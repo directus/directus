@@ -1,5 +1,7 @@
 ---
 edit_field: Kemm ar vaezienn
+location: Lec'h
+input: Enkas
 item_revision: Roll-istor ar pennad
 duplicate_field: Eilañ ar vaezienn
 half_width: Hanter-vann
@@ -39,7 +41,6 @@ delete_folder: Dilemel ar restr
 prefix: Rakger
 suffix: Lostger
 reset_bookmark: Adderaouiñ ar pennroll
-rename_bookmark: Adenvel ar pennroll
 update_bookmark: Kemm ar pennroll
 delete_bookmark: Tennañ ar pennrolloù kuit
 delete_bookmark_copy: >-
@@ -68,7 +69,6 @@ recommended_defaults: Talvoudoù dre ziouer aliet
 unarchive: Adsevel
 unarchive_confirm: Sur oc'h e fell deoc'h adsevel an elfenn-mañ ?
 nested_files_folders_will_be_moved: Dalc'had an teuliad a vo dilec'hiet en teuliad tad.
-unknown_validation_errors: 'Fazioù kadarnaat a zo bet er maeziennoù kuzhet da heul :'
 validationError:
   eq: An talvoud a zle bezañ {valid}
   neq: Arabat e vije {invalid} an talvoud
@@ -232,7 +232,6 @@ related_collections: Dastumadoù liammet
 translations_collection: Dastumad troidigezhioù
 languages_collection: Dastumad yezhoù
 format: Furmad
-use_current_filters_settings: Ober gant ar siloù hag an arventennoù war-implij
 last_page: Pajenn ziwezhañ
 last_access: Mont diwezhañ
 fill_template: Leuniañ gant talvoudegezh ar patrom
@@ -248,6 +247,9 @@ interface_label: Etrefas
 today: Hiziv
 yesterday: Dec'h
 delete_comment: Dilemel an evezhiadenn
+functions:
+  year: Bloaz
+  month: Miz
 month: Miz
 year: Bloaz
 select_all: Dibab pep tra
@@ -410,7 +412,6 @@ unexpected_error_copy: Ur fazi dianv zo bet. Klaskit diwezhatoc'h mar plij.
 copy_details: Eilañ ar munudoù
 no_app_access: Ne c'heller ket implijout an arload
 no_app_access_copy: An implijer-mañ, n'eus ket ar gwir da implijout an arload mererezh.
-password_reset_sent: Ul liamm sur hon 'neus kaset deoc'h evit adderaouiñ ho ker-tremen
 password_reset_successful: Adderaouet eo bet ar ger-tremen
 back: Distreiñ
 editing_image: Chañj ar skeudenn
@@ -428,8 +429,6 @@ start_end_of_count_items: '{start}-{end} {count} elfenn'
 start_end_of_count_filtered_items: '{start}-{end} diwar {count} elfenn silet'
 one_item: '1 elfenn'
 one_filtered_item: '1 elfenn silet'
-delete_collection_are_you_sure: >-
-  Sur oc'h e fell deoc'h dilemel an dastumad-mañ ? Dilemet e vo an dastumad hag an holl elfennoù e-barzh. N'haller ket mont war-gil.
 collections_shown: Dastumadoù diskouezhet
 visible_collections: Dastumadoù da wel
 hidden_collections: Dastumadoù kuzhet
@@ -528,6 +527,11 @@ toggle: Enaouiñ/Lazhañ
 icon_on: Arlun dibab
 icon_off: Arlun diziuzañ
 label: Tikedenn
+trigger: Distegner
+flow_name: Anv
+flow_tracking_activity: Enrollañ an obererezh hepken
+flow_tracking_null: Enrollañ netra
+code: Kod
 full_screen: Skramm a-bezh
 image_url: Url ar skeudenn
 alt_text: Eil testenn
@@ -874,6 +878,7 @@ translation: Troidigezh
 value: Talvoud
 view_project: Gwelet ar raktres
 report_error: Disklêriañ ar fazi
+table: Taolenn
 interfaces:
   filter:
     add_filter: Ouzhpenn ur sil
@@ -924,6 +929,8 @@ interfaces:
     include_seconds: Enklozañ an eilennoù
     set_to_now: Lakaat da vremañ
     use_24: Implijout ar furmad 24e
+  system-fields:
+    select_a_collection: Dibab un dastumad
   system-display-template:
     display-template: Patrom diskwel
     description: Meskañ testenn statik ha talvoudoù ar maeziennoù dinamek
@@ -1003,6 +1010,7 @@ interfaces:
     description: Krouiñ meur a ebarzh evit ar memes framm
     edit_fields: Aozañ ar maeziennoù
     add_label: 'Skridennad "Krouiñ unan Nevez"'
+    sort: Rummañ
     field_name_placeholder: Bizskrivit anv ar vaezienn...
     field_note_placeholder: Bizskrivit notenn ar vaezienn...
   slider:
@@ -1022,7 +1030,6 @@ interfaces:
     auto_formatter: Implij furmad emgefreek an titl
     alphabetize: Alfabetekaat
     alphabetize_label: Rediañ an urzh alfabetek
-    add_tags: Ouzhpennañ tagoù...
   input:
     input: Enkas
     description: Bizskrivañ un talvoud gant an dorn
@@ -1108,6 +1115,7 @@ displays:
     short: Berr
     relative: Relativel
     relative_label: 'Diskwel an eur relativel, da skouer: 5 munutenn zo'
+    suffix: Lostger
   file:
     file: Restr
     description: Diskwel ar restroù
@@ -1182,7 +1190,6 @@ layouts:
     subtitle: Istitl
   tabular:
     tabular: Taolenn
-    fields: Maeziennoù
     spacing: Esaouenn
     comfortable: Aerapl
     compact: Krennet
@@ -1194,3 +1201,6 @@ layouts:
 panels:
   label:
     name: Tikedenn
+operations:
+  notification:
+    recipient: Implijer

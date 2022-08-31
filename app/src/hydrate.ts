@@ -1,21 +1,21 @@
 import { setLanguage } from '@/lang/set-language';
 import { register as registerModules, unregister as unregisterModules } from '@/modules/register';
 import { getBasemapSources } from '@/utils/geometry/basemap';
-import {
-	useAppStore,
-	useCollectionsStore,
-	useFieldsStore,
-	useLatencyStore,
-	useInsightsStore,
-	usePermissionsStore,
-	usePresetsStore,
-	useRelationsStore,
-	useRequestsStore,
-	useServerStore,
-	useSettingsStore,
-	useUserStore,
-	useNotificationsStore,
-} from '@/stores';
+import { useAppStore } from '@/stores/app';
+import { useCollectionsStore } from '@/stores/collections';
+import { useFieldsStore } from '@/stores/fields';
+import { useLatencyStore } from '@/stores/latency';
+import { useInsightsStore } from '@/stores/insights';
+import { useFlowsStore } from '@/stores/flows';
+import { usePermissionsStore } from '@/stores/permissions';
+import { usePresetsStore } from '@/stores/presets';
+import { useRelationsStore } from '@/stores/relations';
+import { useRequestsStore } from '@/stores/requests';
+import { useServerStore } from '@/stores/server';
+import { useSettingsStore } from '@/stores/settings';
+import { useUserStore } from '@/stores/user';
+import { useNotificationsStore } from '@/stores/notifications';
+import { useTranslationStrings } from '@/composables/use-translation-strings';
 
 type GenericStore = {
 	$id: string;
@@ -38,6 +38,7 @@ export function useStores(
 		useRelationsStore,
 		usePermissionsStore,
 		useInsightsStore,
+		useFlowsStore,
 		useNotificationsStore,
 	]
 ): GenericStore[] {
@@ -49,7 +50,9 @@ export async function hydrate(): Promise<void> {
 
 	const appStore = useAppStore();
 	const userStore = useUserStore();
+	const serverStore = useServerStore();
 	const permissionsStore = usePermissionsStore();
+	const { refresh: hydrateTranslationStrings } = useTranslationStrings();
 
 	if (appStore.hydrated) return;
 	if (appStore.hydrating) return;
@@ -65,15 +68,21 @@ export async function hydrate(): Promise<void> {
 		 */
 		await userStore.hydrate();
 
+		let lang = 'en-US';
+		if (serverStore.info?.project?.default_language) lang = serverStore.info.project.default_language;
+
 		if (userStore.currentUser?.role) {
 			await permissionsStore.hydrate();
 			const hydratedStores = ['userStore', 'permissionsStore'];
 
 			await Promise.all(stores.filter(({ $id }) => !hydratedStores.includes($id)).map((store) => store.hydrate?.()));
 			await registerModules();
+			await hydrateTranslationStrings();
 
-			await setLanguage(userStore.currentUser?.language ?? 'en-US');
+			if (userStore.currentUser?.language) lang = userStore.currentUser?.language;
 		}
+
+		await setLanguage(lang);
 
 		appStore.basemap = getBasemapSources()[0].name;
 	} catch (error: any) {

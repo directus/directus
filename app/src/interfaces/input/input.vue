@@ -13,6 +13,8 @@
 		:min="min"
 		:max="max"
 		:step="step"
+		:dir="direction"
+		:autocomplete="masked ? 'new-password' : 'off'"
 		@update:model-value="$emit('input', $event)"
 	>
 		<template v-if="iconLeft" #prepend><v-icon :name="iconLeft" /></template>
@@ -71,7 +73,7 @@ export default defineComponent({
 		},
 		trim: {
 			type: Boolean,
-			default: true,
+			default: false,
 		},
 		font: {
 			type: String as PropType<'sans-serif' | 'serif' | 'monospace'>,
@@ -100,15 +102,19 @@ export default defineComponent({
 		},
 		min: {
 			type: Number,
-			default: null,
+			default: undefined,
 		},
 		max: {
 			type: Number,
-			default: null,
+			default: undefined,
 		},
 		step: {
 			type: Number,
 			default: 1,
+		},
+		direction: {
+			type: String,
+			default: undefined,
 		},
 	},
 	emits: ['input'],

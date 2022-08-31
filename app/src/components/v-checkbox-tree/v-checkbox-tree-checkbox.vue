@@ -1,5 +1,5 @@
 <template>
-	<v-list-group v-if="children" v-show="groupShown" :value="value" :open="groupOpen" arrow-placement="before">
+	<v-list-group v-if="visibleChildrenValues.length > 0" v-show="groupShown" :value="value" arrow-placement="before">
 		<template #activator>
 			<v-checkbox
 				v-model="treeValue"
@@ -33,7 +33,7 @@
 		/>
 	</v-list-group>
 
-	<v-list-item v-else-if="!children" v-show="!hidden" class="item">
+	<v-list-item v-else-if="!hidden" class="item">
 		<v-checkbox v-model="treeValue" :disabled="disabled" :checked="checked" :label="text" :value="value">
 			<v-highlight :text="text" :query="search" />
 		</v-checkbox>
@@ -41,8 +41,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, PropType } from 'vue';
+import { defineComponent, computed, PropType, toRefs } from 'vue';
 import { difference } from 'lodash';
+import { useVisibleChildren } from './use-visible-children';
 
 type Delta = {
 	added?: (number | string)[];
@@ -111,61 +112,27 @@ export default defineComponent({
 	},
 	emits: ['update:modelValue'],
 	setup(props, { emit }) {
-		const visibleChildrenValues = computed(() => {
-			let options = props.children || [];
+		const { search, modelValue, children, showSelectionOnly, itemText, itemValue, itemChildren, parentValue, value } =
+			toRefs(props);
 
-			if (props.search) {
-				options = options.filter(
-					(child) =>
-						child[props.itemText].toLowerCase().includes(props.search.toLowerCase()) ||
-						childrenHaveSearchMatch(child[props.itemChildren])
-				);
-			}
-
-			if (props.showSelectionOnly) {
-				options = options.filter(
-					(child) =>
-						props.modelValue.includes(child[props.itemValue]) ||
-						childrenHaveValueMatch(child[props.itemChildren]) ||
-						props.modelValue.includes(props.parentValue) ||
-						props.modelValue.includes(props.value)
-				);
-			}
-
-			return options.map((child) => child[props.itemValue]);
-
-			function childrenHaveSearchMatch(children: Record<string, any>[] | undefined): boolean {
-				if (!children) return false;
-				return children.some(
-					(child) =>
-						child[props.itemText].toLowerCase().includes(props.search.toLowerCase()) ||
-						childrenHaveSearchMatch(child[props.itemChildren])
-				);
-			}
-
-			function childrenHaveValueMatch(children: Record<string, any>[] | undefined): boolean {
-				if (!children) return false;
-				return children.some(
-					(child) =>
-						props.modelValue.includes(child[props.itemValue]) || childrenHaveValueMatch(child[props.itemChildren])
-				);
-			}
-		});
+		const { visibleChildrenValues } = useVisibleChildren(
+			search,
+			modelValue,
+			children,
+			showSelectionOnly,
+			itemText,
+			itemValue,
+			itemChildren,
+			parentValue,
+			value
+		);
 
 		const groupShown = computed(() => {
 			if (props.showSelectionOnly === true && props.modelValue.includes(props.value)) {
 				return true;
 			}
 
-			return visibleChildrenValues.value.length > 0;
-		});
-
-		const groupOpen = computed(() => {
-			if (props.showSelectionOnly === true) {
-				return visibleChildrenValues.value.length > 0;
-			}
-
-			return typeof props.search === 'string' && props.search.length > 0;
+			return !props.hidden;
 		});
 
 		const childrenValues = computed(() => props.children?.map((child) => child[props.itemValue]) || []);
@@ -261,7 +228,6 @@ export default defineComponent({
 			groupIndeterminateState,
 			visibleChildrenValues,
 			groupShown,
-			groupOpen,
 		};
 
 		function emitAll(rawValue: (string | number)[], { added, removed }: Delta) {

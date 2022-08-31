@@ -1,3 +1,4 @@
+import { Action } from '@directus/shared/types';
 import express from 'express';
 import Joi from 'joi';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
@@ -5,7 +6,6 @@ import { respond } from '../middleware/respond';
 import useCollection from '../middleware/use-collection';
 import { validateBatch } from '../middleware/validate-batch';
 import { ActivityService, MetaService } from '../services';
-import { Action } from '../types';
 import asyncHandler from '../utils/async-handler';
 import { getIPFromReq } from '../utils/get-ip-from-req';
 
@@ -92,6 +92,7 @@ router.post(
 			user: req.accountability?.user,
 			ip: getIPFromReq(req),
 			user_agent: req.get('user-agent'),
+			origin: req.get('origin'),
 		});
 
 		try {

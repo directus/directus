@@ -58,13 +58,13 @@ textarea,
 .selectable {
 	user-select: text;
 
-	/* stylelint-disable no-descending-specificity */
-
 	* {
 		user-select: text;
 	}
+}
 
-	/* stylelint-enable no-descending-specificity */
+::placeholder {
+	opacity: 1;
 }
 
 :invalid {
@@ -105,6 +105,10 @@ a {
 
 strong {
 	font-weight: 600;
+}
+
+code {
+	font-family: var(--family-monospace);
 }
 
 ::selection {

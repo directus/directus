@@ -1,11 +1,11 @@
 <template>
 	<v-item-group v-model="selection" scope="group-accordion" class="group-accordion" :multiple="accordionMode === false">
 		<accordion-section
-			v-for="accordionField in rootFields"
+			v-for="accordionField in groupFields"
 			:key="accordionField.field"
 			:field="accordionField"
 			:fields="fields"
-			:values="values"
+			:values="groupValues"
 			:initial-values="initialValues"
 			:disabled="disabled"
 			:batch-mode="batchMode"
@@ -13,19 +13,23 @@
 			:primary-key="primaryKey"
 			:loading="loading"
 			:validation-errors="validationErrors"
+			:badge="badge"
+			:raw-editor-enabled="rawEditorEnabled"
 			:group="field.meta.field"
 			:multiple="accordionMode === false"
+			:direction="direction"
 			@apply="$emit('apply', $event)"
-			@toggleAll="toggleAll"
+			@toggle-all="toggleAll"
 		/>
 	</v-item-group>
 </template>
 
 <script lang="ts">
 import { Field } from '@directus/shared/types';
-import { defineComponent, PropType, computed, ref, watch } from 'vue';
+import { defineComponent, PropType, ref, watch } from 'vue';
 import { ValidationError } from '@directus/shared/types';
 import AccordionSection from './accordion-section.vue';
+import { isEqual } from 'lodash';
 
 export default defineComponent({
 	name: 'InterfaceGroupAccordion',
@@ -71,7 +75,14 @@ export default defineComponent({
 			type: Array as PropType<ValidationError[]>,
 			default: () => [],
 		},
-
+		badge: {
+			type: String,
+			default: null,
+		},
+		rawEditorEnabled: {
+			type: Boolean,
+			default: false,
+		},
 		accordionMode: {
 			type: Boolean,
 			default: true,
@@ -81,38 +92,80 @@ export default defineComponent({
 			enum: ['opened', 'closed', 'first'],
 			default: 'closed',
 		},
+		direction: {
+			type: String,
+			default: undefined,
+		},
 	},
 	emits: ['apply'],
 	setup(props) {
-		const rootFields = computed(() => {
-			return props.fields.filter((field) => field.meta?.group === props.field.meta?.field);
-		});
-
 		const selection = ref<string[]>([]);
+		const { groupFields, groupValues } = useComputedGroup();
 
 		watch(
 			() => props.start,
 			(start) => {
 				if (start === 'opened') {
-					selection.value = rootFields.value.map((field) => field.field);
+					selection.value = groupFields.value.map((field) => field.field);
 				}
 
 				if (start === 'first') {
-					selection.value = [rootFields.value[0].field];
+					selection.value = [groupFields.value[0].field];
 				}
 			},
 			{ immediate: true }
 		);
 
-		return { rootFields, selection, toggleAll };
+		watch(
+			() => props.validationErrors,
+			(newVal, oldVal) => {
+				if (!props.validationErrors) return;
+				if (isEqual(newVal, oldVal)) return;
+				const includedFieldsWithErrors = props.validationErrors.filter((validationError) =>
+					groupFields.value.find((rootField) => rootField.field === validationError.field)
+				);
+				if (includedFieldsWithErrors.length > 0) selection.value = [includedFieldsWithErrors[0].field];
+			}
+		);
+
+		return { groupFields, groupValues, selection, toggleAll };
 
 		function toggleAll() {
 			if (props.accordionMode === true) return;
 
-			if (selection.value.length === rootFields.value.length) {
+			if (selection.value.length === groupFields.value.length) {
 				selection.value = [];
 			} else {
-				selection.value = rootFields.value.map((field) => field.field);
+				selection.value = groupFields.value.map((field) => field.field);
+			}
+		}
+
+		function useComputedGroup() {
+			const groupFields = ref<Field[]>(limitFields());
+			const groupValues = ref<Record<string, any>>({});
+
+			watch(
+				() => props.fields,
+				() => {
+					const newVal = limitFields();
+					if (!isEqual(groupFields.value, newVal)) {
+						groupFields.value = newVal;
+					}
+				}
+			);
+			watch(
+				() => props.values,
+				(newVal) => {
+					if (!isEqual(groupValues.value, newVal)) {
+						groupValues.value = newVal;
+					}
+				}
+			);
+
+			return { groupFields, groupValues };
+
+			function limitFields(): Field[] {
+				return props.fields.filter((field) => field.meta?.group === props.field.meta?.field);
 			}
 		}
 	},

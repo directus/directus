@@ -21,3 +21,5 @@ coverage
 TODO
 schema.yaml
 schema.json
+.*.swp
+debug

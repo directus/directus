@@ -1,6 +1,7 @@
 import { FieldFilter, Filter } from '../types/filter';
 import { flatten } from 'lodash';
 import { generateJoi, JoiOptions } from './generate-joi';
+import { injectFunctionResults } from './inject-function-results';
 import Joi from 'joi';
 
 /**
@@ -35,19 +36,25 @@ export function validatePayload(
 	} else if (Object.keys(filter)[0] === '_or') {
 		const subValidation = Object.values(filter)[0] as FieldFilter[];
 
-		const nestedErrors = flatten<Joi.ValidationError>(
-			subValidation.map((subObj: Record<string, any>) => validatePayload(subObj, payload, options))
-		);
+		const swallowErrors: Joi.ValidationError[] = [];
 
-		const allErrored = subValidation.length === nestedErrors.length;
+		const pass = subValidation.some((subObj: Record<string, any>) => {
+			const nestedErrors = validatePayload(subObj, payload, options);
+			if (nestedErrors.length > 0) {
+				swallowErrors.push(...nestedErrors);
+				return false;
+			}
+			return true;
+		});
 
-		if (allErrored) {
-			errors.push(...nestedErrors);
+		if (!pass) {
+			errors.push(...swallowErrors);
 		}
 	} else {
+		const payloadWithFunctions = injectFunctionResults(payload, filter);
 		const schema = generateJoi(filter as FieldFilter, options);
 
-		const { error } = schema.validate(payload, { abortEarly: false });
+		const { error } = schema.validate(payloadWithFunctions, { abortEarly: false });
 
 		if (error) {
 			errors.push(error);

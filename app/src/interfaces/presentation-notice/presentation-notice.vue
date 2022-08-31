@@ -26,3 +26,13 @@ export default defineComponent({
 	},
 });
 </script>
+
+<style lang="scss" scoped>
+:deep(a) {
+	color: var(--primary);
+
+	&:hover {
+		color: var(--primary-125);
+	}
+}
+</style>

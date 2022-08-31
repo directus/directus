@@ -14,7 +14,7 @@
 			<v-dialog v-model="confirmDelete" @esc="confirmDelete = false">
 				<template #activator="{ on }">
 					<v-button rounded icon class="action-delete" :disabled="item === null" @click="on">
-						<v-icon name="delete" outline />
+						<v-icon name="delete" />
 					</v-button>
 				</template>
 
@@ -89,11 +89,11 @@ import { defineComponent, computed, toRefs, ref } from 'vue';
 
 import SettingsNavigation from '../../components/navigation.vue';
 import { useRouter } from 'vue-router';
-import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
-import useItem from '@/composables/use-item';
-import SaveOptions from '@/views/private/components/save-options';
-import useShortcut from '@/composables/use-shortcut';
-import useEditsGuard from '@/composables/use-edits-guard';
+import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail.vue';
+import { useItem } from '@/composables/use-item';
+import SaveOptions from '@/views/private/components/save-options.vue';
+import { useShortcut } from '@/composables/use-shortcut';
+import { useEditsGuard } from '@/composables/use-edits-guard';
 
 export default defineComponent({
 	name: 'WebhooksItem',
@@ -223,9 +223,9 @@ export default defineComponent({
 }
 
 .header-icon {
-	--v-button-background-color: var(--warning-10);
-	--v-button-color: var(--warning);
-	--v-button-background-color-hover: var(--warning-25);
-	--v-button-color-hover: var(--warning);
+	--v-button-background-color: var(--primary-10);
+	--v-button-color: var(--primary);
+	--v-button-background-color-hover: var(--primary-25);
+	--v-button-color-hover: var(--primary);
 }
 </style>

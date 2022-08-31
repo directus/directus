@@ -18,10 +18,11 @@
 						rounded
 						icon
 						class="action-delete"
+						secondary
 						:disabled="item === null"
 						@click="on"
 					>
-						<v-icon name="delete" outline />
+						<v-icon name="delete" />
 					</v-button>
 				</template>
 
@@ -78,7 +79,7 @@
 		</div>
 
 		<template #sidebar>
-			<sidebar-detail icon="info_outline" :title="t('information')" close>
+			<sidebar-detail icon="info" :title="t('information')" close>
 				<div v-md="t('page_help_settings_datamodel_fields')" class="page-description" />
 			</sidebar-detail>
 		</template>
@@ -105,11 +106,12 @@ import SettingsNavigation from '../../../components/navigation.vue';
 import { useCollection } from '@directus/shared/composables';
 import FieldsManagement from './components/fields-management.vue';
 
-import useItem from '@/composables/use-item';
+import { useItem } from '@/composables/use-item';
 import { useRouter } from 'vue-router';
-import { useCollectionsStore, useFieldsStore } from '@/stores';
-import useShortcut from '@/composables/use-shortcut';
-import useEditsGuard from '@/composables/use-edits-guard';
+import { useCollectionsStore } from '@/stores/collections';
+import { useFieldsStore } from '@/stores/fields';
+import { useShortcut } from '@/composables/use-shortcut';
+import { useEditsGuard } from '@/composables/use-edits-guard';
 
 export default defineComponent({
 	components: { SettingsNavigation, FieldsManagement },
@@ -233,16 +235,14 @@ export default defineComponent({
 }
 
 .header-icon {
-	--v-button-background-color: var(--warning-10);
-	--v-button-color: var(--warning);
-	--v-button-background-color-hover: var(--warning-25);
-	--v-button-color-hover: var(--warning);
+	--v-button-background-color: var(--primary-10);
+	--v-button-color: var(--primary);
+	--v-button-background-color-hover: var(--primary-25);
+	--v-button-color-hover: var(--primary);
 }
 
 .action-delete {
-	--v-button-background-color: var(--danger-10);
-	--v-button-color: var(--danger);
-	--v-button-background-color-hover: var(--danger-25);
-	--v-button-color-hover: var(--danger);
+	--v-button-background-color-hover: var(--danger) !important;
+	--v-button-color-hover: var(--white) !important;
 }
 </style>

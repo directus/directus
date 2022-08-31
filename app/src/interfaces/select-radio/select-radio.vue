@@ -54,7 +54,7 @@ export default defineComponent({
 			default: false,
 		},
 		value: {
-			type: String,
+			type: [String, Number],
 			default: null,
 		},
 		choices: {
@@ -126,7 +126,7 @@ export default defineComponent({
 
 	display: grid;
 	grid-gap: 12px 32px;
-	grid-template-columns: repeat(var(--columns), 1fr);
+	grid-template-columns: repeat(var(--columns), minmax(0, 1fr));
 }
 
 .grid-2 {
@@ -161,7 +161,7 @@ export default defineComponent({
 	input {
 		display: block;
 		flex-grow: 1;
-		width: 20px; // this will auto grow with flex above
+		width: 20px; /* this will auto grow with flex above */
 		margin: 0;
 		margin-left: 8px;
 		padding: 0;

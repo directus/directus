@@ -1,6 +1,7 @@
 import { StateUpdates, State, HelperFunctions } from '../types';
 import { set, get } from 'lodash';
-import { useCollectionsStore, useFieldsStore } from '@/stores';
+import { useCollectionsStore } from '@/stores/collections';
+import { useFieldsStore } from '@/stores/fields';
 
 export function applyChanges(updates: StateUpdates, state: State, helperFn: HelperFunctions) {
 	const { hasChanged } = helperFn;
@@ -18,6 +19,7 @@ export function applyChanges(updates: StateUpdates, state: State, helperFn: Help
 
 	if (hasChanged('relations.m2o.related_collection')) {
 		preventCircularConstraint(updates, state, helperFn);
+		updateJunctionRelated(updates, state, helperFn);
 	}
 
 	if (hasChanged('relations.o2m.field')) {
@@ -108,6 +110,16 @@ export function setJunctionFields(updates: StateUpdates, _state: State, { getCur
 	set(updates, 'relations.m2o.meta.junction_field', getCurrent('relations.o2m.field'));
 }
 
+export function updateJunctionRelated(updates: StateUpdates, _state: State, { getCurrent }: HelperFunctions) {
+	const fieldsStore = useFieldsStore();
+
+	const relatedCollection = getCurrent('relations.m2o.related_collection');
+	const relatedCollectionPrimaryKeyField =
+		fieldsStore.getPrimaryKeyFieldForCollection(relatedCollection)?.field ?? 'id';
+
+	set(updates, 'relations.m2o.field', `${relatedCollection}_${relatedCollectionPrimaryKeyField}`);
+}
+
 function collectionExists(collection: string) {
 	return !!useCollectionsStore().getCollection(collection);
 }
@@ -169,6 +181,43 @@ export function generateCollections(updates: StateUpdates, state: State, { getCu
 					schema: {},
 					meta: {},
 				},
+				// Open for discussion: we might want to limit choices to 'ltr' and 'rtl'
+				{
+					field: 'direction',
+					type: 'string',
+					schema: {
+						default_value: 'ltr',
+					},
+					meta: {
+						interface: 'select-dropdown',
+						options: {
+							choices: [
+								{
+									text: '$t:left_to_right',
+									value: 'ltr',
+								},
+								{
+									text: '$t:right_to_left',
+									value: 'rtl',
+								},
+							],
+						},
+						display: 'labels',
+						display_options: {
+							choices: [
+								{
+									text: '$t:left_to_right',
+									value: 'ltr',
+								},
+								{
+									text: '$t:right_to_left',
+									value: 'rtl',
+								},
+							],
+							format: false,
+						},
+					},
+				},
 			],
 		});
 
@@ -182,30 +231,42 @@ export function generateCollections(updates: StateUpdates, state: State, { getCu
 				{
 					code: 'en-US',
 					name: 'English',
+					direction: 'ltr',
+				},
+				{
+					code: 'ar-SA',
+					name: 'Arabic',
+					direction: 'rtl',
 				},
 				{
 					code: 'de-DE',
 					name: 'German',
+					direction: 'ltr',
 				},
 				{
 					code: 'fr-FR',
 					name: 'French',
+					direction: 'ltr',
 				},
 				{
 					code: 'ru-RU',
 					name: 'Russian',
+					direction: 'ltr',
 				},
 				{
 					code: 'es-ES',
 					name: 'Spanish',
+					direction: 'ltr',
 				},
 				{
 					code: 'it-IT',
 					name: 'Italian',
+					direction: 'ltr',
 				},
 				{
 					code: 'pt-BR',
 					name: 'Portuguese',
+					direction: 'ltr',
 				},
 			],
 		};

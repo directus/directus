@@ -1,22 +1,26 @@
 import { Range } from '@directus/drive';
+import { parseJSON } from '@directus/shared/utils';
 import { Router } from 'express';
-import { pick } from 'lodash';
+import helmet from 'helmet';
+import { merge, pick } from 'lodash';
 import ms from 'ms';
 import { ASSET_TRANSFORM_QUERY_KEYS, SYSTEM_ASSET_ALLOW_LIST } from '../constants';
 import getDatabase from '../database';
 import env from '../env';
 import { InvalidQueryException, RangeNotSatisfiableException } from '../exceptions';
+import logger from '../logger';
 import useCollection from '../middleware/use-collection';
 import { AssetsService, PayloadService } from '../services';
-import { TransformationParams, TransformationMethods, TransformationPreset } from '../types/assets';
+import { TransformationMethods, TransformationParams, TransformationPreset } from '../types/assets';
 import asyncHandler from '../utils/async-handler';
+import { getConfigFromEnv } from '../utils/get-config-from-env';
 
 const router = Router();
 
 router.use(useCollection('directus_files'));
 
 router.get(
-	'/:pk',
+	'/:pk/:filename?',
 	// Validate query params
 	asyncHandler(async (req, res, next) => {
 		const payloadService = new PayloadService('directus_settings', { schema: req.schema });
@@ -45,7 +49,7 @@ router.get(
 
 			// Try parse the JSON array
 			try {
-				transforms = JSON.parse(transformation['transforms'] as string);
+				transforms = parseJSON(transformation['transforms'] as string);
 			} catch {
 				throw new InvalidQueryException(`"transforms" Parameter needs to be a JSON array of allowed transformations.`);
 			}
@@ -106,6 +110,18 @@ router.get(
 		}
 	}),
 
+	helmet.contentSecurityPolicy(
+		merge(
+			{
+				useDefaults: false,
+				directives: {
+					defaultSrc: ['none'],
+				},
+			},
+			getConfigFromEnv('ASSETS_CONTENT_SECURITY_POLICY')
+		)
+	),
+
 	// Return file
 	asyncHandler(async (req, res) => {
 		const id = req.params.pk?.substring(0, 36);
@@ -124,12 +140,11 @@ router.get(
 		let range: Range | undefined = undefined;
 
 		if (req.headers.range) {
-			// substring 6 = "bytes="
-			const rangeParts = req.headers.range.substring(6).split('-');
+			const rangeParts = /bytes=([0-9]*)-([0-9]*)/.exec(req.headers.range);
 
 			range = {
-				start: rangeParts[0] ? Number(rangeParts[0]) : 0,
-				end: rangeParts[1] ? Number(rangeParts[1]) : undefined,
+				start: rangeParts?.[1] ? Number(rangeParts[1]) : undefined,
+				end: rangeParts?.[2] ? Number(rangeParts[2]) : undefined,
 			};
 
 			if (Number.isNaN(range.start) || Number.isNaN(range.end)) {
@@ -141,15 +156,21 @@ router.get(
 
 		const access = req.accountability?.role ? 'private' : 'public';
 
-		res.attachment(file.filename_download);
+		res.attachment(req.params.filename ?? file.filename_download);
 		res.setHeader('Content-Type', file.type);
 		res.setHeader('Accept-Ranges', 'bytes');
 		res.setHeader('Cache-Control', `${access}, max-age=${ms(env.ASSETS_CACHE_TTL as string) / 1000}`);
 
+		const unixTime = Date.parse(file.modified_on);
+		if (!Number.isNaN(unixTime)) {
+			const lastModifiedDate = new Date(unixTime);
+			res.setHeader('Last-Modified', lastModifiedDate.toUTCString());
+		}
+
 		if (range) {
 			res.setHeader('Content-Range', `bytes ${range.start}-${range.end || stat.size - 1}/${stat.size}`);
 			res.status(206);
-			res.setHeader('Content-Length', (range.end ? range.end + 1 : stat.size) - range.start);
+			res.setHeader('Content-Length', (range.end ? range.end + 1 : stat.size) - (range.start || 0));
 		} else {
 			res.setHeader('Content-Length', stat.size);
 		}
@@ -166,7 +187,37 @@ router.get(
 			return res.end();
 		}
 
-		stream.pipe(res);
+		let isDataSent = false;
+
+		stream.on('data', (chunk) => {
+			isDataSent = true;
+			res.write(chunk);
+		});
+
+		stream.on('end', () => {
+			res.end();
+		});
+
+		stream.on('error', (e) => {
+			logger.error(e, `Couldn't stream file ${file.id} to the client`);
+
+			if (!isDataSent) {
+				res.removeHeader('Content-Type');
+				res.removeHeader('Content-Disposition');
+				res.removeHeader('Cache-Control');
+
+				res.status(500).json({
+					errors: [
+						{
+							message: 'An unexpected error occurred.',
+							extensions: {
+								code: 'INTERNAL_SERVER_ERROR',
+							},
+						},
+					],
+				});
+			}
+		});
 	})
 );
 

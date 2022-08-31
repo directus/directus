@@ -1,9 +1,21 @@
 <template>
 	<v-menu ref="dateTimeMenu" :close-on-content-click="false" attached :disabled="disabled" full-height seamless>
 		<template #activator="{ toggle, active }">
-			<v-input :active="active" clickable readonly :model-value="displayValue" :disabled="disabled" @click="toggle">
+			<v-input
+				:active="active"
+				clickable
+				readonly
+				:model-value="displayValue"
+				:disabled="disabled"
+				:placeholder="!isValidValue ? value : t('enter_a_value')"
+				@click="toggle"
+			>
 				<template v-if="!disabled" #append>
-					<v-icon :name="value ? 'close' : 'today'" :class="{ active }" @click.stop="unsetValue" />
+					<v-icon
+						:name="value ? 'clear' : 'today'"
+						:class="{ active, 'clear-icon': value, 'today-icon': !value }"
+						v-on="{ click: value ? unsetValue : null }"
+					/>
 				</template>
 			</v-input>
 		</template>
@@ -22,9 +34,9 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, PropType, ref, watch } from 'vue';
-import formatLocalized from '@/utils/localized-format';
-import { parse, parseISO } from 'date-fns';
+import { computed, defineComponent, PropType, ref, watch } from 'vue';
+import { localizedFormat } from '@/utils/localized-format';
+import { isValid, parse, parseISO } from 'date-fns';
 
 export default defineComponent({
 	props: {
@@ -56,17 +68,19 @@ export default defineComponent({
 
 		const dateTimeMenu = ref();
 
-		const { displayValue } = useDisplayValue();
+		const { displayValue, isValidValue } = useDisplayValue();
 
 		function useDisplayValue() {
 			const displayValue = ref<string | null>(null);
 
+			const isValidValue = computed(() => isValid(parseValue(props.value)));
+
 			watch(() => props.value, setDisplayValue, { immediate: true });
 
-			return { displayValue };
+			return { displayValue, isValidValue };
 
 			async function setDisplayValue() {
-				if (!props.value) {
+				if (!props.value || !isValidValue.value) {
 					displayValue.value = null;
 					return;
 				}
@@ -76,7 +90,7 @@ export default defineComponent({
 				if (props.type === 'date') format = String(t('date-fns_date'));
 				if (props.type === 'time') format = String(t(timeFormat));
 
-				displayValue.value = await formatLocalized(parseValue(props.value), format);
+				displayValue.value = localizedFormat(parseValue(props.value), format);
 			}
 
 			function parseValue(value: string): Date {
@@ -93,17 +107,31 @@ export default defineComponent({
 			}
 		}
 
-		function unsetValue() {
+		function unsetValue(e: any) {
+			e.preventDefault();
+			e.stopPropagation();
 			emit('input', null);
 		}
 
-		return { displayValue, unsetValue, dateTimeMenu };
+		return { t, displayValue, unsetValue, dateTimeMenu, isValidValue };
 	},
 });
 </script>
 
 <style lang="scss" scoped>
-.v-icon.active {
-	--v-icon-color: var(--primary);
+.v-icon {
+	&.today-icon {
+		&:hover,
+		&.active {
+			--v-icon-color: var(--primary);
+		}
+	}
+
+	&.clear-icon {
+		&:hover,
+		&.active {
+			--v-icon-color: var(--danger);
+		}
+	}
 }
 </style>

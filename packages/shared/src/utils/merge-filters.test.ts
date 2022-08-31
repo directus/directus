@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { mergeFilters } from './merge-filters';
 
 describe('merge filters', () => {

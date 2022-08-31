@@ -8,7 +8,7 @@
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
 import Color from 'color';
-import { isHex } from '@/utils/color';
+import { isHex } from '@/utils/is-hex';
 
 export default defineComponent({
 	props: {

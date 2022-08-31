@@ -28,9 +28,11 @@ draft: Concept
 archived: Gearchiveerd
 modules: Modules
 module_bar: Modulebalk
+reset_width: Stel breedte terug
 tile_size: Tegelgrootte
 edit_field: Veld Bewerken
 conditions: Voorwaarden
+location: Locatie
 maps: Kaarten
 switch_user: Andere gebruiker
 item_creation: Item Aanmaken
@@ -40,6 +42,7 @@ duplicate_field: Dupliceer Veld
 half_width: Halve Breedte
 full_width: Volledige breedte
 group: Groep
+export_items: Exporteer items
 and: En
 or: Of
 fill_width: Vul Breedte
@@ -67,6 +70,13 @@ create_role: Maak rol
 create_user: Gebruiker Aanmaken
 delete_panel: Paneel verwijderen
 create_webhook: Webhook Aanmaken
+create_translation_string: Vertalingen aanmaken
+no_translation_string: Vertaalde Strings
+translation_string_key_placeholder: Tekenreeks van vertalingen...
+translation_string_translations_placeholder: Voeg nieuwe vertaling toe
+edit_translation_string: Vertaalstring bewerken
+delete_translation_string_copy: >-
+  Weet je zeker dat je het {key} veld wilt verwijderen? Dit kan niet ongedaan gemaakt worden.
 invite_users: Gebruikers Uitnodigen
 invite: Nodig uit
 email_already_invited: E-mailadres "{email}" is al uitgenodigd
@@ -83,11 +93,13 @@ delete_folder: Verwijder Map
 prefix: Voorvoegsel
 suffix: Achtervoegsel
 reset_bookmark: Reset Bladwijzer
-rename_bookmark: Hernoem Bladwijzer
 update_bookmark: Update Bladwijzer
 delete_bookmark: Verwijder Bladwijzer
 delete_bookmark_copy: >-
   Weet je zeker dat je de bladwijzer "{bookmark}" wilt verwijderen? Dit kan niet ongedaan gemaakt worden.
+delete_personal_bookmark: Verwijder persoonlijke bladwijzer
+delete_role_bookmark: Bladwijzer verwijderen
+delete_global_bookmark: Verwijder globale bladwijzer
 logoutReason:
   SIGN_OUT: Uitgelogd
   SESSION_EXPIRED: Sessie verlopen
@@ -114,7 +126,7 @@ recommended_defaults: Aanbevolen standaardinstellingen
 unarchive: Terugzetten
 unarchive_confirm: Weet je zeker dat je dit item wilt terugzetten?
 nested_files_folders_will_be_moved: Bestanden en mappen in deze map zullen een map omhoog worden geplaatst.
-unknown_validation_errors: 'Er waren validatie-fouten voor de volgende verborgen velden:'
+validation_errors_notice: 'De volgende velden hebben ongeldige waarden:'
 validationError:
   eq: Waarde moet {valid} zijn
   neq: Waarde kan niet {invalid} zijn
@@ -162,6 +174,9 @@ presets_for_role: 'Standaardwaarden voor de velden voor rol {role}.'
 presentation_and_aliases: Presentatie & Aliasen
 revision_post_create: Zo zag dit item eruit toen het werd gemaakt.
 revision_post_update: Zo zag dit item eruit na de update.
+changes_made: Hieronder staan de specifieke wijzigingen die zijn aangebracht in deze herziening.
+no_relational_data: Houd er rekening mee dat relatiegegevens hier niet bij betrokken zijn.
+hide_field: Veld verbergen
 hide_field_on_detail: Veld Verbergen
 show_field_on_detail: Veld Tonen
 delete_field: Veld Verwijderen
@@ -170,11 +185,18 @@ field_create_success: 'Veld aangemaakt: "{field}"'
 field_update_success: 'Veld bijgewerkt: "{field}"'
 duplicate_where_to: Waar wil je dit veld naar dupliceren?
 language: Taal
+language_placeholder: Kies een taal...
 aggregate_function: Geaggregeerde Functie
+aggregate_precision: Geaggregeerde Functie
+group_aggregation: Groep Aggregatie
+group_precision: Groep Precisie
 global: Wereldwijd
 admins_have_all_permissions: Admins hebben alle permissies
 camera: Camera
 show_zero: Toon nul
+create_in_advanced_field_creation_mode: Maak veld in geavanceerde modus
+continue_in_advanced_field_creation_mode: Doorgaan in geavanceerde veld aanmaak modus
+validation: Validatie
 sum: Som
 sum_distinct: Som Uniek
 avg: Gemiddeld
@@ -217,8 +239,10 @@ uuid: UUID
 hash: Hash
 geometry: Geometrie (Alle)
 geometry.Point: Punt
+geometry.LineString: LineString
 geometry.Polygon: Veelhoek
 geometry.MultiPoint: Multipoint
+geometry.MultiLineString: MultiLineString
 not_available_for_type: Niet beschikbaar voor dit type
 create_translations: Vertalingen aanmaken
 auto_refresh: Automatische verversen
@@ -314,8 +338,6 @@ label_import: Importeren
 label_export: Exporteren
 import_export: Importeren / Exporteren
 format: Format
-use_current_filters_settings: Gebruik huidige filters & instellingen
-export_data_button: Start exporteren
 last_page: Laatste pagina
 last_access: Laatste toegang
 fill_template: Vul met sjabloonwaarde
@@ -331,6 +353,16 @@ interface_label: Interface
 today: Vandaag
 yesterday: Gisteren
 delete_comment: Reactie verwijderen
+functions:
+  year: Jaar
+  month: Maand
+  week: Week
+  day: Dag
+  weekday: Weekdag
+  hour: Uur
+  minute: Minuut
+  second: Seconde
+  count: Aantal
 date-fns_date: PPP
 date-fns_time: 'H:mm:ss'
 date-fns_time_no_seconds: 'H:mm'
@@ -510,7 +542,6 @@ unexpected_error_copy: Een onverwachte fout is opgetreden. Probeer het later opn
 copy_details: Kopieer details
 no_app_access: Geen App Toegang
 no_app_access_copy: Deze gebruiker heeft geen toestemming om de admin app te gebruiken.
-password_reset_sent: We hebben je een beveiligde link gestuurd om je wachtwoord te resetten
 password_reset_successful: Wachtwoord succesvol opnieuw ingesteld
 back: Terug
 filter: Filter
@@ -530,8 +561,6 @@ start_end_of_count_items: '{start}-{end} van {count} items'
 start_end_of_count_filtered_items: '{start}-{end} van {count} gefilterde items'
 one_item: '1 item'
 one_filtered_item: '1 gefilterd item'
-delete_collection_are_you_sure: >-
-  Weet je zeker dat je deze collectie wilt verwijderen? Dit zal de collectie en alle items die erin zijn opgeslagen verwijderen. Deze actie is permanent.
 collections_shown: Collecties getoond
 visible_collections: Zichtbare collecties
 hidden_collections: Verborgen collecties
@@ -635,6 +664,10 @@ toggle: Schakel
 icon_on: Icoon aan
 icon_off: Icoon Uit
 label: Label
+flow_name: Naam
+flow_tracking_activity: Track alleen activiteiten
+flow_tracking_null: Niets tracken
+code: Code
 insights: Inzichten
 dashboard: Dashboard
 panel: Paneel
@@ -991,6 +1024,7 @@ translation: Vertaling
 value: Waarde
 view_project: Bekijk project
 report_error: Rapporteer fout
+table: Tabel
 interfaces:
   filter:
     name: Filter
@@ -1017,6 +1051,8 @@ interfaces:
     include_seconds: Seconden opnemen
     set_to_now: Op Nu instellen
     use_24: 24-uurs formaat gebruiken
+  system-fields:
+    select_a_collection: Selecteer een collectie
   system-display-template:
     display-template: Weergavesjabloon
     collection_field_not_setup: De collectie-veld optie is onjuist geconfigureerd
@@ -1076,6 +1112,7 @@ interfaces:
   list:
     repeater: Herhaler
     edit_fields: Velden bewerken
+    sort: Sorteren
   slider:
     slider: Schuifregelaar
     description: Selecteer een nummer met een slider
@@ -1093,7 +1130,6 @@ interfaces:
     auto_formatter: Automatische titel formatter gebruiken
     alphabetize: Alfabetische volgorde
     alphabetize_label: Alfabetische volgorde forceren
-    add_tags: Tags toevoegen...
   input:
     mask: Gemaskeerd
     mask_label: Verberg de werkelijke waarde
@@ -1122,6 +1158,8 @@ interfaces:
     toolbar: Werkbalk
     custom_formats: Aangepaste vorm
     options_override: Overschrijf opties
+  system-token:
+    system-token: Token
 displays:
   translations:
     translations: Vertalingen
@@ -1154,6 +1192,7 @@ displays:
     short: Kort
     relative: Relatief
     relative_label: 'Relatieve tijd tonen, bijvoorbeeld 5 minuten geleden'
+    suffix: Achtervoegsel
   file:
     file: Bestand
     description: Bestanden weergeven
@@ -1230,7 +1269,6 @@ layouts:
     subtitle: Ondertitel
   tabular:
     tabular: Tabel
-    fields: Velden
     spacing: Ruimte
     comfortable: Comfortabel
     compact: Compact
@@ -1240,3 +1278,8 @@ layouts:
 panels:
   label:
     name: Label
+operations:
+  notification:
+    recipient: Gebruiker
+  request:
+    url: URL

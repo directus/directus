@@ -13,7 +13,7 @@
 					? `interface-${field.meta.interface}`
 					: `interface-${getDefaultInterfaceForType(field.type)}`
 			"
-			v-if="interfaceExists"
+			v-if="interfaceExists && !rawEditorActive"
 			v-bind="(field.meta && field.meta.options) || {}"
 			:autofocus="disabled !== true && autofocus"
 			:disabled="disabled"
@@ -26,6 +26,15 @@
 			:field-data="field"
 			:primary-key="primaryKey"
 			:length="field.schema && field.schema.max_length"
+			:direction="direction"
+			@input="$emit('update:modelValue', $event)"
+			@set-field-value="$emit('setFieldValue', $event)"
+		/>
+
+		<interface-system-raw-editor
+			v-else-if="rawEditorEnabled && rawEditorActive"
+			:value="modelValue === undefined ? field.schema?.default_value : modelValue"
+			:type="field.type"
 			@input="$emit('update:modelValue', $event)"
 		/>
 
@@ -76,8 +85,20 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		rawEditorEnabled: {
+			type: Boolean,
+			default: false,
+		},
+		rawEditorActive: {
+			type: Boolean,
+			default: false,
+		},
+		direction: {
+			type: String,
+			default: undefined,
+		},
 	},
-	emits: ['update:modelValue'],
+	emits: ['update:modelValue', 'setFieldValue'],
 	setup(props) {
 		const { t } = useI18n();
 

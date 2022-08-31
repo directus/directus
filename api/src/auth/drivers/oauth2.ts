@@ -1,23 +1,29 @@
+import { BaseException } from '@directus/shared/exceptions';
+import { parseJSON } from '@directus/shared/utils';
 import { Router } from 'express';
-import { Issuer, Client, generators, errors } from 'openid-client';
+import flatten from 'flat';
 import jwt from 'jsonwebtoken';
 import ms from 'ms';
-import { LocalAuthDriver } from './local';
+import { Client, errors, generators, Issuer } from 'openid-client';
 import { getAuthProvider } from '../../auth';
 import env from '../../env';
-import { AuthenticationService, UsersService } from '../../services';
-import { AuthDriverOptions, User, AuthData } from '../../types';
 import {
-	InvalidCredentialsException,
-	ServiceUnavailableException,
 	InvalidConfigException,
+	InvalidCredentialsException,
+	InvalidProviderException,
 	InvalidTokenException,
+	ServiceUnavailableException,
 } from '../../exceptions';
-import { respond } from '../../middleware/respond';
-import asyncHandler from '../../utils/async-handler';
-import { Url } from '../../utils/url';
+import { RecordNotUniqueException } from '../../exceptions/database/record-not-unique';
 import logger from '../../logger';
+import { respond } from '../../middleware/respond';
+import { AuthenticationService, UsersService } from '../../services';
+import { AuthData, AuthDriverOptions, User } from '../../types';
+import asyncHandler from '../../utils/async-handler';
+import { getConfigFromEnv } from '../../utils/get-config-from-env';
 import { getIPFromReq } from '../../utils/get-ip-from-req';
+import { Url } from '../../utils/url';
+import { LocalAuthDriver } from './local';
 
 export class OAuth2AuthDriver extends LocalAuthDriver {
 	client: Client;
@@ -47,11 +53,18 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 			issuer: additionalConfig.provider,
 		});
 
+		const clientOptionsOverrides = getConfigFromEnv(
+			`AUTH_${config.provider.toUpperCase()}_CLIENT_`,
+			[`AUTH_${config.provider.toUpperCase()}_CLIENT_ID`, `AUTH_${config.provider.toUpperCase()}_CLIENT_SECRET`],
+			'underscore'
+		);
+
 		this.client = new issuer.Client({
 			client_id: clientId,
 			client_secret: clientSecret,
 			redirect_uris: [this.redirectUrl],
 			response_types: ['code'],
+			...clientOptionsOverrides,
 		});
 	}
 
@@ -109,14 +122,17 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 			throw handleError(e);
 		}
 
-		const { emailKey, identifierKey, allowPublicRegistration } = this.config;
+		// Flatten response to support dot indexes
+		userInfo = flatten(userInfo) as Record<string, unknown>;
 
-		const email = userInfo[emailKey ?? 'email'] as string | null | undefined;
+		const { provider, emailKey, identifierKey, allowPublicRegistration } = this.config;
+
+		const email = userInfo[emailKey ?? 'email'] ? String(userInfo[emailKey ?? 'email']) : undefined;
 		// Fallback to email if explicit identifier not found
-		const identifier = (userInfo[identifierKey] as string | null | undefined) ?? email;
+		const identifier = userInfo[identifierKey] ? String(userInfo[identifierKey]) : email;
 
 		if (!identifier) {
-			logger.warn(`[OAuth2] Failed to find user identifier for provider "${this.config.provider}"`);
+			logger.warn(`[OAuth2] Failed to find user identifier for provider "${provider}"`);
 			throw new InvalidCredentialsException();
 		}
 
@@ -134,19 +150,27 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 
 		// Is public registration allowed?
 		if (!allowPublicRegistration) {
-			logger.trace(
-				`[OAuth2] User doesn't exist, and public registration not allowed for provider "${this.config.provider}"`
-			);
+			logger.trace(`[OAuth2] User doesn't exist, and public registration not allowed for provider "${provider}"`);
 			throw new InvalidCredentialsException();
 		}
 
-		await this.usersService.createOne({
-			provider: this.config.provider,
-			email: email,
-			external_identifier: identifier,
-			role: this.config.defaultRoleId,
-			auth_data: tokenSet.refresh_token && JSON.stringify({ refreshToken: tokenSet.refresh_token }),
-		});
+		try {
+			await this.usersService.createOne({
+				provider,
+				first_name: userInfo[this.config.firstNameKey],
+				last_name: userInfo[this.config.lastNameKey],
+				email: email,
+				external_identifier: identifier,
+				role: this.config.defaultRoleId,
+				auth_data: tokenSet.refresh_token && JSON.stringify({ refreshToken: tokenSet.refresh_token }),
+			});
+		} catch (e) {
+			if (e instanceof RecordNotUniqueException) {
+				logger.warn(e, '[OAuth2] Failed to register user. User not unique');
+				throw new InvalidProviderException();
+			}
+			throw e;
+		}
 
 		return (await this.fetchUserId(identifier)) as string;
 	}
@@ -160,7 +184,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 
 		if (typeof authData === 'string') {
 			try {
-				authData = JSON.parse(authData);
+				authData = parseJSON(authData);
 			} catch {
 				logger.warn(`[OAuth2] Session data isn't valid JSON: ${authData}`);
 			}
@@ -252,6 +276,7 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 				accountability: {
 					ip: getIPFromReq(req),
 					userAgent: req.get('user-agent'),
+					origin: req.get('origin'),
 					role: null,
 				},
 				schema: req.schema,
@@ -280,12 +305,8 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 				if (redirect) {
 					let reason = 'UNKNOWN_EXCEPTION';
 
-					if (error instanceof ServiceUnavailableException) {
-						reason = 'SERVICE_UNAVAILABLE';
-					} else if (error instanceof InvalidCredentialsException) {
-						reason = 'INVALID_USER';
-					} else if (error instanceof InvalidTokenException) {
-						reason = 'INVALID_TOKEN';
+					if (error instanceof BaseException) {
+						reason = error.code;
 					} else {
 						logger.warn(error, `[OAuth2] Unexpected error during OAuth2 login`);
 					}

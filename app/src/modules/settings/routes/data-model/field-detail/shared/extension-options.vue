@@ -8,6 +8,9 @@
 		v-model="optionsValues"
 		class="extension-options"
 		:fields="optionsFields"
+		:initial-values="disabled ? optionsValues : null"
+		:disabled="disabled"
+		:raw-editor-enabled="rawEditorEnabled"
 		primary-key="+"
 	/>
 
@@ -23,16 +26,18 @@
 
 <script lang="ts">
 import { defineComponent, PropType, computed } from 'vue';
+import { getOperation } from '@/operations';
 import { getInterface } from '@/interfaces';
 import { getDisplay } from '@/displays';
 import { getPanel } from '@/panels';
 import { useI18n } from 'vue-i18n';
-import { Field } from '@directus/shared/types';
+import { useFieldDetailStore } from '../store';
+import { storeToRefs } from 'pinia';
 
 export default defineComponent({
 	props: {
 		type: {
-			type: String as PropType<'interface' | 'display' | 'panel'>,
+			type: String as PropType<'interface' | 'display' | 'panel' | 'operation'>,
 			required: true,
 		},
 		extension: {
@@ -51,18 +56,22 @@ export default defineComponent({
 			type: Object,
 			default: () => ({}),
 		},
-		collection: {
-			type: String,
-			default: '',
+		disabled: {
+			type: Boolean,
+			default: false,
 		},
-		field: {
-			type: Object as PropType<Field>,
-			default: null,
+		rawEditorEnabled: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	emits: ['update:modelValue'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
+
+		const fieldDetailStore = useFieldDetailStore();
+
+		const { collection, field } = storeToRefs(fieldDetailStore);
 
 		const extensionInfo = computed(() => {
 			switch (props.type) {
@@ -72,6 +81,8 @@ export default defineComponent({
 					return getDisplay(props.extension);
 				case 'panel':
 					return getPanel(props.extension);
+				case 'operation':
+					return getOperation(props.extension);
 				default:
 					return null;
 			}
@@ -122,6 +133,8 @@ export default defineComponent({
 			optionsValues,
 			optionsFields,
 			t,
+			collection,
+			field,
 		};
 	},
 });

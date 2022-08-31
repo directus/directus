@@ -1,5 +1,5 @@
 import { defineDisplay } from '@directus/shared/utils';
-import readableMimeType from '@/utils/readable-mime-type';
+import { readableMimeType } from '@/utils/readable-mime-type';
 import mime from 'mime/lite';
 
 export default defineDisplay({
@@ -26,6 +26,13 @@ export default defineDisplay({
 	types: ['string'],
 	component: ({ value, showAsExtension }: { value: string; showAsExtension: boolean }) => {
 		if (showAsExtension) {
+			return mime.getExtension(value);
+		}
+
+		return readableMimeType(value);
+	},
+	handler: (value, options) => {
+		if (options.showAsExtension) {
 			return mime.getExtension(value);
 		}
 

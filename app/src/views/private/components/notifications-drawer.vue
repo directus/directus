@@ -11,7 +11,7 @@
 				icon
 				rounded
 				:disabled="selection.length === 0"
-				warning
+				secondary
 				@click="toggleArchive"
 			>
 				<v-icon :name="tab[0] === 'inbox' ? 'archive' : 'move_to_inbox'" />
@@ -55,7 +55,10 @@
 <script lang="ts">
 import { defineComponent, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useAppStore, useUserStore, useNotificationsStore, useCollectionsStore } from '@/stores';
+import { useAppStore } from '@/stores/app';
+import { useUserStore } from '@/stores/user';
+import { useNotificationsStore } from '@/stores/notifications';
+import { useCollectionsStore } from '@/stores/collections';
 import { storeToRefs } from 'pinia';
 import { Notification } from '@directus/shared/types';
 import api from '@/api';
@@ -160,7 +163,7 @@ export default defineComponent({
 				for (const notification of notificationsRaw) {
 					notificationsWithRelative.push({
 						...notification,
-						timestampDistance: await localizedFormatDistance(parseISO(notification.timestamp), new Date(), {
+						timestampDistance: localizedFormatDistance(parseISO(notification.timestamp), new Date(), {
 							addSuffix: true,
 						}),
 					});

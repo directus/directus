@@ -9,6 +9,10 @@
 			:validation-errors="validationErrors"
 			:loading="loading"
 			:disabled="disabled"
+			:badge="badge"
+			:raw-editor-enabled="rawEditorEnabled"
+			:direction="direction"
+			nested
 			@update:model-value="$emit('apply', $event)"
 		/>
 	</div>
@@ -59,6 +63,18 @@ export default defineComponent({
 		validationErrors: {
 			type: Array as PropType<ValidationError[]>,
 			default: () => [],
+		},
+		badge: {
+			type: String,
+			default: null,
+		},
+		rawEditorEnabled: {
+			type: Boolean,
+			default: false,
+		},
+		direction: {
+			type: String,
+			default: undefined,
 		},
 	},
 	emits: ['apply'],

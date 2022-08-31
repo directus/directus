@@ -1,24 +1,18 @@
-import { defineLayout } from '@directus/shared/utils';
+import { getGeometryFormatForType, toGeoJSON } from '@/utils/geometry';
+import { syncRefProperty } from '@/utils/sync-ref-property';
+import { useCollection, useItems, useSync } from '@directus/shared/composables';
+import { Field, Filter, GeometryOptions, Item } from '@directus/shared/types';
+import { defineLayout, getFieldsFromTemplate } from '@directus/shared/utils';
+import { cloneDeep, merge } from 'lodash';
+import { computed, ref, toRefs, watch } from 'vue';
+import { useRouter } from 'vue-router';
+import MapActions from './actions.vue';
 import MapLayout from './map.vue';
 import MapOptions from './options.vue';
-import MapActions from './actions.vue';
-
-import { useI18n } from 'vue-i18n';
-import { toRefs, computed, ref, watch } from 'vue';
-
-import { toGeoJSON, getGeometryFormatForType } from '@/utils/geometry';
-import { layers as directusLayers } from './style';
-import { useRouter } from 'vue-router';
-import { useSync } from '@directus/shared/composables';
+import { getMapStyle } from './style';
 import { LayoutOptions, LayoutQuery } from './types';
-import { Filter, Item } from '@directus/shared/types';
-import { useCollection } from '@directus/shared/composables';
-import { useItems } from '@directus/shared/composables';
-import { getFieldsFromTemplate } from '@directus/shared/utils';
-import { Field, GeometryOptions } from '@directus/shared/types';
-import { syncRefProperty } from '@/utils/sync-ref-property';
-
-import { cloneDeep, merge } from 'lodash';
+import { formatCollectionItemsCount } from '@/utils/format-collection-items-count';
+import { saveAsCSV } from '@/utils/save-as-csv';
 
 export default defineLayout<LayoutOptions, LayoutQuery>({
 	id: 'map',
@@ -32,8 +26,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		actions: MapActions,
 	},
 	setup(props, { emit }) {
-		const { t, n } = useI18n();
-
 		const router = useRouter();
 
 		const selection = useSync(props, 'selection', emit);
@@ -48,17 +40,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		const limit = syncRefProperty(layoutQuery, 'limit', 1000);
 		const defaultSort = computed(() => (primaryKeyField.value ? [primaryKeyField.value?.field] : []));
 		const sort = syncRefProperty(layoutQuery, 'sort', defaultSort);
-
-		const locationFilter = ref<Filter>();
-
-		const filterWithLocation = computed<Filter | null>(() => {
-			if (!locationFilter.value) return filter.value;
-			if (!filter.value) return locationFilter.value;
-
-			return {
-				_and: [filter.value, locationFilter.value],
-			};
-		});
 
 		const displayTemplate = syncRefProperty(layoutOptions, 'displayTemplate', undefined);
 		const cameraOptions = syncRefProperty(layoutOptions, 'cameraOptions', undefined);
@@ -96,7 +77,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			if (!geometryFormat) {
 				return;
 			}
-			return { geometryField, geometryFormat, geometryType };
+			return { geometryField, geometryFormat, geometryType } as GeometryOptions;
 		});
 
 		const isGeometryFieldNative = computed(() => geometryOptions.value?.geometryFormat === 'native');
@@ -111,9 +92,9 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				.filter((e) => !!e) as string[];
 		});
 
-		function getLocationFilter(): Filter | undefined {
+		const locationFilter = computed<Filter | null>(() => {
 			if (!isGeometryFieldNative.value || !cameraOptions.value || !geometryField.value) {
-				return;
+				return null;
 			}
 
 			const bbox = cameraOptions.value.bbox;
@@ -134,14 +115,22 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 					},
 				},
 			} as Filter;
-		}
+		});
+
+		const filterWithLocation = computed<Filter | null>(() => {
+			if (!locationFilter.value) return filter.value;
+			if (!filter.value) return locationFilter.value;
+
+			return {
+				_and: [filter.value, locationFilter.value],
+			};
+		});
 
 		const shouldUpdateCamera = ref(false);
 
 		function fitDataBounds() {
 			shouldUpdateCamera.value = true;
 			if (isGeometryFieldNative.value) {
-				locationFilter.value = undefined;
 				return;
 			}
 			if (geojson.value?.features.length) {
@@ -151,7 +140,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		watch(cameraOptions, () => {
 			shouldUpdateCamera.value = false;
-			locationFilter.value = getLocationFilter();
 		});
 
 		const { items, loading, error, totalPages, itemCount, totalCount, getItems } = useItems(collection, {
@@ -241,24 +229,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		});
 
 		const showingCount = computed(() => {
-			if ((itemCount.value || 0) < (totalCount.value || 0) && filterUser.value) {
-				if (itemCount.value === 1) {
-					return t('one_filtered_item');
-				}
-				return t('start_end_of_count_filtered_items', {
-					start: n((+page.value - 1) * limit.value + 1),
-					end: n(Math.min(page.value * limit.value, itemCount.value || 0)),
-					count: n(itemCount.value || 0),
-				});
-			}
-			if (itemCount.value === 1) {
-				return t('one_item');
-			}
-			return t('start_end_of_count_items', {
-				start: n((+page.value - 1) * limit.value + 1),
-				end: n(Math.min(page.value * limit.value, itemCount.value || 0)),
-				count: n(itemCount.value || 0),
-			});
+			const filtering = Boolean((itemCount.value || 0) < (totalCount.value || 0) && filterUser.value);
+			return formatCollectionItemsCount(itemCount.value || 0, page.value, limit.value, filtering);
 		});
 
 		type ItemPopup = { item?: any; position?: { x: number; y: number } };
@@ -275,7 +247,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			collection,
 			geojson,
 			directusSource,
-			directusLayers,
+			directusLayers: getMapStyle(),
 			featureId,
 			geojsonBounds,
 			geojsonLoading,
@@ -309,6 +281,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			template,
 			itemPopup,
 			updateItemPopup,
+			download,
 		};
 
 		async function resetPresetAndRefresh() {
@@ -318,6 +291,11 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		function refresh() {
 			getItems();
+		}
+
+		function download() {
+			if (!collection.value) return;
+			saveAsCSV(collection.value, queryFields.value, items.value);
 		}
 
 		function toPage(newPage: number) {

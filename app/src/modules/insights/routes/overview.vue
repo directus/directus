@@ -41,7 +41,7 @@
 			@click:row="navigateToDashboard"
 		>
 			<template #[`item.icon`]="{ item }">
-				<v-icon class="icon" :name="item.icon" />
+				<v-icon class="icon" :name="item.icon" :color="item.color" />
 			</template>
 
 			<template #item-append="{ item }">
@@ -51,18 +51,18 @@
 					</template>
 
 					<v-list>
-						<v-list-item class="warning" clickable @click="editDashboard = item">
+						<v-list-item class="warning" :disabled="!updateAllowed" clickable @click="editDashboard = item">
 							<v-list-item-icon>
-								<v-icon name="edit" outline />
+								<v-icon name="edit" />
 							</v-list-item-icon>
 							<v-list-item-content>
 								{{ t('edit_dashboard') }}
 							</v-list-item-content>
 						</v-list-item>
 
-						<v-list-item class="danger" clickable @click="confirmDelete = item.id">
+						<v-list-item class="danger" :disabled="!deleteAllowed" clickable @click="confirmDelete = item.id">
 							<v-list-item-icon>
-								<v-icon name="delete" outline />
+								<v-icon name="delete" />
 							</v-list-item-icon>
 							<v-list-item-content>
 								{{ t('delete_dashboard') }}
@@ -102,10 +102,12 @@
 
 <script lang="ts">
 import { defineComponent, computed, ref } from 'vue';
-import { useInsightsStore, usePermissionsStore } from '@/stores';
+import { useInsightsStore } from '@/stores/insights';
+import { usePermissionsStore } from '@/stores/permissions';
 import { useI18n } from 'vue-i18n';
-import { Dashboard } from '@/types';
+import { Dashboard } from '@/types/insights';
 import { router } from '@/router';
+import { Header } from '@/components/v-table/types';
 import InsightsNavigation from '../components/navigation.vue';
 import DashboardDialog from '../components/dashboard-dialog.vue';
 import api from '@/api';
@@ -131,30 +133,48 @@ export default defineComponent({
 			return permissionsStore.hasPermission('directus_dashboards', 'create');
 		});
 
-		const tableHeaders = [
+		const updateAllowed = computed<boolean>(() => {
+			return permissionsStore.hasPermission('directus_dashboards', 'update');
+		});
+
+		const deleteAllowed = computed<boolean>(() => {
+			return permissionsStore.hasPermission('directus_dashboards', 'delete');
+		});
+
+		const tableHeaders = ref<Header[]>([
 			{
 				text: '',
 				value: 'icon',
 				width: 42,
 				sortable: false,
+				align: 'left',
+				description: null,
 			},
 			{
 				text: t('name'),
 				value: 'name',
 				width: 240,
+				sortable: true,
+				align: 'left',
+				description: null,
 			},
 			{
 				text: t('note'),
 				value: 'note',
 				width: 360,
+				sortable: false,
+				align: 'left',
+				description: null,
 			},
-		];
+		]);
 
 		const dashboards = computed(() => insightsStore.dashboards);
 
 		return {
 			dashboards,
 			createAllowed,
+			updateAllowed,
+			deleteAllowed,
 			tableHeaders,
 			navigateToDashboard,
 			createDialogActive,
@@ -204,12 +224,6 @@ export default defineComponent({
 	--v-list-item-color: var(--danger);
 	--v-list-item-color-hover: var(--danger);
 	--v-list-item-icon-color: var(--danger);
-}
-
-.v-list-item.warning {
-	--v-list-item-color: var(--warning);
-	--v-list-item-color-hover: var(--warning);
-	--v-list-item-icon-color: var(--warning);
 }
 
 .header-icon {

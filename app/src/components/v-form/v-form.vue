@@ -1,31 +1,28 @@
 <template>
 	<div ref="el" class="v-form" :class="gridClass">
-		<v-notice v-if="unknownValidationErrors.length > 0" type="danger" class="full">
-			<div>
-				<p>{{ t('unknown_validation_errors') }}</p>
-				<ul>
-					<li v-for="(validationError, index) of unknownValidationErrors" :key="index">
-						<strong v-if="validationError.field">{{ validationError.field }}:</strong>
-						<template v-if="validationError.code === 'RECORD_NOT_UNIQUE'">
-							{{ t('validationError.unique', validationError) }}
-						</template>
-						<template v-else>
-							{{ t(`validationError.${validationError.code}`, validationError) }}
-						</template>
-					</li>
-				</ul>
-			</div>
-		</v-notice>
-
-		<template v-for="(field, index) in formFields">
+		<validation-errors
+			v-if="!nested && validationErrors.length > 0"
+			:validation-errors="validationErrors"
+			:fields="fields ? fields : []"
+			@scroll-to-field="scrollToField"
+		/>
+		<template v-for="(fieldName, index) in fieldNames">
 			<component
-				:is="`interface-${field.meta?.interface || 'group-standard'}`"
-				v-if="field.meta?.special?.includes('group')"
-				v-show="!field.meta?.hidden"
-				:key="field.field"
-				:class="[field.meta?.width || 'full', index === firstVisibleFieldIndex ? 'first-visible-field' : '']"
-				:field="field"
-				:fields="fieldsForGroup[index]"
+				:is="`interface-${fieldsMap[fieldName]?.meta?.interface || 'group-standard'}`"
+				v-if="fieldsMap[fieldName]?.meta?.special?.includes('group')"
+				v-show="!fieldsMap[fieldName]?.meta?.hidden"
+				:ref="
+					(el: Element) => {
+						formFieldEls[fieldName] = el;
+					}
+				"
+				:key="fieldName + '_group'"
+				:class="[
+					fieldsMap[fieldName]?.meta?.width || 'full',
+					index === firstVisibleFieldIndex ? 'first-visible-field' : '',
+				]"
+				:field="fieldsMap[fieldName]"
+				:fields="fieldsForGroup[index] || []"
 				:values="modelValue || {}"
 				:initial-values="initialValues || {}"
 				:disabled="disabled"
@@ -34,43 +31,65 @@
 				:primary-key="primaryKey"
 				:loading="loading"
 				:validation-errors="validationErrors"
-				v-bind="field.meta?.options || {}"
+				:badge="badge"
+				:raw-editor-enabled="rawEditorEnabled"
+				:direction="direction"
+				v-bind="fieldsMap[fieldName]?.meta?.options || {}"
 				@apply="apply"
 			/>
 
 			<form-field
-				v-else-if="!field.meta?.hidden"
-				:key="field.field"
+				v-else-if="!fieldsMap[fieldName]?.meta?.hidden"
+				:ref="
+					(el: Element) => {
+						formFieldEls[fieldName] = el;
+					}
+				"
+				:key="fieldName + '_field'"
 				:class="index === firstVisibleFieldIndex ? 'first-visible-field' : ''"
-				:field="field"
+				:field="fieldsMap[fieldName] || {}"
 				:autofocus="index === firstEditableFieldIndex && autofocus"
-				:model-value="(values || {})[field.field]"
-				:initial-value="(initialValues || {})[field.field]"
-				:disabled="isDisabled(field)"
+				:model-value="(values || {})[fieldName]"
+				:initial-value="(initialValues || {})[fieldName]"
+				:disabled="isDisabled(fieldsMap[fieldName])"
 				:batch-mode="batchMode"
-				:batch-active="batchActiveFields.includes(field.field)"
+				:batch-active="batchActiveFields.includes(fieldName)"
 				:primary-key="primaryKey"
 				:loading="loading"
-				:validation-error="validationErrors.find((err) => err.field === field.field)"
+				:validation-error="
+					validationErrors.find(
+						(err) =>
+							err.collection === fieldsMap[fieldName]?.collection &&
+							(err.field === fieldName || err.field.endsWith(`(${fieldName})`))
+					)
+				"
 				:badge="badge"
-				@update:model-value="setValue(field, $event)"
-				@unset="unsetValue(field)"
-				@toggle-batch="toggleBatchField(field)"
+				:raw-editor-enabled="rawEditorEnabled"
+				:raw-editor-active="rawActiveFields.has(fieldName)"
+				:direction="direction"
+				@update:model-value="setValue(fieldName, $event)"
+				@set-field-value="setValue($event.field, $event.value, { force: true })"
+				@unset="unsetValue(fieldsMap[fieldName])"
+				@toggle-batch="toggleBatchField(fieldsMap[fieldName])"
+				@toggle-raw="toggleRawField(fieldsMap[fieldName])"
 			/>
 		</template>
 	</div>
 </template>
 
 <script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, PropType, computed, ref, provide } from 'vue';
-import { useFieldsStore } from '@/stores/';
-import { Field, FieldRaw, ValidationError } from '@directus/shared/types';
-import { assign, cloneDeep, isNil, omit, pick } from 'lodash';
-import useFormFields from '@/composables/use-form-fields';
 import { useElementSize } from '@/composables/use-element-size';
-import FormField from './form-field.vue';
+import { useFormFields } from '@/composables/use-form-fields';
+import { useFieldsStore } from '@/stores/fields';
 import { applyConditions } from '@/utils/apply-conditions';
+import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
+import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
+import { Field, ValidationError } from '@directus/shared/types';
+import { assign, cloneDeep, isEqual, isNil, omit, pick } from 'lodash';
+import { computed, ComputedRef, defineComponent, onBeforeUpdate, PropType, provide, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import FormField from './form-field.vue';
+import ValidationErrors from './validation-errors.vue';
 
 type FieldValues = {
 	[field: string]: any;
@@ -78,7 +97,7 @@ type FieldValues = {
 
 export default defineComponent({
 	name: 'VForm',
-	components: { FormField },
+	components: { FormField, ValidationErrors },
 	props: {
 		collection: {
 			type: String,
@@ -129,12 +148,22 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
+		nested: {
+			type: Boolean,
+			default: false,
+		},
+		rawEditorEnabled: {
+			type: Boolean,
+			default: false,
+		},
+		direction: {
+			type: String,
+			default: null,
+		},
 	},
 	emits: ['update:modelValue'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
-
-		const fieldsStore = useFieldsStore();
 
 		const values = computed(() => {
 			return Object.assign({}, props.initialValues, props.modelValue);
@@ -154,12 +183,20 @@ export default defineComponent({
 			}
 		});
 
-		const { formFields, getFieldsForGroup, fieldsForGroup, isDisabled } = useForm();
+		const formFieldEls = ref<Record<string, any>>({});
+
+		onBeforeUpdate(() => {
+			formFieldEls.value = {};
+		});
+
+		const { fieldNames, fieldsMap, getFieldsForGroup, fieldsForGroup, isDisabled } = useForm();
 		const { toggleBatchField, batchActiveFields } = useBatch();
+		const { toggleRawField, rawActiveFields } = useRawEditor();
 
 		const firstEditableFieldIndex = computed(() => {
-			for (let i = 0; i < formFields.value.length; i++) {
-				if (formFields.value[i].meta && !formFields.value[i].meta?.readonly && !formFields.value[i].meta?.hidden) {
+			for (let i = 0; i < fieldNames.value.length; i++) {
+				const field = fieldsMap.value[fieldNames.value[i]];
+				if (field?.meta && !field.meta?.readonly && !field.meta?.hidden) {
 					return i;
 				}
 			}
@@ -167,45 +204,35 @@ export default defineComponent({
 		});
 
 		const firstVisibleFieldIndex = computed(() => {
-			for (let i = 0; i < formFields.value.length; i++) {
-				if (formFields.value[i].meta && !formFields.value[i].meta?.hidden) {
+			for (let i = 0; i < fieldNames.value.length; i++) {
+				const field = fieldsMap.value[fieldNames.value[i]];
+				if (field?.meta && !field.meta?.hidden) {
 					return i;
 				}
 			}
 			return null;
 		});
 
-		/**
-		 * The validation errors that don't apply to any visible fields. This can occur if an admin accidentally
-		 * made a hidden field required for example. We want to show these errors at the top of the page, so the
-		 * admin can be made aware
-		 */
-		const unknownValidationErrors = computed(() => {
-			const fieldsInGroup = getFieldsForGroup(props.group);
-			const fieldsInGroupKeys = fieldsInGroup.map((field) => field.field);
-			const fieldKeys = formFields.value.map((field: FieldRaw) => field.field);
-			return props.validationErrors.filter((error) => {
-				let included = fieldKeys.includes(error.field) === false && fieldsInGroupKeys.includes(error.field);
-
-				if (props.group === null) {
-					included = included && fieldsInGroup.find((field) => field.field === error.field)?.meta?.group === null;
-				}
-
-				return included;
-			});
-		});
+		watch(
+			() => props.validationErrors,
+			(newVal, oldVal) => {
+				if (props.nested) return;
+				if (isEqual(newVal, oldVal)) return;
+				if (newVal?.length > 0) el?.value?.scrollIntoView({ behavior: 'smooth' });
+			}
+		);
 
 		provide('values', values);
 
 		return {
 			t,
-			formFields,
 			values,
 			setValue,
 			batchActiveFields,
 			toggleBatchField,
+			rawActiveFields,
+			toggleRawField,
 			unsetValue,
-			unknownValidationErrors,
 			firstEditableFieldIndex,
 			firstVisibleFieldIndex,
 			isNil,
@@ -216,108 +243,143 @@ export default defineComponent({
 			getFieldsForGroup,
 			fieldsForGroup,
 			isDisabled,
+			scrollToField,
+			formFieldEls,
+			fieldNames,
+			fieldsMap,
 		};
 
 		function useForm() {
-			const fields = computed(() => {
-				if (props.collection) {
-					return fieldsStore.getFieldsForCollection(props.collection);
-				}
+			const fieldsStore = useFieldsStore();
+			const fields = ref<Field[]>(getFields());
 
-				if (props.fields) {
-					return props.fields;
-				}
-
-				throw new Error('[v-form]: You need to pass either the collection or fields prop.');
-			});
-
-			const defaultValues = computed(() => {
-				return fields.value.reduce(function (acc, field) {
-					if (
-						field.schema?.default_value !== undefined &&
-						// Ignore autoincremented integer PK field
-						!(
-							field.schema.is_primary_key &&
-							field.schema.data_type === 'integer' &&
-							typeof field.schema.default_value === 'string'
-						)
-					) {
-						acc[field.field] = field.schema?.default_value;
+			watch(
+				() => props.fields,
+				() => {
+					const newVal = getFields();
+					if (!isEqual(fields.value, newVal)) {
+						fields.value = newVal;
 					}
-					return acc;
-				}, {} as Record<string, any>);
-			});
+				}
+			);
 
-			const fieldsParsed = computed(() => {
-				if (props.group !== null) return fields.value;
+			const defaultValues = getDefaultValuesFromFields(fields);
 
-				const setPrimaryKeyReadonly = (field: Field) => {
-					if (
-						field.schema?.has_auto_increment === true ||
-						(field.schema?.is_primary_key === true && props.primaryKey !== '+')
-					) {
-						const fieldClone = cloneDeep(field) as any;
-						if (!fieldClone.meta) fieldClone.meta = {};
-						fieldClone.meta.readonly = true;
-						return fieldClone;
-					}
+			const { formFields } = useFormFields(fields);
 
-					return field;
-				};
-
+			const fieldsMap: ComputedRef<Record<string, Field | undefined>> = computed(() => {
+				if (props.loading) return {} as Record<string, undefined>;
 				const valuesWithDefaults = Object.assign({}, defaultValues.value, values.value);
-
-				return fields.value.map((field) => applyConditions(valuesWithDefaults, setPrimaryKeyReadonly(field)));
+				return formFields.value.reduce((result: Record<string, Field>, field: Field) => {
+					const newField = applyConditions(valuesWithDefaults, setPrimaryKeyReadonly(field));
+					if (newField.field) result[newField.field] = newField;
+					return result;
+				}, {} as Record<string, Field>);
 			});
 
 			const fieldsInGroup = computed(() =>
-				fieldsParsed.value.filter(
-					(field) => field.meta?.group === props.group || (props.group === null && isNil(field.meta?.group))
+				formFields.value.filter(
+					(field: Field) => field.meta?.group === props.group || (props.group === null && isNil(field.meta?.group))
 				)
 			);
+			const fieldNames = computed(() => {
+				return fieldsInGroup.value.map((f) => f.field);
+			});
 
-			const { formFields } = useFormFields(fieldsInGroup);
+			const fieldsForGroup = computed(() =>
+				fieldNames.value.map((name: string) => getFieldsForGroup(fieldsMap.value[name]?.meta?.field || null))
+			);
 
-			const fieldsForGroup = computed(() => formFields.value.map((field) => getFieldsForGroup(field.meta!.field)));
+			return { fieldNames, fieldsMap, isDisabled, getFieldsForGroup, fieldsForGroup };
 
-			return { formFields, isDisabled, getFieldsForGroup, fieldsForGroup };
-
-			function isDisabled(field: Field) {
+			function isDisabled(field: Field | undefined) {
+				if (!field) return true;
+				const meta = fieldsMap.value?.[field.field]?.meta;
 				return (
 					props.loading ||
 					props.disabled === true ||
-					field.meta?.readonly === true ||
+					meta?.readonly === true ||
 					field.schema?.is_generated === true ||
 					(props.batchMode && batchActiveFields.value.includes(field.field) === false)
 				);
 			}
 
-			function getFieldsForGroup(group: null | string): Field[] {
-				const fieldsInGroup: Field[] = fieldsParsed.value.filter(
-					(field) => field.meta?.group === group || (group === null && isNil(field.meta))
-				);
+			function getFieldsForGroup(group: null | string, passed: string[] = []): Field[] {
+				const fieldsInGroup: Field[] = fields.value.filter((field) => {
+					const meta = fieldsMap.value?.[field.field]?.meta;
+					return meta?.group === group || (group === null && isNil(meta));
+				});
 
 				for (const field of fieldsInGroup) {
-					if (field.meta?.special?.includes('group')) {
-						fieldsInGroup.push(...getFieldsForGroup(field.meta!.field));
+					const meta = fieldsMap.value?.[field.field]?.meta;
+					if (meta?.special?.includes('group') && !passed.includes(meta!.field)) {
+						passed.push(meta!.field);
+						fieldsInGroup.push(...getFieldsForGroup(meta!.field, passed));
 					}
 				}
 
 				return fieldsInGroup;
 			}
+
+			function getFields(): Field[] {
+				if (props.collection) {
+					return fieldsStore.getFieldsForCollection(props.collection);
+				}
+				if (props.fields) {
+					return props.fields;
+				}
+
+				throw new Error('[v-form]: You need to pass either the collection or fields prop.');
+			}
+
+			function setPrimaryKeyReadonly(field: Field) {
+				if (
+					field.schema?.has_auto_increment === true ||
+					(field.schema?.is_primary_key === true && props.primaryKey !== '+')
+				) {
+					const fieldClone = cloneDeep(field) as any;
+					if (!fieldClone.meta) fieldClone.meta = {};
+					fieldClone.meta.readonly = true;
+					return fieldClone;
+				}
+
+				return field;
+			}
 		}
 
-		function setValue(field: Field, value: any) {
+		function setValue(fieldKey: string, value: any, opts?: { force?: boolean }) {
+			const field = fieldsMap.value[fieldKey];
+
+			if (opts?.force !== true && (!field || isDisabled(field))) return;
+
 			const edits = props.modelValue ? cloneDeep(props.modelValue) : {};
-			edits[field.field] = value;
+			edits[fieldKey] = value;
 			emit('update:modelValue', edits);
 		}
 
 		function apply(updates: { [field: string]: any }) {
-			emit('update:modelValue', pick(assign({}, props.modelValue, updates), Object.keys(updates)));
+			const updatableKeys = props.batchMode
+				? Object.keys(updates)
+				: Object.keys(updates).filter((key) => {
+						const field = fieldsMap.value[key];
+						if (!field) return false;
+						return field.schema?.is_primary_key || !isDisabled(field);
+				  });
+
+			if (!isNil(props.group)) {
+				const groupFields = getFieldsForGroup(props.group)
+					.filter((field) => !field.schema?.is_primary_key && !isDisabled(field))
+					.map((field) => field.field);
+				emit('update:modelValue', assign({}, omit(props.modelValue, groupFields), pick(updates, updatableKeys)));
+			} else {
+				emit('update:modelValue', pick(assign({}, props.modelValue, updates), updatableKeys));
+			}
 		}
 
-		function unsetValue(field: Field) {
+		function unsetValue(field: Field | undefined) {
+			if (!field) return;
+			if (!props.batchMode && isDisabled(field)) return;
+
 			if (field.field in (props.modelValue || {})) {
 				const newEdits = { ...props.modelValue };
 				delete newEdits[field.field];
@@ -330,14 +392,36 @@ export default defineComponent({
 
 			return { batchActiveFields, toggleBatchField };
 
-			function toggleBatchField(field: Field) {
+			function toggleBatchField(field: Field | undefined) {
+				if (!field) return;
 				if (batchActiveFields.value.includes(field.field)) {
 					batchActiveFields.value = batchActiveFields.value.filter((fieldKey) => fieldKey !== field.field);
 
 					unsetValue(field);
 				} else {
 					batchActiveFields.value = [...batchActiveFields.value, field.field];
-					setValue(field, field.schema?.default_value);
+					setValue(field.field, field.schema?.default_value);
+				}
+			}
+		}
+
+		function scrollToField(fieldKey: string) {
+			const { field } = extractFieldFromFunction(fieldKey);
+			if (!formFieldEls.value[field]) return;
+			formFieldEls.value[field].$el.scrollIntoView({ behavior: 'smooth' });
+		}
+
+		function useRawEditor() {
+			const rawActiveFields = ref(new Set<string>());
+
+			return { rawActiveFields, toggleRawField };
+
+			function toggleRawField(field: Field | undefined) {
+				if (!field) return;
+				if (rawActiveFields.value.has(field.field)) {
+					rawActiveFields.value.delete(field.field);
+				} else {
+					rawActiveFields.value.add(field.field);
 				}
 			}
 		}

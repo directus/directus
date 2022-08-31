@@ -24,8 +24,8 @@ import { Field, GeometryType, GeometryOptions } from '@directus/shared/types';
 import { getBasemapSources, getStyleFromBasemapSource } from '@/utils/geometry/basemap';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { Map, CameraOptions } from 'maplibre-gl';
-import { useAppStore } from '@/stores';
-import getSetting from '@/utils/get-setting';
+import { useAppStore } from '@/stores/app';
+import { useSettingsStore } from '@/stores/settings';
 
 export default defineComponent({
 	props: {
@@ -46,11 +46,13 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
-		const nativeGeometryType = computed(() => props.field.type.split('.')[1] as GeometryType);
+		const nativeGeometryType = computed(() => (props.field?.type.split('.')[1] as GeometryType) ?? 'Point');
 		const geometryType = ref<GeometryType>(nativeGeometryType.value ?? props.value?.geometryType ?? 'Point');
 		const defaultView = ref<CameraOptions | undefined>(props.value?.defaultView);
 
-		watch(() => props.field.type, watchType);
+		const settingsStore = useSettingsStore();
+
+		watch(() => props.field?.type, watchType);
 		watch(nativeGeometryType, watchNativeType);
 		watch([geometryType, defaultView], input, { immediate: true });
 
@@ -72,7 +74,7 @@ export default defineComponent({
 		const mapContainer = ref<HTMLElement | null>(null);
 		let map: Map;
 
-		const mapboxKey = getSetting('mapbox_key');
+		const mapboxKey = settingsStore.settings?.mapbox_key;
 		const basemaps = getBasemapSources();
 		const appStore = useAppStore();
 		const { basemap } = toRefs(appStore);

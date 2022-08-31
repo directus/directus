@@ -35,7 +35,7 @@
 
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
-import { useServerStore } from '@/stores';
+import { useServerStore } from '@/stores/server';
 import { storeToRefs } from 'pinia';
 import { useI18n } from 'vue-i18n';
 import { getRootPath } from '@/utils/get-root-path';

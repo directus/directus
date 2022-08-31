@@ -10,9 +10,9 @@ import {
 } from '../exceptions';
 import collectionExists from '../middleware/collection-exists';
 import { respond } from '../middleware/respond';
-import { RevisionsService, UtilsService, ImportService } from '../services';
+import { RevisionsService, UtilsService, ImportService, ExportService } from '../services';
 import asyncHandler from '../utils/async-handler';
-import Busboy, { BusboyHeaders } from 'busboy';
+import Busboy from 'busboy';
 import { flushCaches } from '../cache';
 import { generateHash } from '../utils/generate-hash';
 
@@ -107,10 +107,10 @@ router.post(
 			schema: req.schema,
 		});
 
-		let headers: BusboyHeaders;
+		let headers;
 
 		if (req.headers['content-type']) {
-			headers = req.headers as BusboyHeaders;
+			headers = req.headers;
 		} else {
 			headers = {
 				...req.headers,
@@ -118,11 +118,11 @@ router.post(
 			};
 		}
 
-		const busboy = new Busboy({ headers });
+		const busboy = Busboy({ headers });
 
-		busboy.on('file', async (fieldname, fileStream, filename, encoding, mimetype) => {
+		busboy.on('file', async (_fieldname, fileStream, { mimeType }) => {
 			try {
-				await service.import(req.params.collection, mimetype, fileStream);
+				await service.import(req.params.collection, mimeType, fileStream);
 			} catch (err: any) {
 				return next(err);
 			}
@@ -137,13 +137,40 @@ router.post(
 );
 
 router.post(
+	'/export/:collection',
+	collectionExists,
+	asyncHandler(async (req, res, next) => {
+		if (!req.body.query) {
+			throw new InvalidPayloadException(`"query" is required.`);
+		}
+
+		if (!req.body.format) {
+			throw new InvalidPayloadException(`"format" is required.`);
+		}
+
+		const service = new ExportService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		// We're not awaiting this, as it's supposed to run async in the background
+		service.exportToFile(req.params.collection, req.body.query, req.body.format, {
+			file: req.body.file,
+		});
+
+		return next();
+	}),
+	respond
+);
+
+router.post(
 	'/cache/clear',
 	asyncHandler(async (req, res) => {
 		if (req.accountability?.admin !== true) {
 			throw new ForbiddenException();
 		}
 
-		await flushCaches();
+		await flushCaches(true);
 
 		res.status(200).end();
 	})

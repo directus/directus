@@ -19,21 +19,18 @@ export default function getDatabase(): Knex {
 		return database;
 	}
 
-	const connectionConfig: Record<string, any> = getConfigFromEnv('DB_', [
-		'DB_CLIENT',
-		'DB_VERSION',
-		'DB_SEARCH_PATH',
-		'DB_CONNECTION_STRING',
-		'DB_POOL',
-		'DB_EXCLUDE_TABLES',
-		'DB_VERSION',
-	]);
-
-	const poolConfig = getConfigFromEnv('DB_POOL');
+	const {
+		client,
+		version,
+		searchPath,
+		connectionString,
+		pool: poolConfig = {},
+		...connectionConfig
+	} = getConfigFromEnv('DB_', ['DB_EXCLUDE_TABLES']);
 
 	const requiredEnvVars = ['DB_CLIENT'];
 
-	switch (env.DB_CLIENT) {
+	switch (client) {
 		case 'sqlite3':
 			requiredEnvVars.push('DB_FILENAME');
 			break;
@@ -48,13 +45,17 @@ export default function getDatabase(): Knex {
 
 		case 'cockroachdb':
 		case 'pg':
-			if (!env.DB_CONNECTION_STRING) {
+			if (!connectionString) {
 				requiredEnvVars.push('DB_HOST', 'DB_PORT', 'DB_DATABASE', 'DB_USER');
 			} else {
 				requiredEnvVars.push('DB_CONNECTION_STRING');
 			}
 			break;
-
+		case 'mssql':
+			if (!env.DB_TYPE || env.DB_TYPE === 'default') {
+				requiredEnvVars.push('DB_HOST', 'DB_PORT', 'DB_DATABASE', 'DB_USER', 'DB_PASSWORD');
+			}
+			break;
 		default:
 			requiredEnvVars.push('DB_HOST', 'DB_PORT', 'DB_DATABASE', 'DB_USER', 'DB_PASSWORD');
 	}
@@ -62,14 +63,15 @@ export default function getDatabase(): Knex {
 	validateEnv(requiredEnvVars);
 
 	const knexConfig: Knex.Config = {
-		client: env.DB_CLIENT,
-		version: env.DB_VERSION,
-		searchPath: env.DB_SEARCH_PATH,
-		connection: env.DB_CONNECTION_STRING || connectionConfig,
+		client,
+		version,
+		searchPath,
+		connection: connectionString || connectionConfig,
 		log: {
 			warn: (msg) => {
 				// Ignore warnings about returning not being supported in some DBs
 				if (msg.startsWith('.returning()')) return;
+				if (msg.endsWith('does not currently support RETURNING clause')) return;
 
 				// Ignore warning about MySQL not supporting TRX for DDL
 				if (msg.startsWith('Transaction was implicitly committed, do not mix transactions and DDL with MySQL')) return;
@@ -83,7 +85,7 @@ export default function getDatabase(): Knex {
 		pool: poolConfig,
 	};
 
-	if (env.DB_CLIENT === 'sqlite3') {
+	if (client === 'sqlite3') {
 		knexConfig.useNullAsDefault = true;
 
 		poolConfig.afterCreate = async (conn: any, callback: any) => {
@@ -96,7 +98,7 @@ export default function getDatabase(): Knex {
 		};
 	}
 
-	if (env.DB_CLIENT === 'cockroachdb') {
+	if (client === 'cockroachdb') {
 		poolConfig.afterCreate = async (conn: any, callback: any) => {
 			logger.trace('Setting CRDB serial_normalization and default_int_size');
 			const run = promisify(conn.query.bind(conn));
@@ -108,7 +110,7 @@ export default function getDatabase(): Knex {
 		};
 	}
 
-	if (env.DB_CLIENT === 'mssql') {
+	if (client === 'mssql') {
 		// This brings MS SQL in line with the other DB vendors. We shouldn't do any automatic
 		// timezone conversion on the database level, especially not when other database vendors don't
 		// act the same
@@ -270,12 +272,6 @@ async function validateDatabaseCharset(database?: Knex): Promise<void> {
 	database = database ?? getDatabase();
 
 	if (getDatabaseClient(database) === 'mysql') {
-		if (env.DB_CHARSET) {
-			logger.warn(
-				`Using custom DB_CHARSET "${env.DB_CHARSET}". Using a charset different from the database's default can cause problems in relationships. Omitting DB_CHARSET is strongly recommended.`
-			);
-		}
-
 		const { collation } = await database.select(database.raw(`@@collation_database as collation`)).first();
 
 		const tables = await database('information_schema.tables')

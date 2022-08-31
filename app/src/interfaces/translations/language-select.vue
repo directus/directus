@@ -96,11 +96,11 @@ export default defineComponent({
 
 .secondary {
 	.toggle {
-		--v-icon-color: var(--blue);
-		--v-icon-color-hover: var(--blue-150);
+		--v-icon-color: var(--secondary);
+		--v-icon-color-hover: var(--secondary-150);
 
-		color: var(--blue);
-		background-color: var(--blue-alt);
+		color: var(--secondary);
+		background-color: var(--secondary-alt);
 	}
 }
 

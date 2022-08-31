@@ -1,17 +1,28 @@
 <template>
-	<div class="label type-label" :class="{ disabled, edited: edited && !batchMode && !hasError && !loading }">
-		<v-checkbox
-			v-if="batchMode"
-			:model-value="batchActive"
-			:value="field.field"
-			@update:model-value="$emit('toggle-batch', field)"
-		/>
-		<span v-tooltip="edited ? t('edited') : null" class="field-name" @click="toggle">
-			{{ field.name }}
-			<v-icon v-if="field.meta?.required === true" class="required" sup name="star" />
+	<div class="field-label type-label" :class="{ disabled, edited: edited && !batchMode && !hasError && !loading }">
+		<span class="field-name" @click="toggle">
+			<v-checkbox
+				v-if="batchMode"
+				:model-value="batchActive"
+				:value="field.field"
+				@update:model-value="$emit('toggle-batch', field)"
+			/>
+			<span v-if="edited" v-tooltip="t('edited')" class="edit-dot"></span>
+			<v-text-overflow :text="field.name" />
+			<v-icon v-if="field.meta?.required === true" class="required" :class="{ 'has-badge': badge }" sup name="star" />
+			<v-chip v-if="badge" x-small>{{ badge }}</v-chip>
+			<v-icon
+				v-if="!disabled && rawEditorEnabled"
+				v-tooltip="t('toggle_raw_editor')"
+				class="raw-editor-toggle"
+				:class="{ active: rawEditorActive }"
+				name="data_object"
+				:filled="!rawEditorActive"
+				small
+				@click.stop="$emit('toggle-raw', !rawEditorActive)"
+			/>
 			<v-icon v-if="!disabled" class="ctx-arrow" :class="{ active }" name="arrow_drop_down" />
 		</span>
-		<v-chip v-if="badge" x-small>{{ badge }}</v-chip>
 	</div>
 </template>
 
@@ -62,22 +73,35 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		rawEditorEnabled: {
+			type: Boolean,
+			default: false,
+		},
+		rawEditorActive: {
+			type: Boolean,
+			default: false,
+		},
 	},
-	emits: ['toggle-batch'],
+	emits: ['toggle-batch', 'toggle-raw'],
 	setup() {
 		const { t } = useI18n();
+
 		return { t };
 	},
 });
 </script>
 
 <style lang="scss" scoped>
-.label {
+.field-label {
 	position: relative;
 	display: flex;
-	width: max-content;
 	margin-bottom: 8px;
 	cursor: pointer;
+
+	.v-text-overflow {
+		display: inline;
+		white-space: normal;
+	}
 
 	&.readonly {
 		cursor: not-allowed;
@@ -90,19 +114,22 @@ export default defineComponent({
 
 	.v-chip {
 		margin: 0;
-		margin-left: 8px;
+		flex-shrink: 0;
+		margin-left: 3px;
 	}
 
 	.required {
 		--v-icon-color: var(--primary);
 
-		margin-left: -3px;
+		margin-left: 3px;
+
+		&.has-badge {
+			margin-right: 6px;
+		}
 	}
 
 	.ctx-arrow {
-		position: absolute;
-		top: -3px;
-		right: -24px;
+		margin-top: -3px;
 		color: var(--foreground-subdued);
 		opacity: 0;
 		transition: opacity var(--fast) var(--transition);
@@ -118,8 +145,30 @@ export default defineComponent({
 		}
 	}
 
+	.raw-editor-toggle {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		height: 24px;
+		width: 24px;
+		margin-top: -2px;
+		margin-left: 5px;
+		color: var(--foreground-subdued);
+		transition: color var(--fast) var(--transition);
+
+		&:hover {
+			color: var(--foreground-normal);
+		}
+
+		&.active {
+			color: var(--primary);
+			background-color: var(--primary-alt);
+			border-radius: 50%;
+		}
+	}
+
 	&.edited {
-		&::before {
+		.edit-dot {
 			position: absolute;
 			top: 7px;
 			left: -7px;
@@ -129,12 +178,24 @@ export default defineComponent({
 			background-color: var(--foreground-subdued);
 			border-radius: 4px;
 			content: '';
-			pointer-events: none;
 		}
 
 		.field-name {
 			margin-left: -16px;
 			padding-left: 16px;
+		}
+	}
+
+	@media (min-width: 960px) {
+		display: block;
+
+		.v-text-overflow {
+			display: initial;
+			white-space: nowrap;
+		}
+
+		.field-name {
+			display: flex;
 		}
 	}
 }
