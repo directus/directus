@@ -1,12 +1,12 @@
 import api from '@/api';
-import { getEndpoint } from '@directus/shared/utils';
-import { unexpectedError } from '@/utils/unexpected-error';
-import { clamp, cloneDeep, isEqual, merge, isPlainObject, mergeWith } from 'lodash';
-import { computed, ref, Ref, watch } from 'vue';
-import { Filter, Item } from '@directus/shared/types';
 import { RelationM2A } from '@/composables/use-relation-m2a';
 import { RelationM2M } from '@/composables/use-relation-m2m';
 import { RelationO2M } from '@/composables/use-relation-o2m';
+import { unexpectedError } from '@/utils/unexpected-error';
+import { Filter, Item } from '@directus/shared/types';
+import { getEndpoint } from '@directus/shared/utils';
+import { clamp, cloneDeep, isEqual, isObjectLike, isPlainObject, merge, mergeWith } from 'lodash';
+import { computed, ref, Ref, watch } from 'vue';
 
 export type RelationQueryMultiple = {
 	page: number;
@@ -111,7 +111,7 @@ export function useRelationMultiple(
 					_value.value.update[editsIndex],
 					(_objValue, srcValue) => {
 						// skip the default merge behavior for objects/arrays
-						if (typeof srcValue === 'object') return srcValue;
+						if (isObjectLike(srcValue)) return srcValue;
 					}
 				);
 			}
