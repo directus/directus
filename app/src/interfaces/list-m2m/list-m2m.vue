@@ -204,7 +204,7 @@ import { parseFilter } from '@/utils/parse-filter';
 import { Filter } from '@directus/shared/types';
 import { deepMap, getFieldsFromTemplate } from '@directus/shared/utils';
 import { render } from 'micromustache';
-import { computed, inject, onMounted, onUnmounted, onUpdated, ref, toRefs, watch } from 'vue';
+import { computed, inject, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import SearchInput from '@/views/private/components/search-input.vue';
 import DrawerItem from '@/views/private/components/drawer-item.vue';

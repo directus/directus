@@ -37,10 +37,10 @@
 					:initial-values="initialValues?.[junctionField]"
 					:primary-key="relatedPrimaryKey"
 					:model-value="internalEdits?.[junctionField]"
-					:fields="junctionRelatedCollectionFields"
+					:fields="relatedCollectionFields"
 					:validation-errors="junctionField ? validationErrors : undefined"
 					autofocus
-					@update:model-value="setJunctionEdits"
+					@update:model-value="setRelationEdits"
 				/>
 
 				<v-divider v-if="showDivider" />
@@ -112,18 +112,19 @@ const fieldsStore = useFieldsStore();
 const relationsStore = useRelationsStore();
 
 const { internalActive } = useActiveState();
-const { junctionFieldInfo, junctionRelatedCollection, junctionRelatedCollectionInfo, setJunctionEdits } = useJunction();
+const { junctionFieldInfo, relatedCollection, relatedCollectionInfo, setRelationEdits, relatedPrimaryKeyField } =
+	useRelation();
 const { internalEdits, loading, initialValues } = useItem();
 const { save, cancel } = useActions();
 
 const { collection } = toRefs(props);
 
-const { info: collectionInfo } = useCollection(collection);
+const { info: collectionInfo, primaryKeyField } = useCollection(collection);
 
 const isNew = computed(() => props.primaryKey === '+' && props.relatedPrimaryKey === '+');
 
 const title = computed(() => {
-	const collection = junctionRelatedCollectionInfo?.value || collectionInfo.value!;
+	const collection = relatedCollectionInfo?.value || collectionInfo.value!;
 
 	if (te(`collection_names_singular.${collection.collection}`)) {
 		return isNew.value
@@ -147,8 +148,8 @@ const showDivider = computed(() => {
 	);
 });
 
-const { fields: junctionRelatedCollectionFields } = usePermissions(
-	junctionRelatedCollection as any,
+const { fields: relatedCollectionFields } = usePermissions(
+	relatedCollection as any,
 	computed(() => initialValues.value && initialValues.value[props.junctionField as any]),
 	computed(() => props.primaryKey === '+')
 );
@@ -186,19 +187,18 @@ const templatePrimaryKey = computed(() =>
 	junctionFieldInfo.value ? String(props.relatedPrimaryKey) : String(props.primaryKey)
 );
 
-const templateCollection = computed(() => junctionRelatedCollectionInfo.value || collectionInfo.value);
+const templateCollection = computed(() => relatedCollectionInfo.value || collectionInfo.value);
 const { templateData, loading: templateDataLoading } = useTemplateData(templateCollection, templatePrimaryKey);
 
 const template = computed(
-	() =>
-		junctionRelatedCollectionInfo.value?.meta?.display_template || collectionInfo.value?.meta?.display_template || null
+	() => relatedCollectionInfo.value?.meta?.display_template || collectionInfo.value?.meta?.display_template || null
 );
 
 const { file } = useFile();
 
 function useFile() {
 	const isDirectusFiles = computed(() => {
-		return junctionRelatedCollection.value === 'directus_files';
+		return relatedCollection.value === 'directus_files';
 	});
 
 	const file = computed(() => {
@@ -281,7 +281,7 @@ function useItem() {
 	async function fetchRelatedItem() {
 		loading.value = true;
 
-		const collection = junctionRelatedCollection.value;
+		const collection = relatedCollection.value;
 
 		if (!collection || !junctionFieldInfo.value) return;
 
@@ -304,14 +304,14 @@ function useItem() {
 	}
 }
 
-function useJunction() {
+function useRelation() {
 	const junctionFieldInfo = computed(() => {
 		if (!props.junctionField) return null;
 
 		return fieldsStore.getField(props.collection, props.junctionField);
 	});
 
-	const junctionRelatedCollection = computed<string | null>(() => {
+	const relatedCollection = computed<string | null>(() => {
 		if (!props.junctionField) return null;
 
 		// If this is a m2m/m2a, there will be 2 relations associated with this field
@@ -332,16 +332,12 @@ function useJunction() {
 		return null;
 	});
 
-	const { info: junctionRelatedCollectionInfo, primaryKeyField } = useCollection(junctionRelatedCollection);
+	const { info: relatedCollectionInfo, primaryKeyField: relatedPrimaryKeyField } = useCollection(relatedCollection);
 
-	return { junctionFieldInfo, junctionRelatedCollection, junctionRelatedCollectionInfo, setJunctionEdits };
+	return { junctionFieldInfo, relatedCollection, relatedCollectionInfo, setRelationEdits, relatedPrimaryKeyField };
 
-	function setJunctionEdits(edits: any) {
+	function setRelationEdits(edits: any) {
 		if (!props.junctionField) return;
-
-		if (props.relatedPrimaryKey !== '+' && primaryKeyField.value) {
-			edits[primaryKeyField.value.field] = props.relatedPrimaryKey;
-		}
 
 		internalEdits.value[props.junctionField] = edits;
 	}
@@ -352,13 +348,21 @@ function useActions() {
 
 	function save() {
 		const editsToValidate = props.junctionField ? internalEdits.value[props.junctionField] : internalEdits.value;
-		const fieldsToValidate = props.junctionField ? junctionRelatedCollectionFields.value : fieldsWithoutCircular.value;
+		const fieldsToValidate = props.junctionField ? relatedCollectionFields.value : fieldsWithoutCircular.value;
 		const defaultValues = getDefaultValuesFromFields(fieldsToValidate);
 		let errors = validateItem(merge({}, defaultValues.value, editsToValidate), fieldsToValidate, isNew.value);
 
 		if (errors.length > 0) {
 			validationErrors.value = errors;
 			return;
+		}
+
+		if (props.junctionField && props.relatedPrimaryKey !== '+' && relatedPrimaryKeyField.value) {
+			set(internalEdits.value, [props.junctionField, relatedPrimaryKeyField.value.field], props.relatedPrimaryKey);
+		}
+
+		if (props.primaryKey && primaryKeyField.value) {
+			internalEdits.value[primaryKeyField.value.field] = props.primaryKey;
 		}
 
 		emit('input', internalEdits.value);
