@@ -1,6 +1,4 @@
 import { ForeignKey } from 'knex-schema-inspector/dist/types/foreign-key';
-import { Field } from './fields';
-import { DeepPartial } from './misc';
 
 export type RelationMeta = {
 	id: number;
@@ -28,5 +26,4 @@ export type Relation = {
 	related_collection: string | null;
 	schema: ForeignKey | null;
 	meta: RelationMeta | null;
-	fields: [DeepPartial<Field>] | null
 };
