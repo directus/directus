@@ -288,18 +288,21 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	 * Get items by query
 	 */
 	async readByQuery(query: Query, opts?: QueryOptions): Promise<Item[]> {
-		const updatedQuery = await emitter.emitFilter(
-			`${this.eventScope}.query`,
-			query,
-			{
-				collection: this.collection,
-			},
-			{
-				database: this.knex,
-				schema: this.schema,
-				accountability: this.accountability,
-			}
-		);
+		const updatedQuery =
+			opts?.emitEvents !== false
+				? await emitter.emitFilter(
+						`${this.eventScope}.query`,
+						query,
+						{
+							collection: this.collection,
+						},
+						{
+							database: this.knex,
+							schema: this.schema,
+							accountability: this.accountability,
+						}
+				  )
+				: query;
 
 		let ast = await getASTFromQuery(this.collection, updatedQuery, this.schema, {
 			accountability: this.accountability,
