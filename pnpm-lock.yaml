@@ -89,6 +89,7 @@ importers:
       '@types/cors': 2.8.12
       '@types/deep-diff': 1.0.1
       '@types/destroy': 1.0.0
+      '@types/encodeurl': ^1.0.0
       '@types/express': 4.17.13
       '@types/express-pino-logger': 4.0.3
       '@types/express-serve-static-core': ^4.17.29
@@ -142,6 +143,7 @@ importers:
       deep-map: ^2.0.0
       destroy: ^1.2.0
       dotenv: ^10.0.0
+      encodeurl: ^1.0.2
       eventemitter2: ^6.4.5
       execa: ^5.1.1
       exifr: ^7.1.3
@@ -177,7 +179,7 @@ importers:
       ms: ^2.1.3
       mysql: ^2.18.1
       nanoid: ^3.1.23
-      node-cron: ^3.0.1
+      node-cron: ^3.0.2
       node-machine-id: ^1.1.12
       nodemailer: ^6.7.5
       nodemailer-mailgun-transport: ^2.1.4
@@ -246,6 +248,7 @@ importers:
       deep-map: 2.0.0
       destroy: 1.2.0
       dotenv: 10.0.0
+      encodeurl: 1.0.2
       eventemitter2: 6.4.6
       execa: 5.1.1
       exifr: 7.1.3
@@ -275,7 +278,7 @@ importers:
       mime-types: 2.1.35
       ms: 2.1.3
       nanoid: 3.3.4
-      node-cron: 3.0.1
+      node-cron: 3.0.2
       node-machine-id: 1.1.12
       nodemailer: 6.7.7
       object-hash: 2.2.0
@@ -321,6 +324,7 @@ importers:
       '@types/cors': 2.8.12
       '@types/deep-diff': 1.0.1
       '@types/destroy': 1.0.0
+      '@types/encodeurl': 1.0.0
       '@types/express': 4.17.13
       '@types/express-pino-logger': 4.0.3
       '@types/express-serve-static-core': 4.17.29
@@ -3936,6 +3940,11 @@ packages:
       { integrity: sha512-YJth9qa0V/E6/XPH1Jq4BC8uCMmO8V1fKWn8PCvuZcAhMn7q0ez9LW6naQT04UZzjFfAPhyRMZmI2a2rbMlEFA== }
     dependencies:
       '@types/trusted-types': 2.0.2
+    dev: true
+
+  /@types/encodeurl/1.0.0:
+    resolution:
+      { integrity: sha512-iO2Q6xQOJ5DtOB6wJ2KIetFq9JRTbpzcKTe2aS6CCsa+W9KNWX2yXx9KeB5sY/nBfAWN43LkPg6SFB+ldsW9ZA== }
     dev: true
 
   /@types/estree/0.0.39:
@@ -11646,10 +11655,12 @@ packages:
       { integrity: sha512-CvkDw2OEnme7ybCykJpVcKH+uAOLV2qLqiyla128dN9TkEWfrYmxG6C2boDe5KcNQqZF3orkqzGgOMvZ/JNekA== }
     dev: false
 
-  /node-cron/3.0.1:
+  /node-cron/3.0.2:
     resolution:
-      { integrity: sha512-RAWZTNn2M5KDIUV/389UX0EXsqvdFAwc9QwHQceh0Ga56dygqSRthqIjwpgZsoDspHGt2rkHdk9Z4RgfPMdALw== }
+      { integrity: sha512-iP8l0yGlNpE0e6q1o185yOApANRe47UPbLf4YxfbiNHt/RU5eBcGB/e0oudruheSf+LQeDMezqC5BVAb5wwRcQ== }
     engines: { node: '>=6.0.0' }
+    dependencies:
+      uuid: 8.3.2
     dev: false
 
   /node-exceptions/4.0.1:

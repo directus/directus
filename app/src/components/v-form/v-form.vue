@@ -83,6 +83,7 @@ import { useFormFields } from '@/composables/use-form-fields';
 import { useFieldsStore } from '@/stores/fields';
 import { applyConditions } from '@/utils/apply-conditions';
 import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
+import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
 import { Field, ValidationError } from '@directus/shared/types';
 import { assign, cloneDeep, isEqual, isNil, omit, pick } from 'lodash';
 import { computed, ComputedRef, defineComponent, onBeforeUpdate, PropType, provide, ref, watch } from 'vue';
@@ -262,22 +263,7 @@ export default defineComponent({
 				}
 			);
 
-			const defaultValues = computed(() => {
-				return fields.value.reduce(function (acc, field) {
-					if (
-						field.schema?.default_value !== undefined &&
-						// Ignore autoincremented integer PK field
-						!(
-							field.schema.is_primary_key &&
-							field.schema.data_type === 'integer' &&
-							typeof field.schema.default_value === 'string'
-						)
-					) {
-						acc[field.field] = field.schema?.default_value;
-					}
-					return acc;
-				}, {} as Record<string, any>);
-			});
+			const defaultValues = getDefaultValuesFromFields(fields);
 
 			const { formFields } = useFormFields(fields);
 

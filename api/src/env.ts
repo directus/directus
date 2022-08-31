@@ -76,6 +76,7 @@ const allowedEnvironmentVars = [
 	'CACHE_REDIS_PASSWORD',
 	'CACHE_MEMCACHE',
 	'CACHE_VALUE_MAX_SIZE',
+	'CACHE_HEALTHCHECK_THRESHOLD',
 	// storage
 	'STORAGE_LOCATIONS',
 	'STORAGE_.+_DRIVER',
@@ -92,6 +93,7 @@ const allowedEnvironmentVars = [
 	'STORAGE_.+_ENDPOINT',
 	'STORAGE_.+_KEY_FILENAME',
 	'STORAGE_.+_BUCKET',
+	'STORAGE_.+_HEALTHCHECK_THRESHOLD',
 	// metadata
 	'FILE_METADATA_ALLOW_LIST',
 	// assets
@@ -148,6 +150,7 @@ const allowedEnvironmentVars = [
 	'EMAIL_VERIFY_SETUP',
 	'EMAIL_SENDMAIL_NEW_LINE',
 	'EMAIL_SENDMAIL_PATH',
+	'EMAIL_SMTP_NAME',
 	'EMAIL_SMTP_HOST',
 	'EMAIL_SMTP_PORT',
 	'EMAIL_SMTP_USER',
@@ -169,6 +172,8 @@ const allowedEnvironmentVars = [
 	// limits & optimization
 	'RELATIONAL_BATCH_SIZE',
 	'EXPORT_BATCH_SIZE',
+	// flows
+	'FLOWS_EXEC_ALLOWED_MODULES',
 ].map((name) => new RegExp(`^${name}$`));
 
 const acceptedEnvTypes = ['string', 'number', 'regex', 'array', 'json'];
