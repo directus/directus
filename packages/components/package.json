@@ -26,7 +26,8 @@
 		"vue-router": "4.0.15"
 	},
 	"peerDependencies": {
-		"vue": "3.2.37"
+		"vue": "3.2.37",
+		"@storybook/node-logger": ">=6.4.3"
 	},
 	"devDependencies": {
 		"@babel/core": "^7.17.9",
