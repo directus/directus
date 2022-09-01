@@ -84,9 +84,9 @@
 	</div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, ref, computed } from 'vue';
+import { ref, computed } from 'vue';
 import { uploadFiles } from '@/utils/upload-files';
 import { uploadFile } from '@/utils/upload-file';
 import DrawerCollection from '@/views/private/components/drawer-collection.vue';
@@ -95,237 +95,203 @@ import emitter, { Events } from '@/events';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { Filter } from '@directus/shared/types';
 
-export default defineComponent({
-	components: { DrawerCollection },
-	props: {
-		multiple: {
-			type: Boolean,
-			default: false,
-		},
-		preset: {
-			type: Object,
-			default: () => ({}),
-		},
-		fileId: {
-			type: String,
-			default: null,
-		},
-		fromUrl: {
-			type: Boolean,
-			default: false,
-		},
-		fromLibrary: {
-			type: Boolean,
-			default: false,
-		},
-		folder: {
-			type: String,
-			default: undefined,
-		},
-	},
-	emits: ['input'],
-	setup(props, { emit }) {
-		const { t } = useI18n();
+interface Props {
+	multiple?: boolean;
+	preset?: Record<string, any>;
+	fileId?: string;
+	fromUrl?: boolean;
+	fromLibrary?: boolean;
+	folder?: string;
+}
 
-		const { uploading, progress, upload, onBrowseSelect, done, numberOfFiles } = useUpload();
-		const { onDragEnter, onDragLeave, onDrop, dragging } = useDragging();
-		const { url, isValidURL, loading: urlLoading, importFromURL } = useURLImport();
-		const { setSelection } = useSelection();
-		const activeDialog = ref<'choose' | 'url' | null>(null);
-		const input = ref(null);
+const props = withDefaults(defineProps<Props>(), {
+	multiple: false,
+	preset: () => ({}),
+	fileId: undefined,
+	fromUrl: false,
+	fromLibrary: false,
+	folder: undefined,
+});
 
-		const filterByFolder = computed(() => {
-			if (!props.folder) return undefined;
-			return { folder: { id: { _eq: props.folder } } } as Filter;
-		});
+const emit = defineEmits(['input']);
 
-		return {
-			t,
-			uploading,
-			progress,
-			onDragEnter,
-			onDragLeave,
-			onDrop,
-			dragging,
-			onBrowseSelect,
-			done,
-			numberOfFiles,
-			activeDialog,
-			filterByFolder,
-			url,
-			isValidURL,
-			urlLoading,
-			importFromURL,
-			setSelection,
-			openFileBrowser,
-			input,
-		};
+const { t } = useI18n();
 
-		function useUpload() {
-			const uploading = ref(false);
-			const progress = ref(0);
-			const numberOfFiles = ref(0);
-			const done = ref(0);
+const { uploading, progress, upload, onBrowseSelect, done, numberOfFiles } = useUpload();
+const { onDragEnter, onDragLeave, onDrop, dragging } = useDragging();
+const { url, isValidURL, loading: urlLoading, importFromURL } = useURLImport();
+const { setSelection } = useSelection();
+const activeDialog = ref<'choose' | 'url' | null>(null);
+const input = ref<HTMLInputElement>();
 
-			return { uploading, progress, upload, onBrowseSelect, numberOfFiles, done };
+const filterByFolder = computed(() => {
+	if (!props.folder) return undefined;
+	return { folder: { id: { _eq: props.folder } } } as Filter;
+});
 
-			async function upload(files: FileList) {
-				uploading.value = true;
-				progress.value = 0;
+function useUpload() {
+	const uploading = ref(false);
+	const progress = ref(0);
+	const numberOfFiles = ref(0);
+	const done = ref(0);
 
-				const folderPreset: { folder?: string } = {};
+	return { uploading, progress, upload, onBrowseSelect, numberOfFiles, done };
 
-				if (props.folder) {
-					folderPreset.folder = props.folder;
-				}
+	async function upload(files: FileList) {
+		uploading.value = true;
+		progress.value = 0;
 
-				try {
-					numberOfFiles.value = files.length;
+		const folderPreset: { folder?: string } = {};
 
-					if (props.multiple === true) {
-						const uploadedFiles = await uploadFiles(Array.from(files), {
-							onProgressChange: (percentage) => {
-								progress.value = Math.round(percentage.reduce((acc, cur) => (acc += cur)) / files.length);
-								done.value = percentage.filter((p) => p === 100).length;
-							},
-							preset: {
-								...props.preset,
-								...folderPreset,
-							},
-						});
-
-						uploadedFiles && emit('input', uploadedFiles);
-					} else {
-						const uploadedFile = await uploadFile(Array.from(files)[0], {
-							onProgressChange: (percentage) => {
-								progress.value = percentage;
-								done.value = percentage === 100 ? 1 : 0;
-							},
-							fileId: props.fileId,
-							preset: {
-								...props.preset,
-								...folderPreset,
-							},
-						});
-
-						uploadedFile && emit('input', uploadedFile);
-					}
-				} catch (err: any) {
-					unexpectedError(err);
-				} finally {
-					uploading.value = false;
-					done.value = 0;
-					numberOfFiles.value = 0;
-				}
-			}
-
-			function onBrowseSelect(event: InputEvent) {
-				const files = (event.target as HTMLInputElement)?.files;
-
-				if (files) {
-					upload(files);
-				}
-			}
+		if (props.folder) {
+			folderPreset.folder = props.folder;
 		}
 
-		function useDragging() {
-			const dragging = ref(false);
+		try {
+			numberOfFiles.value = files.length;
 
-			let dragCounter = 0;
+			if (props.multiple === true) {
+				const uploadedFiles = await uploadFiles(Array.from(files), {
+					onProgressChange: (percentage) => {
+						progress.value = Math.round(percentage.reduce((acc, cur) => (acc += cur)) / files.length);
+						done.value = percentage.filter((p) => p === 100).length;
+					},
+					preset: {
+						...props.preset,
+						...folderPreset,
+					},
+				});
 
-			return { onDragEnter, onDragLeave, onDrop, dragging };
+				uploadedFiles && emit('input', uploadedFiles);
+			} else {
+				const uploadedFile = await uploadFile(Array.from(files)[0], {
+					onProgressChange: (percentage) => {
+						progress.value = percentage;
+						done.value = percentage === 100 ? 1 : 0;
+					},
+					fileId: props.fileId,
+					preset: {
+						...props.preset,
+						...folderPreset,
+					},
+				});
 
-			function onDragEnter() {
-				dragCounter++;
-
-				if (dragCounter === 1) {
-					dragging.value = true;
-				}
+				uploadedFile && emit('input', uploadedFile);
 			}
-
-			function onDragLeave() {
-				dragCounter--;
-
-				if (dragCounter === 0) {
-					dragging.value = false;
-				}
-			}
-
-			function onDrop(event: DragEvent) {
-				dragCounter = 0;
-				dragging.value = false;
-
-				const files = event.dataTransfer?.files;
-
-				if (files) {
-					upload(files);
-				}
-			}
+		} catch (err: any) {
+			unexpectedError(err);
+		} finally {
+			uploading.value = false;
+			done.value = 0;
+			numberOfFiles.value = 0;
 		}
+	}
 
-		function useSelection() {
-			return { setSelection };
+	function onBrowseSelect(event: Event) {
+		const files = (event.target as HTMLInputElement)?.files;
 
-			async function setSelection(selection: string[]) {
-				if (selection[0]) {
-					const id = selection[0];
-					const fileResponse = await api.get(`/files/${id}`);
-					emit('input', fileResponse.data.data);
-				} else {
-					emit('input', null);
-				}
-			}
+		if (files) {
+			upload(files);
 		}
+	}
+}
 
-		function useURLImport() {
-			const url = ref('');
-			const loading = ref(false);
+function useDragging() {
+	const dragging = ref(false);
 
-			const isValidURL = computed(() => {
-				try {
-					new URL(url.value);
-					return true;
-				} catch {
-					return false;
-				}
+	let dragCounter = 0;
+
+	return { onDragEnter, onDragLeave, onDrop, dragging };
+
+	function onDragEnter() {
+		dragCounter++;
+
+		if (dragCounter === 1) {
+			dragging.value = true;
+		}
+	}
+
+	function onDragLeave() {
+		dragCounter--;
+
+		if (dragCounter === 0) {
+			dragging.value = false;
+		}
+	}
+
+	function onDrop(event: DragEvent) {
+		dragCounter = 0;
+		dragging.value = false;
+
+		const files = event.dataTransfer?.files;
+
+		if (files) {
+			upload(files);
+		}
+	}
+}
+
+function useSelection() {
+	return { setSelection };
+
+	async function setSelection(selection: string[]) {
+		if (selection[0]) {
+			const id = selection[0];
+			const fileResponse = await api.get(`/files/${id}`);
+			emit('input', fileResponse.data.data);
+		} else {
+			emit('input', null);
+		}
+	}
+}
+
+function useURLImport() {
+	const url = ref('');
+	const loading = ref(false);
+
+	const isValidURL = computed(() => {
+		try {
+			new URL(url.value);
+			return true;
+		} catch {
+			return false;
+		}
+	});
+
+	return { url, loading, isValidURL, importFromURL };
+
+	async function importFromURL() {
+		loading.value = true;
+
+		try {
+			const response = await api.post(`/files/import`, {
+				url: url.value,
+				data: {
+					folder: props.folder,
+				},
 			});
 
-			return { url, loading, isValidURL, importFromURL };
+			emitter.emit(Events.upload);
 
-			async function importFromURL() {
-				loading.value = true;
-
-				try {
-					const response = await api.post(`/files/import`, {
-						url: url.value,
-						data: {
-							folder: props.folder,
-						},
-					});
-
-					emitter.emit(Events.upload);
-
-					if (props.multiple) {
-						emit('input', [response.data.data]);
-					} else {
-						emit('input', response.data.data);
-					}
-
-					activeDialog.value = null;
-					url.value = '';
-				} catch (err: any) {
-					unexpectedError(err);
-				} finally {
-					loading.value = false;
-				}
+			if (props.multiple) {
+				emit('input', [response.data.data]);
+			} else {
+				emit('input', response.data.data);
 			}
-		}
 
-		function openFileBrowser() {
-			input.value.click();
+			activeDialog.value = null;
+			url.value = '';
+		} catch (err: any) {
+			unexpectedError(err);
+		} finally {
+			loading.value = false;
 		}
-	},
-});
+	}
+}
+
+function openFileBrowser() {
+	input.value?.click();
+}
 </script>
 
 <style lang="scss" scoped>

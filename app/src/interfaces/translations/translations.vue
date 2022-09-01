@@ -69,12 +69,12 @@ import { DisplayItem, RelationQueryMultiple, useRelationMultiple } from '@/compo
 import { useRelationM2M } from '@/composables/use-relation-m2m';
 import { useWindowSize } from '@/composables/use-window-size';
 import { useFieldsStore } from '@/stores/fields';
-import { notEmpty } from '@/utils/is-empty';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { toArray } from '@directus/shared/utils';
 import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import LanguageSelect from './language-select.vue';
+import { isNil } from 'lodash';
 
 const props = withDefaults(
 	defineProps<{
@@ -227,7 +227,7 @@ function useLanguages() {
 
 			const edits = getItemWithLang(displayItems.value, langCode);
 
-			const filledFields = writableFields.filter((field) => notEmpty((edits ?? {})[field.field])).length;
+			const filledFields = writableFields.filter((field) => !isNil((edits ?? {})[field.field])).length;
 
 			return {
 				text: language[props.languageField ?? relationInfo.value.relatedPrimaryKeyField.field],
