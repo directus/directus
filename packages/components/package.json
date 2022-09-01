@@ -1,6 +1,6 @@
 {
 	"name": "@directus/components",
-	"version": "9.15.1",
+	"version": "9.16.1",
 	"description": "Components of the Directus App.",
 	"exports": {
 		"./": "./src/components/"
