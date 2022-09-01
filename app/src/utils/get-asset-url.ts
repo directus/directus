@@ -1,6 +1,12 @@
 import { addTokenToURL } from '@/api';
-import { getRootPath } from '@/utils/get-root-path';
+import { getPublicURL } from '@/utils/get-root-path';
 
 export function getAssetUrl(filename: string, isDownload?: boolean): string {
-	return addTokenToURL(getRootPath() + `assets/${filename}` + (isDownload ? '?download' : ''));
+	const assetUrl = new URL(`assets/${filename}`, getPublicURL());
+
+	if (isDownload) {
+		assetUrl.searchParams.set('download', '');
+	}
+
+	return addTokenToURL(assetUrl.href);
 }
