@@ -63,8 +63,6 @@ export function useRelationMultiple(
 			(Array.isArray(newValue) && Array.isArray(oldValue) && oldValue.length === 0)
 		) {
 			updateFetchedItems();
-		} else if (newValue === null) {
-			clear();
 		}
 	});
 
@@ -173,7 +171,7 @@ export function useRelationMultiple(
 		});
 	});
 
-	const { create, remove, select, update, clear } = useActions(_value);
+	const { create, remove, select, update } = useActions(_value);
 
 	return {
 		create,
@@ -194,7 +192,7 @@ export function useRelationMultiple(
 	};
 
 	function useActions(target: Ref<Item>) {
-		return { create, update, remove, select, clear };
+		return { create, update, remove, select };
 
 		function create(...items: Record<string, any>[]) {
 			for (const item of items) {
@@ -286,28 +284,8 @@ export function useRelationMultiple(
 			else create(...selected);
 		}
 
-		function clear() {
-			if (!relation.value) return;
-
-			target.value.create = [];
-			target.value.update = [];
-			target.value.delete = [];
-
-			reset();
-		}
-
-		function reset() {
-			value.value = itemId.value === '+' ? undefined : [];
-			existingItemCount.value = 0;
-			fetchedItems.value = [];
-		}
-
 		function updateValue() {
 			target.value = cloneDeep(target.value);
-
-			if (target.value.create.length === 0 && target.value.update.length === 0 && target.value.delete.length === 0) {
-				reset();
-			}
 		}
 	}
 
