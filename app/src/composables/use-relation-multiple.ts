@@ -6,7 +6,7 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import { Filter, Item } from '@directus/shared/types';
 import { getEndpoint } from '@directus/shared/utils';
 import { clamp, cloneDeep, isEqual, isObjectLike, isPlainObject, merge, mergeWith } from 'lodash';
-import { computed, ref, Ref, watch } from 'vue';
+import { computed, ref, Ref, unref, watch } from 'vue';
 
 export type RelationQueryMultiple = {
 	page: number;
@@ -102,18 +102,26 @@ export function useRelationMultiple(
 			);
 			const deleteIndex = _value.value.delete.findIndex((id) => id === item[targetPKField]);
 
-			const updatedItem: Record<string, any> = cloneDeep(item);
+			let updatedItem: Record<string, any> = cloneDeep(item);
 
 			if (editsIndex !== -1) {
-				mergeWith(
-					updatedItem,
-					{ $type: 'updated', $index: editsIndex, $edits: editsIndex },
-					_value.value.update[editsIndex],
-					(_objValue, srcValue) => {
-						// skip the default merge behavior for objects/arrays
-						if (isObjectLike(srcValue)) return srcValue;
-					}
-				);
+				const edits = unref(_value.value.update[editsIndex]);
+
+				updatedItem = {
+					...updatedItem,
+					...edits,
+				};
+
+				if (relation.value?.type === 'm2m' || relation.value?.type === 'm2a') {
+					updatedItem[relation.value.junctionField.field] = {
+						...cloneDeep(item)[relation.value.junctionField.field],
+						...edits[relation.value.junctionField.field],
+					};
+				}
+
+				updatedItem.$type = 'updated';
+				updatedItem.$index = editsIndex;
+				updatedItem.$edits = editsIndex;
 			}
 
 			if (deleteIndex !== -1) {
@@ -209,7 +217,7 @@ export function useRelationMultiple(
 
 			for (const item of items) {
 				if (item.$type === undefined || item.$index === undefined) {
-					target.value.update.push(item);
+					target.value.update.push(cleanItem(item));
 				} else if (item.$type === 'created') {
 					target.value.create[item.$index] = cleanItem(item);
 				} else if (item.$type === 'updated') {
