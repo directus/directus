@@ -35,6 +35,40 @@ export function getFieldDefaults(
 					}),
 					value: def('Hello'),
 				};
+			case 'group-accordion':
+			case 'group-detail':
+			case 'group-raw':
+				return {
+					field: def({
+						name: 'My Group',
+						type: 'string',
+						field: 'group',
+						meta: {},
+					}),
+					fields: def([
+						{
+							field: 'title',
+							name: 'Title',
+							meta: {
+								interface: 'input',
+							},
+							type: 'string',
+						},
+						{
+							field: 'body',
+							name: 'Body',
+							meta: {
+								interface: 'textarea',
+							},
+							type: 'text',
+						},
+					]),
+					initialValues: def({
+						title: 'Hello',
+						body: 'World',
+					}),
+					primaryKey: def(1),
+				};
 			case 'input-multiline':
 				return {
 					value: def('This is a super cool message!'),
