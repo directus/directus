@@ -672,36 +672,29 @@ export class PayloadService {
 				if (alterations.create) {
 					const sortField = relation.meta.sort_field;
 
-					let createPayload: Alterations['create'];
+					const processCreateItem = async (item: Record<string, any>) => {
+						const record = cloneDeep(item);
 
-					if (sortField !== null && parent !== null) {
-						const highestOrderNumber: Record<string, any> | undefined = await this.knex
-							.select(sortField)
-							.from(relation.collection)
-							.where({ [relation.field]: parent })
-							.whereNotNull(sortField)
-							.orderBy(sortField, 'desc')
-							.first();
+						// add sort field value if it is not supplied in the item
+						if (sortField !== null && parent !== null && record[sortField] === undefined) {
+							const highestOrderNumber: Record<string, any> | undefined = await this.knex
+								.select(sortField)
+								.from(relation.collection)
+								.where({ [relation.field]: parent })
+								.whereNotNull(sortField)
+								.orderBy(sortField, 'desc')
+								.first();
 
-						createPayload = alterations.create.map((item, index) => {
-							const record = cloneDeep(item);
+							record[sortField] = highestOrderNumber?.[sortField] ? highestOrderNumber[sortField] + 1 : 1;
+						}
 
-							// add sort field value if it is not supplied in the item
-							if (record[sortField] === undefined) {
-								record[sortField] = highestOrderNumber?.[sortField]
-									? highestOrderNumber[sortField] + index + 1
-									: index + 1;
-							}
+						return {
+							...record,
+							[relation.field]: parent || payload[currentPrimaryKeyField],
+						};
+					};
 
-							return {
-								...record,
-								[relation.field]: parent || payload[currentPrimaryKeyField],
-							};
-						});
-					} else {
-						createPayload = alterations.create;
-					}
-
+					const createPayload = await Promise.all(alterations.create.map(processCreateItem));
 					await itemsService.createMany(createPayload, {
 						onRevisionCreate: (pk) => revisions.push(pk),
 						bypassEmitAction: (params) => nestedActionEvents.push(params),
