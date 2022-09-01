@@ -77,16 +77,15 @@
 		</div>
 
 		<drawer-item
+			v-model:active="editModalActive"
 			:disabled="disabled"
-			:active="editModalActive"
 			:collection="relationInfo.junctionCollection.collection"
 			:primary-key="currentlyEditing || '+'"
 			:related-primary-key="relatedPrimaryKey || '+'"
 			:junction-field="relationInfo.junctionField.field"
 			:edits="editsAtStart"
 			:circular-field="relationInfo.reverseJunctionField.field"
-			@input="update"
-			@update:active="cancelEdit"
+			@input="stageEdits"
 		>
 			<template #actions>
 				<v-button
@@ -109,7 +108,7 @@
 			:selection="selectedPrimaryKeys"
 			:filter="customFilter"
 			multiple
-			@input="select"
+			@input="onSelect"
 		/>
 
 		<v-dialog v-if="!disabled" v-model="showUpload">
@@ -136,7 +135,7 @@ import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import Draggable from 'vuedraggable';
 import { getAssetUrl } from '@/utils/get-asset-url';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
-import { get, clamp } from 'lodash';
+import { get, clamp, isEmpty } from 'lodash';
 import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
 import { getFieldsFromTemplate } from '@directus/shared/utils';
@@ -219,8 +218,18 @@ const query = computed<RelationQueryMultiple>(() => ({
 	page: page.value,
 }));
 
-const { create, update, remove, select, displayItems, totalItemCount, loading, selected, isItemSelected, localDelete } =
-	useRelationMultiple(value, query, relationInfo, primaryKey);
+const {
+	update,
+	remove,
+	select,
+	displayItems,
+	totalItemCount,
+	loading,
+	selected,
+	isItemSelected,
+	localDelete,
+	getItemEdits,
+} = useRelationMultiple(value, query, relationInfo, primaryKey);
 
 const pageCount = computed(() => Math.ceil(totalItemCount.value / limit.value));
 
@@ -266,7 +275,7 @@ function editItem(item: DisplayItem) {
 	const junctionField = relationInfo.value.junctionField.field;
 	const junctionPkField = relationInfo.value.junctionPrimaryKeyField.field;
 
-	editsAtStart.value = item;
+	editsAtStart.value = getItemEdits(item);
 
 	editModalActive.value = true;
 
@@ -279,8 +288,10 @@ function editItem(item: DisplayItem) {
 	}
 }
 
-function cancelEdit() {
-	editModalActive.value = false;
+function stageEdits(item: Record<string, any>) {
+	if (isEmpty(item)) return;
+
+	update(item);
 }
 
 function deleteItem(item: DisplayItem) {
@@ -299,20 +310,14 @@ const showUpload = ref(false);
 function onUpload(files: Record<string, any>[]) {
 	showUpload.value = false;
 	if (files.length === 0 || !relationInfo.value) return;
-	const junctionField = relationInfo.value.junctionField.field;
-	const reverseJunctionField = relationInfo.value.reverseJunctionField.field;
-	const relatedPKField = relationInfo.value.relatedPrimaryKeyField.field;
 
-	const filesAsJunctionRows = files.map((file) => {
-		return {
-			[reverseJunctionField]: primaryKey.value,
-			[junctionField]: {
-				[relatedPKField]: file.id,
-			},
-		};
-	});
+	const fileIds = files.map((file) => file.id);
 
-	create(...filesAsJunctionRows);
+	select(fileIds);
+}
+
+function onSelect(selected: string[]) {
+	select(selected.filter((id) => selectedPrimaryKeys.value.includes(id) === false));
 }
 
 const downloadName = computed(() => {
