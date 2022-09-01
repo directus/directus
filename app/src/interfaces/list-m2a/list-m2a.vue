@@ -121,8 +121,8 @@
 		/>
 
 		<drawer-item
+			v-model:active="editModalActive"
 			:disabled="disabled"
-			:active="editModalActive"
 			:collection="relationInfo.junctionCollection.collection"
 			:primary-key="currentlyEditing || '+'"
 			:related-primary-key="relatedPrimaryKey || '+'"
@@ -130,7 +130,6 @@
 			:edits="editsAtStart"
 			:circular-field="relationInfo.reverseJunctionField.field"
 			@input="stageEdits"
-			@update:active="cancelEdit"
 		/>
 	</div>
 </template>
@@ -145,7 +144,7 @@ import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
 import { Filter } from '@directus/shared/types';
 import { getFieldsFromTemplate } from '@directus/shared/utils';
-import { clamp, get } from 'lodash';
+import { clamp, get, isEmpty } from 'lodash';
 import { computed, ref, toRefs, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
@@ -220,8 +219,19 @@ const query = computed<RelationQueryMultiple>(() => ({
 	page: page.value,
 }));
 
-const { create, update, remove, select, displayItems, totalItemCount, loading, selected, isItemSelected, localDelete } =
-	useRelationMultiple(value, query, relationInfo, primaryKey);
+const {
+	create,
+	update,
+	remove,
+	select,
+	displayItems,
+	totalItemCount,
+	loading,
+	selected,
+	isItemSelected,
+	localDelete,
+	getItemEdits,
+} = useRelationMultiple(value, query, relationInfo, primaryKey);
 
 const pageCount = computed(() => Math.ceil(totalItemCount.value / limit.value));
 
@@ -275,7 +285,7 @@ function editItem(item: DisplayItem) {
 	const junctionPkField = relationInfo.value.junctionPrimaryKeyField.field;
 
 	newItem = false;
-	editsAtStart.value = item;
+	editsAtStart.value = getItemEdits(item);
 
 	editModalActive.value = true;
 
@@ -290,15 +300,13 @@ function editItem(item: DisplayItem) {
 }
 
 function stageEdits(item: Record<string, any>) {
+	if (isEmpty(item)) return;
+
 	if (newItem) {
 		create(item);
 	} else {
 		update(item);
 	}
-}
-
-function cancelEdit() {
-	editModalActive.value = false;
 }
 
 function deleteItem(item: DisplayItem) {
