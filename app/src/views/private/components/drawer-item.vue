@@ -361,7 +361,7 @@ function useActions() {
 			set(internalEdits.value, [props.junctionField, relatedPrimaryKeyField.value.field], props.relatedPrimaryKey);
 		}
 
-		if (props.primaryKey && primaryKeyField.value) {
+		if (props.primaryKey && props.primaryKey !== '+' && primaryKeyField.value) {
 			internalEdits.value[primaryKeyField.value.field] = props.primaryKey;
 		}
 
