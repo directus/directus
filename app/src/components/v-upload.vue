@@ -9,8 +9,8 @@
 		@drop.stop.prevent="onDrop"
 	>
 		<template v-if="dragging">
+			<v-icon class="upload-icon" x-large name="file_upload" />
 			<p class="type-label">{{ t('drop_to_upload') }}</p>
-			<p class="type-text">{{ t('upload_pending') }}</p>
 		</template>
 
 		<template v-else-if="uploading">
@@ -26,32 +26,29 @@
 		</template>
 
 		<template v-else>
+			<div class="actions">
+				<v-button v-tooltip="t('click_to_browse')" icon rounded secondary @click="openFileBrowser">
+					<input ref="input" class="browse" type="file" :multiple="multiple" @input="onBrowseSelect" />
+					<v-icon name="file_upload" />
+				</v-button>
+				<v-button
+					v-if="fromLibrary"
+					v-tooltip="t('choose_from_library')"
+					icon
+					rounded
+					secondary
+					@click="activeDialog = 'choose'"
+				>
+					<v-icon name="folder_open" />
+				</v-button>
+				<v-button v-if="fromUrl" v-tooltip="t('import_from_url')" icon rounded secondary @click="activeDialog = 'url'">
+					<v-icon name="link" />
+				</v-button>
+			</div>
+
 			<p class="type-label">{{ t('drag_file_here') }}</p>
-			<p class="type-text">{{ t('click_to_browse') }}</p>
-			<input class="browse" type="file" :multiple="multiple" @input="onBrowseSelect" />
 
 			<template v-if="fromUrl !== false || fromLibrary !== false">
-				<v-menu show-arrow placement="bottom-end">
-					<template #activator="{ toggle }">
-						<v-icon clickable class="options" name="more_vert" @click="toggle" />
-					</template>
-					<v-list>
-						<v-list-item v-if="fromLibrary" clickable @click="activeDialog = 'choose'">
-							<v-list-item-icon><v-icon name="folder_open" /></v-list-item-icon>
-							<v-list-item-content>
-								{{ t('choose_from_library') }}
-							</v-list-item-content>
-						</v-list-item>
-
-						<v-list-item v-if="fromUrl" clickable @click="activeDialog = 'url'">
-							<v-list-item-icon><v-icon name="link" /></v-list-item-icon>
-							<v-list-item-content>
-								{{ t('import_from_url') }}
-							</v-list-item-content>
-						</v-list-item>
-					</v-list>
-				</v-menu>
-
 				<drawer-collection
 					collection="directus_files"
 					:active="activeDialog === 'choose'"
@@ -135,6 +132,7 @@ export default defineComponent({
 		const { url, isValidURL, loading: urlLoading, importFromURL } = useURLImport();
 		const { setSelection } = useSelection();
 		const activeDialog = ref<'choose' | 'url' | null>(null);
+		const input = ref(null);
 
 		const filterByFolder = computed(() => {
 			if (!props.folder) return undefined;
@@ -159,6 +157,8 @@ export default defineComponent({
 			urlLoading,
 			importFromURL,
 			setSelection,
+			openFileBrowser,
+			input,
 		};
 
 		function useUpload() {
@@ -320,6 +320,10 @@ export default defineComponent({
 				}
 			}
 		}
+
+		function openFileBrowser() {
+			input.value.click();
+		}
 	},
 });
 </script>
@@ -344,8 +348,21 @@ export default defineComponent({
 	}
 
 	&:not(.uploading):hover {
-		color: var(--primary);
-		border-color: var(--primary);
+		border-color: var(--border-normal-alt);
+	}
+}
+
+.actions {
+	display: flex;
+	justify-content: center;
+	margin-bottom: 18px;
+
+	.v-button {
+		margin-right: 12px;
+
+		&:last-child {
+			margin-right: 0;
+		}
 	}
 }
 
@@ -369,6 +386,11 @@ export default defineComponent({
 	* {
 		pointer-events: none;
 	}
+
+	.upload-icon {
+		margin: 0 auto;
+		margin-bottom: 12px;
+	}
 }
 
 .uploading {
@@ -387,18 +409,5 @@ export default defineComponent({
 		left: 32px;
 		width: calc(100% - 64px);
 	}
-}
-
-.options {
-	position: absolute;
-	top: 12px;
-	right: 12px;
-	color: var(--foreground-subdued);
-	cursor: pointer;
-	transition: color var(--medium) var(--transition);
-}
-
-.v-upload:hover .options {
-	color: var(--primary);
 }
 </style>
