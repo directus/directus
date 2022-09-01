@@ -1,7 +1,7 @@
 import api from '@/api';
 import { getEndpoint } from '@directus/shared/utils';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { clamp, cloneDeep, isEqual, merge, isPlainObject, isNil } from 'lodash';
+import { clamp, cloneDeep, isEqual, merge, isPlainObject } from 'lodash';
 import { computed, ref, Ref, watch } from 'vue';
 import { Filter, Item } from '@directus/shared/types';
 import { RelationM2A } from '@/composables/use-relation-m2a';
@@ -39,7 +39,6 @@ export function useRelationMultiple(
 	const loading = ref(false);
 	const fetchedItems = ref<Record<string, any>[]>([]);
 	const existingItemCount = ref(0);
-	const existingSortMax = ref<number | null>(null);
 
 	const { cleanItem, getPage, localDelete, getItemEdits } = useUtil();
 
@@ -79,19 +78,6 @@ export function useRelationMultiple(
 		}
 
 		return existingItemCount.value + _value.value.create.length;
-	});
-
-	const totalSortMax = computed(() => {
-		const sortField = relation.value?.sortField;
-		if (!sortField) return null;
-
-		const createdSorts = _value.value.create.map((v) => v[sortField] as number);
-		if (relation.value?.type === 'o2m') {
-			const selectedSorts = selected.value.map((v) => v[sortField] as number);
-			return Math.max(existingSortMax.value ?? 0, ...createdSorts, ...selectedSorts);
-		}
-
-		return Math.max(existingSortMax.value ?? 0, ...createdSorts);
 	});
 
 	const createdItems = computed(() => {
@@ -160,7 +146,6 @@ export function useRelationMultiple(
 					}
 				}
 			});
-
 			if (!edits) return item;
 			return merge({}, item, edits);
 		});
@@ -181,7 +166,6 @@ export function useRelationMultiple(
 		const sortField = relation.value.sortField;
 
 		if ((previewQuery.value.limit > 0 && totalItemCount.value > previewQuery.value.limit) || !sortField) return items;
-
 		return items.sort((a, b) => {
 			return a[sortField] - b[sortField];
 		});
@@ -196,7 +180,6 @@ export function useRelationMultiple(
 		select,
 		displayItems,
 		totalItemCount,
-		totalSortMax,
 		loading,
 		selected,
 		fetchedSelectItems,
@@ -212,19 +195,8 @@ export function useRelationMultiple(
 		return { create, update, remove, select, clear };
 
 		function create(...items: Record<string, any>[]) {
-			const sortField = relation.value?.sortField;
-
-			for (const [index, item] of items.entries()) {
-				target.value.create.push(
-					cleanItem(
-						sortField && isNil(item[sortField])
-							? {
-									...item,
-									[sortField]: (totalSortMax.value || 0) + 1 + index,
-							  }
-							: item
-					)
-				);
+			for (const item of items) {
+				target.value.create.push(cleanItem(item));
 			}
 			updateValue();
 		}
@@ -391,9 +363,6 @@ export function useRelationMultiple(
 					filter._and.push(previewQuery.value.filter);
 				}
 
-				const sortField = relation.value?.sortField;
-				if (sortField) await updateSortMax(targetCollection, sortField, reverseJunctionField);
-
 				const response = await api.get(getEndpoint(targetCollection), {
 					params: {
 						search: previewQuery.value.search,
@@ -430,21 +399,6 @@ export function useRelationMultiple(
 		});
 
 		existingItemCount.value = Number(response.data.data[0].count[targetPKField]);
-	}
-
-	async function updateSortMax(targetCollection: string, sortField: string, reverseJunctionField: string) {
-		const response = await api.get(getEndpoint(targetCollection), {
-			params: {
-				aggregate: {
-					max: sortField,
-				},
-				filter: {
-					[reverseJunctionField]: itemId.value,
-				},
-			},
-		});
-
-		existingSortMax.value = response.data.data[0].max[sortField] as number | null;
 	}
 
 	function useSelected() {
