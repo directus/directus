@@ -194,7 +194,7 @@ import { nanoid, customAlphabet } from 'nanoid';
 import SettingsNotFound from '../not-found.vue';
 import SettingsNavigation from '../../components/navigation.vue';
 import Operation, { ArrowInfo, Target } from './components/operation.vue';
-import { AppTile } from '@/components/v-workspace-tile.vue';
+import { AppTile } from '@directus/components/v-workspace-tile.vue';
 import { ATTACHMENT_OFFSET, PANEL_HEIGHT, PANEL_WIDTH } from './constants';
 import Arrows from './components/arrows.vue';
 import { Vector2 } from '@/utils/vector2';
