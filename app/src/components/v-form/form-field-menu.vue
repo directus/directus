@@ -37,7 +37,7 @@
 		</v-list-item>
 		<v-list-item
 			v-if="!restricted && (defaultValue === null || !isRequired)"
-			:disabled="modelValue === null"
+			:disabled="modelValue === null || relational"
 			clickable
 			@click="$emit('update:modelValue', null)"
 		>
@@ -87,7 +87,14 @@ export default defineComponent({
 			return props.field?.schema?.is_nullable === false;
 		});
 
-		return { t, defaultValue, isRequired, isCopySupported, isPasteSupported };
+		const relational = computed(
+			() =>
+				props.field.meta?.special?.find((type) =>
+					['file', 'files', 'm2o', 'o2m', 'm2m', 'm2a', 'translations'].includes(type)
+				) !== undefined
+		);
+
+		return { t, defaultValue, isRequired, isCopySupported, isPasteSupported, relational };
 	},
 });
 </script>
