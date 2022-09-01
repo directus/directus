@@ -672,7 +672,7 @@ export class PayloadService {
 				if (alterations.create) {
 					const sortField = relation.meta.sort_field;
 
-					const processCreateItem = async (item: Record<string, any>) => {
+					const processCreateItem = async (item: Record<string, any>, index: number) => {
 						const record = cloneDeep(item);
 
 						// add sort field value if it is not supplied in the item
@@ -685,7 +685,9 @@ export class PayloadService {
 								.orderBy(sortField, 'desc')
 								.first();
 
-							record[sortField] = highestOrderNumber?.[sortField] ? highestOrderNumber[sortField] + 1 : 1;
+							record[sortField] = highestOrderNumber?.[sortField]
+								? highestOrderNumber[sortField] + index + 1
+								: index + 1;
 						}
 
 						return {
