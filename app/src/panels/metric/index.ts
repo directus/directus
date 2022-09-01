@@ -72,6 +72,7 @@ export default definePanel({
 					interface: 'system-collection',
 					options: {
 						includeSystem: true,
+						includeSingleton: false,
 					},
 					selectedCollection: '',
 					hasBeenSelected: false,

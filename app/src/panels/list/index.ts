@@ -50,6 +50,7 @@ export default definePanel({
 				interface: 'system-collection',
 				options: {
 					includeSystem: true,
+					includeSingleton: false,
 				},
 				width: 'half',
 			},
