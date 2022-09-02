@@ -285,7 +285,10 @@ function editItem(item: DisplayItem) {
 	const junctionPkField = relationInfo.value.junctionPrimaryKeyField.field;
 
 	newItem = false;
-	editsAtStart.value = getItemEdits(item);
+	editsAtStart.value = {
+		...getItemEdits(item),
+		[relationInfo.value.collectionField.field]: item[relationInfo.value.collectionField.field],
+	};
 
 	editModalActive.value = true;
 
