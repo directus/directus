@@ -191,7 +191,7 @@
 </template>
 
 <script lang="ts" setup>
-import { AppTile } from '@/components/v-workspace-tile.vue';
+import { AppTile } from '@directus/components/v-workspace-tile.vue';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useShortcut } from '@/composables/use-shortcut';
 import { getPanels } from '@/panels';

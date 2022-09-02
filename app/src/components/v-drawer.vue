@@ -18,7 +18,7 @@
 			</v-button>
 
 			<div class="content">
-				<v-overlay v-if="$slots.sidebar" absolute @click="sidebarActive = false" />
+				<v-overlay v-if="$slots.sidebar" absolute />
 
 				<nav v-if="$slots.sidebar" class="sidebar">
 					<slot name="sidebar" />
@@ -60,67 +60,48 @@
 	</v-dialog>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, ref, computed, provide } from 'vue';
+import { ref, computed, provide } from 'vue';
 import HeaderBar from '@/views/private/components/header-bar.vue';
 import { i18n } from '@/lang';
 
-export default defineComponent({
-	components: {
-		HeaderBar,
+interface Props {
+	title: string;
+	subtitle?: string | null;
+	modelValue?: boolean;
+	persistent?: boolean;
+	icon?: string;
+	sidebarLabel?: string;
+	cancelable?: boolean;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+	subtitle: null,
+	modelValue: undefined,
+	persistent: false,
+	icon: 'box',
+	sidebarLabel: i18n.global.t('sidebar'),
+	cancelable: true,
+});
+
+const emit = defineEmits(['cancel', 'update:modelValue']);
+
+const { t } = useI18n();
+
+const localActive = ref(false);
+
+const mainEl = ref<Element>();
+
+provide('main-element', mainEl);
+
+const internalActive = computed({
+	get() {
+		return props.modelValue === undefined ? localActive.value : props.modelValue;
 	},
-	props: {
-		title: {
-			type: String,
-			required: true,
-		},
-		subtitle: {
-			type: String,
-			default: null,
-		},
-		modelValue: {
-			type: Boolean,
-			default: undefined,
-		},
-		persistent: {
-			type: Boolean,
-			default: false,
-		},
-		icon: {
-			type: String,
-			default: 'box',
-		},
-		sidebarLabel: {
-			type: String,
-			default: i18n.global.t('sidebar'),
-		},
-		cancelable: {
-			type: Boolean,
-			default: true,
-		},
-	},
-	emits: ['cancel', 'update:modelValue'],
-	setup(props, { emit }) {
-		const { t } = useI18n();
-
-		const localActive = ref(false);
-
-		const mainEl = ref<Element>();
-
-		provide('main-element', mainEl);
-
-		const internalActive = computed({
-			get() {
-				return props.modelValue === undefined ? localActive.value : props.modelValue;
-			},
-			set(newActive: boolean) {
-				localActive.value = newActive;
-				emit('update:modelValue', newActive);
-			},
-		});
-
-		return { t, internalActive, mainEl };
+	set(newActive: boolean) {
+		localActive.value = newActive;
+		emit('update:modelValue', newActive);
 	},
 });
 </script>

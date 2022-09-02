@@ -144,13 +144,8 @@
 
 			<div class="actions" :class="layout">
 				<template v-if="layout === LAYOUTS.TABLE">
-					<template v-if="totalItemCount > 10">
-						<v-pagination
-							v-if="pageCount > 1"
-							v-model="page"
-							:length="pageCount"
-							:total-visible="width.includes('half') ? 3 : 5"
-						/>
+					<template v-if="pageCount > 1">
+						<v-pagination v-model="page" :length="pageCount" :total-visible="width.includes('half') ? 3 : 5" />
 
 						<div class="spacer" />
 
@@ -323,8 +318,19 @@ watch([search, searchFilter], () => {
 	page.value = 1;
 });
 
-const { create, update, remove, select, displayItems, totalItemCount, loading, selected, isItemSelected, localDelete } =
-	useRelationMultiple(value, query, relationInfo, primaryKey);
+const {
+	create,
+	update,
+	remove,
+	select,
+	displayItems,
+	totalItemCount,
+	loading,
+	selected,
+	isItemSelected,
+	localDelete,
+	getItemEdits,
+} = useRelationMultiple(value, query, relationInfo, primaryKey);
 
 const pageCount = computed(() => Math.ceil(totalItemCount.value / limit.value));
 
@@ -440,7 +446,7 @@ function editItem(item: DisplayItem) {
 	const relatedPkField = relationInfo.value.relatedPrimaryKeyField.field;
 
 	newItem = false;
-	editsAtStart.value = { [relatedPkField]: item[relatedPkField] };
+	editsAtStart.value = getItemEdits(item);
 
 	if (item?.$type === 'created' && !isItemSelected(item)) {
 		currentlyEditing.value = '+';
@@ -454,6 +460,8 @@ function editRow({ item }: { item: DisplayItem }) {
 }
 
 function stageEdits(item: Record<string, any>) {
+	if (isEmpty(item)) return;
+
 	if (newItem) {
 		create(item);
 	} else {

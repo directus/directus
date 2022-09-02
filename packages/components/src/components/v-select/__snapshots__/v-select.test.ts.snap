@@ -1,0 +1,3 @@
+// Vitest Snapshot v1
+
+exports[`Mount component 1`] = `"<v-menu-stub class=\\"v-select\\" disabled=\\"false\\" attached=\\"true\\" show-arrow=\\"false\\" close-on-content-click=\\"true\\" placement=\\"bottom\\" data-v-83c4e9a2=\\"\\"></v-menu-stub>"`;

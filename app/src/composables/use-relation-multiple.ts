@@ -40,7 +40,7 @@ export function useRelationMultiple(
 	const fetchedItems = ref<Record<string, any>[]>([]);
 	const existingItemCount = ref(0);
 
-	const { cleanItem, getPage, localDelete } = useUtil();
+	const { cleanItem, getPage, localDelete, getItemEdits } = useUtil();
 
 	const _value = computed<ChangesItem>({
 		get() {
@@ -63,8 +63,6 @@ export function useRelationMultiple(
 			(Array.isArray(newValue) && Array.isArray(oldValue) && oldValue.length === 0)
 		) {
 			updateFetchedItems();
-		} else if (newValue === null) {
-			clear();
 		}
 	});
 
@@ -173,7 +171,7 @@ export function useRelationMultiple(
 		});
 	});
 
-	const { create, remove, select, update, clear } = useActions(_value);
+	const { create, remove, select, update } = useActions(_value);
 
 	return {
 		create,
@@ -190,10 +188,11 @@ export function useRelationMultiple(
 		cleanItem,
 		isItemSelected,
 		localDelete,
+		getItemEdits,
 	};
 
 	function useActions(target: Ref<Item>) {
-		return { create, update, remove, select, clear };
+		return { create, update, remove, select };
 
 		function create(...items: Record<string, any>[]) {
 			for (const item of items) {
@@ -285,28 +284,8 @@ export function useRelationMultiple(
 			else create(...selected);
 		}
 
-		function clear() {
-			if (!relation.value) return;
-
-			target.value.create = [];
-			target.value.update = [];
-			target.value.delete = [];
-
-			reset();
-		}
-
-		function reset() {
-			value.value = itemId.value === '+' ? undefined : [];
-			existingItemCount.value = 0;
-			fetchedItems.value = [];
-		}
-
 		function updateValue() {
 			target.value = cloneDeep(target.value);
-
-			if (target.value.create.length === 0 && target.value.update.length === 0 && target.value.delete.length === 0) {
-				reset();
-			}
 		}
 	}
 
@@ -540,8 +519,6 @@ export function useRelationMultiple(
 	}
 
 	function useUtil() {
-		return { cleanItem, getPage, localDelete };
-
 		function cleanItem(item: DisplayItem) {
 			return Object.entries(item).reduce((acc, [key, value]) => {
 				if (!key.startsWith('$')) acc[key] = value;
@@ -559,5 +536,32 @@ export function useRelationMultiple(
 			const end = clamp(previewQuery.value.page * previewQuery.value.limit - offset, 0, items.length);
 			return items.slice(start, end);
 		}
+
+		function getItemEdits(item: DisplayItem) {
+			if ('$type' in item && item.$index !== undefined) {
+				if (item.$type === 'created')
+					return {
+						..._value.value.create[item.$index],
+						$type: 'created',
+						$index: item.$index,
+					};
+				else if (item.$type === 'updated')
+					return {
+						..._value.value.update[item.$index],
+						$type: 'updated',
+						$index: item.$index,
+					};
+				else if (item.$type === 'deleted' && item.$edits)
+					return {
+						..._value.value.update[item.$edits],
+						$type: 'deleted',
+						$index: item.$index,
+						$edits: item.$edits,
+					};
+			}
+			return {};
+		}
+
+		return { cleanItem, getPage, localDelete, getItemEdits };
 	}
 }
