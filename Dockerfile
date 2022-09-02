@@ -40,8 +40,8 @@ RUN pnpm install
 RUN pnpm -r build
 
 #COPY ./custom_extensions.sh ./custom_extensions.sh
-#RUN chmod +x ./custom_extensions.sh
-#RUN ./custom_extensions.sh
+RUN chmod +x ./custom_extensions.sh
+RUN ./custom_extensions.sh
 
 WORKDIR /directus/api
 
