@@ -39,6 +39,9 @@ RUN npm install -g pnpm
 RUN pnpm install
 RUN pnpm -r build
 
+RUN chmod +x ./custom_extensions.sh
+RUN ./custom_extensions.sh
+
 WORKDIR /directus/api
 
 CMD ["sh", "-c", "node ./cli.js bootstrap && node ./dist/start.js;"]
