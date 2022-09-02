@@ -19,7 +19,7 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import { useSizeClass } from '@directus/shared/composables';
 import { IconName } from '@fortawesome/fontawesome-svg-core';
-import { capitalize } from 'lodash';
+import { camelCase, upperFirst } from 'lodash';
 
 import CustomIconDirectus from './custom-icons/directus.vue';
 import CustomIconBookmarkSave from './custom-icons/bookmark_save.vue';
@@ -569,7 +569,7 @@ const sizeClass = computed<string | null>(() => {
 });
 
 const customIconName = computed(() => {
-	const name = `CustomIcon${capitalize(props.name.replace(/_/g, '-'))}`;
+	const name = `CustomIcon${upperFirst(camelCase(props.name.replace(/_/g, '-')))}`;
 	if (name in components) return components[name];
 	return null;
 });
