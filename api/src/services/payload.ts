@@ -694,7 +694,7 @@ export class PayloadService {
 							}
 
 							return {
-								...item,
+								...record,
 								[relation.field]: parent || payload[currentPrimaryKeyField],
 							};
 						});
