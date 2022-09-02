@@ -1,4 +1,3 @@
-import { RequestHandler } from 'express';
 import Joi from 'joi';
 import { InvalidPayloadException } from '../exceptions';
 import { FailedValidationException } from '@directus/shared/exceptions';

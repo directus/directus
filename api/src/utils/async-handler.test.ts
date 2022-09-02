@@ -9,7 +9,7 @@ const nextFunction: NextFunction = jest.fn();
 test('Wraps async middleware in Promise resolve that will catch rejects and pass them to the nextFn', async () => {
 	const err = new Error('testing');
 
-	const middleware: RequestHandler = async (req, res, next) => {
+	const middleware: RequestHandler = async (_req, _res, _next) => {
 		throw err;
 	};
 

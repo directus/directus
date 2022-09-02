@@ -33,7 +33,7 @@
 import { defineComponent, computed, PropType, toRefs } from 'vue';
 import { useRelation } from '@/composables/use-m2m';
 import { useUserStore } from '@/stores/user';
-import { notEmpty } from '@/utils/is-empty';
+import { isNil } from 'lodash';
 
 export default defineComponent({
 	props: {
@@ -112,7 +112,7 @@ export default defineComponent({
 		const translations = computed(() => {
 			return props.value.map((item) => {
 				const filledFields = writableFields.value.filter((field) => {
-					return field.field in item && notEmpty(item?.[field.field]);
+					return field.field in item && !isNil(item?.[field.field]);
 				}).length;
 
 				return {

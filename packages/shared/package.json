@@ -59,6 +59,7 @@
 		"knex-schema-inspector": "2.0.4",
 		"lodash": "4.17.21",
 		"micromustache": "^8.0.3",
+		"nanoid": "^4.0.0",
 		"pino": "6.13.3",
 		"vue": "3.2.36",
 		"vue-i18n": "9.1.10",
