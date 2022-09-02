@@ -20,3 +20,7 @@ unzip -d ${DIRECTUS_DIR}/extensions/modules/ /tmp/global-search.zip
 
 mkdir -p ${DIRECTUS_DIR}/extensions/modules/api-viewer
 wget -O ${DIRECTUS_DIR}/extensions/modules/api-viewer/index.js https://github.com/u12206050/directus-extension-api-viewer-module/releases/download/1.1.1/index.js
+
+# Install https://github.com/dimitrov-adrian/directus-extension-masked-interface
+mkdir -p ${DIRECTUS_DIR}/extensions/interfaces/fields-masked
+wget -O ${DIRECTUS_DIR}/extensions/interfaces/fields-masked/index.js https://github.com/dimitrov-adrian/directus-extension-masked-interface/releases/download/v1.1.0/index.js
