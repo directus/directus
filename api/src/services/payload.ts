@@ -672,31 +672,39 @@ export class PayloadService {
 				if (alterations.create) {
 					const sortField = relation.meta.sort_field;
 
-					const processCreateItem = async (item: Record<string, any>, index: number) => {
-						const record = cloneDeep(item);
+					let createPayload: Alterations['create'];
 
-						// add sort field value if it is not supplied in the item
-						if (sortField !== null && parent !== null && record[sortField] === undefined) {
-							const highestOrderNumber: Record<string, any> | undefined = await this.knex
-								.select(sortField)
-								.from(relation.collection)
-								.where({ [relation.field]: parent })
-								.whereNotNull(sortField)
-								.orderBy(sortField, 'desc')
-								.first();
+					if (sortField !== null) {
+						const highestOrderNumber: Record<string, any> | undefined = await this.knex
+							.select(sortField)
+							.from(relation.collection)
+							.where({ [relation.field]: parent })
+							.whereNotNull(sortField)
+							.orderBy(sortField, 'desc')
+							.first();
 
-							record[sortField] = highestOrderNumber?.[sortField]
-								? highestOrderNumber[sortField] + index + 1
-								: index + 1;
-						}
+						createPayload = alterations.create.map((item, index) => {
+							const record = cloneDeep(item);
 
-						return {
-							...record,
+							// add sort field value if it is not supplied in the item
+							if (parent !== null && record[sortField] === undefined) {
+								record[sortField] = highestOrderNumber?.[sortField]
+									? highestOrderNumber[sortField] + index + 1
+									: index + 1;
+							}
+
+							return {
+								...item,
+								[relation.field]: parent || payload[currentPrimaryKeyField],
+							};
+						});
+					} else {
+						createPayload = alterations.create.map((item) => ({
+							...item,
 							[relation.field]: parent || payload[currentPrimaryKeyField],
-						};
-					};
+						}));
+					}
 
-					const createPayload = await Promise.all(alterations.create.map(processCreateItem));
 					await itemsService.createMany(createPayload, {
 						onRevisionCreate: (pk) => revisions.push(pk),
 						bypassEmitAction: (params) => nestedActionEvents.push(params),
