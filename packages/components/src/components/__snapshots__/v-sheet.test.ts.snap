@@ -1,3 +1,0 @@
-// Vitest Snapshot v1
-
-exports[`Mount component 1`] = `"<div class=\\"v-sheet\\" data-v-24b86768=\\"\\">Slot Content</div>"`;
