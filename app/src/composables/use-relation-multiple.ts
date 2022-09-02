@@ -63,14 +63,12 @@ export function useRelationMultiple(
 	});
 
 	onBeforeRouteUpdate((to, from, next) => {
+		updateFetchedItems();
 		next();
 	});
 
 	watch(value, (newValue, oldValue) => {
-		if (
-			(Array.isArray(newValue) && isPlainObject(oldValue)) ||
-			(Array.isArray(newValue) && Array.isArray(oldValue) && oldValue.length === 0)
-		) {
+		if (Array.isArray(newValue) && isPlainObject(oldValue)) {
 			updateFetchedItems();
 		}
 	});
