@@ -74,7 +74,10 @@ interface Props {
 	includeFunctions?: boolean;
 }
 
-const props = withDefaults(defineProps<Props>(), { depth: undefined, search: undefined, includeFunctions: false });
+const props = withDefaults(defineProps<Props>(), {
+	search: undefined,
+	includeFunctions: false,
+});
 
 defineEmits(['add']);
 

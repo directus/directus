@@ -1,0 +1,13 @@
+// Vitest Snapshot v1
+
+exports[`Mount component 1`] = `
+"<div class=\\"v-slider\\" data-v-18099228=\\"\\">
+  <!--v-if-->
+  <div class=\\"slider\\" data-v-18099228=\\"\\"><input type=\\"range\\" max=\\"100\\" min=\\"0\\" step=\\"1\\" data-v-18099228=\\"\\">
+    <div class=\\"fill\\" data-v-18099228=\\"\\"></div>
+    <!--v-if-->
+    <!--v-if-->
+  </div>
+  <!--v-if-->
+</div>"
+`;

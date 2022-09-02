@@ -1,0 +1,3 @@
+// Vitest Snapshot v1
+
+exports[`Mount component 1`] = `"<span class=\\"v-breadcrumb\\" data-v-61eab8ca=\\"\\"><span class=\\"section\\" data-v-61eab8ca=\\"\\"><!--v-if--><router-link-stub to=\\"hi\\" class=\\"section-link\\" data-v-61eab8ca=\\"\\"></router-link-stub></span><span class=\\"section\\" data-v-61eab8ca=\\"\\"><v-icon-stub name=\\"chevron_right\\" small=\\"\\" data-v-61eab8ca=\\"\\"></v-icon-stub><router-link-stub to=\\"wow\\" class=\\"section-link\\" data-v-61eab8ca=\\"\\"></router-link-stub></span><span class=\\"section disabled\\" data-v-61eab8ca=\\"\\"><v-icon-stub name=\\"chevron_right\\" small=\\"\\" data-v-61eab8ca=\\"\\"></v-icon-stub><span class=\\"section-link\\" data-v-61eab8ca=\\"\\"><!--v-if--> Disabled</span></span></span>"`;
