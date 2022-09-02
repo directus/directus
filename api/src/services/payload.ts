@@ -675,12 +675,11 @@ export class PayloadService {
 					let createPayload: Alterations['create'];
 
 					if (sortField !== null) {
-						const highestOrderNumber: Record<string, any> | undefined = await this.knex
-							.select(sortField)
+						const highestOrderNumber: Record<'max', number | null> | undefined = await this.knex
 							.from(relation.collection)
 							.where({ [relation.field]: parent })
 							.whereNotNull(sortField)
-							.orderBy(sortField, 'desc')
+							.max(sortField)
 							.first();
 
 						createPayload = alterations.create.map((item, index) => {
@@ -688,9 +687,7 @@ export class PayloadService {
 
 							// add sort field value if it is not supplied in the item
 							if (parent !== null && record[sortField] === undefined) {
-								record[sortField] = highestOrderNumber?.[sortField]
-									? highestOrderNumber[sortField] + index + 1
-									: index + 1;
+								record[sortField] = highestOrderNumber?.max ? highestOrderNumber.max + index + 1 : index + 1;
 							}
 
 							return {
