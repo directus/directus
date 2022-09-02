@@ -135,6 +135,7 @@ export default defineConfig({
 			{ find: '@', replacement: path.resolve(__dirname, 'src') },
 			{ find: 'json2csv', replacement: 'json2csv/dist/json2csv.umd.js' },
 		],
+		dedupe: ['vue'],
 	},
 	base: process.env.NODE_ENV === 'production' ? '' : '/admin/',
 	server: {
