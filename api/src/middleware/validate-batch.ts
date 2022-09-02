@@ -12,7 +12,6 @@ export const validateBatch = (scope: 'read' | 'update' | 'delete') =>
 		}
 
 		if (req.method.toLowerCase() !== 'search' && scope !== 'read' && req.singleton) {
-			req.body = {};
 			return next();
 		}
 
