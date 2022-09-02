@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 DIRECTUS_DIR="/directus/api"
 #DIRECTUS_DIR="/tmp"
@@ -14,4 +14,3 @@ mkdir -p ${DIRECTUS_DIR}/interfaces/fields-action
 pushd ${DIRECTUS_DIR}/interfaces/fields-action
 	wget -O index.js https://github.com/utomic-media/directus-extension-field-actions/releases/download/1.1.1/interface-index.js
 popd
-
