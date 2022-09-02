@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/sh -
 
 DIRECTUS_DIR="/directus/api"
 #DIRECTUS_DIR="/tmp"
