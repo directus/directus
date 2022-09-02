@@ -1,4 +1,4 @@
-import VBreadcrumb from '../src/components/v-breadcrumb.vue';
+import VBreadcrumb from './v-breadcrumb.vue';
 document.body.classList.add('light');
 
 export default {

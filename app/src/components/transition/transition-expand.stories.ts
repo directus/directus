@@ -1,4 +1,4 @@
-import TransitionExpand from '../src/components/transition/expand.vue';
+import TransitionExpand from './expand.vue';
 document.body.classList.add('light');
 
 export default {

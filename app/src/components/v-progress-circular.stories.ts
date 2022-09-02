@@ -1,4 +1,4 @@
-import VProgressCircular from '../src/components/v-progress-circular.vue';
+import VProgressCircular from './v-progress-circular.vue';
 document.body.classList.add('light');
 
 export default {

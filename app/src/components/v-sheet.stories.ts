@@ -1,4 +1,4 @@
-import VSheet from '../src/components/v-sheet.vue';
+import VSheet from './v-sheet.vue';
 document.body.classList.add('light');
 
 export default {

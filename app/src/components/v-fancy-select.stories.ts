@@ -1,4 +1,4 @@
-import VFancySelect from '../src/components/v-fancy-select.vue';
+import VFancySelect from './v-fancy-select.vue';
 document.body.classList.add('light');
 
 export default {

@@ -1,4 +1,4 @@
-import VWorkspace from '../src/components/v-workspace.vue';
+import VWorkspace from './v-workspace.vue';
 document.body.classList.add('light');
 
 export default {

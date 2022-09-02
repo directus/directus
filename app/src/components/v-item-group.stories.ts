@@ -1,4 +1,4 @@
-import VItemGroup from '../src/components/v-item-group.vue';
+import VItemGroup from './v-item-group.vue';
 document.body.classList.add('light');
 
 export default {

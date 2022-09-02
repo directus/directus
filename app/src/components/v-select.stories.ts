@@ -1,4 +1,4 @@
-import VSelect from '../src/components/v-select/v-select.vue';
+import VSelect from './v-select/v-select.vue';
 
 document.body.classList.add('light');
 

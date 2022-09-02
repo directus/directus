@@ -1,4 +1,4 @@
-import VDivider from '../src/components/v-divider.vue';
+import VDivider from './v-divider.vue';
 document.body.classList.add('light');
 
 export default {

@@ -1,4 +1,4 @@
-import VEmojiPicker from '../src/components/v-emoji-picker.vue';
+import VEmojiPicker from './v-emoji-picker.vue';
 document.body.classList.add('light');
 
 export default {

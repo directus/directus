@@ -1,4 +1,4 @@
-import TransitionBounce from '../src/components/transition/bounce.vue';
+import TransitionBounce from './bounce.vue';
 document.body.classList.add('light');
 
 export default {

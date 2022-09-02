@@ -1,4 +1,4 @@
-import VMenu from '../src/components/v-menu.vue';
+import VMenu from './v-menu.vue';
 document.body.classList.add('light');
 
 export default {

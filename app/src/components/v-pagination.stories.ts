@@ -1,4 +1,4 @@
-import VPagination from '../src/components/v-pagination.vue';
+import VPagination from './v-pagination.vue';
 document.body.classList.add('light');
 
 export default {

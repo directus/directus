@@ -1,4 +1,4 @@
-import VInfo from '../src/components/v-info.vue';
+import VInfo from './v-info.vue';
 document.body.classList.add('light');
 
 export default {

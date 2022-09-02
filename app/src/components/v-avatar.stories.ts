@@ -1,4 +1,4 @@
-import VAvatar from '../src/components/v-avatar.vue';
+import VAvatar from './v-avatar.vue';
 document.body.classList.add('light');
 
 export default {

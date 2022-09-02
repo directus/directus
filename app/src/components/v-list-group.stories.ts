@@ -1,4 +1,4 @@
-import VListGroup from '../src/components/v-list-group.vue';
+import VListGroup from './v-list-group.vue';
 document.body.classList.add('light');
 
 export default {

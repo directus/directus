@@ -1,4 +1,4 @@
-import VTemplateInput from '../src/components/v-template-input.vue';
+import VTemplateInput from './v-template-input.vue';
 document.body.classList.add('light');
 
 export default {

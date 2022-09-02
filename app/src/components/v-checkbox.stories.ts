@@ -1,4 +1,4 @@
-import VCheckbox from '../src/components/v-checkbox.vue';
+import VCheckbox from './v-checkbox.vue';
 document.body.classList.add('light');
 
 export default {

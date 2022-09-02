@@ -1,4 +1,4 @@
-import VRadio from '../src/components/v-radio.vue';
+import VRadio from './v-radio.vue';
 document.body.classList.add('light');
 
 export default {

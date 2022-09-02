@@ -62,16 +62,16 @@ import VWorkspaceTile from '../src/components/v-workspace-tile.vue';
 // import VForm from './v-form/v-form.vue';
 // import VImage from './v-image.vue';
 
-import Focus from '../../../app/src/directives/focus';
-import Tooltip from '../../../app/src/directives/tooltip';
-import ClickOutside from '../../../app/src/directives/click-outside';
+import Focus from '../src/directives/focus';
+import Tooltip from '../src/directives/tooltip';
+import ClickOutside from '../src/directives/click-outside';
 
 export function register(app) {
-    app.directive('focus', Focus);
-    app.directive('tooltip', Tooltip);
+	app.directive('focus', Focus);
+	app.directive('tooltip', Tooltip);
 	app.directive('click-outside', ClickOutside);
-    
-    app.component('VAvatar', VAvatar);
+
+	app.component('VAvatar', VAvatar);
 	app.component('VBadge', VBadge);
 	app.component('VBreadcrumb', VBreadcrumb);
 	app.component('VButton', VButton);

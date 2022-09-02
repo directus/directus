@@ -1,4 +1,4 @@
-import VWorkspaceTile from '../src/components/v-workspace-tile.vue';
+import VWorkspaceTile from './v-workspace-tile.vue';
 document.body.classList.add('light');
 
 export default {

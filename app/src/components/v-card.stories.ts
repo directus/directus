@@ -1,4 +1,4 @@
-import VCard from '../src/components/v-card.vue';
+import VCard from './v-card.vue';
 document.body.classList.add('light');
 
 export default {

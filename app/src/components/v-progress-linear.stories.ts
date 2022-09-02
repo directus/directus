@@ -1,4 +1,4 @@
-import VProgressLinear from '../src/components/v-progress-linear.vue';
+import VProgressLinear from './v-progress-linear.vue';
 document.body.classList.add('light');
 
 export default {

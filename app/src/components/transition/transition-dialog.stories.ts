@@ -1,4 +1,4 @@
-import TransitionDialog from '../src/components/transition/dialog.vue';
+import TransitionDialog from './dialog.vue';
 document.body.classList.add('light');
 
 export default {

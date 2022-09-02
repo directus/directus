@@ -1,4 +1,4 @@
-import VIconFile from '../src/components/v-icon-file.vue';
+import VIconFile from './v-icon-file.vue';
 document.body.classList.add('light');
 
 export default {

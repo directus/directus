@@ -1,4 +1,4 @@
-import VInput from '../src/components/v-input.vue';
+import VInput from './v-input.vue';
 document.body.classList.add('light');
 
 export default {

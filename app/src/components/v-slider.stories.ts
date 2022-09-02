@@ -1,4 +1,4 @@
-import VSlider from '../src/components/v-slider.vue';
+import VSlider from './v-slider.vue';
 
 document.body.classList.add('light');
 

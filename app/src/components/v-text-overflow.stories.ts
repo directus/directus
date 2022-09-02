@@ -1,4 +1,4 @@
-import VTextOverflow from '../src/components/v-text-overflow.vue';
+import VTextOverflow from './v-text-overflow.vue';
 document.body.classList.add('light');
 
 export default {

@@ -1,4 +1,4 @@
-import VCheckboxTree from '../src/components/v-checkbox-tree/v-checkbox-tree.vue';
+import VCheckboxTree from './v-checkbox-tree/v-checkbox-tree.vue';
 document.body.classList.add('light');
 
 export default {

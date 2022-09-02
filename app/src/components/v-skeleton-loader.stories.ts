@@ -1,4 +1,4 @@
-import VSkeletonLoader from '../src/components/v-skeleton-loader.vue';
+import VSkeletonLoader from './v-skeleton-loader.vue';
 document.body.classList.add('light');
 
 export default {

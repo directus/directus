@@ -1,4 +1,4 @@
-import VOverlay from '../src/components/v-overlay.vue';
+import VOverlay from './v-overlay.vue';
 document.body.classList.add('light');
 
 export default {

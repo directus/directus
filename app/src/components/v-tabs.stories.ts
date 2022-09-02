@@ -1,4 +1,4 @@
-import VTabs from '../src/components/v-tabs.vue';
+import VTabs from './v-tabs.vue';
 document.body.classList.add('light');
 
 export default {

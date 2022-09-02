@@ -1,4 +1,4 @@
-import VNotice from '../src/components/v-notice.vue';
+import VNotice from './v-notice.vue';
 document.body.classList.add('light');
 
 export default {

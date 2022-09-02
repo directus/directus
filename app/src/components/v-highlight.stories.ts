@@ -1,4 +1,4 @@
-import VHighlight from '../src/components/v-highlight.vue';
+import VHighlight from './v-highlight.vue';
 document.body.classList.add('light');
 
 export default {

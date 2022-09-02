@@ -1,4 +1,4 @@
-import VTextarea from '../src/components/v-textarea.vue';
+import VTextarea from './v-textarea.vue';
 document.body.classList.add('light');
 
 export default {

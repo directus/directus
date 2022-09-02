@@ -1,4 +1,4 @@
-import VChip from '../src/components/v-chip.vue';
+import VChip from './v-chip.vue';
 document.body.classList.add('light');
 
 export default {

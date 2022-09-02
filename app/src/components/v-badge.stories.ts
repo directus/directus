@@ -1,4 +1,4 @@
-import VBadge from '../src/components/v-badge.vue';
+import VBadge from './v-badge.vue';
 document.body.classList.add('light');
 
 export default {

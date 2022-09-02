@@ -1,4 +1,4 @@
-import VHover from '../src/components/v-hover.vue';
+import VHover from './v-hover.vue';
 document.body.classList.add('light');
 
 export default {

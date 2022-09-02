@@ -1,4 +1,4 @@
-import VButton from '../src/components/v-button.vue';
+import VButton from './v-button.vue';
 
 document.body.classList.add('light');
 
