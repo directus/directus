@@ -15,3 +15,8 @@ wget -O ${DIRECTUS_DIR}/extensions/interfaces/fields-action/index.js https://git
 mkdir -p ${DIRECTUS_DIR}/extensions/modules
 wget -O /tmp/global-search.zip https://github.com/u12206050/directus-extension-global-search/releases/download/1.0.0/global-search.zip
 unzip -d ${DIRECTUS_DIR}/extensions/modules/ /tmp/global-search.zip
+
+# Install https://github.com/u12206050/directus-extension-api-viewer-module
+
+mkdir -p ${DIRECTUS_DIR}/extensions/modules/api-viewer
+wget -O ${DIRECTUS_DIR}/extensions/modules/api-viewer/index.js https://github.com/u12206050/directus-extension-api-viewer-module/releases/download/1.1.1/index.js
