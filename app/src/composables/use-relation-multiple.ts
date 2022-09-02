@@ -62,13 +62,16 @@ export function useRelationMultiple(
 		},
 	});
 
-	onBeforeRouteUpdate((to, from, next) => {
-		updateFetchedItems();
-		next();
-	});
-
+	// Fetch new items when the value gets changed by the external "save and stay"
+	// We don't want to refresh when we ourself reset the value (when we have no more changes)
 	watch(value, (newValue, oldValue) => {
-		if (Array.isArray(newValue) && isPlainObject(oldValue)) {
+		if (
+			Array.isArray(newValue) &&
+			oldValue &&
+			(('create' in oldValue && Array.isArray(oldValue.create) && oldValue.create.length > 0) ||
+				('update' in oldValue && Array.isArray(oldValue.update) && oldValue.update.length > 0) ||
+				('delete' in oldValue && Array.isArray(oldValue.delete) && oldValue.delete.length > 0))
+		) {
 			updateFetchedItems();
 		}
 	});
