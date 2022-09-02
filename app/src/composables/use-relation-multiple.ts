@@ -129,8 +129,8 @@ export function useRelationMultiple(
 			return updatedItem;
 		});
 
-		const selectedOnPage = selected.value.map((item) => {
-			const edits = fetchedSelectItems.value.find((edit) => {
+		const selectedOnPage = selected.value.map((edit) => {
+			const fetchedItem = fetchedSelectItems.value.find((item) => {
 				switch (relation.value?.type) {
 					case 'o2m':
 						return edit[targetPKField] === item[targetPKField];
@@ -153,9 +153,8 @@ export function useRelationMultiple(
 					}
 				}
 			});
-
-			if (!edits) return item;
-			return merge({}, item, edits);
+			if (!fetchedItem) return edit;
+			return merge({}, fetchedItem, edit);
 		});
 
 		const newItems = getPage(existingItemCount.value + selected.value.length, createdItems.value);
