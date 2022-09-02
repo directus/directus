@@ -41,6 +41,9 @@ RUN npm install -g pnpm
 RUN pnpm install
 RUN pnpm -r build
 
+# Custom Extensions
+RUN pnpm install @wellenplan/directus-extension-duration-display
+
 #COPY ./custom_extensions.sh ./custom_extensions.sh
 RUN chmod +x ./custom_extensions.sh
 RUN ./custom_extensions.sh

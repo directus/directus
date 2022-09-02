@@ -23,4 +23,4 @@ mkdir -p ${DIRECTUS_DIR}/extensions/interfaces/fields-masked
 wget -O ${DIRECTUS_DIR}/extensions/interfaces/fields-masked/index.js https://github.com/dimitrov-adrian/directus-extension-masked-interface/releases/download/v1.1.0/index.js
 
 # Install https://github.com/wellenplan/directus-extension-duration-display
-pnpm install @wellenplan/directus-extension-duration-display
+#pnpm install @wellenplan/directus-extension-duration-display
