@@ -45,6 +45,9 @@ RUN pnpm -r build
 RUN chmod +x ./custom_extensions.sh
 RUN ./custom_extensions.sh
 
+# Not sure why we have this folder here
+RUN rm -rf /directus/api/extensions/modules/__MACOSX || true
+
 WORKDIR /directus/api
 
 CMD ["sh", "-c", "node ./cli.js bootstrap && node ./dist/start.js;"]
