@@ -851,8 +851,6 @@ export class GraphQLService {
 				ReadableCollectionFilterTypes[collection.collection].addFields({
 					_and: [ReadableCollectionFilterTypes[collection.collection]],
 					_or: [ReadableCollectionFilterTypes[collection.collection]],
-					_none: [ReadableCollectionFilterTypes[collection.collection]],
-					_some: [ReadableCollectionFilterTypes[collection.collection]],
 				});
 
 				AggregatedFields[collection.collection] = schemaComposer.createObjectTC({
@@ -1031,8 +1029,10 @@ export class GraphQLService {
 				if (relation.related_collection) {
 					if (SYSTEM_DENY_LIST.includes(relation.related_collection)) continue;
 
-					ReadableCollectionFilterTypes[relation.collection]?.addFields({
+					ReadableCollectionFilterTypes[relation.collection].addFields({
 						[relation.field]: ReadableCollectionFilterTypes[relation.related_collection],
+						_none: [ReadableCollectionFilterTypes[relation.collection]],
+						_some: [ReadableCollectionFilterTypes[relation.collection]],
 					});
 
 					ReadCollectionTypes[relation.collection]?.addFieldArgs(relation.field, {
