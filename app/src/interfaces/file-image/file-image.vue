@@ -35,7 +35,13 @@
 				<v-button v-tooltip="t('zoom')" icon rounded @click="lightboxActive = true">
 					<v-icon name="zoom_in" />
 				</v-button>
-				<v-button v-tooltip="t('download')" icon rounded :href="downloadSrc" :download="image.filename_download">
+				<v-button
+					v-tooltip="t('download')"
+					icon
+					rounded
+					:href="getAssetUrl(image.id, true)"
+					:download="image.filename_download"
+				>
 					<v-icon name="file_download" />
 				</v-button>
 				<v-button v-tooltip="t('edit')" icon rounded @click="editImageDetails = true">
@@ -76,7 +82,7 @@ import api, { addTokenToURL } from '@/api';
 import { useRelationM2O } from '@/composables/use-relation-m2o';
 import { RelationQuerySingle, useRelationSingle } from '@/composables/use-relation-single';
 import { formatFilesize } from '@/utils/format-filesize';
-import { getRootPath } from '@/utils/get-root-path';
+import { getAssetUrl } from '@/utils/get-asset-url';
 import { readableMimeType } from '@/utils/readable-mime-type';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
 import FileLightbox from '@/views/private/components/file-lightbox.vue';
@@ -141,11 +147,6 @@ const src = computed(() => {
 });
 
 const ext = computed(() => (image.value ? readableMimeType(image.value.type, true) : 'unknown'));
-
-const downloadSrc = computed(() => {
-	if (!image.value) return null;
-	return addTokenToURL(getRootPath() + 'assets/' + image.value.id);
-});
 
 const meta = computed(() => {
 	if (!image.value) return null;
