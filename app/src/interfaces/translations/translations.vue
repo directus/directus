@@ -142,15 +142,25 @@ const query = ref<RelationQueryMultiple>({
 	page: 1,
 });
 
-const { create, update, remove, displayItems, loading, fetchedItems } = useRelationMultiple(
+const { create, update, displayItems, loading, fetchedItems, getItemEdits } = useRelationMultiple(
 	value,
 	query,
 	relationInfo,
 	primaryKey
 );
 
-const firstItem = computed(() => getItemWithLang(displayItems.value, firstLang.value));
-const secondItem = computed(() => getItemWithLang(displayItems.value, secondLang.value));
+const firstItem = computed(() => {
+	const item = getItemWithLang(displayItems.value, firstLang.value);
+	if (item === undefined) return undefined;
+
+	return getItemEdits(item);
+});
+const secondItem = computed(() => {
+	const item = getItemWithLang(displayItems.value, secondLang.value);
+	if (item === undefined) return undefined;
+
+	return getItemEdits(item);
+});
 const firstItemInitial = computed(() => getItemWithLang(fetchedItems.value, firstLang.value));
 const secondItemInitial = computed(() => getItemWithLang(fetchedItems.value, secondLang.value));
 
@@ -168,24 +178,31 @@ function updateValue(item: DisplayItem, lang: string | undefined) {
 
 	const itemInfo = getItemWithLang(displayItems.value, lang);
 
-	if (!itemInfo) {
+	if (itemInfo) {
+		const itemUpdates = {
+			...item,
+			[info.junctionField.field]: {
+				[info.relatedPrimaryKeyField.field]: lang,
+			},
+			$type: itemInfo?.$type,
+			$index: itemInfo?.$index,
+			$edits: itemInfo?.$edits,
+		};
+
+		if (itemInfo[info.junctionPrimaryKeyField.field] !== undefined) {
+			itemUpdates[info.junctionPrimaryKeyField.field] = itemInfo[info.junctionPrimaryKeyField.field];
+		} else {
+			itemUpdates[info.reverseJunctionField.field] = primaryKey.value;
+		}
+
+		update(itemUpdates);
+	} else {
 		create({
 			...item,
 			[info.junctionField.field]: {
 				[info.relatedPrimaryKeyField.field]: lang,
 			},
 		});
-		return;
-	}
-
-	if (Object.keys(item).some((key) => ![info.junctionField.field, '$type', '$index'].includes(key))) {
-		update({
-			...item,
-			$type: itemInfo?.$type,
-			$index: itemInfo?.$index,
-		});
-	} else {
-		remove(item);
 	}
 }
 
