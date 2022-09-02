@@ -564,10 +564,19 @@ export function useRelationMultiple(
 
 				const deepLevelKeys = Object.keys(item[relation.value.junctionField.field]);
 
-				return (
+				if (
 					topLevelKeys.length === 2 &&
 					topLevelKeys.includes(relation.value.junctionField.field) &&
 					topLevelKeys.includes(relation.value.junctionPrimaryKeyField.field) &&
+					deepLevelKeys.length === 1
+				)
+					return true;
+
+				return (
+					topLevelKeys.length === 3 &&
+					topLevelKeys.includes(relation.value.junctionField.field) &&
+					topLevelKeys.includes(relation.value.junctionPrimaryKeyField.field) &&
+					topLevelKeys.includes(relation.value.collectionField.field) &&
 					deepLevelKeys.length === 1
 				);
 			}
