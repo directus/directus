@@ -166,6 +166,7 @@ export function useRelationMultiple(
 		const sortField = relation.value.sortField;
 
 		if ((previewQuery.value.limit > 0 && totalItemCount.value > previewQuery.value.limit) || !sortField) return items;
+
 		return items.sort((a, b) => {
 			return a[sortField] - b[sortField];
 		});
