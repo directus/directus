@@ -295,6 +295,8 @@ next: 下一步
 field_name: 字段名
 translations: 翻译
 no_translations: 无翻译
+left_to_right: 从左到右
+right_to_left: 从右到左
 note: 注释
 enter_a_value: 请输入值...
 enter_a_placeholder: 输入占位符...
@@ -479,6 +481,7 @@ creating_items: 创建条目
 enable_create_button: 启用创建按钮
 selecting_items: 选择条目
 enable_select_button: 启用选择按钮
+allow_duplicates: 允许重复项
 comments: 注释
 no_comments: 暂无注释
 click_to_expand: 单击展开
@@ -1138,6 +1141,7 @@ fields:
     transformations_none: 禁用转换
     transformations_presets: 限制转换到下面预设
     image_editor: 图像编辑器
+    custom_aspect_ratios: 自定义长宽比
   directus_shares:
     name: 名称
     role: 角色
@@ -1406,6 +1410,10 @@ report_error: 报告错误
 start: 开始
 table: 表
 list: 列表
+item_link: 项目链接
+show_link_to_item: 显示项目链接
+navigate_to_item: 导航到项目
+remove_item: 删除项目
 interfaces:
   filter:
     name: 筛选
