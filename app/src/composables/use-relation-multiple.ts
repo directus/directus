@@ -7,6 +7,7 @@ import { Filter, Item } from '@directus/shared/types';
 import { RelationM2A } from '@/composables/use-relation-m2a';
 import { RelationM2M } from '@/composables/use-relation-m2m';
 import { RelationO2M } from '@/composables/use-relation-o2m';
+import { onBeforeRouteUpdate } from 'vue-router';
 
 export type RelationQueryMultiple = {
 	page: number;
@@ -40,7 +41,7 @@ export function useRelationMultiple(
 	const fetchedItems = ref<Record<string, any>[]>([]);
 	const existingItemCount = ref(0);
 
-	const { cleanItem, getPage, localDelete, getItemEdits } = useUtil();
+	const { cleanItem, getPage, localDelete, getItemEdits, isEmpty } = useUtil();
 
 	const _value = computed<ChangesItem>({
 		get() {
@@ -53,8 +54,16 @@ export function useRelationMultiple(
 			return value.value as ChangesItem;
 		},
 		set(newValue) {
+			if (newValue.create.length === 0 && newValue.update.length === 0 && newValue.delete.length === 0) {
+				value.value = undefined;
+				return;
+			}
 			value.value = newValue;
 		},
+	});
+
+	onBeforeRouteUpdate((to, from, next) => {
+		next();
 	});
 
 	watch(value, (newValue, oldValue) => {
@@ -210,10 +219,12 @@ export function useRelationMultiple(
 				} else if (item.$type === 'created') {
 					target.value.create[item.$index] = cleanItem(item);
 				} else if (item.$type === 'updated') {
-					target.value.update[item.$index] = cleanItem(item);
+					if (isEmpty(item)) target.value.update.splice(item.$index, 1);
+					else target.value.update[item.$index] = cleanItem(item);
 				} else if (item.$type === 'deleted') {
 					if (item.$edits !== undefined) {
-						target.value.update[item.$edits] = cleanItem(item);
+						if (isEmpty(item)) target.value.update.splice(item.$index, 1);
+						else target.value.update[item.$edits] = cleanItem(item);
 					} else {
 						target.value.update.push(cleanItem(item));
 					}
@@ -526,6 +537,44 @@ export function useRelationMultiple(
 			}, {} as DisplayItem);
 		}
 
+		/**
+		 * Returns if the item doesn't contain any actual changes and can be removed from the changes.
+		 */
+		function isEmpty(item: DisplayItem): boolean {
+			if (item.$type !== 'updated' && item.$edits === undefined) return false;
+
+			const topLevelKeys = Object.keys(item).filter((key) => !key.startsWith('$'));
+
+			if (relation.value?.type === 'o2m') {
+				return topLevelKeys.length === 1 && topLevelKeys[0] === relation.value.relatedPrimaryKeyField.field;
+			} else if (relation.value?.type === 'm2m') {
+				if (topLevelKeys.length === 1 && topLevelKeys[0] === relation.value.junctionPrimaryKeyField.field) return true;
+
+				const deepLevelKeys = Object.keys(item[relation.value.junctionField.field]);
+
+				return (
+					topLevelKeys.length === 2 &&
+					topLevelKeys.includes(relation.value.junctionField.field) &&
+					topLevelKeys.includes(relation.value.junctionPrimaryKeyField.field) &&
+					deepLevelKeys.length === 1 &&
+					deepLevelKeys[0] === relation.value.relatedPrimaryKeyField.field
+				);
+			} else if (relation.value?.type === 'm2a') {
+				if (topLevelKeys.length === 1 && topLevelKeys[0] === relation.value.junctionPrimaryKeyField.field) return true;
+
+				const deepLevelKeys = Object.keys(item[relation.value.junctionField.field]);
+
+				return (
+					topLevelKeys.length === 2 &&
+					topLevelKeys.includes(relation.value.junctionField.field) &&
+					topLevelKeys.includes(relation.value.junctionPrimaryKeyField.field) &&
+					deepLevelKeys.length === 1
+				);
+			}
+
+			return false;
+		}
+
 		function localDelete(item: DisplayItem) {
 			return item.$type !== undefined && (item.$type !== 'updated' || isItemSelected(item));
 		}
@@ -551,7 +600,7 @@ export function useRelationMultiple(
 						$type: 'updated',
 						$index: item.$index,
 					};
-				else if (item.$type === 'deleted' && item.$edits)
+				else if (item.$type === 'deleted' && item.$edits !== undefined)
 					return {
 						..._value.value.update[item.$edits],
 						$type: 'deleted',
@@ -562,6 +611,6 @@ export function useRelationMultiple(
 			return {};
 		}
 
-		return { cleanItem, getPage, localDelete, getItemEdits };
+		return { cleanItem, getPage, localDelete, getItemEdits, isEmpty };
 	}
 }
