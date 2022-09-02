@@ -598,6 +598,7 @@ importers:
       '@storybook/client-api': 6.5.10
       '@storybook/client-logger': 6.5.10
       '@storybook/core-common': 6.5.10
+      '@storybook/node-logger': '>=6.4.3'
       '@storybook/vue3': 6.5.10
       '@types/diacritics': 1.3.1
       '@types/lodash': ^4.14.182
@@ -628,13 +629,6 @@ importers:
       vue-router: 4.0.15
       vue-tsc: ^0.34.5
       webpack: 5.72.0
-    dependencies:
-      lodash: 4.17.21
-      micromustache: 8.0.3
-      vite: 2.9.9
-      vue: 3.2.37
-      vue-i18n: 9.1.10_vue@3.2.37
-      vue-router: 4.0.15_vue@3.2.37
     devDependencies:
       '@babel/core': 7.18.6
       '@babel/preset-env': 7.16.11_@babel+core@7.18.6
@@ -651,10 +645,11 @@ importers:
       '@storybook/addon-links': 6.5.10_wcqkhtmu7mswc6yz4uyexck3ty
       '@storybook/addon-measure': 6.5.10_wcqkhtmu7mswc6yz4uyexck3ty
       '@storybook/addon-outline': 6.5.10_wcqkhtmu7mswc6yz4uyexck3ty
-      '@storybook/builder-vite': 0.1.41_p5cdmbnbwksbdiptqbtw3aheee
+      '@storybook/builder-vite': 0.1.41_q5qpfpd6wazlyah6kjm3fsv6sm
       '@storybook/client-api': 6.5.10_wcqkhtmu7mswc6yz4uyexck3ty
       '@storybook/client-logger': 6.5.10
       '@storybook/core-common': 6.5.10_sk7tiidch4ak35d54sr6tbdsmy
+      '@storybook/node-logger': 6.5.10
       '@storybook/vue3': 6.5.10_ozji4kp7bdtbjefnvy5lbyf6p4
       '@types/diacritics': 1.3.1
       '@types/lodash': 4.14.182
@@ -667,6 +662,8 @@ importers:
       caret-pos: 2.0.0
       css-loader: 6.7.1_webpack@5.72.0
       diacritics: 1.3.0
+      lodash: 4.17.21
+      micromustache: 8.0.3
       nanoid: 3.1.30
       npm-run-all: 4.1.5
       react: 16.14.0
@@ -675,8 +672,12 @@ importers:
       sass-loader: 13.0.2_webpack@5.72.0
       style-loader: 3.3.1_webpack@5.72.0
       typescript: 4.5.2
+      vite: 2.9.9
       vitest: 0.18.1_4dctpwuq6wm6e2nilfwb6wz7rm
+      vue: 3.2.37
+      vue-i18n: 9.1.10_vue@3.2.37
       vue-loader: 16.8.3_6oodguqmvfajneapkegdgbg6h4
+      vue-router: 4.0.15_vue@3.2.37
       vue-tsc: 0.34.17_typescript@4.5.2
       webpack: 5.72.0
 
@@ -5872,7 +5873,7 @@ packages:
       util-deprecate: 1.0.2
     dev: true
 
-  /@storybook/builder-vite/0.1.41_p5cdmbnbwksbdiptqbtw3aheee:
+  /@storybook/builder-vite/0.1.41_q5qpfpd6wazlyah6kjm3fsv6sm:
     resolution:
       { integrity: sha512-h/7AgEUfSuVexTD6LuJ6BCNu+FSo/+IKYBQ1O3TyF2BEgcob5/BGrx9QcwM0LJCF44L1zNKaxkKpCZs9p+LRRA== }
     peerDependencies:
@@ -5887,6 +5888,7 @@ packages:
       '@joshwooding/vite-plugin-react-docgen-typescript': 0.0.4_v7l6wjf37eg7lmzcxn4fl266ma
       '@storybook/core-common': 6.5.10_sk7tiidch4ak35d54sr6tbdsmy
       '@storybook/mdx1-csf': 0.0.4_v2wnvfwwhgapxbqqkw3slx2zde
+      '@storybook/node-logger': 6.5.10
       '@storybook/source-loader': 6.5.10_wcqkhtmu7mswc6yz4uyexck3ty
       '@vitejs/plugin-react': 1.3.2
       ast-types: 0.14.2
@@ -8074,6 +8076,7 @@ packages:
       { integrity: sha512-/7WRafBOshOc6m3F7plwzPeCu/RCVv9uMpOwa/5PiY1Zz+WLVRWiy0MYKwmg19KBdGtFWsmZ4cD+LOdVPcs52A== }
     dependencies:
       '@vue/shared': 3.2.37
+    dev: true
 
   /@vue/runtime-core/3.2.36:
     resolution:
@@ -8089,6 +8092,7 @@ packages:
     dependencies:
       '@vue/reactivity': 3.2.37
       '@vue/shared': 3.2.37
+    dev: true
 
   /@vue/runtime-dom/3.2.36:
     resolution:
@@ -8106,6 +8110,7 @@ packages:
       '@vue/runtime-core': 3.2.37
       '@vue/shared': 3.2.37
       csstype: 2.6.20
+    dev: true
 
   /@vue/server-renderer/3.2.36_vue@3.2.36:
     resolution:
@@ -8127,6 +8132,7 @@ packages:
       '@vue/compiler-ssr': 3.2.37
       '@vue/shared': 3.2.37
       vue: 3.2.37
+    dev: true
 
   /@vue/shared/3.2.31:
     resolution:
@@ -12097,6 +12103,7 @@ packages:
     cpu: [x64]
     os: [android]
     requiresBuild: true
+    dev: true
     optional: true
 
   /esbuild-android-arm64/0.14.49:
@@ -12106,6 +12113,7 @@ packages:
     cpu: [arm64]
     os: [android]
     requiresBuild: true
+    dev: true
     optional: true
 
   /esbuild-darwin-64/0.14.49:
@@ -12115,6 +12123,7 @@ packages:
     cpu: [x64]
     os: [darwin]
     requiresBuild: true
+    dev: true
     optional: true
 
   /esbuild-darwin-arm64/0.14.49:
@@ -12124,6 +12133,7 @@ packages:
     cpu: [arm64]
     os: [darwin]
     requiresBuild: true
+    dev: true
     optional: true
 
   /esbuild-freebsd-64/0.14.49:
@@ -12133,6 +12143,7 @@ packages:
     cpu: [x64]
     os: [freebsd]
     requiresBuild: true
+    dev: true
     optional: true
 
   /esbuild-freebsd-arm64/0.14.49:
@@ -12142,6 +12153,7 @@ packages:
     cpu: [arm64]
     os: [freebsd]
     requiresBuild: true
+    dev: true
     optional: true
 
   /esbuild-linux-32/0.14.49:
@@ -12151,6 +12163,7 @@ packages:
     cpu: [ia32]
     os: [linux]
     requiresBuild: true
+    dev: true
     optional: true
 
   /esbuild-linux-64/0.14.49:
@@ -12160,6 +12173,7 @@ packages:
     cpu: [x64]
     os: [linux]
     requiresBuild: true
+    dev: true
     optional: true
 
   /esbuild-linux-arm/0.14.49:
@@ -12169,6 +12183,7 @@ packages:
     cpu: [arm]
     os: [linux]
     requiresBuild: true
+    dev: true
     optional: true
 
   /esbuild-linux-arm64/0.14.49:
@@ -12178,6 +12193,7 @@ packages:
     cpu: [arm64]
     os: [linux]
     requiresBuild: true
+    dev: true
     optional: true
 
   /esbuild-linux-mips64le/0.14.49:
@@ -12187,6 +12203,7 @@ packages:
     cpu: [mips64el]
     os: [linux]
     requiresBuild: true
+    dev: true
     optional: true
 
   /esbuild-linux-ppc64le/0.14.49:
@@ -12196,6 +12213,7 @@ packages:
     cpu: [ppc64]
     os: [linux]
     requiresBuild: true
+    dev: true
     optional: true
 
   /esbuild-linux-riscv64/0.14.49:
@@ -12205,6 +12223,7 @@ packages:
     cpu: [riscv64]
     os: [linux]
     requiresBuild: true
+    dev: true
     optional: true
 
   /esbuild-linux-s390x/0.14.49:
@@ -12214,6 +12233,7 @@ packages:
     cpu: [s390x]
     os: [linux]
     requiresBuild: true
+    dev: true
     optional: true
 
   /esbuild-netbsd-64/0.14.49:
@@ -12223,6 +12243,7 @@ packages:
     cpu: [x64]
     os: [netbsd]
     requiresBuild: true
+    dev: true
     optional: true
 
   /esbuild-openbsd-64/0.14.49:
@@ -12232,6 +12253,7 @@ packages:
     cpu: [x64]
     os: [openbsd]
     requiresBuild: true
+    dev: true
     optional: true
 
   /esbuild-sunos-64/0.14.49:
@@ -12241,6 +12263,7 @@ packages:
     cpu: [x64]
     os: [sunos]
     requiresBuild: true
+    dev: true
     optional: true
 
   /esbuild-windows-32/0.14.49:
@@ -12250,6 +12273,7 @@ packages:
     cpu: [ia32]
     os: [win32]
     requiresBuild: true
+    dev: true
     optional: true
 
   /esbuild-windows-64/0.14.49:
@@ -12259,6 +12283,7 @@ packages:
     cpu: [x64]
     os: [win32]
     requiresBuild: true
+    dev: true
     optional: true
 
   /esbuild-windows-arm64/0.14.49:
@@ -12268,6 +12293,7 @@ packages:
     cpu: [arm64]
     os: [win32]
     requiresBuild: true
+    dev: true
     optional: true
 
   /esbuild/0.14.49:
@@ -12297,6 +12323,7 @@ packages:
       esbuild-windows-32: 0.14.49
       esbuild-windows-64: 0.14.49
       esbuild-windows-arm64: 0.14.49
+    dev: true
 
   /escalade/3.1.1:
     resolution:
@@ -16672,8 +16699,8 @@ packages:
     engines: { node: '>= 0.6' }
     hasBin: true
     dependencies:
-      chalk: 2.4.2
       JSV: 4.0.2
+      chalk: 2.4.2
       underscore: 1.13.4
     dev: true
 
@@ -24137,6 +24164,7 @@ packages:
       rollup: 2.77.0
     optionalDependencies:
       fsevents: 2.3.2
+    dev: true
 
   /vite/2.9.9_sass@1.43.4:
     resolution:
@@ -24461,6 +24489,7 @@ packages:
       '@intlify/vue-devtools': 9.1.10
       '@vue/devtools-api': 6.2.1
       vue: 3.2.36
+    dev: false
 
   /vue-i18n/9.1.10_vue@3.2.37:
     resolution:
@@ -24474,6 +24503,7 @@ packages:
       '@intlify/vue-devtools': 9.1.10
       '@vue/devtools-api': 6.2.1
       vue: 3.2.37
+    dev: true
 
   /vue-inbrowser-compiler-independent-utils/4.52.0_vue@3.2.37:
     resolution:
@@ -24513,6 +24543,7 @@ packages:
     dependencies:
       '@vue/devtools-api': 6.2.1
       vue: 3.2.36
+    dev: false
 
   /vue-router/4.0.15_vue@3.2.37:
     resolution:
@@ -24522,6 +24553,7 @@ packages:
     dependencies:
       '@vue/devtools-api': 6.2.1
       vue: 3.2.37
+    dev: true
 
   /vue-tsc/0.34.17_typescript@4.5.2:
     resolution:
@@ -24554,6 +24586,7 @@ packages:
       '@vue/runtime-dom': 3.2.37
       '@vue/server-renderer': 3.2.37_vue@3.2.37
       '@vue/shared': 3.2.37
+    dev: true
 
   /vuedraggable/4.1.0_vue@3.2.37:
     resolution:
