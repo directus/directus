@@ -1,7 +1,7 @@
 import api from '@/api';
 import { getEndpoint } from '@directus/shared/utils';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { clamp, cloneDeep, isEqual, merge, isPlainObject } from 'lodash';
+import { clamp, cloneDeep, isEqual, merge } from 'lodash';
 import { computed, ref, Ref, watch } from 'vue';
 import { Filter, Item } from '@directus/shared/types';
 import { RelationM2A } from '@/composables/use-relation-m2a';
@@ -40,7 +40,7 @@ export function useRelationMultiple(
 	const fetchedItems = ref<Record<string, any>[]>([]);
 	const existingItemCount = ref(0);
 
-	const { cleanItem, getPage, localDelete } = useUtil();
+	const { cleanItem, getPage, localDelete, getItemEdits, isEmpty } = useUtil();
 
 	const _value = computed<ChangesItem>({
 		get() {
@@ -53,18 +53,25 @@ export function useRelationMultiple(
 			return value.value as ChangesItem;
 		},
 		set(newValue) {
+			if (newValue.create.length === 0 && newValue.update.length === 0 && newValue.delete.length === 0) {
+				value.value = undefined;
+				return;
+			}
 			value.value = newValue;
 		},
 	});
 
+	// Fetch new items when the value gets changed by the external "save and stay"
+	// We don't want to refresh when we ourself reset the value (when we have no more changes)
 	watch(value, (newValue, oldValue) => {
 		if (
-			(Array.isArray(newValue) && isPlainObject(oldValue)) ||
-			(Array.isArray(newValue) && Array.isArray(oldValue) && oldValue.length === 0)
+			Array.isArray(newValue) &&
+			oldValue &&
+			(('create' in oldValue && Array.isArray(oldValue.create) && oldValue.create.length > 0) ||
+				('update' in oldValue && Array.isArray(oldValue.update) && oldValue.update.length > 0) ||
+				('delete' in oldValue && Array.isArray(oldValue.delete) && oldValue.delete.length > 0))
 		) {
 			updateFetchedItems();
-		} else if (newValue === null) {
-			clear();
 		}
 	});
 
@@ -107,6 +114,7 @@ export function useRelationMultiple(
 			if (editsIndex !== -1) {
 				merge(
 					updatedItem,
+					cloneDeep(item),
 					{ $type: 'updated', $index: editsIndex, $edits: editsIndex },
 					_value.value.update[editsIndex]
 				);
@@ -121,8 +129,8 @@ export function useRelationMultiple(
 			return updatedItem;
 		});
 
-		const selectedOnPage = selected.value.map((item) => {
-			const edits = fetchedSelectItems.value.find((edit) => {
+		const selectedOnPage = selected.value.map((edit) => {
+			const fetchedItem = fetchedSelectItems.value.find((item) => {
 				switch (relation.value?.type) {
 					case 'o2m':
 						return edit[targetPKField] === item[targetPKField];
@@ -145,9 +153,8 @@ export function useRelationMultiple(
 					}
 				}
 			});
-
-			if (!edits) return item;
-			return merge({}, item, edits);
+			if (!fetchedItem) return edit;
+			return merge({}, fetchedItem, edit);
 		});
 
 		const newItems = getPage(existingItemCount.value + selected.value.length, createdItems.value);
@@ -172,7 +179,7 @@ export function useRelationMultiple(
 		});
 	});
 
-	const { create, remove, select, update, clear } = useActions(_value);
+	const { create, remove, select, update } = useActions(_value);
 
 	return {
 		create,
@@ -189,10 +196,11 @@ export function useRelationMultiple(
 		cleanItem,
 		isItemSelected,
 		localDelete,
+		getItemEdits,
 	};
 
 	function useActions(target: Ref<Item>) {
-		return { create, update, remove, select, clear };
+		return { create, update, remove, select };
 
 		function create(...items: Record<string, any>[]) {
 			for (const item of items) {
@@ -210,10 +218,12 @@ export function useRelationMultiple(
 				} else if (item.$type === 'created') {
 					target.value.create[item.$index] = cleanItem(item);
 				} else if (item.$type === 'updated') {
-					target.value.update[item.$index] = cleanItem(item);
+					if (isEmpty(item)) target.value.update.splice(item.$index, 1);
+					else target.value.update[item.$index] = cleanItem(item);
 				} else if (item.$type === 'deleted') {
 					if (item.$edits !== undefined) {
-						target.value.update[item.$edits] = cleanItem(item);
+						if (isEmpty(item)) target.value.update.splice(item.$index, 1);
+						else target.value.update[item.$edits] = cleanItem(item);
 					} else {
 						target.value.update.push(cleanItem(item));
 					}
@@ -284,28 +294,8 @@ export function useRelationMultiple(
 			else create(...selected);
 		}
 
-		function clear() {
-			if (!relation.value) return;
-
-			target.value.create = [];
-			target.value.update = [];
-			target.value.delete = [];
-
-			reset();
-		}
-
-		function reset() {
-			value.value = itemId.value === '+' ? undefined : [];
-			existingItemCount.value = 0;
-			fetchedItems.value = [];
-		}
-
 		function updateValue() {
 			target.value = cloneDeep(target.value);
-
-			if (target.value.create.length === 0 && target.value.update.length === 0 && target.value.delete.length === 0) {
-				reset();
-			}
 		}
 	}
 
@@ -539,13 +529,58 @@ export function useRelationMultiple(
 	}
 
 	function useUtil() {
-		return { cleanItem, getPage, localDelete };
-
 		function cleanItem(item: DisplayItem) {
 			return Object.entries(item).reduce((acc, [key, value]) => {
 				if (!key.startsWith('$')) acc[key] = value;
 				return acc;
 			}, {} as DisplayItem);
+		}
+
+		/**
+		 * Returns if the item doesn't contain any actual changes and can be removed from the changes.
+		 */
+		function isEmpty(item: DisplayItem): boolean {
+			if (item.$type !== 'updated' && item.$edits === undefined) return false;
+
+			const topLevelKeys = Object.keys(item).filter((key) => !key.startsWith('$'));
+
+			if (relation.value?.type === 'o2m') {
+				return topLevelKeys.length === 1 && topLevelKeys[0] === relation.value.relatedPrimaryKeyField.field;
+			} else if (relation.value?.type === 'm2m') {
+				if (topLevelKeys.length === 1 && topLevelKeys[0] === relation.value.junctionPrimaryKeyField.field) return true;
+
+				const deepLevelKeys = Object.keys(item[relation.value.junctionField.field]);
+
+				return (
+					topLevelKeys.length === 2 &&
+					topLevelKeys.includes(relation.value.junctionField.field) &&
+					topLevelKeys.includes(relation.value.junctionPrimaryKeyField.field) &&
+					deepLevelKeys.length === 1 &&
+					deepLevelKeys[0] === relation.value.relatedPrimaryKeyField.field
+				);
+			} else if (relation.value?.type === 'm2a') {
+				if (topLevelKeys.length === 1 && topLevelKeys[0] === relation.value.junctionPrimaryKeyField.field) return true;
+
+				const deepLevelKeys = Object.keys(item[relation.value.junctionField.field]);
+
+				if (
+					topLevelKeys.length === 2 &&
+					topLevelKeys.includes(relation.value.junctionField.field) &&
+					topLevelKeys.includes(relation.value.junctionPrimaryKeyField.field) &&
+					deepLevelKeys.length === 1
+				)
+					return true;
+
+				return (
+					topLevelKeys.length === 3 &&
+					topLevelKeys.includes(relation.value.junctionField.field) &&
+					topLevelKeys.includes(relation.value.junctionPrimaryKeyField.field) &&
+					topLevelKeys.includes(relation.value.collectionField.field) &&
+					deepLevelKeys.length === 1
+				);
+			}
+
+			return false;
 		}
 
 		function localDelete(item: DisplayItem) {
@@ -558,5 +593,32 @@ export function useRelationMultiple(
 			const end = clamp(previewQuery.value.page * previewQuery.value.limit - offset, 0, items.length);
 			return items.slice(start, end);
 		}
+
+		function getItemEdits(item: DisplayItem) {
+			if ('$type' in item && item.$index !== undefined) {
+				if (item.$type === 'created')
+					return {
+						..._value.value.create[item.$index],
+						$type: 'created',
+						$index: item.$index,
+					};
+				else if (item.$type === 'updated')
+					return {
+						..._value.value.update[item.$index],
+						$type: 'updated',
+						$index: item.$index,
+					};
+				else if (item.$type === 'deleted' && item.$edits !== undefined)
+					return {
+						..._value.value.update[item.$edits],
+						$type: 'deleted',
+						$index: item.$index,
+						$edits: item.$edits,
+					};
+			}
+			return {};
+		}
+
+		return { cleanItem, getPage, localDelete, getItemEdits, isEmpty };
 	}
 }

@@ -39,7 +39,16 @@ test('Short-circuits when authenticate filter is used', async () => {
 test('Uses default public accountability when no token is given', async () => {
 	const req = {
 		ip: '127.0.0.1',
-		get: jest.fn((string) => (string === 'user-agent' ? 'fake-user-agent' : null)),
+		get: jest.fn((string) => {
+			switch (string) {
+				case 'user-agent':
+					return 'fake-user-agent';
+				case 'origin':
+					return 'fake-origin';
+				default:
+					return null;
+			}
+		}),
 	};
 
 	const res = {};
@@ -56,6 +65,7 @@ test('Uses default public accountability when no token is given', async () => {
 		app: false,
 		ip: '127.0.0.1',
 		userAgent: 'fake-user-agent',
+		origin: 'fake-origin',
 	});
 
 	expect(next).toHaveBeenCalledTimes(1);
@@ -87,7 +97,16 @@ test('Sets accountability to payload contents if valid token is passed', async (
 
 	const req = {
 		ip: '127.0.0.1',
-		get: jest.fn((string) => (string === 'user-agent' ? 'fake-user-agent' : null)),
+		get: jest.fn((string) => {
+			switch (string) {
+				case 'user-agent':
+					return 'fake-user-agent';
+				case 'origin':
+					return 'fake-origin';
+				default:
+					return null;
+			}
+		}),
 		token,
 	};
 
@@ -105,6 +124,7 @@ test('Sets accountability to payload contents if valid token is passed', async (
 		share_scope: shareScope,
 		ip: '127.0.0.1',
 		userAgent: 'fake-user-agent',
+		origin: 'fake-origin',
 	});
 
 	expect(next).toHaveBeenCalledTimes(1);
@@ -136,6 +156,7 @@ test('Sets accountability to payload contents if valid token is passed', async (
 		share_scope: shareScope,
 		ip: '127.0.0.1',
 		userAgent: 'fake-user-agent',
+		origin: 'fake-origin',
 	});
 
 	expect(next).toHaveBeenCalledTimes(1);
@@ -152,7 +173,16 @@ test('Throws InvalidCredentialsException when static token is used, but user doe
 
 	const req = {
 		ip: '127.0.0.1',
-		get: jest.fn((string) => (string === 'user-agent' ? 'fake-user-agent' : null)),
+		get: jest.fn((string) => {
+			switch (string) {
+				case 'user-agent':
+					return 'fake-user-agent';
+				case 'origin':
+					return 'fake-origin';
+				default:
+					return null;
+			}
+		}),
 		token: 'static-token',
 	};
 
@@ -166,7 +196,16 @@ test('Throws InvalidCredentialsException when static token is used, but user doe
 test('Sets accountability to user information when static token is used', async () => {
 	const req = {
 		ip: '127.0.0.1',
-		get: jest.fn((string) => (string === 'user-agent' ? 'fake-user-agent' : null)),
+		get: jest.fn((string) => {
+			switch (string) {
+				case 'user-agent':
+					return 'fake-user-agent';
+				case 'origin':
+					return 'fake-origin';
+				default:
+					return null;
+			}
+		}),
 		token: 'static-token',
 	};
 
@@ -182,6 +221,7 @@ test('Sets accountability to user information when static token is used', async 
 		admin: testUser.admin_access,
 		ip: '127.0.0.1',
 		userAgent: 'fake-user-agent',
+		origin: 'fake-origin',
 	};
 
 	jest.mocked(getDatabase).mockReturnValue({

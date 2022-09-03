@@ -130,8 +130,8 @@ validationError:
   lte: Giá trị phải nhỏ hơn hoặc bằng {valid}
   empty: Dữ liệu phải để trống
   nempty: Dữ liệu không thể để trống
-  null: Dữ liệu phải là null
-  nnull: Dữ liệu không thể là null
+  null: Dữ liệu phải để rỗng
+  nnull: Dữ liệu không thể để rỗng
   required: Dữ liệu là bắt buộc
   unique: Giá trị phải là duy nhất
   regex: Giá trị không có định dạng đúng
@@ -141,6 +141,7 @@ use_custom: Chọn Lọc
 nullable: Có thể rỗng
 allow_null_value: Cho phép NULL
 allow_multiple: Cho phép nhiều
+enter_value_to_replace_nulls: Vui lòng nhập một giá trị mới để thay thế giá trị NULL hiện có trong trường này.
 field_standard: Tiêu chuẩn
 field_presentation: Trình Bày và Bí Danh
 field_file: Tập tin đơn
@@ -210,6 +211,8 @@ geometry.MultiPoint: MultiPoint
 not_available_for_type: Không khả dụng đối với Kiểu này
 create_translations: Tạo Các Bản Dịch
 auto_refresh: Tự động Làm mới
+no_refresh: Không tự làm mới
+refresh_interval_seconds: Mỗi giây | Mỗi {seconds} giây
 refresh_interval_minutes: Mỗi phút | Mỗi {minutes} phút
 auto_generate: Tự khởi tạo
 this_will_auto_setup_fields_relations: Các trường và mối quan hệ bắt buộc sẽ được tự động tạo ra.
@@ -389,6 +392,7 @@ no_items_copy: Chưa có bản ghi nào trong danh mục này.
 file_count: 'Không Có Tập Tin | Có Một Tập Tin | {count} Tập Tin'
 no_files_copy: Không có tập tin nào ở đây.
 user_count: 'Không Có Người Dùng | Có Một Người Dùng | {count} Người Dùng'
+activity_log: Nhật ký hoạt động
 all_items: Tất cả các mục
 csv: CSV
 no_collections: Chưa có Bảng nào
@@ -457,8 +461,9 @@ errors:
   ITEM_NOT_FOUND: Bản ghi không tồn tại
   ROUTE_NOT_FOUND: Không tìm thấy
   USER_SUSPENDED: Tài khoản bị vô hiệu
+  CONTAINS_NULL_VALUES: Trường chứa giá trị rỗng
   INTERNAL_SERVER_ERROR: Lỗi Bất Thường
-  NOT_NULL_VIOLATION: Dữ liệu không thể là null
+  NOT_NULL_VIOLATION: Dữ liệu không thể để rỗng
   ILLEGAL_ASSET_TRANSFORMATION: Nguồn ảnh quá lớn để xem trước
   UNKNOWN: Lỗi Bất Thường
 security: Bảo mật
@@ -520,12 +525,19 @@ operators:
   gte: Lớn hơn hoặc bằng
   in: Là một trong
   nin: Không phải là một trong
-  null: Là null
-  nnull: Không bị null
-  contains: Bao gồm
+  null: Là NULL
+  nnull: Không NULL
+  contains: Chứa
   ncontains: Không chứa
-  between: Giữa
+  icontains: Chứa
+  starts_with: Bắt đầu với
+  nstarts_with: Không bắt đầu với
+  ends_with: Kết thúc với
+  nends_with: Không kết thúc với
+  between: Trong khoảng
+  nbetween: Ngoài khoảng
   empty: Bị rỗng
+  nempty: Không rỗng
 loading: Đang tải...
 upload_file_indeterminate: Đang tải tệp lên...
 upload_file_success: Tệp tin được tải lên
@@ -571,6 +583,7 @@ icon_on: Biểu tượng của trạng thái Bật
 icon_off: Biểu tượng của trạng thái Tắt
 label: Nhãn
 flow_name: Tên
+flow_tracking_null: Không theo dõi bất cứ điều gì
 code: Mã nguồn
 dashboard: Bảng điều khiển
 panel: Bảng
@@ -630,8 +643,8 @@ choices: Lựa chọn
 deselect: Bỏ chọn
 deselect_all: Bỏ chọn tất cả
 other: Khác...
-adding_user: Đang thêm người dùng
-unknown_user: Người dùng vô danh
+adding_user: Đã thêm người dùng
+unknown_user: Người dùng không xác định
 creating_in: 'Đang Tạo Bản Ghi {collection} Mới'
 editing_in: 'Chỉnh sửa mục trong {collection}'
 creating_unit: 'Đang tạo {unit}'
@@ -654,6 +667,8 @@ unsaved_changes: Những thay đổi chưa được lưu
 unsaved_changes_copy: Bạn có chắc chắn muốn rời khỏi trang này không?
 discard_changes: Hủy thay đổi
 keep_editing: Tiếp tục chỉnh sửa
+page_help_collections_collection: >-
+  ** Duyệt các mục ** - Liệt kê tất cả các mục trong {collection} mà bạn có quyền truy cập. Tùy chỉnh bố cục, bộ lọc và sắp xếp để điều chỉnh chế độ xem của bạn và thậm chí lưu dấu trang của các cấu hình khác nhau này để truy cập nhanh.
 add_new: Thêm mới
 create_new: Tạo Mới
 all: Tất cả
@@ -663,6 +678,7 @@ batch_delete_confirm: >-
 cancel: Huỷ
 collection: Danh mục
 collections: Danh mục
+content: Nội dung
 fields:
   directus_activity:
     item: Trường khoá chính định danh
@@ -673,6 +689,7 @@ fields:
     comment: Bình luận
     user_agent: Tài khoản người dùng
     ip: Địa chỉ IP
+    revisions: Bản điều chỉnh
   directus_collections:
     collection: Danh mục
     icon: Biểu tượng
@@ -713,7 +730,11 @@ fields:
     theme: Theme
     tfa_secret: Xác thực hai yếu tố
     status: Trạng thái
+    status_draft: Bản nháp
+    status_invited: Mời
     status_active: Kích hoạt
+    status_suspended: Tạm ngưng
+    status_archived: Đã lưu trữ
     role: Phân quyền
     last_access: Truy cập lần cuối
   directus_settings:
@@ -744,8 +765,10 @@ field_options:
     auth_password_policy:
       none_text: Không có - Không khuyến nghị
   directus_activity:
+    login: Đăng nhập
     create: Tạo
     update: Cập nhật
+    delete: Xóa
   directus_collections:
     collection_setup: Cài đặt Bộ sưu tập
     language: Ngôn ngữ
@@ -758,14 +781,21 @@ field_options:
       name_name: Tên
     collections_name: Danh mục
   directus_users:
+    status_dropdown_draft: Bản nháp
+    status_dropdown_invited: Mời
     status_dropdown_active: Kích hoạt
+    status_dropdown_suspended: Tạm ngưng
+    status_dropdown_archived: Đã lưu trữ
   directus_webhooks:
     status_options_active: Kích hoạt
+    status_options_inactive: Không hoạt động
     actions_create: Tạo
     actions_update: Cập nhật
     headers:
       value: Giá trị
 comment: Bình luận
+share_access_not_found_desc: Vui lòng liên hệ với người dùng được ủy quyền của dự án này để yêu cầu quyền truy cập.
+referential_action_set_null: Vô hiệu hóa trường {field}
 continue_label: Tiếp tục
 continue_as: >-
   Đang đăng nhập {name}. Nhấn tiếp tục đề đăng nhập.
@@ -785,10 +815,10 @@ hidden: Ẩn
 icon: Biểu tượng
 info: Thông tin
 junction_collection: Danh mục liên kết
-latency: Đỗ trễ
+latency: Độ trễ
 login: Đăng nhập
 my_activity: Hoạt động cá nhân
-not_authenticated: Chư đăng nhập
+not_authenticated: Chưa xác thực
 options: Tuỳ chọn
 otp: Mật khẩu sử dụng một lần
 password: Mật khẩu
@@ -823,8 +853,10 @@ interfaces:
     code: Mã nguồn
   system-collection:
     collection: Danh mục
+    description: Chọn trong các danh mục hiện có
   system-collections:
     collections: Danh mục
+    description: Chọn trong các danh mục hiện có
   select-color:
     color: Màu sắc
   datetime:
@@ -854,6 +886,7 @@ interfaces:
   input-rich-text-md:
     edit: Sửa
   map:
+    map: Bản đồ
     zoom: Thu phóng
   system-folder:
     folder: Thư mục
@@ -929,6 +962,10 @@ layouts:
     comfortable: Thoải mái
     compact: Thu gọn
     cozy: Khít
+  calendar:
+    calendar: Lịch
+  map:
+    map: Bản đồ
 panels:
   label:
     name: Nhãn
@@ -937,3 +974,4 @@ operations:
     recipient: Người dùng
   request:
     url: Đường Dẫn
+    header_placeholder: Đang xác thực...

@@ -1,0 +1,10 @@
+// Vitest Snapshot v1
+
+exports[`Mount component 1`] = `
+"Th
+<mark class=\\"highlight\\" data-v-aec7f886=\\"\\">is</mark>
+
+<mark class=\\"highlight\\" data-v-aec7f886=\\"\\">is</mark>
+ a nice
+<mark class=\\"highlight\\" data-v-aec7f886=\\"\\">text</mark>"
+`;
