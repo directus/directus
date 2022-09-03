@@ -534,6 +534,7 @@ activity_item: Elemento de actividad
 action: Acción
 ip_address: Dirección IP
 user_agent: Agente de Usuario (Navegador)
+origin: Origen
 webhooks: Webhooks
 decimals: Decimales
 value_decimals: Valor Decimal
@@ -1040,6 +1041,7 @@ fields:
     user: Realizado por
     comment: Comentar
     user_agent: Agente de Usuario (Navegador)
+    origin: Origen
     ip: Dirección IP
     revisions: Revisiones
   directus_collections:
