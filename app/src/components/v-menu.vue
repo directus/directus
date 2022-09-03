@@ -122,8 +122,6 @@ const emit = defineEmits(['update:modelValue']);
 const activator = ref<HTMLElement | null>(null);
 const reference = ref<HTMLElement | null>(null);
 
-defineExpose({ activator });
-
 const virtualReference = ref({
 	getBoundingClientRect() {
 		return {
@@ -159,6 +157,8 @@ const {
 );
 
 const { isActive, activate, deactivate, toggle } = useActiveState();
+
+defineExpose({ activator, id, activate, deactivate });
 
 watch(isActive, (newActive) => {
 	if (newActive === true) {
