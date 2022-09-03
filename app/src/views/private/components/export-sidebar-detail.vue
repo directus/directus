@@ -487,10 +487,11 @@ function exportDataLocal() {
 
 	if (exportSettings.sort && exportSettings.sort !== '') params.sort = exportSettings.sort;
 	if (exportSettings.fields) params.fields = exportSettings.fields;
-	if (exportSettings.limit) params.limit = exportSettings.limit;
 	if (exportSettings.search) params.search = exportSettings.search;
 	if (exportSettings.filter) params.filter = exportSettings.filter;
 	if (exportSettings.search) params.search = exportSettings.search;
+
+	params.limit = exportSettings.limit ?? -1;
 
 	const exportUrl = api.getUri({
 		url,
