@@ -350,7 +350,11 @@ function useActions() {
 		const editsToValidate = props.junctionField ? internalEdits.value[props.junctionField] : internalEdits.value;
 		const fieldsToValidate = props.junctionField ? relatedCollectionFields.value : fieldsWithoutCircular.value;
 		const defaultValues = getDefaultValuesFromFields(fieldsToValidate);
-		let errors = validateItem(merge({}, defaultValues.value, editsToValidate), fieldsToValidate, isNew.value);
+		let errors = validateItem(
+			merge({}, defaultValues.value, initialValues.value, editsToValidate),
+			fieldsToValidate,
+			isNew.value
+		);
 
 		if (errors.length > 0) {
 			validationErrors.value = errors;
