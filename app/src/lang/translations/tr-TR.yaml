@@ -109,6 +109,7 @@ delete_bookmark_copy: >-
   {bookmark} yer işaretini kaldırmak istediğinize emin misiniz? Bu işlem geri alınamaz.
 delete_personal_bookmark: Kişisel Yer İşaretini Sil
 delete_role_bookmark: Rol İşaretini Sil
+delete_global_bookmark: Genel Yer İmini Sil
 logoutReason:
   SIGN_OUT: Oturum kapatıldı
   SESSION_EXPIRED: Oturumun süresi doldu
@@ -308,6 +309,7 @@ primary_key: Birincil Anahtar
 foreign_key: Yabancı Anahtar
 finish_setup: Kurulumu Bitir
 dismiss: Yoksay
+toggle_raw_editor: Ham Düzenleyiciyi Aç/Kapat
 raw_value: İşlenmemiş veri
 copy_raw_value: İşlenmemiş Veriyi Kopyala
 copy_raw_value_success: Kopyalandı
@@ -395,9 +397,9 @@ date-fns_time: 's:dd:ss a'
 date-fns_time_no_seconds: 's:dd a'
 date-fns_time_24hour: 'SS:dd:ss'
 date-fns_time_no_seconds_24hour: 'SS:dd'
-date-fns_date_short: 'AAA d, u'
+date-fns_date_short: 'MMM d, u'
 date-fns_time_short: 's:aa a'
-date-fns_date_short_no_year: AAA d
+date-fns_date_short_no_year: MMM d
 minutes: Dakika
 hours: Saat
 month: Ay
@@ -485,6 +487,7 @@ disabled: Devre Dışı
 information: Bilgi
 report_bug: Hata Bildir
 request_feature: Özellik Talep Et
+request_body: İstek Gövdesi
 interface_not_found: '"{interface}" arayüzü bulunamadı.'
 reset_interface: Arayüzü Sıfırla
 display_not_found: '"{display}" ekranı bulunamadı.'
@@ -587,6 +590,7 @@ errors:
   VALUE_OUT_OF_RANGE: Değer sınır dışında
   INVALID_FOREIGN_KEY: Geçersiz yabancı anahtar
   UNKNOWN: Beklenmeyen Hata
+  RANGE_NOT_SATISFIABLE: Geçersiz aralık
 security: Güvenlik
 value_hashed: Değer Güvenli Şekilde Hashlendi
 bookmark_name: Yer işareti adı...
@@ -754,6 +758,8 @@ view_trigger: Tetikleyiciyi Görüntüle
 create_trigger: Tetikleyici Oluşturun
 trigger_setup: Tetikleyici Ayarı
 change_trigger: Tetikleyici Değiştirin
+set_flow_active: Akışı Etkin Olarak Ayarla
+set_flow_inactive: Akışı Etkin Değil Olarak Ayarla
 edit_flow: Akışı Düzenle
 delete_flow: Akışı Sil
 no_flows: Akış yok
@@ -799,6 +805,7 @@ dashboard_name: Pano Adı
 no_data: Hiç Veri Yok
 no_data_in_flow: Bu Akış içinde hiçbir veri üretilmedi veya erişilmedi
 accountability: İzlenebilirlik
+payload: Yük
 details: Ayrıntılar
 full_screen: Tam Ekran
 full_text_search: Tam Metin Araması
@@ -1362,6 +1369,8 @@ sign_out_confirm: Oturumunuzu kapatmak istediğinize emin misiniz?
 something_went_wrong: Bir şeyler ters gitti.
 sort_direction: Sıralama Yönü
 export_location: Konumu Dışa Aktar
+export_started: Dışa Aktarma Başladı
+export_started_copy: Dışa aktarma başladı. İndirilmeye hazır olduğunda bilgilendirileceksiniz.
 sort_asc: Artan Şekilde Sırala
 sort_desc: Azalan Şekilde Sırala
 template: Şablon
@@ -1376,6 +1385,8 @@ list: Liste
 search_filter: Ara ve Filtrele
 item_link: Öğe Bağlantısı
 show_link_to_item: Ögenin bağlantısını göster
+navigate_to_item: Öğeye Git
+undo_removed_item: Kaldırılan Öğeyi Geri Al
 remove_item: Oğeyi Sil
 delete_item: Öğeyi Sil
 interfaces:
@@ -1390,6 +1401,7 @@ interfaces:
     all: Tümü
     any: Herhangi Biri
     and: ve
+    of_the_following: aşağıdakilerden
     no_rules: Hiç yapılandırılmış kural yok
     change_value: Değeri değiştirmek için tıklayın
     placeholder: Kuralları buraya sürükleyin
@@ -1888,6 +1900,7 @@ panels:
     function: İşlev
     x_axis: X-Ekseni
     y_axis: Y-Ekseni
+    datasets: Veri Setleri
     show_legend: Göstergeyi Göster
     show_marker: Araç İpucu İşaretçisini Göster
     group_and_function: Hem bir grubu hem de bir işlevi dahil etmeli veya atlamalısınız.
@@ -1912,6 +1925,7 @@ panels:
     variable_key: Değişken Anahtar
 triggers:
   common:
+    response_body: Yanıt Gövdesi
     response_body_all: Tüm Veri
     response_body_last: Son İşlem Verileri
   webhook:
@@ -1934,6 +1948,7 @@ operations:
     name: Komut Dosyasını Çalıştır
   item-create:
     name: Veri Oluştur
+    payload: Yük
     emit_events: Olayları Yayımla
   item-delete:
     name: Veriyi Sil
@@ -1949,6 +1964,7 @@ operations:
     name: Verileri Güncelle
     emit_events: Olayları Yayımla
     key: Kimlikler
+    payload: Yük
     query: Sorgula
   log:
     name: Konsolda Oturum Aç
@@ -1977,6 +1993,8 @@ operations:
     name: Uyku
     description: Belirli bir milisaniye kadar bekleyin
     milliseconds: Milisaniye
+  transform:
+    name: Yükü Dönüştür
   trigger:
     name: Tetik Akışı
     description: Bu verileri başka bir akışa iletin
