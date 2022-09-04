@@ -395,9 +395,9 @@ date-fns_time: 's:dd:ss a'
 date-fns_time_no_seconds: 's:dd a'
 date-fns_time_24hour: 'SS:dd:ss'
 date-fns_time_no_seconds_24hour: 'SS:dd'
-date-fns_date_short: 'AAA d, u'
+date-fns_date_short: 'MMM d, u'
 date-fns_time_short: 's:aa a'
-date-fns_date_short_no_year: AAA d
+date-fns_date_short_no_year: MMM d
 minutes: Dakika
 hours: Saat
 month: Ay
