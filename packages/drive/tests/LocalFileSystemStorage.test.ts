@@ -4,11 +4,16 @@
  * @license MIT
  * @copyright Slynova - Romain Lanz <romain.lanz@slynova.ch>
  */
+import { expect, vi, describe, beforeAll, afterEach, it } from 'vitest';
 
-import { join, normalize } from 'path';
+import * as fse from 'fs-extra';
 
-jest.mock('fs-extra', () => {
-	const fse = jest.requireActual('fs-extra');
+const fsem: typeof fse & {
+	throwErrors(handler: () => Promise<any>, map: Record<string, Error>): () => Promise<void>;
+} = fse as any;
+
+vi.mock('fs-extra', async () => {
+	const fse = (await import('fs-extra')).default;
 
 	const errors: {
 		map: Record<string, Error>;
@@ -47,12 +52,7 @@ jest.mock('fs-extra', () => {
 	};
 });
 
-import * as fse from 'fs-extra';
-
-const fsem: typeof fse & {
-	throwErrors(handler: () => Promise<any>, map: Record<string, Error>): () => Promise<void>;
-} = fse as any;
-
+import { join, normalize } from 'path';
 import * as CE from '../src/exceptions';
 import { LocalFileSystemStorage } from '../src/LocalFileSystemStorage';
 import { streamToString, getFlatList } from '../src/utils';
