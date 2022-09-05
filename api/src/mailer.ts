@@ -66,8 +66,7 @@ export default function getMailer(): Transporter {
 				apiKey: env.EMAIL_SENDGRID_API_KEY,
 			}) as any
 		);
-	}
-	else {
+	} else {
 		logger.warn('Illegal transport given for email. Check the EMAIL_TRANSPORT env var.');
 	}
 
