@@ -171,6 +171,7 @@
 		"memcached": "^2.2.2",
 		"mysql": "^2.18.1",
 		"nodemailer-mailgun-transport": "^2.1.4",
+		"nodemailer-sendgrid": "^1.0.3",
 		"pg": "^8.7.3",
 		"sqlite3": "^5.0.8",
 		"tedious": "^13.0.0"
