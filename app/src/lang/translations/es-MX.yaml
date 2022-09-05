@@ -187,6 +187,7 @@ revision_post_create: Este es el aspecto de este elemento cuando fue creado.
 revision_post_update: Así se vería el elemento después de la actualización.
 changes_made: A continuación se muestran los cambios específicos realizados en esta revisión.
 no_relational_data: Tenga en cuenta que los datos relacionales no se incluyen aquí.
+bottom: Fondo
 hide_field: Ocultar campo
 hide_field_on_detail: Ocultar campo en el detalle
 show_field_on_detail: Mostrar campo en el detalle
@@ -280,19 +281,19 @@ add_m2m_to_collection: 'Añadir M2M a "{collection}"'
 choose_a_type: Elegir un Tipo...
 determined_by_relationship: Determinado por la Relación
 add_note: Añadir una nota útil para los usuarios...
-add_link: Agregar Enlace
-custom_link: Enlance Personalizado
-default_value: Valor por Defecto
-standard_field: Campo Estándar
-single_file: Un Archivo
-multiple_files: Múltiples Archivos
+add_link: Añadir enlace
+custom_link: Enlace personalizado
+default_value: Valor por defecto
+standard_field: Campo estándar
+single_file: Archivo único
+multiple_files: Múltiples archivos
 m2o_relationship: Relación Muchos-a-Uno
 o2m_relationship: Relación Uno-A-Muchos
 m2m_relationship: Relación Muchos-A-Muchos
 m2a_relationship: Relación Muchos-A-Cualquiera
 invalid_item: Artículo inválido
 next: Siguiente
-field_name: Nombre del Campo
+field_name: Nombre del campo
 translations: Traducciones
 no_translations: Sin traducciones
 left_to_right: De izquierda a derecha
@@ -310,16 +311,16 @@ updated_by: Actualizado por
 primary_key: Llave primaria
 foreign_key: Llave Foránea
 finish_setup: Finalizar Configuración
-dismiss: Cerrar
+dismiss: Descartar
 toggle_raw_editor: Alternar editor sin formato
 raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
 raw_value: Valor Plano
 copy_raw_value: Copiar valor exacto
 copy_raw_value_success: Copiado
-copy_raw_value_fail: Copia fallida
+copy_raw_value_fail: Falló la copia
 paste_raw_value: Pegar valor exacto
 paste_raw_value_success: Pegado
-paste_raw_value_fail: Fallo al Pegar
+paste_raw_value_fail: Falló el pegado
 view_raw_value: Ver valor exacto
 edit_raw_value: Editar Valor Plano
 enter_raw_value: Ingresar valor plano...
@@ -370,8 +371,8 @@ label_import: Importar
 label_export: Exportar
 import_export: Importar / Exportar
 format: Formato
-last_page: Última Página
-last_access: Último Acceso
+last_page: Última página
+last_access: Último acceso
 fill_template: Rellenar con Valor de Plantilla
 a_unique_table_name: Un nombre de tabla único...
 a_unique_column_name: Un nombre de columna único...
@@ -384,7 +385,7 @@ add_field_related: Agregar Campo a Colección Relacionada
 interface_label: Interfaz
 today: Hoy
 yesterday: Ayer
-delete_comment: Eliminar Comentario
+delete_comment: Eliminar comentario
 delete_share: Eliminar vínculos compartidos
 functions:
   year: Año
@@ -534,6 +535,7 @@ activity_item: Elemento de actividad
 action: Acción
 ip_address: Dirección IP
 user_agent: Agente de Usuario (Navegador)
+origin: Origen
 webhooks: Webhooks
 decimals: Decimales
 value_decimals: Valor Decimal
@@ -1040,6 +1042,7 @@ fields:
     user: Realizado por
     comment: Comentar
     user_agent: Agente de Usuario (Navegador)
+    origin: Origen
     ip: Dirección IP
     revisions: Revisiones
   directus_collections:
@@ -1110,8 +1113,8 @@ fields:
     token: Token
     provider: Proveedor
     external_identifier: Identificador externo
-    last_page: Última Página
-    last_access: Último Acceso
+    last_page: Última página
+    last_access: Último acceso
     email_notifications: Notificaciones por correo electrónico
   directus_settings:
     jpg: JPEG
