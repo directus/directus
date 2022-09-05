@@ -7,16 +7,14 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script setup lang="ts">
+interface Props {
+	/** Name of another component to mirror */
+	type?: 'input' | 'input-tall' | 'block-list-item' | 'block-list-item-dense' | 'list-item-icon' | 'text';
+}
 
-export default defineComponent({
-	props: {
-		type: {
-			type: String,
-			default: 'input',
-		},
-	},
+withDefaults(defineProps<Props>(), {
+	type: 'input',
 });
 </script>
 

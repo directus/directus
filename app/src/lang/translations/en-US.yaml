@@ -543,6 +543,7 @@ activity_item: Activity Item
 action: Action
 ip_address: IP Address
 user_agent: User Agent
+origin: Origin
 webhooks: Webhooks
 decimals: Decimals
 value_decimals: Value Decimals
@@ -786,6 +787,7 @@ flows: Flows
 flow: Flow
 select_a_flow: Select a Flow
 run_flow_on_current: Run flow on Current Item
+run_flow_on_current_edited_confirm: This item may be updated by this flow, are you sure you want to execute it?
 run_flow_on_selected: No Items Selected | Run flow on 1 Selected Item | Run flow on {n} Selected Items
 run_flow_success: Flow "{flow}" ran successfully
 trigger: Trigger
@@ -1056,6 +1058,7 @@ fields:
     user: Action By
     comment: Comment
     user_agent: User Agent
+    origin: Origin
     ip: IP Address
     revisions: Revisions
   directus_collections:

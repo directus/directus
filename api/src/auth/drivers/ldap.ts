@@ -373,6 +373,7 @@ export function createLDAPAuthRouter(provider: string): Router {
 			const accountability = {
 				ip: getIPFromReq(req),
 				userAgent: req.get('user-agent'),
+				origin: req.get('origin'),
 				role: null,
 			};
 
