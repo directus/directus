@@ -83,11 +83,11 @@ export abstract class SchemaHelper extends DatabaseHelper {
 		}
 	}
 
-	async preColumnDelete(): Promise<boolean> {
+	async preColumnChange(): Promise<boolean> {
 		return false;
 	}
 
-	async postColumnDelete(): Promise<void> {
+	async postColumnChange(): Promise<void> {
 		return;
 	}
 }

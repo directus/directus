@@ -9,28 +9,22 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent, PropType } from 'vue';
+<script setup lang="ts">
+interface Props {
+	/** The title to display in the info */
+	title: string;
+	/** What icon to render above the title */
+	icon?: string;
+	/** Styling of the info */
+	type?: 'info' | 'success' | 'warning' | 'danger';
+	/** Displays the info centered */
+	center?: boolean;
+}
 
-export default defineComponent({
-	props: {
-		icon: {
-			type: String,
-			default: 'box',
-		},
-		title: {
-			type: String,
-			required: true,
-		},
-		type: {
-			type: String as PropType<'info' | 'success' | 'warning' | 'danger'>,
-			default: 'info',
-		},
-		center: {
-			type: Boolean,
-			default: false,
-		},
-	},
+withDefaults(defineProps<Props>(), {
+	icon: 'box',
+	type: 'info',
+	center: false,
 });
 </script>
 
