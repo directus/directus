@@ -23,16 +23,20 @@ identifier: Identifikator
 avatar: Profilbilde
 application: Applikasjon
 default_provider: Standard
+method: Metode
 published: Publisert
 draft: Utkast
 archived: Arkivert
 modules: Moduler
 module_bar: Modul Bar
+logs: Logger
 reset_width: Reset Width
 tile_size: Flisstørrelse
 edit_field: Rediger felt
 conditions: Betingelser
 location: Lokasjon
+condition_rules: Betingelser Regler
+input: Input
 maps: Kart
 switch_user: Bytt bruker
 item_creation: Objekt opprettelse
@@ -45,6 +49,11 @@ group: Gruppe
 export_items: Eksporter produkter
 and: Og
 or: Eller
+init: Init
+dataset_too_large_currently_showing_n_items: Datasettet er for stort. For øyeblikket vises de {n} første elementene.
+modifier: Modifikator
+custom: Egendefinert
+hook: Hook
 fill_width: Fyll vidde
 field_name_translations: Feltnavn oversettelser
 enter_password_to_enable_tfa: Fyll inn passord for å skru på To-Faktor Autentisering
@@ -68,8 +77,15 @@ create_preset: Opprett forhåndsinnstilling
 create_panel: Opprett panel
 create_role: Opprett rolle
 create_user: Opprett bruker
+message: Melding
 delete_panel: Slett panel
 create_webhook: Lag Webhook
+create_translation_string: Opprett oversettelsestekst
+no_translation_string: Ingen oversettelse tekst
+no_translation_string_copy: Det finnes ingen oversettelsestekst ennå.
+translation_string_key_placeholder: Oversettelse tekst nøkkel...
+translation_string_translations_placeholder: Legg til ny oversettelse
+edit_translation_string: Rediger oversettelsestekst
 invite_users: Invitere brukere
 invite: Inviter
 email_already_invited: E-postadressen "{email}" er allerede invitert
@@ -234,6 +250,8 @@ new_collection: 'Ny Kolleksjon'
 choose_a_type: Velg en Type...
 determined_by_relationship: Fastsatt av relasjon
 add_note: Legg til en god beskrivelse til brukerne...
+add_link: Legg til lenke
+custom_link: Egendefinert lenke
 default_value: Standardverdi
 standard_field: Standard felt
 single_file: En fil
@@ -246,6 +264,9 @@ invalid_item: Ugyldig element
 next: Neste
 field_name: Feltnavn
 translations: Oversettelser
+no_translations: Ingen oversettelser
+left_to_right: Venstre mot høyre
+right_to_left: Høyre til Venstre
 note: Notat
 enter_a_value: Legg inn verdi...
 enter_a_placeholder: Legg inn en plassholder...
@@ -291,6 +312,8 @@ related_collection: Relatert kolleksjon
 related_collections: Relaterte kolleksjoner
 languages_collection: Språkkolleksjon
 label_import: Importer
+label_export: Eksporter
+import_export: Importer / Eksporter
 format: Format
 last_page: Siste side
 last_access: Siste tilgang
@@ -310,10 +333,17 @@ delete_comment: Slett kommentar
 functions:
   year: År
   month: Måned
+  week: Uke
+  day: Dag
+  weekday: Ukedag
+  hour: Time
+  minute: Minutt
+  second: Sekund
   count: Antall
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
+date-fns_time_24hour: 'H:mm:ss'
 date-fns_date_short: 'd MMM, u'
 date-fns_time_short: 'h:mma'
 date-fns_date_short_no_year: d MMM
@@ -344,7 +374,13 @@ file_details: Fil detaljer
 dimensions: Dimensjoner
 size: Størrelse
 created: Opprettet
+modified: Endret
 owner: Eier
+edited_by: Redigert av
+folder: Mappe
+zoom: Zoom
+download: Last ned
+open: Åpen
 background_color: Bakgrunnsfarge
 upload_from_device: Last opp fil fra enhet
 choose_from_library: Velg fil fra bibliotek
@@ -367,12 +403,14 @@ save_as_copy: Lagre som kopi
 add_existing: Legge til eksisterende
 creating_items: Oppretter elementer
 selecting_items: Velg elementer
+allow_duplicates: Tillat duplikater
 comments: Kommentarer
 select_item: Velg element
 no_items: Ingen elementer
 search_items: Søk etter elementer...
 disabled: Deaktivert
 information: Informasjon
+report_bug: Rapporter feil
 request_feature: Foreslå ny funksjon
 interface_not_found: 'Grensesnitt "{interface}" ble ikke funnet.'
 reset_interface: Tilbakestill grensesnitt
@@ -527,6 +565,7 @@ read: Les
 update: Oppdater
 select_fields: Velg felter
 flow_name: Navn
+insights: Nøkkeltall
 wysiwyg_options:
   backcolor: Bakgrunnsfarge
   remove: Fjern
@@ -568,6 +607,7 @@ fields:
     created_on: Opprettet den
     created_by: Opprettet av
     embed: Embed
+    folder: Mappe
     charset: Charset
     duration: Varighet
   directus_users:
@@ -692,6 +732,10 @@ interfaces:
     interface: Grensesnitt
   input-rich-text-md:
     edit: Rediger
+  map:
+    zoom: Zoom
+  system-folder:
+    folder: Mappe
   list:
     sort: Sorter
   tags:
@@ -736,5 +780,9 @@ layouts:
     compact: Kompakt
     cozy: Cozy
 operations:
+  log:
+    message: Melding
+  notification:
+    message: Melding
   request:
     url: URL

@@ -1,7 +1,7 @@
 import { SchemaHelper } from '../types';
 
 export class SchemaHelperSQLite extends SchemaHelper {
-	async preColumnDelete(): Promise<boolean> {
+	async preColumnChange(): Promise<boolean> {
 		const foreignCheckStatus = (await this.knex.raw('PRAGMA foreign_keys'))[0].foreign_keys === 1;
 
 		if (foreignCheckStatus) {
@@ -11,7 +11,7 @@ export class SchemaHelperSQLite extends SchemaHelper {
 		return foreignCheckStatus;
 	}
 
-	async postColumnDelete(): Promise<void> {
+	async postColumnChange(): Promise<void> {
 		await this.knex.raw('PRAGMA foreign_keys = ON');
 	}
 }

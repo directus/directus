@@ -187,6 +187,7 @@ revision_post_create: Oto jak wyglądał ten przedmiot podczas jego tworzenia.
 revision_post_update: Oto jak wyglądał ten element po aktualizacji.
 changes_made: Poniżej przedstawiono konkretne zmiany wprowadzone w tej rewizji.
 no_relational_data: Należy pamiętać, że nie uwzględniono tu danych dotyczących relacji.
+bottom: Dolny
 hide_field: Ukryj pole
 hide_field_on_detail: Ukryj pole w szczegółach
 show_field_on_detail: Pokaż pole w szczegółach
@@ -397,8 +398,8 @@ functions:
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
-date-fns_time_24hour: 'HH:mm:ss'
-date-fns_time_no_seconds_24hour: 'HH:mm'
+date-fns_time_24hour: 'GG:mm:ss'
+date-fns_time_no_seconds_24hour: 'GG:mm'
 date-fns_date_short: 'd MMM u'
 date-fns_time_short: 'h:mma'
 date-fns_date_short_no_year: MMM d
@@ -580,6 +581,9 @@ errors:
   INVALID_PAYLOAD: Błędny payload
   INVALID_PROVIDER: Użytkownik należy do innego dostawcy autoryzacji
   INVALID_QUERY: Nieprawidłowe zapytanie
+  INVALID_CONFIG: Nieprawidłowa konfiguracja
+  INVALID_TOKEN: Nieprawidłowy token
+  INVALID_IP: Adres IP niedozwolony
   INVALID_USER: Błąd uwierzytelniania użytkownika
   ITEM_LIMIT_REACHED: Osiągnięto limit przedmiotów
   ITEM_NOT_FOUND: Nie znaleziono elementu
@@ -596,6 +600,13 @@ errors:
   INVALID_FOREIGN_KEY: Nieprawidłowy klucz
   UNKNOWN: Nieoczekiwany błąd
   GRAPHQL_VALIDATION_EXCEPTION: Wyjątek sprawdzania poprawności grafiki
+  SERVICE_UNAVAILABLE: Serwis niedostępny
+  UNSUPPORTED_MEDIA_TYPE: Nie wspierany typ mediów
+  UNEXPECTED_RESPONSE: Nieoczekiwana odpowiedź
+  TOKEN_EXPIRED: Token wygasł
+  RANGE_NOT_SATISFIABLE: Błędny zakres
+  METHOD_NOT_ALLOWED: Metoda niedozwolona
+  REQUESTS_EXCEEDED: Osiągnięto limit żądań
 security: Bezpieczeństwo
 value_hashed: Wartość bezpiecznie zakodowana
 bookmark_name: Nazwa zakładki...
@@ -765,6 +776,7 @@ flows: Przepływy
 flow: Przepływ
 select_a_flow: Wybierz przepływ
 run_flow_on_current: Uruchom przepływ na bieżącym elemencie
+run_flow_on_current_edited_confirm: Ten przedmiot może być aktualizowany przez ten przepływ, czy na pewno chcesz go wykonać?
 run_flow_on_selected: Brak zaznaczonych elementów | Uruchom przepływ na 1 wybranym elemencie | Uruchom przepływ na {n} wybranych elementach
 run_flow_success: Przepływ "{flow}" wykonano pomyślnie
 trigger: Wyzwalacz
@@ -2032,6 +2044,10 @@ operations:
   condition:
     name: Warunek
     description: Trasa przepływu na podstawie logiki If / Else
+  exec:
+    name: Uruchom skrypt
+    description: Wykonaj arbitralny kod, aby zmodyfikować ładunek
+    modules: 'Następujące **Moduły Node** mogą być używane:'
   item-create:
     name: Utwórz dane
     description: Utwórz elementy w bazie danych
@@ -2069,7 +2085,9 @@ operations:
     body: Treść
   notification:
     name: Wyślij powiadomienie
+    description: Wyślij powiadomienie w aplikacji do jednego lub więcej użytkowników
     recipient: Użytkownik
+    recipient_placeholder: Dodaj UUID użytkownika i naciśnij enter...
     message: Wiadomość
   request:
     name: Webhook / URL żądania

@@ -38,169 +38,152 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent, computed, PropType } from 'vue';
+<script setup lang="ts">
+import { computed } from 'vue';
 import { RouteLocation, useRoute, useLink } from 'vue-router';
-import { useSizeClass, sizeProps } from '@/composables/use-size-class';
-import { useGroupable } from '@/composables/use-groupable';
-import { notEmpty } from '@/utils/is-empty';
-import { isEqual } from 'lodash';
+import { useSizeClass, useGroupable } from '@directus/shared/composables';
+import { isEqual, isNil } from 'lodash';
 
-export default defineComponent({
-	props: {
-		autofocus: {
-			type: Boolean,
-			default: false,
-		},
-		kind: {
-			type: String as PropType<'normal' | 'info' | 'success' | 'warning' | 'danger'>,
-			default: 'normal',
-		},
-		fullWidth: {
-			type: Boolean,
-			default: false,
-		},
-		rounded: {
-			type: Boolean,
-			default: false,
-		},
-		outlined: {
-			type: Boolean,
-			default: false,
-		},
-		icon: {
-			type: Boolean,
-			default: false,
-		},
-		type: {
-			type: String,
-			default: 'button',
-		},
-		disabled: {
-			type: Boolean,
-			default: false,
-		},
-		loading: {
-			type: Boolean,
-			default: false,
-		},
-		to: {
-			type: [String, Object] as PropType<string | RouteLocation>,
-			default: '',
-		},
-		href: {
-			type: String,
-			default: undefined,
-		},
-		active: {
-			type: Boolean,
-			default: undefined,
-		},
-		exact: {
-			type: Boolean,
-			default: false,
-		},
-		query: {
-			type: Boolean,
-			default: false,
-		},
-		secondary: {
-			type: Boolean,
-			default: false,
-		},
-		warning: {
-			type: Boolean,
-			default: false,
-		},
-		danger: {
-			type: Boolean,
-			default: false,
-		},
-		value: {
-			type: [Number, String],
-			default: undefined,
-		},
-		dashed: {
-			type: Boolean,
-			default: false,
-		},
-		tile: {
-			type: Boolean,
-			default: false,
-		},
-		align: {
-			type: String,
-			default: 'center',
-			validator: (val: string) => ['left', 'center', 'right'].includes(val),
-		},
-		download: {
-			type: String,
-			default: undefined,
-		},
-		...sizeProps,
-	},
-	emits: ['click'],
-	setup(props, { emit }) {
-		const route = useRoute();
+interface Props {
+	/** Automatically focuses on the button */
+	autofocus?: boolean;
+	/** Styling of the button */
+	kind?: 'normal' | 'info' | 'success' | 'warning' | 'danger';
+	/** Stretches the button to it's maximal width */
+	fullWidth?: boolean;
+	/** Enable rounded corners */
+	rounded?: boolean;
+	/** No background */
+	outlined?: boolean;
+	/** Remove padding / min-width. Meant to be used with just an icon as content */
+	icon?: boolean;
+	/** Element type to be used */
+	type?: string;
+	/** Disables the button */
+	disabled?: boolean;
+	/** Show a circular progress bar */
+	loading?: boolean;
+	/** To what internal link the button should direct */
+	to?: string | RouteLocation;
+	/** To what external link the button should direct */
+	href?: string;
+	/** Renders the button highlighted */
+	active?: boolean;
+	/** If the button should be highlighted if it matches the current internal link */
+	exact?: boolean;
+	/** Renders the button highlighted when it matches the given query  */
+	query?: boolean;
+	/** Renders the button in a less important styling */
+	secondary?: boolean;
+	/** @deprecated The `kind` prop should be used instead */
+	warning?: boolean;
+	/** @deprecated The `kind` prop should be used instead */
+	danger?: boolean;
+	/** What value to use for the button when rendered inside a group of buttons */
+	value?: number | string;
+	/** Renders the button with a dashed border */
+	dashed?: boolean;
+	/** Renders the button as a square */
+	tile?: boolean;
+	/** Align the button to a given side */
+	align?: 'left' | 'center' | 'right';
+	/** Add the download attribute (used in combo with `href`) */
+	download?: string;
+	/** Renders a smaller button */
+	xSmall?: boolean;
+	/** Renders a small button */
+	small?: boolean;
+	/** Renders a large button */
+	large?: boolean;
+	/** Renders a larger button */
+	xLarge?: boolean;
+}
 
-		const { route: linkRoute, isActive, isExactActive } = useLink(props);
-		const sizeClass = useSizeClass(props);
-
-		const component = computed(() => {
-			if (props.disabled) return 'button';
-			if (notEmpty(props.href)) return 'a';
-			if (props.to) return 'router-link';
-			return 'button';
-		});
-
-		const additionalProps = computed(() => {
-			if (props.to) {
-				return {
-					to: props.to,
-				};
-			}
-
-			if (component.value === 'a') {
-				return {
-					href: props.href,
-					target: '_blank',
-					rel: 'noopener noreferrer',
-				};
-			}
-
-			return {};
-		});
-
-		const { active, toggle } = useGroupable({
-			value: props.value,
-			group: 'item-group',
-		});
-
-		const isActiveRoute = computed(() => {
-			if (props.active !== undefined) return props.active;
-
-			if (props.to) {
-				const isQueryActive = !props.query || isEqual(route.query, linkRoute.value.query);
-
-				if (!props.exact) {
-					return (isActive.value && isQueryActive) || active.value;
-				} else {
-					return (isExactActive.value && isQueryActive) || active.value;
-				}
-			}
-
-			return false;
-		});
-		return { sizeClass, onClick, component, additionalProps, isActiveRoute, toggle };
-
-		function onClick(event: MouseEvent) {
-			if (props.loading === true) return;
-			// Toggles the active state in the parent groupable element. Allows buttons to work ootb in button-groups
-			toggle();
-			emit('click', event);
-		}
-	},
+const props = withDefaults(defineProps<Props>(), {
+	autofocus: false,
+	kind: 'normal',
+	fullWidth: false,
+	rounded: false,
+	outlined: false,
+	icon: false,
+	type: 'button',
+	disabled: false,
+	loading: false,
+	to: '',
+	href: undefined,
+	active: undefined,
+	exact: false,
+	query: false,
+	secondary: false,
+	warning: false,
+	danger: false,
+	value: undefined,
+	dashed: false,
+	tile: false,
+	align: 'center',
+	download: undefined,
 });
+
+const emit = defineEmits(['click']);
+
+const route = useRoute();
+
+const { route: linkRoute, isActive, isExactActive } = useLink(props);
+
+const sizeClass = useSizeClass(props);
+
+const component = computed(() => {
+	if (props.disabled) return 'button';
+	if (!isNil(props.href)) return 'a';
+	if (props.to) return 'router-link';
+	return 'button';
+});
+
+const additionalProps = computed(() => {
+	if (props.to) {
+		return {
+			to: props.to,
+		};
+	}
+
+	if (component.value === 'a') {
+		return {
+			href: props.href,
+			target: '_blank',
+			rel: 'noopener noreferrer',
+		};
+	}
+
+	return {};
+});
+
+const { active, toggle } = useGroupable({
+	value: props.value,
+	group: 'item-group',
+});
+
+const isActiveRoute = computed(() => {
+	if (props.active !== undefined) return props.active;
+
+	if (props.to) {
+		const isQueryActive = !props.query || isEqual(route.query, linkRoute.value.query);
+
+		if (!props.exact) {
+			return (isActive.value && isQueryActive) || active.value;
+		} else {
+			return (isExactActive.value && isQueryActive) || active.value;
+		}
+	}
+
+	return false;
+});
+
+async function onClick(event: MouseEvent) {
+	if (props.loading === true) return;
+	// Toggles the active state in the parent groupable element. Allows buttons to work ootb in button-groups
+	toggle();
+	emit('click', event);
+}
 </script>
 
 <style scoped>

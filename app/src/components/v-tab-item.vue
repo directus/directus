@@ -4,20 +4,17 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-import { useGroupable } from '@/composables/use-groupable';
+<script setup lang="ts">
+import { useGroupable } from '@directus/shared/composables';
 
-export default defineComponent({
-	props: {
-		value: {
-			type: String,
-			default: null,
-		},
-	},
-	setup(props) {
-		const { active, toggle } = useGroupable({ value: props.value, group: 'v-tabs-items' });
-		return { active, toggle };
-	},
+interface Props {
+	/** Custom value to use for selection state */
+	value?: string | number;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+	value: undefined,
 });
+
+const { active, toggle } = useGroupable({ value: props.value, group: 'v-tabs-items' });
 </script>

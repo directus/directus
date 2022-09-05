@@ -216,6 +216,7 @@ export class AuthenticationService {
 			expires: refreshTokenExpiration,
 			ip: this.accountability?.ip,
 			user_agent: this.accountability?.userAgent,
+			origin: this.accountability?.origin,
 		});
 
 		await this.knex('directus_sessions').delete().where('expires', '<', new Date());
@@ -226,6 +227,7 @@ export class AuthenticationService {
 				user: user.id,
 				ip: this.accountability.ip,
 				user_agent: this.accountability.userAgent,
+				origin: this.accountability.origin,
 				collection: 'directus_users',
 				item: user.id,
 			});
