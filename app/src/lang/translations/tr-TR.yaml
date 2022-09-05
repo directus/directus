@@ -575,6 +575,7 @@ errors:
   INVALID_OTP: Tek kullanımlık parola hatalı
   INVALID_PAYLOAD: Geçersiz yük
   INVALID_QUERY: Geçersiz sorgu
+  INVALID_IP: IP Adresine izin verilmiyor
   INVALID_USER: Kullanıcı kimliği doğrulanamadı
   ITEM_LIMIT_REACHED: Öge limite ulaşıldı
   ITEM_NOT_FOUND: Öğe bulunamadı
@@ -1907,6 +1908,7 @@ panels:
   meter:
     name: Metre
     select_max_value: Bir maksimum değer seçmelisiniz.
+    max_greater_than_zero: Maksimum değer 0'dan büyük olmalıdır.
     select_field: Bir alan seçmelisiniz.
     select_collection: Bir koleksiyon seçmelisiniz.
     function: İşlev
@@ -1922,6 +1924,7 @@ panels:
     monochrome_color: Tek Renk
   variable:
     name: Global Değişken
+    description: Diğer Panellerin filtrelerinde kullanım için global bir değer belirleyin
     variable_key: Değişken Anahtar
 triggers:
   common:
@@ -1938,9 +1941,11 @@ triggers:
     cron: Aralık
   manual:
     name: Elle
+    description: Seçilen koleksiyon(lar) içindeki manuel çalıştırma tetikleyicileri
     collection_and_item: Koleksiyon ve Öğe Sayfaları
     collection_only: Yalnızca Koleksiyon Sayfası
     item_only: Yalnızca Öğe Sayfası
+item_payload_placeholder: Bu, öğenin alan değerlerini güncellemek için kullanılan JSON'dur...
 operations:
   condition:
     name: Durum
