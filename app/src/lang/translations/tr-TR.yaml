@@ -1948,20 +1948,24 @@ operations:
     name: Komut Dosyasını Çalıştır
   item-create:
     name: Veri Oluştur
+    description: Veritabanında öğeler oluştur
     payload: Yük
     emit_events: Olayları Yayımla
   item-delete:
     name: Veriyi Sil
+    description: Veritabanındaki öğeleri sil
     emit_events: Olayları Yayımla
     key: Kimlikler
     query: Sorgula
   item-read:
     name: Veriyi oku
+    description: Veritabanından öğeleri oku
     key: Kimlikler
     query: Sorgula
     emit_events: Olayları Yayımla
   item-update:
     name: Verileri Güncelle
+    description: Veritabanındaki öğeleri güncelleyin
     emit_events: Olayları Yayımla
     key: Kimlikler
     payload: Yük
