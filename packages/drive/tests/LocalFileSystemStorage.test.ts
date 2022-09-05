@@ -5,7 +5,7 @@
  * @copyright Slynova - Romain Lanz <romain.lanz@slynova.ch>
  */
 
-import path from 'path';
+import { join, normalize } from 'path';
 
 jest.mock('fs-extra', () => {
 	const fse = jest.requireActual('fs-extra');
@@ -47,7 +47,7 @@ jest.mock('fs-extra', () => {
 	};
 });
 
-import fse from 'fs-extra';
+import * as fse from 'fs-extra';
 
 const fsem: typeof fse & {
 	throwErrors(handler: () => Promise<any>, map: Record<string, Error>): () => Promise<void>;
@@ -58,7 +58,7 @@ import { LocalFileSystemStorage } from '../src/LocalFileSystemStorage';
 import { streamToString, getFlatList } from '../src/utils';
 import { RuntimeException } from 'node-exceptions';
 
-const root = path.join(__dirname, 'storage/local');
+const root = join(__dirname, 'storage/local');
 const storage = new LocalFileSystemStorage({ root });
 
 function isWindowsDefenderError(error: { code: string }): boolean {
@@ -66,7 +66,7 @@ function isWindowsDefenderError(error: { code: string }): boolean {
 }
 
 function realFsPath(relativePath: string): string {
-	return path.join(root, relativePath);
+	return join(root, relativePath);
 }
 
 const testString = 'test-data';
@@ -414,7 +414,7 @@ describe('Local Driver', () => {
 		]);
 
 		const result = await getFlatList(storage);
-		expect(result.sort()).toStrictEqual(['foo.txt', path.normalize('foo/bar'), path.normalize('other/dir/file.txt')]);
+		expect(result.sort()).toStrictEqual(['foo.txt', normalize('foo/bar'), normalize('other/dir/file.txt')]);
 	});
 
 	it('list files with folder prefix', async () => {
@@ -425,7 +425,7 @@ describe('Local Driver', () => {
 		]);
 
 		const result = await getFlatList(storage, 'other');
-		expect(result).toStrictEqual([path.normalize('other/dir/file.txt')]);
+		expect(result).toStrictEqual([normalize('other/dir/file.txt')]);
 	});
 
 	it('list files with subfolder prefix', async () => {
@@ -436,7 +436,7 @@ describe('Local Driver', () => {
 		]);
 
 		const result = await getFlatList(storage, `other/dir/`);
-		expect(result).toStrictEqual([path.normalize('other/dir/file.txt')]);
+		expect(result).toStrictEqual([normalize('other/dir/file.txt')]);
 	});
 
 	it('list files with filename prefix', async () => {
@@ -447,7 +447,7 @@ describe('Local Driver', () => {
 		]);
 
 		const result = await getFlatList(storage, 'other/dir/fil');
-		expect(result).toStrictEqual([path.normalize('other/dir/file.txt')]);
+		expect(result).toStrictEqual([normalize('other/dir/file.txt')]);
 	});
 
 	it('list files with double dots in prefix', async () => {
@@ -458,6 +458,6 @@ describe('Local Driver', () => {
 		]);
 
 		const result = await getFlatList(storage, 'other/../');
-		expect(result.sort()).toStrictEqual(['foo.txt', path.normalize('foo/bar'), path.normalize('other/dir/file.txt')]);
+		expect(result.sort()).toStrictEqual(['foo.txt', normalize('foo/bar'), normalize('other/dir/file.txt')]);
 	});
 });

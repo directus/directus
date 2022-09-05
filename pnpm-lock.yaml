@@ -638,7 +638,7 @@ importers:
       node-exceptions: ^4.0.1
       npm-run-all: 4.1.5
       ts-jest: 27.0.7
-      typescript: 4.5.2
+      typescript: ^4.8.2
     dependencies:
       fs-extra: 10.1.0
       node-exceptions: 4.0.1
@@ -649,8 +649,8 @@ importers:
       dotenv: 10.0.0
       jest: 27.3.1
       npm-run-all: 4.1.5
-      ts-jest: 27.0.7_pyvehg5xwu6dr7ymdi6f4bgcyu
-      typescript: 4.5.2
+      ts-jest: 27.0.7_2sn26zjn4fkeuy65hvfgcd6ctm
+      typescript: 4.8.2
 
   packages/drive-azure:
     specifiers:
@@ -9656,6 +9656,7 @@ packages:
   /bindings/1.5.0:
     resolution:
       { integrity: sha512-p2q/t/mhvuOj/UeLlV6566GD/guowlr0hHxClI0W9m7MWYkL1F0hLo+0Aexs9HSPCtR1SXQ0TD3MMKrXZajbiQ== }
+    requiresBuild: true
     dependencies:
       file-uri-to-path: 1.0.0
     dev: true
@@ -13195,6 +13196,7 @@ packages:
   /file-uri-to-path/1.0.0:
     resolution:
       { integrity: sha512-0Zt+s3L7Vf1biwWZ29aARiVYLx7iMGnEUl9x33fbB/j3jR81u/O2LbqK+Bm1CDSNDKVtJ/YjwY7TUd5SkeLQLw== }
+    requiresBuild: true
     dev: true
     optional: true
 
@@ -18336,6 +18338,7 @@ packages:
   /nan/2.16.0:
     resolution:
       { integrity: sha512-UdAqHyFngu7TfQKsCBgAA6pWDkT8MAO7d0jyOecVhN5354xbLqdn8mV9Tat9gepAupm0bt2DbeaSC8vS52MuFA== }
+    requiresBuild: true
     dev: true
     optional: true
 
@@ -23508,6 +23511,38 @@ packages:
     resolution:
       { integrity: sha512-q5W7tVM71e2xjHZTlgfTDoPF/SmqKG5hddq9SzR49CH2hayqRKJtQ4mtRlSxKaJlR/+9rEM+mnBHf7I2/BQcpQ== }
     engines: { node: '>=6.10' }
+    dev: true
+
+  /ts-jest/27.0.7_2sn26zjn4fkeuy65hvfgcd6ctm:
+    resolution:
+      { integrity: sha512-O41shibMqzdafpuP+CkrOL7ykbmLh+FqQrXEmV9CydQ5JBk0Sj0uAEF5TNNe94fZWKm3yYvWa/IbyV4Yg1zK2Q== }
+    engines: { node: ^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0 }
+    hasBin: true
+    peerDependencies:
+      '@babel/core': '>=7.0.0-beta.0 <8'
+      '@types/jest': ^27.0.0
+      babel-jest: '>=27.0.0 <28'
+      jest: ^27.0.0
+      typescript: '>=3.8 <5.0'
+    peerDependenciesMeta:
+      '@babel/core':
+        optional: true
+      '@types/jest':
+        optional: true
+      babel-jest:
+        optional: true
+    dependencies:
+      '@types/jest': 27.0.3
+      bs-logger: 0.2.6
+      fast-json-stable-stringify: 2.1.0
+      jest: 27.3.1
+      jest-util: 27.5.1
+      json5: 2.2.1
+      lodash.memoize: 4.1.2
+      make-error: 1.3.6
+      semver: 7.3.7
+      typescript: 4.8.2
+      yargs-parser: 20.2.9
     dev: true
 
   /ts-jest/27.0.7_pyvehg5xwu6dr7ymdi6f4bgcyu:

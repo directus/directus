@@ -1,5 +1,5 @@
 import { MethodNotSupported } from './exceptions';
-import {
+import type {
 	Response,
 	SignedUrlResponse,
 	ContentResponse,

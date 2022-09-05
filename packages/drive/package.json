@@ -1,5 +1,6 @@
 {
 	"name": "@directus/drive",
+	"type": "module",
 	"version": "9.17.0",
 	"description": "Flexible and Fluent way to manage storage in Node.js.",
 	"license": "MIT",
@@ -61,6 +62,6 @@
 		"jest": "27.3.1",
 		"npm-run-all": "4.1.5",
 		"ts-jest": "27.0.7",
-		"typescript": "4.5.2"
+		"typescript": "^4.8.2"
 	}
 }

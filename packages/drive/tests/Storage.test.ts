@@ -1,4 +1,4 @@
-import Storage from '../src/Storage';
+import Storage from '../src/Storage.js';
 
 describe('Storage Class', () => {
 	it('throws on all methods', async () => {
