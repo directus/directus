@@ -187,6 +187,7 @@ revision_post_create: Ето как е изглеждал записът при 
 revision_post_update: Така ще изглежда записът, след възстановяване.
 changes_made: По-долу, са промените в ревизията.
 no_relational_data: Данните от релационните полета не са включени.
+bottom: Отдолу
 hide_field: Скриване на полето
 hide_field_on_detail: Скриване в детайлен изглед
 show_field_on_detail: Показване в детайлния изглед
