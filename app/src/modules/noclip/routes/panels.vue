@@ -10,6 +10,12 @@
 			<navigation />
 		</template>
 
+		<template #actions>
+			<v-button v-tooltip.bottom="t('dx.clear')" kind="danger" icon rounded @click="clear">
+				<v-icon name="delete" />
+			</v-button>
+		</template>
+
 		<div class="main">
 			<div class="component">
 				<v-workspace
@@ -69,6 +75,7 @@ import { getPanel } from '@/panels';
 import VWorkspace from '@/components/v-workspace.vue';
 import { AppTile } from '@/components/v-workspace-tile.vue';
 import { getOptions } from '../utils/getOptions';
+import { onBeforeRouteLeave, onBeforeRouteUpdate } from 'vue-router';
 
 interface Props {
 	id: string;
@@ -106,6 +113,7 @@ watch(
 	panelInfo,
 	async (value) => {
 		loaded.value = false;
+		load();
 		updateTile();
 		await updateDefaults(value);
 		await updateField(value);
@@ -114,7 +122,12 @@ watch(
 	{ immediate: true }
 );
 
+onBeforeRouteLeave(save);
+onBeforeRouteUpdate(save);
+
 function updateTile() {
+	if (localStorage.getItem(`panel-${props.id}`)) return;
+
 	tiles.value[0] = {
 		height: 20,
 		width: 20,
@@ -127,6 +140,8 @@ function updateTile() {
 }
 
 async function updateDefaults(value?: PanelConfig) {
+	if (localStorage.getItem(`panel-${props.id}`)) return;
+
 	bindings.value = {};
 	if (!value) return;
 
@@ -160,6 +175,25 @@ function updatePanel({
 	if (edits.position_y) tiles.value[0].y = edits.position_y;
 	if (edits.width) tiles.value[0].width = edits.width;
 	if (edits.height) tiles.value[0].height = edits.height;
+}
+
+function save() {
+	localStorage.setItem(`panel-${props.id}`, JSON.stringify({ binding: bindings.value, tile: tiles.value[0] }));
+}
+
+function load() {
+	const savedItem = localStorage.getItem(`panel-${props.id}`);
+	if (savedItem) {
+		const saved = JSON.parse(savedItem);
+		bindings.value = saved.binding;
+		tiles.value[0] = saved.tile;
+	}
+}
+
+function clear() {
+	localStorage.removeItem(`panel-${props.id}`);
+	updateDefaults(panelInfo.value);
+	updateTile();
 }
 
 const panelFields = computed(() => {

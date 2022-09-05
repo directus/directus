@@ -2175,3 +2175,5 @@ dx:
   minHeight: Minimum Height
   draggable: Daggable
   borderRadius: Border Radius
+  optionsOptions: Option Options
+  clear: Clear Local Storage

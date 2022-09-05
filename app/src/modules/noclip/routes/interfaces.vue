@@ -6,6 +6,12 @@
 			</v-button>
 		</template>
 
+		<template #actions>
+			<v-button v-tooltip.bottom="t('dx.clear')" kind="danger" icon rounded @click="clear">
+				<v-icon name="delete" />
+			</v-button>
+		</template>
+
 		<template #navigation>
 			<navigation />
 		</template>
@@ -15,10 +21,28 @@
 				<component :is="`interface-${id}`" v-if="loaded" v-bind="bindings" v-on="listeners" />
 			</div>
 
+			<v-divider>{{ t('options') }}</v-divider>
+
+			<div class="options">
+				<extension-options
+					v-model="bindings"
+					type="interface"
+					:extension="id"
+					show-advanced
+					:options="customOptionsFields"
+				/>
+			</div>
+
 			<v-divider>{{ t('dx.props') }}</v-divider>
 
 			<div class="props">
 				<v-form v-model="bindings" :fields="fields" />
+			</div>
+
+			<v-divider>{{ t('dx.optionsOptions') }}</v-divider>
+
+			<div class="option-options">
+				<interface-input-code :value="fieldOptions" language="json" @input="fieldOptions = $event" />
 			</div>
 		</div>
 
@@ -63,13 +87,15 @@ import Navigation from '../components/navigation.vue';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { getInterface } from '@/interfaces';
-import { Field, InterfaceConfig } from '@directus/shared/types';
+import { ExtensionOptionsContext, Field, InterfaceConfig } from '@directus/shared/types';
 import formatTitle from '@directus/format-title';
 import SidebarDetail from '@/views/private/components/sidebar-detail.vue';
 import { merge, padStart } from 'lodash';
 import { getFieldDefaults } from '../utils/getFieldDefaults';
 import { getDefaultValue, typeToString } from '../utils/getDefaultValue';
 import { getComponent } from '../utils/getComponent';
+import ExtensionOptions from '@/modules/settings/routes/data-model/field-detail/shared/extension-options.vue';
+import { onBeforeRouteLeave, onBeforeRouteUpdate } from 'vue-router';
 
 interface Props {
 	id: string;
@@ -93,9 +119,12 @@ const loaded = ref(false);
 const emitted = ref<EmittedInfo[]>([]);
 const emitOpen = ref<number | null>(null);
 
+const { customOptionsFields, defaultFieldOptions, fieldOptions } = useFieldOptions();
+
 watch(
 	interfaceInfo,
 	(value) => {
+		load();
 		updateDefaults(value);
 		updateField(value);
 		updateListeners(value);
@@ -103,8 +132,16 @@ watch(
 	{ immediate: true }
 );
 
+onBeforeRouteLeave(save);
+onBeforeRouteUpdate(save);
+
 async function updateDefaults(value?: InterfaceConfig) {
 	if (value) {
+		if (localStorage.getItem(`interface-${props.id}`)) {
+			loaded.value = true;
+			return;
+		}
+
 		emitted.value = [];
 		loaded.value = false;
 		bindings.value = {};
@@ -175,6 +212,50 @@ async function updateListeners(value?: InterfaceConfig) {
 	}, {});
 }
 
+function useFieldOptions() {
+	const defaultFieldOptions: ExtensionOptionsContext = {
+		collection: 'my_collection',
+		collections: {
+			junction: undefined,
+			related: undefined,
+		},
+		relations: {
+			o2m: undefined,
+			m2o: undefined,
+			m2a: undefined,
+		},
+		field: {
+			field: 'my_field',
+			type: 'string',
+			meta: {},
+			schema: {},
+		},
+		fields: {
+			corresponding: undefined,
+			junctionCurrent: undefined,
+			junctionRelated: undefined,
+			sort: undefined,
+		},
+		autoGenerateJunctionRelation: false,
+		editing: 'interface',
+		items: {},
+		localType: 'standard',
+		saving: false,
+	};
+
+	const fieldOptions = ref<ExtensionOptionsContext>(defaultFieldOptions);
+
+	const customOptionsFields = computed(() => {
+		if (typeof interfaceInfo.value?.options === 'function') {
+			return interfaceInfo.value?.options(fieldOptions.value);
+		}
+
+		return undefined;
+	});
+
+	return { defaultFieldOptions, fieldOptions, customOptionsFields };
+}
+
 function openEmit(index: number) {
 	emitOpen.value = index;
 }
@@ -182,6 +263,28 @@ function openEmit(index: number) {
 const title = computed(() => {
 	return `Interfaces / ${interfaceInfo.value?.name}`;
 });
+
+function save() {
+	localStorage.setItem(
+		`interface-${props.id}`,
+		JSON.stringify({ binding: bindings.value, fieldOptions: fieldOptions.value })
+	);
+}
+
+function load() {
+	const savedItem = localStorage.getItem(`interface-${props.id}`);
+	if (savedItem) {
+		const saved = JSON.parse(savedItem);
+		bindings.value = saved.binding;
+		fieldOptions.value = saved.fieldOptions;
+	}
+}
+
+function clear() {
+	localStorage.removeItem(`interface-${props.id}`);
+	updateDefaults(interfaceInfo.value);
+	fieldOptions.value = defaultFieldOptions;
+}
 </script>
 
 <style lang="scss" scoped>
