@@ -9,8 +9,8 @@
 		@drop.stop.prevent="onDrop"
 	>
 		<template v-if="dragging">
+			<v-icon class="upload-icon" x-large name="file_upload" />
 			<p class="type-label">{{ t('drop_to_upload') }}</p>
-			<p class="type-text">{{ t('upload_pending') }}</p>
 		</template>
 
 		<template v-else-if="uploading">
@@ -26,32 +26,29 @@
 		</template>
 
 		<template v-else>
+			<div class="actions">
+				<v-button v-tooltip="t('click_to_browse')" icon rounded secondary @click="openFileBrowser">
+					<input ref="input" class="browse" type="file" :multiple="multiple" @input="onBrowseSelect" />
+					<v-icon name="file_upload" />
+				</v-button>
+				<v-button
+					v-if="fromLibrary"
+					v-tooltip="t('choose_from_library')"
+					icon
+					rounded
+					secondary
+					@click="activeDialog = 'choose'"
+				>
+					<v-icon name="folder_open" />
+				</v-button>
+				<v-button v-if="fromUrl" v-tooltip="t('import_from_url')" icon rounded secondary @click="activeDialog = 'url'">
+					<v-icon name="link" />
+				</v-button>
+			</div>
+
 			<p class="type-label">{{ t('drag_file_here') }}</p>
-			<p class="type-text">{{ t('click_to_browse') }}</p>
-			<input class="browse" type="file" :multiple="multiple" @input="onBrowseSelect" />
 
 			<template v-if="fromUrl !== false || fromLibrary !== false">
-				<v-menu show-arrow placement="bottom-end">
-					<template #activator="{ toggle }">
-						<v-icon clickable class="options" name="more_vert" @click="toggle" />
-					</template>
-					<v-list>
-						<v-list-item v-if="fromLibrary" clickable @click="activeDialog = 'choose'">
-							<v-list-item-icon><v-icon name="folder_open" /></v-list-item-icon>
-							<v-list-item-content>
-								{{ t('choose_from_library') }}
-							</v-list-item-content>
-						</v-list-item>
-
-						<v-list-item v-if="fromUrl" clickable @click="activeDialog = 'url'">
-							<v-list-item-icon><v-icon name="link" /></v-list-item-icon>
-							<v-list-item-content>
-								{{ t('import_from_url') }}
-							</v-list-item-content>
-						</v-list-item>
-					</v-list>
-				</v-menu>
-
 				<drawer-collection
 					collection="directus_files"
 					:active="activeDialog === 'choose'"
@@ -87,9 +84,9 @@
 	</div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, ref, computed } from 'vue';
+import { ref, computed } from 'vue';
 import { uploadFiles } from '@/utils/upload-files';
 import { uploadFile } from '@/utils/upload-file';
 import DrawerCollection from '@/views/private/components/drawer-collection.vue';
@@ -98,230 +95,203 @@ import emitter, { Events } from '@/events';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { Filter } from '@directus/shared/types';
 
-export default defineComponent({
-	components: { DrawerCollection },
-	props: {
-		multiple: {
-			type: Boolean,
-			default: false,
-		},
-		preset: {
-			type: Object,
-			default: () => ({}),
-		},
-		fileId: {
-			type: String,
-			default: null,
-		},
-		fromUrl: {
-			type: Boolean,
-			default: false,
-		},
-		fromLibrary: {
-			type: Boolean,
-			default: false,
-		},
-		folder: {
-			type: String,
-			default: undefined,
-		},
-	},
-	emits: ['input'],
-	setup(props, { emit }) {
-		const { t } = useI18n();
+interface Props {
+	multiple?: boolean;
+	preset?: Record<string, any>;
+	fileId?: string;
+	fromUrl?: boolean;
+	fromLibrary?: boolean;
+	folder?: string;
+}
 
-		const { uploading, progress, upload, onBrowseSelect, done, numberOfFiles } = useUpload();
-		const { onDragEnter, onDragLeave, onDrop, dragging } = useDragging();
-		const { url, isValidURL, loading: urlLoading, importFromURL } = useURLImport();
-		const { setSelection } = useSelection();
-		const activeDialog = ref<'choose' | 'url' | null>(null);
+const props = withDefaults(defineProps<Props>(), {
+	multiple: false,
+	preset: () => ({}),
+	fileId: undefined,
+	fromUrl: false,
+	fromLibrary: false,
+	folder: undefined,
+});
 
-		const filterByFolder = computed(() => {
-			if (!props.folder) return undefined;
-			return { folder: { id: { _eq: props.folder } } } as Filter;
-		});
+const emit = defineEmits(['input']);
 
-		return {
-			t,
-			uploading,
-			progress,
-			onDragEnter,
-			onDragLeave,
-			onDrop,
-			dragging,
-			onBrowseSelect,
-			done,
-			numberOfFiles,
-			activeDialog,
-			filterByFolder,
-			url,
-			isValidURL,
-			urlLoading,
-			importFromURL,
-			setSelection,
-		};
+const { t } = useI18n();
 
-		function useUpload() {
-			const uploading = ref(false);
-			const progress = ref(0);
-			const numberOfFiles = ref(0);
-			const done = ref(0);
+const { uploading, progress, upload, onBrowseSelect, done, numberOfFiles } = useUpload();
+const { onDragEnter, onDragLeave, onDrop, dragging } = useDragging();
+const { url, isValidURL, loading: urlLoading, importFromURL } = useURLImport();
+const { setSelection } = useSelection();
+const activeDialog = ref<'choose' | 'url' | null>(null);
+const input = ref<HTMLInputElement>();
 
-			return { uploading, progress, upload, onBrowseSelect, numberOfFiles, done };
+const filterByFolder = computed(() => {
+	if (!props.folder) return undefined;
+	return { folder: { id: { _eq: props.folder } } } as Filter;
+});
 
-			async function upload(files: FileList) {
-				uploading.value = true;
-				progress.value = 0;
+function useUpload() {
+	const uploading = ref(false);
+	const progress = ref(0);
+	const numberOfFiles = ref(0);
+	const done = ref(0);
 
-				const folderPreset: { folder?: string } = {};
+	return { uploading, progress, upload, onBrowseSelect, numberOfFiles, done };
 
-				if (props.folder) {
-					folderPreset.folder = props.folder;
-				}
+	async function upload(files: FileList) {
+		uploading.value = true;
+		progress.value = 0;
 
-				try {
-					numberOfFiles.value = files.length;
+		const folderPreset: { folder?: string } = {};
 
-					if (props.multiple === true) {
-						const uploadedFiles = await uploadFiles(Array.from(files), {
-							onProgressChange: (percentage) => {
-								progress.value = Math.round(percentage.reduce((acc, cur) => (acc += cur)) / files.length);
-								done.value = percentage.filter((p) => p === 100).length;
-							},
-							preset: {
-								...props.preset,
-								...folderPreset,
-							},
-						});
-
-						uploadedFiles && emit('input', uploadedFiles);
-					} else {
-						const uploadedFile = await uploadFile(Array.from(files)[0], {
-							onProgressChange: (percentage) => {
-								progress.value = percentage;
-								done.value = percentage === 100 ? 1 : 0;
-							},
-							fileId: props.fileId,
-							preset: {
-								...props.preset,
-								...folderPreset,
-							},
-						});
-
-						uploadedFile && emit('input', uploadedFile);
-					}
-				} catch (err: any) {
-					unexpectedError(err);
-				} finally {
-					uploading.value = false;
-					done.value = 0;
-					numberOfFiles.value = 0;
-				}
-			}
-
-			function onBrowseSelect(event: InputEvent) {
-				const files = (event.target as HTMLInputElement)?.files;
-
-				if (files) {
-					upload(files);
-				}
-			}
+		if (props.folder) {
+			folderPreset.folder = props.folder;
 		}
 
-		function useDragging() {
-			const dragging = ref(false);
+		try {
+			numberOfFiles.value = files.length;
 
-			let dragCounter = 0;
+			if (props.multiple === true) {
+				const uploadedFiles = await uploadFiles(Array.from(files), {
+					onProgressChange: (percentage) => {
+						progress.value = Math.round(percentage.reduce((acc, cur) => (acc += cur)) / files.length);
+						done.value = percentage.filter((p) => p === 100).length;
+					},
+					preset: {
+						...props.preset,
+						...folderPreset,
+					},
+				});
 
-			return { onDragEnter, onDragLeave, onDrop, dragging };
+				uploadedFiles && emit('input', uploadedFiles);
+			} else {
+				const uploadedFile = await uploadFile(Array.from(files)[0], {
+					onProgressChange: (percentage) => {
+						progress.value = percentage;
+						done.value = percentage === 100 ? 1 : 0;
+					},
+					fileId: props.fileId,
+					preset: {
+						...props.preset,
+						...folderPreset,
+					},
+				});
 
-			function onDragEnter() {
-				dragCounter++;
-
-				if (dragCounter === 1) {
-					dragging.value = true;
-				}
+				uploadedFile && emit('input', uploadedFile);
 			}
-
-			function onDragLeave() {
-				dragCounter--;
-
-				if (dragCounter === 0) {
-					dragging.value = false;
-				}
-			}
-
-			function onDrop(event: DragEvent) {
-				dragCounter = 0;
-				dragging.value = false;
-
-				const files = event.dataTransfer?.files;
-
-				if (files) {
-					upload(files);
-				}
-			}
+		} catch (err: any) {
+			unexpectedError(err);
+		} finally {
+			uploading.value = false;
+			done.value = 0;
+			numberOfFiles.value = 0;
 		}
+	}
 
-		function useSelection() {
-			return { setSelection };
+	function onBrowseSelect(event: Event) {
+		const files = (event.target as HTMLInputElement)?.files;
 
-			async function setSelection(selection: string[]) {
-				if (selection[0]) {
-					const id = selection[0];
-					const fileResponse = await api.get(`/files/${id}`);
-					emit('input', fileResponse.data.data);
-				} else {
-					emit('input', null);
-				}
-			}
+		if (files) {
+			upload(files);
 		}
+	}
+}
 
-		function useURLImport() {
-			const url = ref('');
-			const loading = ref(false);
+function useDragging() {
+	const dragging = ref(false);
 
-			const isValidURL = computed(() => {
-				try {
-					new URL(url.value);
-					return true;
-				} catch {
-					return false;
-				}
+	let dragCounter = 0;
+
+	return { onDragEnter, onDragLeave, onDrop, dragging };
+
+	function onDragEnter() {
+		dragCounter++;
+
+		if (dragCounter === 1) {
+			dragging.value = true;
+		}
+	}
+
+	function onDragLeave() {
+		dragCounter--;
+
+		if (dragCounter === 0) {
+			dragging.value = false;
+		}
+	}
+
+	function onDrop(event: DragEvent) {
+		dragCounter = 0;
+		dragging.value = false;
+
+		const files = event.dataTransfer?.files;
+
+		if (files) {
+			upload(files);
+		}
+	}
+}
+
+function useSelection() {
+	return { setSelection };
+
+	async function setSelection(selection: string[]) {
+		if (selection[0]) {
+			const id = selection[0];
+			const fileResponse = await api.get(`/files/${id}`);
+			emit('input', fileResponse.data.data);
+		} else {
+			emit('input', null);
+		}
+	}
+}
+
+function useURLImport() {
+	const url = ref('');
+	const loading = ref(false);
+
+	const isValidURL = computed(() => {
+		try {
+			new URL(url.value);
+			return true;
+		} catch {
+			return false;
+		}
+	});
+
+	return { url, loading, isValidURL, importFromURL };
+
+	async function importFromURL() {
+		loading.value = true;
+
+		try {
+			const response = await api.post(`/files/import`, {
+				url: url.value,
+				data: {
+					folder: props.folder,
+				},
 			});
 
-			return { url, loading, isValidURL, importFromURL };
+			emitter.emit(Events.upload);
 
-			async function importFromURL() {
-				loading.value = true;
-
-				try {
-					const response = await api.post(`/files/import`, {
-						url: url.value,
-						data: {
-							folder: props.folder,
-						},
-					});
-
-					emitter.emit(Events.upload);
-
-					if (props.multiple) {
-						emit('input', [response.data.data]);
-					} else {
-						emit('input', response.data.data);
-					}
-
-					activeDialog.value = null;
-					url.value = '';
-				} catch (err: any) {
-					unexpectedError(err);
-				} finally {
-					loading.value = false;
-				}
+			if (props.multiple) {
+				emit('input', [response.data.data]);
+			} else {
+				emit('input', response.data.data);
 			}
+
+			activeDialog.value = null;
+			url.value = '';
+		} catch (err: any) {
+			unexpectedError(err);
+		} finally {
+			loading.value = false;
 		}
-	},
-});
+	}
+}
+
+function openFileBrowser() {
+	input.value?.click();
+}
 </script>
 
 <style lang="scss" scoped>
@@ -344,8 +314,21 @@ export default defineComponent({
 	}
 
 	&:not(.uploading):hover {
-		color: var(--primary);
-		border-color: var(--primary);
+		border-color: var(--border-normal-alt);
+	}
+}
+
+.actions {
+	display: flex;
+	justify-content: center;
+	margin-bottom: 18px;
+
+	.v-button {
+		margin-right: 12px;
+
+		&:last-child {
+			margin-right: 0;
+		}
 	}
 }
 
@@ -369,6 +352,11 @@ export default defineComponent({
 	* {
 		pointer-events: none;
 	}
+
+	.upload-icon {
+		margin: 0 auto;
+		margin-bottom: 12px;
+	}
 }
 
 .uploading {
@@ -387,18 +375,5 @@ export default defineComponent({
 		left: 32px;
 		width: calc(100% - 64px);
 	}
-}
-
-.options {
-	position: absolute;
-	top: 12px;
-	right: 12px;
-	color: var(--foreground-subdued);
-	cursor: pointer;
-	transition: color var(--medium) var(--transition);
-}
-
-.v-upload:hover .options {
-	color: var(--primary);
 }
 </style>

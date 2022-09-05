@@ -187,6 +187,7 @@ revision_post_create: Voici à quoi ressemblait cet article lors de sa création
 revision_post_update: Voici à quoi ressemblait cet élément après la mise à jour.
 changes_made: Vous trouverez ci-dessous les modifications spécifiques apportées à cette révision.
 no_relational_data: Attention, les données relationnelles ne sont pas incluses.
+bottom: Bas
 hide_field: Masquer le champ
 hide_field_on_detail: Masquer le champ dans le détail
 show_field_on_detail: Afficher le champ dans le détail
@@ -295,11 +296,12 @@ next: Suivant
 field_name: Nom du champ
 translations: Traductions
 no_translations: Aucune traduction
+left_to_right: Hello
 note: Remarque
 enter_a_value: Saisissez une valeur...
 enter_a_placeholder: Entrez un texte d'indication...
 length: Taille
-soft_length: Limite de souplesse
+soft_length: Limite de caractères
 precision_scale: Précision et échelle
 readonly: Lecture seule
 unique: Unique

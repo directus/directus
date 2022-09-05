@@ -186,6 +186,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 					collection: this.collection,
 					ip: this.accountability!.ip,
 					user_agent: this.accountability!.userAgent,
+					origin: this.accountability!.origin,
 					item: primaryKey,
 				});
 
@@ -290,7 +291,23 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	 * Get items by query
 	 */
 	async readByQuery(query: Query, opts?: QueryOptions): Promise<Item[]> {
-		let ast = await getASTFromQuery(this.collection, query, this.schema, {
+		const updatedQuery =
+			opts?.emitEvents !== false
+				? await emitter.emitFilter(
+						`${this.eventScope}.query`,
+						query,
+						{
+							collection: this.collection,
+						},
+						{
+							database: this.knex,
+							schema: this.schema,
+							accountability: this.accountability,
+						}
+				  )
+				: query;
+
+		let ast = await getASTFromQuery(this.collection, updatedQuery, this.schema, {
 			accountability: this.accountability,
 			// By setting the permissions action, you can read items using the permissions for another
 			// operation's permissions. This is used to dynamically check if you have update/delete
@@ -325,7 +342,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 						this.eventScope === 'items' ? ['items.read', `${this.collection}.items.read`] : `${this.eventScope}.read`,
 						records,
 						{
-							query,
+							query: updatedQuery,
 							collection: this.collection,
 						},
 						{
@@ -341,7 +358,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				this.eventScope === 'items' ? ['items.read', `${this.collection}.items.read`] : `${this.eventScope}.read`,
 				{
 					payload: filteredRecords,
-					query,
+					query: updatedQuery,
 					collection: this.collection,
 				},
 				{
@@ -554,6 +571,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 						collection: this.collection,
 						ip: this.accountability!.ip,
 						user_agent: this.accountability!.userAgent,
+						origin: this.accountability!.origin,
 						item: key,
 					}))
 				);
@@ -773,6 +791,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 						collection: this.collection,
 						ip: this.accountability!.ip,
 						user_agent: this.accountability!.userAgent,
+						origin: this.accountability!.origin,
 						item: key,
 					}))
 				);

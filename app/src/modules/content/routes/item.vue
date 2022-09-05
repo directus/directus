@@ -212,6 +212,8 @@
 				location="item"
 				:collection="collection"
 				:primary-key="internalPrimaryKey"
+				:has-edits="hasEdits"
+				@refresh="refresh"
 			/>
 		</template>
 	</private-view>

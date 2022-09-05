@@ -5,45 +5,40 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent, computed, PropType } from 'vue';
+<script setup lang="ts">
+import { computed } from 'vue';
 
-export default defineComponent({
-	props: {
-		type: {
-			type: String as PropType<'normal' | 'info' | 'success' | 'warning' | 'danger'>,
-			default: 'normal',
-		},
-		icon: {
-			type: [String, Boolean],
-			default: null,
-		},
-		center: {
-			type: Boolean,
-			default: false,
-		},
-	},
-	setup(props) {
-		const iconName = computed(() => {
-			if (props.icon !== false && typeof props.icon === 'string') {
-				return props.icon;
-			}
+interface Props {
+	/** Renders the components in each of it styles */
+	type?: 'normal' | 'info' | 'success' | 'warning' | 'danger';
+	/** Custom icon name, or false if you want to hide the icon completely */
+	icon?: string | boolean | null;
+	/** Render notice content centered */
+	center?: boolean;
+}
 
-			if (props.type == 'info') {
-				return 'info';
-			} else if (props.type == 'success') {
-				return 'check_circle';
-			} else if (props.type == 'warning') {
-				return 'warning';
-			} else if (props.type == 'danger') {
-				return 'error';
-			} else {
-				return 'info';
-			}
-		});
+const props = withDefaults(defineProps<Props>(), {
+	icon: null,
+	type: 'normal',
+	center: false,
+});
 
-		return { iconName };
-	},
+const iconName = computed(() => {
+	if (props.icon !== false && typeof props.icon === 'string') {
+		return props.icon;
+	}
+
+	if (props.type == 'info') {
+		return 'info';
+	} else if (props.type == 'success') {
+		return 'check_circle';
+	} else if (props.type == 'warning') {
+		return 'warning';
+	} else if (props.type == 'danger') {
+		return 'error';
+	} else {
+		return 'info';
+	}
 });
 </script>
 
