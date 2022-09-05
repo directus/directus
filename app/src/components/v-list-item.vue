@@ -20,132 +20,116 @@
 	</component>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { RouteLocation, useLink, useRoute } from 'vue-router';
-import { defineComponent, PropType, computed } from 'vue';
-import { useGroupable } from '@/composables/use-groupable';
+import { computed } from 'vue';
+import { useGroupable } from '@directus/shared/composables';
 import { isEqual } from 'lodash';
 
-export default defineComponent({
-	props: {
-		block: {
-			type: Boolean,
-			default: false,
-		},
-		dense: {
-			type: Boolean,
-			default: false,
-		},
-		to: {
-			type: [String, Object] as PropType<string | RouteLocation>,
-			default: '',
-		},
-		href: {
-			type: String,
-			default: undefined,
-		},
-		disabled: {
-			type: Boolean,
-			default: false,
-		},
-		clickable: {
-			type: Boolean,
-			default: false,
-		},
-		active: {
-			type: Boolean,
-			default: undefined,
-		},
-		dashed: {
-			type: Boolean,
-			default: false,
-		},
-		exact: {
-			type: Boolean,
-			default: false,
-		},
-		query: {
-			type: Boolean,
-			default: false,
-		},
-		download: {
-			type: String,
-			default: undefined,
-		},
-		value: {
-			type: [String, Number],
-			default: undefined,
-		},
-		nav: {
-			type: Boolean,
-			default: false,
-		},
-		scope: {
-			type: String,
-			default: 'v-list',
-		},
-	},
-	emits: ['click'],
-	setup(props, { emit }) {
-		const route = useRoute();
+interface Props {
+	block?: boolean;
+	/** Makes the item smaller */
+	dense?: boolean;
+	/** Where the item should link to */
+	to?: string | RouteLocation;
+	/** Same as to except that it takes an external link */
+	href?: string;
+	/** Disables the item */
+	disabled?: boolean;
+	/** If the item should be clickable */
+	clickable?: boolean;
+	/** If the item should be active or not */
+	active?: boolean;
+	/** Adds a dashed style */
+	dashed?: boolean;
+	/** Renders an active state if the route matches exactly */
+	exact?: boolean;
+	/** Renders an active state it the route matches the query  */
+	query?: boolean;
+	/** Signal that the target link is a downloadable file */
+	download?: string;
+	/** What value to represent when active */
+	value?: number | string;
+	/** If the item is inside the navigation */
+	nav?: boolean;
+	/** Only matches to a group when both scopes are the same */
+	scope?: string;
+}
 
-		const { route: linkRoute, isActive, isExactActive } = useLink(props);
-
-		const component = computed(() => {
-			if (props.to) return 'router-link';
-			if (props.href) return 'a';
-			return 'li';
-		});
-
-		const additionalProps = computed(() => {
-			if (props.to) {
-				return {
-					to: props.to,
-				};
-			}
-
-			if (component.value === 'a') {
-				return {
-					href: props.href,
-					target: '_blank',
-					rel: 'noopener noreferrer',
-				};
-			}
-
-			return {};
-		});
-
-		useGroupable({
-			value: props.value,
-			group: props.scope,
-		});
-
-		const isLink = computed(() => Boolean(props.to || props.href || props.clickable));
-
-		const isActiveRoute = computed(() => {
-			if (props.active !== undefined) return props.active;
-
-			if (props.to) {
-				const isQueryActive = !props.query || isEqual(route.query, linkRoute.value.query);
-
-				if (!props.exact) {
-					return isActive.value && isQueryActive;
-				} else {
-					return isExactActive.value && isQueryActive;
-				}
-			}
-
-			return false;
-		});
-
-		return { component, additionalProps, isLink, isActiveRoute, onClick };
-
-		function onClick(event: PointerEvent) {
-			if (props.disabled === true) return;
-			emit('click', event);
-		}
-	},
+const props = withDefaults(defineProps<Props>(), {
+	block: false,
+	dense: false,
+	to: '',
+	href: undefined,
+	disabled: false,
+	clickable: false,
+	active: undefined,
+	dashed: false,
+	exact: false,
+	query: false,
+	download: undefined,
+	value: undefined,
+	nav: false,
+	scope: 'v-list',
 });
+
+const emit = defineEmits(['click']);
+
+const route = useRoute();
+
+const { route: linkRoute, isActive, isExactActive } = useLink(props);
+
+const component = computed(() => {
+	if (props.to) return 'router-link';
+	if (props.href) return 'a';
+	return 'li';
+});
+
+const additionalProps = computed(() => {
+	if (props.to) {
+		return {
+			to: props.to,
+		};
+	}
+
+	if (component.value === 'a') {
+		return {
+			href: props.href,
+			target: '_blank',
+			rel: 'noopener noreferrer',
+		};
+	}
+
+	return {};
+});
+
+useGroupable({
+	value: props.value,
+	group: props.scope,
+});
+
+const isLink = computed(() => Boolean(props.to || props.href || props.clickable));
+
+const isActiveRoute = computed(() => {
+	if (props.active !== undefined) return props.active;
+
+	if (props.to) {
+		const isQueryActive = !props.query || isEqual(route.query, linkRoute.value.query);
+
+		if (!props.exact) {
+			return isActive.value && isQueryActive;
+		} else {
+			return isExactActive.value && isQueryActive;
+		}
+	}
+
+	return false;
+});
+
+function onClick(event: PointerEvent) {
+	if (props.disabled === true) return;
+	emit('click', event);
+}
 </script>
 
 <style>

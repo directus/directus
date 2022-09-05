@@ -38,6 +38,7 @@ const allowedEnvironmentVars = [
 	'REFRESH_TOKEN_COOKIE_SECURE',
 	'REFRESH_TOKEN_COOKIE_SAME_SITE',
 	'REFRESH_TOKEN_COOKIE_NAME',
+	'LOGIN_STALL_TIME',
 	'PASSWORD_RESET_URL_ALLOW_LIST',
 	'USER_INVITE_URL_ALLOW_LIST',
 	'IP_TRUST_PROXY',
@@ -75,6 +76,7 @@ const allowedEnvironmentVars = [
 	'CACHE_REDIS_PASSWORD',
 	'CACHE_MEMCACHE',
 	'CACHE_VALUE_MAX_SIZE',
+	'CACHE_HEALTHCHECK_THRESHOLD',
 	// storage
 	'STORAGE_LOCATIONS',
 	'STORAGE_.+_DRIVER',
@@ -91,6 +93,7 @@ const allowedEnvironmentVars = [
 	'STORAGE_.+_ENDPOINT',
 	'STORAGE_.+_KEY_FILENAME',
 	'STORAGE_.+_BUCKET',
+	'STORAGE_.+_HEALTHCHECK_THRESHOLD',
 	// metadata
 	'FILE_METADATA_ALLOW_LIST',
 	// assets
@@ -147,6 +150,7 @@ const allowedEnvironmentVars = [
 	'EMAIL_VERIFY_SETUP',
 	'EMAIL_SENDMAIL_NEW_LINE',
 	'EMAIL_SENDMAIL_PATH',
+	'EMAIL_SMTP_NAME',
 	'EMAIL_SMTP_HOST',
 	'EMAIL_SMTP_PORT',
 	'EMAIL_SMTP_USER',
@@ -168,6 +172,8 @@ const allowedEnvironmentVars = [
 	// limits & optimization
 	'RELATIONAL_BATCH_SIZE',
 	'EXPORT_BATCH_SIZE',
+	// flows
+	'FLOWS_EXEC_ALLOWED_MODULES',
 ].map((name) => new RegExp(`^${name}$`));
 
 const acceptedEnvTypes = ['string', 'number', 'regex', 'array', 'json'];
@@ -197,6 +203,8 @@ const defaults: Record<string, any> = {
 	REFRESH_TOKEN_COOKIE_SECURE: false,
 	REFRESH_TOKEN_COOKIE_SAME_SITE: 'lax',
 	REFRESH_TOKEN_COOKIE_NAME: 'directus_refresh_token',
+
+	LOGIN_STALL_TIME: 500,
 
 	ROOT_REDIRECT: './admin',
 

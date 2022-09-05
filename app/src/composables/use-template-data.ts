@@ -1,5 +1,6 @@
 import api from '@/api';
 import { Collection } from '@/types/collections';
+import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { getFieldsFromTemplate } from '@directus/shared/utils';
 import { computed, Ref, ref, watch } from 'vue';
 
@@ -16,7 +17,10 @@ export function useTemplateData(collection: Ref<Collection | null>, primaryKey: 
 
 	const fields = computed(() => {
 		if (!collection.value?.meta?.display_template) return null;
-		return getFieldsFromTemplate(collection.value.meta.display_template);
+		return adjustFieldsForDisplays(
+			getFieldsFromTemplate(collection.value.meta.display_template),
+			collection.value?.collection
+		);
 	});
 
 	watch([collection, primaryKey], fetchTemplateValues, { immediate: true });

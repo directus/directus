@@ -15,6 +15,7 @@ export * from './get-functions-for-type';
 export * from './get-output-type-for-function';
 export * from './get-relation-type';
 export * from './get-simple-hash';
+export * from './get-with-arrays';
 export * from './is-dynamic-variable';
 export * from './merge-filters';
 export * from './move-in-array';
