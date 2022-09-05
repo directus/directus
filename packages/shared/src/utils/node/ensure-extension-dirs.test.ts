@@ -2,7 +2,7 @@ import { describe, beforeEach, afterEach, it, expect } from 'vitest';
 
 import { DirResult, dirSync } from 'tmp';
 import { EXTENSION_TYPES } from '../../constants/extensions';
-import { ensureExtensionDirs } from './ensure-extension-dirs';
+import { ensureExtensionDirs } from './ensure-extension-dirs.js';
 
 describe('ensureExtensionDirs', () => {
 	let rootDir: DirResult;

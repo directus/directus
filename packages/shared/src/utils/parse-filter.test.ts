@@ -1,6 +1,6 @@
 import { vi, afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { Filter } from '../../src/types/filter';
-import { parseFilter } from './parse-filter';
+import type { Filter } from '../../src/types/filter.js';
+import { parseFilter } from './parse-filter.js';
 
 describe('', () => {
 	beforeEach(() => {

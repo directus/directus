@@ -1,7 +1,7 @@
-import path from 'path';
-import fse from 'fs-extra';
-import { pluralize } from '../pluralize';
-import { ExtensionType } from '../../types';
+import * as path from 'path';
+import * as fse from 'fs-extra';
+import { pluralize } from '../pluralize.js';
+import type { ExtensionType } from '../../types';
 
 export async function ensureExtensionDirs(extensionsPath: string, types: readonly ExtensionType[]): Promise<void> {
 	for (const extensionType of types) {

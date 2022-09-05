@@ -22,11 +22,9 @@ import {
 	ContainerSASPermissions,
 } from '@azure/storage-blob';
 
-import path from 'path';
+import * as path from 'path';
 
 import { PassThrough, Readable } from 'stream';
-
-import normalize from 'normalize-path';
 
 function handleError(err: Error, path: string): Error {
 	return new UnknownException(err, err.name, path);
@@ -47,14 +45,14 @@ export class AzureBlobWebServicesStorage extends Storage {
 			this.$signedCredentials
 		);
 		this.$containerClient = this.$client.getContainerClient(config.containerName);
-		this.$root = config.root ? normalize(config.root).replace(/^\//, '') : '';
+		this.$root = config.root ? path.normalize(config.root).replace(/^\//, '') : '';
 	}
 
 	/**
 	 * Prefixes the given filePath with the storage root location
 	 */
 	protected _fullPath(filePath: string): string {
-		return normalize(path.join(this.$root, filePath));
+		return path.normalize(path.join(this.$root, filePath));
 	}
 
 	public async copy(src: string, dest: string): Promise<Response> {

@@ -1,7 +1,7 @@
-import { Knex } from 'knex';
-import { Logger } from 'pino';
-import { Ref } from 'vue';
-import {
+import type { Knex } from 'knex';
+import type { Logger } from 'pino';
+import type { Ref } from 'vue';
+import type {
 	API_EXTENSION_TYPES,
 	APP_EXTENSION_TYPES,
 	EXTENSION_PACKAGE_TYPES,
@@ -11,17 +11,17 @@ import {
 	LOCAL_TYPES,
 	PACKAGE_EXTENSION_TYPES,
 } from '../constants';
-import { Accountability } from './accountability';
-import { InterfaceConfig } from './interfaces';
-import { DisplayConfig } from './displays';
-import { LayoutConfig } from './layouts';
-import { ModuleConfig } from './modules';
-import { PanelConfig } from './panels';
-import { DeepPartial } from './misc';
-import { Field } from './fields';
-import { Relation } from './relations';
-import { Collection } from './collection';
-import { SchemaOverview } from './schema';
+import type { Accountability } from './accountability';
+import type { InterfaceConfig } from './interfaces';
+import type { DisplayConfig } from './displays';
+import type { LayoutConfig } from './layouts';
+import type { ModuleConfig } from './modules';
+import type { PanelConfig } from './panels';
+import type { DeepPartial } from './misc';
+import type { Field } from './fields';
+import type { Relation } from './relations';
+import type { Collection } from './collection';
+import type { SchemaOverview } from './schema';
 
 export type AppExtensionType = typeof APP_EXTENSION_TYPES[number];
 export type ApiExtensionType = typeof API_EXTENSION_TYPES[number];

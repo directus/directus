@@ -1,7 +1,7 @@
-import { useApi } from './use-system';
+import { useApi } from './use-system.js';
 import axios, { CancelTokenSource } from 'axios';
-import { useCollection } from './use-collection';
-import { Item, Query } from '../types';
+import { useCollection } from './use-collection.js';
+import type { Item, Query } from '../types';
 import { moveInArray } from '../utils';
 import { isEqual, throttle } from 'lodash';
 import { computed, ComputedRef, ref, Ref, watch, WritableComputedRef, unref } from 'vue';

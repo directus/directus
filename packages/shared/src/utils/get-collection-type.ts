@@ -1,4 +1,4 @@
-import { Collection, CollectionType } from '../types';
+import type { Collection, CollectionType } from '../types';
 
 /**
  * Get the type of collection. One of alias | table. (And later: view)

@@ -653,31 +653,27 @@ importers:
       '@azure/storage-blob': ^12.6.0
       '@directus/drive': workspace:*
       '@types/fs-extra': 9.0.13
-      '@types/jest': 27.0.3
       '@types/node': 16.11.9
       '@types/normalize-path': 3.0.0
       dotenv: 10.0.0
       fs-extra: 10.0.0
-      jest: 27.3.1
       normalize-path: ^3.0.0
       npm-run-all: 4.1.5
-      ts-jest: 27.0.7
-      typescript: 4.5.2
+      typescript: 4.8.2
+      vitest: ^0.18.1
     dependencies:
       '@azure/storage-blob': 12.11.0
       '@directus/drive': link:../drive
       normalize-path: 3.0.0
     devDependencies:
       '@types/fs-extra': 9.0.13
-      '@types/jest': 27.0.3
       '@types/node': 16.11.9
       '@types/normalize-path': 3.0.0
       dotenv: 10.0.0
       fs-extra: 10.0.0
-      jest: 27.3.1
       npm-run-all: 4.1.5
-      ts-jest: 27.0.7_pyvehg5xwu6dr7ymdi6f4bgcyu
-      typescript: 4.5.2
+      typescript: 4.8.2
+      vitest: 0.18.1
 
   packages/drive-gcs:
     specifiers:
@@ -831,7 +827,7 @@ importers:
       pino: 6.13.3
       rimraf: 3.0.2
       tmp: 0.2.1
-      typescript: 4.5.2
+      typescript: ^4.8.2
       vitest: ^0.18.1
       vue: 3.2.36
       vue-i18n: 9.1.10
@@ -863,7 +859,7 @@ importers:
       npm-run-all: 4.1.5
       rimraf: 3.0.2
       tmp: 0.2.1
-      typescript: 4.5.2
+      typescript: 4.8.2
       vitest: 0.18.1_c8@7.12.0
 
   packages/specs:

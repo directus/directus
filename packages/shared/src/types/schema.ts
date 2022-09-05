@@ -1,6 +1,6 @@
-import { Type } from './fields';
-import { Relation } from './relations';
-import { Filter } from './filter';
+import type { Type } from './fields';
+import type { Relation } from './relations';
+import type { Filter } from './filter';
 
 export type FieldOverview = {
 	field: string;

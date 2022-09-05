@@ -1,1 +1,1 @@
-export * from './AzureBlobWebServices';
+export * from './AzureBlobWebServices.js';

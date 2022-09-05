@@ -1,5 +1,5 @@
 import { renderFn, get, Scope, ResolveFn } from 'micromustache';
-import { parseJSON } from './parse-json';
+import { parseJSON } from './parse-json.js';
 
 type Mustacheable = string | number | boolean | null | Mustacheable[] | { [key: string]: Mustacheable };
 type GenericString<T> = T extends string ? string : T;

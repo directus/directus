@@ -1,23 +1,23 @@
-import path from 'path';
-import fse from 'fs-extra';
-import {
+import * as path from 'path';
+import * as fse from 'fs-extra';
+import type {
 	ExtensionLocal,
 	ExtensionManifestRaw,
 	ExtensionPackage,
 	ExtensionPackageType,
 	ExtensionType,
 } from '../../types';
-import { resolvePackage } from './resolve-package';
-import { listFolders } from './list-folders';
+import { resolvePackage } from './resolve-package.js';
+import { listFolders } from './list-folders.js';
 import {
 	EXTENSION_NAME_REGEX,
 	EXTENSION_PKG_KEY,
 	HYBRID_EXTENSION_TYPES,
 	PACKAGE_EXTENSION_TYPES,
 } from '../../constants';
-import { pluralize } from '../pluralize';
-import { validateExtensionManifest } from '../validate-extension-manifest';
-import { isIn, isTypeIn } from '../array-helpers';
+import { pluralize } from '../pluralize.js';
+import { validateExtensionManifest } from '../validate-extension-manifest.js';
+import { isIn, isTypeIn } from '../array-helpers.js';
 
 async function resolvePackageExtensions(
 	extensionNames: string[],

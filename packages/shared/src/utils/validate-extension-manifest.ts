@@ -4,8 +4,8 @@ import {
 	HYBRID_EXTENSION_TYPES,
 	PACKAGE_EXTENSION_TYPES,
 } from '../constants';
-import { ExtensionManifest, ExtensionManifestRaw } from '../types';
-import { isIn } from './array-helpers';
+import type { ExtensionManifest, ExtensionManifestRaw } from '../types';
+import { isIn } from './array-helpers.js';
 
 export function validateExtensionManifest(
 	extensionManifest: ExtensionManifestRaw

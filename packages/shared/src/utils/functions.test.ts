@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { functions } from './functions';
+import { functions } from './functions.js';
 
 describe('Data Functions', () => {
 	describe('year', () => {

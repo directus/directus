@@ -1,4 +1,4 @@
-import { Filter, LogicalFilterOR, LogicalFilterAND } from '../types/filter';
+import type { Filter, LogicalFilterOR, LogicalFilterAND } from '../types/filter';
 
 export function mergeFilters(
 	filterA: Filter | null,
