@@ -170,10 +170,6 @@ export default defineInterface({
 								value: 'bottom',
 								text: '$t:bottom',
 							},
-							{
-								value: 'off',
-								text: '$t:off',
-							},
 						],
 					},
 					width: 'half',
