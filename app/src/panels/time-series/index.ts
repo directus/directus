@@ -1,3 +1,4 @@
+import { useCollectionsStore } from '@/stores/collections';
 import { getGroups } from '@/utils/get-groups';
 import { Filter } from '@directus/shared/types';
 import { definePanel } from '@directus/shared/utils';
@@ -12,6 +13,12 @@ export default definePanel({
 		if (!options?.function || !options.valueField || !options.dateField) {
 			return;
 		}
+
+		const collectionsStore = useCollectionsStore();
+		const collectionInfo = collectionsStore.getCollection(options.collection);
+
+		if (!collectionInfo) return;
+		if (collectionInfo?.meta?.singleton) return;
 
 		const filter: Filter = {
 			_and: [options.filter || {}],
@@ -54,6 +61,7 @@ export default definePanel({
 				interface: 'system-collection',
 				options: {
 					includeSystem: true,
+					includeSingleton: false,
 				},
 				width: 'half',
 			},
