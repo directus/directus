@@ -26,7 +26,9 @@ FROM node:${NODE_VERSION}
 #ENV TNS_ADMIN /usr/lib/instantclient
 #ENV ORACLE_HOME /usr/lib/instantclient
 
+RUN apk update
 RUN apk --no-cache add --virtual builds-deps build-base python3
+RUN apk add nano
 
 WORKDIR /directus
 
@@ -38,6 +40,16 @@ RUN apk add --update python3 make g++\
 RUN npm install -g pnpm
 RUN pnpm install
 RUN pnpm -r build
+
+# Custom Extensions
+RUN pnpm install @wellenplan/directus-extension-duration-display -w
+
+#COPY ./custom_extensions.sh ./custom_extensions.sh
+RUN chmod +x ./custom_extensions.sh
+RUN ./custom_extensions.sh
+
+# Not sure why we have this folder here
+RUN rm -rf /directus/api/extensions/modules/__MACOSX || true
 
 WORKDIR /directus/api
 
