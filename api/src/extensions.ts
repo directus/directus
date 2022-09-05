@@ -110,22 +110,30 @@ class ExtensionManager {
 	}
 
 	public async initialize(options: Partial<Options> = {}): Promise<void> {
+		const prevOptions = this.options;
+
 		this.options = {
 			...defaultOptions,
 			...options,
 		};
 
-		this.initializeWatcher();
+		if (!prevOptions.watch && this.options.watch) {
+			this.initializeWatcher();
+		} else if (prevOptions.watch && !this.options.watch) {
+			await this.closeWatcher();
+		}
 
 		if (!this.isLoaded) {
 			await this.load();
-
-			this.updateWatchedExtensions(this.extensions);
 
 			const loadedExtensions = this.getExtensionsList();
 			if (loadedExtensions.length > 0) {
 				logger.info(`Loaded extensions: ${loadedExtensions.join(', ')}`);
 			}
+		}
+
+		if (!prevOptions.watch && this.options.watch) {
+			this.updateWatchedExtensions(this.extensions);
 		}
 	}
 
@@ -214,7 +222,7 @@ class ExtensionManager {
 	}
 
 	private initializeWatcher(): void {
-		if (this.options.watch && !this.watcher) {
+		if (!this.watcher) {
 			logger.info('Watching extensions for changes...');
 
 			const localExtensionPaths = (env.SERVE_APP ? EXTENSION_TYPES : API_OR_HYBRID_EXTENSION_TYPES).flatMap((type) => {
@@ -236,6 +244,12 @@ class ExtensionManager {
 				.on('add', () => this.reload())
 				.on('change', () => this.reload())
 				.on('unlink', () => this.reload());
+		}
+	}
+
+	private async closeWatcher(): Promise<void> {
+		if (this.watcher) {
+			await this.watcher.close();
 		}
 	}
 

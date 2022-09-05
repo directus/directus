@@ -1,10 +1,11 @@
+import { isObjectLike } from 'lodash';
 import { REGEX_BETWEEN_PARENS } from '../constants';
 import { Accountability, Filter, User, Role, Item } from '../types';
-import { toArray } from './to-array';
 import { adjustDate } from './adjust-date';
-import { isDynamicVariable } from './is-dynamic-variable';
-import { isObjectLike } from 'lodash';
 import { deepMap } from './deep-map';
+import { get } from './get-with-arrays';
+import { isDynamicVariable } from './is-dynamic-variable';
+import { toArray } from './to-array';
 
 export type ParseFilterContext = {
 	// The user can add any custom fields to user
@@ -94,13 +95,4 @@ function parseDynamicVariable(value: any, accountability: Accountability | null,
 	if (value.startsWith('$CURRENT_ITEM')) {
 		return get(context, value, null);
 	}
-}
-
-function get(object: Record<string, any> | any[], path: string, defaultValue: any): any {
-	const [key, ...follow] = path.split('.');
-	const result = Array.isArray(object) ? object.map((entry) => entry[key!]) : object?.[key!];
-	if (follow.length > 0) {
-		return get(result, follow.join('.'), defaultValue);
-	}
-	return result ?? defaultValue;
 }

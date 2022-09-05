@@ -27,6 +27,9 @@
 			<p class="type-label">{{ t('user_agent') }}:</p>
 			<p>{{ item.user_agent }}</p>
 
+			<p class="type-label">{{ t('origin') }}:</p>
+			<p>{{ item.origin }}</p>
+
 			<p class="type-label">{{ t('collection') }}:</p>
 			<p>{{ item.collection }}</p>
 
@@ -62,6 +65,7 @@ type ActivityRecord = {
 	timestamp: string;
 	ip: string;
 	user_agent: string;
+	origin: string;
 	collection: string;
 	item: string;
 };
@@ -109,6 +113,7 @@ export default defineComponent({
 							'timestamp',
 							'ip',
 							'user_agent',
+							'origin',
 							'collection',
 							'item',
 						],
