@@ -74,6 +74,7 @@
 				@toggle-raw="toggleRawField(fieldsMap[fieldName])"
 			/>
 		</template>
+		<v-divider v-if="showDivider && !noVisibleFields" />
 	</div>
 </template>
 
@@ -110,6 +111,7 @@ interface Props {
 	nested?: boolean;
 	rawEditorEnabled?: boolean;
 	direction?: string;
+	showDivider?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -128,6 +130,7 @@ const props = withDefaults(defineProps<Props>(), {
 	nested: false,
 	rawEditorEnabled: false,
 	direction: undefined,
+	showDivider: false,
 });
 
 const emit = defineEmits(['update:modelValue']);
@@ -178,6 +181,13 @@ const firstVisibleFieldIndex = computed(() => {
 		}
 	}
 	return null;
+});
+
+const noVisibleFields = computed(() => {
+	return Object.keys(fieldsMap.value).every((fieldKey) => {
+		let field: Field = fieldsMap.value[fieldKey];
+		return field.meta?.hidden === true;
+	});
 });
 
 watch(
@@ -378,5 +388,11 @@ function useRawEditor() {
 
 .v-form .first-visible-field :deep(.v-divider) {
 	margin-top: 0;
+}
+
+.v-divider {
+	margin-bottom: 50px;
+	grid-column-start: 1;
+	grid-column-end: 3;
 }
 </style>
