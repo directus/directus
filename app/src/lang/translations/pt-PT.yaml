@@ -434,7 +434,7 @@ display_not_found: 'Visualização "{display}" não encontrado.'
 reset_display: Restaurar visualização
 list-m2a: Construtor (M2A)
 item_count: 'Não existem documentos | Um documento | {count} documentos'
-no_items_copy: Aind não existem documentos nesta coleção.
+no_items_copy: Ainda não existem documentos nesta coleção.
 file_count: 'Nenhum ficheiro | Um ficheiro | {count} ficheiros'
 no_files_copy: Não existem ficheiros aqui.
 user_count: 'Nenhum utilizador | Um utilizador | {count} utilizadores'
@@ -721,6 +721,7 @@ fields:
     comment: Comentário
     user_agent: User Agent
     ip: Endereço IP
+    revisions: Revisões
   directus_collections:
     collection: Coleção
     note: Nota
@@ -832,6 +833,7 @@ continue_as: >-
 creating_webhook: Criando Webhook
 description: Descrição
 file_library: Biblioteca de Arquivos
+revisions: Revisões
 save: Guardar
 sign_in: Iniciar Sessão
 sign_out: Sair
