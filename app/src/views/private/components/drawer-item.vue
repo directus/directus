@@ -348,8 +348,9 @@ function useActions() {
 		const editsToValidate = props.junctionField ? internalEdits.value[props.junctionField] : internalEdits.value;
 		const fieldsToValidate = props.junctionField ? relatedCollectionFields.value : fieldsWithoutCircular.value;
 		const defaultValues = getDefaultValuesFromFields(fieldsToValidate);
+		const existingValues = props.junctionField ? initialValues?.value?.[props.junctionField] : initialValues?.value;
 		let errors = validateItem(
-			merge({}, defaultValues.value, initialValues.value, editsToValidate),
+			merge({}, defaultValues.value, existingValues, editsToValidate),
 			fieldsToValidate,
 			isNew.value
 		);
@@ -357,6 +358,8 @@ function useActions() {
 		if (errors.length > 0) {
 			validationErrors.value = errors;
 			return;
+		} else {
+			validationErrors.value = [];
 		}
 
 		if (props.junctionField && props.relatedPrimaryKey !== '+' && relatedPrimaryKeyField.value) {
