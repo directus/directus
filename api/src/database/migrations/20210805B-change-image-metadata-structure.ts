@@ -1,5 +1,5 @@
 import { parseJSON } from '@directus/shared/utils';
-import { Knex } from 'knex';
+import type { Knex } from 'knex';
 
 // Change image metadata structure to match the output from 'exifr'
 export async function up(knex: Knex): Promise<void> {
@@ -66,25 +66,25 @@ export async function down(knex: Knex): Promise<void> {
 			// Put all data under 'exif' and rename/move keys afterwards
 			const newMetadata: { exif: Record<string, unknown>; icc?: unknown; iptc?: unknown } = { exif: prevMetadata };
 
-			if (newMetadata.exif.ifd0) {
-				newMetadata.exif.image = newMetadata.exif.ifd0;
-				delete newMetadata.exif.ifd0;
+			if (newMetadata.exif['ifd0']) {
+				newMetadata.exif['image'] = newMetadata.exif['ifd0'];
+				delete newMetadata.exif['ifd0'];
 			}
-			if (newMetadata.exif.ifd1) {
-				newMetadata.exif.thumbnail = newMetadata.exif.ifd1;
-				delete newMetadata.exif.ifd1;
+			if (newMetadata.exif['ifd1']) {
+				newMetadata.exif['thumbnail'] = newMetadata.exif['ifd1'];
+				delete newMetadata.exif['ifd1'];
 			}
-			if (newMetadata.exif.interop) {
-				newMetadata.exif.interoperability = newMetadata.exif.interop;
-				delete newMetadata.exif.interop;
+			if (newMetadata.exif['interop']) {
+				newMetadata.exif['interoperability'] = newMetadata.exif['interop'];
+				delete newMetadata.exif['interop'];
 			}
-			if (newMetadata.exif.icc) {
-				newMetadata.icc = newMetadata.exif.icc;
-				delete newMetadata.exif.icc;
+			if (newMetadata.exif['icc']) {
+				newMetadata.icc = newMetadata.exif['icc'];
+				delete newMetadata.exif['icc'];
 			}
-			if (newMetadata.exif.iptc) {
-				newMetadata.iptc = newMetadata.exif.iptc;
-				delete newMetadata.exif.iptc;
+			if (newMetadata.exif['iptc']) {
+				newMetadata.iptc = newMetadata.exif['iptc'];
+				delete newMetadata.exif['iptc'];
 			}
 
 			await knex('directus_files')

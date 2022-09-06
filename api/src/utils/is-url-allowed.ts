@@ -17,6 +17,7 @@ export default function isUrlAllowed(url: string, allowList: string | string[]):
 		} catch {
 			logger.warn(`Invalid URL used "${url}"`);
 		}
+		return undefined;
 	});
 
 	try {

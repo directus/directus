@@ -94,6 +94,7 @@ export const multipartHandler: RequestHandler = (req, res, next) => {
 		} catch (error: any) {
 			busboy.emit('error', error);
 		}
+		return;
 	});
 
 	busboy.on('error', (error: Error) => {
@@ -313,7 +314,7 @@ router.patch(
 router.delete(
 	'/',
 	validateBatch('delete'),
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req, _res, next) => {
 		const service = new FilesService({
 			accountability: req.accountability!,
 			schema: req.schema,
@@ -334,7 +335,7 @@ router.delete(
 
 router.delete(
 	'/:pk',
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req, _res, next) => {
 		const service = new FilesService({
 			accountability: req.accountability!,
 			schema: req.schema,

@@ -1,10 +1,10 @@
 import * as express from 'express';
-import { ForbiddenException, InvalidPayloadException } from '../exceptions.js';
+import { ForbiddenException, InvalidPayloadException } from '../exceptions/index.js';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { validateBatch } from '../middleware/validate-batch.js';
-import { SharesService } from '../services.js';
-import type { PrimaryKey } from '../types.js';
+import { SharesService } from '../services/index.js';
+import type { PrimaryKey } from '../types/index.js';
 import asyncHandler from '../utils/async-handler.js';
 import { UUID_REGEX, COOKIE_OPTIONS } from '../constants.js';
 import * as Joi from 'joi';
@@ -51,7 +51,7 @@ const sharedInviteSchema = Joi.object({
 
 router.post(
 	'/invite',
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req, _res, next) => {
 		const service = new SharesService({
 			accountability: req.accountability!,
 			schema: req.schema,

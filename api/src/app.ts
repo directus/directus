@@ -34,7 +34,12 @@ import usersRouter from './controllers/users.js';
 import utilsRouter from './controllers/utils.js';
 import webhooksRouter from './controllers/webhooks.js';
 import sharesRouter from './controllers/shares.js';
-import { isInstalled, validateDatabaseConnection, validateDatabaseExtensions, validateMigrations } from './database/index.js';
+import {
+	isInstalled,
+	validateDatabaseConnection,
+	validateDatabaseExtensions,
+	validateMigrations,
+} from './database/index.js';
 import emitter from './emitter.js';
 import env from './env.js';
 import { InvalidPayloadException } from './exceptions/index.js';
@@ -208,7 +213,7 @@ export default async function createApp(): Promise<express.Application> {
 		app.use(rateLimiter);
 	}
 
-	app.get('/server/ping', (req, res) => res.send('pong'));
+	app.get('/server/ping', (_req, res) => res.send('pong'));
 
 	app.use(authenticate);
 

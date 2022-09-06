@@ -5,7 +5,7 @@ import asyncHandler from '../utils/async-handler.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
 
 export const validateBatch = (scope: 'read' | 'update' | 'delete') =>
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req, _res, next) => {
 		if (req.method.toLowerCase() === 'get') {
 			req.body = {};
 			return next();

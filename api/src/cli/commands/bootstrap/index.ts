@@ -7,7 +7,11 @@ import logger from '../../../logger.js';
 import { getSchema } from '../../../utils/get-schema.js';
 import { RolesService, UsersService, SettingsService } from '../../../services/index.js';
 
-import getDatabase, { isInstalled, validateDatabaseConnection, hasDatabaseConnection } from '../../../database/index.js';
+import getDatabase, {
+	isInstalled,
+	validateDatabaseConnection,
+	hasDatabaseConnection,
+} from '../../../database/index.js';
 import type { SchemaOverview } from '@directus/shared/types';
 import { defaultAdminRole, defaultAdminUser } from '../../utils/defaults.js';
 
@@ -54,7 +58,7 @@ async function waitForDatabase(database: Knex) {
 
 	for (let i = 0; i < tries; i++) {
 		if (await hasDatabaseConnection(database)) {
-			return true;
+			return;
 		}
 
 		await new Promise((resolve) => setTimeout(resolve, secondsBetweenTries * 1000));

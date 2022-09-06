@@ -1,7 +1,7 @@
 import formatTitle from '@directus/format-title';
-import {openapi} from '@directus/specs/index.js';
+import { openapi } from '@directus/specs/index.js';
 import type { Knex } from 'knex';
-import { cloneDeep, isNil, mergeWith } from 'lodash';
+import { cloneDeep, mergeWith } from 'lodash';
 import type {
 	OpenAPIObject,
 	OperationObject,
@@ -98,9 +98,9 @@ class OASSpecsService implements SpecificationSubService {
 		const paths = await this.generatePaths(permissions, tags);
 		const components = await this.generateComponents(collections, fields, relations, tags);
 
-		if(!tags || !components) {
+		if (!tags || !components) {
 			throw new Error('Failed to generate OpenAPI specification');
-		};
+		}
 
 		const spec: OpenAPIObject = {
 			openapi: '3.0.1',
@@ -151,9 +151,9 @@ class OASSpecsService implements SpecificationSubService {
 				const tag: TagObject = {
 					name: 'Items' + formatTitle(collection.collection).replace(/ /g, ''),
 					'x-collection': collection.collection,
-				}
+				};
 
-				if(collection.meta && collection.meta.note) {
+				if (collection.meta && collection.meta.note) {
 					tag.description = collection.meta.note;
 				}
 
@@ -272,6 +272,7 @@ class OASSpecsService implements SpecificationSubService {
 								},
 								(obj, src) => {
 									if (Array.isArray(obj)) return obj.concat(src);
+									return undefined;
 								}
 							);
 						}
@@ -317,6 +318,7 @@ class OASSpecsService implements SpecificationSubService {
 								},
 								(obj, src) => {
 									if (Array.isArray(obj)) return obj.concat(src);
+									return undefined;
 								}
 							);
 						}
@@ -407,7 +409,7 @@ class OASSpecsService implements SpecificationSubService {
 			nullable: field.schema?.is_nullable ?? false,
 		};
 
-		if(field.meta && field.meta.note) {
+		if (field.meta && field.meta.note) {
 			propertyObject.description = field.meta.note;
 		}
 
@@ -548,9 +550,7 @@ class OASSpecsService implements SpecificationSubService {
 			type: 'string',
 			format: 'timestamp',
 		},
-		unknown: {
-			
-		},
+		unknown: {},
 		uuid: {
 			type: 'string',
 			format: 'uuid',

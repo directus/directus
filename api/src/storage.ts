@@ -67,4 +67,5 @@ function getStorageDriver(driver: string) {
 		case 'azure':
 			return AzureBlobWebServicesStorage;
 	}
+	return undefined;
 }

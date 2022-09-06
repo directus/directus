@@ -219,6 +219,7 @@ class FlowManager {
 					} else {
 						return this.executeFlow(flow, data, context);
 					}
+					return undefined;
 				};
 
 				const method = flow.options?.['method'] ?? 'GET';
@@ -253,6 +254,8 @@ class FlowManager {
 					} else {
 						return this.executeFlow(flow, data, context);
 					}
+
+					return undefined;
 				};
 
 				// Default return to $last for manual

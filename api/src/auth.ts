@@ -80,4 +80,5 @@ function getProviderInstance(
 		case 'ldap':
 			return new LDAPAuthDriver(options, config);
 	}
+	return undefined;
 }

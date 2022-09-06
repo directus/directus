@@ -1,4 +1,4 @@
-import { Knex } from 'knex';
+import type { Knex } from 'knex';
 import { getDefaultIndexName } from '../../utils/get-default-index-name.js';
 
 const indexName = getDefaultIndexName('foreign', 'directus_settings', 'storage_default_folder');

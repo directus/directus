@@ -9,7 +9,7 @@
 
 import type { RequestHandler } from 'express';
 
-const extractToken: RequestHandler = (req, res, next) => {
+const extractToken: RequestHandler = (req, _res, next) => {
 	let token: string | null = null;
 
 	if (req.query && req.query['access_token']) {

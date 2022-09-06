@@ -1,4 +1,4 @@
-import { Knex } from 'knex';
+import type { Knex } from 'knex';
 import { merge } from 'lodash';
 
 export async function up(knex: Knex): Promise<void> {

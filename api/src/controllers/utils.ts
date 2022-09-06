@@ -84,7 +84,7 @@ router.post(
 
 router.post(
 	'/revert/:revision',
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req, _res, next) => {
 		const service = new RevisionsService({
 			accountability: req.accountability!,
 			schema: req.schema,
@@ -139,7 +139,7 @@ router.post(
 router.post(
 	'/export/:collection',
 	collectionExists,
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req, _res, next) => {
 		if (!req.body.query) {
 			throw new InvalidPayloadException(`"query" is required.`);
 		}
