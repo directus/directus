@@ -20,7 +20,7 @@ function getStorageConfig(): StorageManagerConfig {
 		disks: {},
 	};
 
-	const locations = toArray(env.STORAGE_LOCATIONS);
+	const locations = toArray(env['STORAGE_LOCATIONS']);
 
 	locations.forEach((location: string) => {
 		location = location.trim();
@@ -30,8 +30,8 @@ function getStorageConfig(): StorageManagerConfig {
 			config: getConfigFromEnv(`STORAGE_${location.toUpperCase()}_`),
 		};
 
-		delete diskConfig.config.publicUrl;
-		delete diskConfig.config.driver;
+		delete diskConfig.config['publicUrl'];
+		delete diskConfig.config['driver'];
 
 		config.disks![location] = diskConfig;
 	});

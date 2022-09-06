@@ -1,11 +1,11 @@
-import { Field, Relation, SchemaOverview } from '@directus/shared/types';
-import { Diff, DiffDeleted, DiffNew } from 'deep-diff';
-import { Knex } from 'knex';
+import type { Field, Relation, SchemaOverview } from '@directus/shared/types';
+import type { Diff, DiffDeleted, DiffNew } from 'deep-diff';
+import type { Knex } from 'knex';
 import { merge, set } from 'lodash';
 import getDatabase from '../database';
 import logger from '../logger';
 import { CollectionsService, FieldsService, RelationsService } from '../services';
-import { Collection, Snapshot, SnapshotDiff, SnapshotField } from '../types';
+import type { Collection, Snapshot, SnapshotDiff, SnapshotField } from '../types';
 import { getSchema } from './get-schema';
 import { getSnapshot } from './get-snapshot';
 import { getSnapshotDiff } from './get-snapshot-diff';
@@ -42,7 +42,7 @@ export async function applySnapshot(
 
 		const createCollections = async (collections: CollectionDelta[]) => {
 			for (const { collection, diff } of collections) {
-				if (diff?.[0].kind === 'N' && diff[0].rhs) {
+				if (diff?.[0]!.kind === 'N' && diff[0].rhs) {
 					// We'll nest the to-be-created fields in the same collection creation, to prevent
 					// creating a collection without a primary key
 					const fields = snapshotDiff.fields
@@ -83,7 +83,7 @@ export async function applySnapshot(
 
 		const deleteCollections = async (collections: CollectionDelta[]) => {
 			for (const { collection, diff } of collections) {
-				if (diff?.[0].kind === 'D') {
+				if (diff?.[0]!.kind === 'D') {
 					const relations = schema.relations.filter(
 						(r) => r.related_collection === collection || r.collection === collection
 					);
@@ -123,7 +123,7 @@ export async function applySnapshot(
 		// Finds all collections that need to be created
 		const filterCollectionsForCreation = ({ diff }: { collection: string; diff: Diff<Collection | undefined>[] }) => {
 			// Check new collections only
-			const isNewCollection = diff[0].kind === 'N';
+			const isNewCollection = diff[0]!.kind === 'N';
 			if (!isNewCollection) return false;
 
 			// Create now if no group
@@ -141,7 +141,7 @@ export async function applySnapshot(
 			// 		NestedCollection - I exist in snapshotDiff as a new collection
 			//			TheCurrentCollectionInIteration - I exist in snapshotDiff as a new collection but will be created as part of NestedCollection
 			const parentWillBeCreatedInThisApply =
-				snapshotDiff.collections.filter(({ collection, diff }) => diff[0].kind === 'N' && collection === groupName)
+				snapshotDiff.collections.filter(({ collection, diff }) => diff[0]!.kind === 'N' && collection === groupName)
 					.length > 0;
 			// Has group, but parent is not new, parent is also not being created in this snapshot apply
 			if (parentExists && !parentWillBeCreatedInThisApply) return true;
@@ -156,12 +156,12 @@ export async function applySnapshot(
 		// delete top level collections (no group) first, then continue with nested collections recursively
 		await deleteCollections(
 			snapshotDiff.collections.filter(
-				({ diff }) => diff[0].kind === 'D' && (diff[0] as DiffDeleted<Collection>).lhs.meta?.group === null
+				({ diff }) => diff[0]!.kind === 'D' && (diff[0] as DiffDeleted<Collection>).lhs.meta?.group === null
 			)
 		);
 
 		for (const { collection, diff } of snapshotDiff.collections) {
-			if (diff?.[0].kind === 'E' || diff?.[0].kind === 'A') {
+			if (diff?.[0]!.kind === 'E' || diff?.[0]!.kind === 'A') {
 				const newValues = snapshot.collections.find((field) => {
 					return field.collection === collection;
 				});
@@ -180,7 +180,7 @@ export async function applySnapshot(
 		const fieldsService = new FieldsService({ knex: trx, schema: await getSchema({ database: trx }) });
 
 		for (const { collection, field, diff } of snapshotDiff.fields) {
-			if (diff?.[0].kind === 'N' && !isNestedMetaUpdate(diff?.[0])) {
+			if (diff?.[0]!.kind === 'N' && !isNestedMetaUpdate(diff?.[0])) {
 				try {
 					await fieldsService.createField(collection, (diff[0] as DiffNew<Field>).rhs);
 				} catch (err) {
@@ -189,7 +189,7 @@ export async function applySnapshot(
 				}
 			}
 
-			if (diff?.[0].kind === 'E' || diff?.[0].kind === 'A' || isNestedMetaUpdate(diff?.[0])) {
+			if (diff?.[0]!.kind === 'E' || diff?.[0]!.kind === 'A' || isNestedMetaUpdate(diff[0]!)) {
 				const newValues = snapshot.fields.find((snapshotField) => {
 					return snapshotField.collection === collection && snapshotField.field === field;
 				});
@@ -206,7 +206,7 @@ export async function applySnapshot(
 				}
 			}
 
-			if (diff?.[0].kind === 'D' && !isNestedMetaUpdate(diff?.[0])) {
+			if (diff?.[0]!.kind === 'D' && !isNestedMetaUpdate(diff?.[0])) {
 				try {
 					await fieldsService.deleteField(collection, field);
 				} catch (err) {
@@ -231,7 +231,7 @@ export async function applySnapshot(
 				set(structure, diffEdit.path!, undefined);
 			}
 
-			if (diff?.[0].kind === 'N') {
+			if (diff?.[0]!.kind === 'N') {
 				try {
 					await relationsService.createOne((diff[0] as DiffNew<Relation>).rhs);
 				} catch (err) {
@@ -240,7 +240,7 @@ export async function applySnapshot(
 				}
 			}
 
-			if (diff?.[0].kind === 'E' || diff?.[0].kind === 'A') {
+			if (diff?.[0]!.kind === 'E' || diff?.[0]!.kind === 'A') {
 				const newValues = snapshot.relations.find((relation) => {
 					return relation.collection === collection && relation.field === field;
 				});
@@ -255,7 +255,7 @@ export async function applySnapshot(
 				}
 			}
 
-			if (diff?.[0].kind === 'D') {
+			if (diff?.[0]!.kind === 'D') {
 				try {
 					await relationsService.deleteOne(collection, field);
 				} catch (err) {

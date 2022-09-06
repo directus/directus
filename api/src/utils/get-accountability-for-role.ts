@@ -1,7 +1,7 @@
-import { Accountability, SchemaOverview } from '@directus/shared/types';
+import type { Accountability, SchemaOverview } from '@directus/shared/types';
 import { getPermissions } from './get-permissions';
 import { InvalidConfigException } from '../exceptions';
-import { Knex } from 'knex';
+import type { Knex } from 'knex';
 
 export async function getAccountabilityForRole(
 	role: null | string,

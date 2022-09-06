@@ -11,7 +11,7 @@ import {
 	snapshotCreateCollectionNotNested,
 	snapshotBeforeDeleteCollection,
 } from '../__utils__/snapshots';
-import { Snapshot } from '../types';
+import type { Snapshot } from '../types';
 
 jest.mock('../../src/database/index', () => {
 	return {

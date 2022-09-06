@@ -1,1 +1,1 @@
-export * from './dist/esm/composables';
+export * from './src/composables';

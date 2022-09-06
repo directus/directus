@@ -3,10 +3,10 @@
  * For all possible keys, see: https://docs.directus.io/self-hosted/config-options/
  */
 
-import dotenv from 'dotenv';
-import fs from 'fs';
+import * as dotenv from 'dotenv';
+import * as fs from 'fs';
 import { clone, toNumber, toString } from 'lodash';
-import path from 'path';
+import * as path from 'path';
 import { requireYAML } from './utils/require-yaml';
 import { toArray } from '@directus/shared/utils';
 import { parseJSON } from '@directus/shared/utils';
@@ -313,7 +313,7 @@ export function refreshEnv(): void {
 }
 
 function getEnv() {
-	const configPath = path.resolve(process.env.CONFIG_PATH || defaults.CONFIG_PATH);
+	const configPath = path.resolve(process.env['CONFIG_PATH'] || defaults['CONFIG_PATH']);
 
 	if (fs.existsSync(configPath) === false) return {};
 
@@ -371,7 +371,9 @@ function getEnvironmentValueWithPrefix(envArray: Array<string>): Array<string | 
 
 function getEnvironmentValueByType(envVariableString: string) {
 	const variableType = getVariableType(envVariableString);
+	if (!variableType) return;
 	const envVariableValue = getEnvVariableValue(envVariableString, variableType);
+	if (!envVariableValue) return;
 
 	switch (variableType) {
 		case 'number':

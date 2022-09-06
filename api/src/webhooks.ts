@@ -2,10 +2,10 @@ import axios from 'axios';
 import getDatabase from './database';
 import emitter from './emitter';
 import logger from './logger';
-import { Webhook, WebhookHeader } from './types';
+import type { Webhook, WebhookHeader } from './types';
 import { WebhooksService } from './services';
 import { getSchema } from './utils/get-schema';
-import { ActionHandler } from '@directus/shared/types';
+import type { ActionHandler } from '@directus/shared/types';
 import { getMessenger } from './messenger';
 import { JobQueue } from './utils/job-queue';
 
@@ -18,7 +18,7 @@ export async function init(): Promise<void> {
 	const messenger = getMessenger();
 
 	messenger.subscribe('webhooks', (event) => {
-		if (event.type === 'reload') {
+		if (event['type'] === 'reload') {
 			reloadQueue.enqueue(async () => {
 				await reload();
 			});
@@ -56,7 +56,7 @@ export function unregister(): void {
 
 function createHandler(webhook: Webhook, event: string): ActionHandler {
 	return async (meta, context) => {
-		if (webhook.collections.includes(meta.collection) === false) return;
+		if (webhook.collections.includes(meta['collection']) === false) return;
 
 		const webhookPayload = {
 			event,

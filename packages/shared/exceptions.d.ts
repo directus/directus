@@ -1,1 +1,1 @@
-export * from './dist/esm/exceptions';
+export * from './src/exceptions';

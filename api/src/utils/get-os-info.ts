@@ -1,4 +1,4 @@
-import os from 'os';
+import * as os from 'os';
 
 /**
  * Get current host OS information

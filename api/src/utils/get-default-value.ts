@@ -1,6 +1,6 @@
-import { SchemaOverview } from '@directus/schema/dist/types/overview';
+import type { SchemaOverview } from '@directus/schema/dist/types/overview';
 import { parseJSON } from '@directus/shared/utils';
-import { Column } from 'knex-schema-inspector/dist/types/column';
+import type { Column } from 'knex-schema-inspector/dist/types/column';
 import env from '../env';
 import logger from '../logger';
 import getLocalType from './get-local-type';
@@ -50,7 +50,7 @@ function castToObject(value: any): any | any[] {
 		try {
 			return parseJSON(value);
 		} catch (err: any) {
-			if (env.NODE_ENV === 'development') {
+			if (env['NODE_ENV'] === 'development') {
 				logger.error(err);
 			}
 

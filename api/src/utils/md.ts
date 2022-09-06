@@ -1,5 +1,5 @@
 import { marked } from 'marked';
-import sanitizeHTML from 'sanitize-html';
+import * as sanitizeHTML from 'sanitize-html';
 
 /**
  * Render and sanitize a markdown string

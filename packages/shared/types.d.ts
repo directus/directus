@@ -1,1 +1,1 @@
-export * from './dist/esm/types';
+export * from './src/types';

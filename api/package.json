@@ -1,6 +1,7 @@
 {
 	"name": "directus",
 	"version": "9.17.0",
+	"type": "module",
 	"license": "GPL-3.0-only",
 	"homepage": "https://github.com/directus/directus#readme",
 	"description": "Directus is a real-time API and App dashboard for managing SQL database content.",
@@ -136,7 +137,7 @@
 		"marked": "^4.0.16",
 		"micromustache": "^8.0.3",
 		"mime-types": "^2.1.35",
-		"ms": "^2.1.3",
+		"ms": "^3.0.0-canary.1",
 		"nanoid": "^3.1.23",
 		"node-cron": "^3.0.2",
 		"node-machine-id": "^1.1.12",
