@@ -244,6 +244,8 @@ paths:
     $ref: './paths/utils/import.yaml'
   /utils/export/{collection}:
     $ref: './paths/utils/export.yaml'
+  /utils/transform-export:
+    $ref: './paths/utils/transform-export.yaml'
   /utils/cache/clear:
     $ref: './paths/utils/cache-clear.yaml'
   /utils/random/string:

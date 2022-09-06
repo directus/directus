@@ -1,0 +1,31 @@
+post:
+  summary: Transform Export Items
+  description: Transform the input JSON string to another format
+  operationId: transform-export
+  requestBody:
+    content:
+      multipart/form-data:
+        schema:
+          type: object
+          properties:
+            input:
+              description: The JSON string to be transformed
+              type: string
+              required: true
+            format:
+              description: Which file format to transform to
+              type: string
+              enum: ['csv', 'xml', 'json']
+              required: true
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: object
+  tags:
+    - Utilities
