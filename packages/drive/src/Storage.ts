@@ -9,7 +9,7 @@ import type {
 	FileListResponse,
 	DeleteResponse,
 	Range,
-} from './types';
+} from './types.js';
 
 export default abstract class Storage {
 	/**

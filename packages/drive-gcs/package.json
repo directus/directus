@@ -1,6 +1,7 @@
 {
 	"name": "@directus/drive-gcs",
 	"version": "9.17.0",
+	"type": "module",
 	"description": "Google Cloud Storage driver for @directus/drive",
 	"license": "MIT",
 	"main": "dist/index.js",
@@ -32,28 +33,25 @@
 		"cleanup": "run-p cleanup:*",
 		"cleanup:dist": "rimraf ./dist",
 		"cleanup:coverage": "rimraf ./coverage",
-		"test:watch": "jest --coverage --watchAll",
-		"test": "jest --coverage",
+		"test": "vitest run",
+		"test:coverage": "vitest run --coverage",
+		"test:watch": "vitest",
 		"dev": "pnpm build -w --preserveWatchOutput --incremental"
 	},
 	"dependencies": {
 		"@directus/drive": "workspace:*",
 		"@google-cloud/storage": "^5.8.5",
-		"lodash": "4.17.21",
-		"normalize-path": "^3.0.0"
+		"lodash": "4.17.21"
 	},
 	"devDependencies": {
 		"@lukeed/uuid": "2.0.0",
 		"@types/fs-extra": "9.0.13",
-		"@types/jest": "27.0.3",
 		"@types/lodash": "^4.14.182",
 		"@types/node": "16.11.9",
-		"@types/normalize-path": "3.0.0",
 		"dotenv": "10.0.0",
-		"jest": "27.3.1",
+		"vitest": "^0.18.1",
 		"npm-run-all": "4.1.5",
-		"ts-jest": "27.0.7",
-		"typescript": "4.5.2"
+		"typescript": "4.8.2"
 	},
 	"publishConfig": {
 		"access": "public"
