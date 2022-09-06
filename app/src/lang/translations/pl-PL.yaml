@@ -187,6 +187,7 @@ revision_post_create: Oto jak wyglądał ten przedmiot podczas jego tworzenia.
 revision_post_update: Oto jak wyglądał ten element po aktualizacji.
 changes_made: Poniżej przedstawiono konkretne zmiany wprowadzone w tej rewizji.
 no_relational_data: Należy pamiętać, że nie uwzględniono tu danych dotyczących relacji.
+bottom: Dolny
 hide_field: Ukryj pole
 hide_field_on_detail: Ukryj pole w szczegółach
 show_field_on_detail: Pokaż pole w szczegółach

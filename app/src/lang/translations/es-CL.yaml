@@ -187,6 +187,7 @@ revision_post_create: Este es el aspecto de este elemento cuando fue creado.
 revision_post_update: Así se vería el elemento después de la actualización.
 changes_made: A continuación se muestran los cambios específicos realizados en esta revisión.
 no_relational_data: Tenga en cuenta que los datos relacionales no se incluyen aquí.
+bottom: Fondo
 hide_field: Ocultar campo
 hide_field_on_detail: Ocultar campo en el Detalle
 show_field_on_detail: Mostrar campo en el Detalle
@@ -534,6 +535,7 @@ activity_item: Elemento de actividad
 action: Acción
 ip_address: Dirección IP
 user_agent: Agente de usuario
+origin: Origen
 webhooks: Webhooks
 decimals: Decimales
 value_decimals: Valor Decimal
@@ -1040,6 +1042,7 @@ fields:
     user: Realizado por
     comment: Comentar
     user_agent: Agente de usuario
+    origin: Origen
     ip: Dirección IP
     revisions: Revisiones
   directus_collections:

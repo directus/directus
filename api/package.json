@@ -1,6 +1,6 @@
 {
 	"name": "directus",
-	"version": "9.17.0",
+	"version": "9.17.1",
 	"license": "GPL-3.0-only",
 	"homepage": "https://github.com/directus/directus#readme",
 	"description": "Directus is a real-time API and App dashboard for managing SQL database content.",
@@ -158,7 +158,6 @@
 		"snappy": "^7.1.1",
 		"stream-json": "^1.7.4",
 		"strip-bom-stream": "^4.0.0",
-		"supertest": "^6.2.3",
 		"tmp-promise": "^3.0.3",
 		"update-check": "^1.5.4",
 		"uuid": "^8.3.2",
@@ -172,6 +171,7 @@
 		"memcached": "^2.2.2",
 		"mysql": "^2.18.1",
 		"nodemailer-mailgun-transport": "^2.1.4",
+		"nodemailer-sendgrid": "^1.0.3",
 		"pg": "^8.7.3",
 		"sqlite3": "^5.0.8",
 		"tedious": "^13.0.0"
@@ -227,6 +227,7 @@
 		"jest": "28.1.2",
 		"knex-mock-client": "1.8.4",
 		"rimraf": "3.0.2",
+		"supertest": "^6.2.3",
 		"ts-jest": "28.0.5",
 		"ts-node": "^10.8.2",
 		"ts-node-dev": "1.1.8",

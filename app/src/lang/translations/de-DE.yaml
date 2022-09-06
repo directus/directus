@@ -187,6 +187,7 @@ revision_post_create: So sah dieses Element bei der Erstellung aus.
 revision_post_update: So sieht dieses Element nach der Überarbeitung aus.
 changes_made: Dies sind die spezifischen Änderungen, die in dieser Revision vorgenommen wurden.
 no_relational_data: Beachten Sie, dass relationale Daten hier nicht enthalten sind.
+bottom: Unten
 hide_field: Felder ausblenden
 hide_field_on_detail: In Detailansicht ausblenden
 show_field_on_detail: In Detailansicht einblenden

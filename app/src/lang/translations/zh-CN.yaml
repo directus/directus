@@ -601,6 +601,7 @@ errors:
   UNKNOWN: 未知错误
   GRAPHQL_VALIDATION_EXCEPTION: GraphQL 验证异常
   SERVICE_UNAVAILABLE: 服务不可用
+  UNSUPPORTED_MEDIA_TYPE: 不支持的媒体类型。
   TOKEN_EXPIRED: 令牌已过期
   RANGE_NOT_SATISFIABLE: 无效的范围
 security: 安全

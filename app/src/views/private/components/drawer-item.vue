@@ -30,31 +30,32 @@
 					:title="file.title"
 					:in-modal="true"
 				/>
+				<div class="drawer-item-order" :class="{ swap: swapFormOrder }">
+					<v-form
+						:disabled="disabled"
+						:loading="loading"
+						:initial-values="initialValues?.[junctionField]"
+						:primary-key="relatedPrimaryKey"
+						:model-value="internalEdits?.[junctionField]"
+						:fields="relatedCollectionFields"
+						:validation-errors="junctionField ? validationErrors : undefined"
+						autofocus
+						:show-divider="!swapFormOrder"
+						@update:model-value="setRelationEdits"
+					/>
 
-				<v-form
-					:disabled="disabled"
-					:loading="loading"
-					:initial-values="initialValues?.[junctionField]"
-					:primary-key="relatedPrimaryKey"
-					:model-value="internalEdits?.[junctionField]"
-					:fields="relatedCollectionFields"
-					:validation-errors="junctionField ? validationErrors : undefined"
-					autofocus
-					@update:model-value="setRelationEdits"
-				/>
-
-				<v-divider v-if="showDivider" />
+					<v-form
+						v-model="internalEdits"
+						:disabled="disabled"
+						:loading="loading"
+						:initial-values="initialValues"
+						:show-divider="swapFormOrder"
+						:primary-key="primaryKey"
+						:fields="fields"
+						:validation-errors="!junctionField ? validationErrors : undefined"
+					/>
+				</div>
 			</template>
-
-			<v-form
-				v-model="internalEdits"
-				:disabled="disabled"
-				:loading="loading"
-				:initial-values="initialValues"
-				:primary-key="primaryKey"
-				:fields="fields"
-				:validation-errors="!junctionField ? validationErrors : undefined"
-			/>
 		</div>
 	</v-drawer>
 </template>
@@ -90,6 +91,7 @@ interface Props {
 	// If this drawer-item is opened from a relational interface, we need to force-block the field
 	// that relates back to the parent item.
 	circularField?: string | null;
+	junctionFieldLocation?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -100,6 +102,7 @@ const props = withDefaults(defineProps<Props>(), {
 	disabled: false,
 	relatedPrimaryKey: '+',
 	circularField: null,
+	junctionFieldLocation: 'bottom',
 });
 
 const emit = defineEmits(['update:active', 'input']);
@@ -123,6 +126,10 @@ const { info: collectionInfo, primaryKeyField } = useCollection(collection);
 
 const isNew = computed(() => props.primaryKey === '+' && props.relatedPrimaryKey === '+');
 
+const swapFormOrder = computed(() => {
+	return props.junctionFieldLocation === 'top';
+});
+
 const title = computed(() => {
 	const collection = relatedCollectionInfo?.value || collectionInfo.value!;
 
@@ -139,13 +146,6 @@ const title = computed(() => {
 	return isNew.value
 		? t('creating_in', { collection: collection.name })
 		: t('editing_in', { collection: collection.name });
-});
-
-const showDivider = computed(() => {
-	return (
-		fieldsStore.getFieldsForCollection(props.collection).filter((field: Field) => field.meta?.hidden !== true).length >
-		0
-	);
 });
 
 const { fields: relatedCollectionFields } = usePermissions(
@@ -391,5 +391,11 @@ function useActions() {
 .drawer-item-content {
 	padding: var(--content-padding);
 	padding-bottom: var(--content-padding-bottom);
+	.drawer-item-order {
+		&.swap {
+			display: flex;
+			flex-direction: column-reverse;
+		}
+	}
 }
 </style>

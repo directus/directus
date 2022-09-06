@@ -109,6 +109,7 @@ delete_bookmark_copy: >-
   {bookmark} yer işaretini kaldırmak istediğinize emin misiniz? Bu işlem geri alınamaz.
 delete_personal_bookmark: Kişisel Yer İşaretini Sil
 delete_role_bookmark: Rol İşaretini Sil
+delete_global_bookmark: Genel Yer İmini Sil
 logoutReason:
   SIGN_OUT: Oturum kapatıldı
   SESSION_EXPIRED: Oturumun süresi doldu
@@ -308,6 +309,7 @@ primary_key: Birincil Anahtar
 foreign_key: Yabancı Anahtar
 finish_setup: Kurulumu Bitir
 dismiss: Yoksay
+toggle_raw_editor: Ham Düzenleyiciyi Aç/Kapat
 raw_value: İşlenmemiş veri
 copy_raw_value: İşlenmemiş Veriyi Kopyala
 copy_raw_value_success: Kopyalandı
@@ -485,6 +487,7 @@ disabled: Devre Dışı
 information: Bilgi
 report_bug: Hata Bildir
 request_feature: Özellik Talep Et
+request_body: İstek Gövdesi
 interface_not_found: '"{interface}" arayüzü bulunamadı.'
 reset_interface: Arayüzü Sıfırla
 display_not_found: '"{display}" ekranı bulunamadı.'
@@ -572,6 +575,7 @@ errors:
   INVALID_OTP: Tek kullanımlık parola hatalı
   INVALID_PAYLOAD: Geçersiz yük
   INVALID_QUERY: Geçersiz sorgu
+  INVALID_IP: IP Adresine izin verilmiyor
   INVALID_USER: Kullanıcı kimliği doğrulanamadı
   ITEM_LIMIT_REACHED: Öge limite ulaşıldı
   ITEM_NOT_FOUND: Öğe bulunamadı
@@ -587,6 +591,7 @@ errors:
   VALUE_OUT_OF_RANGE: Değer sınır dışında
   INVALID_FOREIGN_KEY: Geçersiz yabancı anahtar
   UNKNOWN: Beklenmeyen Hata
+  RANGE_NOT_SATISFIABLE: Geçersiz aralık
 security: Güvenlik
 value_hashed: Değer Güvenli Şekilde Hashlendi
 bookmark_name: Yer işareti adı...
@@ -754,6 +759,8 @@ view_trigger: Tetikleyiciyi Görüntüle
 create_trigger: Tetikleyici Oluşturun
 trigger_setup: Tetikleyici Ayarı
 change_trigger: Tetikleyici Değiştirin
+set_flow_active: Akışı Etkin Olarak Ayarla
+set_flow_inactive: Akışı Etkin Değil Olarak Ayarla
 edit_flow: Akışı Düzenle
 delete_flow: Akışı Sil
 no_flows: Akış yok
@@ -799,6 +806,7 @@ dashboard_name: Pano Adı
 no_data: Hiç Veri Yok
 no_data_in_flow: Bu Akış içinde hiçbir veri üretilmedi veya erişilmedi
 accountability: İzlenebilirlik
+payload: Yük
 details: Ayrıntılar
 full_screen: Tam Ekran
 full_text_search: Tam Metin Araması
@@ -1362,6 +1370,8 @@ sign_out_confirm: Oturumunuzu kapatmak istediğinize emin misiniz?
 something_went_wrong: Bir şeyler ters gitti.
 sort_direction: Sıralama Yönü
 export_location: Konumu Dışa Aktar
+export_started: Dışa Aktarma Başladı
+export_started_copy: Dışa aktarma başladı. İndirilmeye hazır olduğunda bilgilendirileceksiniz.
 sort_asc: Artan Şekilde Sırala
 sort_desc: Azalan Şekilde Sırala
 template: Şablon
@@ -1376,6 +1386,8 @@ list: Liste
 search_filter: Ara ve Filtrele
 item_link: Öğe Bağlantısı
 show_link_to_item: Ögenin bağlantısını göster
+navigate_to_item: Öğeye Git
+undo_removed_item: Kaldırılan Öğeyi Geri Al
 remove_item: Oğeyi Sil
 delete_item: Öğeyi Sil
 interfaces:
@@ -1390,6 +1402,7 @@ interfaces:
     all: Tümü
     any: Herhangi Biri
     and: ve
+    of_the_following: aşağıdakilerden
     no_rules: Hiç yapılandırılmış kural yok
     change_value: Değeri değiştirmek için tıklayın
     placeholder: Kuralları buraya sürükleyin
@@ -1888,12 +1901,14 @@ panels:
     function: İşlev
     x_axis: X-Ekseni
     y_axis: Y-Ekseni
+    datasets: Veri Setleri
     show_legend: Göstergeyi Göster
     show_marker: Araç İpucu İşaretçisini Göster
     group_and_function: Hem bir grubu hem de bir işlevi dahil etmeli veya atlamalısınız.
   meter:
     name: Metre
     select_max_value: Bir maksimum değer seçmelisiniz.
+    max_greater_than_zero: Maksimum değer 0'dan büyük olmalıdır.
     select_field: Bir alan seçmelisiniz.
     select_collection: Bir koleksiyon seçmelisiniz.
     function: İşlev
@@ -1909,9 +1924,11 @@ panels:
     monochrome_color: Tek Renk
   variable:
     name: Global Değişken
+    description: Diğer Panellerin filtrelerinde kullanım için global bir değer belirleyin
     variable_key: Değişken Anahtar
 triggers:
   common:
+    response_body: Yanıt Gövdesi
     response_body_all: Tüm Veri
     response_body_last: Son İşlem Verileri
   webhook:
@@ -1924,9 +1941,11 @@ triggers:
     cron: Aralık
   manual:
     name: Elle
+    description: Seçilen koleksiyon(lar) içindeki manuel çalıştırma tetikleyicileri
     collection_and_item: Koleksiyon ve Öğe Sayfaları
     collection_only: Yalnızca Koleksiyon Sayfası
     item_only: Yalnızca Öğe Sayfası
+item_payload_placeholder: Bu, öğenin alan değerlerini güncellemek için kullanılan JSON'dur...
 operations:
   condition:
     name: Durum
@@ -1934,21 +1953,27 @@ operations:
     name: Komut Dosyasını Çalıştır
   item-create:
     name: Veri Oluştur
+    description: Veritabanında öğeler oluştur
+    payload: Yük
     emit_events: Olayları Yayımla
   item-delete:
     name: Veriyi Sil
+    description: Veritabanındaki öğeleri sil
     emit_events: Olayları Yayımla
     key: Kimlikler
     query: Sorgula
   item-read:
     name: Veriyi oku
+    description: Veritabanından öğeleri oku
     key: Kimlikler
     query: Sorgula
     emit_events: Olayları Yayımla
   item-update:
     name: Verileri Güncelle
+    description: Veritabanındaki öğeleri güncelleyin
     emit_events: Olayları Yayımla
     key: Kimlikler
+    payload: Yük
     query: Sorgula
   log:
     name: Konsolda Oturum Aç
@@ -1977,6 +2002,8 @@ operations:
     name: Uyku
     description: Belirli bir milisaniye kadar bekleyin
     milliseconds: Milisaniye
+  transform:
+    name: Yükü Dönüştür
   trigger:
     name: Tetik Akışı
     description: Bu verileri başka bir akışa iletin
