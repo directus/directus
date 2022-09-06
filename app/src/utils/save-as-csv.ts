@@ -6,6 +6,8 @@ import { DisplayConfig, Field, Item } from '@directus/shared/types';
 import { saveAs } from 'file-saver';
 import { parse } from 'json2csv';
 import { ref } from 'vue';
+import api from '@/api';
+import { unexpectedError } from './unexpected-error';
 
 /**
  * Saves the given collection + items combination as a CSV file
@@ -63,20 +65,34 @@ export async function saveAsCSV(collection: string, fields: string[], items: Ite
 					  })
 					: value;
 			} else {
-				parsedItem[name] = value;
+				parsedItem[name] = value ?? null;
 			}
 		}
 
 		parsedItems.push(parsedItem);
 	}
 
-	const csvContent = parse(parsedItems);
-	const now = new Date();
+	try {
+		const formData = new FormData();
+		formData.set('input', JSON.stringify(parsedItems));
+		formData.set('format', 'json');
 
-	const dateString = `${now.getFullYear()}${(now.getMonth() + 1).toString().padStart(2, '0')}${now
-		.getDate()
-		.toString()
-		.padStart(2, '0')}`;
+		const response = await api.post('/utils/transform-export', formData, {
+			headers: {
+				'Content-Type': 'multipart/form-data',
+			},
+		});
 
-	saveAs(new Blob([csvContent], { type: 'text/csv;charset=utf-8' }), `${collection}-${dateString}.csv`);
+		const csvContent = parse(JSON.parse(response.data.data));
+		const now = new Date();
+
+		const dateString = `${now.getFullYear()}${(now.getMonth() + 1).toString().padStart(2, '0')}${now
+			.getDate()
+			.toString()
+			.padStart(2, '0')}`;
+
+		saveAs(new Blob([csvContent], { type: 'text/csv;charset=utf-8' }), `${collection}-${dateString}.csv`);
+	} catch (err: any) {
+		unexpectedError(err);
+	}
 }

@@ -164,6 +164,56 @@ router.post(
 );
 
 router.post(
+	'/transform-export',
+	asyncHandler(async (req, res, next) => {
+		if (req.is('multipart/form-data') === false || !req.headers['content-type'])
+			throw new UnsupportedMediaTypeException(`Unsupported Content-Type header`);
+
+		const service = new ExportService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		const busboy = Busboy({ headers: req.headers });
+
+		let inputString: string;
+		let format: 'xml' | 'csv' | 'json';
+
+		busboy.on('field', (fieldname, val) => {
+			if (fieldname === 'input') {
+				inputString = val;
+			} else if (fieldname === 'format') {
+				if (!['xml', 'csv', 'json'].includes(val)) {
+					return next(new ForbiddenException());
+				}
+				format = val as any;
+			}
+		});
+
+		busboy.on('error', (err: Error) => next(err));
+
+		busboy.on('close', async () => {
+			if (!inputString || !format) {
+				return next(new ForbiddenException());
+			}
+
+			try {
+				const input = JSON.parse(inputString);
+				const result = await service.transform(input, format);
+
+				res.locals.payload = { data: result };
+				next();
+			} catch (error) {
+				return next(error);
+			}
+		});
+
+		req.pipe(busboy);
+	}),
+	respond
+);
+
+router.post(
 	'/cache/clear',
 	asyncHandler(async (req, res) => {
 		if (req.accountability?.admin !== true) {
