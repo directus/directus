@@ -1,10 +1,10 @@
 import * as Joi from 'joi';
 import { isPlainObject, uniq } from 'lodash';
-import { InvalidQueryException } from '../exceptions';
+import { InvalidQueryException } from '../exceptions/index.js';
 import type { Query } from '@directus/shared/types';
 import { stringify } from 'wellknown';
-import { calculateFieldDepth } from './calculate-field-depth';
-import env from '../env';
+import { calculateFieldDepth } from './calculate-field-depth.js';
+import env from '../env.js';
 
 const querySchema = Joi.object({
 	fields: Joi.array().items(Joi.string()),

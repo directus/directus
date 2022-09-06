@@ -1,10 +1,10 @@
-import { appAccessMinimalPermissions } from '../database/system-data/app-access-permissions';
-import { ItemsService, QueryOptions } from '../services/items';
-import type { AbstractServiceOptions, Item, PrimaryKey, MutationOptions } from '../types';
+import { appAccessMinimalPermissions } from '../database/system-data/app-access-permissions/index.js';
+import { ItemsService, QueryOptions } from '../services/items.js';
+import type { AbstractServiceOptions, Item, PrimaryKey, MutationOptions } from '../types/index.js';
 import type { Query, PermissionsAction } from '@directus/shared/types';
-import { filterItems } from '../utils/filter-items';
+import { filterItems } from '../utils/filter-items.js';
 import type Keyv from 'keyv';
-import { getCache, clearSystemCache } from '../cache';
+import { getCache, clearSystemCache } from '../cache.js';
 
 export class PermissionsService extends ItemsService {
 	systemCache: Keyv<any>;

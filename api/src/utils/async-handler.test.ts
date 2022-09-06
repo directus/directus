@@ -1,6 +1,6 @@
 import type { RequestHandler, NextFunction, Request, Response } from 'express';
 import '../../src/types/express.d.ts';
-import asyncHandler from './async-handler';
+import asyncHandler from './async-handler.js';
 
 let mockRequest: Partial<Request & { token?: string }>;
 let mockResponse: Partial<Response>;

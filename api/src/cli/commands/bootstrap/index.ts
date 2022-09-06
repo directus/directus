@@ -1,15 +1,15 @@
 import type { Knex } from 'knex';
 import { nanoid } from 'nanoid';
-import runMigrations from '../../../database/migrations/run';
-import installDatabase from '../../../database/seeds/run';
-import env from '../../../env';
-import logger from '../../../logger';
-import { getSchema } from '../../../utils/get-schema';
-import { RolesService, UsersService, SettingsService } from '../../../services';
+import runMigrations from '../../../database/migrations/run.js';
+import installDatabase from '../../../database/seeds/run.js';
+import env from '../../../env.js';
+import logger from '../../../logger.js';
+import { getSchema } from '../../../utils/get-schema.js';
+import { RolesService, UsersService, SettingsService } from '../../../services/index.js';
 
-import getDatabase, { isInstalled, validateDatabaseConnection, hasDatabaseConnection } from '../../../database';
+import getDatabase, { isInstalled, validateDatabaseConnection, hasDatabaseConnection } from '../../../database/index.js';
 import type { SchemaOverview } from '@directus/shared/types';
-import { defaultAdminRole, defaultAdminUser } from '../../utils/defaults';
+import { defaultAdminRole, defaultAdminUser } from '../../utils/defaults.js';
 
 export default async function bootstrap({ skipAdminInit }: { skipAdminInit?: boolean }): Promise<void> {
 	logger.info('Initializing bootstrap...');

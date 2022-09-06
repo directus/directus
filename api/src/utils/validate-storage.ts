@@ -1,5 +1,5 @@
-import env from '../env';
-import logger from '../logger';
+import env from '../env.js';
+import logger from '../logger.js';
 import { access } from 'fs-extra';
 import { constants } from 'fs';
 import * as path from 'path';

@@ -1,11 +1,11 @@
 import * as express from 'express';
-import { ForbiddenException } from '../exceptions';
-import { respond } from '../middleware/respond';
-import useCollection from '../middleware/use-collection';
-import { validateBatch } from '../middleware/validate-batch';
-import { FoldersService, MetaService } from '../services';
-import type { PrimaryKey } from '../types';
-import asyncHandler from '../utils/async-handler';
+import { ForbiddenException } from '../exceptions/index.js';
+import { respond } from '../middleware/respond.js';
+import useCollection from '../middleware/use-collection.js';
+import { validateBatch } from '../middleware/validate-batch.js';
+import { FoldersService, MetaService } from '../services/index.js';
+import type { PrimaryKey } from '../types/index.js';
+import asyncHandler from '../utils/async-handler.js';
 
 const router = express.Router();
 

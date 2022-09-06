@@ -1,6 +1,6 @@
 import { stringify as geojsonToWKT, GeoJSONGeometry } from 'wellknown';
 import type { Field, RawField } from '@directus/shared/types';
-import { DatabaseHelper } from '../types';
+import { DatabaseHelper } from '../types.js';
 import type { Knex } from 'knex';
 
 export abstract class GeometryHelper extends DatabaseHelper {

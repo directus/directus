@@ -1,12 +1,12 @@
 import * as express from 'express';
 import * as Joi from 'joi';
-import { InvalidCredentialsException, ForbiddenException, InvalidPayloadException } from '../exceptions';
-import { respond } from '../middleware/respond';
-import useCollection from '../middleware/use-collection';
-import { validateBatch } from '../middleware/validate-batch';
-import { AuthenticationService, MetaService, UsersService, RolesService, TFAService } from '../services';
-import type { PrimaryKey } from '../types';
-import asyncHandler from '../utils/async-handler';
+import { InvalidCredentialsException, ForbiddenException, InvalidPayloadException } from '../exceptions/index.js';
+import { respond } from '../middleware/respond.js';
+import useCollection from '../middleware/use-collection.js';
+import { validateBatch } from '../middleware/validate-batch.js';
+import { AuthenticationService, MetaService, UsersService, RolesService, TFAService } from '../services/index.js';
+import type { PrimaryKey } from '../types/index.js';
+import asyncHandler from '../utils/async-handler.js';
 import type { Role } from '@directus/shared/types';
 
 const router = express.Router();

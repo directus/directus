@@ -3,9 +3,9 @@
  */
 
 import type { RequestHandler } from 'express';
-import { systemCollectionRows } from '../database/system-data/collections';
-import { ForbiddenException } from '../exceptions';
-import asyncHandler from '../utils/async-handler';
+import { systemCollectionRows } from '../database/system-data/collections/index.js';
+import { ForbiddenException } from '../exceptions/index.js';
+import asyncHandler from '../utils/async-handler.js';
 
 const collectionExists: RequestHandler = asyncHandler(async (req, res, next) => {
 	if (!req.params['collection']) return next();

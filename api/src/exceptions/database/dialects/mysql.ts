@@ -1,10 +1,10 @@
-import { ContainsNullValuesException } from '../contains-null-values';
-import { InvalidForeignKeyException } from '../invalid-foreign-key';
-import { NotNullViolationException } from '../not-null-violation';
-import { RecordNotUniqueException } from '../record-not-unique';
-import { ValueOutOfRangeException } from '../value-out-of-range';
-import { ValueTooLongException } from '../value-too-long';
-import type { MySQLError } from './types';
+import { ContainsNullValuesException } from '../contains-null-values.js';
+import { InvalidForeignKeyException } from '../invalid-foreign-key.js';
+import { NotNullViolationException } from '../not-null-violation.js';
+import { RecordNotUniqueException } from '../record-not-unique.js';
+import { ValueOutOfRangeException } from '../value-out-of-range.js';
+import { ValueTooLongException } from '../value-too-long.js';
+import type { MySQLError } from './types.js';
 
 enum MySQLErrorCodes {
 	UNIQUE_VIOLATION = 'ER_DUP_ENTRY',

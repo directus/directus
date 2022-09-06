@@ -1,11 +1,11 @@
 import * as express from 'express';
-import { ForbiddenException, RouteNotFoundException } from '../exceptions';
-import collectionExists from '../middleware/collection-exists';
-import { respond } from '../middleware/respond';
-import { validateBatch } from '../middleware/validate-batch';
-import { ItemsService, MetaService } from '../services';
-import type { PrimaryKey } from '../types';
-import asyncHandler from '../utils/async-handler';
+import { ForbiddenException, RouteNotFoundException } from '../exceptions/index.js';
+import collectionExists from '../middleware/collection-exists.js';
+import { respond } from '../middleware/respond.js';
+import { validateBatch } from '../middleware/validate-batch.js';
+import { ItemsService, MetaService } from '../services/index.js';
+import type { PrimaryKey } from '../types/index.js';
+import asyncHandler from '../utils/async-handler.js';
 
 const router = express.Router();
 

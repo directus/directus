@@ -1,6 +1,6 @@
-import type { AbstractServiceOptions, Item, PrimaryKey, Webhook, MutationOptions } from '../types';
-import { ItemsService } from './items';
-import { getMessenger, Messenger } from '../messenger';
+import type { AbstractServiceOptions, Item, PrimaryKey, Webhook, MutationOptions } from '../types/index.js';
+import { ItemsService } from './items.js';
+import { getMessenger, Messenger } from '../messenger.js';
 
 export class WebhooksService extends ItemsService<Webhook> {
 	messenger: Messenger;

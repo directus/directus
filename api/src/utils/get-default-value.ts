@@ -1,9 +1,9 @@
 import type { SchemaOverview } from '@directus/schema/dist/types/overview';
 import { parseJSON } from '@directus/shared/utils';
 import type { Column } from 'knex-schema-inspector/dist/types/column';
-import env from '../env';
-import logger from '../logger';
-import getLocalType from './get-local-type';
+import env from '../env.js';
+import logger from '../logger.js';
+import getLocalType from './get-local-type.js';
 
 export default function getDefaultValue(
 	column: SchemaOverview[string]['columns'][string] | Column

@@ -4,8 +4,8 @@ import { nanoid } from 'nanoid';
 import * as path from 'path';
 import { promisify } from 'util';
 import { v4 as uuid } from 'uuid';
-import type { Credentials } from '../create-db-connection';
-import type { drivers } from '../drivers';
+import type { Credentials } from '../create-db-connection.js';
+import type { drivers } from '../drivers.js';
 
 const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);

@@ -2,13 +2,13 @@ import { Accountability, Action, PermissionsAction, Query, SchemaOverview } from
 import type Keyv from 'keyv';
 import type { Knex } from 'knex';
 import { assign, clone, cloneDeep, omit, pick, without } from 'lodash';
-import { getCache } from '../cache';
-import getDatabase from '../database';
-import runAST from '../database/run-ast';
-import emitter from '../emitter';
-import env from '../env';
-import { ForbiddenException, InvalidPayloadException } from '../exceptions';
-import { translateDatabaseError } from '../exceptions/database/translate';
+import { getCache } from '../cache.js';
+import getDatabase from '../database/index.js';
+import runAST from '../database/run-ast.js';
+import emitter from '../emitter.js';
+import env from '../env.js';
+import { ForbiddenException, InvalidPayloadException } from '../exceptions/index.js';
+import { translateDatabaseError } from '../exceptions/database/translate.js';
 import type {
 	AbstractService,
 	AbstractServiceOptions,
@@ -16,12 +16,12 @@ import type {
 	Item as AnyItem,
 	MutationOptions,
 	PrimaryKey,
-} from '../types';
-import getASTFromQuery from '../utils/get-ast-from-query';
-import { validateKeys } from '../utils/validate-keys';
-import { AuthorizationService } from './authorization';
-import { ActivityService, RevisionsService } from './index';
-import { PayloadService } from './payload';
+} from '../types/index.js';
+import getASTFromQuery from '../utils/get-ast-from-query.js';
+import { validateKeys } from '../utils/validate-keys.js';
+import { AuthorizationService } from './authorization.js';
+import { ActivityService, RevisionsService } from './index.js';
+import { PayloadService } from './payload.js';
 
 export type QueryOptions = {
 	stripNonRequested?: boolean;

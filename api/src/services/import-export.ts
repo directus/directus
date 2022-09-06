@@ -11,20 +11,20 @@ import { set, transform } from 'lodash';
 import * as StreamArray from 'stream-json/streamers/StreamArray';
 import * as stripBomStream from 'strip-bom-stream';
 import { file as createTmpFile } from 'tmp-promise';
-import getDatabase from '../database';
-import env from '../env';
+import getDatabase from '../database/index.js';
+import env from '../env.js';
 import {
 	ForbiddenException,
 	InvalidPayloadException,
 	ServiceUnavailableException,
 	UnsupportedMediaTypeException,
-} from '../exceptions';
-import logger from '../logger';
-import type { AbstractServiceOptions, File } from '../types';
-import { getDateFormatted } from '../utils/get-date-formatted';
-import { FilesService } from './files';
-import { ItemsService } from './items';
-import { NotificationsService } from './notifications';
+} from '../exceptions/index.js';
+import logger from '../logger.js';
+import type { AbstractServiceOptions, File } from '../types/index.js';
+import { getDateFormatted } from '../utils/get-date-formatted.js';
+import { FilesService } from './files.js';
+import { ItemsService } from './items.js';
+import { NotificationsService } from './notifications.js';
 
 export class ImportService {
 	knex: Knex;

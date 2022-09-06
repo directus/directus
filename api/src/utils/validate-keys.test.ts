@@ -1,4 +1,4 @@
-import { validateKeys } from '../../src/utils/validate-keys';
+import { validateKeys } from '../../src/utils/validate-keys.js';
 import type { SchemaOverview } from '@directus/shared/types';
 import { v4 as uuid } from 'uuid';
 

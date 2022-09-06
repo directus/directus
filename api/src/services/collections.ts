@@ -1,19 +1,19 @@
 import SchemaInspector from '@directus/schema';
 import type { Knex } from 'knex';
-import { getCache, clearSystemCache } from '../cache';
-import { ALIAS_TYPES } from '../constants';
-import getDatabase, { getSchemaInspector } from '../database';
-import { systemCollectionRows } from '../database/system-data/collections';
-import env from '../env';
-import { ForbiddenException, InvalidPayloadException } from '../exceptions';
-import { FieldsService } from '../services/fields';
-import { ItemsService } from '../services/items';
+import { getCache, clearSystemCache } from '../cache.js';
+import { ALIAS_TYPES } from '../constants.js';
+import getDatabase, { getSchemaInspector } from '../database/index.js';
+import { systemCollectionRows } from '../database/system-data/collections/index.js';
+import env from '../env.js';
+import { ForbiddenException, InvalidPayloadException } from '../exceptions/index.js';
+import { FieldsService } from '../services/fields.js';
+import { ItemsService } from '../services/items.js';
 import type Keyv from 'keyv';
-import type { AbstractServiceOptions, Collection, CollectionMeta, MutationOptions } from '../types';
+import type { AbstractServiceOptions, Collection, CollectionMeta, MutationOptions } from '../types/index.js';
 import type { Accountability, FieldMeta, RawField, SchemaOverview } from '@directus/shared/types';
 import type { Table } from 'knex-schema-inspector/dist/types/table';
 import { addFieldFlag } from '@directus/shared/utils';
-import { getHelpers, Helpers } from '../database/helpers';
+import { getHelpers, Helpers } from '../database/helpers/index.js';
 
 export type RawCollection = {
 	collection: string;

@@ -1,10 +1,10 @@
 import type { Knex } from 'knex';
-import getDatabase from '../database';
-import { systemCollectionRows } from '../database/system-data/collections';
-import { ForbiddenException, InvalidPayloadException } from '../exceptions';
-import type { AbstractServiceOptions, PrimaryKey } from '../types';
+import getDatabase from '../database/index.js';
+import { systemCollectionRows } from '../database/system-data/collections/index.js';
+import { ForbiddenException, InvalidPayloadException } from '../exceptions/index.js';
+import type { AbstractServiceOptions, PrimaryKey } from '../types/index.js';
 import type { Accountability, SchemaOverview } from '@directus/shared/types';
-import emitter from '../emitter';
+import emitter from '../emitter.js';
 
 export class UtilsService {
 	knex: Knex;

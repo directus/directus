@@ -1,1 +1,1 @@
-export * from './src/types';
+export * from './dist/types';

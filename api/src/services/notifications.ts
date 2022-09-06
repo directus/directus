@@ -1,10 +1,10 @@
-import type { AbstractServiceOptions, PrimaryKey, MutationOptions } from '../types';
-import { ItemsService } from './items';
+import type { AbstractServiceOptions, PrimaryKey, MutationOptions } from '../types/index.js';
+import { ItemsService } from './items.js';
 import type { Notification } from '@directus/shared/types';
-import { md } from '../utils/md';
-import { UsersService } from './users';
-import { MailService } from './mail';
-import logger from '../logger';
+import { md } from '../utils/md.js';
+import { UsersService } from './users.js';
+import { MailService } from './mail/index.js';
+import logger from '../logger.js';
 
 export class NotificationsService extends ItemsService {
 	usersService: UsersService;

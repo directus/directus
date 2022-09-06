@@ -1,15 +1,15 @@
 import SchemaInspector from '@directus/schema';
 import { knex, Knex } from 'knex';
 import { performance } from 'perf_hooks';
-import env from '../env';
-import logger from '../logger';
-import { getConfigFromEnv } from '../utils/get-config-from-env';
-import { validateEnv } from '../utils/validate-env';
+import env from '../env.js';
+import logger from '../logger.js';
+import { getConfigFromEnv } from '../utils/get-config-from-env.js';
+import { validateEnv } from '../utils/validate-env.js';
 import * as fse from 'fs-extra';
 import * as path from 'path';
 import { merge } from 'lodash';
 import { promisify } from 'util';
-import { getHelpers } from './helpers';
+import { getHelpers } from './helpers/index.js';
 
 let database: Knex | null = null;
 let inspector: ReturnType<typeof SchemaInspector> | null = null;

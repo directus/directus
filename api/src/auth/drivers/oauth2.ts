@@ -5,25 +5,25 @@ import * as flatten from 'flat';
 import * as jwt from 'jsonwebtoken';
 import ms from 'ms';
 import { Client, errors, generators, Issuer } from 'openid-client';
-import { getAuthProvider } from '../../auth';
-import env from '../../env';
+import { getAuthProvider } from '../../auth.js';
+import env from '../../env.js';
 import {
 	InvalidConfigException,
 	InvalidCredentialsException,
 	InvalidProviderException,
 	InvalidTokenException,
 	ServiceUnavailableException,
-} from '../../exceptions';
-import { RecordNotUniqueException } from '../../exceptions/database/record-not-unique';
-import logger from '../../logger';
-import { respond } from '../../middleware/respond';
-import { AuthenticationService, UsersService } from '../../services';
-import type { AuthData, AuthDriverOptions, User } from '../../types';
-import asyncHandler from '../../utils/async-handler';
-import { getConfigFromEnv } from '../../utils/get-config-from-env';
-import { getIPFromReq } from '../../utils/get-ip-from-req';
-import { Url } from '../../utils/url';
-import { LocalAuthDriver } from './local';
+} from '../../exceptions/index.js';
+import { RecordNotUniqueException } from '../../exceptions/database/record-not-unique.js';
+import logger from '../../logger.js';
+import { respond } from '../../middleware/respond.js';
+import { AuthenticationService, UsersService } from '../../services/index.js';
+import type { AuthData, AuthDriverOptions, User } from '../../types/index.js';
+import asyncHandler from '../../utils/async-handler.js';
+import { getConfigFromEnv } from '../../utils/get-config-from-env.js';
+import { getIPFromReq } from '../../utils/get-ip-from-req.js';
+import { Url } from '../../utils/url.js';
+import { LocalAuthDriver } from './local.js';
 
 export class OAuth2AuthDriver extends LocalAuthDriver {
 	client: Client;

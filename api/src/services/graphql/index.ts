@@ -43,52 +43,52 @@ import {
 import type { Knex } from 'knex';
 import { flatten, get, mapKeys, merge, omit, pick, set, transform, uniq } from 'lodash';
 import ms from 'ms';
-import { clearSystemCache, getCache } from '../../cache';
-import { DEFAULT_AUTH_PROVIDER, GENERATE_SPECIAL } from '../../constants';
+import { clearSystemCache, getCache } from '../../cache.js';
+import { DEFAULT_AUTH_PROVIDER, GENERATE_SPECIAL } from '../../constants.js';
 import { REGEX_BETWEEN_PARENS } from '@directus/shared/constants';
-import getDatabase from '../../database';
-import env from '../../env';
-import { ForbiddenException, GraphQLValidationException, InvalidPayloadException } from '../../exceptions';
-import { getExtensionManager } from '../../extensions';
-import type { AbstractServiceOptions, GraphQLParams, Item } from '../../types';
-import { generateHash } from '../../utils/generate-hash';
-import { getGraphQLType } from '../../utils/get-graphql-type';
-import { reduceSchema } from '../../utils/reduce-schema';
-import { sanitizeQuery } from '../../utils/sanitize-query';
-import { validateQuery } from '../../utils/validate-query';
-import { ActivityService } from '../activity';
-import { AuthenticationService } from '../authentication';
-import { CollectionsService } from '../collections';
-import { FieldsService } from '../fields';
-import { FilesService } from '../files';
-import { FlowsService } from '../flows';
-import { FoldersService } from '../folders';
-import { ItemsService } from '../items';
-import { NotificationsService } from '../notifications';
-import { OperationsService } from '../operations';
-import { PermissionsService } from '../permissions';
-import { PresetsService } from '../presets';
-import { RelationsService } from '../relations';
-import { RevisionsService } from '../revisions';
-import { RolesService } from '../roles';
-import { ServerService } from '../server';
-import { SettingsService } from '../settings';
-import { SharesService } from '../shares';
-import { SpecificationService } from '../specifications';
-import { TFAService } from '../tfa';
-import { UsersService } from '../users';
-import { UtilsService } from '../utils';
-import { WebhooksService } from '../webhooks';
+import getDatabase from '../../database/index.js';
+import env from '../../env.js';
+import { ForbiddenException, GraphQLValidationException, InvalidPayloadException } from '../../exceptions/index.js';
+import { getExtensionManager } from '../../extensions.js';
+import type { AbstractServiceOptions, GraphQLParams, Item } from '../../types/index.js';
+import { generateHash } from '../../utils/generate-hash.js';
+import { getGraphQLType } from '../../utils/get-graphql-type.js';
+import { reduceSchema } from '../../utils/reduce-schema.js';
+import { sanitizeQuery } from '../../utils/sanitize-query.js';
+import { validateQuery } from '../../utils/validate-query.js';
+import { ActivityService } from '../activity.js';
+import { AuthenticationService } from '../authentication.js';
+import { CollectionsService } from '../collections.js';
+import { FieldsService } from '../fields.js';
+import { FilesService } from '../files.js';
+import { FlowsService } from '../flows.js';
+import { FoldersService } from '../folders.js';
+import { ItemsService } from '../items.js';
+import { NotificationsService } from '../notifications.js';
+import { OperationsService } from '../operations.js';
+import { PermissionsService } from '../permissions.js';
+import { PresetsService } from '../presets.js';
+import { RelationsService } from '../relations.js';
+import { RevisionsService } from '../revisions.js';
+import { RolesService } from '../roles.js';
+import { ServerService } from '../server.js';
+import { SettingsService } from '../settings.js';
+import { SharesService } from '../shares.js';
+import { SpecificationService } from '../specifications.js';
+import { TFAService } from '../tfa.js';
+import { UsersService } from '../users.js';
+import { UtilsService } from '../utils.js';
+import { WebhooksService } from '../webhooks.js';
 
-import { GraphQLDate } from './types/date';
-import { GraphQLGeoJSON } from './types/geojson';
-import { GraphQLStringOrFloat } from './types/string-or-float';
-import { GraphQLVoid } from './types/void';
+import { GraphQLDate } from './types/date.js';
+import { GraphQLGeoJSON } from './types/geojson.js';
+import { GraphQLStringOrFloat } from './types/string-or-float.js';
+import { GraphQLVoid } from './types/void.js';
 
 import type { PrimaryKey } from '@directus/shared/types';
 
-import { addPathToValidationError } from './utils/add-path-to-validation-error';
-import { GraphQLHash } from './types/hash';
+import { addPathToValidationError } from './utils/add-path-to-validation-error.js';
+import { GraphQLHash } from './types/hash.js';
 
 const validationRules = Array.from(specifiedRules);
 
@@ -228,15 +228,16 @@ export class GraphQLService {
 			schemaComposer.Query.addFields(
 				readableCollections.reduce((acc, collection) => {
 					const collectionName = this.scope === 'items' ? collection.collection : collection.collection.substring(9);
-					acc[collectionName] = ReadCollectionTypes[collection.collection].getResolver(collection.collection);
 
-					if (this.schema.collections[collection.collection].singleton === false) {
-						acc[`${collectionName}_by_id`] = ReadCollectionTypes[collection.collection].getResolver(
+					acc[collectionName] = ReadCollectionTypes[collection.collection]?.getResolver(collection.collection) as any;
+
+					if (this.schema.collections[collection.collection]!.singleton === false) {
+						acc[`${collectionName}_by_id`] = ReadCollectionTypes[collection.collection]?.getResolver(
 							`${collection.collection}_by_id`
-						);
-						acc[`${collectionName}_aggregated`] = ReadCollectionTypes[collection.collection].getResolver(
+						) as any;
+						acc[`${collectionName}_aggregated`] = ReadCollectionTypes[collection.collection]?.getResolver(
 							`${collection.collection}_aggregated`
-						);
+						) as any;
 					}
 
 					return acc;
@@ -259,12 +260,12 @@ export class GraphQLService {
 					.filter((collection) => READ_ONLY.includes(collection.collection) === false)
 					.reduce((acc, collection) => {
 						const collectionName = this.scope === 'items' ? collection.collection : collection.collection.substring(9);
-						acc[`create_${collectionName}_items`] = CreateCollectionTypes[collection.collection].getResolver(
+						acc[`create_${collectionName}_items`] = CreateCollectionTypes[collection.collection]?.getResolver(
 							`create_${collection.collection}_items`
-						);
-						acc[`create_${collectionName}_item`] = CreateCollectionTypes[collection.collection].getResolver(
+						) as any;
+						acc[`create_${collectionName}_item`] = CreateCollectionTypes[collection.collection]?.getResolver(
 							`create_${collection.collection}_item`
-						);
+						) as any;
 						return acc;
 					}, {} as ObjectTypeComposerFieldConfigMapDefinition<any, any>)
 			);
@@ -280,21 +281,21 @@ export class GraphQLService {
 						const collectionName = this.scope === 'items' ? collection.collection : collection.collection.substring(9);
 
 						if (collection.singleton) {
-							acc[`update_${collectionName}`] = UpdateCollectionTypes[collection.collection].getResolver(
+							acc[`update_${collectionName}`] = UpdateCollectionTypes[collection.collection]?.getResolver(
 								`update_${collection.collection}`
-							);
+							) as any;
 						} else {
-							acc[`update_${collectionName}_items`] = UpdateCollectionTypes[collection.collection].getResolver(
+							acc[`update_${collectionName}_items`] = UpdateCollectionTypes[collection.collection]?.getResolver(
 								`update_${collection.collection}_items`
-							);
+							) as any;
 
-							acc[`update_${collectionName}_batch`] = UpdateCollectionTypes[collection.collection].getResolver(
+							acc[`update_${collectionName}_batch`] = UpdateCollectionTypes[collection.collection]?.getResolver(
 								`update_${collection.collection}_batch`
-							);
+							) as any;
 
-							acc[`update_${collectionName}_item`] = UpdateCollectionTypes[collection.collection].getResolver(
+							acc[`update_${collectionName}_item`] = UpdateCollectionTypes[collection.collection]?.getResolver(
 								`update_${collection.collection}_item`
-							);
+							) as any;
 						}
 
 						return acc;
@@ -311,13 +312,13 @@ export class GraphQLService {
 					.reduce((acc, collection) => {
 						const collectionName = this.scope === 'items' ? collection.collection : collection.collection.substring(9);
 
-						acc[`delete_${collectionName}_items`] = DeleteCollectionTypes['many'].getResolver(
+						acc[`delete_${collectionName}_items`] = DeleteCollectionTypes['many']?.getResolver(
 							`delete_${collection.collection}_items`
-						);
+						) as any;
 
-						acc[`delete_${collectionName}_item`] = DeleteCollectionTypes['one'].getResolver(
+						acc[`delete_${collectionName}_item`] = DeleteCollectionTypes['one']?.getResolver(
 							`delete_${collection.collection}_item`
-						);
+						) as any;
 
 						return acc;
 					}, {} as ObjectTypeComposerFieldConfigMapDefinition<any, any>)
@@ -501,7 +502,7 @@ export class GraphQLService {
 						[relation.field]: {
 							type: new GraphQLUnionType({
 								name: `${relation.collection}_${relation.field}_union`,
-								types: relation.meta.one_allowed_collections.map((collection) => CollectionTypes[collection].getType()),
+								types: relation.meta.one_allowed_collections.map((collection) => CollectionTypes[collection]!.getType()),
 								resolveType(value, context, info) {
 									let path: (string | number)[] = [];
 									let currentPath = info.path;
@@ -520,7 +521,7 @@ export class GraphQLService {
 									}
 
 									const collection = parent[relation.meta!.one_collection_field!];
-									return CollectionTypes[collection].getType();
+									return CollectionTypes[collection]!.getType();
 								},
 							}),
 							resolve: (obj: Record<string, any>, _, __, info) => {

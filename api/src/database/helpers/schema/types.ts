@@ -1,5 +1,5 @@
-import { getDatabaseClient } from '../../index';
-import { DatabaseHelper } from '../types';
+import { getDatabaseClient } from '../../index.js';
+import { DatabaseHelper } from '../types.js';
 import type { KNEX_TYPES } from '@directus/shared/constants';
 
 type Clients = 'mysql' | 'postgres' | 'cockroachdb' | 'sqlite' | 'oracle' | 'mssql' | 'redshift';

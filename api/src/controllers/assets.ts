@@ -4,16 +4,16 @@ import { Router } from 'express';
 import helmet from 'helmet';
 import { merge, pick } from 'lodash';
 import ms from 'ms';
-import { ASSET_TRANSFORM_QUERY_KEYS, SYSTEM_ASSET_ALLOW_LIST } from '../constants';
-import getDatabase from '../database';
-import env from '../env';
-import { InvalidQueryException, RangeNotSatisfiableException } from '../exceptions';
-import logger from '../logger';
-import useCollection from '../middleware/use-collection';
-import { AssetsService, PayloadService } from '../services';
-import { TransformationMethods, TransformationParams, TransformationPreset } from '../types/assets';
-import asyncHandler from '../utils/async-handler';
-import { getConfigFromEnv } from '../utils/get-config-from-env';
+import { ASSET_TRANSFORM_QUERY_KEYS, SYSTEM_ASSET_ALLOW_LIST } from '../constants.js';
+import getDatabase from '../database/index.js';
+import env from '../env.js';
+import { InvalidQueryException, RangeNotSatisfiableException } from '../exceptions/index.js';
+import logger from '../logger.js';
+import useCollection from '../middleware/use-collection.js';
+import { AssetsService, PayloadService } from '../services/index.js';
+import { TransformationMethods, TransformationParams, TransformationPreset } from '../types/assets.js';
+import asyncHandler from '../utils/async-handler.js';
+import { getConfigFromEnv } from '../utils/get-config-from-env.js';
 
 const router = Router();
 

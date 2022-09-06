@@ -6,20 +6,20 @@ import type {
 	PrimaryKey,
 	MutationOptions,
 	DirectusTokenPayload,
-} from '../types';
-import { ItemsService } from './items';
+} from '../types/index.js';
+import { ItemsService } from './items.js';
 import * as argon2 from 'argon2';
 import * as jwt from 'jsonwebtoken';
 import ms from 'ms';
-import { InvalidCredentialsException, ForbiddenException } from '../exceptions';
-import env from '../env';
+import { InvalidCredentialsException, ForbiddenException } from '../exceptions/index.js';
+import env from '../env.js';
 import { nanoid } from 'nanoid';
-import { AuthorizationService } from './authorization';
-import { UsersService } from './users';
-import { MailService } from './mail';
-import { userName } from '../utils/user-name';
-import { md } from '../utils/md';
-import { Url } from '../utils/url';
+import { AuthorizationService } from './authorization.js';
+import { UsersService } from './users.js';
+import { MailService } from './mail/index.js';
+import { userName } from '../utils/user-name.js';
+import { md } from '../utils/md.js';
+import { Url } from '../utils/url.js';
 
 export class SharesService extends ItemsService {
 	authorizationService: AuthorizationService;

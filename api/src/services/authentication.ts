@@ -5,23 +5,23 @@ import { clone, cloneDeep } from 'lodash';
 import ms from 'ms';
 import { nanoid } from 'nanoid';
 import { performance } from 'perf_hooks';
-import { getAuthProvider } from '../auth';
-import { DEFAULT_AUTH_PROVIDER } from '../constants';
-import getDatabase from '../database';
-import emitter from '../emitter';
-import env from '../env';
+import { getAuthProvider } from '../auth.js';
+import { DEFAULT_AUTH_PROVIDER } from '../constants.js';
+import getDatabase from '../database/index.js';
+import emitter from '../emitter.js';
+import env from '../env.js';
 import {
 	InvalidCredentialsException,
 	InvalidOTPException,
 	InvalidProviderException,
 	UserSuspendedException,
-} from '../exceptions';
-import { createRateLimiter } from '../rate-limiter';
-import type { AbstractServiceOptions, DirectusTokenPayload, LoginResult, Session, User } from '../types';
-import { stall } from '../utils/stall';
-import { ActivityService } from './activity';
-import { SettingsService } from './settings';
-import { TFAService } from './tfa';
+} from '../exceptions/index.js';
+import { createRateLimiter } from '../rate-limiter.js';
+import type { AbstractServiceOptions, DirectusTokenPayload, LoginResult, Session, User } from '../types/index.js';
+import { stall } from '../utils/stall.js';
+import { ActivityService } from './activity.js';
+import { SettingsService } from './settings.js';
+import { TFAService } from './tfa.js';
 
 const loginAttemptsLimiter = createRateLimiter({ duration: 0 });
 

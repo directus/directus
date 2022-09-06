@@ -1,6 +1,6 @@
 import knex, { Knex } from 'knex';
 import { getTracker, MockClient, Tracker } from 'knex-mock-client';
-import { CollectionsService, FieldsService, RelationsService, SpecificationService } from '../../src/services';
+import { CollectionsService, FieldsService, RelationsService, SpecificationService } from '../../src/services/index.js';
 
 jest.mock('../../src/database/index', () => {
 	return { getDatabaseClient: jest.fn().mockReturnValue('postgres') };

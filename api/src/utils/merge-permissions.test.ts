@@ -1,4 +1,4 @@
-import { mergePermission } from '../../src/utils/merge-permissions';
+import { mergePermission } from '../../src/utils/merge-permissions.js';
 import type { Permission, Filter } from '@directus/shared/types';
 
 const fullFilter = {} as Filter;

@@ -2,15 +2,15 @@ import * as fse from 'fs-extra';
 import type { Knex } from 'knex';
 import { Liquid } from 'liquidjs';
 import * as path from 'path';
-import getDatabase from '../../database';
-import env from '../../env';
-import { InvalidPayloadException } from '../../exceptions';
-import logger from '../../logger';
-import type { AbstractServiceOptions } from '../../types';
+import getDatabase from '../../database/index.js';
+import env from '../../env.js';
+import { InvalidPayloadException } from '../../exceptions/index.js';
+import logger from '../../logger.js';
+import type { AbstractServiceOptions } from '../../types/index.js';
 import type { Accountability, SchemaOverview } from '@directus/shared/types';
-import getMailer from '../../mailer';
+import getMailer from '../../mailer.js';
 import type { Transporter, SendMailOptions } from 'nodemailer';
-import { Url } from '../../utils/url';
+import { Url } from '../../utils/url.js';
 
 const liquidEngine = new Liquid({
 	root: [path.resolve(env['EXTENSIONS_PATH'], 'templates'), path.resolve(__dirname, 'templates')],

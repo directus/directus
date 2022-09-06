@@ -1,4 +1,4 @@
-import type { Collection } from './collection';
+import type { Collection } from './collection.js';
 import type { Relation, RelationMeta, Field, FieldMeta } from '@directus/shared/types';
 import type { Diff } from 'deep-diff';
 

@@ -1,6 +1,6 @@
 import { VMError } from 'vm2';
 
-import config from './index';
+import config from './index.js';
 
 test('Rejects when modules are used without modules being allowed', async () => {
 	const testCode = `

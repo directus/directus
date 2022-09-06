@@ -3,9 +3,9 @@ import ms from 'ms';
 import { machineId } from 'node-machine-id';
 import * as os from 'os';
 // @ts-ignore
-import { version } from '../../package.json';
-import env from '../env';
-import logger from '../logger';
+import { version } from '../../package.json.js';
+import env from '../env.js';
+import logger from '../logger.js';
 import { toArray } from '@directus/shared/utils';
 
 export async function track(event: string): Promise<void> {

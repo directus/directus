@@ -1,9 +1,9 @@
 import type { Knex } from 'knex';
-import getDatabase from '../database';
-import { ForbiddenException } from '../exceptions';
-import type { AbstractServiceOptions } from '../types';
+import getDatabase from '../database/index.js';
+import { ForbiddenException } from '../exceptions/index.js';
+import type { AbstractServiceOptions } from '../types/index.js';
 import type { Accountability, Query, SchemaOverview } from '@directus/shared/types';
-import { applyFilter, applySearch } from '../utils/apply-query';
+import { applyFilter, applySearch } from '../utils/apply-query.js';
 
 export class MetaService {
 	knex: Knex;

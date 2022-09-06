@@ -1,13 +1,13 @@
 import * as express from 'express';
-import { UUID_REGEX } from '../constants';
-import { ForbiddenException } from '../exceptions';
-import { getFlowManager } from '../flows';
-import { respond } from '../middleware/respond';
-import useCollection from '../middleware/use-collection';
-import { validateBatch } from '../middleware/validate-batch';
-import { MetaService, FlowsService } from '../services';
-import type { PrimaryKey } from '../types';
-import asyncHandler from '../utils/async-handler';
+import { UUID_REGEX } from '../constants.js';
+import { ForbiddenException } from '../exceptions/index.js';
+import { getFlowManager } from '../flows.js';
+import { respond } from '../middleware/respond.js';
+import useCollection from '../middleware/use-collection.js';
+import { validateBatch } from '../middleware/validate-batch.js';
+import { MetaService, FlowsService } from '../services/index.js';
+import type { PrimaryKey } from '../types/index.js';
+import asyncHandler from '../utils/async-handler.js';
 
 const router = express.Router();
 

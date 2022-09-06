@@ -1,13 +1,13 @@
-import getDatabase from './database';
-import env from './env';
-import logger from './logger';
-import type { AuthDriver } from './auth/auth';
-import { LocalAuthDriver, OAuth2AuthDriver, OpenIDAuthDriver, LDAPAuthDriver } from './auth/drivers';
-import { DEFAULT_AUTH_PROVIDER } from './constants';
-import { InvalidConfigException } from './exceptions';
-import type { AuthDriverOptions } from './types';
-import { getConfigFromEnv } from './utils/get-config-from-env';
-import { getSchema } from './utils/get-schema';
+import getDatabase from './database/index.js';
+import env from './env.js';
+import logger from './logger.js';
+import type { AuthDriver } from './auth/auth.js';
+import { LocalAuthDriver, OAuth2AuthDriver, OpenIDAuthDriver, LDAPAuthDriver } from './auth/drivers/index.js';
+import { DEFAULT_AUTH_PROVIDER } from './constants.js';
+import { InvalidConfigException } from './exceptions/index.js';
+import type { AuthDriverOptions } from './types/index.js';
+import { getConfigFromEnv } from './utils/get-config-from-env.js';
+import { getSchema } from './utils/get-schema.js';
 import { toArray } from '@directus/shared/utils';
 
 const providerNames = toArray(env['AUTH_PROVIDERS']);

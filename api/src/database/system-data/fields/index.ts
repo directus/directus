@@ -3,8 +3,8 @@ import { merge } from 'lodash';
 import * as path from 'path';
 import formatTitle from '@directus/format-title';
 import type { FieldMeta } from '@directus/shared/types';
-import { getAuthProviders } from '../../../utils/get-auth-providers';
-import { requireYAML } from '../../../utils/require-yaml';
+import { getAuthProviders } from '../../../utils/get-auth-providers.js';
+import { requireYAML } from '../../../utils/require-yaml.js';
 
 const defaults = requireYAML(require.resolve('./_defaults.yaml'));
 const fieldData = fse.readdirSync(path.resolve(__dirname));

@@ -1,11 +1,11 @@
 // @ts-nocheck
 
 import jwt from 'jsonwebtoken';
-import getDatabase from '../database';
-import emitter from '../emitter';
-import env from '../env';
-import { InvalidCredentialsException } from '../exceptions';
-import { handler } from './authenticate';
+import getDatabase from '../database.js';
+import emitter from '../emitter.js';
+import env from '../env.js';
+import { InvalidCredentialsException } from '../exceptions.js';
+import { handler } from './authenticate.js';
 import '../../src/types/express.d.ts';
 
 jest.mock('../../src/database');

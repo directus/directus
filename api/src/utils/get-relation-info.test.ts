@@ -1,4 +1,4 @@
-import { getRelationInfo } from '../../src/utils/get-relation-info';
+import { getRelationInfo } from '../../src/utils/get-relation-info.js';
 import type { Relation, DeepPartial } from '@directus/shared/types';
 
 describe('getRelationInfo', () => {

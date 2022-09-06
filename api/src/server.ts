@@ -5,14 +5,14 @@ import * as https from 'https';
 import { once } from 'lodash';
 import * as qs from 'qs';
 import * as url from 'url';
-import createApp from './app';
-import getDatabase from './database';
-import env from './env';
-import logger from './logger';
-import emitter from './emitter';
+import createApp from './app.js';
+import getDatabase from './database/index.js';
+import env from './env.js';
+import logger from './logger.js';
+import emitter from './emitter.js';
 import checkForUpdate from 'update-check';
 import { readFileSync } from 'node:fs';
-import { getConfigFromEnv } from './utils/get-config-from-env';
+import { getConfigFromEnv } from './utils/get-config-from-env.js';
 
 const pkg = JSON.parse(readFileSync('../package.json', 'utf8'));
 

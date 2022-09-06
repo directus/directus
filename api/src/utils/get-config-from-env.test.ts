@@ -1,4 +1,4 @@
-import { getConfigFromEnv } from '../../src/utils/get-config-from-env';
+import { getConfigFromEnv } from '../../src/utils/get-config-from-env.js';
 
 jest.mock('../../src/env', () => ({
 	OBJECT_BRAND__COLOR: 'purple',

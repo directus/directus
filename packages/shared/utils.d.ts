@@ -1,1 +1,1 @@
-export * from './src/utils';
+export * from './dist/utils';

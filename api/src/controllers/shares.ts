@@ -1,14 +1,14 @@
 import * as express from 'express';
-import { ForbiddenException, InvalidPayloadException } from '../exceptions';
-import { respond } from '../middleware/respond';
-import useCollection from '../middleware/use-collection';
-import { validateBatch } from '../middleware/validate-batch';
-import { SharesService } from '../services';
-import type { PrimaryKey } from '../types';
-import asyncHandler from '../utils/async-handler';
-import { UUID_REGEX, COOKIE_OPTIONS } from '../constants';
+import { ForbiddenException, InvalidPayloadException } from '../exceptions.js';
+import { respond } from '../middleware/respond.js';
+import useCollection from '../middleware/use-collection.js';
+import { validateBatch } from '../middleware/validate-batch.js';
+import { SharesService } from '../services.js';
+import type { PrimaryKey } from '../types.js';
+import asyncHandler from '../utils/async-handler.js';
+import { UUID_REGEX, COOKIE_OPTIONS } from '../constants.js';
 import * as Joi from 'joi';
-import env from '../env';
+import env from '../env.js';
 
 const router = express.Router();
 

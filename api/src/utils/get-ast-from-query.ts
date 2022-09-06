@@ -4,9 +4,9 @@
 
 import type { Knex } from 'knex';
 import { cloneDeep, mapKeys, omitBy, uniq, isEmpty } from 'lodash';
-import type { AST, FieldNode, FunctionFieldNode, NestedCollectionNode } from '../types';
+import type { AST, FieldNode, FunctionFieldNode, NestedCollectionNode } from '../types/index.js';
 import type { Query, PermissionsAction, Accountability, SchemaOverview } from '@directus/shared/types';
-import { getRelationType } from '../utils/get-relation-type';
+import { getRelationType } from '../utils/get-relation-type.js';
 import { REGEX_BETWEEN_PARENS } from '@directus/shared/constants';
 
 type GetASTOptions = {

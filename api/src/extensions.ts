@@ -1,6 +1,6 @@
 import express, { Router } from 'express';
 import path from 'path';
-import {
+import type {
 	ActionHandler,
 	ApiExtension,
 	AppExtensionType,
@@ -32,29 +32,29 @@ import {
 	HYBRID_EXTENSION_TYPES,
 	PACKAGE_EXTENSION_TYPES,
 } from '@directus/shared/constants';
-import getDatabase from './database';
-import emitter, { Emitter } from './emitter';
-import env from './env';
-import * as exceptions from './exceptions';
+import getDatabase from './database/index.js';
+import emitter, { Emitter } from './emitter.js';
+import env from './env.js';
+import * as exceptions from './exceptions/index.js';
 import * as sharedExceptions from '@directus/shared/exceptions';
-import logger from './logger';
+import logger from './logger.js';
 import fse from 'fs-extra';
-import { getSchema } from './utils/get-schema';
+import { getSchema } from './utils/get-schema.js';
 
-import * as services from './services';
+import * as services from './services/index.js';
 import { schedule, validate } from 'node-cron';
 import { rollup } from 'rollup';
 import virtual from '@rollup/plugin-virtual';
 import alias from '@rollup/plugin-alias';
-import { Url } from './utils/url';
-import getModuleDefault from './utils/get-module-default';
+import { Url } from './utils/url.js';
+import getModuleDefault from './utils/get-module-default.js';
 import { clone, escapeRegExp } from 'lodash';
 import chokidar, { FSWatcher } from 'chokidar';
 import { isIn, isTypeIn, pluralize } from '@directus/shared/utils';
-import { getFlowManager } from './flows';
+import { getFlowManager } from './flows.js';
 import globby from 'globby';
-import { EventHandler } from './types';
-import { JobQueue } from './utils/job-queue';
+import type { EventHandler } from './types/index.js';
+import { JobQueue } from './utils/job-queue.js';
 
 let extensionManager: ExtensionManager | undefined;
 
@@ -82,7 +82,7 @@ type Options = {
 
 const defaultOptions: Options = {
 	schedule: true,
-	watch: env.EXTENSIONS_AUTO_RELOAD && env.NODE_ENV !== 'development',
+	watch: env['EXTENSIONS_AUTO_RELOAD'] && env['NODE_ENV'] !== 'development',
 };
 
 class ExtensionManager {
@@ -188,7 +188,7 @@ class ExtensionManager {
 
 	private async load(): Promise<void> {
 		try {
-			await ensureExtensionDirs(env.EXTENSIONS_PATH, env.SERVE_APP ? EXTENSION_TYPES : API_OR_HYBRID_EXTENSION_TYPES);
+			await ensureExtensionDirs(env['EXTENSIONS_PATH'], env['SERVE_APP'] ? EXTENSION_TYPES : API_OR_HYBRID_EXTENSION_TYPES);
 
 			this.extensions = await this.getExtensions();
 		} catch (err: any) {
@@ -200,7 +200,7 @@ class ExtensionManager {
 		this.registerEndpoints();
 		await this.registerOperations();
 
-		if (env.SERVE_APP) {
+		if (env['SERVE_APP']) {
 			this.appExtensions = await this.generateExtensionBundles();
 		}
 
@@ -214,7 +214,7 @@ class ExtensionManager {
 
 		this.apiEmitter.offAll();
 
-		if (env.SERVE_APP) {
+		if (env['SERVE_APP']) {
 			this.appExtensions = {};
 		}
 
@@ -225,9 +225,9 @@ class ExtensionManager {
 		if (!this.watcher) {
 			logger.info('Watching extensions for changes...');
 
-			const localExtensionPaths = (env.SERVE_APP ? EXTENSION_TYPES : API_OR_HYBRID_EXTENSION_TYPES).flatMap((type) => {
+			const localExtensionPaths = (env['SERVE_APP'] ? EXTENSION_TYPES : API_OR_HYBRID_EXTENSION_TYPES).flatMap((type) => {
 				const typeDir = path.posix.join(
-					path.relative('.', env.EXTENSIONS_PATH).split(path.sep).join(path.posix.sep),
+					path.relative('.', env['EXTENSIONS_PATH']).split(path.sep).join(path.posix.sep),
 					pluralize(type)
 				);
 
@@ -280,11 +280,11 @@ class ExtensionManager {
 	private async getExtensions(): Promise<Extension[]> {
 		const packageExtensions = await getPackageExtensions(
 			'.',
-			env.SERVE_APP ? EXTENSION_PACKAGE_TYPES : API_OR_HYBRID_EXTENSION_PACKAGE_TYPES
+			env['SERVE_APP'] ? EXTENSION_PACKAGE_TYPES : API_OR_HYBRID_EXTENSION_PACKAGE_TYPES
 		);
 		const localExtensions = await getLocalExtensions(
-			env.EXTENSIONS_PATH,
-			env.SERVE_APP ? EXTENSION_TYPES : API_OR_HYBRID_EXTENSION_TYPES
+			env['EXTENSIONS_PATH'],
+			env['SERVE_APP'] ? EXTENSION_TYPES : API_OR_HYBRID_EXTENSION_TYPES
 		);
 
 		return [...packageExtensions, ...localExtensions];
@@ -334,7 +334,7 @@ class ExtensionManager {
 			const depName = appDir.find((file) => depRegex.test(file));
 
 			if (depName) {
-				const depUrl = new Url(env.PUBLIC_URL).addPath('admin', 'assets', depName);
+				const depUrl = new Url(env['PUBLIC_URL']).addPath('admin', 'assets', depName);
 
 				depsMapping[dep] = depUrl.toString({ rootRelative: true });
 			} else {
@@ -402,7 +402,7 @@ class ExtensionManager {
 
 		for (const operation of [...internalOperations, ...operations]) {
 			try {
-				const operationPath = path.resolve(operation.path, operation.entrypoint.api);
+				const operationPath = path.resolve(operation.path, operation.entrypoint.api!);
 				const operationInstance: OperationApiConfig | { default: OperationApiConfig } = require(operationPath);
 
 				const config = getModuleDefault(operationInstance);

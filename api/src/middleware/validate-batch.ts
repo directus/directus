@@ -1,8 +1,8 @@
 import * as Joi from 'joi';
-import { InvalidPayloadException } from '../exceptions';
+import { InvalidPayloadException } from '../exceptions/index.js';
 import { FailedValidationException } from '@directus/shared/exceptions';
-import asyncHandler from '../utils/async-handler';
-import { sanitizeQuery } from '../utils/sanitize-query';
+import asyncHandler from '../utils/async-handler.js';
+import { sanitizeQuery } from '../utils/sanitize-query.js';
 
 export const validateBatch = (scope: 'read' | 'update' | 'delete') =>
 	asyncHandler(async (req, res, next) => {

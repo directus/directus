@@ -1,20 +1,20 @@
 import { Router } from 'express';
-import env from '../env';
-import { InvalidPayloadException } from '../exceptions';
-import { respond } from '../middleware/respond';
-import { AuthenticationService, UsersService } from '../services';
-import asyncHandler from '../utils/async-handler';
-import { getAuthProviders } from '../utils/get-auth-providers';
-import logger from '../logger';
+import env from '../env.js';
+import { InvalidPayloadException } from '../exceptions/index.js';
+import { respond } from '../middleware/respond.js';
+import { AuthenticationService, UsersService } from '../services/index.js';
+import asyncHandler from '../utils/async-handler.js';
+import { getAuthProviders } from '../utils/get-auth-providers.js';
+import logger from '../logger.js';
 import {
 	createLocalAuthRouter,
 	createOAuth2AuthRouter,
 	createOpenIDAuthRouter,
 	createLDAPAuthRouter,
-} from '../auth/drivers';
-import { DEFAULT_AUTH_PROVIDER } from '../constants';
-import { getIPFromReq } from '../utils/get-ip-from-req';
-import { COOKIE_OPTIONS } from '../constants';
+} from '../auth/drivers/index.js';
+import { DEFAULT_AUTH_PROVIDER } from '../constants.js';
+import { getIPFromReq } from '../utils/get-ip-from-req.js';
+import { COOKIE_OPTIONS } from '../constants.js';
 
 const router = Router();
 

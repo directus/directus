@@ -1,6 +1,6 @@
 import { merge } from 'lodash';
 import type { RelationMeta } from '@directus/shared/types';
-import { requireYAML } from '../../../utils/require-yaml';
+import { requireYAML } from '../../../utils/require-yaml.js';
 
 const systemData = requireYAML(require.resolve('./relations.yaml')) as {
 	data: RelationMeta[];

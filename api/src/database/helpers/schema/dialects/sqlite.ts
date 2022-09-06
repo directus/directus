@@ -1,4 +1,4 @@
-import { SchemaHelper } from '../types';
+import { SchemaHelper } from '../types.js';
 
 export class SchemaHelperSQLite extends SchemaHelper {
 	override async preColumnChange(): Promise<boolean> {

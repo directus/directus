@@ -7,20 +7,20 @@ import * as hash from 'object-hash';
 import * as path from 'path';
 import * as sharp from 'sharp';
 import * as validateUUID from 'uuid-validate';
-import getDatabase from '../database';
-import env from '../env';
-import { ForbiddenException, IllegalAssetTransformation, RangeNotSatisfiableException } from '../exceptions';
-import logger from '../logger';
-import storage from '../storage';
+import getDatabase from '../database/index.js';
+import env from '../env.js';
+import { ForbiddenException, IllegalAssetTransformation, RangeNotSatisfiableException } from '../exceptions/index.js';
+import logger from '../logger.js';
+import storage from '../storage.js';
 import type {
 	AbstractServiceOptions,
 	File,
 	Transformation,
 	TransformationParams,
 	TransformationPreset,
-} from '../types';
-import * as TransformationUtils from '../utils/transformations';
-import { AuthorizationService } from './authorization';
+} from '../types/index.js';
+import * as TransformationUtils from '../utils/transformations.js';
+import { AuthorizationService } from './authorization.js';
 
 sharp.concurrency(1);
 

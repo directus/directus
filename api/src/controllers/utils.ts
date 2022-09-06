@@ -7,14 +7,14 @@ import {
 	InvalidPayloadException,
 	InvalidQueryException,
 	UnsupportedMediaTypeException,
-} from '../exceptions';
-import collectionExists from '../middleware/collection-exists';
-import { respond } from '../middleware/respond';
-import { RevisionsService, UtilsService, ImportService, ExportService } from '../services';
-import asyncHandler from '../utils/async-handler';
+} from '../exceptions/index.js';
+import collectionExists from '../middleware/collection-exists.js';
+import { respond } from '../middleware/respond.js';
+import { RevisionsService, UtilsService, ImportService, ExportService } from '../services/index.js';
+import asyncHandler from '../utils/async-handler.js';
 import * as Busboy from 'busboy';
-import { flushCaches } from '../cache';
-import { generateHash } from '../utils/generate-hash';
+import { flushCaches } from '../cache.js';
+import { generateHash } from '../utils/generate-hash.js';
 
 const router = Router();
 

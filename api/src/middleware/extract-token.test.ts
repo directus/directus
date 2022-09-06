@@ -1,5 +1,5 @@
 import type { NextFunction, Request, Response } from 'express';
-import extractToken from '../../src/middleware/extract-token';
+import extractToken from '../../src/middleware/extract-token.js';
 import '../../src/types/express.d.ts';
 
 let mockRequest: Partial<Request & { token?: string }>;

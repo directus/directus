@@ -1,5 +1,5 @@
-import type { TransformationParams } from './types';
-import env from './env';
+import type { TransformationParams } from './types/index.js';
+import env from './env.js';
 import ms from 'ms';
 
 export const SYSTEM_ASSET_ALLOW_LIST: TransformationParams[] = [

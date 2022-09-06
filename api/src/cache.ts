@@ -1,10 +1,10 @@
 import Keyv, { Options } from 'keyv';
 import ms from 'ms';
-import env from './env';
-import logger from './logger';
-import { getConfigFromEnv } from './utils/get-config-from-env';
-import { validateEnv } from './utils/validate-env';
-import { compress, decompress } from './utils/compress';
+import env from './env.js';
+import logger from './logger.js';
+import { getConfigFromEnv } from './utils/get-config-from-env.js';
+import { validateEnv } from './utils/validate-env.js';
+import { compress, decompress } from './utils/compress.js';
 
 let cache: Keyv | null = null;
 let systemCache: Keyv | null = null;

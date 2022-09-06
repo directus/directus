@@ -1,6 +1,6 @@
 import type { SchemaOverview } from '@directus/shared/types';
-import { ForbiddenException } from '../exceptions';
-import type { PrimaryKey } from '../types';
+import { ForbiddenException } from '../exceptions/index.js';
+import type { PrimaryKey } from '../types/index.js';
 import * as validateUUID from 'uuid-validate';
 
 /**

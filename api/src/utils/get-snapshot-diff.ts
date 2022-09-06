@@ -1,4 +1,4 @@
-import type { Snapshot, SnapshotDiff } from '../types';
+import type { Snapshot, SnapshotDiff } from '../types/index.js';
 import { diff } from 'deep-diff';
 import { orderBy } from 'lodash';
 

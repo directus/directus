@@ -1,8 +1,8 @@
-import { ContainsNullValuesException } from '../contains-null-values';
-import { InvalidForeignKeyException } from '../invalid-foreign-key';
-import { NotNullViolationException } from '../not-null-violation';
-import { RecordNotUniqueException } from '../record-not-unique';
-import type { SQLiteError } from './types';
+import { ContainsNullValuesException } from '../contains-null-values.js';
+import { InvalidForeignKeyException } from '../invalid-foreign-key.js';
+import { NotNullViolationException } from '../not-null-violation.js';
+import { RecordNotUniqueException } from '../record-not-unique.js';
+import type { SQLiteError } from './types.js';
 
 // NOTE:
 // - Sqlite doesn't have varchar with length support, so no ValueTooLongException

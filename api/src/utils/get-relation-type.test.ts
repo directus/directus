@@ -1,4 +1,4 @@
-import { getRelationType } from '../../src/utils/get-relation-type';
+import { getRelationType } from '../../src/utils/get-relation-type.js';
 import type { Relation } from '@directus/shared/types';
 
 test('Returns null if no relation object is included', () => {

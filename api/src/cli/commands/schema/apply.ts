@@ -4,13 +4,13 @@ import { promises as fs } from 'fs';
 import * as inquirer from 'inquirer';
 import { load as loadYaml } from 'js-yaml';
 import * as path from 'path';
-import { flushCaches } from '../../../cache';
-import getDatabase, { isInstalled, validateDatabaseConnection } from '../../../database';
-import logger from '../../../logger';
-import type { Snapshot } from '../../../types';
-import { applySnapshot, isNestedMetaUpdate } from '../../../utils/apply-snapshot';
-import { getSnapshot } from '../../../utils/get-snapshot';
-import { getSnapshotDiff } from '../../../utils/get-snapshot-diff';
+import { flushCaches } from '../../../cache.js';
+import getDatabase, { isInstalled, validateDatabaseConnection } from '../../../database/index.js';
+import logger from '../../../logger.js';
+import type { Snapshot } from '../../../types/index.js';
+import { applySnapshot, isNestedMetaUpdate } from '../../../utils/apply-snapshot.js';
+import { getSnapshot } from '../../../utils/get-snapshot.js';
+import { getSnapshotDiff } from '../../../utils/get-snapshot-diff.js';
 
 export async function apply(snapshotPath: string, options?: { yes: boolean; dryRun: boolean }): Promise<void> {
 	const filename = path.resolve(process.cwd(), snapshotPath);

@@ -1,14 +1,14 @@
 import { Router } from 'express';
-import asyncHandler from '../utils/async-handler';
-import { RouteNotFoundException } from '../exceptions';
-import { getExtensionManager } from '../extensions';
-import { respond } from '../middleware/respond';
+import asyncHandler from '../utils/async-handler.js';
+import { RouteNotFoundException } from '../exceptions/index.js';
+import { getExtensionManager } from '../extensions.js';
+import { respond } from '../middleware/respond.js';
 import { depluralize, isIn } from '@directus/shared/utils';
 import type { Plural } from '@directus/shared/types';
 import { APP_OR_HYBRID_EXTENSION_TYPES } from '@directus/shared/constants';
 import ms from 'ms';
-import env from '../env';
-import { getCacheControlHeader } from '../utils/get-cache-headers';
+import env from '../env.js';
+import { getCacheControlHeader } from '../utils/get-cache-headers.js';
 
 const router = Router();
 

@@ -1,6 +1,6 @@
 import { merge } from 'lodash';
 import type { Permission } from '@directus/shared/types';
-import { requireYAML } from '../../../utils/require-yaml';
+import { requireYAML } from '../../../utils/require-yaml.js';
 
 const defaults: Partial<Permission> = {
 	role: null,

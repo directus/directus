@@ -1,4 +1,4 @@
-import { FnHelper, FnHelperOptions } from '../types';
+import { FnHelper, FnHelperOptions } from '../types.js';
 import type { Knex } from 'knex';
 
 export class FnHelperPostgres extends FnHelper {

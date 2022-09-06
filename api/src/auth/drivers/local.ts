@@ -1,17 +1,17 @@
 import { Router } from 'express';
 import * as argon2 from 'argon2';
 import * as Joi from 'joi';
-import { AuthDriver } from '../auth';
-import type { User } from '../../types';
-import { InvalidCredentialsException, InvalidPayloadException } from '../../exceptions';
-import { AuthenticationService } from '../../services';
-import asyncHandler from '../../utils/async-handler';
-import env from '../../env';
-import { respond } from '../../middleware/respond';
-import { COOKIE_OPTIONS } from '../../constants';
-import { getIPFromReq } from '../../utils/get-ip-from-req';
+import { AuthDriver } from '../auth.js';
+import type { User } from '../../types/index.js';
+import { InvalidCredentialsException, InvalidPayloadException } from '../../exceptions/index.js';
+import { AuthenticationService } from '../../services/index.js';
+import asyncHandler from '../../utils/async-handler.js';
+import env from '../../env.js';
+import { respond } from '../../middleware/respond.js';
+import { COOKIE_OPTIONS } from '../../constants.js';
+import { getIPFromReq } from '../../utils/get-ip-from-req.js';
 import { performance } from 'perf_hooks';
-import { stall } from '../../utils/stall';
+import { stall } from '../../utils/stall.js';
 
 export class LocalAuthDriver extends AuthDriver {
 	async getUserID(payload: Record<string, any>): Promise<string> {

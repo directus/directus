@@ -1,7 +1,7 @@
 import type { NextFunction, Request, Response } from 'express';
-import { validateBatch } from './validate-batch';
+import { validateBatch } from './validate-batch.js';
 import '../../src/types/express.d.ts';
-import { InvalidPayloadException } from '../exceptions';
+import { InvalidPayloadException } from '../exceptions/index.js';
 import { FailedValidationException } from '@directus/shared/exceptions';
 
 let mockRequest: Partial<Request & { token?: string }>;
@@ -39,7 +39,7 @@ test('Throws InvalidPayloadException on missing body', async () => {
 	await validateBatch('read')(mockRequest as Request, mockResponse as Response, nextFunction);
 
 	expect(nextFunction).toHaveBeenCalledTimes(1);
-	expect(jest.mocked(nextFunction).mock.calls[0][0]).toBeInstanceOf(InvalidPayloadException);
+	expect(jest.mocked(nextFunction).mock.calls[0]![0]).toBeInstanceOf(InvalidPayloadException);
 });
 
 test(`Short circuits on Array body in update/delete use`, async () => {
@@ -77,7 +77,7 @@ test(`Doesn't allow both query and keys in a batch delete`, async () => {
 	await validateBatch('delete')(mockRequest as Request, mockResponse as Response, nextFunction as NextFunction);
 
 	expect(nextFunction).toHaveBeenCalledTimes(1);
-	expect(jest.mocked(nextFunction).mock.calls[0][0]).toBeInstanceOf(FailedValidationException);
+	expect(jest.mocked(nextFunction).mock.calls[0]![0]).toBeInstanceOf(FailedValidationException);
 });
 
 test(`Requires 'data' on batch update`, async () => {
@@ -90,7 +90,7 @@ test(`Requires 'data' on batch update`, async () => {
 	await validateBatch('update')(mockRequest as Request, mockResponse as Response, nextFunction as NextFunction);
 
 	expect(nextFunction).toHaveBeenCalledTimes(1);
-	expect(jest.mocked(nextFunction).mock.calls[0][0]).toBeInstanceOf(FailedValidationException);
+	expect(jest.mocked(nextFunction).mock.calls[0]![0]).toBeInstanceOf(FailedValidationException);
 });
 
 test(`Calls next when all is well`, async () => {
@@ -104,5 +104,5 @@ test(`Calls next when all is well`, async () => {
 	await validateBatch('update')(mockRequest as Request, mockResponse as Response, nextFunction as NextFunction);
 
 	expect(nextFunction).toHaveBeenCalledTimes(1);
-	expect(jest.mocked(nextFunction).mock.calls[0][0]).toBeUndefined();
+	expect(jest.mocked(nextFunction).mock.calls[0]![0]).toBeUndefined();
 });

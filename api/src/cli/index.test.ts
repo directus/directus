@@ -1,6 +1,6 @@
-import { Command } from 'commander';
-import { Extension, HookConfig } from '@directus/shared/types';
-import { createCli } from './index';
+import type { Command } from 'commander';
+import type { Extension, HookConfig } from '@directus/shared/types';
+import { createCli } from './index.js';
 
 jest.mock('../../src/env', () => ({
 	...jest.requireActual('../../src/env').default,

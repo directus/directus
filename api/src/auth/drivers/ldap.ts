@@ -12,10 +12,10 @@ import {
 } from 'ldapjs';
 import * as ldap from 'ldapjs';
 import ms from 'ms';
-import { getIPFromReq } from '../../utils/get-ip-from-req';
+import { getIPFromReq } from '../../utils/get-ip-from-req.js';
 import * as Joi from 'joi';
-import { AuthDriver } from '../auth';
-import type { AuthDriverOptions, User } from '../../types';
+import { AuthDriver } from '../auth.js';
+import type { AuthDriverOptions, User } from '../../types/index.js';
 import {
 	InvalidCredentialsException,
 	InvalidPayloadException,
@@ -23,13 +23,13 @@ import {
 	ServiceUnavailableException,
 	InvalidConfigException,
 	UnexpectedResponseException,
-} from '../../exceptions';
-import { RecordNotUniqueException } from '../../exceptions/database/record-not-unique';
-import { AuthenticationService, UsersService } from '../../services';
-import asyncHandler from '../../utils/async-handler';
-import env from '../../env';
-import { respond } from '../../middleware/respond';
-import logger from '../../logger';
+} from '../../exceptions/index.js';
+import { RecordNotUniqueException } from '../../exceptions/database/record-not-unique.js';
+import { AuthenticationService, UsersService } from '../../services/index.js';
+import asyncHandler from '../../utils/async-handler.js';
+import env from '../../env.js';
+import { respond } from '../../middleware/respond.js';
+import logger from '../../logger.js';
 
 interface UserInfo {
 	dn: string;

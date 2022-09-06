@@ -1,4 +1,4 @@
-import { GeometryHelper } from '../types';
+import { GeometryHelper } from '../types.js';
 import type { Knex } from 'knex';
 
 export class GeometryHelperMySQL extends GeometryHelper {

@@ -4,7 +4,7 @@ import type { Knex } from 'knex';
 import { isObject } from 'lodash';
 import * as path from 'path';
 import type { Type, Field } from '@directus/shared/types';
-import { getHelpers } from '../helpers';
+import { getHelpers } from '../helpers/index.js';
 
 type TableSeed = {
 	table: string;
