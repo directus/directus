@@ -1,0 +1,8 @@
+// Vitest Snapshot v1
+
+exports[`Mount component 1`] = `
+"<div class=\\"v-overlay active has-click\\" data-v-520714ce=\\"\\">
+  <div class=\\"overlay\\" data-v-520714ce=\\"\\"></div>
+  <div class=\\"content\\" data-v-520714ce=\\"\\">Slot Content</div>
+</div>"
+`;

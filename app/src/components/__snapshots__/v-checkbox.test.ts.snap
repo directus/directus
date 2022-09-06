@@ -1,0 +1,9 @@
+// Vitest Snapshot v1
+
+exports[`Mount component 1`] = `
+"<button class=\\"v-checkbox\\" type=\\"button\\" role=\\"checkbox\\" aria-pressed=\\"false\\" disabled=\\"false\\" data-v-d0be376c=\\"\\">
+  <!--v-if-->
+  <v-icon-stub class=\\"checkbox\\" name=\\"indeterminate_check_box\\" disabled=\\"false\\" data-v-d0be376c=\\"\\"></v-icon-stub><span class=\\"label type-text\\" data-v-d0be376c=\\"\\"><div>Hi</div></span>
+  <!--v-if-->
+</button>"
+`;

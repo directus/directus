@@ -3,13 +3,12 @@ import { i18n } from '@/lang';
 import { Collection as CollectionRaw, DeepPartial, Field } from '@directus/shared/types';
 import { Collection } from '@/types/collections';
 import { getCollectionType } from '@directus/shared/utils';
-import { notEmpty } from '@/utils/is-empty';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 import formatTitle from '@directus/format-title';
 import { defineStore } from 'pinia';
 import { COLLECTIONS_DENY_LIST } from '@/constants';
-import { isEqual, orderBy, omit } from 'lodash';
+import { isEqual, orderBy, omit, isNil } from 'lodash';
 import { useRelationsStore } from './relations';
 
 export const useCollectionsStore = defineStore({
@@ -53,7 +52,7 @@ export const useCollectionsStore = defineStore({
 			let name = formatTitle(collection.collection);
 			const type = getCollectionType(collection);
 
-			if (collection.meta && notEmpty(collection.meta.translations)) {
+			if (collection.meta && !isNil(collection.meta.translations)) {
 				for (let i = 0; i < collection.meta.translations.length; i++) {
 					const { language, translation, singular, plural } = collection.meta.translations[i];
 

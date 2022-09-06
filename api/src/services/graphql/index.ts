@@ -3,7 +3,6 @@ import { Accountability, Action, Aggregate, Filter, Query, SchemaOverview } from
 import argon2 from 'argon2';
 import {
 	ArgumentNode,
-	BooleanValueNode,
 	execute,
 	ExecutionResult,
 	FieldNode,
@@ -26,14 +25,11 @@ import {
 	GraphQLString,
 	GraphQLUnionType,
 	InlineFragmentNode,
-	IntValueNode,
 	NoSchemaIntrospectionCustomRule,
-	ObjectFieldNode,
-	ObjectValueNode,
 	SelectionNode,
 	specifiedRules,
-	StringValueNode,
 	validate,
+	ValueNode,
 } from 'graphql';
 import {
 	GraphQLJSON,
@@ -429,44 +425,46 @@ export class GraphQLService {
 							},
 						};
 
-						if (field.type === 'date') {
-							acc[`${field.field}_func`] = {
-								type: DateFunctions,
-								resolve: (obj: Record<string, any>) => {
-									const funcFields = Object.keys(DateFunctions.getFields()).map((key) => `${field.field}_${key}`);
-									return mapKeys(pick(obj, funcFields), (_value, key) => key.substring(field.field.length + 1));
-								},
-							};
-						}
+						if (action === 'read') {
+							if (field.type === 'date') {
+								acc[`${field.field}_func`] = {
+									type: DateFunctions,
+									resolve: (obj: Record<string, any>) => {
+										const funcFields = Object.keys(DateFunctions.getFields()).map((key) => `${field.field}_${key}`);
+										return mapKeys(pick(obj, funcFields), (_value, key) => key.substring(field.field.length + 1));
+									},
+								};
+							}
 
-						if (field.type === 'time') {
-							acc[`${field.field}_func`] = {
-								type: TimeFunctions,
-								resolve: (obj: Record<string, any>) => {
-									const funcFields = Object.keys(TimeFunctions.getFields()).map((key) => `${field.field}_${key}`);
-									return mapKeys(pick(obj, funcFields), (_value, key) => key.substring(field.field.length + 1));
-								},
-							};
-						}
+							if (field.type === 'time') {
+								acc[`${field.field}_func`] = {
+									type: TimeFunctions,
+									resolve: (obj: Record<string, any>) => {
+										const funcFields = Object.keys(TimeFunctions.getFields()).map((key) => `${field.field}_${key}`);
+										return mapKeys(pick(obj, funcFields), (_value, key) => key.substring(field.field.length + 1));
+									},
+								};
+							}
 
-						if (field.type === 'dateTime' || field.type === 'timestamp') {
-							acc[`${field.field}_func`] = {
-								type: DateTimeFunctions,
-								resolve: (obj: Record<string, any>) => {
-									const funcFields = Object.keys(DateTimeFunctions.getFields()).map((key) => `${field.field}_${key}`);
-									return mapKeys(pick(obj, funcFields), (_value, key) => key.substring(field.field.length + 1));
-								},
-							};
-						}
+							if (field.type === 'dateTime' || field.type === 'timestamp') {
+								acc[`${field.field}_func`] = {
+									type: DateTimeFunctions,
+									resolve: (obj: Record<string, any>) => {
+										const funcFields = Object.keys(DateTimeFunctions.getFields()).map((key) => `${field.field}_${key}`);
+										return mapKeys(pick(obj, funcFields), (_value, key) => key.substring(field.field.length + 1));
+									},
+								};
+							}
 
-						if (field.type === 'json' || field.type === 'alias') {
-							acc[`${field.field}_func`] = {
-								type: CountFunctions,
-								resolve: (obj: Record<string, any>) => {
-									const funcFields = Object.keys(CountFunctions.getFields()).map((key) => `${field.field}_${key}`);
-									return mapKeys(pick(obj, funcFields), (_value, key) => key.substring(field.field.length + 1));
-								},
-							};
+							if (field.type === 'json' || field.type === 'alias') {
+								acc[`${field.field}_func`] = {
+									type: CountFunctions,
+									resolve: (obj: Record<string, any>) => {
+										const funcFields = Object.keys(CountFunctions.getFields()).map((key) => `${field.field}_${key}`);
+										return mapKeys(pick(obj, funcFields), (_value, key) => key.substring(field.field.length + 1));
+									},
+								};
+							}
 						}
 
 						return acc;
@@ -1459,43 +1457,33 @@ export class GraphQLService {
 	 * In order to do that, we'll parse over all ArgumentNodes and ObjectFieldNodes to manually recreate an object structure
 	 * of arguments
 	 */
-	parseArgs(
-		args: readonly ArgumentNode[] | readonly ObjectFieldNode[],
-		variableValues: GraphQLResolveInfo['variableValues']
-	): Record<string, any> {
+	parseArgs(args: readonly ArgumentNode[], variableValues: GraphQLResolveInfo['variableValues']): Record<string, any> {
 		if (!args || args.length === 0) return {};
 
-		const parseObjectValue = (arg: ObjectValueNode) => {
-			return this.parseArgs(arg.fields, variableValues);
+		const parse = (node: ValueNode): any => {
+			switch (node.kind) {
+				case 'Variable':
+					return variableValues[node.name.value];
+				case 'ListValue':
+					return node.values.map(parse);
+				case 'ObjectValue':
+					return Object.fromEntries(node.fields.map((node) => [node.name.value, parse(node.value)]));
+				case 'NullValue':
+					return null;
+				case 'StringValue':
+					return String(node.value);
+				case 'IntValue':
+				case 'FloatValue':
+					return Number(node.value);
+				case 'BooleanValue':
+					return Boolean(node.value);
+				case 'EnumValue':
+				default:
+					return node.value;
+			}
 		};
 
-		const argsObject: any = {};
-
-		for (const argument of args) {
-			if (argument.value.kind === 'ObjectValue') {
-				argsObject[argument.name.value] = parseObjectValue(argument.value);
-			} else if (argument.value.kind === 'Variable') {
-				argsObject[argument.name.value] = variableValues[argument.value.name.value];
-			} else if (argument.value.kind === 'ListValue') {
-				const values: any = [];
-
-				for (const valueNode of argument.value.values) {
-					if (valueNode.kind === 'ObjectValue') {
-						values.push(this.parseArgs(valueNode.fields, variableValues));
-					} else {
-						if (valueNode.kind === 'Variable') {
-							values.push(variableValues[valueNode.name.value]);
-						} else {
-							values.push((valueNode as any).value);
-						}
-					}
-				}
-
-				argsObject[argument.name.value] = values;
-			} else {
-				argsObject[argument.name.value] = (argument.value as IntValueNode | StringValueNode | BooleanValueNode).value;
-			}
-		}
+		const argsObject = Object.fromEntries(args.map((arg) => [arg.name.value, parse(arg.value)]));
 
 		return argsObject;
 	}
@@ -1969,6 +1957,7 @@ export class GraphQLService {
 					const accountability = {
 						ip: req?.ip,
 						userAgent: req?.get('user-agent'),
+						origin: req?.get('origin'),
 						role: null,
 					};
 					const authenticationService = new AuthenticationService({
@@ -2002,6 +1991,7 @@ export class GraphQLService {
 					const accountability = {
 						ip: req?.ip,
 						userAgent: req?.get('user-agent'),
+						origin: req?.get('origin'),
 						role: null,
 					};
 					const authenticationService = new AuthenticationService({
@@ -2038,6 +2028,7 @@ export class GraphQLService {
 					const accountability = {
 						ip: req?.ip,
 						userAgent: req?.get('user-agent'),
+						origin: req?.get('origin'),
 						role: null,
 					};
 					const authenticationService = new AuthenticationService({
@@ -2062,6 +2053,7 @@ export class GraphQLService {
 					const accountability = {
 						ip: req?.ip,
 						userAgent: req?.get('user-agent'),
+						origin: req?.get('origin'),
 						role: null,
 					};
 					const service = new UsersService({ accountability, schema: this.schema });
@@ -2087,6 +2079,7 @@ export class GraphQLService {
 					const accountability = {
 						ip: req?.ip,
 						userAgent: req?.get('user-agent'),
+						origin: req?.get('origin'),
 						role: null,
 					};
 					const service = new UsersService({ accountability, schema: this.schema });
@@ -2694,6 +2687,7 @@ export class GraphQLService {
 							user: this.accountability?.user,
 							ip: this.accountability?.ip,
 							user_agent: this.accountability?.userAgent,
+							origin: this.accountability?.origin,
 						});
 
 						if ('directus_activity' in ReadCollectionTypes) {

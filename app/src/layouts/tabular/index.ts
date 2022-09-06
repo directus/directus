@@ -6,12 +6,12 @@ import { getDefaultDisplayForType } from '@/utils/get-default-display-for-type';
 import { hideDragImage } from '@/utils/hide-drag-image';
 import { saveAsCSV } from '@/utils/save-as-csv';
 import { syncRefProperty } from '@/utils/sync-ref-property';
+import { formatCollectionItemsCount } from '@/utils/format-collection-items-count';
 import { useCollection, useItems, useSync } from '@directus/shared/composables';
 import { Field } from '@directus/shared/types';
 import { defineLayout } from '@directus/shared/utils';
 import { clone, debounce } from 'lodash';
 import { computed, ref, toRefs, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import TabularActions from './actions.vue';
 import TabularOptions from './options.vue';
@@ -29,8 +29,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		actions: TabularActions,
 	},
 	setup(props, { emit }) {
-		const { t, n } = useI18n();
-
 		const router = useRouter();
 
 		const fieldsStore = useFieldsStore();
@@ -79,27 +77,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		} = useTable();
 
 		const showingCount = computed(() => {
-			if ((itemCount.value || 0) < (totalCount.value || 0) && filterUser.value) {
-				if (itemCount.value === 1) {
-					return t('one_filtered_item');
-				}
-
-				return t('start_end_of_count_filtered_items', {
-					start: n((+page.value - 1) * limit.value + 1),
-					end: n(Math.min(page.value * limit.value, itemCount.value || 0)),
-					count: n(itemCount.value || 0),
-				});
-			}
-
-			if (itemCount.value === 1) {
-				return t('one_item');
-			}
-
-			return t('start_end_of_count_items', {
-				start: n((+page.value - 1) * limit.value + 1),
-				end: n(Math.min(page.value * limit.value, itemCount.value || 0)),
-				count: n(itemCount.value || 0),
-			});
+			const filtering = Boolean((itemCount.value || 0) < (totalCount.value || 0) && filterUser.value);
+			return formatCollectionItemsCount(itemCount.value || 0, page.value, limit.value, filtering);
 		});
 
 		return {

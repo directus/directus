@@ -13,7 +13,7 @@
 			},
 			color,
 		]"
-		@animationiteration="$emit('animationiteration')"
+		@animationiteration="$emit('animationiteration', $event)"
 	>
 		<div
 			class="inner"
@@ -25,54 +25,45 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent } from 'vue';
+<script setup lang="ts">
+import { computed } from 'vue';
 
-export default defineComponent({
-	props: {
-		absolute: {
-			type: Boolean,
-			default: false,
-		},
-		bottom: {
-			type: Boolean,
-			default: false,
-		},
-		fixed: {
-			type: Boolean,
-			default: false,
-		},
-		indeterminate: {
-			type: Boolean,
-			default: false,
-		},
-		rounded: {
-			type: Boolean,
-			default: false,
-		},
-		top: {
-			type: Boolean,
-			default: false,
-		},
-		value: {
-			type: Number,
-			default: 0,
-		},
-		colorful: {
-			type: Boolean,
-			default: false,
-		},
-	},
-	emits: ['animationiteration'],
-	setup(props) {
-		const color = computed(() => {
-			if (props.value <= 33) return 'danger';
-			if (props.value <= 66) return 'warning';
-			return 'success';
-		});
+interface Props {
+	/** Sets position to absolute */
+	absolute?: boolean;
+	/** Positions the bar at the bottom */
+	bottom?: boolean;
+	/** Sets position to fixed */
+	fixed?: boolean;
+	/** Play a general loading animation */
+	indeterminate?: boolean;
+	/** Rounds up the corners of the progress */
+	rounded?: boolean;
+	/** Positions the bar at the top */
+	top?: boolean;
+	/** Which value to represent from 0 to 100 */
+	value?: number;
+	/** Adds color to progress linear depending on the current percentage */
+	colorful?: boolean;
+}
 
-		return { color };
-	},
+const props = withDefaults(defineProps<Props>(), {
+	absolute: false,
+	bottom: false,
+	fixed: false,
+	indeterminate: false,
+	rounded: false,
+	top: false,
+	value: 0,
+	colorful: false,
+});
+
+defineEmits(['animationiteration']);
+
+const color = computed(() => {
+	if (props.value <= 33) return 'danger';
+	if (props.value <= 66) return 'warning';
+	return 'success';
 });
 </script>
 
