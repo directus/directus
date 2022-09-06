@@ -1,16 +1,23 @@
-import { Accountability, Query, SchemaOverview } from '@directus/shared/types';
+import type { Accountability, Query, SchemaOverview } from '@directus/shared/types';
 import { format, parseISO, isValid } from 'date-fns';
 import { parseJSON, toArray } from '@directus/shared/utils';
 import { unflatten } from 'flat';
-import Joi from 'joi';
-import { Knex } from 'knex';
+import * as Joi from 'joi';
+import type { Knex } from 'knex';
 import { clone, cloneDeep, isNil, isObject, isPlainObject, omit, pick } from 'lodash';
 import { v4 as uuid } from 'uuid';
 import { parse as wktToGeoJSON } from 'wellknown';
 import getDatabase from '../database';
 import { getHelpers, Helpers } from '../database/helpers';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
-import { AbstractServiceOptions, ActionEventParams, Alterations, Item, MutationOptions, PrimaryKey } from '../types';
+import type {
+	AbstractServiceOptions,
+	ActionEventParams,
+	Alterations,
+	Item,
+	MutationOptions,
+	PrimaryKey,
+} from '../types';
 import { generateHash } from '../utils/generate-hash';
 import { ItemsService } from './items';
 
@@ -145,9 +152,9 @@ export class PayloadService {
 
 		if (processedPayload.length === 0) return [];
 
-		const fieldsInPayload = Object.keys(processedPayload[0]);
+		const fieldsInPayload = Object.keys(processedPayload[0]!);
 
-		let specialFieldsInCollection = Object.entries(this.schema.collections[this.collection].fields).filter(
+		let specialFieldsInCollection = Object.entries(this.schema.collections[this.collection]!.fields).filter(
 			([_name, field]) => field.special && field.special.length > 0
 		);
 
@@ -191,11 +198,11 @@ export class PayloadService {
 			return processedPayload;
 		}
 
-		return processedPayload[0];
+		return processedPayload[0]!;
 	}
 
 	processAggregates(payload: Partial<Item>[]) {
-		const aggregateKeys = Object.keys(payload[0]).filter((key) => key.includes('->'));
+		const aggregateKeys = Object.keys(payload[0]!).filter((key) => key.includes('->'));
 		if (aggregateKeys.length) {
 			for (const item of payload) {
 				Object.assign(item, unflatten(pick(item, aggregateKeys), { delimiter: '->' }));
@@ -217,7 +224,7 @@ export class PayloadService {
 
 		for (const special of fieldSpecials) {
 			if (special in this.transformers) {
-				value = await this.transformers[special]({
+				value = await this.transformers[special]!({
 					action,
 					value,
 					payload,
@@ -243,7 +250,7 @@ export class PayloadService {
 				? (value: any) => (typeof value === 'string' ? wktToGeoJSON(value) : value)
 				: (value: any) => this.helpers.st.fromGeoJSON(typeof value == 'string' ? parseJSON(value) : value);
 
-		const fieldsInCollection = Object.entries(this.schema.collections[this.collection].fields);
+		const fieldsInCollection = Object.entries(this.schema.collections[this.collection]!.fields);
 		const geometryColumns = fieldsInCollection.filter(([_, field]) => field.type.startsWith('geometry'));
 
 		for (const [name] of geometryColumns) {
@@ -261,7 +268,7 @@ export class PayloadService {
 	 * shouldn't return with time / timezone info respectively
 	 */
 	processDates(payloads: Partial<Record<string, any>>[], action: Action): Partial<Record<string, any>>[] {
-		const fieldsInCollection = Object.entries(this.schema.collections[this.collection].fields);
+		const fieldsInCollection = Object.entries(this.schema.collections[this.collection]!.fields);
 
 		const dateColumns = fieldsInCollection.filter(([_name, field]) =>
 			['dateTime', 'date', 'timestamp'].includes(field.type)
@@ -409,7 +416,7 @@ export class PayloadService {
 				schema: this.schema,
 			});
 
-			const relatedPrimary = this.schema.collections[relatedCollection].primary;
+			const relatedPrimary = this.schema.collections[relatedCollection]!.primary;
 			const relatedRecord: Partial<Item> = payload[relation.field];
 
 			if (['string', 'number'].includes(typeof relatedRecord)) continue;
@@ -433,14 +440,14 @@ export class PayloadService {
 					await itemsService.updateOne(relatedPrimaryKey, relatedRecord, {
 						onRevisionCreate: (pk) => revisions.push(pk),
 						bypassEmitAction: (params) => nestedActionEvents.push(params),
-						emitEvents: opts?.emitEvents,
+						emitEvents: opts!.emitEvents!,
 					});
 				}
 			} else {
 				relatedPrimaryKey = await itemsService.createOne(relatedRecord, {
 					onRevisionCreate: (pk) => revisions.push(pk),
 					bypassEmitAction: (params) => nestedActionEvents.push(params),
-					emitEvents: opts?.emitEvents,
+					emitEvents: opts!.emitEvents!,
 				});
 			}
 
@@ -478,7 +485,7 @@ export class PayloadService {
 		for (const relation of relationsToProcess) {
 			// If no "one collection" exists, this is a A2O, not a M2O
 			if (!relation.related_collection) continue;
-			const relatedPrimaryKeyField = this.schema.collections[relation.related_collection].primary;
+			const relatedPrimaryKeyField = this.schema.collections[relation.related_collection]!.primary;
 
 			// Items service to the related collection
 			const itemsService = new ItemsService(relation.related_collection, {
@@ -510,14 +517,14 @@ export class PayloadService {
 					await itemsService.updateOne(relatedPrimaryKey, relatedRecord, {
 						onRevisionCreate: (pk) => revisions.push(pk),
 						bypassEmitAction: (params) => nestedActionEvents.push(params),
-						emitEvents: opts?.emitEvents,
+						emitEvents: opts!.emitEvents!,
 					});
 				}
 			} else {
 				relatedPrimaryKey = await itemsService.createOne(relatedRecord, {
 					onRevisionCreate: (pk) => revisions.push(pk),
 					bypassEmitAction: (params) => nestedActionEvents.push(params),
-					emitEvents: opts?.emitEvents,
+					emitEvents: opts!.emitEvents!,
 				});
 			}
 
@@ -561,8 +568,8 @@ export class PayloadService {
 		for (const relation of relationsToProcess) {
 			if (!relation.meta) continue;
 
-			const currentPrimaryKeyField = this.schema.collections[relation.related_collection!].primary;
-			const relatedPrimaryKeyField = this.schema.collections[relation.collection].primary;
+			const currentPrimaryKeyField = this.schema.collections[relation.related_collection!]!.primary;
+			const relatedPrimaryKeyField = this.schema.collections[relation.collection]!.primary;
 
 			const itemsService = new ItemsService(relation.collection, {
 				accountability: this.accountability,
@@ -623,7 +630,7 @@ export class PayloadService {
 					...(await itemsService.upsertMany(recordsToUpsert, {
 						onRevisionCreate: (pk) => revisions.push(pk),
 						bypassEmitAction: (params) => nestedActionEvents.push(params),
-						emitEvents: opts?.emitEvents,
+						emitEvents: opts!.emitEvents!,
 					}))
 				);
 
@@ -649,7 +656,7 @@ export class PayloadService {
 					// There's no revision for a deletion
 					await itemsService.deleteByQuery(query, {
 						bypassEmitAction: (params) => nestedActionEvents.push(params),
-						emitEvents: opts?.emitEvents,
+						emitEvents: opts!.emitEvents!,
 					});
 				} else {
 					await itemsService.updateByQuery(
@@ -658,7 +665,7 @@ export class PayloadService {
 						{
 							onRevisionCreate: (pk) => revisions.push(pk),
 							bypassEmitAction: (params) => nestedActionEvents.push(params),
-							emitEvents: opts?.emitEvents,
+							emitEvents: opts!.emitEvents!,
 						}
 					);
 				}
@@ -705,12 +712,12 @@ export class PayloadService {
 					await itemsService.createMany(createPayload, {
 						onRevisionCreate: (pk) => revisions.push(pk),
 						bypassEmitAction: (params) => nestedActionEvents.push(params),
-						emitEvents: opts?.emitEvents,
+						emitEvents: opts!.emitEvents!,
 					});
 				}
 
 				if (alterations.update) {
-					const primaryKeyField = this.schema.collections[relation.collection].primary;
+					const primaryKeyField = this.schema.collections[relation.collection]!.primary;
 
 					for (const item of alterations.update) {
 						await itemsService.updateOne(
@@ -722,7 +729,7 @@ export class PayloadService {
 							{
 								onRevisionCreate: (pk) => revisions.push(pk),
 								bypassEmitAction: (params) => nestedActionEvents.push(params),
-								emitEvents: opts?.emitEvents,
+								emitEvents: opts!.emitEvents!,
 							}
 						);
 					}
@@ -749,7 +756,7 @@ export class PayloadService {
 					if (relation.meta.one_deselect_action === 'delete') {
 						await itemsService.deleteByQuery(query, {
 							bypassEmitAction: (params) => nestedActionEvents.push(params),
-							emitEvents: opts?.emitEvents,
+							emitEvents: opts!.emitEvents!,
 						});
 					} else {
 						await itemsService.updateByQuery(
@@ -758,7 +765,7 @@ export class PayloadService {
 							{
 								onRevisionCreate: (pk) => revisions.push(pk),
 								bypassEmitAction: (params) => nestedActionEvents.push(params),
-								emitEvents: opts?.emitEvents,
+								emitEvents: opts!.emitEvents!,
 							}
 						);
 					}

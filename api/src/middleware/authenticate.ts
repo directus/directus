@@ -1,5 +1,5 @@
-import { Accountability } from '@directus/shared/types';
-import { NextFunction, Request, Response } from 'express';
+import type { Accountability } from '@directus/shared/types';
+import type { NextFunction, Request, Response } from 'express';
 import { isEqual } from 'lodash';
 import getDatabase from '../database';
 import emitter from '../emitter';
@@ -20,8 +20,8 @@ export const handler = async (req: Request, res: Response, next: NextFunction) =
 		admin: false,
 		app: false,
 		ip: getIPFromReq(req),
-		userAgent: req.get('user-agent'),
-		origin: req.get('origin'),
+		userAgent: req.get('user-agent')!,
+		origin: req.get('origin')!,
 	};
 
 	const database = getDatabase();
@@ -48,11 +48,11 @@ export const handler = async (req: Request, res: Response, next: NextFunction) =
 
 	if (req.token) {
 		if (isDirectusJWT(req.token)) {
-			const payload = verifyAccessJWT(req.token, env.SECRET);
+			const payload = verifyAccessJWT(req.token, env['SECRET']);
 
-			req.accountability.share = payload.share;
-			req.accountability.share_scope = payload.share_scope;
-			req.accountability.user = payload.id;
+			req.accountability.share = payload.share!;
+			req.accountability.share_scope = payload.share_scope!;
+			req.accountability.user = payload.id!;
 			req.accountability.role = payload.role;
 			req.accountability.admin = payload.admin_access === true || payload.admin_access == 1;
 			req.accountability.app = payload.app_access === true || payload.app_access == 1;

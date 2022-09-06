@@ -11,12 +11,12 @@ router.use(
 	parseGraphQL,
 	asyncHandler(async (req, res, next) => {
 		const service = new GraphQLService({
-			accountability: req.accountability,
+			accountability: req.accountability!,
 			schema: req.schema,
 			scope: 'system',
 		});
 
-		res.locals.payload = await service.execute(res.locals.graphqlParams);
+		res.locals['payload'] = await service.execute(res.locals['graphqlParams']);
 
 		return next();
 	}),
@@ -28,12 +28,12 @@ router.use(
 	parseGraphQL,
 	asyncHandler(async (req, res, next) => {
 		const service = new GraphQLService({
-			accountability: req.accountability,
+			accountability: req.accountability!,
 			schema: req.schema,
 			scope: 'items',
 		});
 
-		res.locals.payload = await service.execute(res.locals.graphqlParams);
+		res.locals['payload'] = await service.execute(res.locals['graphqlParams']);
 
 		return next();
 	}),

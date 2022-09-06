@@ -1,8 +1,8 @@
-import { Knex } from 'knex';
+import type { Knex } from 'knex';
 import getDatabase from '../database';
 import { ForbiddenException } from '../exceptions';
-import { AbstractServiceOptions } from '../types';
-import { Accountability, Query, SchemaOverview } from '@directus/shared/types';
+import type { AbstractServiceOptions } from '../types';
+import type { Accountability, Query, SchemaOverview } from '@directus/shared/types';
 import { applyFilter, applySearch } from '../utils/apply-query';
 
 export class MetaService {
@@ -86,6 +86,6 @@ export class MetaService {
 
 		const records = await dbQuery;
 
-		return Number(records[0].count);
+		return Number(records[0]!.count);
 	}
 }

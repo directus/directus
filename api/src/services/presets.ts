@@ -1,4 +1,4 @@
-import { AbstractServiceOptions } from '../types';
+import type { AbstractServiceOptions } from '../types';
 import { ItemsService } from './items';
 
 export class PresetsService extends ItemsService {

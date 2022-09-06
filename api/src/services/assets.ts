@@ -1,18 +1,24 @@
-import { Range, StatResponse } from '@directus/drive';
-import { Accountability } from '@directus/shared/types';
+import type { Range, StatResponse } from '@directus/drive';
+import type { Accountability } from '@directus/shared/types';
 import { Semaphore } from 'async-mutex';
-import { Knex } from 'knex';
+import type { Knex } from 'knex';
 import { contentType } from 'mime-types';
-import hash from 'object-hash';
-import path from 'path';
-import sharp from 'sharp';
-import validateUUID from 'uuid-validate';
+import * as hash from 'object-hash';
+import * as path from 'path';
+import * as sharp from 'sharp';
+import * as validateUUID from 'uuid-validate';
 import getDatabase from '../database';
 import env from '../env';
 import { ForbiddenException, IllegalAssetTransformation, RangeNotSatisfiableException } from '../exceptions';
 import logger from '../logger';
 import storage from '../storage';
-import { AbstractServiceOptions, File, Transformation, TransformationParams, TransformationPreset } from '../types';
+import type {
+	AbstractServiceOptions,
+	File,
+	Transformation,
+	TransformationParams,
+	TransformationPreset,
+} from '../types';
 import * as TransformationUtils from '../utils/transformations';
 import { AuthorizationService } from './authorization';
 
@@ -20,7 +26,7 @@ sharp.concurrency(1);
 
 // Note: don't put this in the service. The service can be initialized in multiple places, but they
 // should all share the same semaphore instance.
-const semaphore = new Semaphore(env.ASSETS_TRANSFORM_MAX_CONCURRENT);
+const semaphore = new Semaphore(env['ASSETS_TRANSFORM_MAX_CONCURRENT']);
 
 export class AssetsService {
 	knex: Knex;
@@ -138,8 +144,8 @@ export class AssetsService {
 			if (
 				!width ||
 				!height ||
-				width > env.ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION ||
-				height > env.ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION
+				width > env['ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION'] ||
+				height > env['ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION']
 			) {
 				throw new IllegalAssetTransformation(
 					`Image is too large to be transformed, or image size couldn't be determined.`
@@ -149,7 +155,7 @@ export class AssetsService {
 			return await semaphore.runExclusive(async () => {
 				const readStream = storage.disk(file.storage).getStream(file.filename_disk, range);
 				const transformer = sharp({
-					limitInputPixels: Math.pow(env.ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION, 2),
+					limitInputPixels: Math.pow(env['ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION'], 2),
 					sequentialRead: true,
 				}).rotate();
 

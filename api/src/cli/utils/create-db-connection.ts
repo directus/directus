@@ -1,5 +1,5 @@
 import { knex, Knex } from 'knex';
-import path from 'path';
+import * as path from 'path';
 import { promisify } from 'util';
 
 export type Credentials = {
@@ -28,23 +28,23 @@ export default function createDBConnection(
 		const { host, port, database, user, password } = credentials as Credentials;
 
 		connection = {
-			host: host,
+			host: host!,
 			port: Number(port),
-			database: database,
-			user: user,
-			password: password,
+			database: database!,
+			user: user!,
+			password: password!,
 		};
 
 		if (client === 'pg' || client === 'cockroachdb') {
 			const { ssl } = credentials as Credentials;
-			connection['ssl'] = ssl;
+			connection['ssl'] = ssl!;
 		}
 
 		if (client === 'mssql') {
 			const { options__encrypt } = credentials as Credentials;
 
 			(connection as Knex.MsSqlConnectionConfig)['options'] = {
-				encrypt: options__encrypt,
+				encrypt: options__encrypt!,
 			};
 		}
 	}

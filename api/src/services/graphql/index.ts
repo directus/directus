@@ -1,4 +1,4 @@
-import { BaseException } from '@directus/shared/exceptions';
+import type { BaseException } from '@directus/shared/exceptions';
 import { Accountability, Action, Aggregate, Filter, Query, SchemaOverview } from '@directus/shared/types';
 import argon2 from 'argon2';
 import {
@@ -40,7 +40,7 @@ import {
 	SchemaComposer,
 	toInputObjectType,
 } from 'graphql-compose';
-import { Knex } from 'knex';
+import type { Knex } from 'knex';
 import { flatten, get, mapKeys, merge, omit, pick, set, transform, uniq } from 'lodash';
 import ms from 'ms';
 import { clearSystemCache, getCache } from '../../cache';
@@ -50,7 +50,7 @@ import getDatabase from '../../database';
 import env from '../../env';
 import { ForbiddenException, GraphQLValidationException, InvalidPayloadException } from '../../exceptions';
 import { getExtensionManager } from '../../extensions';
-import { AbstractServiceOptions, GraphQLParams, Item } from '../../types';
+import type { AbstractServiceOptions, GraphQLParams, Item } from '../../types';
 import { generateHash } from '../../utils/generate-hash';
 import { getGraphQLType } from '../../utils/get-graphql-type';
 import { reduceSchema } from '../../utils/reduce-schema';
@@ -85,14 +85,14 @@ import { GraphQLGeoJSON } from './types/geojson';
 import { GraphQLStringOrFloat } from './types/string-or-float';
 import { GraphQLVoid } from './types/void';
 
-import { PrimaryKey } from '@directus/shared/types';
+import type { PrimaryKey } from '@directus/shared/types';
 
 import { addPathToValidationError } from './utils/add-path-to-validation-error';
 import { GraphQLHash } from './types/hash';
 
 const validationRules = Array.from(specifiedRules);
 
-if (env.GRAPHQL_INTROSPECTION === false) {
+if (env['GRAPHQL_INTROSPECTION'] === false) {
 	validationRules.push(NoSchemaIntrospectionCustomRule);
 }
 
@@ -311,11 +311,11 @@ export class GraphQLService {
 					.reduce((acc, collection) => {
 						const collectionName = this.scope === 'items' ? collection.collection : collection.collection.substring(9);
 
-						acc[`delete_${collectionName}_items`] = DeleteCollectionTypes.many.getResolver(
+						acc[`delete_${collectionName}_items`] = DeleteCollectionTypes['many'].getResolver(
 							`delete_${collection.collection}_items`
 						);
 
-						acc[`delete_${collectionName}_item`] = DeleteCollectionTypes.one.getResolver(
+						acc[`delete_${collectionName}_item`] = DeleteCollectionTypes['one'].getResolver(
 							`delete_${collection.collection}_item`
 						);
 
@@ -978,7 +978,7 @@ export class GraphQLService {
 						  ),
 					resolve: async ({ info, context }: { info: GraphQLResolveInfo; context: Record<string, any> }) => {
 						const result = await self.resolveQuery(info);
-						context.data = result;
+						context['data'] = result;
 						return result;
 					},
 				});
@@ -1003,7 +1003,7 @@ export class GraphQLService {
 					},
 					resolve: async ({ info, context }: { info: GraphQLResolveInfo; context: Record<string, any> }) => {
 						const result = await self.resolveQuery(info);
-						context.data = result;
+						context['data'] = result;
 
 						return result;
 					},
@@ -1018,7 +1018,7 @@ export class GraphQLService {
 						},
 						resolve: async ({ info, context }: { info: GraphQLResolveInfo; context: Record<string, any> }) => {
 							const result = await self.resolveQuery(info);
-							context.data = result;
+							context['data'] = result;
 							return result;
 						},
 					});
@@ -1225,14 +1225,14 @@ export class GraphQLService {
 				}
 			}
 
-			DeleteCollectionTypes.many = schemaComposer.createObjectTC({
+			DeleteCollectionTypes['many'] = schemaComposer.createObjectTC({
 				name: `delete_many`,
 				fields: {
 					ids: GraphQLNonNull(new GraphQLList(GraphQLID)),
 				},
 			});
 
-			DeleteCollectionTypes.one = schemaComposer.createObjectTC({
+			DeleteCollectionTypes['one'] = schemaComposer.createObjectTC({
 				name: `delete_one`,
 				fields: {
 					id: GraphQLNonNull(GraphQLID),
@@ -1240,9 +1240,9 @@ export class GraphQLService {
 			});
 
 			for (const collection of Object.values(schema.delete.collections)) {
-				DeleteCollectionTypes.many.addResolver({
+				DeleteCollectionTypes['many'].addResolver({
 					name: `delete_${collection.collection}_items`,
-					type: DeleteCollectionTypes.many,
+					type: DeleteCollectionTypes['many'],
 					args: {
 						ids: GraphQLNonNull(new GraphQLList(GraphQLID)),
 					},
@@ -1250,9 +1250,9 @@ export class GraphQLService {
 						await self.resolveMutation(args, info),
 				});
 
-				DeleteCollectionTypes.one.addResolver({
+				DeleteCollectionTypes['one'].addResolver({
 					name: `delete_${collection.collection}_item`,
-					type: DeleteCollectionTypes.one,
+					type: DeleteCollectionTypes['one'],
 					args: {
 						id: GraphQLNonNull(GraphQLID),
 					},
@@ -1291,13 +1291,13 @@ export class GraphQLService {
 				collection = collection.slice(0, -6);
 			}
 		}
-		if (args.id) {
+		if (args['id']) {
 			query.filter = {
 				_and: [
 					query.filter || {},
 					{
 						[this.schema.collections[collection].primary]: {
-							_eq: args.id,
+							_eq: args['id'],
 						},
 					},
 				],
@@ -1322,7 +1322,7 @@ export class GraphQLService {
 
 		const result = await this.read(collection, query);
 
-		if (args.id) {
+		if (args['id']) {
 			return result?.[0] || null;
 		}
 
@@ -1330,8 +1330,8 @@ export class GraphQLService {
 			// for every entry in result add a group field based on query.group;
 			const aggregateKeys = Object.keys(query.aggregate ?? {});
 
-			result.map((field: Item) => {
-				field.group = omit(field, aggregateKeys);
+			result['map']((field: Item) => {
+				field['group'] = omit(field, aggregateKeys);
 			});
 		}
 
@@ -1363,7 +1363,7 @@ export class GraphQLService {
 		if (collection.endsWith('_item')) collection = collection.slice(0, -5);
 
 		if (singleton && action === 'update') {
-			return await this.upsertSingleton(collection, args.data, query);
+			return await this.upsertSingleton(collection, args['data'], query);
 		}
 
 		const service = this.getService(collection);
@@ -1372,22 +1372,22 @@ export class GraphQLService {
 		try {
 			if (single) {
 				if (action === 'create') {
-					const key = await service.createOne(args.data);
+					const key = await service.createOne(args['data']);
 					return hasQuery ? await service.readOne(key, query) : true;
 				}
 
 				if (action === 'update') {
-					const key = await service.updateOne(args.id, args.data);
+					const key = await service.updateOne(args['id'], args['data']);
 					return hasQuery ? await service.readOne(key, query) : true;
 				}
 
 				if (action === 'delete') {
-					await service.deleteOne(args.id);
-					return { id: args.id };
+					await service.deleteOne(args['id']);
+					return { id: args['id'] };
 				}
 			} else {
 				if (action === 'create') {
-					const keys = await service.createMany(args.data);
+					const keys = await service.createMany(args['data']);
 					return hasQuery ? await service.readMany(keys, query) : true;
 				}
 
@@ -1395,16 +1395,16 @@ export class GraphQLService {
 					const keys: PrimaryKey[] = [];
 
 					if (batchUpdate) {
-						keys.push(...(await service.updateBatch(args.data)));
+						keys.push(...(await service.updateBatch(args['data'])));
 					} else {
-						keys.push(...(await service.updateMany(args.ids, args.data)));
+						keys.push(...(await service.updateMany(args['ids'], args['data'])));
 					}
 
 					return hasQuery ? await service.readMany(keys, query) : true;
 				}
 
 				if (action === 'delete') {
-					const keys = await service.deleteMany(args.ids);
+					const keys = await service.deleteMany(args['ids']);
 					return { ids: keys };
 				}
 			}
@@ -1672,10 +1672,10 @@ export class GraphQLService {
 	 */
 	formatError(error: BaseException | BaseException[]): GraphQLError {
 		if (Array.isArray(error)) {
-			error[0].extensions.code = error[0].code;
+			error[0].extensions['code'] = error[0].code;
 			return new GraphQLError(error[0].message, undefined, undefined, undefined, undefined, error[0]);
 		}
-		error.extensions.code = error.code;
+		error.extensions['code'] = error.code;
 		return new GraphQLError(error.message, undefined, undefined, undefined, undefined, error);
 	}
 
@@ -1966,12 +1966,12 @@ export class GraphQLService {
 					});
 					const result = await authenticationService.login(DEFAULT_AUTH_PROVIDER, args, args?.otp);
 					if (args.mode === 'cookie') {
-						res?.cookie(env.REFRESH_TOKEN_COOKIE_NAME, result.refreshToken, {
+						res?.cookie(env['REFRESH_TOKEN_COOKIE_NAME'], result.refreshToken, {
 							httpOnly: true,
-							domain: env.REFRESH_TOKEN_COOKIE_DOMAIN,
-							maxAge: ms(env.REFRESH_TOKEN_TTL as string),
-							secure: env.REFRESH_TOKEN_COOKIE_SECURE ?? false,
-							sameSite: (env.REFRESH_TOKEN_COOKIE_SAME_SITE as 'lax' | 'strict' | 'none') || 'strict',
+							domain: env['REFRESH_TOKEN_COOKIE_DOMAIN'],
+							maxAge: ms(env['REFRESH_TOKEN_TTL'] as string),
+							secure: env['REFRESH_TOKEN_COOKIE_SECURE'] ?? false,
+							sameSite: (env['REFRESH_TOKEN_COOKIE_SAME_SITE'] as 'lax' | 'strict' | 'none') || 'strict',
 						});
 					}
 					return {
@@ -1998,24 +1998,24 @@ export class GraphQLService {
 						accountability: accountability,
 						schema: this.schema,
 					});
-					const currentRefreshToken = args.refresh_token || req?.cookies[env.REFRESH_TOKEN_COOKIE_NAME];
+					const currentRefreshToken = args.refresh_token || req?.cookies[env['REFRESH_TOKEN_COOKIE_NAME']];
 					if (!currentRefreshToken) {
 						throw new InvalidPayloadException(`"refresh_token" is required in either the JSON payload or Cookie`);
 					}
 					const result = await authenticationService.refresh(currentRefreshToken);
 					if (args.mode === 'cookie') {
-						res?.cookie(env.REFRESH_TOKEN_COOKIE_NAME, result.refreshToken, {
+						res?.cookie(env['REFRESH_TOKEN_COOKIE_NAME'], result['refreshToken'], {
 							httpOnly: true,
-							domain: env.REFRESH_TOKEN_COOKIE_DOMAIN,
-							maxAge: ms(env.REFRESH_TOKEN_TTL as string),
-							secure: env.REFRESH_TOKEN_COOKIE_SECURE ?? false,
-							sameSite: (env.REFRESH_TOKEN_COOKIE_SAME_SITE as 'lax' | 'strict' | 'none') || 'strict',
+							domain: env['REFRESH_TOKEN_COOKIE_DOMAIN'],
+							maxAge: ms(env['REFRESH_TOKEN_TTL'] as string),
+							secure: env['REFRESH_TOKEN_COOKIE_SECURE'] ?? false,
+							sameSite: (env['REFRESH_TOKEN_COOKIE_SAME_SITE'] as 'lax' | 'strict' | 'none') || 'strict',
 						});
 					}
 					return {
-						access_token: result.accessToken,
-						expires: result.expires,
-						refresh_token: result.refreshToken,
+						access_token: result['accessToken'],
+						expires: result['expires'],
+						refresh_token: result['refreshToken'],
 					};
 				},
 			},
@@ -2035,7 +2035,7 @@ export class GraphQLService {
 						accountability: accountability,
 						schema: this.schema,
 					});
-					const currentRefreshToken = args.refresh_token || req?.cookies[env.REFRESH_TOKEN_COOKIE_NAME];
+					const currentRefreshToken = args.refresh_token || req?.cookies[env['REFRESH_TOKEN_COOKIE_NAME']];
 					if (!currentRefreshToken) {
 						throw new InvalidPayloadException(`"refresh_token" is required in either the JSON payload or Cookie`);
 					}
@@ -2740,7 +2740,7 @@ export class GraphQLService {
 		if ('directus_activity' in schema.delete.collections) {
 			schemaComposer.Mutation.addFields({
 				delete_comment: {
-					type: DeleteCollectionTypes.one,
+					type: DeleteCollectionTypes['one'],
 					args: {
 						id: GraphQLNonNull(GraphQLID),
 					},

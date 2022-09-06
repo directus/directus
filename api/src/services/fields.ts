@@ -1,10 +1,10 @@
 import SchemaInspector from '@directus/schema';
 import { REGEX_BETWEEN_PARENS } from '@directus/shared/constants';
-import { Accountability, Field, FieldMeta, RawField, SchemaOverview, Type } from '@directus/shared/types';
+import type { Accountability, Field, FieldMeta, RawField, SchemaOverview, Type } from '@directus/shared/types';
 import { addFieldFlag, toArray } from '@directus/shared/utils';
-import Keyv from 'keyv';
-import { Knex } from 'knex';
-import { Column } from 'knex-schema-inspector/dist/types/column';
+import type Keyv from 'keyv';
+import type { Knex } from 'knex';
+import type { Column } from 'knex-schema-inspector/dist/types/column';
 import { isEqual, isNil } from 'lodash';
 import { clearSystemCache, getCache } from '../cache';
 import { ALIAS_TYPES } from '../constants';
@@ -17,7 +17,7 @@ import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { translateDatabaseError } from '../exceptions/database/translate';
 import { ItemsService } from '../services/items';
 import { PayloadService } from '../services/payload';
-import { AbstractServiceOptions } from '../types';
+import type { AbstractServiceOptions } from '../types';
 import getDefaultValue from '../utils/get-default-value';
 import getLocalType from '../utils/get-local-type';
 import { RelationsService } from './relations';
@@ -165,8 +165,8 @@ export class FieldsService {
 			return result.filter((field) => {
 				if (field.collection in allowedFieldsInCollection === false) return false;
 				const allowedFields = allowedFieldsInCollection[field.collection];
-				if (allowedFields[0] === '*') return true;
-				return allowedFields.includes(field.field);
+				if (allowedFields?.[0] === '*') return true;
+				return allowedFields?.includes(field.field);
 			});
 		}
 
@@ -251,7 +251,7 @@ export class FieldsService {
 
 		try {
 			const exists =
-				field.field in this.schema.collections[collection].fields ||
+				field.field in this.schema.collections[collection]!.fields ||
 				isNil(
 					await this.knex.select('id').from('directus_fields').where({ collection, field: field.field }).first()
 				) === false;
@@ -327,7 +327,7 @@ export class FieldsService {
 				await this.helpers.schema.postColumnChange();
 			}
 
-			if (this.cache && env.CACHE_AUTO_PURGE) {
+			if (this.cache && env['CACHE_AUTO_PURGE']) {
 				await this.cache.clear();
 			}
 
@@ -419,7 +419,7 @@ export class FieldsService {
 				await this.helpers.schema.postColumnChange();
 			}
 
-			if (this.cache && env.CACHE_AUTO_PURGE) {
+			if (this.cache && env['CACHE_AUTO_PURGE']) {
 				await this.cache.clear();
 			}
 
@@ -491,8 +491,8 @@ export class FieldsService {
 				// Delete field only after foreign key constraints are removed
 				if (
 					this.schema.collections[collection] &&
-					field in this.schema.collections[collection].fields &&
-					this.schema.collections[collection].fields[field].alias === false
+					field in this.schema.collections[collection]!.fields &&
+					this.schema.collections[collection]!.fields[field]!.alias === false
 				) {
 					await trx.schema.table(collection, (table) => {
 						table.dropColumn(field);
@@ -508,11 +508,11 @@ export class FieldsService {
 				const collectionMetaUpdates: Record<string, null> = {};
 
 				if (collectionMeta?.archive_field === field) {
-					collectionMetaUpdates.archive_field = null;
+					collectionMetaUpdates['archive_field'] = null;
 				}
 
 				if (collectionMeta?.sort_field === field) {
-					collectionMetaUpdates.sort_field = null;
+					collectionMetaUpdates['sort_field'] = null;
 				}
 
 				if (Object.keys(collectionMetaUpdates).length > 0) {
@@ -553,7 +553,7 @@ export class FieldsService {
 				await this.helpers.schema.postColumnChange();
 			}
 
-			if (this.cache && env.CACHE_AUTO_PURGE) {
+			if (this.cache && env['CACHE_AUTO_PURGE']) {
 				await this.cache.clear();
 			}
 

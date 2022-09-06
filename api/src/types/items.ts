@@ -3,7 +3,7 @@
  * expecting an item vs any other generic object.
  */
 
-import { EventContext } from '@directus/shared/types';
+import type { EventContext } from '@directus/shared/types';
 
 export type Item = Record<string, any>;
 

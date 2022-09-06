@@ -1,4 +1,4 @@
-import { RequestHandler } from 'express';
+import type { RequestHandler } from 'express';
 import getDatabase from '../database';
 import emitter from '../emitter';
 import { RouteNotFoundException } from '../exceptions';

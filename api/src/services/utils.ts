@@ -1,9 +1,9 @@
-import { Knex } from 'knex';
+import type { Knex } from 'knex';
 import getDatabase from '../database';
 import { systemCollectionRows } from '../database/system-data/collections';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
-import { AbstractServiceOptions, PrimaryKey } from '../types';
-import { Accountability, SchemaOverview } from '@directus/shared/types';
+import type { AbstractServiceOptions, PrimaryKey } from '../types';
+import type { Accountability, SchemaOverview } from '@directus/shared/types';
 import emitter from '../emitter';
 
 export class UtilsService {
@@ -44,7 +44,7 @@ export class UtilsService {
 			}
 		}
 
-		const primaryKeyField = this.schema.collections[collection].primary;
+		const primaryKeyField = this.schema.collections[collection]!.primary;
 
 		// Make sure all rows have a sort value
 		const countResponse = await this.knex.count('* as count').from(collection).whereNull(sortField).first();

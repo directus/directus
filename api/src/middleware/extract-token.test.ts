@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from 'express';
+import type { NextFunction, Request, Response } from 'express';
 import extractToken from '../../src/middleware/extract-token';
 import '../../src/types/express.d.ts';
 

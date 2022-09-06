@@ -1,5 +1,5 @@
-import { Query, SchemaOverview } from '@directus/shared/types';
-import { Knex } from 'knex';
+import type { Query, SchemaOverview } from '@directus/shared/types';
+import type { Knex } from 'knex';
 import { applyFilter } from '../../../utils/apply-query';
 import { DatabaseHelper } from '../types';
 
@@ -9,7 +9,7 @@ export type FnHelperOptions = {
 };
 
 export abstract class FnHelper extends DatabaseHelper {
-	constructor(protected knex: Knex, protected schema: SchemaOverview) {
+	constructor(protected override knex: Knex, protected schema: SchemaOverview) {
 		super(knex);
 		this.schema = schema;
 	}
@@ -29,7 +29,7 @@ export abstract class FnHelper extends DatabaseHelper {
 			(relation) => relation.related_collection === table && relation?.meta?.one_field === column
 		);
 
-		const currentPrimary = this.schema.collections[table].primary;
+		const currentPrimary = this.schema.collections[table]!.primary;
 
 		if (!relation) {
 			throw new Error(`Field ${table}.${column} isn't a nested relational collection`);

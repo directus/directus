@@ -1,7 +1,7 @@
-import { Knex } from 'knex';
+import type { Knex } from 'knex';
 import { merge } from 'lodash';
 import { nanoid } from 'nanoid';
-import os from 'os';
+import * as os from 'os';
 import { performance } from 'perf_hooks';
 // @ts-ignore
 import { version } from '../../package.json';
@@ -11,8 +11,8 @@ import env from '../env';
 import logger from '../logger';
 import { rateLimiter } from '../middleware/rate-limiter';
 import storage from '../storage';
-import { AbstractServiceOptions } from '../types';
-import { Accountability, SchemaOverview } from '@directus/shared/types';
+import type { AbstractServiceOptions } from '../types';
+import type { Accountability, SchemaOverview } from '@directus/shared/types';
 import { toArray } from '@directus/shared/utils';
 import getMailer from '../mailer';
 import { SettingsService } from './settings';
@@ -48,36 +48,36 @@ export class ServerService {
 			],
 		});
 
-		info.project = projectInfo;
+		info['project'] = projectInfo;
 
 		if (this.accountability?.user) {
-			if (env.RATE_LIMITER_ENABLED) {
-				info.rateLimit = {
-					points: env.RATE_LIMITER_POINTS,
-					duration: env.RATE_LIMITER_DURATION,
+			if (env['RATE_LIMITER_ENABLED']) {
+				info['rateLimit'] = {
+					points: env['RATE_LIMITER_POINTS'],
+					duration: env['RATE_LIMITER_DURATION'],
 				};
 			} else {
-				info.rateLimit = false;
+				info['rateLimit'] = false;
 			}
 
-			info.flows = {
-				execAllowedModules: env.FLOWS_EXEC_ALLOWED_MODULES ? toArray(env.FLOWS_EXEC_ALLOWED_MODULES) : [],
+			info['flows'] = {
+				execAllowedModules: env['FLOWS_EXEC_ALLOWED_MODULES'] ? toArray(env['FLOWS_EXEC_ALLOWED_MODULES']) : [],
 			};
 		}
 
 		if (this.accountability?.admin === true) {
 			const { osType, osVersion } = getOSInfo();
 
-			info.directus = {
+			info['directus'] = {
 				version,
 			};
 
-			info.node = {
+			info['node'] = {
 				version: process.versions.node,
 				uptime: Math.round(process.uptime()),
 			};
 
-			info.os = {
+			info['os'] = {
 				type: osType,
 				version: osVersion,
 				uptime: Math.round(os.uptime()),
@@ -113,7 +113,7 @@ export class ServerService {
 		const data: HealthData = {
 			status: 'ok',
 			releaseId: version,
-			serviceId: env.KEY,
+			serviceId: env['KEY'],
 			checks: merge(
 				...(await Promise.all([testDatabase(), testCache(), testRateLimiter(), testStorage(), testEmail()]))
 			),
@@ -148,7 +148,7 @@ export class ServerService {
 
 		async function testDatabase(): Promise<Record<string, HealthCheck[]>> {
 			const database = getDatabase();
-			const client = env.DB_CLIENT;
+			const client = env['DB_CLIENT'];
 
 			const checks: Record<string, HealthCheck[]> = {};
 
@@ -160,7 +160,7 @@ export class ServerService {
 					componentType: 'datastore',
 					observedUnit: 'ms',
 					observedValue: 0,
-					threshold: env.DB_HEALTHCHECK_THRESHOLD ? +env.DB_HEALTHCHECK_THRESHOLD : 150,
+					threshold: env['DB_HEALTHCHECK_THRESHOLD'] ? +env['DB_HEALTHCHECK_THRESHOLD'] : 150,
 				},
 			];
 
@@ -169,8 +169,8 @@ export class ServerService {
 			if (await hasDatabaseConnection()) {
 				checks[`${client}:responseTime`][0].status = 'ok';
 			} else {
-				checks[`${client}:responseTime`][0].status = 'error';
-				checks[`${client}:responseTime`][0].output = `Can't connect to the database.`;
+				checks[`${client}:responseTime`][0]!.status = 'error';
+				checks[`${client}:responseTime`][0]!.output = `Can't connect to the database.`;
 			}
 
 			const endTime = performance.now();
@@ -203,7 +203,7 @@ export class ServerService {
 		}
 
 		async function testCache(): Promise<Record<string, HealthCheck[]>> {
-			if (env.CACHE_ENABLED !== true) {
+			if (env['CACHE_ENABLED'] !== true) {
 				return {};
 			}
 
@@ -216,7 +216,7 @@ export class ServerService {
 						componentType: 'cache',
 						observedValue: 0,
 						observedUnit: 'ms',
-						threshold: env.CACHE_HEALTHCHECK_THRESHOLD ? +env.CACHE_HEALTHCHECK_THRESHOLD : 150,
+						threshold: env['CACHE_HEALTHCHECK_THRESHOLD'] ? +env['CACHE_HEALTHCHECK_THRESHOLD'] : 150,
 					},
 				],
 			};
@@ -245,7 +245,7 @@ export class ServerService {
 		}
 
 		async function testRateLimiter(): Promise<Record<string, HealthCheck[]>> {
-			if (env.RATE_LIMITER_ENABLED !== true) {
+			if (env['RATE_LIMITER_ENABLED'] !== true) {
 				return {};
 			}
 
@@ -256,7 +256,7 @@ export class ServerService {
 						componentType: 'ratelimiter',
 						observedValue: 0,
 						observedUnit: 'ms',
-						threshold: env.RATE_LIMITER_HEALTHCHECK_THRESHOLD ? +env.RATE_LIMITER_HEALTHCHECK_THRESHOLD : 150,
+						threshold: env['RATE_LIMITER_HEALTHCHECK_THRESHOLD'] ? +env['RATE_LIMITER_HEALTHCHECK_THRESHOLD'] : 150,
 					},
 				],
 			};
@@ -287,7 +287,7 @@ export class ServerService {
 		async function testStorage(): Promise<Record<string, HealthCheck[]>> {
 			const checks: Record<string, HealthCheck[]> = {};
 
-			for (const location of toArray(env.STORAGE_LOCATIONS)) {
+			for (const location of toArray(env['STORAGE_LOCATIONS'])) {
 				const disk = storage.disk(location);
 				const envThresholdKey = `STORAGE_${location}_HEALTHCHECK_THRESHOLD`.toUpperCase();
 				checks[`storage:${location}:responseTime`] = [

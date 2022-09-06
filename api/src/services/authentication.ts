@@ -1,6 +1,6 @@
 import { Accountability, Action, SchemaOverview } from '@directus/shared/types';
-import jwt from 'jsonwebtoken';
-import { Knex } from 'knex';
+import * as jwt from 'jsonwebtoken';
+import type { Knex } from 'knex';
 import { clone, cloneDeep } from 'lodash';
 import ms from 'ms';
 import { nanoid } from 'nanoid';
@@ -17,7 +17,7 @@ import {
 	UserSuspendedException,
 } from '../exceptions';
 import { createRateLimiter } from '../rate-limiter';
-import { AbstractServiceOptions, DirectusTokenPayload, LoginResult, Session, User } from '../types';
+import type { AbstractServiceOptions, DirectusTokenPayload, LoginResult, Session, User } from '../types';
 import { stall } from '../utils/stall';
 import { ActivityService } from './activity';
 import { SettingsService } from './settings';
@@ -49,7 +49,7 @@ export class AuthenticationService {
 		payload: Record<string, any>,
 		otp?: string
 	): Promise<LoginResult> {
-		const STALL_TIME = env.LOGIN_STALL_TIME;
+		const STALL_TIME = env['LOGIN_STALL_TIME'];
 		const timeStart = performance.now();
 
 		const provider = getAuthProvider(providerName);
@@ -202,13 +202,13 @@ export class AuthenticationService {
 			}
 		);
 
-		const accessToken = jwt.sign(customClaims, env.SECRET as string, {
-			expiresIn: env.ACCESS_TOKEN_TTL,
+		const accessToken = jwt.sign(customClaims, env['SECRET'] as string, {
+			expiresIn: env['ACCESS_TOKEN_TTL'],
 			issuer: 'directus',
 		});
 
 		const refreshToken = nanoid(64);
-		const refreshTokenExpiration = new Date(Date.now() + ms(env.REFRESH_TOKEN_TTL as string));
+		const refreshTokenExpiration = new Date(Date.now() + ms(env['REFRESH_TOKEN_TTL']));
 
 		await this.knex('directus_sessions').insert({
 			token: refreshToken,
@@ -246,7 +246,7 @@ export class AuthenticationService {
 		return {
 			accessToken,
 			refreshToken,
-			expires: ms(env.ACCESS_TOKEN_TTL as string),
+			expires: ms(env['ACCESS_TOKEN_TTL']),
 			id: user.id,
 		};
 	}
@@ -355,13 +355,13 @@ export class AuthenticationService {
 			}
 		);
 
-		const accessToken = jwt.sign(customClaims, env.SECRET as string, {
-			expiresIn: env.ACCESS_TOKEN_TTL,
+		const accessToken = jwt.sign(customClaims, env['SECRET'] as string, {
+			expiresIn: env['ACCESS_TOKEN_TTL'],
 			issuer: 'directus',
 		});
 
 		const newRefreshToken = nanoid(64);
-		const refreshTokenExpiration = new Date(Date.now() + ms(env.REFRESH_TOKEN_TTL as string));
+		const refreshTokenExpiration = new Date(Date.now() + ms(env['REFRESH_TOKEN_TTL']));
 
 		await this.knex('directus_sessions')
 			.update({
@@ -377,7 +377,7 @@ export class AuthenticationService {
 		return {
 			accessToken,
 			refreshToken: newRefreshToken,
-			expires: ms(env.ACCESS_TOKEN_TTL as string),
+			expires: ms(env['ACCESS_TOKEN_TTL']),
 			id: record.user_id,
 		};
 	}

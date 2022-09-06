@@ -1,8 +1,8 @@
-import { KNEX_TYPES } from '@directus/shared/constants';
+import type { KNEX_TYPES } from '@directus/shared/constants';
 import { Options, SchemaHelper } from '../types';
 
 export class SchemaHelperOracle extends SchemaHelper {
-	async changeToType(
+	override async changeToType(
 		table: string,
 		column: string,
 		type: typeof KNEX_TYPES[number],

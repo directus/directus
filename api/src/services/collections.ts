@@ -1,5 +1,5 @@
 import SchemaInspector from '@directus/schema';
-import { Knex } from 'knex';
+import type { Knex } from 'knex';
 import { getCache, clearSystemCache } from '../cache';
 import { ALIAS_TYPES } from '../constants';
 import getDatabase, { getSchemaInspector } from '../database';
@@ -8,10 +8,10 @@ import env from '../env';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { FieldsService } from '../services/fields';
 import { ItemsService } from '../services/items';
-import Keyv from 'keyv';
-import { AbstractServiceOptions, Collection, CollectionMeta, MutationOptions } from '../types';
-import { Accountability, FieldMeta, RawField, SchemaOverview } from '@directus/shared/types';
-import { Table } from 'knex-schema-inspector/dist/types/table';
+import type Keyv from 'keyv';
+import type { AbstractServiceOptions, Collection, CollectionMeta, MutationOptions } from '../types';
+import type { Accountability, FieldMeta, RawField, SchemaOverview } from '@directus/shared/types';
+import type { Table } from 'knex-schema-inspector/dist/types/table';
 import { addFieldFlag } from '@directus/shared/utils';
 import { getHelpers, Helpers } from '../database/helpers';
 
@@ -150,7 +150,7 @@ export class CollectionsService {
 
 			return payload.collection;
 		} finally {
-			if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
+			if (this.cache && env['CACHE_AUTO_PURGE'] && opts?.autoPurgeCache !== false) {
 				await this.cache.clear();
 			}
 
@@ -182,7 +182,7 @@ export class CollectionsService {
 
 			return collections;
 		} finally {
-			if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
+			if (this.cache && env['CACHE_AUTO_PURGE'] && opts?.autoPurgeCache !== false) {
 				await this.cache.clear();
 			}
 
@@ -264,8 +264,8 @@ export class CollectionsService {
 			}
 		}
 
-		if (env.DB_EXCLUDE_TABLES) {
-			return collections.filter((collection) => env.DB_EXCLUDE_TABLES.includes(collection.collection) === false);
+		if (env['DB_EXCLUDE_TABLES']) {
+			return collections.filter((collection) => env['DB_EXCLUDE_TABLES'].includes(collection.collection) === false);
 		}
 
 		return collections;
@@ -279,7 +279,7 @@ export class CollectionsService {
 
 		if (result.length === 0) throw new ForbiddenException();
 
-		return result[0];
+		return result[0]!;
 	}
 
 	/**
@@ -341,7 +341,7 @@ export class CollectionsService {
 
 			return collectionKey;
 		} finally {
-			if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
+			if (this.cache && env['CACHE_AUTO_PURGE'] && opts?.autoPurgeCache !== false) {
 				await this.cache.clear();
 			}
 
@@ -372,7 +372,7 @@ export class CollectionsService {
 
 			return collectionKeys;
 		} finally {
-			if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
+			if (this.cache && env['CACHE_AUTO_PURGE'] && opts?.autoPurgeCache !== false) {
 				await this.cache.clear();
 			}
 
@@ -475,7 +475,7 @@ export class CollectionsService {
 
 			return collectionKey;
 		} finally {
-			if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
+			if (this.cache && env['CACHE_AUTO_PURGE'] && opts?.autoPurgeCache !== false) {
 				await this.cache.clear();
 			}
 
@@ -506,7 +506,7 @@ export class CollectionsService {
 
 			return collectionKeys;
 		} finally {
-			if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
+			if (this.cache && env['CACHE_AUTO_PURGE'] && opts?.autoPurgeCache !== false) {
 				await this.cache.clear();
 			}
 

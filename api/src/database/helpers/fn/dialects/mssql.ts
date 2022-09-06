@@ -1,5 +1,5 @@
 import { FnHelper, FnHelperOptions } from '../types';
-import { Knex } from 'knex';
+import type { Knex } from 'knex';
 
 export class FnHelperMSSQL extends FnHelper {
 	year(table: string, column: string): Knex.Raw {
