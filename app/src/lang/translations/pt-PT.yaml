@@ -831,6 +831,8 @@ choose_action: Escolher ação
 continue_as: >-
   {name} está autenticado no momento. Se você reconhecer esta conta, pressione continuar.
 creating_webhook: Criando Webhook
+delete_are_you_sure: >-
+  Esta ação é permanente e não pode ser desfeita. Tem certeza de que deseja prosseguir?
 description: Descrição
 file_library: Biblioteca de Arquivos
 revisions: Revisões
