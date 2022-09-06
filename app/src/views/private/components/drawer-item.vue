@@ -20,42 +20,40 @@
 		</template>
 
 		<div class="drawer-item-content">
-			<template v-if="junctionField">
-				<file-preview
-					v-if="file"
-					:src="file.src"
-					:mime="file.type"
-					:width="file.width"
-					:height="file.height"
-					:title="file.title"
-					:in-modal="true"
+			<file-preview
+				v-if="junctionField && file"
+				:src="file.src"
+				:mime="file.type"
+				:width="file.width"
+				:height="file.height"
+				:title="file.title"
+				:in-modal="true"
+			/>
+			<div class="drawer-item-order" :class="{ swap: swapFormOrder }">
+				<v-form
+					v-if="junctionField"
+					:disabled="disabled"
+					:loading="loading"
+					:initial-values="initialValues?.[junctionField]"
+					:primary-key="relatedPrimaryKey"
+					:model-value="internalEdits?.[junctionField]"
+					:fields="relatedCollectionFields"
+					:validation-errors="junctionField ? validationErrors : undefined"
+					autofocus
+					:show-divider="!swapFormOrder"
+					@update:model-value="setRelationEdits"
 				/>
-				<div class="drawer-item-order" :class="{ swap: swapFormOrder }">
-					<v-form
-						:disabled="disabled"
-						:loading="loading"
-						:initial-values="initialValues?.[junctionField]"
-						:primary-key="relatedPrimaryKey"
-						:model-value="internalEdits?.[junctionField]"
-						:fields="relatedCollectionFields"
-						:validation-errors="junctionField ? validationErrors : undefined"
-						autofocus
-						:show-divider="!swapFormOrder"
-						@update:model-value="setRelationEdits"
-					/>
-
-					<v-form
-						v-model="internalEdits"
-						:disabled="disabled"
-						:loading="loading"
-						:initial-values="initialValues"
-						:show-divider="swapFormOrder"
-						:primary-key="primaryKey"
-						:fields="fields"
-						:validation-errors="!junctionField ? validationErrors : undefined"
-					/>
-				</div>
-			</template>
+				<v-form
+					v-model="internalEdits"
+					:disabled="disabled"
+					:loading="loading"
+					:initial-values="initialValues"
+					:show-divider="swapFormOrder"
+					:primary-key="primaryKey"
+					:fields="fields"
+					:validation-errors="!junctionField ? validationErrors : undefined"
+				/>
+			</div>
 		</div>
 	</v-drawer>
 </template>
