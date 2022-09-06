@@ -10,6 +10,21 @@ export default definePanel({
 	variable: true,
 	options: [
 		{
+			name: '$t:panels.relational-variable.variable_key',
+			field: 'field',
+			type: 'string',
+			meta: {
+				interface: 'input',
+				width: 'full',
+				options: {
+					dbSafe: true,
+					font: 'monospace',
+					placeholder: '$t:interfaces.list.field_name_placeholder',
+				},
+			},
+			schema: null,
+		},
+		{
 			field: 'collection',
 			type: 'string',
 			name: '$t:collection',
