@@ -358,6 +358,8 @@ function useActions() {
 		if (errors.length > 0) {
 			validationErrors.value = errors;
 			return;
+		} else {
+			validationErrors.value = [];
 		}
 
 		if (props.junctionField && props.relatedPrimaryKey !== '+' && relatedPrimaryKeyField.value) {
