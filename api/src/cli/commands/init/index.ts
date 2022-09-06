@@ -1,10 +1,10 @@
-import chalk from 'chalk';
-import execa from 'execa';
-import inquirer from 'inquirer';
-import { Knex } from 'knex';
-import ora from 'ora';
+import * as chalk from 'chalk';
+import * as execa from 'execa';
+import * as inquirer from 'inquirer';
+import type { Knex } from 'knex';
+import * as ora from 'ora';
 import { v4 as uuid } from 'uuid';
-import Joi from 'joi';
+import * as Joi from 'joi';
 import runMigrations from '../../../database/migrations/run';
 import runSeed from '../../../database/seeds/run';
 import createDBConnection, { Credentials } from '../../utils/create-db-connection';

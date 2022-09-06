@@ -2,8 +2,8 @@ import getDatabase from '../../../database';
 import logger from '../../../logger';
 import { getSnapshot } from '../../../utils/get-snapshot';
 import { constants as fsConstants, promises as fs } from 'fs';
-import path from 'path';
-import inquirer from 'inquirer';
+import * as path from 'path';
+import * as inquirer from 'inquirer';
 import { dump as toYaml } from 'js-yaml';
 import { flushCaches } from '../../../cache';
 
