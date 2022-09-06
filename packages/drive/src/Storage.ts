@@ -1,4 +1,4 @@
-import { MethodNotSupported } from './exceptions';
+import { MethodNotSupported } from './exceptions/index.js';
 import type {
 	Response,
 	SignedUrlResponse,

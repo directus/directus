@@ -1,6 +1,6 @@
 import { LocalFileSystemStorage } from './LocalFileSystemStorage.js';
 import type Storage from './Storage.js';
-import { InvalidConfig, DriverNotSupported } from './exceptions';
+import { InvalidConfig, DriverNotSupported } from './exceptions/index.js';
 import type { StorageManagerConfig, StorageManagerDiskConfig, StorageManagerSingleDiskConfig } from './types.js';
 
 interface StorageConstructor<T extends Storage = Storage> {

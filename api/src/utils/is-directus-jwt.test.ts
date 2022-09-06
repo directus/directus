@@ -1,5 +1,5 @@
 import isDirectusJWT from '../../src/utils/is-directus-jwt';
-import jwt from 'jsonwebtoken';
+import * as jwt from 'jsonwebtoken';
 
 test('Returns false for non JWT string', () => {
 	const result = isDirectusJWT('test');

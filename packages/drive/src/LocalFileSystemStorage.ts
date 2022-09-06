@@ -2,7 +2,7 @@ import * as fse from 'fs-extra';
 import { dirname, join, resolve, relative, sep } from 'path';
 import Storage from './Storage.js';
 import { isReadableStream, pipeline } from './utils.js';
-import { FileNotFound, UnknownException, PermissionMissing } from './exceptions';
+import { FileNotFound, UnknownException, PermissionMissing } from './exceptions/index.js';
 import type {
 	Response,
 	ExistsResponse,

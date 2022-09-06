@@ -24,7 +24,8 @@
 	  "noUnusedParameters": true,
 	  "importsNotUsedAsValues": "error",
 	  "checkJs": true,
-	  "outDir": "dist"
+	  "outDir": "dist",
+	  "allowSyntheticDefaultImports": true
 	  },
 	  "include": ["src", ""]
   }
