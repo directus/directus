@@ -26,10 +26,10 @@ test('Sets body to empty, calls next on GET requests', async () => {
 test(`Short circuits on singletons that aren't queried through SEARCH`, async () => {
 	mockRequest.method = 'PATCH';
 	mockRequest.singleton = true;
+	mockRequest.body = { title: 'test' };
 
 	await validateBatch('update')(mockRequest as Request, mockResponse as Response, nextFunction);
 
-	expect(mockRequest.body).toEqual({});
 	expect(nextFunction).toHaveBeenCalledTimes(1);
 });
 
