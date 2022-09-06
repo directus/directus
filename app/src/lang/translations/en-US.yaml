@@ -2043,6 +2043,10 @@ panels:
     name: Global Variable
     description: Set a global value for use in other Panels' filters
     variable_key: Variable Key
+  relational-variable:
+    name: Global Relational Variable
+    description: Set a global relational value for use in other Panels' filters
+    variable_key: Relational Variable Key
 triggers:
   common:
     response_body: Response Body
