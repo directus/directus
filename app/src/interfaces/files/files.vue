@@ -322,7 +322,10 @@ function onSelect(selected: string[]) {
 
 const downloadName = computed(() => {
 	if (relatedPrimaryKey.value === null || relationInfo.value?.relatedCollection.collection !== 'directus_files') return;
-	return editsAtStart.value.directus_files_id.filename_download;
+	const junctionField = relationInfo.value.junctionField.field;
+	const relationPkField = relationInfo.value.relatedPrimaryKeyField.field;
+
+	return displayItems.value.find(item => get(item, [junctionField, relationPkField]))?.directus_files_id?.filename_download
 });
 
 const downloadUrl = computed(() => {
