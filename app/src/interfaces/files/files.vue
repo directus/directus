@@ -325,7 +325,8 @@ const downloadName = computed(() => {
 	const junctionField = relationInfo.value.junctionField.field;
 	const relationPkField = relationInfo.value.relatedPrimaryKeyField.field;
 
-	return displayItems.value.find(item => get(item, [junctionField, relationPkField]))?.directus_files_id?.filename_download
+	return displayItems.value.find((item) => get(item, [junctionField, relationPkField]))?.directus_files_id
+		?.filename_download;
 });
 
 const downloadUrl = computed(() => {
