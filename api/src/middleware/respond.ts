@@ -61,21 +61,24 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 		filename += ' ' + getDateFormatted();
 
 		if (req.sanitizedQuery.export === 'json') {
+			const data = await exportService.transform(res.locals.payload?.data, 'json');
 			res.attachment(`${filename}.json`);
 			res.set('Content-Type', 'application/json');
-			return res.status(200).send(exportService.transform(res.locals.payload?.data, 'json'));
+			return res.status(200).send(data);
 		}
 
 		if (req.sanitizedQuery.export === 'xml') {
+			const data = await exportService.transform(res.locals.payload?.data, 'xml');
 			res.attachment(`${filename}.xml`);
 			res.set('Content-Type', 'text/xml');
-			return res.status(200).send(exportService.transform(res.locals.payload?.data, 'xml'));
+			return res.status(200).send(data);
 		}
 
 		if (req.sanitizedQuery.export === 'csv') {
+			const data = await exportService.transform(res.locals.payload?.data, 'csv');
 			res.attachment(`${filename}.csv`);
 			res.set('Content-Type', 'text/csv');
-			return res.status(200).send(exportService.transform(res.locals.payload?.data, 'csv'));
+			return res.status(200).send(data);
 		}
 	}
 

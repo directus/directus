@@ -12,6 +12,7 @@ import StreamArray from 'stream-json/streamers/StreamArray';
 import stripBomStream from 'strip-bom-stream';
 import { file as createTmpFile } from 'tmp-promise';
 import getDatabase from '../database';
+import emitter from '../emitter';
 import env from '../env';
 import {
 	ForbiddenException,
@@ -234,7 +235,7 @@ export class ExportService {
 					if (result.length) {
 						await appendFile(
 							path,
-							this.transform(result, format, {
+							await this.transform(result, format, {
 								includeHeader: batch === 0,
 								includeFooter: batch + 1 === batchesRequired,
 							})
@@ -301,16 +302,34 @@ export class ExportService {
 	/**
 	 * Transform a given input object / array to the given type
 	 */
-	transform(
+	async transform(
 		input: Record<string, any>[],
 		format: 'xml' | 'csv' | 'json',
 		options?: {
 			includeHeader?: boolean;
 			includeFooter?: boolean;
 		}
-	): string {
+	): Promise<string> {
+		const updatedInput = await emitter.emitFilter(
+			'export.transform',
+			input,
+			{
+				format,
+				options,
+			},
+			{
+				database: this.knex,
+				schema: this.schema,
+				accountability: this.accountability,
+			}
+		);
+
+		if (!updatedInput) {
+			throw new InvalidPayloadException(`Missing payload to transform`);
+		}
+
 		if (format === 'json') {
-			let string = JSON.stringify(input || null, null, '\t');
+			let string = JSON.stringify(updatedInput || null, null, '\t');
 
 			if (options?.includeHeader === false) string = string.split('\n').slice(1).join('\n');
 
@@ -324,7 +343,7 @@ export class ExportService {
 		}
 
 		if (format === 'xml') {
-			let string = toXML('data', input);
+			let string = toXML('data', updatedInput);
 
 			if (options?.includeHeader === false) string = string.split('\n').slice(2).join('\n');
 
@@ -343,7 +362,7 @@ export class ExportService {
 				header: options?.includeHeader !== false,
 			});
 
-			let string = parser.parse(input);
+			let string = parser.parse(updatedInput);
 
 			if (options?.includeHeader === false) {
 				string = '\n' + string;

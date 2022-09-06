@@ -125,6 +125,7 @@ export function getTriggers() {
 									'auth.login',
 									'auth.jwt',
 									'authenticate',
+									'export.transform',
 								],
 								font: 'monospace',
 							},
