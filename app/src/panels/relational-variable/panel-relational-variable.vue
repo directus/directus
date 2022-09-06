@@ -11,8 +11,9 @@ import { useInsightsStore } from '@/stores/insights';
 
 interface Props {
 	type: Type;
-	multiple: boolean;
+	field: string;
 	collection: string;
+	multiple: boolean;
 	filter: Record<string, any>;
 	dashboard: string;
 	showHeader?: boolean;
