@@ -176,6 +176,7 @@ revision_post_create: Her er hvordan dette element så ud, da det blev oprettet.
 revision_post_update: Her er hvad dette element så ud efter opdateringen.
 changes_made: Nedenfor er de specifikke ændringer i denne revision.
 no_relational_data: Husk på, at relationsdata ikke er inkluderet her.
+bottom: Bund
 hide_field: Skjul Felt
 hide_field_on_detail: Skjul felt på detalje
 show_field_on_detail: Vis felt på detalje

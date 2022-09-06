@@ -187,6 +187,7 @@ revision_post_create: 這是項目建立後看起來的樣子.
 revision_post_update: 這是項目更新後看起來的樣子.
 changes_made: 以下是此版本所做的改變。
 no_relational_data: 請留意關聯數據並不包含於此。
+bottom: 下方
 hide_field: 隱藏欄位
 hide_field_on_detail: 在詳細內容中隱藏
 show_field_on_detail: 在詳細內容中顯示

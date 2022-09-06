@@ -187,6 +187,7 @@ revision_post_create: Zde je jak položka vypadala po jejím vytvoření.
 revision_post_update: Zde je jak položka vypadala po její aktualizaci.
 changes_made: Níže jsou uvedeny konkrétní změny provedené v této revizi.
 no_relational_data: Mějte na paměti, že údaje o vztazích zde nejsou zahrnuty.
+bottom: Dole
 hide_field: Skrýt pole
 hide_field_on_detail: Skrýt pole v detailu
 show_field_on_detail: Zobrazit pole v detailu

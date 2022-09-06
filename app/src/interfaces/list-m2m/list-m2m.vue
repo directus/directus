@@ -178,6 +178,7 @@
 			:junction-field="relationInfo.junctionField.field"
 			:edits="editsAtStart"
 			:circular-field="relationInfo.reverseJunctionField.field"
+			:junction-field-location="junctionFieldLocation"
 			@input="stageEdits"
 		/>
 
@@ -234,6 +235,7 @@ const props = withDefaults(
 		enableLink?: boolean;
 		limit?: number;
 		allowDuplicates?: boolean;
+		junctionFieldLocation?: string;
 	}>(),
 	{
 		value: () => [],
@@ -249,6 +251,7 @@ const props = withDefaults(
 		enableLink: false,
 		limit: 15,
 		allowDuplicates: false,
+		junctionFieldLocation: 'bottom',
 	}
 );
 
@@ -438,7 +441,7 @@ function sortItems(items: DisplayItem[]) {
 
 	const sortedItems = items.map((item, index) => ({
 		...item,
-		[sortField]: index,
+		[sortField]: index + 1,
 	}));
 	update(...sortedItems);
 }

@@ -1,4 +1,3 @@
-import { RequestHandler } from 'express';
 import Joi from 'joi';
 import { InvalidPayloadException } from '../exceptions';
 import { FailedValidationException } from '@directus/shared/exceptions';
@@ -13,7 +12,6 @@ export const validateBatch = (scope: 'read' | 'update' | 'delete') =>
 		}
 
 		if (req.method.toLowerCase() !== 'search' && scope !== 'read' && req.singleton) {
-			req.body = {};
 			return next();
 		}
 

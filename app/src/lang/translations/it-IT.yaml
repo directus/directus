@@ -187,6 +187,7 @@ revision_post_create: Ecco come appariva questo elemento quando è stato creato.
 revision_post_update: Ecco come appariva questo elemento dopo l'aggiornamento.
 changes_made: Di seguito sono riportate le modifiche apportate in questa revisione.
 no_relational_data: Ricorda che qui i dati relazionali non sono inclusi.
+bottom: In basso
 hide_field: Nascondi campo
 hide_field_on_detail: Nascondi campo nel dettaglio
 show_field_on_detail: Mostra campo nel dettaglio
@@ -295,6 +296,8 @@ next: Avanti
 field_name: Nome del Campo
 translations: Traduzioni
 no_translations: Nessuna traduzione
+left_to_right: Da sinistra a destra
+right_to_left: Da destra a sinistra
 note: Nota
 enter_a_value: Inserisci un valore...
 enter_a_placeholder: Inserisci un segnaposto...
@@ -479,6 +482,7 @@ creating_items: Creazione Oggetti
 enable_create_button: Abilita il pulsante di creazione
 selecting_items: Selezione elementi
 enable_select_button: Abilita il pulsante di selezione
+allow_duplicates: Consenti duplicati
 comments: Commenti
 no_comments: Non ci sono ancora commenti
 click_to_expand: Fare clic per espandere
@@ -496,7 +500,7 @@ reset_interface: Reimposta interfaccia
 display_not_found: 'Display "{display}" non trovato.'
 reset_display: Ripristina il Display
 list-m2a: Costruttore (M2A)
-item_count: 'Nessun elemento | Un articolo | {count} Articoli'
+item_count: 'Nessun elemento | Un elemento | {count} elementi'
 no_items_copy: Non ci sono ancora elementi in questa raccolta.
 file_count: 'Nessun File | Un File | {count} File'
 no_files_copy: Non ci sono file qui.
@@ -531,6 +535,7 @@ activity_item: Elemento attività
 action: Azioni
 ip_address: Indirizzo IP
 user_agent: User agent
+origin: Origine
 webhooks: Webhooks
 decimals: Decimali
 value_decimals: Valore decimali
@@ -579,6 +584,9 @@ errors:
   INVALID_PAYLOAD: Payload non valido
   INVALID_PROVIDER: L'utente appartiene a un provider di autenticazione diverso
   INVALID_QUERY: Query non valida
+  INVALID_CONFIG: Configurazione non valida
+  INVALID_TOKEN: Token non valido
+  INVALID_IP: Indirizzo IP non consentito
   INVALID_USER: Autenticazione dell'utente fallita
   ITEM_LIMIT_REACHED: Limite di elementi raggiunto
   ITEM_NOT_FOUND: Elemento non trovato
@@ -595,6 +603,13 @@ errors:
   INVALID_FOREIGN_KEY: Chiave esterna non valida
   UNKNOWN: Errore Imprevisto
   GRAPHQL_VALIDATION_EXCEPTION: Eccezione di validazione GraphQL
+  SERVICE_UNAVAILABLE: Servizio non disponibile
+  UNSUPPORTED_MEDIA_TYPE: Tipo di file non supportato
+  UNEXPECTED_RESPONSE: Risposta inattesa
+  TOKEN_EXPIRED: Token scaduto
+  RANGE_NOT_SATISFIABLE: Intervallo non valido
+  METHOD_NOT_ALLOWED: Metodo non consentito
+  REQUESTS_EXCEEDED: Limite di richieste raggiunto
 security: Sicurezza
 value_hashed: Valore cifrato in sicurezza
 bookmark_name: Nome segnalibro...
@@ -764,6 +779,7 @@ flows: Flussi
 flow: Flusso
 select_a_flow: Seleziona un flusso
 run_flow_on_current: Esegui il flusso sull'elemento corrente
+run_flow_on_current_edited_confirm: Questo elemento potrebbe essere aggiornato dal flusso, sei sicuro di volerlo eseguire?
 run_flow_on_selected: Nessun elemento selezionato | Eseguire il flusso su 1 elemento selezionato | Eseguire il flusso su {n} elementi selezionati
 run_flow_success: Flusso "{flow}" eseguito con successo
 trigger: Trigger
@@ -773,8 +789,8 @@ create_trigger: Crea un trigger
 trigger_setup: Impostazione del trigger
 change_trigger: Cambia trigger
 flow_delete_confirm: Sei sicuro di voler eliminare il flusso "{flow}"? Questa azione non può essere annullata.
-set_flow_active: Rendi il flusso attivo
-set_flow_inactive: Rendi il flusso disattivo
+set_flow_active: Attiva il flusso
+set_flow_inactive: Disattiva il flusso
 edit_flow: Modifica il flusso
 delete_flow: Elimina il flusso
 no_other_flows_copy: Non hai ancora ancora nessun altro flusso.
@@ -987,7 +1003,7 @@ all: Tutti
 none: Nessuno
 no_layout_collection_selected_yet: Nessun layout/raccolta ancora selezionato
 batch_delete_confirm: >-
-  Nessun elemento è stato selezionato | Sei sicuro di voler eliminare questo articolo? Questa azione non può essere annullata. | Sei sicuro di voler eliminare questi {count} elementi? Questa azione non può essere annullata.
+  Nessun elemento è stato selezionato | Sei sicuro di voler eliminare questo elemento? Questa azione non può essere annullata. | Sei sicuro di voler eliminare questi {count} elementi? Questa azione non può essere annullata.
 cancel: Annulla
 no_upscale: Non ingrandire le immagini
 collection: Raccolta
@@ -1027,6 +1043,7 @@ fields:
     user: Autore
     comment: Commento
     user_agent: User agent
+    origin: Origine
     ip: Indirizzo IP
     revisions: Revisioni
   directus_collections:
@@ -1408,6 +1425,14 @@ report_error: Segnala l'errore
 start: Inizio
 table: Tabella
 list: Elenco
+search_filter: Cerca e filtra
+enable_search_filter: Abilita la ricerca e i filtri
+item_link: Collegamento dell'elemento
+show_link_to_item: Mostra un collegamento all'elemento
+navigate_to_item: Vai all'elemento
+undo_removed_item: Annulla la rimozione dell'elemento
+remove_item: Rimuovi l'elemento
+delete_item: Elimina l'elemento
 interfaces:
   filter:
     name: Filtro
@@ -1489,6 +1514,7 @@ interfaces:
     placeholder: Scegli data e ora...
   system-fields:
     select_a_collection: Seleziona una Raccolta
+    no_fields: Nessun campo
   system-display-template:
     display-template: Display Template
     description: Metti insieme testo statico e valori di campo dinamici
@@ -1546,6 +1572,7 @@ interfaces:
   list-m2m:
     many-to-many: Molti a Molti
     description: Seleziona più elementi di giunzione correlati
+    columns_configure_notice: Puoi configurare le colonne dopo aver creato questo campo.
     display_template_configure_notice: Puoi configurare il template di visualizzazione dopo aver creato il campo.
   select-dropdown-m2o:
     many-to-one: Molti a Uno
@@ -1663,6 +1690,7 @@ interfaces:
     user_language: Usa la lingua dell'utente corrente
     default_language: Lingua predefinita
     language_field: Campo indicatore della lingua
+    language_direction_field: Campo direzione della lingua
   list-o2m-tree-view:
     description: Vista ad albero per oggetti ricorsivi annidati one-to-many
     recursive_only: L'interfaccia di visualizzazione ad albero funziona solo per le relazioni ricorsive.
@@ -1746,16 +1774,16 @@ displays:
     description: Visualizza valori relativi al tempo
     format: Formato
     format_note: >-
-      Il formato personalizzato accetta la __[tabella dei simboli del campo data](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
+      Il formato personalizzato accetta i simboli nella __[tabella dei simboli del campo data](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
     long: Lungo
     short: Breve
     relative: Relativo
-    relative_label: 'Mostra tempo relativo, es.: 5 minuti fa'
+    relative_label: 'Tempo relativo, es.: 5 minuti fa'
     suffix: Suffisso
     suffix_label: Mostra indicatore relativo
     suffix_note: Usa espressioni come 'fra...' e '...fa'
     strict: Esatto
-    strict_label: Usa unià esatte
+    strict_label: Usa unità esatte
     strict_note: Rimuove espressioni come 'quasi...', 'più di...', 'meno di...'
     round: Arrotonda
     round_note: Scegli una funzione di arrotondamento
@@ -2024,6 +2052,10 @@ operations:
   condition:
     name: Condizione
     description: Stabilisce il percorso di un flusso con una logica Se / Altrimenti
+  exec:
+    name: Esegui lo script
+    description: Esegui codice arbitrario per modificare il payload
+    modules: 'I seguenti **moduli Node** possono essere utilizzati:'
   item-create:
     name: Crea dati
     description: Crea elementi nel database
@@ -2061,7 +2093,9 @@ operations:
     body: Contenuto
   notification:
     name: Invia una notifica
+    description: Invia una notifica in app a uno o più utenti
     recipient: Utente
+    recipient_placeholder: Inserisci l'UUID dell'utente e premi invio...
     message: Messaggio
   request:
     name: URL webhook / chiamata

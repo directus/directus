@@ -47,7 +47,7 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, watch, PropType, computed, inject, Ref } from 'vue';
 import { Filter } from '@directus/shared/types';
 import { isObject } from 'lodash';
-import { useElementSize } from '@/composables/use-element-size';
+import { useElementSize } from '@directus/shared/composables';
 
 export default defineComponent({
 	props: {
