@@ -1849,8 +1849,12 @@ layouts:
     text: Kart Metni,
     text_placeholder: İsteğe bağlı metin alanı...,
     date: Kart Tarihi,
+    date_placeholder: İsteğe bağlı tarih alanı...,
     tags: Kart Etiketleri,
+    tags_placeholder: İsteğe bağlı etiket alanı...,
     user: Kart Kullanıcısı,
+    user_placeholder: İsteğe bağlı kullanıcı alanı...,
+    image: Kart Resmi,
     image_placeholder: İsteğe bağlı görüntü alanı...,
     crop: Kırp,
     advanced: Gelişmiş,
@@ -1885,6 +1889,7 @@ panels:
     function: İşlev
     horizontal: Yatay
     x_axis: X-Ekseni
+    y_axis_function: Y Ekseni Fonksiyonu
     y_axis: Y-Ekseni
     show_x_axis: X Eksenini Göster
     show_y_axis: Y Eksenini Göster
@@ -1932,12 +1937,16 @@ triggers:
     response_body_all: Tüm Veri
     response_body_last: Son İşlem Verileri
   webhook:
+    description: Gelen bir HTTP isteğinde tetikler
     method: Metod
     async: Eşzamanlı Olmayan
   operation:
     name: Başka Bir Akış
+    description: Zincirleme için başka bir akış tarafından tetiklendi
+    preview: Farklı akıştaki bir işlem tarafından tetiklendi
   schedule:
     name: Program (CRON)
+    description: Zaman içinde düzenli noktalarda tetikler
     cron: Aralık
   manual:
     name: Elle
