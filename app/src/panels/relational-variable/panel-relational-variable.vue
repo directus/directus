@@ -45,9 +45,11 @@ const insightsStore = useInsightsStore();
 
 const value = computed({
 	get() {
+		//console.log('aha', insightsStore.getVariable(props.field));
 		return insightsStore.getVariable(props.field) || [];
 	},
 	set(val: any) {
+		//console.log('save', val);
 		insightsStore.setVariable(props.field, val);
 	},
 });
