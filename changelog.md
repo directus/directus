@@ -2,6 +2,13 @@
 
 _Changes marked with a :warning: contain potential breaking changes depending on your use of the package._
 
+## v9.17.4 (September 6, 2022)
+
+### :bug: Bug Fixes
+
+- **App**
+  - [#15438](https://github.com/directus/directus/pull/15438) Prevent v-highlight infinite loop (by @azrikahar)
+
 ## v9.17.3 (September 6, 2022)
 
 ### :bug: Bug Fixes
