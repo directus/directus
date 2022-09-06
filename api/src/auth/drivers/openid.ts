@@ -300,6 +300,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 				accountability: {
 					ip: getIPFromReq(req),
 					userAgent: req.get('user-agent'),
+					origin: req.get('origin'),
 					role: null,
 				},
 				schema: req.schema,

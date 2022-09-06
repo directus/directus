@@ -36,7 +36,7 @@
 					<v-icon name="zoom_in" />
 				</v-button>
 				<v-button v-tooltip="t('download')" icon rounded :href="downloadSrc" :download="image.filename_download">
-					<v-icon name="get_app" />
+					<v-icon name="file_download" />
 				</v-button>
 				<v-button v-tooltip="t('edit')" icon rounded @click="editImageDetails = true">
 					<v-icon name="open_in_new" />
@@ -76,6 +76,7 @@ import api, { addTokenToURL } from '@/api';
 import { useRelationM2O } from '@/composables/use-relation-m2o';
 import { RelationQuerySingle, useRelationSingle } from '@/composables/use-relation-single';
 import { formatFilesize } from '@/utils/format-filesize';
+import { getRootPath } from '@/utils/get-root-path';
 import { readableMimeType } from '@/utils/readable-mime-type';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
 import FileLightbox from '@/views/private/components/file-lightbox.vue';
@@ -143,7 +144,7 @@ const ext = computed(() => (image.value ? readableMimeType(image.value.type, tru
 
 const downloadSrc = computed(() => {
 	if (!image.value) return null;
-	return addTokenToURL('/assets/' + image.value.id);
+	return addTokenToURL(getRootPath() + 'assets/' + image.value.id);
 });
 
 const meta = computed(() => {

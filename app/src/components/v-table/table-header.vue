@@ -111,11 +111,11 @@ import { useSync } from '@directus/shared/composables';
 interface Props {
 	headers: Header[];
 	sort: Sort;
+	reordering: boolean;
+	allowHeaderReorder: boolean;
 	showSelect?: ShowSelect;
 	showResize?: boolean;
 	showManualSort?: boolean;
-	allowHeaderReorder: boolean;
-	reordering: boolean;
 	someItemsSelected?: boolean;
 	allItemsSelected?: boolean;
 	fixed?: boolean;

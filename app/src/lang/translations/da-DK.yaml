@@ -176,6 +176,7 @@ revision_post_create: Her er hvordan dette element så ud, da det blev oprettet.
 revision_post_update: Her er hvad dette element så ud efter opdateringen.
 changes_made: Nedenfor er de specifikke ændringer i denne revision.
 no_relational_data: Husk på, at relationsdata ikke er inkluderet her.
+bottom: Bund
 hide_field: Skjul Felt
 hide_field_on_detail: Skjul felt på detalje
 show_field_on_detail: Vis felt på detalje
@@ -729,6 +730,7 @@ trigger: Udløser
 flow_name: Navn
 flow_tracking_activity: Spor Kun Aktivitet
 flow_tracking_null: Spor Ikke Noget
+code: Kode
 insights: Indsigter
 dashboard: Instrumentbræt
 panel: Stykke
@@ -1289,6 +1291,8 @@ value: Værdi
 view_project: Vis Projekt
 report_error: Fejl I Rapport
 start: Start
+table: Tabel
+list: Liste
 interfaces:
   filter:
     name: Filtrer
@@ -1367,6 +1371,8 @@ interfaces:
     set_to_now: Indstil til nu
     use_24: Brug 24-timers Format
     placeholder: Vælg en datetime...
+  system-fields:
+    select_a_collection: Vælg en samling
   system-display-template:
     display-template: Vis Skabelon
     description: Bland statisk tekst og dynamiske feltværdier

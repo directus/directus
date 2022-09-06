@@ -736,6 +736,7 @@ trigger: Disparador
 flow_name: Nom
 flow_tracking_activity: Només traça l'activitat
 flow_tracking_null: No tracis res
+code: Codi
 full_screen: Pantalla completa
 image_url: URL de la imatge
 alt_text: Text alternatiu
@@ -1209,6 +1210,7 @@ value: Valor
 view_project: Veure el projecte
 report_error: Notifica un error
 start: Comença
+table: Taula
 interfaces:
   filter:
     name: Filtre
@@ -1272,6 +1274,8 @@ interfaces:
     include_seconds: Inclou els segons
     set_to_now: Fixa'l a "Ara"
     use_24: Utilitza el format de 24 hores
+  system-fields:
+    select_a_collection: Selecciona una col·lecció
   system-display-template:
     display-template: Mostra la plantilla
     description: Barreja text estàtic i valors de camp dinàmic
