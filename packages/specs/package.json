@@ -5,6 +5,7 @@
 	"type": "module",
 	"exports": {
 		"./": "./dist/",
+		"./index.js": "./index.js",
 		"./package.json": "./package.json"
 	},
 	"scripts": {

@@ -1,1 +1,1 @@
-export * from './dist/exceptions';
+export * from './dist/exceptions/index.js';

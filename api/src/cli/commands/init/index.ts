@@ -1,8 +1,8 @@
-import * as chalk from 'chalk';
-import * as execa from 'execa';
+import chalk from 'chalk';
+import execa from 'execa';
 import * as inquirer from 'inquirer';
 import type { Knex } from 'knex';
-import * as ora from 'ora';
+import ora from 'ora';
 import { v4 as uuid } from 'uuid';
 import * as Joi from 'joi';
 import runMigrations from '../../../database/migrations/run.js';

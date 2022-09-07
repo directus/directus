@@ -1,1 +1,1 @@
-export * from './GoogleCloudStorage';
+export * from './GoogleCloudStorage.js';

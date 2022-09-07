@@ -14,7 +14,7 @@ import {
 	EXTENSION_PKG_KEY,
 	HYBRID_EXTENSION_TYPES,
 	PACKAGE_EXTENSION_TYPES,
-} from '../../constants';
+} from '../../constants/index.js';
 import { pluralize } from '../pluralize.js';
 import { validateExtensionManifest } from '../validate-extension-manifest.js';
 import { isIn, isTypeIn } from '../array-helpers.js';

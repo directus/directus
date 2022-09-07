@@ -1,4 +1,4 @@
-import type * as S3 from 'aws-sdk/clients/s3';
+import S3 from 'aws-sdk/clients/s3';
 import type { ClientConfiguration, ObjectList } from 'aws-sdk/clients/s3';
 import {
 	Storage,
@@ -39,7 +39,6 @@ export class AmazonWebServicesS3Storage extends Storage {
 
 	constructor(config: AmazonWebServicesS3StorageConfig) {
 		super();
-		const S3 = import('aws-sdk/clients/s3');
 
 		this.$driver = new S3({
 			accessKeyId: config.key,
@@ -74,7 +73,7 @@ export class AmazonWebServicesS3Storage extends Storage {
 		};
 
 		try {
-			const result = await this.$driver.copyObject(params).promise();
+			const result = await this.$driver.copyObject(params as any).promise();
 			return { raw: result };
 		} catch (e: any) {
 			throw handleError(e, src, this.$bucket);
@@ -208,7 +207,7 @@ export class AmazonWebServicesS3Storage extends Storage {
 		const params: S3.GetObjectRequest = {
 			Key: location,
 			Bucket: this.$bucket,
-			Range: range ? `bytes=${range.start}-${range.end || ''}` : undefined,
+			Range: range ? `bytes=${range.start}-${range.end || ''}` : (undefined as any),
 		};
 
 		return this.$driver.getObject(params).createReadStream();
@@ -263,7 +262,7 @@ export class AmazonWebServicesS3Storage extends Storage {
 		};
 
 		try {
-			const result = await this.$driver.upload(params).promise();
+			const result = await this.$driver.upload(params as any).promise();
 			return { raw: result };
 		} catch (e: any) {
 			throw handleError(e, location, this.$bucket);
@@ -286,7 +285,7 @@ export class AmazonWebServicesS3Storage extends Storage {
 						Prefix: prefix,
 						ContinuationToken: continuationToken,
 						MaxKeys: 1000,
-					})
+					} as any)
 					.promise();
 
 				continuationToken = response.NextContinuationToken;

@@ -8,7 +8,7 @@ import { parse as toXML } from 'js2xmlparser';
 import { Parser as CSVParser, transforms as CSVTransforms } from 'json2csv';
 import type { Knex } from 'knex';
 import { set, transform } from 'lodash';
-import * as StreamArray from 'stream-json/streamers/StreamArray';
+import StreamArray from 'stream-json/streamers/StreamArray.js';
 import * as stripBomStream from 'strip-bom-stream';
 import { file as createTmpFile } from 'tmp-promise';
 import getDatabase from '../database/index.js';

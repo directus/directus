@@ -3,8 +3,6 @@ import { merge } from 'lodash';
 import { nanoid } from 'nanoid';
 import * as os from 'os';
 import { performance } from 'perf_hooks';
-// @ts-ignore
-import { version } from '../../package.json.js';
 import { getCache } from '../cache.js';
 import getDatabase, { hasDatabaseConnection } from '../database/index.js';
 import env from '../env.js';
@@ -17,6 +15,9 @@ import { toArray } from '@directus/shared/utils';
 import getMailer from '../mailer.js';
 import { SettingsService } from './settings.js';
 import { getOSInfo } from '../utils/get-os-info.js';
+import { readFileSync } from 'node:fs';
+
+const version = JSON.parse(readFileSync('../../package.json', 'utf8')).version;
 
 export class ServerService {
 	knex: Knex;

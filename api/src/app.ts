@@ -1,11 +1,11 @@
-import * as cookieParser from 'cookie-parser';
+import cookieParser from 'cookie-parser';
 import type { Request, Response, RequestHandler } from 'express';
-import * as express from 'express';
-import * as fse from 'fs-extra';
-import * as path from 'path';
-import * as qs from 'qs';
+import express from 'express';
+import fse from 'fs-extra';
+import path from 'path';
+import qs from 'qs';
 import type { ServerResponse } from 'http';
-import * as helmet from 'helmet';
+import helmet from 'helmet';
 
 import activityRouter from './controllers/activity.js';
 import assetsRouter from './controllers/assets.js';

@@ -12,7 +12,6 @@ import type {
 	TagObject,
 } from 'openapi3-ts';
 // @ts-ignore
-import { version } from '../../package.json.js';
 import getDatabase from '../database/index.js';
 import env from '../env.js';
 import type { AbstractServiceOptions, Collection } from '../types/index.js';
@@ -22,6 +21,9 @@ import { CollectionsService } from './collections.js';
 import { FieldsService } from './fields.js';
 import { GraphQLService } from './graphql/index.js';
 import { RelationsService } from './relations.js';
+import { readFileSync } from 'node:fs';
+
+const version = JSON.parse(readFileSync('../../package.json', 'utf8')).version;
 
 export class SpecificationService {
 	accountability: Accountability | null;
