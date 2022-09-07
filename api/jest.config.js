@@ -4,7 +4,7 @@ require('dotenv').config();
 
 module.exports = {
 	...base,
-	roots: ['<rootDir>/tests', '<rootDir>/src'],
+	roots: ['<rootDir>/src'],
 	verbose: true,
 	setupFiles: ['dotenv/config'],
 	collectCoverageFrom: ['src/**/*.ts'],

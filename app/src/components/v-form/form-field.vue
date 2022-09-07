@@ -73,7 +73,7 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { getJSType } from '@/utils/get-js-type';
 import { Field, ValidationError } from '@directus/shared/types';
 import { isEqual } from 'lodash';
@@ -222,7 +222,9 @@ function useRaw() {
 function useComputedValues() {
 	const defaultValue = computed<any>(() => props.field?.schema?.default_value);
 	const internalValue = ref<any>(getInternalValue());
-	const isEdited = ref<boolean>(getIsEdited());
+	const isEdited = computed(
+		() => props.modelValue !== undefined && isEqual(props.modelValue, props.initialValue) === false
+	);
 
 	watch(
 		() => props.modelValue,
@@ -231,7 +233,6 @@ function useComputedValues() {
 			if (!isEqual(internalValue.value, newVal)) {
 				internalValue.value = newVal;
 			}
-			isEdited.value = getIsEdited();
 		}
 	);
 
@@ -241,9 +242,6 @@ function useComputedValues() {
 		if (props.modelValue !== undefined) return props.modelValue;
 		if (props.initialValue !== undefined) return props.initialValue;
 		return defaultValue.value;
-	}
-	function getIsEdited(): boolean {
-		return props.modelValue !== undefined && isEqual(props.modelValue, props.initialValue) === false;
 	}
 }
 </script>
