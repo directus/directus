@@ -1,4 +1,4 @@
-import type { Permission } from './permissions';
+import type { Permission } from './permissions.js';
 
 export type ShareScope = {
 	collection: string;

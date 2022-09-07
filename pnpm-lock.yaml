@@ -208,8 +208,8 @@ importers:
       tedious: ^13.0.0
       tmp-promise: ^3.0.3
       ts-jest: 28.0.5
-      ts-node: ^10.8.2
-      ts-node-dev: 1.1.8
+      ts-node: ^10.9.1
+      ts-node-dev: ^2.0.0
       typescript: 4.7.3
       update-check: ^1.5.4
       uuid: ^8.3.2
@@ -368,7 +368,7 @@ importers:
       supertest: 6.2.4
       ts-jest: 28.0.5_burdcpru4gmol7mmtlcoahzthu
       ts-node: 10.9.1_267sziivmg24nk6cdwmqdtczye
-      ts-node-dev: 1.1.8_typescript@4.7.3
+      ts-node-dev: 2.0.0_267sziivmg24nk6cdwmqdtczye
       typescript: 4.7.3
 
   app:
@@ -8203,6 +8203,7 @@ packages:
       { integrity: sha512-Xx54uLJQZ19lKygFXOWsscKUbsBZW0CPykPhVQdhIeIwrbPmJzqeASDInc8nKBnp/JT6igTs82qPXz069H8I/A== }
     engines: { node: '>=0.4.0' }
     hasBin: true
+    dev: false
 
   /acorn/8.8.0:
     resolution:
@@ -22415,9 +22416,9 @@ packages:
       { integrity: sha512-vDWbsl26LIcPGmDpoVzjEP6+hvHZkBkLW7JpvwbCv/5IYPJlsbzCVXY3wsCeAxAUeTclNOUZxnLdGh3VBD/J6w== }
     dev: true
 
-  /ts-node-dev/1.1.8_typescript@4.7.3:
+  /ts-node-dev/2.0.0_267sziivmg24nk6cdwmqdtczye:
     resolution:
-      { integrity: sha512-Q/m3vEwzYwLZKmV6/0VlFxcZzVV/xcgOt+Tx/VjaaRHyiBcFlV0541yrT09QjzzCxlDZ34OzKjrFAynlmtflEg== }
+      { integrity: sha512-ywMrhCfH6M75yftYvrvNarLEY+SUXtUvU8/0Z6llrHQVBx12GiFk5sStF8UdfE/yfzk9IAq7O5EEbTQsxlBI8w== }
     engines: { node: '>=0.8.0' }
     hasBin: true
     peerDependencies:
@@ -22435,9 +22436,13 @@ packages:
       rimraf: 2.7.1
       source-map-support: 0.5.21
       tree-kill: 1.2.2
-      ts-node: 9.1.1_typescript@4.7.3
+      ts-node: 10.9.1_267sziivmg24nk6cdwmqdtczye
       tsconfig: 7.0.0
       typescript: 4.7.3
+    transitivePeerDependencies:
+      - '@swc/core'
+      - '@swc/wasm'
+      - '@types/node'
     dev: true
 
   /ts-node/10.9.1_267sziivmg24nk6cdwmqdtczye:
@@ -22461,7 +22466,7 @@ packages:
       '@tsconfig/node14': 1.0.3
       '@tsconfig/node16': 1.0.3
       '@types/node': 16.11.9
-      acorn: 8.7.1
+      acorn: 8.8.0
       acorn-walk: 8.2.0
       arg: 4.1.3
       create-require: 1.1.1
@@ -22469,23 +22474,6 @@ packages:
       make-error: 1.3.6
       typescript: 4.7.3
       v8-compile-cache-lib: 3.0.1
-      yn: 3.1.1
-    dev: true
-
-  /ts-node/9.1.1_typescript@4.7.3:
-    resolution:
-      { integrity: sha512-hPlt7ZACERQGf03M253ytLY3dHbGNGrAq9qIHWUY9XHYl1z7wYngSr3OQ5xmui8o2AaxsONxIzjafLUiWBo1Fg== }
-    engines: { node: '>=10.0.0' }
-    hasBin: true
-    peerDependencies:
-      typescript: '>=2.7'
-    dependencies:
-      arg: 4.1.3
-      create-require: 1.1.1
-      diff: 4.0.2
-      make-error: 1.3.6
-      source-map-support: 0.5.21
-      typescript: 4.7.3
       yn: 3.1.1
     dev: true
 

@@ -8,7 +8,7 @@ import type {
 	EndpointConfig,
 	OperationAppConfig,
 	OperationApiConfig,
-} from '../types';
+} from '../types/index.js';
 
 export function defineInterface<T extends InterfaceConfig>(config: T): T {
 	return config;

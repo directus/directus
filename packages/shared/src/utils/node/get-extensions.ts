@@ -6,7 +6,7 @@ import type {
 	ExtensionPackage,
 	ExtensionPackageType,
 	ExtensionType,
-} from '../../types';
+} from '../../types/index.js';
 import { resolvePackage } from './resolve-package.js';
 import { listFolders } from './list-folders.js';
 import {

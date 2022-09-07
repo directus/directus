@@ -27,5 +27,5 @@
 	  "outDir": "dist",
 	  "allowSyntheticDefaultImports": true
 	  },
-	  "include": ["src", ""]
+	  "include": ["src"]
   }

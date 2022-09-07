@@ -1,6 +1,12 @@
 import * as path from 'path';
-import { HYBRID_EXTENSION_TYPES } from '../../constants';
-import type { AppExtension, AppExtensionType, Extension, HybridExtension, HybridExtensionType } from '../../types';
+import { HYBRID_EXTENSION_TYPES } from '../../constants/index.js';
+import type {
+	AppExtension,
+	AppExtensionType,
+	Extension,
+	HybridExtension,
+	HybridExtensionType,
+} from '../../types/index.js';
 import { isTypeIn } from '../array-helpers.js';
 
 export function generateExtensionsEntry(type: AppExtensionType | HybridExtensionType, extensions: Extension[]): string {

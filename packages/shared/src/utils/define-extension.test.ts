@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { defineComponent } from 'vue';
-import type { Type } from '../types/fields';
+import type { Type } from '../types/fields.js';
 import {
 	defineDisplay,
 	defineEndpoint,

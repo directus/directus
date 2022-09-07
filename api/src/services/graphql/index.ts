@@ -955,7 +955,7 @@ export class GraphQLService {
 				ReadCollectionTypes[collection.collection]!.addResolver({
 					name: collection.collection,
 					args: collection.singleton
-						? undefined
+						? (undefined as any)
 						: {
 								filter: ReadableCollectionFilterTypes[collection.collection],
 								sort: {
@@ -975,7 +975,7 @@ export class GraphQLService {
 								},
 						  },
 					type: collection.singleton
-						? ReadCollectionTypes[collection.collection]
+						? ReadCollectionTypes[collection.collection]!
 						: new GraphQLNonNull(
 								new GraphQLList(new GraphQLNonNull(ReadCollectionTypes[collection.collection]!.getType()))
 						  ),
@@ -1114,7 +1114,7 @@ export class GraphQLService {
 							: GraphQLBoolean,
 						args: collectionIsReadable
 							? ReadCollectionTypes[collection.collection]!.getResolver(collection.collection).getArgs()
-							: undefined,
+							: (undefined as any),
 						resolve: async ({ args, info }: { args: Record<string, any>; info: GraphQLResolveInfo }) =>
 							await self.resolveMutation(args, info),
 					});
@@ -2801,7 +2801,7 @@ export class GraphQLService {
 						role: GraphQLNonNull(GraphQLString),
 						invite_url: GraphQLString,
 					},
-					resolve: async (_, args) => {
+					resolve: async (_, args: any) => {
 						const service = new UsersService({
 							accountability: this.accountability,
 							schema: this.schema,

@@ -1,4 +1,4 @@
-import type { Plural } from '../types';
+import type { Plural } from '../types/index.js';
 
 export function pluralize<T extends string>(str: T): Plural<T> {
 	return `${str}s`;

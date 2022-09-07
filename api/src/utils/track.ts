@@ -2,11 +2,12 @@ import axios from 'axios';
 import ms from 'ms';
 import { machineId } from 'node-machine-id';
 import * as os from 'os';
-// @ts-ignore
-import { version } from '../../package.json.js';
 import env from '../env.js';
 import logger from '../logger.js';
 import { toArray } from '@directus/shared/utils';
+import { readFileSync } from 'node:fs';
+
+const version = JSON.parse(readFileSync('../../package.json', 'utf8')).version;
 
 export async function track(event: string): Promise<void> {
 	if (env['TELEMETRY'] !== false) {

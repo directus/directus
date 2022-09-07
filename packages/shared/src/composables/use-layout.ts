@@ -1,5 +1,5 @@
 import { computed, reactive, toRefs, defineComponent, Ref, PropType, Component, ComputedRef } from 'vue';
-import type { Filter, LayoutConfig, ShowSelect } from '../types';
+import type { Filter, LayoutConfig, ShowSelect } from '../types/index.js';
 import { useExtensions } from './use-system.js';
 
 const NAME_SUFFIX = 'wrapper';

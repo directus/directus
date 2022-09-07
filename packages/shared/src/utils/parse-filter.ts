@@ -1,6 +1,6 @@
 import { isObjectLike } from 'lodash';
-import { REGEX_BETWEEN_PARENS } from '../constants';
-import type { Accountability, Filter, Role, User } from '../types';
+import { REGEX_BETWEEN_PARENS } from '../constants/index.js';
+import type { Accountability, Filter, Role, User } from '../types/index.js';
 import { adjustDate } from './adjust-date.js';
 import { deepMap } from './deep-map.js';
 import { get } from './get-with-arrays.js';

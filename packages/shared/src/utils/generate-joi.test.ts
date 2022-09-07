@@ -1,6 +1,6 @@
 import { escapeRegExp } from 'lodash';
 import { describe, expect, it } from 'vitest';
-import type { FieldFilter } from '../types';
+import type { FieldFilter } from '../types/index.js';
 import { generateJoi, Joi, JoiOptions, StringSchema } from './generate-joi.js';
 
 describe(`generateJoi`, () => {

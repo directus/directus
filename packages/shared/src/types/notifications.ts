@@ -1,4 +1,4 @@
-import type { PrimaryKey } from './items';
+import type { PrimaryKey } from './items.js';
 
 export type Notification = {
 	id: string;

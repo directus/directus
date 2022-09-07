@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { Relation } from '../types';
+import type { Relation } from '../types/index.js';
 import { getRelationType } from './get-relation-type.js';
 
 describe('getRelationType', () => {

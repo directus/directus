@@ -1,9 +1,9 @@
 import type { ComponentOptions } from 'vue';
-import type { Accountability } from './accountability';
-import type { ApiExtensionContext } from './extensions';
-import type { Field } from './fields';
-import type { DeepPartial } from './misc';
-import type { FlowRaw } from './flows';
+import type { Accountability } from './accountability.js';
+import type { ApiExtensionContext } from './extensions.js';
+import type { Field } from './fields.js';
+import type { DeepPartial } from './misc.js';
+import type { FlowRaw } from './flows.js';
 
 type OperationContext = ApiExtensionContext & {
 	data: Record<string, unknown>;

@@ -1,4 +1,4 @@
-import type { User } from './users';
+import type { User } from './users.js';
 
 export type Share = {
 	id: string;

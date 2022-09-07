@@ -1,7 +1,7 @@
 import type { Component, ComponentOptions } from 'vue';
-import type { DeepPartial } from './misc';
-import type { Field } from './fields';
-import type { Query } from './query';
+import type { DeepPartial } from './misc.js';
+import type { Field } from './fields.js';
+import type { Query } from './query.js';
 
 export type PanelQuery = { collection: string; query: Query; key?: string };
 
