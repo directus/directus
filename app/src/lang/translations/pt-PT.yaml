@@ -861,6 +861,8 @@ interfaces:
   select-color:
     color: Cor
     placeholder: Escolha uma cor...
+  datetime:
+    set_to_now: Definir para agora
   system-fields:
     select_a_collection: Selecione uma coleção
   system-display-template:
