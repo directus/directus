@@ -381,10 +381,10 @@ export default defineComponent({
 									dragMode.value == 'crop'
 										? {
 												x: imageTransformations.value.flop
-													? imageData.value.width - (Math.round(cropperData.x) + cropperData.width)
+													? imageData.value.width - (Math.round(cropperData.x) + Math.round(cropperData.width))
 													: Math.round(cropperData.x),
 												y: imageTransformations.value.flip
-													? imageData.value.height - (Math.round(cropperData.y) + cropperData.height)
+													? imageData.value.height - (Math.round(cropperData.y) + Math.round(cropperData.height))
 													: Math.round(cropperData.y),
 												width: Math.round(cropperData.width),
 												height: Math.round(cropperData.height),
