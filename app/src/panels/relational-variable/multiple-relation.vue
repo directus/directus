@@ -82,8 +82,13 @@ watch(() => props.value, getDisplayItems, { immediate: true });
 function select() {
 	// console.log('selected');
 }
-function deleteItem(elem: any) {
-	// console.log('deleteItem', elem);
+function deleteItem(elem: Record<string, any>) {
+	emit(
+		'input',
+		displayItems.value
+			.filter((item) => item[primaryKey.value] !== elem[primaryKey.value])
+			.map((item) => item[primaryKey.value])
+	);
 }
 function getDeselectIcon(elem: any) {
 	return 'delete';
