@@ -199,7 +199,11 @@ router.post(
 				const input = JSON.parse(inputString);
 				res.locals.payload = { data: input };
 				next();
-			} catch (error) {
+			} catch (error: any) {
+				if (error?.message && error.message.includes('JSON')) {
+					return next(new InvalidPayloadException('Invalid JSON input'));
+				}
+
 				return next(error);
 			}
 		});
