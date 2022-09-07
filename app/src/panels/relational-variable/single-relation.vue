@@ -101,4 +101,8 @@ async function getDisplayItems() {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.preview {
+	flex-grow: 1;
+}
+</style>
