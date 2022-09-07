@@ -289,6 +289,7 @@ const tiles = computed<AppTile[]>(() => {
 				color: panel.color,
 				note: panel.note,
 				showHeader: panel.show_header === true,
+				scrollable: panelType?.scrollable === true,
 				minWidth: panelType?.minWidth,
 				minHeight: panelType?.minHeight,
 				draggable: true,

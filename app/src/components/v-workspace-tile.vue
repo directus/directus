@@ -72,7 +72,7 @@
 			<div class="bottom-left" @pointerdown.stop="onPointerDown('resize-bottom-left', $event)" />
 		</div>
 
-		<div class="tile-content" :class="{ 'has-header': showHeader }">
+		<div class="tile-content" :class="{ 'has-header': showHeader, scrollable: scrollable }">
 			<slot></slot>
 			<div v-if="$slots.footer" class="footer">
 				<slot name="footer"></slot>
@@ -99,6 +99,7 @@ export type AppTile = {
 	color?: string;
 	note?: string;
 	showHeader?: boolean;
+	scrollable?: boolean;
 	minWidth?: number;
 	minHeight?: number;
 	draggable?: boolean;
@@ -118,6 +119,8 @@ type Props = {
 	color?: string;
 	note?: string;
 	showHeader?: boolean;
+	/** allow scrollable tile content */
+	scrollable?: boolean;
 	minWidth?: number;
 	minHeight?: number;
 	draggable?: boolean;
@@ -142,6 +145,7 @@ const props = withDefaults(defineProps<Props>(), {
 	borderRadius: () => [true, true, true, true],
 	showOptions: true,
 	alwaysUpdatePosition: false,
+	scrollable: false,
 });
 
 const emit = defineEmits(['update', 'move', 'duplicate', 'delete', 'edit', 'preview']);
@@ -389,6 +393,10 @@ function useDragDrop() {
 	width: 100%;
 	height: 100%;
 	overflow: hidden;
+}
+
+.tile-content.scrollable {
+	overflow: scroll;
 }
 
 .tile-content.has-header {

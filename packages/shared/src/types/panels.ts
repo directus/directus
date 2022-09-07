@@ -22,6 +22,7 @@ export interface PanelConfig {
 		  ) => DeepPartial<Field>[] | { standard: DeepPartial<Field>[]; advanced: DeepPartial<Field>[] })
 		| ComponentOptions
 		| null;
+	scrollable?: boolean;
 	minWidth: number;
 	minHeight: number;
 	skipUndefinedKeys?: string[];
