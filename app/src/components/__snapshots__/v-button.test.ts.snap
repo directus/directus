@@ -1,0 +1,9 @@
+// Vitest Snapshot v1
+
+exports[`Mount component 1`] = `
+"<div class=\\"v-button\\" data-v-290ca00e=\\"\\"><button class=\\"button align-center normal\\" type=\\"button\\" disabled=\\"false\\" data-v-290ca00e=\\"\\"><span class=\\"content\\" data-v-290ca00e=\\"\\"></span>
+    <div class=\\"spinner\\" data-v-290ca00e=\\"\\">
+      <!--v-if-->
+    </div>
+  </button></div>"
+`;

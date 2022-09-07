@@ -416,7 +416,7 @@ function sortItems(items: DisplayItem[]) {
 
 	const sortedItems = items.map((item, index) => ({
 		...item,
-		[sortField]: index,
+		[sortField]: index + 1,
 	}));
 	update(...sortedItems);
 }

@@ -26,69 +26,41 @@
 	</div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, PropType } from 'vue';
 import { Field } from '@directus/shared/types';
 
-export default defineComponent({
-	props: {
-		batchMode: {
-			type: Boolean,
-			default: false,
-		},
-		batchActive: {
-			type: Boolean,
-			default: false,
-		},
-		field: {
-			type: Object as PropType<Field>,
-			required: true,
-		},
-		disabled: {
-			type: Boolean,
-			default: false,
-		},
-		toggle: {
-			type: Function,
-			required: true,
-		},
-		active: {
-			type: Boolean,
-			default: false,
-		},
-		edited: {
-			type: Boolean,
-			default: false,
-		},
-		hasError: {
-			type: Boolean,
-			default: false,
-		},
-		badge: {
-			type: String,
-			default: null,
-		},
-		loading: {
-			type: Boolean,
-			default: false,
-		},
-		rawEditorEnabled: {
-			type: Boolean,
-			default: false,
-		},
-		rawEditorActive: {
-			type: Boolean,
-			default: false,
-		},
-	},
-	emits: ['toggle-batch', 'toggle-raw'],
-	setup() {
-		const { t } = useI18n();
+interface Props {
+	field: Field;
+	toggle: (event: Event) => any;
+	batchMode?: boolean;
+	batchActive?: boolean;
+	disabled?: boolean;
+	active?: boolean;
+	edited?: boolean;
+	hasError?: boolean;
+	badge?: string | null;
+	loading?: boolean;
+	rawEditorEnabled?: boolean;
+	rawEditorActive?: boolean;
+}
 
-		return { t };
-	},
+withDefaults(defineProps<Props>(), {
+	batchMode: false,
+	batchActive: false,
+	disabled: false,
+	active: false,
+	edited: false,
+	hasError: false,
+	badge: null,
+	loading: false,
+	rawEditorEnabled: false,
+	rawEditorActive: false,
 });
+
+defineEmits(['toggle-batch', 'toggle-raw']);
+
+const { t } = useI18n();
 </script>
 
 <style lang="scss" scoped>

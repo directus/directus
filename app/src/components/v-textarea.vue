@@ -21,72 +21,63 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent, computed } from 'vue';
+<script setup lang="ts">
+import { computed } from 'vue';
 
-export default defineComponent({
-	props: {
-		disabled: {
-			type: Boolean,
-			default: false,
-		},
-		autofocus: {
-			type: Boolean,
-			default: false,
-		},
-		fullWidth: {
-			type: Boolean,
-			default: true,
-		},
-		modelValue: {
-			type: String,
-			default: null,
-		},
-		nullable: {
-			type: Boolean,
-			default: true,
-		},
-		expandOnFocus: {
-			type: Boolean,
-			default: false,
-		},
-		placeholder: {
-			type: String,
-			default: null,
-		},
-		trim: {
-			type: Boolean,
-			default: false,
-		},
-	},
-	emits: ['update:modelValue'],
-	setup(props, { emit }) {
-		const listeners = computed(() => ({
-			input: emitValue,
-			blur: trimIfEnabled,
-		}));
+interface Props {
+	/** Disables the input */
+	disabled?: boolean;
+	/** Autofocusses the input on render */
+	autofocus?: boolean;
+	/** Render the input with 100% width */
+	fullWidth?: boolean;
+	/** Model the text inside the input */
+	modelValue?: string;
+	/** If the input is empty, return `null` instead of `''` */
+	nullable?: boolean;
+	/** Renders the textarea at regular input size, and expands to max-height on focus */
+	expandOnFocus?: boolean;
+	/** Text to show when no input is entered */
+	placeholder?: string;
+	/** Trim leading and trailing whitespace */
+	trim?: boolean;
+}
 
-		const hasContent = computed(() => props.modelValue && props.modelValue.length > 0);
-
-		return { listeners, hasContent };
-
-		function emitValue(event: InputEvent) {
-			const value = (event.target as HTMLInputElement).value;
-
-			if (props.nullable === true && value === '') {
-				emit('update:modelValue', null);
-			} else {
-				emit('update:modelValue', value);
-			}
-		}
-
-		function trimIfEnabled() {
-			if (props.modelValue && props.trim) {
-				emit('update:modelValue', props.modelValue.trim());
-			}
-		}
-	},
+const props = withDefaults(defineProps<Props>(), {
+	disabled: false,
+	autofocus: false,
+	fullWidth: true,
+	modelValue: undefined,
+	nullable: true,
+	expandOnFocus: false,
+	placeholder: undefined,
+	trim: false,
 });
+
+const emit = defineEmits(['update:modelValue']);
+
+const listeners = computed(() => ({
+	input: emitValue,
+	blur: trimIfEnabled,
+}));
+
+const hasContent = computed(() => props.modelValue && props.modelValue.length > 0);
+
+function emitValue(event: InputEvent) {
+	const value = (event.target as HTMLInputElement).value;
+
+	if (props.nullable === true && value === '') {
+		emit('update:modelValue', null);
+	} else {
+		emit('update:modelValue', value);
+	}
+}
+
+function trimIfEnabled() {
+	if (props.modelValue && props.trim) {
+		emit('update:modelValue', props.modelValue.trim());
+	}
+}
 </script>
 
 <style>
