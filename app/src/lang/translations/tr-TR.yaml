@@ -687,6 +687,7 @@ operators:
   nintersects: Kesişmeyen
   intersects_bbox: Sınırlayıcı kutuyla kesişen
   nintersects_bbox: Sınırlayıcı kutuyla kesişmeyen
+custom_validation_message: Özel Doğrulama Mesajı
 loading: Yükleniyor...
 drop_to_upload: Yüklemek için Dosyayı Buraya Bırakın
 item: Öğe
@@ -1686,6 +1687,8 @@ interfaces:
   system-token:
     system-token: Erişim Anahtarı (Token)
     value_securely_saved: Değer Güvenli Bir Şekilde Kaydedildi
+    generate: Erişim Anahtarı Üret
+    regenerate: Yeniden Erişim Anahtarı Üret
   system-raw-editor:
     system-raw-editor: Ham Düzenleyici
 displays:
@@ -1861,6 +1864,7 @@ layouts:
     edit_group: Grubu Düzenle,
     delete_group: Grubu sil,
     add_group: Grup Ekle,
+    add_group_placeholder: Yeni bir grup adı girin...,
     show: Göster,
     no_group: Grup Yok,
 panels:
