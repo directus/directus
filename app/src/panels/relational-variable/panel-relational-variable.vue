@@ -7,7 +7,7 @@
 			:filter="filter"
 			:value="value"
 			:limit="limit"
-			@input="saveSelection"
+			@input="value = $event"
 			@select="selectModalOpen = true"
 		/>
 		<single-relation
@@ -16,7 +16,7 @@
 			:template="displayTemplate"
 			:filter="filter"
 			:value="value"
-			@input="saveSelection"
+			@input="value = $event"
 			@select="selectModalOpen = true"
 		/>
 
@@ -52,7 +52,8 @@ interface Props {
 }
 const { t } = useI18n();
 const props = withDefaults(defineProps<Props>(), {});
-const emit = defineEmits(['input']);
+/*const emit = */ defineEmits(['input']);
+
 const insightsStore = useInsightsStore();
 const value = computed({
 	get() {
@@ -62,10 +63,6 @@ const value = computed({
 		insightsStore.setVariable(props.field, val);
 	},
 });
-function saveSelection(data: any) {
-	// console.log('save', props.field, data);
-	value.value = data;
-}
 
 const selectModalOpen = ref(false);
 function onSelection(data: (number | string)[]) {
@@ -82,9 +79,9 @@ function onSelection(data: (number | string)[]) {
 		} else {
 			value.value = items;
 		}
-		return;
+	} else {
+		value.value = data;
 	}
-	value.value = data;
 }
 </script>
 

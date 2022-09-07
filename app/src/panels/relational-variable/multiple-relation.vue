@@ -33,14 +33,9 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
+import { computed, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useCollectionsStore } from '@/stores/collections';
-import { useFieldsStore } from '@/stores/fields';
-import { unexpectedError } from '@/utils/unexpected-error';
-import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
-import { getEndpoint, getFieldsFromTemplate } from '@directus/shared/utils';
-import { useApi } from '@directus/shared/composables';
+import useDisplayItems from './use-display-items';
 
 interface Props {
 	value: (string | number)[];
@@ -52,28 +47,11 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {});
 const emit = defineEmits(['input', 'select']);
 
-const collectionsStore = useCollectionsStore();
-const fieldStore = useFieldsStore();
-
 const { t } = useI18n();
-const api = useApi();
+const { collection, template, value } = toRefs(props);
 
-const loading = ref(false);
-const displayItems = ref([]);
-const primaryKey = computed(() => fieldStore.getPrimaryKeyFieldForCollection(props.collection)?.field);
-const totalItemCount = computed(() => displayItems.value.length);
-const displayTemplate = computed(() => {
-	if (props.template) return props.template;
-
-	const displayTemplate = collectionsStore.getCollection(props.collection)?.meta?.display_template;
-	const pkField = fieldStore.getPrimaryKeyFieldForCollection(props.collection);
-	return displayTemplate || `{{ ${pkField?.field || 'id'} }}`;
-});
-const requiredFields = computed(() => {
-	if (!displayTemplate.value || !props.collection) return [];
-	return adjustFieldsForDisplays(getFieldsFromTemplate(displayTemplate.value), props.collection);
-});
-watch(() => props.value, getDisplayItems, { immediate: true });
+const { displayItems, displayTemplate, loading, primaryKey } = useDisplayItems(collection, template, value);
+const totalItemCount = computed(() => displayItems.value?.length || 0);
 
 function deleteItem(elem: Record<string, any>) {
 	emit(
@@ -82,38 +60,6 @@ function deleteItem(elem: Record<string, any>) {
 			.filter((item) => item[primaryKey.value] !== elem[primaryKey.value])
 			.map((item) => item[primaryKey.value])
 	);
-}
-async function getDisplayItems() {
-	if (props.value.length === 0) {
-		displayItems.value = [];
-		return;
-	}
-
-	const pkField = fieldStore.getPrimaryKeyFieldForCollection(props.collection);
-	const sortField = collectionsStore.getCollection(props.collection)?.meta?.sort_field;
-	if (!props.collection || !pkField) return;
-
-	const fields = new Set(requiredFields.value);
-	fields.add(pkField.field);
-
-	if (sortField) fields.add(sortField);
-
-	try {
-		loading.value = true;
-
-		const response = await api.get(getEndpoint(props.collection), {
-			params: {
-				fields: Array.from(fields),
-				filter: { [pkField.field]: { _in: props.value } },
-			},
-		});
-
-		displayItems.value = response.data.data;
-	} catch (err: any) {
-		unexpectedError(err);
-	} finally {
-		loading.value = false;
-	}
 }
 </script>
 
@@ -194,21 +140,6 @@ async function getDisplayItems() {
 	}
 }
 
-.item-link {
-	--v-icon-color: var(--foreground-subdued);
-	transition: color var(--fast) var(--transition);
-	margin: 0 4px;
-
-	&:hover {
-		--v-icon-color: var(--primary);
-	}
-
-	&.disabled {
-		opacity: 0;
-		pointer-events: none;
-	}
-}
-
 .deselect {
 	--v-icon-color: var(--foreground-subdued);
 	transition: color var(--fast) var(--transition);
@@ -216,25 +147,6 @@ async function getDisplayItems() {
 
 	&:hover {
 		--v-icon-color: var(--danger);
-	}
-}
-
-.per-page {
-	display: flex;
-	align-items: center;
-	justify-content: flex-end;
-	width: 120px;
-	padding: 10px 0;
-	margin-right: 2px;
-	color: var(--foreground-subdued);
-
-	span {
-		width: auto;
-		margin-right: 8px;
-	}
-
-	.v-select {
-		color: var(--foreground-normal);
 	}
 }
 </style>
