@@ -1,5 +1,5 @@
-import KnexCockroachDB, { parseDefaultValue } from 'knex-schema-inspector/dist/dialects/cockroachdb';
-import type { Column } from 'knex-schema-inspector/dist/types/column';
+import KnexCockroachDB, { parseDefaultValue } from '../lib/dialects/cockroachdb';
+import type { Column } from '../lib/types/column';
 import type { SchemaOverview } from '../types/overview.js';
 import type { SchemaInspector } from '../types/schema.js';
 

@@ -1,6 +1,6 @@
-import KnexSQLite, { parseDefaultValue } from 'knex-schema-inspector/dist/dialects/sqlite';
-import extractMaxLength from 'knex-schema-inspector/dist/utils/extract-max-length';
-import extractType from 'knex-schema-inspector/dist/utils/extract-type';
+import KnexSQLite, { parseDefaultValue } from '../lib/dialects/sqlite';
+import extractMaxLength from '../lib/utils/extract-max-length';
+import extractType from '../lib/utils/extract-type';
 import type { SchemaOverview } from '../types/overview.js';
 import type { SchemaInspector } from '../types/schema.js';
 
