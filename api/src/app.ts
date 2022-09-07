@@ -66,7 +66,7 @@ import { flushCaches } from './cache.js';
 import { registerAuthProviders } from './auth.js';
 import { Url } from './utils/url.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
-import { merge } from 'lodash';
+import { merge } from 'lodash-es';
 
 export default async function createApp(): Promise<express.Application> {
 	validateEnv(['KEY', 'SECRET']);

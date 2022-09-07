@@ -2,7 +2,7 @@ import SchemaInspector from '@directus/schema';
 import type { Accountability, Filter, SchemaOverview } from '@directus/shared/types';
 import { parseJSON, toArray } from '@directus/shared/utils';
 import type { Knex } from 'knex';
-import { mapValues } from 'lodash';
+import { mapValues } from 'lodash-es';
 import { getSystemCache, setSystemCache } from '../cache.js';
 import { ALIAS_TYPES } from '../constants.js';
 import getDatabase from '../database/index.js';

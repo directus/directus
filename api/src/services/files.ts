@@ -1,7 +1,7 @@
 import formatTitle from '@directus/format-title';
 import axios, { AxiosResponse } from 'axios';
 import exifr from 'exifr';
-import { clone, pick } from 'lodash';
+import { clone, pick } from 'lodash-es';
 import { extension } from 'mime-types';
 import path from 'path';
 import sharp from 'sharp';

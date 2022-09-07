@@ -1,7 +1,7 @@
 import type { Field, Relation, SchemaOverview } from '@directus/shared/types';
 import type { Diff, DiffDeleted, DiffNew } from 'deep-diff';
 import type { Knex } from 'knex';
-import { merge, set } from 'lodash';
+import { merge, set } from 'lodash-es';
 import getDatabase from '../database/index.js';
 import logger from '../logger.js';
 import { CollectionsService, FieldsService, RelationsService } from '../services/index.js';

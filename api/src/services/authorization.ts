@@ -10,7 +10,7 @@ import type {
 } from '@directus/shared/types';
 import { validatePayload } from '@directus/shared/utils';
 import type { Knex } from 'knex';
-import { cloneDeep, flatten, isArray, isNil, merge, reduce, uniq, uniqWith } from 'lodash';
+import { cloneDeep, flatten, isArray, isNil, merge, reduce, uniq, uniqWith } from 'lodash-es';
 import getDatabase from '../database/index.js';
 import { ForbiddenException } from '../exceptions/index.js';
 import type {

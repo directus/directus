@@ -1,7 +1,7 @@
 import type { Request } from 'express';
 import url from 'url';
 import hash from 'object-hash';
-import { pick } from 'lodash';
+import { pick } from 'lodash-es';
 
 export function getCacheKey(req: Request): string {
 	const path = url.parse(req.originalUrl).pathname;

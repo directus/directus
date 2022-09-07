@@ -1,6 +1,6 @@
 import type { Accountability } from '@directus/shared/types';
 import type { NextFunction, Request, Response } from 'express';
-import { isEqual } from 'lodash';
+import { isEqual } from 'lodash-es';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
 import env from '../env.js';

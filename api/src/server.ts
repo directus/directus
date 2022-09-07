@@ -2,7 +2,7 @@ import { createTerminus, TerminusOptions } from '@godaddy/terminus';
 import type { Request } from 'express';
 import http from 'http';
 import https from 'https';
-import { once } from 'lodash';
+import { once } from 'lodash-es';
 import qs from 'qs';
 import url from 'url';
 import createApp from './app.js';

@@ -1,5 +1,5 @@
 import type { Knex } from 'knex';
-import type { SchemaInspector } from './types/schema';
+import type { SchemaInspector } from './types/schema.js';
 
 interface SchemaInspectorConstructor {
 	new (knex: Knex): SchemaInspector;

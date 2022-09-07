@@ -1,5 +1,5 @@
 import fse from 'fs-extra';
-import { merge } from 'lodash';
+import { merge } from 'lodash-es';
 import path from 'path';
 import formatTitle from '@directus/format-title';
 import type { FieldMeta } from '@directus/shared/types';

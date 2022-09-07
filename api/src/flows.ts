@@ -12,7 +12,7 @@ import {
 import { applyOptionsData, toArray } from '@directus/shared/utils';
 import fastRedact from 'fast-redact';
 import type { Knex } from 'knex';
-import { omit } from 'lodash';
+import { omit } from 'lodash-es';
 import { get } from 'micromustache';
 import { schedule, validate } from 'node-cron';
 import getDatabase from './database/index.js';

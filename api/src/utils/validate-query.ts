@@ -1,5 +1,5 @@
 import Joi from 'joi';
-import { isPlainObject, uniq } from 'lodash';
+import { isPlainObject, uniq } from 'lodash-es';
 import { InvalidQueryException } from '../exceptions/index.js';
 import type { Query } from '@directus/shared/types';
 import { stringify } from 'wellknown';

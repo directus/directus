@@ -48,7 +48,7 @@ import virtual from '@rollup/plugin-virtual';
 import alias from '@rollup/plugin-alias';
 import { Url } from './utils/url.js';
 import getModuleDefault from './utils/get-module-default.js';
-import { clone, escapeRegExp } from 'lodash';
+import { clone, escapeRegExp } from 'lodash-es';
 import chokidar, { FSWatcher } from 'chokidar';
 import { isIn, isTypeIn, pluralize } from '@directus/shared/utils';
 import { getFlowManager } from './flows.js';
@@ -188,7 +188,10 @@ class ExtensionManager {
 
 	private async load(): Promise<void> {
 		try {
-			await ensureExtensionDirs(env['EXTENSIONS_PATH'], env['SERVE_APP'] ? EXTENSION_TYPES : API_OR_HYBRID_EXTENSION_TYPES);
+			await ensureExtensionDirs(
+				env['EXTENSIONS_PATH'],
+				env['SERVE_APP'] ? EXTENSION_TYPES : API_OR_HYBRID_EXTENSION_TYPES
+			);
 
 			this.extensions = await this.getExtensions();
 		} catch (err: any) {
@@ -225,16 +228,18 @@ class ExtensionManager {
 		if (!this.watcher) {
 			logger.info('Watching extensions for changes...');
 
-			const localExtensionPaths = (env['SERVE_APP'] ? EXTENSION_TYPES : API_OR_HYBRID_EXTENSION_TYPES).flatMap((type) => {
-				const typeDir = path.posix.join(
-					path.relative('.', env['EXTENSIONS_PATH']).split(path.sep).join(path.posix.sep),
-					pluralize(type)
-				);
+			const localExtensionPaths = (env['SERVE_APP'] ? EXTENSION_TYPES : API_OR_HYBRID_EXTENSION_TYPES).flatMap(
+				(type) => {
+					const typeDir = path.posix.join(
+						path.relative('.', env['EXTENSIONS_PATH']).split(path.sep).join(path.posix.sep),
+						pluralize(type)
+					);
 
-				return isIn(type, HYBRID_EXTENSION_TYPES)
-					? [path.posix.join(typeDir, '*', 'app.js'), path.posix.join(typeDir, '*', 'api.js')]
-					: path.posix.join(typeDir, '*', 'index.js');
-			});
+					return isIn(type, HYBRID_EXTENSION_TYPES)
+						? [path.posix.join(typeDir, '*', 'app.js'), path.posix.join(typeDir, '*', 'api.js')]
+						: path.posix.join(typeDir, '*', 'index.js');
+				}
+			);
 
 			this.watcher = chokidar.watch([path.resolve('package.json'), ...localExtensionPaths], {
 				ignoreInitial: true,

@@ -4,7 +4,7 @@ import { getTracker, MockClient, Tracker } from 'knex-mock-client';
 import { ItemsService } from '../../src/services/index.js';
 import { sqlFieldFormatter, sqlFieldList } from '../__utils__/items-utils.js';
 import { systemSchema, userSchema } from '../__utils__/schemas.js';
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from 'lodash-es';
 
 jest.mock('../../src/database/index', () => {
 	return { getDatabaseClient: jest.fn().mockReturnValue('postgres') };
@@ -964,7 +964,9 @@ describe('Integration Tests', () => {
 					`select "${childTable}"."id", "${childTable}"."title", "${childTable}"."uploaded_by" from "${childTable}" where (("${childTable}"."id" in (?))) order by "${childTable}"."id" asc limit ?`
 				);
 				expect(tracker.history['update']?.[0]?.bindings).toStrictEqual([null, childItem.id]);
-				expect(tracker.history['update']?.[0]?.sql).toBe(`update "${childTable}" set "uploaded_by" = ? where "id" in (?)`);
+				expect(tracker.history['update']?.[0]?.sql).toBe(
+					`update "${childTable}" set "uploaded_by" = ? where "id" in (?)`
+				);
 
 				expect(response).toStrictEqual(item.id);
 			}

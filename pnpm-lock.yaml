@@ -105,7 +105,7 @@ importers:
       '@types/jsonwebtoken': 8.5.8
       '@types/keyv': 3.1.4
       '@types/ldapjs': 2.2.2
-      '@types/lodash': 4.14.182
+      '@types/lodash-es': 4.17.6
       '@types/marked': 4.0.3
       '@types/mime-types': 2.1.1
       '@types/ms': 0.7.31
@@ -171,7 +171,7 @@ importers:
       knex-schema-inspector: 2.0.4
       ldapjs: ^2.3.3
       liquidjs: ^9.37.0
-      lodash: ^4.17.21
+      lodash-es: ^4.17.21
       marked: ^4.0.16
       memcached: ^2.2.2
       micromustache: ^8.0.3
@@ -273,7 +273,7 @@ importers:
       knex-schema-inspector: 2.0.4
       ldapjs: 2.3.3
       liquidjs: 9.39.1
-      lodash: 4.17.21
+      lodash-es: 4.17.21
       marked: 4.0.18
       micromustache: 8.0.3
       mime-types: 2.1.35
@@ -310,7 +310,7 @@ importers:
       keyv-memcache: 1.3.3
       memcached: 2.2.2
       mysql: 2.18.1
-      nodemailer-mailgun-transport: 2.1.4_lodash@4.17.21
+      nodemailer-mailgun-transport: 2.1.4
       nodemailer-sendgrid: 1.0.3
       pg: 8.7.3
       sqlite3: 5.0.9
@@ -341,7 +341,7 @@ importers:
       '@types/jsonwebtoken': 8.5.8
       '@types/keyv': 3.1.4
       '@types/ldapjs': 2.2.2
-      '@types/lodash': 4.14.182
+      '@types/lodash-es': 4.17.6
       '@types/marked': 4.0.3
       '@types/mime-types': 2.1.1
       '@types/ms': 0.7.31
@@ -788,7 +788,7 @@ importers:
       '@types/express': 4.17.13
       '@types/fs-extra': 9.0.13
       '@types/geojson': 7946.0.8
-      '@types/lodash': ^4.14.182
+      '@types/lodash-es': 4.17.6
       '@types/pino': 6.3.12
       '@types/tmp': ^0.2.3
       axios: ^0.27.2
@@ -800,7 +800,7 @@ importers:
       joi: 17.4.2
       knex: 2.2.0
       knex-schema-inspector: 2.0.4
-      lodash: 4.17.21
+      lodash-es: 4.17.21
       micromustache: ^8.0.3
       nanoid: ^4.0.0
       npm-run-all: 4.1.5
@@ -821,7 +821,7 @@ importers:
       joi: 17.4.2
       knex: 2.2.0
       knex-schema-inspector: 2.0.4
-      lodash: 4.17.21
+      lodash-es: 4.17.21
       micromustache: 8.0.3
       nanoid: 4.0.0
       pino: 6.13.3
@@ -832,7 +832,7 @@ importers:
       '@types/express': 4.17.13
       '@types/fs-extra': 9.0.13
       '@types/geojson': 7946.0.8
-      '@types/lodash': 4.14.182
+      '@types/lodash-es': 4.17.6
       '@types/pino': 6.3.12
       '@types/tmp': 0.2.3
       c8: 7.12.0
@@ -7081,6 +7081,13 @@ packages:
       rxjs: 6.6.7
     dev: true
 
+  /@types/lodash-es/4.17.6:
+    resolution:
+      { integrity: sha512-R+zTeVUKDdfoRxpAryaQNRKk3105Rrgx2CFRClIgRGaqDTdjsm8h6IYA8ir584W3ePzkZfst5xIgDwYrlh9HLg== }
+    dependencies:
+      '@types/lodash': 4.14.184
+    dev: true
+
   /@types/lodash/4.14.177:
     resolution:
       { integrity: sha512-0fDwydE2clKe9MNfvXHBHF9WEahRuj+msTuQqOmAApNORFvhMYZKNGGJdCzuhheVjMps/ti0Ak/iJPACMaevvw== }
@@ -10259,7 +10266,7 @@ packages:
     resolution:
       { integrity: sha512-ty/fTekppD2fIwRvnZAVdeOiGd1c7YXEixbgJTNzqcxJWKQnjJ/V1bNEEE6hygpM3WjwHFUVK6HTjWSzV4a8sQ== }
 
-  /consolidate/0.15.1_lodash@4.17.21:
+  /consolidate/0.15.1:
     resolution:
       { integrity: sha512-DW46nrsMJgy9kqAbPt5rKaCr7uFtpo4mSUvLHIUbJEjm0vo+aY5QLwBUq3FK4tRnJr/X0Psc0C4jf/h+HtXSMw== }
     engines: { node: '>= 0.10.0' }
@@ -10426,7 +10433,6 @@ packages:
         optional: true
     dependencies:
       bluebird: 3.7.2
-      lodash: 4.17.21
     dev: false
     optional: true
 
@@ -16334,6 +16340,11 @@ packages:
     dependencies:
       p-locate: 5.0.0
 
+  /lodash-es/4.17.21:
+    resolution:
+      { integrity: sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw== }
+    dev: false
+
   /lodash.clonedeep/4.5.0:
     resolution:
       { integrity: sha512-H5ZhCF25riFd9uB5UCkVKo61m3S/xZk1x4wA6yp/L3RFP6Z/eHH1ymQcGLo7J3GMPfm0V/7m1tryHuGVxpqEBQ== }
@@ -17470,12 +17481,12 @@ packages:
     resolution:
       { integrity: sha512-PiVXnNuFm5+iYkLBNeq5211hvO38y63T0i2KKh2KnUs3RpzJ+JtODFjkD8yjLwnDkTYF1eKXheUwdssR+NRZdg== }
 
-  /nodemailer-mailgun-transport/2.1.4_lodash@4.17.21:
+  /nodemailer-mailgun-transport/2.1.4:
     resolution:
       { integrity: sha512-ZXnul1HvQHEhpflH1+3FNCPq6bYkBWWjvMkusH2N43UNyJR64Z0ufmzng3eHdfQkIHZ7yco8yBngVzGi7+lsTA== }
     requiresBuild: true
     dependencies:
-      consolidate: 0.15.1_lodash@4.17.21
+      consolidate: 0.15.1
       form-data: 4.0.0
       mailgun.js: 3.7.3
     transitivePeerDependencies:

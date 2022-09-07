@@ -1,7 +1,7 @@
 import type { Relation } from '@directus/shared/types';
 import { getRelationInfo } from './get-relation-info.js';
 import { InvalidQueryException } from '../exceptions/index.js';
-import { get } from 'lodash';
+import { get } from 'lodash-es';
 
 type AliasMap = string | { [key: string]: AliasMap };
 

@@ -1,4 +1,4 @@
-import { isObjectLike } from 'lodash';
+import { isObjectLike } from 'lodash-es';
 import { REGEX_BETWEEN_PARENS } from '../constants/index.js';
 import type { Accountability, Filter, Role, User } from '../types/index.js';
 import { adjustDate } from './adjust-date.js';

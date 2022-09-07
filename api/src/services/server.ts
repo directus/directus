@@ -1,5 +1,5 @@
 import type { Knex } from 'knex';
-import { merge } from 'lodash';
+import { merge } from 'lodash-es';
 import { nanoid } from 'nanoid';
 import os from 'os';
 import { performance } from 'perf_hooks';

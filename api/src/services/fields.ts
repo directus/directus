@@ -5,7 +5,7 @@ import { addFieldFlag, toArray } from '@directus/shared/utils';
 import type Keyv from 'keyv';
 import type { Knex } from 'knex';
 import type { Column } from 'knex-schema-inspector/dist/types/column';
-import { isEqual, isNil } from 'lodash';
+import { isEqual, isNil } from 'lodash-es';
 import { clearSystemCache, getCache } from '../cache.js';
 import { ALIAS_TYPES } from '../constants.js';
 import getDatabase, { getSchemaInspector } from '../database/index.js';

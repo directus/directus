@@ -1,7 +1,7 @@
 import { Accountability, Action, SchemaOverview } from '@directus/shared/types';
 import jwt from 'jsonwebtoken';
 import type { Knex } from 'knex';
-import { clone, cloneDeep } from 'lodash';
+import { clone, cloneDeep } from 'lodash-es';
 import ms from 'ms';
 import { nanoid } from 'nanoid';
 import { performance } from 'perf_hooks';

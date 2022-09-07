@@ -1,4 +1,4 @@
-import { merge } from 'lodash';
+import { merge } from 'lodash-es';
 import type { Permission } from '@directus/shared/types';
 import { requireYAML } from '../../../utils/require-yaml.js';
 

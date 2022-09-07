@@ -1,8 +1,8 @@
 import KnexSQLite, { parseDefaultValue } from 'knex-schema-inspector/dist/dialects/sqlite';
 import extractMaxLength from 'knex-schema-inspector/dist/utils/extract-max-length';
 import extractType from 'knex-schema-inspector/dist/utils/extract-type';
-import type { SchemaOverview } from '../types/overview';
-import type { SchemaInspector } from '../types/schema';
+import type { SchemaOverview } from '../types/overview.js';
+import type { SchemaInspector } from '../types/schema.js';
 
 type RawColumn = {
 	cid: number;

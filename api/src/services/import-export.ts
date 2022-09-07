@@ -7,7 +7,7 @@ import { appendFile, createReadStream } from 'fs-extra';
 import { parse as toXML } from 'js2xmlparser';
 import { Parser as CSVParser, transforms as CSVTransforms } from 'json2csv';
 import type { Knex } from 'knex';
-import { set, transform } from 'lodash';
+import { set, transform } from 'lodash-es';
 import StreamArray from 'stream-json/streamers/StreamArray.js';
 import stripBomStream from 'strip-bom-stream';
 import { file as createTmpFile } from 'tmp-promise';

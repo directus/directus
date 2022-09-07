@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import type { Knex } from 'knex';
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from 'lodash-es';
 import getDatabase from '../database/index.js';
 import env from '../env.js';
 import { FailedValidationException } from '@directus/shared/exceptions';

@@ -3,7 +3,7 @@
  */
 
 import type { Knex } from 'knex';
-import { cloneDeep, mapKeys, omitBy, uniq, isEmpty } from 'lodash';
+import { cloneDeep, mapKeys, omitBy, uniq, isEmpty } from 'lodash-es';
 import type { AST, FieldNode, FunctionFieldNode, NestedCollectionNode } from '../types/index.js';
 import type { Query, PermissionsAction, Accountability, SchemaOverview } from '@directus/shared/types';
 import { getRelationType } from '../utils/get-relation-type.js';

@@ -1,7 +1,7 @@
 import KnexCockroachDB, { parseDefaultValue } from 'knex-schema-inspector/dist/dialects/cockroachdb';
 import type { Column } from 'knex-schema-inspector/dist/types/column';
-import type { SchemaOverview } from '../types/overview';
-import type { SchemaInspector } from '../types/schema';
+import type { SchemaOverview } from '../types/overview.js';
+import type { SchemaInspector } from '../types/schema.js';
 
 export default class CockroachDB extends KnexCockroachDB implements SchemaInspector {
 	async overview(): Promise<SchemaOverview> {

@@ -7,7 +7,7 @@ import { getConfigFromEnv } from '../utils/get-config-from-env.js';
 import { validateEnv } from '../utils/validate-env.js';
 import fse from 'fs-extra';
 import path from 'path';
-import { merge } from 'lodash';
+import { merge } from 'lodash-es';
 import { promisify } from 'util';
 import { getHelpers } from './helpers/index.js';
 

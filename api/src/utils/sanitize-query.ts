@@ -1,6 +1,6 @@
 import type { Accountability, Aggregate, Filter, Query } from '@directus/shared/types';
 import { parseFilter, parseJSON } from '@directus/shared/utils';
-import { flatten, get, isPlainObject, merge, set } from 'lodash';
+import { flatten, get, isPlainObject, merge, set } from 'lodash-es';
 import logger from '../logger.js';
 import { Meta } from '../types/index.js';
 

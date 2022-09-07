@@ -1,7 +1,8 @@
 import KnexMySQL, { parseDefaultValue } from 'knex-schema-inspector/dist/dialects/mysql';
-import type { SchemaOverview } from '../types/overview';
-import type { SchemaInspector } from '../types/schema';
+import type { SchemaOverview } from '../types/overview.js';
+import type { SchemaInspector } from '../types/schema.js';
 
+// ts-ignore-next-line
 export default class MySQL extends KnexMySQL implements SchemaInspector {
 	async overview(): Promise<SchemaOverview> {
 		const columns = await this.knex.raw(

@@ -1,6 +1,6 @@
 import KnexMSSQL, { parseDefaultValue } from 'knex-schema-inspector/dist/dialects/mssql';
-import type { SchemaOverview } from '../types/overview';
-import type { SchemaInspector } from '../types/schema';
+import type { SchemaOverview } from '../types/overview.js';
+import type { SchemaInspector } from '../types/schema.js';
 
 export default class MSSQL extends KnexMSSQL implements SchemaInspector {
 	// Overview

@@ -9,7 +9,7 @@ import type {
 	Type,
 } from '@directus/shared/types';
 import type { Knex } from 'knex';
-import { clone, isPlainObject, set } from 'lodash';
+import { clone, isPlainObject, set } from 'lodash-es';
 import { customAlphabet } from 'nanoid';
 import validate from 'uuid-validate';
 import { getHelpers } from '../database/helpers/index.js';

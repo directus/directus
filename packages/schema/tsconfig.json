@@ -8,7 +8,7 @@
     "module": "es2022",
     "target": "es2022",
     "strict": true,
-    "esModuleInterop": false,
+    "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "moduleResolution": "node",
@@ -21,6 +21,7 @@
     "noPropertyAccessFromIndexSignature": true,
     "noUncheckedIndexedAccess": true,
     "noUnusedLocals": true,
+    "declaration": true,
     "noUnusedParameters": true,
     "importsNotUsedAsValues": "error",
     "checkJs": true

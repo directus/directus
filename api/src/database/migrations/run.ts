@@ -5,7 +5,7 @@ import path from 'path';
 import env from '../../env.js';
 import logger from '../../logger.js';
 import type { Migration } from '../../types/index.js';
-import { orderBy } from 'lodash';
+import { orderBy } from 'lodash-es';
 
 export default async function run(database: Knex, direction: 'up' | 'down' | 'latest', log = true): Promise<void> {
 	let migrationFiles = await fse.readdir(__dirname);

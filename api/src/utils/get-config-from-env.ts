@@ -1,5 +1,5 @@
 import camelcase from 'camelcase';
-import { set } from 'lodash';
+import { set } from 'lodash-es';
 import env from '../env.js';
 
 export function getConfigFromEnv(

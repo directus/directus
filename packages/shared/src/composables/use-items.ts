@@ -3,7 +3,7 @@ import axios, { CancelTokenSource } from 'axios';
 import { useCollection } from './use-collection.js';
 import type { Item, Query } from '../types/index.js';
 import { moveInArray } from '../utils/index.js';
-import { isEqual, throttle } from 'lodash';
+import { isEqual, throttle } from 'lodash-es';
 import { computed, ComputedRef, ref, Ref, watch, WritableComputedRef, unref } from 'vue';
 
 type ManualSortData = {

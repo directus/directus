@@ -3,7 +3,7 @@ import { getSchema } from './get-schema.js';
 import { CollectionsService, FieldsService, RelationsService } from '../services/index.js';
 import type { Snapshot, SnapshotField, SnapshotRelation } from '../types/index.js';
 import type { Knex } from 'knex';
-import { omit, sortBy, toPairs, fromPairs, mapValues, isPlainObject, isArray } from 'lodash';
+import { omit, sortBy, toPairs, fromPairs, mapValues, isPlainObject, isArray } from 'lodash-es';
 import type { SchemaOverview } from '@directus/shared/types';
 import { readFileSync } from 'node:fs';
 

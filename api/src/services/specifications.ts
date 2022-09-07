@@ -1,7 +1,7 @@
 import formatTitle from '@directus/format-title';
 import { openapi } from '@directus/specs/index.js';
 import type { Knex } from 'knex';
-import { cloneDeep, mergeWith } from 'lodash';
+import { cloneDeep, mergeWith } from 'lodash-es';
 import type {
 	OpenAPIObject,
 	OperationObject,

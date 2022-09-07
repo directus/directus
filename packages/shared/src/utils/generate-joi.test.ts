@@ -1,4 +1,4 @@
-import { escapeRegExp } from 'lodash';
+import { escapeRegExp } from 'lodash-es';
 import { describe, expect, it } from 'vitest';
 import type { FieldFilter } from '../types/index.js';
 import { generateJoi, Joi, JoiOptions, StringSchema } from './generate-joi.js';

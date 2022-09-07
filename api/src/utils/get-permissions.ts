@@ -1,6 +1,6 @@
 import type { Accountability, Permission, SchemaOverview } from '@directus/shared/types';
 import { deepMap, parseFilter, parseJSON, parsePreset } from '@directus/shared/utils';
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from 'lodash-es';
 import hash from 'object-hash';
 import { getCache, getSystemCache, setSystemCache } from '../cache.js';
 import getDatabase from '../database/index.js';

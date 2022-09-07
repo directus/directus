@@ -1,6 +1,6 @@
 import type { AnySchema, StringSchema as BaseStringSchema, NumberSchema, DateSchema } from 'joi';
 import * as BaseJoi from 'joi';
-import { escapeRegExp, merge } from 'lodash';
+import { escapeRegExp, merge } from 'lodash-es';
 import type { FieldFilter } from '../types/filter.js';
 
 export interface StringSchema extends BaseStringSchema {

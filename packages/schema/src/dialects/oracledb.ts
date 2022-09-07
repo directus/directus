@@ -1,7 +1,7 @@
 import KnexOracle, { parseDefaultValue } from 'knex-schema-inspector/dist/dialects/oracledb';
 import type { Column } from 'knex-schema-inspector/dist/types/column';
-import type { SchemaOverview } from '../types/overview';
-import type { SchemaInspector } from '../types/schema';
+import type { SchemaOverview } from '../types/overview.js';
+import type { SchemaInspector } from '../types/schema.js';
 
 export default class Oracle extends KnexOracle implements SchemaInspector {
 	private static _mapColumnAutoIncrement(column: Column): Column {
