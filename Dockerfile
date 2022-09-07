@@ -53,5 +53,7 @@ RUN rm -rf /directus/api/extensions/modules/__MACOSX || true
 
 WORKDIR /directus/api
 
+RUN mkdir -p ./uploads
+
 CMD ["sh", "-c", "node ./cli.js bootstrap && node ./dist/start.js;"]
 EXPOSE 8055/tcp
