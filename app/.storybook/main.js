@@ -6,10 +6,7 @@ module.exports = {
 		return mergeConfig(config, {
 			resolve: {
 				dedupe: ['@storybook/client-api'],
-				alias: [
-					{ find: '@', replacement: path.resolve(__dirname, '..', 'src') },
-					// { find: 'json2csv', replacement: 'json2csv/dist/json2csv.umd.js' },
-				],
+				alias: [{ find: '@', replacement: path.resolve(__dirname, '..', 'src') }],
 			},
 		});
 	},

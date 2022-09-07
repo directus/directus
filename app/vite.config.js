@@ -131,10 +131,7 @@ export default defineConfig({
 		exclude: ['@directus/docs'],
 	},
 	resolve: {
-		alias: [
-			{ find: '@', replacement: path.resolve(__dirname, 'src') },
-			{ find: 'json2csv', replacement: 'json2csv/dist/json2csv.umd.js' },
-		],
+		alias: [{ find: '@', replacement: path.resolve(__dirname, 'src') }],
 	},
 	base: process.env.NODE_ENV === 'production' ? '' : '/admin/',
 	server: {

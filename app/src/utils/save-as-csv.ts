@@ -4,7 +4,6 @@ import { useFieldsStore } from '@/stores/fields';
 import { get } from '@directus/shared/utils';
 import { DisplayConfig, Field, Item } from '@directus/shared/types';
 import { saveAs } from 'file-saver';
-import { parse } from 'json2csv';
 import { ref } from 'vue';
 import api from '@/api';
 import { unexpectedError } from './unexpected-error';
@@ -75,15 +74,13 @@ export async function saveAsCSV(collection: string, fields: string[], items: Ite
 	try {
 		const formData = new FormData();
 		formData.set('input', JSON.stringify(parsedItems));
-		formData.set('format', 'json');
 
-		const response = await api.post('/utils/transform-export', formData, {
+		const response = await api.post('/utils/transform-export?export=csv', formData, {
 			headers: {
 				'Content-Type': 'multipart/form-data',
 			},
 		});
 
-		const csvContent = parse(JSON.parse(response.data.data));
 		const now = new Date();
 
 		const dateString = `${now.getFullYear()}${(now.getMonth() + 1).toString().padStart(2, '0')}${now
@@ -91,7 +88,7 @@ export async function saveAsCSV(collection: string, fields: string[], items: Ite
 			.toString()
 			.padStart(2, '0')}`;
 
-		saveAs(new Blob([csvContent], { type: 'text/csv;charset=utf-8' }), `${collection}-${dateString}.csv`);
+		saveAs(new Blob([response.data], { type: 'text/csv;charset=utf-8' }), `${collection}-${dateString}.csv`);
 	} catch (err: any) {
 		unexpectedError(err);
 	}
