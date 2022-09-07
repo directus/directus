@@ -66,7 +66,7 @@ function saveSelection(data: any) {
 
 const selectModalOpen = ref(false);
 function onSelection(data: (number | string)[]) {
-	if (!data || data.length === 0) {
+	if (!Array.isArray(data) || data.length === 0) {
 		value.value = [];
 	} else {
 		value.value = data;

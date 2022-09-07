@@ -58,8 +58,7 @@ const displayItem = ref<Record<string, any> | undefined>(undefined);
 watch(() => props.value, getDisplayItems, { immediate: true });
 
 const displayTemplate = computed(() => {
-	// if (props.template) return props.template;
-	// for some reason im getting parsed templates T.T "undefined - undefined"
+	if (props.template) return props.template;
 
 	const displayTemplate = collectionsStore.getCollection(props.collection)?.meta?.display_template;
 	const pkField = fieldStore.getPrimaryKeyFieldForCollection(props.collection);

@@ -52,44 +52,30 @@ export default definePanel({
 				default_value: false,
 			},
 		},
-		// {
-		// 	field: 'sortField',
-		// 	type: 'string',
-		// 	name: '$t:sort_field',
-		// 	meta: {
-		// 		interface: 'system-field',
-		// 		options: {
-		// 			collectionField: 'collection',
-		// 			allowPrimaryKey: true,
-		// 			placeholder: '$t:primary_key',
-		// 		},
-		// 		width: 'half',
-		// 	},
-		// },
-		// {
-		// 	field: 'sortDirection',
-		// 	type: 'string',
-		// 	name: '$t:sort_direction',
-		// 	schema: {
-		// 		default_value: 'desc',
-		// 	},
-		// 	meta: {
-		// 		interface: 'select-dropdown',
-		// 		options: {
-		// 			choices: [
-		// 				{
-		// 					text: '$t:sort_asc',
-		// 					value: 'asc',
-		// 				},
-		// 				{
-		// 					text: '$t:sort_desc',
-		// 					value: 'desc',
-		// 				},
-		// 			],
-		// 		},
-		// 		width: 'half',
-		// 	},
-		// },
+		{
+			field: 'limit',
+			name: '$t:limit',
+			type: 'integer',
+			meta: {
+				interface: 'input',
+				width: 'half',
+				hidden: true,
+				options: {
+					placeholder: '$t:decimals_placeholder',
+				},
+				conditions: [
+					{
+						rule: {
+							multiple: { _eq: true },
+						},
+						hidden: false,
+					},
+				],
+			},
+			schema: {
+				default_value: 5,
+			},
+		},
 		{
 			field: 'displayTemplate',
 			name: '$t:display_template',
@@ -117,4 +103,5 @@ export default definePanel({
 	],
 	minWidth: 12,
 	minHeight: 6,
+	skipUndefinedKeys: ['displayTemplate'],
 });

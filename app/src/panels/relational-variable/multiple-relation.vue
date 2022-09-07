@@ -5,11 +5,7 @@
 	<div v-else class="one-to-many">
 		<div>
 			<template v-if="loading">
-				<v-skeleton-loader
-					v-for="n in clamp(totalItemCount - (page - 1) * limit, 1, limit)"
-					:key="n"
-					type="block-list-item-dense"
-				/>
+				<v-skeleton-loader v-for="n in limit" :key="n" type="block-list-item-dense" />
 			</template>
 
 			<v-notice v-else-if="displayItems.length === 0">
@@ -17,27 +13,16 @@
 			</v-notice>
 
 			<v-list v-else>
-				<draggable
-					:force-fallback="true"
-					:model-value="displayItems"
-					item-key="id"
-					handle=".drag-handle"
-					:disabled="!allowDrag"
-				>
-					<template #item="{ element }">
-						<v-list-item block :dense="true">
-							<!-- <v-icon v-if="allowDrag" name="drag_handle" class="drag-handle" left @click.stop="() => {}" /> -->
-							<render-template :collection="collection" :item="element" :template="displayTemplate" />
-							<div class="spacer" />
-							<v-icon
-								v-tooltip="t('some tooltip')"
-								class="deselect"
-								:name="getDeselectIcon(element)"
-								@click.stop="deleteItem(element)"
-							/>
-						</v-list-item>
-					</template>
-				</draggable>
+				<v-list-item v-for="element in displayItems" :key="element[primaryKey]" block :dense="true">
+					<render-template :collection="collection" :item="element" :template="displayTemplate" />
+					<div class="spacer" />
+					<v-icon
+						v-tooltip="t('some tooltip')"
+						class="deselect"
+						:name="getDeselectIcon(element)"
+						@click.stop="deleteItem(element)"
+					/>
+				</v-list-item>
 			</v-list>
 
 			<div class="actions list">
@@ -52,10 +37,8 @@
 </template>
 
 <script setup lang="ts">
-import { clamp } from 'lodash';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import Draggable from 'vuedraggable';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
@@ -69,9 +52,7 @@ interface Props {
 	filter: Record<string, any>;
 	limit: number;
 }
-const props = withDefaults(defineProps<Props>(), {
-	limit: 5,
-});
+const props = withDefaults(defineProps<Props>(), {});
 const emit = defineEmits(['input', 'select']);
 
 const collectionsStore = useCollectionsStore();
@@ -81,20 +62,16 @@ const { t } = useI18n();
 const api = useApi();
 
 const loading = ref(false);
-const pageCount = ref(1);
-const page = ref(1);
-const limit = ref(10);
 const displayItems = ref([]);
+const primaryKey = computed(() => fieldStore.getPrimaryKeyFieldForCollection(props.collection)?.field);
 // watch(displayItems, () => console.log(displayItems.value));
 const totalItemCount = computed(() => displayItems.value.length);
-const allowDrag = ref(true);
-const templateWithDefaults = ref('{{ id }}');
 const displayTemplate = computed(() => {
-	// if (props.template) return props.template;
+	if (props.template) return props.template;
 
+	const displayTemplate = collectionsStore.getCollection(props.collection)?.meta?.display_template;
 	const pkField = fieldStore.getPrimaryKeyFieldForCollection(props.collection);
-
-	return false /*props.template*/ || `{{ ${pkField?.field || 'id'} }}`;
+	return displayTemplate || `{{ ${pkField?.field || 'id'} }}`;
 });
 const requiredFields = computed(() => {
 	if (!displayTemplate.value || !props.collection) return [];
