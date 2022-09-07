@@ -1,4 +1,4 @@
-import * as Joi from 'joi';
+import Joi from 'joi';
 import { InvalidPayloadException } from '../exceptions/index.js';
 import { FailedValidationException } from '@directus/shared/exceptions';
 import asyncHandler from '../utils/async-handler.js';

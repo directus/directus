@@ -1,4 +1,4 @@
-import * as express from 'express';
+import express from 'express';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions/index.js';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
@@ -7,7 +7,7 @@ import { SharesService } from '../services/index.js';
 import type { PrimaryKey } from '../types/index.js';
 import asyncHandler from '../utils/async-handler.js';
 import { UUID_REGEX, COOKIE_OPTIONS } from '../constants.js';
-import * as Joi from 'joi';
+import Joi from 'joi';
 import env from '../env.js';
 
 const router = express.Router();

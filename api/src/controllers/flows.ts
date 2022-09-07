@@ -1,4 +1,4 @@
-import * as express from 'express';
+import express from 'express';
 import { UUID_REGEX } from '../constants.js';
 import { ForbiddenException } from '../exceptions/index.js';
 import { getFlowManager } from '../flows.js';

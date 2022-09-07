@@ -1,4 +1,4 @@
-import * as jwt from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 
 /**
  * Check if a given string conforms to the structure of a JWT

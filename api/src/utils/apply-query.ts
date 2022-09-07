@@ -11,7 +11,7 @@ import type {
 import type { Knex } from 'knex';
 import { clone, isPlainObject, set } from 'lodash';
 import { customAlphabet } from 'nanoid';
-import * as validate from 'uuid-validate';
+import validate from 'uuid-validate';
 import { getHelpers } from '../database/helpers/index.js';
 import { InvalidQueryException } from '../exceptions/invalid-query.js';
 import { getColumn } from './get-column.js';

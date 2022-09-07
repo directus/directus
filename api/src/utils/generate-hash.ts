@@ -1,4 +1,4 @@
-import * as argon2 from 'argon2';
+import argon2 from 'argon2';
 import { getConfigFromEnv } from './get-config-from-env.js';
 
 export function generateHash(stringToHash: string): Promise<string> {

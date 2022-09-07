@@ -1,4 +1,4 @@
-import * as jwt from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 import { JsonWebTokenError, TokenExpiredError } from 'jsonwebtoken';
 import type { DirectusTokenPayload } from '../types/index.js';
 import { InvalidTokenException, ServiceUnavailableException, TokenExpiredException } from '../exceptions/index.js';

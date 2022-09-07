@@ -1,5 +1,5 @@
 import { Accountability, Action, SchemaOverview } from '@directus/shared/types';
-import * as jwt from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 import type { Knex } from 'knex';
 import { clone, cloneDeep } from 'lodash';
 import ms from 'ms';

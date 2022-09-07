@@ -1,10 +1,10 @@
 import { createTerminus, TerminusOptions } from '@godaddy/terminus';
 import type { Request } from 'express';
-import * as http from 'http';
-import * as https from 'https';
+import http from 'http';
+import https from 'https';
 import { once } from 'lodash';
-import * as qs from 'qs';
-import * as url from 'url';
+import qs from 'qs';
+import url from 'url';
 import createApp from './app.js';
 import getDatabase from './database/index.js';
 import env from './env.js';

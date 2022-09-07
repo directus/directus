@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import * as argon2 from 'argon2';
-import * as Joi from 'joi';
+import argon2 from 'argon2';
+import Joi from 'joi';
 import { AuthDriver } from '../auth.js';
 import type { User } from '../../types/index.js';
 import { InvalidCredentialsException, InvalidPayloadException } from '../../exceptions/index.js';

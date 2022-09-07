@@ -1,6 +1,6 @@
-import * as fse from 'fs-extra';
+import fse from 'fs-extra';
 import { merge } from 'lodash';
-import * as path from 'path';
+import path from 'path';
 import formatTitle from '@directus/format-title';
 import type { FieldMeta } from '@directus/shared/types';
 import { getAuthProviders } from '../../../utils/get-auth-providers.js';

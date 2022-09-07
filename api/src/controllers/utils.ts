@@ -1,6 +1,6 @@
-import * as argon2 from 'argon2';
+import argon2 from 'argon2';
 import { Router } from 'express';
-import * as Joi from 'joi';
+import Joi from 'joi';
 import { nanoid } from 'nanoid';
 import {
 	ForbiddenException,
@@ -12,7 +12,7 @@ import collectionExists from '../middleware/collection-exists.js';
 import { respond } from '../middleware/respond.js';
 import { RevisionsService, UtilsService, ImportService, ExportService } from '../services/index.js';
 import asyncHandler from '../utils/async-handler.js';
-import * as Busboy from 'busboy';
+import Busboy from 'busboy';
 import { flushCaches } from '../cache.js';
 import { generateHash } from '../utils/generate-hash.js';
 

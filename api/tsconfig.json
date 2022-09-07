@@ -27,5 +27,6 @@
 	  "outDir": "dist",
 	  "allowSyntheticDefaultImports": true
 	  },
-	  "include": ["src"]
+	  "include": ["src/**/*.ts"],
+	  "exclude": ["src/**/*.test.ts"]
   }

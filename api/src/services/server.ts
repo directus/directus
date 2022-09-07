@@ -1,7 +1,7 @@
 import type { Knex } from 'knex';
 import { merge } from 'lodash';
 import { nanoid } from 'nanoid';
-import * as os from 'os';
+import os from 'os';
 import { performance } from 'perf_hooks';
 import { getCache } from '../cache.js';
 import getDatabase, { hasDatabaseConnection } from '../database/index.js';

@@ -1,7 +1,7 @@
-import * as fse from 'fs-extra';
+import fse from 'fs-extra';
 import type { Knex } from 'knex';
 import { Liquid } from 'liquidjs';
-import * as path from 'path';
+import path from 'path';
 import getDatabase from '../../database/index.js';
 import env from '../../env.js';
 import { InvalidPayloadException } from '../../exceptions/index.js';

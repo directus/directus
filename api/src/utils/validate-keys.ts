@@ -1,7 +1,7 @@
 import type { SchemaOverview } from '@directus/shared/types';
 import { ForbiddenException } from '../exceptions/index.js';
 import type { PrimaryKey } from '../types/index.js';
-import * as validateUUID from 'uuid-validate';
+import validateUUID from 'uuid-validate';
 
 /**
  * Validate keys based on its type

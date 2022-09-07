@@ -2,7 +2,7 @@ import env from '../env.js';
 import logger from '../logger.js';
 import { access } from 'fs-extra';
 import { constants } from 'fs';
-import * as path from 'path';
+import path from 'path';
 import { toArray } from '@directus/shared/utils';
 
 export async function validateStorage(): Promise<void> {

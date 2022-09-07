@@ -1,7 +1,7 @@
 import axios from 'axios';
 import ms from 'ms';
 import { machineId } from 'node-machine-id';
-import * as os from 'os';
+import os from 'os';
 import env from '../env.js';
 import logger from '../logger.js';
 import { toArray } from '@directus/shared/utils';

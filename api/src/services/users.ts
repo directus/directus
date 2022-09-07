@@ -1,4 +1,4 @@
-import * as jwt from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 import type { Knex } from 'knex';
 import { cloneDeep } from 'lodash';
 import getDatabase from '../database/index.js';

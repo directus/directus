@@ -1,4 +1,4 @@
-import * as express from 'express';
+import express from 'express';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { validateBatch } from '../middleware/validate-batch.js';

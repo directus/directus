@@ -8,8 +8,8 @@ import type {
 	DirectusTokenPayload,
 } from '../types/index.js';
 import { ItemsService } from './items.js';
-import * as argon2 from 'argon2';
-import * as jwt from 'jsonwebtoken';
+import argon2 from 'argon2';
+import jwt from 'jsonwebtoken';
 import ms from 'ms';
 import { InvalidCredentialsException, ForbiddenException } from '../exceptions/index.js';
 import env from '../env.js';

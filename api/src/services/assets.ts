@@ -3,10 +3,10 @@ import type { Accountability } from '@directus/shared/types';
 import { Semaphore } from 'async-mutex';
 import type { Knex } from 'knex';
 import { contentType } from 'mime-types';
-import * as hash from 'object-hash';
-import * as path from 'path';
-import * as sharp from 'sharp';
-import * as validateUUID from 'uuid-validate';
+import hash from 'object-hash';
+import path from 'path';
+import sharp from 'sharp';
+import validateUUID from 'uuid-validate';
 import getDatabase from '../database/index.js';
 import env from '../env.js';
 import { ForbiddenException, IllegalAssetTransformation, RangeNotSatisfiableException } from '../exceptions/index.js';
@@ -19,7 +19,7 @@ import type {
 	TransformationParams,
 	TransformationPreset,
 } from '../types/index.js';
-import * as TransformationUtils from '../utils/transformations.js';
+import { maybeExtractFormat, resolvePreset } from '../utils/transformations.js';
 import { AuthorizationService } from './authorization.js';
 
 sharp.concurrency(1);
@@ -111,11 +111,11 @@ export class AssetsService {
 		}
 
 		const type = file.type;
-		const transforms = TransformationUtils.resolvePreset(transformation, file);
+		const transforms = resolvePreset(transformation, file);
 
 		// We can only transform JPEG, PNG, and WebP
 		if (type && transforms.length > 0 && ['image/jpeg', 'image/png', 'image/webp', 'image/tiff'].includes(type)) {
-			const maybeNewFormat = TransformationUtils.maybeExtractFormat(transforms);
+			const maybeNewFormat = maybeExtractFormat(transforms);
 
 			const assetFilename =
 				path.basename(file.filename_disk, path.extname(file.filename_disk)) +

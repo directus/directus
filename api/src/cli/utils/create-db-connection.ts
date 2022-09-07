@@ -1,5 +1,5 @@
 import { knex, Knex } from 'knex';
-import * as path from 'path';
+import path from 'path';
 import { promisify } from 'util';
 
 export type Credentials = {

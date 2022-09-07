@@ -1,5 +1,5 @@
-import * as express from 'express';
-import * as Joi from 'joi';
+import express from 'express';
+import Joi from 'joi';
 import { InvalidCredentialsException, ForbiddenException, InvalidPayloadException } from '../exceptions/index.js';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';

@@ -4,7 +4,7 @@ import { snapshotApplyTestSchema } from '../__utils__/schemas.js';
 
 import { CollectionsService, FieldsService } from '../services/index.js';
 import { applySnapshot } from './apply-snapshot.js';
-import * as getSchema from './get-schema.js';
+import { getSchema } from './get-schema.js';
 import {
 	snapshotBeforeCreateCollection,
 	snapshotCreateCollection,

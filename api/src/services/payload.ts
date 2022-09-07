@@ -2,7 +2,7 @@ import type { Accountability, Query, SchemaOverview } from '@directus/shared/typ
 import { format, parseISO, isValid } from 'date-fns';
 import { parseJSON, toArray } from '@directus/shared/utils';
 import { unflatten } from 'flat';
-import * as Joi from 'joi';
+import Joi from 'joi';
 import type { Knex } from 'knex';
 import { clone, cloneDeep, isNil, isObject, isPlainObject, omit, pick } from 'lodash';
 import { v4 as uuid } from 'uuid';

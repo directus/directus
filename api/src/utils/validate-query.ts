@@ -1,4 +1,4 @@
-import * as Joi from 'joi';
+import Joi from 'joi';
 import { isPlainObject, uniq } from 'lodash';
 import { InvalidQueryException } from '../exceptions/index.js';
 import type { Query } from '@directus/shared/types';

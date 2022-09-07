@@ -1,4 +1,4 @@
-import * as cors from 'cors';
+import cors from 'cors';
 import type { RequestHandler } from 'express';
 import env from '../env.js';
 

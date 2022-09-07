@@ -1,6 +1,6 @@
 import { Accountability, Action } from '@directus/shared/types';
 import { uniq } from 'lodash';
-import * as validateUUID from 'uuid-validate';
+import validateUUID from 'uuid-validate';
 import env from '../env.js';
 import { ForbiddenException } from '../exceptions/forbidden.js';
 import logger from '../logger.js';

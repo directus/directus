@@ -1,4 +1,4 @@
-import * as express from 'express';
+import express from 'express';
 import { ForbiddenException } from '../exceptions/index.js';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';

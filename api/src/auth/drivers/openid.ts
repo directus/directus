@@ -1,8 +1,8 @@
 import { BaseException } from '@directus/shared/exceptions';
 import { parseJSON } from '@directus/shared/utils';
 import { Router } from 'express';
-import * as flatten from 'flat';
-import * as jwt from 'jsonwebtoken';
+import flatten from 'flat';
+import jwt from 'jsonwebtoken';
 import ms from 'ms';
 import { Client, errors, generators, Issuer } from 'openid-client';
 import { getAuthProvider } from '../../auth.js';

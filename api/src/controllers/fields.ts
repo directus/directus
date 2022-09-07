@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import * as Joi from 'joi';
+import Joi from 'joi';
 import { ALIAS_TYPES } from '../constants.js';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions/index.js';
 import validateCollection from '../middleware/collection-exists.js';

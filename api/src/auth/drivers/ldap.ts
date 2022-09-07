@@ -10,10 +10,10 @@ import {
 	InvalidCredentialsError,
 	InsufficientAccessRightsError,
 } from 'ldapjs';
-import * as ldap from 'ldapjs';
+import ldap from 'ldapjs';
 import ms from 'ms';
 import { getIPFromReq } from '../../utils/get-ip-from-req.js';
-import * as Joi from 'joi';
+import Joi from 'joi';
 import { AuthDriver } from '../auth.js';
 import type { AuthDriverOptions, User } from '../../types/index.js';
 import {

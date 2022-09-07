@@ -333,7 +333,7 @@ export class GraphQLService {
 
 		/**
 		 * Construct an object of types for every collection, using the permitted fields per action type
-		 * as it's fields.
+		 it's fields.
 		 */
 		function getTypes(action: 'read' | 'create' | 'update' | 'delete') {
 			const CollectionTypes: Record<string, ObjectTypeComposer> = {};

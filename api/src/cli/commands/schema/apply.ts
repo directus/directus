@@ -1,9 +1,9 @@
 import { parseJSON } from '@directus/shared/utils';
-import * as chalk from 'chalk';
+import chalk from 'chalk';
 import { promises as fs } from 'fs';
-import * as inquirer from 'inquirer';
+import inquirer from 'inquirer';
 import { load as loadYaml } from 'js-yaml';
-import * as path from 'path';
+import path from 'path';
 import { flushCaches } from '../../../cache.js';
 import getDatabase, { isInstalled, validateDatabaseConnection } from '../../../database/index.js';
 import logger from '../../../logger.js';

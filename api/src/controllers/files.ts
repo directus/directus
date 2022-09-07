@@ -1,10 +1,10 @@
 import formatTitle from '@directus/format-title';
 import { toArray } from '@directus/shared/utils';
-import * as Busboy from 'busboy';
-import * as express from 'express';
+import Busboy from 'busboy';
+import express from 'express';
 import type { RequestHandler } from 'express';
-import * as Joi from 'joi';
-import * as path from 'path';
+import Joi from 'joi';
+import path from 'path';
 import env from '../env.js';
 import { ForbiddenException, InvalidPayloadException, UnsupportedMediaTypeException } from '../exceptions/index.js';
 import { respond } from '../middleware/respond.js';

@@ -1,4 +1,4 @@
-import * as express from 'express';
+import express from 'express';
 import { ForbiddenException, RouteNotFoundException } from '../exceptions/index.js';
 import collectionExists from '../middleware/collection-exists.js';
 import { respond } from '../middleware/respond.js';

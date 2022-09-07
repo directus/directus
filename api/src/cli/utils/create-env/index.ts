@@ -1,7 +1,7 @@
-import * as fs from 'fs';
+import fs from 'fs';
 import { Liquid } from 'liquidjs';
 import { nanoid } from 'nanoid';
-import * as path from 'path';
+import path from 'path';
 import { promisify } from 'util';
 import { v4 as uuid } from 'uuid';
 import type { Credentials } from '../create-db-connection.js';

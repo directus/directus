@@ -1,6 +1,6 @@
 import type { Request } from 'express';
-import * as url from 'url';
-import * as hash from 'object-hash';
+import url from 'url';
+import hash from 'object-hash';
 import { pick } from 'lodash';
 
 export function getCacheKey(req: Request): string {
