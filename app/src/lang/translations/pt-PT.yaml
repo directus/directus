@@ -218,7 +218,7 @@ auto_refresh: Atualização Automática
 refresh_interval: Intervalo de atualização
 no_refresh: Não atualizar
 refresh_interval_seconds: Atualizar instantaneamente | A cada segundo | A cada {seconds} segundos
-refresh_interval_minutes: A cada minuto | a cada {minutes} minutos
+refresh_interval_minutes: A cada minuto | A cada {minutes} minutos
 auto_generate: Geração Automatica
 this_will_auto_setup_fields_relations: Isto irá automaticamente configurar todos os campos e relações obrigatórias.
 click_here: Clique aqui
@@ -641,6 +641,7 @@ read: Ler
 update: Atualizar
 delete: Eliminar
 select_fields: Selecione os campos
+run_flow_success: O fluxo "{flow}" foi executado
 flow_name: Nome
 flow_tracking_activity: Apenas rastrear Atividade
 flow_tracking_null: Não rastrear nada
@@ -711,6 +712,7 @@ batch_delete_confirm: >-
   Nenhum item foi selecionado. Tem certeza de que deseja remover este item? Esta ação não pode ser desfeita. Tem certeza que deseja remover estes {count} itens? Esta ação não pode ser desfeita.
 cancel: Cancelar
 collection: Coleção
+content: Conteúdo
 fields:
   directus_activity:
     item: Chave primária
@@ -760,9 +762,11 @@ fields:
     last_access: Último Acesso
   directus_settings:
     project_name: Nome do projeto
+    project_descriptor: Descrição do Projeto
     project_url: URL do projeto
     project_color: Cor do Projeto
     project_logo: Logótipo do projeto
+    default_language: Idioma Padrão
     public_background: Fundo Público
     public_note: Nota Pública
     custom_css: CSS Personalizado
@@ -788,6 +792,8 @@ fields:
     status: Estado
 field_options:
   directus_settings:
+    project_name_placeholder: O meu projeto...
+    public_note_placeholder: Uma mensagem pública e curta que suporta a formatação markdown...
     security_divider_title: Segurança
   directus_activity:
     create: Criar
@@ -837,6 +843,7 @@ description: Descrição
 file_library: Biblioteca de Arquivos
 revisions: Revisões
 save: Guardar
+settings: Configurações
 sign_in: Iniciar Sessão
 sign_out: Sair
 sign_out_confirm: Tem certeza que deseja sair?
@@ -853,6 +860,7 @@ interfaces:
     collection: Coleção
   select-color:
     color: Cor
+    placeholder: Escolha uma cor...
   system-fields:
     select_a_collection: Selecione uma coleção
   system-display-template:
@@ -885,6 +893,7 @@ interfaces:
     label_default: Activo
   translations:
     display_template: Templates de Exibição
+    default_language: Idioma Padrão
   user:
     user: Utilizador
   system-token:
@@ -892,6 +901,7 @@ interfaces:
 displays:
   translations:
     translations: Traduções
+    default_language: Idioma Padrão
   boolean:
     boolean: Boleano
   collection:
@@ -926,6 +936,7 @@ layouts:
     subtitle: Subtítulo
   tabular:
     tabular: Tabela
+    spacing: Espaçamento
 operations:
   log:
     message: Mensagem
