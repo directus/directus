@@ -89,7 +89,7 @@ import { readableMimeType } from '@/utils/readable-mime-type';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
 import FileLightbox from '@/views/private/components/file-lightbox.vue';
 import ImageEditor from '@/views/private/components/image-editor.vue';
-import { computed, ref, toRefs, watch } from 'vue';
+import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const props = withDefaults(
@@ -121,7 +121,7 @@ const cropID = computed({
 });
 
 const cropQuery = ref<RelationQuerySingle>({
-	fields: ['x,y,width,height,file_id.*'],
+	fields: ['x,y,width,height,image_transformations,file_id.*'],
 });
 const { collection, field } = toRefs(props);
 const { relationInfo } = useRelationM2O(collection, field);
@@ -158,6 +158,7 @@ const cropInfoForEditor = computed(() => {
 
 	return {
 		coordinates: coordinates,
+		imageTransformations: cropInfo.value?.image_transformations,
 		collection: collection.value,
 		cropCollection: cropCollection,
 		id: cropID.value || null,
@@ -180,8 +181,11 @@ const src = computed(() => {
 	if (image.value.type.includes('svg')) {
 		return '/assets/' + image.value.id;
 	}
-	if (image.value.type.includes('image') && cropInfoForEditor.value.coordinates) {
-		const url = `/assets/${image.value.id}?cache-buster=${image.value.modified_on}&transforms=[["extract",{"width": ${cropInfo.value.width}, "height": ${cropInfo.value.height}, "left": ${cropInfo.value.x}, "top": ${cropInfo.value.y}}]]`;
+	if (image.value.type.includes('image')) {
+		let url = `/assets/${image.value.id}?cache-buster=${image.value.modified_on}`;
+		if (cropInfo.value.image_transformations) {
+			url = applyImageTransformationsToUrl(url);
+		}
 		return addTokenToURL(url);
 	}
 	if (image.value.type.includes('image')) {
@@ -213,12 +217,36 @@ const meta = computed(() => {
 const editImageDetails = ref(false);
 const editImageEditor = ref(false);
 
+function applyImageTransformationsToUrl(url: string): string {
+	let readyTransformations = [];
+
+	if (cropInfo.value.image_transformations) {
+		if (cropInfo.value.image_transformations.flip) {
+			readyTransformations.push('["flip"]');
+		}
+		if (cropInfo.value.image_transformations.flop) {
+			readyTransformations.push('["flop"]');
+		}
+	}
+
+	const coordinates = cropInfoForEditor.value.coordinates;
+	if (coordinates) {
+		readyTransformations.push(
+			`["extract",{"width": ${coordinates.width}, "height": ${coordinates.height}, "left": ${coordinates.x}, "top": ${coordinates.y}}]`
+		);
+	}
+	if (readyTransformations.length > 0) {
+		url += `&transforms=[${readyTransformations.join(',')}]`;
+	}
+
+	return url;
+}
+
 async function imageErrorHandler() {
 	if (!src.value) return;
 	try {
 		await api.get(src.value);
 	} catch (err: any) {
-		console.log(err.response);
 		imageError.value = err.response?.data?.errors[0]?.extensions?.code;
 
 		if (!imageError.value || !te('errors.' + imageError.value)) {

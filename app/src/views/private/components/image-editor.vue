@@ -106,8 +106,6 @@
 					</v-list>
 				</v-menu>
 
-				<v-checkbox v-if="showReferToOriginalCheckbox" v-model="referToOriginalImage" :label="t('refer_to_original_image')" />
-
 				<div class="spacer" />
 
 				<v-icon v-tooltip.top.inverted="t('reset')" name="restart_alt" clickable @click="reset" />
@@ -136,7 +134,7 @@
 
 <script lang="ts">
 import api, { addTokenToURL } from '@/api';
-import { computed, defineComponent, PropType, nextTick, reactive, ref, watch } from 'vue';
+import { computed, defineComponent, PropType, nextTick, reactive, ref, Ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { useSettingsStore } from '@/stores/settings';
@@ -145,6 +143,7 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import Cropper from 'cropperjs';
 import throttle from 'lodash/throttle';
 import { nanoid } from 'nanoid';
+import { cloneDeep } from 'lodash';
 
 type Image = {
 	type: string;
@@ -160,6 +159,11 @@ type CropInfo = {
 		y: number;
 		width: number;
 		height: number;
+	} | null;
+	imageTransformations: {
+		flip: boolean;
+		flop: boolean;
+		rotate: number | null;
 	} | null;
 	cropCollection: string | null;
 	id: string | number | null;
@@ -180,7 +184,7 @@ export default defineComponent({
 		},
 		cropInfo: {
 			type: Object as PropType<CropInfo>,
-			default: undefined
+			default: undefined,
 		},
 	},
 	emits: ['update:modelValue', 'refresh'],
@@ -190,8 +194,6 @@ export default defineComponent({
 		const settingsStore = useSettingsStore();
 
 		const localActive = ref(false);
-
-		const referToOriginalImage = ref(false);
 
 		const internalActive = computed({
 			get() {
@@ -234,14 +236,43 @@ export default defineComponent({
 
 		const randomId = ref<string>(nanoid());
 
-		const imageURL = computed(() => {
-			return addTokenToURL(`${getRootPath()}assets/${props.id}?${randomId.value}`);
+		const imageTransformations = computed(() => {
+			if (props.cropInfo?.imageTransformations) {
+				return cloneDeep(props.cropInfo?.imageTransformations);
+			} else {
+				return {
+					flip: false,
+					flop: false,
+					rotate: null,
+				};
+			}
 		});
 
-		const showReferToOriginalCheckbox = computed(() => props.cropInfo && !props.cropInfo.coordinates && dragMode.value === 'crop')
+		const coordinates = computed(() => {
+			if (props.cropInfo?.coordinates) {
+				if (imageTransformations.value.flop) {
+					props.cropInfo.coordinates.x =
+						imageData.value?.width - props.cropInfo.coordinates.width - props.cropInfo.coordinates.x;
+				}
+				if (imageTransformations.value.flip) {
+					props.cropInfo.coordinates.y =
+						imageData.value?.height - props.cropInfo.coordinates.height - props.cropInfo.coordinates.y;
+				}
+				return props.cropInfo.coordinates;
+			} else {
+				return undefined;
+			}
+		});
+
+		const imageURL = computed(() => {
+			let url = `${getRootPath()}assets/${props.id}?${randomId.value}`;
+			url = applyImageTransformationsToUrl(url);
+
+			return addTokenToURL(url);
+		});
 
 		// TODO: add original has crops logic
-		const showOriginalHasCropsWarning = computed(() => !props.cropInfo)
+		const showOriginalHasCropsWarning = computed(() => !props.cropInfo);
 
 		const customAspectRatios = settingsStore.settings?.custom_aspect_ratios ?? null;
 
@@ -267,10 +298,27 @@ export default defineComponent({
 			cropping,
 			setAspectRatio,
 			customAspectRatios,
-			referToOriginalImage,
-			showReferToOriginalCheckbox,
-			showOriginalHasCropsWarning
+			showOriginalHasCropsWarning,
 		};
+
+		function applyImageTransformationsToUrl(url: string): string {
+			let readyTransformations = [];
+
+			if (props.cropInfo?.imageTransformations) {
+				if (props.cropInfo?.imageTransformations.flip) {
+					readyTransformations.push('["flip"]');
+				}
+				if (props.cropInfo?.imageTransformations.flop) {
+					readyTransformations.push('["flop"]');
+				}
+			}
+
+			if (readyTransformations.length > 0) {
+				url += `&transforms=[${readyTransformations.join(',')}]`;
+			}
+
+			return url;
+		}
 
 		function useImage() {
 			const loading = ref(false);
@@ -328,27 +376,25 @@ export default defineComponent({
 						try {
 							const cropperData = cropperInstance.value?.getData();
 
-							if (!props.cropInfo) {
-								// Default behaviour: update the directus_files entry, not the crop
-								await api.patch(`/files/${props.id}`, formData);
-							} else {
-								if (!referToOriginalImage.value && !props.cropInfo.coordinates) {
-									await api.patch(`/files/${props.id}`, formData);
-								} else if (cropperData && props.cropInfo.cropCollection && props.cropInfo.id) {
-									const x = Math.round(cropperData.x);
-									const y = Math.round(cropperData.y);
-									const width = Math.round(cropperData.width);
-									const height = Math.round(cropperData.height);
+							if (cropperData && props.cropInfo.cropCollection && props.cropInfo.id) {
+								const coordinates =
+									dragMode.value == 'crop'
+										? {
+												x: imageTransformations.value.flop
+													? imageData.value.width - (Math.round(cropperData.x) + cropperData.width)
+													: Math.round(cropperData.x),
+												y: imageTransformations.value.flip
+													? imageData.value.height - (Math.round(cropperData.y) + cropperData.height)
+													: Math.round(cropperData.y),
+												width: Math.round(cropperData.width),
+												height: Math.round(cropperData.height),
+										  }
+										: {};
 
-									await api.patch(`/items/${props.cropInfo.cropCollection}/${props.cropInfo.id}`, {
-										x: x,
-										y: y,
-										width: width,
-										height: height,
-									});
-
-									await saveFileTransformationsWithoutCropping()
-								}
+								await api.patch(`/items/${props.cropInfo.cropCollection}/${props.cropInfo.id}`, {
+									...coordinates,
+									image_transformations: imageTransformations.value,
+								});
 							}
 
 							emit('refresh');
@@ -365,30 +411,6 @@ export default defineComponent({
 			async function onImageLoad() {
 				await nextTick();
 				initCropper();
-			}
-
-			async function saveFileTransformationsWithoutCropping() {
-				cropperInstance.value?.setData({
-					x: 0,
-					y: 0,
-					width: imageData.value?.width,
-					height: imageData.value?.height,
-				});
-
-				cropperInstance.value
-					?.getCroppedCanvas({
-						imageSmoothingQuality: 'high',
-					})
-					.toBlob(async (blob) => {
-						if (blob === null) {
-							saving.value = false;
-							return;
-						}
-						const formData = new FormData();
-						formData.append('file', blob, imageData.value?.filename_download);
-
-						await api.patch(`/files/${props.id}`, formData);
-					})
 			}
 		}
 
@@ -528,14 +550,14 @@ export default defineComponent({
 
 				cropperInstance.value?.getData();
 
-				if (props.cropInfo && props.cropInfo.coordinates) {
+				if (props.cropInfo && coordinates.value) {
 					setTimeout(() => {
 						cropperInstance.value?.crop();
 						cropperInstance.value?.setData({
-							x: props.cropInfo?.coordinates.x,
-							y: props.cropInfo?.coordinates.y,
-							width: props.cropInfo?.coordinates.width,
-							height: props.cropInfo?.coordinates.height,
+							x: coordinates.value.x,
+							y: coordinates.value.y,
+							width: coordinates.value.width,
+							height: coordinates.value.height,
 						});
 						dragMode.value = 'crop';
 					}, 100);
@@ -549,6 +571,7 @@ export default defineComponent({
 					} else {
 						cropperInstance.value?.scaleX(-1);
 					}
+					imageTransformations.value.flop = !imageTransformations.value.flop;
 				}
 
 				if (type === 'horizontal') {
@@ -557,6 +580,7 @@ export default defineComponent({
 					} else {
 						cropperInstance.value?.scaleY(-1);
 					}
+					imageTransformations.value.flip = !imageTransformations.value.flip;
 				}
 			}
 
@@ -631,11 +655,11 @@ export default defineComponent({
 }
 
 .warnings {
-	width: 2/3; 
-	position: absolute; 
+	width: 2/3;
+	position: absolute;
 	z-index: 9999;
 	margin: 20px 20px 0;
-	
+
 	display: grid;
 	grid-gap: 10px;
 }

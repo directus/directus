@@ -121,6 +121,11 @@ export function setDefaults(updates: StateUpdates, state: State, { getCurrent }:
 			collection: junctionName,
 			field: 'height',
 			type: 'integer',
+		},
+		{
+			collection: junctionName,
+			field: 'image_transformations',
+			type: 'json',
 		}
 	]);
 	set(updates, 'relations.m2o.meta.one_allowed_collections', [currentCollection]);
