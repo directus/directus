@@ -6,6 +6,7 @@
 			:template="displayTemplate"
 			:filter="filter"
 			:value="value"
+			:limit="limit"
 			@input="saveSelection"
 			@select="selectModalOpen = true"
 		/>
@@ -34,6 +35,7 @@
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useInsightsStore } from '@/stores/insights';
+import { unexpectedError } from '@/utils/unexpected-error';
 import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import SingleRelation from './single-relation.vue';
 import MultipleRelation from './multiple-relation.vue';
@@ -44,6 +46,7 @@ interface Props {
 	multiple: boolean;
 	displayTemplate: string;
 	filter: Record<string, any>;
+	limit: number;
 	dashboard: string;
 	showHeader?: boolean;
 }
@@ -68,6 +71,9 @@ const selectModalOpen = ref(false);
 function onSelection(data: (number | string)[]) {
 	if (!Array.isArray(data) || data.length === 0) {
 		value.value = [];
+	} else if (props.multiple && data.length > props.limit) {
+		unexpectedError(new Error('Too many items'));
+		value.value = data.slice(0, props.limit);
 	} else {
 		value.value = data;
 	}

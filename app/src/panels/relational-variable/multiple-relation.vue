@@ -16,21 +16,14 @@
 				<v-list-item v-for="element in displayItems" :key="element[primaryKey]" block :dense="true">
 					<render-template :collection="collection" :item="element" :template="displayTemplate" />
 					<div class="spacer" />
-					<v-icon
-						v-tooltip="t('some tooltip')"
-						class="deselect"
-						:name="getDeselectIcon(element)"
-						@click.stop="deleteItem(element)"
-					/>
+					<v-icon v-tooltip="t('some tooltip')" class="deselect" name="delete" @click.stop="deleteItem(element)" />
 				</v-list-item>
 			</v-list>
 
 			<div class="actions list">
-				<v-button @click="$emit('select')">
+				<v-button v-if="totalItemCount < limit" @click="$emit('select')">
 					{{ t('add_existing') }}
 				</v-button>
-				<div class="spacer" />
-				<v-pagination v-if="pageCount > 1" v-model="page" :length="pageCount" :total-visible="5" />
 			</div>
 		</div>
 	</div>
@@ -41,6 +34,7 @@ import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
+import { unexpectedError } from '@/utils/unexpected-error';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { getEndpoint, getFieldsFromTemplate } from '@directus/shared/utils';
 import { useApi } from '@directus/shared/composables';
@@ -64,7 +58,6 @@ const api = useApi();
 const loading = ref(false);
 const displayItems = ref([]);
 const primaryKey = computed(() => fieldStore.getPrimaryKeyFieldForCollection(props.collection)?.field);
-// watch(displayItems, () => console.log(displayItems.value));
 const totalItemCount = computed(() => displayItems.value.length);
 const displayTemplate = computed(() => {
 	if (props.template) return props.template;
@@ -79,9 +72,6 @@ const requiredFields = computed(() => {
 });
 watch(() => props.value, getDisplayItems, { immediate: true });
 
-function select() {
-	// console.log('selected');
-}
 function deleteItem(elem: Record<string, any>) {
 	emit(
 		'input',
@@ -89,16 +79,6 @@ function deleteItem(elem: Record<string, any>) {
 			.filter((item) => item[primaryKey.value] !== elem[primaryKey.value])
 			.map((item) => item[primaryKey.value])
 	);
-}
-function getDeselectIcon(elem: any) {
-	return 'delete';
-	// console.log('getDeselectIcon', elem);
-}
-function getLinkForItem(elem: any) {
-	return '/test';
-}
-function sortItems(elem: any) {
-	// console.log('sortItems', elem);
 }
 async function getDisplayItems() {
 	if (props.value.length === 0) {
@@ -127,7 +107,7 @@ async function getDisplayItems() {
 
 		displayItems.value = response.data.data;
 	} catch (err: any) {
-		// console.error(err);
+		unexpectedError(err);
 	} finally {
 		loading.value = false;
 	}
