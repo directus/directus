@@ -8,7 +8,7 @@
 				<v-skeleton-loader
 					v-for="n in clamp(totalItemCount - (page - 1) * limit, 1, limit)"
 					:key="n"
-					:type="totalItemCount > 4 ? 'block-list-item-dense' : 'block-list-item'"
+					type="block-list-item-dense"
 				/>
 			</template>
 
@@ -23,31 +23,13 @@
 					item-key="id"
 					handle=".drag-handle"
 					:disabled="!allowDrag"
-					@update:model-value="sortItems($event)"
 				>
 					<template #item="{ element }">
-						<v-list-item
-							block
-							:dense="totalItemCount > 4"
-							:disabled="disabled"
-							:class="{ deleted: element.$type === 'deleted' }"
-						>
-							<v-icon v-if="allowDrag" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
-							<render-template :collection="collection" :item="element" :template="templateWithDefaults" />
+						<v-list-item block :dense="true">
+							<!-- <v-icon v-if="allowDrag" name="drag_handle" class="drag-handle" left @click.stop="() => {}" /> -->
+							<render-template :collection="collection" :item="element" :template="displayTemplate" />
 							<div class="spacer" />
-
-							<router-link
-								v-if="enableLink"
-								v-tooltip="t('navigate_to_item')"
-								:to="getLinkForItem(element)"
-								class="item-link"
-								:class="{ disabled: element.$type === 'created' }"
-								@click.stop
-							>
-								<v-icon name="launch" />
-							</router-link>
 							<v-icon
-								v-if="!disabled"
 								v-tooltip="t('some tooltip')"
 								class="deselect"
 								:name="getDeselectIcon(element)"
@@ -59,52 +41,66 @@
 			</v-list>
 
 			<div class="actions list">
-				<v-button :disabled="disabled" @click="selectModalActive = true">
+				<v-button @click="$emit('select')">
 					{{ t('add_existing') }}
 				</v-button>
 				<div class="spacer" />
 				<v-pagination v-if="pageCount > 1" v-model="page" :length="pageCount" :total-visible="5" />
 			</div>
 		</div>
-
-		<drawer-collection
-			v-if="!disabled"
-			v-model:active="selectModalActive"
-			:collection="collection"
-			:filter="filter"
-			multiple
-			@input="select"
-		/>
 	</div>
 </template>
 
 <script setup lang="ts">
 import { clamp } from 'lodash';
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import Draggable from 'vuedraggable';
+import { useCollectionsStore } from '@/stores/collections';
+import { useFieldsStore } from '@/stores/fields';
+import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
+import { getEndpoint, getFieldsFromTemplate } from '@directus/shared/utils';
+import { useApi } from '@directus/shared/composables';
 
 interface Props {
-	item: (string | number)[];
+	value: (string | number)[];
 	collection: string;
 	template: string;
 	filter: Record<string, any>;
+	limit: number;
 }
-const props = withDefaults(defineProps<Props>(), {});
-const emit = defineEmits(['input']);
+const props = withDefaults(defineProps<Props>(), {
+	limit: 5,
+});
+const emit = defineEmits(['input', 'select']);
+
+const collectionsStore = useCollectionsStore();
+const fieldStore = useFieldsStore();
 
 const { t } = useI18n();
+const api = useApi();
 
 const loading = ref(false);
-const disabled = ref(false);
-const selectModalActive = ref(false);
 const pageCount = ref(1);
 const page = ref(1);
 const limit = ref(10);
 const displayItems = ref([]);
+// watch(displayItems, () => console.log(displayItems.value));
 const totalItemCount = computed(() => displayItems.value.length);
 const allowDrag = ref(true);
-const enableLink = ref(false);
 const templateWithDefaults = ref('{{ id }}');
+const displayTemplate = computed(() => {
+	// if (props.template) return props.template;
+
+	const pkField = fieldStore.getPrimaryKeyFieldForCollection(props.collection);
+
+	return false /*props.template*/ || `{{ ${pkField?.field || 'id'} }}`;
+});
+const requiredFields = computed(() => {
+	if (!displayTemplate.value || !props.collection) return [];
+	return adjustFieldsForDisplays(getFieldsFromTemplate(displayTemplate.value), props.collection);
+});
+watch(() => props.value, getDisplayItems, { immediate: true });
 
 function select() {
 	// console.log('selected');
@@ -113,6 +109,7 @@ function deleteItem(elem: any) {
 	// console.log('deleteItem', elem);
 }
 function getDeselectIcon(elem: any) {
+	return 'delete';
 	// console.log('getDeselectIcon', elem);
 }
 function getLinkForItem(elem: any) {
@@ -120,6 +117,38 @@ function getLinkForItem(elem: any) {
 }
 function sortItems(elem: any) {
 	// console.log('sortItems', elem);
+}
+async function getDisplayItems() {
+	if (props.value.length === 0) {
+		displayItems.value = [];
+		return;
+	}
+
+	const pkField = fieldStore.getPrimaryKeyFieldForCollection(props.collection);
+	const sortField = collectionsStore.getCollection(props.collection)?.meta?.sort_field;
+	if (!props.collection || !pkField) return;
+
+	const fields = new Set(requiredFields.value);
+	fields.add(pkField.field);
+
+	if (sortField) fields.add(sortField);
+
+	try {
+		loading.value = true;
+
+		const response = await api.get(getEndpoint(props.collection), {
+			params: {
+				fields: Array.from(fields),
+				filter: { [pkField.field]: { _in: props.value } },
+			},
+		});
+
+		displayItems.value = response.data.data;
+	} catch (err: any) {
+		// console.error(err);
+	} finally {
+		loading.value = false;
+	}
 }
 </script>
 

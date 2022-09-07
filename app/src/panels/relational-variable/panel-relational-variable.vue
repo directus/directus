@@ -5,24 +5,36 @@
 			:collection="collection"
 			:template="displayTemplate"
 			:filter="filter"
-			:items="value"
+			:value="value"
 			@input="saveSelection"
+			@select="selectModalOpen = true"
 		/>
 		<single-relation
 			v-else
 			:collection="collection"
 			:template="displayTemplate"
 			:filter="filter"
-			:item="value"
+			:value="value"
 			@input="saveSelection"
+			@select="selectModalOpen = true"
+		/>
+
+		<drawer-collection
+			:active="selectModalOpen"
+			:collection="collection"
+			:filter="filter"
+			:multiple="multiple"
+			@input="onSelection"
+			@update:active="selectModalOpen = false"
 		/>
 	</div>
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, watch } from 'vue';
-import { useInsightsStore } from '@/stores/insights';
+import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useInsightsStore } from '@/stores/insights';
+import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import SingleRelation from './single-relation.vue';
 import MultipleRelation from './multiple-relation.vue';
 
@@ -36,27 +48,30 @@ interface Props {
 	showHeader?: boolean;
 }
 const { t } = useI18n();
-
 const props = withDefaults(defineProps<Props>(), {});
-
 const emit = defineEmits(['input']);
-
 const insightsStore = useInsightsStore();
-
 const value = computed({
 	get() {
-		//console.log('aha', insightsStore.getVariable(props.field));
 		return insightsStore.getVariable(props.field) || [];
 	},
 	set(val: any) {
-		//console.log('save', val);
 		insightsStore.setVariable(props.field, val);
 	},
 });
-
 function saveSelection(data: any) {
 	// console.log('save', props.field, data);
 	value.value = data;
+}
+
+const selectModalOpen = ref(false);
+function onSelection(data: (number | string)[]) {
+	if (!data || data.length === 0) {
+		value.value = [];
+	} else {
+		value.value = data;
+	}
+	selectModalOpen.value = false;
 }
 </script>
 
