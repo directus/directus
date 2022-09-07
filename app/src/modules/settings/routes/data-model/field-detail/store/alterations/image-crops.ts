@@ -68,7 +68,7 @@ export function prepareRelation(updates: StateUpdates, state: State) {
 		field: undefined,
 		related_collection: 'directus_files',
 		meta: {
-			one_field: updates.field?.field ?? state.field.field,
+			one_field: updates.field?.field ?? getAutomaticJunctionCollectionName(),
 			sort_field: null,
 			one_deselect_action: 'nullify',
 		},
@@ -129,7 +129,7 @@ export function setDefaults(updates: StateUpdates, state: State, { getCurrent }:
 	// Create a M2O relation between the collections and junction table
 	set(state, 'createFieldOnCurrentCollection', false);
 	set(updates, 'relations.m2o.meta.link_one_allowed_collections_back', true);
-	set(updates, 'relations.m2o.meta.one_allowed_collections_relation_field', state.field.name);
+	set(updates, 'relations.m2o.meta.one_allowed_collections_relation_field', junctionName);
 }
 
 export function autoGenerateJunctionCollectionName(updates: StateUpdates, { getCurrent }: HelperFunctions) {
@@ -206,8 +206,6 @@ export function generateCollections(updates: StateUpdates, state: State, { getCu
 }
 
 function generateFields(updates: StateUpdates, state: State, { getCurrent }: HelperFunctions) {
-	const fieldsStore = useFieldsStore();
-	const currentPrimaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(state.collection!);
 	const junctionCollection = getCurrent('relations.o2m.collection');
 	const junctionCurrent = getCurrent('relations.o2m.field');
 	const junctionRelated = getCurrent('relations.m2o.field');
@@ -218,7 +216,7 @@ function generateFields(updates: StateUpdates, state: State, { getCurrent }: Hel
 		set(updates, 'fields.junctionCurrent', {
 			collection: junctionCollection,
 			field: junctionCurrent,
-			type: currentPrimaryKeyField?.type ?? 'integer',
+			type: 'uuid',
 			schema: {},
 			meta: {
 				hidden: true,
@@ -263,7 +261,7 @@ function generateFields(updates: StateUpdates, state: State, { getCurrent }: Hel
 		set(updates, 'fields.sort', {
 			collection: junctionCollection,
 			field: sort,
-			type: 'integer',
+			type: 'uuid',
 			schema: {},
 			meta: {
 				hidden: true,
