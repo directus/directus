@@ -69,15 +69,22 @@ function saveSelection(data: any) {
 
 const selectModalOpen = ref(false);
 function onSelection(data: (number | string)[]) {
+	selectModalOpen.value = false;
 	if (!Array.isArray(data) || data.length === 0) {
 		value.value = [];
-	} else if (props.multiple && data.length > props.limit) {
-		unexpectedError(new Error('Too many items'));
-		value.value = data.slice(0, props.limit);
-	} else {
-		value.value = data;
+		return;
 	}
-	selectModalOpen.value = false;
+	if (props.multiple) {
+		const items = value.value.slice().concat(data);
+		if (items.length > props.limit) {
+			unexpectedError(new Error('More items selected than the allowed limit'));
+			value.value = items.slice(0, props.limit);
+		} else {
+			value.value = items;
+		}
+		return;
+	}
+	value.value = data;
 }
 </script>
 

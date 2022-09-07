@@ -24,6 +24,9 @@
 				<v-button v-if="totalItemCount < limit" @click="$emit('select')">
 					{{ t('add_existing') }}
 				</v-button>
+				<v-button v-if="totalItemCount > 0" @click="$emit('input', [])">
+					{{ t('clear_items') }}
+				</v-button>
 			</div>
 		</div>
 	</div>
