@@ -510,6 +510,7 @@ something_went_wrong: 問題が発生しました
 sort_direction: ソート順
 translation: 翻訳
 value: 値
+table: テーブル
 interfaces:
   filter:
     all: すべて

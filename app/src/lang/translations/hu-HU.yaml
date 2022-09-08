@@ -688,6 +688,7 @@ trigger: Eseményindító
 flow_name: Név
 flow_tracking_activity: Csak a tevékenység nyomon követése
 flow_tracking_null: Minden nyomkövetés tiltása
+code: Kód
 dashboard: Irányítópult
 panel: Panel
 panel_options: Panel beállításai
@@ -1189,6 +1190,8 @@ value: Érték
 view_project: Projekt megtekintése
 report_error: Hiba jelentése
 start: Start
+table: Táblázat
+list: Lista
 interfaces:
   filter:
     name: Szűrő
@@ -1260,6 +1263,8 @@ interfaces:
     include_seconds: Beleértve a másodperceket
     set_to_now: Mai nap
     use_24: 24 órás formátum használata
+  system-fields:
+    select_a_collection: Gyűjtemény kiválasztása
   system-display-template:
     display-template: Megjelenítési sablon
     description: Statikus szöveg és dinamikus mezőértékek keverése

@@ -36,82 +36,65 @@
 	</li>
 </template>
 
-<script lang="ts">
-import { defineComponent, computed } from 'vue';
-import { useGroupable } from '@/composables/use-groupable';
+<script setup lang="ts">
+import { computed } from 'vue';
+import { useGroupable } from '@directus/shared/composables';
 
-export default defineComponent({
-	props: {
-		multiple: {
-			type: Boolean,
-			default: true,
-		},
-		to: {
-			type: String,
-			default: '',
-		},
-		active: {
-			type: Boolean,
-			default: undefined,
-		},
-		exact: {
-			type: Boolean,
-			default: false,
-		},
-		query: {
-			type: Boolean,
-			default: false,
-		},
-		disabled: {
-			type: Boolean,
-			default: false,
-		},
-		clickable: {
-			type: Boolean,
-			default: false,
-		},
-		scope: {
-			type: String,
-			default: 'v-list',
-		},
-		value: {
-			type: [String, Number],
-			default: undefined,
-		},
-		dense: {
-			type: Boolean,
-			default: false,
-		},
-		open: {
-			type: Boolean,
-			default: false,
-		},
-		arrowPlacement: {
-			type: [String, Boolean],
-			default: 'after',
-			validator: (val: string | boolean) => ['before', 'after', false].includes(val),
-		},
-	},
-	emits: ['click'],
-	setup(props, { emit }) {
-		const { active, toggle } = useGroupable({
-			group: props.scope,
-			value: props.value,
-		});
+interface Props {
+	/** If enabled, multiple elements can be selected */
+	multiple?: boolean;
+	/** To what route the item should link to */
+	to?: string;
+	/** Renders an active state if the route matches exactly */
+	exact?: boolean;
+	/** Renders an active state it the route matches the query  */
+	query?: boolean;
+	/** Disables the group */
+	disabled?: boolean;
+	/** If the group itself should be selectable */
+	clickable?: boolean;
+	/** Only matches to a group when both scopes are the same */
+	scope?: string;
+	/** Which value to represent when active */
+	value?: number | string;
+	/** Renders the group densely */
+	dense?: boolean;
+	/** Overrides the internal open state */
+	open?: boolean;
+	/** Where the visual arrow should be placed */
+	arrowPlacement?: 'before' | 'after' | false;
+}
 
-		const groupActive = computed(() => active.value || props.open);
-
-		return { groupActive, toggle, onClick };
-
-		function onClick(event: MouseEvent) {
-			if (props.to) return null;
-			if (props.clickable) return emit('click', event);
-
-			event.stopPropagation();
-			toggle();
-		}
-	},
+const props = withDefaults(defineProps<Props>(), {
+	multiple: true,
+	to: '',
+	exact: false,
+	query: false,
+	disabled: false,
+	clickable: false,
+	scope: 'v-list',
+	value: undefined,
+	dense: false,
+	open: false,
+	arrowPlacement: 'after',
 });
+
+const emit = defineEmits(['click']);
+
+const { active, toggle } = useGroupable({
+	group: props.scope,
+	value: props.value,
+});
+
+const groupActive = computed(() => active.value || props.open);
+
+function onClick(event: MouseEvent) {
+	if (props.to) return null;
+	if (props.clickable) return emit('click', event);
+
+	event.stopPropagation();
+	toggle();
+}
 </script>
 
 <style lang="scss" scoped>

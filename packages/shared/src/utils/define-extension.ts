@@ -10,11 +10,11 @@ import {
 	OperationApiConfig,
 } from '../types';
 
-export function defineInterface(config: InterfaceConfig): InterfaceConfig {
+export function defineInterface<T extends InterfaceConfig>(config: T): T {
 	return config;
 }
 
-export function defineDisplay(config: DisplayConfig): DisplayConfig {
+export function defineDisplay<T extends DisplayConfig>(config: T): T {
 	return config;
 }
 
@@ -24,23 +24,23 @@ export function defineLayout<Options = any, Query = any>(
 	return config;
 }
 
-export function defineModule(config: ModuleConfig): ModuleConfig {
+export function defineModule<T extends ModuleConfig>(config: T): T {
 	return config;
 }
 
-export function definePanel(config: PanelConfig): PanelConfig {
+export function definePanel<T extends PanelConfig>(config: T): T {
 	return config;
 }
 
-export function defineHook(config: HookConfig): HookConfig {
+export function defineHook<T extends HookConfig>(config: T): T {
 	return config;
 }
 
-export function defineEndpoint(config: EndpointConfig): EndpointConfig {
+export function defineEndpoint<T extends EndpointConfig>(config: T): T {
 	return config;
 }
 
-export function defineOperationApp(config: OperationAppConfig): OperationAppConfig {
+export function defineOperationApp<T extends OperationAppConfig>(config: T): T {
 	return config;
 }
 
