@@ -23,6 +23,7 @@
 		<drawer-collection
 			:active="selectModalOpen"
 			:collection="collection"
+			:selection="value"
 			:filter="filter"
 			:multiple="multiple"
 			@input="onSelection"
