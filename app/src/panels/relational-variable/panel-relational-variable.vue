@@ -1,7 +1,11 @@
 <template>
 	<div class="relational-variable" :class="{ 'show-header': showHeader }">
+		<v-notice v-if="!collection" type="warning">
+			{{ t('collection_field_not_setup') }}
+		</v-notice>
+
 		<multiple-relation
-			v-if="multiple"
+			v-else-if="multiple"
 			:collection="collection"
 			:template="displayTemplate"
 			:filter="filter"

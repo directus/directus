@@ -1,33 +1,28 @@
 <template>
-	<v-notice v-if="!true" type="warning">
-		{{ t('relationship_not_setup') }}
-	</v-notice>
-	<div v-else class="one-to-many">
-		<div>
-			<template v-if="loading">
-				<v-skeleton-loader v-for="n in limit" :key="n" type="block-list-item-dense" />
-			</template>
+	<div class="one-to-many">
+		<template v-if="loading">
+			<v-skeleton-loader v-for="n in limit" :key="n" type="block-list-item-dense" />
+		</template>
 
-			<v-notice v-else-if="displayItems.length === 0">
-				{{ t('no_items') }}
-			</v-notice>
+		<v-notice v-else-if="displayItems.length === 0">
+			{{ t('no_items') }}
+		</v-notice>
 
-			<v-list v-else>
-				<v-list-item v-for="element in displayItems" :key="element[primaryKey]" block :dense="displayItems.length > 4">
-					<render-template :collection="collection" :item="element" :template="displayTemplate" />
-					<div class="spacer" />
-					<v-icon v-tooltip="t('some tooltip')" class="deselect" name="delete" @click.stop="deleteItem(element)" />
-				</v-list-item>
-			</v-list>
+		<v-list v-else>
+			<v-list-item v-for="element in displayItems" :key="element[primaryKey]" block :dense="displayItems.length > 4">
+				<render-template :collection="collection" :item="element" :template="displayTemplate" />
+				<div class="spacer" />
+				<v-icon v-tooltip="t('some tooltip')" class="deselect" name="delete" @click.stop="deleteItem(element)" />
+			</v-list-item>
+		</v-list>
 
-			<div class="actions list">
-				<v-button v-if="totalItemCount < limit" @click="$emit('select')">
-					{{ t('add_existing') }}
-				</v-button>
-				<v-button v-if="totalItemCount > 0" @click="$emit('input', undefined)">
-					{{ t('clear_items') }}
-				</v-button>
-			</div>
+		<div class="actions list">
+			<v-button v-if="totalItemCount < limit" @click="$emit('select')">
+				{{ t('add_existing') }}
+			</v-button>
+			<v-button v-if="totalItemCount > 0" @click="$emit('input', undefined)">
+				{{ t('clear_items') }}
+			</v-button>
 		</div>
 	</div>
 </template>

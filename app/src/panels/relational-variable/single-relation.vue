@@ -1,10 +1,4 @@
 <template>
-	<!-- <v-notice v-else-if="!displayTemplate" type="warning">
-			{{ t('display_template_not_setup') }}
-		</v-notice>
-		<v-notice v-else-if="!displayItem">
-			{{ t('no_items') }}
-		</v-notice> -->
 	<div class="many-to-one">
 		<v-skeleton-loader v-if="loading" type="input" />
 		<v-input v-else clickable :placeholder="t('select_an_item')" @click="$emit('select')">
