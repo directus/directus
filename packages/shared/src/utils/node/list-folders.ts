@@ -1,5 +1,5 @@
-import * as path from 'path';
-import * as fse from 'fs-extra';
+import path from 'path';
+import fse from 'fs-extra';
 
 export async function listFolders(location: string): Promise<string[]> {
 	const fullPath = path.resolve(location);

@@ -1,32 +1,36 @@
 import type { Knex } from 'knex';
-import type { SchemaInspector } from './types/schema.js';
+import type { SchemaInspectorConstructor } from './types/schema-inspector';
 
-interface SchemaInspectorConstructor {
-	new (knex: Knex): SchemaInspector;
-}
+import MySQLSchemaInspector from './dialects/mysql.js';
+import PostgresSchemaInspector from './dialects/postgres.js';
+import CockroachDBSchemaInspector from './dialects/cockroachdb.js';
+import SqliteSchemaInspector from './dialects/sqlite.js';
+import OracleDBSchemaInspector from './dialects/oracledb.js';
+import MSSQLSchemaInspector from './dialects/mssql.js';
 
-export default function Schema(knex: Knex): SchemaInspector {
+export function SchemaInspector(knex: Knex) {
 	let constructor: SchemaInspectorConstructor;
 
 	switch (knex.client.constructor.name) {
 		case 'Client_MySQL':
-			constructor = require('./dialects/mysql').default;
+		case 'Client_MySQL2':
+			constructor = MySQLSchemaInspector;
 			break;
 		case 'Client_PG':
-			constructor = require('./dialects/postgres').default;
+			constructor = PostgresSchemaInspector;
 			break;
 		case 'Client_CockroachDB':
-			constructor = require('./dialects/cockroachdb').default;
+			constructor = CockroachDBSchemaInspector;
 			break;
 		case 'Client_SQLite3':
-			constructor = require('./dialects/sqlite').default;
+			constructor = SqliteSchemaInspector;
 			break;
 		case 'Client_Oracledb':
 		case 'Client_Oracle':
-			constructor = require('./dialects/oracledb').default;
+			constructor = OracleDBSchemaInspector;
 			break;
 		case 'Client_MSSQL':
-			constructor = require('./dialects/mssql').default;
+			constructor = MSSQLSchemaInspector;
 			break;
 
 		default:
@@ -35,3 +39,5 @@ export default function Schema(knex: Knex): SchemaInspector {
 
 	return new constructor(knex);
 }
+
+export default SchemaInspector;

@@ -6,7 +6,7 @@
  */
 import { expect, vi, describe, beforeAll, afterEach, it } from 'vitest';
 
-import * as fse from 'fs-extra';
+import fse from 'fs-extra';
 
 const fsem: typeof fse & {
 	throwErrors(handler: () => Promise<any>, map: Record<string, Error>): () => Promise<void>;

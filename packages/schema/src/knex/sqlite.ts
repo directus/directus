@@ -4,8 +4,8 @@ import type { Column } from '../types/column';
 import type { ForeignKey } from '../types/foreign-key';
 import type { SchemaInspector } from '../types/schema-inspector';
 import type { Table } from '../types/table';
-import extractMaxLength from '../utils/extract-max-length';
-import extractType from '../utils/extract-type';
+import extractMaxLength from '../utils/extract-max-length.js';
+import extractType from '../utils/extract-type.js';
 import { stripQuotes } from '../utils/strip-quotes.js';
 
 type RawColumn = {

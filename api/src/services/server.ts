@@ -15,9 +15,9 @@ import { toArray } from '@directus/shared/utils';
 import getMailer from '../mailer.js';
 import { SettingsService } from './settings.js';
 import { getOSInfo } from '../utils/get-os-info.js';
-import { readFileSync } from 'node:fs';
+import { importFile } from '../utils/importFile.js';
 
-const version = JSON.parse(readFileSync('../../package.json', 'utf8')).version;
+const version = JSON.parse(importFile('../package.json')).version;
 
 export class ServerService {
 	knex: Knex;

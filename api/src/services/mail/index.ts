@@ -11,6 +11,10 @@ import type { Accountability, SchemaOverview } from '@directus/shared/types';
 import getMailer from '../../mailer.js';
 import type { Transporter, SendMailOptions } from 'nodemailer';
 import { Url } from '../../utils/url.js';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const liquidEngine = new Liquid({
 	root: [path.resolve(env['EXTENSIONS_PATH'], 'templates'), path.resolve(__dirname, 'templates')],

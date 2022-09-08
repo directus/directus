@@ -1,5 +1,6 @@
 import SchemaInspector from '@directus/schema';
-import { knex, Knex } from 'knex';
+import type { Knex } from 'knex';
+import knex from 'knex';
 import { performance } from 'perf_hooks';
 import env from '../env.js';
 import logger from '../logger.js';
@@ -10,6 +11,7 @@ import path from 'path';
 import { merge } from 'lodash-es';
 import { promisify } from 'util';
 import { getHelpers } from './helpers/index.js';
+import { fileURLToPath } from 'url';
 
 let database: Knex | null = null;
 let inspector: ReturnType<typeof SchemaInspector> | null = null;
@@ -216,6 +218,9 @@ export async function isInstalled(): Promise<boolean> {
 
 export async function validateMigrations(): Promise<boolean> {
 	const database = getDatabase();
+
+	const __filename = fileURLToPath(import.meta.url);
+	const __dirname = path.dirname(__filename);
 
 	try {
 		let migrationFiles = await fse.readdir(path.join(__dirname, 'migrations'));

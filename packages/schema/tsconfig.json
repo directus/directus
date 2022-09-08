@@ -24,7 +24,8 @@
     "declaration": true,
     "noUnusedParameters": true,
     "importsNotUsedAsValues": "error",
-    "checkJs": true
+    "checkJs": true,
+    "outDir": "dist"
 	},
 	"include": ["src"]
 }

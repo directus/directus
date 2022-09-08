@@ -5,6 +5,7 @@ import { getConfigFromEnv } from './utils/get-config-from-env.js';
 import { URL } from 'url';
 import env from './env.js';
 import { toArray } from '@directus/shared/utils';
+import pinoColada from 'pino-colada';
 
 const pinoOptions: LoggerOptions = {
 	level: env['LOG_LEVEL'] || 'info',
@@ -16,7 +17,7 @@ const pinoOptions: LoggerOptions = {
 
 if (env['LOG_STYLE'] !== 'raw') {
 	pinoOptions.prettyPrint = true;
-	pinoOptions.prettifier = require('pino-colada');
+	pinoOptions.prettifier = pinoColada;
 }
 
 const loggerEnvConfig = getConfigFromEnv('LOGGER_', 'LOGGER_HTTP');

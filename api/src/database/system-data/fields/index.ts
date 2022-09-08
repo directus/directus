@@ -5,8 +5,12 @@ import formatTitle from '@directus/format-title';
 import type { FieldMeta } from '@directus/shared/types';
 import { getAuthProviders } from '../../../utils/get-auth-providers.js';
 import { requireYAML } from '../../../utils/require-yaml.js';
+import { fileURLToPath } from 'url';
 
-const defaults = requireYAML(require.resolve('./_defaults.yaml'));
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const defaults = requireYAML(path.join(__dirname, './_defaults.yaml'));
 const fieldData = fse.readdirSync(path.resolve(__dirname));
 
 export const systemFieldRows: FieldMeta[] = [];

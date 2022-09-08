@@ -1,5 +1,5 @@
-import * as path from 'path';
-import * as fse from 'fs-extra';
+import path from 'path';
+import fse from 'fs-extra';
 import type {
 	ExtensionLocal,
 	ExtensionManifestRaw,
@@ -135,8 +135,8 @@ export async function getLocalExtensions(root: string, types: readonly Extension
 					});
 				}
 			}
-		} catch {
-			throw new Error(`Extension folder "${typePath}" couldn't be opened`);
+		} catch (error) {
+			throw new Error(`Extension folder "${typePath}" couldn't be opened ${error}`);
 		}
 	}
 

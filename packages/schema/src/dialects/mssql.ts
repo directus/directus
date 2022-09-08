@@ -1,4 +1,4 @@
-import KnexMSSQL, { parseDefaultValue } from '../lib/dialects/mssql';
+import KnexMSSQL, { parseDefaultValue } from '../knex/mssql.js';
 import type { SchemaOverview } from '../types/overview.js';
 import type { SchemaInspector } from '../types/schema.js';
 

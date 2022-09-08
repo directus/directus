@@ -67,6 +67,7 @@ import { registerAuthProviders } from './auth.js';
 import { Url } from './utils/url.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
 import { merge } from 'lodash-es';
+import { createRequire } from 'module';
 
 export default async function createApp(): Promise<express.Application> {
 	validateEnv(['KEY', 'SECRET']);
@@ -185,6 +186,8 @@ export default async function createApp(): Promise<express.Application> {
 	});
 
 	if (env['SERVE_APP']) {
+		const require = createRequire(import.meta.url);
+
 		const adminPath = require.resolve('@directus/app', require.main ? { paths: [require.main.filename] } : undefined);
 		const adminUrl = new Url(env['PUBLIC_URL']).addPath('admin');
 

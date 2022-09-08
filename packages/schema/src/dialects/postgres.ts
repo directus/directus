@@ -1,5 +1,5 @@
-import KnexPostgres, { parseDefaultValue } from '../lib/dialects/postgres';
-import type { Column } from '../lib/types/column';
+import KnexPostgres, { parseDefaultValue } from '../knex/postgres.js';
+import type { Column } from '../types/column.js';
 import type { SchemaOverview } from '../types/overview.js';
 import type { SchemaInspector } from '../types/schema.js';
 

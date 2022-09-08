@@ -5,9 +5,9 @@ import type { Snapshot, SnapshotField, SnapshotRelation } from '../types/index.j
 import type { Knex } from 'knex';
 import { omit, sortBy, toPairs, fromPairs, mapValues, isPlainObject, isArray } from 'lodash-es';
 import type { SchemaOverview } from '@directus/shared/types';
-import { readFileSync } from 'node:fs';
+import { importFile } from './importFile.js';
 
-const version = JSON.parse(readFileSync('../../package.json', 'utf8')).version;
+const version = JSON.parse(importFile('../package.json')).version;
 
 export async function getSnapshot(options?: { database?: Knex; schema?: SchemaOverview }): Promise<Snapshot> {
 	const database = options?.database ?? getDatabase();

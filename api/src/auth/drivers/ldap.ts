@@ -1,14 +1,11 @@
 import { Router } from 'express';
-import {
+import type {
 	Client,
 	Error,
-	EqualityFilter,
 	SearchCallbackResponse,
 	SearchEntry,
 	LDAPResult,
-	InappropriateAuthenticationError,
-	InvalidCredentialsError,
-	InsufficientAccessRightsError,
+	EqualityFilter as EqualityFilterType,
 } from 'ldapjs';
 import ldap from 'ldapjs';
 import ms from 'ms';
@@ -30,6 +27,9 @@ import asyncHandler from '../../utils/async-handler.js';
 import env from '../../env.js';
 import { respond } from '../../middleware/respond.js';
 import logger from '../../logger.js';
+
+const { InappropriateAuthenticationError, InvalidCredentialsError, InsufficientAccessRightsError, EqualityFilter } =
+	ldap;
 
 interface UserInfo {
 	dn: string;
@@ -121,7 +121,7 @@ export class LDAPAuthDriver extends AuthDriver {
 
 	private async fetchUserInfo(
 		baseDn: string,
-		filter?: EqualityFilter,
+		filter?: EqualityFilterType,
 		scope?: SearchScope
 	): Promise<UserInfo | undefined> {
 		let { firstNameAttribute, lastNameAttribute, mailAttribute } = this.config;
@@ -169,7 +169,7 @@ export class LDAPAuthDriver extends AuthDriver {
 		});
 	}
 
-	private async fetchUserGroups(baseDn: string, filter?: EqualityFilter, scope?: SearchScope): Promise<string[]> {
+	private async fetchUserGroups(baseDn: string, filter?: EqualityFilterType, scope?: SearchScope): Promise<string[]> {
 		return new Promise((resolve, reject) => {
 			let userGroups: string[] = [];
 

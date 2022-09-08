@@ -677,21 +677,21 @@ importers:
       '@google-cloud/storage': ^5.8.5
       '@lukeed/uuid': 2.0.0
       '@types/fs-extra': 9.0.13
-      '@types/lodash': ^4.14.182
+      '@types/lodash-es': 4.17.6
       '@types/node': 16.11.9
       dotenv: 10.0.0
-      lodash: 4.17.21
+      lodash-es: ^4.17.21
       npm-run-all: 4.1.5
       typescript: 4.8.2
       vitest: ^0.18.1
     dependencies:
       '@directus/drive': link:../drive
       '@google-cloud/storage': 5.20.5
-      lodash: 4.17.21
+      '@types/lodash-es': 4.17.6
+      lodash-es: 4.17.21
     devDependencies:
       '@lukeed/uuid': 2.0.0
       '@types/fs-extra': 9.0.13
-      '@types/lodash': 4.14.182
       '@types/node': 16.11.9
       dotenv: 10.0.0
       npm-run-all: 4.1.5
@@ -770,16 +770,20 @@ importers:
 
   packages/schema:
     specifiers:
+      '@types/lodash-es': 4.17.6
       knex: 2.2.0
       knex-schema-inspector: 2.0.4
       lodash: ^4.17.21
+      lodash-es: ^4.17.21
       npm-watch: 0.11.0
       typescript: 4.8.2
     dependencies:
       knex: 2.2.0
       knex-schema-inspector: 2.0.4
       lodash: 4.17.21
+      lodash-es: 4.17.21
     devDependencies:
+      '@types/lodash-es': 4.17.6
       npm-watch: 0.11.0
       typescript: 4.8.2
 
@@ -7086,22 +7090,15 @@ packages:
       { integrity: sha512-R+zTeVUKDdfoRxpAryaQNRKk3105Rrgx2CFRClIgRGaqDTdjsm8h6IYA8ir584W3ePzkZfst5xIgDwYrlh9HLg== }
     dependencies:
       '@types/lodash': 4.14.184
-    dev: true
 
   /@types/lodash/4.14.177:
     resolution:
       { integrity: sha512-0fDwydE2clKe9MNfvXHBHF9WEahRuj+msTuQqOmAApNORFvhMYZKNGGJdCzuhheVjMps/ti0Ak/iJPACMaevvw== }
     dev: true
 
-  /@types/lodash/4.14.182:
-    resolution:
-      { integrity: sha512-/THyiqyQAP9AfARo4pF+aCGcyiQ94tX/Is2I7HofNRqoYLgN1PBoOWu2/zTA5zMxzP5EFutMtWtGAFRKUe961Q== }
-    dev: true
-
   /@types/lodash/4.14.184:
     resolution:
       { integrity: sha512-RoZphVtHbxPZizt4IcILciSWiC6dcn+eZ8oX9IWEYfDMcocdd42f7NPI6fQj+6zI8y4E0L7gu2pcZKLGTRaV9Q== }
-    dev: true
 
   /@types/mapbox-gl/2.7.3:
     resolution:

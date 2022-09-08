@@ -108,7 +108,7 @@ export class RelationsService {
 		});
 
 		const schemaRow = (await this.schemaInspector.foreignKeys(collection)).find(
-			(foreignKey) => foreignKey.column === field
+			(foreignKey: any) => foreignKey.column === field
 		);
 		const stitched = this.stitchRelations(metaRow, schemaRow ? [schemaRow] : []);
 		const results = await this.filterForbidden(stitched);
@@ -330,7 +330,7 @@ export class RelationsService {
 		try {
 			await this.knex.transaction(async (trx) => {
 				const existingConstraints = await this.schemaInspector.foreignKeys();
-				const constraintNames = existingConstraints.map((key) => key.constraint_name);
+				const constraintNames = existingConstraints.map((key: any) => key.constraint_name);
 
 				if (
 					existingRelation.schema?.constraint_name &&

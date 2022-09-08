@@ -1,4 +1,4 @@
-import * as fse from 'fs-extra';
+import fse from 'fs-extra';
 import { dirname, join, resolve, relative, sep } from 'path';
 import Storage from './Storage.js';
 import { isReadableStream, pipeline } from './utils.js';

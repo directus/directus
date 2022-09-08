@@ -1,7 +1,7 @@
 import type { Accountability, Query, SchemaOverview } from '@directus/shared/types';
 import { format, parseISO, isValid } from 'date-fns';
 import { parseJSON, toArray } from '@directus/shared/utils';
-import { unflatten } from 'flat';
+import flat from 'flat';
 import Joi from 'joi';
 import type { Knex } from 'knex';
 import { clone, cloneDeep, isNil, isObject, isPlainObject, omit, pick } from 'lodash-es';
@@ -20,6 +20,8 @@ import type {
 } from '../types/index.js';
 import { generateHash } from '../utils/generate-hash.js';
 import { ItemsService } from './items.js';
+
+const { unflatten } = flat;
 
 type Action = 'create' | 'read' | 'update';
 

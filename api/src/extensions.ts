@@ -55,6 +55,8 @@ import { getFlowManager } from './flows.js';
 import globby from 'globby';
 import type { EventHandler } from './types/index.js';
 import { JobQueue } from './utils/job-queue.js';
+import { fileURLToPath } from 'url';
+import { createRequire } from 'module';
 
 let extensionManager: ExtensionManager | undefined;
 
@@ -99,6 +101,8 @@ class ExtensionManager {
 
 	private reloadQueue: JobQueue;
 	private watcher: FSWatcher | null = null;
+
+	private require = createRequire(import.meta.url);
 
 	constructor() {
 		this.options = defaultOptions;
@@ -330,7 +334,7 @@ class ExtensionManager {
 
 	private async getSharedDepsMapping(deps: string[]) {
 		const appDir = await fse.readdir(
-			path.join(resolvePackage('@directus/app', require.main?.filename), 'dist', 'assets')
+			path.join(resolvePackage(this.require, '@directus/app', this.require.main?.filename), 'dist', 'assets')
 		);
 
 		const depsMapping: Record<string, string> = {};
@@ -356,7 +360,7 @@ class ExtensionManager {
 		for (const hook of hooks) {
 			try {
 				const hookPath = path.resolve(hook.path, hook.entrypoint);
-				const hookInstance: HookConfig | { default: HookConfig } = require(hookPath);
+				const hookInstance: HookConfig | { default: HookConfig } = this.require(hookPath);
 
 				const config = getModuleDefault(hookInstance);
 
@@ -374,7 +378,7 @@ class ExtensionManager {
 		for (const endpoint of endpoints) {
 			try {
 				const endpointPath = path.resolve(endpoint.path, endpoint.entrypoint);
-				const endpointInstance: EndpointConfig | { default: EndpointConfig } = require(endpointPath);
+				const endpointInstance: EndpointConfig | { default: EndpointConfig } = this.require(endpointPath);
 
 				const config = getModuleDefault(endpointInstance);
 
@@ -387,17 +391,20 @@ class ExtensionManager {
 	}
 
 	private async registerOperations(): Promise<void> {
+		const __filename = fileURLToPath(import.meta.url);
+		const __dirname = path.dirname(__filename);
+
 		const internalPaths = await globby(
 			path.posix.join(path.relative('.', __dirname).split(path.sep).join(path.posix.sep), 'operations/*/index.(js|ts)')
 		);
 
 		const internalOperations = internalPaths.map((internalPath) => {
-			const dirs = internalPath.split(path.sep);
+			const dirs = internalPath.split('/');
 
 			return {
-				name: dirs[dirs.length - 2],
+				name: dirs.at(-2),
 				path: dirs.slice(0, -1).join(path.sep),
-				entrypoint: { api: dirs[dirs.length - 1] },
+				entrypoint: { api: dirs.at(-1) },
 			};
 		});
 
@@ -405,10 +412,26 @@ class ExtensionManager {
 			(extension): extension is HybridExtension => extension.type === 'operation'
 		);
 
-		for (const operation of [...internalOperations, ...operations]) {
+		for (const operation of operations) {
 			try {
 				const operationPath = path.resolve(operation.path, operation.entrypoint.api!);
-				const operationInstance: OperationApiConfig | { default: OperationApiConfig } = require(operationPath);
+				const operationInstance: OperationApiConfig | { default: OperationApiConfig } = this.require(operationPath);
+
+				const config = getModuleDefault(operationInstance);
+
+				this.registerOperation(config, operationPath);
+			} catch (error: any) {
+				logger.warn(`Couldn't register operation "${operation.name}"`);
+				logger.warn(error);
+			}
+		}
+
+		for (const operation of internalOperations) {
+			try {
+				const operationPath = path.resolve(operation.path, operation.entrypoint.api!);
+				const operationInstance: OperationApiConfig | { default: OperationApiConfig } = await import(
+					'file://' + operationPath
+				);
 
 				const config = getModuleDefault(operationInstance);
 
@@ -540,7 +563,7 @@ class ExtensionManager {
 				}
 			}
 
-			delete require.cache[require.resolve(hook.path)];
+			delete this.require.cache[this.require.resolve(hook.path)];
 		}
 
 		this.apiExtensions.hooks = [];
@@ -548,7 +571,7 @@ class ExtensionManager {
 
 	private unregisterEndpoints(): void {
 		for (const endpoint of this.apiExtensions.endpoints) {
-			delete require.cache[require.resolve(endpoint.path)];
+			delete this.require.cache[this.require.resolve(endpoint.path)];
 		}
 
 		this.endpointRouter.stack = [];
@@ -558,7 +581,7 @@ class ExtensionManager {
 
 	private unregisterOperations(): void {
 		for (const operation of this.apiExtensions.operations) {
-			delete require.cache[require.resolve(operation.path)];
+			delete this.require.cache[this.require.resolve(operation.path)];
 		}
 
 		const flowManager = getFlowManager();

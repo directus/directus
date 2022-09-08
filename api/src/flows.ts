@@ -1,4 +1,4 @@
-import sharedExceptions from '@directus/shared/exceptions';
+import * as sharedExceptions from '@directus/shared/exceptions';
 import {
 	Accountability,
 	Action,

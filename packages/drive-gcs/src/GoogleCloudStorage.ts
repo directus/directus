@@ -28,7 +28,7 @@ import {
 
 import * as path from 'path';
 
-import { mapKeys, snakeCase } from 'lodash';
+import { mapKeys, snakeCase } from 'lodash-es';
 
 function handleError(err: Error & { code?: number | string }, path: string): Error {
 	switch (err.code) {

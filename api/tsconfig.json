@@ -25,7 +25,8 @@
 	  "importsNotUsedAsValues": "error",
 	  "checkJs": true,
 	  "outDir": "dist",
-	  "allowSyntheticDefaultImports": true
+	  "allowSyntheticDefaultImports": true,
+	  "typeRoots": ["./types", "./node_modules/@types"],
 	  },
 	  "include": ["src/**/*.ts"],
 	  "exclude": ["src/**/*.test.ts"]

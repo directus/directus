@@ -3,7 +3,7 @@ import { parseJSON, toArray } from '@directus/shared/utils';
 import { queue } from 'async';
 import csv from 'csv-parser';
 import destroyStream from 'destroy';
-import { appendFile, createReadStream } from 'fs-extra';
+import fsExtra from 'fs-extra';
 import { parse as toXML } from 'js2xmlparser';
 import { Parser as CSVParser, transforms as CSVTransforms } from 'json2csv';
 import type { Knex } from 'knex';
@@ -25,6 +25,8 @@ import { getDateFormatted } from '../utils/get-date-formatted.js';
 import { FilesService } from './files.js';
 import { ItemsService } from './items.js';
 import { NotificationsService } from './notifications.js';
+
+const { appendFile, createReadStream } = fsExtra;
 
 export class ImportService {
 	knex: Knex;

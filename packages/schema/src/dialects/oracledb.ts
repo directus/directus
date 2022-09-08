@@ -1,5 +1,5 @@
-import KnexOracle, { parseDefaultValue } from '../lib/dialects/oracledb';
-import type { Column } from '../lib/types/column';
+import KnexOracle, { parseDefaultValue } from '../knex/oracledb.js';
+import type { Column } from '../types/column.js';
 import type { SchemaOverview } from '../types/overview.js';
 import type { SchemaInspector } from '../types/schema.js';
 

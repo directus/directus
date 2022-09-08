@@ -74,7 +74,7 @@ async function getDatabaseSchema(
 			continue;
 		}
 
-		if (!info.primary) {
+		if (!(info as any).primary) {
 			logger.warn(`Collection "${collection}" doesn't have a primary key column and will be ignored`);
 			continue;
 		}
@@ -88,7 +88,7 @@ async function getDatabaseSchema(
 
 		result.collections[collection] = {
 			collection,
-			primary: info.primary,
+			primary: (info as any).primary,
 			singleton:
 				collectionMeta?.singleton === true || collectionMeta?.singleton === 'true' || collectionMeta?.singleton === 1,
 			note: collectionMeta?.note || null,

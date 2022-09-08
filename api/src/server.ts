@@ -11,10 +11,10 @@ import env from './env.js';
 import logger from './logger.js';
 import emitter from './emitter.js';
 import checkForUpdate from 'update-check';
-import { readFileSync } from 'node:fs';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
+import { importFile } from './utils/importFile.js';
 
-const pkg = JSON.parse(readFileSync('../package.json', 'utf8'));
+const pkg = JSON.parse(importFile('../package.json'));
 
 export async function createServer(): Promise<http.Server> {
 	const server = http.createServer(await createApp());
@@ -136,7 +136,7 @@ export async function startServer(): Promise<void> {
 			checkForUpdate(pkg)
 				.then((update) => {
 					if (update) {
-						logger.warn(`Update available: ${pkg.version} -> ${update.latest}`);
+						logger.warn(`Update available: ${pkg['version']} -> ${update.latest}`);
 					}
 				})
 				.catch(() => {

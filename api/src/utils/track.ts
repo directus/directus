@@ -1,13 +1,15 @@
 import axios from 'axios';
 import ms from 'ms';
-import { machineId } from 'node-machine-id';
+import nodeMachineId from 'node-machine-id';
 import os from 'os';
 import env from '../env.js';
 import logger from '../logger.js';
 import { toArray } from '@directus/shared/utils';
-import { readFileSync } from 'node:fs';
+import { importFile } from './importFile.js';
 
-const version = JSON.parse(readFileSync('../../package.json', 'utf8')).version;
+const { machineId } = nodeMachineId;
+
+const version = JSON.parse(importFile('../package.json')).version;
 
 export async function track(event: string): Promise<void> {
 	if (env['TELEMETRY'] !== false) {

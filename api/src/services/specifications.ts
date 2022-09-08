@@ -21,9 +21,9 @@ import { CollectionsService } from './collections.js';
 import { FieldsService } from './fields.js';
 import { GraphQLService } from './graphql/index.js';
 import { RelationsService } from './relations.js';
-import { readFileSync } from 'node:fs';
+import { importFile } from '../utils/importFile.js';
 
-const version = JSON.parse(readFileSync('../../package.json', 'utf8')).version;
+const version = JSON.parse(importFile('../package.json')).version;
 
 export class SpecificationService {
 	accountability: Accountability | null;

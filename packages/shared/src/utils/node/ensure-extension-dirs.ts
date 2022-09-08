@@ -1,5 +1,5 @@
-import * as path from 'path';
-import * as fse from 'fs-extra';
+import path from 'path';
+import fse from 'fs-extra';
 import { pluralize } from '../pluralize.js';
 import type { ExtensionType } from '../../types/index.js';
 

@@ -1,4 +1,4 @@
-import KnexMySQL, { parseDefaultValue } from '../lib/dialects/mysql.js';
+import KnexMySQL, { parseDefaultValue } from '../knex/mysql.js';
 import type { SchemaOverview } from '../types/overview.js';
 import type { SchemaInspector } from '../types/schema.js';
 

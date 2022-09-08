@@ -1,9 +1,10 @@
 import env from '../env.js';
 import logger from '../logger.js';
-import { access } from 'fs-extra';
+import fsExtra from 'fs-extra';
 import { constants } from 'fs';
 import path from 'path';
 import { toArray } from '@directus/shared/utils';
+const { access } = fsExtra;
 
 export async function validateStorage(): Promise<void> {
 	if (env['DB_CLIENT'] === 'sqlite3') {

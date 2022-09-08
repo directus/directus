@@ -79,12 +79,12 @@ export class FieldsService {
 			fields.push(...systemFieldRows);
 		}
 
-		const columns = (await this.schemaInspector.columnInfo(collection)).map((column) => ({
+		const columns = (await this.schemaInspector.columnInfo(collection)).map((column: any) => ({
 			...column,
 			default_value: getDefaultValue(column),
 		}));
 
-		const columnsWithSystem = columns.map((column) => {
+		const columnsWithSystem = columns.map((column: any) => {
 			const field = fields.find((field) => {
 				return field.field === column.name && field.collection === column.table;
 			});

@@ -231,7 +231,7 @@ export class CollectionsService {
 
 			collectionsYouHavePermissionToRead = [...new Set([...collectionsYouHavePermissionToRead])];
 
-			tablesInDatabase = tablesInDatabase.filter((table) => {
+			tablesInDatabase = tablesInDatabase.filter((table: any) => {
 				return collectionsYouHavePermissionToRead.includes(table.name);
 			});
 
@@ -246,7 +246,7 @@ export class CollectionsService {
 			const collection: Collection = {
 				collection: collectionMeta.collection,
 				meta: collectionMeta,
-				schema: tablesInDatabase.find((table) => table.name === collectionMeta.collection) ?? null,
+				schema: tablesInDatabase.find((table: any) => table.name === collectionMeta.collection) ?? null,
 			};
 
 			collections.push(collection);
