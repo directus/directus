@@ -843,12 +843,14 @@ description: Descrição
 file_library: Biblioteca de Arquivos
 revisions: Revisões
 save: Guardar
+search: Procurar
 settings: Configurações
 sign_in: Iniciar Sessão
 sign_out: Sair
 sign_out_confirm: Tem certeza que deseja sair?
 report_error: Reportar erro
 table: Tabela
+search_filter: Pesquisa & Filtro
 interfaces:
   filter:
     add_filter: Adicionar filtro
@@ -891,6 +893,8 @@ interfaces:
     sort: Ordenar
   tags:
     tags: Etiquetas
+  input-translated-string:
+    search_placeholder: Procurar...
   boolean:
     label_default: Activo
   translations:
