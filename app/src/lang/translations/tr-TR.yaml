@@ -591,7 +591,10 @@ errors:
   VALUE_OUT_OF_RANGE: Değer sınır dışında
   INVALID_FOREIGN_KEY: Geçersiz yabancı anahtar
   UNKNOWN: Beklenmeyen Hata
+  UNSUPPORTED_MEDIA_TYPE: Desteklenmeyen ortam türü
+  UNEXPECTED_RESPONSE: Beklenmeyen yanıt
   RANGE_NOT_SATISFIABLE: Geçersiz aralık
+  METHOD_NOT_ALLOWED: İzin verilmeyen yöntem
 security: Güvenlik
 value_hashed: Değer Güvenli Şekilde Hashlendi
 bookmark_name: Yer işareti adı...
@@ -673,6 +676,7 @@ operators:
   nnull: Null değildir
   contains: Şunu içerir
   ncontains: Şunu içermez
+  icontains: İçerir (duyarsız)
   starts_with: Şununla başlar
   nstarts_with: Şununla başlamaz
   ends_with: Şununla biter
@@ -1645,6 +1649,7 @@ interfaces:
     user_language: Mevcut Kullanıcı Dilini Kullan
     default_language: Varsayılan Dil
     language_field: Dil Göstergesi Alanı
+    language_direction_field: Dil Yön Alanı
   list-o2m-tree-view:
     description: İç içe özyinelemeli birden çoka öğeler için ağaç görünümü
     recursive_only: Ağaç görünümü arayüzü sadece özyinelemeli ilişkiler içindir.
@@ -1964,6 +1969,7 @@ operations:
     name: Durum
   exec:
     name: Komut Dosyasını Çalıştır
+    modules: 'Aşağıdaki **Düğüm modülleri** kullanılabilir:'
   item-create:
     name: Veri Oluştur
     description: Veritabanında öğeler oluştur
