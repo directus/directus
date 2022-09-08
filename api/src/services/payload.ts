@@ -442,14 +442,14 @@ export class PayloadService {
 					await itemsService.updateOne(relatedPrimaryKey, relatedRecord, {
 						onRevisionCreate: (pk: PrimaryKey) => revisions.push(pk),
 						bypassEmitAction: (params: ActionEventParams) => nestedActionEvents.push(params),
-						emitEvents: opts!.emitEvents!,
+						emitEvents: opts?.emitEvents,
 					});
 				}
 			} else {
 				relatedPrimaryKey = await itemsService.createOne(relatedRecord, {
 					onRevisionCreate: (pk: PrimaryKey) => revisions.push(pk),
 					bypassEmitAction: (params: ActionEventParams) => nestedActionEvents.push(params),
-					emitEvents: opts!.emitEvents!,
+					emitEvents: opts?.emitEvents,
 				});
 			}
 
@@ -519,14 +519,14 @@ export class PayloadService {
 					await itemsService.updateOne(relatedPrimaryKey, relatedRecord, {
 						onRevisionCreate: (pk: PrimaryKey) => revisions.push(pk),
 						bypassEmitAction: (params: ActionEventParams) => nestedActionEvents.push(params),
-						emitEvents: opts!.emitEvents!,
+						emitEvents: opts?.emitEvents,
 					});
 				}
 			} else {
 				relatedPrimaryKey = await itemsService.createOne(relatedRecord, {
 					onRevisionCreate: (pk: PrimaryKey) => revisions.push(pk),
 					bypassEmitAction: (params: ActionEventParams) => nestedActionEvents.push(params),
-					emitEvents: opts!.emitEvents!,
+					emitEvents: opts?.emitEvents,
 				});
 			}
 
@@ -632,7 +632,7 @@ export class PayloadService {
 					...(await itemsService.upsertMany(recordsToUpsert, {
 						onRevisionCreate: (pk: PrimaryKey) => revisions.push(pk),
 						bypassEmitAction: (params: ActionEventParams) => nestedActionEvents.push(params),
-						emitEvents: opts!.emitEvents!,
+						emitEvents: opts?.emitEvents,
 					}))
 				);
 
@@ -658,7 +658,7 @@ export class PayloadService {
 					// There's no revision for a deletion
 					await itemsService.deleteByQuery(query, {
 						bypassEmitAction: (params: ActionEventParams) => nestedActionEvents.push(params),
-						emitEvents: opts!.emitEvents!,
+						emitEvents: opts?.emitEvents,
 					});
 				} else {
 					await itemsService.updateByQuery(
@@ -667,7 +667,7 @@ export class PayloadService {
 						{
 							onRevisionCreate: (pk: PrimaryKey) => revisions.push(pk),
 							bypassEmitAction: (params: ActionEventParams) => nestedActionEvents.push(params),
-							emitEvents: opts!.emitEvents!,
+							emitEvents: opts?.emitEvents,
 						}
 					);
 				}
@@ -714,7 +714,7 @@ export class PayloadService {
 					await itemsService.createMany(createPayload, {
 						onRevisionCreate: (pk: PrimaryKey) => revisions.push(pk),
 						bypassEmitAction: (params: ActionEventParams) => nestedActionEvents.push(params),
-						emitEvents: opts!.emitEvents!,
+						emitEvents: opts?.emitEvents,
 					});
 				}
 
@@ -731,7 +731,7 @@ export class PayloadService {
 							{
 								onRevisionCreate: (pk: PrimaryKey) => revisions.push(pk),
 								bypassEmitAction: (params: ActionEventParams) => nestedActionEvents.push(params),
-								emitEvents: opts!.emitEvents!,
+								emitEvents: opts?.emitEvents,
 							}
 						);
 					}
@@ -758,7 +758,7 @@ export class PayloadService {
 					if (relation.meta.one_deselect_action === 'delete') {
 						await itemsService.deleteByQuery(query, {
 							bypassEmitAction: (params: ActionEventParams) => nestedActionEvents.push(params),
-							emitEvents: opts!.emitEvents!,
+							emitEvents: opts?.emitEvents,
 						});
 					} else {
 						await itemsService.updateByQuery(
@@ -767,7 +767,7 @@ export class PayloadService {
 							{
 								onRevisionCreate: (pk: PrimaryKey) => revisions.push(pk),
 								bypassEmitAction: (params: ActionEventParams) => nestedActionEvents.push(params),
-								emitEvents: opts!.emitEvents!,
+								emitEvents: opts?.emitEvents,
 							}
 						);
 					}

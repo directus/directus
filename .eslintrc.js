@@ -21,6 +21,7 @@ module.exports = {
 	rules: defaultRules,
 	parserOptions: {
 		ecmaVersion: 2020,
+		sourceType: 'module',
 	},
 	overrides: [
 		// Parse rollup configuration as module

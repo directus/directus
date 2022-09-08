@@ -1,11 +1,13 @@
 import fse from 'fs-extra';
 import { merge } from 'lodash-es';
 import path from 'path';
-import formatTitle from '@directus/format-title';
+import FormatTitle from '@directus/format-title';
 import type { FieldMeta } from '@directus/shared/types';
 import { getAuthProviders } from '../../../utils/get-auth-providers.js';
 import { requireYAML } from '../../../utils/require-yaml.js';
 import { fileURLToPath } from 'url';
+
+const { formatTitle } = FormatTitle as any; // TODO: WTF is this?
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

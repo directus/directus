@@ -1,4 +1,4 @@
-import formatTitle from '@directus/format-title';
+import FormatTitle from '@directus/format-title';
 import { toArray } from '@directus/shared/utils';
 import Busboy from 'busboy';
 import express from 'express';
@@ -13,6 +13,8 @@ import { validateBatch } from '../middleware/validate-batch.js';
 import { FilesService, MetaService } from '../services/index.js';
 import type { File, PrimaryKey } from '../types/index.js';
 import asyncHandler from '../utils/async-handler.js';
+
+const { formatTitle } = FormatTitle as any; // TODO: WTF is this?
 
 const router = express.Router();
 
