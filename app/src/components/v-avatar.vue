@@ -4,27 +4,27 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-import { useSizeClass, sizeProps } from '@/composables/use-size-class';
+<script setup lang="ts">
+import { useSizeClass } from '@directus/shared/composables';
 
-export default defineComponent({
-	props: {
-		size: {
-			type: Number,
-			default: null,
-		},
-		tile: {
-			type: Boolean,
-			default: false,
-		},
-		...sizeProps,
-	},
-	setup(props) {
-		const sizeClass = useSizeClass(props);
-		return { sizeClass };
-	},
+interface Props {
+	/** Render as a tile (square) */
+	tile?: boolean;
+	/** Renders a smaller avatar */
+	xSmall?: boolean;
+	/** Renders a small avatar */
+	small?: boolean;
+	/** Renders a large avatar */
+	large?: boolean;
+	/** Renders a larger avatar */
+	xLarge?: boolean;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+	tile: false,
 });
+
+const sizeClass = useSizeClass(props);
 </script>
 
 <style>

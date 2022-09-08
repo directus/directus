@@ -719,6 +719,7 @@ trigger: Trigger
 flow_name: Name
 flow_tracking_activity: Only Track Activity
 flow_tracking_null: Do Not Track Anything
+code: Code
 insights: Insights
 dashboard: Dashboard
 panel: Panel
@@ -1048,8 +1049,6 @@ fields:
     transformations_all: Allow all transformations
     transformations_none: Disable transformations
     transformations_presets: Limit transformations to presets below
-    image_editor: Image Editor
-    custom_aspect_ratios: Custom Aspect Ratios
   directus_shares:
     name: Name
     role: Role
@@ -1314,6 +1313,8 @@ value: Value
 view_project: View Project
 report_error: Report Error
 start: Start
+table: Table
+list: List
 interfaces:
   filter:
     name: Filter
@@ -1392,6 +1393,8 @@ interfaces:
     set_to_now: Set to Now
     use_24: Use 24-Hour Format
     placeholder: Choose a datetime...
+  system-fields:
+    select_a_collection: Select a Collection
   system-display-template:
     display-template: Display Template
     description: Mix static text and dynamic field values

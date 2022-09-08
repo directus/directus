@@ -1,3 +1,4 @@
+export { compress, decompress } from './compress';
 export * from './abbreviate-number';
 export * from './add-field-flag';
 export * from './adjust-date';
@@ -14,6 +15,7 @@ export * from './get-functions-for-type';
 export * from './get-output-type-for-function';
 export * from './get-relation-type';
 export * from './get-simple-hash';
+export * from './get-with-arrays';
 export * from './is-dynamic-variable';
 export * from './merge-filters';
 export * from './move-in-array';

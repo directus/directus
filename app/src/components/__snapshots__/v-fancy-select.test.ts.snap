@@ -1,0 +1,39 @@
+// Vitest Snapshot v1
+
+exports[`Mount component 1`] = `
+"<div class=\\"v-fancy-select\\" data-v-6904cf07=\\"\\">
+  <transition-group-stub data-v-6904cf07=\\"\\">
+    <div class=\\"v-fancy-select-option\\" data-v-6904cf07=\\"\\">
+      <div class=\\"icon\\" data-v-6904cf07=\\"\\">
+        <v-icon-stub name=\\"person\\" data-v-6904cf07=\\"\\"></v-icon-stub>
+      </div>
+      <div class=\\"content\\" data-v-6904cf07=\\"\\">
+        <div class=\\"text\\" data-v-6904cf07=\\"\\">Person</div>
+        <div class=\\"description\\" data-v-6904cf07=\\"\\"></div>
+      </div>
+      <!--v-if-->
+    </div>
+    <div class=\\"v-fancy-select-option\\" style=\\"--index: 1;\\" data-v-6904cf07=\\"\\">
+      <div class=\\"icon\\" data-v-6904cf07=\\"\\">
+        <v-icon-stub name=\\"directions_car\\" data-v-6904cf07=\\"\\"></v-icon-stub>
+      </div>
+      <div class=\\"content\\" data-v-6904cf07=\\"\\">
+        <div class=\\"text\\" data-v-6904cf07=\\"\\">Car</div>
+        <div class=\\"description\\" data-v-6904cf07=\\"\\"></div>
+      </div>
+      <!--v-if-->
+    </div>
+    <v-divider-stub data-v-6904cf07=\\"\\"></v-divider-stub>
+    <div class=\\"v-fancy-select-option\\" style=\\"--index: 3;\\" data-v-6904cf07=\\"\\">
+      <div class=\\"icon\\" data-v-6904cf07=\\"\\">
+        <v-icon-stub name=\\"home\\" data-v-6904cf07=\\"\\"></v-icon-stub>
+      </div>
+      <div class=\\"content\\" data-v-6904cf07=\\"\\">
+        <div class=\\"text\\" data-v-6904cf07=\\"\\">Home</div>
+        <div class=\\"description\\" data-v-6904cf07=\\"\\">A home is a nice place</div>
+      </div>
+      <!--v-if-->
+    </div>
+  </transition-group-stub>
+</div>"
+`;

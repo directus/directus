@@ -12,6 +12,7 @@ import { getDefaultIndexName } from '../utils/get-default-index-name';
 import { getCache, clearSystemCache } from '../cache';
 import Keyv from 'keyv';
 import { AbstractServiceOptions } from '../types';
+import { getHelpers, Helpers } from '../database/helpers';
 
 export class RelationsService {
 	knex: Knex;
@@ -21,6 +22,7 @@ export class RelationsService {
 	schema: SchemaOverview;
 	relationsItemService: ItemsService<RelationMeta>;
 	systemCache: Keyv<any>;
+	helpers: Helpers;
 
 	constructor(options: AbstractServiceOptions) {
 		this.knex = options.knex || getDatabase();
@@ -37,6 +39,7 @@ export class RelationsService {
 		});
 
 		this.systemCache = getCache().systemCache;
+		this.helpers = getHelpers(this.knex);
 	}
 
 	async readAll(collection?: string, opts?: QueryOptions): Promise<Relation[]> {
@@ -165,6 +168,8 @@ export class RelationsService {
 			);
 		}
 
+		const runPostColumnChange = await this.helpers.schema.preColumnChange();
+
 		try {
 			const metaRow = {
 				...(relation.meta || {}),
@@ -202,6 +207,10 @@ export class RelationsService {
 				await relationsItemService.createOne(metaRow);
 			});
 		} finally {
+			if (runPostColumnChange) {
+				await this.helpers.schema.postColumnChange();
+			}
+
 			await clearSystemCache();
 		}
 	}
@@ -231,6 +240,8 @@ export class RelationsService {
 		if (!existingRelation) {
 			throw new InvalidPayloadException(`Field "${field}" in collection "${collection}" doesn't have a relationship.`);
 		}
+
+		const runPostColumnChange = await this.helpers.schema.preColumnChange();
 
 		try {
 			await this.knex.transaction(async (trx) => {
@@ -282,6 +293,10 @@ export class RelationsService {
 				}
 			});
 		} finally {
+			if (runPostColumnChange) {
+				await this.helpers.schema.postColumnChange();
+			}
+
 			await clearSystemCache();
 		}
 	}
@@ -310,6 +325,8 @@ export class RelationsService {
 			throw new InvalidPayloadException(`Field "${field}" in collection "${collection}" doesn't have a relationship.`);
 		}
 
+		const runPostColumnChange = await this.helpers.schema.preColumnChange();
+
 		try {
 			await this.knex.transaction(async (trx) => {
 				const existingConstraints = await this.schemaInspector.foreignKeys();
@@ -329,6 +346,10 @@ export class RelationsService {
 				}
 			});
 		} finally {
+			if (runPostColumnChange) {
+				await this.helpers.schema.postColumnChange();
+			}
+
 			await clearSystemCache();
 		}
 	}

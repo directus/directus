@@ -505,6 +505,7 @@ icon_on: Įjungumo ikona
 icon_off: Išjungimo ikona
 label: Žyma
 flow_name: Pavadinimas
+code: Kodas
 full_screen: Per visą ekraną
 width: Plotis
 height: Aukštis
@@ -803,6 +804,7 @@ translation: Vertimas
 value: Reikšmė
 view_project: Peržiūrėti projektą
 report_error: Pranešti apie klaidą
+table: Lentelė
 interfaces:
   filter:
     add_filter: Pridėti filtrą
@@ -827,6 +829,8 @@ interfaces:
     include_seconds: Įtraukti sekundes
     set_to_now: Nustatyti į dabartinį laiką
     use_24: Naudoti 24 val. laikrodį
+  system-fields:
+    select_a_collection: Pasirinkite kolekciją
   system-display-template:
     display-template: Rodymo šablonas
     collection_field_not_setup: Blogai sukonfigūruota kolekcijos lauko parinktis
