@@ -189,11 +189,10 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 			.map(({ options }) => options.field);
 	}
 	function hasEmptyRelation(panel: Pick<Panel, 'options' | 'type'>) {
-		const whynot = JSON.stringify(panel.options);
-		const relational = emptyRelations();
-		for (const r of relational) {
-			const _r = new RegExp(`{{\\s*?${escapeStringRegexp(r)}\\s*?}}`);
-			if (_r.test(whynot)) return true;
+		const stringOptions = JSON.stringify(panel.options);
+		for (const relationVar of emptyRelations()) {
+			const fieldRegex = new RegExp(`{{\\s*?${escapeStringRegexp(relationVar)}\\s*?}}`);
+			if (fieldRegex.test(stringOptions)) return true;
 		}
 		return false;
 	}
