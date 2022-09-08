@@ -16,7 +16,7 @@
 
 			<template #append>
 				<template v-if="displayItem">
-					<v-icon v-tooltip="t('deselect')" name="close" class="deselect" @click.stop="$emit('input', [])" />
+					<v-icon v-tooltip="t('deselect')" name="close" class="deselect" @click.stop="$emit('input', undefined)" />
 				</template>
 				<template v-else>
 					<v-icon class="expand" name="expand_more" />

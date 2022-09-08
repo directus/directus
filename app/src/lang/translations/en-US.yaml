@@ -334,6 +334,7 @@ edit_raw_value: Edit Raw Value
 enter_raw_value: Enter raw value...
 clear_value: Clear Value
 clear_changes: Clear Changes
+clear_items: Clear Items
 reset_to_default: Reset to Default
 undo_changes: Undo Changes
 notifications: Notifications
