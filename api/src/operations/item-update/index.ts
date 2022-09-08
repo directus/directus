@@ -26,13 +26,7 @@ export default defineOperationApi<Options>({
 		if (!permissions || permissions === '$trigger') {
 			customAccountability = accountability;
 		} else if (permissions === '$full') {
-			customAccountability = {
-				user: null,
-				role: null,
-				admin: true,
-				app: true,
-				permissions: [],
-			};
+			customAccountability = await getAccountabilityForRole('system', { database, schema, accountability });
 		} else if (permissions === '$public') {
 			customAccountability = await getAccountabilityForRole(null, { database, schema, accountability });
 		} else {
