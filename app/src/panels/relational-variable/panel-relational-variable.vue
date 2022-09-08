@@ -63,7 +63,7 @@ const value = computed({
 		return val ? [val] : undefined;
 	},
 	set(val: any) {
-		const _val = props.multiple ? val : val[0];
+		const _val = !props.multiple && Array.isArray(val) ? val[0] : val;
 		insightsStore.setVariable(props.field, _val);
 	},
 });
