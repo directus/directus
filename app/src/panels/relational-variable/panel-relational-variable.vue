@@ -58,10 +58,13 @@ const props = withDefaults(defineProps<Props>(), {});
 const insightsStore = useInsightsStore();
 const value = computed({
 	get() {
-		return insightsStore.getVariable(props.field) || [];
+		const val = insightsStore.getVariable(props.field);
+		if (props.multiple) return val ?? [];
+		return val ? [val] : undefined;
 	},
 	set(val: any) {
-		insightsStore.setVariable(props.field, val);
+		const _val = props.multiple ? val : val[0];
+		insightsStore.setVariable(props.field, _val);
 	},
 });
 

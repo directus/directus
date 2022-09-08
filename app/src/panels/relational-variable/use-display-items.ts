@@ -32,7 +32,7 @@ export default function useDisplayItems(collection: Ref<string>, template: Ref<s
 	return { displayItems, displayTemplate, loading, primaryKey };
 
 	async function getDisplayItems() {
-		if (ids.value.length === 0) {
+		if (!ids.value || ids.value.length === 0) {
 			displayItems.value = [];
 			return;
 		}
