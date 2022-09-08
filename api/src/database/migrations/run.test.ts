@@ -1,13 +1,14 @@
 import knex, { Knex } from 'knex';
 import { getTracker, MockClient, Tracker } from 'knex-mock-client';
 import run from './run.js';
+import { describe, beforeAll, afterEach, expect, it, Mocked } from 'vitest';
 
 describe('run', () => {
-	let db: jest.Mocked<Knex>;
+	let db: Mocked<Knex>;
 	let tracker: Tracker;
 
 	beforeAll(() => {
-		db = knex({ client: MockClient }) as jest.Mocked<Knex>;
+		db = knex({ client: MockClient }) as Mocked<Knex>;
 		tracker = getTracker();
 	});
 

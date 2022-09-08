@@ -1,3 +1,4 @@
+import {describe, test, expect} from 'vitest'
 import { mergePermission } from '../../src/utils/merge-permissions.js';
 import type { Permission, Filter } from '@directus/shared/types';
 

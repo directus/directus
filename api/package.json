@@ -61,11 +61,11 @@
 		"prebuild": "pnpm cleanup",
 		"build": "tsc --build && copyfiles \"src/**/*.*\" -e \"src/**/*.ts\" -u 1 dist",
 		"cleanup": "rimraf dist",
-		"dev": "cross-env NODE_ENV=development SERVE_APP=false ts-node-dev --files --transpile-only --respawn --watch \".env\" --inspect=0 --exit-child -- src/start.ts",
-		"cli": "cross-env NODE_ENV=development SERVE_APP=false ts-node --script-mode --transpile-only src/cli/run.ts",
-		"test": "jest",
-		"test:coverage": "jest --coverage",
-		"test:watch": "jest --watch"
+		"dev": "cross-env NODE_ENV=development SERVE_APP=false tsx watch ./src/start.ts",
+		"cli": "cross-env NODE_ENV=development SERVE_APP=false tsx watch ./src/cli/run.ts",
+		"test": "vitest run",
+		"test:coverage": "vitest run --coverage",
+		"test:watch": "vitest"
 	},
 	"engines": {
 		"node": ">=12.20.0"
@@ -198,7 +198,6 @@
 		"@types/fs-extra": "9.0.13",
 		"@types/inquirer": "8.2.1",
 		"@types/ioredis": "^4.28.10",
-		"@types/jest": "27.5.2",
 		"@types/js-yaml": "4.0.5",
 		"@types/json2csv": "5.0.3",
 		"@types/jsonwebtoken": "8.5.8",
@@ -225,12 +224,11 @@
 		"copyfiles": "2.4.1",
 		"cross-env": "7.0.3",
 		"form-data": "^4.0.0",
-		"jest": "28.1.2",
 		"knex-mock-client": "1.8.4",
 		"rimraf": "3.0.2",
 		"supertest": "^6.2.3",
-		"ts-jest": "28.0.5",
 		"tsx": "^3.9.0",
-		"typescript": "4.7.3"
+		"typescript": "4.7.3",
+		"vitest": "^0.18.1"
 	}
 }

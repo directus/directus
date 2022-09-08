@@ -1,3 +1,5 @@
+import {describe, beforeEach, afterEach, test, expect, vi} from 'vitest'
+
 const testEnv = {
 	NUMBER: '1234',
 	NUMBER_CAST_AS_STRING: 'string:1234',
@@ -11,10 +13,10 @@ describe('env processed values', () => {
 	const originalEnv = process.env;
 	let env: Record<string, any>;
 
-	beforeEach(() => {
-		jest.resetModules();
+	beforeEach(async () => {
+		vi.resetModules();
 		process.env = { ...testEnv };
-		env = jest.requireActual('../src/env').default;
+		env = (await import('../src/env.js')).default;
 	});
 
 	afterEach(() => {

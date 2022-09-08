@@ -15,7 +15,9 @@ import usersPasswd from './commands/users/passwd.js';
 import { snapshot } from './commands/schema/snapshot.js';
 import { apply } from './commands/schema/apply.js';
 
-const pkg = require('../../package.json');
+import { importFile } from '../utils/importFile.js';
+
+const pkg = JSON.parse(importFile('../../package.json'));
 
 export async function createCli(): Promise<Command> {
 	const program = new Command();

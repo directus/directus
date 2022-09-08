@@ -2,18 +2,18 @@ import knex, { Knex } from 'knex';
 import { MockClient, Tracker, getTracker } from 'knex-mock-client';
 import { PayloadService } from '../../src/services/index.js';
 import { getHelpers, Helpers } from '../../src/database/helpers/index.js';
+import {describe, beforeEach, beforeAll, afterEach, Mocked, expect, vi, it} from 'vitest'
 
-jest.mock('../../src/database/index', () => {
-	return { getDatabaseClient: jest.fn().mockReturnValue('postgres') };
+vi.mock('../../src/database/index', () => {
+	return { getDatabaseClient: vi.fn().mockReturnValue('postgres') };
 });
-jest.requireMock('../../src/database/index');
 
 describe('Integration Tests', () => {
-	let db: jest.Mocked<Knex>;
+	let db: Mocked<Knex>;
 	let tracker: Tracker;
 
 	beforeAll(async () => {
-		db = knex({ client: MockClient }) as jest.Mocked<Knex>;
+		db = knex({ client: MockClient }) as Mocked<Knex>;
 		tracker = getTracker();
 	});
 

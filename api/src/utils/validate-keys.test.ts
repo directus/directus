@@ -1,6 +1,7 @@
 import { validateKeys } from '../../src/utils/validate-keys.js';
 import type { SchemaOverview } from '@directus/shared/types';
 import { v4 as uuid } from 'uuid';
+import {describe, expect, it} from 'vitest'
 
 const schema: SchemaOverview = {
 	collections: {

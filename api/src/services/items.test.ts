@@ -5,14 +5,14 @@ import { ItemsService } from '../../src/services/index.js';
 import { sqlFieldFormatter, sqlFieldList } from '../__utils__/items-utils.js';
 import { systemSchema, userSchema } from '../__utils__/schemas.js';
 import { cloneDeep } from 'lodash-es';
+import {describe, afterEach, expect, vi, Mocked, it, beforeAll} from 'vitest'
 
-jest.mock('../../src/database/index', () => {
-	return { getDatabaseClient: jest.fn().mockReturnValue('postgres') };
+vi.mock('../../src/database/index', () => {
+	return { getDatabaseClient: vi.fn().mockReturnValue('postgres') };
 });
-jest.requireMock('../../src/database/index');
 
 describe('Integration Tests', () => {
-	let db: jest.Mocked<Knex>;
+	let db: Mocked<Knex>;
 	let tracker: Tracker;
 
 	const schemas: Record<string, any> = {
@@ -21,7 +21,7 @@ describe('Integration Tests', () => {
 	};
 
 	beforeAll(async () => {
-		db = knex({ client: MockClient }) as jest.Mocked<Knex>;
+		db = knex({ client: MockClient }) as Mocked<Knex>;
 		tracker = getTracker();
 	});
 
