@@ -17,7 +17,6 @@ export default defineOperationApi<Options>({
 
 	handler: async ({ collection, key, query, emitEvents, permissions }, { accountability, database, getSchema }) => {
 		const schema = await getSchema({ database });
-
 		let customAccountability: Accountability | null;
 
 		if (!permissions || permissions === '$trigger') {

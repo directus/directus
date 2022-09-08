@@ -23,6 +23,7 @@ export default defineOperationApi<Options>({
 	) => {
 		const schema = await getSchema({ database });
 		let customAccountability: Accountability | null;
+
 		if (!permissions || permissions === '$trigger') {
 			customAccountability = accountability;
 		} else if (permissions === '$full') {
