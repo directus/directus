@@ -58,7 +58,7 @@ export default definePanel({
 			type: 'integer',
 			meta: {
 				interface: 'input',
-				width: 'half',
+				width: 'full',
 				hidden: true,
 				options: {
 					placeholder: '$t:decimals_placeholder',
