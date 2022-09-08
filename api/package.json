@@ -230,8 +230,7 @@
 		"rimraf": "3.0.2",
 		"supertest": "^6.2.3",
 		"ts-jest": "28.0.5",
-		"ts-node": "^10.9.1",
-		"ts-node-dev": "^2.0.0",
+		"tsx": "^3.9.0",
 		"typescript": "4.7.3"
 	}
 }
