@@ -31,11 +31,6 @@ export default defineOperationApi<Options>({
 				role: null,
 				admin: true,
 				app: true,
-				ip: '',
-				userAgent: '',
-				origin: '',
-				share: undefined,
-				share_scope: undefined,
 				permissions: [],
 			};
 		} else if (permissions === '$public') {
