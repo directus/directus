@@ -13,7 +13,7 @@
 			</v-notice>
 
 			<v-list v-else>
-				<v-list-item v-for="element in displayItems" :key="element[primaryKey]" block :dense="true">
+				<v-list-item v-for="element in displayItems" :key="element[primaryKey]" block :dense="displayItems.length > 4">
 					<render-template :collection="collection" :item="element" :template="displayTemplate" />
 					<div class="spacer" />
 					<v-icon v-tooltip="t('some tooltip')" class="deselect" name="delete" @click.stop="deleteItem(element)" />
