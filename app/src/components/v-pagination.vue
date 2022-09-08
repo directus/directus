@@ -5,7 +5,7 @@
 		</v-button>
 
 		<v-button
-			v-if="showFirstLast && modelValue > Math.ceil(totalVisible / 2) + 1 && length > totalVisible"
+			v-if="showFirstLast && totalVisible && modelValue > Math.ceil(totalVisible / 2) + 1 && length > totalVisible"
 			class="page"
 			secondary
 			small
@@ -15,7 +15,10 @@
 			1
 		</v-button>
 
-		<span v-if="showFirstLast && modelValue > Math.ceil(totalVisible / 2) + 1 && length > totalVisible + 1" class="gap">
+		<span
+			v-if="showFirstLast && totalVisible && modelValue > Math.ceil(totalVisible / 2) + 1 && length > totalVisible + 1"
+			class="gap"
+		>
 			...
 		</span>
 
@@ -33,14 +36,18 @@
 		</v-button>
 
 		<span
-			v-if="showFirstLast && modelValue < length - Math.ceil(totalVisible / 2) && length > totalVisible + 1"
+			v-if="
+				showFirstLast && totalVisible && modelValue < length - Math.ceil(totalVisible / 2) && length > totalVisible + 1
+			"
 			class="gap"
 		>
 			...
 		</span>
 
 		<v-button
-			v-if="showFirstLast && modelValue <= length - Math.ceil(totalVisible / 2) && length > totalVisible"
+			v-if="
+				showFirstLast && totalVisible && modelValue <= length - Math.ceil(totalVisible / 2) && length > totalVisible
+			"
 			:class="{ active: modelValue === length }"
 			class="page"
 			secondary
@@ -57,81 +64,80 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent, computed } from 'vue';
-import { isEmpty } from '@/utils/is-empty';
+<script setup lang="ts">
+import { computed } from 'vue';
 
-export default defineComponent({
-	props: {
-		disabled: {
-			type: Boolean,
-			default: false,
-		},
-		length: {
-			type: Number,
-			default: null,
-			required: true,
-			validator: (val: number) => val % 1 === 0,
-		},
-		totalVisible: {
-			type: Number,
-			default: undefined,
-			validator: (val: number) => val >= 0,
-		},
-		modelValue: {
-			type: Number,
-			default: null,
-		},
-		showFirstLast: {
-			type: Boolean,
-			default: false,
-		},
+const props = defineProps({
+	/** Disables the pagination */
+	disabled: {
+		type: Boolean,
+		default: false,
 	},
-	emits: ['update:modelValue'],
-	setup(props, { emit }) {
-		const visiblePages = computed<number[]>(() => {
-			if (props.totalVisible === undefined) return [];
-
-			let startPage: number;
-			let endPage: number;
-
-			if (isEmpty(props.totalVisible) || props.length <= props.totalVisible) {
-				startPage = 1;
-				endPage = props.length;
-			} else {
-				const pagesBeforeCurrentPage = Math.floor(props.totalVisible / 2);
-				const pagesAfterCurrentPage = Math.ceil(props.totalVisible / 2) - 1;
-
-				if (props.modelValue <= pagesBeforeCurrentPage) {
-					startPage = 1;
-					endPage = props.totalVisible;
-				} else if (props.modelValue + pagesAfterCurrentPage >= props.length) {
-					startPage = props.length - props.totalVisible + 1;
-					endPage = props.length;
-				} else {
-					startPage = props.modelValue - pagesBeforeCurrentPage;
-					endPage = props.modelValue + pagesAfterCurrentPage;
-				}
-			}
-
-			return Array.from(Array(endPage + 1 - startPage).keys()).map((i) => startPage + i);
-		});
-
-		return { toPage, toPrev, toNext, visiblePages };
-
-		function toPrev() {
-			toPage(props.modelValue - 1);
-		}
-
-		function toNext() {
-			toPage(props.modelValue + 1);
-		}
-
-		function toPage(page: number) {
-			emit('update:modelValue', page);
-		}
+	/** The amount of pages to render */
+	length: {
+		type: Number,
+		required: true,
+		validator: Number.isInteger,
+	},
+	/** Specify the max total visible pagination numbers */
+	totalVisible: {
+		type: Number,
+		default: undefined,
+		validator: (val: number) => val >= 0,
+	},
+	/** Currently selected page */
+	modelValue: {
+		type: Number,
+		default: null,
+	},
+	/** Show first/last buttons */
+	showFirstLast: {
+		type: Boolean,
+		default: false,
 	},
 });
+
+const emit = defineEmits(['update:modelValue']);
+
+const visiblePages = computed<number[]>(() => {
+	if (props.totalVisible === undefined) return [];
+
+	let startPage: number;
+	let endPage: number;
+
+	if (!Number.isInteger(props.totalVisible) || props.length <= props.totalVisible) {
+		startPage = 1;
+		endPage = props.length;
+	} else {
+		const pagesBeforeCurrentPage = Math.floor(props.totalVisible / 2);
+		const pagesAfterCurrentPage = Math.ceil(props.totalVisible / 2) - 1;
+
+		if (props.modelValue <= pagesBeforeCurrentPage) {
+			startPage = 1;
+			endPage = props.totalVisible;
+		} else if (props.modelValue + pagesAfterCurrentPage >= props.length) {
+			startPage = props.length - props.totalVisible + 1;
+			endPage = props.length;
+		} else {
+			startPage = props.modelValue - pagesBeforeCurrentPage;
+			endPage = props.modelValue + pagesAfterCurrentPage;
+		}
+	}
+
+	return Array.from(Array(endPage + 1 - startPage).keys()).map((i) => startPage + i);
+});
+
+function toPrev() {
+	toPage(props.modelValue - 1);
+}
+
+function toNext() {
+	toPage(props.modelValue + 1);
+}
+
+function toPage(page: number) {
+	emit('update:modelValue', page);
+}
 </script>
 
 <style scoped>

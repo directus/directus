@@ -1,0 +1,11 @@
+// Vitest Snapshot v1
+
+exports[`Mount component 1`] = `
+"<div class=\\"v-info info\\" data-v-29a9cf35=\\"\\">
+  <div class=\\"icon\\" data-v-29a9cf35=\\"\\">
+    <v-icon-stub large=\\"\\" name=\\"box\\" outline=\\"\\" data-v-29a9cf35=\\"\\"></v-icon-stub>
+  </div>
+  <h2 class=\\"title type-title\\" data-v-29a9cf35=\\"\\">This is an info</h2>
+  <p class=\\"content\\" data-v-29a9cf35=\\"\\">content</p>
+</div>"
+`;
