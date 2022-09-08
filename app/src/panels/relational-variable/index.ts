@@ -41,12 +41,12 @@ export default definePanel({
 		},
 		{
 			field: 'multiple',
-			name: '$t:multiple',
+			name: '$t:panels.relational-variable.multiple',
 			type: 'boolean',
 			meta: {
 				interface: 'boolean',
 				options: {
-					label: '$t:multiple',
+					label: '$t:panels.relational-variable.multiple-label',
 				},
 				width: 'half',
 			},

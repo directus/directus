@@ -2048,6 +2048,8 @@ panels:
     name: Global Relational Variable
     description: Set a global relational value for use in other Panels' filters
     variable_key: Variable Key
+    multiple: Multiple
+    multiple-label: Select multiple items
 triggers:
   common:
     response_body: Response Body
