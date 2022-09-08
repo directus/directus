@@ -14,6 +14,7 @@ export default definePanel({
 			field: 'field',
 			type: 'string',
 			meta: {
+				required: true,
 				interface: 'input',
 				width: 'full',
 				options: {
@@ -29,6 +30,7 @@ export default definePanel({
 			type: 'string',
 			name: '$t:collection',
 			meta: {
+				required: true,
 				interface: 'system-collection',
 				options: {
 					includeSystem: true,

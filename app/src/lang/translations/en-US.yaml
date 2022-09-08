@@ -2047,7 +2047,7 @@ panels:
   relational-variable:
     name: Global Relational Variable
     description: Set a global relational value for use in other Panels' filters
-    variable_key: Relational Variable Key
+    variable_key: Variable Key
 triggers:
   common:
     response_body: Response Body
