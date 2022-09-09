@@ -9,7 +9,7 @@ export default defineInterface({
 	icon: 'insert_photo',
 	component: InterfaceFileImage,
 	types: ['uuid'],
-	localTypes: ['image_crops'],
+	localTypes: ['file'],
 	group: 'relational',
 	relational: true,
 	options: [
