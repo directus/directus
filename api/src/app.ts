@@ -5,6 +5,7 @@ import path from 'path';
 import qs from 'qs';
 import { ServerResponse } from 'http';
 import helmet from 'helmet';
+import { getEntryFile } from '@directus/shared/utils/node';
 
 import activityRouter from './controllers/activity';
 import assetsRouter from './controllers/assets';
@@ -179,7 +180,8 @@ export default async function createApp(): Promise<express.Application> {
 	});
 
 	if (env.SERVE_APP) {
-		const adminPath = require.resolve('@directus/app', require.main ? { paths: [require.main.filename] } : undefined);
+		const entryFile = getEntryFile();
+		const adminPath = require.resolve('@directus/app', entryFile ? { paths: [entryFile] } : undefined);
 		const adminUrl = new Url(env.PUBLIC_URL).addPath('admin');
 
 		// Set the App's base path according to the APIs public URL

@@ -21,6 +21,7 @@ import {
 	getLocalExtensions,
 	getPackageExtensions,
 	resolvePackage,
+	getEntryFile,
 } from '@directus/shared/utils/node';
 import {
 	API_OR_HYBRID_EXTENSION_PACKAGE_TYPES,
@@ -324,9 +325,7 @@ class ExtensionManager {
 	}
 
 	private async getSharedDepsMapping(deps: string[]) {
-		const appDir = await fse.readdir(
-			path.join(resolvePackage('@directus/app', require.main?.filename), 'dist', 'assets')
-		);
+		const appDir = await fse.readdir(path.join(resolvePackage('@directus/app', getEntryFile()), 'dist', 'assets'));
 
 		const depsMapping: Record<string, string> = {};
 		for (const dep of deps) {
