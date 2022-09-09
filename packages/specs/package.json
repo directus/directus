@@ -1,6 +1,6 @@
 {
 	"name": "@directus/specs",
-	"version": "9.17.0",
+	"version": "9.17.4",
 	"description": "OpenAPI Specification of the Directus API",
 	"type": "module",
 	"exports": {

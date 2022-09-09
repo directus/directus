@@ -2,6 +2,55 @@
 
 _Changes marked with a :warning: contain potential breaking changes depending on your use of the package._
 
+## v9.17.4 (September 6, 2022)
+
+### :bug: Bug Fixes
+
+- **App**
+  - [#15438](https://github.com/directus/directus/pull/15438) Prevent v-highlight infinite loop (by @azrikahar)
+
+## v9.17.3 (September 6, 2022)
+
+### :bug: Bug Fixes
+
+- **App**
+  - [#15433](https://github.com/directus/directus/pull/15433) Merge with M2M junction value when validating in
+    drawer-item (by @licitdev)
+
+## v9.17.2 (September 6, 2022)
+
+### :bug: Bug Fixes
+
+- **App**
+  - [#15413](https://github.com/directus/directus/pull/15413) Fix drawer item empty form for o2m/treeview (by
+    @azrikahar)
+
+## v9.17.1 (September 5, 2022)
+
+### :sparkles: New Features
+
+- **API**
+  - [#15384](https://github.com/directus/directus/pull/15384) Adding SendGrid email transport (by @naskio)
+
+### :rocket: Improvements
+
+- **App**
+  - [#14605](https://github.com/directus/directus/pull/14605) fix divider not showing/ showing when not needed
+    (drawer-item) (by @NigmaX)
+
+### :bug: Bug Fixes
+
+- **API**
+  - [#15403](https://github.com/directus/directus/pull/15403) Disable foreign check outside the trx in SQLite (by
+    @licitdev)
+- **App**
+  - [#15396](https://github.com/directus/directus/pull/15396) #15395 fix: date-fns date format for tr-TR translations
+    (by @kadiresen)
+  - [#15386](https://github.com/directus/directus/pull/15386) Merge with existing item when validating in drawer-item
+    (by @licitdev)
+  - [#15385](https://github.com/directus/directus/pull/15385) Set limit as -1 for local exports when field is cleared
+    (by @licitdev)
+
 ## v9.17.0 (September 2, 2022)
 
 ### :sparkles: New Features

@@ -1,6 +1,6 @@
 {
 	"name": "@directus/shared",
-	"version": "9.17.0",
+	"version": "9.17.4",
 	"type": "module",
 	"description": "Code shared between all directus packages.",
 	"sideEffects": false,

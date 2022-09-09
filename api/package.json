@@ -1,6 +1,6 @@
 {
 	"name": "directus",
-	"version": "9.17.0",
+	"version": "9.17.4",
 	"type": "module",
 	"license": "GPL-3.0-only",
 	"homepage": "https://github.com/directus/directus#readme",
