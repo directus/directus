@@ -23,7 +23,7 @@ const collectionExists: RequestHandler = asyncHandler(async (req, _res, next) =>
 
 		req.singleton = !!systemRow?.singleton;
 	} else {
-		req.singleton = req.schema.collections[req.collection].singleton;
+		req.singleton = req.schema.collections[req.collection]!.singleton;
 	}
 
 	return next();

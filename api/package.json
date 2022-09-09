@@ -84,7 +84,7 @@
 		"@directus/drive-gcs": "workspace:*",
 		"@directus/drive-s3": "workspace:*",
 		"@directus/extensions-sdk": "^9.14.1",
-		"@directus/format-title": "^9.15.0",
+		"@directus/format-title": "^10.0.0",
 		"@directus/schema": "workspace:*",
 		"@directus/shared": "workspace:*",
 		"@directus/specs": "workspace:*",
@@ -228,7 +228,7 @@
 		"rimraf": "3.0.2",
 		"supertest": "^6.2.3",
 		"tsx": "^3.9.0",
-		"typescript": "4.7.3",
+		"typescript": "^4.8.2",
 		"vitest": "^0.18.1"
 	}
 }

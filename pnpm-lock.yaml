@@ -73,7 +73,7 @@ importers:
       '@directus/drive-gcs': workspace:*
       '@directus/drive-s3': workspace:*
       '@directus/extensions-sdk': ^9.14.1
-      '@directus/format-title': ^9.15.0
+      '@directus/format-title': ^10.0.0
       '@directus/schema': workspace:*
       '@directus/shared': workspace:*
       '@directus/specs': workspace:*
@@ -207,7 +207,7 @@ importers:
       tedious: ^13.0.0
       tmp-promise: ^3.0.3
       tsx: ^3.9.0
-      typescript: 4.7.3
+      typescript: ^4.8.2
       update-check: ^1.5.4
       uuid: ^8.3.2
       uuid-validate: 0.0.3
@@ -221,8 +221,8 @@ importers:
       '@directus/drive-azure': link:../packages/drive-azure
       '@directus/drive-gcs': link:../packages/drive-gcs
       '@directus/drive-s3': link:../packages/drive-s3
-      '@directus/extensions-sdk': 9.17.1_d6pbstp52yk7qbaiktwo5c5e64
-      '@directus/format-title': 9.15.0
+      '@directus/extensions-sdk': 9.17.1_r2bk3stu5al3k2mn7th3iv6jcu
+      '@directus/format-title': 10.0.0
       '@directus/schema': link:../packages/schema
       '@directus/shared': link:../packages/shared
       '@directus/specs': link:../packages/specs
@@ -363,7 +363,7 @@ importers:
       rimraf: 3.0.2
       supertest: 6.2.4
       tsx: 3.9.0
-      typescript: 4.7.3
+      typescript: 4.8.2
       vitest: 0.18.1
 
   app:
@@ -3226,7 +3226,7 @@ packages:
     resolution: {integrity: sha512-04GQluhaOciWfZC8p5Fe9fiZk6AvaP2cVCTXN97cDviwf0I8Vq06Rkacg21V7fy+CVrRop3xt4jbETzdKnqXFg==}
     dev: true
 
-  /@directus/extensions-sdk/9.17.1_d6pbstp52yk7qbaiktwo5c5e64:
+  /@directus/extensions-sdk/9.17.1_r2bk3stu5al3k2mn7th3iv6jcu:
     resolution: {integrity: sha512-VsEFK+p9EgjZDvFXWJI+6Yp7wdWJgrhAS7dC/rAi/mM5k6R7oBDY6GpTDYcX0xSa58eIrET+N5yzfAeAAC9J8g==}
     engines: {node: '>=12.20.0'}
     hasBin: true
@@ -3245,7 +3245,7 @@ packages:
       rollup: 2.77.0
       rollup-plugin-styles: 4.0.0_rollup@2.77.0
       rollup-plugin-terser: 7.0.2_rollup@2.77.0
-      rollup-plugin-typescript2: 0.31.2_elo3jdiacgiewnz2pljaltpgp4
+      rollup-plugin-typescript2: 0.31.2_3ovunycq54yly6uix3e77yk3bq
       rollup-plugin-vue: 6.0.0_@vue+compiler-sfc@3.2.37
     transitivePeerDependencies:
       - better-sqlite3
@@ -3294,9 +3294,15 @@ packages:
       - typescript
     dev: true
 
+  /@directus/format-title/10.0.0:
+    resolution: {integrity: sha512-iMXP8yQb0UKAMGRHAY7IkNXEGdUqQDvlu1aAkPARYah4lMhEU8E5KgkXdOCPQaxt6Wy0gXb7DPMjeSlKyBKCxg==}
+    engines: {node: '>=6.0.0'}
+    dev: false
+
   /@directus/format-title/9.15.0:
     resolution: {integrity: sha512-2korjLjPrVA3kZlMiGWIJwWdiqwK5t9d84cMriUW4HIWDIvexjHRpOMX0Ju/89RqdXwIYbR19xqyTlK2GKQbIw==}
     engines: {node: '>=6.0.0'}
+    dev: true
 
   /@directus/shared/9.17.1:
     resolution: {integrity: sha512-ypvmnx298AEAXwRb6wkbH7E/gAM2MuD1EP4Kg1TErXIxkteoZP9ZQY3F7s/mJ8nsbkD59uimvnM3ew+D1kXCww==}
@@ -18260,6 +18266,22 @@ packages:
       serialize-javascript: 4.0.0
       terser: 5.14.2
 
+  /rollup-plugin-typescript2/0.31.2_3ovunycq54yly6uix3e77yk3bq:
+    resolution: {integrity: sha512-hRwEYR1C8xDGVVMFJQdEVnNAeWRvpaY97g5mp3IeLnzhNXzSVq78Ye/BJ9PAaUfN4DXa/uDnqerifMOaMFY54Q==}
+    peerDependencies:
+      rollup: '>=1.26.3'
+      typescript: '>=2.4.0'
+    dependencies:
+      '@rollup/pluginutils': 4.2.1
+      '@yarn-tool/resolve-package': 1.0.47
+      find-cache-dir: 3.3.2
+      fs-extra: 10.1.0
+      resolve: 1.22.1
+      rollup: 2.77.0
+      tslib: 2.4.0
+      typescript: 4.8.2
+    dev: false
+
   /rollup-plugin-typescript2/0.31.2_6ifrfgdmoewlzrgt2kpl7sy6ce:
     resolution: {integrity: sha512-hRwEYR1C8xDGVVMFJQdEVnNAeWRvpaY97g5mp3IeLnzhNXzSVq78Ye/BJ9PAaUfN4DXa/uDnqerifMOaMFY54Q==}
     peerDependencies:
@@ -18290,6 +18312,7 @@ packages:
       rollup: 2.77.0
       tslib: 2.4.0
       typescript: 4.7.3
+    dev: true
 
   /rollup-plugin-vue/6.0.0_@vue+compiler-sfc@3.2.37:
     resolution: {integrity: sha512-oVvUd84d5u73M2HYM3XsMDLtZRIA/tw2U0dmHlXU2UWP5JARYHzh/U9vcxaN/x/9MrepY7VH3pHFeOhrWpxs/Q==}
@@ -20199,12 +20222,12 @@ packages:
     resolution: {integrity: sha512-WOkT3XYvrpXx4vMMqlD+8R8R37fZkjyLGlxavMc4iB8lrl8L0DeTcHbYgw/v0N/z9wAFsgBhcsF0ruoySS22mA==}
     engines: {node: '>=4.2.0'}
     hasBin: true
+    dev: true
 
   /typescript/4.8.2:
     resolution: {integrity: sha512-C0I1UsrrDHo2fYI5oaCGbSejwX4ch+9Y5jTQELvovfmFkK3HHSZJB8MSJcWLmCUBzQBchCrZ9rMRV6GuNrvGtw==}
     engines: {node: '>=4.2.0'}
     hasBin: true
-    dev: true
 
   /uc.micro/1.0.6:
     resolution: {integrity: sha512-8Y75pvTYkLJW2hWQHXxoqRgV7qb9B+9vFEtidML+7koHUFapnVJAZ6cKs+Qjz5Aw3aZWHMC6u0wJE3At+nSGwA==}

@@ -155,12 +155,14 @@ export class GraphQLService {
 			throw new InvalidPayloadException('GraphQL execution error.', { graphqlErrors: [err.message] });
 		}
 
-		const formattedResult: FormattedExecutionResult = {
-			...result,
-			errors: result.errors?.map(formatError),
-		};
+		if(result.errors) {
+			return {
+				...result,
+				errors: result.errors.map(formatError),
+			};
+		}
 
-		return formattedResult;
+		return result as FormattedExecutionResult;
 	}
 
 	/**
@@ -2801,7 +2803,7 @@ export class GraphQLService {
 						role: GraphQLNonNull(GraphQLString),
 						invite_url: GraphQLString,
 					},
-					resolve: async (_, args: any) => {
+					resolve: async (_, args) => {
 						const service = new UsersService({
 							accountability: this.accountability,
 							schema: this.schema,

@@ -1,4 +1,4 @@
-import FormatTitle from '@directus/format-title';
+import formatTitle from '@directus/format-title';
 import { openapi } from '@directus/specs/index.js';
 import type { Knex } from 'knex';
 import { cloneDeep, mergeWith } from 'lodash-es';
@@ -22,8 +22,6 @@ import { FieldsService } from './fields.js';
 import { GraphQLService } from './graphql/index.js';
 import { RelationsService } from './relations.js';
 import { importFile } from '../utils/importFile.js';
-
-const { formatTitle } = FormatTitle as any; // TODO: WTF is this?
 
 const version = JSON.parse(importFile('../package.json')).version;
 

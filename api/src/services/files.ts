@@ -1,4 +1,4 @@
-import FormatTitle from '@directus/format-title';
+import formatTitle from '@directus/format-title';
 import axios, { AxiosResponse } from 'axios';
 import exifr from 'exifr';
 import { clone, pick } from 'lodash-es';
@@ -20,8 +20,6 @@ import { ItemsService } from './items.js';
 import net from 'net';
 import os from 'os';
 import encodeURL from 'encodeurl';
-
-const { formatTitle } = FormatTitle as any; // TODO: WTF is this?
 
 const lookupDNS = promisify(lookup);
 
