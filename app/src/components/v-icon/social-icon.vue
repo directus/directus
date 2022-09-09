@@ -1,28 +1,30 @@
-<script lang="ts">
-import { defineComponent, h, PropType } from 'vue';
+<template>
+	<render />
+</template>
+
+<script setup lang="ts">
+import { h } from 'vue';
 import { icon, findIconDefinition, IconName } from '@fortawesome/fontawesome-svg-core';
 
-export default defineComponent({
-	props: {
-		name: {
-			type: String as PropType<IconName>,
-			required: true,
-		},
-	},
-	render() {
-		const socialIcon = icon(findIconDefinition({ prefix: 'fab', iconName: this.name }));
+interface Props {
+	name: IconName;
+}
 
-		if (socialIcon && socialIcon.abstract[0] && socialIcon.abstract[0].children && socialIcon.abstract[0].children[0]) {
-			return h(
-				'svg',
-				{
-					...socialIcon.abstract[0].attributes,
-				},
-				h('path', { ...socialIcon.abstract![0].children![0].attributes })
-			);
-		}
+const props = defineProps<Props>();
 
-		return null;
-	},
-});
+const render = () => {
+	const socialIcon = icon(findIconDefinition({ prefix: 'fab', iconName: props.name }));
+
+	if (socialIcon && socialIcon.abstract[0] && socialIcon.abstract[0].children && socialIcon.abstract[0].children[0]) {
+		return h(
+			'svg',
+			{
+				...socialIcon.abstract[0].attributes,
+			},
+			h('path', { ...socialIcon.abstract![0].children![0].attributes })
+		);
+	}
+
+	return null;
+};
 </script>
