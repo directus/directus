@@ -64,6 +64,7 @@ export default definePanel({
 				hidden: true,
 				options: {
 					placeholder: '$t:decimals_placeholder',
+					min: 0,
 				},
 				conditions: [
 					{
