@@ -59,12 +59,6 @@ function deleteItem(elem: Record<string, any>) {
 </script>
 
 <style lang="scss" scoped>
-.bordered {
-	border: var(--border-width) solid var(--border-normal);
-	border-radius: var(--border-radius-outline);
-	padding: var(--v-card-padding);
-}
-
 .v-list {
 	margin-top: 8px;
 	--v-list-padding: 0 0 4px;
