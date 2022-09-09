@@ -227,6 +227,10 @@ function applyImageTransformationsToUrl(url: string): string {
 		if (cropInfo.value.image_transformations.flop) {
 			readyTransformations.push('["flop"]');
 		}
+		const rotation = cropInfo.value.image_transformations.rotate
+		if (rotation != null) {
+			readyTransformations.push(`["rotate", ${rotation}]`);
+		}
 	}
 
 	const coordinates = cropInfoForEditor.value.coordinates;

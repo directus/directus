@@ -311,8 +311,9 @@ export default defineComponent({
 				if (props.cropInfo?.imageTransformations.flop) {
 					readyTransformations.push('["flop"]');
 				}
-				if (props.cropInfo?.imageTransformations.rotate) {
-					readyTransformations.push(`["rotate", 90]`);
+				const rotation = props.cropInfo?.imageTransformations.rotate;
+				if (rotation) {
+					readyTransformations.push(`["rotate", ${rotation}]`);
 				}
 			}
 
@@ -381,7 +382,7 @@ export default defineComponent({
 
 							if (cropperData && props.cropInfo.cropCollection && props.cropInfo.id) {
 								const coordinates =
-									dragMode.value == 'crop'
+									cropping.value
 										? {
 												x: imageTransformations.value.flop
 													? imageData.value.width - (Math.round(cropperData.x) + Math.round(cropperData.width))
@@ -392,9 +393,12 @@ export default defineComponent({
 												width: Math.round(cropperData.width),
 												height: Math.round(cropperData.height),
 										  }
-										: {};
+										: { x: null, y: null, width: null, height: null };
 
-								imageTransformations.value.rotate = cropperData.rotate
+								imageTransformations.value.rotate = imageTransformations.value.rotate
+									? imageTransformations.value.rotate + cropperData.rotate
+									: cropperData.rotate;
+								imageTransformations.value.rotate %= -360;
 
 								await api.patch(`/items/${props.cropInfo.cropCollection}/${props.cropInfo.id}`, {
 									...coordinates,

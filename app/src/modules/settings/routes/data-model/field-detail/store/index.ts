@@ -53,9 +53,6 @@ export const useFieldDetailStore = defineStore({
 			meta: {},
 		} as DeepPartial<Field>,
 
-		// Create the field on the current collection
-		createFieldOnCurrentCollection: true,
-
 		// Relations that will be upserted as part of this change
 		relations: {
 			m2o: undefined as DeepPartial<Relation> | undefined,
@@ -163,9 +160,8 @@ export const useFieldDetailStore = defineStore({
 			this.saving = true;
 
 			try {
-				if (this.createFieldOnCurrentCollection) {
-					await fieldsStore.upsertField(this.collection, this.editing, this.field);
-				}
+				await fieldsStore.upsertField(this.collection, this.editing, this.field);
+
 				for (const collection of Object.values(this.collections)) {
 					if (!collection || !collection.collection) continue;
 					await collectionsStore.upsertCollection(collection?.collection, collection);
