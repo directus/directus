@@ -311,6 +311,9 @@ export default defineComponent({
 				if (props.cropInfo?.imageTransformations.flop) {
 					readyTransformations.push('["flop"]');
 				}
+				if (props.cropInfo?.imageTransformations.rotate) {
+					readyTransformations.push(`["rotate", 90]`);
+				}
 			}
 
 			if (readyTransformations.length > 0) {
@@ -390,6 +393,8 @@ export default defineComponent({
 												height: Math.round(cropperData.height),
 										  }
 										: {};
+
+								imageTransformations.value.rotate = cropperData.rotate
 
 								await api.patch(`/items/${props.cropInfo.cropCollection}/${props.cropInfo.id}`, {
 									...coordinates,
