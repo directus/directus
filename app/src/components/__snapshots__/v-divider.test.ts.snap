@@ -1,0 +1,7 @@
+// Vitest Snapshot v1
+
+exports[`Mount component 1`] = `
+"<div class=\\"v-divider inlineTitle\\" data-v-cb64903c=\\"\\"><span class=\\"wrapper\\" data-v-cb64903c=\\"\\"><span class=\\"type-text\\" data-v-cb64903c=\\"\\">Default slot</span></span>
+  <hr role=\\"separator\\" aria-orientation=\\"horizontal\\" data-v-cb64903c=\\"\\">
+</div>"
+`;

@@ -14,57 +14,48 @@
 	</button>
 </template>
 
-<script lang="ts">
-import { defineComponent, computed } from 'vue';
+<script setup lang="ts">
+import { computed } from 'vue';
 
-export default defineComponent({
-	props: {
-		value: {
-			type: [String, Number],
-			required: true,
-		},
-		modelValue: {
-			type: [String, Number],
-			default: null,
-		},
-		label: {
-			type: String,
-			default: null,
-		},
-		disabled: {
-			type: Boolean,
-			default: false,
-		},
-		iconOn: {
-			type: String,
-			default: 'radio_button_checked',
-		},
-		iconOff: {
-			type: String,
-			default: 'radio_button_unchecked',
-		},
-		block: {
-			type: Boolean,
-			default: false,
-		},
-	},
-	emits: ['update:modelValue'],
-	setup(props, { emit }) {
-		const isChecked = computed<boolean>(() => {
-			return props.modelValue === props.value;
-		});
+interface Props {
+	/** What value to represent when selected */
+	value: string | number;
+	/** If `value` and `modelValue` match, the radio is selected */
+	modelValue?: string | number | null;
+	/** Label to render next to the radio */
+	label?: string | null;
+	/** Disable the radio button */
+	disabled?: boolean;
+	/** Change the icon to display when enabled */
+	iconOn?: string;
+	/** Change the icon to display when disabled */
+	iconOff?: string;
+	/** Render the radio in a block like style */
+	block?: boolean;
+}
 
-		const icon = computed<string>(() => {
-			return isChecked.value ? props.iconOn : props.iconOff;
-		});
-
-		return { isChecked, emitValue, icon };
-
-		function emitValue(): void {
-			emit('update:modelValue', props.value);
-		}
-	},
+const props = withDefaults(defineProps<Props>(), {
+	modelValue: null,
+	label: null,
+	disabled: false,
+	iconOn: 'radio_button_checked',
+	iconOff: 'radio_button_unchecked',
+	block: false,
 });
+
+const emit = defineEmits(['update:modelValue']);
+
+const isChecked = computed<boolean>(() => {
+	return props.modelValue === props.value;
+});
+
+const icon = computed<string>(() => {
+	return isChecked.value ? props.iconOn : props.iconOff;
+});
+
+function emitValue(): void {
+	emit('update:modelValue', props.value);
+}
 </script>
 
 <style>

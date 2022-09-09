@@ -247,6 +247,8 @@ export class FieldsService {
 			throw new ForbiddenException();
 		}
 
+		const runPostColumnChange = await this.helpers.schema.preColumnChange();
+
 		try {
 			const exists =
 				field.field in this.schema.collections[collection].fields ||
@@ -321,6 +323,10 @@ export class FieldsService {
 				);
 			});
 		} finally {
+			if (runPostColumnChange) {
+				await this.helpers.schema.postColumnChange();
+			}
+
 			if (this.cache && env.CACHE_AUTO_PURGE) {
 				await this.cache.clear();
 			}
@@ -333,6 +339,8 @@ export class FieldsService {
 		if (this.accountability && this.accountability.admin !== true) {
 			throw new ForbiddenException();
 		}
+
+		const runPostColumnChange = await this.helpers.schema.preColumnChange();
 
 		try {
 			const hookAdjustedField = await emitter.emitFilter(
@@ -407,6 +415,10 @@ export class FieldsService {
 
 			return field.field;
 		} finally {
+			if (runPostColumnChange) {
+				await this.helpers.schema.postColumnChange();
+			}
+
 			if (this.cache && env.CACHE_AUTO_PURGE) {
 				await this.cache.clear();
 			}
@@ -420,7 +432,7 @@ export class FieldsService {
 			throw new ForbiddenException();
 		}
 
-		const runPostColumnDelete = await this.helpers.schema.preColumnDelete();
+		const runPostColumnChange = await this.helpers.schema.preColumnChange();
 
 		try {
 			await emitter.emitFilter(
@@ -537,8 +549,8 @@ export class FieldsService {
 				}
 			);
 		} finally {
-			if (runPostColumnDelete) {
-				await this.helpers.schema.postColumnDelete();
+			if (runPostColumnChange) {
+				await this.helpers.schema.postColumnChange();
 			}
 
 			if (this.cache && env.CACHE_AUTO_PURGE) {

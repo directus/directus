@@ -2,6 +2,161 @@
 
 _Changes marked with a :warning: contain potential breaking changes depending on your use of the package._
 
+## v9.17.4 (September 6, 2022)
+
+### :bug: Bug Fixes
+
+- **App**
+  - [#15438](https://github.com/directus/directus/pull/15438) Prevent v-highlight infinite loop (by @azrikahar)
+
+## v9.17.3 (September 6, 2022)
+
+### :bug: Bug Fixes
+
+- **App**
+  - [#15433](https://github.com/directus/directus/pull/15433) Merge with M2M junction value when validating in
+    drawer-item (by @licitdev)
+
+## v9.17.2 (September 6, 2022)
+
+### :bug: Bug Fixes
+
+- **App**
+  - [#15413](https://github.com/directus/directus/pull/15413) Fix drawer item empty form for o2m/treeview (by
+    @azrikahar)
+
+## v9.17.1 (September 5, 2022)
+
+### :sparkles: New Features
+
+- **API**
+  - [#15384](https://github.com/directus/directus/pull/15384) Adding SendGrid email transport (by @naskio)
+
+### :rocket: Improvements
+
+- **App**
+  - [#14605](https://github.com/directus/directus/pull/14605) fix divider not showing/ showing when not needed
+    (drawer-item) (by @NigmaX)
+
+### :bug: Bug Fixes
+
+- **API**
+  - [#15403](https://github.com/directus/directus/pull/15403) Disable foreign check outside the trx in SQLite (by
+    @licitdev)
+- **App**
+  - [#15396](https://github.com/directus/directus/pull/15396) #15395 fix: date-fns date format for tr-TR translations
+    (by @kadiresen)
+  - [#15386](https://github.com/directus/directus/pull/15386) Merge with existing item when validating in drawer-item
+    (by @licitdev)
+  - [#15385](https://github.com/directus/directus/pull/15385) Set limit as -1 for local exports when field is cleared
+    (by @licitdev)
+
+## v9.17.0 (September 2, 2022)
+
+### :sparkles: New Features
+
+- **Misc.**
+  - [#10551](https://github.com/directus/directus/pull/10551) Implement query hook (by @sebj54)
+
+### :rocket: Improvements
+
+- **App**
+  - [#15366](https://github.com/directus/directus/pull/15366) Reset value when no changes (by @Nitwel)
+  - [#15273](https://github.com/directus/directus/pull/15273) Add origin to accountability (by @licitdev)
+  - [#15267](https://github.com/directus/directus/pull/15267) Revert list style for O2M and M2M interfaces (by
+    @azrikahar)
+  - [#15243](https://github.com/directus/directus/pull/15243) Allow for displaying lists in render template (by @Nitwel)
+  - [#15218](https://github.com/directus/directus/pull/15218) Add missing translations (by @Nitwel)
+  - [#15200](https://github.com/directus/directus/pull/15200) Automatic range on insights graph (by @HuldaCZ)
+  - [#15128](https://github.com/directus/directus/pull/15128) Make all options from upload menu directly accessible (by
+    @Tummerhore)
+  - [#15094](https://github.com/directus/directus/pull/15094) Add Components Package (by @Nitwel)
+  - [#14700](https://github.com/directus/directus/pull/14700) Refresh current item on flow run & prompt when there's
+    unsaved changes (by @azrikahar)
+- **API**
+  - [#15327](https://github.com/directus/directus/pull/15327) Allow setting SMTP name (by @rijkvanzanten)
+  - [#15302](https://github.com/directus/directus/pull/15302) Added COOKIE_OPTIONS to /refresh (by @j0hnfl0w)
+  - [#15284](https://github.com/directus/directus/pull/15284) Make threshold checks configurable (by @nazarevrn)
+  - [#15273](https://github.com/directus/directus/pull/15273) Add origin to accountability (by @licitdev)
+  - [#15257](https://github.com/directus/directus/pull/15257) Use encodeurl package to escape URLs for axios (by
+    @licitdev)
+  - [#15251](https://github.com/directus/directus/pull/15251) Remove functions from non-read actions in GraphQL types
+    (by @licitdev)
+- **Extensions**
+  - [#15213](https://github.com/directus/directus/pull/15213) Be smarter when scaffolding an extension and choosing the
+    package name and target path based on the user-provided name (by @nickrum)
+
+### :bug: Bug Fixes
+
+- **API**
+  - [#15369](https://github.com/directus/directus/pull/15369) Don't reset body on singleton non-SEARCH reqs (by
+    @rijkvanzanten)
+  - [#15354](https://github.com/directus/directus/pull/15354) Do not parse json in transform operation if it is already
+    an object (by @nickrum)
+  - [#15339](https://github.com/directus/directus/pull/15339) Fix SEARCH query not functioning on singleton collections
+    (by @rijkvanzanten)
+  - [#15308](https://github.com/directus/directus/pull/15308) Missing headers for invalid json requests (by @br41nslug)
+  - [#15283](https://github.com/directus/directus/pull/15283) Throw rejected error for filter event in Flows (by
+    @licitdev)
+  - [#15241](https://github.com/directus/directus/pull/15241) Sort is set to NULL for new items (by @br41nslug)
+  - [#15228](https://github.com/directus/directus/pull/15228) Return empty array if scope is not defined (by @licitdev)
+  - [#15215](https://github.com/directus/directus/pull/15215) Expose login stall time environment variable (by
+    @licitdev)
+  - [#15209](https://github.com/directus/directus/pull/15209) Update watched extensions when enabling watcher (by
+    @nickrum)
+  - [#15164](https://github.com/directus/directus/pull/15164) Update workspace tile position only when there are values
+    defined (by @licitdev)
+- **App**
+  - [#15361](https://github.com/directus/directus/pull/15361) Fix custom icons (by @azrikahar)
+  - [#15355](https://github.com/directus/directus/pull/15355) check that collection exists and not a singleton on panels
+    (by @freekrai)
+  - [#15352](https://github.com/directus/directus/pull/15352) Prevent sending the primary key for newly created
+    relational items (by @br41nslug)
+  - [#15337](https://github.com/directus/directus/pull/15337) Current items cleared in o2m/m2m when selecting nothing
+    with "add existing" (by @br41nslug)
+  - [#15336](https://github.com/directus/directus/pull/15336) Fix drawer (by @Nitwel)
+  - [#15328](https://github.com/directus/directus/pull/15328) Add max height to CodeMirror scroller (by @rijkvanzanten)
+  - [#15310](https://github.com/directus/directus/pull/15310) Default values ignored for validations affected by
+    conditions (by @br41nslug)
+  - [#15304](https://github.com/directus/directus/pull/15304) Fix pagination on disabled o2m and m2m fields (by
+    @azrikahar)
+  - [#15276](https://github.com/directus/directus/pull/15276) Don't throw error if entry is null or undefined (by
+    @u12206050)
+  - [#15245](https://github.com/directus/directus/pull/15245) 100 related items being deleted from m2m relationship (by
+    @u12206050)
+  - [#15243](https://github.com/directus/directus/pull/15243) Allow for displaying lists in render template (by @Nitwel)
+  - [#15241](https://github.com/directus/directus/pull/15241) Sort is set to NULL for new items (by @br41nslug)
+  - [#15238](https://github.com/directus/directus/pull/15238) Add collection info to conditions (by @Nitwel)
+  - [#15236](https://github.com/directus/directus/pull/15236) Fix filter not resetting on bookmarks (by @Nitwel)
+  - [#15228](https://github.com/directus/directus/pull/15228) Return empty array if scope is not defined (by @licitdev)
+  - [#15220](https://github.com/directus/directus/pull/15220) Fix and clean up m2m & o2m (by @Nitwel)
+  - [#15211](https://github.com/directus/directus/pull/15211) Make variable panels editable in non edit mode (by
+    @rijkvanzanten)
+  - [#15210](https://github.com/directus/directus/pull/15210) Can't edit o2m relations to directus_files collection (by
+    @br41nslug)
+  - [#15155](https://github.com/directus/directus/pull/15155) Fix displaying values from deeper relationships in table
+    (by @u12206050)
+  - [#15115](https://github.com/directus/directus/pull/15115) Fix thumbnail overflow in render-template (by @azrikahar)
+
+### :sponge: Optimizations
+
+- **Misc.**
+  - [#15374](https://github.com/directus/directus/pull/15374) Move updated components to app (by @rijkvanzanten)
+  - [#15358](https://github.com/directus/directus/pull/15358) Fix lint warnings (by @licitdev)
+  - [#15268](https://github.com/directus/directus/pull/15268) Add new flow env to allowed list & remove comment leftover
+    (by @paescuj)
+- **API**
+  - [#15340](https://github.com/directus/directus/pull/15340) Simplify ("unoverengineer") async-handler (by
+    @rijkvanzanten)
+- **App**
+  - [#15332](https://github.com/directus/directus/pull/15332) Move get-with-arrays to shared (by @rijkvanzanten)
+- **shared**
+  - [#15332](https://github.com/directus/directus/pull/15332) Move get-with-arrays to shared (by @rijkvanzanten)
+
+### :package: Dependency Updates
+
+- [#15234](https://github.com/directus/directus/pull/15234) Update node-cron to 3.0.2 (by @tenebrius)
+
 ## v9.16.1 (August 19, 2022)
 
 ### :bug: Bug Fixes
