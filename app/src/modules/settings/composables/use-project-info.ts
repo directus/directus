@@ -1,6 +1,4 @@
 import api from '@/api';
-import bytes from 'bytes';
-import prettyMS from 'pretty-ms';
 import { computed, ComputedRef, ref, Ref } from 'vue';
 
 type ServerInfo = {
