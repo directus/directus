@@ -8,4 +8,6 @@ interface PhusionPassenger extends EventEmitter {
 	};
 }
 
-export declare const PhusionPassenger: PhusionPassenger;
+declare global {
+	const PhusionPassenger: PhusionPassenger | undefined;
+}
