@@ -56,7 +56,8 @@ import globby from 'globby';
 import type { EventHandler } from './types/index.js';
 import { JobQueue } from './utils/job-queue.js';
 import { fileURLToPath } from 'url';
-import {NodeVM} from 'vm2';
+import { createRequire } from 'module';
+import { NodeVM } from 'vm2';
 
 let extensionManager: ExtensionManager | undefined;
 
@@ -121,10 +122,10 @@ class ExtensionManager {
 			...options,
 		};
 
-		if (!prevOptions.watch && this.options.watch) {
-			this.initializeWatcher();
-		} else if (prevOptions.watch && !this.options.watch) {
+		if (prevOptions.watch && !this.options.watch) {
 			await this.closeWatcher();
+		} else if (this.options.watch) {
+			this.initializeWatcher();
 		}
 
 		if (!this.isLoaded) {
@@ -333,8 +334,10 @@ class ExtensionManager {
 	}
 
 	private async getSharedDepsMapping(deps: string[]) {
+		const require = createRequire(import.meta.url);
+
 		const appDir = await fse.readdir(
-			path.join(resolvePackage('@directus/app'), 'dist', 'assets')
+			path.join(resolvePackage('@directus/app', import.meta.url, require.main?.filename), 'dist', 'assets')
 		);
 
 		const depsMapping: Record<string, string> = {};
@@ -360,7 +363,7 @@ class ExtensionManager {
 		for (const hook of hooks) {
 			try {
 				const hookPath = path.resolve(hook.path, hook.entrypoint);
-				const hookInstance: HookConfig | { default: HookConfig } = this.vm.runFile(hookPath)
+				const hookInstance: HookConfig | { default: HookConfig } = this.vm.runFile(hookPath);
 
 				const config = getModuleDefault(hookInstance);
 

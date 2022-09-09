@@ -21,13 +21,13 @@ import { isIn, isTypeIn } from '../array-helpers.js';
 
 async function resolvePackageExtensions(
 	extensionNames: string[],
-	_root: string,
+	root: string,
 	types: readonly ExtensionPackageType[]
 ): Promise<ExtensionPackage[]> {
 	const extensions: ExtensionPackage[] = [];
 
 	for (const extensionName of extensionNames) {
-		const extensionPath = resolvePackage(extensionName);
+		const extensionPath = resolvePackage(extensionName, import.meta.url, root);
 		const extensionManifest: ExtensionManifestRaw = await fse.readJSON(path.join(extensionPath, 'package.json'));
 
 		if (!validateExtensionManifest(extensionManifest)) {
