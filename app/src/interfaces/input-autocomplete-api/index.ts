@@ -8,8 +8,8 @@ export default defineInterface({
 	description: '$t:interfaces.input-autocomplete-api.description',
 	icon: 'find_in_page',
 	component: InterfaceInputAutocompleteAPI,
-	types: ['string', 'text'],
-	localTypes: ['standard'],
+	types: ['uuid', 'string', 'text', 'integer', 'bigInteger'],
+	localTypes: ['standard', 'm2o'],
 	group: 'standard',
 	recommendedDisplays: ['formatted-value'],
 	options: [
