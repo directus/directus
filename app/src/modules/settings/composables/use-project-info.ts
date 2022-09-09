@@ -7,16 +7,6 @@ type ServerInfo = {
 	directus: {
 		version: string;
 	};
-	node: {
-		version: string;
-		uptime: number;
-	};
-	os: {
-		type: string;
-		version: string;
-		uptime: number;
-		totalmem: number;
-	};
 };
 
 type UsableProjectInfo = {
@@ -24,16 +14,6 @@ type UsableProjectInfo = {
 	parsedInfo: ComputedRef<{
 		directus: {
 			version: string;
-		};
-		node: {
-			version: string;
-			uptime: string;
-		};
-		os: {
-			type: string;
-			version: string;
-			uptime: string;
-			totalmem: string;
 		};
 	} | null>;
 	loading: Ref<boolean>;
@@ -51,16 +31,6 @@ export function useProjectInfo(): UsableProjectInfo {
 		return {
 			directus: {
 				version: info.value.directus.version,
-			},
-			node: {
-				version: info.value.node.version,
-				uptime: prettyMS(info.value.node.uptime * 1000),
-			},
-			os: {
-				type: info.value.os.type,
-				version: info.value.os.version,
-				uptime: prettyMS(info.value.os.uptime * 1000),
-				totalmem: bytes(info.value.os.totalmem),
 			},
 		};
 	});

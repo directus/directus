@@ -120,12 +120,6 @@ public_description: Controls what API data is available without authenticating.
 admin_description: Initial administrative role with unrestricted App/API access.
 not_allowed: Not Allowed
 directus_version: Directus Version
-node_version: Node Version
-node_uptime: Node Uptime
-os_type: OS Type
-os_version: OS Version
-os_uptime: OS Uptime
-os_totalmem: OS Memory
 archive: Archive
 archive_confirm: Are you sure you want to archive this item?
 archive_confirm_count: >-
