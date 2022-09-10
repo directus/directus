@@ -136,6 +136,7 @@ recommended_defaults: Önerilen Varsayılanlar
 unarchive: Arşivden Çıkar
 unarchive_confirm: Bu öğeyi arşivden çıkarmak istediğinizden emin misiniz?
 nested_files_folders_will_be_moved: İç içe geçmiş dosyalar ve klasörler bir seviye yukarı taşınacaktır.
+validation_errors_notice: 'Aşağıdaki alanlarda geçersiz değerler var:'
 validationError:
   eq: Değer {valid} olmalıdır
   neq: Değer {invalid} olamaz
@@ -185,6 +186,8 @@ revision_post_create: Öğe oluşturulduğunda böyle gözüküyordu.
 revision_post_update: Öğe güncellendikten sonra böyle gözüküyordu.
 changes_made: Aşağıda bu revizyonda yapılan belirli değişiklikler bulunmaktadır.
 no_relational_data: Unutmayın, ilişkisel veriler buraya dahil değildir.
+top: Üst
+bottom: Alt
 hide_field: Alanı Gizle
 hide_field_on_detail: Alanı Detayda Gizle
 show_field_on_detail: Alanı Detayda Göster
@@ -489,6 +492,7 @@ report_bug: Hata Bildir
 request_feature: Özellik Talep Et
 request_body: İstek Gövdesi
 interface_not_found: '"{interface}" arayüzü bulunamadı.'
+operation_not_found: '"{operation}" işlemi bulunamadı.'
 reset_interface: Arayüzü Sıfırla
 display_not_found: '"{display}" ekranı bulunamadı.'
 reset_display: Ekranı Sıfırla
@@ -574,7 +578,9 @@ errors:
   INVALID_CREDENTIALS: Hatalı kullanıcı adı ya da parola
   INVALID_OTP: Tek kullanımlık parola hatalı
   INVALID_PAYLOAD: Geçersiz yük
+  INVALID_PROVIDER: Kullanıcı farklı bir yetkilendirme sağlayıcısına ait
   INVALID_QUERY: Geçersiz sorgu
+  INVALID_CONFIG: Geçersiz yapılandırma
   INVALID_IP: IP Adresine izin verilmiyor
   INVALID_USER: Kullanıcı kimliği doğrulanamadı
   ITEM_LIMIT_REACHED: Öge limite ulaşıldı
@@ -591,6 +597,7 @@ errors:
   VALUE_OUT_OF_RANGE: Değer sınır dışında
   INVALID_FOREIGN_KEY: Geçersiz yabancı anahtar
   UNKNOWN: Beklenmeyen Hata
+  SERVICE_UNAVAILABLE: Hizmet Kullanılamıyor
   UNSUPPORTED_MEDIA_TYPE: Desteklenmeyen ortam türü
   UNEXPECTED_RESPONSE: Beklenmeyen yanıt
   RANGE_NOT_SATISFIABLE: Geçersiz aralık
@@ -1734,6 +1741,7 @@ displays:
     relative: Göreceli Zaman
     relative_label: 'Göreceli zamanı göster, örn: 5 dakika önce'
     suffix: Suffiks
+    suffix_label: Göreceli göstergeyi göster
     strict: Katı
     strict_label: Katı birimler kullanın
     down: Aşağı
@@ -1919,6 +1927,7 @@ panels:
     show_legend: Göstergeyi Göster
     show_marker: Araç İpucu İşaretçisini Göster
     group_and_function: Hem bir grubu hem de bir işlevi dahil etmeli veya atlamalısınız.
+    straight: 'Düz'
   meter:
     name: Metre
     select_max_value: Bir maksimum değer seçmelisiniz.
@@ -1934,6 +1943,7 @@ panels:
     labels: Etiketleri Göster
     legend: Göstergeyi Göster
     right: Sağ
+    bottom: Alt
     monochrome: Tek Renkli
     monochrome_color: Tek Renk
   variable:
@@ -2007,6 +2017,7 @@ operations:
     name: Bildirim Gönder
     description: Bir veya daha fazla kullanıcıya uygulama içi bildirim gönderin
     recipient: Kullanıcı
+    recipient_placeholder: Kullanıcı UUID'sini ekleyin ve enter tuşuna basın...
     message: Mesaj
   request:
     description: "Bir URL'ye istekte bulunun"
