@@ -379,69 +379,38 @@ export function applyFilter(
 			 */
 			const pathRoot = filterPath[0].split(':')[0];
 
-			const { relation, relationType } = getRelationInfo(relations, collection, pathRoot);
+			const { relation } = getRelationInfo(relations, collection, pathRoot);
 
 			const { operator: filterOperator, value: filterValue } = getOperation(key, value);
 
-			if (relationType === 'm2o' || relationType === 'a2o' || relationType === null) {
-				if (filterPath.length > 1) {
-					const { columnPath, targetCollection } = getColumnPath({
-						path: filterPath,
-						collection,
-						relations,
-						aliasMap,
-					});
-
-					if (!columnPath) continue;
-
-					validateFilterOperator(
-						schema.collections[targetCollection].fields[stripFunction(filterPath[filterPath.length - 1])].type,
-						filterOperator,
-						schema.collections[targetCollection].fields[stripFunction(filterPath[filterPath.length - 1])].special
-					);
-
-					applyFilterToQuery(columnPath, filterOperator, filterValue, logical, targetCollection);
-				} else {
-					validateFilterOperator(
-						schema.collections[collection].fields[stripFunction(filterPath[0])].type,
-						filterOperator,
-						schema.collections[collection].fields[stripFunction(filterPath[0])].special
-					);
-
-					applyFilterToQuery(`${collection}.${filterPath[0]}`, filterOperator, filterValue, logical);
-				}
-			} else if (subQuery === false || filterPath.length > 1) {
+			// if (relationType === 'm2o' || relationType === 'a2o' || relationType === null) {
+			if (filterPath.length > 1) {
 				if (!relation) continue;
 
-				let pkField: Knex.Raw<any> | string = `${collection}.${
-					schema.collections[relation!.related_collection!].primary
-				}`;
+				const { columnPath, targetCollection } = getColumnPath({
+					path: filterPath,
+					collection,
+					relations,
+					aliasMap,
+				});
 
-				if (relationType === 'o2a') {
-					pkField = knex.raw(`CAST(?? AS CHAR(255))`, [pkField]);
-				}
+				if (!columnPath) continue;
 
-				const subQueryBuilder = (filter: Filter) => (subQueryKnex: Knex.QueryBuilder<any, unknown[]>) => {
-					const field = relation!.field;
-					const collection = relation!.collection;
-					const column = `${collection}.${field}`;
+				validateFilterOperator(
+					schema.collections[targetCollection].fields[stripFunction(filterPath[filterPath.length - 1])].type,
+					filterOperator,
+					schema.collections[targetCollection].fields[stripFunction(filterPath[filterPath.length - 1])].special
+				);
 
-					subQueryKnex
-						.select({ [field]: column })
-						.distinct()
-						.from(collection)
-						.whereNotNull(column);
+				applyFilterToQuery(columnPath, filterOperator, filterValue, logical, targetCollection);
+			} else {
+				validateFilterOperator(
+					schema.collections[collection].fields[stripFunction(filterPath[0])].type,
+					filterOperator,
+					schema.collections[collection].fields[stripFunction(filterPath[0])].special
+				);
 
-					applyQuery(knex, relation!.collection, subQueryKnex, { filter }, schema, true);
-				};
-
-				if (Object.keys(value)?.[0] === '_none') {
-					dbQuery[logical].whereNotIn(pkField as string, subQueryBuilder(Object.values(value)[0] as Filter));
-				} else if (Object.keys(value)?.[0] === '_some') {
-					dbQuery[logical].whereIn(pkField as string, subQueryBuilder(Object.values(value)[0] as Filter));
-				} else {
-					dbQuery[logical].whereIn(pkField as string, subQueryBuilder(value));
-				}
+				applyFilterToQuery(`${collection}.${filterPath[0]}`, filterOperator, filterValue, logical);
 			}
 		}
 
