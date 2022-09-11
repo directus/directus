@@ -65,7 +65,7 @@ indeterminate: Neodređeno
 edit_collection: Uredi zbirku
 exclusive: Ekskluzivno
 children: Djeca
-db_only_click_to_configure: 'Samo za bave podataka: Kliknite za konfiguriranje'
+db_only_click_to_configure: 'Samo za baze podataka: Kliknite za konfiguriranje'
 show_active_items: Prikaži aktivne stavke
 show_archived_items: Prikaži arhivirane stavke
 show_all_items: Prikaži sve stavke
@@ -187,6 +187,9 @@ revision_post_create: Evo kako je ova stavka izgledala kada je nastala.
 revision_post_update: Evo kako je ova stavka izgledala nakon ažuriranja.
 changes_made: U nastavku se nalazi pregled promjena nastalih u ovoj reviziji.
 no_relational_data: Vodite računa da ovdje nisu uključeni relacijski podaci.
+junction_field_location: Položaj spojnih polja
+top: Vrh
+bottom: Dno
 hide_field: Sakrij polje
 hide_field_on_detail: Sakrij polje na detaljima
 show_field_on_detail: Prikaži polje na detaljima
@@ -297,6 +300,8 @@ next: Nastavi
 field_name: Naziv polja
 translations: Prijevodi
 no_translations: Nema prijevoda
+left_to_right: S lijeva na desno
+right_to_left: S desna na lijevo
 note: Napomena
 enter_a_value: Unesite vrijednost...
 enter_a_placeholder: Unesite rezervirano mjesto...
@@ -480,6 +485,7 @@ creating_items: Izrada stavki
 enable_create_button: Omogući gumb za stvaranje
 selecting_items: Odabir stavki
 enable_select_button: Omogući gumb za odabir
+allow_duplicates: Dopusti duplikate
 comments: Komentari
 no_comments: Još nema komentara
 click_to_expand: Klikni za proširenje
@@ -532,6 +538,7 @@ activity_item: Stavka aktivnosti
 action: Radnja
 ip_address: IP Adresa
 user_agent: Korisnički Agent
+origin: Podrijetlo
 webhooks: Web-dojavnici
 decimals: Decimale
 value_decimals: Decimalne vrijednosti
@@ -580,6 +587,9 @@ errors:
   INVALID_PAYLOAD: Neispravan payload
   INVALID_PROVIDER: Korisnik pripada drugom pružatelju autorizacije
   INVALID_QUERY: Neispravan upit
+  INVALID_CONFIG: Neispravna konfiguracija
+  INVALID_TOKEN: Nevažeći token
+  INVALID_IP: IP adresa nije dozvoljena
   INVALID_USER: Neuspjelo autenticiranje korisnika
   ITEM_LIMIT_REACHED: Dosegnuto je ograničenje stavke
   ITEM_NOT_FOUND: Stavka nije pronađena
@@ -596,6 +606,13 @@ errors:
   INVALID_FOREIGN_KEY: Neispravan strani ključ
   UNKNOWN: Neočekivana greška
   GRAPHQL_VALIDATION_EXCEPTION: GraphQL iznimka provjere valjanosti
+  SERVICE_UNAVAILABLE: Usluga nije dostupna
+  UNSUPPORTED_MEDIA_TYPE: Nepodržan tip datoteke
+  UNEXPECTED_RESPONSE: Neočekivani odgovor
+  TOKEN_EXPIRED: Token je istekao
+  RANGE_NOT_SATISFIABLE: Nevažeći raspon
+  METHOD_NOT_ALLOWED: Metoda nije dozvoljena
+  REQUESTS_EXCEEDED: Dosegnuto je ograničenje zahtjeva
 security: Sigurnost
 value_hashed: Sigurno kriptirana vrijednost
 bookmark_name: Naziv oznake...
@@ -765,6 +782,7 @@ flows: Tokovi
 flow: Tok
 select_a_flow: Odaberite tok
 run_flow_on_current: Pokreni tok na trenutnoj stavci
+run_flow_on_current_edited_confirm: Ova se stavka može ažurirati ovim tokom, jeste li sigurni da je želite izvršiti?
 run_flow_on_selected: Nema odabranih stavki | Pokreni tok na 1 odabranoj stavci | Pokreni tok na {n} odabranih stavki
 run_flow_success: Tok "{flow}" je uspješno izvršen
 trigger: Okidač
@@ -793,7 +811,14 @@ flow_tracking_null: Nemoj pratiti ništa
 start_flow: Pokreni tok
 stop_flow: Zaustavi tok
 create_operation: Kreiraj operaciju
+edit_operation: Ažuriraj operaciju
 code: Kôd
+operation_options: Mogućnosti operacije
+operation_name: Naziv operacije...
+operation_key: Identifikator za referencu...
+operation_key_unique_error: Operacijski ključevi moraju biti jedinstveni u toku
+operation_handle_resolve: 'Rješavanje: kliknite za dodavanje ili povucite za preusmjeravanje'
+operation_handle_reject: 'Odbaci: kliknite za dodavanje ili povucite za preusmjeravanje'
 insights: Uvidi
 dashboard: Upravljačka ploča
 panel: Panel
@@ -814,7 +839,10 @@ no_dashboards_copy: Još nemate nijednu nadzornu ploču.
 create_dashboard: Kreiraj nadzornu ploču
 dashboard_name: Naziv nadzorne ploče
 no_data: Nema podataka
+no_data_in_flow: Nikakvi podaci nisu proizvedeni niti im je pristupljeno unutar ovog toka
 accountability: Odgovornost
+payload: Payload
+details: Pojedinosti
 full_screen: Puni zaslon
 full_text_search: Pretraživanje cijelog teksta
 edit_panels: Uredi ploče
@@ -828,6 +856,7 @@ media: Mediji
 quality: Kvaliteta
 width: Širina
 height: Visina
+transformation_preset_key: Unaprijed postavljena tipka transformacije
 source: Izvor
 url_placeholder: Unesite url...
 display_text: Prikaz teksta
@@ -962,6 +991,8 @@ page_help_settings_presets_item: >-
   **Unaprijed postavljene pojedinosti** — Obrazac za upravljanje oznakama i zadanim postavkama zbirke.
 page_help_settings_webhooks_collection: '**Pregledaj web-dojavnike** — Prikazuje sve web-dojavnike unutar projekta.'
 page_help_settings_webhooks_item: '**Detalji web-dojavnika** — Forma za stvaranje i upravljanje web-dojavnicima.'
+page_help_settings_flows_collection: '**Pregledaj tokove** — Popisuje sve tokove unutar projekta.'
+page_help_settings_flows_item: '**Detalji toka** — Radni prostor za upravljanje jednom ili više operacija.'
 page_help_settings_translation_strings_collection: '**Pregledaj nizove prijevoda** — Navodi sve prijevodne nizove unutar projekta.'
 page_help_users_collection: '**Korisnički imenik** — Prikazuje sve korisnike sustava unutar ovog projekta.'
 page_help_users_item: >-
@@ -990,9 +1021,11 @@ directus_collection:
   directus_dashboards: Nadzorne ploče unutar modula s uvidima
   directus_fields: Dodatna konfiguracija polja i metapodaci
   directus_files: Metapodaci za sva upravljana datotečna sredstva
+  directus_flows: Automatizacija tokova
   directus_folders: Pruža virtualne direktorije za datoteke
   directus_migrations: Koju verziju baze podataka koristite
   directus_notifications: Obavijesti poslane korisnicima
+  directus_operations: Operacije koje se izvode u tokovima
   directus_panels: Pojedinačne ploče unutar nadzornih ploča s uvidima
   directus_permissions: Dozvole pristupa za svaku ulogu
   directus_presets: Unaprijed postavljene postavke za zbirke i oznake
@@ -1013,6 +1046,7 @@ fields:
     user: Radnja od strane
     comment: Komentar
     user_agent: Korisnički Agent
+    origin: Podrijetlo
     ip: IP Adresa
     revisions: Revizije
   directus_collections:
@@ -1124,6 +1158,8 @@ fields:
     transformations_all: Dozvoli sve transformacije
     transformations_none: Onemogući transformacije
     transformations_presets: Ograničite transformacije na unaprijed postavljene postavke u nastavku
+    image_editor: Uređivač slika
+    custom_aspect_ratios: Prilagođeni omjeri
   directus_shares:
     name: Ime
     role: Uloge
@@ -1338,6 +1374,16 @@ normal: Normalno
 success: Uspješno
 warning: Upozorenje
 danger: Opasnost
+colors:
+  purple: Ljubičasta
+  blue: Plava
+  green: Zelena
+  yellow: Žuta
+  orange: Narančasta
+  red: Crvena
+  black: Crna
+  gray: Siva
+  white: Bijela
 junction_collection: Zbirka spojeva
 latency: Latencija
 login: Prijavite se
@@ -1353,6 +1399,7 @@ reset: Ponovno postavi
 reset_password: Resetiraj lozinku
 revisions: Revizije
 no_revisions: Još nema revizija
+no_logs: Još nema zapisa
 revert: Vrati
 save: Spremi
 schema: Shema
@@ -1366,6 +1413,9 @@ sign_out: Odjava
 sign_out_confirm: Jeste li sigurni da se želite odjaviti?
 something_went_wrong: Nešto je pošlo po zlu.
 sort_direction: Smjer sortiranja
+export_location: Izvoz lokacije
+export_started: Izvoz je započet
+export_started_copy: Vaš izvoz je započet. Dobit ćete obavijest kada bude spremno za preuzimanje.
 sort_asc: Sortiraj uzlazno
 sort_desc: Sortiraj silazno
 template: Predložak
@@ -1884,7 +1934,17 @@ panels:
     select_x_axis: Morate odabrati X os.
     function: Funkcija
     x_axis: X os
+    include_y_axis: Morate uključiti Y-os za svaki skup podataka kada grupa nije navedena.
+    group_and_function: Morate uključiti ili izostaviti i grupu i funkciju.
+    smooth: 'Glatko'
+    straight: 'Ravno'
+    step_line: 'Linija koraka'
   meter:
+    description: Mjerač za praćenje vrijednosti
+    name: Mjerač
+    arc: Luk
+    stroke_width: Širina poteza
+    select_max_value: Morate odabrati maksimalnu vrijednost.
     select_field: Morate odabrati polje.
     select_collection: Morate odabrati kolekciju.
     function: Funkcija
@@ -1894,6 +1954,10 @@ triggers:
   webhook:
     method: Metoda
 operations:
+  item-create:
+    payload: Payload
+  item-update:
+    payload: Payload
   log:
     message: Poruka
   notification:
