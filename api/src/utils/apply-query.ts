@@ -295,10 +295,24 @@ export function applyFilter(
 
 	const aliasMap: AliasMap = {};
 
-	if (subQuery) {
+	if (!subQuery) {
+		const column = `${collection}.${schema.collections[collection].primary}`;
+
+		const subQueryBuilder = (filter: Filter) => (subQueryKnex: Knex.QueryBuilder<any, unknown[]>) => {
+			subQueryKnex
+				.select({ [schema.collections[collection].primary]: column })
+				.distinct()
+				.from(collection)
+				.whereNotNull(column);
+
+			applyQuery(knex, collection, subQueryKnex, { filter }, schema, true);
+		};
+
+		rootQuery['and'].whereIn(column, subQueryBuilder(rootFilter));
+	} else {
 		addJoins(rootQuery, rootFilter, collection);
+		addWhereClauses(knex, rootQuery, rootFilter, collection);
 	}
-	addWhereClauses(knex, rootQuery, rootFilter, collection);
 
 	return rootQuery;
 
@@ -370,47 +384,31 @@ export function applyFilter(
 			const { operator: filterOperator, value: filterValue } = getOperation(key, value);
 
 			if (relationType === 'm2o' || relationType === 'a2o' || relationType === null) {
-				if (relationType && subQuery === false) {
-					const column = `${collection}.${schema.collections[collection].primary}`;
+				if (filterPath.length > 1) {
+					const { columnPath, targetCollection } = getColumnPath({
+						path: filterPath,
+						collection,
+						relations,
+						aliasMap,
+					});
 
-					const subQueryBuilder = (filter: Filter) => (subQueryKnex: Knex.QueryBuilder<any, unknown[]>) => {
-						subQueryKnex
-							.select({ [schema.collections[collection].primary]: column })
-							.distinct()
-							.from(collection)
-							.whereNotNull(column);
+					if (!columnPath) continue;
 
-						applyQuery(knex, collection, subQueryKnex, { filter }, schema, true);
-					};
+					validateFilterOperator(
+						schema.collections[targetCollection].fields[stripFunction(filterPath[filterPath.length - 1])].type,
+						filterOperator,
+						schema.collections[targetCollection].fields[stripFunction(filterPath[filterPath.length - 1])].special
+					);
 
-					dbQuery[logical].whereIn(column, subQueryBuilder(filter));
+					applyFilterToQuery(columnPath, filterOperator, filterValue, logical, targetCollection);
 				} else {
-					if (filterPath.length > 1) {
-						const { columnPath, targetCollection } = getColumnPath({
-							path: filterPath,
-							collection,
-							relations,
-							aliasMap,
-						});
+					validateFilterOperator(
+						schema.collections[collection].fields[stripFunction(filterPath[0])].type,
+						filterOperator,
+						schema.collections[collection].fields[stripFunction(filterPath[0])].special
+					);
 
-						if (!columnPath) continue;
-
-						validateFilterOperator(
-							schema.collections[targetCollection].fields[stripFunction(filterPath[filterPath.length - 1])].type,
-							filterOperator,
-							schema.collections[targetCollection].fields[stripFunction(filterPath[filterPath.length - 1])].special
-						);
-
-						applyFilterToQuery(columnPath, filterOperator, filterValue, logical, targetCollection);
-					} else {
-						validateFilterOperator(
-							schema.collections[collection].fields[stripFunction(filterPath[0])].type,
-							filterOperator,
-							schema.collections[collection].fields[stripFunction(filterPath[0])].special
-						);
-
-						applyFilterToQuery(`${collection}.${filterPath[0]}`, filterOperator, filterValue, logical);
-					}
+					applyFilterToQuery(`${collection}.${filterPath[0]}`, filterOperator, filterValue, logical);
 				}
 			} else if (subQuery === false || filterPath.length > 1) {
 				if (!relation) continue;
