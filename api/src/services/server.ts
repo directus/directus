@@ -1,7 +1,6 @@
 import { Knex } from 'knex';
 import { merge } from 'lodash';
 import { nanoid } from 'nanoid';
-import os from 'os';
 import { performance } from 'perf_hooks';
 // @ts-ignore
 import { version } from '../../package.json';
@@ -16,7 +15,6 @@ import { Accountability, SchemaOverview } from '@directus/shared/types';
 import { toArray } from '@directus/shared/utils';
 import getMailer from '../mailer';
 import { SettingsService } from './settings';
-import { getOSInfo } from '../utils/get-os-info';
 
 export class ServerService {
 	knex: Knex;
@@ -66,22 +64,8 @@ export class ServerService {
 		}
 
 		if (this.accountability?.admin === true) {
-			const { osType, osVersion } = getOSInfo();
-
 			info.directus = {
 				version,
-			};
-
-			info.node = {
-				version: process.versions.node,
-				uptime: Math.round(process.uptime()),
-			};
-
-			info.os = {
-				type: osType,
-				version: osVersion,
-				uptime: Math.round(os.uptime()),
-				totalmem: os.totalmem(),
 			};
 		}
 
