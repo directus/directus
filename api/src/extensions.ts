@@ -4,6 +4,7 @@ import {
 	ActionHandler,
 	ApiExtension,
 	AppExtensionType,
+	BundleExtension,
 	EndpointConfig,
 	Extension,
 	ExtensionType,
@@ -31,7 +32,6 @@ import {
 	EXTENSION_PACKAGE_TYPES,
 	EXTENSION_TYPES,
 	HYBRID_EXTENSION_TYPES,
-	PACKAGE_EXTENSION_TYPES,
 } from '@directus/shared/constants';
 import getDatabase from './database';
 import emitter, { Emitter } from './emitter';
@@ -69,12 +69,14 @@ export function getExtensionManager(): ExtensionManager {
 	return extensionManager;
 }
 
-type AppExtensions = Partial<Record<AppExtensionType | HybridExtensionType, string>>;
-type ApiExtensions = {
-	hooks: { path: string; events: EventHandler[] }[];
-	endpoints: { path: string }[];
-	operations: { path: string }[];
+type BundleConfig = {
+	endpoints: { name: string; config: EndpointConfig }[];
+	hooks: { name: string; config: HookConfig }[];
+	operations: { name: string; config: OperationApiConfig }[];
 };
+
+type AppExtensions = Partial<Record<AppExtensionType | HybridExtensionType, string>>;
+type ApiExtensions = { path: string }[];
 
 type Options = {
 	schedule: boolean;
@@ -93,9 +95,10 @@ class ExtensionManager {
 	private extensions: Extension[] = [];
 
 	private appExtensions: AppExtensions = {};
-	private apiExtensions: ApiExtensions = { hooks: [], endpoints: [], operations: [] };
+	private apiExtensions: ApiExtensions = [];
 
 	private apiEmitter: Emitter;
+	private hookEvents: EventHandler[] = [];
 	private endpointRouter: Router;
 
 	private reloadQueue: JobQueue;
@@ -197,9 +200,10 @@ class ExtensionManager {
 			logger.warn(err);
 		}
 
-		this.registerHooks();
-		this.registerEndpoints();
+		await this.registerHooks();
+		await this.registerEndpoints();
 		await this.registerOperations();
+		await this.registerBundles();
 
 		if (env.SERVE_APP) {
 			this.appExtensions = await this.generateExtensionBundles();
@@ -209,9 +213,7 @@ class ExtensionManager {
 	}
 
 	private async unload(): Promise<void> {
-		this.unregisterHooks();
-		this.unregisterEndpoints();
-		this.unregisterOperations();
+		this.unregisterApiExtensions();
 
 		this.apiEmitter.offAll();
 
@@ -257,9 +259,9 @@ class ExtensionManager {
 				extensions
 					.filter((extension) => !extension.local)
 					.flatMap((extension) =>
-						isTypeIn(extension, PACKAGE_EXTENSION_TYPES)
+						extension.type === 'pack'
 							? path.resolve(extension.path, 'package.json')
-							: isTypeIn(extension, HYBRID_EXTENSION_TYPES)
+							: isTypeIn(extension, HYBRID_EXTENSION_TYPES) || extension.type === 'bundle'
 							? [
 									path.resolve(extension.path, extension.entrypoint.app),
 									path.resolve(extension.path, extension.entrypoint.api),
@@ -341,7 +343,7 @@ class ExtensionManager {
 		return depsMapping;
 	}
 
-	private registerHooks(): void {
+	private async registerHooks(): Promise<void> {
 		const hooks = this.extensions.filter((extension): extension is ApiExtension => extension.type === 'hook');
 
 		for (const hook of hooks) {
@@ -351,7 +353,9 @@ class ExtensionManager {
 
 				const config = getModuleDefault(hookInstance);
 
-				this.registerHook(config, hookPath);
+				this.registerHook(config);
+
+				this.apiExtensions.push({ path: hookPath });
 			} catch (error: any) {
 				logger.warn(`Couldn't register hook "${hook.name}"`);
 				logger.warn(error);
@@ -359,7 +363,7 @@ class ExtensionManager {
 		}
 	}
 
-	private registerEndpoints(): void {
+	private async registerEndpoints(): Promise<void> {
 		const endpoints = this.extensions.filter((extension): extension is ApiExtension => extension.type === 'endpoint');
 
 		for (const endpoint of endpoints) {
@@ -369,7 +373,9 @@ class ExtensionManager {
 
 				const config = getModuleDefault(endpointInstance);
 
-				this.registerEndpoint(config, endpointPath, endpoint.name, this.endpointRouter);
+				this.registerEndpoint(config, endpoint.name);
+
+				this.apiExtensions.push({ path: endpointPath });
 			} catch (error: any) {
 				logger.warn(`Couldn't register endpoint "${endpoint.name}"`);
 				logger.warn(error);
@@ -401,7 +407,9 @@ class ExtensionManager {
 
 				const config = getModuleDefault(operationInstance);
 
-				this.registerOperation(config, operationPath);
+				this.registerOperation(config);
+
+				this.apiExtensions.push({ path: operationPath });
 			} catch (error: any) {
 				logger.warn(`Couldn't register operation "${operation.name}"`);
 				logger.warn(error);
@@ -409,17 +417,42 @@ class ExtensionManager {
 		}
 	}
 
-	private registerHook(register: HookConfig, path: string) {
-		const hookHandler: { path: string; events: EventHandler[] } = {
-			path,
-			events: [],
-		};
+	private async registerBundles(): Promise<void> {
+		const bundles = this.extensions.filter((extension): extension is BundleExtension => extension.type === 'bundle');
 
+		for (const bundle of bundles) {
+			try {
+				const bundlePath = path.resolve(bundle.path, bundle.entrypoint.api);
+				const bundleInstances: BundleConfig | { default: BundleConfig } = require(bundlePath);
+
+				const configs = getModuleDefault(bundleInstances);
+
+				for (const { config } of configs.hooks) {
+					this.registerHook(config);
+				}
+
+				for (const { config, name } of configs.endpoints) {
+					this.registerEndpoint(config, name);
+				}
+
+				for (const { config } of configs.operations) {
+					this.registerOperation(config);
+				}
+
+				this.apiExtensions.push({ path: bundlePath });
+			} catch (error: any) {
+				logger.warn(`Couldn't register bundle "${bundle.name}"`);
+				logger.warn(error);
+			}
+		}
+	}
+
+	private registerHook(register: HookConfig): void {
 		const registerFunctions = {
 			filter: (event: string, handler: FilterHandler) => {
 				emitter.onFilter(event, handler);
 
-				hookHandler.events.push({
+				this.hookEvents.push({
 					type: 'filter',
 					name: event,
 					handler,
@@ -428,7 +461,7 @@ class ExtensionManager {
 			action: (event: string, handler: ActionHandler) => {
 				emitter.onAction(event, handler);
 
-				hookHandler.events.push({
+				this.hookEvents.push({
 					type: 'action',
 					name: event,
 					handler,
@@ -437,7 +470,7 @@ class ExtensionManager {
 			init: (event: string, handler: InitHandler) => {
 				emitter.onInit(event, handler);
 
-				hookHandler.events.push({
+				this.hookEvents.push({
 					type: 'init',
 					name: event,
 					handler,
@@ -455,7 +488,7 @@ class ExtensionManager {
 						}
 					});
 
-					hookHandler.events.push({
+					this.hookEvents.push({
 						type: 'schedule',
 						task,
 					});
@@ -474,16 +507,14 @@ class ExtensionManager {
 			logger,
 			getSchema,
 		});
-
-		this.apiExtensions.hooks.push(hookHandler);
 	}
 
-	private registerEndpoint(config: EndpointConfig, path: string, name: string, router: Router) {
+	private registerEndpoint(config: EndpointConfig, name: string): void {
 		const register = typeof config === 'function' ? config : config.handler;
 		const routeName = typeof config === 'function' ? name : config.id;
 
 		const scopedRouter = express.Router();
-		router.use(`/${routeName}`, scopedRouter);
+		this.endpointRouter.use(`/${routeName}`, scopedRouter);
 
 		register(scopedRouter, {
 			services,
@@ -494,66 +525,44 @@ class ExtensionManager {
 			logger,
 			getSchema,
 		});
-
-		this.apiExtensions.endpoints.push({
-			path,
-		});
 	}
 
-	private registerOperation(config: OperationApiConfig, path: string) {
+	private registerOperation(config: OperationApiConfig) {
 		const flowManager = getFlowManager();
 
 		flowManager.addOperation(config.id, config.handler);
-
-		this.apiExtensions.operations.push({
-			path,
-		});
 	}
 
-	private unregisterHooks(): void {
-		for (const hook of this.apiExtensions.hooks) {
-			for (const event of hook.events) {
-				switch (event.type) {
-					case 'filter':
-						emitter.offFilter(event.name, event.handler);
-						break;
-					case 'action':
-						emitter.offAction(event.name, event.handler);
-						break;
-					case 'init':
-						emitter.offInit(event.name, event.handler);
-						break;
-					case 'schedule':
-						event.task.stop();
-						break;
-				}
+	private unregisterApiExtensions(): void {
+		for (const event of this.hookEvents) {
+			switch (event.type) {
+				case 'filter':
+					emitter.offFilter(event.name, event.handler);
+					break;
+				case 'action':
+					emitter.offAction(event.name, event.handler);
+					break;
+				case 'init':
+					emitter.offInit(event.name, event.handler);
+					break;
+				case 'schedule':
+					event.task.stop();
+					break;
 			}
-
-			delete require.cache[require.resolve(hook.path)];
 		}
 
-		this.apiExtensions.hooks = [];
-	}
-
-	private unregisterEndpoints(): void {
-		for (const endpoint of this.apiExtensions.endpoints) {
-			delete require.cache[require.resolve(endpoint.path)];
-		}
+		this.hookEvents = [];
 
 		this.endpointRouter.stack = [];
-
-		this.apiExtensions.endpoints = [];
-	}
-
-	private unregisterOperations(): void {
-		for (const operation of this.apiExtensions.operations) {
-			delete require.cache[require.resolve(operation.path)];
-		}
 
 		const flowManager = getFlowManager();
 
 		flowManager.clearOperations();
 
-		this.apiExtensions.operations = [];
+		for (const apiExtension of this.apiExtensions) {
+			delete require.cache[require.resolve(apiExtension.path)];
+		}
+
+		this.apiExtensions = [];
 	}
 }
