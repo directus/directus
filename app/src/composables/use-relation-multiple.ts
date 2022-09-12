@@ -91,8 +91,16 @@ export function useRelationMultiple(
 		const info = relation.value;
 		if (info?.type === undefined) return [];
 
-		if (info.type === 'o2m') return _value.value.create;
-		return _value.value.create.filter((item) => item[info.reverseJunctionField.field] === undefined);
+		const items = _value.value.create.map((item, index) => {
+			return {
+				...item,
+				$type: 'created',
+				$index: index,
+			} as DisplayItem;
+		});
+
+		if (info.type === 'o2m') return items;
+		return items.filter((item) => item[info.reverseJunctionField.field] === undefined);
 	});
 
 	const displayItems = computed(() => {
@@ -159,16 +167,7 @@ export function useRelationMultiple(
 
 		const newItems = getPage(existingItemCount.value + selected.value.length, createdItems.value);
 
-		items.push(
-			...selectedOnPage,
-			...newItems.map((item, index) => {
-				return {
-					...item,
-					$type: 'created',
-					$index: index,
-				} as DisplayItem;
-			})
-		);
+		items.push(...selectedOnPage, ...newItems);
 
 		const sortField = relation.value.sortField;
 
