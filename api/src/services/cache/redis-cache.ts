@@ -3,6 +3,7 @@ import env from "../../env";
 import logger from "../../logger";
 import { getConfigFromEnv } from "../../utils/get-config-from-env";
 import { CacheOptions, CacheService } from "./cache";
+import {parse, stringify} from 'json-buffer'
 
 
 export class RedisCache extends CacheService {
@@ -20,12 +21,16 @@ export class RedisCache extends CacheService {
     }
 
     async get(key: string): Promise<any> {
-        return await this.client.get(this.addPrefix(key)) ?? undefined
+        const value = await this.client.get(this.addPrefix(key))
+
+        if(value === null) return undefined;
+
+        return parse(value)
     }
     async set(key: string, value: any, ttl: number | undefined = this.ttl): Promise<void> {
         const _key = this.addPrefix(key)
 
-        await this.client.set(_key, value)
+        await this.client.set(_key, stringify(value))
         if(ttl !== undefined) await this.client.expire(_key, ttl);
     }
     async clear(): Promise<void> {
