@@ -29,6 +29,8 @@ draft: Kladde
 archived: Arkiveret
 modules: Moduler
 module_bar: Modul Bar
+logs: Logger
+reset_width: Tilbagestil bredde
 tile_size: Tile Size
 edit_field: Rediger Felt
 conditions: Betingelser
@@ -46,6 +48,8 @@ group: Gruppe
 export_items: Eksportér Elementer
 and: Og
 or: Eller
+init: Initaliser
+custom: Brugertilpasset
 fill_width: Fuld Bredde
 field_name_translations: Oversættelse af feltnavn
 enter_password_to_enable_tfa: Indtast dit kodeord for at aktivere To-faktor-godkendelse (2FA)
@@ -69,9 +73,12 @@ create_preset: Opret forudindstilling
 create_panel: Opret Panel
 create_role: Opret Rolle
 create_user: Opret bruger
+message: Besked
 delete_panel: Slet Panel
 create_webhook: Opret Webhook
 create_translation_string: Opret Oversættelsesstreng
+no_translation_string: Oversættelse mangler
+no_translation_string_copy: Der er ingen oversættelsesstrenge endnu.
 translation_string_key_placeholder: Oversættelse streng nøgle...
 translation_string_translations_placeholder: Tilføj en ny oversættelse
 edit_translation_string: Rediger Oversættelsesstreng
@@ -176,6 +183,7 @@ revision_post_create: Her er hvordan dette element så ud, da det blev oprettet.
 revision_post_update: Her er hvad dette element så ud efter opdateringen.
 changes_made: Nedenfor er de specifikke ændringer i denne revision.
 no_relational_data: Husk på, at relationsdata ikke er inkluderet her.
+top: Top
 bottom: Bund
 hide_field: Skjul Felt
 hide_field_on_detail: Skjul felt på detalje
@@ -240,7 +248,9 @@ uuid: UUID
 hash: Hash
 geometry: Geometri (Alle)
 geometry.Point: Punkt
+geometry.Polygon: Polygon
 geometry.MultiPoint: Multipunkt
+geometry.MultiLineString: Stræng med linjeskift
 not_available_for_type: Ikke tilgængelig for denne type
 create_translations: Opret Oversættelser
 auto_refresh: Opdater Automatisk
@@ -281,6 +291,8 @@ next: Næste
 field_name: Felt Navn
 translations: Oversættelser
 no_translations: Ingen Oversættelser
+left_to_right: Venstre mod højre
+right_to_left: Højre mod venstre
 note: Kommentar
 enter_a_value: Indtast en værdi...
 enter_a_placeholder: Indtast en pladsholder...
@@ -323,6 +335,7 @@ revision_delta_created_externally: Oprettet Eksternt
 revision_delta_updated: 'Opdateret 1 Felt | Opdaterede {count} felter'
 revision_delta_deleted: Slettet
 revision_delta_reverted: Omvendt
+revision_delta_update_message: Dette felt er blevet opdateret, men dets værdi bliver skjult af sikkerhedsmæssige årsager.
 revision_delta_other: Revision
 revision_delta_by: '{date} af {user}'
 private_user: Privat Bruger
@@ -1825,8 +1838,11 @@ triggers:
   webhook:
     method: Metode
 operations:
+  log:
+    message: Besked
   notification:
     recipient: Bruger
+    message: Besked
   request:
     url: URL
     method: Metode
