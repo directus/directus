@@ -10,6 +10,7 @@ import axios from 'axios';
 import { writeFileSync } from 'fs';
 import { awaitDatabaseConnection, awaitDirectusConnection } from '../utils/await-connection';
 import * as common from '../common';
+import { clone } from 'lodash';
 
 let started = false;
 
@@ -60,6 +61,27 @@ export default async (): Promise<void> => {
 									// Give the server some time to start
 									await awaitDirectusConnection(Number(config.envs[vendor]!.PORT!));
 									server.on('exit', () => undefined);
+
+									// Set up separate directus instance without system cache
+									const noCacheEnv = clone(config.envs[vendor]!);
+									noCacheEnv.PORT = String(parseInt(noCacheEnv.PORT!) + 50);
+									const serverNoCache = spawn('node', ['api/cli', 'start'], { env: noCacheEnv });
+									global.directusNoCache[vendor] = serverNoCache;
+									let serverNoCacheOutput = '';
+									serverNoCache.stdout.setEncoding('utf8');
+									serverNoCache.stdout.on('data', (data) => {
+										serverNoCacheOutput += data.toString();
+									});
+									serverNoCache.on('exit', (code) => {
+										if (process.env.TEST_SAVE_LOGS) {
+											writeFileSync(__dirname + `/../server-log-${vendor}-no-cache.txt`, serverNoCacheOutput);
+										}
+										if (code !== null)
+											throw new Error(`Directus-${vendor}-no-cache server failed: \n ${serverNoCacheOutput}`);
+									});
+									// Give the server some time to start
+									await awaitDirectusConnection(Number(noCacheEnv.PORT!));
+									serverNoCache.on('exit', () => undefined);
 								}
 							},
 						};
@@ -123,6 +145,9 @@ export default async (): Promise<void> => {
 		.catch((reason) => {
 			for (const server of Object.values(global.directus)) {
 				server?.kill();
+			}
+			for (const serverNoCache of Object.values(global.directusNoCache)) {
+				serverNoCache?.kill();
 			}
 			throw new Error(reason);
 		});

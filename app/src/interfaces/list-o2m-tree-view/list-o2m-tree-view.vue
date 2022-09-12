@@ -141,16 +141,4 @@ const fields = computed(() => {
 	margin-left: 24px;
 	padding-left: 0;
 }
-
-.actions {
-	margin-top: 12px;
-}
-
-.actions .v-button + .v-button {
-	margin-left: 12px;
-}
-
-.existing {
-	margin-left: 12px;
-}
 </style>

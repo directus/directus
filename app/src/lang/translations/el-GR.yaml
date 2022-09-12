@@ -316,6 +316,7 @@ search: Αναζήτηση
 settings: Ρυθμίσεις
 translation: Μετάφραση
 value: Τιμή
+table: Πίνακας
 interfaces:
   filter:
     all: Όλα

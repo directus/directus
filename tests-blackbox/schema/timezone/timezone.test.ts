@@ -49,6 +49,8 @@ describe('schema', () => {
 
 	describe('timezone', () => {
 		describe('update timezone field schema', () => {
+			common.DisableTestCachingSetup();
+
 			it.each(vendors)(
 				'%s',
 				async (vendor) => {
@@ -172,9 +174,11 @@ describe('schema', () => {
 							break;
 					}
 				},
-				10000
+				300000
 			);
 		});
+
+		common.ClearCaches();
 
 		describe('stores the correct timezone data', () => {
 			it.each(vendors)(

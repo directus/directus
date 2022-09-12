@@ -720,6 +720,7 @@ trigger: Declanșator
 flow_name: Nume
 flow_tracking_activity: Urmărește doar activitatea
 flow_tracking_null: Nu urmări nimic
+code: Cod
 insights: Analize
 dashboard: Panou
 panel: Panou
@@ -1301,6 +1302,8 @@ value: Valoare
 view_project: Vezi proiect
 report_error: Raportare eroare
 start: Pornire
+table: Tabel
+list: Listă
 interfaces:
   filter:
     name: Filtru
@@ -1379,6 +1382,8 @@ interfaces:
     set_to_now: Setează acum
     use_24: Utilizaţi formatul de 24 de ore
     placeholder: Alegeți o dată...
+  system-fields:
+    select_a_collection: Selectează o colecție
   system-display-template:
     display-template: Afişare şablon
     description: Combină textul static cu valorile dinamice ale câmpului

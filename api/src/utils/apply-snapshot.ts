@@ -84,6 +84,30 @@ export async function applySnapshot(
 		const deleteCollections = async (collections: CollectionDelta[]) => {
 			for (const { collection, diff } of collections) {
 				if (diff?.[0].kind === 'D') {
+					const relations = schema.relations.filter(
+						(r) => r.related_collection === collection || r.collection === collection
+					);
+
+					if (relations.length > 0) {
+						const relationsService = new RelationsService({ knex: trx, schema });
+
+						for (const relation of relations) {
+							try {
+								await relationsService.deleteOne(relation.collection, relation.field);
+							} catch (err) {
+								logger.error(
+									`Failed to delete collection "${collection}" due to relation "${relation.collection}.${relation.field}"`
+								);
+								throw err;
+							}
+						}
+
+						// clean up deleted relations from existing schema
+						schema.relations = schema.relations.filter(
+							(r) => r.related_collection !== collection && r.collection !== collection
+						);
+					}
+
 					await deleteCollections(getNestedCollectionsToDelete(collection));
 
 					try {

@@ -48,6 +48,7 @@ group: المجموعة
 export_items: تصدير عنصر
 and: و
 or: أو
+init: إطلاق
 dataset_too_large_currently_showing_n_items: مجموعة البيانات كبيرة جداً. حالياً تظهر العناصر {n} الأولى.
 hook: ربط
 fill_width: العرض الكامل
@@ -671,6 +672,7 @@ label: تسمية
 flow_name: الاسم
 flow_tracking_activity: تتبع النشاط فقط
 flow_tracking_null: عدم تتبع أي شيء
+code: نص برمجي
 image_url: رابط الصورة
 alt_text: النص البديل
 media: وسائط الإعلام
@@ -971,6 +973,7 @@ translation: الترجمة
 value: قيمة
 view_project: عرض المشروع
 report_error: الإبلاغ عن خطأ
+table: الجدول
 interfaces:
   filter:
     add_filter: إضافة فلتر
@@ -1008,6 +1011,8 @@ interfaces:
     description: أدخل التواريخ والأوقات
     set_to_now: اضبط على الآن
     use_24: استخدم تنسيق 24 ساعة
+  system-fields:
+    select_a_collection: حدد مجموعة
   system-display-template:
     display-template: عرض القالب
     description: خلط النص الثابت وقيم الحقل الديناميكي

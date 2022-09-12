@@ -81,13 +81,7 @@ export default defineComponent({
 		});
 
 		const availableCollections = computed(() => {
-			return orderBy(
-				collectionsStore.collections.filter((collection) => {
-					return collection.collection.startsWith('directus_') === false && collection.schema;
-				}),
-				['sort', 'collection'],
-				['asc']
-			);
+			return orderBy(collectionsStore.databaseCollections, ['sort', 'collection'], ['asc']);
 		});
 
 		const systemCollections = collectionsStore.crudSafeSystemCollections;

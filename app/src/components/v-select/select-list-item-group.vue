@@ -44,56 +44,42 @@
 	</v-list-group>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent, PropType } from 'vue';
+<script setup lang="ts">
+import { computed } from 'vue';
 import { Option } from './types';
 import SelectListItem from './select-list-item.vue';
 
-export default defineComponent({
-	name: 'SelectListItemGroup',
-	components: { SelectListItem },
-	props: {
-		item: {
-			type: Object as PropType<Option>,
-			required: true,
-		},
-		modelValue: {
-			type: [String, Number, Array] as PropType<string | number | (string | number)[]>,
-			default: null,
-		},
-		multiple: {
-			type: Boolean,
-			required: true,
-		},
-		allowOther: {
-			type: Boolean,
-			required: true,
-		},
-		groupSelectable: {
-			type: Boolean,
-			default: false,
-		},
-	},
-	emits: ['update:modelValue'],
-	setup(props, { emit }) {
-		const isActive = computed(() => {
-			if (props.multiple) {
-				if (!Array.isArray(props.modelValue) || !props.item.value) {
-					return false;
-				}
-				return props.modelValue.includes(props.item.value);
-			} else {
-				return props.modelValue === props.item.value;
-			}
-		});
+interface Props {
+	item: Option;
+	modelValue?: string | number | (string | number)[] | null;
+	multiple?: boolean;
+	allowOther?: boolean;
+	groupSelectable?: boolean;
+}
 
-		return { isActive, onGroupClick };
-
-		function onGroupClick(item: Option) {
-			if (!props.groupSelectable) return;
-
-			emit('update:modelValue', item.value);
-		}
-	},
+const props = withDefaults(defineProps<Props>(), {
+	modelValue: null,
+	multiple: true,
+	allowOther: true,
+	groupSelectable: false,
 });
+
+const emit = defineEmits(['update:modelValue']);
+
+const isActive = computed(() => {
+	if (props.multiple) {
+		if (!Array.isArray(props.modelValue) || !props.item.value) {
+			return false;
+		}
+		return props.modelValue.includes(props.item.value);
+	} else {
+		return props.modelValue === props.item.value;
+	}
+});
+
+function onGroupClick(item: Option) {
+	if (!props.groupSelectable) return;
+
+	emit('update:modelValue', item.value);
+}
 </script>
