@@ -49,8 +49,6 @@ export default defineComponent({
 ### Project details
 Directus Version: ${parsedInfo.value?.directus.version}
 Environment: ${import.meta.env.MODE}
-OS: ${parsedInfo.value?.os.type} ${parsedInfo.value?.os.version}
-Node: ${parsedInfo.value?.node.version}
 
 ### Error
 
