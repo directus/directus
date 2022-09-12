@@ -3,11 +3,11 @@ import { ItemsService, QueryOptions } from '../services/items';
 import { AbstractServiceOptions, Item, PrimaryKey, MutationOptions } from '../types';
 import { Query, PermissionsAction } from '@directus/shared/types';
 import { filterItems } from '../utils/filter-items';
-import Keyv from 'keyv';
 import { getCache, clearSystemCache } from '../cache';
+import { CacheService } from './cache/cache';
 
 export class PermissionsService extends ItemsService {
-	systemCache: Keyv<any>;
+	systemCache: CacheService;
 
 	constructor(options: AbstractServiceOptions) {
 		super('directus_permissions', options);
