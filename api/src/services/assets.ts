@@ -153,8 +153,7 @@ export class AssetsService {
 					sequentialRead: true,
 				});
 
-				if(transforms.find((transform) => transform[0] === 'rotate') === undefined)
-					transformer.rotate()
+				if (transforms.find((transform) => transform[0] === 'rotate') === undefined) transformer.rotate();
 
 				transforms.forEach(([method, ...args]) => (transformer[method] as any).apply(transformer, args));
 
