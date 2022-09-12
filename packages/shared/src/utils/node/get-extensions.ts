@@ -9,12 +9,7 @@ import {
 } from '../../types';
 import { resolvePackage } from './resolve-package';
 import { listFolders } from './list-folders';
-import {
-	EXTENSION_NAME_REGEX,
-	EXTENSION_PKG_KEY,
-	HYBRID_EXTENSION_TYPES,
-	PACKAGE_EXTENSION_TYPES,
-} from '../../constants';
+import { EXTENSION_NAME_REGEX, EXTENSION_PKG_KEY, HYBRID_EXTENSION_TYPES } from '../../constants';
 import { pluralize } from '../pluralize';
 import { validateExtensionManifest } from '../validate-extension-manifest';
 import { isIn, isTypeIn } from '../array-helpers';
@@ -37,7 +32,7 @@ async function resolvePackageExtensions(
 		const extensionOptions = extensionManifest[EXTENSION_PKG_KEY];
 
 		if (isIn(extensionOptions.type, types)) {
-			if (isTypeIn(extensionOptions, PACKAGE_EXTENSION_TYPES)) {
+			if (extensionOptions.type === 'pack') {
 				const extensionChildren = Object.keys(extensionManifest.dependencies ?? {}).filter((dep) =>
 					EXTENSION_NAME_REGEX.test(dep)
 				);
@@ -54,6 +49,20 @@ async function resolvePackageExtensions(
 
 				extensions.push(extension);
 				extensions.push(...(await resolvePackageExtensions(extension.children || [], extension.path, types)));
+			} else if (extensionOptions.type === 'bundle') {
+				extensions.push({
+					path: extensionPath,
+					name: extensionName,
+					version: extensionManifest.version,
+					type: extensionOptions.type,
+					entrypoint: {
+						app: extensionOptions.path.app,
+						api: extensionOptions.path.api,
+					},
+					entries: extensionOptions.entries,
+					host: extensionOptions.host,
+					local: false,
+				});
 			} else if (isTypeIn(extensionOptions, HYBRID_EXTENSION_TYPES)) {
 				extensions.push({
 					path: extensionPath,

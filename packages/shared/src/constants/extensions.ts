@@ -6,7 +6,7 @@ export const API_EXTENSION_TYPES = ['hook', 'endpoint'] as const;
 export const HYBRID_EXTENSION_TYPES = ['operation'] as const;
 export const EXTENSION_TYPES = [...APP_EXTENSION_TYPES, ...API_EXTENSION_TYPES, ...HYBRID_EXTENSION_TYPES] as const;
 
-export const PACKAGE_EXTENSION_TYPES = ['pack'] as const;
+export const PACKAGE_EXTENSION_TYPES = ['pack', 'bundle'] as const;
 export const EXTENSION_PACKAGE_TYPES = [...EXTENSION_TYPES, ...PACKAGE_EXTENSION_TYPES] as const;
 
 export const APP_OR_HYBRID_EXTENSION_TYPES = [...APP_EXTENSION_TYPES, ...HYBRID_EXTENSION_TYPES] as const;
