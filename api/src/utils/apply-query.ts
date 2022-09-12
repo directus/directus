@@ -19,6 +19,7 @@ import { AliasMap, getColumnPath } from './get-column-path';
 import { getRelationInfo } from './get-relation-info';
 import { getFilterOperatorsForType, getOutputTypeForFunction } from '@directus/shared/utils';
 import { stripFunction } from './strip-function';
+import { calculateFieldDepth } from './calculate-field-depth';
 
 const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
 
@@ -295,7 +296,7 @@ export function applyFilter(
 
 	const aliasMap: AliasMap = {};
 
-	if (!subQuery) {
+	if (!subQuery && calculateFieldDepth(rootFilter) > 1) {
 		const column = `${collection}.${schema.collections[collection].primary}`;
 
 		const subQueryBuilder = (filter: Filter) => (subQueryKnex: Knex.QueryBuilder<any, unknown[]>) => {
