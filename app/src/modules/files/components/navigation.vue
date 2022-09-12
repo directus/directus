@@ -15,6 +15,7 @@
 					scope="files-navigation"
 					exact
 					disable-groupable-parent
+					:arrow-placement="nestedFolders && nestedFolders.length > 0 ? 'after' : false"
 				>
 					<template #activator>
 						<v-list-item-icon>
