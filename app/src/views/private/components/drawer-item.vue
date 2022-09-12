@@ -39,7 +39,7 @@
 					:model-value="internalEdits?.[junctionField]"
 					:fields="relatedCollectionFields"
 					:validation-errors="junctionField ? validationErrors : undefined"
-					autofocus
+					:autofocus="!swapFormOrder"
 					:show-divider="!swapFormOrder"
 					@update:model-value="setRelationEdits"
 				/>
@@ -48,6 +48,7 @@
 					:disabled="disabled"
 					:loading="loading"
 					:initial-values="initialValues"
+					:autofocus="swapFormOrder"
 					:show-divider="swapFormOrder"
 					:primary-key="primaryKey"
 					:fields="fields"
