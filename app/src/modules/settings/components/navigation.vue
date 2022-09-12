@@ -79,8 +79,6 @@ export default defineComponent({
 			const bugReportParams = new URLSearchParams({
 				template: 'bug_report.yml',
 				'directus-version': parsedInfo.value?.directus.version ?? '',
-				'node-version': parsedInfo.value?.node.version ?? '',
-				'operating-system': `${parsedInfo.value?.os.type ?? ''} ${parsedInfo.value?.os.version ?? ''}`,
 			});
 
 			return [
