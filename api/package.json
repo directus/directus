@@ -127,7 +127,6 @@
 		"js2xmlparser": "^4.0.2",
 		"json2csv": "^5.0.7",
 		"jsonwebtoken": "^8.5.1",
-		"keyv": "^4.3.0",
 		"knex": "2.2.0",
 		"knex-schema-inspector": "2.0.4",
 		"ldapjs": "^2.3.3",
@@ -151,6 +150,7 @@
 		"pino-http": "5.8.0",
 		"qs": "^6.10.5",
 		"rate-limiter-flexible": "^2.3.7",
+		"redis": "^4.3.1",
 		"resolve-cwd": "^3.0.0",
 		"rollup": "^2.75.6",
 		"sanitize-html": "^2.7.0",
@@ -166,8 +166,6 @@
 		"wellknown": "^0.5.0"
 	},
 	"optionalDependencies": {
-		"@keyv/redis": "^2.3.6",
-		"keyv-memcache": "^1.2.5",
 		"memcached": "^2.2.2",
 		"mysql": "^2.18.1",
 		"nodemailer-mailgun-transport": "^2.1.4",
@@ -201,7 +199,6 @@
 		"@types/js-yaml": "4.0.5",
 		"@types/json2csv": "5.0.3",
 		"@types/jsonwebtoken": "8.5.8",
-		"@types/keyv": "3.1.4",
 		"@types/ldapjs": "2.2.2",
 		"@types/lodash": "4.14.182",
 		"@types/marked": "4.0.3",
