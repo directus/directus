@@ -379,13 +379,45 @@ export function applyFilter(
 			 */
 			const pathRoot = filterPath[0].split(':')[0];
 
-			const { relation } = getRelationInfo(relations, collection, pathRoot);
+			const { relation, relationType } = getRelationInfo(relations, collection, pathRoot);
 
 			const { operator: filterOperator, value: filterValue } = getOperation(key, value);
 
-			// if (relationType === 'm2o' || relationType === 'a2o' || relationType === null) {
 			if (filterPath.length > 1) {
 				if (!relation) continue;
+
+				if (relationType === 'o2m' || relationType === 'o2a') {
+					let pkField: Knex.Raw<any> | string = `${collection}.${
+						schema.collections[relation!.related_collection!].primary
+					}`;
+
+					if (relationType === 'o2a') {
+						pkField = knex.raw(`CAST(?? AS CHAR(255))`, [pkField]);
+					}
+
+					const subQueryBuilder = (filter: Filter) => (subQueryKnex: Knex.QueryBuilder<any, unknown[]>) => {
+						const field = relation!.field;
+						const collection = relation!.collection;
+						const column = `${collection}.${field}`;
+
+						subQueryKnex
+							.select({ [field]: column })
+							.from(collection)
+							.whereNotNull(column);
+
+						applyQuery(knex, relation!.collection, subQueryKnex, { filter }, schema, true);
+					};
+
+					const childKey = Object.keys(value)?.[0];
+
+					if (childKey === '_none') {
+						dbQuery[logical].whereNotIn(pkField as string, subQueryBuilder(Object.values(value)[0] as Filter));
+						continue;
+					} else if (childKey === '_some') {
+						dbQuery[logical].whereIn(pkField as string, subQueryBuilder(Object.values(value)[0] as Filter));
+						continue;
+					}
+				}
 
 				const { columnPath, targetCollection } = getColumnPath({
 					path: filterPath,
@@ -720,13 +752,14 @@ export function applyAggregate(dbQuery: Knex.QueryBuilder, aggregate: Aggregate,
 
 function getFilterPath(key: string, value: Record<string, any>) {
 	const path = [key];
+	const childKey = Object.keys(value)[0];
 
-	if (typeof Object.keys(value)[0] === 'string' && Object.keys(value)[0].startsWith('_') === true) {
+	if (typeof childKey === 'string' && childKey.startsWith('_') === true && !['_none', '_some'].includes(childKey)) {
 		return path;
 	}
 
 	if (isPlainObject(value)) {
-		path.push(...getFilterPath(Object.keys(value)[0], Object.values(value)[0]));
+		path.push(...getFilterPath(childKey, Object.values(value)[0]));
 	}
 
 	return path;
