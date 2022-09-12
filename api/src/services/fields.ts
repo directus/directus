@@ -2,7 +2,6 @@ import SchemaInspector from '@directus/schema';
 import { REGEX_BETWEEN_PARENS } from '@directus/shared/constants';
 import { Accountability, Field, FieldMeta, RawField, SchemaOverview, Type } from '@directus/shared/types';
 import { addFieldFlag, toArray } from '@directus/shared/utils';
-import Keyv from 'keyv';
 import { Knex } from 'knex';
 import { Column } from 'knex-schema-inspector/dist/types/column';
 import { isEqual, isNil } from 'lodash';
@@ -22,6 +21,7 @@ import getDefaultValue from '../utils/get-default-value';
 import getLocalType from '../utils/get-local-type';
 import { RelationsService } from './relations';
 import { KNEX_TYPES } from '@directus/shared/constants';
+import { CacheService } from './cache/cache';
 
 export class FieldsService {
 	knex: Knex;
@@ -31,8 +31,8 @@ export class FieldsService {
 	payloadService: PayloadService;
 	schemaInspector: ReturnType<typeof SchemaInspector>;
 	schema: SchemaOverview;
-	cache: Keyv<any> | null;
-	systemCache: Keyv<any>;
+	cache: CacheService | null;
+	systemCache: CacheService;
 
 	constructor(options: AbstractServiceOptions) {
 		this.knex = options.knex || getDatabase();

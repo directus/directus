@@ -8,12 +8,12 @@ import env from '../env';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { FieldsService } from '../services/fields';
 import { ItemsService } from '../services/items';
-import Keyv from 'keyv';
 import { AbstractServiceOptions, Collection, CollectionMeta, MutationOptions } from '../types';
 import { Accountability, FieldMeta, RawField, SchemaOverview } from '@directus/shared/types';
 import { Table } from 'knex-schema-inspector/dist/types/table';
 import { addFieldFlag } from '@directus/shared/utils';
 import { getHelpers, Helpers } from '../database/helpers';
+import { CacheService } from './cache/cache';
 
 export type RawCollection = {
 	collection: string;
@@ -28,8 +28,8 @@ export class CollectionsService {
 	accountability: Accountability | null;
 	schemaInspector: ReturnType<typeof SchemaInspector>;
 	schema: SchemaOverview;
-	cache: Keyv<any> | null;
-	systemCache: Keyv<any>;
+	cache: CacheService | null;
+	systemCache: CacheService;
 
 	constructor(options: AbstractServiceOptions) {
 		this.knex = options.knex || getDatabase();

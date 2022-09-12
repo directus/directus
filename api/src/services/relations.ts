@@ -10,9 +10,9 @@ import { ForeignKey } from 'knex-schema-inspector/dist/types/foreign-key';
 import getDatabase, { getSchemaInspector } from '../database';
 import { getDefaultIndexName } from '../utils/get-default-index-name';
 import { getCache, clearSystemCache } from '../cache';
-import Keyv from 'keyv';
 import { AbstractServiceOptions } from '../types';
 import { getHelpers, Helpers } from '../database/helpers';
+import { CacheService } from './cache/cache';
 
 export class RelationsService {
 	knex: Knex;
@@ -21,7 +21,7 @@ export class RelationsService {
 	accountability: Accountability | null;
 	schema: SchemaOverview;
 	relationsItemService: ItemsService<RelationMeta>;
-	systemCache: Keyv<any>;
+	systemCache: CacheService;
 	helpers: Helpers;
 
 	constructor(options: AbstractServiceOptions) {

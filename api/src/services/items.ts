@@ -1,5 +1,4 @@
 import { Accountability, Action, PermissionsAction, Query, SchemaOverview } from '@directus/shared/types';
-import Keyv from 'keyv';
 import { Knex } from 'knex';
 import { assign, clone, cloneDeep, omit, pick, without } from 'lodash';
 import { getCache } from '../cache';
@@ -20,6 +19,7 @@ import {
 import getASTFromQuery from '../utils/get-ast-from-query';
 import { validateKeys } from '../utils/validate-keys';
 import { AuthorizationService } from './authorization';
+import { CacheService } from './cache/cache';
 import { ActivityService, RevisionsService } from './index';
 import { PayloadService } from './payload';
 
@@ -35,7 +35,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	accountability: Accountability | null;
 	eventScope: string;
 	schema: SchemaOverview;
-	cache: Keyv<any> | null;
+	cache: CacheService | null;
 
 	constructor(collection: string, options: AbstractServiceOptions) {
 		this.collection = collection;
