@@ -101,6 +101,7 @@ importers:
       '@types/ioredis': ^4.28.10
       '@types/jest': 27.5.2
       '@types/js-yaml': 4.0.5
+      '@types/json-buffer': ^3.0.0
       '@types/json2csv': 5.0.3
       '@types/jsonwebtoken': 8.5.8
       '@types/ldapjs': 2.2.2
@@ -161,6 +162,7 @@ importers:
       joi: ^17.6.0
       js-yaml: ^4.1.0
       js2xmlparser: ^4.0.2
+      json-buffer: ^3.0.1
       json2csv: ^5.0.7
       jsonwebtoken: ^8.5.1
       knex: 2.2.0
@@ -229,6 +231,7 @@ importers:
       '@godaddy/terminus': 4.11.1
       '@rollup/plugin-alias': 3.1.9_rollup@2.77.0
       '@rollup/plugin-virtual': 2.1.0_rollup@2.77.0
+      '@types/json-buffer': 3.0.0
       argon2: 0.28.7
       async: 3.2.4
       async-mutex: 0.3.2
@@ -264,6 +267,7 @@ importers:
       joi: 17.6.0
       js-yaml: 4.1.0
       js2xmlparser: 4.0.2
+      json-buffer: 3.0.1
       json2csv: 5.0.7
       jsonwebtoken: 8.5.1
       knex: 2.2.0_2vpcbsnibo2fqjt4xpwdmbx3nu
@@ -6916,7 +6920,6 @@ packages:
 
   /@types/json-buffer/3.0.0:
     resolution: {integrity: sha512-3YP80IxxFJB4b5tYC2SUPwkg0XQLiu0nWvhRgEatgjf+29IcWO9X1k8xRv5DGssJ/lCrjYTjQPcobJr2yWIVuQ==}
-    dev: true
 
   /@types/json-schema/7.0.11:
     resolution: {integrity: sha512-wOuvG1SN4Us4rez+tylwwwCV1psiNVOkJeM3AUWUNWg/jDQY2+HE/444y5gc+jBmRqASOm2Oeh5c1axHobwRKQ==}
@@ -15164,7 +15167,6 @@ packages:
 
   /json-buffer/3.0.1:
     resolution: {integrity: sha512-4bV5BfR2mqfQTJm+V5tPPdf+ZpuhiIvTuAB5g8kcrXOZpTT/QwwVRWBywX1ozr6lEuPdbHxwaJlm9G6mI2sfSQ==}
-    dev: true
 
   /json-parse-better-errors/1.0.2:
     resolution: {integrity: sha512-mrqyZKfX5EhL7hvqcV6WG1yYjnjeuYDzDhhcAAUrq8Po85NBQBJP+ZDUT75qZQ98IkUoBqdkExkukOU7Ts2wrw==}
