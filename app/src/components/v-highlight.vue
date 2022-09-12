@@ -44,7 +44,7 @@ const parts = computed<HighlightPart[]>(() => {
 
 	const matches = flatten(
 		queries.reduce<number[][][]>((acc, query) => {
-			if (query === null) return acc;
+			if (!query) return acc;
 
 			query = removeDiacritics(query.toLowerCase());
 
