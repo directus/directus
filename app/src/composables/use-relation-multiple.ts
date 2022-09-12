@@ -97,7 +97,7 @@ export function useRelationMultiple(
 				$type: 'created',
 				$index: index,
 			} as DisplayItem;
-		})
+		});
 
 		if (info.type === 'o2m') return items;
 		return items.filter((item) => item[info.reverseJunctionField.field] === undefined);
@@ -167,10 +167,7 @@ export function useRelationMultiple(
 
 		const newItems = getPage(existingItemCount.value + selected.value.length, createdItems.value);
 
-		items.push(
-			...selectedOnPage,
-			...newItems
-		);
+		items.push(...selectedOnPage, ...newItems);
 
 		const sortField = relation.value.sortField;
 
