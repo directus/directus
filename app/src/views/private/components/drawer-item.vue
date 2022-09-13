@@ -20,18 +20,18 @@
 		</template>
 
 		<div class="drawer-item-content">
-			<template v-if="junctionField">
-				<file-preview
-					v-if="file"
-					:src="file.src"
-					:mime="file.type"
-					:width="file.width"
-					:height="file.height"
-					:title="file.title"
-					:in-modal="true"
-				/>
-
+			<file-preview
+				v-if="junctionField && file"
+				:src="file.src"
+				:mime="file.type"
+				:width="file.width"
+				:height="file.height"
+				:title="file.title"
+				:in-modal="true"
+			/>
+			<div class="drawer-item-order" :class="{ swap: swapFormOrder }">
 				<v-form
+					v-if="junctionField"
 					:disabled="disabled"
 					:loading="loading"
 					:initial-values="initialValues?.[junctionField]"
@@ -39,22 +39,22 @@
 					:model-value="internalEdits?.[junctionField]"
 					:fields="relatedCollectionFields"
 					:validation-errors="junctionField ? validationErrors : undefined"
-					autofocus
+					:autofocus="!swapFormOrder"
+					:show-divider="!swapFormOrder"
 					@update:model-value="setRelationEdits"
 				/>
-
-				<v-divider v-if="showDivider" />
-			</template>
-
-			<v-form
-				v-model="internalEdits"
-				:disabled="disabled"
-				:loading="loading"
-				:initial-values="initialValues"
-				:primary-key="primaryKey"
-				:fields="fields"
-				:validation-errors="!junctionField ? validationErrors : undefined"
-			/>
+				<v-form
+					v-model="internalEdits"
+					:disabled="disabled"
+					:loading="loading"
+					:initial-values="initialValues"
+					:autofocus="swapFormOrder"
+					:show-divider="swapFormOrder"
+					:primary-key="primaryKey"
+					:fields="fields"
+					:validation-errors="!junctionField ? validationErrors : undefined"
+				/>
+			</div>
 		</div>
 	</v-drawer>
 </template>
@@ -90,6 +90,7 @@ interface Props {
 	// If this drawer-item is opened from a relational interface, we need to force-block the field
 	// that relates back to the parent item.
 	circularField?: string | null;
+	junctionFieldLocation?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -100,6 +101,7 @@ const props = withDefaults(defineProps<Props>(), {
 	disabled: false,
 	relatedPrimaryKey: '+',
 	circularField: null,
+	junctionFieldLocation: 'bottom',
 });
 
 const emit = defineEmits(['update:active', 'input']);
@@ -123,6 +125,10 @@ const { info: collectionInfo, primaryKeyField } = useCollection(collection);
 
 const isNew = computed(() => props.primaryKey === '+' && props.relatedPrimaryKey === '+');
 
+const swapFormOrder = computed(() => {
+	return props.junctionFieldLocation === 'top';
+});
+
 const title = computed(() => {
 	const collection = relatedCollectionInfo?.value || collectionInfo.value!;
 
@@ -139,13 +145,6 @@ const title = computed(() => {
 	return isNew.value
 		? t('creating_in', { collection: collection.name })
 		: t('editing_in', { collection: collection.name });
-});
-
-const showDivider = computed(() => {
-	return (
-		fieldsStore.getFieldsForCollection(props.collection).filter((field: Field) => field.meta?.hidden !== true).length >
-		0
-	);
 });
 
 const { fields: relatedCollectionFields } = usePermissions(
@@ -350,8 +349,9 @@ function useActions() {
 		const editsToValidate = props.junctionField ? internalEdits.value[props.junctionField] : internalEdits.value;
 		const fieldsToValidate = props.junctionField ? relatedCollectionFields.value : fieldsWithoutCircular.value;
 		const defaultValues = getDefaultValuesFromFields(fieldsToValidate);
+		const existingValues = props.junctionField ? initialValues?.value?.[props.junctionField] : initialValues?.value;
 		let errors = validateItem(
-			merge({}, defaultValues.value, initialValues.value, editsToValidate),
+			merge({}, defaultValues.value, existingValues, editsToValidate),
 			fieldsToValidate,
 			isNew.value
 		);
@@ -359,6 +359,8 @@ function useActions() {
 		if (errors.length > 0) {
 			validationErrors.value = errors;
 			return;
+		} else {
+			validationErrors.value = [];
 		}
 
 		if (props.junctionField && props.relatedPrimaryKey !== '+' && relatedPrimaryKeyField.value) {
@@ -391,5 +393,11 @@ function useActions() {
 .drawer-item-content {
 	padding: var(--content-padding);
 	padding-bottom: var(--content-padding-bottom);
+	.drawer-item-order {
+		&.swap {
+			display: flex;
+			flex-direction: column-reverse;
+		}
+	}
 }
 </style>

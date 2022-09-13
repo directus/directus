@@ -565,6 +565,22 @@ export async function ReadItem(vendor: string, options: OptionsReadItem) {
 	return response.body.data;
 }
 
+export type OptionsUpdateItem = {
+	id?: string | number;
+	collection: string;
+	item: any;
+};
+
+export async function UpdateItem(vendor: string, options: OptionsUpdateItem) {
+	// Action
+	const response = await request(getUrl(vendor))
+		.patch(`/items/${options.collection}/${options.id === undefined ? '' : options.id}`)
+		.set('Authorization', `Bearer ${common.USER.TESTS_FLOW.TOKEN}`)
+		.send(options.item);
+
+	return response.body.data;
+}
+
 // TODO
 // export async function CreatePermissions() {}
 // export async function UpdatePermissions() {}
