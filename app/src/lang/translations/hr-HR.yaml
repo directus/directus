@@ -793,6 +793,7 @@ flow_tracking_null: Nemoj pratiti ništa
 start_flow: Pokreni tok
 stop_flow: Zaustavi tok
 create_operation: Kreiraj operaciju
+code: Kôd
 insights: Uvidi
 dashboard: Upravljačka ploča
 panel: Panel
@@ -1374,6 +1375,8 @@ value: Vrijednost
 view_project: Pogledaj projekt
 report_error: Prijavi grešku
 start: Započni
+table: Tablica
+list: Lista
 interfaces:
   filter:
     name: Filter
@@ -1449,6 +1452,8 @@ interfaces:
     include_seconds: Uključi sekunde
     set_to_now: Postavi na sad
     use_24: Koristi 24-satni format
+  system-fields:
+    select_a_collection: Odaberite zbirku
   system-display-template:
     display-template: Predložak prikaza
     description: Pomiješajte statički tekst i dinamičke vrijednosti polja

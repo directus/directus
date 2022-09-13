@@ -1,4 +1,6 @@
 import { useFieldsStore } from '@/stores/fields';
+import { useCollectionsStore } from '@/stores/collections';
+import panel from '@directus-extensions-panel';
 import { PanelQuery } from '@directus/shared/types';
 import { definePanel } from '@directus/shared/utils';
 import { computed } from 'vue';
@@ -12,6 +14,12 @@ export default definePanel({
 	component: PanelMetric,
 	query(options) {
 		if (!options || !options.function) return;
+		const collectionsStore = useCollectionsStore();
+		const collectionInfo = collectionsStore.getCollection(options.collection);
+
+		if (!collectionInfo) return;
+		if (collectionInfo?.meta?.singleton) return;
+
 		const isRawValue = ['first', 'last'].includes(options.function);
 
 		const sort = options.sortField && `${options.function === 'last' ? '-' : ''}${options.sortField}`;
@@ -64,6 +72,7 @@ export default definePanel({
 					interface: 'system-collection',
 					options: {
 						includeSystem: true,
+						includeSingleton: false,
 					},
 					selectedCollection: '',
 					hasBeenSelected: false,

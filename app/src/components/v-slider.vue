@@ -32,71 +32,58 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent, computed } from 'vue';
+<script setup lang="ts">
+import { computed } from 'vue';
 
-export default defineComponent({
-	props: {
-		disabled: {
-			type: Boolean,
-			default: false,
-		},
-		showThumbLabel: {
-			type: Boolean,
-			default: false,
-		},
-		max: {
-			type: Number,
-			default: 100,
-		},
-		min: {
-			type: Number,
-			default: 0,
-		},
-		step: {
-			type: Number,
-			default: 1,
-		},
-		showTicks: {
-			type: Boolean,
-			default: false,
-		},
-		alwaysShowValue: {
-			type: Boolean,
-			default: true,
-		},
-		modelValue: {
-			type: Number,
-			default: 0,
-		},
-	},
-	emits: ['change', 'update:modelValue'],
-	setup(props, { emit }) {
-		const styles = computed(() => {
-			if (props.modelValue === null) return { '--_v-slider-percentage': 50 };
+interface Props {
+	/** Disables the slider */
+	disabled?: boolean;
+	/** Show the thumb label on drag of the thumb */
+	showThumbLabel?: boolean;
+	/** Maximum allowed value */
+	max?: number;
+	/** Minimum allowed value */
+	min?: number;
+	/** In what step the value can be entered */
+	step?: number;
+	/** Show tick for each step */
+	showTicks?: boolean;
+	/** Always the current selected value */
+	alwaysShowValue?: boolean;
+	/** Model the current selected value */
+	modelValue?: number;
+}
 
-			let percentage = ((props.modelValue - props.min) / (props.max - props.min)) * 100;
-			if (isNaN(percentage)) percentage = 0;
-			return { '--_v-slider-percentage': percentage };
-		});
-
-		return {
-			styles,
-			onChange,
-			onInput,
-		};
-
-		function onChange(event: InputEvent) {
-			const target = event.target as HTMLInputElement;
-			emit('change', Number(target.value));
-		}
-
-		function onInput(event: InputEvent) {
-			const target = event.target as HTMLInputElement;
-			emit('update:modelValue', Number(target.value));
-		}
-	},
+const props = withDefaults(defineProps<Props>(), {
+	disabled: false,
+	showThumbLabel: false,
+	max: 100,
+	min: 0,
+	step: 1,
+	showTicks: false,
+	alwaysShowValue: true,
+	modelValue: 0,
 });
+
+const emit = defineEmits(['change', 'update:modelValue']);
+
+const styles = computed(() => {
+	if (props.modelValue === null) return { '--_v-slider-percentage': 50 };
+
+	let percentage = ((props.modelValue - props.min) / (props.max - props.min)) * 100;
+	if (isNaN(percentage)) percentage = 0;
+	return { '--_v-slider-percentage': percentage };
+});
+
+function onChange(event: Event) {
+	const target = event.target as HTMLInputElement;
+	emit('change', Number(target.value));
+}
+
+function onInput(event: Event) {
+	const target = event.target as HTMLInputElement;
+	emit('update:modelValue', Number(target.value));
+}
 </script>
 
 <style>
