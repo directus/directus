@@ -225,7 +225,7 @@ function getColumnPreprocessor(knex: Knex, schema: SchemaOverview, table: string
 		}
 
 		if (fieldNode.type === 'functionField') {
-			return getColumn(knex, table, fieldNode.name, alias, schema, fieldNode.query);
+			return getColumn(knex, table, fieldNode.name, alias, schema, { query: fieldNode.query });
 		}
 
 		return getColumn(knex, table, fieldNode.name, alias, schema);

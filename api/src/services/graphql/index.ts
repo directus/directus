@@ -1,5 +1,6 @@
 import { BaseException } from '@directus/shared/exceptions';
-import { Accountability, Action, Aggregate, Filter, Query, SchemaOverview } from '@directus/shared/types';
+import { Accountability, Action, Aggregate, Filter, Query, SchemaOverview, PrimaryKey } from '@directus/shared/types';
+import { parseFilterFunctionPath } from '@directus/shared/utils';
 import argon2 from 'argon2';
 import {
 	ArgumentNode,
@@ -45,7 +46,6 @@ import { flatten, get, mapKeys, merge, omit, pick, set, transform, uniq } from '
 import ms from 'ms';
 import { clearSystemCache, getCache } from '../../cache';
 import { DEFAULT_AUTH_PROVIDER, GENERATE_SPECIAL } from '../../constants';
-import { REGEX_BETWEEN_PARENS } from '@directus/shared/constants';
 import getDatabase from '../../database';
 import env from '../../env';
 import { ForbiddenException, GraphQLValidationException, InvalidPayloadException } from '../../exceptions';
@@ -84,8 +84,6 @@ import { GraphQLDate } from './types/date';
 import { GraphQLGeoJSON } from './types/geojson';
 import { GraphQLStringOrFloat } from './types/string-or-float';
 import { GraphQLVoid } from './types/void';
-
-import { PrimaryKey } from '@directus/shared/types';
 
 import { addPathToValidationError } from './utils/add-path-to-validation-error';
 import { GraphQLHash } from './types/hash';
@@ -1309,14 +1307,7 @@ export class GraphQLService {
 		// Transform count(a.b.c) into a.b.count(c)
 		if (query.fields?.length) {
 			for (let fieldIndex = 0; fieldIndex < query.fields.length; fieldIndex++) {
-				if (query.fields[fieldIndex].includes('(') && query.fields[fieldIndex].includes(')')) {
-					const functionName = query.fields[fieldIndex].split('(')[0];
-					const columnNames = query.fields[fieldIndex].match(REGEX_BETWEEN_PARENS)![1].split('.');
-					if (columnNames.length > 1) {
-						const column = columnNames.pop();
-						query.fields[fieldIndex] = columnNames.join('.') + '.' + functionName + '(' + column + ')';
-					}
-				}
+				query.fields[fieldIndex] = parseFilterFunctionPath(query.fields[fieldIndex]);
 			}
 		}
 
