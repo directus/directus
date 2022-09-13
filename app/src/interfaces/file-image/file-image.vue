@@ -35,8 +35,14 @@
 				<v-button v-tooltip="t('zoom')" icon rounded @click="lightboxActive = true">
 					<v-icon name="zoom_in" />
 				</v-button>
-				<v-button v-tooltip="t('download')" icon rounded :href="downloadSrc" :download="image.filename_download">
-					<v-icon name="file_download" />
+				<v-button
+					v-tooltip="t('download')"
+					icon
+					rounded
+					:href="getAssetUrl(image.id, true)"
+					:download="image.filename_download"
+				>
+					<v-icon name="download" />
 				</v-button>
 				<v-button v-tooltip="t('edit')" icon rounded @click="editImageDetails = true">
 					<v-icon name="open_in_new" />
@@ -61,7 +67,13 @@
 				:primary-key="image.id"
 				:edits="edits"
 				@input="update"
-			/>
+			>
+				<template #actions>
+					<v-button secondary rounded icon :download="image.filename_download" :href="getAssetUrl(image.id, true)">
+						<v-icon name="download" />
+					</v-button>
+				</template>
+			</drawer-item>
 
 			<image-editor v-if="!disabled && image" :id="image.id" v-model="editImageEditor" @refresh="refresh" />
 
@@ -76,7 +88,7 @@ import api, { addTokenToURL } from '@/api';
 import { useRelationM2O } from '@/composables/use-relation-m2o';
 import { RelationQuerySingle, useRelationSingle } from '@/composables/use-relation-single';
 import { formatFilesize } from '@/utils/format-filesize';
-import { getRootPath } from '@/utils/get-root-path';
+import { getAssetUrl } from '@/utils/get-asset-url';
 import { readableMimeType } from '@/utils/readable-mime-type';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
 import FileLightbox from '@/views/private/components/file-lightbox.vue';
@@ -141,11 +153,6 @@ const src = computed(() => {
 });
 
 const ext = computed(() => (image.value ? readableMimeType(image.value.type, true) : 'unknown'));
-
-const downloadSrc = computed(() => {
-	if (!image.value) return null;
-	return addTokenToURL(getRootPath() + 'assets/' + image.value.id);
-});
 
 const meta = computed(() => {
 	if (!image.value) return null;
@@ -238,74 +245,76 @@ img {
 	}
 }
 
-.shadow {
-	position: absolute;
-	bottom: 0;
-	left: 0;
-	z-index: 2;
-	width: 100%;
-	height: 40px;
-	overflow: hidden;
-	line-height: 1;
-	white-space: nowrap;
-	text-overflow: ellipsis;
-	background: linear-gradient(180deg, rgb(38 50 56 / 0) 0%, rgb(38 50 56 / 0.25) 100%);
-	transition: height var(--fast) var(--transition);
-}
+.image-preview {
+	.shadow {
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		z-index: 2;
+		width: 100%;
+		height: 40px;
+		overflow: hidden;
+		line-height: 1;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+		background: linear-gradient(180deg, rgb(38 50 56 / 0) 0%, rgb(38 50 56 / 0.25) 100%);
+		transition: height var(--fast) var(--transition);
+	}
 
-.actions {
-	--v-button-color: var(--foreground-subdued);
-	--v-button-background-color: var(--white);
-	--v-button-color-hover: var(--foreground-normal);
-	--v-button-background-color-hover: var(--white);
+	.actions {
+		--v-button-color: var(--foreground-subdued);
+		--v-button-background-color: var(--white);
+		--v-button-color-hover: var(--foreground-normal);
+		--v-button-background-color-hover: var(--white);
 
-	position: absolute;
-	top: calc(50% - 32px);
-	left: 0;
-	z-index: 3;
-	display: flex;
-	justify-content: center;
-	width: 100%;
+		position: absolute;
+		top: calc(50% - 32px);
+		left: 0;
+		z-index: 3;
+		display: flex;
+		justify-content: center;
+		width: 100%;
 
-	.v-button {
-		margin-right: 12px;
-		transform: translateY(10px);
-		opacity: 0;
-		transition: var(--medium) var(--transition);
-		transition-property: opacity transform;
+		.v-button {
+			margin-right: 12px;
+			transform: translateY(10px);
+			opacity: 0;
+			transition: var(--medium) var(--transition);
+			transition-property: opacity transform;
 
-		@for $i from 0 through 4 {
-			&:nth-of-type(#{$i + 1}) {
-				transition-delay: $i * 25ms;
+			@for $i from 0 through 4 {
+				&:nth-of-type(#{$i + 1}) {
+					transition-delay: $i * 25ms;
+				}
 			}
+		}
+
+		.v-button:last-child {
+			margin-right: 0px;
 		}
 	}
 
-	.v-button:last-child {
-		margin-right: 0px;
+	.info {
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		z-index: 3;
+		width: 100%;
+		padding: 8px 12px;
+		line-height: 1.2;
 	}
-}
 
-.info {
-	position: absolute;
-	bottom: 0;
-	left: 0;
-	z-index: 3;
-	width: 100%;
-	padding: 8px 12px;
-	line-height: 1.2;
-}
+	.title {
+		color: var(--white);
+	}
 
-.title {
-	color: var(--white);
-}
-
-.meta {
-	height: 17px;
-	max-height: 0;
-	overflow: hidden;
-	color: rgb(255 255 255 / 0.75);
-	transition: max-height var(--fast) var(--transition);
+	.meta {
+		height: 17px;
+		max-height: 0;
+		overflow: hidden;
+		color: rgb(255 255 255 / 0.75);
+		transition: max-height var(--fast) var(--transition);
+	}
 }
 
 .image-preview:focus-within,
