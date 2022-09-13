@@ -23,7 +23,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { useFieldsStore } from '@/stores/fields';
-import { get } from 'lodash';
+import { get } from '@directus/shared/utils';
 import { Field } from '@directus/shared/types';
 import { getDisplay } from '@/displays';
 import { getDefaultDisplayForType } from '@/utils/get-default-display-for-type';
