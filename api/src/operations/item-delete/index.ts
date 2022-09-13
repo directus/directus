@@ -17,13 +17,12 @@ export default defineOperationApi<Options>({
 
 	handler: async ({ collection, key, query, emitEvents, permissions }, { accountability, database, getSchema }) => {
 		const schema = await getSchema({ database });
-
 		let customAccountability: Accountability | null;
 
 		if (!permissions || permissions === '$trigger') {
 			customAccountability = accountability;
 		} else if (permissions === '$full') {
-			customAccountability = null;
+			customAccountability = await getAccountabilityForRole('system', { database, schema, accountability });
 		} else if (permissions === '$public') {
 			customAccountability = await getAccountabilityForRole(null, { database, schema, accountability });
 		} else {
