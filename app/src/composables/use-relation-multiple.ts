@@ -309,7 +309,7 @@ export function useRelationMultiple(
 
 		let targetCollection: string;
 		let targetPKField: string;
-		let reverseJunctionField = relation.value.reverseJunctionField.field;
+		const reverseJunctionField = relation.value.reverseJunctionField.field;
 		const fields = new Set(previewQuery.value.fields);
 
 		switch (relation.value.type) {
@@ -467,12 +467,14 @@ export function useRelationMultiple(
 				return;
 			}
 
-			const fields = new Set(previewQuery.value.fields.reduce<string[]>((acc, field) => {
-				const prefix = relation.junctionField.field + '.'
-				
-				if(field.startsWith(prefix)) acc.push(field.replace(prefix, ''));
-				return acc
-			}, []));
+			const fields = new Set(
+				previewQuery.value.fields.reduce<string[]>((acc, field) => {
+					const prefix = relation.junctionField.field + '.';
+
+					if (field.startsWith(prefix)) acc.push(field.replace(prefix, ''));
+					return acc;
+				}, [])
+			);
 			fields.add(relation.relatedPrimaryKeyField.field);
 
 			const relatedPKField = relation.relatedPrimaryKeyField.field;
@@ -514,12 +516,14 @@ export function useRelationMultiple(
 				Object.entries(selectGrouped).map(([collection, items]) => {
 					const pkField = relation.relationPrimaryKeyFields[collection].field;
 
-					const fields = new Set(previewQuery.value.fields.reduce<string[]>((acc, field) => {
-						const prefix = `${relation.junctionField.field}:${collection}.`
-						
-						if(field.startsWith(prefix)) acc.push(field.replace(prefix, ''));
-						return acc
-					}, []));
+					const fields = new Set(
+						previewQuery.value.fields.reduce<string[]>((acc, field) => {
+							const prefix = `${relation.junctionField.field}:${collection}.`;
+
+							if (field.startsWith(prefix)) acc.push(field.replace(prefix, ''));
+							return acc;
+						}, [])
+					);
 
 					fields.add(pkField);
 
