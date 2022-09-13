@@ -411,5 +411,79 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				});
 			});
 		});
+
+		describe('Returns no duplicated results from joins', () => {
+			it.each(vendors)('%s', async (vendor) => {
+				// Setup
+				await CreateItem(vendor, {
+					collection: localCollectionCountries,
+					item: {
+						...createCountry(pkType),
+						name: 'test_country_duplicates',
+						states: {
+							create: [
+								{
+									...createState(pkType),
+									name: 'test_state_duplicates_1',
+								},
+								{
+									...createState(pkType),
+									name: 'test_state_duplicates_2',
+								},
+							],
+							update: [],
+							delete: [],
+						},
+					},
+				});
+
+				// Action
+				const o2mResponse = await request(getUrl(vendor))
+					.get(`/items/${localCollectionCountries}`)
+					.query({
+						filter: JSON.stringify({
+							_and: [
+								{
+									name: { _eq: 'test_country_duplicates' },
+								},
+								{
+									states: {
+										country_id: {
+											id: { _nnull: true },
+										},
+									},
+								},
+							],
+						}),
+					})
+					.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+				const m2oResponse = await request(getUrl(vendor))
+					.get(`/items/${localCollectionStates}`)
+					.query({
+						filter: JSON.stringify({
+							_and: [
+								{
+									name: { _starts_with: 'test_state_duplicates' },
+								},
+								{
+									country_id: {
+										states: {
+											id: { _nnull: true },
+										},
+									},
+								},
+							],
+						}),
+					})
+					.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+				// Assert
+				expect(o2mResponse.statusCode).toEqual(200);
+				expect(o2mResponse.body.data.length).toEqual(1);
+				expect(m2oResponse.statusCode).toEqual(200);
+				expect(m2oResponse.body.data.length).toEqual(2);
+			});
+		});
 	});
 });
