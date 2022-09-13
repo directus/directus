@@ -309,14 +309,13 @@ export function useRelationMultiple(
 
 		let targetCollection: string;
 		let targetPKField: string;
-		let reverseJunctionField: string;
+		let reverseJunctionField = relation.value.reverseJunctionField.field;
 		const fields = new Set(previewQuery.value.fields);
 
 		switch (relation.value.type) {
 			case 'm2a':
 				targetCollection = relation.value.junctionCollection.collection;
 				targetPKField = relation.value.junctionPrimaryKeyField.field;
-				reverseJunctionField = relation.value.reverseJunctionField.field;
 				fields.add(relation.value.junctionPrimaryKeyField.field);
 				fields.add(relation.value.collectionField.field);
 				for (const collection of relation.value.allowedCollections) {
@@ -327,14 +326,12 @@ export function useRelationMultiple(
 			case 'm2m':
 				targetCollection = relation.value.junctionCollection.collection;
 				targetPKField = relation.value.junctionPrimaryKeyField.field;
-				reverseJunctionField = relation.value.reverseJunctionField.field;
 				fields.add(relation.value.junctionPrimaryKeyField.field);
 				fields.add(`${relation.value.junctionField.field}.${relation.value.relatedPrimaryKeyField.field}`);
 				break;
 			case 'o2m':
 				targetCollection = relation.value.relatedCollection.collection;
 				targetPKField = relation.value.relatedPrimaryKeyField.field;
-				reverseJunctionField = relation.value.reverseJunctionField.field;
 				fields.add(relation.value.relatedPrimaryKeyField.field);
 				break;
 		}
@@ -441,11 +438,17 @@ export function useRelationMultiple(
 				return;
 			}
 
+			const fields = new Set(previewQuery.value.fields);
+			fields.add(relation.relatedPrimaryKeyField.field);
+
+			if (relation.sortField) fields.add(relation.sortField);
+
 			const targetCollection = relation.relatedCollection.collection;
 			const targetPKField = relation.relatedPrimaryKeyField.field;
 
 			const response = await api.get(getEndpoint(targetCollection), {
 				params: {
+					fields: Array.from(fields),
 					filter: {
 						[targetPKField]: {
 							_in: selectedOnPage.value.map((item) => item[targetPKField]),
@@ -464,10 +467,19 @@ export function useRelationMultiple(
 				return;
 			}
 
+			const fields = new Set(previewQuery.value.fields.reduce<string[]>((acc, field) => {
+				const prefix = relation.junctionField.field + '.'
+				
+				if(field.startsWith(prefix)) acc.push(field.replace(prefix, ''));
+				return acc
+			}, []));
+			fields.add(relation.relatedPrimaryKeyField.field);
+
 			const relatedPKField = relation.relatedPrimaryKeyField.field;
 
 			const response = await api.get(getEndpoint(relation.relatedCollection.collection), {
 				params: {
+					fields: Array.from(fields),
 					filter: {
 						[relatedPKField]: {
 							_in: selectedOnPage.value.map((item) => item[relation.junctionField.field][relatedPKField]),
@@ -502,8 +514,18 @@ export function useRelationMultiple(
 				Object.entries(selectGrouped).map(([collection, items]) => {
 					const pkField = relation.relationPrimaryKeyFields[collection].field;
 
+					const fields = new Set(previewQuery.value.fields.reduce<string[]>((acc, field) => {
+						const prefix = `${relation.junctionField.field}:${collection}.`
+						
+						if(field.startsWith(prefix)) acc.push(field.replace(prefix, ''));
+						return acc
+					}, []));
+
+					fields.add(pkField);
+
 					return api.get(getEndpoint(collection), {
 						params: {
+							fields: Array.from(fields),
 							filter: {
 								[pkField]: {
 									_in: items.map((item) => item[relation.junctionField.field][pkField]),
