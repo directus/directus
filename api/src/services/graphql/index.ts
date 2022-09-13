@@ -1620,6 +1620,7 @@ export class GraphQLService {
 		query.alias = parseAliases(selections);
 		query.fields = parseFields(selections);
 		query.filter = replaceFuncs(query.filter);
+		query.deep = replaceFuncs(query.deep as any) as any;
 
 		validateQuery(query);
 
