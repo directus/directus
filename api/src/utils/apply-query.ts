@@ -9,7 +9,7 @@ import {
 	Type,
 } from '@directus/shared/types';
 import { Knex } from 'knex';
-import { clone, get, isPlainObject, set } from 'lodash';
+import { clone, get, isPlainObject, pull, set } from 'lodash';
 import { customAlphabet } from 'nanoid';
 import validate from 'uuid-validate';
 import { getHelpers } from '../database/helpers';
@@ -419,6 +419,8 @@ export function applyFilter(
 						continue;
 					}
 				}
+
+				pull(filterPath, '_none', '_some');
 
 				const { columnPath, targetCollection } = getColumnPath({
 					path: filterPath,
