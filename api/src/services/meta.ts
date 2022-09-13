@@ -1,7 +1,7 @@
 import { Knex } from 'knex';
 import getDatabase from '../database';
 import { ForbiddenException } from '../exceptions';
-import { AbstractServiceOptions } from '../types';
+import { AbstractServiceOptions } from '@directus/shared/services';
 import { Accountability, Query, SchemaOverview } from '@directus/shared/types';
 import { applyFilter, applySearch } from '../utils/apply-query';
 

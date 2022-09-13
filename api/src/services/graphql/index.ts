@@ -1,4 +1,5 @@
 import { BaseException } from '@directus/shared/exceptions';
+import { AbstractServiceOptions } from '@directus/shared/services';
 import { Accountability, Action, Aggregate, Filter, Query, SchemaOverview } from '@directus/shared/types';
 import argon2 from 'argon2';
 import {
@@ -51,7 +52,7 @@ import getDatabase from '../../database';
 import env from '../../env';
 import { ForbiddenException, GraphQLValidationException, InvalidPayloadException } from '../../exceptions';
 import { getExtensionManager } from '../../extensions';
-import { AbstractServiceOptions, GraphQLParams, Item } from '../../types';
+import { GraphQLParams, Item } from '../../types';
 import { generateHash } from '../../utils/generate-hash';
 import { getGraphQLType } from '../../utils/get-graphql-type';
 import { reduceSchema } from '../../utils/reduce-schema';

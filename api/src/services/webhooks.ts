@@ -1,4 +1,5 @@
-import { AbstractServiceOptions, Item, PrimaryKey, Webhook, MutationOptions } from '../types';
+import { AbstractServiceOptions } from '@directus/shared/services';
+import { Item, PrimaryKey, Webhook, MutationOptions } from '../types';
 import { ItemsService } from './items';
 import { getMessenger, Messenger } from '../messenger';
 

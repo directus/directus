@@ -1,9 +1,10 @@
+import { AbstractServiceOptions } from '@directus/shared/services';
 import { Knex } from 'knex';
 import { authenticator } from 'otplib';
 import getDatabase from '../database';
 import { InvalidPayloadException } from '../exceptions';
 import { ItemsService } from './items';
-import { AbstractServiceOptions, PrimaryKey } from '../types';
+import { PrimaryKey } from '../types';
 
 export class TFAService {
 	knex: Knex;

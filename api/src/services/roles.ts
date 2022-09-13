@@ -1,5 +1,6 @@
 import { ForbiddenException, UnprocessableEntityException } from '../exceptions';
-import { AbstractServiceOptions, MutationOptions, PrimaryKey, Alterations, Item } from '../types';
+import { MutationOptions, PrimaryKey, Alterations, Item } from '../types';
+import { AbstractServiceOptions } from '@directus/shared/services';
 import { Query } from '@directus/shared/types';
 import { ItemsService } from './items';
 import { PermissionsService } from './permissions';

@@ -1,4 +1,4 @@
-import { AbstractServiceOptions } from '../types';
+import { AbstractServiceOptions } from '@directus/shared/services';
 import { ItemsService } from './items';
 
 export class DashboardsService extends ItemsService {

@@ -6,7 +6,7 @@ import getDatabase from '../../database';
 import env from '../../env';
 import { InvalidPayloadException } from '../../exceptions';
 import logger from '../../logger';
-import { AbstractServiceOptions } from '../../types';
+import { AbstractServiceOptions } from '@directus/shared/services';
 import { Accountability, SchemaOverview } from '@directus/shared/types';
 import getMailer from '../../mailer';
 import { Transporter, SendMailOptions } from 'nodemailer';

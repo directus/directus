@@ -1,3 +1,4 @@
+import { AbstractServiceOptions } from '@directus/shared/services';
 import { Accountability, Action, SchemaOverview } from '@directus/shared/types';
 import jwt from 'jsonwebtoken';
 import { Knex } from 'knex';
@@ -17,7 +18,7 @@ import {
 	UserSuspendedException,
 } from '../exceptions';
 import { createRateLimiter } from '../rate-limiter';
-import { AbstractServiceOptions, DirectusTokenPayload, LoginResult, Session, User } from '../types';
+import { DirectusTokenPayload, LoginResult, Session, User } from '../types';
 import { stall } from '../utils/stall';
 import { ActivityService } from './activity';
 import { SettingsService } from './settings';

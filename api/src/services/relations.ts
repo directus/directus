@@ -1,6 +1,7 @@
 import { Knex } from 'knex';
 import { systemRelationRows } from '../database/system-data/relations';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
+import { AbstractServiceOptions } from '@directus/shared/services';
 import { SchemaOverview, Relation, RelationMeta, Accountability, Query } from '@directus/shared/types';
 import { toArray } from '@directus/shared/utils';
 import { ItemsService, QueryOptions } from './items';
@@ -11,7 +12,7 @@ import getDatabase, { getSchemaInspector } from '../database';
 import { getDefaultIndexName } from '../utils/get-default-index-name';
 import { getCache, clearSystemCache } from '../cache';
 import Keyv from 'keyv';
-import { AbstractServiceOptions, ActionEventParams, MutationOptions } from '../types';
+import { ActionEventParams, MutationOptions } from '../types';
 import { getHelpers, Helpers } from '../database/helpers';
 import emitter from '../emitter';
 import { getSchema } from '../utils/get-schema';

@@ -1,10 +1,11 @@
+import { AbstractServiceOptions } from '@directus/shared/services';
 import { Accountability, Action } from '@directus/shared/types';
 import { uniq } from 'lodash';
 import validateUUID from 'uuid-validate';
 import env from '../env';
 import { ForbiddenException } from '../exceptions/forbidden';
 import logger from '../logger';
-import { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '../types';
+import { Item, MutationOptions, PrimaryKey } from '../types';
 import { getPermissions } from '../utils/get-permissions';
 import { Url } from '../utils/url';
 import { userName } from '../utils/user-name';

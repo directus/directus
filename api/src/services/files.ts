@@ -1,4 +1,5 @@
 import formatTitle from '@directus/format-title';
+import { AbstractServiceOptions } from '@directus/shared/services';
 import axios, { AxiosResponse } from 'axios';
 import exifr from 'exifr';
 import { clone, pick } from 'lodash';
@@ -13,7 +14,7 @@ import env from '../env';
 import { ForbiddenException, InvalidPayloadException, ServiceUnavailableException } from '../exceptions';
 import logger from '../logger';
 import storage from '../storage';
-import { AbstractServiceOptions, File, PrimaryKey, MutationOptions, Metadata } from '../types';
+import { File, PrimaryKey, MutationOptions, Metadata } from '../types';
 import { toArray } from '@directus/shared/utils';
 import { ItemsService } from './items';
 import net from 'net';

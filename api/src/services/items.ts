@@ -1,3 +1,4 @@
+import { AbstractService, AbstractServiceOptions } from '@directus/shared/services';
 import { Accountability, Action, PermissionsAction, Query, SchemaOverview } from '@directus/shared/types';
 import Keyv from 'keyv';
 import { Knex } from 'knex';
@@ -9,14 +10,7 @@ import emitter from '../emitter';
 import env from '../env';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { translateDatabaseError } from '../exceptions/database/translate';
-import {
-	AbstractService,
-	AbstractServiceOptions,
-	ActionEventParams,
-	Item as AnyItem,
-	MutationOptions,
-	PrimaryKey,
-} from '../types';
+import { ActionEventParams, Item as AnyItem, MutationOptions, PrimaryKey } from '../types';
 import getASTFromQuery from '../utils/get-ast-from-query';
 import { validateKeys } from '../utils/validate-keys';
 import { AuthorizationService } from './authorization';

@@ -9,6 +9,5 @@ export * from './items';
 export * from './meta';
 export * from './migration';
 export * from './revision';
-export * from './services';
 export * from './snapshot';
 export * from './webhooks';

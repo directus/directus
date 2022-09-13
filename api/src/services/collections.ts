@@ -1,4 +1,5 @@
 import SchemaInspector from '@directus/schema';
+import { AbstractServiceOptions } from '@directus/shared/services';
 import { Knex } from 'knex';
 import { getCache, clearSystemCache } from '../cache';
 import { ALIAS_TYPES } from '../constants';
@@ -9,7 +10,7 @@ import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { FieldsService } from '../services/fields';
 import { ItemsService } from '../services/items';
 import Keyv from 'keyv';
-import { AbstractServiceOptions, ActionEventParams, Collection, CollectionMeta, MutationOptions } from '../types';
+import { ActionEventParams, Collection, CollectionMeta, MutationOptions } from '../types';
 import { Accountability, FieldMeta, RawField, SchemaOverview } from '@directus/shared/types';
 import { Table } from 'knex-schema-inspector/dist/types/table';
 import { addFieldFlag } from '@directus/shared/utils';

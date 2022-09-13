@@ -1,6 +1,7 @@
 import { appAccessMinimalPermissions } from '../database/system-data/app-access-permissions';
 import { ItemsService, QueryOptions } from '../services/items';
-import { AbstractServiceOptions, Item, PrimaryKey, MutationOptions } from '../types';
+import { Item, PrimaryKey, MutationOptions } from '../types';
+import { AbstractServiceOptions } from '@directus/shared/services';
 import { Query, PermissionsAction } from '@directus/shared/types';
 import { filterItems } from '../utils/filter-items';
 import Keyv from 'keyv';

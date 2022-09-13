@@ -7,7 +7,8 @@ import { OpenAPIObject, ParameterObject, PathItemObject, ReferenceObject, Schema
 import { version } from '../../package.json';
 import getDatabase from '../database';
 import env from '../env';
-import { AbstractServiceOptions, Collection } from '../types';
+import { Collection } from '../types';
+import { AbstractServiceOptions } from '@directus/shared/services';
 import { Accountability, Field, Type, Permission, SchemaOverview, Relation } from '@directus/shared/types';
 import { getRelationType } from '../utils/get-relation-type';
 import { CollectionsService } from './collections';
