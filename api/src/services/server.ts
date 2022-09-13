@@ -1,7 +1,6 @@
 import type { Knex } from 'knex';
 import { merge } from 'lodash-es';
 import { nanoid } from 'nanoid';
-import os from 'os';
 import { performance } from 'perf_hooks';
 import { getCache } from '../cache.js';
 import getDatabase, { hasDatabaseConnection } from '../database/index.js';
@@ -67,22 +66,8 @@ export class ServerService {
 		}
 
 		if (this.accountability?.admin === true) {
-			const { osType, osVersion } = getOSInfo();
-
-			info['directus'] = {
+			info.directus = {
 				version,
-			};
-
-			info['node'] = {
-				version: process.versions.node,
-				uptime: Math.round(process.uptime()),
-			};
-
-			info['os'] = {
-				type: osType,
-				version: osVersion,
-				uptime: Math.round(os.uptime()),
-				totalmem: os.totalmem(),
 			};
 		}
 
