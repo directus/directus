@@ -414,7 +414,7 @@ export class GraphQLService {
 						}
 
 						if (collection.primary === field.field) {
-							type = GraphQLID;
+							type = GraphQLNonNull(GraphQLID);
 						}
 
 						acc[field.field] = {
