@@ -222,6 +222,13 @@ function useForm() {
 	const fieldsMap: ComputedRef<Record<string, Field | undefined>> = computed(() => {
 		if (props.loading) return {} as Record<string, undefined>;
 		const valuesWithDefaults = Object.assign({}, defaultValues.value, values.value);
+
+		for(const field of fields.value) {
+			if(field.type === 'csv') {
+				valuesWithDefaults[field.field] = valuesWithDefaults[field.field]?.join(',') ?? '';
+			}
+		}
+
 		return formFields.value.reduce((result: Record<string, Field>, field: Field) => {
 			const newField = applyConditions(valuesWithDefaults, setPrimaryKeyReadonly(field));
 			if (newField.field) result[newField.field] = newField;
