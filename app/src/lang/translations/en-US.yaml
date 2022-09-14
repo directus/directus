@@ -93,7 +93,6 @@ invite_users: Invite Users
 invite: Invite
 email_already_invited: Email "{email}" has already been invited
 subject: Subject
-use_wysiwyg_editor: Use WYSIWYG Editor
 inbox: Inbox
 emails: Emails
 connection_excellent: Excellent Connection
@@ -2116,6 +2115,7 @@ operations:
     message_placeholder: Enter a message to show in the console...
   mail:
     name: Send Email
+    description: Send an email to one or more people
     to: To
     to_placeholder: Add e-mail addresses and press enter...
     body: Body

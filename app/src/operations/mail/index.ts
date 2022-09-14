@@ -5,7 +5,7 @@ export default defineOperationApp({
 	icon: 'mail',
 	name: '$t:operations.mail.name',
 	description: '$t:operations.mail.description',
-	overview: ({ subject, to, body_wysiwyg, body_markdown, use_wysiwyg_editor }) => [
+	overview: ({ subject, to, body }) => [
 		{
 			label: '$t:subject',
 			text: subject,
@@ -16,7 +16,7 @@ export default defineOperationApp({
 		},
 		{
 			label: '$t:operations.mail.body',
-			text: use_wysiwyg_editor ? body_wysiwyg : body_markdown,
+			text: body,
 		},
 	],
 	options: [
@@ -46,76 +46,12 @@ export default defineOperationApp({
 			},
 		},
 		{
-			field: 'use_wysiwyg_editor',
-			name: '$t:use_wysiwyg_editor',
-			type: 'boolean',
-			schema: {
-				default_value: false,
-			},
-			meta: {
-				width: 'full',
-				interface: 'boolean',
-				options: {
-					label: 'Yes',
-				},
-			},
-		},
-		{
-			field: 'body_markdown',
+			field: 'body',
 			name: '$t:operations.mail.body',
 			type: 'text',
 			meta: {
 				width: 'full',
 				interface: 'input-rich-text-md',
-				required: true,
-				hidden: false,
-				conditions: [
-					{
-						name: 'If NOT Use WYSIWYG Editor',
-						rule: {
-							_and: [
-								{
-									use_wysiwyg_editor: {
-										_eq: true,
-									},
-								},
-							],
-						},
-						hidden: true,
-						required: false,
-						options: {},
-						readonly: false,
-					},
-				],
-			},
-		},
-		{
-			field: 'body_wysiwyg',
-			name: '$t:operations.mail.body',
-			type: 'text',
-			meta: {
-				width: 'full',
-				interface: 'input-rich-text-html',
-				required: false,
-				hidden: true,
-				conditions: [
-					{
-						name: 'If Use WYSIWYG Editor',
-						rule: {
-							_and: [
-								{
-									use_wysiwyg_editor: {
-										_eq: true,
-									},
-								},
-							],
-						},
-						hidden: false,
-						required: true,
-						options: {},
-						readonly: false,
-					},
-				],
 			},
 		},
 	],
