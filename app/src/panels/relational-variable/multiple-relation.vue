@@ -59,8 +59,14 @@ function deleteItem(elem: Record<string, any>) {
 </script>
 
 <style lang="scss" scoped>
+.one-to-many {
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+}
 .v-list {
 	margin-top: 8px;
+	flex-grow: 1;
 	--v-list-padding: 0 0 4px;
 
 	.v-list-item.deleted {
