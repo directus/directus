@@ -581,6 +581,7 @@ errors:
   INVALID_PROVIDER: Kullanıcı farklı bir yetkilendirme sağlayıcısına ait
   INVALID_QUERY: Geçersiz sorgu
   INVALID_CONFIG: Geçersiz yapılandırma
+  INVALID_TOKEN: Geçersiz belirteç
   INVALID_IP: IP Adresine izin verilmiyor
   INVALID_USER: Kullanıcı kimliği doğrulanamadı
   ITEM_LIMIT_REACHED: Öge limite ulaşıldı
@@ -597,11 +598,14 @@ errors:
   VALUE_OUT_OF_RANGE: Değer sınır dışında
   INVALID_FOREIGN_KEY: Geçersiz yabancı anahtar
   UNKNOWN: Beklenmeyen Hata
+  GRAPHQL_VALIDATION_EXCEPTION: GraphQL Doğrulama İstisnası
   SERVICE_UNAVAILABLE: Hizmet Kullanılamıyor
   UNSUPPORTED_MEDIA_TYPE: Desteklenmeyen ortam türü
   UNEXPECTED_RESPONSE: Beklenmeyen yanıt
+  TOKEN_EXPIRED: Belirteç süresi doldu
   RANGE_NOT_SATISFIABLE: Geçersiz aralık
   METHOD_NOT_ALLOWED: İzin verilmeyen yöntem
+  REQUESTS_EXCEEDED: İstek sınırına ulaşıldı
 security: Güvenlik
 value_hashed: Değer Güvenli Şekilde Hashlendi
 bookmark_name: Yer işareti adı...
@@ -1336,6 +1340,7 @@ file: Dosya
 file_library: Dosya Kütüphanesi
 forgot_password: Parolamı Unuttum
 hidden: Gizli
+hidden_in_group: '{group} içinde gizli'
 icon: İkon
 info: Bilgi
 normal: Normal
@@ -1396,6 +1401,7 @@ start: Başla
 table: Tablo
 list: Liste
 search_filter: Ara ve Filtrele
+enable_search_filter: Aramayı ve filtrelemeyi etkinleştir
 item_link: Öğe Bağlantısı
 show_link_to_item: Ögenin bağlantısını göster
 navigate_to_item: Öğeye Git
@@ -1701,6 +1707,7 @@ interfaces:
     value_securely_saved: Değer Güvenli Bir Şekilde Kaydedildi
     generate: Erişim Anahtarı Üret
     regenerate: Yeniden Erişim Anahtarı Üret
+    remove_token: Belirteci kaldır
   system-raw-editor:
     system-raw-editor: Ham Düzenleyici
 displays:
@@ -1742,8 +1749,10 @@ displays:
     relative_label: 'Göreceli zamanı göster, örn: 5 dakika önce'
     suffix: Suffiks
     suffix_label: Göreceli göstergeyi göster
+    suffix_note: '''içinde'' ve ''önce'' gibi kelimeler kullanır'
     strict: Katı
     strict_label: Katı birimler kullanın
+    strict_note: '''Neredeyse'', ''bitti'', ''daha az'' gibi kelimeleri kaldırır'
     down: Aşağı
     nearest: En yakın
     up: Yukarı
@@ -1858,6 +1867,7 @@ layouts:
     default_template: Koleksiyon Varsayılanı Kullanılıyor...
     no_compatible_fields: Hiç uyumlu alan yok
   kanban:
+    name: Kanban,
     group_field: Gruplandırma,
     group_title: Grup Başlığı,
     title: Kart Başlığı,
@@ -1878,8 +1888,10 @@ layouts:
     delete_group: Grubu sil,
     add_group: Grup Ekle,
     add_group_placeholder: Yeni bir grup adı girin...,
+    show_ungrouped: Gruplandırılmamışları Göster,
     show: Göster,
     no_group: Grup Yok,
+    not_all_loaded: Yalnızca ilk 1000 öğe yüklenebilir.
 panels:
   metric:
     name: Metrik
@@ -1900,6 +1912,7 @@ panels:
     description: Bir koleksiyondan alanları filtrele ve listele
   barchart:
     name: Grafik Çubuğu
+    description: Değer gruplarını karşılaştırmak için çubuk veya sütun grafikler
     select_field: Bir alan seçmelisiniz.
     select_collection: Bir koleksiyon seçmelisiniz.
     select_x_axis: Bir X Ekseni seçmelisiniz.
@@ -1911,6 +1924,7 @@ panels:
     show_x_axis: X Eksenini Göster
     show_y_axis: Y Eksenini Göster
     show_data_label: Veri Etiketini Göster
+    group_by: Gruplandırılmış
     group_and_function: Hem bir grubu hem de bir işlevi dahil etmeli veya atlamalısınız.
     y_axis_NaN: Y ekseni bir sayı olmalıdır.
     y_axis_conditional_two: bir sayı olmalıdır.
