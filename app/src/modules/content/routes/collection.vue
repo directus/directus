@@ -285,7 +285,7 @@ import ExportSidebarDetail from '@/views/private/components/export-sidebar-detai
 import FlowSidebarDetail from '@/views/private/components/flow-sidebar-detail.vue';
 import SearchInput from '@/views/private/components/search-input.vue';
 import BookmarkAdd from '@/views/private/components/bookmark-add.vue';
-import { useRouter } from 'vue-router';
+import { useRouter, onBeforeRouteUpdate, RouteLocationNormalized } from 'vue-router';
 import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
 import DrawerBatch from '@/views/private/components/drawer-batch.vue';
@@ -427,41 +427,38 @@ export default defineComponent({
 			}
 		});
 
-		const route = router.currentRoute.value;
-		if (!props.bookmark && (route.query.filter || route.query.search)) {
-			filter.value = {};
-			search.value = '';
+		onBeforeRouteUpdate((to, from) => {
+			if (to.path === from.path && to.query.bookmark === from.query.bookmark) return;
+			getFiltersFromParams(to);
+		});
 
-			if (route.query.filter) {
+		watch([filter, search, bookmarkSaved], () => {
+			const query: Record<string, any> = {};
+
+			if (props.bookmark) {
+				query.bookmark = props.bookmark;
+				if (bookmarkSaved.value) {
+					router.replace({ query });
+					return;
+				}
+			}
+
+			if (filter.value) {
 				try {
-					filter.value = JSON.parse(route.query.filter as string);
+					query.filter = JSON.stringify(filter.value);
 				} catch (err) {
 					// eslint-disable-next-line no-console
 					console.warn(err);
 				}
 			}
-			if (route.query.search) {
-				search.value = route.query.search as string;
+			if (search.value) {
+				query.search = search.value;
 			}
-		}
 
-		watch([filter, search], () => {
-			if (!props.bookmark) {
-				const query: Record<string, any> = {};
-				if (filter.value) {
-					try {
-						query.filter = JSON.stringify(filter.value);
-					} catch (err) {
-						// eslint-disable-next-line no-console
-						console.warn(err);
-					}
-				}
-				if (search.value) {
-					query.search = search.value;
-				}
-				router.replace({ query });
-			}
+			router.replace({ query });
 		});
+
+		getFiltersFromParams(router.currentRoute.value);
 
 		return {
 			t,
@@ -655,6 +652,22 @@ export default defineComponent({
 		function clearFilters() {
 			filter.value = null;
 			search.value = null;
+		}
+
+		function getFiltersFromParams(route: RouteLocationNormalized) {
+			if (route.query.filter || route.query.search) {
+				if (route.query.filter) {
+					try {
+						filter.value = JSON.parse(route.query.filter as string);
+					} catch (err) {
+						// eslint-disable-next-line no-console
+						console.warn(err);
+					}
+				}
+				if (route.query.search) {
+					search.value = route.query.search as string;
+				}
+			}
 		}
 
 		function usePermissions() {
