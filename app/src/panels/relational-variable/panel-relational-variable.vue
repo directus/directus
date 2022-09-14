@@ -1,5 +1,5 @@
 <template>
-	<div class="relational-variable" :class="{ 'show-header': showHeader }">
+	<div class="relational-variable" :class="{ 'show-header': showHeader, centered: !multiple }">
 		<v-notice v-if="!collection" type="warning">
 			{{ t('collection_field_not_setup') }}
 		</v-notice>
@@ -101,10 +101,12 @@ function onSelection(data: (number | string)[]) {
 		padding-top: 6px;
 	}
 
-	display: grid;
-	align-content: center;
-	width: 100%;
-	height: 100%;
+	&.centered {
+		display: grid;
+		align-content: center;
+		width: 100%;
+		height: 100%;
+	}
 
 	> * {
 		grid-row: 1;
