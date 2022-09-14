@@ -106,11 +106,7 @@
 				<v-icon v-tooltip.top.inverted="t('reset')" name="restart_alt" clickable @click="reset" />
 
 				<div v-if="imageData" class="dimensions">
-					{{ n(imageData.width) }}x{{ n(imageData.height) }}
-					<template v-if="imageData.width !== newDimensions.width || imageData.height !== newDimensions.height">
-						->
-						{{ n(newDimensions.width ?? 0) }}x{{ n(newDimensions.height ?? 0) }}
-					</template>
+					{{ dimensionsString }}
 				</div>
 
 				<button v-show="cropping" class="toolbar-button cancel" @click="cropping = false">
@@ -211,6 +207,33 @@ export default defineComponent({
 			return addTokenToURL(`${getRootPath()}assets/${props.id}?${randomId.value}`);
 		});
 
+		const dimensionsString = computed(() => {
+			let output = '';
+			const isSVG = imageData.value?.type === 'image/svg+xml';
+
+			if (imageData.value) {
+				if (isSVG) {
+					output += 'SVG';
+				} else {
+					output += `${n(imageData.value.width ?? 0)}x${n(imageData.value.height ?? 0)}`;
+				}
+
+				if (imageData.value.width !== newDimensions.width || imageData.value.height !== newDimensions.height) {
+					if (isSVG) {
+						if (newDimensions.width || newDimensions.height) {
+							output += ` -> PNG ${n(newDimensions.width ?? 0)}x${n(newDimensions.height ?? 0)}`;
+						} else {
+							output += ' -> PNG';
+						}
+					} else {
+						output += ` -> ${isSVG ? 'PNG ' : ''}${n(newDimensions.width ?? 0)}x${n(newDimensions.height ?? 0)}`;
+					}
+				}
+			}
+
+			return output;
+		});
+
 		const customAspectRatios = settingsStore.settings?.custom_aspect_ratios ?? null;
 
 		return {
@@ -234,6 +257,7 @@ export default defineComponent({
 			dragMode,
 			cropping,
 			setAspectRatio,
+			dimensionsString,
 			customAspectRatios,
 		};
 

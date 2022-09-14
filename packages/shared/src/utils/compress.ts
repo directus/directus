@@ -51,6 +51,26 @@ export function compress(obj: Record<string, any> | Record<string, any>[]) {
 			return ['@', ...part.map((subPart) => getAst(subPart))];
 		}
 
+		if (part instanceof Date) {
+			const value = encode(part.toJSON());
+
+			if (strings.has(value)) {
+				return {
+					type: Types.STRING,
+					index: strings.get(value)!,
+				};
+			}
+
+			const index = strings.size;
+
+			strings.set(value, index);
+
+			return {
+				type: Types.STRING,
+				index,
+			};
+		}
+
 		if (typeof part === 'object') {
 			return [
 				'$',
