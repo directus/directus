@@ -80,7 +80,7 @@ function onSelection(data: (number | string)[]) {
 		return;
 	}
 	if (props.multiple) {
-		const items = value.value.slice().concat(data);
+		const items = Array.from(new Set(data.concat(value.value)));
 		if (items.length > props.limit) {
 			unexpectedError(new Error('More items selected than the allowed limit'));
 			value.value = items.slice(0, props.limit);
