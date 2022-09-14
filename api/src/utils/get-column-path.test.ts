@@ -7,16 +7,17 @@ import { DeepPartial } from '@directus/shared/types';
   path: [ 'author', 'role', 'name' ],
   collection: 'articles',
   aliasMap: {
-    author: { role: { '~alias': 'ljnsv' } },
+    author: 'grenv',
+	'author.role': 'ljnsv',
   },
   relations: []
 
-grenv.name
+ljnsv.name
 
 {
   path: [ 'author', 'first_name' ],
   collection: 'articles',
-  aliasMap: { author: { '~alias': 'rnmxt' } },
+  aliasMap: { author: 'rnmxt' },
   relations: []
 
 rnmxt.first_name
@@ -24,8 +25,10 @@ rnmxt.first_name
 {
   path: [ 'item:headings', 'text' ],
   collection: 'pages_sections',
-  aliasMap: { 'item:headings': { '~alias': 'yllus' } },
-  relations: [
+  aliasMap: { 'item:headings': 'yllus' },
+  relations: []
+
+yllus.text
 */
 
 test('Throws an error when the field path is not known in relations', () => {
@@ -64,7 +67,7 @@ test('Extracts path scope and returns correct alias for a2o', () => {
 	const input: DeepPartial<ColPathProps> = {
 		path: ['item:headings', 'text'],
 		collection: 'pages',
-		aliasMap: { 'item:headings': { '~alias': 'abcdef' } },
+		aliasMap: { 'item:headings': 'abcdef' },
 		relations: [
 			{
 				collection: 'pages',
@@ -88,12 +91,8 @@ test('Returns correct alias for m2o', () => {
 		path: ['author', 'role', 'name'],
 		collection: 'articles',
 		aliasMap: {
-			author: {
-				'~alias': 'ljnsv',
-				role: {
-					'~alias': 'grenv',
-				},
-			},
+			author: 'ljnsv',
+			'author.role': 'grenv',
 		},
 		relations: [
 			{
@@ -123,12 +122,8 @@ test('Returns correct alias for o2m', () => {
 		path: ['categories', 'category_id', 'name'],
 		collection: 'articles',
 		aliasMap: {
-			categories: {
-				'~alias': 'aaaa',
-				category_id: {
-					'~alias': 'bbbb',
-				},
-			},
+			categories: 'aaaa',
+			'categories.category_id': 'bbbb',
 		},
 		relations: [
 			{
@@ -153,6 +148,37 @@ test('Returns correct alias for o2m', () => {
 	const result = getColumnPath(input as ColPathProps);
 	expect(result.columnPath).toBe('bbbb.name');
 	expect(result.targetCollection).toBe('categories');
+});
+
+test('Returns correct alias for nested o2m', () => {
+	const input: DeepPartial<ColPathProps> = {
+		path: ['articles', 'article_id', 'articles', 'article_id', 'name'],
+		collection: 'article',
+		aliasMap: {
+			articles: 'aaaa',
+			'articles.article_id': 'bbbb',
+			'articles.article_id.articles': 'cccc',
+			'articles.article_id.articles.article_id': 'dddd',
+		},
+		relations: [
+			{
+				collection: 'articles_o2m',
+				field: 'article_id',
+				related_collection: 'article',
+				meta: {
+					many_collection: 'articles_o2m',
+					many_field: 'article_id',
+					one_collection: 'article',
+					one_field: 'articles',
+				},
+				schema: null,
+			},
+		],
+	};
+
+	const result = getColumnPath(input as ColPathProps);
+	expect(result.columnPath).toBe('dddd.name');
+	expect(result.targetCollection).toBe('article');
 });
 
 test('Returns correct alias for o2m (& uses the table name if no alias exists)', () => {
@@ -190,15 +216,9 @@ test('Returns correct alias when there are multiple joins to the same table', ()
 		path: ['author', 'secondary_role', 'name'],
 		collection: 'articles',
 		aliasMap: {
-			author: {
-				'~alias': 'ljnsv',
-				role: {
-					'~alias': 'grenv',
-				},
-				secondary_role: {
-					'~alias': 'psgwn',
-				},
-			},
+			author: 'ljnsv',
+			'author.role': 'grenv',
+			'author.secondary_role': 'psgwn',
 		},
 		relations: [
 			{

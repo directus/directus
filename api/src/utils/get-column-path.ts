@@ -1,10 +1,8 @@
 import { Relation } from '@directus/shared/types';
 import { getRelationInfo } from './get-relation-info';
 import { InvalidQueryException } from '../exceptions';
-import { get } from 'lodash';
 
-export type AliasMap = { [key: string]: AliasMapColumn };
-type AliasMapColumn = { '~alias': string } | ({ '~alias': string } & { [key: string]: AliasMapColumn });
+export type AliasMap = { [key: string]: string };
 
 export type ColPathProps = {
 	path: string[];
@@ -36,7 +34,7 @@ export function getColumnPath({ path, collection, aliasMap, relations }: ColPath
 			throw new InvalidQueryException(`"${parentCollection}.${pathRoot}" is not a relational field`);
 		}
 
-		const alias = get(aliasMap, parentFields ? `${parentFields}.${pathParts[0]}.~alias` : `${pathParts[0]}.~alias`);
+		const alias = parentFields ? aliasMap[`${parentFields}.${pathParts[0]}`] : aliasMap[pathParts[0]];
 		const remainingParts = pathParts.slice(1);
 
 		let parent: string;

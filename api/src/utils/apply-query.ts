@@ -9,7 +9,7 @@ import {
 	Type,
 } from '@directus/shared/types';
 import { Knex } from 'knex';
-import { clone, get, isPlainObject, pull, set } from 'lodash';
+import { clone, isPlainObject, pull } from 'lodash';
 import { customAlphabet } from 'nanoid';
 import validate from 'uuid-validate';
 import { getHelpers } from '../database/helpers';
@@ -135,20 +135,17 @@ function addJoin({ path, collection, aliasMap, rootQuery, subQuery, schema, rela
 			return;
 		}
 
-		const existingAlias = get(
-			aliasMap,
-			parentFields ? `${parentFields}.${pathParts[0]}.~alias` : `${pathParts[0]}.~alias`
-		);
+		const existingAlias = parentFields ? aliasMap[`${parentFields}.${pathParts[0]}`] : aliasMap[pathParts[0]];
 
 		if (!existingAlias) {
 			const alias = generateAlias();
 
-			set(aliasMap, parentFields ? `${parentFields}.${pathParts[0]}.~alias` : `${pathParts[0]}.~alias`, alias);
+			aliasMap[parentFields ? `${parentFields}.${pathParts[0]}` : pathParts[0]] = alias;
 
 			if (relationType === 'm2o') {
 				rootQuery.leftJoin(
 					{ [alias]: relation.related_collection! },
-					`${get(aliasMap, parentFields ? `${parentFields}.~alias` : '') || parentCollection}.${relation.field}`,
+					`${aliasMap[parentFields ?? ''] || parentCollection}.${relation.field}`,
 					`${alias}.${schema.collections[relation.related_collection!].primary}`
 				);
 			} else if (relationType === 'a2o') {
@@ -164,7 +161,7 @@ function addJoin({ path, collection, aliasMap, rootQuery, subQuery, schema, rela
 					joinClause
 						.onVal(relation.meta!.one_collection_field!, '=', pathScope)
 						.andOn(
-							`${get(aliasMap, parentFields ? `${parentFields}.~alias` : '') || parentCollection}.${relation.field}`,
+							`${aliasMap[parentFields ?? ''] || parentCollection}.${relation.field}`,
 							'=',
 							knex.raw(`CAST(?? AS CHAR(255))`, `${alias}.${schema.collections[pathScope].primary}`)
 						);
@@ -178,9 +175,7 @@ function addJoin({ path, collection, aliasMap, rootQuery, subQuery, schema, rela
 							'=',
 							knex.raw(
 								`CAST(?? AS CHAR(255))`,
-								`${get(aliasMap, parentFields ? `${parentFields}.~alias` : '') || parentCollection}.${
-									schema.collections[parentCollection].primary
-								}`
+								`${aliasMap[parentFields ?? ''] || parentCollection}.${schema.collections[parentCollection].primary}`
 							)
 						);
 				});
@@ -190,7 +185,7 @@ function addJoin({ path, collection, aliasMap, rootQuery, subQuery, schema, rela
 			else if (relationType === 'o2m' && (subQuery === true || parentFields !== undefined)) {
 				rootQuery.leftJoin(
 					{ [alias]: relation.collection },
-					`${get(aliasMap, parentFields ? `${parentFields}.~alias` : '') || parentCollection}.${
+					`${aliasMap[parentFields ?? ''] || parentCollection}.${
 						schema.collections[relation.related_collection!].primary
 					}`,
 					`${alias}.${relation.field}`
