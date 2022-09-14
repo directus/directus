@@ -4,7 +4,10 @@ import { AppExtension, AppExtensionType, Extension, HybridExtension, HybridExten
 import { isTypeIn } from '../array-helpers';
 import { pathToRelativeUrl } from './path-to-relative-url';
 
-export function generateExtensionsEntry(type: AppExtensionType | HybridExtensionType, extensions: Extension[]): string {
+export function generateExtensionsEntrypoint(
+	type: AppExtensionType | HybridExtensionType,
+	extensions: Extension[]
+): string {
 	const filteredExtensions = extensions.filter(
 		(extension): extension is AppExtension | HybridExtension => extension.type === type
 	);

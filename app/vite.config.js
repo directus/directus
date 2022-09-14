@@ -5,7 +5,7 @@ import {
 } from '@directus/shared/constants';
 import {
 	ensureExtensionDirs,
-	generateExtensionsEntry,
+	generateExtensionsEntrypoint,
 	getLocalExtensions,
 	getPackageExtensions,
 } from '@directus/shared/utils/node';
@@ -229,7 +229,7 @@ function directusExtensions() {
 		const extensions = [...packageExtensions, ...localExtensions];
 
 		for (const extensionType of APP_OR_HYBRID_EXTENSION_TYPES) {
-			extensionEntrypoints[extensionType] = generateExtensionsEntry(extensionType, extensions);
+			extensionEntrypoints[extensionType] = generateExtensionsEntrypoint(extensionType, extensions);
 		}
 	}
 }

@@ -18,7 +18,7 @@ import {
 } from '@directus/shared/types';
 import {
 	ensureExtensionDirs,
-	generateExtensionsEntry,
+	generateExtensionsEntrypoint,
 	getLocalExtensions,
 	getPackageExtensions,
 	pathToRelativeUrl,
@@ -300,7 +300,7 @@ class ExtensionManager {
 		const bundles: Partial<Record<AppExtensionType | HybridExtensionType, string>> = {};
 
 		for (const extensionType of APP_OR_HYBRID_EXTENSION_TYPES) {
-			const entry = generateExtensionsEntry(extensionType, this.extensions);
+			const entry = generateExtensionsEntrypoint(extensionType, this.extensions);
 
 			try {
 				const bundle = await rollup({
