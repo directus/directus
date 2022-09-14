@@ -53,7 +53,7 @@
 					:show-divider="swapFormOrder"
 					:primary-key="primaryKey"
 					:fields="fields"
-				  :nested="true"
+					:nested="true"
 					:validation-errors="!junctionField ? validationErrors : undefined"
 				/>
 			</div>
