@@ -49,9 +49,11 @@ group: Grupo
 export_items: Exportar itens
 and: E
 or: Ou
+init: Inicializador
 dataset_too_large_currently_showing_n_items: Conjunto de dados é muito grande. Mostrando os primeiros {n} itens.
 modifier: Modificador
 custom: Personalizado
+hook: Gancho
 fill_width: Preencher Largura
 field_name_translations: Traduções do Nome do Campo
 enter_password_to_enable_tfa: Digite sua senha para ativar a Autenticação em Duas Etapas
@@ -80,7 +82,10 @@ delete_panel: Excluir Painel
 create_webhook: Criar Webhook
 create_translation_string: String chave para a tradução
 no_translation_string: Nenhuma tradução
+no_translation_string_copy: Ainda não há nenhuma memória de tradução.
+translation_string_key_placeholder: Chave da tradução...
 translation_string_translations_placeholder: Adicionar uma nova tradução
+edit_translation_string: Editar String de Tradução
 delete_translation_string_copy: >-
   Tem certeza de que deseja excluir a string de tradução "{key}"? Essa ação não pode ser desfeita.
 invite_users: Convidar Usuários
@@ -103,6 +108,9 @@ update_bookmark: Atualizar Favorito
 delete_bookmark: Deletar Favorito
 delete_bookmark_copy: >-
   Tem certeza que deseja deletar o favorito "{bookmark}"? Esta ação não pode ser desfeita.
+delete_personal_bookmark: Excluir marcador pessoal
+delete_role_bookmark: Excluir Função Favorito
+delete_global_bookmark: Excluir Global Bookmark
 logoutReason:
   SIGN_OUT: Deslogado
   SESSION_EXPIRED: Sessão expirada
@@ -129,6 +137,7 @@ recommended_defaults: Padrões Recomendados
 unarchive: Desarquivar
 unarchive_confirm: Você tem certeza que deseja desarquivar este item?
 nested_files_folders_will_be_moved: Arquivos e pastas aninhadas serão movidos um nível acima.
+validation_errors_notice: 'Os seguintes campos têm valores inválidos:'
 validationError:
   eq: O valor tem de ser {valid}
   neq: O valor não pode ser {invalid}
@@ -286,6 +295,8 @@ next: Próximo
 field_name: Nome do campo
 translations: Traduções
 no_translations: Nenhuma Tradução
+left_to_right: Esquerda para Direita
+right_to_left: Direita para esquerda
 note: Nota
 enter_a_value: Insira um valor...
 enter_a_placeholder: Adicionar um placeholder...
@@ -300,6 +311,7 @@ primary_key: Chave primária
 foreign_key: Chave Extrangeira
 finish_setup: Concluir a instalação
 dismiss: Dispensar
+toggle_raw_editor: Alternar Editor Raw
 raw_value: Valor bruto
 copy_raw_value: Copiar Valor Bruto
 copy_raw_value_success: Copiado
@@ -328,8 +340,10 @@ revision_delta_created_externally: Criado externamente
 revision_delta_updated: '1 campo atualizado | {count} campos atualizados'
 revision_delta_deleted: Excluído
 revision_delta_reverted: Revertido
+revision_delta_update_message: Este campo foi actualizado, mas o seu valor está a ser ocultado por razões de segurança.
 revision_delta_other: Revisão
 revision_delta_by: '{date} por {user}'
+presentation_text_values_cannot_be_reimported: "Usa texto de apresentação, valores não podem ser importados novamente."
 download_page_as_csv: 'Baixar página como CSV'
 private_user: Usuário privado
 creation_preview: Pré-visualização da criação
@@ -370,6 +384,7 @@ interface_label: Interface
 today: Hoje
 yesterday: Ontem
 delete_comment: Excluir comentário
+delete_share: Excluir compartilhamento
 functions:
   year: Ano
   month: Mês
@@ -438,7 +453,12 @@ download_file: Baixar arquivo
 open_file_in_tab: Abrir em nova guia
 start_export: Iniciar Exportação
 not_available_for_local_downloads: Não disponível para downloads locais
+exporting_all_items_in_collection: Exportando todos os {total} itens dentro de {collection}.
+exporting_limited_items_in_collection: Exportando {limit} de {total} itens em {collection}.
+exporting_no_items_to_export: Sem itens para exportar. Ajuste a configuração exportadora abaixo.
 exporting_download_hint: Uma vez concluído, este arquivo {format} será automaticamente baixado para o seu dispositivo.
+exporting_batch_hint: Esta exportação será processada em lotes e, assim que concluída, o arquivo {format} será salvo na Biblioteca de Arquivos.
+exporting_batch_hint_forced: Devido ao grande número de itens, esta exportação deve ser processada em lotes, e assim que concluído, o arquivo {format} será salvo na Biblioteca de Arquivos.
 collection_key: Chave da coleção
 name: Nome
 primary_key_field: Campo de chave primária
@@ -459,6 +479,7 @@ creating_items: Criando Itens
 enable_create_button: Habilitar botão de criação
 selecting_items: Selecionando Itens
 enable_select_button: Habilitar botão de seleção
+allow_duplicates: Permitir duplicatas
 comments: Comentários
 no_comments: Nenhum comentário ainda
 click_to_expand: Clique para expandir
@@ -556,6 +577,7 @@ errors:
   INVALID_CREDENTIALS: Nome de usuário ou senha incorreta
   INVALID_OTP: Senha de uso único incorreta
   INVALID_PAYLOAD: Payload inválido
+  INVALID_PROVIDER: Usuário pertence a um provedor de autenticação diferente
   INVALID_QUERY: Consulta inválida
   INVALID_USER: Falha ao autenticar usuário
   ITEM_LIMIT_REACHED: Limite de elementos alcançado
@@ -665,6 +687,7 @@ operators:
   nintersects: Não interceptado
   intersects_bbox: Cruza a caixa delimitadora
   nintersects_bbox: Não cruza a caixa delimitadora
+  regex: Coincide RegExp
 loading: Carregando...
 drop_to_upload: Solte para enviar
 item: Item
@@ -755,6 +778,7 @@ start_flow: Iniciar fluxo
 stop_flow: Parar fluxo
 create_operation: Criar operação
 edit_operation: Editar operação
+code: Código
 operation_options: Opções de operação
 operation_name: Nome da operação...
 operation_key: Identificador de referência...
@@ -785,7 +809,7 @@ details: Detalhes
 full_screen: Tela cheia
 full_text_search: Pesquisa de texto completo
 edit_panels: Editar painéis
-center_align: Centralizar
+center_align: Alinhar no centro
 left_align: Alinhar à Esquerda
 right_align: Alinhar à Direita
 fit_to_screen: Ajustar à tela
@@ -814,7 +838,7 @@ current_tab: Aba atual
 save_image: Salvar Imagem
 save_media: Salvar Arquivo
 wysiwyg_options:
-  aligncenter: Alinhar ao centro
+  aligncenter: Alinhar no centro
   alignjustify: Justificar
   alignleft: Alinhar à esquerda
   alignnone: Não alinhar
@@ -1358,6 +1382,8 @@ value: Valor
 view_project: Visualizar projeto
 report_error: Relatar erro
 start: Início
+table: Tabela
+list: Lista
 interfaces:
   filter:
     name: Filtro
@@ -1431,6 +1457,8 @@ interfaces:
     include_seconds: Incluir segundos
     set_to_now: Definir como Agora
     use_24: Usar formato de 24 horas
+  system-fields:
+    select_a_collection: Selecione uma coleção
   system-display-template:
     display-template: Modelo de exibição
     description: Combinar texto estático e valores dinâmicos

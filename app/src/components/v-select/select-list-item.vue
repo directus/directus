@@ -26,45 +26,33 @@
 	</v-list-item>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent, PropType } from 'vue';
+<script setup lang="ts">
+import { computed } from 'vue';
 import { Option } from './types';
 
-export default defineComponent({
-	name: 'SelectListItem',
-	props: {
-		item: {
-			type: Object as PropType<Option>,
-			required: true,
-		},
-		modelValue: {
-			type: [String, Number, Array] as PropType<string | number | (string | number)[]>,
-			default: null,
-		},
-		multiple: {
-			type: Boolean,
-			required: true,
-		},
-		allowOther: {
-			type: Boolean,
-			required: true,
-		},
-	},
-	emits: ['update:modelValue'],
-	setup(props) {
-		const isActive = computed(() => {
-			if (props.multiple) {
-				if (!Array.isArray(props.modelValue) || !props.item.value) {
-					return false;
-				}
-				return props.modelValue.includes(props.item.value);
-			} else {
-				return props.modelValue === props.item.value;
-			}
-		});
-		return {
-			isActive,
-		};
-	},
+interface Props {
+	item: Option;
+	modelValue?: string | number | (string | number)[] | null;
+	multiple?: boolean;
+	allowOther?: boolean;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+	modelValue: null,
+	multiple: true,
+	allowOther: false,
+});
+
+defineEmits(['update:modelValue']);
+
+const isActive = computed(() => {
+	if (props.multiple) {
+		if (!Array.isArray(props.modelValue) || !props.item.value) {
+			return false;
+		}
+		return props.modelValue.includes(props.item.value);
+	} else {
+		return props.modelValue === props.item.value;
+	}
 });
 </script>

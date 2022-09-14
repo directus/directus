@@ -667,6 +667,7 @@ label: Label
 flow_name: Naam
 flow_tracking_activity: Track alleen activiteiten
 flow_tracking_null: Niets tracken
+code: Code
 insights: Inzichten
 dashboard: Dashboard
 panel: Paneel
@@ -1023,6 +1024,7 @@ translation: Vertaling
 value: Waarde
 view_project: Bekijk project
 report_error: Rapporteer fout
+table: Tabel
 interfaces:
   filter:
     name: Filter
@@ -1049,6 +1051,8 @@ interfaces:
     include_seconds: Seconden opnemen
     set_to_now: Op Nu instellen
     use_24: 24-uurs formaat gebruiken
+  system-fields:
+    select_a_collection: Selecteer een collectie
   system-display-template:
     display-template: Weergavesjabloon
     collection_field_not_setup: De collectie-veld optie is onjuist geconfigureerd

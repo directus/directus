@@ -2,6 +2,11 @@
 
 <br />
 
+:rocket: **We're hiring Software Engineers and Project Managers**! See
+[Discussion #15048](https://github.com/directus/directus/discussions/15048) for more information.
+
+<br />
+
 ## 🐰 Introduction
 
 Directus is a real-time API and App dashboard for managing SQL database content.

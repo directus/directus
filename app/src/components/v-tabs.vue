@@ -7,46 +7,43 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent, PropType, toRefs, provide, ref } from 'vue';
-import { useGroupableParent } from '@/composables/use-groupable';
+<script setup lang="ts">
+import { toRefs, provide, ref } from 'vue';
+import { useGroupableParent } from '@directus/shared/composables';
 
-export default defineComponent({
-	props: {
-		vertical: {
-			type: Boolean,
-			default: false,
-		},
-		modelValue: {
-			type: Array as PropType<(string | number)[]>,
-			default: undefined,
-		},
-	},
-	emits: ['update:modelValue'],
-	setup(props, { emit }) {
-		const { modelValue: selection, vertical } = toRefs(props);
+interface Props {
+	/** Display the tabs in a vertical format */
+	vertical?: boolean;
+	/** The currently selected tab */
+	modelValue?: (number | string)[];
+}
 
-		provide('v-tabs-vertical', vertical);
-
-		const { items } = useGroupableParent(
-			{
-				selection: selection,
-				onSelectionChange: update,
-			},
-			{
-				multiple: ref(false),
-				mandatory: ref(true),
-			},
-			'v-tabs'
-		);
-
-		function update(newSelection: readonly (string | number)[]) {
-			emit('update:modelValue', newSelection);
-		}
-
-		return { update, items };
-	},
+const props = withDefaults(defineProps<Props>(), {
+	vertical: false,
+	modelValue: undefined,
 });
+
+const emit = defineEmits(['update:modelValue']);
+
+const { modelValue: selection, vertical } = toRefs(props);
+
+provide('v-tabs-vertical', vertical);
+
+useGroupableParent(
+	{
+		selection: selection,
+		onSelectionChange: update,
+	},
+	{
+		multiple: ref(false),
+		mandatory: ref(true),
+	},
+	'v-tabs'
+);
+
+function update(newSelection: readonly (string | number)[]) {
+	emit('update:modelValue', newSelection);
+}
 </script>
 
 <style scoped>

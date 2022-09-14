@@ -26,7 +26,7 @@ export type FieldTreeContext = {
 export function useFieldTree(
 	collection: Ref<string | null>,
 	inject?: Ref<{ fields: Field[]; relations: Relation[] } | null>,
-	filter: (field: Field) => boolean = () => true
+	filter: (field: Field, parent?: FieldNode) => boolean = () => true
 ): FieldTreeContext {
 	const fieldsStore = useFieldsStore();
 	const relationsStore = useRelationsStore();
@@ -60,7 +60,7 @@ export function useFieldTree(
 					field.meta?.special?.includes('group') ||
 					(!field.meta?.special?.includes('alias') && !field.meta?.special?.includes('no-data'))
 			)
-			.filter((field) => filter(field));
+			.filter((field) => filter(field, parent));
 
 		const topLevelFields = allFields.filter((field) => {
 			if (parent?.group === true) return field.meta?.group === parent?.field;

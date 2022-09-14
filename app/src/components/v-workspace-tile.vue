@@ -108,23 +108,35 @@ export type AppTile = {
 
 // Right now, it is not possible to do type Props = AppTile & {resizable?: boolean; editMode?: boolean}
 type Props = {
+	/** The id of the tile */
 	id: string;
 	x: number;
 	y: number;
 	width: number;
 	height: number;
+	/** What title to display on the panel */
 	name?: string;
+	/** What icon to show next to the title */
 	icon?: string;
+	/** The color theme of the panel */
 	color?: string;
+	/** Adds a note beneath the title */
 	note?: string;
+	/** Allows to hide the header */
 	showHeader?: boolean;
 	minWidth?: number;
 	minHeight?: number;
+	/** If enabled, makes the tile draggable */
 	draggable?: boolean;
+	/** Add or remove rounded corners from the panels */
 	borderRadius?: [boolean, boolean, boolean, boolean];
+	/** If enabled, allows for resizing of the tile */
 	resizable?: boolean;
+	/** Enable the edit mode of the panel */
 	editMode?: boolean;
+	/** Shows options when the `editMode` is active */
 	showOptions?: boolean;
+	/** Constantly updates position, not only after the dragend */
 	alwaysUpdatePosition?: boolean;
 };
 
@@ -294,7 +306,14 @@ function useDragDrop() {
 
 	function onPointerUp() {
 		dragging.value = false;
-		if (props.editMode === false || props.draggable === false) return;
+		if (
+			props.editMode === false ||
+			props.draggable === false ||
+			Object.values(editedPosition).every((v) => v === undefined)
+		) {
+			return;
+		}
+
 		emit('update', editedPosition);
 		window.removeEventListener('pointerup', onPointerUp);
 		window.removeEventListener('pointermove', onPointerMove);
@@ -385,7 +404,7 @@ function useDragDrop() {
 }
 
 .tile-content.has-header {
-	height: calc(100% - 48px);
+	height: calc(100% - 42px);
 }
 
 .header {

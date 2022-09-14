@@ -5,10 +5,12 @@ import SidebarDetail from '@/views/private/components/sidebar-detail.vue';
 import UserPopover from '@/views/private/components/user-popover.vue';
 import ValueNull from '@/views/private/components/value-null.vue';
 import DocsWrapper from '@/views/private/components/docs-wrapper.vue';
+import DrawerItem from '@/views/private/components/drawer-item.vue';
+import DrawerBatch from '@/views/private/components/drawer-batch.vue';
 import { App } from 'vue';
-import TransitionBounce from './transition/bounce';
-import TransitionDialog from './transition/dialog';
-import TransitionExpand from './transition/expand';
+import TransitionBounce from './transition/bounce.vue';
+import TransitionDialog from './transition/dialog.vue';
+import TransitionExpand from './transition/expand.vue';
 import VAvatar from './v-avatar.vue';
 import VBadge from './v-badge.vue';
 import VBreadcrumb from './v-breadcrumb.vue';
@@ -56,7 +58,6 @@ import VSelect from './v-select/v-select.vue';
 import VSheet from './v-sheet.vue';
 import VSkeletonLoader from './v-skeleton-loader.vue';
 import VSlider from './v-slider.vue';
-import VSwitch from './v-switch.vue';
 import VTable from './v-table/v-table.vue';
 import VTabs from './v-tabs.vue';
 import VTab from './v-tab.vue';
@@ -119,7 +120,6 @@ export function registerComponents(app: App): void {
 	app.component('VSheet', VSheet);
 	app.component('VSkeletonLoader', VSkeletonLoader);
 	app.component('VSlider', VSlider);
-	app.component('VSwitch', VSwitch);
 	app.component('VTabItem', VTabItem);
 	app.component('VTab', VTab);
 	app.component('VTable', VTable);
@@ -145,4 +145,6 @@ export function registerComponents(app: App): void {
 	app.component('UserPopover', UserPopover);
 	app.component('ValueNull', ValueNull);
 	app.component('DocsWrapper', DocsWrapper);
+	app.component('DrawerItem', DrawerItem);
+	app.component('DrawerBatch', DrawerBatch);
 }

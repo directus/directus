@@ -52,6 +52,19 @@
 					</template>
 
 					<v-list>
+						<template v-if="customAspectRatios">
+							<v-list-item
+								v-for="customAspectRatio in customAspectRatios"
+								:key="customAspectRatio.text"
+								clickable
+								:active="aspectRatio === customAspectRatio.value"
+								@click="aspectRatio = customAspectRatio.value"
+							>
+								<v-list-item-icon><v-icon name="aspect_ratio" /></v-list-item-icon>
+								<v-list-item-content>{{ customAspectRatio.text }}</v-list-item-content>
+							</v-list-item>
+							<v-divider />
+						</template>
 						<v-list-item clickable :active="aspectRatio === 16 / 9" @click="aspectRatio = 16 / 9">
 							<v-list-item-icon><v-icon name="crop_16_9" /></v-list-item-icon>
 							<v-list-item-content>16:9</v-list-item-content>
@@ -93,11 +106,7 @@
 				<v-icon v-tooltip.top.inverted="t('reset')" name="restart_alt" clickable @click="reset" />
 
 				<div v-if="imageData" class="dimensions">
-					{{ n(imageData.width) }}x{{ n(imageData.height) }}
-					<template v-if="imageData.width !== newDimensions.width || imageData.height !== newDimensions.height">
-						->
-						{{ n(newDimensions.width ?? 0) }}x{{ n(newDimensions.height ?? 0) }}
-					</template>
+					{{ dimensionsString }}
 				</div>
 
 				<button v-show="cropping" class="toolbar-button cancel" @click="cropping = false">
@@ -119,6 +128,7 @@ import api, { addTokenToURL } from '@/api';
 import { computed, defineComponent, nextTick, reactive, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
+import { useSettingsStore } from '@/stores/settings';
 import { getRootPath } from '@/utils/get-root-path';
 import { unexpectedError } from '@/utils/unexpected-error';
 import Cropper from 'cropperjs';
@@ -147,6 +157,8 @@ export default defineComponent({
 	emits: ['update:modelValue', 'refresh'],
 	setup(props, { emit }) {
 		const { t, n } = useI18n();
+
+		const settingsStore = useSettingsStore();
 
 		const localActive = ref(false);
 
@@ -195,6 +207,35 @@ export default defineComponent({
 			return addTokenToURL(`${getRootPath()}assets/${props.id}?${randomId.value}`);
 		});
 
+		const dimensionsString = computed(() => {
+			let output = '';
+			const isSVG = imageData.value?.type === 'image/svg+xml';
+
+			if (imageData.value) {
+				if (isSVG) {
+					output += 'SVG';
+				} else {
+					output += `${n(imageData.value.width ?? 0)}x${n(imageData.value.height ?? 0)}`;
+				}
+
+				if (imageData.value.width !== newDimensions.width || imageData.value.height !== newDimensions.height) {
+					if (isSVG) {
+						if (newDimensions.width || newDimensions.height) {
+							output += ` -> PNG ${n(newDimensions.width ?? 0)}x${n(newDimensions.height ?? 0)}`;
+						} else {
+							output += ' -> PNG';
+						}
+					} else {
+						output += ` -> ${isSVG ? 'PNG ' : ''}${n(newDimensions.width ?? 0)}x${n(newDimensions.height ?? 0)}`;
+					}
+				}
+			}
+
+			return output;
+		});
+
+		const customAspectRatios = settingsStore.settings?.custom_aspect_ratios ?? null;
+
 		return {
 			t,
 			n,
@@ -216,6 +257,8 @@ export default defineComponent({
 			dragMode,
 			cropping,
 			setAspectRatio,
+			dimensionsString,
+			customAspectRatios,
 		};
 
 		function useImage() {
@@ -321,6 +364,11 @@ export default defineComponent({
 
 			const aspectRatioIcon = computed(() => {
 				if (!imageData.value) return 'crop_original';
+
+				if (customAspectRatios) {
+					const customAspectRatio = customAspectRatios.find((customAR) => customAR.value == aspectRatio.value);
+					if (customAspectRatio) return 'crop_square';
+				}
 
 				switch (aspectRatio.value) {
 					case 16 / 9:

@@ -1,16 +1,44 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+identifier: מזהה
 avatar: צלמית
+application: יישום
 default_provider: ספק ברירת מחדל
+method: פונקציה
 published: פורסם
 draft: טיוטה
 archived: ארכיון
 modules: מודולים
 module_bar: סרגל מודולים
+logs: לוגים
+reset_width: אפס רוחב
 tile_size: גודל צלמית
 edit_field: ערוך שדה
 conditions: תנאים
 location: מיקום
+condition_rules: תנאי כלל
+input: קלט
 maps: מפות
+switch_user: החלף משתמש
 item_creation: יצירת פריט חדש
 item_revision: גרסת פריט
 enter_a_name: הכניסו שם...
@@ -18,30 +46,106 @@ duplicate_field: שדה כפול
 half_width: חצי עמוד
 full_width: רוחב מלא
 group: קבוצה
+export_items: יצא פריטים
 and: ו
 or: או
+init: אתחל
+dataset_too_large_currently_showing_n_items: מערך הנתונים גדול מדי. מציג כעת את {n} הפריטים הראשונים.
+custom: מותאם אישית
+hook: נקודת השחלה
 fill_width: עמוד מלא
 field_name_translations: תרגומי שמות שדות
 enter_password_to_enable_tfa: הכניסו סיסמה להפעלת אימות דו שלבי
 add_field: הוסף שדה
 role_name: שם תפקיד
 branch: ענף
+leaf: עלה
+edit_collection: ערוך אוסף
 exclusive: בלעדי
 children: ילדים
+show_active_items: הצג פריטים פעילים
+show_archived_items: הצג פריטי ארכיון
+show_all_items: הצג את כל הפריטים
 edited: ערך נערך
 required: שדה חובה
+requires_value: דורש ערך
 create_preset: יצירת הגדרה מראש
 create_role: צור תפקיד
 create_user: צור משתמש
+message: הודעה
 create_webhook: צור Webhook
+translation_string_translations_placeholder: יצירת תרגום חדש
+edit_translation_string: אריכה של תרגום
 invite_users: הזמן משתמשים
 invite: הזמן
+subject: נושא
+inbox: תיבת דואר
+emails: אימייל
+connection_excellent: קליטה מצואן
+connection_good: קליטה טובה
+connection_fair: קליטה בינוני
+connection_poor: קליטה לא טובה
+primary: ראשי
+rename_folder: שינוי שם תיקיה
+delete_folder: מחק תיקייה
 not_allowed: לא מורשה
 directus_version: גרסת דירקטוס
 node_version: Node Version
 node_uptime: Node Uptime
 os_type: OS Type
+validationError:
+  eq: הערך צריך להיות {valid}
+  neq: הערך אינו יכול להיות {invalid}
+  in: הערך צריך להיות אחד מ- {valid}
+  nempty: הערך אינו יכול להיות ריק
+  null: הערך צריך להיות null
+  nnull: הערך צריך להיות לא null
+allow_multiple: מאפשר כמה
+field_file: קובץ בודד
+field_files: כמה קובצים
+field_translations: תרגומים
+hide_field: שדה הסתר
+delete_field: מחק שדה
+language: שפה
+language_placeholder: בחר שפה...
+global: גלובלי
+camera: מצלמה
+validation: אימות
+sum: סכום
+avg: ממוצע
+count: כמות
+count_distinct: ספירה מובחנת
+min: מינימום
+max: מקסימום
+create_field: צור שדה
+boolean: בוליאני
+date: תאריך
+date_range: טווח תאריכים
+precision: דיוק
+string: מחרוזת
+text: טקסט
+time: זמן
+click_here: לחץ כאן
+new_field: 'שדה חדש'
+new_collection: 'אוסף חדש'
+add_link: הוסף קישור
+single_file: קובץ בודד
+multiple_files: כמה קובצים
+next: המשך
+field_name: שם שדה
+translations: תרגומים
+note: הערה
+enter_a_value: הכנס ערך...
+length: אורך
+dismiss: דחה
+notifications: התראות
 title: כותרת
+revision_delta_deleted: נמחק
+leave_comment: השאר תגובה...
+post_comment_success: תגובה פורסמה
+post_comment_updated: התגובה עודכנה
+functions:
+  count: כמות
 checksum: מחרוזת בדיקה
 users: משתמשים
 activity: פעילות
@@ -49,6 +153,8 @@ action: פעולה
 ip_address: '‏כתובת IP'
 duration: משך זמן
 status: סטטוס
+errors:
+  NOT_NULL_VIOLATION: הערך צריך להיות לא null
 role: תפקיד
 width: רוחב
 height: גובה
@@ -64,6 +170,7 @@ fields:
     ip: '‏כתובת IP'
   directus_collections:
     collection: מאגר
+    note: הערה
   directus_files:
     title: כותרת
     description: תיאור
@@ -84,6 +191,7 @@ fields:
     title: כותרת
     description: תיאור
     tags: תגיות
+    language: שפה
     theme: ערכת נושא
     tfa_secret: אימות דו-שלבי
     status: סטטוס
@@ -94,26 +202,42 @@ fields:
     role: תפקיד
     password: סיסמה
   directus_fields:
+    note: הערה
     translation: תרגומי שמות שדות
   directus_roles:
     name: שם תפקיד
     description: תיאור
   directus_webhooks:
     status: סטטוס
+field_options:
+  directus_collections:
+    language: שפה
 comment: הערה
 description: תיאור
 email: דוא"ל
 password: סיסמה
 interfaces:
+  presentation-links:
+    primary: ראשי
   system-collection:
     collection: מאגר
+  select-dropdown:
+    choices_value_placeholder: הכנס ערך...
   files:
     files: קבצים
   tags:
     tags: תגיות
 displays:
+  translations:
+    translations: תרגומים
+  boolean:
+    boolean: בוליאני
   collection:
     collection: מאגר
+  formatted-value:
+    text: טקסט
+  labels:
+    choices_value_placeholder: הכנס ערך...
   mime-type:
     mime-type: MIME Type
   rating:
@@ -128,3 +252,8 @@ layouts:
     subtitle: כותרת משנית
   calendar:
     calendar: לוח שנה
+operations:
+  log:
+    message: הודעה
+  notification:
+    message: הודעה
