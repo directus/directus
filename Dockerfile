@@ -27,7 +27,7 @@ FROM node:${NODE_VERSION}
 #ENV ORACLE_HOME /usr/lib/instantclient
 
 RUN apk update
-RUN apk --no-cache add --virtual builds-deps build-base python3 git
+RUN apk --no-cache add --virtual builds-deps build-base python3 openssh-client bash git openssh curl
 RUN apk add nano
 
 WORKDIR /directus
