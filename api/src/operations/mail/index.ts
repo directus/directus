@@ -5,7 +5,7 @@ import { md } from '../../utils/md';
 type Options = {
 	body: string;
 	to: string;
-	type: string;
+	type: 'wysiwyg' | 'markdown';
 	subject: string;
 };
 
@@ -16,7 +16,7 @@ export default defineOperationApi<Options>({
 		const mailService = new MailService({ schema: await getSchema({ database }), accountability, knex: database });
 
 		await mailService.send({
-			html: type === 'input-rich-text-html' ? body : md(body),
+			html: type === 'wysiwyg' ? body : md(body),
 			to,
 			subject,
 		});

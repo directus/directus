@@ -16,7 +16,7 @@ export default defineOperationApp({
 		},
 		{
 			label: '$t:type',
-			text: type,
+			text: type || 'markdown',
 		},
 		{
 			label: '$t:operations.mail.body',
@@ -55,21 +55,20 @@ export default defineOperationApp({
 				name: '$t:type',
 				type: 'string',
 				schema: {
-					default_value: 'input-rich-text-md',
+					default_value: 'markdown',
 				},
 				meta: {
 					interface: 'select-dropdown',
-					width: 'full',
-					required: true,
+					width: 'half',
 					options: {
 						choices: [
 							{
 								text: '$t:interfaces.input-rich-text-md.markdown',
-								value: 'input-rich-text-md',
+								value: 'markdown',
 							},
 							{
 								text: '$t:interfaces.input-rich-text-html.wysiwyg',
-								value: 'input-rich-text-html',
+								value: 'wysiwyg',
 							},
 						],
 					},
@@ -81,7 +80,7 @@ export default defineOperationApp({
 				type: 'text',
 				meta: {
 					width: 'full',
-					interface: panel.type || 'input-rich-text-md',
+					interface: panel.type === 'wysiwyg' ? 'input-rich-text-html' : 'input-rich-text-md',
 				},
 			},
 		];
