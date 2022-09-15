@@ -13,7 +13,6 @@ import type { Accountability, SchemaOverview } from '@directus/shared/types';
 import { toArray } from '@directus/shared/utils';
 import getMailer from '../mailer.js';
 import { SettingsService } from './settings.js';
-import { getOSInfo } from '../utils/get-os-info.js';
 import { importFile } from '../utils/importFile.js';
 
 const version = JSON.parse(importFile('../package.json')).version;
@@ -66,7 +65,7 @@ export class ServerService {
 		}
 
 		if (this.accountability?.admin === true) {
-			info.directus = {
+			info['directus'] = {
 				version,
 			};
 		}
