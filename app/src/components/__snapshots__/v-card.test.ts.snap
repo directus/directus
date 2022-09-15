@@ -1,0 +1,3 @@
+// Vitest Snapshot v1
+
+exports[`Mount component 1`] = `"<div class=\\"v-card\\" data-v-1e90e497=\\"\\">Slot Content</div>"`;

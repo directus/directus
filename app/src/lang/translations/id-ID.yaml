@@ -35,6 +35,7 @@ tile_size: Ukuran Corak
 edit_field: Edit Kolom
 conditions: Kondisi
 location: Lokasi
+condition_rules: Gaya Bersyarat
 input: Input
 maps: Peta
 switch_user: Beralih/ganti pengguna
@@ -45,8 +46,11 @@ duplicate_field: Kolom Duplikat
 half_width: Lebar Setengah
 full_width: Lebar Penuh
 group: Grup
+export_items: Ekspor Item
 and: Dan
 or: Atau
+init: Awal
+dataset_too_large_currently_showing_n_items: Himpunan data terlalu besar. Saat ini menampilkan {n} item pertama.
 modifier: Pengubah
 custom: Kustomisasi
 hook: Hook
@@ -76,6 +80,8 @@ create_user: Buat User
 message: Pesan
 delete_panel: Hapus Panel
 create_webhook: Buat Webhook
+create_translation_string: Buat Terjemahan
+no_translation_string: Tidak ditemukan terjemahan
 no_translation_string_copy: Belum ada terjemahan tersedia.
 translation_string_translations_placeholder: Tambahkan terjemahan baru
 edit_translation_string: Sunting Terjemahan
@@ -101,6 +107,8 @@ update_bookmark: Hapus Markah
 delete_bookmark: Hapus Markah
 delete_bookmark_copy: >-
   Apakah anda yakin ingin menghapus markah "{bookmark}"? Tindakan ini tidak dapat dikembalikan.
+delete_personal_bookmark: Hapus Markah Pribadi
+delete_global_bookmark: Hapus Markah Global
 logoutReason:
   SIGN_OUT: Telah keluar
   SESSION_EXPIRED: Sesi kadaluarsa
@@ -127,6 +135,7 @@ recommended_defaults: Bawaan yang Direkomendasikan
 unarchive: Batalkan pengarsipan
 unarchive_confirm: Apakah Anda yakin ingin membatalkan arsip dari item ini?
 nested_files_folders_will_be_moved: Berkas dan folder yang disarang akan dipindahkan satu tingkat keatas.
+validation_errors_notice: 'Bidang berikut memiliki nilai-nilai yang tidak sah:'
 validationError:
   eq: Nilai harus {valid}
   neq: Nilai tidak boleh {invalid}
@@ -284,6 +293,8 @@ next: Lanjut
 field_name: Nama Kolom
 translations: Terjemahan
 no_translations: Tidak ada terjemahan
+left_to_right: Kiri ke Kanan
+right_to_left: Kanan ke Kiri
 note: Catatan
 enter_a_value: Masukkan sebuah nilai...
 enter_a_placeholder: Masukkan sebuah placeholder...
@@ -454,6 +465,7 @@ creating_items: Membuat Item
 enable_create_button: Aktifkan Tombol Buat Baru
 selecting_items: Memilih item
 enable_select_button: Aktifkan Tombol Pemilihan
+allow_duplicates: Izinkan Duplikasi
 comments: Komentar
 no_comments: Belum Ada Komentar
 click_to_expand: Tekan Untuk Memperluas
@@ -504,6 +516,7 @@ activity_item: Item Aktifitas
 action: Aksi
 ip_address: Alamat IP
 user_agent: Agen pengguna
+origin: Asal
 webhooks: Webhooks
 decimals: Desimal
 value_decimals: Nilai Desimal
@@ -551,6 +564,8 @@ errors:
   INVALID_OTP: Kata sandi satu-kali salah
   INVALID_PAYLOAD: Payload tidak valid
   INVALID_QUERY: Kueri tidak valid
+  INVALID_TOKEN: Token tidak valid
+  INVALID_IP: Alamat IP tidak diperbolehkan
   INVALID_USER: Gagal untuk mengautentikasi pengguna
   ITEM_LIMIT_REACHED: Batas item tercapai
   ITEM_NOT_FOUND: Item tidak ditemukan
@@ -566,11 +581,20 @@ errors:
   VALUE_OUT_OF_RANGE: Nilai di luar rentang
   INVALID_FOREIGN_KEY: Foreign key tidak valid
   UNKNOWN: Kesalahan Tidak Terduga
+  SERVICE_UNAVAILABLE: Layanan Tidak Tersedia
+  UNSUPPORTED_MEDIA_TYPE: Jenis media tidak didukung
+  UNEXPECTED_RESPONSE: Respon tidak terduga
+  TOKEN_EXPIRED: Token kedaluwarsa
+  RANGE_NOT_SATISFIABLE: Rentang tidak valid
+  METHOD_NOT_ALLOWED: Metode Tidak Diizinkan
+  REQUESTS_EXCEEDED: Batas permintaan telah tercapai
 security: Keamanan
 value_hashed: Nilai telah Di-hash secara Aman
 bookmark_name: Nama bookmark...
 create_bookmark: Buat Bookmark
 edit_bookmark: Sunting Bookmark
+edit_personal_bookmark: Sunting Markah Pribadi
+edit_global_bookmark: Sunting Markah Global
 bookmarks: Markah
 presets: Preset
 unexpected_error: Kesalahan Tidak Terduga
@@ -578,9 +602,11 @@ unexpected_error_copy: Terjadi galat yang tidak terduga, Silahkan mencoba lagi n
 copy_details: Salin Rincian
 no_app_access: Tidak Ada Akses Aplikasi
 no_app_access_copy: Pengguna ini tidak diperbolehkan untuk menggunakan aplikasi admin.
+password_reset_sent: Jika Anda memiliki akun, kami telah mengirimkan tautan yang aman untuk mengatur ulang kata sandi Anda
 password_reset_successful: Sandi berhasil diatur ulang
 back: Kembali
 filter: Penyaring
+edit_image: Sunting Gambar
 editing_image: Menyunting Gambar
 square: Persegi
 free: Bebas
@@ -721,10 +747,21 @@ toggle: Beralih
 icon_on: Ikon Aktif
 icon_off: Ikon Tidak Aktif
 label: Label
+updating_flow: Memperbarui Alur
+flow_setup: Penyiapan Alur
 flow_name: Nama
+flow_tracking: Pelacakan Log & Aktifitas
+flow_tracking_all: Lacak Log & Aktifitas
 flow_tracking_activity: Hanya Aktifitas Melacak
 flow_tracking_null: Jangan Lacak Apapun
+start_flow: Mulai Alur
+stop_flow: Hentikan Alur
+create_operation: Buat Operasi
+edit_operation: Sunting Operasi
 code: Kode
+operation_options: Opsi Operasi
+operation_name: Nama dari operasi...
+operation_key: Pengenal untuk referensi...
 insights: Wawasan
 dashboard: Dasbor
 panel: Panel
@@ -746,8 +783,14 @@ create_dashboard: Buat Dasbor
 dashboard_name: Nama Dasbor
 no_data: Tidak ada Data
 accountability: Akuntabilitas
+payload: Muatan
+details: Rincian
 full_screen: Layar Penuh
+full_text_search: Pencarian teks lengkap
 edit_panels: Sunting Panel
+center_align: Rata Tengah
+left_align: Rata Kiri
+right_align: Rata kanan
 fit_to_screen: Sesuaikan dengan Layar
 image_url: Tautan Gambar
 alt_text: Teks Alternatif
@@ -885,6 +928,7 @@ fields:
     collection: Koleksi
     comment: Komentar
     user_agent: Agen pengguna
+    origin: Asal
     ip: Alamat IP
     revisions: Revisi
   directus_collections:
@@ -1332,6 +1376,10 @@ panels:
   label:
     name: Label
 operations:
+  item-create:
+    payload: Muatan
+  item-update:
+    payload: Muatan
   log:
     message: Pesan
   notification:

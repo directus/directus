@@ -43,14 +43,20 @@ export type FancySelectItem = {
 	description?: string;
 	divider?: boolean;
 	iconRight?: string;
-};
+} & Record<string, any>;
 
 interface Props {
+	/** The list of possible items to display */
 	items: FancySelectItem[];
+	/** Used to model the current selected item */
 	modelValue?: string | number | null;
+	/** Disable selecting / deselecting a value */
 	disabled?: boolean;
+	/** What key in items to use to display text */
 	itemText?: string;
+	/** What key in items to use to model the selected item */
 	itemValue?: string;
+	/** What key in items to use to display a description */
 	itemDescription?: string;
 }
 

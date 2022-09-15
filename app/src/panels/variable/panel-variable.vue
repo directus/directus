@@ -3,7 +3,6 @@
 		<component
 			:is="`interface-${inter}`"
 			v-bind="options"
-			:disabled="true"
 			:value="value"
 			:width="fieldWidth"
 			:type="type"
