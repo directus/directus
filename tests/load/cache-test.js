@@ -39,6 +39,9 @@ For each collection, create 100 items with random values for each field
 const COLLECTION_COUNT = 10;
 const FIELD_COUNT = 25;
 const ITEM_COUNT = 100;
+const EDIT_CHANCE = 0.1;
+const ADD_FIELD_CHANCE = 0.05;
+
 const relation = (collectionNr) => {
     collectionNr -= 1;
     let i = 0
@@ -51,12 +54,33 @@ const relation = (collectionNr) => {
     }
 };
 
+function getRandomString(length) {
+    var result = ' ';
+    var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    for ( var i = 0; i < length; i++ ) {
+      result += chars.charAt(Math.floor(Math.random() * chars.length));
+   }
+   return result;
+}
+
+function getRandomCollection() {
+    return `test_${Math.ceil(Math.random() * COLLECTION_COUNT)}`
+}
+
+function getRandomField() {
+    return `field_${Math.ceil(Math.random() * FIELD_COUNT)}`
+}
+
+function getRandomItem() {
+    return Math.ceil(Math.random() * ITEM_COUNT)
+}
+
 export function setup() {
     for(let i = 1; i <= COLLECTION_COUNT; i++) {
         const collectionName = `test_${i}`
 
         const fields = [{
-            field: `field-0`,
+            field: `primary_key`,
             type: 'integer',
             interface: 'input',
             meta: {
@@ -78,21 +102,34 @@ export function setup() {
             })
         }
 
-        if(relation(i)) {
+        const hasRelation = relation(i)
+
+        if(hasRelation) {
             fields.push({
                 field: `relation`,
                 type: 'integer',
                 interface: 'select-dropdown-m2o',
                 meta: {
-                    interface: 'input',
-                    readonly: true
+                    interface: 'select-dropdown-m2o',
+                    options: {
+                        template: '{{primary_key}} - {{field-1}}',
+                    },
+                    special: ['m2o']
                 },
-                schema: {
-                    is_primary_key: true,
-                    has_auto_increment: true,
-                },
+                schema: {},
             })
+        }
 
+        http.post(getURL('/collections'), JSON.stringify({
+            collection: collectionName,
+            meta: {
+                icon: 'tag',
+            },
+            schema: {},
+            fields
+        }), params)
+
+        if(hasRelation) {
             http.post(getURL('/relations'), JSON.stringify({
                 collection: collectionName,
                 field: 'relation',
@@ -101,29 +138,57 @@ export function setup() {
                 schema: {
                     on_delete: 'SET NULL',
                 },
-            }))
+            }), params)
         }
 
+        const items = []
 
-        const resp = http.post(getURL('/collections'), JSON.stringify({
-            collection: collectionName,
-            meta: {
-                icon: 'tag',
-            },
-            schema: {},
-            fields
-        }), params)
+        for(let i = 1; i <= ITEM_COUNT; i++) {
+            const item = {}
+
+            fields.slice(1).forEach(field => {
+                if(field.type === 'string') {
+                    item[field.field] = getRandomString(10)
+                }
+                if(field.type === 'integer') {
+                    item[field.field] = getRandomItem()
+                }
+            })
+
+            items.push(item)
+        }
+        
+        http.post(getURL(`/items/${collectionName}`), JSON.stringify(items), params)
     }
 }
 
 export default function() {
-    let response = http.get(getURL('/collections/test_1'), params);
+    let response = http.get(getURL(`/items/${getRandomCollection()}`), params);
 
+    if(Math.random() < EDIT_CHANCE) {
+        const items = JSON.parse(response.body).data
+        const item = items[Math.floor(Math.random() * items.length)]
 
+        item[getRandomField()] = 'edited'
+
+        http.patch(getURL(`/items/${getRandomCollection()}/${item.primary_key}`), JSON.stringify(item), params)
+    }
+
+    if(Math.random() < ADD_FIELD_CHANCE) {
+        const collectionName = getRandomCollection()
+
+        http.post(getURL(`/fields/${collectionName}`), JSON.stringify({
+            field: `new_field_${Math.floor(Math.random() * 1000)}`,
+            type: 'string',
+            meta: {},
+            schema: {},
+        }), params)
+    }
+    
 }
 
 export function teardown() {
-    for (let i = COLLECTION_COUNT; i > 0; i++) {
+    for (let i = COLLECTION_COUNT; i > 0; i--) {
         http.del(getURL(`/collections/${`test_${i}`}`), params)
     }
 }
