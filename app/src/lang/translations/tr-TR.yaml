@@ -1964,6 +1964,8 @@ panels:
     name: Global Değişken
     description: Diğer Panellerin filtrelerinde kullanım için global bir değer belirleyin
     variable_key: Değişken Anahtar
+  relational-variable:
+    variable_key: Değişken Anahtar
 triggers:
   common:
     response_body: Yanıt Gövdesi
