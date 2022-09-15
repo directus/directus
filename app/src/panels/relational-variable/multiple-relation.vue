@@ -17,12 +17,12 @@
 		</v-list>
 
 		<div class="actions list">
-			<v-button v-if="totalItemCount < limit" @click="$emit('select')">
+			<button v-if="totalItemCount < limit" @click="$emit('select')">
 				{{ t('add_existing') }}
-			</v-button>
-			<v-button v-if="totalItemCount > 0" @click="$emit('input', undefined)">
+			</button>
+			<button v-if="totalItemCount > 0" @click="$emit('input', undefined)">
 				{{ t('clear_items') }}
-			</v-button>
+			</button>
 		</div>
 	</div>
 </template>
@@ -39,7 +39,7 @@ interface Props {
 	filter: Record<string, any>;
 	limit: number;
 }
-const props = withDefaults(defineProps<Props>(), {});
+const props = withDefaults(defineProps<Props>(), { limit: 5 });
 const emit = defineEmits(['input', 'select']);
 
 const { t } = useI18n();
@@ -91,60 +91,13 @@ function deleteItem(elem: Record<string, any>) {
 	align-items: center;
 	gap: var(--v-sheet-padding);
 
-	> .v-button {
-		:deep(.button) {
-			--v-button-width: auto;
-			--v-button-min-width: auto;
-			--v-button-height: auto;
-			--v-button-color: var(--primary);
-			--v-button-color-hover: var(--primary-125);
-			--v-button-background-color: transparent;
-			--v-button-background-color-hover: transparent;
-			padding: 0 4px;
+	button {
+		color: var(--primary);
+		padding: 0 4px;
+
+		&:hover {
+			color: var(--primary-125);
 		}
-	}
-
-	.v-pagination {
-		:deep(.v-button) {
-			display: inline-flex;
-		}
-	}
-
-	.table.v-pagination {
-		margin-top: var(--v-sheet-padding);
-	}
-
-	.spacer {
-		flex-grow: 1;
-	}
-
-	.search {
-		position: relative;
-		z-index: 1;
-	}
-
-	.item-count {
-		color: var(--foreground-subdued);
-		white-space: nowrap;
-	}
-
-	&.half,
-	&.half-right {
-		flex-wrap: wrap;
-
-		.search {
-			width: 100%;
-			order: -1;
-
-			:deep(.search-input),
-			:deep(.search-badge) {
-				width: 100% !important;
-			}
-		}
-	}
-
-	&.list {
-		margin-top: 8px;
 	}
 }
 
