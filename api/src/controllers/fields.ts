@@ -1,14 +1,14 @@
 import { Router } from 'express';
 import Joi from 'joi';
-import { ALIAS_TYPES } from '../constants';
-import { ForbiddenException, InvalidPayloadException } from '../exceptions';
-import validateCollection from '../middleware/collection-exists';
-import { respond } from '../middleware/respond';
-import useCollection from '../middleware/use-collection';
-import { FieldsService } from '../services/fields';
-import { Field, Type } from '@directus/shared/types';
+import { ALIAS_TYPES } from '../constants.js';
+import { ForbiddenException, InvalidPayloadException } from '../exceptions/index.js';
+import validateCollection from '../middleware/collection-exists.js';
+import { respond } from '../middleware/respond.js';
+import useCollection from '../middleware/use-collection.js';
+import { FieldsService } from '../services/fields.js';
+import type { Field, Type } from '@directus/shared/types';
 import { TYPES } from '@directus/shared/constants';
-import asyncHandler from '../utils/async-handler';
+import asyncHandler from '../utils/async-handler.js';
 
 const router = Router();
 
@@ -18,12 +18,12 @@ router.get(
 	'/',
 	asyncHandler(async (req, res, next) => {
 		const service = new FieldsService({
-			accountability: req.accountability,
+			accountability: req.accountability!,
 			schema: req.schema,
 		});
 		const fields = await service.readAll();
 
-		res.locals.payload = { data: fields || null };
+		res.locals['payload'] = { data: fields || null };
 		return next();
 	}),
 	respond
@@ -34,12 +34,12 @@ router.get(
 	validateCollection,
 	asyncHandler(async (req, res, next) => {
 		const service = new FieldsService({
-			accountability: req.accountability,
+			accountability: req.accountability!,
 			schema: req.schema,
 		});
-		const fields = await service.readAll(req.params.collection);
+		const fields = await service.readAll(req.params['collection']);
 
-		res.locals.payload = { data: fields || null };
+		res.locals['payload'] = { data: fields || null };
 		return next();
 	}),
 	respond
@@ -50,13 +50,13 @@ router.get(
 	validateCollection,
 	asyncHandler(async (req, res, next) => {
 		const service = new FieldsService({
-			accountability: req.accountability,
+			accountability: req.accountability!,
 			schema: req.schema,
 		});
 
-		const field = await service.readOne(req.params.collection, req.params.field);
+		const field = await service.readOne(req.params['collection']!, req.params['field']!);
 
-		res.locals.payload = { data: field || null };
+		res.locals['payload'] = { data: field || null };
 		return next();
 	}),
 	respond
@@ -84,7 +84,7 @@ router.post(
 	validateCollection,
 	asyncHandler(async (req, res, next) => {
 		const service = new FieldsService({
-			accountability: req.accountability,
+			accountability: req.accountability!,
 			schema: req.schema,
 		});
 
@@ -96,11 +96,11 @@ router.post(
 
 		const field: Partial<Field> & { field: string; type: Type | null } = req.body;
 
-		await service.createField(req.params.collection, field);
+		await service.createField(req.params['collection']!, field);
 
 		try {
-			const createdField = await service.readOne(req.params.collection, field.field);
-			res.locals.payload = { data: createdField || null };
+			const createdField = await service.readOne(req.params['collection']!, field.field);
+			res.locals['payload'] = { data: createdField || null };
 		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
 				return next();
@@ -119,7 +119,7 @@ router.patch(
 	validateCollection,
 	asyncHandler(async (req, res, next) => {
 		const service = new FieldsService({
-			accountability: req.accountability,
+			accountability: req.accountability!,
 			schema: req.schema,
 		});
 
@@ -128,15 +128,15 @@ router.patch(
 		}
 
 		for (const field of req.body) {
-			await service.updateField(req.params.collection, field);
+			await service.updateField(req.params['collection']!, field);
 		}
 
 		try {
 			const results: any = [];
 			for (const field of req.body) {
-				const updatedField = await service.readOne(req.params.collection, field.field);
+				const updatedField = await service.readOne(req.params['collection']!, field.field);
 				results.push(updatedField);
-				res.locals.payload = { data: results || null };
+				res.locals['payload'] = { data: results || null };
 			}
 		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
@@ -170,7 +170,7 @@ router.patch(
 	validateCollection,
 	asyncHandler(async (req, res, next) => {
 		const service = new FieldsService({
-			accountability: req.accountability,
+			accountability: req.accountability!,
 			schema: req.schema,
 		});
 
@@ -186,13 +186,13 @@ router.patch(
 
 		const fieldData: Partial<Field> & { field: string; type: Type } = req.body;
 
-		if (!fieldData.field) fieldData.field = req.params.field;
+		if (!fieldData.field) fieldData.field = req.params['field']!;
 
-		await service.updateField(req.params.collection, fieldData);
+		await service.updateField(req.params['collection']!, fieldData);
 
 		try {
-			const updatedField = await service.readOne(req.params.collection, req.params.field);
-			res.locals.payload = { data: updatedField || null };
+			const updatedField = await service.readOne(req.params['collection']!, req.params['field']!);
+			res.locals['payload'] = { data: updatedField || null };
 		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
 				return next();
@@ -209,12 +209,12 @@ router.patch(
 router.delete(
 	'/:collection/:field',
 	validateCollection,
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req, _res, next) => {
 		const service = new FieldsService({
-			accountability: req.accountability,
+			accountability: req.accountability!,
 			schema: req.schema,
 		});
-		await service.deleteField(req.params.collection, req.params.field);
+		await service.deleteField(req.params['collection']!, req.params['field']!);
 		return next();
 	}),
 	respond

@@ -1,8 +1,8 @@
-import { KNEX_TYPES } from '@directus/shared/constants';
-import { Options, SchemaHelper } from '../types';
+import type { KNEX_TYPES } from '@directus/shared/constants';
+import { Options, SchemaHelper } from '../types.js';
 
 export class SchemaHelperCockroachDb extends SchemaHelper {
-	async changeToType(
+	override async changeToType(
 		table: string,
 		column: string,
 		type: typeof KNEX_TYPES[number],

@@ -1,4 +1,4 @@
-import { Type, FieldFunction } from '../types/fields';
+import type { Type, FieldFunction } from '../types/fields.js';
 
 export function getFunctionsForType(type: Type): FieldFunction[] {
 	switch (type) {

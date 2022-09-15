@@ -4,8 +4,8 @@ import { nanoid } from 'nanoid';
 import path from 'path';
 import { promisify } from 'util';
 import { v4 as uuid } from 'uuid';
-import { Credentials } from '../create-db-connection';
-import { drivers } from '../drivers';
+import type { Credentials } from '../create-db-connection.js';
+import type { drivers } from '../drivers.js';
 
 const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);
@@ -36,7 +36,7 @@ export default async function createEnv(
 	};
 
 	for (const [key, value] of Object.entries(credentials)) {
-		config.database[`DB_${key.toUpperCase()}`] = value;
+		config['database'][`DB_${key.toUpperCase()}`] = value;
 	}
 
 	const configAsStrings: any = {};

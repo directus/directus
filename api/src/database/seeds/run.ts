@@ -1,10 +1,10 @@
 import fse from 'fs-extra';
 import yaml from 'js-yaml';
-import { Knex } from 'knex';
-import { isObject } from 'lodash';
+import type { Knex } from 'knex';
+import { isObject } from 'lodash-es';
 import path from 'path';
-import { Type, Field } from '@directus/shared/types';
-import { getHelpers } from '../helpers';
+import type { Type, Field } from '@directus/shared/types';
+import { getHelpers } from '../helpers/index.js';
 
 type TableSeed = {
 	table: string;

@@ -1,4 +1,5 @@
 import * as drive from '../src';
+import { expect, describe, it } from 'vitest';
 
 describe('drive', function () {
 	it('Objects should be exported', function () {

@@ -1,6 +1,6 @@
 import { test, expect } from 'vitest';
 
-import { get } from './get-with-arrays';
+import { get } from './get-with-arrays.js';
 
 test('Returns static value from object', () => {
 	const input = { test: { path: 'example' } };

@@ -1,43 +1,21 @@
 {
 	"name": "@directus/shared",
 	"version": "9.17.4",
+	"type": "module",
 	"description": "Code shared between all directus packages.",
+	"sideEffects": false,
 	"exports": {
-		"./composables": {
-			"import": "./dist/esm/composables/index.js",
-			"require": "./dist/cjs/composables/index.js"
-		},
-		"./constants": {
-			"import": "./dist/esm/constants/index.js",
-			"require": "./dist/cjs/constants/index.js"
-		},
-		"./exceptions": {
-			"import": "./dist/esm/exceptions/index.js",
-			"require": "./dist/cjs/exceptions/index.js"
-		},
-		"./types": {
-			"import": "./dist/esm/types/index.js",
-			"require": "./dist/cjs/types/index.js"
-		},
-		"./utils": {
-			"import": "./dist/esm/utils/index.js",
-			"require": "./dist/cjs/utils/index.js"
-		},
-		"./utils/browser": {
-			"import": "./dist/esm/utils/browser/index.js",
-			"require": "./dist/cjs/utils/browser/index.js"
-		},
-		"./utils/node": {
-			"import": "./dist/esm/utils/node/index.js",
-			"require": "./dist/cjs/utils/node/index.js"
-		},
+		"./composables": "./dist/composables/index.js",
+		"./constants": "./dist/constants/index.js",
+		"./exceptions": "./dist/exceptions/index.js",
+		"./types": "./dist/types/index.js",
+		"./utils": "./dist/utils/index.js",
+		"./utils/node": "./dist/utils/node/index.js",
+		"./utils/browser": "./dist/utils/browser/index.js",
 		"./package.json": "./package.json"
 	},
-	"sideEffects": false,
 	"scripts": {
-		"build": "run-p \"build:* {@}\"",
-		"build:esm": "tsc --project ./tsconfig.json --module ES2015 --outDir ./dist/esm",
-		"build:cjs": "tsc --project ./tsconfig.json --module CommonJS --outDir ./dist/cjs",
+		"build": "tsc --project ./tsconfig.json",
 		"cleanup": "rimraf ./dist",
 		"dev": "pnpm build -- -w --preserveWatchOutput --incremental",
 		"test": "vitest run",
@@ -57,7 +35,7 @@
 		"joi": "17.4.2",
 		"knex": "2.2.0",
 		"knex-schema-inspector": "2.0.4",
-		"lodash": "4.17.21",
+		"lodash-es": "4.17.21",
 		"micromustache": "^8.0.3",
 		"nanoid": "^4.0.0",
 		"pino": "6.13.3",
@@ -69,14 +47,14 @@
 		"@types/express": "4.17.13",
 		"@types/fs-extra": "9.0.13",
 		"@types/geojson": "7946.0.8",
-		"@types/lodash": "^4.14.182",
+		"@types/lodash-es": "4.17.6",
 		"@types/pino": "6.3.12",
 		"@types/tmp": "^0.2.3",
 		"c8": "^7.12.0",
 		"npm-run-all": "4.1.5",
 		"rimraf": "3.0.2",
 		"tmp": "0.2.1",
-		"typescript": "4.5.2",
+		"typescript": "^4.8.2",
 		"vitest": "^0.18.1"
 	}
 }

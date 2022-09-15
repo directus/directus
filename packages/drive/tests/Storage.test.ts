@@ -1,4 +1,5 @@
-import Storage from '../src/Storage';
+import Storage from '../src/Storage.js';
+import { expect, it, describe } from 'vitest';
 
 describe('Storage Class', () => {
 	it('throws on all methods', async () => {

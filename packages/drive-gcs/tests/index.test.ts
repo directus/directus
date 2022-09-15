@@ -1,5 +1,6 @@
 import { StorageManager } from '@directus/drive';
 import { GoogleCloudStorage, GoogleCloudStorageConfig } from '../src';
+import { describe, it, expect } from 'vitest';
 
 describe('drive', function () {
 	it('Instantiate', function () {

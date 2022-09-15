@@ -1,5 +1,6 @@
-import { getRelationInfo } from '../../src/utils/get-relation-info';
-import { Relation, DeepPartial } from '@directus/shared/types';
+import { getRelationInfo } from '../../src/utils/get-relation-info.js';
+import type { Relation, DeepPartial } from '@directus/shared/types';
+import {describe, expect, it} from 'vitest'
 
 describe('getRelationInfo', () => {
 	it('Errors on suspiciously long implicit $FOLLOW', () => {

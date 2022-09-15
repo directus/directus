@@ -3,9 +3,9 @@
  * This ensures that query params are formatted and ready to go for the services.
  */
 
-import { RequestHandler } from 'express';
-import { sanitizeQuery } from '../utils/sanitize-query';
-import { validateQuery } from '../utils/validate-query';
+import type { RequestHandler } from 'express';
+import { sanitizeQuery } from '../utils/sanitize-query.js';
+import { validateQuery } from '../utils/validate-query.js';
 
 const sanitizeQueryMiddleware: RequestHandler = (req, _res, next) => {
 	req.sanitizedQuery = {};
@@ -13,7 +13,7 @@ const sanitizeQueryMiddleware: RequestHandler = (req, _res, next) => {
 
 	req.sanitizedQuery = sanitizeQuery(
 		{
-			fields: req.query.fields || '*',
+			fields: req.query['fields'] || '*',
 			...req.query,
 		},
 		req.accountability || null

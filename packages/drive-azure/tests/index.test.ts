@@ -1,5 +1,6 @@
 import { StorageManager } from '@directus/drive';
-import { AzureBlobWebServicesStorage } from '../src';
+import { AzureBlobWebServicesStorage } from '../src/AzureBlobWebServices.js';
+import { describe, it, expect } from 'vitest';
 
 describe('drive', function () {
 	it('Instantiate', function () {

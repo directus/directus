@@ -11,24 +11,24 @@ import {
 } from '@directus/shared/types';
 import { applyOptionsData, toArray } from '@directus/shared/utils';
 import fastRedact from 'fast-redact';
-import { Knex } from 'knex';
-import { omit } from 'lodash';
+import type { Knex } from 'knex';
+import { omit } from 'lodash-es';
 import { get } from 'micromustache';
 import { schedule, validate } from 'node-cron';
-import getDatabase from './database';
-import emitter from './emitter';
-import env from './env';
-import * as exceptions from './exceptions';
-import logger from './logger';
-import { getMessenger } from './messenger';
-import * as services from './services';
-import { FlowsService } from './services';
-import { ActivityService } from './services/activity';
-import { RevisionsService } from './services/revisions';
-import { EventHandler } from './types';
-import { constructFlowTree } from './utils/construct-flow-tree';
-import { getSchema } from './utils/get-schema';
-import { JobQueue } from './utils/job-queue';
+import getDatabase from './database/index.js';
+import emitter from './emitter.js';
+import env from './env.js';
+import * as exceptions from './exceptions/index.js';
+import logger from './logger.js';
+import { getMessenger } from './messenger.js';
+import * as services from './services/index.js';
+import { FlowsService } from './services/index.js';
+import { ActivityService } from './services/activity.js';
+import { RevisionsService } from './services/revisions.js';
+import type { EventHandler } from './types/index.js';
+import { constructFlowTree } from './utils/construct-flow-tree.js';
+import { getSchema } from './utils/get-schema.js';
+import { JobQueue } from './utils/job-queue.js';
 
 let flowManager: FlowManager | undefined;
 
@@ -74,7 +74,7 @@ class FlowManager {
 		const messenger = getMessenger();
 
 		messenger.subscribe('flows', (event) => {
-			if (event.type === 'reload') {
+			if (event['type'] === 'reload') {
 				this.reloadQueue.enqueue(async () => {
 					if (this.isLoaded) {
 						await this.unload();
@@ -142,12 +142,12 @@ class FlowManager {
 
 		for (const flow of flowTrees) {
 			if (flow.trigger === 'event') {
-				const events: string[] = flow.options?.scope
-					? toArray(flow.options.scope)
+				const events: string[] = flow.options?.['scope']
+					? toArray(flow.options['scope'])
 							.map((scope: string) => {
 								if (['items.create', 'items.update', 'items.delete'].includes(scope)) {
 									return (
-										flow.options?.collections?.map((collection: string) => {
+										flow.options?.['collections']?.map((collection: string) => {
 											if (collection.startsWith('directus_')) {
 												const action = scope.split('.')[1];
 												return collection.substring(9) + '.' + action;
@@ -163,7 +163,7 @@ class FlowManager {
 							.flat()
 					: [];
 
-				if (flow.options.type === 'filter') {
+				if (flow.options['type'] === 'filter') {
 					const handler: FilterHandler = (payload, meta, context) =>
 						this.executeFlow(
 							flow,
@@ -180,7 +180,7 @@ class FlowManager {
 						id: flow.id,
 						events: events.map((event) => ({ type: 'filter', name: event, handler })),
 					});
-				} else if (flow.options.type === 'action') {
+				} else if (flow.options['type'] === 'action') {
 					const handler: ActionHandler = (meta, context) =>
 						this.executeFlow(flow, meta, {
 							accountability: context.accountability,
@@ -195,8 +195,8 @@ class FlowManager {
 					});
 				}
 			} else if (flow.trigger === 'schedule') {
-				if (validate(flow.options.cron)) {
-					const task = schedule(flow.options.cron, async () => {
+				if (validate(flow.options['cron'])) {
+					const task = schedule(flow.options['cron'], async () => {
 						try {
 							await this.executeFlow(flow);
 						} catch (error: any) {
@@ -206,7 +206,7 @@ class FlowManager {
 
 					this.triggerHandlers.push({ id: flow.id, events: [{ type: flow.trigger, task }] });
 				} else {
-					logger.warn(`Couldn't register cron trigger. Provided cron is invalid: ${flow.options.cron}`);
+					logger.warn(`Couldn't register cron trigger. Provided cron is invalid: ${flow.options['cron']}`);
 				}
 			} else if (flow.trigger === 'operation') {
 				const handler = (data: unknown, context: Record<string, unknown>) => this.executeFlow(flow, data, context);
@@ -214,23 +214,25 @@ class FlowManager {
 				this.operationFlowHandlers[flow.id] = handler;
 			} else if (flow.trigger === 'webhook') {
 				const handler = (data: unknown, context: Record<string, unknown>) => {
-					if (flow.options.async) {
+					if (flow.options['async']) {
 						this.executeFlow(flow, data, context);
 					} else {
 						return this.executeFlow(flow, data, context);
 					}
+					return undefined;
 				};
 
-				const method = flow.options?.method ?? 'GET';
+				const method = flow.options?.['method'] ?? 'GET';
 
 				// Default return to $last for webhooks
-				flow.options.return = flow.options.return ?? '$last';
+				// Default return to $last for webhooks
+				flow.options['return'] = flow.options['return'] ?? '$last';
 
 				this.webhookFlowHandlers[`${method}-${flow.id}`] = handler;
 			} else if (flow.trigger === 'manual') {
 				const handler = (data: unknown, context: Record<string, unknown>) => {
-					const enabledCollections = flow.options?.collections ?? [];
-					const targetCollection = (data as Record<string, any>)?.body.collection;
+					const enabledCollections = flow.options?.['collections'] ?? [];
+					const targetCollection = (data as Record<string, any>)?.['body'].collection;
 
 					if (!targetCollection) {
 						logger.warn(`Manual trigger requires "collection" to be specified in the payload`);
@@ -247,15 +249,18 @@ class FlowManager {
 						throw new exceptions.ForbiddenException();
 					}
 
-					if (flow.options.async) {
+					if (flow.options['async']) {
 						this.executeFlow(flow, data, context);
 					} else {
 						return this.executeFlow(flow, data, context);
 					}
+
+					return undefined;
 				};
 
 				// Default return to $last for manual
-				flow.options.return = '$last';
+				// Default return to $last for manual
+				flow.options['return'] = '$last';
 
 				this.webhookFlowHandlers[`POST-${flow.id}`] = handler;
 			}
@@ -289,13 +294,13 @@ class FlowManager {
 	}
 
 	private async executeFlow(flow: Flow, data: unknown = null, context: Record<string, unknown> = {}): Promise<unknown> {
-		const database = (context.database as Knex) ?? getDatabase();
-		const schema = (context.schema as SchemaOverview) ?? (await getSchema({ database }));
+		const database = (context['database'] as Knex) ?? getDatabase();
+		const schema = (context['schema'] as SchemaOverview) ?? (await getSchema({ database }));
 
 		const keyedData: Record<string, unknown> = {
 			[TRIGGER_KEY]: data,
 			[LAST_KEY]: data,
-			[ACCOUNTABILITY_KEY]: context?.accountability ?? null,
+			[ACCOUNTABILITY_KEY]: context?.['accountability'] ?? null,
 		};
 
 		let nextOperation = flow.operation;
@@ -325,7 +330,7 @@ class FlowManager {
 				schema: schema,
 			});
 
-			const accountability = context?.accountability as Accountability | undefined;
+			const accountability = context?.['accountability'] as Accountability | undefined;
 
 			const activity = await activityService.createOne({
 				action: Action.RUN,
@@ -355,14 +360,14 @@ class FlowManager {
 			}
 		}
 
-		if (flow.trigger === 'event' && flow.options.type === 'filter' && lastOperationStatus === 'reject') {
+		if (flow.trigger === 'event' && flow.options['type'] === 'filter' && lastOperationStatus === 'reject') {
 			throw keyedData[LAST_KEY];
 		}
 
-		if (flow.options.return === '$all') {
+		if (flow.options['return'] === '$all') {
 			return keyedData;
-		} else if (flow.options.return) {
-			return get(keyedData, flow.options.return);
+		} else if (flow.options['return']) {
+			return get(keyedData, flow.options['return']);
 		}
 
 		return undefined;
@@ -383,7 +388,7 @@ class FlowManager {
 			return { successor: null, status: 'unknown', data: null, options: null };
 		}
 
-		const handler = this.operations[operation.type];
+		const handler = this.operations[operation.type]!;
 
 		const options = applyOptionsData(operation.options, keyedData);
 

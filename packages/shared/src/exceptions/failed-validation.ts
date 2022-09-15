@@ -1,6 +1,6 @@
-import { ValidationErrorItem } from 'joi';
-import { FilterOperator } from '../types';
-import { BaseException } from './base';
+import type { ValidationErrorItem } from 'joi';
+import type { FilterOperator } from '../types/index.js';
+import { BaseException } from './base.js';
 
 type FailedValidationExtensions = {
 	field: string;
@@ -20,11 +20,11 @@ export class FailedValidationException extends BaseException {
 
 		// eq | in | null | empty
 		if (joiType.endsWith('only')) {
-			if (error.context?.valids.length > 1) {
+			if (error.context?.['valids'].length > 1) {
 				extensions.type = 'in';
-				extensions.valid = error.context?.valids;
+				extensions.valid = error.context?.['valids'];
 			} else {
-				const valid = error.context?.valids[0];
+				const valid = error.context?.['valids'][0];
 
 				if (valid === null) {
 					extensions.type = 'null';
@@ -32,18 +32,18 @@ export class FailedValidationException extends BaseException {
 					extensions.type = 'empty';
 				} else {
 					extensions.type = 'eq';
-					extensions.valid = error.context?.valids[0];
+					extensions.valid = error.context?.['valids'][0];
 				}
 			}
 		}
 
 		// neq | nin | nnull | nempty
 		if (joiType.endsWith('invalid')) {
-			if (error.context?.invalids.length > 1) {
+			if (error.context?.['invalids'].length > 1) {
 				extensions.type = 'nin';
-				extensions.invalid = error.context?.invalids;
+				extensions.invalid = error.context?.['invalids'];
 			} else {
-				const invalid = error.context?.invalids[0];
+				const invalid = error.context?.['invalids'][0];
 
 				if (invalid === null) {
 					extensions.type = 'nnull';
@@ -59,37 +59,37 @@ export class FailedValidationException extends BaseException {
 		// gt
 		if (joiType.endsWith('greater')) {
 			extensions.type = 'gt';
-			extensions.valid = error.context?.limit;
+			extensions.valid = error.context?.['limit'];
 		}
 
 		// gte
 		if (joiType.endsWith('min')) {
 			extensions.type = 'gte';
-			extensions.valid = error.context?.limit;
+			extensions.valid = error.context?.['limit'];
 		}
 
 		// lt
 		if (joiType.endsWith('less')) {
 			extensions.type = 'lt';
-			extensions.valid = error.context?.limit;
+			extensions.valid = error.context?.['limit'];
 		}
 
 		// lte
 		if (joiType.endsWith('max')) {
 			extensions.type = 'lte';
-			extensions.valid = error.context?.limit;
+			extensions.valid = error.context?.['limit'];
 		}
 
 		// contains
 		if (joiType.endsWith('contains')) {
 			extensions.type = 'contains';
-			extensions.substring = error.context?.substring;
+			extensions.substring = error.context?.['substring'];
 		}
 
 		// ncontains
 		if (joiType.endsWith('ncontains')) {
 			extensions.type = 'ncontains';
-			extensions.substring = error.context?.substring;
+			extensions.substring = error.context?.['substring'];
 		}
 
 		// required

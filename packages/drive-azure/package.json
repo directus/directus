@@ -1,5 +1,6 @@
 {
 	"name": "@directus/drive-azure",
+	"type": "module",
 	"version": "9.17.4",
 	"description": "Azure Blob driver for @directus/drive",
 	"license": "MIT",
@@ -26,8 +27,9 @@
 		"cleanup": "run-p cleanup:*",
 		"cleanup:dist": "rimraf ./dist",
 		"cleanup:coverage": "rimraf ./coverage",
-		"test:watch": "jest --coverage --watchAll",
-		"test": "jest --coverage",
+		"test": "vitest run",
+		"test:coverage": "vitest run --coverage",
+		"test:watch": "vitest",
 		"dev": "pnpm build -w --preserveWatchOutput --incremental"
 	},
 	"author": "Robin Grundvåg <robgru52@gmail.com>",
@@ -39,20 +41,16 @@
 	],
 	"dependencies": {
 		"@azure/storage-blob": "^12.6.0",
-		"@directus/drive": "workspace:*",
-		"normalize-path": "^3.0.0"
+		"@directus/drive": "workspace:*"
 	},
 	"devDependencies": {
 		"@types/fs-extra": "9.0.13",
-		"@types/jest": "27.0.3",
 		"@types/node": "16.11.9",
-		"@types/normalize-path": "3.0.0",
 		"dotenv": "10.0.0",
 		"fs-extra": "10.0.0",
-		"jest": "27.3.1",
 		"npm-run-all": "4.1.5",
-		"ts-jest": "27.0.7",
-		"typescript": "4.5.2"
+		"vitest": "^0.18.1",
+		"typescript": "4.8.2"
 	},
 	"publishConfig": {
 		"access": "public"

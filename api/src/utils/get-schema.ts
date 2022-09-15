@@ -1,18 +1,18 @@
 import SchemaInspector from '@directus/schema';
-import { Accountability, Filter, SchemaOverview } from '@directus/shared/types';
+import type { Accountability, Filter, SchemaOverview } from '@directus/shared/types';
 import { parseJSON, toArray } from '@directus/shared/utils';
-import { Knex } from 'knex';
-import { mapValues } from 'lodash';
-import { getSystemCache, setSystemCache } from '../cache';
-import { ALIAS_TYPES } from '../constants';
-import getDatabase from '../database';
-import { systemCollectionRows } from '../database/system-data/collections';
-import { systemFieldRows } from '../database/system-data/fields';
-import env from '../env';
-import logger from '../logger';
-import { RelationsService } from '../services';
-import getDefaultValue from './get-default-value';
-import getLocalType from './get-local-type';
+import type { Knex } from 'knex';
+import { mapValues } from 'lodash-es';
+import { getSystemCache, setSystemCache } from '../cache.js';
+import { ALIAS_TYPES } from '../constants.js';
+import getDatabase from '../database/index.js';
+import { systemCollectionRows } from '../database/system-data/collections/index.js';
+import { systemFieldRows } from '../database/system-data/fields/index.js';
+import env from '../env.js';
+import logger from '../logger.js';
+import { RelationsService } from '../services/index.js';
+import getDefaultValue from './get-default-value.js';
+import getLocalType from './get-local-type.js';
 
 export async function getSchema(options?: {
 	accountability?: Accountability;
@@ -23,7 +23,7 @@ export async function getSchema(options?: {
 
 	let result: SchemaOverview;
 
-	if (env.CACHE_SCHEMA !== false) {
+	if (env['CACHE_SCHEMA'] !== false) {
 		let cachedSchema;
 
 		try {
@@ -69,12 +69,12 @@ async function getDatabaseSchema(
 	];
 
 	for (const [collection, info] of Object.entries(schemaOverview)) {
-		if (toArray(env.DB_EXCLUDE_TABLES).includes(collection)) {
+		if (toArray(env['DB_EXCLUDE_TABLES']).includes(collection)) {
 			logger.trace(`Collection "${collection}" is configured to be excluded and will be ignored`);
 			continue;
 		}
 
-		if (!info.primary) {
+		if (!(info as any).primary) {
 			logger.warn(`Collection "${collection}" doesn't have a primary key column and will be ignored`);
 			continue;
 		}
@@ -88,13 +88,13 @@ async function getDatabaseSchema(
 
 		result.collections[collection] = {
 			collection,
-			primary: info.primary,
+			primary: (info as any).primary,
 			singleton:
 				collectionMeta?.singleton === true || collectionMeta?.singleton === 'true' || collectionMeta?.singleton === 1,
 			note: collectionMeta?.note || null,
 			sortField: collectionMeta?.sort_field || null,
 			accountability: collectionMeta ? collectionMeta.accountability : 'all',
-			fields: mapValues(schemaOverview[collection].columns, (column) => {
+			fields: mapValues(schemaOverview[collection]!.columns, (column) => {
 				return {
 					field: column.column_name,
 					defaultValue: getDefaultValue(column) ?? null,
@@ -132,8 +132,8 @@ async function getDatabaseSchema(
 	for (const field of fields) {
 		if (!result.collections[field.collection]) continue;
 
-		const existing = result.collections[field.collection].fields[field.field];
-		const column = schemaOverview[field.collection].columns[field.field];
+		const existing = result.collections[field.collection]!.fields[field.field];
+		const column = schemaOverview[field.collection]!.columns[field.field];
 		const special = field.special ? toArray(field.special) : [];
 
 		if (ALIAS_TYPES.some((type) => special.includes(type)) === false && !existing) continue;
@@ -143,7 +143,7 @@ async function getDatabaseSchema(
 
 		if (validation && typeof validation === 'string') validation = parseJSON(validation);
 
-		result.collections[field.collection].fields[field.field] = {
+		result.collections[field.collection]!.fields[field.field] = {
 			field: field.field,
 			defaultValue: existing?.defaultValue ?? null,
 			nullable: existing?.nullable ?? true,

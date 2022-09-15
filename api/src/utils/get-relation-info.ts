@@ -1,5 +1,5 @@
-import { Relation, RelationMeta } from '@directus/shared/types';
-import { getRelationType } from './get-relation-type';
+import type { Relation, RelationMeta } from '@directus/shared/types';
+import { getRelationType } from './get-relation-type.js';
 
 type RelationInfo = {
 	relation: Relation | null;
@@ -18,8 +18,8 @@ export function getRelationInfo(relations: Relation[], collection: string, field
 			const [m2oCollection, m2oField] = implicitRelation;
 
 			const relation: Relation = {
-				collection: m2oCollection.trim(),
-				field: m2oField.trim(),
+				collection: m2oCollection!.trim(),
+				field: m2oField!.trim(),
 				related_collection: collection,
 				schema: null,
 				meta: null,
@@ -30,8 +30,8 @@ export function getRelationInfo(relations: Relation[], collection: string, field
 			const [a2oCollection, a2oItemField, a2oCollectionField] = implicitRelation;
 
 			const relation: Relation = {
-				collection: a2oCollection.trim(),
-				field: a2oItemField.trim(),
+				collection: a2oCollection!.trim(),
+				field: a2oItemField!.trim(),
 				related_collection: collection,
 				schema: null,
 				meta: {

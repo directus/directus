@@ -1,7 +1,7 @@
-import { DateHelper } from '../types';
+import { DateHelper } from '../types.js';
 
 export class DateHelperOracle extends DateHelper {
-	fieldFlagForField(fieldType: string): string {
+	override fieldFlagForField(fieldType: string): string {
 		switch (fieldType) {
 			case 'dateTime':
 				return 'cast-datetime';

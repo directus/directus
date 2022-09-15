@@ -5,25 +5,25 @@ import flatten from 'flat';
 import jwt from 'jsonwebtoken';
 import ms from 'ms';
 import { Client, errors, generators, Issuer } from 'openid-client';
-import { getAuthProvider } from '../../auth';
-import env from '../../env';
+import { getAuthProvider } from '../../auth.js';
+import env from '../../env.js';
 import {
 	InvalidConfigException,
 	InvalidCredentialsException,
 	InvalidProviderException,
 	InvalidTokenException,
 	ServiceUnavailableException,
-} from '../../exceptions';
-import { RecordNotUniqueException } from '../../exceptions/database/record-not-unique';
-import logger from '../../logger';
-import { respond } from '../../middleware/respond';
-import { AuthenticationService, UsersService } from '../../services';
-import { AuthData, AuthDriverOptions, User } from '../../types';
-import asyncHandler from '../../utils/async-handler';
-import { getConfigFromEnv } from '../../utils/get-config-from-env';
-import { getIPFromReq } from '../../utils/get-ip-from-req';
-import { Url } from '../../utils/url';
-import { LocalAuthDriver } from './local';
+} from '../../exceptions/index.js';
+import { RecordNotUniqueException } from '../../exceptions/database/record-not-unique.js';
+import logger from '../../logger.js';
+import { respond } from '../../middleware/respond.js';
+import { AuthenticationService, UsersService } from '../../services/index.js';
+import type { AuthData, AuthDriverOptions, User } from '../../types/index.js';
+import asyncHandler from '../../utils/async-handler.js';
+import { getConfigFromEnv } from '../../utils/get-config-from-env.js';
+import { getIPFromReq } from '../../utils/get-ip-from-req.js';
+import { Url } from '../../utils/url.js';
+import { LocalAuthDriver } from './local.js';
 
 export class OAuth2AuthDriver extends LocalAuthDriver {
 	client: Client;
@@ -36,11 +36,11 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 
 		const { authorizeUrl, accessUrl, profileUrl, clientId, clientSecret, ...additionalConfig } = config;
 
-		if (!authorizeUrl || !accessUrl || !profileUrl || !clientId || !clientSecret || !additionalConfig.provider) {
-			throw new InvalidConfigException('Invalid provider config', { provider: additionalConfig.provider });
+		if (!authorizeUrl || !accessUrl || !profileUrl || !clientId || !clientSecret || !additionalConfig['provider']) {
+			throw new InvalidConfigException('Invalid provider config', { provider: additionalConfig['provider'] });
 		}
 
-		const redirectUrl = new Url(env.PUBLIC_URL).addPath('auth', 'login', additionalConfig.provider, 'callback');
+		const redirectUrl = new Url(env['PUBLIC_URL']).addPath('auth', 'login', additionalConfig['provider'], 'callback');
 
 		this.redirectUrl = redirectUrl.toString();
 		this.usersService = new UsersService({ knex: this.knex, schema: this.schema });
@@ -50,12 +50,12 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 			authorization_endpoint: authorizeUrl,
 			token_endpoint: accessUrl,
 			userinfo_endpoint: profileUrl,
-			issuer: additionalConfig.provider,
+			issuer: additionalConfig['provider'],
 		});
 
 		const clientOptionsOverrides = getConfigFromEnv(
-			`AUTH_${config.provider.toUpperCase()}_CLIENT_`,
-			[`AUTH_${config.provider.toUpperCase()}_CLIENT_ID`, `AUTH_${config.provider.toUpperCase()}_CLIENT_SECRET`],
+			`AUTH_${config['provider'].toUpperCase()}_CLIENT_`,
+			[`AUTH_${config['provider'].toUpperCase()}_CLIENT_ID`, `AUTH_${config['provider'].toUpperCase()}_CLIENT_SECRET`],
 			'underscore'
 		);
 
@@ -75,10 +75,10 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 	generateAuthUrl(codeVerifier: string, prompt = false): string {
 		try {
 			const codeChallenge = generators.codeChallenge(codeVerifier);
-			const paramsConfig = typeof this.config.params === 'object' ? this.config.params : {};
+			const paramsConfig = typeof this.config['params'] === 'object' ? this.config['params'] : {};
 
 			return this.client.authorizationUrl({
-				scope: this.config.scope ?? 'email',
+				scope: this.config['scope'] ?? 'email',
 				access_type: 'offline',
 				prompt: prompt ? 'consent' : undefined,
 				...paramsConfig,
@@ -102,8 +102,8 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 		return user?.id;
 	}
 
-	async getUserID(payload: Record<string, any>): Promise<string> {
-		if (!payload.code || !payload.codeVerifier) {
+	override async getUserID(payload: Record<string, any>): Promise<string> {
+		if (!payload['code'] || !payload['codeVerifier']) {
 			logger.trace('[OAuth2] No code or codeVerifier in payload');
 			throw new InvalidCredentialsException();
 		}
@@ -114,8 +114,8 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 		try {
 			tokenSet = await this.client.oauthCallback(
 				this.redirectUrl,
-				{ code: payload.code, state: payload.state },
-				{ code_verifier: payload.codeVerifier, state: generators.codeChallenge(payload.codeVerifier) }
+				{ code: payload['code'], state: payload['state'] },
+				{ code_verifier: payload['codeVerifier'], state: generators.codeChallenge(payload['codeVerifier']) }
 			);
 			userInfo = await this.client.userinfo(tokenSet.access_token!);
 		} catch (e) {
@@ -157,11 +157,11 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 		try {
 			await this.usersService.createOne({
 				provider,
-				first_name: userInfo[this.config.firstNameKey],
-				last_name: userInfo[this.config.lastNameKey],
+				first_name: userInfo[this.config['firstNameKey']],
+				last_name: userInfo[this.config['lastNameKey']],
 				email: email,
 				external_identifier: identifier,
-				role: this.config.defaultRoleId,
+				role: this.config['defaultRoleId'],
 				auth_data: tokenSet.refresh_token && JSON.stringify({ refreshToken: tokenSet.refresh_token }),
 			});
 		} catch (e) {
@@ -175,11 +175,11 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 		return (await this.fetchUserId(identifier)) as string;
 	}
 
-	async login(user: User): Promise<void> {
+	override async login(user: User): Promise<void> {
 		return this.refresh(user);
 	}
 
-	async refresh(user: User): Promise<void> {
+	override async refresh(user: User): Promise<void> {
 		let authData = user.auth_data as AuthData;
 
 		if (typeof authData === 'string') {
@@ -190,9 +190,9 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 			}
 		}
 
-		if (authData?.refreshToken) {
+		if (authData?.['refreshToken']) {
 			try {
-				const tokenSet = await this.client.refresh(authData.refreshToken);
+				const tokenSet = await this.client.refresh(authData['refreshToken']);
 				// Update user refreshToken if provided
 				if (tokenSet.refresh_token) {
 					await this.usersService.updateOne(user.id, {
@@ -238,11 +238,15 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 		(req, res) => {
 			const provider = getAuthProvider(providerName) as OAuth2AuthDriver;
 			const codeVerifier = provider.generateCodeVerifier();
-			const prompt = !!req.query.prompt;
-			const token = jwt.sign({ verifier: codeVerifier, redirect: req.query.redirect, prompt }, env.SECRET as string, {
-				expiresIn: '5m',
-				issuer: 'directus',
-			});
+			const prompt = !!req.query['prompt'];
+			const token = jwt.sign(
+				{ verifier: codeVerifier, redirect: req.query['redirect'], prompt },
+				env['SECRET'] as string,
+				{
+					expiresIn: '5m',
+					issuer: 'directus',
+				}
+			);
 
 			res.cookie(`oauth2.${providerName}`, token, {
 				httpOnly: true,
@@ -260,7 +264,9 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 			let tokenData;
 
 			try {
-				tokenData = jwt.verify(req.cookies[`oauth2.${providerName}`], env.SECRET as string, { issuer: 'directus' }) as {
+				tokenData = jwt.verify(req.cookies[`oauth2.${providerName}`], env['SECRET'] as string, {
+					issuer: 'directus',
+				}) as {
 					verifier: string;
 					redirect?: string;
 					prompt: boolean;
@@ -275,8 +281,8 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 			const authenticationService = new AuthenticationService({
 				accountability: {
 					ip: getIPFromReq(req),
-					userAgent: req.get('user-agent'),
-					origin: req.get('origin'),
+					userAgent: req.get('user-agent')!,
+					origin: req.get('origin')!,
 					role: null,
 				},
 				schema: req.schema,
@@ -287,14 +293,14 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 			try {
 				res.clearCookie(`oauth2.${providerName}`);
 
-				if (!req.query.code || !req.query.state) {
+				if (!req.query['code'] || !req.query['state']) {
 					logger.warn(`[OAuth2] Couldn't extract OAuth2 code or state from query: ${JSON.stringify(req.query)}`);
 				}
 
 				authResponse = await authenticationService.login(providerName, {
-					code: req.query.code,
+					code: req.query['code'],
 					codeVerifier: verifier,
-					state: req.query.state,
+					state: req.query['state'],
 				});
 			} catch (error: any) {
 				// Prompt user for a new refresh_token if invalidated
@@ -321,18 +327,18 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 			const { accessToken, refreshToken, expires } = authResponse;
 
 			if (redirect) {
-				res.cookie(env.REFRESH_TOKEN_COOKIE_NAME, refreshToken, {
+				res.cookie(env['REFRESH_TOKEN_COOKIE_NAME'], refreshToken, {
 					httpOnly: true,
-					domain: env.REFRESH_TOKEN_COOKIE_DOMAIN,
-					maxAge: ms(env.REFRESH_TOKEN_TTL as string),
-					secure: env.REFRESH_TOKEN_COOKIE_SECURE ?? false,
-					sameSite: (env.REFRESH_TOKEN_COOKIE_SAME_SITE as 'lax' | 'strict' | 'none') || 'strict',
+					domain: env['REFRESH_TOKEN_COOKIE_DOMAIN'],
+					maxAge: ms(env['REFRESH_TOKEN_TTL']),
+					secure: env['REFRESH_TOKEN_COOKIE_SECURE'] ?? false,
+					sameSite: (env['REFRESH_TOKEN_COOKIE_SAME_SITE'] as 'lax' | 'strict' | 'none') || 'strict',
 				});
 
 				return res.redirect(redirect);
 			}
 
-			res.locals.payload = {
+			res.locals['payload'] = {
 				data: { access_token: accessToken, refresh_token: refreshToken, expires },
 			};
 

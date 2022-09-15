@@ -1,5 +1,5 @@
-import { TransformationParams } from './types';
-import env from './env';
+import type { TransformationParams } from './types/index.js';
+import env from './env.js';
 import ms from 'ms';
 
 export const SYSTEM_ASSET_ALLOW_LIST: TransformationParams[] = [
@@ -54,10 +54,10 @@ export const UUID_REGEX = '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a
 
 export const COOKIE_OPTIONS = {
 	httpOnly: true,
-	domain: env.REFRESH_TOKEN_COOKIE_DOMAIN,
-	maxAge: ms(env.REFRESH_TOKEN_TTL as string),
-	secure: env.REFRESH_TOKEN_COOKIE_SECURE ?? false,
-	sameSite: (env.REFRESH_TOKEN_COOKIE_SAME_SITE as 'lax' | 'strict' | 'none') || 'strict',
+	domain: env['REFRESH_TOKEN_COOKIE_DOMAIN'],
+	maxAge: ms(env['REFRESH_TOKEN_TTL']),
+	secure: env['REFRESH_TOKEN_COOKIE_SECURE'] ?? false,
+	sameSite: (env['REFRESH_TOKEN_COOKIE_SAME_SITE'] as 'lax' | 'strict' | 'none') || 'strict',
 };
 
 export const ROBOTSTXT = `

@@ -3,9 +3,9 @@ import {
 	EXTENSION_PKG_KEY,
 	HYBRID_EXTENSION_TYPES,
 	PACKAGE_EXTENSION_TYPES,
-} from '../constants';
-import { ExtensionManifest, ExtensionManifestRaw } from '../types';
-import { isIn } from './array-helpers';
+} from '../constants/index.js';
+import type { ExtensionManifest, ExtensionManifestRaw } from '../types/index.js';
+import { isIn } from './array-helpers.js';
 
 export function validateExtensionManifest(
 	extensionManifest: ExtensionManifestRaw

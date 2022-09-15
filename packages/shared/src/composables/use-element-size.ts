@@ -1,4 +1,4 @@
-import { isNil } from 'lodash';
+import { isNil } from 'lodash-es';
 import { isRef, onMounted, onUnmounted, Ref, ref } from 'vue';
 
 declare global {

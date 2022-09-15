@@ -1,1 +1,1 @@
-export * from './dist/esm/types';
+export * from './dist/types/index.js';

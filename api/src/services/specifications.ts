@@ -1,8 +1,8 @@
 import formatTitle from '@directus/format-title';
-import openapi from '@directus/specs';
-import { Knex } from 'knex';
-import { cloneDeep, mergeWith } from 'lodash';
-import {
+import { openapi } from '@directus/specs/index.js';
+import type { Knex } from 'knex';
+import { cloneDeep, mergeWith } from 'lodash-es';
+import type {
 	OpenAPIObject,
 	OperationObject,
 	ParameterObject,
@@ -12,16 +12,18 @@ import {
 	TagObject,
 } from 'openapi3-ts';
 // @ts-ignore
-import { version } from '../../package.json';
-import getDatabase from '../database';
-import env from '../env';
-import { AbstractServiceOptions, Collection } from '../types';
-import { Accountability, Field, Type, Permission, SchemaOverview, Relation } from '@directus/shared/types';
-import { getRelationType } from '../utils/get-relation-type';
-import { CollectionsService } from './collections';
-import { FieldsService } from './fields';
-import { GraphQLService } from './graphql';
-import { RelationsService } from './relations';
+import getDatabase from '../database/index.js';
+import env from '../env.js';
+import type { AbstractServiceOptions, Collection } from '../types/index.js';
+import type { Accountability, Field, Type, Permission, SchemaOverview, Relation } from '@directus/shared/types';
+import { getRelationType } from '../utils/get-relation-type.js';
+import { CollectionsService } from './collections.js';
+import { FieldsService } from './fields.js';
+import { GraphQLService } from './graphql/index.js';
+import { RelationsService } from './relations.js';
+import { importFile } from '../utils/importFile.js';
+
+const version = JSON.parse(importFile('../package.json')).version;
 
 export class SpecificationService {
 	accountability: Accountability | null;
@@ -98,6 +100,10 @@ class OASSpecsService implements SpecificationSubService {
 		const paths = await this.generatePaths(permissions, tags);
 		const components = await this.generateComponents(collections, fields, relations, tags);
 
+		if (!tags || !components) {
+			throw new Error('Failed to generate OpenAPI specification');
+		}
+
 		const spec: OpenAPIObject = {
 			openapi: '3.0.1',
 			info: {
@@ -108,7 +114,7 @@ class OASSpecsService implements SpecificationSubService {
 			},
 			servers: [
 				{
-					url: env.PUBLIC_URL,
+					url: env['PUBLIC_URL'],
 					description: 'Your current Directus instance.',
 				},
 			],
@@ -121,7 +127,7 @@ class OASSpecsService implements SpecificationSubService {
 	}
 
 	private async generateTags(collections: Collection[]): Promise<OpenAPIObject['tags']> {
-		const systemTags = cloneDeep(openapi.tags)!;
+		const systemTags = cloneDeep(openapi['tags'])!;
 
 		const tags: OpenAPIObject['tags'] = [];
 
@@ -137,18 +143,23 @@ class OASSpecsService implements SpecificationSubService {
 
 			// If the collection is one of the system collections, pull the tag from the static spec
 			if (isSystem) {
-				for (const tag of openapi.tags!) {
+				for (const tag of openapi['tags']!) {
 					if (tag['x-collection'] === collection.collection) {
 						tags.push(tag);
 						break;
 					}
 				}
 			} else {
-				tags.push({
+				const tag: TagObject = {
 					name: 'Items' + formatTitle(collection.collection).replace(/ /g, ''),
-					description: collection.meta?.note || undefined,
 					'x-collection': collection.collection,
-				});
+				};
+
+				if (collection.meta && collection.meta.note) {
+					tag.description = collection.meta.note;
+				}
+
+				tags.push(tag);
 			}
 		}
 
@@ -165,7 +176,7 @@ class OASSpecsService implements SpecificationSubService {
 			const isSystem = 'x-collection' in tag === false || tag['x-collection'].startsWith('directus_');
 
 			if (isSystem) {
-				for (const [path, pathItem] of Object.entries<PathItemObject>(openapi.paths)) {
+				for (const [path, pathItem] of Object.entries<PathItemObject>(openapi['paths'])) {
 					for (const [method, operation] of Object.entries<OperationObject>(pathItem)) {
 						if (operation.tags?.includes(tag.name)) {
 							if (!paths[path]) {
@@ -195,8 +206,8 @@ class OASSpecsService implements SpecificationSubService {
 					}
 				}
 			} else {
-				const listBase = cloneDeep(openapi.paths['/items/{collection}']);
-				const detailBase = cloneDeep(openapi.paths['/items/{collection}/{id}']);
+				const listBase = cloneDeep(openapi['paths']['/items/{collection}']);
+				const detailBase = cloneDeep(openapi['paths']['/items/{collection}/{id}']);
 				const collection = tag['x-collection'];
 
 				for (const method of ['post', 'get', 'patch', 'delete']) {
@@ -263,6 +274,7 @@ class OASSpecsService implements SpecificationSubService {
 								},
 								(obj, src) => {
 									if (Array.isArray(obj)) return obj.concat(src);
+									return undefined;
 								}
 							);
 						}
@@ -308,6 +320,7 @@ class OASSpecsService implements SpecificationSubService {
 								},
 								(obj, src) => {
 									if (Array.isArray(obj)) return obj.concat(src);
+									return undefined;
 								}
 							);
 						}
@@ -325,7 +338,7 @@ class OASSpecsService implements SpecificationSubService {
 		relations: Relation[],
 		tags: OpenAPIObject['tags']
 	): Promise<OpenAPIObject['components']> {
-		let components: OpenAPIObject['components'] = cloneDeep(openapi.components);
+		let components: OpenAPIObject['components'] = cloneDeep(openapi['components']);
 
 		if (!components) components = {};
 
@@ -343,14 +356,14 @@ class OASSpecsService implements SpecificationSubService {
 			const fieldsInCollection = fields.filter((field) => field.collection === collection.collection);
 
 			if (isSystem) {
-				const schemaComponent: SchemaObject = cloneDeep(openapi.components!.schemas![tag.name]);
+				const schemaComponent: SchemaObject = cloneDeep(openapi['components']!.schemas![tag.name]);
 
 				schemaComponent.properties = {};
 
 				for (const field of fieldsInCollection) {
 					schemaComponent.properties[field.field] =
 						(cloneDeep(
-							(openapi.components!.schemas![tag.name] as SchemaObject).properties![field.field]
+							(openapi['components']!.schemas![tag.name] as SchemaObject).properties![field.field]
 						) as SchemaObject) || this.generateField(field, relations, tags, fields);
 				}
 
@@ -395,9 +408,12 @@ class OASSpecsService implements SpecificationSubService {
 
 	private generateField(field: Field, relations: Relation[], tags: TagObject[], fields: Field[]): SchemaObject {
 		let propertyObject: SchemaObject = {
-			nullable: field.schema?.is_nullable,
-			description: field.meta?.note || undefined,
+			nullable: field.schema?.is_nullable ?? false,
 		};
+
+		if (field.meta && field.meta.note) {
+			propertyObject.description = field.meta.note;
+		}
 
 		const relation = relations.find(
 			(relation) =>
@@ -475,7 +491,7 @@ class OASSpecsService implements SpecificationSubService {
 	private fieldTypes: Record<
 		Type,
 		{
-			type?: 'string' | 'number' | 'boolean' | 'object' | 'array' | 'integer' | 'null' | undefined;
+			type?: 'string' | 'number' | 'boolean' | 'object' | 'array' | 'integer' | 'null';
 			format?: string;
 			items?: any;
 		}
@@ -536,9 +552,7 @@ class OASSpecsService implements SpecificationSubService {
 			type: 'string',
 			format: 'timestamp',
 		},
-		unknown: {
-			type: undefined,
-		},
+		unknown: {},
 		uuid: {
 			type: 'string',
 			format: 'uuid',

@@ -1,11 +1,11 @@
-// @ts-nocheck
+import {describe, expect, vi, it} from 'vitest'
 
-jest.mock('../../src/cache');
-jest.mock('../../src/database');
-jest.mock('../../src/utils/validate-env');
+vi.mock('../cache.js');
+vi.mock('../database.js');
+vi.mock('../utils/validate-env.js');
 
-import { multipartHandler } from './files';
-import { InvalidPayloadException } from '../exceptions/invalid-payload';
+import { multipartHandler } from './files.js';
+import { InvalidPayloadException } from '../exceptions/invalid-payload.js';
 import { PassThrough } from 'stream';
 
 import FormData from 'form-data';
@@ -16,9 +16,9 @@ describe('multipartHandler', () => {
 
 		fakeForm.append('field', 'test');
 
-		const req = {
+		const req: any = {
 			headers: fakeForm.getHeaders(),
-			is: jest.fn().mockReturnValue(true),
+			is: vi.fn().mockReturnValue(true),
 			body: fakeForm.getBuffer(),
 			params: {},
 			pipe: (input) => stream.pipe(input),
@@ -27,7 +27,7 @@ describe('multipartHandler', () => {
 		const stream = new PassThrough();
 		stream.push(fakeForm.getBuffer());
 
-		multipartHandler(req, {}, (err) => {
+		multipartHandler(req, {} as any, (err) => {
 			expect(err.message).toBe('No files where included in the body');
 			expect(err).toBeInstanceOf(InvalidPayloadException);
 		});
@@ -43,9 +43,9 @@ describe('multipartHandler', () => {
 			)
 		);
 
-		const req = {
+		const req: any = {
 			headers: fakeForm.getHeaders(),
-			is: jest.fn().mockReturnValue(true),
+			is: vi.fn().mockReturnValue(true),
 			body: fakeForm.getBuffer(),
 			params: {},
 			pipe: (input) => stream.pipe(input),
@@ -54,7 +54,7 @@ describe('multipartHandler', () => {
 		const stream = new PassThrough();
 		stream.push(fakeForm.getBuffer());
 
-		multipartHandler(req, {}, (err) => {
+		multipartHandler(req, {} as any, (err) => {
 			expect(err.message).toBe('File is missing filename');
 			expect(err).toBeInstanceOf(InvalidPayloadException);
 		});

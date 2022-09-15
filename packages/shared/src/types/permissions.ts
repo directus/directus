@@ -1,4 +1,4 @@
-import { Filter } from './filter';
+import type { Filter } from './filter.js';
 
 export type PermissionsAction = 'create' | 'read' | 'update' | 'delete' | 'comment' | 'explain' | 'share';
 

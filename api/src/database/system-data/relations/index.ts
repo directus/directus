@@ -1,8 +1,9 @@
-import { merge } from 'lodash';
-import { RelationMeta } from '@directus/shared/types';
-import { requireYAML } from '../../../utils/require-yaml';
+import { merge } from 'lodash-es';
+import type { RelationMeta } from '@directus/shared/types';
+import { requireYAML } from '../../../utils/require-yaml.js';
+import { getImportFilePath } from '../../../utils/importFile.js';
 
-const systemData = requireYAML(require.resolve('./relations.yaml')) as {
+const systemData = requireYAML(getImportFilePath('./database/system-data/relations/relations.yaml')) as {
 	data: RelationMeta[];
 	defaults: Partial<RelationMeta>;
 };

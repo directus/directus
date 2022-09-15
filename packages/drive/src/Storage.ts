@@ -1,5 +1,5 @@
-import { MethodNotSupported } from './exceptions';
-import {
+import { MethodNotSupported } from './exceptions/index.js';
+import type {
 	Response,
 	SignedUrlResponse,
 	ContentResponse,
@@ -9,7 +9,7 @@ import {
 	FileListResponse,
 	DeleteResponse,
 	Range,
-} from './types';
+} from './types.js';
 
 export default abstract class Storage {
 	/**

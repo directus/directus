@@ -8,10 +8,10 @@ import {
 	GraphQLType,
 } from 'graphql';
 import { GraphQLJSON } from 'graphql-compose';
-import { GraphQLDate } from '../services/graphql/types/date';
-import { GraphQLGeoJSON } from '../services/graphql/types/geojson';
-import { Type } from '@directus/shared/types';
-import { GraphQLHash } from '../services/graphql/types/hash';
+import { GraphQLDate } from '../services/graphql/types/date.js';
+import { GraphQLGeoJSON } from '../services/graphql/types/geojson.js';
+import type { Type } from '@directus/shared/types';
+import { GraphQLHash } from '../services/graphql/types/hash.js';
 
 export function getGraphQLType(
 	localType: Type | 'alias' | 'unknown',

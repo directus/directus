@@ -1,23 +1,23 @@
 import ms from 'ms';
 import env from './env';
-import { validateEnv } from './utils/validate-env';
-import { compress, decompress } from './utils/compress';
-import { CacheService } from './services/cache/cache';
-import { RedisCache } from './services/cache/redis-cache';
-import { MemCache } from './services/cache/mem-cache';
+import { validateEnv } from './utils/validate-env.js';
+import { compress, decompress } from './utils/compress.js';
+import { CacheService } from './services/cache/cache.js';
+import { RedisCache } from './services/cache/redis-cache.js';
+import { MemCache } from './services/cache/mem-cache.js';
 
 let cache: CacheService | null = null;
 let systemCache: CacheService | null = null;
 let lockCache: CacheService | null = null;
 
 export function getCache(): { cache: CacheService | null; systemCache: CacheService; lockCache: CacheService } {
-	if (env.CACHE_ENABLED === true && cache === null) {
+	if (env['CACHE_ENABLED'] === true && cache === null) {
 		validateEnv(['CACHE_NAMESPACE', 'CACHE_TTL', 'CACHE_STORE']);
-		cache = getCacheInstance(env.CACHE_TTL ? ms(env.CACHE_TTL as string) : undefined);
+		cache = getCacheInstance(env['CACHE_TTL'] ? ms(env['CACHE_TTL']) : undefined);
 	}
 
 	if (systemCache === null) {
-		systemCache = getCacheInstance(env.CACHE_SYSTEM_TTL ? ms(env.CACHE_SYSTEM_TTL as string) : undefined, '_system');
+		systemCache = getCacheInstance(env['CACHE_SYSTEM_TTL'] ? ms(env['CACHE_SYSTEM_TTL']) : undefined, '_system');
 	}
 
 	if (lockCache === null) {
@@ -81,7 +81,7 @@ function getCacheInstance(ttl: number | undefined, namespaceSuffix?: string): Ca
 		ttl,
 	}
 
-	switch (env.CACHE_STORE) {
+	switch (env['CACHE_STORE']) {
 		case 'redis':
 			return new RedisCache(config);
 		case 'memory':

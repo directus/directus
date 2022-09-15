@@ -1,7 +1,7 @@
-import { Filter, FilterOperator } from './filter';
-import { DeepPartial } from './misc';
-import { Column } from 'knex-schema-inspector/dist/types/column';
-import { LOCAL_TYPES, TYPES, GEOMETRY_TYPES, GEOMETRY_FORMATS, FUNCTIONS } from '../constants';
+import type { Filter, FilterOperator } from './filter.js';
+import type { DeepPartial } from './misc.js';
+import type { Column } from 'knex-schema-inspector/dist/types/column';
+import type { LOCAL_TYPES, TYPES, GEOMETRY_TYPES, GEOMETRY_FORMATS, FUNCTIONS } from '../constants/index.js';
 
 type Translations = {
 	language: string;

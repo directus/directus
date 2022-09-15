@@ -1,6 +1,6 @@
-import { Collection } from './collection';
-import { Relation, RelationMeta, Field, FieldMeta } from '@directus/shared/types';
-import { Diff } from 'deep-diff';
+import type { Collection } from './collection.js';
+import type { Relation, RelationMeta, Field, FieldMeta } from '@directus/shared/types';
+import type { Diff } from 'deep-diff';
 
 export type Snapshot = {
 	version: number;

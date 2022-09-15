@@ -1,4 +1,4 @@
-import {
+import type {
 	Storage as GCSDriver,
 	StorageOptions,
 	Bucket,
@@ -26,11 +26,9 @@ import {
 	Range,
 } from '@directus/drive';
 
-import path from 'path';
+import * as path from 'path';
 
-import normalize from 'normalize-path';
-
-import { mapKeys, snakeCase } from 'lodash';
+import { mapKeys, snakeCase } from 'lodash-es';
 
 function handleError(err: Error & { code?: number | string }, path: string): Error {
 	switch (err.code) {
@@ -63,14 +61,14 @@ export class GoogleCloudStorage extends Storage {
 		const GCSStorage = require('@google-cloud/storage').Storage;
 		this.$driver = new GCSStorage(config);
 		this.$bucket = this.$driver.bucket(config.bucket);
-		this.$root = config.root ? normalize(config.root).replace(/^\//, '') : '';
+		this.$root = config.root ? path.normalize(config.root).replace(/^\//, '') : '';
 	}
 
 	/**
 	 * Prefixes the given filePath with the storage root location
 	 */
 	protected _fullPath(filePath: string): string {
-		return normalize(path.join(this.$root, filePath));
+		return path.normalize(path.join(this.$root, filePath));
 	}
 
 	private _file(filePath: string): File {
@@ -80,7 +78,7 @@ export class GoogleCloudStorage extends Storage {
 	/**
 	 * Copy a file to a location.
 	 */
-	public async copy(src: string, dest: string): Promise<Response> {
+	public override async copy(src: string, dest: string): Promise<Response> {
 		const srcFile = this._file(src);
 		const destFile = this._file(dest);
 
@@ -95,7 +93,7 @@ export class GoogleCloudStorage extends Storage {
 	/**
 	 * Delete existing file.
 	 */
-	public async delete(location: string): Promise<DeleteResponse> {
+	public override async delete(location: string): Promise<DeleteResponse> {
 		try {
 			const result = await this._file(location).delete();
 			return { raw: result, wasDeleted: true };
@@ -113,14 +111,14 @@ export class GoogleCloudStorage extends Storage {
 	/**
 	 * Returns the driver.
 	 */
-	public driver(): GCSDriver {
+	public override driver(): GCSDriver {
 		return this.$driver;
 	}
 
 	/**
 	 * Determines if a file or folder already exists.
 	 */
-	public async exists(location: string): Promise<ExistsResponse> {
+	public override async exists(location: string): Promise<ExistsResponse> {
 		try {
 			const result = await this._file(location).exists();
 			return { exists: result[0], raw: result };
@@ -133,7 +131,7 @@ export class GoogleCloudStorage extends Storage {
 	 * Returns the file contents.
 	 */
 
-	public async get(location: string, encoding: BufferEncoding = 'utf-8'): Promise<ContentResponse<string>> {
+	public override async get(location: string, encoding: BufferEncoding = 'utf-8'): Promise<ContentResponse<string>> {
 		try {
 			const result = await this._file(location).download();
 			return { content: result[0].toString(encoding), raw: result };
@@ -145,7 +143,7 @@ export class GoogleCloudStorage extends Storage {
 	/**
 	 * Returns the file contents as Buffer.
 	 */
-	public async getBuffer(location: string): Promise<ContentResponse<Buffer>> {
+	public override async getBuffer(location: string): Promise<ContentResponse<Buffer>> {
 		try {
 			const result = await this._file(location).download();
 			return { content: result[0], raw: result };
@@ -157,7 +155,7 @@ export class GoogleCloudStorage extends Storage {
 	/**
 	 * Returns signed url for an existing file.
 	 */
-	public async getSignedUrl(location: string, options: SignedUrlOptions = {}): Promise<SignedUrlResponse> {
+	public override async getSignedUrl(location: string, options: SignedUrlOptions = {}): Promise<SignedUrlResponse> {
 		const { expiry = 900 } = options;
 		try {
 			const result = await this._file(location).getSignedUrl({
@@ -173,7 +171,7 @@ export class GoogleCloudStorage extends Storage {
 	/**
 	 * Returns file's size and modification date.
 	 */
-	public async getStat(location: string): Promise<StatResponse> {
+	public override async getStat(location: string): Promise<StatResponse> {
 		try {
 			const result = await this._file(location).getMetadata();
 			return {
@@ -189,8 +187,12 @@ export class GoogleCloudStorage extends Storage {
 	/**
 	 * Returns the stream for the given file.
 	 */
-	public getStream(location: string, range?: Range): NodeJS.ReadableStream {
-		return this._file(location).createReadStream({ start: range?.start, end: range?.end });
+	public override getStream(location: string, range?: Range): NodeJS.ReadableStream {
+		let options: { start: number; end: number } | undefined = undefined;
+		if (range?.start !== undefined && range?.end !== undefined) {
+			options = { start: range.start, end: range.end };
+		}
+		return this._file(location).createReadStream(options);
 	}
 
 	/**
@@ -198,14 +200,14 @@ export class GoogleCloudStorage extends Storage {
 	 * validates the existence of file or it's visibility
 	 * status.
 	 */
-	public getUrl(location: string): string {
+	public override getUrl(location: string): string {
 		return `https://storage.googleapis.com/${this.$bucket.name}/${this._fullPath(location)}`;
 	}
 
 	/**
 	 * Move file to a new location.
 	 */
-	public async move(src: string, dest: string): Promise<Response> {
+	public override async move(src: string, dest: string): Promise<Response> {
 		const srcFile = this._file(src);
 		const destFile = this._file(dest);
 
@@ -221,7 +223,7 @@ export class GoogleCloudStorage extends Storage {
 	 * Creates a new file.
 	 * This method will create missing directories on the fly.
 	 */
-	public async put(location: string, content: Buffer | NodeJS.ReadableStream | string): Promise<Response> {
+	public override async put(location: string, content: Buffer | NodeJS.ReadableStream | string): Promise<Response> {
 		const file = this._file(location);
 
 		try {
@@ -241,7 +243,7 @@ export class GoogleCloudStorage extends Storage {
 	/**
 	 * Iterate over all files in the bucket.
 	 */
-	public async *flatList(prefix = ''): AsyncIterable<FileListResponse> {
+	public override async *flatList(prefix = ''): AsyncIterable<FileListResponse> {
 		prefix = this._fullPath(prefix);
 
 		let nextQuery: GetFilesOptions | undefined = {

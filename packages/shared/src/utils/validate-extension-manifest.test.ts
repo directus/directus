@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { validateExtensionManifest } from './validate-extension-manifest';
+import { validateExtensionManifest } from './validate-extension-manifest.js';
 
 describe('', () => {
 	it('returns false when passed item has no name or version', () => {

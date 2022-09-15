@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { Relation } from '../types';
-import { getRelationType } from './get-relation-type';
+import type { Relation } from '../types/index.js';
+import { getRelationType } from './get-relation-type.js';
 
 describe('getRelationType', () => {
 	it('returns m2o when relation is the same as collection and field', () => {

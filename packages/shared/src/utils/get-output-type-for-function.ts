@@ -1,4 +1,4 @@
-import { FieldFunction, Type } from '../types/fields';
+import type { FieldFunction, Type } from '../types/fields.js';
 
 export function getOutputTypeForFunction(fn: FieldFunction): Type {
 	const typeMap: Record<FieldFunction, Type> = {

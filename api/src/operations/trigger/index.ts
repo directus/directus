@@ -1,5 +1,5 @@
 import { defineOperationApi, optionToObject } from '@directus/shared/utils';
-import { getFlowManager } from '../../flows';
+import { getFlowManager } from '../../flows.js';
 
 type Options = {
 	flow: string;

@@ -1,4 +1,4 @@
-import { LocalFileSystemStorageConfig } from './LocalFileSystemStorage';
+import type { LocalFileSystemStorageConfig } from './LocalFileSystemStorage.js';
 
 export type { LocalFileSystemStorageConfig };
 

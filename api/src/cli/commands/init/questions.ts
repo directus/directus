@@ -1,10 +1,10 @@
-import path from 'path';
+import { join } from 'path';
 
 const filename = ({ filepath }: { filepath: string }): Record<string, string> => ({
 	type: 'input',
 	name: 'filename',
 	message: 'Database File Path:',
-	default: path.join(filepath, 'data.db'),
+	default: join(filepath, 'data.db'),
 });
 
 const host = (): Record<string, string> => ({

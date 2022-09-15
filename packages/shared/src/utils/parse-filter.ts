@@ -1,11 +1,11 @@
-import { isObjectLike } from 'lodash';
-import { REGEX_BETWEEN_PARENS } from '../constants';
-import { Accountability, Filter, Role, User } from '../types';
-import { adjustDate } from './adjust-date';
-import { deepMap } from './deep-map';
-import { get } from './get-with-arrays';
-import { isDynamicVariable } from './is-dynamic-variable';
-import { toArray } from './to-array';
+import { isObjectLike } from 'lodash-es';
+import { REGEX_BETWEEN_PARENS } from '../constants/index.js';
+import type { Accountability, Filter, Role, User } from '../types/index.js';
+import { adjustDate } from './adjust-date.js';
+import { deepMap } from './deep-map.js';
+import { get } from './get-with-arrays.js';
+import { isDynamicVariable } from './is-dynamic-variable.js';
+import { toArray } from './to-array.js';
 
 type ParseFilterContext = {
 	// The user can add any custom fields to user

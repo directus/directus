@@ -9,6 +9,8 @@ import {
 	WrongKeyPath,
 } from '../src/exceptions';
 
+import { expect, describe, it } from 'vitest';
+
 describe('AuthorizationRequired', function () {
 	it('sets the raw exception object', function () {
 		try {

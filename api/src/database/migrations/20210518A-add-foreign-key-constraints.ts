@@ -1,8 +1,8 @@
-import { Knex } from 'knex';
+import type { Knex } from 'knex';
 import SchemaInspector from 'knex-schema-inspector';
-import logger from '../../logger';
-import { RelationMeta } from '@directus/shared/types';
-import { getDefaultIndexName } from '../../utils/get-default-index-name';
+import logger from '../../logger.js';
+import type { RelationMeta } from '@directus/shared/types';
+import { getDefaultIndexName } from '../../utils/get-default-index-name.js';
 
 export async function up(knex: Knex): Promise<void> {
 	const inspector = SchemaInspector(knex);

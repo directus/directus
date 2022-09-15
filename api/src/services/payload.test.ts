@@ -1,19 +1,19 @@
 import knex, { Knex } from 'knex';
 import { MockClient, Tracker, getTracker } from 'knex-mock-client';
-import { PayloadService } from '../../src/services';
-import { getHelpers, Helpers } from '../../src/database/helpers';
+import { PayloadService } from '../../src/services/index.js';
+import { getHelpers, Helpers } from '../../src/database/helpers/index.js';
+import {describe, beforeEach, beforeAll, afterEach, Mocked, expect, vi, it} from 'vitest'
 
-jest.mock('../../src/database/index', () => {
-	return { getDatabaseClient: jest.fn().mockReturnValue('postgres') };
+vi.mock('../../src/database/index', () => {
+	return { getDatabaseClient: vi.fn().mockReturnValue('postgres') };
 });
-jest.requireMock('../../src/database/index');
 
 describe('Integration Tests', () => {
-	let db: jest.Mocked<Knex>;
+	let db: Mocked<Knex>;
 	let tracker: Tracker;
 
 	beforeAll(async () => {
-		db = knex({ client: MockClient }) as jest.Mocked<Knex>;
+		db = knex({ client: MockClient }) as Mocked<Knex>;
 		tracker = getTracker();
 	});
 
@@ -36,7 +36,7 @@ describe('Integration Tests', () => {
 
 			describe('csv', () => {
 				it('Returns undefined for illegal values', async () => {
-					const result = await service.transformers['cast-csv']({
+					const result = await service.transformers['cast-csv']!({
 						value: 123,
 						action: 'read',
 						payload: {},
@@ -49,7 +49,7 @@ describe('Integration Tests', () => {
 				});
 
 				it('Returns [] for empty strings', async () => {
-					const result = await service.transformers['cast-csv']({
+					const result = await service.transformers['cast-csv']!({
 						value: '',
 						action: 'read',
 						payload: {},
@@ -62,7 +62,7 @@ describe('Integration Tests', () => {
 				});
 
 				it('Splits the CSV string', async () => {
-					const result = await service.transformers['cast-csv']({
+					const result = await service.transformers['cast-csv']!({
 						value: 'test,directus',
 						action: 'read',
 						payload: {},
@@ -75,7 +75,7 @@ describe('Integration Tests', () => {
 				});
 
 				it('Saves array values as joined string', async () => {
-					const result = await service.transformers['cast-csv']({
+					const result = await service.transformers['cast-csv']!({
 						value: ['test', 'directus'],
 						action: 'create',
 						payload: {},
@@ -88,7 +88,7 @@ describe('Integration Tests', () => {
 				});
 
 				it('Saves string values as is', async () => {
-					const result = await service.transformers['cast-csv']({
+					const result = await service.transformers['cast-csv']!({
 						value: 'test,directus',
 						action: 'create',
 						payload: {},

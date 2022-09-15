@@ -1,5 +1,6 @@
 import { StorageManager } from '@directus/drive';
 import { AmazonWebServicesS3Storage, AmazonWebServicesS3StorageConfig } from '../src';
+import { describe, it, expect } from 'vitest';
 
 describe('drive', function () {
 	it('Instantiate', function () {

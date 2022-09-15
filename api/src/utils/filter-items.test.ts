@@ -1,4 +1,5 @@
-import { filterItems } from '../../src/utils/filter-items';
+import { filterItems } from '../../src/utils/filter-items.js';
+import {describe, test, expect } from 'vitest'
 
 const items = [
 	{

@@ -1,4 +1,4 @@
-import { isEqual, isNil } from 'lodash';
+import { isEqual, isNil } from 'lodash-es';
 import { computed, inject, nextTick, onBeforeUnmount, provide, ref, shallowRef, Ref, watch } from 'vue';
 
 export type GroupableInstance = {

@@ -5,7 +5,7 @@ import { REGEX_BETWEEN_PARENS } from '@directus/shared/constants';
  */
 export function stripFunction(field: string): string {
 	if (field.includes('(') && field.includes(')')) {
-		return field.match(REGEX_BETWEEN_PARENS)![1].trim();
+		return field.match(REGEX_BETWEEN_PARENS)![1]!.trim();
 	} else {
 		return field;
 	}

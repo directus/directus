@@ -5,9 +5,10 @@
  * @copyright Slynova - Romain Lanz <romain.lanz@slynova.ch>
  */
 
-import Storage from '../src/Storage';
-import StorageManager from '../src/StorageManager';
-import { LocalFileSystemStorage } from '../src/LocalFileSystemStorage';
+import Storage from '../src/Storage.js';
+import StorageManager from '../src/StorageManager.js';
+import { LocalFileSystemStorage } from '../src/LocalFileSystemStorage.js';
+import { expect, it, describe } from 'vitest';
 
 describe('Storage Manager', () => {
 	it('throw exception when no disk name is defined', () => {

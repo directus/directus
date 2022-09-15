@@ -1,11 +1,11 @@
 import express from 'express';
-import { ForbiddenException } from '../exceptions';
-import { respond } from '../middleware/respond';
-import useCollection from '../middleware/use-collection';
-import { validateBatch } from '../middleware/validate-batch';
-import { MetaService, NotificationsService } from '../services';
-import { PrimaryKey } from '../types';
-import asyncHandler from '../utils/async-handler';
+import { ForbiddenException } from '../exceptions/index.js';
+import { respond } from '../middleware/respond.js';
+import useCollection from '../middleware/use-collection.js';
+import { validateBatch } from '../middleware/validate-batch.js';
+import { MetaService, NotificationsService } from '../services/index.js';
+import type { PrimaryKey } from '../types/index.js';
+import asyncHandler from '../utils/async-handler.js';
 
 const router = express.Router();
 
@@ -15,7 +15,7 @@ router.post(
 	'/',
 	asyncHandler(async (req, res, next) => {
 		const service = new NotificationsService({
-			accountability: req.accountability,
+			accountability: req.accountability!,
 			schema: req.schema,
 		});
 
@@ -32,10 +32,10 @@ router.post(
 		try {
 			if (Array.isArray(req.body)) {
 				const records = await service.readMany(savedKeys, req.sanitizedQuery);
-				res.locals.payload = { data: records };
+				res.locals['payload'] = { data: records };
 			} else {
-				const record = await service.readOne(savedKeys[0], req.sanitizedQuery);
-				res.locals.payload = { data: record };
+				const record = await service.readOne(savedKeys[0]!, req.sanitizedQuery);
+				res.locals['payload'] = { data: record };
 			}
 		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
@@ -52,11 +52,11 @@ router.post(
 
 const readHandler = asyncHandler(async (req, res, next) => {
 	const service = new NotificationsService({
-		accountability: req.accountability,
+		accountability: req.accountability!,
 		schema: req.schema,
 	});
 	const metaService = new MetaService({
-		accountability: req.accountability,
+		accountability: req.accountability!,
 		schema: req.schema,
 	});
 
@@ -72,7 +72,7 @@ const readHandler = asyncHandler(async (req, res, next) => {
 
 	const meta = await metaService.getMetaForQuery('directus_notifications', req.sanitizedQuery);
 
-	res.locals.payload = { data: result, meta };
+	res.locals['payload'] = { data: result, meta };
 	return next();
 });
 
@@ -83,13 +83,13 @@ router.get(
 	'/:pk',
 	asyncHandler(async (req, res, next) => {
 		const service = new NotificationsService({
-			accountability: req.accountability,
+			accountability: req.accountability!,
 			schema: req.schema,
 		});
 
-		const record = await service.readOne(req.params.pk, req.sanitizedQuery);
+		const record = await service.readOne(req.params['pk']!, req.sanitizedQuery);
 
-		res.locals.payload = { data: record || null };
+		res.locals['payload'] = { data: record || null };
 		return next();
 	}),
 	respond
@@ -100,7 +100,7 @@ router.patch(
 	validateBatch('update'),
 	asyncHandler(async (req, res, next) => {
 		const service = new NotificationsService({
-			accountability: req.accountability,
+			accountability: req.accountability!,
 			schema: req.schema,
 		});
 
@@ -116,7 +116,7 @@ router.patch(
 
 		try {
 			const result = await service.readMany(keys, req.sanitizedQuery);
-			res.locals.payload = { data: result };
+			res.locals['payload'] = { data: result };
 		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
 				return next();
@@ -134,15 +134,15 @@ router.patch(
 	'/:pk',
 	asyncHandler(async (req, res, next) => {
 		const service = new NotificationsService({
-			accountability: req.accountability,
+			accountability: req.accountability!,
 			schema: req.schema,
 		});
 
-		const primaryKey = await service.updateOne(req.params.pk, req.body);
+		const primaryKey = await service.updateOne(req.params['pk']!, req.body);
 
 		try {
 			const record = await service.readOne(primaryKey, req.sanitizedQuery);
-			res.locals.payload = { data: record };
+			res.locals['payload'] = { data: record };
 		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
 				return next();
@@ -159,9 +159,9 @@ router.patch(
 router.delete(
 	'/',
 	validateBatch('delete'),
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req, _res, next) => {
 		const service = new NotificationsService({
-			accountability: req.accountability,
+			accountability: req.accountability!,
 			schema: req.schema,
 		});
 
@@ -180,13 +180,13 @@ router.delete(
 
 router.delete(
 	'/:pk',
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req, _res, next) => {
 		const service = new NotificationsService({
-			accountability: req.accountability,
+			accountability: req.accountability!,
 			schema: req.schema,
 		});
 
-		await service.deleteOne(req.params.pk);
+		await service.deleteOne(req.params['pk']!);
 
 		return next();
 	}),

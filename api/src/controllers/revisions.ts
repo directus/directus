@@ -1,9 +1,9 @@
 import express from 'express';
-import { respond } from '../middleware/respond';
-import useCollection from '../middleware/use-collection';
-import { validateBatch } from '../middleware/validate-batch';
-import { MetaService, RevisionsService } from '../services';
-import asyncHandler from '../utils/async-handler';
+import { respond } from '../middleware/respond.js';
+import useCollection from '../middleware/use-collection.js';
+import { validateBatch } from '../middleware/validate-batch.js';
+import { MetaService, RevisionsService } from '../services/index.js';
+import asyncHandler from '../utils/async-handler.js';
 
 const router = express.Router();
 
@@ -11,18 +11,18 @@ router.use(useCollection('directus_revisions'));
 
 const readHandler = asyncHandler(async (req, res, next) => {
 	const service = new RevisionsService({
-		accountability: req.accountability,
+		accountability: req.accountability!,
 		schema: req.schema,
 	});
 	const metaService = new MetaService({
-		accountability: req.accountability,
+		accountability: req.accountability!,
 		schema: req.schema,
 	});
 
 	const records = await service.readByQuery(req.sanitizedQuery);
 	const meta = await metaService.getMetaForQuery('directus_revisions', req.sanitizedQuery);
 
-	res.locals.payload = { data: records || null, meta };
+	res.locals['payload'] = { data: records || null, meta };
 	return next();
 });
 
@@ -33,13 +33,13 @@ router.get(
 	'/:pk',
 	asyncHandler(async (req, res, next) => {
 		const service = new RevisionsService({
-			accountability: req.accountability,
+			accountability: req.accountability!,
 			schema: req.schema,
 		});
 
-		const record = await service.readOne(req.params.pk, req.sanitizedQuery);
+		const record = await service.readOne(req.params['pk']!, req.sanitizedQuery);
 
-		res.locals.payload = { data: record || null };
+		res.locals['payload'] = { data: record || null };
 		return next();
 	}),
 	respond

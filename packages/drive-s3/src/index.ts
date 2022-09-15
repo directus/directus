@@ -1,1 +1,1 @@
-export * from './AmazonWebServicesS3Storage';
+export * from './AmazonWebServicesS3Storage.js';

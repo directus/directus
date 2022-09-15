@@ -1,4 +1,4 @@
-import { ClientFilterOperator, Type } from '../types';
+import type { ClientFilterOperator, Type } from '../types/index.js';
 
 type GetFilterOperationsForTypeOptions = {
 	includeValidation?: boolean;

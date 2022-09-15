@@ -1,9 +1,9 @@
-import { Permission, Accountability, Filter, SchemaOverview } from '@directus/shared/types';
+import type { Permission, Accountability, Filter, SchemaOverview } from '@directus/shared/types';
 
-import { assign, set, uniq } from 'lodash';
-import { mergePermissions } from './merge-permissions';
-import { schemaPermissions } from '../database/system-data/app-access-permissions';
-import { reduceSchema } from './reduce-schema';
+import { assign, set, uniq } from 'lodash-es';
+import { mergePermissions } from './merge-permissions.js';
+import { schemaPermissions } from '../database/system-data/app-access-permissions/index.js';
+import { reduceSchema } from './reduce-schema.js';
 
 export function mergePermissionsForShare(
 	currentPermissions: Permission[],
@@ -22,7 +22,7 @@ export function mergePermissionsForShare(
 
 	const { collection, item } = accountability.share_scope!;
 
-	const parentPrimaryKeyField = schema.collections[collection].primary;
+	const parentPrimaryKeyField = schema.collections[collection]!.primary;
 
 	const reducedSchema = reduceSchema(schema, currentPermissions, ['read']);
 

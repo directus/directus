@@ -1,4 +1,4 @@
-import { Table } from 'knex-schema-inspector/dist/types/table';
+import type { Table } from 'knex-schema-inspector/dist/types/table';
 
 type Translations = {
 	language: string;

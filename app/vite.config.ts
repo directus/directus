@@ -16,9 +16,14 @@ import path from 'path';
 import markdownItAnchor from 'markdown-it-anchor';
 import markdownItContainer from 'markdown-it-container';
 import markdownItTableOfContents from 'markdown-it-table-of-contents';
-import md from 'vite-plugin-vue-markdown';
+// import md from 'vite-plugin-vue-markdown';
 import { defineConfig } from 'vitest/config';
 import hljsGraphQL from './src/utils/hljs-graphql';
+import { createRequire } from 'module';
+
+const require = createRequire(import.meta.url);
+
+const md = require('vite-plugin-vue-markdown').default
 
 hljs.registerLanguage('graphql', hljsGraphQL);
 
