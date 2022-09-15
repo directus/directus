@@ -1,5 +1,5 @@
 import ms from 'ms';
-import env from './env';
+import env from './env.js';
 import { validateEnv } from './utils/validate-env.js';
 import { compress, decompress } from './utils/compress.js';
 import type { CacheOptions, CacheService } from './services/cache/cache.js';

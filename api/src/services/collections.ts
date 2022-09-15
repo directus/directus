@@ -12,7 +12,7 @@ import type { AbstractServiceOptions, Collection, CollectionMeta, MutationOption
 import type { Accountability, FieldMeta, RawField, SchemaOverview } from '@directus/shared/types';
 import type { Table } from 'knex-schema-inspector/dist/types/table';
 import { addFieldFlag } from '@directus/shared/utils';
-import { getHelpers, Helpers } from '../database/helpers';
+import { getHelpers, Helpers } from '../database/helpers/index.js';
 import type { CacheService } from './cache/cache.js';
 
 export type RawCollection = {
