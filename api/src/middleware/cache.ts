@@ -9,7 +9,9 @@ import logger from '../logger';
 const checkCacheMiddleware: RequestHandler = asyncHandler(async (req, res, next) => {
 	const { cache } = getCache();
 
-	if (req.method.toLowerCase() !== 'get' && req.path?.startsWith('/graphql') === false) return next();
+	const isGraphql = /^\/(system\/)?graphql/.test(req.originalUrl);
+
+	if (req.method.toLowerCase() !== 'get' && !isGraphql) return next();
 	if (env.CACHE_ENABLED !== true) return next();
 	if (!cache) return next();
 

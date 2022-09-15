@@ -22,8 +22,10 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 		exceedsMaxSize = valueSize > maxSize;
 	}
 
+	const isGraphql = /^\/(system\/)?graphql/.test(req.originalUrl);
+
 	if (
-		(req.method.toLowerCase() === 'get' || req.path?.startsWith('/graphql')) &&
+		(req.method.toLowerCase() === 'get' || isGraphql) &&
 		env.CACHE_ENABLED === true &&
 		cache &&
 		!req.sanitizedQuery.export &&
