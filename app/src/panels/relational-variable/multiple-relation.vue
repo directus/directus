@@ -91,6 +91,19 @@ function deleteItem(elem: Record<string, any>) {
 	align-items: center;
 	gap: var(--v-sheet-padding);
 
+	> .v-button {
+		:deep(.button) {
+			--v-button-width: auto;
+			--v-button-min-width: auto;
+			--v-button-height: auto;
+			--v-button-color: var(--primary);
+			--v-button-color-hover: var(--primary-125);
+			--v-button-background-color: transparent;
+			--v-button-background-color-hover: transparent;
+			padding: 0 4px;
+		}
+	}
+
 	.v-pagination {
 		:deep(.v-button) {
 			display: inline-flex;
