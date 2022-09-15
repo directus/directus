@@ -754,6 +754,7 @@ fields:
     tags: Etiquetas
     language: Idioma
     theme: Tema
+    theme_auto: Automático (baseado no sistema)
     tfa_secret: Autenticação em dois passos
     status: Estado
     status_active: Ativar
@@ -812,6 +813,7 @@ field_options:
     fields:
       name_name: Nome
   directus_users:
+    dropdown_auto: Automático (baseado no sistema)
     status_dropdown_active: Ativar
   directus_webhooks:
     status_options_active: Ativar
@@ -843,6 +845,7 @@ delete_are_you_sure: >-
 description: Descrição
 file_library: Biblioteca de Arquivos
 revisions: Revisões
+no_revisions: Ainda não há revisões
 save: Guardar
 search: Procurar
 settings: Configurações
