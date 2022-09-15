@@ -15,6 +15,7 @@ import asyncHandler from '../utils/async-handler';
 import Busboy from 'busboy';
 import { flushCaches } from '../cache';
 import { generateHash } from '../utils/generate-hash';
+import { parseJSON } from '@directus/shared/utils';
 
 const router = Router();
 
@@ -196,7 +197,7 @@ router.post(
 			}
 
 			try {
-				const input = JSON.parse(inputString);
+				const input = parseJSON(inputString);
 				res.locals.payload = { data: input };
 				next();
 			} catch (error: any) {
