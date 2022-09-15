@@ -2008,6 +2008,8 @@ panels:
     name: Zmienna globalna
     description: Ustaw wartość globalną dla filtrów innych paneli
     variable_key: Klucz zmienny
+  relational-variable:
+    variable_key: Klucz zmienny
 triggers:
   common:
     response_body: Treść odpowiedzi
