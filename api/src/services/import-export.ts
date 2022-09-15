@@ -4,6 +4,7 @@ import { queue } from 'async';
 import csv from 'csv-parser';
 import destroyStream from 'destroy';
 import { appendFile, createReadStream } from 'fs-extra';
+import { dump as toYAML } from 'js-yaml';
 import { parse as toXML } from 'js2xmlparser';
 import { Parser as CSVParser, transforms as CSVTransforms } from 'json2csv';
 import { Knex } from 'knex';
@@ -177,16 +178,17 @@ export class ExportService {
 	async exportToFile(
 		collection: string,
 		query: Partial<Query>,
-		format: 'xml' | 'csv' | 'json',
+		format: 'csv' | 'json' | 'xml' | 'yaml',
 		options?: {
 			file?: Partial<File>;
 		}
 	) {
 		try {
 			const mimeTypes = {
-				xml: 'text/xml',
 				csv: 'text/csv',
 				json: 'application/json',
+				xml: 'text/xml',
+				yaml: 'text/yaml',
 			};
 
 			const database = getDatabase();
@@ -303,7 +305,7 @@ export class ExportService {
 	 */
 	transform(
 		input: Record<string, any>[],
-		format: 'xml' | 'csv' | 'json',
+		format: 'csv' | 'json' | 'xml' | 'yaml',
 		options?: {
 			includeHeader?: boolean;
 			includeFooter?: boolean;
@@ -350,6 +352,10 @@ export class ExportService {
 			}
 
 			return string;
+		}
+
+		if (format === 'yaml') {
+			return toYAML(input);
 		}
 
 		throw new ServiceUnavailableException(`Illegal export type used: "${format}"`, { service: 'export' });

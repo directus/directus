@@ -21,7 +21,7 @@ export async function applySnapshot(
 	options?: { database?: Knex; schema?: SchemaOverview; current?: Snapshot; diff?: SnapshotDiff }
 ): Promise<void> {
 	const database = options?.database ?? getDatabase();
-	const schema = options?.schema ?? (await getSchema({ database }));
+	const schema = options?.schema ?? (await getSchema({ database, bypassCache: true }));
 	const { systemCache } = getCache();
 
 	const current = options?.current ?? (await getSnapshot({ database, schema }));
@@ -52,7 +52,7 @@ export async function applySnapshot(
 							// Casts field type to UUID when applying non-PostgreSQL schema onto PostgreSQL database.
 							// This is needed because they snapshots UUID fields as char with length 36.
 							if (
-								fieldDiff.schema?.data_type === 'char' &&
+								String(fieldDiff.schema?.data_type).toLowerCase() === 'char' &&
 								fieldDiff.schema?.max_length === 36 &&
 								(fieldDiff.schema?.is_primary_key ||
 									(fieldDiff.schema?.foreign_key_table && fieldDiff.schema?.foreign_key_column))
@@ -177,7 +177,10 @@ export async function applySnapshot(
 			}
 		}
 
-		const fieldsService = new FieldsService({ knex: trx, schema: await getSchema({ database: trx }) });
+		const fieldsService = new FieldsService({
+			knex: trx,
+			schema: await getSchema({ database: trx, bypassCache: true }),
+		});
 
 		for (const { collection, field, diff } of snapshotDiff.fields) {
 			if (diff?.[0].kind === 'N' && !isNestedMetaUpdate(diff?.[0])) {
@@ -222,7 +225,10 @@ export async function applySnapshot(
 			}
 		}
 
-		const relationsService = new RelationsService({ knex: trx, schema: await getSchema({ database: trx }) });
+		const relationsService = new RelationsService({
+			knex: trx,
+			schema: await getSchema({ database: trx, bypassCache: true }),
+		});
 
 		for (const { collection, field, diff } of snapshotDiff.relations) {
 			const structure = {};

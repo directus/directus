@@ -104,6 +104,10 @@
 								text: t('xml'),
 								value: 'xml',
 							},
+							{
+								text: t('yaml'),
+								value: 'yaml',
+							},
 						]"
 					/>
 				</div>

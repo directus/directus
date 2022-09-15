@@ -210,6 +210,12 @@ paths:
     $ref: './paths/server/info.yaml'
   /server/ping:
     $ref: './paths/server/ping.yaml'
+  /server/schema/snapshot:
+    $ref: './paths/server/schema/snapshot.yaml'
+  /server/schema/apply:
+    $ref: './paths/server/schema/apply.yaml'
+  /server/schema/diff:
+    $ref: './paths/server/schema/diff.yaml'
 
   # Settings
   /settings:
@@ -317,6 +323,8 @@ components:
       $ref: './parameters/fields.yaml'
     Mode:
       $ref: './parameters/mode.yaml'
+    Export:
+      $ref: './parameters/export.yaml'
   definitions:
     Query:
       $ref: './definitions/query.yaml'

@@ -1,9 +1,16 @@
+import { parseJSON } from '@directus/shared/utils';
+import Busboy from 'busboy';
 import { format } from 'date-fns';
-import { Router } from 'express';
-import { RouteNotFoundException } from '../exceptions';
+import { RequestHandler, Router } from 'express';
+import { load as loadYaml } from 'js-yaml';
+import { InvalidPayloadException, RouteNotFoundException, UnsupportedMediaTypeException } from '../exceptions';
+import logger from '../logger';
 import { respond } from '../middleware/respond';
 import { ServerService, SpecificationService } from '../services';
+import { SchemaService } from '../services/schema';
+import { Snapshot } from '../types';
 import asyncHandler from '../utils/async-handler';
+import { getStringFromStream } from '../utils/get-string-from-stream';
 
 const router = Router();
 
@@ -76,6 +83,115 @@ router.get(
 		if (data.status === 'error') res.status(503);
 		res.locals.payload = data;
 		res.locals.cache = false;
+		return next();
+	}),
+	respond
+);
+
+router.get(
+	'/schema/snapshot',
+	asyncHandler(async (req, res, next) => {
+		const service = new SchemaService({ accountability: req.accountability });
+
+		const currentSnapshot = await service.snapshot();
+
+		res.locals.payload = { data: currentSnapshot };
+
+		return next();
+	}),
+	respond
+);
+
+const schemaMultipartHandler: RequestHandler = (req, res, next) => {
+	if (req.is('application/json')) {
+		if (Object.keys(req.body).length === 0) throw new InvalidPayloadException(`No data were included in the body`);
+		return next();
+	}
+
+	if (!req.is('multipart/form-data')) throw new UnsupportedMediaTypeException(`Unsupported Content-Type header`);
+
+	const headers = req.headers['content-type']
+		? req.headers
+		: {
+				...req.headers,
+				'content-type': 'application/octet-stream',
+		  };
+
+	const busboy = Busboy({ headers, limits: { files: 1 } });
+
+	let fileCount = 0;
+	let uploadedSnapshot: Snapshot | null = null;
+
+	busboy.on('file', async (_, fileStream, { mimeType }) => {
+		fileCount++;
+
+		try {
+			const uploadedString = await getStringFromStream(fileStream);
+
+			if (mimeType === 'application/json') {
+				try {
+					uploadedSnapshot = parseJSON(uploadedString);
+				} catch (err: any) {
+					logger.warn(err);
+					throw new InvalidPayloadException('Invalid JSON schema snapshot');
+				}
+			} else {
+				try {
+					uploadedSnapshot = (await loadYaml(uploadedString)) as Snapshot;
+				} catch (err: any) {
+					logger.warn(err);
+					throw new InvalidPayloadException('Invalid YAML schema snapshot');
+				}
+			}
+
+			if (!uploadedSnapshot) throw new InvalidPayloadException(`No file were included in the body`);
+
+			res.locals.uploadedSnapshot = uploadedSnapshot;
+
+			return next();
+		} catch (error: any) {
+			busboy.emit('error', error);
+		}
+	});
+
+	busboy.on('error', (error: Error) => next(error));
+
+	busboy.on('close', () => {
+		if (fileCount === 0) return next(new InvalidPayloadException(`No file were included in the body`));
+	});
+
+	req.pipe(busboy);
+};
+
+router.post(
+	'/schema/apply',
+	asyncHandler(schemaMultipartHandler),
+	asyncHandler(async (req, res, next) => {
+		const service = new SchemaService({ accountability: req.accountability });
+
+		const snapshot: Snapshot = req.is('application/json') ? req.body : res.locals.uploadedSnapshot;
+
+		await service.apply(snapshot);
+
+		return next();
+	}),
+	respond
+);
+
+router.post(
+	'/schema/diff',
+	asyncHandler(schemaMultipartHandler),
+	asyncHandler(async (req, res, next) => {
+		const service = new SchemaService({ accountability: req.accountability });
+
+		const snapshot: Snapshot = req.is('application/json') ? req.body : res.locals.uploadedSnapshot;
+
+		const snapshotDiff = await service.diff(snapshot);
+
+		if (!snapshotDiff) return next();
+
+		res.locals.payload = { data: snapshotDiff };
+
 		return next();
 	}),
 	respond
