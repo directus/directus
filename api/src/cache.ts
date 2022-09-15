@@ -2,7 +2,7 @@ import ms from 'ms';
 import env from './env';
 import { validateEnv } from './utils/validate-env.js';
 import { compress, decompress } from './utils/compress.js';
-import { CacheService } from './services/cache/cache.js';
+import type { CacheOptions, CacheService } from './services/cache/cache.js';
 import { RedisCache } from './services/cache/redis-cache.js';
 import { MemCache } from './services/cache/mem-cache.js';
 
@@ -76,8 +76,8 @@ export async function getCacheValue(cache: CacheService, key: string): Promise<a
 }
 
 function getCacheInstance(ttl: number | undefined, namespaceSuffix?: string): CacheService {
-	const config = {
-		namespace: `${env.CACHE_NAMESPACE}${namespaceSuffix}`,
+	const config: CacheOptions = {
+		namespace: `${env['CACHE_NAMESPACE']}${namespaceSuffix}`,
 		ttl,
 	}
 

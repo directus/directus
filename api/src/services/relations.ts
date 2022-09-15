@@ -10,7 +10,6 @@ import type { ForeignKey } from 'knex-schema-inspector/dist/types/foreign-key';
 import getDatabase, { getSchemaInspector } from '../database/index.js';
 import { getDefaultIndexName } from '../utils/get-default-index-name.js';
 import { getCache, clearSystemCache } from '../cache.js';
-import type Keyv from 'keyv';
 import type { AbstractServiceOptions } from '../types/index.js';
 import { getHelpers, Helpers } from '../database/helpers/index.js';
 import type { CacheService } from './cache/cache.js';

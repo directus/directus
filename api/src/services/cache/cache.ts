@@ -1,6 +1,6 @@
 export interface CacheOptions {
-    ttl?: number;
-    namespace?: string;
+    ttl: number | undefined;
+    namespace: string | undefined;
 }
 
 export abstract class CacheService {

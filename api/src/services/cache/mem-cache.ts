@@ -1,4 +1,4 @@
-import { CacheService } from "./cache";
+import { CacheService } from "./cache.js";
 
 export class MemCache extends CacheService {
     

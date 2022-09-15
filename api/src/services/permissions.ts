@@ -3,7 +3,6 @@ import { ItemsService, QueryOptions } from '../services/items.js';
 import type { AbstractServiceOptions, Item, PrimaryKey, MutationOptions } from '../types/index.js';
 import type { Query, PermissionsAction } from '@directus/shared/types';
 import { filterItems } from '../utils/filter-items.js';
-import type Keyv from 'keyv';
 import { getCache, clearSystemCache } from '../cache.js';
 import type { CacheService } from './cache/cache.js';
 

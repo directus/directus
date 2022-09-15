@@ -13,7 +13,7 @@ import type { Accountability, FieldMeta, RawField, SchemaOverview } from '@direc
 import type { Table } from 'knex-schema-inspector/dist/types/table';
 import { addFieldFlag } from '@directus/shared/utils';
 import { getHelpers, Helpers } from '../database/helpers';
-import { CacheService } from './cache/cache.js';
+import type { CacheService } from './cache/cache.js';
 
 export type RawCollection = {
 	collection: string;

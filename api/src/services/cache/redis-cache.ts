@@ -2,7 +2,7 @@ import { createClient, RedisClientType } from "redis";
 import env from "../../env";
 import logger from "../../logger";
 import { getConfigFromEnv } from "../../utils/get-config-from-env";
-import { CacheOptions, CacheService } from "./cache";
+import { CacheOptions, CacheService } from "./cache.js";
 import {parse, stringify} from 'json-buffer'
 
 
@@ -14,7 +14,7 @@ export class RedisCache extends CacheService {
         super(options);
 
         this.client = createClient({
-            url: env.CACHE_REDIS || getConfigFromEnv('CACHE_REDIS_')
+            url: env["CACHE_REDIS"] || getConfigFromEnv('CACHE_REDIS_')
         })
         this.client.on('error', (err) => logger.warn(err, `[cache] ${err}`))
         this.client.connect()
