@@ -1989,6 +1989,8 @@ panels:
     name: Variable globale
     description: Définir une valeur globale pour l'utilisation dans d'autres panneaux de filtres
     variable_key: Clé variable
+  relational-variable:
+    variable_key: Clé variable
 triggers:
   common:
     response_body: Corps de la Réponse
