@@ -1,21 +1,22 @@
 import formatTitle from '@directus/format-title';
 import axios, { AxiosResponse } from 'axios';
 import exifr from 'exifr';
-import { clone, pick } from 'lodash';
+import { clone, pick } from 'lodash-es';
 import { extension } from 'mime-types';
 import path from 'path';
 import sharp from 'sharp';
-import url, { URL } from 'url';
+import url from 'url';
+import { URL } from 'url';
 import { promisify } from 'util';
 import { lookup } from 'dns';
-import emitter from '../emitter';
-import env from '../env';
-import { ForbiddenException, ServiceUnavailableException } from '../exceptions';
-import logger from '../logger';
-import storage from '../storage';
-import { AbstractServiceOptions, File, PrimaryKey, MutationOptions, Metadata } from '../types';
+import emitter from '../emitter.js';
+import env from '../env.js';
+import { ForbiddenException, ServiceUnavailableException } from '../exceptions/index.js';
+import logger from '../logger.js';
+import storage from '../storage.js';
+import type { AbstractServiceOptions, File, PrimaryKey, MutationOptions, Metadata } from '../types/index.js';
 import { toArray } from '@directus/shared/utils';
-import { ItemsService } from './items';
+import { ItemsService } from './items.js';
 import net from 'net';
 import os from 'os';
 import encodeURL from 'encodeurl';
@@ -84,10 +85,10 @@ export class FilesService extends ItemsService {
 			const buffer = await storage.disk(data.storage).getBuffer(payload.filename_disk);
 			const { height, width, description, title, tags, metadata } = await this.getMetadata(buffer.content);
 
-			payload.height ??= height;
-			payload.width ??= width;
-			payload.description ??= description;
-			payload.title ??= title;
+			payload.height ??= height ?? null;
+			payload.width ??= width ?? null;
+			payload.description ??= description ?? null;
+			payload.title ??= title ?? null;
 			payload.tags ??= tags;
 			payload.metadata ??= metadata;
 		}
@@ -101,7 +102,7 @@ export class FilesService extends ItemsService {
 
 		await sudoService.updateOne(primaryKey, payload, { emitEvents: false });
 
-		if (this.cache && env.CACHE_AUTO_PURGE) {
+		if (this.cache && env['CACHE_AUTO_PURGE']) {
 			await this.cache.clear();
 		}
 
@@ -127,7 +128,7 @@ export class FilesService extends ItemsService {
 	/**
 	 * Extract metadata from a buffer's content
 	 */
-	async getMetadata(bufferContent: any, allowList = env.FILE_METADATA_ALLOW_LIST): Promise<Metadata> {
+	async getMetadata(bufferContent: any, allowList = env['FILE_METADATA_ALLOW_LIST']): Promise<Metadata> {
 		const metadata: Metadata = {};
 
 		try {
@@ -217,7 +218,7 @@ export class FilesService extends ItemsService {
 			}
 		}
 
-		if (env.IMPORT_IP_DENY_LIST.includes('0.0.0.0')) {
+		if (env['IMPORT_IP_DENY_LIST'].includes('0.0.0.0')) {
 			const networkInterfaces = os.networkInterfaces();
 
 			for (const networkInfo of Object.values(networkInterfaces)) {
@@ -234,7 +235,7 @@ export class FilesService extends ItemsService {
 			}
 		}
 
-		if (env.IMPORT_IP_DENY_LIST.includes(ip)) {
+		if (env['IMPORT_IP_DENY_LIST'].includes(ip)) {
 			logger.warn(`Requested URL ${importURL} resolves to a denied IP address.`);
 			throw new ServiceUnavailableException(`Couldn't fetch file from url "${importURL}"`, {
 				service: 'external-file',
@@ -259,8 +260,8 @@ export class FilesService extends ItemsService {
 
 		const payload = {
 			filename_download: filename,
-			storage: toArray(env.STORAGE_LOCATIONS)[0],
-			type: fileResponse.headers['content-type'],
+			storage: toArray(env['STORAGE_LOCATIONS'])[0],
+			type: fileResponse.headers['content-type'] ?? null,
 			title: formatTitle(filename),
 			...(body || {}),
 		};
@@ -271,7 +272,7 @@ export class FilesService extends ItemsService {
 	/**
 	 * Delete a file
 	 */
-	async deleteOne(key: PrimaryKey, opts?: MutationOptions): Promise<PrimaryKey> {
+	override async deleteOne(key: PrimaryKey, opts?: MutationOptions): Promise<PrimaryKey> {
 		await this.deleteMany([key], opts);
 		return key;
 	}
@@ -279,7 +280,7 @@ export class FilesService extends ItemsService {
 	/**
 	 * Delete multiple files
 	 */
-	async deleteMany(keys: PrimaryKey[], opts?: MutationOptions): Promise<PrimaryKey[]> {
+	override async deleteMany(keys: PrimaryKey[], opts?: MutationOptions): Promise<PrimaryKey[]> {
 		const files = await super.readMany(keys, { fields: ['id', 'storage'], limit: -1 });
 
 		if (!files) {
@@ -289,15 +290,15 @@ export class FilesService extends ItemsService {
 		await super.deleteMany(keys);
 
 		for (const file of files) {
-			const disk = storage.disk(file.storage);
+			const disk = storage.disk(file['storage']);
 
 			// Delete file + thumbnails
-			for await (const { path } of disk.flatList(file.id)) {
+			for await (const { path } of disk.flatList(file['id'])) {
 				await disk.delete(path);
 			}
 		}
 
-		if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
+		if (this.cache && env['CACHE_AUTO_PURGE'] && opts?.autoPurgeCache !== false) {
 			await this.cache.clear();
 		}
 

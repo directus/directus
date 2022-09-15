@@ -1,4 +1,4 @@
-import { RawField, FieldMeta } from '../types';
+import type { RawField, FieldMeta } from '../types/index.js';
 
 /**
  * Add a flag to a field.

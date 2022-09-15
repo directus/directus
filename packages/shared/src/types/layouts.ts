@@ -1,5 +1,5 @@
-import { Component } from 'vue';
-import { Filter } from './filter';
+import type { Component } from 'vue';
+import type { Filter } from './filter.js';
 
 export interface LayoutConfig<Options = any, Query = any> {
 	id: string;

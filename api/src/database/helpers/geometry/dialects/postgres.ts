@@ -1,18 +1,18 @@
-import { GeometryHelper } from '../types';
-import { Field, RawField } from '@directus/shared/types';
-import { GeoJSONGeometry } from 'wellknown';
-import { Knex } from 'knex';
+import { GeometryHelper } from '../types.js';
+import type { Field, RawField } from '@directus/shared/types';
+import type { GeoJSONGeometry } from 'wellknown';
+import type { Knex } from 'knex';
 
 export class GeometryHelperPostgres extends GeometryHelper {
-	async supported() {
+	override async supported() {
 		const res = await this.knex.select('oid').from('pg_proc').where({ proname: 'postgis_version' });
 		return res.length > 0;
 	}
-	createColumn(table: Knex.CreateTableBuilder, field: RawField | Field) {
+	override createColumn(table: Knex.CreateTableBuilder, field: RawField | Field) {
 		const type = field.type.split('.')[1] ?? 'geometry';
 		return table.specificType(field.field, `geometry(${type}, 4326)`);
 	}
-	_intersects_bbox(key: string, geojson: GeoJSONGeometry): Knex.Raw {
+	override _intersects_bbox(key: string, geojson: GeoJSONGeometry): Knex.Raw {
 		const geometry = this.fromGeoJSON(geojson);
 		return this.knex.raw('?? && ?', [key, geometry]);
 	}

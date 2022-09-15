@@ -1,18 +1,33 @@
 {
+	"$schema": "https://json.schemastore.org/tsconfig",
+	"display": "Node 18 + ESM + Strictest",
 	"compilerOptions": {
-		"module": "commonjs",
-		"esModuleInterop": true,
-		"target": "ES2019",
-		"moduleResolution": "node",
-		"sourceMap": false,
-		"outDir": "dist",
-		"rootDir": "src",
-		"strict": true,
-		"lib": ["es2019"],
-		"skipLibCheck": true,
-		"declaration": true,
-		"resolveJsonModule": true,
-		"types": ["jest"]
-	},
-	"exclude": ["node_modules", "dist", "extensions", "tests"]
-}
+	  "lib": [
+		"es2022"
+	  ],
+	  "module": "es2022",
+	  "target": "es2022",
+	  "strict": true,
+	  "esModuleInterop": true,
+	  "skipLibCheck": true,
+	  "forceConsistentCasingInFileNames": true,
+	  "moduleResolution": "node",
+	  "allowUnusedLabels": false,
+	  "allowUnreachableCode": false,
+	  "exactOptionalPropertyTypes": true,
+	  "noFallthroughCasesInSwitch": true,
+	  "noImplicitOverride": true,
+	  "noImplicitReturns": true,
+	  "noPropertyAccessFromIndexSignature": true,
+	  "noUncheckedIndexedAccess": true,
+	  "noUnusedLocals": true,
+	  "noUnusedParameters": true,
+	  "importsNotUsedAsValues": "error",
+	  "checkJs": true,
+	  "outDir": "dist",
+	  "allowSyntheticDefaultImports": true,
+	  "typeRoots": ["./types", "./node_modules/@types"],
+	  },
+	  "include": ["src/**/*.ts"],
+	  "exclude": ["src/**/*.test.ts"]
+  }

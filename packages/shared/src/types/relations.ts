@@ -1,4 +1,4 @@
-import { ForeignKey } from 'knex-schema-inspector/dist/types/foreign-key';
+import type { ForeignKey } from 'knex-schema-inspector/dist/types/foreign-key';
 
 export type RelationMeta = {
 	id: number;

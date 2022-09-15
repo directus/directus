@@ -1,4 +1,4 @@
-import { Field } from '../types';
+import type { Field } from '../types/index.js';
 import { Ref, computed, ComputedRef } from 'vue';
 
 export function useFilterFields<T extends string>(

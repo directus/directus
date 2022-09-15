@@ -3,7 +3,7 @@
  * expecting an item vs any other generic object.
  */
 
-import { EventContext } from '@directus/shared/types';
+import type { EventContext } from '@directus/shared/types';
 
 export type Item = Record<string, any>;
 
@@ -33,7 +33,7 @@ export type MutationOptions = {
 	/**
 	 * Allow disabling the emitting of hooks. Useful if a custom hook is fired (like files.upload)
 	 */
-	emitEvents?: boolean;
+	emitEvents?: boolean | undefined;
 
 	/**
 	 * To bypass the emitting of action events if emitEvents is enabled

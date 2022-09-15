@@ -1,4 +1,4 @@
-import { Filter } from './filter';
+import type { Filter } from './filter.js';
 
 export type Query = {
 	fields?: string[] | null;

@@ -1,9 +1,9 @@
-import { GeometryHelper } from '../types';
-import { Field, RawField } from '@directus/shared/types';
-import { Knex } from 'knex';
+import { GeometryHelper } from '../types.js';
+import type { Field, RawField } from '@directus/shared/types';
+import type { Knex } from 'knex';
 
 export class GeometryHelperRedshift extends GeometryHelper {
-	createColumn(table: Knex.CreateTableBuilder, field: RawField | Field) {
+	override createColumn(table: Knex.CreateTableBuilder, field: RawField | Field) {
 		if (field.type.split('.')[1]) {
 			field.meta!.special = [field.type];
 		}

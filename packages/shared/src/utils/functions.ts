@@ -1,4 +1,4 @@
-import { FieldFunction } from '../types/fields';
+import type { FieldFunction } from '../types/fields.js';
 import { getDate, getDay, getWeek, parseISO } from 'date-fns';
 
 export const functions: Record<FieldFunction, (val: any) => any> = {

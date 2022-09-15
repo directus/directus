@@ -1,18 +1,18 @@
-import { Knex } from 'knex';
-import { systemRelationRows } from '../database/system-data/relations';
-import { ForbiddenException, InvalidPayloadException } from '../exceptions';
-import { SchemaOverview, Relation, RelationMeta, Accountability, Query } from '@directus/shared/types';
+import type { Knex } from 'knex';
+import { systemRelationRows } from '../database/system-data/relations/index.js';
+import { ForbiddenException, InvalidPayloadException } from '../exceptions/index.js';
+import type { SchemaOverview, Relation, RelationMeta, Accountability, Query } from '@directus/shared/types';
 import { toArray } from '@directus/shared/utils';
-import { ItemsService, QueryOptions } from './items';
-import { PermissionsService } from './permissions';
+import { ItemsService, QueryOptions } from './items.js';
+import { PermissionsService } from './permissions.js';
 import SchemaInspector from '@directus/schema';
-import { ForeignKey } from 'knex-schema-inspector/dist/types/foreign-key';
-import getDatabase, { getSchemaInspector } from '../database';
-import { getDefaultIndexName } from '../utils/get-default-index-name';
-import { getCache, clearSystemCache } from '../cache';
-import Keyv from 'keyv';
-import { AbstractServiceOptions } from '../types';
-import { getHelpers, Helpers } from '../database/helpers';
+import type { ForeignKey } from 'knex-schema-inspector/dist/types/foreign-key';
+import getDatabase, { getSchemaInspector } from '../database/index.js';
+import { getDefaultIndexName } from '../utils/get-default-index-name.js';
+import { getCache, clearSystemCache } from '../cache.js';
+import type Keyv from 'keyv';
+import type { AbstractServiceOptions } from '../types/index.js';
+import { getHelpers, Helpers } from '../database/helpers/index.js';
 
 export class RelationsService {
 	knex: Knex;
@@ -108,7 +108,7 @@ export class RelationsService {
 		});
 
 		const schemaRow = (await this.schemaInspector.foreignKeys(collection)).find(
-			(foreignKey) => foreignKey.column === field
+			(foreignKey: any) => foreignKey.column === field
 		);
 		const stitched = this.stitchRelations(metaRow, schemaRow ? [schemaRow] : []);
 		const results = await this.filterForbidden(stitched);
@@ -117,7 +117,7 @@ export class RelationsService {
 			throw new ForbiddenException();
 		}
 
-		return results[0];
+		return results[0]!;
 	}
 
 	/**
@@ -140,14 +140,14 @@ export class RelationsService {
 			throw new InvalidPayloadException(`Collection "${relation.collection}" doesn't exist`);
 		}
 
-		if (relation.field in this.schema.collections[relation.collection].fields === false) {
+		if (relation.field in this.schema.collections[relation.collection]!.fields === false) {
 			throw new InvalidPayloadException(
 				`Field "${relation.field}" doesn't exist in collection "${relation.collection}"`
 			);
 		}
 
 		// A primary key should not be a foreign key
-		if (this.schema.collections[relation.collection].primary === relation.field) {
+		if (this.schema.collections[relation.collection]!.primary === relation.field) {
 			throw new InvalidPayloadException(
 				`Field "${relation.field}" in collection "${relation.collection}" is a primary key`
 			);
@@ -187,7 +187,7 @@ export class RelationsService {
 						const builder = table
 							.foreign(relation.field!, constraintName)
 							.references(
-								`${relation.related_collection!}.${this.schema.collections[relation.related_collection!].primary}`
+								`${relation.related_collection!}.${this.schema.collections[relation.related_collection!]!.primary}`
 							);
 
 						if (relation.schema?.on_delete) {
@@ -229,7 +229,7 @@ export class RelationsService {
 			throw new InvalidPayloadException(`Collection "${collection}" doesn't exist`);
 		}
 
-		if (field in this.schema.collections[collection].fields === false) {
+		if (field in this.schema.collections[collection]!.fields === false) {
 			throw new InvalidPayloadException(`Field "${field}" doesn't exist in collection "${collection}"`);
 		}
 
@@ -261,7 +261,7 @@ export class RelationsService {
 							.foreign(field, constraintName || undefined)
 							.references(
 								`${existingRelation.related_collection!}.${
-									this.schema.collections[existingRelation.related_collection!].primary
+									this.schema.collections[existingRelation.related_collection!]!.primary
 								}`
 							);
 
@@ -313,7 +313,7 @@ export class RelationsService {
 			throw new InvalidPayloadException(`Collection "${collection}" doesn't exist`);
 		}
 
-		if (field in this.schema.collections[collection].fields === false) {
+		if (field in this.schema.collections[collection]!.fields === false) {
 			throw new InvalidPayloadException(`Field "${field}" doesn't exist in collection "${collection}"`);
 		}
 
@@ -330,7 +330,7 @@ export class RelationsService {
 		try {
 			await this.knex.transaction(async (trx) => {
 				const existingConstraints = await this.schemaInspector.foreignKeys();
-				const constraintNames = existingConstraints.map((key) => key.constraint_name);
+				const constraintNames = existingConstraints.map((key: any) => key.constraint_name);
 
 				if (
 					existingRelation.schema?.constraint_name &&
@@ -445,8 +445,8 @@ export class RelationsService {
 
 			if (
 				!allowedFields[relation.collection] ||
-				(allowedFields[relation.collection].includes('*') === false &&
-					allowedFields[relation.collection].includes(relation.field) === false)
+				(allowedFields[relation.collection]!.includes('*') === false &&
+					allowedFields[relation.collection]!.includes(relation.field) === false)
 			) {
 				fieldsAllowed = false;
 			}
@@ -455,8 +455,8 @@ export class RelationsService {
 				relation.related_collection &&
 				relation.meta?.one_field &&
 				(!allowedFields[relation.related_collection] ||
-					(allowedFields[relation.related_collection].includes('*') === false &&
-						allowedFields[relation.related_collection].includes(relation.meta.one_field) === false))
+					(allowedFields[relation.related_collection]!.includes('*') === false &&
+						allowedFields[relation.related_collection]!.includes(relation.meta.one_field) === false))
 			) {
 				fieldsAllowed = false;
 			}
@@ -476,11 +476,11 @@ export class RelationsService {
 	 * @TODO This is a bit of a hack, and might be better of abstracted elsewhere
 	 */
 	private alterType(table: Knex.TableBuilder, relation: Partial<Relation>) {
-		const m2oFieldDBType = this.schema.collections[relation.collection!].fields[relation.field!].dbType;
+		const m2oFieldDBType = this.schema.collections[relation.collection!]!.fields[relation.field!]!.dbType;
 		const relatedFieldDBType =
-			this.schema.collections[relation.related_collection!].fields[
-				this.schema.collections[relation.related_collection!].primary
-			].dbType;
+			this.schema.collections[relation.related_collection!]!.fields[
+				this.schema.collections[relation.related_collection!]!.primary
+			]!.dbType;
 
 		if (m2oFieldDBType !== relatedFieldDBType && m2oFieldDBType === 'int' && relatedFieldDBType === 'int unsigned') {
 			table.specificType(relation.field!, 'int unsigned').alter();

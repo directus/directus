@@ -1,11 +1,11 @@
-import getDatabase from '../../../database';
-import { ContainsNullValuesException } from '../contains-null-values';
-import { InvalidForeignKeyException } from '../invalid-foreign-key';
-import { NotNullViolationException } from '../not-null-violation';
-import { RecordNotUniqueException } from '../record-not-unique';
-import { ValueOutOfRangeException } from '../value-out-of-range';
-import { ValueTooLongException } from '../value-too-long';
-import { MSSQLError } from './types';
+import getDatabase from '../../../database/index.js';
+import { ContainsNullValuesException } from '../contains-null-values.js';
+import { InvalidForeignKeyException } from '../invalid-foreign-key.js';
+import { NotNullViolationException } from '../not-null-violation.js';
+import { RecordNotUniqueException } from '../record-not-unique.js';
+import { ValueOutOfRangeException } from '../value-out-of-range.js';
+import { ValueTooLongException } from '../value-too-long.js';
+import type { MSSQLError } from './types.js';
 
 enum MSSQLErrorCodes {
 	FOREIGN_KEY_VIOLATION = 547,
@@ -56,7 +56,7 @@ async function uniqueViolation(error: MSSQLError) {
 
 	const keyName = quoteMatches[1]?.slice(1, -1);
 
-	let collection = quoteMatches[0]?.slice(1, -1);
+	let collection = quoteMatches[0]!.slice(1, -1)!;
 	let field: string | null = null;
 
 	if (keyName) {
@@ -78,11 +78,11 @@ async function uniqueViolation(error: MSSQLError) {
 			.where('sys.indexes.name', '=', keyName)
 			.first();
 
-		collection = constraintUsage?.collection;
-		field = constraintUsage?.field;
+		collection = constraintUsage!.collection!;
+		field = constraintUsage!.field!;
 	}
 
-	const invalid = parenMatches[parenMatches.length - 1]?.slice(1, -1);
+	const invalid = parenMatches[parenMatches.length - 1]!.slice(1, -1)!;
 
 	return new RecordNotUniqueException(field, {
 		collection,
@@ -98,7 +98,7 @@ function numericValueOutOfRange(error: MSSQLError) {
 
 	if (!bracketMatches) return error;
 
-	const collection = bracketMatches[0].slice(1, -1);
+	const collection = bracketMatches[0]!.slice(1, -1);
 
 	/**
 	 * NOTE
@@ -112,7 +112,7 @@ function numericValueOutOfRange(error: MSSQLError) {
 	const field = null;
 
 	const parts = error.message.split(' ');
-	const invalid = parts[parts.length - 1].slice(0, -1);
+	const invalid = parts.at(-1)!.slice(0, -1);
 
 	return new ValueOutOfRangeException(field, {
 		collection,
@@ -130,8 +130,8 @@ function valueLimitViolation(error: MSSQLError) {
 
 	if (!bracketMatches || !quoteMatches) return error;
 
-	const collection = bracketMatches[0].slice(1, -1);
-	const field = quoteMatches[1].slice(1, -1);
+	const collection = bracketMatches[0]!.slice(1, -1);
+	const field = quoteMatches[1]!.slice(1, -1);
 
 	return new ValueTooLongException(field, {
 		collection,
@@ -148,8 +148,8 @@ function notNullViolation(error: MSSQLError) {
 
 	if (!bracketMatches || !quoteMatches) return error;
 
-	const collection = bracketMatches[0].slice(1, -1);
-	const field = quoteMatches[0].slice(1, -1);
+	const collection = bracketMatches[0]!.slice(1, -1);
+	const field = quoteMatches[0]!.slice(1, -1);
 
 	if (error.message.includes('Cannot insert the value NULL into column')) {
 		return new ContainsNullValuesException(field, { collection, field });
@@ -175,10 +175,10 @@ function foreignKeyViolation(error: MSSQLError) {
 
 	if (!underscoreMatches || !parenMatches) return error;
 
-	const underscoreParts = underscoreMatches[0].split('__');
+	const underscoreParts = underscoreMatches[0]!.split('__');
 
-	const collection = underscoreParts[1];
-	const field = underscoreParts[2];
+	const collection = underscoreParts[1]!;
+	const field = underscoreParts[2]!;
 
 	return new InvalidForeignKeyException(field, {
 		collection,

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { defineComponent } from 'vue';
-import { Type } from '../types/fields';
+import type { Type } from '../types/fields.js';
 import {
 	defineDisplay,
 	defineEndpoint,
@@ -11,7 +11,7 @@ import {
 	defineOperationApi,
 	defineOperationApp,
 	definePanel,
-} from './define-extension';
+} from './define-extension.js';
 
 const mockComponent = defineComponent({});
 const mockHandler = () => {

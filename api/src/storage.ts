@@ -2,10 +2,10 @@ import { LocalFileSystemStorage, Storage, StorageManager, StorageManagerConfig }
 import { AzureBlobWebServicesStorage } from '@directus/drive-azure';
 import { GoogleCloudStorage } from '@directus/drive-gcs';
 import { AmazonWebServicesS3Storage } from '@directus/drive-s3';
-import env from './env';
-import { getConfigFromEnv } from './utils/get-config-from-env';
+import env from './env.js';
+import { getConfigFromEnv } from './utils/get-config-from-env.js';
 import { toArray } from '@directus/shared/utils';
-import { validateEnv } from './utils/validate-env';
+import { validateEnv } from './utils/validate-env.js';
 
 validateEnv(['STORAGE_LOCATIONS']);
 
@@ -20,7 +20,7 @@ function getStorageConfig(): StorageManagerConfig {
 		disks: {},
 	};
 
-	const locations = toArray(env.STORAGE_LOCATIONS);
+	const locations = toArray(env['STORAGE_LOCATIONS']);
 
 	locations.forEach((location: string) => {
 		location = location.trim();
@@ -30,8 +30,8 @@ function getStorageConfig(): StorageManagerConfig {
 			config: getConfigFromEnv(`STORAGE_${location.toUpperCase()}_`),
 		};
 
-		delete diskConfig.config.publicUrl;
-		delete diskConfig.config.driver;
+		delete diskConfig.config['publicUrl'];
+		delete diskConfig.config['driver'];
 
 		config.disks![location] = diskConfig;
 	});
@@ -67,4 +67,5 @@ function getStorageDriver(driver: string) {
 		case 'azure':
 			return AzureBlobWebServicesStorage;
 	}
+	return undefined;
 }

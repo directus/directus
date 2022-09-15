@@ -1,11 +1,13 @@
-import getDatabase from '../database';
-import { getSchema } from './get-schema';
-import { CollectionsService, FieldsService, RelationsService } from '../services';
-import { version } from '../../package.json';
-import { Snapshot, SnapshotField, SnapshotRelation } from '../types';
-import { Knex } from 'knex';
-import { omit, sortBy, toPairs, fromPairs, mapValues, isPlainObject, isArray } from 'lodash';
-import { SchemaOverview } from '@directus/shared/types';
+import getDatabase from '../database/index.js';
+import { getSchema } from './get-schema.js';
+import { CollectionsService, FieldsService, RelationsService } from '../services/index.js';
+import type { Snapshot, SnapshotField, SnapshotRelation } from '../types/index.js';
+import type { Knex } from 'knex';
+import { omit, sortBy, toPairs, fromPairs, mapValues, isPlainObject, isArray } from 'lodash-es';
+import type { SchemaOverview } from '@directus/shared/types';
+import { importFile } from './importFile.js';
+
+const version = JSON.parse(importFile('../package.json')).version;
 
 export async function getSnapshot(options?: { database?: Knex; schema?: SchemaOverview }): Promise<Snapshot> {
 	const database = options?.database ?? getDatabase();

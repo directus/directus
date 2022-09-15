@@ -1,5 +1,6 @@
-import { Request } from 'express';
-import { getCacheKey } from '../../src/utils/get-cache-key';
+import type { Request } from 'express';
+import { getCacheKey } from '../../src/utils/get-cache-key.js';
+import {describe, test, expect} from 'vitest'
 
 const restUrl = 'http://localhost/items/example';
 const graphQlUrl = 'http://localhost/graphql';

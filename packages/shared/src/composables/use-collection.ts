@@ -1,5 +1,5 @@
-import { useStores } from './use-system';
-import { AppCollection, Field } from '../types';
+import { useStores } from './use-system.js';
+import type { AppCollection, Field } from '../types/index.js';
 import { computed, ref, Ref, ComputedRef } from 'vue';
 
 type UsableCollection = {

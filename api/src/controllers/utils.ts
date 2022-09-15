@@ -7,24 +7,24 @@ import {
 	InvalidPayloadException,
 	InvalidQueryException,
 	UnsupportedMediaTypeException,
-} from '../exceptions';
-import collectionExists from '../middleware/collection-exists';
-import { respond } from '../middleware/respond';
-import { RevisionsService, UtilsService, ImportService, ExportService } from '../services';
-import asyncHandler from '../utils/async-handler';
+} from '../exceptions/index.js';
+import collectionExists from '../middleware/collection-exists.js';
+import { respond } from '../middleware/respond.js';
+import { RevisionsService, UtilsService, ImportService, ExportService } from '../services/index.js';
+import asyncHandler from '../utils/async-handler.js';
 import Busboy from 'busboy';
-import { flushCaches } from '../cache';
-import { generateHash } from '../utils/generate-hash';
+import { flushCaches } from '../cache.js';
+import { generateHash } from '../utils/generate-hash.js';
 
 const router = Router();
 
 router.get(
 	'/random/string',
 	asyncHandler(async (req, res) => {
-		if (req.query && req.query.length && Number(req.query.length) > 500)
+		if (req.query && req.query['length'] && Number(req.query['length']) > 500)
 			throw new InvalidQueryException(`"length" can't be more than 500 characters`);
 
-		const string = nanoid(req.query?.length ? Number(req.query.length) : 32);
+		const string = nanoid(req.query?.['length'] ? Number(req.query['length']) : 32);
 
 		return res.json({ data: string });
 	})
@@ -73,7 +73,7 @@ router.post(
 		if (error) throw new InvalidPayloadException(error.message);
 
 		const service = new UtilsService({
-			accountability: req.accountability,
+			accountability: req.accountability!,
 			schema: req.schema,
 		});
 		await service.sort(req.collection, req.body);
@@ -84,12 +84,12 @@ router.post(
 
 router.post(
 	'/revert/:revision',
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req, _res, next) => {
 		const service = new RevisionsService({
-			accountability: req.accountability,
+			accountability: req.accountability!,
 			schema: req.schema,
 		});
-		await service.revert(req.params.revision);
+		await service.revert(req.params['revision']!);
 		next();
 	}),
 	respond
@@ -103,7 +103,7 @@ router.post(
 			throw new UnsupportedMediaTypeException(`Unsupported Content-Type header`);
 
 		const service = new ImportService({
-			accountability: req.accountability,
+			accountability: req.accountability!,
 			schema: req.schema,
 		});
 
@@ -122,7 +122,7 @@ router.post(
 
 		busboy.on('file', async (_fieldname, fileStream, { mimeType }) => {
 			try {
-				await service.import(req.params.collection, mimeType, fileStream);
+				await service.import(req.params['collection']!, mimeType, fileStream);
 			} catch (err: any) {
 				return next(err);
 			}
@@ -139,7 +139,7 @@ router.post(
 router.post(
 	'/export/:collection',
 	collectionExists,
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req, _res, next) => {
 		if (!req.body.query) {
 			throw new InvalidPayloadException(`"query" is required.`);
 		}
@@ -149,12 +149,12 @@ router.post(
 		}
 
 		const service = new ExportService({
-			accountability: req.accountability,
+			accountability: req.accountability!,
 			schema: req.schema,
 		});
 
 		// We're not awaiting this, as it's supposed to run async in the background
-		service.exportToFile(req.params.collection, req.body.query, req.body.format, {
+		service.exportToFile(req.params['collection']!, req.body.query, req.body.format, {
 			file: req.body.file,
 		});
 

@@ -1,4 +1,4 @@
-import {
+import type {
 	AbstractServiceOptions,
 	ShareData,
 	LoginResult,
@@ -6,20 +6,20 @@ import {
 	PrimaryKey,
 	MutationOptions,
 	DirectusTokenPayload,
-} from '../types';
-import { ItemsService } from './items';
+} from '../types/index.js';
+import { ItemsService } from './items.js';
 import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
 import ms from 'ms';
-import { InvalidCredentialsException, ForbiddenException } from '../exceptions';
-import env from '../env';
+import { InvalidCredentialsException, ForbiddenException } from '../exceptions/index.js';
+import env from '../env.js';
 import { nanoid } from 'nanoid';
-import { AuthorizationService } from './authorization';
-import { UsersService } from './users';
-import { MailService } from './mail';
-import { userName } from '../utils/user-name';
-import { md } from '../utils/md';
-import { Url } from '../utils/url';
+import { AuthorizationService } from './authorization.js';
+import { UsersService } from './users.js';
+import { MailService } from './mail/index.js';
+import { userName } from '../utils/user-name.js';
+import { md } from '../utils/md.js';
+import { Url } from '../utils/url.js';
 
 export class SharesService extends ItemsService {
 	authorizationService: AuthorizationService;
@@ -34,8 +34,8 @@ export class SharesService extends ItemsService {
 		});
 	}
 
-	async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
-		await this.authorizationService.checkAccess('share', data.collection, data.item);
+	override async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
+		await this.authorizationService.checkAccess('share', data['collection'], data['item']);
 		return super.createOne(data, opts);
 	}
 
@@ -53,7 +53,7 @@ export class SharesService extends ItemsService {
 				share_password: 'password',
 			})
 			.from('directus_shares')
-			.where('id', payload.share)
+			.where('id', payload['share'])
 			.andWhere((subQuery) => {
 				subQuery.whereNull('date_end').orWhere('date_end', '>=', new Date());
 			})
@@ -69,7 +69,7 @@ export class SharesService extends ItemsService {
 			throw new InvalidCredentialsException();
 		}
 
-		if (record.share_password && !(await argon2.verify(record.share_password, payload.password))) {
+		if (record.share_password && !(await argon2.verify(record.share_password, payload['password']))) {
 			throw new InvalidCredentialsException();
 		}
 
@@ -88,13 +88,13 @@ export class SharesService extends ItemsService {
 			},
 		};
 
-		const accessToken = jwt.sign(tokenPayload, env.SECRET as string, {
-			expiresIn: env.ACCESS_TOKEN_TTL,
+		const accessToken = jwt.sign(tokenPayload, env['SECRET'] as string, {
+			expiresIn: env['ACCESS_TOKEN_TTL'],
 			issuer: 'directus',
 		});
 
 		const refreshToken = nanoid(64);
-		const refreshTokenExpiration = new Date(Date.now() + ms(env.REFRESH_TOKEN_TTL as string));
+		const refreshTokenExpiration = new Date(Date.now() + ms(env['REFRESH_TOKEN_TTL']));
 
 		await this.knex('directus_sessions').insert({
 			token: refreshToken,
@@ -110,7 +110,7 @@ export class SharesService extends ItemsService {
 		return {
 			accessToken,
 			refreshToken,
-			expires: ms(env.ACCESS_TOKEN_TTL as string),
+			expires: ms(env['ACCESS_TOKEN_TTL']),
 		};
 	}
 
@@ -137,9 +137,9 @@ export class SharesService extends ItemsService {
 		const message = `
 Hello!
 
-${userName(userInfo)} has invited you to view an item in ${share.collection}.
+${userName(userInfo)} has invited you to view an item in ${share['collection']}.
 
-[Open](${new Url(env.PUBLIC_URL).addPath('admin', 'shared', payload.share).toString()})
+[Open](${new Url(env['PUBLIC_URL']).addPath('admin', 'shared', payload.share).toString()})
 `;
 
 		for (const email of payload.emails) {

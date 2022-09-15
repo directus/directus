@@ -1,8 +1,8 @@
-import KnexSQLite, { parseDefaultValue } from 'knex-schema-inspector/dist/dialects/sqlite';
-import extractMaxLength from 'knex-schema-inspector/dist/utils/extract-max-length';
-import extractType from 'knex-schema-inspector/dist/utils/extract-type';
-import { SchemaOverview } from '../types/overview';
-import { SchemaInspector } from '../types/schema';
+import KnexSQLite, { parseDefaultValue } from '../knex/sqlite.js';
+import extractMaxLength from '../utils/extract-max-length.js';
+import extractType from '../utils/extract-type.js';
+import type { SchemaOverview } from '../types/overview.js';
+import type { SchemaInspector } from '../types/schema.js';
 
 type RawColumn = {
 	cid: number;
@@ -35,7 +35,7 @@ export default class SQLite extends KnexSQLite implements SchemaInspector {
 			}
 
 			for (const column of columns) {
-				overview[table].columns[column.name] = {
+				overview[table]!.columns[column.name] = {
 					table_name: table,
 					column_name: column.name,
 					default_value:

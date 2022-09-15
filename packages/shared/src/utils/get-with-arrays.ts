@@ -1,5 +1,5 @@
 /**
- * Basically the same as `get` from `lodash`, but will convert nested array values to arrays, so for example:
+ * Basically the same as `get` from `lodash-es`, but will convert nested array values to arrays, so for example:
  *
  * @example
  * ```js

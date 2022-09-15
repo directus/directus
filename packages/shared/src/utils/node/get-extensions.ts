@@ -1,23 +1,23 @@
 import path from 'path';
 import fse from 'fs-extra';
-import {
+import type {
 	ExtensionLocal,
 	ExtensionManifestRaw,
 	ExtensionPackage,
 	ExtensionPackageType,
 	ExtensionType,
-} from '../../types';
-import { resolvePackage } from './resolve-package';
-import { listFolders } from './list-folders';
+} from '../../types/index.js';
+import { resolvePackage } from './resolve-package.js';
+import { listFolders } from './list-folders.js';
 import {
 	EXTENSION_NAME_REGEX,
 	EXTENSION_PKG_KEY,
 	HYBRID_EXTENSION_TYPES,
 	PACKAGE_EXTENSION_TYPES,
-} from '../../constants';
-import { pluralize } from '../pluralize';
-import { validateExtensionManifest } from '../validate-extension-manifest';
-import { isIn, isTypeIn } from '../array-helpers';
+} from '../../constants/index.js';
+import { pluralize } from '../pluralize.js';
+import { validateExtensionManifest } from '../validate-extension-manifest.js';
+import { isIn, isTypeIn } from '../array-helpers.js';
 
 async function resolvePackageExtensions(
 	extensionNames: string[],
@@ -27,7 +27,7 @@ async function resolvePackageExtensions(
 	const extensions: ExtensionPackage[] = [];
 
 	for (const extensionName of extensionNames) {
-		const extensionPath = resolvePackage(extensionName, root);
+		const extensionPath = resolvePackage(extensionName, import.meta.url, root);
 		const extensionManifest: ExtensionManifestRaw = await fse.readJSON(path.join(extensionPath, 'package.json'));
 
 		if (!validateExtensionManifest(extensionManifest)) {
@@ -135,8 +135,8 @@ export async function getLocalExtensions(root: string, types: readonly Extension
 					});
 				}
 			}
-		} catch {
-			throw new Error(`Extension folder "${typePath}" couldn't be opened`);
+		} catch (error) {
+			throw new Error(`Extension folder "${typePath}" couldn't be opened ${error}`);
 		}
 	}
 

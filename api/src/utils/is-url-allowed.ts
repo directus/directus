@@ -1,5 +1,5 @@
 import { toArray } from '@directus/shared/utils';
-import logger from '../logger';
+import logger from '../logger.js';
 import { URL } from 'url';
 
 /**
@@ -17,6 +17,7 @@ export default function isUrlAllowed(url: string, allowList: string | string[]):
 		} catch {
 			logger.warn(`Invalid URL used "${url}"`);
 		}
+		return undefined;
 	});
 
 	try {

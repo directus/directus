@@ -1,10 +1,10 @@
-import { ContainsNullValuesException } from '../contains-null-values';
-import { InvalidForeignKeyException } from '../invalid-foreign-key';
-import { NotNullViolationException } from '../not-null-violation';
-import { RecordNotUniqueException } from '../record-not-unique';
-import { ValueOutOfRangeException } from '../value-out-of-range';
-import { ValueTooLongException } from '../value-too-long';
-import { PostgresError } from './types';
+import { ContainsNullValuesException } from '../contains-null-values.js';
+import { InvalidForeignKeyException } from '../invalid-foreign-key.js';
+import { NotNullViolationException } from '../not-null-violation.js';
+import { RecordNotUniqueException } from '../record-not-unique.js';
+import { ValueOutOfRangeException } from '../value-out-of-range.js';
+import { ValueTooLongException } from '../value-too-long.js';
+import type { PostgresError } from './types.js';
 
 enum PostgresErrorCodes {
 	FOREIGN_KEY_VIOLATION = '23503',
@@ -40,8 +40,8 @@ function uniqueViolation(error: PostgresError) {
 	if (!matches) return error;
 
 	const collection = table;
-	const field = matches[0].slice(1, -1);
-	const invalid = matches[1].slice(1, -1);
+	const field = matches[0]!.slice(1, -1);
+	const invalid = matches[1]!.slice(1, -1);
 
 	return new RecordNotUniqueException(field, {
 		collection,
@@ -56,9 +56,9 @@ function numericValueOutOfRange(error: PostgresError) {
 
 	if (!matches) return error;
 
-	const collection = matches[0].slice(1, -1);
+	const collection = matches[0]!.slice(1, -1);
 	const field = null;
-	const invalid = matches[2].slice(1, -1);
+	const invalid = matches[2]!.slice(1, -1);
 
 	return new ValueOutOfRangeException(field, {
 		collection,
@@ -78,7 +78,7 @@ function valueLimitViolation(error: PostgresError) {
 
 	if (!matches) return error;
 
-	const collection = matches[0].slice(1, -1);
+	const collection = matches[0]!.slice(1, -1);
 	const field = null;
 
 	return new ValueTooLongException(field, {
@@ -110,8 +110,8 @@ function foreignKeyViolation(error: PostgresError) {
 	if (!matches) return error;
 
 	const collection = table;
-	const field = matches[0].slice(1, -1);
-	const invalid = matches[1].slice(1, -1);
+	const field = matches[0]!.slice(1, -1);
+	const invalid = matches[1]!.slice(1, -1);
 
 	return new InvalidForeignKeyException(field, {
 		collection,

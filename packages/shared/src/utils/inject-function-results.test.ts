@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { injectFunctionResults } from './inject-function-results';
+import { injectFunctionResults } from './inject-function-results.js';
 
 describe('injectFunctionResults', () => {
 	it('Passes the original object unchanged if no filter rules apply', () => {

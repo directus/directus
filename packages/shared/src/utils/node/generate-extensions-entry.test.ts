@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
-import { Extension } from '../../types/extensions';
-import { generateExtensionsEntry } from './generate-extensions-entry';
+import type { Extension } from '../../types/extensions.js';
+import { generateExtensionsEntry } from './generate-extensions-entry.js';
 
 describe('generateExtensionsEntry', () => {
 	const type = 'panel';

@@ -1,10 +1,9 @@
-import * as fse from 'fs-extra';
-//import { promises as fs } from 'fs';
+import fse from 'fs-extra';
 import { dirname, join, resolve, relative, sep } from 'path';
-import Storage from './Storage';
-import { isReadableStream, pipeline } from './utils';
-import { FileNotFound, UnknownException, PermissionMissing } from './exceptions';
-import {
+import Storage from './Storage.js';
+import { isReadableStream, pipeline } from './utils.js';
+import { FileNotFound, UnknownException, PermissionMissing } from './exceptions/index.js';
+import type {
 	Response,
 	ExistsResponse,
 	ContentResponse,
@@ -12,7 +11,11 @@ import {
 	FileListResponse,
 	DeleteResponse,
 	Range,
-} from './types';
+} from './types.js';
+import { appendFile, opendir, readFile, unlink } from 'fs/promises';
+import { createWriteStream } from 'fs';
+
+const { copy, createReadStream, ensureDir, move, outputFile, pathExists, stat } = fse;
 
 function handleError(err: Error & { code: string; path?: string }, location: string): Error {
 	switch (err.code) {
@@ -43,9 +46,9 @@ export class LocalFileSystemStorage extends Storage {
 	/**
 	 * Appends content to a file.
 	 */
-	public async append(location: string, content: Buffer | string): Promise<Response> {
+	public override async append(location: string, content: Buffer | string): Promise<Response> {
 		try {
-			const result = await fse.appendFile(this._fullPath(location), content);
+			const result = await appendFile(this._fullPath(location), content);
 			return { raw: result };
 		} catch (e: any) {
 			throw handleError(e, location);
@@ -55,9 +58,9 @@ export class LocalFileSystemStorage extends Storage {
 	/**
 	 * Copy a file to a location.
 	 */
-	public async copy(src: string, dest: string): Promise<Response> {
+	public override async copy(src: string, dest: string): Promise<Response> {
 		try {
-			const result = await fse.copy(this._fullPath(src), this._fullPath(dest));
+			const result = await copy(this._fullPath(src), this._fullPath(dest));
 			return { raw: result };
 		} catch (e: any) {
 			throw handleError(e, `${src} -> ${dest}`);
@@ -67,9 +70,9 @@ export class LocalFileSystemStorage extends Storage {
 	/**
 	 * Delete existing file.
 	 */
-	public async delete(location: string): Promise<DeleteResponse> {
+	public override async delete(location: string): Promise<DeleteResponse> {
 		try {
-			const result = await fse.unlink(this._fullPath(location));
+			const result = await unlink(this._fullPath(location));
 			return { raw: result, wasDeleted: true };
 		} catch (e: any) {
 			const error = handleError(e, location);
@@ -85,16 +88,16 @@ export class LocalFileSystemStorage extends Storage {
 	/**
 	 * Returns the driver.
 	 */
-	public driver(): typeof fse {
+	public override driver(): typeof fse {
 		return fse;
 	}
 
 	/**
 	 * Determines if a file or folder already exists.
 	 */
-	public async exists(location: string): Promise<ExistsResponse> {
+	public override async exists(location: string): Promise<ExistsResponse> {
 		try {
-			const result = await fse.pathExists(this._fullPath(location));
+			const result = await pathExists(this._fullPath(location));
 			return { exists: result, raw: result };
 		} catch (e: any) {
 			throw handleError(e, location);
@@ -104,9 +107,9 @@ export class LocalFileSystemStorage extends Storage {
 	/**
 	 * Returns the file contents as string.
 	 */
-	public async get(location: string, encoding = 'utf-8'): Promise<ContentResponse<string>> {
+	public override async get(location: string, encoding: BufferEncoding = 'utf-8'): Promise<ContentResponse<string>> {
 		try {
-			const result = await fse.readFile(this._fullPath(location), encoding);
+			const result = await readFile(this._fullPath(location), { encoding: encoding });
 			return { content: result, raw: result };
 		} catch (e: any) {
 			throw handleError(e, location);
@@ -116,9 +119,9 @@ export class LocalFileSystemStorage extends Storage {
 	/**
 	 * Returns the file contents as Buffer.
 	 */
-	public async getBuffer(location: string): Promise<ContentResponse<Buffer>> {
+	public override async getBuffer(location: string): Promise<ContentResponse<Buffer>> {
 		try {
-			const result = await fse.readFile(this._fullPath(location));
+			const result = await readFile(this._fullPath(location));
 			return { content: result, raw: result };
 		} catch (e: any) {
 			throw handleError(e, location);
@@ -128,13 +131,13 @@ export class LocalFileSystemStorage extends Storage {
 	/**
 	 * Returns file size in bytes.
 	 */
-	public async getStat(location: string): Promise<StatResponse> {
+	public override async getStat(location: string): Promise<StatResponse> {
 		try {
-			const stat = await fse.stat(this._fullPath(location));
+			const statInfo = await stat(this._fullPath(location));
 			return {
-				size: stat.size,
-				modified: stat.mtime,
-				raw: stat,
+				size: statInfo.size,
+				modified: statInfo.mtime,
+				raw: statInfo,
 			};
 		} catch (e: any) {
 			throw handleError(e, location);
@@ -144,8 +147,8 @@ export class LocalFileSystemStorage extends Storage {
 	/**
 	 * Returns a read stream for a file location.
 	 */
-	public getStream(location: string, range?: Range): NodeJS.ReadableStream {
-		return fse.createReadStream(this._fullPath(location), {
+	public override getStream(location: string, range?: Range): NodeJS.ReadableStream {
+		return createReadStream(this._fullPath(location), {
 			start: range?.start,
 			end: range?.end,
 		});
@@ -154,9 +157,9 @@ export class LocalFileSystemStorage extends Storage {
 	/**
 	 * Move file to a new location.
 	 */
-	public async move(src: string, dest: string): Promise<Response> {
+	public override async move(src: string, dest: string): Promise<Response> {
 		try {
-			const result = await fse.move(this._fullPath(src), this._fullPath(dest));
+			const result = await move(this._fullPath(src), this._fullPath(dest));
 			return { raw: result };
 		} catch (e: any) {
 			throw handleError(e, `${src} -> ${dest}`);
@@ -166,7 +169,7 @@ export class LocalFileSystemStorage extends Storage {
 	/**
 	 * Prepends content to a file.
 	 */
-	public async prepend(location: string, content: Buffer | string): Promise<Response> {
+	public override async prepend(location: string, content: Buffer | string): Promise<Response> {
 		try {
 			const { content: actualContent } = await this.get(location, 'utf-8');
 
@@ -183,19 +186,19 @@ export class LocalFileSystemStorage extends Storage {
 	 * Creates a new file.
 	 * This method will create missing directories on the fly.
 	 */
-	public async put(location: string, content: Buffer | NodeJS.ReadableStream | string): Promise<Response> {
+	public override async put(location: string, content: Buffer | NodeJS.ReadableStream | string): Promise<Response> {
 		const fullPath = this._fullPath(location);
 
 		try {
 			if (isReadableStream(content)) {
 				const dir = dirname(fullPath);
-				await fse.ensureDir(dir);
-				const ws = fse.createWriteStream(fullPath);
+				await ensureDir(dir);
+				const ws = createWriteStream(fullPath);
 				await pipeline(content, ws);
 				return { raw: undefined };
 			}
 
-			const result = await fse.outputFile(fullPath, content);
+			const result = await outputFile(fullPath, content);
 			return { raw: result };
 		} catch (e: any) {
 			throw handleError(e, location);
@@ -205,7 +208,7 @@ export class LocalFileSystemStorage extends Storage {
 	/**
 	 * List files with a given prefix.
 	 */
-	public flatList(prefix = ''): AsyncIterable<FileListResponse> {
+	public override flatList(prefix = ''): AsyncIterable<FileListResponse> {
 		const fullPrefix = this._fullPath(prefix);
 		return this._flatDirIterator(fullPrefix, prefix);
 	}
@@ -214,7 +217,7 @@ export class LocalFileSystemStorage extends Storage {
 		const prefixDirectory = prefix[prefix.length - 1] === sep ? prefix : dirname(prefix);
 
 		try {
-			const dir = await fse.opendir(prefixDirectory);
+			const dir = await opendir(prefixDirectory);
 
 			for await (const file of dir) {
 				const fileName = join(prefixDirectory, file.name);

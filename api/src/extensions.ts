@@ -1,6 +1,6 @@
 import express, { Router } from 'express';
 import path from 'path';
-import {
+import type {
 	ActionHandler,
 	ApiExtension,
 	AppExtensionType,
@@ -32,29 +32,32 @@ import {
 	HYBRID_EXTENSION_TYPES,
 	PACKAGE_EXTENSION_TYPES,
 } from '@directus/shared/constants';
-import getDatabase from './database';
-import emitter, { Emitter } from './emitter';
-import env from './env';
-import * as exceptions from './exceptions';
+import getDatabase from './database/index.js';
+import emitter, { Emitter } from './emitter.js';
+import env from './env.js';
+import * as exceptions from './exceptions/index.js';
 import * as sharedExceptions from '@directus/shared/exceptions';
-import logger from './logger';
+import logger from './logger.js';
 import fse from 'fs-extra';
-import { getSchema } from './utils/get-schema';
+import { getSchema } from './utils/get-schema.js';
 
-import * as services from './services';
+import * as services from './services/index.js';
 import { schedule, validate } from 'node-cron';
 import { rollup } from 'rollup';
 import virtual from '@rollup/plugin-virtual';
 import alias from '@rollup/plugin-alias';
-import { Url } from './utils/url';
-import getModuleDefault from './utils/get-module-default';
-import { clone, escapeRegExp } from 'lodash';
+import { Url } from './utils/url.js';
+import getModuleDefault from './utils/get-module-default.js';
+import { clone, escapeRegExp } from 'lodash-es';
 import chokidar, { FSWatcher } from 'chokidar';
 import { isIn, isTypeIn, pluralize } from '@directus/shared/utils';
-import { getFlowManager } from './flows';
+import { getFlowManager } from './flows.js';
 import globby from 'globby';
-import { EventHandler } from './types';
-import { JobQueue } from './utils/job-queue';
+import type { EventHandler } from './types/index.js';
+import { JobQueue } from './utils/job-queue.js';
+import { fileURLToPath } from 'url';
+import { createRequire } from 'module';
+import { NodeVM } from 'vm2';
 
 let extensionManager: ExtensionManager | undefined;
 
@@ -82,7 +85,7 @@ type Options = {
 
 const defaultOptions: Options = {
 	schedule: true,
-	watch: env.EXTENSIONS_AUTO_RELOAD && env.NODE_ENV !== 'development',
+	watch: env['EXTENSIONS_AUTO_RELOAD'] && env['NODE_ENV'] !== 'development',
 };
 
 class ExtensionManager {
@@ -99,6 +102,8 @@ class ExtensionManager {
 
 	private reloadQueue: JobQueue;
 	private watcher: FSWatcher | null = null;
+
+	private vm = new NodeVM()
 
 	constructor() {
 		this.options = defaultOptions;
@@ -117,10 +122,10 @@ class ExtensionManager {
 			...options,
 		};
 
-		if (!prevOptions.watch && this.options.watch) {
-			this.initializeWatcher();
-		} else if (prevOptions.watch && !this.options.watch) {
+		if (prevOptions.watch && !this.options.watch) {
 			await this.closeWatcher();
+		} else if (this.options.watch) {
+			this.initializeWatcher();
 		}
 
 		if (!this.isLoaded) {
@@ -188,7 +193,10 @@ class ExtensionManager {
 
 	private async load(): Promise<void> {
 		try {
-			await ensureExtensionDirs(env.EXTENSIONS_PATH, env.SERVE_APP ? EXTENSION_TYPES : API_OR_HYBRID_EXTENSION_TYPES);
+			await ensureExtensionDirs(
+				env['EXTENSIONS_PATH'],
+				env['SERVE_APP'] ? EXTENSION_TYPES : API_OR_HYBRID_EXTENSION_TYPES
+			);
 
 			this.extensions = await this.getExtensions();
 		} catch (err: any) {
@@ -200,7 +208,7 @@ class ExtensionManager {
 		this.registerEndpoints();
 		await this.registerOperations();
 
-		if (env.SERVE_APP) {
+		if (env['SERVE_APP']) {
 			this.appExtensions = await this.generateExtensionBundles();
 		}
 
@@ -214,7 +222,7 @@ class ExtensionManager {
 
 		this.apiEmitter.offAll();
 
-		if (env.SERVE_APP) {
+		if (env['SERVE_APP']) {
 			this.appExtensions = {};
 		}
 
@@ -225,16 +233,18 @@ class ExtensionManager {
 		if (!this.watcher) {
 			logger.info('Watching extensions for changes...');
 
-			const localExtensionPaths = (env.SERVE_APP ? EXTENSION_TYPES : API_OR_HYBRID_EXTENSION_TYPES).flatMap((type) => {
-				const typeDir = path.posix.join(
-					path.relative('.', env.EXTENSIONS_PATH).split(path.sep).join(path.posix.sep),
-					pluralize(type)
-				);
+			const localExtensionPaths = (env['SERVE_APP'] ? EXTENSION_TYPES : API_OR_HYBRID_EXTENSION_TYPES).flatMap(
+				(type) => {
+					const typeDir = path.posix.join(
+						path.relative('.', env['EXTENSIONS_PATH']).split(path.sep).join(path.posix.sep),
+						pluralize(type)
+					);
 
-				return isIn(type, HYBRID_EXTENSION_TYPES)
-					? [path.posix.join(typeDir, '*', 'app.js'), path.posix.join(typeDir, '*', 'api.js')]
-					: path.posix.join(typeDir, '*', 'index.js');
-			});
+					return isIn(type, HYBRID_EXTENSION_TYPES)
+						? [path.posix.join(typeDir, '*', 'app.js'), path.posix.join(typeDir, '*', 'api.js')]
+						: path.posix.join(typeDir, '*', 'index.js');
+				}
+			);
 
 			this.watcher = chokidar.watch([path.resolve('package.json'), ...localExtensionPaths], {
 				ignoreInitial: true,
@@ -280,11 +290,11 @@ class ExtensionManager {
 	private async getExtensions(): Promise<Extension[]> {
 		const packageExtensions = await getPackageExtensions(
 			'.',
-			env.SERVE_APP ? EXTENSION_PACKAGE_TYPES : API_OR_HYBRID_EXTENSION_PACKAGE_TYPES
+			env['SERVE_APP'] ? EXTENSION_PACKAGE_TYPES : API_OR_HYBRID_EXTENSION_PACKAGE_TYPES
 		);
 		const localExtensions = await getLocalExtensions(
-			env.EXTENSIONS_PATH,
-			env.SERVE_APP ? EXTENSION_TYPES : API_OR_HYBRID_EXTENSION_TYPES
+			env['EXTENSIONS_PATH'],
+			env['SERVE_APP'] ? EXTENSION_TYPES : API_OR_HYBRID_EXTENSION_TYPES
 		);
 
 		return [...packageExtensions, ...localExtensions];
@@ -324,8 +334,10 @@ class ExtensionManager {
 	}
 
 	private async getSharedDepsMapping(deps: string[]) {
+		const require = createRequire(import.meta.url);
+
 		const appDir = await fse.readdir(
-			path.join(resolvePackage('@directus/app', require.main?.filename), 'dist', 'assets')
+			path.join(resolvePackage('@directus/app', import.meta.url, require.main?.filename), 'dist', 'assets')
 		);
 
 		const depsMapping: Record<string, string> = {};
@@ -334,7 +346,7 @@ class ExtensionManager {
 			const depName = appDir.find((file) => depRegex.test(file));
 
 			if (depName) {
-				const depUrl = new Url(env.PUBLIC_URL).addPath('admin', 'assets', depName);
+				const depUrl = new Url(env['PUBLIC_URL']).addPath('admin', 'assets', depName);
 
 				depsMapping[dep] = depUrl.toString({ rootRelative: true });
 			} else {
@@ -351,7 +363,7 @@ class ExtensionManager {
 		for (const hook of hooks) {
 			try {
 				const hookPath = path.resolve(hook.path, hook.entrypoint);
-				const hookInstance: HookConfig | { default: HookConfig } = require(hookPath);
+				const hookInstance: HookConfig | { default: HookConfig } = this.vm.runFile(hookPath);
 
 				const config = getModuleDefault(hookInstance);
 
@@ -369,7 +381,7 @@ class ExtensionManager {
 		for (const endpoint of endpoints) {
 			try {
 				const endpointPath = path.resolve(endpoint.path, endpoint.entrypoint);
-				const endpointInstance: EndpointConfig | { default: EndpointConfig } = require(endpointPath);
+				const endpointInstance: EndpointConfig | { default: EndpointConfig } = this.vm.runFile(endpointPath);
 
 				const config = getModuleDefault(endpointInstance);
 
@@ -382,17 +394,20 @@ class ExtensionManager {
 	}
 
 	private async registerOperations(): Promise<void> {
+		const __filename = fileURLToPath(import.meta.url);
+		const __dirname = path.dirname(__filename);
+
 		const internalPaths = await globby(
 			path.posix.join(path.relative('.', __dirname).split(path.sep).join(path.posix.sep), 'operations/*/index.(js|ts)')
 		);
 
 		const internalOperations = internalPaths.map((internalPath) => {
-			const dirs = internalPath.split(path.sep);
+			const dirs = internalPath.split('/');
 
 			return {
-				name: dirs[dirs.length - 2],
+				name: dirs.at(-2),
 				path: dirs.slice(0, -1).join(path.sep),
-				entrypoint: { api: dirs[dirs.length - 1] },
+				entrypoint: { api: dirs.at(-1) },
 			};
 		});
 
@@ -400,10 +415,26 @@ class ExtensionManager {
 			(extension): extension is HybridExtension => extension.type === 'operation'
 		);
 
-		for (const operation of [...internalOperations, ...operations]) {
+		for (const operation of operations) {
 			try {
-				const operationPath = path.resolve(operation.path, operation.entrypoint.api);
-				const operationInstance: OperationApiConfig | { default: OperationApiConfig } = require(operationPath);
+				const operationPath = path.resolve(operation.path, operation.entrypoint.api!);
+				const operationInstance: OperationApiConfig | { default: OperationApiConfig } = this.vm.runFile(operationPath);
+
+				const config = getModuleDefault(operationInstance);
+
+				this.registerOperation(config, operationPath);
+			} catch (error: any) {
+				logger.warn(`Couldn't register operation "${operation.name}"`);
+				logger.warn(error);
+			}
+		}
+
+		for (const operation of internalOperations) {
+			try {
+				const operationPath = path.resolve(operation.path, operation.entrypoint.api!);
+				const operationInstance: OperationApiConfig | { default: OperationApiConfig } = await import(
+					'file://' + operationPath
+				);
 
 				const config = getModuleDefault(operationInstance);
 
@@ -534,28 +565,17 @@ class ExtensionManager {
 						break;
 				}
 			}
-
-			delete require.cache[require.resolve(hook.path)];
 		}
 
 		this.apiExtensions.hooks = [];
 	}
 
 	private unregisterEndpoints(): void {
-		for (const endpoint of this.apiExtensions.endpoints) {
-			delete require.cache[require.resolve(endpoint.path)];
-		}
-
 		this.endpointRouter.stack = [];
-
 		this.apiExtensions.endpoints = [];
 	}
 
 	private unregisterOperations(): void {
-		for (const operation of this.apiExtensions.operations) {
-			delete require.cache[require.resolve(operation.path)];
-		}
-
 		const flowManager = getFlowManager();
 
 		flowManager.clearOperations();

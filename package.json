@@ -8,7 +8,7 @@
 		"./packages/*"
 	],
 	"scripts": {
-		"lint": "eslint .",
+		"lint": "tsc --noEmit && eslint .",
 		"format": "prettier --write \"**/*.{js,ts,vue,md,yaml}\"",
 		"test:e2e": "jest tests -c tests/jest.config.js",
 		"test:e2e:watch": "jest tests -c tests/jest.config.js --watch",

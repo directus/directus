@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { mergeFilters } from './merge-filters';
+import { mergeFilters } from './merge-filters.js';
 
 describe('merge filters', () => {
 	it('defaults to A when B is null', () => {

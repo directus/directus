@@ -1,3 +1,3 @@
-import { DateHelper } from '../types';
+import { DateHelper } from '../types.js';
 
 export class DateHelperDefault extends DateHelper {}

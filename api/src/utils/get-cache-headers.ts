@@ -1,5 +1,5 @@
-import env from '../env';
-import { Request } from 'express';
+import env from '../env.js';
+import type { Request } from 'express';
 
 /**
  * Returns the Cache-Control header for the current request
@@ -12,7 +12,7 @@ export function getCacheControlHeader(req: Request, ttl: number | null): string 
 	if (ttl === null) return 'no-cache';
 
 	// When the API cache can invalidate at any moment
-	if (env.CACHE_AUTO_PURGE === true) return 'no-cache';
+	if (env['CACHE_AUTO_PURGE'] === true) return 'no-cache';
 
 	const noCacheRequested =
 		req.headers['cache-control']?.includes('no-store') || req.headers['Cache-Control']?.includes('no-store');
@@ -28,13 +28,13 @@ export function getCacheControlHeader(req: Request, ttl: number | null): string 
 	let headerValue = `${access}, max-age=${ttlSeconds}`;
 
 	// When the s-maxage flag should be included
-	if (env.CACHE_CONTROL_S_MAXAGE !== false) {
+	if (env['CACHE_CONTROL_S_MAXAGE'] !== false) {
 		// Default to regular max-age flag when true
-		if (env.CACHE_CONTROL_S_MAXAGE === true) {
+		if (env['CACHE_CONTROL_S_MAXAGE'] === true) {
 			headerValue += `, s-maxage=${ttlSeconds}`;
 		} else {
 			// Set to custom value
-			headerValue += `, s-maxage=${env.CACHE_CONTROL_S_MAXAGE}`;
+			headerValue += `, s-maxage=${env['CACHE_CONTROL_S_MAXAGE']}`;
 		}
 	}
 

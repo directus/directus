@@ -1,10 +1,10 @@
-import { AbstractServiceOptions, PrimaryKey, MutationOptions } from '../types';
-import { ItemsService } from './items';
-import { Notification } from '@directus/shared/types';
-import { md } from '../utils/md';
-import { UsersService } from './users';
-import { MailService } from './mail';
-import logger from '../logger';
+import type { AbstractServiceOptions, PrimaryKey, MutationOptions } from '../types/index.js';
+import { ItemsService } from './items.js';
+import type { Notification } from '@directus/shared/types';
+import { md } from '../utils/md.js';
+import { UsersService } from './users.js';
+import { MailService } from './mail/index.js';
+import logger from '../logger.js';
 
 export class NotificationsService extends ItemsService {
 	usersService: UsersService;
@@ -16,7 +16,7 @@ export class NotificationsService extends ItemsService {
 		this.mailService = new MailService({ schema: this.schema, accountability: this.accountability });
 	}
 
-	async createOne(data: Partial<Notification>, opts?: MutationOptions): Promise<PrimaryKey> {
+	override async createOne(data: Partial<Notification>, opts?: MutationOptions): Promise<PrimaryKey> {
 		const response = await super.createOne(data, opts);
 
 		await this.sendEmail(data);
@@ -24,7 +24,7 @@ export class NotificationsService extends ItemsService {
 		return response;
 	}
 
-	async createMany(data: Partial<Notification>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
+	override async createMany(data: Partial<Notification>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
 		const response = await super.createMany(data, opts);
 
 		for (const notification of data) {
@@ -38,7 +38,7 @@ export class NotificationsService extends ItemsService {
 		if (data.recipient) {
 			const user = await this.usersService.readOne(data.recipient, { fields: ['email', 'email_notifications'] });
 
-			if (user.email && user.email_notifications === true) {
+			if (user['email'] && user['email_notifications'] === true) {
 				try {
 					await this.mailService.send({
 						template: {
@@ -47,7 +47,7 @@ export class NotificationsService extends ItemsService {
 								html: data.message ? md(data.message) : '',
 							},
 						},
-						to: user.email,
+						to: user['email'],
 						subject: data.subject,
 					});
 				} catch (error: any) {

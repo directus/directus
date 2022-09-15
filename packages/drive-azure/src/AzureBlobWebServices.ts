@@ -22,11 +22,9 @@ import {
 	ContainerSASPermissions,
 } from '@azure/storage-blob';
 
-import path from 'path';
+import * as path from 'path';
 
 import { PassThrough, Readable } from 'stream';
-
-import normalize from 'normalize-path';
 
 function handleError(err: Error, path: string): Error {
 	return new UnknownException(err, err.name, path);
@@ -47,17 +45,17 @@ export class AzureBlobWebServicesStorage extends Storage {
 			this.$signedCredentials
 		);
 		this.$containerClient = this.$client.getContainerClient(config.containerName);
-		this.$root = config.root ? normalize(config.root).replace(/^\//, '') : '';
+		this.$root = config.root ? path.normalize(config.root).replace(/^\//, '') : '';
 	}
 
 	/**
 	 * Prefixes the given filePath with the storage root location
 	 */
 	protected _fullPath(filePath: string): string {
-		return normalize(path.join(this.$root, filePath));
+		return path.normalize(path.join(this.$root, filePath));
 	}
 
-	public async copy(src: string, dest: string): Promise<Response> {
+	public override async copy(src: string, dest: string): Promise<Response> {
 		src = this._fullPath(src);
 		dest = this._fullPath(dest);
 
@@ -74,7 +72,7 @@ export class AzureBlobWebServicesStorage extends Storage {
 		}
 	}
 
-	public async delete(location: string): Promise<DeleteResponse> {
+	public override async delete(location: string): Promise<DeleteResponse> {
 		location = this._fullPath(location);
 
 		try {
@@ -85,11 +83,11 @@ export class AzureBlobWebServicesStorage extends Storage {
 		}
 	}
 
-	public driver(): BlobServiceClient {
+	public override driver(): BlobServiceClient {
 		return this.$client;
 	}
 
-	public async exists(location: string): Promise<ExistsResponse> {
+	public override async exists(location: string): Promise<ExistsResponse> {
 		location = this._fullPath(location);
 
 		try {
@@ -100,7 +98,7 @@ export class AzureBlobWebServicesStorage extends Storage {
 		}
 	}
 
-	public async get(location: string, encoding: BufferEncoding = 'utf-8'): Promise<ContentResponse<string>> {
+	public override async get(location: string, encoding: BufferEncoding = 'utf-8'): Promise<ContentResponse<string>> {
 		try {
 			const bufferResult = await this.getBuffer(location);
 			return {
@@ -112,7 +110,7 @@ export class AzureBlobWebServicesStorage extends Storage {
 		}
 	}
 
-	public async getBuffer(location: string): Promise<ContentResponse<Buffer>> {
+	public override async getBuffer(location: string): Promise<ContentResponse<Buffer>> {
 		location = this._fullPath(location);
 
 		try {
@@ -123,7 +121,7 @@ export class AzureBlobWebServicesStorage extends Storage {
 		}
 	}
 
-	public async getSignedUrl(location: string, options: SignedUrlOptions = {}): Promise<SignedUrlResponse> {
+	public override async getSignedUrl(location: string, options: SignedUrlOptions = {}): Promise<SignedUrlResponse> {
 		location = this._fullPath(location);
 
 		const { expiry = 900 } = options;
@@ -148,7 +146,7 @@ export class AzureBlobWebServicesStorage extends Storage {
 		}
 	}
 
-	public async getStat(location: string): Promise<StatResponse> {
+	public override async getStat(location: string): Promise<StatResponse> {
 		location = this._fullPath(location);
 
 		try {
@@ -163,7 +161,7 @@ export class AzureBlobWebServicesStorage extends Storage {
 		}
 	}
 
-	public getStream(location: string, range?: Range): NodeJS.ReadableStream {
+	public override getStream(location: string, range?: Range): NodeJS.ReadableStream {
 		location = this._fullPath(location);
 
 		const intermediateStream = new PassThrough({ highWaterMark: 1 });
@@ -192,13 +190,13 @@ export class AzureBlobWebServicesStorage extends Storage {
 		return intermediateStream;
 	}
 
-	public getUrl(location: string): string {
+	public override getUrl(location: string): string {
 		location = this._fullPath(location);
 
 		return this.$containerClient.getBlobClient(location).url;
 	}
 
-	public async move(src: string, dest: string): Promise<Response> {
+	public override async move(src: string, dest: string): Promise<Response> {
 		src = this._fullPath(src);
 		dest = this._fullPath(dest);
 
@@ -213,7 +211,7 @@ export class AzureBlobWebServicesStorage extends Storage {
 		return { raw: result };
 	}
 
-	public async put(
+	public override async put(
 		location: string,
 		content: Buffer | NodeJS.ReadableStream | string,
 		type?: string
@@ -237,7 +235,7 @@ export class AzureBlobWebServicesStorage extends Storage {
 		}
 	}
 
-	public async *flatList(prefix = ''): AsyncIterable<FileListResponse> {
+	public override async *flatList(prefix = ''): AsyncIterable<FileListResponse> {
 		prefix = this._fullPath(prefix);
 
 		try {

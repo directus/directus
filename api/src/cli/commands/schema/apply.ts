@@ -4,13 +4,13 @@ import { promises as fs } from 'fs';
 import inquirer from 'inquirer';
 import { load as loadYaml } from 'js-yaml';
 import path from 'path';
-import { flushCaches } from '../../../cache';
-import getDatabase, { isInstalled, validateDatabaseConnection } from '../../../database';
-import logger from '../../../logger';
-import { Snapshot } from '../../../types';
-import { applySnapshot, isNestedMetaUpdate } from '../../../utils/apply-snapshot';
-import { getSnapshot } from '../../../utils/get-snapshot';
-import { getSnapshotDiff } from '../../../utils/get-snapshot-diff';
+import { flushCaches } from '../../../cache.js';
+import getDatabase, { isInstalled, validateDatabaseConnection } from '../../../database/index.js';
+import logger from '../../../logger.js';
+import type { Snapshot } from '../../../types/index.js';
+import { applySnapshot, isNestedMetaUpdate } from '../../../utils/apply-snapshot.js';
+import { getSnapshot } from '../../../utils/get-snapshot.js';
+import { getSnapshotDiff } from '../../../utils/get-snapshot-diff.js';
 
 export async function apply(snapshotPath: string, options?: { yes: boolean; dryRun: boolean }): Promise<void> {
 	const filename = path.resolve(process.cwd(), snapshotPath);
@@ -83,7 +83,7 @@ export async function apply(snapshotPath: string, options?: { yes: boolean; dryR
 				message += '\n\n' + chalk.black.underline.bold('Fields:');
 
 				for (const { collection, field, diff } of snapshotDiff.fields) {
-					if (diff[0]?.kind === 'E' || isNestedMetaUpdate(diff[0])) {
+					if (diff[0]?.kind === 'E' || isNestedMetaUpdate(diff[0]!)) {
 						message += `\n  - ${chalk.blue('Update')} ${collection}.${field}`;
 
 						for (const change of diff) {

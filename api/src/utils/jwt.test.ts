@@ -1,7 +1,12 @@
-import { verifyAccessJWT } from '../../src/utils/jwt';
+import { verifyAccessJWT } from '../../src/utils/jwt.js';
 import jwt from 'jsonwebtoken';
-import { InvalidTokenException, ServiceUnavailableException, TokenExpiredException } from '../../src/exceptions';
-import { DirectusTokenPayload } from '../../src/types';
+import {
+	InvalidTokenException,
+	ServiceUnavailableException,
+	TokenExpiredException,
+} from '../../src/exceptions/index.js';
+import type { DirectusTokenPayload } from '../../src/types/index.js';
+import { test, expect, vi} from 'vitest'
 
 const payload: DirectusTokenPayload = { role: null, app_access: false, admin_access: false };
 const secret = 'test-secret';
@@ -32,7 +37,7 @@ Object.entries(InvalidTokenCases).forEach(([title, token]) =>
 );
 
 test(`Throws ServiceUnavailableException for unexpected error from jsonwebtoken`, () => {
-	jest.spyOn(jwt, 'verify').mockImplementation(() => {
+	vi.spyOn(jwt, 'verify').mockImplementation(() => {
 		throw new Error();
 	});
 

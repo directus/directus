@@ -1,39 +1,39 @@
 import knex, { Knex } from 'knex';
 import { getTracker, MockClient, Tracker } from 'knex-mock-client';
-import { snapshotApplyTestSchema } from '../__utils__/schemas';
+import { snapshotApplyTestSchema } from '../__utils__/schemas.js';
+import {describe, beforeEach, afterEach, expect, vi, Mocked, it} from 'vitest'
 
-import { CollectionsService, FieldsService } from '../services';
-import { applySnapshot } from './apply-snapshot';
-import * as getSchema from './get-schema';
+import { CollectionsService, FieldsService } from '../services/index.js';
+import { applySnapshot } from './apply-snapshot.js';
+import * as schema from './get-schema.js';
 import {
 	snapshotBeforeCreateCollection,
 	snapshotCreateCollection,
 	snapshotCreateCollectionNotNested,
 	snapshotBeforeDeleteCollection,
-} from '../__utils__/snapshots';
-import { Snapshot } from '../types';
+} from '../__utils__/snapshots.js';
+import type { Snapshot } from '../types/index.js';
 
-jest.mock('../../src/database/index', () => {
+vi.mock('../../src/database/index', () => {
 	return {
-		getDatabaseClient: jest.fn().mockReturnValue('postgres'),
+		getDatabaseClient: vi.fn().mockReturnValue('postgres'),
 	};
 });
-jest.requireMock('../../src/database/index');
 
 class Client_PG extends MockClient {}
 
 describe('applySnapshot', () => {
-	let db: jest.Mocked<Knex>;
+	let db: Mocked<Knex>;
 	let tracker: Tracker;
 
 	beforeEach(() => {
-		db = knex({ client: Client_PG }) as jest.Mocked<Knex>;
+		db = knex({ client: Client_PG }) as Mocked<Knex>;
 		tracker = getTracker();
 	});
 
 	afterEach(() => {
 		tracker.reset();
-		jest.clearAllMocks();
+		vi.clearAllMocks();
 	});
 
 	describe('Creating new collection(s)', () => {
@@ -102,12 +102,12 @@ describe('applySnapshot', () => {
 			};
 
 			// Stop call to db later on in apply-snapshot
-			jest.spyOn(getSchema, 'getSchema').mockReturnValue(Promise.resolve(snapshotApplyTestSchema));
+			vi.spyOn(schema, 'getSchema').mockReturnValue(Promise.resolve(snapshotApplyTestSchema));
 			// We are not actually testing that createOne works, just that is is called correctly
-			const createOneCollectionSpy = jest
+			const createOneCollectionSpy = vi
 				.spyOn(CollectionsService.prototype, 'createOne')
-				.mockImplementation(jest.fn());
-			const createFieldSpy = jest.spyOn(FieldsService.prototype, 'createField').mockImplementation(jest.fn());
+				.mockImplementation(async () => '');
+			const createFieldSpy = vi.spyOn(FieldsService.prototype, 'createField').mockImplementation(async () => {});
 
 			await applySnapshot(snapshotCreateCollectionNotNested, {
 				database: db,
@@ -251,12 +251,12 @@ describe('applySnapshot', () => {
 			};
 
 			// Stop call to db later on in apply-snapshot
-			jest.spyOn(getSchema, 'getSchema').mockReturnValue(Promise.resolve(snapshotApplyTestSchema));
+			vi.spyOn(schema, 'getSchema').mockReturnValue(Promise.resolve(snapshotApplyTestSchema));
 			// We are not actually testing that createOne works, just that is is called correctly
-			const createOneCollectionSpy = jest
+			const createOneCollectionSpy = vi
 				.spyOn(CollectionsService.prototype, 'createOne')
-				.mockImplementation(jest.fn());
-			const createFieldSpy = jest.spyOn(FieldsService.prototype, 'createField').mockImplementation(jest.fn());
+				.mockImplementation(async () => '');
+			const createFieldSpy = vi.spyOn(FieldsService.prototype, 'createField').mockImplementation(async () => {});
 
 			await applySnapshot(snapshotCreateCollection, {
 				database: db,
@@ -285,11 +285,11 @@ describe('applySnapshot', () => {
 			};
 
 			// Stop call to db later on in apply-snapshot
-			jest.spyOn(getSchema, 'getSchema').mockReturnValue(Promise.resolve(snapshotApplyTestSchema));
+			vi.spyOn(schema, 'getSchema').mockReturnValue(Promise.resolve(snapshotApplyTestSchema));
 			// We are not actually testing that deleteOne works, just that is is called correctly
-			const deleteOneCollectionSpy = jest
+			const deleteOneCollectionSpy = vi
 				.spyOn(CollectionsService.prototype, 'deleteOne')
-				.mockImplementation(jest.fn());
+				.mockImplementation(async () => '');
 
 			await applySnapshot(snapshotToApply, {
 				database: db,

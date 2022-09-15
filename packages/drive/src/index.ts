@@ -1,7 +1,7 @@
-export { default as Storage } from './Storage';
-export { default as StorageManager } from './StorageManager';
-export { LocalFileSystemStorage } from './LocalFileSystemStorage';
+export { default as Storage } from './Storage.js';
+export { default as StorageManager } from './StorageManager.js';
+export { LocalFileSystemStorage } from './LocalFileSystemStorage.js';
 
-export * from './exceptions';
-export * from './utils';
-export * from './types';
+export * from './exceptions/index.js';
+export * from './utils.js';
+export * from './types.js';

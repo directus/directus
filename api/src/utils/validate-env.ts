@@ -1,5 +1,5 @@
-import env from '../env';
-import logger from '../logger';
+import env from '../env.js';
+import logger from '../logger.js';
 
 export function validateEnv(requiredKeys: string[]): void {
 	for (const requiredKey of requiredKeys) {

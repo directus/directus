@@ -1,5 +1,5 @@
-import getDatabase from '../../../database';
-import logger from '../../../logger';
+import getDatabase from '../../../database/index.js';
+import logger from '../../../logger.js';
 
 export default async function count(collection: string): Promise<void> {
 	const database = getDatabase();
@@ -11,7 +11,7 @@ export default async function count(collection: string): Promise<void> {
 
 	try {
 		const records = await database(collection).count('*', { as: 'count' });
-		const count = Number(records[0].count);
+		const count = Number(records[0]!.count);
 
 		process.stdout.write(`${count}\n`);
 		database.destroy();

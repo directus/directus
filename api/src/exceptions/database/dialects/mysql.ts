@@ -1,10 +1,10 @@
-import { ContainsNullValuesException } from '../contains-null-values';
-import { InvalidForeignKeyException } from '../invalid-foreign-key';
-import { NotNullViolationException } from '../not-null-violation';
-import { RecordNotUniqueException } from '../record-not-unique';
-import { ValueOutOfRangeException } from '../value-out-of-range';
-import { ValueTooLongException } from '../value-too-long';
-import { MySQLError } from './types';
+import { ContainsNullValuesException } from '../contains-null-values.js';
+import { InvalidForeignKeyException } from '../invalid-foreign-key.js';
+import { NotNullViolationException } from '../not-null-violation.js';
+import { RecordNotUniqueException } from '../record-not-unique.js';
+import { ValueOutOfRangeException } from '../value-out-of-range.js';
+import { ValueTooLongException } from '../value-too-long.js';
+import type { MySQLError } from './types.js';
 
 enum MySQLErrorCodes {
 	UNIQUE_VIOLATION = 'ER_DUP_ENTRY',
@@ -50,18 +50,18 @@ function uniqueViolation(error: MySQLError) {
 	 */
 
 	/** MySQL 8+ style error message */
-	if (matches[1].includes('.')) {
-		const collection = matches[1]?.slice(1, -1).split('.')[0];
+	if (matches[1]!.includes('.')) {
+		const collection = matches[1]!.slice(1, -1).split('.')[0]!;
 
 		let field = null;
 
-		const indexName = matches[1]?.slice(1, -1).split('.')[1];
+		const indexName = matches[1]!.slice(1, -1).split('.')[1];
 
 		if (indexName?.startsWith(`${collection}_`) && indexName.endsWith('_unique')) {
 			field = indexName?.slice(collection.length + 1, -7);
 		}
 
-		const invalid = matches[0]?.slice(1, -1);
+		const invalid = matches[0]!.slice(1, -1)!;
 
 		return new RecordNotUniqueException(field, {
 			collection,
@@ -70,9 +70,9 @@ function uniqueViolation(error: MySQLError) {
 		});
 	} else {
 		/** MySQL 5.7 style error message */
-		const indexName = matches[1]?.slice(1, -1);
+		const indexName = matches[1]!.slice(1, -1)!;
 
-		const collection = indexName.split('_')[0];
+		const collection = indexName.split('_')[0]!;
 
 		let field = null;
 
@@ -80,7 +80,7 @@ function uniqueViolation(error: MySQLError) {
 			field = indexName?.slice(collection.length + 1, -7);
 		}
 
-		const invalid = matches[0]?.slice(1, -1);
+		const invalid = matches[0]!.slice(1, -1)!;
 
 		return new RecordNotUniqueException(field, {
 			collection,
@@ -99,8 +99,8 @@ function numericValueOutOfRange(error: MySQLError) {
 
 	if (!tickMatches || !quoteMatches) return error;
 
-	const collection = tickMatches[0]?.slice(1, -1);
-	const field = quoteMatches[0]?.slice(1, -1);
+	const collection = tickMatches[0]!.slice(1, -1)!;
+	const field = quoteMatches[0]!.slice(1, -1)!;
 
 	return new ValueOutOfRangeException(field, {
 		collection,
@@ -117,8 +117,8 @@ function valueLimitViolation(error: MySQLError) {
 
 	if (!tickMatches || !quoteMatches) return error;
 
-	const collection = tickMatches[0]?.slice(1, -1);
-	const field = quoteMatches[0]?.slice(1, -1);
+	const collection = tickMatches[0]!.slice(1, -1)!;
+	const field = quoteMatches[0]!.slice(1, -1)!;
 
 	return new ValueTooLongException(field, {
 		collection,
@@ -135,8 +135,8 @@ function notNullViolation(error: MySQLError) {
 
 	if (!tickMatches || !quoteMatches) return error;
 
-	const collection = tickMatches[0]?.slice(1, -1);
-	const field = quoteMatches[0]?.slice(1, -1);
+	const collection = tickMatches[0]!.slice(1, -1)!;
+	const field = quoteMatches[0]!.slice(1, -1)!;
 
 	return new NotNullViolationException(field, {
 		collection,
@@ -153,9 +153,9 @@ function foreignKeyViolation(error: MySQLError) {
 
 	if (!tickMatches || !parenMatches) return error;
 
-	const collection = tickMatches[1]?.slice(1, -1);
-	const field = tickMatches[3]?.slice(1, -1);
-	const invalid = parenMatches[1]?.slice(1, -1);
+	const collection = tickMatches[1]!.slice(1, -1)!;
+	const field = tickMatches[3]!.slice(1, -1)!;
+	const invalid = parenMatches[1]!.slice(1, -1)!;
 
 	return new InvalidForeignKeyException(field, {
 		collection,
@@ -173,7 +173,7 @@ function containsNullValues(error: MySQLError) {
 
 	if (!tickMatches) return error;
 
-	const field = tickMatches[1]?.slice(1, -1);
+	const field = tickMatches[1]!.slice(1, -1)!;
 
 	return new ContainsNullValuesException(field);
 }

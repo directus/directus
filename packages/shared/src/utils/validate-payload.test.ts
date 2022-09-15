@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { Filter } from '../../src/types/filter';
-import { validatePayload } from './validate-payload';
+import type { Filter } from '../../src/types/filter.js';
+import { validatePayload } from './validate-payload.js';
 
 describe('validatePayload', () => {
 	it('returns an empty array when there are no errors', () => {

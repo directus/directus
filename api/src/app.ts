@@ -1,71 +1,78 @@
 import cookieParser from 'cookie-parser';
-import express, { Request, Response, RequestHandler } from 'express';
+import type { Request, Response, RequestHandler } from 'express';
+import express from 'express';
 import fse from 'fs-extra';
 import path from 'path';
 import qs from 'qs';
-import { ServerResponse } from 'http';
+import type { ServerResponse } from 'http';
 import helmet from 'helmet';
 
-import activityRouter from './controllers/activity';
-import assetsRouter from './controllers/assets';
-import authRouter from './controllers/auth';
-import collectionsRouter from './controllers/collections';
-import dashboardsRouter from './controllers/dashboards';
-import extensionsRouter from './controllers/extensions';
-import fieldsRouter from './controllers/fields';
-import filesRouter from './controllers/files';
-import flowsRouter from './controllers/flows';
-import foldersRouter from './controllers/folders';
-import graphqlRouter from './controllers/graphql';
-import itemsRouter from './controllers/items';
-import notFoundHandler from './controllers/not-found';
-import panelsRouter from './controllers/panels';
-import notificationsRouter from './controllers/notifications';
-import operationsRouter from './controllers/operations';
-import permissionsRouter from './controllers/permissions';
-import presetsRouter from './controllers/presets';
-import relationsRouter from './controllers/relations';
-import revisionsRouter from './controllers/revisions';
-import rolesRouter from './controllers/roles';
-import serverRouter from './controllers/server';
-import settingsRouter from './controllers/settings';
-import usersRouter from './controllers/users';
-import utilsRouter from './controllers/utils';
-import webhooksRouter from './controllers/webhooks';
-import sharesRouter from './controllers/shares';
-import { isInstalled, validateDatabaseConnection, validateDatabaseExtensions, validateMigrations } from './database';
-import emitter from './emitter';
-import env from './env';
-import { InvalidPayloadException } from './exceptions';
-import { getExtensionManager } from './extensions';
-import { getFlowManager } from './flows';
-import logger, { expressLogger } from './logger';
-import authenticate from './middleware/authenticate';
-import getPermissions from './middleware/get-permissions';
-import cache from './middleware/cache';
-import { checkIP } from './middleware/check-ip';
-import cors from './middleware/cors';
-import errorHandler from './middleware/error-handler';
-import extractToken from './middleware/extract-token';
-import rateLimiter from './middleware/rate-limiter';
-import sanitizeQuery from './middleware/sanitize-query';
-import schema from './middleware/schema';
-import { ROBOTSTXT } from './constants';
+import activityRouter from './controllers/activity.js';
+import assetsRouter from './controllers/assets.js';
+import authRouter from './controllers/auth.js';
+import collectionsRouter from './controllers/collections.js';
+import dashboardsRouter from './controllers/dashboards.js';
+import extensionsRouter from './controllers/extensions.js';
+import fieldsRouter from './controllers/fields.js';
+import filesRouter from './controllers/files.js';
+import flowsRouter from './controllers/flows.js';
+import foldersRouter from './controllers/folders.js';
+import graphqlRouter from './controllers/graphql.js';
+import itemsRouter from './controllers/items.js';
+import notFoundHandler from './controllers/not-found.js';
+import panelsRouter from './controllers/panels.js';
+import notificationsRouter from './controllers/notifications.js';
+import operationsRouter from './controllers/operations.js';
+import permissionsRouter from './controllers/permissions.js';
+import presetsRouter from './controllers/presets.js';
+import relationsRouter from './controllers/relations.js';
+import revisionsRouter from './controllers/revisions.js';
+import rolesRouter from './controllers/roles.js';
+import serverRouter from './controllers/server.js';
+import settingsRouter from './controllers/settings.js';
+import usersRouter from './controllers/users.js';
+import utilsRouter from './controllers/utils.js';
+import webhooksRouter from './controllers/webhooks.js';
+import sharesRouter from './controllers/shares.js';
+import {
+	isInstalled,
+	validateDatabaseConnection,
+	validateDatabaseExtensions,
+	validateMigrations,
+} from './database/index.js';
+import emitter from './emitter.js';
+import env from './env.js';
+import { InvalidPayloadException } from './exceptions/index.js';
+import { getExtensionManager } from './extensions.js';
+import { getFlowManager } from './flows.js';
+import logger, { expressLogger } from './logger.js';
+import authenticate from './middleware/authenticate.js';
+import getPermissions from './middleware/get-permissions.js';
+import cache from './middleware/cache.js';
+import { checkIP } from './middleware/check-ip.js';
+import cors from './middleware/cors.js';
+import errorHandler from './middleware/error-handler.js';
+import extractToken from './middleware/extract-token.js';
+import rateLimiter from './middleware/rate-limiter.js';
+import sanitizeQuery from './middleware/sanitize-query.js';
+import schema from './middleware/schema.js';
+import { ROBOTSTXT } from './constants.js';
 
-import { track } from './utils/track';
-import { validateEnv } from './utils/validate-env';
-import { validateStorage } from './utils/validate-storage';
-import { init as initWebhooks } from './webhooks';
-import { flushCaches } from './cache';
-import { registerAuthProviders } from './auth';
-import { Url } from './utils/url';
-import { getConfigFromEnv } from './utils/get-config-from-env';
-import { merge } from 'lodash';
+import { track } from './utils/track.js';
+import { validateEnv } from './utils/validate-env.js';
+import { validateStorage } from './utils/validate-storage.js';
+import { init as initWebhooks } from './webhooks.js';
+import { flushCaches } from './cache.js';
+import { registerAuthProviders } from './auth.js';
+import { Url } from './utils/url.js';
+import { getConfigFromEnv } from './utils/get-config-from-env.js';
+import { merge } from 'lodash-es';
+import { createRequire } from 'module';
 
 export default async function createApp(): Promise<express.Application> {
 	validateEnv(['KEY', 'SECRET']);
 
-	if (!new Url(env.PUBLIC_URL).isAbsolute()) {
+	if (!new Url(env['PUBLIC_URL']).isAbsolute()) {
 		logger.warn('PUBLIC_URL should be a full URL');
 	}
 
@@ -96,7 +103,7 @@ export default async function createApp(): Promise<express.Application> {
 	const app = express();
 
 	app.disable('x-powered-by');
-	app.set('trust proxy', env.IP_TRUST_PROXY);
+	app.set('trust proxy', env['IP_TRUST_PROXY']);
 	app.set('query parser', (str: string) => qs.parse(str, { depth: 10 }));
 
 	app.use(
@@ -127,7 +134,7 @@ export default async function createApp(): Promise<express.Application> {
 		)
 	);
 
-	if (env.HSTS_ENABLED) {
+	if (env['HSTS_ENABLED']) {
 		app.use(helmet.hsts(getConfigFromEnv('HSTS_', ['HSTS_ENABLED'])));
 	}
 
@@ -142,14 +149,14 @@ export default async function createApp(): Promise<express.Application> {
 		next();
 	});
 
-	if (env.CORS_ENABLED === true) {
+	if (env['CORS_ENABLED'] === true) {
 		app.use(cors);
 	}
 
 	app.use((req, res, next) => {
 		(
 			express.json({
-				limit: env.MAX_PAYLOAD_SIZE,
+				limit: env['MAX_PAYLOAD_SIZE'],
 			}) as RequestHandler
 		)(req, res, (err: any) => {
 			if (err) {
@@ -165,8 +172,8 @@ export default async function createApp(): Promise<express.Application> {
 	app.use(extractToken);
 
 	app.get('/', (_req, res, next) => {
-		if (env.ROOT_REDIRECT) {
-			res.redirect(env.ROOT_REDIRECT);
+		if (env['ROOT_REDIRECT']) {
+			res.redirect(env['ROOT_REDIRECT']);
 		} else {
 			next();
 		}
@@ -178,9 +185,11 @@ export default async function createApp(): Promise<express.Application> {
 		res.send(ROBOTSTXT);
 	});
 
-	if (env.SERVE_APP) {
+	if (env['SERVE_APP']) {
+		const require = createRequire(import.meta.url);
+
 		const adminPath = require.resolve('@directus/app', require.main ? { paths: [require.main.filename] } : undefined);
-		const adminUrl = new Url(env.PUBLIC_URL).addPath('admin');
+		const adminUrl = new Url(env['PUBLIC_URL']).addPath('admin');
 
 		// Set the App's base path according to the APIs public URL
 		const html = await fse.readFile(adminPath, 'utf8');
@@ -203,11 +212,11 @@ export default async function createApp(): Promise<express.Application> {
 	}
 
 	// use the rate limiter - all routes for now
-	if (env.RATE_LIMITER_ENABLED === true) {
+	if (env['RATE_LIMITER_ENABLED'] === true) {
 		app.use(rateLimiter);
 	}
 
-	app.get('/server/ping', (req, res) => res.send('pong'));
+	app.get('/server/ping', (_req, res) => res.send('pong'));
 
 	app.use(authenticate);
 

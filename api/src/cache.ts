@@ -1,24 +1,24 @@
 import Keyv, { Options } from 'keyv';
 import ms from 'ms';
-import env from './env';
-import logger from './logger';
-import { getConfigFromEnv } from './utils/get-config-from-env';
-import { validateEnv } from './utils/validate-env';
-import { compress, decompress } from './utils/compress';
+import env from './env.js';
+import logger from './logger.js';
+import { getConfigFromEnv } from './utils/get-config-from-env.js';
+import { validateEnv } from './utils/validate-env.js';
+import { compress, decompress } from './utils/compress.js';
 
 let cache: Keyv | null = null;
 let systemCache: Keyv | null = null;
 let lockCache: Keyv | null = null;
 
 export function getCache(): { cache: Keyv | null; systemCache: Keyv; lockCache: Keyv } {
-	if (env.CACHE_ENABLED === true && cache === null) {
+	if (env['CACHE_ENABLED'] === true && cache === null) {
 		validateEnv(['CACHE_NAMESPACE', 'CACHE_TTL', 'CACHE_STORE']);
-		cache = getKeyvInstance(env.CACHE_TTL ? ms(env.CACHE_TTL as string) : undefined);
+		cache = getKeyvInstance(env['CACHE_TTL'] ? ms(env['CACHE_TTL']) : undefined);
 		cache.on('error', (err) => logger.warn(err, `[cache] ${err}`));
 	}
 
 	if (systemCache === null) {
-		systemCache = getKeyvInstance(env.CACHE_SYSTEM_TTL ? ms(env.CACHE_SYSTEM_TTL as string) : undefined, '_system');
+		systemCache = getKeyvInstance(env['CACHE_SYSTEM_TTL'] ? ms(env['CACHE_SYSTEM_TTL']) : undefined, '_system');
 		systemCache.on('error', (err) => logger.warn(err, `[cache] ${err}`));
 	}
 
@@ -79,7 +79,7 @@ export async function getCacheValue(cache: Keyv, key: string): Promise<any> {
 }
 
 function getKeyvInstance(ttl: number | undefined, namespaceSuffix?: string): Keyv {
-	switch (env.CACHE_STORE) {
+	switch (env['CACHE_STORE']) {
 		case 'redis':
 			return new Keyv(getConfig('redis', ttl, namespaceSuffix));
 		case 'memcache':
@@ -96,14 +96,14 @@ function getConfig(
 	namespaceSuffix = ''
 ): Options<any> {
 	const config: Options<any> = {
-		namespace: `${env.CACHE_NAMESPACE}${namespaceSuffix}`,
+		namespace: `${env['CACHE_NAMESPACE']}${namespaceSuffix}`,
 		ttl,
 	};
 
 	if (store === 'redis') {
 		const KeyvRedis = require('@keyv/redis');
 
-		config.store = new KeyvRedis(env.CACHE_REDIS || getConfigFromEnv('CACHE_REDIS_'));
+		config.store = new KeyvRedis(env['CACHE_REDIS'] || getConfigFromEnv('CACHE_REDIS_'));
 	}
 
 	if (store === 'memcache') {
@@ -111,7 +111,9 @@ function getConfig(
 
 		// keyv-memcache uses memjs which only accepts a comma separated string instead of an array,
 		// so we need to join array into a string when applicable. See #7986
-		const cacheMemcache = Array.isArray(env.CACHE_MEMCACHE) ? env.CACHE_MEMCACHE.join(',') : env.CACHE_MEMCACHE;
+		const cacheMemcache = Array.isArray(env['CACHE_MEMCACHE'])
+			? env['CACHE_MEMCACHE'].join(',')
+			: env['CACHE_MEMCACHE'];
 
 		config.store = new KeyvMemcache(cacheMemcache);
 	}

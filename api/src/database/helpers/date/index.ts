@@ -1,7 +1,7 @@
-export { DateHelperDefault as postgres } from './dialects/default';
-export { DateHelperDefault as redshift } from './dialects/default';
-export { DateHelperDefault as cockroachdb } from './dialects/default';
-export { DateHelperOracle as oracle } from './dialects/oracle';
-export { DateHelperMySQL as mysql } from './dialects/mysql';
-export { DateHelperMSSQL as mssql } from './dialects/mssql';
-export { DateHelperSQLite as sqlite } from './dialects/sqlite';
+export { DateHelperDefault as postgres } from './dialects/default.js';
+export { DateHelperDefault as redshift } from './dialects/default.js';
+export { DateHelperDefault as cockroachdb } from './dialects/default.js';
+export { DateHelperOracle as oracle } from './dialects/oracle.js';
+export { DateHelperMySQL as mysql } from './dialects/mysql.js';
+export { DateHelperMSSQL as mssql } from './dialects/mssql.js';
+export { DateHelperSQLite as sqlite } from './dialects/sqlite.js';

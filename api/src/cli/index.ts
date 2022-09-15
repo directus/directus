@@ -1,21 +1,23 @@
 import { Command, Option } from 'commander';
-import { startServer } from '../server';
-import emitter from '../emitter';
-import { getExtensionManager } from '../extensions';
-import bootstrap from './commands/bootstrap';
-import count from './commands/count';
-import dbInstall from './commands/database/install';
-import dbMigrate from './commands/database/migrate';
-import init from './commands/init';
-import keyGenerate from './commands/security/key';
-import secretGenerate from './commands/security/secret';
-import rolesCreate from './commands/roles/create';
-import usersCreate from './commands/users/create';
-import usersPasswd from './commands/users/passwd';
-import { snapshot } from './commands/schema/snapshot';
-import { apply } from './commands/schema/apply';
+import { startServer } from '../server.js';
+import emitter from '../emitter.js';
+import { getExtensionManager } from '../extensions.js';
+import bootstrap from './commands/bootstrap/index.js';
+import count from './commands/count/index.js';
+import dbInstall from './commands/database/install.js';
+import dbMigrate from './commands/database/migrate.js';
+import init from './commands/init/index.js';
+import keyGenerate from './commands/security/key.js';
+import secretGenerate from './commands/security/secret.js';
+import rolesCreate from './commands/roles/create.js';
+import usersCreate from './commands/users/create.js';
+import usersPasswd from './commands/users/passwd.js';
+import { snapshot } from './commands/schema/snapshot.js';
+import { apply } from './commands/schema/apply.js';
 
-const pkg = require('../../package.json');
+import { importFile } from '../utils/importFile.js';
+
+const pkg = JSON.parse(importFile('../../package.json'));
 
 export async function createCli(): Promise<Command> {
 	const program = new Command();

@@ -1,7 +1,7 @@
-import { Relation } from '@directus/shared/types';
-import { getRelationInfo } from './get-relation-info';
-import { InvalidQueryException } from '../exceptions';
-import { get } from 'lodash';
+import type { Relation } from '@directus/shared/types';
+import { getRelationInfo } from './get-relation-info.js';
+import { InvalidQueryException } from '../exceptions/index.js';
+import { get } from 'lodash-es';
 
 type AliasMap = string | { [key: string]: AliasMap };
 
@@ -28,7 +28,7 @@ export function getColumnPath({ path, collection, aliasMap, relations }: ColPath
 		/**
 		 * For A2M fields, the path can contain an optional collection scope <field>:<scope>
 		 */
-		const pathRoot = pathParts[0].split(':')[0];
+		const pathRoot = pathParts[0]!.split(':')[0]!;
 		const { relation, relationType } = getRelationInfo(relations, parentCollection, pathRoot);
 
 		if (!relation) {
@@ -41,7 +41,7 @@ export function getColumnPath({ path, collection, aliasMap, relations }: ColPath
 		let parent: string;
 
 		if (relationType === 'a2o') {
-			const pathScope = pathParts[0].split(':')[1];
+			const pathScope = pathParts[0]!.split(':')[1];
 
 			if (!pathScope) {
 				throw new InvalidQueryException(`You have to provide a collection scope when sorting on a many-to-any item`);

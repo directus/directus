@@ -1,10 +1,10 @@
 import { REGEX_BETWEEN_PARENS } from '@directus/shared/constants';
-import { FieldFunction, Query, SchemaOverview } from '@directus/shared/types';
+import type { FieldFunction, Query, SchemaOverview } from '@directus/shared/types';
 import { getFunctionsForType } from '@directus/shared/utils';
-import { Knex } from 'knex';
-import { getFunctions } from '../database/helpers';
-import { InvalidQueryException } from '../exceptions';
-import { applyFunctionToColumnName } from './apply-function-to-column-name';
+import type { Knex } from 'knex';
+import { getFunctions } from '../database/helpers/index.js';
+import { InvalidQueryException } from '../exceptions/index.js';
+import { applyFunctionToColumnName } from './apply-function-to-column-name.js';
 
 /**
  * Return column prefixed by table. If column includes functions (like `year(date_created)`), the
@@ -28,7 +28,7 @@ export function getColumn(
 
 	if (column.includes('(') && column.includes(')')) {
 		const functionName = column.split('(')[0] as FieldFunction;
-		const columnName = column.match(REGEX_BETWEEN_PARENS)![1];
+		const columnName = column.match(REGEX_BETWEEN_PARENS)![1]!;
 
 		if (functionName in fn) {
 			const type = schema?.collections[table]?.fields?.[columnName]?.type ?? 'unknown';
@@ -38,7 +38,7 @@ export function getColumn(
 				throw new InvalidQueryException(`Invalid function specified "${functionName}"`);
 			}
 
-			const result = fn[functionName as keyof typeof fn](table, columnName, { type, query }) as Knex.Raw;
+			const result = fn[functionName as keyof typeof fn](table, columnName, { type, query: query! }) as Knex.Raw;
 
 			if (alias) {
 				return knex.raw(result + ' AS ??', [alias]);

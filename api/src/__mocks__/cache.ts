@@ -1,4 +1,6 @@
-export const getCache = jest.fn().mockReturnValue({ cache: undefined, systemCache: undefined, lockCache: undefined });
-export const flushCaches = jest.fn();
-export const clearSystemCache = jest.fn();
-export const setSystemCache = jest.fn();
+import { vi} from 'vitest'
+
+export const getCache = vi.fn().mockReturnValue({ cache: undefined, systemCache: undefined, lockCache: undefined });
+export const flushCaches = vi.fn();
+export const clearSystemCache = vi.fn();
+export const setSystemCache = vi.fn();

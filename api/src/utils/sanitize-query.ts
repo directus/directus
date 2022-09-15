@@ -1,75 +1,75 @@
-import { Accountability, Aggregate, Filter, Query } from '@directus/shared/types';
+import type { Accountability, Aggregate, Filter, Query } from '@directus/shared/types';
 import { parseFilter, parseJSON } from '@directus/shared/utils';
-import { flatten, get, isPlainObject, merge, set } from 'lodash';
-import logger from '../logger';
-import { Meta } from '../types';
+import { flatten, get, isPlainObject, merge, set } from 'lodash-es';
+import logger from '../logger.js';
+import { Meta } from '../types/index.js';
 
 export function sanitizeQuery(rawQuery: Record<string, any>, accountability?: Accountability | null): Query {
 	const query: Query = {};
 
-	if (rawQuery.limit !== undefined) {
-		const limit = sanitizeLimit(rawQuery.limit);
+	if (rawQuery['limit'] !== undefined) {
+		const limit = sanitizeLimit(rawQuery['limit']);
 
 		if (typeof limit === 'number') {
 			query.limit = limit;
 		}
 	}
 
-	if (rawQuery.fields) {
-		query.fields = sanitizeFields(rawQuery.fields);
+	if (rawQuery['fields']) {
+		query.fields = sanitizeFields(rawQuery['fields']);
 	}
 
-	if (rawQuery.groupBy) {
-		query.group = sanitizeFields(rawQuery.groupBy);
+	if (rawQuery['groupBy']) {
+		query.group = sanitizeFields(rawQuery['groupBy']);
 	}
 
-	if (rawQuery.aggregate) {
-		query.aggregate = sanitizeAggregate(rawQuery.aggregate);
+	if (rawQuery['aggregate']) {
+		query.aggregate = sanitizeAggregate(rawQuery['aggregate']);
 	}
 
-	if (rawQuery.sort) {
-		query.sort = sanitizeSort(rawQuery.sort);
+	if (rawQuery['sort']) {
+		query.sort = sanitizeSort(rawQuery['sort']);
 	}
 
-	if (rawQuery.filter) {
-		query.filter = sanitizeFilter(rawQuery.filter, accountability || null);
+	if (rawQuery['filter']) {
+		query.filter = sanitizeFilter(rawQuery['filter'], accountability || null);
 	}
 
-	if (rawQuery.offset) {
-		query.offset = sanitizeOffset(rawQuery.offset);
+	if (rawQuery['offset']) {
+		query.offset = sanitizeOffset(rawQuery['offset']);
 	}
 
-	if (rawQuery.page) {
-		query.page = sanitizePage(rawQuery.page);
+	if (rawQuery['page']) {
+		query.page = sanitizePage(rawQuery['page']);
 	}
 
-	if (rawQuery.meta) {
-		(query as any).meta = sanitizeMeta(rawQuery.meta);
+	if (rawQuery['meta']) {
+		(query as any).meta = sanitizeMeta(rawQuery['meta']);
 	}
 
-	if (rawQuery.search && typeof rawQuery.search === 'string') {
-		query.search = rawQuery.search;
+	if (rawQuery['search'] && typeof rawQuery['search'] === 'string') {
+		query.search = rawQuery['search'];
 	}
 
-	if (rawQuery.export) {
-		query.export = rawQuery.export as 'json' | 'csv';
+	if (rawQuery['export']) {
+		query.export = rawQuery['export'] as 'json' | 'csv';
 	}
 
-	if (rawQuery.deep as Record<string, any>) {
+	if (rawQuery['deep'] as Record<string, any>) {
 		if (!query.deep) query.deep = {};
 
-		query.deep = sanitizeDeep(rawQuery.deep, accountability);
+		query.deep = sanitizeDeep(rawQuery['deep'], accountability);
 	}
 
-	if (rawQuery.alias) {
-		query.alias = sanitizeAlias(rawQuery.alias);
+	if (rawQuery['alias']) {
+		query.alias = sanitizeAlias(rawQuery['alias']);
 	}
 
 	return query;
 }
 
 function sanitizeFields(rawFields: any) {
-	if (!rawFields) return;
+	if (!rawFields) return [];
 
 	let fields: string[] = [];
 
@@ -181,7 +181,7 @@ function sanitizeDeep(deep: Record<string, any>, accountability?: Accountability
 				const parsedSubQuery = sanitizeQuery({ [key.substring(1)]: value }, accountability);
 				// ...however we want to keep them for the nested structure of deep, otherwise there's no
 				// way of knowing when to keep nesting and when to stop
-				const [parsedKey, parsedValue] = Object.entries(parsedSubQuery)[0];
+				const [parsedKey, parsedValue] = Object.entries(parsedSubQuery)[0]!;
 				parsedLevel[`_${parsedKey}`] = parsedValue;
 			} else if (isPlainObject(value)) {
 				parse(value, [...path, key]);

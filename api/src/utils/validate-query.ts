@@ -1,10 +1,10 @@
 import Joi from 'joi';
-import { isPlainObject, uniq } from 'lodash';
-import { InvalidQueryException } from '../exceptions';
-import { Query } from '@directus/shared/types';
+import { isPlainObject, uniq } from 'lodash-es';
+import { InvalidQueryException } from '../exceptions/index.js';
+import type { Query } from '@directus/shared/types';
 import { stringify } from 'wellknown';
-import { calculateFieldDepth } from './calculate-field-depth';
-import env from '../env';
+import { calculateFieldDepth } from './calculate-field-depth.js';
+import env from '../env.js';
 
 const querySchema = Joi.object({
 	fields: Joi.array().items(Joi.string()),
@@ -173,7 +173,7 @@ function validateAlias(alias: any) {
 }
 
 function validateRelationalDepth(query: Query) {
-	const maxRelationalDepth = Number(env.MAX_RELATIONAL_DEPTH) > 2 ? Number(env.MAX_RELATIONAL_DEPTH) : 2;
+	const maxRelationalDepth = Number(env['MAX_RELATIONAL_DEPTH']) > 2 ? Number(env['MAX_RELATIONAL_DEPTH']) : 2;
 
 	// Process the fields in the same way as api/src/utils/get-ast-from-query.ts
 	let fields = ['*'];

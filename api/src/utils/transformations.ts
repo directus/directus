@@ -1,12 +1,12 @@
-import { isNil } from 'lodash';
-import {
+import { isNil } from 'lodash-es';
+import type {
 	File,
 	Transformation,
 	TransformationParams,
 	TransformationPreset,
 	TransformationPresetFormat,
 	TransformationPresetResize,
-} from '../types';
+} from '../types/index.js';
 
 // Extract transforms from a preset
 export function resolvePreset(input: TransformationParams | TransformationPreset, file: File): Transformation[] {
@@ -28,7 +28,7 @@ function extractOptions<T extends Record<string, any>>(
 					? {
 							...config,
 							[key]: numberKeys.includes(key as any)
-								? +value
+								? Number(value)
 								: booleanKeys.includes(key as any)
 								? Boolean(value)
 								: value,

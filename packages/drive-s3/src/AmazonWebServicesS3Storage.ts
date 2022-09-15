@@ -1,4 +1,5 @@
-import S3, { ClientConfiguration, ObjectList } from 'aws-sdk/clients/s3';
+import S3 from 'aws-sdk/clients/s3.js';
+import type { ClientConfiguration, ObjectList } from 'aws-sdk/clients/s3';
 import {
 	Storage,
 	UnknownException,
@@ -15,8 +16,7 @@ import {
 	DeleteResponse,
 	Range,
 } from '@directus/drive';
-import path from 'path';
-import normalize from 'normalize-path';
+import * as path from 'path';
 
 function handleError(err: Error, path: string, bucket: string): Error {
 	switch (err.name) {
@@ -35,11 +35,10 @@ export class AmazonWebServicesS3Storage extends Storage {
 	protected $driver: S3;
 	protected $bucket: string;
 	protected $root: string;
-	protected $acl?: string;
+	protected $acl: string | undefined;
 
 	constructor(config: AmazonWebServicesS3StorageConfig) {
 		super();
-		const S3 = require('aws-sdk/clients/s3');
 
 		this.$driver = new S3({
 			accessKeyId: config.key,
@@ -48,7 +47,7 @@ export class AmazonWebServicesS3Storage extends Storage {
 		});
 
 		this.$bucket = config.bucket;
-		this.$root = config.root ? normalize(config.root).replace(/^\//, '') : '';
+		this.$root = config.root ? path.normalize(config.root).replace(/^\//, '') : '';
 		this.$acl = config.acl;
 	}
 
@@ -56,13 +55,13 @@ export class AmazonWebServicesS3Storage extends Storage {
 	 * Prefixes the given filePath with the storage root location
 	 */
 	protected _fullPath(filePath: string): string {
-		return normalize(path.join(this.$root, filePath));
+		return path.normalize(path.join(this.$root, filePath));
 	}
 
 	/**
 	 * Copy a file to a location.
 	 */
-	public async copy(src: string, dest: string): Promise<Response> {
+	public override async copy(src: string, dest: string): Promise<Response> {
 		src = this._fullPath(src);
 		dest = this._fullPath(dest);
 
@@ -74,7 +73,7 @@ export class AmazonWebServicesS3Storage extends Storage {
 		};
 
 		try {
-			const result = await this.$driver.copyObject(params).promise();
+			const result = await this.$driver.copyObject(params as any).promise();
 			return { raw: result };
 		} catch (e: any) {
 			throw handleError(e, src, this.$bucket);
@@ -84,7 +83,7 @@ export class AmazonWebServicesS3Storage extends Storage {
 	/**
 	 * Delete existing file.
 	 */
-	public async delete(location: string): Promise<DeleteResponse> {
+	public override async delete(location: string): Promise<DeleteResponse> {
 		location = this._fullPath(location);
 
 		const params = { Key: location, Bucket: this.$bucket };
@@ -101,14 +100,14 @@ export class AmazonWebServicesS3Storage extends Storage {
 	/**
 	 * Returns the driver.
 	 */
-	public driver(): S3 {
+	public override driver(): S3 {
 		return this.$driver;
 	}
 
 	/**
 	 * Determines if a file or folder already exists.
 	 */
-	public async exists(location: string): Promise<ExistsResponse> {
+	public override async exists(location: string): Promise<ExistsResponse> {
 		location = this._fullPath(location);
 
 		const params = { Key: location, Bucket: this.$bucket };
@@ -128,7 +127,7 @@ export class AmazonWebServicesS3Storage extends Storage {
 	/**
 	 * Returns the file contents.
 	 */
-	public async get(location: string, encoding: BufferEncoding = 'utf-8'): Promise<ContentResponse<string>> {
+	public override async get(location: string, encoding: BufferEncoding = 'utf-8'): Promise<ContentResponse<string>> {
 		const bufferResult = await this.getBuffer(location);
 
 		return {
@@ -140,7 +139,7 @@ export class AmazonWebServicesS3Storage extends Storage {
 	/**
 	 * Returns the file contents as Buffer.
 	 */
-	public async getBuffer(location: string): Promise<ContentResponse<Buffer>> {
+	public override async getBuffer(location: string): Promise<ContentResponse<Buffer>> {
 		location = this._fullPath(location);
 
 		const params = { Key: location, Bucket: this.$bucket };
@@ -160,7 +159,7 @@ export class AmazonWebServicesS3Storage extends Storage {
 	/**
 	 * Returns signed url for an existing file
 	 */
-	public async getSignedUrl(location: string, options: SignedUrlOptions = {}): Promise<SignedUrlResponse> {
+	public override async getSignedUrl(location: string, options: SignedUrlOptions = {}): Promise<SignedUrlResponse> {
 		location = this._fullPath(location);
 
 		const { expiry = 900 } = options;
@@ -182,7 +181,7 @@ export class AmazonWebServicesS3Storage extends Storage {
 	/**
 	 * Returns file's size and modification date.
 	 */
-	public async getStat(location: string): Promise<StatResponse> {
+	public override async getStat(location: string): Promise<StatResponse> {
 		location = this._fullPath(location);
 
 		const params = { Key: location, Bucket: this.$bucket };
@@ -202,13 +201,13 @@ export class AmazonWebServicesS3Storage extends Storage {
 	/**
 	 * Returns the stream for the given file.
 	 */
-	public getStream(location: string, range?: Range): NodeJS.ReadableStream {
+	public override getStream(location: string, range?: Range): NodeJS.ReadableStream {
 		location = this._fullPath(location);
 
 		const params: S3.GetObjectRequest = {
 			Key: location,
 			Bucket: this.$bucket,
-			Range: range ? `bytes=${range.start}-${range.end || ''}` : undefined,
+			Range: range ? `bytes=${range.start}-${range.end || ''}` : (undefined as any),
 		};
 
 		return this.$driver.getObject(params).createReadStream();
@@ -217,7 +216,7 @@ export class AmazonWebServicesS3Storage extends Storage {
 	/**
 	 * Returns url for a given key.
 	 */
-	public getUrl(location: string): string {
+	public override getUrl(location: string): string {
 		location = this._fullPath(location);
 
 		const { href } = this.$driver.endpoint;
@@ -234,7 +233,7 @@ export class AmazonWebServicesS3Storage extends Storage {
 	 * method will call `copy` and `delete` under
 	 * the hood.
 	 */
-	public async move(src: string, dest: string): Promise<Response> {
+	public override async move(src: string, dest: string): Promise<Response> {
 		src = this._fullPath(src);
 		dest = this._fullPath(dest);
 
@@ -247,7 +246,7 @@ export class AmazonWebServicesS3Storage extends Storage {
 	 * Creates a new file.
 	 * This method will create missing directories on the fly.
 	 */
-	public async put(
+	public override async put(
 		location: string,
 		content: Buffer | NodeJS.ReadableStream | string,
 		type?: string
@@ -263,7 +262,7 @@ export class AmazonWebServicesS3Storage extends Storage {
 		};
 
 		try {
-			const result = await this.$driver.upload(params).promise();
+			const result = await this.$driver.upload(params as any).promise();
 			return { raw: result };
 		} catch (e: any) {
 			throw handleError(e, location, this.$bucket);
@@ -273,7 +272,7 @@ export class AmazonWebServicesS3Storage extends Storage {
 	/**
 	 * Iterate over all files in the bucket.
 	 */
-	public async *flatList(prefix = ''): AsyncIterable<FileListResponse> {
+	public override async *flatList(prefix = ''): AsyncIterable<FileListResponse> {
 		prefix = this._fullPath(prefix);
 
 		let continuationToken: string | undefined;
@@ -286,7 +285,7 @@ export class AmazonWebServicesS3Storage extends Storage {
 						Prefix: prefix,
 						ContinuationToken: continuationToken,
 						MaxKeys: 1000,
-					})
+					} as any)
 					.promise();
 
 				continuationToken = response.NextContinuationToken;

@@ -1,21 +1,21 @@
 import { Router } from 'express';
-import asyncHandler from '../utils/async-handler';
-import { RouteNotFoundException } from '../exceptions';
-import { getExtensionManager } from '../extensions';
-import { respond } from '../middleware/respond';
+import asyncHandler from '../utils/async-handler.js';
+import { RouteNotFoundException } from '../exceptions/index.js';
+import { getExtensionManager } from '../extensions.js';
+import { respond } from '../middleware/respond.js';
 import { depluralize, isIn } from '@directus/shared/utils';
-import { Plural } from '@directus/shared/types';
+import type { Plural } from '@directus/shared/types';
 import { APP_OR_HYBRID_EXTENSION_TYPES } from '@directus/shared/constants';
 import ms from 'ms';
-import env from '../env';
-import { getCacheControlHeader } from '../utils/get-cache-headers';
+import env from '../env.js';
+import { getCacheControlHeader } from '../utils/get-cache-headers.js';
 
 const router = Router();
 
 router.get(
 	'/:type',
 	asyncHandler(async (req, res, next) => {
-		const type = depluralize(req.params.type as Plural<string>);
+		const type = depluralize(req.params['type'] as Plural<string>);
 
 		if (!isIn(type, APP_OR_HYBRID_EXTENSION_TYPES)) {
 			throw new RouteNotFoundException(req.path);
@@ -25,7 +25,7 @@ router.get(
 
 		const extensions = extensionManager.getExtensionsList(type);
 
-		res.locals.payload = {
+		res.locals['payload'] = {
 			data: extensions,
 		};
 
@@ -37,7 +37,7 @@ router.get(
 router.get(
 	'/:type/index.js',
 	asyncHandler(async (req, res) => {
-		const type = depluralize(req.params.type as Plural<string>);
+		const type = depluralize(req.params['type'] as Plural<string>);
 
 		if (!isIn(type, APP_OR_HYBRID_EXTENSION_TYPES)) {
 			throw new RouteNotFoundException(req.path);
@@ -51,8 +51,8 @@ router.get(
 		}
 
 		res.setHeader('Content-Type', 'application/javascript; charset=UTF-8');
-		if (env.EXTENSIONS_CACHE_TTL) {
-			res.setHeader('Cache-Control', getCacheControlHeader(req, ms(env.EXTENSIONS_CACHE_TTL as string)));
+		if (env['EXTENSIONS_CACHE_TTL']) {
+			res.setHeader('Cache-Control', getCacheControlHeader(req, ms(env['EXTENSIONS_CACHE_TTL'])));
 		} else {
 			res.setHeader('Cache-Control', 'no-store');
 		}

@@ -1,5 +1,6 @@
-import { getRelationType } from '../../src/utils/get-relation-type';
-import { Relation } from '@directus/shared/types';
+import { getRelationType } from '../../src/utils/get-relation-type.js';
+import type { Relation } from '@directus/shared/types';
+import { test, expect} from 'vitest'
 
 test('Returns null if no relation object is included', () => {
 	const result = getRelationType({ relation: null, collection: null, field: 'test' });
