@@ -23,17 +23,19 @@ identifier: מזהה
 avatar: צלמית
 application: יישום
 default_provider: ספק ברירת מחדל
-method: מתודה
+method: פונקציה
 published: פורסם
 draft: טיוטה
 archived: ארכיון
 modules: מודולים
 module_bar: סרגל מודולים
 logs: לוגים
+reset_width: אפס רוחב
 tile_size: גודל צלמית
 edit_field: ערוך שדה
 conditions: תנאים
 location: מיקום
+condition_rules: תנאי כלל
 input: קלט
 maps: מפות
 switch_user: החלף משתמש
@@ -47,6 +49,9 @@ group: קבוצה
 export_items: יצא פריטים
 and: ו
 or: או
+init: אתחל
+dataset_too_large_currently_showing_n_items: מערך הנתונים גדול מדי. מציג כעת את {n} הפריטים הראשונים.
+custom: מותאם אישית
 hook: נקודת השחלה
 fill_width: עמוד מלא
 field_name_translations: תרגומי שמות שדות
@@ -55,11 +60,15 @@ add_field: הוסף שדה
 role_name: שם תפקיד
 branch: ענף
 leaf: עלה
+edit_collection: ערוך אוסף
 exclusive: בלעדי
 children: ילדים
+show_active_items: הצג פריטים פעילים
+show_archived_items: הצג פריטי ארכיון
 show_all_items: הצג את כל הפריטים
 edited: ערך נערך
 required: שדה חובה
+requires_value: דורש ערך
 create_preset: יצירת הגדרה מראש
 create_role: צור תפקיד
 create_user: צור משתמש

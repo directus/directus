@@ -14,61 +14,52 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent, computed, ref } from 'vue';
+<script setup lang="ts">
+import { computed, ref } from 'vue';
 import { i18n } from '@/lang';
 
-export default defineComponent({
-	props: {
-		modelValue: {
-			type: Boolean,
-			default: undefined,
-		},
-		label: {
-			type: String,
-			default: i18n.global.t('toggle'),
-		},
-		startOpen: {
-			type: Boolean,
-			default: false,
-		},
-		disabled: {
-			type: Boolean,
-			default: false,
-		},
+interface Props {
+	modelValue?: boolean;
+	label?: string;
+	startOpen?: boolean;
+	disabled?: boolean;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+	modelValue: undefined,
+	label: i18n.global.t('toggle'),
+	startOpen: false,
+	disabled: false,
+});
+
+const emit = defineEmits(['update:modelValue']);
+
+const localActive = ref(props.startOpen);
+
+const internalActive = computed({
+	get() {
+		if (props.modelValue !== undefined) {
+			return props.modelValue;
+		}
+		return localActive.value;
 	},
-	emits: ['update:modelValue'],
-	setup(props, { emit }) {
-		const localActive = ref(props.startOpen);
-
-		const internalActive = computed({
-			get() {
-				if (props.modelValue !== undefined) {
-					return props.modelValue;
-				}
-				return localActive.value;
-			},
-			set(newActive: boolean) {
-				localActive.value = newActive;
-				emit('update:modelValue', newActive);
-			},
-		});
-
-		return { internalActive, enable, disable, toggle };
-
-		function enable() {
-			internalActive.value = true;
-		}
-
-		function disable() {
-			internalActive.value = false;
-		}
-
-		function toggle() {
-			internalActive.value = !internalActive.value;
-		}
+	set(newActive: boolean) {
+		localActive.value = newActive;
+		emit('update:modelValue', newActive);
 	},
 });
+
+function enable() {
+	internalActive.value = true;
+}
+
+function disable() {
+	internalActive.value = false;
+}
+
+function toggle() {
+	internalActive.value = !internalActive.value;
+}
 </script>
 
 <style lang="scss" scoped>

@@ -192,6 +192,9 @@ revision_post_create: Here is what this item looked like when it was created.
 revision_post_update: Here is what this item looked like after the update.
 changes_made: Below are the specific changes made in this revision.
 no_relational_data: Keep in mind that relational data is not included here.
+junction_field_location: Junction Fields Location
+top: Top
+bottom: Bottom
 hide_field: Hide Field
 hide_field_on_detail: Hide Field on Detail
 show_field_on_detail: Show Field on Detail
@@ -543,6 +546,7 @@ activity_item: Activity Item
 action: Action
 ip_address: IP Address
 user_agent: User Agent
+origin: Origin
 webhooks: Webhooks
 decimals: Decimals
 value_decimals: Value Decimals
@@ -591,6 +595,9 @@ errors:
   INVALID_PAYLOAD: Invalid payload
   INVALID_PROVIDER: User belongs to a different auth provider
   INVALID_QUERY: Invalid query
+  INVALID_CONFIG: Invalid config
+  INVALID_TOKEN: Invalid token
+  INVALID_IP: IP Address not allowed
   INVALID_USER: Failed to authenticate user
   ITEM_LIMIT_REACHED: Item limit reached
   ITEM_NOT_FOUND: Item not found
@@ -607,6 +614,13 @@ errors:
   INVALID_FOREIGN_KEY: Invalid foreign key
   UNKNOWN: Unexpected Error
   GRAPHQL_VALIDATION_EXCEPTION: GraphQL Validation Exception
+  SERVICE_UNAVAILABLE: Service Unavailable
+  UNSUPPORTED_MEDIA_TYPE: Unsupported media type
+  UNEXPECTED_RESPONSE: Unexpected response
+  TOKEN_EXPIRED: Token expired
+  RANGE_NOT_SATISFIABLE: Invalid range
+  METHOD_NOT_ALLOWED: Method not allowed
+  REQUESTS_EXCEEDED: Requests limit reached
 security: Security
 value_hashed: Value Securely Hashed
 bookmark_name: Bookmark name...
@@ -776,6 +790,7 @@ flows: Flows
 flow: Flow
 select_a_flow: Select a Flow
 run_flow_on_current: Run flow on Current Item
+run_flow_on_current_edited_confirm: This item may be updated by this flow, are you sure you want to execute it?
 run_flow_on_selected: No Items Selected | Run flow on 1 Selected Item | Run flow on {n} Selected Items
 run_flow_success: Flow "{flow}" ran successfully
 trigger: Trigger
@@ -805,6 +820,7 @@ start_flow: Start Flow
 stop_flow: Stop Flow
 create_operation: Create Operation
 edit_operation: Edit Operation
+code: Code
 operation_options: Operation Options
 operation_name: Name of operation...
 operation_key: Identifier for reference...
@@ -1045,6 +1061,7 @@ fields:
     user: Action By
     comment: Comment
     user_agent: User Agent
+    origin: Origin
     ip: IP Address
     revisions: Revisions
   directus_collections:
@@ -1430,6 +1447,16 @@ view_project: View Project
 weeks: {}
 report_error: Report Error
 start: Start
+table: Table
+list: List
+search_filter: Search & Filter
+enable_search_filter: Enable searching & filtering
+item_link: Item link
+show_link_to_item: Show a link to the item
+navigate_to_item: Navigate to Item
+undo_removed_item: Undo Removed Item
+remove_item: Remove Item
+delete_item: Delete Item
 interfaces:
   filter:
     name: Filter
@@ -1509,6 +1536,9 @@ interfaces:
     set_to_now: Set to Now
     use_24: Use 24-Hour Format
     placeholder: Choose a datetime...
+  system-fields:
+    select_a_collection: Select a Collection
+    no_fields: No fields
   system-display-template:
     display-template: Display Template
     description: Mix static text and dynamic field values
@@ -1566,6 +1596,7 @@ interfaces:
   list-m2m:
     many-to-many: Many to Many
     description: Select multiple related junction items
+    columns_configure_notice: You can configure the columns after creating this field.
     display_template_configure_notice: You can configure the display template after creating this field.
   select-dropdown-m2o:
     many-to-one: Many to One
@@ -2041,7 +2072,6 @@ triggers:
     collection_and_item: Collection & Item Pages
     collection_only: Collection Page Only
     item_only: Item Page Only
-a_users_uuid: A User's Primary Key UUID...
 a_flow_uuid: A Flow's Primary Key UUID...
 any_string_or_json: Any string or JSON...
 item_payload_placeholder: This is the JSON used to update the item's field values...
@@ -2050,6 +2080,10 @@ operations:
   condition:
     name: Condition
     description: Route a flow based on If / Else logic
+  exec:
+    name: Run Script
+    description: Execute arbitrary code to modify the payload
+    modules: 'The following **Node modules** can be used:'
   item-create:
     name: Create Data
     description: Create items in the database
@@ -2087,8 +2121,9 @@ operations:
     body: Body
   notification:
     name: Send Notification
-    description: Send an in-app notification to a user
+    description: Send an in-app notification to one or more users
     recipient: User
+    recipient_placeholder: Add user UUID and press enter...
     message: Message
   request:
     name: Webhook / Request URL
