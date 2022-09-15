@@ -14,7 +14,6 @@ function isWritableProp(prop: string): prop is WritableProp {
 function createLayoutWrapper<Options, Query>(layout: LayoutConfig): Component {
 	return defineComponent({
 		name: `${layout.id}-${NAME_SUFFIX}`,
-		inheritAttrs: false,
 		props: {
 			collection: {
 				type: String,
