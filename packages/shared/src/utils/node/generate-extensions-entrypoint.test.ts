@@ -4,13 +4,11 @@ import { Extension } from '../../types/extensions';
 import { generateExtensionsEntrypoint } from './generate-extensions-entrypoint';
 
 describe('generateExtensionsEntrypoint', () => {
-	const type = 'panel';
-
 	it('returns an extension entrypoint exporting all extensions with a type that matches the provided type', () => {
 		const mockExtension: Extension[] = [
 			{ path: './extensions', name: 'mockExtension', type: 'panel', entrypoint: 'index.js', local: true },
 		];
-		expect(generateExtensionsEntrypoint(type, mockExtension)).toBe(
+		expect(generateExtensionsEntrypoint(mockExtension)).toBe(
 			`import e0 from './extensions/index.js';
 export default [e0];`
 		);
@@ -28,6 +26,6 @@ export default [e0];`
 				local: false,
 			},
 		];
-		expect(generateExtensionsEntrypoint(type, mockExtension)).toBe(`export default [];`);
+		expect(generateExtensionsEntrypoint(mockExtension)).toBe(`export default [];`);
 	});
 });

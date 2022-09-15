@@ -1,27 +1,17 @@
-import { getRootPath } from '@/utils/get-root-path';
 import { App } from 'vue';
 import { getOperations } from './index';
 import { OperationAppConfig } from '@directus/shared/types';
+import { getExtensions } from '@/extensions';
 
 const { operationsRaw } = getOperations();
 
-export async function registerOperations(app: App): Promise<void> {
+export function registerOperations(app: App): void {
 	const operationModules = import.meta.globEager('./*/**/index.ts');
 
 	const operations: OperationAppConfig[] = Object.values(operationModules).map((module) => module.default);
 
-	try {
-		const customOperations: { default: OperationAppConfig[] } = import.meta.env.DEV
-			? await import('@directus-extensions-operation')
-			: await import(/* @vite-ignore */ `${getRootPath()}extensions/operations/index.js`);
-
-		operations.push(...customOperations.default);
-	} catch (err: any) {
-		// eslint-disable-next-line no-console
-		console.warn(`Couldn't load custom operations`);
-		// eslint-disable-next-line no-console
-		console.warn(err);
-	}
+	const customOperations = getExtensions('operation');
+	operations.push(...customOperations);
 
 	operationsRaw.value = operations;
 

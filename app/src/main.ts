@@ -17,6 +17,7 @@ import { router } from './router';
 import './styles/main.scss';
 import { registerViews } from './views/register';
 import { registerOperations } from './operations/register';
+import { loadExtensions } from './extensions';
 
 init();
 
@@ -44,14 +45,14 @@ async function init() {
 	registerComponents(app);
 	registerViews(app);
 
-	await Promise.all([
-		registerInterfaces(app),
-		registerPanels(app),
-		registerDisplays(app),
-		registerLayouts(app),
-		registerOperations(app),
-		loadModules(),
-	]);
+	await loadExtensions();
+
+	registerInterfaces(app);
+	registerPanels(app);
+	registerDisplays(app);
+	registerLayouts(app);
+	registerOperations(app);
+	loadModules();
 
 	app.mount('#app');
 

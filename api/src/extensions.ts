@@ -3,7 +3,6 @@ import path from 'path';
 import {
 	ActionHandler,
 	ApiExtension,
-	AppExtensionType,
 	BundleExtension,
 	EndpointConfig,
 	Extension,
@@ -11,7 +10,6 @@ import {
 	FilterHandler,
 	HookConfig,
 	HybridExtension,
-	HybridExtensionType,
 	InitHandler,
 	OperationApiConfig,
 	ScheduleHandler,
@@ -27,7 +25,6 @@ import {
 import {
 	API_OR_HYBRID_EXTENSION_PACKAGE_TYPES,
 	API_OR_HYBRID_EXTENSION_TYPES,
-	APP_OR_HYBRID_EXTENSION_TYPES,
 	APP_SHARED_DEPS,
 	EXTENSION_PACKAGE_TYPES,
 	EXTENSION_TYPES,
@@ -75,7 +72,7 @@ type BundleConfig = {
 	operations: { name: string; config: OperationApiConfig }[];
 };
 
-type AppExtensions = Partial<Record<AppExtensionType | HybridExtensionType, string>>;
+type AppExtensions = string | null;
 type ApiExtensions = { path: string }[];
 
 type Options = {
@@ -94,7 +91,7 @@ class ExtensionManager {
 
 	private extensions: Extension[] = [];
 
-	private appExtensions: AppExtensions = {};
+	private appExtensions: AppExtensions = null;
 	private apiExtensions: ApiExtensions = [];
 
 	private apiEmitter: Emitter;
@@ -182,8 +179,8 @@ class ExtensionManager {
 		}
 	}
 
-	public getAppExtensions(type: AppExtensionType | HybridExtensionType): string | undefined {
-		return this.appExtensions[type];
+	public getAppExtensions(): string | null {
+		return this.appExtensions;
 	}
 
 	public getEndpointRouter(): Router {
@@ -206,7 +203,7 @@ class ExtensionManager {
 		await this.registerBundles();
 
 		if (env.SERVE_APP) {
-			this.appExtensions = await this.generateExtensionBundles();
+			this.appExtensions = await this.generateExtensionBundle();
 		}
 
 		this.isLoaded = true;
@@ -218,7 +215,7 @@ class ExtensionManager {
 		this.apiEmitter.offAll();
 
 		if (env.SERVE_APP) {
-			this.appExtensions = {};
+			this.appExtensions = null;
 		}
 
 		this.isLoaded = false;
@@ -290,40 +287,36 @@ class ExtensionManager {
 		return [...packageExtensions, ...localExtensions];
 	}
 
-	private async generateExtensionBundles() {
+	private async generateExtensionBundle(): Promise<string | null> {
 		const sharedDepsMapping = await this.getSharedDepsMapping(APP_SHARED_DEPS);
 		const internalImports = Object.entries(sharedDepsMapping).map(([name, path]) => ({
 			find: name,
 			replacement: path,
 		}));
 
-		const bundles: Partial<Record<AppExtensionType | HybridExtensionType, string>> = {};
+		const entrypoint = generateExtensionsEntrypoint(this.extensions);
 
-		for (const extensionType of APP_OR_HYBRID_EXTENSION_TYPES) {
-			const entry = generateExtensionsEntrypoint(extensionType, this.extensions);
+		try {
+			const bundle = await rollup({
+				input: 'entry',
+				external: Object.values(sharedDepsMapping),
+				makeAbsoluteExternalsRelative: false,
+				plugins: [virtual({ entry: entrypoint }), alias({ entries: internalImports })],
+			});
+			const { output } = await bundle.generate({ format: 'es', compact: true });
 
-			try {
-				const bundle = await rollup({
-					input: 'entry',
-					external: Object.values(sharedDepsMapping),
-					makeAbsoluteExternalsRelative: false,
-					plugins: [virtual({ entry }), alias({ entries: internalImports })],
-				});
-				const { output } = await bundle.generate({ format: 'es', compact: true });
+			await bundle.close();
 
-				bundles[extensionType] = output[0].code;
-
-				await bundle.close();
-			} catch (error: any) {
-				logger.warn(`Couldn't bundle App extensions`);
-				logger.warn(error);
-			}
+			return output[0].code;
+		} catch (error: any) {
+			logger.warn(`Couldn't bundle App extensions`);
+			logger.warn(error);
 		}
 
-		return bundles;
+		return null;
 	}
 
-	private async getSharedDepsMapping(deps: string[]) {
+	private async getSharedDepsMapping(deps: string[]): Promise<Record<string, string>> {
 		const appDir = await fse.readdir(path.join(resolvePackage('@directus/app', __dirname), 'dist', 'assets'));
 
 		const depsMapping: Record<string, string> = {};
@@ -527,7 +520,7 @@ class ExtensionManager {
 		});
 	}
 
-	private registerOperation(config: OperationApiConfig) {
+	private registerOperation(config: OperationApiConfig): void {
 		const flowManager = getFlowManager();
 
 		flowManager.addOperation(config.id, config.handler);
