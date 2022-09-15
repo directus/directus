@@ -51,7 +51,7 @@ describe('applySnapshot', () => {
 					singleton: false,
 					translations: {},
 				},
-				schema: { comment: null, name: 'test_table_2', schema: 'public' },
+				schema: { name: 'test_table_2' },
 				fields: [
 					{
 						collection: 'test_table_2',
@@ -77,11 +77,9 @@ describe('applySnapshot', () => {
 							width: 'full',
 						},
 						schema: {
-							comment: null,
 							data_type: 'uuid',
 							default_value: null,
 							foreign_key_column: null,
-							foreign_key_schema: null,
 							foreign_key_table: null,
 							generation_expression: null,
 							has_auto_increment: false,
@@ -93,7 +91,6 @@ describe('applySnapshot', () => {
 							name: 'id',
 							numeric_precision: null,
 							numeric_scale: null,
-							schema: 'public',
 							table: 'test_table_2',
 						},
 						type: 'uuid',
@@ -137,7 +134,7 @@ describe('applySnapshot', () => {
 					singleton: false,
 					translations: {},
 				},
-				schema: { comment: null, name: 'test_table_2', schema: 'public' },
+				schema: { name: 'test_table_2' },
 				fields: [
 					{
 						collection: 'test_table_2',
@@ -163,11 +160,9 @@ describe('applySnapshot', () => {
 							width: 'full',
 						},
 						schema: {
-							comment: null,
 							data_type: 'uuid',
 							default_value: null,
 							foreign_key_column: null,
-							foreign_key_schema: null,
 							foreign_key_table: null,
 							generation_expression: null,
 							has_auto_increment: false,
@@ -179,7 +174,6 @@ describe('applySnapshot', () => {
 							name: 'id',
 							numeric_precision: null,
 							numeric_scale: null,
-							schema: 'public',
 							table: 'test_table_2',
 						},
 						type: 'uuid',
@@ -214,11 +208,9 @@ describe('applySnapshot', () => {
 							width: 'full',
 						},
 						schema: {
-							comment: null,
 							data_type: 'uuid',
 							default_value: null,
 							foreign_key_column: null,
-							foreign_key_schema: null,
 							foreign_key_table: null,
 							generation_expression: null,
 							has_auto_increment: false,
@@ -230,7 +222,6 @@ describe('applySnapshot', () => {
 							name: 'id',
 							numeric_precision: null,
 							numeric_scale: null,
-							schema: 'public',
 							table: 'test_table_3',
 						},
 						type: 'uuid',
@@ -247,7 +238,7 @@ describe('applySnapshot', () => {
 					singleton: false,
 					translations: {},
 				},
-				schema: { comment: null, name: 'test_table_3', schema: 'public' },
+				schema: { name: 'test_table_3' },
 			};
 
 			// Stop call to db later on in apply-snapshot

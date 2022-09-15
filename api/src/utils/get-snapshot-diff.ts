@@ -1,6 +1,7 @@
-import { Snapshot, SnapshotDiff } from '../types';
+import { Field, Relation } from '@directus/shared/types';
 import { diff } from 'deep-diff';
-import { orderBy } from 'lodash';
+import { omit, orderBy } from 'lodash';
+import { Collection, Snapshot, SnapshotDiff } from '../types';
 
 export function getSnapshotDiff(current: Snapshot, after: Snapshot): SnapshotDiff {
 	const diffedSnapshot: SnapshotDiff = {
@@ -13,7 +14,7 @@ export function getSnapshotDiff(current: Snapshot, after: Snapshot): SnapshotDif
 
 					return {
 						collection: currentCollection.collection,
-						diff: diff(currentCollection, afterCollection),
+						diff: diff(sanitizeCollection(currentCollection), sanitizeCollection(afterCollection)),
 					};
 				}),
 				...after.collections
@@ -26,7 +27,7 @@ export function getSnapshotDiff(current: Snapshot, after: Snapshot): SnapshotDif
 					})
 					.map((afterCollection) => ({
 						collection: afterCollection.collection,
-						diff: diff(undefined, afterCollection),
+						diff: diff(undefined, sanitizeCollection(afterCollection)),
 					})),
 			].filter((obj) => Array.isArray(obj.diff)) as SnapshotDiff['collections'],
 			'collection'
@@ -38,10 +39,16 @@ export function getSnapshotDiff(current: Snapshot, after: Snapshot): SnapshotDif
 						(afterField) => afterField.collection === currentField.collection && afterField.field === currentField.field
 					);
 
+					const isAutoIncrementPrimaryKey =
+						!!currentField.schema?.is_primary_key && !!currentField.schema?.has_auto_increment;
+
 					return {
 						collection: currentField.collection,
 						field: currentField.field,
-						diff: diff(currentField, afterField),
+						diff: diff(
+							sanitizeField(currentField, isAutoIncrementPrimaryKey),
+							sanitizeField(afterField, isAutoIncrementPrimaryKey)
+						),
 					};
 				}),
 				...after.fields
@@ -56,7 +63,7 @@ export function getSnapshotDiff(current: Snapshot, after: Snapshot): SnapshotDif
 					.map((afterField) => ({
 						collection: afterField.collection,
 						field: afterField.field,
-						diff: diff(undefined, afterField),
+						diff: diff(undefined, sanitizeField(afterField)),
 					})),
 			].filter((obj) => Array.isArray(obj.diff)) as SnapshotDiff['fields'],
 			['collection']
@@ -73,7 +80,7 @@ export function getSnapshotDiff(current: Snapshot, after: Snapshot): SnapshotDif
 						collection: currentRelation.collection,
 						field: currentRelation.field,
 						related_collection: currentRelation.related_collection,
-						diff: diff(currentRelation, afterRelation),
+						diff: diff(sanitizeRelation(currentRelation), sanitizeRelation(afterRelation)),
 					};
 				}),
 				...after.relations
@@ -89,7 +96,7 @@ export function getSnapshotDiff(current: Snapshot, after: Snapshot): SnapshotDif
 						collection: afterRelation.collection,
 						field: afterRelation.field,
 						related_collection: afterRelation.related_collection,
-						diff: diff(undefined, afterRelation),
+						diff: diff(undefined, sanitizeRelation(afterRelation)),
 					})),
 			].filter((obj) => Array.isArray(obj.diff)) as SnapshotDiff['relations'],
 			['collection']
@@ -113,4 +120,77 @@ export function getSnapshotDiff(current: Snapshot, after: Snapshot): SnapshotDif
 	);
 
 	return diffedSnapshot;
+}
+
+/**
+ * Omit certain database vendor specific collection properties that should not be compared when performing diff
+ *
+ * @param collection collection to sanitize
+ * @returns sanitized collection
+ *
+ * @see {@link https://github.com/knex/knex-schema-inspector/blob/master/lib/types/table.ts}
+ */
+
+function sanitizeCollection(collection: Collection | undefined) {
+	const omittedPaths = [
+		// Not supported in SQLite + comment in MSSQL
+		'schema.comment',
+		'schema.schema',
+
+		// MySQL Only
+		'schema.collation',
+		'schema.engine',
+
+		// Postgres Only
+		'schema.owner',
+
+		// SQLite Only
+		'schema.sql',
+
+		//MSSQL only
+		'schema.catalog',
+	];
+
+	return collection ? omit(collection, omittedPaths) : collection;
+}
+
+/**
+ * Omit certain database vendor specific field properties that should not be compared when performing diff
+ *
+ * @param field field to sanitize
+ * @param sanitizeAllSchema Whether or not the whole field schema should be sanitized. Mainly used to prevent modifying autoincrement fields
+ * @returns sanitized field
+ *
+ * @see {@link https://github.com/knex/knex-schema-inspector/blob/master/lib/types/column.ts}
+ */
+function sanitizeField(field: Field | undefined, sanitizeAllSchema = false) {
+	const omittedPaths = sanitizeAllSchema
+		? ['schema']
+		: [
+				// Not supported in SQLite or MSSQL
+				'schema.comment',
+
+				// Postgres Only
+				'schema.schema',
+				'schema.foreign_key_schema',
+		  ];
+
+	return field ? omit(field, omittedPaths) : field;
+}
+
+/**
+ * Omit certain database vendor specific relation properties that should not be compared when performing diff
+ *
+ * @param relation relation to sanitize
+ * @returns sanitized relation
+ *
+ * @see {@link https://github.com/knex/knex-schema-inspector/blob/master/lib/types/foreign-key.ts}
+ */
+function sanitizeRelation(relation: Relation | undefined) {
+	const omittedPaths = [
+		// Postgres + MSSSQL
+		'schema.foreign_key_schema',
+	];
+
+	return relation ? omit(relation, omittedPaths) : relation;
 }
