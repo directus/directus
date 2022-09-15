@@ -65,9 +65,15 @@
 					</v-card-actions>
 				</v-card>
 			</v-dialog>
-
-			<v-button v-tooltip.bottom="t('download')" rounded icon secondary @click="downloadFile">
-				<v-icon name="file_download" />
+			<v-button
+				v-tooltip.bottom="t('download')"
+				secondary
+				icon
+				rounded
+				:download="item?.filename_download"
+				:href="getAssetUrl(props.primaryKey, true)"
+			>
+				<v-icon name="download" />
 			</v-button>
 
 			<v-button
@@ -176,12 +182,12 @@
 </template>
 
 <script lang="ts" setup>
-import api, { addTokenToURL } from '@/api';
+import api from '@/api';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItem } from '@/composables/use-item';
 import { usePermissions } from '@/composables/use-permissions';
 import { useShortcut } from '@/composables/use-shortcut';
-import { getRootPath } from '@/utils/get-root-path';
+import { getAssetUrl } from '@/utils/get-asset-url';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
@@ -347,11 +353,6 @@ function discardAndLeave() {
 function discardAndStay() {
 	edits.value = {};
 	confirmLeave.value = false;
-}
-
-function downloadFile() {
-	const filePath = addTokenToURL(getRootPath() + `assets/${props.primaryKey}?download`);
-	window.open(filePath, '_blank');
 }
 
 function useMovetoFolder() {
