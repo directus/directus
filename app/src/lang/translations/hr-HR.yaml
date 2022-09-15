@@ -1425,7 +1425,6 @@ translation: Prijevod
 translation_placeholder: Unesite prijevod...
 value: Vrijednost
 view_project: Pogledaj projekt
-weeks: { }
 report_error: Prijavi grešku
 start: Započni
 table: Tablica
@@ -2019,6 +2018,8 @@ panels:
   variable:
     name: Globalna varijabla
     description: Postavite globalnu vrijednost za korištenje u filtrima drugih ploča
+    variable_key: Ključ varijable
+  relational-variable:
     variable_key: Ključ varijable
 triggers:
   common:
