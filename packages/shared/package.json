@@ -30,6 +30,10 @@
 			"import": "./dist/esm/exceptions/index.js",
 			"require": "./dist/cjs/exceptions/index.js"
 		},
+		"./services": {
+			"import": "./dist/esm/services/index.js",
+			"require": "./dist/cjs/services/index.js"
+		},
 		"./types": {
 			"import": "./dist/esm/types/index.js",
 			"require": "./dist/cjs/types/index.js"
