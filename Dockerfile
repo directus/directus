@@ -27,7 +27,7 @@ FROM node:${NODE_VERSION}
 #ENV ORACLE_HOME /usr/lib/instantclient
 
 RUN apk update
-RUN apk --no-cache add --virtual builds-deps build-base python3
+RUN apk --no-cache add --virtual builds-deps build-base python3 openssh-client bash git openssh curl
 RUN apk add nano
 
 WORKDIR /directus
@@ -52,6 +52,8 @@ RUN ./custom_extensions.sh
 RUN rm -rf /directus/api/extensions/modules/__MACOSX || true
 
 WORKDIR /directus/api
+
+RUN mkdir -p ./uploads
 
 CMD ["sh", "-c", "node ./cli.js bootstrap && node ./dist/start.js;"]
 EXPOSE 8055/tcp

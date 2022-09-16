@@ -22,5 +22,14 @@ wget -O ${DIRECTUS_DIR}/extensions/modules/api-viewer/index.js https://github.co
 mkdir -p ${DIRECTUS_DIR}/extensions/interfaces/fields-masked
 wget -O ${DIRECTUS_DIR}/extensions/interfaces/fields-masked/index.js https://github.com/dimitrov-adrian/directus-extension-masked-interface/releases/download/v1.1.0/index.js
 
+# Install https://github.com/br41nslug/directus-extension-randomized
+mkdir -p /tmp/directus-extension-randomized
+mkdir -p ${DIRECTUS_DIR}/extensions/hooks/directus-extension-randomized
+git clone git@github.com:br41nslug/directus-extension-randomized.git /tmp/directus-extension-randomized
+cd /tmp/directus-extension-randomized
+npm install
+npm run build
+mv dist ${DIRECTUS_DIR}/extensions/hooks/directus-extension-randomized
+
 # Install https://github.com/wellenplan/directus-extension-duration-display
 #pnpm install @wellenplan/directus-extension-duration-display
