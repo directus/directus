@@ -121,7 +121,7 @@ const cropID = computed({
 });
 
 const cropQuery = ref<RelationQuerySingle>({
-	fields: ['x,y,width,height,image_transformations,file_id.*'],
+	fields: ['x,y,width,height,image_transformations,file_id.id,file_id.modified_on,file_id.type,file_id.filename_download,file_id.width,file_id.height'],
 });
 const { collection, field } = toRefs(props);
 const { relationInfo } = useRelationM2O(collection, field);
@@ -221,13 +221,16 @@ function applyImageTransformationsToUrl(url: string): string {
 	let readyTransformations = [];
 
 	if (cropInfo.value.image_transformations) {
-		if (cropInfo.value.image_transformations.flip) {
+		const flip = cropInfo.value.image_transformations.flip
+		const flop = cropInfo.value.image_transformations.flop
+		if (flip) {
 			readyTransformations.push('["flip"]');
 		}
-		if (cropInfo.value.image_transformations.flop) {
+		if (flop) {
 			readyTransformations.push('["flop"]');
 		}
-		const rotation = cropInfo.value.image_transformations.rotate
+
+		let rotation = cropInfo.value.image_transformations.rotate
 		if (rotation != null) {
 			readyTransformations.push(`["rotate", ${rotation}]`);
 		}

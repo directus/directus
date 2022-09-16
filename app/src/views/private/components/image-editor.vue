@@ -20,7 +20,7 @@
 
 		<div class="warnings">
 			<v-notice v-if="!loading && error" type="error">error</v-notice>
-			<v-notice v-if="showOriginalHasCropsWarning" type="warning">
+			<v-notice v-if="showImageHasCropsWarning" type="warning">
 				Attention: this image has some crops refering to it. Changing this image has irreversable effect on them!
 			</v-notice>
 		</div>
@@ -186,8 +186,12 @@ export default defineComponent({
 			type: Object as PropType<CropInfo>,
 			default: undefined,
 		},
+		showImageHasCropsWarning: {
+			type: Boolean,
+			default: false
+		}
 	},
-	emits: ['update:modelValue', 'refresh'],
+	emits: ['update:modelValue', 'refresh', 'load-crops-warning'],
 	setup(props, { emit }) {
 		const { t, n } = useI18n();
 
@@ -222,6 +226,7 @@ export default defineComponent({
 
 		watch(internalActive, (isActive) => {
 			if (isActive === true) {
+				emit('load-crops-warning');
 				fetchImage();
 			} else {
 				if (cropperInstance.value) {
@@ -271,9 +276,6 @@ export default defineComponent({
 			return addTokenToURL(url);
 		});
 
-		// TODO: add original has crops logic
-		const showOriginalHasCropsWarning = computed(() => !props.cropInfo);
-
 		const customAspectRatios = settingsStore.settings?.custom_aspect_ratios ?? null;
 
 		return {
@@ -298,20 +300,21 @@ export default defineComponent({
 			cropping,
 			setAspectRatio,
 			customAspectRatios,
-			showOriginalHasCropsWarning,
 		};
 
 		function applyImageTransformationsToUrl(url: string): string {
 			let readyTransformations = [];
 
 			if (props.cropInfo?.imageTransformations) {
-				if (props.cropInfo?.imageTransformations.flip) {
+				const flip = props.cropInfo?.imageTransformations.flip
+				const flop = props.cropInfo?.imageTransformations.flop
+				if (flip) {
 					readyTransformations.push('["flip"]');
 				}
-				if (props.cropInfo?.imageTransformations.flop) {
+				if (flop) {
 					readyTransformations.push('["flop"]');
 				}
-				const rotation = props.cropInfo?.imageTransformations.rotate;
+				let rotation = props.cropInfo?.imageTransformations.rotate
 				if (rotation) {
 					readyTransformations.push(`["rotate", ${rotation}]`);
 				}
