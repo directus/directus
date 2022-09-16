@@ -187,6 +187,7 @@ revision_post_create: Voici à quoi ressemblait cet article lors de sa création
 revision_post_update: Voici à quoi ressemblait cet élément après la mise à jour.
 changes_made: Vous trouverez ci-dessous les modifications spécifiques apportées à cette révision.
 no_relational_data: Attention, les données relationnelles ne sont pas incluses.
+bottom: Bas
 hide_field: Masquer le champ
 hide_field_on_detail: Masquer le champ dans le détail
 show_field_on_detail: Afficher le champ dans le détail
@@ -295,11 +296,12 @@ next: Suivant
 field_name: Nom du champ
 translations: Traductions
 no_translations: Aucune traduction
+left_to_right: Hello
 note: Remarque
 enter_a_value: Saisissez une valeur...
 enter_a_placeholder: Entrez un texte d'indication...
 length: Taille
-soft_length: Limite de souplesse
+soft_length: Limite de caractères
 precision_scale: Précision et échelle
 readonly: Lecture seule
 unique: Unique
@@ -309,6 +311,8 @@ primary_key: Clef primaire
 foreign_key: Clé étrangère
 finish_setup: Terminer la configuration
 dismiss: Ignorer
+toggle_raw_editor: Activer/désactiver l'éditeur de texte brut
+raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
 raw_value: Valeur brute
 copy_raw_value: Copier la valeur brute
 copy_raw_value_success: Copié
@@ -614,6 +618,7 @@ password_reset_sent: Si vous avez un compte, nous vous avons envoyé un lien sé
 password_reset_successful: Mot de passe réinitialisé avec succès
 back: Retour
 filter: Filtre
+edit_image: Éditer l'image
 editing_image: Modification de l'image
 square: Carré
 free: Libre
@@ -757,7 +762,7 @@ toggle: Activer/Désactiver
 icon_on: Icône de sélection
 icon_off: Icône de désélection
 label: Étiquette
-flows: Les Flux
+flows: Flux
 flow: Flux
 select_a_flow: Sélectionner un flux
 run_flow_on_current: Exécuter le flux sur l'élément actuel
@@ -790,6 +795,7 @@ start_flow: Démarrer le Flux
 stop_flow: Arrêt du Flux
 create_operation: Créer une Opération
 edit_operation: Modifier l'Opération
+code: Code
 operation_options: Les Options d'Opération
 operation_name: Nom de l'Opération...
 operation_key: Identifiant pour référence...
@@ -833,6 +839,7 @@ media: Média
 quality: Qualité
 width: Largeur
 height: Hauteur
+transformation_preset_key: Préréglages de transformation
 source: Source
 url_placeholder: Entrez une url...
 display_text: Afficher le texte
@@ -917,9 +924,9 @@ settings_data_model: Modèle de données
 settings_permissions: Rôles et autorisations
 settings_project: Paramètres du projet
 settings_webhooks: Webhooks
-settings_flows: Les Flux
+settings_flows: Flux
 settings_presets: Préréglages et favoris
-settings_translation_strings: Chaînes de traduction
+settings_translation_strings: Traductions
 one_or_more_options_are_missing: Une ou plusieurs options sont manquantes
 scope: Utilisateurs ou rôles
 actions: Actions
@@ -1133,6 +1140,8 @@ fields:
     transformations_all: Autoriser toutes les transformations
     transformations_none: Désactiver les transformations
     transformations_presets: Limiter les transformations aux présélections ci-dessous
+    image_editor: Éditeur d'Image
+    custom_aspect_ratios: Personnaliser le rapport d'aspect
   directus_shares:
     name: Nom
     role: Rôle
@@ -1399,6 +1408,8 @@ value: Valeur
 view_project: Voir le projet
 report_error: Signaler l'erreur
 start: Début
+table: Tableau
+list: Liste
 interfaces:
   filter:
     name: Filtre
@@ -1478,6 +1489,8 @@ interfaces:
     set_to_now: Configurer à maintenant
     use_24: Utiliser le format 24h
     placeholder: Choisissez une date et heure...
+  system-fields:
+    select_a_collection: Sélectionner une collection
   system-display-template:
     display-template: Modèle d'affichage
     description: Mélanger du texte statique et des valeurs de champs dynamiques
@@ -1501,6 +1514,7 @@ interfaces:
     allow_none_label: Autoriser aucune sélection
     choices_name_placeholder: Entrez un nom...
     choices_value_placeholder: Saisissez une valeur...
+    preview_threshold: Seuil d'aperçu
   select-multiple-dropdown:
     select-multiple-dropdown: Liste déroulante (choix multiple)
     description: Sélectionner plusieurs valeurs à partir d'une liste déroulante
@@ -1699,6 +1713,9 @@ interfaces:
     regenerate: Régénérer le jeton
     generate_success_copy: Assurez-vous de sauvegarder et de copier le jeton ci-dessus. Pour des raisons de sécurité, vous ne pourrez plus voir le jeton après avoir enregistré et quitté cette page.
     remove_token: Supprimer le jeton
+  system-raw-editor:
+    system-raw-editor: Éditeur brut
+    description: Permettre la saisie de valeurs brutes ou de modèles en moustache
 displays:
   translations:
     translations: Traductions
@@ -1742,6 +1759,11 @@ displays:
     strict: Stricte
     strict_label: Utilisez des unités strictes
     strict_note: Retire les mots comme 'environ', 'plus de', 'moins de'
+    round: Arrondir
+    round_note: Choisissez une fonction d'arrondi à utiliser
+    down: Bas
+    nearest: Le plus proche
+    up: Haut
   file:
     file: Fichier
     description: Afficher les fichiers
@@ -1996,7 +2018,6 @@ triggers:
     collection_and_item: Pages des Collections et des Articles
     collection_only: Page de la Collection Uniquement
     item_only: Page de l'Article Uniquement
-a_users_uuid: La Clé Primaire UUID d'un utilisateur...
 a_flow_uuid: La Clé primaire UUID d'un Flux...
 any_string_or_json: Toute chaîne de caractères ou JSON...
 item_payload_placeholder: C'est le JSON utilisé pour mettre à jour les valeurs des champs de l'élément...
@@ -2042,7 +2063,6 @@ operations:
     body: Corps du mail
   notification:
     name: Envoyer la Notification
-    description: Envoyer une notification in-app à un utilisateur
     recipient: Utilisateur
     message: Message
   request:
@@ -2066,6 +2086,6 @@ operations:
   trigger:
     name: Déclencher le Flux
     description: Transmettre ces données à un autre Flux
-    flows: Les Flux
+    flows: Flux
     flow: Flux
     data: Données

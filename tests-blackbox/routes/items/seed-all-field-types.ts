@@ -1,4 +1,4 @@
-import { CreateField, CreateItem, SeedFunctions, PrimaryKeyType } from '@common/index';
+import { CreateField, CreateItem, SeedFunctions, PrimaryKeyType, ReadItem } from '@common/index';
 import { TestsFieldSchema } from '@query/filter';
 
 const valuesQuantity = 2;
@@ -90,7 +90,7 @@ export const seedAllFieldTypesValues = async (vendor: string, collection: string
 	}
 };
 
-export const seedAliasAllFieldTypesValues = async (
+export const seedO2MAliasAllFieldTypesValues = async (
 	vendor: string,
 	collection: string,
 	pkType: PrimaryKeyType,
@@ -142,6 +142,42 @@ export const seedAliasAllFieldTypesValues = async (
 		}
 
 		expect(true).toBeTruthy();
+	} catch (error) {
+		expect(error).toBeFalsy();
+	}
+};
+
+export const seedM2MAliasAllFieldTypesValues = async (
+	vendor: string,
+	collection: string,
+	otherCollection: string,
+	junctionCollection: string,
+	junctionField: string,
+	otherJunctionField: string,
+	possibleKeys: any[],
+	otherPossibleKeys: any[]
+) => {
+	try {
+		const collectionItems = await ReadItem(vendor, { collection: collection, fields: '*' });
+		const otherCollectionItems = await ReadItem(vendor, { collection: otherCollection, fields: '*' });
+		const newCollectionKeys = collectionItems.map((i: any) => i.id).filter((i: any) => !possibleKeys.includes(i));
+		const newOtherCollectionKeys = otherCollectionItems
+			.map((i: any) => i.id)
+			.filter((i: any) => !otherPossibleKeys.includes(i));
+
+		if (newCollectionKeys.length !== newOtherCollectionKeys.length) {
+			expect('Keys should have the same length').toBeFalsy();
+		} else {
+			const items = [];
+
+			for (let i = 0; i < newCollectionKeys.length; i++) {
+				items.push({ [junctionField]: newCollectionKeys[i], [otherJunctionField]: newOtherCollectionKeys[i] });
+			}
+
+			await CreateItem(vendor, { collection: junctionCollection, item: items });
+
+			expect(true).toBeTruthy();
+		}
 	} catch (error) {
 		expect(error).toBeFalsy();
 	}

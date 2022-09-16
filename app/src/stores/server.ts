@@ -5,6 +5,7 @@ import { setLanguage } from '@/lang/set-language';
 import formatTitle from '@directus/format-title';
 import { acceptHMRUpdate, defineStore } from 'pinia';
 import { computed, reactive, unref } from 'vue';
+import { useUserStore } from '@/stores/user';
 
 type Info = {
 	project: null | {
@@ -37,6 +38,9 @@ type Info = {
 				points: number;
 				duration: number;
 		  };
+	flows?: {
+		execAllowedModules: string[];
+	};
 };
 
 type Auth = {
@@ -50,6 +54,8 @@ export const useServerStore = defineStore('serverStore', () => {
 		directus: undefined,
 		node: undefined,
 		os: undefined,
+		rateLimiter: undefined,
+		flows: undefined,
 	});
 
 	const auth = reactive<Auth>({
@@ -79,11 +85,16 @@ export const useServerStore = defineStore('serverStore', () => {
 		info.directus = serverInfoResponse.data.data?.directus;
 		info.node = serverInfoResponse.data.data?.node;
 		info.os = serverInfoResponse.data.data?.os;
+		info.flows = serverInfoResponse.data.data?.flows;
 
 		auth.providers = authResponse.data.data;
 		auth.disableDefault = authResponse.data.disableDefault;
 
-		await setLanguage(unref(info)?.project?.default_language ?? 'en-US');
+		const { currentUser } = useUserStore();
+
+		if (!currentUser?.language) {
+			await setLanguage(unref(info)?.project?.default_language ?? 'en-US');
+		}
 
 		if (serverInfoResponse.data.data?.rateLimit !== undefined) {
 			if (serverInfoResponse.data.data?.rateLimit === false) {

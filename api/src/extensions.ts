@@ -10,6 +10,7 @@ import {
 	FilterHandler,
 	HookConfig,
 	HybridExtension,
+	HybridExtensionType,
 	InitHandler,
 	OperationApiConfig,
 	ScheduleHandler,
@@ -19,17 +20,18 @@ import {
 	generateExtensionsEntry,
 	getLocalExtensions,
 	getPackageExtensions,
+	pathToRelativeUrl,
 	resolvePackage,
 } from '@directus/shared/utils/node';
 import {
-	API_EXTENSION_PACKAGE_TYPES,
-	API_EXTENSION_TYPES,
-	APP_EXTENSION_TYPES,
+	API_OR_HYBRID_EXTENSION_PACKAGE_TYPES,
+	API_OR_HYBRID_EXTENSION_TYPES,
+	APP_OR_HYBRID_EXTENSION_TYPES,
 	APP_SHARED_DEPS,
 	EXTENSION_PACKAGE_TYPES,
 	EXTENSION_TYPES,
 	HYBRID_EXTENSION_TYPES,
-	PACK_EXTENSION_TYPE,
+	PACKAGE_EXTENSION_TYPES,
 } from '@directus/shared/constants';
 import getDatabase from './database';
 import emitter, { Emitter } from './emitter';
@@ -49,7 +51,7 @@ import { Url } from './utils/url';
 import getModuleDefault from './utils/get-module-default';
 import { clone, escapeRegExp } from 'lodash';
 import chokidar, { FSWatcher } from 'chokidar';
-import { isExtensionObject, isHybridExtension, pluralize } from '@directus/shared/utils';
+import { isIn, isTypeIn, pluralize } from '@directus/shared/utils';
 import { getFlowManager } from './flows';
 import globby from 'globby';
 import { EventHandler } from './types';
@@ -67,7 +69,7 @@ export function getExtensionManager(): ExtensionManager {
 	return extensionManager;
 }
 
-type AppExtensions = Partial<Record<AppExtensionType, string>>;
+type AppExtensions = Partial<Record<AppExtensionType | HybridExtensionType, string>>;
 type ApiExtensions = {
 	hooks: { path: string; events: EventHandler[] }[];
 	endpoints: { path: string }[];
@@ -109,22 +111,30 @@ class ExtensionManager {
 	}
 
 	public async initialize(options: Partial<Options> = {}): Promise<void> {
+		const prevOptions = this.options;
+
 		this.options = {
 			...defaultOptions,
 			...options,
 		};
 
-		this.initializeWatcher();
+		if (!prevOptions.watch && this.options.watch) {
+			this.initializeWatcher();
+		} else if (prevOptions.watch && !this.options.watch) {
+			await this.closeWatcher();
+		}
 
 		if (!this.isLoaded) {
 			await this.load();
-
-			this.updateWatchedExtensions(this.extensions);
 
 			const loadedExtensions = this.getExtensionsList();
 			if (loadedExtensions.length > 0) {
 				logger.info(`Loaded extensions: ${loadedExtensions.join(', ')}`);
 			}
+		}
+
+		if (!prevOptions.watch && this.options.watch) {
+			this.updateWatchedExtensions(this.extensions);
 		}
 	}
 
@@ -169,7 +179,7 @@ class ExtensionManager {
 		}
 	}
 
-	public getAppExtensions(type: AppExtensionType): string | undefined {
+	public getAppExtensions(type: AppExtensionType | HybridExtensionType): string | undefined {
 		return this.appExtensions[type];
 	}
 
@@ -179,7 +189,7 @@ class ExtensionManager {
 
 	private async load(): Promise<void> {
 		try {
-			await ensureExtensionDirs(env.EXTENSIONS_PATH, env.SERVE_APP ? EXTENSION_TYPES : API_EXTENSION_TYPES);
+			await ensureExtensionDirs(env.EXTENSIONS_PATH, env.SERVE_APP ? EXTENSION_TYPES : API_OR_HYBRID_EXTENSION_TYPES);
 
 			this.extensions = await this.getExtensions();
 		} catch (err: any) {
@@ -213,16 +223,13 @@ class ExtensionManager {
 	}
 
 	private initializeWatcher(): void {
-		if (this.options.watch && !this.watcher) {
+		if (!this.watcher) {
 			logger.info('Watching extensions for changes...');
 
-			const localExtensionPaths = (env.SERVE_APP ? EXTENSION_TYPES : API_EXTENSION_TYPES).flatMap((type) => {
-				const typeDir = path.posix.join(
-					path.relative('.', env.EXTENSIONS_PATH).split(path.sep).join(path.posix.sep),
-					pluralize(type)
-				);
+			const localExtensionPaths = (env.SERVE_APP ? EXTENSION_TYPES : API_OR_HYBRID_EXTENSION_TYPES).flatMap((type) => {
+				const typeDir = path.posix.join(pathToRelativeUrl(env.EXTENSIONS_PATH), pluralize(type));
 
-				return isHybridExtension(type)
+				return isIn(type, HYBRID_EXTENSION_TYPES)
 					? [path.posix.join(typeDir, '*', 'app.js'), path.posix.join(typeDir, '*', 'api.js')]
 					: path.posix.join(typeDir, '*', 'index.js');
 			});
@@ -238,15 +245,21 @@ class ExtensionManager {
 		}
 	}
 
+	private async closeWatcher(): Promise<void> {
+		if (this.watcher) {
+			await this.watcher.close();
+		}
+	}
+
 	private updateWatchedExtensions(added: Extension[], removed: Extension[] = []): void {
 		if (this.watcher) {
 			const toPackageExtensionPaths = (extensions: Extension[]) =>
 				extensions
 					.filter((extension) => !extension.local)
 					.flatMap((extension) =>
-						extension.type === PACK_EXTENSION_TYPE
+						isTypeIn(extension, PACKAGE_EXTENSION_TYPES)
 							? path.resolve(extension.path, 'package.json')
-							: isExtensionObject(extension, HYBRID_EXTENSION_TYPES)
+							: isTypeIn(extension, HYBRID_EXTENSION_TYPES)
 							? [
 									path.resolve(extension.path, extension.entrypoint.app),
 									path.resolve(extension.path, extension.entrypoint.api),
@@ -265,11 +278,11 @@ class ExtensionManager {
 	private async getExtensions(): Promise<Extension[]> {
 		const packageExtensions = await getPackageExtensions(
 			'.',
-			env.SERVE_APP ? EXTENSION_PACKAGE_TYPES : API_EXTENSION_PACKAGE_TYPES
+			env.SERVE_APP ? EXTENSION_PACKAGE_TYPES : API_OR_HYBRID_EXTENSION_PACKAGE_TYPES
 		);
 		const localExtensions = await getLocalExtensions(
 			env.EXTENSIONS_PATH,
-			env.SERVE_APP ? EXTENSION_TYPES : API_EXTENSION_TYPES
+			env.SERVE_APP ? EXTENSION_TYPES : API_OR_HYBRID_EXTENSION_TYPES
 		);
 
 		return [...packageExtensions, ...localExtensions];
@@ -282,9 +295,9 @@ class ExtensionManager {
 			replacement: path,
 		}));
 
-		const bundles: Partial<Record<AppExtensionType, string>> = {};
+		const bundles: Partial<Record<AppExtensionType | HybridExtensionType, string>> = {};
 
-		for (const extensionType of APP_EXTENSION_TYPES) {
+		for (const extensionType of APP_OR_HYBRID_EXTENSION_TYPES) {
 			const entry = generateExtensionsEntry(extensionType, this.extensions);
 
 			try {
@@ -309,7 +322,7 @@ class ExtensionManager {
 	}
 
 	private async getSharedDepsMapping(deps: string[]) {
-		const appDir = await fse.readdir(path.join(resolvePackage('@directus/app'), 'dist', 'assets'));
+		const appDir = await fse.readdir(path.join(resolvePackage('@directus/app', __dirname), 'dist', 'assets'));
 
 		const depsMapping: Record<string, string> = {};
 		for (const dep of deps) {
@@ -365,9 +378,7 @@ class ExtensionManager {
 	}
 
 	private async registerOperations(): Promise<void> {
-		const internalPaths = await globby(
-			path.posix.join(path.relative('.', __dirname).split(path.sep).join(path.posix.sep), 'operations/*/index.(js|ts)')
-		);
+		const internalPaths = await globby(path.posix.join(pathToRelativeUrl(__dirname), 'operations/*/index.(js|ts)'));
 
 		const internalOperations = internalPaths.map((internalPath) => {
 			const dirs = internalPath.split(path.sep);

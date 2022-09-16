@@ -1,9 +1,11 @@
-import { SchemaOverview } from '@directus/shared/types';
+import { Query, SchemaOverview } from '@directus/shared/types';
 import { Knex } from 'knex';
+import { applyFilter } from '../../../utils/apply-query';
 import { DatabaseHelper } from '../types';
 
 export type FnHelperOptions = {
 	type?: string;
+	query?: Query;
 };
 
 export abstract class FnHelper extends DatabaseHelper {
@@ -22,7 +24,7 @@ export abstract class FnHelper extends DatabaseHelper {
 	abstract second(table: string, column: string, options?: FnHelperOptions): Knex.Raw;
 	abstract count(table: string, column: string, options?: FnHelperOptions): Knex.Raw;
 
-	protected _relationalCount(table: string, column: string): Knex.Raw {
+	protected _relationalCount(table: string, column: string, options?: FnHelperOptions): Knex.Raw {
 		const relation = this.schema.relations.find(
 			(relation) => relation.related_collection === table && relation?.meta?.one_field === column
 		);
@@ -33,14 +35,15 @@ export abstract class FnHelper extends DatabaseHelper {
 			throw new Error(`Field ${table}.${column} isn't a nested relational collection`);
 		}
 
-		return this.knex.raw(
-			'(' +
-				this.knex
-					.count('*')
-					.from(relation.collection)
-					.where(relation.field, '=', this.knex.raw(`??.??`, [table, currentPrimary]))
-					.toQuery() +
-				')'
-		);
+		let countQuery = this.knex
+			.count('*')
+			.from(relation.collection)
+			.where(relation.field, '=', this.knex.raw(`??.??`, [table, currentPrimary]));
+
+		if (options?.query?.filter) {
+			countQuery = applyFilter(this.knex, this.schema, countQuery, options.query.filter, relation.collection, false);
+		}
+
+		return this.knex.raw('(' + countQuery.toQuery() + ')');
 	}
 }

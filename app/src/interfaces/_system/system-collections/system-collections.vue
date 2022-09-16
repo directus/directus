@@ -14,7 +14,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed } from 'vue';
-import { useCollectionsStore } from '@/stores/';
+import { useCollectionsStore } from '@/stores/collections';
 
 export default defineComponent({
 	props: {
@@ -30,6 +30,10 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		includeSingleton: {
+			type: Boolean,
+			default: true,
+		},
 	},
 	emits: ['input'],
 	setup(props) {
@@ -38,11 +42,14 @@ export default defineComponent({
 		const collectionsStore = useCollectionsStore();
 
 		const collections = computed(() => {
-			if (props.includeSystem) return collectionsStore.collections;
+			let collections = collectionsStore.collections;
+			if (!props.includeSingleton) {
+				collections = collections.filter((collection) => collection?.meta?.singleton === false);
+			}
 
-			return collectionsStore.collections.filter(
-				(collection) => collection.collection.startsWith('directus_') === false
-			);
+			if (props.includeSystem) return collections;
+
+			return collections.filter((collection) => collection.collection.startsWith('directus_') === false);
 		});
 
 		const items = computed(() => {

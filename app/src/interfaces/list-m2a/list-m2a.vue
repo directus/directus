@@ -111,7 +111,7 @@
 		</div>
 
 		<drawer-collection
-			v-if="!disabled"
+			v-if="!disabled && selectingFrom"
 			multiple
 			:active="!!selectingFrom"
 			:collection="selectingFrom"
@@ -121,8 +121,8 @@
 		/>
 
 		<drawer-item
+			v-model:active="editModalActive"
 			:disabled="disabled"
-			:active="editModalActive"
 			:collection="relationInfo.junctionCollection.collection"
 			:primary-key="currentlyEditing || '+'"
 			:related-primary-key="relatedPrimaryKey || '+'"
@@ -130,21 +130,21 @@
 			:edits="editsAtStart"
 			:circular-field="relationInfo.reverseJunctionField.field"
 			@input="stageEdits"
-			@update:active="cancelEdit"
 		/>
 	</div>
 </template>
 
 <script setup lang="ts">
-import { DisplayItem, RelationQueryMultiple, useRelationM2A, useRelationMultiple } from '@/composables/use-relation';
+import { useRelationM2A } from '@/composables/use-relation-m2a';
+import { DisplayItem, RelationQueryMultiple, useRelationMultiple } from '@/composables/use-relation-multiple';
 import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
-import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
+import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { hideDragImage } from '@/utils/hide-drag-image';
-import DrawerCollection from '@/views/private/components/drawer-collection';
-import DrawerItem from '@/views/private/components/drawer-item';
-import { Filter, FieldFilter } from '@directus/shared/types';
+import DrawerCollection from '@/views/private/components/drawer-collection.vue';
+import DrawerItem from '@/views/private/components/drawer-item.vue';
+import { Filter } from '@directus/shared/types';
 import { getFieldsFromTemplate } from '@directus/shared/utils';
-import { clamp, get } from 'lodash';
+import { clamp, get, isEmpty } from 'lodash';
 import { computed, ref, toRefs, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
@@ -159,6 +159,7 @@ const props = withDefaults(
 		enableCreate?: boolean;
 		enableSelect?: boolean;
 		limit?: number;
+		allowDuplicates?: boolean;
 	}>(),
 	{
 		value: () => [],
@@ -166,6 +167,7 @@ const props = withDefaults(
 		enableCreate: true,
 		enableSelect: true,
 		limit: 15,
+		allowDuplicates: false,
 	}
 );
 
@@ -217,8 +219,19 @@ const query = computed<RelationQueryMultiple>(() => ({
 	page: page.value,
 }));
 
-const { create, update, remove, select, displayItems, totalItemCount, loading, selected, isItemSelected, localDelete } =
-	useRelationMultiple(value, query, relationInfo, primaryKey);
+const {
+	create,
+	update,
+	remove,
+	select,
+	displayItems,
+	totalItemCount,
+	loading,
+	selected,
+	isItemSelected,
+	localDelete,
+	getItemEdits,
+} = useRelationMultiple(value, query, relationInfo, primaryKey);
 
 const pageCount = computed(() => Math.ceil(totalItemCount.value / limit.value));
 
@@ -238,7 +251,7 @@ function sortItems(items: DisplayItem[]) {
 
 	const sortedItems = items.map((item, index) => ({
 		...item,
-		[sortField]: index,
+		[sortField]: index + 1,
 	}));
 	update(...sortedItems);
 }
@@ -272,7 +285,10 @@ function editItem(item: DisplayItem) {
 	const junctionPkField = relationInfo.value.junctionPrimaryKeyField.field;
 
 	newItem = false;
-	editsAtStart.value = item;
+	editsAtStart.value = {
+		...getItemEdits(item),
+		[relationInfo.value.collectionField.field]: item[relationInfo.value.collectionField.field],
+	};
 
 	editModalActive.value = true;
 
@@ -287,15 +303,13 @@ function editItem(item: DisplayItem) {
 }
 
 function stageEdits(item: Record<string, any>) {
+	if (isEmpty(item)) return;
+
 	if (newItem) {
 		create(item);
 	} else {
 		update(item);
 	}
-}
-
-function cancelEdit() {
-	editModalActive.value = false;
 }
 
 function deleteItem(item: DisplayItem) {
@@ -328,7 +342,7 @@ function getCollectionName(item: DisplayItem) {
 const customFilter = computed(() => {
 	const info = relationInfo.value;
 
-	if (!info || !selectingFrom.value) return {};
+	if (!info || !selectingFrom.value || props.allowDuplicates) return {};
 
 	const filter: Filter = {
 		_and: [],

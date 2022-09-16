@@ -3,8 +3,8 @@
 		:is="isSingleton ? 'item-route' : 'collection-route'"
 		:collection="collection"
 		:bookmark="bookmark"
-		:singleton="isSingleton ? true : undefined"
 		:archive="archive"
+		v-bind="isSingleton ? { singleton: isSingleton } : {}"
 	/>
 </template>
 
@@ -12,9 +12,9 @@
 import { defineComponent, computed, watch } from 'vue';
 import CollectionRoute from './collection.vue';
 import ItemRoute from './item.vue';
-import { useCollectionsStore } from '@/stores/';
+import { useCollectionsStore } from '@/stores/collections';
 import { useRoute } from 'vue-router';
-import useLocalStorage from '@/composables/use-local-storage';
+import { useLocalStorage } from '@/composables/use-local-storage';
 
 export default defineComponent({
 	components: {

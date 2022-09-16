@@ -1,5 +1,5 @@
 import { logout, LogoutReason, refresh } from '@/auth';
-import { useRequestsStore } from '@/stores/';
+import { useRequestsStore } from '@/stores/requests';
 import { getRootPath } from '@/utils/get-root-path';
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { addQueryToPath } from './utils/add-query-to-path';

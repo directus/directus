@@ -135,7 +135,7 @@
 </template>
 
 <script lang="ts" setup>
-import useClipboard from '@/composables/use-clipboard';
+import { useClipboard } from '@/composables/use-clipboard';
 import { getOperations } from '@/operations';
 import { translate } from '@/utils/translate-object-values';
 import { Vector2 } from '@/utils/vector2';

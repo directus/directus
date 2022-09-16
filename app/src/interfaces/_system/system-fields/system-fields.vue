@@ -1,26 +1,36 @@
 <template>
-	<v-list>
-		<draggable v-model="fields" :force-fallback="true" item-key="key" handle=".drag-handle">
-			<template #item="{ element: field }">
-				<v-list-item block>
-					<v-icon name="drag_handle" class="drag-handle" left />
-					<div class="name">{{ field.displayName }}</div>
-					<div class="spacer" />
-					<v-icon name="close" clickable @click="removeField(field.key)" />
-				</v-list-item>
+	<template v-if="!collectionName">
+		<v-notice type="info">
+			{{ t('interfaces.system-fields.select_a_collection') }}
+		</v-notice>
+	</template>
+	<template v-else>
+		<v-list v-if="fields.length === 0">
+			<v-notice class="no-fields">{{ t('interfaces.system-fields.no_fields') }}</v-notice>
+		</v-list>
+		<v-list v-else>
+			<draggable v-model="fields" :force-fallback="true" item-key="key" handle=".drag-handle">
+				<template #item="{ element: field }">
+					<v-list-item block>
+						<v-icon name="drag_handle" class="drag-handle" left />
+						<div class="name">{{ field.displayName }}</div>
+						<div class="spacer" />
+						<v-icon name="close" clickable @click="removeField(field.key)" />
+					</v-list-item>
+				</template>
+			</draggable>
+		</v-list>
+		<v-menu placement="bottom-start" show-arrow>
+			<template #activator="{ toggle }">
+				<button class="toggle" @click="toggle">
+					{{ t('add_field') }}
+					<v-icon name="expand_more" />
+				</button>
 			</template>
-		</draggable>
-	</v-list>
-	<v-menu placement="bottom-start" show-arrow>
-		<template #activator="{ toggle }">
-			<button class="toggle" @click="toggle">
-				{{ t('add_field') }}
-				<v-icon name="expand_more" />
-			</button>
-		</template>
 
-		<v-field-list :disabled-fields="value" :collection="collectionName" @select-field="addField" />
-	</v-menu>
+			<v-field-list :disabled-fields="value" :collection="collectionName" @select-field="addField" />
+		</v-menu>
+	</template>
 </template>
 
 <script lang="ts" setup>
@@ -114,6 +124,15 @@ function removeField(fieldKey: string) {
 
 	.v-icon {
 		position: absolute;
+	}
+}
+
+.v-notice.no-fields {
+	background-color: var(--background-page);
+	border: var(--border-width) solid var(--v-list-item-border-color);
+
+	&::after {
+		display: none;
 	}
 }
 </style>

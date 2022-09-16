@@ -62,38 +62,39 @@
 </template>
 
 <script lang="ts">
-import 'maplibre-gl/dist/maplibre-gl.css';
+import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
-import { defineComponent, onMounted, onUnmounted, PropType, ref, watch, toRefs, computed } from 'vue';
 import maplibre, {
-	LngLatLike,
-	LngLatBoundsLike,
 	AnimationOptions,
+	AttributionControl,
 	CameraOptions,
+	GeolocateControl,
+	LngLatBoundsLike,
+	LngLatLike,
 	Map,
 	NavigationControl,
-	GeolocateControl,
-	AttributionControl,
 } from 'maplibre-gl';
-import MapboxDraw from '@mapbox/mapbox-gl-draw';
+import 'maplibre-gl/dist/maplibre-gl.css';
+import { computed, defineComponent, onMounted, onUnmounted, PropType, ref, toRefs, watch } from 'vue';
+import { useSettingsStore } from '@/stores/settings';
+import { flatten, getBBox, getGeometryFormatForType, getParser, getSerializer } from '@/utils/geometry';
+import { ButtonControl } from '@/utils/geometry/controls';
+import {
+	Field,
+	GeoJSONParser,
+	GeoJSONSerializer,
+	GeometryType,
+	MultiGeometry,
+	SimpleGeometry,
+} from '@directus/shared/types';
 // @ts-ignore
 import StaticMode from '@mapbox/mapbox-gl-draw-static-mode';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
-import { ButtonControl } from '@/utils/geometry/controls';
 import { Geometry } from 'geojson';
-import { flatten, getBBox, getParser, getSerializer, getGeometryFormatForType } from '@/utils/geometry';
-import {
-	Field,
-	GeometryType,
-	GeoJSONParser,
-	GeoJSONSerializer,
-	SimpleGeometry,
-	MultiGeometry,
-} from '@directus/shared/types';
-import getSetting from '@/utils/get-setting';
-import { snakeCase, isEqual, debounce } from 'lodash';
+import { debounce, isEqual, snakeCase } from 'lodash';
 import { getMapStyle } from './style';
+
 const activeLayers = [
 	'directus-point',
 	'directus-line',
@@ -103,9 +104,8 @@ const activeLayers = [
 	'directus-polygon-and-line-vertex',
 ].flatMap((name) => [name + '.hot', name + '.cold']);
 
-import { useI18n } from 'vue-i18n';
-import { TranslateResult } from 'vue-i18n';
-import { useAppStore } from '@/stores';
+import { useAppStore } from '@/stores/app';
+import { TranslateResult, useI18n } from 'vue-i18n';
 
 import { getBasemapSources, getStyleFromBasemapSource } from '@/utils/geometry/basemap';
 
@@ -151,10 +151,12 @@ export default defineComponent({
 		const geometryOptionsError = ref<string | null>();
 		const geometryParsingError = ref<string | TranslateResult>();
 
-		const geometryType = props.geometryType || (props.fieldData?.type.split('.')[1] as GeometryType);
+		const geometryType = props.fieldData?.type.split('.')[1] as GeometryType;
 		const geometryFormat = getGeometryFormatForType(props.type)!;
 
-		const mapboxKey = getSetting('mapbox_key');
+		const settingsStore = useSettingsStore();
+		const mapboxKey = settingsStore.settings?.mapbox_key;
+
 		const basemaps = getBasemapSources();
 		const appStore = useAppStore();
 		const { basemap } = toRefs(appStore);
