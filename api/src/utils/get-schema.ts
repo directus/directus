@@ -26,6 +26,8 @@ export async function getSchema(options?: {
 	const database = options?.database || getDatabase();
 	const schemaInspector = SchemaInspector(database);
 
+	const {systemCache} = getCache()
+
 	let result: SchemaOverview;
 
 	if (!options?.bypassCache && env.CACHE_SCHEMA !== false) {
@@ -49,49 +51,83 @@ export async function getSchema(options?: {
 			}
 		}
 	} else {
-		result = await getDatabaseSchema(database, schemaInspector);
+		return {
+			getCollections: loadCollections,
+			getCollection: loadCollection,
+			getFields: loadFields,
+			getField: loadField,
+			getRelationsForCollection: loadRelationsForCollection,
+			getRelationsForField: loadRelationsForField,
+			getPrimaryKeyField: async (collection: string) => {
+				const collectionInfo = await loadCollection(collection);
+				return await loadField(collection, collectionInfo!.primary);
+			},
+		};
 	}
 
-	return result;
-}
+	
 
-async function getDatabaseSchema(
-	database: Knex,
-	schemaInspector: ReturnType<typeof SchemaInspector>
-): Promise<SchemaOverview> {
-	const result: SchemaOverview = {
-		collections: {},
-		relations: [],
-	};
+	async function loadCollections() {
+		const schemaOverview = await schemaInspector.overview();
 
-	const schemaOverview = await schemaInspector.overview();
+		const result: Record<string, CollectionOverview> = {}
+	
+		const collections = [
+			...(await database
+				.select('collection', 'singleton', 'note', 'sort_field', 'accountability')
+				.from('directus_collections')),
+			...systemCollectionRows,
+		];
+	
+		for (const [collection, info] of Object.entries(schemaOverview)) {
+			if (toArray(env['DB_EXCLUDE_TABLES']).includes(collection)) {
+				logger.trace(`Collection "${collection}" is configured to be excluded and will be ignored`);
+				continue;
+			}
+	
+			if (!(info as any).primary) {
+				logger.warn(`Collection "${collection}" doesn't have a primary key column and will be ignored`);
+				continue;
+			}
+	
+			if (collection.includes(' ')) {
+				logger.warn(`Collection "${collection}" has a space in the name and will be ignored`);
+				continue;
+			}
+	
+			const collectionMeta = collections.find((collectionMeta) => collectionMeta.collection === collection);
+	
+			result[collection] = {
+				collection,
+				primary: (info as any).primary,
+				singleton:
+					collectionMeta?.singleton === true || collectionMeta?.singleton === 'true' || collectionMeta?.singleton === 1,
+				note: collectionMeta?.note || null,
+				sortField: collectionMeta?.sort_field || null,
+				accountability: collectionMeta ? collectionMeta.accountability : 'all',
+			};
+		}
 
-	const collections = [
-		...(await database
-			.select('collection', 'singleton', 'note', 'sort_field', 'accountability')
-			.from('directus_collections')),
-		...systemCollectionRows,
-	];
+		return result;
+	}
 
 	for (const [collection, info] of Object.entries(schemaOverview)) {
 		if (toArray(env.DB_EXCLUDE_TABLES).includes(collection)) {
 			logger.trace(`Collection "${collection}" is configured to be excluded and will be ignored`);
-			continue;
+			return null;
 		}
 
 		if (!info.primary) {
 			logger.warn(`Collection "${collection}" doesn't have a primary key column and will be ignored`);
-			continue;
+			return null;
 		}
 
 		if (collection.includes(' ')) {
 			logger.warn(`Collection "${collection}" has a space in the name and will be ignored`);
-			continue;
+			return null;
 		}
 
-		const collectionMeta = collections.find((collectionMeta) => collectionMeta.collection === collection);
-
-		result.collections[collection] = {
+		return {
 			collection,
 			primary: info.primary,
 			singleton:
@@ -113,59 +149,135 @@ async function getDatabaseSchema(
 					note: null,
 					validation: null,
 					alias: false,
-				};
-			}),
-		};
+				}
+			];
+		}))
+
+		let fields: {
+			id: number;
+			collection: string;
+			field: string;
+			special: string | string[] | null;
+			note: string | null;
+			validation: string | Record<string, any> | null;
+		}[];
+
+		if(collection.startsWith('directus_')) {
+			fields = systemFieldRows.filter((field) => field.collection === collection);
+		} else {
+			fields = await database.select('id', 'collection', 'field', 'special', 'note', 'validation').from('directus_fields').where('collection', collection);
+		}
+
+		fields = fields.filter((field) => (field.special ? toArray(field.special)  : []).includes('no-data') === false);
+
+		return fields.reduce<Record<string, FieldOverview>>((acc, field) => {
+			const existing = fieldsInfo[field.field];
+			const column = schemaOverview[field.collection]!.columns[field.field];
+			const special = field.special ? toArray(field.special) : [];
+	
+			const type = (existing && getLocalType(column, { special })) || 'alias';
+			let validation = field.validation ?? null;
+			
+			if (validation && typeof validation === 'string') validation = parseJSON(validation);
+			
+			if (ALIAS_TYPES.some((type) => special.includes(type)) === false && !existing) return acc;
+
+			acc[field.field] = {
+				field: field.field,
+				defaultValue: existing?.defaultValue ?? null,
+				nullable: existing?.nullable ?? true,
+				generated: existing?.generated ?? false,
+				type: type,
+				dbType: existing?.dbType || null,
+				precision: existing?.precision || null,
+				scale: existing?.scale || null,
+				special: special,
+				note: field.note,
+				alias: existing?.alias ?? true,
+				validation: (validation as Filter) ?? null,
+			}
+
+			return acc
+			
+		}, {})
 	}
 
-	const fields = [
-		...(await database
-			.select<
-				{
-					id: number;
-					collection: string;
-					field: string;
-					special: string;
-					note: string | null;
-					validation: string | Record<string, any> | null;
-				}[]
-			>('id', 'collection', 'field', 'special', 'note', 'validation')
-			.from('directus_fields')),
-		...systemFieldRows,
-	].filter((field) => (field.special ? toArray(field.special) : []).includes('no-data') === false);
+	async function loadField(collection: string, fieldName: string) {
+		const schemaOverview = await schemaInspector.overview();
 
-	for (const field of fields) {
-		if (!result.collections[field.collection]) continue;
+		const info = schemaOverview[collection]!.columns[fieldName]!;
+
+		let fieldInfo = {
+			field: info.column_name,
+			defaultValue: getDefaultValue(info) ?? null,
+			nullable: info.is_nullable ?? true,
+			generated: info.is_generated ?? false,
+			type: getLocalType(info),
+			dbType: info.data_type,
+			precision: info.numeric_precision || null,
+			scale: info.numeric_scale || null,
+			special: [],
+			note: null,
+			validation: null,
+			alias: false,
+		}
+
+		let field: {
+			id: number;
+			collection: string;
+			field: string;
+			special: string | string[] | null;
+			note: string | null;
+			validation: string | Record<string, any> | null;
+		} | null;
+
+		if(collection.startsWith('directus_')) {
+			field = systemFieldRows.find((sysField) => sysField.collection === collection && sysField.field === fieldName) ?? null;
+		} else {
+			field = (await database.select('id', 'collection', 'field', 'special', 'note', 'validation').from('directus_fields').where('collection', collection).andWhere('field', fieldName))[0];
+		}
+
+		if(field === null || (field.special ? toArray(field.special)  : []).includes('no-data') == false) return null;
 
 		const existing = result.collections[field.collection].fields[field.field];
 		const column = schemaOverview[field.collection].columns[field.field];
 		const special = field.special ? toArray(field.special) : [];
 
-		if (ALIAS_TYPES.some((type) => special.includes(type)) === false && !existing) continue;
+		if (ALIAS_TYPES.some((type) => special.includes(type)) === false && !fieldInfo) return null;
 
-		const type = (existing && getLocalType(column, { special })) || 'alias';
+		const type = (fieldInfo && getLocalType(column, { special })) || 'alias';
 		let validation = field.validation ?? null;
 
 		if (validation && typeof validation === 'string') validation = parseJSON(validation);
 
 		result.collections[field.collection].fields[field.field] = {
 			field: field.field,
-			defaultValue: existing?.defaultValue ?? null,
-			nullable: existing?.nullable ?? true,
-			generated: existing?.generated ?? false,
+			defaultValue: fieldInfo?.defaultValue ?? null,
+			nullable: fieldInfo?.nullable ?? true,
+			generated: fieldInfo?.generated ?? false,
 			type: type,
-			dbType: existing?.dbType || null,
-			precision: existing?.precision || null,
-			scale: existing?.scale || null,
+			dbType: fieldInfo?.dbType || null,
+			precision: fieldInfo?.precision || null,
+			scale: fieldInfo?.scale || null,
 			special: special,
 			note: field.note,
-			alias: existing?.alias ?? true,
+			alias: fieldInfo?.alias ?? true,
 			validation: (validation as Filter) ?? null,
 		};
 	}
 
-	const relationsService = new RelationsService({ knex: database, schema: result });
-	result.relations = await relationsService.readAll();
+	async function loadRelationsForCollection(collection: string) {
+		const relationsService = new RelationsService({ knex: database, schema: result });
+		const relations = await relationsService.readAll(collection);
 
-	return result;
+		return relations.reduce<Record<string, Relation>>((acc, relation) => {
+			acc[relation.field] = relation;
+			return acc
+		}, {});
+	}
+
+	async function loadRelationsForField(collection: string, field: string) {
+		const relationsService = new RelationsService({ knex: database, schema: result });
+		return await relationsService.readOne(collection, field);
+	}
 }

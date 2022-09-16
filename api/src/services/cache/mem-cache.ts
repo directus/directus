@@ -1,5 +1,4 @@
 import { CacheService } from './cache';
-import { compress, decompress } from '../../utils/compress';
 import { cloneDeep } from 'lodash-es';
 
 export class MemCache extends CacheService {
@@ -20,6 +19,8 @@ export class MemCache extends CacheService {
 	}
 
 	async set(key: string, value: any, ttl: number | undefined = this.ttl): Promise<void> {
+		if (await this.isLocked()) return;
+
 		const _key = this.addPrefix(key);
 		this.store.set(_key, value);
 
