@@ -18,6 +18,7 @@ export * from './hooks';
 export * from './interfaces';
 export * from './items';
 export * from './layouts';
+export * from './messenger';
 export * from './misc';
 export * from './modules';
 export * from './notifications';

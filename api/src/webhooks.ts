@@ -2,10 +2,9 @@ import axios from 'axios';
 import getDatabase from './database';
 import emitter from './emitter';
 import logger from './logger';
-import { Webhook, WebhookHeader } from './types';
 import { WebhooksService } from './services';
 import { getSchema } from './utils/get-schema';
-import { ActionHandler } from '@directus/shared/types';
+import { ActionHandler, Webhook, WebhookHeader } from '@directus/shared/types';
 import { getMessenger } from './messenger';
 import { JobQueue } from './utils/job-queue';
 

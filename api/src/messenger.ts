@@ -1,16 +1,9 @@
 import { parseJSON } from '@directus/shared/utils';
+import { Messenger, MessengerSubscriptionCallback } from '@directus/shared/types';
 import IORedis from 'ioredis';
 import type { Redis } from 'ioredis';
 import env from './env';
 import { getConfigFromEnv } from './utils/get-config-from-env';
-
-export type MessengerSubscriptionCallback = (payload: Record<string, any>) => void;
-
-export interface Messenger {
-	publish: (channel: string, payload: Record<string, any>) => void;
-	subscribe: (channel: string, callback: MessengerSubscriptionCallback) => void;
-	unsubscribe: (channel: string) => void;
-}
 
 export class MessengerMemory implements Messenger {
 	handlers: Record<string, MessengerSubscriptionCallback>;

@@ -1,7 +1,7 @@
 import { AbstractServiceOptions } from '@directus/shared/services';
-import { Item, PrimaryKey, Webhook, MutationOptions } from '@directus/shared/types';
+import { Item, PrimaryKey, Webhook, MutationOptions, Messenger } from '@directus/shared/types';
 import { ItemsService } from './items';
-import { getMessenger, Messenger } from '../messenger';
+import { getMessenger } from '../messenger';
 
 export class WebhooksService extends ItemsService<Webhook> {
 	messenger: Messenger;
