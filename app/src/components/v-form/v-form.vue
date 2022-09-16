@@ -286,8 +286,8 @@ function useForm() {
 
 	function setPrimaryKeyReadonly(field: Field) {
 		if (
-			field.schema?.has_auto_increment === true ||
-			(field.schema?.is_primary_key === true && props.primaryKey !== '+')
+			field.schema?.is_generated === true &&
+			(field.schema?.has_auto_increment === true || (field.schema?.is_primary_key === true && props.primaryKey !== '+'))
 		) {
 			const fieldClone = cloneDeep(field) as any;
 			if (!fieldClone.meta) fieldClone.meta = {};
