@@ -1,4 +1,4 @@
-import { TransformationParams } from './types';
+import { TransformationParams } from '@directus/shared/types';
 import env from './env';
 import ms from 'ms';
 

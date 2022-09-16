@@ -1,6 +1,6 @@
 import SchemaInspector from '@directus/schema';
 import { REGEX_BETWEEN_PARENS } from '@directus/shared/constants';
-import { Accountability, Field, FieldMeta, RawField, SchemaOverview, Type } from '@directus/shared/types';
+import { ActionEventParams, MutationOptions, Accountability, Field, FieldMeta, RawField, SchemaOverview, Type } from '@directus/shared/types';
 import { addFieldFlag, toArray } from '@directus/shared/utils';
 import { AbstractServiceOptions } from '@directus/shared/services';
 import Keyv from 'keyv';
@@ -18,7 +18,6 @@ import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { translateDatabaseError } from '../exceptions/database/translate';
 import { ItemsService } from '../services/items';
 import { PayloadService } from '../services/payload';
-import { ActionEventParams, MutationOptions } from '../types';
 import getDefaultValue from '../utils/get-default-value';
 import getLocalType from '../utils/get-local-type';
 import { RelationsService } from './relations';

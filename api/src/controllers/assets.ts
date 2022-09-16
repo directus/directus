@@ -11,7 +11,7 @@ import { InvalidQueryException, RangeNotSatisfiableException } from '../exceptio
 import logger from '../logger';
 import useCollection from '../middleware/use-collection';
 import { AssetsService, PayloadService } from '../services';
-import { TransformationMethods, TransformationParams, TransformationPreset } from '../types/assets';
+import { TransformationMethods, TransformationParams, TransformationPreset } from '@directus/shared/types';
 import asyncHandler from '../utils/async-handler';
 import { getConfigFromEnv } from '../utils/get-config-from-env';
 

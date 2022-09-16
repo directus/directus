@@ -1,7 +1,6 @@
 import { AbstractServiceOptions } from '@directus/shared/services';
-import { PrimaryKey, MutationOptions } from '../types';
+import { MutationOptions, Notification, PrimaryKey } from '@directus/shared/types';
 import { ItemsService } from './items';
-import { Notification } from '@directus/shared/types';
 import { md } from '../utils/md';
 import { Url } from '../utils/url';
 import { UsersService } from './users';

@@ -1,5 +1,6 @@
 import { AbstractServiceOptions } from '@directus/shared/services';
-import { ShareData, LoginResult, Item, PrimaryKey, MutationOptions, DirectusTokenPayload } from '../types';
+import { LoginResult, Item, PrimaryKey, MutationOptions } from '@directus/shared/types';
+import { ShareData, DirectusTokenPayload } from '../types';
 import { ItemsService } from './items';
 import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';

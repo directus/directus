@@ -1,4 +1,13 @@
-import { Item, Query, SchemaOverview } from '@directus/shared/types';
+import {
+	AST,
+	FieldNode,
+	FunctionFieldNode,
+	M2ONode,
+	NestedCollectionNode,
+	Item,
+	Query,
+	SchemaOverview,
+} from '@directus/shared/types';
 import { toArray } from '@directus/shared/utils';
 import { Knex } from 'knex';
 import { clone, cloneDeep, merge, pick, uniq } from 'lodash';
@@ -6,7 +15,6 @@ import getDatabase from '.';
 import { getHelpers } from '../database/helpers';
 import env from '../env';
 import { PayloadService } from '../services/payload';
-import { AST, FieldNode, FunctionFieldNode, M2ONode, NestedCollectionNode } from '../types/ast';
 import { applyFunctionToColumnName } from '../utils/apply-function-to-column-name';
 import applyQuery from '../utils/apply-query';
 import { getColumn } from '../utils/get-column';

@@ -1,6 +1,12 @@
 import { Range, StatResponse } from '@directus/drive';
 import { AbstractServiceOptions } from '@directus/shared/services';
-import { Accountability } from '@directus/shared/types';
+import {
+	Accountability,
+	File,
+	Transformation,
+	TransformationParams,
+	TransformationPreset,
+} from '@directus/shared/types';
 import { Semaphore } from 'async-mutex';
 import { Knex } from 'knex';
 import { contentType } from 'mime-types';
@@ -13,7 +19,6 @@ import env from '../env';
 import { ForbiddenException, IllegalAssetTransformation, RangeNotSatisfiableException } from '../exceptions';
 import logger from '../logger';
 import storage from '../storage';
-import { File, Transformation, TransformationParams, TransformationPreset } from '../types';
 import * as TransformationUtils from '../utils/transformations';
 import { AuthorizationService } from './authorization';
 

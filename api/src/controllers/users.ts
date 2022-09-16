@@ -5,7 +5,7 @@ import { respond } from '../middleware/respond';
 import useCollection from '../middleware/use-collection';
 import { validateBatch } from '../middleware/validate-batch';
 import { AuthenticationService, MetaService, UsersService, RolesService, TFAService } from '../services';
-import { PrimaryKey } from '../types';
+import { PrimaryKey } from '@directus/shared/types';
 import asyncHandler from '../utils/async-handler';
 import { Role } from '@directus/shared/types';
 

@@ -4,7 +4,7 @@ import { respond } from '../middleware/respond';
 import useCollection from '../middleware/use-collection';
 import { validateBatch } from '../middleware/validate-batch';
 import { MetaService, NotificationsService } from '../services';
-import { PrimaryKey } from '../types';
+import { PrimaryKey } from '@directus/shared/types';
 import asyncHandler from '../utils/async-handler';
 
 const router = express.Router();

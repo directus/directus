@@ -10,7 +10,7 @@ import { respond } from '../middleware/respond';
 import useCollection from '../middleware/use-collection';
 import { validateBatch } from '../middleware/validate-batch';
 import { FilesService, MetaService } from '../services';
-import { File, PrimaryKey } from '../types';
+import { File, PrimaryKey } from '@directus/shared/types';
 import asyncHandler from '../utils/async-handler';
 
 const router = express.Router();

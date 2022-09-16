@@ -6,7 +6,7 @@ import {
 	TransformationPreset,
 	TransformationPresetFormat,
 	TransformationPresetResize,
-} from '../types';
+} from '@directus/shared/types';
 
 // Extract transforms from a preset
 export function resolvePreset(input: TransformationParams | TransformationPreset, file: File): Transformation[] {

@@ -1,5 +1,5 @@
 import { AbstractServiceOptions } from '@directus/shared/services';
-import { Accountability, Query, SchemaOverview } from '@directus/shared/types';
+import { Accountability, File, Query, SchemaOverview } from '@directus/shared/types';
 import { parseJSON, toArray } from '@directus/shared/utils';
 import { queue } from 'async';
 import csv from 'csv-parser';
@@ -21,7 +21,6 @@ import {
 	UnsupportedMediaTypeException,
 } from '../exceptions';
 import logger from '../logger';
-import { File } from '../types';
 import { getDateFormatted } from '../utils/get-date-formatted';
 import { FilesService } from './files';
 import { ItemsService } from './items';

@@ -1,6 +1,6 @@
 import { AbstractServiceOptions } from '@directus/shared/services';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
-import { PrimaryKey } from '../types';
+import { PrimaryKey } from '@directus/shared/types';
 import { ItemsService } from './index';
 
 export class RevisionsService extends ItemsService {
