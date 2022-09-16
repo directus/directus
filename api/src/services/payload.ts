@@ -156,7 +156,7 @@ export class PayloadService {
 
 		const fieldsInPayload = Object.keys(processedPayload[0]!);
 
-		let specialFieldsInCollection = Object.entries(this.schema.collections[this.collection]!.fields).filter(
+		let specialFieldsInCollection = Object.entries(await this.schema.getFields(this.collection)).filter(
 			([_name, field]) => field.special && field.special.length > 0
 		);
 
@@ -178,7 +178,7 @@ export class PayloadService {
 		);
 
 		this.processGeometries(processedPayload, action);
-		this.processDates(processedPayload, action);
+		await this.processDates(processedPayload, action);
 
 		if (['create', 'update'].includes(action)) {
 			processedPayload.forEach((record) => {
@@ -269,8 +269,8 @@ export class PayloadService {
 	 * Knex returns `datetime` and `date` columns as Date.. This is wrong for date / datetime, as those
 	 * shouldn't return with time / timezone info respectively
 	 */
-	processDates(payloads: Partial<Record<string, any>>[], action: Action): Partial<Record<string, any>>[] {
-		const fieldsInCollection = Object.entries(this.schema.collections[this.collection]!.fields);
+	async processDates(payloads: Partial<Record<string, any>>[], action: Action): Promise<Partial<Record<string, any>>[]> {
+		const fieldsInCollection = Object.entries(await this.schema.getFields(this.collection));
 
 		const dateColumns = fieldsInCollection.filter(([_name, field]) =>
 			['dateTime', 'date', 'timestamp'].includes(field.type)
@@ -377,9 +377,7 @@ export class PayloadService {
 		data: Partial<Item>,
 		opts?: MutationOptions
 	): Promise<{ payload: Partial<Item>; revisions: PrimaryKey[]; nestedActionEvents: ActionEventParams[] }> {
-		const relations = this.schema.relations.filter((relation) => {
-			return relation.collection === this.collection;
-		});
+		const relations = Object.values(await this.schema.getRelationsForCollection(this.collection));
 
 		const revisions: PrimaryKey[] = [];
 
@@ -418,7 +416,7 @@ export class PayloadService {
 				schema: this.schema,
 			});
 
-			const relatedPrimary = this.schema.collections[relatedCollection]!.primary;
+			const relatedPrimary = (await this.schema.getCollection(relatedCollection))!.primary;
 			const relatedRecord: Partial<Item> = payload[relation.field];
 
 			if (['string', 'number'].includes(typeof relatedRecord)) continue;
@@ -475,19 +473,19 @@ export class PayloadService {
 		const nestedActionEvents: ActionEventParams[] = [];
 
 		// Many to one relations that exist on the current collection
-		const relations = this.schema.relations.filter((relation) => {
-			return relation.collection === this.collection;
-		});
+		const relations = Object.values(await this.schema.getRelationsForCollection(this.collection));
 
 		// Only process related records that are actually in the payload
 		const relationsToProcess = relations.filter((relation) => {
 			return relation.field in payload && isObject(payload[relation.field]);
 		});
 
+		const collections = await this.schema.getCollections();
+
 		for (const relation of relationsToProcess) {
 			// If no "one collection" exists, this is a A2O, not a M2O
 			if (!relation.related_collection) continue;
-			const relatedPrimaryKeyField = this.schema.collections[relation.related_collection]!.primary;
+			const relatedPrimaryKeyField = collections[relation.related_collection]!.primary;
 
 			// Items service to the related collection
 			const itemsService = new ItemsService(relation.related_collection, {
@@ -549,9 +547,7 @@ export class PayloadService {
 
 		const nestedActionEvents: ActionEventParams[] = [];
 
-		const relations = this.schema.relations.filter((relation) => {
-			return relation.related_collection === this.collection;
-		});
+		const relations = Object.values(await this.schema.getRelationsForCollection(this.collection));
 
 		const payload = cloneDeep(data);
 
@@ -567,11 +563,13 @@ export class PayloadService {
 			delete: Joi.array().items(Joi.string(), Joi.number()),
 		});
 
+		const collections = await this.schema.getCollections();
+
 		for (const relation of relationsToProcess) {
 			if (!relation.meta) continue;
 
-			const currentPrimaryKeyField = this.schema.collections[relation.related_collection!]!.primary;
-			const relatedPrimaryKeyField = this.schema.collections[relation.collection]!.primary;
+			const currentPrimaryKeyField = collections[relation.related_collection!]!.primary;
+			const relatedPrimaryKeyField = collections[relation.collection]!.primary;
 
 			const itemsService = new ItemsService(relation.collection, {
 				accountability: this.accountability,

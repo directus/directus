@@ -136,31 +136,33 @@ export class RelationsService {
 			throw new InvalidPayloadException('"field" is required');
 		}
 
-		if (relation.collection in this.schema.collections === false) {
+		const collections = await this.schema.getCollections()
+
+		if (relation.collection in collections === false) {
 			throw new InvalidPayloadException(`Collection "${relation.collection}" doesn't exist`);
 		}
 
-		if (relation.field in this.schema.collections[relation.collection]!.fields === false) {
+		const fields = await this.schema.getFields(relation.collection)
+
+		if (relation.field in fields === false) {
 			throw new InvalidPayloadException(
 				`Field "${relation.field}" doesn't exist in collection "${relation.collection}"`
 			);
 		}
 
 		// A primary key should not be a foreign key
-		if (this.schema.collections[relation.collection]!.primary === relation.field) {
+		if (collections[relation.collection]!.primary === relation.field) {
 			throw new InvalidPayloadException(
 				`Field "${relation.field}" in collection "${relation.collection}" is a primary key`
 			);
 		}
 
-		if (relation.related_collection && relation.related_collection in this.schema.collections === false) {
+		if (relation.related_collection && relation.related_collection in collections === false) {
 			throw new InvalidPayloadException(`Collection "${relation.related_collection}" doesn't exist`);
 		}
 
-		const existingRelation = this.schema.relations.find(
-			(existingRelation) =>
-				existingRelation.collection === relation.collection && existingRelation.field === relation.field
-		);
+		const existingRelation = Object.values(await this.schema.getRelationsForCollection(relation.collection)).find(
+			(existingRelation) => existingRelation.field === relation.field );
 
 		if (existingRelation) {
 			throw new InvalidPayloadException(
@@ -187,7 +189,7 @@ export class RelationsService {
 						const builder = table
 							.foreign(relation.field!, constraintName)
 							.references(
-								`${relation.related_collection!}.${this.schema.collections[relation.related_collection!]!.primary}`
+								`${relation.related_collection!}.${collections[relation.related_collection!]!.primary}`
 							);
 
 						if (relation.schema?.on_delete) {

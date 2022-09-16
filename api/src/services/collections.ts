@@ -61,7 +61,7 @@ export class CollectionsService {
 			const existingCollections: string[] = [
 				...((await this.knex.select('collection').from('directus_collections'))?.map(({ collection }) => collection) ??
 					[]),
-				...Object.keys(this.schema.collections),
+				...Object.keys(await this.schema.getCollections()),
 			];
 
 			if (existingCollections.includes(payload.collection)) {
@@ -442,8 +442,10 @@ export class CollectionsService {
 					await trx('directus_permissions').delete().where('collection', '=', collectionKey);
 					await trx('directus_relations').delete().where({ many_collection: collectionKey });
 
-					const relations = this.schema.relations.filter((relation) => {
-						return relation.collection === collectionKey || relation.related_collection === collectionKey;
+					const collectionRelations = Object.values(await this.schema.getRelationsForCollection(collectionKey))
+
+					const relations = collectionRelations.filter((relation) => {
+						return relation.related_collection === collectionKey;
 					});
 
 					for (const relation of relations) {
@@ -458,7 +460,7 @@ export class CollectionsService {
 						}
 					}
 
-					const a2oRelationsThatIncludeThisCollection = this.schema.relations.filter((relation) => {
+					const a2oRelationsThatIncludeThisCollection = collectionRelations.filter((relation) => {
 						return relation.meta?.one_allowed_collections?.includes(collectionKey);
 					});
 

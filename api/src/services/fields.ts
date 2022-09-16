@@ -449,7 +449,9 @@ export class FieldsService {
 			);
 
 			await this.knex.transaction(async (trx) => {
-				const relations = this.schema.relations.filter((relation) => {
+				const collectionRelations = Object.values(await this.schema.getRelationsForCollection(collection));
+
+				const relations = collectionRelations.filter((relation) => {
 					return (
 						(relation.collection === collection && relation.field === field) ||
 						(relation.related_collection === collection && relation.meta?.one_field === field)
@@ -488,12 +490,10 @@ export class FieldsService {
 					}
 				}
 
+				const fieldInfo = await this.schema.getField(collection, field);
+
 				// Delete field only after foreign key constraints are removed
-				if (
-					this.schema.collections[collection] &&
-					field in this.schema.collections[collection]!.fields &&
-					this.schema.collections[collection]!.fields[field]!.alias === false
-				) {
+				if (fieldInfo?.alias === false) {
 					await trx.schema.table(collection, (table) => {
 						table.dropColumn(field);
 					});
