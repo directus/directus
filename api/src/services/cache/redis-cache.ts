@@ -7,7 +7,6 @@ import {parse, stringify} from 'json-buffer'
 import { compress, decompress } from '../../utils/compress.js';
 
 export class RedisCache extends CacheService {
-
     client: RedisClientType
 
     constructor(options?: CacheOptions) {
@@ -38,6 +37,31 @@ export class RedisCache extends CacheService {
     }
     async delete(key: string): Promise<void> {
         await this.client.del(this.addPrefix(key))
+    }
+
+    async setHash(key: string, value: Record<string, any>, ttl?: number | undefined): Promise<void> {
+        const _key = this.addPrefix(key)
+
+        const values = []
+
+        for(const [key, val] of Object.entries(value)) {
+            values.push(key, stringify(await compress(val)))
+        }
+
+        await this.client.sendCommand(['HSET', _key, ...values])
+        if(ttl !== undefined) await this.client.expire(_key, ttl);
+    }
+    async getHash(key: string): Promise<Record<string, any>> {
+        return await this.client.hGetAll(this.addPrefix(key))
+    }
+    async setHashField(key: string, field: string, value: any, ttl?: number | undefined): Promise<void> {
+        const _key = this.addPrefix(key)
+
+        await this.client.hSet(_key, field, stringify(await compress(value)))
+        if(ttl !== undefined) await this.client.expire(_key, ttl);
+    }
+    async getHashField(key: string, field: string): Promise<any> {
+        return await this.client.hGet(this.addPrefix(key), field)
     }
     
 }
