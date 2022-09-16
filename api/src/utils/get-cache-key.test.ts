@@ -37,6 +37,16 @@ const requests = [
 		params: { method: 'POST', originalUrl: graphQlUrl, body: { query: 'query { test { name } }' } },
 		key: '64eb0c48ea69d0863ff930398f29b5c7884f88f7',
 	},
+	{
+		name: 'an authenticated GraphQL GET query request',
+		params: { method, originalUrl: graphQlUrl, accountability, query: { query: 'query { test { id } }' } },
+		key: '9bc52c98dcf2de04c64589f52e0ada1e38d53a90',
+	},
+	{
+		name: 'an authenticated GraphQL POST query request',
+		params: { method: 'POST', originalUrl: graphQlUrl, accountability, body: { query: 'query { test { name } }' } },
+		key: '051ea77ce5ba71bbc88bcb567b9ddc602b585c13',
+	},
 ];
 
 const cases = requests.map(({ name, params, key }) => [name, params, key]);
