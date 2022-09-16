@@ -110,7 +110,7 @@ class FlowManager {
 	public async runOperationFlow(id: string, data: unknown, context: Record<string, unknown>): Promise<unknown> {
 		if (!(id in this.operationFlowHandlers)) {
 			logger.warn(`Couldn't find operation triggered flow with id "${id}"`);
-			return null;
+			return;
 		}
 
 		const handler = this.operationFlowHandlers[id];
@@ -380,7 +380,7 @@ class FlowManager {
 	}> {
 		if (!(operation.type in this.operations)) {
 			logger.warn(`Couldn't find operation ${operation.type}`);
-			return { successor: null, status: 'unknown', data: null, options: null };
+			return { successor: null, status: 'unknown', data: undefined, options: null };
 		}
 
 		const handler = this.operations[operation.type];
@@ -400,9 +400,9 @@ class FlowManager {
 				...context,
 			});
 
-			return { successor: operation.resolve, status: 'resolve', data: result ?? null, options };
+			return { successor: operation.resolve, status: 'resolve', data: result, options };
 		} catch (error: unknown) {
-			return { successor: operation.reject, status: 'reject', data: error ?? null, options };
+			return { successor: operation.reject, status: 'reject', data: error, options };
 		}
 	}
 }
