@@ -34,11 +34,11 @@ export class FnHelperPostgres extends FnHelper {
 		return this.knex.raw('EXTRACT(SECOND FROM ??.??)', [table, column]);
 	}
 
-	count(table: string, column: string, options?: FnHelperOptions): Knex.Raw {
-		const type = this.schema.collections?.[table]?.fields?.[column]?.type ?? 'unknown';
+	async count(table: string, column: string, options?: FnHelperOptions): Promise<Knex.Raw> {
+		const type = (await this.schema.getField(table, column))?.type ?? 'unknown';
 
 		if (type === 'json') {
-			const { dbType } = this.schema.collections[table]!.fields[column]!;
+			const { dbType } = await this.schema.getField(table, column) ?? {};
 
 			return this.knex.raw(dbType === 'jsonb' ? 'jsonb_array_length(??.??)' : 'json_array_length(??.??)', [
 				table,
@@ -47,7 +47,7 @@ export class FnHelperPostgres extends FnHelper {
 		}
 
 		if (type === 'alias') {
-			return this._relationalCount(table, column, options);
+			return await this._relationalCount(table, column, options);
 		}
 
 		throw new Error(`Couldn't extract type from ${table}.${column}`);

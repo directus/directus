@@ -31,6 +31,7 @@ export type SchemaOverview = {
 	getCollection: (collection: string) => Promise<CollectionOverview | null>
 	getFields: (collection: string) => Promise<Record<string, FieldOverview>>
 	getField: (collection: string, field: string) => Promise<FieldOverview | null>
+	getRelations: () => Promise<Relation[]>
 	getRelationsForCollection: (collection: string) => Promise<Record<string, Relation>>
 	getRelationsForField: (collection: string, field: string) => Promise<Relation | null>
 	getPrimaryKeyField: (collection: string) => Promise<FieldOverview | null>

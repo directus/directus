@@ -26,16 +26,28 @@ export async function getSchema(options?: {
 
 	if (env['CACHE_SCHEMA'] !== false) {
 		return {
-			getCollections: () => systemCache.autoCacheHash('collections', undefined, loadCollections),
-			getCollection: (collection: string) => systemCache.autoCacheHashField('collections', collection, undefined, async () => await loadCollection(collection)),
-			getFields: (collection: string) => systemCache.autoCacheHash(`fields:${collection}`, undefined, async () => await loadFields(collection)),
-			getField: (collection: string, field: string) => systemCache.autoCacheHashField(`fields:${collection}`, field, undefined, async () => await loadField(collection, field)),
-			getRelationsForCollection: (collection: string) => systemCache.autoCacheHash(`relations:${collection}`, undefined, async () => await loadRelationsForCollection(collection)),
-			getRelationsForField: (collection: string, field: string) => systemCache.autoCacheHashField(`relations:${collection}`, field, undefined, async () => await loadRelationsForField(collection, field)),
+			getCollections: () => systemCache.autoCacheHash('collections', loadCollections),
+			getCollection: (collection: string) => systemCache.autoCacheHashField('collections', collection, async () => await loadCollection(collection)),
+			getFields: (collection: string) => systemCache.autoCacheHash(`fields:${collection}`, async () => await loadFields(collection)),
+			getField: (collection: string, field: string) => systemCache.autoCacheHashField(`fields:${collection}`, field, async () => await loadField(collection, field)),
+			getRelationsForCollection: (collection: string) => systemCache.autoCacheHash(`relations:${collection}`, async () => await loadRelationsForCollection(collection)),
+			getRelationsForField: (collection: string, field: string) => systemCache.autoCacheHashField(`relations:${collection}`, field, async () => await loadRelationsForField(collection, field)),
 			getPrimaryKeyField: async (collection: string) => {
-				const collectionInfo = await systemCache.autoCacheHashField(`collections`, collection, undefined, async () => loadCollection(collection));
-				return await systemCache.autoCacheHashField(`fields:${collection}`, collectionInfo!.primary, undefined, async () => loadField(collection, collectionInfo!.primary));
+				const collectionInfo = await systemCache.autoCacheHashField(`collections`, collection, async () => loadCollection(collection));
+				return await systemCache.autoCacheHashField(`fields:${collection}`, collectionInfo!.primary, async () => loadField(collection, collectionInfo!.primary));
 			},
+			getRelations: async () => {
+				const collections = await systemCache.autoCacheHash('collections', loadCollections);
+
+				const result: Relation[] = []
+
+				for(const collection of Object.keys(collections)) {
+					const relations = await systemCache.autoCacheHash(`relations:${collection}`, async () => await loadRelationsForCollection(collection));
+					result.push(...Object.values(relations))
+				}
+
+				return result
+			}
 		};
 	} else {
 		return {
@@ -49,6 +61,18 @@ export async function getSchema(options?: {
 				const collectionInfo = await loadCollection(collection);
 				return await loadField(collection, collectionInfo!.primary);
 			},
+			getRelations: async () => {
+				const collections = await loadCollections();
+
+				const result: Relation[] = []
+
+				for(const collection of Object.keys(collections)) {
+					const relations = await loadRelationsForCollection(collection);
+					result.push(...Object.values(relations))
+				}
+
+				return result
+			}
 		};
 	}
 

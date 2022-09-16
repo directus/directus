@@ -34,7 +34,7 @@ export abstract class CacheService {
         return this.namespace ? key.replace(`${this.namespace}:`, '') : key;
     }
 
-    async autoCache<T>(key: string, ttl: number | undefined, fn: () => Promise<T>): Promise<T> {
+    async autoCache<T>(key: string, fn: () => Promise<T>, ttl?: number | undefined,): Promise<T> {
         let value = await this.get(key)
 
         if (value !== undefined) return value;
@@ -45,18 +45,18 @@ export abstract class CacheService {
         return value
     }
 
-    async autoCacheHash(key: string, ttl: number | undefined, fn: () => Promise<Record<string, any>>): Promise<Record<string, any>> {
+    async autoCacheHash<T extends Record<string, any>>(key: string, fn: () => Promise<T>, ttl?: number | undefined): Promise<T> {
         let value = await this.getHash(key)
 
-        if (value !== undefined) return value;
+        if (value !== undefined) return value as T;
 
         value = await fn()
         await this.setHash(key, value, ttl)
 
-        return value
+        return value as T
     }
 
-    async autoCacheHashField<T>(key: string, field: string, ttl: number | undefined, fn: () => Promise<T>): Promise<T> {
+    async autoCacheHashField<T>(key: string, field: string, fn: () => Promise<T>, ttl?: number | undefined): Promise<T> {
         let value = await this.getHashField(key, field)
 
         if (value !== undefined) return value;

@@ -41,15 +41,15 @@ export class FnHelperOracle extends FnHelper {
 		return this.knex.raw(`TO_CHAR(??.??${parseLocaltime(options?.type)}, 'SS')`, [table, column]);
 	}
 
-	count(table: string, column: string, options?: FnHelperOptions): Knex.Raw<any> {
-		const type = this.schema.collections?.[table]?.fields?.[column]?.type ?? 'unknown';
+	async count(table: string, column: string, options?: FnHelperOptions): Promise<Knex.Raw<any>> {
+		const type = (await this.schema.getField(table, column))?.type ?? 'unknown';
 
 		if (type === 'json') {
 			return this.knex.raw("json_value(??.??, '$.size()')", [table, column]);
 		}
 
 		if (type === 'alias') {
-			return this._relationalCount(table, column, options);
+			return await this._relationalCount(table, column, options);
 		}
 
 		throw new Error(`Couldn't extract type from ${table}.${column}`);
