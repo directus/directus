@@ -9,7 +9,7 @@ import { compress, decompress } from '../../utils/compress.js';
 export class RedisCache extends CacheService {
     client: RedisClientType
 
-    constructor(options?: CacheOptions) {
+    constructor(options: CacheOptions) {
         super(options);
 
         this.client = createClient({
@@ -27,6 +27,8 @@ export class RedisCache extends CacheService {
         return await decompress(parse(value))
     }
     async set(key: string, value: any, ttl: number | undefined = this.ttl): Promise<void> {
+        if(await this.isLocked()) return
+
         const _key = this.addPrefix(key)
 
         await this.client.set(_key, stringify(await compress(value)))
@@ -40,6 +42,8 @@ export class RedisCache extends CacheService {
     }
 
     async setHash(key: string, value: Record<string, any>, ttl?: number | undefined): Promise<void> {
+        if(await this.isLocked()) return
+
         const _key = this.addPrefix(key)
 
         const values = []
@@ -55,6 +59,8 @@ export class RedisCache extends CacheService {
         return await this.client.hGetAll(this.addPrefix(key))
     }
     async setHashField(key: string, field: string, value: any, ttl?: number | undefined): Promise<void> {
+        if(await this.isLocked()) return
+
         const _key = this.addPrefix(key)
 
         await this.client.hSet(_key, field, stringify(await compress(value)))

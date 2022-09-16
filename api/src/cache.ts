@@ -13,11 +13,11 @@ let lockCache: CacheService | null = null;
 export function getCache(): { cache: CacheService | null; systemCache: CacheService; lockCache: CacheService } {
 	if (env['CACHE_ENABLED'] === true && cache === null) {
 		validateEnv(['CACHE_NAMESPACE', 'CACHE_TTL', 'CACHE_STORE']);
-		cache = getCacheInstance(env['CACHE_TTL'] ? ms(env['CACHE_TTL']) : undefined);
+		cache = getCacheInstance(env['CACHE_TTL'] ? ms(env['CACHE_TTL']) : undefined, '_data');
 	}
 
 	if (systemCache === null) {
-		systemCache = getCacheInstance(env['CACHE_SYSTEM_TTL'] ? ms(env['CACHE_SYSTEM_TTL']) : undefined, '_system');
+		systemCache = getCacheInstance(env['CACHE_SYSTEM_TTL'] ? ms(env['CACHE_SYSTEM_TTL']) : undefined, '_system', true);
 	}
 
 	if (lockCache === null) {
@@ -58,10 +58,11 @@ export async function getSystemCache(key: string): Promise<Record<string, any>> 
 	return await systemCache.get(key);
 }
 
-function getCacheInstance(ttl: number | undefined, namespaceSuffix?: string): CacheService {
+function getCacheInstance(ttl: number | undefined, namespaceSuffix: string, checkLock: boolean = false): CacheService {
 	const config: CacheOptions = {
 		namespace: `${env['CACHE_NAMESPACE']}${namespaceSuffix}`,
 		ttl,
+		checkLock
 	}
 
 	switch (env['CACHE_STORE']) {
