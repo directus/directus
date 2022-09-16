@@ -325,6 +325,7 @@ edit_raw_value: İşlenmemiş Değeri Düzenle
 enter_raw_value: İşlenmemiş değeri girin...
 clear_value: Değeri Temizle
 clear_changes: Değişiklikleri İptal Et
+clear_items: Öğeleri Sil
 reset_to_default: Varsayılana Sıfırla
 undo_changes: Değişiklikleri Geri Al
 notifications: Bildirimler
@@ -797,6 +798,7 @@ edit_operation: İşlemi Düzenle
 code: Kod
 operation_options: İşlem Seçenekleri
 operation_name: Operasyonun adı...
+operation_key: Referans için tanımlayıcı...
 operation_key_unique_error: İşlem anahtarları bir Akışta benzersiz olmalıdır
 operation_handle_resolve: 'Çözümle: Eklemek İçin Tıklayın veya Yeniden Yönlendirmek İçin Sürükleyin'
 operation_handle_reject: 'Reddet: Eklemek İçin Tıklayın veya Yeniden Yönlendirmek İçin Sürükleyin'
@@ -1965,12 +1967,19 @@ panels:
     description: Diğer Panellerin filtrelerinde kullanım için global bir değer belirleyin
     variable_key: Değişken Anahtar
   relational-variable:
+    name: Küresel İlişkisel Değişken
     variable_key: Değişken Anahtar
+    multiple: Çoklu
+    multiple-label: Birden çok öğe seçin
 triggers:
   common:
     response_body: Yanıt Gövdesi
     response_body_all: Tüm Veri
     response_body_last: Son İşlem Verileri
+  event:
+    description: Platform veya veri olaylarında tetikleyiciler
+    action: 'Eylem (Engellenmeyen)'
+    filter: 'Filtre (Engellenen)'
   webhook:
     description: Gelen bir HTTP isteğinde tetikler
     method: Metod
