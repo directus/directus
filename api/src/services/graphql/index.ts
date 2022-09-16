@@ -1595,32 +1595,10 @@ export class GraphQLService {
 			return uniq(fields);
 		};
 
-		const replaceFuncs = (filter?: Filter | null): null | undefined | Filter => {
-			if (!filter) return filter;
-
-			return replaceFuncDeep(filter);
-
-			function replaceFuncDeep(filter: Record<string, any>) {
-				return transform(filter, (result: Record<string, any>, value, key) => {
-					let currentKey = key;
-
-					if (typeof key === 'string' && key.endsWith('_func')) {
-						const functionName = Object.keys(value)[0]!;
-						currentKey = `${functionName}(${currentKey.slice(0, -5)})`;
-
-						result[currentKey] = Object.values(value)[0]!;
-					} else {
-						result[currentKey] =
-							value?.constructor === Object || value?.constructor === Array ? replaceFuncDeep(value) : value;
-					}
-				});
-			}
-		};
-
 		query.alias = parseAliases(selections);
 		query.fields = parseFields(selections);
-		query.filter = replaceFuncs(query.filter);
-		query.deep = replaceFuncs(query.deep as any) as any;
+		query.filter = this.replaceFuncs(query.filter);
+		query.deep = this.replaceFuncs(query.deep as any) as any;
 
 		validateQuery(query);
 
@@ -1655,10 +1633,38 @@ export class GraphQLService {
 					}) ?? [];
 		}
 
+		query.filter = this.replaceFuncs(query.filter);
+
 		validateQuery(query);
 
 		return query;
 	}
+
+	/**
+	 * Replace functions from GraphQL format to Directus-Filter format
+	 */
+	replaceFuncs(filter?: Filter | null): null | undefined | Filter {
+		if (!filter) return filter;
+
+		return replaceFuncDeep(filter);
+
+		function replaceFuncDeep(filter: Record<string, any>) {
+			return transform(filter, (result: Record<string, any>, value, key) => {
+				let currentKey = key;
+
+				if (typeof key === 'string' && key.endsWith('_func')) {
+					const functionName = Object.keys(value)[0]!;
+					currentKey = `${functionName}(${currentKey.slice(0, -5)})`;
+
+					result[currentKey] = Object.values(value)[0]!;
+				} else {
+					result[currentKey] =
+						value?.constructor === Object || value?.constructor === Array ? replaceFuncDeep(value) : value;
+				}
+			});
+		}
+	}
+
 	/**
 	 * Convert Directus-Exception into a GraphQL format, so it can be returned by GraphQL properly.
 	 */
