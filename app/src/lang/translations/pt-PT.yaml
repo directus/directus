@@ -252,6 +252,7 @@ next: Seguinte
 field_name: Nome do campo
 translations: Traduções
 no_translations: Sem traduções
+left_to_right: Da Esquerda para a Direita
 note: Nota
 enter_a_value: Insira um valor...
 enter_a_placeholder: Insira um placeholder...
