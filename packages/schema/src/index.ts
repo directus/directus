@@ -1,5 +1,5 @@
 import type { Knex } from 'knex';
-import type { SchemaInspectorConstructor } from './types/schema-inspector';
+import type { SchemaInspectorConstructor } from './types/schema.js';
 
 import MySQLSchemaInspector from './dialects/mysql.js';
 import PostgresSchemaInspector from './dialects/postgres.js';

@@ -363,11 +363,11 @@ export default class CockroachDB implements SchemaInspector {
 		if (column) {
 			const geometry = await query.andWhere('f_geometry_column', column).first();
 			if (geometry) {
-				targetColumns.data_type = geometry.data_type;
+				(targetColumns as any).data_type = geometry.data_type;
 			}
 		}
 		const geometries = await query;
-		for (const column of targetColumns) {
+		for (const column of (targetColumns as any)) {
 			const geometry = geometries.find((geometry: any) => {
 				return column.name == geometry.name && column.table == geometry.table;
 			});
