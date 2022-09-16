@@ -59,12 +59,13 @@ describe('get cache key', () => {
 		const variables1 = JSON.stringify({ name: 'test 1' });
 		const variables2 = JSON.stringify({ name: 'test 2' });
 		const req1: any = { method, originalUrl: graphQlUrl, query: { query, operationName, variables: variables1 } };
-		const req2: any = {
-			method: 'POST',
-			originalUrl: graphQlUrl,
-			query: { query, operationName, variables: variables2 },
-		};
+		const req2: any = { method, originalUrl: graphQlUrl, query: { query, operationName, variables: variables2 } };
+		const postReq1: any = { method: 'POST', originalUrl: req1.originalUrl, body: req1.query };
+		const postReq2: any = { method: 'POST', originalUrl: req2.originalUrl, body: req2.query };
 
 		expect(getCacheKey(req1)).not.toEqual(getCacheKey(req2));
+		expect(getCacheKey(postReq1)).not.toEqual(getCacheKey(postReq2));
+		expect(getCacheKey(req1)).toEqual(getCacheKey(postReq1));
+		expect(getCacheKey(req2)).toEqual(getCacheKey(postReq2));
 	});
 });
