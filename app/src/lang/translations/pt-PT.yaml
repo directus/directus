@@ -696,6 +696,7 @@ layout_setup: Configuração de Layout
 unsaved_changes: Alterações por guardar
 unsaved_changes_copy: Tem certeza que deseja sair desta página?
 discard_changes: Cancelar alterações
+discard_all_changes: Descartar todas as Alterações
 discard_changes_copy: Tem a certeza de que pretende ignorar as alterações?
 keep_editing: Continuar a editar
 page_help_collections_collection: >-
