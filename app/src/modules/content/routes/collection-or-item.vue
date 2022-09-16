@@ -3,8 +3,8 @@
 		:is="isSingleton ? 'item-route' : 'collection-route'"
 		:collection="collection"
 		:bookmark="bookmark"
-		:singleton="isSingleton"
 		:archive="archive"
+		v-bind="isSingleton ? { singleton: isSingleton } : {}"
 	/>
 </template>
 
