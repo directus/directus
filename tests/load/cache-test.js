@@ -37,10 +37,12 @@ For each collection, create 100 items with random values for each field
 */
 
 const COLLECTION_COUNT = 10;
-const FIELD_COUNT = 25;
+const FIELD_COUNT = 10;
 const ITEM_COUNT = 100;
-const EDIT_CHANCE = 0.1;
-const ADD_FIELD_CHANCE = 0.05;
+const EDIT_CHANCE = 0.2;
+const COLLECTION_CHANCE = 0.5;
+const FIELD_CHANCE = 0.5;
+const ADD_FIELD_CHANCE = 0.2;
 
 const relation = (collectionNr) => {
     collectionNr -= 1;
@@ -172,6 +174,14 @@ export default function() {
         item[getRandomField()] = 'edited'
 
         http.patch(getURL(`/items/${getRandomCollection()}/${item.primary_key}`), JSON.stringify(item), params)
+    }
+
+    if(Math.random() < COLLECTION_CHANCE) {
+        http.get(getURL(`/collections`), params)
+    }
+
+    if(Math.random() < FIELD_CHANCE) {
+        http.get(getURL(`/fields`), params)
     }
 
     if(Math.random() < ADD_FIELD_CHANCE) {
