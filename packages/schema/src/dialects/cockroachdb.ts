@@ -203,69 +203,6 @@ export default class CockroachDB implements SchemaInspector {
 	columnInfo(table: string): Promise<Column[]>;
 	columnInfo(table: string, column: string): Promise<Column>;
 	async columnInfo(table?: string, column?: string): Promise<Column | Column[]> {
-		const columns = await this._columnInfo(table!, column!);
-		if (!columns?.length) {
-			return columns;
-		}
-
-		for (const column of Array.isArray(columns) ? columns : [columns]) {
-			if (['point', 'polygon'].includes(column.data_type)) {
-				column.data_type = 'unknown';
-			}
-		}
-
-		const hasPostGIS =
-			(await this.knex.raw(`SELECT oid FROM pg_proc WHERE proname = 'postgis_version'`)).rows.length > 0;
-
-		if (!hasPostGIS) {
-			return columns;
-		}
-
-		const query = this.knex
-			.with(
-				'geometries',
-				this.knex.raw(`
-				select * from geometry_columns
-				union
-				select * from geography_columns
-		`)
-			)
-			.select<Column[]>({
-				table: 'f_table_name',
-				name: 'f_geometry_column',
-				data_type: 'type',
-			})
-			.from('geometries')
-			.whereIn('f_table_schema', this.explodedSchema);
-
-		if (table) {
-			query.andWhere('f_table_name', table);
-		}
-		if (column) {
-			const geometry = await query.andWhere('f_geometry_column', column).first();
-			if (geometry) {
-				columns.data_type = geometry.data_type;
-			}
-		}
-		const geometries = await query;
-		for (const column of columns) {
-			const geometry = geometries.find((geometry: any) => {
-				return column.name == geometry.name && column.table == geometry.table;
-			});
-			if (geometry) {
-				column.data_type = geometry.data_type;
-			}
-		}
-		return columns;
-	}
-
-	/**
-	 * Get the column info for all columns, columns in a given table, or a specific column.
-	 */
-	_columnInfo(): Promise<Column[]>;
-	_columnInfo(table: string): Promise<Column[]>;
-	_columnInfo(table: string, column: string): Promise<Column>;
-	async _columnInfo(table?: string, column?: string) {
 		const { knex } = this;
 
 		const bindings: any[] = [];
@@ -384,9 +321,66 @@ export default class CockroachDB implements SchemaInspector {
 			};
 		});
 
-		if (table && column) return parsedColumms[0];
-		return parsedColumms;
+		let targetColumns = table && column ? parsedColumms[0]! : parsedColumms;
+
+		if (!(targetColumns as any)?.length) {
+			return targetColumns;
+		}
+
+		for (const column of Array.isArray(targetColumns) ? targetColumns : [targetColumns]) {
+			if (['point', 'polygon'].includes(column.data_type)) {
+				column.data_type = 'unknown';
+			}
+		}
+
+		const hasPostGIS =
+			(await this.knex.raw(`SELECT oid FROM pg_proc WHERE proname = 'postgis_version'`)).rows.length > 0;
+
+		if (!hasPostGIS) {
+			return targetColumns;
+		}
+
+		const query = this.knex
+			.with(
+				'geometries',
+				this.knex.raw(`
+				select * from geometry_columns
+				union
+				select * from geography_columns
+		`)
+			)
+			.select<Column[]>({
+				table: 'f_table_name',
+				name: 'f_geometry_column',
+				data_type: 'type',
+			})
+			.from('geometries')
+			.whereIn('f_table_schema', this.explodedSchema);
+
+		if (table) {
+			query.andWhere('f_table_name', table);
+		}
+		if (column) {
+			const geometry = await query.andWhere('f_geometry_column', column).first();
+			if (geometry) {
+				targetColumns.data_type = geometry.data_type;
+			}
+		}
+		const geometries = await query;
+		for (const column of targetColumns) {
+			const geometry = geometries.find((geometry: any) => {
+				return column.name == geometry.name && column.table == geometry.table;
+			});
+			if (geometry) {
+				column.data_type = geometry.data_type;
+			}
+		}
+		return targetColumns;
 	}
+
+	/**
+	 * Get the column info for all columns, columns in a given table, or a specific column.
+	 */
 
 	// CockroachDB specific
 	// ===============================================================================================
