@@ -1,8 +1,7 @@
 import ms from 'ms';
 import env from './env';
 import { validateEnv } from './utils/validate-env';
-import { compress, decompress } from './utils/compress';
-import { CacheService } from './services/cache/cache';
+import { CacheOptions, CacheService } from './services/cache/cache';
 import { RedisCache } from './services/cache/redis-cache';
 import { MemCache } from './services/cache/mem-cache';
 
@@ -48,38 +47,21 @@ export async function setSystemCache(key: string, value: any, ttl?: number): Pro
 	const { systemCache, lockCache } = getCache();
 
 	if (!(await lockCache.get('system-cache-lock'))) {
-		await setCacheValue(systemCache, key, value, ttl);
+		await systemCache.set(key, value, ttl);
 	}
 }
 
 export async function getSystemCache(key: string): Promise<Record<string, any>> {
 	const { systemCache } = getCache();
 
-	return await getCacheValue(systemCache, key);
-}
-
-export async function setCacheValue(
-	cache: CacheService,
-	key: string,
-	value: Record<string, any> | Record<string, any>[],
-	ttl?: number
-) {
-	const compressed = await compress(value);
-	await cache.set(key, compressed, ttl);
-}
-
-export async function getCacheValue(cache: CacheService, key: string): Promise<any> {
-	const value = await cache.get(key);
-	if (!value) return undefined;
-	const decompressed = await decompress(value);
-	return decompressed;
+	return await systemCache.get(key);
 }
 
 function getCacheInstance(ttl: number | undefined, namespaceSuffix?: string): CacheService {
 	const config = {
 		namespace: `${env.CACHE_NAMESPACE}${namespaceSuffix}`,
 		ttl,
-	}
+	};
 
 	switch (env.CACHE_STORE) {
 		case 'redis':

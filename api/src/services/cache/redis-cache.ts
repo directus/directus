@@ -4,6 +4,7 @@ import logger from '../../logger';
 import { getConfigFromEnv } from '../../utils/get-config-from-env';
 import { CacheOptions, CacheService } from './cache';
 import { parse, stringify } from 'json-buffer';
+import { compress, decompress } from '../../utils/compress';
 
 export class RedisCache extends CacheService {
 	client: RedisClientType;
@@ -22,13 +23,12 @@ export class RedisCache extends CacheService {
 		const value = await this.client.get(this.addPrefix(key));
 
 		if (value === null) return undefined;
-
-		return parse(value);
+		return await decompress(parse(value));
 	}
 	async set(key: string, value: any, ttl: number | undefined = this.ttl): Promise<void> {
 		const _key = this.addPrefix(key);
 
-		await this.client.set(_key, stringify(value));
+		await this.client.set(_key, stringify(await compress(value)));
 		if (ttl !== undefined) await this.client.expire(_key, ttl);
 	}
 	async clear(): Promise<void> {

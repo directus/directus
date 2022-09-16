@@ -1,47 +1,44 @@
-import { CacheService } from "./cache";
+import { CacheService } from './cache';
+import { compress, decompress } from '../../utils/compress';
 
 export class MemCache extends CacheService {
-    
-    store = new Map<string, any>();
-    expires = new Map<string, number>();
+	store = new Map<string, any>();
+	expires = new Map<string, number>();
 
-    get(key: string): Promise<any> {
-        const _key = this.addPrefix(key);
-        const expired = this.expires.get(_key) ?? -1;
+	async get(key: string): Promise<any> {
+		const _key = this.addPrefix(key);
+		const expired = this.expires.get(_key) ?? -1;
 
-        if(Date.now() > expired) {
-            this.store.delete(_key);
-            this.expires.delete(_key);
-            return Promise.resolve(undefined);
-        }
+		if (Date.now() > expired) {
+			this.store.delete(_key);
+			this.expires.delete(_key);
+			return undefined;
+		}
 
-        return Promise.resolve(this.store.get(key))
-    }
+		return await decompress(this.store.get(key));
+	}
 
-    set(key: string, value: any, ttl: number | undefined = this.ttl): Promise<void> {
-        const _key = this.addPrefix(key);
-        this.store.set(_key, value);
+	async set(key: string, value: any, ttl: number | undefined = this.ttl): Promise<void> {
+		const _key = this.addPrefix(key);
+		this.store.set(_key, await compress(value));
 
-        if(ttl !== undefined && ttl > 0) {
-            const expires = Date.now() + ttl;
-            this.expires.set(_key, expires);
-        }
+		if (ttl !== undefined && ttl > 0) {
+			const expires = Date.now() + ttl;
+			this.expires.set(_key, expires);
+		}
+	}
 
-        return Promise.resolve();
-    }
+	clear(): Promise<void> {
+		this.store.clear();
+		this.expires.clear();
+		return Promise.resolve();
+	}
 
-    clear(): Promise<void> {
-        this.store.clear()
-        this.expires.clear();
-        return Promise.resolve();
-    }
+	delete(key: string): Promise<void> {
+		const _key = this.addPrefix(key);
 
-    delete(key: string): Promise<void> {
-        const _key = this.addPrefix(key);
-
-        this.store.delete(_key);
-        this.expires.delete(_key);
-        return Promise.resolve();
-    }
-    
+		this.store.delete(_key);
+		this.expires.delete(_key);
+		return Promise.resolve();
+	}
 }
