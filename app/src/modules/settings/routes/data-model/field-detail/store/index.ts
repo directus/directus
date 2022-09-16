@@ -79,6 +79,9 @@ export const useFieldDetailStore = defineStore({
 			o2m: undefined as [DeepPartial<Field>] | undefined,
 		},
 
+		// Create the field on the current collection
+		createFieldOnCurrentCollection: true,
+
 		// Any items that need to be injected into any collection
 		items: {} as Record<string, Record<string, any>[]>,
 
@@ -160,7 +163,9 @@ export const useFieldDetailStore = defineStore({
 			this.saving = true;
 
 			try {
-				await fieldsStore.upsertField(this.collection, this.editing, this.field);
+				if (this.createFieldOnCurrentCollection) {
+					await fieldsStore.upsertField(this.collection, this.editing, this.field);
+				}
 
 				for (const collection of Object.values(this.collections)) {
 					if (!collection || !collection.collection) continue;
