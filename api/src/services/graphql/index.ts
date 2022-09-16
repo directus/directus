@@ -1277,19 +1277,16 @@ export class GraphQLService {
 		if (!selections) return null;
 		const args: Record<string, any> = this.parseArgs(info.fieldNodes[0].arguments || [], info.variableValues);
 
-		let query: Query;
+		const query: Query = this.getQuery(args, selections, info.variableValues);
 
 		const isAggregate = collection.endsWith('_aggregated') && collection in this.schema.collections === false;
 
 		if (isAggregate) {
-			query = this.getAggregateQuery(args, selections);
+			const aggregateQuery = this.getAggregateQuery(args, selections);
+			query.aggregate = aggregateQuery.aggregate;
 			collection = collection.slice(0, -11);
-		} else {
-			query = this.getQuery(args, selections, info.variableValues);
-
-			if (collection.endsWith('_by_id') && collection in this.schema.collections === false) {
-				collection = collection.slice(0, -6);
-			}
+		} else if (collection.endsWith('_by_id') && collection in this.schema.collections === false) {
+			collection = collection.slice(0, -6);
 		}
 		if (args.id) {
 			query.filter = {
