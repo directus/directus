@@ -754,6 +754,7 @@ importers:
       '@types/fs-extra': 9.0.13
       '@types/geojson': 7946.0.10
       '@types/lodash': 4.14.189
+      '@types/nodemailer': 6.4.6
       '@types/pino': 7.0.4
       '@types/sharp': 0.31.0
       '@types/tmp': 0.2.3
@@ -764,12 +765,15 @@ importers:
       fs-extra: 10.1.0
       geojson: 0.5.0
       graphql: 16.6.0
+      graphql-compose: 9.0.9
       joi: 17.7.0
+      keyv: 4.5.0
       knex: 2.3.0
       knex-schema-inspector: 3.0.0
       lodash: 4.17.21
       micromustache: 8.0.3
       nanoid: 4.0.0
+      openapi3-ts: 3.1.1
       pino: 8.7.0
       tmp: 0.2.1
       typescript: 4.9.3
@@ -784,12 +788,15 @@ importers:
       fs-extra: 10.1.0
       geojson: 0.5.0
       graphql: 16.6.0
+      graphql-compose: 9.0.9_graphql@16.6.0
       joi: 17.7.0
+      keyv: 4.5.0
       knex: 2.3.0
       knex-schema-inspector: 3.0.0
       lodash: 4.17.21
       micromustache: 8.0.3
       nanoid: 4.0.0
+      openapi3-ts: 3.1.1
       pino: 8.7.0
       vue: 3.2.45
       vue-i18n: 9.2.2_vue@3.2.45
@@ -799,6 +806,7 @@ importers:
       '@types/fs-extra': 9.0.13
       '@types/geojson': 7946.0.10
       '@types/lodash': 4.14.189
+      '@types/nodemailer': 6.4.6
       '@types/pino': 7.0.4
       '@types/sharp': 0.31.0
       '@types/tmp': 0.2.3
@@ -12064,6 +12072,15 @@ packages:
       - graphql
     dev: false
 
+  /graphql-compose/9.0.9_graphql@16.6.0:
+    resolution: {integrity: sha512-kEXdwuBk7GKaThWY7eKDP+GLF9pGrGuMpYLu3O5w+lwDsgsfdiUCEC8jTsuPjm1qz9AxsspZHqc3jA4vKwyiNg==}
+    peerDependencies:
+      graphql: ^14.2.0 || ^15.0.0 || ^16.0.0
+    dependencies:
+      graphql: 16.6.0
+      graphql-type-json: 0.3.2_graphql@16.6.0
+    dev: false
+
   /graphql-type-json/0.3.2_graphql@16.6.0:
     resolution: {integrity: sha512-J+vjof74oMlCWXSvt0DOf2APEdZOCdubEvGDUAlqH//VBYcOYsGgRW7Xzorr44LvkjiuvecWc8fChxuZZbChtg==}
     peerDependencies:
@@ -14213,6 +14230,12 @@ packages:
       memjs: 1.3.0
     dev: false
     optional: true
+
+  /keyv/4.5.0:
+    resolution: {integrity: sha512-2YvuMsA+jnFGtBareKqgANOEKe1mk3HKiXu2fRmAfyxG0MJAywNhi5ttWA3PMjl4NmpyjZNbFifR2vNjW1znfA==}
+    dependencies:
+      json-buffer: 3.0.1
+    dev: false
 
   /keyv/4.5.2:
     resolution: {integrity: sha512-5MHbFaKn8cNSmVW7BYnijeAVlE4cYA/SVkifVgrh7yotnfhKmjuXpDKjrABLnT0SfHWV21P8ow07OGfRrNDg8g==}

@@ -14,6 +14,7 @@ export * from './filter';
 export * from './flows';
 export * from './geometry';
 export * from './graphql';
+export * from './helpers';
 export * from './hooks';
 export * from './interfaces';
 export * from './items';

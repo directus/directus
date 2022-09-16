@@ -34,3 +34,7 @@ export type JsonValue = null | string | number | boolean | JsonValue[] | { [key:
 export type GenericString<T> = T extends string ? string : T;
 
 export type Plural<T extends string> = `${T}s`;
+
+export interface ConstructorType<T> extends Function {
+	new (...args: unknown[]): T;
+}

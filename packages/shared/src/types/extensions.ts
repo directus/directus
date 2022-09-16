@@ -22,6 +22,7 @@ import { Relation } from './relations';
 import { Collection } from './collection';
 import { SchemaOverview } from './schema';
 import { OperationAppConfig } from './operations';
+import { ServicesOverview } from '../services';
 
 export type AppExtensionType = typeof APP_EXTENSION_TYPES[number];
 export type ApiExtensionType = typeof API_EXTENSION_TYPES[number];
@@ -164,7 +165,7 @@ export type AppExtensionConfigs = {
 };
 
 export type ApiExtensionContext = {
-	services: any;
+	services: ServicesOverview;
 	exceptions: any;
 	database: Knex;
 	env: Record<string, any>;
