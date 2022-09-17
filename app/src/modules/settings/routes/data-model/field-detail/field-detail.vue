@@ -34,6 +34,7 @@ import { useI18n } from 'vue-i18n';
 import formatTitle from '@directus/format-title';
 import { useDialogRoute } from '@/composables/use-dialog-route';
 import { storeToRefs } from 'pinia';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
 	name: 'FieldDetail',
@@ -103,7 +104,12 @@ export default defineComponent({
 		}
 
 		async function save() {
-			await fieldDetail.save();
+			try {
+				await fieldDetail.save();
+			} catch (err: any) {
+				unexpectedError(err);
+				return;
+			}
 			router.push(`/settings/data-model/${props.collection}`);
 			fieldDetail.$reset();
 		}

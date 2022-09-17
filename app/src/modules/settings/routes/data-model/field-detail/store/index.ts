@@ -148,6 +148,14 @@ export const useFieldDetailStore = defineStore({
 		async save() {
 			if (!this.collection || !this.field.field) return;
 
+			// Validation to prevent cyclic relation
+			for (const relation of Object.values(this.relations)) {
+				if (!relation || !relation.collection || !relation.field) continue;
+				if (relation.collection === relation.related_collection && relation.field === relation.meta?.one_field) {
+					throw new Error('Field key cannot be the same as foreign key');
+				}
+			}
+
 			const collectionsStore = useCollectionsStore();
 			const fieldsStore = useFieldsStore();
 			const relationsStore = useRelationsStore();
