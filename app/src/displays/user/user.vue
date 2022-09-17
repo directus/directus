@@ -1,7 +1,7 @@
 <template>
 	<user-popover v-if="value" :user="value.id">
 		<div class="user" :class="display">
-			<img
+			<v-image
 				v-if="(display === 'avatar' || display === 'both') && src"
 				:src="src"
 				role="presentation"
@@ -21,10 +21,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed } from 'vue';
-import { getRootPath } from '@/utils/get-root-path';
 import { userName } from '@/utils/user-name';
-import { addTokenToURL } from '@/api';
+import { computed, defineComponent, PropType } from 'vue';
 
 type User = {
 	id: number;
@@ -56,8 +54,7 @@ export default defineComponent({
 			if (props.value === null) return null;
 
 			if (props.value.avatar?.id) {
-				const url = `${getRootPath()}assets/${props.value.avatar.id}?key=system-small-cover`;
-				return addTokenToURL(url);
+				return `/assets/${props.value.avatar.id}?key=system-small-cover`;
 			}
 
 			return null;

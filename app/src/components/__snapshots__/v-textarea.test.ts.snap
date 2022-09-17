@@ -1,0 +1,8 @@
+// Vitest Snapshot v1
+
+exports[`Mount component 1`] = `
+"<div class=\\"v-textarea full-width has-content\\" data-v-f9fe277e=\\"\\">
+  <!--v-if--><textarea data-v-f9fe277e=\\"\\"></textarea>
+  <!--v-if-->
+</div>"
+`;

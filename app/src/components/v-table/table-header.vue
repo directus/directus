@@ -101,21 +101,21 @@
 import { useI18n } from 'vue-i18n';
 import { computed, ref, useSlots } from 'vue';
 import { ShowSelect } from '@directus/shared/types';
-import useEventListener from '@/composables/use-event-listener';
+import { useEventListener } from '@/composables/use-event-listener';
 import { Header, Sort } from './types';
 import { throttle, clone } from 'lodash';
 import Draggable from 'vuedraggable';
-import hideDragImage from '@/utils/hide-drag-image';
+import { hideDragImage } from '@/utils/hide-drag-image';
 import { useSync } from '@directus/shared/composables';
 
 interface Props {
 	headers: Header[];
 	sort: Sort;
+	reordering: boolean;
+	allowHeaderReorder: boolean;
 	showSelect?: ShowSelect;
 	showResize?: boolean;
 	showManualSort?: boolean;
-	allowHeaderReorder: boolean;
-	reordering: boolean;
 	someItemsSelected?: boolean;
 	allItemsSelected?: boolean;
 	fixed?: boolean;

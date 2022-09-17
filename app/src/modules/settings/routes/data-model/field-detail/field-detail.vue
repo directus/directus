@@ -28,7 +28,8 @@ import FieldDetailAdvanced from './field-detail-advanced/field-detail-advanced.v
 import FieldDetailAdvancedTabs from './field-detail-advanced/field-detail-advanced-tabs.vue';
 import FieldDetailAdvancedActions from './field-detail-advanced/field-detail-advanced-actions.vue';
 import { useRouter } from 'vue-router';
-import { useCollectionsStore, useFieldsStore } from '@/stores';
+import { useCollectionsStore } from '@/stores/collections';
+import { useFieldsStore } from '@/stores/fields';
 import { useI18n } from 'vue-i18n';
 import formatTitle from '@directus/format-title';
 import { useDialogRoute } from '@/composables/use-dialog-route';

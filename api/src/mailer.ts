@@ -39,6 +39,7 @@ export default function getMailer(): Transporter {
 		const tls: Record<string, unknown> = getConfigFromEnv('EMAIL_SMTP_TLS_');
 
 		transporter = nodemailer.createTransport({
+			name: env.EMAIL_SMTP_NAME,
 			pool: env.EMAIL_SMTP_POOL,
 			host: env.EMAIL_SMTP_HOST,
 			port: env.EMAIL_SMTP_PORT,
@@ -56,6 +57,13 @@ export default function getMailer(): Transporter {
 					domain: env.EMAIL_MAILGUN_DOMAIN,
 				},
 				host: env.EMAIL_MAILGUN_HOST || 'api.mailgun.net',
+			}) as any
+		);
+	} else if (transportName === 'sendgrid') {
+		const sg = require('nodemailer-sendgrid');
+		transporter = nodemailer.createTransport(
+			sg({
+				apiKey: env.EMAIL_SENDGRID_API_KEY,
 			}) as any
 		);
 	} else {

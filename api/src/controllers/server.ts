@@ -47,8 +47,6 @@ router.get(
 	})
 );
 
-router.get('/ping', (req, res) => res.send('pong'));
-
 router.get(
 	'/info',
 	asyncHandler(async (req, res, next) => {

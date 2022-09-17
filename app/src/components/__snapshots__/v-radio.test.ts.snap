@@ -1,0 +1,7 @@
+// Vitest Snapshot v1
+
+exports[`Mount component 1`] = `
+"<button class=\\"v-radio\\" type=\\"button\\" aria-pressed=\\"false\\" disabled=\\"false\\" data-v-ea1b1ff8=\\"\\">
+  <v-icon-stub name=\\"radio_button_unchecked\\" data-v-ea1b1ff8=\\"\\"></v-icon-stub><span class=\\"label type-text\\" data-v-ea1b1ff8=\\"\\">My Label</span>
+</button>"
+`;

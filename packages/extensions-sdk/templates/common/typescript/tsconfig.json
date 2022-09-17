@@ -1,0 +1,29 @@
+{
+	"compilerOptions": {
+		"target": "ES2019",
+		"lib": ["ES2019", "DOM"],
+		"moduleResolution": "node",
+		"strict": true,
+		"noFallthroughCasesInSwitch": true,
+		"esModuleInterop": true,
+		"noImplicitAny": true,
+		"noImplicitThis": true,
+		"noImplicitReturns": true,
+		"noUnusedLocals": true,
+		"noUncheckedIndexedAccess": true,
+		"noUnusedParameters": true,
+		"alwaysStrict": true,
+		"strictNullChecks": true,
+		"strictFunctionTypes": true,
+		"strictBindCallApply": true,
+		"strictPropertyInitialization": true,
+		"resolveJsonModule": false,
+		"skipLibCheck": true,
+		"forceConsistentCasingInFileNames": true,
+		"allowSyntheticDefaultImports": true,
+		"isolatedModules": true,
+		"rootDir": "./src",
+		"sourceMap": true
+	},
+	"include": ["./src/**/*.ts"]
+}

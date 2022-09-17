@@ -65,9 +65,15 @@
 					</v-card-actions>
 				</v-card>
 			</v-dialog>
-
-			<v-button v-tooltip.bottom="t('download')" rounded icon secondary @click="downloadFile">
-				<v-icon name="save_alt" />
+			<v-button
+				v-tooltip.bottom="t('download')"
+				secondary
+				icon
+				rounded
+				:download="item?.filename_download"
+				:href="getAssetUrl(props.primaryKey, true)"
+			>
+				<v-icon name="download" />
 			</v-button>
 
 			<v-button
@@ -176,22 +182,22 @@
 </template>
 
 <script lang="ts" setup>
-import api, { addTokenToURL } from '@/api';
-import useEditsGuard from '@/composables/use-edits-guard';
-import useItem from '@/composables/use-item';
+import api from '@/api';
+import { useEditsGuard } from '@/composables/use-edits-guard';
+import { useItem } from '@/composables/use-item';
 import { usePermissions } from '@/composables/use-permissions';
-import useShortcut from '@/composables/use-shortcut';
-import { getRootPath } from '@/utils/get-root-path';
+import { useShortcut } from '@/composables/use-shortcut';
+import { getAssetUrl } from '@/utils/get-asset-url';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
-import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail';
-import FilePreview from '@/views/private/components/file-preview';
-import FolderPicker from '@/views/private/components/folder-picker/folder-picker.vue';
-import ImageEditor from '@/views/private/components/image-editor';
-import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
-import SaveOptions from '@/views/private/components/save-options';
+import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
+import FilePreview from '@/views/private/components/file-preview.vue';
+import FolderPicker from '@/views/private/components/folder-picker.vue';
+import ImageEditor from '@/views/private/components/image-editor.vue';
+import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail.vue';
+import SaveOptions from '@/views/private/components/save-options.vue';
 import { Field } from '@directus/shared/types';
-import { ComponentPublicInstance, computed, ref, toRefs, watch } from 'vue';
+import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import FileInfoSidebarDetail from '../components/file-info-sidebar-detail.vue';
@@ -214,7 +220,7 @@ const { primaryKey } = toRefs(props);
 const { breadcrumb } = useBreadcrumb();
 const replaceFileDialogActive = ref(false);
 
-const revisionsDrawerDetailRef = ref<ComponentPublicInstance | null>(null);
+const revisionsDrawerDetailRef = ref<InstanceType<typeof RevisionsDrawerDetail> | null>(null);
 
 const {
 	isNew,
@@ -240,12 +246,10 @@ const confirmDelete = ref(false);
 const editActive = ref(false);
 const fileSrc = computed(() => {
 	if (item.value && item.value.modified_on) {
-		return addTokenToURL(
-			getRootPath() + `assets/${props.primaryKey}?cache-buster=${item.value.modified_on}&key=system-large-contain`
-		);
+		return `assets/${props.primaryKey}?cache-buster=${item.value.modified_on}&key=system-large-contain`;
 	}
 
-	return addTokenToURL(getRootPath() + `assets/${props.primaryKey}?key=system-large-contain`);
+	return `assets/${props.primaryKey}?key=system-large-contain`;
 });
 
 // These are the fields that will be prevented from showing up in the form because they'll be shown in the sidebar
@@ -349,11 +353,6 @@ function discardAndLeave() {
 function discardAndStay() {
 	edits.value = {};
 	confirmLeave.value = false;
-}
-
-function downloadFile() {
-	const filePath = addTokenToURL(getRootPath() + `assets/${props.primaryKey}?download`);
-	window.open(filePath, '_blank');
 }
 
 function useMovetoFolder() {

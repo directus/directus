@@ -13,7 +13,7 @@
 					? `interface-${field.meta.interface}`
 					: `interface-${getDefaultInterfaceForType(field.type)}`
 			"
-			v-if="interfaceExists"
+			v-if="interfaceExists && !rawEditorActive"
 			v-bind="(field.meta && field.meta.options) || {}"
 			:autofocus="disabled !== true && autofocus"
 			:disabled="disabled"
@@ -26,8 +26,16 @@
 			:field-data="field"
 			:primary-key="primaryKey"
 			:length="field.schema && field.schema.max_length"
+			:direction="direction"
 			@input="$emit('update:modelValue', $event)"
 			@set-field-value="$emit('setFieldValue', $event)"
+		/>
+
+		<interface-system-raw-editor
+			v-else-if="rawEditorEnabled && rawEditorActive"
+			:value="modelValue === undefined ? field.schema?.default_value : modelValue"
+			:type="field.type"
+			@input="$emit('update:modelValue', $event)"
 		/>
 
 		<v-notice v-else type="warning">
@@ -36,57 +44,45 @@
 	</div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, PropType, computed } from 'vue';
+import { computed } from 'vue';
 import { Field } from '@directus/shared/types';
 import { getInterface } from '@/interfaces';
 import { getDefaultInterfaceForType } from '@/utils/get-default-interface-for-type';
 
-export default defineComponent({
-	props: {
-		field: {
-			type: Object as PropType<Field>,
-			required: true,
-		},
-		batchMode: {
-			type: Boolean,
-			default: false,
-		},
-		batchActive: {
-			type: Boolean,
-			default: false,
-		},
-		primaryKey: {
-			type: [Number, String],
-			default: null,
-		},
-		modelValue: {
-			type: [String, Number, Object, Array, Boolean],
-			default: undefined,
-		},
-		loading: {
-			type: Boolean,
-			default: false,
-		},
-		disabled: {
-			type: Boolean,
-			default: false,
-		},
-		autofocus: {
-			type: Boolean,
-			default: false,
-		},
-	},
-	emits: ['update:modelValue', 'setFieldValue'],
-	setup(props) {
-		const { t } = useI18n();
+interface Props {
+	field: Field;
+	batchMode?: boolean;
+	batchActive?: boolean;
+	primaryKey?: string | number | null;
+	modelValue?: string | number | boolean | Record<string, any> | Array<any>;
+	loading?: boolean;
+	disabled?: boolean;
+	autofocus?: boolean;
+	rawEditorEnabled?: boolean;
+	rawEditorActive?: boolean;
+	direction?: string;
+}
 
-		const interfaceExists = computed(() => !!getInterface(props.field?.meta?.interface || 'input'));
-
-		return { t, interfaceExists, getDefaultInterfaceForType };
-	},
+const props = withDefaults(defineProps<Props>(), {
+	batchMode: false,
+	batchActive: false,
+	primaryKey: null,
+	modelValue: undefined,
+	loading: false,
+	disabled: false,
+	autofocus: false,
+	rawEditorEnabled: false,
+	rawEditorActive: false,
+	direction: undefined,
 });
+
+defineEmits(['update:modelValue', 'setFieldValue']);
+
+const { t } = useI18n();
+
+const interfaceExists = computed(() => !!getInterface(props.field?.meta?.interface || 'input'));
 </script>
 
 <style lang="scss" scoped>

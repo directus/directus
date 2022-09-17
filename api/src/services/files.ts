@@ -18,6 +18,7 @@ import { toArray } from '@directus/shared/utils';
 import { ItemsService } from './items';
 import net from 'net';
 import os from 'os';
+import encodeURL from 'encodeurl';
 
 const lookupDNS = promisify(lookup);
 
@@ -243,7 +244,7 @@ export class FilesService extends ItemsService {
 		let fileResponse: AxiosResponse<NodeJS.ReadableStream>;
 
 		try {
-			fileResponse = await axios.get<NodeJS.ReadableStream>(importURL, {
+			fileResponse = await axios.get<NodeJS.ReadableStream>(encodeURL(importURL), {
 				responseType: 'stream',
 			});
 		} catch (err: any) {
@@ -254,7 +255,7 @@ export class FilesService extends ItemsService {
 		}
 
 		const parsedURL = url.parse(fileResponse.request.res.responseUrl);
-		const filename = path.basename(parsedURL.pathname as string);
+		const filename = decodeURI(path.basename(parsedURL.pathname as string));
 
 		const payload = {
 			filename_download: filename,

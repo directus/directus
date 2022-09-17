@@ -273,6 +273,10 @@ body.dark .tox .tox-toolbar__overflow {
 	line-height: unset;
 }
 
+.tox .tox-collection__item-accessory {
+	color: var(--foreground-normal);
+}
+
 .tox .tox-textfield:focus,
 .tox .tox-selectfield select:focus,
 .tox .tox-textarea:focus {

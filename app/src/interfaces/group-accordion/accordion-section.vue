@@ -28,6 +28,7 @@
 						:loading="loading"
 						:batch-mode="batchMode"
 						:disabled="disabled"
+						:direction="direction"
 						nested
 						@update:model-value="$emit('apply', $event)"
 					/>
@@ -39,7 +40,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType, computed } from 'vue';
-import { merge } from 'lodash';
+import { merge, isNil } from 'lodash';
 import { Field } from '@directus/shared/types';
 import { ValidationError } from '@directus/shared/types';
 import { useI18n } from 'vue-i18n';
@@ -99,15 +100,21 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		direction: {
+			type: String,
+			default: undefined,
+		},
 	},
 	emits: ['apply', 'toggleAll'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
 		const fieldsInSection = computed(() => {
-			return props.fields
-				.filter((field) => field.meta?.group === props.group && field.meta?.id === props.field.meta?.id)
-				.map((field) => merge({}, field, { hideLabel: true }));
+			let fields: Field[] = [merge({}, props.field, { hideLabel: true })];
+			if (props.field.meta?.special?.includes('group')) {
+				fields.push(...getFieldsForGroup(props.field.meta?.field));
+			}
+			return fields;
 		});
 
 		const edited = computed(() => {
@@ -141,6 +148,21 @@ export default defineComponent({
 			} else {
 				toggle();
 			}
+		}
+
+		function getFieldsForGroup(group: null | string, passed: string[] = []): Field[] {
+			const fieldsInGroup: Field[] = props.fields.filter((field) => {
+				return field.meta?.group === group || (group === null && isNil(field.meta));
+			});
+
+			for (const field of fieldsInGroup) {
+				if (field.meta?.special?.includes('group') && !passed.includes(field.meta!.field)) {
+					passed.push(field.meta!.field);
+					fieldsInGroup.push(...getFieldsForGroup(field.meta!.field, passed));
+				}
+			}
+
+			return fieldsInGroup;
 		}
 	},
 });

@@ -19,7 +19,12 @@
 				<template #item="{ element, index }">
 					<v-list-item :dense="internalValue.length > 4" block @click="openItem(index)">
 						<v-icon v-if="!disabled && !sort" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
-						<render-template :fields="fields" :item="{ ...defaults, ...element }" :template="templateWithDefaults" />
+						<render-template
+							:fields="fields"
+							:item="{ ...defaults, ...element }"
+							:direction="direction"
+							:template="templateWithDefaults"
+						/>
 						<div class="spacer" />
 						<v-icon v-if="!disabled" name="close" @click.stop="removeItem(element)" />
 					</v-list-item>
@@ -54,6 +59,7 @@
 					:disabled="disabled"
 					:fields="fieldsWithNames"
 					:model-value="activeItem"
+					:direction="direction"
 					autofocus
 					primary-key="+"
 					@update:model-value="trackEdits($event)"
@@ -83,7 +89,7 @@ import { Field } from '@directus/shared/types';
 import Draggable from 'vuedraggable';
 import { i18n } from '@/lang';
 import { renderStringTemplate } from '@/utils/render-string-template';
-import hideDragImage from '@/utils/hide-drag-image';
+import { hideDragImage } from '@/utils/hide-drag-image';
 import formatTitle from '@directus/format-title';
 import { isEqual, sortBy } from 'lodash';
 
@@ -129,6 +135,10 @@ export default defineComponent({
 		placeholder: {
 			type: String,
 			default: () => i18n.global.t('no_items'),
+		},
+		direction: {
+			type: String,
+			default: undefined,
 		},
 	},
 	emits: ['input'],

@@ -40,7 +40,7 @@
 <script lang="ts">
 import { defineComponent, computed, PropType } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useFieldsStore } from '@/stores';
+import { useFieldsStore } from '@/stores/fields';
 import { i18n } from '@/lang';
 
 export default defineComponent({

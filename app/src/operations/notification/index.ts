@@ -19,13 +19,13 @@ export default defineOperationApp({
 		{
 			field: 'recipient',
 			name: '$t:operations.notification.recipient',
-			type: 'string',
+			type: 'csv',
 			meta: {
 				width: 'half',
-				interface: 'input',
+				interface: 'tags',
 				options: {
 					iconRight: 'people_alt',
-					placeholder: '$t:a_users_uuid',
+					placeholder: '$t:operations.notification.recipient_placeholder',
 				},
 			},
 		},
@@ -73,7 +73,7 @@ export default defineOperationApp({
 		{
 			field: 'message',
 			name: '$t:operations.notification.message',
-			type: 'string',
+			type: 'text',
 			meta: {
 				width: 'full',
 				interface: 'input-rich-text-md',

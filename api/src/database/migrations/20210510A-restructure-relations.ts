@@ -11,11 +11,11 @@ export async function up(knex: Knex): Promise<void> {
 
 	await knex('directus_relations').update({ one_deselect_action: 'nullify' });
 
-	await helper.changeToString('directus_relations', 'sort_field', {
+	await helper.changeToType('directus_relations', 'sort_field', 'string', {
 		length: 64,
 	});
 
-	await helper.changeToString('directus_relations', 'one_deselect_action', {
+	await helper.changeToType('directus_relations', 'one_deselect_action', 'string', {
 		nullable: false,
 		default: 'nullify',
 	});
@@ -24,7 +24,7 @@ export async function up(knex: Knex): Promise<void> {
 export async function down(knex: Knex): Promise<void> {
 	const helper = getHelpers(knex).schema;
 
-	await helper.changeToString('directus_relations', 'sort_field', {
+	await helper.changeToType('directus_relations', 'sort_field', 'string', {
 		length: 255,
 	});
 

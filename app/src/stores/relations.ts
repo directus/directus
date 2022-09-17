@@ -1,5 +1,5 @@
 import api from '@/api';
-import { useFieldsStore } from '@/stores/';
+import { useFieldsStore } from '@/stores/fields';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { Relation, DeepPartial } from '@directus/shared/types';
 import { isEqual } from 'lodash';

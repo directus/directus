@@ -1,11 +1,11 @@
 import api from '@/api';
 import { i18n } from '@/lang';
-import { useRelationsStore, useCollectionsStore } from '@/stores/';
-import { notEmpty } from '@/utils/is-empty/';
+import { useCollectionsStore } from '@/stores/collections';
+import { useRelationsStore } from '@/stores/relations';
 import { unexpectedError } from '@/utils/unexpected-error';
 import formatTitle from '@directus/format-title';
 import { DeepPartial, Field, FieldRaw, Relation } from '@directus/shared/types';
-import { isEqual, merge, orderBy, omit } from 'lodash';
+import { isEqual, isNil, merge, omit, orderBy } from 'lodash';
 import { nanoid } from 'nanoid';
 import { defineStore } from 'pinia';
 
@@ -71,7 +71,7 @@ export const useFieldsStore = defineStore({
 		parseField(field: FieldRaw): Field {
 			let name = formatTitle(field.field);
 
-			if (field.meta && notEmpty(field.meta.translations) && field.meta.translations.length > 0) {
+			if (field.meta && !isNil(field.meta.translations) && field.meta.translations.length > 0) {
 				for (let i = 0; i < field.meta.translations.length; i++) {
 					const { language, translation } = field.meta.translations[i];
 

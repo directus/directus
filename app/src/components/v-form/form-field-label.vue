@@ -11,66 +11,56 @@
 			<v-text-overflow :text="field.name" />
 			<v-icon v-if="field.meta?.required === true" class="required" :class="{ 'has-badge': badge }" sup name="star" />
 			<v-chip v-if="badge" x-small>{{ badge }}</v-chip>
+			<v-icon
+				v-if="!disabled && rawEditorEnabled"
+				v-tooltip="t('toggle_raw_editor')"
+				class="raw-editor-toggle"
+				:class="{ active: rawEditorActive }"
+				name="data_object"
+				:filled="!rawEditorActive"
+				small
+				@click.stop="$emit('toggle-raw', !rawEditorActive)"
+			/>
 			<v-icon v-if="!disabled" class="ctx-arrow" :class="{ active }" name="arrow_drop_down" />
 		</span>
 	</div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, PropType } from 'vue';
 import { Field } from '@directus/shared/types';
 
-export default defineComponent({
-	props: {
-		batchMode: {
-			type: Boolean,
-			default: false,
-		},
-		batchActive: {
-			type: Boolean,
-			default: false,
-		},
-		field: {
-			type: Object as PropType<Field>,
-			required: true,
-		},
-		disabled: {
-			type: Boolean,
-			default: false,
-		},
-		toggle: {
-			type: Function,
-			required: true,
-		},
-		active: {
-			type: Boolean,
-			default: false,
-		},
-		edited: {
-			type: Boolean,
-			default: false,
-		},
-		hasError: {
-			type: Boolean,
-			default: false,
-		},
-		badge: {
-			type: String,
-			default: null,
-		},
-		loading: {
-			type: Boolean,
-			default: false,
-		},
-	},
-	emits: ['toggle-batch'],
-	setup() {
-		const { t } = useI18n();
+interface Props {
+	field: Field;
+	toggle: (event: Event) => any;
+	batchMode?: boolean;
+	batchActive?: boolean;
+	disabled?: boolean;
+	active?: boolean;
+	edited?: boolean;
+	hasError?: boolean;
+	badge?: string | null;
+	loading?: boolean;
+	rawEditorEnabled?: boolean;
+	rawEditorActive?: boolean;
+}
 
-		return { t };
-	},
+withDefaults(defineProps<Props>(), {
+	batchMode: false,
+	batchActive: false,
+	disabled: false,
+	active: false,
+	edited: false,
+	hasError: false,
+	badge: null,
+	loading: false,
+	rawEditorEnabled: false,
+	rawEditorActive: false,
 });
+
+defineEmits(['toggle-batch', 'toggle-raw']);
+
+const { t } = useI18n();
 </script>
 
 <style lang="scss" scoped>
@@ -124,6 +114,28 @@ export default defineComponent({
 	&:hover {
 		.ctx-arrow {
 			opacity: 1;
+		}
+	}
+
+	.raw-editor-toggle {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		height: 24px;
+		width: 24px;
+		margin-top: -2px;
+		margin-left: 5px;
+		color: var(--foreground-subdued);
+		transition: color var(--fast) var(--transition);
+
+		&:hover {
+			color: var(--foreground-normal);
+		}
+
+		&.active {
+			color: var(--primary);
+			background-color: var(--primary-alt);
+			border-radius: 50%;
 		}
 	}
 
