@@ -483,7 +483,12 @@ export class FieldsService {
 					if (isM2O) {
 						await relationsService.deleteOne(collection, field);
 
-						if (relation.related_collection && relation.meta?.one_field) {
+						if (
+							relation.related_collection &&
+							relation.meta?.one_field &&
+							relation.related_collection !== collection &&
+							relation.meta.one_field !== field
+						) {
 							await fieldsService.deleteField(relation.related_collection, relation.meta.one_field);
 						}
 					}
