@@ -2,6 +2,7 @@ import { LocalFileSystemStorage, Storage, StorageManager, StorageManagerConfig }
 import { AzureBlobWebServicesStorage } from '@directus/drive-azure';
 import { GoogleCloudStorage } from '@directus/drive-gcs';
 import { AmazonWebServicesS3Storage } from '@directus/drive-s3';
+import { SupabaseStorage } from '@directus/drive-supabase';
 import env from './env';
 import { getConfigFromEnv } from './utils/get-config-from-env';
 import { toArray } from '@directus/shared/utils';
@@ -57,6 +58,7 @@ function registerDrivers(storage: StorageManager) {
 }
 
 function getStorageDriver(driver: string) {
+
 	switch (driver) {
 		case 'local':
 			return LocalFileSystemStorage;
@@ -66,5 +68,7 @@ function getStorageDriver(driver: string) {
 			return GoogleCloudStorage;
 		case 'azure':
 			return AzureBlobWebServicesStorage;
+		case 'supabase':
+			return SupabaseStorage;
 	}
 }
