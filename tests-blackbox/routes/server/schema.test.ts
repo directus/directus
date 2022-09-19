@@ -364,20 +364,7 @@ describe('Schema Snapshots', () => {
 });
 
 function parseSnapshot(vendor: string, snapshot: any) {
-	if (vendor === 'sqlite3') {
-		if (snapshot.collections) {
-			for (const collection of snapshot.collections) {
-				if (collection.schema?.sql) {
-					collection.schema.sql = parseCreateTableSQL(
-						collection.schema.sql
-							.replace(/null DEFAULT null/gi, 'NULL')
-							.replace(/ null/g, ' NULL')
-							.replace(/ default/g, ' DEFAULT')
-					);
-				}
-			}
-		}
-	} else if (vendor === 'cockroachdb') {
+	if (vendor === 'cockroachdb') {
 		if (snapshot.fields) {
 			for (const field of snapshot.fields) {
 				if (
@@ -394,25 +381,6 @@ function parseSnapshot(vendor: string, snapshot: any) {
 			}
 		}
 	}
-}
-
-function parseCreateTableSQL(sql: string) {
-	const match = sql.match(/\((.*)\)/);
-
-	if (!match) {
-		return sql;
-	}
-
-	const createStatement = sql.slice(0, -match[0].length);
-	const params = match[1]
-		.split(',')
-		.map((v) => v.trim())
-		.sort();
-
-	return {
-		createStatement,
-		params,
-	};
 }
 
 async function assertCollectionsDeleted(vendor: string, pkType: PrimaryKeyType) {
