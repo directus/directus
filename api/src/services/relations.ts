@@ -183,7 +183,7 @@ export class RelationsService {
 			await this.knex.transaction(async (trx) => {
 				if (relation.related_collection) {
 					await trx.schema.alterTable(relation.collection!, async (table) => {
-						this.alterType(table, relation);
+						await this.alterType(table, relation);
 
 						const constraintName: string = getDefaultIndexName('foreign', relation.collection!, relation.field!);
 						const builder = table
@@ -227,17 +227,15 @@ export class RelationsService {
 			throw new ForbiddenException();
 		}
 
-		if (collection in this.schema.collections === false) {
+		if (!await this.schema.hasCollection(collection)) {
 			throw new InvalidPayloadException(`Collection "${collection}" doesn't exist`);
 		}
 
-		if (field in this.schema.collections[collection]!.fields === false) {
+		if (!await this.schema.hasField(collection, field)) {
 			throw new InvalidPayloadException(`Field "${field}" doesn't exist in collection "${collection}"`);
 		}
 
-		const existingRelation = this.schema.relations.find(
-			(existingRelation) => existingRelation.collection === collection && existingRelation.field === field
-		);
+		const existingRelation = await this.schema.getRelationsForField(collection, field)
 
 		if (!existingRelation) {
 			throw new InvalidPayloadException(`Field "${field}" in collection "${collection}" doesn't have a relationship.`);
@@ -257,13 +255,13 @@ export class RelationsService {
 							table.dropForeign(field, constraintName);
 						}
 
-						this.alterType(table, relation);
+						await this.alterType(table, relation);
 
 						const builder = table
 							.foreign(field, constraintName || undefined)
 							.references(
 								`${existingRelation.related_collection!}.${
-									this.schema.collections[existingRelation.related_collection!]!.primary
+									(await this.schema.getCollection(existingRelation.related_collection!))!.primary
 								}`
 							);
 
@@ -311,17 +309,15 @@ export class RelationsService {
 			throw new ForbiddenException();
 		}
 
-		if (collection in this.schema.collections === false) {
+		if (!await this.schema.hasCollection(collection)) {
 			throw new InvalidPayloadException(`Collection "${collection}" doesn't exist`);
 		}
 
-		if (field in this.schema.collections[collection]!.fields === false) {
+		if (!await this.schema.hasField(collection, field)) {
 			throw new InvalidPayloadException(`Field "${field}" doesn't exist in collection "${collection}"`);
 		}
 
-		const existingRelation = this.schema.relations.find(
-			(existingRelation) => existingRelation.collection === collection && existingRelation.field === field
-		);
+		const existingRelation = await this.schema.getRelationsForField(collection, field);
 
 		if (!existingRelation) {
 			throw new InvalidPayloadException(`Field "${field}" in collection "${collection}" doesn't have a relationship.`);
@@ -477,12 +473,11 @@ export class RelationsService {
 	 *
 	 * @TODO This is a bit of a hack, and might be better of abstracted elsewhere
 	 */
-	private alterType(table: Knex.TableBuilder, relation: Partial<Relation>) {
-		const m2oFieldDBType = this.schema.collections[relation.collection!]!.fields[relation.field!]!.dbType;
-		const relatedFieldDBType =
-			this.schema.collections[relation.related_collection!]!.fields[
-				this.schema.collections[relation.related_collection!]!.primary
-			]!.dbType;
+	private async alterType(table: Knex.TableBuilder, relation: Partial<Relation>) {
+		
+		const m2oFieldDBType = (await this.schema.getField(relation.collection!, relation.field!))!.dbType;
+
+		const relatedFieldDBType = (await this.schema.getPrimaryKeyField(relation.related_collection!))!.dbType;
 
 		if (m2oFieldDBType !== relatedFieldDBType && m2oFieldDBType === 'int' && relatedFieldDBType === 'int unsigned') {
 			table.specificType(relation.field!, 'int unsigned').alter();

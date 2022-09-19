@@ -183,7 +183,7 @@ export class UsersService extends ItemsService {
 	}
 
 	override async updateBatch(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
-		const primaryKeyField = this.schema.collections[this.collection]!.primary;
+		const primaryKeyField = (await this.schema.getCollection(this.collection))!.primary;
 
 		const keys: PrimaryKey[] = [];
 
@@ -273,7 +273,7 @@ export class UsersService extends ItemsService {
 	}
 
 	override async deleteByQuery(query: Query, opts?: MutationOptions): Promise<PrimaryKey[]> {
-		const primaryKeyField = this.schema.collections[this.collection]!.primary;
+		const primaryKeyField = (await this.schema.getCollection(this.collection))!.primary;
 		const readQuery = cloneDeep(query);
 		readQuery.fields = [primaryKeyField];
 

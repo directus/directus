@@ -5,11 +5,11 @@ import { mergePermissions } from './merge-permissions.js';
 import { schemaPermissions } from '../database/system-data/app-access-permissions/index.js';
 import { reduceSchema } from './reduce-schema.js';
 
-export function mergePermissionsForShare(
+export async function mergePermissionsForShare(
 	currentPermissions: Permission[],
 	accountability: Accountability,
 	schema: SchemaOverview
-): Permission[] {
+): Promise<Permission[]> {
 	const defaults: Permission = {
 		action: 'read',
 		role: accountability.role,
@@ -22,11 +22,11 @@ export function mergePermissionsForShare(
 
 	const { collection, item } = accountability.share_scope!;
 
-	const parentPrimaryKeyField = schema.collections[collection]!.primary;
+	const parentPrimaryKeyField = (await schema.getCollection(collection))!.primary;
 
 	const reducedSchema = reduceSchema(schema, currentPermissions, ['read']);
 
-	const relationalPermissions = traverse(reducedSchema, parentPrimaryKeyField, item, collection);
+	const relationalPermissions = await traverse(reducedSchema, parentPrimaryKeyField, item, collection);
 
 	const parentCollectionPermission: Permission = assign({}, defaults, {
 		collection,
@@ -71,14 +71,14 @@ export function mergePermissionsForShare(
 	return mergePermissions('and', limitedPermissions, generatedPermissions);
 }
 
-export function traverse(
+export async function traverse(
 	schema: SchemaOverview,
 	rootItemPrimaryKeyField: string,
 	rootItemPrimaryKey: string,
 	currentCollection: string,
 	parentCollections: string[] = [],
 	path: string[] = []
-): Partial<Permission>[] {
+): Promise<Partial<Permission>[]> {
 	const permissions: Partial<Permission>[] = [];
 
 	// If there's already a permissions rule for the collection we're currently checking, we'll shortcircuit.
@@ -88,7 +88,7 @@ export function traverse(
 		return permissions;
 	}
 
-	const relationsInCollection = schema.relations.filter((relation) => {
+	const relationsInCollection = (await schema.getRelations()).filter((relation) => {
 		return relation.collection === currentCollection || relation.related_collection === currentCollection;
 	});
 
@@ -110,7 +110,7 @@ export function traverse(
 			});
 
 			permissions.push(
-				...traverse(
+				...await traverse(
 					schema,
 					rootItemPrimaryKeyField,
 					rootItemPrimaryKey,
@@ -148,7 +148,7 @@ export function traverse(
 
 			if (relation.meta?.one_field) {
 				permissions.push(
-					...traverse(
+					...await traverse(
 						schema,
 						rootItemPrimaryKeyField,
 						rootItemPrimaryKey,

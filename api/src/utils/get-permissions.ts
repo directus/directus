@@ -84,7 +84,7 @@ export async function getPermissions(accountability: Accountability, schema: Sch
 		}
 
 		if (accountability.share_scope) {
-			permissions = mergePermissionsForShare(permissions, accountability, schema);
+			permissions = await mergePermissionsForShare(permissions, accountability, schema);
 		}
 
 		const filterContext = containDynamicData

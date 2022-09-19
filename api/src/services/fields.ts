@@ -140,7 +140,7 @@ export class FieldsService {
 			return data;
 		}) as Field[];
 
-		const knownCollections = Object.keys(this.schema.collections);
+		const knownCollections = Object.keys(await this.schema.getCollections());
 
 		const result = [...columnsWithSystem, ...aliasFieldsAsField].filter((field) =>
 			knownCollections.includes(field.collection)
@@ -251,7 +251,7 @@ export class FieldsService {
 
 		try {
 			const exists =
-				field.field in this.schema.collections[collection]!.fields ||
+				await this.schema.hasField(collection, field.field) ||
 				isNil(
 					await this.knex.select('id').from('directus_fields').where({ collection, field: field.field }).first()
 				) === false;
