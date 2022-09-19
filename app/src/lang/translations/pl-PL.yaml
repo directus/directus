@@ -187,6 +187,7 @@ revision_post_create: Oto jak wyglądał ten przedmiot podczas jego tworzenia.
 revision_post_update: Oto jak wyglądał ten element po aktualizacji.
 changes_made: Poniżej przedstawiono konkretne zmiany wprowadzone w tej rewizji.
 no_relational_data: Należy pamiętać, że nie uwzględniono tu danych dotyczących relacji.
+top: Góra
 bottom: Dolny
 hide_field: Ukryj pole
 hide_field_on_detail: Ukryj pole w szczegółach
@@ -2006,6 +2007,8 @@ panels:
   variable:
     name: Zmienna globalna
     description: Ustaw wartość globalną dla filtrów innych paneli
+    variable_key: Klucz zmienny
+  relational-variable:
     variable_key: Klucz zmienny
 triggers:
   common:

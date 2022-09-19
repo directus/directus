@@ -187,6 +187,8 @@ revision_post_create: Ecco come appariva questo elemento quando è stato creato.
 revision_post_update: Ecco come appariva questo elemento dopo l'aggiornamento.
 changes_made: Di seguito sono riportate le modifiche apportate in questa revisione.
 no_relational_data: Ricorda che qui i dati relazionali non sono inclusi.
+junction_field_location: Posizione dei campi di relazione
+top: In alto
 bottom: In basso
 hide_field: Nascondi campo
 hide_field_on_detail: Nascondi campo nel dettaglio
@@ -2014,6 +2016,8 @@ panels:
   variable:
     name: Variabile globale
     description: Imposta un valore globale da usare nei filtri di altri pannelli
+    variable_key: Chiave della variabile
+  relational-variable:
     variable_key: Chiave della variabile
 triggers:
   common:
