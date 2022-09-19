@@ -258,7 +258,7 @@ export function applySort(
 
 				return {
 					order,
-					column: getColumn(knex, alias!, field!, false, schema) as any,
+					column: await getColumn(knex, alias!, field!, false, schema) as any,
 				};
 			}
 
@@ -270,7 +270,7 @@ export function applySort(
 
 			return {
 				order,
-				column: getColumn(knex, collection, col!, false, schema) as any,
+				column: await getColumn(knex, collection, col!, false, schema) as any,
 			};
 		})
 	);

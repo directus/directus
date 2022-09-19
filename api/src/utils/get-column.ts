@@ -16,14 +16,14 @@ import { applyFunctionToColumnName } from './apply-function-to-column-name.js';
  * @param alias Whether or not to add a SQL AS statement
  * @returns Knex raw instance
  */
-export function getColumn(
+export async function getColumn(
 	knex: Knex,
 	table: string,
 	column: string,
 	alias: string | false = applyFunctionToColumnName(column),
 	schema: SchemaOverview,
 	query?: Query
-): Knex.Raw {
+): Promise<Knex.Raw> {
 	const fn = getFunctions(knex, schema);
 
 	if (column.includes('(') && column.includes(')')) {
@@ -31,7 +31,7 @@ export function getColumn(
 		const columnName = column.match(REGEX_BETWEEN_PARENS)![1]!;
 
 		if (functionName in fn) {
-			const type = schema?.collections[table]?.fields?.[columnName]?.type ?? 'unknown';
+			const type = await (schema.getField(table, columnName))?.type ?? 'unknown';
 			const allowedFunctions = getFunctionsForType(type);
 
 			if (allowedFunctions.includes(functionName) === false) {

@@ -1,4 +1,4 @@
-import type { Accountability, Query, SchemaOverview } from '@directus/shared/types';
+import type { Accountability, FieldOverview, Query, SchemaOverview } from '@directus/shared/types';
 import { format, parseISO, isValid } from 'date-fns';
 import { parseJSON, toArray } from '@directus/shared/utils';
 import flat from 'flat';
@@ -177,7 +177,7 @@ export class PayloadService {
 			})
 		);
 
-		this.processGeometries(processedPayload, action);
+		await this.processGeometries(processedPayload, action);
 		await this.processDates(processedPayload, action);
 
 		if (['create', 'update'].includes(action)) {
@@ -214,7 +214,7 @@ export class PayloadService {
 	}
 
 	async processField(
-		field: SchemaOverview['collections'][string]['fields'][string],
+		field: FieldOverview,
 		payload: Partial<Item>,
 		action: Action,
 		accountability: Accountability | null
@@ -246,13 +246,13 @@ export class PayloadService {
 	 * escaped. It's therefore placed as a Knex.Raw object in the payload. Thus the need
 	 * to check if the value is a raw instance before stringifying it in the next step.
 	 */
-	processGeometries<T extends Partial<Record<string, any>>[]>(payloads: T, action: Action): T {
+	async processGeometries<T extends Partial<Record<string, any>>[]>(payloads: T, action: Action): Promise<T> {
 		const process =
 			action == 'read'
 				? (value: any) => (typeof value === 'string' ? wktToGeoJSON(value) : value)
 				: (value: any) => this.helpers.st.fromGeoJSON(typeof value == 'string' ? parseJSON(value) : value);
 
-		const fieldsInCollection = Object.entries(this.schema.collections[this.collection]!.fields);
+		const fieldsInCollection = Object.entries(await this.schema.getFields(this.collection));
 		const geometryColumns = fieldsInCollection.filter(([_, field]) => field.type.startsWith('geometry'));
 
 		for (const [name] of geometryColumns) {

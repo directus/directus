@@ -72,7 +72,7 @@ export default async function runAST(
 		);
 
 		// The actual knex query builder instance. This is a promise that resolves with the raw items from the db
-		const dbQuery = getDBQuery(schema, knex, collection, fieldNodes, query);
+		const dbQuery = await getDBQuery(schema, knex, collection, fieldNodes, query);
 
 		const rawItems: Item | Item[] = await dbQuery;
 
@@ -144,8 +144,8 @@ async function parseCurrentLevel(
 	children: (NestedCollectionNode | FieldNode | FunctionFieldNode)[],
 	query: Query
 ) {
-	const primaryKeyField = schema.collections[collection]!.primary;
-	const columnsInCollection = Object.keys(schema.collections[collection]!.fields);
+	const primaryKeyField = (await schema.getCollection(collection))!.primary;
+	const columnsInCollection = Object.keys(await schema.getFields(collection));
 
 	const columnsToSelectInternal: string[] = [];
 	const nestedCollectionNodes: NestedCollectionNode[] = [];
@@ -205,7 +205,7 @@ async function parseCurrentLevel(
 function getColumnPreprocessor(knex: Knex, schema: SchemaOverview, table: string) {
 	const helpers = getHelpers(knex);
 
-	return function (fieldNode: FieldNode | FunctionFieldNode | M2ONode): Knex.Raw<string> {
+	return async function (fieldNode: FieldNode | FunctionFieldNode | M2ONode): Promise<Knex.Raw<string>> {
 		let alias = undefined;
 
 		if (fieldNode.name !== fieldNode.fieldKey) {
@@ -215,9 +215,9 @@ function getColumnPreprocessor(knex: Knex, schema: SchemaOverview, table: string
 		let field;
 
 		if (fieldNode.type === 'field' || fieldNode.type === 'functionField') {
-			field = schema.collections[table]!.fields[stripFunction(fieldNode.name)];
+			field = await schema.getField(table, stripFunction(fieldNode.name));
 		} else {
-			field = schema.collections[fieldNode.relation.collection]!.fields[fieldNode.relation.field];
+			field = await schema.getField(fieldNode.relation.collection, fieldNode.relation.field);
 		}
 
 		if (field?.type?.startsWith('geometry')) {
@@ -225,10 +225,10 @@ function getColumnPreprocessor(knex: Knex, schema: SchemaOverview, table: string
 		}
 
 		if (fieldNode.type === 'functionField') {
-			return getColumn(knex, table, fieldNode.name, alias, schema, fieldNode.query);
+			return await getColumn(knex, table, fieldNode.name, alias, schema, fieldNode.query);
 		}
 
-		return getColumn(knex, table, fieldNode.name, alias, schema);
+		return await getColumn(knex, table, fieldNode.name, alias, schema);
 	};
 }
 
