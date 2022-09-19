@@ -58,7 +58,6 @@ function registerDrivers(storage: StorageManager) {
 }
 
 function getStorageDriver(driver: string) {
-
 	switch (driver) {
 		case 'local':
 			return LocalFileSystemStorage;
