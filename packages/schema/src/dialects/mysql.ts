@@ -258,14 +258,29 @@ export default class MySQL implements SchemaInspector {
 	/**
 	 * Get the primary key column for the given table
 	 */
-	async primary(table: string) {
-		const results = await this.knex.raw(`SHOW KEYS FROM ?? WHERE Key_name = 'PRIMARY'`, table);
+	primary(): Promise<Record<string, any>>;
+	primary(table: string): Promise<string | null>;
+	async primary(table?: string) {
+		const primaryColumns = this.knex.select('C.TABLE_NAME', 'C.COLUMN_NAME as column_name', 'C.COLUMN_KEY as column_key')
+			.from('INFORMATION_SCHEMA.COLUMNS as C')
+			.leftJoin('INFORMATION_SCHEMA.TABLES as T', function () {
+				this.on('C.TABLE_NAME', '=', 'T.TABLE_NAME').andOn('C.TABLE_SCHEMA', '=', 'T.TABLE_SCHEMA');
+			}).where({
+				'T.TABLE_TYPE': 'BASE TABLE',
+				'C.TABLE_SCHEMA': this.knex.client.database(),
+				'C.COLUMN_KEY': 'PRI',
+			})
 
-		if (results && results.length && results[0].length) {
-			return results[0][0]['Column_name'] as string;
+		if(table) {
+			return (await primaryColumns.andWhere({ 'C.TABLE_NAME': table }).first())?.column_name;
 		}
 
-		return null;
+		return (await primaryColumns).reduce<Record<string, string>>((obj, row) => {
+			if(row?.TABLE_NAME) {
+				obj[row.TABLE_NAME] = row.column_name;
+			}
+			return obj
+		}, {});
 	}
 
 	// Foreign Keys

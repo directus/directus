@@ -136,7 +136,11 @@ export default class MSSQL implements SchemaInspector {
 				TABLE_CATALOG: this.knex.client.database(),
 				TABLE_TYPE: 'BASE TABLE',
 				TABLE_SCHEMA: this.schema,
-			});
+			}).leftJoin(`[${this.knex.client.database()}].INFORMATION_SCHEMA.COLUMNS as c`, function() {
+				this.on('c.TABLE_NAME', '=', 'TABLES.TABLE_NAME')
+				.andOn('c.TABLE_SCHEMA', '=', 'TABLES.TABLE_SCHEMA')
+				.andOn('c.', '=', 'TABLES.TABLE_CATALOG')
+			})
 
 		if (table) {
 			const rawTable: RawTable = await query.andWhere({ table_name: table }).first();
@@ -310,24 +314,30 @@ export default class MSSQL implements SchemaInspector {
 	/**
 	 * Get the primary key column for the given table
 	 */
-	async primary(table: string) {
-		const results = await this.knex.raw(
-			`SELECT
-         Col.Column_Name
-       FROM
-         INFORMATION_SCHEMA.TABLE_CONSTRAINTS Tab,
-         INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE Col
-       WHERE
-         Col.Constraint_Name = Tab.Constraint_Name
-         AND Col.Table_Name = Tab.Table_Name
-         AND Constraint_Type = 'PRIMARY KEY'
-         AND Col.Table_Name = ?
-         AND Tab.CONSTRAINT_SCHEMA = ?`,
-			[table, this.schema]
-		);
+	primary(): Promise<Record<string, string>>;
+	primary(table: string): Promise<string | null>;
+	async primary(table?: string) {
+		const query = this.knex.select('C.Column_Name', 'C.Table_Name')
+			.from('INFORMATION_SCHEMA.TABLE_CONSTRAINTS as T')
+			.join('INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE as C', function () {
+				this.on('C.Constraint_Name', '=', 'T.Constraint_Name')
+					.andOn('C.Table_Name', '=', 'T.Table_Name');
+			})
+			.where({
+				Constraint_Type: 'PRIMARY KEY',
+				'T.CONSTRAINT_SCHEMA': this.schema,
+			})
+			
+		if(table) {
+			return (await query.andWhere({ 'C.Table_Name': table }).first())?.['Column_Name'];
+		}
 
-		const columnName = results.length > 0 ? results[0]['Column_Name'] : null;
-		return columnName as string;
+		return (await query).reduce<Record<string, string>>((obj, row) => {
+			if(row['Table_Name']) {
+				obj[row['Table_Name']] = row['Column_Name'];
+			}
+			return obj
+		}, {});
 	}
 
 	// Foreign Keys

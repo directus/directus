@@ -1,6 +1,6 @@
 import { uniq } from 'lodash-es';
 
-import type { Permission, PermissionsAction, SchemaOverview } from '@directus/shared/types';
+import type { CollectionOverview, FieldOverview, Permission, PermissionsAction, Relation, SchemaOverview } from '@directus/shared/types';
 
 /**
  * Reduces the schema based on the included permissions. The resulting object is the schema structure, but with only
@@ -14,68 +14,91 @@ export function reduceSchema(
 	permissions: Permission[] | null,
 	actions: PermissionsAction[] = ['create', 'read', 'update', 'delete']
 ): SchemaOverview {
-	const reduced: SchemaOverview = {
-		collections: {},
-		relations: [],
-	};
 
-	const allowedFieldsInCollection =
-		permissions
-			?.filter((permission) => actions.includes(permission.action))
-			.reduce((acc, permission) => {
-				if (!acc[permission.collection]) {
-					acc[permission.collection] = [];
-				}
+	async function getCollections() {
+		const result = await schema.getCollections()
 
-				if (permission.fields) {
-					acc[permission.collection] = uniq([...acc[permission.collection]!, ...permission.fields]);
-				}
+		return Object.entries(result).reduce((acc, [collectionName, collection]) => {
+			if (showCollection(collection)) acc[collectionName] = collection;
+			return acc
+		}, {} as Record<string, CollectionOverview>);
+	}
+	async function getCollection(collection: string) {
+		const result = await schema.getCollection(collection)
 
-				return acc;
-			}, {} as { [collection: string]: string[] }) ?? {};
+		if (result === null || !showCollection(result)) return null;
 
-	for (const [collectionName, collection] of Object.entries(schema.collections)) {
-		if (
-			!permissions?.some(
-				(permission) => permission.collection === collectionName && actions.includes(permission.action)
-			)
-		) {
-			continue;
-		}
+		return result;
+	}
+	async function getFields(collection: string) {
+		const result = await schema.getFields(collection)
 
-		const fields: SchemaOverview['collections'][string]['fields'] = {};
+		const relations = await getRelations()
 
-		for (const [fieldName, field] of Object.entries(schema.collections[collectionName]!.fields)) {
-			if (
-				!allowedFieldsInCollection[collectionName]?.includes('*') &&
-				!allowedFieldsInCollection[collectionName]?.includes(fieldName)
-			) {
-				continue;
-			}
+		return Object.entries(result).reduce((acc, [fieldName, field]) => {
+			if (showField(collection, field, relations)) acc[fieldName] = field;
+			return acc
+		}, {} as Record<string, FieldOverview>);
+	}
+	async function getField(collection: string, field: string) {
+		const result = await schema.getField(collection, field)
 
-			const o2mRelation = schema.relations.find(
-				(relation) => relation.related_collection === collectionName && relation.meta?.one_field === fieldName
-			);
+		const relations = await getRelations()
 
-			if (
-				o2mRelation &&
-				!permissions?.some(
-					(permission) => permission.collection === o2mRelation.collection && actions.includes(permission.action)
-				)
-			) {
-				continue;
-			}
+		if (result === null || !showField(collection, result, relations)) return null;
 
-			fields[fieldName] = field;
-		}
+		return result;
+	}
+	async function getRelations() {
+		return (await schema.getRelations()).filter(relation => showRelation(relation));
 
-		reduced.collections[collectionName] = {
-			...collection,
-			fields,
-		};
+	}
+	async function getRelationsForCollection(collection: string) {
+		const result = await schema.getRelationsForCollection(collection)
+
+		return Object.entries(result).reduce((acc, [key, relation]) => {
+			if (showRelation(relation)) acc[key] = relation;
+			return acc
+		}, {} as Record<string, Relation>);
+	}
+	async function getRelationsForField(collection: string, field: string) {
+		const result = await schema.getRelationsForField(collection, field)
+
+		if (result === null || !showRelation(result)) return null;
+
+		return result;
+	}
+	async function getPrimaryKeyField(collection: string) {
+		const result = await schema.getPrimaryKeyField(collection)
+
+		const relations = await getRelations()
+
+		if (result === null || !showField(collection, result, relations)) return null;
+
+		return result;
 	}
 
-	reduced.relations = schema.relations.filter((relation) => {
+	const allowedFieldsInCollection = permissions
+		?.filter((permission) => actions.includes(permission.action))
+		.reduce((acc, permission) => {
+			if (!acc[permission.collection]) {
+				acc[permission.collection] = [];
+			}
+
+			if (permission.fields) {
+				acc[permission.collection] = uniq([...acc[permission.collection]!, ...permission.fields]);
+			}
+
+			return acc;
+		}, {} as { [collection: string]: string[] }) ?? {};
+
+	function showCollection(collection: CollectionOverview) {
+		return permissions?.some(
+			(permission) => permission.collection === collection.collection && actions.includes(permission.action)
+		)
+	}
+
+	function showRelation(relation: Relation) {
 		let collectionsAllowed = true;
 		let fieldsAllowed = true;
 
@@ -117,8 +140,43 @@ export function reduceSchema(
 			fieldsAllowed = false;
 		}
 
-		return collectionsAllowed && fieldsAllowed;
-	});
+		return !collectionsAllowed || !fieldsAllowed;
+	}
 
-	return reduced;
+	function showField(collection: string, field: FieldOverview, relations: Relation[]) {
+		if (
+			!permissions?.some(
+				(permission) => permission.collection === collection && actions.includes(permission.action)
+			)
+		) return false;
+
+		if (
+			!allowedFieldsInCollection[collection]?.includes('*') &&
+			!allowedFieldsInCollection[collection]?.includes(field.field)
+		) return false;
+
+		const o2mRelation = relations.find(
+			(relation) => relation.related_collection === collection && relation.meta?.one_field === field.field
+		);
+
+		if (
+			o2mRelation &&
+			!permissions?.some(
+				(permission) => permission.collection === o2mRelation.collection && actions.includes(permission.action)
+			)
+		) return false
+
+		return true
+	}
+
+	return {
+		getCollections,
+		getCollection,
+		getFields,
+		getField,
+		getRelations,
+		getRelationsForCollection,
+		getRelationsForField,
+		getPrimaryKeyField,
+	}
 }

@@ -1,5 +1,5 @@
 import SchemaInspector from '@directus/schema';
-import type { Accountability, CollectionOverview, FieldOverview, Filter, Relation, SchemaOverview } from '@directus/shared/types';
+import type { Accountability, CollectionMeta, CollectionOverview, FieldOverview, Filter, Relation, SchemaOverview } from '@directus/shared/types';
 import { parseJSON, toArray } from '@directus/shared/utils';
 import type { Knex } from 'knex';
 import { getCache } from '../cache.js';
@@ -79,7 +79,8 @@ export async function getSchema(options?: {
 	
 
 	async function loadCollections() {
-		const schemaOverview = await schemaInspector.overview();
+		const schemaOverview = await schemaInspector.tableInfo()
+		const primaryKeys = await schemaInspector.primary()
 
 		const result: Record<string, CollectionOverview> = {}
 	
@@ -89,14 +90,19 @@ export async function getSchema(options?: {
 				.from('directus_collections')),
 			...systemCollectionRows,
 		];
+
+		const collectionMeta = collections.reduce<Record<string, CollectionMeta>>((obj, collection) => ({ ...obj, [collection.collection]: collection }), {});
 	
-		for (const [collection, info] of Object.entries(schemaOverview)) {
+		for (const info of schemaOverview) {
+			const collection = info.name;
+			const primary = primaryKeys[collection];
+
 			if (toArray(env['DB_EXCLUDE_TABLES']).includes(collection)) {
 				logger.trace(`Collection "${collection}" is configured to be excluded and will be ignored`);
 				continue;
 			}
 	
-			if (!(info as any).primary) {
+			if (!primary) {
 				logger.warn(`Collection "${collection}" doesn't have a primary key column and will be ignored`);
 				continue;
 			}
@@ -106,16 +112,14 @@ export async function getSchema(options?: {
 				continue;
 			}
 	
-			const collectionMeta = collections.find((collectionMeta) => collectionMeta.collection === collection);
-	
 			result[collection] = {
 				collection,
-				primary: (info as any).primary,
+				primary,
 				singleton:
-					collectionMeta?.singleton === true || collectionMeta?.singleton === 'true' || collectionMeta?.singleton === 1,
-				note: collectionMeta?.note || null,
-				sortField: collectionMeta?.sort_field || null,
-				accountability: collectionMeta ? collectionMeta.accountability : 'all',
+					collectionMeta[collection]?.singleton === true,
+				note: collectionMeta[collection]?.note || null,
+				sortField: collectionMeta[collection]?.sort_field || null,
+				accountability: collectionMeta ? collectionMeta[collection]!.accountability : 'all',
 			};
 		}
 
@@ -123,7 +127,7 @@ export async function getSchema(options?: {
 	}
 
 	async function loadCollection(collection: string) {
-		const schemaOverview = await schemaInspector.overview();
+		const primary = await schemaInspector.primary(collection);
 
 		let collectionMeta: Record<string, any> | null = null;
 
@@ -134,15 +138,13 @@ export async function getSchema(options?: {
 				.select('collection', 'singleton', 'note', 'sort_field', 'accountability')
 				.from('directus_collections').where('collection', collection))[0]
 		}
-
-		const info = schemaOverview[collection] || {};
 	
 		if (toArray(env['DB_EXCLUDE_TABLES']).includes(collection)) {
 			logger.trace(`Collection "${collection}" is configured to be excluded and will be ignored`);
 			return null;
 		}
 
-		if (!(info as any).primary) {
+		if (!primary) {
 			logger.warn(`Collection "${collection}" doesn't have a primary key column and will be ignored`);
 			return null;
 		}
@@ -154,7 +156,7 @@ export async function getSchema(options?: {
 
 		return {
 			collection,
-			primary: (info as any).primary,
+			primary,
 			singleton:
 				collectionMeta?.['singleton'] === true || collectionMeta?.['singleton'] === 'true' || collectionMeta?.['singleton'] === 1,
 			note: collectionMeta?.['note'] || null,
@@ -164,13 +166,13 @@ export async function getSchema(options?: {
 	}
 
 	async function loadFields(collection: string) {
-		const schemaOverview = await schemaInspector.overview();
+		const columns = await schemaInspector.columnInfo(collection);
 
-		let fieldsInfo = Object.fromEntries(Object.values(schemaOverview[collection]!.columns).map((column) => {
+		let fieldsInfo = Object.fromEntries(columns.map((column) => {
 			return [
-				column.column_name,
+				column.name,
 				{
-					field: column.column_name,
+					field: column.name,
 					defaultValue: getDefaultValue(column) ?? null,
 					nullable: column.is_nullable ?? true,
 					generated: column.is_generated ?? false,
@@ -205,7 +207,7 @@ export async function getSchema(options?: {
 
 		return fields.reduce<Record<string, FieldOverview>>((acc, field) => {
 			const existing = fieldsInfo[field.field];
-			const column = schemaOverview[field.collection]!.columns[field.field];
+			const column = columns.find(column => column.name === field.field);
 			const special = field.special ? toArray(field.special) : [];
 	
 			const type = (existing && getLocalType(column, { special })) || 'alias';
@@ -236,19 +238,17 @@ export async function getSchema(options?: {
 	}
 
 	async function loadField(collection: string, fieldName: string) {
-		const schemaOverview = await schemaInspector.overview();
-
-		const info = schemaOverview[collection]!.columns[fieldName]!;
+		const column = await schemaInspector.columnInfo(collection, fieldName);
 
 		let fieldInfo = {
-			field: info.column_name,
-			defaultValue: getDefaultValue(info) ?? null,
-			nullable: info.is_nullable ?? true,
-			generated: info.is_generated ?? false,
-			type: getLocalType(info),
-			dbType: info.data_type,
-			precision: info.numeric_precision || null,
-			scale: info.numeric_scale || null,
+			field: column.name,
+			defaultValue: getDefaultValue(column) ?? null,
+			nullable: column.is_nullable ?? true,
+			generated: column.is_generated ?? false,
+			type: getLocalType(column),
+			dbType: column.data_type,
+			precision: column.numeric_precision || null,
+			scale: column.numeric_scale || null,
 			special: [],
 			note: null,
 			validation: null,
@@ -272,7 +272,6 @@ export async function getSchema(options?: {
 
 		if(field === null || (field.special ? toArray(field.special)  : []).includes('no-data') == false) return null;
 
-		const column = schemaOverview[field.collection]!.columns[field.field];
 		const special = field.special ? toArray(field.special) : [];
 
 		if (ALIAS_TYPES.some((type) => special.includes(type)) === false && !fieldInfo) return null;

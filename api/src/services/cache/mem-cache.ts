@@ -57,7 +57,7 @@ export class MemCache extends CacheService {
 
         localValue[field] = value;
 
-        this.set(key, localValue, ttl);
+        await this.set(key, localValue, ttl);
     }
     async getHashField(key: string, field: string): Promise<any> {
         const value = await this.get(key)
@@ -67,4 +67,13 @@ export class MemCache extends CacheService {
         return value[field]
     }
     
+    async deleteHashField(key: string, field: string): Promise<void> {
+        const localValue = cloneDeep(await this.get(key)) ?? {}
+
+        if(typeof localValue !== 'object') throw new Error('Cannot set hash field on non-object value');
+
+        delete localValue[field];
+
+        await this.set(key, localValue);
+    }
 }

@@ -258,11 +258,15 @@ export default class Oracle implements SchemaInspector {
 	/**
 	 * Get the primary key column for the given table
 	 */
-	async primary(table: string): Promise<string> {
+	primary(): Promise<Record<string, string>>;
+	primary(table: string): Promise<string | null>;
+	async primary(table?: string){
 		/**
 		 * NOTE: Keep in mind, this query is optimized for speed.
 		 */
-		const result = await this.knex
+
+		if(table) {
+			const result = await this.knex
 			.with(
 				'uc',
 				this.knex.select(this.knex.raw(`/*+ MATERIALIZE */ "CONSTRAINT_NAME"`)).from('USER_CONSTRAINTS').where({
@@ -281,7 +285,34 @@ export default class Oracle implements SchemaInspector {
 			)
 			.first();
 
-		return result?.COLUMN_NAME ?? null;
+			return result?.COLUMN_NAME ?? null;
+		}
+
+		const result = await this.knex.with(
+				'uc',
+				this.knex.select(this.knex.raw(`/*+ MATERIALIZE */ "CONSTRAINT_NAME", "TABLE_NAME"`))
+				.from('USER_CONSTRAINTS')
+				.where({
+					CONSTRAINT_TYPE: 'P',
+				})
+			)
+			.select(
+				this.knex.raw(`
+				/*+ OPTIMIZER_FEATURES_ENABLE('${OPTIMIZER_FEATURES}') */
+					"ucc"."COLUMN_NAME" as "column",
+					"uc"."TABLE_NAME" as "table"
+				FROM "USER_CONS_COLUMNS" "ucc"
+				INNER JOIN "uc" "pk"
+					ON "ucc"."CONSTRAINT_NAME" = "pk"."CONSTRAINT_NAME"
+				`)
+			)
+			
+		return result.reduce<Record<string, string>>((obj, row) => {
+			if(row?.table) {
+				obj[row?.table] = row?.column;
+			}
+			return obj
+		}, {});
 	}
 
 	// Foreign Keys

@@ -203,75 +203,93 @@ export default class SQLite implements SchemaInspector {
 	/**
 	 * Get the primary key column for the given table
 	 */
-	async primary(table: string) {
-		const columns = await this.knex.raw<RawColumn[]>(`PRAGMA table_xinfo(??)`, table);
-		const pkColumn = columns.find((col) => col.pk !== 0);
-		return pkColumn?.name || null;
+	primary(): Promise<Record<string, string>>;
+	primary(table: string): Promise<string | null>;
+	async primary(table?: string) {
+		if (table) {
+			const columns = await this.knex.raw<RawColumn[]>(`PRAGMA table_xinfo(??)`, table);
+			const pkColumn = columns.find((col) => col.pk !== 0);
+			return pkColumn?.name || null;
+		}
+
+		const tables = await this.tables();
+
+		const result: Record<string, string> = {}
+
+		for (const table of tables) {
+			const columns = await this.knex.raw<RawColumn[]>(`PRAGMA table_xinfo(??)`, table);
+
+			if (table in result === false) {
+				const primaryKeys = columns.filter((column) => column.pk !== 0);
+				result[table] = primaryKeys.length !== 1 ? (undefined as any) : primaryKeys[0]!.name!
+			}
+		}
+		return result;
 	}
 
 	// Foreign Keys
 	// ===============================================================================================
 
-	async foreignKeys(table?: string): Promise<ForeignKey[]> {
-		if (table) {
-			const keys = await this.knex.raw(`PRAGMA foreign_key_list(??)`, table);
+	async foreignKeys(table ?: string): Promise < ForeignKey[] > {
+			if(table) {
+				const keys = await this.knex.raw(`PRAGMA foreign_key_list(??)`, table);
 
-			return keys.map(
-				(key: RawForeignKey): ForeignKey => ({
-					table,
-					column: key.from,
-					foreign_key_table: key.table,
-					foreign_key_column: key.to,
-					on_update: key.on_update,
-					on_delete: key.on_delete,
-					constraint_name: null,
-				})
-			);
-		}
+				return keys.map(
+					(key: RawForeignKey): ForeignKey => ({
+						table,
+						column: key.from,
+						foreign_key_table: key.table,
+						foreign_key_column: key.to,
+						on_update: key.on_update,
+						on_delete: key.on_delete,
+						constraint_name: null,
+					})
+				);
+			}
 
 		const tables = await this.tables();
 
-		const keysPerTable = await Promise.all(tables.map(async (table) => await this.foreignKeys(table)));
+			const keysPerTable = await Promise.all(tables.map(async (table) => await this.foreignKeys(table)));
 
-		return flatten(keysPerTable);
-	}
-
-	async overview(): Promise<SchemaOverview> {
-		const tablesWithAutoIncrementPrimaryKeys = (
-			await this.knex.select('name').from('sqlite_master').whereRaw(`sql LIKE "%AUTOINCREMENT%"`)
-		).map(({ name }) => name);
-
-		const tables = await this.tables();
-		const overview: SchemaOverview = {};
-
-		for (const table of tables) {
-			const columns = await this.knex.raw<RawColumn[]>(`PRAGMA table_xinfo(??)`, table);
-
-			if (table in overview === false) {
-				const primaryKeys = columns.filter((column) => column.pk !== 0);
-				overview[table] = {
-					primary: primaryKeys.length !== 1 ? (undefined as any) : primaryKeys[0]!.name!,
-					columns: {},
-				};
-			}
-
-			for (const column of columns) {
-				overview[table]!.columns[column.name] = {
-					table_name: table,
-					column_name: column.name,
-					default_value:
-						column.pk === 1 && tablesWithAutoIncrementPrimaryKeys.includes(table)
-							? 'AUTO_INCREMENT'
-							: parseDefaultValue(column.dflt_value),
-					is_nullable: column.notnull == 0,
-					is_generated: column.hidden !== 0,
-					data_type: extractType(column.type),
-					max_length: extractMaxLength(column.type),
-					numeric_precision: null,
-					numeric_scale: null,
-				};
-			}
+			return flatten(keysPerTable);
 		}
+
+	async overview(): Promise < SchemaOverview > {
+			const tablesWithAutoIncrementPrimaryKeys = (
+				await this.knex.select('name').from('sqlite_master').whereRaw(`sql LIKE "%AUTOINCREMENT%"`)
+			).map(({ name }) => name);
+
+			const tables = await this.tables();
+			const overview: SchemaOverview = {};
+
+			for(const table of tables) {
+				const columns = await this.knex.raw<RawColumn[]>(`PRAGMA table_xinfo(??)`, table);
+
+				if (table in overview === false) {
+					const primaryKeys = columns.filter((column) => column.pk !== 0);
+					overview[table] = {
+						primary: primaryKeys.length !== 1 ? (undefined as any) : primaryKeys[0]!.name!,
+						columns: {},
+					};
+				}
+
+				for (const column of columns) {
+					overview[table]!.columns[column.name] = {
+						table_name: table,
+						column_name: column.name,
+						default_value:
+							column.pk === 1 && tablesWithAutoIncrementPrimaryKeys.includes(table)
+								? 'AUTO_INCREMENT'
+								: parseDefaultValue(column.dflt_value),
+						is_nullable: column.notnull == 0,
+						is_generated: column.hidden !== 0,
+						data_type: extractType(column.type),
+						max_length: extractMaxLength(column.type),
+						numeric_precision: null,
+						numeric_scale: null,
+					};
+				}
+			}
 		return overview;
+		}
 	}
-}

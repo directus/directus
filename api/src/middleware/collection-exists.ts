@@ -10,7 +10,9 @@ import asyncHandler from '../utils/async-handler.js';
 const collectionExists: RequestHandler = asyncHandler(async (req, _res, next) => {
 	if (!req.params['collection']) return next();
 
-	if (req.params['collection'] in req.schema.collections === false) {
+	const info = await req.schema.getCollection(req.params['collection'])
+
+	if (!info) {
 		throw new ForbiddenException();
 	}
 
@@ -23,7 +25,7 @@ const collectionExists: RequestHandler = asyncHandler(async (req, _res, next) =>
 
 		req.singleton = !!systemRow?.singleton;
 	} else {
-		req.singleton = req.schema.collections[req.collection]!.singleton;
+		req.singleton = info.singleton;
 	}
 
 	return next();

@@ -84,7 +84,9 @@ export async function applySnapshot(
 		const deleteCollections = async (collections: CollectionDelta[]) => {
 			for (const { collection, diff } of collections) {
 				if (diff?.[0]!.kind === 'D') {
-					const relations = schema.relations.filter(
+					const relationsInfo = Object.values(schema.getRelationsForCollection(collection));
+
+					const relations = relationsInfo.filter(
 						(r) => r.related_collection === collection || r.collection === collection
 					);
 
@@ -103,9 +105,7 @@ export async function applySnapshot(
 						}
 
 						// clean up deleted relations from existing schema
-						schema.relations = schema.relations.filter(
-							(r) => r.related_collection !== collection && r.collection !== collection
-						);
+						await systemCache.delete(`relations:${collection}`);
 					}
 
 					await deleteCollections(getNestedCollectionsToDelete(collection));

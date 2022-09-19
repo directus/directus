@@ -1,5 +1,5 @@
 import type { BaseException } from '@directus/shared/exceptions';
-import { Accountability, Action, Aggregate, Filter, Query, SchemaOverview } from '@directus/shared/types';
+import { Accountability, Action, Aggregate, CollectionOverview, Filter, Query, SchemaOverview } from '@directus/shared/types';
 import argon2 from 'argon2';
 import {
 	ArgumentNode,
@@ -200,7 +200,7 @@ export class GraphQLService {
 
 		const { CreateCollectionTypes, UpdateCollectionTypes, DeleteCollectionTypes } = getWritableTypes();
 
-		const scopeFilter = (collection: SchemaOverview['collections'][string]) => {
+		const scopeFilter = (collection: CollectionOverview) => {
 			if (this.scope === 'items' && collection.collection.startsWith('directus_') === true) return false;
 			if (this.scope === 'system') {
 				if (collection.collection.startsWith('directus_') === false) return false;

@@ -25,6 +25,7 @@ export abstract class CacheService {
     abstract getHash(key: string): Promise<Record<string, any>>;
     abstract setHashField(key: string, field: string, value: any, ttl?: number): Promise<void>;
     abstract getHashField(key: string, field: string): Promise<any>;
+    abstract deleteHashField(key: string, field: string): Promise<void>;
 
     addPrefix(key: string) {
         return this.namespace ? `${this.namespace}:${key}` : key;

@@ -69,5 +69,9 @@ export class RedisCache extends CacheService {
     async getHashField(key: string, field: string): Promise<any> {
         return await this.client.hGet(this.addPrefix(key), field)
     }
+
+    async deleteHashField(key: string, field: string): Promise<void> {
+        await this.client.hDel(this.addPrefix(key), field)
+    }
     
 }

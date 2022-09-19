@@ -1,4 +1,4 @@
-import type { CollectionsOverview, Relation } from '@directus/shared/types';
+import type { CollectionOverview, Relation } from '@directus/shared/types';
 
 export const systemSchema = {
 	collections: {
@@ -106,7 +106,7 @@ export const systemSchema = {
 				},
 			},
 		},
-	} as CollectionsOverview,
+	} as Record<string, CollectionOverview>,
 	relations: [
 		{
 			collection: 'directus_files',
@@ -243,7 +243,7 @@ export const userSchema = {
 				},
 			},
 		},
-	} as CollectionsOverview,
+	} as Record<string, CollectionOverview>,
 	relations: [
 		{
 			collection: 'posts',
@@ -300,6 +300,6 @@ export const snapshotApplyTestSchema = {
 				},
 			},
 		},
-	} as CollectionsOverview,
+	} as Record<string, CollectionOverview>,
 	relations: [] as Relation[],
 };
