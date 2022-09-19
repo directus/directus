@@ -182,6 +182,21 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 		}
 	}
 
+	function emptyRelations() {
+		return unref(panels)
+			.filter(({ type }) => type === 'relational-variable')
+			.filter(({ options }) => get(unref(variables), options.field) == undefined)
+			.map(({ options }) => options.field);
+	}
+	function hasEmptyRelation(panel: Pick<Panel, 'options' | 'type'>) {
+		const stringOptions = JSON.stringify(panel.options);
+		for (const relationVar of emptyRelations()) {
+			const fieldRegex = new RegExp(`{{\\s*?${escapeStringRegexp(relationVar)}\\s*?}}`);
+			if (fieldRegex.test(stringOptions)) return true;
+		}
+		return false;
+	}
+
 	async function loadPanelData(
 		panels: Pick<Panel, 'id' | 'options' | 'type'> | Pick<Panel, 'id' | 'options' | 'type'>[]
 	) {
@@ -193,6 +208,11 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 			const req = prepareQuery(panel);
 
 			if (!req) continue;
+
+			if (hasEmptyRelation(panel)) {
+				data.value[panel.id] = {};
+				continue;
+			}
 
 			toArray(req).forEach(({ collection, query }, index) => {
 				const key = getSimpleHash(panel.id + collection + JSON.stringify(query));
@@ -353,6 +373,11 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 				applyOptionsData(panelEdits.options ?? {}, unref(variables), panelType.skipUndefinedKeys)
 			);
 			if (JSON.stringify(oldQuery) !== JSON.stringify(newQuery)) loadPanelData(panel);
+
+			// Clear relational variable cache if collection was changed
+			if (panel.type === 'relational-variable' && panelEdits.options?.collection && panel.options?.field) {
+				variables.value[panel.options.field] = undefined;
+			}
 		}
 	}
 
