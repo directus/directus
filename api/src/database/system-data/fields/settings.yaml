@@ -131,7 +131,8 @@ fields:
 
   - field: module_bar
     interface: system-modules
-    special: cast-json
+    special:
+      - cast-json
 
   - field: security_divider
     interface: presentation-divider
@@ -307,7 +308,8 @@ fields:
                 ]
             width: full
       template: '{{key}}'
-    special: cast-json
+    special:
+      - cast-json
     width: full
 
   - field: map_divider
@@ -332,7 +334,8 @@ fields:
 
   - field: basemaps
     interface: list
-    special: cast-json
+    special:
+      - cast-json
     options:
       template: '{{name}}'
       fields:
@@ -390,7 +393,8 @@ fields:
               placeholder: $t:fields.directus_settings.attribution_placeholder
 
   - field: translation_strings
-    special: cast-json
+    special:
+      - cast-json
     hidden: true
 
   - field: image_editor
@@ -405,7 +409,8 @@ fields:
 
   - field: custom_aspect_ratios
     interface: list
-    special: cast-json
+    special:
+      - cast-json
     options:
       template: '{{text}}'
       fields:
