@@ -313,6 +313,7 @@ foreign_key: Yabancı Anahtar
 finish_setup: Kurulumu Bitir
 dismiss: Yoksay
 toggle_raw_editor: Ham Düzenleyiciyi Aç/Kapat
+raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
 raw_value: İşlenmemiş veri
 copy_raw_value: İşlenmemiş Veriyi Kopyala
 copy_raw_value_success: Kopyalandı
@@ -345,6 +346,7 @@ revision_delta_reverted: Geri Alındı
 revision_delta_update_message: Bu alan güncellenmiştir ancak değeri güvenlik nedeniyle gizlenmektedir.
 revision_delta_other: Revizyon
 revision_delta_by: '{user} tarafından {date} tarihinde'
+presentation_text_values_cannot_be_reimported: "Sunum metnini kullanır, değerler yeniden içe aktarılamaz."
 download_page_as_csv: 'Sayfayı CSV olarak indir'
 private_user: Gizli Kullanıcı
 creation_preview: Oluşturma Önizlemesi
@@ -470,6 +472,7 @@ created_on: Oluşturulma Tarihi
 creating_collection_info: Koleksiyonu adlandır ve benzersiz "anahtar" alanını ayarla...
 creating_collection_system: Opsiyonel alanları etkinleştir ve yeniden adlandır.
 auto_increment_integer: Otomatik artan tamsayı
+auto_increment_big_integer: Otomatik artışlı büyük tamsayı
 generated_uuid: Otomatik üretilen UUID
 manual_string: Manuel olarak girilmiş metin
 save_and_create_new: Kaydet ve Yeni Oluştur
@@ -613,6 +616,10 @@ bookmark_name: Yer işareti adı...
 create_bookmark: Yer İşareti Oluştur
 edit_bookmark: Yer İşaretini Düzenle
 edit_personal_bookmark: Kişisel Yer İşaretini Düzenle
+edit_role_bookmark: Rol Yer İmini Düzenle
+edit_global_bookmark: Genel Yer İmini Düzenle
+cannot_edit_role_bookmarks: Rol Yer İmleri Düzenlenemiyor
+cannot_edit_global_bookmarks: Genel Yer İmleri Düzenlenemiyor
 bookmarks: Yer İmleri
 presets: Ön Ayarlar
 unexpected_error: Beklenmeyen Hata
@@ -770,12 +777,14 @@ label: Etiket
 flows: Akışlar
 flow: Akış
 select_a_flow: Bir Akış Seç
+run_flow_on_current: Geçerli Öğede akışı çalıştır
 trigger: Tetikleme
 trigger_options: Tetikleyici Seçenekleri
 view_trigger: Tetikleyiciyi Görüntüle
 create_trigger: Tetikleyici Oluşturun
 trigger_setup: Tetikleyici Ayarı
 change_trigger: Tetikleyici Değiştirin
+flow_delete_confirm: '"{flow}" Akışını silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.'
 set_flow_active: Akışı Etkin Olarak Ayarla
 set_flow_inactive: Akışı Etkin Değil Olarak Ayarla
 edit_flow: Akışı Düzenle
@@ -1162,6 +1171,7 @@ fields:
     ip_access: IP Erişimi
     enforce_tfa: 2FA Gerekli
     users: Rol'deki Kullanıcılar
+    module_list: Modül Navigasyonu
   directus_webhooks:
     name: İsim
     method: Metod
