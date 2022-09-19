@@ -168,8 +168,8 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 			...edits.value,
 		};
 
-		// Make sure to delete the primary key
-		if (primaryKeyField.value && primaryKeyField.value.field in newItem) {
+		// Make sure to delete the primary key if it's generated
+		if (primaryKeyField.value && primaryKeyField.value.schema?.is_generated && primaryKeyField.value.field in newItem) {
 			delete newItem[primaryKeyField.value.field];
 		}
 
