@@ -1028,32 +1028,8 @@ export class GraphQLService {
 				if (relation.related_collection) {
 					if (SYSTEM_DENY_LIST.includes(relation.related_collection)) continue;
 
-					// is this an O2M type?
+					// is this an O2M type relationship?
 					if (relation.meta?.one_field) {
-						ReadableCollectionFilterTypes[relation.related_collection]?.addFields({
-							[relation.meta.one_field]: ReadableCollectionFilterTypes[relation.collection],
-							//_none: [ReadableCollectionFilterTypes[relation.collection]],
-							//_some: [ReadableCollectionFilterTypes[relation.collection]],
-						});
-
-						ReadCollectionTypes[relation.related_collection]?.addFieldArgs(relation.meta.one_field, {
-							filter: ReadableCollectionFilterTypes[relation.collection],
-							sort: {
-								type: new GraphQLList(GraphQLString),
-							},
-							limit: {
-								type: GraphQLInt,
-							},
-							offset: {
-								type: GraphQLInt,
-							},
-							page: {
-								type: GraphQLInt,
-							},
-							search: {
-								type: GraphQLString,
-							},
-						});
 						ReadableCollectionFilterTypes[relation.collection]?.addFields({
 							[relation.field]: ReadableCollectionFilterTypes[relation.related_collection],
 							_none: [ReadableCollectionFilterTypes[relation.collection]],
@@ -1083,6 +1059,32 @@ export class GraphQLService {
 							type: GraphQLString,
 						},
 					});
+
+					// is this an O2M type relationship?
+					if (relation.meta?.one_field) {
+						ReadableCollectionFilterTypes[relation.related_collection]?.addFields({
+							[relation.meta.one_field]: ReadableCollectionFilterTypes[relation.collection],
+						});
+
+						ReadCollectionTypes[relation.related_collection]?.addFieldArgs(relation.meta.one_field, {
+							filter: ReadableCollectionFilterTypes[relation.collection],
+							sort: {
+								type: new GraphQLList(GraphQLString),
+							},
+							limit: {
+								type: GraphQLInt,
+							},
+							offset: {
+								type: GraphQLInt,
+							},
+							page: {
+								type: GraphQLInt,
+							},
+							search: {
+								type: GraphQLString,
+							},
+						});
+					}
 				} else if (relation.meta?.one_allowed_collections) {
 					/**
 					 * @TODO
