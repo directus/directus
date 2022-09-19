@@ -1030,38 +1030,10 @@ export class GraphQLService {
 
 					// is this an O2M type?
 					if (relation.meta?.one_field) {
-						ReadableCollectionFilterTypes[relation.collection]?.addFields({
-							[relation.field]: ReadableCollectionFilterTypes[relation.related_collection],
-							_none: [ReadableCollectionFilterTypes[relation.collection]],
-							_some: [ReadableCollectionFilterTypes[relation.collection]],
-						});
-					} else {
-						ReadableCollectionFilterTypes[relation.collection]?.addFields({
-							[relation.field]: ReadableCollectionFilterTypes[relation.related_collection],
-						});
-					}
-					ReadCollectionTypes[relation.collection]?.addFieldArgs(relation.field, {
-						filter: ReadableCollectionFilterTypes[relation.related_collection],
-						sort: {
-							type: new GraphQLList(GraphQLString),
-						},
-						limit: {
-							type: GraphQLInt,
-						},
-						offset: {
-							type: GraphQLInt,
-						},
-						page: {
-							type: GraphQLInt,
-						},
-						search: {
-							type: GraphQLString,
-						},
-					});
-
-					if (relation.meta?.one_field) {
 						ReadableCollectionFilterTypes[relation.related_collection]?.addFields({
 							[relation.meta.one_field]: ReadableCollectionFilterTypes[relation.collection],
+							//_none: [ReadableCollectionFilterTypes[relation.collection]],
+							//_some: [ReadableCollectionFilterTypes[relation.collection]],
 						});
 
 						ReadCollectionTypes[relation.related_collection]?.addFieldArgs(relation.meta.one_field, {
@@ -1082,7 +1054,35 @@ export class GraphQLService {
 								type: GraphQLString,
 							},
 						});
+						ReadableCollectionFilterTypes[relation.collection]?.addFields({
+							[relation.field]: ReadableCollectionFilterTypes[relation.related_collection],
+							_none: [ReadableCollectionFilterTypes[relation.collection]],
+							_some: [ReadableCollectionFilterTypes[relation.collection]],
+						});
+					} else {
+						ReadableCollectionFilterTypes[relation.collection]?.addFields({
+							[relation.field]: ReadableCollectionFilterTypes[relation.related_collection],
+						});
 					}
+
+					ReadCollectionTypes[relation.collection]?.addFieldArgs(relation.field, {
+						filter: ReadableCollectionFilterTypes[relation.related_collection],
+						sort: {
+							type: new GraphQLList(GraphQLString),
+						},
+						limit: {
+							type: GraphQLInt,
+						},
+						offset: {
+							type: GraphQLInt,
+						},
+						page: {
+							type: GraphQLInt,
+						},
+						search: {
+							type: GraphQLString,
+						},
+					});
 				} else if (relation.meta?.one_allowed_collections) {
 					/**
 					 * @TODO
