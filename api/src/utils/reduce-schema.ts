@@ -78,6 +78,27 @@ export function reduceSchema(
 		return result;
 	}
 
+	async function hasCollection(collection: string) {
+		const result = await schema.hasCollection(collection)
+
+		const collectionInfo = await getCollection(collection)
+
+		if (collectionInfo === null || !showCollection(collectionInfo)) return false;
+
+		return result;
+	}
+
+	async function hasField(collection: string, field: string) {
+		const result = await schema.hasField(collection, field)
+
+		const fieldInfo = await getField(collection, field)
+		const relations = await getRelations()
+
+		if (fieldInfo === null || !showField(collection, fieldInfo, relations)) return false;
+
+		return result;
+	}
+
 	const allowedFieldsInCollection = permissions
 		?.filter((permission) => actions.includes(permission.action))
 		.reduce((acc, permission) => {
@@ -178,5 +199,7 @@ export function reduceSchema(
 		getRelationsForCollection,
 		getRelationsForField,
 		getPrimaryKeyField,
+		hasCollection,
+		hasField
 	}
 }

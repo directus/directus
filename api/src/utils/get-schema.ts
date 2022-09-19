@@ -24,59 +24,52 @@ export async function getSchema(options?: {
 
 	let result: SchemaOverview;
 
-	if (env['CACHE_SCHEMA'] !== false) {
-		return {
-			getCollections: () => systemCache.autoCacheHash('collections', loadCollections),
-			getCollection: (collection: string) => systemCache.autoCacheHashField('collections', collection, async () => await loadCollection(collection)),
-			getFields: (collection: string) => systemCache.autoCacheHash(`fields:${collection}`, async () => await loadFields(collection)),
-			getField: (collection: string, field: string) => systemCache.autoCacheHashField(`fields:${collection}`, field, async () => await loadField(collection, field)),
-			getRelationsForCollection: (collection: string) => systemCache.autoCacheHash(`relations:${collection}`, async () => await loadRelationsForCollection(collection)),
-			getRelationsForField: (collection: string, field: string) => systemCache.autoCacheHashField(`relations:${collection}`, field, async () => await loadRelationsForField(collection, field)),
-			getPrimaryKeyField: async (collection: string) => {
-				const collectionInfo = await systemCache.autoCacheHashField(`collections`, collection, async () => loadCollection(collection));
-				return await systemCache.autoCacheHashField(`fields:${collection}`, collectionInfo!.primary, async () => loadField(collection, collectionInfo!.primary));
-			},
-			getRelations: async () => {
-				const collections = await systemCache.autoCacheHash('collections', loadCollections);
+	return {
+		getCollections: () => useAutoCacheHash('collections', loadCollections),
+		getCollection: (collection: string) => useAutoCacheHashField('collections', collection, async () => await loadCollection(collection)),
+		getFields: (collection: string) => useAutoCacheHash(`fields:${collection}`, async () => await loadFields(collection)),
+		getField: (collection: string, field: string) => useAutoCacheHashField(`fields:${collection}`, field, async () => await loadField(collection, field)),
+		getRelationsForCollection: (collection: string) => useAutoCacheHash(`relations:${collection}`, async () => await loadRelationsForCollection(collection)),
+		getRelationsForField: (collection: string, field: string) => useAutoCacheHashField(`relations:${collection}`, field, async () => await loadRelationsForField(collection, field)),
+		getPrimaryKeyField: async (collection: string) => {
+			const collectionInfo = await useAutoCacheHashField(`collections`, collection, async () => loadCollection(collection));
+			return await useAutoCacheHashField(`fields:${collection}`, collectionInfo!.primary, async () => loadField(collection, collectionInfo!.primary));
+		},
+		getRelations: async () => {
+			const collections = await useAutoCacheHash('collections', loadCollections);
 
-				const result: Relation[] = []
+			const result: Relation[] = []
 
-				for(const collection of Object.keys(collections)) {
-					const relations = await systemCache.autoCacheHash(`relations:${collection}`, async () => await loadRelationsForCollection(collection));
-					result.push(...Object.values(relations))
-				}
-
-				return result
+			for(const collection of Object.keys(collections)) {
+				const relations = await useAutoCacheHash(`relations:${collection}`, async () => await loadRelationsForCollection(collection));
+				result.push(...Object.values(relations))
 			}
-		};
-	} else {
-		return {
-			getCollections: loadCollections,
-			getCollection: loadCollection,
-			getFields: loadFields,
-			getField: loadField,
-			getRelationsForCollection: loadRelationsForCollection,
-			getRelationsForField: loadRelationsForField,
-			getPrimaryKeyField: async (collection: string) => {
-				const collectionInfo = await loadCollection(collection);
-				return await loadField(collection, collectionInfo!.primary);
-			},
-			getRelations: async () => {
-				const collections = await loadCollections();
 
-				const result: Relation[] = []
+			return result
+		},
+		hasCollection: async (collection: string) => {
+			return await useAutoCacheHashField('hasCollection', collection, async () => await loadHasCollection(collection));
+		},
+		hasField: async (collection: string, field: string) => {
+			return await useAutoCacheHashField(`hasField:${collection}`, field, async () => await loadHasField(collection, field));
+		}
+	};
 
-				for(const collection of Object.keys(collections)) {
-					const relations = await loadRelationsForCollection(collection);
-					result.push(...Object.values(relations))
-				}
-
-				return result
-			}
-		};
+	async function useAutoCacheHash<T>(key: string, fn: () => Promise<Record<string, T>>): Promise<Record<string,T>> {
+		if(env['CACHE_SCHEMA'] !== false) {
+			return await systemCache.autoCacheHash(key, fn);
+		} else {
+			return await fn()
+		}
 	}
 
-	
+	async function useAutoCacheHashField<T>(key: string, field: string, fn: () => Promise<T>): Promise<T> {
+		if(env['CACHE_SCHEMA'] !== false) {
+			return await systemCache.autoCacheHashField(key, field, fn);
+		} else {
+			return await fn()
+		}
+	}
 
 	async function loadCollections() {
 		const schemaOverview = await schemaInspector.tableInfo()
@@ -163,6 +156,14 @@ export async function getSchema(options?: {
 			sortField: collectionMeta?.['sort_field'] || null,
 			accountability: collectionMeta ? collectionMeta['accountability'] : 'all',
 		};
+	}
+
+	async function loadHasCollection(collection: string) {
+		return await schemaInspector.hasTable(collection);
+	}
+
+	async function loadHasField(collection: string, field: string) {
+		return await schemaInspector.hasColumn(collection, field);
 	}
 
 	async function loadFields(collection: string) {
