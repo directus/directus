@@ -9,9 +9,10 @@ describe('drive', function () {
 				remote: {
 					driver: 'supabase',
 					config: {
-						supabaseUrl: 'url',
-						supabaseKey: 'key',
+						url: 'url',
+						key: 'key',
 						bucket: 'bucket',
+						root: '',
 					} as SupabaseStorageConfig,
 				},
 			},
