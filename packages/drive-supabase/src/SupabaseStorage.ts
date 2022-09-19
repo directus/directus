@@ -36,7 +36,6 @@ function handleError(err: Error, path: string, bucket: string): Error {
 }
 
 export class SupabaseStorage extends Storage {
-	protected $baseUrl: string;
 	protected $client: SupabaseClient;
 	protected $bucket: string;
 	protected $root: string;
@@ -44,7 +43,6 @@ export class SupabaseStorage extends Storage {
 	constructor(config: SupabaseStorageConfig) {
 		super();
 
-		this.$baseUrl = config.url.replace(/\/$/, '') + `/storage/v1/object/public/${config.bucket}/`;
 		this.$client = createClient(config.url, config.key, config.options);
 		this.$bucket = config.bucket;
 		this.$root = config.root ? normalize(config.root).replace(/^\//, '') : '';
