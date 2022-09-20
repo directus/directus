@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia';
-import { getDisplays } from '@/displays';
 import { has, isEmpty, orderBy, cloneDeep } from 'lodash';
 import {
 	InterfaceConfig,
@@ -247,7 +246,7 @@ export const useFieldDetailStore = defineStore({
 			);
 		},
 		displaysForType(): DisplayConfig[] {
-			const { displays } = getDisplays();
+			const { displays } = useExtensions();
 
 			return orderBy(
 				displays.value.filter((inter: DisplayConfig) => {
