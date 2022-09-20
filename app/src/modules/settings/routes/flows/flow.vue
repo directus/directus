@@ -201,7 +201,7 @@ import { Vector2 } from '@/utils/vector2';
 import FlowDrawer from './flow-drawer.vue';
 
 import LogsSidebarDetail from './components/logs-sidebar-detail.vue';
-import { getOperations } from '@/operations';
+import { useExtensions } from '@/extensions';
 
 // Maps the x and y coordinates of attachments of panels to their id
 export type Attachments = Record<number, Record<number, string>>;
@@ -263,7 +263,7 @@ async function deleteFlow() {
 
 // ------------- Manage Panels ------------- //
 
-const { operations } = getOperations();
+const { operations } = useExtensions();
 
 const triggerDetailOpen = ref(false);
 const stagedPanels = ref<Partial<OperationRaw & { borderRadius: [boolean, boolean, boolean, boolean] }>[]>([]);

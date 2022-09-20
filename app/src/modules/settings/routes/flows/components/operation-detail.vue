@@ -68,13 +68,14 @@
 <script setup lang="ts">
 import { useDialogRoute } from '@/composables/use-dialog-route';
 import ExtensionOptions from '@/modules/settings/routes/data-model/field-detail/shared/extension-options.vue';
-import { getOperation, getOperations } from '@/operations';
+import { getOperation } from '@/operations';
 import { translate } from '@/utils/translate-object-values';
 import { FlowRaw } from '@directus/shared/types';
 import slugify from '@sindresorhus/slugify';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { customAlphabet } from 'nanoid';
+import { useExtensions } from '@/extensions';
 
 const generateSuffix = customAlphabet('abcdefghijklmnopqrstuvwxyz1234567890', 5);
 
@@ -159,7 +160,7 @@ const generatedKey = computed(() =>
 		: t('operation_key')
 );
 
-const { operations } = getOperations();
+const { operations } = useExtensions();
 
 const displayOperations = computed(() => {
 	return operations.value.map((operation) => ({

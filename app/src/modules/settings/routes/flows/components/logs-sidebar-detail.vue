@@ -79,7 +79,7 @@
 
 <script lang="ts" setup>
 import { useRevisions } from '@/composables/use-revisions';
-import { getOperations } from '@/operations';
+import { useExtensions } from '@/extensions';
 import { Action, FlowRaw } from '@directus/shared/types';
 import { computed, ref, toRefs, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -96,7 +96,7 @@ const props = defineProps<Props>();
 const { flow } = toRefs(props);
 
 const { triggers } = getTriggers();
-const { operations } = getOperations();
+const { operations } = useExtensions();
 
 const usedTrigger = computed(() => {
 	return triggers.find((trigger) => trigger.id === unref(flow).trigger);
