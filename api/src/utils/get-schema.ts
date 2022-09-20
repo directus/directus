@@ -267,8 +267,15 @@ export async function getSchema(options?: {
 	}
 
 	async function loadRelationsForCollection(collection: string) {
-		const relationsService = new RelationsService({ knex: database, schema: result });
-		const relations = await relationsService.readAll(collection);
+		let metaRows = [
+			...await database
+				.select('id','many_collection','many_field','one_collection','one_field','one_collection_field','one_allowed_collections','junction_field','sort_field','one_deselect_action')
+				.from('directus_relations').where('many_collection', collection),
+			...systemRelationRows.filter((fieldMeta) => fieldMeta.many_collection === collection)
+		]
+
+		const schemaRows = await schemaInspector.foreignKeys(collection);
+		const relations = stitchRelations(metaRows, schemaRows);
 
 		return relations.reduce<Record<string, Relation>>((acc, relation) => {
 			acc[relation.field] = relation;
@@ -277,7 +284,16 @@ export async function getSchema(options?: {
 	}
 
 	async function loadRelationsForField(collection: string, field: string) {
-		const relationsService = new RelationsService({ knex: database, schema: result });
-		return await relationsService.readOne(collection, field);
+		let metaRows = [
+			...await database
+				.select('id','many_collection','many_field','one_collection','one_field','one_collection_field','one_allowed_collections','junction_field','sort_field','one_deselect_action')
+				.from('directus_relations').where('many_collection', collection).andWhere('many_field', field),
+			...systemRelationRows.filter((fieldMeta) => fieldMeta.many_collection === collection && fieldMeta.many_field === field)
+		]
+
+		const schemaRows = (await schemaInspector.foreignKeys(collection)).filter((row) => row.column === field && row.table === collection);
+		const relations = stitchRelations(metaRows, schemaRows);
+
+		return relations[0] ?? null;
 	}
 }
