@@ -95,8 +95,8 @@
 
 <script lang="ts" setup>
 import { useDialogRoute } from '@/composables/use-dialog-route';
+import { useExtension } from '@/composables/use-extension';
 import { useExtensions } from '@/extensions';
-import { getPanel } from '@/panels';
 import { useInsightsStore } from '@/stores/insights';
 import { CreatePanel } from '@/stores/insights';
 import { Panel } from '@directus/shared/types';
@@ -159,9 +159,10 @@ const selectItems = computed<FancySelectItem[]>(() => {
 	});
 });
 
-const currentTypeInfo = computed(() => {
-	return unref(panel).type ? getPanel(unref(panel).type) : null;
-});
+const currentTypeInfo = useExtension(
+	'panel',
+	computed(() => panel.value.type ?? null)
+);
 
 const customOptionsFields = computed(() => {
 	if (typeof currentTypeInfo.value?.options === 'function') {
