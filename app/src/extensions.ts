@@ -1,12 +1,12 @@
 import { AppExtensionConfigs } from '@directus/shared/types';
 import { App, shallowRef, UnwrapRef, watch } from 'vue';
-import { getInternalDisplays, registerDisplays } from './displays/register';
-import { getInternalInterfaces, registerInterfaces } from './interfaces/register';
+import { getInternalDisplays, registerDisplays } from './displays';
+import { getInternalInterfaces, registerInterfaces } from './interfaces';
 import { i18n } from './lang';
-import { getInternalLayouts, registerLayouts } from './layouts/register';
-import { getInternalModules, registerModules } from './modules/register';
-import { getInternalOperations, registerOperations } from './operations/register';
-import { getInternalPanels, registerPanels } from './panels/register';
+import { getInternalLayouts, registerLayouts } from './layouts';
+import { getInternalModules, registerModules } from './modules';
+import { getInternalOperations, registerOperations } from './operations';
+import { getInternalPanels, registerPanels } from './panels';
 import { getRootPath } from './utils/get-root-path';
 import { translate } from './utils/translate-object-values';
 
