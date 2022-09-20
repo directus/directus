@@ -73,6 +73,6 @@ export function registerExtensions(app: App): void {
 	);
 }
 
-export function useExtensions() {
+export function useExtensions(): AppExtensionConfigs {
 	return extensions;
 }
