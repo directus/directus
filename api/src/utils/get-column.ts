@@ -31,7 +31,7 @@ export async function getColumn(
 		const columnName = column.match(REGEX_BETWEEN_PARENS)![1]!;
 
 		if (functionName in fn) {
-			const type = await (schema.getField(table, columnName))?.type ?? 'unknown';
+			const type = (await schema.getField(table, columnName))?.type ?? 'unknown';
 			const allowedFunctions = getFunctionsForType(type);
 
 			if (allowedFunctions.includes(functionName) === false) {

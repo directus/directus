@@ -19,22 +19,23 @@ import { getColumnPath } from './get-column-path.js';
 import { getRelationInfo } from './get-relation-info.js';
 import { getFilterOperatorsForType, getOutputTypeForFunction } from '@directus/shared/utils';
 import { stripFunction } from './strip-function.js';
+import { forEach, map } from 'async';
 
 const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
 
 /**
  * Apply the Query to a given Knex query builder instance
  */
-export default function applyQuery(
+export default async function applyQuery(
 	knex: Knex,
 	collection: string,
 	dbQuery: Knex.QueryBuilder,
 	query: Query,
 	schema: SchemaOverview,
 	subQuery = false
-): Knex.QueryBuilder {
+): Promise<Knex.QueryBuilder> {
 	if (query.sort) {
-		applySort(knex, schema, dbQuery, query.sort, collection, subQuery);
+		await applySort(knex, schema, dbQuery, query.sort, collection, subQuery);
 	}
 
 	if (typeof query.limit === 'number' && query.limit !== -1) {
@@ -50,11 +51,13 @@ export default function applyQuery(
 	}
 
 	if (query.search) {
-		applySearch(schema, dbQuery, query.search, collection);
+		await applySearch(schema, dbQuery, query.search, collection);
 	}
 
 	if (query.group) {
-		dbQuery.groupBy(query.group.map((column) => getColumn(knex, collection, column, false, schema)));
+		const mapped = await map(query.group, async (column: string) => await getColumn(knex, collection, column, false, schema))
+
+		dbQuery.groupBy(mapped);
 	}
 
 	if (query.aggregate) {
@@ -62,7 +65,7 @@ export default function applyQuery(
 	}
 
 	if (query.filter) {
-		applyFilter(knex, schema, dbQuery, query.filter, collection, subQuery);
+		await applyFilter(knex, schema, dbQuery, query.filter, collection, subQuery);
 	}
 
 	return dbQuery;
@@ -118,11 +121,11 @@ type AddJoinProps = {
 	knex: Knex;
 };
 
-function addJoin({ path, collection, aliasMap, rootQuery, subQuery, schema, relations, knex }: AddJoinProps) {
+async function addJoin({ path, collection, aliasMap, rootQuery, subQuery, schema, relations, knex }: AddJoinProps) {
 	path = clone(path);
-	followRelation(path);
+	await followRelation(path);
 
-	function followRelation(pathParts: string[], parentCollection: string = collection, parentAlias?: string) {
+	async function followRelation(pathParts: string[], parentCollection: string = collection, parentAlias?: string) {
 		/**
 		 * For A2M fields, the path can contain an optional collection scope <field>:<scope>
 		 */
@@ -135,6 +138,7 @@ function addJoin({ path, collection, aliasMap, rootQuery, subQuery, schema, rela
 		}
 
 		const alias = generateAlias();
+		const relatedCollectionInfo = await schema.getCollection(relation.related_collection!)
 
 		set(aliasMap, parentAlias ? [parentAlias, ...pathParts] : pathParts, alias);
 
@@ -142,7 +146,7 @@ function addJoin({ path, collection, aliasMap, rootQuery, subQuery, schema, rela
 			rootQuery.leftJoin(
 				{ [alias]: relation.related_collection! },
 				`${parentAlias || parentCollection}.${relation.field}`,
-				`${alias}.${schema.collections[relation.related_collection!]!.primary}`
+				`${alias}.${relatedCollectionInfo!.primary}`
 			);
 		}
 
@@ -155,18 +159,23 @@ function addJoin({ path, collection, aliasMap, rootQuery, subQuery, schema, rela
 				);
 			}
 
+			const collectionInfo = await schema.getCollection(pathScope)
+
 			rootQuery.leftJoin({ [alias]: pathScope }, (joinClause) => {
 				joinClause
 					.onVal(relation.meta!.one_collection_field!, '=', pathScope)
 					.andOn(
 						`${parentAlias || parentCollection}.${relation.field}`,
 						'=',
-						knex.raw(`CAST(?? AS CHAR(255))`, `${alias}.${schema.collections[pathScope]!.primary}`)
+						knex.raw(`CAST(?? AS CHAR(255))`, `${alias}.${collectionInfo!.primary}`)
 					);
 			});
 		}
 
 		if (relationType === 'o2a') {
+
+			const collectionInfo = await schema.getCollection(parentCollection)
+
 			rootQuery.leftJoin({ [alias]: relation.collection }, (joinClause) => {
 				joinClause
 					.onVal(relation.meta!.one_collection_field!, '=', parentCollection)
@@ -175,7 +184,7 @@ function addJoin({ path, collection, aliasMap, rootQuery, subQuery, schema, rela
 						'=',
 						knex.raw(
 							`CAST(?? AS CHAR(255))`,
-							`${parentAlias || parentCollection}.${schema.collections[parentCollection]!.primary}`
+							`${parentAlias || parentCollection}.${collectionInfo!.primary}`
 						)
 					);
 			});
@@ -185,7 +194,7 @@ function addJoin({ path, collection, aliasMap, rootQuery, subQuery, schema, rela
 		if (relationType === 'o2m' && (subQuery === true || parentAlias !== undefined)) {
 			rootQuery.leftJoin(
 				{ [alias]: relation.collection },
-				`${parentAlias || parentCollection}.${schema.collections[relation.related_collection!]!.primary}`,
+				`${parentAlias || parentCollection}.${relatedCollectionInfo!.primary}`,
 				`${alias}.${relation.field}`
 			);
 		}
@@ -211,13 +220,13 @@ function addJoin({ path, collection, aliasMap, rootQuery, subQuery, schema, rela
 
 			pathParts.shift();
 			if (pathParts.length) {
-				followRelation(pathParts, parent, alias);
+				await followRelation(pathParts, parent, alias);
 			}
 		}
 	}
 }
 
-export function applySort(
+export async function applySort(
 	knex: Knex,
 	schema: SchemaOverview,
 	rootQuery: Knex.QueryBuilder,
@@ -225,58 +234,58 @@ export function applySort(
 	collection: string,
 	subQuery = false
 ) {
-	const relations: Relation[] = schema.relations;
+	const relations: Relation[] = await schema.getRelations();
 	const aliasMap: Record<string, string> = {};
 
-	rootQuery.orderBy(
-		rootSort.map((sortField) => {
-			const column: string[] = sortField.split('.');
-			let order: 'asc' | 'desc' = 'asc';
+	const mapped = await map(rootSort, async (sortField: string) => {
+		const column: string[] = sortField.split('.');
+		let order: 'asc' | 'desc' = 'asc';
 
-			if (column.length > 1) {
-				if (sortField.startsWith('-')) {
-					order = 'desc';
-				}
-
-				if (column[0]!.startsWith('-')) {
-					column[0] = column[0]!.substring(1);
-				}
-
-				addJoin({
-					path: column,
-					collection,
-					aliasMap,
-					rootQuery,
-					subQuery,
-					schema,
-					relations,
-					knex,
-				});
-
-				const { columnPath } = getColumnPath({ path: column, collection, aliasMap, relations });
-				const [alias, field] = columnPath.split('.');
-
-				return {
-					order,
-					column: await getColumn(knex, alias!, field!, false, schema) as any,
-				};
-			}
-
-			let col = column[0];
+		if (column.length > 1) {
 			if (sortField.startsWith('-')) {
-				col = column[0]!.substring(1);
 				order = 'desc';
 			}
 
+			if (column[0]!.startsWith('-')) {
+				column[0] = column[0]!.substring(1);
+			}
+
+			await addJoin({
+				path: column,
+				collection,
+				aliasMap,
+				rootQuery,
+				subQuery,
+				schema,
+				relations,
+				knex,
+			});
+
+			const { columnPath } = getColumnPath({ path: column, collection, aliasMap, relations });
+			const [alias, field] = columnPath.split('.');
+
 			return {
 				order,
-				column: await getColumn(knex, collection, col!, false, schema) as any,
+				column: await getColumn(knex, alias!, field!, false, schema) as any,
 			};
-		})
-	);
+		}
+
+		let col = column[0];
+		if (sortField.startsWith('-')) {
+			col = column[0]!.substring(1);
+			order = 'desc';
+		}
+
+		return {
+			order,
+			column: await getColumn(knex, collection, col!, false, schema) as any,
+		};
+	})
+
+	rootQuery.orderBy(mapped);
 }
 
-export function applyFilter(
+export async function applyFilter(
 	knex: Knex,
 	schema: SchemaOverview,
 	rootQuery: Knex.QueryBuilder,
@@ -285,16 +294,16 @@ export function applyFilter(
 	subQuery = false
 ) {
 	const helpers = getHelpers(knex);
-	const relations: Relation[] = schema.relations;
+	const relations: Relation[] = await schema.getRelations();
 
 	const aliasMap: Record<string, string> = {};
 
-	addJoins(rootQuery, rootFilter, collection);
-	addWhereClauses(knex, rootQuery, rootFilter, collection);
+	await addJoins(rootQuery, rootFilter, collection);
+	await addWhereClauses(knex, rootQuery, rootFilter, collection);
 
 	return rootQuery;
 
-	function addJoins(dbQuery: Knex.QueryBuilder, filter: Filter, collection: string) {
+	async function addJoins(dbQuery: Knex.QueryBuilder, filter: Filter, collection: string) {
 		for (const [key, value] of Object.entries(filter)) {
 			if (key === '_or' || key === '_and') {
 				// If the _or array contains an empty object (full permissions), we should short-circuit and ignore all other
@@ -302,8 +311,8 @@ export function applyFilter(
 				if (key === '_or' && value.some((subFilter: Record<string, any>) => Object.keys(subFilter).length === 0))
 					continue;
 
-				value.forEach((subFilter: Record<string, any>) => {
-					addJoins(dbQuery, subFilter, collection);
+				forEach(value, async (subFilter: Record<string, any>) => {
+					await addJoins(dbQuery, subFilter, collection);
 				});
 
 				continue;
@@ -311,7 +320,7 @@ export function applyFilter(
 
 			const filterPath = getFilterPath(key, value);
 			if (filterPath.length > 1) {
-				addJoin({
+				await addJoin({
 					path: filterPath,
 					collection,
 					knex,
@@ -325,7 +334,7 @@ export function applyFilter(
 		}
 	}
 
-	function addWhereClauses(
+	async function addWhereClauses(
 		knex: Knex,
 		dbQuery: Knex.QueryBuilder,
 		filter: Filter,
@@ -342,8 +351,8 @@ export function applyFilter(
 
 				/** @NOTE this callback function isn't called until Knex runs the query */
 				dbQuery[logical].where((subQuery) => {
-					value.forEach((subFilter: Record<string, any>) => {
-						addWhereClauses(knex, subQuery, subFilter, collection, key === '_and' ? 'and' : 'or');
+					forEach(value, async (subFilter: Record<string, any>) => {
+						await addWhereClauses(knex, subQuery, subFilter, collection, key === '_and' ? 'and' : 'or');
 					});
 				});
 
@@ -367,34 +376,30 @@ export function applyFilter(
 
 					if (!columnPath) continue;
 
-					validateFilterOperator(
-						schema.collections[targetCollection]!.fields[stripFunction(filterPath[filterPath.length - 1]!)]!.type,
-						filterOperator,
-						schema.collections[targetCollection]!.fields[stripFunction(filterPath[filterPath.length - 1]!)]!.special
-					);
+					const field = await schema.getField(targetCollection, stripFunction(filterPath[filterPath.length - 1]!));
 
-					applyFilterToQuery(columnPath, filterOperator, filterValue, logical, targetCollection);
+					validateFilterOperator(field!.type, filterOperator, field!.special);
+
+					await applyFilterToQuery(columnPath, filterOperator, filterValue, logical, targetCollection);
 				} else {
-					validateFilterOperator(
-						schema.collections[collection]!.fields[stripFunction(filterPath[0]!)]!.type,
-						filterOperator,
-						schema.collections[collection]!.fields[stripFunction(filterPath[0]!)]!.special
-					);
+					const field = await schema.getField(collection, stripFunction(filterPath[0]!));
 
-					applyFilterToQuery(`${collection}.${filterPath[0]}`, filterOperator, filterValue, logical);
+					validateFilterOperator(field!.type, filterOperator, field!.special);
+
+					await applyFilterToQuery(`${collection}.${filterPath[0]}`, filterOperator, filterValue, logical);
 				}
 			} else if (subQuery === false || filterPath.length > 1) {
 				if (!relation) continue;
 
-				let pkField: Knex.Raw<any> | string = `${collection}.${
-					schema.collections[relation!.related_collection!]!.primary
-				}`;
+				const collectionInfo = await schema.getCollection(relation!.related_collection!)
+
+				let pkField: Knex.Raw<any> | string = `${collection}.${collectionInfo!.primary}`;
 
 				if (relationType === 'o2a') {
 					pkField = knex.raw(`CAST(?? AS CHAR(255))`, [pkField]);
 				}
 
-				const subQueryBuilder = (filter: Filter) => (subQueryKnex: Knex.QueryBuilder<any, unknown[]>) => {
+				const subQueryBuilder = (filter: Filter) => async (subQueryKnex: Knex.QueryBuilder<any, unknown[]>) => {
 					const field = relation!.field;
 					const collection = relation!.collection;
 					const column = `${collection}.${field}`;
@@ -404,9 +409,10 @@ export function applyFilter(
 						.from(collection)
 						.whereNotNull(column);
 
-					applyQuery(knex, relation!.collection, subQueryKnex, { filter }, schema, true);
+					await applyQuery(knex, relation!.collection, subQueryKnex, { filter }, schema, true);
 				};
 
+				// TODO: this wont work as it is async and whereNotIn probably doesn't support async
 				if (Object.keys(value)?.[0] === '_none') {
 					dbQuery[logical].whereNotIn(pkField as string, subQueryBuilder(Object.values(value)[0] as Filter));
 				} else if (Object.keys(value)?.[0] === '_some') {
@@ -438,7 +444,7 @@ export function applyFilter(
 			}
 		}
 
-		function applyFilterToQuery(
+		async function applyFilterToQuery(
 			key: string,
 			operator: string,
 			compareValue: any,
@@ -500,10 +506,11 @@ export function applyFilter(
 			const [collection, field] = key.split('.');
 			const mappedCollection = originalCollectionName || collection!;
 
-			if (mappedCollection in schema.collections && field! in schema.collections[mappedCollection]!.fields) {
-				const type = schema.collections[mappedCollection]!.fields[field!]!.type;
+			const fieldInfo = await schema.getField(mappedCollection, field!)
 
-				if (['date', 'dateTime', 'time', 'timestamp'].includes(type)) {
+			if (fieldInfo !== null) {
+
+				if (['date', 'dateTime', 'time', 'timestamp'].includes(fieldInfo.type)) {
 					if (Array.isArray(compareValue)) {
 						compareValue = compareValue.map((val) => helpers.date.parse(val));
 					} else {
@@ -511,7 +518,7 @@ export function applyFilter(
 					}
 				}
 
-				if (['bigInteger', 'integer', 'float', 'decimal'].includes(type)) {
+				if (['bigInteger', 'integer', 'float', 'decimal'].includes(fieldInfo.type)) {
 					if (Array.isArray(compareValue)) {
 						compareValue = compareValue.map((val) => Number(val));
 					} else {
@@ -657,7 +664,7 @@ export async function applySearch(
 	searchQuery: string,
 	collection: string
 ): Promise<void> {
-	const fields = Object.entries(schema.collections[collection]!.fields);
+	const fields = Object.entries(await schema.getFields(collection));
 
 	dbQuery.andWhere(function () {
 		fields.forEach(([name, field]) => {

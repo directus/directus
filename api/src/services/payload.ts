@@ -717,7 +717,7 @@ export class PayloadService {
 				}
 
 				if (alterations.update) {
-					const primaryKeyField = this.schema.collections[relation.collection]!.primary;
+					const primaryKeyField = (await this.schema.getCollection(relation.collection))!.primary;
 
 					for (const item of alterations.update) {
 						await itemsService.updateOne(
