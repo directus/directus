@@ -19,7 +19,6 @@ import { AliasMap, getColumnPath } from './get-column-path';
 import { getRelationInfo } from './get-relation-info';
 import { getFilterOperatorsForType, getOutputTypeForFunction } from '@directus/shared/utils';
 import { stripFunction } from './strip-function';
-import { calculateFieldDepth } from './calculate-field-depth';
 
 const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
 
@@ -179,10 +178,7 @@ function addJoin({ path, collection, aliasMap, rootQuery, subQuery, schema, rela
 							)
 						);
 				});
-			}
-
-			// Still join o2m relations when in subquery OR when the o2m relation is not at the root level
-			else if (relationType === 'o2m' && (subQuery === true || parentFields !== undefined)) {
+			} else if (relationType === 'o2m') {
 				rootQuery.leftJoin(
 					{ [alias]: relation.collection },
 					`${aliasMap[parentFields ?? ''] || parentCollection}.${
@@ -212,7 +208,7 @@ function addJoin({ path, collection, aliasMap, rootQuery, subQuery, schema, rela
 				parent = relation.collection;
 			}
 
-			if (pathParts.length) {
+			if (pathParts.length > 1) {
 				followRelation(pathParts.slice(1), parent, `${parentFields ? parentFields + '.' : ''}${pathParts[0]}`);
 			}
 		}
@@ -255,7 +251,7 @@ export function applySort(
 					knex,
 				});
 
-				const { columnPath } = getColumnPath({ path: column, collection, aliasMap, relations });
+				const { columnPath } = getColumnPath({ path: column, collection, aliasMap, relations, schema });
 				const [alias, field] = columnPath.split('.');
 
 				return {
@@ -291,7 +287,7 @@ export function applyFilter(
 
 	const aliasMap: AliasMap = {};
 
-	if (!subQuery && calculateFieldDepth(rootFilter) > 1) {
+	if (!subQuery) {
 		const column = `${collection}.${schema.collections[collection].primary}`;
 
 		const subQueryBuilder = (filter: Filter) => (subQueryKnex: Knex.QueryBuilder<any, unknown[]>) => {
@@ -328,7 +324,11 @@ export function applyFilter(
 			}
 
 			const filterPath = getFilterPath(key, value);
-			if (filterPath.length > 1) {
+
+			if (
+				filterPath.length > 1 ||
+				(!(key.includes('(') && key.includes(')')) && schema.collections[collection].fields[key].type === 'alias')
+			) {
 				addJoin({
 					path: filterPath,
 					collection,
@@ -379,7 +379,10 @@ export function applyFilter(
 
 			const { operator: filterOperator, value: filterValue } = getOperation(key, value);
 
-			if (filterPath.length > 1) {
+			if (
+				filterPath.length > 1 ||
+				(!(key.includes('(') && key.includes(')')) && schema.collections[collection].fields[key].type === 'alias')
+			) {
 				if (!relation) continue;
 
 				if (relationType === 'o2m' || relationType === 'o2a') {
@@ -417,12 +420,17 @@ export function applyFilter(
 
 				pull(filterPath, '_none', '_some');
 
-				const { columnPath, targetCollection } = getColumnPath({
+				const { columnPath, targetCollection, addNestedPkField } = getColumnPath({
 					path: filterPath,
 					collection,
 					relations,
 					aliasMap,
+					schema,
 				});
+
+				if (addNestedPkField) {
+					filterPath.push(addNestedPkField);
+				}
 
 				if (!columnPath) continue;
 
