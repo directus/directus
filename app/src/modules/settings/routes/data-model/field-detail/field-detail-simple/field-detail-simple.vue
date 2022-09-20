@@ -42,11 +42,11 @@
 import { defineComponent, PropType, computed, toRefs, watch } from 'vue';
 import { Collection } from '@directus/shared/types';
 import { useI18n } from 'vue-i18n';
-import { getInterfaces } from '@/interfaces';
 import { orderBy } from 'lodash';
 import { useFieldDetailStore, syncFieldDetailStoreProperty } from '../store/';
 import { syncRefProperty } from '@/utils/sync-ref-property';
 import FieldConfiguration from './field-configuration.vue';
+import { useExtensions } from '@/extensions';
 
 export default defineComponent({
 	components: { FieldConfiguration },
@@ -65,7 +65,7 @@ export default defineComponent({
 		const fieldDetail = useFieldDetailStore();
 		watch(collection, () => fieldDetail.update({ collection: collection.value.collection }), { immediate: true });
 
-		const { interfaces } = getInterfaces();
+		const { interfaces } = useExtensions();
 
 		const interfacesSorted = computed(() => {
 			return orderBy(

@@ -63,13 +63,14 @@
 
 <script lang="ts">
 import { defineComponent, computed, watch } from 'vue';
-import { getInterface, getInterfaces } from '@/interfaces';
+import { getInterface } from '@/interfaces';
 import { useI18n } from 'vue-i18n';
 import { useFieldDetailStore, syncFieldDetailStoreProperty } from '../store/';
 import { storeToRefs } from 'pinia';
 import ExtensionOptions from '../shared/extension-options.vue';
 import RelationshipConfiguration from './relationship-configuration.vue';
 import { nanoid } from 'nanoid';
+import { useExtensions } from '@/extensions';
 
 export default defineComponent({
 	components: { ExtensionOptions, RelationshipConfiguration },
@@ -107,7 +108,7 @@ export default defineComponent({
 
 		const typeDisabled = computed(() => typeOptions.value.length === 1 || localType.value !== 'standard');
 
-		const { interfaces } = getInterfaces();
+		const { interfaces } = useExtensions();
 
 		const interfaceIdsWithHiddenLabel = computed(() =>
 			interfaces.value.filter((inter) => inter.hideLabel === true).map((inter) => inter.id)
