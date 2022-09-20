@@ -95,7 +95,8 @@
 
 <script lang="ts" setup>
 import { useDialogRoute } from '@/composables/use-dialog-route';
-import { getPanel, getPanels } from '@/panels';
+import { useExtensions } from '@/extensions';
+import { getPanel } from '@/panels';
 import { useInsightsStore } from '@/stores/insights';
 import { CreatePanel } from '@/stores/insights';
 import { Panel } from '@directus/shared/types';
@@ -135,7 +136,7 @@ const edits = reactive<Partial<Panel>>({
 const insightsStore = useInsightsStore();
 
 const { panels } = storeToRefs(insightsStore);
-const { panels: panelTypes } = getPanels();
+const { panels: panelTypes } = useExtensions();
 
 const router = useRouter();
 
