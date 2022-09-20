@@ -292,7 +292,7 @@ import DrawerBatch from '@/views/private/components/drawer-batch.vue';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { mergeFilters } from '@directus/shared/utils';
 import { Filter } from '@directus/shared/types';
-import { useExtensions } from '@/extensions';
+import { useExtension } from '@/composables/use-extension';
 
 type Item = {
 	[field: string]: any;
@@ -331,7 +331,6 @@ export default defineComponent({
 
 		const router = useRouter();
 
-		const { layouts } = useExtensions();
 		const userStore = useUserStore();
 		const permissionsStore = usePermissionsStore();
 		const layoutRef = ref();
@@ -377,7 +376,7 @@ export default defineComponent({
 
 		const { bookmarkDialogActive, creatingBookmark, createBookmark } = useBookmarks();
 
-		const currentLayout = computed(() => layouts.value.find((l) => l.id === layout.value));
+		const currentLayout = useExtension('layout', layout);
 
 		watch(
 			collection,

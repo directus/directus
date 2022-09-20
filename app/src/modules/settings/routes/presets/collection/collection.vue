@@ -156,7 +156,7 @@ import { useUserStore } from '@/stores/user';
 import { usePresetsStore } from '@/stores/presets';
 import DrawerBatch from '@/views/private/components/drawer-batch.vue';
 import { usePreset } from '@/composables/use-preset';
-import { useExtensions } from '@/extensions';
+import { useExtension } from '@/composables/use-extension';
 
 export default defineComponent({
 	name: 'ContentCollection',
@@ -175,7 +175,6 @@ export default defineComponent({
 
 		const { t } = useI18n();
 
-		const { layouts } = useExtensions();
 		const userStore = useUserStore();
 		const permissionsStore = usePermissionsStore();
 		const layoutRef = ref();
@@ -187,7 +186,7 @@ export default defineComponent({
 
 		const { confirmDelete, deleting, batchDelete, error: deleteError, batchEditActive } = useBatch();
 
-		const currentLayout = computed(() => layouts.value.find((l) => l.id === layout.value));
+		const currentLayout = useExtension('layout', layout);
 
 		const { batchEditAllowed, batchDeleteAllowed, createAllowed } = usePermissions();
 
