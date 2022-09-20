@@ -22,6 +22,7 @@ import { Field } from './fields';
 import { Relation } from './relations';
 import { Collection } from './collection';
 import { SchemaOverview } from './schema';
+import { OperationAppConfig } from './operations';
 
 export type AppExtensionType = typeof APP_EXTENSION_TYPES[number];
 export type ApiExtensionType = typeof API_EXTENSION_TYPES[number];
@@ -151,6 +152,7 @@ export type AppExtensionConfigs = {
 	layouts: Ref<LayoutConfig[]>;
 	modules: Ref<ModuleConfig[]>;
 	panels: Ref<PanelConfig[]>;
+	operations: Ref<OperationAppConfig[]>;
 };
 
 export type ApiExtensionContext = {

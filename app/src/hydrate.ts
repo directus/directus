@@ -1,5 +1,4 @@
 import { setLanguage } from '@/lang/set-language';
-import { register as registerModules, unregister as unregisterModules } from '@/modules/register';
 import { getBasemapSources } from '@/utils/geometry/basemap';
 import { useAppStore } from '@/stores/app';
 import { useCollectionsStore } from '@/stores/collections';
@@ -76,7 +75,6 @@ export async function hydrate(): Promise<void> {
 			const hydratedStores = ['userStore', 'permissionsStore'];
 
 			await Promise.all(stores.filter(({ $id }) => !hydratedStores.includes($id)).map((store) => store.hydrate?.()));
-			await registerModules();
 			await hydrateTranslationStrings();
 
 			if (userStore.currentUser?.language) lang = userStore.currentUser?.language;
@@ -102,8 +100,6 @@ export async function dehydrate(stores = useStores()): Promise<void> {
 	for (const store of stores) {
 		await store.dehydrate?.();
 	}
-
-	unregisterModules();
 
 	appStore.hydrated = false;
 }

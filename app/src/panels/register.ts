@@ -1,25 +1,18 @@
 import { App } from 'vue';
-import { getPanels } from './index';
 import { PanelConfig } from '@directus/shared/types';
-import { getExtensions } from '@/extensions';
 
-const { panelsRaw } = getPanels();
+export function getInternalPanels(): PanelConfig[] {
+	const panels = import.meta.globEager('./*/index.ts');
 
-export function registerPanels(app: App): void {
-	const panelModules = import.meta.globEager('./*/**/index.ts');
+	return Object.values(panels).map((module) => module.default);
+}
 
-	const panels: PanelConfig[] = Object.values(panelModules).map((module) => module.default);
-
-	const customPanels = getExtensions('panel');
-	panels.push(...customPanels);
-
-	panelsRaw.value = panels;
-
-	panelsRaw.value.forEach((panel: PanelConfig) => {
+export function registerPanels(panels: PanelConfig[], app: App): void {
+	for (const panel of panels) {
 		app.component(`panel-${panel.id}`, panel.component);
 
 		if (typeof panel.options !== 'function' && Array.isArray(panel.options) === false && panel.options !== null) {
 			app.component(`panel-options-${panel.id}`, panel.options);
 		}
-	});
+	}
 }

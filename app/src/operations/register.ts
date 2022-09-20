@@ -1,21 +1,14 @@
 import { App } from 'vue';
-import { getOperations } from './index';
 import { OperationAppConfig } from '@directus/shared/types';
-import { getExtensions } from '@/extensions';
 
-const { operationsRaw } = getOperations();
+export function getInternalOperations(): OperationAppConfig[] {
+	const operations = import.meta.globEager('./*/index.ts');
 
-export function registerOperations(app: App): void {
-	const operationModules = import.meta.globEager('./*/**/index.ts');
+	return Object.values(operations).map((module) => module.default);
+}
 
-	const operations: OperationAppConfig[] = Object.values(operationModules).map((module) => module.default);
-
-	const customOperations = getExtensions('operation');
-	operations.push(...customOperations);
-
-	operationsRaw.value = operations;
-
-	operationsRaw.value.forEach((operation: OperationAppConfig) => {
+export function registerOperations(operations: OperationAppConfig[], app: App): void {
+	for (const operation of operations) {
 		if (
 			typeof operation.overview !== 'function' &&
 			Array.isArray(operation.overview) === false &&
@@ -31,5 +24,5 @@ export function registerOperations(app: App): void {
 		) {
 			app.component(`operation-options-${operation.id}`, operation.options);
 		}
-	});
+	}
 }

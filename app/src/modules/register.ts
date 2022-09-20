@@ -2,58 +2,61 @@ import { router } from '@/router';
 import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
 import RouterPass from '@/utils/router-passthrough';
-import { getModules } from './index';
 import { ModuleConfig } from '@directus/shared/types';
-import { getExtensions } from '@/extensions';
+import { useAppStore } from '@/stores/app';
+import { ShallowRef, shallowRef, watch } from 'vue';
 
-const { modulesRaw } = getModules();
+export function getInternalModules(): ModuleConfig[] {
+	const modules = import.meta.globEager('./*/index.ts');
 
-let queuedModules: ModuleConfig[] = [];
-
-export function loadModules(): void {
-	const moduleModules = import.meta.globEager('./*/index.ts');
-
-	const modules: ModuleConfig[] = Object.values(moduleModules).map((module) => module.default);
-
-	const customModules = getExtensions('module');
-	modules.push(...customModules);
-
-	queuedModules = modules;
+	return Object.values(modules).map((module) => module.default);
 }
 
-export async function register(): Promise<void> {
-	const userStore = useUserStore();
-	const permissionsStore = usePermissionsStore();
+export function registerModules(modules: ModuleConfig[]): ShallowRef<ModuleConfig[]> {
+	const appStore = useAppStore();
 
-	const registeredModules = [];
+	const registeredModules = shallowRef<ModuleConfig[]>([]);
 
-	for (const mod of queuedModules) {
-		if (!userStore.currentUser) continue;
+	watch(
+		() => appStore.hydrated,
+		async (hydrated) => {
+			if (hydrated) {
+				registeredModules.value = [];
 
-		if (mod.preRegisterCheck) {
-			const allowed = await mod.preRegisterCheck(userStore.currentUser, permissionsStore.permissions);
-			if (allowed) registeredModules.push(mod);
-		} else {
-			registeredModules.push(mod);
+				const userStore = useUserStore();
+				const permissionsStore = usePermissionsStore();
+
+				for (const module of modules) {
+					if (!userStore.currentUser) continue;
+
+					if (module.preRegisterCheck) {
+						const allowed = await module.preRegisterCheck(userStore.currentUser, permissionsStore.permissions);
+
+						if (allowed) {
+							registeredModules.value.push(module);
+						}
+					} else {
+						registeredModules.value.push(module);
+					}
+				}
+
+				for (const module of registeredModules.value) {
+					router.addRoute({
+						name: module.id,
+						path: `/${module.id}`,
+						component: RouterPass,
+						children: module.routes,
+					});
+				}
+			} else {
+				for (const module of modules) {
+					router.removeRoute(module.id);
+				}
+
+				registeredModules.value = [];
+			}
 		}
-	}
+	);
 
-	for (const module of registeredModules) {
-		router.addRoute({
-			name: module.id,
-			path: `/${module.id}`,
-			component: RouterPass,
-			children: module.routes,
-		});
-	}
-
-	modulesRaw.value = registeredModules;
-}
-
-export function unregister(): void {
-	for (const module of modulesRaw.value) {
-		router.removeRoute(module.id);
-	}
-
-	modulesRaw.value = [];
+	return registeredModules;
 }
