@@ -11,6 +11,7 @@ import { applyFunctionToColumnName } from '../utils/apply-function-to-column-nam
 import applyQuery from '../utils/apply-query.js';
 import { getColumn } from '../utils/get-column.js';
 import { stripFunction } from '../utils/strip-function.js';
+import { map } from 'async';
 
 type RunASTOptions = {
 	/**
@@ -240,7 +241,7 @@ async function getDBQuery(
 	query: Query
 ): Promise<Knex.QueryBuilder> {
 	const preProcess = getColumnPreprocessor(knex, schema, table);
-	const dbQuery = knex.select(fieldNodes.map(preProcess)).from(table);
+	const dbQuery = knex.select(await map(fieldNodes, preProcess)).from(table);
 	const queryCopy = clone(query);
 
 	queryCopy.limit = typeof queryCopy.limit === 'number' ? queryCopy.limit : 100;

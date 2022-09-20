@@ -53,6 +53,6 @@ export async function getColumn(
 	if (alias && column !== alias) {
 		return knex.ref(`${table}.${column}`).as(alias);
 	}
-
-	return knex.ref(`${table}.${column}`);
+	// TODO: why did I have to remove the knex.ref?
+	return `${table}.${column}`;
 }

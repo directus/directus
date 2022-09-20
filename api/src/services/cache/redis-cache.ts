@@ -5,6 +5,7 @@ import { getConfigFromEnv } from "../../utils/get-config-from-env.js";
 import { CacheOptions, CacheService } from "./cache.js";
 import {parse, stringify} from 'json-buffer'
 import { compress, decompress } from '../../utils/compress.js';
+import { map } from "async";
 
 export class RedisCache extends CacheService {
     client: RedisClientType
@@ -19,7 +20,7 @@ export class RedisCache extends CacheService {
         this.client.connect()
     }
 
-    async get(key: string): Promise<any> {
+    async get(key: string): Promise<any | null> {
         const value = await this.client.get(this.addPrefix(key))
 
         if(value === null) return undefined;
@@ -55,8 +56,10 @@ export class RedisCache extends CacheService {
         await this.client.sendCommand(['HSET', _key, ...values])
         if(ttl !== undefined) await this.client.expire(_key, ttl);
     }
-    async getHash(key: string): Promise<Record<string, any>> {
-        return await this.client.hGetAll(this.addPrefix(key))
+    async getHash(key: string): Promise<Record<string, any> | null> {
+        const value = await this.client.hGetAll(this.addPrefix(key))
+        if(value === null) return null;
+        return Object.fromEntries(await map(Object.entries(value), async ([key, val]: [string, any]) => [key, await decompress( parse(val))]))
     }
     async setHashField(key: string, field: string, value: any, ttl?: number | undefined): Promise<void> {
         if(await this.isLocked()) return
@@ -66,8 +69,12 @@ export class RedisCache extends CacheService {
         await this.client.hSet(_key, field, stringify(await compress(value)))
         if(ttl !== undefined) await this.client.expire(_key, ttl);
     }
-    async getHashField(key: string, field: string): Promise<any> {
-        return await this.client.hGet(this.addPrefix(key), field)
+    async getHashField(key: string, field: string): Promise<any | null> {
+        const value = await this.client.hGet(this.addPrefix(key), field)
+
+        if(value === undefined) return null;
+
+        return await decompress(parse(value))
     }
 
     async deleteHashField(key: string, field: string): Promise<void> {

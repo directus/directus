@@ -5,7 +5,7 @@ export class MemCache extends CacheService {
     store = new Map<string, any>();
     expires = new Map<string, number>();
 
-    async get(key: string): Promise<any> {
+    async get(key: string): Promise<any | null> {
         const _key = this.addPrefix(key);
         const expired = this.expires.get(_key) ?? -1;
 
@@ -47,7 +47,7 @@ export class MemCache extends CacheService {
     setHash(key: string, value: Record<string, any>, ttl?: number | undefined): Promise<void> {
         return this.set(key, value, ttl);
     }
-    getHash(key: string): Promise<Record<string, any>> {
+    getHash(key: string): Promise<Record<string, any> | null> {
         return this.get(key);
     }
     async setHashField(key: string, field: string, value: any, ttl?: number | undefined): Promise<void> {
@@ -59,7 +59,7 @@ export class MemCache extends CacheService {
 
         await this.set(key, localValue, ttl);
     }
-    async getHashField(key: string, field: string): Promise<any> {
+    async getHashField(key: string, field: string): Promise<any | null> {
         const value = await this.get(key)
 
         if(typeof value !== 'object') throw new Error('Cannot get hash field on non-object value');
