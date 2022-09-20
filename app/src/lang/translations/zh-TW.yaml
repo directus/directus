@@ -472,7 +472,7 @@ manual_string: 自訂輸入的字串
 save_and_create_new: 儲存並新建
 save_and_stay: 儲存並停留
 save_as_copy: 儲存為副本
-add_existing: 新增現有的
+add_existing: 從現有清單選擇
 creating_items: 建立項目中
 enable_create_button: 啟用建立按鈕
 selecting_items: 選擇項目中
