@@ -2,6 +2,73 @@
 
 _Changes marked with a :warning: contain potential breaking changes depending on your use of the package._
 
+## v9.18.0 (September 19, 2022)
+
+### :sparkles: New Features
+
+- **App**
+  - [#15452](https://github.com/directus/directus/pull/15452) Relational Selection Panel for Insights Variable (by
+    @br41nslug)
+
+### :rocket: Improvements
+
+- **App**
+  - [#15570](https://github.com/directus/directus/pull/15570) Only pass singleton prop in CollectionOrItem component
+    when necessary (by @azrikahar)
+  - [#15548](https://github.com/directus/directus/pull/15548) Use the improved get method (by @Nitwel)
+  - [#15514](https://github.com/directus/directus/pull/15514) Allow user to send a WYSIWYG email body (by @raflymln)
+- **API**
+  - [#15514](https://github.com/directus/directus/pull/15514) Allow user to send a WYSIWYG email body (by @raflymln)
+
+### :bug: Bug Fixes
+
+- **API**
+  - [#15599](https://github.com/directus/directus/pull/15599) Cache: Fix check if endpoint is `/graphql` or not (by
+    @joselcvarela)
+  - [#15574](https://github.com/directus/directus/pull/15574) Fix starting Directus using a custom start file (by
+    @nickrum)
+  - [#15547](https://github.com/directus/directus/pull/15547) Handle Date objects in compress util (by @azrikahar)
+  - [#15494](https://github.com/directus/directus/pull/15494) Fix rotating called twice (by @Nitwel)
+  - [#15467](https://github.com/directus/directus/pull/15467) revisions for CRUD operations with $full (by @freekrai)
+  - [#15465](https://github.com/directus/directus/pull/15465) GraphQLID is always Non-Nullable (by @kepi)
+  - [#15420](https://github.com/directus/directus/pull/15420) Ensure case insensitive email checks for password reset
+    requests (by @azrikahar)
+  - [#14816](https://github.com/directus/directus/pull/14816) Fix schema re-apply attempts when it's a different
+    database vendor (by @azrikahar)
+  - [#14690](https://github.com/directus/directus/pull/14690) Use original table names for columns with functions (by
+    @licitdev)
+- **App**
+  - [#15593](https://github.com/directus/directus/pull/15593) skip interface options for variable panel (by @br41nslug)
+  - [#15579](https://github.com/directus/directus/pull/15579) Showing the v-error on unexpected errors (by
+    @VincentKempers)
+  - [#15548](https://github.com/directus/directus/pull/15548) Use the improved get method (by @Nitwel)
+  - [#15520](https://github.com/directus/directus/pull/15520) fix redudant message in unexpected error (by
+    @VincentKempers)
+  - [#15500](https://github.com/directus/directus/pull/15500) Fix duplicate indexes (by @Nitwel)
+  - [#15463](https://github.com/directus/directus/pull/15463) Fix display dimensions of SVG in image edit drawer (by
+    @licitdev)
+  - [#15450](https://github.com/directus/directus/pull/15450) Fix M2M drawer autofocusing the wrong field with junction
+    field location `top` (by @NigmaX)
+  - [#15442](https://github.com/directus/directus/pull/15442) Fix v-list-group active state (by @azrikahar)
+  - [#15441](https://github.com/directus/directus/pull/15441) fix: add arrow-placement logic check if folder empty (by
+    @chaiwattsw)
+  - [#15221](https://github.com/directus/directus/pull/15221) Fix O2M edits on unsaved items (by @azrikahar)
+  - [#14947](https://github.com/directus/directus/pull/14947) Item Duplication for manually entered primary keys (by
+    @br41nslug)
+  - [#14871](https://github.com/directus/directus/pull/14871) Add missing download and token parameter in File interface
+    (by @JonathanSchndr)
+  - [#14690](https://github.com/directus/directus/pull/14690) Use original table names for columns with functions (by
+    @licitdev)
+
+### :sponge: Optimizations
+
+- **Misc.**
+  - [#15594](https://github.com/directus/directus/pull/15594) Correct the documented default type for argon2 (by
+    @azrikahar)
+  - [#15402](https://github.com/directus/directus/pull/15402) Add singleton tests (by @licitdev)
+- **shared**
+  - [#15578](https://github.com/directus/directus/pull/15578) Add a pathToRelativeUrl util function (by @nickrum)
+
 ## v9.17.4 (September 6, 2022)
 
 ### :bug: Bug Fixes
