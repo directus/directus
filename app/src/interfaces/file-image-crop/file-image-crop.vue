@@ -221,17 +221,17 @@ function applyImageTransformationsToUrl(url: string): string {
 	let readyTransformations = [];
 
 	if (cropInfo.value.image_transformations) {
-		const flip = cropInfo.value.image_transformations.flip
-		const flop = cropInfo.value.image_transformations.flop
-		if (flip) {
-			readyTransformations.push('["flip"]');
-		}
-		if (flop) {
+		const flipY = cropInfo.value.image_transformations.flipY
+		const flipX = cropInfo.value.image_transformations.flipX
+		if (flipY) {
 			readyTransformations.push('["flop"]');
+		}
+		if (flipX) {
+			readyTransformations.push('["flip"]');
 		}
 
 		let rotation = cropInfo.value.image_transformations.rotate
-		if (rotation != null) {
+		if (rotation != null && rotation != 0) {
 			readyTransformations.push(`["rotate", ${rotation}]`);
 		}
 	}
