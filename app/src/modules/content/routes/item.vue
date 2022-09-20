@@ -216,7 +216,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, unref, toRefs } from 'vue';
+import { computed, ref, unref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { useEditsGuard } from '@/composables/use-edits-guard';
@@ -278,6 +278,21 @@ const {
 	refresh,
 	validationErrors,
 } = useItem(collection, primaryKey);
+
+watch(
+	router.currentRoute,
+	() => {
+		if (router.currentRoute.value.query.data) {
+			try {
+				const data = JSON.parse(router.currentRoute.value.query.data as string);
+				Object.assign(edits.value, data);
+			} catch {
+				// Malformed data can be safely ignored
+			}
+		}
+	},
+	{ immediate: true }
+);
 
 const { templateData, loading: templateDataLoading } = useTemplateData(collectionInfo, primaryKey);
 
