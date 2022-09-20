@@ -290,9 +290,9 @@ import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
 import DrawerBatch from '@/views/private/components/drawer-batch.vue';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { getLayouts } from '@/layouts';
 import { mergeFilters } from '@directus/shared/utils';
 import { Filter } from '@directus/shared/types';
+import { useExtensions } from '@/extensions';
 
 type Item = {
 	[field: string]: any;
@@ -331,7 +331,7 @@ export default defineComponent({
 
 		const router = useRouter();
 
-		const { layouts } = getLayouts();
+		const { layouts } = useExtensions();
 		const userStore = useUserStore();
 		const permissionsStore = usePermissionsStore();
 		const layoutRef = ref();

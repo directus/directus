@@ -155,8 +155,8 @@ import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
 import { usePresetsStore } from '@/stores/presets';
 import DrawerBatch from '@/views/private/components/drawer-batch.vue';
-import { getLayouts } from '@/layouts';
 import { usePreset } from '@/composables/use-preset';
+import { useExtensions } from '@/extensions';
 
 export default defineComponent({
 	name: 'ContentCollection',
@@ -175,7 +175,7 @@ export default defineComponent({
 
 		const { t } = useI18n();
 
-		const { layouts } = getLayouts();
+		const { layouts } = useExtensions();
 		const userStore = useUserStore();
 		const permissionsStore = usePermissionsStore();
 		const layoutRef = ref();

@@ -18,8 +18,9 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed } from 'vue';
-import { getLayouts, getLayout } from '@/layouts';
+import { getLayout } from '@/layouts';
 import { useSync } from '@directus/shared/composables';
+import { useExtensions } from '@/extensions';
 
 export default defineComponent({
 	props: {
@@ -32,7 +33,7 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
-		const { layouts } = getLayouts();
+		const { layouts } = useExtensions();
 
 		const currentLayout = computed(() => getLayout(props.modelValue) ?? getLayout('tabular'));
 
