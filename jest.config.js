@@ -5,6 +5,7 @@ module.exports = {
 		'@directus/drive-s3(.*)$': `${__dirname}/packages/drive-s3/src/$1`,
 		'@directus/drive-gcs(.*)$': `${__dirname}/packages/drive-gcs/src/$1`,
 		'@directus/drive-azure(.*)$': `${__dirname}/packages/drive-azure/src/$1`,
+		'@directus/drive-supabase(.*)$': `${__dirname}/packages/drive-supabase/src/$1`,
 		'@directus/drive(.*)$': `${__dirname}/packages/drive/src/$1`,
 		'@directus/extension-sdk(.*)$': `${__dirname}/packages/extension-sdk/src/$1`,
 		'@directus/schema(.*)$': `${__dirname}/packages/schema/src/$1`,
