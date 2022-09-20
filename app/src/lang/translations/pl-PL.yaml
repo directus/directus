@@ -2010,8 +2010,10 @@ panels:
     description: Ustaw wartość globalną dla filtrów innych paneli
     variable_key: Klucz zmienny
   relational-variable:
+    name: Globalna Zmienna Relacyjna
     description: Ustaw globalną wartość relacyjną dla filtrów innych paneli
     variable_key: Klucz zmienny
+    multiple: Wielokrotność
     multiple-label: Wybierz wiele elementów
 triggers:
   common:
