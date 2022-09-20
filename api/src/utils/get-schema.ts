@@ -237,7 +237,7 @@ export async function getSchema(options?: {
 			field = (await database.select('id', 'collection', 'field', 'special', 'note', 'validation').from('directus_fields').where('collection', collection).andWhere('field', fieldName))[0];
 		}
 
-		if(field === null || (field.special ? toArray(field.special)  : []).includes('no-data') == false) return null;
+		if(field === null || (field.special ? toArray(field.special)  : []).includes('no-data')) return null;
 
 		const existing = result.collections[field.collection].fields[field.field];
 		const column = schemaOverview[field.collection].columns[field.field];

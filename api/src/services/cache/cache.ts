@@ -15,15 +15,16 @@ export abstract class CacheService {
 		this.namespace = options.namespace;
 	}
 
-	abstract get(key: string): Promise<any>;
+	abstract get(key: string): Promise<any | null>;
 	abstract set(key: string, value: any, ttl?: number): Promise<void>;
 	abstract clear(): Promise<void>;
 	abstract delete(key: string): Promise<void>;
 
 	abstract setHash(key: string, value: Record<string, any>, ttl?: number): Promise<void>;
-	abstract getHash(key: string): Promise<Record<string, any>>;
+	abstract getHash(key: string): Promise<Record<string, any> | null>;
 	abstract setHashField(key: string, field: string, value: any, ttl?: number): Promise<void>;
-	abstract getHashField(key: string, field: string): Promise<any>;
+	abstract getHashField(key: string, field: string): Promise<any | null>;
+	abstract deleteHashField(key: string, field: string): Promise<void>;
 
 	addPrefix(key: string) {
 		return this.namespace ? `${this.namespace}:${key}` : key;
@@ -36,7 +37,7 @@ export abstract class CacheService {
 	async autoCache<T>(key: string, ttl: number | undefined, fn: () => Promise<T>): Promise<T> {
 		let value = await this.get(key);
 
-		if (value !== undefined) return value;
+		if (value !== null) return value;
 
 		value = await fn();
 		await this.set(key, value, ttl);
@@ -51,7 +52,7 @@ export abstract class CacheService {
 	): Promise<Record<string, any>> {
 		let value = await this.getHash(key);
 
-		if (value !== undefined) return value;
+		if (value !== null) return value as T;
 
 		value = await fn();
 		await this.setHash(key, value, ttl);
@@ -59,10 +60,9 @@ export abstract class CacheService {
 		return value;
 	}
 
-	async autoCacheHashField<T>(key: string, field: string, ttl: number | undefined, fn: () => Promise<T>): Promise<T> {
+	async autoCacheHashField<T>(key: string, field: string, fn: () => Promise<T>, ttl?: number | undefined): Promise<T> {
 		let value = await this.getHashField(key, field);
-
-		if (value !== undefined) return value;
+		if (value !== null) return value;
 
 		value = await fn();
 		await this.setHashField(key, field, value, ttl);
