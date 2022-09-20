@@ -22,11 +22,11 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed } from 'vue';
 import { getDisplay } from '@/displays';
-import { getInterface } from '@/interfaces';
 import { clone } from 'lodash';
 import { useFieldDetailStore, syncFieldDetailStoreProperty } from '../store';
 import { storeToRefs } from 'pinia';
 import ExtensionOptions from '../shared/extension-options.vue';
+import { useExtension } from '@/composables/use-extension';
 
 export default defineComponent({
 	components: { ExtensionOptions },
@@ -37,10 +37,10 @@ export default defineComponent({
 
 		const { field, displaysForType } = storeToRefs(fieldDetailStore);
 
-		const interfaceID = computed(() => field.value.meta?.interface);
+		const interfaceId = computed(() => field.value.meta?.interface ?? null);
 		const display = syncFieldDetailStoreProperty('field.meta.display');
 
-		const selectedInterface = computed(() => getInterface(interfaceID.value));
+		const selectedInterface = useExtension('interface', interfaceId);
 		const selectedDisplay = computed(() => getDisplay(display.value));
 
 		const selectItems = computed(() => {

@@ -1,10 +1,10 @@
 import { FormField } from '@/components/v-form/types';
-import { getInterface } from '@/interfaces';
 import { Field } from '@directus/shared/types';
 import { getDefaultInterfaceForType } from '@/utils/get-default-interface-for-type';
 import { cloneDeep, orderBy } from 'lodash';
 import { computed, ComputedRef, Ref } from 'vue';
 import { translate } from '@/utils/translate-object-values';
+import { useExtension } from './use-extension';
 
 export function useFormFields(fields: Ref<Field[]>): { formFields: ComputedRef<Field[]> } {
 	const formFields = computed(() => {
@@ -24,10 +24,10 @@ export function useFormFields(fields: Ref<Field[]>): { formFields: ComputedRef<F
 		formFields = formFields.map((field, index) => {
 			if (!field.meta) return field;
 
-			let interfaceUsed = getInterface(field.meta.interface);
-			if (interfaceUsed === undefined) {
+			let interfaceUsed = field.meta.interface ? useExtension('interface', field.meta.interface).value : null;
+			if (interfaceUsed === null) {
 				field.meta.interface = getDefaultInterfaceForType(field.type);
-				interfaceUsed = getInterface(field.meta.interface);
+				interfaceUsed = useExtension('interface', field.meta.interface).value;
 			}
 
 			if (interfaceUsed?.hideLabel === true) {

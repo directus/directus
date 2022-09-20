@@ -63,7 +63,6 @@
 
 <script lang="ts">
 import { defineComponent, computed, watch } from 'vue';
-import { getInterface } from '@/interfaces';
 import { useI18n } from 'vue-i18n';
 import { useFieldDetailStore, syncFieldDetailStoreProperty } from '../store/';
 import { storeToRefs } from 'pinia';
@@ -71,6 +70,7 @@ import ExtensionOptions from '../shared/extension-options.vue';
 import RelationshipConfiguration from './relationship-configuration.vue';
 import { nanoid } from 'nanoid';
 import { useExtensions } from '@/extensions';
+import { useExtension } from '@/composables/use-extension';
 
 export default defineComponent({
 	components: { ExtensionOptions, RelationshipConfiguration },
@@ -95,7 +95,7 @@ export default defineComponent({
 		const required = syncFieldDetailStoreProperty('field.meta.required', false);
 		const note = syncFieldDetailStoreProperty('field.meta.note');
 
-		const chosenInterfaceConfig = computed(() => getInterface(chosenInterface.value));
+		const chosenInterfaceConfig = useExtension('interface', chosenInterface);
 
 		const typeOptions = computed(() => {
 			if (!chosenInterfaceConfig.value) return [];

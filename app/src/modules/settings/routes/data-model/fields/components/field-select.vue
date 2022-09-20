@@ -148,7 +148,6 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, ref, computed } from 'vue';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
-import { getInterface } from '@/interfaces';
 import { useRouter } from 'vue-router';
 import { cloneDeep } from 'lodash';
 import { getLocalTypeForField } from '@/utils/get-local-type';
@@ -159,6 +158,7 @@ import FieldSelectMenu from './field-select-menu.vue';
 import { hideDragImage } from '@/utils/hide-drag-image';
 import Draggable from 'vuedraggable';
 import formatTitle from '@directus/format-title';
+import { useExtension } from '@/composables/use-extension';
 
 export default defineComponent({
 	name: 'FieldSelect',
@@ -191,7 +191,11 @@ export default defineComponent({
 		const { deleteActive, deleting, deleteField } = useDeleteField();
 		const { duplicateActive, duplicateName, collections, duplicateTo, saveDuplicate, duplicating } = useDuplicate();
 
-		const interfaceName = computed(() => getInterface(props.field.meta?.interface)?.name);
+		const inter = useExtension(
+			'interface',
+			computed(() => props.field.meta?.interface ?? null)
+		);
+		const interfaceName = computed(() => inter.value?.name ?? null);
 
 		const hidden = computed(() => props.field.meta?.hidden === true);
 

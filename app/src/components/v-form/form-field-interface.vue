@@ -48,8 +48,8 @@
 import { useI18n } from 'vue-i18n';
 import { computed } from 'vue';
 import { Field } from '@directus/shared/types';
-import { getInterface } from '@/interfaces';
 import { getDefaultInterfaceForType } from '@/utils/get-default-interface-for-type';
+import { useExtension } from '@/composables/use-extension';
 
 interface Props {
 	field: Field;
@@ -82,7 +82,12 @@ defineEmits(['update:modelValue', 'setFieldValue']);
 
 const { t } = useI18n();
 
-const interfaceExists = computed(() => !!getInterface(props.field?.meta?.interface || 'input'));
+const inter = useExtension(
+	'interface',
+	computed(() => props.field?.meta?.interface ?? 'input')
+);
+
+const interfaceExists = computed(() => !!inter.value);
 </script>
 
 <style lang="scss" scoped>
