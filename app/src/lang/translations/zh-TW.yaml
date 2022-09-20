@@ -1963,6 +1963,8 @@ panels:
     name: 全域變數
     description: 在其他面板的篩選器中設定一個全域值
     variable_key: 變動值
+  relational-variable:
+    variable_key: 變動值
 triggers:
   common:
     response_body: 回應內文
