@@ -25,9 +25,9 @@ import { computed, ref } from 'vue';
 import { useFieldsStore } from '@/stores/fields';
 import { get } from 'lodash';
 import { Field } from '@directus/shared/types';
-import { getDisplay } from '@/displays';
 import { getDefaultDisplayForType } from '@/utils/get-default-display-for-type';
 import { translate } from '@/utils/translate-object-values';
+import { useExtension } from '@/composables/use-extension';
 
 interface Props {
 	template: string;
@@ -79,12 +79,15 @@ function handleArray(fieldKeyBefore: string, fieldKeyAfter: string) {
 
 	if (!field) return value;
 
-	const displayInfo = getDisplay(field.meta?.display);
+	const displayInfo = useExtension(
+		'display',
+		computed(() => field.meta?.display ?? null)
+	);
 
 	let component = field.meta?.display;
 	let options = field.meta?.display_options;
 
-	if (!displayInfo) {
+	if (!displayInfo.value) {
 		component = 'related-values';
 		options = { template: `{{${fieldKeyAfter}}}` };
 	}
@@ -131,10 +134,13 @@ function handleObject(fieldKey: string) {
 	// No need to render the empty display overhead in this case
 	if (display === 'raw') return value;
 
-	const displayInfo = getDisplay(field.meta?.display);
+	const displayInfo = useExtension(
+		'display',
+		computed(() => field.meta?.display ?? null)
+	);
 
 	// If used display doesn't exist in the current project, return raw value
-	if (!displayInfo) return value;
+	if (!displayInfo.value) return value;
 
 	return {
 		component: field.meta?.display,

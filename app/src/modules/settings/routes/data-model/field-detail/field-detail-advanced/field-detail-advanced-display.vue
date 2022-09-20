@@ -21,7 +21,6 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed } from 'vue';
-import { getDisplay } from '@/displays';
 import { clone } from 'lodash';
 import { useFieldDetailStore, syncFieldDetailStoreProperty } from '../store';
 import { storeToRefs } from 'pinia';
@@ -41,7 +40,7 @@ export default defineComponent({
 		const display = syncFieldDetailStoreProperty('field.meta.display');
 
 		const selectedInterface = useExtension('interface', interfaceId);
-		const selectedDisplay = computed(() => getDisplay(display.value));
+		const selectedDisplay = useExtension('display', display);
 
 		const selectItems = computed(() => {
 			let recommended = clone(selectedInterface.value?.recommendedDisplays) || [];

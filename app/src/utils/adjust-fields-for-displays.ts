@@ -1,6 +1,7 @@
-import { getDisplay } from '@/displays';
+import { useExtension } from '@/composables/use-extension';
 import { useFieldsStore } from '@/stores/fields';
 import { Field } from '@directus/shared/types';
+import { computed } from 'vue';
 
 export function adjustFieldsForDisplays(fields: readonly string[], parentCollection: string): string[] {
 	const fieldsStore = useFieldsStore();
@@ -12,19 +13,22 @@ export function adjustFieldsForDisplays(fields: readonly string[], parentCollect
 			if (!field) return fieldKey;
 			if (field.meta?.display === null) return fieldKey;
 
-			const display = getDisplay(field.meta?.display);
+			const display = useExtension(
+				'display',
+				computed(() => field.meta?.display ?? null)
+			);
 
 			if (!display) return fieldKey;
-			if (!display?.fields) return fieldKey;
+			if (!display.value?.fields) return fieldKey;
 
 			let fieldKeys: string[] | null = null;
 
-			if (Array.isArray(display.fields)) {
-				fieldKeys = display.fields.map((relatedFieldKey: string) => `${fieldKey}.${relatedFieldKey}`);
+			if (Array.isArray(display.value.fields)) {
+				fieldKeys = display.value.fields.map((relatedFieldKey: string) => `${fieldKey}.${relatedFieldKey}`);
 			}
 
-			if (typeof display.fields === 'function') {
-				fieldKeys = display
+			if (typeof display.value.fields === 'function') {
+				fieldKeys = display.value
 					.fields(field.meta?.display_options, {
 						collection: field.collection,
 						field: field.field,
