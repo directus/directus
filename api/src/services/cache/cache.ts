@@ -10,6 +10,7 @@ export abstract class CacheService {
 
     ttl: number | undefined;
     namespace: string;
+    KEY_BLACKLIST = ['lock']
 
     constructor(options: CacheOptions) {
         this.ttl = options?.ttl;
@@ -23,6 +24,7 @@ export abstract class CacheService {
     
     abstract setHash(key: string, value: Record<string, any>, ttl?: number): Promise<void>;
     abstract getHash(key: string): Promise<Record<string, any> | null>;
+    abstract isHashFull(key: string): Promise<boolean>;
     abstract setHashField(key: string, field: string, value: any, ttl?: number): Promise<void>;
     abstract getHashField(key: string, field: string): Promise<any | null>;
     abstract deleteHashField(key: string, field: string): Promise<void>;
@@ -49,8 +51,10 @@ export abstract class CacheService {
     async autoCacheHash<T extends Record<string, any>>(key: string, fn: () => Promise<T>, ttl?: number | undefined): Promise<T> {
         let value = await this.getHash(key)
 
-        if (value !== null) return value as T;
-
+        if (value !== null && await this.isHashFull(key)) {
+            return await this.getHash(key) as T
+        };
+ 
         value = await fn()
         await this.setHash(key, value, ttl)
 
@@ -59,7 +63,9 @@ export abstract class CacheService {
 
     async autoCacheHashField<T>(key: string, field: string, fn: () => Promise<T>, ttl?: number | undefined): Promise<T> {
         let value = await this.getHashField(key, field)
-        if (value !== null) return value;
+        if (value !== null) {
+            return value
+        };
 
         value = await fn()
         await this.setHashField(key, field, value, ttl)

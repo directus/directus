@@ -7,11 +7,12 @@ import { ALIAS_TYPES } from '../constants.js';
 import getDatabase from '../database/index.js';
 import { systemCollectionRows } from '../database/system-data/collections/index.js';
 import { systemFieldRows } from '../database/system-data/fields/index.js';
+import { systemRelationRows } from '../database/system-data/relations/index.js';
 import env from '../env.js';
 import logger from '../logger.js';
-import { RelationsService } from '../services/index.js';
 import getDefaultValue from './get-default-value.js';
 import getLocalType from './get-local-type.js';
+import { stitchRelations } from './stitch-relations.js';
 
 export async function getSchema(options?: {
 	accountability?: Accountability;
@@ -22,9 +23,7 @@ export async function getSchema(options?: {
 
 	const {systemCache} = getCache()
 
-	let result: SchemaOverview;
-
-	return {
+	let result: SchemaOverview = {
 		getCollections: () => useAutoCacheHash('collections', loadCollections),
 		getCollection: (collection: string) => useAutoCacheHashField('collections', collection, async () => await loadCollection(collection)),
 		getFields: (collection: string) => useAutoCacheHash(`fields:${collection}`, async () => await loadFields(collection)),
@@ -53,22 +52,40 @@ export async function getSchema(options?: {
 		hasField: async (collection: string, field: string) => {
 			return await useAutoCacheHashField(`hasField:${collection}`, field, async () => await loadHasField(collection, field));
 		}
-	};
+	}
+
+	return result;
 
 	async function useAutoCacheHash<T>(key: string, fn: () => Promise<Record<string, T>>): Promise<Record<string,T>> {
+		// console.time(`getSchema:${key}`)
+
+		let result
+
 		if(env['CACHE_SCHEMA'] !== false) {
-			return await systemCache.autoCacheHash(key, fn);
+			result = await systemCache.autoCacheHash(key, fn);
 		} else {
-			return await fn()
+			result = await fn()
 		}
+
+		// console.timeEnd(`getSchema:${key}`)
+
+		return result
 	}
 
 	async function useAutoCacheHashField<T>(key: string, field: string, fn: () => Promise<T>): Promise<T> {
+		// console.time(`getSchemaField:${key}:${field}`)
+
+		let result
+
 		if(env['CACHE_SCHEMA'] !== false) {
-			return await systemCache.autoCacheHashField(key, field, fn);
+			result = await systemCache.autoCacheHashField(key, field, fn);
 		} else {
-			return await fn()
+			result = await fn()
 		}
+
+		// console.timeEnd(`getSchemaField:${key}:${field}`)
+
+		return result
 	}
 
 	async function loadCollections() {
@@ -299,8 +316,15 @@ export async function getSchema(options?: {
 	}
 
 	async function loadRelationsForCollection(collection: string) {
-		const relationsService = new RelationsService({ knex: database, schema: result });
-		const relations = await relationsService.readAll(collection);
+		let metaRows = [
+			...await database
+				.select('id','many_collection','many_field','one_collection','one_field','one_collection_field','one_allowed_collections','junction_field','sort_field','one_deselect_action')
+				.from('directus_relations').where('many_collection', collection),
+			...systemRelationRows.filter((fieldMeta) => fieldMeta.many_collection === collection)
+		]
+
+		const schemaRows = await schemaInspector.foreignKeys(collection);
+		const relations = stitchRelations(metaRows, schemaRows);
 
 		return relations.reduce<Record<string, Relation>>((acc, relation) => {
 			acc[relation.field] = relation;
@@ -309,7 +333,16 @@ export async function getSchema(options?: {
 	}
 
 	async function loadRelationsForField(collection: string, field: string) {
-		const relationsService = new RelationsService({ knex: database, schema: result });
-		return await relationsService.readOne(collection, field);
+		let metaRows = [
+			...await database
+				.select('id','many_collection','many_field','one_collection','one_field','one_collection_field','one_allowed_collections','junction_field','sort_field','one_deselect_action')
+				.from('directus_relations').where('many_collection', collection).andWhere('many_field', field),
+			...systemRelationRows.filter((fieldMeta) => fieldMeta.many_collection === collection && fieldMeta.many_field === field)
+		]
+
+		const schemaRows = (await schemaInspector.foreignKeys(collection)).filter((row) => row.column === field && row.table === collection);
+		const relations = stitchRelations(metaRows, schemaRows);
+
+		return relations[0] ?? null;
 	}
 }

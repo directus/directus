@@ -6,13 +6,13 @@ import { toArray } from '@directus/shared/utils';
 import { ItemsService, QueryOptions } from './items.js';
 import { PermissionsService } from './permissions.js';
 import SchemaInspector from '@directus/schema';
-import type { ForeignKey } from 'knex-schema-inspector/dist/types/foreign-key';
 import getDatabase, { getSchemaInspector } from '../database/index.js';
 import { getDefaultIndexName } from '../utils/get-default-index-name.js';
 import { getCache, clearSystemCache } from '../cache.js';
 import type { AbstractServiceOptions } from '../types/index.js';
 import { getHelpers, Helpers } from '../database/helpers/index.js';
 import type { CacheService } from './cache/cache.js';
+import { stitchRelations } from '../utils/stitch-relations.js';
 
 export class RelationsService {
 	knex: Knex;
@@ -68,7 +68,7 @@ export class RelationsService {
 		});
 
 		const schemaRows = await this.schemaInspector.foreignKeys(collection);
-		const results = this.stitchRelations(metaRows, schemaRows);
+		const results = stitchRelations(metaRows, schemaRows);
 		return await this.filterForbidden(results);
 	}
 
@@ -110,7 +110,7 @@ export class RelationsService {
 		const schemaRow = (await this.schemaInspector.foreignKeys(collection)).find(
 			(foreignKey: any) => foreignKey.column === field
 		);
-		const stitched = this.stitchRelations(metaRow, schemaRow ? [schemaRow] : []);
+		const stitched = stitchRelations(metaRow, schemaRow ? [schemaRow] : []);
 		const results = await this.filterForbidden(stitched);
 
 		if (results.length === 0) {
@@ -359,49 +359,6 @@ export class RelationsService {
 		return !!this.accountability?.permissions?.find((permission) => {
 			return permission.collection === 'directus_relations' && permission.action === 'read';
 		});
-	}
-
-	/**
-	 * Combine raw schema foreign key information with Directus relations meta rows to form final
-	 * Relation objects
-	 */
-	private stitchRelations(metaRows: RelationMeta[], schemaRows: ForeignKey[]) {
-		const results = schemaRows.map((foreignKey): Relation => {
-			return {
-				collection: foreignKey.table,
-				field: foreignKey.column,
-				related_collection: foreignKey.foreign_key_table,
-				schema: foreignKey,
-				meta:
-					metaRows.find((meta) => {
-						if (meta.many_collection !== foreignKey.table) return false;
-						if (meta.many_field !== foreignKey.column) return false;
-						if (meta.one_collection && meta.one_collection !== foreignKey.foreign_key_table) return false;
-						return true;
-					}) || null,
-			};
-		});
-
-		/**
-		 * Meta rows that don't have a corresponding schema foreign key
-		 */
-		const remainingMetaRows = metaRows
-			.filter((meta) => {
-				return !results.find((relation) => relation.meta === meta);
-			})
-			.map((meta): Relation => {
-				return {
-					collection: meta.many_collection,
-					field: meta.many_field,
-					related_collection: meta.one_collection ?? null,
-					schema: null,
-					meta: meta,
-				};
-			});
-
-		results.push(...remainingMetaRows);
-
-		return results;
 	}
 
 	/**

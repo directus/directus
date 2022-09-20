@@ -53,14 +53,24 @@ export class RedisCache extends CacheService {
             values.push(key, stringify(await compress(val)))
         }
 
+        values.push('#full', 'true')
+
         await this.client.sendCommand(['HSET', _key, ...values])
+
         if(ttl !== undefined) await this.client.expire(_key, ttl);
     }
     async getHash(key: string): Promise<Record<string, any> | null> {
         const value = await this.client.hGetAll(this.addPrefix(key))
         if(value === null) return null;
-        return Object.fromEntries(await map(Object.entries(value), async ([key, val]: [string, any]) => [key, await decompress( parse(val))]))
+        const entries = Object.entries(value).filter(([key]) => key.startsWith('#') === false)
+
+        return Object.fromEntries(await map(entries, async ([key, val]: [string, any]) => [key, await decompress( parse(val))]))
     }
+
+    async isHashFull(key: string): Promise<boolean> {
+        return await this.client.hGet(this.addPrefix(key), '#full') === 'true'
+    }
+
     async setHashField(key: string, field: string, value: any, ttl?: number | undefined): Promise<void> {
         if(await this.isLocked()) return
 
@@ -78,7 +88,7 @@ export class RedisCache extends CacheService {
     }
 
     async deleteHashField(key: string, field: string): Promise<void> {
-        await this.client.hDel(this.addPrefix(key), field)
+        await this.client.sendCommand(['HDEL', this.addPrefix(key), field, '$full'])
     }
     
 }

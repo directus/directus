@@ -12,7 +12,7 @@ export class MemCache extends CacheService {
         if(Date.now() > expired) {
             this.store.delete(_key);
             this.expires.delete(_key);
-            return undefined;
+            return null;
         }
 
         return this.store.get(key)
@@ -30,26 +30,33 @@ export class MemCache extends CacheService {
         }
     }
 
-    clear(): Promise<void> {
+    async clear(): Promise<void> {
         this.store.clear()
         this.expires.clear();
-        return Promise.resolve();
     }
 
-    delete(key: string): Promise<void> {
+    async delete(key: string): Promise<void> {
         const _key = this.addPrefix(key);
 
         this.store.delete(_key);
         this.expires.delete(_key);
-        return Promise.resolve();
     }
 
-    setHash(key: string, value: Record<string, any>, ttl?: number | undefined): Promise<void> {
-        return this.set(key, value, ttl);
+    async setHash(key: string, value: Record<string, any>, ttl?: number | undefined): Promise<void> {
+        return await this.set(key, {...value, '#full': 'true'}, ttl);
     }
-    getHash(key: string): Promise<Record<string, any> | null> {
-        return this.get(key);
+    async getHash(key: string): Promise<Record<string, any> | null> {
+        const value = await this.get(key)
+
+        if(value === null) return null;
+
+        return Object.fromEntries(Object.entries(value).filter(([key]) => key.startsWith('#') === false));
     }
+    
+    async isHashFull(key: string): Promise<boolean> {
+        return await (this.store.get(key)?.['#full']) === 'true';
+    }
+
     async setHashField(key: string, field: string, value: any, ttl?: number | undefined): Promise<void> {
         const localValue = cloneDeep(await this.get(key)) ?? {}
 
@@ -73,6 +80,7 @@ export class MemCache extends CacheService {
         if(typeof localValue !== 'object') throw new Error('Cannot set hash field on non-object value');
 
         delete localValue[field];
+        delete localValue['#full'];
 
         await this.set(key, localValue);
     }

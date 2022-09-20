@@ -241,7 +241,8 @@ async function getDBQuery(
 	query: Query
 ): Promise<Knex.QueryBuilder> {
 	const preProcess = getColumnPreprocessor(knex, schema, table);
-	const dbQuery = knex.select(await map(fieldNodes, preProcess)).from(table);
+	const fields = await map(fieldNodes, preProcess)
+	const dbQuery = knex.select(fields).from(table);
 	const queryCopy = clone(query);
 
 	queryCopy.limit = typeof queryCopy.limit === 'number' ? queryCopy.limit : 100;
