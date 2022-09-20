@@ -241,7 +241,12 @@ async function getDBQuery(
 	query: Query
 ): Promise<Knex.QueryBuilder> {
 	const preProcess = getColumnPreprocessor(knex, schema, table);
-	const fields = await map(fieldNodes, preProcess)
+	let fields = []
+
+	for (const fieldNode of fieldNodes) {
+		fields.push(await preProcess(fieldNode));
+	}
+
 	const dbQuery = knex.select(fields).from(table);
 	const queryCopy = clone(query);
 

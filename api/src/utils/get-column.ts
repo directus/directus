@@ -23,7 +23,7 @@ export async function getColumn(
 	alias: string | false = applyFunctionToColumnName(column),
 	schema: SchemaOverview,
 	query?: Query
-): Promise<Knex.Raw> {
+): Promise<Knex.Raw<string>> {
 	const fn = getFunctions(knex, schema);
 
 	if (column.includes('(') && column.includes(')')) {
