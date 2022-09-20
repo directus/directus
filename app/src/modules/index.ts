@@ -21,24 +21,24 @@ export function registerModules(modules: ModuleConfig[]): ShallowRef<ModuleConfi
 		() => appStore.hydrated,
 		async (hydrated) => {
 			if (hydrated) {
-				registeredModules.value = [];
-
 				const userStore = useUserStore();
 				const permissionsStore = usePermissionsStore();
 
-				for (const module of modules) {
-					if (!userStore.currentUser) continue;
+				if (!userStore.currentUser) return;
 
-					if (module.preRegisterCheck) {
-						const allowed = await module.preRegisterCheck(userStore.currentUser, permissionsStore.permissions);
+				registeredModules.value = (
+					await Promise.all(
+						modules.map(async (module) => {
+							if (!module.preRegisterCheck) return module;
 
-						if (allowed) {
-							registeredModules.value.push(module);
-						}
-					} else {
-						registeredModules.value.push(module);
-					}
-				}
+							const allowed = await module.preRegisterCheck(userStore.currentUser, permissionsStore.permissions);
+
+							if (allowed) return module;
+
+							return null;
+						})
+					)
+				).filter((module): module is ModuleConfig => module !== null);
 
 				for (const module of registeredModules.value) {
 					router.addRoute({
