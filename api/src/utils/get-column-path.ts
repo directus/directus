@@ -9,7 +9,7 @@ export type ColPathProps = {
 	collection: string;
 	aliasMap: AliasMap;
 	relations: Relation[];
-	schema: SchemaOverview;
+	schema?: SchemaOverview;
 };
 
 export type ColPathResult = {
@@ -63,7 +63,7 @@ export function getColumnPath({ path, collection, aliasMap, relations, schema }:
 		}
 
 		// Top level alias field
-		if (!((remainingParts[0] ?? parent).includes('(') && (remainingParts[0] ?? parent).includes(')'))) {
+		if (schema && !((remainingParts[0] ?? parent).includes('(') && (remainingParts[0] ?? parent).includes(')'))) {
 			if (remainingParts.length === 0) {
 				remainingParts.push(schema.collections[parent].primary);
 				addNestedPkField = schema.collections[parent].primary;
