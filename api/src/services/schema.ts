@@ -1,7 +1,9 @@
 import { Accountability } from '@directus/shared/types';
+import { getSimpleHash } from '@directus/shared/utils';
 import { Knex } from 'knex';
+import { version as currentDirectusVersion } from '../../package.json';
 import getDatabase from '../database';
-import { ForbiddenException, InvalidPayloadException } from '../exceptions';
+import { ForbiddenException } from '../exceptions';
 import { AbstractServiceOptions, Snapshot, SnapshotDiff } from '../types';
 import { applySnapshot } from '../utils/apply-snapshot';
 import { getSnapshot } from '../utils/get-snapshot';
@@ -24,41 +26,40 @@ export class SchemaService {
 		return currentSnapshot;
 	}
 
-	async apply(snapshot: Snapshot): Promise<void> {
+	async apply(diff: SnapshotDiff): Promise<void> {
 		if (this.accountability?.admin !== true) throw new ForbiddenException();
 
-		const currentSnapshot = await getSnapshot({ database: this.knex });
-		const snapshotDiff = getSnapshotDiff(currentSnapshot, snapshot);
+		const currentSnapshot = await this.snapshot();
 
-		if (
-			snapshotDiff.collections.length === 0 &&
-			snapshotDiff.fields.length === 0 &&
-			snapshotDiff.relations.length === 0
-		) {
+		if (diff.collections.length === 0 && diff.fields.length === 0 && diff.relations.length === 0) {
 			return;
 		}
 
-		try {
-			await applySnapshot(snapshot, { current: currentSnapshot, diff: snapshotDiff, database: this.knex });
-		} catch (err: any) {
-			throw new InvalidPayloadException('Failed to apply snapshot');
-		}
+		// intentionally don't try/catch to let errors bubble up
+		// TODO: remove "{} as any" temporary workaround
+		await applySnapshot({} as any, { current: currentSnapshot, diff, database: this.knex });
 	}
 
 	async diff(snapshot: Snapshot): Promise<SnapshotDiff | null> {
 		if (this.accountability?.admin !== true) throw new ForbiddenException();
 
 		const currentSnapshot = await getSnapshot({ database: this.knex });
-		const snapshotDiff = getSnapshotDiff(currentSnapshot, snapshot);
+		const diff = getSnapshotDiff(currentSnapshot, snapshot);
 
-		if (
-			snapshotDiff.collections.length === 0 &&
-			snapshotDiff.fields.length === 0 &&
-			snapshotDiff.relations.length === 0
-		) {
+		if (diff.collections.length === 0 && diff.fields.length === 0 && diff.relations.length === 0) {
 			return null;
 		}
 
-		return snapshotDiff;
+		return diff;
+	}
+
+	async getCurrentHash(): Promise<string> {
+		if (this.accountability?.admin !== true) throw new ForbiddenException();
+
+		const currentSnapshot = await this.snapshot();
+
+		const hash = getSimpleHash(`${JSON.stringify(currentSnapshot)}_${currentDirectusVersion}`);
+
+		return hash;
 	}
 }

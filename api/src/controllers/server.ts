@@ -165,13 +165,21 @@ const schemaMultipartHandler: RequestHandler = (req, res, next) => {
 
 router.post(
 	'/schema/apply',
-	asyncHandler(schemaMultipartHandler),
 	asyncHandler(async (req, res, next) => {
 		const service = new SchemaService({ accountability: req.accountability });
 
-		const snapshot: Snapshot = req.is('application/json') ? req.body : res.locals.uploadedSnapshot;
+		if (!req.body.hash) throw new InvalidPayloadException(`No hash were included in the body`);
+		if (!req.body.diff) throw new InvalidPayloadException(`No diff were included in the body`);
 
-		await service.apply(snapshot);
+		const hash = await service.getCurrentHash();
+
+		if (req.body.hash !== hash) {
+			throw new InvalidPayloadException(
+				`Provided hash ${req.body.hash} does not match the current instance's hash ${hash}`
+			);
+		}
+
+		await service.apply(req.body.diff);
 
 		return next();
 	}),
@@ -190,7 +198,9 @@ router.post(
 
 		if (!snapshotDiff) return next();
 
-		res.locals.payload = { data: snapshotDiff };
+		const hash = await service.getCurrentHash();
+
+		res.locals.payload = { data: { hash, diff: snapshotDiff } };
 
 		return next();
 	}),
