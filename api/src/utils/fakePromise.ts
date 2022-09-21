@@ -1,5 +1,5 @@
-export function fakePromise<T extends object>(value: T) {
-    return Promise.resolve( new Proxy(value, {
+export function fakePromise<T extends object>(value: T): T {
+    return new Proxy(value, {
         get: function (target, name) {
 
             if(name === 'then') {
@@ -8,11 +8,11 @@ export function fakePromise<T extends object>(value: T) {
                 })
             }
 
-            if(name === 'run') {
+            if(name === '$run') {
                 return target;
             }
-    
+            
             return Reflect.get(target, name);
         }
-    }))
+    })
 }
