@@ -5,6 +5,7 @@ import type { Knex } from 'knex';
 import { getFunctions } from '../database/helpers/index.js';
 import { InvalidQueryException } from '../exceptions/index.js';
 import { applyFunctionToColumnName } from './apply-function-to-column-name.js';
+import { fakePromise } from './fakePromise.js';
 
 /**
  * Return column prefixed by table. If column includes functions (like `year(date_created)`), the
@@ -23,7 +24,7 @@ export async function getColumn(
 	alias: string | false = applyFunctionToColumnName(column),
 	schema: SchemaOverview,
 	query?: Query
-): Promise<() => Knex.Raw<string>> {
+): Promise<Knex.Raw<string>> {
 	const fn = getFunctions(knex, schema);
 
 	if (column.includes('(') && column.includes(')')) {
@@ -41,18 +42,18 @@ export async function getColumn(
 			const result = await fn[functionName as keyof typeof fn](table, columnName, { type, query: query! }) as Knex.Raw;
 
 			if (alias) {
-				return () => knex.raw(result + ' AS ??', [alias]);
+				return fakePromise(knex.raw(result + ' AS ??', [alias]));
 			}
 
-			return () => result;
+			return fakePromise(result);
 		} else {
 			throw new InvalidQueryException(`Invalid function specified "${functionName}"`);
 		}
 	}
 
 	if (alias && column !== alias) {
-		return () => knex.ref(`${table}.${column}`).as(alias);
+		return fakePromise(knex.ref(`${table}.${column}`).as(alias));
 	}
 	// TODO: why did I have to remove the knex.ref?
-	return () => knex.ref(`${table}.${column}`);
+	return fakePromise(knex.ref(`${table}.${column}`));
 }

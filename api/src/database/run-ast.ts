@@ -11,6 +11,7 @@ import { applyFunctionToColumnName } from '../utils/apply-function-to-column-nam
 import applyQuery from '../utils/apply-query.js';
 import { getColumn } from '../utils/get-column.js';
 import { stripFunction } from '../utils/strip-function.js';
+import { fakePromise } from '../utils/fakePromise.js';
 
 type RunASTOptions = {
 	/**
@@ -205,7 +206,7 @@ async function parseCurrentLevel(
 function getColumnPreprocessor(knex: Knex, schema: SchemaOverview, table: string) {
 	const helpers = getHelpers(knex);
 
-	return async function (fieldNode: FieldNode | FunctionFieldNode | M2ONode): Promise<() => Knex.Raw<string>> {
+	return async function (fieldNode: FieldNode | FunctionFieldNode | M2ONode): Promise<Knex.Raw<string>> {
 		let alias = undefined;
 
 		if (fieldNode.name !== fieldNode.fieldKey) {
@@ -225,11 +226,11 @@ function getColumnPreprocessor(knex: Knex, schema: SchemaOverview, table: string
 		}
 
 		if (fieldNode.type === 'functionField') {
-			return await getColumn(knex, table, fieldNode.name, alias, schema, fieldNode.query);
+			return getColumn(knex, table, fieldNode.name, alias, schema, fieldNode.query);
 
 		}
 
-		return await getColumn(knex, table, fieldNode.name, alias, schema);
+		return getColumn(knex, table, fieldNode.name, alias, schema);
 	};
 }
 
@@ -244,7 +245,7 @@ async function getDBQuery(
 	let fields = []
 
 	for (const fieldNode of fieldNodes) {
-		fields.push((await preProcess(fieldNode))());
+		fields.push(await preProcess(fieldNode));
 	}
 
 	const dbQuery = knex.select(fields).from(table);
@@ -252,7 +253,7 @@ async function getDBQuery(
 
 	queryCopy.limit = typeof queryCopy.limit === 'number' ? queryCopy.limit : 100;
 
-	return await applyQuery(knex, table, dbQuery, queryCopy, schema);
+	return applyQuery(knex, table, dbQuery, queryCopy, schema);
 }
 
 async function applyParentFilters(
