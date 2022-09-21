@@ -192,6 +192,9 @@ revision_post_create: Here is what this item looked like when it was created.
 revision_post_update: Here is what this item looked like after the update.
 changes_made: Below are the specific changes made in this revision.
 no_relational_data: Keep in mind that relational data is not included here.
+junction_field_location: Junction Fields Location
+top: Top
+bottom: Bottom
 hide_field: Hide Field
 hide_field_on_detail: Hide Field on Detail
 show_field_on_detail: Show Field on Detail
@@ -331,6 +334,7 @@ edit_raw_value: Edit Raw Value
 enter_raw_value: Enter raw value...
 clear_value: Clear Value
 clear_changes: Clear Changes
+clear_items: Clear Items
 reset_to_default: Reset to Default
 undo_changes: Undo Changes
 notifications: Notifications
@@ -2040,6 +2044,12 @@ panels:
     name: Global Variable
     description: Set a global value for use in other Panels' filters
     variable_key: Variable Key
+  relational-variable:
+    name: Global Relational Variable
+    description: Set a global relational value for use in other Panels' filters
+    variable_key: Variable Key
+    multiple: Multiple
+    multiple-label: Select multiple items
 triggers:
   common:
     response_body: Response Body

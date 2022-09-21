@@ -29,7 +29,7 @@
 <script lang="ts">
 import { defineComponent, toRefs } from 'vue';
 import { useAppStore } from '@/stores/app';
-import { useGroupable } from '@/composables/use-groupable';
+import { useGroupable } from '@directus/shared/composables';
 
 export default defineComponent({
 	props: {

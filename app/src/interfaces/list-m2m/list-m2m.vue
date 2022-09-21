@@ -170,16 +170,16 @@
 		</div>
 
 		<drawer-item
+			v-model:active="editModalActive"
 			:disabled="disabled"
-			:active="editModalActive"
 			:collection="relationInfo.junctionCollection.collection"
 			:primary-key="currentlyEditing || '+'"
 			:related-primary-key="relatedPrimaryKey || '+'"
 			:junction-field="relationInfo.junctionField.field"
 			:edits="editsAtStart"
 			:circular-field="relationInfo.reverseJunctionField.field"
+			:junction-field-location="junctionFieldLocation"
 			@input="stageEdits"
-			@update:active="cancelEdit"
 		/>
 
 		<drawer-collection
@@ -235,6 +235,7 @@ const props = withDefaults(
 		enableLink?: boolean;
 		limit?: number;
 		allowDuplicates?: boolean;
+		junctionFieldLocation?: string;
 	}>(),
 	{
 		value: () => [],
@@ -250,6 +251,7 @@ const props = withDefaults(
 		enableLink: false,
 		limit: 15,
 		allowDuplicates: false,
+		junctionFieldLocation: 'bottom',
 	}
 );
 
@@ -341,8 +343,19 @@ watch([search, searchFilter], () => {
 	page.value = 1;
 });
 
-const { create, update, remove, select, displayItems, totalItemCount, loading, selected, isItemSelected, localDelete } =
-	useRelationMultiple(value, query, relationInfo, primaryKey);
+const {
+	create,
+	update,
+	remove,
+	select,
+	displayItems,
+	totalItemCount,
+	loading,
+	selected,
+	isItemSelected,
+	localDelete,
+	getItemEdits,
+} = useRelationMultiple(value, query, relationInfo, primaryKey);
 
 const pageCount = computed(() => Math.ceil(totalItemCount.value / limit.value));
 
@@ -428,7 +441,7 @@ function sortItems(items: DisplayItem[]) {
 
 	const sortedItems = items.map((item, index) => ({
 		...item,
-		[sortField]: index,
+		[sortField]: index + 1,
 	}));
 	update(...sortedItems);
 }
@@ -464,9 +477,8 @@ function editItem(item: DisplayItem) {
 	const junctionField = relationInfo.value.junctionField.field;
 	const junctionPkField = relationInfo.value.junctionPrimaryKeyField.field;
 
+	editsAtStart.value = getItemEdits(item);
 	newItem = false;
-	editsAtStart.value = item;
-
 	editModalActive.value = true;
 
 	if (item?.$type === 'created' && !isItemSelected(item)) {
@@ -483,15 +495,13 @@ function editRow({ item }: { item: DisplayItem }) {
 }
 
 function stageEdits(item: Record<string, any>) {
+	if (isEmpty(item)) return;
+
 	if (newItem) {
 		create(item);
 	} else {
 		update(item);
 	}
-}
-
-function cancelEdit() {
-	editModalActive.value = false;
 }
 
 function deleteItem(item: DisplayItem) {

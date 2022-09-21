@@ -47,11 +47,15 @@
 							</template>
 
 							<v-list>
-								<v-list-item clickable :href="getUrl(element)">
+								<v-list-item clickable :href="getAssetUrl(getFilename(element))">
 									<v-list-item-icon><v-icon name="launch" /></v-list-item-icon>
 									<v-list-item-content>{{ t('open_file_in_tab') }}</v-list-item-content>
 								</v-list-item>
-								<v-list-item clickable :href="getUrl(element, true)">
+								<v-list-item
+									clickable
+									:download="element.directus_files_id.filename_download"
+									:href="getAssetUrl(getFilename(element), true)"
+								>
 									<v-list-item-icon><v-icon name="download" /></v-list-item-icon>
 									<v-list-item-content>{{ t('download_file') }}</v-list-item-content>
 								</v-list-item>
@@ -73,16 +77,15 @@
 		</div>
 
 		<drawer-item
+			v-model:active="editModalActive"
 			:disabled="disabled"
-			:active="editModalActive"
 			:collection="relationInfo.junctionCollection.collection"
 			:primary-key="currentlyEditing || '+'"
 			:related-primary-key="relatedPrimaryKey || '+'"
 			:junction-field="relationInfo.junctionField.field"
 			:edits="editsAtStart"
 			:circular-field="relationInfo.reverseJunctionField.field"
-			@input="update"
-			@update:active="cancelEdit"
+			@input="stageEdits"
 		>
 			<template #actions>
 				<v-button
@@ -90,7 +93,7 @@
 					secondary
 					rounded
 					icon
-					download
+					:download="downloadName"
 					:href="downloadUrl"
 				>
 					<v-icon name="download" />
@@ -105,7 +108,7 @@
 			:selection="selectedPrimaryKeys"
 			:filter="customFilter"
 			multiple
-			@input="select"
+			@input="onSelect"
 		/>
 
 		<v-dialog v-if="!disabled" v-model="showUpload">
@@ -130,12 +133,11 @@ import { useI18n } from 'vue-i18n';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
 import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import Draggable from 'vuedraggable';
+import { getAssetUrl } from '@/utils/get-asset-url';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
-import { get, clamp } from 'lodash';
+import { get, clamp, isEmpty } from 'lodash';
 import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
-import { addTokenToURL } from '@/api';
-import { getRootPath } from '@/utils/get-root-path';
 import { getFieldsFromTemplate } from '@directus/shared/utils';
 import { Filter } from '@directus/shared/types';
 
@@ -203,7 +205,7 @@ const templateWithDefaults = computed(() => {
 
 const fields = computed(() =>
 	adjustFieldsForDisplays(
-		getFieldsFromTemplate(templateWithDefaults.value),
+		[...getFieldsFromTemplate(templateWithDefaults.value), `${relationInfo.value?.relation.field}.filename_download`],
 		relationInfo.value?.junctionCollection.collection ?? ''
 	)
 );
@@ -216,8 +218,18 @@ const query = computed<RelationQueryMultiple>(() => ({
 	page: page.value,
 }));
 
-const { create, update, remove, select, displayItems, totalItemCount, loading, selected, isItemSelected, localDelete } =
-	useRelationMultiple(value, query, relationInfo, primaryKey);
+const {
+	update,
+	remove,
+	select,
+	displayItems,
+	totalItemCount,
+	loading,
+	selected,
+	isItemSelected,
+	localDelete,
+	getItemEdits,
+} = useRelationMultiple(value, query, relationInfo, primaryKey);
 
 const pageCount = computed(() => Math.ceil(totalItemCount.value / limit.value));
 
@@ -237,7 +249,7 @@ function sortItems(items: DisplayItem[]) {
 
 	const sortedItems = items.map((item, index) => ({
 		...item,
-		[sortField]: index,
+		[sortField]: index + 1,
 	}));
 	update(...sortedItems);
 }
@@ -263,7 +275,7 @@ function editItem(item: DisplayItem) {
 	const junctionField = relationInfo.value.junctionField.field;
 	const junctionPkField = relationInfo.value.junctionPrimaryKeyField.field;
 
-	editsAtStart.value = item;
+	editsAtStart.value = getItemEdits(item);
 
 	editModalActive.value = true;
 
@@ -276,8 +288,10 @@ function editItem(item: DisplayItem) {
 	}
 }
 
-function cancelEdit() {
-	editModalActive.value = false;
+function stageEdits(item: Record<string, any>) {
+	if (isEmpty(item)) return;
+
+	update(item);
 }
 
 function deleteItem(item: DisplayItem) {
@@ -296,39 +310,38 @@ const showUpload = ref(false);
 function onUpload(files: Record<string, any>[]) {
 	showUpload.value = false;
 	if (files.length === 0 || !relationInfo.value) return;
-	const junctionField = relationInfo.value.junctionField.field;
-	const reverseJunctionField = relationInfo.value.reverseJunctionField.field;
-	const relatedPKField = relationInfo.value.relatedPrimaryKeyField.field;
 
-	const filesAsJunctionRows = files.map((file) => {
-		return {
-			[reverseJunctionField]: primaryKey.value,
-			[junctionField]: {
-				[relatedPKField]: file.id,
-			},
-		};
-	});
+	const fileIds = files.map((file) => file.id);
 
-	create(...filesAsJunctionRows);
+	select(fileIds);
 }
+
+function onSelect(selected: string[]) {
+	select(selected.filter((id) => selectedPrimaryKeys.value.includes(id) === false));
+}
+
+const downloadName = computed(() => {
+	if (relatedPrimaryKey.value === null || relationInfo.value?.relatedCollection.collection !== 'directus_files') return;
+	const junctionField = relationInfo.value.junctionField.field;
+	const relationPkField = relationInfo.value.relatedPrimaryKeyField.field;
+
+	return displayItems.value.find((item) => get(item, [junctionField, relationPkField]))?.directus_files_id
+		?.filename_download;
+});
 
 const downloadUrl = computed(() => {
 	if (relatedPrimaryKey.value === null || relationInfo.value?.relatedCollection.collection !== 'directus_files') return;
-	return addTokenToURL(getRootPath() + `assets/${relatedPrimaryKey.value}?download`);
+	return getAssetUrl(String(relatedPrimaryKey.value), true);
 });
 
-function getUrl(junctionRow: Record<string, any>, addDownload?: boolean) {
+function getFilename(junctionRow: Record<string, any>) {
 	const junctionField = relationInfo.value?.junctionField.field;
 	if (!junctionField) return;
 
 	const key = junctionRow[junctionField]?.id ?? junctionRow[junctionField] ?? null;
 	if (!key) return null;
 
-	if (addDownload) {
-		return addTokenToURL(getRootPath() + `assets/${key}?download`);
-	}
-
-	return addTokenToURL(getRootPath() + `assets/${key}`);
+	return key;
 }
 
 const customFilter = computed(() => {

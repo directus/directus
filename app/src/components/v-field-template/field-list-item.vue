@@ -13,32 +13,24 @@
 			v-for="childField in field.children"
 			:key="childField.key"
 			:field="childField"
-			:depth="depth - 1"
+			:depth="depth ? depth - 1 : undefined"
 			@add="$emit('add', $event)"
 		/>
 	</v-list-group>
 </template>
 
-<script lang="ts">
-import { defineComponent, PropType } from 'vue';
+<script setup lang="ts">
 import { FieldTree } from './types';
 import formatTitle from '@directus/format-title';
 
-export default defineComponent({
-	name: 'FieldListItem',
-	props: {
-		field: {
-			type: Object as PropType<FieldTree>,
-			required: true,
-		},
-		depth: {
-			type: Number,
-			default: undefined,
-		},
-	},
-	emits: ['add'],
-	setup() {
-		return { formatTitle };
-	},
+interface Props {
+	field: FieldTree;
+	depth?: number;
+}
+
+withDefaults(defineProps<Props>(), {
+	depth: undefined,
 });
+
+defineEmits(['add']);
 </script>

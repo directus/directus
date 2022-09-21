@@ -19,101 +19,93 @@
 	</component>
 </template>
 
-<script lang="ts">
-import { defineComponent, computed } from 'vue';
+<script setup lang="ts">
+import { computed } from 'vue';
 import { useSync } from '@directus/shared/composables';
 
-export default defineComponent({
-	props: {
-		value: {
-			type: String,
-			default: null,
-		},
-		modelValue: {
-			type: [Boolean, Array],
-			default: null,
-		},
-		label: {
-			type: String,
-			default: null,
-		},
-		disabled: {
-			type: Boolean,
-			default: false,
-		},
-		indeterminate: {
-			type: Boolean,
-			default: false,
-		},
-		iconOn: {
-			type: String,
-			default: 'check_box',
-		},
-		iconOff: {
-			type: String,
-			default: 'check_box_outline_blank',
-		},
-		iconIndeterminate: {
-			type: String,
-			default: 'indeterminate_check_box',
-		},
-		block: {
-			type: Boolean,
-			default: false,
-		},
-		customValue: {
-			type: Boolean,
-			default: false,
-		},
-		checked: {
-			type: Boolean,
-			default: null,
-		},
-	},
-	emits: ['update:indeterminate', 'update:modelValue', 'update:value'],
-	setup(props, { emit }) {
-		const internalValue = useSync(props, 'value', emit);
+interface Props {
+	/** If the `modelValue` is an array of strings, activates the checkbox if the value is inside it */
+	value?: string | null;
+	/** Used to model the active state */
+	modelValue?: boolean | string[] | null;
+	/** Label for the checkbox */
+	label?: string | null;
+	/** Disable the checkbox */
+	disabled?: boolean;
+	/** Renders the checkbox neither selected nor unselected */
+	indeterminate?: boolean;
+	/** What icon to use for the on state */
+	iconOn?: string;
+	/** What icon to use for the off state */
+	iconOff?: string;
+	/** What icon to use for the indeterminate state */
+	iconIndeterminate?: string;
+	/** Show as styled block. Matches input size */
+	block?: boolean;
+	/** If a custom value can be entered next to it */
+	customValue?: boolean;
+	/** TODO: What the? */
+	checked?: boolean | null;
+}
 
-		const isChecked = computed<boolean>(() => {
-			if (props.checked !== null) return props.checked;
-
-			if (props.modelValue instanceof Array) {
-				return props.modelValue.includes(props.value);
-			}
-
-			return props.modelValue === true;
-		});
-
-		const icon = computed<string>(() => {
-			if (props.indeterminate === true) return props.iconIndeterminate;
-			if (props.checked === null && props.modelValue === null) return props.iconIndeterminate;
-
-			return isChecked.value ? props.iconOn : props.iconOff;
-		});
-
-		return { isChecked, toggleInput, icon, internalValue };
-
-		function toggleInput(): void {
-			if (props.indeterminate === true) {
-				emit('update:indeterminate', false);
-			}
-
-			if (props.modelValue instanceof Array) {
-				const newValue = [...props.modelValue];
-
-				if (props.modelValue.includes(props.value) === false) {
-					newValue.push(props.value);
-				} else {
-					newValue.splice(newValue.indexOf(props.value), 1);
-				}
-
-				emit('update:modelValue', newValue);
-			} else {
-				emit('update:modelValue', !props.modelValue);
-			}
-		}
-	},
+const props = withDefaults(defineProps<Props>(), {
+	value: null,
+	modelValue: null,
+	label: null,
+	disabled: false,
+	indeterminate: false,
+	iconOn: 'check_box',
+	iconOff: 'check_box_outline_blank',
+	iconIndeterminate: 'indeterminate_check_box',
+	block: false,
+	customValue: false,
+	checked: null,
 });
+
+const emit = defineEmits(['update:indeterminate', 'update:modelValue', 'update:value']);
+
+const internalValue = useSync(props, 'value', emit);
+
+const isChecked = computed<boolean>(() => {
+	if (props.checked !== null) return props.checked;
+
+	if (props.modelValue instanceof Array) {
+		if (!props.value) return false;
+
+		return props.modelValue.includes(props.value);
+	}
+
+	return props.modelValue === true;
+});
+
+const icon = computed<string>(() => {
+	if (props.indeterminate === true) return props.iconIndeterminate;
+	if (props.checked === null && props.modelValue === null) return props.iconIndeterminate;
+
+	return isChecked.value ? props.iconOn : props.iconOff;
+});
+
+function toggleInput(): void {
+	if (props.disabled) return;
+
+	if (props.indeterminate === true) {
+		emit('update:indeterminate', false);
+	}
+
+	if (props.modelValue instanceof Array && props.value) {
+		const newValue = [...props.modelValue];
+
+		if (props.modelValue.includes(props.value) === false) {
+			newValue.push(props.value);
+		} else {
+			newValue.splice(newValue.indexOf(props.value), 1);
+		}
+
+		emit('update:modelValue', newValue);
+	} else {
+		emit('update:modelValue', !props.modelValue);
+	}
+}
 </script>
 
 <style>
