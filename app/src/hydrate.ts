@@ -15,6 +15,7 @@ import { useSettingsStore } from '@/stores/settings';
 import { useUserStore } from '@/stores/user';
 import { useNotificationsStore } from '@/stores/notifications';
 import { useTranslationStrings } from '@/composables/use-translation-strings';
+import { onDehydrateExtensions, onHydrateExtensions } from './extensions';
 
 type GenericStore = {
 	$id: string;
@@ -75,6 +76,7 @@ export async function hydrate(): Promise<void> {
 			const hydratedStores = ['userStore', 'permissionsStore'];
 
 			await Promise.all(stores.filter(({ $id }) => !hydratedStores.includes($id)).map((store) => store.hydrate?.()));
+			await onHydrateExtensions();
 			await hydrateTranslationStrings();
 
 			if (userStore.currentUser?.language) lang = userStore.currentUser?.language;
@@ -100,6 +102,8 @@ export async function dehydrate(stores = useStores()): Promise<void> {
 	for (const store of stores) {
 		await store.dehydrate?.();
 	}
+
+	await onDehydrateExtensions();
 
 	appStore.hydrated = false;
 }

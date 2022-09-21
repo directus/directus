@@ -21,6 +21,9 @@ const extensions: RefRecord<AppExtensionConfigs> = {
 	operations: shallowRef([]),
 };
 
+const onHydrateCallbacks: (() => Promise<void>)[] = [];
+const onDehydrateCallbacks: (() => Promise<void>)[] = [];
+
 export async function loadExtensions(): Promise<void> {
 	try {
 		customExtensions = import.meta.env.DEV
@@ -62,7 +65,7 @@ export function registerExtensions(app: App): void {
 		{ immediate: true }
 	);
 
-	const registeredModules = registerModules(modules);
+	const { registeredModules, onHydrateModules, onDehydrateModules } = registerModules(modules);
 
 	watch(
 		[i18n.global.locale, registeredModules],
@@ -71,6 +74,17 @@ export function registerExtensions(app: App): void {
 		},
 		{ immediate: true }
 	);
+
+	onHydrateCallbacks.push(onHydrateModules);
+	onDehydrateCallbacks.push(onDehydrateModules);
+}
+
+export async function onHydrateExtensions() {
+	await Promise.all(onHydrateCallbacks.map((onHydrate) => onHydrate()));
+}
+
+export async function onDehydrateExtensions() {
+	await Promise.all(onDehydrateCallbacks.map((onDehydrate) => onDehydrate()));
 }
 
 export function useExtensions(): RefRecord<AppExtensionConfigs> {

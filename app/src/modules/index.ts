@@ -3,8 +3,7 @@ import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
 import RouterPass from '@/utils/router-passthrough';
 import { ModuleConfig } from '@directus/shared/types';
-import { useAppStore } from '@/stores/app';
-import { ShallowRef, shallowRef, watch } from 'vue';
+import { ShallowRef, shallowRef } from 'vue';
 
 export function getInternalModules(): ModuleConfig[] {
 	const modules = import.meta.globEager('./*/index.ts');
@@ -12,51 +11,50 @@ export function getInternalModules(): ModuleConfig[] {
 	return Object.values(modules).map((module) => module.default);
 }
 
-export function registerModules(modules: ModuleConfig[]): ShallowRef<ModuleConfig[]> {
-	const appStore = useAppStore();
-
+export function registerModules(modules: ModuleConfig[]): {
+	registeredModules: ShallowRef<ModuleConfig[]>;
+	onHydrateModules: () => Promise<void>;
+	onDehydrateModules: () => Promise<void>;
+} {
 	const registeredModules = shallowRef<ModuleConfig[]>([]);
 
-	watch(
-		() => appStore.hydrated,
-		async (hydrated) => {
-			if (hydrated) {
-				const userStore = useUserStore();
-				const permissionsStore = usePermissionsStore();
+	const onHydrateModules = async () => {
+		const userStore = useUserStore();
+		const permissionsStore = usePermissionsStore();
 
-				if (!userStore.currentUser) return;
+		if (!userStore.currentUser) return;
 
-				registeredModules.value = (
-					await Promise.all(
-						modules.map(async (module) => {
-							if (!module.preRegisterCheck) return module;
+		registeredModules.value = (
+			await Promise.all(
+				modules.map(async (module) => {
+					if (!module.preRegisterCheck) return module;
 
-							const allowed = await module.preRegisterCheck(userStore.currentUser, permissionsStore.permissions);
+					const allowed = await module.preRegisterCheck(userStore.currentUser, permissionsStore.permissions);
 
-							if (allowed) return module;
+					if (allowed) return module;
 
-							return null;
-						})
-					)
-				).filter((module): module is ModuleConfig => module !== null);
+					return null;
+				})
+			)
+		).filter((module): module is ModuleConfig => module !== null);
 
-				for (const module of registeredModules.value) {
-					router.addRoute({
-						name: module.id,
-						path: `/${module.id}`,
-						component: RouterPass,
-						children: module.routes,
-					});
-				}
-			} else {
-				for (const module of modules) {
-					router.removeRoute(module.id);
-				}
-
-				registeredModules.value = [];
-			}
+		for (const module of registeredModules.value) {
+			router.addRoute({
+				name: module.id,
+				path: `/${module.id}`,
+				component: RouterPass,
+				children: module.routes,
+			});
 		}
-	);
+	};
 
-	return registeredModules;
+	const onDehydrateModules = async () => {
+		for (const module of modules) {
+			router.removeRoute(module.id);
+		}
+
+		registeredModules.value = [];
+	};
+
+	return { registeredModules, onHydrateModules, onDehydrateModules };
 }
