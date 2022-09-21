@@ -5,6 +5,8 @@ import logger from './logger.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
 import { validateEnv } from './utils/validate-env.js';
 import { compress, decompress } from './utils/compress.js';
+import KeyvMemcache from 'keyv-memcache';
+import KeyvRedis from '@keyv/redis';
 
 let cache: Keyv | null = null;
 let systemCache: Keyv | null = null;
@@ -101,13 +103,10 @@ function getConfig(
 	};
 
 	if (store === 'redis') {
-		const KeyvRedis = require('@keyv/redis');
-
-		config.store = new KeyvRedis(env['CACHE_REDIS'] || getConfigFromEnv('CACHE_REDIS_'));
+		config.store = new KeyvRedis(env['CACHE_REDIS'] || getConfigFromEnv('CACHE_REDIS_')) as any;
 	}
 
 	if (store === 'memcache') {
-		const KeyvMemcache = require('keyv-memcache');
 
 		// keyv-memcache uses memjs which only accepts a comma separated string instead of an array,
 		// so we need to join array into a string when applicable. See #7986
@@ -115,7 +114,7 @@ function getConfig(
 			? env['CACHE_MEMCACHE'].join(',')
 			: env['CACHE_MEMCACHE'];
 
-		config.store = new KeyvMemcache(cacheMemcache);
+		config.store = new KeyvMemcache(cacheMemcache) as any;
 	}
 
 	return config;

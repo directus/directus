@@ -1,5 +1,5 @@
 import type { Knex } from 'knex';
-import SchemaInspector from 'knex-schema-inspector';
+import {SchemaInspector} from 'knex-schema-inspector';
 import logger from '../../logger.js';
 import type { RelationMeta } from '@directus/shared/types';
 import { getDefaultIndexName } from '../../utils/get-default-index-name.js';
