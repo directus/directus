@@ -54,5 +54,5 @@ export async function getColumn(
 		return knex.ref(`${table}.${column}`).as(alias);
 	}
 	// TODO: why did I have to remove the knex.ref?
-	return knex.ref(`${table}.${column}`);
+	return `${table}.${column}`;
 }
