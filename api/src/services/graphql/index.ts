@@ -415,7 +415,8 @@ export class GraphQLService {
 						}
 
 						if (collection.primary === field.field) {
-							if (!field.defaultValue && action === 'create') type = GraphQLNonNull(GraphQLID);
+							if (!field.defaultValue && !field.special.includes('uuid') && action === 'create')
+								type = GraphQLNonNull(GraphQLID);
 							else if (['create', 'update'].includes(action)) type = GraphQLID;
 							else type = GraphQLNonNull(GraphQLID);
 						}
