@@ -1,6 +1,8 @@
 import type { Snapshot, SnapshotDiff } from '../types/index.js';
-import { diff } from 'deep-diff';
+import deepDiff from 'deep-diff';
 import { orderBy } from 'lodash-es';
+
+const {diff} = deepDiff;
 
 export function getSnapshotDiff(current: Snapshot, after: Snapshot): SnapshotDiff {
 	const diffedSnapshot: SnapshotDiff = {

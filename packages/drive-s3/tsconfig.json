@@ -24,6 +24,7 @@
 	  "noUnusedLocals": true,
 	  "noUnusedParameters": true,
 	  "importsNotUsedAsValues": "error",
+	  "declaration": true,
 	  "checkJs": true,
 	  "outDir": "dist"
 	  },
