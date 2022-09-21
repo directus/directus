@@ -407,6 +407,7 @@ export class GraphQLService {
 						// submitted on updates
 						if (
 							field.nullable === false &&
+							!field.defaultValue &&
 							!GENERATE_SPECIAL.some((flag) => field.special.includes(flag)) &&
 							action !== 'update'
 						) {
