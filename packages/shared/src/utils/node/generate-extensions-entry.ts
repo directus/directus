@@ -8,6 +8,7 @@ import type {
 	HybridExtensionType,
 } from '../../types/index.js';
 import { isTypeIn } from '../array-helpers.js';
+import { pathToRelativeUrl } from './path-to-relative-url';
 
 export function generateExtensionsEntry(type: AppExtensionType | HybridExtensionType, extensions: Extension[]): string {
 	const filteredExtensions = extensions.filter(
@@ -17,16 +18,12 @@ export function generateExtensionsEntry(type: AppExtensionType | HybridExtension
 	return `${filteredExtensions
 		.map(
 			(extension, i) =>
-				`import e${i} from './${path
-					.relative(
-						'.',
-						path.resolve(
-							extension.path,
-							isTypeIn(extension, HYBRID_EXTENSION_TYPES) ? extension.entrypoint.app : extension.entrypoint
-						)
+				`import e${i} from './${pathToRelativeUrl(
+					path.resolve(
+						extension.path,
+						isTypeIn(extension, HYBRID_EXTENSION_TYPES) ? extension.entrypoint.app : extension.entrypoint
 					)
-					.split(path.sep)
-					.join(path.posix.sep)}';\n`
+				)}';\n`
 		)
 		.join('')}export default [${filteredExtensions.map((_, i) => `e${i}`).join(',')}];`;
 }

@@ -291,7 +291,9 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		const updatedQuery =
 			opts?.emitEvents !== false
 				? await emitter.emitFilter(
-						`${this.eventScope}.query`,
+						this.eventScope === 'items'
+							? ['items.query', `${this.collection}.items.query`]
+							: `${this.eventScope}.query`,
 						query,
 						{
 							collection: this.collection,
