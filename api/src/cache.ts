@@ -1,9 +1,11 @@
 import ms from 'ms';
-import env from './env';
-import { validateEnv } from './utils/validate-env';
-import { CacheOptions, CacheService } from './services/cache/cache';
-import { RedisCache } from './services/cache/redis-cache';
-import { MemCache } from './services/cache/mem-cache';
+import env from './env.js';
+import logger from './logger.js';
+import { getConfigFromEnv } from './utils/get-config-from-env.js';
+import { validateEnv } from './utils/validate-env.js';
+import { compress, decompress } from './utils/compress.js';
+import KeyvMemcache from 'keyv-memcache';
+import KeyvRedis from '@keyv/redis';
 
 let cache: CacheService | null = null;
 let systemCache: CacheService | null = null;
@@ -64,11 +66,20 @@ function getCacheInstance(ttl: number | undefined, namespaceSuffix: string, chec
 		checkLock,
 	};
 
-	switch (env.CACHE_STORE) {
-		case 'redis':
-			return new RedisCache(config);
-		case 'memory':
-		default:
-			return new MemCache(config);
+	if (store === 'redis') {
+		config.store = new KeyvRedis(env['CACHE_REDIS'] || getConfigFromEnv('CACHE_REDIS_')) as any;
 	}
+
+	if (store === 'memcache') {
+
+		// keyv-memcache uses memjs which only accepts a comma separated string instead of an array,
+		// so we need to join array into a string when applicable. See #7986
+		const cacheMemcache = Array.isArray(env['CACHE_MEMCACHE'])
+			? env['CACHE_MEMCACHE'].join(',')
+			: env['CACHE_MEMCACHE'];
+
+		config.store = new KeyvMemcache(cacheMemcache) as any;
+	}
+
+	return config;
 }
