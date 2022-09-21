@@ -414,7 +414,8 @@ export class GraphQLService {
 						}
 
 						if (collection.primary === field.field) {
-							type = GraphQLNonNull(GraphQLID);
+							if (['create', 'update'].includes(action)) type = GraphQLID;
+							else type = GraphQLNonNull(GraphQLID);
 						}
 
 						acc[field.field] = {
