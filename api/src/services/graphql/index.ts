@@ -1128,9 +1128,9 @@ export class GraphQLService {
 							.getResolver(`create_${collection.collection}_items`)
 							.getArgs(),
 						data: [
-							toInputObjectType(CreateCollectionTypes[collection.collection]).setTypeName(
-								`create_${collection.collection}_input`
-							).NonNull,
+							toInputObjectType(CreateCollectionTypes[collection.collection])
+								.setTypeName(`create_${collection.collection}_input`)
+								.setField(collection.primary, GraphQLID).NonNull,
 						],
 					});
 
@@ -1138,9 +1138,9 @@ export class GraphQLService {
 						...CreateCollectionTypes[collection.collection]
 							.getResolver(`create_${collection.collection}_item`)
 							.getArgs(),
-						data: toInputObjectType(CreateCollectionTypes[collection.collection]).setTypeName(
-							`create_${collection.collection}_input`
-						).NonNull,
+						data: toInputObjectType(CreateCollectionTypes[collection.collection])
+							.setTypeName(`create_${collection.collection}_input`)
+							.setField(collection.primary, GraphQLID).NonNull,
 					});
 				}
 			}
@@ -1160,9 +1160,9 @@ export class GraphQLService {
 							name: `update_${collection.collection}`,
 							type: collectionIsReadable ? ReadCollectionTypes[collection.collection] : GraphQLBoolean,
 							args: {
-								data: toInputObjectType(UpdateCollectionTypes[collection.collection]).setTypeName(
-									`update_${collection.collection}_input`
-								).NonNull,
+								data: toInputObjectType(UpdateCollectionTypes[collection.collection])
+									.setTypeName(`update_${collection.collection}_input`)
+									.setField(collection.primary, GraphQLID).NonNull,
 							},
 							resolve: async ({ args, info }: { args: Record<string, any>; info: GraphQLResolveInfo }) =>
 								await self.resolveMutation(args, info),
@@ -1180,9 +1180,9 @@ export class GraphQLService {
 									? ReadCollectionTypes[collection.collection].getResolver(collection.collection).getArgs()
 									: {}),
 								data: [
-									toInputObjectType(UpdateCollectionTypes[collection.collection]).setTypeName(
-										`update_${collection.collection}_input`
-									).NonNull,
+									toInputObjectType(UpdateCollectionTypes[collection.collection])
+										.setTypeName(`update_${collection.collection}_input`)
+										.setField(collection.primary, GraphQLID).NonNull,
 								],
 							},
 							resolve: async ({ args, info }: { args: Record<string, any>; info: GraphQLResolveInfo }) =>
@@ -1201,9 +1201,9 @@ export class GraphQLService {
 									? ReadCollectionTypes[collection.collection].getResolver(collection.collection).getArgs()
 									: {}),
 								ids: GraphQLNonNull(new GraphQLList(GraphQLID)),
-								data: toInputObjectType(UpdateCollectionTypes[collection.collection]).setTypeName(
-									`update_${collection.collection}_input`
-								).NonNull,
+								data: toInputObjectType(UpdateCollectionTypes[collection.collection])
+									.setTypeName(`update_${collection.collection}_input`)
+									.setField(collection.primary, GraphQLID).NonNull,
 							},
 							resolve: async ({ args, info }: { args: Record<string, any>; info: GraphQLResolveInfo }) =>
 								await self.resolveMutation(args, info),
@@ -1214,9 +1214,9 @@ export class GraphQLService {
 							type: collectionIsReadable ? ReadCollectionTypes[collection.collection] : GraphQLBoolean,
 							args: {
 								id: GraphQLNonNull(GraphQLID),
-								data: toInputObjectType(UpdateCollectionTypes[collection.collection]).setTypeName(
-									`update_${collection.collection}_input`
-								).NonNull,
+								data: toInputObjectType(UpdateCollectionTypes[collection.collection])
+									.setTypeName(`update_${collection.collection}_input`)
+									.setField(collection.primary, GraphQLID).NonNull,
 							},
 							resolve: async ({ args, info }: { args: Record<string, any>; info: GraphQLResolveInfo }) =>
 								await self.resolveMutation(args, info),
