@@ -26,3 +26,4 @@ export * from './schema';
 export * from './settings';
 export * from './shares';
 export * from './users';
+export * from './vue';

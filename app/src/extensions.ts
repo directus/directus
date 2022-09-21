@@ -1,5 +1,5 @@
-import { AppExtensionConfigs } from '@directus/shared/types';
-import { App, shallowRef, UnwrapRef, watch } from 'vue';
+import { AppExtensionConfigs, RefRecord } from '@directus/shared/types';
+import { App, shallowRef, watch } from 'vue';
 import { getInternalDisplays, registerDisplays } from './displays';
 import { getInternalInterfaces, registerInterfaces } from './interfaces';
 import { i18n } from './lang';
@@ -10,9 +10,9 @@ import { getInternalPanels, registerPanels } from './panels';
 import { getRootPath } from './utils/get-root-path';
 import { translate } from './utils/translate-object-values';
 
-let customExtensions: UnwrapRef<AppExtensionConfigs> | null = null;
+let customExtensions: AppExtensionConfigs | null = null;
 
-const extensions: AppExtensionConfigs = {
+const extensions: RefRecord<AppExtensionConfigs> = {
 	interfaces: shallowRef([]),
 	displays: shallowRef([]),
 	layouts: shallowRef([]),
@@ -73,6 +73,6 @@ export function registerExtensions(app: App): void {
 	);
 }
 
-export function useExtensions(): AppExtensionConfigs {
+export function useExtensions(): RefRecord<AppExtensionConfigs> {
 	return extensions;
 }

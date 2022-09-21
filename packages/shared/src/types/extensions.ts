@@ -1,6 +1,5 @@
 import { Knex } from 'knex';
 import { Logger } from 'pino';
-import { Ref } from 'vue';
 import {
 	API_EXTENSION_TYPES,
 	APP_EXTENSION_TYPES,
@@ -147,12 +146,12 @@ export type ExtensionManifest = {
 };
 
 export type AppExtensionConfigs = {
-	interfaces: Ref<InterfaceConfig[]>;
-	displays: Ref<DisplayConfig[]>;
-	layouts: Ref<LayoutConfig[]>;
-	modules: Ref<ModuleConfig[]>;
-	panels: Ref<PanelConfig[]>;
-	operations: Ref<OperationAppConfig[]>;
+	interfaces: InterfaceConfig[];
+	displays: DisplayConfig[];
+	layouts: LayoutConfig[];
+	modules: ModuleConfig[];
+	panels: PanelConfig[];
+	operations: OperationAppConfig[];
 };
 
 export type ApiExtensionContext = {

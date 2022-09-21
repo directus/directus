@@ -1,4 +1,4 @@
-import { Ref, computed, UnwrapRef, unref } from 'vue';
+import { Ref, computed, unref } from 'vue';
 import { AppExtensionConfigs, AppExtensionType, HybridExtensionType, Plural } from '@directus/shared/types';
 import { useExtensions } from '@/extensions';
 import { pluralize } from '@directus/shared/utils';
@@ -6,7 +6,7 @@ import { pluralize } from '@directus/shared/utils';
 export function useExtension<T extends AppExtensionType | HybridExtensionType>(
 	type: T,
 	name: string | Ref<string | null>
-): Ref<UnwrapRef<AppExtensionConfigs[Plural<T>]>[number] | null> {
+): Ref<AppExtensionConfigs[Plural<T>][number] | null> {
 	const extensions = useExtensions();
 
 	return computed(() => {
