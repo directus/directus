@@ -6,10 +6,14 @@ import env from '../../env.js';
 import logger from '../../logger.js';
 import type { Migration } from '../../types/index.js';
 import { orderBy } from 'lodash-es';
+import { fileURLToPath } from 'url';
 
 const { formatTitle } = FormatTitle as any; // TODO: WTF is this?
 
 export default async function run(database: Knex, direction: 'up' | 'down' | 'latest', log = true): Promise<void> {
+	const __filename = fileURLToPath(import.meta.url)
+	const __dirname = path.dirname(__filename)
+
 	let migrationFiles = await fse.readdir(__dirname);
 
 	const customMigrationsPath = path.resolve(env['EXTENSIONS_PATH'], 'migrations');
