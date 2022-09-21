@@ -205,7 +205,7 @@ async function parseCurrentLevel(
 function getColumnPreprocessor(knex: Knex, schema: SchemaOverview, table: string) {
 	const helpers = getHelpers(knex);
 
-	return async function (fieldNode: FieldNode | FunctionFieldNode | M2ONode): Promise<Knex.Raw<string>> {
+	return async function (fieldNode: FieldNode | FunctionFieldNode | M2ONode): Promise<() => Knex.Raw<string>> {
 		let alias = undefined;
 
 		if (fieldNode.name !== fieldNode.fieldKey) {
@@ -226,6 +226,7 @@ function getColumnPreprocessor(knex: Knex, schema: SchemaOverview, table: string
 
 		if (fieldNode.type === 'functionField') {
 			return await getColumn(knex, table, fieldNode.name, alias, schema, fieldNode.query);
+
 		}
 
 		return await getColumn(knex, table, fieldNode.name, alias, schema);
@@ -243,7 +244,7 @@ async function getDBQuery(
 	let fields = []
 
 	for (const fieldNode of fieldNodes) {
-		fields.push(await preProcess(fieldNode));
+		fields.push((await preProcess(fieldNode))());
 	}
 
 	const dbQuery = knex.select(fields).from(table);

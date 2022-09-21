@@ -23,7 +23,7 @@ export async function getColumn(
 	alias: string | false = applyFunctionToColumnName(column),
 	schema: SchemaOverview,
 	query?: Query
-): Promise<Knex.Raw<string>> {
+): Promise<() => Knex.Raw<string>> {
 	const fn = getFunctions(knex, schema);
 
 	if (column.includes('(') && column.includes(')')) {
@@ -41,18 +41,18 @@ export async function getColumn(
 			const result = await fn[functionName as keyof typeof fn](table, columnName, { type, query: query! }) as Knex.Raw;
 
 			if (alias) {
-				return knex.raw(result + ' AS ??', [alias]);
+				return () => knex.raw(result + ' AS ??', [alias]);
 			}
 
-			return result;
+			return () => result;
 		} else {
 			throw new InvalidQueryException(`Invalid function specified "${functionName}"`);
 		}
 	}
 
 	if (alias && column !== alias) {
-		return knex.ref(`${table}.${column}`).as(alias);
+		return () => knex.ref(`${table}.${column}`).as(alias);
 	}
 	// TODO: why did I have to remove the knex.ref?
-	return knex.ref(`${table}.${column}`);
+	return () => knex.ref(`${table}.${column}`);
 }
