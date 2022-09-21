@@ -57,7 +57,6 @@ import globby from 'globby';
 import type { EventHandler } from './types/index.js';
 import { JobQueue } from './utils/job-queue.js';
 import { fileURLToPath } from 'url';
-import { createRequire } from 'module';
 import { NodeVM } from 'vm2';
 
 let extensionManager: ExtensionManager | undefined;
@@ -334,7 +333,6 @@ class ExtensionManager {
 	private async getSharedDepsMapping(deps: string[]) {
 		const __filename = fileURLToPath(import.meta.url);
 		const __dirname = path.dirname(__filename);
-		const require = createRequire(import.meta.url);
 
 		const appDir = await fse.readdir(path.join(resolvePackage('@directus/app', import.meta.url, __dirname), 'dist', 'assets'));
 
