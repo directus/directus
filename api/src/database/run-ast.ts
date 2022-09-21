@@ -11,7 +11,6 @@ import { applyFunctionToColumnName } from '../utils/apply-function-to-column-nam
 import applyQuery from '../utils/apply-query.js';
 import { getColumn } from '../utils/get-column.js';
 import { stripFunction } from '../utils/strip-function.js';
-import { map } from 'async';
 
 type RunASTOptions = {
 	/**

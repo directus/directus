@@ -38,7 +38,7 @@ export async function getColumn(
 				throw new InvalidQueryException(`Invalid function specified "${functionName}"`);
 			}
 
-			const result = fn[functionName as keyof typeof fn](table, columnName, { type, query: query! }) as Knex.Raw;
+			const result = await fn[functionName as keyof typeof fn](table, columnName, { type, query: query! }) as Knex.Raw;
 
 			if (alias) {
 				return knex.raw(result + ' AS ??', [alias]);
@@ -54,5 +54,5 @@ export async function getColumn(
 		return knex.ref(`${table}.${column}`).as(alias);
 	}
 	// TODO: why did I have to remove the knex.ref?
-	return `${table}.${column}`;
+	return knex.ref(`${table}.${column}`);
 }
