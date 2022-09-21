@@ -175,8 +175,10 @@ router.post(
 		const hash = await service.getCurrentHash();
 
 		if (req.body.hash !== hash) {
+			// TODO: Check collection/field/relation level hash
+
 			throw new InvalidPayloadException(
-				`Provided hash ${req.body.hash} does not match the current instance's hash ${hash}`
+				`Provided hash ${req.body.hash} does not match the current instance's hash ${hash}. Please regenerate a new diff and try again.`
 			);
 		}
 
