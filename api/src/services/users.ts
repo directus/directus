@@ -357,7 +357,11 @@ export class UsersService extends ItemsService {
 		const STALL_TIME = 500;
 		const timeStart = performance.now();
 
-		const user = await this.knex.select('status', 'password').from('directus_users').where({ email }).first();
+		const user = await this.knex
+			.select('status', 'password')
+			.from('directus_users')
+			.whereRaw('LOWER(??) = ?', ['email', email.toLowerCase()])
+			.first();
 
 		if (user?.status !== 'active') {
 			await stall(STALL_TIME, timeStart);

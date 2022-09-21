@@ -20,6 +20,7 @@ import {
 	generateExtensionsEntry,
 	getLocalExtensions,
 	getPackageExtensions,
+	pathToRelativeUrl,
 	resolvePackage,
 } from '@directus/shared/utils/node';
 import {
@@ -235,10 +236,7 @@ class ExtensionManager {
 
 			const localExtensionPaths = (env['SERVE_APP'] ? EXTENSION_TYPES : API_OR_HYBRID_EXTENSION_TYPES).flatMap(
 				(type) => {
-					const typeDir = path.posix.join(
-						path.relative('.', env['EXTENSIONS_PATH']).split(path.sep).join(path.posix.sep),
-						pluralize(type)
-					);
+					const typeDir = path.posix.join(pathToRelativeUrl(env['EXTENSIONS_PATH']), pluralize(type));
 
 					return isIn(type, HYBRID_EXTENSION_TYPES)
 						? [path.posix.join(typeDir, '*', 'app.js'), path.posix.join(typeDir, '*', 'api.js')]
@@ -334,11 +332,11 @@ class ExtensionManager {
 	}
 
 	private async getSharedDepsMapping(deps: string[]) {
+		const __filename = fileURLToPath(import.meta.url);
+		const __dirname = path.dirname(__filename);
 		const require = createRequire(import.meta.url);
 
-		const appDir = await fse.readdir(
-			path.join(resolvePackage('@directus/app', import.meta.url, require.main?.filename), 'dist', 'assets')
-		);
+		const appDir = await fse.readdir(path.join(resolvePackage('@directus/app', import.meta.url, __dirname), 'dist', 'assets'));
 
 		const depsMapping: Record<string, string> = {};
 		for (const dep of deps) {
@@ -397,9 +395,7 @@ class ExtensionManager {
 		const __filename = fileURLToPath(import.meta.url);
 		const __dirname = path.dirname(__filename);
 
-		const internalPaths = await globby(
-			path.posix.join(path.relative('.', __dirname).split(path.sep).join(path.posix.sep), 'operations/*/index.(js|ts)')
-		);
+		const internalPaths = await globby(path.posix.join(pathToRelativeUrl(__dirname), 'operations/*/index.(js|ts)'));
 
 		const internalOperations = internalPaths.map((internalPath) => {
 			const dirs = internalPath.split('/');

@@ -5,6 +5,7 @@ import { isObject } from 'lodash-es';
 import path from 'path';
 import type { Type, Field } from '@directus/shared/types';
 import { getHelpers } from '../helpers/index.js';
+import { fileURLToPath } from 'url';
 
 type TableSeed = {
 	table: string;
@@ -29,6 +30,9 @@ type TableSeed = {
 export default async function runSeed(database: Knex): Promise<void> {
 	const helpers = getHelpers(database);
 	const exists = await database.schema.hasTable('directus_collections');
+
+	const __filename = fileURLToPath(import.meta.url)
+	const __dirname = path.dirname(__filename)
 
 	if (exists) {
 		throw new Error('Database is already installed');
