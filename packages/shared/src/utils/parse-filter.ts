@@ -58,7 +58,19 @@ function parseFilterEntry(
 	} else if (String(key).startsWith('_')) {
 		return { [key]: parseFilterValue(value, accountability, context) };
 	} else {
-		return { [key]: parseFilter(value, accountability, context) } as Filter;
+		const parsed = parseFilter(value, accountability, context) as any;
+		// Shift _and & _or operators upwards
+		if (!['_and', '_or'].includes(key) && typeof parsed === 'object') {
+			const operator = Object.keys(parsed)[0];
+			if (operator && ['_and', '_or'].includes(operator)) {
+				return {
+					[operator]: toArray(parsed[operator]).map((filter: Filter) => {
+						return { [key]: filter } as Filter;
+					}),
+				} as Filter;
+			}
+		}
+		return { [key]: parsed } as Filter;
 	}
 }
 
