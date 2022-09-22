@@ -370,8 +370,10 @@ function useActions() {
 		if (props.primaryKey && props.primaryKey !== '+' && primaryKeyField.value) {
 			internalEdits.value[primaryKeyField.value.field] = props.primaryKey;
 		}
-
-		emit('input', internalEdits.value);
+		
+		const noNullDefaultValues = Object.fromEntries(Object.entries(defaultValues.value).filter(([_, value]) => value !== null));
+		
+		emit('input', merge({}, noNullDefaultValues, internalEdits.value));
 
 		internalActive.value = false;
 		internalEdits.value = {};
