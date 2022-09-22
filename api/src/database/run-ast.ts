@@ -75,7 +75,7 @@ export default async function runAST(
 		// The actual knex query builder instance. This is a promise that resolves with the raw items from the db
 		const dbQuery = await getDBQuery(schema, knex, collection, fieldNodes, query);
 
-		const rawItems: Item | Item[] = await dbQuery.$run();
+		const rawItems: Item | Item[] = await dbQuery.removeFakePromise();
 
 		if (!rawItems) return null;
 

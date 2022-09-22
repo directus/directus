@@ -20,6 +20,7 @@ import { getRelationInfo } from './get-relation-info.js';
 import { getFilterOperatorsForType, getOutputTypeForFunction } from '@directus/shared/utils';
 import { stripFunction } from './strip-function.js';
 import { forEach, map } from 'async';
+import { fakePromise } from './fakePromise.js';
 
 const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
 
@@ -311,9 +312,9 @@ export async function applyFilter(
 				if (key === '_or' && value.some((subFilter: Record<string, any>) => Object.keys(subFilter).length === 0))
 					continue;
 
-				forEach(value, async (subFilter: Record<string, any>) => {
+				for (const subFilter of value) {
 					await addJoins(dbQuery, subFilter, collection);
-				});
+				}
 
 				continue;
 			}
@@ -350,10 +351,12 @@ export async function applyFilter(
 				}
 
 				/** @NOTE this callback function isn't called until Knex runs the query */
-				dbQuery[logical].where((subQuery) => {
-					forEach(value, async (subFilter: Record<string, any>) => {
-						await addWhereClauses(knex, subQuery, subFilter, collection, key === '_and' ? 'and' : 'or');
-					});
+				dbQuery[logical].where(async (subQuery) => {
+					const fakedSubQuery = fakePromise(subQuery)
+
+					for (const subFilter of value) {
+						await addWhereClauses(knex, fakedSubQuery, subFilter, collection, key === '_and' ? 'and' : 'or');
+					}
 				});
 
 				continue;

@@ -1,6 +1,6 @@
-export function fakePromise<T extends object>(value: T): T {
-    if(typeof value === 'object' && 'isFakePromise' in value) {
-        return value;
+export function fakePromise<T extends object>(value: T): T & {removeFakePromise: () => T} {
+    if(typeof value === 'object' && (value as any).isFakePromise === true) {
+        return value as any;
     }
 
     return new Proxy(value, {
@@ -12,14 +12,8 @@ export function fakePromise<T extends object>(value: T): T {
                 })
             }
 
-            if(name === '$run') {
-                return async function() {
-                    if((target as any).isFakePromise) {
-                        return await (target as any).$run();
-                    }
-
-                    return await target;
-                }
+            if(name === 'removeFakePromise') {
+                return () => target
             }
 
             if(name === 'isFakePromise') {
@@ -39,5 +33,5 @@ export function fakePromise<T extends object>(value: T): T {
             
             return returnValue;
         }
-    })
+    }) as any
 }

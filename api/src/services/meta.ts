@@ -4,6 +4,8 @@ import { ForbiddenException } from '../exceptions/index.js';
 import type { AbstractServiceOptions } from '../types/index.js';
 import type { Accountability, Query, SchemaOverview } from '@directus/shared/types';
 import { applyFilter, applySearch } from '../utils/apply-query.js';
+import { map } from 'async';
+import { fakePromise } from '../utils/fakePromise.js';
 
 export class MetaService {
 	knex: Knex;
@@ -11,7 +13,7 @@ export class MetaService {
 	schema: SchemaOverview;
 
 	constructor(options: AbstractServiceOptions) {
-		this.knex = options.knex || getDatabase();
+		this.knex = fakePromise(options.knex || getDatabase());
 		this.accountability = options.accountability || null;
 		this.schema = options.schema;
 	}
@@ -20,13 +22,11 @@ export class MetaService {
 	async getMetaForQuery(collection: string, query: any): Promise<Record<string, any> | undefined> {
 		if (!query || !query.meta) return;
 
-		const results = await Promise.all(
-			query.meta.map((metaVal: string) => {
-				if (metaVal === 'total_count') return this.totalCount(collection);
-				if (metaVal === 'filter_count') return this.filterCount(collection, query);
-				return undefined;
-			})
-		);
+		const results = await map(query.meta, async (metaVal: string) => {
+			if (metaVal === 'total_count') return this.totalCount(collection);
+			if (metaVal === 'filter_count') return this.filterCount(collection, query);
+			return undefined;
+		})
 
 		return results.reduce((metaObject: Record<string, any>, value, index) => {
 			return {
@@ -37,7 +37,7 @@ export class MetaService {
 	}
 
 	async totalCount(collection: string): Promise<number> {
-		const dbQuery = this.knex(collection).count('*', { as: 'count' }).first();
+		const dbQuery = fakePromise(this.knex(collection).count('*', { as: 'count' }).first());
 
 		if (this.accountability?.admin !== true) {
 			const permissionsRecord = this.accountability?.permissions?.find((permission) => {
@@ -51,13 +51,13 @@ export class MetaService {
 			await applyFilter(this.knex, this.schema, dbQuery, permissions, collection);
 		}
 
-		const result = await dbQuery;
+		const result = await dbQuery.removeFakePromise();
 
 		return Number(result?.count ?? 0);
 	}
 
 	async filterCount(collection: string, query: Query): Promise<number> {
-		const dbQuery = this.knex(collection).count('*', { as: 'count' });
+		const dbQuery = fakePromise(this.knex(collection).count('*', { as: 'count' }));
 
 		let filter = query.filter || {};
 
@@ -81,11 +81,12 @@ export class MetaService {
 			await applyFilter(this.knex, this.schema, dbQuery, filter, collection);
 		}
 
+
 		if (query.search) {
 			await applySearch(this.schema, dbQuery, query.search, collection);
 		}
 
-		const records = await dbQuery;
+		const records = await dbQuery.removeFakePromise();
 
 		return Number(records[0]!.count);
 	}
