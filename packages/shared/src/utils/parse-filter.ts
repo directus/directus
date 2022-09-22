@@ -18,6 +18,14 @@ export function parseFilter(
 	accountability: Accountability | null,
 	context: ParseFilterContext = {}
 ): Filter | null {
+	return parseFilterRecursive(filter, accountability, context);
+}
+
+function parseFilterRecursive(
+	filter: Filter | null,
+	accountability: Accountability | null,
+	context: ParseFilterContext = {}
+): Filter | null {
 	if (filter === null || filter === undefined) {
 		return null;
 	}
@@ -52,13 +60,13 @@ function parseFilterEntry(
 	context: ParseFilterContext
 ): Filter {
 	if (['_or', '_and'].includes(String(key))) {
-		return { [key]: value.map((filter: Filter) => parseFilter(filter, accountability, context)) };
+		return { [key]: value.map((filter: Filter) => parseFilterRecursive(filter, accountability, context)) };
 	} else if (['_in', '_nin', '_between', '_nbetween'].includes(String(key))) {
 		return { [key]: toArray(value).flatMap((value) => parseFilterValue(value, accountability, context)) } as Filter;
 	} else if (String(key).startsWith('_')) {
 		return { [key]: parseFilterValue(value, accountability, context) };
 	} else {
-		const parsed = parseFilter(value, accountability, context) as any;
+		const parsed = parseFilterRecursive(value, accountability, context) as any;
 		// Shift _and & _or operators upwards
 		if (!['_and', '_or'].includes(key) && typeof parsed === 'object') {
 			const operator = Object.keys(parsed)[0];
