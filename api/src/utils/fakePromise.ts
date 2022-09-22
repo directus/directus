@@ -1,4 +1,8 @@
 export function fakePromise<T extends object>(value: T): T {
+    if(typeof value === 'object' && 'isFakePromise' in value) {
+        return value;
+    }
+
     return new Proxy(value, {
         get: function (target, name) {
 
@@ -9,11 +13,17 @@ export function fakePromise<T extends object>(value: T): T {
             }
 
             if(name === '$run') {
-                return target;
+                return async function() {
+                    if((target as any).isFakePromise) {
+                        return await (target as any).$run();
+                    }
+
+                    return await target;
+                }
             }
 
-            if(name === '$debug') {
-                return 'Test is working!'
+            if(name === 'isFakePromise') {
+                return true;
             }
 
             const returnValue = Reflect.get(target, name)
@@ -21,7 +31,7 @@ export function fakePromise<T extends object>(value: T): T {
             if(typeof returnValue === 'function') {
                 return (...args: any[]) => {
                     const result = returnValue.apply(target, args);
-                    if(typeof result === 'object' && 'then' in result)
+                    if(typeof result === 'object' && 'then' in result && !('isFakePromise' in result))
                         return fakePromise(result)
                     return result
                 };

@@ -75,14 +75,13 @@ export default async function runAST(
 		// The actual knex query builder instance. This is a promise that resolves with the raw items from the db
 		const dbQuery = await getDBQuery(schema, knex, collection, fieldNodes, query);
 
-		const rawItems: Item | Item[] = await (dbQuery.$run);
+		const rawItems: Item | Item[] = await dbQuery.$run();
 
 		if (!rawItems) return null;
 
 		// Run the items through the special transforms
 		const payloadService = new PayloadService(collection, { knex, schema });
 		let items: null | Item | Item[] = await payloadService.processValues('read', rawItems);
-
 		if (!items || items['length'] === 0) return items;
 
 		// Apply the `_in` filters to the nested collection batches

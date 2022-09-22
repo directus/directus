@@ -8,7 +8,7 @@ import type {
 	HybridExtensionType,
 } from '../../types/index.js';
 import { isTypeIn } from '../array-helpers.js';
-import { pathToRelativeUrl } from './path-to-relative-url';
+import { pathToRelativeUrl } from './path-to-relative-url.js';
 
 export function generateExtensionsEntry(type: AppExtensionType | HybridExtensionType, extensions: Extension[]): string {
 	const filteredExtensions = extensions.filter(
