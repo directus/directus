@@ -531,9 +531,11 @@ errors:
   INVALID_FOREIGN_KEY: Chave estrangeira inválida
   UNKNOWN: Erro Inesperado
 security: Segurança
+value_hashed: Valor Guardado em Segurança
 bookmarks: Favoritos
 unexpected_error: Erro Inesperado
 unexpected_error_copy: Ocorreu um erro inesperado. Por favor, tente novamente mais tarde.
+password_reset_sent: Se a conta existir, um email terá sido enviado para fazer a reposição da palavra passe.
 back: Voltar
 all_users: Todos os utilizadores
 delete_collection: Remover coleção
@@ -842,6 +844,7 @@ referential_action_no_action: Prevenir que elimine
 referential_action_cascade: Eliminar o {collection} item (cascade)
 referential_action_set_default: Definir {field} para o seu valor padrão
 choose_action: Escolher ação
+continue_label: Continuar
 continue_as: >-
   {name} está autenticado no momento. Se você reconhecer esta conta, pressione continuar.
 creating_webhook: Criando Webhook
@@ -849,6 +852,7 @@ delete_are_you_sure: >-
   Esta ação é permanente e não pode ser desfeita. Tem certeza de que deseja prosseguir?
 description: Descrição
 file_library: Biblioteca de Arquivos
+forgot_password: Repor palavra-passe
 revisions: Revisões
 no_revisions: Ainda não há revisões
 save: Guardar
@@ -913,6 +917,7 @@ interfaces:
     user: Utilizador
   system-token:
     system-token: Token
+    value_securely_saved: Valor Guardado em Segurança
 displays:
   translations:
     translations: Traduções
