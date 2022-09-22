@@ -1,4 +1,4 @@
-import getDatabase from '../database';
+import getDatabase, { getDatabaseClient } from '../database';
 import { getSchema } from './get-schema';
 import { CollectionsService, FieldsService, RelationsService } from '../services';
 import { version } from '../../package.json';
@@ -9,6 +9,7 @@ import { SchemaOverview } from '@directus/shared/types';
 
 export async function getSnapshot(options?: { database?: Knex; schema?: SchemaOverview }): Promise<Snapshot> {
 	const database = options?.database ?? getDatabase();
+	const vendor = getDatabaseClient(database);
 	const schema = options?.schema ?? (await getSchema({ database, bypassCache: true }));
 
 	const collectionsService = new CollectionsService({ knex: database, schema });
@@ -32,6 +33,7 @@ export async function getSnapshot(options?: { database?: Knex; schema?: SchemaOv
 	return {
 		version: 1,
 		directus: version,
+		vendor,
 		collections: collectionsSorted,
 		fields: fieldsSorted,
 		relations: relationsSorted,
