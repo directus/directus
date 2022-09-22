@@ -260,10 +260,10 @@ geometry.MultiLineString: 多條線段
 geometry.MultiPolygon: 多個多邊形
 not_available_for_type: 此類別無法使用
 create_translations: 創建翻譯
-auto_refresh: 自動刷新
+auto_refresh: 自動重新整理
 refresh_interval: 重新整理間隔
 no_refresh: 不要重新整理
-refresh_interval_seconds: 即時刷新 | 每秒 | 每{seconds} 秒
+refresh_interval_seconds: 即時重整 | 每秒 | 每{seconds} 秒
 refresh_interval_minutes: 每分鐘 | 每 {minutes} 分鐘
 auto_generate: 自動產生
 this_will_auto_setup_fields_relations: 這會自動設定所有相關的必要欄位和關係。
@@ -2036,6 +2036,10 @@ operations:
   condition:
     name: 條件
     description: 透過判斷邏輯來操作流程
+  exec:
+    name: 執行程式
+    description: 透過自訂程式修改傳入資料
+    modules: '將會使用以下的 **Node modules**'
   item-create:
     name: 建立資料
     description: 在資料庫中建立資料
@@ -2073,7 +2077,9 @@ operations:
     body: 郵件內文
   notification:
     name: 發送通知
+    description: 發送管理介面通知給其他使用者
     recipient: 用戶
+    recipient_placeholder: 輸入使用者編號(UUID)並按下Enter鍵....
     message: 訊息
   request:
     name: Webhook / 要求網址
