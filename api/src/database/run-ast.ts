@@ -45,7 +45,7 @@ export default async function runAST(
 ): Promise<null | Item | Item[]> {
 	const ast = cloneDeep(originalAST);
 
-	const knex = options?.knex || getDatabase();
+	const knex = fakePromise(options?.knex || getDatabase());
 
 	if (ast.type === 'a2o') {
 		const results: { [collection: string]: null | Item | Item[] } = {};
@@ -75,7 +75,7 @@ export default async function runAST(
 		// The actual knex query builder instance. This is a promise that resolves with the raw items from the db
 		const dbQuery = await getDBQuery(schema, knex, collection, fieldNodes, query);
 
-		const rawItems: Item | Item[] = await dbQuery;
+		const rawItems: Item | Item[] = await (dbQuery.$run);
 
 		if (!rawItems) return null;
 
@@ -253,7 +253,7 @@ async function getDBQuery(
 
 	queryCopy.limit = typeof queryCopy.limit === 'number' ? queryCopy.limit : 100;
 
-	return applyQuery(knex, table, dbQuery, queryCopy, schema);
+	return await applyQuery(knex, table, dbQuery, queryCopy, schema);
 }
 
 async function applyParentFilters(
