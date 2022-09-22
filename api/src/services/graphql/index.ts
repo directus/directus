@@ -1077,10 +1077,12 @@ export class GraphQLService {
 						});
 					}
 				} else if (relation.meta?.one_allowed_collections) {
-					/**
-					 * @TODO
-					 * Looking to add nested typed filters per union type? This is where that's supposed to go.
-					 */
+					ReadableCollectionFilterTypes[relation.collection]?.removeField('item');
+					for (const collection of relation.meta.one_allowed_collections) {
+						ReadableCollectionFilterTypes[relation.collection]?.addFields({
+							[`item__${collection}`]: ReadableCollectionFilterTypes[collection],
+						});
+					}
 				}
 			}
 
