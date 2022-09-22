@@ -186,6 +186,7 @@ revision_post_create: Öğe oluşturulduğunda böyle gözüküyordu.
 revision_post_update: Öğe güncellendikten sonra böyle gözüküyordu.
 changes_made: Aşağıda bu revizyonda yapılan belirli değişiklikler bulunmaktadır.
 no_relational_data: Unutmayın, ilişkisel veriler buraya dahil değildir.
+junction_field_location: Kavşak Alanları Konumu
 top: Üst
 bottom: Alt
 hide_field: Alanı Gizle
@@ -536,6 +537,7 @@ activity_item: Etkinlik Öğesi
 action: İşlem
 ip_address: IP Adresi
 user_agent: Kullanıcı Etmeni
+origin: Kaynak
 webhooks: Webhooklar
 decimals: Ondalıklar
 value_decimals: Ondalık Değerleri
@@ -778,6 +780,7 @@ flows: Akışlar
 flow: Akış
 select_a_flow: Bir Akış Seç
 run_flow_on_current: Geçerli Öğede akışı çalıştır
+run_flow_on_current_edited_confirm: Bu öğe bu akış tarafından güncellenebilir, yürütmek istediğinizden emin misiniz?
 trigger: Tetikleme
 trigger_options: Tetikleyici Seçenekleri
 view_trigger: Tetikleyiciyi Görüntüle
@@ -1035,6 +1038,7 @@ fields:
     user: Uygulayan
     comment: Yorum
     user_agent: Kullanıcı Etmeni
+    origin: Kaynak
     ip: IP Adresi
     revisions: Revizyonlar
   directus_collections:
@@ -1965,6 +1969,7 @@ panels:
     medium: Orta
     broad: Kalın
   piechart:
+    description: Bir sütundaki grupların oranlarını gösteren dairesel grafik.
     function: 'İşlev'
     labels: Etiketleri Göster
     legend: Göstergeyi Göster
@@ -1978,6 +1983,7 @@ panels:
     variable_key: Değişken Anahtar
   relational-variable:
     name: Küresel İlişkisel Değişken
+    description: Diğer Panellerin filtrelerinde kullanım için global bir ilişkisel değer ayarlayın
     variable_key: Değişken Anahtar
     multiple: Çoklu
     multiple-label: Birden çok öğe seçin
