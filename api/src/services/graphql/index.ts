@@ -405,6 +405,7 @@ export class GraphQLService {
 						// submitted on updates
 						if (
 							field.nullable === false &&
+							!field.defaultValue &&
 							!GENERATE_SPECIAL.some((flag) => field.special.includes(flag)) &&
 							action !== 'update'
 						) {
@@ -412,7 +413,10 @@ export class GraphQLService {
 						}
 
 						if (collection.primary === field.field) {
-							type = GraphQLNonNull(GraphQLID);
+							if (!field.defaultValue && !field.special.includes('uuid') && action === 'create')
+								type = GraphQLNonNull(GraphQLID);
+							else if (['create', 'update'].includes(action)) type = GraphQLID;
+							else type = GraphQLNonNull(GraphQLID);
 						}
 
 						acc[field.field] = {
@@ -1075,10 +1079,12 @@ export class GraphQLService {
 						});
 					}
 				} else if (relation.meta?.one_allowed_collections) {
-					/**
-					 * @TODO
-					 * Looking to add nested typed filters per union type? This is where that's supposed to go.
-					 */
+					ReadableCollectionFilterTypes[relation.collection]?.removeField('item');
+					for (const collection of relation.meta.one_allowed_collections) {
+						ReadableCollectionFilterTypes[relation.collection]?.addFields({
+							[`item__${collection}`]: ReadableCollectionFilterTypes[collection],
+						});
+					}
 				}
 			}
 
