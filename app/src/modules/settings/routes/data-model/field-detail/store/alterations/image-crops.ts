@@ -73,7 +73,7 @@ export function prepareRelation(updates: StateUpdates, state: State) {
 			one_deselect_action: 'nullify',
 		},
 		schema: {
-			on_delete: 'SET NULL',
+			on_delete: 'CASCADE',
 		},
 	};
 
@@ -97,6 +97,7 @@ export function setDefaults(updates: StateUpdates, state: State, { getCurrent }:
 	// Set relation from files to crops collection and setup an M2A
 	set(updates, 'collection', 'directus_files');
 	set(updates, 'field.meta.special', 'm2a');
+	set(updates, 'field.meta.interface', 'file-image-crop');
 	set(updates, 'relations.o2m.collection', junctionName);
 	set(updates, 'relations.o2m.field', 'file_id');
 
@@ -138,7 +139,7 @@ export function setDefaults(updates: StateUpdates, state: State, { getCurrent }:
 	set(updates, 'relations.m2o.meta.one_collection_field', 'collection');
 
 	// Create a M2O relation between the collections and junction table
-	set(state, 'createFieldOnCurrentCollection', true);
+	set(state, 'createFieldOnCurrentCollection', false);
 	set(updates, 'relations.m2o.meta.link_one_allowed_collections_back', true);
 	set(updates, 'relations.m2o.meta.one_allowed_collections_relation_field', junctionName);
 }

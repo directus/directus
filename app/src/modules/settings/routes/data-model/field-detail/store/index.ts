@@ -214,6 +214,7 @@ export const useFieldDetailStore = defineStore({
 									related_collection: relation.collection,
 									collection: oneAllowedCollection,
 									field: linkCollectionsToJunctionField,
+									schema: {on_delete: 'SET DEFAULT'}
 								});
 							}
 						}
