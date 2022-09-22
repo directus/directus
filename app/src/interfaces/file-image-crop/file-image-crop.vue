@@ -31,14 +31,11 @@
 
 			<div class="shadow" />
 
-			<div v-if="!disabled" class="actions">
-				<v-button v-tooltip="t('zoom')" icon rounded @click="lightboxActive = true">
-					<v-icon name="zoom_in" />
-				</v-button>
-				<v-button v-tooltip="t('download')" icon rounded :href="downloadSrc" :download="image.filename_download">
+			<div v-if="!disabled && cropInfo && image" class="actions">
+				<v-button v-tooltip="t('download')" icon rounded :href="downloadSrc" :download="cropInfo.name || image.filename_download">
 					<v-icon name="file_download" />
 				</v-button>
-				<v-button v-tooltip="t('edit')" icon rounded @click="editImageDetails = true">
+				<v-button v-tooltip="t('edit_crop_details')" icon rounded @click="editCropDetails = true">
 					<v-icon name="open_in_new" />
 				</v-button>
 				<v-button v-tooltip="t('edit_image')" icon rounded @click="editImageEditor = true">
@@ -55,13 +52,19 @@
 			</div>
 
 			<drawer-item
-				v-if="!disabled && image"
-				v-model:active="editImageDetails"
-				collection="directus_files"
-				:primary-key="image.id"
+				v-if="!disabled && relationInfo && cropInfo && image"
+				v-model:active="editCropDetails"
+				:collection="relationInfo.relatedCollection.collection"
+				:primary-key="cropInfo.id"
 				:edits="edits"
 				@input="update"
-			/>
+			>
+				<template #actions>
+					<v-button secondary rounded icon :download="cropInfo.name || image.filename_download" :href="downloadSrc">
+						<v-icon name="download" />
+					</v-button>
+				</template>
+			</drawer-item>
 
 			<image-editor
 				v-if="!disabled && image"
@@ -72,8 +75,6 @@
 				@refresh="refresh"
 				@replace-image="updateImage($event.id)"
 			/>
-
-			<file-lightbox :id="image.id" v-model="lightboxActive" />
 		</div>
 		<v-upload v-else from-library from-url :folder="folder" @input="updateImage($event.id)" />
 	</div>
@@ -87,7 +88,6 @@ import { formatFilesize } from '@/utils/format-filesize';
 import { getRootPath } from '@/utils/get-root-path';
 import { readableMimeType } from '@/utils/readable-mime-type';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
-import FileLightbox from '@/views/private/components/file-lightbox.vue';
 import ImageEditor from '@/views/private/components/image-editor.vue';
 import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -121,7 +121,7 @@ const cropID = computed({
 });
 
 const cropQuery = ref<RelationQuerySingle>({
-	fields: ['x,y,width,height,image_transformations,file_id.id,file_id.modified_on,file_id.type,file_id.filename_download,file_id.width,file_id.height'],
+	fields: ['x,y,width,height,image_transformations,name,file_id.id,file_id.modified_on,file_id.filename_download,file_id.type,file_id.width,file_id.height'],
 });
 const { collection, field } = toRefs(props);
 const { relationInfo } = useRelationM2O(collection, field);
@@ -129,11 +129,13 @@ const { displayItem: cropInfo, loading, update, remove, refresh } = useRelationS
 
 const fileID = computed(() => {
 	if (!cropInfo.value) return null;
-	return cropInfo.value.file_id.id;
+	return cropInfo.value.file_id;
 });
 
 const image = computed(() => {
 	if (!cropInfo.value) return null;
+
+	// Note: it is a preloaded file row, not file ID
 	return cropInfo.value.file_id;
 });
 
@@ -171,25 +173,18 @@ const cropCollection = computed(() => relationInfo.value?.relatedCollection.coll
 
 const { t, n, te } = useI18n();
 
-const lightboxActive = ref(false);
 const editDrawerActive = ref(false);
 const imageError = ref<string | null>(null);
 
 const src = computed(() => {
 	if (!image.value || !cropInfo.value) return null;
 
-	if (image.value.type.includes('svg')) {
-		return '/assets/' + image.value.id;
-	}
 	if (image.value.type.includes('image')) {
 		let url = `/assets/${image.value.id}?cache-buster=${image.value.modified_on}`;
 		if (cropInfo.value.image_transformations) {
 			url = applyImageTransformationsToUrl(url);
+			console.log(url)
 		}
-		return addTokenToURL(url);
-	}
-	if (image.value.type.includes('image')) {
-		const url = `/assets/${image.value.id}?cache-buster=${image.value.modified_on}`;
 		return addTokenToURL(url);
 	}
 
@@ -199,28 +194,37 @@ const src = computed(() => {
 const ext = computed(() => (image.value ? readableMimeType(image.value.type, true) : 'unknown'));
 
 const downloadSrc = computed(() => {
-	if (!image.value) return null;
-	return addTokenToURL(getRootPath() + 'assets/' + image.value.id);
+	let url = `${getRootPath()}assets/${image.value.id}`
+	if (!cropInfo.value) {
+		return addTokenToURL(url);
+	} else {
+		url = applyImageTransformationsToUrl(url, '?')
+		return addTokenToURL(url);
+	}
 });
 
 const meta = computed(() => {
-	if (!image.value) return null;
-	const { filesize, width, height, type } = image.value;
+	if (!cropInfo.value || !image.value) return null;
 
-	if (width && height) {
-		return `${n(width)}x${n(height)} • ${formatFilesize(filesize)} • ${type}`;
-	}
-
-	return `${formatFilesize(filesize)} • ${type}`;
+	const { type, width: originalWidth, height: originalHeight } = image.value;
+	const width = cropInfo.value.width
+	const height = cropInfo.value.height
+	
+	let dimensions = (width && height) ? `${n(width)}x${n(height)}` : null
+	if (!dimensions && originalWidth && originalHeight) 
+		dimensions = `${n(originalWidth)}x${n(originalHeight)}`
+		
+	const properties = [cropInfo.value.name, dimensions, type]
+	return properties.filter(x => !!x).join(' • ');
 });
 
-const editImageDetails = ref(false);
+const editCropDetails = ref(false);
 const editImageEditor = ref(false);
 
-function applyImageTransformationsToUrl(url: string): string {
+function applyImageTransformationsToUrl(url: string, paramStart = '&'): string {
 	let readyTransformations = [];
 
-	if (cropInfo.value.image_transformations) {
+	if (cropInfo.value && cropInfo.value.image_transformations) {
 		const flipY = cropInfo.value.image_transformations.flipY
 		const flipX = cropInfo.value.image_transformations.flipX
 		if (flipY) {
@@ -243,7 +247,7 @@ function applyImageTransformationsToUrl(url: string): string {
 		);
 	}
 	if (readyTransformations.length > 0) {
-		url += `&transforms=[${readyTransformations.join(',')}]`;
+		url += `${paramStart}transforms=[${readyTransformations.join(',')}]`;
 	}
 
 	return url;
@@ -269,7 +273,7 @@ async function updateImage(item: string | number) {
 		const response = await api.post(`/items/${relationInfo.value?.relatedCollection.collection}`, {
 			collection: collection.value,
 			file_id: item,
-			item: primaryKey,
+			item: primaryKey
 		});
 		update(response.data.data.id);
 	} catch (err: any) {
@@ -282,16 +286,14 @@ function deselect() {
 	remove();
 
 	loading.value = false;
-	lightboxActive.value = false;
 	editDrawerActive.value = false;
-	editImageDetails.value = false;
+	editCropDetails.value = false;
 	editImageEditor.value = false;
 }
 
 const edits = computed(() => {
-	if (!fileID || typeof fileID !== 'object') return {};
-
-	return fileID;
+	if (!cropID.value || typeof cropID.value !== 'object') return {};
+	return cropID.value
 });
 </script>
 
@@ -341,75 +343,76 @@ img {
 		text-align: center;
 	}
 }
+.image-preview {
+	.shadow {
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		z-index: 2;
+		width: 100%;
+		height: 40px;
+		overflow: hidden;
+		line-height: 1;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+		background: linear-gradient(180deg, rgb(38 50 56 / 0) 0%, rgb(38 50 56 / 0.25) 100%);
+		transition: height var(--fast) var(--transition);
+	}
 
-.shadow {
-	position: absolute;
-	bottom: 0;
-	left: 0;
-	z-index: 2;
-	width: 100%;
-	height: 40px;
-	overflow: hidden;
-	line-height: 1;
-	white-space: nowrap;
-	text-overflow: ellipsis;
-	background: linear-gradient(180deg, rgb(38 50 56 / 0) 0%, rgb(38 50 56 / 0.25) 100%);
-	transition: height var(--fast) var(--transition);
-}
+	.actions {
+		--v-button-color: var(--foreground-subdued);
+		--v-button-background-color: var(--white);
+		--v-button-color-hover: var(--foreground-normal);
+		--v-button-background-color-hover: var(--white);
 
-.actions {
-	--v-button-color: var(--foreground-subdued);
-	--v-button-background-color: var(--white);
-	--v-button-color-hover: var(--foreground-normal);
-	--v-button-background-color-hover: var(--white);
+		position: absolute;
+		top: calc(50% - 32px);
+		left: 0;
+		z-index: 3;
+		display: flex;
+		justify-content: center;
+		width: 100%;
 
-	position: absolute;
-	top: calc(50% - 32px);
-	left: 0;
-	z-index: 3;
-	display: flex;
-	justify-content: center;
-	width: 100%;
+		.v-button {
+			margin-right: 12px;
+			transform: translateY(10px);
+			opacity: 0;
+			transition: var(--medium) var(--transition);
+			transition-property: opacity transform;
 
-	.v-button {
-		margin-right: 12px;
-		transform: translateY(10px);
-		opacity: 0;
-		transition: var(--medium) var(--transition);
-		transition-property: opacity transform;
-
-		@for $i from 0 through 4 {
-			&:nth-of-type(#{$i + 1}) {
-				transition-delay: $i * 25ms;
+			@for $i from 0 through 4 {
+				&:nth-of-type(#{$i + 1}) {
+					transition-delay: $i * 25ms;
+				}
 			}
+		}
+
+		.v-button:last-child {
+			margin-right: 0px;
 		}
 	}
 
-	.v-button:last-child {
-		margin-right: 0px;
+	.info {
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		z-index: 3;
+		width: 100%;
+		padding: 8px 12px;
+		line-height: 1.2;
 	}
-}
 
-.info {
-	position: absolute;
-	bottom: 0;
-	left: 0;
-	z-index: 3;
-	width: 100%;
-	padding: 8px 12px;
-	line-height: 1.2;
-}
+	.title {
+		color: var(--white);
+	}
 
-.title {
-	color: var(--white);
-}
-
-.meta {
-	height: 17px;
-	max-height: 0;
-	overflow: hidden;
-	color: rgb(255 255 255 / 0.75);
-	transition: max-height var(--fast) var(--transition);
+	.meta {
+		height: 17px;
+		max-height: 0;
+		overflow: hidden;
+		color: rgb(255 255 255 / 0.75);
+		transition: max-height var(--fast) var(--transition);
+	}
 }
 
 .image-preview:focus-within,

@@ -583,6 +583,7 @@ bookmark_doesnt_exist_copy: The bookmark you're trying to open couldn't be found
 bookmark_doesnt_exist_cta: Return to collection
 select_an_item: Select an item...
 edit: Edit
+edit_crop_details: Edit Crop Details
 enabled: Enabled
 disable_tfa: Disable 2FA
 tfa_scan_code: Scan the code in your authenticator app to finish setting up 2FA

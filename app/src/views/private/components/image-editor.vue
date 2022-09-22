@@ -149,13 +149,15 @@ type Image = {
 	height: number;
 };
 
+type CropCoordinates = {
+	x: number;
+	y: number;
+	width: number;
+	height: number;
+}
+
 type CropInfo = {
-	coordinates: {
-		x: number;
-		y: number;
-		width: number;
-		height: number;
-	} | null;
+	coordinates: CropCoordinates | null;
 	imageTransformations: {
 		flipY: boolean;
 		flipX: boolean;
@@ -250,14 +252,12 @@ export default defineComponent({
 		});
 
 		const coordinates = computed(() => {
-			if (props.cropInfo?.coordinates) {
+			if (props.cropInfo && props.cropInfo.coordinates && imageData.value && cropperInstance.value) {
 				if (imageTransformations.value.flipY) {
-					props.cropInfo.coordinates.x =
-						imageData.value?.width - props.cropInfo.coordinates.width - props.cropInfo.coordinates.x;
+					props.cropInfo.coordinates.x = imageData.value.width - props.cropInfo.coordinates.width - props.cropInfo.coordinates.x;
 				}
 				if (imageTransformations.value.flipX) {
-					props.cropInfo.coordinates.y =
-						imageData.value?.height - props.cropInfo.coordinates.height - props.cropInfo.coordinates.y;
+					props.cropInfo.coordinates.y = imageData.value?.height - props.cropInfo.coordinates.height - props.cropInfo.coordinates.y;
 				}
 				return props.cropInfo.coordinates;
 			} else {
@@ -329,16 +329,16 @@ export default defineComponent({
 		function applyImageTransformationsToUrl(url: string): string {
 			let readyTransformations = [];
 
-			if (props.cropInfo?.imageTransformations) {
-				const flipY = props.cropInfo?.imageTransformations.flipY
-				const flipX = props.cropInfo?.imageTransformations.flipX
+			if (props.cropInfo && props.cropInfo.imageTransformations) {
+				const flipY = props.cropInfo.imageTransformations.flipY
+				const flipX = props.cropInfo.imageTransformations.flipX
 				if (flipX) {
 					readyTransformations.push('["flip"]');
 				}
 				if (flipY) {
 					readyTransformations.push('["flop"]');
 				}
-				let rotation = props.cropInfo?.imageTransformations.rotate
+				let rotation = props.cropInfo.imageTransformations.rotate
 				if (rotation) {
 					readyTransformations.push(`["rotate", ${rotation}]`);
 				}
@@ -407,7 +407,7 @@ export default defineComponent({
 						try {
 							const cropperData = cropperInstance.value?.getData();
 
-							if (cropperData && props.cropInfo.cropCollection && props.cropInfo.id) {
+							if (cropperData && imageData.value && props.cropInfo && props.cropInfo.cropCollection && props.cropInfo.id) {
 								const coordinates =
 									cropping.value
 										? {
@@ -436,6 +436,8 @@ export default defineComponent({
 									...coordinates,
 									image_transformations: imageTransformations.value,
 								});
+							} else {
+								await api.patch(`/files/${props.id}`, formData);
 							}
 
 							emit('refresh');
@@ -589,10 +591,8 @@ export default defineComponent({
 					}, 50),
 				});
 
-				cropperInstance.value?.getData();
-
-				if (props.cropInfo && coordinates.value) {
-					setTimeout(() => {
+				setTimeout(() => {
+					if (coordinates.value) {
 						cropperInstance.value?.crop();
 						cropperInstance.value?.setData({
 							x: coordinates.value.x,
@@ -601,8 +601,8 @@ export default defineComponent({
 							height: coordinates.value.height,
 						});
 						dragMode.value = 'crop';
-					}, 100);
-				}
+					}
+				}, 100)
 			}
 
 			function flip(type: 'horizontal' | 'vertical') {
