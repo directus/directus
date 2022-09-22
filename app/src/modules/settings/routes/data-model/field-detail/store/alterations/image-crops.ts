@@ -106,7 +106,7 @@ export function setDefaults(updates: StateUpdates, state: State, { getCurrent }:
 	set(updates, 'relatedCollectionFields.m2o', [
 		{
 			collection: junctionName,
-			field: 'name',
+			field: 'filename_download',
 			type: 'string',
 		},
 		{

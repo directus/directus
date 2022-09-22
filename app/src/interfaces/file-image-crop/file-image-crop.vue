@@ -32,7 +32,7 @@
 			<div class="shadow" />
 
 			<div v-if="!disabled && cropInfo && image" class="actions">
-				<v-button v-tooltip="t('download')" icon rounded :href="downloadSrc" :download="cropInfo.name || image.filename_download">
+				<v-button v-tooltip="t('download')" icon rounded :href="downloadSrc" :download="cropInfo.filename_download || image.filename_download">
 					<v-icon name="file_download" />
 				</v-button>
 				<v-button v-tooltip="t('edit_crop_details')" icon rounded @click="editCropDetails = true">
@@ -60,7 +60,7 @@
 				@input="update"
 			>
 				<template #actions>
-					<v-button secondary rounded icon :download="cropInfo.name || image.filename_download" :href="downloadSrc">
+					<v-button secondary rounded icon :download="cropInfo.filename_download || image.filename_download" :href="downloadSrc">
 						<v-icon name="download" />
 					</v-button>
 				</template>
@@ -214,7 +214,7 @@ const meta = computed(() => {
 	if (!dimensions && originalWidth && originalHeight) 
 		dimensions = `${n(originalWidth)}x${n(originalHeight)}`
 		
-	const properties = [cropInfo.value.name, dimensions, type]
+	const properties = [cropInfo.value.filename_download, dimensions, type]
 	return properties.filter(x => !!x).join(' • ');
 });
 
