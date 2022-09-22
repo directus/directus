@@ -9,7 +9,7 @@ import {
 	Type,
 } from '@directus/shared/types';
 import { Knex } from 'knex';
-import { clone, isPlainObject, pull } from 'lodash';
+import { clone, isPlainObject } from 'lodash';
 import { customAlphabet } from 'nanoid';
 import validate from 'uuid-validate';
 import { getHelpers } from '../database/helpers';
@@ -418,7 +418,13 @@ export function applyFilter(
 					}
 				}
 
-				pull(filterPath, '_none', '_some');
+				if (filterPath.includes('_none') || filterPath.includes('_some')) {
+					throw new InvalidQueryException(
+						`"${
+							filterPath.includes('_none') ? '_none' : '_some'
+						}" can only be used with top level relational alias field`
+					);
+				}
 
 				const { columnPath, targetCollection, addNestedPkField } = getColumnPath({
 					path: filterPath,
