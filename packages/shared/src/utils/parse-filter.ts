@@ -18,7 +18,42 @@ export function parseFilter(
 	accountability: Accountability | null,
 	context: ParseFilterContext = {}
 ): Filter | null {
-	return parseFilterRecursive(filter, accountability, context);
+	let parsedFilter = parseFilterRecursive(filter, accountability, context);
+	if (parsedFilter) {
+		parsedFilter = shiftLogicalOperatorsUp(parsedFilter);
+	}
+	return parsedFilter;
+}
+
+const logicalFilterOperators = ['_and', '_or'];
+const bypassOperators = ['_none', '_some'];
+
+function shiftLogicalOperatorsUp(filter: any): any {
+	const key = Object.keys(filter)[0];
+	if (!key) return filter;
+
+	if (logicalFilterOperators.includes(key)) {
+		for (const childKey of Object.keys(filter[key])) {
+			filter[key][childKey] = shiftLogicalOperatorsUp(filter[key][childKey]);
+		}
+		return filter;
+	} else {
+		const childKey = Object.keys(filter[key])[0];
+		if (!childKey) return filter;
+		if (logicalFilterOperators.includes(childKey)) {
+			return {
+				[childKey]: toArray(filter[key][childKey]).map((childFilter) => {
+					return { [key]: shiftLogicalOperatorsUp(childFilter) };
+				}),
+			};
+		} else if (bypassOperators.includes(childKey)) {
+			return { [key]: { [childKey]: shiftLogicalOperatorsUp(filter[key][childKey]) } };
+		} else if (childKey.startsWith('_')) {
+			return filter;
+		} else {
+			return { [key]: shiftLogicalOperatorsUp(filter[key]) };
+		}
+	}
 }
 
 function parseFilterRecursive(
@@ -63,22 +98,10 @@ function parseFilterEntry(
 		return { [key]: value.map((filter: Filter) => parseFilterRecursive(filter, accountability, context)) };
 	} else if (['_in', '_nin', '_between', '_nbetween'].includes(String(key))) {
 		return { [key]: toArray(value).flatMap((value) => parseFilterValue(value, accountability, context)) } as Filter;
-	} else if (String(key).startsWith('_')) {
+	} else if (String(key).startsWith('_') && !bypassOperators.includes(key)) {
 		return { [key]: parseFilterValue(value, accountability, context) };
 	} else {
-		const parsed = parseFilterRecursive(value, accountability, context) as any;
-		// Shift _and & _or operators upwards
-		if (!['_and', '_or'].includes(key) && typeof parsed === 'object') {
-			const operator = Object.keys(parsed)[0];
-			if (operator && ['_and', '_or'].includes(operator)) {
-				return {
-					[operator]: toArray(parsed[operator]).map((filter: Filter) => {
-						return { [key]: filter } as Filter;
-					}),
-				} as Filter;
-			}
-		}
-		return { [key]: parsed } as Filter;
+		return { [key]: parseFilterRecursive(value, accountability, context) } as Filter;
 	}
 }
 
