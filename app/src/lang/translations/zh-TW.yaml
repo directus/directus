@@ -327,6 +327,7 @@ edit_raw_value: 編輯原始值
 enter_raw_value: 輸入原始值...
 clear_value: 清除內容
 clear_changes: 清除更改
+clear_items: 清除項目
 reset_to_default: 重設為預設值
 undo_changes: 還原變更
 notifications: 通知
@@ -1667,6 +1668,7 @@ interfaces:
     user_language: 使用目前使用者的語言
     default_language: 預設語言
     language_field: 語言判斷欄位
+    language_direction_field: 語言方向欄位
   list-o2m-tree-view:
     description: 以樹狀方式顯示多層一對多的資料項目
     recursive_only: 樹狀結構只能用來顯示有多層關係的資料
@@ -1992,7 +1994,11 @@ panels:
     description: 在其他面板的篩選器中設定一個全域值
     variable_key: 變動值
   relational-variable:
+    name: 全站關聯性資料
+    description: 設定一個可以在其他面板中作為篩選的全站性資料
     variable_key: 變動值
+    multiple: 多選
+    multiple-label: 選擇多個項目
 triggers:
   common:
     response_body: 回應內文
