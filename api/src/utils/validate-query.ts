@@ -5,6 +5,7 @@ import { Query } from '@directus/shared/types';
 import { stringify } from 'wellknown';
 import { calculateFieldDepth } from './calculate-field-depth';
 import env from '../env';
+import e from 'express';
 
 const querySchema = Joi.object({
 	fields: Joi.array().items(Joi.string()),
@@ -42,10 +43,14 @@ export function validateQuery(query: Query): Query {
 	return query;
 }
 
-function validateFilter(filter: Query['filter']) {
+function validateFilter(filter: Query['filter'], level = 1) {
 	if (!filter) throw new InvalidQueryException('Invalid filter object');
 
 	for (const [key, nested] of Object.entries(filter)) {
+		// we only want to enforce _some and _none on the top level...
+		if (key === '_some' || key === '_none') {
+			if (level != 1) throw new InvalidQueryException('Invalid filter object');
+		}
 		if (key === '_and' || key === '_or') {
 			nested.forEach(validateFilter);
 		} else if (key.startsWith('_')) {
@@ -73,7 +78,7 @@ function validateFilter(filter: Query['filter']) {
 					break;
 				case '_none':
 				case '_some':
-					validateFilter(nested);
+					validateFilter(nested, 2);
 					break;
 				case '_eq':
 				case '_neq':
