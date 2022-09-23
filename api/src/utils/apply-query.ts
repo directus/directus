@@ -19,8 +19,7 @@ import { getColumnPath } from './get-column-path.js';
 import { getRelationInfo } from './get-relation-info.js';
 import { getFilterOperatorsForType, getOutputTypeForFunction } from '@directus/shared/utils';
 import { stripFunction } from './strip-function.js';
-import { forEach, map } from 'async';
-import { fakePromise } from './fakePromise.js';
+import { map } from 'async';
 
 const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
 
