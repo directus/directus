@@ -186,6 +186,7 @@ revision_post_create: Öğe oluşturulduğunda böyle gözüküyordu.
 revision_post_update: Öğe güncellendikten sonra böyle gözüküyordu.
 changes_made: Aşağıda bu revizyonda yapılan belirli değişiklikler bulunmaktadır.
 no_relational_data: Unutmayın, ilişkisel veriler buraya dahil değildir.
+junction_field_location: Kavşak Alanları Konumu
 top: Üst
 bottom: Alt
 hide_field: Alanı Gizle
@@ -536,6 +537,7 @@ activity_item: Etkinlik Öğesi
 action: İşlem
 ip_address: IP Adresi
 user_agent: Kullanıcı Etmeni
+origin: Kaynak
 webhooks: Webhooklar
 decimals: Ondalıklar
 value_decimals: Ondalık Değerleri
@@ -778,6 +780,7 @@ flows: Akışlar
 flow: Akış
 select_a_flow: Bir Akış Seç
 run_flow_on_current: Geçerli Öğede akışı çalıştır
+run_flow_on_current_edited_confirm: Bu öğe bu akış tarafından güncellenebilir, yürütmek istediğinizden emin misiniz?
 trigger: Tetikleme
 trigger_options: Tetikleyici Seçenekleri
 view_trigger: Tetikleyiciyi Görüntüle
@@ -1035,6 +1038,7 @@ fields:
     user: Uygulayan
     comment: Yorum
     user_agent: Kullanıcı Etmeni
+    origin: Kaynak
     ip: IP Adresi
     revisions: Revizyonlar
   directus_collections:
@@ -1765,6 +1769,7 @@ displays:
     strict: Katı
     strict_label: Katı birimler kullanın
     strict_note: '''Neredeyse'', ''bitti'', ''daha az'' gibi kelimeleri kaldırır'
+    round_note: Kullanılacak bir yuvarlama işlevi seçin
     down: Aşağı
     nearest: En yakın
     up: Yukarı
@@ -1881,7 +1886,9 @@ layouts:
   kanban:
     name: Kanban,
     group_field: Gruplandırma,
+    group_field_placeholder: Gruplandırılacak alan...,
     group_title: Grup Başlığı,
+    group_title_placeholder: Grup başlıkları için alan...,
     title: Kart Başlığı,
     title_placeholder: İsteğe bağlı başlık alanı...,
     text: Kart Metni,
@@ -1948,13 +1955,17 @@ panels:
     select_x_axis: Bir X Ekseni seçmelisiniz.
     function: İşlev
     x_axis: X-Ekseni
+    disabled_no_grouping: Gruplandırma seçilmediğinde devre dışı bırakılır.
     y_axis: Y-Ekseni
     datasets: Veri Setleri
     show_legend: Göstergeyi Göster
     show_marker: Araç İpucu İşaretçisini Göster
+    include_dataset: En az bir veri kümesi eklemelisiniz.
+    include_y_axis: Hiçbir grup belirtilmediğinde her veri kümesi için bir Y Ekseni eklemelisiniz.
     group_and_function: Hem bir grubu hem de bir işlevi dahil etmeli veya atlamalısınız.
     straight: 'Düz'
   meter:
+    description: İzleme değerleri için sayaç
     name: Metre
     select_max_value: Bir maksimum değer seçmelisiniz.
     max_greater_than_zero: Maksimum değer 0'dan büyük olmalıdır.
@@ -1965,6 +1976,7 @@ panels:
     medium: Orta
     broad: Kalın
   piechart:
+    description: Bir sütundaki grupların oranlarını gösteren dairesel grafik.
     function: 'İşlev'
     labels: Etiketleri Göster
     legend: Göstergeyi Göster
@@ -1978,6 +1990,7 @@ panels:
     variable_key: Değişken Anahtar
   relational-variable:
     name: Küresel İlişkisel Değişken
+    description: Diğer Panellerin filtrelerinde kullanım için global bir ilişkisel değer ayarlayın
     variable_key: Değişken Anahtar
     multiple: Çoklu
     multiple-label: Birden çok öğe seçin
@@ -2008,6 +2021,8 @@ triggers:
     collection_and_item: Koleksiyon ve Öğe Sayfaları
     collection_only: Yalnızca Koleksiyon Sayfası
     item_only: Yalnızca Öğe Sayfası
+a_flow_uuid: Bir Akışın Birincil Anahtar UUID'si...
+any_string_or_json: Herhangi bir dize veya JSON...
 item_payload_placeholder: Bu, öğenin alan değerlerini güncellemek için kullanılan JSON'dur...
 operations:
   condition:
