@@ -93,11 +93,18 @@ router.get(
 	'/schema/snapshot',
 	asyncHandler(async (req, res, next) => {
 		const service = new SchemaService({ accountability: req.accountability });
-
 		const currentSnapshot = await service.snapshot();
-
 		res.locals.payload = { data: currentSnapshot };
+		return next();
+	}),
+	respond
+);
 
+router.post(
+	'/schema/apply',
+	asyncHandler(async (req, res, next) => {
+		const service = new SchemaService({ accountability: req.accountability });
+		await service.apply(req.body);
 		return next();
 	}),
 	respond
@@ -165,23 +172,11 @@ const schemaMultipartHandler: RequestHandler = (req, res, next) => {
 };
 
 router.post(
-	'/schema/apply',
-	asyncHandler(async (req, res, next) => {
-		const service = new SchemaService({ accountability: req.accountability });
-		await service.apply(req.body);
-		return next();
-	}),
-	respond
-);
-
-router.post(
 	'/schema/diff',
 	asyncHandler(schemaMultipartHandler),
 	asyncHandler(async (req, res, next) => {
 		const service = new SchemaService({ accountability: req.accountability });
-
 		const snapshot: Snapshot = req.is('application/json') ? req.body : res.locals.uploadedSnapshot;
-
 		if (snapshot.directus !== currentDirectusVersion && 'force' in req.query === false) {
 			throw new InvalidPayloadException(
 				`Provided snapshot's directus version ${snapshot.directus} does not match the current instance's version ${currentDirectusVersion}`
@@ -189,13 +184,10 @@ router.post(
 		}
 
 		const snapshotDiff = await service.diff(snapshot);
-
 		if (!snapshotDiff) return next();
 
 		const hash = await service.getCurrentHash();
-
 		res.locals.payload = { data: { hash, diff: snapshotDiff } };
-
 		return next();
 	}),
 	respond
