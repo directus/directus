@@ -5,6 +5,7 @@ import { validateEnv } from './utils/validate-env.js';
 import type { CacheOptions, CacheService } from './services/cache/cache.js';
 import { RedisCache } from './services/cache/redis-cache.js';
 import { MemCache } from './services/cache/mem-cache.js';
+import {clearSystemCache} from './utils/clearSystemCache.js';
 
 let cache: CacheService | null = null;
 let systemCache: CacheService | null = null;
@@ -31,31 +32,6 @@ export async function flushCaches(forced?: boolean): Promise<void> {
 	const { cache } = getCache();
 	await clearSystemCache(forced);
 	await cache?.clear();
-}
-
-export async function clearSystemCache(forced?: boolean): Promise<void> {
-	const { systemCache } = getCache();
-
-	// Flush system cache when forced or when system cache lock not set
-	if (forced || !(await systemCache.isLocked())) {
-		await systemCache.lock();
-		await systemCache.clear();
-		await systemCache.unlock();
-	}
-}
-
-export async function setSystemCache(key: string, value: any, ttl?: number): Promise<void> {
-	const { systemCache } = getCache();
-
-	if (!(await systemCache.isLocked())) {
-		await systemCache.set(key, value, ttl);
-	}
-}
-
-export async function getSystemCache(key: string): Promise<Record<string, any>> {
-	const { systemCache } = getCache();
-
-	return await systemCache.get(key);
 }
 
 function getCacheInstance(ttl: number | undefined, namespaceSuffix: string, checkLock: boolean = false): CacheService {

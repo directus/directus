@@ -1,6 +1,6 @@
 import SchemaInspector from '@directus/schema';
 import type { Knex } from 'knex';
-import { getCache, clearSystemCache } from '../cache.js';
+import { getCache } from '../cache.js';
 import { ALIAS_TYPES } from '../constants.js';
 import getDatabase, { getSchemaInspector } from '../database/index.js';
 import { systemCollectionRows } from '../database/system-data/collections/index.js';
@@ -14,6 +14,7 @@ import type { Table } from 'knex-schema-inspector/dist/types/table';
 import { addFieldFlag } from '@directus/shared/utils';
 import { getHelpers, Helpers } from '../database/helpers/index.js';
 import type { CacheService } from './cache/cache.js';
+import { clearAllCollections, clearAllRelations, clearCollection, clearFields } from '../utils/clearSystemCache.js';
 
 export type RawCollection = {
 	collection: string;
@@ -154,7 +155,7 @@ export class CollectionsService {
 				await this.cache.clear();
 			}
 
-			await clearSystemCache();
+			await clearAllCollections();
 		}
 	}
 
@@ -186,7 +187,7 @@ export class CollectionsService {
 				await this.cache.clear();
 			}
 
-			await clearSystemCache();
+			await clearAllCollections()
 		}
 	}
 
@@ -345,7 +346,7 @@ export class CollectionsService {
 				await this.cache.clear();
 			}
 
-			await clearSystemCache();
+			await clearCollection(collectionKey);
 		}
 	}
 
@@ -376,7 +377,7 @@ export class CollectionsService {
 				await this.cache.clear();
 			}
 
-			await clearSystemCache();
+			await clearCollection(collectionKeys);
 		}
 	}
 
@@ -481,7 +482,9 @@ export class CollectionsService {
 				await this.cache.clear();
 			}
 
-			await clearSystemCache();
+			await clearCollection(collectionKey);
+			await clearFields(collectionKey);
+			await clearAllRelations()
 		}
 	}
 
@@ -511,8 +514,6 @@ export class CollectionsService {
 			if (this.cache && env['CACHE_AUTO_PURGE'] && opts?.autoPurgeCache !== false) {
 				await this.cache.clear();
 			}
-
-			await clearSystemCache();
 		}
 	}
 }

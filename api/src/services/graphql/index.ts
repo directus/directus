@@ -43,7 +43,7 @@ import {
 import type { Knex } from 'knex';
 import { flatten, get, mapKeys, merge, omit, pick, set, transform, uniq } from 'lodash-es';
 import ms from 'ms';
-import { clearSystemCache, getCache } from '../../cache.js';
+import { getCache } from '../../cache.js';
 import { DEFAULT_AUTH_PROVIDER, GENERATE_SPECIAL } from '../../constants.js';
 import { REGEX_BETWEEN_PARENS } from '@directus/shared/constants';
 import getDatabase from '../../database/index.js';
@@ -89,6 +89,7 @@ import type { PrimaryKey } from '@directus/shared/types';
 
 import { addPathToValidationError } from './utils/add-path-to-validation-error.js';
 import { GraphQLHash } from './types/hash.js';
+import { clearSystemCache } from '../../utils/clearSystemCache.js';
 
 const validationRules = Array.from(specifiedRules);
 
@@ -1101,7 +1102,7 @@ export class GraphQLService {
 					ReadableCollectionFilterTypes[relation.collection]?.removeField('item');
 					for (const collection of relation.meta.one_allowed_collections) {
 						ReadableCollectionFilterTypes[relation.collection]?.addFields({
-							[`item__${collection}`]: ReadableCollectionFilterTypes[collection],
+							[`item__${collection}`]: ReadableCollectionFilterTypes[collection]!,
 						});
 					}
 				}

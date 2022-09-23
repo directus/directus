@@ -8,11 +8,12 @@ import { PermissionsService } from './permissions.js';
 import SchemaInspector from '@directus/schema';
 import getDatabase, { getSchemaInspector } from '../database/index.js';
 import { getDefaultIndexName } from '../utils/get-default-index-name.js';
-import { getCache, clearSystemCache } from '../cache.js';
+import { getCache } from '../cache.js';
 import type { AbstractServiceOptions } from '../types/index.js';
 import { getHelpers, Helpers } from '../database/helpers/index.js';
 import type { CacheService } from './cache/cache.js';
 import { stitchRelations } from '../utils/stitch-relations.js';
+import { clearAllRelations, clearRelationsForField } from '../utils/clearSystemCache.js';
 
 export class RelationsService {
 	knex: Knex;
@@ -213,7 +214,7 @@ export class RelationsService {
 				await this.helpers.schema.postColumnChange();
 			}
 
-			await clearSystemCache();
+			await clearAllRelations();
 		}
 	}
 
@@ -297,7 +298,7 @@ export class RelationsService {
 				await this.helpers.schema.postColumnChange();
 			}
 
-			await clearSystemCache();
+			await clearRelationsForField(collection, field);
 		}
 	}
 
@@ -348,7 +349,7 @@ export class RelationsService {
 				await this.helpers.schema.postColumnChange();
 			}
 
-			await clearSystemCache();
+			await clearRelationsForField(collection, field);
 		}
 	}
 

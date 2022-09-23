@@ -5,7 +5,7 @@ import { addFieldFlag, toArray } from '@directus/shared/utils';
 import type { Knex } from 'knex';
 import type { Column } from 'knex-schema-inspector/dist/types/column';
 import { isEqual, isNil } from 'lodash-es';
-import { clearSystemCache, getCache } from '../cache.js';
+import { getCache } from '../cache.js';
 import { ALIAS_TYPES } from '../constants.js';
 import getDatabase, { getSchemaInspector } from '../database/index.js';
 import { getHelpers, Helpers } from '../database/helpers/index.js';
@@ -22,6 +22,7 @@ import getLocalType from '../utils/get-local-type.js';
 import { RelationsService } from './relations.js';
 import { KNEX_TYPES } from '@directus/shared/constants';
 import type { CacheService } from './cache/cache.js';
+import { clearField, clearFields } from '../utils/clearSystemCache.js';
 
 export class FieldsService {
 	knex: Knex;
@@ -331,7 +332,7 @@ export class FieldsService {
 				await this.cache.clear();
 			}
 
-			await clearSystemCache();
+			await clearFields(collection);
 		}
 	}
 
@@ -423,7 +424,7 @@ export class FieldsService {
 				await this.cache.clear();
 			}
 
-			await clearSystemCache();
+			await clearField(collection, field.field);
 		}
 	}
 
@@ -557,7 +558,7 @@ export class FieldsService {
 				await this.cache.clear();
 			}
 
-			await clearSystemCache();
+			await clearField(collection, field);
 		}
 	}
 
