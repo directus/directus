@@ -47,7 +47,7 @@ export class MetaService {
 
 			const permissions = permissionsRecord.permissions ?? {};
 
-			applyFilter(this.knex, this.schema, dbQuery, permissions, collection);
+			applyFilter(this.knex, this.schema, dbQuery, permissions, collection, {});
 		}
 
 		const result = await dbQuery;
@@ -77,7 +77,7 @@ export class MetaService {
 		}
 
 		if (Object.keys(filter).length > 0) {
-			applyFilter(this.knex, this.schema, dbQuery, filter, collection);
+			applyFilter(this.knex, this.schema, dbQuery, filter, collection, {});
 		}
 
 		if (query.search) {

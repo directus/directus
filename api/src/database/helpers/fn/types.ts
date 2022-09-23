@@ -46,7 +46,7 @@ export abstract class FnHelper extends DatabaseHelper {
 			.where(relation.field, '=', this.knex.raw(`??.??`, [table, currentPrimary]));
 
 		if (options?.query?.filter) {
-			countQuery = applyFilter(this.knex, this.schema, countQuery, options.query.filter, relation.collection, false);
+			countQuery = applyFilter(this.knex, this.schema, countQuery, options.query.filter, relation.collection, {});
 		}
 
 		return this.knex.raw('(' + countQuery.toQuery() + ')');

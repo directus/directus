@@ -32,8 +32,10 @@ export default function applyQuery(
 	query: Query,
 	schema: SchemaOverview
 ): Knex.QueryBuilder {
+	const aliasMap: AliasMap = {};
+
 	if (query.sort) {
-		applySort(knex, schema, dbQuery, query.sort, collection);
+		applySort(knex, schema, dbQuery, query.sort, collection, aliasMap);
 	}
 
 	if (typeof query.limit === 'number' && query.limit !== -1) {
@@ -61,7 +63,7 @@ export default function applyQuery(
 	}
 
 	if (query.filter) {
-		applyFilter(knex, schema, dbQuery, query.filter, collection);
+		applyFilter(knex, schema, dbQuery, query.filter, collection, aliasMap);
 	}
 
 	return dbQuery;
@@ -216,10 +218,10 @@ export function applySort(
 	schema: SchemaOverview,
 	rootQuery: Knex.QueryBuilder,
 	rootSort: string[],
-	collection: string
+	collection: string,
+	aliasMap: AliasMap
 ) {
 	const relations: Relation[] = schema.relations;
-	const aliasMap: AliasMap = {};
 
 	rootQuery.orderBy(
 		rootSort.map((sortField) => {
@@ -273,12 +275,11 @@ export function applyFilter(
 	schema: SchemaOverview,
 	rootQuery: Knex.QueryBuilder,
 	rootFilter: Filter,
-	collection: string
+	collection: string,
+	aliasMap: AliasMap
 ) {
 	const helpers = getHelpers(knex);
 	const relations: Relation[] = schema.relations;
-
-	const aliasMap: AliasMap = {};
 
 	addJoins(rootQuery, rootFilter, collection);
 	addWhereClauses(knex, rootQuery, rootFilter, collection);
