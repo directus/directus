@@ -240,12 +240,33 @@ function getDBQuery(
 	query: Query
 ): Knex.QueryBuilder {
 	const preProcess = getColumnPreprocessor(knex, schema, table);
-	const dbQuery = knex.select(fieldNodes.map(preProcess)).from(table);
 	const queryCopy = clone(query);
 
 	queryCopy.limit = typeof queryCopy.limit === 'number' ? queryCopy.limit : 100;
 
-	return applyQuery(knex, table, dbQuery, queryCopy, schema);
+	// Aggregates will not have duplicate result
+	if (queryCopy.aggregate) {
+		const aggregateQuery = knex.select(fieldNodes.map(preProcess)).from(table);
+		return applyQuery(knex, table, aggregateQuery, queryCopy, schema);
+	}
+
+	const primaryKey = schema.collections[table].primary;
+	const dbQuery = knex.select(`${table}.${primaryKey}`).from(table).distinct();
+	const wrapperQuery = knex
+		.select(fieldNodes.map(preProcess))
+		.from(table)
+		.innerJoin(
+			knex.raw('??', applyQuery(knex, table, dbQuery, queryCopy, schema).as('inner')),
+			`${table}.${primaryKey}`,
+			`inner.${primaryKey}`
+		);
+
+	// Setting limit on the main query - just in case
+	if (queryCopy.limit !== -1) {
+		wrapperQuery.limit(queryCopy.limit);
+	}
+
+	return wrapperQuery;
 }
 
 function applyParentFilters(

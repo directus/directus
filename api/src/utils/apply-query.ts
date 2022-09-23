@@ -30,11 +30,10 @@ export default function applyQuery(
 	collection: string,
 	dbQuery: Knex.QueryBuilder,
 	query: Query,
-	schema: SchemaOverview,
-	subQuery = false
+	schema: SchemaOverview
 ): Knex.QueryBuilder {
 	if (query.sort) {
-		applySort(knex, schema, dbQuery, query.sort, collection, subQuery);
+		applySort(knex, schema, dbQuery, query.sort, collection);
 	}
 
 	if (typeof query.limit === 'number' && query.limit !== -1) {
@@ -62,7 +61,7 @@ export default function applyQuery(
 	}
 
 	if (query.filter) {
-		applyFilter(knex, schema, dbQuery, query.filter, collection, subQuery);
+		applyFilter(knex, schema, dbQuery, query.filter, collection);
 	}
 
 	return dbQuery;
@@ -114,11 +113,10 @@ type AddJoinProps = {
 	relations: Relation[];
 	rootQuery: Knex.QueryBuilder;
 	schema: SchemaOverview;
-	subQuery: boolean;
 	knex: Knex;
 };
 
-function addJoin({ path, collection, aliasMap, rootQuery, subQuery, schema, relations, knex }: AddJoinProps) {
+function addJoin({ path, collection, aliasMap, rootQuery, schema, relations, knex }: AddJoinProps) {
 	path = clone(path);
 	followRelation(path);
 
@@ -189,28 +187,26 @@ function addJoin({ path, collection, aliasMap, rootQuery, subQuery, schema, rela
 			}
 		}
 
-		if (relationType === 'm2o' || subQuery === true || (relationType === 'o2m' && parentFields !== undefined)) {
-			let parent: string;
+		let parent: string;
 
-			if (relationType === 'm2o') {
-				parent = relation.related_collection!;
-			} else if (relationType === 'a2o') {
-				const pathScope = pathParts[0].split(':')[1];
+		if (relationType === 'm2o') {
+			parent = relation.related_collection!;
+		} else if (relationType === 'a2o') {
+			const pathScope = pathParts[0].split(':')[1];
 
-				if (!pathScope) {
-					throw new InvalidQueryException(
-						`You have to provide a collection scope when sorting or filtering on a many-to-any item`
-					);
-				}
-
-				parent = pathScope;
-			} else {
-				parent = relation.collection;
+			if (!pathScope) {
+				throw new InvalidQueryException(
+					`You have to provide a collection scope when sorting or filtering on a many-to-any item`
+				);
 			}
 
-			if (pathParts.length > 1) {
-				followRelation(pathParts.slice(1), parent, `${parentFields ? parentFields + '.' : ''}${pathParts[0]}`);
-			}
+			parent = pathScope;
+		} else {
+			parent = relation.collection;
+		}
+
+		if (pathParts.length > 1) {
+			followRelation(pathParts.slice(1), parent, `${parentFields ? parentFields + '.' : ''}${pathParts[0]}`);
 		}
 	}
 }
@@ -220,8 +216,7 @@ export function applySort(
 	schema: SchemaOverview,
 	rootQuery: Knex.QueryBuilder,
 	rootSort: string[],
-	collection: string,
-	subQuery = false
+	collection: string
 ) {
 	const relations: Relation[] = schema.relations;
 	const aliasMap: AliasMap = {};
@@ -245,7 +240,6 @@ export function applySort(
 					collection,
 					aliasMap,
 					rootQuery,
-					subQuery,
 					schema,
 					relations,
 					knex,
@@ -279,32 +273,15 @@ export function applyFilter(
 	schema: SchemaOverview,
 	rootQuery: Knex.QueryBuilder,
 	rootFilter: Filter,
-	collection: string,
-	subQuery = false
+	collection: string
 ) {
 	const helpers = getHelpers(knex);
 	const relations: Relation[] = schema.relations;
 
 	const aliasMap: AliasMap = {};
 
-	if (!subQuery) {
-		const column = `${collection}.${schema.collections[collection].primary}`;
-
-		const subQueryBuilder = (filter: Filter) => (subQueryKnex: Knex.QueryBuilder<any, unknown[]>) => {
-			subQueryKnex
-				.select({ [schema.collections[collection].primary]: column })
-				.distinct()
-				.from(collection)
-				.whereNotNull(column);
-
-			applyQuery(knex, collection, subQueryKnex, { filter }, schema, true);
-		};
-
-		rootQuery['and'].whereIn(column, subQueryBuilder(rootFilter));
-	} else {
-		addJoins(rootQuery, rootFilter, collection);
-		addWhereClauses(knex, rootQuery, rootFilter, collection);
-	}
+	addJoins(rootQuery, rootFilter, collection);
+	addWhereClauses(knex, rootQuery, rootFilter, collection);
 
 	return rootQuery;
 
@@ -335,7 +312,6 @@ export function applyFilter(
 					knex,
 					schema,
 					relations,
-					subQuery,
 					rootQuery,
 					aliasMap,
 				});
@@ -404,7 +380,7 @@ export function applyFilter(
 							.from(collection)
 							.whereNotNull(column);
 
-						applyQuery(knex, relation!.collection, subQueryKnex, { filter }, schema, true);
+						applyQuery(knex, relation!.collection, subQueryKnex, { filter }, schema);
 					};
 
 					const childKey = Object.keys(value)?.[0];
