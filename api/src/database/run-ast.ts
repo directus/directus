@@ -270,7 +270,7 @@ function getDBQuery(
 		.select(fieldNodes.map(preProcess))
 		.from(table)
 		.innerJoin(
-			knex.raw('??', applyQuery(knex, table, dbQuery, queryCopy, schema, true).as('inner')),
+			knex.raw('??', applyQuery(knex, table, dbQuery, queryCopy, schema, { aliasMap, isInnerQuery: true }).as('inner')),
 			`${table}.${primaryKey}`,
 			`inner.${primaryKey}`
 		);

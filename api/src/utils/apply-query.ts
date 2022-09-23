@@ -31,10 +31,11 @@ export default function applyQuery(
 	dbQuery: Knex.QueryBuilder,
 	query: Query,
 	schema: SchemaOverview,
-	isInnerQuery = false,
-	aliasMap: AliasMap = {}
+	options?: { aliasMap?: AliasMap; isInnerQuery?: boolean }
 ): Knex.QueryBuilder {
-	if (query.sort && !isInnerQuery) {
+	const aliasMap = options?.aliasMap ?? {};
+
+	if (query.sort && !options?.isInnerQuery) {
 		applySort(knex, schema, dbQuery, query.sort, collection, aliasMap);
 	}
 
