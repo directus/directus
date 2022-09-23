@@ -50,7 +50,9 @@ and: и
 or: или
 init: Инициализация
 dataset_too_large_currently_showing_n_items: Набор данных слишком большой. Показано первые {n} элементов.
+modifier: Модификатор
 custom: Пользовательский
+hook: Хук
 fill_width: В ширину
 field_name_translations: Переводы названия поля
 enter_password_to_enable_tfa: Введите свой пароль для включения двухфакторной аутентификации
@@ -291,6 +293,8 @@ next: Дальше
 field_name: Название поля
 translations: Переводы
 no_translations: Нет переводов
+left_to_right: Слева направо
+right_to_left: Справа налево
 note: Заметка
 enter_a_value: Введите значение...
 enter_a_placeholder: Введите плейсхолдер...
@@ -333,6 +337,7 @@ revision_delta_created_externally: Создано Извне
 revision_delta_updated: 'Обновлено 1 Поле | Обновлено {count} Полей'
 revision_delta_deleted: Удалено
 revision_delta_reverted: Возвращено
+revision_delta_update_message: Это поле было обновлено, но его значение скрывается по соображениям безопасности.
 revision_delta_other: Ревизия
 revision_delta_by: '{date} пользователем {user}'
 download_page_as_csv: 'Скачать страницу в формате CSV'
@@ -563,6 +568,10 @@ errors:
   INVALID_OTP: Неверный одноразовый пароль
   INVALID_PAYLOAD: Некорректное содержимое
   INVALID_QUERY: Некорректный запрос
+  INVALID_CONFIG: Неверная конфигурация
+  INVALID_TOKEN: Неверный токен
+  INVALID_IP: Недопустимый IP
+  INVALID_USER: Не удалось аутентифицировать пользователя
   ITEM_LIMIT_REACHED: Достигнут лимит элементов
   ITEM_NOT_FOUND: Элемент не найден
   ROUTE_NOT_FOUND: Не найдено
@@ -577,11 +586,22 @@ errors:
   VALUE_OUT_OF_RANGE: Значение вне допустимого диапазона
   INVALID_FOREIGN_KEY: Неверный внешний ключ
   UNKNOWN: Неожиданная Ошибка
+  GRAPHQL_VALIDATION_EXCEPTION: Исключение GraphQL валидации
+  SERVICE_UNAVAILABLE: Сервис недоступен
+  UNSUPPORTED_MEDIA_TYPE: Неподдерживаемый тип медиа
+  UNEXPECTED_RESPONSE: Неожиданный ответ
+  TOKEN_EXPIRED: Token просрочен
+  RANGE_NOT_SATISFIABLE: Недопустимый диапазон
+  METHOD_NOT_ALLOWED: Метод не разрешен
+  REQUESTS_EXCEEDED: Достигнут лимит запросов
 security: Безопасность
 value_hashed: Значение Безопасно Хэшировано
 bookmark_name: Название закладки...
 create_bookmark: Создать Закладку
 edit_bookmark: Редактировать Закладку
+edit_personal_bookmark: Редактировать личную закладку
+edit_global_bookmark: Редактировать глобальную закладку
+cannot_edit_global_bookmarks: Невозможно редактировать глобальные закладки
 bookmarks: Закладки
 presets: Пресеты
 unexpected_error: Неожиданная Ошибка
@@ -670,6 +690,8 @@ operators:
   nintersects: Не пересекает
   intersects_bbox: Пересекает ограничивающую рамку
   nintersects_bbox: Не пересекает ограничивающую рамку
+  regex: Соответствует RegExp
+custom_validation_message: Пользовательское сообщение валидации
 loading: Загрузка...
 drop_to_upload: Перетащите для Загрузки
 item: Элемент
@@ -735,6 +757,7 @@ icon_off: Значок Выкл
 label: Метка
 flows: Поток
 flow: Поток
+select_a_flow: Выберите поток
 trigger: Триггер
 create_trigger: Создать триггер
 trigger_setup: Настройка триггера
@@ -742,6 +765,7 @@ change_trigger: Изменить триггер
 flow_delete_confirm: Вы уверены, что хотите удалить Поток "{flow}"? Это действие не может быть отменено.
 set_flow_active: Активировать Поток
 set_flow_inactive: Отключить Поток
+no_flows: Нет Потоков
 updating_flow: Обновить Поток
 flow_setup: Настройка Потока
 flow_name: Имя

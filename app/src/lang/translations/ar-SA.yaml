@@ -23,6 +23,7 @@ identifier: English
 avatar: الصورةالرمزية
 application: التطبيق
 default_provider: الإفتراضي
+method: طريقة
 published: تم نشره
 draft: مسوّدة
 archived: مؤرشف
@@ -50,6 +51,8 @@ and: و
 or: أو
 init: إطلاق
 dataset_too_large_currently_showing_n_items: مجموعة البيانات كبيرة جداً. حالياً تظهر العناصر {n} الأولى.
+modifier: معدِل
+custom: تخصيص
 hook: ربط
 fill_width: العرض الكامل
 field_name_translations: ترجمة اسم الحقل
@@ -184,6 +187,9 @@ revision_post_create: إليك ما بدا عليه هذا العنصر بعد �
 revision_post_update: إليك ما بدا عليه هذا العنصر بعد التحديث.
 changes_made: تجد أدناه التغييرات المحددة التي أدخلت على هذا التنقيح.
 no_relational_data: 'ملاحظة: العلاقة بين الجداول غير مدرجة هنا.'
+junction_field_location: موقع الحقول
+top: أعلى
+bottom: الأسفل
 hide_field: إخفاء الحقل
 hide_field_on_detail: مخفي في التفاصيل
 show_field_on_detail: أظهر الحقل في التفاصيل
@@ -197,6 +203,7 @@ language_placeholder: اختر اللغة...
 aggregate_function: وظائف المجاميع
 aggregate_precision: وظائف التدقيق
 group_aggregation: تجميع المجموعات
+group_precision: دِقَّة المجموعة
 global: الإجمالي
 admins_have_all_permissions: المشرفون لديهم جميع الأذونات
 camera: الكاميرا
@@ -244,6 +251,7 @@ time: الوقت
 timestamp: الطابع الزمني
 uuid: UUID
 hash: الهاش
+geometry: الهندسة (الكل)
 geometry.Point: نقطة
 geometry.Polygon: مضلّع
 geometry.MultiPoint: نقاط متعددة
@@ -287,6 +295,8 @@ next: التالي
 field_name: إسم الحقل
 translations: الترجمة
 no_translations: لا توجد ترجمات
+left_to_right: من اليسار إلى اليمين
+right_to_left: من اليمين إلى اليسار
 note: ملحوظة
 enter_a_value: أدخل قيمة...
 enter_a_placeholder: أدخل قيمة مؤقته...
@@ -301,10 +311,22 @@ primary_key: المفتاح الرئيسي
 foreign_key: مفتاح خارجي
 finish_setup: إنهاء التثبيت
 dismiss: تجاهل
+toggle_raw_editor: فتح \ إغلاق محرر الخريطة
 raw_value: قيمة خام
+copy_raw_value: نسخ القيمة الخام
+copy_raw_value_success: تَمَّ النَّسخ
+copy_raw_value_fail: فشل النسخ
+paste_raw_value: لصق قيمة الخام
+paste_raw_value_success: تم النسخ
+paste_raw_value_fail: فشل النسخ
+view_raw_value: عرض قيمة الخام
 edit_raw_value: تعديل القيمة الخام
 enter_raw_value: أدخل قيمة سطر...
+clear_value: مسح القيمة
 clear_changes: مسح التغييرات
+clear_items: مسح كل العناصر
+reset_to_default: إعادة التعيين إلى الوضع الإفتراضي
+undo_changes: التراجع عن التغييرات
 notifications: إشعارات
 show_all_activity: أظهر كل النشاط
 page_not_found: الصفحة غير موجودة
@@ -319,14 +341,18 @@ revision_delta_created_externally: تم إنشاؤها خارجيا
 revision_delta_updated: 'تم تحديث حقل واحد | تحديث حقول {count}'
 revision_delta_deleted: حذف
 revision_delta_reverted: تمت الإستعادة
+revision_delta_update_message: تم تحديث هذا الحقل ولكن يتم إخفاء قيمته لأسباب أمنية.
 revision_delta_other: تنقيح
 revision_delta_by: '{date} بواسطة {user}'
+presentation_text_values_cannot_be_reimported: "يستخدم نص العرض التقديمي، لا يمكن إعادة استيراد القيم."
+download_page_as_csv: 'تحميل الصفحة كـ CSV'
 private_user: خصخصة المستخدم
 creation_preview: معاينة الإنشاء
 revision_preview: معاينة التعديلات
 updates_made: ترقيات مصنوعة
 leave_comment: اترك تعليقا...
 post_comment_success: تم ارسال التعليق
+post_comment_updated: تم تحديث التعليق
 item_create_success: عنصر تم إنشاؤه | عناصر تم إنشاؤها
 item_update_success: عنصر تم تحديثه | عناصر تم تحديثها
 item_delete_success: عنصر تم حذفه | عناصر تم حذفها
@@ -335,6 +361,11 @@ related_collection: مجموعة ذات صلة
 related_collections: مجموعات ذات صلة
 translations_collection: مجموعة الترجمة
 languages_collection: مجموعة اللغات
+import_data_input_placeholder: CSV أو JSON...
+import_data_button: بدء الاستيراد
+import_data_indeterminate: استيراد البيانات...
+import_data_success: البيانات تم استيرادها بنجاح من {اسم المِلَفّ}
+import_data_error: هيكل بيانات هذا الملف لا يتطابق مع المجموعة.
 label_import: إستيراد
 label_export: تصدير
 import_export: أستيراد / تصدير
@@ -421,6 +452,8 @@ replace_from_url: استبدال الملف من رابط
 no_file_selected: لم يتم تحديد ملف
 download_file: تحميل الملف
 open_file_in_tab: أفتح الملف في علامة تبويب جديدة
+start_export: بدء التصدير
+not_available_for_local_downloads: غير متوفر للتنزيلات المحلية
 collection_key: مفتاح المجموعة
 name: الاسم
 primary_key_field: '‮حقل المفتاح الرئيسي'
@@ -441,6 +474,7 @@ creating_items: إنشاء عنصر
 enable_create_button: تفعيل زر إعادة المحاولة
 selecting_items: تحديد العناصر
 enable_select_button: تفعيل زر التحديد
+allow_duplicates: السماح بالتكرارات
 comments: تعليقات
 no_comments: لا توجد تعليقات بعد
 click_to_expand: أضغط للمزيد
@@ -451,6 +485,7 @@ disabled: مُعطل
 information: معلومات
 report_bug: تبليغ عن خطأ
 request_feature: طلب ميزة
+request_body: "هيئة الطلب\n"
 interface_not_found: 'لم يتم العثور على واجهة "{interface}".'
 reset_interface: إعادة تعيين الواجهة
 display_not_found: 'عرض "{display}" غير موجود.'
@@ -464,6 +499,8 @@ user_count: 'لا توجد عناصر | عنصر واحد | {count} العناص
 no_users_copy: لا يوجد مستخدمون في هذه التجزئة.
 webhooks_count: 'لاتوجد روابط ويب | رابط ويب | {count} روابط ويب'
 no_notifications: لا توجد إشعارات
+no_notifications_copy: لقد وصلت إلى المدخل الأخير!
+activity_log: سجل الأنشطة
 all_items: كافة العناصر
 any: أي
 csv: CSV
@@ -483,10 +520,13 @@ no_other_dashboards_copy: ليس لديك حتى الآن أي لوحة تحكم
 inactive: غير نشط
 users: المستخدمين
 activity: الأنشطة
+activity_item: عنصر النشاط
 action: الإجراء
 ip_address: عنوان IP
 user_agent: وكيل المستخدم
+origin: الأصل
 webhooks: روابط الويب (Webhooks)
+decimals: الأعداد العشرية
 field_width: عرض الحقل
 add_filter: إضافة فلتر
 upper_limit: الحد الأقصى...
@@ -547,9 +587,12 @@ presets: الإعدادات المسبقة
 unexpected_error: خطأ غير متوقع
 unexpected_error_copy: حدث خطأ غير متوقع. الرجاء المحاولة مرة أخرى لاحقاً.
 copy_details: نسخ التفاصيل
+no_app_access: لا توجد صلاحيه للوصول
 no_app_access_copy: هذا المستخدم غير مسموح له باستخدام تطبيق المدير.
 password_reset_successful: تم إعادة تعيين كلمة المرور بنجاح
 back: رجوع
+filter: فلترة
+edit_image: تعديل الصورة
 editing_image: تحرير صورة
 square: مربع
 free: حر
@@ -561,6 +604,7 @@ all_users: كل المستخدمين
 delete_collection: احذف المجموعة
 update_collection_success: تم تحديث المجموعة
 delete_collection_success: تم حذف المجموعة
+make_collection_visible: جعل المجموعة مرئية
 start_end_of_count_items: '{start}-{end} من {count} عناصر'
 start_end_of_count_filtered_items: '{start}-{end} من {count} من العناصر المصفاة'
 one_item: '1 عنصر'
@@ -794,6 +838,7 @@ fields:
     user: تم بواسطة
     comment: تعليق
     user_agent: وكيل المستخدم
+    origin: الأصل
     ip: عنوان IP
     revisions: المراجعات
   directus_collections:
@@ -976,6 +1021,7 @@ report_error: الإبلاغ عن خطأ
 table: الجدول
 interfaces:
   filter:
+    name: فلترة
     add_filter: إضافة فلتر
     all: الجميع
     any: أي
