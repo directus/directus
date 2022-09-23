@@ -30,17 +30,29 @@ export class MemCache extends CacheService {
 		}
 	}
 
-	async clear(): Promise<void> {
-		this.store.clear();
-		this.expires.clear();
-	}
+    async keys(pattern?: string | undefined): Promise<string[]> {
+        const allKeys = [...this.store.keys()].map(key => this.removePrefix(key))
 
-	async delete(key: string): Promise<void> {
-		const _key = this.addPrefix(key);
+        if(pattern === undefined) return allKeys;
 
-		this.store.delete(_key);
-		this.expires.delete(_key);
-	}
+        return allKeys.filter(key => new RegExp(pattern).test(key));
+    }
+
+    async clear(): Promise<void> {
+        this.store.clear()
+        this.expires.clear();
+    }
+
+    async delete(key: string | string[]): Promise<void> {
+        const keys = Array.isArray(key) ? key : [key];
+
+        for(const key of keys) {
+            const _key = this.addPrefix(key);
+
+            this.store.delete(_key);
+            this.expires.delete(_key);
+        }
+    }
 
 	async setHash(key: string, value: Record<string, any>, ttl?: number | undefined): Promise<void> {
 		return await this.set(key, { ...value, '#full': 'true' }, ttl);
@@ -72,13 +84,21 @@ export class MemCache extends CacheService {
         if(value === null) return null;
         if(typeof value !== 'object') throw new Error('Cannot get hash field on non-object value');
 
-		if (typeof value !== 'object') throw new Error('Cannot get hash field on non-object value');
+        return value[field]
+    }
+    
+    async deleteHashField(key: string, field: string | string[]): Promise<void> {
+        const localValue = cloneDeep(await this.get(key)) ?? {}
 
 		return value[field];
 	}
 
-	async deleteHashField(key: string, field: string): Promise<void> {
-		const localValue = cloneDeep(await this.get(key)) ?? {};
+        const fields = Array.isArray(field) ? field : [field];
+
+        for(const field of fields) {
+            delete localValue[field];
+        }
+        delete localValue['#full'];
 
 		if (typeof localValue !== 'object') throw new Error('Cannot set hash field on non-object value');
 
