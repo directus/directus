@@ -8,7 +8,7 @@ import { ALIAS_TYPES } from '../constants';
 import getDatabase from '../database';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { AbstractServiceOptions, Snapshot, SnapshotDiff } from '../types';
-import { applySnapshot } from '../utils/apply-snapshot';
+import { applyDiff } from '../utils/apply-diff';
 import { getSnapshot } from '../utils/get-snapshot';
 import { getSnapshotDiff } from '../utils/get-snapshot-diff';
 
@@ -122,8 +122,6 @@ export class SchemaService {
 			);
 		}
 
-		const currentSnapshot = await this.snapshot();
-
 		if (
 			payload.diff.collections.length === 0 &&
 			payload.diff.fields.length === 0 &&
@@ -132,9 +130,8 @@ export class SchemaService {
 			return;
 		}
 
-		// intentionally don't try/catch to let errors bubble up
-		// TODO: remove "{} as any" temporary workaround
-		await applySnapshot({} as any, { current: currentSnapshot, diff: payload.diff, database: this.knex });
+		const currentSnapshot = await this.snapshot();
+		await applyDiff(currentSnapshot, payload.diff, { database: this.knex });
 	}
 
 	async diff(snapshot: Snapshot): Promise<SnapshotDiff | null> {
