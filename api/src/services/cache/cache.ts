@@ -19,15 +19,16 @@ export abstract class CacheService {
 
     abstract get(key: string): Promise<any | null>;
     abstract set(key: string, value: any, ttl?: number): Promise<void>;
+    abstract keys(pattern?: string): Promise<string[]>;
     abstract clear(): Promise<void>;
-    abstract delete(key: string): Promise<void>;
+    abstract delete(key: string | string[]): Promise<void>;
     
     abstract setHash(key: string, value: Record<string, any>, ttl?: number): Promise<void>;
     abstract getHash(key: string): Promise<Record<string, any> | null>;
     abstract isHashFull(key: string): Promise<boolean>;
     abstract setHashField(key: string, field: string, value: any, ttl?: number): Promise<void>;
     abstract getHashField(key: string, field: string): Promise<any | null>;
-    abstract deleteHashField(key: string, field: string): Promise<void>;
+    abstract deleteHashField(key: string, field: string | string[]): Promise<void>;
 
     addPrefix(key: string) {
         return this.namespace ? `${this.namespace}:${key}` : key;

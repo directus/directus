@@ -30,16 +30,28 @@ export class MemCache extends CacheService {
         }
     }
 
+    async keys(pattern?: string | undefined): Promise<string[]> {
+        const allKeys = [...this.store.keys()].map(key => this.removePrefix(key))
+
+        if(pattern === undefined) return allKeys;
+
+        return allKeys.filter(key => new RegExp(pattern).test(key));
+    }
+
     async clear(): Promise<void> {
         this.store.clear()
         this.expires.clear();
     }
 
-    async delete(key: string): Promise<void> {
-        const _key = this.addPrefix(key);
+    async delete(key: string | string[]): Promise<void> {
+        const keys = Array.isArray(key) ? key : [key];
 
-        this.store.delete(_key);
-        this.expires.delete(_key);
+        for(const key of keys) {
+            const _key = this.addPrefix(key);
+
+            this.store.delete(_key);
+            this.expires.delete(_key);
+        }
     }
 
     async setHash(key: string, value: Record<string, any>, ttl?: number | undefined): Promise<void> {
@@ -76,12 +88,16 @@ export class MemCache extends CacheService {
         return value[field]
     }
     
-    async deleteHashField(key: string, field: string): Promise<void> {
+    async deleteHashField(key: string, field: string | string[]): Promise<void> {
         const localValue = cloneDeep(await this.get(key)) ?? {}
 
         if(typeof localValue !== 'object') throw new Error('Cannot set hash field on non-object value');
 
-        delete localValue[field];
+        const fields = Array.isArray(field) ? field : [field];
+
+        for(const field of fields) {
+            delete localValue[field];
+        }
         delete localValue['#full'];
 
         await this.set(key, localValue);
