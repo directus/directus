@@ -584,6 +584,7 @@ errors:
   INVALID_QUERY: 无效的查询
   INVALID_CONFIG: 无效配置
   INVALID_TOKEN: 令牌无效
+  INVALID_IP: IP地址不允许访问
   INVALID_USER: 用户身份验证失败
   ITEM_LIMIT_REACHED: 条目已达到限制
   ITEM_NOT_FOUND: 找不到条目
