@@ -1,4 +1,4 @@
-import { getCache } from "../cache";
+import { getCache } from "../cache.js";
 
 export async function clearSystemCache(forced?: boolean): Promise<void> {
 	const { systemCache } = getCache();

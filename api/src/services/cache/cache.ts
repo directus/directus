@@ -58,9 +58,12 @@ export abstract class CacheService {
 	): Promise<Record<string, any>> {
 		let value = await this.getHash(key);
 
-		if (value !== null && (await this.isHashFull(key))) {
-			return (await this.getHash(key)) as T;
-		}
+        if (value !== null && await this.isHashFull(key)) {
+            return value as T
+        };
+ 
+        value = await fn()
+        await this.setHash(key, value, ttl)
 
 		value = await fn();
 		await this.setHash(key, value, ttl);

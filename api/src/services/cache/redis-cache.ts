@@ -23,7 +23,7 @@ export class RedisCache extends CacheService {
 	async get(key: string): Promise<any | null> {
 		const value = await this.client.get(this.addPrefix(key));
 
-		if (value === null) return undefined;
+        if(value === null) return null;
 
 		return await decompress(parse(value));
 	}
@@ -73,16 +73,16 @@ export class RedisCache extends CacheService {
 		return (await this.client.hGet(this.addPrefix(key), '#full')) === 'true';
 	}
 
-	async setHashField(key: string, field: string, value: any, ttl?: number | undefined): Promise<void> {
-		if (await this.isLocked()) return;
+        values.push('#full', 'true')
+        await this.client.sendCommand(['HSET', _key, ...values])
 
-		const _key = this.addPrefix(key);
+        if(ttl !== undefined) await this.client.expire(_key, ttl);
+    }
 
-		await this.client.hSet(_key, field, stringify(await compress(value)));
-		if (ttl !== undefined) await this.client.expire(_key, ttl);
-	}
-	async getHashField(key: string, field: string): Promise<any | null> {
-		const value = await this.client.hGet(this.addPrefix(key), field);
+    async getHash(key: string): Promise<Record<string, any> | null> {
+        const value = await this.client.hGetAll(this.addPrefix(key))
+        if(value === null) return null;
+        const entries = Object.entries(value).filter(([key]) => !key.startsWith('#'))
 
 		if (value === undefined) return null;
 
