@@ -13,7 +13,7 @@ import type { AbstractServiceOptions } from '../types/index.js';
 import { getHelpers, Helpers } from '../database/helpers/index.js';
 import type { CacheService } from './cache/cache.js';
 import { stitchRelations } from '../utils/stitch-relations.js';
-import { clearAllRelations, clearRelationsForField } from '../utils/clearSystemCache.js';
+import { clearRelationsForField } from '../utils/clearSystemCache.js';
 
 export class RelationsService {
 	knex: Knex;
@@ -214,7 +214,7 @@ export class RelationsService {
 				await this.helpers.schema.postColumnChange();
 			}
 
-			await clearAllRelations();
+			await this.systemCache.setHashFull(`relations:${relation.collection}`, false);
 		}
 	}
 

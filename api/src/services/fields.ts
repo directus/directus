@@ -22,7 +22,7 @@ import getLocalType from '../utils/get-local-type.js';
 import { RelationsService } from './relations.js';
 import { KNEX_TYPES } from '@directus/shared/constants';
 import type { CacheService } from './cache/cache.js';
-import { clearField, clearFields } from '../utils/clearSystemCache.js';
+import { clearField } from '../utils/clearSystemCache.js';
 
 export class FieldsService {
 	knex: Knex;
@@ -332,7 +332,7 @@ export class FieldsService {
 				await this.cache.clear();
 			}
 
-			await clearFields(collection);
+			await this.systemCache.setHashFull(`fields:${collection}`, false);
 		}
 	}
 

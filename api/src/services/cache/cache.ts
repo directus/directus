@@ -38,6 +38,10 @@ export abstract class CacheService {
         return this.namespace ? key.replace(`${this.namespace}:`, '') : key;
     }
 
+    async setHashFull(key: string, full: boolean) {
+        await this.setHashField(key, '#full', full)
+    }
+
     async autoCache<T>(key: string, fn: () => Promise<T>, ttl?: number | undefined): Promise<T> {
         let value = await this.get(key)
 
