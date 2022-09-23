@@ -350,14 +350,10 @@ export async function applyFilter(
 					continue;
 				}
 
-				/** @NOTE this callback function isn't called until Knex runs the query */
-				dbQuery[logical].where(async (subQuery) => {
-					const fakedSubQuery = fakePromise(subQuery)
-
-					for (const subFilter of value) {
-						await addWhereClauses(knex, fakedSubQuery, subFilter, collection, key === '_and' ? 'and' : 'or');
-					}
-				});
+				for (const subFilter of value) {
+					// TODO: Test if this change actually works on all cases
+					await addWhereClauses(knex, dbQuery, subFilter, collection, key === '_and' ? 'and' : 'or');
+				}
 
 				continue;
 			}
