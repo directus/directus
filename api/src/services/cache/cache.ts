@@ -53,7 +53,7 @@ export abstract class CacheService {
         let value = await this.getHash(key)
 
         if (value !== null && await this.isHashFull(key)) {
-            return await this.getHash(key) as T
+            return value as T
         };
  
         value = await fn()
