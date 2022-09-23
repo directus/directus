@@ -136,6 +136,7 @@ export default defineComponent({
 
 .display-translations {
 	display: inline-flex;
+	align-items: center;
 
 	.icon {
 		color: var(--foreground-subdued);
