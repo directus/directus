@@ -4,8 +4,18 @@ import { RouteNotFoundException } from '../exceptions';
 import { respond } from '../middleware/respond';
 import { ServerService, SpecificationService } from '../services';
 import asyncHandler from '../utils/async-handler';
+import swaggerUi from 'swagger-ui-express';
 
 const router = Router();
+
+const options = {
+	swaggerOptions: {
+		url: '/specs/oas',
+	},
+};
+
+router.use('/swagger', swaggerUi.serve);
+router.get('/swagger', swaggerUi.setup({}, options));
 
 router.get(
 	'/specs/oas',
