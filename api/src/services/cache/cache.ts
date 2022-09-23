@@ -34,8 +34,8 @@ export abstract class CacheService {
 		return this.namespace ? key.replace(`${this.namespace}:`, '') : key;
 	}
 
-	async autoCache<T>(key: string, ttl: number | undefined, fn: () => Promise<T>): Promise<T> {
-		let value = await this.get(key);
+    async autoCache<T>(key: string, fn: () => Promise<T>, ttl?: number | undefined): Promise<T> {
+        let value = await this.get(key)
 
 		if (value !== null) return value;
 
@@ -62,14 +62,10 @@ export abstract class CacheService {
 		return value;
 	}
 
-	async autoCacheHashField<T>(key: string, field: string, fn: () => Promise<T>, ttl?: number | undefined): Promise<T> {
-		let value = await this.getHashField(key, field);
-		if (value !== null) {
-			return value;
-		}
-
-		value = await fn();
-		await this.setHashField(key, field, value, ttl);
+        value = await fn()
+        await this.setHashField(key, field, value, ttl)
+        return value
+    }
 
 		return value;
 	}
@@ -83,13 +79,8 @@ export abstract class CacheService {
 		return true;
 	}
 
-	async unlock() {
-		const { lockCache } = getCache();
-		await lockCache.delete(this.addPrefix('lock'));
-	}
-
-	async isLocked() {
-		const { lockCache } = getCache();
-		return (await lockCache.get(this.addPrefix('lock'))) !== undefined;
-	}
+    async isLocked() {
+        const {lockCache} = getCache()
+        return (await lockCache.get(this.addPrefix('lock'))) !== null
+    }
 }

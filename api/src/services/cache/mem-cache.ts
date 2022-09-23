@@ -5,18 +5,18 @@ export class MemCache extends CacheService {
 	store = new Map<string, any>();
 	expires = new Map<string, number>();
 
-	async get(key: string): Promise<any | null> {
-		const _key = this.addPrefix(key);
-		const expired = this.expires.get(_key) ?? -1;
+    async get(key: string): Promise<any | null> {
+        const _key = this.addPrefix(key);
+        const expired = this.expires.get(_key);
 
-		if (Date.now() > expired) {
-			this.store.delete(_key);
-			this.expires.delete(_key);
-			return null;
-		}
+        if(expired !== undefined && Date.now() > expired) {
+            this.store.delete(_key);
+            this.expires.delete(_key);
+            return null;
+        }
 
-		return this.store.get(key);
-	}
+        return this.store.get(_key) ?? null
+    }
 
 	async set(key: string, value: any, ttl: number | undefined = this.ttl): Promise<void> {
 		if (await this.isLocked()) return;
@@ -50,8 +50,13 @@ export class MemCache extends CacheService {
 
 		if (value === null) return null;
 
-		return Object.fromEntries(Object.entries(value).filter(([key]) => key.startsWith('#') === false));
-	}
+        return Object.fromEntries(Object.entries(value).filter(([key]) => !key.startsWith('#')));
+    }
+    
+    async isHashFull(key: string): Promise<boolean> {
+        const value = await this.get(key)
+        return value?.['#full'] === 'true';
+    }
 
 	async isHashFull(key: string): Promise<boolean> {
 		return (await this.store.get(key)?.['#full']) === 'true';
@@ -64,10 +69,8 @@ export class MemCache extends CacheService {
 
 		localValue[field] = value;
 
-		await this.set(key, localValue, ttl);
-	}
-	async getHashField(key: string, field: string): Promise<any | null> {
-		const value = await this.get(key);
+        if(value === null) return null;
+        if(typeof value !== 'object') throw new Error('Cannot get hash field on non-object value');
 
 		if (typeof value !== 'object') throw new Error('Cannot get hash field on non-object value');
 
