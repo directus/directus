@@ -13,7 +13,7 @@ program
 	.command('create')
 	.arguments('<type> <name>')
 	.description('Scaffold a new Directus extension')
-	.option('-l, --language <language>', 'specify the language to use', 'javascript')
+	.option('-l, --language <language>', 'specify the language to use')
 	.action(create);
 
 program
