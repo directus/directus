@@ -8,7 +8,7 @@ import env from '../env';
 import { PayloadService } from '../services/payload';
 import { AST, FieldNode, FunctionFieldNode, M2ONode, NestedCollectionNode } from '../types/ast';
 import { applyFunctionToColumnName } from '../utils/apply-function-to-column-name';
-import applyQuery from '../utils/apply-query';
+import applyQuery, { applySort, ColumnSortRecord } from '../utils/apply-query';
 import { getColumn } from '../utils/get-column';
 import { stripFunction } from '../utils/strip-function';
 
@@ -251,15 +251,39 @@ function getDBQuery(
 	}
 
 	const primaryKey = schema.collections[table].primary;
+	const aliasMap = {};
 	const dbQuery = knex.select(`${table}.${primaryKey}`).from(table).distinct();
+	let sortRecords: ColumnSortRecord[] = [];
+
+	if (queryCopy.sort) {
+		sortRecords = applySort(knex, schema, dbQuery, queryCopy.sort, table, aliasMap, true) ?? [];
+		sortRecords.map((sortRecord) => {
+			if (sortRecord.column.includes('.')) {
+				dbQuery.select(knex.ref(sortRecord.column).as(sortRecord.column.replace('.', '_')));
+			} else if (schema.collections[table].primary !== sortRecord.column) {
+				dbQuery.select(knex.ref(sortRecord.column));
+			}
+		});
+	}
+
 	const wrapperQuery = knex
 		.select(fieldNodes.map(preProcess))
 		.from(table)
 		.innerJoin(
-			knex.raw('??', applyQuery(knex, table, dbQuery, queryCopy, schema).as('inner')),
+			knex.raw('??', applyQuery(knex, table, dbQuery, queryCopy, schema, true).as('inner')),
 			`${table}.${primaryKey}`,
 			`inner.${primaryKey}`
 		);
+
+	if (queryCopy.sort) {
+		sortRecords.map((sortRecord) => {
+			if (sortRecord.column.includes('.')) {
+				wrapperQuery.orderBy(`inner.${sortRecord.column.replace('.', '_')}`, sortRecord.order);
+			} else {
+				wrapperQuery.orderBy(`${table}.${sortRecord.column}`, sortRecord.order);
+			}
+		});
+	}
 
 	// Setting limit on the main query - just in case
 	if (queryCopy.limit !== -1) {

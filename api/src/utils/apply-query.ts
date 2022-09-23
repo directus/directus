@@ -30,11 +30,11 @@ export default function applyQuery(
 	collection: string,
 	dbQuery: Knex.QueryBuilder,
 	query: Query,
-	schema: SchemaOverview
+	schema: SchemaOverview,
+	isInnerQuery = false,
+	aliasMap: AliasMap = {}
 ): Knex.QueryBuilder {
-	const aliasMap: AliasMap = {};
-
-	if (query.sort) {
+	if (query.sort && !isInnerQuery) {
 		applySort(knex, schema, dbQuery, query.sort, collection, aliasMap);
 	}
 
@@ -213,61 +213,66 @@ function addJoin({ path, collection, aliasMap, rootQuery, schema, relations, kne
 	}
 }
 
+export type ColumnSortRecord = { order: 'asc' | 'desc'; column: string };
+
 export function applySort(
 	knex: Knex,
 	schema: SchemaOverview,
 	rootQuery: Knex.QueryBuilder,
 	rootSort: string[],
 	collection: string,
-	aliasMap: AliasMap
+	aliasMap: AliasMap,
+	returnRecords = false
 ) {
 	const relations: Relation[] = schema.relations;
 
-	rootQuery.orderBy(
-		rootSort.map((sortField) => {
-			const column: string[] = sortField.split('.');
-			let order: 'asc' | 'desc' = 'asc';
+	const sortRecords = rootSort.map((sortField) => {
+		const column: string[] = sortField.split('.');
+		let order: 'asc' | 'desc' = 'asc';
 
-			if (column.length > 1) {
-				if (sortField.startsWith('-')) {
-					order = 'desc';
-				}
-
-				if (column[0].startsWith('-')) {
-					column[0] = column[0].substring(1);
-				}
-
-				addJoin({
-					path: column,
-					collection,
-					aliasMap,
-					rootQuery,
-					schema,
-					relations,
-					knex,
-				});
-
-				const { columnPath } = getColumnPath({ path: column, collection, aliasMap, relations, schema });
-				const [alias, field] = columnPath.split('.');
-
-				return {
-					order,
-					column: getColumn(knex, alias, field, false, schema) as any,
-				};
-			}
-
-			let col = column[0];
+		if (column.length > 1) {
 			if (sortField.startsWith('-')) {
-				col = column[0].substring(1);
 				order = 'desc';
 			}
 
+			if (column[0].startsWith('-')) {
+				column[0] = column[0].substring(1);
+			}
+
+			addJoin({
+				path: column,
+				collection,
+				aliasMap,
+				rootQuery,
+				schema,
+				relations,
+				knex,
+			});
+
+			const { columnPath } = getColumnPath({ path: column, collection, aliasMap, relations, schema });
+			const [alias, field] = columnPath.split('.');
+
 			return {
 				order,
-				column: getColumn(knex, collection, col, false, schema) as any,
+				column: returnRecords ? columnPath : (getColumn(knex, alias, field, false, schema) as any),
 			};
-		})
-	);
+		}
+
+		let col = column[0];
+		if (sortField.startsWith('-')) {
+			col = column[0].substring(1);
+			order = 'desc';
+		}
+
+		return {
+			order,
+			column: returnRecords ? col : (getColumn(knex, collection, col, false, schema) as any),
+		};
+	});
+
+	if (returnRecords) return sortRecords;
+
+	rootQuery.orderBy(sortRecords);
 }
 
 export function applyFilter(
