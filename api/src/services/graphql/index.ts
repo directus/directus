@@ -1102,7 +1102,7 @@ export class GraphQLService {
 					ReadableCollectionFilterTypes[relation.collection]?.removeField('item');
 					for (const collection of relation.meta.one_allowed_collections) {
 						ReadableCollectionFilterTypes[relation.collection]?.addFields({
-							[`item__${collection}`]: ReadableCollectionFilterTypes[collection],
+							[`item__${collection}`]: ReadableCollectionFilterTypes[collection]!,
 						});
 					}
 				}

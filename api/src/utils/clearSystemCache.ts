@@ -20,29 +20,31 @@ export async function clearAllCollections(): Promise<void> {
     await systemCache.unlock();
 }
 
-export async function clearCollection(collection: string): Promise<void> {
+export async function clearCollection(collections: string | string[]): Promise<void> {
     const { systemCache } = getCache();
     await systemCache.lock();
 
-    await systemCache.deleteHashField('collections', collection);
+    await systemCache.deleteHashField('collections', collections);
 
     await systemCache.unlock();
 }
 
-export async function clearFields(collection: string): Promise<void> {
+export async function clearFields(collection: string | string[]): Promise<void> {
     const { systemCache } = getCache();
     await systemCache.lock();
 
-    await systemCache.delete(`fields:${collection}`);
+    const keys = (Array.isArray(collection) ? collection : [collection]).map((collection) => `fields:${collection}`);
+
+    await systemCache.delete(keys);
 
     await systemCache.unlock();
 }
 
-export async function clearField(collection: string, field: string): Promise<void> {
+export async function clearField(collection: string, fields: string | string[]): Promise<void> {
     const { systemCache } = getCache();
     await systemCache.lock();
 
-    await systemCache.deleteHashField(`fields:${collection}`, field);
+    await systemCache.deleteHashField(`fields:${collection}`, fields);
 
     await systemCache.unlock();
 }
@@ -62,21 +64,23 @@ export async function clearAllRelations(): Promise<void> {
     await systemCache.unlock();
 }
 
-export async function clearRelationsForCollection(collection: string): Promise<void> {
+export async function clearRelationsForCollection(collections: string | string[]): Promise<void> {
     const { systemCache } = getCache();
     await systemCache.lock();
 
-    await systemCache.delete(`relations:${collection}`);
+    const keys = (Array.isArray(collections) ? collections : [collections]).map((collection) => `relations:${collection}`);
+
+    await systemCache.delete(keys);
 
     await systemCache.unlock();
 }
 
 
-export async function clearRelationsForField(collection: string, field: string): Promise<void> {
+export async function clearRelationsForField(collection: string, fields: string | string[]): Promise<void> {
     const { systemCache } = getCache();
     await systemCache.lock();
 
-    await systemCache.deleteHashField(`relations:${collection}`, field);
+    await systemCache.deleteHashField(`relations:${collection}`, fields);
 
     await systemCache.unlock();
 }

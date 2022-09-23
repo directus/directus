@@ -1,11 +1,13 @@
 import ms from 'ms';
-import env from './env.js';
-import logger from './logger.js';
-import { getConfigFromEnv } from './utils/get-config-from-env.js';
-import { validateEnv } from './utils/validate-env.js';
-import { compress, decompress } from './utils/compress.js';
-import KeyvMemcache from 'keyv-memcache';
-import KeyvRedis from '@keyv/redis';
+import env from './env';
+import logger from './logger';
+import { getConfigFromEnv } from './utils/get-config-from-env';
+import { validateEnv } from './utils/validate-env';
+
+import type { CacheOptions, CacheService } from './services/cache/cache';
+import { RedisCache } from './services/cache/redis-cache';
+import { MemCache } from './services/cache/mem-cache';
+import { clearSystemCache } from './utils/clearSystemCache';
 
 let cache: CacheService | null = null;
 let systemCache: CacheService | null = null;
@@ -34,31 +36,6 @@ export async function flushCaches(forced?: boolean): Promise<void> {
 	await cache?.clear();
 }
 
-export async function clearSystemCache(forced?: boolean): Promise<void> {
-	const { systemCache } = getCache();
-
-	// Flush system cache when forced or when system cache lock not set
-	if (forced || !(await systemCache.isLocked())) {
-		await systemCache.lock();
-		await systemCache.clear();
-		await systemCache.unlock();
-	}
-}
-
-export async function setSystemCache(key: string, value: any, ttl?: number): Promise<void> {
-	const { systemCache } = getCache();
-
-	if (!(await systemCache.isLocked())) {
-		await systemCache.set(key, value, ttl);
-	}
-}
-
-export async function getSystemCache(key: string): Promise<Record<string, any>> {
-	const { systemCache } = getCache();
-
-	return await systemCache.get(key);
-}
-
 function getCacheInstance(ttl: number | undefined, namespaceSuffix: string, checkLock = false): CacheService {
 	const config: CacheOptions = {
 		namespace: `${env['CACHE_NAMESPACE']}${namespaceSuffix}`,
@@ -71,7 +48,6 @@ function getCacheInstance(ttl: number | undefined, namespaceSuffix: string, chec
 	}
 
 	if (store === 'memcache') {
-
 		// keyv-memcache uses memjs which only accepts a comma separated string instead of an array,
 		// so we need to join array into a string when applicable. See #7986
 		const cacheMemcache = Array.isArray(env['CACHE_MEMCACHE'])
