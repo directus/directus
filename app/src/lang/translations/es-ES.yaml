@@ -87,7 +87,7 @@ translation_string_key_placeholder: Clave de cadena de traducción...
 translation_string_translations_placeholder: Añadir una nueva traducción
 edit_translation_string: Editar cadena de traducción
 delete_translation_string_copy: >-
-  ¿Está seguro de que desea eliminar la traducción"{key}"? Esta acción no se puede deshacer.
+  ¿Está seguro de que desea eliminar la cadena de traducción "{key}"? Esta acción no se puede deshacer.
 invite_users: Invitar Usuarios
 invite: Invitar
 email_already_invited: El correo electrónico "{email}" ya ha sido invitado
@@ -97,10 +97,10 @@ emails: Correos Electrónicos
 connection_excellent: Excelente Conexión
 connection_good: Buena Conexión
 connection_fair: Conexión Suficiente
-connection_poor: Conexión Pobre
-primary: Principal
-rename_folder: Renombrar Directorio
-delete_folder: Eliminar Directorio
+connection_poor: Conexión mala
+primary: Primario
+rename_folder: Renombrar carpeta
+delete_folder: Eliminar carpeta
 prefix: Prefijo
 suffix: Sufijo
 reset_bookmark: Restablecer Marcador
@@ -112,15 +112,15 @@ delete_personal_bookmark: Eliminar marcador personal
 delete_role_bookmark: Eliminar marcador de rol
 delete_global_bookmark: Eliminar marcador global
 logoutReason:
-  SIGN_OUT: Sesión terminada
+  SIGN_OUT: Cerró sesión
   SESSION_EXPIRED: Sesión expirada
 public_label: Público
-public_description: Controla qué datos de la API estarán disponibles sin requerir autenticarse
-admin_description: Función administrativa inicial con acceso sin restricciones App/API.
+public_description: Controla qué datos de la API estarán disponibles sin requerir autenticarse.
+admin_description: Rol administrativo inicial con acceso sin restricciones a la aplicación/API.
 not_allowed: No Permitido
-directus_version: Versión de Directus
-node_version: Versión de Node
-node_uptime: Tiempo de actividad de Node
+directus_version: Versión directa
+node_version: Versión del nodo
+node_uptime: Tiempo de actividad de Nodo
 os_type: Tipo de SO
 os_version: Versión de SO
 os_uptime: Tiempo de actividad del SO
@@ -180,7 +180,7 @@ field_validation: Validación de Campo
 field_presets: Predefinidos para Campo
 permissions_for_role: 'Elementos que el Rol {role} puede {action}.'
 fields_for_role: 'Campos que el Rol {role} puede {action}.'
-validation_for_role: 'Reglas de campo al {action} que el Rol {role} tiene que obedecer.'
+validation_for_role: 'Reglas de campo a la {action} que el Rol {role} tiene que obedecer.'
 presets_for_role: 'Valores por defecto del Campo para el Rol {role}.'
 presentation_and_aliases: Presentación y Alias
 revision_post_create: Este es el aspecto de este elemento cuando fue creado.
@@ -197,10 +197,10 @@ delete_field: Eliminar Campo
 fields_and_layout: Campos y Diseño
 field_create_success: 'Campo Creado: "{field}"'
 field_update_success: 'Campo Actualizado: "{field}"'
-duplicate_where_to: '¿A dónde le gustaría duplicar este campo?'
+duplicate_where_to: '¿En dónde le gustaría duplicar este campo?'
 language: Idioma
 language_placeholder: Seleccione un idioma...
-aggregate_function: Función de agregado
+aggregate_function: Función agregada
 aggregate_precision: Precisión agregada
 group_aggregation: Agregación de grupo
 group_precision: Precisión del grupo
@@ -212,15 +212,15 @@ create_in_advanced_field_creation_mode: Crear campo en modo avanzado
 continue_in_advanced_field_creation_mode: Continuar en modo de creación avanzada de campos
 validation: Validación
 sum: Suma
-sum_distinct: Sumar Diferentes
-avg: Media
-avg_distinct: Media de elementos distintos
+sum_distinct: Sumas distintas
+avg: Promedio
+avg_distinct: Promedios distintos
 count: Contar
 count_distinct: Recuento de elementos distintos
-min: Min
-max: Máx
+min: Mínimo
+max: Máximo
 exposure: Exposición
-shutter: Obturación
+shutter: Obturador
 iso: ISO
 focal_length: Distancia Focal
 schema_setup_key: Nombre de columna de este campo de la base de datos y clave API
@@ -782,6 +782,7 @@ flows: Flujos
 flow: Flujo
 select_a_flow: Selecciona un flujo
 run_flow_on_current: Ejecutar flujo en el elemento actual
+run_flow_on_current_edited_confirm: Este elemento podría haber sido actualizado por este flujo, ¿estás seguro que quieres ejecutarlo?
 run_flow_on_selected: No hay elementos seleccionados | Ejecutar flujo en 1 elemento seleccionado | Ejecutar flujo en {n} elementos seleccionados
 run_flow_success: Flujo "{flow}" se ha ejecutado correctamente
 trigger: Disparador
@@ -1423,6 +1424,7 @@ translation: Traducción
 translation_placeholder: Introduzca una traducción...
 value: Valor
 view_project: Ver Proyecto
+weeks: { }
 report_error: Reportar Error
 start: Iniciar
 table: Tabla
@@ -1468,7 +1470,7 @@ interfaces:
     links: Enlaces
     description: Botones de enlace configurables para abrir URLs dinámicas
     style: Estilo
-    primary: Principal
+    primary: Primario
     link: Enlaces
     button: Botones
     error: No se puede realizar la acción
@@ -2018,7 +2020,11 @@ panels:
     description: Establecer un valor global para el uso en los filtros de otros Paneles
     variable_key: Clave variable
   relational-variable:
+    name: Variable de relación global
+    description: Establecer un valor de relación global para usar en otros filtros de paneles
     variable_key: Clave variable
+    multiple: Múltiple
+    multiple-label: Selecciona múltiples elementos
 triggers:
   common:
     response_body: Cuerpo de respuesta
