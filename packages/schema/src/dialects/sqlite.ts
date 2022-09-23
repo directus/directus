@@ -150,11 +150,13 @@ export default class SQLite implements SchemaInspector {
 				const index = indexList[indexIndex];
 				const indexInfo = indexInfoList[indexIndex];
 
+				const hasAutoIncrement = raw.pk === 1 && tablesWithAutoIncrementPrimaryKeys.includes(table)
+
 				return {
 					name: raw.name,
 					table: table,
 					data_type: extractType(raw.type),
-					default_value: parseDefaultValue(raw.dflt_value),
+					default_value: hasAutoIncrement ? 'AUTO_INCREMENT' : parseDefaultValue(raw.dflt_value),
 					max_length: extractMaxLength(raw.type),
 					/** @NOTE SQLite3 doesn't support precision/scale */
 					numeric_precision: null,
@@ -164,7 +166,7 @@ export default class SQLite implements SchemaInspector {
 					is_nullable: raw.notnull === 0,
 					is_unique: !!index?.unique && indexInfo?.length === 1,
 					is_primary_key: raw.pk === 1,
-					has_auto_increment: raw.pk === 1 && tablesWithAutoIncrementPrimaryKeys.includes(table),
+					has_auto_increment: hasAutoIncrement,
 					foreign_key_column: foreignKey?.to || null,
 					foreign_key_table: foreignKey?.table || null,
 				};

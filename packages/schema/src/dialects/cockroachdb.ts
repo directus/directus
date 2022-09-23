@@ -309,12 +309,14 @@ export default class CockroachDB implements SchemaInspector {
 
 			const foreignKeyConstraint = constraintsForColumn.find((constraint) => constraint.type === 'f');
 
+			const hasAutoIncrement = constraintsForColumn.some((constraint) => constraint.has_auto_increment)
+
 			return {
 				...col,
 				is_unique: constraintsForColumn.some((constraint) => ['u', 'p'].includes(constraint.type)),
 				is_primary_key: constraintsForColumn.some((constraint) => constraint.type === 'p'),
-				has_auto_increment: constraintsForColumn.some((constraint) => constraint.has_auto_increment),
-				default_value: parseDefaultValue(col.default_value),
+				has_auto_increment: hasAutoIncrement,
+				default_value: hasAutoIncrement ? 'AUTO_INCREMENT' : parseDefaultValue(col.default_value),
 				foreign_key_schema: foreignKeyConstraint?.foreign_key_schema ?? null,
 				foreign_key_table: foreignKeyConstraint?.foreign_key_table ?? null,
 				foreign_key_column: foreignKeyConstraint?.foreign_key_column ?? null,

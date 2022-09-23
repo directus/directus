@@ -35,7 +35,7 @@ export function rawColumnToColumn(rawColumn: RawColumn): Column {
 		name: rawColumn.COLUMN_NAME,
 		table: rawColumn.TABLE_NAME,
 		data_type: rawColumn.DATA_TYPE,
-		default_value: !is_generated ? default_value : null,
+		default_value: is_generated ? null : (rawColumn.IDENTITY_COLUMN === 'YES' ? 'AUTO_INCREMENT' : default_value),
 		generation_expression: is_generated ? default_value : null,
 		max_length: rawColumn.DATA_LENGTH,
 		numeric_precision: rawColumn.DATA_PRECISION,
