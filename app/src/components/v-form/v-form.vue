@@ -10,17 +10,13 @@
 			<component
 				:is="`interface-${fieldsMap[fieldName]?.meta?.interface || 'group-standard'}`"
 				v-if="fieldsMap[fieldName]?.meta?.special?.includes('group')"
-				v-show="!fieldsMap[fieldName]?.meta?.hidden"
 				:ref="
 					(el: Element) => {
 						formFieldEls[fieldName] = el;
 					}
 				"
 				:key="fieldName + '_group'"
-				:class="[
-					fieldsMap[fieldName]?.meta?.width || 'full',
-					index === firstVisibleFieldIndex ? 'first-visible-field' : '',
-				]"
+				:class="[fieldsMap[fieldName]?.meta?.width || 'full', index === 0 ? 'first-visible-field' : '']"
 				:field="fieldsMap[fieldName]"
 				:fields="fieldsForGroup[index] || []"
 				:values="modelValue || {}"
@@ -39,14 +35,14 @@
 			/>
 
 			<form-field
-				v-else-if="!fieldsMap[fieldName]?.meta?.hidden"
+				v-else
 				:ref="
 					(el) => {
 						formFieldEls[fieldName] = el;
 					}
 				"
 				:key="fieldName + '_field'"
-				:class="index === firstVisibleFieldIndex ? 'first-visible-field' : ''"
+				:class="index === 0 ? 'first-visible-field' : ''"
 				:field="fieldsMap[fieldName] || {}"
 				:autofocus="index === firstEditableFieldIndex && autofocus"
 				:model-value="(values || {})[fieldName]"
@@ -74,7 +70,7 @@
 				@toggle-raw="toggleRawField(fieldsMap[fieldName])"
 			/>
 		</template>
-		<v-divider v-if="showDivider && !noVisibleFields" />
+		<v-divider v-if="showDivider && !fieldNames.length" />
 	</div>
 </template>
 
@@ -166,28 +162,11 @@ const { toggleRawField, rawActiveFields } = useRawEditor();
 const firstEditableFieldIndex = computed(() => {
 	for (let i = 0; i < fieldNames.value.length; i++) {
 		const field = fieldsMap.value[fieldNames.value[i]];
-		if (field?.meta && !field.meta?.readonly && !field.meta?.hidden) {
+		if (field?.meta && !field.meta?.readonly) {
 			return i;
 		}
 	}
 	return null;
-});
-
-const firstVisibleFieldIndex = computed(() => {
-	for (let i = 0; i < fieldNames.value.length; i++) {
-		const field = fieldsMap.value[fieldNames.value[i]];
-		if (field?.meta && !field.meta?.hidden) {
-			return i;
-		}
-	}
-	return null;
-});
-
-const noVisibleFields = computed(() => {
-	return Object.keys(fieldsMap.value).every((fieldKey) => {
-		let field: Field = fieldsMap.value[fieldKey];
-		return field.meta?.hidden === true;
-	});
 });
 
 watch(
@@ -235,7 +214,7 @@ function useForm() {
 		)
 	);
 	const fieldNames = computed(() => {
-		return fieldsInGroup.value.map((f) => f.field);
+		return fieldsInGroup.value.filter((f) => !f.meta?.hidden).map((f) => f.field);
 	});
 
 	const fieldsForGroup = computed(() =>
