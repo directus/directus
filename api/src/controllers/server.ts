@@ -168,22 +168,7 @@ router.post(
 	'/schema/apply',
 	asyncHandler(async (req, res, next) => {
 		const service = new SchemaService({ accountability: req.accountability });
-
-		if (!req.body.hash) throw new InvalidPayloadException(`No hash were included in the body`);
-		if (!req.body.diff) throw new InvalidPayloadException(`No diff were included in the body`);
-
-		const hash = await service.getCurrentHash();
-
-		if (req.body.hash !== hash) {
-			// TODO: Check collection/field/relation level hash
-
-			throw new InvalidPayloadException(
-				`Provided hash ${req.body.hash} does not match the current instance's hash ${hash}. Please regenerate a new diff and try again.`
-			);
-		}
-
-		await service.apply(req.body.diff);
-
+		await service.apply(req.body);
 		return next();
 	}),
 	respond
