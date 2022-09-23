@@ -37,7 +37,7 @@ export abstract class CacheService {
         return this.namespace ? key.replace(`${this.namespace}:`, '') : key;
     }
 
-    async autoCache<T>(key: string, fn: () => Promise<T>, ttl?: number | undefined,): Promise<T> {
+    async autoCache<T>(key: string, fn: () => Promise<T>, ttl?: number | undefined): Promise<T> {
         let value = await this.get(key)
 
         if (value !== null) return value;
@@ -69,7 +69,6 @@ export abstract class CacheService {
 
         value = await fn()
         await this.setHashField(key, field, value, ttl)
-
         return value
     }
 
@@ -89,6 +88,6 @@ export abstract class CacheService {
 
     async isLocked() {
         const {lockCache} = getCache()
-        return await lockCache.get(this.addPrefix('lock')) !== undefined
+        return (await lockCache.get(this.addPrefix('lock'))) !== null
     }
 }

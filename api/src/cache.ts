@@ -34,20 +34,20 @@ export async function flushCaches(forced?: boolean): Promise<void> {
 }
 
 export async function clearSystemCache(forced?: boolean): Promise<void> {
-	const { systemCache, lockCache } = getCache();
+	const { systemCache } = getCache();
 
 	// Flush system cache when forced or when system cache lock not set
-	if (forced || !(await lockCache.get('system-cache-lock'))) {
-		await lockCache.set('system-cache-lock', true, 10000);
+	if (forced || !(await systemCache.isLocked())) {
+		await systemCache.lock();
 		await systemCache.clear();
-		await lockCache.delete('system-cache-lock');
+		await systemCache.unlock();
 	}
 }
 
 export async function setSystemCache(key: string, value: any, ttl?: number): Promise<void> {
-	const { systemCache, lockCache } = getCache();
+	const { systemCache } = getCache();
 
-	if (!(await lockCache.get('system-cache-lock'))) {
+	if (!(await systemCache.isLocked())) {
 		await systemCache.set(key, value, ttl);
 	}
 }
