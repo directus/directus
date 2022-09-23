@@ -1,5 +1,4 @@
 import http from "k6/http";
-import { check, sleep } from "k6";
 import { URL } from 'https://jslib.k6.io/url/1.0.0/index.js';
 
 const URL_PATH = "http://localhost:8055"
@@ -36,13 +35,24 @@ Create relations between each collection with the following pattern: test_1 | te
 For each collection, create 100 items with random values for each field
 */
 
-const COLLECTION_COUNT = 10;
-const FIELD_COUNT = 10;
-const ITEM_COUNT = 100;
-const EDIT_CHANCE = 0.2;
-const COLLECTION_CHANCE = 0.5;
-const FIELD_CHANCE = 0.5;
-const ADD_FIELD_CHANCE = 0.2;
+const COLLECTION_COUNT = __ENV.COLLECTION_COUNT || 200;
+const FIELD_COUNT = __ENV.FIELD_COUNT || 25;
+const ITEM_COUNT = __ENV.ITEM_COUNT || 10;
+const EDIT_CHANCE = __ENV.EDIT_CHANCE || 0.2;
+const COLLECTION_CHANCE = __ENV.COLLECTION_CHANCE || 0.5;
+const FIELD_CHANCE = __ENV.FIELD_CHANCE || 0.5;
+const ADD_FIELD_CHANCE = __ENV.ADD_FIELD_CHANCE || 0.2;
+
+export const options = {
+    setupTimeout: "10m",
+    scenarios: {
+        "test": {
+            executor: "constant-vus",
+            vus: 20,
+            duration: "1m",
+        }
+    }
+}
 
 const relation = (collectionNr) => {
     collectionNr -= 1;
