@@ -285,11 +285,6 @@ function getDBQuery(
 		});
 	}
 
-	// Setting limit on the main query - just in case
-	if (queryCopy.limit !== -1) {
-		wrapperQuery.limit(queryCopy.limit);
-	}
-
 	return wrapperQuery;
 }
 
