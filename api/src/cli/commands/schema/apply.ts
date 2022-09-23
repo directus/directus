@@ -7,7 +7,8 @@ import path from 'path';
 import getDatabase, { isInstalled, validateDatabaseConnection } from '../../../database';
 import logger from '../../../logger';
 import { Snapshot } from '../../../types';
-import { applySnapshot, isNestedMetaUpdate } from '../../../utils/apply-snapshot';
+import { isNestedMetaUpdate } from '../../../utils/apply-diff';
+import { applySnapshot } from '../../../utils/apply-snapshot';
 import { getSnapshot } from '../../../utils/get-snapshot';
 import { getSnapshotDiff } from '../../../utils/get-snapshot-diff';
 
