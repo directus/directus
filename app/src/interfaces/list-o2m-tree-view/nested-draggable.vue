@@ -296,13 +296,19 @@ function stageEdits(item: Record<string, any>) {
 
 .row {
 	.preview {
-		padding: 12px;
-		background-color: var(--card-face-color);
+		position: relative;
+		display: flex;
+		flex-grow: 1;
+		align-items: center;
+		height: 100%;
+		padding: var(--input-padding);
+		color: var(--v-input-color);
+		font-family: var(--v-input-font-family);
+		background-color: var(--v-input-background-color);
+		border: var(--border-width) solid var(--border-normal);
 		border-radius: var(--border-radius);
-		box-shadow: 0px 0px 6px 0px rgb(var(--card-shadow-color), 0.2);
+		transition: border-color var(--fast) var(--transition);
 		cursor: grab;
-		transition: var(--fast) var(--transition);
-		transition-property: box-shadow, background-color;
 
 		& + .drag-area {
 			padding-top: 12px;
