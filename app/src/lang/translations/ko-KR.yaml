@@ -40,7 +40,7 @@ item_revision: 아이템 리비전
 duplicate_field: 중복 필드
 export_items: 내보내기
 dataset_too_large_currently_showing_n_items: 표시할 항목이 너무 많습니다. 앞에서부터  {n}개만 표시합니다.
-field_name_translations: 항목 명 번역
+field_name_translations: 필드명 번역
 enter_password_to_enable_tfa: 암호를 입력하여 이중 인증을 활성화하십시오
 add_field: 필드 추가
 role_name: 역할명
@@ -113,7 +113,7 @@ new_field: '새 필드'
 new_collection: '새 컬렉션'
 choose_a_type: 유형을 선택...
 default_value: 기본값
-standard_field: 표준 항목들
+standard_field: 표준 필드
 single_file: 단일 파일
 multiple_files: 여러 파일들
 invalid_item: 비정상적인 아이템
@@ -175,7 +175,7 @@ start_export: 내보내기 시작
 exporting_all_items_in_collection: '{collection}의 전체 데이터({total}개 항목) 내보내기 '
 exporting_limited_items_in_collection: '{collection}의 전체 {total}개 중 {limit}개 항목 내보내기'
 exporting_no_items_to_export: 내보낼 데이터가 없습니다. 아래 설정을 확인 해보세요.
-primary_key_field: 기본 키 항목(필드)
+primary_key_field: 기본키 필드
 type: 타입
 creating_new_collection: 새 컬렉션 만들기
 created_by: '작성자:'
@@ -287,7 +287,7 @@ fields:
     role: 역할
   directus_fields:
     note: 메모
-    translation: 항목 명 번역
+    translation: 필드명 번역
   directus_roles:
     name: 역할명
     users: 이 역할의 사용자 목록
@@ -407,7 +407,7 @@ layouts:
     basemap: 배경 지도
     cluster: 인근 데이터 묶기
     default_template: 기본 설정에 따름
-    no_compatible_fields: 해당항목 없음
+    no_compatible_fields: 해당필드 없음
 panels:
   linechart:
     datasets: 데이터 세트
