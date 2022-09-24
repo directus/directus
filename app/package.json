@@ -1,6 +1,6 @@
 {
 	"name": "@directus/app",
-	"version": "9.17.4",
+	"version": "9.18.1",
 	"private": false,
 	"description": "Directus is an Open-Source Headless CMS & API for Managing Custom Databases",
 	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
@@ -34,7 +34,7 @@
 	"devDependencies": {
 		"@babel/core": "^7.18.13",
 		"@babel/preset-env": "^7.18.10",
-		"@directus/docs": "9.17.0",
+		"@directus/docs": "9.18.1",
 		"@directus/extensions-sdk": "^9.14.1",
 		"@directus/format-title": "^9.15.0",
 		"@directus/shared": "workspace:*",

@@ -1925,6 +1925,8 @@ panels:
   variable:
     name: 全局变量
     variable_key: 变量键
+  relational-variable:
+    variable_key: 变量键
 triggers:
   common:
     response_body: 响应体
