@@ -1,4 +1,8 @@
 <template>
+	<v-notice v-if="!filteredDisplayItems.length" type="information">
+		{{ t('n_items_selected', filteredDisplayItems.length) }}
+	</v-notice>
+
 	<draggable
 		v-bind="dragOptions"
 		class="drag-area"
@@ -323,6 +327,11 @@ function stageEdits(item: Record<string, any>) {
 
 	&:not(.draggable) .preview {
 		cursor: not-allowed;
+	}
+
+	.v-notice {
+		margin-top: 12px;
+		margin-left: 24px;
 	}
 }
 
