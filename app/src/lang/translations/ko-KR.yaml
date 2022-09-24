@@ -147,13 +147,16 @@ months:
 drag_mode: 끌기 모드
 type: 타입
 creating_new_collection: 새 컬렉션 만들기
+creating_items: 데이터 추가
+item_count: '데이터 없음 | 1개 항목 | {count}개 항목'
 no_users_copy: 이 역할(role)의 사용자가 아직 없습니다.
 users: 사용자
-user_directory: 사용자 디렉토리
+user_directory: 사용자 관리
 errors:
   INVALID_USER: 사용자 인증에 실패하였습니다.
 all_users: 전체 사용자
 goto_collection_content: 내용 보기
+drag_file_here: 여기에 파일 끌어서 놓기
 value_unique: 생산Key는 유일해야만 합니다.
 all_files: 모든 파일
 my_files: 내 파일
@@ -173,6 +176,7 @@ wysiwyg_options:
   selectall: 모두 선택
 adding_user: 사용자 추가
 unknown_user: 알 수 없는 사용자
+creating_in: '{collection} 데이터 추가'
 settings_data_model: 데이터 모델
 settings_permissions: 역할 및 권한
 settings_project: 프로젝트 설정
