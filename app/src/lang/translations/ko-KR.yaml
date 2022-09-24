@@ -38,6 +38,8 @@ location: 위치
 switch_user: 사용자 전환
 item_revision: 아이템 리비전
 duplicate_field: 중복 필드
+export_items: 내보내기
+dataset_too_large_currently_showing_n_items: 표시할 항목이 너무 많습니다. 앞에서부터  {n}개만 표시합니다.
 field_name_translations: 항목 명 번역
 enter_password_to_enable_tfa: 암호를 입력하여 이중 인증을 활성화하십시오
 add_field: 필드 추가
@@ -45,6 +47,9 @@ role_name: 역할명
 branch: 브랜치
 indeterminate: 불확정 상태
 children: 하위
+show_active_items: 사용중인 항목 표시
+show_archived_items: 보관된 항목 표시
+show_all_items: 모든 항목 표시
 required: 필수 사항
 requires_value: 필수 항목
 create_preset: 사전설정 생성
@@ -112,9 +117,18 @@ note: 메모
 enter_a_value: 값 입력
 length: 길이
 unique: 고유
+updated_on: 수정일
+updated_by: 수정자
+clear_items: 선택 해제
+settings_update_success: 설정이 수정됨.
 title: 제목
 private_user: 비공개 사용자
 post_comment_success: 댓글 작성됨
+import_data_button: 가져오기 시작
+import_data_indeterminate: 데이터를 가져오는 중...
+label_import: 가져오기
+label_export: 내보내기
+import_export: 가져오기 / 내보내기
 format: 형식
 last_page: 마지막 페이지
 last_access: 최근 접속
@@ -146,21 +160,46 @@ months:
   november: 11월
   december: 12월
 drag_mode: 끌기 모드
+import_label: 가져오기
+created: 작성됨
+import_from_url: URL로부터 파일 가져오기
+start_export: 내보내기 시작
+exporting_all_items_in_collection: '{collection}의 전체 데이터({total}개 항목) 내보내기 '
+exporting_limited_items_in_collection: '{collection}의 전체 {total}개 중 {limit}개 항목 내보내기'
+exporting_no_items_to_export: 내보낼 데이터가 없습니다. 아래 설정을 확인 해보세요.
 type: 타입
 creating_new_collection: 새 컬렉션 만들기
+created_by: '작성자:'
+created_on: 작성일
 creating_items: 데이터 추가
+selecting_items: 항목 선택
+no_items: 항목 없음
+search_items: 검색
 item_count: '데이터 없음 | 1개 항목 | {count}개 항목'
+no_items_copy: 이 목록에는 등록된 내용이 없습니다.
 no_users_copy: 이 역할(role)의 사용자가 아직 없습니다.
+activity_log: 활동 기록
+all_items: 전체 내용
+create_collection: 목록 생성
 users: 사용자
 user_directory: 사용자 관리
+collection_created: 목록이 생성됨
 sort_field: 정렬 기준
+create_account: 계정 추가
+account_created_successfully: 계정이 추가되었습니다.
 errors:
   INVALID_USER: 사용자 인증에 실패하였습니다.
+create_bookmark: 북마크 만들기
 all_users: 전체 사용자
 goto_collection_content: 내용 보기
+start_end_of_count_items: '{start}-{end} / 총 {count}개'
+start_end_of_count_filtered_items: '{start}-{end} / 총 {count}개 '
 drag_file_here: 여기에 파일 끌어서 놓기
+layout_options: 표시방법 선택
 value_unique: 생산Key는 유일해야만 합니다.
+all_activity: 전체 활동
 create_item: 추가
+display_template: 표시 형식
 all_files: 전체 파일
 my_files: 내 파일
 recent_files: 최근 파일
@@ -169,6 +208,12 @@ add_file: 파일 추가
 replace_file: 파일 바꾸기
 role: 역할
 user: 사용자
+create: 작성/추가
+on_create: 추가시
+update: 수정
+create_trigger: 트리거 생성
+create_flow: 플로우 작성
+flow_tracking: 활동 및 기록 추적
 insights: 현황판
 dashboard: 대쉬보드
 edit_dashboard: 대시보드 편집
@@ -188,18 +233,23 @@ settings_permissions: 역할 및 권한
 settings_project: 프로젝트 설정
 settings_presets: 사전설정 및 북마크
 scope: 범위
+layout: 표시 방법
 data: 데이터
+activity_feed: 활동 내역
 content: 데이터 및 컨텐츠 관리
 fields:
   directus_activity:
     revisions: 수정내역
   directus_collections:
     note: 메모
+    display_template: 표시 형식
     sort_field: 정렬 기준
   directus_files:
     title: 제목
     metadata: 메타데이터(Metadata)
     filesize: 파일 크기
+    created_on: 작성일
+    created_by: '작성자:'
   directus_users:
     title: 제목
     user_preferences: 사용자 개인 설정
@@ -221,16 +271,24 @@ fields:
   directus_webhooks:
     data: 데이터
 field_options:
+  directus_activity:
+    login: 로그인
+    create: 작성
+    update: 수정
   directus_collections:
     language: 언어
     sort_divider: 정렬
   directus_users:
     preferences_divider: 사용자 개인 설정
+  directus_webhooks:
+    actions_create: 작성/추가
+    actions_update: 업데이트
 save_current_user_id: 현재 사용자 ID 저장
 save_current_user_role: 현재 사용자 역할(role) 저장
 file: 파일
 file_library: 파일 관리
 forgot_password: 비밀번호를 잊으셨나요?
+my_activity: 내 활동
 permissions: 사용 권한
 revisions: 수정내역
 no_revisions: 수정 내역 없음
@@ -239,16 +297,25 @@ sign_in: 로그인
 sign_out: 로그아웃
 sign_out_confirm: 로그아웃 하시겠습니까?
 sort_direction: 정렬 순서
+export_started: 내보내기를 시작했습니다.
+export_started_copy: 내보내기 시작합니다. 다운로드 준비가 되면 알려드립니다.
 interfaces:
+  system-display-template:
+    display-template: 표시 형식
   select-dropdown:
     choices_value_placeholder: 값 입력
   file:
     file: 파일
   system-interface:
     interface: 인터페이스
+  select-dropdown-m2o:
+    display_template: 표시 형식
+  map:
+    map: 지도
   presentation-notice:
     text: 내용을 입력하세요...
   translations:
+    display_template: 표시 형식
     user_language: 현재 사용자와 같은 언어 사용
   user:
     user: 사용자
@@ -274,7 +341,29 @@ displays:
     user: 사용자
 layouts:
   cards:
+    cards: 카드형식
+    image_source: 표시이미지
+    image_fit: 이미지맞춤
+    crop: 맞춰자르기(crop)
+    contain: 다보이게
     title: 제목
+    subtitle: 부제
+  tabular:
+    tabular: 테이블
+    spacing: 간격
+    comfortable: 넓게
+    compact: 좁게
+    cozy: 중간
+  calendar:
+    calendar: 달력
+    start_date_field: 시작일 기준
+    end_date_field: 종료일 기준
+  map:
+    map: 지도
+    basemap: 배경 지도
+    cluster: 인근 데이터 묶기
+    default_template: 기본 설정에 따름
+    no_compatible_fields: 해당항목 없음
 panels:
   linechart:
     datasets: 데이터 세트
