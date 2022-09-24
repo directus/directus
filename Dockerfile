@@ -6,6 +6,7 @@ FROM node:${NODE_VERSION}
 
 ARG CI_JOB_TOKEN
 ARG CI_API_V4_URL
+ARG PAYMENT_EXTENSION
 
 # Required to run OracleDB
 # Technically not required for the others, but I'd rather have 1 image that works for all, instead of building n images
@@ -51,7 +52,10 @@ RUN pnpm install @wellenplan/directus-extension-duration-display -w
 RUN export CI_JOB_TOKEN=${CI_JOB_TOKEN}
 RUN export CI_API_V4_URL=${CI_API_V4_URL}
 RUN chmod +x ./custom_extensions.sh
+RUN chmod +x ./payment_extensions.sh
 RUN ./custom_extensions.sh
+
+RUN if [[ -z "$PAYMENT_EXTENSION" ]] ; then echo "Payment extension disabled" ; else ./payment_extensions.sh ; fi
 
 # Not sure why we have this folder here
 RUN rm -rf /directus/api/extensions/modules/__MACOSX || true
@@ -59,7 +63,6 @@ RUN rm -rf /directus/api/extensions/modules/__MACOSX || true
 WORKDIR /directus/api
 
 RUN mkdir -p ./uploads
-RUN mkdir -p ./snapshots
 
 CMD ["sh", "-c", "node ./cli.js bootstrap && node ./dist/start.js;"]
 EXPOSE 8055/tcp

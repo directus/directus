@@ -2,8 +2,6 @@
 
 DIRECTUS_DIR="/directus/api"
 DIRECTUS_EXTENSIONS="${DIRECTUS_DIR}/extensions"
-DIRECTUS_ENDPOINTS="${DIRECTUS_EXTENSIONS}/endpoints"
-DIRECTUS_HOOKS="${DIRECTUS_EXTENSIONS}/hooks"
 DIRECTUS_INTERFACES="${DIRECTUS_EXTENSIONS}/interfaces"
 DIRECTUS_MODULES="${DIRECTUS_EXTENSIONS}/modules"
 DIRECTUS_DISPLAYS="${DIRECTUS_EXTENSIONS}/displays"
@@ -32,32 +30,3 @@ wget -O ${DIRECTUS_MODULES}/api-viewer/index.js https://github.com/u12206050/dir
 # Install https://github.com/dimitrov-adrian/directus-extension-masked-interface
 mkdir -p ${DIRECTUS_INTERFACES}/fields-masked
 wget -O ${DIRECTUS_INTERFACES}/fields-masked/index.js https://github.com/dimitrov-adrian/directus-extension-masked-interface/releases/download/v1.1.0/index.js
-
-# TODO, fix this download, how to download from a different project Packages Registry??
-#curl --header 'Private-Token: ${CI_JOB_TOKEN}' \
-#	https://gitlab.com/api/v4/projects/39544563/packages/generic/Releases/0.0.1/directus-payment-integration-release.zip
-
-wget https://s3.eu-central-2.wasabisys.com/crwtests/directus-payment-integration-release.zip
-
-ls -la
-
-unzip directus-payment-integration-release.zip
-
-mv ./directus-payment-integration-release/payments-api ${DIRECTUS_ENDPOINTS}
-mv ./directus-payment-integration-release/payments-hook ${DIRECTUS_HOOKS}
-mv ./directus-payment-integration-release/collection-ext ${DIRECTUS_INTERFACES}
-mv ./directus-payment-integration-release/filter-ext ${DIRECTUS_INTERFACES}
-mv ./directus-payment-integration-release/payments-module ${DIRECTUS_MODULES}
-mv ./directus-payment-integration-release/snapshots/* ${DIRECTUS_SNAPSHOTS}
-
-# Install https://github.com/br41nslug/directus-extension-randomized
-#mkdir -p /tmp/directus-extension-randomized
-#mkdir -p ${DIRECTUS_EXTENSIONS}/hooks/directus-extension-randomized
-#git clone git@github.com:br41nslug/directus-extension-randomized.git /tmp/directus-extension-randomized
-#cd /tmp/directus-extension-randomized
-#npm install
-#npm run build
-#mv dist ${DIRECTUS_EXTENSIONS}/hooks/directus-extension-randomized
-
-# Install https://github.com/wellenplan/directus-extension-duration-display
-#pnpm install @wellenplan/directus-extension-duration-display
