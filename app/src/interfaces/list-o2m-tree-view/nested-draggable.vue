@@ -313,6 +313,12 @@ function stageEdits(item: Record<string, any>) {
 		& + .drag-area {
 			padding-top: 12px;
 		}
+
+		&:hover {
+			color: var(--v-input-color);
+			background-color: var(--background-input);
+			border-color: var(--border-normal-alt);
+		}
 	}
 
 	&:not(.draggable) .preview {
