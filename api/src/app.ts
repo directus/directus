@@ -95,6 +95,8 @@ export default async function createApp(): Promise<express.Application> {
 
 	const app = express();
 
+	await emitter.emitInit('app.afterCreate', { app });
+
 	app.disable('x-powered-by');
 	app.set('trust proxy', env.IP_TRUST_PROXY);
 	app.set('query parser', (str: string) => qs.parse(str, { depth: 10 }));
