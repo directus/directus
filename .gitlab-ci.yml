@@ -7,7 +7,8 @@ variables:
   DOCKER_HOST: tcp://localhost:2375
   DOCKER_TLS_CERTDIR: ""
 
-image: aigent/dind-node
+#image: aigent/dind-node
+image: registry.gitlab.com/crawless/crawless-images/dind-do-k8s
 
 services:
   - docker:dind
@@ -60,6 +61,8 @@ docker_test_build:
     - export IMAGE_TAG=${CI_COMMIT_TAG:-test}
     - docker build -t $IMAGE_NAME:$IMAGE_TAG --build-arg SSH_PRIVATE_KEY="${SSH_PRIVATE_KEY}" --build-arg CI_JOB_TOKEN="${CI_JOB_TOKEN}" --build-arg CI_API_V4_URL="${CI_API_V4_URL}" --build-arg PAYMENT_EXTENSION=1 .
     - docker push $IMAGE_NAME:$IMAGE_TAG
+    - doctl kubernetes cluster kubeconfig save k8s-stage-fra1
+    - kubectl rollout restart deployment directustests-admin-directus-next -n workflow-websites
 #    - 'curl --user $KEEL_USERNAME:$KEEL_PASSWORD -X POST -H "Content-Type: application/json" --data "{\"name\":\"${IMAGE_NAME}\",\"tag\":\"${IMAGE_TAG}\"}" $KEEL_WEBHOOK --insecure'
   tags:
     - crawless
