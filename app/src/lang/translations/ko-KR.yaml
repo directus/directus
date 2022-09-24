@@ -41,7 +41,7 @@ duplicate_field: 중복 필드
 field_name_translations: 항목 명 번역
 enter_password_to_enable_tfa: 암호를 입력하여 이중 인증을 활성화하십시오
 add_field: 필드 추가
-role_name: 권한 이름
+role_name: 역할명
 branch: 브랜치
 indeterminate: 불확정 상태
 children: 하위
@@ -65,7 +65,7 @@ delete_bookmark: 북마크 삭제
 delete_bookmark_copy: >-
   정말로 이 계정을 삭제하시겠습니까? 이 작업은 취소할 수 없습니다.
 logoutReason:
-  SIGN_OUT: 로그아웃
+  SIGN_OUT: 로그아웃됨
   SESSION_EXPIRED: 세션 만료
 not_allowed: 허용되지 않음
 validationError:
@@ -112,6 +112,7 @@ note: 메모
 enter_a_value: 값 입력
 length: 길이
 unique: 고유
+title: 제목
 private_user: 비공개 사용자
 post_comment_success: 댓글 작성됨
 format: 형식
@@ -152,18 +153,23 @@ item_count: '데이터 없음 | 1개 항목 | {count}개 항목'
 no_users_copy: 이 역할(role)의 사용자가 아직 없습니다.
 users: 사용자
 user_directory: 사용자 관리
+sort_field: 정렬 기준
 errors:
   INVALID_USER: 사용자 인증에 실패하였습니다.
 all_users: 전체 사용자
 goto_collection_content: 내용 보기
 drag_file_here: 여기에 파일 끌어서 놓기
 value_unique: 생산Key는 유일해야만 합니다.
-all_files: 모든 파일
+create_item: 추가
+all_files: 전체 파일
 my_files: 내 파일
-recent_files: 최근 열어본 파일
+recent_files: 최근 파일
+create_folder: 폴더 만들기
 add_file: 파일 추가
 replace_file: 파일 바꾸기
+role: 역할
 user: 사용자
+insights: 현황판
 dashboard: 대쉬보드
 edit_dashboard: 대시보드 편집
 delete_dashboard: 대시보드 삭제
@@ -185,23 +191,31 @@ scope: 범위
 data: 데이터
 content: 데이터 및 컨텐츠 관리
 fields:
+  directus_activity:
+    revisions: 수정내역
   directus_collections:
     note: 메모
+    sort_field: 정렬 기준
   directus_files:
+    title: 제목
     metadata: 메타데이터(Metadata)
     filesize: 파일 크기
   directus_users:
+    title: 제목
     user_preferences: 사용자 개인 설정
     language: 언어
+    role: 역할
     last_page: 마지막 페이지
     last_access: 최근 접속
   directus_settings:
     module_bar: 모듈 바
+  directus_shares:
+    role: 역할
   directus_fields:
     note: 메모
     translation: 항목 명 번역
   directus_roles:
-    name: 권한 이름
+    name: 역할명
     users: 이 역할의 사용자 목록
     module_list: '모듈 탐색:'
   directus_webhooks:
@@ -209,12 +223,22 @@ fields:
 field_options:
   directus_collections:
     language: 언어
+    sort_divider: 정렬
   directus_users:
     preferences_divider: 사용자 개인 설정
 save_current_user_id: 현재 사용자 ID 저장
 save_current_user_role: 현재 사용자 역할(role) 저장
 file: 파일
 file_library: 파일 관리
+forgot_password: 비밀번호를 잊으셨나요?
+permissions: 사용 권한
+revisions: 수정내역
+no_revisions: 수정 내역 없음
+settings: 설정
+sign_in: 로그인
+sign_out: 로그아웃
+sign_out_confirm: 로그아웃 하시겠습니까?
+sort_direction: 정렬 순서
 interfaces:
   select-dropdown:
     choices_value_placeholder: 값 입력
@@ -248,6 +272,9 @@ displays:
     choices_value_placeholder: 값 입력
   user:
     user: 사용자
+layouts:
+  cards:
+    title: 제목
 panels:
   linechart:
     datasets: 데이터 세트
