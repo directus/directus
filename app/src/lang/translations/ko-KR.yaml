@@ -161,15 +161,30 @@ recent_files: 최근 열어본 파일
 add_file: 파일 추가
 replace_file: 파일 바꾸기
 user: 사용자
+dashboard: 대쉬보드
+edit_dashboard: 대시보드 편집
+delete_dashboard: 대시보드 삭제
+no_dashboards: 대시보드 없음
+no_dashboards_copy: 생성된 대시보드가 없습니다.
+create_dashboard: 대시보드 생성
+dashboard_name: 대시보드 이름
+no_data: 데이터 없음
 wysiwyg_options:
   selectall: 모두 선택
 adding_user: 사용자 추가
 unknown_user: 알 수 없는 사용자
+settings_data_model: 데이터 모델
+settings_permissions: 역할 및 권한
+settings_project: 프로젝트 설정
+settings_presets: 사전설정 및 북마크
+scope: 범위
+data: 데이터
 content: 컨텐츠
 fields:
   directus_collections:
     note: 메모
   directus_files:
+    metadata: 메타데이터(Metadata)
     filesize: 파일 크기
   directus_users:
     user_preferences: 사용자 개인 설정
@@ -184,6 +199,9 @@ fields:
   directus_roles:
     name: 권한 이름
     users: 이 역할의 사용자 목록
+    module_list: '모듈 탐색:'
+  directus_webhooks:
+    data: 데이터
 field_options:
   directus_collections:
     language: 언어
@@ -206,11 +224,13 @@ interfaces:
     user_language: 현재 사용자와 같은 언어 사용
   user:
     user: 사용자
+    description: 등록된 사용자 중에서 선택
   input-rich-text-html:
     description: HTML 형식으로 작성할 수 있는 리치텍스트 에디터
 displays:
   translations:
     translations: 번역
+    user_language: 현재 사용자와 같은 언어 사용
   datetime:
     format: 형식
     suffix: 접미사
@@ -224,6 +244,24 @@ displays:
     choices_value_placeholder: 값 입력
   user:
     user: 사용자
+panels:
+  linechart:
+    datasets: 데이터 세트
+triggers:
+  common:
+    response_body_all: 전체 데이터
 operations:
+  item-create:
+    name: 데이터 생성
+  item-delete:
+    name: 데이터 삭제
+  item-read:
+    name: 데이터 읽기
+  item-update:
+    name: 데이터 업데이트
   notification:
     recipient: 사용자
+  request:
+    data: 데이터
+  trigger:
+    data: 데이터
