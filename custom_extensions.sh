@@ -6,11 +6,12 @@ DIRECTUS_ENDPOINTS="${DIRECTUS_EXTENSIONS}/endpoints"
 DIRECTUS_HOOKS="${DIRECTUS_EXTENSIONS}/hooks"
 DIRECTUS_INTERFACES="${DIRECTUS_EXTENSIONS}/interfaces"
 DIRECTUS_MODULES="${DIRECTUS_EXTENSIONS}/modules"
+DIRECTUS_DISPLAYS="${DIRECTUS_EXTENSIONS}/displays"
 #DIRECTUS_DIR="/tmp"
 
 # Install https://github.com/utomic-media/directus-extension-field-actions
-mkdir -p ${DIRECTUS_EXTENSIONS}/displays/fields-action
-wget -O ${DIRECTUS_EXTENSIONS}/displays/fields-action/index.js https://github.com/utomic-media/directus-extension-field-actions/releases/download/1.1.1/display-index.js
+mkdir -p ${DIRECTUS_DISPLAYS}/fields-action
+wget -O ${DIRECTUS_DISPLAYS}/fields-action/index.js https://github.com/utomic-media/directus-extension-field-actions/releases/download/1.1.1/display-index.js
 mkdir -p ${DIRECTUS_INTERFACES}/fields-action
 wget -O ${DIRECTUS_INTERFACES}/fields-action/index.js https://github.com/utomic-media/directus-extension-field-actions/releases/download/1.1.1/interface-index.js
 
