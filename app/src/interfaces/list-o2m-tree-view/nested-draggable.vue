@@ -1,6 +1,6 @@
 <template>
-	<v-notice v-if="!filteredDisplayItems.length" type="information">
-		{{ t('n_items_selected', filteredDisplayItems.length) }}
+	<v-notice v-if="displayItems.length === 0">
+		{{ t('no_items') }}
 	</v-notice>
 
 	<draggable
