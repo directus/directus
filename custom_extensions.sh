@@ -27,8 +27,11 @@ wget -O ${DIRECTUS_MODULES}/api-viewer/index.js https://github.com/u12206050/dir
 mkdir -p ${DIRECTUS_INTERFACES}/fields-masked
 wget -O ${DIRECTUS_INTERFACES}/fields-masked/index.js https://github.com/dimitrov-adrian/directus-extension-masked-interface/releases/download/v1.1.0/index.js
 
-curl --header 'Private-Token: ${CI_JOB_TOKEN}' \
-	https://gitlab.com/api/v4/projects/39544563/packages/generic/Releases/0.0.1/directus-payment-integration-release.zip
+# TODO, fix this download
+#curl --header 'Private-Token: ${CI_JOB_TOKEN}' \
+#	https://gitlab.com/api/v4/projects/39544563/packages/generic/Releases/0.0.1/directus-payment-integration-release.zip
+
+wget https://s3.eu-central-2.wasabisys.com/crwtests/directus-payment-integration-release.zip
 
 ls -la
 
