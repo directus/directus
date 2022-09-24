@@ -47,10 +47,14 @@
 				v-model:headers="headers"
 				:class="{ 'no-last-border': totalItemCount <= 10 }"
 				:loading="loading"
+				:show-manual-sort="allowDrag"
+				:manual-sort-key="relationInfo?.sortField"
+				:server-sort="allowDrag"
 				:items="displayItems"
 				:row-height="tableRowHeight"
 				show-resize
 				@click:row="editRow"
+				@manual-sort="tableSortChange"
 			>
 				<template v-for="header in headers" :key="header.value" #[`item.${header.value}`]="{ item }">
 					<render-template
@@ -195,7 +199,7 @@ import { useRelationO2M } from '@/composables/use-relation-o2m';
 import { useRelationMultiple, RelationQueryMultiple, DisplayItem } from '@/composables/use-relation-multiple';
 import { parseFilter } from '@/utils/parse-filter';
 import { Filter } from '@directus/shared/types';
-import { deepMap, getFieldsFromTemplate } from '@directus/shared/utils';
+import { deepMap, getFieldsFromTemplate, moveInArray } from '@directus/shared/utils';
 import { render } from 'micromustache';
 import { computed, inject, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -418,6 +422,26 @@ function sortItems(items: DisplayItem[]) {
 		...item,
 		[sortField]: index + 1,
 	}));
+	update(...sortedItems);
+}
+
+async function tableSortChange({ item, to }: any) {
+	const sortField = relationInfo.value?.sortField;
+	const relatedPkField = relationInfo.value?.relatedPrimaryKeyField.field;
+
+	if (!sortField) return;
+	if (!relatedPkField) return;
+
+	const fromIndex = displayItems.value.findIndex((existing: Record<string, any>) => existing[relatedPkField] === item);
+	const toIndex = displayItems.value.findIndex((existing: Record<string, any>) => existing[relatedPkField] === to);
+
+	const items = moveInArray(displayItems.value, fromIndex, toIndex);
+
+	const sortedItems = items.map((item, index) => ({
+		...item,
+		[sortField]: index + 1,
+	}));
+
 	update(...sortedItems);
 }
 
