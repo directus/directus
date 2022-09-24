@@ -214,7 +214,7 @@ field_options:
 save_current_user_id: 현재 사용자 ID 저장
 save_current_user_role: 현재 사용자 역할(role) 저장
 file: 파일
-file_library: 파일 라이브러리
+file_library: 파일 관리
 interfaces:
   select-dropdown:
     choices_value_placeholder: 값 입력
