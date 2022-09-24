@@ -63,6 +63,7 @@ RUN rm -rf /directus/api/extensions/modules/__MACOSX || true
 WORKDIR /directus/api
 
 RUN mkdir -p ./uploads
+RUN mkdir -p ./snapshots
 
-CMD ["sh", "-c", "node ./cli.js bootstrap && node ./dist/start.js;"]
+CMD ["sh", "-c", "node ./cli.js bootstrap && node ./cli.js schema apply --yes ./snapshots/* || true && node ./dist/start.js;"]
 EXPOSE 8055/tcp
