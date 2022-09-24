@@ -35,6 +35,7 @@ tile_size: 타일 크기
 edit_field: 필드 편집
 conditions: 상태
 location: 위치
+switch_user: 사용자 전환
 item_revision: 아이템 리비전
 duplicate_field: 중복 필드
 field_name_translations: 항목 명 번역
@@ -111,6 +112,7 @@ note: 메모
 enter_a_value: 값 입력
 length: 길이
 unique: 고유
+private_user: 비공개 사용자
 post_comment_success: 댓글 작성됨
 format: 형식
 last_page: 마지막 페이지
@@ -145,13 +147,32 @@ months:
 drag_mode: 끌기 모드
 type: 타입
 creating_new_collection: 새 컬렉션 만들기
+no_users_copy: 이 역할(role)의 사용자가 아직 없습니다.
+users: 사용자
+user_directory: 사용자 디렉토리
+errors:
+  INVALID_USER: 사용자 인증에 실패하였습니다.
+all_users: 모든 사용자
+goto_collection_content: 내용 보기
 value_unique: 생산Key는 유일해야만 합니다.
+all_files: 모든 파일
+my_files: 내 파일
+recent_files: 최근 열어본 파일
+add_file: 파일 추가
+replace_file: 파일 바꾸기
+user: 사용자
 wysiwyg_options:
   selectall: 모두 선택
+adding_user: 사용자 추가
+unknown_user: 알 수 없는 사용자
+content: 컨텐츠
 fields:
   directus_collections:
     note: 메모
+  directus_files:
+    filesize: 파일 크기
   directus_users:
+    user_preferences: 사용자 개인 설정
     language: 언어
     last_page: 마지막 페이지
     last_access: 최근 접속
@@ -162,23 +183,47 @@ fields:
     translation: 항목 명 번역
   directus_roles:
     name: 권한 이름
+    users: 이 역할의 사용자 목록
 field_options:
   directus_collections:
     language: 언어
+  directus_users:
+    preferences_divider: 사용자 개인 설정
+save_current_user_id: 현재 사용자 ID 저장
+save_current_user_role: 현재 사용자 역할(role) 저장
+file: 파일
+file_library: 파일 라이브러리
 interfaces:
   select-dropdown:
     choices_value_placeholder: 값 입력
+  file:
+    file: 파일
   system-interface:
     interface: 인터페이스
+  presentation-notice:
+    text: 내용을 입력하세요...
+  translations:
+    user_language: 현재 사용자와 같은 언어 사용
+  user:
+    user: 사용자
+  input-rich-text-html:
+    description: HTML 형식으로 작성할 수 있는 리치텍스트 에디터
 displays:
   translations:
     translations: 번역
   datetime:
     format: 형식
     suffix: 접미사
+  file:
+    file: 파일
   formatted-value:
     format: 형식
     prefix: 접두사
     suffix: 접미사
   labels:
     choices_value_placeholder: 값 입력
+  user:
+    user: 사용자
+operations:
+  notification:
+    recipient: 사용자
