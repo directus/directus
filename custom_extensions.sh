@@ -7,7 +7,12 @@ DIRECTUS_HOOKS="${DIRECTUS_EXTENSIONS}/hooks"
 DIRECTUS_INTERFACES="${DIRECTUS_EXTENSIONS}/interfaces"
 DIRECTUS_MODULES="${DIRECTUS_EXTENSIONS}/modules"
 DIRECTUS_DISPLAYS="${DIRECTUS_EXTENSIONS}/displays"
+DIRECTUS_SNAPSHOTS="${DIRECTUS_EXTENSIONS}/snapshots"
+
 #DIRECTUS_DIR="/tmp"
+
+# Create if not exists
+mkdir -p ${DIRECTUS_SNAPSHOTS}
 
 # Install https://github.com/utomic-media/directus-extension-field-actions
 mkdir -p ${DIRECTUS_DISPLAYS}/fields-action
@@ -28,7 +33,7 @@ wget -O ${DIRECTUS_MODULES}/api-viewer/index.js https://github.com/u12206050/dir
 mkdir -p ${DIRECTUS_INTERFACES}/fields-masked
 wget -O ${DIRECTUS_INTERFACES}/fields-masked/index.js https://github.com/dimitrov-adrian/directus-extension-masked-interface/releases/download/v1.1.0/index.js
 
-# TODO, fix this download
+# TODO, fix this download, how to download from a different project Packages Registry??
 #curl --header 'Private-Token: ${CI_JOB_TOKEN}' \
 #	https://gitlab.com/api/v4/projects/39544563/packages/generic/Releases/0.0.1/directus-payment-integration-release.zip
 
@@ -43,6 +48,7 @@ mv ./directus-payment-integration-release/payments-hook ${DIRECTUS_HOOKS}
 mv ./directus-payment-integration-release/collection-ext ${DIRECTUS_INTERFACES}
 mv ./directus-payment-integration-release/filter-ext ${DIRECTUS_INTERFACES}
 mv ./directus-payment-integration-release/payments-module ${DIRECTUS_MODULES}
+mv ./directus-payment-integration-release/snapshots/* ${DIRECTUS_SNAPSHOTS}
 
 # Install https://github.com/br41nslug/directus-extension-randomized
 #mkdir -p /tmp/directus-extension-randomized
