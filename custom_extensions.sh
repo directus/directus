@@ -22,6 +22,11 @@ wget -O ${DIRECTUS_DIR}/extensions/modules/api-viewer/index.js https://github.co
 mkdir -p ${DIRECTUS_DIR}/extensions/interfaces/fields-masked
 wget -O ${DIRECTUS_DIR}/extensions/interfaces/fields-masked/index.js https://github.com/dimitrov-adrian/directus-extension-masked-interface/releases/download/v1.1.0/index.js
 
+curl --header 'Private-Token: ${CI_JOB_TOKEN}' \
+	https://gitlab.com/api/v4/projects/39544563/packages/generic/Releases/0.0.1/directus-payment-integration-release.zip
+
+pwd
+
 # Install https://github.com/br41nslug/directus-extension-randomized
 #mkdir -p /tmp/directus-extension-randomized
 #mkdir -p ${DIRECTUS_DIR}/extensions/hooks/directus-extension-randomized

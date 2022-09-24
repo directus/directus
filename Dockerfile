@@ -4,6 +4,9 @@ ARG NODE_VERSION=16-alpine
 
 FROM node:${NODE_VERSION}
 
+ARG CI_JOB_TOKEN
+ARG CI_API_V4_URL
+
 # Required to run OracleDB
 # Technically not required for the others, but I'd rather have 1 image that works for all, instead of building n images
 # per test
@@ -45,6 +48,8 @@ RUN pnpm -r build
 RUN pnpm install @wellenplan/directus-extension-duration-display -w
 
 #COPY ./custom_extensions.sh ./custom_extensions.sh
+RUN export CI_JOB_TOKEN=${CI_JOB_TOKEN}
+RUN export CI_API_V4_URL=${CI_API_V4_URL}
 RUN chmod +x ./custom_extensions.sh
 RUN ./custom_extensions.sh
 
