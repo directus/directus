@@ -2,7 +2,7 @@
 	<div class="preview" :class="{ open, deleted }">
 		<v-icon
 			v-if="relationInfo.relatedPrimaryKeyField.field in item"
-			:name="props.open ? 'expand_less' : 'chevron_right'"
+			:name="props.open ? 'expand_more' : 'chevron_right'"
 			clickable
 			@click="emit('update:open', !props.open)"
 		/>
