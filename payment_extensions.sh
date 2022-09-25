@@ -24,3 +24,4 @@ mv -v ./directus-payment-integration-release/collection-ext ${DIRECTUS_INTERFACE
 mv -v ./directus-payment-integration-release/filter-ext ${DIRECTUS_INTERFACES}
 mv -v ./directus-payment-integration-release/payments-module ${DIRECTUS_MODULES}
 mv -v ./directus-payment-integration-release/snapshots/* ${DIRECTUS_SNAPSHOTS}
+mv -v ./directus-payment-integration-release/migrations ${DIRECTUS_EXTENSIONS}
