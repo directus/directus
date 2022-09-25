@@ -11,12 +11,7 @@ DIRECTUS_SNAPSHOTS="${DIRECTUS_DIR}/snapshots"
 # Create if not exists
 mkdir -p ${DIRECTUS_SNAPSHOTS}
 
-# TODO, fix this download, how to download from a different project Packages Registry??
 curl --header "Private-Token: ${GITLAB_PIPELINE_TOKEN}" -LO ${CI_API_V4_URL}/projects/39544563/packages/generic/Releases/0.0.1/directus-payment-integration-release.zip
-
-#wget https://s3.eu-central-2.wasabisys.com/crwtests/directus-payment-integration-release.zip
-
-ls -la
 
 unzip directus-payment-integration-release.zip
 
