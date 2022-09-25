@@ -35,9 +35,15 @@ tile_size: 타일 크기
 edit_field: 필드 편집
 conditions: 상태
 location: 위치
+condition_rules: 조건식
+input: 입력
 switch_user: 사용자 전환
-item_revision: 아이템 리비전
+item_creation: 추가
+item_revision: 수정
+enter_a_name: 이름 입력...
 duplicate_field: 중복 필드
+half_width: 1/2 폭
+full_width: 전체 폭
 export_items: 내보내기
 dataset_too_large_currently_showing_n_items: 표시할 항목이 너무 많습니다. 앞에서부터  {n}개만 표시합니다.
 field_name_translations: 필드명 번역
@@ -46,6 +52,7 @@ add_field: 필드 추가
 role_name: 역할명
 branch: 브랜치
 indeterminate: 불확정 상태
+edit_collection: 목록 수정
 children: 하위
 show_active_items: 사용중인 항목만 표시
 show_archived_items: 보관된 (미사용) 항목만 표시
@@ -53,12 +60,29 @@ show_all_items: 전체 항목을 표시
 required: 필수 사항
 requires_value: 필수 항목
 create_preset: 사전설정 생성
+create_panel: 판넬 추가
 create_role: 역할 생성
 create_user: 사용자 생성
+message: 메시지
+delete_panel: 판넬 삭제
 create_webhook: 웹훅 생성
+create_translation_string: 번역 문구 추가
+no_translation_string: 번역 문구 없음.
+no_translation_string_copy: 아직 등록된 번역 문구가 없습니다.
+translation_string_key_placeholder: 번역 문구 키(key)...
+translation_string_translations_placeholder: 새로운 번역 문구를 추가하세요.
+edit_translation_string: 번역 문구 수정
+delete_translation_string_copy: >-
+  번역 문구 "{key}"를 삭제하시겠습니까? 한번 삭제하면 복구되지 않습니다.
 invite_users: 사용자 초대
 invite: 초대
+email_already_invited: 이메일주소 "{email}" 로 이미 초대하였습니다.
+subject: 제목
+inbox: 받은편지함
 emails: 이메일
+connection_excellent: 연결 상태 최상
+connection_good: 연결 상태 좋음
+connection_fair: 연결 상태 보통
 connection_poor: 연결 상태 불량
 primary: 기본
 rename_folder: 폴더 이름 변경
@@ -70,42 +94,83 @@ update_bookmark: 북마크 업데이트
 delete_bookmark: 북마크 삭제
 delete_bookmark_copy: >-
   정말로 이 계정을 삭제하시겠습니까? 이 작업은 취소할 수 없습니다.
+delete_personal_bookmark: 내 북마크 삭제
+delete_role_bookmark: 역할 북마크 삭제
+delete_global_bookmark: 공용 북마크 삭제
 logoutReason:
   SIGN_OUT: 로그아웃됨
   SESSION_EXPIRED: 세션 만료
+public_label: 공개
 not_allowed: 허용되지 않음
 archive: 보관
+archive_confirm: 이 항목을 사용하지 않고 보관하시겠습니까?
+reset_system_permissions_to: '시스템 권한 초기화 :'
+reset_system_permissions_copy: 시스템 데이터 목록에 대한 권한 설정값이 모두 초기화됩니다. 그래도 진행하시겠습니까?
+unarchive: 보관 해제(사용)
+unarchive_confirm: 이 항목을 보관 해제하여 다시 사용하시겠습니까?
+nested_files_folders_will_be_moved: 포함된 파일과 폴더는 모두 상위 폴더로 옮겨집니다.
+validation_errors_notice: '입력값이 유효하지 않은 필드:'
 validationError:
   unique: 생산Key는 유일해야만 합니다.
 all_access: 모든 액세스
 no_access: 접근 불가
 use_custom: 직접 설정
 nullable: NULL허용
+allow_null_value: NULL값 허용
+allow_multiple: 여러 값 허용
 field_standard: 표준
 field_file: 단일 파일
 field_files: 여러 파일들
 field_translations: 번역
+field_group: 그룹
+item_permissions: 항목 관리 권한
+field_permissions: 필드 관리 권한
+field_validation: 필드 검증
+field_presets: 필드 사전 설정
+hide_field: 필드 감추기
 delete_field: 필드 삭제
+fields_and_layout: 필드 및 레이아웃
+field_create_success: '"{field}" 필드 생성됨'
+field_update_success: '"{field}" 필드 수정됨'
+duplicate_where_to: 이 필드를 어느 위치에 복제할까요?
 language: 언어
+language_placeholder: 언어를 선택하세요...
 global: 글로벌
+admins_have_all_permissions: 관리자에게는 모든 권한이 부여됩니다.
 camera: 카메라
+create_in_advanced_field_creation_mode: 고급 모드에서 필드 만들기
+continue_in_advanced_field_creation_mode: 고급 필드 생성 모드 계속
+validation: 검증
+sum: 합계
+avg: 평균
+count: 카운팅(횟수)
+min: 최소(Min)
+max: 최대(Max)
 exposure: 노출
 shutter: 셔터
 iso: ISO
 focal_length: 초점 거리
+schema_setup_key: 이 필드의 DB 컬럼명과 API 키
 create_field: 필드 생성
+creating_new_field: '새 필드 ({collection})'
 reset_page_preferences: 앱 환경설정 초기화
 hidden_field: 숨김 필드
 hidden_on_detail: 실행 시 숨김
 key: 키
 alias: 별칭
+not_available_for_type: 형식이 유효하지 않습니다.
+create_translations: 번역 문구 추가
 auto_refresh: 자동 갱신
 refresh_interval: 갱신 간격
 no_refresh: 갱신하지 않음
 refresh_interval_seconds: 즉시 | 1초 | {seconds}초
 refresh_interval_minutes: 1분  |  {minutes}분 
 auto_generate: 자동 생성
+this_will_auto_setup_fields_relations: 필수 필드 및 관련된 부분은 자동으로 생성 및 설정됩니다.
 click_here: 여기를 클릭하세요
+to_manually_setup_translations: 수동으로 번역 설정하기
+click_to_manage_translated_fields: >-
+  필드명이 아직 번역되지 않았습니다. 번역 문구를 추가하려면 여기를 클릭하세요. | 필드명 번역 문구가 하나 있습니다. 번역 문구를 관리하려면 여기를 클릭하세요. | 필드명 번역 문구가 {count}개 있습니다. 번역 문구를 관리하려면 여기를 클릭하세요.
 fields_group: 필드 그룹
 no_collections_found: 컬렉션 없음
 search_collection: 컬렉션 검색
@@ -127,7 +192,9 @@ unique: 고유
 updated_on: 수정일
 updated_by: 수정자
 primary_key: 기본키
+foreign_key: 외래키
 clear_items: 선택 해제
+show_all_activity: 전체 활동기록 보기
 settings_update_success: 설정이 수정됨.
 title: 제목
 private_user: 비공개 사용자
@@ -151,6 +218,7 @@ delete_comment: 댓글 삭제
 functions:
   year: 년
   month: 월
+  count: 카운팅(횟수)
 month: 월
 year: 년
 select_all: 모두 선택
@@ -187,6 +255,7 @@ no_items: 항목 없음
 search_items: 검색
 item_count: '데이터 없음 | 1개 항목 | {count}개 항목'
 no_items_copy: 이 목록에는 등록된 내용이 없습니다.
+file_count: '파일 없음 | 파일 1개 | 파일 {count}개'
 no_files_copy: 표시할 파일이 없습니다.
 no_users_copy: 이 역할(role)의 사용자가 아직 없습니다.
 activity_log: 활동 기록
@@ -194,20 +263,34 @@ all_items: 전체 내용
 create_collection: 목록 생성
 copy_to: 복사 ...
 users: 사용자
-user_directory: 사용자 관리
+action: 활동
+ip_address: IP 주소
+add_filter: 필터 추가
+user_directory: 사용자 목록
 collection_created: 목록이 생성됨
+card_size: 카드형식 크기
 sort_field: 정렬 기준
+status: 상태
 edit: 수정
 create_account: 계정 추가
 account_created_successfully: 계정이 추가되었습니다.
 errors:
+  COLLECTION_NOT_FOUND: "목록이 존재하지 않습니다."
+  FIELD_NOT_FOUND: 필드가 존재하지 않습니다.
+  FORBIDDEN: 접근이 허용되지 않음.
+  INVALID_CREDENTIALS: 이메일이나 비밀번호가 올바르지 않습니다.
+  INVALID_OTP: 일회용 비밀번호가 맞지 않습니다.
+  INVALID_PAYLOAD: 내용이나 형식이 맞지 않습니다.
   INVALID_USER: 사용자 인증에 실패하였습니다.
 create_bookmark: 북마크 만들기
+filter: 필터
 edit_image: 이미지 편집
 all_users: 전체 사용자
 goto_collection_content: 내용 보기
 start_end_of_count_items: '{start}-{end} / 총 {count}개'
 start_end_of_count_filtered_items: '{start}-{end} / 총 {count}개 '
+one_item: '1개 항목'
+one_filtered_item: '1개 항목'
 drag_file_here: 여기에 파일 끌어서 놓기
 layout_options: 표시방법 선택
 value_unique: 생산Key는 유일해야만 합니다.
@@ -243,6 +326,7 @@ dashboard_name: 대시보드 이름
 no_data: 데이터 없음
 full_screen: 전체화면
 full_text_search: 전체 검색
+edit_panels: 판넬 수정
 fit_to_screen: 화면크기에 맞추기
 wysiwyg_options:
   selectall: 모두 선택
@@ -262,7 +346,12 @@ content: 데이터 및 컨텐츠 관리
 fields:
   directus_activity:
     item: 기본키
+    action: 활동
+    collection: 목록
+    timestamp: 활동일시
+    user: 사용자
     comment: 코멘트
+    ip: IP 주소
     revisions: 수정내역
   directus_collections:
     note: 메모
@@ -275,28 +364,72 @@ fields:
     created_on: 작성일
     created_by: '작성자:'
   directus_users:
-    title: 제목
-    user_preferences: 사용자 개인 설정
+    first_name: 이름/별명
+    last_name: 성
+    email: 이메일
+    password: 비밀번호
+    avatar: 아바타/사진
+    location: 위치정보
+    title: 관계/지위/직책
+    description: 상세설명
+    tags: 태그(Tags)
+    user_preferences: 개인 설정
     language: 언어
+    theme: 화면테마
+    theme_auto: 자동(시스템 설정)
+    theme_light: 밝은 배경 테마
+    theme_dark: 어두운 배경 테마
+    tfa_secret: 이중 인증
+    admin_options: 관리 옵션
+    status: 상태
     role: 역할
+    token: 접속 인증 토큰
+    provider: 외부 인증 제공사
+    external_identifier: 외부 인증 식별자
     last_page: 마지막 페이지
     last_access: 최근 접속
+    email_notifications: 이메일 알림
   directus_settings:
+    project_name: 프로젝트명
+    project_descriptor: 프로젝트 설명
+    project_url: 프로젝트 URL
+    project_color: 테마컬러
+    project_logo: 로고
+    default_language: 기본 언어 설정
+    branding: 브랜딩 및 스타일
+    public_foreground: 공개화면 전경(foreground)
+    public_background: 공개화면 배경(background)
+    public_note: 공개화면 표시글
+    auth_password_policy: 비밀번호 정책
+    auth_login_attempts: 로그인 시도 횟수 제한
+    files_and_thumbnails: 파일 및 저장폴더
+    storage_default_folder: 기본 폴더
+    storage_asset_presets: 파일 변환 설정
+    storage_asset_transform: 변환 허용 파일
+    overrides: App 오버라이드
+    custom_css: 커스텀 CSS
     module_bar: 모듈 바
+    transformations_all: 모든 변환 허용
+    transformations_none: 변환 없음(원본사용)
+    image_editor: 이미지 에디터
+    custom_aspect_ratios: 가로세로 비율 조정
   directus_shares:
     role: 역할
+    password: 비밀번호
   directus_fields:
     note: 메모
-    translation: 필드명 번역
+    translation: 항목 명 번역
   directus_roles:
     name: 역할명
     users: 이 역할의 사용자 목록
     module_list: '모듈 탐색:'
   directus_webhooks:
+    status: 상태
     data: 데이터
 field_options:
   directus_settings:
     project_color_note: 로그인/로고 화면 배경
+    overrides_divider_title: App 오버라이드
   directus_activity:
     login: 로그인
     create: 작성
@@ -308,6 +441,10 @@ field_options:
     sort_divider: 정렬
   directus_users:
     preferences_divider: 사용자 개인 설정
+    dropdown_auto: 자동(시스템 설정)
+    dropdown_light: 밝은 배경 테마
+    dropdown_dark: 어두운 배경 테마
+    admin_divider: 관리 옵션
   directus_webhooks:
     actions_create: 작성/추가
     actions_update: 업데이트
@@ -318,11 +455,13 @@ save_current_user_role: 현재 사용자 역할(role) 저장
 comment: 코멘트
 delete_label: 삭제
 duplicate: 복제
+email: 이메일
 file: 파일
 file_library: 파일 관리
 forgot_password: 비밀번호를 잊으셨나요?
 login: 로그인
 my_activity: 내 활동
+password: 비밀번호
 permissions: 사용 권한
 revisions: 수정내역
 no_revisions: 수정 내역 없음
@@ -336,6 +475,9 @@ export_started: 내보내기를 시작했습니다.
 export_started_copy: 내보내기 시작합니다. 다운로드 준비가 되면 알려드립니다.
 search_filter: 검색 및 필터링
 interfaces:
+  filter:
+    name: 필터
+    add_filter: 필터 추가
   presentation-links:
     primary: 기본
   system-display-template:
@@ -366,6 +508,8 @@ interfaces:
     description: 등록된 사용자 중에서 선택
   input-rich-text-html:
     description: HTML 형식으로 작성할 수 있는 리치텍스트 에디터
+  system-token:
+    system-token: 접속 인증 토큰
 displays:
   translations:
     translations: 번역
@@ -383,6 +527,7 @@ displays:
     choices_value_placeholder: 값 입력
   user:
     user: 사용자
+    avatar: 아바타/사진
 layouts:
   cards:
     cards: 카드형식
@@ -424,8 +569,11 @@ operations:
     name: 데이터 읽기
   item-update:
     name: 데이터 업데이트
+  log:
+    message: 메시지
   notification:
     recipient: 사용자
+    message: 메시지
   request:
     data: 데이터
   trigger:
