@@ -58,7 +58,7 @@ docker_test_build:
     IMAGE_NAME: $CI_REGISTRY_IMAGE
   retry: 2
   before_script:
-    - 'curl --header "Private-Token: ${GITLAB_PIPELINE_TOKEN}" https://gitlab.com/api/v4/projects/39544563/packages/generic/Releases/0.0.1/directus-payment-integration-release.zip'
+    - 'curl --header "Private-Token: ${GITLAB_PIPELINE_TOKEN}" -LO https://gitlab.com/api/v4/projects/39544563/packages/generic/Releases/0.0.1/directus-payment-integration-release.zip'
     - ls -la
   script:
     - export IMAGE_TAG=${CI_COMMIT_TAG:-test}
