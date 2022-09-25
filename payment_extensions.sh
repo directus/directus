@@ -16,9 +16,11 @@ curl --header "Private-Token: ${GITLAB_PIPELINE_TOKEN}" -LO ${CI_API_V4_URL}/pro
 
 unzip directus-payment-integration-release.zip
 
-mv ./directus-payment-integration-release/payments-api ${DIRECTUS_ENDPOINTS}
-mv ./directus-payment-integration-release/payments-hook ${DIRECTUS_HOOKS}
-mv ./directus-payment-integration-release/collection-ext ${DIRECTUS_INTERFACES}
-mv ./directus-payment-integration-release/filter-ext ${DIRECTUS_INTERFACES}
-mv ./directus-payment-integration-release/payments-module ${DIRECTUS_MODULES}
-mv ./directus-payment-integration-release/snapshots/* ${DIRECTUS_SNAPSHOTS}
+mkdir -p ${DIRECTUS_HOOKS}/payments-hook
+
+mv -v ./directus-payment-integration-release/payments-api ${DIRECTUS_ENDPOINTS}
+mv -v ./directus-payment-integration-release/payments-hook/* ${DIRECTUS_HOOKS}/payments-hook/
+mv -v ./directus-payment-integration-release/collection-ext ${DIRECTUS_INTERFACES}
+mv -v ./directus-payment-integration-release/filter-ext ${DIRECTUS_INTERFACES}
+mv -v ./directus-payment-integration-release/payments-module ${DIRECTUS_MODULES}
+mv -v ./directus-payment-integration-release/snapshots/* ${DIRECTUS_SNAPSHOTS}
