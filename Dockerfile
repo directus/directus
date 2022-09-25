@@ -4,7 +4,7 @@ ARG NODE_VERSION=16-alpine
 
 FROM node:${NODE_VERSION}
 
-ARG CI_JOB_TOKEN
+ARG GITLAB_PIPELINE_TOKEN
 ARG CI_API_V4_URL
 ARG PAYMENT_EXTENSION
 
@@ -49,7 +49,7 @@ RUN pnpm -r build
 RUN pnpm install @wellenplan/directus-extension-duration-display -w
 
 #COPY ./custom_extensions.sh ./custom_extensions.sh
-RUN export CI_JOB_TOKEN=${CI_JOB_TOKEN}
+RUN export GITLAB_PIPELINE_TOKEN=${GITLAB_PIPELINE_TOKEN}
 RUN export CI_API_V4_URL=${CI_API_V4_URL}
 RUN chmod +x ./custom_extensions.sh
 RUN chmod +x ./payment_extensions.sh
