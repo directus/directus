@@ -113,7 +113,7 @@ new_field: '새 필드'
 new_collection: '새 컬렉션'
 choose_a_type: 유형을 선택...
 default_value: 기본값
-standard_field: 표준 필드
+standard_field: 표준
 single_file: 단일 파일
 multiple_files: 여러 파일들
 invalid_item: 비정상적인 아이템
