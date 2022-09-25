@@ -31,7 +31,7 @@ export default function applyQuery(
 	dbQuery: Knex.QueryBuilder,
 	query: Query,
 	schema: SchemaOverview,
-	options?: { aliasMap?: AliasMap; isInnerQuery?: boolean }
+	options?: { aliasMap?: AliasMap; isInnerQuery?: boolean; hasMultiRelational?: boolean }
 ): Knex.QueryBuilder {
 	const aliasMap = options?.aliasMap ?? {};
 
@@ -39,8 +39,8 @@ export default function applyQuery(
 		applySort(knex, schema, dbQuery, query.sort, collection, aliasMap);
 	}
 
-	if (typeof query.limit === 'number' && query.limit !== -1) {
-		dbQuery.limit(query.limit);
+	if (!options?.hasMultiRelational) {
+		applyLimit(dbQuery, query.limit);
 	}
 
 	if (query.offset) {
@@ -226,54 +226,70 @@ export function applySort(
 	returnRecords = false
 ) {
 	const relations: Relation[] = schema.relations;
+	let hasMultiRelational = false;
 
 	const sortRecords = rootSort.map((sortField) => {
 		const column: string[] = sortField.split('.');
 		let order: 'asc' | 'desc' = 'asc';
 
-		if (column.length > 1) {
-			if (sortField.startsWith('-')) {
-				order = 'desc';
-			}
-
-			if (column[0].startsWith('-')) {
-				column[0] = column[0].substring(1);
-			}
-
-			addJoin({
-				path: column,
-				collection,
-				aliasMap,
-				rootQuery,
-				schema,
-				relations,
-				knex,
-			});
-
-			const { columnPath } = getColumnPath({ path: column, collection, aliasMap, relations, schema });
-			const [alias, field] = columnPath.split('.');
-
-			return {
-				order,
-				column: returnRecords ? columnPath : (getColumn(knex, alias, field, false, schema) as any),
-			};
+		if (sortField.startsWith('-')) {
+			order = 'desc';
 		}
 
-		let col = column[0];
-		if (sortField.startsWith('-')) {
-			col = column[0].substring(1);
-			order = 'desc';
+		if (column[0].startsWith('-')) {
+			column[0] = column[0].substring(1);
+		}
+
+		if (column.length === 1) {
+			const pathRoot = column[0].split(':')[0];
+			const { relation } = getRelationInfo(relations, collection, pathRoot);
+
+			if (!relation) {
+				return {
+					order,
+					column: returnRecords ? column[0] : (getColumn(knex, collection, column[0], false, schema) as any),
+				};
+			}
+		}
+
+		addJoin({
+			path: column,
+			collection,
+			aliasMap,
+			rootQuery,
+			schema,
+			relations,
+			knex,
+		});
+
+		const { columnPath, hasMultiRelational: pathHasMultiRelational } = getColumnPath({
+			path: column,
+			collection,
+			aliasMap,
+			relations,
+			schema,
+		});
+		const [alias, field] = columnPath.split('.');
+
+		if (!hasMultiRelational) {
+			hasMultiRelational = pathHasMultiRelational;
 		}
 
 		return {
 			order,
-			column: returnRecords ? col : (getColumn(knex, collection, col, false, schema) as any),
+			column: returnRecords ? columnPath : (getColumn(knex, alias, field, false, schema) as any),
 		};
 	});
 
-	if (returnRecords) return sortRecords;
+	if (returnRecords) return { sortRecords, hasMultiRelational };
 
 	rootQuery.orderBy(sortRecords);
+}
+
+export function applyLimit(rootQuery: Knex.QueryBuilder, limit: any) {
+	if (typeof limit === 'number' && limit !== -1) {
+		rootQuery.limit(limit);
+	}
 }
 
 export function applyFilter(

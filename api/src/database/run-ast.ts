@@ -8,7 +8,7 @@ import env from '../env';
 import { PayloadService } from '../services/payload';
 import { AST, FieldNode, FunctionFieldNode, M2ONode, NestedCollectionNode } from '../types/ast';
 import { applyFunctionToColumnName } from '../utils/apply-function-to-column-name';
-import applyQuery, { applySort, ColumnSortRecord } from '../utils/apply-query';
+import applyQuery, { applyLimit, applySort, ColumnSortRecord } from '../utils/apply-query';
 import { getColumn } from '../utils/get-column';
 import { stripFunction } from '../utils/strip-function';
 
@@ -253,36 +253,53 @@ function getDBQuery(
 	const primaryKey = schema.collections[table].primary;
 	const aliasMap = {};
 	const dbQuery = knex.select(`${table}.${primaryKey}`).from(table).distinct();
-	let sortRecords: ColumnSortRecord[] = [];
+	let sortRecords: ColumnSortRecord[] | undefined;
+	let hasMultiRelational: boolean | undefined;
 
 	if (queryCopy.sort) {
-		sortRecords = applySort(knex, schema, dbQuery, queryCopy.sort, table, aliasMap, true) ?? [];
-		sortRecords.map((sortRecord) => {
+		({ sortRecords, hasMultiRelational } =
+			applySort(knex, schema, dbQuery, queryCopy.sort, table, aliasMap, true) ?? {});
+
+		sortRecords?.map((sortRecord) => {
 			if (sortRecord.column.includes('.')) {
 				dbQuery.select(knex.ref(sortRecord.column).as(sortRecord.column.replace('.', '_')));
 			} else if (schema.collections[table].primary !== sortRecord.column) {
 				dbQuery.select(knex.ref(sortRecord.column));
 			}
 		});
+
+		if (hasMultiRelational) {
+			dbQuery.rowNumber('directus_rank', knex.raw(`partition by ??`, `${table}.${primaryKey}`));
+		}
 	}
 
 	const wrapperQuery = knex
 		.select(fieldNodes.map(preProcess))
 		.from(table)
 		.innerJoin(
-			knex.raw('??', applyQuery(knex, table, dbQuery, queryCopy, schema, { aliasMap, isInnerQuery: true }).as('inner')),
+			knex.raw(
+				'??',
+				applyQuery(knex, table, dbQuery, queryCopy, schema, { aliasMap, isInnerQuery: true, hasMultiRelational }).as(
+					'inner'
+				)
+			),
 			`${table}.${primaryKey}`,
 			`inner.${primaryKey}`
 		);
 
 	if (queryCopy.sort) {
-		sortRecords.map((sortRecord) => {
+		sortRecords?.map((sortRecord) => {
 			if (sortRecord.column.includes('.')) {
 				wrapperQuery.orderBy(`inner.${sortRecord.column.replace('.', '_')}`, sortRecord.order);
 			} else {
 				wrapperQuery.orderBy(`${table}.${sortRecord.column}`, sortRecord.order);
 			}
 		});
+	}
+
+	if (hasMultiRelational) {
+		wrapperQuery.where('inner.directus_rank', '=', 1);
+		applyLimit(wrapperQuery, queryCopy.limit);
 	}
 
 	return wrapperQuery;
