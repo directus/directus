@@ -29,11 +29,15 @@
 				:title="file.title"
 				:in-modal="true"
 			/>
-			<div class="drawer-item-order" :class="{ swap: swapFormOrder }">
+			<v-info v-if="emptyForm" :title="t('no_visible_fields')" icon="search" center>
+				{{ t('no_visible_fields_copy') }}
+			</v-info>
+			<div v-else class="drawer-item-order" :class="{ swap: swapFormOrder }">
 				<v-form
 					v-if="junctionField"
 					:disabled="disabled"
 					:loading="loading"
+					:nested="true"
 					:initial-values="initialValues?.[junctionField]"
 					:primary-key="relatedPrimaryKey"
 					:model-value="internalEdits?.[junctionField]"
@@ -43,10 +47,12 @@
 					:show-divider="!swapFormOrder"
 					@update:model-value="setRelationEdits"
 				/>
+
 				<v-form
 					v-model="internalEdits"
 					:disabled="disabled"
 					:loading="loading"
+					:nested="true"
 					:initial-values="initialValues"
 					:autofocus="swapFormOrder"
 					:show-divider="swapFormOrder"
@@ -180,6 +186,12 @@ const fieldsWithoutCircular = computed(() => {
 	} else {
 		return fields.value;
 	}
+});
+
+const emptyForm = computed(() => {
+	const visibleFieldsRelated = relatedCollectionFields.value.filter((field: Field) => !field.meta?.hidden);
+	const visibleFieldsJunction = fields.value.filter((field: Field) => !field.meta?.hidden);
+	return visibleFieldsRelated.length + visibleFieldsJunction.length === 0;
 });
 
 const templatePrimaryKey = computed(() =>

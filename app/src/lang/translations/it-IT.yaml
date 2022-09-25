@@ -328,6 +328,7 @@ edit_raw_value: Modifica il valore grezzo
 enter_raw_value: Inserisci valore grezzo...
 clear_value: Cancella il valore
 clear_changes: Annulla modifiche
+clear_items: Rimuovi gli elementi
 reset_to_default: Reimposta al valore predefinito
 undo_changes: Annulla le modifiche
 notifications: Notifiche
@@ -1423,6 +1424,7 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 table: Tabella
@@ -2018,7 +2020,11 @@ panels:
     description: Imposta un valore globale da usare nei filtri di altri pannelli
     variable_key: Chiave della variabile
   relational-variable:
+    name: Variabile relazionale globale
+    description: Imposta un valore relazionale globale da usare nei filtri di altri pannelli
     variable_key: Chiave della variabile
+    multiple: Multiplo
+    multiple-label: Seleziona più elementi
 triggers:
   common:
     response_body: Corpo della risposta
