@@ -78,7 +78,7 @@ export function useCustomSelectionMultiple(
 				}
 			}
 		});
-	});
+	}, { immediate: true });
 
 	return { otherValues, addOtherValue, setOtherValue };
 
