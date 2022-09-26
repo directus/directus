@@ -41,6 +41,8 @@ export const seedAllFieldTypesStructure = async (vendor: string, collection: str
 					default_value: SeedFunctions.generateValues[fieldType as keyof typeof SeedFunctions.generateValues]({
 						quantity: 1,
 						seed: `${collection}_${fieldType}`,
+						vendor,
+						isDefaultValue: true,
 					}),
 				};
 			}
