@@ -120,6 +120,7 @@ describe('', () => {
 		expect(getFilterOperatorsForType('alias', { includeValidation: true })).toStrictEqual([
 			'contains',
 			'ncontains',
+			'icontains',
 			'eq',
 			'neq',
 			'lt',

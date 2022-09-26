@@ -68,6 +68,7 @@ export function getFilterOperatorsForType(
 			return [
 				'contains',
 				'ncontains',
+				'icontains',
 				'eq',
 				'neq',
 				'lt',
