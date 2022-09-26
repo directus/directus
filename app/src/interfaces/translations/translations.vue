@@ -320,6 +320,11 @@ function useLanguages() {
 		--v-chip-background-color: var(--primary-alt);
 
 		margin-top: 32px;
+
+		::v-deep(.info) {
+			position: relative;
+			grid-column: 1 / -1;
+		}
 	}
 
 	.primary {
