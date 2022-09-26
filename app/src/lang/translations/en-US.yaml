@@ -761,6 +761,8 @@ add_file: Add File
 replace_file: Replace File
 no_results: No Results
 no_results_copy: Adjust or clear search filters to see results.
+no_visible_fields: Empty Form
+no_visible_fields_copy: This form has no visible fields.
 clear_filters: Clear Filters
 saves_automatically: Saves Automatically
 role: Role
