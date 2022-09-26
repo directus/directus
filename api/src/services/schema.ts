@@ -134,8 +134,14 @@ export class SchemaService {
 		await applyDiff(currentSnapshot, payload.diff, { database: this.knex });
 	}
 
-	async diff(snapshot: Snapshot): Promise<SnapshotDiff | null> {
+	async diff(snapshot: Snapshot, options: { force: boolean }): Promise<SnapshotDiff | null> {
 		if (this.accountability?.admin !== true) throw new ForbiddenException();
+
+		if (snapshot.directus !== currentDirectusVersion && !options.force) {
+			throw new InvalidPayloadException(
+				`Provided snapshot's directus version ${snapshot.directus} does not match the current instance's version ${currentDirectusVersion}`
+			);
+		}
 
 		const { error } = snapshotJoiSchema.validate(snapshot);
 		if (error) throw new InvalidPayloadException(error.message);

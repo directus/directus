@@ -3,7 +3,6 @@ import Busboy from 'busboy';
 import { format } from 'date-fns';
 import { RequestHandler, Router } from 'express';
 import { load as loadYaml } from 'js-yaml';
-import { version as currentDirectusVersion } from '../../package.json';
 import { InvalidPayloadException, RouteNotFoundException, UnsupportedMediaTypeException } from '../exceptions';
 import logger from '../logger';
 import { respond } from '../middleware/respond';
@@ -177,13 +176,8 @@ router.post(
 	asyncHandler(async (req, res, next) => {
 		const service = new SchemaService({ accountability: req.accountability });
 		const snapshot: Snapshot = req.is('application/json') ? req.body : res.locals.uploadedSnapshot;
-		if (snapshot.directus !== currentDirectusVersion && 'force' in req.query === false) {
-			throw new InvalidPayloadException(
-				`Provided snapshot's directus version ${snapshot.directus} does not match the current instance's version ${currentDirectusVersion}`
-			);
-		}
 
-		const snapshotDiff = await service.diff(snapshot);
+		const snapshotDiff = await service.diff(snapshot, { force: 'force' in req.query });
 		if (!snapshotDiff) return next();
 
 		const hash = await service.getCurrentHash();
