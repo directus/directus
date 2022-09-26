@@ -546,8 +546,10 @@ export class PayloadService {
 		const revisions: PrimaryKey[] = [];
 
 		const nestedActionEvents: ActionEventParams[] = [];
-
-		const relations = Object.values(await this.schema.getRelationsForCollection(this.collection));
+		
+		const relations = (await this.schema.getRelations()).filter((relation) => {
+			return relation.related_collection === this.collection;
+		});
 
 		const payload = cloneDeep(data);
 

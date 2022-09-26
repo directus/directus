@@ -14,7 +14,7 @@ import type { Table } from 'knex-schema-inspector/dist/types/table';
 import { addFieldFlag } from '@directus/shared/utils';
 import { getHelpers, Helpers } from '../database/helpers/index.js';
 import type { CacheService } from './cache/cache.js';
-import { clearAllRelations, clearCollection, clearFields } from '../utils/clearSystemCache.js';
+import { clearCollection, clearFields, clearRelationsForCollection } from '../utils/clearSystemCache.js';
 
 export type RawCollection = {
 	collection: string;
@@ -485,7 +485,8 @@ export class CollectionsService {
 
 			await clearCollection(collectionKey);
 			await clearFields(collectionKey);
-			await clearAllRelations()
+			// TODO: Might be not enough, we need to clear all the related collections as well
+			await clearRelationsForCollection(collectionKey);
 		}
 	}
 
