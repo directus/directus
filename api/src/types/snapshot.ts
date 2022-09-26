@@ -5,7 +5,7 @@ import { Diff } from 'deep-diff';
 export type Snapshot = {
 	version: number;
 	directus: string;
-	vendor: 'mysql' | 'postgres' | 'cockroachdb' | 'sqlite' | 'oracle' | 'mssql' | 'redshift';
+	vendor?: 'mysql' | 'postgres' | 'cockroachdb' | 'sqlite' | 'oracle' | 'mssql' | 'redshift';
 	collections: Collection[];
 	fields: SnapshotField[];
 	relations: SnapshotRelation[];
