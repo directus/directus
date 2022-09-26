@@ -19,6 +19,7 @@ import {
 import { cloneDeep } from 'lodash';
 import { PrimaryKeyType } from '@common/index';
 import { load as loadYaml } from 'js-yaml';
+import { version as currentDirectusVersion } from '../../../api/package.json';
 
 describe('Schema Snapshots', () => {
 	const snapshotsCacheOriginal: {
@@ -131,6 +132,96 @@ describe('Schema Snapshots', () => {
 		);
 	});
 
+	describe('POST /server/schema/diff', () => {
+		describe('denies non-admin users', () => {
+			it.each(vendors)('%s', async (vendor) => {
+				// Action
+				const response = await request(getUrl(vendor))
+					.post('/server/schema/diff')
+					.send({
+						version: 1,
+						directus: currentDirectusVersion,
+						// TODO: align vendor names
+						vendor: 'postgres',
+						collections: [],
+						fields: [],
+						relations: [],
+					})
+					.set('Content-type', 'application/json')
+					.set('Authorization', `Bearer ${common.USER.APP_ACCESS.TOKEN}`);
+				const response2 = await request(getUrl(vendor))
+					.post('/server/schema/diff')
+					.send({
+						version: 1,
+						directus: currentDirectusVersion,
+						// TODO: align vendor names
+						vendor: 'postgres',
+						collections: [],
+						fields: [],
+						relations: [],
+					})
+					.set('Content-type', 'application/json')
+					.set('Authorization', `Bearer ${common.USER.API_ONLY.TOKEN}`);
+				const response3 = await request(getUrl(vendor))
+					.post('/server/schema/diff')
+					.send({
+						version: 1,
+						directus: currentDirectusVersion,
+						// TODO: align vendor names
+						vendor: 'postgres',
+						collections: [],
+						fields: [],
+						relations: [],
+					})
+					.set('Content-type', 'application/json')
+					.set('Authorization', `Bearer ${common.USER.NO_ROLE.TOKEN}`);
+
+				// Assert
+				expect(response.statusCode).toEqual(403);
+				expect(response2.statusCode).toEqual(403);
+				expect(response3.statusCode).toEqual(403);
+			});
+		});
+
+		describe('returns diffs if with empty snapshot', () => {
+			it.each(vendors)(
+				'%s',
+				async (vendor) => {
+					// Action
+					const response = await request(getUrl(vendor))
+						.post('/server/schema/diff')
+						.send(snapshotsCacheEmpty[vendor])
+						.set('Content-type', 'application/json')
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					expect(response.statusCode).toEqual(204);
+				},
+				300000
+			);
+		});
+
+		describe('returns diffs with original snapshot', () => {
+			it.each(vendors)(
+				'%s',
+				async (vendor) => {
+					// Action
+					const response = await request(getUrl(vendor))
+						.post('/server/schema/diff')
+						.send(snapshotsCacheOriginal[vendor])
+						.set('Content-type', 'application/json')
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					// Assert
+					expect(response.statusCode).toEqual(200);
+					expect(response.body.data?.diff?.collections?.length).toBe(66);
+					expect(response.body.data?.diff?.fields?.length).toBe(342);
+					expect(response.body.data?.diff?.relations?.length).toBe(66);
+				},
+				300000
+			);
+		});
+	});
+
 	describe('POST /server/schema/apply', () => {
 		describe('denies non-admin users', () => {
 			it.each(vendors)('%s', async (vendor) => {
@@ -165,9 +256,15 @@ describe('Schema Snapshots', () => {
 					expect(snapshotsCacheOriginal[vendor]).toBeDefined();
 
 					// Action
+					const responseDiff = await request(getUrl(vendor))
+						.post('/server/schema/diff')
+						.send(snapshotsCacheOriginal[vendor])
+						.set('Content-type', 'application/json')
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
 					const response = await request(getUrl(vendor))
 						.post('/server/schema/apply')
-						.send(snapshotsCacheOriginal[vendor])
+						.send(responseDiff.body.data)
 						.set('Content-type', 'application/json')
 						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
@@ -210,9 +307,15 @@ describe('Schema Snapshots', () => {
 					expect(snapshotsCacheEmpty[vendor]).toBeDefined();
 
 					// Action
+					const responseDiff = await request(getUrl(vendor))
+						.post('/server/schema/diff')
+						.send(snapshotsCacheEmpty[vendor])
+						.set('Content-type', 'application/json')
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
 					const response = await request(getUrl(vendor))
 						.post('/server/schema/apply')
-						.send(snapshotsCacheEmpty[vendor])
+						.send(responseDiff.body.data)
 						.set('Content-type', 'application/json')
 						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
@@ -242,9 +345,15 @@ describe('Schema Snapshots', () => {
 					expect(snapshotsCacheOriginalYaml[vendor]).toBeDefined();
 
 					// Action
+					const responseDiff = await request(getUrl(vendor))
+						.post('/server/schema/diff')
+						.attach('file', Buffer.from(snapshotsCacheOriginalYaml[vendor]))
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
 					const response = await request(getUrl(vendor))
 						.post('/server/schema/apply')
-						.attach('file', Buffer.from(snapshotsCacheOriginalYaml[vendor]))
+						.send(responseDiff.body.data)
+						.set('Content-type', 'application/json')
 						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
 					// Assert
@@ -275,87 +384,6 @@ describe('Schema Snapshots', () => {
 					// Assert
 					expect(response.statusCode).toEqual(200);
 					expect(curSnapshot).toStrictEqual(oldSnapshot);
-				},
-				300000
-			);
-		});
-	});
-
-	describe('POST /server/schema/diff', () => {
-		describe('denies non-admin users', () => {
-			it.each(vendors)('%s', async (vendor) => {
-				// Action
-				const response = await request(getUrl(vendor))
-					.post('/server/schema/diff')
-					.send({ data: true })
-					.set('Content-type', 'application/json')
-					.set('Authorization', `Bearer ${common.USER.APP_ACCESS.TOKEN}`);
-				const response2 = await request(getUrl(vendor))
-					.post('/server/schema/diff')
-					.send({ data: true })
-					.set('Content-type', 'application/json')
-					.set('Authorization', `Bearer ${common.USER.API_ONLY.TOKEN}`);
-				const response3 = await request(getUrl(vendor))
-					.post('/server/schema/diff')
-					.send({ data: true })
-					.set('Content-type', 'application/json')
-					.set('Authorization', `Bearer ${common.USER.NO_ROLE.TOKEN}`);
-
-				// Assert
-				expect(response.statusCode).toEqual(403);
-				expect(response2.statusCode).toEqual(403);
-				expect(response3.statusCode).toEqual(403);
-			});
-		});
-
-		describe('returns diffs with empty schema', () => {
-			it.each(vendors)(
-				'%s',
-				async (vendor) => {
-					// Action
-					const response = await request(getUrl(vendor))
-						.post('/server/schema/diff')
-						.send(snapshotsCacheEmpty[vendor])
-						.set('Content-type', 'application/json')
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
-
-					// Assert
-					expect(response.statusCode).toEqual(200);
-					expect(response.body.data?.collections?.length).toBe(66);
-					expect(response.body.data?.fields?.length).toBe(0);
-					expect(response.body.data?.relations?.length).toBe(0);
-				},
-				300000
-			);
-		});
-
-		describe('returns diffs if without changes', () => {
-			it.each(vendors)(
-				'%s',
-				async (vendor) => {
-					// Action
-					const response = await request(getUrl(vendor))
-						.post('/server/schema/diff')
-						.send(snapshotsCacheOriginal[vendor])
-						.set('Content-type', 'application/json')
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
-
-					// Assert
-					if (vendor === 'sqlite3') {
-						// Diff contains different SQL strings
-						expect(response.statusCode).toEqual(200);
-						expect(response.body.data?.collections?.length).toBe(60);
-						expect(response.body.data?.fields?.length).toBe(0);
-						expect(response.body.data?.relations?.length).toBe(0);
-					} else if (vendor === 'cockroachdb') {
-						// Autoincremented fields have different sequence numbers
-						expect(response.statusCode).toEqual(200);
-						expect(response.body.data?.collections?.length).toBe(0);
-						expect(response.body.data?.fields?.length).toBe(34);
-						expect(response.body.data?.relations?.length).toBe(0);
-					} else {
-						expect(response.statusCode).toEqual(204);
-					}
 				},
 				300000
 			);
