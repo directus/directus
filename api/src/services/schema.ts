@@ -15,7 +15,7 @@ import { getSnapshotDiff } from '../utils/get-snapshot-diff';
 const snapshotJoiSchema = Joi.object({
 	version: Joi.number().required(),
 	directus: Joi.string().required(),
-	vendor: Joi.string().valid('mysql', 'postgres', 'cockroachdb', 'sqlite', 'oracle', 'msql', 'redshift').optional(),
+	vendor: Joi.string().valid('mysql', 'postgres', 'cockroachdb', 'sqlite', 'oracle', 'mssql', 'redshift').optional(),
 	collections: Joi.array().items(
 		Joi.object({
 			collection: Joi.string(),
