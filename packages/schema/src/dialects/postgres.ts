@@ -358,7 +358,7 @@ export default class Postgres implements SchemaInspector {
 			[table, column]
 		);
 
-		return result.rows;
+		return result.rows.length !== 0;
 	}
 
 	/**
@@ -369,21 +369,41 @@ export default class Postgres implements SchemaInspector {
 	async primary(table?: string) {
 		const schemaIn = this.explodedSchema.map((schemaName) => `${this.knex.raw('?', [schemaName])}::regnamespace`);
 
-		const query = this.knex.select('att.attname AS column','rel.relname AS table').from('pg_constraint AS con')
-			.from('pg_constraint AS con')
-			.leftJoin('pg_class AS rel', 'con.conrelid', 'rel.oid')
-			.leftJoin('pg_attribute AS att', function () {
-				this.on('att.attrelid', 'con.conrelid')
-					.andOn('att.attnum', 'con.conkey[1]');
-			}).where('con.connamespace', 'IN', schemaIn)
-			.andWhere('con.contype', '=', 'p')
-			.andWhereRaw('array_length(con.conkey, 1) <= 1')
-
 		if (table) {
-			return (await query.andWhere('table', '=', table).first())?.column ?? null;
+			const result = await this.knex.raw(
+				`
+		  SELECT
+			  att.attname AS column
+			FROM
+			  pg_constraint con
+			LEFT JOIN pg_class rel ON con.conrelid = rel.oid
+			LEFT JOIN pg_attribute att ON att.attrelid = con.conrelid AND att.attnum = con.conkey[1]
+			WHERE con.connamespace IN (${schemaIn})
+			  AND con.contype = 'p'
+			  AND array_length(con.conkey, 1) <= 1
+			  AND rel.relname = ?
+				`,
+				[table]
+			);
+
+			return result.rows?.[0]?.column ?? null;
 		}
 
-		return (await query).reduce<Record<string, string>>((obj, row) => {
+		const result = await this.knex.raw(
+			`
+	  SELECT
+		  att.attname AS column,
+		  rel.relname AS table
+		FROM
+		  pg_constraint con
+		LEFT JOIN pg_class rel ON con.conrelid = rel.oid
+		LEFT JOIN pg_attribute att ON att.attrelid = con.conrelid AND att.attnum = con.conkey[1]
+		WHERE con.connamespace IN (${schemaIn})
+		  AND con.contype = 'p'
+		  AND array_length(con.conkey, 1) <= 1
+			`);
+
+		return (result.rows).reduce((obj: Record<string, string>, row: any) => {
 			if(row?.table) {
 				obj[row?.table] = row?.column;
 			}
