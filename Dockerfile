@@ -45,12 +45,9 @@ RUN npm install -g pnpm
 RUN pnpm install
 RUN pnpm -r build
 
-# Custom Extensions
-RUN pnpm install @wellenplan/directus-extension-duration-display -w
-
-#COPY ./custom_extensions.sh ./custom_extensions.sh
 RUN export GITLAB_PIPELINE_TOKEN=${GITLAB_PIPELINE_TOKEN}
 RUN export CI_API_V4_URL=${CI_API_V4_URL}
+
 RUN chmod +x ./custom_extensions.sh
 RUN chmod +x ./payment_extensions.sh
 RUN ./custom_extensions.sh
@@ -65,6 +62,5 @@ WORKDIR /directus/api
 RUN mkdir -p ./uploads
 RUN mkdir -p ./snapshots
 
-#CMD ["sh", "-c", "node ./cli.js bootstrap && node ./cli.js schema apply --yes ./snapshots/* || true && node ./dist/start.js;"]
 CMD ["sh", "-c", "node ./cli.js bootstrap && for snapshots_file in ./snapshots/*.yaml; do echo $snapshots_file; node ./cli.js schema apply --yes $snapshots_file || true; done && node ./dist/start.js;"]
 EXPOSE 8055/tcp
