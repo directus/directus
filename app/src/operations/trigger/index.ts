@@ -18,8 +18,12 @@ export default defineOperationApp({
 			type: 'string',
 			meta: {
 				width: 'full',
-				interface: 'input',
+				interface: 'input-autocomplete-api',
 				options: {
+					url: '/flows?search={{value}}&filter[trigger]=operation',
+					resultsPath: 'data',
+					textPath: 'name',
+					valuePath: 'id',
 					iconRight: 'bolt',
 					placeholder: '$t:a_flow_uuid',
 				},
