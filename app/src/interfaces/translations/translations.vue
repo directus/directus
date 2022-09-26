@@ -324,6 +324,10 @@ function useLanguages() {
 		::v-deep(.info) {
 			position: relative;
 			grid-column: 1 / -1;
+
+			.icon {
+				display: none;
+			}
 		}
 	}
 
