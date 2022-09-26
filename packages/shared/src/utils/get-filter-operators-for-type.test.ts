@@ -6,6 +6,7 @@ describe('', () => {
 		expect(getFilterOperatorsForType('alias')).toStrictEqual([
 			'contains',
 			'ncontains',
+			'icontains',
 			'eq',
 			'neq',
 			'lt',
@@ -104,6 +105,8 @@ describe('', () => {
 
 	it('returns the filter operators for geometry', () => {
 		expect(getFilterOperatorsForType('geometry')).toStrictEqual([
+			'eq',
+			'neq',
 			'null',
 			'nnull',
 			'intersects',
