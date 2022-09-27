@@ -10,6 +10,7 @@ import { ServerService, SpecificationService } from '../services';
 import { SchemaService } from '../services/schema';
 import { Snapshot } from '../types';
 import asyncHandler from '../utils/async-handler';
+import { getVersionedHash } from '../utils/get-snapshot';
 import { getStringFromStream } from '../utils/get-string-from-stream';
 
 const router = Router();
@@ -177,11 +178,12 @@ router.post(
 		const service = new SchemaService({ accountability: req.accountability });
 		const snapshot: Snapshot = req.is('application/json') ? req.body : res.locals.uploadedSnapshot;
 
-		const snapshotDiff = await service.diff(snapshot, { force: 'force' in req.query });
+		const currentSnapshot = await service.snapshot();
+		const snapshotDiff = await service.diff(snapshot, { currentSnapshot, force: 'force' in req.query });
 		if (!snapshotDiff) return next();
 
-		const hash = await service.getCurrentHash();
-		res.locals.payload = { data: { hash, diff: snapshotDiff } };
+		const currentSnapshotHash = getVersionedHash(currentSnapshot);
+		res.locals.payload = { data: { hash: currentSnapshotHash, diff: snapshotDiff } };
 		return next();
 	}),
 	respond

@@ -170,10 +170,13 @@ export class SchemaService {
 		await applyDiff(currentSnapshot, payload.diff, { database: this.knex });
 	}
 
-	async diff(snapshot: Snapshot, options: { force: boolean }): Promise<SnapshotDiff | null> {
+	async diff(
+		snapshot: Snapshot,
+		options?: { currentSnapshot?: Snapshot; force?: boolean }
+	): Promise<SnapshotDiff | null> {
 		if (this.accountability?.admin !== true) throw new ForbiddenException();
 
-		if (snapshot.directus !== currentDirectusVersion && !options.force) {
+		if (snapshot.directus !== currentDirectusVersion && !options?.force) {
 			throw new InvalidPayloadException(
 				`Provided snapshot's directus version ${snapshot.directus} does not match the current instance's version ${currentDirectusVersion}`
 			);
@@ -182,7 +185,7 @@ export class SchemaService {
 		const { error } = snapshotJoiSchema.validate(snapshot);
 		if (error) throw new InvalidPayloadException(error.message);
 
-		const currentSnapshot = await getSnapshot({ database: this.knex });
+		const currentSnapshot = options?.currentSnapshot ?? (await getSnapshot({ database: this.knex }));
 		const diff = getSnapshotDiff(currentSnapshot, snapshot);
 
 		if (diff.collections.length === 0 && diff.fields.length === 0 && diff.relations.length === 0) {
