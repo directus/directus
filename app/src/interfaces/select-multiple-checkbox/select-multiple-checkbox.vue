@@ -41,7 +41,6 @@
 				:icon-off="iconOff"
 				:model-value="value || []"
 				@update:value="setOtherValue(otherValue.key, $event)"
-				@update:model-value="$emit('input', $event)"
 			/>
 
 			<button
