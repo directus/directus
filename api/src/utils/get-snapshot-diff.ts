@@ -1,6 +1,7 @@
 import { diff } from 'deep-diff';
 import { orderBy } from 'lodash';
 import { Snapshot, SnapshotDiff } from '../types';
+import { getVersionedHash } from './get-snapshot';
 import { sanitizeCollection, sanitizeField, sanitizeRelation } from './sanitize-schema';
 
 export function getSnapshotDiff(current: Snapshot, after: Snapshot): SnapshotDiff {
@@ -14,6 +15,7 @@ export function getSnapshotDiff(current: Snapshot, after: Snapshot): SnapshotDif
 
 					return {
 						collection: currentCollection.collection,
+						hash: getVersionedHash(currentCollection),
 						diff: diff(sanitizeCollection(currentCollection), sanitizeCollection(afterCollection)),
 					};
 				}),
@@ -45,6 +47,7 @@ export function getSnapshotDiff(current: Snapshot, after: Snapshot): SnapshotDif
 					return {
 						collection: currentField.collection,
 						field: currentField.field,
+						hash: getVersionedHash(currentField),
 						diff: diff(
 							sanitizeField(currentField, isAutoIncrementPrimaryKey),
 							sanitizeField(afterField, isAutoIncrementPrimaryKey)
@@ -80,6 +83,7 @@ export function getSnapshotDiff(current: Snapshot, after: Snapshot): SnapshotDif
 						collection: currentRelation.collection,
 						field: currentRelation.field,
 						related_collection: currentRelation.related_collection,
+						hash: getVersionedHash(currentRelation),
 						diff: diff(sanitizeRelation(currentRelation), sanitizeRelation(afterRelation)),
 					};
 				}),

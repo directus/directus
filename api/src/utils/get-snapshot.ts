@@ -7,6 +7,7 @@ import { Knex } from 'knex';
 import { omit, sortBy, toPairs, fromPairs, mapValues, isPlainObject, isArray } from 'lodash';
 import { SchemaOverview } from '@directus/shared/types';
 import { sanitizeCollection, sanitizeField, sanitizeRelation } from './sanitize-schema';
+import { getSimpleHash } from '@directus/shared/utils';
 
 export async function getSnapshot(options?: { database?: Knex; schema?: SchemaOverview }): Promise<Snapshot> {
 	const database = options?.database ?? getDatabase();
@@ -63,4 +64,8 @@ function sortDeep(raw: any): any {
 	}
 
 	return raw;
+}
+
+export function getVersionedHash(item: Record<string, any>): string {
+	return getSimpleHash(`${JSON.stringify(item)}_${version}`);
 }

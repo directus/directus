@@ -1,15 +1,14 @@
 import { TYPES } from '@directus/shared/constants';
 import { Accountability } from '@directus/shared/types';
-import { getSimpleHash } from '@directus/shared/utils';
 import Joi from 'joi';
 import { Knex } from 'knex';
 import { version as currentDirectusVersion } from '../../package.json';
 import { ALIAS_TYPES } from '../constants';
 import getDatabase from '../database';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
-import { AbstractServiceOptions, Snapshot, SnapshotDiff } from '../types';
+import { AbstractServiceOptions, Snapshot, SnapshotDiff, SnapshotWithHash } from '../types';
 import { applyDiff } from '../utils/apply-diff';
-import { getSnapshot } from '../utils/get-snapshot';
+import { getSnapshot, getVersionedHash } from '../utils/get-snapshot';
 import { getSnapshotDiff } from '../utils/get-snapshot-diff';
 
 const snapshotJoiSchema = Joi.object({
@@ -112,13 +111,51 @@ export class SchemaService {
 		const { error } = applyJoiSchema.validate(payload);
 		if (error) throw new InvalidPayloadException(error.message);
 
-		const hash = await this.getCurrentHash();
+		const currentSnapshot = await this.snapshot();
 
-		if (payload.hash !== hash) {
-			// TODO: Check collection/field/relation level hash
+		const snapshotWithHash = this.getHashedSnapshot(currentSnapshot);
+
+		if (payload.hash !== snapshotWithHash.hash) {
+			for (const diffCollection of payload.diff.collections) {
+				if (diffCollection.hash) {
+					const matchingCollection = snapshotWithHash.collections.find((c) => c.hash === diffCollection.hash);
+					if (!matchingCollection) {
+						throw new InvalidPayloadException(
+							`Provided diff for collection "${diffCollection.collection}" does not match the current instance's collection, indicating it has changed after this diff was generated. Please regenerate a new diff and try again.`
+						);
+					}
+				}
+			}
+			for (const diffField of payload.diff.fields) {
+				if (diffField.hash) {
+					const matchingField = snapshotWithHash.fields.find((f) => f.hash === diffField.hash);
+					if (!matchingField) {
+						throw new InvalidPayloadException(
+							`Provided diff for field "${diffField.collection}.${diffField.field}" does not match the current instance's field, indicating it has changed after this diff was generated. Please regenerate a new diff and try again.`
+						);
+					}
+				}
+			}
+			for (const diffRelation of payload.diff.relations) {
+				if (diffRelation.hash) {
+					const matchingRelation = snapshotWithHash.relations.find((r) => r.hash === diffRelation.hash);
+					if (!matchingRelation) {
+						// Related collection doesn't exist for a2o relationship types
+						if (diffRelation.related_collection) {
+							throw new InvalidPayloadException(
+								`Provided diff for relation "${diffRelation.collection}.${diffRelation.field} -> ${diffRelation.related_collection}" does not match the current instance's relation, indicating it has changed after this diff was generated. Please regenerate a new diff and try again.`
+							);
+						} else {
+							throw new InvalidPayloadException(
+								`Provided diff for relation "${diffRelation.collection}.${diffRelation.field}" does not match the current instance's relation, indicating it has changed after this diff was generated. Please regenerate a new diff and try again.`
+							);
+						}
+					}
+				}
+			}
 
 			throw new InvalidPayloadException(
-				`Provided hash ${payload.hash} does not match the current instance's hash ${hash}. Please regenerate a new diff and try again.`
+				`Provided hash "${payload.hash}" does not match the current instance's schema hash "${snapshotWithHash.hash}". Please regenerate a new diff and try again.`
 			);
 		}
 
@@ -130,7 +167,6 @@ export class SchemaService {
 			return;
 		}
 
-		const currentSnapshot = await this.snapshot();
 		await applyDiff(currentSnapshot, payload.diff, { database: this.knex });
 	}
 
@@ -156,13 +192,22 @@ export class SchemaService {
 		return diff;
 	}
 
-	async getCurrentHash(): Promise<string> {
-		if (this.accountability?.admin !== true) throw new ForbiddenException();
+	getHashedSnapshot(snapshot: Snapshot): SnapshotWithHash {
+		const snapshotHash = getVersionedHash(snapshot);
 
-		const currentSnapshot = await this.snapshot();
+		return {
+			hash: snapshotHash,
+			...snapshot,
+			collections: snapshot.collections.map(addHash),
+			fields: snapshot.fields.map(addHash),
+			relations: snapshot.relations.map(addHash),
+		};
 
-		const hash = getSimpleHash(`${JSON.stringify(currentSnapshot)}_${currentDirectusVersion}`);
-
-		return hash;
+		function addHash<T extends Record<string, any>>(item: T): T & { hash: string } {
+			return {
+				hash: getVersionedHash(item),
+				...item,
+			};
+		}
 	}
 }
