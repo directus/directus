@@ -36,6 +36,14 @@ const geoJSON = {
 	],
 };
 
+const dateString = '2022-02-14T01:02:11.000Z';
+const dateInput = {
+	date_created: new Date(dateString),
+};
+const dateOutput = {
+	date_created: dateString,
+};
+
 describe('compress', () => {
 	test('Compresses plain objects', () => {
 		expect(compress(plain)).toBe(
@@ -59,6 +67,10 @@ describe('compress', () => {
 		expect(compress(geoJSON)).toBe(
 			'data|id|f36431ea-0d25-4747-8b37-185eb3ba66d0|point1|type|Point|coordinates|point2^^-107.57812499999984|34.30714385628873|-91.25923790168956|42.324763327278106^$0|@$1|2|3|$4|5|6|@8|9]]|7|$4|5|6|@A|B]]]]]'
 		);
+	});
+
+	test('Compresses Date objects into strings', () => {
+		expect(compress(dateInput)).toBe('date_created|2022-02-14T01:02:11.000Z^^^$0|1]');
 	});
 
 	test('Throws error on non-supported types', () => {
@@ -97,6 +109,10 @@ describe('decompress', () => {
 				'data|id|f36431ea-0d25-4747-8b37-185eb3ba66d0|point1|type|Point|coordinates|point2^^-107.57812499999984|34.30714385628873|-91.25923790168956|42.324763327278106^$0|@$1|2|3|$4|5|6|@8|9]]|7|$4|5|6|@A|B]]]]]'
 			)
 		).toEqual(geoJSON);
+	});
+
+	test('Decompresses Date strings', () => {
+		expect(decompress('date_created|2022-02-14T01:02:11.000Z^^^$0|1]')).toEqual(dateOutput);
 	});
 
 	test('Errors when not enough parts exist', () => {
