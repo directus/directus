@@ -6,7 +6,6 @@ describe('', () => {
 		expect(getFilterOperatorsForType('alias')).toStrictEqual([
 			'contains',
 			'ncontains',
-			'icontains',
 			'eq',
 			'neq',
 			'lt',
