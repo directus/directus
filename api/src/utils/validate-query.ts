@@ -5,7 +5,6 @@ import { Query } from '@directus/shared/types';
 import { stringify } from 'wellknown';
 import { calculateFieldDepth } from './calculate-field-depth';
 import env from '../env';
-import e from 'express';
 
 const querySchema = Joi.object({
 	fields: Joi.array().items(Joi.string()),
