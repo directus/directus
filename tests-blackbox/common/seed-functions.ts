@@ -264,6 +264,18 @@ function generateDate(options: OptionsSeedGenerateDate) {
 		}
 	}
 
+	if (options.isDefaultValue && options.vendor === 'oracle') {
+		for (let i = 0; i < values.length; i++) {
+			values[i] = new Date(values[i])
+				.toLocaleDateString('en-GB', {
+					day: 'numeric',
+					month: 'short',
+					year: 'numeric',
+				})
+				.replace(/ /g, '-');
+		}
+	}
+
 	return values;
 }
 
@@ -272,6 +284,12 @@ function generateDateTime(options: OptionsSeedGenerateDateTime) {
 
 	for (let i = 0; i < values.length; i++) {
 		values[i] = values[i].slice(0, -5);
+	}
+
+	if (options.isDefaultValue && options.vendor === 'oracle') {
+		for (let index = 0; index < values.length; index++) {
+			values[index] = 'CURRENT_TIMESTAMP';
+		}
 	}
 
 	return values;
@@ -317,6 +335,12 @@ function generateTime(options: OptionsSeedGenerateTime) {
 		}
 	}
 
+	if (options.isDefaultValue && options.vendor === 'oracle') {
+		for (let index = 0; index < values.length; index++) {
+			values[index] = 'CURRENT_TIMESTAMP';
+		}
+	}
+
 	return values;
 }
 
@@ -356,9 +380,15 @@ function generateTimestamp(options: OptionsSeedGenerateTimestamp) {
 		values[index] = values[index].slice(0, 20) + '000Z';
 	}
 
-	if (options.isDefaultValue && options.vendor && ['mysql', 'maria'].includes(options.vendor)) {
-		for (let index = 0; index < values.length; index++) {
-			values[index] = new Date(values[index]).toISOString().replace(/([^T]+)T([^.]+).*/g, '$1 $2');
+	if (options.isDefaultValue && options.vendor) {
+		if (['mysql', 'maria'].includes(options.vendor)) {
+			for (let index = 0; index < values.length; index++) {
+				values[index] = new Date(values[index]).toISOString().replace(/([^T]+)T([^.]+).*/g, '$1 $2');
+			}
+		} else if (options.vendor === 'oracle') {
+			for (let index = 0; index < values.length; index++) {
+				values[index] = 'CURRENT_TIMESTAMP';
+			}
 		}
 	}
 

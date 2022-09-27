@@ -43,7 +43,7 @@ export const seedAllFieldTypesStructure = async (vendor: string, collection: str
 						seed: `${collection}_${fieldType}`,
 						vendor,
 						isDefaultValue: true,
-					}),
+					})[0],
 				};
 			}
 
