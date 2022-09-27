@@ -87,6 +87,12 @@ export type BundleExtension = BundleExtensionBase & ExtensionPackageBase;
 
 export type Extension = ExtensionLocal | ExtensionPackage;
 
+export type ExtensionOptionsBundleEntryRaw = {
+	type?: string;
+	name?: string;
+	source?: string | { app?: string; api?: string };
+};
+
 export type ExtensionManifestRaw = {
 	name?: string;
 	version?: string;
@@ -96,7 +102,7 @@ export type ExtensionManifestRaw = {
 		type?: string;
 		path?: string | { app?: string; api?: string };
 		source?: string | { app?: string; api?: string };
-		entries?: { type?: string; name?: string; source?: string | { app?: string; api?: string } }[];
+		entries?: ExtensionOptionsBundleEntryRaw[];
 		host?: string;
 		hidden?: boolean;
 	};

@@ -1,5 +1,10 @@
 import { EXTENSION_PACKAGE_TYPES, EXTENSION_PKG_KEY, EXTENSION_TYPES, HYBRID_EXTENSION_TYPES } from '../constants';
-import { ExtensionManifest, ExtensionManifestRaw } from '../types';
+import {
+	ExtensionManifest,
+	ExtensionManifestRaw,
+	ExtensionOptionsBundleEntry,
+	ExtensionOptionsBundleEntryRaw,
+} from '../types';
 import { isIn } from './array-helpers';
 
 export function validateExtensionManifest(
@@ -28,23 +33,7 @@ export function validateExtensionManifest(
 			!extensionOptions.path.api ||
 			!extensionOptions.entries ||
 			!Array.isArray(extensionOptions.entries) ||
-			!extensionOptions.entries.every((entry) => {
-				if (!entry.type || !isIn(entry.type, EXTENSION_TYPES) || !entry.name) {
-					return false;
-				}
-
-				if (isIn(entry.type, HYBRID_EXTENSION_TYPES)) {
-					if (!entry.source || typeof entry.source === 'string' || !entry.source.app || !entry.source.api) {
-						return false;
-					}
-				} else {
-					if (!entry.source) {
-						return false;
-					}
-				}
-
-				return true;
-			}) ||
+			!extensionOptions.entries.every((entry) => validateExtensionOptionsBundleEntry(entry)) ||
 			!extensionOptions.host
 		) {
 			return false;
@@ -64,6 +53,26 @@ export function validateExtensionManifest(
 		}
 	} else {
 		if (!extensionOptions.path || !extensionOptions.source) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
+export function validateExtensionOptionsBundleEntry(
+	entry: ExtensionOptionsBundleEntryRaw
+): entry is ExtensionOptionsBundleEntry {
+	if (!entry.type || !isIn(entry.type, EXTENSION_TYPES) || !entry.name) {
+		return false;
+	}
+
+	if (isIn(entry.type, HYBRID_EXTENSION_TYPES)) {
+		if (!entry.source || typeof entry.source === 'string' || !entry.source.app || !entry.source.api) {
+			return false;
+		}
+	} else {
+		if (!entry.source) {
 			return false;
 		}
 	}

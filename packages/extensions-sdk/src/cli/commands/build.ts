@@ -26,7 +26,6 @@ import {
 	APP_EXTENSION_TYPES,
 	HYBRID_EXTENSION_TYPES,
 	EXTENSION_PACKAGE_TYPES,
-	EXTENSION_TYPES,
 } from '@directus/shared/constants';
 import { isIn, isTypeIn, validateExtensionManifest } from '@directus/shared/utils';
 import {
@@ -39,12 +38,13 @@ import { log, clear } from '../utils/logger';
 import { getLanguageFromPath, isLanguage } from '../utils/languages';
 import { Language, RollupConfig, RollupMode } from '../types';
 import loadConfig from '../utils/load-config';
-import toObject from '../utils/to-object';
 import generateBundleEntrypoint from '../utils/generate-bundle-entrypoint';
+import tryParseJson from '../utils/try-parse-json';
+import { validateBundleEntriesOption, validateSplitEntrypointOption } from '../utils/validate-cli-options';
 
 type BuildOptions = {
 	type?: string;
-	input?: string[];
+	input?: string;
 	output?: string;
 	watch?: boolean;
 	minify?: boolean;
@@ -109,7 +109,7 @@ export default async function build(options: BuildOptions): Promise<void> {
 		}
 	} else {
 		const type = options.type;
-		const inputs = options.input;
+		const input = options.input;
 		const output = options.output;
 
 		if (!type) {
@@ -132,7 +132,7 @@ export default async function build(options: BuildOptions): Promise<void> {
 			process.exit(1);
 		}
 
-		if (!inputs) {
+		if (!input) {
 			log(`Extension entrypoint has to be specified using the ${chalk.blue('[-i, --input <file>]')} option.`, 'error');
 			process.exit(1);
 		}
@@ -145,58 +145,23 @@ export default async function build(options: BuildOptions): Promise<void> {
 		}
 
 		if (type === 'bundle') {
-			const entries = inputs.map((input) => {
-				const inputObject = toObject(input);
+			const entries = tryParseJson(input);
+			const splitOutput = tryParseJson(output);
 
-				if (!inputObject || !inputObject.type || !isIn(inputObject.type, EXTENSION_TYPES) || !inputObject.name) {
-					log(
-						`Input option needs to be of the format ${chalk.blue(
-							'[-i type:<app-or-api-type>,name:<extension-name>,source:<source-path>]'
-						)} or ${chalk.blue(
-							'[-i type:<hybrid-type>,name:<extension-name>,app:<app-entrypoint>,api:<api-entrypoint>]'
-						)}.`,
-						'error'
-					);
-					process.exit(1);
-				}
-
-				if (isIn(inputObject.type, HYBRID_EXTENSION_TYPES)) {
-					if (!inputObject.app) {
-						log(`App entrypoint of ${chalk.bold(inputObject.name)} needs to be specified.`, 'error');
-						process.exit(1);
-					}
-					if (!inputObject.api) {
-						log(`API entrypoint of ${chalk.bold(inputObject.name)} needs to be specified.`, 'error');
-						process.exit(1);
-					}
-
-					return {
-						type: inputObject.type,
-						name: inputObject.name,
-						source: {
-							app: inputObject.app,
-							api: inputObject.api,
-						},
-					};
-				} else {
-					if (!inputObject.source) {
-						log(`Entrypoint of ${chalk.bold(inputObject.name)} needs to be specified.`, 'error');
-						process.exit(1);
-					}
-
-					return {
-						type: inputObject.type,
-						name: inputObject.name,
-						source: inputObject.source,
-					};
-				}
-			});
-
-			const outputObject = toObject(output);
-
-			if (!outputObject || !outputObject.app || !outputObject.api) {
+			if (!validateBundleEntriesOption(entries)) {
 				log(
-					`Output option needs to be of the format ${chalk.blue('[-o app:<app-output-file>,api:<api-output-file>]')}.`,
+					`Input option needs to be of the format ${chalk.blue(
+						`[-i '[{"type":"<extension-type>","name":"<extension-name>","source":<entrypoint>}]']`
+					)}.`,
+					'error'
+				);
+				process.exit(1);
+			}
+			if (!validateSplitEntrypointOption(splitOutput)) {
+				log(
+					`Output option needs to be of the format ${chalk.blue(
+						`[-o '{"app":"<app-entrypoint>","api":"<api-entrypoint>"}']`
+					)}.`,
 					'error'
 				);
 				process.exit(1);
@@ -204,45 +169,45 @@ export default async function build(options: BuildOptions): Promise<void> {
 
 			await buildBundleExtension({
 				entries,
-				outputApp: outputObject.app,
-				outputApi: outputObject.api,
+				outputApp: splitOutput.app,
+				outputApi: splitOutput.api,
 				watch,
 				sourcemap,
 				minify,
 			});
 		} else if (isIn(type, HYBRID_EXTENSION_TYPES)) {
-			const input = inputs[inputs.length - 1]!;
+			const splitInput = tryParseJson(input);
+			const splitOutput = tryParseJson(output);
 
-			const inputObject = toObject(input);
-			const outputObject = toObject(output);
-
-			if (!inputObject || !inputObject.app || !inputObject.api) {
+			if (!validateSplitEntrypointOption(splitInput)) {
 				log(
-					`Input option needs to be of the format ${chalk.blue('[-i app:<app-entrypoint>,api:<api-entrypoint>]')}.`,
+					`Input option needs to be of the format ${chalk.blue(
+						`[-i '{"app":"<app-entrypoint>","api":"<api-entrypoint>"}']`
+					)}.`,
 					'error'
 				);
 				process.exit(1);
 			}
-			if (!outputObject || !outputObject.app || !outputObject.api) {
+			if (!validateSplitEntrypointOption(splitOutput)) {
 				log(
-					`Output option needs to be of the format ${chalk.blue('[-o app:<app-output-file>,api:<api-output-file>]')}.`,
+					`Output option needs to be of the format ${chalk.blue(
+						`[-o '{"app":"<app-entrypoint>","api":"<api-entrypoint>"}']`
+					)}.`,
 					'error'
 				);
 				process.exit(1);
 			}
 
 			await buildHybridExtension({
-				inputApp: inputObject.app,
-				inputApi: inputObject.api,
-				outputApp: outputObject.app,
-				outputApi: outputObject.api,
+				inputApp: splitInput.app,
+				inputApi: splitInput.api,
+				outputApp: splitOutput.app,
+				outputApi: splitOutput.api,
 				watch,
 				sourcemap,
 				minify,
 			});
 		} else {
-			const input = inputs[inputs.length - 1]!;
-
 			await buildAppOrApiExtension({
 				type,
 				input,
