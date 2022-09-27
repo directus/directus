@@ -29,6 +29,7 @@ export function getSnapshotDiff(current: Snapshot, after: Snapshot): SnapshotDif
 					})
 					.map((afterCollection) => ({
 						collection: afterCollection.collection,
+						hash: getVersionedHash(afterCollection),
 						diff: diff(undefined, sanitizeCollection(afterCollection)),
 					})),
 			].filter((obj) => Array.isArray(obj.diff)) as SnapshotDiff['collections'],
@@ -66,6 +67,7 @@ export function getSnapshotDiff(current: Snapshot, after: Snapshot): SnapshotDif
 					.map((afterField) => ({
 						collection: afterField.collection,
 						field: afterField.field,
+						hash: getVersionedHash(afterField),
 						diff: diff(undefined, sanitizeField(afterField)),
 					})),
 			].filter((obj) => Array.isArray(obj.diff)) as SnapshotDiff['fields'],
@@ -100,6 +102,7 @@ export function getSnapshotDiff(current: Snapshot, after: Snapshot): SnapshotDif
 						collection: afterRelation.collection,
 						field: afterRelation.field,
 						related_collection: afterRelation.related_collection,
+						hash: getVersionedHash(afterRelation),
 						diff: diff(undefined, sanitizeRelation(afterRelation)),
 					})),
 			].filter((obj) => Array.isArray(obj.diff)) as SnapshotDiff['relations'],
