@@ -102,6 +102,10 @@ export type ExtensionManifestRaw = {
 	};
 };
 
+export type ExtensionOptionsBundleEntry =
+	| { type: AppExtensionType | ApiExtensionType; name: string; source: string }
+	| { type: HybridExtensionType; name: string; source: { app: string; api: string } };
+
 type ExtensionOptionsBase = {
 	host: string;
 	hidden?: boolean;
@@ -126,10 +130,7 @@ type ExtensionOptionsPack = {
 type ExtensionOptionsBundle = {
 	type: 'bundle';
 	path: { app: string; api: string };
-	entries: (
-		| { type: AppExtensionType | ApiExtensionType; name: string; source: string }
-		| { type: HybridExtensionType; name: string; source: { app: string; api: string } }
-	)[];
+	entries: ExtensionOptionsBundleEntry[];
 };
 
 type ExtensionOptionsPackage = ExtensionOptionsPack | ExtensionOptionsBundle;

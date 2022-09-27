@@ -20,7 +20,7 @@ program
 	.command('build')
 	.description('Bundle a Directus extension to a single entrypoint')
 	.option('-t, --type <type>', 'specify the extension type instead of reading from package manifest')
-	.option('-i, --input <file>', 'specify the entrypoint instead of reading from package manifest')
+	.option('-i, --input <file...>', 'specify the entrypoint instead of reading from package manifest')
 	.option('-o, --output <file>', 'specify the output file instead of reading from package manifest')
 	.option('-l, --language <language>', '[DEPRECATED]')
 	.option('-f, --force', '[DEPRECATED]')
