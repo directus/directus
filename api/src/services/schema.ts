@@ -66,14 +66,14 @@ const applyJoiSchema = Joi.object({
 	diff: Joi.object({
 		collections: Joi.array().items(
 			Joi.object({
-				hash: Joi.string().required(),
+				hash: Joi.string().when('diff.0.kind', { is: 'N', then: Joi.optional(), otherwise: Joi.any() }),
 				collection: Joi.string(),
 				diff: Joi.array().items(deepDiffSchema),
 			})
 		),
 		fields: Joi.array().items(
 			Joi.object({
-				hash: Joi.string().required(),
+				hash: Joi.string().when('diff.0.kind', { is: 'N', then: Joi.optional(), otherwise: Joi.any() }),
 				collection: Joi.string(),
 				field: Joi.string(),
 				diff: Joi.array().items(deepDiffSchema),
@@ -81,7 +81,7 @@ const applyJoiSchema = Joi.object({
 		),
 		relations: Joi.array().items(
 			Joi.object({
-				hash: Joi.string().required(),
+				hash: Joi.string().when('diff.0.kind', { is: 'N', then: Joi.optional(), otherwise: Joi.any() }),
 				collection: Joi.string(),
 				field: Joi.string(),
 				related_collection: Joi.any(),
