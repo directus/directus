@@ -144,6 +144,10 @@ router.patch(
 			schema: req.schema,
 		});
 
+		// remove status and role from fields...
+		delete req.body.status;
+		delete req.body.role;
+
 		const primaryKey = await service.updateOne(req.accountability.user, req.body);
 		const item = await service.readOne(primaryKey, req.sanitizedQuery);
 
@@ -214,6 +218,13 @@ router.patch(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
+
+
+		if (req.accountability?.user === req.params.pk) {
+			// remove status and role from fields...
+			delete req.body.status;
+			delete req.body.role;
+		}
 
 		const primaryKey = await service.updateOne(req.params.pk, req.body);
 
