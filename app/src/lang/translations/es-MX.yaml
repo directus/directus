@@ -22,7 +22,7 @@
 identifier: Identificador
 avatar: Avatar
 application: Aplicación
-default_provider: Por Defecto
+default_provider: Por defecto
 method: Método
 published: Publicado
 draft: Borrador
@@ -57,7 +57,7 @@ hook: Gancho
 fill_width: Ancho completo
 field_name_translations: Traducciones del campo de nombre
 enter_password_to_enable_tfa: Introduzca su contraseña para activar la autenticación de dos factores
-add_field: Agregar campo
+add_field: Añadir campo
 role_name: Nombre del rol
 branch: Rama
 leaf: Hoja
@@ -112,7 +112,7 @@ delete_personal_bookmark: Borrar el marcador personal
 delete_role_bookmark: Borrar el marcador de rol
 delete_global_bookmark: Eliminar marcador global
 logoutReason:
-  SIGN_OUT: Sesión cerrada
+  SIGN_OUT: Cerró sesión
   SESSION_EXPIRED: Sesión expirada
 public_label: Público
 public_description: Controla qué datos de la API están disponibles sin autenticar.
@@ -133,7 +133,7 @@ reset_system_permissions_to: 'Restablecer los permisos del sistema a:'
 reset_system_permissions_copy: Esta acción sobrescribirá cualquier permiso personalizado que haya aplicado a las colecciones del sistema. ¿Está seguro?
 the_following_are_minimum_permissions: Los siguientes son permisos mínimos requeridos cuando "Acceso a App" está habilitado. Puede extender permisos más allá de esto, pero no más abajo.
 app_access_minimum: Acceso mínimo a la aplicación
-recommended_defaults: Valores predeterminados recomendados
+recommended_defaults: Valores por defecto recomendados
 unarchive: Desarchivar
 unarchive_confirm: '¿Está seguro de que quiere desarchivar este elemento?'
 nested_files_folders_will_be_moved: Los archivos y carpetas anidados se moverán un nivel hacia arriba.
@@ -154,13 +154,13 @@ validationError:
   null: El valor tiene que ser nulo
   nnull: El valor no puede ser nulo
   required: El valor es requerido
-  unique: El Valor tiene que ser único
+  unique: El valor tiene que ser único
   regex: El valor no tiene el formato correcto
-all_access: Todos los accesos
+all_access: Todo el acceso
 no_access: Sin acceso
 use_custom: Personalizar
 nullable: Anulable
-allow_null_value: Permitir valor NULL
+allow_null_value: Permitir valor NULO
 allow_multiple: Permitir múltiple
 allow_multiple_to_be_open: Permitir la apertura múltiple
 enter_value_to_replace_nulls: Por favor, introduzca un nuevo valor para reemplazar cualquier valor NULO actualmente dentro de este campo.
@@ -184,7 +184,7 @@ validation_for_role: 'Reglas de campo al {action} que el rol {role} tiene que ob
 presets_for_role: 'Valores por defecto del campo para el rol {role}.'
 presentation_and_aliases: Presentación y alias
 revision_post_create: Este es el aspecto de este elemento cuando fue creado.
-revision_post_update: Así se vería el elemento después de la actualización.
+revision_post_update: Este es el aspecto de este elemento después de la actualización.
 changes_made: A continuación se muestran los cambios específicos realizados en esta revisión.
 no_relational_data: Tenga en cuenta que los datos relacionales no se incluyen aquí.
 junction_field_location: Ubicación de los campos de unión
@@ -200,7 +200,7 @@ field_update_success: 'Campo actualizado: "{field}"'
 duplicate_where_to: '¿A dónde le gustaría duplicar este campo?'
 language: Idioma
 language_placeholder: Seleccione un idioma...
-aggregate_function: Función de agregado
+aggregate_function: Función agregada
 aggregate_precision: Precisión agregada
 group_aggregation: Agregación de grupo
 group_precision: Precisión de grupo
@@ -209,7 +209,7 @@ admins_have_all_permissions: Los administradores tienen todos los permisos
 camera: Cámara
 show_zero: Mostrar cero
 create_in_advanced_field_creation_mode: Crear campo en modo avanzado
-continue_in_advanced_field_creation_mode: Continuar en modo de creación de campos avanzado
+continue_in_advanced_field_creation_mode: Continuar en modo de creación avanzada de campos
 validation: Validación
 sum: Suma
 sum_distinct: Sumar diferentes
@@ -241,8 +241,8 @@ datetime: Fecha y hora
 dateTime: Fecha y hora
 precision: Precisión
 decimal: Decimal
-float: Número flotante
-integer: Número entero
+float: Flotante
+integer: Entero
 json: JSON
 xml: XML
 string: Cadena de texto
@@ -319,10 +319,10 @@ raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
 raw_value: Valor Plano
 copy_raw_value: Copiar valor exacto
 copy_raw_value_success: Copiado
-copy_raw_value_fail: Falló la copia
+copy_raw_value_fail: Error al copiar
 paste_raw_value: Pegar valor exacto
 paste_raw_value_success: Pegado
-paste_raw_value_fail: Falló el pegado
+paste_raw_value_fail: Error al pegar
 view_raw_value: Ver valor exacto
 edit_raw_value: Editar Valor Plano
 enter_raw_value: Ingresar valor plano...
@@ -439,7 +439,7 @@ modified: Modificado
 checksum: Checksum
 owner: Propietario
 edited_by: Editado por
-folder: Directorio
+folder: Carpeta
 zoom: Zoom
 download: Descargar
 open: Abrir
@@ -514,10 +514,10 @@ no_webhooks_copy: Aún no se ha configurado ningún webhooks. Comienza creando u
 no_notifications: Sin notificaciones
 no_notifications_copy: '¡Estás al día!'
 activity_log: Registro de actividad
-all_items: Todos los Elementos
+all_items: Todos los elementos
 any: Cualquiera
 csv: CSV
-no_collections: Sin Colecciones
+no_collections: Sin colecciones
 create_collection: Crear colección
 no_collections_copy_admin: Aún no tiene alguna Colección. Haga clic en el botón para empezar.
 no_collections_copy: Aún no tiene alguna Colección. Por favor contacte al administrador del sistema.
@@ -555,11 +555,11 @@ sidebar: Barra Lateral
 duration: Duración
 charset: Codificación
 second: segundo
-file_moved: Archivo Movido
-collection_created: Colección Creada
-modified_on: Modificado en
-card_size: Tamaño de Tarjeta
-sort_field: Campo Ordenamiento
+file_moved: Archivo movido
+collection_created: Colección creada
+modified_on: Modificado el
+card_size: Tamaño de tarjeta
+sort_field: Ordenar campo
 add_sort_field: Añadir campo de ordenación
 sort: Ordenar
 status: Estado
@@ -570,7 +570,7 @@ bookmark_doesnt_exist_copy: El Marcador que está intentando abrir no pudo ser e
 bookmark_doesnt_exist_cta: Regresar a Colección
 select_an_item: Seleccionar un Elemento...
 edit: Editar
-enabled: Habilitado
+enabled: Activado
 disable_tfa: Desactivar 2FA
 tfa_scan_code: Escanee el código en tu aplicación de Autentificación para finalizar la configuración de 2FA
 enter_otp_to_disable_tfa: Ingrese el OTP para desactivar 2FA
@@ -595,7 +595,7 @@ errors:
   ITEM_NOT_FOUND: Elemento no encontrado
   ROUTE_NOT_FOUND: No encontrado
   RECORD_NOT_UNIQUE: Se ha detectado un valor duplicado
-  USER_SUSPENDED: Usuario Suspendido
+  USER_SUSPENDED: Usuario suspendido
   CONTAINS_NULL_VALUES: El campo contiene valores nulos
   UNPROCESSABLE_ENTITY: Entidad no procesable
   INTERNAL_SERVER_ERROR: Error Inesperado
@@ -635,14 +635,14 @@ password_reset_successful: Contraseña restablecida exitósamente
 back: Volver
 filter: Filtro
 edit_image: Editar imagen
-editing_image: Editar Imagen
+editing_image: Editando imagen
 square: Cuadrado
 free: Libre
-flip_horizontal: Voltear Horizontal
-flip_vertical: Voltear Vertical
-aspect_ratio: Relación de Aspecto
+flip_horizontal: Voltear horizontal
+flip_vertical: Voltear vertical
+aspect_ratio: Relación de aspecto
 rotate: Rotar
-all_users: Todos los Usuarios
+all_users: Todos los usuarios
 delete_collection: Eliminar Colección
 update_collection_success: Colección Actualizada
 delete_collection_success: Colección Eliminada
@@ -733,7 +733,7 @@ rows: Filas
 columns: Columnas
 collection_setup: Configuración de Colección
 optional_system_fields: Campos Opcionales del Sistema
-value_unique: El Valor tiene que ser único
+value_unique: El valor tiene que ser único
 all_activity: Toda la Actividad
 create_item: Crear Elemento
 display_template: Plantilla de Presentación
@@ -1054,14 +1054,14 @@ fields:
     icon: Ícono
     note: Nota
     color: Color
-    display_template: Plantilla de Presentación
+    display_template: Mostrar plantilla
     hidden: Oculto
     singleton: Singleton
     translations: Traducciones para Nombre de Colección
     archive_app_filter: Archivar filtros de App
     archive_value: Archivar valor
     unarchive_value: Desarchivar valor
-    sort_field: Campo Ordenamiento
+    sort_field: Ordenar campo
     accountability: Actividad y seguimiento de revisión
     archive_field: Campo de archivo
     item_duplication_fields: Campos de duplicación de elementos
@@ -1078,21 +1078,21 @@ fields:
     type: Tipo Mime
     filesize: Tamaño del archivo
     modified_by: Modificado por
-    modified_on: Modificado en
+    modified_on: Modificado el
     created_on: Creado el
     created_by: Creado por
     embed: Incrustado
     uploaded_by: Subido por
-    folder: Directorio
+    folder: Carpeta
     width: Ancho
     uploaded_on: Subido el
     height: Alto
     charset: Codificación
     duration: Duración
   directus_users:
-    first_name: Nombres
-    last_name: Apellidos
-    email: Correo electrónico
+    first_name: Nombre
+    last_name: Apellido
+    email: Email
     password: Contraseña
     avatar: Avatar
     location: Ubicación
@@ -1103,10 +1103,10 @@ fields:
     language: Idioma
     theme: Tema
     theme_auto: Automático (basado en el sistema)
-    theme_light: Modo luz
-    theme_dark: Modo Oscuro
-    tfa_secret: Autentificación en 2 Pasos
-    admin_options: Opciones de Admin
+    theme_light: Modo claro
+    theme_dark: Modo oscuro
+    tfa_secret: Autenticación de dos factores
+    admin_options: Opciones de administrador
     status: Estado
     status_draft: Borrador
     status_invited: Invitado
@@ -1159,7 +1159,7 @@ fields:
     transformations_none: Desactivar transformaciones
     transformations_presets: Limitar las transformaciones a los ajustes de abajo
     image_editor: Editor de imágenes
-    custom_aspect_ratios: Personalizar radios de aspecto
+    custom_aspect_ratios: Relaciones de aspecto personalizadas
   directus_shares:
     name: Nombre
     role: Rol
@@ -1174,7 +1174,7 @@ fields:
     note: Nota
     hidden: Oculto
     singleton: Singleton
-    translation: Traducciones del campo de nombre
+    translation: Traducciones de nombre del campo
     display_template: Plantilla
   directus_roles:
     name: Nombre del rol
@@ -1184,7 +1184,7 @@ fields:
     admin_access: Acceso Admin
     ip_access: Acceso IP
     enforce_tfa: Requiere 2FA
-    users: Usuarios en el Rol
+    users: Usuarios en el rol
     module_list: Navegación en Módulo
   directus_webhooks:
     name: Nombre
@@ -1278,9 +1278,9 @@ field_options:
   directus_users:
     preferences_divider: Preferencias de usuario
     dropdown_auto: Automático (basado en el sistema)
-    dropdown_light: Modo luz
-    dropdown_dark: Modo Oscuro
-    admin_divider: Opciones de Admin
+    dropdown_light: Modo claro
+    dropdown_dark: Modo oscuro
+    admin_divider: Opciones de administrador
     status_dropdown_draft: Borrador
     status_dropdown_invited: Invitado
     status_dropdown_active: Activo
@@ -1359,7 +1359,7 @@ description: Descripción
 done: Completado
 duplicate: Duplicado
 limit: Límite
-email: Correo electrónico
+email: Email
 embed: Incrustado
 fallback_icon: Ícono de Reserva
 field: Campo | Campos
@@ -1620,7 +1620,7 @@ interfaces:
     description: Seleccionar varios elementos relacionados
     no_collection: No se encontró la colección
   system-folder:
-    folder: Directorio
+    folder: Carpeta
     description: Seleccione una carpeta
     field_hint: Carpeta para los archivos subidos. No afecta a los archivos existentes.
     root_name: Raíz de la Biblioteca de Archivos
@@ -1684,7 +1684,7 @@ interfaces:
     color_on: Color para Activo
     color_off: Color para Inactivo
     label_placeholder: Ingresar una etiqueta...
-    label_default: Habilitado
+    label_default: Activado
   translations:
     display_template: Plantilla de Presentación
     no_collection: Sin Colección
