@@ -169,6 +169,7 @@ export class RelationsService {
 		}
 
 		const runPostColumnChange = await this.helpers.schema.preColumnChange();
+		this.helpers.schema.preRelationChange(relation);
 
 		try {
 			const metaRow = {
@@ -242,6 +243,7 @@ export class RelationsService {
 		}
 
 		const runPostColumnChange = await this.helpers.schema.preColumnChange();
+		this.helpers.schema.preRelationChange(relation);
 
 		try {
 			await this.knex.transaction(async (trx) => {

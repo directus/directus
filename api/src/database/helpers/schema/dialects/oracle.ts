@@ -1,5 +1,5 @@
 import { KNEX_TYPES } from '@directus/shared/constants';
-import { Field } from '@directus/shared/types';
+import { Field, Relation } from '@directus/shared/types';
 import { Options, SchemaHelper } from '../types';
 
 export class SchemaHelperOracle extends SchemaHelper {
@@ -10,6 +10,16 @@ export class SchemaHelperOracle extends SchemaHelper {
 		options: Options = {}
 	): Promise<void> {
 		await this.changeToTypeByCopy(table, column, type, options);
+	}
+
+	preRelationChange(relation: Partial<Relation>): void {
+		if (relation.collection === relation.related_collection) {
+			// Constraints are not allowed on self referencing relationships
+			// Setting NO ACTION throws - ORA-00905: missing keyword
+			if (relation.schema?.on_delete) {
+				relation.schema.on_delete = null;
+			}
+		}
 	}
 
 	processField(field: Field): void {

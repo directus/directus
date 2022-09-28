@@ -207,12 +207,12 @@ export const seedDBStructure = () => {
 							otherField: 'm2m2',
 							junctionCollection: localJunctionSelfM2M,
 							primaryKeyType: pkType,
-							relationSchema:
-								vendor === 'oracle'
-									? {}
-									: {
-											on_delete: 'NO ACTION',
-									  },
+							relationSchema: {
+								on_delete: 'SET NULL',
+							},
+							otherRelationSchema: {
+								on_delete: 'SET NULL',
+							},
 						});
 
 						// Create self O2M relationship
@@ -222,12 +222,9 @@ export const seedDBStructure = () => {
 							otherCollection: localCollectionSelf,
 							otherField: 'self_id',
 							primaryKeyType: pkType,
-							relationSchema:
-								vendor === 'oracle'
-									? {}
-									: {
-											on_delete: 'NO ACTION',
-									  },
+							relationSchema: {
+								on_delete: 'NO ACTION',
+							},
 						});
 
 						await seedAllFieldTypesStructure(vendor, localCollectionAll, setDefaultValues);
