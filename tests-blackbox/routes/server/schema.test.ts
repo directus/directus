@@ -17,7 +17,7 @@ import {
 	junctionSelfM2M,
 } from './schema.seed';
 import { cloneDeep } from 'lodash';
-import { PrimaryKeyType } from '@common/index';
+import { PrimaryKeyType, PRIMARY_KEY_TYPES } from '@common/index';
 import { load as loadYaml } from 'js-yaml';
 import { version as currentDirectusVersion } from '../../../api/package.json';
 
@@ -386,6 +386,85 @@ describe('Schema Snapshots', () => {
 					expect(curSnapshot).toStrictEqual(oldSnapshot);
 				},
 				300000
+			);
+		});
+	});
+
+	describe('Hash Tests', () => {
+		describe('with deleted fields', () => {
+			it.each(vendors)(
+				'%s',
+				async (vendor) => {
+					expect(snapshotsCacheEmpty[vendor]).toBeDefined();
+
+					// Action
+					const responseDiff = await request(getUrl(vendor))
+						.post('/server/schema/diff')
+						.send(snapshotsCacheEmpty[vendor])
+						.set('Content-type', 'application/json')
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					for (const pkType of PRIMARY_KEY_TYPES) {
+						await request(getUrl(vendor))
+							.delete(`/fields/${collectionSelf}_${pkType}/self_id`)
+							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+					}
+
+					const response = await request(getUrl(vendor))
+						.post('/server/schema/apply')
+						.send(responseDiff.body.data)
+						.set('Content-type', 'application/json')
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					// Assert
+					expect(response.statusCode).toEqual(400);
+					expect(response.text).toContain('Please regenerate a new diff and try again.');
+				},
+				1200000
+			);
+		});
+
+		describe('with new collection', () => {
+			it.each(vendors)(
+				'%s',
+				async (vendor) => {
+					expect(snapshotsCacheEmpty[vendor]).toBeDefined();
+
+					// Action
+					const responseDiff = await request(getUrl(vendor))
+						.post('/server/schema/diff')
+						.send(snapshotsCacheEmpty[vendor])
+						.set('Content-type', 'application/json')
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					await request(getUrl(vendor))
+						.post(`/collections`)
+						.send({
+							collection: 'temp_test_collection',
+							fields: [
+								{
+									field: 'id',
+									type: 'integer',
+									meta: { hidden: true, interface: 'input', readonly: true },
+									schema: { is_primary_key: true, has_auto_increment: true },
+								},
+							],
+							schema: {},
+							meta: { singleton: false },
+						})
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					const response = await request(getUrl(vendor))
+						.post('/server/schema/apply')
+						.send(responseDiff.body.data)
+						.set('Content-type', 'application/json')
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					// Assert
+					expect(response.statusCode).toEqual(400);
+					expect(response.text).toContain('Please regenerate a new diff and try again.');
+				},
+				1200000
 			);
 		});
 	});
