@@ -298,8 +298,8 @@ next: Siguiente
 field_name: Nombre del campo
 translations: Traducciones
 no_translations: Sin traducciones
-left_to_right: De izquierda a derecha
-right_to_left: De derecha a izquierda
+left_to_right: Izquierda a derecha
+right_to_left: Derecha a izquierda
 note: Nota
 enter_a_value: Ingrese un valor...
 enter_a_placeholder: Ingrese un placeholder...
@@ -311,8 +311,8 @@ unique: Único
 updated_on: Actualizado el
 updated_by: Actualizado por
 primary_key: Llave primaria
-foreign_key: Llave Foránea
-finish_setup: Finalizar Configuración
+foreign_key: Llave foránea
+finish_setup: Finalizar configuración
 dismiss: Descartar
 toggle_raw_editor: Alternar editor sin formato
 raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
@@ -332,8 +332,8 @@ clear_items: Limpiar elementos
 reset_to_default: Restablecer ajustes predeterminados
 undo_changes: Deshacer cambios
 notifications: Notificaciones
-show_all_activity: Presentar toda la actividad
-page_not_found: Página No Encontrada
+show_all_activity: Mostrar toda la actividad
+page_not_found: Página no encontrada
 page_not_found_body: Parece que la página que está buscando no existe.
 confirm_revert: Confirmar reversión
 confirm_revert_body: Esto revertirá el elemento al estado seleccionado.
@@ -341,7 +341,7 @@ display: Mostrar
 settings_update_success: Ajustes actualizados
 title: Título
 revision_delta_created: Creado
-revision_delta_created_externally: Creado Externamente
+revision_delta_created_externally: Creado externamente
 revision_delta_updated: '1 Campo Actualizado | {count} Campos Actualizados'
 revision_delta_deleted: Eliminado
 revision_delta_reverted: Revertido
@@ -412,7 +412,7 @@ minutes: Minutos
 hours: Horas
 month: Mes
 year: Año
-select_all: Seleccionar Todo
+select_all: Seleccionar todo
 months:
   january: Enero
   february: Febrero
@@ -426,7 +426,7 @@ months:
   october: Octubre
   november: Noviembre
   december: Diciembre
-drag_mode: Modo Arrastrar
+drag_mode: Modo de arrastre
 cancel_crop: No Cortar
 original: Original
 url: URL
@@ -443,7 +443,7 @@ folder: Directorio
 zoom: Zoom
 download: Descargar
 open: Abrir
-open_in_new_window: Abrir en Nueva Ventana
+open_in_new_window: Abrir en nueva ventana
 open_folder: Abrir carpeta "{folder}"
 foreground_color: Color de Letra
 background_color: Color de Fondo
@@ -454,7 +454,7 @@ replace_from_device: Reemplazar Archivo desde Dispositivo
 replace_from_library: Reemplazar Archivo desde Biblioteca
 replace_from_url: Reemplazar Archivo desde URL
 no_file_selected: Sin Archivos Seleccionados
-download_file: Descargar Archivo
+download_file: Descargar archivo
 open_file_in_tab: Abrir archivo en nueva pestaña
 start_export: Iniciar exportación
 not_available_for_local_downloads: No disponible para descargas locales
@@ -469,8 +469,8 @@ name: Nombre
 primary_key_field: Campo Llave Primaria
 type: Tipo
 creating_new_collection: Crear Nueva Colección
-created_by: Creado Por
-created_on: Creado El
+created_by: Creado por
+created_on: Creado el
 creating_collection_info: Defina un nombre para la colección y configure su campo de "llave" única...
 creating_collection_system: Habilitar y renombrar cualquiera de estos campos opcionales.
 auto_increment_integer: Número Entero Auto-Incrementado
@@ -537,16 +537,16 @@ activity: Actividad
 activity_item: Elemento de actividad
 action: Acción
 ip_address: Dirección IP
-user_agent: Agente de Usuario (Navegador)
+user_agent: Agente de usuario
 origin: Origen
 webhooks: Webhooks
 decimals: Decimales
-value_decimals: Valor Decimal
-min_value: Valor Mínimo
+value_decimals: Valor decimal
+min_value: Valor mínimo
 max_value: Valor máximo
 automatic: Automático
-field_width: Ancho de Campo
-add_filter: Agregar Filtro
+field_width: Ancho de campo
+add_filter: Añadir filtro
 upper_limit: Límite Superior...
 lower_limit: Límite Inferior...
 user_directory: Directorio de Usuarios
@@ -916,7 +916,7 @@ wysiwyg_options:
   redo: Rehacer
   remove: Eliminar
   removeformat: Quitar Formato
-  selectall: Seleccionar Todo
+  selectall: Seleccionar todo
   table: Tabla
   visualaid: Ver elementos invisibles
   source_code: Editar código fuente
@@ -1079,8 +1079,8 @@ fields:
     filesize: Tamaño del archivo
     modified_by: Modificado por
     modified_on: Modificado en
-    created_on: Creado El
-    created_by: Creado Por
+    created_on: Creado el
+    created_by: Creado por
     embed: Incrustado
     uploaded_by: Subido por
     folder: Directorio
@@ -1440,7 +1440,7 @@ interfaces:
   filter:
     name: Filtro
     description: Configurar un objeto de filtro.
-    add_filter: Agregar Filtro
+    add_filter: Añadir filtro
     add_group: Y / O grupo
     add_value: Añadir valor
     logic_type_and: "Y"
