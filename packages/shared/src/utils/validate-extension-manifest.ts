@@ -1,4 +1,10 @@
-import { EXTENSION_PACKAGE_TYPES, EXTENSION_PKG_KEY, EXTENSION_TYPES, HYBRID_EXTENSION_TYPES } from '../constants';
+import {
+	EXTENSION_PACKAGE_TYPES,
+	EXTENSION_PKG_KEY,
+	EXTENSION_TYPES,
+	HYBRID_EXTENSION_TYPES,
+	PACKAGE_EXTENSION_TYPES,
+} from '../constants';
 import {
 	ExtensionManifest,
 	ExtensionManifestRaw,
@@ -25,35 +31,38 @@ export function validateExtensionManifest(
 		return false;
 	}
 
-	if (extensionOptions.type === 'bundle') {
-		if (
-			!extensionOptions.path ||
-			typeof extensionOptions.path === 'string' ||
-			!extensionOptions.path.app ||
-			!extensionOptions.path.api ||
-			!extensionOptions.entries ||
-			!Array.isArray(extensionOptions.entries) ||
-			!extensionOptions.entries.every((entry) => validateExtensionOptionsBundleEntry(entry)) ||
-			!extensionOptions.host
-		) {
-			return false;
-		}
-	} else if (isIn(extensionOptions.type, HYBRID_EXTENSION_TYPES)) {
-		if (
-			!extensionOptions.path ||
-			!extensionOptions.source ||
-			typeof extensionOptions.path === 'string' ||
-			typeof extensionOptions.source === 'string' ||
-			!extensionOptions.path.app ||
-			!extensionOptions.path.api ||
-			!extensionOptions.source.app ||
-			!extensionOptions.source.api
-		) {
-			return false;
+	if (isIn(extensionOptions.type, PACKAGE_EXTENSION_TYPES)) {
+		if (extensionOptions.type === 'bundle') {
+			if (
+				!extensionOptions.path ||
+				typeof extensionOptions.path === 'string' ||
+				!extensionOptions.path.app ||
+				!extensionOptions.path.api ||
+				!extensionOptions.entries ||
+				!Array.isArray(extensionOptions.entries) ||
+				!extensionOptions.entries.every((entry) => validateExtensionOptionsBundleEntry(entry))
+			) {
+				return false;
+			}
 		}
 	} else {
-		if (!extensionOptions.path || !extensionOptions.source) {
-			return false;
+		if (isIn(extensionOptions.type, HYBRID_EXTENSION_TYPES)) {
+			if (
+				!extensionOptions.path ||
+				!extensionOptions.source ||
+				typeof extensionOptions.path === 'string' ||
+				typeof extensionOptions.source === 'string' ||
+				!extensionOptions.path.app ||
+				!extensionOptions.path.api ||
+				!extensionOptions.source.app ||
+				!extensionOptions.source.api
+			) {
+				return false;
+			}
+		} else {
+			if (!extensionOptions.path || !extensionOptions.source) {
+				return false;
+			}
 		}
 	}
 
