@@ -38,14 +38,21 @@ export async function loadExtensions(): Promise<void> {
 }
 
 export function registerExtensions(app: App): void {
-	if (customExtensions === null) return;
+	const interfaces = getInternalInterfaces();
+	const displays = getInternalDisplays();
+	const layouts = getInternalLayouts();
+	const modules = getInternalModules();
+	const panels = getInternalPanels();
+	const operations = getInternalOperations();
 
-	const interfaces = [...getInternalInterfaces(), ...customExtensions.interfaces];
-	const displays = [...getInternalDisplays(), ...customExtensions.displays];
-	const layouts = [...getInternalLayouts(), ...customExtensions.layouts];
-	const modules = [...getInternalModules(), ...customExtensions.modules];
-	const panels = [...getInternalPanels(), ...customExtensions.panels];
-	const operations = [...getInternalOperations(), ...customExtensions.operations];
+	if (customExtensions !== null) {
+		interfaces.push(...customExtensions.interfaces);
+		displays.push(...customExtensions.displays);
+		layouts.push(...customExtensions.layouts);
+		modules.push(...customExtensions.modules);
+		panels.push(...customExtensions.panels);
+		operations.push(...customExtensions.operations);
+	}
 
 	registerInterfaces(interfaces, app);
 	registerDisplays(displays, app);
