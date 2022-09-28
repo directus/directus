@@ -1,11 +1,12 @@
 import { Collection } from './collection';
 import { Relation, RelationMeta, Field, FieldMeta } from '@directus/shared/types';
 import { Diff } from 'deep-diff';
+import { DatabaseClient } from './database';
 
 export type Snapshot = {
 	version: number;
 	directus: string;
-	vendor?: 'mysql' | 'postgres' | 'cockroachdb' | 'sqlite' | 'oracle' | 'mssql' | 'redshift';
+	vendor?: DatabaseClient;
 	collections: Collection[];
 	fields: SnapshotField[];
 	relations: SnapshotRelation[];

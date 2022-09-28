@@ -2,13 +2,12 @@ import { getDatabaseClient } from '../../index';
 import { DatabaseHelper } from '../types';
 import { KNEX_TYPES } from '@directus/shared/constants';
 import { Field, Relation } from '@directus/shared/types';
-
-type Clients = 'mysql' | 'postgres' | 'cockroachdb' | 'sqlite' | 'oracle' | 'mssql' | 'redshift';
+import { DatabaseClient } from '../../../types';
 
 export type Options = { nullable?: boolean; default?: any; length?: number };
 
 export abstract class SchemaHelper extends DatabaseHelper {
-	isOneOfClients(clients: Clients[]): boolean {
+	isOneOfClients(clients: DatabaseClient[]): boolean {
 		return clients.includes(getDatabaseClient(this.knex));
 	}
 

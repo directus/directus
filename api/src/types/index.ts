@@ -2,6 +2,7 @@ export * from './assets';
 export * from './ast';
 export * from './auth';
 export * from './collection';
+export * from './database';
 export * from './events';
 export * from './files';
 export * from './graphql';
