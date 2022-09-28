@@ -8,6 +8,7 @@ import { SettingsStorageAssetPreset } from '@directus/shared/types';
 type ImageSelection = {
 	imageUrl: string;
 	alt: string;
+	loading?: string;
 	width?: number;
 	height?: number;
 	transformationKey?: string | null;
@@ -52,6 +53,7 @@ export default function useImage(
 			if (selectedPreset.value) {
 				imageSelection.value!.width = selectedPreset.value.width ?? undefined;
 				imageSelection.value!.height = selectedPreset.value.height ?? undefined;
+				imageSelection.value!.loading = selectedPreset.value.loading ?? undefined;
 			}
 		}
 	);
@@ -68,6 +70,7 @@ export default function useImage(
 				const imageUrlParams = imageUrl ? new URL(imageUrl).searchParams : undefined;
 				const alt = node.getAttribute('alt');
 				const width = Number(imageUrlParams?.get('width') || undefined) || undefined;
+				const loading = node.getAttribute('loading') || undefined;
 				const height = Number(imageUrlParams?.get('height') || undefined) || undefined;
 				const transformationKey = imageUrlParams?.get('key') || undefined;
 
@@ -86,6 +89,7 @@ export default function useImage(
 					alt,
 					width: selectedPreset.value ? selectedPreset.value.width ?? undefined : width,
 					height: selectedPreset.value ? selectedPreset.value.height ?? undefined : height,
+					loading: selectedPreset.value ? selectedPreset.value.loading ?? undefined : loading,
 					transformationKey,
 					previewUrl: replaceUrlAccessToken(imageUrl, imageToken.value ?? getToken()),
 				};
@@ -121,6 +125,7 @@ export default function useImage(
 			alt: image.title,
 			width: image.width,
 			height: image.height,
+			loading: image.loading,
 			previewUrl: replaceUrlAccessToken(assetUrl, imageToken.value ?? getToken()),
 		};
 	}
@@ -137,6 +142,7 @@ export default function useImage(
 		newURL.searchParams.delete('width');
 		newURL.searchParams.delete('height');
 		newURL.searchParams.delete('key');
+		newURL.searchParams.delete('loading');
 
 		if (options.storageAssetTransform.value === 'all') {
 			if (img.transformationKey) {
@@ -152,7 +158,9 @@ export default function useImage(
 		}
 
 		const resizedImageUrl = addQueryToPath(newURL.toString(), queries);
-		const imageHtml = `<img src="${resizedImageUrl}" alt="${img.alt}" />`;
+		const imageHtml = `<img src="${resizedImageUrl}" alt="${img.alt}" ${
+			img.loading ? `loading=${img.loading}` : null
+		} />`;
 		editor.value.selection.setContent(imageHtml);
 		editor.value.undoManager.add();
 		closeImageDrawer();

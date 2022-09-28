@@ -104,6 +104,17 @@
 								:show-deselect="true"
 							/>
 						</div>
+						<div class="field half">
+							<div class="type-label">Loading</div>
+							<v-select
+								v-model="imageSelection.loading"
+								:items="[
+									{ text: 'Eager', value: 'eager' },
+									{ text: 'Lazy', value: 'lazy' },
+								]"
+								:show-deselect="true"
+							/>
+						</div>
 					</div>
 				</template>
 				<v-upload v-else :multiple="false" from-library from-url :folder="folder" @input="onImageSelect" />
@@ -204,6 +215,10 @@ import 'tinymce/plugins/paste/plugin';
 import 'tinymce/plugins/preview/plugin';
 import 'tinymce/plugins/table/plugin';
 import 'tinymce/icons/default';
+import VSelect from '@/components/v-select/v-select.vue';
+import VItem from '@/components/v-item.vue';
+import VSelect1 from '@/components/v-select/v-select.vue';
+import SelectDropdown from '../select-dropdown/select-dropdown.vue';
 
 type CustomFormat = {
 	title: string;
@@ -214,7 +229,7 @@ type CustomFormat = {
 };
 
 export default defineComponent({
-	components: { Editor },
+	components: { Editor, VSelect },
 	props: {
 		value: {
 			type: String,

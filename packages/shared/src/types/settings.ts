@@ -24,6 +24,7 @@ export type SettingsStorageAssetPreset = {
 	withoutEnlargement: boolean | null;
 	format: 'jpeg' | 'png' | 'webp' | 'tiff' | null;
 	transforms: any[] | null;
+	loading: string | null;
 };
 
 export type CustomAspectRatio = {
