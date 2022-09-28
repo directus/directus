@@ -299,9 +299,12 @@ export default defineComponent({
 			'modified_on',
 			'last_access',
 		];
-
 		const fieldsFiltered = computed(() => {
 			return fields.value.filter((field: Field) => {
+				// user should not be able to change their own status or role... can lead to much breakage
+				if (userStore.currentUser!.id === item.value?.id && ['status', 'role'].includes(field.field)) {
+					field.meta.readonly = true;
+				}
 				// These fields should only be editable when creating new users
 				if (!isNew.value && ['provider', 'external_identifier'].includes(field.field)) {
 					field.meta.readonly = true;
