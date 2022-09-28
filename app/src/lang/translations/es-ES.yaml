@@ -752,6 +752,8 @@ add_file: Agregar Archivo
 replace_file: Reemplazar Archivo
 no_results: Sin Resultados
 no_results_copy: Ajustar o limpiar filtros de búsqueda para ver los resultados.
+no_visible_fields: Limipiar Formulario
+no_visible_fields_copy: Este formulario no tiene campos visibles.
 clear_filters: Limpiar Filtros
 saves_automatically: Guardar Automáticamente
 role: Rol
@@ -1424,6 +1426,7 @@ translation: Traducción
 translation_placeholder: Introduzca una traducción...
 value: Valor
 view_project: Ver Proyecto
+weeks: { }
 report_error: Reportar Error
 start: Iniciar
 table: Tabla
