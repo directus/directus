@@ -219,7 +219,6 @@ router.patch(
 			schema: req.schema,
 		});
 
-
 		if (req.accountability?.user === req.params.pk) {
 			// remove status and role from fields...
 			delete req.body.status;
