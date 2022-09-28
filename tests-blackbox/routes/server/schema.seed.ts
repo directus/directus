@@ -210,9 +210,12 @@ export const seedDBStructure = () => {
 							relationSchema: {
 								on_delete: 'SET NULL',
 							},
-							otherRelationSchema: {
-								on_delete: 'SET NULL',
-							},
+							otherRelationSchema:
+								vendor === 'mssql'
+									? { on_delete: 'NO ACTION' }
+									: {
+											on_delete: 'SET NULL',
+									  },
 						});
 
 						// Create self O2M relationship
