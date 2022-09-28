@@ -13,6 +13,8 @@ export default function getDefaultValue(
 	const defaultValue = column.default_value ?? null;
 	if (defaultValue === null) return null;
 	if (defaultValue === '0000-00-00 00:00:00') return null;
+	// TODO: Remove when https://github.com/knex/knex-schema-inspector/pull/129 is merged
+	if (defaultValue === 'CURRENT_TIMESTAMP ') return 'CURRENT_TIMESTAMP';
 
 	switch (type) {
 		case 'bigInteger':
