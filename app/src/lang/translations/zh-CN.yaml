@@ -1904,6 +1904,7 @@ layouts:
     tags_placeholder: 可选标签字段...，
     user: 卡片使用者，
     image_fit: 卡片图像匹配
+    edit_group: 编辑分组
     show_ungrouped: 显示未分组
 panels:
   metric:
