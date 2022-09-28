@@ -325,6 +325,7 @@ edit_raw_value: 编辑原始值
 enter_raw_value: 输入原始值...
 clear_value: 清除值
 clear_changes: 清除更改
+clear_items: 清除条目
 reset_to_default: 重置为默认值
 undo_changes: 撤销更改
 notifications: 通知
@@ -534,6 +535,7 @@ activity_item: 活动项
 action: 操作
 ip_address: IP 地址
 user_agent: 用户代理（User Agent）
+origin: 原始
 webhooks: Webhook
 decimals: 小数
 value_decimals: 小数的值
@@ -603,8 +605,11 @@ errors:
   GRAPHQL_VALIDATION_EXCEPTION: GraphQL 验证异常
   SERVICE_UNAVAILABLE: 服务不可用
   UNSUPPORTED_MEDIA_TYPE: 不支持的媒体类型。
+  UNEXPECTED_RESPONSE: 响应异常
   TOKEN_EXPIRED: 令牌已过期
   RANGE_NOT_SATISFIABLE: 无效的范围
+  METHOD_NOT_ALLOWED: 不被允许的方法
+  REQUESTS_EXCEEDED: 已达到请求数量限制
 security: 安全
 value_hashed: 哈希值
 bookmark_name: 书签名称
@@ -744,6 +749,7 @@ add_file: 添加文件
 replace_file: 替换文件
 no_results: 找不到查询结果
 no_results_copy: 调整或清除搜索过滤器以查看结果。
+no_visible_fields: 空表单
 clear_filters: 清除过滤器
 saves_automatically: 自动保存
 role: 角色
@@ -1036,6 +1042,7 @@ fields:
     user: 操作人
     comment: 注释
     user_agent: 用户代理（User Agent）
+    origin: 原始
     ip: IP 地址
     revisions: 修订版本
   directus_collections:
@@ -1887,6 +1894,7 @@ layouts:
     default_template: 使用Collection默认值
     no_compatible_fields: 没有兼容的字段
   kanban:
+    name: 看板
     group_title: 组标题
     title: 卡片标题
     text: 卡片文本，
