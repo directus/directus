@@ -932,12 +932,12 @@ deselect_all: Deseleccionar Todo
 other: Otro...
 adding_user: Agregando Usuario
 unknown_user: Usuario Desconocido
-creating_in: 'Creando Elemento en {collection}'
-editing_in: 'Editando Elemento en {collection}'
-viewing_in: 'Viendo objeto en {collection}'
+creating_in: 'Creando elemento en {collection}'
+editing_in: 'Editando elemento en {collection}'
+viewing_in: 'Viendo elemnto en {collection}'
 creating_unit: 'Creando {unit}'
 editing_unit: 'Editando {unit}'
-editing_in_batch: 'Editando {count} Elementos por lote'
+editing_in_batch: 'Editando por lote {count} elementos'
 no_options_available: Sin opciones disponibles
 settings_data_model: Modelo de datos
 settings_permissions: Roles y permisos
@@ -1342,7 +1342,7 @@ relational_triggers: Disparadores Relacionales
 referential_action_field_label_m2o: Al eliminar {collection}...
 referential_action_field_label_o2m: Al deseleccionar {collection}...
 referential_action_no_action: Evitar la eliminación
-referential_action_cascade: Eliminar el item {collection} (cascada)
+referential_action_cascade: Eliminar elemento de {collection} (cascada)
 referential_action_set_null: Anular el campo {field}
 referential_action_set_default: Establecer {field} a su valor predeterminado
 choose_action: Elegir acción
