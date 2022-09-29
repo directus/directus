@@ -20,8 +20,7 @@ import { isLanguage, languageToShort } from '../utils/languages';
 import renameMap from '../utils/rename-map';
 import { Language } from '../types';
 import getPackageVersion from '../utils/get-package-version';
-
-const pkg = require('../../../../package.json');
+import getSdkVersion from '../utils/get-sdk-version';
 
 const TEMPLATE_PATH = path.resolve(__dirname, '../../../../templates');
 
@@ -86,7 +85,7 @@ async function createPackageExtension({
 
 	await fse.ensureDir(targetPath);
 
-	const host = `^${pkg.version}`;
+	const host = `^${getSdkVersion()}`;
 	const options: ExtensionOptions =
 		type === 'bundle' ? { type, path: { app: 'dist/app.js', api: 'dist/api.js' }, entries: [], host } : { type, host };
 	const packageManifest = getPackageManifest(name, options, await getPackageDeps(type));
@@ -131,7 +130,7 @@ async function createLocalExtension({
 	await fse.copy(path.join(TEMPLATE_PATH, type, language), targetPath);
 	await renameMap(targetPath, (name) => (name.startsWith('_') ? `.${name.substring(1)}` : null));
 
-	const host = `^${pkg.version}`;
+	const host = `^${getSdkVersion()}`;
 	const options: ExtensionOptions = isIn(type, HYBRID_EXTENSION_TYPES)
 		? {
 				type,
@@ -172,7 +171,7 @@ function getPackageManifest(name: string, options: ExtensionOptions, deps: Recor
 
 async function getPackageDeps(type: ExtensionPackageType, language?: Language) {
 	return {
-		'@directus/extensions-sdk': pkg.version,
+		'@directus/extensions-sdk': getSdkVersion(),
 		...(language === 'typescript'
 			? {
 					...(isIn(type, API_OR_HYBRID_EXTENSION_TYPES)
