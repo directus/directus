@@ -199,7 +199,7 @@ export default defineComponent({
 				} else {
 					router.push(`/content/${item.collection}/${item.item}`);
 				}
-			} else {
+			} else if (String(item.item).startsWith('/')) {
 				router.push(item.item);
 			}
 
