@@ -7,8 +7,6 @@ import {
 	EXTENSION_PKG_KEY,
 	EXTENSION_LANGUAGES,
 	HYBRID_EXTENSION_TYPES,
-	API_OR_HYBRID_EXTENSION_TYPES,
-	APP_OR_HYBRID_EXTENSION_TYPES,
 	EXTENSION_NAME_REGEX,
 	EXTENSION_PACKAGE_TYPES,
 	PACKAGE_EXTENSION_TYPES,
@@ -18,9 +16,8 @@ import { ExtensionOptions, ExtensionPackageType, ExtensionType, PackageExtension
 import { log } from '../utils/logger';
 import { isLanguage, languageToShort } from '../utils/languages';
 import renameMap from '../utils/rename-map';
-import { Language } from '../types';
-import getPackageVersion from '../utils/get-package-version';
 import getSdkVersion from '../utils/get-sdk-version';
+import getExtensionDevDeps from './helpers/get-extension-dev-deps';
 
 const TEMPLATE_PATH = path.resolve(__dirname, '../../../../templates');
 
@@ -88,7 +85,7 @@ async function createPackageExtension({
 	const host = `^${getSdkVersion()}`;
 	const options: ExtensionOptions =
 		type === 'bundle' ? { type, path: { app: 'dist/app.js', api: 'dist/api.js' }, entries: [], host } : { type, host };
-	const packageManifest = getPackageManifest(name, options, await getPackageDeps(type));
+	const packageManifest = getPackageManifest(name, options, await getExtensionDevDeps(type));
 
 	await fse.writeJSON(path.join(targetPath, 'package.json'), packageManifest, { spaces: '\t' });
 
@@ -144,7 +141,7 @@ async function createLocalExtension({
 				source: `src/index.${languageToShort(language)}`,
 				host,
 		  };
-	const packageManifest = getPackageManifest(name, options, await getPackageDeps(type, language));
+	const packageManifest = getPackageManifest(name, options, await getExtensionDevDeps(type, language));
 
 	await fse.writeJSON(path.join(targetPath, 'package.json'), packageManifest, { spaces: '\t' });
 
@@ -166,21 +163,6 @@ function getPackageManifest(name: string, options: ExtensionOptions, deps: Recor
 			dev: 'directus-extension build -w --no-minify',
 		},
 		devDependencies: deps,
-	};
-}
-
-async function getPackageDeps(type: ExtensionPackageType, language?: Language) {
-	return {
-		'@directus/extensions-sdk': getSdkVersion(),
-		...(language === 'typescript'
-			? {
-					...(isIn(type, API_OR_HYBRID_EXTENSION_TYPES)
-						? { '@types/node': `^${await getPackageVersion('@types/node')}` }
-						: {}),
-					typescript: `^${await getPackageVersion('typescript')}`,
-			  }
-			: {}),
-		...(isIn(type, APP_OR_HYBRID_EXTENSION_TYPES) ? { vue: `^${await getPackageVersion('vue')}` } : {}),
 	};
 }
 
