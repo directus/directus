@@ -31,6 +31,8 @@ export type ExtensionType = typeof EXTENSION_TYPES[number];
 export type PackageExtensionType = typeof PACKAGE_EXTENSION_TYPES[number];
 export type ExtensionPackageType = typeof EXTENSION_PACKAGE_TYPES[number];
 
+export type SplitEntrypoint = { app: string; api: string };
+
 type ExtensionBase = {
 	path: string;
 	name: string;
@@ -48,7 +50,7 @@ type ApiExtensionBase = {
 
 type HybridExtensionBase = {
 	type: HybridExtensionType;
-	entrypoint: { app: string; api: string };
+	entrypoint: SplitEntrypoint;
 };
 
 type PackExtensionBase = {
@@ -58,7 +60,7 @@ type PackExtensionBase = {
 
 type BundleExtensionBase = {
 	type: 'bundle';
-	entrypoint: { app: string; api: string };
+	entrypoint: SplitEntrypoint;
 	entries: { type: ExtensionType; name: string }[];
 };
 
@@ -90,7 +92,7 @@ export type Extension = ExtensionLocal | ExtensionPackage;
 export type ExtensionOptionsBundleEntryRaw = {
 	type?: string;
 	name?: string;
-	source?: string | { app?: string; api?: string };
+	source?: string | Partial<SplitEntrypoint>;
 };
 
 export type ExtensionManifestRaw = {
@@ -100,8 +102,8 @@ export type ExtensionManifestRaw = {
 
 	[EXTENSION_PKG_KEY]?: {
 		type?: string;
-		path?: string | { app?: string; api?: string };
-		source?: string | { app?: string; api?: string };
+		path?: string | Partial<SplitEntrypoint>;
+		source?: string | Partial<SplitEntrypoint>;
 		entries?: ExtensionOptionsBundleEntryRaw[];
 		host?: string;
 		hidden?: boolean;
@@ -110,7 +112,7 @@ export type ExtensionManifestRaw = {
 
 export type ExtensionOptionsBundleEntry =
 	| { type: AppExtensionType | ApiExtensionType; name: string; source: string }
-	| { type: HybridExtensionType; name: string; source: { app: string; api: string } };
+	| { type: HybridExtensionType; name: string; source: SplitEntrypoint };
 
 type ExtensionOptionsBase = {
 	host: string;
@@ -125,8 +127,8 @@ type ExtensionOptionsAppOrApi = {
 
 type ExtensionOptionsHybrid = {
 	type: HybridExtensionType;
-	path: { app: string; api: string };
-	source: { app: string; api: string };
+	path: SplitEntrypoint;
+	source: SplitEntrypoint;
 };
 
 type ExtensionOptionsPack = {
@@ -135,7 +137,7 @@ type ExtensionOptionsPack = {
 
 type ExtensionOptionsBundle = {
 	type: 'bundle';
-	path: { app: string; api: string };
+	path: SplitEntrypoint;
 	entries: ExtensionOptionsBundleEntry[];
 };
 

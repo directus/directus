@@ -1,4 +1,4 @@
-import { ExtensionOptionsBundleEntry, JsonValue } from '@directus/shared/types';
+import { ExtensionOptionsBundleEntry, JsonValue, SplitEntrypoint } from '@directus/shared/types';
 import { validateExtensionOptionsBundleEntry } from '@directus/shared/utils';
 
 function validateNonPrimitive(value: JsonValue | undefined): value is JsonValue[] | { [key: string]: JsonValue } {
@@ -15,7 +15,7 @@ function validateNonPrimitive(value: JsonValue | undefined): value is JsonValue[
 	return true;
 }
 
-export function validateSplitEntrypointOption(option: JsonValue | undefined): option is { app: string; api: string } {
+export function validateSplitEntrypointOption(option: JsonValue | undefined): option is SplitEntrypoint {
 	if (!validateNonPrimitive(option) || Array.isArray(option)) {
 		return false;
 	}
