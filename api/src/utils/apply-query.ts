@@ -367,19 +367,23 @@ export function applyFilter(
 
 					if (!columnPath) continue;
 
-					validateFilterOperator(
-						schema.collections[targetCollection].fields[stripFunction(filterPath[filterPath.length - 1])].type,
-						filterOperator,
-						schema.collections[targetCollection].fields[stripFunction(filterPath[filterPath.length - 1])].special
+					const { type, special } = getOrThrow(
+						schema.collections[targetCollection].fields,
+						stripFunction(filterPath[filterPath.length - 1]),
+						targetCollection
 					);
+
+					validateFilterOperator(type, filterOperator, special);
 
 					applyFilterToQuery(columnPath, filterOperator, filterValue, logical, targetCollection);
 				} else {
-					validateFilterOperator(
-						schema.collections[collection].fields[stripFunction(filterPath[0])].type,
-						filterOperator,
-						schema.collections[collection].fields[stripFunction(filterPath[0])].special
+					const { type, special } = getOrThrow(
+						schema.collections[collection].fields,
+						stripFunction(filterPath[0]),
+						collection
 					);
+
+					validateFilterOperator(type, filterOperator, special);
 
 					applyFilterToQuery(`${collection}.${filterPath[0]}`, filterOperator, filterValue, logical);
 				}
@@ -743,4 +747,12 @@ function getOperation(key: string, value: Record<string, any>): { operator: stri
 	}
 
 	return getOperation(Object.keys(value)[0], Object.values(value)[0]);
+}
+
+function getOrThrow<T extends object>(object: T, key: keyof T, context = 'unknown') {
+	if (object[key] === undefined) {
+		throw new Error(`Invalid filter key "${String(key)}" on ${context}`);
+	}
+
+	return object[key];
 }
