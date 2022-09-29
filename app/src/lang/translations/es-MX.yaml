@@ -752,6 +752,8 @@ add_file: Agregar Archivo
 replace_file: Reemplazar Archivo
 no_results: Sin Resultados
 no_results_copy: Ajustar o limpiar filtros de búsqueda para ver los resultados.
+no_visible_fields: Limipiar Formulario
+no_visible_fields_copy: Este formulario no tiene campos visibles.
 clear_filters: Limpiar Filtros
 saves_automatically: Guardar Automáticamente
 role: Rol
@@ -797,7 +799,7 @@ set_flow_inactive: Establecer flujo a inactivo
 edit_flow: Editar flujo
 delete_flow: Eliminar flujo
 no_other_flows_copy: Aún no tienes otros flujos.
-no_flows: No hay flujos
+no_flows: Sin flujos
 no_flows_copy: Todavía no tienes flujos.
 create_flow: Crear flujo
 creating_new_flow: Creando nuevo flujo
@@ -937,12 +939,12 @@ creating_unit: 'Creando {unit}'
 editing_unit: 'Editando {unit}'
 editing_in_batch: 'Editando {count} Elementos por lote'
 no_options_available: Sin opciones disponibles
-settings_data_model: Modelo de Datos
-settings_permissions: Roles y Permisos
-settings_project: Configuración del Proyecto
+settings_data_model: Modelo de datos
+settings_permissions: Roles y permisos
+settings_project: Configuración del proyecto
 settings_webhooks: Webhooks
 settings_flows: Flujos
-settings_presets: Predefinidos y Marcadores
+settings_presets: Preajustes y marcadores
 settings_translation_strings: Cadenas de traducción
 one_or_more_options_are_missing: Falta una o más opciones
 scope: Alcance
@@ -1424,6 +1426,7 @@ translation: Traducción
 translation_placeholder: Introduzca una traducción...
 value: Valor
 view_project: Ver Proyecto
+weeks: { }
 report_error: Reportar Error
 start: Iniciar
 table: Tabla
