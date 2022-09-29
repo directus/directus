@@ -1,6 +1,6 @@
 post:
-  summary: Apply Schema
-  description: Apply schema snapshot based on JSON request body or a JSON/CSV schema file.
+  summary: Apply Schema Difference
+  description: Apply schema difference based on JSON request body. This endpoint is only available to admin users.
   operationId: serverSchemaApply
   requestBody:
     required: true
@@ -9,15 +9,56 @@ post:
         schema:
           type: object
           properties:
-            data:
-              type: object
-      multipart/form-data:
-        schema:
-          type: object
-          properties:
-            file:
+            hash:
               type: string
-              format: binary
+            diff:
+              type: object
+              properties:
+                collections:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      hash:
+                        type: string
+                      collection:
+                        type: string
+                      diff:
+                        type: array
+                        items:
+                          type: object
+                fields:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      hash:
+                        type: string
+                      collection:
+                        type: string
+                      field:
+                        type: string
+                      diff:
+                        type: array
+                        items:
+                          type: object
+                relations:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      hash:
+                        type: string
+                      collection:
+                        type: string
+                      field:
+                        type: string
+                      related_collection:
+                        type: string
+                      diff:
+                        type: array
+                        items:
+                          type: object
   responses:
     '204':
       description: Successful request

@@ -1,9 +1,16 @@
 post:
   summary: Retrieve Schema Difference
   description:
-    Compares and retrieve the difference of the current schema vs the schema in JSON request body or a JSON/CSV schema
-    file.
+    Compares and retrieve the difference of the current schema vs the schema in JSON request body or a JSON/YAML schema
+    file. This endpoint is only available to admin users.
   operationId: serverSchemaDiff
+  parameters:
+    - name: force
+      description: Bypasses version and database vendor restrictions when this query parameter is included.
+      in: query
+      required: false
+      schema:
+        type: boolean
   requestBody:
     required: true
     content:
@@ -31,45 +38,56 @@ post:
               data:
                 type: object
                 properties:
-                  collections:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        collection:
-                          type: string
-                        diff:
-                          type: array
-                          items:
-                            type: object
-                  fields:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        collection:
-                          type: string
-                        field:
-                          type: string
-                        diff:
-                          type: array
-                          items:
-                            type: object
-                  relations:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        collection:
-                          type: string
-                        field:
-                          type: string
-                        related_collection:
-                          type: string
-                        diff:
-                          type: array
-                          items:
-                            type: object
+                  hash:
+                    type: string
+                  diff:
+                    type: object
+                    properties:
+                      collections:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            hash:
+                              type: string
+                            collection:
+                              type: string
+                            diff:
+                              type: array
+                              items:
+                                type: object
+                      fields:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            hash:
+                              type: string
+                            collection:
+                              type: string
+                            field:
+                              type: string
+                            diff:
+                              type: array
+                              items:
+                                type: object
+                      relations:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            hash:
+                              type: string
+                            collection:
+                              type: string
+                            field:
+                              type: string
+                            related_collection:
+                              type: string
+                            diff:
+                              type: array
+                              items:
+                                type: object
     '204':
       description: No schema difference.
     '403':
