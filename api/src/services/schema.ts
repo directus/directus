@@ -4,7 +4,7 @@ import Joi from 'joi';
 import { Knex } from 'knex';
 import { version as currentDirectusVersion } from '../../package.json';
 import { ALIAS_TYPES } from '../constants';
-import getDatabase from '../database';
+import getDatabase, { getDatabaseClient } from '../database';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { AbstractServiceOptions, Snapshot, SnapshotDiff, SnapshotWithHash } from '../types';
 import { applyDiff } from '../utils/apply-diff';
@@ -233,10 +233,25 @@ export class SchemaService {
 	): Promise<SnapshotDiff | null> {
 		if (this.accountability?.admin !== true) throw new ForbiddenException();
 
-		if (snapshot.directus !== currentDirectusVersion && !options?.force) {
-			throw new InvalidPayloadException(
-				`Provided snapshot's directus version ${snapshot.directus} does not match the current instance's version ${currentDirectusVersion}`
-			);
+		if (!options?.force) {
+			if (snapshot.directus !== currentDirectusVersion) {
+				throw new InvalidPayloadException(
+					`Provided snapshot's directus version ${snapshot.directus} does not match the current instance's version ${currentDirectusVersion}. You can bypass this check by passing the "force" query parameter.`
+				);
+			}
+
+			if (!snapshot.vendor) {
+				throw new InvalidPayloadException(
+					'Provided snapshot does not contain the "vendor" property. You can bypass this check by passing the "force" query parameter.'
+				);
+			}
+
+			const currentVendor = getDatabaseClient();
+			if (snapshot.vendor !== currentVendor) {
+				throw new InvalidPayloadException(
+					`Provided snapshot's vendor ${snapshot.vendor} does not match the current instance's vendor ${currentVendor}. You can bypass this check by passing the "force" query parameter.`
+				);
+			}
 		}
 
 		const { error } = snapshotJoiSchema.validate(snapshot);
