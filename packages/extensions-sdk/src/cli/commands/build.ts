@@ -36,11 +36,11 @@ import {
 } from '@directus/shared/types';
 import { log, clear } from '../utils/logger';
 import { getLanguageFromPath, isLanguage } from '../utils/languages';
-import { Language, RollupConfig, RollupMode } from '../types';
-import loadConfig from '../utils/load-config';
-import generateBundleEntrypoint from '../utils/generate-bundle-entrypoint';
 import tryParseJson from '../utils/try-parse-json';
-import { validateBundleEntriesOption, validateSplitEntrypointOption } from '../utils/validate-cli-options';
+import { Language, RollupConfig, RollupMode } from '../types';
+import loadConfig from './helpers/load-config';
+import generateBundleEntrypoint from './helpers/generate-bundle-entrypoint';
+import { validateBundleEntriesOption, validateSplitEntrypointOption } from './helpers/validate-cli-options';
 
 type BuildOptions = {
 	type?: string;
