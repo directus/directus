@@ -18,8 +18,7 @@ import { isLanguage, languageToShort } from '../utils/languages';
 import renameMap from '../utils/rename-map';
 import getSdkVersion from '../utils/get-sdk-version';
 import getExtensionDevDeps from './helpers/get-extension-dev-deps';
-
-const TEMPLATE_PATH = path.resolve(__dirname, '../../../../templates');
+import getTemplatePath from '../utils/get-template-path';
 
 type CreateOptions = { language?: string };
 
@@ -123,8 +122,10 @@ async function createLocalExtension({
 
 	await fse.ensureDir(targetPath);
 
-	await fse.copy(path.join(TEMPLATE_PATH, 'common', language), targetPath);
-	await fse.copy(path.join(TEMPLATE_PATH, type, language), targetPath);
+	const templatePath = getTemplatePath();
+
+	await fse.copy(path.join(templatePath, 'common', language), targetPath);
+	await fse.copy(path.join(templatePath, type, language), targetPath);
 	await renameMap(targetPath, (name) => (name.startsWith('_') ? `.${name.substring(1)}` : null));
 
 	const host = `^${getSdkVersion()}`;
