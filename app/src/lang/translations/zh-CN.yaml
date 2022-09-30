@@ -187,6 +187,8 @@ revision_post_create: 这是新建条目后看起来的样子。
 revision_post_update: 这是更新后该条目的外观。
 changes_made: 下面是本次修订中所作的具体修改。
 no_relational_data: 请记住，此处不包括关系数据。
+top: 顶部
+bottom: 底部
 hide_field: 隐藏字段
 hide_field_on_detail: 在详情中隐藏该字段
 show_field_on_detail: 在详情中显示
@@ -750,6 +752,7 @@ replace_file: 替换文件
 no_results: 找不到查询结果
 no_results_copy: 调整或清除搜索过滤器以查看结果。
 no_visible_fields: 空表单
+no_visible_fields_copy: 此表单没有可见字段。
 clear_filters: 清除过滤器
 saves_automatically: 自动保存
 role: 角色
@@ -780,6 +783,7 @@ flows: 流程
 flow: 流程
 select_a_flow: 选择一个流程
 run_flow_on_current: 在当前条目上运行Flow
+run_flow_on_current_edited_confirm: 此流程可能会更新此项，您确定要执行它吗？
 run_flow_on_selected: 没有选定项 | 在已选定的 1 项上运行流流程 | 在选定的 {n} 个项目上运行流程
 run_flow_success: 流程 "{flow}" 运行成功
 trigger: 触发器
@@ -989,6 +993,7 @@ page_help_settings_presets_item: >-
 page_help_settings_webhooks_collection: '**Browse Webhooks** - 列出项目内的所有网络钩子。'
 page_help_settings_webhooks_item: '**Webhook Detail** - 用于创建和管理项目webhooks的表格。'
 page_help_settings_flows_collection: '**Browse Webhooks** - 列出项目内的所有流。'
+page_help_settings_flows_item: '**流程详情** - 管理一个或多个操作面板的工作空间。'
 page_help_settings_translation_strings_collection: '**浏览翻译字符串** - 列出项目中的所有翻译字符串。'
 page_help_users_collection: '**用户目录** - 列出此项目中的所有系统用户。'
 page_help_users_item: >-
@@ -1571,6 +1576,7 @@ interfaces:
   list-m2m:
     many-to-many: 多对多
     description: 选择多个相关项目
+    columns_configure_notice: 您可以在创建此字段后配置显示模板。
     display_template_configure_notice: 您可以在创建此字段后配置显示模板。
   select-dropdown-m2o:
     many-to-one: 多对一
@@ -1739,6 +1745,7 @@ interfaces:
     remove_token: 删除令牌
   system-raw-editor:
     system-raw-editor: 原始编辑器
+    description: 允许输入原始或mustache 模板值
 displays:
   translations:
     translations: 翻译
@@ -1777,11 +1784,14 @@ displays:
     relative: 相对
     relative_label: '显示相对时间，例如 5 分钟前'
     suffix: 后缀
+    suffix_note: 使用 'in' 和 'ago' 等单词
     strict: 严格的
     strict_label: 使用严格的单位
     strict_note: 删除像‘几乎’，‘超过’，‘小于’ 这样的单词
+    round: 圆角
     round_note: 选择 (取整函数) 四舍五入的方式
     down: 向下取整
+    nearest: 最近的
     up: 向上取整
   file:
     file: 文件
@@ -1895,14 +1905,20 @@ layouts:
     no_compatible_fields: 没有兼容的字段
   kanban:
     name: 看板
+    group_field: 分组：
+    group_field_placeholder: 用于分组的字段...，
     group_title: 组标题
+    group_title_placeholder: 分组标题字段...，
     title: 卡片标题
+    title_placeholder: 可选日期字段...，
     text: 卡片文本，
+    text_placeholder: 可选标签字段...，
     date: 卡片日期
     date_placeholder: 可选日期字段...，
     tags: 卡片标签
     tags_placeholder: 可选标签字段...，
     user: 卡片使用者，
+    user_placeholder: 可选文本字段...，
     image_fit: 卡片图像匹配
     edit_group: 编辑分组
     show_ungrouped: 显示未分组
@@ -1932,6 +1948,10 @@ panels:
     select_field: 您必须选择一个字段。
     select_collection: 您必须选择一个集合。
     datasets: 数据集
+  meter:
+    select_field: 您必须选择一个字段。
+    select_collection: 您必须选择一个集合。
+    function: 功能函数
   variable:
     name: 全局变量
     variable_key: 变量键
@@ -1949,12 +1969,15 @@ triggers:
     method: 方法
     async: 异步的
   operation:
-    name: 另一个流
+    name: 另一个流程
+    description: 被另一个流程触发，形成流程链
+    preview: 在不同的流程中被一个操作触发
   schedule:
     name: 计划任务(CRON)
     cron: 间隔
   manual:
     name: 手动
+operation_variables_note: 您可以通过变量引用访问流程数据，例如**{{'}{'{'}$last{'}'}{'}'}**， **{{'}{{'}$trigger{'}'}{'}'}** 和 **{{'}{'{'}$accountability{'}'}{'}'}**, 或使用 **{'{'}{'{'} operation_key{'}'}{'}'}**引用之前的操作。
 operations:
   exec:
     name: 运行脚本
@@ -1990,12 +2013,22 @@ operations:
     message: 消息
   request:
     url: URl
+    url_placeholder: https://example.com/example
     method: 方法
     data: 数据
     headers: 请求头
     header: 报头
     header_placeholder: 身份验证
+    value_placeholder: Bearer eyJhbGciOi...
+  sleep:
+    name: 休眠
+    description: 等待给定的毫秒数
+    milliseconds: 毫秒
+  transform:
+    name: 转换有效负载
+    description: 修改流程的JSON格式负载
   trigger:
+    name: 触发流程
     description: 将此数据传递到另一个流程
     flows: 流程
     flow: 流程
