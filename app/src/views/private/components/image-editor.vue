@@ -189,7 +189,7 @@ export default defineComponent({
 			default: false
 		}
 	},
-	emits: ['update:modelValue', 'refresh', 'load-crops-warning'],
+	emits: ['update:modelValue', 'refresh', 'update-crop-info'],
 	setup(props, { emit }) {
 		const { t, n } = useI18n();
 
@@ -224,7 +224,6 @@ export default defineComponent({
 
 		watch(internalActive, (isActive) => {
 			if (isActive === true) {
-				emit('load-crops-warning');
 				fetchImage();
 			} else {
 				if (cropperInstance.value) {
@@ -432,10 +431,7 @@ export default defineComponent({
 
 								imageTransformations.value.rotate > 0 ? imageTransformations.value.rotate %= 360 : imageTransformations.value.rotate %= -360;
 
-								await api.patch(`/items/${props.cropInfo.cropCollection}/${props.cropInfo.id}`, {
-									...coordinates,
-									image_transformations: imageTransformations.value,
-								});
+								emit('update-crop-info', {...coordinates, image_transformations: imageTransformations.value})
 							} else {
 								await api.patch(`/files/${props.id}`, formData);
 							}

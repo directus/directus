@@ -135,7 +135,6 @@
 				v-model="editActive"
 				:show-image-has-crops-warning="showImageHasCropsWarning"
 				@refresh="refresh"
-				@load-crops-warning="loadCropsWarning"
 			/>
 
 			<v-form
@@ -290,21 +289,6 @@ const { createAllowed, deleteAllowed, saveAllowed, updateAllowed, fields, revisi
 const fieldsFiltered = computed(() => {
 	return fields.value.filter((field: Field) => fieldsDenyList.includes(field.field) === false);
 });
-
-async function loadCropsWarning() {
-	const allFields = await api.get("/fields/directus_files")
-
-	const cropFields = allFields.data.data.filter(field => {
-		return field.meta.interface === "file-image-crop"
-	}).map(field => field.field)
-
-	for (const field of cropFields) {
-		if (item.value[field].length > 0) {
-			showImageHasCropsWarning.value = true
-			break;
-		}
-	}
-}
 
 function useBreadcrumb() {
 	const breadcrumb = computed(() => {

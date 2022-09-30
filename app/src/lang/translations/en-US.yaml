@@ -592,6 +592,7 @@ create_account: Create Account
 account_created_successfully: Account Created Successfully
 auto_fill: Auto Fill
 corresponding_field: Corresponding Field
+required_crop_collection_fields: Required Crop Collection Fields
 errors:
   COLLECTION_NOT_FOUND: "Collection doesn't exist"
   FIELD_NOT_FOUND: Field not found

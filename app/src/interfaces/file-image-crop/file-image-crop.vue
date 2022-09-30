@@ -73,28 +73,29 @@
 				:crop-info="cropInfoForEditor"
 				:crop-collection="cropCollection"
 				@refresh="refresh"
-				@replace-image="updateImage($event.id)"
+				@replace-image="replaceImage($event.id)"
+				@update-crop-info="updateCropInfo"
 			/>
 		</div>
-		<v-upload v-else from-library from-url :folder="folder" @input="updateImage($event.id)" />
+		<v-upload v-else from-library from-url :folder="folder" @input="replaceImage($event.id)" />
 	</div>
 </template>
 
 <script setup lang="ts">
 import api, { addTokenToURL } from '@/api';
 import { useRelationM2O } from '@/composables/use-relation-m2o';
+import { useItem } from '@/composables/use-item';
 import { RelationQuerySingle, useRelationSingle } from '@/composables/use-relation-single';
-import { formatFilesize } from '@/utils/format-filesize';
 import { getRootPath } from '@/utils/get-root-path';
 import { readableMimeType } from '@/utils/readable-mime-type';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
 import ImageEditor from '@/views/private/components/image-editor.vue';
-import { computed, ref, toRefs } from 'vue';
+import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const props = withDefaults(
 	defineProps<{
-		value?: string | number | null;
+		value?: string | number | null | Record<string, any>;
 		disabled?: boolean;
 		folder?: string;
 		collection: string;
@@ -127,16 +128,24 @@ const { collection, field } = toRefs(props);
 const { relationInfo } = useRelationM2O(collection, field);
 const { displayItem: cropInfo, loading, update, remove, refresh } = useRelationSingle(cropID, cropQuery, relationInfo);
 
-const fileID = computed(() => {
-	if (!cropInfo.value) return null;
-	return cropInfo.value.file_id;
+const fileID = computed({
+	get() {
+		if (!cropInfo.value) return null;
+		return cropInfo.value.file_id;
+	},
+	set(newVal) {
+		return newVal
+	}
 });
+const file = useItem(ref('directus_files'), fileID)
 
 const image = computed(() => {
-	if (!cropInfo.value) return null;
-
 	// Note: it is a preloaded file row, not file ID
-	return cropInfo.value.file_id;
+	if (cropInfo.value && typeof cropInfo.value.file_id === 'object') return cropInfo.value.file_id;
+
+	if (file && file.item.value) return file.item.value
+	
+	return null;
 });
 
 const cropInfoForEditor = computed(() => {
@@ -183,7 +192,6 @@ const src = computed(() => {
 		let url = `/assets/${image.value.id}?cache-buster=${image.value.modified_on}`;
 		if (cropInfo.value.image_transformations) {
 			url = applyImageTransformationsToUrl(url);
-			console.log(url)
 		}
 		return addTokenToURL(url);
 	}
@@ -266,20 +274,18 @@ async function imageErrorHandler() {
 	}
 }
 
-async function updateImage(item: string | number) {
+async function replaceImage(item: string | number) {
 	try {
-		// TODO: handle item
-		const primaryKey = props.primaryKey == '+' ? null : props.primaryKey;
-		const response = await api.post(`/items/${relationInfo.value?.relatedCollection.collection}`, {
-			collection: collection.value,
-			file_id: item,
-			item: primaryKey
-		});
-		update(response.data.data.id);
+		fileID.value = item
+		cropID.value = {file_id: item, collection: collection.value}
 	} catch (err: any) {
-		// TODO: Handle prop could not be created
 		console.log(err);
 	}
+}
+
+function updateCropInfo(payload: {coordinates: object, image_transformations: object}) {
+	if (cropID.value && typeof cropID.value === 'object') cropID.value = {...cropID.value, ...payload}
+	if (cropID.value && (typeof cropID.value === 'string' || typeof cropID.value === 'number')) cropID.value = {id: cropID.value, ...payload}
 }
 
 function deselect() {

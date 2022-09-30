@@ -111,6 +111,11 @@ export function setDefaults(updates: StateUpdates, state: State, { getCurrent }:
 		},
 		{
 			collection: junctionName,
+			field: 'image_transformations',
+			type: 'json',
+		},
+		{
+			collection: junctionName,
 			field: 'x',
 			type: 'integer',
 		},
@@ -128,18 +133,13 @@ export function setDefaults(updates: StateUpdates, state: State, { getCurrent }:
 			collection: junctionName,
 			field: 'height',
 			type: 'integer',
-		},
-		{
-			collection: junctionName,
-			field: 'image_transformations',
-			type: 'json',
 		}
 	]);
 	set(updates, 'relations.m2o.meta.one_allowed_collections', [currentCollection]);
 	set(updates, 'relations.m2o.meta.one_collection_field', 'collection');
 
 	// Create a M2O relation between the collections and junction table
-	set(state, 'createFieldOnCurrentCollection', false);
+	set(updates, 'createFieldOnCurrentCollection', false);
 	set(updates, 'relations.m2o.meta.link_one_allowed_collections_back', true);
 	set(updates, 'relations.m2o.meta.one_allowed_collections_relation_field', junctionName);
 }

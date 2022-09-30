@@ -61,16 +61,17 @@
 
 			<div class="spacer" />
 
-			<template v-for="field in junctionFieldsRelated">
-				<v-input class="second-col-field" :model-value="field.field" :disabled="autoGenerateJunctionRelation || isExisting" />
-				<div class="spacer" />
-			</template>
+			<v-icon class="arrow" name="arrow_forward" />
+			<v-icon class="arrow" name="arrow_backward" />
+			<v-icon class="arrow" name="arrow_backward" />
+			<v-icon class="arrow" name="arrow_forward" />
+		</div>
 
-			<v-checkbox v-if="!isExisting" class="second-col-field" v-model="autoGenerateJunctionRelation" block :label="t('auto_fill')" />
-			<v-icon class="arrow" name="arrow_forward" />
-			<v-icon class="arrow" name="arrow_backward" />
-			<v-icon class="arrow" name="arrow_backward" />
-			<v-icon class="arrow" name="arrow_forward" />
+		<div class="required-crop-section">
+			<v-divider large :inline-title="false">{{ t('required_crop_collection_fields') }}</v-divider>
+			<div class="required-crop-fields">
+				<v-input v-for="field in junctionFieldsRelated" :model-value="field.field" :disabled="autoGenerateJunctionRelation || isExisting" />
+			</div>
 		</div>
 
 		<div class="sort-field">
@@ -339,6 +340,21 @@ export default defineComponent({
 
 .second-col-field {
 	grid-column: 2;
+}
+
+.required-crop-section {
+	--v-input-font-family: var(--family-monospace);
+
+	.v-divider {
+		margin-top: 48px;
+		margin-bottom: 24px;
+	}
+}
+
+.required-crop-fields {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 10px;
 }
 
 .sort-field {
