@@ -151,7 +151,7 @@ shutter: 셔터
 iso: ISO
 focal_length: 초점 거리
 schema_setup_key: 이 필드의 DB 컬럼명과 API 키
-create_field: 필드 생성
+create_field: 필드 추가
 creating_new_field: '새 필드 ({collection})'
 reset_page_preferences: 앱 환경설정 초기화
 hidden_field: 숨김 필드
@@ -193,6 +193,7 @@ updated_on: 수정일
 updated_by: 수정자
 primary_key: 기본키
 foreign_key: 외래키
+finish_setup: 셋업 종료
 clear_items: 선택 해제
 show_all_activity: 전체 활동기록 보기
 settings_update_success: 설정이 수정됨.
@@ -248,6 +249,7 @@ type: 타입
 creating_new_collection: 새 컬렉션 만들기
 created_by: '작성자:'
 created_on: 작성일
+add_existing: 데이터 선택
 creating_items: 데이터 추가
 selecting_items: 항목 선택
 comments: 코멘트
@@ -271,6 +273,7 @@ collection_created: 목록이 생성됨
 card_size: 카드형식 크기
 sort_field: 정렬 기준
 status: 상태
+select_an_item: 목록에서 선택...
 edit: 수정
 create_account: 계정 추가
 account_created_successfully: 계정이 추가되었습니다.
@@ -291,6 +294,8 @@ start_end_of_count_items: '{start}-{end} / 총 {count}개'
 start_end_of_count_filtered_items: '{start}-{end} / 총 {count}개 '
 one_item: '1개 항목'
 one_filtered_item: '1개 항목'
+item: 항목
+items: 항목
 drag_file_here: 여기에 파일 끌어서 놓기
 layout_options: 표시방법 선택
 value_unique: 생산Key는 유일해야만 합니다.
@@ -328,12 +333,16 @@ full_screen: 전체화면
 full_text_search: 전체 검색
 edit_panels: 판넬 수정
 fit_to_screen: 화면크기에 맞추기
+width: 가로(폭)
+height: 세로(높이)
 wysiwyg_options:
   selectall: 모두 선택
   fullscreen: 전체화면
 adding_user: 사용자 추가
 unknown_user: 알 수 없는 사용자
 creating_in: '{collection} 데이터 추가'
+editing_in: '{collection} 편집'
+viewing_in: '{collection} 조회'
 settings_data_model: 데이터 모델
 settings_permissions: 역할 및 권한
 settings_project: 프로젝트 설정
@@ -342,6 +351,8 @@ scope: 범위
 layout: 표시 방법
 data: 데이터
 activity_feed: 활동 내역
+batch_delete_confirm: >-
+  선택한 항목이 없습니다. | 선택한 항목을 삭제하시겠습니까? 한번 삭제하면 복구할 수 없습니다. | 선택한 {count}개 항목을 을 삭제하시겠습니까? 한번 삭제하면 복구할 수 없습니다.
 content: 데이터 및 컨텐츠 관리
 fields:
   directus_activity:
@@ -358,11 +369,26 @@ fields:
     display_template: 표시 형식
     sort_field: 정렬 기준
   directus_files:
+    $thumbnail: 미리보기
     title: 제목
+    description: 설명
+    tags: 태그
+    location: 위치
+    filename_disk: 파일명(저장명)
+    filename_download: 파일명(다운로드)
     metadata: 메타데이터(Metadata)
+    type: 마임(Mime)타입
     filesize: 파일 크기
+    modified_by: 수정자
+    modified_on: 수정일
     created_on: 작성일
-    created_by: '작성자:'
+    created_by: 작성자
+    uploaded_by: 작성자(업로드)
+    folder: 폴더
+    width: 가로(폭)
+    uploaded_on: 작성일(업로드)
+    height: 세로(높이)
+    charset: 문자셋
   directus_users:
     first_name: 이름/별명
     last_name: 성
@@ -421,6 +447,7 @@ fields:
     translation: 항목 명 번역
   directus_roles:
     name: 역할명
+    description: 설명
     users: 이 역할의 사용자 목록
     module_list: '모듈 탐색:'
   directus_webhooks:
@@ -454,6 +481,7 @@ save_current_user_id: 현재 사용자 ID 저장
 save_current_user_role: 현재 사용자 역할(role) 저장
 comment: 코멘트
 delete_label: 삭제
+description: 설명
 duplicate: 복제
 email: 이메일
 file: 파일
@@ -498,6 +526,8 @@ interfaces:
     map: 지도
   presentation-notice:
     text: 내용을 입력하세요...
+  tags:
+    tags: 태그
   input-translated-string:
     search_placeholder: 검색...
   translations:
