@@ -13,7 +13,12 @@
 
 		<template v-if="canSelectAll">
 			<v-divider />
-			<v-list-item clickable @click="selectAll">{{ t('select_all') }}</v-list-item>
+			<v-list-item v-if="disabledFields?.length !== allFields?.length" clickable @click="selectAll">
+				{{ t('select_all') }}
+			</v-list-item>
+			<v-list-item v-else clickable @click="deselectAll">
+				{{ t('deselect_all') }}
+			</v-list-item>
 			<v-divider />
 		</template>
 
@@ -94,6 +99,16 @@ const treeList = computed(() => {
 	}
 });
 
+const allFields = computed(() => {
+	return treeList.value.flatMap(map());
+
+	function map(parent?: string) {
+		return function (field: FieldNode): string[] {
+			return [parent ? `${parent}.${field.field}` : field.field, ...(field?.children?.flatMap(map(field.field)) || [])];
+		};
+	}
+});
+
 function filter(field: Field, parent?: FieldNode): boolean {
 	if (
 		!includeRelations.value &&
@@ -116,20 +131,11 @@ function filter(field: Field, parent?: FieldNode): boolean {
 }
 
 function selectAll() {
-	const allFields: string[] = [];
-	loop(unref(treeList));
-	emit('select-all', allFields);
+	emit('select-all', unref(allFields));
+}
 
-	async function loop(fields: (FieldNode & { disabled: boolean })[], parent?: string) {
-		for (const field of fields) {
-			if (!field.disabled) {
-				allFields.push(parent ? `${parent}.${field.field}` : field.field);
-				if (field.children) {
-					loop(field.children as (FieldNode & { disabled: boolean })[], field.field);
-				}
-			}
-		}
-	}
+function deselectAll() {
+	emit('select-all', []);
 }
 </script>
 

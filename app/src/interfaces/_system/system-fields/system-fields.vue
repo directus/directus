@@ -112,7 +112,7 @@ function addField(fieldKey: string) {
 }
 
 function addAllFields(fields: string[]) {
-	emit('input', fields);
+	emit('input', fields?.length ? fields : null);
 }
 
 function removeField(fieldKey: string) {
