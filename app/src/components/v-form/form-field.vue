@@ -49,17 +49,16 @@
 			@set-field-value="$emit('setFieldValue', $event)"
 		/>
 
-		<v-dialog v-model="showRaw" persistent @esc="cancelEdits">
-			<v-card>
-				<v-card-title>{{ isDisabled ? t('view_raw_value') : t('edit_raw_value') }}</v-card-title>
-				<v-card-text>
-					<v-textarea v-model="rawValue" :disabled="isDisabled" class="raw-value" :placeholder="t('enter_raw_value')" />
-				</v-card-text>
-				<v-card-actions>
-					<v-button @click="submitEdits">{{ t('done') }}</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
+		<!-- <v-dialog v-model="showRaw" persistent @esc="cancelEdits"> -->
+		<form-field-raw-editor
+			:show-modal="showRaw"
+			:field="field"
+			:current-value="internalValue"
+			:disabled="isDisabled"
+			@cancel="showRaw = false"
+			@submit="onRawValueSubmit"
+		/>
+		<!-- </v-dialog> -->
 
 		<small v-if="field.meta && field.meta.note" v-md="field.meta.note" class="type-note" />
 
@@ -74,7 +73,6 @@
 </template>
 
 <script setup lang="ts">
-import { getJSType } from '@/utils/get-js-type';
 import { Field, ValidationError } from '@directus/shared/types';
 import { isEqual } from 'lodash';
 import { computed, ref, watch } from 'vue';
@@ -84,6 +82,7 @@ import FormFieldLabel from './form-field-label.vue';
 import FormFieldMenu from './form-field-menu.vue';
 import { formatFieldFunction } from '@/utils/format-field-function';
 import { useClipboard } from '@/composables/use-clipboard';
+import FormFieldRawEditor from './form-field-raw-editor.vue';
 
 interface Props {
 	field: Field;
@@ -131,7 +130,7 @@ const isDisabled = computed(() => {
 
 const { internalValue, isEdited, defaultValue } = useComputedValues();
 
-const { showRaw, rawValue, copyRaw, pasteRaw, cancelEdits, submitEdits } = useRaw();
+const { showRaw, copyRaw, pasteRaw, onRawValueSubmit } = useRaw();
 
 const validationMessage = computed(() => {
 	if (!props.validationError) return null;
@@ -169,66 +168,22 @@ function useRaw() {
 
 	const { copyToClipboard, pasteFromClipboard } = useClipboard();
 
-	const type = computed(() => {
-		return getJSType(props.field);
-	});
-
-	const rawValue = computed({
-		get() {
-			switch (type.value) {
-				case 'object':
-					return JSON.stringify(internalValue.value, null, '\t');
-				case 'string':
-				case 'number':
-				case 'boolean':
-				default:
-					return internalValue.value;
-			}
-		},
-		set(newRawValue: string) {
-			switch (type.value) {
-				case 'string':
-					emit('update:modelValue', newRawValue);
-					break;
-				case 'number':
-					emit('update:modelValue', Number(newRawValue));
-					break;
-				case 'boolean':
-					emit('update:modelValue', newRawValue === 'true');
-					break;
-				case 'object':
-					emit('update:modelValue', JSON.parse(newRawValue));
-					break;
-				default:
-					emit('update:modelValue', newRawValue);
-					break;
-			}
-		},
-	});
-
-	let originalRawValue: any = rawValue.value;
+	function onRawValueSubmit(value: any) {
+		showRaw.value = false;
+		emitValue(value);
+	}
 
 	async function copyRaw() {
-		await copyToClipboard(rawValue.value);
+		await copyToClipboard(internalValue.value);
 	}
 
 	async function pasteRaw() {
 		const pastedValue = await pasteFromClipboard();
 		if (!pastedValue) return;
-		rawValue.value = pastedValue;
+		internalValue.value = pastedValue;
 	}
 
-	function cancelEdits() {
-		showRaw.value = false;
-		rawValue.value = originalRawValue;
-	}
-
-	function submitEdits() {
-		showRaw.value = false;
-		originalRawValue = rawValue.value;
-	}
-
-	return { showRaw, rawValue, originalRawValue, copyRaw, pasteRaw, cancelEdits, submitEdits };
+	return { showRaw, copyRaw, pasteRaw, onRawValueSubmit };
 }
 
 function useComputedValues() {
