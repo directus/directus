@@ -28,7 +28,13 @@
 				</button>
 			</template>
 
-			<v-field-list :disabled-fields="value" :collection="collectionName" @select-field="addField" />
+			<v-field-list
+				:disabled-fields="value"
+				:collection="collectionName"
+				:can-select-all="canSelectAll"
+				@select-field="addField"
+				@select-all="addAllFields"
+			/>
 		</v-menu>
 	</template>
 </template>
@@ -44,6 +50,7 @@ import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
 interface Props {
 	collectionName: string;
 	value?: string[] | null;
+	canSelectAll?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), { value: () => null });
@@ -102,6 +109,10 @@ const { t } = useI18n();
 
 function addField(fieldKey: string) {
 	emit('input', [...(props.value ?? []), fieldKey]);
+}
+
+function addAllFields(fields: string[]) {
+	emit('input', fields);
 }
 
 function removeField(fieldKey: string) {

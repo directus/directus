@@ -11,6 +11,12 @@
 			</v-list-item-content>
 		</v-list-item>
 
+		<template v-if="canSelectAll">
+			<v-divider />
+			<v-list-item clickable @click="selectAll">{{ t('select_all') }}</v-list-item>
+			<v-divider />
+		</template>
+
 		<v-field-list-item
 			v-for="fieldNode in treeList"
 			:key="fieldNode.field"
@@ -25,7 +31,7 @@
 <script lang="ts" setup>
 import { FieldNode, useFieldTree } from '@/composables/use-field-tree';
 import { Field } from '@directus/shared/types';
-import { computed, ref, toRefs, watch } from 'vue';
+import { computed, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import VFieldListItem from './v-field-list-item.vue';
 import { debounce, isNil } from 'lodash';
@@ -37,6 +43,7 @@ interface Props {
 	disabledFields?: string[];
 	includeFunctions?: boolean;
 	includeRelations?: boolean;
+	canSelectAll?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -44,9 +51,10 @@ const props = withDefaults(defineProps<Props>(), {
 	disabledFields: () => [],
 	includeFunctions: false,
 	includeRelations: true,
+	canSelectAll: false,
 });
 
-defineEmits(['select-field']);
+const emit = defineEmits(['select-field', 'select-all']);
 
 const fieldsStore = useFieldsStore();
 
@@ -104,6 +112,23 @@ function filter(field: Field, parent?: FieldNode): boolean {
 			field.field.toLowerCase().includes(search.value.toLowerCase()) ||
 			field.name.toLowerCase().includes(search.value.toLowerCase())
 		);
+	}
+}
+
+function selectAll() {
+	const allFields: string[] = [];
+	loop(unref(treeList));
+	emit('select-all', allFields);
+
+	async function loop(fields: (FieldNode & { disabled: boolean })[], parent?: string) {
+		for (const field of fields) {
+			if (!field.disabled) {
+				allFields.push(parent ? `${parent}.${field.field}` : field.field);
+				if (field.children) {
+					loop(field.children as (FieldNode & { disabled: boolean })[], field.field);
+				}
+			}
+		}
 	}
 }
 </script>
