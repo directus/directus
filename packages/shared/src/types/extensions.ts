@@ -22,6 +22,7 @@ import { Field } from './fields';
 import { Relation } from './relations';
 import { Collection } from './collection';
 import { SchemaOverview } from './schema';
+import { AbstractService } from './services';
 
 export type AppExtensionType = typeof APP_EXTENSION_TYPES[number];
 export type ApiExtensionType = typeof API_EXTENSION_TYPES[number];
@@ -129,8 +130,22 @@ export type AppExtensionConfigs = {
 	panels: Ref<PanelConfig[]>;
 };
 
+export type ApiExtensionServices = {
+	ItemService: AbstractService;
+	ActivityService: AbstractService;
+	DashboardsService: AbstractService;
+	FlowsService: AbstractService;
+	FoldersService: AbstractService;
+	OperationsService: AbstractService;
+	PanelsService: AbstractService;
+	PresetsSeervice: AbstractService;
+	SettingsService: AbstractService;
+	WebhooksService: AbstractService;
+	[key: string]: AbstractService & Record<any, any>;
+};
+
 export type ApiExtensionContext = {
-	services: any;
+	services: ApiExtensionServices;
 	exceptions: any;
 	database: Knex;
 	env: Record<string, any>;
