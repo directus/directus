@@ -104,7 +104,11 @@ const allFields = computed(() => {
 
 	function map(parent?: string) {
 		return function (field: FieldNode): string[] {
-			return [parent ? `${parent}.${field.field}` : field.field, ...(field?.children?.flatMap(map(field.field)) || [])];
+			if (field.children) {
+				return field?.children?.flatMap(map(field.field)) || [];
+			} else {
+				return [parent ? `${parent}.${field.field}` : field.field];
+			}
 		};
 	}
 });
