@@ -40,12 +40,12 @@ input: Input
 maps: 地图
 switch_user: 切换用户
 item_creation: 新建
-item_revision: 条目调整
+item_revision: 条目修订
 enter_a_name: 请输入名称...
 duplicate_field: 复制
 half_width: 半宽
 full_width: 全宽
-group: 群组
+group: 分组
 export_items: 导出
 and: 与
 or: 或
@@ -187,6 +187,7 @@ revision_post_create: 这是新建条目后看起来的样子。
 revision_post_update: 这是更新后该条目的外观。
 changes_made: 下面是本次修订中所作的具体修改。
 no_relational_data: 请记住，此处不包括关系数据。
+junction_field_location: 交叉字段位置
 top: 顶部
 bottom: 底部
 hide_field: 隐藏字段
@@ -1425,6 +1426,7 @@ translation: 翻译
 translation_placeholder: 输入翻译...
 value: 值
 view_project: 查看项目
+weeks: { }
 report_error: 报告错误
 start: 开始
 table: 表
@@ -1784,6 +1786,7 @@ displays:
     relative: 相对
     relative_label: '显示相对时间，例如 5 分钟前'
     suffix: 后缀
+    suffix_label: 显示相对指示器
     suffix_note: 使用 'in' 和 'ago' 等单词
     strict: 严格的
     strict_label: 使用严格的单位
@@ -1919,9 +1922,19 @@ layouts:
     tags_placeholder: 可选标签字段...，
     user: 卡片使用者，
     user_placeholder: 可选文本字段...，
+    image: 卡片图像
+    image_placeholder: 可选图像字段...。
     image_fit: 卡片图像匹配
+    crop: 剪裁
+    advanced: 高级，
     edit_group: 编辑分组
+    delete_group: 删除组
+    add_group: 添加组
+    add_group_placeholder: 输入新群组名称
     show_ungrouped: 显示未分组
+    show: 显示
+    no_group: 未分组
+    not_all_loaded: 只能加载前 1000 个条目。
 panels:
   metric:
     name: 公制
@@ -1943,20 +1956,77 @@ panels:
   barchart:
     name: 条形图
     description: 比较数值组的条形图或柱形图
-    y_axis_conditional_two: 必须是一个数字。
-  linechart:
     select_field: 您必须选择一个字段。
     select_collection: 您必须选择一个集合。
+    select_x_axis: 您必须选择一个X轴。
+    function: 功能函数
+    horizontal: 横向
+    x_axis_grouping: X轴组聚合
+    x_axis: X轴
+    y_axis_function: Y-轴函数
+    y_axis: Y-轴
+    show_x_axis: 显示 X-轴
+    show_y_axis: 显示 Y-轴
+    show_data_label: 显示数据标签
+    group_by: 分组依据
+    group_and_function: 您必须同时包含或省略一个分组函数和一个功能函数。
+    y_axis_NaN: Y轴必须是一个数字。
+    y_axis_conditional_one: 条件值
+    y_axis_conditional_two: 必须是一个数字。
+  linechart:
+    name: 折线图
+    description: 比较字段值变化的折线图。
+    select_field: 您必须选择一个字段。
+    select_collection: 您必须选择一个集合。
+    select_x_axis: 您必须选择一个X轴。
+    function: 功能函数
+    x_axis: X轴
+    x_axis_decimals: X轴数值
+    disabled_no_grouping: 未选择分组时禁用。
+    y_axis: Y-轴
     datasets: 数据集
+    show_legend: 显示图例
+    show_marker: 显示工具提示标志
+    include_dataset: 您必须包含至少一个数据集。
+    include_y_axis: 当没有指定组时，您必须为每个数据集包含Y-Axis。
+    group_and_function: 您必须同时包含或省略一个分组函数和一个功能函数。
+    smooth: '平滑模式'
+    straight: '直线模式'
+    step_line: '分步线条'
   meter:
+    description: 跟踪值的仪表
+    name: 电表模式
+    arc: 弧形
+    stroke_width: 笔画宽度
+    select_max_value: 您必须选择一个最大值。
+    max_greater_than_zero: 最大值必须大于 0。
     select_field: 您必须选择一个字段。
     select_collection: 您必须选择一个集合。
     function: 功能函数
+    thin: 纤细
+    medium: 中等
+    broad: 广泛的
+  piechart:
+    name: 饼图或环图
+    description: 在栏上显示分组比率的圆形图表。
+    function: '功能函数'
+    donut: 圆环图
+    labels: 显示标签
+    legend: 显示图例
+    right: 右
+    bottom: 底部
+    monochrome: 黑白的
+    monochrome_color: 单色颜色
   variable:
     name: 全局变量
+    description: 设置用于其他面板筛选器的全局值
     variable_key: 变量键
   relational-variable:
+    name: 全局关联变量
+    description: 设置用于其他面板筛选器的全局关联值
     variable_key: 变量键
+    multiple: 多
+    multiple-label: 选择多个条目
 triggers:
   common:
     response_body: 响应体
@@ -1964,8 +2034,12 @@ triggers:
     response_body_last: 上次操作的数据
   event:
     name: 事件钩子
+    description: 由平台触发或数据事件触发
+    action: '动作(非阻塞)'
     filter: '过滤器(锁定)'
   webhook:
+    name: 互联网钩子
+    description: 由传入的 HTTP 请求触发
     method: 方法
     async: 异步的
   operation:
@@ -1974,32 +2048,55 @@ triggers:
     preview: 在不同的流程中被一个操作触发
   schedule:
     name: 计划任务(CRON)
+    description: 在常规时间点触发
     cron: 间隔
   manual:
     name: 手动
+    description: 在选定的数据集 (一个或多个) 上手动触发
+    collection_and_item: 集合和条目页面
+    collection_only: 仅集合页面
+    item_only: 仅条目页面
+a_flow_uuid: 一个流程的主键 UUUID...
+any_string_or_json: 任意字符串或JSON对象...
+item_payload_placeholder: 这是用于更新条目字段值的 JSON对象...
 operation_variables_note: 您可以通过变量引用访问流程数据，例如**{{'}{'{'}$last{'}'}{'}'}**， **{{'}{{'}$trigger{'}'}{'}'}** 和 **{{'}{'{'}$accountability{'}'}{'}'}**, 或使用 **{'{'}{'{'} operation_key{'}'}{'}'}**引用之前的操作。
 operations:
+  condition:
+    name: 条件
+    description: 基于 if /Else 逻辑路由的流程
   exec:
     name: 运行脚本
+    description: 执行任意代码来修改有效负载
+    modules: '以下**Node modules** 可以使用：'
   item-create:
     name: 创建数据
     description: 在数据库中创建项目
     payload: 有效载荷 (Payload)
+    emit_events: 发出事件
   item-delete:
     name: 删除数据
     description: 删除数据库中的项目
+    emit_events: 发出事件
+    key: ID组
     query: 查询
   item-read:
     name: 读取数据
     description: 从数据库读取项目
+    key: ID组
     query: 查询
+    emit_events: 发出事件
   item-update:
     name: 更新数据
     description: 更新数据库中的项目
+    emit_events: 发出事件
+    key: ID组
     payload: 有效载荷 (Payload)
     query: 查询
   log:
+    name: 记录到控制台
+    description: 输出内容到控制台
     message: 消息
+    message_placeholder: 输入要在控制台中显示的消息...
   mail:
     name: 发送电子邮件
     description: 向一个或多个用户发送电子邮件
@@ -2010,8 +2107,11 @@ operations:
     name: 发送通知
     description: 向一个或多个用户发送应用内通知
     recipient: 用户
+    recipient_placeholder: 添加用户 UUID 并按回车...
     message: 消息
   request:
+    name: 互联网钩子 / 请求 URL
+    description: "向一个 URL 地址发出请求"
     url: URl
     url_placeholder: https://example.com/example
     method: 方法
