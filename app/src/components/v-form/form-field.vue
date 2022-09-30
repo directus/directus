@@ -49,14 +49,14 @@
 			@set-field-value="$emit('setFieldValue', $event)"
 		/>
 
-		<v-dialog v-model="showRaw" @esc="showRaw = false">
+		<v-dialog v-model="showRaw" persistent @esc="cancelEdits">
 			<v-card>
 				<v-card-title>{{ isDisabled ? t('view_raw_value') : t('edit_raw_value') }}</v-card-title>
 				<v-card-text>
 					<v-textarea v-model="rawValue" :disabled="isDisabled" class="raw-value" :placeholder="t('enter_raw_value')" />
 				</v-card-text>
 				<v-card-actions>
-					<v-button @click="showRaw = false">{{ t('done') }}</v-button>
+					<v-button @click="submitEdits">{{ t('done') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
@@ -131,7 +131,7 @@ const isDisabled = computed(() => {
 
 const { internalValue, isEdited, defaultValue } = useComputedValues();
 
-const { showRaw, rawValue, copyRaw, pasteRaw } = useRaw();
+const { showRaw, rawValue, copyRaw, pasteRaw, cancelEdits, submitEdits } = useRaw();
 
 const validationMessage = computed(() => {
 	if (!props.validationError) return null;
@@ -165,7 +165,7 @@ function emitValue(value: any) {
 }
 
 function useRaw() {
-	const showRaw = ref(false);
+	let showRaw = ref(false);
 
 	const { copyToClipboard, pasteFromClipboard } = useClipboard();
 
@@ -206,6 +206,8 @@ function useRaw() {
 		},
 	});
 
+	let originalRawValue: any = rawValue.value;
+
 	async function copyRaw() {
 		await copyToClipboard(rawValue.value);
 	}
@@ -216,7 +218,17 @@ function useRaw() {
 		rawValue.value = pastedValue;
 	}
 
-	return { showRaw, rawValue, copyRaw, pasteRaw };
+	function cancelEdits() {
+		showRaw.value = false;
+		rawValue.value = originalRawValue;
+	}
+
+	function submitEdits() {
+		showRaw.value = false;
+		originalRawValue = rawValue.value;
+	}
+
+	return { showRaw, rawValue, originalRawValue, copyRaw, pasteRaw, cancelEdits, submitEdits };
 }
 
 function useComputedValues() {
