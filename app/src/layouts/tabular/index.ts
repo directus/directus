@@ -1,6 +1,6 @@
 import { HeaderRaw, Item } from '@/components/v-table/types';
 import { useFieldsStore } from '@/stores/fields';
-import { useAliasFields } from '@/composables/use-alias-fields';
+import { AliasField, useAliasFields } from '@/composables/use-alias-fields';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { getDefaultDisplayForType } from '@/utils/get-default-display-for-type';
 import { hideDragImage } from '@/utils/hide-drag-image';
@@ -9,14 +9,16 @@ import { syncRefProperty } from '@/utils/sync-ref-property';
 import { formatCollectionItemsCount } from '@/utils/format-collection-items-count';
 import { useCollection, useItems, useSync } from '@directus/shared/composables';
 import { Field } from '@directus/shared/types';
-import { defineLayout } from '@directus/shared/utils';
-import { clone, debounce } from 'lodash';
+import { defineLayout, get } from '@directus/shared/utils';
+import { clone, debounce, isEmpty, merge } from 'lodash';
 import { computed, ref, toRefs, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import TabularActions from './actions.vue';
 import TabularOptions from './options.vue';
 import TabularLayout from './tabular.vue';
 import { LayoutOptions, LayoutQuery } from './types';
+
+
 
 export default defineLayout<LayoutOptions, LayoutQuery>({
 	id: 'tabular',
@@ -52,18 +54,21 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			);
 		});
 
-		const { items, loading, error, totalPages, itemCount, totalCount, changeManualSort, getItems } = useItems(
-			collection,
-			{
-				sort,
-				limit,
-				page,
-				fields: fieldsWithRelationalAliased,
-				alias: aliasQuery,
-				filter,
-				search,
-			}
-		);
+		const { items: itemsRaw, loading, error, totalPages, itemCount, totalCount, changeManualSort, getItems } = useItems(
+				collection,
+				{
+					sort,
+					limit,
+					page,
+					fields: fieldsWithRelationalAliased,
+					alias: aliasQuery,
+					filter,
+					search,
+				}
+			),
+			items = computed(() => {
+				return getAliasedItems(itemsRaw.value)
+			})
 
 		const {
 			tableSort,
@@ -331,5 +336,44 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				};
 			}
 		}
+
+
+		function getAliasedItems(items: Record<string, any>[]) {
+			if(!aliasFields.value){
+				return items;
+			}
+
+			return items.map((item) => {
+				const _item = {...item}
+				fields.value.map((field) => {
+					if(_item[field] === undefined){
+						_item[field] = getAliasedValue(_item, field)
+					}
+				})
+				return _item
+			})
+		}
+		function getAliasedValue(item: Record<string, any>, field: string) {
+			if (aliasFields.value![field]) return get(item, aliasFields.value![field].fullAlias);
+
+			const matchingAliasFields = Object.values(aliasFields.value!).filter(
+				(aliasField: AliasField) => aliasField.fieldName === field
+			);
+			const matchingValues = matchingAliasFields.map(({ fieldAlias }) => item[fieldAlias]);
+			// if we have multiple results for each field pivot the data into a list of records
+			if (matchingValues.every((val) => Array.isArray(val))) {
+				return matchingValues.reduce((result, data) => {
+					for (let i = 0; i < data.length; i++) {
+						result[i] = merge(result[i], data[i]);
+					}
+					return result;
+				}, []);
+			}
+
+			// merge into a single record
+			const result = matchingValues.reduce((result, data) => merge(result, data), {});
+			return !isEmpty(result) ? result : null;
+		}
+
 	},
 });

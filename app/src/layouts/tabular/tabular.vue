@@ -26,11 +26,7 @@
 		>
 			<template v-for="header in tableHeaders" :key="header.value" #[`item.${header.value}`]="{ item }">
 				<render-display
-					:value="
-						!aliasFields || item[header.value] !== undefined
-							? get(item, header.value)
-							: getAliasedValue(item, header.value)
-					"
+					:value="get(item, header.value)"
 					:display="header.field.display"
 					:options="header.field.displayOptions"
 					:interface="header.field.interface"
@@ -186,9 +182,6 @@ import { Field, Filter, Item, ShowSelect } from '@directus/shared/types';
 import { ComponentPublicInstance, inject, ref, Ref, watch, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { get } from '@directus/shared/utils';
-import { useAliasFields, AliasField } from '@/composables/use-alias-fields';
-import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
-import { isEmpty, merge } from 'lodash';
 
 interface Props {
 	collection: string;
@@ -261,32 +254,6 @@ useShortcut(
 );
 
 const fieldsWritable = useSync(props, 'fields', emit);
-
-const fieldsWithRelational = computed(() => adjustFieldsForDisplays(fieldsWritable.value, props.collection));
-
-const { aliasFields } = useAliasFields(fieldsWithRelational);
-
-function getAliasedValue(item: Record<string, any>, field: string) {
-	if (aliasFields.value![field]) return get(item, aliasFields.value![field].fullAlias);
-
-	const matchingAliasFields = Object.values(aliasFields.value!).filter(
-		(aliasField: AliasField) => aliasField.fieldName === field
-	);
-	const matchingValues = matchingAliasFields.map(({ fieldAlias }) => item[fieldAlias]);
-	// if we have multiple results for each field pivot the data into a list of records
-	if (matchingValues.every((val) => Array.isArray(val))) {
-		return matchingValues.reduce((result, data) => {
-			for (let i = 0; i < data.length; i++) {
-				result[i] = merge(result[i], data[i]);
-			}
-			return result;
-		}, []);
-	}
-
-	// merge into a single record
-	const result = matchingValues.reduce((result, data) => merge(result, data), {});
-	return !isEmpty(result) ? result : null;
-}
 
 function addField(fieldKey: string) {
 	fieldsWritable.value = [...fieldsWritable.value, fieldKey];
