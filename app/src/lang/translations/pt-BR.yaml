@@ -324,6 +324,7 @@ edit_raw_value: Editar valor bruto
 enter_raw_value: Insira valor bruto...
 clear_value: Limpar Valor
 clear_changes: Limpar alterações
+clear_items: Excluir itens
 reset_to_default: Restaurar Padrões
 undo_changes: Desfazer Alterações
 notifications: Notificações
@@ -1119,6 +1120,7 @@ fields:
     transformations_all: Permitir todas as transformações
     transformations_none: Desativar transformações
     transformations_presets: Limitar transformações às predefinições abaixo
+    image_editor: Editor de imagem
   directus_shares:
     name: Nome
     role: Função
@@ -1384,6 +1386,8 @@ report_error: Relatar erro
 start: Início
 table: Tabela
 list: Lista
+show_link_to_item: Mostrar um link para o item
+delete_item: Excluir item
 interfaces:
   filter:
     name: Filtro
