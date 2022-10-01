@@ -18,8 +18,6 @@ import TabularOptions from './options.vue';
 import TabularLayout from './tabular.vue';
 import { LayoutOptions, LayoutQuery } from './types';
 
-
-
 export default defineLayout<LayoutOptions, LayoutQuery>({
 	id: 'tabular',
 	name: '$t:layouts.tabular.tabular',
@@ -54,21 +52,27 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			);
 		});
 
-		const { items: itemsRaw, loading, error, totalPages, itemCount, totalCount, changeManualSort, getItems } = useItems(
-				collection,
-				{
-					sort,
-					limit,
-					page,
-					fields: fieldsWithRelationalAliased,
-					alias: aliasQuery,
-					filter,
-					search,
-				}
-			),
+		const {
+				items: itemsRaw,
+				loading,
+				error,
+				totalPages,
+				itemCount,
+				totalCount,
+				changeManualSort,
+				getItems,
+			} = useItems(collection, {
+				sort,
+				limit,
+				page,
+				fields: fieldsWithRelationalAliased,
+				alias: aliasQuery,
+				filter,
+				search,
+			}),
 			items = computed(() => {
-				return getAliasedItems(itemsRaw.value)
-			})
+				return getAliasedItems(itemsRaw.value);
+			});
 
 		const {
 			tableSort,
@@ -337,21 +341,20 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			}
 		}
 
-
 		function getAliasedItems(items: Record<string, any>[]) {
-			if(!aliasFields.value){
+			if (!aliasFields.value) {
 				return items;
 			}
 
 			return items.map((item) => {
-				const _item = {...item}
+				const _item = { ...item };
 				fields.value.map((field) => {
-					if(_item[field] === undefined){
-						_item[field] = getAliasedValue(_item, field)
+					if (_item[field] === undefined) {
+						_item[field] = getAliasedValue(_item, field);
 					}
-				})
-				return _item
-			})
+				});
+				return _item;
+			});
 		}
 		function getAliasedValue(item: Record<string, any>, field: string) {
 			if (aliasFields.value![field]) return get(item, aliasFields.value![field].fullAlias);
@@ -374,6 +377,5 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			const result = matchingValues.reduce((result, data) => merge(result, data), {});
 			return !isEmpty(result) ? result : null;
 		}
-
 	},
 });
