@@ -65,11 +65,17 @@ const ssl = (): Record<string, string | boolean> => ({
 	default: false,
 });
 
+const options = (): Record<string, string> => ({
+	type: 'input',
+	name: 'options',
+	message: 'Extra options:',
+});
+
 export const databaseQuestions = {
 	sqlite3: [filename],
 	mysql: [host, port, database, user, password],
-	pg: [host, port, database, user, password, ssl],
-	cockroachdb: [host, port, database, user, password, ssl],
+	pg: [host, port, database, user, password, ssl, options],
+	cockroachdb: [host, port, database, user, password, ssl, options],
 	oracledb: [host, port, database, user, password],
 	mssql: [host, port, database, user, password, encrypt],
 };
