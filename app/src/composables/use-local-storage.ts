@@ -1,38 +1,25 @@
 import { ref, watch } from 'vue';
+import { LocalStorageObject } from '@/utils/local-storage-object';
 
 export function useLocalStorage(key: string) {
-	const internalKey = `directus-${key}`;
+	const localStorageObject = new LocalStorageObject(key);
 	const data = ref<string | number | boolean | object | null>(null);
 
 	function getExistingValue() {
-		let rawExistingValue;
-		try {
-			rawExistingValue = localStorage.getItem(internalKey);
-		} catch (err: any) {
-			//
-		}
+		const existingValue = localStorageObject.getValue();
 
-		if (!rawExistingValue) return;
+		if (!existingValue) return;
 
-		try {
-			const existingValue = JSON.parse(rawExistingValue);
-			data.value = existingValue;
-		} catch (err: any) {
-			//
-		}
+		data.value = existingValue;
 	}
 
 	getExistingValue();
 
 	watch(data, () => {
-		try {
-			if (data.value == null) {
-				localStorage.removeItem(internalKey);
-			} else {
-				localStorage.setItem(internalKey, JSON.stringify(data.value));
-			}
-		} catch (err: any) {
-			//
+		if (data.value == null) {
+			localStorageObject.clear();
+		} else {
+			localStorageObject.setValue(data.value);
 		}
 	});
 

@@ -1,9 +1,12 @@
 import { defineStore } from 'pinia';
+import { LocalStorageObject } from '@/utils/local-storage-object';
+
+const sidebarOpenObject = new LocalStorageObject('appStoreSidebarOpen', window.innerWidth >= 1430);
 
 export const useAppStore = defineStore({
 	id: 'appStore',
 	state: () => ({
-		sidebarOpen: window.innerWidth >= 1430,
+		sidebarOpen: sidebarOpenObject.getValue(),
 		notificationsDrawerOpen: false,
 		fullScreen: false,
 		hydrated: false,
@@ -13,4 +16,9 @@ export const useAppStore = defineStore({
 		accessTokenExpiry: 0,
 		basemap: 'OpenStreetMap',
 	}),
+	actions: {
+		setSidebarOpen(isOpen: boolean) {
+			this.sidebarOpen = sidebarOpenObject.setValue(isOpen);
+		},
+	},
 });

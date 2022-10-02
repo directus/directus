@@ -234,7 +234,7 @@ function useModuleNavResize() {
 
 function openSidebar(event: PointerEvent) {
 	if (event.target && (event.target as HTMLElement).classList.contains('close') === false) {
-		sidebarOpen.value = true;
+		appStore.setSidebarOpen(true);
 	}
 }
 </script>
