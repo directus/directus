@@ -27,59 +27,86 @@ method: Meetod
 published: Avaldatud
 draft: Mustand
 archived: Arhiveeritud
-modules: Moodul
+modules: Moodulid
+module_bar: Mooduliriba
 logs: Logid
+reset_width: Lähtesta Laius
 tile_size: Failisuurus
 edit_field: Muuda välja
 conditions: Tingimused
 location: Asukoht
+condition_rules: Tingimuse reeglid
 input: Sisend
 maps: Kaardid
 switch_user: Vaheta kasutajat
-item_revision: Kirje parandamine
-enter_a_name: Sisesta nimi...
-duplicate_field: Korduv väli
-half_width: Pool laiust
+item_creation: Kirje Loomine
+item_revision: Kirje Parandamine
+enter_a_name: Sisesta Nimi...
+duplicate_field: Korduv Väli
+half_width: Pool Laiust
 full_width: Täislaius
-group: Rühm
-export_items: Ekspordi üksused
+group: Grupp
+export_items: Ekspordi Kirjed
 and: Ja
+or: Või
+init: Init
+dataset_too_large_currently_showing_n_items: Andmekogum on liiga suur. Hetkel kuvatakse esimesed {n} üksust.
+modifier: Muutja
+custom: Kohandatud
+hook: Haak
 fill_width: Täislaius
 field_name_translations: Väljade tõlked
 enter_password_to_enable_tfa: Sisesta oma parool 2F audentimiseks
 add_field: Lisa väli
 role_name: Rolli nimi
+branch: Haru
+leaf: Leht
+indeterminate: Määramatu
+edit_collection: Muuda kogumikku
+db_only_click_to_configure: 'Ainult andmebaas: kliki, et konfigureerida'
+show_active_items: Näita Aktiivseid Kirjeid
 show_archived_items: Näita arhiveeritud üksuseid
+show_all_items: Näita Kõiki Kirjeid
 edited: Muudetud väärtus
 required: Nõutud
 required_for_app_access: Vajalik äpi ligipääsuks
 requires_value: Väärtus nõutud
 create_preset: Loo seadistus
 create_role: Loo roll
-create_user: Loo kasutaja
-create_webhook: Loo veebikonks
-invite_users: Kutsu kasutajaid
+create_user: Loo Kasutaja
+message: Sõnum
+create_webhook: Loo Veebikonks
+create_translation_string: Loo Tõlkestring
+no_translation_string: Puuduvad Tõlkestringid
+no_translation_string_copy: Tõlkestringe veel pole.
+translation_string_key_placeholder: Tõlkestringi võti...
+translation_string_translations_placeholder: Loo uus tõlge
+edit_translation_string: Redigeeri Tõlkestringi
+invite_users: Kutsu Kasutajaid
 invite: Kutsu
 email_already_invited: Meilile "{email}" on kutse juba saadetud
+subject: Teema
+inbox: Postkast
 emails: E-mail
-connection_excellent: Suurepärane ühendus
-connection_good: Hea ühendus
-connection_fair: Keskmine ühendus
-connection_poor: Kehv ühendus
+connection_excellent: Suurepärane Ühendus
+connection_good: Hea Ühendus
+connection_fair: Keskmine Ühendus
+connection_poor: Kehv Ühendus
 primary: Peamine
-rename_folder: Nimeta kaust ümber
-delete_folder: Kustuta kaust
+rename_folder: Nimeta Kaust Ümber
+delete_folder: Kustuta Kaust
 prefix: Eesliide
 suffix: Järelliide
-reset_bookmark: Kustuta järjehoidja
-update_bookmark: Järjehoidja uuendamine
+reset_bookmark: Kustuta Järjehoidja
+update_bookmark: Järjehoidja Uuendamine
 delete_bookmark: Kustuta järjehoidja
 delete_bookmark_copy: >-
   Kas soovid kindlasti järjehoidjat "{bookmark}" kustutada? Seda toimingut ei saa tagasi võtta.
 logoutReason:
   SIGN_OUT: Välja logitud
   SESSION_EXPIRED: Sessioon aegunud
-public_description: Kontrollib, millised API andmed on saadaval autentimata kasutajale.
+public_label: Avalik
+public_description: Kontrollib, millised API andmed on autentimata kasutajale saadaval.
 not_allowed: Ei ole lubatud
 directus_version: Directuse versioon
 node_version: Node versioon
@@ -522,7 +549,7 @@ upload_pending: Laadimine on ootel
 drag_file_here: Lohista failid siia
 click_to_browse: Kliki otsimiseks
 interface_options: Kasutajaliidese valikud
-layout_options: Paiguse valikud
+layout_options: Paigutuse Valikud
 rows: Read
 columns: Veerud
 collection_setup: Andmekogu seadistus
@@ -788,6 +815,7 @@ fields:
     auth_password_policy: Salasõna reeglid
     auth_login_attempts: Sisselogimise katseid
     custom_css: Kohandatud CSS
+    module_bar: Mooduliriba
   directus_shares:
     name: Nimi
     role: Roll
@@ -1258,7 +1286,10 @@ panels:
   label:
     name: Silt
 operations:
+  log:
+    message: Sõnum
   notification:
     recipient: Kasutaja
+    message: Sõnum
   request:
     url: URL
