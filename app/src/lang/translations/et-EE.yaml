@@ -63,6 +63,7 @@ branch: Haru
 leaf: Leht
 indeterminate: Määramatu
 edit_collection: Muuda kogumikku
+exclusive: Eksklusiivne
 db_only_click_to_configure: 'Ainult andmebaas: kliki, et konfigureerida'
 show_active_items: Näita Aktiivseid Kirjeid
 show_archived_items: Näita arhiveeritud üksuseid
