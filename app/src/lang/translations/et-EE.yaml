@@ -21,17 +21,29 @@
 #'Proxy', 'Intl'
 identifier: Identifikaator
 avatar: Avatar
+application: Rakendused
 default_provider: Vaikimisi
+method: Meetod
 published: Avaldatud
 draft: Mustand
 archived: Arhiveeritud
+modules: Moodul
+logs: Logid
+tile_size: Failisuurus
 edit_field: Muuda välja
+conditions: Tingimused
 location: Asukoht
 input: Sisend
+maps: Kaardid
+switch_user: Vaheta kasutajat
 item_revision: Kirje parandamine
+enter_a_name: Sisesta nimi...
 duplicate_field: Korduv väli
 half_width: Pool laiust
 full_width: Täislaius
+group: Rühm
+export_items: Ekspordi üksused
+and: Ja
 fill_width: Täislaius
 field_name_translations: Väljade tõlked
 enter_password_to_enable_tfa: Sisesta oma parool 2F audentimiseks
