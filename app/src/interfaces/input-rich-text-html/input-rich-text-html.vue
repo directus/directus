@@ -78,9 +78,20 @@
 				<template v-if="imageSelection">
 					<img class="image-preview" :src="imageSelection.previewUrl" />
 					<div class="grid">
-						<div class="field half">
+						<div class="field full">
 							<div class="type-label">{{ t('image_url') }}</div>
 							<v-input v-model="imageSelection.imageUrl" />
+						</div>
+						<div class="field half-left">
+							<div class="type-label">Loading</div>
+							<v-select
+								v-model="imageSelection.loading"
+								:items="[
+									{ text: 'Eager', value: 'eager' },
+									{ text: 'Lazy', value: 'lazy' },
+								]"
+								:show-deselect="true"
+							/>
 						</div>
 						<div class="field half-right">
 							<div class="type-label">{{ t('alt_text') }}</div>
@@ -101,17 +112,6 @@
 							<v-select
 								v-model="imageSelection.transformationKey"
 								:items="storageAssetPresets.map((preset) => ({ text: preset.key, value: preset.key }))"
-								:show-deselect="true"
-							/>
-						</div>
-						<div class="field half">
-							<div class="type-label">Loading</div>
-							<v-select
-								v-model="imageSelection.loading"
-								:items="[
-									{ text: 'Eager', value: 'eager' },
-									{ text: 'Lazy', value: 'lazy' },
-								]"
 								:show-deselect="true"
 							/>
 						</div>
