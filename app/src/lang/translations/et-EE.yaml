@@ -111,7 +111,7 @@ logoutReason:
 public_label: Avalik
 public_description: Kontrollib, millised API andmed on autentimata kasutajale saadaval.
 not_allowed: Ei ole lubatud
-directus_version: Directuse versioon
+directus_version: Directuse Versioon
 node_version: Node versioon
 node_uptime: Node ülevaloleku aeg
 os_type: OS Tüüp
@@ -122,7 +122,7 @@ archive: Arhiiv
 archive_confirm: Oled kindel, et soovid eemaldada selle üksuse?
 archive_confirm_count: >-
   Üksuseid pole valitud | Oled kindel, et soovid arhiveerida seda üksust? | Oled kindel, et soovid arhiveerida neid {count} üksuseid?
-reset_system_permissions_to: 'Lähtesta süsteemi load:'
+reset_system_permissions_to: 'Lähtesta Süsteemi Load:'
 reset_system_permissions_copy: See tegevus kirjutab üle kõik eelnevad süsteemsetele kogudele kohandatud load. Kas oled kindel?
 the_following_are_minimum_permissions: Need on vähimad load, mida on vaja "Rakenduse ligipääsu" võimaldamiseks. Sa võid ligipääsulube lisada, kuid mitte vähendada.
 app_access_minimum: Rakenduse ligipääsu miinimum
