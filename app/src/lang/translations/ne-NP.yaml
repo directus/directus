@@ -87,6 +87,67 @@ nested_files_folders_will_be_moved: नेस्ट गरिएका फाइ
 validation_errors_notice: 'निम्न क्षेत्रहरूमा अमान्य मानहरू छन्:'
 validationError:
   eq: मान {valid} हुनुपर्छ
+  neq: मान {invalid} हुन सक्दैन
+  in: मान {valid} हुनुपर्छ
+  nin: मान {invalid} हुन सक्दैन
+  contains: मानमा {substring} समावेश हुनुपर्छ
+  ncontains: मानमा {substring} हुन सक्दैन
+  gt: मान {valid} भन्दा बढी हुनुपर्छ
+  gte: मान {valid} भन्दा ठूलो वा बराबर हुनुपर्छ
+  lt: मान {valid} भन्दा कम हुनुपर्छ
+  lte: मान {valid} भन्दा कम वा बराबर हुनुपर्छ
+  empty: मान खाली हुनुपर्छ
+  nempty: मान खाली हुन सक्दैन
+  null: मान शून्य हुनुपर्छ
+  nnull: मूल्य शून्य हुन सक्दैन
+  required: मान आवश्यक छ
+  unique: मान दोहोर्याउनु हुँदैन
+  regex: मानको सही ढाँचा छैन
+all_access: सबै पहुँच
+no_access: शून्य पहुँच
+use_custom: कस्टम प्रयोग गर्नुहोस्
+nullable: शून्य गर्न सम्भव
+allow_null_value: शून्य मानलाई अनुमति दिनुहोस्
+allow_multiple: एक भन्दा बढीको लागि अनुमति दिनुहोस्
+allow_multiple_to_be_open: एक भन्दा बढी खोल्न अनुमति दिनुहोस्
+enter_value_to_replace_nulls: कृपया यस क्षेत्र भित्र कुनै पनि NULL लाई बदल्नको लागि नयाँ मान प्रविष्ट गर्नुहोस्।
+field_standard: मानक
+field_presentation: प्रस्तुति र उपनाम
+field_file: एकल फाइल
+field_files: धेरै फाइलहरू
+field_m2o: धेरै देखि एक सम्बन्ध
+field_translations: अनुवादहरू
+field_group: फिल्ड ग्रुप
+focal_length: फोकल लम्बाइ
+schema_setup_key: यो फिल्डको डाटाबेस कोलुम नाम र API कुञ्जी
+create_field: फिल्ड बनाउनुहोस्
+creating_new_field: 'नयाँ क्षेत्र ({collection})'
+field_in_collection: '{field} ({collection})'
+reset_page_preferences: पृष्ठ प्राथमिकताहरू रिसेट गर्नुहोस्
+hidden_field: लुकेको फिल्ड
+hidden_on_detail: विवरणमा लुकेको छ
+disabled_editing_value: मान सम्पादन असक्षम गर्नुहोस्
+key: कुञ्जी
+alias: उपनाम
+bigInteger: ठूलो पूर्ण संख्या
+date: मिति
+date_range: मिति सीमा
+datetime: मिति र समय
+dateTime: मिति र समय
+precision: सटीक
+decimal: दशमलव
+float: वास्तविक संख्या
+integer: पूर्ण संख्या
+text: पाठ
+time: समय
+timestamp: समयछाप
+hash: ह्यास
+geometry: ज्यामिति (सबै)
+geometry.Point: बिन्दु
+geometry.Polygon: बहुभुज
+errors:
+  NOT_NULL_VIOLATION: मूल्य शून्य हुन सक्दैन
+value_unique: मान दोहोर्याउनु हुँदैन
 fields:
   directus_settings:
     module_bar: मोड्युल बार
@@ -97,3 +158,9 @@ fields:
 field_options:
   directus_collections:
     archive_divider: संग्रह
+interfaces:
+  input-hash:
+    hash: ह्यास
+displays:
+  formatted-value:
+    text: पाठ
