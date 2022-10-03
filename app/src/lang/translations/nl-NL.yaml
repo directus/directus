@@ -29,11 +29,14 @@ draft: Concept
 archived: Gearchiveerd
 modules: Modules
 module_bar: Modulebalk
+logs: Logboeken
 reset_width: Stel breedte terug
 tile_size: Tegelgrootte
 edit_field: Veld Bewerken
 conditions: Voorwaarden
 location: Locatie
+condition_rules: Voorwaarde Regels
+input: Invoer
 maps: Kaarten
 switch_user: Andere gebruiker
 item_creation: Item Aanmaken
@@ -46,7 +49,10 @@ group: Groep
 export_items: Exporteer items
 and: En
 or: Of
+dataset_too_large_currently_showing_n_items: Gegevensset is te groot. Alleen de eerste {n} items worden nu weergegeven.
 modifier: Modificator
+custom: Aangepast
+hook: Hook
 fill_width: Vul Breedte
 field_name_translations: Veld-naam Vertalingen
 enter_password_to_enable_tfa: Voer je wachtwoord in om Tweestapsverificatie in te schakelen
@@ -75,6 +81,7 @@ delete_panel: Paneel verwijderen
 create_webhook: Webhook Aanmaken
 create_translation_string: Vertalingen aanmaken
 no_translation_string: Vertaalde Strings
+no_translation_string_copy: Er zijn nog geen vertaling reeksen.
 translation_string_key_placeholder: Tekenreeks van vertalingen...
 translation_string_translations_placeholder: Voeg nieuwe vertaling toe
 edit_translation_string: Vertaalstring bewerken
@@ -179,6 +186,7 @@ revision_post_create: Zo zag dit item eruit toen het werd gemaakt.
 revision_post_update: Zo zag dit item eruit na de update.
 changes_made: Hieronder staan de specifieke wijzigingen die zijn aangebracht in deze herziening.
 no_relational_data: Houd er rekening mee dat relatiegegevens hier niet bij betrokken zijn.
+junction_field_location: Verbindingsvelden Locatie
 top: Bovenaan
 bottom: Onderaan
 hide_field: Veld verbergen
@@ -248,6 +256,7 @@ geometry.LineString: LineString
 geometry.Polygon: Veelhoek
 geometry.MultiPoint: Multipoint
 geometry.MultiLineString: MultiLineString
+geometry.MultiPolygon: MultiVeelhoek
 not_available_for_type: Niet beschikbaar voor dit type
 create_translations: Vertalingen aanmaken
 auto_refresh: Automatische verversen
@@ -267,6 +276,9 @@ new_data_alert: 'Het volgende wordt aangemaakt in uw datamodel:'
 search_collection: Collectie doorzoeken...
 new_field: 'Nieuw veld'
 new_collection: 'Nieuwe collectie'
+add_m2o_to_collection: 'Voeg M20 toe aan {collection}'
+add_o2m_to_collection: 'Voeg O2M toe aan {collection}'
+add_m2m_to_collection: 'Voeg M2M toe aan {collection}'
 choose_a_type: Kies een type...
 determined_by_relationship: Bepaald door relatie
 add_note: Voeg een hint toe voor de eindgebruiker...
@@ -301,13 +313,21 @@ primary_key: Primary Key
 foreign_key: Foreign Key
 finish_setup: Setup voltooien
 dismiss: Negeren
+toggle_raw_editor: Schakel Onbewerkte Bewerker
+raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
 raw_value: Ruwe waarde
+copy_raw_value: Kopieer Onbewerkte Waarde
 copy_raw_value_success: Gekopieerd
 copy_raw_value_fail: Kopiëren mislukt
+paste_raw_value: Plak Onbewerkte Waarde
 paste_raw_value_success: Geplakt
 paste_raw_value_fail: Plakken mislukt
+view_raw_value: Bekijk Onbewerkte Waarde
 edit_raw_value: Bewerk Ruwe Waarde
 enter_raw_value: Ruwe waarde invoeren...
+clear_value: Wis Waarde
+clear_changes: Verwijder Veranderingen
+clear_items: Verwijder Items
 reset_to_default: Herstel naar Standaard
 undo_changes: Ongedaan maken
 notifications: Notificaties
@@ -324,9 +344,13 @@ revision_delta_created_externally: Extern aangemaakt
 revision_delta_updated: '1 veld bijgewerkt | {count} velden bijgewerkt'
 revision_delta_deleted: Verwijderd
 revision_delta_reverted: Teruggedraaid
+revision_delta_update_message: Dit veld is bijgewerkt, maar de waarde wordt verborgen om veiligheidsredenen.
 revision_delta_other: Revisie
 revision_delta_by: '{date} door {user}'
+presentation_text_values_cannot_be_reimported: "Gebruikt presentatietekst, waardes kunnen niet opnieuw worden geïmporteerd."
+download_page_as_csv: 'Download Pagina als CSV'
 private_user: Privé gebruiker
+creation_preview: Creatie voorbeeld
 revision_preview: Revisie voorbeeld
 updates_made: Gemaakte updates
 leave_comment: Plaats een reactie...
@@ -340,6 +364,7 @@ related_collection: Gerelateerde collecties
 related_collections: Gerelateerde collecties
 translations_collection: Vertalingscollectie
 languages_collection: Talen Collectie
+import_data_input_placeholder: CSV of JSON...
 import_data_button: Importeren starten
 import_data_indeterminate: Gegevens importeren...
 import_data_success: Gegevens succesvol geïmporteerd uit {filename}
@@ -376,6 +401,8 @@ functions:
 date-fns_date: PPP
 date-fns_time: 'H:mm:ss'
 date-fns_time_no_seconds: 'H:mm'
+date-fns_time_24hour: 'HH:mm:ss'
+date-fns_time_no_seconds_24hour: 'HH:mm'
 date-fns_date_short: 'd MMM u'
 date-fns_time_short: 'H:mm'
 date-fns_date_short_no_year: d MMM
@@ -429,6 +456,12 @@ download_file: Download bestand
 open_file_in_tab: Openen in nieuw tabblad
 start_export: Start exporteren
 not_available_for_local_downloads: Niet beschikbaar voor lokale downloads
+exporting_all_items_in_collection: Alle {total} items uit {collection} aan het exporteren.
+exporting_limited_items_in_collection: '{limit} van de {total} items uit {collection} aan het exporteren.'
+exporting_no_items_to_export: Geen items om te exporteren. Pas de exportconfiguratie hieronder aan.
+exporting_download_hint: Eenmaal voltooid, zal dit {format}-bestand automatisch worden gedownload naar je apparaat.
+exporting_batch_hint: Deze export zal worden verwerkt in batches, en wanneer voltooid, zal het {format}-bestand worden opgeslagen in de Bestandsbibliotheek.
+exporting_batch_hint_forced: Vanwege het grote aantal items moet deze export in batches worden verwerkt, en wanneer voltooid, zal het {format}-bestand worden opgeslagen in de Bestandsbibliotheek.
 collection_key: Collectie Key
 name: Naam
 primary_key_field: Primary Key veld
@@ -439,6 +472,7 @@ created_on: Aangemaakt op
 creating_collection_info: Geef de collectie een naam en stel het unieke "key" veld in...
 creating_collection_system: Schakel een van deze optionele velden in.
 auto_increment_integer: Auto-incremented integer
+auto_increment_big_integer: Automatisch verhogende Big Integer
 generated_uuid: Gegenereerde UUID
 manual_string: Handmatig ingevoerde tekst
 save_and_create_new: Opslaan en nieuwe aanmaken
@@ -460,7 +494,9 @@ disabled: Uitgeschakeld
 information: Informatie
 report_bug: Bug melden
 request_feature: Vraag nieuwe feature aan
+request_body: Request Body
 interface_not_found: 'Interface "{interface}" niet gevonden.'
+operation_not_found: 'Bewerking "{operation}" niet gevonden.'
 reset_interface: Interface resetten
 display_not_found: 'Display "{display}" niet gevonden.'
 reset_display: Reset Display
@@ -487,14 +523,26 @@ relationship_not_setup: De relatie is niet correct geconfigureerd
 display_template_not_setup: De weergavesjabloon optie is onjuist geconfigureerd
 collection_field_not_setup: De collectie-veld optie is onjuist geconfigureerd
 select_a_collection: Selecteer een collectie
+select_a_field: Selecteer een veld
 active: Actief
+move_to: Verplaatsen naar...
 copy: Kopieer
+copy_to: Kopieer naar...
+no_other_dashboards_copy: Je hebt nog geen Dashboards.
+inactive: Inactief
 users: Gebruikers
 activity: Activiteit
+activity_item: Activiteit item
 action: Actie
 ip_address: IP Adres
 user_agent: User Agent
+origin: Herkomst
 webhooks: Webhooks
+decimals: Decimalen
+value_decimals: Waarde Decimaal
+min_value: Minimumwaarde
+max_value: Maximumwaarde
+automatic: Automatisch
 field_width: Veld breedte
 add_filter: Filter toevoegen
 upper_limit: Bovengrens...
@@ -504,6 +552,7 @@ documentation: Documentatie
 sidebar: Sidebar
 duration: Duur
 charset: Karakterset
+second: seconde
 file_moved: Bestand verplaatst
 collection_created: Collectie aangemaakt
 modified_on: Aangepast op
@@ -537,6 +586,9 @@ errors:
   INVALID_PROVIDER: Gebruiker behoort tot een andere autorisatieprovider
   INVALID_QUERY: Ongeldige zoekopdracht
   INVALID_CONFIG: Ongeldige configuratie
+  INVALID_TOKEN: Ongeldige token
+  INVALID_IP: IP-adres niet toegestaan
+  INVALID_USER: Authenticatie van gebruiker mislukt
   ITEM_LIMIT_REACHED: Item limiet bereikt
   ITEM_NOT_FOUND: Item niet gevonden
   ROUTE_NOT_FOUND: Niet gevonden
@@ -675,14 +727,44 @@ read: Zichtbaar
 update: Updaten
 select_fields: Selecteer velden
 format_text: Formateer tekst
+operator: Operator
 bold: Vetgedrukt
 toggle: Schakel
 icon_on: Icoon aan
 icon_off: Icoon Uit
 label: Label
+flows: Flows
+flow: Flow
+select_a_flow: Selecteer een Flow
+run_flow_on_current: Voer Flow uit op dit item
+run_flow_on_current_edited_confirm: Dit item kan aangepast worden door deze Flow, weet je zeker dat je het wilt uitvoeren?
+run_flow_on_selected: Geen items geslecteerd | Voer Flow uit op 1 geselecteerd item | Voer Flow uit op {n} geselecteerde items
+run_flow_success: Flow "{flow}" is succesvol uitgevoerd
+trigger: Trigger
+trigger_options: Trigger opties
+view_trigger: Trigger weergeven
+create_trigger: Trigger toevoegen
+trigger_setup: Trigger setup
+change_trigger: Trigger aanpassen
+flow_delete_confirm: Weet je zeker dat je Flow "{flow}" wilt verwijderen? Dit kan niet ongedaan gemaakt worden.
+set_flow_active: Activeer Flow
+set_flow_inactive: Deactiveer Flow
+edit_flow: Bewerk Flow
+delete_flow: Verwijder Flow
+no_other_flows_copy: Je hebt nog geen Flows.
+no_flows: Geen Flows
+no_flows_copy: Je hebt nog geen Flows.
+create_flow: Flow aanmaken
+creating_new_flow: Flow aan het maken
+updating_flow: Flow aan het bewerken
+flow_setup: Flow setup
 flow_name: Naam
+flow_tracking: Activiteit & Logboeken Tracking
+flow_tracking_all: Track Activiteit & Logboeken
 flow_tracking_activity: Track alleen activiteiten
 flow_tracking_null: Niets tracken
+start_flow: Start Flow
+stop_flow: Stop Flow
 code: Code
 insights: Inzichten
 dashboard: Dashboard
@@ -776,6 +858,7 @@ settings_data_model: Data model
 settings_permissions: Rollen & Permissies
 settings_project: Project Instellingen
 settings_webhooks: Webhooks
+settings_flows: Flows
 settings_presets: Voorkeuren & Bladwijzers
 one_or_more_options_are_missing: Eén of meer opties ontbreken
 scope: Bereik
@@ -843,6 +926,7 @@ fields:
     user: Actie door
     comment: Reactie
     user_agent: User Agent
+    origin: Herkomst
     ip: IP Adres
     revisions: Revisies
   directus_collections:
@@ -965,6 +1049,7 @@ field_options:
     status_dropdown_active: Actief
   directus_webhooks:
     status_options_active: Actief
+    status_options_inactive: Inactief
     actions_create: Maak
     actions_update: Updaten
     headers:
@@ -1302,3 +1387,6 @@ operations:
     message: Bericht
   request:
     url: URL
+  trigger:
+    flows: Flows
+    flow: Flow
