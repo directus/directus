@@ -1,0 +1,43 @@
+// Vitest Snapshot v1
+
+exports[`click on done 1`] = `
+"<v-dialog model-value=\\"true\\" persistent=\\"\\">
+  <v-card>
+    <v-card-title>edit_raw_value</v-card-title>
+    <v-card-text>
+      <interface-input-code disabled=\\"false\\" class=\\"raw-value\\" placeholder=\\"enter_raw_value\\" language=\\"plaintext\\"></interface-input-code>
+    </v-card-text>
+    <v-card-actions>
+      <v-button>done</v-button>
+    </v-card-actions>
+  </v-card>
+</v-dialog>"
+`;
+
+exports[`form-field-raw-editor.vue 1`] = `
+"<v-dialog model-value=\\"true\\" persistent=\\"\\">
+  <v-card>
+    <v-card-title>edit_raw_value</v-card-title>
+    <v-card-text>
+      <interface-input-code disabled=\\"false\\" class=\\"raw-value\\" placeholder=\\"enter_raw_value\\" language=\\"plaintext\\"></interface-input-code>
+    </v-card-text>
+    <v-card-actions>
+      <v-button>done</v-button>
+    </v-card-actions>
+  </v-card>
+</v-dialog>"
+`;
+
+exports[`should render 1`] = `
+"<v-dialog model-value=\\"true\\" persistent=\\"\\">
+  <v-card>
+    <v-card-title>edit_raw_value</v-card-title>
+    <v-card-text>
+      <interface-input-code disabled=\\"false\\" class=\\"raw-value\\" placeholder=\\"enter_raw_value\\" language=\\"plaintext\\"></interface-input-code>
+    </v-card-text>
+    <v-card-actions>
+      <v-button>done</v-button>
+    </v-card-actions>
+  </v-card>
+</v-dialog>"
+`;
