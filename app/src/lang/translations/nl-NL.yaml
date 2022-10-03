@@ -598,11 +598,29 @@ errors:
   UNPROCESSABLE_ENTITY: Onverwerkbare entiteit
   INTERNAL_SERVER_ERROR: Onverwachte fout
   NOT_NULL_VIOLATION: Waarde kan niet "null" zijn
+  ILLEGAL_ASSET_TRANSFORMATION: Afbeeldingsbron te groot om een voorbeeld van te bekijken
+  VALUE_TOO_LONG: Waarde is te lang
+  VALUE_OUT_OF_RANGE: Waarde valt buiten het bereik
+  INVALID_FOREIGN_KEY: Ongeldige Foreign Key
   UNKNOWN: Onverwachte fout
+  GRAPHQL_VALIDATION_EXCEPTION: GraphQL validatie fout
+  SERVICE_UNAVAILABLE: Dienst onbeschikbaar
+  UNSUPPORTED_MEDIA_TYPE: Niet-ondersteund mediatype
+  UNEXPECTED_RESPONSE: Onverwachte resultaat
+  TOKEN_EXPIRED: Token verlopen
+  RANGE_NOT_SATISFIABLE: Ongeldig bereik
+  METHOD_NOT_ALLOWED: Methode niet toegestaan
+  REQUESTS_EXCEEDED: Limiet aantal verzoeken bereikt
+security: Beveiliging
 value_hashed: Waarde veilig opgeslagen
 bookmark_name: Bladwijzer naam...
 create_bookmark: Bladwijzer aanmaken
 edit_bookmark: Bladwijzer bewerken
+edit_personal_bookmark: Bewerk persoonlijke bladwijzer
+edit_role_bookmark: Bewerk Rol bladwijzer
+edit_global_bookmark: Bewerk globale bladwijzer
+cannot_edit_role_bookmarks: Kan niet Rol bladwijzers bewerken
+cannot_edit_global_bookmarks: Kan niet globale bladwijzers bewerken
 bookmarks: Bladwijzers
 presets: Voorkeuren
 unexpected_error: Onverwachte fout
@@ -610,9 +628,11 @@ unexpected_error_copy: Een onverwachte fout is opgetreden. Probeer het later opn
 copy_details: Kopieer details
 no_app_access: Geen App Toegang
 no_app_access_copy: Deze gebruiker heeft geen toestemming om de admin app te gebruiken.
+password_reset_sent: Als je een account hebt, dan hebben we je een beveiligde link gestuurd om je wachtwoord te resetten
 password_reset_successful: Wachtwoord succesvol opnieuw ingesteld
 back: Terug
 filter: Filter
+edit_image: Bewerk afbeelding
 editing_image: Afbeelding bewerken
 square: Vierkant
 free: Vrij
@@ -625,15 +645,23 @@ delete_collection: Collectie verwijderen
 update_collection_success: Collectie bijgewerkt
 delete_collection_success: Collectie verwijderd
 make_collection_visible: Maak Collectie Zichtbaar
+make_collection_hidden: Maak collectie verborgen
+make_folder_visible: Maak map zichtbar
+make_folder_hidden: Maak map verborgen
+goto_collection_content: Bekijk inhoud
 start_end_of_count_items: '{start}-{end} van {count} items'
 start_end_of_count_filtered_items: '{start}-{end} van {count} gefilterde items'
 one_item: '1 item'
 one_filtered_item: '1 gefilterd item'
+delete_collection_are_you_sure: >-
+  Weet je zeker dat je collectie "{collection}" wilt verwijderen? Dit zal de collectie en alle items die erin zijn opgeslagen verwijderen. Deze actie is permanent.
+delete_folder_are_you_sure: Weet je zeker dat je de map "{folder}" wilt verwijderen? Geneste mappen en collecties zullen worden verplaatst naar het hoogste niveau.
 collections_shown: Collecties getoond
 visible_collections: Zichtbare collecties
 hidden_collections: Verborgen collecties
 show_hidden_collections: Verborgen collecties tonen
 hide_hidden_collections: Verborgen collecties verbergen
+show_header: Toon kop
 unmanaged_collections: Niet geconfigureerde Collecties
 system_collections: Systeem Collecties
 placeholder: Tijdelijke plaatshouder
@@ -649,9 +677,12 @@ color: Kleur
 circle: Cirkel
 empty_item: Leeg item
 log_in_with: 'Log in met {provider}'
+conditional_styles: Voorwaardelijke stijlen
+advanced_settings: Geavanceerde instellingen
 advanced_filter: Geavanceerd filter
 delete_advanced_filter: Verwijder filter
 change_advanced_filter_operator: Vervang operatie
+advanced: Geavanceerd
 operators:
   eq: Gelijk aan
   neq: Niet gelijk aan
@@ -665,6 +696,7 @@ operators:
   nnull: Is niet null
   contains: Bevat
   ncontains: Bevat niet
+  icontains: Bevat (ongevoelig)
   starts_with: Begint met
   nstarts_with: Begint niet met
   ends_with: Eindigt met
@@ -675,6 +707,12 @@ operators:
   nempty: Is niet leeg
   all: Bevat deze keys
   has: Bevat enkele van deze keys
+  intersects: Overlapt
+  nintersects: Overlapt niet
+  intersects_bbox: Overlapt begrenzingsvak
+  nintersects_bbox: Overlapt niet met begrenzingsvak
+  regex: Komt overeen met RegExp
+custom_validation_message: Aangepaste validatiemelding
 loading: Aan het laden...
 drop_to_upload: Sleep hier om te uploaden
 item: Item
@@ -712,21 +750,28 @@ add_file: Bestand toevoegen
 replace_file: Vervang Bestand
 no_results: Geen resultaten
 no_results_copy: Pas de zoekfilters aan om resultaten te zien.
+no_visible_fields: Leeg formulier
+no_visible_fields_copy: Dit formulier bevat geen zichtbare velden.
 clear_filters: Filters wissen
 saves_automatically: Slaat automatisch op
 role: Rol
+edit_role: Rol bewerken
 rule: Regel
 user: Gebruiker
 no_presets: Geen Voorkeuren
 no_presets_copy: Geen voorkeuren of bladwijzers.
 no_presets_cta: Voorkeur Aanmaken
+presets_only: Alleen voorinstellingen
 create: Maak
 on_create: Tijdens Aanmaken
 on_update: Tijdens updaten
 read: Zichtbaar
 update: Updaten
+delete: Verwijder
 select_fields: Selecteer velden
 format_text: Formateer tekst
+format_value: Formatteer waarde
+abbreviate_value: Waarde afkorten
 operator: Operator
 bold: Vetgedrukt
 toggle: Schakel
@@ -900,9 +945,12 @@ page_help_settings_presets_item: >-
   **Voorkeur Detail** — Formulier om voorkeuren en bladwijzers mee te beheren.
 page_help_settings_webhooks_collection: '**Browse Webhooks** — Toont alle webhooks in het project.'
 page_help_settings_webhooks_item: '**Webhook Detail** - Een formulier voor het maken en beheren van project webhooks.'
+page_help_settings_translation_strings_collection: '**Blader door vertaling reeksen** — Toont alle vertaling reeksen in het project.'
 page_help_users_collection: '**User Directory** — Laat alle gebruikers in dit project zien.'
 page_help_users_item: >-
   **Gebruikersdetail** — Beheer je accountgegevens, of bekijk de details van andere gebruikers.
+page_help_insights_overview: '**Inzichten** — Lijst van dashboards waar je toegang toe hebt.'
+page_help_insights_dashboard: '**Dashboard** — Werkruimte voor het beheren van één of meer panelen'
 activity_feed: Activiteiten
 add_new: Nieuw Toevoegen
 create_new: Nieuwe aanmaken
@@ -912,11 +960,16 @@ no_layout_collection_selected_yet: Geen layout/collectie geselecteerd
 batch_delete_confirm: >-
   Geen items geselecteerd | Weet je zeker dat je dit item wilt verwijderen? Dit kan niet ongedaan gemaakt worden. | Weet je zeker dat je {count} items wilt verwijderen? Dit kan niet ongedaan gemaakt worden.
 cancel: Annuleer
+no_upscale: Afbeeldingen niet opschalen
 collection: Collectie
 collections: Collecties
+content: Inhoud
 singleton: Singleton
 singleton_label: Behandel als één object
 system_fields_locked: Systeem velden zijn vergrendeld en kunnen niet worden bewerkt
+directus_collection:
+  directus_activity: Verantwoordelijkheids-logboeken voor alle gebeurtenissen
+  directus_collections: Aanvullende collectie configuratie en metadata
 fields:
   directus_activity:
     item: Item Primary Key
@@ -1026,6 +1079,8 @@ fields:
     value: Waarde
     collections: Collecties
 field_options:
+  directus_settings:
+    security_divider_title: Beveiliging
   directus_activity:
     create: Maak
     update: Updaten
