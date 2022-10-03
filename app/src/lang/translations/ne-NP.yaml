@@ -1,1 +1,99 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+identifier: पहिचान
+avatar: अवतार
+application: अनुप्रयोग
+default_provider: पूर्वनिर्धारित
+method: विधि
+published: प्रकाशित
+draft: मस्यौदा
+archived: संग्रहित
+modules: मोड्युलहरू
+module_bar: मोड्युल बार
+logs: क्रियाकलापहारु
+reset_width: चौडाइ रिसेट
+tile_size: टाइल आकार
+edit_field: फिल्ड सम्पादन
+conditions: अवस्था
+location: स्‍थानः
+condition_rules: शर्त नियम
+input: इनपुट
+maps: नक्साहरू
+switch_user: प्रयोगकर्ता परिवर्तन
+item_creation: बस्तु सिर्जना
+item_revision: बस्तु संशोधन
+enter_a_name: नाम प्रविष्ट गर्नुहोस्...
+duplicate_field: फिल्ड डुप्लिकेट
+half_width: आधा चौडाइ
+full_width: पूर्ण चौडाइ
+group: समूह
+export_items: वस्तुहरू निर्यात गर्नुहोस्
+and: र
+or: वा
+init: सुरु.
+dataset_too_large_currently_showing_n_items: डाटासेट धेरै ठूलो छ। हाल पहिलो {n} वस्तुहरू देखाउँदै . .
+modifier: परिमार्जक
+custom: आफ्नै
+hook: हुक
+fill_width: पूर्ण चौडाइ
+field_name_translations: फिल्ड नामको उल्थाहरू
+enter_password_to_enable_tfa: दुई-कारक प्रमाणीकरण सक्षम गर्न आफ्नो पासवर्ड प्रविष्ट गर्नुहोस्
+add_field: फिल्ड थप्नुहोस्
+role_name: भूमिकाको नाम
+branch: साखा
+leaf: पात
+indeterminate: अनिश्चित
+edit_collection: संग्रह सम्पादन
+exclusive: विशेष
+children: बच्चाहरू
+db_only_click_to_configure: 'डाटाबेस मात्र: कन्फिगर गर्न क्लिक गर्नुहोस्'
+show_active_items: सक्रिय वस्तुहरू देखाउनुहोस्
+show_archived_items: संग्रहित वस्तुहरू देखाउनुहोस्
+show_all_items: सबै वस्तुहरू देखाउनुहोस्
+os_version: अपरेटिङ सिस्टम संस्करण
+os_uptime: अपरेटिङ सिस्टम अपटाइम
+os_totalmem: अपरेटिङ सिस्टम मेमोरी
+archive: संग्रह
+archive_confirm: के तपाइँ यो वस्तु संग्रह गर्न निश्चित हुनुहुन्छ?
+archive_confirm_count: >-
+  कुनै वस्तु चयन गरिएको छैन | के तपाइँ निश्चित हुनुहुन्छ कि तपाइँ यो वस्तु संग्रह गर्न चाहनुहुन्छ? | के तपाईं यी {count} वस्तुहरू सङ्ग्रह गर्न निश्चित हुनुहुन्छ?
+reset_system_permissions_to: 'प्रणाली अनुमतिहरू रिसेट गर्नुहोस्:'
+reset_system_permissions_copy: यो कार्यले तपाईंले प्रणाली सङ्कलनहरूमा लागू गर्नुभएको कुनै पनि अनुकूल अनुमतिहरू अधिलेखन गर्नेछ। के तपाईँ निश्चित हुनुहुन्छ?
+the_following_are_minimum_permissions: '"अनुप्रयोग पहुँच" सक्षम हुँदा आवश्यक न्यूनतम अनुमतिहरू निम्न हुन्। तपाईं यसभन्दा बाहिर अनुमतिहरू विस्तार गर्न सक्नुहुन्छ, तर तल होइन।'
+app_access_minimum: न्यूनतम एप पहुँच
+recommended_defaults: पूर्वनिर्धारित सुझाव
+unarchive: संग्रह रद्द
+unarchive_confirm: के तपाइँ यो वस्तु संग्रह गर्न निश्चित हुनुहुन्छ?
+nested_files_folders_will_be_moved: नेस्ट गरिएका फाइलहरू र फोल्डरहरू एक तह माथि सारिनेछन्।
+validation_errors_notice: 'निम्न क्षेत्रहरूमा अमान्य मानहरू छन्:'
+validationError:
+  eq: मान {valid} हुनुपर्छ
+fields:
+  directus_settings:
+    module_bar: मोड्युल बार
+  directus_fields:
+    translation: फिल्ड नामको उल्थाहरू
+  directus_roles:
+    name: भूमिकाको नाम
+field_options:
+  directus_collections:
+    archive_divider: संग्रह
