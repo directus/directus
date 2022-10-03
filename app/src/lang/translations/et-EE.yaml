@@ -32,13 +32,13 @@ module_bar: Mooduliriba
 logs: Logid
 reset_width: Lähtesta Laius
 tile_size: Failisuurus
-edit_field: Muuda välja
+edit_field: Muuda Välja
 conditions: Tingimused
 location: Asukoht
-condition_rules: Tingimuse reeglid
+condition_rules: Tingimuse Reeglid
 input: Sisend
 maps: Kaardid
-switch_user: Vaheta kasutajat
+switch_user: Vaheta Kasutajat
 item_creation: Kirje Loomine
 item_revision: Kirje Parandamine
 enter_a_name: Sisesta Nimi...
@@ -55,26 +55,26 @@ modifier: Muutja
 custom: Kohandatud
 hook: Haak
 fill_width: Täislaius
-field_name_translations: Väljade tõlked
+field_name_translations: Väljade Tõlked
 enter_password_to_enable_tfa: Sisesta oma parool 2F audentimiseks
-add_field: Lisa väli
-role_name: Rolli nimi
+add_field: Lisa Väli
+role_name: Rolli Nimi
 branch: Haru
 leaf: Leht
 indeterminate: Määramatu
-edit_collection: Muuda kogumikku
+edit_collection: Muuda Kogumikku
 exclusive: Eksklusiivne
 db_only_click_to_configure: 'Ainult andmebaas: kliki, et konfigureerida'
 show_active_items: Näita Aktiivseid Kirjeid
-show_archived_items: Näita arhiveeritud üksuseid
+show_archived_items: Näita Arhiveeritud Üksuseid
 show_all_items: Näita Kõiki Kirjeid
-edited: Muudetud väärtus
+edited: Muudetud Väärtus
 required: Nõutud
 required_for_app_access: Vajalik äpi ligipääsuks
 requires_value: Väärtus nõutud
-create_preset: Loo seadistus
+create_preset: Loo Seadistus
 create_panel: Loomise Paneel
-create_role: Loo roll
+create_role: Loo Roll
 create_user: Loo Kasutaja
 message: Sõnum
 delete_panel: Kustutamise Paneel
@@ -104,7 +104,7 @@ prefix: Eesliide
 suffix: Järelliide
 reset_bookmark: Kustuta Järjehoidja
 update_bookmark: Järjehoidja Uuendamine
-delete_bookmark: Kustuta järjehoidja
+delete_bookmark: Kustuta Järjehoidja
 delete_bookmark_copy: >-
   Kas soovid kindlasti järjehoidjat "{bookmark}" kustutada? Seda toimingut ei saa tagasi võtta.
 delete_personal_bookmark: Kustuta Isiklik Järjehoidja
@@ -115,24 +115,24 @@ logoutReason:
   SESSION_EXPIRED: Sessioon aegunud
 public_label: Avalik
 public_description: Kontrollib, millised API andmed on autentimata kasutajale saadaval.
-admin_description: Esialgne administraatoriroll. Administraatoril on piiramatu juurdepääsus rakendusele ja API-le.
+admin_description: Esialgne administraatoriroll. Administraatoril on piiramatu juurdepääs rakendusele ja API-le.
 not_allowed: Ei ole lubatud
 directus_version: Directuse Versioon
-node_version: Node versioon
+node_version: Node Versioon
 node_uptime: Node ülevaloleku aeg
 os_type: OS Tüüp
 os_version: OS Versioon
-os_uptime: OS Ülevaloleku aeg
+os_uptime: OS Ülevaloleku Aeg
 os_totalmem: OS Mälu
 archive: Arhiiv
 archive_confirm: Oled kindel, et soovid eemaldada selle üksuse?
 archive_confirm_count: >-
-  Üksuseid pole valitud | Oled kindel, et soovid arhiveerida seda üksust? | Oled kindel, et soovid arhiveerida neid {count} üksuseid?
+  Üksuseid pole valitud | Oled kindel, et soovid arhiveerida seda üksust? | Oled kindel, et soovid arhiveerida {count} üksust?
 reset_system_permissions_to: 'Lähtesta Süsteemi Load:'
 reset_system_permissions_copy: See tegevus kirjutab üle kõik eelnevad süsteemsetele kogudele kohandatud load. Kas oled kindel?
 the_following_are_minimum_permissions: Need on vähimad load, mida on vaja "Rakenduse ligipääsu" võimaldamiseks. Sa võid ligipääsulube lisada, kuid mitte vähendada.
-app_access_minimum: Rakenduse ligipääsu miinimum
-recommended_defaults: Soovituslikud vaikeväärtused
+app_access_minimum: Rakenduse Ligipääsu Miinimum
+recommended_defaults: Soovituslikud Vaikeväärtused
 unarchive: Eemalda arhiivist
 unarchive_confirm: Oled kindel, et soovid selle üksuse arhiivist eemaldada?
 nested_files_folders_will_be_moved: Pesastatud failid ja kaustad liigutatakse üks aste ülesse.
@@ -156,32 +156,32 @@ validationError:
   unique: Väärtus peab olema unikaalne
   regex: Väärtuse vorming on vigane
 all_access: Ligipääs kõigele
-no_access: Ei ole ligipääsu
-use_custom: Kasuta kohandatud
+no_access: Ei Ole Ligipääsu
+use_custom: Kasuta Kohandatud
 nullable: Nullitav
 allow_null_value: Luba NULL väärtus
 allow_multiple: Luba Mitu
 allow_multiple_to_be_open: Luba Avada Mitu
 enter_value_to_replace_nulls: Palun sisesta uus väärtus, et asendada kõik senised NULL väärtused sellel väljal.
 field_standard: Standard
-field_presentation: Kujundus ja aliased
-field_file: Üksik fail
-field_files: Mitu faili
+field_presentation: Kujundus ja Aliased
+field_file: Üksik Fail
+field_files: Mitu Faili
 field_m2o: M2O Seos
-field_m2a: M2A seosed
+field_m2a: M2A Seos
 field_o2m: O2M Seos
 field_m2m: M2M Seos
 field_translations: Tõlked
 field_group: Väljade Grupp
-item_permissions: Üksuse õigused
-field_permissions: Väljade õigused
-field_validation: Välja valideerimine
-field_presets: Välja eelseadistused
+item_permissions: Üksuse Õigused
+field_permissions: Väljade Õigused
+field_validation: Välja Valideerimine
+field_presets: Välja Eelseadistused
 permissions_for_role: '{role} rollil lubatud üksuste {action}.'
 fields_for_role: '{role} rollil lubatud väljade {action}.'
 validation_for_role: 'Tegevuse {action} jaoks on vajalik roll {role}.'
 presets_for_role: 'Välja vaikeväärtuseks on {role} roll.'
-presentation_and_aliases: Kujundus ja aliased
+presentation_and_aliases: Kujundus ja Aliased
 revision_post_create: Kuidas kirje loomise ajal välja nägi.
 revision_post_update: Kuidas kirje loomise ajal välja nägi.
 changes_made: Allpool on välja toodud selles redaktsioonis tehtud konkreetsed muudatused.
@@ -189,12 +189,12 @@ no_relational_data: Pidage meeles, et relatsiooniandmed siin puuduvad.
 top: Üleval
 bottom: All
 hide_field: Peida Väli
-hide_field_on_detail: Peida väli detailvaates
-show_field_on_detail: Näita detailvaates
-delete_field: Kustuta väli
-fields_and_layout: Väljad ja paigutus
-field_create_success: 'Loodud väli: "{field}"'
-field_update_success: 'Uuendatud väli: "{field}"'
+hide_field_on_detail: Peida Väli Detailvaates
+show_field_on_detail: Näita Detailvaates
+delete_field: Kustuta Väli
+fields_and_layout: Väljad ja Paigutus
+field_create_success: 'Loodud Väli: "{field}"'
+field_update_success: 'Uuendatud Väli: "{field}"'
 duplicate_where_to: Kuhu sa sooviks seda välja dubleerida?
 language: Keel
 language_placeholder: Vali keel...
@@ -213,12 +213,12 @@ shutter: Katik
 iso: ISO
 focal_length: Fookuskaugus
 schema_setup_key: Välja nimi andmebaasis ja API päringutes
-create_field: Loo väli
-creating_new_field: 'Uus väli ({collection})'
+create_field: Loo Väli
+creating_new_field: 'Uus Väli ({collection})'
 field_in_collection: '{field} ({collection})'
-reset_page_preferences: Nulli lehe seadistused
-hidden_field: Peidetud väli
-hidden_on_detail: Üksikasjavaates peidetud
+reset_page_preferences: Lähtesta Lehe Seadistused
+hidden_field: Peidetud Väli
+hidden_on_detail: Üksikasjavaates Peidetud
 disabled_editing_value: Keela välja muutmine
 key: Võti
 alias: Alias
@@ -241,9 +241,9 @@ timestamp: Timestamp
 uuid: UUID
 hash: Hash (räsi)
 not_available_for_type: Pole selle tüübi korral saadaval
-create_translations: Lisa tõlkeid
-auto_refresh: Automaatne värskendamine
-refresh_interval: Värskenduse intervall
+create_translations: Lisa Tõlkeid
+auto_refresh: Automaatne Värskendamine
+refresh_interval: Värskenduse Intervall
 no_refresh: Ära värskenda
 refresh_interval_seconds: Värskenda kohe | Iga sekund | Iga {seconds} sekundi tagant
 refresh_interval_minutes: Iga minut | Iga {minutes} minuti tagant
@@ -256,9 +256,9 @@ click_to_manage_translated_fields: >-
 fields_group: Väljade grupp
 no_collections_found: Andmedkogusid ei leitud.
 new_data_alert: 'Sinu andmemudelisse lisatakse:'
-search_collection: Otsi andmekogu...
-new_field: 'Uus väli'
-new_collection: 'Uus kogumik'
+search_collection: Otsi Andmekogu...
+new_field: 'Uus Väli'
+new_collection: 'Uus Kogumik'
 choose_a_type: Vali Tüüp...
 determined_by_relationship: Määratud suhtega
 add_note: Lisa kasutajaid abistav märkus...
@@ -857,10 +857,10 @@ fields:
     note: Märkus
     hidden: Peidetud
     singleton: Üksik
-    translation: Väljade tõlked
+    translation: Väljade Tõlked
     display_template: Mall
   directus_roles:
-    name: Rolli nimi
+    name: Rolli Nimi
     icon: Rolli pilt
     description: Kirjeldus
     app_access: Rakenduse ligipääs
