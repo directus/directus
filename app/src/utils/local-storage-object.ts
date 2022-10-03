@@ -17,12 +17,22 @@ export class LocalStorageObject {
 		try {
 			return JSON.parse(valueFromLocalStorage);
 		} catch (e) {
+			// eslint-disable-next-line no-console
+			console.warn(`Couldn't parse value from local storage`, e);
+
 			return this.defaultValue;
 		}
 	}
 
 	setValue(value: LocalStorageObjectType): LocalStorageObjectType {
-		localStorage.setItem(this.key, JSON.stringify(value));
+		try {
+			localStorage.setItem(this.key, JSON.stringify(value));
+		} catch (e) {
+			// eslint-disable-next-line no-console
+			console.warn(`Couldn't stringify and set value to local storage`, e);
+
+			return this.getValue();
+		}
 
 		return value;
 	}

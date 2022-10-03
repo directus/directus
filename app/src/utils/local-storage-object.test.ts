@@ -49,6 +49,20 @@ describe('LocalStorageObject', () => {
 		it('returns value', () => {
 			expect(localStorageObject.setValue(value)).toBe(value);
 		});
+
+		describe('when there is an error while stringifying', () => {
+			it('returns default value', () => {
+				const currentValue = 'Hello!';
+				const stringifiedValue = JSON.stringify(currentValue);
+				localStorage.setItem(keyWithPrefix, stringifiedValue);
+
+				const newValue = {};
+				newValue.a = { b: newValue };
+
+				expect(localStorageObject.setValue(newValue)).toBe(currentValue);
+				expect(localStorage.getItem(keyWithPrefix)).toBe(stringifiedValue);
+			});
+		});
 	});
 
 	describe('#clear', () => {
