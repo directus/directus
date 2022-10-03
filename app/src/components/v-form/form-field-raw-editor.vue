@@ -32,7 +32,12 @@ interface Props {
 	currentValue: unknown;
 }
 
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+	showModal: false,
+	disabled: false,
+	currentValue: undefined,
+});
+
 const emit = defineEmits(['cancel', 'submit']);
 
 const { t } = useI18n();
