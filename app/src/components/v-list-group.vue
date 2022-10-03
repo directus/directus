@@ -45,6 +45,8 @@ interface Props {
 	multiple?: boolean;
 	/** To what route the item should link to */
 	to?: string;
+	/** If the item should be active or not */
+	active?: boolean;
 	/** Renders an active state if the route matches exactly */
 	exact?: boolean;
 	/** Renders an active state it the route matches the query  */
@@ -68,6 +70,7 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
 	multiple: true,
 	to: '',
+	active: undefined,
 	exact: false,
 	query: false,
 	disabled: false,
@@ -81,12 +84,12 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits(['click']);
 
-const { active, toggle } = useGroupable({
+const { active: groupableActive, toggle } = useGroupable({
 	group: props.scope,
 	value: props.value,
 });
 
-const groupActive = computed(() => active.value || props.open);
+const groupActive = computed(() => groupableActive.value || props.open);
 
 function onClick(event: MouseEvent) {
 	if (props.to) return null;

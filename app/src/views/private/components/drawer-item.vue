@@ -20,42 +20,47 @@
 		</template>
 
 		<div class="drawer-item-content">
-			<template v-if="junctionField">
-				<file-preview
-					v-if="file"
-					:src="file.src"
-					:mime="file.type"
-					:width="file.width"
-					:height="file.height"
-					:title="file.title"
-					:in-modal="true"
+			<file-preview
+				v-if="junctionField && file"
+				:src="file.src"
+				:mime="file.type"
+				:width="file.width"
+				:height="file.height"
+				:title="file.title"
+				:in-modal="true"
+			/>
+			<v-info v-if="emptyForm" :title="t('no_visible_fields')" icon="search" center>
+				{{ t('no_visible_fields_copy') }}
+			</v-info>
+			<div v-else class="drawer-item-order" :class="{ swap: swapFormOrder }">
+				<v-form
+					v-if="junctionField"
+					:disabled="disabled"
+					:loading="loading"
+					:nested="true"
+					:initial-values="initialValues?.[junctionField]"
+					:primary-key="relatedPrimaryKey"
+					:model-value="internalEdits?.[junctionField]"
+					:fields="relatedCollectionFields"
+					:validation-errors="junctionField ? validationErrors : undefined"
+					:autofocus="!swapFormOrder"
+					:show-divider="!swapFormOrder"
+					@update:model-value="setRelationEdits"
 				/>
-				<div class="drawer-item-order" :class="{ swap: swapFormOrder }">
-					<v-form
-						:disabled="disabled"
-						:loading="loading"
-						:initial-values="initialValues?.[junctionField]"
-						:primary-key="relatedPrimaryKey"
-						:model-value="internalEdits?.[junctionField]"
-						:fields="relatedCollectionFields"
-						:validation-errors="junctionField ? validationErrors : undefined"
-						autofocus
-						:show-divider="!swapFormOrder"
-						@update:model-value="setRelationEdits"
-					/>
 
-					<v-form
-						v-model="internalEdits"
-						:disabled="disabled"
-						:loading="loading"
-						:initial-values="initialValues"
-						:show-divider="swapFormOrder"
-						:primary-key="primaryKey"
-						:fields="fields"
-						:validation-errors="!junctionField ? validationErrors : undefined"
-					/>
-				</div>
-			</template>
+				<v-form
+					v-model="internalEdits"
+					:disabled="disabled"
+					:loading="loading"
+					:nested="true"
+					:initial-values="initialValues"
+					:autofocus="swapFormOrder"
+					:show-divider="swapFormOrder"
+					:primary-key="primaryKey"
+					:fields="fields"
+					:validation-errors="!junctionField ? validationErrors : undefined"
+				/>
+			</div>
 		</div>
 	</v-drawer>
 </template>
@@ -181,6 +186,12 @@ const fieldsWithoutCircular = computed(() => {
 	} else {
 		return fields.value;
 	}
+});
+
+const emptyForm = computed(() => {
+	const visibleFieldsRelated = relatedCollectionFields.value.filter((field: Field) => !field.meta?.hidden);
+	const visibleFieldsJunction = fields.value.filter((field: Field) => !field.meta?.hidden);
+	return visibleFieldsRelated.length + visibleFieldsJunction.length === 0;
 });
 
 const templatePrimaryKey = computed(() =>
@@ -350,8 +361,9 @@ function useActions() {
 		const editsToValidate = props.junctionField ? internalEdits.value[props.junctionField] : internalEdits.value;
 		const fieldsToValidate = props.junctionField ? relatedCollectionFields.value : fieldsWithoutCircular.value;
 		const defaultValues = getDefaultValuesFromFields(fieldsToValidate);
+		const existingValues = props.junctionField ? initialValues?.value?.[props.junctionField] : initialValues?.value;
 		let errors = validateItem(
-			merge({}, defaultValues.value, initialValues.value, editsToValidate),
+			merge({}, defaultValues.value, existingValues, editsToValidate),
 			fieldsToValidate,
 			isNew.value
 		);
@@ -359,6 +371,8 @@ function useActions() {
 		if (errors.length > 0) {
 			validationErrors.value = errors;
 			return;
+		} else {
+			validationErrors.value = [];
 		}
 
 		if (props.junctionField && props.relatedPrimaryKey !== '+' && relatedPrimaryKeyField.value) {

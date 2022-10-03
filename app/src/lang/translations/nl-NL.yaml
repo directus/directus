@@ -23,6 +23,7 @@ identifier: Identificator
 avatar: Profielafbeelding
 application: Applicatie
 default_provider: Standaard
+method: Methode
 published: Gepubliceerd
 draft: Concept
 archived: Gearchiveerd
@@ -45,6 +46,7 @@ group: Groep
 export_items: Exporteer items
 and: En
 or: Of
+modifier: Modificator
 fill_width: Vul Breedte
 field_name_translations: Veld-naam Vertalingen
 enter_password_to_enable_tfa: Voer je wachtwoord in om Tweestapsverificatie in te schakelen
@@ -68,6 +70,7 @@ create_preset: Voorkeur Aanmaken
 create_panel: Paneel maken
 create_role: Maak rol
 create_user: Gebruiker Aanmaken
+message: Bericht
 delete_panel: Paneel verwijderen
 create_webhook: Webhook Aanmaken
 create_translation_string: Vertalingen aanmaken
@@ -176,6 +179,8 @@ revision_post_create: Zo zag dit item eruit toen het werd gemaakt.
 revision_post_update: Zo zag dit item eruit na de update.
 changes_made: Hieronder staan de specifieke wijzigingen die zijn aangebracht in deze herziening.
 no_relational_data: Houd er rekening mee dat relatiegegevens hier niet bij betrokken zijn.
+top: Bovenaan
+bottom: Onderaan
 hide_field: Veld verbergen
 hide_field_on_detail: Veld Verbergen
 show_field_on_detail: Veld Tonen
@@ -280,6 +285,8 @@ next: Volgende
 field_name: Veldnaam
 translations: Vertalingen
 no_translations: Geen vertalingen
+left_to_right: Links naar rechts
+right_to_left: Rechts naar links
 note: Notitie
 enter_a_value: Voer een waarde in...
 enter_a_placeholder: Voer een placeholder in...
@@ -301,6 +308,8 @@ paste_raw_value_success: Geplakt
 paste_raw_value_fail: Plakken mislukt
 edit_raw_value: Bewerk Ruwe Waarde
 enter_raw_value: Ruwe waarde invoeren...
+reset_to_default: Herstel naar Standaard
+undo_changes: Ongedaan maken
 notifications: Notificaties
 show_all_activity: Alle activiteiten tonen
 page_not_found: Pagina niet gevonden
@@ -322,6 +331,7 @@ revision_preview: Revisie voorbeeld
 updates_made: Gemaakte updates
 leave_comment: Plaats een reactie...
 post_comment_success: Reactie geplaatst
+post_comment_updated: Reactie bijgewerkt
 item_create_success: Item Aangemaakt | Items Aangemaakt
 item_update_success: Item Bijgewerkt | Items Bijgewerkt
 item_delete_success: Item Verwijderd | Items Verwijderd
@@ -416,6 +426,9 @@ replace_from_library: Vervang bestand met bestaande
 replace_from_url: Vervang bestand via een URL import
 no_file_selected: Geen bestand geselecteerd
 download_file: Download bestand
+open_file_in_tab: Openen in nieuw tabblad
+start_export: Start exporteren
+not_available_for_local_downloads: Niet beschikbaar voor lokale downloads
 collection_key: Collectie Key
 name: Naam
 primary_key_field: Primary Key veld
@@ -436,6 +449,7 @@ creating_items: Items aanmaken
 enable_create_button: Aanmaakknop inschakelen
 selecting_items: Items selecteren
 enable_select_button: Selecteerknop inschakelen
+allow_duplicates: Sta duplicaten toe
 comments: Reacties
 no_comments: Nog geen reacties
 click_to_expand: Klik om uit te breiden
@@ -520,7 +534,9 @@ errors:
   INVALID_CREDENTIALS: Verkeerde gebruikersnaam of wachtwoord
   INVALID_OTP: Verkeerd eenmalig wachtwoord
   INVALID_PAYLOAD: Invalid payload
+  INVALID_PROVIDER: Gebruiker behoort tot een andere autorisatieprovider
   INVALID_QUERY: Ongeldige zoekopdracht
+  INVALID_CONFIG: Ongeldige configuratie
   ITEM_LIMIT_REACHED: Item limiet bereikt
   ITEM_NOT_FOUND: Item niet gevonden
   ROUTE_NOT_FOUND: Niet gevonden
@@ -1279,7 +1295,10 @@ panels:
   label:
     name: Label
 operations:
+  log:
+    message: Bericht
   notification:
     recipient: Gebruiker
+    message: Bericht
   request:
     url: URL
