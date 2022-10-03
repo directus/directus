@@ -11,7 +11,7 @@
 			</v-list-item-content>
 		</v-list-item>
 
-		<template v-if="canSelectAll">
+		<template v-if="allowSelectAll">
 			<v-divider />
 			<v-list-item v-if="disabledFields?.length !== allFields?.length" clickable @click="selectAll">
 				{{ t('select_all') }}
@@ -48,7 +48,7 @@ interface Props {
 	disabledFields?: string[];
 	includeFunctions?: boolean;
 	includeRelations?: boolean;
-	canSelectAll?: boolean;
+	allowSelectAll?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -56,7 +56,7 @@ const props = withDefaults(defineProps<Props>(), {
 	disabledFields: () => [],
 	includeFunctions: false,
 	includeRelations: true,
-	canSelectAll: false,
+	allowSelectAll: false,
 });
 
 const emit = defineEmits(['select-field', 'select-all']);

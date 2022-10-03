@@ -31,7 +31,7 @@
 			<v-field-list
 				:disabled-fields="value"
 				:collection="collectionName"
-				:can-select-all="canSelectAll"
+				allow-select-all
 				@select-field="addField"
 				@select-all="addAllFields"
 			/>
@@ -50,7 +50,7 @@ import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
 interface Props {
 	collectionName: string;
 	value?: string[] | null;
-	canSelectAll?: boolean;
+	allowSelectAll?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), { value: () => null });
