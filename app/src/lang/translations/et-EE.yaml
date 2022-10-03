@@ -21,7 +21,7 @@
 #'Proxy', 'Intl'
 identifier: Identifikaator
 avatar: Avatar
-application: Rakendused
+application: Rakendus
 default_provider: Vaikimisi
 method: Meetod
 published: Avaldatud
@@ -73,9 +73,11 @@ required: Nõutud
 required_for_app_access: Vajalik äpi ligipääsuks
 requires_value: Väärtus nõutud
 create_preset: Loo seadistus
+create_panel: Loomise Paneel
 create_role: Loo roll
 create_user: Loo Kasutaja
 message: Sõnum
+delete_panel: Kustutamise Paneel
 create_webhook: Loo Veebikonks
 create_translation_string: Loo Tõlkestring
 no_translation_string: Puuduvad Tõlkestringid
@@ -105,11 +107,15 @@ update_bookmark: Järjehoidja Uuendamine
 delete_bookmark: Kustuta järjehoidja
 delete_bookmark_copy: >-
   Kas soovid kindlasti järjehoidjat "{bookmark}" kustutada? Seda toimingut ei saa tagasi võtta.
+delete_personal_bookmark: Kustuta Isiklik Järjehoidja
+delete_role_bookmark: Kustuta Rolli Järjehoidja
+delete_global_bookmark: Kustuta Globaalne Järjehoidja
 logoutReason:
   SIGN_OUT: Välja logitud
   SESSION_EXPIRED: Sessioon aegunud
 public_label: Avalik
 public_description: Kontrollib, millised API andmed on autentimata kasutajale saadaval.
+admin_description: Esialgne administraatoriroll. Administraatoril on piiramatu juurdepääsus rakendusele ja API-le.
 not_allowed: Ei ole lubatud
 directus_version: Directuse Versioon
 node_version: Node versioon
@@ -130,6 +136,7 @@ recommended_defaults: Soovituslikud vaikeväärtused
 unarchive: Eemalda arhiivist
 unarchive_confirm: Oled kindel, et soovid selle üksuse arhiivist eemaldada?
 nested_files_folders_will_be_moved: Pesastatud failid ja kaustad liigutatakse üks aste ülesse.
+validation_errors_notice: 'Järgnevatel väljadel on kehtetud väärtused:'
 validationError:
   eq: Väärtus peab olema {valid}
   neq: Väärtus ei saa olla {invalid}
@@ -153,6 +160,8 @@ no_access: Ei ole ligipääsu
 use_custom: Kasuta kohandatud
 nullable: Nullitav
 allow_null_value: Luba NULL väärtus
+allow_multiple: Luba Mitu
+allow_multiple_to_be_open: Luba Avada Mitu
 enter_value_to_replace_nulls: Palun sisesta uus väärtus, et asendada kõik senised NULL väärtused sellel väljal.
 field_standard: Standard
 field_presentation: Kujundus ja aliased
@@ -163,6 +172,7 @@ field_m2a: M2A seosed
 field_o2m: O2M Seos
 field_m2m: M2M Seos
 field_translations: Tõlked
+field_group: Väljade Grupp
 item_permissions: Üksuse õigused
 field_permissions: Väljade õigused
 field_validation: Välja valideerimine
@@ -172,6 +182,13 @@ fields_for_role: '{role} rollil lubatud väljade {action}.'
 validation_for_role: 'Tegevuse {action} jaoks on vajalik roll {role}.'
 presets_for_role: 'Välja vaikeväärtuseks on {role} roll.'
 presentation_and_aliases: Kujundus ja aliased
+revision_post_create: Kuidas kirje loomise ajal välja nägi.
+revision_post_update: Kuidas kirje loomise ajal välja nägi.
+changes_made: Allpool on välja toodud selles redaktsioonis tehtud konkreetsed muudatused.
+no_relational_data: Pidage meeles, et relatsiooniandmed siin puuduvad.
+top: Üleval
+bottom: All
+hide_field: Peida Väli
 hide_field_on_detail: Peida väli detailvaates
 show_field_on_detail: Näita detailvaates
 delete_field: Kustuta väli
@@ -180,9 +197,17 @@ field_create_success: 'Loodud väli: "{field}"'
 field_update_success: 'Uuendatud väli: "{field}"'
 duplicate_where_to: Kuhu sa sooviks seda välja dubleerida?
 language: Keel
+language_placeholder: Vali keel...
+aggregate_function: Koondfunktsioon
 global: Üldine
 admins_have_all_permissions: Adminnidel on kõik õigused
 camera: Kaamera
+validation: Valideerimine
+sum: Summa
+avg: Keskmine
+count: Arv
+min: Miinimum
+max: Maksimum
 exposure: Säriaeg
 shutter: Katik
 iso: ISO
@@ -200,8 +225,10 @@ alias: Alias
 bigInteger: Big Integer
 boolean: Boolean
 date: Kuupäev
+date_range: Kuupäevade Vahemik
 datetime: DateTime
 dateTime: DateTime
+precision: Täpsus
 decimal: Decimal
 float: Float
 integer: Integer
@@ -311,6 +338,7 @@ delete_comment: Kustuta Kommentaar
 functions:
   year: Aasta
   month: Kuu
+  count: Arv
 date-fns_date: PPP
 date-fns_time: 'HH:mm:ss'
 date-fns_time_no_seconds: 'HH:mm'
