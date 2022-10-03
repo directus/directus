@@ -211,7 +211,7 @@
 					<interface-system-fields
 						:value="exportSettings.fields"
 						:collection-name="collection"
-						:can-select-all="true"
+						allow-select-all
 						@input="exportSettings.fields = $event"
 					/>
 				</div>

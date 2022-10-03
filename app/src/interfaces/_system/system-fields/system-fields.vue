@@ -31,7 +31,7 @@
 			<v-field-list
 				:disabled-fields="value"
 				:collection="collectionName"
-				allow-select-all
+				:allow-select-all="allowSelectAll"
 				@select-field="addField"
 				@select-all="addAllFields"
 			/>
