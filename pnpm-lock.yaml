@@ -99,7 +99,6 @@ importers:
       '@types/flat': 5.0.2
       '@types/fs-extra': 9.0.13
       '@types/inquirer': 8.2.1
-      '@types/ioredis': ^4.28.10
       '@types/jest': 27.5.2
       '@types/js-yaml': 4.0.5
       '@types/json2csv': 5.0.3
@@ -335,7 +334,6 @@ importers:
       '@types/flat': 5.0.2
       '@types/fs-extra': 9.0.13
       '@types/inquirer': 8.2.1
-      '@types/ioredis': 4.28.10
       '@types/jest': 27.5.2
       '@types/js-yaml': 4.0.5
       '@types/json2csv': 5.0.3
@@ -6840,12 +6838,6 @@ packages:
     dependencies:
       '@types/through': 0.0.30
       rxjs: 7.5.6
-    dev: true
-
-  /@types/ioredis/4.28.10:
-    resolution: {integrity: sha512-69LyhUgrXdgcNDv7ogs1qXZomnfOEnSmrmMFqKgt1XMJxmoOSG/u3wYy13yACIfKuMJ8IhKgHafDO3sx19zVQQ==}
-    dependencies:
-      '@types/node': 16.11.9
     dev: true
 
   /@types/is-function/1.0.1:
