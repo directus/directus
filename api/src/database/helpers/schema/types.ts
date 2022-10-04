@@ -1,6 +1,7 @@
 import { getDatabaseClient } from '../../index';
 import { DatabaseHelper } from '../types';
 import { KNEX_TYPES } from '@directus/shared/constants';
+import { Knex } from 'knex';
 
 type Clients = 'mysql' | 'postgres' | 'cockroachdb' | 'sqlite' | 'oracle' | 'mssql' | 'redshift';
 
@@ -89,5 +90,9 @@ export abstract class SchemaHelper extends DatabaseHelper {
 
 	async postColumnChange(): Promise<void> {
 		return;
+	}
+
+	applyOffset(rootQuery: Knex.QueryBuilder, offset: number): void {
+		rootQuery.offset(offset);
 	}
 }

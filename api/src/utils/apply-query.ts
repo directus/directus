@@ -44,7 +44,7 @@ export default function applyQuery(
 	}
 
 	if (query.offset) {
-		dbQuery.offset(query.offset);
+		applyOffset(knex, dbQuery, query.offset);
 	}
 
 	if (query.page && query.limit && query.limit !== -1) {
@@ -289,6 +289,12 @@ export function applySort(
 export function applyLimit(rootQuery: Knex.QueryBuilder, limit: any) {
 	if (typeof limit === 'number' && limit !== -1) {
 		rootQuery.limit(limit);
+	}
+}
+
+export function applyOffset(knex: Knex, rootQuery: Knex.QueryBuilder, offset: any) {
+	if (typeof offset === 'number') {
+		getHelpers(knex).schema.applyOffset(rootQuery, offset);
 	}
 }
 
