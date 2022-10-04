@@ -84,7 +84,7 @@ no_translation_string: Puuduvad Tõlkestringid
 no_translation_string_copy: Tõlkestringe veel pole.
 translation_string_key_placeholder: Tõlkestringi võti...
 translation_string_translations_placeholder: Loo uus tõlge
-edit_translation_string: Redigeeri Tõlkestringi
+edit_translation_string: Muuda Tõlkestringi
 delete_translation_string_copy: >-
   Oled kindel, et soovid tõlkestringi "{key}" kustutada? Seda toimingut ei saa tagasi võtta.
 invite_users: Kutsu Kasutajaid
@@ -106,7 +106,7 @@ reset_bookmark: Kustuta Järjehoidja
 update_bookmark: Järjehoidja Uuendamine
 delete_bookmark: Kustuta Järjehoidja
 delete_bookmark_copy: >-
-  Kas soovid kindlasti järjehoidjat "{bookmark}" kustutada? Seda toimingut ei saa tagasi võtta.
+  Oled kindel, et soovid järjehoidjat "{bookmark}" kustutada? Seda toimingut ei saa tagasi võtta.
 delete_personal_bookmark: Kustuta Isiklik Järjehoidja
 delete_role_bookmark: Kustuta Rolli Järjehoidja
 delete_global_bookmark: Kustuta Globaalne Järjehoidja
