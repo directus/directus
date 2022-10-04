@@ -42,11 +42,14 @@ export function validateQuery(query: Query): Query {
 	return query;
 }
 
-function validateFilter(filter: Query['filter']) {
+function validateFilter(filter: Query['filter'], isNested = false) {
 	if (!filter) throw new InvalidQueryException('Invalid filter object');
 	for (const [key, nested] of Object.entries(filter)) {
+		if (key === '_some' || key === '_none') {
+			if (isNested) throw new InvalidQueryException('Invalid filter object');
+		}
 		if (key === '_and' || key === '_or') {
-			nested.forEach(validateNestedFilter);
+			nested.forEach(validateFilter, true);
 		} else if (key.startsWith('_')) {
 			const value = nested;
 
@@ -72,7 +75,7 @@ function validateFilter(filter: Query['filter']) {
 					break;
 				case '_none':
 				case '_some':
-					validateNestedFilter(nested);
+					validateFilter(nested, true);
 					break;
 				case '_eq':
 				case '_neq':
@@ -96,61 +99,6 @@ function validateFilter(filter: Query['filter']) {
 			validateFilterPrimitive(nested, '_eq');
 		} else {
 			validateFilter(nested);
-		}
-	}
-}
-
-function validateNestedFilter(filter: Query['filter']) {
-	if (!filter) throw new InvalidQueryException('Invalid filter object');
-
-	for (const [key, nested] of Object.entries(filter)) {
-		if (key === '_and' || key === '_or') {
-			nested.forEach(validateNestedFilter);
-		} else if (key.startsWith('_')) {
-			const value = nested;
-
-			switch (key) {
-				case '_in':
-				case '_nin':
-				case '_between':
-				case '_nbetween':
-					validateList(value, key);
-					break;
-				case '_null':
-				case '_nnull':
-				case '_empty':
-				case '_nempty':
-					validateBoolean(value, key);
-					break;
-
-				case '_intersects':
-				case '_nintersects':
-				case '_intersects_bbox':
-				case '_nintersects_bbox':
-					validateGeometry(value, key);
-					break;
-				case '_eq':
-				case '_neq':
-				case '_contains':
-				case '_ncontains':
-				case '_starts_with':
-				case '_nstarts_with':
-				case '_ends_with':
-				case '_nends_with':
-				case '_gt':
-				case '_gte':
-				case '_lt':
-				case '_lte':
-				default:
-					validateFilterPrimitive(value, key);
-					break;
-			}
-		} else if (isPlainObject(nested)) {
-			validateNestedFilter(nested);
-		} else if (Array.isArray(nested) === false) {
-			validateFilterPrimitive(nested, '_eq');
-		} else {
-			validateNestedFilter(nested);
 		}
 	}
 }
