@@ -1023,6 +1023,7 @@ directus_collection:
   directus_migrations: Welke versie van de database je gebruikt
   directus_notifications: Notificaties verzonden naar gebruikers
   directus_operations: Operaties die worden uitgevoerd in Flows
+  directus_panels: Individuele panelen binnen de Inzichten dashboards
 fields:
   directus_activity:
     item: Item Primary Key
