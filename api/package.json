@@ -121,7 +121,7 @@
 		"graphql-compose": "^9.0.8",
 		"helmet": "^4.6.0",
 		"inquirer": "^8.2.4",
-		"ioredis": "^4.27.6",
+		"ioredis": "^5.2.3",
 		"joi": "^17.6.0",
 		"js-yaml": "^4.1.0",
 		"js2xmlparser": "^4.0.2",
