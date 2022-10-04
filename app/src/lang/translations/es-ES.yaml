@@ -136,7 +136,7 @@ app_access_minimum: Mínimo acceso a App
 recommended_defaults: Valores predeterminados recomendados
 unarchive: Desarchivar
 unarchive_confirm: '¿Realmente desea desarchivar este elemento?'
-nested_files_folders_will_be_moved: Los archivos y directorios anidados serán movidos a un nivel superior.
+nested_files_folders_will_be_moved: Los archivos y directorios anidados serán movidos un nivel hacia arriba.
 validation_errors_notice: 'Los siguientes campos tienen valores no válidos:'
 validationError:
   eq: El valor tiene que ser {valid}
@@ -158,8 +158,8 @@ validationError:
   regex: El valor no tiene el formato correcto
 all_access: Todos los accesos
 no_access: Sin Acceso
-use_custom: Personalizar
-nullable: Acepta valores nulos
+use_custom: Personalizar uso
+nullable: Anulable
 allow_null_value: Permitir valor NULL
 allow_multiple: Permitir Múltiples
 allow_multiple_to_be_open: Permitir que se abran múltiples
