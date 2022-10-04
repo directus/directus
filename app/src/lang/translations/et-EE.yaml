@@ -114,7 +114,7 @@ logoutReason:
   SIGN_OUT: Välja logitud
   SESSION_EXPIRED: Sessioon aegunud
 public_label: Avalik
-public_description: Kontrollib, millised API andmed on autentimata kasutajale saadaval.
+public_description: Kontrollib, millised API andmed on saadaval autentimata kasutajale.
 admin_description: Esialgne administraatoriroll. Administraatoril on piiramatu juurdepääs rakendusele ja API-le.
 not_allowed: Ei ole lubatud
 directus_version: Directuse Versioon
@@ -125,16 +125,16 @@ os_version: OS Versioon
 os_uptime: OS Ülevaloleku Aeg
 os_totalmem: OS Mälu
 archive: Arhiiv
-archive_confirm: Oled kindel, et soovid eemaldada selle üksuse?
+archive_confirm: Oled kindel, et soovid arhiveerida selle kirje?
 archive_confirm_count: >-
-  Üksuseid pole valitud | Oled kindel, et soovid arhiveerida seda üksust? | Oled kindel, et soovid arhiveerida {count} üksust?
+  Kirjeid pole valitud | Oled kindel, et soovid arhiveerida selle kirje? | Oled kindel, et soovid arhiveerida {count} kirjet?
 reset_system_permissions_to: 'Lähtesta Süsteemi Load:'
 reset_system_permissions_copy: See tegevus kirjutab üle kõik eelnevad süsteemsetele kogudele kohandatud load. Kas oled kindel?
 the_following_are_minimum_permissions: Need on vähimad load, mida on vaja "Rakenduse ligipääsu" võimaldamiseks. Sa võid ligipääsulube lisada, kuid mitte vähendada.
 app_access_minimum: Rakenduse Ligipääsu Miinimum
 recommended_defaults: Soovituslikud Vaikeväärtused
 unarchive: Eemalda arhiivist
-unarchive_confirm: Oled kindel, et soovid selle üksuse arhiivist eemaldada?
+unarchive_confirm: Oled kindel, et soovid selle kirje arhiivist eemaldada?
 nested_files_folders_will_be_moved: Pesastatud failid ja kaustad liigutatakse üks aste ülesse.
 validation_errors_notice: 'Järgnevatel väljadel on kehtetud väärtused:'
 validationError:
@@ -145,9 +145,9 @@ validationError:
   contains: Väärtus peab sisaldama {substring}
   ncontains: Väärtus ei tohi sisaldada {substring}
   gt: Väärtus peab olema suurem kui {valid}
-  gte: Väärtus peab olema suurem või võrdne {valid}
+  gte: Väärtus peab olema suurem või võrdne kui {valid}
   lt: Väärtus peab olema vähem kui {valid}
-  lte: Väärtus peab olema vähem kui või võrdne {valid}
+  lte: Väärtus peab olema vähem kui või võrdne kui {valid}
   empty: Väärtus peab olema tühi
   nempty: Väärtus ei saa olla tühi
   null: Väärtus peab olema null
@@ -155,7 +155,7 @@ validationError:
   required: Väärtus on nõutud
   unique: Väärtus peab olema unikaalne
   regex: Väärtuse vorming on vigane
-all_access: Ligipääs kõigele
+all_access: Ligipääs Kõigele
 no_access: Ei Ole Ligipääsu
 use_custom: Kasuta Kohandatud
 nullable: Nullitav
@@ -177,7 +177,7 @@ item_permissions: Üksuse Õigused
 field_permissions: Väljade Õigused
 field_validation: Välja Valideerimine
 field_presets: Välja Eelseadistused
-permissions_for_role: '{role} rollil lubatud üksuste {action}.'
+permissions_for_role: '{role} rollil lubatud kirjete {action}.'
 fields_for_role: '{role} rollil lubatud väljade {action}.'
 validation_for_role: 'Tegevuse {action} jaoks on vajalik roll {role}.'
 presets_for_role: 'Välja vaikeväärtuseks on {role} roll.'
