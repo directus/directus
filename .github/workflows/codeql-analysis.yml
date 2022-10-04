@@ -17,7 +17,7 @@ jobs:
       contents: read
       security-events: write
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix:
         language:
           - javascript
