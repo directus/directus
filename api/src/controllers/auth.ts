@@ -50,7 +50,6 @@ for (const authProvider of authProviders) {
 		logger.warn(`Couldn't create login router for auth provider "${authProvider.name}"`);
 		continue;
 	}
-
 	router.use(`/login/${authProvider.name}`, authRouter);
 }
 

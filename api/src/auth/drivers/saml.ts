@@ -69,6 +69,7 @@ export function createSAMLAuthRouter(providerName: string) {
 	router.post('/acs', express.urlencoded({ extended: false }), asyncHandler(async (req, res, next) => {
 		const { sp, idp } = getAuthProvider(providerName) as SAMLAuthDriver;
 		const { extract } = await sp.parseLoginResponse(idp, 'post', req);
+		console.log( extract );
 		const authService = new AuthenticationService({ accountability: req.accountability, schema: req.schema });
 		const { accessToken, refreshToken, expires } = await authService.login(providerName, extract.attributes);
 
