@@ -84,7 +84,7 @@
 						</div>
 						<div class="field half-right">
 							<div class="type-label">{{ t('alt_text') }}</div>
-							<v-input v-model="imageSelection.alt" />
+							<v-input v-model="imageSelection.alt" :nullable="false" />
 						</div>
 						<template v-if="storageAssetTransform === 'all'">
 							<div class="field half">
