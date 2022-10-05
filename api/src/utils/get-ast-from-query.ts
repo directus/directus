@@ -8,6 +8,7 @@ import { AST, FieldNode, FunctionFieldNode, NestedCollectionNode } from '../type
 import { Query, PermissionsAction, Accountability, SchemaOverview } from '@directus/shared/types';
 import { getRelationType } from '../utils/get-relation-type';
 import { REGEX_BETWEEN_PARENS } from '@directus/shared/constants';
+import { stripFunction } from './strip-function';
 
 type GetASTOptions = {
 	accountability?: Accountability | null;
@@ -123,7 +124,7 @@ export default async function getASTFromQuery(
 			}
 
 			const isRelational =
-				name.includes('.') ||
+				(name.includes('.') && !name.includes('(') && !name.includes(')')) || // exception for json query getting handled as relation.
 				// We'll always treat top level o2m fields as a related item. This is an alias field, otherwise it won't return
 				// anything
 				!!schema.relations.find(
@@ -167,7 +168,7 @@ export default async function getASTFromQuery(
 				}
 			} else {
 				if (fieldKey.includes('(') && fieldKey.includes(')')) {
-					const columnName = fieldKey.match(REGEX_BETWEEN_PARENS)![1];
+					const columnName = stripFunction(fieldKey); //fieldKey.match(REGEX_BETWEEN_PARENS)![1];
 					const foundField = schema.collections[parentCollection].fields[columnName];
 
 					if (foundField && foundField.type === 'alias') {

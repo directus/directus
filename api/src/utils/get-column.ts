@@ -4,7 +4,9 @@ import { getFunctionsForType } from '@directus/shared/utils';
 import { Knex } from 'knex';
 import { getFunctions } from '../database/helpers';
 import { InvalidQueryException } from '../exceptions';
+import logger from '../logger';
 import { applyFunctionToColumnName } from './apply-function-to-column-name';
+import { stripFunction } from './strip-function';
 
 /**
  * Return column prefixed by table. If column includes functions (like `year(date_created)`), the
@@ -28,9 +30,25 @@ export function getColumn(
 
 	if (column.includes('(') && column.includes(')')) {
 		const functionName = column.split('(')[0] as FieldFunction;
-		const columnName = column.match(REGEX_BETWEEN_PARENS)![1];
+		const columnName = stripFunction(column); //.split('$')[0] : stripFunction(column);
 
-		if (functionName in fn) {
+		if (functionName === 'json') {
+			const colName = columnName.split('$')[0];
+			const type = schema?.collections[table]?.fields?.[colName]?.type ?? 'unknown';
+			const allowedFunctions = getFunctionsForType(type);
+
+			if (allowedFunctions.includes(functionName) === false) {
+				throw new InvalidQueryException(`Invalid function specified "${functionName}"`);
+			}
+
+			const result = fn[functionName as keyof typeof fn](table, columnName, { type, query }) as Knex.Raw;
+
+			if (alias) {
+				return knex.raw(result + ' AS ??', [alias]);
+			}
+
+			return result;
+		} else if (functionName in fn) {
 			const type = schema?.collections[table]?.fields?.[columnName]?.type ?? 'unknown';
 			const allowedFunctions = getFunctionsForType(type);
 

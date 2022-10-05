@@ -24,6 +24,15 @@ export abstract class FnHelper extends DatabaseHelper {
 	abstract second(table: string, column: string, options?: FnHelperOptions): Knex.Raw;
 	abstract count(table: string, column: string, options?: FnHelperOptions): Knex.Raw;
 
+	json(table: string, column: string, options?: FnHelperOptions) {
+		const [columnName, queryPath] = column.split('$');
+		if (!queryPath) {
+			throw new Error(`A jsonpath is required! json(column$jsonpath)`);
+		}
+		return this.knex.jsonExtract(`${table}.${columnName}`, '$' + queryPath);
+		// throw new Error(`Couldn't do json for ${table}.${column}`);
+	}
+
 	protected _relationalCount(table: string, column: string, options?: FnHelperOptions): Knex.Raw {
 		const relation = this.schema.relations.find(
 			(relation) => relation.related_collection === table && relation?.meta?.one_field === column

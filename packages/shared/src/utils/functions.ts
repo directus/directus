@@ -11,6 +11,7 @@ export const functions: Record<FieldFunction, (val: any) => any> = {
 	minute,
 	second,
 	count,
+	json,
 };
 
 /**
@@ -51,4 +52,9 @@ function second(value: string): number {
 
 function count(value: any): number | null {
 	return Array.isArray(value) ? value.length : null;
+}
+
+function json(value: any): string {
+	console.log('json parser?', value);
+	return value as string;
 }

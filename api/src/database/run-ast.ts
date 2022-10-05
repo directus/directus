@@ -73,7 +73,7 @@ export default async function runAST(
 
 		// The actual knex query builder instance. This is a promise that resolves with the raw items from the db
 		const dbQuery = getDBQuery(schema, knex, collection, fieldNodes, query);
-
+		// console.log(`[QUERY]`, dbQuery.toQuery());
 		const rawItems: Item | Item[] = await dbQuery;
 
 		if (!rawItems) return null;
@@ -153,6 +153,13 @@ async function parseCurrentLevel(
 	for (const child of children) {
 		if (child.type === 'field' || child.type === 'functionField') {
 			const fieldName = stripFunction(child.name);
+
+			if (fieldName.includes('$')) {
+				const [_fieldKey, _path] = fieldName.split('$');
+				if (columnsInCollection.includes(_fieldKey)) {
+					columnsToSelectInternal.push(child.fieldKey);
+				}
+			}
 
 			if (columnsInCollection.includes(fieldName)) {
 				columnsToSelectInternal.push(child.fieldKey);
@@ -240,6 +247,7 @@ function getDBQuery(
 	query: Query
 ): Knex.QueryBuilder {
 	const preProcess = getColumnPreprocessor(knex, schema, table);
+	// console.log('ppp', fieldNodes.map(preProcess));
 	const dbQuery = knex.select(fieldNodes.map(preProcess)).from(table);
 	const queryCopy = clone(query);
 
