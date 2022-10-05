@@ -286,7 +286,29 @@ function getDBQuery(
 			});
 
 			if (hasMultiRelationalSort) {
-				dbQuery.rowNumber('directus_rank', knex.raw(`partition by ??`, `${table}.${primaryKey}`));
+				let orderByString = '';
+				const orderByFields: string[] = [];
+
+				sortRecords.map((sortRecord) => {
+					if (orderByString.length === 0) {
+						orderByString += ' order by';
+					} else {
+						orderByString += ',';
+					}
+
+					if (sortRecord.column.includes('.')) {
+						orderByString += ` ?? ${sortRecord.order}`;
+						orderByFields.push(sortRecord.column);
+					} else {
+						orderByString += ` ?? ${sortRecord.order}`;
+						orderByFields.push(`${table}.${sortRecord.column}`);
+					}
+				});
+
+				dbQuery.rowNumber(
+					'directus_rank',
+					knex.raw(`partition by ??${orderByString}`, [`${table}.${primaryKey}`, ...orderByFields])
+				);
 			}
 		} else {
 			// Clears the order if any, eg: from MSSQL offset
