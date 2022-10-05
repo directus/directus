@@ -276,9 +276,9 @@ function getDBQuery(
 		dbQuery.select(fieldNodes.map(preProcess));
 	}
 
-	if (queryCopy.sort) {
+	if (sortRecords) {
 		if (needsInnerQuery) {
-			sortRecords?.map((sortRecord) => {
+			sortRecords.map((sortRecord) => {
 				if (sortRecord.column.includes('.')) {
 					dbQuery.select(knex.ref(sortRecord.column).as(sortRecord.column.replace('.', '_')));
 				} else if (schema.collections[table].primary !== sortRecord.column) {
@@ -289,8 +289,11 @@ function getDBQuery(
 			if (hasMultiRelationalSort) {
 				dbQuery.rowNumber('directus_rank', knex.raw(`partition by ??`, `${table}.${primaryKey}`));
 			}
-		} else if (sortRecords) {
-			sortRecords?.map((sortRecord) => {
+		} else {
+			// Clears the order if any, eg: from MSSQL offset
+			dbQuery.clear('order');
+
+			sortRecords.map((sortRecord) => {
 				if (sortRecord.column.includes('.')) {
 					dbQuery.orderBy(sortRecord.column, sortRecord.order);
 				} else {
@@ -307,8 +310,8 @@ function getDBQuery(
 		.from(table)
 		.innerJoin(knex.raw('??', dbQuery.as('inner')), `${table}.${primaryKey}`, `inner.${primaryKey}`);
 
-	if (queryCopy.sort && needsInnerQuery) {
-		sortRecords?.map((sortRecord) => {
+	if (sortRecords && needsInnerQuery) {
+		sortRecords.map((sortRecord) => {
 			if (sortRecord.column.includes('.')) {
 				wrapperQuery.orderBy(`inner.${sortRecord.column.replace('.', '_')}`, sortRecord.order);
 			} else {
