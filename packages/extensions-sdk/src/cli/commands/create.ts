@@ -15,10 +15,9 @@ import { isIn } from '@directus/shared/utils';
 import { ExtensionOptions, ExtensionPackageType, ExtensionType, PackageExtensionType } from '@directus/shared/types';
 import { log } from '../utils/logger';
 import { isLanguage, languageToShort } from '../utils/languages';
-import renameMap from '../utils/rename-map';
 import getSdkVersion from '../utils/get-sdk-version';
 import getExtensionDevDeps from './helpers/get-extension-dev-deps';
-import getTemplatePath from '../utils/get-template-path';
+import copyTemplate from './helpers/copy-template';
 
 type CreateOptions = { language?: string };
 
@@ -80,6 +79,7 @@ async function createPackageExtension({
 	const spinner = ora(chalk.bold('Scaffolding Directus extension...')).start();
 
 	await fse.ensureDir(targetPath);
+	await copyTemplate(type, targetPath);
 
 	const host = `^${getSdkVersion()}`;
 	const options: ExtensionOptions =
@@ -121,12 +121,7 @@ async function createLocalExtension({
 	const spinner = ora(chalk.bold('Scaffolding Directus extension...')).start();
 
 	await fse.ensureDir(targetPath);
-
-	const templatePath = getTemplatePath();
-
-	await fse.copy(path.join(templatePath, 'common', language), targetPath);
-	await fse.copy(path.join(templatePath, type, language), targetPath);
-	await renameMap(targetPath, (name) => (name.startsWith('_') ? `.${name.substring(1)}` : null));
+	await copyTemplate(type, targetPath, 'src', language);
 
 	const host = `^${getSdkVersion()}`;
 	const options: ExtensionOptions = isIn(type, HYBRID_EXTENSION_TYPES)
