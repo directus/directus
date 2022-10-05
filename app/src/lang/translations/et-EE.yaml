@@ -262,6 +262,7 @@ new_collection: 'Uus Kogumik'
 choose_a_type: Vali Tüüp...
 determined_by_relationship: Määratud suhtega
 add_note: Lisa kasutajaid abistav märkus...
+add_link: Lisa link
 default_value: Vaikeväärtus
 standard_field: Tavaline väli
 single_file: Üksik fail
@@ -274,6 +275,8 @@ invalid_item: Vigane kirje
 next: Järgmine
 field_name: Välja Nimi
 translations: Tõlked
+left_to_right: Vasakult paremale
+right_to_left: Paremalt vasakule
 note: Märkus
 enter_a_value: Sisesta väärtus...
 enter_a_placeholder: Lisa kohatäide...
@@ -288,8 +291,12 @@ foreign_key: Väline Võti
 finish_setup: Valmis
 dismiss: Loobu
 raw_value: Algne väärtus
+copy_raw_value_success: Kopeeritud
+copy_raw_value_fail: Kopeerimine ebaõnnestus
+paste_raw_value_success: Kleebitud
 edit_raw_value: Muuda algväärtust
 enter_raw_value: Sisesta väärtus...
+clear_value: Tühjenda väärtus
 notifications: Teavitused
 show_all_activity: Näita kogu aktiivsust
 page_not_found: Lehekülge ei leitud
@@ -319,6 +326,11 @@ related_collection: Seotud kogu
 related_collections: Seotud andmekogud
 translations_collection: Tõlgete andmekogu
 languages_collection: Keelte andmekogu
+import_data_input_placeholder: CSV või JSON...
+import_data_button: Alusta importi
+import_data_indeterminate: Laeb Andmeid...
+import_data_success: Andmed edukalt laetud {filename}
+label_import: Impordi
 format: Vorming
 last_page: Viimane leht
 last_access: Viimati vaadatud
@@ -365,6 +377,7 @@ drag_mode: Lohistusrežiim
 cancel_crop: Tühista lõikamine
 original: Originaal
 url: URL
+import_label: Impordi
 file_details: Faili Üksikasjad
 dimensions: Mõõtmed
 size: Suurus
@@ -378,6 +391,7 @@ zoom: Suurenda
 download: Laadi alla
 open: Ava
 open_in_new_window: Ava Uues Aknas
+open_folder: Ava "{folder}" kaust
 foreground_color: Esiplaani värv
 background_color: Taustavärv
 upload_from_device: Lae Fail seadmest
@@ -388,6 +402,8 @@ replace_from_library: Asenda Fail teegist
 replace_from_url: Asenda Fail aadressilt
 no_file_selected: Faili pole valitud
 download_file: Lae fail alla
+open_file_in_tab: Ava file uues tabis
+start_export: Alusta Eksporti
 collection_key: Kogumi võti
 name: Nimi
 primary_key_field: Primaarse Võtme Väli
@@ -448,6 +464,9 @@ action: Tegevus
 ip_address: IP aadress
 user_agent: Kasutaja agent
 webhooks: Webhooks
+min_value: Min väärtus
+max_value: Maksimaalne väärtus
+automatic: Automaatne
 field_width: Välja laius
 add_filter: Lisa filter
 upper_limit: Ülemine piir
@@ -457,6 +476,7 @@ documentation: Dokumentatsioon
 sidebar: Külgmenüü
 duration: Kestus
 charset: Sümbolid
+second: sekund
 file_moved: Fail on liigutatud
 collection_created: Andmekogu on lisatud
 modified_on: Muudetud
