@@ -247,47 +247,67 @@ function getDBQuery(
 	// Aggregates will not have duplicate result
 	if (queryCopy.aggregate) {
 		const aggregateQuery = knex.select(fieldNodes.map(preProcess)).from(table);
-		return applyQuery(knex, table, aggregateQuery, queryCopy, schema);
+		return applyQuery(knex, table, aggregateQuery, queryCopy, schema).query;
 	}
 
 	const primaryKey = schema.collections[table].primary;
 	const aliasMap = {};
-	const dbQuery = knex.select(`${table}.${primaryKey}`).from(table).distinct();
+	const dbQuery = knex.from(table);
 	let sortRecords: ColumnSortRecord[] | undefined;
-	let hasMultiRelational: boolean | undefined;
+	let hasMultiRelationalSort: boolean | undefined;
+	let hasNestedSort: boolean | undefined;
 
 	if (queryCopy.sort) {
-		({ sortRecords, hasMultiRelational } =
+		({ sortRecords, hasMultiRelationalSort, hasNestedSort } =
 			applySort(knex, schema, dbQuery, queryCopy.sort, table, aliasMap, true) ?? {});
+	}
 
-		sortRecords?.map((sortRecord) => {
-			if (sortRecord.column.includes('.')) {
-				dbQuery.select(knex.ref(sortRecord.column).as(sortRecord.column.replace('.', '_')));
-			} else if (schema.collections[table].primary !== sortRecord.column) {
-				dbQuery.select(knex.ref(sortRecord.column));
+	const { hasMultiRelationalFilter } = applyQuery(knex, table, dbQuery, queryCopy, schema, {
+		aliasMap,
+		isInnerQuery: true,
+		hasMultiRelationalSort,
+	});
+
+	const needsInnerQuery = hasNestedSort || hasMultiRelationalFilter;
+
+	if (needsInnerQuery) {
+		dbQuery.select(`${table}.${primaryKey}`).distinct();
+	} else {
+		dbQuery.select(fieldNodes.map(preProcess));
+	}
+
+	if (queryCopy.sort) {
+		if (needsInnerQuery) {
+			sortRecords?.map((sortRecord) => {
+				if (sortRecord.column.includes('.')) {
+					dbQuery.select(knex.ref(sortRecord.column).as(sortRecord.column.replace('.', '_')));
+				} else if (schema.collections[table].primary !== sortRecord.column) {
+					dbQuery.select(knex.ref(sortRecord.column));
+				}
+			});
+
+			if (hasMultiRelationalSort) {
+				dbQuery.rowNumber('directus_rank', knex.raw(`partition by ??`, `${table}.${primaryKey}`));
 			}
-		});
-
-		if (hasMultiRelational) {
-			dbQuery.rowNumber('directus_rank', knex.raw(`partition by ??`, `${table}.${primaryKey}`));
+		} else if (sortRecords) {
+			sortRecords?.map((sortRecord) => {
+				if (sortRecord.column.includes('.')) {
+					dbQuery.orderBy(sortRecord.column, sortRecord.order);
+				} else {
+					dbQuery.orderBy(`${table}.${sortRecord.column}`, sortRecord.order);
+				}
+			});
 		}
 	}
+
+	if (!needsInnerQuery) return dbQuery;
 
 	const wrapperQuery = knex
 		.select(fieldNodes.map(preProcess))
 		.from(table)
-		.innerJoin(
-			knex.raw(
-				'??',
-				applyQuery(knex, table, dbQuery, queryCopy, schema, { aliasMap, isInnerQuery: true, hasMultiRelational }).as(
-					'inner'
-				)
-			),
-			`${table}.${primaryKey}`,
-			`inner.${primaryKey}`
-		);
+		.innerJoin(knex.raw('??', dbQuery.as('inner')), `${table}.${primaryKey}`, `inner.${primaryKey}`);
 
-	if (queryCopy.sort) {
+	if (queryCopy.sort && needsInnerQuery) {
 		sortRecords?.map((sortRecord) => {
 			if (sortRecord.column.includes('.')) {
 				wrapperQuery.orderBy(`inner.${sortRecord.column.replace('.', '_')}`, sortRecord.order);
@@ -295,11 +315,11 @@ function getDBQuery(
 				wrapperQuery.orderBy(`${table}.${sortRecord.column}`, sortRecord.order);
 			}
 		});
-	}
 
-	if (hasMultiRelational) {
-		wrapperQuery.where('inner.directus_rank', '=', 1);
-		applyLimit(wrapperQuery, queryCopy.limit);
+		if (hasMultiRelationalSort) {
+			wrapperQuery.where('inner.directus_rank', '=', 1);
+			applyLimit(wrapperQuery, queryCopy.limit);
+		}
 	}
 
 	return wrapperQuery;

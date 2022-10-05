@@ -15,7 +15,6 @@ export type ColPathProps = {
 export type ColPathResult = {
 	columnPath: string;
 	targetCollection: string;
-	hasMultiRelational: boolean;
 	addNestedPkField?: string;
 };
 
@@ -32,8 +31,7 @@ export function getColumnPath({ path, collection, aliasMap, relations, schema }:
 		pathParts: string[],
 		parentCollection: string = collection,
 		parentFields?: string,
-		addNestedPkField?: string,
-		hasMultiRelational?: boolean
+		addNestedPkField?: string
 	): ColPathResult {
 		/**
 		 * For A2M fields, the path can contain an optional collection scope <field>:<scope>
@@ -43,10 +41,6 @@ export function getColumnPath({ path, collection, aliasMap, relations, schema }:
 
 		if (!relation) {
 			throw new InvalidQueryException(`"${parentCollection}.${pathRoot}" is not a relational field`);
-		}
-
-		if (!hasMultiRelational) {
-			hasMultiRelational = relationType !== 'm2o';
 		}
 
 		const alias = parentFields ? aliasMap[`${parentFields}.${pathParts[0]}`] : aliasMap[pathParts[0]];
@@ -85,7 +79,6 @@ export function getColumnPath({ path, collection, aliasMap, relations, schema }:
 			return {
 				columnPath: `${alias || parent}.${remainingParts[0]}`,
 				targetCollection: parent,
-				hasMultiRelational,
 				addNestedPkField,
 			};
 		}
@@ -95,11 +88,10 @@ export function getColumnPath({ path, collection, aliasMap, relations, schema }:
 				remainingParts,
 				parent,
 				`${parentFields ? parentFields + '.' : ''}${pathParts[0]}`,
-				addNestedPkField,
-				hasMultiRelational
+				addNestedPkField
 			);
 		}
 
-		return { columnPath: '', targetCollection: '', hasMultiRelational, addNestedPkField };
+		return { columnPath: '', targetCollection: '', addNestedPkField };
 	}
 }

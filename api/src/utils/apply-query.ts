@@ -31,15 +31,16 @@ export default function applyQuery(
 	dbQuery: Knex.QueryBuilder,
 	query: Query,
 	schema: SchemaOverview,
-	options?: { aliasMap?: AliasMap; isInnerQuery?: boolean; hasMultiRelational?: boolean }
-): Knex.QueryBuilder {
+	options?: { aliasMap?: AliasMap; isInnerQuery?: boolean; hasMultiRelationalSort?: boolean }
+) {
 	const aliasMap = options?.aliasMap ?? {};
+	let hasMultiRelationalFilter = false;
 
-	if (query.sort && !options?.isInnerQuery) {
+	if (query.sort && !options?.isInnerQuery && !options?.hasMultiRelationalSort) {
 		applySort(knex, schema, dbQuery, query.sort, collection, aliasMap);
 	}
 
-	if (!options?.hasMultiRelational) {
+	if (!options?.hasMultiRelationalSort) {
 		applyLimit(dbQuery, query.limit);
 	}
 
@@ -64,10 +65,10 @@ export default function applyQuery(
 	}
 
 	if (query.filter) {
-		applyFilter(knex, schema, dbQuery, query.filter, collection, aliasMap);
+		({ hasMultiRelationalFilter } = applyFilter(knex, schema, dbQuery, query.filter, collection, aliasMap));
 	}
 
-	return dbQuery;
+	return { query: dbQuery, hasMultiRelationalFilter };
 }
 
 /**
@@ -119,9 +120,13 @@ type AddJoinProps = {
 	knex: Knex;
 };
 
-function addJoin({ path, collection, aliasMap, rootQuery, schema, relations, knex }: AddJoinProps) {
+function addJoin({ path, collection, aliasMap, rootQuery, schema, relations, knex }: AddJoinProps): boolean {
+	let hasMultiRelational = false;
+
 	path = clone(path);
 	followRelation(path);
+
+	return hasMultiRelational;
 
 	function followRelation(pathParts: string[], parentCollection: string = collection, parentFields?: string) {
 		/**
@@ -179,6 +184,8 @@ function addJoin({ path, collection, aliasMap, rootQuery, schema, relations, kne
 							)
 						);
 				});
+
+				hasMultiRelational = true;
 			} else if (relationType === 'o2m') {
 				rootQuery.leftJoin(
 					{ [alias]: relation.collection },
@@ -187,6 +194,8 @@ function addJoin({ path, collection, aliasMap, rootQuery, schema, relations, kne
 					}`,
 					`${alias}.${relation.field}`
 				);
+
+				hasMultiRelational = true;
 			}
 		}
 
@@ -226,7 +235,8 @@ export function applySort(
 	returnRecords = false
 ) {
 	const relations: Relation[] = schema.relations;
-	let hasMultiRelational = false;
+	let hasMultiRelationalSort = false;
+	let hasNestedSort = false;
 
 	const sortRecords = rootSort.map((sortField) => {
 		const column: string[] = sortField.split('.');
@@ -252,7 +262,7 @@ export function applySort(
 			}
 		}
 
-		addJoin({
+		const hasMultiRelational = addJoin({
 			path: column,
 			collection,
 			aliasMap,
@@ -262,7 +272,9 @@ export function applySort(
 			knex,
 		});
 
-		const { columnPath, hasMultiRelational: pathHasMultiRelational } = getColumnPath({
+		hasNestedSort = true;
+
+		const { columnPath } = getColumnPath({
 			path: column,
 			collection,
 			aliasMap,
@@ -271,8 +283,8 @@ export function applySort(
 		});
 		const [alias, field] = columnPath.split('.');
 
-		if (!hasMultiRelational) {
-			hasMultiRelational = pathHasMultiRelational;
+		if (!hasMultiRelationalSort) {
+			hasMultiRelationalSort = hasMultiRelational;
 		}
 
 		return {
@@ -281,7 +293,7 @@ export function applySort(
 		};
 	});
 
-	if (returnRecords) return { sortRecords, hasMultiRelational };
+	if (returnRecords) return { sortRecords, hasMultiRelationalSort, hasNestedSort };
 
 	rootQuery.orderBy(sortRecords);
 }
@@ -308,11 +320,12 @@ export function applyFilter(
 ) {
 	const helpers = getHelpers(knex);
 	const relations: Relation[] = schema.relations;
+	let hasMultiRelationalFilter = false;
 
 	addJoins(rootQuery, rootFilter, collection);
 	addWhereClauses(knex, rootQuery, rootFilter, collection);
 
-	return rootQuery;
+	return { query: rootQuery, hasMultiRelationalFilter };
 
 	function addJoins(dbQuery: Knex.QueryBuilder, filter: Filter, collection: string) {
 		for (const [key, value] of Object.entries(filter)) {
@@ -335,7 +348,7 @@ export function applyFilter(
 				filterPath.length > 1 ||
 				(!(key.includes('(') && key.includes(')')) && schema.collections[collection].fields[key].type === 'alias')
 			) {
-				addJoin({
+				const hasMultiRelational = addJoin({
 					path: filterPath,
 					collection,
 					knex,
@@ -344,6 +357,10 @@ export function applyFilter(
 					rootQuery,
 					aliasMap,
 				});
+
+				if (!hasMultiRelationalFilter) {
+					hasMultiRelationalFilter = hasMultiRelational;
+				}
 			}
 		}
 	}
