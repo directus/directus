@@ -306,7 +306,7 @@ function getDBQuery(
 				});
 
 				dbQuery.rowNumber(
-					'directus_rank',
+					'directus_row_number',
 					knex.raw(`partition by ??${orderByString}`, [`${table}.${primaryKey}`, ...orderByFields])
 				);
 			}
@@ -341,7 +341,7 @@ function getDBQuery(
 		});
 
 		if (hasMultiRelationalSort) {
-			wrapperQuery.where('inner.directus_rank', '=', 1);
+			wrapperQuery.where('inner.directus_row_number', '=', 1);
 			applyLimit(wrapperQuery, queryCopy.limit);
 		}
 	}
