@@ -236,7 +236,6 @@ export function applySort(
 ) {
 	const relations: Relation[] = schema.relations;
 	let hasMultiRelationalSort = false;
-	let hasNestedSort = false;
 
 	const sortRecords = rootSort.map((sortField) => {
 		const column: string[] = sortField.split('.');
@@ -272,8 +271,6 @@ export function applySort(
 			knex,
 		});
 
-		hasNestedSort = true;
-
 		const { columnPath } = getColumnPath({
 			path: column,
 			collection,
@@ -293,7 +290,7 @@ export function applySort(
 		};
 	});
 
-	if (returnRecords) return { sortRecords, hasMultiRelationalSort, hasNestedSort };
+	if (returnRecords) return { sortRecords, hasMultiRelationalSort };
 
 	rootQuery.orderBy(sortRecords);
 }

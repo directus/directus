@@ -255,10 +255,9 @@ function getDBQuery(
 	const dbQuery = knex.from(table);
 	let sortRecords: ColumnSortRecord[] | undefined;
 	let hasMultiRelationalSort: boolean | undefined;
-	let hasNestedSort: boolean | undefined;
 
 	if (queryCopy.sort) {
-		({ sortRecords, hasMultiRelationalSort, hasNestedSort } =
+		({ sortRecords, hasMultiRelationalSort } =
 			applySort(knex, schema, dbQuery, queryCopy.sort, table, aliasMap, true) ?? {});
 	}
 
@@ -268,7 +267,7 @@ function getDBQuery(
 		hasMultiRelationalSort,
 	});
 
-	const needsInnerQuery = hasNestedSort || hasMultiRelationalFilter;
+	const needsInnerQuery = hasMultiRelationalSort || hasMultiRelationalFilter;
 
 	if (needsInnerQuery) {
 		dbQuery.select(`${table}.${primaryKey}`).distinct();
