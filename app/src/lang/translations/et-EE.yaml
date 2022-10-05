@@ -508,6 +508,7 @@ errors:
   INVALID_OTP: Vale ühekordne parool
   INVALID_PAYLOAD: Vigane päring
   INVALID_QUERY: Vigane päring
+  INVALID_IP: Host või IP aadress pole lubatud
   ITEM_LIMIT_REACHED: Kirjete limiit sai täis
   ITEM_NOT_FOUND: Kirjet ei leitud
   ROUTE_NOT_FOUND: Ei leitud
@@ -517,6 +518,7 @@ errors:
   INTERNAL_SERVER_ERROR: Ootamatu viga
   NOT_NULL_VIOLATION: Väärtus ei saa olla null
   UNKNOWN: Ootamatu viga
+  UNSUPPORTED_MEDIA_TYPE: Failitüüp pole toetatud
 value_hashed: Väärtus salastati
 bookmark_name: Järjehoidja nimi...
 create_bookmark: Loo järjehoidja
@@ -530,6 +532,8 @@ no_app_access: Rakenduse ligipääs puudub
 no_app_access_copy: See kasutaja ei tohi adminni rakendust kasutada.
 password_reset_successful: Salasõna on edukalt lähtestatud
 back: Tagasi
+filter: Filter
+edit_image: Muuda pilti
 editing_image: Pildi muutmine
 square: Ruut
 free: Vaba
@@ -541,6 +545,7 @@ all_users: Kõik kasutajad
 delete_collection: Kustuta andmekogu
 update_collection_success: Andmekogu uuendatud
 delete_collection_success: Andmekogu kustutatud
+goto_collection_content: Vaata Sisu
 start_end_of_count_items: '{start}-{end} / {count}'
 start_end_of_count_filtered_items: '{start}-{end} / {count}'
 one_item: '1 kirje'
@@ -550,6 +555,7 @@ visible_collections: Nähtavad andmekogud
 hidden_collections: Peidetud andmekogud
 show_hidden_collections: Näita peidetud andmekogusid
 hide_hidden_collections: Peida andmekogud
+show_header: Näita päist
 unmanaged_collections: Seadistamata andmekogud
 system_collections: Süsteemsed andmekogud
 placeholder: Kohatäitja
@@ -565,9 +571,11 @@ color: Värv
 circle: Ring
 empty_item: Tühi kirje
 log_in_with: 'Logi sisse {provider} kontoga'
+advanced_settings: Täpsemad seaded
 advanced_filter: Laiendatud filter
 delete_advanced_filter: Kustuta Filter
 change_advanced_filter_operator: Muuda operaatorit
+advanced: Lisavalikud
 operators:
   eq: Võrdub
   neq: Pole võrdne
@@ -581,12 +589,18 @@ operators:
   nnull: Ei ole null
   contains: Sisaldab
   ncontains: Ei sisalda
+  starts_with: Algab
+  nstarts_with: Ei Alga
+  ends_with: Lõppeb
+  nends_with: Ei Lõppe
   between: On vahemikus
   nbetween: Ei ole vahemikus
   empty: On tühi
   nempty: Ei ole tühi
   all: Sisaldab neid võtmeid
   has: Sisaldab neid võtmeid
+  intersects: Lõikub
+  nintersects: Ei Lõiku
 loading: Laadimine...
 drop_to_upload: Lohista üleslaadimiseks
 item: Kirje
@@ -617,14 +631,20 @@ all_files: Kõik failid
 my_files: Minu failid
 recent_files: Hiljutised failid
 create_folder: Loo kaust
+edit_folder: Muuda Kausta
 folder_name: Kausta nimi...
+folder_key: Kausta võti...
 add_file: Lisa fail
 replace_file: Asenda fail
 no_results: Tulemusi pole
 no_results_copy: Muuda või nulli otsingufilter, et tulemusi näha.
+no_visible_fields: Tühi Kirje
+no_visible_fields_copy: Sellel kirjel pole nähtavaid väljasid.
 clear_filters: Tühjenda filtrid
 saves_automatically: Salvestab Automaatselt
 role: Roll
+edit_role: Muuda Rolli
+rule: Reegel
 user: Kasutaja
 no_presets: Eelsätteid ei ole
 no_presets_copy: Eelsätteid ja järjehoidjaid pole veel salvestatud.
@@ -634,6 +654,7 @@ on_create: Loomisel
 on_update: Uuendamisel
 read: Loe
 update: Uuenda
+delete: Kustuta
 select_fields: Vali väljad
 format_text: Vormista tekst
 bold: Paks kiri
@@ -1001,6 +1022,7 @@ report_error: Raporteeri viga
 table: Tabel
 interfaces:
   filter:
+    name: Filter
     add_filter: Lisa filter
     all: Kõik
   presentation-links:
