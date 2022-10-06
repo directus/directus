@@ -2,7 +2,7 @@ import request from 'supertest';
 import { getUrl } from '@common/config';
 import vendors from '@common/get-dbs-to-test';
 import { v4 as uuid } from 'uuid';
-import { CreateItem } from '@common/functions';
+import { CreateItem, ReadItem } from '@common/functions';
 import { CachedTestsSchema, TestsSchemaVendorValues } from '@query/filter';
 import * as common from '@common/index';
 import {
@@ -264,6 +264,191 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 						// Assert
 						expect(response.statusCode).toBe(403);
+					});
+				});
+			});
+
+			describe(`filters`, () => {
+				describe(`on top level`, () => {
+					it.each(vendors)('%s', async (vendor) => {
+						// Setup
+						const ingredient = createIngredient(pkType);
+						ingredient.name = 'ingredient-m2m-top-' + uuid();
+						const insertedIngredient = await CreateItem(vendor, {
+							collection: localCollectionIngredients,
+							item: ingredient,
+						});
+
+						// Action
+						const response = await request(getUrl(vendor))
+							.get(`/items/${localCollectionIngredients}`)
+							.query({
+								filter: { id: { _eq: insertedIngredient.id } },
+							})
+							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+						const response2 = await request(getUrl(vendor))
+							.get(`/items/${localCollectionIngredients}`)
+							.query({
+								filter: { name: { _eq: insertedIngredient.name } },
+							})
+							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+						// Assert
+						expect(response.statusCode).toEqual(200);
+						expect(response.body.data.length).toBe(1);
+						expect(response.body.data[0]).toMatchObject({ id: insertedIngredient.id });
+						expect(response2.statusCode).toEqual(200);
+						expect(response.body.data).toEqual(response2.body.data);
+					});
+				});
+
+				describe(`on m2m level`, () => {
+					it.each(vendors)('%s', async (vendor) => {
+						// Setup
+						const food = createFood(pkType);
+						food.name = 'food-m2m-' + uuid();
+						const ingredient = createIngredient(pkType);
+						ingredient.name = 'ingredient-m2m-' + uuid();
+						const insertedIngredient = await CreateItem(vendor, {
+							collection: localCollectionIngredients,
+							item: {
+								...ingredient,
+								foods: {
+									create: [{ [`${localCollectionFoods}_id`]: food }],
+									update: [],
+									delete: [],
+								},
+							},
+						});
+
+						const retrievedIngredient = await ReadItem(vendor, {
+							collection: localCollectionIngredients,
+							fields: '*.*.*',
+							filter: { id: { _eq: insertedIngredient.id } },
+						});
+
+						// Action
+						const response = await request(getUrl(vendor))
+							.get(`/items/${localCollectionIngredients}`)
+							.query({
+								filter: JSON.stringify({
+									foods: {
+										[`${localCollectionFoods}_id`]: {
+											id: { _eq: retrievedIngredient[0].foods[0][`${localCollectionFoods}_id`]['id'] },
+										},
+									},
+								}),
+							})
+							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+						const response2 = await request(getUrl(vendor))
+							.get(`/items/${localCollectionIngredients}`)
+							.query({
+								filter: JSON.stringify({
+									foods: { [`${localCollectionFoods}_id`]: { name: { _eq: food.name } } },
+								}),
+							})
+							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+						// Assert
+						expect(response.statusCode).toEqual(200);
+						expect(response.body.data.length).toBe(1);
+						expect(response.body.data[0]).toMatchObject({ id: insertedIngredient.id });
+						expect(response2.statusCode).toEqual(200);
+						expect(response.body.data).toEqual(response2.body.data);
+					});
+				});
+			});
+
+			describe(`sorts`, () => {
+				describe(`on top level`, () => {
+					it.each(vendors)('%s', async (vendor) => {
+						// Setup
+						const sortValues = [4, 2, 3, 5, 1];
+						const ingredients = [];
+
+						for (const val of sortValues) {
+							const ingredient = createIngredient(pkType);
+							ingredient.name = 'ingredient-m2m-top-sort-' + val;
+							ingredients.push(ingredient);
+						}
+
+						await CreateItem(vendor, {
+							collection: localCollectionIngredients,
+							item: ingredients,
+						});
+
+						// Action
+						const response = await request(getUrl(vendor))
+							.get(`/items/${localCollectionIngredients}`)
+							.query({
+								sort: 'name',
+								filter: { name: { _starts_with: 'ingredient-m2m-top-sort-' } },
+							})
+							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+						const response2 = await request(getUrl(vendor))
+							.get(`/items/${localCollectionIngredients}`)
+							.query({
+								sort: '-name',
+								filter: { name: { _starts_with: 'ingredient-m2m-top-sort-' } },
+							})
+							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+						// Assert
+						expect(response.statusCode).toEqual(200);
+						expect(response.body.data.length).toBe(5);
+						expect(response2.statusCode).toEqual(200);
+						expect(response.body.data).toEqual(response2.body.data.reverse());
+					});
+				});
+
+				describe(`on m2m level`, () => {
+					it.each(vendors)('%s', async (vendor) => {
+						// Setup
+						const sortValues = [4, 2, 3, 5, 1];
+
+						for (const val of sortValues) {
+							const food = createFood(pkType);
+							food.name = 'food-m2m-sort-' + val;
+							const ingredient = createIngredient(pkType);
+							ingredient.name = 'ingredient-m2m-sort-' + uuid();
+							await CreateItem(vendor, {
+								collection: localCollectionIngredients,
+								item: {
+									...ingredient,
+									foods: {
+										create: [{ [`${localCollectionFoods}_id`]: food }],
+										update: [],
+										delete: [],
+									},
+								},
+							});
+						}
+
+						// Action
+						const response = await request(getUrl(vendor))
+							.get(`/items/${localCollectionIngredients}`)
+							.query({
+								sort: `foods.${localCollectionFoods}_id.name`,
+								filter: { name: { _starts_with: 'ingredient-m2m-sort-' } },
+							})
+							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+						const response2 = await request(getUrl(vendor))
+							.get(`/items/${localCollectionIngredients}`)
+							.query({
+								sort: `-foods.${localCollectionFoods}_id.name`,
+								filter: { name: { _starts_with: 'ingredient-m2m-sort-' } },
+							})
+							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+						// Assert
+						expect(response.statusCode).toEqual(200);
+						expect(response.body.data.length).toBe(5);
+						expect(response2.statusCode).toEqual(200);
+						expect(response.body.data).toEqual(response2.body.data.reverse());
 					});
 				});
 			});
