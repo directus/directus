@@ -13,6 +13,7 @@
 				/>
 			</v-card-text>
 			<v-card-actions>
+				<v-button secondary @click="$emit('cancel')">{{ t('cancel') }}</v-button>
 				<v-button @click="submit">{{ t('done') }}</v-button>
 			</v-card-actions>
 		</v-card>
