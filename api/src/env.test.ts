@@ -1,6 +1,3 @@
-import fs from 'fs';
-jest.mock('fs');
-
 const testEnv = {
 	NUMBER: '1234',
 	NUMBER_CAST_AS_STRING: 'string:1234',
@@ -8,7 +5,6 @@ const testEnv = {
 	CSV: 'one,two,three,four',
 	CSV_CAST_AS_STRING: 'string:one,two,three,four',
 	MULTIPLE: 'array:string:https://example.com,regex:\\.example2\\.com$',
-	PUBLIC_URL_FILE: 'public_url.txt',
 };
 
 describe('env processed values', () => {
@@ -17,7 +13,6 @@ describe('env processed values', () => {
 
 	beforeEach(() => {
 		jest.resetModules();
-		fs.readFileSync.mockResolvedValue('public_url.txt');
 		process.env = { ...testEnv };
 		env = jest.requireActual('../src/env').default;
 	});
@@ -49,10 +44,5 @@ describe('env processed values', () => {
 
 	test('Multiple type cast', () => {
 		expect(env.MULTIPLE).toStrictEqual(['https://example.com', /\.example2\.com$/]);
-	});
-
-	test('PUBLIC_URL_FILE without collision', () => {
-		// without throwing a duplicate error
-		expect(env.PUBLIC_URL).toBe('public_url.txt');
 	});
 });
