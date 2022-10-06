@@ -18,6 +18,7 @@ import { isLanguage, languageToShort } from '../utils/languages';
 import getSdkVersion from '../utils/get-sdk-version';
 import getExtensionDevDeps from './helpers/get-extension-dev-deps';
 import copyTemplate from './helpers/copy-template';
+import getPackageManager from '../utils/get-package-manager';
 
 type CreateOptions = { language?: string };
 
@@ -88,11 +89,13 @@ async function createPackageExtension({
 
 	await fse.writeJSON(path.join(targetPath, 'package.json'), packageManifest, { spaces: '\t' });
 
-	await execa('npm', ['install'], { cwd: targetPath });
+	const packageManager = getPackageManager();
+
+	await execa(packageManager, ['install'], { cwd: targetPath });
 
 	spinner.succeed(chalk.bold('Done'));
 
-	log(getDoneMessage(type, targetDir, targetPath));
+	log(getDoneMessage(type, targetDir, targetPath, packageManager));
 }
 
 async function createLocalExtension({
@@ -141,11 +144,13 @@ async function createLocalExtension({
 
 	await fse.writeJSON(path.join(targetPath, 'package.json'), packageManifest, { spaces: '\t' });
 
-	await execa('npm', ['install'], { cwd: targetPath });
+	const packageManager = getPackageManager();
+
+	await execa(packageManager, ['install'], { cwd: targetPath });
 
 	spinner.succeed(chalk.bold('Done'));
 
-	log(getDoneMessage(type, targetDir, targetPath));
+	log(getDoneMessage(type, targetDir, targetPath, packageManager));
 }
 
 function getPackageManifest(name: string, options: ExtensionOptions, deps: Record<string, string>) {
@@ -162,15 +167,15 @@ function getPackageManifest(name: string, options: ExtensionOptions, deps: Recor
 	};
 }
 
-function getDoneMessage(type: ExtensionPackageType, targetDir: string, targetPath: string) {
+function getDoneMessage(type: ExtensionPackageType, targetDir: string, targetPath: string, packageManager: string) {
 	return `
 Your ${type} extension has been created at ${chalk.green(targetPath)}
 
 To start developing, run:
 	${chalk.blue('cd')} ${targetDir}
-	${chalk.blue('npm run')} dev
+	${chalk.blue(`${packageManager} run`)} dev
 
 and then to build for production, run:
-	${chalk.blue('npm run')} build
+	${chalk.blue(`${packageManager} run`)} build
 `;
 }
