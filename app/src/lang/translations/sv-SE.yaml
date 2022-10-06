@@ -725,6 +725,7 @@ icon_off: Ikon Av
 label: Etikett
 run_flow_on_current: Kör flöde på aktuellt objekt
 run_flow_on_current_edited_confirm: Detta objekt kan uppdateras av detta flöde, är du säker på att du vill köra det?
+run_flow_success: Flödet "{flow}" kördes framgångsrikt
 trigger: Utlösare
 flow_name: Namn
 flow_tracking_activity: Spåra endast aktivitet
