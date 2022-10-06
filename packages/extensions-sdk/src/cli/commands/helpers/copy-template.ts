@@ -1,47 +1,72 @@
 import path from 'path';
 import fse from 'fs-extra';
 import getTemplatePath from '../../utils/get-template-path';
-import renameMap from '../../utils/rename-map';
 import { ExtensionPackageType } from '@directus/shared/types';
 import { Language } from '../../types';
 
-async function copyIfExists(src: string, dest: string): Promise<void> {
-	if (await fse.pathExists(src)) {
-		await fse.copy(src, dest, { overwrite: false });
+type TemplateFile = { type: 'config' | 'source'; path: string };
+
+async function copyTemplateFile(templateFile: TemplateFile, extensionPath: string, sourcePath?: string) {
+	if (sourcePath !== undefined) {
+		const oldName = path.basename(templateFile.path);
+		const newName = oldName.startsWith('_') ? `.${oldName.substring(1)}` : oldName;
+
+		const targetPath =
+			templateFile.type === 'config'
+				? path.join(extensionPath, newName)
+				: path.resolve(extensionPath, sourcePath, newName);
+
+		await fse.copy(templateFile.path, targetPath, { overwrite: false });
 	}
 }
 
-async function copyLanguageTemplate(templateLanguagePath: string, targetPath: string, sourcePath?: string) {
-	await copyIfExists(path.join(templateLanguagePath, 'config'), targetPath);
+async function getFilesInDir(templatePath: string): Promise<string[]> {
+	if (!(await fse.pathExists(templatePath))) return [];
 
-	if (sourcePath) {
-		await copyIfExists(path.join(templateLanguagePath, 'source'), path.resolve(targetPath, sourcePath));
-	}
+	const files = await fse.readdir(templatePath);
+
+	return files.map((file) => path.join(templatePath, file));
 }
 
-async function copyTypeTemplate(
-	templateTypePath: string,
-	targetPath: string,
-	sourcePath?: string,
-	language?: Language
-) {
-	await copyLanguageTemplate(path.join(templateTypePath, 'common'), targetPath, sourcePath);
+async function getLanguageTemplateFiles(templateLanguagePath: string): Promise<TemplateFile[]> {
+	const [configFiles, sourceFiles] = await Promise.all([
+		getFilesInDir(path.join(templateLanguagePath, 'config')),
+		getFilesInDir(path.join(templateLanguagePath, 'source')),
+	]);
 
-	if (language) {
-		await copyLanguageTemplate(path.join(templateTypePath, language), targetPath, sourcePath);
-	}
+	const configTemplateFiles: TemplateFile[] = configFiles.map((file) => ({ type: 'config', path: file }));
+	const sourceTemplateFiles: TemplateFile[] = sourceFiles.map((file) => ({ type: 'source', path: file }));
+
+	return [...configTemplateFiles, ...sourceTemplateFiles];
+}
+
+async function getTypeTemplateFiles(templateTypePath: string, language?: Language): Promise<TemplateFile[]> {
+	const [commonTemplateFiles, languageTemplateFiles] = await Promise.all([
+		getLanguageTemplateFiles(path.join(templateTypePath, 'common')),
+		language ? getLanguageTemplateFiles(path.join(templateTypePath, language)) : null,
+	]);
+
+	return [...commonTemplateFiles, ...(languageTemplateFiles ? languageTemplateFiles : [])];
+}
+
+async function getTemplateFiles(type: ExtensionPackageType, language?: Language): Promise<TemplateFile[]> {
+	const templatePath = getTemplatePath();
+
+	const [commonTemplateFiles, typeTemplateFiles] = await Promise.all([
+		getTypeTemplateFiles(path.join(templatePath, 'common'), language),
+		getTypeTemplateFiles(path.join(templatePath, type), language),
+	]);
+
+	return [...commonTemplateFiles, ...typeTemplateFiles];
 }
 
 export default async function copyTemplate(
 	type: ExtensionPackageType,
-	targetPath: string,
+	extensionPath: string,
 	sourcePath?: string,
 	language?: Language
 ): Promise<void> {
-	const templatePath = getTemplatePath();
+	const templateFiles = await getTemplateFiles(type, language);
 
-	await copyTypeTemplate(path.join(templatePath, 'common'), targetPath, sourcePath, language);
-	await copyTypeTemplate(path.join(templatePath, type), targetPath, sourcePath, language);
-
-	await renameMap(targetPath, (name) => (name.startsWith('_') ? `.${name.substring(1)}` : null));
+	await Promise.all(templateFiles.map((templateFile) => copyTemplateFile(templateFile, extensionPath, sourcePath)));
 }
