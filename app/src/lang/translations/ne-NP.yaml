@@ -69,6 +69,12 @@ db_only_click_to_configure: 'डाटाबेस मात्र: कन्फ
 show_active_items: सक्रिय वस्तुहरू देखाउनुहोस्
 show_archived_items: संग्रहित वस्तुहरू देखाउनुहोस्
 show_all_items: सबै वस्तुहरू देखाउनुहोस्
+edited: मान सम्पादन गरियो
+required: आवश्यक
+required_for_app_access: अनुप्रयोग प्रयोग लागि आवश्यक छ
+message: सन्देश
+invite: निमन्त्रणा दिनुहोस्
+emails: इमेल
 os_version: अपरेटिङ सिस्टम संस्करण
 os_uptime: अपरेटिङ सिस्टम अपटाइम
 os_totalmem: अपरेटिङ सिस्टम मेमोरी
@@ -164,3 +170,8 @@ interfaces:
 displays:
   formatted-value:
     text: पाठ
+operations:
+  log:
+    message: सन्देश
+  notification:
+    message: सन्देश
