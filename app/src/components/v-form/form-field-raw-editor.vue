@@ -22,6 +22,7 @@
 <script setup lang="ts">
 import { getJSType } from '@/utils/get-js-type';
 import { Field } from '@directus/shared/types';
+import { isNil } from 'lodash';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -51,6 +52,10 @@ watch(
 	() => props.showModal,
 	(isActive) => {
 		if (isActive) {
+			if (isNil(props.currentValue)) {
+				return;
+			}
+
 			if (type.value === 'object') {
 				internalValue.value = JSON.stringify(props.currentValue, null, '\t');
 			} else {
