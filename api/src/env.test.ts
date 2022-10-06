@@ -1,3 +1,6 @@
+import fs from 'fs';
+jest.mock('fs');
+
 const testEnv = {
 	NUMBER: '1234',
 	NUMBER_CAST_AS_STRING: 'string:1234',
@@ -14,12 +17,14 @@ describe('env processed values', () => {
 
 	beforeEach(() => {
 		jest.resetModules();
+		fs.readFileSync.mockResolvedValue('public_url.txt');
 		process.env = { ...testEnv };
 		env = jest.requireActual('../src/env').default;
 	});
 
 	afterEach(() => {
 		process.env = originalEnv;
+		jest.resetAllMocks();
 	});
 
 	test('Number value should be a number', () => {
