@@ -101,6 +101,32 @@ connection_poor: খারাপ সংযোগ
 primary: প্রাথমিক
 rename_folder: ফোল্ডারের নতুন নাম দিন
 delete_folder: ফোল্ডার মুছুন
+reset_bookmark: বুকমার্ক রিসেট করুন
+update_bookmark: বুকমার্ক আপডেট করুন
+delete_bookmark: বুকমার্ক মুছুন
+delete_bookmark_copy: >-
+  আপনি কি সত্যিই এই "{bookmark}" বুকমার্কটিকে মুছতে চান? এই বুকমার্কটি কিন্তু আর পূর্বাবস্থায় ফেরানো যাবে না।
+delete_personal_bookmark: ব্যক্তিগত বুকমার্ক মুছুন
+delete_role_bookmark: ভূমিকা বুকমার্ক মুছুন
+delete_global_bookmark: গ্লোবাল বুকমার্ক মুছুন
+logoutReason:
+  SIGN_OUT: সাইন আউট করা হয়েছে
+  SESSION_EXPIRED: সেশন উত্তীর্ণ
+public_label: সার্বজনীন
+public_description: এটা নিয়ন্ত্রণ করে প্রমাণীকরণ ছাড়া কোন কোন API ডেটা উপলব্ধ।
+admin_description: অনিয়ন্ত্রিত অ্যাপ/এপিআই অ্যাক্সেস সহ প্রাথমিক প্রশাসনিক ভূমিকা।
+not_allowed: অনুমতি নেই
+directus_version: ডাইরেক্টাস সংস্করণ
+node_version: নোড সংস্করণ
+node_uptime: নোড আপটাইম
+os_type: কোন OS
+os_version: OS সংস্করণ
+os_uptime: ওএস আপটাইম
+os_totalmem: ওএস মেমোরি
+archive: সংরক্ষণাগার
+archive_confirm: আপনি কি নিশ্চিত যে আপনি এই আইটেমটি সংরক্ষণাগারে পাঠাতে চান?
+archive_confirm_count: >-
+  কোন আইটেম নির্বাচিত করা হয়নি | আপনি কি নিশ্চিত যে আপনি এই আইটেমটি সংরক্ষণাগারে পাঠাতে চান? | আপনি কি নিশ্চিত আপনি {count}টি আইটেম সংরক্ষণাগারে পাঠাতে চান?
 fields:
   directus_settings:
     module_bar: মডিউল বার
@@ -108,6 +134,9 @@ fields:
     translation: ক্ষেত্রের নাম অনুবাদ
   directus_roles:
     name: নামভূমিকা
+field_options:
+  directus_collections:
+    archive_divider: সংরক্ষণাগার
 interfaces:
   presentation-links:
     primary: প্রাথমিক
