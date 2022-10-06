@@ -49,7 +49,6 @@
 			@set-field-value="$emit('setFieldValue', $event)"
 		/>
 
-		<!-- <v-dialog v-model="showRaw" persistent @esc="cancelEdits"> -->
 		<form-field-raw-editor
 			:show-modal="showRaw"
 			:field="field"
@@ -58,7 +57,6 @@
 			@cancel="showRaw = false"
 			@submit="onRawValueSubmit"
 		/>
-		<!-- </v-dialog> -->
 
 		<small v-if="field.meta && field.meta.note" v-md="field.meta.note" class="type-note" />
 
