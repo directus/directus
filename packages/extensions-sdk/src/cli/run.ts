@@ -1,5 +1,6 @@
 import { Command } from 'commander';
 import create from './commands/create';
+import add from './commands/add';
 import build from './commands/build';
 
 const pkg = require('../../../package.json');
@@ -15,6 +16,8 @@ program
 	.description('Scaffold a new Directus extension')
 	.option('-l, --language <language>', 'specify the language to use')
 	.action(create);
+
+program.command('add').description('Add entries to an existing Directus extension').action(add);
 
 program
 	.command('build')

@@ -761,11 +761,13 @@ importers:
       '@rollup/plugin-replace': ^3.1.0
       '@rollup/plugin-virtual': ^2.1.0
       '@types/fs-extra': 9.0.13
+      '@types/inquirer': 8.2.1
       '@vue/compiler-sfc': ^3.1.1
       chalk: ^4.1.1
       commander: ^8.0.0
       execa: ^5.1.1
       fs-extra: ^10.0.0
+      inquirer: ^8.2.4
       npm-run-all: 4.1.5
       ora: ^5.4.0
       rimraf: 3.0.2
@@ -787,6 +789,7 @@ importers:
       commander: 8.3.0
       execa: 5.1.1
       fs-extra: 10.1.0
+      inquirer: 8.2.4
       ora: 5.4.1
       rollup: 2.77.0
       rollup-plugin-styles: 4.0.0_rollup@2.77.0
@@ -795,6 +798,7 @@ importers:
       rollup-plugin-vue: 6.0.0_@vue+compiler-sfc@3.2.37
     devDependencies:
       '@types/fs-extra': 9.0.13
+      '@types/inquirer': 8.2.1
       npm-run-all: 4.1.5
       rimraf: 3.0.2
       typescript: 4.5.2
@@ -7071,6 +7075,7 @@ packages:
 
   /@types/node/18.0.4:
     resolution: {integrity: sha512-M0+G6V0Y4YV8cqzHssZpaNCqvYwlCiulmm0PwpNLF55r/+cT8Ol42CHRU1SEaYFH2rTwiiE1aYg/2g2rrtGdPA==}
+    dev: true
 
   /@types/node/18.7.14:
     resolution: {integrity: sha512-6bbDaETVi8oyIARulOE9qF1/Qdi/23z6emrUh0fNJRUmjznqrixD4MpGDdgOFk5Xb0m2H6Xu42JGdvAxaJR/wA==}
@@ -7175,7 +7180,7 @@ packages:
   /@types/resolve/1.17.1:
     resolution: {integrity: sha512-yy7HuzQhj0dhGpD8RLXSZWEkLsV9ibvxvi6EiJ3bkqLAO1RGo0WbkWQiwpRlSFymTJRz0d3k5LM3kkx8ArDbLw==}
     dependencies:
-      '@types/node': 18.0.4
+      '@types/node': 18.7.14
     dev: false
 
   /@types/responselike/1.0.0:
@@ -7267,7 +7272,7 @@ packages:
   /@types/through/0.0.30:
     resolution: {integrity: sha512-FvnCJljyxhPM3gkRgWmxmDZyAQSiBQQWLI0A0VFL0K7W1oRUrPJSqNO0NvTnLkBcotdlp3lKvaT0JrnyRDkzOg==}
     dependencies:
-      '@types/node': 16.11.9
+      '@types/node': 18.7.14
     dev: true
 
   /@types/tmp/0.2.3:
@@ -21883,7 +21888,7 @@ packages:
   /upath2/3.1.13:
     resolution: {integrity: sha512-M88uBoqgzrkXvXrF/+oSIPsTmL21uRwGhPVJKODrl+3lXkQ5NPKrTYuSBZVa+lgPGFoI6qYyHlSKACFHO0AoNw==}
     dependencies:
-      '@types/node': 18.0.4
+      '@types/node': 18.7.14
       path-is-network-drive: 1.0.15
       path-strip-sep: 1.0.12
       tslib: 2.4.0
