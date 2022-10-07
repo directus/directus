@@ -244,10 +244,10 @@ function getDBQuery(
 
 	queryCopy.limit = typeof queryCopy.limit === 'number' ? queryCopy.limit : 100;
 
-	// Aggregates will not have duplicate result
-	if (queryCopy.aggregate) {
-		const aggregateQuery = knex.select(fieldNodes.map(preProcess)).from(table);
-		return applyQuery(knex, table, aggregateQuery, queryCopy, schema).query;
+	// Queries with aggregates and groupBy will not have duplicate result
+	if (queryCopy.aggregate || queryCopy.group) {
+		const flatQuery = knex.select(fieldNodes.map(preProcess)).from(table);
+		return applyQuery(knex, table, flatQuery, queryCopy, schema).query;
 	}
 
 	const primaryKey = schema.collections[table].primary;
