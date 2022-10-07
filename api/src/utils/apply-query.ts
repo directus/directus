@@ -20,7 +20,7 @@ import { getRelationInfo } from './get-relation-info';
 import { getFilterOperatorsForType, getOutputTypeForFunction } from '@directus/shared/utils';
 import { stripFunction } from './strip-function';
 
-const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
+export const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
 
 /**
  * Apply the Query to a given Knex query builder instance

@@ -8,7 +8,7 @@ import env from '../env';
 import { PayloadService } from '../services/payload';
 import { AST, FieldNode, FunctionFieldNode, M2ONode, NestedCollectionNode } from '../types/ast';
 import { applyFunctionToColumnName } from '../utils/apply-function-to-column-name';
-import applyQuery, { applyLimit, applySort, ColumnSortRecord } from '../utils/apply-query';
+import applyQuery, { applyLimit, applySort, ColumnSortRecord, generateAlias } from '../utils/apply-query';
 import { getColumn } from '../utils/get-column';
 import { stripFunction } from '../utils/strip-function';
 
@@ -254,6 +254,7 @@ function getDBQuery(
 	const aliasMap = {};
 	const dbQuery = knex.from(table);
 	let sortRecords: ColumnSortRecord[] | undefined;
+	const innerQuerySortRecords: { alias: string; order: 'asc' | 'desc' }[] = [];
 	let hasMultiRelationalSort: boolean | undefined;
 
 	if (queryCopy.sort) {
@@ -278,10 +279,14 @@ function getDBQuery(
 	if (sortRecords) {
 		if (needsInnerQuery) {
 			sortRecords.map((sortRecord) => {
+				const sortAlias = `sort_${generateAlias()}`;
 				if (sortRecord.column.includes('.')) {
-					dbQuery.select(knex.ref(sortRecord.column).as(sortRecord.column.replace('.', '_')));
+					const [alias, field] = sortRecord.column.split('.');
+					dbQuery.select(getColumn(knex, alias, field, sortAlias, schema));
+					innerQuerySortRecords.push({ alias: sortAlias, order: sortRecord.order });
 				} else if (schema.collections[table].primary !== sortRecord.column) {
-					dbQuery.select(knex.ref(sortRecord.column));
+					dbQuery.select(getColumn(knex, table, sortRecord.column, sortAlias, schema));
+					innerQuerySortRecords.push({ alias: sortAlias, order: sortRecord.order });
 				}
 			});
 
@@ -335,12 +340,8 @@ function getDBQuery(
 		.innerJoin(knex.raw('??', dbQuery.as('inner')), `${table}.${primaryKey}`, `inner.${primaryKey}`);
 
 	if (sortRecords && needsInnerQuery) {
-		sortRecords.map((sortRecord) => {
-			if (sortRecord.column.includes('.')) {
-				wrapperQuery.orderBy(`inner.${sortRecord.column.replace('.', '_')}`, sortRecord.order);
-			} else {
-				wrapperQuery.orderBy(`${table}.${sortRecord.column}`, sortRecord.order);
-			}
+		innerQuerySortRecords.map((innerQuerySortRecord) => {
+			wrapperQuery.orderBy(`inner.${innerQuerySortRecord.alias}`, innerQuerySortRecord.order);
 		});
 
 		if (hasMultiRelationalSort) {
