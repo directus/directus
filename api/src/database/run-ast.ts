@@ -316,11 +316,14 @@ function getDBQuery(
 
 			sortRecords.map((sortRecord) => {
 				if (sortRecord.column.includes('.')) {
-					dbQuery.orderBy(sortRecord.column, sortRecord.order);
+					const [alias, field] = sortRecord.column.split('.');
+					sortRecord.column = getColumn(knex, alias, field, false, schema) as any;
 				} else {
-					dbQuery.orderBy(`${table}.${sortRecord.column}`, sortRecord.order);
+					sortRecord.column = getColumn(knex, table, sortRecord.column, false, schema) as any;
 				}
 			});
+
+			dbQuery.orderBy(sortRecords);
 		}
 	}
 
