@@ -283,11 +283,10 @@ function getDBQuery(
 				if (sortRecord.column.includes('.')) {
 					const [alias, field] = sortRecord.column.split('.');
 					dbQuery.select(getColumn(knex, alias, field, sortAlias, schema));
-					innerQuerySortRecords.push({ alias: sortAlias, order: sortRecord.order });
-				} else if (schema.collections[table].primary !== sortRecord.column) {
+				} else {
 					dbQuery.select(getColumn(knex, table, sortRecord.column, sortAlias, schema));
-					innerQuerySortRecords.push({ alias: sortAlias, order: sortRecord.order });
 				}
+				innerQuerySortRecords.push({ alias: sortAlias, order: sortRecord.order });
 			});
 
 			if (hasMultiRelationalSort) {
