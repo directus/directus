@@ -311,7 +311,7 @@ function getDBQuery(
 				});
 
 				dbQuery.rowNumber(
-					knex.raw('??', 'directus_row_number').toQuery(),
+					knex.ref('directus_row_number').toQuery(),
 					knex.raw(`partition by ??${orderByString}`, [`${table}.${primaryKey}`, ...orderByFields])
 				);
 			}
