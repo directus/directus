@@ -52,6 +52,9 @@ export const GENERATE_SPECIAL = ['uuid', 'date-created', 'role-created', 'user-c
 
 export const UUID_REGEX = '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}';
 
+// export const JSON_QUERY_REGEX = /^(\w+)(\.(\w+|\*)|\[-?(\d+|\*)\])+$/i; // with negative indexes
+export const JSON_QUERY_REGEX = /^(\w+)(\.(\w+|\*)|\[(\d+|\*)\])+$/i;
+
 export const COOKIE_OPTIONS = {
 	httpOnly: true,
 	domain: env.REFRESH_TOKEN_COOKIE_DOMAIN,

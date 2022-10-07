@@ -3,8 +3,10 @@ import { toArray } from '@directus/shared/utils';
 import { Knex } from 'knex';
 import { clone, cloneDeep, merge, pick, uniq } from 'lodash';
 import getDatabase from '.';
+import { JSON_QUERY_REGEX } from '../constants';
 import { getHelpers } from '../database/helpers';
 import env from '../env';
+import { InvalidQueryException } from '../exceptions';
 import { PayloadService } from '../services/payload';
 import { AST, FieldNode, FunctionFieldNode, M2ONode, NestedCollectionNode } from '../types/ast';
 import { applyFunctionToColumnName } from '../utils/apply-function-to-column-name';
@@ -153,10 +155,15 @@ async function parseCurrentLevel(
 	for (const child of children) {
 		if (child.type === 'field' || child.type === 'functionField') {
 			const fieldName = stripFunction(child.name);
+			const functionName = child.name.substring(0, child.name.indexOf('('));
 
-			if (fieldName.includes('$')) {
-				const [_fieldKey, _path] = fieldName.split('$');
-				if (columnsInCollection.includes(_fieldKey)) {
+			if (functionName === 'json') {
+				if (!JSON_QUERY_REGEX.test(fieldName)) {
+					throw new InvalidQueryException(`The json query used is not valid. "${fieldName}"`);
+				}
+				const pathStart = Math.min(fieldName.indexOf('.'), fieldName.indexOf('['));
+				const fieldKey = fieldName.substring(0, pathStart);
+				if (columnsInCollection.includes(fieldKey)) {
 					columnsToSelectInternal.push(child.fieldKey);
 				}
 			}

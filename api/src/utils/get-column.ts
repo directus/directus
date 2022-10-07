@@ -33,7 +33,8 @@ export function getColumn(
 		const columnName = stripFunction(column); //.split('$')[0] : stripFunction(column);
 
 		if (functionName === 'json') {
-			const colName = columnName.split('$')[0];
+			const pathStart = Math.min(columnName.indexOf('.'), columnName.indexOf('['));
+			const colName = columnName.substring(0, pathStart);
 			const type = schema?.collections[table]?.fields?.[colName]?.type ?? 'unknown';
 			const allowedFunctions = getFunctionsForType(type);
 

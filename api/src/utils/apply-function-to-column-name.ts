@@ -16,7 +16,9 @@ export function applyFunctionToColumnName(column: string): string {
 	if (column.includes('(') && column.includes(')')) {
 		const functionName = column.split('(')[0];
 		if (functionName === 'json') {
-			const [columnName] = stripFunction(column).split('$');
+			const jsonQuery = stripFunction(column);
+			const pathStart = Math.min(jsonQuery.indexOf('.'), jsonQuery.indexOf('['));
+			const columnName = jsonQuery.substring(0, pathStart);
 			return `${columnName}_${functionName}`;
 		}
 		const columnName = stripFunction(column);
