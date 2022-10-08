@@ -297,7 +297,7 @@ function getDBQuery(
 
 			if (hasMultiRelationalSort) {
 				let orderByString = '';
-				const orderByFields: string[] = [];
+				const orderByFields: Knex.Raw[] = [];
 
 				sortRecords.map((sortRecord) => {
 					if (orderByString.length === 0) {
@@ -308,10 +308,15 @@ function getDBQuery(
 
 					if (sortRecord.column.includes('.')) {
 						orderByString += ` ?? ${sortRecord.order}`;
-						orderByFields.push(sortRecord.column);
+						const [alias, field] = sortRecord.column.split('.');
+						orderByFields.push(
+							getColumn(knex, alias, field, false, schema, {
+								originalCollectionName: getCollectionFromAlias(alias, aliasMap),
+							})
+						);
 					} else {
 						orderByString += ` ?? ${sortRecord.order}`;
-						orderByFields.push(`${table}.${sortRecord.column}`);
+						orderByFields.push(getColumn(knex, table, sortRecord.column, false, schema));
 					}
 				});
 
