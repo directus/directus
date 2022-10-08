@@ -330,6 +330,213 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				});
 			});
 
+			describe('filters with functions', () => {
+				describe('on top level', () => {
+					it.each(vendors)('%s', async (vendor) => {
+						// Setup
+						await CreateItem(vendor, {
+							collection: localCollectionCountries,
+							item: {
+								...createCountry(pkType),
+								name: 'test_country_top',
+								states: {
+									create: [
+										{
+											...createState(pkType),
+											name: 'test_state_top_1',
+										},
+										{
+											...createState(pkType),
+											name: 'test_state_top_2',
+										},
+									],
+									update: [],
+									delete: [],
+								},
+							},
+						});
+
+						await CreateItem(vendor, {
+							collection: localCollectionCountries,
+							item: {
+								...createCountry(pkType),
+								name: 'test_country_top',
+							},
+						});
+
+						// Action
+						const response = await request(getUrl(vendor))
+							.get(`/items/${localCollectionCountries}`)
+							.query({
+								filter: JSON.stringify({
+									_and: [
+										{
+											name: { _eq: 'test_country_top' },
+										},
+										{
+											'count(states)': { _eq: 2 },
+										},
+									],
+								}),
+							})
+							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+						const responseTotal = await request(getUrl(vendor))
+							.get(`/items/${localCollectionCountries}`)
+							.query({
+								filter: JSON.stringify({
+									name: { _eq: 'test_country_top' },
+								}),
+							})
+							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+						// Assert
+						expect(response.statusCode).toEqual(200);
+						expect(response.body.data.length).toEqual(1);
+						expect(responseTotal.statusCode).toEqual(200);
+						expect(responseTotal.body.data.length).toEqual(2);
+					});
+				});
+
+				describe('on o2m level', () => {
+					it.each(vendors)('%s', async (vendor) => {
+						// Setup
+						await CreateItem(vendor, {
+							collection: localCollectionCountries,
+							item: {
+								...createCountry(pkType),
+								name: 'test_country_nested',
+								states: {
+									create: [
+										{
+											...createState(pkType),
+											name: 'test_state_nested_1',
+											cities: {
+												create: [
+													{
+														...createCity(pkType),
+														name: 'test_city_nested_1',
+													},
+													{
+														...createState(pkType),
+														name: 'test_city_nested_2',
+													},
+												],
+												update: [],
+												delete: [],
+											},
+										},
+										{
+											...createState(pkType),
+											name: 'test_state_nested_2',
+											cities: {
+												create: [
+													{
+														...createCity(pkType),
+														name: 'test_city_nested_3',
+													},
+													{
+														...createState(pkType),
+														name: 'test_city_nested_4',
+													},
+												],
+												update: [],
+												delete: [],
+											},
+										},
+									],
+									update: [],
+									delete: [],
+								},
+							},
+						});
+
+						await CreateItem(vendor, {
+							collection: localCollectionCountries,
+							item: {
+								...createCountry(pkType),
+								name: 'test_country_nested',
+								states: {
+									create: [
+										{
+											...createState(pkType),
+											name: 'test_state_nested_3',
+											cities: {
+												create: [
+													{
+														...createCity(pkType),
+														name: 'test_city_nested_5',
+													},
+												],
+												update: [],
+												delete: [],
+											},
+										},
+										{
+											...createState(pkType),
+											name: 'test_state_nested_4',
+											cities: {
+												create: [
+													{
+														...createCity(pkType),
+														name: 'test_city_nested_6',
+													},
+												],
+												update: [],
+												delete: [],
+											},
+										},
+									],
+									update: [],
+									delete: [],
+								},
+							},
+						});
+
+						// Action
+						const response = await request(getUrl(vendor))
+							.get(`/items/${localCollectionCountries}`)
+							.query({
+								filter: JSON.stringify({
+									_and: [
+										{
+											name: { _eq: 'test_country_nested' },
+										},
+										{
+											states: {
+												'count(cities)': { _eq: 2 },
+											},
+										},
+										{
+											states: {
+												country_id: {
+													'count(states)': { _eq: 2 },
+												},
+											},
+										},
+									],
+								}),
+							})
+							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+						const responseTotal = await request(getUrl(vendor))
+							.get(`/items/${localCollectionCountries}`)
+							.query({
+								filter: JSON.stringify({
+									name: { _eq: 'test_country_nested' },
+								}),
+							})
+							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+						// Assert
+						expect(response.statusCode).toEqual(200);
+						expect(response.body.data.length).toEqual(1);
+						expect(responseTotal.statusCode).toEqual(200);
+						expect(responseTotal.body.data.length).toEqual(2);
+					});
+				});
+			});
+
 			describe(`sorts`, () => {
 				describe(`on top level`, () => {
 					it.each(vendors)('%s', async (vendor) => {
@@ -405,6 +612,97 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							.query({
 								sort: '-states.name',
 								filter: { name: { _starts_with: 'country-o2m-sort-' } },
+							})
+							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+						// Assert
+						expect(response.statusCode).toEqual(200);
+						expect(response.body.data.length).toBe(5);
+						expect(response2.statusCode).toEqual(200);
+						expect(response.body.data).toEqual(response2.body.data.reverse());
+					});
+				});
+			});
+
+			describe(`sorts with functions`, () => {
+				describe(`on top level`, () => {
+					it.each(vendors)('%s', async (vendor) => {
+						// Setup
+						const sortValues = [4, 2, 3, 5, 1];
+						const countries = [];
+
+						for (const val of sortValues) {
+							const country = createCountry(pkType);
+							country.name = 'country-o2m-top-sort-fn-' + uuid();
+							country.test_datetime = new Date(new Date().setFullYear(parseInt(`202${val}`)))
+								.toISOString()
+								.slice(0, 19);
+							countries.push(country);
+						}
+
+						await CreateItem(vendor, {
+							collection: localCollectionCountries,
+							item: countries,
+						});
+
+						// Action
+						const response = await request(getUrl(vendor))
+							.get(`/items/${localCollectionCountries}`)
+							.query({
+								sort: 'year(test_datetime)',
+								filter: { name: { _starts_with: 'country-o2m-top-sort-fn-' } },
+							})
+							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+						const response2 = await request(getUrl(vendor))
+							.get(`/items/${localCollectionCountries}`)
+							.query({
+								sort: '-year(test_datetime)',
+								filter: { name: { _starts_with: 'country-o2m-top-sort-fn-' } },
+							})
+							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+						// Assert
+						expect(response.statusCode).toEqual(200);
+						expect(response.body.data.length).toBe(5);
+						expect(response2.statusCode).toEqual(200);
+						expect(response.body.data).toEqual(response2.body.data.reverse());
+					});
+				});
+
+				describe(`on o2m level`, () => {
+					it.each(vendors)('%s', async (vendor) => {
+						// Setup
+						const sortValues = [4, 2, 3, 5, 1];
+
+						for (const val of sortValues) {
+							const country = createCountry(pkType);
+							country.name = 'country-o2m-sort-fn-' + uuid();
+							const insertedCountry = await CreateItem(vendor, {
+								collection: localCollectionCountries,
+								item: country,
+							});
+							const state = createState(pkType);
+							state.name = 'state-o2m-sort-fn-' + uuid;
+							state.test_datetime = new Date(new Date().setFullYear(parseInt(`202${val}`))).toISOString().slice(0, 19);
+							state.country_id = insertedCountry.id;
+							await CreateItem(vendor, { collection: localCollectionStates, item: state });
+						}
+
+						// Action
+						const response = await request(getUrl(vendor))
+							.get(`/items/${localCollectionCountries}`)
+							.query({
+								sort: 'states.year(test_datetime)',
+								filter: { name: { _starts_with: 'country-o2m-sort-fn-' } },
+							})
+							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+						const response2 = await request(getUrl(vendor))
+							.get(`/items/${localCollectionCountries}`)
+							.query({
+								sort: '-states.year(test_datetime)',
+								filter: { name: { _starts_with: 'country-o2m-sort-fn-' } },
 							})
 							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
@@ -644,213 +942,6 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				expect(o2mResponse.body.data.length).toEqual(1);
 				expect(m2oResponse.statusCode).toEqual(200);
 				expect(m2oResponse.body.data.length).toEqual(2);
-			});
-		});
-
-		describe('Filter functions', () => {
-			describe('works on the top level', () => {
-				it.each(vendors)('%s', async (vendor) => {
-					// Setup
-					await CreateItem(vendor, {
-						collection: localCollectionCountries,
-						item: {
-							...createCountry(pkType),
-							name: 'test_country_top',
-							states: {
-								create: [
-									{
-										...createState(pkType),
-										name: 'test_state_top_1',
-									},
-									{
-										...createState(pkType),
-										name: 'test_state_top_2',
-									},
-								],
-								update: [],
-								delete: [],
-							},
-						},
-					});
-
-					await CreateItem(vendor, {
-						collection: localCollectionCountries,
-						item: {
-							...createCountry(pkType),
-							name: 'test_country_top',
-						},
-					});
-
-					// Action
-					const response = await request(getUrl(vendor))
-						.get(`/items/${localCollectionCountries}`)
-						.query({
-							filter: JSON.stringify({
-								_and: [
-									{
-										name: { _eq: 'test_country_top' },
-									},
-									{
-										'count(states)': { _eq: 2 },
-									},
-								],
-							}),
-						})
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
-
-					const responseTotal = await request(getUrl(vendor))
-						.get(`/items/${localCollectionCountries}`)
-						.query({
-							filter: JSON.stringify({
-								name: { _eq: 'test_country_top' },
-							}),
-						})
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
-
-					// Assert
-					expect(response.statusCode).toEqual(200);
-					expect(response.body.data.length).toEqual(1);
-					expect(responseTotal.statusCode).toEqual(200);
-					expect(responseTotal.body.data.length).toEqual(2);
-				});
-			});
-
-			describe('works on the nested level', () => {
-				it.each(vendors)('%s', async (vendor) => {
-					// Setup
-					await CreateItem(vendor, {
-						collection: localCollectionCountries,
-						item: {
-							...createCountry(pkType),
-							name: 'test_country_nested',
-							states: {
-								create: [
-									{
-										...createState(pkType),
-										name: 'test_state_nested_1',
-										cities: {
-											create: [
-												{
-													...createCity(pkType),
-													name: 'test_city_nested_1',
-												},
-												{
-													...createState(pkType),
-													name: 'test_city_nested_2',
-												},
-											],
-											update: [],
-											delete: [],
-										},
-									},
-									{
-										...createState(pkType),
-										name: 'test_state_nested_2',
-										cities: {
-											create: [
-												{
-													...createCity(pkType),
-													name: 'test_city_nested_3',
-												},
-												{
-													...createState(pkType),
-													name: 'test_city_nested_4',
-												},
-											],
-											update: [],
-											delete: [],
-										},
-									},
-								],
-								update: [],
-								delete: [],
-							},
-						},
-					});
-
-					await CreateItem(vendor, {
-						collection: localCollectionCountries,
-						item: {
-							...createCountry(pkType),
-							name: 'test_country_nested',
-							states: {
-								create: [
-									{
-										...createState(pkType),
-										name: 'test_state_nested_3',
-										cities: {
-											create: [
-												{
-													...createCity(pkType),
-													name: 'test_city_nested_5',
-												},
-											],
-											update: [],
-											delete: [],
-										},
-									},
-									{
-										...createState(pkType),
-										name: 'test_state_nested_4',
-										cities: {
-											create: [
-												{
-													...createCity(pkType),
-													name: 'test_city_nested_6',
-												},
-											],
-											update: [],
-											delete: [],
-										},
-									},
-								],
-								update: [],
-								delete: [],
-							},
-						},
-					});
-
-					// Action
-					const response = await request(getUrl(vendor))
-						.get(`/items/${localCollectionCountries}`)
-						.query({
-							filter: JSON.stringify({
-								_and: [
-									{
-										name: { _eq: 'test_country_nested' },
-									},
-									{
-										states: {
-											'count(cities)': { _eq: 2 },
-										},
-									},
-									{
-										states: {
-											country_id: {
-												'count(states)': { _eq: 2 },
-											},
-										},
-									},
-								],
-							}),
-						})
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
-
-					const responseTotal = await request(getUrl(vendor))
-						.get(`/items/${localCollectionCountries}`)
-						.query({
-							filter: JSON.stringify({
-								name: { _eq: 'test_country_nested' },
-							}),
-						})
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
-
-					// Assert
-					expect(response.statusCode).toEqual(200);
-					expect(response.body.data.length).toEqual(1);
-					expect(responseTotal.statusCode).toEqual(200);
-					expect(responseTotal.body.data.length).toEqual(2);
-				});
 			});
 		});
 	});

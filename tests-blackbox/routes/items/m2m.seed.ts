@@ -25,6 +25,7 @@ export const collectionSuppliers = 'test_items_m2m_suppliers';
 export type Food = {
 	id?: number | string;
 	name: string;
+	test_datetime?: string;
 	ingredients?: Ingredient[];
 };
 

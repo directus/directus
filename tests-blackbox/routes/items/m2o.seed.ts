@@ -21,12 +21,14 @@ export const collectionCities = 'test_items_m2o_cities';
 export type Country = {
 	id?: number | string;
 	name: string;
+	test_datetime?: string;
 };
 
 export type State = {
 	id?: number | string;
 	name: string;
 	country_id?: number | string | null;
+	test_datetime?: string;
 };
 
 export type City = {

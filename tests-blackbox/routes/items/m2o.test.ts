@@ -329,6 +329,97 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				});
 			});
 
+			describe('filters with functions', () => {
+				describe('on top level', () => {
+					it.each(vendors)('%s', async (vendor) => {
+						// Setup
+						const states = [];
+						const years = [1980, 1988];
+
+						for (const year of years) {
+							const state = createState(pkType);
+							state.name = 'state-m2o-top-fn-' + uuid();
+							state.test_datetime = new Date(new Date().setFullYear(year)).toISOString().slice(0, 19);
+							states.push(state);
+						}
+
+						await CreateItem(vendor, {
+							collection: localCollectionStates,
+							item: states,
+						});
+
+						// Action
+						const response = await request(getUrl(vendor))
+							.get(`/items/${localCollectionStates}`)
+							.query({
+								filter: { 'year(test_datetime)': { _eq: years[0] } },
+							})
+							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+						const response2 = await request(getUrl(vendor))
+							.get(`/items/${localCollectionStates}`)
+							.query({
+								filter: { 'year(test_datetime)': { _eq: years[1] } },
+							})
+							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+						// Assert
+						expect(response.statusCode).toEqual(200);
+						expect(response.body.data.length).toBe(1);
+						expect(response.body.data[0]).toMatchObject({ name: states[0].name });
+						expect(response2.statusCode).toEqual(200);
+						expect(response2.body.data.length).toBe(1);
+						expect(response2.body.data[0]).toMatchObject({ name: states[1].name });
+					});
+				});
+
+				describe('on m2o level', () => {
+					it.each(vendors)('%s', async (vendor) => {
+						// Setup
+						const states = [];
+						const years = [1983, 1990];
+
+						for (const year of years) {
+							const country = createCountry(pkType);
+							country.name = 'country-m2o-fn-' + uuid();
+							country.test_datetime = new Date(new Date().setFullYear(year)).toISOString().slice(0, 19);
+							const insertedCountry = await CreateItem(vendor, {
+								collection: localCollectionCountries,
+								item: country,
+							});
+							const state = createState(pkType);
+							state.name = 'state-m2o-fn-' + uuid();
+							state.country_id = insertedCountry.id;
+							states.push(state);
+							await CreateItem(vendor, { collection: localCollectionStates, item: state });
+						}
+
+						// Action
+						const response = await request(getUrl(vendor))
+							.get(`/items/${localCollectionStates}`)
+							.query({
+								filter: JSON.stringify({ country_id: { 'year(test_datetime)': { _eq: years[0] } } }),
+							})
+							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+						const response2 = await request(getUrl(vendor))
+							.get(`/items/${localCollectionStates}`)
+							.query({
+								filter: JSON.stringify({ country_id: { 'year(test_datetime)': { _eq: years[1] } } }),
+							})
+							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+						// Assert
+						expect(response.statusCode).toEqual(200);
+						expect(response.body.data.length).toBe(1);
+						expect(response.body.data[0]).toMatchObject({ name: states[0].name });
+						expect(response2.statusCode).toEqual(200);
+						expect(response2.body.data.length).toBe(1);
+						expect(response2.body.data[0]).toMatchObject({ name: states[1].name });
+					});
+				});
+			});
+
 			describe(`sorts`, () => {
 				describe(`on top level`, () => {
 					it.each(vendors)('%s', async (vendor) => {
@@ -404,6 +495,97 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							.query({
 								sort: '-country_id.name',
 								filter: { name: { _starts_with: 'state-m2o-sort-' } },
+							})
+							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+						// Assert
+						expect(response.statusCode).toEqual(200);
+						expect(response.body.data.length).toBe(5);
+						expect(response2.statusCode).toEqual(200);
+						expect(response.body.data).toEqual(response2.body.data.reverse());
+					});
+				});
+			});
+
+			describe(`sorts with functions`, () => {
+				describe(`on top level`, () => {
+					it.each(vendors)('%s', async (vendor) => {
+						// Setup
+						const sortValues = [4, 2, 3, 5, 1];
+						const states = [];
+
+						for (const val of sortValues) {
+							const state = createState(pkType);
+							state.name = 'state-m2o-top-sort-fn-' + uuid();
+							state.test_datetime = new Date(new Date().setFullYear(parseInt(`202${val}`))).toISOString().slice(0, 19);
+							states.push(state);
+						}
+
+						await CreateItem(vendor, {
+							collection: localCollectionStates,
+							item: states,
+						});
+
+						// Action
+						const response = await request(getUrl(vendor))
+							.get(`/items/${localCollectionStates}`)
+							.query({
+								sort: 'year(test_datetime)',
+								filter: { name: { _starts_with: 'state-m2o-top-sort-fn-' } },
+							})
+							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+						const response2 = await request(getUrl(vendor))
+							.get(`/items/${localCollectionStates}`)
+							.query({
+								sort: '-year(test_datetime)',
+								filter: { name: { _starts_with: 'state-m2o-top-sort-fn-' } },
+							})
+							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+						// Assert
+						expect(response.statusCode).toEqual(200);
+						expect(response.body.data.length).toBe(5);
+						expect(response2.statusCode).toEqual(200);
+						expect(response.body.data).toEqual(response2.body.data.reverse());
+					});
+				});
+
+				describe(`on m2o level`, () => {
+					it.each(vendors)('%s', async (vendor) => {
+						// Setup
+						const sortValues = [4, 2, 3, 5, 1];
+
+						for (const val of sortValues) {
+							const country = createCountry(pkType);
+							country.name = 'country-m2o-sort-fn-' + uuid();
+							country.test_datetime = new Date(new Date().setFullYear(parseInt(`202${val}`)))
+								.toISOString()
+								.slice(0, 19);
+							const insertedCountry = await CreateItem(vendor, {
+								collection: localCollectionCountries,
+								item: country,
+							});
+							const state = createState(pkType);
+							state.name = 'state-m2o-sort-fn-' + uuid();
+							state.country_id = insertedCountry.id;
+							await CreateItem(vendor, { collection: localCollectionStates, item: state });
+						}
+
+						// Action
+						const response = await request(getUrl(vendor))
+							.get(`/items/${localCollectionStates}`)
+							.query({
+								sort: 'country_id.year(test_datetime)',
+								filter: { name: { _starts_with: 'state-m2o-sort-fn-' } },
+							})
+							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+						const response2 = await request(getUrl(vendor))
+							.get(`/items/${localCollectionStates}`)
+							.query({
+								sort: '-country_id.year(test_datetime)',
+								filter: { name: { _starts_with: 'state-m2o-sort-fn-' } },
 							})
 							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
