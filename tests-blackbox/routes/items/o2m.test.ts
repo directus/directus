@@ -683,7 +683,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								item: country,
 							});
 							const state = createState(pkType);
-							state.name = 'state-o2m-sort-fn-' + uuid;
+							state.name = 'state-o2m-sort-fn-' + uuid();
 							state.test_datetime = new Date(new Date().setFullYear(parseInt(`202${val}`))).toISOString().slice(0, 19);
 							state.country_id = insertedCountry.id;
 							await CreateItem(vendor, { collection: localCollectionStates, item: state });
