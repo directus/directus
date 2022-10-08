@@ -9,7 +9,9 @@ import { PayloadService } from '../services/payload';
 import { AST, FieldNode, FunctionFieldNode, M2ONode, NestedCollectionNode } from '../types/ast';
 import { applyFunctionToColumnName } from '../utils/apply-function-to-column-name';
 import applyQuery, { applyLimit, applySort, ColumnSortRecord, generateAlias } from '../utils/apply-query';
+import { getCollectionFromAlias } from '../utils/get-collection-from-alias';
 import { getColumn } from '../utils/get-column';
+import { AliasMap } from '../utils/get-column-path';
 import { stripFunction } from '../utils/strip-function';
 
 type RunASTOptions = {
@@ -251,7 +253,7 @@ function getDBQuery(
 	}
 
 	const primaryKey = schema.collections[table].primary;
-	const aliasMap = {};
+	const aliasMap: AliasMap = {};
 	const dbQuery = knex.from(table);
 	let sortRecords: ColumnSortRecord[] | undefined;
 	const innerQuerySortRecords: { alias: string; order: 'asc' | 'desc' }[] = [];
@@ -282,7 +284,11 @@ function getDBQuery(
 				const sortAlias = `sort_${generateAlias()}`;
 				if (sortRecord.column.includes('.')) {
 					const [alias, field] = sortRecord.column.split('.');
-					dbQuery.select(getColumn(knex, alias, field, sortAlias, schema));
+					dbQuery.select(
+						getColumn(knex, alias, field, sortAlias, schema, {
+							originalCollectionName: getCollectionFromAlias(alias, aliasMap),
+						})
+					);
 				} else {
 					dbQuery.select(getColumn(knex, table, sortRecord.column, sortAlias, schema));
 				}
@@ -321,7 +327,9 @@ function getDBQuery(
 			sortRecords.map((sortRecord) => {
 				if (sortRecord.column.includes('.')) {
 					const [alias, field] = sortRecord.column.split('.');
-					sortRecord.column = getColumn(knex, alias, field, false, schema) as any;
+					sortRecord.column = getColumn(knex, alias, field, false, schema, {
+						originalCollectionName: getCollectionFromAlias(alias, aliasMap),
+					}) as any;
 				} else {
 					sortRecord.column = getColumn(knex, table, sortRecord.column, false, schema) as any;
 				}

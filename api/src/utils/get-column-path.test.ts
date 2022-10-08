@@ -7,8 +7,8 @@ import { DeepPartial } from '@directus/shared/types';
   path: [ 'author', 'role', 'name' ],
   collection: 'articles',
   aliasMap: {
-    author: 'grenv',
-	'author.role': 'ljnsv',
+    author: { alias: 'grenv', collection: 'directus_users' },
+	'author.role': { alias: 'ljnsv', collection: 'directus_roles' },
   },
   relations: []
 
@@ -17,7 +17,7 @@ ljnsv.name
 {
   path: [ 'author', 'first_name' ],
   collection: 'articles',
-  aliasMap: { author: 'rnmxt' },
+  aliasMap: { author: { alias: 'rnmxt', collection: 'authors' } },
   relations: []
 
 rnmxt.first_name
@@ -25,7 +25,7 @@ rnmxt.first_name
 {
   path: [ 'item:headings', 'text' ],
   collection: 'pages_sections',
-  aliasMap: { 'item:headings': 'yllus' },
+  aliasMap: { 'item:headings': { alias: 'yllus', collection: 'headings' } },
   relations: []
 
 yllus.text
@@ -67,7 +67,7 @@ test('Extracts path scope and returns correct alias for a2o', () => {
 	const input: DeepPartial<ColPathProps> = {
 		path: ['item:headings', 'text'],
 		collection: 'pages',
-		aliasMap: { 'item:headings': 'abcdef' },
+		aliasMap: { 'item:headings': { alias: 'abcdef', collection: 'headings' } },
 		relations: [
 			{
 				collection: 'pages',
@@ -91,8 +91,8 @@ test('Returns correct alias for m2o', () => {
 		path: ['author', 'role', 'name'],
 		collection: 'articles',
 		aliasMap: {
-			author: 'ljnsv',
-			'author.role': 'grenv',
+			author: { alias: 'ljnsv', collection: 'directus_users' },
+			'author.role': { alias: 'grenv', collection: 'directus_roles' },
 		},
 		relations: [
 			{
@@ -122,8 +122,8 @@ test('Returns correct alias for o2m', () => {
 		path: ['categories', 'category_id', 'name'],
 		collection: 'articles',
 		aliasMap: {
-			categories: 'aaaa',
-			'categories.category_id': 'bbbb',
+			categories: { alias: 'aaaa', collection: 'categories_articles' },
+			'categories.category_id': { alias: 'bbbb', collection: 'categories' },
 		},
 		relations: [
 			{
@@ -155,10 +155,10 @@ test('Returns correct alias for nested o2m', () => {
 		path: ['articles', 'article_id', 'articles', 'article_id', 'name'],
 		collection: 'article',
 		aliasMap: {
-			articles: 'aaaa',
-			'articles.article_id': 'bbbb',
-			'articles.article_id.articles': 'cccc',
-			'articles.article_id.articles.article_id': 'dddd',
+			articles: { alias: 'aaaa', collection: 'article' },
+			'articles.article_id': { alias: 'bbbb', collection: 'article' },
+			'articles.article_id.articles': { alias: 'cccc', collection: 'article' },
+			'articles.article_id.articles.article_id': { alias: 'dddd', collection: 'article' },
 		},
 		relations: [
 			{
@@ -216,9 +216,9 @@ test('Returns correct alias when there are multiple joins to the same table', ()
 		path: ['author', 'secondary_role', 'name'],
 		collection: 'articles',
 		aliasMap: {
-			author: 'ljnsv',
-			'author.role': 'grenv',
-			'author.secondary_role': 'psgwn',
+			author: { alias: 'ljnsv', collection: 'directus_users' },
+			'author.role': { alias: 'grenv', collection: 'directus_roles' },
+			'author.secondary_role': { alias: 'psgwn', collection: 'directus_roles' },
 		},
 		relations: [
 			{

@@ -33,7 +33,7 @@ export default function applyQuery(
 	schema: SchemaOverview,
 	options?: { aliasMap?: AliasMap; isInnerQuery?: boolean; hasMultiRelationalSort?: boolean }
 ) {
-	const aliasMap = options?.aliasMap ?? {};
+	const aliasMap: AliasMap = options?.aliasMap ?? {};
 	let hasMultiRelationalFilter = false;
 
 	if (query.sort && !options?.isInnerQuery && !options?.hasMultiRelationalSort) {
@@ -140,19 +140,23 @@ function addJoin({ path, collection, aliasMap, rootQuery, schema, relations, kne
 			return;
 		}
 
-		const existingAlias = parentFields ? aliasMap[`${parentFields}.${pathParts[0]}`] : aliasMap[pathParts[0]];
+		const existingAlias = parentFields
+			? aliasMap[`${parentFields}.${pathParts[0]}`]?.alias
+			: aliasMap[pathParts[0]]?.alias;
 
 		if (!existingAlias) {
 			const alias = generateAlias();
+			const aliasKey = parentFields ? `${parentFields}.${pathParts[0]}` : pathParts[0];
 
-			aliasMap[parentFields ? `${parentFields}.${pathParts[0]}` : pathParts[0]] = alias;
+			aliasMap[aliasKey] = { alias, collection: '' };
 
 			if (relationType === 'm2o') {
 				rootQuery.leftJoin(
 					{ [alias]: relation.related_collection! },
-					`${aliasMap[parentFields ?? ''] || parentCollection}.${relation.field}`,
+					`${aliasMap[parentFields ?? '']?.alias || parentCollection}.${relation.field}`,
 					`${alias}.${schema.collections[relation.related_collection!].primary}`
 				);
+				aliasMap[aliasKey].collection = relation.related_collection!;
 			} else if (relationType === 'a2o') {
 				const pathScope = pathParts[0].split(':')[1];
 
@@ -166,11 +170,12 @@ function addJoin({ path, collection, aliasMap, rootQuery, schema, relations, kne
 					joinClause
 						.onVal(relation.meta!.one_collection_field!, '=', pathScope)
 						.andOn(
-							`${aliasMap[parentFields ?? ''] || parentCollection}.${relation.field}`,
+							`${aliasMap[parentFields ?? '']?.alias || parentCollection}.${relation.field}`,
 							'=',
 							knex.raw(`CAST(?? AS CHAR(255))`, `${alias}.${schema.collections[pathScope].primary}`)
 						);
 				});
+				aliasMap[aliasKey].collection = pathScope;
 			} else if (relationType === 'o2a') {
 				rootQuery.leftJoin({ [alias]: relation.collection }, (joinClause) => {
 					joinClause
@@ -180,20 +185,24 @@ function addJoin({ path, collection, aliasMap, rootQuery, schema, relations, kne
 							'=',
 							knex.raw(
 								`CAST(?? AS CHAR(255))`,
-								`${aliasMap[parentFields ?? ''] || parentCollection}.${schema.collections[parentCollection].primary}`
+								`${aliasMap[parentFields ?? '']?.alias || parentCollection}.${
+									schema.collections[parentCollection].primary
+								}`
 							)
 						);
 				});
+				aliasMap[aliasKey].collection = relation.collection;
 
 				hasMultiRelational = true;
 			} else if (relationType === 'o2m') {
 				rootQuery.leftJoin(
 					{ [alias]: relation.collection },
-					`${aliasMap[parentFields ?? ''] || parentCollection}.${
+					`${aliasMap[parentFields ?? '']?.alias || parentCollection}.${
 						schema.collections[relation.related_collection!].primary
 					}`,
 					`${alias}.${relation.field}`
 				);
+				aliasMap[aliasKey].collection = relation.collection;
 
 				hasMultiRelational = true;
 			}
