@@ -13,7 +13,7 @@
 				<v-icon class="expand-icon" :name="active ? 'expand_less' : 'expand_more'" />
 			</div>
 		</button>
-		<div v-if="close" v-show="sidebarOpen" class="close" @click="closeSidebar">
+		<div v-if="close" v-show="sidebarOpen" class="close" @click="sidebarOpen = false">
 			<v-icon name="close" />
 		</div>
 		<transition-expand class="scroll-container">
@@ -58,11 +58,6 @@ export default defineComponent({
 		const appStore = useAppStore();
 		const { sidebarOpen } = toRefs(appStore);
 		return { active, toggle, sidebarOpen };
-	},
-	methods: {
-		closeSidebar() {
-			useAppStore().setSidebarOpen(false);
-		},
 	},
 });
 </script>

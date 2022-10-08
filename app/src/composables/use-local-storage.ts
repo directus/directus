@@ -1,8 +1,8 @@
 import { ref, watch } from 'vue';
-import { LocalStorageObject } from '@/utils/local-storage-object';
+import { LocalStorageObject, LocalStorageObjectType } from '@/utils/local-storage-object';
 
-export function useLocalStorage(key: string) {
-	const localStorageObject = new LocalStorageObject(key);
+export function useLocalStorage(key: string, defaultValue?: LocalStorageObjectType) {
+	const localStorageObject = new LocalStorageObject(key, defaultValue);
 	const data = ref<string | number | boolean | object | null>(null);
 
 	function getExistingValue() {

@@ -1,4 +1,4 @@
-type LocalStorageObjectType = string | number | boolean | object | null;
+export type LocalStorageObjectType = string | number | boolean | object | null;
 
 export class LocalStorageObject {
 	private readonly key: string;
