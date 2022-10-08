@@ -81,6 +81,7 @@
 
 <script lang="ts" setup>
 import { useFieldsStore } from '@/stores/fields';
+import { useRelationsStore } from '@/stores/relations';
 import { Filter, Type, FieldFunction } from '@directus/shared/types';
 import { getFilterOperatorsForType, getOutputTypeForFunction, parseFilterFunctionPath } from '@directus/shared/utils';
 import { cloneDeep, get, isEmpty, set } from 'lodash';
@@ -127,6 +128,7 @@ const collection = computed(() => {
 });
 
 const fieldsStore = useFieldsStore();
+const relationsStore = useRelationsStore();
 
 const innerValue = computed<Filter[]>({
 	get() {
@@ -170,6 +172,14 @@ function addNode(key: string) {
 			key = parseFilterFunctionPath(key);
 		} else {
 			type = field?.type || 'unknown';
+
+			// Alias uses the foreign key type
+			if (type === 'alias') {
+				const relations = relationsStore.getRelationsForField(collection.value, key);
+				if (relations[0]) {
+					type = fieldsStore.getField(relations[0].collection, relations[0].field)?.type || 'unknown';
+				}
+			}
 		}
 		let filterOperators = getFilterOperatorsForType(type, { includeValidation: props.includeValidation });
 		const operator = field?.meta?.options?.choices && filterOperators.includes('eq') ? 'eq' : filterOperators[0];

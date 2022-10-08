@@ -99,6 +99,7 @@
 
 <script lang="ts" setup>
 import { useFieldsStore } from '@/stores/fields';
+import { useRelationsStore } from '@/stores/relations';
 import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
 import { useSync } from '@directus/shared/composables';
 import {
@@ -156,6 +157,7 @@ const emit = defineEmits(['remove-node', 'update:filter', 'change']);
 const { collection } = toRefs(props);
 const filterSync = useSync(props, 'filter', emit);
 const fieldsStore = useFieldsStore();
+const relationsStore = useRelationsStore();
 const { t } = useI18n();
 
 const filterInfo = computed<FilterInfo[]>({
@@ -334,6 +336,14 @@ function getCompareOptions(name: string) {
 	} else {
 		const fieldInfo = fieldsStore.getField(props.collection, name);
 		type = fieldInfo?.type || 'unknown';
+
+		// Alias uses the foreign key type
+		if (type === 'alias') {
+			const relations = relationsStore.getRelationsForField(props.collection, name);
+			if (relations[0]) {
+				type = fieldsStore.getField(relations[0].collection, relations[0].field)?.type || 'unknown';
+			}
+		}
 	}
 
 	return getFilterOperatorsForType(type, { includeValidation: props.includeValidation }).map((type) => ({
