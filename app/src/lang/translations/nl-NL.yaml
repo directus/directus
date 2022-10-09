@@ -1087,6 +1087,7 @@ fields:
     language: Taal
     theme: Thema
     tfa_secret: 2FA (Twee-Factor Authenticatie)
+    admin_options: Admin opties
     status: Status
     status_active: Actief
     role: Rol
@@ -1094,6 +1095,13 @@ fields:
     last_page: Laatste pagina
     last_access: Laatste toegang
   directus_settings:
+    jpg: JPEG
+    png: PNG
+    webP: WebP
+    tiff: Tiff
+    basemaps_style: Mapbox stijl
+    mapbox_key: Toegangstoken Mapbox
+    attribution_placeholder: '© OpenStreetMap bijdragers'
     project_name: Project Naam
     project_url: Project URL
     project_color: Project kleur
@@ -1103,6 +1111,7 @@ fields:
     public_note: Openbare notitie
     auth_password_policy: Wachtwoordbeleid
     auth_login_attempts: Login pogingen
+    storage_default_folder: Standaard map
     custom_css: Aangepastte CSS
     module_bar: Modulebalk
   directus_shares:
@@ -1135,6 +1144,8 @@ fields:
 field_options:
   directus_settings:
     security_divider_title: Beveiliging
+    mapbox_key: Toegangstoken Mapbox
+    basemaps_style: Mapbox stijl
   directus_activity:
     create: Maak
     update: Updaten
@@ -1155,6 +1166,7 @@ field_options:
       name_name: Naam
     collections_name: Collecties
   directus_users:
+    admin_divider: Admin opties
     status_dropdown_active: Actief
   directus_webhooks:
     status_options_active: Actief
