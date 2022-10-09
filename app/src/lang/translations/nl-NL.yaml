@@ -19,7 +19,7 @@
 #'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
-identifier: Identificator
+identifier: ID
 avatar: Profielafbeelding
 application: Applicatie
 default_provider: Standaard
@@ -30,7 +30,7 @@ archived: Gearchiveerd
 modules: Modules
 module_bar: Modulebalk
 logs: Logboeken
-reset_width: Stel breedte terug
+reset_width: Reset breedte
 tile_size: Tegelgrootte
 edit_field: Veld Bewerken
 conditions: Voorwaarden
@@ -38,10 +38,10 @@ location: Locatie
 condition_rules: Voorwaarde Regels
 input: Invoer
 maps: Kaarten
-switch_user: Andere gebruiker
+switch_user: Verander gebruiker
 item_creation: Item Aanmaken
 item_revision: Item Revisie
-enter_a_name: Vul een naam in...
+enter_a_name: Voer een naam in...
 duplicate_field: Dupliceer Veld
 half_width: Halve Breedte
 full_width: Volledige breedte
@@ -50,21 +50,21 @@ export_items: Exporteer items
 and: En
 or: Of
 dataset_too_large_currently_showing_n_items: Gegevensset is te groot. Alleen de eerste {n} items worden nu weergegeven.
-modifier: Modificator
+modifier: Aanpasser
 custom: Aangepast
 hook: Hook
 fill_width: Vul Breedte
 field_name_translations: Veld-naam Vertalingen
-enter_password_to_enable_tfa: Voer je wachtwoord in om Tweestapsverificatie in te schakelen
-add_field: Voeg Veld Toe
+enter_password_to_enable_tfa: Voer je wachtwoord in om tweefactorauthenticatie in te schakelen
+add_field: Veld toevoegen
 role_name: Rol Naam
-branch: Tak
+branch: Aftakking
 leaf: Blad
 indeterminate: Onbepaald
 edit_collection: Collectie bewerken
 exclusive: Exclusief
 children: Onderliggende
-db_only_click_to_configure: 'Aleen in de databank: Klik om te configureren'
+db_only_click_to_configure: 'Alleen database: Klik om te configureren'
 show_active_items: Toon actieve items
 show_archived_items: Toon Gearchiveerde Items
 show_all_items: Toon alle items
