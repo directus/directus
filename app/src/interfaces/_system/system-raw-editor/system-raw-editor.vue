@@ -18,12 +18,14 @@ const props = withDefaults(
 		autofocus?: boolean;
 		disabled?: boolean;
 		type?: string;
+		placeholder?: string;
 	}>(),
 	{
 		value: undefined,
 		autofocus: false,
 		disabled: false,
 		type: undefined,
+		placeholder: undefined,
 	}
 );
 
@@ -57,7 +59,7 @@ onMounted(async () => {
 			scrollbarStyle: isMultiLine.value ? 'native' : 'null',
 			extraKeys: { Ctrl: 'autocomplete' },
 			cursorBlinkRate: props.disabled ? -1 : 530,
-			placeholder: t('raw_editor_placeholder'),
+			placeholder: props.placeholder !== undefined ? props.placeholder : t('raw_editor_placeholder'),
 		});
 
 		// prevent new lines for single lines
