@@ -10,6 +10,7 @@ import {
 	ExtensionType,
 } from '@directus/shared/types';
 import { isIn, isTypeIn, validateExtensionManifest } from '@directus/shared/utils';
+import { pathToRelativeUrl } from '@directus/shared/utils/node';
 import {
 	EXTENSION_LANGUAGES,
 	EXTENSION_NAME_REGEX,
@@ -102,14 +103,14 @@ export default async function add(): Promise<void> {
 						type,
 						name,
 						source: {
-							app: `${source}/${name}/app.${languageToShort(language)}`,
-							api: `${source}/${name}/api.${languageToShort(language)}`,
+							app: `${pathToRelativeUrl(source)}/${name}/app.${languageToShort(language)}`,
+							api: `${pathToRelativeUrl(source)}/${name}/api.${languageToShort(language)}`,
 						},
 				  }
 				: {
 						type,
 						name,
-						source: `${source}/${name}/index.${languageToShort(language)}`,
+						source: `${pathToRelativeUrl(source)}/${name}/index.${languageToShort(language)}`,
 				  },
 		];
 
@@ -208,34 +209,37 @@ export default async function add(): Promise<void> {
 		await fse.ensureDir(entrySourcePath);
 		await copyTemplate(type, extensionPath, entrySourcePath, language);
 
+		const toConvertSourceUrl = (entrypoint: string) =>
+			path.posix.join(pathToRelativeUrl(source), convertName, path.posix.relative(source, entrypoint));
+
 		const entries: ExtensionOptionsBundleEntry[] = [
 			isTypeIn(extensionOptions, HYBRID_EXTENSION_TYPES)
 				? {
 						type: extensionOptions.type,
 						name: convertName,
 						source: {
-							app: path.posix.join(source, convertName, path.posix.relative(source, extensionOptions.source.app)),
-							api: path.posix.join(source, convertName, path.posix.relative(source, extensionOptions.source.api)),
+							app: toConvertSourceUrl(extensionOptions.source.app),
+							api: toConvertSourceUrl(extensionOptions.source.api),
 						},
 				  }
 				: {
 						type: extensionOptions.type,
 						name: convertName,
-						source: path.posix.join(source, convertName, path.posix.relative(source, extensionOptions.source)),
+						source: toConvertSourceUrl(extensionOptions.source),
 				  },
 			isIn(type, HYBRID_EXTENSION_TYPES)
 				? {
 						type,
 						name,
 						source: {
-							app: `${source}/${name}/app.${languageToShort(language)}`,
-							api: `${source}/${name}/api.${languageToShort(language)}`,
+							app: `${pathToRelativeUrl(source)}/${name}/app.${languageToShort(language)}`,
+							api: `${pathToRelativeUrl(source)}/${name}/api.${languageToShort(language)}`,
 						},
 				  }
 				: {
 						type,
 						name,
-						source: `${source}/${name}/index.${languageToShort(language)}`,
+						source: `${pathToRelativeUrl(source)}/${name}/index.${languageToShort(language)}`,
 				  },
 		];
 
