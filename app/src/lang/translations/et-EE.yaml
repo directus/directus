@@ -56,7 +56,7 @@ custom: Kohandatud
 hook: Haak
 fill_width: Täislaius
 field_name_translations: Väljade Tõlked
-enter_password_to_enable_tfa: Sisesta oma parool 2F audentimiseks
+enter_password_to_enable_tfa: Sisesta oma parool, et lubada 2-astmeline audentimine
 add_field: Lisa Väli
 role_name: Rolli Nimi
 branch: Haru
@@ -294,6 +294,7 @@ raw_value: Algne väärtus
 copy_raw_value_success: Kopeeritud
 copy_raw_value_fail: Kopeerimine ebaõnnestus
 paste_raw_value_success: Kleebitud
+paste_raw_value_fail: Kleepimine Nurjus
 edit_raw_value: Muuda algväärtust
 enter_raw_value: Sisesta väärtus...
 clear_value: Tühjenda väärtus
@@ -424,6 +425,7 @@ creating_items: Kirjete loomine
 enable_create_button: Luba lisamise nupp
 selecting_items: Kirjete valimine
 enable_select_button: Luba valimise nupp
+allow_duplicates: Luba duplikaadid
 comments: Kommentaarid
 no_comments: Kommentaarid puuduvad
 click_to_expand: Kliki suurendamiseks
@@ -440,7 +442,7 @@ display_not_found: 'Vaadet "{display}" ei leitud.'
 reset_display: Nulli vaade
 list-m2a: Ehitaja (M2A)
 item_count: 'Kirjeid pole | Üks kirje | {count} kirjed'
-no_items_copy: Selles kogus pole veel ühtegi kiret.
+no_items_copy: Selles kogus pole veel ühtegi kirjet.
 file_count: 'Faile pole | Leiti 1 fail | {count} faili'
 no_files_copy: Faile pole.
 user_count: 'Kasutajaid pole | Üks kasutaja | {count} kasutajat'
@@ -469,7 +471,7 @@ max_value: Maksimaalne väärtus
 automatic: Automaatne
 field_width: Välja laius
 add_filter: Lisa filter
-upper_limit: Ülemine piir
+upper_limit: Ülemine piir...
 lower_limit: Ülemine piir...
 user_directory: Kasutaja kaust
 documentation: Dokumentatsioon
@@ -519,6 +521,7 @@ errors:
   NOT_NULL_VIOLATION: Väärtus ei saa olla null
   UNKNOWN: Ootamatu viga
   UNSUPPORTED_MEDIA_TYPE: Failitüüp pole toetatud
+security: Turvalisus
 value_hashed: Väärtus salastati
 bookmark_name: Järjehoidja nimi...
 create_bookmark: Loo järjehoidja
@@ -529,7 +532,7 @@ unexpected_error: Ootamatu viga
 unexpected_error_copy: Ilmnes tõrge. Palun proovi hiljem uuesti.
 copy_details: Kopeeri detailid
 no_app_access: Rakenduse ligipääs puudub
-no_app_access_copy: See kasutaja ei tohi adminni rakendust kasutada.
+no_app_access_copy: Sel kasutajal pole lubatud kasutada admin rakendust.
 password_reset_successful: Salasõna on edukalt lähtestatud
 back: Tagasi
 filter: Filter
@@ -667,6 +670,7 @@ flow_name: Nimi
 flow_tracking_activity: Jälgi ainult aktiivsust
 flow_tracking_null: Ära jälgi midagi
 code: Kood
+details: Üksikasjad
 full_screen: Täisekraan
 image_url: Pildi URL
 alt_text: Alternatiivne Tekst
@@ -771,20 +775,20 @@ page_help_collections_item: >-
 page_help_activity_collection: >-
   **Vaata aktiivsust* - Põhjalik nimekiri kõigist toimingutest, mis süsteemis on tehtud.
 page_help_docs_global: >-
-  **Dokumentatsioon**  - Selle projekti ülesehitust kirjeldav teave
+  **Dokumentatsioon** — Selle projekti ülesehitust kirjeldav teave.
 page_help_files_collection: >-
   **Failikogu* - Näitab kõiki faile ja pilte selles projektis. Muuta saab vaateid, filtreid jm ning lisada järjehoidjaid
 page_help_files_item: >-
-  **Faili detailid* - Vorm, milles saab muuta faili metaandmeid, ligipääse jm 
-page_help_settings_project: "**Projekti seaded** - Sinu projekti üldised seaded"
+  **Faili detailid* — Vorm, milles saab muuta faili metaandmeid, ligipääse jm.
+page_help_settings_project: "**Projekti seaded** — Sinu projekti üldised seaded."
 page_help_settings_datamodel_collections: >-
-  **Andmekogud** - Näitab kõiki andmekogusid (sh süsteemseid)
+  **Andmekogud** — Näitab olemasolevaid andmekogusid. Samuti ka nähtavaid, peidetud, ja süsteemi kogusid, lisaks ka haldamata andmebaaside tabeleid, mida saab lisada.
 page_help_settings_datamodel_fields: >-
-  **Andmekogu** - Ükskiku andmekogu ja tema väljade muutmise vorm
-page_help_settings_roles_collection: '**Vaata rolle** - Näitab adminne, avalikku jm kasutajarolle.'
+  **Andmekogu** — Ükskiku andmekogu ja tema väljade muutmise vorm.
+page_help_settings_roles_collection: '**Vaata rolle* — Näitab adminne, avalikke jm kasutajarolle.'
 page_help_settings_roles_item: "**Rolli detailid** - Muuda rolli ligipääse ja muid seadistusti."
 page_help_settings_presets_collection: >-
-  **Näita eelseadistusi** - Näitab kõiki projekti eelseadistusi, sh kasutajad, rollid, järjehoidjad ja vaikimisi vaated
+  **Näita eelseadistusi** — Näitab kõiki projekti eelseadistusi, sh kasutajad, rollid, järjehoidjad ja vaikimisi vaated.
 page_help_settings_presets_item: >-
   **Eelseadistuse detailid" - Vorm järjehoidjate ja andmekogude eelseadistuste muutmiseks.
 page_help_settings_webhooks_collection: '**Vaata veebikonkse** - Näitab veebikonkse.'
@@ -916,9 +920,12 @@ fields:
     value: Väärtus
     collections: Kogud
 field_options:
+  directus_settings:
+    security_divider_title: Turvalisus
   directus_activity:
     create: Loo
     update: Uuenda
+    delete: Kustuta
   directus_collections:
     track_activity_revisions: Salvesta muudatuste statistika
     only_track_activity: Jälgi ainult aktiivsust
@@ -943,6 +950,7 @@ field_options:
     status_options_active: aktiivne
     actions_create: Loo
     actions_update: Uuenda
+    actions_delete: Kustuta
     headers:
       value: Väärtus
 no_fields_in_collection: 'Andmekogus "{collection}" puuduvad kirjed'
@@ -962,6 +970,7 @@ referential_action_cascade: Kustuta {collection} kirje (kaskaadina)
 referential_action_set_null: Nulli {field} väli
 referential_action_set_default: Seadista {field} väljale vaikeväärtus
 choose_action: Vali tegevus
+continue_label: Jätka
 editing_role: '{role} roll'
 creating_webhook: Loo veebikonks
 delete_are_you_sure: >-
@@ -985,6 +994,16 @@ normal: Tavaline
 success: Õnnestus
 warning: Hoiatus
 danger: Oht
+colors:
+  purple: Lilla
+  blue: Sinine
+  green: Roheline
+  yellow: Kollane
+  orange: Oranž
+  red: Punane
+  black: Must
+  gray: Hall
+  white: Valge
 junction_collection: Seoste andmekogu
 latency: Latsentsus
 login: Logi sisse
@@ -1095,7 +1114,7 @@ interfaces:
     description: Vali mitu väärtust rippmenüüst
   file:
     file: Fail
-    description: Vali olemasolev fail või lae üles uus
+    description: Vali fail või lae üles uus
   files:
     files: Failid
     description: Vali või lae üles mitu faili
@@ -1141,7 +1160,7 @@ interfaces:
     default_view: Vaikimisi vaade
     invalid_options: Vigased valikud
     invalid_format: Vigane formaat ({format})
-    unexpected_geometry: Oodatud väärtuse '{expected}' asemel on '{got}'
+    unexpected_geometry: Oodatud väärtuse '{expected}' asemel on '{got}'.
   presentation-notice:
     notice: Teade
     description: Näita lühikest teadet
@@ -1199,6 +1218,8 @@ interfaces:
   input-multiline:
     textarea: Tekstiala
     description: Sisesta mitmerealine tavatekst
+  input-translated-string:
+    search_placeholder: Otsi...
   boolean:
     toggle: Lülita
     description: Lülita sisse ja välja
@@ -1229,7 +1250,7 @@ interfaces:
     folder_note: Üles laetud failide kaust. Ei mõjuta olemasolevaid faile.
   input-autocomplete-api:
     input-autocomplete-api: Automaatselt täidetav väli (API)
-    description: Otsingutulemused välisest APIst
+    description: Otsingutulemused välisest APIst.
     results_path: Tulemuste asukoht (path)
     value_path: Väärtuse väli
     trigger: Päästik
@@ -1263,7 +1284,7 @@ displays:
     description: Näita suhtelisi aegu
     format: Vorming
     format_note: >-
-      Ajaformaadi valikud  __[Date Field Symbol Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
+      Ajaformaadi valikud __[Date Field Symbol Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
     long: Pikk
     short: Lühike
     relative: Suhteline
@@ -1355,6 +1376,7 @@ layouts:
     end_date_field: Lõpu kuupäev
   map:
     map: Kaart
+    find_location: Otsi asukohta...
 panels:
   label:
     name: Silt
