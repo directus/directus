@@ -90,7 +90,7 @@
 		"@godaddy/terminus": "^4.10.2",
 		"@rollup/plugin-alias": "^3.1.9",
 		"@rollup/plugin-virtual": "^2.1.0",
-		"argon2": "^0.28.5",
+		"argon2": "^0.29.1",
 		"async": "^3.2.4",
 		"async-mutex": "^0.3.2",
 		"axios": "^0.27.2",
