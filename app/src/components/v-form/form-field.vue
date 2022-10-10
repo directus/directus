@@ -162,7 +162,7 @@ function emitValue(value: any) {
 }
 
 function useRaw() {
-	let showRaw = ref(false);
+	const showRaw = ref(false);
 
 	const { copyToClipboard, pasteFromClipboard } = useClipboard();
 
