@@ -1,4 +1,5 @@
 import { defineOperationApp } from '@directus/shared/utils';
+import { useFlowsStore } from '@/stores/flows';
 
 export default defineOperationApp({
 	id: 'trigger',
@@ -11,51 +12,56 @@ export default defineOperationApp({
 			text: flow,
 		},
 	],
-	options: [
-		{
-			field: 'flow',
-			name: '$t:operations.trigger.flow',
-			type: 'string',
-			meta: {
-				width: 'full',
-				interface: 'input-autocomplete-api',
-				options: {
-					url: '/flows?search={{value}}&filter[trigger]=operation',
-					resultsPath: 'data',
-					textPath: 'name',
-					valuePath: 'id',
-					iconRight: 'bolt',
-					placeholder: '$t:a_flow_uuid',
+	options: () => {
+		const flowStore = useFlowsStore();
+		const flowChoices = flowStore.flows
+			.filter((flow) => flow.trigger === 'operation')
+			.map((flow) => {
+				return { text: flow.name, value: flow.id };
+			});
+		return [
+			{
+				field: 'flow',
+				name: '$t:operations.trigger.flow',
+				type: 'string',
+				meta: {
+					width: 'full',
+					interface: 'select-dropdown',
+					options: {
+						choices: flowChoices,
+						iconRight: 'bolt',
+						placeholder: '$t:a_flow_uuid',
+					},
 				},
 			},
-		},
-		{
-			field: 'payload',
-			name: '$t:payload',
-			type: 'json',
-			meta: {
-				width: 'full',
-				interface: 'input-code',
-				options: {
-					language: 'json',
-					placeholder: JSON.stringify(
-						{
-							user: '{{ $accountability.user }}',
-							data: '{{ $last }}',
-						},
-						null,
-						2
-					),
-					template: JSON.stringify(
-						{
-							user: '{{ $accountability.user }}',
-							data: '{{ $last }}',
-						},
-						null,
-						2
-					),
+			{
+				field: 'payload',
+				name: '$t:payload',
+				type: 'json',
+				meta: {
+					width: 'full',
+					interface: 'input-code',
+					options: {
+						language: 'json',
+						placeholder: JSON.stringify(
+							{
+								user: '{{ $accountability.user }}',
+								data: '{{ $last }}',
+							},
+							null,
+							2
+						),
+						template: JSON.stringify(
+							{
+								user: '{{ $accountability.user }}',
+								data: '{{ $last }}',
+							},
+							null,
+							2
+						),
+					},
 				},
 			},
-		},
-	],
+		];
+	},
 });
