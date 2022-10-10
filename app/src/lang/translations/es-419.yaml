@@ -752,6 +752,8 @@ add_file: Agregar Archivo
 replace_file: Reemplazar Archivo
 no_results: Sin Resultados
 no_results_copy: Ajustar o limpiar filtros de búsqueda para ver los resultados.
+no_visible_fields: Limipiar Formulario
+no_visible_fields_copy: Este formulario no tiene campos visibles.
 clear_filters: Limpiar Filtros
 saves_automatically: Guarda Automáticamente
 role: Rol
@@ -2053,7 +2055,6 @@ triggers:
     collection_and_item: Paginas de colección y elementos
     collection_only: Pagina de colección solamente
     item_only: Página de elemento solamente
-a_flow_uuid: Clave primaria UUID del flujo...
 any_string_or_json: Alguna cadena o JSON...
 item_payload_placeholder: Este es el JSON usado para actualizar los valores del campo del elemento...
 operation_variables_note: Puedes acceder a los datos del flujo con variables como **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** y **{'{'}{'{'}$accountability{'}'}{'}'}**, o hacer referencia a previas operaciones usando **{'{'}{'{'}operation_key{'}'}{'}'}**.'
