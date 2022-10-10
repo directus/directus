@@ -1426,7 +1426,6 @@ translation: Traduction
 translation_placeholder: Entrez une nouvelle traduction...
 value: Valeur
 view_project: Voir le projet
-weeks: { }
 report_error: Signaler l'erreur
 start: Début
 table: Tableau
@@ -2056,7 +2055,6 @@ triggers:
     collection_and_item: Pages des Collections et des Articles
     collection_only: Page de la Collection Uniquement
     item_only: Page de l'Article Uniquement
-a_flow_uuid: La Clé primaire UUID d'un Flux...
 any_string_or_json: Toute chaîne de caractères ou JSON...
 item_payload_placeholder: C'est le JSON utilisé pour mettre à jour les valeurs des champs de l'élément...
 operation_variables_note: Vous pouvez accéder aux données de flux à l'aide de variables telles que **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** et **{'{'}{'{'}$accountability{'}'}{'}'}**, ou faire référence à des opérations précédentes à l'aide de **{'{'}{'{'}operation_key{'}'}{'}'}**.'
