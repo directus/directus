@@ -247,10 +247,6 @@ function useComputedValues() {
 	font-style: italic;
 }
 
-.raw-value {
-	--v-textarea-font-family: var(--family-monospace);
-}
-
 .label-spacer {
 	height: 28px;
 }
