@@ -8,7 +8,7 @@ export default defineDisplay({
 	description: '$t:displays.filesize.description',
 	icon: 'description',
 	component: ({ value }: { value: number }) => h('span', null, formatFilesize(value)),
-	handler: ({ value }: { value: number }) => formatFilesize(value),
+	handler: (value: number) => formatFilesize(value),
 	options: [],
 	types: ['integer', 'bigInteger'],
 });
