@@ -31,19 +31,20 @@ test('submitting', async () => {
 	expect(formFieldRawEditor).toBeTruthy();
 	const wrapper = mount(formFieldRawEditor, {
 		props: {
-			showModal: false,
+			showModal: true,
 			field: 'string',
 			disabled: false,
 			currentValue: 'things',
 		},
 		global,
 	});
-	await wrapper.find('v-button').trigger('click');
+	const button = wrapper.findAll('v-button').at(1);
+	await button!.trigger('click');
 	await wrapper.vm.$nextTick();
-	expect(wrapper.emitted().submit.length).toBe(1);
+	expect(wrapper.emitted().setRawValue.length).toBe(1);
 });
 
-it('should cancel', async () => {
+it('should cancel with keydown', async () => {
 	const wrapper = mount(formFieldRawEditor, {
 		props: {
 			showModal: true,
@@ -53,7 +54,23 @@ it('should cancel', async () => {
 		},
 		global,
 	});
-	await wrapper.trigger('keydown.esc');
+	await wrapper.trigger('esc');
 	await wrapper.vm.$nextTick();
-	expect(wrapper.emitted().cancel).toBeTruthy;
+	expect(wrapper.emitted().cancel.length).toBe(1);
+});
+
+it('should cancel with the cancel button', async () => {
+	const wrapper = mount(formFieldRawEditor, {
+		props: {
+			showModal: true,
+			field: 'object',
+			disabled: false,
+			currentValue: '["id","new_content"]',
+		},
+		global,
+	});
+	const button = wrapper.findAll('v-button').at(0);
+	await button!.trigger('click');
+	await wrapper.vm.$nextTick();
+	expect(wrapper.emitted().cancel.length).toBe(1);
 });
