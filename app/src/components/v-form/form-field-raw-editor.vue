@@ -4,12 +4,19 @@
 			<v-card-title>{{ disabled ? t('view_raw_value') : t('edit_raw_value') }}</v-card-title>
 			<v-card-text>
 				<interface-input-code
+					v-if="type === 'object'"
 					:value="internalValue"
 					:disabled="disabled"
-					class="raw-value"
 					:placeholder="t('enter_raw_value')"
 					:language="type === 'object' ? 'json' : 'plaintext'"
 					@input="internalValue = $event"
+				/>
+				<v-textarea
+					v-else
+					v-model="internalValue"
+					:disabled="disabled"
+					class="raw-value"
+					:placeholder="t('enter_raw_value')"
 				/>
 			</v-card-text>
 			<v-card-actions>
@@ -86,3 +93,9 @@ const submit = () => {
 	}
 };
 </script>
+
+<style lang="scss" scoped>
+.raw-value {
+	--v-textarea-font-family: var(--family-monospace);
+}
+</style>
