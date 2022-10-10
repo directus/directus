@@ -6,7 +6,7 @@
 					v-for="row in data"
 					:key="row[primaryKeyField]"
 					class="selectable"
-					clickable
+					:clickable="linkToItem === true"
 					@click="startEditing(row)"
 				>
 					<render-template :item="row" :collection="collection" :template="displayTemplate" />
@@ -36,6 +36,7 @@ const props = withDefaults(
 	defineProps<{
 		showHeader?: boolean;
 		displayTemplate?: string;
+		linkToItem?: boolean;
 		collection: string;
 		dashboard: string;
 		data?: object;
@@ -43,6 +44,7 @@ const props = withDefaults(
 	{
 		showHeader: false,
 		displayTemplate: '',
+		linkToItem: false,
 		sortDirection: 'desc',
 		data: () => ({}),
 	}
@@ -57,6 +59,7 @@ const insightsStore = useInsightsStore();
 const primaryKeyField = computed(() => fieldsStore.getPrimaryKeyFieldForCollection(props.collection)?.field ?? 'id');
 
 function startEditing(item: Record<string, any>) {
+	if (!props.linkToItem) return;
 	currentlyEditing.value = item[primaryKeyField.value];
 	editsAtStart.value = item;
 }
