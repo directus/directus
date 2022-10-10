@@ -1426,7 +1426,6 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
-weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 table: Tabella
@@ -2056,7 +2055,6 @@ triggers:
     collection_and_item: Pagine della raccolta e degli elementi
     collection_only: Solo pagina della raccolta
     item_only: Solo pagina dell'elemento
-a_flow_uuid: Chiave primaria UUID di un flusso...
 any_string_or_json: Qualsiasi stringa o JSON...
 item_payload_placeholder: Questo è il JSON usato per aggiornare i valori dei campi dell'elemento...
 operation_variables_note: Puoi accedere ai dati di flusso con variabili come **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** e **{'{'}{'{'}$accountability{'}'}{'}'}**, o fare riferimento alle operazioni precedenti usando **{'{'}{'{'}operation_key{'}'}{'}'}**.'
