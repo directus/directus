@@ -55,7 +55,7 @@
 			:current-value="internalValue"
 			:disabled="isDisabled"
 			@cancel="showRaw = false"
-			@submit="onRawValueSubmit"
+			@set-raw-value="onRawValueSubmit"
 		/>
 
 		<small v-if="field.meta && field.meta.note" v-md="field.meta.note" class="type-note" />
