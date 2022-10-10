@@ -589,7 +589,6 @@ panels:
 triggers:
   common:
     response_body_all: 전체 데이터
-a_flow_uuid: 플로우 기본키(UUID)
 operations:
   item-create:
     name: 데이터 생성
