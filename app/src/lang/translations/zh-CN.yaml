@@ -59,9 +59,9 @@ field_name_translations: 字段名称翻译
 enter_password_to_enable_tfa: 输入您的密码以启用双因素认证(2FA)
 add_field: 添加字段
 role_name: 角色名称
-branch: 父节点优先
-leaf: 叶节点优先
-indeterminate: 不确定状态，总是保留分支节点
+branch: 分支
+leaf: 叶节点
+indeterminate: 不确定的状态
 edit_collection: 编辑模型
 exclusive: 排他，分支或叶节点间互斥
 children: 子页面
@@ -74,12 +74,12 @@ required: 必填
 required_for_app_access: 应用程序访问所需的
 requires_value: 必填值
 create_preset: 创建预设
-create_panel: 新建
+create_panel: 创建面板
 create_role: 创建角色
 create_user: 创建用户
 message: 消息
-delete_panel: 删除
-create_webhook: 创建Web钩子
+delete_panel: 删除面板
+create_webhook: 创建网络钩子
 create_translation_string: 创建翻译字符串
 no_translation_string: 空
 no_translation_string_copy: 目前没有翻译字符串。
@@ -97,7 +97,7 @@ emails: 邮箱
 connection_excellent: 优秀的连接状态
 connection_good: 好的连接状态
 connection_fair: 一般的连接状态
-connection_poor: 连接失败
+connection_poor: 连接不良
 primary: 主要的
 rename_folder: 重命名文件夹
 delete_folder: 删除文件夹
