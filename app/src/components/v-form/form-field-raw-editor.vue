@@ -3,25 +3,18 @@
 		<v-card>
 			<v-card-title>{{ disabled ? t('view_raw_value') : t('edit_raw_value') }}</v-card-title>
 			<v-card-text>
-				<interface-input-code
-					v-if="type === 'object'"
+				<interface-system-raw-editor
 					:value="internalValue"
-					:disabled="disabled"
-					:placeholder="t('enter_raw_value')"
-					:language="type === 'object' ? 'json' : 'plaintext'"
-					@input="internalValue = $event"
-				/>
-				<v-textarea
-					v-else
-					v-model="internalValue"
-					:disabled="disabled"
+					:type="type === 'object' ? 'json' : 'text'"
 					class="raw-value"
+					:disabled="disabled"
 					:placeholder="t('enter_raw_value')"
+					@input="internalValue = $event"
 				/>
 			</v-card-text>
 			<v-card-actions>
 				<v-button secondary @click="$emit('cancel')">{{ t('cancel') }}</v-button>
-				<v-button @click="setRawValue">{{ t('done') }}</v-button>
+				<v-button @click.prevent="setRawValue">{{ t('done') }}</v-button>
 			</v-card-actions>
 		</v-card>
 	</v-dialog>
