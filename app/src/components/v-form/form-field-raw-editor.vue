@@ -21,7 +21,7 @@
 			</v-card-text>
 			<v-card-actions>
 				<v-button secondary @click="$emit('cancel')">{{ t('cancel') }}</v-button>
-				<v-button @click="submit">{{ t('done') }}</v-button>
+				<v-button @click="setRawValue">{{ t('done') }}</v-button>
 			</v-card-actions>
 		</v-card>
 	</v-dialog>
@@ -47,7 +47,7 @@ const props = withDefaults(defineProps<Props>(), {
 	currentValue: undefined,
 });
 
-const emit = defineEmits(['cancel', 'submit']);
+const emit = defineEmits(['cancel', 'setRawValue']);
 
 const { t } = useI18n();
 const internalValue = ref();
@@ -73,22 +73,22 @@ watch(
 	}
 );
 
-const submit = () => {
+const setRawValue = () => {
 	switch (type.value) {
 		case 'string':
-			emit('submit', internalValue.value);
+			emit('setRawValue', internalValue.value);
 			break;
 		case 'number':
-			emit('submit', Number(internalValue.value));
+			emit('setRawValue', Number(internalValue.value));
 			break;
 		case 'boolean':
-			emit('submit', internalValue.value === 'true');
+			emit('setRawValue', internalValue.value === 'true');
 			break;
 		case 'object':
-			emit('submit', JSON.parse(internalValue.value));
+			emit('setRawValue', JSON.parse(internalValue.value));
 			break;
 		default:
-			emit('submit', internalValue.value);
+			emit('setRawValue', internalValue.value);
 			break;
 	}
 };
