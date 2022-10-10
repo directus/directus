@@ -131,6 +131,11 @@
 					<v-notice v-else>{{ t('not_available_for_local_downloads') }}</v-notice>
 				</div>
 
+				<div v-if="format === 'csv'" class="field half-left">
+					<p class="type-label">{{ t('separator') }}</p>
+					<v-input v-model="csvSeparator" :trim="true" :nullable="false" />
+				</div>
+
 				<v-notice class="full" :type="lockedToFiles ? 'warning' : 'normal'">
 					<div>
 						<p>
@@ -233,6 +238,7 @@ import { debounce } from 'lodash';
 import { getEndpoint } from '@directus/shared/utils';
 import FolderPicker from '@/views/private/components/folder-picker.vue';
 import { usePermissionsStore } from '@/stores/permissions';
+import VInput from '@/components/v-input.vue';
 
 type LayoutQuery = {
 	fields?: string[];
@@ -280,6 +286,8 @@ const exportSettings = reactive({
 	fields: props.layoutQuery?.fields ?? fields.value?.map((field) => field.field),
 	sort: `${primaryKeyField.value?.field ?? ''}`,
 });
+
+const csvSeparator = ref(',');
 
 watch(
 	fields,
@@ -492,6 +500,9 @@ function exportDataLocal() {
 	if (exportSettings.search) params.search = exportSettings.search;
 
 	params.limit = exportSettings.limit ?? -1;
+	if (format.value === 'csv') {
+		params.separator = csvSeparator.value;
+	}
 
 	const exportUrl = api.getUri({
 		url,
@@ -509,6 +520,7 @@ async function exportDataFiles() {
 			query: {
 				...exportSettings,
 				...(exportSettings.sort && exportSettings.sort !== '' && { sort: [exportSettings.sort] }),
+				...(format.value === 'csv' ? { separator: csvSeparator.value } : {}),
 			},
 			format: format.value,
 			file: {
