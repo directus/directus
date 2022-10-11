@@ -7,7 +7,7 @@
 			</div>
 
 			<div class="field">
-				<div class="type-label">{{ t('image_transformation_collection') }}</div>
+				<div class="type-label">{{ t('junction_collection') }}</div>
 				<related-collection-select
 					v-model="junctionCollection"
 					:disabled="autoGenerateJunctionRelation || isExisting"
@@ -68,7 +68,7 @@
 		</div>
 
 		<div class="required-transformation-section">
-			<v-divider large :inline-title="false">{{ t('required_image_transformation_collection_fields') }}</v-divider>
+			<v-divider large :inline-title="false">{{ t('required_junction_collection_fields') }}</v-divider>
 			<div class="required-transformation-fields">
 				<v-input
 					v-for="field in junctionFieldsRelated"
