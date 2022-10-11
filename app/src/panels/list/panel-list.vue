@@ -63,16 +63,19 @@ function startEditing(item: Record<string, any>) {
 	currentlyEditing.value = item[primaryKeyField.value];
 	editsAtStart.value = item;
 }
+
 function cancelEdit() {
 	editsAtStart.value = undefined;
 	currentlyEditing.value = undefined;
 }
+
 async function saveEdits(item: Record<string, any>) {
 	try {
 		await api.patch(`/items/${props.collection}/${currentlyEditing.value}`, item);
 	} catch (err: any) {
 		unexpectedError(err);
 	}
+
 	await insightsStore.refresh(props.dashboard);
 }
 </script>
