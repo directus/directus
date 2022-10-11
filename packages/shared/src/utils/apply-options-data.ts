@@ -1,7 +1,7 @@
 import { renderFn, get, Scope, ResolveFn } from 'micromustache';
+import { JsonValue } from '../types';
 import { parseJSON } from './parse-json';
 
-type Mustacheable = string | number | boolean | null | Mustacheable[] | { [key: string]: Mustacheable };
 type GenericString<T> = T extends string ? string : T;
 
 export function applyOptionsData(
@@ -44,7 +44,7 @@ function resolveFn(skipUndefined: boolean): ResolveFn {
 	};
 }
 
-function renderMustache<T extends Mustacheable>(item: T, scope: Scope, skipUndefined: boolean): GenericString<T> {
+function renderMustache<T extends JsonValue>(item: T, scope: Scope, skipUndefined: boolean): GenericString<T> {
 	if (typeof item === 'string') {
 		return renderFn(item, resolveFn(skipUndefined), scope, { explicit: true }) as GenericString<T>;
 	} else if (Array.isArray(item)) {
