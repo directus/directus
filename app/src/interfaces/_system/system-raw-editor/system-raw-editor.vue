@@ -18,6 +18,7 @@ const props = withDefaults(
 		autofocus?: boolean;
 		disabled?: boolean;
 		type?: string;
+		language?: string;
 		placeholder?: string;
 	}>(),
 	{
@@ -26,6 +27,7 @@ const props = withDefaults(
 		disabled: false,
 		type: undefined,
 		placeholder: undefined,
+		language: undefined,
 	}
 );
 
@@ -45,7 +47,7 @@ onMounted(async () => {
 		CodeMirror.defineSimpleMode('mustache', mustacheMode);
 
 		codemirror = CodeMirror(codemirrorEl.value, {
-			mode: 'mustache',
+			mode: props.language === undefined ? 'mustache' : props.language,
 			value: typeof props.value === 'object' ? JSON.stringify(props.value, null, 4) : String(props.value ?? ''),
 			tabSize: 0,
 			autoRefresh: true,
