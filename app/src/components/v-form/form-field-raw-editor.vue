@@ -3,14 +3,12 @@
 		<v-card>
 			<v-card-title>{{ disabled ? t('view_raw_value') : t('edit_raw_value') }}</v-card-title>
 			<v-card-text>
-				<interface-input-code
+				<interface-system-raw-editor
 					:value="internalValue"
+					:type="type === 'object' ? 'json' : type === 'string' ? 'text' : type"
 					:disabled="disabled"
-					:line-number="false"
-					class="raw-value"
-					:alt-options="{ gutters: false }"
+					:language="type === 'object' ? 'json' : type === 'string' ? 'plaintext' : type"
 					:placeholder="t('enter_raw_value')"
-					:language="type === 'object' ? 'json' : 'plaintext'"
 					@input="internalValue = $event"
 				/>
 			</v-card-text>
@@ -88,11 +86,3 @@ const setRawValue = () => {
 	}
 };
 </script>
-
-<style lang="scss" scoped>
-.raw-value {
-	:deep(.CodeMirror) {
-		padding: var(--input-padding);
-	}
-}
-</style>
