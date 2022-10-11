@@ -1,17 +1,21 @@
 import * as validator from '@authenio/samlify-node-xmllint';
 import express, { Router } from 'express';
-import { access } from 'fs';
+import { parseJSON } from '@directus/shared/utils';
 import * as samlify from 'samlify';
-import flatten from 'flat';
 import logger from '../../logger';
 import { getAuthProvider } from '../../auth';
 import { COOKIE_OPTIONS } from '../../constants';
 import env from '../../env';
 import { RecordNotUniqueException } from '../../exceptions/database/record-not-unique';
-import { InvalidCredentialsException } from '../../exceptions/invalid-credentials';
+import {
+	InvalidCredentialsException,
+	InvalidProviderException,
+	InvalidTokenException,
+	ServiceUnavailableException,
+} from '../../exceptions';
 import { respond } from '../../middleware/respond';
 import { AuthenticationService, UsersService } from '../../services';
-import { AuthDriverOptions, User } from '../../types';
+import { AuthData, AuthDriverOptions, User } from '../../types';
 import asyncHandler from '../../utils/async-handler';
 import { getConfigFromEnv } from '../../utils/get-config-from-env';
 import { LocalAuthDriver } from './local';
@@ -44,22 +48,20 @@ export class SAMLAuthDriver extends LocalAuthDriver {
 	}
 
 	async getUserID(payload: Record<string, any>) {
-		const { provider, emailKey, identifierKey, allowPublicRegistration } = this.config;
+		const { provider, emailKey, identifierKey, nameKey, givenNameKey, familyNameKey, allowPublicRegistration } = this.config;
 
 		const email = payload[emailKey ?? 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'];
 		const identifier = payload[identifierKey ?? 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'];
 		const userID = await this.fetchUserID(identifier);
 
-		let userInfo = {
-			name: payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'],
-			given_name: payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname'],
-			family_name: payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname'],
+		const userInfo = {
+			name: payload[nameKey ?? 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'],
+			given_name: payload[givenNameKey ?? 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname'],
+			family_name: payload[familyNameKey ?? 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname'],
 			email,
 		};
 
 		if (userID) return userID;
-
-		userInfo = flatten(userInfo) as Record<string, unknown>;
 
 		// Is public registration allowed?
 		if (!allowPublicRegistration) {
@@ -90,8 +92,45 @@ export class SAMLAuthDriver extends LocalAuthDriver {
 		throw new InvalidCredentialsException();
 	}
 
-	async login(user: User) {}
+
+	async login(user: User): Promise<void> {
+		return this.refresh(user);
+	}
+
+	async refresh(user: User): Promise<void> {
+		let authData = user.auth_data as AuthData;
+
+		if (typeof authData === 'string') {
+			try {
+				authData = parseJSON(authData);
+			} catch {
+				logger.warn(`[Saml] Session data isn't valid JSON: ${authData}`);
+			}
+		}
+
+		if (authData?.refreshToken) {
+			try {
+				// TODO
+/*
+				const tokenSet = await client.refresh(authData.refreshToken);
+				// Update user refreshToken if provided
+				if (tokenSet.refresh_token) {
+					await this.usersService.updateOne(user.id, {
+						auth_data: JSON.stringify({ refreshToken: tokenSet.refresh_token }),
+					});
+				}
+*/
+			} catch (e) {
+				throw handleError(e);
+			}
+		}
+	}
 }
+
+const handleError = (e: any) => {
+	logger.trace(e, `[Saml] Unknown error`);
+	return e;
+};
 
 export function createSAMLAuthRouter(providerName: string) {
 	const router = Router();
