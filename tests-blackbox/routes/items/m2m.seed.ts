@@ -33,6 +33,7 @@ export type Ingredient = {
 	id?: number | string;
 	name: string;
 	suppliers?: Supplier[];
+	test_datetime?: string;
 };
 
 export type Supplier = {
@@ -201,7 +202,7 @@ export const seedDBStructure = () => {
 						type: 'string',
 					});
 
-					// Create O2M relationships
+					// Create M2M relationships
 					await CreateFieldM2M(vendor, {
 						collection: localCollectionFoods,
 						field: 'ingredients',

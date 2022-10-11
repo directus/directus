@@ -192,7 +192,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 			describe(`updates one food's name with no relations`, () => {
 				it.each(vendors)('%s', async (vendor) => {
 					// Setup
-					const insertedArtist = await CreateItem(vendor, {
+					const insertedFood = await CreateItem(vendor, {
 						collection: localCollectionFoods,
 						item: createFood(pkType),
 					});
@@ -200,14 +200,14 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 					// Action
 					const response = await request(getUrl(vendor))
-						.patch(`/items/${localCollectionFoods}/${insertedArtist.id}`)
+						.patch(`/items/${localCollectionFoods}/${insertedFood.id}`)
 						.send(body)
 						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
 					// Assert
 					expect(response.statusCode).toEqual(200);
 					expect(response.body.data).toMatchObject({
-						id: insertedArtist.id,
+						id: insertedFood.id,
 						name: 'Tommy Cash',
 					});
 				});
@@ -217,14 +217,14 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 			describe('deletes an food with no relations', () => {
 				it.each(vendors)('%s', async (vendor) => {
 					// Setup
-					const insertedArtist = await CreateItem(vendor, {
+					const insertedFood = await CreateItem(vendor, {
 						collection: localCollectionFoods,
 						item: createFood(pkType),
 					});
 
 					// Action
 					const response = await request(getUrl(vendor))
-						.delete(`/items/${localCollectionFoods}/${insertedArtist.id}`)
+						.delete(`/items/${localCollectionFoods}/${insertedFood.id}`)
 						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
 					// Assert
@@ -613,7 +613,10 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 						for (const val of sortValues) {
 							const ingredient = createIngredient(pkType);
-							ingredient.name = 'ingredient-m2m-top-sort-fn-' + val;
+							ingredient.name = 'ingredient-m2m-top-sort-fn-' + uuid();
+							ingredient.test_datetime = new Date(new Date().setFullYear(parseInt(`202${val}`)))
+								.toISOString()
+								.slice(0, 19);
 							ingredients.push(ingredient);
 						}
 
@@ -626,7 +629,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						const response = await request(getUrl(vendor))
 							.get(`/items/${localCollectionIngredients}`)
 							.query({
-								sort: 'name',
+								sort: 'year(test_datetime)',
 								filter: { name: { _starts_with: 'ingredient-m2m-top-sort-fn-' } },
 							})
 							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
@@ -634,7 +637,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						const response2 = await request(getUrl(vendor))
 							.get(`/items/${localCollectionIngredients}`)
 							.query({
-								sort: '-name',
+								sort: '-year(test_datetime)',
 								filter: { name: { _starts_with: 'ingredient-m2m-top-sort-fn-' } },
 							})
 							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
@@ -654,7 +657,8 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 						for (const val of sortValues) {
 							const food = createFood(pkType);
-							food.name = 'food-m2m-sort-' + val;
+							food.name = 'food-m2m-sort-fn-' + uuid();
+							food.test_datetime = new Date(new Date().setFullYear(parseInt(`202${val}`))).toISOString().slice(0, 19);
 							const ingredient = createIngredient(pkType);
 							ingredient.name = 'ingredient-m2m-sort-fn-' + uuid();
 							await CreateItem(vendor, {
@@ -674,7 +678,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						const response = await request(getUrl(vendor))
 							.get(`/items/${localCollectionIngredients}`)
 							.query({
-								sort: `foods.${localCollectionFoods}_id.name`,
+								sort: `foods.${localCollectionFoods}_id.year(test_datetime)`,
 								filter: { name: { _starts_with: 'ingredient-m2m-sort-fn-' } },
 							})
 							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
@@ -682,7 +686,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						const response2 = await request(getUrl(vendor))
 							.get(`/items/${localCollectionIngredients}`)
 							.query({
-								sort: `-foods.${localCollectionFoods}_id.name`,
+								sort: `-foods.${localCollectionFoods}_id.year(test_datetime)`,
 								filter: { name: { _starts_with: 'ingredient-m2m-sort-fn-' } },
 							})
 							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
