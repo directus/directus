@@ -21,17 +21,25 @@
 #'Proxy', 'Intl'
 identifier: ตัวบ่งชี้
 avatar: ภาพประจำตัว
+application: แอพลิเคชัน
 default_provider: ค่าเริ่มต้น
 method: เมธอด
 published: เผยแพร่แล้ว
 draft: ฉบับร่าง
 archived: เก็บถาวร
 modules: โมดูล
+module_bar: โมดูลบาร์
+logs: บันทึกย้อนหลัง
+reset_width: รีเซ็ตความกว้าง
+tile_size: ขนาดกรอบ
 edit_field: แก้ไขฟิลด์
 conditions: เงื่อนไข
 location: ตำแหน่งที่ตั้ง
+condition_rules: ลักษณะเงื่อนไข
 input: Input
 maps: แผนที่
+switch_user: สลับผู้ใช้งาน
+item_creation: สร้างรายการ
 item_revision: ประวัติรายการ
 enter_a_name: กรอกชื่อ...
 duplicate_field: สำเนาฟิลด์
@@ -881,6 +889,7 @@ fields:
     files_and_thumbnails: ไฟล์ และ ที่เก็บ
     storage_default_folder: โฟลเดอร์เริ่มต้น
     custom_css: CSS ที่กำหนดเอง
+    module_bar: โมดูลบาร์
   directus_shares:
     name: ชื่อ
     role: บทบาท
