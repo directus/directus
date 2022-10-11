@@ -305,6 +305,7 @@ export class ExportService {
 		input: Record<string, any>[],
 		format: 'xml' | 'csv' | 'json',
 		options?: {
+			delimiter?: string;
 			includeHeader?: boolean;
 			includeFooter?: boolean;
 		}
@@ -341,6 +342,7 @@ export class ExportService {
 			const parser = new CSVParser({
 				transforms: [CSVTransforms.flatten({ separator: '.' })],
 				header: options?.includeHeader !== false,
+				delimiter: options?.delimiter ?? ',',
 			});
 
 			let string = parser.parse(input);
