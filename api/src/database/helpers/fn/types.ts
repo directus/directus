@@ -1,6 +1,7 @@
 import { Query, SchemaOverview } from '@directus/shared/types';
 import { Knex } from 'knex';
 import { applyFilter } from '../../../utils/apply-query';
+import { parseJsonFunction } from '../../../utils/parse-json-function';
 import { DatabaseHelper } from '../types';
 
 export type FnHelperOptions = {
@@ -25,15 +26,8 @@ export abstract class FnHelper extends DatabaseHelper {
 	abstract count(table: string, column: string, options?: FnHelperOptions): Knex.Raw;
 
 	json(table: string, column: string, options?: FnHelperOptions) {
-		const pathStart = Math.min(
-			column.includes('.') ? column.indexOf('.') : Number.MAX_SAFE_INTEGER,
-			column.includes('[') ? column.indexOf('[') : Number.MAX_SAFE_INTEGER
-		);
-		const columnName = column.substring(0, pathStart);
-		const queryPath = '$' + column.substring(pathStart);
-		//console.log(`${table}.${columnName}`, queryPath);
-		return this.knex.jsonExtract(`${table}.${columnName}`, queryPath, undefined, false);
-		// throw new Error(`Couldn't do json for ${table}.${column}`);
+		const { fieldName, queryPath } = parseJsonFunction(column);
+		return this.knex.jsonExtract(`${table}.${fieldName}`, queryPath, undefined, false);
 	}
 
 	protected _relationalCount(table: string, column: string, options?: FnHelperOptions): Knex.Raw {

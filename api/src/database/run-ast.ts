@@ -3,15 +3,14 @@ import { toArray } from '@directus/shared/utils';
 import { Knex } from 'knex';
 import { clone, cloneDeep, merge, pick, uniq } from 'lodash';
 import getDatabase from '.';
-import { JSON_QUERY_REGEX } from '../constants';
 import { getHelpers } from '../database/helpers';
 import env from '../env';
-import { InvalidQueryException } from '../exceptions';
 import { PayloadService } from '../services/payload';
 import { AST, FieldNode, FunctionFieldNode, M2ONode, NestedCollectionNode } from '../types/ast';
 import { applyFunctionToColumnName } from '../utils/apply-function-to-column-name';
 import applyQuery from '../utils/apply-query';
 import { getColumn } from '../utils/get-column';
+import { parseJsonFunction } from '../utils/parse-json-function';
 import { stripFunction } from '../utils/strip-function';
 
 type RunASTOptions = {
@@ -158,16 +157,7 @@ async function parseCurrentLevel(
 			const functionName = child.name.substring(0, child.name.indexOf('('));
 
 			if (functionName === 'json') {
-				// console.log('FUNC!!!!', fieldName, functionName, JSON_QUERY_REGEX.test(fieldName));
-				if (!JSON_QUERY_REGEX.test(fieldName)) {
-					throw new InvalidQueryException(`The json query used is not valid. "${fieldName}"`);
-				}
-				const pathStart = Math.min(
-					fieldName.includes('.') ? fieldName.indexOf('.') : Number.MAX_SAFE_INTEGER,
-					fieldName.includes('[') ? fieldName.indexOf('[') : Number.MAX_SAFE_INTEGER
-				);
-				const fieldKey = fieldName.substring(0, pathStart);
-				// console.log(fieldKey, pathStart, child);
+				const { fieldName: fieldKey } = parseJsonFunction(child.name);
 				if (columnsInCollection.includes(fieldKey)) {
 					columnsToSelectInternal.push(child.fieldKey);
 				}

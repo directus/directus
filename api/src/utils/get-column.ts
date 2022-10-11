@@ -1,11 +1,10 @@
-import { REGEX_BETWEEN_PARENS } from '@directus/shared/constants';
 import { FieldFunction, Query, SchemaOverview } from '@directus/shared/types';
 import { getFunctionsForType } from '@directus/shared/utils';
 import { Knex } from 'knex';
 import { getFunctions } from '../database/helpers';
 import { InvalidQueryException } from '../exceptions';
-import logger from '../logger';
 import { applyFunctionToColumnName } from './apply-function-to-column-name';
+import { parseJsonFunction } from './parse-json-function';
 import { stripFunction } from './strip-function';
 
 /**
@@ -30,15 +29,11 @@ export function getColumn(
 
 	if (column.includes('(') && column.includes(')')) {
 		const functionName = column.split('(')[0] as FieldFunction;
-		const columnName = stripFunction(column); //.split('$')[0] : stripFunction(column);
+		const columnName = stripFunction(column);
 
 		if (functionName === 'json') {
-			const pathStart = Math.min(
-				columnName.includes('.') ? columnName.indexOf('.') : Number.MAX_SAFE_INTEGER,
-				columnName.includes('[') ? columnName.indexOf('[') : Number.MAX_SAFE_INTEGER
-			);
-			const colName = columnName.substring(0, pathStart);
-			const type = schema?.collections[table]?.fields?.[colName]?.type ?? 'unknown';
+			const { fieldName } = parseJsonFunction(columnName);
+			const type = schema?.collections[table]?.fields?.[fieldName]?.type ?? 'unknown';
 			const allowedFunctions = getFunctionsForType(type);
 
 			if (allowedFunctions.includes(functionName) === false) {
