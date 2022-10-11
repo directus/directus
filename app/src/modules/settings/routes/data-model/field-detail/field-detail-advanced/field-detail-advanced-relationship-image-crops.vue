@@ -5,7 +5,7 @@
 				<div class="type-label">{{ t('files_collection') }}</div>
 				<v-input disabled :model-value="collection" />
 			</div>
-			
+
 			<div class="field">
 				<div class="type-label">{{ t('crop_collection') }}</div>
 				<related-collection-select
@@ -53,7 +53,7 @@
 
 			<related-field-select v-model="junctionFieldRelated" :disabled="autoGenerateJunctionRelation || isExisting" />
 			<v-input disabled :model-value="t('primary_key')" />
-		
+
 			<div class="spacer" />
 
 			<v-input disabled :model-value="t('primary_key')" />
@@ -70,7 +70,11 @@
 		<div class="required-crop-section">
 			<v-divider large :inline-title="false">{{ t('required_crop_collection_fields') }}</v-divider>
 			<div class="required-crop-fields">
-				<v-input v-for="field in junctionFieldsRelated" :model-value="field.field" :disabled="autoGenerateJunctionRelation || isExisting" />
+				<v-input
+					v-for="field in junctionFieldsRelated"
+					:model-value="field.field"
+					:disabled="autoGenerateJunctionRelation || isExisting"
+				/>
 			</div>
 		</div>
 
@@ -249,7 +253,7 @@ export default defineComponent({
 			onDelete,
 			onDeselect,
 			unsortableJunctionFields,
-			currentField
+			currentField,
 		};
 	},
 });

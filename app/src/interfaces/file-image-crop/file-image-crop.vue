@@ -32,7 +32,13 @@
 			<div class="shadow" />
 
 			<div v-if="!disabled && cropInfo && image" class="actions">
-				<v-button v-tooltip="t('download')" icon rounded :href="downloadSrc" :download="cropInfo.filename_download || image.filename_download">
+				<v-button
+					v-tooltip="t('download')"
+					icon
+					rounded
+					:href="downloadSrc"
+					:download="cropInfo.filename_download || image.filename_download"
+				>
 					<v-icon name="file_download" />
 				</v-button>
 				<v-button v-tooltip="t('edit_crop_details')" icon rounded @click="editCropDetails = true">
@@ -60,7 +66,13 @@
 				@input="update"
 			>
 				<template #actions>
-					<v-button secondary rounded icon :download="cropInfo.filename_download || image.filename_download" :href="downloadSrc">
+					<v-button
+						secondary
+						rounded
+						icon
+						:download="cropInfo.filename_download || image.filename_download"
+						:href="downloadSrc"
+					>
 						<v-icon name="download" />
 					</v-button>
 				</template>
@@ -122,7 +134,9 @@ const cropID = computed({
 });
 
 const cropQuery = ref<RelationQuerySingle>({
-	fields: ['x,y,width,height,image_transformations,name,file_id.id,file_id.modified_on,file_id.filename_download,file_id.type,file_id.width,file_id.height'],
+	fields: [
+		'x,y,width,height,image_transformations,name,file_id.id,file_id.modified_on,file_id.filename_download,file_id.type,file_id.width,file_id.height',
+	],
 });
 const { collection, field } = toRefs(props);
 const { relationInfo } = useRelationM2O(collection, field);
@@ -134,17 +148,17 @@ const fileID = computed({
 		return cropInfo.value.file_id;
 	},
 	set(newVal) {
-		return newVal
-	}
+		return newVal;
+	},
 });
-const file = useItem(ref('directus_files'), fileID)
+const file = useItem(ref('directus_files'), fileID);
 
 const image = computed(() => {
 	// Note: it is a preloaded file row, not file ID
 	if (cropInfo.value && typeof cropInfo.value.file_id === 'object') return cropInfo.value.file_id;
 
-	if (file && file.item.value) return file.item.value
-	
+	if (file && file.item.value) return file.item.value;
+
 	return null;
 });
 
@@ -202,11 +216,11 @@ const src = computed(() => {
 const ext = computed(() => (image.value ? readableMimeType(image.value.type, true) : 'unknown'));
 
 const downloadSrc = computed(() => {
-	let url = `${getRootPath()}assets/${image.value.id}`
+	let url = `${getRootPath()}assets/${image.value.id}`;
 	if (!cropInfo.value) {
 		return addTokenToURL(url);
 	} else {
-		url = applyImageTransformationsToUrl(url, '?')
+		url = applyImageTransformationsToUrl(url, '?');
 		return addTokenToURL(url);
 	}
 });
@@ -215,15 +229,14 @@ const meta = computed(() => {
 	if (!cropInfo.value || !image.value) return null;
 
 	const { type, width: originalWidth, height: originalHeight } = image.value;
-	const width = cropInfo.value.width
-	const height = cropInfo.value.height
-	
-	let dimensions = (width && height) ? `${n(width)}x${n(height)}` : null
-	if (!dimensions && originalWidth && originalHeight) 
-		dimensions = `${n(originalWidth)}x${n(originalHeight)}`
-		
-	const properties = [cropInfo.value.filename_download, dimensions, type]
-	return properties.filter(x => !!x).join(' • ');
+	const width = cropInfo.value.width;
+	const height = cropInfo.value.height;
+
+	let dimensions = width && height ? `${n(width)}x${n(height)}` : null;
+	if (!dimensions && originalWidth && originalHeight) dimensions = `${n(originalWidth)}x${n(originalHeight)}`;
+
+	const properties = [cropInfo.value.filename_download, dimensions, type];
+	return properties.filter((x) => !!x).join(' • ');
 });
 
 const editCropDetails = ref(false);
@@ -233,8 +246,8 @@ function applyImageTransformationsToUrl(url: string, paramStart = '&'): string {
 	let readyTransformations = [];
 
 	if (cropInfo.value && cropInfo.value.image_transformations) {
-		const flipY = cropInfo.value.image_transformations.flipY
-		const flipX = cropInfo.value.image_transformations.flipX
+		const flipY = cropInfo.value.image_transformations.flipY;
+		const flipX = cropInfo.value.image_transformations.flipX;
 		if (flipY) {
 			readyTransformations.push('["flop"]');
 		}
@@ -242,7 +255,7 @@ function applyImageTransformationsToUrl(url: string, paramStart = '&'): string {
 			readyTransformations.push('["flip"]');
 		}
 
-		let rotation = cropInfo.value.image_transformations.rotate
+		let rotation = cropInfo.value.image_transformations.rotate;
 		if (rotation != null && rotation != 0) {
 			readyTransformations.push(`["rotate", ${rotation}]`);
 		}
@@ -276,16 +289,17 @@ async function imageErrorHandler() {
 
 async function replaceImage(item: string | number) {
 	try {
-		fileID.value = item
-		cropID.value = {file_id: item, collection: collection.value}
+		fileID.value = item;
+		cropID.value = { file_id: item, collection: collection.value };
 	} catch (err: any) {
 		console.log(err);
 	}
 }
 
-function updateCropInfo(payload: {coordinates: object, image_transformations: object}) {
-	if (cropID.value && typeof cropID.value === 'object') cropID.value = {...cropID.value, ...payload}
-	if (cropID.value && (typeof cropID.value === 'string' || typeof cropID.value === 'number')) cropID.value = {id: cropID.value, ...payload}
+function updateCropInfo(payload: { coordinates: object; image_transformations: object }) {
+	if (cropID.value && typeof cropID.value === 'object') cropID.value = { ...cropID.value, ...payload };
+	if (cropID.value && (typeof cropID.value === 'string' || typeof cropID.value === 'number'))
+		cropID.value = { id: cropID.value, ...payload };
 }
 
 function deselect() {
@@ -299,7 +313,7 @@ function deselect() {
 
 const edits = computed(() => {
 	if (!cropID.value || typeof cropID.value !== 'object') return {};
-	return cropID.value
+	return cropID.value;
 });
 </script>
 

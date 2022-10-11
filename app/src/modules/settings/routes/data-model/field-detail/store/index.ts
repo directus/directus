@@ -203,8 +203,8 @@ export const useFieldDetailStore = defineStore({
 					if (relation.meta && relation.meta.one_allowed_collections) {
 						const linkCollectionsToJunction = relation.meta.link_one_allowed_collections_back;
 						const linkCollectionsToJunctionField = relation.meta.one_allowed_collections_relation_field;
-						if (linkCollectionsToJunction && linkCollectionsToJunctionField) {
-							for (const oneAllowedCollection of relation.meta?.one_allowed_collections) {
+						if (linkCollectionsToJunction && linkCollectionsToJunctionField && relation.meta) {
+							for (const oneAllowedCollection of relation.meta.one_allowed_collections) {
 								await fieldsStore.upsertField(oneAllowedCollection, '+', {
 									field: linkCollectionsToJunctionField,
 									type: 'integer',
@@ -214,7 +214,7 @@ export const useFieldDetailStore = defineStore({
 									related_collection: relation.collection,
 									collection: oneAllowedCollection,
 									field: linkCollectionsToJunctionField,
-									schema: {on_delete: 'SET DEFAULT'}
+									schema: { on_delete: 'SET DEFAULT' },
 								});
 							}
 						}

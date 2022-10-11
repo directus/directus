@@ -130,7 +130,7 @@
 
 <script lang="ts">
 import api, { addTokenToURL } from '@/api';
-import { computed, defineComponent, PropType, nextTick, reactive, ref, Ref, watch } from 'vue';
+import { computed, defineComponent, PropType, nextTick, reactive, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { useSettingsStore } from '@/stores/settings';
@@ -154,7 +154,7 @@ type CropCoordinates = {
 	y: number;
 	width: number;
 	height: number;
-}
+};
 
 type CropInfo = {
 	coordinates: CropCoordinates | null;
@@ -186,8 +186,8 @@ export default defineComponent({
 		},
 		showImageHasCropsWarning: {
 			type: Boolean,
-			default: false
-		}
+			default: false,
+		},
 	},
 	emits: ['update:modelValue', 'refresh', 'update-crop-info'],
 	setup(props, { emit }) {
@@ -253,10 +253,12 @@ export default defineComponent({
 		const coordinates = computed(() => {
 			if (props.cropInfo && props.cropInfo.coordinates && imageData.value && cropperInstance.value) {
 				if (imageTransformations.value.flipY) {
-					props.cropInfo.coordinates.x = imageData.value.width - props.cropInfo.coordinates.width - props.cropInfo.coordinates.x;
+					props.cropInfo.coordinates.x =
+						imageData.value.width - props.cropInfo.coordinates.width - props.cropInfo.coordinates.x;
 				}
 				if (imageTransformations.value.flipX) {
-					props.cropInfo.coordinates.y = imageData.value?.height - props.cropInfo.coordinates.height - props.cropInfo.coordinates.y;
+					props.cropInfo.coordinates.y =
+						imageData.value?.height - props.cropInfo.coordinates.height - props.cropInfo.coordinates.y;
 				}
 				return props.cropInfo.coordinates;
 			} else {
@@ -329,15 +331,15 @@ export default defineComponent({
 			let readyTransformations = [];
 
 			if (props.cropInfo && props.cropInfo.imageTransformations) {
-				const flipY = props.cropInfo.imageTransformations.flipY
-				const flipX = props.cropInfo.imageTransformations.flipX
+				const flipY = props.cropInfo.imageTransformations.flipY;
+				const flipX = props.cropInfo.imageTransformations.flipX;
 				if (flipX) {
 					readyTransformations.push('["flip"]');
 				}
 				if (flipY) {
 					readyTransformations.push('["flop"]');
 				}
-				let rotation = props.cropInfo.imageTransformations.rotate
+				let rotation = props.cropInfo.imageTransformations.rotate;
 				if (rotation) {
 					readyTransformations.push(`["rotate", ${rotation}]`);
 				}
@@ -406,32 +408,42 @@ export default defineComponent({
 						try {
 							const cropperData = cropperInstance.value?.getData();
 
-							if (cropperData && imageData.value && props.cropInfo && props.cropInfo.cropCollection && props.cropInfo.id) {
-								const coordinates =
-									cropping.value
-										? {
-												x: imageTransformations.value.flipY
-													? imageData.value.width - (Math.round(cropperData.x) + Math.round(cropperData.width))
-													: Math.round(cropperData.x),
-												y: imageTransformations.value.flipX
-													? imageData.value.height - (Math.round(cropperData.y) + Math.round(cropperData.height))
-													: Math.round(cropperData.y),
-												width: Math.round(cropperData.width),
-												height: Math.round(cropperData.height),
-										  }
-										: { x: null, y: null, width: null, height: null };
+							if (
+								cropperData &&
+								imageData.value &&
+								props.cropInfo &&
+								props.cropInfo.cropCollection &&
+								props.cropInfo.id
+							) {
+								const coordinates = cropping.value
+									? {
+											x: imageTransformations.value.flipY
+												? imageData.value.width - (Math.round(cropperData.x) + Math.round(cropperData.width))
+												: Math.round(cropperData.x),
+											y: imageTransformations.value.flipX
+												? imageData.value.height - (Math.round(cropperData.y) + Math.round(cropperData.height))
+												: Math.round(cropperData.y),
+											width: Math.round(cropperData.width),
+											height: Math.round(cropperData.height),
+									  }
+									: { x: null, y: null, width: null, height: null };
 
-								let inverseMultiplier = 1
-								const inverse = (imageTransformations.value.flipX) ? !imageTransformations.value.flipY : imageTransformations.value.flipY
-								if (inverse) inverseMultiplier = -1
-								
-								imageTransformations.value.rotate = imageTransformations.value.rotate != null
-									? imageTransformations.value.rotate + cropperData.rotate * inverseMultiplier
-									: cropperData.rotate;
+								let inverseMultiplier = 1;
+								const inverse = imageTransformations.value.flipX
+									? !imageTransformations.value.flipY
+									: imageTransformations.value.flipY;
+								if (inverse) inverseMultiplier = -1;
 
-								imageTransformations.value.rotate > 0 ? imageTransformations.value.rotate %= 360 : imageTransformations.value.rotate %= -360;
+								imageTransformations.value.rotate =
+									imageTransformations.value.rotate != null
+										? imageTransformations.value.rotate + cropperData.rotate * inverseMultiplier
+										: cropperData.rotate;
 
-								emit('update-crop-info', {...coordinates, image_transformations: imageTransformations.value})
+								imageTransformations.value.rotate > 0
+									? (imageTransformations.value.rotate %= 360)
+									: (imageTransformations.value.rotate %= -360);
+
+								emit('update-crop-info', { ...coordinates, image_transformations: imageTransformations.value });
 							} else {
 								await api.patch(`/files/${props.id}`, formData);
 							}
@@ -598,28 +610,28 @@ export default defineComponent({
 						});
 						dragMode.value = 'crop';
 					}
-				}, 100)
+				}, 100);
 			}
 
 			function flip(type: 'horizontal' | 'vertical') {
 				const cropperData = cropperInstance.value?.getData();
 				if (cropperData) {
-					const inverseScaling = cropperData.rotate % -180 != 0
-					
+					const inverseScaling = cropperData.rotate % -180 != 0;
+
 					if (type === 'vertical') {
 						if (inverseScaling) {
-							scaleY()
-						} else {	
-							scaleX()
+							scaleY();
+						} else {
+							scaleX();
 						}
 						imageTransformations.value.flipY = !imageTransformations.value.flipY;
 					}
 
 					if (type === 'horizontal') {
 						if (inverseScaling) {
-							scaleX()
-						} else {	
-							scaleY()
+							scaleX();
+						} else {
+							scaleY();
 						}
 						imageTransformations.value.flipX = !imageTransformations.value.flipX;
 					}

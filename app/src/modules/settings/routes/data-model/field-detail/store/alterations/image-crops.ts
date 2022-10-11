@@ -9,7 +9,7 @@ export function applyChanges(updates: StateUpdates, state: State, helperFn: Help
 	if (hasChanged('localType')) {
 		removeSchema(updates);
 		setTypeToAlias(updates);
-		prepareRelation(updates, state);
+		prepareRelation(updates);
 		setDefaults(updates, state, helperFn);
 	}
 
@@ -60,7 +60,7 @@ export function setTypeToAlias(updates: StateUpdates) {
 	set(updates, 'field.type', 'alias');
 }
 
-export function prepareRelation(updates: StateUpdates, state: State) {
+export function prepareRelation(updates: StateUpdates) {
 	if (!updates.relations) updates.relations = {};
 
 	updates.relations.o2m = {
@@ -133,7 +133,7 @@ export function setDefaults(updates: StateUpdates, state: State, { getCurrent }:
 			collection: junctionName,
 			field: 'height',
 			type: 'integer',
-		}
+		},
 	]);
 	set(updates, 'relations.m2o.meta.one_allowed_collections', [currentCollection]);
 	set(updates, 'relations.m2o.meta.one_collection_field', 'collection');

@@ -27,7 +27,7 @@ export default defineComponent({
 		RelationshipM2m,
 		RelationshipM2a,
 		RelationshipTranslations,
-		RelationshipImageCrops
+		RelationshipImageCrops,
 	},
 	setup() {
 		const fieldDetailStore = useFieldDetailStore();
