@@ -17,7 +17,10 @@ export function applyFunctionToColumnName(column: string): string {
 		const functionName = column.split('(')[0];
 		if (functionName === 'json') {
 			const jsonQuery = stripFunction(column);
-			const pathStart = Math.min(jsonQuery.indexOf('.'), jsonQuery.indexOf('['));
+			const pathStart = Math.min(
+				jsonQuery.includes('.') ? jsonQuery.indexOf('.') : Number.MAX_SAFE_INTEGER,
+				jsonQuery.includes('[') ? jsonQuery.indexOf('[') : Number.MAX_SAFE_INTEGER
+			);
 			const columnName = jsonQuery.substring(0, pathStart);
 			return `${columnName}_${functionName}`;
 		}

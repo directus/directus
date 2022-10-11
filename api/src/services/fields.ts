@@ -587,6 +587,8 @@ export class FieldsService {
 			column = table.dateTime(field.field, { useTz: false });
 		} else if (field.type === 'timestamp') {
 			column = table.timestamp(field.field, { useTz: true });
+		} else if (field.type === 'json') {
+			column = table.jsonb(field.field); // try for jsonb when available
 		} else if (field.type.startsWith('geometry')) {
 			column = this.helpers.st.createColumn(table, field);
 		} else if (KNEX_TYPES.includes(field.type as typeof KNEX_TYPES[number])) {

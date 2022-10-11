@@ -158,11 +158,16 @@ async function parseCurrentLevel(
 			const functionName = child.name.substring(0, child.name.indexOf('('));
 
 			if (functionName === 'json') {
+				// console.log('FUNC!!!!', fieldName, functionName, JSON_QUERY_REGEX.test(fieldName));
 				if (!JSON_QUERY_REGEX.test(fieldName)) {
 					throw new InvalidQueryException(`The json query used is not valid. "${fieldName}"`);
 				}
-				const pathStart = Math.min(fieldName.indexOf('.'), fieldName.indexOf('['));
+				const pathStart = Math.min(
+					fieldName.includes('.') ? fieldName.indexOf('.') : Number.MAX_SAFE_INTEGER,
+					fieldName.includes('[') ? fieldName.indexOf('[') : Number.MAX_SAFE_INTEGER
+				);
 				const fieldKey = fieldName.substring(0, pathStart);
+				// console.log(fieldKey, pathStart, child);
 				if (columnsInCollection.includes(fieldKey)) {
 					columnsToSelectInternal.push(child.fieldKey);
 				}

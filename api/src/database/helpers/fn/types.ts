@@ -25,11 +25,14 @@ export abstract class FnHelper extends DatabaseHelper {
 	abstract count(table: string, column: string, options?: FnHelperOptions): Knex.Raw;
 
 	json(table: string, column: string, options?: FnHelperOptions) {
-		const pathStart = Math.min(column.indexOf('.'), column.indexOf('['));
+		const pathStart = Math.min(
+			column.includes('.') ? column.indexOf('.') : Number.MAX_SAFE_INTEGER,
+			column.includes('[') ? column.indexOf('[') : Number.MAX_SAFE_INTEGER
+		);
 		const columnName = column.substring(0, pathStart);
 		const queryPath = '$' + column.substring(pathStart);
-		// console.log(`${table}.${columnName}`, queryPath);
-		return this.knex.jsonExtract(`${table}.${columnName}`, queryPath);
+		//console.log(`${table}.${columnName}`, queryPath);
+		return this.knex.jsonExtract(`${table}.${columnName}`, queryPath, undefined, false);
 		// throw new Error(`Couldn't do json for ${table}.${column}`);
 	}
 
