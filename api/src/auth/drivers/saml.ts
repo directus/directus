@@ -10,8 +10,6 @@ import { RecordNotUniqueException } from '../../exceptions/database/record-not-u
 import {
 	InvalidCredentialsException,
 	InvalidProviderException,
-	InvalidTokenException,
-	ServiceUnavailableException,
 } from '../../exceptions';
 import { respond } from '../../middleware/respond';
 import { AuthenticationService, UsersService } from '../../services';
@@ -48,7 +46,8 @@ export class SAMLAuthDriver extends LocalAuthDriver {
 	}
 
 	async getUserID(payload: Record<string, any>) {
-		const { provider, emailKey, identifierKey, nameKey, givenNameKey, familyNameKey, allowPublicRegistration } = this.config;
+		const { provider, emailKey, identifierKey, nameKey, givenNameKey, familyNameKey, allowPublicRegistration } =
+			this.config;
 
 		const email = payload[emailKey ?? 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'];
 		const identifier = payload[identifierKey ?? 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'];
@@ -92,7 +91,6 @@ export class SAMLAuthDriver extends LocalAuthDriver {
 		throw new InvalidCredentialsException();
 	}
 
-
 	async login(user: User): Promise<void> {
 		return this.refresh(user);
 	}
@@ -111,7 +109,7 @@ export class SAMLAuthDriver extends LocalAuthDriver {
 		if (authData?.refreshToken) {
 			try {
 				// TODO
-/*
+				/*
 				const tokenSet = await client.refresh(authData.refreshToken);
 				// Update user refreshToken if provided
 				if (tokenSet.refresh_token) {
