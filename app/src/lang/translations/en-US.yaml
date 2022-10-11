@@ -838,6 +838,7 @@ panel_header: Panel Header
 panel_name_placeholder: Name this panel...
 panel_note_placeholder: Optional details about this panel...
 panel_delete_confirm: Are you sure you want to delete this panel? This action can not be undone.
+list_panel_allow_edit: Allow Inline Editing
 dashboard_delete_confirm: Are you sure you want to delete this dashboard? This action can not be undone.
 edit_dashboard: Edit Dashboard
 delete_dashboard: Delete Dashboard
