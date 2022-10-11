@@ -41,7 +41,12 @@
 				>
 					<v-icon name="file_download" />
 				</v-button>
-				<v-button v-tooltip="t('edit_image_transformation_details')" icon rounded @click="editImageTransformationDetails = true">
+				<v-button
+					v-tooltip="t('edit_image_transformation_details')"
+					icon
+					rounded
+					@click="editImageTransformationDetails = true"
+				>
 					<v-icon name="open_in_new" />
 				</v-button>
 				<v-button v-tooltip="t('edit_image')" icon rounded @click="editImageEditor = true">
@@ -98,11 +103,12 @@ import api, { addTokenToURL } from '@/api';
 import { useRelationM2O } from '@/composables/use-relation-m2o';
 import { useItem } from '@/composables/use-item';
 import { RelationQuerySingle, useRelationSingle } from '@/composables/use-relation-single';
+import { unexpectedError } from '@/utils/unexpected-error';
 import { getRootPath } from '@/utils/get-root-path';
 import { readableMimeType } from '@/utils/readable-mime-type';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
 import ImageEditor from '@/views/private/components/image-editor.vue';
-import { computed, ref, toRefs, watch } from 'vue';
+import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const props = withDefaults(
@@ -140,7 +146,13 @@ const imageTransformationQuery = ref<RelationQuerySingle>({
 });
 const { collection, field } = toRefs(props);
 const { relationInfo } = useRelationM2O(collection, field);
-const { displayItem: imageTransformationInfo, loading, update, remove, refresh } = useRelationSingle(imageTransformationID, imageTransformationQuery, relationInfo);
+const {
+	displayItem: imageTransformationInfo,
+	loading,
+	update,
+	remove,
+	refresh,
+} = useRelationSingle(imageTransformationID, imageTransformationQuery, relationInfo);
 
 const fileID = computed({
 	get() {
@@ -155,7 +167,8 @@ const file = useItem(ref('directus_files'), fileID);
 
 const image = computed(() => {
 	// Note: it is a preloaded file row, not file ID
-	if (imageTransformationInfo.value && typeof imageTransformationInfo.value.file_id === 'object') return imageTransformationInfo.value.file_id;
+	if (imageTransformationInfo.value && typeof imageTransformationInfo.value.file_id === 'object')
+		return imageTransformationInfo.value.file_id;
 
 	if (file && file.item.value) return file.item.value;
 
@@ -185,7 +198,7 @@ const imageTransformationEditorDetails = computed(() => {
 		coordinates: coordinates,
 		imageTransformations: imageTransformationInfo.value?.image_transformations,
 		collection: collection.value,
-		imageTransformationCollection: imageTransformationCollection,
+		transformationCollection: imageTransformationCollection,
 		id: imageTransformationID.value || null,
 		fileID: fileID.value || null,
 		item: primaryKey,
@@ -292,14 +305,18 @@ async function replaceImage(item: string | number) {
 		fileID.value = item;
 		imageTransformationID.value = { file_id: item, collection: collection.value };
 	} catch (err: any) {
-		console.log(err);
+		unexpectedError(err);
 	}
 }
 
 function updateImageTransformationInfo(payload: { coordinates: object; image_transformations: object }) {
-	if (imageTransformationID.value && typeof imageTransformationID.value === 'object') imageTransformationID.value = { ...imageTransformationID.value, ...payload };
-	if (imageTransformationID.value && (typeof imageTransformationID.value === 'string' || typeof imageTransformationID.value === 'number'))
-	imageTransformationID.value = { id: imageTransformationID.value, ...payload };
+	if (imageTransformationID.value && typeof imageTransformationID.value === 'object')
+		imageTransformationID.value = { ...imageTransformationID.value, ...payload };
+	if (
+		imageTransformationID.value &&
+		(typeof imageTransformationID.value === 'string' || typeof imageTransformationID.value === 'number')
+	)
+		imageTransformationID.value = { id: imageTransformationID.value, ...payload };
 }
 
 function deselect() {

@@ -72,6 +72,7 @@
 			<div class="required-transformation-fields">
 				<v-input
 					v-for="field in junctionFieldsRelated"
+					:key="field.field"
 					:model-value="field.field"
 					:disabled="autoGenerateJunctionRelation || isExisting"
 				/>

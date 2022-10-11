@@ -341,11 +341,11 @@ export const useFieldDetailStore = defineStore({
 			for (const relation of Object.values(this.relations)) {
 				if (!relation || !relation.collection || !relation.field) continue;
 
-				if (relation.meta && relation.meta.one_allowed_collections) {
+				if (relation.meta) {
 					const linkCollectionsToJunction = relation.meta.link_one_allowed_collections_back;
 					const linkCollectionsToJunctionField = relation.meta.one_allowed_collections_relation_field;
-					if (linkCollectionsToJunction && linkCollectionsToJunctionField) {
-						for (const oneAllowedCollection of relation.meta?.one_allowed_collections) {
+					if (linkCollectionsToJunction && linkCollectionsToJunctionField && relation.meta.one_allowed_collections) {
+						for (const oneAllowedCollection of relation.meta.one_allowed_collections) {
 							items.push({
 								name: `${oneAllowedCollection}.${linkCollectionsToJunctionField}`,
 								type: 'field',

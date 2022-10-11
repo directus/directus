@@ -161,7 +161,7 @@ type TransformationInfo = {
 		rotate: number | null;
 	} | null;
 	transformationCollection: string | null;
-	id: string | number | null;
+	id: string | number | null | Record<string, any>;
 	collection: string;
 	fileID: string | null;
 	item: string | null;
@@ -244,16 +244,33 @@ export default defineComponent({
 		});
 
 		const coordinates = computed(() => {
-			if (props.transformationInfo && props.transformationInfo.coordinates && imageData.value && cropperInstance.value) {
+			if (
+				props.transformationInfo &&
+				props.transformationInfo.coordinates &&
+				imageData.value &&
+				cropperInstance.value
+			) {
+				let x = props.transformationInfo.coordinates.x;
+				let y = props.transformationInfo.coordinates.y;
+				const width = props.transformationInfo.coordinates.width;
+				const height = props.transformationInfo.coordinates.height;
+
 				if (imageTransformations.value.flipY) {
-					props.transformationInfo.coordinates.x =
+					x =
 						imageData.value.width - props.transformationInfo.coordinates.width - props.transformationInfo.coordinates.x;
 				}
 				if (imageTransformations.value.flipX) {
-					props.transformationInfo.coordinates.y =
-						imageData.value?.height - props.transformationInfo.coordinates.height - props.transformationInfo.coordinates.y;
+					y =
+						imageData.value?.height -
+						props.transformationInfo.coordinates.height -
+						props.transformationInfo.coordinates.y;
 				}
-				return props.transformationInfo.coordinates;
+				return {
+					x: x,
+					y: y,
+					width: width,
+					height: height,
+				};
 			} else {
 				return undefined;
 			}
@@ -436,7 +453,10 @@ export default defineComponent({
 									? (imageTransformations.value.rotate %= 360)
 									: (imageTransformations.value.rotate %= -360);
 
-								emit('update-transformation-info', { ...coordinates, image_transformations: imageTransformations.value });
+								emit('update-transformation-info', {
+									...coordinates,
+									image_transformations: imageTransformations.value,
+								});
 							} else {
 								await api.patch(`/files/${props.id}`, formData);
 							}

@@ -10,7 +10,7 @@ export function applyChanges(updates: StateUpdates, state: State, helperFn: Help
 		removeSchema(updates);
 		setTypeToAlias(updates);
 		prepareRelation(updates);
-		setDefaults(updates, state, helperFn);
+		setDefaults(updates, state);
 	}
 
 	if (hasChanged('field.field')) {
@@ -90,7 +90,7 @@ export function prepareRelation(updates: StateUpdates) {
 	};
 }
 
-export function setDefaults(updates: StateUpdates, state: State, { getCurrent }: HelperFunctions) {
+export function setDefaults(updates: StateUpdates, state: State) {
 	const currentCollection = state.collection!;
 	const junctionName = getAutomaticJunctionCollectionName();
 
