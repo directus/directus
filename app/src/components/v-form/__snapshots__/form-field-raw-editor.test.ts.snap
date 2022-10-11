@@ -1,15 +1,15 @@
 // Vitest Snapshot v1
 
 exports[`should render 1`] = `
-"<v-dialog model-value=\\"true\\" persistent=\\"\\" data-v-c3a4e9ec=\\"\\">
-  <v-card data-v-c3a4e9ec=\\"\\">
-    <v-card-title data-v-c3a4e9ec=\\"\\">edit_raw_value</v-card-title>
-    <v-card-text data-v-c3a4e9ec=\\"\\">
-      <interface-system-raw-editor type=\\"text\\" class=\\"raw-value\\" disabled=\\"false\\" placeholder=\\"enter_raw_value\\" data-v-c3a4e9ec=\\"\\"></interface-system-raw-editor>
+"<v-dialog model-value=\\"true\\" persistent=\\"\\">
+  <v-card>
+    <v-card-title>edit_raw_value</v-card-title>
+    <v-card-text>
+      <interface-system-raw-editor type=\\"undefined\\" disabled=\\"false\\" language=\\"undefined\\" placeholder=\\"enter_raw_value\\"></interface-system-raw-editor>
     </v-card-text>
-    <v-card-actions data-v-c3a4e9ec=\\"\\">
-      <v-button secondary=\\"\\" data-v-c3a4e9ec=\\"\\">cancel</v-button>
-      <v-button data-v-c3a4e9ec=\\"\\">done</v-button>
+    <v-card-actions>
+      <v-button secondary=\\"\\">cancel</v-button>
+      <v-button>done</v-button>
     </v-card-actions>
   </v-card>
 </v-dialog>"
