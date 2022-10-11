@@ -2,7 +2,7 @@ import { App } from 'vue';
 import { LayoutConfig } from '@directus/shared/types';
 
 export function getInternalLayouts(): LayoutConfig[] {
-	const layouts = import.meta.globEager('./*/index.ts');
+	const layouts = import.meta.glob<{ default: LayoutConfig }>('./*/index.ts', { eager: true });
 
 	return Object.values(layouts).map((module) => module.default);
 }

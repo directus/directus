@@ -2,7 +2,7 @@ import { App } from 'vue';
 import { OperationAppConfig } from '@directus/shared/types';
 
 export function getInternalOperations(): OperationAppConfig[] {
-	const operations = import.meta.globEager('./*/index.ts');
+	const operations = import.meta.glob<{ default: OperationAppConfig }>('./*/index.ts', { eager: true });
 
 	return Object.values(operations).map((module) => module.default);
 }

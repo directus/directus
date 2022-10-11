@@ -2,8 +2,8 @@ import { App } from 'vue';
 import { InterfaceConfig } from '@directus/shared/types';
 
 export function getInternalInterfaces(): InterfaceConfig[] {
-	const interfaces = import.meta.globEager('./*/index.ts');
-	const interfacesSystem = import.meta.globEager('./_system/*/index.ts');
+	const interfaces = import.meta.glob<{ default: InterfaceConfig }>('./*/index.ts', { eager: true });
+	const interfacesSystem = import.meta.glob<{ default: InterfaceConfig }>('./_system/*/index.ts', { eager: true });
 
 	return [
 		...Object.values(interfaces).map((module) => module.default),

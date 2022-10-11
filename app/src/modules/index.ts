@@ -6,7 +6,7 @@ import { ModuleConfig } from '@directus/shared/types';
 import { ShallowRef, shallowRef } from 'vue';
 
 export function getInternalModules(): ModuleConfig[] {
-	const modules = import.meta.globEager('./*/index.ts');
+	const modules = import.meta.glob<{ default: ModuleConfig }>('./*/index.ts', { eager: true });
 
 	return Object.values(modules).map((module) => module.default);
 }

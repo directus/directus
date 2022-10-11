@@ -2,7 +2,7 @@ import { App } from 'vue';
 import { PanelConfig } from '@directus/shared/types';
 
 export function getInternalPanels(): PanelConfig[] {
-	const panels = import.meta.globEager('./*/index.ts');
+	const panels = import.meta.glob<{ default: PanelConfig }>('./*/index.ts', { eager: true });
 
 	return Object.values(panels).map((module) => module.default);
 }

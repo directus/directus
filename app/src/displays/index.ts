@@ -2,7 +2,7 @@ import { App } from 'vue';
 import { DisplayConfig } from '@directus/shared/types';
 
 export function getInternalDisplays(): DisplayConfig[] {
-	const displays = import.meta.globEager('./*/index.ts');
+	const displays = import.meta.glob<{ default: DisplayConfig }>('./*/index.ts', { eager: true });
 
 	return Object.values(displays).map((module) => module.default);
 }
