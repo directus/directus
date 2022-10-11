@@ -187,7 +187,7 @@ importers:
       nodemailer-sendgrid: ^1.0.3
       object-hash: ^2.2.0
       openapi3-ts: ^2.0.2
-      openid-client: ^5.1.6
+      openid-client: ^5.1.10
       ora: ^5.4.0
       otplib: ^12.0.1
       pg: ^8.7.3
@@ -285,7 +285,7 @@ importers:
       nodemailer: 6.7.7
       object-hash: 2.2.0
       openapi3-ts: 2.0.2
-      openid-client: 5.1.8
+      openid-client: 5.1.10
       ora: 5.4.1
       otplib: 12.0.1
       pino: 6.13.3
@@ -8844,6 +8844,7 @@ packages:
 
   /bindings/1.5.0:
     resolution: {integrity: sha512-p2q/t/mhvuOj/UeLlV6566GD/guowlr0hHxClI0W9m7MWYkL1F0hLo+0Aexs9HSPCtR1SXQ0TD3MMKrXZajbiQ==}
+    requiresBuild: true
     dependencies:
       file-uri-to-path: 1.0.0
     dev: true
@@ -11969,6 +11970,7 @@ packages:
 
   /file-uri-to-path/1.0.0:
     resolution: {integrity: sha512-0Zt+s3L7Vf1biwWZ29aARiVYLx7iMGnEUl9x33fbB/j3jR81u/O2LbqK+Bm1CDSNDKVtJ/YjwY7TUd5SkeLQLw==}
+    requiresBuild: true
     dev: true
     optional: true
 
@@ -15252,8 +15254,8 @@ packages:
     engines: {node: '>= 0.6'}
     hasBin: true
     dependencies:
-      chalk: 2.4.2
       JSV: 4.0.2
+      chalk: 2.4.2
       underscore: 1.13.4
     dev: true
 
@@ -16550,6 +16552,7 @@ packages:
 
   /nan/2.16.0:
     resolution: {integrity: sha512-UdAqHyFngu7TfQKsCBgAA6pWDkT8MAO7d0jyOecVhN5354xbLqdn8mV9Tat9gepAupm0bt2DbeaSC8vS52MuFA==}
+    requiresBuild: true
     dev: true
     optional: true
 
@@ -17134,9 +17137,8 @@ packages:
       yaml: 1.10.2
     dev: false
 
-  /openid-client/5.1.8:
-    resolution: {integrity: sha512-EPxJY6bT7YIYQEXSGxRC5flQ3GUhLy98ufdto6+BVBrFGPmwjUpy4xBcYuU/Wt9nPkO/3EgljBrr6Ezx4lp1RQ==}
-    engines: {node: ^12.19.0 || ^14.15.0 || ^16.13.0}
+  /openid-client/5.1.10:
+    resolution: {integrity: sha512-KYAtkxTuUwTvjAmH0QMFFP3i9l0+XhP2/blct6Q9kn+DUJ/lu8/g/bI8ghSgxz9dJLm/9cpB/1uLVGTcGGY0hw==}
     dependencies:
       jose: 4.8.3
       lru-cache: 6.0.0
