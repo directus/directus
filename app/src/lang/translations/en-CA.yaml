@@ -256,7 +256,6 @@ choose_a_type: Choose a Type...
 determined_by_relationship: Determined by Relationship
 add_note: Add a helpful note for users...
 add_link: Add Link
-refer_to_original_image: Refer to the original image
 custom_link: Custom Link
 default_value: Default Value
 standard_field: Standard Field
@@ -318,7 +317,7 @@ related_collection: Related Collection
 related_collections: Related Collections
 translations_collection: Translation Collection
 files_collection: Files Collection
-crop_collection: Crop Collection
+image_transformation_collection: Image Transformation Collection
 languages_collection: Languages Collection
 label_import: Import
 format: Format

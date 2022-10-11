@@ -60,13 +60,13 @@ export default defineComponent({
 				});
 			}
 
-			if (localType.value === 'image_crops') {
+			if (localType.value === 'image_transformations') {
 				tabs.splice(
 					1,
 					0,
 					...[
 						{
-							text: t('image_crops'),
+							text: t('image_transformations'),
 							value: 'relationship',
 						},
 					]

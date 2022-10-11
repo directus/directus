@@ -34,8 +34,8 @@ export function getLocalTypeForField(collection: string, field: string): LocalTy
 		if ((fieldInfo.meta?.special || []).includes('translations')) {
 			return 'translations';
 		}
-		if ((fieldInfo.meta?.special || []).includes('image_crops')) {
-			return 'image_crops';
+		if ((fieldInfo.meta?.special || []).includes('image_transformations')) {
+			return 'image_transformations';
 		}
 		if ((fieldInfo.meta?.special || []).includes('m2a')) {
 			return 'm2a';

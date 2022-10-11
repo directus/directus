@@ -17,7 +17,7 @@ export function applyChanges(updates: StateUpdates, state: State, helperFn: Help
 		updateRelationField(updates);
 		autoGenerateJunctionCollectionName(updates, helperFn);
 
-		// For the image crops, field name is going to be a field
+		// For the image transformations, field name is going to be a field
 		// linking the M2A collections back to the junction collection
 		set(updates, 'relations.m2o.meta.one_allowed_collections_relation_field', updates.field?.field);
 	}
@@ -94,10 +94,10 @@ export function setDefaults(updates: StateUpdates, state: State, { getCurrent }:
 	const currentCollection = state.collection!;
 	const junctionName = getAutomaticJunctionCollectionName();
 
-	// Set relation from files to crops collection and setup an M2A
+	// Set relation from files to image transformations collection and setup an M2A
 	set(updates, 'collection', 'directus_files');
 	set(updates, 'field.meta.special', 'm2a');
-	set(updates, 'field.meta.interface', 'file-image-crop');
+	set(updates, 'field.meta.interface', 'file-image-transformation');
 	set(updates, 'relations.o2m.collection', junctionName);
 	set(updates, 'relations.o2m.field', 'file_id');
 
@@ -151,7 +151,7 @@ export function autoGenerateJunctionCollectionName(updates: StateUpdates, { getC
 }
 
 export function getAutomaticJunctionCollectionName() {
-	let name = `image_crops`;
+	let name = `image_transformations`;
 
 	if (name.startsWith('directus_')) {
 		name = 'junction_' + name;

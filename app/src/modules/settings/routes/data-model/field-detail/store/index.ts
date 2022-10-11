@@ -113,7 +113,7 @@ export const useFieldDetailStore = defineStore({
 					(relation) => relation.related_collection === collection && relation.meta?.one_field === field
 				) as DeepPartial<Relation> | undefined;
 
-				if (['files', 'm2m', 'translations', 'm2a', 'image_crops'].includes(this.localType)) {
+				if (['files', 'm2m', 'translations', 'm2a', 'image_transformations'].includes(this.localType)) {
 					// These types rely on directus_relations fields being said, so meta should exist for these particular relations
 					this.relations.m2o = relations.find((relation) => relation.meta?.id !== this.relations.o2m?.meta?.id) as
 						| DeepPartial<Relation>
@@ -254,7 +254,7 @@ export const useFieldDetailStore = defineStore({
 				requiredProperties.push('relations.o2m.collection', 'relations.o2m.field', 'relations.o2m.related_collection');
 			}
 
-			if (localType == 'image_crops') {
+			if (localType == 'image_transformations') {
 				requiredProperties.push(
 					'relations.o2m.collection',
 					'relations.o2m.field',

@@ -152,9 +152,9 @@ export default defineComponent({
 				text: t('translations'),
 			},
 			{
-				type: 'image_crops',
+				type: 'image_transformations',
 				icon: 'crop_original',
-				text: t('image_crops'),
+				text: t('image_transformations'),
 			},
 		]);
 

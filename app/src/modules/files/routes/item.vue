@@ -133,7 +133,6 @@
 				v-if="item && item.type.startsWith('image')"
 				:id="item.id"
 				v-model="editActive"
-				:show-image-has-crops-warning="showImageHasCropsWarning"
 				@refresh="refresh"
 			/>
 
@@ -220,7 +219,6 @@ const form = ref<HTMLElement>();
 const { primaryKey } = toRefs(props);
 const { breadcrumb } = useBreadcrumb();
 const replaceFileDialogActive = ref(false);
-const showImageHasCropsWarning = ref(false);
 
 const revisionsDrawerDetailRef = ref<InstanceType<typeof RevisionsDrawerDetail> | null>(null);
 

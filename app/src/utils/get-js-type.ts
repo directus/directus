@@ -4,7 +4,7 @@ export function getJSType(field: Field): string {
 	if (
 		Array.isArray(field.meta?.special) &&
 		field.meta!.special.some((special) =>
-			['m2o', 'o2m', 'm2m', 'm2a', 'files', 'translations', 'image_crops'].includes(special)
+			['m2o', 'o2m', 'm2m', 'm2a', 'files', 'translations', 'image_transformations'].includes(special)
 		)
 	)
 		return 'object';

@@ -47,9 +47,9 @@
 			<related-collection-select v-model="relatedCollectionM2O" />
 		</div>
 
-		<div v-if="localType === 'image_crops'" class="field full">
+		<div v-if="localType === 'image_transformations'" class="field full">
 			<div class="label type-label">
-				{{ t('crop_collection') }}
+				{{ t('image_transformation_collection') }}
 				<v-icon v-tooltip="t('required')" class="required-mark" sup name="star" />
 			</div>
 

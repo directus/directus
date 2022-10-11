@@ -268,7 +268,6 @@ choose_a_type: Choose a Type...
 determined_by_relationship: Determined by Relationship
 add_note: Add a helpful note for users...
 add_link: Add Link
-refer_to_original_image: Refer to the original image
 custom_link: Custom Link
 default_value: Default Value
 standard_field: Standard Field
@@ -341,7 +340,7 @@ related_collection: Related Collection
 related_collections: Related Collections
 translations_collection: Translation Collection
 files_collection: Files Collection
-crop_collection: Crop Collection
+image_transformation_collection: Image Transformation Collection
 languages_collection: Languages Collection
 import_data_input_placeholder: CSV or JSON...
 import_data_button: Start Import
@@ -537,7 +536,7 @@ bookmark_doesnt_exist_copy: The bookmark you're trying to open couldn't be found
 bookmark_doesnt_exist_cta: Return to collection
 select_an_item: Select an item...
 edit: Edit
-edit_crop_details: Edit Crop Details
+edit_image_transformation_details: Edit Image Transformation Details
 enabled: Enabled
 disable_tfa: Disable 2FA
 tfa_scan_code: Scan the code in your authenticator app to finish setting up 2FA

@@ -31,17 +31,17 @@
 
 			<div class="shadow" />
 
-			<div v-if="!disabled && cropInfo && image" class="actions">
+			<div v-if="!disabled && imageTransformationInfo && image" class="actions">
 				<v-button
 					v-tooltip="t('download')"
 					icon
 					rounded
 					:href="downloadSrc"
-					:download="cropInfo.filename_download || image.filename_download"
+					:download="imageTransformationInfo.filename_download || image.filename_download"
 				>
 					<v-icon name="file_download" />
 				</v-button>
-				<v-button v-tooltip="t('edit_crop_details')" icon rounded @click="editCropDetails = true">
+				<v-button v-tooltip="t('edit_image_transformation_details')" icon rounded @click="editImageTransformationDetails = true">
 					<v-icon name="open_in_new" />
 				</v-button>
 				<v-button v-tooltip="t('edit_image')" icon rounded @click="editImageEditor = true">
@@ -58,10 +58,10 @@
 			</div>
 
 			<drawer-item
-				v-if="!disabled && relationInfo && cropInfo && image"
-				v-model:active="editCropDetails"
+				v-if="!disabled && relationInfo && imageTransformationInfo && image"
+				v-model:active="editImageTransformationDetails"
 				:collection="relationInfo.relatedCollection.collection"
-				:primary-key="cropInfo.id"
+				:primary-key="imageTransformationInfo.id"
 				:edits="edits"
 				@input="update"
 			>
@@ -70,7 +70,7 @@
 						secondary
 						rounded
 						icon
-						:download="cropInfo.filename_download || image.filename_download"
+						:download="imageTransformationInfo.filename_download || image.filename_download"
 						:href="downloadSrc"
 					>
 						<v-icon name="download" />
@@ -82,11 +82,11 @@
 				v-if="!disabled && image"
 				:id="image.id"
 				v-model="editImageEditor"
-				:crop-info="cropInfoForEditor"
-				:crop-collection="cropCollection"
+				:transformation-info="imageTransformationEditorDetails"
+				:transformation-collection="imageTransformationCollection"
 				@refresh="refresh"
 				@replace-image="replaceImage($event.id)"
-				@update-crop-info="updateCropInfo"
+				@update-transformation-info="updateImageTransformationInfo"
 			/>
 		</div>
 		<v-upload v-else from-library from-url :folder="folder" @input="replaceImage($event.id)" />
@@ -126,26 +126,26 @@ const props = withDefaults(
 
 const emit = defineEmits(['input']);
 
-const cropID = computed({
+const imageTransformationID = computed({
 	get: () => props.value ?? null,
 	set: (value) => {
 		emit('input', value);
 	},
 });
 
-const cropQuery = ref<RelationQuerySingle>({
+const imageTransformationQuery = ref<RelationQuerySingle>({
 	fields: [
 		'x,y,width,height,image_transformations,name,file_id.id,file_id.modified_on,file_id.filename_download,file_id.type,file_id.width,file_id.height',
 	],
 });
 const { collection, field } = toRefs(props);
 const { relationInfo } = useRelationM2O(collection, field);
-const { displayItem: cropInfo, loading, update, remove, refresh } = useRelationSingle(cropID, cropQuery, relationInfo);
+const { displayItem: imageTransformationInfo, loading, update, remove, refresh } = useRelationSingle(imageTransformationID, imageTransformationQuery, relationInfo);
 
 const fileID = computed({
 	get() {
-		if (!cropInfo.value) return null;
-		return cropInfo.value.file_id;
+		if (!imageTransformationInfo.value) return null;
+		return imageTransformationInfo.value.file_id;
 	},
 	set(newVal) {
 		return newVal;
@@ -155,44 +155,44 @@ const file = useItem(ref('directus_files'), fileID);
 
 const image = computed(() => {
 	// Note: it is a preloaded file row, not file ID
-	if (cropInfo.value && typeof cropInfo.value.file_id === 'object') return cropInfo.value.file_id;
+	if (imageTransformationInfo.value && typeof imageTransformationInfo.value.file_id === 'object') return imageTransformationInfo.value.file_id;
 
 	if (file && file.item.value) return file.item.value;
 
 	return null;
 });
 
-const cropInfoForEditor = computed(() => {
+const imageTransformationEditorDetails = computed(() => {
 	let coordinates = null;
 	if (
-		cropInfo.value &&
-		cropInfo.value.x != null &&
-		cropInfo.value.y != null &&
-		cropInfo.value.height != null &&
-		cropInfo.value.width != null
+		imageTransformationInfo.value &&
+		imageTransformationInfo.value.x != null &&
+		imageTransformationInfo.value.y != null &&
+		imageTransformationInfo.value.height != null &&
+		imageTransformationInfo.value.width != null
 	) {
 		coordinates = {
-			x: cropInfo.value.x,
-			y: cropInfo.value.y,
-			width: cropInfo.value.width,
-			height: cropInfo.value.height,
+			x: imageTransformationInfo.value.x,
+			y: imageTransformationInfo.value.y,
+			width: imageTransformationInfo.value.width,
+			height: imageTransformationInfo.value.height,
 		};
 	}
 	const primaryKey = props.primaryKey == '+' ? null : props.primaryKey;
-	const cropCollection = relationInfo.value ? relationInfo.value.relatedCollection.collection : null;
+	const imageTransformationCollection = relationInfo.value ? relationInfo.value.relatedCollection.collection : null;
 
 	return {
 		coordinates: coordinates,
-		imageTransformations: cropInfo.value?.image_transformations,
+		imageTransformations: imageTransformationInfo.value?.image_transformations,
 		collection: collection.value,
-		cropCollection: cropCollection,
-		id: cropID.value || null,
+		imageTransformationCollection: imageTransformationCollection,
+		id: imageTransformationID.value || null,
 		fileID: fileID.value || null,
 		item: primaryKey,
 	};
 });
 
-const cropCollection = computed(() => relationInfo.value?.relatedCollection.collection);
+const imageTransformationCollection = computed(() => relationInfo.value?.relatedCollection.collection);
 
 const { t, n, te } = useI18n();
 
@@ -200,11 +200,11 @@ const editDrawerActive = ref(false);
 const imageError = ref<string | null>(null);
 
 const src = computed(() => {
-	if (!image.value || !cropInfo.value) return null;
+	if (!image.value || !imageTransformationInfo.value) return null;
 
 	if (image.value.type.includes('image')) {
 		let url = `/assets/${image.value.id}?cache-buster=${image.value.modified_on}`;
-		if (cropInfo.value.image_transformations) {
+		if (imageTransformationInfo.value.image_transformations) {
 			url = applyImageTransformationsToUrl(url);
 		}
 		return addTokenToURL(url);
@@ -217,7 +217,7 @@ const ext = computed(() => (image.value ? readableMimeType(image.value.type, tru
 
 const downloadSrc = computed(() => {
 	let url = `${getRootPath()}assets/${image.value.id}`;
-	if (!cropInfo.value) {
+	if (!imageTransformationInfo.value) {
 		return addTokenToURL(url);
 	} else {
 		url = applyImageTransformationsToUrl(url, '?');
@@ -226,28 +226,28 @@ const downloadSrc = computed(() => {
 });
 
 const meta = computed(() => {
-	if (!cropInfo.value || !image.value) return null;
+	if (!imageTransformationInfo.value || !image.value) return null;
 
 	const { type, width: originalWidth, height: originalHeight } = image.value;
-	const width = cropInfo.value.width;
-	const height = cropInfo.value.height;
+	const width = imageTransformationInfo.value.width;
+	const height = imageTransformationInfo.value.height;
 
 	let dimensions = width && height ? `${n(width)}x${n(height)}` : null;
 	if (!dimensions && originalWidth && originalHeight) dimensions = `${n(originalWidth)}x${n(originalHeight)}`;
 
-	const properties = [cropInfo.value.filename_download, dimensions, type];
+	const properties = [imageTransformationInfo.value.filename_download, dimensions, type];
 	return properties.filter((x) => !!x).join(' • ');
 });
 
-const editCropDetails = ref(false);
+const editImageTransformationDetails = ref(false);
 const editImageEditor = ref(false);
 
 function applyImageTransformationsToUrl(url: string, paramStart = '&'): string {
 	let readyTransformations = [];
 
-	if (cropInfo.value && cropInfo.value.image_transformations) {
-		const flipY = cropInfo.value.image_transformations.flipY;
-		const flipX = cropInfo.value.image_transformations.flipX;
+	if (imageTransformationInfo.value && imageTransformationInfo.value.image_transformations) {
+		const flipY = imageTransformationInfo.value.image_transformations.flipY;
+		const flipX = imageTransformationInfo.value.image_transformations.flipX;
 		if (flipY) {
 			readyTransformations.push('["flop"]');
 		}
@@ -255,13 +255,13 @@ function applyImageTransformationsToUrl(url: string, paramStart = '&'): string {
 			readyTransformations.push('["flip"]');
 		}
 
-		let rotation = cropInfo.value.image_transformations.rotate;
+		let rotation = imageTransformationInfo.value.image_transformations.rotate;
 		if (rotation != null && rotation != 0) {
 			readyTransformations.push(`["rotate", ${rotation}]`);
 		}
 	}
 
-	const coordinates = cropInfoForEditor.value.coordinates;
+	const coordinates = imageTransformationEditorDetails.value.coordinates;
 	if (coordinates) {
 		readyTransformations.push(
 			`["extract",{"width": ${coordinates.width}, "height": ${coordinates.height}, "left": ${coordinates.x}, "top": ${coordinates.y}}]`
@@ -290,16 +290,16 @@ async function imageErrorHandler() {
 async function replaceImage(item: string | number) {
 	try {
 		fileID.value = item;
-		cropID.value = { file_id: item, collection: collection.value };
+		imageTransformationID.value = { file_id: item, collection: collection.value };
 	} catch (err: any) {
 		console.log(err);
 	}
 }
 
-function updateCropInfo(payload: { coordinates: object; image_transformations: object }) {
-	if (cropID.value && typeof cropID.value === 'object') cropID.value = { ...cropID.value, ...payload };
-	if (cropID.value && (typeof cropID.value === 'string' || typeof cropID.value === 'number'))
-		cropID.value = { id: cropID.value, ...payload };
+function updateImageTransformationInfo(payload: { coordinates: object; image_transformations: object }) {
+	if (imageTransformationID.value && typeof imageTransformationID.value === 'object') imageTransformationID.value = { ...imageTransformationID.value, ...payload };
+	if (imageTransformationID.value && (typeof imageTransformationID.value === 'string' || typeof imageTransformationID.value === 'number'))
+	imageTransformationID.value = { id: imageTransformationID.value, ...payload };
 }
 
 function deselect() {
@@ -307,13 +307,13 @@ function deselect() {
 
 	loading.value = false;
 	editDrawerActive.value = false;
-	editCropDetails.value = false;
+	editImageTransformationDetails.value = false;
 	editImageEditor.value = false;
 }
 
 const edits = computed(() => {
-	if (!cropID.value || typeof cropID.value !== 'object') return {};
-	return cropID.value;
+	if (!imageTransformationID.value || typeof imageTransformationID.value !== 'object') return {};
+	return imageTransformationID.value;
 });
 </script>
 

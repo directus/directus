@@ -7,7 +7,7 @@
 			</div>
 
 			<div class="field">
-				<div class="type-label">{{ t('crop_collection') }}</div>
+				<div class="type-label">{{ t('image_transformation_collection') }}</div>
 				<related-collection-select
 					v-model="junctionCollection"
 					:disabled="autoGenerateJunctionRelation || isExisting"
@@ -67,9 +67,9 @@
 			<v-icon class="arrow" name="arrow_forward" />
 		</div>
 
-		<div class="required-crop-section">
-			<v-divider large :inline-title="false">{{ t('required_crop_collection_fields') }}</v-divider>
-			<div class="required-crop-fields">
+		<div class="required-transformation-section">
+			<v-divider large :inline-title="false">{{ t('required_image_transformation_collection_fields') }}</v-divider>
+			<div class="required-transformation-fields">
 				<v-input
 					v-for="field in junctionFieldsRelated"
 					:model-value="field.field"
@@ -346,7 +346,7 @@ export default defineComponent({
 	grid-column: 2;
 }
 
-.required-crop-section {
+.required-transformation-section {
 	--v-input-font-family: var(--family-monospace);
 
 	.v-divider {
@@ -355,7 +355,7 @@ export default defineComponent({
 	}
 }
 
-.required-crop-fields {
+.required-transformation-fields {
 	display: grid;
 	grid-template-columns: repeat(2, minmax(0, 1fr));
 	gap: 10px;

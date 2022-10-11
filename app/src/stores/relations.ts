@@ -57,6 +57,7 @@ export const useRelationsStore = defineStore({
 		getRelationsForField(collection: string, field: string): Relation[] {
 			const fieldsStore = useFieldsStore();
 			const fieldInfo = fieldsStore.getField(collection, field);
+
 			if (!fieldInfo) return [];
 
 			const relations: Relation[] = this.getRelationsForCollection(collection).filter((relation: Relation) => {

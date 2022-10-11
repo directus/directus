@@ -20,9 +20,6 @@
 
 		<div class="warnings">
 			<v-notice v-if="!loading && error" type="error">error</v-notice>
-			<v-notice v-if="showImageHasCropsWarning" type="warning">
-				Attention: this image has some crops refering to it. Changing this image has irreversable effect on them!
-			</v-notice>
 		</div>
 
 		<div v-show="imageData && !loading && !error" class="editor-container">
@@ -156,14 +153,14 @@ type CropCoordinates = {
 	height: number;
 };
 
-type CropInfo = {
+type TransformationInfo = {
 	coordinates: CropCoordinates | null;
 	imageTransformations: {
 		flipY: boolean;
 		flipX: boolean;
 		rotate: number | null;
 	} | null;
-	cropCollection: string | null;
+	transformationCollection: string | null;
 	id: string | number | null;
 	collection: string;
 	fileID: string | null;
@@ -180,16 +177,12 @@ export default defineComponent({
 			type: Boolean,
 			default: undefined,
 		},
-		cropInfo: {
-			type: Object as PropType<CropInfo>,
+		transformationInfo: {
+			type: Object as PropType<TransformationInfo>,
 			default: undefined,
 		},
-		showImageHasCropsWarning: {
-			type: Boolean,
-			default: false,
-		},
 	},
-	emits: ['update:modelValue', 'refresh', 'update-crop-info'],
+	emits: ['update:modelValue', 'refresh', 'update-transformation-info'],
 	setup(props, { emit }) {
 		const { t, n } = useI18n();
 
@@ -239,8 +232,8 @@ export default defineComponent({
 		const randomId = ref<string>(nanoid());
 
 		const imageTransformations = computed(() => {
-			if (props.cropInfo?.imageTransformations) {
-				return cloneDeep(props.cropInfo?.imageTransformations);
+			if (props.transformationInfo?.imageTransformations) {
+				return cloneDeep(props.transformationInfo?.imageTransformations);
 			} else {
 				return {
 					flipY: false,
@@ -251,16 +244,16 @@ export default defineComponent({
 		});
 
 		const coordinates = computed(() => {
-			if (props.cropInfo && props.cropInfo.coordinates && imageData.value && cropperInstance.value) {
+			if (props.transformationInfo && props.transformationInfo.coordinates && imageData.value && cropperInstance.value) {
 				if (imageTransformations.value.flipY) {
-					props.cropInfo.coordinates.x =
-						imageData.value.width - props.cropInfo.coordinates.width - props.cropInfo.coordinates.x;
+					props.transformationInfo.coordinates.x =
+						imageData.value.width - props.transformationInfo.coordinates.width - props.transformationInfo.coordinates.x;
 				}
 				if (imageTransformations.value.flipX) {
-					props.cropInfo.coordinates.y =
-						imageData.value?.height - props.cropInfo.coordinates.height - props.cropInfo.coordinates.y;
+					props.transformationInfo.coordinates.y =
+						imageData.value?.height - props.transformationInfo.coordinates.height - props.transformationInfo.coordinates.y;
 				}
-				return props.cropInfo.coordinates;
+				return props.transformationInfo.coordinates;
 			} else {
 				return undefined;
 			}
@@ -330,16 +323,16 @@ export default defineComponent({
 		function applyImageTransformationsToUrl(url: string): string {
 			let readyTransformations = [];
 
-			if (props.cropInfo && props.cropInfo.imageTransformations) {
-				const flipY = props.cropInfo.imageTransformations.flipY;
-				const flipX = props.cropInfo.imageTransformations.flipX;
+			if (props.transformationInfo && props.transformationInfo.imageTransformations) {
+				const flipY = props.transformationInfo.imageTransformations.flipY;
+				const flipX = props.transformationInfo.imageTransformations.flipX;
 				if (flipX) {
 					readyTransformations.push('["flip"]');
 				}
 				if (flipY) {
 					readyTransformations.push('["flop"]');
 				}
-				let rotation = props.cropInfo.imageTransformations.rotate;
+				let rotation = props.transformationInfo.imageTransformations.rotate;
 				if (rotation) {
 					readyTransformations.push(`["rotate", ${rotation}]`);
 				}
@@ -411,9 +404,9 @@ export default defineComponent({
 							if (
 								cropperData &&
 								imageData.value &&
-								props.cropInfo &&
-								props.cropInfo.cropCollection &&
-								props.cropInfo.id
+								props.transformationInfo &&
+								props.transformationInfo.transformationCollection &&
+								props.transformationInfo.id
 							) {
 								const coordinates = cropping.value
 									? {
@@ -443,7 +436,7 @@ export default defineComponent({
 									? (imageTransformations.value.rotate %= 360)
 									: (imageTransformations.value.rotate %= -360);
 
-								emit('update-crop-info', { ...coordinates, image_transformations: imageTransformations.value });
+								emit('update-transformation-info', { ...coordinates, image_transformations: imageTransformations.value });
 							} else {
 								await api.patch(`/files/${props.id}`, formData);
 							}
