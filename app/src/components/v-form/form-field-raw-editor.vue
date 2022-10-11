@@ -3,9 +3,20 @@
 		<v-card>
 			<v-card-title>{{ disabled ? t('view_raw_value') : t('edit_raw_value') }}</v-card-title>
 			<v-card-text>
-				<interface-system-raw-editor
+				<interface-input-code
+					v-if="type === 'object'"
 					:value="internalValue"
-					:type="type === 'object' ? 'json' : type === 'string' ? 'text' : type"
+					:disabled="disabled"
+					:line-number="false"
+					:alt-options="{ gutters: false }"
+					:placeholder="t('enter_raw_value')"
+					language="json"
+					@input="internalValue = $event"
+				/>
+				<interface-system-raw-editor
+					v-else
+					:value="internalValue"
+					:type="type === 'string' ? 'text' : type"
 					:disabled="disabled"
 					:language="type === 'object' ? 'json' : type === 'string' ? 'plaintext' : type"
 					:placeholder="t('enter_raw_value')"
