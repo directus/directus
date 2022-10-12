@@ -164,7 +164,17 @@ const processSchemaFields = (
 						// Assert
 						expect(response.status).toBe(200);
 
-						processValidation(response.body.data, filterKey, filter, possibleValues, true);
+						const parsedFilterKey = filterKey.includes(':')
+							? filterKey
+									.split('.')
+									.map((key) => {
+										if (!key.includes(':')) return key;
+										return key.split(':')[0];
+									})
+									.join('.')
+							: filterKey;
+
+						processValidation(response.body.data, parsedFilterKey, filter, possibleValues, true);
 					}
 				});
 			});
@@ -218,11 +228,18 @@ function processValidation(
 				return found;
 			}
 		} else {
+			let validationResult;
+			try {
+				validationResult = filter.validatorFunction(get(data, keys[0]), filter.value);
+			} catch (_err) {
+				validationResult = false;
+			}
+
 			if (assert) {
-				expect(filter.validatorFunction(get(data, keys[0]), filter.value)).toBe(true);
+				expect(validationResult).toBe(true);
 				return true;
 			} else {
-				return filter.validatorFunction(get(data, keys[0]), filter.value);
+				return validationResult;
 			}
 		}
 	} else {

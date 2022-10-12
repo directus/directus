@@ -15,7 +15,7 @@ import {
 	getTestsSchema,
 	seedDBValues,
 } from './m2a.seed';
-// import { CheckQueryFilters } from '@query/filter';
+import { CheckQueryFilters } from '@query/filter';
 
 function createShape(pkType: common.PrimaryKeyType) {
 	const item: Shape = {
@@ -708,39 +708,38 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				});
 			});
 
-			// TODO: Enable query filter tests
-			// CheckQueryFilters(
-			// 	{
-			// 		method: 'get',
-			// 		path: `/items/${localCollectionShapes}`,
-			// 		token: common.USER.ADMIN.TOKEN,
-			// 	},
-			// 	localCollectionShapes,
-			// 	cachedSchema[pkType][localCollectionShapes],
-			// 	vendorSchemaValues
-			// );
+			CheckQueryFilters(
+				{
+					method: 'get',
+					path: `/items/${localCollectionShapes}`,
+					token: common.USER.ADMIN.TOKEN,
+				},
+				localCollectionShapes,
+				cachedSchema[pkType][localCollectionShapes],
+				vendorSchemaValues
+			);
 
-			// CheckQueryFilters(
-			// 	{
-			// 		method: 'get',
-			// 		path: `/items/${localCollectionCircles}`,
-			// 		token: common.USER.ADMIN.TOKEN,
-			// 	},
-			// 	localCollectionCircles,
-			// 	cachedSchema[pkType][localCollectionCircles],
-			// 	vendorSchemaValues
-			// );
+			CheckQueryFilters(
+				{
+					method: 'get',
+					path: `/items/${localCollectionCircles}`,
+					token: common.USER.ADMIN.TOKEN,
+				},
+				localCollectionCircles,
+				cachedSchema[pkType][localCollectionCircles],
+				vendorSchemaValues
+			);
 
-			// CheckQueryFilters(
-			// 	{
-			// 		method: 'get',
-			// 		path: `/items/${localCollectionSquares}`,
-			// 		token: common.USER.ADMIN.TOKEN,
-			// 	},
-			// 	localCollectionSquares,
-			// 	cachedSchema[pkType][localCollectionSquares],
-			// 	vendorSchemaValues
-			// );
+			CheckQueryFilters(
+				{
+					method: 'get',
+					path: `/items/${localCollectionSquares}`,
+					token: common.USER.ADMIN.TOKEN,
+				},
+				localCollectionSquares,
+				cachedSchema[pkType][localCollectionSquares],
+				vendorSchemaValues
+			);
 		});
 
 		describe('POST /:collection', () => {
