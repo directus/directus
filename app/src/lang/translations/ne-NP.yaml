@@ -266,44 +266,350 @@ click_to_manage_translated_fields: >-
   त्यहाँ अझै अनुवादित फिल्डहरू छैनन्। तिनीहरूलाई सिर्जना गर्न यहाँ क्लिक गर्नुहोस्। | त्यहाँ एउटा अनुवादित फिल्ड छ। यसलाई व्यवस्थापन गर्न यहाँ क्लिक गर्नुहोस्। | त्यहाँ {count} अनुवादित फिल्डहरू छन्। तिनीहरूलाई व्यवस्थापन गर्न यहाँ क्लिक गर्नुहोस्।
 fields_group: फिल्ड समूह
 no_collections_found: कुनै संग्रह फेला परेन।
+new_data_alert: 'तपाईंको डाटा मोडेल भित्र निम्न सिर्जना गरिनेछ:'
+search_collection: सङ्ग्रह खोज्नुहोस्...
+new_field: 'नयाँ फिल्ड'
+new_collection: 'नयाँ संग्रह'
+add_m2o_to_collection: '"{collection}" मा M2O थप्नुहोस्'
+add_o2m_to_collection: '"{collection}" मा O2M थप्नुहोस्'
+add_m2m_to_collection: '"{collection}" मा M2M थप्नुहोस्'
+choose_a_type: एक प्रकार छान्नुहोस्...
+determined_by_relationship: सम्बन्ध द्वारा निर्धारण
+add_note: प्रयोगकर्ताहरूको लागि उपयोगी टिप्पणी थप्नुहोस्...
+add_link: लिङ्क थप्नुहोस्
+custom_link: कस्टम लिंक
+default_value: पूर्वनिर्धारित मान
+standard_field: मानक फिल्ड
+single_file: एकल फाइल
+multiple_files: धेरै फाइलहरू
+m2o_relationship: धेरै देखि एक सम्बन्ध
+o2m_relationship: एक देखि धेरै सम्बन्ध
+m2m_relationship: धेरै देखि धेरै सम्बन्ध
+m2a_relationship: धेरै देखि कुनै सम्बन्ध
+invalid_item: अमान्य वस्तु
+next: अर्को
+field_name: फिल्ड नाम
+translations: अनुवादहरू
+no_translations: कुनै अनुवाद छैन
+left_to_right: बायाँ देखि दायाँ
+right_to_left: दायाँ देखि बायाँ
+note: नोट
+enter_a_value: मान प्रविष्ट गर्नुहोस्...
+enter_a_placeholder: प्लेसहोल्डर प्रविष्ट गर्नुहोस्...
+length: लम्बाइ
+soft_length: नरम सीमा
+precision_scale: सटीक र स्केल
+readonly: पढ्न मात्र मिल्ने
+unique: अद्वितीय
+updated_on: अपडेट गरिएको मिति
+updated_by: द्वारा अद्यावधिक गरिएको
+primary_key: प्राथमिक कुञ्जी
+foreign_key: विदेशी कुञ्जी
+finish_setup: सेटअप समाप्त गर्नुहोस्
+dismiss: रद्द गर्नुहोस्
 copy_raw_value_success: प्रतिलिपि गरियो
 copy_raw_value_fail: प्रतिलिपि गर्न सकिएन
 paste_raw_value_success: टाँसियो
 paste_raw_value_fail: टाँस्न असफल भयो
+clear_value: मान खाली गर्नुहोस्
+clear_changes: परिवर्तनहरू खाली गर्नुहोस्
+clear_items: वस्तुहरू खाली गर्नुहोस्
+reset_to_default: पूर्वनिर्धारितमा रिसेट गर्नुहोस्
+undo_changes: परिवर्तनहरू पूर्ववत गर्नुहोस्
+notifications: सूचनाहरू
+show_all_activity: सबै गतिविधि देखाउनुहोस्
+page_not_found: पृष्ठ फेला परेन
+import_data_error: यस फाइलको डेटा संरचना सङ्कलनसँग मेल खाँदैन।
+label_import: आयात गर्नुहोस्
+label_export: निर्यात गर्नुहोस्
+import_export: आयात/निर्यात
+format: ढाँचा
+last_page: अन्तिम पाना
+last_access: अन्तिम पहुँच
+fill_template: टेम्प्लेटको मान भर्नुहोस्
+a_unique_table_name: एक अद्वितीय टेबल नाम ...
+a_unique_column_name: एक अद्वितीय पङ्क्ति नाम ...
+enable_custom_values: आफू अनुकूल मानहरू सक्षम गर्नुहोस्
+submit: पेश गर्नुहोस्
+move_to_folder: फोल्डरमा सार्नुहोस्
+move: सार्नुहोस्
+system: प्रणाली
+add_field_related: सम्बन्धित संग्रहमा फिल्ड थप्नुहोस्
+interface_label: इन्टरफेस
+today: आज
+yesterday: हिजो
+delete_comment: टिप्पणी मेटाउनुहोस्
+delete_share: सेयर मेटाउनुहोस्
 functions:
+  year: वर्ष
+  month: महिना
+  week: हप्ता
+  day: दिन
+  weekday: काम गर्ने दिनहरू
+  hour: घण्टा
+  minute: मिनेट
+  second: सेकेण्ड
   count: गणना
+date-fns_date: PPP
+minutes: मिनेटहरू
+hours: घण्टाहरू
+month: महिना
+year: वर्ष
+select_all: सबै चयन गर्नुहोस्
+months:
+  january: जनवरी
+  february: फेब्रुवरी
+  march: मार्च
+  april: अप्रिल
+  may: मे
+  june: जुन
+  july: जुलाई
+  august: अगस्ट
+  september: सेप्टेम्बर
+primary_key_field: प्राथमिक कुञ्जी फिल्ड
+type: प्रकार
+creating_new_collection: नयाँ सङ्ग्रह सिर्जना गर्दै
+created_by: द्वारा सिर्जना गरिएको
+created_on: मा सिर्जना गरियो
+creating_collection_info: संग्रहको नाम दिनुहोस् र यसको अद्वितीय "कुञ्जी" फिल्ड सेटअप गर्नुहोस्...
+creating_collection_system: 'यी कुनै पनि वैकल्पिक फिल्डहरू सक्षम र पुन: नामाकरण गर्नुहोस्।'
+auto_increment_integer: स्वतः बढेको पूर्णांक
+auto_increment_big_integer: स्वतः बढेको ठूलो पूर्णांक
+generated_uuid: उत्पन्न UUID
+manual_string: म्यानुअल रूपमा स्ट्रिङ प्रविष्ट गरियो
+save_and_create_new: सेभ गर्नुहोस् र नयाँ सिर्जना गर्नुहोस्
+save_and_stay: सेभ गर्नुहोस र रहनुहोस 
+save_as_copy: प्रतिलिपिको रूपमा सेभ गर्नुहोस्
+add_existing: विद्यमान थप्नुहोस्
+creating_items: वस्तुहरू सिर्जना गर्दै
+enable_create_button: सिर्जना बटन सक्षम गर्नुहोस्
+selecting_items: वस्तुहरू चयन गर्दै
+enable_select_button: चयन बटन सक्षम गर्नुहोस्
+allow_duplicates: डुप्लिकेटहरूलाई अनुमति दिनुहोस्
+comments: टिप्पणीहरू
+no_comments: अहिले सम्म कुनै टिप्पणी छैन
+click_to_expand: विस्तार गर्नको लागि क्लिक गर्नुहोस्
+select_item: वस्तु चयन गर्नुहोस्
+no_items: कुनै वस्तुहरू छैनन्
+search_items: वस्तुहरू खोज्नुहोस्...
+disabled: सक्षम गरिएको छैन
+information: जानकारी
+report_bug: त्रुटि रिपोट गर्नुहोस् 
+request_feature: सुविधा अनुरोध गर्नुहोस्
+request_body: अनुरोध शरीर
+interface_not_found: '"{interface}" इन्टरफेस फेला परेन।'
+operation_not_found: '"{operation}" अपरेशन फेला परेन।'
+reset_interface: इन्टरफेस रिसेट गर्नुहोस्
+display_not_found: '"{display}" डिस्प्ले फेला परेन।'
+reset_display: डिस्प्ले रिसेट गर्नुहोस्
+list-m2a: बिल्डर (M2A)
+item_count: 'कुनै वस्तु छैन | एउटा वस्तु | {count} वस्तुहरू'
+no_items_copy: यस संग्रहमा अझै कुनै वस्तुहरू छैनन्।
+file_count: 'कुनै फाइल छैन | एउटा फाइल | {count} फाइलहरू'
+no_files_copy: यहाँ कुनै फाइलहरू छैनन्।
+user_count: 'कुनै प्रयोगकर्ता छैन | एक प्रयोगकर्ता | {count} प्रयोगकर्ताहरू'
+no_users_copy: यस भूमिकामा अझै कुनै प्रयोगकर्ताहरू छैनन्।
+webhooks_count: 'कुनै वेबहुक छैन | एउटा वेबहुक | {count} वेबहुकहरू'
+no_webhooks_copy: कुनै पनि वेबहुकहरू अझै कन्फिगर गरिएको छैन। तल एउटा सिर्जना गरेर सुरु गर्नुहोस्।
+no_notifications: कुनै सूचनाहरू छैनन्
+no_notifications_copy: तपाईंले सबै जाँच गर्नुभयो
+activity_log: गतिविधि लग
+all_items: सबै वस्तुहरू
+any: कुनै पनि
+bookmark_doesnt_exist_copy: तपाईंले खोल्न खोज्नु भएको बुकमार्क फेला पार्न सकिएन।
+bookmark_doesnt_exist_cta: संग्रह मा फर्कनुहोस्
+select_an_item: एउटा वस्तु चयन गर्नुहोस्...
+edit: सम्पादन गर्नुहोस्
+enabled: सक्षम गरियो
+disable_tfa: 2FA असक्षम गर्नुहोस्
+tfa_scan_code: 2FA सेटअप पूरा गर्न आफ्नो प्रमाणक एपमा कोड स्क्यान गर्नुहोस्
+enter_otp_to_disable_tfa: 2FA असक्षम गर्न OTP प्रविष्ट गर्नुहोस्
+create_account: खाता सिर्जना गर्नुहोस्
+account_created_successfully: खाता सफलतापूर्वक सिर्जना गरियो
+auto_fill: स्वतः भर्नुहोस्
+corresponding_field: सम्बन्धित फिल्ड
 errors:
+  COLLECTION_NOT_FOUND: "संग्रह अवस्थित छैन"
+  FIELD_NOT_FOUND: फिल्ड भेटिएन
+  FORBIDDEN: प्रतिबन्धि‍त
+  INVALID_CREDENTIALS: गलत प्रयोगकर्ता नाम वा पासवर्ड
+  INVALID_OTP: गलत वन-टाइम पासवर्ड
+  INVALID_PAYLOAD: अमान्य पेलोड
+  INVALID_PROVIDER: प्रयोगकर्ता फरक प्रमाणीकरण प्रदायकसँग सम्बन्धित छ
+  INVALID_QUERY: अमान्य क्वेरी
+  INVALID_CONFIG: अमान्य कन्फिगरेसन
+  INVALID_TOKEN: अमान्य टोकन
+  INVALID_IP: आईपी ठेगानालाई अनुमति छैन
+  INVALID_USER: प्रयोगकर्ता प्रमाणीकरण गर्न असफल
+  ITEM_LIMIT_REACHED: वस्तुको सीमा पुगेको छ
+  ITEM_NOT_FOUND: वस्तु फेला परेन
+  ROUTE_NOT_FOUND: फेला परेन
+  RECORD_NOT_UNIQUE: डुप्लिकेट मान पत्ता लाग्यो
+  USER_SUSPENDED: प्रयोगकर्ता निलम्बित
+  CONTAINS_NULL_VALUES: फिल्डमा शून्य मानहरू छन्
+  UNPROCESSABLE_ENTITY: प्रशोधन गर्न नसकिने इन्टिटी
+  INTERNAL_SERVER_ERROR: नसाेचेकाे समस्या
   NOT_NULL_VIOLATION: मूल्य शून्य हुन सक्दैन
+  ILLEGAL_ASSET_TRANSFORMATION: पूर्वावलोकनको लागि तस्वीरको स्रोत धेरै ठूलो छ
+  VALUE_TOO_LONG: मान धेरै लामो छ
+  VALUE_OUT_OF_RANGE: मान दायरा भन्दा बाहिर छ
+  INVALID_FOREIGN_KEY: अवैध विदेशी कुञ्जी
+  UNKNOWN: नसाेचेकाे समस्या
+  GRAPHQL_VALIDATION_EXCEPTION: GraphQL प्रमाणीकरण अपवाद
+  SERVICE_UNAVAILABLE: सेवा उपलब्ध छैन
+  UNSUPPORTED_MEDIA_TYPE: असमर्थित मिडिया प्रकार
+  UNEXPECTED_RESPONSE: अप्रत्याशित प्रतिक्रिया
+  TOKEN_EXPIRED: टोकनको म्याद सकियो
+  RANGE_NOT_SATISFIABLE: अमान्य दायरा
+  REQUESTS_EXCEEDED: अनुरोध सीमा पुग्यो
+security: सुरक्षा
+value_hashed: मान सुरक्षित रूपमा ह्यास गरिएको
+bookmark_name: बुकमार्कको नाम...
+create_bookmark: बुकमार्क सिर्जना गर्नुहोस्
+edit_bookmark: बुकमार्क सम्पादन गर्नुहोस्
+unexpected_error: नसाेचेकाे समस्या
+count_other_revisions: '{count} अन्य संशोधनहरू'
+font: फन्ट
+sans_serif: सान्स सेरिफ
+serif: सेरिफ
+monospace: मोनोस्पेस
+divider: विभाजक
+color: रंग
+circle: वृत्त
+empty_item: खाली वस्तु
+log_in_with: '{provider} मार्फत लग इन गर्नुहोस्'
+conditional_styles: सशर्त शैलीहरू
+advanced_settings: उन्नत सेटिङहरू
+advanced_filter: उन्नत फिल्टर
+delete_advanced_filter: फिल्टर मेटाउनुहोस्
+change_advanced_filter_operator: अपरेटर परिवर्तन गर्नुहोस्
+advanced: उन्नत
+operators:
+  eq: बराबर
+  neq: बराबर छैन
+  lt: भन्दा कम
+  gt: भन्दा ठुलो
+  lte: भन्दा कम वा बराबर
+  gte: भन्दा ठूलो वा बराबर
+  in: मध्ये एक हो
+  nin: मध्ये एक होइन
+  null: शून्य छ
+  nnull: शून्य छैन
+  contains: समावेश छ
+  ncontains: यसमा समावेश छैन
+  icontains: समावेश (असंवेदनशील)
+  starts_with: बाट सुरु हुन्छ
+  nstarts_with: बाट सुरु हुँदैन
+  ends_with: संग समाप्त हुन्छ
+  nends_with: संग समाप्त हुँदैन
+  between: बीचमा
 value_unique: मान दोहोर्याउनु हुँदैन
+wysiwyg_options:
+  selectall: सबै चयन गर्नुहोस्
 fields:
+  directus_collections:
+    note: नोट
+    color: रंग
+  directus_files:
+    created_on: मा सिर्जना गरियो
+    created_by: द्वारा सिर्जना गरिएको
   directus_users:
     language: भाषा
+    last_page: अन्तिम पाना
+    last_access: अन्तिम पहुँच
   directus_settings:
     module_bar: मोड्युल बार
   directus_fields:
+    note: नोट
     translation: फिल्ड नामको उल्थाहरू
   directus_roles:
     name: भूमिकाको नाम
 field_options:
+  directus_settings:
+    security_divider_title: सुरक्षा
   directus_collections:
     language: भाषा
     archive_divider: संग्रह
 interfaces:
+  filter:
+    any: कुनै पनि
   presentation-links:
     primary: प्राथमिक
+  select-color:
+    color: रंग
+  presentation-divider:
+    divider: विभाजक
+  select-dropdown:
+    choices_value_placeholder: मान प्रविष्ट गर्नुहोस्...
   input-hash:
     hash: ह्यास
+  input-rich-text-md:
+    edit: सम्पादन गर्नुहोस्
+  boolean:
+    label_default: सक्षम गरियो
 displays:
+  translations:
+    translations: अनुवादहरू
   boolean:
     boolean: Boolean
+  color:
+    color: रंग
   datetime:
+    format: ढाँचा
+    format_note: >-
+      आफू अनुकूल ढाँचाले __[मिति फिल्ड चिन्ह तालिका](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__ स्वीकार गर्दछ
     suffix: प्रत्यय
   formatted-value:
+    format: ढाँचा
+    font: फन्ट
+    font_serif: सेरिफ
+    font_monospace: मोनोस्पेस
     prefix: उपसर्ग
     suffix: प्रत्यय
+    color: रंग
     text: पाठ
+  image:
+    circle: वृत्त
+  labels:
+    choices_value_placeholder: मान प्रविष्ट गर्नुहोस्...
 operations:
   log:
+    name: कन्सोलमा लग गर्नुहोस्
+    description: कन्सोलमा केहि आउटपुट गर्नुहोस्
     message: सन्देश
+    message_placeholder: कन्सोलमा देखाउनको लागि सन्देश प्रविष्ट गर्नुहोस्...
+  mail:
+    name: ई-मेल पठाउनुहोस्
+    description: एक वा धेरै व्यक्तिहरूलाई इमेल पठाउनुहोस्
+    to_placeholder: इ-मेल ठेगानाहरू थप्नुहोस् र इन्टर थिच्नुहोस्...
+    body: शरीर
   notification:
+    name: सूचना पठाउनुहोस्
+    description: एक वा धेरै प्रयोगकर्ताहरूलाई इन-एप सूचना पठाउनुहोस्
+    recipient: प्रयोगकर्ता
+    recipient_placeholder: प्रयोगकर्ता UUID थप्नुहोस् र इन्टर थिच्नुहोस्...
     message: सन्देश
+  request:
+    name: वेबहुक / अनुरोध URL
+    description: "URL मा अनुरोध गर्नुहोस्"
+    url: URL
+    url_placeholder: https://example.com/example
+    method: विधि
+    data: डाटा
+    headers: हेडरहरू
+    header: हेडर
+    header_placeholder: प्राधिकरण...
+    value_placeholder: Bearer eyJhbGciOi...
+  sleep:
+    name: निष्क्रिय
+    description: दिइएको संख्या मिलिसेकेन्ड पर्खनुहोस्
+    milliseconds: मिलिसेकेन्ड
+  transform:
+    name: पेलोड रूपान्तरण
+    description: फ्लोको JSON पेलोड परिवर्तन गर्नुहोस्
+  trigger:
+    name: ट्रिगर फ्लो
+    description: यो डाटालाई अर्को फ्लोमा पठाउनुहोस्
+    flows: फ्लोहरु
+    flow: फ्लो
+    data: डाटा
