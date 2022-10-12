@@ -6,8 +6,8 @@ import { flatten, isEmpty, isNil } from 'lodash';
 import { applyConditions } from './apply-conditions';
 
 export function validateItem(item: Record<string, any>, fields: Field[], isNew: boolean) {
-	const relationsStore = useRelationsStore()
-	
+	const relationsStore = useRelationsStore();
+
 	const validationRules = {
 		_and: [],
 	} as LogicalFilterAND;
@@ -28,8 +28,8 @@ export function validateItem(item: Record<string, any>, fields: Field[], isNew: 
 		const relation = relationsStore.getRelationsForField(field.collection, field.field);
 
 		// Check if we are dealing with a relational field that has an empty array as its value
-		if(relation.length > 0 && Array.isArray(item[field.field]) && isEmpty(item[field.field])) {
-			item[field.field] = null
+		if (relation.length > 0 && Array.isArray(item[field.field]) && isEmpty(item[field.field])) {
+			item[field.field] = null;
 		}
 
 		validationRules._and.push({
