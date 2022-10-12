@@ -90,10 +90,10 @@ delete_translation_string_copy: >-
   ¿Está seguro de que desea eliminar la cadena de traducción "{key}"? Esta acción no se puede deshacer.
 invite_users: Invitar usuarios
 invite: Invitar
-email_already_invited: El correo electrónico "{email}" ya ha sido invitado
+email_already_invited: El email "{email}" ya ha sido invitado
 subject: Asunto
 inbox: Buzón
-emails: Correos
+emails: Emails
 connection_excellent: Conexión excelente
 connection_good: Conexión buena
 connection_fair: Conexión justa
@@ -278,7 +278,7 @@ search_collection: Buscar colección...
 new_field: 'Nuevo campo'
 new_collection: 'Nueva colección'
 add_m2o_to_collection: 'Añadir M2O a "{collection}"'
-add_o2m_to_collection: 'Agregar Uno-A-Muchos a "{collection}"'
+add_o2m_to_collection: 'Añadir O2M a "{collection}"'
 add_m2m_to_collection: 'Añadir M2M a "{collection}"'
 choose_a_type: Elegir un Tipo...
 determined_by_relationship: Determinado por la Relación
@@ -301,7 +301,7 @@ no_translations: Sin traducciones
 left_to_right: Izquierda a derecha
 right_to_left: Derecha a izquierda
 note: Nota
-enter_a_value: Ingrese un valor...
+enter_a_value: Introduzca un valor...
 enter_a_placeholder: Ingrese un placeholder...
 length: Longitud
 soft_length: Límite suave
@@ -384,7 +384,7 @@ submit: Enviar
 move_to_folder: Mover a Directorio
 move: Mover
 system: Sistema
-add_field_related: Agregar Campo a Colección Relacionada
+add_field_related: Añadir campo a colección relacionada
 interface_label: Interfaz
 today: Hoy
 yesterday: Ayer
@@ -480,7 +480,7 @@ manual_string: Cadena de Texto introducida Manualmente
 save_and_create_new: Guardar y Crear Nuevo
 save_and_stay: Guardar y Permanecer
 save_as_copy: Guardar como Copia
-add_existing: Agregar Existente
+add_existing: Añadir existente
 creating_items: Creando elementos
 enable_create_button: Habilitar el botón Crear
 selecting_items: Seleccionando elementos
@@ -748,7 +748,7 @@ create_folder: Crear Directorio
 edit_folder: Editar Carpeta
 folder_name: Nombre del Directorio...
 folder_key: Clave de carpeta...
-add_file: Agregar Archivo
+add_file: Añadir archivo
 replace_file: Reemplazar Archivo
 no_results: Sin Resultados
 no_results_copy: Ajustar o limpiar filtros de búsqueda para ver los resultados.
@@ -862,7 +862,7 @@ transformation_preset_key: Clave preestablecida de transformación
 source: Fuente
 url_placeholder: Introduzca una url...
 display_text: Mostrar texto
-display_text_placeholder: Introduzca un texto de visualización...
+display_text_placeholder: Introduzca un texto para mostrar...
 interface_group_text_and_numbers: Texto y Números
 interface_group_selection: Selección
 interface_group_relational: Relacional
@@ -899,7 +899,7 @@ wysiwyg_options:
   link: Añadir/Editar enlace
   unlink: Remover Enlace
   media: Añadir/Editar medios
-  image: Añadir/Editar Imagen
+  image: Añadir/Editar imagen
   copy: Copiar
   cut: Cortar
   paste: Pegar
@@ -930,7 +930,7 @@ choices_option_configured_incorrectly: Opciones configuradas incorrectamente
 deselect: Quitar selección
 deselect_all: Deseleccionar Todo
 other: Otro...
-adding_user: Agregando Usuario
+adding_user: Añadiendo usuario
 unknown_user: Usuario Desconocido
 creating_in: 'Creando elemento en {collection}'
 editing_in: 'Editando elemento en {collection}'
@@ -1002,7 +1002,7 @@ page_help_users_item: >-
 page_help_insights_overview: '**Diseños** — Lista de paneles a los que tienes acceso.'
 page_help_insights_dashboard: '**Panel de control** — Espacio de trabajo para administrar uno o más paneles'
 activity_feed: Actividad
-add_new: Añadir Nuevo
+add_new: Añadir nuevo
 create_new: Crear Nuevo
 all: Todo
 none: Nada
@@ -1121,7 +1121,7 @@ fields:
     external_identifier: Identificador externo
     last_page: Última página
     last_access: Último acceso
-    email_notifications: Notificaciones por correo electrónico
+    email_notifications: Notificaciones por email
   directus_settings:
     jpg: JPEG
     png: PNG
@@ -1268,15 +1268,15 @@ field_options:
   directus_roles:
     name: El nombre único para este rol...
     description: Una descripción de este rol...
-    ip_access: Añadir direcciones IP permitidas, dejar vacío para permitir todos...
+    ip_access: Añadir direcciones IP permitidas, déjelo en blanco para permitir todo...
     fields:
       icon_name: Ícono
       name_name: Nombre
-      name_placeholder: Ingresar un título...
+      name_placeholder: Introduzca un título...
       link_name: Enlace
       link_placeholder: URL relativa o absoluta...
     collections_name: Colecciones
-    collections_addLabel: Añadir Colección...
+    collections_addLabel: Añadir colección...
   directus_users:
     preferences_divider: Preferencias de usuario
     dropdown_auto: Automático (basado en el sistema)
@@ -1454,7 +1454,7 @@ interfaces:
     no_rules: No hay reglas configuradas
     change_value: Haga clic para cambiar el valor
     placeholder: Arrastre archivos a esta zona
-    add_key_placeholder: Añada una clave y presionar Enter...
+    add_key_placeholder: Añade una clave y presiona enter...
   fields:
     name: Campos
   group-accordion:
@@ -1493,7 +1493,7 @@ interfaces:
     description: Escribir o compartir fragmentos de código
     line_number: Número de línea
     line_wrapping: Salto de línea
-    placeholder: Ingrese el código aquí...
+    placeholder: Introduzca el código aquí...
   system-collection:
     collection: Colección
     description: Seleccionar entre colecciones existentes
@@ -1512,7 +1512,7 @@ interfaces:
     name_placeholder: Introduce el nombre del color...
   datetime:
     datetime: Fecha/hora
-    description: Ingrese fechas y horas
+    description: Introduzca fechas y horas
     include_seconds: Incluir Segundos
     set_to_now: Ajustar a Ahora Mismo
     use_24: Usar Formato 24 horas
@@ -1536,13 +1536,13 @@ interfaces:
     margin_top_label: Aumentar Margen Superior
   select-dropdown:
     description: Seleccione un valor de una lista desplegable
-    choices_placeholder: Agregar una nueva opción
+    choices_placeholder: Añadir una nueva opción
     allow_other: Permitir otro
     allow_other_label: Permitir otros valores
     allow_none: Permitir "Nada"
     allow_none_label: Permitir "Sin selección"
-    choices_name_placeholder: Ingrese un nombre...
-    choices_value_placeholder: Ingrese un valor...
+    choices_name_placeholder: Introduzca un nombre...
+    choices_value_placeholder: Introduzca un valor...
     preview_threshold: Umbral de vista previa
   select-multiple-dropdown:
     select-multiple-dropdown: Lista Desplegable (Múltiple)
@@ -1646,7 +1646,7 @@ interfaces:
     always_show_value: Siemrpe presentar valor
   tags:
     tags: Etiquetas
-    description: Seleccionar o agregar etiquetas
+    description: Seleccionar o añadir etiquetas
     whitespace: Espacio en Blanco
     hyphen: Reemplazar con guiones
     underscore: Reemplazar con guiones bajos
@@ -1657,7 +1657,7 @@ interfaces:
     auto_formatter: Usar Auto-Formateador de Título
     alphabetize: Alfabetización
     alphabetize_label: Forzar Orden Alfabético
-    add_tags: Añadir una etiqueta y presionar Enter...
+    add_tags: Añade una etiqueta y presiona enter...
   input:
     input: Entrada
     description: Introduzca manualmente un valor
@@ -1845,7 +1845,7 @@ displays:
     default_background: Fondo por defecto
     format_label: Formatear cada etiqueta
     show_as_dot: Presentar como Punto
-    choices_value_placeholder: Ingrese un valor...
+    choices_value_placeholder: Introduzca un valor...
     choices_text_placeholder: Ingresar un texto...
   mime-type:
     mime-type: Tipo MIME
@@ -1928,7 +1928,7 @@ layouts:
     advanced: Avanzado,
     edit_group: Editar Grupo,
     delete_group: Eliminar Grupo,
-    add_group: Añadir Grupo,
+    add_group: Añadir grupo,
     add_group_placeholder: Introduzca un nuevo título para el grupo...,
     show_ungrouped: Mostrar Desagrupado,
     show: Mostrar,
@@ -2096,16 +2096,16 @@ operations:
     message: Mensaje
     message_placeholder: Envía un mensaje para mostrar en la consola...
   mail:
-    name: Enviar Email
-    description: Envía un email a una o más personas
+    name: Enviar email
+    description: Enviar un email a una o más personas
     to: A
-    to_placeholder: Añada la dirección del correo electrónico y presionar Enter...
+    to_placeholder: Añade una dirección de email y presiona enter...
     body: Cuerpo
   notification:
     name: Enviar notificación
     description: Enviar una notificación dentro de la aplicación a uno o más usuarios
     recipient: Usuario
-    recipient_placeholder: Añadir la UUID del usuario y presionar Enter...
+    recipient_placeholder: Añade el UUID de usuario y presiona enter...
     message: Mensaje
   request:
     name: Webhook / Solicitud de URL
