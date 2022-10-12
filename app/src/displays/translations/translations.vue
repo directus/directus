@@ -1,7 +1,11 @@
 <template>
 	<value-null v-if="!relationInfo?.junctionCollection?.collection" />
 	<div v-else class="display-translations">
-		<render-template :template="internalTemplate" :item="displayItem" :collection="relationInfo.junctionCollection.collection" />
+		<render-template
+			:template="internalTemplate"
+			:item="displayItem"
+			:collection="relationInfo.junctionCollection.collection"
+		/>
 		<v-menu class="menu" show-arrow :disabled="value.length === 0">
 			<template #activator="{ toggle, deactivate, active }">
 				<v-icon small class="icon" :class="{ active }" name="info" @click.stop="toggle" @focusout="deactivate"></v-icon>
@@ -39,8 +43,8 @@ import { useFieldsStore } from '@/stores/fields';
 interface Props {
 	collection: string;
 	field: string;
-	type: string
-	value?: Record<string, any>[]
+	type: string;
+	value?: Record<string, any>[];
 	template?: string;
 	userLanguage?: boolean;
 	defaultLanguage?: string;
@@ -53,58 +57,53 @@ const props = withDefaults(defineProps<Props>(), {
 	userLanguage: false,
 	defaultLanguage: undefined,
 	languageField: undefined,
-})
+});
 
 const { collection, field } = toRefs(props);
 const fieldsStore = useFieldsStore();
 
-const {relationInfo} = useRelationM2M(collection, field);
+const { relationInfo } = useRelationM2M(collection, field);
 
 const internalTemplate = computed(() => {
-	if(!relationInfo.value) return '';
+	if (!relationInfo.value) return '';
 
 	const primaryKeyField = relationInfo.value.junctionPrimaryKeyField.field;
-	const collectionDisplayTemplate = relationInfo.value.junctionCollection?.meta?.display_template
+	const collectionDisplayTemplate = relationInfo.value.junctionCollection?.meta?.display_template;
 
-	return (
-		props.template || collectionDisplayTemplate || `{{ ${primaryKeyField} }}`
-	);
+	return props.template || collectionDisplayTemplate || `{{ ${primaryKeyField} }}`;
 });
 
 const displayItem = computed(() => {
-	if(!relationInfo.value) return {};
+	if (!relationInfo.value) return {};
 
 	const langPkField = relationInfo.value.relatedPrimaryKeyField.field;
-	const langField = relationInfo.value.junctionField.field
+	const langField = relationInfo.value.junctionField.field;
 
-	let item =
-		props.value.find((val) => val?.[langField]?.[langPkField] === props.defaultLanguage) ??
-		props.value[0];
+	let item = props.value.find((val) => val?.[langField]?.[langPkField] === props.defaultLanguage) ?? props.value[0];
 
 	if (props.userLanguage) {
 		const user = useUserStore();
-		item =
-			props.value.find((val) => val?.[langField]?.[langPkField] === user.currentUser?.language) ?? item;
+		item = props.value.find((val) => val?.[langField]?.[langPkField] === user.currentUser?.language) ?? item;
 	}
 	return item ?? {};
 });
 
 const writableFields = computed(() => {
-	if(!relationInfo.value) return [];
+	if (!relationInfo.value) return [];
 
 	const junctionFields = fieldsStore.getFieldsForCollection(relationInfo.value.junctionCollection.collection);
 
 	return junctionFields.filter(
 		(field) => field.type !== 'alias' && field.meta?.hidden === false && field.meta.readonly === false
-	)
+	);
 });
 
 const translations = computed(() => {
-	if(!relationInfo.value) return [];
+	if (!relationInfo.value) return [];
 
 	const primaryKeyField = relationInfo.value.junctionPrimaryKeyField.field;
 	const langPkField = relationInfo.value.relatedPrimaryKeyField.field;
-	const langField = relationInfo.value.junctionField.field
+	const langField = relationInfo.value.junctionField.field;
 
 	return props.value.map((item) => {
 		const filledFields = writableFields.value.filter((field) => {
