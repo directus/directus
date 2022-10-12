@@ -25,7 +25,7 @@ export abstract class FnHelper extends DatabaseHelper {
 	abstract second(table: string, column: string, options?: FnHelperOptions): Knex.Raw;
 	abstract count(table: string, column: string, options?: FnHelperOptions): Knex.Raw;
 
-	json(table: string, column: string, options?: FnHelperOptions) {
+	json(table: string, column: string, _options?: FnHelperOptions) {
 		const { fieldName, queryPath } = parseJsonFunction(column);
 		return this.knex.jsonExtract(`${table}.${fieldName}`, queryPath, undefined, false);
 	}

@@ -55,6 +55,5 @@ function count(value: any): number | null {
 }
 
 function json(value: any): string {
-	console.log('json parser?', value);
 	return value as string;
 }

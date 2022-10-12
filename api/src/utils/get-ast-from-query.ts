@@ -7,7 +7,6 @@ import { cloneDeep, mapKeys, omitBy, uniq, isEmpty } from 'lodash';
 import { AST, FieldNode, FunctionFieldNode, NestedCollectionNode } from '../types';
 import { Query, PermissionsAction, Accountability, SchemaOverview } from '@directus/shared/types';
 import { getRelationType } from '../utils/get-relation-type';
-import { REGEX_BETWEEN_PARENS } from '@directus/shared/constants';
 import { stripFunction } from './strip-function';
 
 type GetASTOptions = {
