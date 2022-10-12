@@ -41,7 +41,7 @@ maps: Mapas
 switch_user: Cambiar de usuario
 item_creation: Creación de elementos
 item_revision: Revisión de elementos
-enter_a_name: Escribe un nombre...
+enter_a_name: Ingresa un nombre...
 duplicate_field: Duplicar campo
 half_width: Anchura 50%
 full_width: Ancho completo
@@ -56,7 +56,7 @@ custom: Personalizado
 hook: Gancho
 fill_width: Ancho completo
 field_name_translations: Traducciones del campo de nombre
-enter_password_to_enable_tfa: Introduzca su contraseña para activar la autenticación de dos factores
+enter_password_to_enable_tfa: Ingresa tu contraseña para habilitar la autenticación de dos factores
 add_field: Añadir campo
 role_name: Nombre del rol
 branch: Rama
@@ -163,7 +163,7 @@ nullable: Anulable
 allow_null_value: Permitir valor NULO
 allow_multiple: Permitir múltiple
 allow_multiple_to_be_open: Permitir la apertura múltiple
-enter_value_to_replace_nulls: Por favor, introduzca un nuevo valor para reemplazar cualquier valor NULO actualmente dentro de este campo.
+enter_value_to_replace_nulls: Por favor, ingresa un nuevo valor para reemplazar cualquier valor NULO actualmente dentro de este campo.
 field_standard: Estándar
 field_presentation: Presentación y alias
 field_file: Un archivo
@@ -301,8 +301,8 @@ no_translations: Sin traducciones
 left_to_right: Izquierda a derecha
 right_to_left: Derecha a izquierda
 note: Nota
-enter_a_value: Introduzca un valor...
-enter_a_placeholder: Ingrese un placeholder...
+enter_a_value: Ingresa un valor...
+enter_a_placeholder: Ingresa un placeholder...
 length: Longitud
 soft_length: Límite suave
 precision_scale: Precisión y Escala
@@ -325,7 +325,7 @@ paste_raw_value_success: Pegado
 paste_raw_value_fail: Error al pegar
 view_raw_value: Ver valor exacto
 edit_raw_value: Editar Valor Plano
-enter_raw_value: Ingresar valor plano...
+enter_raw_value: Ingresa un valor raw...
 clear_value: Limpiar valor
 clear_changes: Borrar Cambios
 clear_items: Limpiar elementos
@@ -573,7 +573,7 @@ edit: Editar
 enabled: Activado
 disable_tfa: Desactivar 2FA
 tfa_scan_code: Escanee el código en tu aplicación de Autentificación para finalizar la configuración de 2FA
-enter_otp_to_disable_tfa: Ingrese el OTP para desactivar 2FA
+enter_otp_to_disable_tfa: Ingresa el OTP para desactivar 2FA
 create_account: Crear Cuenta
 account_created_successfully: La Cuenta ha sido creada exitósamente
 auto_fill: Auto Rellenar
@@ -860,9 +860,9 @@ width: Ancho
 height: Alto
 transformation_preset_key: Clave preestablecida de transformación
 source: Fuente
-url_placeholder: Introduzca una url...
+url_placeholder: Ingresa una url...
 display_text: Mostrar texto
-display_text_placeholder: Introduzca un texto para mostrar...
+display_text_placeholder: Ingresa un texto para mostrar...
 interface_group_text_and_numbers: Texto y Números
 interface_group_selection: Selección
 interface_group_relational: Relacional
@@ -870,7 +870,7 @@ interface_group_presentation: Presentación
 interface_group_groups: Grupos
 interface_group_other: Otro
 tooltip: Sugerencia
-tooltip_placeholder: Introduzca una sugerencia...
+tooltip_placeholder: Ingresa una sugerencia...
 unlimited: Ilimitado
 open_link_in: Abrir enlace en
 new_tab: Nueva pestaña
@@ -1224,7 +1224,7 @@ field_options:
     mapbox_key: Token de acceso Mapbox
     mapbox_placeholder: pk.eyJ1Ijo.....
     basemaps: Mapas basales
-    basemaps_name_placeholder: Introduzca el nombre del mapa base...
+    basemaps_name_placeholder: Ingresa el nombre del mapa base...
     basemaps_raster: Raster
     basemaps_tile: Raster TileJSON
     basemaps_style: Estilo Mapbox
@@ -1245,7 +1245,7 @@ field_options:
     singleton: Tratar como un sólo objeto
     language: Idioma
     translation: Traducción
-    translation_placeholder: Introduzca una traducción...
+    translation_placeholder: Ingresa una traducción...
     collection_name: Nombre de Colección
     singular_unit: Unidad Singular
     plural_unit: Unidad plural
@@ -1272,7 +1272,7 @@ field_options:
     fields:
       icon_name: Ícono
       name_name: Nombre
-      name_placeholder: Introduzca un título...
+      name_placeholder: Ingresa un título...
       link_name: Enlace
       link_placeholder: URL relativa o absoluta...
     collections_name: Colecciones
@@ -1288,7 +1288,7 @@ field_options:
     status_dropdown_active: Activo
     status_dropdown_suspended: Suspendido
     status_dropdown_archived: Archivado
-    token: Introduzca un token de acceso seguro...
+    token: Ingresa un token de acceso seguro...
   directus_webhooks:
     status_options_active: Activo
     status_options_inactive: Inactivo
@@ -1325,7 +1325,7 @@ upcoming: Próximamente
 share: Compartir
 share_item: Compartir elemento
 shared_with_you: Un artículo ha sido compartido contigo
-shared_enter_passcode: Introduzca su código de acceso para continuar...
+shared_enter_passcode: Ingresa tu código de acceso para continuar...
 shared_leave_blank_for_unlimited: Dejar en blanco para ilimitado
 shared_times_remaining: Este enlace sólo puede utilizarse {n} veces
 shared_last_remaining: Este enlace sólo puede utilizarse una vez
@@ -1423,7 +1423,7 @@ sort_desc: Orden descendente
 template: Plantilla
 require_value_to_be_set: Requiere un valor para ser establecido en la creación
 translation: Traducción
-translation_placeholder: Introduzca una traducción...
+translation_placeholder: Ingresa una traducción...
 value: Valor
 view_project: Ver proyecto
 report_error: Reportar Error
@@ -1493,7 +1493,7 @@ interfaces:
     description: Escribir o compartir fragmentos de código
     line_number: Número de línea
     line_wrapping: Salto de línea
-    placeholder: Introduzca el código aquí...
+    placeholder: Ingresa el código aquí...
   system-collection:
     collection: Colección
     description: Seleccionar entre colecciones existentes
@@ -1504,15 +1504,15 @@ interfaces:
     include_system_collections: Incluir Colecciones del Sistema
   select-color:
     color: Color
-    description: Introduzca o seleccione un valor de color
+    description: Ingresa o selecciona un valor de color
     placeholder: Seleccione un color...
     preset_colors: Colores preestablecidos
     opacity: Opacidad
     preset_colors_add_label: Añadir nuevo color...
-    name_placeholder: Introduce el nombre del color...
+    name_placeholder: Ingresa el nombre del color...
   datetime:
     datetime: Fecha/hora
-    description: Introduzca fechas y horas
+    description: Ingresa fechas y horas
     include_seconds: Incluir Segundos
     set_to_now: Ajustar a Ahora Mismo
     use_24: Usar Formato 24 horas
@@ -1529,7 +1529,7 @@ interfaces:
   presentation-divider:
     divider: Separador
     description: Etiqueta y divide los campos en secciones
-    title_placeholder: Introduzca un título, o déjelo en blanco para mostrar sólo una línea...
+    title_placeholder: Ingresa un título, o déjalo en blanco para mostrar sólo una línea...
     inline_title: Título seguido por línea
     inline_title_label: Mostrar título seguido por línea
     margin_top: Margen superior
@@ -1541,8 +1541,8 @@ interfaces:
     allow_other_label: Permitir otros valores
     allow_none: Permitir "Nada"
     allow_none_label: Permitir "Sin selección"
-    choices_name_placeholder: Introduzca un nombre...
-    choices_value_placeholder: Introduzca un valor...
+    choices_name_placeholder: Ingresa un nombre...
+    choices_value_placeholder: Ingresa un valor...
     preview_threshold: Umbral de vista previa
   select-multiple-dropdown:
     select-multiple-dropdown: Lista Desplegable (Múltiple)
@@ -1555,7 +1555,7 @@ interfaces:
     description: Seleccionar o subir múltiples archivos
   input-hash:
     hash: Hash
-    description: Introduzca un valor para ser cifrado
+    description: Ingresa un valor para ser cifrado
     masked: Enmascarado
     masked_label: Ocultar los valores reales
   select-icon:
@@ -1585,7 +1585,7 @@ interfaces:
     display_template: Plantilla de Presentación
   input-rich-text-md:
     markdown: Markdown
-    description: Ingresar y previsualizar Markdown
+    description: Ingresar y previsualizar markdown
     edit: Editar
     preview: Vista previa
     editorFont: Fuente del editor
@@ -1616,7 +1616,7 @@ interfaces:
   presentation-notice:
     notice: Aviso
     description: Mostrar un breve aviso
-    text: Introduzca el contenido del aviso aquí...
+    text: Ingresa el contenido del aviso aquí...
   list-o2m:
     one-to-many: Uno a Muchos
     description: Seleccionar varios elementos relacionados
@@ -1637,8 +1637,8 @@ interfaces:
     add_label: 'Etiqueta "Crear nuevo"'
     sort: Ordenar
     sort_placeholder: Manual
-    field_name_placeholder: Ingrese el nombre del campo...
-    field_note_placeholder: Introducir nota del campo...
+    field_name_placeholder: Introduzca el nombre del campo...
+    field_note_placeholder: Ingresa la nota del campo...
     incompatible_data: Los datos actuales no son compatibles con la interfaz del repetidor y serán reemplazados al agregar elementos al repetidor
   slider:
     slider: Deslizador
@@ -1660,7 +1660,7 @@ interfaces:
     add_tags: Añade una etiqueta y presiona enter...
   input:
     input: Entrada
-    description: Introduzca manualmente un valor
+    description: Ingresa manualmente un valor
     trim: Recortar
     trim_label: Recortar el inicio y el final
     mask: Enmascarado
@@ -1671,10 +1671,10 @@ interfaces:
     maximum_value: Valor Máximo
     step_interval: Intervalo de Pasos
     slug: Slugify
-    slug_label: Hacer segura la URL del valor introducido
+    slug_label: Hacer segura la URL del valor ingresado
   input-multiline:
     textarea: Área de Texto
-    description: Introduzca texto plano multilínea
+    description: Ingresa texto plano multilínea
   input-translated-string:
     input-translated-string: Cadenas traducidas
     description: Seleccionar o añadir cadena de traducción
@@ -1685,7 +1685,7 @@ interfaces:
     description: Alternar entre Activado y Desactivado
     color_on: Color para Activo
     color_off: Color para Inactivo
-    label_placeholder: Ingresar una etiqueta...
+    label_placeholder: Ingresa una etiqueta...
     label_default: Activado
   translations:
     display_template: Plantilla de Presentación
@@ -1746,7 +1746,7 @@ interfaces:
     remove_token: Remover token
   system-raw-editor:
     system-raw-editor: Editor bruto
-    description: Permitir la introducción de valores de plantillas en crudo o en mostacho
+    description: Permitir la introducción de valores de plantillas en raw o mustache
 displays:
   translations:
     translations: Traducciones
@@ -1759,9 +1759,9 @@ displays:
     boolean: Booleano
     description: Presentar estados Activo e Inactivo
     label_on: Etiqueta Activo
-    label_on_placeholder: Ingrese una etiqueta para Activo...
+    label_on_placeholder: Ingresa una etiqueta...
     label_off: Etiqueta Inactivo
-    label_off_placeholder: Ingrese una etiqueta para Inactivo...
+    label_off_placeholder: Ingresa una etiqueta no válida...
     icon_on: Icono Activado
     icon_off: Icono Desactivado
     color_on: Color para Activo
@@ -1845,8 +1845,8 @@ displays:
     default_background: Fondo por defecto
     format_label: Formatear cada etiqueta
     show_as_dot: Presentar como Punto
-    choices_value_placeholder: Introduzca un valor...
-    choices_text_placeholder: Ingresar un texto...
+    choices_value_placeholder: Ingresa un valor...
+    choices_text_placeholder: Ingresa un texto...
   mime-type:
     mime-type: Tipo MIME
     description: Presentar el Tipo MIME del archivo
@@ -1929,7 +1929,7 @@ layouts:
     edit_group: Editar Grupo,
     delete_group: Eliminar Grupo,
     add_group: Añadir grupo,
-    add_group_placeholder: Introduzca un nuevo título para el grupo...,
+    add_group_placeholder: Ingresa un nuevo título de grupo...,
     show_ungrouped: Mostrar Desagrupado,
     show: Mostrar,
     no_group: Sin Agrupar,
@@ -2094,7 +2094,7 @@ operations:
     name: Registrar en la consola
     description: Envía algo a la consola
     message: Mensaje
-    message_placeholder: Envía un mensaje para mostrar en la consola...
+    message_placeholder: Ingresa un mensaje para mostrar en la consola...
   mail:
     name: Enviar email
     description: Enviar un email a una o más personas
