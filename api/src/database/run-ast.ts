@@ -1,5 +1,5 @@
 import { Item, Query, SchemaOverview } from '@directus/shared/types';
-import { toArray } from '@directus/shared/utils';
+import { parseJSON, toArray } from '@directus/shared/utils';
 import { Knex } from 'knex';
 import { clone, cloneDeep, merge, pick, uniq } from 'lodash';
 import getDatabase from '.';
@@ -65,7 +65,7 @@ export default async function runAST(
 		query: Query
 	) {
 		// Retrieve the database columns to select in the current AST
-		const { fieldNodes, primaryKeyField, nestedCollectionNodes } = await parseCurrentLevel(
+		const { fieldNodes, jsonNodes, primaryKeyField, nestedCollectionNodes } = await parseCurrentLevel(
 			schema,
 			collection,
 			children,
@@ -82,6 +82,15 @@ export default async function runAST(
 		// Run the items through the special transforms
 		const payloadService = new PayloadService(collection, { knex, schema });
 		let items: null | Item | Item[] = await payloadService.processValues('read', rawItems);
+
+		// Transform json query results
+		for (const item of toArray(rawItems)) {
+			for (const jsonKey of jsonNodes) {
+				if (jsonKey in item && typeof item[jsonKey] === 'string') {
+					item[jsonKey] = parseJSON(item[jsonKey]);
+				}
+			}
+		}
 
 		if (!items || items.length === 0) return items;
 
@@ -148,6 +157,7 @@ async function parseCurrentLevel(
 	const primaryKeyField = schema.collections[collection].primary;
 	const columnsInCollection = Object.keys(schema.collections[collection].fields);
 
+	const jsonNodes: string[] = [];
 	const columnsToSelectInternal: string[] = [];
 	const nestedCollectionNodes: NestedCollectionNode[] = [];
 
@@ -160,6 +170,7 @@ async function parseCurrentLevel(
 				const { fieldName: fieldKey } = parseJsonFunction(child.name);
 				if (columnsInCollection.includes(fieldKey)) {
 					columnsToSelectInternal.push(child.fieldKey);
+					jsonNodes.push(applyFunctionToColumnName(child.name));
 				}
 			}
 
@@ -208,7 +219,7 @@ async function parseCurrentLevel(
 			}
 	) as FieldNode[];
 
-	return { fieldNodes, nestedCollectionNodes, primaryKeyField };
+	return { fieldNodes, jsonNodes, nestedCollectionNodes, primaryKeyField };
 }
 
 function getColumnPreprocessor(knex: Knex, schema: SchemaOverview, table: string) {
