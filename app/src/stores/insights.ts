@@ -186,7 +186,8 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 		return unref(panels)
 			.filter(({ type }) => type === 'relational-variable')
 			.filter(({ options }) => get(unref(variables), options.field) == undefined)
-			.map(({ options }) => options.field);
+			.map(({ options }) => options.field)
+			.filter((fieldName) => typeof fieldName === 'string' && fieldName.length > 0);
 	}
 	function hasEmptyRelation(panel: Pick<Panel, 'options' | 'type'>) {
 		const stringOptions = JSON.stringify(panel.options);
