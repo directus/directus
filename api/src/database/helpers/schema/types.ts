@@ -95,4 +95,8 @@ export abstract class SchemaHelper extends DatabaseHelper {
 	applyOffset(rootQuery: Knex.QueryBuilder, offset: number): void {
 		rootQuery.offset(offset);
 	}
+
+	castM2aPrimaryKey(): string {
+		return 'CAST(?? AS CHAR(255))';
+	}
 }
