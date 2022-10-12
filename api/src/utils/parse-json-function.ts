@@ -1,6 +1,8 @@
-import { JSON_QUERY_REGEX } from '../constants';
 import { InvalidQueryException } from '../exceptions';
 import { stripFunction } from './strip-function';
+
+// export const JSON_QUERY_REGEX = /^(\w+)(\.(\w+|\*)|\[-?(\d+|\*)\])+$/i; // with negative indexes
+export const JSON_QUERY_REGEX = /^(\w+)(\.(\w+|\*)|\[(\d+|\*)\])+$/i;
 
 /**
  * Takes in a column name and parses it into its individual parts
