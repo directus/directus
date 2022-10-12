@@ -349,7 +349,7 @@ export function setDefaults(updates: StateUpdates, state: State, { getCurrent }:
 	set(updates, 'relations.o2m.collection', junctionName);
 	set(updates, 'relations.o2m.field', `${currentCollection}_${currentCollectionPrimaryKeyField}`);
 	set(updates, 'relations.m2o.collection', junctionName);
-	set(updates, 'relations.m2o.related_collection', state.relations.m2o?.related_collection ?? 'languages');
+	set(updates, 'relations.m2o.related_collection', getCurrent('relations.m2o.related_collection') ?? 'languages');
 
 	const languagesCollection = getCurrent('relations.m2o.related_collection');
 	const languagesCollectionPrimaryKeyField =
