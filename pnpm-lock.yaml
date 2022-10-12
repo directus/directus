@@ -124,7 +124,7 @@ importers:
       '@types/uuid': 8.3.4
       '@types/uuid-validate': 0.0.1
       '@types/wellknown': 0.5.3
-      argon2: ^0.28.5
+      argon2: ^0.29.1
       async: ^3.2.4
       async-mutex: ^0.3.2
       axios: ^0.27.2
@@ -232,7 +232,7 @@ importers:
       '@godaddy/terminus': 4.11.1
       '@rollup/plugin-alias': 3.1.9_rollup@2.77.0
       '@rollup/plugin-virtual': 2.1.0_rollup@2.77.0
-      argon2: 0.28.7
+      argon2: 0.29.1
       async: 3.2.4
       async-mutex: 0.3.2
       axios: 0.27.2
@@ -8238,8 +8238,8 @@ packages:
     resolution: {integrity: sha512-58S9QDqG0Xx27YwPSt9fJxivjYl432YCwfDMfZ+71RAqUrZef7LrKQZ3LHLOwCS4FLNBplP533Zx895SeOCHvA==}
     dev: true
 
-  /argon2/0.28.7:
-    resolution: {integrity: sha512-pvsScM3Fq7b+jolXkZHh8nRQx0uD/WeelnwYPMRpn4pAydoa1gqeL/KRdWAag4Hnu1TJNBTAfqyTjV+ZHwNnYA==}
+  /argon2/0.29.1:
+    resolution: {integrity: sha512-bWXzAsQA0B6EFWZh5li+YBk+muoknAb8KacAi1h/bC6Gigy9p5ANbrPvpnjTIb7i9I11/8Df6FeSxpJDK3vy4g==}
     engines: {node: '>=14.0.0'}
     requiresBuild: true
     dependencies:
