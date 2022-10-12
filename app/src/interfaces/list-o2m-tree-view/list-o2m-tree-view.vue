@@ -132,10 +132,7 @@ const fields = computed(() => {
 		relationInfo.value.relatedCollection.collection
 	);
 
-	return addRelatedPrimaryKeyToFields(
-		relationInfo.value?.relatedCollection.collection ?? '',
-		displayFields
-	);
+	return addRelatedPrimaryKeyToFields(relationInfo.value?.relatedCollection.collection ?? '', displayFields);
 });
 </script>
 
