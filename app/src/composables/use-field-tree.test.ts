@@ -170,8 +170,9 @@ test('Returns tree list with injected field', () => {
 	]);
 });
 
-test.todo('Returns tree list with filter', () => {
-	const mockedFields = [
+test('Returns tree list with filter', () => {
+	const fieldsStore = useFieldsStore();
+	fieldsStore.fields = [
 		{
 			collection: 'a',
 			field: 'id',
@@ -206,10 +207,7 @@ test.todo('Returns tree list with filter', () => {
 			},
 			name: 'Title',
 		},
-	];
-
-	const fieldsStore = useFieldsStore();
-	fieldsStore.fields = mockedFields as Field[];
+	] as Field[];
 
 	const relationsStore = useRelationsStore();
 	relationsStore.relations = [] as Relation[];
@@ -221,7 +219,10 @@ test.todo('Returns tree list with filter', () => {
 
 	const { treeList } = useFieldTree(ref('a'), undefined, filterIntegerFields);
 
-	expect(unref(treeList)).toEqual(mockedFields.filter((field) => field.type !== 'integer'));
+	expect(unref(treeList)).toHaveLength(1);
+	expect(unref(treeList)).toEqual([
+		{ name: 'ID', field: 'id', collection: 'a', relatedCollection: undefined, key: 'id', path: 'id', type: 'integer' },
+	]);
 });
 
 test('Returns tree list with group', () => {
