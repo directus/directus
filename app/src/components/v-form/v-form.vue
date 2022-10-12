@@ -9,7 +9,7 @@
 		<v-info v-if="noVisibleFields && !nested && !loading" :title="t('no_visible_fields')" icon="search" center>
 			{{ t('no_visible_fields_copy') }}
 		</v-info>
-		<template v-for="(fieldName, index) in fieldNames">
+		<template v-for="(fieldName, index) in fieldNames" :key="fieldName">
 			<component
 				:is="`interface-${fieldsMap[fieldName]?.meta?.interface || 'group-standard'}`"
 				v-if="fieldsMap[fieldName]?.meta?.special?.includes('group')"
@@ -19,7 +19,6 @@
 						formFieldEls[fieldName] = el;
 					}
 				"
-				:key="fieldName + '_group'"
 				:class="[
 					fieldsMap[fieldName]?.meta?.width || 'full',
 					index === firstVisibleFieldIndex ? 'first-visible-field' : '',
@@ -48,7 +47,6 @@
 						formFieldEls[fieldName] = el;
 					}
 				"
-				:key="fieldName + '_field'"
 				:class="index === firstVisibleFieldIndex ? 'first-visible-field' : ''"
 				:field="fieldsMap[fieldName] || {}"
 				:autofocus="index === firstEditableFieldIndex && autofocus"
