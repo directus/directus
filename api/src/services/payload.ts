@@ -679,7 +679,7 @@ export class PayloadService {
 							.from(relation.collection)
 							.where({ [relation.field]: parent })
 							.whereNotNull(sortField)
-							.max(sortField)
+							.max(sortField, { as: 'max' })
 							.first();
 
 						createPayload = alterations.create.map((item, index) => {
