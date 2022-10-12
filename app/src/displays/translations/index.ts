@@ -1,18 +1,12 @@
 import { getDisplay } from '@/displays';
+import { i18n } from '@/lang';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
-import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { getRelatedCollection } from '@/utils/get-related-collection';
 import { renderPlainStringTemplate } from '@/utils/render-string-template';
 import { defineDisplay, getFieldsFromTemplate } from '@directus/shared/utils';
 import { get, set } from 'lodash';
 import DisplayTranslations from './translations.vue';
-import { i18n } from '@/lang';
-
-type Options = {
-	template: string;
-	languageField: string;
-};
 
 export default defineDisplay({
 	id: 'translations',
@@ -145,7 +139,7 @@ export default defineDisplay({
 				name: '$t:displays.translations.user_language',
 				type: 'string',
 				schema: {
-					default_value: false,
+					default_value: 'false',
 				},
 				meta: {
 					interface: 'boolean',
@@ -159,5 +153,5 @@ export default defineDisplay({
 	},
 	types: ['alias'],
 	localTypes: ['translations'],
-	fields: ['*']
+	fields: ['*'],
 });
