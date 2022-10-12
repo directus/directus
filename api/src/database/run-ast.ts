@@ -253,7 +253,7 @@ function getDBQuery(
 	}
 
 	const primaryKey = schema.collections[table].primary;
-	const aliasMap: AliasMap = {};
+	const aliasMap: AliasMap = Object.create(null);
 	const dbQuery = knex.from(table);
 	let sortRecords: ColumnSortRecord[] | undefined;
 	const innerQuerySortRecords: { alias: string; order: 'asc' | 'desc' }[] = [];

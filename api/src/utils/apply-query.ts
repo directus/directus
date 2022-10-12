@@ -33,7 +33,7 @@ export default function applyQuery(
 	schema: SchemaOverview,
 	options?: { aliasMap?: AliasMap; isInnerQuery?: boolean; hasMultiRelationalSort?: boolean }
 ) {
-	const aliasMap: AliasMap = options?.aliasMap ?? {};
+	const aliasMap: AliasMap = options?.aliasMap ?? Object.create(null);
 	let hasMultiRelationalFilter = false;
 
 	if (query.sort && !options?.isInnerQuery && !options?.hasMultiRelationalSort) {
