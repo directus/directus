@@ -156,6 +156,7 @@ export default defineConfig({
 	},
 	test: {
 		environment: 'happy-dom',
+		setupFiles: ['src/__setup__/mock-globals.ts'],
 	},
 });
 
