@@ -281,6 +281,7 @@ fields_group: Fields Group
 no_collections_found: No collections found.
 new_data_alert: 'The following will be created within your Data Model:'
 search_collection: Search Collection...
+search_field: Search Field...
 new_field: 'New Field'
 new_collection: 'New Collection'
 add_m2o_to_collection: 'Add M2O to "{collection}"'
