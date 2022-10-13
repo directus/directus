@@ -568,7 +568,7 @@ function getRollupOptions({
 		plugins: [
 			typeof input !== 'string' ? virtual(input) : null,
 			mode === 'browser' ? (vue({ preprocessStyles: true }) as Plugin) : null,
-			languages.includes('typescript') ? esbuild({ include: /\.tsx?$/ }) : null,
+			languages.includes('typescript') ? esbuild({ include: /\.tsx?$/, sourceMap: sourcemap }) : null,
 			mode === 'browser' ? styles() : null,
 			...plugins,
 			nodeResolve({ browser: mode === 'browser' }),
