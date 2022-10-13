@@ -2159,3 +2159,5 @@ operations:
     flows: Flows
     flow: Flow
     data: Data
+check_files_integrity: Check files integrity
+check: Check
