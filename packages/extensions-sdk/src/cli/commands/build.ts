@@ -31,8 +31,8 @@ import {
 	RollupOptions,
 	watch as rollupWatch,
 } from 'rollup';
+import esbuild from 'rollup-plugin-esbuild';
 import styles from 'rollup-plugin-styles';
-import typescript from 'rollup-plugin-typescript2';
 import vue from 'rollup-plugin-vue';
 import { Language, RollupConfig, RollupMode } from '../types';
 import { getLanguageFromPath, isLanguage } from '../utils/languages';
@@ -568,7 +568,7 @@ function getRollupOptions({
 		plugins: [
 			typeof input !== 'string' ? virtual(input) : null,
 			mode === 'browser' ? (vue({ preprocessStyles: true }) as Plugin) : null,
-			languages.includes('typescript') ? typescript({ check: false }) : null,
+			languages.includes('typescript') ? esbuild({ include: /\.tsx?$/ }) : null,
 			mode === 'browser' ? styles() : null,
 			...plugins,
 			nodeResolve({ browser: mode === 'browser' }),
