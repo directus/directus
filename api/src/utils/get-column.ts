@@ -22,7 +22,8 @@ export function getColumn(
 	column: string,
 	alias: string | false = applyFunctionToColumnName(column),
 	schema: SchemaOverview,
-	query?: Query
+	query?: Query,
+	originalCollectionName?: string
 ): Knex.Raw {
 	const fn = getFunctions(knex, schema);
 
@@ -31,7 +32,7 @@ export function getColumn(
 		const columnName = column.match(REGEX_BETWEEN_PARENS)![1];
 
 		if (functionName in fn) {
-			const type = schema?.collections[table]?.fields?.[columnName]?.type ?? 'unknown';
+			const type = schema?.collections[originalCollectionName || table]?.fields?.[columnName]?.type ?? 'unknown';
 			const allowedFunctions = getFunctionsForType(type);
 
 			if (allowedFunctions.includes(functionName) === false) {
