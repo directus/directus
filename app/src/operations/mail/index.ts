@@ -67,7 +67,7 @@ export default defineOperationApp({
 								value: 'wysiwyg',
 							},
 							{
-								text: 'Template', // TODO: i18n
+								text: '$t:operations.mail.template',
 								value: 'template',
 							},
 						],
@@ -76,7 +76,7 @@ export default defineOperationApp({
 			},
 			{
 				field: 'template',
-				name: 'Template', // TODO: i18n
+				name: '$t:operations.mail.template',
 				type: 'string',
 				meta: {
 					interface: 'input',
@@ -99,7 +99,7 @@ export default defineOperationApp({
 			},
 			{
 				field: 'data',
-				name: 'Data', // TODO: i18n
+				name: '$t:operations.mail.data',
 				type: 'json',
 				meta: {
 					width: 'full',
