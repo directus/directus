@@ -745,6 +745,7 @@ add_file: 新增檔案
 replace_file: 取代檔案
 no_results: 無任何結果
 no_results_copy: 調整或清除搜尋篩選器以查看結果。
+no_visible_fields_copy: 此表單沒有可見的欄位
 clear_filters: 清除篩選器
 saves_automatically: 自動儲存
 role: 角色
@@ -820,6 +821,7 @@ panel_header: 面板標題
 panel_name_placeholder: 設定面板名稱....
 panel_note_placeholder: 關於此面板的其他選填資訊....
 panel_delete_confirm: 是否確定要刪除此面板？此動作無法還原。
+list_panel_allow_edit: 允許快速編輯
 dashboard_delete_confirm: 是否確定要刪除此儀表板？此動作無法還原。
 edit_dashboard: 編輯儀表板
 delete_dashboard: 刪除儀表板
@@ -975,6 +977,9 @@ page_help_settings_project: "**專案設定** - 專案的全域設定選項"
 page_help_settings_datamodel_collections: >-
   **資料模型：資料集** - 列出所有可用的資料集。包含可見、隱藏以及系統資料集，以及尚未加入管理介面的資料庫。
 page_help_settings_flows_item: '流程細節 - 管理各項操作'
+page_help_users_collection: '使用者目錄 - 列出所有在此項目中的系統用戶'
+page_help_users_item: >-
+  使用者詳細資料 - 管理你的帳戶資料或者查閱其他使用者的詳細資料
 activity_feed: 活動紀錄
 add_new: 新增
 create_new: 新增
