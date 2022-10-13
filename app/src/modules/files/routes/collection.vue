@@ -32,6 +32,7 @@
 				<search-input v-model="search" v-model:filter="filter" collection="directus_files" />
 
 				<add-folder :parent="folder" :disabled="createFolderAllowed !== true" />
+				<scan-folder :parent="folder" :disabled="createFolderAllowed !== true" />
 
 				<v-dialog v-if="selection.length > 0" v-model="moveToDialogActive" @esc="moveToDialogActive = false">
 					<template #activator="{ on }">
@@ -192,6 +193,7 @@ import api from '@/api';
 import { usePreset } from '@/composables/use-preset';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
 import AddFolder from '../components/add-folder.vue';
+import ScanFolder from '../components/scan-folder.vue';
 import SearchInput from '@/views/private/components/search-input.vue';
 import FolderPicker from '@/views/private/components/folder-picker.vue';
 import emitter, { Events } from '@/events';
@@ -221,6 +223,7 @@ export default defineComponent({
 		AddFolder,
 		SearchInput,
 		FolderPicker,
+		ScanFolder,
 		DrawerBatch,
 	},
 	props: {
