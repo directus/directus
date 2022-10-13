@@ -83,7 +83,7 @@ export default defineOperationApp({
 					hidden: panel.type !== 'template',
 					width: 'half',
 					options: {
-						placeholder: 'password-reset',
+						placeholder: 'base',
 					},
 				},
 			},
