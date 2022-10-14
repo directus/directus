@@ -6,7 +6,10 @@
 			:fields="fields ? fields : []"
 			@scroll-to-field="scrollToField"
 		/>
-		<template v-for="(fieldName, index) in fieldNames">
+		<v-info v-if="noVisibleFields && !nested && !loading" :title="t('no_visible_fields')" icon="search" center>
+			{{ t('no_visible_fields_copy') }}
+		</v-info>
+		<template v-for="(fieldName, index) in fieldNames" :key="fieldName">
 			<component
 				:is="`interface-${fieldsMap[fieldName]?.meta?.interface || 'group-standard'}`"
 				v-if="fieldsMap[fieldName]?.meta?.special?.includes('group')"
@@ -16,7 +19,6 @@
 						formFieldEls[fieldName] = el;
 					}
 				"
-				:key="fieldName + '_group'"
 				:class="[
 					fieldsMap[fieldName]?.meta?.width || 'full',
 					index === firstVisibleFieldIndex ? 'first-visible-field' : '',
@@ -45,7 +47,6 @@
 						formFieldEls[fieldName] = el;
 					}
 				"
-				:key="fieldName + '_field'"
 				:class="index === firstVisibleFieldIndex ? 'first-visible-field' : ''"
 				:field="fieldsMap[fieldName] || {}"
 				:autofocus="index === firstEditableFieldIndex && autofocus"
@@ -90,6 +91,7 @@ import { assign, cloneDeep, isEqual, isNil, omit, pick } from 'lodash';
 import { computed, ComputedRef, onBeforeUpdate, provide, ref, watch } from 'vue';
 import FormField from './form-field.vue';
 import ValidationErrors from './validation-errors.vue';
+import { useI18n } from 'vue-i18n';
 
 type FieldValues = {
 	[field: string]: any;
@@ -132,6 +134,8 @@ const props = withDefaults(defineProps<Props>(), {
 	direction: undefined,
 	showDivider: false,
 });
+
+const { t } = useI18n();
 
 const emit = defineEmits(['update:modelValue']);
 
@@ -185,8 +189,7 @@ const firstVisibleFieldIndex = computed(() => {
 
 const noVisibleFields = computed(() => {
 	return Object.keys(fieldsMap.value).every((fieldKey) => {
-		let field: Field = fieldsMap.value[fieldKey];
-		return field.meta?.hidden === true;
+		return fieldsMap.value[fieldKey]?.meta?.hidden === true;
 	});
 });
 

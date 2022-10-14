@@ -87,6 +87,7 @@ const allowedEnvironmentVars = [
 	'STORAGE_.+_ENDPOINT',
 	'STORAGE_.+_ACL',
 	'STORAGE_.+_CONTAINER_NAME',
+	'STORAGE_.+_SERVER_SIDE_ENCRYPTION',
 	'STORAGE_.+_ACCOUNT_NAME',
 	'STORAGE_.+_ACCOUNT_KEY',
 	'STORAGE_.+_ENDPOINT',
@@ -402,7 +403,7 @@ function processValues(env: Record<string, any>) {
 		if (key.length > 5 && key.endsWith('_FILE')) {
 			newKey = key.slice(0, -5);
 			if (allowedEnvironmentVars.some((pattern) => pattern.test(newKey as string))) {
-				if (newKey in env) {
+				if (newKey in env && !(newKey in defaults && env[newKey] === defaults[newKey])) {
 					throw new Error(
 						`Duplicate environment variable encountered: you can't use "${newKey}" and "${key}" simultaneously.`
 					);

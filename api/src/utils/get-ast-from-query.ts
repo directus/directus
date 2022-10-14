@@ -113,7 +113,7 @@ export default async function getASTFromQuery(
 		const children: (NestedCollectionNode | FieldNode | FunctionFieldNode)[] = [];
 		const collections = await schema.getCollections();
 
-		const relationalStructure: Record<string, string[] | anyNested> = {};
+		const relationalStructure: Record<string, string[] | anyNested> = Object.create(null);
 
 		for (const fieldKey of fields) {
 			let name = fieldKey;

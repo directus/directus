@@ -578,6 +578,9 @@ export class GraphQLService {
 					_contains: {
 						type: GraphQLString,
 					},
+					_icontains: {
+						type: GraphQLString,
+					},
 					_ncontains: {
 						type: GraphQLString,
 					},
@@ -659,6 +662,12 @@ export class GraphQLService {
 					_nnull: {
 						type: GraphQLBoolean,
 					},
+					_in: {
+						type: new GraphQLList(GraphQLString),
+					},
+					_nin: {
+						type: new GraphQLList(GraphQLString),
+					},
 					_between: {
 						type: new GraphQLList(GraphQLStringOrFloat),
 					},
@@ -731,6 +740,12 @@ export class GraphQLService {
 					},
 					_nintersects_bbox: {
 						type: GraphQLGeoJSON,
+					},
+					_null: {
+						type: GraphQLBoolean,
+					},
+					_nnull: {
+						type: GraphQLBoolean,
 					},
 				},
 			});
