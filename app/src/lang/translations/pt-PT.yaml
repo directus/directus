@@ -61,6 +61,7 @@ indeterminate: Indeterminado
 edit_collection: Editar coleção
 exclusive: Exclusivo
 children: Crianças
+db_only_click_to_configure: 'Apenas em Base de Dados: Clique para Configurar'
 show_active_items: Mostrar Itens Ativos
 show_archived_items: Mostrar documentos arquivados
 show_all_items: Mostrar todos os itens
