@@ -189,7 +189,7 @@ import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useShortcut } from '@/composables/use-shortcut';
 import { isEmpty, merge, omit, cloneDeep } from 'lodash';
 import { router } from '@/router';
-import { nanoid, customAlphabet } from 'nanoid';
+import { nanoid, customAlphabet } from 'nanoid/non-secure';
 
 import SettingsNotFound from '../not-found.vue';
 import SettingsNavigation from '../../components/navigation.vue';

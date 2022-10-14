@@ -1,16 +1,12 @@
 type Primitive = undefined | null | string | number | boolean | bigint | symbol;
 type Builtin = Primitive | Date | Error | RegExp | ((...args: any[]) => unknown);
-type Tuple =
-	| [unknown]
-	| [unknown, unknown]
-	| [unknown, unknown, unknown]
-	| [unknown, unknown, unknown, unknown]
-	| [unknown, unknown, unknown, unknown, unknown];
 
 export type DeepPartial<T> = T extends Builtin
 	? T
-	: T extends Tuple
-	? { [K in keyof T]?: DeepPartial<T[K]> }
+	: T extends []
+	? []
+	: T extends [infer U, ...infer R]
+	? [DeepPartial<U>, ...DeepPartial<R>]
 	: T extends Array<infer U>
 	? Array<DeepPartial<U>>
 	: T extends ReadonlyArray<infer U>

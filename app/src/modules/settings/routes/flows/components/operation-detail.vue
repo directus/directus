@@ -73,9 +73,9 @@ import { FlowRaw } from '@directus/shared/types';
 import slugify from '@sindresorhus/slugify';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { customAlphabet } from 'nanoid';
 import { useExtensions } from '@/extensions';
 import { useExtension } from '@/composables/use-extension';
+import { customAlphabet } from 'nanoid/non-secure';
 
 const generateSuffix = customAlphabet('abcdefghijklmnopqrstuvwxyz1234567890', 5);
 
