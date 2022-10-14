@@ -3,9 +3,11 @@ import { i18n } from '@/lang';
 import { useCollectionsStore } from '@/stores/collections';
 import { useRelationsStore } from '@/stores/relations';
 import { getLiteralInterpolatedTranslation } from '@/utils/get-literal-interpolated-translation';
+import { translate } from '@/utils/translate-literal';
 import { unexpectedError } from '@/utils/unexpected-error';
 import formatTitle from '@directus/format-title';
 import { DeepPartial, Field, FieldRaw, Relation } from '@directus/shared/types';
+import { deepMap } from '@directus/shared/utils';
 import { isEqual, isNil, merge, omit, orderBy } from 'lodash';
 import { nanoid } from 'nanoid';
 import { defineStore } from 'pinia';
@@ -104,6 +106,13 @@ export const useFieldsStore = defineStore({
 				if (i18n.global.te(`fields.${field.collection}.${field.field}`)) {
 					field.name = i18n.global.t(`fields.${field.collection}.${field.field}`);
 				}
+				if (field.meta?.options) {
+					field.meta.options = deepMap(field.meta.options, translate);
+				}
+				if (field.meta?.display_options) {
+					field.meta.display_options = deepMap(field.meta.display_options, translate);
+				}
+
 				return field;
 			});
 		},
