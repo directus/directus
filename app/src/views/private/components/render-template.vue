@@ -102,11 +102,8 @@ function handleArray(fieldKeyBefore: string, fieldKeyAfter: string) {
 }
 
 function handleObject(fieldKey: string) {
-	const value = get(props.item, fieldKey);
 	const field =
 		fieldsStore.getField(props.collection, fieldKey) || props.fields?.find((field) => field.field === fieldKey);
-
-	if (value === undefined) return null;
 
 	/**
 	 * This is for cases where you are rendering a display template directly on
@@ -122,6 +119,10 @@ function handleObject(fieldKey: string) {
 			.filter((part) => part !== '$thumbnail')
 			.join('.');
 	}
+
+	const value = get(props.item, fieldKey, field?.schema?.default_value);
+
+	if (value === undefined) return null;
 
 	if (!field) return value;
 
