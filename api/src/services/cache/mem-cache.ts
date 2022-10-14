@@ -1,19 +1,14 @@
-import { CacheService } from './cache';
-import { cloneDeep } from 'lodash-es';
+import { cloneDeep } from "lodash-es";
+import { CacheService } from "./cache";
+import LRU from "lru-cache";
 
 export class MemCache extends CacheService {
-	store = new Map<string, any>();
-	expires = new Map<string, number>();
+    store = new LRU<string, any>({
+        max: 2000,
+    });
 
     async get(key: string): Promise<any | null> {
         const _key = this.addPrefix(key);
-        const expired = this.expires.get(_key);
-
-        if(expired !== undefined && Date.now() > expired) {
-            this.store.delete(_key);
-            this.expires.delete(_key);
-            return null;
-        }
 
         return this.store.get(_key) ?? null
     }
@@ -21,14 +16,9 @@ export class MemCache extends CacheService {
 	async set(key: string, value: any, ttl: number | undefined = this.ttl): Promise<void> {
 		if (await this.isLocked()) return;
 
-		const _key = this.addPrefix(key);
-		this.store.set(_key, value);
-
-		if (ttl !== undefined && ttl > 0) {
-			const expires = Date.now() + ttl;
-			this.expires.set(_key, expires);
-		}
-	}
+        const _key = this.addPrefix(key);
+        this.store.set(_key, value, { ttl });
+    }
 
     async keys(pattern?: string | undefined): Promise<string[]> {
         const allKeys = [...this.store.keys()].map(key => this.removePrefix(key))
@@ -40,7 +30,6 @@ export class MemCache extends CacheService {
 
     async clear(): Promise<void> {
         this.store.clear()
-        this.expires.clear();
     }
 
     async delete(key: string | string[]): Promise<void> {
@@ -50,7 +39,6 @@ export class MemCache extends CacheService {
             const _key = this.addPrefix(key);
 
             this.store.delete(_key);
-            this.expires.delete(_key);
         }
     }
 

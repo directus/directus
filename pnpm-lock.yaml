@@ -126,7 +126,6 @@ importers:
       '@types/uuid': 9.0.0
       '@types/uuid-validate': 0.0.1
       '@types/wellknown': 0.5.3
-      '@vitest/coverage-c8': 0.28.3
       argon2: 0.30.3
       async: 3.2.4
       async-mutex: 0.4.0
@@ -175,6 +174,7 @@ importers:
       ldapjs: 2.3.3
       liquidjs: 10.4.0
       lodash: 4.17.21
+      lru-cache: ^7.14.0
       marked: 4.2.12
       memcached: 2.2.2
       micromustache: 8.0.3
@@ -282,6 +282,7 @@ importers:
       ldapjs: 2.3.3
       liquidjs: 10.4.0
       lodash: 4.17.21
+      lru-cache: 7.14.1
       marked: 4.2.12
       micromustache: 8.0.3
       mime-types: 2.1.35
@@ -363,7 +364,6 @@ importers:
       '@types/uuid': 9.0.0
       '@types/uuid-validate': 0.0.1
       '@types/wellknown': 0.5.3
-      '@vitest/coverage-c8': 0.28.3
       copyfiles: 2.4.1
       form-data: 4.0.0
       knex-mock-client: 1.11.0_knex@2.4.2
@@ -15000,6 +15000,11 @@ packages:
     engines: {node: '>=10'}
     dependencies:
       yallist: 4.0.0
+
+  /lru-cache/7.14.1:
+    resolution: {integrity: sha512-ysxwsnTKdAx96aTRdhDOCQfDgbHnt8SK0KY8SEjO0wHinhWOFTESbjVCMPbU1uGXg/ch4lifqx0wfjOawU2+WA==}
+    engines: {node: '>=12'}
+    dev: false
 
   /magic-string/0.25.9:
     resolution: {integrity: sha512-RmF0AsMzgt25qzqqLc1+MbHmhdx0ojF2Fvs4XnOqz2ZOBXzzkEwc/dJQZCYHAn7v1jbVOjAZfK8msRn4BxO4VQ==}
