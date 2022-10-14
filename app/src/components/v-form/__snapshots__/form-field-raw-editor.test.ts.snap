@@ -5,7 +5,7 @@ exports[`should render 1`] = `
   <v-card>
     <v-card-title>edit_raw_value</v-card-title>
     <v-card-text>
-      <interface-system-raw-editor type=\\"undefined\\" disabled=\\"false\\" language=\\"undefined\\" placeholder=\\"enter_raw_value\\"></interface-system-raw-editor>
+      <interface-system-raw-editor type=\\"undefined\\" disabled=\\"false\\" language=\\"plaintext\\" placeholder=\\"enter_raw_value\\"></interface-system-raw-editor>
     </v-card-text>
     <v-card-actions>
       <v-button secondary=\\"\\">cancel</v-button>
