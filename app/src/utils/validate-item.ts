@@ -16,7 +16,7 @@ export function validateItem(item: Record<string, any>, fields: Field[], isNew: 
 
 	const requiredFields = fieldsWithConditions.filter((field) => field.meta?.required === true);
 
-	let updatedItem = cloneDeep(item)
+	const updatedItem = cloneDeep(item);
 
 	for (const field of requiredFields) {
 		if (isNew && isNil(field.schema?.default_value)) {
