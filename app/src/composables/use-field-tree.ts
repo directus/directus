@@ -73,7 +73,7 @@ export function useFieldTree(
 	}
 
 	function makeNode(field: Field, parent?: FieldNode): FieldNode | FieldNode[] {
-		const relatedCollections = getRelatedCollections(field);
+		const { relationType, relatedCollections } = getRelationTypeAndRelatedCollections(field);
 		const pathContext = parent?.path ? parent.path + '.' : '';
 		const keyContext = parent?.key ? parent.key + '.' : '';
 
@@ -95,7 +95,7 @@ export function useFieldTree(
 			};
 		}
 
-		if (relatedCollections.length <= 1) {
+		if (relatedCollections.length <= 1 && relationType !== 'm2a') {
 			return {
 				name: field.name,
 				field: field.field,
@@ -120,20 +120,23 @@ export function useFieldTree(
 		});
 	}
 
-	function getRelatedCollections(field: Field): string[] {
+	function getRelationTypeAndRelatedCollections(field: Field): {
+		relationType: 'o2m' | 'm2o' | 'm2a' | null;
+		relatedCollections: string[];
+	} {
 		const relation = getRelationForField(field);
-		if (!relation?.meta) return [];
+		if (!relation?.meta) return { relationType: null, relatedCollections: [] };
 		const relationType = getRelationType({ relation, collection: field.collection, field: field.field });
 
 		switch (relationType) {
 			case 'o2m':
-				return [relation!.meta!.many_collection];
+				return { relationType: 'o2m', relatedCollections: [relation!.meta!.many_collection] };
 			case 'm2o':
-				return [relation!.meta!.one_collection!];
+				return { relationType: 'm2o', relatedCollections: [relation!.meta!.one_collection!] };
 			case 'm2a':
-				return relation!.meta!.one_allowed_collections!;
+				return { relationType: 'm2a', relatedCollections: relation!.meta!.one_allowed_collections! };
 			default:
-				return [];
+				return { relationType: null, relatedCollections: [] };
 		}
 	}
 
