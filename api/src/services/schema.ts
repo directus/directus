@@ -6,7 +6,7 @@ import { version as currentDirectusVersion } from '../../package.json';
 import { ALIAS_TYPES } from '../constants';
 import getDatabase, { getDatabaseClient } from '../database';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
-import { AbstractServiceOptions, Snapshot, SnapshotDiff, SnapshotWithHash } from '../types';
+import { AbstractServiceOptions, DatabaseClient, Snapshot, SnapshotDiff, SnapshotWithHash } from '../types';
 import { applyDiff } from '../utils/apply-diff';
 import { getSnapshot, getVersionedHash } from '../utils/get-snapshot';
 import { getSnapshotDiff } from '../utils/get-snapshot-diff';
@@ -14,7 +14,9 @@ import { getSnapshotDiff } from '../utils/get-snapshot-diff';
 const snapshotJoiSchema = Joi.object({
 	version: Joi.number().required(),
 	directus: Joi.string().required(),
-	vendor: Joi.string().valid('mysql', 'postgres', 'cockroachdb', 'sqlite', 'oracle', 'mssql', 'redshift').optional(),
+	vendor: Joi.string()
+		.valid(['mysql', 'postgres', 'cockroachdb', 'sqlite', 'oracle', 'mssql', 'redshift'] as DatabaseClient[])
+		.optional(),
 	collections: Joi.array().items(
 		Joi.object({
 			collection: Joi.string(),
