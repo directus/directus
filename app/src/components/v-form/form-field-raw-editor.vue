@@ -18,7 +18,7 @@
 					:value="internalValue"
 					:type="type === 'string' ? 'text' : type"
 					:disabled="disabled"
-					:language="type === 'object' ? 'json' : type === 'string' ? 'plaintext' : type"
+					language="plaintext"
 					:placeholder="t('enter_raw_value')"
 					@input="internalValue = $event"
 				/>
