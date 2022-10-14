@@ -51,7 +51,7 @@
 				</v-card-text>
 				<v-card-actions>
 					<v-button secondary @click="closeLinkDrawer">{{ t('cancel') }}</v-button>
-					<v-button :disabled="linkSelection.url === null" @click="saveLink">{{ t('save') }}</v-button>
+					<v-button :disabled="linkSelection.url === null && !linkNode" @click="saveLink">{{ t('save') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
@@ -84,7 +84,7 @@
 						</div>
 						<div class="field half-right">
 							<div class="type-label">{{ t('alt_text') }}</div>
-							<v-input v-model="imageSelection.alt" />
+							<v-input v-model="imageSelection.alt" :nullable="false" />
 						</div>
 						<template v-if="storageAssetTransform === 'all'">
 							<div class="field half">
@@ -319,7 +319,7 @@ export default defineComponent({
 			mediaButton,
 		} = useMedia(editorRef, imageToken);
 
-		const { linkButton, linkDrawerOpen, closeLinkDrawer, saveLink, linkSelection } = useLink(editorRef);
+		const { linkButton, linkDrawerOpen, closeLinkDrawer, saveLink, linkSelection, linkNode } = useLink(editorRef);
 
 		const { codeDrawerOpen, code, closeCodeDrawer, saveCode, sourceCodeButton } = useSourceCode(editorRef);
 
@@ -428,6 +428,7 @@ export default defineComponent({
 			closeLinkDrawer,
 			saveLink,
 			linkSelection,
+			linkNode,
 			codeDrawerOpen,
 			code,
 			closeCodeDrawer,

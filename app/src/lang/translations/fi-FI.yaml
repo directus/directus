@@ -49,6 +49,7 @@ group: Ryhmä
 export_items: Vie kohteet
 and: Ja
 or: Tai
+init: Alusta
 dataset_too_large_currently_showing_n_items: Dataset on liian suuri, näytetään ensimmäiset {n} kohdetta.
 custom: Mukautettu
 fill_width: Täysleveä

@@ -187,6 +187,8 @@ revision_post_create: 這是項目建立後看起來的樣子.
 revision_post_update: 這是項目更新後看起來的樣子.
 changes_made: 以下是此版本所做的改變。
 no_relational_data: 請留意關聯數據並不包含於此。
+junction_field_location: 連結欄位位置
+top: 上方
 bottom: 下方
 hide_field: 隱藏欄位
 hide_field_on_detail: 在詳細內容中隱藏
@@ -258,10 +260,10 @@ geometry.MultiLineString: 多條線段
 geometry.MultiPolygon: 多個多邊形
 not_available_for_type: 此類別無法使用
 create_translations: 創建翻譯
-auto_refresh: 自動刷新
+auto_refresh: 自動重新整理
 refresh_interval: 重新整理間隔
 no_refresh: 不要重新整理
-refresh_interval_seconds: 即時刷新 | 每秒 | 每{seconds} 秒
+refresh_interval_seconds: 即時重整 | 每秒 | 每{seconds} 秒
 refresh_interval_minutes: 每分鐘 | 每 {minutes} 分鐘
 auto_generate: 自動產生
 this_will_auto_setup_fields_relations: 這會自動設定所有相關的必要欄位和關係。
@@ -296,6 +298,8 @@ next: 下一個
 field_name: 欄位名稱
 translations: 翻譯
 no_translations: 沒有翻譯
+left_to_right: 由左至右
+right_to_left: 由右至左
 note: 備註
 enter_a_value: 請輸入...
 enter_a_placeholder: 輸入一個佔位符...
@@ -323,6 +327,7 @@ edit_raw_value: 編輯原始值
 enter_raw_value: 輸入原始值...
 clear_value: 清除內容
 clear_changes: 清除更改
+clear_items: 清除項目
 reset_to_default: 重設為預設值
 undo_changes: 還原變更
 notifications: 通知
@@ -468,11 +473,12 @@ manual_string: 自訂輸入的字串
 save_and_create_new: 儲存並新建
 save_and_stay: 儲存並停留
 save_as_copy: 儲存為副本
-add_existing: 新增現有的
+add_existing: 從現有清單選擇
 creating_items: 建立項目中
 enable_create_button: 啟用建立按鈕
 selecting_items: 選擇項目中
 enable_select_button: 啟用選取按鈕
+allow_duplicates: 允許重複
 comments: 評論
 no_comments: 還沒有評論
 click_to_expand: 點擊以展開
@@ -496,7 +502,7 @@ file_count: '沒有檔案 | 1 個檔案 | {count} 個檔案'
 no_files_copy: 這裡還沒有任何檔案。
 user_count: '沒有使用者 | 1 個使用者 | {count} 個使用者'
 no_users_copy: 這個角色中還沒有任何使用者。
-webhooks_count: '沒有 Webhooks｜1 個 Webhook｜{count} 個 Webhooks'
+webhooks_count: 'No Webhooks | One Webhook | {count} Webhooks'
 no_webhooks_copy: 目前未設定任何 webhook ，從下方開始建立
 no_notifications: 沒有通知
 no_notifications_copy: 已經追上了！沒有新通知。
@@ -525,6 +531,7 @@ activity_item: 活動項目
 action: 操作
 ip_address: IP位址
 user_agent: 代理用戶
+origin: 來源
 webhooks: Webhooks
 decimals: 小數點
 value_decimals: 含有小數點的值
@@ -573,6 +580,9 @@ errors:
   INVALID_PAYLOAD: 附載的資料無效
   INVALID_PROVIDER: 使用者屬於其他的登入服務
   INVALID_QUERY: 無效的查詢
+  INVALID_CONFIG: 無效組態
+  INVALID_TOKEN: 無效的 token
+  INVALID_IP: 不允許的主機或IP地址
   INVALID_USER: 無法認證使用者
   ITEM_LIMIT_REACHED: 資料已達上限
   ITEM_NOT_FOUND: 找不到項目
@@ -589,6 +599,13 @@ errors:
   INVALID_FOREIGN_KEY: 外部鍵值錯誤
   UNKNOWN: 未預期的錯誤
   GRAPHQL_VALIDATION_EXCEPTION: GraphQL 驗證錯誤
+  SERVICE_UNAVAILABLE: 服務暫時不可用
+  UNSUPPORTED_MEDIA_TYPE: 不支援的媒體類型
+  UNEXPECTED_RESPONSE: 非預期的伺服器回應
+  TOKEN_EXPIRED: Token 已過期
+  RANGE_NOT_SATISFIABLE: 範圍無效
+  METHOD_NOT_ALLOWED: 不支援此方式
+  REQUESTS_EXCEEDED: 已達到要求數量限制
 security: 安全
 value_hashed: 值已安全加密
 bookmark_name: 書籤名稱...
@@ -758,6 +775,7 @@ flows: 流程
 flow: 流程
 select_a_flow: 選擇流程
 run_flow_on_current: 在目前項目上執行流程
+run_flow_on_current_edited_confirm: 有些項目可能會被這個工作流程更新，是否確定要執行？
 run_flow_on_selected: 沒有選擇項目 | 在一個選擇的項目上執行流程 | 在 {n} 個選擇的項目上執行流程
 run_flow_success: 流程 {flow} 執行完畢
 trigger: 觸發條件
@@ -815,7 +833,7 @@ create_dashboard: 建立儀表板
 dashboard_name: 儀表板名稱
 no_data: 沒有資料
 no_data_in_flow: 此流程沒有產生或存取任何資料
-accountability: 負責
+accountability: 稽核
 payload: 傳送資料
 details: 細節
 full_screen: 全螢幕
@@ -1004,6 +1022,7 @@ fields:
     user: 操作人
     comment: 評論
     user_agent: 代理用戶
+    origin: 來源
     ip: IP位址
     revisions: 修訂版本
   directus_collections:
@@ -1210,8 +1229,8 @@ field_options:
     unarchive_value: 當不歸檔時將值設定為
     sort_divider: 排序
     sort_field: 選擇欄位
-    accountability_divider: 負責
-    duplication_divider: 複製
+    accountability_divider: 稽核
+    duplication_divider: 重複欄位
   directus_files:
     title: 不重複的標題...
     description: 選填的描述內容
@@ -1384,6 +1403,14 @@ report_error: 報告錯誤
 start: 開始
 table: 表格
 list: 清單
+search_filter: 搜尋過濾
+enable_search_filter: 啟用搜尋與過濾功能
+item_link: 項目連結
+show_link_to_item: 顯示一個前往該資料項目的連結
+navigate_to_item: 移動至該項目
+undo_removed_item: 還原移除的項目
+remove_item: 移除項目
+delete_item: 刪除項目
 interfaces:
   filter:
     name: 篩選
@@ -1465,6 +1492,7 @@ interfaces:
     placeholder: 選擇日期時間...
   system-fields:
     select_a_collection: 選擇一個集合
+    no_fields: 沒有欄位
   system-display-template:
     display-template: 顯示模板
     description: 混合文字與動態欄位內容
@@ -1522,6 +1550,7 @@ interfaces:
   list-m2m:
     many-to-many: 多對多
     description: 選擇多個關聯項目
+    columns_configure_notice: 您可以在建立欄位後修改欄位設定
     display_template_configure_notice: 您可以在建立欄位後修改顯示範本
   select-dropdown-m2o:
     many-to-one: 多對一
@@ -1639,6 +1668,7 @@ interfaces:
     user_language: 使用目前使用者的語言
     default_language: 預設語言
     language_field: 語言判斷欄位
+    language_direction_field: 語言方向欄位
   list-o2m-tree-view:
     description: 以樹狀方式顯示多層一對多的資料項目
     recursive_only: 樹狀結構只能用來顯示有多層關係的資料
@@ -1963,6 +1993,12 @@ panels:
     name: 全域變數
     description: 在其他面板的篩選器中設定一個全域值
     variable_key: 變動值
+  relational-variable:
+    name: 全站關聯性資料
+    description: 設定一個可以在其他面板中作為篩選的全站性資料
+    variable_key: 變動值
+    multiple: 多選
+    multiple-label: 選擇多個項目
 triggers:
   common:
     response_body: 回應內文
@@ -2000,6 +2036,10 @@ operations:
   condition:
     name: 條件
     description: 透過判斷邏輯來操作流程
+  exec:
+    name: 執行程式
+    description: 透過自訂程式修改傳入資料
+    modules: '將會使用以下的 **Node modules**'
   item-create:
     name: 建立資料
     description: 在資料庫中建立資料
@@ -2037,7 +2077,9 @@ operations:
     body: 郵件內文
   notification:
     name: 發送通知
+    description: 發送管理介面通知給其他使用者
     recipient: 用戶
+    recipient_placeholder: 輸入使用者編號(UUID)並按下Enter鍵....
     message: 訊息
   request:
     name: Webhook / 要求網址
