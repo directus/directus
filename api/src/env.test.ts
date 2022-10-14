@@ -21,6 +21,7 @@ describe('env processed values', () => {
 
 	afterEach(() => {
 		process.env = originalEnv;
+		jest.resetAllMocks();
 	});
 
 	test('Number value should be a number', () => {
