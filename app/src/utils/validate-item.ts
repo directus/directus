@@ -2,7 +2,7 @@ import { useRelationsStore } from '@/stores/relations';
 import { FailedValidationException } from '@directus/shared/exceptions';
 import { Field, LogicalFilterAND } from '@directus/shared/types';
 import { validatePayload } from '@directus/shared/utils';
-import { flatten, isEmpty, isNil } from 'lodash';
+import { cloneDeep, flatten, isEmpty, isNil } from 'lodash';
 import { applyConditions } from './apply-conditions';
 
 export function validateItem(item: Record<string, any>, fields: Field[], isNew: boolean) {
@@ -16,6 +16,8 @@ export function validateItem(item: Record<string, any>, fields: Field[], isNew: 
 
 	const requiredFields = fieldsWithConditions.filter((field) => field.meta?.required === true);
 
+	let updatedItem = cloneDeep(item)
+
 	for (const field of requiredFields) {
 		if (isNew && isNil(field.schema?.default_value)) {
 			validationRules._and.push({
@@ -28,8 +30,8 @@ export function validateItem(item: Record<string, any>, fields: Field[], isNew: 
 		const relation = relationsStore.getRelationsForField(field.collection, field.field);
 
 		// Check if we are dealing with a relational field that has an empty array as its value
-		if (relation.length > 0 && Array.isArray(item[field.field]) && isEmpty(item[field.field])) {
-			item[field.field] = null;
+		if (relation.length > 0 && Array.isArray(updatedItem[field.field]) && isEmpty(updatedItem[field.field])) {
+			updatedItem[field.field] = null;
 		}
 
 		validationRules._and.push({
@@ -40,7 +42,7 @@ export function validateItem(item: Record<string, any>, fields: Field[], isNew: 
 	}
 
 	return flatten(
-		validatePayload(validationRules, item).map((error) =>
+		validatePayload(validationRules, updatedItem).map((error) =>
 			error.details.map((details) => new FailedValidationException(details).extensions)
 		)
 	).map((error) => {
