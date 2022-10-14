@@ -15,7 +15,7 @@ const snapshotJoiSchema = Joi.object({
 	version: Joi.number().required(),
 	directus: Joi.string().required(),
 	vendor: Joi.string()
-		.valid(['mysql', 'postgres', 'cockroachdb', 'sqlite', 'oracle', 'mssql', 'redshift'] as DatabaseClient[])
+		.valid(...(['mysql', 'postgres', 'cockroachdb', 'sqlite', 'oracle', 'mssql', 'redshift'] as DatabaseClient[]))
 		.optional(),
 	collections: Joi.array().items(
 		Joi.object({
