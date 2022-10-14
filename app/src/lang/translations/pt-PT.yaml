@@ -29,6 +29,7 @@ draft: Rascunho
 archived: Arquivado
 modules: Módulos
 logs: Registo de Eventos
+reset_width: Redefinir Largura
 tile_size: Tamanho do ícone
 edit_field: Editar campo
 conditions: Condições
@@ -37,6 +38,7 @@ condition_rules: Regras de Condição
 input: Input
 maps: Mapas
 switch_user: Mudar de utilizador
+item_creation: Criação de Item
 item_revision: Revisão do documento
 enter_a_name: Introduza um nome...
 duplicate_field: Duplicar este campo
