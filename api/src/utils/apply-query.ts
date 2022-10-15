@@ -2,6 +2,7 @@ import {
 	Aggregate,
 	ClientFilterOperator,
 	FieldFunction,
+	FieldOverview,
 	Filter,
 	Query,
 	Relation,
@@ -367,7 +368,7 @@ export function applyFilter(
 
 					if (!columnPath) continue;
 
-					const { type, special } = getOrThrow(
+					const { type, special } = validateFilterField(
 						schema.collections[targetCollection].fields,
 						stripFunction(filterPath[filterPath.length - 1]),
 						targetCollection
@@ -377,7 +378,7 @@ export function applyFilter(
 
 					applyFilterToQuery(columnPath, filterOperator, filterValue, logical, targetCollection);
 				} else {
-					const { type, special } = getOrThrow(
+					const { type, special } = validateFilterField(
 						schema.collections[collection].fields,
 						stripFunction(filterPath[0]),
 						collection
@@ -419,6 +420,14 @@ export function applyFilter(
 					dbQuery[logical].whereIn(pkField as string, subQueryBuilder(value));
 				}
 			}
+		}
+
+		function validateFilterField(fields: Record<string, FieldOverview>, key: string, collection = 'unknown') {
+			if (fields[key] === undefined) {
+				throw new InvalidQueryException(`Invalid filter key "${key}" on "${collection}"`);
+			}
+
+			return fields[key];
 		}
 
 		function validateFilterOperator(type: Type, filterOperator: string, special: string[]) {
@@ -747,12 +756,4 @@ function getOperation(key: string, value: Record<string, any>): { operator: stri
 	}
 
 	return getOperation(Object.keys(value)[0], Object.values(value)[0]);
-}
-
-function getOrThrow<T extends object>(object: T, key: keyof T, context = 'unknown') {
-	if (object[key] === undefined) {
-		throw new Error(`Invalid filter key "${String(key)}" on ${context}`);
-	}
-
-	return object[key];
 }
