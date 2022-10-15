@@ -777,7 +777,6 @@ flows: Flows
 flow: Flow
 select_a_flow: Flow auswählen
 run_flow_on_current: Flow für aktuelles Element ausführen
-run_flow_on_selected: Keine Items ausgewählt | Flow für 1 ausgewähltes Element ausführen | Flow für {n} ausgewählte Items ausführen
 run_flow_success: Flow "{flow}" wurde erfolgreich ausgeführt
 trigger: Trigger
 trigger_options: Auslöse-Optionen
