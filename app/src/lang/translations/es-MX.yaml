@@ -188,8 +188,8 @@ revision_post_update: Este es el aspecto de este elemento después de la actuali
 changes_made: A continuación se muestran los cambios específicos realizados en esta revisión.
 no_relational_data: Tenga en cuenta que los datos relacionales no se incluyen aquí.
 junction_field_location: Ubicación de los campos de unión
-top: Parte superior
-bottom: Fondo
+top: Arriba
+bottom: Abajo
 hide_field: Ocultar campo
 hide_field_on_detail: Ocultar campo en el detalle
 show_field_on_detail: Mostrar campo en el detalle
@@ -280,7 +280,7 @@ new_collection: 'Nueva colección'
 add_m2o_to_collection: 'Añadir M2O a "{collection}"'
 add_o2m_to_collection: 'Añadir O2M a "{collection}"'
 add_m2m_to_collection: 'Añadir M2M a "{collection}"'
-choose_a_type: Elegir un Tipo...
+choose_a_type: Elige un tipo...
 determined_by_relationship: Determinado por la Relación
 add_note: Añadir una nota útil para los usuarios...
 add_link: Añadir enlace
@@ -448,7 +448,7 @@ open_folder: Abrir carpeta "{folder}"
 foreground_color: Color de Letra
 background_color: Color de Fondo
 upload_from_device: Subir Archivo desde Dispositivo
-choose_from_library: Seleccionar Archivo desde Biblioteca
+choose_from_library: Elegir archivo de la biblioteca
 import_from_url: Importar Archivo desde URL
 replace_from_device: Reemplazar Archivo desde Dispositivo
 replace_from_library: Reemplazar Archivo desde Biblioteca
@@ -667,8 +667,8 @@ show_header: Mostrar encabezado
 unmanaged_collections: Colecciones No Configuradas
 system_collections: Colecciones del Sistema
 placeholder: Valor de Ejemplo
-icon_left: Icono Izquierdo
-icon_right: Icono Derecho
+icon_left: Ícono izquierdo
+icon_right: Ícono derecho
 count_other_revisions: '{count} otras revisiones'
 font: Fuente
 sans_serif: Sans Serif
@@ -777,8 +777,8 @@ abbreviate_value: Abreviar valor
 operator: Operador
 bold: Negrita
 toggle: Alternar
-icon_on: Icono Activado
-icon_off: Icono Desactivado
+icon_on: Ícono activado
+icon_off: Ícono desactivado
 label: Etiqueta
 flows: Flujos
 flow: Flujo
@@ -824,7 +824,7 @@ insights: Informes
 dashboard: Panel de control
 panel: Panel
 panel_options: Opciones del Panel
-panel_header: Encabezado del Panel
+panel_header: Encabezado del panel
 panel_name_placeholder: Nombre este panel...
 panel_note_placeholder: Detalles opcionales sobre este panel...
 panel_delete_confirm: '¿Está seguro de que desea eliminar este panel? Esta acción no se puede deshacer.'
@@ -1171,7 +1171,7 @@ fields:
     times_used: Veces usado
   directus_fields:
     collection: Nombre de Colección
-    icon: Ícono de Colección
+    icon: Ícono de colección
     note: Nota
     hidden: Oculto
     singleton: Singleton
@@ -1179,7 +1179,7 @@ fields:
     display_template: Plantilla
   directus_roles:
     name: Nombre del rol
-    icon: Ícono del Rol
+    icon: Ícono del rol
     description: Descripción
     app_access: Acceso a App
     admin_access: Acceso Admin
@@ -1194,7 +1194,7 @@ fields:
     data: Datos
     header: Encabezado
     value: Valor
-    headers: Solicitar Encabezados
+    headers: Solicitar encabezados
     data_label: Enviar datos del evento
     triggers: Disparadores
     actions: Acciones
@@ -1249,12 +1249,12 @@ field_options:
     singular_unit: Unidad Singular
     plural_unit: Unidad plural
     archive_divider: Archivar
-    archive_field_placeholder: Elija un campo...
+    archive_field_placeholder: Elige un campo...
     archive_app_filter: Activar Filtro de Archivos de la Aplicación
     archive_value: Valor establecido al archivar...
     unarchive_value: Valor establecido al desarchivar...
     sort_divider: Ordenar
-    sort_field: Elija un campo...
+    sort_field: Elige un campo...
     accountability_divider: Responsabilidad
     duplication_divider: Duplicación
   directus_files:
@@ -1307,7 +1307,7 @@ do_nothing: No hacer nada
 generate_and_save_uuid: Generar y Guardar UUID
 save_current_user_id: Guardar ID de Usuario Actual
 save_current_user_role: Guardar Rol Actual de Usuario
-save_current_datetime: Guardar Fecha y Hora Actual
+save_current_datetime: Guardar fecha y hora actual
 always_open: Abrir Siempre
 start_open: Iniciar apertura
 start_collapsed: Iniciar colapsado
@@ -1362,7 +1362,7 @@ duplicate: Duplicado
 limit: Límite
 email: Email
 embed: Incrustado
-fallback_icon: Ícono de Reserva
+fallback_icon: Ícono de reserva
 field: Campo | Campos
 file: Archivo
 file_library: Biblioteca de Archivos
@@ -1476,13 +1476,13 @@ interfaces:
     error: No se puede realizar la acción
   select-multiple-checkbox:
     checkboxes: Casillas de selección
-    description: Elegir entre múltiples opciones a través de casillas de selección
+    description: Elije entre múltiples opciones a través de casillas de verificación
     allow_other: Permitir otro
     show_more: 'Mostrar {count} más'
     items_shown: Elementos mostrados
   select-multiple-checkbox-tree:
     name: Casillas (árbol)
-    description: Elija entre múltiples opciones a través de casillas anidadas
+    description: Elije entre múltiples opciones a través de casillas de verificación anidadas
     value_combining: Combinación de Valor
     value_combining_note: Controla qué valor se almacena cuando se realizan selecciones anidadas.
     show_all: Mostrar todo
@@ -1504,18 +1504,18 @@ interfaces:
   select-color:
     color: Color
     description: Ingresa o selecciona un valor de color
-    placeholder: Seleccione un color...
+    placeholder: Elige un color...
     preset_colors: Colores preestablecidos
     opacity: Opacidad
     preset_colors_add_label: Añadir nuevo color...
     name_placeholder: Ingresa el nombre del color...
   datetime:
-    datetime: Fecha/hora
+    datetime: Fecha y hora
     description: Ingresa fechas y horas
-    include_seconds: Incluir Segundos
-    set_to_now: Ajustar a Ahora Mismo
-    use_24: Usar Formato 24 horas
-    placeholder: Elija una fecha...
+    include_seconds: Incluir segundos
+    set_to_now: Establecer ahora
+    use_24: Usar formato 24 horas
+    placeholder: Elige una fecha y hora...
   system-fields:
     select_a_collection: Seleccionar una Colección
     no_fields: No hay campos
@@ -1532,7 +1532,7 @@ interfaces:
     inline_title: Título seguido por línea
     inline_title_label: Mostrar título seguido por línea
     margin_top: Margen superior
-    margin_top_label: Aumentar Margen Superior
+    margin_top_label: Aumentar margen superior
   select-dropdown:
     description: Seleccione un valor de una lista desplegable
     choices_placeholder: Añadir una nueva opción
@@ -1559,8 +1559,8 @@ interfaces:
     masked_label: Ocultar los valores reales
   select-icon:
     icon: Ícono
-    description: Seleccione un ícono de la lista desplegable
-    search_for_icon: Buscar un ícono...
+    description: Seleccione un icono del menú desplegable
+    search_for_icon: Buscar ícono...
   file-image:
     image: Imagen
     description: Seleccionar o subir una imagen
@@ -1730,7 +1730,7 @@ interfaces:
     name: Grupo de detalles
     description: Procesar los campos como una sección colapsable
     show_header: Mostrar encabezado de grupo
-    header_icon: Iconos del encabezado
+    header_icon: Ícono del encabezado
     header_color: Color del encabezado
     start_open: Iniciar apertura
     start_closed: Iniciar colapsado
@@ -1761,36 +1761,36 @@ displays:
     label_on_placeholder: Ingresa una etiqueta...
     label_off: Etiqueta Inactivo
     label_off_placeholder: Ingresa una etiqueta no válida...
-    icon_on: Icono Activado
-    icon_off: Icono Desactivado
+    icon_on: Ícono activado
+    icon_off: Ícono desactivado
     color_on: Color para Activo
     color_off: Color para Inactivo
   collection:
     collection: Colección
     description: Presentar una colección
-    icon_label: Presentar el ícono de la colección
+    icon_label: Mostrar el icono de la colección
   color:
     color: Color
     description: Presentar un punto coloreado
     default_color: Color por Defecto
   datetime:
-    datetime: Fecha/hora
-    description: Presentar valores relacionados a la hora
+    datetime: Fecha y hora
+    description: Mostrar valores relacionados con el tiempo
     format: Formato
     format_note: >-
-      El formato personalizado acepta el __[Date Field Symbol Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
+      El formato personalizado acepta la __[Date Field Symbol Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
     long: Larga
     short: Corta
     relative: Relativa
-    relative_label: 'Presentar hora relativa, ej: hace 5 minutos'
+    relative_label: 'Mostrar tiempo relativo, ej: hace 5 minutos'
     suffix: Sufijo
     suffix_label: Mostrar indicador relativo
-    suffix_note: Usa palabras cómo 'en' y 'antes'
+    suffix_note: Usa palabras como 'en' y 'hace'
     strict: Estricto
-    strict_label: Usa unidades estrictas
-    strict_note: Remover palabras cómo 'casi', 'encima', 'menos que'
-    round: Redondeo
-    round_note: Escoja una función de redondeo para usar
+    strict_label: Usar unidades estrictas
+    strict_note: Elimina palabras como 'casi', 'sobre', 'menos que'
+    round: Redondo
+    round_note: Elije una función de redondeo para usar
     down: Abajo
     nearest: Más cercano
     up: Arriba
@@ -1829,7 +1829,7 @@ displays:
     description: Presentar una versión formateada del objeto
   icon:
     icon: Ícono
-    description: Presentar un ícono
+    description: Mostrar un ícono
     filled: Lleno
     filled_label: Usar una variante de llenado
   image:
@@ -2012,7 +2012,7 @@ panels:
     labels: Mostrar etiquetas
     legend: Mostrar leyenda
     right: Derecha
-    bottom: Fondo
+    bottom: Abajo
     monochrome: Monocromo
     monochrome_color: Color monocromático
   variable:
