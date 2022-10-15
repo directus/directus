@@ -785,7 +785,6 @@ flow: Flusso
 select_a_flow: Seleziona un flusso
 run_flow_on_current: Esegui il flusso sull'elemento corrente
 run_flow_on_current_edited_confirm: Questo elemento potrebbe essere aggiornato dal flusso, sei sicuro di volerlo eseguire?
-run_flow_on_selected: Nessun elemento selezionato | Eseguire il flusso su 1 elemento selezionato | Eseguire il flusso su {n} elementi selezionati
 run_flow_success: Flusso "{flow}" eseguito con successo
 trigger: Trigger
 trigger_options: Opzioni del trigger
