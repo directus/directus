@@ -755,7 +755,6 @@ label: Rótulo
 flows: Fluxos
 flow: Fluxo
 select_a_flow: Selecione um fluxo
-run_flow_on_selected: Sem itens selecionados | Executar fluxo em 1 item selecionado | Executar fluxo em {n} itens selecionados
 trigger: Acionar
 view_trigger: Ver gatilho
 create_trigger: Criar gatilho
