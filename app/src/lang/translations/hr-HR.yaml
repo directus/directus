@@ -784,7 +784,6 @@ flow: Tok
 select_a_flow: Odaberite tok
 run_flow_on_current: Pokreni tok na trenutnoj stavci
 run_flow_on_current_edited_confirm: Ova se stavka može ažurirati ovim tokom, jeste li sigurni da je želite izvršiti?
-run_flow_on_selected: Nema odabranih stavki | Pokreni tok na 1 odabranoj stavci | Pokreni tok na {n} odabranih stavki
 run_flow_success: Tok "{flow}" je uspješno izvršen
 trigger: Okidač
 trigger_options: Opcije okidača
