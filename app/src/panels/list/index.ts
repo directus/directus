@@ -111,11 +111,24 @@ export default definePanel({
 			type: 'string',
 			meta: {
 				interface: 'system-display-template',
-				width: 'full',
+				width: 'half',
 				options: {
 					collectionField: 'collection',
 					placeholder: '{{ field }}',
 				},
+			},
+		},
+		{
+			field: 'linkToItem',
+			name: '$t:list_panel_allow_edit',
+			type: 'boolean',
+			meta: {
+				width: 'half',
+				interface: 'toggle',
+				required: true,
+			},
+			schema: {
+				default_value: false,
 			},
 		},
 		{
