@@ -783,7 +783,6 @@ flow: Flow
 select_a_flow: Selecteer een Flow
 run_flow_on_current: Voer Flow uit op dit item
 run_flow_on_current_edited_confirm: Dit item kan aangepast worden door deze Flow, weet je zeker dat je het wilt uitvoeren?
-run_flow_on_selected: Geen items geslecteerd | Voer Flow uit op 1 geselecteerd item | Voer Flow uit op {n} geselecteerde items
 run_flow_success: Flow "{flow}" is succesvol uitgevoerd
 trigger: Trigger
 trigger_options: Trigger opties
