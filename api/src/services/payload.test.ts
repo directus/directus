@@ -210,7 +210,7 @@ describe('Integration Tests', () => {
 						{
 							[dateFieldId]: '2022-01-10',
 							[dateTimeFieldId]: '2021-10-01T12:34:56',
-							[timestampFieldId]: '1980-12-07T16:41:22.333Z',
+							[timestampFieldId]: new Date('1980-12-08 00:11:22.333').toISOString(),
 						},
 					]);
 				});
