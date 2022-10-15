@@ -575,7 +575,7 @@ export default defineComponent({
 .card {
 	overflow: auto;
 
-	.card-title{
+	.card-title {
 		margin-bottom: 24px;
 		font-size: 24px;
 	}
