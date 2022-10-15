@@ -763,7 +763,6 @@ flows: Toky
 flow: Tok
 select_a_flow: Vybrat tok
 run_flow_on_current: Spustit tok na aktuální položku
-run_flow_on_selected: Žádné vybrané položky | Spustit tok na 1 vybrané položce | Spustit tok na {n} vybraných položkách
 run_flow_success: Tok "{flow}" proběhl úspěšně
 trigger: Spouštěč
 trigger_options: Možnosti spouštěče
