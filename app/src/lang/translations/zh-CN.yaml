@@ -785,7 +785,6 @@ flow: 流程
 select_a_flow: 选择一个流程
 run_flow_on_current: 在当前条目上运行Flow
 run_flow_on_current_edited_confirm: 此流程可能会更新此项，您确定要执行它吗？
-run_flow_on_selected: 没有选定项 | 在已选定的 1 项上运行流流程 | 在选定的 {n} 个项目上运行流程
 run_flow_success: 流程 "{flow}" 运行成功
 trigger: 触发器
 trigger_options: 触发器选项
