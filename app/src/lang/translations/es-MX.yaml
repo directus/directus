@@ -1300,7 +1300,7 @@ field_options:
     headers:
       header: Encabezado
       value: Valor
-      add: Añadir cabecera
+      add: Añadir encabezado
 no_fields_in_collection: 'Aún no hay campos en "{collection}"'
 no_value: Sin valor
 do_nothing: No hacer nada
@@ -1806,7 +1806,7 @@ displays:
     format: Formato
     format_label: Formato automático
     font: Fuente
-    font_sans_serif: Sans Serif
+    font_sans_serif: Sans serif
     font_serif: Serif
     font_monospace: Monospace
     bold: Negrita
