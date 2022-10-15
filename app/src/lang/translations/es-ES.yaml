@@ -2014,6 +2014,8 @@ panels:
     name: Variable global
     description: Establecer un valor global para el uso en los filtros de otros Paneles
     variable_key: Clave variable
+  relational-variable:
+    variable_key: Clave variable
 triggers:
   common:
     response_body: Cuerpo de respuesta
