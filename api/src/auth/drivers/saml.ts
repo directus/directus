@@ -6,23 +6,23 @@ import logger from '../../logger';
 import { getAuthProvider } from '../../auth';
 import { COOKIE_OPTIONS } from '../../constants';
 import env from '../../env';
+import ms from 'ms';
 import { RecordNotUniqueException } from '../../exceptions/database/record-not-unique';
-import {
-	InvalidCredentialsException,
-	InvalidProviderException,
-} from '../../exceptions';
+import { InvalidCredentialsException, InvalidProviderException, InvalidTokenException } from '../../exceptions';
 import { respond } from '../../middleware/respond';
 import { AuthenticationService, UsersService } from '../../services';
 import { AuthData, AuthDriverOptions, User } from '../../types';
 import asyncHandler from '../../utils/async-handler';
 import { getConfigFromEnv } from '../../utils/get-config-from-env';
 import { LocalAuthDriver } from './local';
+import { Url } from '../../utils/url';
 
 samlify.setSchemaValidator(validator);
 
 export class SAMLAuthDriver extends LocalAuthDriver {
 	idp: any;
 	sp: any;
+	redirectUrl: string;
 	usersService: UsersService;
 	config: Record<string, any>;
 
@@ -30,6 +30,10 @@ export class SAMLAuthDriver extends LocalAuthDriver {
 		super(options, config);
 
 		this.config = config;
+
+		const redirectUrl = new Url(env.PUBLIC_URL).addPath('auth', 'login', config.provider, 'callback');
+		this.redirectUrl = redirectUrl.toString();
+
 		this.usersService = new UsersService({ knex: this.knex, schema: this.schema });
 		this.sp = samlify.ServiceProvider(getConfigFromEnv(`AUTH_${config.provider.toUpperCase()}_SP`));
 		this.idp = samlify.IdentityProvider(getConfigFromEnv(`AUTH_${config.provider.toUpperCase()}_IDP`));
@@ -153,15 +157,42 @@ export function createSAMLAuthRouter(providerName: string) {
 		'/acs',
 		express.urlencoded({ extended: false }),
 		asyncHandler(async (req, res, next) => {
-			const { sp, idp } = getAuthProvider(providerName) as SAMLAuthDriver;
-			const { extract } = await sp.parseLoginResponse(idp, 'post', req);
+			try {
+				const { sp, idp } = getAuthProvider(providerName) as SAMLAuthDriver;
+				const { extract } = await sp.parseLoginResponse(idp, 'post', req);
 
-			const authService = new AuthenticationService({ accountability: req.accountability, schema: req.schema });
-			const { accessToken, refreshToken, expires } = await authService.login(providerName, extract.attributes);
+				const authService = new AuthenticationService({ accountability: req.accountability, schema: req.schema });
+				const { accessToken, refreshToken, expires } = await authService.login(providerName, extract.attributes);
 
-			res.cookie(env.REFRESH_TOKEN_COOKIE_NAME, refreshToken, COOKIE_OPTIONS);
+				//res.cookie(env.REFRESH_TOKEN_COOKIE_NAME, refreshToken, COOKIE_OPTIONS);
+				//return res.redirect(env.PUBLIC_URL);
 
-			return res.redirect(env.PUBLIC_URL);
+				/*
+				if (redirectUrl) {
+					res.cookie(env.REFRESH_TOKEN_COOKIE_NAME, refreshToken, {
+						httpOnly: true,
+						domain: env.REFRESH_TOKEN_COOKIE_DOMAIN,
+						maxAge: ms(env.REFRESH_TOKEN_TTL as string),
+						secure: env.REFRESH_TOKEN_COOKIE_SECURE ?? false,
+						sameSite: (env.REFRESH_TOKEN_COOKIE_SAME_SITE as 'lax' | 'strict' | 'none') || 'strict',
+					});
+	
+					return res.redirect(redirectUrl);
+				}
+*/
+				res.locals.payload = {
+					data: {
+						access_token: accessToken,
+						refresh_token: refreshToken,
+						expires,
+					},
+				};
+
+				next();
+			} catch (error: any) {
+				logger.warn(error, `[Saml] Unexpected error during Saml login`);
+				throw error;
+			}
 		}),
 		respond
 	);
