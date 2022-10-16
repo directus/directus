@@ -16,7 +16,7 @@
 	],
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/directus/directus.git"
+		"url": "git+https://github.com/ciso360ai/directus.git"
 	},
 	"publishConfig": {
 		"access": "public"
