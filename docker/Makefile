@@ -3,9 +3,9 @@ SHELL=bash
 version=$(shell git describe --tags --abbrev=0)
 tag=latest
 cmd=
-user=directus
+user=ciso360ai
 registry=docker.io
-repository=directus/directus
+repository=ciso360ai/directus
 
 .PHONY: build-images
 
