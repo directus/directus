@@ -187,6 +187,7 @@ revision_post_create: Aqui está como este ítem ficou quando foi criado.
 revision_post_update: Aqui está como este item ficou após a atualização.
 changes_made: Abaixo estão as mudanças específicas feitas nesta revisão.
 no_relational_data: Tenha em mente que os dados relacionais não estão inclusos aqui.
+top: Topo
 hide_field: Ocultar campo
 hide_field_on_detail: Ocultar Campo em Detalhes
 show_field_on_detail: Exibir Campo em Detalhes
