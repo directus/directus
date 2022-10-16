@@ -76,7 +76,6 @@ export class SAMLAuthDriver extends LocalAuthDriver {
 				email: email,
 				external_identifier: identifier,
 				role: this.config.defaultRoleId,
-				//auth_data: tokenSet.refresh_token && JSON.stringify({ refreshToken: tokenSet.refresh_token }),
 			});
 			const userID = await this.fetchUserID(identifier);
 			if (userID) return userID;
