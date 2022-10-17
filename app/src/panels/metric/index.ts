@@ -1,6 +1,5 @@
-import { useFieldsStore } from '@/stores/fields';
 import { useCollectionsStore } from '@/stores/collections';
-import panel from '@directus-extensions-panel';
+import { useFieldsStore } from '@/stores/fields';
 import { PanelQuery } from '@directus/shared/types';
 import { definePanel } from '@directus/shared/utils';
 import { computed } from 'vue';
