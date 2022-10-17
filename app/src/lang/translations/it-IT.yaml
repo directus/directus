@@ -1905,33 +1905,8 @@ layouts:
     default_template: Uso il default della raccolta...
     no_compatible_fields: Nessun campo compatibile
   kanban:
-    name: Kanban,
-    group_field: Raggruppa per,
-    group_field_placeholder: Campo di raggruppamento...,
-    group_title: Titolo del gruppo,
-    group_title_placeholder: Campo per i titoli del gruppo...,
-    title: Titolo della scheda,
-    title_placeholder: Campo titolo opzionale...,
-    text: Testo della scheda,
-    text_placeholder: Campo testuale opzionale...,
-    date: Data della scheda,
-    date_placeholder: Campo data opzionale...,
-    tags: Tag della scheda,
-    tags_placeholder: Campo tag opzionale...,
-    user: Utente della scheda,
-    user_placeholder: Campo utente opzionale...,
-    image: Immagine della scheda,
-    image_placeholder: Campo immagine opzionale...,
-    image_fit: Immagine della scheda adattata,
-    crop: Ritaglia,
-    advanced: Avanzate,
-    edit_group: Modifica gruppo,
-    delete_group: Elimina gruppo,
-    add_group: Aggiungi gruppo,
-    add_group_placeholder: Inserisci un nuovo titolo per il gruppo...,
-    show_ungrouped: Mostra separati,
-    show: Mostra,
-    no_group: Nessun gruppo,
+    crop: Ritaglia
+    advanced: Avanzate
     not_all_loaded: È stato possibile caricare solo i primi 1000 elementi.
 panels:
   metric:
@@ -1994,7 +1969,6 @@ panels:
   meter:
     description: Metro per il rilevamento dei valori
     name: Metro
-    arc: Arco
     stroke_width: Spessore della linea
     select_max_value: Devi selezionare un valore massimo.
     max_greater_than_zero: Il massimo deve essere maggiore di zero.
