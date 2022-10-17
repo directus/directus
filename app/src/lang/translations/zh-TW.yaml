@@ -1888,33 +1888,8 @@ layouts:
     default_template: 使用資料集的預設值...
     no_compatible_fields: 沒有相容的欄位
   kanban:
-    name: 看板,
-    group_field: 分組,
-    group_field_placeholder: 要用來分組的欄位,
-    group_title: 分組標題,
-    group_title_placeholder: 群組標題欄位,
-    title: 卡片標題
-    title_placeholder: 可選標題欄位,
-    text: 卡片文字,
-    text_placeholder: 選填文字欄位...,
-    date: 卡片日期,
-    date_placeholder: 選填日期欄位...,
-    tags: 卡片標籤,
-    tags_placeholder: 選填卡片標籤...,
-    user: 卡片使用者,
-    user_placeholder: 選填使用者欄位...,
-    image: 卡片圖片
-    image_placeholder: 選填卡片圖片...,
-    image_fit: 卡片圖片顯示,
-    crop: 裁切,
-    advanced: 進階,
-    edit_group: 編輯群組,
-    delete_group: 刪除群組,
-    add_group: 新增群組,
-    add_group_placeholder: 輸入新的群組名稱,
-    show_ungrouped: 以非群組方式顯示,
-    show: 顯示,
-    no_group: 沒有群組,
+    crop: 裁剪
+    advanced: 進階
     not_all_loaded: 只能讀取前1000個項目。
 panels:
   metric:
@@ -1977,7 +1952,6 @@ panels:
   meter:
     description: 根據數值產生格線
     name: 格線
-    arc: 弧形
     stroke_width: 線條粗細
     select_max_value: 您必須選擇最大值
     max_greater_than_zero: 最大值必須大於0
