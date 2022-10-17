@@ -77,7 +77,7 @@ export class SAMLAuthDriver extends LocalAuthDriver {
 				first_name: userInfo.given_name,
 				last_name: userInfo.family_name,
 				email: email,
-				external_identifier: identifier,
+				external_identifier: identifier.toLowerCase(),
 				role: this.config.defaultRoleId,
 			});
 			const userID = await this.fetchUserID(identifier);
@@ -105,10 +105,9 @@ export class SAMLAuthDriver extends LocalAuthDriver {
 		}
 	}
 
-	/*
-	async logout(user: User): Promise<void> {
+	async logout(_user: User): Promise<void> {
+		return;
 	}
-*/
 }
 
 export function createSAMLAuthRouter(providerName: string) {
