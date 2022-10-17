@@ -125,7 +125,7 @@ router.get(
 		const service = new FilesService({ accountability: req.accountability, schema: req.schema });
 
 		for await (const f of localStorage.flatList()) {
-			service.sync(f.path);
+			await service.sync(f.path);
 		}
 
 		res.locals.payload = {};
