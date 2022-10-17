@@ -1227,6 +1227,8 @@ layouts:
     title: सेटिङहरू अद्यावधिक गरियो
   tabular:
     tabular: टेबल
+  kanban:
+    advanced: उन्नत
 panels:
   label:
     name: लेबल
