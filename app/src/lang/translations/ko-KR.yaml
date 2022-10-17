@@ -583,6 +583,8 @@ layouts:
     cluster: 인근 데이터 묶기
     default_template: 기본 설정에 따름
     no_compatible_fields: 해당필드 없음
+  kanban:
+    crop: 맞춰자르기(crop)
 panels:
   linechart:
     datasets: 데이터 세트
