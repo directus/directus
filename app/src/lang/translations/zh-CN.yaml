@@ -1905,33 +1905,8 @@ layouts:
     default_template: 使用Collection默认值
     no_compatible_fields: 没有兼容的字段
   kanban:
-    name: 看板
-    group_field: 分组：
-    group_field_placeholder: 用于分组的字段...，
-    group_title: 组标题
-    group_title_placeholder: 分组标题字段...，
-    title: 卡片标题
-    title_placeholder: 可选日期字段...，
-    text: 卡片文本，
-    text_placeholder: 可选标签字段...，
-    date: 卡片日期
-    date_placeholder: 可选日期字段...，
-    tags: 卡片标签
-    tags_placeholder: 可选标签字段...，
-    user: 卡片使用者，
-    user_placeholder: 可选文本字段...，
-    image: 卡片图像
-    image_placeholder: 可选图像字段...。
-    image_fit: 卡片图像匹配
-    crop: 剪裁
-    advanced: 高级，
-    edit_group: 编辑分组
-    delete_group: 删除组
-    add_group: 添加组
-    add_group_placeholder: 输入新群组名称
-    show_ungrouped: 显示未分组
-    show: 显示
-    no_group: 未分组
+    crop: 裁剪
+    advanced: 高级
     not_all_loaded: 只能加载前 1000 个条目。
 panels:
   metric:
@@ -1994,7 +1969,6 @@ panels:
   meter:
     description: 跟踪值的仪表
     name: 电表模式
-    arc: 弧形
     stroke_width: 笔画宽度
     select_max_value: 您必须选择一个最大值。
     max_greater_than_zero: 最大值必须大于 0。
