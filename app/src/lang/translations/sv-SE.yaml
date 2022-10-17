@@ -1616,6 +1616,8 @@ layouts:
     basemap: Basemap
     layers: Lager
     find_location: Hitta plats...
+  kanban:
+    crop: Beskär
 panels:
   metric:
     name: Metrisk
