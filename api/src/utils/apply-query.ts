@@ -20,6 +20,7 @@ import { getColumnPath } from './get-column-path';
 import { getRelationInfo } from './get-relation-info';
 import { getFilterOperatorsForType, getOutputTypeForFunction } from '@directus/shared/utils';
 import { stripFunction } from './strip-function';
+import { parseJsonFunction } from './parse-json-function';
 
 const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
 
@@ -63,6 +64,7 @@ export default function applyQuery(
 	}
 
 	if (query.filter) {
+		// console.log('query.filter', query.filter);
 		applyFilter(knex, schema, dbQuery, query.filter, collection, subQuery);
 	}
 
@@ -290,6 +292,8 @@ export function applyFilter(
 
 	const aliasMap: Record<string, string> = {};
 
+	// addJsonFilters()
+	// console.log('addJsonFilters', rootFilter, collection);
 	addJoins(rootQuery, rootFilter, collection);
 	addWhereClauses(knex, rootQuery, rootFilter, collection);
 
@@ -378,15 +382,21 @@ export function applyFilter(
 
 					applyFilterToQuery(columnPath, filterOperator, filterValue, logical, targetCollection);
 				} else {
-					const { type, special } = validateFilterField(
-						schema.collections[collection].fields,
-						stripFunction(filterPath[0]),
-						collection
+					const fieldName = filterPath[0].startsWith('json(')
+						? parseJsonFunction(filterPath[0]).fieldName
+						: stripFunction(filterPath[0]);
+					validateFilterOperator(
+						schema.collections[collection].fields[fieldName].type,
+						filterOperator,
+						schema.collections[collection].fields[fieldName].special
 					);
 
-					validateFilterOperator(type, filterOperator, special);
-
-					applyFilterToQuery(`${collection}.${filterPath[0]}`, filterOperator, filterValue, logical);
+					// validateFilterOperator(type, filterOperator, special);
+					if (schema.collections[collection].fields[fieldName].special?.includes('json-alias')) {
+						applyFilterToQuery(filterPath[0], filterOperator, filterValue, logical);
+					} else {
+						applyFilterToQuery(`${collection}.${filterPath[0]}`, filterOperator, filterValue, logical);
+					}
 				}
 			} else if (subQuery === false || filterPath.length > 1) {
 				if (!relation) continue;
@@ -458,10 +468,16 @@ export function applyFilter(
 			logical: 'and' | 'or' = 'and',
 			originalCollectionName?: string
 		) {
-			const [table, column] = key.split('.');
-
-			// Is processed through Knex.Raw, so should be safe to string-inject into these where queries
-			const selectionRaw = getColumn(knex, table, column, false, schema) as any;
+			let selectionRaw, column;
+			if (key.includes('.')) {
+				const [table, _column] = key.split('.');
+				// Is processed through Knex.Raw, so should be safe to string-inject into these where queries
+				selectionRaw = getColumn(knex, table, _column, false, schema) as any;
+				column = _column;
+			} else {
+				selectionRaw = key;
+				column = key;
+			}
 
 			// Knex supports "raw" in the columnName parameter, but isn't typed as such. Too bad..
 			// See https://github.com/knex/knex/issues/4518 @TODO remove as any once knex is updated

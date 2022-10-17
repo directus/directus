@@ -42,7 +42,24 @@ export function getFilterOperatorsForType(
 		case 'uuid':
 			return ['eq', 'neq', 'null', 'nnull', 'in', 'nin'];
 		case 'json':
-			return ['null', 'nnull'];
+			return [
+				'contains',
+				'ncontains',
+				'icontains',
+				'starts_with',
+				'nstarts_with',
+				'ends_with',
+				'nends_with',
+				'eq',
+				'neq',
+				'empty',
+				'nempty',
+				'null',
+				'nnull',
+				'in',
+				'nin',
+				...validationOnlyStringFilterOperators,
+			];
 
 		// Boolean
 		case 'boolean':

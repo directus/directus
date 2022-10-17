@@ -27,27 +27,11 @@ export function getColumn(
 ): Knex.Raw {
 	const fn = getFunctions(knex, schema);
 
-	if (column.includes('(') && column.includes(')')) {
+	if (column && column.includes('(') && column.includes(')')) {
 		const functionName = column.split('(')[0] as FieldFunction;
 		const columnName = stripFunction(column);
 
-		if (functionName === 'json') {
-			const { fieldName } = parseJsonFunction(columnName);
-			const type = schema?.collections[table]?.fields?.[fieldName]?.type ?? 'unknown';
-			const allowedFunctions = getFunctionsForType(type);
-
-			if (allowedFunctions.includes(functionName) === false) {
-				throw new InvalidQueryException(`Invalid function specified "${functionName}"`);
-			}
-
-			const result = fn[functionName as keyof typeof fn](table, columnName, { type, query }) as Knex.Raw;
-
-			if (alias) {
-				return knex.raw(result + ' AS ??', [alias]);
-			}
-
-			return result;
-		} else if (functionName in fn) {
+		if (functionName in fn) {
 			const type = schema?.collections[table]?.fields?.[columnName]?.type ?? 'unknown';
 			const allowedFunctions = getFunctionsForType(type);
 
@@ -72,4 +56,22 @@ export function getColumn(
 	}
 
 	return knex.ref(`${table}.${column}`);
+}
+
+export function getJsonColumn(
+	knex: Knex,
+	table: string,
+	column: string,
+	alias: string,
+	jsonPath: string,
+	schema: SchemaOverview
+) {
+	const type = schema?.collections[table]?.fields?.[column]?.type ?? 'unknown';
+	const allowedFunctions = getFunctionsForType(type);
+
+	if (allowedFunctions.includes('json') === false) {
+		throw new InvalidQueryException(`Invalid field of type "${type}" is not compatible with JSON queries.`);
+	}
+
+	return knex.raw(knex.jsonExtract(`${table}.${column}`, jsonPath, alias, false));
 }

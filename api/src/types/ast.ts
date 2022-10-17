@@ -1,9 +1,9 @@
-import { Query, Relation } from '@directus/shared/types';
+import { FieldFilterOperator, Query, Relation } from '@directus/shared/types';
 
 export type M2ONode = {
 	type: 'm2o';
 	name: string;
-	children: (NestedCollectionNode | FieldNode | FunctionFieldNode)[];
+	children: ASTChildNode[];
 	query: Query;
 	fieldKey: string;
 	relation: Relation;
@@ -15,7 +15,7 @@ export type A2MNode = {
 	type: 'a2o';
 	names: string[];
 	children: {
-		[collection: string]: (NestedCollectionNode | FieldNode | FunctionFieldNode)[];
+		[collection: string]: ASTChildNode[];
 	};
 	query: {
 		[collection: string]: Query;
@@ -31,7 +31,7 @@ export type A2MNode = {
 export type O2MNode = {
 	type: 'o2m';
 	name: string;
-	children: (NestedCollectionNode | FieldNode | FunctionFieldNode)[];
+	children: ASTChildNode[];
 	query: Query;
 	fieldKey: string;
 	relation: Relation;
@@ -55,9 +55,27 @@ export type FunctionFieldNode = {
 	relatedCollection: string;
 };
 
+// export type JsonFieldNode = {
+// 	type: 'jsonField';
+// 	name: string;
+// 	fieldKey: string;
+// 	alias: string;
+// };
+
+export type JsonFieldNode = {
+	type: 'jsonField';
+	name: string;
+	fieldKey: string;
+	fieldName: string;
+	queryPath: string;
+	filter?: FieldFilterOperator;
+};
+
+export type ASTChildNode = NestedCollectionNode | FieldNode | FunctionFieldNode | JsonFieldNode;
+
 export type AST = {
 	type: 'root';
 	name: string;
-	children: (NestedCollectionNode | FieldNode | FunctionFieldNode)[];
+	children: ASTChildNode[];
 	query: Query;
 };

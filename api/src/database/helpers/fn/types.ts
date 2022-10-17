@@ -1,7 +1,6 @@
 import { Query, SchemaOverview } from '@directus/shared/types';
 import { Knex } from 'knex';
 import { applyFilter } from '../../../utils/apply-query';
-import { parseJsonFunction } from '../../../utils/parse-json-function';
 import { DatabaseHelper } from '../types';
 
 export type FnHelperOptions = {
@@ -24,11 +23,6 @@ export abstract class FnHelper extends DatabaseHelper {
 	abstract minute(table: string, column: string, options?: FnHelperOptions): Knex.Raw;
 	abstract second(table: string, column: string, options?: FnHelperOptions): Knex.Raw;
 	abstract count(table: string, column: string, options?: FnHelperOptions): Knex.Raw;
-
-	json(table: string, column: string, _options?: FnHelperOptions) {
-		const { fieldName, queryPath } = parseJsonFunction(column);
-		return this.knex.jsonExtract(`${table}.${fieldName}`, queryPath, undefined, false);
-	}
 
 	protected _relationalCount(table: string, column: string, options?: FnHelperOptions): Knex.Raw {
 		const relation = this.schema.relations.find(
