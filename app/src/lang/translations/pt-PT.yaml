@@ -959,6 +959,8 @@ layouts:
   tabular:
     tabular: Tabela
     spacing: Espaçamento
+  kanban:
+    advanced: Avançado
 operations:
   log:
     message: Mensagem
