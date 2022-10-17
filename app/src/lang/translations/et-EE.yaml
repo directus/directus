@@ -1377,6 +1377,9 @@ layouts:
   map:
     map: Kaart
     find_location: Otsi asukohta...
+  kanban:
+    crop: Kärpimine
+    advanced: Lisavalikud
 panels:
   label:
     name: Silt
