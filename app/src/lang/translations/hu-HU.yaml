@@ -1574,6 +1574,9 @@ layouts:
     cluster_minpoints: Minimális klaszter méret
     cluster_maxzoom: Maximális zoom a klaszterezéshez
     invalid_geometry: Érvénytelen geometria
+  kanban:
+    crop: Vágás
+    advanced: Speciális
 panels:
   metric:
     name: Metrikus
