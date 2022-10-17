@@ -1897,33 +1897,8 @@ layouts:
     default_template: По подразбиране от колекцията...
     no_compatible_fields: Няма съвместими полета
   kanban:
-    name: Канбан
-    group_field: Групиране по
-    group_field_placeholder: Поле за групиране
-    group_title: Заглавие при групиране
-    group_title_placeholder: Полета за групиране
-    title: Заглавие на карта
-    title_placeholder: Незадължително поле за заглавие
-    text: Текст на картата
-    text_placeholder: Незадължително поле за текст
-    date: Дата на картата
-    date_placeholder: Незадължително поле за дата
-    tags: Етикети на картата
-    tags_placeholder: Незадължително поле за етикети
-    user: Потребител на картата
-    user_placeholder: Незадължително поле за потребител
-    image: Избражение на картата
-    image_placeholder: Незадължително поле за изображение
-    image_fit: Напасване на изображението
     crop: Изрязване
     advanced: Разширени
-    edit_group: Редактиране на група
-    delete_group: Изтриване на група
-    add_group: Добавяне на група
-    add_group_placeholder: Въвеждане на заглавие за група...
-    show_ungrouped: Негрупирано показване
-    show: Показване
-    no_group: Няма група
     not_all_loaded: Може да се заредят само първите 1000 записи.
 panels:
   metric:
@@ -1986,7 +1961,6 @@ panels:
   meter:
     description: Циферблат за показване на стойности
     name: Циферблат
-    arc: Арка
     stroke_width: Ширина на чертите
     select_max_value: Трябва да изберете максимална стойност.
     max_greater_than_zero: Максималната стойност трябва да е по-голяма от 0.
