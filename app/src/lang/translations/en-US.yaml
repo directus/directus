@@ -2024,7 +2024,8 @@ panels:
   meter:
     description: Meter for tracking values
     name: Meter
-    arc: Arc
+    half_circle: Half Circle
+    full_circle: Full Circle
     stroke_width: Stroke Width
     select_max_value: You must select a maximum value.
     max_greater_than_zero: The maximum must be greater than 0.
