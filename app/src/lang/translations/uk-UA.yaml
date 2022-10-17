@@ -1840,17 +1840,7 @@ layouts:
     default_template: Використання колекції за замовчуванням...
     no_compatible_fields: Немає сумісних полів
   kanban:
-    name: Kanban,
-    group_field: Групувати за,
-    group_field_placeholder: Поле для групування...,
-    group_title: Заголовок групи,
-    group_title_placeholder: Поле для заголовків групи...,
-    title: Ім'я картки,
-    title_placeholder: Необов'язкове поле заголовка...,
-    text: Текст картки,
-    text_placeholder: Необов'язкове текстове поле...,
-    date: Дата картки,
-    date_placeholder: Необов'язкове поле дати...,
+    crop: Обрізати
 panels:
   metric:
     name: Метрична
