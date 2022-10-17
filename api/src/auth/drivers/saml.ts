@@ -68,7 +68,7 @@ export class SAMLAuthDriver extends LocalAuthDriver {
 
 		// Is public registration allowed?
 		if (!allowPublicRegistration) {
-			logger.trace(`[Saml] User doesn't exist, and public registration not allowed for provider "${provider}"`);
+			logger.trace(`[SAML] User doesn't exist, and public registration not allowed for provider "${provider}"`);
 			throw new InvalidCredentialsException();
 		}
 
@@ -85,7 +85,7 @@ export class SAMLAuthDriver extends LocalAuthDriver {
 			if (userID) return userID;
 		} catch (e) {
 			if (e instanceof RecordNotUniqueException) {
-				logger.warn(e, '[Saml] Failed to register user. User not unique');
+				logger.warn(e, '[SAML] Failed to register user. User not unique');
 				throw new InvalidProviderException();
 			}
 			throw e;
@@ -95,43 +95,22 @@ export class SAMLAuthDriver extends LocalAuthDriver {
 	}
 
 	async login(user: User): Promise<void> {
-		return this.refresh(user);
-	}
-
-	async refresh(user: User): Promise<void> {
 		let authData = user.auth_data as AuthData;
 
 		if (typeof authData === 'string') {
 			try {
 				authData = parseJSON(authData);
 			} catch {
-				logger.warn(`[Saml] Session data isn't valid JSON: ${authData}`);
-			}
-		}
-
-		if (authData?.refreshToken) {
-			try {
-				// TODO
-				/*
-				const tokenSet = await client.refresh(authData.refreshToken);
-				// Update user refreshToken if provided
-				if (tokenSet.refresh_token) {
-					await this.usersService.updateOne(user.id, {
-						auth_data: JSON.stringify({ refreshToken: tokenSet.refresh_token }),
-					});
-				}
-*/
-			} catch (e) {
-				throw handleError(e);
+				logger.warn(`[SAML] Session data isn't valid JSON: ${authData}`);
 			}
 		}
 	}
-}
 
-const handleError = (e: any) => {
-	logger.trace(e, `[Saml] Unknown error`);
-	return e;
-};
+	/*
+	async logout(user: User): Promise<void> {
+	}
+*/
+}
 
 export function createSAMLAuthRouter(providerName: string) {
 	const router = Router();
@@ -164,22 +143,15 @@ export function createSAMLAuthRouter(providerName: string) {
 				const authService = new AuthenticationService({ accountability: req.accountability, schema: req.schema });
 				const { accessToken, refreshToken, expires } = await authService.login(providerName, extract.attributes);
 
-				//res.cookie(env.REFRESH_TOKEN_COOKIE_NAME, refreshToken, COOKIE_OPTIONS);
-				//return res.redirect(env.PUBLIC_URL);
+				// TODO: figure out better redirect...
+				const redirectUrl = env.PUBLIC_URL;
 
-				/*
 				if (redirectUrl) {
-					res.cookie(env.REFRESH_TOKEN_COOKIE_NAME, refreshToken, {
-						httpOnly: true,
-						domain: env.REFRESH_TOKEN_COOKIE_DOMAIN,
-						maxAge: ms(env.REFRESH_TOKEN_TTL as string),
-						secure: env.REFRESH_TOKEN_COOKIE_SECURE ?? false,
-						sameSite: (env.REFRESH_TOKEN_COOKIE_SAME_SITE as 'lax' | 'strict' | 'none') || 'strict',
-					});
-	
+					res.cookie(env.REFRESH_TOKEN_COOKIE_NAME, refreshToken, COOKIE_OPTIONS);
 					return res.redirect(redirectUrl);
 				}
-*/
+
+				// TODO: json
 				res.locals.payload = {
 					data: {
 						access_token: accessToken,
@@ -190,7 +162,7 @@ export function createSAMLAuthRouter(providerName: string) {
 
 				next();
 			} catch (error: any) {
-				logger.warn(error, `[Saml] Unexpected error during Saml login`);
+				logger.warn(error, `[SAML] Unexpected error during SAML login`);
 				throw error;
 			}
 		}),
