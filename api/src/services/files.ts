@@ -19,6 +19,7 @@ import { ItemsService } from './items';
 import net from 'net';
 import os from 'os';
 import encodeURL from 'encodeurl';
+import mime from 'mime-types';
 
 const lookupDNS = promisify(lookup);
 
@@ -125,12 +126,47 @@ export class FilesService extends ItemsService {
 	}
 
 	/**
-	 * sync file from filesystem and update it on database
-	 * If the file exists on database it will update it's metadata
+	 * Sync file from filesystem and update it on database
 	 * If the file doesn't exists on database it will create it
 	 */
-	async sync(path: string): Promise<any> {
-		return null;
+	async sync(relativePath: string): Promise<any> {
+		const res = await this.knex(this.collection).select('*').where({ filename_disk: relativePath }).first();
+
+		if (!res) {
+			const stats = await storage.disk('local').getStat(relativePath);
+			const fileExtension = path.extname(relativePath);
+
+			const payload: Partial<File> & { filename_download: string; storage: string } = {
+				storage: 'local',
+				filename_download: relativePath,
+				type: mime.lookup(relativePath) || 'application/octet-stream',
+				filename_disk: relativePath,
+				title: relativePath.replace(fileExtension, '').replace('-', ' ').toLowerCase(),
+				filesize: stats.size,
+			};
+
+			const primaryKey: PrimaryKey = await this.createOne(payload, { emitEvents: false });
+
+			if (['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/tiff'].includes(payload.type || '')) {
+				const buffer = await storage.disk(payload.storage).getBuffer(relativePath);
+				const { height, width, description, title, tags, metadata } = await this.getMetadata(buffer.content);
+
+				payload.height ??= height;
+				payload.width ??= width;
+				payload.description ??= description;
+				payload.title ??= title;
+				payload.tags ??= tags;
+				payload.metadata ??= metadata;
+			}
+
+			payload.filename_disk = primaryKey + (fileExtension || '');
+
+			await storage.disk('local').move(relativePath, payload.filename_disk);
+
+			await this.updateOne(primaryKey, payload, { emitEvents: false });
+
+			return primaryKey;
+		}
 	}
 
 	/**
