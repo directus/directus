@@ -10,6 +10,7 @@ import { respond } from '../middleware/respond';
 import useCollection from '../middleware/use-collection';
 import { validateBatch } from '../middleware/validate-batch';
 import { FilesService, MetaService } from '../services';
+import storage from '../storage';
 import { File, PrimaryKey } from '../types';
 import asyncHandler from '../utils/async-handler';
 
@@ -116,6 +117,22 @@ export const multipartHandler: RequestHandler = (req, res, next) => {
 		}
 	}
 };
+
+router.get(
+	'/scan',
+	asyncHandler(async (req, res, next) => {
+		const localStorage = storage.disk('local');
+		const service = new FilesService({ accountability: req.accountability, schema: req.schema });
+
+		for await (const f of localStorage.flatList()) {
+			service.sync(f.path);
+		}
+
+		res.locals.payload = {};
+		return next();
+	}),
+	respond
+);
 
 router.post(
 	'/',
