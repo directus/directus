@@ -1826,6 +1826,9 @@ layouts:
     map: Mapa
     invalid_geometry: Geometria inválida
     find_location: Encontrar localização...
+  kanban:
+    crop: Recortar
+    advanced: Avançado
 panels:
   metric:
     name: Métrico
