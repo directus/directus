@@ -125,6 +125,15 @@ export class FilesService extends ItemsService {
 	}
 
 	/**
+	 * sync file from filesystem and update it on database
+	 * If the file exists on database it will update it's metadata
+	 * If the file doesn't exists on database it will create it
+	 */
+	async sync(path: string): Promise<any> {
+		return null;
+	}
+
+	/**
 	 * Extract metadata from a buffer's content
 	 */
 	async getMetadata(bufferContent: any, allowList = env.FILE_METADATA_ALLOW_LIST): Promise<Metadata> {
