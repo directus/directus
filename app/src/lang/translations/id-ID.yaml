@@ -1372,6 +1372,8 @@ layouts:
     comfortable: Longgar
     compact: Rapat
     cozy: Normal
+  kanban:
+    advanced: Tingkat lanjut
 panels:
   label:
     name: Label
