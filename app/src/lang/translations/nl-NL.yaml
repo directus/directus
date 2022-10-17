@@ -1497,6 +1497,9 @@ layouts:
     cozy: Knus
   calendar:
     calendar: Kalender
+  kanban:
+    crop: Bijsnijden
+    advanced: Geavanceerd
 panels:
   label:
     name: Label
