@@ -96,6 +96,12 @@ export const useFieldDetailStore = defineStore({
 				const relationsStore = useRelationsStore();
 
 				this.field = cloneDeep(fieldsStore.getField(collection, field)!);
+				// re-fetch field meta to get the raw untranslated values
+				// uses callback to avoid blocking the whole startEditing function
+				// TODO: only patch meta.options, meta.display_options, meta.note, meta.validation_message
+				api.get(`/fields/${collection}/${field}`).then((response) => {
+					this.$patch({ field: { meta: response.data.data.meta } });
+				});
 				this.localType = getLocalTypeForField(collection, field)!;
 
 				const relations = cloneDeep(relationsStore.getRelationsForField(collection, field));
