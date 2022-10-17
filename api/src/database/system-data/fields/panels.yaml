@@ -2,24 +2,28 @@ table: directus_panels
 
 fields:
   - field: id
-    special: uuid
+    special:
+      - uuid
   - field: name
   - field: icon
   - field: color
   - field: note
   - field: type
   - field: show_header
-    special: cast-boolean
+    special:
+      - cast-boolean
   - field: position_x
   - field: position_y
   - field: width
   - field: height
   - field: options
-    special: cast-json
+    special:
+      - cast-json
   - field: date_created
     special:
       - date-created
       - cast-timestamp
   - field: user_created
-    special: user-created
+    special:
+      - user-created
   - field: dashboard

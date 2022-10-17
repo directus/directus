@@ -20,7 +20,9 @@ fields:
     width: half
 
   - field: password
-    special: hash,conceal
+    special:
+      - hash
+      - conceal
     interface: input-hash
     options:
       iconRight: lock
@@ -50,7 +52,8 @@ fields:
 
   - field: tags
     interface: tags
-    special: cast-json
+    special:
+      - cast-json
     width: full
     options:
       iconRight: local_offer
@@ -89,13 +92,15 @@ fields:
 
   - field: tfa_secret
     interface: system-mfa-setup
-    special: conceal
+    special:
+      - conceal
     width: half
 
   - field: email_notifications
     interface: boolean
     width: half
-    special: cast-boolean
+    special:
+      - cast-boolean
 
   - field: admin_divider
     interface: presentation-divider
@@ -128,7 +133,8 @@ fields:
     interface: select-dropdown-m2o
     options:
       template: '{{ name }}'
-    special: m2o
+    special:
+      - m2o
     width: half
     display: related-values
     display_options:
@@ -136,11 +142,13 @@ fields:
 
   - field: token
     interface: system-token
-    special: conceal
+    special:
+      - conceal
     width: full
 
   - field: id
-    special: uuid
+    special:
+      - uuid
     interface: input
     options:
       iconRight: vpn_key
