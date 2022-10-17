@@ -199,6 +199,7 @@ global: Globális
 admins_have_all_permissions: Az adminisztrátorok minden hozzáféréssel rendelkeznek
 camera: Fényképezőgép
 show_zero: Zéró megjelenítése
+create_in_advanced_field_creation_mode: Mező létrehozása fejlesztő módban
 continue_in_advanced_field_creation_mode: Folytassa a Speciális mező létrehozási módban
 validation: Érvényesítés
 sum: Össz.
@@ -685,6 +686,7 @@ icon_on: Ikon be
 icon_off: Ikon ki
 label: Címke
 trigger: Eseményindító
+create_trigger: Trigger létrehozása
 flow_name: Név
 flow_tracking_activity: Csak a tevékenység nyomon követése
 flow_tracking_null: Minden nyomkövetés tiltása
