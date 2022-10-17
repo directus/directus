@@ -74,8 +74,8 @@ export async function hydrate(): Promise<void> {
 		if (userStore.currentUser?.role) {
 			await permissionsStore.hydrate();
 			await hydrateTranslationStrings();
-			const hydratedStores = ['userStore', 'permissionsStore'];
 
+			const hydratedStores = ['userStore', 'permissionsStore'];
 			await Promise.all(stores.filter(({ $id }) => !hydratedStores.includes($id)).map((store) => store.hydrate?.()));
 			await registerModules();
 
