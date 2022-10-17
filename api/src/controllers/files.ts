@@ -121,14 +121,12 @@ export const multipartHandler: RequestHandler = (req, res, next) => {
 router.get(
 	'/scan',
 	asyncHandler(async (req, res, next) => {
-		const localStorage = storage.disk('local');
+		const storageFolder = storage.disk('local');
 		const service = new FilesService({ accountability: req.accountability, schema: req.schema });
-
-		for await (const f of localStorage.flatList()) {
+		for await (const f of storageFolder.flatList()) {
 			await service.sync(f.path);
 		}
 
-		res.locals.payload = {};
 		return next();
 	}),
 	respond
