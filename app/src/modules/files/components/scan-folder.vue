@@ -34,10 +34,6 @@ import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
 	props: {
-		parent: {
-			type: String,
-			default: null,
-		},
 		disabled: {
 			type: Boolean,
 			default: false,
@@ -57,11 +53,7 @@ export default defineComponent({
 			checking.value = true;
 
 			try {
-				await api.get(`/folders/scan`, {
-					params: {
-						parent: props.parent,
-					},
-				});
+				await api.get(`/files/scan`);
 
 				await fetchFolders();
 
