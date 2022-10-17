@@ -1860,33 +1860,8 @@ layouts:
     default_template: Použití výchozího nastavení kolekce...
     no_compatible_fields: Žádná kompatibilní pole
   kanban:
-    name: Kanban,
-    group_field: Seskupit podle,
-    group_field_placeholder: Pole pro seskupení...,
-    group_title: Název skupiny,
-    group_title_placeholder: Pole pro názvy skupiny...,
-    title: Název karty,
-    title_placeholder: Volitelné pole názvu...,
-    text: Text karty
-    text_placeholder: Volitelné textové pole...,
-    date: Datum karty,
-    date_placeholder: Volitelné pole data...,
-    tags: Štítky karet,
-    tags_placeholder: Volitelné pole štítků...,
-    user: Uživatel karty,
-    user_placeholder: Volitelné uživatelské pole...,
-    image: Obrázek karty,
-    image_placeholder: Volitelné pole obrázku...,
-    image_fit: Přizpůsobení karty obrázku,
-    crop: Oříznout,
-    advanced: Pokročilé,
-    edit_group: Upravit skupinu,
-    delete_group: Odstranit skupinu,
-    add_group: Přidat skupinu,
-    add_group_placeholder: Zadejte nový název skupiny...,
-    show_ungrouped: Zobrazit rozdělené,
-    show: Zobrazit,
-    no_group: Žádná skupina,
+    crop: Oříznout
+    advanced: Rozšířené
     not_all_loaded: Podařilo se načíst pouze prvních 1000 položek.
 panels:
   metric:
