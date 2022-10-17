@@ -1,14 +1,7 @@
 <template>
 	<v-dialog v-model="dialogActive" @esc="dialogActive = false">
 		<template #activator="{ on }">
-			<v-button
-				v-tooltip.bottom="disabled ? t('not_allowed') : t('check_files_integrity')"
-				rounded
-				icon
-				secondary
-				:disabled="disabled"
-				@click="on"
-			>
+			<v-button v-tooltip.bottom="t('check_files_integrity')" rounded icon secondary @click="on">
 				<v-icon name="sync_problem" outline />
 			</v-button>
 		</template>
@@ -33,13 +26,7 @@ import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
-	props: {
-		disabled: {
-			type: Boolean,
-			default: false,
-		},
-	},
-	setup(props) {
+	setup() {
 		const { t } = useI18n();
 
 		const dialogActive = ref(false);

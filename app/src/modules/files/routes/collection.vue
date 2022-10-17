@@ -32,7 +32,7 @@
 				<search-input v-model="search" v-model:filter="filter" collection="directus_files" />
 
 				<add-folder :parent="folder" :disabled="createFolderAllowed !== true" />
-				<scan-folder :parent="folder" :disabled="createFolderAllowed !== true" />
+				<scan-folder />
 
 				<v-dialog v-if="selection.length > 0" v-model="moveToDialogActive" @esc="moveToDialogActive = false">
 					<template #activator="{ on }">
