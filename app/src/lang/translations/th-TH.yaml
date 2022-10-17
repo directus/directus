@@ -1407,6 +1407,8 @@ layouts:
   map:
     map: แผนที่
     find_location: ค้นหาสถานที่
+  kanban:
+    crop: ครอบตัด
 panels:
   metric:
     field: ฟิลด์
