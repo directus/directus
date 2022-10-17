@@ -1785,10 +1785,8 @@ layouts:
     default_template: Использование коллекции по умолчанию...
     no_compatible_fields: Нет совместимых полей
   kanban:
-    edit_group: Редактировать группу,
-    delete_group: Удалить группу,
-    add_group: Добавить группу,
-    add_group_placeholder: Ввести новое название группы...,
+    crop: Обрезать
+    advanced: Доп. настройки
 panels:
   metric:
     name: Метрика
