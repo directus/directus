@@ -27,7 +27,7 @@ import { get } from 'lodash';
 import { Field } from '@directus/shared/types';
 import { getDisplay } from '@/displays';
 import { getDefaultDisplayForType } from '@/utils/get-default-display-for-type';
-import { translate } from '@/utils/translate-object-values';
+import { translate } from '@/utils/translate-literal';
 
 interface Props {
 	template: string;
