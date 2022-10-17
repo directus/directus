@@ -1823,32 +1823,8 @@ layouts:
     default_template: Korištenje zadane kolekcije...
     no_compatible_fields: Nema kompatibilnih polja
   kanban:
-    group_field: Grupiši po,
-    group_field_placeholder: Polje za grupisanje prema...,
-    group_title: Naslov Grupe,
-    group_title_placeholder: Polje za naslove grupa...,
-    title: Naslov kartice,
-    title_placeholder: Neobavezno polje naslova...,
-    text: Tekst kartice,
-    text_placeholder: Neobavezno tekstualno polje...,
-    date: Datum kartice,
-    date_placeholder: Neobavezno polje datuma...,
-    tags: Tagovi kartice,
-    tags_placeholder: Neobavezno polje oznaka...,
-    user: Korisnik kartice,
-    user_placeholder: Neobavezno polje korisnika...,
-    image: Slika kartice,
-    image_placeholder: Neobavezno polje slike...,
-    image_fit: Prilagodba slike kartice,
-    crop: Izreži,
-    advanced: Napredno,
-    edit_group: Uredi grupu,
-    delete_group: Obriši grupu,
-    add_group: Dodaj grupu,
-    add_group_placeholder: Unesite novi naslov grupe...,
-    show_ungrouped: Prikaži negrupisano,
-    show: Prikaži,
-    no_group: Nema grupe,
+    crop: Izreži
+    advanced: Napredno
     not_all_loaded: Moguće učitati samo prvih 1000 stavki.
 panels:
   metric:
@@ -1911,7 +1887,6 @@ panels:
   meter:
     description: Mjerač za praćenje vrijednosti
     name: Mjerač
-    arc: Luk
     stroke_width: Širina poteza
     select_max_value: Morate odabrati maksimalnu vrijednost.
     max_greater_than_zero: Maksimalna vrijednost mora biti veća od 0.
