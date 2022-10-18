@@ -290,9 +290,12 @@ foreign_key: Idegen Kulcs
 finish_setup: Beállítás befejezése
 dismiss: Elutasít
 raw_value: Nyers érték
+copy_raw_value: Nyers érték másolása
+paste_raw_value: Nyers érték beillesztése
 edit_raw_value: Nyers érték szerkesztése
 enter_raw_value: Nyers érték megadása...
 clear_changes: Változások törlése
+undo_changes: Változtatások visszavonása
 notifications: Értesítések
 show_all_activity: Összes tevékenység mutatása
 page_not_found: Az oldal nem található
@@ -933,7 +936,7 @@ fields:
     charset: Karakterkészlet
     duration: Időtartam
   directus_users:
-    first_name: Családnév
+    first_name: Keresztnév
     last_name: Vezetéknév
     email: Email
     password: Jelszó
