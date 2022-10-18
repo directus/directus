@@ -129,15 +129,14 @@ export class FilesService extends ItemsService {
 	 * Sync file from filesystem and update it on database
 	 * If the file doesn't exists on database it will create it
 	 */
-	async sync(relativePath: string): Promise<any> {
+	async sync(relativePath: string, storageLocation: string): Promise<any> {
 		const res = await this.knex(this.collection).select('*').where({ filename_disk: relativePath }).first();
-
 		if (!res) {
-			const stats = await storage.disk('local').getStat(relativePath);
+			const stats = await storage.disk(storageLocation).getStat(relativePath);
 			const fileExtension = path.extname(relativePath);
 
 			const payload: Partial<File> & { filename_download: string; storage: string } = {
-				storage: 'local',
+				storage: storageLocation,
 				filename_download: relativePath,
 				type: mime.lookup(relativePath) || 'application/octet-stream',
 				filename_disk: relativePath,
@@ -161,7 +160,7 @@ export class FilesService extends ItemsService {
 
 			payload.filename_disk = primaryKey + (fileExtension || '');
 
-			await storage.disk('local').move(relativePath, payload.filename_disk);
+			await storage.disk(storageLocation).move(relativePath, payload.filename_disk);
 
 			await this.updateOne(primaryKey, payload, { emitEvents: false });
 
