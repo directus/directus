@@ -252,12 +252,12 @@ export default defineComponent({
 			) {
 				let x = props.transformationInfo.coordinates.x;
 				let y = props.transformationInfo.coordinates.y;
-				const cropWidth = props.transformationInfo.coordinates.width
-				const cropHeight = props.transformationInfo.coordinates.height
+				const cropWidth = props.transformationInfo.coordinates.width;
+				const cropHeight = props.transformationInfo.coordinates.height;
 
-				const rotate = props.transformationInfo.imageTransformations?.rotate
-				const width = (rotate != null && rotate % 180 != 0) ? imageData.value.height : imageData.value.width
-				const height = (rotate != null && rotate % 180 != 0) ? imageData.value.width : imageData.value.height
+				const rotate = props.transformationInfo.imageTransformations?.rotate;
+				const width = rotate != null && rotate % 180 != 0 ? imageData.value.height : imageData.value.width;
+				const height = rotate != null && rotate % 180 != 0 ? imageData.value.width : imageData.value.height;
 
 				if (imageTransformations.value.flipY) {
 					x = width - props.transformationInfo.coordinates.width - props.transformationInfo.coordinates.x;
@@ -429,30 +429,34 @@ export default defineComponent({
 									? !imageTransformations.value.flipY
 									: imageTransformations.value.flipY;
 
-								const rotation = inverse ? cropperData.rotate : -cropperData.rotate
+								const rotation = inverse ? cropperData.rotate : -cropperData.rotate;
 
 								imageTransformations.value.rotate =
-									imageTransformations.value.rotate != null
-										? imageTransformations.value.rotate - rotation
-										: -rotation;
+									imageTransformations.value.rotate != null ? imageTransformations.value.rotate - rotation : -rotation;
 
 								imageTransformations.value.rotate > 0
 									? (imageTransformations.value.rotate %= 360)
 									: (imageTransformations.value.rotate %= -360);
 
-								const width = (imageTransformations.value.rotate != null && imageTransformations.value.rotate % 180 != 0) ? imageData.value.height : imageData.value.width
-								const height = (imageTransformations.value.rotate != null && imageTransformations.value.rotate % 180 != 0) ? imageData.value.width : imageData.value.height
+								const width =
+									imageTransformations.value.rotate != null && imageTransformations.value.rotate % 180 != 0
+										? imageData.value.height
+										: imageData.value.width;
+								const height =
+									imageTransformations.value.rotate != null && imageTransformations.value.rotate % 180 != 0
+										? imageData.value.width
+										: imageData.value.height;
 
 								const coordinates = cropping.value
 									? {
-										x: imageTransformations.value.flipY
+											x: imageTransformations.value.flipY
 												? width - (Math.round(cropperData.x) + Math.round(cropperData.width))
 												: Math.round(cropperData.x),
-										y: imageTransformations.value.flipX
-											? height - (Math.round(cropperData.y) + Math.round(cropperData.height))
-											: Math.round(cropperData.y),
-										width: Math.round(cropperData.width),
-										height: Math.round(cropperData.height),
+											y: imageTransformations.value.flipX
+												? height - (Math.round(cropperData.y) + Math.round(cropperData.height))
+												: Math.round(cropperData.y),
+											width: Math.round(cropperData.width),
+											height: Math.round(cropperData.height),
 									  }
 									: { x: null, y: null, width: null, height: null };
 
@@ -660,7 +664,7 @@ export default defineComponent({
 				}
 			}
 
-			function rotate() {				
+			function rotate() {
 				cropperInstance.value?.rotate(-90);
 			}
 
