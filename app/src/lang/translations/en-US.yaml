@@ -1934,33 +1934,33 @@ layouts:
     default_template: Using Collection Default...
     no_compatible_fields: No compatible fields
   kanban:
-    name: Kanban,
-    group_field: Group By,
-    group_field_placeholder: Field to group by...,
-    group_title: Group Title,
-    group_title_placeholder: Field for group titles...,
-    title: Card Title,
-    title_placeholder: Optional title field...,
-    text: Card Text,
-    text_placeholder: Optional text field...,
-    date: Card Date,
-    date_placeholder: Optional date field...,
-    tags: Card Tags,
-    tags_placeholder: Optional tags field...,
-    user: Card User,
-    user_placeholder: Optional user field...,
-    image: Card Image,
-    image_placeholder: Optional image field...,
-    image_fit: Card Image Fit,
-    crop: Crop,
-    advanced: Advanced,
-    edit_group: Edit Group,
-    delete_group: Delete Group,
-    add_group: Add Group,
-    add_group_placeholder: Enter a new group title...,
-    show_ungrouped: Show Ungrouped,
-    show: Show,
-    no_group: No Group,
+    name: Kanban
+    group_field: Group By
+    group_field_placeholder: Field to group by...
+    group_title: Group Title
+    group_title_placeholder: Field for group titles...
+    title: Card Title
+    title_placeholder: Optional title field...
+    text: Card Text
+    text_placeholder: Optional text field...
+    date: Card Date
+    date_placeholder: Optional date field...
+    tags: Card Tags
+    tags_placeholder: Optional tags field...
+    user: Card User
+    user_placeholder: Optional user field...
+    image: Card Image
+    image_placeholder: Optional image field...
+    image_fit: Card Image Fit
+    crop: Crop
+    advanced: Advanced
+    edit_group: Edit Group
+    delete_group: Delete Group
+    add_group: Add Group
+    add_group_placeholder: Enter a new group title...
+    show_ungrouped: Show Ungrouped
+    show: Show
+    no_group: No Group
     not_all_loaded: Could only load the first 1000 items.
 
 panels:
@@ -2024,7 +2024,8 @@ panels:
   meter:
     description: Meter for tracking values
     name: Meter
-    arc: Arc
+    half_circle: Half Circle
+    full_circle: Full Circle
     stroke_width: Stroke Width
     select_max_value: You must select a maximum value.
     max_greater_than_zero: The maximum must be greater than 0.
