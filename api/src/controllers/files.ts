@@ -121,14 +121,17 @@ export const multipartHandler: RequestHandler = (req, res, next) => {
 router.get(
 	'/scan',
 	asyncHandler(async (req, res, next) => {
-		const storageLocation = 'local';
+		// I got the uuid regex from https://stackoverflow.com/questions/7905929/how-to-test-valid-uuid-guid
 		const previewRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}__[0-9a-f]{40}\.jpg/;
-		const storageFolder = storage.disk(storageLocation);
-		const service = new FilesService({ accountability: req.accountability, schema: req.schema });
-		for await (const f of storageFolder.flatList()) {
-			if (f.path.match(previewRegex)) continue;
-			service.sync(f.path, storageLocation);
-		}
+		const locations = toArray(env.STORAGE_LOCATIONS);
+		locations.forEach(async (storageLocation) => {
+			const storageFolder = storage.disk(storageLocation);
+			const service = new FilesService({ accountability: req.accountability, schema: req.schema });
+			for await (const f of storageFolder.flatList()) {
+				if (f.path.match(previewRegex)) continue;
+				service.sync(f.path, storageLocation);
+			}
+		});
 
 		return next();
 	}),
