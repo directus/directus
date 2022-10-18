@@ -45,6 +45,7 @@
 					v-tooltip="t('edit_image_transformation_details')"
 					icon
 					rounded
+					:disabled="!imageTransformationInfo?.id"
 					@click="editImageTransformationDetails = true"
 				>
 					<v-icon name="open_in_new" />
@@ -63,7 +64,7 @@
 			</div>
 
 			<drawer-item
-				v-if="!disabled && relationInfo && imageTransformationInfo && image"
+				v-if="!disabled && relationInfo && imageTransformationInfo?.id && image"
 				v-model:active="editImageTransformationDetails"
 				:collection="relationInfo.relatedCollection.collection"
 				:primary-key="imageTransformationInfo.id"
@@ -163,14 +164,17 @@ const fileID = computed({
 		return newVal;
 	},
 });
-const file = useItem(ref('directus_files'), fileID);
+const file = computed(() => {
+	if (!fileID.value) return null;
+	return useItem(ref('directus_files'), fileID);
+});
 
 const image = computed(() => {
 	// Note: it is a preloaded file row, not file ID
 	if (imageTransformationInfo.value && typeof imageTransformationInfo.value.file_id === 'object')
 		return imageTransformationInfo.value.file_id;
 
-	if (file && file.item.value) return file.item.value;
+	if (file.value && file.value.item.value) return file.value.item.value;
 
 	return null;
 });
