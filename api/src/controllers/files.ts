@@ -121,10 +121,13 @@ export const multipartHandler: RequestHandler = (req, res, next) => {
 router.get(
 	'/scan',
 	asyncHandler(async (req, res, next) => {
-		const storageFolder = storage.disk('local');
+		const storageLocation = 'local';
+		const previewRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}__[0-9a-f]{40}\.jpg/;
+		const storageFolder = storage.disk(storageLocation);
 		const service = new FilesService({ accountability: req.accountability, schema: req.schema });
 		for await (const f of storageFolder.flatList()) {
-			await service.sync(f.path);
+			if (f.path.match(previewRegex)) continue;
+			await service.sync(f.path, storageLocation);
 		}
 
 		return next();
