@@ -14,6 +14,7 @@ import { Accountability, FieldMeta, RawField, SchemaOverview } from '@directus/s
 import { Table } from 'knex-schema-inspector/dist/types/table';
 import { addFieldFlag } from '@directus/shared/utils';
 import { getHelpers, Helpers } from '../database/helpers';
+import { omit } from 'lodash';
 
 export type RawCollection = {
 	collection: string;
@@ -347,6 +348,45 @@ export class CollectionsService {
 
 			await clearSystemCache();
 		}
+	}
+
+	/**
+	 * Update multiple collections in a single transaction
+	 */
+	async updateBatch(data: Partial<Collection>[], opts?: MutationOptions): Promise<string[]> {
+		if ((this.accountability && this.accountability.admin !== true) || !Array.isArray(data)) {
+			throw new ForbiddenException();
+		}
+
+		const collectionKey = 'collection';
+		const collectionKeys: string[] = [];
+
+		try {
+			await this.knex.transaction(async (trx) => {
+				const collectionItemsService = new CollectionsService({
+					knex: trx,
+					accountability: this.accountability,
+					schema: this.schema,
+				});
+
+				for (const payload of data) {
+					if (!payload[collectionKey]) throw new InvalidPayloadException(`Collection in update misses collection key.`);
+
+					await collectionItemsService.updateOne(payload[collectionKey], omit(payload, collectionKey), {
+						autoPurgeCache: false,
+					});
+					collectionKeys.push(payload[collectionKey]);
+				}
+			});
+		} finally {
+			if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
+				await this.cache.clear();
+			}
+
+			await clearSystemCache();
+		}
+
+		return collectionKeys;
 	}
 
 	/**
