@@ -1401,6 +1401,7 @@ start: Início
 table: Tabela
 list: Lista
 show_link_to_item: Mostrar um link para o item
+remove_item: Remover Item
 delete_item: Excluir item
 interfaces:
   filter:
