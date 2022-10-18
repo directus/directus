@@ -252,24 +252,25 @@ export default defineComponent({
 			) {
 				let x = props.transformationInfo.coordinates.x;
 				let y = props.transformationInfo.coordinates.y;
-				const width = props.transformationInfo.coordinates.width;
-				const height = props.transformationInfo.coordinates.height;
+				const cropWidth = props.transformationInfo.coordinates.width
+				const cropHeight = props.transformationInfo.coordinates.height
+
+				const rotate = props.transformationInfo.imageTransformations?.rotate
+				const width = (rotate != null && rotate % 180 != 0) ? imageData.value.height : imageData.value.width
+				const height = (rotate != null && rotate % 180 != 0) ? imageData.value.width : imageData.value.height
 
 				if (imageTransformations.value.flipY) {
-					x =
-						imageData.value.width - props.transformationInfo.coordinates.width - props.transformationInfo.coordinates.x;
+					x = width - props.transformationInfo.coordinates.width - props.transformationInfo.coordinates.x;
 				}
 				if (imageTransformations.value.flipX) {
-					y =
-						imageData.value?.height -
-						props.transformationInfo.coordinates.height -
-						props.transformationInfo.coordinates.y;
+					y = height - props.transformationInfo.coordinates.height - props.transformationInfo.coordinates.y;
 				}
+
 				return {
 					x: x,
 					y: y,
-					width: width,
-					height: height,
+					width: cropWidth,
+					height: cropHeight,
 				};
 			} else {
 				return undefined;
@@ -279,7 +280,6 @@ export default defineComponent({
 		const imageURL = computed(() => {
 			let url = `${getRootPath()}assets/${props.id}?${randomId.value}`;
 			url = applyImageTransformationsToUrl(url);
-
 			return addTokenToURL(url);
 		});
 
@@ -425,33 +425,32 @@ export default defineComponent({
 								props.transformationInfo.transformationCollection &&
 								props.transformationInfo.id
 							) {
-								const coordinates = cropping.value
-									? {
-											x: imageTransformations.value.flipY
-												? imageData.value.width - (Math.round(cropperData.x) + Math.round(cropperData.width))
-												: Math.round(cropperData.x),
-											y: imageTransformations.value.flipX
-												? imageData.value.height - (Math.round(cropperData.y) + Math.round(cropperData.height))
-												: Math.round(cropperData.y),
-											width: Math.round(cropperData.width),
-											height: Math.round(cropperData.height),
-									  }
-									: { x: null, y: null, width: null, height: null };
-
-								let inverseMultiplier = 1;
 								const inverse = imageTransformations.value.flipX
 									? !imageTransformations.value.flipY
 									: imageTransformations.value.flipY;
-								if (inverse) inverseMultiplier = -1;
+
+								const rotation = inverse ? cropperData.rotate : -cropperData.rotate
 
 								imageTransformations.value.rotate =
 									imageTransformations.value.rotate != null
-										? imageTransformations.value.rotate + cropperData.rotate * inverseMultiplier
-										: cropperData.rotate;
+										? imageTransformations.value.rotate - rotation
+										: -rotation;
 
-								imageTransformations.value.rotate > 0
-									? (imageTransformations.value.rotate %= 360)
-									: (imageTransformations.value.rotate %= -360);
+								const width = (imageTransformations.value.rotate != null && imageTransformations.value.rotate % 180 != 0) ? imageData.value.height : imageData.value.width
+								const height = (imageTransformations.value.rotate != null && imageTransformations.value.rotate % 180 != 0) ? imageData.value.width : imageData.value.height
+
+								const coordinates = cropping.value
+									? {
+										x: imageTransformations.value.flipY
+												? width - (Math.round(cropperData.x) + Math.round(cropperData.width))
+												: Math.round(cropperData.x),
+										y: imageTransformations.value.flipX
+											? height - (Math.round(cropperData.y) + Math.round(cropperData.height))
+											: Math.round(cropperData.y),
+										width: Math.round(cropperData.width),
+										height: Math.round(cropperData.height),
+									  }
+									: { x: null, y: null, width: null, height: null };
 
 								emit('update-transformation-info', {
 									...coordinates,
@@ -629,23 +628,13 @@ export default defineComponent({
 			function flip(type: 'horizontal' | 'vertical') {
 				const cropperData = cropperInstance.value?.getData();
 				if (cropperData) {
-					const inverseScaling = cropperData.rotate % -180 != 0;
-
 					if (type === 'vertical') {
-						if (inverseScaling) {
-							scaleY();
-						} else {
-							scaleX();
-						}
+						scaleX();
 						imageTransformations.value.flipY = !imageTransformations.value.flipY;
 					}
 
 					if (type === 'horizontal') {
-						if (inverseScaling) {
-							scaleX();
-						} else {
-							scaleY();
-						}
+						scaleY();
 						imageTransformations.value.flipX = !imageTransformations.value.flipX;
 					}
 				}
@@ -667,7 +656,7 @@ export default defineComponent({
 				}
 			}
 
-			function rotate() {
+			function rotate() {				
 				cropperInstance.value?.rotate(-90);
 			}
 

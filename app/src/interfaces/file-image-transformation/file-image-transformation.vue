@@ -280,6 +280,7 @@ function applyImageTransformationsToUrl(url: string, paramStart = '&'): string {
 			`["extract",{"width": ${coordinates.width}, "height": ${coordinates.height}, "left": ${coordinates.x}, "top": ${coordinates.y}}]`
 		);
 	}
+
 	if (readyTransformations.length > 0) {
 		url += `${paramStart}transforms=[${readyTransformations.join(',')}]`;
 	}
