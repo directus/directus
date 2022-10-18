@@ -83,6 +83,7 @@ create_webhook: Buat Webhook
 create_translation_string: Buat Terjemahan
 no_translation_string: Tidak ditemukan terjemahan
 no_translation_string_copy: Belum ada terjemahan tersedia.
+translation_string_key_placeholder: Kunci string terjemahan...
 translation_string_translations_placeholder: Tambahkan terjemahan baru
 edit_translation_string: Sunting Terjemahan
 delete_translation_string_copy: >-
@@ -108,6 +109,7 @@ delete_bookmark: Hapus Markah
 delete_bookmark_copy: >-
   Apakah anda yakin ingin menghapus markah "{bookmark}"? Tindakan ini tidak dapat dikembalikan.
 delete_personal_bookmark: Hapus Markah Pribadi
+delete_role_bookmark: Hapus Markah Peran
 delete_global_bookmark: Hapus Markah Global
 logoutReason:
   SIGN_OUT: Telah keluar
@@ -185,6 +187,9 @@ revision_post_create: Ini adalah bagaimana item ini terlihat ketika dibuat.
 revision_post_update: Ini adalah bagaimana item ini terlihat setelah pembaruan.
 changes_made: Dibawah adalah perubahan spesifik yang dibuat dalam revisi ini.
 no_relational_data: Ingat bahwa data yang berhubungan tidak termasuk disini.
+junction_field_location: Lokasi Kolom yang bersimpangan
+top: Atas
+bottom: Bawah
 hide_field: Sembunyikan bidang
 hide_field_on_detail: Sembunyikan Baris pada Rincian
 show_field_on_detail: Tampilkan Baris pada Rincian
@@ -270,6 +275,7 @@ fields_group: Grup kolom-kolom
 no_collections_found: Tidak ada koleksi ditemukan.
 new_data_alert: 'Berikut ini akan dibuat menurut Model Data Anda:'
 search_collection: Cari Koleksi...
+search_field: Kolom Pencarian...
 new_field: 'Baris Baru'
 new_collection: 'Koleksi Baru'
 add_m2o_to_collection: 'Tambah M2O ke "{collection}"'
@@ -299,6 +305,7 @@ note: Catatan
 enter_a_value: Masukkan sebuah nilai...
 enter_a_placeholder: Masukkan sebuah placeholder...
 length: Panjang
+soft_length: Batasan Umum
 precision_scale: Presisi & Skala
 readonly: Hanya-baca
 unique: Unik
@@ -308,6 +315,8 @@ primary_key: Primary Key
 foreign_key: Kunci Asing
 finish_setup: Selesai Setup
 dismiss: Abaikan
+toggle_raw_editor: Ganti Editor Raw
+raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
 raw_value: Nilai mentah
 copy_raw_value: Salin Nilai Asli
 copy_raw_value_success: Disalin
@@ -320,6 +329,7 @@ edit_raw_value: Sunting Nilai Mentah
 enter_raw_value: Masukkan nilai mentah...
 clear_value: Kosongkan Nilai
 clear_changes: Kosongkan Perubahan
+clear_items: Kosongkan Item
 reset_to_default: Atur Ulang ke Bawaan
 undo_changes: Batalkan Perubahan
 notifications: Notifikasi
@@ -336,8 +346,10 @@ revision_delta_created_externally: Buat secara Eksternal
 revision_delta_updated: 'Diperbarui 1 Baris | Diperbarui {count} Baris'
 revision_delta_deleted: Terhapus
 revision_delta_reverted: Dikembalikan
+revision_delta_update_message: Kolom ini telah diperbarui namun nilainya sedang disembunyikan demi alasan keamanan.
 revision_delta_other: Revisi
 revision_delta_by: '{date} oleh {user}'
+presentation_text_values_cannot_be_reimported: "Menggunakan teks untuk presentasi, nilai tidak dapat diimpor ulang."
 download_page_as_csv: 'Unduh Halaman sebagai CSV'
 private_user: Pengguna Pribadi
 creation_preview: Pratinjau Kreasi
@@ -358,6 +370,7 @@ import_data_input_placeholder: CSV atau JSON...
 import_data_button: Mulai Impor
 import_data_indeterminate: Mengimpor Data...
 import_data_success: Data berhasil diimpor dari {filename}
+import_data_error: Struktur Data dari Berkas ini tidak sesuai dengan Koleksi.
 label_import: Impor
 label_export: Ekspor
 import_export: Impor / Ekspor
@@ -377,6 +390,7 @@ interface_label: Antarmuka
 today: Hari Ini
 yesterday: Kemarin
 delete_comment: Hapus Komentar
+delete_share: Hapus Berbagi
 functions:
   year: Tahun
   month: Bulan
@@ -445,6 +459,8 @@ download_file: Unduh Berkas
 open_file_in_tab: Buka file di tab baru
 start_export: Mulai Ekspor
 not_available_for_local_downloads: Tidak tersedia untuk unduhan lokal
+exporting_all_items_in_collection: Ekspor semua {total} item dalam {collection}.
+exporting_limited_items_in_collection: Ekspor {limit} dari {total} keseluruhan item dalam {collection}.
 collection_key: Kunci Koleksi
 name: Nama
 primary_key_field: Kolom Primary Key
