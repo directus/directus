@@ -49,6 +49,7 @@ group: Група
 export_items: Експорт товарів
 and: Й
 or: Або
+init: Ініціалізація
 dataset_too_large_currently_showing_n_items: Дані завеликі. Зараз показуються перші {n} елементів.
 fill_width: Ширина заповнення
 field_name_translations: Переклад назви поля
@@ -269,6 +270,7 @@ fields_group: Група полів
 no_collections_found: Колекцій не знайдено.
 new_data_alert: 'Наступне буде створено в межах вашої моделі даних:'
 search_collection: Пошук колекцій...
+search_field: Пошуковий запит...
 new_field: 'Нове поле'
 new_collection: 'Нова колекція'
 add_m2o_to_collection: 'Додати М2О до "{collection}"'
@@ -774,7 +776,12 @@ trigger: Тригер
 flow_name: Назва
 flow_tracking_activity: Лише відстежувати діяльність
 flow_tracking_null: Нічого не відслідковувати
+edit_operation: Редагувати дію
 code: Код
+operation_options: Параметри операції
+operation_name: Назва операції...
+operation_handle_resolve: 'Рішення: натисніть, щоб додати, або перетягніть, щоб змінити маршрут'
+operation_handle_reject: 'Відмова: натисніть, щоб додати, або перетягніть, щоб змінити маршрут'
 insights: Статистика
 dashboard: Панель приладів
 panel: Панель
@@ -783,6 +790,7 @@ panel_header: Заголовок панелі
 panel_name_placeholder: Назвіть цю панель...
 panel_note_placeholder: Деталі налаштування стосовно цієї панелі...
 panel_delete_confirm: Ви впевнені, що хочете видалити цю панель? Цю дію не можна буде скасувати.
+list_panel_allow_edit: Дозволити вбудоване редагування
 dashboard_delete_confirm: Ви впевнені, що хочете видалити цю панель? Цю дію не можна буде скасувати.
 edit_dashboard: Редагувати панель
 delete_dashboard: Видалити панель
