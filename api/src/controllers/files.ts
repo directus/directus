@@ -127,7 +127,7 @@ router.get(
 		const service = new FilesService({ accountability: req.accountability, schema: req.schema });
 		for await (const f of storageFolder.flatList()) {
 			if (f.path.match(previewRegex)) continue;
-			await service.sync(f.path, storageLocation);
+			service.sync(f.path, storageLocation);
 		}
 
 		return next();
