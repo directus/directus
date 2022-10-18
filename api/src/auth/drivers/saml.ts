@@ -131,6 +131,22 @@ export function createSAMLAuthRouter(providerName: string) {
 	);
 
 	router.post(
+		'/logout',
+		asyncHandler(async (req, res) => {
+			/*
+			let userInfo = {
+				logoutNameID: userName,
+				sessionIndex: session.sessionID
+			  }
+			  let { relayState, type, entityEndpoint, id, context } = sp.createLogoutRequest(idp,"redirect",userInfo);
+*/
+			const { sp, idp } = getAuthProvider(providerName) as SAMLAuthDriver;
+			const { context } = await sp.createLogoutRequest(idp, 'redirect');
+			return res.redirect(context);
+		})
+	);
+
+	router.post(
 		'/acs',
 		express.urlencoded({ extended: false }),
 		asyncHandler(async (req, res, next) => {
@@ -141,14 +157,6 @@ export function createSAMLAuthRouter(providerName: string) {
 				const authService = new AuthenticationService({ accountability: req.accountability, schema: req.schema });
 				const { accessToken, refreshToken, expires } = await authService.login(providerName, extract.attributes);
 
-				// TODO: figure out better redirect...
-				const redirectUrl = env.PUBLIC_URL;
-
-				if (redirectUrl) {
-					res.cookie(env.REFRESH_TOKEN_COOKIE_NAME, refreshToken, COOKIE_OPTIONS);
-					return res.redirect(redirectUrl);
-				}
-
 				// TODO: json
 				res.locals.payload = {
 					data: {
@@ -157,6 +165,14 @@ export function createSAMLAuthRouter(providerName: string) {
 						expires,
 					},
 				};
+
+				// TODO: figure out better redirect...
+				const redirectUrl = env.PUBLIC_URL;
+
+				if (redirectUrl) {
+					res.cookie(env.REFRESH_TOKEN_COOKIE_NAME, refreshToken, COOKIE_OPTIONS);
+					return res.redirect(redirectUrl);
+				}
 
 				next();
 			} catch (error: any) {
