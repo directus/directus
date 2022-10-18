@@ -436,6 +436,10 @@ export default defineComponent({
 										? imageTransformations.value.rotate - rotation
 										: -rotation;
 
+								imageTransformations.value.rotate > 0
+									? (imageTransformations.value.rotate %= 360)
+									: (imageTransformations.value.rotate %= -360);
+
 								const width = (imageTransformations.value.rotate != null && imageTransformations.value.rotate % 180 != 0) ? imageData.value.height : imageData.value.width
 								const height = (imageTransformations.value.rotate != null && imageTransformations.value.rotate % 180 != 0) ? imageData.value.width : imageData.value.height
 
