@@ -309,6 +309,7 @@ revision_delta_deleted: Törölt
 revision_delta_reverted: Visszaállítva
 revision_delta_other: Változat
 revision_delta_by: '{date} {user} által'
+download_page_as_csv: 'Letöltés CSV-ként'
 private_user: Privát felhasználó
 creation_preview: Létrehozás előnézete
 revision_preview: Felülvizsgálati előnézet
@@ -323,6 +324,8 @@ related_collection: Kapcsolódó gyűjtemény
 related_collections: Kapcsolódó gyűjtemények
 translations_collection: Fordításgyűjtemény
 languages_collection: Nyelvek gyűjteménye
+import_data_input_placeholder: CSV vagy JSON...
+import_data_button: Importálás indítása
 label_import: Importálás
 format: Formátum
 last_page: Utolsó oldal
@@ -1567,6 +1570,8 @@ layouts:
     calendar: Naptár
     start_date_field: Kezdő dátum mező
     end_date_field: Záró dátum mező
+    optional: Opcionáis
+    first_day: A hét első napja
   map:
     map: Térkép
     basemap: Alaptérkép
