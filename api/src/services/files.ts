@@ -135,7 +135,7 @@ export class FilesService extends ItemsService {
 			const stats = await storage.disk(storageLocation).getStat(relativePath);
 			const fileExtension = path.extname(relativePath);
 
-			const payload: Partial<File> & { filename_download: string; storage: string } = {
+			let payload: Partial<File> & { filename_download: string; storage: string } = {
 				storage: storageLocation,
 				filename_download: relativePath,
 				type: mime.lookup(relativePath) || 'application/octet-stream',
@@ -148,14 +148,8 @@ export class FilesService extends ItemsService {
 
 			if (['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/tiff'].includes(payload.type || '')) {
 				const buffer = await storage.disk(payload.storage).getBuffer(relativePath);
-				const { height, width, description, title, tags, metadata } = await this.getMetadata(buffer.content);
-
-				payload.height ??= height;
-				payload.width ??= width;
-				payload.description ??= description;
-				payload.title ??= title;
-				payload.tags ??= tags;
-				payload.metadata ??= metadata;
+				const metadata = await this.getMetadata(buffer.content);
+				payload = { ...payload, ...metadata };
 			}
 
 			payload.filename_disk = primaryKey + (fileExtension || '');
