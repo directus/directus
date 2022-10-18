@@ -358,8 +358,12 @@ export class CollectionsService {
 	 * Update multiple collections in a single transaction
 	 */
 	async updateBatch(data: Partial<Collection>[], opts?: MutationOptions): Promise<string[]> {
-		if ((this.accountability && this.accountability.admin !== true) || !Array.isArray(data)) {
+		if (this.accountability && this.accountability.admin !== true) {
 			throw new ForbiddenException();
+		}
+
+		if (!Array.isArray(data)) {
+			throw new InvalidPayloadException('Input should be an array of collection changes.');
 		}
 
 		const collectionKey = 'collection';
