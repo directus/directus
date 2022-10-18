@@ -155,7 +155,9 @@ export class CollectionsService {
 				await this.cache.clear();
 			}
 
-			await clearSystemCache();
+			if (opts?.autoPurgeSystemCache !== false) {
+				await clearSystemCache();
+			}
 		}
 	}
 
@@ -174,7 +176,7 @@ export class CollectionsService {
 				const collectionNames: string[] = [];
 
 				for (const payload of payloads) {
-					const name = await service.createOne(payload, { autoPurgeCache: false });
+					const name = await service.createOne(payload, { autoPurgeCache: false, autoPurgeSystemCache: false });
 					collectionNames.push(name);
 				}
 
@@ -346,7 +348,9 @@ export class CollectionsService {
 				await this.cache.clear();
 			}
 
-			await clearSystemCache();
+			if (opts?.autoPurgeSystemCache !== false) {
+				await clearSystemCache();
+			}
 		}
 	}
 
@@ -374,6 +378,7 @@ export class CollectionsService {
 
 					await collectionItemsService.updateOne(payload[collectionKey], omit(payload, collectionKey), {
 						autoPurgeCache: false,
+						autoPurgeSystemCache: false,
 					});
 					collectionKeys.push(payload[collectionKey]);
 				}
@@ -406,7 +411,7 @@ export class CollectionsService {
 				});
 
 				for (const collectionKey of collectionKeys) {
-					await service.updateOne(collectionKey, data, { autoPurgeCache: false });
+					await service.updateOne(collectionKey, data, { autoPurgeCache: false, autoPurgeSystemCache: false });
 				}
 			});
 
@@ -519,7 +524,9 @@ export class CollectionsService {
 				await this.cache.clear();
 			}
 
-			await clearSystemCache();
+			if (opts?.autoPurgeSystemCache !== false) {
+				await clearSystemCache();
+			}
 		}
 	}
 
@@ -540,7 +547,7 @@ export class CollectionsService {
 				});
 
 				for (const collectionKey of collectionKeys) {
-					await service.deleteOne(collectionKey, { autoPurgeCache: false });
+					await service.deleteOne(collectionKey, { autoPurgeCache: false, autoPurgeSystemCache: false });
 				}
 			});
 
