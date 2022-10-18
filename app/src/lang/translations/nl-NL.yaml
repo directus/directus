@@ -274,6 +274,7 @@ fields_group: Veld-Groep
 no_collections_found: Geen collecties gevonden.
 new_data_alert: 'Het volgende wordt aangemaakt in uw datamodel:'
 search_collection: Collectie doorzoeken...
+search_field: Zoekveld...
 new_field: 'Nieuw veld'
 new_collection: 'Nieuwe collectie'
 add_m2o_to_collection: 'Voeg M20 toe aan {collection}'
@@ -1085,14 +1086,21 @@ fields:
     tags: Tags
     language: Taal
     theme: Thema
+    theme_light: Lichte modus
+    theme_dark: Donkere Modus
     tfa_secret: 2FA (Twee-Factor Authenticatie)
     admin_options: Admin opties
     status: Status
+    status_draft: Concept
+    status_invited: Uitgenodigd
     status_active: Actief
+    status_archived: Gearchiveerd
     role: Rol
     token: Token
+    provider: Provider
     last_page: Laatste pagina
     last_access: Laatste toegang
+    email_notifications: Email Notificaties
   directus_settings:
     jpg: JPEG
     png: PNG
@@ -1105,11 +1113,14 @@ fields:
     project_url: Project URL
     project_color: Project kleur
     project_logo: Project logo
+    default_language: Standaard Taal
+    branding: Merk & Stijl
     public_foreground: Openbare voorgrond
     public_background: Openbare achtergrond
     public_note: Openbare notitie
     auth_password_policy: Wachtwoordbeleid
     auth_login_attempts: Login pogingen
+    files_and_thumbnails: Bestanden & Opslag
     storage_default_folder: Standaard map
     custom_css: Aangepastte CSS
     module_bar: Modulebalk
@@ -1165,8 +1176,12 @@ field_options:
       name_name: Naam
     collections_name: Collecties
   directus_users:
+    dropdown_light: Lichte modus
+    dropdown_dark: Donkere Modus
     admin_divider: Admin opties
+    status_dropdown_draft: Concept
     status_dropdown_active: Actief
+    status_dropdown_archived: Gearchiveerd
   directus_webhooks:
     status_options_active: Actief
     status_options_inactive: Inactief
