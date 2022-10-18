@@ -21,6 +21,14 @@ import os from 'os';
 import encodeURL from 'encodeurl';
 import mime from 'mime-types';
 
+function titleize(s: string): string {
+	return s
+		.toLowerCase()
+		.split('-')
+		.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+		.join(' ');
+}
+
 const lookupDNS = promisify(lookup);
 
 export class FilesService extends ItemsService {
@@ -140,7 +148,7 @@ export class FilesService extends ItemsService {
 				filename_download: relativePath,
 				type: mime.lookup(relativePath) || 'application/octet-stream',
 				filename_disk: relativePath,
-				title: relativePath.replace(fileExtension, '').replace('-', ' ').toLowerCase(),
+				title: titleize(relativePath.replace(fileExtension, '')),
 				filesize: stats.size,
 			};
 
