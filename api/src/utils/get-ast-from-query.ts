@@ -5,7 +5,14 @@
 import { Knex } from 'knex';
 import { cloneDeep, mapKeys, omitBy, uniq, isEmpty } from 'lodash';
 import { AST, ASTChildNode, NestedCollectionNode } from '../types';
-import { Query, PermissionsAction, Accountability, SchemaOverview, FieldFilterOperator } from '@directus/shared/types';
+import {
+	Query,
+	PermissionsAction,
+	Accountability,
+	SchemaOverview,
+	FieldFilterOperator,
+	Filter,
+} from '@directus/shared/types';
 import { getRelationType } from '../utils/get-relation-type';
 import { stripFunction } from './strip-function';
 import { customAlphabet } from 'nanoid';
@@ -107,32 +114,46 @@ export default async function getASTFromQuery(
 
 	ast.children = await parseFields(collection, fields, deep);
 
-	// do something with filters
-	if (query.filter) {
-		for (const key of Object.keys(query.filter)) {
-			// if (!query.filter[key]) continue;
-			if (key.startsWith('json(')) {
-				const alias = generateAlias();
-				const { fieldName, queryPath } = parseJsonFunction(key);
-				const filter: FieldFilterOperator = query.filter[key];
-				ast.children.push({
-					type: 'jsonField',
-					name: key,
-					fieldKey: alias,
-					fieldName,
-					queryPath,
-					filter,
-				});
-				delete query.filter[key];
-				query.filter[alias] = filter;
-				// lol this is probably not great
-				schema.collections[collection].fields[alias] = {
-					...schema.collections[collection].fields[fieldName],
-					special: ['cast-json', 'json-alias'],
-				};
-			}
+	if (query.json) {
+		for (const [alias, path] of Object.entries(query.json)) {
+			const { fieldName, queryPath } = parseJsonFunction(path);
+			ast.children.push({
+				type: 'jsonField',
+				name: fieldName,
+				fieldKey: alias,
+				queryPath,
+			});
 		}
 	}
+
+	// do something with filters
+	// if (query.filter) {
+	// 	for (const key of Object.keys(query.filter)) {
+	// 		// if (!query.filter[key]) continue;
+	// 		if (key.startsWith('json(')) {
+	// 			const alias = generateAlias();
+	// 			const { fieldName, queryPath } = parseJsonFunction(key);
+	// 			const filters: Record<string, any> = query.filter;
+	// 			const filter: FieldFilterOperator = filters[key];
+	// 			ast.children.push({
+	// 				type: 'jsonField',
+	// 				name: key,
+	// 				fieldKey: alias,
+	// 				fieldName,
+	// 				queryPath,
+	// 				filter,
+	// 			});
+	// 			delete filters[key];
+	// 			filters[alias] = filter;
+	// 			query.filter = filters as Filter;
+	// 			// lol this is probably not great
+	// 			schema.collections[collection].fields[alias] = {
+	// 				...schema.collections[collection].fields[fieldName],
+	// 				special: ['cast-json', 'json-alias'],
+	// 			};
+	// 		}
+	// 	}
+	// }
 
 	return ast;
 
@@ -228,7 +249,6 @@ export default async function getASTFromQuery(
 							type: 'jsonField',
 							name: fieldKey,
 							fieldKey: alias,
-							fieldName,
 							queryPath,
 						});
 						schema.collections[collection].fields[alias] = {

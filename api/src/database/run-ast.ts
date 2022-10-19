@@ -88,13 +88,16 @@ export default async function runAST(
 		let items: null | Item | Item[] = await payloadService.processValues('read', rawItems);
 
 		// Transform json query results
-		// for (const item of toArray(rawItems)) {
-		// 	for (const jsonKey of jsonNodes) {
-		// 		if (jsonKey in item && typeof item[jsonKey] === 'string') {
-		// 			item[jsonKey] = parseJSON(item[jsonKey]);
-		// 		}
-		// 	}
-		// }
+		if (query.json) {
+			const keys: string[] = Object.keys(query.json);
+			for (const item of toArray(rawItems)) {
+				for (const jsonAlias of keys) {
+					if (jsonAlias in item && typeof item[jsonAlias] === 'string') {
+						item[jsonAlias] = parseJSON(item[jsonAlias]);
+					}
+				}
+			}
+		}
 
 		if (!items || items.length === 0) return items;
 
@@ -234,7 +237,7 @@ function getColumnPreprocessor(knex: Knex, schema: SchemaOverview, table: string
 		if (fieldNode.type === 'field' || fieldNode.type === 'functionField') {
 			field = schema.collections[table].fields[stripFunction(fieldNode.name)];
 		} else if (fieldNode.type === 'jsonField') {
-			field = schema.collections[table].fields[fieldNode.fieldName];
+			field = schema.collections[table].fields[fieldNode.name];
 		} else {
 			field = schema.collections[fieldNode.relation.collection].fields[fieldNode.relation.field];
 		}
@@ -246,7 +249,7 @@ function getColumnPreprocessor(knex: Knex, schema: SchemaOverview, table: string
 		if (fieldNode.type === 'functionField') {
 			return getColumn(knex, table, fieldNode.name, alias, schema, fieldNode.query);
 		} else if (fieldNode.type === 'jsonField') {
-			return getJsonColumn(knex, table, fieldNode.fieldName, fieldNode.fieldKey, fieldNode.queryPath, schema);
+			return getJsonColumn(knex, table, fieldNode.name, fieldNode.fieldKey, fieldNode.queryPath, schema);
 		}
 
 		return getColumn(knex, table, fieldNode.name, alias, schema);

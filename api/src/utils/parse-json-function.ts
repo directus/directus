@@ -14,10 +14,10 @@ export const JSON_QUERY_REGEX = /^(\w+)(\.(\w+|\*)|\[(\d+|\*)\])+$/i;
  * // => "date_created_year"
  * ```
  */
-export function parseJsonFunction(column: string) {
-	const content = stripFunction(column);
+export function parseJsonFunction(content: string) {
+	// const content = stripFunction(column);
 	if (!JSON_QUERY_REGEX.test(content)) {
-		throw new InvalidQueryException(`The json query used is not valid. "${column}"`);
+		throw new InvalidQueryException(`The json query used is not valid. "${content}"`);
 	}
 	const contentEnd = content.length - 1;
 	const pathStart = Math.min(

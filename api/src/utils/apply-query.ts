@@ -64,8 +64,7 @@ export default function applyQuery(
 	}
 
 	if (query.filter) {
-		// console.log('query.filter', query.filter);
-		applyFilter(knex, schema, dbQuery, query.filter, collection, subQuery);
+		applyFilter(knex, schema, dbQuery, query.filter, Object.keys(query.json ?? {}), collection, subQuery);
 	}
 
 	return dbQuery;
@@ -284,6 +283,7 @@ export function applyFilter(
 	schema: SchemaOverview,
 	rootQuery: Knex.QueryBuilder,
 	rootFilter: Filter,
+	jsonFields: string[],
 	collection: string,
 	subQuery = false
 ) {
@@ -381,10 +381,12 @@ export function applyFilter(
 					validateFilterOperator(type, filterOperator, special);
 
 					applyFilterToQuery(columnPath, filterOperator, filterValue, logical, targetCollection);
+				} else if (jsonFields.includes(filterPath[0])) {
+					validateFilterOperator('string', filterOperator, []);
+
+					applyFilterToQuery(filterPath[0], filterOperator, filterValue, logical);
 				} else {
-					const fieldName = filterPath[0].startsWith('json(')
-						? parseJsonFunction(filterPath[0]).fieldName
-						: stripFunction(filterPath[0]);
+					const fieldName = stripFunction(filterPath[0]);
 					validateFilterOperator(
 						schema.collections[collection].fields[fieldName].type,
 						filterOperator,
@@ -392,11 +394,7 @@ export function applyFilter(
 					);
 
 					// validateFilterOperator(type, filterOperator, special);
-					if (schema.collections[collection].fields[fieldName].special?.includes('json-alias')) {
-						applyFilterToQuery(filterPath[0], filterOperator, filterValue, logical);
-					} else {
-						applyFilterToQuery(`${collection}.${filterPath[0]}`, filterOperator, filterValue, logical);
-					}
+					applyFilterToQuery(`${collection}.${filterPath[0]}`, filterOperator, filterValue, logical);
 				}
 			} else if (subQuery === false || filterPath.length > 1) {
 				if (!relation) continue;

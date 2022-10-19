@@ -55,18 +55,11 @@ export type FunctionFieldNode = {
 	relatedCollection: string;
 };
 
-// export type JsonFieldNode = {
-// 	type: 'jsonField';
-// 	name: string;
-// 	fieldKey: string;
-// 	alias: string;
-// };
-
 export type JsonFieldNode = {
 	type: 'jsonField';
 	name: string;
 	fieldKey: string;
-	fieldName: string;
+	// fieldName: string;
 	queryPath: string;
 	filter?: FieldFilterOperator;
 };

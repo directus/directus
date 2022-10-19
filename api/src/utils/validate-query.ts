@@ -5,6 +5,7 @@ import { Query } from '@directus/shared/types';
 import { stringify } from 'wellknown';
 import { calculateFieldDepth } from './calculate-field-depth';
 import env from '../env';
+import { JSON_QUERY_REGEX } from './parse-json-function';
 
 const querySchema = Joi.object({
 	fields: Joi.array().items(Joi.string()),
@@ -20,6 +21,7 @@ const querySchema = Joi.object({
 	aggregate: Joi.object(),
 	deep: Joi.object(),
 	alias: Joi.object(),
+	json: Joi.object(),
 }).id('query');
 
 export function validateQuery(query: Query): Query {
@@ -31,6 +33,10 @@ export function validateQuery(query: Query): Query {
 
 	if (query.alias) {
 		validateAlias(query.alias);
+	}
+
+	if (query.json) {
+		validateJson(query.json);
 	}
 
 	validateRelationalDepth(query);
@@ -168,6 +174,30 @@ function validateAlias(alias: any) {
 
 		if (key.includes('.') || value.includes('.')) {
 			throw new InvalidQueryException(`"alias" key/value can't contain a period character \`.\``);
+		}
+	}
+}
+
+function validateJson(json: any) {
+	if (isPlainObject(json) === false) {
+		throw new InvalidQueryException(`"json" has to be an object`);
+	}
+
+	for (const [alias, path] of Object.entries(json)) {
+		if (typeof alias !== 'string') {
+			throw new InvalidQueryException(`"json" alias has to be a string. "${typeof alias}" given.`);
+		}
+
+		if (typeof path !== 'string') {
+			throw new InvalidQueryException(`"json" path has to be a string. "${typeof path}" given.`);
+		}
+
+		if (alias.includes('.')) {
+			throw new InvalidQueryException(`"json" key can't contain a period character \`.\``);
+		}
+
+		if (JSON_QUERY_REGEX.test(path) === false) {
+			throw new InvalidQueryException(`"json" path does not match the allowed pattern. `);
 		}
 	}
 }

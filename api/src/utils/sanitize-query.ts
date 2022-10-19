@@ -65,6 +65,10 @@ export function sanitizeQuery(rawQuery: Record<string, any>, accountability?: Ac
 		query.alias = sanitizeAlias(rawQuery.alias);
 	}
 
+	if (rawQuery.json) {
+		query.json = sanitizeJson(rawQuery.json);
+	}
+
 	return query;
 }
 
@@ -206,4 +210,18 @@ function sanitizeAlias(rawAlias: any) {
 	}
 
 	return alias;
+}
+
+function sanitizeJson(rawJson: any) {
+	let json: Record<string, string> = rawJson;
+
+	if (typeof rawJson === 'string') {
+		try {
+			json = parseJSON(rawJson);
+		} catch (err) {
+			logger.warn('Invalid value passed for json query parameter.');
+		}
+	}
+
+	return json;
 }
