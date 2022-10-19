@@ -39,6 +39,7 @@ import {
 	ObjectTypeComposerFieldConfigMapDefinition,
 	SchemaComposer,
 	toInputObjectType,
+	ObjectTypeComposerFieldConfigDefinition,
 } from 'graphql-compose';
 import { Knex } from 'knex';
 import { flatten, get, mapKeys, merge, omit, pick, set, transform, uniq } from 'lodash';
@@ -427,7 +428,7 @@ export class GraphQLService {
 							resolve: (obj: Record<string, any>) => {
 								return obj[field.field];
 							},
-						};
+						} as ObjectTypeComposerFieldConfigDefinition<any, any>;
 
 						if (action === 'read') {
 							if (field.type === 'date') {
@@ -524,7 +525,7 @@ export class GraphQLService {
 									}
 
 									const collection = parent[relation.meta!.one_collection_field!];
-									return CollectionTypes[collection].getType();
+									return CollectionTypes[collection].getType().name;
 								},
 							}),
 							resolve: (obj: Record<string, any>, _, __, info) => {
@@ -1500,7 +1501,7 @@ export class GraphQLService {
 					return Boolean(node.value);
 				case 'EnumValue':
 				default:
-					return node.value;
+					return 'value' in node ? node.value : null;
 			}
 		};
 
@@ -2263,7 +2264,7 @@ export class GraphQLService {
 								? getGraphQLType(field.type, field.special)
 								: new GraphQLNonNull(getGraphQLType(field.type, field.special)),
 							description: field.note,
-						};
+						} as ObjectTypeComposerFieldConfigDefinition<any, any, any>;
 
 						return acc;
 					}, {} as ObjectTypeComposerFieldConfigMapDefinition<any, any>),
@@ -2320,7 +2321,7 @@ export class GraphQLService {
 								? getGraphQLType(field.type, field.special)
 								: new GraphQLNonNull(getGraphQLType(field.type, field.special)),
 							description: field.note,
-						};
+						} as ObjectTypeComposerFieldConfigDefinition<any, any, any>;
 
 						return acc;
 					}, {} as ObjectTypeComposerFieldConfigMapDefinition<any, any>),
@@ -2411,7 +2412,7 @@ export class GraphQLService {
 						acc[field.field] = {
 							type: getGraphQLType(field.type, field.special),
 							description: field.note,
-						};
+						} as ObjectTypeComposerFieldConfigDefinition<any, any, any>;
 
 						return acc;
 					}, {} as ObjectTypeComposerFieldConfigMapDefinition<any, any>),
