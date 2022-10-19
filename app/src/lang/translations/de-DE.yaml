@@ -1885,33 +1885,33 @@ layouts:
     default_template: Verwenden des Sammlungs-Standards...
     no_compatible_fields: Keine kompatiblen Felder
   kanban:
-    name: Kanban,
-    group_field: Gruppieren nach,
-    group_field_placeholder: Feld zum Gruppieren...,
-    group_title: Gruppentitel,
-    group_title_placeholder: Feld für Gruppentitel...,
-    title: Karten-Titel,
-    title_placeholder: Optionales Titelfeld...,
-    text: Karten-Text,
-    text_placeholder: Optionales Textfeld...,
-    date: Karten-Datum,
-    date_placeholder: Optionales Datumsfeld...,
-    tags: Karten-Tags,
-    tags_placeholder: Optionales Tag-Feld...,
-    user: Karten-Benutzer,
-    user_placeholder: Optionales Benutzerfeld...,
-    image: Karten-Bild,
-    image_placeholder: Optionales Bildfeld...,
-    image_fit: Karten-Bildfüllmodus,
-    crop: Beschneiden,
-    advanced: Erweitert,
-    edit_group: Gruppe bearbeiten,
-    delete_group: Gruppe löschen,
-    add_group: Gruppe hinzufügen,
-    add_group_placeholder: Neuen Gruppentitel eingeben...,
-    show_ungrouped: Nicht gruppierte Elemente zeigen,
-    show: Anzeigen,
-    no_group: Keine Gruppe,
+    name: Kanban
+    group_field: Gruppieren nach
+    group_field_placeholder: Feld zum Gruppieren...
+    group_title: Gruppentitel
+    group_title_placeholder: Feld für Gruppentitel...
+    title: Karten-Titel
+    title_placeholder: Optionales Titelfeld...
+    text: Karten-Text
+    text_placeholder: Optionales Textfeld...
+    date: Karten-Datum
+    date_placeholder: Optionales Datumsfeld...
+    tags: Karten-Tags
+    tags_placeholder: Optionales Tag-Feld...
+    user: Karten-Benutzer
+    user_placeholder: Optionales Benutzerfeld...
+    image: Karten-Bild
+    image_placeholder: Optionales Bildfeld...
+    image_fit: Karten-Bildfüllmodus
+    crop: Beschneiden
+    advanced: Erweitert
+    edit_group: Gruppe bearbeiten
+    delete_group: Gruppe löschen
+    add_group: Gruppe hinzufügen
+    add_group_placeholder: Neuen Gruppentitel eingeben...
+    show_ungrouped: Nicht gruppierte Elemente zeigen
+    show: Anzeigen
+    no_group: Keine Gruppe
     not_all_loaded: Konnte nur die ersten 1000 Elemente laden.
 panels:
   metric:
