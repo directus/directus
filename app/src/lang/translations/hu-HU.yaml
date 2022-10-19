@@ -1338,6 +1338,7 @@ interfaces:
     markdown: Markdown
     description: Markdown bevitele és előnézete
     edit: Szerkesztés
+    preview: Előnézet
     customSyntax: Egyedi blokkok
     customSyntax_label: Egyéni szintaxistípusok hozzáadása
     customSyntax_add: Egyéni szintaxis hozzáadása
