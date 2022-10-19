@@ -1,11 +1,11 @@
-import globby from 'globby';
+import { globbySync } from 'globby';
 import * as common from '@common/index';
 import { list } from '../setup/sequentialTests';
 
 describe('Seed Database Structure', () => {
 	common.DisableTestCachingSetup();
 
-	let paths = globby.sync('**.seed.ts', {
+	let paths = globbySync('**.seed.ts', {
 		cwd: `${__dirname}/../`,
 	});
 
