@@ -40,7 +40,7 @@
 	"dependencies": {
 		"@directus/drive": "workspace:*",
 		"aws-sdk": "2.1236.0",
-		"normalize-path": "^3.0.0"
+		"normalize-path": "3.0.0"
 	},
 	"devDependencies": {
 		"@lukeed/uuid": "2.0.0",

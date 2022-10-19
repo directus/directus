@@ -40,7 +40,7 @@
 		"@directus/drive": "workspace:*",
 		"@google-cloud/storage": "6.5.3",
 		"lodash": "4.17.21",
-		"normalize-path": "^3.0.0"
+		"normalize-path": "3.0.0"
 	},
 	"devDependencies": {
 		"@lukeed/uuid": "2.0.0",
