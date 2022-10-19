@@ -295,6 +295,7 @@ paste_raw_value: Nyers érték beillesztése
 edit_raw_value: Nyers érték szerkesztése
 enter_raw_value: Nyers érték megadása...
 clear_changes: Változások törlése
+reset_to_default: Visszaállítás alapértelmezettre
 undo_changes: Változtatások visszavonása
 notifications: Értesítések
 show_all_activity: Összes tevékenység mutatása
@@ -982,11 +983,13 @@ fields:
     project_url: Projekt webcíme
     project_color: Projekt színe
     project_logo: Projekt logója
+    default_language: Alapértelmezett nyelv
     public_foreground: Nyilvános előtér
     public_background: Nyilvános háttér
     public_note: Nyilvános megjegyzés
     auth_password_policy: Hitelesítési jelszóházirend
     auth_login_attempts: Bejelentkezési kísérletek
+    storage_default_folder: Alapértelmezett mappa
     overrides: Alkalmazás felülbírálások
     custom_css: Egyéni CSS
     module_bar: Modulsáv
@@ -1343,6 +1346,7 @@ interfaces:
     map: Térkép
     description: Hely megadása térképen
     zoom: Nagyítás
+    default_view: Alapértelmezett nézet
     invalid_options: Érvénytelen opciók
     invalid_format: Érvénytelen formátum ({format})
     unexpected_geometry: 'Elvárt: {expected}, kapott: {got}.'
@@ -1421,6 +1425,7 @@ interfaces:
     display_template: Megjelenítési sablon
     no_collection: Nincsenek gyűjtemények
     toggle_split_view: Osztott nézet váltása
+    default_language: Alapértelmezett nyelv
   list-o2m-tree-view:
     description: Fa nézet egymásba ágyazott rekurzív egy a sokhoz elemekhez
     recursive_only: A fa nézet felület csak rekurzív kapcsolatok esetén működik.
@@ -1460,6 +1465,7 @@ interfaces:
 displays:
   translations:
     translations: Fordítások
+    default_language: Alapértelmezett nyelv
   boolean:
     boolean: Logikai
     description: Be- és kikapcsolt állapotok megjelenítése
@@ -1586,8 +1592,11 @@ layouts:
     cluster_maxzoom: Maximális zoom a klaszterezéshez
     invalid_geometry: Érvénytelen geometria
   kanban:
+    image: Kártya kép
     crop: Vágás
     advanced: Speciális
+    edit_group: Csoport szerkesztése
+    delete_group: Csoport törlése
 panels:
   metric:
     name: Metrikus
