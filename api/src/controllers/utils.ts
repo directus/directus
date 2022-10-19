@@ -167,49 +167,13 @@ router.post(
 router.post(
 	'/transform-export',
 	asyncHandler(async (req, res, next) => {
-		if (req.is('multipart/form-data') === false || !req.headers['content-type']) {
-			throw new UnsupportedMediaTypeException(`Unsupported Content-Type header`);
-		}
-
 		if (!req.sanitizedQuery.export) {
 			throw new ForbiddenException();
 		}
 
-		const busboy = Busboy({ headers: req.headers });
+		res.locals.payload = { data: req.body };
 
-		let inputString: string;
-
-		busboy.on('field', (fieldname, val, info) => {
-			if (info.valueTruncated) {
-				return next(new InvalidPayloadException('Form field size exceeded'));
-			}
-
-			if (fieldname === 'input') {
-				inputString = val;
-			}
-		});
-
-		busboy.on('error', (err: Error) => next(err));
-
-		busboy.on('close', async () => {
-			if (!inputString) {
-				return next(new ForbiddenException());
-			}
-
-			try {
-				const input = parseJSON(inputString);
-				res.locals.payload = { data: input };
-				next();
-			} catch (error: any) {
-				if (error?.message && error.message.includes('JSON')) {
-					return next(new InvalidPayloadException('Invalid JSON input'));
-				}
-
-				return next(error);
-			}
-		});
-
-		req.pipe(busboy);
+		return next();
 	}),
 	respond
 );

@@ -72,14 +72,7 @@ export async function saveAsCSV(collection: string, fields: string[], items: Ite
 	}
 
 	try {
-		const formData = new FormData();
-		formData.set('input', JSON.stringify(parsedItems));
-
-		const response = await api.post('/utils/transform-export?export=csv', formData, {
-			headers: {
-				'Content-Type': 'multipart/form-data',
-			},
-		});
+		const response = await api.post('/utils/transform-export?export=csv', parsedItems);
 
 		const now = new Date();
 
