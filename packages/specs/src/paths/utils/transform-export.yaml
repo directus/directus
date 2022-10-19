@@ -14,15 +14,9 @@ post:
           - xml
   requestBody:
     content:
-      multipart/form-data:
+      application/json:
         schema:
           type: object
-          properties:
-            input:
-              description: The JSON string to be transformed
-              type: string
-          required:
-            - input
   responses:
     '200':
       description: Successful request
