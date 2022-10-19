@@ -15,8 +15,7 @@ const pinoOptions: LoggerOptions = {
 };
 
 if (env.LOG_STYLE !== 'raw') {
-	pinoOptions.prettyPrint = true;
-	pinoOptions.prettifier = require('pino-colada');
+	pinoOptions.transport = { target: 'pino-pretty' };
 }
 
 const loggerEnvConfig = getConfigFromEnv('LOGGER_', 'LOGGER_HTTP');
