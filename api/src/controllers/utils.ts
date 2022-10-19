@@ -166,6 +166,10 @@ router.post(
 router.post(
 	'/transform-export',
 	asyncHandler(async (req, res, next) => {
+		if (req.is('application/json') === false || !req.headers['content-type']) {
+			throw new InvalidPayloadException(`Payload should be a JSON object`);
+		}
+
 		if (!req.sanitizedQuery.export) {
 			throw new ForbiddenException();
 		}
