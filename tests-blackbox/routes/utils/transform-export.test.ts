@@ -64,7 +64,7 @@ describe('/utils', () => {
 					// Action
 					const response = await request(getUrl(vendor))
 						.post(`/utils/transform-export?export=${format}`)
-						.field('input', JSON.stringify(sampleData))
+						.send(sampleData)
 						.expect('Content-Type', contentTypes[format]);
 
 					// Assert
@@ -81,7 +81,24 @@ describe('/utils', () => {
 						// Action
 						const response = await request(getUrl(vendor))
 							.post(`/utils/transform-export?export=${format}`)
-							.field('input', JSON.stringify(sampleData).slice(0, -1))
+							.send('not a JSON')
+							.expect('Content-Type', /application\/json/);
+
+						// Assert
+						expect(response.statusCode).toBe(400);
+					});
+				});
+			}
+		});
+
+		describe(`errors on incorrect content type`, () => {
+			for (const format of exportFormats) {
+				describe(format.toUpperCase(), () => {
+					it.each(vendors)('%s', async (vendor) => {
+						// Action
+						const response = await request(getUrl(vendor))
+							.post(`/utils/transform-export?export=${format}`)
+							.send(JSON.stringify(sampleData))
 							.expect('Content-Type', /application\/json/);
 
 						// Assert
@@ -96,7 +113,7 @@ describe('/utils', () => {
 				// Action
 				const response = await request(getUrl(vendor))
 					.post(`/utils/transform-export`)
-					.field('input', JSON.stringify(sampleData))
+					.send(sampleData)
 					.expect('Content-Type', /application\/json/);
 
 				// Assert
@@ -109,24 +126,11 @@ describe('/utils', () => {
 				// Action
 				const response = await request(getUrl(vendor))
 					.post(`/utils/transform-export?export=fake`)
-					.field('input', JSON.stringify(sampleData))
-					.expect('Content-Type', /application\/json/);
-
-				// Assert
-				expect(response.statusCode).toBe(400);
-			});
-		});
-
-		describe(`errors on invalid POST format`, () => {
-			it.each(vendors)('%s', async (vendor) => {
-				// Action
-				const response = await request(getUrl(vendor))
-					.post(`/utils/transform-export?export=csv`)
 					.send(sampleData)
 					.expect('Content-Type', /application\/json/);
 
 				// Assert
-				expect(response.statusCode).toBe(415);
+				expect(response.statusCode).toBe(400);
 			});
 		});
 
@@ -135,11 +139,11 @@ describe('/utils', () => {
 				// Action
 				const response = await request(getUrl(vendor))
 					.post(`/utils/transform-export?export=csv`)
-					.field('input', `{"x":"${'o'.repeat(1024 * 1024 - 9)}"}`);
+					.send({ x: 'o'.repeat(1024 * 1024 - 8) });
 
 				const responseLarge = await request(getUrl(vendor))
 					.post(`/utils/transform-export?export=csv`)
-					.field('input', `{"x":"${'o'.repeat(1024 * 1024)}"}`);
+					.send({ x: 'o'.repeat(1024 * 1024) });
 
 				// Assert
 				expect(response.statusCode).toBe(200);
