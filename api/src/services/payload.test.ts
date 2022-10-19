@@ -229,8 +229,8 @@ describe('Integration Tests', () => {
 
 					expect(result).toMatchObject([
 						{
-							[dateFieldId]: '2022-10-26',
-							[dateTimeFieldId]: '2022-10-25T10:57:46',
+							[dateFieldId]: new Date(1666777777000).toISOString().slice(0, 10),
+							[dateTimeFieldId]: new Date(1666666666000).toISOString().slice(0, 19),
 							[timestampFieldId]: new Date(1666555444333).toISOString(),
 						},
 					]);
