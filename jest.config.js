@@ -11,11 +11,4 @@ module.exports = {
 		'@directus/shared(.*)$': `${__dirname}/packages/shared/src/$1`,
 		'@directus/specs(.*)$': `${__dirname}/packages/specs/$1`,
 	},
-	globals: {
-		'ts-jest': {
-			tsconfig: {
-				sourceMap: true,
-			},
-		},
-	},
 };
