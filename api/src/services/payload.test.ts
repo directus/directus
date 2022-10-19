@@ -214,6 +214,27 @@ describe('Integration Tests', () => {
 						},
 					]);
 				});
+
+				it('with date object values', async () => {
+					const result = await service.processDates(
+						[
+							{
+								[dateFieldId]: new Date(1666777777000),
+								[dateTimeFieldId]: new Date(1666666666000),
+								[timestampFieldId]: new Date(1666555444333),
+							},
+						],
+						'read'
+					);
+
+					expect(result).toMatchObject([
+						{
+							[dateFieldId]: '2022-10-26',
+							[dateTimeFieldId]: '2022-10-25T10:57:46',
+							[timestampFieldId]: new Date(1666555444333).toISOString(),
+						},
+					]);
+				});
 			});
 		});
 	});
