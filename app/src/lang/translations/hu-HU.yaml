@@ -1615,6 +1615,8 @@ panels:
     name: Lista
     description: Mezők szűrése és listázása egy gyűjteményből
 triggers:
+  common:
+    response_body_all: Összes adat
   webhook:
     method: Metódus
 operations:
