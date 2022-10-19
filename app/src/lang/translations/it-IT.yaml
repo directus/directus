@@ -187,6 +187,8 @@ revision_post_create: Ecco come appariva questo elemento quando è stato creato.
 revision_post_update: Ecco come appariva questo elemento dopo l'aggiornamento.
 changes_made: Di seguito sono riportate le modifiche apportate in questa revisione.
 no_relational_data: Ricorda che qui i dati relazionali non sono inclusi.
+junction_field_location: Posizione dei campi di relazione
+top: In alto
 bottom: In basso
 hide_field: Nascondi campo
 hide_field_on_detail: Nascondi campo nel dettaglio
@@ -326,6 +328,7 @@ edit_raw_value: Modifica il valore grezzo
 enter_raw_value: Inserisci valore grezzo...
 clear_value: Cancella il valore
 clear_changes: Annulla modifiche
+clear_items: Rimuovi gli elementi
 reset_to_default: Reimposta al valore predefinito
 undo_changes: Annulla le modifiche
 notifications: Notifiche
@@ -1421,6 +1424,7 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 table: Tabella
@@ -2015,6 +2019,12 @@ panels:
     name: Variabile globale
     description: Imposta un valore globale da usare nei filtri di altri pannelli
     variable_key: Chiave della variabile
+  relational-variable:
+    name: Variabile relazionale globale
+    description: Imposta un valore relazionale globale da usare nei filtri di altri pannelli
+    variable_key: Chiave della variabile
+    multiple: Multiplo
+    multiple-label: Seleziona più elementi
 triggers:
   common:
     response_body: Corpo della risposta
