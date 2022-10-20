@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from './utils/axios-instance';
 import getDatabase from './database';
 import emitter from './emitter';
 import logger from './logger';

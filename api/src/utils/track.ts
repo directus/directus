@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from './axios-instance';
 import ms from 'ms';
 import { machineId } from 'node-machine-id';
 import os from 'os';
