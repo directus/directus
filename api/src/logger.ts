@@ -5,6 +5,7 @@ import { getConfigFromEnv } from './utils/get-config-from-env';
 import { URL } from 'url';
 import env from './env';
 import { toArray } from '@directus/shared/utils';
+import { merge } from 'lodash';
 
 const pinoOptions: LoggerOptions = {
 	level: env.LOG_LEVEL || 'info',
@@ -14,8 +15,6 @@ const pinoOptions: LoggerOptions = {
 	},
 };
 
-const loggerTransportOptionsEnvConfig = getConfigFromEnv('LOGGER_TRANSPORT_OPTIONS');
-
 if (env.LOG_STYLE !== 'raw') {
 	pinoOptions.transport = {
 		target: 'pino-http-print',
@@ -23,7 +22,6 @@ if (env.LOG_STYLE !== 'raw') {
 			all: true,
 			translateTime: 'SYS:HH:MM:ss',
 			relativeUrl: true,
-			...loggerTransportOptionsEnvConfig,
 		},
 	};
 }
@@ -51,7 +49,7 @@ if (loggerEnvConfig.levels) {
 	delete loggerEnvConfig.levels;
 }
 
-const logger = pino(Object.assign(pinoOptions, loggerEnvConfig));
+const logger = pino(merge(pinoOptions, loggerEnvConfig));
 
 const httpLoggerEnvConfig = getConfigFromEnv('LOGGER_HTTP', ['LOGGER_HTTP_LOGGER']);
 
