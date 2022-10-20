@@ -16,9 +16,11 @@ import { ForbiddenException } from '../exceptions';
 import {
 	AbstractServiceOptions,
 	AST,
+	ASTChildNode,
 	FieldNode,
 	FunctionFieldNode,
 	Item,
+	JsonFieldNode,
 	NestedCollectionNode,
 	PrimaryKey,
 } from '../types';
@@ -74,7 +76,9 @@ export class AuthorizationService {
 		/**
 		 * Traverses the AST and returns an array of all collections that are being fetched
 		 */
-		function getCollectionsFromAST(ast: AST | NestedCollectionNode): { collection: string; field: string }[] {
+		function getCollectionsFromAST(
+			ast: AST | NestedCollectionNode | JsonFieldNode
+		): { collection: string; field: string }[] {
 			const collections = [];
 
 			if (ast.type === 'a2o') {
@@ -93,14 +97,16 @@ export class AuthorizationService {
 					field: ast.type === 'root' ? null : ast.fieldKey,
 				});
 
-				for (const nestedNode of ast.children) {
-					if (nestedNode.type === 'functionField') {
-						collections.push({
-							collection: nestedNode.relatedCollection,
-							field: null,
-						});
-					} else if (nestedNode.type !== 'field') {
-						collections.push(...getCollectionsFromAST(nestedNode));
+				if ('children' in ast) {
+					for (const nestedNode of ast.children) {
+						if (nestedNode.type === 'functionField') {
+							collections.push({
+								collection: nestedNode.relatedCollection,
+								field: null,
+							});
+						} else if (nestedNode.type !== 'field') {
+							collections.push(...getCollectionsFromAST(nestedNode));
+						}
 					}
 				}
 			}
@@ -109,7 +115,7 @@ export class AuthorizationService {
 		}
 
 		function validateFields(ast: AST | NestedCollectionNode | FieldNode | FunctionFieldNode) {
-			if (ast.type !== 'field' && ast.type !== 'functionField') {
+			if (ast.type !== 'field' && ast.type !== 'functionField' && 'children' in ast) {
 				if (ast.type === 'a2o') {
 					for (const [collection, children] of Object.entries(ast.children)) {
 						checkFields(collection, children, ast.query?.[collection]?.aggregate);
@@ -119,11 +125,7 @@ export class AuthorizationService {
 				}
 			}
 
-			function checkFields(
-				collection: string,
-				children: (NestedCollectionNode | FieldNode | FunctionFieldNode)[],
-				aggregate?: Aggregate | null
-			) {
+			function checkFields(collection: string, children: ASTChildNode[], aggregate?: Aggregate | null) {
 				// We check the availability of the permissions in the step before this is run
 				const permissions = permissionsForCollections.find((permission) => permission.collection === collection)!;
 				const allowedFields = permissions.fields || [];
@@ -140,7 +142,7 @@ export class AuthorizationService {
 				}
 
 				for (const childNode of children) {
-					if (childNode.type !== 'field') {
+					if (childNode.type !== 'field' && childNode.type !== 'jsonField') {
 						validateFields(childNode);
 						continue;
 					}
@@ -173,6 +175,7 @@ export class AuthorizationService {
 						);
 
 						for (const child of ast.children[collection]) {
+							if (child.type === 'jsonField') continue;
 							const childPermissions = validateFilterPermissions(child, schema, action, accountability);
 
 							if (Object.keys(childPermissions).length > 0) {
@@ -194,6 +197,7 @@ export class AuthorizationService {
 					);
 
 					for (const child of ast.children) {
+						if (child.type === 'jsonField') continue;
 						const childPermissions = validateFilterPermissions(child, schema, action, accountability);
 
 						if (Object.keys(childPermissions).length > 0) {
@@ -401,15 +405,12 @@ export class AuthorizationService {
 			}
 		}
 
-		function applyFilters(
-			ast: AST | NestedCollectionNode | FieldNode | FunctionFieldNode,
-			accountability: Accountability | null
-		): AST | NestedCollectionNode | FieldNode | FunctionFieldNode {
+		function applyFilters(ast: AST | ASTChildNode, accountability: Accountability | null): AST | ASTChildNode {
 			if (ast.type === 'functionField') {
 				const collection = ast.relatedCollection;
 
 				updateFilterQuery(collection, ast.query);
-			} else if (ast.type !== 'field') {
+			} else if (ast.type !== 'field' && ast.type !== 'jsonField') {
 				if (ast.type === 'a2o') {
 					const collections = Object.keys(ast.children);
 
