@@ -16,6 +16,7 @@ export function getFilterOperatorsForType(
 		case 'string':
 		case 'text':
 		case 'csv':
+		case 'json':
 			return [
 				'contains',
 				'ncontains',
@@ -41,25 +42,6 @@ export function getFilterOperatorsForType(
 		// UUID
 		case 'uuid':
 			return ['eq', 'neq', 'null', 'nnull', 'in', 'nin'];
-		case 'json':
-			return [
-				'contains',
-				'ncontains',
-				'icontains',
-				'starts_with',
-				'nstarts_with',
-				'ends_with',
-				'nends_with',
-				'eq',
-				'neq',
-				'empty',
-				'nempty',
-				'null',
-				'nnull',
-				'in',
-				'nin',
-				...validationOnlyStringFilterOperators,
-			];
 
 		// Boolean
 		case 'boolean':
