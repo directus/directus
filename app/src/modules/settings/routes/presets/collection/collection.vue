@@ -89,7 +89,7 @@
 
 			<component :is="`layout-${layout || 'tabular'}`" class="layout" v-bind="layoutState">
 				<template #no-results>
-					<v-info :title="t('no_presets')" icon="bookmark" center type="warning">
+					<v-info :title="t('no_presets')" icon="bookmark" center>
 						{{ t('no_presets_copy') }}
 
 						<template #append>
@@ -99,7 +99,7 @@
 				</template>
 
 				<template #no-items>
-					<v-info :title="t('no_presets')" icon="bookmark" center type="warning">
+					<v-info :title="t('no_presets')" icon="bookmark" center>
 						{{ t('no_presets_copy') }}
 
 						<template v-if="createAllowed" #append>

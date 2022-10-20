@@ -172,7 +172,7 @@ const props = withDefaults(
 );
 
 const emit = defineEmits(['input']);
-const { t } = useI18n();
+const { t, te } = useI18n();
 const { collection, field, primaryKey, limit } = toRefs(props);
 const { relationInfo } = useRelationM2A(collection, field);
 
@@ -336,7 +336,13 @@ function hasAllowedCollection(item: DisplayItem) {
 function getCollectionName(item: DisplayItem) {
 	const info = relationInfo.value;
 	if (!info) return false;
-	return info.allowedCollections.find((coll) => coll.collection === item[info.collectionField.field])?.name;
+
+	const collection = info.allowedCollections.find((coll) => coll.collection === item[info.collectionField.field]);
+	if (te(`collection_names_singular.${collection?.collection}`))
+		return t(`collection_names_singular.${collection?.collection}`);
+	if (te(`collection_names_plural.${collection?.collection}`))
+		return t(`collection_names_plural.${collection?.collection}`);
+	return collection?.name;
 }
 
 const customFilter = computed(() => {
