@@ -67,20 +67,10 @@ jobs:
           path: '**/dist'
           key: build-artifacts-${{ github.sha }}
 
-      - name: Install Node.js
-        uses: actions/setup-node@v3
+      - name: Prepare
+        uses: ./.github/actions/prepare
         with:
-          node-version: 16
-
-      - uses: pnpm/action-setup@v2.2.2
-        name: Install pnpm
-        id: pnpm-install
-        with:
-          version: 7
-          run_install: false
-
-      - name: Install dependencies
-        run: pnpm i
+          build: false
 
       - name: Publish packages to NPM
         env:
