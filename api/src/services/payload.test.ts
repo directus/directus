@@ -229,8 +229,11 @@ describe('Integration Tests', () => {
 
 					expect(result).toMatchObject([
 						{
-							[dateFieldId]: new Date(1666777777000).toISOString().slice(0, 10),
-							[dateTimeFieldId]: new Date(1666666666000).toISOString().slice(0, 19),
+							[dateFieldId]: new Date(1666777777000).toLocaleString('sv', { timeZoneName: 'short' }).slice(0, 10),
+							[dateTimeFieldId]: new Date(1666666666000)
+								.toLocaleString('sv', { timeZoneName: 'short' })
+								.slice(0, 19)
+								.replace(' ', 'T'),
 							[timestampFieldId]: new Date(1666555444333).toISOString(),
 						},
 					]);
