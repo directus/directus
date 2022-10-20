@@ -4,7 +4,7 @@ const defaultRules = {
 	// No debugger statements in production
 	'no-debugger': process.env.NODE_ENV !== 'development' ? 'error' : 'off',
 	// Enforce prettier formatting
-	'prettier/prettier': 'error',
+	'prettier/prettier': ['error', { endOfLine: 'auto' }],
 };
 
 module.exports = {

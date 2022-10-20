@@ -10,7 +10,8 @@ import {
 	getPackageExtensions,
 } from '@directus/shared/utils/node';
 import yaml from '@rollup/plugin-yaml';
-import vue from '@vitejs/plugin-vue';
+import veauryVitePlugins from 'veaury/vite/index.js';
+
 import hljs from 'highlight.js';
 import path from 'path';
 import fs from 'fs';
@@ -30,10 +31,10 @@ hljs.registerLanguage('graphql', hljsGraphQL);
 // https://vitejs.dev/config/
 export default defineConfig({
 	plugins: [
-		directusExtensions(),
-		vue({
-			include: [/\.vue$/, /\.md$/],
+		veauryVitePlugins({
+			type: 'vue',
 		}),
+		directusExtensions(),
 		md({
 			wrapperComponent: 'docs-wrapper',
 			markdownItOptions: {
@@ -163,7 +164,6 @@ function getExtensionsRealPaths() {
 	return fs.existsSync(EXTENSIONS_PATH)
 		? fs.readdirSync(EXTENSIONS_PATH).flatMap((typeDir) => {
 				const extensionTypeDir = path.join(EXTENSIONS_PATH, typeDir);
-
 				return fs.readdirSync(extensionTypeDir).map((dir) => fs.realpathSync(path.join(extensionTypeDir, dir)));
 		  })
 		: [];

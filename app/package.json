@@ -153,5 +153,13 @@
 		"vuedraggable": "4.1.0",
 		"webpack": "^5.74.0",
 		"wellknown": "0.5.0"
+	},
+	"dependencies": {
+		"@plasmicapp/loader-nextjs": "^1.0.188",
+		"@plasmicapp/loader-vue": "^0.1.175",
+		"@vitejs/plugin-react": "^2.1.0",
+		"@vitejs/plugin-vue-jsx": "^2.0.1",
+		"next": "^12.3.1",
+		"veaury": "^2.3.9"
 	}
 }

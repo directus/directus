@@ -31,7 +31,6 @@ import { useSystem } from '@/composables/use-system';
 
 import { setFavicon } from '@/utils/set-favicon';
 import { User } from '@directus/shared/types';
-
 export default defineComponent({
 	setup() {
 		const { t } = useI18n();
