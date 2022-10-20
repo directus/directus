@@ -26,6 +26,6 @@
 	"dependencies": {
 		"@directus/extensions-sdk": "workspace:*",
 		"@directus/shared": "workspace:*",
-		"inquirer": "^8.1.2"
+		"inquirer": "8.1.2"
 	}
 }
