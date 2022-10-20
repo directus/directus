@@ -2,15 +2,7 @@ import formatTitle from '@directus/format-title';
 import openapi from '@directus/specs';
 import { Knex } from 'knex';
 import { cloneDeep, mergeWith } from 'lodash';
-import {
-	OpenAPIObject,
-	OperationObject,
-	ParameterObject,
-	PathItemObject,
-	ReferenceObject,
-	SchemaObject,
-	TagObject,
-} from 'openapi3-ts';
+import { OpenAPIObject, ParameterObject, PathItemObject, ReferenceObject, SchemaObject, TagObject } from 'openapi3-ts';
 // @ts-ignore
 import { version } from '../../package.json';
 import getDatabase from '../database';
