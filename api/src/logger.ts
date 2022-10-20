@@ -15,7 +15,14 @@ const pinoOptions: LoggerOptions = {
 };
 
 if (env.LOG_STYLE !== 'raw') {
-	pinoOptions.transport = { target: 'pino-pretty' };
+	pinoOptions.transport = {
+		target: 'pino-http-print',
+		options: {
+			all: true,
+			translateTime: 'SYS:standard',
+			relativeUrl: true,
+		},
+	};
 }
 
 const loggerEnvConfig = getConfigFromEnv('LOGGER_', 'LOGGER_HTTP');

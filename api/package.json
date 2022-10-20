@@ -148,7 +148,7 @@
 		"otplib": "12.0.1",
 		"pino": "8.6.1",
 		"pino-http": "8.2.1",
-		"pino-pretty": "9.1.1",
+		"pino-http-print": "3.1.0",
 		"qs": "6.11.0",
 		"rate-limiter-flexible": "2.3.12",
 		"resolve-cwd": "3.0.0",
