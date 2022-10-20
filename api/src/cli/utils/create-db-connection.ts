@@ -11,7 +11,7 @@ export type Credentials = {
 	password?: string;
 	ssl?: boolean;
 	options__encrypt?: boolean;
-	options__cluster?: string;
+	options?: string; // Support pg and cockroachdb
 };
 export default function createDBConnection(
 	client: 'sqlite3' | 'mysql' | 'pg' | 'oracledb' | 'mssql' | 'cockroachdb',
@@ -37,10 +37,13 @@ export default function createDBConnection(
 		};
 
 		if (client === 'pg' || client === 'cockroachdb') {
-			const { ssl, options__cluster } = credentials as Credentials;
-			// connection['ssl'] = ssl;
-			(connection as Knex.PgConnectionConfig)['ssl'] = ssl;
-			(connection as Knex.PgConnectionConfig)['options'] = options__cluster;
+			const { ssl, options } = credentials as Credentials;
+
+			(connection as Knex.PgConnectionConfig) = {
+				...(connection as Knex.PgConnectionConfig),
+				ssl: ssl,
+				options: options,
+			};
 		}
 
 		if (client === 'mssql') {

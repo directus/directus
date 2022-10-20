@@ -68,7 +68,7 @@ const ssl = (): Record<string, string | boolean> => ({
 const options = (): Record<string, string> => ({
 	type: 'input',
 	name: 'options',
-	message: 'Extra options:',
+	message: 'Extra Options (string):',
 });
 
 export const databaseQuestions = {
