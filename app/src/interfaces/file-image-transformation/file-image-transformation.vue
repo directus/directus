@@ -142,7 +142,7 @@ const imageTransformationID = computed({
 
 const imageTransformationQuery = ref<RelationQuerySingle>({
 	fields: [
-		'x,y,width,height,image_transformations,name,file_id.id,file_id.modified_on,file_id.filename_download,file_id.type,file_id.width,file_id.height',
+		'x,y,width,height,image_transformations,filename_download,file_id.id,file_id.modified_on,file_id.filename_download,file_id.type,file_id.width,file_id.height',
 	],
 });
 const { collection, field } = toRefs(props);
