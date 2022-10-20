@@ -14,13 +14,16 @@ const pinoOptions: LoggerOptions = {
 	},
 };
 
+const loggerTransportOptionsEnvConfig = getConfigFromEnv('LOGGER_TRANSPORT_OPTIONS');
+
 if (env.LOG_STYLE !== 'raw') {
 	pinoOptions.transport = {
 		target: 'pino-http-print',
 		options: {
 			all: true,
-			translateTime: 'SYS:standard',
+			translateTime: 'SYS:HH:MM:ss',
 			relativeUrl: true,
+			...loggerTransportOptionsEnvConfig,
 		},
 	};
 }
