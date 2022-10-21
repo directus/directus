@@ -16,7 +16,7 @@ import { ForbiddenException } from '../exceptions';
 import {
 	AbstractServiceOptions,
 	AST,
-	ASTChildNode,
+	ASTNode,
 	FieldNode,
 	FunctionFieldNode,
 	Item,
@@ -125,7 +125,7 @@ export class AuthorizationService {
 				}
 			}
 
-			function checkFields(collection: string, children: ASTChildNode[], aggregate?: Aggregate | null) {
+			function checkFields(collection: string, children: ASTNode[], aggregate?: Aggregate | null) {
 				// We check the availability of the permissions in the step before this is run
 				const permissions = permissionsForCollections.find((permission) => permission.collection === collection)!;
 				const allowedFields = permissions.fields || [];
@@ -405,7 +405,7 @@ export class AuthorizationService {
 			}
 		}
 
-		function applyFilters(ast: AST | ASTChildNode, accountability: Accountability | null): AST | ASTChildNode {
+		function applyFilters(ast: AST | ASTNode, accountability: Accountability | null): AST | ASTNode {
 			if (ast.type === 'functionField') {
 				const collection = ast.relatedCollection;
 
