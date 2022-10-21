@@ -104,10 +104,6 @@ export class SAMLAuthDriver extends LocalAuthDriver {
 			}
 		}
 	}
-
-	async logout(_user: User): Promise<void> {
-		return;
-	}
 }
 
 export function createSAMLAuthRouter(providerName: string) {
