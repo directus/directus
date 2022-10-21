@@ -117,7 +117,7 @@ describe('/utils', () => {
 					.expect('Content-Type', /application\/json/);
 
 				// Assert
-				expect(response.statusCode).toBe(403);
+				expect(response.statusCode).toBe(400);
 			});
 		});
 
