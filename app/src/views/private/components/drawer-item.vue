@@ -52,7 +52,6 @@
 					v-model="internalEdits"
 					:disabled="disabled"
 					:loading="loading"
-					:nested="true"
 					:initial-values="initialValues"
 					:autofocus="swapFormOrder"
 					:show-divider="swapFormOrder"
