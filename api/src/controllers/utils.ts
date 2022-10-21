@@ -171,7 +171,7 @@ router.post(
 		}
 
 		if (!req.sanitizedQuery.export) {
-			throw new ForbiddenException();
+			throw new InvalidQueryException('"export" has to be provided.');
 		}
 
 		res.locals.payload = { data: req.body };
