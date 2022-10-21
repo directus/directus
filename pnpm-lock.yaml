@@ -374,7 +374,7 @@ importers:
     specifiers:
       '@babel/core': 7.19.3
       '@babel/preset-env': 7.19.4
-      '@directus/docs': 9.18.1
+      '@directus/docs': 9.19.0
       '@directus/extensions-sdk': 9.18.1
       '@directus/format-title': 10.0.0
       '@directus/shared': workspace:*
@@ -496,7 +496,7 @@ importers:
     devDependencies:
       '@babel/core': 7.19.3
       '@babel/preset-env': 7.19.4_@babel+core@7.19.3
-      '@directus/docs': 9.18.1
+      '@directus/docs': 9.19.0
       '@directus/extensions-sdk': link:../packages/extensions-sdk
       '@directus/format-title': 10.0.0
       '@directus/shared': link:../packages/shared
@@ -3243,8 +3243,8 @@ packages:
       '@jridgewell/trace-mapping': 0.3.9
     dev: true
 
-  /@directus/docs/9.18.1:
-    resolution: {integrity: sha512-BOB7R119Tm+aGSWMYyLpryqrOUgTg3rU4ymOI3IutQOTrihbs2ppeNkBWO6GwXQFGtgg8qK+toTRRTZ03iP1nA==}
+  /@directus/docs/9.19.0:
+    resolution: {integrity: sha512-kNCnFAYZgOyJChndjtajDSUzKY6i2lIiKv+h0tXWcYLRZVo1g2sWU+sXMJQo+ws5du0j7V9MqeP+ONxinFRE0Q==}
     dev: true
 
   /@directus/format-title/10.0.0:
