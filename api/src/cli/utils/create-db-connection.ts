@@ -22,11 +22,7 @@ export default function createDBConnection(
 		};
 	} else {
 		const { connection_string } = credentials;
-		// eslint-disable-next-line no-console
-		console.log('connectionURL: ', connection_string);
 		connection = connection_string?.toString();
-		// eslint-disable-next-line no-console
-		console.log('connection: ', connection_string?.toString());
 	}
 
 	const knexConfig: Knex.Config = {
