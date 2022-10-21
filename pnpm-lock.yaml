@@ -214,6 +214,7 @@ importers:
       update-check: 1.5.4
       uuid: 9.0.0
       uuid-validate: 0.0.3
+      vitest: 0.24.3
       vm2: 3.9.11
       wellknown: 0.5.0
     dependencies:
@@ -369,6 +370,7 @@ importers:
       ts-node: 10.9.1_id5sxmpllzol2kp2zgqrnepaum
       ts-node-dev: 2.0.0_id5sxmpllzol2kp2zgqrnepaum
       typescript: 4.8.4
+      vitest: 0.24.3
 
   app:
     specifiers:
@@ -19891,7 +19893,7 @@ packages:
     dependencies:
       bs-logger: 0.2.6
       fast-json-stable-stringify: 2.1.0
-      jest: 29.2.1_@types+node@18.11.2
+      jest: 29.2.1_5uyhgycj63wuqgvl4exdnr442q
       jest-util: 29.2.1
       json5: 2.2.1
       lodash.memoize: 4.1.2
