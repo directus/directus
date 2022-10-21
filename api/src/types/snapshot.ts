@@ -12,6 +12,10 @@ export type Snapshot = {
 
 export type SnapshotField = Field & { meta: Omit<FieldMeta, 'id'> };
 export type SnapshotRelation = Relation & { meta: Omit<RelationMeta, 'id'> };
+export type SnapshotCollection = Collection & {
+	fields: Array<SnapshotField>;
+	relations: Array<SnapshotRelation>;
+};
 
 export type SnapshotDiff = {
 	collections: {
