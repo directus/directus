@@ -40,6 +40,7 @@ type Info = {
 		  };
 	flows?: {
 		execAllowedModules: string[];
+		execAllowedEnv: string[];
 	};
 };
 

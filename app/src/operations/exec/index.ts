@@ -35,20 +35,32 @@ export default defineOperationApp({
 			},
 		];
 
+		let notice = '';
+
 		if (serverStore.info?.flows?.execAllowedModules && serverStore.info.flows.execAllowedModules.length > 0) {
+			notice +=
+				t('operations.exec.modules') +
+				`<br>${serverStore.info.flows.execAllowedModules.map((mod) => `\`${mod}\``).join(', ')}`;
+		}
+
+		if (serverStore.info?.flows?.execAllowedEnv && serverStore.info.flows.execAllowedEnv.length > 0) {
+			if (notice) notice += '<br><br>';
+			notice +=
+				t('operations.exec.env') + `<br>${serverStore.info.flows.execAllowedEnv.map((env) => `\`${env}\``).join(', ')}`;
+		}
+
+		if (notice) {
 			return [
 				...standard,
 				{
 					field: 'notice',
-					name: '$t:modules',
+					name: '$t:interfaces.presentation-notice.notice',
 					type: 'alias',
 					meta: {
 						width: 'full',
 						interface: 'presentation-notice',
 						options: {
-							text:
-								t('operations.exec.modules') +
-								`<br>${serverStore.info.flows.execAllowedModules.map((mod) => `\`${mod}\``).join(', ')}`,
+							text: notice,
 						},
 					},
 				},

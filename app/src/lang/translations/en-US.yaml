@@ -2099,6 +2099,7 @@ operations:
     name: Run Script
     description: Execute arbitrary code to modify the payload
     modules: 'The following **Node modules** can be used:'
+    env: 'The following **Environment Variables** can be used:'
   item-create:
     name: Create Data
     description: Create items in the database

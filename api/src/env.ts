@@ -177,6 +177,7 @@ const allowedEnvironmentVars = [
 	'EXPORT_BATCH_SIZE',
 	// flows
 	'FLOWS_EXEC_ALLOWED_MODULES',
+	'FLOWS_EXEC_ALLOWED_ENV',
 ].map((name) => new RegExp(`^${name}$`));
 
 const acceptedEnvTypes = ['string', 'number', 'regex', 'array', 'json'];
@@ -264,6 +265,7 @@ const defaults: Record<string, any> = {
 	GRAPHQL_INTROSPECTION: true,
 
 	FLOWS_EXEC_ALLOWED_MODULES: false,
+	FLOWS_EXEC_ALLOWED_ENV: false,
 };
 
 // Allows us to force certain environment variable into a type, instead of relying

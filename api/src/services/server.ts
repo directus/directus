@@ -62,6 +62,7 @@ export class ServerService {
 
 			info.flows = {
 				execAllowedModules: env.FLOWS_EXEC_ALLOWED_MODULES ? toArray(env.FLOWS_EXEC_ALLOWED_MODULES) : [],
+				execAllowedEnv: env.FLOWS_EXEC_ALLOWED_ENV ? toArray(env.FLOWS_EXEC_ALLOWED_ENV) : [],
 			};
 		}
 

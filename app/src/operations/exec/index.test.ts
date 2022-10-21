@@ -28,11 +28,34 @@ describe('Options', () => {
 		expect(config.options()).toHaveLength(1);
 	});
 
-	it('Shows notice when no modules are allowed', () => {
+	it('Shows notice when modules are allowed', () => {
 		const serverStore = useServerStore();
 
 		serverStore.info.flows = {
 			execAllowedModules: ['nanoid'],
+			execAllowedEnv: [],
+		};
+
+		expect(config.options()).toHaveLength(2);
+	});
+
+	it('Shows notice when env is allowed', () => {
+		const serverStore = useServerStore();
+
+		serverStore.info.flows = {
+			execAllowedModules: [],
+			execAllowedEnv: ['PUBLIC_URL'],
+		};
+
+		expect(config.options()).toHaveLength(2);
+	});
+
+	it('Shows notice when modules and env are allowed', () => {
+		const serverStore = useServerStore();
+
+		serverStore.info.flows = {
+			execAllowedModules: ['nanoid'],
+			execAllowedEnv: ['PUBLIC_URL'],
 		};
 
 		expect(config.options()).toHaveLength(2);
