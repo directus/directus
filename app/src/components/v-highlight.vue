@@ -1,6 +1,6 @@
 <template>
-	<template v-for="(part, index) in parts">
-		<mark v-if="part.highlighted" :key="index" class="highlight">{{ part.text }}</mark>
+	<template v-for="(part, index) in parts" :key="index">
+		<mark v-if="part.highlighted" class="highlight">{{ part.text }}</mark>
 		<template v-else>{{ part.text }}</template>
 	</template>
 </template>
