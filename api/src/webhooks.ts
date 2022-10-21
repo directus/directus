@@ -1,4 +1,3 @@
-import axios from 'axios';
 import getDatabase from './database';
 import emitter from './emitter';
 import logger from './logger';
@@ -8,6 +7,7 @@ import { getSchema } from './utils/get-schema';
 import { ActionHandler } from '@directus/shared/types';
 import { getMessenger } from './messenger';
 import { JobQueue } from './utils/job-queue';
+import { sendRequest } from './utils/send-request';
 
 let registered: { event: string; handler: ActionHandler }[] = [];
 
@@ -70,7 +70,7 @@ function createHandler(webhook: Webhook, event: string): ActionHandler {
 		};
 
 		try {
-			await axios({
+			await sendRequest({
 				url: webhook.url,
 				method: webhook.method,
 				data: webhook.data ? webhookPayload : null,

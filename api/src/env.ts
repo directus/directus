@@ -29,6 +29,8 @@ const allowedEnvironmentVars = [
 	'SERVER_.+',
 	// database
 	'DB_.+',
+	// request
+	'REQUEST_.+',
 	// security
 	'KEY',
 	'SECRET',

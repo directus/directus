@@ -1,4 +1,3 @@
-import axios from 'axios';
 import ms from 'ms';
 import { machineId } from 'node-machine-id';
 import os from 'os';
@@ -7,13 +6,18 @@ import { version } from '../../package.json';
 import env from '../env';
 import logger from '../logger';
 import { toArray } from '@directus/shared/utils';
+import { sendRequest } from './send-request';
 
 export async function track(event: string): Promise<void> {
 	if (env.TELEMETRY !== false) {
 		const info = await getEnvInfo(event);
 
 		try {
-			await axios.post('https://telemetry.directus.io/', info);
+			await sendRequest({
+				url: 'https://telemetry.directus.io/',
+				method: 'POST',
+				data: info,
+			});
 		} catch (err: any) {
 			if (env.NODE_ENV === 'development') {
 				logger.error(err);
