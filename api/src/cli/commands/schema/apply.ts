@@ -7,7 +7,7 @@ import path from 'path';
 import { flushCaches } from '../../../cache';
 import getDatabase, { isInstalled, validateDatabaseConnection } from '../../../database';
 import logger from '../../../logger';
-import { Snapshot } from '../../../types';
+import { SnapshotCollection, Snapshot, SnapshotField, SnapshotRelation } from '../../../types';
 import { applySnapshot, isNestedMetaUpdate } from '../../../utils/apply-snapshot';
 import { getSnapshot } from '../../../utils/get-snapshot';
 import { getSnapshotDiff } from '../../../utils/get-snapshot-diff';
@@ -29,13 +29,43 @@ export async function apply(snapshotPath: string, options?: { yes: boolean; dryR
 
 	let snapshot: Snapshot;
 
-	try {
+	async function loadSnapshot<T extends Snapshot | SnapshotCollection>(filename: any): Promise<T> {
 		const fileContents = await fs.readFile(filename, 'utf8');
 
 		if (filename.endsWith('.yaml') || filename.endsWith('.yml')) {
-			snapshot = (await loadYaml(fileContents)) as Snapshot;
+			return loadYaml(fileContents) as T;
 		} else {
-			snapshot = parseJSON(fileContents) as Snapshot;
+			return parseJSON(fileContents) as T;
+		}
+	}
+
+	try {
+		snapshot = await loadSnapshot<Snapshot>(filename);
+
+		if ((snapshot as any).partial === true) {
+			snapshot.collections = [];
+			snapshot.fields = [];
+			snapshot.relations = [];
+
+			const { dir, name, ext } = path.parse(path.resolve(process.cwd(), filename));
+			const files = await fs.readdir(dir);
+			const regex = new RegExp(`${name}-(.+)${ext}$`);
+
+			for (const file of files) {
+				if (file.match(regex) !== null) {
+					const { fields, relations, ...collection } = await loadSnapshot<SnapshotCollection>(path.resolve(dir, file));
+					fields?.forEach((field: SnapshotField) => {
+						field.collection = collection.collection;
+						snapshot.fields?.push(field);
+					});
+					relations?.forEach((relation: SnapshotRelation) => {
+						relation.collection = collection.collection;
+						snapshot.relations?.push(relation);
+					});
+
+					snapshot.collections.push(collection);
+				}
+			}
 		}
 
 		const currentSnapshot = await getSnapshot({ database });
