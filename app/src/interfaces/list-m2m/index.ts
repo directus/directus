@@ -13,7 +13,7 @@ export default defineInterface({
 	localTypes: ['m2m'],
 	group: 'relational',
 	options: ({ editing, relations, field: { meta } }) => {
-		const { collection, related_collection } = relations.o2m ?? {};
+		const { collection, related_collection } = relations.m2o ?? {};
 		const options = meta?.options ?? {};
 
 		const tableOptions = [

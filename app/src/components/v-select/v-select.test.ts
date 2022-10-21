@@ -6,7 +6,7 @@ import { GlobalMountOptions } from '@vue/test-utils/dist/types';
 import { createI18n } from 'vue-i18n';
 import { Focus } from '@/__utils__/focus';
 
-const i18n = createI18n();
+const i18n = createI18n({ legacy: false });
 const global: GlobalMountOptions = {
 	stubs: [
 		'v-list',

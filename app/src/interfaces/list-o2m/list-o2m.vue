@@ -108,7 +108,6 @@
 							block
 							clickable
 							:dense="totalItemCount > 4"
-							:disabled="disabled || updateAllowed === false"
 							:class="{ deleted: element.$type === 'deleted' }"
 							@click="editItem(element)"
 						>
