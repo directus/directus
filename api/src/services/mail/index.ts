@@ -46,7 +46,7 @@ export class MailService {
 		}
 	}
 
-	async send(options: EmailOptions): Promise<void> {
+	async send(options: EmailOptions): Promise<any> {
 		const { template, ...emailOptions } = options;
 		let { html } = options;
 
@@ -73,7 +73,7 @@ export class MailService {
 				.join('\n');
 		}
 
-		await this.mailer.sendMail({ ...emailOptions, from, html });
+		return this.mailer.sendMail({ ...emailOptions, from, html });
 	}
 
 	private async renderTemplate(template: string, variables: Record<string, any>) {
