@@ -1,17 +1,13 @@
 import { knex, Knex } from 'knex';
 import path from 'path';
+import { URL } from 'url';
 import { promisify } from 'util';
 
 export type Credentials = {
 	filename?: string;
-	host?: string;
-	port?: number;
-	database?: string;
-	user?: string;
-	password?: string;
-	ssl?: boolean;
-	options__encrypt?: boolean;
+	connection_string?: URL;
 };
+
 export default function createDBConnection(
 	client: 'sqlite3' | 'mysql' | 'pg' | 'oracledb' | 'mssql' | 'cockroachdb',
 	credentials: Credentials
@@ -25,28 +21,12 @@ export default function createDBConnection(
 			filename: filename as string,
 		};
 	} else {
-		const { host, port, database, user, password } = credentials as Credentials;
-
-		connection = {
-			host: host,
-			port: Number(port),
-			database: database,
-			user: user,
-			password: password,
-		};
-
-		if (client === 'pg' || client === 'cockroachdb') {
-			const { ssl } = credentials as Credentials;
-			connection['ssl'] = ssl;
-		}
-
-		if (client === 'mssql') {
-			const { options__encrypt } = credentials as Credentials;
-
-			(connection as Knex.MsSqlConnectionConfig)['options'] = {
-				encrypt: options__encrypt,
-			};
-		}
+		const { connection_string } = credentials;
+		// eslint-disable-next-line no-console
+		console.log('connectionURL: ', connection_string);
+		connection = connection_string?.toString();
+		// eslint-disable-next-line no-console
+		console.log('connection: ', connection_string?.toString());
 	}
 
 	const knexConfig: Knex.Config = {
