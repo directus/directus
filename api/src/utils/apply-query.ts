@@ -33,7 +33,8 @@ export default function applyQuery(
 	dbQuery: Knex.QueryBuilder,
 	query: Query,
 	schema: SchemaOverview,
-	subQuery = false
+	subQuery = false,
+	jsonFields: string[] = []
 ): Knex.QueryBuilder {
 	if (query.sort) {
 		applySort(knex, schema, dbQuery, query.sort, collection, subQuery);
@@ -64,7 +65,7 @@ export default function applyQuery(
 	}
 
 	if (query.filter) {
-		applyFilter(knex, schema, dbQuery, query.filter, Object.keys(query.json ?? {}), collection, subQuery);
+		applyFilter(knex, schema, dbQuery, query.filter, jsonFields, collection, subQuery);
 	}
 
 	return dbQuery;
@@ -417,7 +418,7 @@ export function applyFilter(
 						.from(collection)
 						.whereNotNull(column);
 
-					applyQuery(knex, relation!.collection, subQueryKnex, { filter }, schema, true);
+					applyQuery(knex, relation!.collection, subQueryKnex, { filter }, schema, true, jsonFields);
 				};
 
 				if (Object.keys(value)?.[0] === '_none') {

@@ -13,7 +13,6 @@ export type Query = {
 	aggregate?: Aggregate | null;
 	deep?: Record<string, Query> | null;
 	alias?: Record<string, string> | null;
-	json?: Record<string, string> | null;
 };
 
 /**

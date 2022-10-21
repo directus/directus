@@ -4,15 +4,8 @@
 
 import { Knex } from 'knex';
 import { cloneDeep, mapKeys, omitBy, uniq, isEmpty } from 'lodash';
-import { AST, ASTChildNode, NestedCollectionNode } from '../types';
-import {
-	Query,
-	PermissionsAction,
-	Accountability,
-	SchemaOverview,
-	FieldFilterOperator,
-	Filter,
-} from '@directus/shared/types';
+import { AST, ASTNode, JsonFieldNode, NestedCollectionNode } from '../types';
+import { Query, PermissionsAction, Accountability, SchemaOverview } from '@directus/shared/types';
 import { getRelationType } from '../utils/get-relation-type';
 import { stripFunction } from './strip-function';
 import { customAlphabet } from 'nanoid';
@@ -60,10 +53,6 @@ export default async function getASTFromQuery(
 	if (query.fields) {
 		fields = query.fields;
 	}
-
-	/**
-	 * Add filter
-	 */
 
 	/**
 	 * When using aggregate functions, you can't have any other regular fields
@@ -114,47 +103,6 @@ export default async function getASTFromQuery(
 
 	ast.children = await parseFields(collection, fields, deep);
 
-	if (query.json) {
-		for (const [alias, path] of Object.entries(query.json)) {
-			const { fieldName, queryPath } = parseJsonFunction(path);
-			ast.children.push({
-				type: 'jsonField',
-				name: fieldName,
-				fieldKey: alias,
-				queryPath,
-			});
-		}
-	}
-
-	// do something with filters
-	// if (query.filter) {
-	// 	for (const key of Object.keys(query.filter)) {
-	// 		// if (!query.filter[key]) continue;
-	// 		if (key.startsWith('json(')) {
-	// 			const alias = generateAlias();
-	// 			const { fieldName, queryPath } = parseJsonFunction(key);
-	// 			const filters: Record<string, any> = query.filter;
-	// 			const filter: FieldFilterOperator = filters[key];
-	// 			ast.children.push({
-	// 				type: 'jsonField',
-	// 				name: key,
-	// 				fieldKey: alias,
-	// 				fieldName,
-	// 				queryPath,
-	// 				filter,
-	// 			});
-	// 			delete filters[key];
-	// 			filters[alias] = filter;
-	// 			query.filter = filters as Filter;
-	// 			// lol this is probably not great
-	// 			schema.collections[collection].fields[alias] = {
-	// 				...schema.collections[collection].fields[fieldName],
-	// 				special: ['cast-json', 'json-alias'],
-	// 			};
-	// 		}
-	// 	}
-	// }
-
 	return ast;
 
 	async function parseFields(parentCollection: string, fields: string[] | null, deep?: Record<string, any>) {
@@ -164,7 +112,7 @@ export default async function getASTFromQuery(
 
 		if (!fields || !Array.isArray(fields)) return [];
 
-		const children: ASTChildNode[] = [];
+		const children: ASTNode[] = [];
 
 		const relationalStructure: Record<string, string[] | anyNested> = Object.create(null);
 
@@ -178,8 +126,9 @@ export default async function getASTFromQuery(
 				}
 			}
 
+			const isFunction = name.includes('(') && name.endsWith(')');
 			const isRelational =
-				(name.includes('.') && !name.includes('(') && !name.includes(')')) || // exception for json query getting handled as relation.
+				(name.includes('.') && !isFunction) || // exception for json query getting handled as relation.
 				// We'll always treat top level o2m fields as a related item. This is an alias field, otherwise it won't return
 				// anything
 				!!schema.relations.find(
@@ -221,44 +170,42 @@ export default async function getASTFromQuery(
 						(relationalStructure[rootField] as string[]).push(childKey);
 					}
 				}
-			} else {
-				if (fieldKey.includes('(') && fieldKey.includes(')')) {
-					const columnName = stripFunction(fieldKey); //fieldKey.match(REGEX_BETWEEN_PARENS)![1];
-					const foundField = schema.collections[parentCollection].fields[columnName];
+			} else if (isFunction) {
+				const columnName = stripFunction(fieldKey); //fieldKey.match(REGEX_BETWEEN_PARENS)![1];
+				const foundField = schema.collections[parentCollection].fields[columnName];
 
-					if (foundField && foundField.type === 'alias') {
-						const foundRelation = schema.relations.find(
-							(relation) => relation.related_collection === parentCollection && relation.meta?.one_field === columnName
-						);
+				if (foundField && foundField.type === 'alias') {
+					const foundRelation = schema.relations.find(
+						(relation) => relation.related_collection === parentCollection && relation.meta?.one_field === columnName
+					);
 
-						if (foundRelation) {
-							children.push({
-								type: 'functionField',
-								name,
-								fieldKey,
-								query: {},
-								relatedCollection: foundRelation.collection,
-							});
-							continue;
-						}
-					}
-					if (fieldKey.startsWith('json(')) {
-						const alias = generateAlias();
-						const { fieldName, queryPath } = parseJsonFunction(fieldKey);
+					if (foundRelation) {
 						children.push({
-							type: 'jsonField',
-							name: fieldKey,
-							fieldKey: alias,
-							queryPath,
+							type: 'functionField',
+							name,
+							fieldKey,
+							query: {},
+							relatedCollection: foundRelation.collection,
 						});
-						schema.collections[collection].fields[alias] = {
-							...schema.collections[collection].fields[fieldName],
-							special: ['cast-json', 'json-alias'],
-						};
 						continue;
 					}
 				}
 
+				if (name.startsWith('json(')) {
+					const alias = name !== fieldKey ? fieldKey : generateAlias();
+					const { fieldName, queryPath } = parseJsonFunction(name);
+					children.push({
+						type: 'jsonField',
+						fieldKey: alias,
+						name: fieldName,
+						queryPath,
+						temporary: false,
+					});
+					if (query.alias?.[fieldKey]) {
+						delete query.alias[fieldKey];
+					}
+				}
+			} else {
 				children.push({ type: 'field', name, fieldKey });
 			}
 		}
@@ -340,6 +287,13 @@ export default async function getASTFromQuery(
 
 			if (child) {
 				children.push(child);
+			}
+		}
+
+		// transpose json functions used as filter keys
+		if (query.filter) {
+			for (const jsonField of replaceJsonFilters(query.filter)) {
+				children.push(jsonField);
 			}
 		}
 
@@ -465,6 +419,31 @@ export default async function getASTFromQuery(
 		}
 
 		return null;
+	}
+
+	function replaceJsonFilters(filter: Record<string, any>): JsonFieldNode[] {
+		// make this recursive later, the top levelk will work for now
+		const result: JsonFieldNode[] = [];
+		const filterKeys = Object.keys(filter);
+		for (const key of filterKeys) {
+			if (key.startsWith('json(')) {
+				const { fieldName, queryPath } = parseJsonFunction(key);
+				const alias = generateAlias();
+
+				filter[alias] = filter[key];
+				delete filter[key];
+
+				result.push({
+					type: 'jsonField',
+					fieldKey: alias,
+					name: fieldName,
+					queryPath,
+					temporary: true,
+				});
+			}
+		}
+
+		return result;
 	}
 }
 

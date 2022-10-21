@@ -1,9 +1,9 @@
-import { FieldFilterOperator, Query, Relation } from '@directus/shared/types';
+import { Query, Relation } from '@directus/shared/types';
 
 export type M2ONode = {
 	type: 'm2o';
 	name: string;
-	children: ASTChildNode[];
+	children: ASTNode[];
 	query: Query;
 	fieldKey: string;
 	relation: Relation;
@@ -15,7 +15,7 @@ export type A2MNode = {
 	type: 'a2o';
 	names: string[];
 	children: {
-		[collection: string]: ASTChildNode[];
+		[collection: string]: ASTNode[];
 	};
 	query: {
 		[collection: string]: Query;
@@ -31,7 +31,7 @@ export type A2MNode = {
 export type O2MNode = {
 	type: 'o2m';
 	name: string;
-	children: ASTChildNode[];
+	children: ASTNode[];
 	query: Query;
 	fieldKey: string;
 	relation: Relation;
@@ -57,18 +57,17 @@ export type FunctionFieldNode = {
 
 export type JsonFieldNode = {
 	type: 'jsonField';
-	name: string;
-	fieldKey: string;
-	// fieldName: string;
+	name: string; // field string
+	fieldKey: string; // alias
 	queryPath: string;
-	filter?: FieldFilterOperator;
+	temporary: boolean;
 };
 
-export type ASTChildNode = NestedCollectionNode | FieldNode | FunctionFieldNode | JsonFieldNode;
+export type ASTNode = NestedCollectionNode | FieldNode | FunctionFieldNode | JsonFieldNode;
 
 export type AST = {
 	type: 'root';
 	name: string;
-	children: ASTChildNode[];
+	children: ASTNode[];
 	query: Query;
 };

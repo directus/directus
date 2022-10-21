@@ -6,15 +6,7 @@ import getDatabase from '.';
 import { getHelpers } from '../database/helpers';
 import env from '../env';
 import { PayloadService } from '../services/payload';
-import {
-	AST,
-	ASTChildNode,
-	FieldNode,
-	FunctionFieldNode,
-	JsonFieldNode,
-	M2ONode,
-	NestedCollectionNode,
-} from '../types/ast';
+import { AST, ASTNode, FieldNode, FunctionFieldNode, JsonFieldNode, M2ONode, NestedCollectionNode } from '../types/ast';
 import { applyFunctionToColumnName } from '../utils/apply-function-to-column-name';
 import applyQuery from '../utils/apply-query';
 import { getColumn, getJsonColumn } from '../utils/get-column';
@@ -66,8 +58,7 @@ export default async function runAST(
 		return await run(ast.name, ast.children, options?.query || ast.query);
 	}
 
-	async function run(collection: string, children: ASTChildNode[], query: Query) {
-		// console.log('run', originalAST);
+	async function run(collection: string, children: ASTNode[], query: Query) {
 		// Retrieve the database columns to select in the current AST
 		const { fieldNodes, jsonNodes, primaryKeyField, nestedCollectionNodes } = await parseCurrentLevel(
 			schema,
@@ -86,18 +77,6 @@ export default async function runAST(
 		// Run the items through the special transforms
 		const payloadService = new PayloadService(collection, { knex, schema });
 		let items: null | Item | Item[] = await payloadService.processValues('read', rawItems);
-
-		// Transform json query results
-		if (query.json) {
-			const keys: string[] = Object.keys(query.json);
-			for (const item of toArray(rawItems)) {
-				for (const jsonAlias of keys) {
-					if (jsonAlias in item && typeof item[jsonAlias] === 'string') {
-						item[jsonAlias] = parseJSON(item[jsonAlias]);
-					}
-				}
-			}
-		}
 
 		if (!items || items.length === 0) return items;
 
@@ -147,6 +126,22 @@ export default async function runAST(
 			}
 		}
 
+		// Transform json query results
+		if (jsonNodes.length > 0) {
+			const keys = jsonNodes.map(({ fieldKey }) => fieldKey);
+			for (const item of toArray(rawItems)) {
+				for (const jsonAlias of keys) {
+					if (jsonAlias in item && typeof item[jsonAlias] === 'string') {
+						try {
+							item[jsonAlias] = parseJSON(item[jsonAlias]);
+						} catch {
+							// in case a single string value was returned
+						}
+					}
+				}
+			}
+		}
+
 		// During the fetching of data, we have to inject a couple of required fields for the child nesting
 		// to work (primary / foreign keys) even if they're not explicitly requested. After all fetching
 		// and nesting is done, we parse through the output structure, and filter out all non-requested
@@ -159,7 +154,7 @@ export default async function runAST(
 	}
 }
 
-async function parseCurrentLevel(schema: SchemaOverview, collection: string, children: ASTChildNode[], query: Query) {
+async function parseCurrentLevel(schema: SchemaOverview, collection: string, children: ASTNode[], query: Query) {
 	const primaryKeyField = schema.collections[collection].primary;
 	const columnsInCollection = Object.keys(schema.collections[collection].fields);
 
@@ -264,13 +259,14 @@ function getDBQuery(
 	query: Query
 ): Knex.QueryBuilder {
 	const preProcess = getColumnPreprocessor(knex, schema, table);
-	// console.log('ppp', fieldNodes.map(preProcess));
+
+	const jsonFields = fieldNodes.filter(({ type }) => type === 'jsonField').map(({ fieldKey }) => fieldKey);
 	const dbQuery = knex.select(fieldNodes.map(preProcess)).from(table);
 	const queryCopy = clone(query);
 
 	queryCopy.limit = typeof queryCopy.limit === 'number' ? queryCopy.limit : 100;
 
-	return applyQuery(knex, table, dbQuery, queryCopy, schema);
+	return applyQuery(knex, table, dbQuery, queryCopy, schema, false, jsonFields);
 }
 
 function applyParentFilters(
@@ -444,7 +440,6 @@ function removeTemporaryFields(
 ): null | Item | Item[] {
 	const rawItems = cloneDeep(toArray(rawItem));
 	const items: Item[] = [];
-
 	if (ast.type === 'a2o') {
 		const fields: Record<string, string[]> = {};
 		const nestedCollectionNodes: Record<string, NestedCollectionNode[]> = {};
@@ -491,7 +486,9 @@ function removeTemporaryFields(
 		const nestedCollectionNodes: NestedCollectionNode[] = [];
 
 		for (const child of ast.children) {
-			fields.push(child.fieldKey);
+			if (child.type !== 'jsonField' || !child.temporary) {
+				fields.push(child.fieldKey);
+			}
 
 			if (child.type !== 'field' && child.type !== 'functionField' && child.type !== 'jsonField') {
 				nestedCollectionNodes.push(child);
