@@ -50,9 +50,9 @@ export async function setLanguage(lang: Language): Promise<boolean> {
 	displays.value = translate(displaysRaw.value);
 	operations.value = translate(operationsRaw.value);
 
+	mergeTranslationStringsForLanguage(lang);
 	collectionsStore.translateCollections();
 	fieldsStore.translateFields();
-	mergeTranslationStringsForLanguage(lang);
 
 	await loadDateFNSLocale(lang);
 

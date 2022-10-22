@@ -11,6 +11,14 @@ import { isEqual, isNil, merge, omit, orderBy } from 'lodash';
 import { nanoid } from 'nanoid';
 import { defineStore } from 'pinia';
 
+type HydrateOptions = {
+	/**
+	 * Allow disabling field translation on hydrate. Used in global app hydration to account for
+	 * user's custom locale instead of the default en-US locale.
+	 */
+	skipTranslation?: boolean;
+};
+
 /**
  * directus_files is a special case. For it to play nice with interfaces/layouts/displays, we need
  * to treat the actual image thumbnail as a separate available field, instead of part of the regular
@@ -60,12 +68,12 @@ export const useFieldsStore = defineStore({
 		fields: [] as Field[],
 	}),
 	actions: {
-		async hydrate() {
+		async hydrate(options?: HydrateOptions) {
 			const fieldsResponse = await api.get<any>(`/fields`, { params: { limit: -1 } });
 
 			const fields: FieldRaw[] = fieldsResponse.data.data;
 			this.fields = [...fields.map(this.parseField), fakeFilesField];
-			this.translateFields();
+			if (options?.skipTranslation !== true) this.translateFields();
 		},
 		async dehydrate() {
 			this.$reset();
