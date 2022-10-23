@@ -280,6 +280,7 @@ new_field: 'Új mező'
 new_collection: 'Új gyűjtemény'
 add_m2o_to_collection: 'Sok-az-Egyhez kapcsolat hozzáadása {collection} gyűjteményhez'
 add_o2m_to_collection: 'Egy-a-Sokhoz kapcsolat hozzáadása {collection} gyűjteményhez'
+add_m2m_to_collection: 'Sok-a-Sokhoz kapcsolat hozzáadása {collection} gyűjteményhez'
 choose_a_type: Válassz típust...
 determined_by_relationship: A kapcsolat által meghatározott
 add_note: Felhasználóknak szóló hasznos megjegyzés hozzáadása...
@@ -304,6 +305,7 @@ note: Jegyzet
 enter_a_value: Adjon meg egy értéket...
 enter_a_placeholder: Adjon meg egy helyőrzőt...
 length: Hossz
+soft_length: Gyenge limit
 precision_scale: Pontosság és lépték
 readonly: Csak olvasható
 unique: Egyedi
@@ -313,11 +315,19 @@ primary_key: Elsődleges kulcs
 foreign_key: Idegen Kulcs
 finish_setup: Beállítás befejezése
 dismiss: Elutasít
+toggle_raw_editor: Nyers szerkesztő ki/bekapcsolása
+raw_editor_placeholder: "Nyers szerkesztő helykitöltő"
 raw_value: Nyers érték
 copy_raw_value: Nyers érték másolása
+copy_raw_value_success: Másolva
+copy_raw_value_fail: Másolás sikertelen
 paste_raw_value: Nyers érték beillesztése
+paste_raw_value_success: Beillesztve
+paste_raw_value_fail: Beillesztés sikertelen
+view_raw_value: Nyers érték megtekintése
 edit_raw_value: Nyers érték szerkesztése
 enter_raw_value: Nyers érték megadása...
+clear_value: Érték eltávolítása
 clear_changes: Változások törlése
 reset_to_default: Visszaállítás alapértelmezettre
 undo_changes: Változtatások visszavonása
@@ -736,8 +746,19 @@ toggle: Váltás
 icon_on: Ikon be
 icon_off: Ikon ki
 label: Címke
+run_flow_on_current: Folyamat futtatása a jelenlegi tételen
+run_flow_on_current_edited_confirm: Lehetséges, hogy a tétel frissítve lesz a futtatás miatt, biztosan folytatja?
+run_flow_on_selected: Válassz ki egy vagy több elemet | Futtasd a folyamatot 1 kiválasztott elemen | Futtasd a folyamatot {n} kiválasztott elemen
+run_flow_success: Folyamat "{flow}" sikeresen futtatva
 trigger: Eseményindító
 create_trigger: Trigger létrehozása
+set_flow_active: Folyamat aktívra állítása
+set_flow_inactive: Folyamat inaktívra állítása
+edit_flow: Folyamat szerkesztése
+delete_flow: Folyamat törlése
+create_flow: Folyamat létrehozása
+creating_new_flow: Új folyamat létrehozása
+updating_flow: Folyamat frissítése
 flow_name: Név
 flow_tracking_activity: Csak a tevékenység nyomon követése
 flow_tracking_null: Minden nyomkövetés tiltása
