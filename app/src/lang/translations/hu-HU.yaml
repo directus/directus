@@ -277,6 +277,8 @@ next: Következő
 field_name: Mezőnév
 translations: Fordítások
 no_translations: Nincsenek fordítások
+left_to_right: Balról jobbra
+right_to_left: Jobbról balra
 note: Jegyzet
 enter_a_value: Adjon meg egy értéket...
 enter_a_placeholder: Adjon meg egy helyőrzőt...
@@ -720,6 +722,7 @@ dashboard_name: Irányítópult neve
 no_data: Nincs adat
 full_screen: Teljes képernyő
 edit_panels: Panel szerkesztése
+center_align: Középre igazítás
 left_align: Balra igazítás
 right_align: Jobbra igazítás
 fit_to_screen: Képernyőhöz igazítva
