@@ -896,6 +896,7 @@ fields:
     user: Művelet kezdeményezője
     comment: Hozzászólás
     user_agent: Felhasználói ügynök
+    origin: Származás
     ip: IP cím
     revisions: Változatok
   directus_collections:
