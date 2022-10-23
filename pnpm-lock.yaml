@@ -72,7 +72,7 @@ importers:
       '@directus/drive-azure': workspace:*
       '@directus/drive-gcs': workspace:*
       '@directus/drive-s3': workspace:*
-      '@directus/extensions-sdk': 9.18.1
+      '@directus/extensions-sdk': workspace:*
       '@directus/format-title': 9.15.0
       '@directus/schema': workspace:*
       '@directus/shared': workspace:*
@@ -377,7 +377,7 @@ importers:
       '@babel/core': 7.19.3
       '@babel/preset-env': 7.19.4
       '@directus/docs': 9.19.0
-      '@directus/extensions-sdk': 9.18.1
+      '@directus/extensions-sdk': workspace:*
       '@directus/format-title': 10.0.0
       '@directus/shared': workspace:*
       '@fortawesome/fontawesome-svg-core': 6.2.0
