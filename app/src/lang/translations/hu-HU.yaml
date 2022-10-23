@@ -49,7 +49,9 @@ group: Csoport
 export_items: Elemek exportálása
 and: És
 or: Vagy
+init: Init
 dataset_too_large_currently_showing_n_items: Túlméretes adathalmaz. Jelenleg az első {n} adat jelenik meg.
+modifier: Módosító
 custom: Egyedi
 fill_width: Teret kitöltő
 field_name_translations: Lefordított mezőnevek
