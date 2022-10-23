@@ -1884,32 +1884,8 @@ layouts:
     default_template: Koleksiyon Varsayılanı Kullanılıyor...
     no_compatible_fields: Hiç uyumlu alan yok
   kanban:
-    name: Kanban,
-    group_field: Gruplandırma,
-    group_field_placeholder: Gruplandırılacak alan...,
-    group_title: Grup Başlığı,
-    group_title_placeholder: Grup başlıkları için alan...,
-    title: Kart Başlığı,
-    title_placeholder: İsteğe bağlı başlık alanı...,
-    text: Kart Metni,
-    text_placeholder: İsteğe bağlı metin alanı...,
-    date: Kart Tarihi,
-    date_placeholder: İsteğe bağlı tarih alanı...,
-    tags: Kart Etiketleri,
-    tags_placeholder: İsteğe bağlı etiket alanı...,
-    user: Kart Kullanıcısı,
-    user_placeholder: İsteğe bağlı kullanıcı alanı...,
-    image: Kart Resmi,
-    image_placeholder: İsteğe bağlı görüntü alanı...,
-    crop: Kırp,
-    advanced: Gelişmiş,
-    edit_group: Grubu Düzenle,
-    delete_group: Grubu sil,
-    add_group: Grup Ekle,
-    add_group_placeholder: Yeni bir grup adı girin...,
-    show_ungrouped: Gruplandırılmamışları Göster,
-    show: Göster,
-    no_group: Grup Yok,
+    crop: Kırp
+    advanced: Gelişmiş
     not_all_loaded: Yalnızca ilk 1000 öğe yüklenebilir.
 panels:
   metric:
@@ -2021,7 +1997,6 @@ triggers:
     collection_and_item: Koleksiyon ve Öğe Sayfaları
     collection_only: Yalnızca Koleksiyon Sayfası
     item_only: Yalnızca Öğe Sayfası
-a_flow_uuid: Bir Akışın Birincil Anahtar UUID'si...
 any_string_or_json: Herhangi bir dize veya JSON...
 item_payload_placeholder: Bu, öğenin alan değerlerini güncellemek için kullanılan JSON'dur...
 operations:
