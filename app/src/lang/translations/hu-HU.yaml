@@ -35,6 +35,7 @@ tile_size: Csempeméret
 edit_field: Mező szerkesztése
 conditions: Feltételek
 location: Pozíció
+condition_rules: Feltételes szabályok
 input: Bevitel
 maps: Térképek
 switch_user: Felhasználó váltása
@@ -1582,7 +1583,7 @@ layouts:
     calendar: Naptár
     start_date_field: Kezdő dátum mező
     end_date_field: Záró dátum mező
-    optional: Opcionáis
+    optional: Opcionális
     first_day: A hét első napja
   map:
     map: Térkép
