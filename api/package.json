@@ -1,6 +1,6 @@
 {
 	"name": "directus",
-	"version": "9.18.1",
+	"version": "9.19.1",
 	"license": "GPL-3.0-only",
 	"homepage": "https://github.com/directus/directus#readme",
 	"description": "Directus is a real-time API and App dashboard for managing SQL database content.",
@@ -82,7 +82,7 @@
 		"@directus/drive-azure": "workspace:*",
 		"@directus/drive-gcs": "workspace:*",
 		"@directus/drive-s3": "workspace:*",
-		"@directus/extensions-sdk": "9.18.1",
+		"@directus/extensions-sdk": "workspace:*",
 		"@directus/format-title": "9.15.0",
 		"@directus/schema": "workspace:*",
 		"@directus/shared": "workspace:*",
