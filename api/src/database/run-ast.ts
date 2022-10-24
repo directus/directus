@@ -258,9 +258,10 @@ function getDBQuery(
 	fieldNodes: (FieldNode | FunctionFieldNode | JsonFieldNode)[],
 	query: Query
 ): Knex.QueryBuilder {
+	// const { json } = getHelpers(knex);
 	const preProcess = getColumnPreprocessor(knex, schema, table);
 
-	const jsonFields = fieldNodes.filter(({ type }) => type === 'jsonField').map(({ fieldKey }) => fieldKey);
+	const jsonFields = fieldNodes.filter((node) => node.type === 'jsonField').map(({ fieldKey }) => fieldKey);
 	const dbQuery = knex.select(fieldNodes.map(preProcess)).from(table);
 	const queryCopy = clone(query);
 

@@ -20,7 +20,6 @@ import { getColumnPath } from './get-column-path';
 import { getRelationInfo } from './get-relation-info';
 import { getFilterOperatorsForType, getOutputTypeForFunction } from '@directus/shared/utils';
 import { stripFunction } from './strip-function';
-import { parseJsonFunction } from './parse-json-function';
 
 const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
 
