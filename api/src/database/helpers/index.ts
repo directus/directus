@@ -6,6 +6,7 @@ import * as dateHelpers from './date';
 import * as fnHelpers from './fn';
 import * as geometryHelpers from './geometry';
 import * as schemaHelpers from './schema';
+import * as jsonHelpers from './json';
 
 export function getHelpers(database: Knex) {
 	const client = getDatabaseClient(database);
@@ -14,6 +15,7 @@ export function getHelpers(database: Knex) {
 		date: new dateHelpers[client](database),
 		st: new geometryHelpers[client](database),
 		schema: new schemaHelpers[client](database),
+		json: new jsonHelpers[client](database),
 	};
 }
 
