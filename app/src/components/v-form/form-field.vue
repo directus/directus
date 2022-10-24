@@ -179,6 +179,7 @@ function useRaw() {
 		const pastedValue = await pasteFromClipboard();
 		if (!pastedValue) return;
 		internalValue.value = pastedValue;
+		onRawValueSubmit(pastedValue);
 	}
 
 	return { showRaw, copyRaw, pasteRaw, onRawValueSubmit };
