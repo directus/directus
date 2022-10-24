@@ -1379,6 +1379,8 @@ layouts:
     cluster_minpoints: Minimalna velikost gruče
     cluster_maxzoom: Največja povečava za gruče
     invalid_geometry: Neveljavna geometrija
+  kanban:
+    crop: Obrezovanje
 panels:
   label:
     name: Oznaka

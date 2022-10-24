@@ -1746,22 +1746,7 @@ layouts:
     default_template: Se folosește Implicit Colecția...
     no_compatible_fields: Nu există câmpuri compatibile
   kanban:
-    name: Kanban,
-    group_field: Grupare după
-    group_field_placeholder: Câmp pentru grup de...,
-    group_title: Titlul grupului
-    group_title_placeholder: Câmp pentru titlurile grupului...,
-    title: Titlu card
-    title_placeholder: Câmp titlu opțional...,
-    text: Text Card,
-    text_placeholder: Câmp text opțional...,
-    date: Data cardului,
-    date_placeholder: Câmp de dată opțional...,
-    tags: Tag-uri de card,
-    tags_placeholder: Câmp etichete opționale...,
-    user: Utilizator Card,
-    user_placeholder: Câmp opțional de utilizator...,
-    image: Imaginea cardului,
+    crop: Decupare
 panels:
   metric:
     name: Metric
