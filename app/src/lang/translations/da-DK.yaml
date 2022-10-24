@@ -1757,32 +1757,8 @@ layouts:
     default_template: Brug Samling Standard...
     no_compatible_fields: Ingen kompatible felter
   kanban:
-    group_field: Grupper Af,
-    group_field_placeholder: Felt til gruppe af...,
-    group_title: Gruppe Titel
-    group_title_placeholder: Felt for gruppetitler...,
-    title: Korttitel
-    title_placeholder: Valgfrit titelfelt...,
-    text: Kort Tekst
-    text_placeholder: Valgfrit tekstfelt...,
-    date: Kortdato
-    date_placeholder: Valgfri datofelt...,
-    tags: Kort Tags,
-    tags_placeholder: Valgfri tags felt...,
-    user: Kortbruger
-    user_placeholder: Valgfrit brugerfelt...,
-    image: Kortbillede,
-    image_placeholder: Valgfrit billedfelt...,
-    image_fit: Kortbilled Passer Til
-    crop: Afgrøde
+    crop: Beskær
     advanced: Avanceret
-    edit_group: Rediger Gruppe,
-    delete_group: Slet Gruppe,
-    add_group: Tilføj Gruppe,
-    add_group_placeholder: Indtast en ny gruppetitel...,
-    show_ungrouped: Show Ungrouped,
-    show: Vis,
-    no_group: Ingen Gruppe,
     not_all_loaded: Kunne kun indlæse de første 1000 elementer.
 panels:
   metric:
