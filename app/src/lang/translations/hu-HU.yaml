@@ -199,6 +199,7 @@ global: Globális
 admins_have_all_permissions: Az adminisztrátorok minden hozzáféréssel rendelkeznek
 camera: Fényképezőgép
 show_zero: Zéró megjelenítése
+create_in_advanced_field_creation_mode: Mező létrehozása fejlesztő módban
 continue_in_advanced_field_creation_mode: Folytassa a Speciális mező létrehozási módban
 validation: Érvényesítés
 sum: Össz.
@@ -289,9 +290,13 @@ foreign_key: Idegen Kulcs
 finish_setup: Beállítás befejezése
 dismiss: Elutasít
 raw_value: Nyers érték
+copy_raw_value: Nyers érték másolása
+paste_raw_value: Nyers érték beillesztése
 edit_raw_value: Nyers érték szerkesztése
 enter_raw_value: Nyers érték megadása...
 clear_changes: Változások törlése
+reset_to_default: Visszaállítás alapértelmezettre
+undo_changes: Változtatások visszavonása
 notifications: Értesítések
 show_all_activity: Összes tevékenység mutatása
 page_not_found: Az oldal nem található
@@ -308,6 +313,7 @@ revision_delta_deleted: Törölt
 revision_delta_reverted: Visszaállítva
 revision_delta_other: Változat
 revision_delta_by: '{date} {user} által'
+download_page_as_csv: 'Letöltés CSV-ként'
 private_user: Privát felhasználó
 creation_preview: Létrehozás előnézete
 revision_preview: Felülvizsgálati előnézet
@@ -322,6 +328,8 @@ related_collection: Kapcsolódó gyűjtemény
 related_collections: Kapcsolódó gyűjtemények
 translations_collection: Fordításgyűjtemény
 languages_collection: Nyelvek gyűjteménye
+import_data_input_placeholder: CSV vagy JSON...
+import_data_button: Importálás indítása
 label_import: Importálás
 format: Formátum
 last_page: Utolsó oldal
@@ -685,6 +693,7 @@ icon_on: Ikon be
 icon_off: Ikon ki
 label: Címke
 trigger: Eseményindító
+create_trigger: Trigger létrehozása
 flow_name: Név
 flow_tracking_activity: Csak a tevékenység nyomon követése
 flow_tracking_null: Minden nyomkövetés tiltása
@@ -859,7 +868,7 @@ cancel: Mégse
 no_upscale: Ne méretezze fel a képeket
 collection: Gyűjtemény
 collections: Gyűjtemények
-content: Tartalom
+content: Ügyvitel
 singleton: Egyedüli
 singleton_label: Egyetlen objektumként kezelendő
 system_fields_locked: A rendszermezők zároltak és nem szerkeszthetők
@@ -928,7 +937,7 @@ fields:
     charset: Karakterkészlet
     duration: Időtartam
   directus_users:
-    first_name: Családnév
+    first_name: Keresztnév
     last_name: Vezetéknév
     email: Email
     password: Jelszó
@@ -974,11 +983,13 @@ fields:
     project_url: Projekt webcíme
     project_color: Projekt színe
     project_logo: Projekt logója
+    default_language: Alapértelmezett nyelv
     public_foreground: Nyilvános előtér
     public_background: Nyilvános háttér
     public_note: Nyilvános megjegyzés
     auth_password_policy: Hitelesítési jelszóházirend
     auth_login_attempts: Bejelentkezési kísérletek
+    storage_default_folder: Alapértelmezett mappa
     overrides: Alkalmazás felülbírálások
     custom_css: Egyéni CSS
     module_bar: Modulsáv
@@ -1184,6 +1195,7 @@ sort_direction: Rendezés iránya
 sort_asc: Növekvő sorrend
 sort_desc: Csökkenő sorrend
 template: Sablon
+require_value_to_be_set: Szükséges értéket megadni létrehozáskor
 translation: Fordítás
 translation_placeholder: Fordítás megadása...
 value: Érték
@@ -1326,6 +1338,7 @@ interfaces:
     markdown: Markdown
     description: Markdown bevitele és előnézete
     edit: Szerkesztés
+    preview: Előnézet
     customSyntax: Egyedi blokkok
     customSyntax_label: Egyéni szintaxistípusok hozzáadása
     customSyntax_add: Egyéni szintaxis hozzáadása
@@ -1334,6 +1347,7 @@ interfaces:
     map: Térkép
     description: Hely megadása térképen
     zoom: Nagyítás
+    default_view: Alapértelmezett nézet
     invalid_options: Érvénytelen opciók
     invalid_format: Érvénytelen formátum ({format})
     unexpected_geometry: 'Elvárt: {expected}, kapott: {got}.'
@@ -1412,6 +1426,7 @@ interfaces:
     display_template: Megjelenítési sablon
     no_collection: Nincsenek gyűjtemények
     toggle_split_view: Osztott nézet váltása
+    default_language: Alapértelmezett nyelv
   list-o2m-tree-view:
     description: Fa nézet egymásba ágyazott rekurzív egy a sokhoz elemekhez
     recursive_only: A fa nézet felület csak rekurzív kapcsolatok esetén működik.
@@ -1451,6 +1466,7 @@ interfaces:
 displays:
   translations:
     translations: Fordítások
+    default_language: Alapértelmezett nyelv
   boolean:
     boolean: Logikai
     description: Be- és kikapcsolt állapotok megjelenítése
@@ -1565,6 +1581,8 @@ layouts:
     calendar: Naptár
     start_date_field: Kezdő dátum mező
     end_date_field: Záró dátum mező
+    optional: Opcionáis
+    first_day: A hét első napja
   map:
     map: Térkép
     basemap: Alaptérkép
@@ -1574,6 +1592,12 @@ layouts:
     cluster_minpoints: Minimális klaszter méret
     cluster_maxzoom: Maximális zoom a klaszterezéshez
     invalid_geometry: Érvénytelen geometria
+  kanban:
+    image: Kártya kép
+    crop: Vágás
+    advanced: Speciális
+    edit_group: Csoport szerkesztése
+    delete_group: Csoport törlése
 panels:
   metric:
     name: Metrikus
@@ -1591,6 +1615,8 @@ panels:
     name: Lista
     description: Mezők szűrése és listázása egy gyűjteményből
 triggers:
+  common:
+    response_body_all: Összes adat
   webhook:
     method: Metódus
 operations:

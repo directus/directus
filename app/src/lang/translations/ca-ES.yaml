@@ -1585,6 +1585,9 @@ layouts:
     cluster_minpoints: Mida mínima del clúster
     cluster_maxzoom: Zoom màxim per clustering
     invalid_geometry: Geometria invàlida
+  kanban:
+    crop: Retalla
+    advanced: Avançat
 panels:
   label:
     name: Etiqueta
