@@ -44,6 +44,7 @@
 					:collection="collection"
 					include-functions
 					:include-relations="includeRelations"
+					:alias-field-selectable="aliasFieldSelectable"
 					@select-field="addNode($event)"
 				>
 					<template #prepend>
@@ -99,6 +100,7 @@ interface Props {
 	inline?: boolean;
 	includeValidation?: boolean;
 	includeRelations?: boolean;
+	aliasFieldSelectable?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -111,6 +113,7 @@ const props = withDefaults(defineProps<Props>(), {
 	inline: false,
 	includeValidation: false,
 	includeRelations: true,
+	aliasFieldSelectable: true,
 });
 
 const emit = defineEmits(['input']);
