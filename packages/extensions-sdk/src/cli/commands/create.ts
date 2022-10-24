@@ -7,6 +7,7 @@ import {
 	EXTENSION_TYPES,
 	EXTENSION_PKG_KEY,
 	EXTENSION_LANGUAGES,
+	EXTENSION_PACKAGE_MANAGERS,
 	HYBRID_EXTENSION_TYPES,
 	API_OR_HYBRID_EXTENSION_TYPES,
 	APP_OR_HYBRID_EXTENSION_TYPES,
@@ -24,11 +25,24 @@ const pkg = require('../../../../package.json');
 
 const TEMPLATE_PATH = path.resolve(__dirname, '../../../../templates');
 
-type CreateOptions = { language: string };
+type CreateOptions = { language: string; packageManager?: string };
 
 export default async function create(type: string, name: string, options: CreateOptions): Promise<void> {
 	const targetDir = name.substring(name.lastIndexOf('/') + 1);
 	const targetPath = path.resolve(targetDir);
+	const packageManager = options.packageManager || 'npm';
+
+	if (!isIn(packageManager, EXTENSION_PACKAGE_MANAGERS)) {
+		log(
+			`Package manager ${chalk.bold(
+				packageManager
+			)} is not supported. Available package managers: ${EXTENSION_PACKAGE_MANAGERS.map((t) =>
+				chalk.bold.magenta(t)
+			).join(', ')}.`,
+			'error'
+		);
+		process.exit(1);
+	}
 
 	if (!isIn(type, EXTENSION_TYPES)) {
 		log(
@@ -103,7 +117,7 @@ export default async function create(type: string, name: string, options: Create
 
 	await fse.writeJSON(path.join(targetPath, 'package.json'), packageManifest, { spaces: '\t' });
 
-	await execa('npm', ['install'], { cwd: targetPath });
+	await execa(packageManager, ['install'], { cwd: targetPath });
 
 	spinner.succeed(chalk.bold('Done'));
 
@@ -112,10 +126,10 @@ Your ${type} extension has been created at ${chalk.green(targetPath)}
 
 To start developing, run:
   ${chalk.blue('cd')} ${targetDir}
-  ${chalk.blue('npm run')} dev
+  ${chalk.blue(packageManager + ' run')} dev
 
 and then to build for production, run:
-  ${chalk.blue('npm run')} build
+  ${chalk.blue(packageManager + ' run')} build
 	`);
 }
 
