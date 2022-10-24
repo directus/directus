@@ -14,7 +14,7 @@ import { mustacheMode } from './mustacheMode';
 
 const props = withDefaults(
 	defineProps<{
-		value?: string;
+		value?: string | object;
 		autofocus?: boolean;
 		disabled?: boolean;
 		type?: string;
@@ -84,7 +84,11 @@ onMounted(async () => {
 		codemirror.on('change', (doc, { origin }) => {
 			if (origin === 'setValue') return;
 			const content = doc.getValue();
-			emit('input', content !== '' ? content : null);
+			if (typeof props.value === 'object') {
+				emit('input', content !== '' ? JSON.parse(content) : null);
+			} else {
+				emit('input', content !== '' ? content : null);
+			}
 		});
 	}
 });
