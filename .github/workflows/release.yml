@@ -15,10 +15,10 @@ jobs:
     name: Create Release
     runs-on: ubuntu-latest
     steps:
-       - name: Create release
-         env:
-           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-         run: gh release create "$GITHUB_REF_NAME" --target "$GITHUB_REF_NAME" --notes "Directus $GITHUB_REF_NAME"
+      - name: Create release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release create "$GITHUB_REF_NAME" --target "$GITHUB_REF_NAME" --notes "Directus $GITHUB_REF_NAME"
 
   build:
     name: Build Packages
