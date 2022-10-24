@@ -1,4 +1,4 @@
-import axios from 'axios';
+import { sendRequest } from '../utils/send-request';
 import ms from 'ms';
 import { machineId } from 'node-machine-id';
 import os from 'os';
@@ -13,7 +13,11 @@ export async function track(event: string): Promise<void> {
 		const info = await getEnvInfo(event);
 
 		try {
-			await axios.post('https://telemetry.directus.io/', info);
+			await sendRequest({
+				url: 'https://telemetry.directus.io/',
+				method: 'POST',
+				data: info,
+			});
 		} catch (err: any) {
 			if (env.NODE_ENV === 'development') {
 				logger.error(err);

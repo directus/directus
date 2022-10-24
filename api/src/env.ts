@@ -29,6 +29,11 @@ const allowedEnvironmentVars = [
 	'SERVER_.+',
 	// database
 	'DB_.+',
+	// request
+	'REQUEST_PROXY',
+	'REQUEST_PROXY_.+',
+	'REQUEST_TIMEOUT',
+	'REQUEST_MAX_REDIRECTS',
 	// security
 	'KEY',
 	'SECRET',
@@ -189,6 +194,10 @@ const defaults: Record<string, any> = {
 	PUBLIC_URL: '/',
 	MAX_PAYLOAD_SIZE: '1mb',
 	MAX_RELATIONAL_DEPTH: 10,
+
+	REQUEST_PROXY: false,
+	REQUEST_TIMEOUT: 1000 * 60 * 3,
+	REQUEST_MAX_REDIRECTS: 5,
 
 	DB_EXCLUDE_TABLES: 'spatial_ref_sys,sysdiagrams',
 

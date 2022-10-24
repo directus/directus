@@ -1,6 +1,7 @@
-import { defineOperationApi, parseJSON } from '@directus/shared/utils';
-import axios, { Method } from 'axios';
 import encodeUrl from 'encodeurl';
+import { defineOperationApi, parseJSON } from '@directus/shared/utils';
+import { sendRequest } from '../../utils/send-request';
+import { Method } from '../../types';
 
 type Options = {
 	url: string;
@@ -23,7 +24,7 @@ export default defineOperationApi<Options>({
 			customHeaders['Content-Type'] = 'application/json';
 		}
 
-		const result = await axios({
+		const result = await sendRequest({
 			url: encodeUrl(url),
 			method,
 			data: body,

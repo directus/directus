@@ -8,6 +8,7 @@ export * from './graphql';
 export * from './items';
 export * from './meta';
 export * from './migration';
+export * from './request';
 export * from './revision';
 export * from './services';
 export * from './snapshot';

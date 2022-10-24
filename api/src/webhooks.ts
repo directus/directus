@@ -1,7 +1,7 @@
-import axios from 'axios';
 import getDatabase from './database';
 import emitter from './emitter';
 import logger from './logger';
+import { sendRequest } from './utils/send-request';
 import { Webhook, WebhookHeader } from './types';
 import { WebhooksService } from './services';
 import { getSchema } from './utils/get-schema';
@@ -70,7 +70,7 @@ function createHandler(webhook: Webhook, event: string): ActionHandler {
 		};
 
 		try {
-			await axios({
+			await sendRequest({
 				url: webhook.url,
 				method: webhook.method,
 				data: webhook.data ? webhookPayload : null,
