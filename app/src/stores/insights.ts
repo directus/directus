@@ -10,7 +10,7 @@ import { assign, clone, get, isUndefined, mapKeys, omit, omitBy, pull, uniq } fr
 import { nanoid } from 'nanoid';
 import { acceptHMRUpdate, defineStore } from 'pinia';
 import { computed, reactive, ref, unref } from 'vue';
-import { Dashboard } from '../types';
+import { Dashboard } from '@/types/insights';
 import escapeStringRegexp from 'escape-string-regexp';
 
 export type CreatePanel = Partial<Panel> &
