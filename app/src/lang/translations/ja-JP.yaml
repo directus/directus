@@ -108,6 +108,8 @@ time: 時刻
 timestamp: Timestamp
 uuid: UUID
 hash: ハッシュ値
+auto_refresh: 自動更新
+refresh_interval: 更新間隔
 auto_generate: 自動生成
 click_here: ここをクリック
 to_manually_setup_translations: 独自の翻訳を設定することができます
@@ -379,6 +381,7 @@ fields:
     comment: コメント
     user_agent: ユーザーエージェント
     ip: IPアドレス
+    revisions: 履歴
   directus_collections:
     icon: アイコン
     note: 備考
@@ -496,6 +499,7 @@ permissions: 許可
 relationship: 関連
 reset: リセット
 reset_password: パスワードリセット
+revisions: 履歴
 revert: 元に戻す
 save: 保存
 schema: スキーマ
