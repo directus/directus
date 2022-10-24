@@ -90,7 +90,7 @@ import Nodes from './nodes.vue';
 import { getNodeName } from './utils';
 
 interface Props {
-	value?: Record<string, any>;
+	value?: Record<string, any> | string;
 	disabled?: boolean;
 	collectionName?: string;
 	collectionField?: string;
@@ -130,14 +130,16 @@ const fieldsStore = useFieldsStore();
 
 const innerValue = computed<Filter[]>({
 	get() {
-		if (!props.value || isEmpty(props.value)) return [];
+		const filterValue = typeof props.value === 'string' ? JSON.parse(props.value) : props.value;
 
-		const name = getNodeName(props.value);
+		if (!filterValue || isEmpty(filterValue)) return [];
+
+		const name = getNodeName(filterValue);
 
 		if (name === '_and') {
-			return cloneDeep(props.value['_and']);
+			return cloneDeep(filterValue['_and']);
 		} else {
-			return cloneDeep([props.value]);
+			return cloneDeep([filterValue]);
 		}
 	},
 	set(newVal) {
