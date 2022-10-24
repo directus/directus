@@ -1672,16 +1672,13 @@ export class GraphQLService {
 
 		function replaceFuncDeep(filter: Record<string, any>) {
 			return transform(filter, (result: Record<string, any>, value, key) => {
-				let currentKey = key;
-
 				if (typeof key === 'string' && key.endsWith('_func')) {
 					const functionName = Object.keys(value)[0]!;
-					currentKey = `${functionName}(${currentKey.slice(0, -5)})`;
+					const fieldName = key.slice(0, -5);
 
-					result[currentKey] = Object.values(value)[0]!;
+					result[`${functionName}(${fieldName})`] = Object.values(value)[0]!;
 				} else {
-					result[currentKey] =
-						value?.constructor === Object || value?.constructor === Array ? replaceFuncDeep(value) : value;
+					result[key] = value?.constructor === Object || value?.constructor === Array ? replaceFuncDeep(value) : value;
 				}
 			});
 		}
