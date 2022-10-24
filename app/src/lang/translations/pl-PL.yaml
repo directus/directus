@@ -1898,8 +1898,32 @@ layouts:
     default_template: Używanie domyślnej kolekcji...
     no_compatible_fields: Brak kompatybilnych pól
   kanban:
+    name: Kanban
+    group_field: Grupuj według
+    group_field_placeholder: Pole do grupowania przez...
+    group_title: Tytuł grupy
+    group_title_placeholder: Pole dla tytułów grupy...
+    title: Tytuł karty
+    title_placeholder: Opcjonalne pole tytułu...
+    text: Tekst karty
+    text_placeholder: Opcjonalne pole tekstowe...
+    date: Data karty
+    date_placeholder: Opcjonalne pole daty...
+    tags: Tagi kart
+    tags_placeholder: Opcjonalne pole tagów...
+    user: Użytkownik karty
+    user_placeholder: Opcjonalne pole użytkownika...
+    image: Zdjęcie karty
+    image_placeholder: Opcjonalne pole obrazu...
+    image_fit: Dopasuj obraz karty
     crop: Przytnij
     advanced: Zaawansowane
+    edit_group: Edytuj grupę
+    delete_group: Usuń grupę
+    add_group: Dodaj grupę
+    add_group_placeholder: Wprowadź nowy tytuł grupy...
+    show: Pokaż
+    no_group: Brak grupy
     not_all_loaded: Można załadować tylko pierwszych 1000 elementów.
 panels:
   metric:
@@ -2021,6 +2045,8 @@ triggers:
     collection_and_item: Strony kolekcji i rekordów
     collection_only: Tylko strona kolekcji
     item_only: Tylko strona rekordu
+    collection_page: Strona kolekcji
+    require_selection: Wymaga zaznaczenia
 any_string_or_json: Dowolny ciąg znaków lub JSON...
 item_payload_placeholder: To jest JSON używany do aktualizacji wartości pola elementu...
 operation_variables_note: Możesz uzyskać dostęp do danych przepływu zmiennymi takimi jak **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** i **{'{'}{'{'}$accountability{'}'}{'}'}**, lub odniesienie do poprzednich operacji używając **{'{'}{'{'}operation_key{'}'}{'}'}**.'
