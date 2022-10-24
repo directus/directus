@@ -72,6 +72,20 @@ export const useFieldsStore = defineStore({
 		parseField(field: FieldRaw): Field {
 			let name = formatTitle(field.field);
 
+			const localesToReset = !isNil(field.meta?.translations)
+				? field.meta!.translations.map((translation) => translation.language)
+				: i18n.global.availableLocales;
+
+			for (const locale of i18n.global.availableLocales) {
+				if (
+					i18n.global.te(`fields.${field.collection}.${field.field}`, locale) &&
+					localesToReset.includes(locale) &&
+					!field.meta?.system
+				) {
+					i18n.global.mergeLocaleMessage(locale, { fields: { [field.collection]: { [field.field]: undefined } } });
+				}
+			}
+
 			if (field.meta && !isNil(field.meta.translations) && field.meta.translations.length > 0) {
 				for (let i = 0; i < field.meta.translations.length; i++) {
 					const { language, translation } = field.meta.translations[i];
