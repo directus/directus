@@ -12,28 +12,31 @@ import {
 	snapshotBeforeDeleteCollection,
 } from '../__utils__/snapshots';
 import { Snapshot } from '../types';
+import { describe, afterEach, it, expect, vi } from 'vitest';
 
-jest.mock('../../src/database/index', () => {
+vi.mock('../../src/database/index', () => {
 	return {
-		getDatabaseClient: jest.fn().mockReturnValue('postgres'),
+		getDatabaseClient: vi.fn().mockReturnValue('postgres'),
 	};
 });
-jest.requireMock('../../src/database/index');
+vi.mock('../../src/database/index');
 
 class Client_PG extends MockClient {}
 
 describe('applySnapshot', () => {
-	let db: jest.Mocked<Knex>;
+	//TODO: replace with correct vitest api call
+	let db: vi.Mocked<Knex>;
 	let tracker: Tracker;
 
 	beforeEach(() => {
-		db = knex({ client: Client_PG }) as jest.Mocked<Knex>;
+		//TODO: replace with correct vitest api call
+		db = knex({ client: Client_PG }) as vi.Mocked<Knex>;
 		tracker = getTracker();
 	});
 
 	afterEach(() => {
 		tracker.reset();
-		jest.clearAllMocks();
+		vi.clearAllMocks();
 	});
 
 	describe('Creating new collection(s)', () => {
@@ -102,12 +105,10 @@ describe('applySnapshot', () => {
 			};
 
 			// Stop call to db later on in apply-snapshot
-			jest.spyOn(getSchema, 'getSchema').mockReturnValue(Promise.resolve(snapshotApplyTestSchema));
+			vi.spyOn(getSchema, 'getSchema').mockReturnValue(Promise.resolve(snapshotApplyTestSchema));
 			// We are not actually testing that createOne works, just that is is called correctly
-			const createOneCollectionSpy = jest
-				.spyOn(CollectionsService.prototype, 'createOne')
-				.mockImplementation(jest.fn());
-			const createFieldSpy = jest.spyOn(FieldsService.prototype, 'createField').mockImplementation(jest.fn());
+			const createOneCollectionSpy = vi.spyOn(CollectionsService.prototype, 'createOne').mockImplementation(vi.fn());
+			const createFieldSpy = vi.spyOn(FieldsService.prototype, 'createField').mockImplementation(vi.fn());
 
 			await applySnapshot(snapshotCreateCollectionNotNested, {
 				database: db,
@@ -251,12 +252,10 @@ describe('applySnapshot', () => {
 			};
 
 			// Stop call to db later on in apply-snapshot
-			jest.spyOn(getSchema, 'getSchema').mockReturnValue(Promise.resolve(snapshotApplyTestSchema));
+			vi.spyOn(getSchema, 'getSchema').mockReturnValue(Promise.resolve(snapshotApplyTestSchema));
 			// We are not actually testing that createOne works, just that is is called correctly
-			const createOneCollectionSpy = jest
-				.spyOn(CollectionsService.prototype, 'createOne')
-				.mockImplementation(jest.fn());
-			const createFieldSpy = jest.spyOn(FieldsService.prototype, 'createField').mockImplementation(jest.fn());
+			const createOneCollectionSpy = vi.spyOn(CollectionsService.prototype, 'createOne').mockImplementation(vi.fn());
+			const createFieldSpy = vi.spyOn(FieldsService.prototype, 'createField').mockImplementation(vi.fn());
 
 			await applySnapshot(snapshotCreateCollection, {
 				database: db,
@@ -285,11 +284,9 @@ describe('applySnapshot', () => {
 			};
 
 			// Stop call to db later on in apply-snapshot
-			jest.spyOn(getSchema, 'getSchema').mockReturnValue(Promise.resolve(snapshotApplyTestSchema));
+			vi.spyOn(getSchema, 'getSchema').mockReturnValue(Promise.resolve(snapshotApplyTestSchema));
 			// We are not actually testing that deleteOne works, just that is is called correctly
-			const deleteOneCollectionSpy = jest
-				.spyOn(CollectionsService.prototype, 'deleteOne')
-				.mockImplementation(jest.fn());
+			const deleteOneCollectionSpy = vi.spyOn(CollectionsService.prototype, 'deleteOne').mockImplementation(vi.fn());
 
 			await applySnapshot(snapshotToApply, {
 				database: db,

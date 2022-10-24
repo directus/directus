@@ -1,4 +1,5 @@
 import { VMError } from 'vm2';
+import { test, expect } from 'vitest';
 
 import config from './index';
 

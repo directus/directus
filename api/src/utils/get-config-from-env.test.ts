@@ -1,6 +1,7 @@
 import { getConfigFromEnv } from '../../src/utils/get-config-from-env';
+import { describe, test, expect, vi } from 'vitest';
 
-jest.mock('../../src/env', () => ({
+vi.mock('../../src/env', () => ({
 	OBJECT_BRAND__COLOR: 'purple',
 	OBJECT_BRAND__HEX: '#6644FF',
 	CAMELCASE_OBJECT__FIRST_KEY: 'firstValue',

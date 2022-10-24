@@ -1,6 +1,8 @@
+import { describe, expect, vi, test } from 'vitest';
+
 let factoryEnv: { [k: string]: any } = {};
 
-jest.mock(
+vi.mock(
 	'../../src/env',
 	() =>
 		new Proxy(

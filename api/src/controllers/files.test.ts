@@ -1,8 +1,8 @@
 // @ts-nocheck
 
-jest.mock('../../src/cache');
-jest.mock('../../src/database');
-jest.mock('../../src/utils/validate-env');
+vi.mock('../../src/cache');
+vi.mock('../../src/database');
+vi.mock('../../src/utils/validate-env');
 
 import { multipartHandler } from './files';
 import { InvalidPayloadException } from '../exceptions/invalid-payload';
@@ -18,7 +18,7 @@ describe('multipartHandler', () => {
 
 		const req = {
 			headers: fakeForm.getHeaders(),
-			is: jest.fn().mockReturnValue(true),
+			is: vi.fn().mockReturnValue(true),
 			body: fakeForm.getBuffer(),
 			params: {},
 			pipe: (input) => stream.pipe(input),
@@ -45,7 +45,7 @@ describe('multipartHandler', () => {
 
 		const req = {
 			headers: fakeForm.getHeaders(),
-			is: jest.fn().mockReturnValue(true),
+			is: vi.fn().mockReturnValue(true),
 			body: fakeForm.getBuffer(),
 			params: {},
 			pipe: (input) => stream.pipe(input),

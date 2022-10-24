@@ -2,19 +2,20 @@ import exifr from 'exifr';
 import knex, { Knex } from 'knex';
 import { MockClient, Tracker, getTracker } from 'knex-mock-client';
 import { FilesService } from '.';
+import { describe, beforeAll, afterEach, expect, it, vi } from 'vitest';
 
-jest.mock('exifr');
-jest.mock('../../src/database/index', () => {
-	return { getDatabaseClient: jest.fn().mockReturnValue('postgres') };
+vi.mock('exifr');
+vi.mock('../../src/database/index', () => {
+	return { getDatabaseClient: vi.fn().mockReturnValue('postgres') };
 });
-jest.requireMock('../../src/database/index');
+vi.requireMock('../../src/database/index');
 
 describe('Integration Tests', () => {
-	let db: jest.Mocked<Knex>;
+	let db: vi.mocked<Knex>;
 	let tracker: Tracker;
 
 	beforeAll(async () => {
-		db = knex({ client: MockClient }) as jest.Mocked<Knex>;
+		db = knex({ client: MockClient }) as vi.mocked<Knex>;
 		tracker = getTracker();
 	});
 
@@ -25,7 +26,7 @@ describe('Integration Tests', () => {
 	describe('Services / Files', () => {
 		describe('getMetadata', () => {
 			let service: FilesService;
-			let exifrParseSpy: jest.SpyInstance<any>;
+			let exifrParseSpy: vi.SpyInstance<any>;
 
 			const sampleMetadata = {
 				CustomTagA: 'value a',
@@ -34,7 +35,7 @@ describe('Integration Tests', () => {
 			};
 
 			beforeEach(() => {
-				exifrParseSpy = jest.spyOn(exifr, 'parse');
+				exifrParseSpy = vi.spyOn(exifr, 'parse');
 				service = new FilesService({
 					knex: db,
 					schema: { collections: {}, relations: [] },
