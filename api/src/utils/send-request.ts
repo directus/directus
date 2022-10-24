@@ -7,7 +7,11 @@ export async function sendRequest(config: RequestConfig) {
 	const { method, url, data, headers = {}, options = {} } = config;
 
 	// set config by "priority" -> Prio 1: handler options / Prio 2: global options
-	const proxy: boolean | any = options.proxy ?? getConfigFromEnv('REQUEST_PROXY_') ?? env.REQUEST_PROXY; // default: false -> (use system proxy)
+	const proxy: boolean | any =
+		options.proxy ?? Object.keys(getConfigFromEnv('REQUEST_PROXY_')).length > 0
+			? getConfigFromEnv('REQUEST_PROXY_')
+			: env.REQUEST_PROXY; // default: false -> (use system proxy)
+
 	const timeout: number = options.timeout ?? env.REQUEST_TIMEOUT; // default: 1000 * 60 * 3
 	const maxRedirects: number = options.maxRedirects ?? env.REQUEST_MAX_REDIRECTS; // default: 5
 
