@@ -568,7 +568,7 @@ function getRollupOptions({
 			external: APP_SHARED_DEPS,
 			plugins: [
 				typeof input !== 'string' ? virtual(input) : null,
-				vue({ preprocessStyles: true }),
+				vue({ preprocessStyles: true }) as Plugin,
 				languages.includes('typescript') ? typescript({ check: false }) : null,
 				styles(),
 				...plugins,
