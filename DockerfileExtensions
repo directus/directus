@@ -15,7 +15,6 @@ RUN export CI_API_V4_URL=${CI_API_V4_URL}
 
 RUN chmod +x ./custom_extensions.sh
 RUN chmod +x ./payment_extensions.sh
-RUN chmod +x ./start_up.sh
 RUN ./custom_extensions.sh
 
 RUN if [[ -z "$PAYMENT_EXTENSION" ]] ; then echo "Payment extension disabled" ; else ./payment_extensions.sh ; fi
