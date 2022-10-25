@@ -1,5 +1,6 @@
 import { App } from 'vue';
 import { InterfaceConfig } from '@directus/shared/types';
+import { getSortedModules } from '@/utils/get-sorted-modules';
 
 export function getInternalInterfaces(): InterfaceConfig[] {
 	const interfaces = import.meta.glob<{ default: InterfaceConfig }>('./*/index.ts', { eager: true });
@@ -7,7 +8,7 @@ export function getInternalInterfaces(): InterfaceConfig[] {
 
 	return [
 		...Object.values(interfaces).map((module) => module.default),
-		...Object.values(interfacesSystem).map((module) => module.default),
+		...getSortedModules(interfacesSystem, './_system/*/index.ts'),
 	];
 }
 

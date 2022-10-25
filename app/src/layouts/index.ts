@@ -1,10 +1,11 @@
 import { App } from 'vue';
 import { LayoutConfig } from '@directus/shared/types';
+import { getSortedModules } from '@/utils/get-sorted-modules';
 
 export function getInternalLayouts(): LayoutConfig[] {
 	const layouts = import.meta.glob<{ default: LayoutConfig }>('./*/index.ts', { eager: true });
 
-	return Object.values(layouts).map((module) => module.default);
+	return getSortedModules(layouts, './*/index.ts');
 }
 
 export function registerLayouts(layouts: LayoutConfig[], app: App): void {

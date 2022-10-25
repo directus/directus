@@ -1,10 +1,11 @@
 import { App } from 'vue';
 import { OperationAppConfig } from '@directus/shared/types';
+import { getSortedModules } from '@/utils/get-sorted-modules';
 
 export function getInternalOperations(): OperationAppConfig[] {
 	const operations = import.meta.glob<{ default: OperationAppConfig }>('./*/index.ts', { eager: true });
 
-	return Object.values(operations).map((module) => module.default);
+	return getSortedModules(operations, './*/index.ts');
 }
 
 export function registerOperations(operations: OperationAppConfig[], app: App): void {

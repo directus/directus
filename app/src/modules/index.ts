@@ -4,11 +4,12 @@ import { useUserStore } from '@/stores/user';
 import RouterPass from '@/utils/router-passthrough';
 import { ModuleConfig } from '@directus/shared/types';
 import { ShallowRef, shallowRef } from 'vue';
+import { getSortedModules } from '@/utils/get-sorted-modules';
 
 export function getInternalModules(): ModuleConfig[] {
 	const modules = import.meta.glob<{ default: ModuleConfig }>('./*/index.ts', { eager: true });
 
-	return Object.values(modules).map((module) => module.default);
+	return getSortedModules(modules, './*/index.ts');
 }
 
 export function registerModules(modules: ModuleConfig[]): {
