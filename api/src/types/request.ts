@@ -20,8 +20,17 @@ export type Method =
 	| 'unlink'
 	| 'UNLINK';
 
+export interface RequestProxyConfig {
+	host: string;
+	port: number;
+	auth?: {
+		username: string;
+		password: string;
+	};
+	protocol?: string;
+}
+
 export interface RequestOptions {
-	proxy?: false | any;
 	timeout?: number;
 	maxRedirects?: number;
 }

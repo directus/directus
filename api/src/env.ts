@@ -31,7 +31,11 @@ const allowedEnvironmentVars = [
 	'DB_.+',
 	// request
 	'REQUEST_PROXY',
-	'REQUEST_PROXY_.+',
+	'REQUEST_PROXY_PROTOCOL',
+	'REQUEST_PROXY_HOST',
+	'REQUEST_PROXY_PORT',
+	'REQUEST_PROXY_AUTH_USERNAME',
+	'REQUEST_PROXY_AUTH_PASSWORD',
 	'REQUEST_TIMEOUT',
 	'REQUEST_MAX_REDIRECTS',
 	// security
@@ -286,6 +290,12 @@ const typeMap: Record<string, string> = {
 	DB_PASSWORD: 'string',
 	DB_DATABASE: 'string',
 	DB_PORT: 'number',
+
+	REQUEST_PROXY_PROTOCOL: 'string',
+	REQUEST_PROXY_HOST: 'string',
+	REQUEST_PROXY_PORT: 'number',
+	REQUEST_PROXY_AUTH_USERNAME: 'string',
+	REQUEST_PROXY_AUTH_PASSWORD: 'string',
 
 	DB_EXCLUDE_TABLES: 'array',
 	IMPORT_IP_DENY_LIST: 'array',
