@@ -31,6 +31,11 @@ export type MutationOptions = {
 	autoPurgeCache?: false;
 
 	/**
+	 * Flag to disable the auto purging of the system cache.
+	 */
+	autoPurgeSystemCache?: false;
+
+	/**
 	 * Allow disabling the emitting of hooks. Useful if a custom hook is fired (like files.upload)
 	 */
 	emitEvents?: boolean;

@@ -29,6 +29,7 @@ draft: Rascunho
 archived: Arquivado
 modules: Módulos
 logs: Registo de Eventos
+reset_width: Redefinir Largura
 tile_size: Tamanho do ícone
 edit_field: Editar campo
 conditions: Condições
@@ -37,6 +38,7 @@ condition_rules: Regras de Condição
 input: Input
 maps: Mapas
 switch_user: Mudar de utilizador
+item_creation: Criação de Item
 item_revision: Revisão do documento
 enter_a_name: Introduza um nome...
 duplicate_field: Duplicar este campo
@@ -59,6 +61,7 @@ indeterminate: Indeterminado
 edit_collection: Editar coleção
 exclusive: Exclusivo
 children: Crianças
+db_only_click_to_configure: 'Apenas em Base de Dados: Clique para Configurar'
 show_active_items: Mostrar Itens Ativos
 show_archived_items: Mostrar documentos arquivados
 show_all_items: Mostrar todos os itens
@@ -647,7 +650,6 @@ read: Ler
 update: Atualizar
 delete: Eliminar
 select_fields: Selecione os campos
-run_flow_on_selected: Não há itens selecionados | Executar flow em 1 item | Executar flow em {n} itens
 run_flow_success: O fluxo "{flow}" foi executado
 flow_name: Nome
 flow_tracking_activity: Apenas rastrear Atividade
@@ -957,6 +959,8 @@ layouts:
   tabular:
     tabular: Tabela
     spacing: Espaçamento
+  kanban:
+    advanced: Avançado
 operations:
   log:
     message: Mensagem
