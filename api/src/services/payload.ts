@@ -1,6 +1,6 @@
 import { Accountability, Query, SchemaOverview } from '@directus/shared/types';
 import { format, parseISO, isValid } from 'date-fns';
-import { parseJSON, toArray } from '@directus/shared/utils';
+import { parseJSON, toArray, JSONstringifyWithCircularRefs } from '@directus/shared/utils';
 import { unflatten } from 'flat';
 import Joi from 'joi';
 import { Knex } from 'knex';
@@ -176,7 +176,7 @@ export class PayloadService {
 				for (const [key, value] of Object.entries(record)) {
 					if (Array.isArray(value) || (typeof value === 'object' && !(value instanceof Date) && value !== null)) {
 						if (!value.isRawInstance) {
-							record[key] = JSON.stringify(value);
+							record[key] = JSONstringifyWithCircularRefs(value);
 						}
 					}
 				}

@@ -22,6 +22,7 @@ export * from './move-in-array';
 export * from './parse-filter';
 export * from './parse-json';
 export * from './pluralize';
+export * from './stringify-json';
 export * from './to-array';
 export * from './validate-extension-manifest';
 export * from './validate-payload';
