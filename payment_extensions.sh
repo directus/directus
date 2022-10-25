@@ -12,7 +12,9 @@ DIRECTUS_SNAPSHOTS="${DIRECTUS_DIR}/snapshots"
 mkdir -p ${DIRECTUS_SNAPSHOTS}
 
 # TODO@geo This is a hack to download the archived files from another project
-curl --header "Private-Token: ${GITLAB_PIPELINE_TOKEN}" -LO ${CI_API_V4_URL}/projects/39544563/packages/generic/Releases/0.0.1/directus-payment-integration-release.zip
+headers="--header=Private-Token: ${GITLAB_PIPELINE_TOKEN}"
+wget "$headers" ${CI_API_V4_URL}/projects/39544563/packages/generic/Releases/0.0.1/directus-payment-integration-release.zip
+#curl --header "Private-Token: ${GITLAB_PIPELINE_TOKEN}" -LO ${CI_API_V4_URL}/projects/39544563/packages/generic/Releases/0.0.1/directus-payment-integration-release.zip
 
 unzip directus-payment-integration-release.zip
 
