@@ -24,6 +24,7 @@ RUN if [[ -z "$PAYMENT_EXTENSION" ]] ; then echo "Payment extension disabled" ; 
 RUN rm -rf /directus/api/extensions/modules/__MACOSX || true
 
 COPY ./start_up.sh /directus/api
+RUN chmod +x /directus/api/start_up.sh
 
 WORKDIR /directus/api
 
