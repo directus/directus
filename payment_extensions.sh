@@ -16,6 +16,8 @@ curl --header "Private-Token: ${GITLAB_PIPELINE_TOKEN}" -LO ${CI_API_V4_URL}/pro
 
 unzip directus-payment-integration-release.zip
 
+ls -la ./directus-payment-integration-release
+
 mkdir -p ${DIRECTUS_ENDPOINTS}/payments-api
 mv -v ./directus-payment-integration-release/payments-api/* ${DIRECTUS_ENDPOINTS}/payments-api
 
