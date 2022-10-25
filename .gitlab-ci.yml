@@ -1,5 +1,5 @@
 stages:
-  - crawless-directus-tests
+#  - crawless-directus-tests
   - crawless-directus
 
 variables:
