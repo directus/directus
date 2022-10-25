@@ -7,7 +7,7 @@ export function getInternalInterfaces(): InterfaceConfig[] {
 	const interfacesSystem = import.meta.glob<{ default: InterfaceConfig }>('./_system/*/index.ts', { eager: true });
 
 	return [
-		...Object.values(interfaces).map((module) => module.default),
+		...getSortedModules(interfaces, './*/index.ts'),
 		...getSortedModules(interfacesSystem, './_system/*/index.ts'),
 	];
 }
