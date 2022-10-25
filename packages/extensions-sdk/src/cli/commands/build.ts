@@ -399,7 +399,7 @@ function getRollupOptions({
 			input,
 			external: APP_SHARED_DEPS,
 			plugins: [
-				vue({ preprocessStyles: true }),
+				vue({ preprocessStyles: true }) as Plugin,
 				language === 'typescript' ? typescript({ check: false }) : null,
 				styles(),
 				...plugins,
