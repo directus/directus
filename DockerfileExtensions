@@ -1,0 +1,28 @@
+# NOTE: Testing Only. DO NOT use this in production
+
+FROM registry.gitlab.com/crawless/directus:latest
+
+ARG GITLAB_PIPELINE_TOKEN
+ARG CI_API_V4_URL
+ARG PAYMENT_EXTENSION
+
+WORKDIR /directus
+
+COPY . .
+
+RUN export GITLAB_PIPELINE_TOKEN=${GITLAB_PIPELINE_TOKEN}
+RUN export CI_API_V4_URL=${CI_API_V4_URL}
+
+RUN chmod +x ./custom_extensions.sh
+RUN chmod +x ./payment_extensions.sh
+RUN ./custom_extensions.sh
+
+RUN if [[ -z "$PAYMENT_EXTENSION" ]] ; then echo "Payment extension disabled" ; else ./payment_extensions.sh ; fi
+
+# Not sure why we have this folder here
+RUN rm -rf /directus/api/extensions/modules/__MACOSX || true
+
+WORKDIR /directus/api
+
+CMD ["sh", "-c", "node ./cli.js bootstrap && for snapshots_file in ./snapshots/*.yaml; do echo $snapshots_file; node ./cli.js schema apply --yes $snapshots_file || true; done && node ./dist/start.js;"]
+EXPOSE 8055/tcp

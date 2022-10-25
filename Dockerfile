@@ -4,6 +4,10 @@ ARG NODE_VERSION=16-alpine
 
 FROM node:${NODE_VERSION}
 
+ARG GITLAB_PIPELINE_TOKEN
+ARG CI_API_V4_URL
+ARG PAYMENT_EXTENSION
+
 # Required to run OracleDB
 # Technically not required for the others, but I'd rather have 1 image that works for all, instead of building n images
 # per test
@@ -27,7 +31,7 @@ FROM node:${NODE_VERSION}
 #ENV ORACLE_HOME /usr/lib/instantclient
 
 RUN apk update
-RUN apk --no-cache add --virtual builds-deps build-base python3 openssh-client bash git openssh curl
+RUN apk --no-cache add --virtual builds-deps build-base python3 openssh-client bash git openssh curl wget
 RUN apk add nano
 
 WORKDIR /directus
@@ -41,12 +45,14 @@ RUN npm install -g pnpm
 RUN pnpm install
 RUN pnpm -r build
 
-# Custom Extensions
-RUN pnpm install @wellenplan/directus-extension-duration-display -w
+RUN export GITLAB_PIPELINE_TOKEN=${GITLAB_PIPELINE_TOKEN}
+RUN export CI_API_V4_URL=${CI_API_V4_URL}
 
-#COPY ./custom_extensions.sh ./custom_extensions.sh
 RUN chmod +x ./custom_extensions.sh
+RUN chmod +x ./payment_extensions.sh
 RUN ./custom_extensions.sh
+
+RUN if [[ -z "$PAYMENT_EXTENSION" ]] ; then echo "Payment extension disabled" ; else ./payment_extensions.sh ; fi
 
 # Not sure why we have this folder here
 RUN rm -rf /directus/api/extensions/modules/__MACOSX || true
@@ -54,6 +60,7 @@ RUN rm -rf /directus/api/extensions/modules/__MACOSX || true
 WORKDIR /directus/api
 
 RUN mkdir -p ./uploads
+RUN mkdir -p ./snapshots
 
-CMD ["sh", "-c", "node ./cli.js bootstrap && node ./dist/start.js;"]
+CMD ["sh", "-c", "node ./cli.js bootstrap && for snapshots_file in ./snapshots/*.yaml; do echo $snapshots_file; node ./cli.js schema apply --yes $snapshots_file || true; done && node ./dist/start.js;"]
 EXPOSE 8055/tcp
