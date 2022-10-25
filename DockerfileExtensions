@@ -25,5 +25,5 @@ RUN rm -rf /directus/api/extensions/modules/__MACOSX || true
 WORKDIR /directus/api
 
 #CMD ["sh", "-c", "node ./cli.js bootstrap && for snapshots_file in ./snapshots/*.yaml; do echo $snapshots_file; node ./cli.js schema apply --yes $snapshots_file || true; done && node ./dist/start.js;"]
-CMD ["sh", "-c", "node ./cli.js database install && for snapshots_file in ./snapshots/*.yaml; do echo $snapshots_file; node ./cli.js schema apply --yes $snapshots_file || true; done && node ./cli.js database migrate:latest && node ./dist/start.js;"]
+CMD ["sh", "-c", "node ./cli.js database install || true && for snapshots_file in ./snapshots/*.yaml; do echo $snapshots_file; node ./cli.js schema apply --yes $snapshots_file || true; done && node ./cli.js database migrate:latest || true && node ./dist/start.js;"]
 EXPOSE 8055/tcp
