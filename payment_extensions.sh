@@ -24,6 +24,7 @@ mv -v ./directus-payment-integration-release/payments-hook/* ${DIRECTUS_HOOKS}/p
 
 mv -v ./directus-payment-integration-release/collection-ext ${DIRECTUS_INTERFACES}
 mv -v ./directus-payment-integration-release/filter-ext ${DIRECTUS_INTERFACES}
+mv -v ./directus-payment-integration-release/loading-api-field ${DIRECTUS_INTERFACES}
 mv -v ./directus-payment-integration-release/payments-module ${DIRECTUS_MODULES}
 mv -v ./directus-payment-integration-release/snapshots/* ${DIRECTUS_SNAPSHOTS}
 mv -v ./directus-payment-integration-release/migrations ${DIRECTUS_EXTENSIONS}
