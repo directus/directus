@@ -291,8 +291,8 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 			try {
 				res.clearCookie(`oauth2.${providerName}`);
 
-				const code = req.query.code ?? req.post.code;
-				const state = req.query.state ?? req.post.state;
+				const code = req.method === 'POST' ? req.post.code : req.query.code;
+				const state = req.method === 'POST' ? req.post.state : req.query.state;
 				
 				if (!code || !state) {
 					logger.warn(`[OAuth2] Couldn't extract OAuth2 code or state from provider response.`);
