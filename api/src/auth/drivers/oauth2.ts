@@ -254,9 +254,13 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 		respond
 	);
 
-	router.get(
+	router.all(
 		'/callback',
 		asyncHandler(async (req, res, next) => {
+			if (!req.method.includes('POST', 'GET')) {
+				return next();
+			}
+			
 			let tokenData;
 
 			try {
@@ -287,14 +291,17 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 			try {
 				res.clearCookie(`oauth2.${providerName}`);
 
-				if (!req.query.code || !req.query.state) {
-					logger.warn(`[OAuth2] Couldn't extract OAuth2 code or state from query: ${JSON.stringify(req.query)}`);
+				const code = req.query.code ?? req.post.code;
+				const state = req.query.state ?? req.post.state;
+				
+				if (!code || !state) {
+					logger.warn(`[OAuth2] Couldn't extract OAuth2 code or state from provider response.`);
 				}
 
 				authResponse = await authenticationService.login(providerName, {
-					code: req.query.code,
+					code: code,
 					codeVerifier: verifier,
-					state: req.query.state,
+					state: state,
 				});
 			} catch (error: any) {
 				// Prompt user for a new refresh_token if invalidated
