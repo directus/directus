@@ -10,4 +10,5 @@ export type Notification = {
 	message: string | null;
 	collection: string | null;
 	item: PrimaryKey | null;
+	read: boolean;
 };

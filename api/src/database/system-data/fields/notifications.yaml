@@ -13,3 +13,4 @@ fields:
   - field: message
   - field: collection
   - field: item
+  - field: read
