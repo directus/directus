@@ -48,7 +48,31 @@
 			:items="notifications"
 			item-key="id"
 			@click:row="onRowClick"
-		></v-table>
+		>
+			<template #[`#item.read`]="{ item }">
+				<v-badge dot :class="{ read: item.read }" />
+			</template>
+		</v-table>
+	</v-drawer>
+	<v-drawer
+		v-model="notificationDetailDrawerOpen"
+		icon="notifications"
+		:title="viewingNotification.subject"
+		@cancel="notificationDetailDrawerOpen = false"
+	>
+		<template #actions>
+			<v-button v-tooltip.bottom="tab[0] === t('back')" icon rounded @click="notificationDetailDrawerOpen = false">
+				<v-icon name="check" />
+			</v-button>
+		</template>
+		<div class="drawer-content">
+			<p class="message-details">
+				{{ viewingNotification.timestampDistance }}
+				<span v-if="viewingNotification.sender">&bull; {{ viewingNotification.sender }}</span>
+			</p>
+			<p class="type-label">{{ t('message') }}</p>
+			<div v-md="viewingNotification.message" class="message-value selectable" />
+		</div>
 	</v-drawer>
 </template>
 
@@ -91,6 +115,8 @@ export default defineComponent({
 		const error = ref(null);
 		const selection = ref([]);
 		const tab = ref(['inbox']);
+		const notificationDetailDrawerOpen = ref(false);
+		const viewingNotification = ref<(Notification & { timestampDistance: string }) | Record<string, unknown>>({});
 
 		const { notificationsDrawerOpen } = storeToRefs(appStore);
 
@@ -99,15 +125,22 @@ export default defineComponent({
 				text: t('subject'),
 				value: 'subject',
 				sortable: false,
-				width: 300,
+				width: 250,
 				align: 'left',
 			},
 			{
 				text: t('timestamp'),
 				value: 'timestampDistance',
 				sortable: false,
-				width: 180,
+				width: 170,
 				align: 'left',
+			},
+			{
+				text: t('status'),
+				value: 'read',
+				sortable: false,
+				width: 90,
+				align: 'center',
 			},
 		]);
 
@@ -127,6 +160,8 @@ export default defineComponent({
 			onRowClick,
 			toggleArchive,
 			tab,
+			notificationDetailDrawerOpen,
+			viewingNotification,
 		};
 
 		async function fetchNotifications() {
@@ -149,7 +184,7 @@ export default defineComponent({
 								},
 							],
 						},
-						fields: ['id', 'subject', 'collection', 'item', 'timestamp'],
+						fields: ['id', 'subject', 'collection', 'item', 'timestamp', 'message', 'read'],
 						sort: ['-timestamp'],
 					},
 				});
@@ -190,16 +225,26 @@ export default defineComponent({
 			selection.value = [];
 		}
 
-		function onRowClick({ item }: { item: Item; event: PointerEvent }) {
-			const collection = collectionsStore.getCollection(item.collection);
+		async function onRowClick({ item }: { item: Notification & { timestampDistance: string }; event: PointerEvent }) {
+			// Notification was sent from a collection, send user there
+			if (item.collection) {
+				const collection = collectionsStore.getCollection(item.collection);
 
-			if (collection?.meta?.singleton) {
-				router.push(`/content/${item.collection}`);
-			} else {
-				router.push(`/content/${item.collection}/${item.item}`);
+				if (collection?.meta?.singleton) {
+					router.push(`/content/${item.collection}`);
+				} else {
+					router.push(`/content/${item.collection}/${item.item}`);
+				}
+
+				notificationsDrawerOpen.value = false;
 			}
-
-			notificationsDrawerOpen.value = false;
+			// Notification has a message (maybe from an operation), display it
+			if (!item.collection) {
+				viewingNotification.value = item;
+				notificationDetailDrawerOpen.value = true;
+			}
+			// Set viewed notification as read
+			await api.patch(`/notifications/${item.id}`, { read: true });
 		}
 	},
 });
@@ -217,5 +262,28 @@ export default defineComponent({
 			margin-right: var(--content-padding);
 		}
 	}
+}
+
+.drawer-content {
+	margin: 0 var(--content-padding);
+
+	.message-details {
+		margin-bottom: var(--content-padding);
+	}
+
+	.message-value {
+		background-color: var(--background-input);
+		border: var(--border-width) solid var(--border-normal);
+		border-radius: var(--border-radius);
+		padding: var(--input-padding);
+	}
+
+	.type-label {
+		margin-bottom: 8px;
+	}
+}
+
+.v-badge.read {
+	--v-badge-background-color: var(--background-normal-alt);
 }
 </style>
