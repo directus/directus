@@ -15,7 +15,7 @@ export default defineModule({
 			component: StaticDocs,
 			children: [
 				{
-					name: 'docs-app-overview',
+					name: 'docs-app-overview-redirect',
 					path: '',
 					redirect: '/docs/app/overview',
 				},
