@@ -23,7 +23,7 @@ describe('/files', () => {
 						data: {
 							title: payload.title,
 							storage: payload.storage,
-							file_download: payload.filename_download,
+							filename_download: payload.filename_download,
 						},
 					});
 				});
