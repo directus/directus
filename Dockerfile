@@ -65,7 +65,7 @@ WORKDIR /directus/api
 RUN mkdir -p ./uploads
 RUN mkdir -p ./snapshots
 
-CMD ["sh", "-c", "./start_up.sh"]
+#CMD ["sh", "-c", "./start_up.sh"]
 #CMD ["sh", "-c", "node ./cli.js database install || true && for snapshots_file in ./snapshots/*.yaml; do echo 'Apply ' $snapshots_file; node ./cli.js schema apply --yes $snapshots_file || true; done && node ./cli.js database migrate:latest || true && node ./dist/start.js;"]
-#CMD ["sh", "-c", "node ./cli.js bootstrap && for snapshots_file in ./snapshots/*.yaml; do echo $snapshots_file; node ./cli.js schema apply --yes $snapshots_file || true; done && node ./dist/start.js;"]
+CMD ["sh", "-c", "node ./cli.js bootstrap && for snapshots_file in ./snapshots/*.yaml; do echo $snapshots_file; node ./cli.js schema apply --yes $snapshots_file || true; done && node ./dist/start.js;"]
 EXPOSE 8055/tcp
