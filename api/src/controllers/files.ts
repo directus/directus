@@ -121,10 +121,6 @@ router.post(
 	'/',
 	asyncHandler(multipartHandler),
 	asyncHandler(async (req, res, next) => {
-		if (req.is('multipart/form-data') === false) {
-			throw new UnsupportedMediaTypeException(`Unsupported Content-Type header`);
-		}
-
 		const service = new FilesService({
 			accountability: req.accountability,
 			schema: req.schema,
