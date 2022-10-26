@@ -129,15 +129,8 @@ export function createSAMLAuthRouter(providerName: string) {
 	router.post(
 		'/logout',
 		asyncHandler(async (req, res) => {
-			/*
-			let userInfo = {
-				logoutNameID: userName,
-				sessionIndex: session.sessionID
-			  }
-			  let { relayState, type, entityEndpoint, id, context } = sp.createLogoutRequest(idp,"redirect",userInfo);
-*/
 			const { sp, idp } = getAuthProvider(providerName) as SAMLAuthDriver;
-			const { context } = await sp.createLogoutRequest(idp, 'redirect');
+			const { context } = await sp.createLogoutRequest(idp, 'redirect', req.body);
 			return res.redirect(context);
 		})
 	);
