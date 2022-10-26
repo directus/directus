@@ -71,7 +71,7 @@ show_archived_items: Mostrar alementos archivados
 show_all_items: Mostrar todos los elementos
 edited: Valor editado
 required: Requerido
-required_for_app_access: Necesario para el acceso a la aplicación
+required_for_app_access: Requerido para el acceso a la aplicación
 requires_value: Requiere un valor
 create_preset: Crear predefinido
 create_panel: Crear panel
@@ -116,7 +116,7 @@ logoutReason:
   SESSION_EXPIRED: Sesión expirada
 public_label: Público
 public_description: Controla qué datos de la API están disponibles sin autenticar.
-admin_description: Rol administrativo inicial con acceso ilimitado a la App/API.
+admin_description: Rol administrativo inicial con acceso sin restricciones a la aplicación/API.
 not_allowed: No permitido
 directus_version: Versión de Directus
 node_version: Versión de Node
@@ -130,8 +130,8 @@ archive_confirm: '¿Estás seguro que quieres archivar este elemento?'
 archive_confirm_count: >-
   No hay elementos seleccionados | ¿Estás seguro que quieres archivar este elemento? | ¿Estás seguro que quieres archivar estos {count} elementos?
 reset_system_permissions_to: 'Restablecer los permisos del sistema a:'
-reset_system_permissions_copy: Esta acción sobrescribirá cualquier permiso personalizado que haya aplicado a las colecciones del sistema. ¿Está seguro?
-the_following_are_minimum_permissions: Los siguientes son permisos mínimos requeridos cuando "Acceso a App" está habilitado. Puede extender permisos más allá de esto, pero no más abajo.
+reset_system_permissions_copy: Esta acción sobrescribirá cualquier permiso personalizado que hayas aplicado a las colecciones del sistema. ¿Estás seguro?
+the_following_are_minimum_permissions: Los siguientes son permisos mínimos requeridos cuando "Acceso a la aplicación" está habilitado. Puedes extender permisos más allá de esto, pero no más abajo.
 app_access_minimum: Acceso mínimo a la aplicación
 recommended_defaults: Valores por defecto recomendados
 unarchive: Desarchivar
@@ -446,8 +446,8 @@ open: Abrir
 open_in_new_window: Abrir en nueva ventana
 open_folder: Abrir carpeta "{folder}"
 foreground_color: Color de Letra
-background_color: Color de Fondo
-upload_from_device: Subir Archivo desde Dispositivo
+background_color: Color de fondo
+upload_from_device: Subir archivo desde dispositivo
 choose_from_library: Elegir archivo de la biblioteca
 import_from_url: Importar Archivo desde URL
 replace_from_device: Reemplazar Archivo desde Dispositivo
@@ -628,8 +628,8 @@ presets: Predefinidos
 unexpected_error: Error Inesperado
 unexpected_error_copy: Ha ocurrido un error inesperado. Por favor inténtelo más tarde.
 copy_details: Copiar Detalles
-no_app_access: Sin Acceso al App
-no_app_access_copy: Este usuario no tiene permitido usar la app administrativa.
+no_app_access: Sin acceso a la aplicación
+no_app_access_copy: Este usuario no tiene permitido usar la aplicación de administración.
 password_reset_sent: Si tienes una cuenta, te hemos enviado un enlace seguro para restablecer tu contraseña
 password_reset_successful: Contraseña restablecida exitósamente
 back: Volver
@@ -719,11 +719,11 @@ loading: Cargando...
 drop_to_upload: Arrastrar para Subir
 item: Elemento
 items: Elementos
-upload_file: Subir Archivo
-upload_file_indeterminate: Subiendo Archivo...
-upload_file_success: Archivo Subido
+upload_file: Subir archivo
+upload_file_indeterminate: Subiendo archivo...
+upload_file_success: Archivo subido
 upload_files_indeterminate: 'Subiendo archivos {done}/{total}'
-upload_files_success: '{count} Archivos Subidos'
+upload_files_success: '{count} archivos subidos'
 upload_pending: Subida Pendiente
 drag_file_here: Arrastre y Suelte un Archivo Aquí
 click_to_browse: Haga Clic para Navegar
@@ -883,7 +883,7 @@ wysiwyg_options:
   alignnone: No Alinear
   alignright: Alinear a la Derecha
   forecolor: Color de Letra
-  backcolor: Color de Fondo
+  backcolor: Color de fondo
   bold: Negrita
   italic: Cursiva
   underline: Subrayado
@@ -976,9 +976,9 @@ page_help_activity_collection: >-
 page_help_docs_global: >-
   **Resumen de la Documentación** — Documentos específicamente diseñados para la versión y esquema de este proyecto.
 page_help_files_collection: >-
-  **Biblioteca de Archivos** — Lista todos los activos subidos a este proyecto. Puede personalizar el Diseño, Filtros y Ordenamientos para adaptar sus vistas, incluso puede guardar Marcadores de esas configuraciones para un rápido acceso.
+  **Biblioteca de archivos** — Lista todos los archivos subidos a este proyecto. Personaliza el diseño, los filtros y la ordenación para adaptar su vista, e incluso guardar los marcadores de estas diferentes configuraciones para un acceso rápido.
 page_help_files_item: >-
-  **Detalle de Archivo** — Una manera de manejar metadatos de archivos, editar el activo original, y actualizar ajustes de acceso.
+  **Detalle de archivo** — Una forma para administrar metadatos de archivos, editar el archivo original y actualizar los ajustes de acceso.
 page_help_settings_project: "**Ajustes del proyecto** — Opciones globales de configuración de tu proyecto."
 page_help_settings_datamodel_collections: >-
   **Modelo de Datos: Colecciones** — Lista todas las colecciones disponibles. Esto incluye colecciones visibles, ocultas y del sistema, así como las tablas de base de datos que pueden ser agregadas.
@@ -1145,7 +1145,7 @@ fields:
     default_language: Idioma predeterminado
     branding: Marca y estilo
     public_foreground: Superficie Pública
-    public_background: Fondo Público
+    public_background: Fondo público
     public_note: Notas Públicas
     auth_password_policy: Política de Contraseña para Autentificación
     auth_login_attempts: Intentos de Inicio de Sesión al Autentificarse
@@ -1181,7 +1181,7 @@ fields:
     name: Nombre del rol
     icon: Ícono del rol
     description: Descripción
-    app_access: Acceso a App
+    app_access: Acceso a la aplicación
     admin_access: Acceso Admin
     ip_access: Acceso IP
     enforce_tfa: Requiere 2FA
@@ -1551,7 +1551,7 @@ interfaces:
     description: Seleccionar o subir un archivo
   files:
     files: Archivos
-    description: Seleccionar o subir múltiples archivos
+    description: Seleccionar o subir varios archivos
   input-hash:
     hash: Hash
     description: Ingresa un valor para ser cifrado
@@ -1594,7 +1594,7 @@ interfaces:
     customSyntax_add: Añadir sintaxis personalizada
     box: Bloque / Alineación
     imageToken: Token de acceso estático
-    imageToken_label: Token de acceso estático a añadir la URL de los recursos
+    imageToken_label: Token de acceso estático se añade a la URL de los archivos
   map:
     map: Mapa
     description: Seleccione una ubicación en el mapa
@@ -1714,7 +1714,7 @@ interfaces:
     options_override: Sobrescribir Opciones
     folder_note: Carpeta para los archivos subidos. No afecta a los archivos existentes.
     imageToken: Token de acceso estático
-    imageToken_label: Token de acceso estático a añadir la URL de los recursos
+    imageToken_label: Token de acceso estático se añade a la URL de los archivos
   input-autocomplete-api:
     input-autocomplete-api: Campo de Autocompletado (API)
     description: Búsqueda autocompletada para valores de API externos.
