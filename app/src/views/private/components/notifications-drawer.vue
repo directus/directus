@@ -90,7 +90,6 @@ import { storeToRefs } from 'pinia';
 import { Notification } from '@directus/shared/types';
 import api from '@/api';
 import { Header as TableHeader } from '@/components/v-table/types';
-import { Item } from '@directus/shared/types';
 import { useRouter } from 'vue-router';
 import { parseISO } from 'date-fns';
 import { localizedFormatDistance } from '@/utils/localized-format-distance';
