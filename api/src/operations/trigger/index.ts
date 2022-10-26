@@ -17,7 +17,12 @@ export default defineOperationApi<Options>({
 		let result: unknown | unknown[];
 
 		if (Array.isArray(payloadObject)) {
-			result = await Promise.all(payloadObject.map((payload) => flowManager.runOperationFlow(flow, payload, context)));
+			result = await Promise.all(
+				payloadObject.map((payload) => {
+					const updatedData = { ...context.data, $last: payload };
+					return flowManager.runOperationFlow(flow, payload, { ...context, data: updatedData });
+				})
+			);
 		} else {
 			result = await flowManager.runOperationFlow(flow, payloadObject, context);
 		}
