@@ -42,6 +42,11 @@ export const useNotificationsStore = defineStore({
 									_eq: 'inbox',
 								},
 							},
+							{
+								read: {
+									_eq: false,
+								},
+							},
 						],
 					},
 					aggregate: {

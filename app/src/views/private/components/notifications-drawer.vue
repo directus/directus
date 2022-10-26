@@ -16,6 +16,9 @@
 			>
 				<v-icon :name="tab[0] === 'inbox' ? 'archive' : 'move_to_inbox'" />
 			</v-button>
+			<v-button icon rounded :disabled="selection.length === 0" secondary @click="markUnread">
+				<v-icon name="mark_email_unread" />
+			</v-button>
 		</template>
 
 		<template #sidebar>
@@ -49,7 +52,7 @@
 			item-key="id"
 			@click:row="onRowClick"
 		>
-			<template #[`#item.read`]="{ item }">
+			<template #[`item.read`]="{ item }">
 				<v-badge dot :class="{ read: item.read }" />
 			</template>
 		</v-table>
@@ -162,6 +165,7 @@ export default defineComponent({
 			tab,
 			notificationDetailDrawerOpen,
 			viewingNotification,
+			markUnread,
 		};
 
 		async function fetchNotifications() {
@@ -245,6 +249,20 @@ export default defineComponent({
 			}
 			// Set viewed notification as read
 			await api.patch(`/notifications/${item.id}`, { read: true });
+			await fetchNotifications();
+		}
+
+		async function markUnread() {
+			await api.patch('/notifications', {
+				keys: selection.value.map(({ id }) => id),
+				data: {
+					read: false,
+				},
+			});
+
+			await fetchNotifications();
+
+			selection.value = [];
 		}
 	},
 });
