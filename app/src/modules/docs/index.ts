@@ -10,10 +10,12 @@ export default defineModule({
 	icon: 'help_outline',
 	routes: [
 		{
+			name: 'docs-routes',
 			path: '',
 			component: StaticDocs,
 			children: [
 				{
+					name: 'docs-app-overview',
 					path: '',
 					redirect: '/docs/app/overview',
 				},
