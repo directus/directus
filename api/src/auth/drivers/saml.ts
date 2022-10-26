@@ -157,12 +157,10 @@ export function createSAMLAuthRouter(providerName: string) {
 
 				// TODO: figure out better redirect...
 				const redirectUrl = env.PUBLIC_URL;
-
 				if (redirectUrl) {
 					res.cookie(env.REFRESH_TOKEN_COOKIE_NAME, refreshToken, COOKIE_OPTIONS);
 					return res.redirect(redirectUrl);
 				}
-
 				next();
 			} catch (error: any) {
 				logger.warn(error, `[SAML] Unexpected error during SAML login`);
