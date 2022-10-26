@@ -5,7 +5,7 @@ import { getConfigFromEnv } from './get-config-from-env';
 
 /* The sense behind returning false:
  * So if you are on a unix environment, you are able to configure your proxy system wide.
- * But there is no continuty. Sometimes the configuration is in UPPERCASE sometimes in lowercase.
+ * But there is no continuity. Sometimes the configuration is in UPPERCASE sometimes in lowercase.
  * And this really matters for some libs out there.
  * So false means: Do not use any of the env variables out there. Just do nothing. My system is configured properly.
  * see: https://about.gitlab.com/blog/2021/01/27/we-need-to-talk-no-proxy/
