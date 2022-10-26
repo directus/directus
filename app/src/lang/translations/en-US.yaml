@@ -2038,11 +2038,11 @@ panels:
     broad: Broad
   piechart:
     name: Pie or Donut Chart
-    description: Circular chart showing the ratios of groups on a column.
-    function: 'Function'
+    description: Circular chart showing the ratios of groups on a column
+    function: Function
     donut: Donut
-    labels: Show Labels
-    legend: Show Legend
+    show_labels: Show Labels
+    show_legend: Show Legend
     right: Right
     bottom: Bottom
     monochrome: Monochrome
