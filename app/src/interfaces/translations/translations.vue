@@ -27,6 +27,7 @@
 				:badge="languageOptions.find((lang) => lang.value === firstLang)?.text"
 				:direction="languageOptions.find((lang) => lang.value === firstLang)?.direction"
 				:autofocus="autofocus"
+				inline
 				@update:model-value="updateValue($event, firstLang)"
 			/>
 			<v-divider />
@@ -56,6 +57,7 @@
 				:badge="languageOptions.find((lang) => lang.value === secondLang)?.text"
 				:direction="languageOptions.find((lang) => lang.value === secondLang)?.direction"
 				:model-value="secondItem"
+				inline
 				@update:model-value="updateValue($event, secondLang)"
 			/>
 			<v-divider />
@@ -65,16 +67,20 @@
 
 <script setup lang="ts">
 import api from '@/api';
-import { DisplayItem, RelationQueryMultiple, useRelationMultiple } from '@/composables/use-relation-multiple';
+import VDivider from '@/components/v-divider.vue';
+import VForm from '@/components/v-form/v-form.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
 import { useRelationM2M } from '@/composables/use-relation-m2m';
+import { DisplayItem, RelationQueryMultiple, useRelationMultiple } from '@/composables/use-relation-multiple';
 import { useWindowSize } from '@/composables/use-window-size';
+import vTooltip from '@/directives/tooltip';
 import { useFieldsStore } from '@/stores/fields';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { toArray } from '@directus/shared/utils';
+import { isNil } from 'lodash';
 import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import LanguageSelect from './language-select.vue';
-import { isNil } from 'lodash';
 
 const props = withDefaults(
 	defineProps<{

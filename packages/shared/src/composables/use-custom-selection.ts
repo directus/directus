@@ -59,26 +59,30 @@ export function useCustomSelectionMultiple(
 ): UsableCustomSelectionMultiple {
 	const otherValues = ref<OtherValue[]>([]);
 
-	watch(currentValues, (newValue) => {
-		if (newValue === null) return;
-		if (Array.isArray(newValue) === false) return;
-		if (items.value === null) return;
-
-		(newValue as string[]).forEach((value) => {
+	watch(
+		currentValues,
+		(newValue) => {
+			if (newValue === null) return;
+			if (Array.isArray(newValue) === false) return;
 			if (items.value === null) return;
-			const values = items.value.map((item) => item.value);
-			const existsInValues = values.includes(value) === true;
 
-			if (existsInValues === false) {
-				const other = otherValues.value.map((o) => o.value);
-				const existsInOtherValues = other.includes(value) === true;
+			(newValue as string[]).forEach((value) => {
+				if (items.value === null) return;
+				const values = items.value.map((item) => item.value);
+				const existsInValues = values.includes(value) === true;
 
-				if (existsInOtherValues === false) {
-					addOtherValue(value);
+				if (existsInValues === false) {
+					const other = otherValues.value.map((o) => o.value);
+					const existsInOtherValues = other.includes(value) === true;
+
+					if (existsInOtherValues === false) {
+						addOtherValue(value);
+					}
 				}
-			}
-		});
-	});
+			});
+		},
+		{ immediate: true }
+	);
 
 	return { otherValues, addOtherValue, setOtherValue };
 
