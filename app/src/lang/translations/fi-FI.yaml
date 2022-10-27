@@ -1627,6 +1627,8 @@ layouts:
     invalid_geometry: Virheellinen geometria
     find_location: Etsi sijainti...
     no_compatible_fields: Ei yhteensopivia kenttiä
+  kanban:
+    crop: Rajaa
 panels:
   metric:
     name: Metrinen
