@@ -361,6 +361,14 @@ export class FieldsService {
 				? await this.knex.select('id').from('directus_fields').where({ collection, field: field.field }).first()
 				: null;
 
+			if (
+				(hookAdjustedField.type === 'alias' ||
+					this.schema.collections[collection].fields[field.field].type === 'alias') &&
+				hookAdjustedField.type !== this.schema.collections[collection].fields[field.field].type
+			) {
+				throw new InvalidPayloadException('Alias type cannot be changed');
+			}
+
 			if (hookAdjustedField.schema) {
 				const existingColumn = await this.schemaInspector.columnInfo(collection, hookAdjustedField.field);
 
@@ -475,7 +483,12 @@ export class FieldsService {
 					if (isM2O) {
 						await relationsService.deleteOne(collection, field);
 
-						if (relation.related_collection && relation.meta?.one_field) {
+						if (
+							relation.related_collection &&
+							relation.meta?.one_field &&
+							relation.related_collection !== collection &&
+							relation.meta.one_field !== field
+						) {
 							await fieldsService.deleteField(relation.related_collection, relation.meta.one_field);
 						}
 					}
