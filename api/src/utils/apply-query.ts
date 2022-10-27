@@ -750,7 +750,7 @@ function getFilterPath(key: string, value: Record<string, any>) {
 }
 
 function getOperation(key: string, value: Record<string, any>): { operator: string; value: any } {
-	if (key.startsWith('_') && key !== '_and' && key !== '_or' && CLIENT_FILTER_OPERATORS.includes(key.slice(1))) {
+	if (key.startsWith('_') && key !== '_and' && key !== '_or' && key.substring(1) in CLIENT_FILTER_OPERATORS) {
 		return { operator: key as string, value };
 	} else if (isPlainObject(value) === false) {
 		return { operator: '_eq', value };
