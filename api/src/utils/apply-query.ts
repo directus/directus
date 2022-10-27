@@ -11,7 +11,7 @@ import {
 } from '@directus/shared/types';
 import { CLIENT_FILTER_OPERATORS } from '@directus/shared/constants';
 import { Knex } from 'knex';
-import { clone, isPlainObject, set } from 'lodash';
+import { clone, filter, isPlainObject, set } from 'lodash';
 import { customAlphabet } from 'nanoid';
 import validate from 'uuid-validate';
 import { getHelpers } from '../database/helpers';
@@ -735,22 +735,33 @@ export function applyAggregate(dbQuery: Knex.QueryBuilder, aggregate: Aggregate,
 	}
 }
 
-function getFilterPath(key: string, value: Record<string, any>) {
+export function getFilterPath(key: string, value: Record<string, any>) {
 	const path = [key];
 
-	if (typeof Object.keys(value)[0] === 'string' && Object.keys(value)[0].startsWith('_') === true) {
+	const filterKey = Object.keys(value)[0];
+
+	if (
+		typeof filterKey === 'string' &&
+		filterKey.startsWith('_') &&
+		CLIENT_FILTER_OPERATORS.includes(filterKey.substring(1) as ClientFilterOperator)
+	) {
 		return path;
 	}
 
 	if (isPlainObject(value)) {
-		path.push(...getFilterPath(Object.keys(value)[0], Object.values(value)[0]));
+		path.push(...getFilterPath(filterKey, Object.values(value)[0]));
 	}
 
 	return path;
 }
 
-function getOperation(key: string, value: Record<string, any>): { operator: string; value: any } {
-	if (key.startsWith('_') && key !== '_and' && key !== '_or' && key.substring(1) in CLIENT_FILTER_OPERATORS) {
+export function getOperation(key: string, value: Record<string, any>): { operator: string; value: any } {
+	if (
+		key.startsWith('_') &&
+		key !== '_and' &&
+		key !== '_or' &&
+		CLIENT_FILTER_OPERATORS.includes(key.substring(1) as ClientFilterOperator)
+	) {
 		return { operator: key as string, value };
 	} else if (isPlainObject(value) === false) {
 		return { operator: '_eq', value };
