@@ -9,6 +9,7 @@ import {
 	SchemaOverview,
 	Type,
 } from '@directus/shared/types';
+import { CLIENT_FILTER_OPERATORS } from '@directus/shared/constants';
 import { Knex } from 'knex';
 import { clone, isPlainObject, set } from 'lodash';
 import { customAlphabet } from 'nanoid';
@@ -749,7 +750,7 @@ function getFilterPath(key: string, value: Record<string, any>) {
 }
 
 function getOperation(key: string, value: Record<string, any>): { operator: string; value: any } {
-	if (key.startsWith('_') && key !== '_and' && key !== '_or') {
+	if (key.startsWith('_') && key !== '_and' && key !== '_or' && CLIENT_FILTER_OPERATORS.includes(key.slice(1))) {
 		return { operator: key as string, value };
 	} else if (isPlainObject(value) === false) {
 		return { operator: '_eq', value };

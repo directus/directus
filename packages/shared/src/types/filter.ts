@@ -1,33 +1,8 @@
-export type FilterOperator =
-	| 'eq'
-	| 'neq'
-	| 'lt'
-	| 'lte'
-	| 'gt'
-	| 'gte'
-	| 'in'
-	| 'nin'
-	| 'null'
-	| 'nnull'
-	| 'contains'
-	| 'ncontains'
-	| 'icontains'
-	| 'between'
-	| 'nbetween'
-	| 'empty'
-	| 'nempty'
-	| 'intersects'
-	| 'nintersects'
-	| 'intersects_bbox'
-	| 'nintersects_bbox';
+import { FILTER_OPERATORS, CLIENT_FILTER_OPERATORS } from '../constants';
 
-export type ClientFilterOperator =
-	| FilterOperator
-	| 'starts_with'
-	| 'nstarts_with'
-	| 'ends_with'
-	| 'nends_with'
-	| 'regex';
+export type FilterOperator = typeof FILTER_OPERATORS[number];
+
+export type ClientFilterOperator = typeof CLIENT_FILTER_OPERATORS[number];
 
 export type Filter = LogicalFilter | FieldFilter;
 
