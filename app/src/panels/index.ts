@@ -1,11 +1,11 @@
 import { App } from 'vue';
 import { PanelConfig } from '@directus/shared/types';
-import { getSortedModules } from '@/utils/get-sorted-modules';
+import { sortBy } from 'lodash';
 
 export function getInternalPanels(): PanelConfig[] {
-	const panels = import.meta.glob<{ default: PanelConfig }>('./*/index.ts', { eager: true });
+	const panels = import.meta.glob<PanelConfig>('./*/index.ts', { import: 'default', eager: true });
 
-	return getSortedModules(panels, './*/index.ts');
+	return sortBy(Object.values(panels), 'id');
 }
 
 export function registerPanels(panels: PanelConfig[], app: App): void {

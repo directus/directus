@@ -1,11 +1,11 @@
 import { App } from 'vue';
 import { DisplayConfig } from '@directus/shared/types';
-import { getSortedModules } from '@/utils/get-sorted-modules';
+import { sortBy } from 'lodash';
 
 export function getInternalDisplays(): DisplayConfig[] {
-	const displays = import.meta.glob<{ default: DisplayConfig }>('./*/index.ts', { eager: true });
+	const displays = import.meta.glob<DisplayConfig>('./*/index.ts', { import: 'default', eager: true });
 
-	return getSortedModules(displays, './*/index.ts');
+	return sortBy(Object.values(displays), 'id');
 }
 
 export function registerDisplays(displays: DisplayConfig[], app: App): void {

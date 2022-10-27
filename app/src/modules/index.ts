@@ -4,12 +4,12 @@ import { useUserStore } from '@/stores/user';
 import RouterPass from '@/utils/router-passthrough';
 import { ModuleConfig } from '@directus/shared/types';
 import { ShallowRef, shallowRef } from 'vue';
-import { getSortedModules } from '@/utils/get-sorted-modules';
+import { sortBy } from 'lodash';
 
 export function getInternalModules(): ModuleConfig[] {
-	const modules = import.meta.glob<{ default: ModuleConfig }>('./*/index.ts', { eager: true });
+	const modules = import.meta.glob<ModuleConfig>('./*/index.ts', { import: 'default', eager: true });
 
-	return getSortedModules(modules, './*/index.ts');
+	return sortBy(Object.values(modules), 'id');
 }
 
 export function registerModules(modules: ModuleConfig[]): {

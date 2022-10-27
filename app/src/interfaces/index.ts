@@ -1,15 +1,14 @@
 import { App } from 'vue';
 import { InterfaceConfig } from '@directus/shared/types';
-import { getSortedModules } from '@/utils/get-sorted-modules';
+import { sortBy } from 'lodash';
 
 export function getInternalInterfaces(): InterfaceConfig[] {
-	const interfaces = import.meta.glob<{ default: InterfaceConfig }>('./*/index.ts', { eager: true });
-	const interfacesSystem = import.meta.glob<{ default: InterfaceConfig }>('./_system/*/index.ts', { eager: true });
+	const interfaces = import.meta.glob<InterfaceConfig>(['./*/index.ts', './_system/*/index.ts'], {
+		import: 'default',
+		eager: true,
+	});
 
-	return [
-		...getSortedModules(interfaces, './*/index.ts'),
-		...getSortedModules(interfacesSystem, './_system/*/index.ts'),
-	];
+	return sortBy(Object.values(interfaces), 'id');
 }
 
 export function registerInterfaces(interfaces: InterfaceConfig[], app: App): void {

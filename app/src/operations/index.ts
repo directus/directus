@@ -1,11 +1,11 @@
 import { App } from 'vue';
 import { OperationAppConfig } from '@directus/shared/types';
-import { getSortedModules } from '@/utils/get-sorted-modules';
+import { sortBy } from 'lodash';
 
 export function getInternalOperations(): OperationAppConfig[] {
-	const operations = import.meta.glob<{ default: OperationAppConfig }>('./*/index.ts', { eager: true });
+	const operations = import.meta.glob<OperationAppConfig>('./*/index.ts', { import: 'default', eager: true });
 
-	return getSortedModules(operations, './*/index.ts');
+	return sortBy(Object.values(operations), 'id');
 }
 
 export function registerOperations(operations: OperationAppConfig[], app: App): void {
