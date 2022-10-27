@@ -57,10 +57,13 @@ RUN if [[ -z "$PAYMENT_EXTENSION" ]] ; then echo "Payment extension disabled" ; 
 # Not sure why we have this folder here
 RUN rm -rf /directus/api/extensions/modules/__MACOSX || true
 
+COPY ./start_up.sh /directus/api
+RUN chmod +x /directus/api/start_up.sh
+
 WORKDIR /directus/api
 
 RUN mkdir -p ./uploads
 RUN mkdir -p ./snapshots
 
-CMD ["sh", "-c", "node ./cli.js bootstrap && for snapshots_file in ./snapshots/*.yaml; do echo $snapshots_file; node ./cli.js schema apply --yes $snapshots_file || true; done && node ./dist/start.js;"]
+CMD ["sh", "-c", "node ./cli.js bootstrap && node ./dist/start.js;"]
 EXPOSE 8055/tcp
