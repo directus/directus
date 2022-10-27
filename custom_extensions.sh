@@ -39,6 +39,6 @@ unzip directus-custom-extensions-release.zip
 
 ls -la ./directus-custom-extensions-release
 
-mv -v ./directus-payment-integration-release/collection-ext ${DIRECTUS_INTERFACES}
-mv -v ./directus-payment-integration-release/filter-ext ${DIRECTUS_INTERFACES}
-mv -v ./directus-payment-integration-release/loading-api-field ${DIRECTUS_INTERFACES}
+mv -v ./directus-custom-extensions-release/collection-ext ${DIRECTUS_INTERFACES}
+mv -v ./directus-custom-extensions-release/filter-ext ${DIRECTUS_INTERFACES}
+mv -v ./directus-custom-extensions-release/loading-api-field ${DIRECTUS_INTERFACES}
