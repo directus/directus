@@ -8,9 +8,6 @@ ARG GITLAB_PIPELINE_TOKEN
 ARG CI_API_V4_URL
 ARG PAYMENT_EXTENSION
 
-RUN export GITLAB_PIPELINE_TOKEN=${GITLAB_PIPELINE_TOKEN}
-RUN export CI_API_V4_URL=${CI_API_V4_URL}
-
 # Required to run OracleDB
 # Technically not required for the others, but I'd rather have 1 image that works for all, instead of building n images
 # per test
