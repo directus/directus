@@ -17,8 +17,8 @@ router.post(
 		});
 
 		if (Array.isArray(req.body)) {
-			const collectionKey = await collectionsService.createMany(req.body);
-			const records = await collectionsService.readMany(collectionKey);
+			const collectionKeys = await collectionsService.createMany(req.body);
+			const records = await collectionsService.readMany(collectionKeys);
 			res.locals.payload = { data: records || null };
 		} else {
 			const collectionKey = await collectionsService.createOne(req.body);
