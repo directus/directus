@@ -9,6 +9,10 @@ describe('getFilterPath tests', () => {
 		const path = getFilterPath('field', { nested: { _eq: 'nested' } });
 		expect(path).toStrictEqual(['field', 'nested']);
 	});
+	test('nested get filter path with _some', () => {
+		const path = getFilterPath('field', { alias: { _some: { nested: { _eq: 'test' } } } });
+		expect(path).toStrictEqual(['field', 'alias']);
+	});
 	test('get filter path for underscored field (issue #16189)', () => {
 		const path = getFilterPath('_field', { _actualField: { _contains: 'underscore' } });
 		expect(path).toStrictEqual(['_field', '_actualField']);
@@ -25,6 +29,11 @@ describe('getOperation tests', () => {
 		const { operator, value } = getOperation('field', { nested: { _eq: 'nested' } });
 		expect(operator).toBe('_eq');
 		expect(value).toBe('nested');
+	});
+	test('nested get operation with _none', () => {
+		const { operator, value } = getOperation('field', { alias: { _none: { nested: { _eq: 'test' } } } });
+		expect(operator).toBe('_none');
+		expect(value).toStrictEqual({ nested: { _eq: 'test' } });
 	});
 	test('get operation for underscored field (issue #16189)', () => {
 		const { operator, value } = getOperation('_field', { _actualField: { _contains: 'underscore' } });

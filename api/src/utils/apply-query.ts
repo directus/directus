@@ -9,7 +9,7 @@ import {
 	SchemaOverview,
 	Type,
 } from '@directus/shared/types';
-import { CLIENT_FILTER_OPERATORS } from '@directus/shared/constants';
+import { VALID_FILTER_OPERATORS } from '@directus/shared/constants';
 import { Knex } from 'knex';
 import { clone, isPlainObject, set } from 'lodash';
 import { customAlphabet } from 'nanoid';
@@ -743,7 +743,7 @@ export function getFilterPath(key: string, value: Record<string, any>) {
 	if (
 		typeof filterKey === 'string' &&
 		filterKey.startsWith('_') &&
-		CLIENT_FILTER_OPERATORS.includes(filterKey.substring(1) as ClientFilterOperator)
+		VALID_FILTER_OPERATORS.includes(filterKey.substring(1) as ClientFilterOperator)
 	) {
 		return path;
 	}
@@ -760,7 +760,7 @@ export function getOperation(key: string, value: Record<string, any>): { operato
 		key.startsWith('_') &&
 		key !== '_and' &&
 		key !== '_or' &&
-		CLIENT_FILTER_OPERATORS.includes(key.substring(1) as ClientFilterOperator)
+		VALID_FILTER_OPERATORS.includes(key.substring(1) as ClientFilterOperator)
 	) {
 		return { operator: key as string, value };
 	} else if (isPlainObject(value) === false) {

@@ -30,3 +30,5 @@ export const CLIENT_FILTER_OPERATORS = [
 	'nends_with',
 	'regex',
 ] as const;
+
+export const VALID_FILTER_OPERATORS = [...CLIENT_FILTER_OPERATORS, 'some', 'none'] as const;
