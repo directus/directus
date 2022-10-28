@@ -15,7 +15,7 @@ vi.mock('../../src/env', async () => {
 		DB_DATABASE: 'directus',
 		DB_USER: 'postgres',
 		DB_PASSWORD: 'psql1234',
-		...actual,
+		...(actual as object),
 	};
 });
 
@@ -23,9 +23,6 @@ vi.mock('@directus/shared/utils/node/get-extensions', () => ({
 	getPackageExtensions: vi.fn(() => Promise.resolve([])),
 	getLocalExtensions: vi.fn(() => Promise.resolve([customCliExtension])),
 }));
-
-//Original call
-// vi.mock(`/hooks/custom-cli/index.js`, () => customCliHook, { virtual: true });
 
 vi.mock(`/hooks/custom-cli/index.js`, () => customCliHook);
 
@@ -58,7 +55,9 @@ const setup = async () => {
 	return program;
 };
 
-beforeEach(vi.clearAllMocks);
+beforeEach(() => {
+	vi.clearAllMocks();
+});
 
 describe('cli hooks', () => {
 	test('should call hooks before and after creating the cli', async () => {
