@@ -39,7 +39,7 @@ export function getColumn(
 
 		if (functionName in fn) {
 			const collectionName = options?.originalCollectionName || table;
-			const type = schema?.collections?.[collectionName]?.fields?.[column]?.type ?? 'unknown';
+			const type = schema?.collections[collectionName]?.fields?.[columnName]?.type ?? 'unknown';
 			const allowedFunctions = getFunctionsForType(type);
 
 			if (allowedFunctions.includes(functionName) === false) {
