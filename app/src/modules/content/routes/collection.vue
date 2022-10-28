@@ -228,7 +228,7 @@
 				v-model:active="batchEditActive"
 				:primary-keys="selection"
 				:collection="collection"
-				@refresh="drawerBatchRefresh"
+				@refresh="batchRefresh"
 			/>
 
 			<template #sidebar>
@@ -252,7 +252,12 @@
 					@download="download"
 					@refresh="refresh"
 				/>
-				<flow-sidebar-detail location="collection" :collection="collection" :selection="selection" @refresh="refresh" />
+				<flow-sidebar-detail
+					location="collection"
+					:collection="collection"
+					:selection="selection"
+					@refresh="batchRefresh"
+				/>
 			</template>
 
 			<v-dialog :model-value="deleteError !== null">
@@ -498,7 +503,7 @@ export default defineComponent({
 			bookmarkIsMine,
 			bookmarkSaving,
 			clearLocalSave,
-			drawerBatchRefresh,
+			batchRefresh,
 			refresh,
 			refreshInterval,
 			currentLayout,
@@ -516,7 +521,7 @@ export default defineComponent({
 			await layoutRef.value?.state?.download?.();
 		}
 
-		async function drawerBatchRefresh() {
+		async function batchRefresh() {
 			selection.value = [];
 			await refresh();
 		}

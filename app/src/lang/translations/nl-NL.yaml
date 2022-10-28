@@ -19,7 +19,7 @@
 #'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
-identifier: Identificator
+identifier: ID
 avatar: Profielafbeelding
 application: Applicatie
 default_provider: Standaard
@@ -29,16 +29,19 @@ draft: Concept
 archived: Gearchiveerd
 modules: Modules
 module_bar: Modulebalk
-reset_width: Stel breedte terug
+logs: Logboeken
+reset_width: Reset breedte
 tile_size: Tegelgrootte
 edit_field: Veld Bewerken
 conditions: Voorwaarden
 location: Locatie
+condition_rules: Voorwaarde Regels
+input: Invoer
 maps: Kaarten
-switch_user: Andere gebruiker
+switch_user: Verander gebruiker
 item_creation: Item Aanmaken
 item_revision: Item Revisie
-enter_a_name: Vul een naam in...
+enter_a_name: Voer een naam in...
 duplicate_field: Dupliceer Veld
 half_width: Halve Breedte
 full_width: Volledige breedte
@@ -46,19 +49,22 @@ group: Groep
 export_items: Exporteer items
 and: En
 or: Of
-modifier: Modificator
+dataset_too_large_currently_showing_n_items: Gegevensset is te groot. Alleen de eerste {n} items worden nu weergegeven.
+modifier: Aanpasser
+custom: Aangepast
+hook: Hook
 fill_width: Vul Breedte
 field_name_translations: Veld-naam Vertalingen
-enter_password_to_enable_tfa: Voer je wachtwoord in om Tweestapsverificatie in te schakelen
-add_field: Voeg Veld Toe
+enter_password_to_enable_tfa: Voer je wachtwoord in om tweefactorauthenticatie in te schakelen
+add_field: Veld toevoegen
 role_name: Rol Naam
-branch: Tak
+branch: Aftakking
 leaf: Blad
 indeterminate: Onbepaald
 edit_collection: Collectie bewerken
 exclusive: Exclusief
 children: Onderliggende
-db_only_click_to_configure: 'Aleen in de databank: Klik om te configureren'
+db_only_click_to_configure: 'Alleen database: Klik om te configureren'
 show_active_items: Toon actieve items
 show_archived_items: Toon Gearchiveerde Items
 show_all_items: Toon alle items
@@ -75,6 +81,7 @@ delete_panel: Paneel verwijderen
 create_webhook: Webhook Aanmaken
 create_translation_string: Vertalingen aanmaken
 no_translation_string: Vertaalde Strings
+no_translation_string_copy: Er zijn nog geen vertaling reeksen.
 translation_string_key_placeholder: Tekenreeks van vertalingen...
 translation_string_translations_placeholder: Voeg nieuwe vertaling toe
 edit_translation_string: Vertaalstring bewerken
@@ -179,6 +186,7 @@ revision_post_create: Zo zag dit item eruit toen het werd gemaakt.
 revision_post_update: Zo zag dit item eruit na de update.
 changes_made: Hieronder staan de specifieke wijzigingen die zijn aangebracht in deze herziening.
 no_relational_data: Houd er rekening mee dat relatiegegevens hier niet bij betrokken zijn.
+junction_field_location: Verbindingsvelden Locatie
 top: Bovenaan
 bottom: Onderaan
 hide_field: Veld verbergen
@@ -248,6 +256,7 @@ geometry.LineString: LineString
 geometry.Polygon: Veelhoek
 geometry.MultiPoint: Multipoint
 geometry.MultiLineString: MultiLineString
+geometry.MultiPolygon: MultiVeelhoek
 not_available_for_type: Niet beschikbaar voor dit type
 create_translations: Vertalingen aanmaken
 auto_refresh: Automatische verversen
@@ -265,8 +274,12 @@ fields_group: Veld-Groep
 no_collections_found: Geen collecties gevonden.
 new_data_alert: 'Het volgende wordt aangemaakt in uw datamodel:'
 search_collection: Collectie doorzoeken...
+search_field: Zoekveld...
 new_field: 'Nieuw veld'
 new_collection: 'Nieuwe collectie'
+add_m2o_to_collection: 'Voeg M20 toe aan {collection}'
+add_o2m_to_collection: 'Voeg O2M toe aan {collection}'
+add_m2m_to_collection: 'Voeg M2M toe aan {collection}'
 choose_a_type: Kies een type...
 determined_by_relationship: Bepaald door relatie
 add_note: Voeg een hint toe voor de eindgebruiker...
@@ -301,13 +314,21 @@ primary_key: Primary Key
 foreign_key: Foreign Key
 finish_setup: Setup voltooien
 dismiss: Negeren
+toggle_raw_editor: Schakel Onbewerkte Bewerker
+raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
 raw_value: Ruwe waarde
+copy_raw_value: Kopieer Onbewerkte Waarde
 copy_raw_value_success: Gekopieerd
 copy_raw_value_fail: Kopiëren mislukt
+paste_raw_value: Plak Onbewerkte Waarde
 paste_raw_value_success: Geplakt
 paste_raw_value_fail: Plakken mislukt
+view_raw_value: Bekijk Onbewerkte Waarde
 edit_raw_value: Bewerk Ruwe Waarde
 enter_raw_value: Ruwe waarde invoeren...
+clear_value: Wis Waarde
+clear_changes: Verwijder Veranderingen
+clear_items: Verwijder Items
 reset_to_default: Herstel naar Standaard
 undo_changes: Ongedaan maken
 notifications: Notificaties
@@ -324,9 +345,13 @@ revision_delta_created_externally: Extern aangemaakt
 revision_delta_updated: '1 veld bijgewerkt | {count} velden bijgewerkt'
 revision_delta_deleted: Verwijderd
 revision_delta_reverted: Teruggedraaid
+revision_delta_update_message: Dit veld is bijgewerkt, maar de waarde wordt verborgen om veiligheidsredenen.
 revision_delta_other: Revisie
 revision_delta_by: '{date} door {user}'
+presentation_text_values_cannot_be_reimported: "Gebruikt presentatietekst, waardes kunnen niet opnieuw worden geïmporteerd."
+download_page_as_csv: 'Download Pagina als CSV'
 private_user: Privé gebruiker
+creation_preview: Creatie voorbeeld
 revision_preview: Revisie voorbeeld
 updates_made: Gemaakte updates
 leave_comment: Plaats een reactie...
@@ -340,6 +365,7 @@ related_collection: Gerelateerde collecties
 related_collections: Gerelateerde collecties
 translations_collection: Vertalingscollectie
 languages_collection: Talen Collectie
+import_data_input_placeholder: CSV of JSON...
 import_data_button: Importeren starten
 import_data_indeterminate: Gegevens importeren...
 import_data_success: Gegevens succesvol geïmporteerd uit {filename}
@@ -376,6 +402,8 @@ functions:
 date-fns_date: PPP
 date-fns_time: 'H:mm:ss'
 date-fns_time_no_seconds: 'H:mm'
+date-fns_time_24hour: 'HH:mm:ss'
+date-fns_time_no_seconds_24hour: 'HH:mm'
 date-fns_date_short: 'd MMM u'
 date-fns_time_short: 'H:mm'
 date-fns_date_short_no_year: d MMM
@@ -429,6 +457,12 @@ download_file: Download bestand
 open_file_in_tab: Openen in nieuw tabblad
 start_export: Start exporteren
 not_available_for_local_downloads: Niet beschikbaar voor lokale downloads
+exporting_all_items_in_collection: Alle {total} items uit {collection} aan het exporteren.
+exporting_limited_items_in_collection: '{limit} van de {total} items uit {collection} aan het exporteren.'
+exporting_no_items_to_export: Geen items om te exporteren. Pas de exportconfiguratie hieronder aan.
+exporting_download_hint: Eenmaal voltooid, zal dit {format}-bestand automatisch worden gedownload naar je apparaat.
+exporting_batch_hint: Deze export zal worden verwerkt in batches, en wanneer voltooid, zal het {format}-bestand worden opgeslagen in de Bestandsbibliotheek.
+exporting_batch_hint_forced: Vanwege het grote aantal items moet deze export in batches worden verwerkt, en wanneer voltooid, zal het {format}-bestand worden opgeslagen in de Bestandsbibliotheek.
 collection_key: Collectie Key
 name: Naam
 primary_key_field: Primary Key veld
@@ -439,6 +473,7 @@ created_on: Aangemaakt op
 creating_collection_info: Geef de collectie een naam en stel het unieke "key" veld in...
 creating_collection_system: Schakel een van deze optionele velden in.
 auto_increment_integer: Auto-incremented integer
+auto_increment_big_integer: Automatisch verhogende Big Integer
 generated_uuid: Gegenereerde UUID
 manual_string: Handmatig ingevoerde tekst
 save_and_create_new: Opslaan en nieuwe aanmaken
@@ -460,7 +495,9 @@ disabled: Uitgeschakeld
 information: Informatie
 report_bug: Bug melden
 request_feature: Vraag nieuwe feature aan
+request_body: Request Body
 interface_not_found: 'Interface "{interface}" niet gevonden.'
+operation_not_found: 'Bewerking "{operation}" niet gevonden.'
 reset_interface: Interface resetten
 display_not_found: 'Display "{display}" niet gevonden.'
 reset_display: Reset Display
@@ -487,14 +524,26 @@ relationship_not_setup: De relatie is niet correct geconfigureerd
 display_template_not_setup: De weergavesjabloon optie is onjuist geconfigureerd
 collection_field_not_setup: De collectie-veld optie is onjuist geconfigureerd
 select_a_collection: Selecteer een collectie
+select_a_field: Selecteer een veld
 active: Actief
+move_to: Verplaatsen naar...
 copy: Kopieer
+copy_to: Kopieer naar...
+no_other_dashboards_copy: Je hebt nog geen Dashboards.
+inactive: Inactief
 users: Gebruikers
 activity: Activiteit
+activity_item: Activiteit item
 action: Actie
 ip_address: IP Adres
 user_agent: User Agent
+origin: Herkomst
 webhooks: Webhooks
+decimals: Decimalen
+value_decimals: Waarde Decimaal
+min_value: Minimumwaarde
+max_value: Maximumwaarde
+automatic: Automatisch
 field_width: Veld breedte
 add_filter: Filter toevoegen
 upper_limit: Bovengrens...
@@ -504,6 +553,7 @@ documentation: Documentatie
 sidebar: Sidebar
 duration: Duur
 charset: Karakterset
+second: seconde
 file_moved: Bestand verplaatst
 collection_created: Collectie aangemaakt
 modified_on: Aangepast op
@@ -537,6 +587,9 @@ errors:
   INVALID_PROVIDER: Gebruiker behoort tot een andere autorisatieprovider
   INVALID_QUERY: Ongeldige zoekopdracht
   INVALID_CONFIG: Ongeldige configuratie
+  INVALID_TOKEN: Ongeldige token
+  INVALID_IP: IP-adres niet toegestaan
+  INVALID_USER: Authenticatie van gebruiker mislukt
   ITEM_LIMIT_REACHED: Item limiet bereikt
   ITEM_NOT_FOUND: Item niet gevonden
   ROUTE_NOT_FOUND: Niet gevonden
@@ -546,11 +599,29 @@ errors:
   UNPROCESSABLE_ENTITY: Onverwerkbare entiteit
   INTERNAL_SERVER_ERROR: Onverwachte fout
   NOT_NULL_VIOLATION: Waarde kan niet "null" zijn
+  ILLEGAL_ASSET_TRANSFORMATION: Afbeeldingsbron te groot om een voorbeeld van te bekijken
+  VALUE_TOO_LONG: Waarde is te lang
+  VALUE_OUT_OF_RANGE: Waarde valt buiten het bereik
+  INVALID_FOREIGN_KEY: Ongeldige Foreign Key
   UNKNOWN: Onverwachte fout
+  GRAPHQL_VALIDATION_EXCEPTION: GraphQL validatie fout
+  SERVICE_UNAVAILABLE: Dienst onbeschikbaar
+  UNSUPPORTED_MEDIA_TYPE: Niet-ondersteund mediatype
+  UNEXPECTED_RESPONSE: Onverwachte resultaat
+  TOKEN_EXPIRED: Token verlopen
+  RANGE_NOT_SATISFIABLE: Ongeldig bereik
+  METHOD_NOT_ALLOWED: Methode niet toegestaan
+  REQUESTS_EXCEEDED: Limiet aantal verzoeken bereikt
+security: Beveiliging
 value_hashed: Waarde veilig opgeslagen
 bookmark_name: Bladwijzer naam...
 create_bookmark: Bladwijzer aanmaken
 edit_bookmark: Bladwijzer bewerken
+edit_personal_bookmark: Bewerk persoonlijke bladwijzer
+edit_role_bookmark: Bewerk Rol bladwijzer
+edit_global_bookmark: Bewerk globale bladwijzer
+cannot_edit_role_bookmarks: Kan niet Rol bladwijzers bewerken
+cannot_edit_global_bookmarks: Kan niet globale bladwijzers bewerken
 bookmarks: Bladwijzers
 presets: Voorkeuren
 unexpected_error: Onverwachte fout
@@ -558,9 +629,11 @@ unexpected_error_copy: Een onverwachte fout is opgetreden. Probeer het later opn
 copy_details: Kopieer details
 no_app_access: Geen App Toegang
 no_app_access_copy: Deze gebruiker heeft geen toestemming om de admin app te gebruiken.
+password_reset_sent: Als je een account hebt, dan hebben we je een beveiligde link gestuurd om je wachtwoord te resetten
 password_reset_successful: Wachtwoord succesvol opnieuw ingesteld
 back: Terug
 filter: Filter
+edit_image: Bewerk afbeelding
 editing_image: Afbeelding bewerken
 square: Vierkant
 free: Vrij
@@ -573,15 +646,23 @@ delete_collection: Collectie verwijderen
 update_collection_success: Collectie bijgewerkt
 delete_collection_success: Collectie verwijderd
 make_collection_visible: Maak Collectie Zichtbaar
+make_collection_hidden: Maak collectie verborgen
+make_folder_visible: Maak map zichtbar
+make_folder_hidden: Maak map verborgen
+goto_collection_content: Bekijk inhoud
 start_end_of_count_items: '{start}-{end} van {count} items'
 start_end_of_count_filtered_items: '{start}-{end} van {count} gefilterde items'
 one_item: '1 item'
 one_filtered_item: '1 gefilterd item'
+delete_collection_are_you_sure: >-
+  Weet je zeker dat je collectie "{collection}" wilt verwijderen? Dit zal de collectie en alle items die erin zijn opgeslagen verwijderen. Deze actie is permanent.
+delete_folder_are_you_sure: Weet je zeker dat je de map "{folder}" wilt verwijderen? Geneste mappen en collecties zullen worden verplaatst naar het hoogste niveau.
 collections_shown: Collecties getoond
 visible_collections: Zichtbare collecties
 hidden_collections: Verborgen collecties
 show_hidden_collections: Verborgen collecties tonen
 hide_hidden_collections: Verborgen collecties verbergen
+show_header: Toon kop
 unmanaged_collections: Niet geconfigureerde Collecties
 system_collections: Systeem Collecties
 placeholder: Tijdelijke plaatshouder
@@ -597,9 +678,12 @@ color: Kleur
 circle: Cirkel
 empty_item: Leeg item
 log_in_with: 'Log in met {provider}'
+conditional_styles: Voorwaardelijke stijlen
+advanced_settings: Geavanceerde instellingen
 advanced_filter: Geavanceerd filter
 delete_advanced_filter: Verwijder filter
 change_advanced_filter_operator: Vervang operatie
+advanced: Geavanceerd
 operators:
   eq: Gelijk aan
   neq: Niet gelijk aan
@@ -613,6 +697,7 @@ operators:
   nnull: Is niet null
   contains: Bevat
   ncontains: Bevat niet
+  icontains: Bevat (ongevoelig)
   starts_with: Begint met
   nstarts_with: Begint niet met
   ends_with: Eindigt met
@@ -623,6 +708,12 @@ operators:
   nempty: Is niet leeg
   all: Bevat deze keys
   has: Bevat enkele van deze keys
+  intersects: Overlapt
+  nintersects: Overlapt niet
+  intersects_bbox: Overlapt begrenzingsvak
+  nintersects_bbox: Overlapt niet met begrenzingsvak
+  regex: Komt overeen met RegExp
+custom_validation_message: Aangepaste validatiemelding
 loading: Aan het laden...
 drop_to_upload: Sleep hier om te uploaden
 item: Item
@@ -660,30 +751,73 @@ add_file: Bestand toevoegen
 replace_file: Vervang Bestand
 no_results: Geen resultaten
 no_results_copy: Pas de zoekfilters aan om resultaten te zien.
+no_visible_fields: Leeg formulier
+no_visible_fields_copy: Dit formulier bevat geen zichtbare velden.
 clear_filters: Filters wissen
 saves_automatically: Slaat automatisch op
 role: Rol
+edit_role: Rol bewerken
 rule: Regel
 user: Gebruiker
 no_presets: Geen Voorkeuren
 no_presets_copy: Geen voorkeuren of bladwijzers.
 no_presets_cta: Voorkeur Aanmaken
+presets_only: Alleen voorinstellingen
 create: Maak
 on_create: Tijdens Aanmaken
 on_update: Tijdens updaten
 read: Zichtbaar
 update: Updaten
+delete: Verwijder
 select_fields: Selecteer velden
 format_text: Formateer tekst
+format_value: Formatteer waarde
+abbreviate_value: Waarde afkorten
+operator: Operator
 bold: Vetgedrukt
 toggle: Schakel
 icon_on: Icoon aan
 icon_off: Icoon Uit
 label: Label
+flows: Flows
+flow: Flow
+select_a_flow: Selecteer een Flow
+run_flow_on_current: Voer Flow uit op dit item
+run_flow_on_current_edited_confirm: Dit item kan aangepast worden door deze Flow, weet je zeker dat je het wilt uitvoeren?
+run_flow_success: Flow "{flow}" is succesvol uitgevoerd
+trigger: Trigger
+trigger_options: Trigger opties
+view_trigger: Trigger weergeven
+create_trigger: Trigger toevoegen
+trigger_setup: Trigger setup
+change_trigger: Trigger aanpassen
+flow_delete_confirm: Weet je zeker dat je Flow "{flow}" wilt verwijderen? Dit kan niet ongedaan gemaakt worden.
+set_flow_active: Activeer Flow
+set_flow_inactive: Deactiveer Flow
+edit_flow: Bewerk Flow
+delete_flow: Verwijder Flow
+no_other_flows_copy: Je hebt nog geen Flows.
+no_flows: Geen Flows
+no_flows_copy: Je hebt nog geen Flows.
+create_flow: Flow aanmaken
+creating_new_flow: Flow aan het maken
+updating_flow: Flow aan het bewerken
+flow_setup: Flow setup
 flow_name: Naam
+flow_tracking: Activiteit & Logboeken Tracking
+flow_tracking_all: Track Activiteit & Logboeken
 flow_tracking_activity: Track alleen activiteiten
 flow_tracking_null: Niets tracken
+start_flow: Start Flow
+stop_flow: Stop Flow
+create_operation: Operatie aanmaken
+edit_operation: Operatie bewerken
 code: Code
+operation_options: Operatie opties
+operation_name: Operatienaam...
+operation_key_unique_error: Operatie-sleutels moeten uniek zijn in een Flow
+operation_handle_resolve: 'Los op: Klik om toe te voegen, of sleep om te omleiden'
+operation_handle_reject: 'Weiger: Klik om toe te voegen, of sleep om te omleiden'
 insights: Inzichten
 dashboard: Dashboard
 panel: Paneel
@@ -691,26 +825,54 @@ panel_options: Paneelopties
 panel_header: Paneelrubriek
 panel_name_placeholder: Benoem dit paneel...
 panel_note_placeholder: Optionele details over dit paneel...
+panel_delete_confirm: Weet je zeker dat je dit paneel wilt verwijderen? Dit kan niet ongedaan worden gemaakt.
+dashboard_delete_confirm: Weet je zeker dat je dit dashboard wilt verwijderen? Dit kan niet ongedaan worden gemaakt.
+edit_dashboard: Bewerk dashboard
+delete_dashboard: Verwijder dashboard
 visible: Zichtbaar
+prefix_placeholder: Tekst voorafgaand van waarde...
+suffix_placeholder: Tekst achter waarde...
+decimals_placeholder: Aantal decimalen...
 no_dashboards: Geen Dashboards
 no_dashboards_copy: Je hebt nog geen dashboards.
+create_dashboard: Maak dashboard
+dashboard_name: Dashboard naam
 no_data: Geen gegevens
+no_data_in_flow: Er zijn geen gegevens binnen deze Flow geproduceerd of benaderd
+accountability: Verantwoording
+details: Details
 full_screen: Volledig scherm
+full_text_search: Full text-zoeken
+edit_panels: Bewerk panelen
+center_align: Midden uitlijnen
+left_align: Links uitlijnen
+right_align: Rechts uitlijnen
+fit_to_screen: Aanpassen aan scherm
 image_url: Afbeeldings-url
 alt_text: Alternatieve tekst
 media: Media
+quality: Kwaliteit
 width: Breedte
 height: Hoogte
+transformation_preset_key: Transformation Preset Key
 source: Bron
 url_placeholder: Voer een URL in...
 display_text: Weergegeven tekst
 display_text_placeholder: Enter weergegeven tekst...
+interface_group_text_and_numbers: Tekst en cijfers
+interface_group_selection: Selectie
+interface_group_relational: Relationeel
+interface_group_presentation: Weergave
+interface_group_groups: Groepen
+interface_group_other: Overige
 tooltip: Tooltip
 tooltip_placeholder: Voer een tooltip in...
 unlimited: Onbeperkt
 open_link_in: Open link in
 new_tab: Nieuw tabblad
 current_tab: Huidig tabblad
+save_image: Afbeelding opslaan
+save_media: Media opslaan
 wysiwyg_options:
   aligncenter: Align Center
   alignjustify: Align Justify
@@ -768,6 +930,7 @@ adding_user: Gebruiker toevoegen
 unknown_user: Onbekende gebruiker
 creating_in: 'Item maken in {collection}'
 editing_in: 'Item bewerken in {collection}'
+viewing_in: 'Bekijken van item uit {collection}'
 creating_unit: '{unit} aan het aanmaken'
 editing_unit: '{unit} aan het bewerken'
 editing_in_batch: '{count} items aan het wijzigen'
@@ -776,9 +939,11 @@ settings_data_model: Data model
 settings_permissions: Rollen & Permissies
 settings_project: Project Instellingen
 settings_webhooks: Webhooks
+settings_flows: Flows
 settings_presets: Voorkeuren & Bladwijzers
 one_or_more_options_are_missing: Eén of meer opties ontbreken
 scope: Bereik
+actions: Acties
 select: Selecteer...
 layout: Lay-out
 tree_view: Boomstructuurweergave
@@ -788,10 +953,16 @@ preset_search_placeholder: Zoekterm...
 editing_preset: Voorkeur aan het Wijzigen
 layout_preview: Lay-out voorbeeld
 layout_setup: Lay-out instellingen
+data: Data
 unsaved_changes: Niet-opgeslagen wijzigingen
 unsaved_changes_copy: Weet je zeker dat je pagina wilt verlaten?
 discard_changes: Wijzigingen ongedaan maken
+discard_all_changes: Alle wijzigingen verwerpen
+discard_changes_copy: Weet je zeker dat je alle wijzigingen wilt verwerpen?
+show_x_axis: Toon X-as
+show_y_axis: Toon Y-as
 keep_editing: Blijf wijzigen
+page_help_collections_overview: '**Collecties overzicht** - Overzicht van alle collecties waartoe je toegang hebt.'
 page_help_collections_collection: >-
   **Browse Items** — Toont alle items in {collection}. Pas layout, filters en sortering aan om je weergave aan te passen en sla bladwijzers van deze verschillende configuraties op voor snelle toegang.
 page_help_collections_item: >-
@@ -817,9 +988,14 @@ page_help_settings_presets_item: >-
   **Voorkeur Detail** — Formulier om voorkeuren en bladwijzers mee te beheren.
 page_help_settings_webhooks_collection: '**Browse Webhooks** — Toont alle webhooks in het project.'
 page_help_settings_webhooks_item: '**Webhook Detail** - Een formulier voor het maken en beheren van project webhooks.'
+page_help_settings_flows_collection: '**Blader door Flows** — Toon alle Flows in het project.'
+page_help_settings_flows_item: '**Flow details** — Werkruimte voor het beheren van één of meerdere operaties.'
+page_help_settings_translation_strings_collection: '**Blader door vertaling reeksen** — Toont alle vertaling reeksen in het project.'
 page_help_users_collection: '**User Directory** — Laat alle gebruikers in dit project zien.'
 page_help_users_item: >-
   **Gebruikersdetail** — Beheer je accountgegevens, of bekijk de details van andere gebruikers.
+page_help_insights_overview: '**Inzichten** — Lijst van dashboards waar je toegang toe hebt.'
+page_help_insights_dashboard: '**Dashboard** — Werkruimte voor het beheren van één of meer panelen'
 activity_feed: Activiteiten
 add_new: Nieuw Toevoegen
 create_new: Nieuwe aanmaken
@@ -829,11 +1005,25 @@ no_layout_collection_selected_yet: Geen layout/collectie geselecteerd
 batch_delete_confirm: >-
   Geen items geselecteerd | Weet je zeker dat je dit item wilt verwijderen? Dit kan niet ongedaan gemaakt worden. | Weet je zeker dat je {count} items wilt verwijderen? Dit kan niet ongedaan gemaakt worden.
 cancel: Annuleer
+no_upscale: Afbeeldingen niet opschalen
 collection: Collectie
 collections: Collecties
+content: Inhoud
 singleton: Singleton
 singleton_label: Behandel als één object
 system_fields_locked: Systeem velden zijn vergrendeld en kunnen niet worden bewerkt
+directus_collection:
+  directus_activity: Verantwoordings-logboeken voor alle gebeurtenissen
+  directus_collections: Aanvullende collectie configuratie en metadata
+  directus_dashboards: Dashboards binnen de Inzichten module
+  directus_fields: Aanvullende collectie configuratie en metadata
+  directus_files: Metadata voor alle beheerde bestanden
+  directus_flows: Automatisering Flows
+  directus_folders: Geeft virtuele map voor bestanden
+  directus_migrations: Welke versie van de database je gebruikt
+  directus_notifications: Notificaties verzonden naar gebruikers
+  directus_operations: Operaties die worden uitgevoerd in Flows
+  directus_panels: Individuele panelen binnen de Inzichten dashboards
 fields:
   directus_activity:
     item: Item Primary Key
@@ -843,6 +1033,7 @@ fields:
     user: Actie door
     comment: Reactie
     user_agent: User Agent
+    origin: Herkomst
     ip: IP Adres
     revisions: Revisies
   directus_collections:
@@ -895,23 +1086,42 @@ fields:
     tags: Tags
     language: Taal
     theme: Thema
+    theme_light: Lichte modus
+    theme_dark: Donkere Modus
     tfa_secret: 2FA (Twee-Factor Authenticatie)
+    admin_options: Admin opties
     status: Status
+    status_draft: Concept
+    status_invited: Uitgenodigd
     status_active: Actief
+    status_archived: Gearchiveerd
     role: Rol
     token: Token
+    provider: Provider
     last_page: Laatste pagina
     last_access: Laatste toegang
+    email_notifications: Email Notificaties
   directus_settings:
+    jpg: JPEG
+    png: PNG
+    webP: WebP
+    tiff: Tiff
+    basemaps_style: Mapbox stijl
+    mapbox_key: Toegangstoken Mapbox
+    attribution_placeholder: '© OpenStreetMap bijdragers'
     project_name: Project Naam
     project_url: Project URL
     project_color: Project kleur
     project_logo: Project logo
+    default_language: Standaard Taal
+    branding: Merk & Stijl
     public_foreground: Openbare voorgrond
     public_background: Openbare achtergrond
     public_note: Openbare notitie
     auth_password_policy: Wachtwoordbeleid
     auth_login_attempts: Login pogingen
+    files_and_thumbnails: Bestanden & Opslag
+    storage_default_folder: Standaard map
     custom_css: Aangepastte CSS
     module_bar: Modulebalk
   directus_shares:
@@ -942,6 +1152,10 @@ fields:
     value: Waarde
     collections: Collecties
 field_options:
+  directus_settings:
+    security_divider_title: Beveiliging
+    mapbox_key: Toegangstoken Mapbox
+    basemaps_style: Mapbox stijl
   directus_activity:
     create: Maak
     update: Updaten
@@ -962,9 +1176,15 @@ field_options:
       name_name: Naam
     collections_name: Collecties
   directus_users:
+    dropdown_light: Lichte modus
+    dropdown_dark: Donkere Modus
+    admin_divider: Admin opties
+    status_dropdown_draft: Concept
     status_dropdown_active: Actief
+    status_dropdown_archived: Gearchiveerd
   directus_webhooks:
     status_options_active: Actief
+    status_options_inactive: Inactief
     actions_create: Maak
     actions_update: Updaten
     headers:
@@ -1061,6 +1281,7 @@ interfaces:
     include_system_collections: Toon systeem collecties
   select-color:
     color: Kleur
+    placeholder: Kies een kleur...
   datetime:
     datetime: Datum/tijd
     description: Voer datums en tijden in
@@ -1291,6 +1512,9 @@ layouts:
     cozy: Knus
   calendar:
     calendar: Kalender
+  kanban:
+    crop: Bijsnijden
+    advanced: Geavanceerd
 panels:
   label:
     name: Label
@@ -1302,3 +1526,6 @@ operations:
     message: Bericht
   request:
     url: URL
+  trigger:
+    flows: Flows
+    flow: Flow

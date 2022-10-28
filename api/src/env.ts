@@ -120,6 +120,7 @@ const allowedEnvironmentVars = [
 	'AUTH_.+_ALLOW_PUBLIC_REGISTRATION',
 	'AUTH_.+_DEFAULT_ROLE_ID',
 	'AUTH_.+_ICON',
+	'AUTH_.+_LABEL',
 	'AUTH_.+_PARAMS',
 	'AUTH_.+_ISSUER_URL',
 	'AUTH_.+_AUTH_REQUIRE_VERIFIED_EMAIL',
@@ -186,7 +187,7 @@ const defaults: Record<string, any> = {
 	HOST: '0.0.0.0',
 	PORT: 8055,
 	PUBLIC_URL: '/',
-	MAX_PAYLOAD_SIZE: '100kb',
+	MAX_PAYLOAD_SIZE: '1mb',
 	MAX_RELATIONAL_DEPTH: 10,
 
 	DB_EXCLUDE_TABLES: 'spatial_ref_sys,sysdiagrams',
