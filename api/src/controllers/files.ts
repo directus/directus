@@ -108,7 +108,7 @@ export const multipartHandler: RequestHandler = (req, res, next) => {
 	function tryDone() {
 		if (savedFiles.reduce((cnt: number) => cnt + 1, 0) === fileCount) {
 			if (fileCount === 0) {
-				return next(new InvalidPayloadException(`No files where included in the body`));
+				return next(new InvalidPayloadException(`No files were included in the body`));
 			}
 
 			res.locals.savedFiles = savedFiles;
