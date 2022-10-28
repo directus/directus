@@ -38,8 +38,8 @@ export function getColumn(
 		const columnName = column.match(REGEX_BETWEEN_PARENS)![1];
 
 		if (functionName in fn) {
-			const type =
-				schema?.collections[options?.originalCollectionName || table]?.fields?.[columnName]?.type ?? 'unknown';
+                const collectionName = options?.originalCollectionName || table;
+                const type = this.schema.collections?.[collectionName]?.fields?.[column]?.type ?? 'unknown';
 			const allowedFunctions = getFunctionsForType(type);
 
 			if (allowedFunctions.includes(functionName) === false) {

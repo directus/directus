@@ -42,8 +42,8 @@ export class FnHelperOracle extends FnHelper {
 	}
 
 	count(table: string, column: string, options?: FnHelperOptions): Knex.Raw<any> {
-		const type =
-			this.schema.collections?.[options?.originalCollectionName || table]?.fields?.[column]?.type ?? 'unknown';
+                const collectionName = options?.originalCollectionName || table;
+                const type = this.schema.collections?.[collectionName]?.fields?.[column]?.type ?? 'unknown';
 
 		if (type === 'json') {
 			return this.knex.raw("json_value(??.??, '$.size()')", [table, column]);
