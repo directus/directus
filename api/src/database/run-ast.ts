@@ -264,11 +264,11 @@ function getDBQuery(
 	let hasMultiRelationalSort: boolean | undefined;
 
 	if (queryCopy.sort) {
-                const sortResult = applySort(knex, schema, dbQuery, queryCopy.sort, table, aliasMap, true);
-                if (sortResult) {
-                    sortRecords = sortResult.sortRecords;
-                    hasMultiRelationalSort = sortResult.hasMultiRelationalSort;
-                }
+		const sortResult = applySort(knex, schema, dbQuery, queryCopy.sort, table, aliasMap, true);
+		if (sortResult) {
+			sortRecords = sortResult.sortRecords;
+			hasMultiRelationalSort = sortResult.hasMultiRelationalSort;
+		}
 	}
 
 	const { hasMultiRelationalFilter } = applyQuery(knex, table, dbQuery, queryCopy, schema, {
