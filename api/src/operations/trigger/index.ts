@@ -19,12 +19,13 @@ export default defineOperationApi<Options>({
 		if (Array.isArray(payloadObject)) {
 			result = await Promise.all(
 				payloadObject.map((payload) => {
-					const updatedData = { ...context.data, $last: payload };
+					const updatedData = { $trigger: payload, $last: payload };
 					return flowManager.runOperationFlow(flow, payload, { ...context, data: updatedData });
 				})
 			);
 		} else {
-			result = await flowManager.runOperationFlow(flow, payloadObject, context);
+			const updatedData = { $trigger: payload, $last: payload };
+			result = await flowManager.runOperationFlow(flow, payloadObject, { ...context, data: updatedData });
 		}
 
 		return result;
