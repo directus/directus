@@ -23,6 +23,8 @@ import { RelationM2M } from '@/composables/use-relation-m2m';
 import { RelationM2O } from '@/composables/use-relation-m2o';
 import { RelationO2M } from '@/composables/use-relation-o2m';
 import { useFieldsStore } from '@/stores/fields';
+import { Field } from '@directus/shared/types';
+import { Vector2 } from '@/utils/vector2';
 
 interface Props {
 	collection: string;
@@ -43,6 +45,8 @@ interface Props {
 	relationInfo: RelationM2A | RelationM2M | RelationM2O | RelationO2M | null;
 	displayTemplates: Record<string, string>;
 	running: boolean;
+	primaryKeyField: Field | null
+	fixedPositions: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -60,6 +64,19 @@ const props = withDefaults(defineProps<Props>(), {
 	onSortChange: () => undefined,
 	onAlignChange: () => undefined,
 });
+
+let angle = 0
+let radius = 0.1
+
+function getCirclePosition() {
+	const x = Math.cos(angle) * radius
+	const y = Math.sin(angle) * radius
+
+	angle = (angle + 0.653) % (Math.PI * 2)
+	radius += 0.1 / radius + 0.01
+
+	return { x, y }
+}
 
 const emit = defineEmits(['update:selection', 'update:tableHeaders', 'update:limit', 'update:fields']);
 
@@ -90,10 +107,13 @@ watch(() => props.items, (newItems, oldItems) => {
 	graph.clear()
 
 	for(const item of newItems) {
-		graph.addNode(`${props.collection}:${item.id}`, {
+
+		const { x, y } = getCirclePosition()
+
+		graph.addNode(`${props.collection}:${item[props.primaryKeyField!.field]}`, {
 			label: renderStringTemplate(props.displayTemplates[props.collection], item).displayValue.value,
-			x: Math.random() * 10,
-			y: Math.random() * 10,
+			x,
+			y,
 			size: size,
 			color: '#000',
 		});
@@ -106,75 +126,62 @@ watch(() => props.items, (newItems, oldItems) => {
 
 		if(Array.isArray(relationData)) {
 			for(const relation of relationData) {
-				createRelatedItem(graph, relation, item)
+				createRelatedItem(relation, item)
 			}
 		} else if(isNil(relationData) === false) {
-			createRelatedItem(graph, relationData, item)
+			createRelatedItem(relationData, item)
 		}
 	}
 }, {immediate: true})
 
-function createRelatedItem(graph: Graph, data: Record<string, any>, item: Record<string, any>) {
-	if(props.relationInfo?.type === 'm2a') {
-		const collection = data[props.relationInfo.collectionField.field]
-		const idField = fieldsStore.getPrimaryKeyFieldForCollection(collection)!.field
-		const id = data[props.relationInfo.junctionField.field][idField]
+function createRelatedItem(data: Record<string, any>, item: Record<string, any>) {
+	let collection: string
+	let id: string
+	let label: string | false
 
-		if(!graph.hasNode(`${collection}:${id}`)) {
-			graph.addNode(`${collection}:${id}`, {
-				label: renderStringTemplate(props.displayTemplates[collection], data[props.relationInfo.junctionField.field]).displayValue.value,
-				x: Math.random() * 10,
-				y: Math.random() * 10,
-				size: size,
-				color: '#000',
-			});
-		}
-		graph.addEdge(`${props.collection}:${item.id}`, `${collection}:${id}`);
+	if(props.relationInfo?.type === 'm2a') {
+		collection = data[props.relationInfo.collectionField.field]
+		const idField = fieldsStore.getPrimaryKeyFieldForCollection(collection)!.field
+		id = data[props.relationInfo.junctionField.field][idField]
+		label = renderStringTemplate(props.displayTemplates[collection], data[props.relationInfo.junctionField.field]).displayValue.value
 
 	} else if(props.relationInfo?.type === 'm2m') {
-		const collection = props.relationInfo!.relatedCollection.collection
-		const junctionCollection = props.relationInfo!.junctionCollection.collection
-
-		const id = data[props.relationInfo!.junctionField!.field][props.relationInfo!.relatedPrimaryKeyField.field]
-
-		if(!graph.hasNode(`${collection}:${id}`)) {
-			graph.addNode(`${collection}:${id}`, {
-				label: renderStringTemplate(props.displayTemplates[junctionCollection], data).displayValue.value,
-				x: Math.random() * 10,
-				y: Math.random() * 10,
-				size: size,
-				color: '#000',
-			});
-		}
-
-		graph.addEdge(`${props.collection}:${item.id}`, `${collection}:${id}`);
+		collection = props.relationInfo!.relatedCollection.collection
+		id = data[props.relationInfo!.junctionField!.field][props.relationInfo!.relatedPrimaryKeyField.field]
+		label = renderStringTemplate(props.displayTemplates[props.relationInfo!.junctionCollection.collection], data).displayValue.value
 
 	} else  {
-		const collection = props.relationInfo!.relatedCollection.collection
-
-		if(!graph.hasNode(`${collection}:${data.id}`)) {
-			graph.addNode(`${collection}:${data.id}`, {
-				label: renderStringTemplate(props.displayTemplates[collection], data).displayValue.value,
-				x: Math.random() * 10,
-				y: Math.random() * 10,
-				size: size,
-				color: '#000',
-			});
-		}
-
-		graph.addEdge(`${props.collection}:${item.id}`, `${collection}:${data.id}`);
-
+		collection = props.relationInfo!.relatedCollection.collection
+		id = data[props.relationInfo!.relatedPrimaryKeyField.field]
+		label = renderStringTemplate(props.displayTemplates[collection], data).displayValue.value
 	}
+
+	if(!graph.hasNode(`${collection}:${id}`)) {
+
+		const { x, y } = getCirclePosition()
+
+		graph.addNode(`${collection}:${id}`, {
+			label,
+			x,
+			y,
+			size: size,
+			color: '#000',
+		});
+	}
+
+	graph.addEdge(`${props.collection}:${item[props.primaryKeyField!.field]}`, `${collection}:${id}`);
 }
 
 onMounted(() => {
 	if(container.value === null) return
 
-	layout = new ForceSupervisor(graph, {
-		isNodeFixed: (_, attr) => attr.highlighted
-	})
+	if(props.fixedPositions === false) {
+		layout = new ForceSupervisor(graph, {
+			isNodeFixed: (_, attr) => attr.highlighted
+		})
 
-	layout.start()
+		layout.start()
+	}
 
 	renderer = new Sigma(graph, container.value, {
 		allowInvalidContainer: true

@@ -32,9 +32,10 @@
 		</v-list>
 	</div>
 
-	<v-drawer :modelValue="openCollection !== null" @update:modelValue="openCollection = null">
-		<v-form :modelValue="collectionsOptions[openCollection!]" :fields="fields" @update:modelValue="updateCollectionOptions" />
-
+	<v-drawer :modelValue="openCollection !== null" @cancel="openCollection = null" :title="t('layouts.graph.drawer_title', openCollection)">
+		<div class="content">
+			<v-form :modelValue="collectionsOptions[openCollection!]" :fields="fields" @update:modelValue="updateCollectionOptions" />
+		</div>
 	</v-drawer>
 </template>
 
@@ -99,7 +100,7 @@ const fields = computed(() => {
 
 	const fieldsInfo = fieldsStore.getFieldsForCollection(collectionInfo.collection)
 
-	const numberFields = fieldsInfo.filter(field => field.type === 'integer' || field.type === 'decimal' || field.type === 'float' || field.type === 'bigInteger')
+	const numberFields = fieldsInfo.filter(field => field.type === 'integer' || field.type === 'decimal' || field.type === 'float' || field.type === 'bigInteger').map(mapFields)
 
 	const fields: DeepPartial<Field>[] = [{
 		field: 'displayTemplate',
@@ -107,7 +108,7 @@ const fields = computed(() => {
 		meta: {
 			interface: 'system-display-template',
 			options: {
-				collectionName: props.collection,
+				collectionName: collectionInfo.collection,
 			},
 		},
 		type: 'string',
@@ -115,9 +116,10 @@ const fields = computed(() => {
 		field: 'colorField',
 		name: t('layouts.graph.colorField'),
 		meta: {
+			width: 'half',
 			interface: 'select-dropdown',
 			options: {
-				choices: fieldsInfo.filter(field => field.type === 'string'),
+				choices: fieldsInfo.filter(field => field.type === 'string').map(mapFields),
 			},
 		},
 		type: 'string',
@@ -125,6 +127,7 @@ const fields = computed(() => {
 		field: 'sizeField',
 		name: t('layouts.graph.sizeField'),
 		meta: {
+			width: 'half',
 			interface: 'select-dropdown',
 			options: {
 				choices: numberFields,
@@ -138,6 +141,7 @@ const fields = computed(() => {
 			field: 'xField',
 			name: t('layouts.graph.xField'),
 			meta: {
+				width: 'half',
 				interface: 'select-dropdown',
 				options: {
 					choices: numberFields,
@@ -149,6 +153,7 @@ const fields = computed(() => {
 			field: 'yField',
 			name: t('layouts.graph.yField'),
 			meta: {
+				width: 'half',
 				interface: 'select-dropdown',
 				options: {
 					choices: numberFields,
@@ -160,6 +165,13 @@ const fields = computed(() => {
 
 	return fields
 })
+
+function mapFields(field: Field) {
+	return {
+		text: field.name,
+		value: field.field,
+	}
+}
 
 
 </script>
@@ -187,5 +199,9 @@ const fields = computed(() => {
 	&:hover {
 		--v-icon-color: var(--foreground-normal);
 	}
+}
+
+.content {
+	padding: var(--content-padding)
 }
 </style>

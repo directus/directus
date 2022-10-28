@@ -48,7 +48,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 			if(!props.collection) return templates
 
-			templates[props.collection] = title.value || info.value?.meta?.display_template || `{{${primaryKeyField.value?.field}}}`
+			templates[props.collection] = collectionsOptions.value[props.collection].displayTemplate || info.value?.meta?.display_template || `{{${primaryKeyField.value?.field}}}`
 
 			const relation = relationInfo.value
 
@@ -58,17 +58,17 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				if(relatedToItself.value) {
 					templates[relation.relatedCollection.collection] = templates[props.collection]
 				} else {
-					templates[relation.relatedCollection.collection] = relatedTitles.value[relation.relatedCollection.collection] || relation.relatedCollection?.meta?.display_template || `{{${relation.relatedPrimaryKeyField.field}}}`
+					templates[relation.relatedCollection.collection] = collectionsOptions.value[relation.relatedCollection.collection].displayTemplate || relation.relatedCollection?.meta?.display_template || `{{${relation.relatedPrimaryKeyField.field}}}`
 				}
 				
 			} else if (relation.type === 'm2m') {
-				templates[relation.junctionCollection.collection] = relatedTitles.value[relation.junctionCollection.collection] || relation.junctionCollection?.meta?.display_template || `{{${relation.junctionField.field}.${relation.relatedPrimaryKeyField.field}}}`			
+				templates[relation.junctionCollection.collection] = collectionsOptions.value[relation.junctionCollection.collection].displayTemplate || relation.junctionCollection?.meta?.display_template || `{{${relation.junctionField.field}.${relation.relatedPrimaryKeyField.field}}}`			
 			
 			} else if (relation.type === 'm2a') {
 				for(const collection of relation.allowedCollections) {
 					const primaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(collection.collection)!.field
 
-					templates[collection.collection] = relatedTitles.value[collection.collection] || collection?.meta?.display_template || `{{${primaryKeyField}}}`
+					templates[collection.collection] = collectionsOptions.value[collection.collection].displayTemplate || collection?.meta?.display_template || `{{${primaryKeyField}}}`
 				}
 			}
 
