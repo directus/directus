@@ -13,7 +13,7 @@ export default {
 <script lang="ts" setup>
 import Graph from 'graphology';
 import Sigma from 'sigma';
-import ForceSupervisor from "graphology-layout-force/worker";
+import ForceSupervisor from 'graphology-layout-force/worker';
 import { onMounted, onUnmounted, ref, watch } from 'vue';
 import { renderStringTemplate } from '@/utils/render-string-template';
 import { router } from '@/router';
@@ -24,7 +24,8 @@ import { RelationM2O } from '@/composables/use-relation-m2o';
 import { RelationO2M } from '@/composables/use-relation-o2m';
 import { useFieldsStore } from '@/stores/fields';
 import { Field } from '@directus/shared/types';
-import { Vector2 } from '@/utils/vector2';
+import { getRandomPosition } from './bunny';
+import { CollectionOptions } from './types';
 
 interface Props {
 	collection: string;
@@ -45,8 +46,11 @@ interface Props {
 	relationInfo: RelationM2A | RelationM2M | RelationM2O | RelationO2M | null;
 	displayTemplates: Record<string, string>;
 	running: boolean;
-	primaryKeyField: Field | null
-	fixedPositions: boolean
+	primaryKeyField: Field | null;
+	fixedPositions: boolean;
+	collectionsOptions: Record<string, CollectionOptions>;
+	baseColor: string;
+	baseSize: number;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -65,166 +69,178 @@ const props = withDefaults(defineProps<Props>(), {
 	onAlignChange: () => undefined,
 });
 
-let angle = 0
-let radius = 0.1
+const _emit = defineEmits(['update:selection', 'update:tableHeaders', 'update:limit', 'update:fields']);
 
-function getCirclePosition() {
-	const x = Math.cos(angle) * radius
-	const y = Math.sin(angle) * radius
+const container = ref<HTMLElement | null>(null);
 
-	angle = (angle + 0.653) % (Math.PI * 2)
-	radius += 0.1 / radius + 0.01
+let draggedNode: string | null = null;
+let isDragging = false;
+let renderer: Sigma | null = null;
+let layout: ForceSupervisor | null = null;
+let graph: Graph = new Graph();
 
-	return { x, y }
-}
+const fieldsStore = useFieldsStore();
 
-const emit = defineEmits(['update:selection', 'update:tableHeaders', 'update:limit', 'update:fields']);
-
-const container = ref<HTMLElement | null>(null)
-
-let draggedNode: string | null = null
-let isDragging = false
-let renderer: Sigma | null = null
-let layout: ForceSupervisor | null = null
-let graph: Graph = new Graph()
-const size = 10
-
-const fieldsStore = useFieldsStore()
-
-watch(() => props.running, (running) => {
-	if (running) {
-		layout?.start()
-	} else {
-		layout?.stop()
-	}
-})
-
-watch(() => props.items, (newItems, oldItems) => {
-	if(isEqual(newItems, oldItems)) return
-	const relationField = props.layoutOptions?.relationField
-	if(relationField === null) return
-
-	graph.clear()
-
-	for(const item of newItems) {
-
-		const { x, y } = getCirclePosition()
-
-		graph.addNode(`${props.collection}:${item[props.primaryKeyField!.field]}`, {
-			label: renderStringTemplate(props.displayTemplates[props.collection], item).displayValue.value,
-			x,
-			y,
-			size: size,
-			color: '#000',
-		});
-	}
-
-	console.log(newItems)
-
-	for(const item of newItems) {
-		const relationData = item[relationField]
-
-		if(Array.isArray(relationData)) {
-			for(const relation of relationData) {
-				createRelatedItem(relation, item)
-			}
-		} else if(isNil(relationData) === false) {
-			createRelatedItem(relationData, item)
+watch(
+	() => props.running,
+	(running) => {
+		if (running) {
+			layout?.start();
+		} else {
+			layout?.stop();
 		}
 	}
-}, {immediate: true})
+);
+
+watch(
+	() => props.items,
+	(newItems, oldItems) => {
+		if (isEqual(newItems, oldItems)) return;
+		const relationField = props.layoutOptions?.relationField;
+		if (relationField === null) return;
+
+		graph.clear();
+
+		for (const item of newItems) {
+			const key = `${props.collection}:${item[props.primaryKeyField!.field]}`;
+			addNode(props.collection, key, item);
+		}
+
+		for (const item of newItems) {
+			const relationData = item[relationField];
+
+			if (Array.isArray(relationData)) {
+				for (const relation of relationData) {
+					createRelatedItem(relation, item);
+				}
+			} else if (isNil(relationData) === false) {
+				createRelatedItem(relationData, item);
+			}
+		}
+	},
+	{ immediate: true }
+);
 
 function createRelatedItem(data: Record<string, any>, item: Record<string, any>) {
-	let collection: string
-	let id: string
-	let label: string | false
+	let collection: string;
+	let key: string;
 
-	if(props.relationInfo?.type === 'm2a') {
-		collection = data[props.relationInfo.collectionField.field]
-		const idField = fieldsStore.getPrimaryKeyFieldForCollection(collection)!.field
-		id = data[props.relationInfo.junctionField.field][idField]
-		label = renderStringTemplate(props.displayTemplates[collection], data[props.relationInfo.junctionField.field]).displayValue.value
+	if (props.relationInfo?.type === 'm2a') {
+		collection = data[props.relationInfo.collectionField.field];
+		const idField = fieldsStore.getPrimaryKeyFieldForCollection(collection)!.field;
+		const id = data[props.relationInfo.junctionField.field][idField];
+		key = `${collection}:${id}`;
 
-	} else if(props.relationInfo?.type === 'm2m') {
-		collection = props.relationInfo!.relatedCollection.collection
-		id = data[props.relationInfo!.junctionField!.field][props.relationInfo!.relatedPrimaryKeyField.field]
-		label = renderStringTemplate(props.displayTemplates[props.relationInfo!.junctionCollection.collection], data).displayValue.value
+		addNode(collection, key, data[props.relationInfo.junctionField.field]);
+	} else if (props.relationInfo?.type === 'm2m') {
+		collection = props.relationInfo!.junctionCollection.collection;
+		const id = data[props.relationInfo!.junctionField!.field][props.relationInfo!.relatedPrimaryKeyField.field];
+		key = `${props.relationInfo!.relatedCollection.collection}:${id}`;
 
-	} else  {
-		collection = props.relationInfo!.relatedCollection.collection
-		id = data[props.relationInfo!.relatedPrimaryKeyField.field]
-		label = renderStringTemplate(props.displayTemplates[collection], data).displayValue.value
+		addNode(collection, key, data);
+	} else {
+		collection = props.relationInfo!.relatedCollection.collection;
+		const id = data[props.relationInfo!.relatedPrimaryKeyField.field];
+		key = `${collection}:${id}`;
+
+		addNode(collection, key, data);
 	}
 
-	if(!graph.hasNode(`${collection}:${id}`)) {
+	graph.addEdge(`${props.collection}:${item[props.primaryKeyField!.field]}`, key);
+}
 
-		const { x, y } = getCirclePosition()
+function addNode(collection: string, key: string, data: Record<string, any>) {
+	if (graph.hasNode(key)) return;
 
-		graph.addNode(`${collection}:${id}`, {
-			label,
-			x,
-			y,
-			size: size,
-			color: '#000',
-		});
+	let { x, y } = getRandomPosition();
+	let size = props.baseSize;
+	let color = props.baseColor;
+	const label = renderStringTemplate(props.displayTemplates[collection], data).displayValue.value;
+	const xField = props.collectionsOptions[collection].xField;
+	const yField = props.collectionsOptions[collection].yField;
+	const sizeField = props.collectionsOptions[collection].sizeField;
+	const colorField = props.collectionsOptions[collection].colorField;
+
+	if (
+		props.fixedPositions &&
+		xField &&
+		yField &&
+		typeof data[xField] === 'number' &&
+		typeof data[yField] === 'number'
+	) {
+		x = data[xField];
+		y = data[yField];
 	}
 
-	graph.addEdge(`${props.collection}:${item[props.primaryKeyField!.field]}`, `${collection}:${id}`);
+	if (sizeField && Number.isInteger(data[sizeField])) {
+		size = data[sizeField];
+	}
+
+	if (colorField && typeof data[colorField] === 'string') {
+		color = data[colorField];
+	}
+
+	graph.addNode(key, {
+		label,
+		x,
+		y,
+		size,
+		color,
+	});
 }
 
 onMounted(() => {
-	if(container.value === null) return
+	if (container.value === null) return;
 
-	if(props.fixedPositions === false) {
+	if (props.fixedPositions === false) {
 		layout = new ForceSupervisor(graph, {
-			isNodeFixed: (_, attr) => attr.highlighted
-		})
+			isNodeFixed: (_, attr) => attr.highlighted,
+		});
 
-		layout.start()
+		layout.start();
 	}
 
 	renderer = new Sigma(graph, container.value, {
-		allowInvalidContainer: true
-	})
+		allowInvalidContainer: true,
+	});
 
 	renderer.on('downNode', (event) => {
-		draggedNode = event.node
-	})
+		draggedNode = event.node;
+	});
 
 	renderer.getMouseCaptor().on('mousemovebody', (event) => {
-		if(!renderer || !draggedNode) return
+		if (!renderer || !draggedNode) return;
 
-		isDragging = true
+		isDragging = true;
 
-		const { x, y } = renderer.viewportToGraph(event)
+		const { x, y } = renderer.viewportToGraph(event);
 
-		graph.setNodeAttribute(draggedNode, 'x', x)
-		graph.setNodeAttribute(draggedNode, 'y', y)
+		graph.setNodeAttribute(draggedNode, 'x', x);
+		graph.setNodeAttribute(draggedNode, 'y', y);
 
-		event.preventSigmaDefault()
-		event.original.preventDefault()
-		event.original.stopPropagation()
-	})
+		event.preventSigmaDefault();
+		event.original.preventDefault();
+		event.original.stopPropagation();
+	});
 
 	renderer.getMouseCaptor().on('mouseup', () => {
-		if(isDragging === false && draggedNode !== null) {
-			router.push({path: `/content/${draggedNode.split(':')[0]}/${draggedNode.split(':')[1]}`})
-			return
+		if (isDragging === false && draggedNode !== null) {
+			router.push({ path: `/content/${draggedNode.split(':')[0]}/${draggedNode.split(':')[1]}` });
+			return;
 		}
 		isDragging = false;
 		draggedNode = null;
-	})
+	});
 
-	renderer.getMouseCaptor().on("mousedown", () => {
+	renderer.getMouseCaptor().on('mousedown', () => {
 		if (renderer && !renderer.getCustomBBox()) renderer.setCustomBBox(renderer.getBBox());
 	});
-})
+});
 
 onUnmounted(() => {
-	if(renderer) renderer.kill()
-	if(layout) layout.kill()
-})
-
+	if (renderer) renderer.kill();
+	if (layout) layout.kill();
+});
 </script>
 
 <style lang="scss" scoped>
@@ -238,5 +254,4 @@ onUnmounted(() => {
 		width: 100%;
 	}
 }
-
 </style>

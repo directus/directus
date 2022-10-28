@@ -25,13 +25,12 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		actions: ActionsComponent,
 	},
 	setup(props, { emit }) {
-
-		const fieldsStore = useFieldsStore()
+		const fieldsStore = useFieldsStore();
 		const selection = useSync(props, 'selection', emit);
 		const layoutOptions = useSync(props, 'layoutOptions', emit);
 		const layoutQuery = useSync(props, 'layoutQuery', emit);
 
-		const running = ref(true)
+		const running = ref(true);
 
 		const { collection, filter, filterUser, search } = toRefs(props);
 
@@ -39,41 +38,55 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		const _relationField = computed(() => layoutOptions.value?.relationField ?? null);
 
-		const {relationInfo, relationOptions, relatedToItself, relationCollections} = useRelationInfo(collection, _relationField);
+		const { relationInfo, relationOptions, relatedToItself, relationCollections } = useRelationInfo(
+			collection,
+			_relationField
+		);
 
-		const {relationField, collectionsOptions, baseColor, baseSize, fixedPositions, collectionsForOptions} = useLayoutOptions()
+		const { relationField, collectionsOptions, baseColor, baseSize, fixedPositions, collectionsForOptions } =
+			useLayoutOptions();
 
 		const displayTemplates = computed(() => {
-			const templates: Record<string, string> = {}
+			const templates: Record<string, string> = {};
 
-			if(!props.collection) return templates
+			if (!props.collection) return templates;
 
-			templates[props.collection] = collectionsOptions.value[props.collection].displayTemplate || info.value?.meta?.display_template || `{{${primaryKeyField.value?.field}}}`
+			templates[props.collection] =
+				collectionsOptions.value[props.collection].displayTemplate ||
+				info.value?.meta?.display_template ||
+				`{{${primaryKeyField.value?.field}}}`;
 
-			const relation = relationInfo.value
+			const relation = relationInfo.value;
 
-			if(relation === undefined) return templates
+			if (relation === undefined) return templates;
 
 			if (relation.type === 'o2m' || relation.type === 'm2o') {
-				if(relatedToItself.value) {
-					templates[relation.relatedCollection.collection] = templates[props.collection]
+				if (relatedToItself.value) {
+					templates[relation.relatedCollection.collection] = templates[props.collection];
 				} else {
-					templates[relation.relatedCollection.collection] = collectionsOptions.value[relation.relatedCollection.collection].displayTemplate || relation.relatedCollection?.meta?.display_template || `{{${relation.relatedPrimaryKeyField.field}}}`
+					templates[relation.relatedCollection.collection] =
+						collectionsOptions.value[relation.relatedCollection.collection].displayTemplate ||
+						relation.relatedCollection?.meta?.display_template ||
+						`{{${relation.relatedPrimaryKeyField.field}}}`;
 				}
-				
 			} else if (relation.type === 'm2m') {
-				templates[relation.junctionCollection.collection] = collectionsOptions.value[relation.junctionCollection.collection].displayTemplate || relation.junctionCollection?.meta?.display_template || `{{${relation.junctionField.field}.${relation.relatedPrimaryKeyField.field}}}`			
-			
+				templates[relation.junctionCollection.collection] =
+					collectionsOptions.value[relation.junctionCollection.collection].displayTemplate ||
+					relation.junctionCollection?.meta?.display_template ||
+					`{{${relation.junctionField.field}.${relation.relatedPrimaryKeyField.field}}}`;
 			} else if (relation.type === 'm2a') {
-				for(const collection of relation.allowedCollections) {
-					const primaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(collection.collection)!.field
+				for (const collection of relation.allowedCollections) {
+					const primaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(collection.collection)!.field;
 
-					templates[collection.collection] = collectionsOptions.value[collection.collection].displayTemplate || collection?.meta?.display_template || `{{${primaryKeyField}}}`
+					templates[collection.collection] =
+						collectionsOptions.value[collection.collection].displayTemplate ||
+						collection?.meta?.display_template ||
+						`{{${primaryKeyField}}}`;
 				}
 			}
 
-			return templates
-		})
+			return templates;
+		});
 
 		const { sort, limit, page, fields, fieldsWithRelational } = useItemOptions();
 
@@ -127,7 +140,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			baseSize,
 			fixedPositions,
 			relationOptions,
-			collectionsForOptions
+			collectionsForOptions,
 		};
 
 		async function resetPresetAndRefresh() {
@@ -159,31 +172,60 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			const fieldsWithRelational = computed<string[]>(() => {
 				if (!props.collection || !relationField.value) return [];
 
-				const displayFields: Set<string> = new Set(fields.value)
-				const relation = relationInfo.value
+				const displayFields: Set<string> = new Set(fields.value);
+				const relation = relationInfo.value;
 
-				getFieldsFromTemplate(displayTemplates.value[props.collection]).forEach(field => displayFields.add(field))
+				getFieldsFromTemplate(displayTemplates.value[props.collection]).forEach((field) => displayFields.add(field));
+				getAdditionalFields(props.collection).forEach((field) => displayFields.add(field));
 
-				if(relation?.type === undefined) return Array.from(displayFields)
+				if (relation?.type === undefined) return Array.from(displayFields);
 
 				if (relation.type === 'o2m' || relation.type === 'm2o') {
-					displayFields.add(`${relationField.value}.${relation.relatedPrimaryKeyField.field}`)
-					getFieldsFromTemplate(displayTemplates.value[relation.relatedCollection.collection]).forEach(field => displayFields.add(`${relationField.value}.${field}`))
-
+					displayFields.add(`${relationField.value}.${relation.relatedPrimaryKeyField.field}`);
+					getFieldsFromTemplate(displayTemplates.value[relation.relatedCollection.collection]).forEach((field) =>
+						displayFields.add(`${relationField.value}.${field}`)
+					);
+					getAdditionalFields(relation.relatedCollection.collection).forEach((field) =>
+						displayFields.add(`${relationField.value}.${field}`)
+					);
 				} else if (relation.type === 'm2m') {
-					displayFields.add(`${relationField.value}.${relation.junctionField.field}.${relation.relatedPrimaryKeyField.field}`)
-					getFieldsFromTemplate(displayTemplates.value[relation.junctionCollection.collection]).forEach(field => displayFields.add(`${relationField.value}.${field}`))
-
+					displayFields.add(
+						`${relationField.value}.${relation.junctionField.field}.${relation.relatedPrimaryKeyField.field}`
+					);
+					getFieldsFromTemplate(displayTemplates.value[relation.junctionCollection.collection]).forEach((field) =>
+						displayFields.add(`${relationField.value}.${field}`)
+					);
+					getAdditionalFields(relation.junctionCollection.collection).forEach((field) =>
+						displayFields.add(`${relationField.value}.${field}`)
+					);
 				} else if (relation.type === 'm2a') {
-					for(const collection of relation.allowedCollections) {
-						displayFields.add(`${relationField.value}.${relation.collectionField.field}`)
-						displayFields.add(`${relationField.value}.${relation.junctionField.field}.${fieldsStore.getPrimaryKeyFieldForCollection(collection.collection)!.field}`)
-						getFieldsFromTemplate(displayTemplates.value[collection.collection]).forEach(field => displayFields.add(`${relationField.value}.${relation.junctionField.field}.${field}`))
+					for (const collection of relation.allowedCollections) {
+						displayFields.add(`${relationField.value}.${relation.collectionField.field}`);
+						displayFields.add(
+							`${relationField.value}.${relation.junctionField.field}.${
+								fieldsStore.getPrimaryKeyFieldForCollection(collection.collection)!.field
+							}`
+						);
+						getFieldsFromTemplate(displayTemplates.value[collection.collection]).forEach((field) =>
+							displayFields.add(`${relationField.value}.${relation.junctionField.field}.${field}`)
+						);
+						getAdditionalFields(collection.collection).forEach((field) =>
+							displayFields.add(`${relationField.value}.${relation.junctionField.field}.${field}`)
+						);
 					}
 				}
 
 				return Array.from(displayFields);
 			});
+
+			function getAdditionalFields(collection: string) {
+				const colorField = collectionsOptions.value?.[collection].colorField;
+				const sizeField = collectionsOptions.value?.[collection].sizeField;
+				const xField = collectionsOptions.value?.[collection].xField;
+				const yField = collectionsOptions.value?.[collection].yField;
+
+				return [colorField, sizeField, xField, yField].filter((field) => field !== undefined) as string[];
+			}
 
 			return { sort, limit, page, fields, fieldsWithRelational };
 		}
@@ -194,22 +236,25 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			const baseColor = createViewOption<string>('baseColor', '#000000');
 			const baseSize = createViewOption<number>('baseSize', 10);
 
-			const collectionsForOptions = computed(() => [...relationCollections.value, info.value] as AppCollection[])
+			const collectionsForOptions = computed(() => [...relationCollections.value, info.value] as AppCollection[]);
 
-			const collectionsOptions = computed({
+			const collectionsOptions = computed<Record<string, CollectionOptions>>({
 				get() {
-					return Object.fromEntries(collectionsForOptions.value.map(collection => {
-						const existingValue = layoutOptions.value.collectionsOptions?.[collection.collection] ?? {}
+					return Object.fromEntries(
+						collectionsForOptions.value.map((collection) => {
+							const existingValue = layoutOptions.value.collectionsOptions?.[collection.collection] ?? {};
 
-						return [collection.collection, existingValue]
-					}))
-				}, set(newOptions) {
+							return [collection.collection, existingValue];
+						})
+					);
+				},
+				set(newOptions) {
 					layoutOptions.value = {
 						...layoutOptions.value,
 						collectionsOptions: newOptions,
 					};
-				}
-			})
+				},
+			});
 
 			return { relationField, collectionsOptions, baseColor, baseSize, fixedPositions, collectionsForOptions };
 
