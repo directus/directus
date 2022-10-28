@@ -1907,6 +1907,7 @@ layouts:
   kanban:
     crop: Rogner
     advanced: Avancé
+    show_ungrouped: Afficher non-groupé
     not_all_loaded: Impossible de charger les 1000 premiers éléments.
 panels:
   metric:
