@@ -451,6 +451,9 @@ importers:
       flatpickr: 4.6.13
       front-matter: 4.0.2
       geojson: 0.5.0
+      graphology: ^0.25.1
+      graphology-layout-force: ^0.2.4
+      graphology-types: ^0.24.5
       happy-dom: 7.6.0
       highlight.js: 11.6.0
       html-entities: 2.3.3
@@ -481,6 +484,7 @@ importers:
       rimraf: 3.0.2
       rollup: 3.2.3
       sass: 1.55.0
+      sigma: ^2.3.1
       tinymce: 5.10.2
       tslib: 2.4.0
       typescript: 4.8.4
@@ -493,6 +497,11 @@ importers:
       vuedraggable: 4.1.0
       webpack: 5.74.0
       wellknown: 0.5.0
+    dependencies:
+      graphology: 0.25.1_graphology-types@0.24.5
+      graphology-layout-force: 0.2.4_graphology-types@0.24.5
+      graphology-types: 0.24.5
+      sigma: 2.3.1_graphology-types@0.24.5
     devDependencies:
       '@babel/core': 7.19.3
       '@babel/preset-env': 7.19.4_@babel+core@7.19.3
@@ -7374,6 +7383,10 @@ packages:
     resolution: {integrity: sha512-NuHqBY1PB/D8xU6s/thBgOAiAP7HOYDQ32+BFZILJ8ivkUkAHQnWfn6WhL79Owj1qmUnoN/YPhktdIoucipkAQ==}
     dev: true
 
+  /@yomguithereal/helpers/1.1.1:
+    resolution: {integrity: sha512-UYvAq/XCA7xoh1juWDYsq3W0WywOB+pz8cgVnE1b45ZfdMhBvHDrgmSFG3jXeZSr2tMTYLGHFHON+ekG05Jebg==}
+    dev: false
+
   /JSV/4.0.2:
     resolution: {integrity: sha512-ZJ6wx9xaKJ3yFUhq5/sk82PJMuUyLk277I8mQeyDgCTjGdjWJIvPfaU5LIXaMuaN2UO1X3kZH4+lgphublZUHw==}
     dev: true
@@ -12008,6 +12021,37 @@ packages:
       lodash: 4.17.21
     dev: true
 
+  /graphology-layout-force/0.2.4_graphology-types@0.24.5:
+    resolution: {integrity: sha512-NYZz0YAnDkn5pkm30cvB0IScFoWGtbzJMrqaiH070dYlYJiag12Oc89dbVfaMaVR/w8DMIKxn/ix9Bqj+Umm9Q==}
+    peerDependencies:
+      graphology-types: '>=0.19.0'
+    dependencies:
+      graphology-types: 0.24.5
+      graphology-utils: 2.5.2_graphology-types@0.24.5
+    dev: false
+
+  /graphology-types/0.24.5:
+    resolution: {integrity: sha512-m8FVoj9b6MwIaTN+/AvoxXhcK5n0uSe7ZnhbQNTcjh94vzN6m5hU501LihtCfRjF35QEMVrXYOrTNO0wAR1Gxw==}
+    dev: false
+
+  /graphology-utils/2.5.2_graphology-types@0.24.5:
+    resolution: {integrity: sha512-ckHg8MXrXJkOARk56ZaSCM1g1Wihe2d6iTmz1enGOz4W/l831MBCKSayeFQfowgF8wd+PQ4rlch/56Vs/VZLDQ==}
+    peerDependencies:
+      graphology-types: '>=0.23.0'
+    dependencies:
+      graphology-types: 0.24.5
+    dev: false
+
+  /graphology/0.25.1_graphology-types@0.24.5:
+    resolution: {integrity: sha512-yYA7BJCcXN2DrKNQQ9Qf22zBHm/yTbyBR71T1MYBbGtywNHsv0QZtk8zaR6zxNcp2hCCZayUkHp9DyMSZCpoxQ==}
+    peerDependencies:
+      graphology-types: '>=0.24.0'
+    dependencies:
+      events: 3.3.0
+      graphology-types: 0.24.5
+      obliterator: 2.0.4
+    dev: false
+
   /graphql-compose/9.0.9_graphql@16.6.0:
     resolution: {integrity: sha512-kEXdwuBk7GKaThWY7eKDP+GLF9pGrGuMpYLu3O5w+lwDsgsfdiUCEC8jTsuPjm1qz9AxsspZHqc3jA4vKwyiNg==}
     peerDependencies:
@@ -15834,6 +15878,10 @@ packages:
       es-abstract: 1.20.1
     dev: true
 
+  /obliterator/2.0.4:
+    resolution: {integrity: sha512-lgHwxlxV1qIg1Eap7LgIeoBWIMFibOjbrYPIPJZcI1mmGAI2m3lNYpK12Y+GBdPQ0U1hRwSord7GIaawz962qQ==}
+    dev: false
+
   /oidc-token-hash/5.0.1:
     resolution: {integrity: sha512-EvoOtz6FIEBzE+9q253HsLCVRiK/0doEJ2HCvvqMQb3dHZrP3WlJKYtJ55CRTw4jmYomzH4wkPuCj/I3ZvpKxQ==}
     engines: {node: ^10.13.0 || >=12.0.0}
@@ -18493,6 +18541,16 @@ packages:
       call-bind: 1.0.2
       get-intrinsic: 1.1.2
       object-inspect: 1.12.2
+
+  /sigma/2.3.1_graphology-types@0.24.5:
+    resolution: {integrity: sha512-YfQsVZf78CeIUv8EYLqp/yvhMwwBXGrbpy+rD1N2X9IqtJ11+VfQRjWfVqHDhjM8oPfWPsaJMtpWFQ8pIflvCA==}
+    dependencies:
+      '@yomguithereal/helpers': 1.1.1
+      events: 3.3.0
+      graphology-utils: 2.5.2_graphology-types@0.24.5
+    transitivePeerDependencies:
+      - graphology-types
+    dev: false
 
   /signal-exit/3.0.7:
     resolution: {integrity: sha512-wnD2ZE+l+SPC/uoS0vXeE9L1+0wuaMqKlfz9AMUo38JsyLSBWSFcHR1Rri62LZc12vLr1gb3jl7iwQhgwpAbGQ==}

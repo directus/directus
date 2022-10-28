@@ -153,5 +153,11 @@
 		"vuedraggable": "4.1.0",
 		"webpack": "5.74.0",
 		"wellknown": "0.5.0"
+	},
+	"dependencies": {
+		"graphology": "^0.25.1",
+		"graphology-layout-force": "^0.2.4",
+		"graphology-types": "^0.24.5",
+		"sigma": "^2.3.1"
 	}
 }
