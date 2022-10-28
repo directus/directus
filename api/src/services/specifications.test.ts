@@ -1,7 +1,7 @@
 import knex, { Knex } from 'knex';
 import { getTracker, MockClient, Tracker } from 'knex-mock-client';
 import { CollectionsService, FieldsService, RelationsService, SpecificationService } from '../../src/services';
-import { describe, beforeAll, afterEach, it, expect, vi } from 'vitest';
+import { describe, beforeAll, afterEach, it, expect, vi, beforeEach } from 'vitest';
 
 vi.mock('../../src/database/index', () => {
 	return { getDatabaseClient: vi.fn().mockReturnValue('postgres') };

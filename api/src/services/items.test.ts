@@ -10,7 +10,7 @@ import { describe, beforeAll, afterEach, it, expect, vi } from 'vitest';
 vi.mock('../../src/database/index', () => {
 	return { getDatabaseClient: vi.fn().mockReturnValue('postgres') };
 });
-vi.requireMock('../../src/database/index');
+vi.mock('../../src/database/index');
 
 describe('Integration Tests', () => {
 	let db: vi.Mocked<Knex>;

@@ -1,14 +1,14 @@
 // @ts-nocheck
 
-vi.mock('../../src/cache');
-vi.mock('../../src/database');
-vi.mock('../../src/utils/validate-env');
-
 import { multipartHandler } from './files';
 import { InvalidPayloadException } from '../exceptions/invalid-payload';
 import { PassThrough } from 'stream';
-
 import FormData from 'form-data';
+import { vi, describe, expect, it } from 'vitest';
+
+vi.mock('../../src/cache');
+vi.mock('../../src/database');
+vi.mock('../../src/utils/validate-env');
 
 describe('multipartHandler', () => {
 	it(`Errors out if request doesn't contain any files to upload`, () => {

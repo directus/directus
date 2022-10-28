@@ -1,16 +1,16 @@
 import knex, { Knex } from 'knex';
 import { getTracker, MockClient, Tracker } from 'knex-mock-client';
 import run from './run';
-import { describe, beforeAll, afterEach, it, expect } from 'vitest';
+import { describe, beforeAll, afterEach, it, expect, vi } from 'vitest';
 
 describe('run', () => {
-	//TODO Replace jest functions with vitest equivalents
-	let db: jest.Mocked<Knex>;
+	//TODO Replace with mocked type helper
+	let db: vi.Mocked<Knex>;
 	let tracker: Tracker;
 
 	beforeAll(() => {
-		//TODO Replace jest functions with vitest equivalents
-		db = knex({ client: MockClient }) as jest.Mocked<Knex>;
+		//TODO Replace with mocked type helper
+		db = knex({ client: MockClient }) as vi.Mocked<Knex>;
 		tracker = getTracker();
 	});
 

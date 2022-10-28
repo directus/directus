@@ -7,6 +7,7 @@ import env from '../env';
 import { InvalidCredentialsException } from '../exceptions';
 import { handler } from './authenticate';
 import '../../src/types/express.d.ts';
+import { vi, afterEach, test, expect } from 'vitest';
 
 vi.mock('../../src/database');
 vi.mock('../../src/env', () => ({

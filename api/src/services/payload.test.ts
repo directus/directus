@@ -11,12 +11,12 @@ vi.mock('../../src/database/index');
 
 describe('Integration Tests', () => {
 	//TODO: replace with correct vitest api call
-	// let db: vi.mocked(Knex);
+	let db: vi.Mocked<Knex>;
 	let tracker: Tracker;
 
 	beforeAll(async () => {
 		//TODO: replace with correct vitest api call
-		// db = knex({ client: MockClient }) as vi.mocked(knex);
+		db = knex({ client: MockClient });
 		tracker = getTracker();
 	});
 

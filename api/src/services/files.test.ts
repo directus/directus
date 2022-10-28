@@ -2,13 +2,13 @@ import exifr from 'exifr';
 import knex, { Knex } from 'knex';
 import { MockClient, Tracker, getTracker } from 'knex-mock-client';
 import { FilesService } from '.';
-import { describe, beforeAll, afterEach, expect, it, vi } from 'vitest';
+import { describe, beforeAll, afterEach, expect, it, vi, beforeEach } from 'vitest';
 
 vi.mock('exifr');
 vi.mock('../../src/database/index', () => {
 	return { getDatabaseClient: vi.fn().mockReturnValue('postgres') };
 });
-vi.requireMock('../../src/database/index');
+vi.mock('../../src/database/index');
 
 describe('Integration Tests', () => {
 	let db: vi.mocked<Knex>;
