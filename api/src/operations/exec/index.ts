@@ -16,9 +16,6 @@ export default defineOperationApi<Options>({
 			eval: false,
 			wasm: false,
 			env: allowedEnv,
-			sandbox: {
-				$env: allowedEnv,
-			},
 		};
 
 		if (allowedModules.length > 0) {
