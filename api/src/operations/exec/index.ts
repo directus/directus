@@ -13,11 +13,6 @@ export default defineOperationApi<Options>({
 		const opts: NodeVMOptions = {
 			eval: false,
 			wasm: false,
-			sandbox: {
-				$trigger: data['$trigger'],
-				$accountability: data['$accountability'],
-				$last: data['$last'],
-			},
 		};
 
 		if (allowedModules.length > 0) {
