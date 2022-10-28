@@ -6,8 +6,9 @@ import logger from '../../logger';
 import { getAuthProvider } from '../../auth';
 import { COOKIE_OPTIONS } from '../../constants';
 import env from '../../env';
+import Joi from 'joi';
 import { RecordNotUniqueException } from '../../exceptions/database/record-not-unique';
-import { InvalidCredentialsException, InvalidProviderException } from '../../exceptions';
+import { InvalidConfigException, InvalidCredentialsException, InvalidProviderException } from '../../exceptions';
 import { respond } from '../../middleware/respond';
 import { AuthenticationService, UsersService } from '../../services';
 import { AuthData, AuthDriverOptions, User } from '../../types';
@@ -30,8 +31,27 @@ export class SAMLAuthDriver extends LocalAuthDriver {
 
 		this.config = config;
 
+		const samlSchema = Joi.object({
+			sp: Joi.string()
+				.pattern(/(<.[^(><.)]+>)/)
+				.required(),
+			idp: Joi.string()
+				.pattern(/(<.[^(><.)]+>)/)
+				.required(),
+		}).unknown();
+
 		const redirectUrl = new Url(env.PUBLIC_URL).addPath('auth', 'login', config.provider, 'callback');
 		this.redirectUrl = redirectUrl.toString();
+
+		// validate if the metadata field of each key contains valid xml...
+		const { error } = samlSchema.validate({
+			sp: getConfigFromEnv(`AUTH_${config.provider.toUpperCase()}_SP`).metadata || '',
+			idp: getConfigFromEnv(`AUTH_${config.provider.toUpperCase()}_IDP`).metadata || '',
+		});
+
+		if (error) {
+			throw new InvalidConfigException(error.message);
+		}
 
 		this.usersService = new UsersService({ knex: this.knex, schema: this.schema });
 		this.sp = samlify.ServiceProvider(getConfigFromEnv(`AUTH_${config.provider.toUpperCase()}_SP`));
