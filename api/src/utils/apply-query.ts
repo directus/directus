@@ -11,7 +11,7 @@ import {
 } from '@directus/shared/types';
 import { CLIENT_FILTER_OPERATORS } from '@directus/shared/constants';
 import { Knex } from 'knex';
-import { clone, filter, isPlainObject, set } from 'lodash';
+import { clone, isPlainObject, set } from 'lodash';
 import { customAlphabet } from 'nanoid';
 import validate from 'uuid-validate';
 import { getHelpers } from '../database/helpers';
