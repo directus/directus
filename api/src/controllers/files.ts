@@ -65,7 +65,7 @@ export const multipartHandler: RequestHandler = (req, res, next) => {
 		if (!filename) {
 			return busboy.emit('error', new InvalidPayloadException(`File is missing filename`));
 		}
-
+		const fileIndex = fileCount;
 		fileCount++;
 
 		if (!payload.title) {
@@ -88,7 +88,7 @@ export const multipartHandler: RequestHandler = (req, res, next) => {
 
 		try {
 			const primaryKey = await service.uploadOne(fileStream, payloadWithRequiredFields, existingPrimaryKey);
-			savedFiles.push(primaryKey);
+			savedFiles[fileIndex] = primaryKey;
 			tryDone();
 		} catch (error: any) {
 			busboy.emit('error', error);
@@ -106,7 +106,7 @@ export const multipartHandler: RequestHandler = (req, res, next) => {
 	req.pipe(busboy);
 
 	function tryDone() {
-		if (savedFiles.length === fileCount) {
+		if (savedFiles.reduce((cnt: number) => cnt + 1, 0) === fileCount) {
 			if (fileCount === 0) {
 				return next(new InvalidPayloadException(`No files where included in the body`));
 			}

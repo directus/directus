@@ -406,6 +406,13 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		}
 
 		const results = await this.readByQuery(queryWithKey, opts);
+		if (!query.sort) {
+			const pkMap = new Map();
+			keys.forEach((key, index) => {
+				pkMap.set(key, index);
+			});
+			results.sort((a, b) => pkMap.get(a[primaryKeyField]) - pkMap.get(b[primaryKeyField]));
+		}
 
 		return results;
 	}
