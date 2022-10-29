@@ -37,24 +37,4 @@ describe('Options', () => {
 
 		expect(config.options()).toHaveLength(2);
 	});
-
-	it('Shows notice when env is allowed', () => {
-		const serverStore = useServerStore();
-
-		serverStore.info.flows = {
-			execAllowedModules: [],
-		};
-
-		expect(config.options()).toHaveLength(2);
-	});
-
-	it('Shows notice when modules and env are allowed', () => {
-		const serverStore = useServerStore();
-
-		serverStore.info.flows = {
-			execAllowedModules: ['nanoid'],
-		};
-
-		expect(config.options()).toHaveLength(2);
-	});
 });
