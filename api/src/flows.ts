@@ -292,7 +292,7 @@ class FlowManager {
 		const database = (context.database as Knex) ?? getDatabase();
 		const schema = (context.schema as SchemaOverview) ?? (await getSchema({ database }));
 
-		const keyedData: Record<string, unknown> = (context.data as Record<string, unknown>) ?? {
+		const keyedData: Record<string, unknown> = {
 			[TRIGGER_KEY]: data,
 			[LAST_KEY]: data,
 			[ACCOUNTABILITY_KEY]: context?.accountability ?? null,
