@@ -33,7 +33,6 @@ describe('Options', () => {
 
 		serverStore.info.flows = {
 			execAllowedModules: ['nanoid'],
-			execAllowedEnv: [],
 		};
 
 		expect(config.options()).toHaveLength(2);
@@ -44,7 +43,6 @@ describe('Options', () => {
 
 		serverStore.info.flows = {
 			execAllowedModules: [],
-			execAllowedEnv: ['PUBLIC_URL'],
 		};
 
 		expect(config.options()).toHaveLength(2);
@@ -55,7 +53,6 @@ describe('Options', () => {
 
 		serverStore.info.flows = {
 			execAllowedModules: ['nanoid'],
-			execAllowedEnv: ['PUBLIC_URL'],
 		};
 
 		expect(config.options()).toHaveLength(2);
