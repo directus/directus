@@ -119,7 +119,7 @@
 		"json2csv": "5.0.7",
 		"jsonlint-mod": "1.7.6",
 		"lodash": "4.17.21",
-		"mapbox-gl": "2.10.0",
+		"mapbox-gl": "1.13.2",
 		"maplibre-gl": "1.15.3",
 		"markdown-it": "13.0.1",
 		"markdown-it-anchor": "8.6.5",
