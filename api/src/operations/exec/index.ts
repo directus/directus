@@ -10,7 +10,7 @@ export default defineOperationApi<Options>({
 	id: 'exec',
 	handler: async ({ code }, { data, env }) => {
 		const allowedModules = env.FLOWS_EXEC_ALLOWED_MODULES ? toArray(env.FLOWS_EXEC_ALLOWED_MODULES) : [];
-		const allowedEnv = pick(env, env.FLOWS_EXEC_ALLOWED_ENV ? toArray(env.FLOWS_EXEC_ALLOWED_ENV) : []);
+		const allowedEnv = pick(env, env.FLOWS_ENV_ALLOW_LIST ? toArray(env.FLOWS_ENV_ALLOW_LIST) : []);
 
 		const opts: NodeVMOptions = {
 			eval: false,

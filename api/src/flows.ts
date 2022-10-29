@@ -297,7 +297,7 @@ class FlowManager {
 			[TRIGGER_KEY]: data,
 			[LAST_KEY]: data,
 			[ACCOUNTABILITY_KEY]: context?.accountability ?? null,
-			[ENV_KEY]: pick(env, env.FLOWS_EXEC_ALLOWED_ENV ? toArray(env.FLOWS_EXEC_ALLOWED_ENV) : []),
+			[ENV_KEY]: pick(env, env.FLOWS_ENV_ALLOW_LIST ? toArray(env.FLOWS_ENV_ALLOW_LIST) : []),
 		};
 
 		let nextOperation = flow.operation;
