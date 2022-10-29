@@ -1605,6 +1605,8 @@ interfaces:
     display_template: Megjelenítési sablon
     no_collection: Nincsenek gyűjtemények
     toggle_split_view: Osztott nézet váltása
+    enable: Engedélyez
+    user_language: Az aktuális felhasználói nyelv használata
     default_language: Alapértelmezett nyelv
   list-o2m-tree-view:
     description: Fa nézet egymásba ágyazott rekurzív egy a sokhoz elemekhez
@@ -1651,7 +1653,11 @@ interfaces:
 displays:
   translations:
     translations: Fordítások
+    description: A fordítások előnézete
+    enable: Engedélyez
+    user_language: Az aktuális felhasználói nyelv használata
     default_language: Alapértelmezett nyelv
+    language_field: Nyelv
   boolean:
     boolean: Logikai
     description: Be- és kikapcsolt állapotok megjelenítése
@@ -1682,6 +1688,16 @@ displays:
     relative: Relatív
     relative_label: 'Relatív idő megjelenítése, pl.: 5 perccel ezelőtt'
     suffix: Utótag
+    suffix_label: Relatív mutató megjelenítése
+    suffix_note: Olyan szavakat használ, mint „benne” és „ezelőtt”
+    strict: Szigorú
+    strict_label: Használjon szigorú mértékegységeket
+    strict_note: Eltávolítja az olyan kifejezéseket, mint a „majdnem”, „vége”, „kevesebb, mint”
+    round: Kerekítés
+    round_note: Válassza ki a használni kívánt kerekítési funkciót
+    down: Le
+    nearest: Legközelebb
+    up: Fel
   file:
     file: File
     description: Fájlok megjelenítése
@@ -1692,17 +1708,26 @@ displays:
     formatted-value: Formázott érték
     description: A szöveg formázott változatának megjelenítése
     format: Formátum
+    format_label: Automatikus formátum
     font: Betűtípus
+    font_sans_serif: Talpatlan
     font_serif: Talpas
     font_monospace: Egyterű
     bold: Félkövér
     bold_label: Vastag stílus használata
     italic: Dőlt
+    italic_label: Használjon dőlt stílust
     prefix: Előtag
+    prefix_label: Szöveg elé
     suffix: Utótag
+    suffix_label: Hozzáfűzött szöveg
     color: Szín
+    background: Háttér
     icon: Ikon
+    border: Keret
+    border_label: Keret mutatása
     text: Szöveg
+    text_placeholder: Opcionális érték törlése...
   formatted-json-value:
     formatted-json-value: Formázott JSON érték
     description: Az objektum formázott változatának megjelenítése
@@ -1740,6 +1765,7 @@ displays:
   related-values:
     related-values: Hasonló értékek
     description: Hasonló értékek megjelenítése
+    display_template_configure_notice: A mező létrehozása után konfigurálhatod a megjelenő sablont.
   user:
     user: Felhasználó
     description: Egy directus felhasználó megjelenítése
@@ -1773,10 +1799,14 @@ layouts:
     basemap: Alaptérkép
     layers: Rétegek
     cluster_options: Klaszterezés beállításai
+    cluster: Közeli adatok csoportosítása (klaszterezés)
     cluster_radius: Klaszter sugara
     cluster_minpoints: Minimális klaszter méret
     cluster_maxzoom: Maximális zoom a klaszterezéshez
+    field: Geospatial mező
     invalid_geometry: Érvénytelen geometria
+    find_location: Hely megkeresése...
+    default_template: Alapértelmezett gyűjtemény használata...
   kanban:
     image: Kártya kép
     crop: Vágás
