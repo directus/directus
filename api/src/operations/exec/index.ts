@@ -1,5 +1,4 @@
 import { defineOperationApi, toArray } from '@directus/shared/utils';
-import { pick } from 'lodash';
 import { NodeVM, NodeVMOptions, VMScript } from 'vm2';
 
 type Options = {
@@ -10,7 +9,7 @@ export default defineOperationApi<Options>({
 	id: 'exec',
 	handler: async ({ code }, { data, env }) => {
 		const allowedModules = env.FLOWS_EXEC_ALLOWED_MODULES ? toArray(env.FLOWS_EXEC_ALLOWED_MODULES) : [];
-		const allowedEnv = pick(env, env.FLOWS_ENV_ALLOW_LIST ? toArray(env.FLOWS_ENV_ALLOW_LIST) : []);
+		const allowedEnv = data.$env ?? {};
 
 		const opts: NodeVMOptions = {
 			eval: false,
