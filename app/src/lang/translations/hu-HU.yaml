@@ -373,6 +373,7 @@ import_data_success: 'Adatok sikeresen importálva innen: {filename}'
 import_data_error: Ennek a fájlnak az adatszerkezete nem egyezik a gyűjteményével.
 label_import: Importálás
 label_export: Export
+import_export: Import / Export
 format: Formátum
 last_page: Utolsó oldal
 last_access: Utolsó hozzáférés
@@ -389,10 +390,14 @@ interface_label: Kezelőfelület
 today: Ma
 yesterday: Tegnap
 delete_comment: Hozzászólás törlése
+delete_share: Megosztás törlése
 functions:
   year: év
   month: hónap
   week: Hét
+  day: Nap
+  weekday: Hétköznap
+  hour: Óra
   minute: Perc
   second: Másodperc
   count: Mennyiség
@@ -452,6 +457,9 @@ replace_from_url: Fájl cseréje URL-ből
 no_file_selected: Nincs kijelölt fájl
 download_file: Fájl letöltése
 open_file_in_tab: Megnyitás új fülön
+start_export: Indítsa el az exportálást
+not_available_for_local_downloads: Nem érhető el helyi letöltésekhez
+exporting_all_items_in_collection: A(z) {collection} összes {total} elemének exportálása.
 collection_key: Gyűjtemény kulcsa
 name: Név
 primary_key_field: Elsődleges kulcs mező
