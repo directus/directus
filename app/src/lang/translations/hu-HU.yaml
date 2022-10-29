@@ -329,6 +329,7 @@ edit_raw_value: Nyers érték szerkesztése
 enter_raw_value: Nyers érték megadása...
 clear_value: Érték eltávolítása
 clear_changes: Változások törlése
+clear_items: Tétel eltávolítása
 reset_to_default: Visszaállítás alapértelmezettre
 undo_changes: Változtatások visszavonása
 notifications: Értesítések
@@ -345,8 +346,10 @@ revision_delta_created_externally: Külsőleg létrehozva
 revision_delta_updated: 'Egy mező frissítve | {count} mező frissítve'
 revision_delta_deleted: Törölt
 revision_delta_reverted: Visszaállítva
+revision_delta_update_message: Ezt a mezőt frissítették, de értékét biztonsági okokból elrejtjük
 revision_delta_other: Változat
 revision_delta_by: '{date} {user} által'
+presentation_text_values_cannot_be_reimported: "Prezentációs szöveget használ, az értékek nem importálhatók újra."
 download_page_as_csv: 'Letöltés CSV-ként'
 private_user: Privát felhasználó
 creation_preview: Létrehozás előnézete
@@ -354,6 +357,7 @@ revision_preview: Felülvizsgálati előnézet
 updates_made: Végrehajtott frissítések
 leave_comment: Hozzászólás írása...
 post_comment_success: Közzétett hozzászólások
+post_comment_updated: Hozzászólás frissítve
 item_create_success: Létrehozott Elem | Létrehozott Elemek
 item_update_success: Frissített Elem | Frissített Elemek
 item_delete_success: Törölt Elem | Törölt Elemek
@@ -364,7 +368,11 @@ translations_collection: Fordításgyűjtemény
 languages_collection: Nyelvek gyűjteménye
 import_data_input_placeholder: CSV vagy JSON...
 import_data_button: Importálás indítása
+import_data_indeterminate: Adatok importálása...
+import_data_success: 'Adatok sikeresen importálva innen: {filename}'
+import_data_error: Ennek a fájlnak az adatszerkezete nem egyezik a gyűjteményével.
 label_import: Importálás
+label_export: Export
 format: Formátum
 last_page: Utolsó oldal
 last_access: Utolsó hozzáférés
