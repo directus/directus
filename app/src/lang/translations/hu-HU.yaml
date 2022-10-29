@@ -460,6 +460,11 @@ open_file_in_tab: Megnyitás új fülön
 start_export: Indítsa el az exportálást
 not_available_for_local_downloads: Nem érhető el helyi letöltésekhez
 exporting_all_items_in_collection: A(z) {collection} összes {total} elemének exportálása.
+exporting_limited_items_in_collection: A(z) {total} elemből {limit} exportálása a(z) {collection} gyűjteménybe.
+exporting_no_items_to_export: Nincs exportálandó tétel. Módosítsa az alábbi exportálási konfigurációt.
+exporting_download_hint: Ha elkészült, ez a {format} fájl automatikusan letöltődik az eszközére.
+exporting_batch_hint: Ezt az exportálást kötegekben dolgozzuk fel, és a befejezést követően a {format} fájl a Fájlkönyvtárba kerül.
+exporting_batch_hint_forced: A tételek nagy száma miatt ezt az exportálást kötegekben kell feldolgozni, és a befejezés után a {format} fájl a Fájltárba kerül.
 collection_key: Gyűjtemény kulcsa
 name: Név
 primary_key_field: Elsődleges kulcs mező
@@ -470,6 +475,7 @@ created_on: Létrehozva
 creating_collection_info: Nevezze el a Gyűjteményt és állítsa be az egyedi "kulcs" mezőt...
 creating_collection_system: Engedélyezze és nevezze át ezen opcionális mezők bármelyikét!
 auto_increment_integer: Automatikusan növekvő egész szám
+auto_increment_big_integer: Automatikusan növelt nagy egész szám
 generated_uuid: Generált UUID
 manual_string: Kézzel beírt szöveg
 save_and_create_new: Mentés és létrehozás
@@ -480,6 +486,7 @@ creating_items: Elemek létrehozása
 enable_create_button: Létrehozás gomb engedélyezése
 selecting_items: Elemek kiválasztása
 enable_select_button: Kiválasztás gomb engedélyezése
+allow_duplicates: Másolatok engedélyezése
 comments: Hozzászólások
 no_comments: Még nincs hozzászólás
 click_to_expand: Kattintson a kibontáshoz
@@ -490,7 +497,9 @@ disabled: Letiltva
 information: Információ
 report_bug: Hibajelentés
 request_feature: Funkció ajánlása
+request_body: Kérelem szerve
 interface_not_found: 'Hiányzó interfész: "{interface}".'
+operation_not_found: 'A „{operation}” művelet nem található.'
 reset_interface: Felhasználói felület visszaállítása
 display_not_found: 'A "{display}" nézet nem található.'
 reset_display: Megjelenés alaphelyzetbe
@@ -504,6 +513,7 @@ no_users_copy: Ez a szerepkör még egy felhasználóhoz sem lett hozzárendelve
 webhooks_count: 'Nincsenek webhookok | Egy webhook | {count} webhook'
 no_webhooks_copy: Még nincsenek webhookok konfigurálva. Hozzon létre egyet alább!
 no_notifications: Nincsenek értesítések
+no_notifications_copy: Felzárkózott!
 activity_log: Tevékenységnapló
 all_items: Minden elem
 any: Bármely
@@ -529,8 +539,10 @@ activity_item: Aktivitás elem
 action: Művelet
 ip_address: IP cím
 user_agent: Felhasználói ügynök
+origin: Eredeti
 webhooks: Webhookok
 decimals: Decimálisok
+value_decimals: Tizedes érték
 min_value: Min. érték
 max_value: Max. érték
 automatic: Automatikus
@@ -574,6 +586,7 @@ errors:
   INVALID_CREDENTIALS: Hibás felhasználónév vagy jelszó
   INVALID_OTP: Helytelen az egyszer használatos jelszó
   INVALID_PAYLOAD: Érvénytelen payload
+  INVALID_PROVIDER: A felhasználó egy másik hitelesítési szolgáltatóhoz tartozik
   INVALID_QUERY: Érvénytelen lekérdezés
   INVALID_CONFIG: Érvénytelen konfiguráció
   INVALID_TOKEN: Érvénytelen token
@@ -645,6 +658,7 @@ one_item: '1 elem'
 one_filtered_item: '1 szűrt elem'
 delete_collection_are_you_sure: >-
   Biztos, hogy törölni szeretné ezt a gyűjteményt"{collection}"? Ez törli a gyűjteményt a benne lévő összes elemével együtt. Ez a művelet végleges.
+delete_folder_are_you_sure: Biztosan törli a(z) "{folder}" mappát? A beágyazott mappák és gyűjtemények a legfelső szintre kerülnek.
 collections_shown: Megjelenített gyűjtemények
 visible_collections: Látható gyűjtemények
 hidden_collections: Rejtett gyűjtemények
@@ -685,6 +699,7 @@ operators:
   nnull: nem null
   contains: Tartalmaz
   ncontains: nem tartalmaz
+  icontains: Tartalmaz (nem érzékeny)
   starts_with: Ezzel kezdődik
   nstarts_with: Nem ezzel kezdődik
   ends_with: Ezzel végződik
@@ -699,6 +714,8 @@ operators:
   nintersects: Nem metszi
   intersects_bbox: Metszi a határoló dobozt
   nintersects_bbox: Nem metszi a határoló dobozt
+  regex: Megfelel a RegExp-nek
+custom_validation_message: Egyéni érvényesítési üzenet
 loading: Betöltés...
 drop_to_upload: Húzd ide a feltöltéshez
 item: Elem
@@ -736,6 +753,8 @@ add_file: Fájl hozzáadása
 replace_file: Fájl cseréje
 no_results: Nincs találat
 no_results_copy: Módosítsd vagy töröld a keresési szűrőket a találatokért.
+no_visible_fields: Üres űrlap
+no_visible_fields_copy: Ezen az űrlapon nincsenek látható mezők.
 clear_filters: Szűrök törlése
 saves_automatically: Automatikus mentés
 role: Szerepkör
@@ -762,23 +781,46 @@ toggle: Váltás
 icon_on: Ikon be
 icon_off: Ikon ki
 label: Címke
+flows: Folyamatok
+flow: Folyamat
+select_a_flow: Válasszon egy folyamatot
+run_flow_on_current_collection: Futtassa a folyamatot az aktuális gyűjteményben
 run_flow_on_current: Folyamat futtatása a jelenlegi tételen
 run_flow_on_current_edited_confirm: Lehetséges, hogy a tétel frissítve lesz a futtatás miatt, biztosan folytatja?
 run_flow_on_selected: Válassz ki egy vagy több elemet | Futtasd a folyamatot 1 kiválasztott elemen | Futtasd a folyamatot {n} kiválasztott elemen
 run_flow_success: Folyamat "{flow}" sikeresen futtatva
 trigger: Eseményindító
+trigger_options: Trigger opciók
+view_trigger: Trigger megtekintése
 create_trigger: Trigger létrehozása
+trigger_setup: Trigger beállítása
+change_trigger: Trigger módosítása
+flow_delete_confirm: Biztosan törli a(z) "{flow}" folyamatot? Ez a művelet nem visszavonható.
 set_flow_active: Folyamat aktívra állítása
 set_flow_inactive: Folyamat inaktívra állítása
 edit_flow: Folyamat szerkesztése
 delete_flow: Folyamat törlése
+no_other_flows_copy: Még nincsenek más folyamatok.
+no_flows: Nincsenek folyamatok
+no_flows_copy: Nincsenek folyamatok.
 create_flow: Folyamat létrehozása
 creating_new_flow: Új folyamat létrehozása
 updating_flow: Folyamat frissítése
+flow_setup: Folyamat beállításai
 flow_name: Név
+flow_tracking: Tevékenység és naplók követése
+flow_tracking_all: Tevékenységek és naplók nyomon követése
 flow_tracking_activity: Csak a tevékenység nyomon követése
 flow_tracking_null: Minden nyomkövetés tiltása
+start_flow: Indítsa el a folyamatot
+stop_flow: Folyamat megállítása
+create_operation: Művelet létrehozása
+edit_operation: Művelet szerkesztése
 code: Kód
+operation_options: Működési lehetőségek
+operation_name: A művelet neve...
+operation_key: Referencia azonosító...
+operation_key_unique_error: A műveleti kulcsoknak egyedinek kell lenniük a folyamatban
 insights: Kimutatások
 dashboard: Irányítópult
 panel: Panel
@@ -799,6 +841,7 @@ no_dashboards_copy: Önnek egy irányítópultja sincs még.
 create_dashboard: Irányítópult létrehozása
 dashboard_name: Irányítópult neve
 no_data: Nincs adat
+accountability: Elszámoltathatóság
 full_screen: Teljes képernyő
 edit_panels: Panel szerkesztése
 center_align: Középre igazítás
@@ -887,6 +930,7 @@ settings_data_model: Adatmodell
 settings_permissions: Szerepkörök és jogosultságok
 settings_project: Projekt beállításai
 settings_webhooks: Webhookok
+settings_flows: Folyamatok
 settings_presets: Alapértelmezések és Könyvjelzők
 one_or_more_options_are_missing: Egy vagy több opció hiányzik
 scope: Hatókör
@@ -1105,6 +1149,7 @@ fields:
     status: Állapot
     data: Adat
     value: Érték
+    headers: Fejlécek kérése
     data_label: Eseményadatok küldése
     triggers: Triggerek
     actions: Műveletek
@@ -1112,6 +1157,8 @@ fields:
 field_options:
   directus_settings:
     project_name_placeholder: Saját projektem...
+    project_color_note: Bejelentkezés és logó háttér
+    project_logo_note: Fehér 40x40 SVG/PNG
     public_note_placeholder: Egy rövid, nyilvános üzenet, mely támogatja a markdown formázást...
     security_divider_title: Biztonság
     auth_password_policy:
@@ -1119,6 +1166,8 @@ field_options:
       weak_text: Gyenge - Minimum 8 karakter
       strong_text: Erős - Nagybetű / Kisbetű / Számok / Speciális karakterek
     storage_asset_presets:
+      fit_label: Illeszkedés
+      upscaling: Felskálázás
       fit:
         contain_text: Tartalmazza (a képarány megőrzése)
         cover_text: Fedje (pontos méretre kényszerítés)
@@ -1129,6 +1178,7 @@ field_options:
     mapbox_key: Mapbox hozzáférési token
     mapbox_placeholder: pk.eyJ1Ijo.....
     basemaps: Alaptérkép
+    basemaps_name_placeholder: Adja meg az alaptérkép nevét...
     basemaps_raster: Raszter
     basemaps_tile: Raszter TileJSON
     basemaps_style: Mapbox stílus
@@ -1151,6 +1201,8 @@ field_options:
     translation: Fordítás
     translation_placeholder: Fordítás megadása...
     collection_name: Gyűjtemény neve
+    singular_unit: Egyes számú egység
+    plural_unit: Többes számú egység
     archive_divider: Archiválás
     archive_field_placeholder: Mező kiválasztása...
     archive_app_filter: Alkalmazás archívum szűrőjének engedélyezése
@@ -1158,11 +1210,14 @@ field_options:
     unarchive_value: Az archiválás visszavonásakor beállított érték...
     sort_divider: Rendezés
     sort_field: Mező kiválasztása...
+    accountability_divider: Elszámoltathatóság
+    duplication_divider: Duplikálás
   directus_files:
     title: Egy egyedi cím...
     description: Egy opcionális leírás...
     location: Egy opcionális helyszín...
     storage_divider: Fájl elnevezése
+    filename_disk: Név a lemeztáron...
     filename_download: Elnevezés letöltés esetén...
   directus_roles:
     name: E szerepkör egyedi neve...
@@ -1198,7 +1253,9 @@ field_options:
     actions_delete: Törlés
     actions_login: Bejelentkezés
     headers:
+      header: Fejléc
       value: Érték
+      add: Fejléc hozzáadása
 no_fields_in_collection: 'A(z) {collection} még nem tartalmaz mezőt'
 no_value: Hiányzó érték
 do_nothing: Ne tegyen semmit
@@ -1212,6 +1269,29 @@ start_collapsed: Kezdetben összecsukva
 block: Blokk
 inline: Inline
 comment: Hozzászólás
+shares: Megosztások
+unlimited_usage: Korlátlan használat
+uses_left: Nincs használat hátra | 1 használat maradt | {n} használat maradt
+no_shares: Nincs megjeleníthető megosztás
+new_share: Új megosztás
+expired: Lejárt
+upcoming: Közelgő
+share: Megosztás
+share_item: Elem megosztása
+shared_with_you: Egy elemet megosztottak Önnel
+shared_enter_passcode: A folytatáshoz írja be a jelszót...
+shared_leave_blank_for_unlimited: Hagyja üresen a korlátlanhoz
+shared_times_remaining: Ez a link csak {n} alkalommal használható
+shared_last_remaining: Ez a link csak egyszer használható
+shared_uses_left: A nagyobb biztonság érdekében ez a megosztott oldal korlátozott számú nézettel lett konfigurálva. Jelenleg {n} megtekintés van hátra, ezt követően az oldal már nem lesz elérhető.
+share_access_page: Megosztott oldal elérése
+share_access_not_found: Ez a megosztott oldal vagy nem létezik, vagy már túllépte a megengedett használatok maximális számát.
+share_access_not_found_desc: Hozzáférés kéréséhez forduljon a projekt egy arra jogosult felhasználójához.
+share_access_not_found_title: Ismeretlen megosztási oldal
+share_copy_link: Link másolása
+share_copy_link_success: Link másolva
+share_copy_link_error: Nem sikerült a hivatkozás másolása
+share_send_link: Link küldése
 relational_triggers: Relációs triggerek
 referential_action_field_label_m2o: '{collection} törlésekor...'
 referential_action_field_label_o2m: '{collection} kiválasztásának megszüntetésekor...'
@@ -1243,12 +1323,23 @@ file: File
 file_library: Könyvtár
 forgot_password: Elfelejtett jelszó
 hidden: Rejtett
+hidden_in_group: Elrejtve {group}
 icon: Ikon
 info: Információ
 normal: Normál
 success: Sikeres
 warning: Figyelmeztetés
 danger: Veszély
+colors:
+  purple: Lila
+  blue: Kék
+  green: Zöld
+  yellow: Sárga
+  orange: Narancssárga
+  red: Piros
+  black: Fekete
+  gray: Szürke
+  white: Fehér
 junction_collection: Csomópont gyűjtemény
 latency: Késleltetés
 login: Belépés
@@ -1263,6 +1354,8 @@ relationship: Kapcsolat
 reset: Visszaállítás
 reset_password: Jelszó visszaállítása
 revisions: Változatok
+no_revisions: Még nincsenek felülvizsgálatok
+no_logs: Még nincsenek naplók
 revert: Visszaállítás
 save: Mentés
 schema: Séma
@@ -1276,6 +1369,8 @@ sign_out: Kilépés
 sign_out_confirm: Biztos, hogy ki szeretne jelentkezni?
 something_went_wrong: Valami hiba történt.
 sort_direction: Rendezés iránya
+export_location: Exportálás helye
+export_started: Az exportálás megkezdődött
 sort_asc: Növekvő sorrend
 sort_desc: Csökkenő sorrend
 template: Sablon
@@ -1547,6 +1642,12 @@ interfaces:
     start_closed: Indíts zárva!
   system-token:
     system-token: Token
+    regenerate: Token újragenerálása
+    generate_success_copy: Készítsen biztonsági másolatot a fenti tokenről. Biztonsági okokból nem tudja újra megnézni a tokent az oldal elhagyása után.
+    remove_token: Token eltávolítása
+  system-raw-editor:
+    system-raw-editor: Nyers szerkesztő
+    description: Lehetővé teszi a nyers vagy kapcsos zárójeles sablonértékek megadását
 displays:
   translations:
     translations: Fordítások
@@ -1714,4 +1815,6 @@ operations:
     method: Metódus
     data: Adat
   trigger:
+    flows: Folyamatok
+    flow: Folyamat
     data: Adat
