@@ -1558,6 +1558,7 @@ interfaces:
     edit_fields: Mezők szerkesztése
     add_label: '"Új létrehozása" címke'
     sort: Rendezés
+    sort_placeholder: Manuális
     field_name_placeholder: Mezőnév megadása...
     field_note_placeholder: Megjegyzés hozzáadása mezőhöz...
   slider:
@@ -1807,8 +1808,25 @@ layouts:
     invalid_geometry: Érvénytelen geometria
     find_location: Hely megkeresése...
     default_template: Alapértelmezett gyűjtemény használata...
+    no_compatible_fields: Nincs kompatibilis mező
   kanban:
+    name: Kanban név
+    group_field: Csoportosítás
+    group_field_placeholder: Mező a csoportosításhoz...
+    group_title: Csoport neve
+    group_title_placeholder: Mező a csoport neveihez...
+    title: Kártya neve
+    title_placeholder: Opcionális név mező...
+    text: Kártya szövege
+    text_placeholder: Opcionális szövegmező...
+    date: Kártya dátuma
+    date_placeholder: Opcionális dátum mező...
+    tags: Kártya jelzői
+    tags_placeholder: Opcionális jelzők...
+    user: Kártya felhasználó
+    user_placeholder: Opcionális felhasználó mezők...
     image: Kártya kép
+    image_placeholder: Opcionális kép mező...
     crop: Vágás
     advanced: Speciális
     edit_group: Csoport szerkesztése
@@ -1829,11 +1847,69 @@ panels:
   list:
     name: Lista
     description: Mezők szűrése és listázása egy gyűjteményből
+  meter:
+    select_max_value: Ki kell választania egy maximális értéket.
+    max_greater_than_zero: A maximumnak 0-nál nagyobbnak kell lennie.
+    select_field: Ki kell választani egy mezőt.
+    select_collection: Ki kell választani egy gyűjteményt.
+    function: Függvény
+    thin: Vékony
+    medium: Közepes
+    broad: Széles
+  piechart:
+    name: Torta vagy fánk diagram
+    description: Kör diagram, amely a csoportok arányát mutatja egy oszlopon.
+    function: 'Függvény'
+    donut: Fánk
+    labels: Címkék megjelenítése
+    legend: Mutasd a magyarázatot
+    right: Jobb
+    bottom: Alsó
+    monochrome: Monokróm
+    monochrome_color: Monokróm szín
+  variable:
+    name: Globális változó
+    description: Állítson be egy globális értéket más panelek szűrőiben való használatra
+    variable_key: Változó kulcs
+  relational-variable:
+    name: Globális relációs változó
+    description: Állítson be egy globális relációs értéket más panelek szűrőiben való használatra
+    variable_key: Változó kulcs
+    multiple: Többszörös
+    multiple-label: Válasszon ki több elemet
 triggers:
   common:
+    response_body: Választörzs
     response_body_all: Összes adat
+    response_body_last: Az utolsó művelet adatai
+  event:
+    name: Esemény Hook
+    description: Triggerek platformon vagy adateseményekben
+    action: 'Művelet (nem blokkoló)'
+    filter: 'Szűrő (blokkolás)'
   webhook:
+    name: Webhook
+    description: Bejövő HTTP-kérés esetén aktiválódik
     method: Metódus
+    async: Aszinkron
+  operation:
+    name: Egy másik folyamat
+    description: Egy másik Folyamat váltja ki, láncoláshoz
+    preview: Egy másik folyamatban végrehajtott művelet váltja ki
+  schedule:
+    name: Menetrend (CRON)
+    description: Rendszeres időpontokban aktiválódik
+    cron: Intervallum
+  manual:
+    name: Manuális
+    description: Triggerek kézi futtatáskor a kiválasztott gyűjtemény(ek) en belül
+    collection_and_item: Gyűjtemény- és cikkoldalak
+    collection_only: Csak gyűjteményoldal
+    item_only: Csak az elem oldala
+    collection_page: Gyűjtemény oldal
+    require_selection: Kiválasztást igényel
+a_flow_uuid: Válasszon ki egy folyamatot az aktiváláshoz...
+any_string_or_json: Bármilyen karakterlánc vagy JSON...
 operations:
   log:
     message: Üzenet
@@ -1845,6 +1921,7 @@ operations:
     method: Metódus
     data: Adat
   trigger:
+    description: Adja át ezeket az adatokat egy másik folyamatnak
     flows: Folyamatok
     flow: Folyamat
     data: Adat
