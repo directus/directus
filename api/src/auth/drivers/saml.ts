@@ -7,6 +7,7 @@ import { getAuthProvider } from '../../auth';
 import { COOKIE_OPTIONS } from '../../constants';
 import env from '../../env';
 import Joi from 'joi';
+import { parse as toXML } from 'js2xmlparser';
 import { RecordNotUniqueException } from '../../exceptions/database/record-not-unique';
 import { InvalidConfigException, InvalidCredentialsException, InvalidProviderException } from '../../exceptions';
 import { respond } from '../../middleware/respond';
@@ -17,6 +18,7 @@ import { getConfigFromEnv } from '../../utils/get-config-from-env';
 import { LocalAuthDriver } from './local';
 import { Url } from '../../utils/url';
 
+// tell samlify to use validator...
 samlify.setSchemaValidator(validator);
 
 export class SAMLAuthDriver extends LocalAuthDriver {
@@ -30,7 +32,19 @@ export class SAMLAuthDriver extends LocalAuthDriver {
 		super(options, config);
 
 		this.config = config;
+		this.usersService = new UsersService({ knex: this.knex, schema: this.schema });
 
+		const redirectUrl = new Url(env.PUBLIC_URL).addPath('auth', 'login', config.provider, 'callback');
+		this.redirectUrl = redirectUrl.toString();
+
+		if (this.validateMetadata()) {
+			this.sp = samlify.ServiceProvider(getConfigFromEnv(`AUTH_${config.provider.toUpperCase()}_SP`));
+			this.idp = samlify.IdentityProvider(getConfigFromEnv(`AUTH_${config.provider.toUpperCase()}_IDP`));
+		}
+	}
+
+	// validate if metadata looks correct, first making sure it's not empty then validating it's what we expect...
+	validateMetadata() {
 		const samlSchema = Joi.object({
 			sp: Joi.string()
 				.pattern(/(<.[^(><.)]+>)/)
@@ -38,24 +52,40 @@ export class SAMLAuthDriver extends LocalAuthDriver {
 			idp: Joi.string()
 				.pattern(/(<.[^(><.)]+>)/)
 				.required(),
+			registration: Joi.bool(),
+			defaultRoleId: Joi.alternatives().conditional('registration', {
+				is: true,
+				then: Joi.string().required(),
+				otherwise: Joi.string(),
+			}),
 		}).unknown();
-
-		const redirectUrl = new Url(env.PUBLIC_URL).addPath('auth', 'login', config.provider, 'callback');
-		this.redirectUrl = redirectUrl.toString();
 
 		// validate if the metadata field of each key contains valid xml...
 		const { error } = samlSchema.validate({
-			sp: getConfigFromEnv(`AUTH_${config.provider.toUpperCase()}_SP`).metadata || '',
-			idp: getConfigFromEnv(`AUTH_${config.provider.toUpperCase()}_IDP`).metadata || '',
+			sp: getConfigFromEnv(`AUTH_${this.config.provider.toUpperCase()}_SP`).metadata,
+			idp: getConfigFromEnv(`AUTH_${this.config.provider.toUpperCase()}_IDP`).metadata,
+			registration: this.config.allowPublicRegistration,
+			defaultRoleId: this.config.defaultRoleId,
 		});
 
 		if (error) {
 			throw new InvalidConfigException(error.message);
 		}
 
-		this.usersService = new UsersService({ knex: this.knex, schema: this.schema });
-		this.sp = samlify.ServiceProvider(getConfigFromEnv(`AUTH_${config.provider.toUpperCase()}_SP`));
-		this.idp = samlify.IdentityProvider(getConfigFromEnv(`AUTH_${config.provider.toUpperCase()}_IDP`));
+		const spString = toXML(
+			'SPSSODescriptor',
+			getConfigFromEnv(`AUTH_${this.config.provider.toUpperCase()}_SP`).metadata
+		);
+		const idpString = toXML(
+			'IDPSSODescriptor',
+			getConfigFromEnv(`AUTH_${this.config.provider.toUpperCase()}_SP`).metadata
+		);
+
+		if (!spString || !idpString) {
+			throw new InvalidConfigException('[SAML] config error: invalid xml');
+		}
+
+		return true;
 	}
 
 	async fetchUserID(identifier: string) {
