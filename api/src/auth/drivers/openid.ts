@@ -282,12 +282,12 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 	router.post(
 		'/callback',
 		bodyParser.urlencoded({ extended: false }),
-		asyncHandler(async (req, res, next) => {
+		(req, res) => {
 			res.redirect(303, `./callback?${new URLSearchParams(req.body)}`);
-		}),
+		},
 		respond
 	);
-			
+
 	router.get(
 		'/callback',
 		asyncHandler(async (req, res, next) => {
