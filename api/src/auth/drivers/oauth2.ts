@@ -257,7 +257,7 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 	router.all(
 		'/callback',
 		asyncHandler(async (req, res, next) => {
-			if (!req.method.includes('POST', 'GET')) {
+			if (!['POST', 'GET'].includes(req.method)) {
 				return next();
 			}
 			
