@@ -103,8 +103,8 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 	}
 
 	async getUserID(payload: Record<string, any>): Promise<string> {
-		if (!payload.code || !payload.codeVerifier) {
-			logger.warn('[OAuth2] No code or codeVerifier in payload');
+		if (!payload.code || !payload.codeVerifier || !payload.state) {
+			logger.warn('[OAuth2] No code, codeVerifier or state in payload');
 			throw new InvalidCredentialsException();
 		}
 
@@ -290,18 +290,10 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 
 			try {
 				res.clearCookie(`oauth2.${providerName}`);
-
-				const code = req.method === 'POST' ? req.post.code : req.query.code;
-				const state = req.method === 'POST' ? req.post.state : req.query.state;
-				
-				if (!code || !state) {
-					logger.warn(`[OAuth2] Couldn't extract OAuth2 code or state from provider response.`);
-				}
-
 				authResponse = await authenticationService.login(providerName, {
-					code: code,
+					code: req.method === 'POST' ? req.post.code : req.query.code,
 					codeVerifier: verifier,
-					state: state,
+					state: req.method === 'POST' ? req.post.state : req.query.state,
 				});
 			} catch (error: any) {
 				// Prompt user for a new refresh_token if invalidated
