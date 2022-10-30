@@ -187,6 +187,8 @@ revision_post_create: Aqui está como este ítem ficou quando foi criado.
 revision_post_update: Aqui está como este item ficou após a atualização.
 changes_made: Abaixo estão as mudanças específicas feitas nesta revisão.
 no_relational_data: Tenha em mente que os dados relacionais não estão inclusos aqui.
+top: Topo
+bottom: Inferior
 hide_field: Ocultar campo
 hide_field_on_detail: Ocultar Campo em Detalhes
 show_field_on_detail: Exibir Campo em Detalhes
@@ -272,6 +274,7 @@ fields_group: Grupo de Campos
 no_collections_found: Nenhuma coleção encontrada.
 new_data_alert: 'O seguinte será criado em seu modelo de dados:'
 search_collection: Pesquisar Coleção...
+search_field: Campo de pesquisa...
 new_field: 'Novo campo'
 new_collection: 'Nova Coleção'
 add_m2o_to_collection: 'Adicionar M2O a "{collection}"'
@@ -324,6 +327,7 @@ edit_raw_value: Editar valor bruto
 enter_raw_value: Insira valor bruto...
 clear_value: Limpar Valor
 clear_changes: Limpar alterações
+clear_items: Excluir itens
 reset_to_default: Restaurar Padrões
 undo_changes: Desfazer Alterações
 notifications: Notificações
@@ -531,6 +535,7 @@ activity_item: Feed de atividade
 action: Ação
 ip_address: Endereço de IP
 user_agent: Agente de Usuário
+origin: Origem
 webhooks: Webhooks
 decimals: Decimais
 value_decimals: Valores decimais
@@ -579,6 +584,9 @@ errors:
   INVALID_PAYLOAD: Payload inválido
   INVALID_PROVIDER: Usuário pertence a um provedor de autenticação diferente
   INVALID_QUERY: Consulta inválida
+  INVALID_CONFIG: Configuração inválida
+  INVALID_TOKEN: Token inválido
+  INVALID_IP: Endereço IP não permitido
   INVALID_USER: Falha ao autenticar usuário
   ITEM_LIMIT_REACHED: Limite de elementos alcançado
   ITEM_NOT_FOUND: Item não encontrado
@@ -592,7 +600,14 @@ errors:
   ILLEGAL_ASSET_TRANSFORMATION: Fonte de imagem muito grande para visualização
   VALUE_TOO_LONG: Valor é muito longo
   VALUE_OUT_OF_RANGE: Valor fora de alcance
+  INVALID_FOREIGN_KEY: Chave estrangeira inválida
   UNKNOWN: Erro inesperado
+  GRAPHQL_VALIDATION_EXCEPTION: Exceção de Validação GraphQL
+  SERVICE_UNAVAILABLE: Serviço indisponível
+  UNSUPPORTED_MEDIA_TYPE: Tipo de mídia incompatível
+  UNEXPECTED_RESPONSE: Resposta inesperada
+  TOKEN_EXPIRED: Token expirado
+  METHOD_NOT_ALLOWED: Método não permitido
 security: Segurança
 value_hashed: Valor secretamente salvo em hash
 bookmark_name: Nome do marcador...
@@ -754,7 +769,6 @@ label: Rótulo
 flows: Fluxos
 flow: Fluxo
 select_a_flow: Selecione um fluxo
-run_flow_on_selected: Sem itens selecionados | Executar fluxo em 1 item selecionado | Executar fluxo em {n} itens selecionados
 trigger: Acionar
 view_trigger: Ver gatilho
 create_trigger: Criar gatilho
@@ -1008,6 +1022,7 @@ fields:
     user: Ação Por
     comment: Comentário
     user_agent: Agente de Usuário
+    origin: Origem
     ip: Endereço de IP
     revisions: Revisões
   directus_collections:
@@ -1119,6 +1134,7 @@ fields:
     transformations_all: Permitir todas as transformações
     transformations_none: Desativar transformações
     transformations_presets: Limitar transformações às predefinições abaixo
+    image_editor: Editor de imagem
   directus_shares:
     name: Nome
     role: Função
@@ -1384,6 +1400,9 @@ report_error: Relatar erro
 start: Início
 table: Tabela
 list: Lista
+show_link_to_item: Mostrar um link para o item
+remove_item: Remover Item
+delete_item: Excluir item
 interfaces:
   filter:
     name: Filtro
@@ -1808,6 +1827,9 @@ layouts:
     map: Mapa
     invalid_geometry: Geometria inválida
     find_location: Encontrar localização...
+  kanban:
+    crop: Recortar
+    advanced: Avançado
 panels:
   metric:
     name: Métrico
