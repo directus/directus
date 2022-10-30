@@ -1,6 +1,7 @@
 import { BaseException } from '@directus/shared/exceptions';
 import { parseJSON } from '@directus/shared/utils';
 import { Router } from 'express';
+import bodyParser from 'body-parser';
 import flatten from 'flat';
 import jwt from 'jsonwebtoken';
 import ms from 'ms';
@@ -278,13 +279,18 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 		respond
 	);
 
-	router.all(
+	router.post(
+		'/callback',
+		bodyParser.urlencoded({ extended: false }),
+		asyncHandler(async (req, res, next) => {
+			res.redirect(303, `./callback?${new URLSearchParams(req.body)}`);
+		}),
+		respond
+	);
+			
+	router.get(
 		'/callback',
 		asyncHandler(async (req, res, next) => {
-			if (req.method !== 'POST' && req.method !== 'GET') {
-				return next();
-			}
-			
 			let tokenData;
 
 			try {
@@ -315,9 +321,9 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 			try {
 				res.clearCookie(`openid.${providerName}`);
 				authResponse = await authenticationService.login(providerName, {
-					code: req.method === 'POST' ? req.post.code : req.query.code,
+					code: req.query.code,
 					codeVerifier: verifier,
-					state: req.method === 'POST' ? req.post.state : req.query.state,
+					state: req.query.state,
 				});
 			} catch (error: any) {
 				// Prompt user for a new refresh_token if invalidated
