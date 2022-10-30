@@ -263,7 +263,6 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 		},
 		respond
 	);
-	
 	router.get(
 		'/callback',
 		asyncHandler(async (req, res, next) => {
