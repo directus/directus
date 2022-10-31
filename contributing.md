@@ -85,15 +85,15 @@ that we can't merge every suggested code change.
 
 ##### Triaging Process
 
-Each Pull Request that comes in is required to resolve [an open Issue](https://github.com/directus/directus/issues).
-This ensures that any code change made implements a known actionable item, be it a feature or otherwise.
-
 Feature Request Discussions that are deemed ready to be implemented with the discussed implementation details are marked
 "Accepted" and converted into an Issue, at which point the feature is ready to be implemented.
 
 New feature ideas reported directly to issues might be converted into a Discussion for further triaging at
 [the core team](https://github.com/orgs/directus/people)'s discretion first. This is often due to a lack of detail, or
 lack of proven interest.
+
+Each Pull Request that comes in is required to resolve [an open Issue](https://github.com/directus/directus/issues).
+This ensures that any code change made implements a known actionable item, be it a feature or otherwise.
 
 ### Reporting Security Vulnerabilities
 
