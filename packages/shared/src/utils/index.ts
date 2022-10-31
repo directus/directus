@@ -17,7 +17,7 @@ export * from './get-relation-type';
 export * from './get-simple-hash';
 export * from './get-with-arrays';
 export * from './is-dynamic-variable';
-export * from './is-valid-filter';
+export * from './is-valid-filter-operator';
 export * from './merge-filters';
 export * from './move-in-array';
 export * from './parse-filter';
