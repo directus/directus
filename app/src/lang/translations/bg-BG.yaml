@@ -778,7 +778,6 @@ flows: Автоматизирани процеси
 flow: Процес
 select_a_flow: Избор на процес
 run_flow_on_current: Стартиране на процеса за текущия запис
-run_flow_on_selected: Не са избрани записи | Стартиране на процеса за 1 запис | Стартиране на процеса за {n} записа
 run_flow_success: Изпълнението на процеса „{flow}“ е успешно
 trigger: Задействане
 trigger_options: Настройка на задействането
@@ -1898,33 +1897,8 @@ layouts:
     default_template: По подразбиране от колекцията...
     no_compatible_fields: Няма съвместими полета
   kanban:
-    name: Канбан
-    group_field: Групиране по
-    group_field_placeholder: Поле за групиране
-    group_title: Заглавие при групиране
-    group_title_placeholder: Полета за групиране
-    title: Заглавие на карта
-    title_placeholder: Незадължително поле за заглавие
-    text: Текст на картата
-    text_placeholder: Незадължително поле за текст
-    date: Дата на картата
-    date_placeholder: Незадължително поле за дата
-    tags: Етикети на картата
-    tags_placeholder: Незадължително поле за етикети
-    user: Потребител на картата
-    user_placeholder: Незадължително поле за потребител
-    image: Избражение на картата
-    image_placeholder: Незадължително поле за изображение
-    image_fit: Напасване на изображението
     crop: Изрязване
     advanced: Разширени
-    edit_group: Редактиране на група
-    delete_group: Изтриване на група
-    add_group: Добавяне на група
-    add_group_placeholder: Въвеждане на заглавие за група...
-    show_ungrouped: Негрупирано показване
-    show: Показване
-    no_group: Няма група
     not_all_loaded: Може да се заредят само първите 1000 записи.
 panels:
   metric:
@@ -1987,7 +1961,6 @@ panels:
   meter:
     description: Циферблат за показване на стойности
     name: Циферблат
-    arc: Арка
     stroke_width: Ширина на чертите
     select_max_value: Трябва да изберете максимална стойност.
     max_greater_than_zero: Максималната стойност трябва да е по-голяма от 0.
@@ -2043,7 +2016,6 @@ triggers:
     collection_and_item: В колекцията и детайлния изглед
     collection_only: Само в изгледа на колекцията
     item_only: Само в детайлния изглед
-a_flow_uuid: Първичен UUID ключ на процеса...
 any_string_or_json: Всякакъв низ или JSON...
 item_payload_placeholder: Това трябва да е JSON документа, който ще се използва при актуализирането на полетата на записа...
 operation_variables_note: Данните от операцията са достъпни чрез променливи като **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** и **{'{'}{'{'}$accountability{'}'}{'}'}**, или за достъп до предишната операция чрез **{'{'}{'{'}operation_key{'}'}{'}'}**.'
