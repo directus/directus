@@ -3,7 +3,7 @@ import { parseJSON, toArray } from '@directus/shared/utils';
 import { Knex } from 'knex';
 import { clone, cloneDeep, merge, pick, uniq } from 'lodash';
 import getDatabase from '.';
-import { getHelpers } from '../database/helpers';
+import { getHelpers, getJsonHelper } from '../database/helpers';
 import env from '../env';
 import { PayloadService } from '../services/payload';
 import { AST, ASTNode, FieldNode, FunctionFieldNode, JsonFieldNode, M2ONode, NestedCollectionNode } from '../types/ast';
@@ -258,16 +258,32 @@ function getDBQuery(
 	fieldNodes: (FieldNode | FunctionFieldNode | JsonFieldNode)[],
 	query: Query
 ): Knex.QueryBuilder {
-	// const { json } = getHelpers(knex);
 	const preProcess = getColumnPreprocessor(knex, schema, table);
 
-	const jsonFields = fieldNodes.filter((node) => node.type === 'jsonField').map(({ fieldKey }) => fieldKey);
-	const dbQuery = knex.select(fieldNodes.map(preProcess)).from(table);
-	const queryCopy = clone(query);
+	const jsonNodes = fieldNodes.filter((node) => node.type === 'jsonField') as JsonFieldNode[];
+	const jsonHelper = getJsonHelper(knex, schema, jsonNodes);
+	const regularNodes = fieldNodes.filter((node) => node.type !== 'jsonField');
 
+	let dbQuery = knex.select(regularNodes.map(preProcess));
+	dbQuery = jsonHelper.applyFields(dbQuery, table);
+	dbQuery = dbQuery.from(table);
+	dbQuery = jsonHelper.applyJoins(dbQuery);
+
+	const queryCopy = clone(query);
 	queryCopy.limit = typeof queryCopy.limit === 'number' ? queryCopy.limit : 100;
 
-	return applyQuery(knex, table, dbQuery, queryCopy, schema, false, jsonFields);
+	dbQuery = applyQuery(
+		knex,
+		table,
+		dbQuery,
+		queryCopy,
+		schema,
+		false,
+		jsonNodes.map(({ fieldKey }) => fieldKey)
+	);
+	dbQuery = jsonHelper.applyQuery(dbQuery);
+
+	return dbQuery;
 }
 
 function applyParentFilters(

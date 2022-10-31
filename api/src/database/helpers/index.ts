@@ -1,6 +1,7 @@
 import { SchemaOverview } from '@directus/shared/types';
 import { Knex } from 'knex';
 import { getDatabaseClient } from '..';
+import { JsonFieldNode } from '../../types';
 
 import * as dateHelpers from './date';
 import * as fnHelpers from './fn';
@@ -15,8 +16,12 @@ export function getHelpers(database: Knex) {
 		date: new dateHelpers[client](database),
 		st: new geometryHelpers[client](database),
 		schema: new schemaHelpers[client](database),
-		json: new jsonHelpers[client](database),
 	};
+}
+
+export function getJsonHelper(database: Knex, schema: SchemaOverview, nodes: JsonFieldNode[] = []) {
+	const client = getDatabaseClient(database);
+	return new jsonHelpers[client](database, schema, nodes);
 }
 
 export function getFunctions(database: Knex, schema: SchemaOverview) {
