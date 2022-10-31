@@ -9,7 +9,7 @@ import { PayloadService } from '../services/payload';
 import { AST, ASTNode, FieldNode, FunctionFieldNode, JsonFieldNode, M2ONode, NestedCollectionNode } from '../types/ast';
 import { applyFunctionToColumnName } from '../utils/apply-function-to-column-name';
 import applyQuery from '../utils/apply-query';
-import { getColumn, getJsonColumn } from '../utils/get-column';
+import { getColumn } from '../utils/get-column';
 import { stripFunction } from '../utils/strip-function';
 
 type RunASTOptions = {
@@ -220,7 +220,7 @@ async function parseCurrentLevel(schema: SchemaOverview, collection: string, chi
 function getColumnPreprocessor(knex: Knex, schema: SchemaOverview, table: string) {
 	const helpers = getHelpers(knex);
 
-	return function (fieldNode: FieldNode | FunctionFieldNode | M2ONode | JsonFieldNode): Knex.Raw<string> {
+	return function (fieldNode: FieldNode | FunctionFieldNode | M2ONode): Knex.Raw<string> {
 		let alias = undefined;
 
 		if (fieldNode.name !== fieldNode.fieldKey) {
@@ -231,8 +231,6 @@ function getColumnPreprocessor(knex: Knex, schema: SchemaOverview, table: string
 
 		if (fieldNode.type === 'field' || fieldNode.type === 'functionField') {
 			field = schema.collections[table].fields[stripFunction(fieldNode.name)];
-		} else if (fieldNode.type === 'jsonField') {
-			field = schema.collections[table].fields[fieldNode.name];
 		} else {
 			field = schema.collections[fieldNode.relation.collection].fields[fieldNode.relation.field];
 		}
@@ -243,8 +241,6 @@ function getColumnPreprocessor(knex: Knex, schema: SchemaOverview, table: string
 
 		if (fieldNode.type === 'functionField') {
 			return getColumn(knex, table, fieldNode.name, alias, schema, fieldNode.query);
-		} else if (fieldNode.type === 'jsonField') {
-			return getJsonColumn(knex, table, fieldNode.name, fieldNode.fieldKey, fieldNode.queryPath, schema);
 		}
 
 		return getColumn(knex, table, fieldNode.name, alias, schema);
@@ -262,7 +258,11 @@ function getDBQuery(
 
 	const jsonNodes = fieldNodes.filter((node) => node.type === 'jsonField') as JsonFieldNode[];
 	const jsonHelper = getJsonHelper(knex, schema, jsonNodes);
-	const regularNodes = fieldNodes.filter((node) => node.type !== 'jsonField');
+	const regularNodes = fieldNodes.filter((node) => node.type !== 'jsonField') as (
+		| FieldNode
+		| FunctionFieldNode
+		| M2ONode
+	)[];
 
 	let dbQuery = knex.select(regularNodes.map(preProcess));
 	dbQuery = jsonHelper.applyFields(dbQuery, table);

@@ -1,7 +1,7 @@
 import { FieldFunction, Query, SchemaOverview } from '@directus/shared/types';
 import { getFunctionsForType } from '@directus/shared/utils';
 import { Knex } from 'knex';
-import { getFunctions, getHelpers } from '../database/helpers';
+import { getFunctions } from '../database/helpers';
 import { InvalidQueryException } from '../exceptions';
 import { applyFunctionToColumnName } from './apply-function-to-column-name';
 import { stripFunction } from './strip-function';
@@ -55,25 +55,4 @@ export function getColumn(
 	}
 
 	return knex.ref(`${table}.${column}`);
-}
-
-export function getJsonColumn(
-	knex: Knex,
-	table: string,
-	column: string,
-	alias: string,
-	jsonPath: string,
-	schema: SchemaOverview
-) {
-	const { json } = getHelpers(knex);
-
-	const type = schema?.collections[table]?.fields?.[column]?.type ?? 'unknown';
-	const allowedFunctions = getFunctionsForType(type);
-
-	if (allowedFunctions.includes('json') === false) {
-		throw new InvalidQueryException(`Invalid field of type "${type}" is not compatible with JSON queries.`);
-	}
-
-	return json.jsonColumn(table, column, jsonPath, alias);
-	// return knex.raw(knex.jsonExtract(`${table}.${column}`, jsonPath, alias, false));
 }
