@@ -72,8 +72,8 @@ describe('/auth/login/saml', () => {
 	});
 
 	describe('POST /acs', () => {
-		describe('when saml response is provided', () => {
-			describe('returns directus refresh token', () => {
+		describe('when no redirect is provided', () => {
+			describe('returns directus refresh token in JSON', () => {
 				it.each(vendors)('%s', async (vendor) => {
 					// Action
 					const samlLogin = await request(getUrl(vendor)).get('/auth/login/saml').expect(302);
@@ -93,6 +93,49 @@ describe('/auth/login/saml', () => {
 						.post('/auth/login/saml/acs')
 						.send({
 							SAMLResponse,
+						})
+						.expect(200);
+
+					// Assert
+					expect(acsResponse.body.data).toEqual(
+						expect.objectContaining({
+							access_token: expect.any(String),
+							expires: expect.any(Number),
+							refresh_token: expect.any(String),
+						})
+					);
+				});
+			});
+		});
+
+		describe('when redirect is provided', () => {
+			describe('returns directus refresh token in cookie', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// Action
+					const samlLogin = await request(getUrl(vendor))
+						.get(`/auth/login/saml?redirect=${getUrl(vendor)}/admin/login?continue`)
+						.expect(302);
+					const samlRedirectUrl = String(samlLogin.headers.location).split('/simplesaml/');
+
+					const authResponse = await request(samlRedirectUrl[0])
+						.get(`/simplesaml/${samlRedirectUrl[1]}`)
+						.set('Cookie', authCookies[vendor]);
+
+					expect(authResponse.statusCode).toBe(200);
+
+					const SAMLResponse = authResponse.text
+						.split('<input type="hidden" name="SAMLResponse" value="')[1]
+						.split('" />')[0];
+
+					const RelayState = authResponse.text
+						.split('<input type="hidden" name="RelayState" value="')[1]
+						.split('" />')[0];
+
+					const acsResponse = await request(getUrl(vendor))
+						.post('/auth/login/saml/acs')
+						.send({
+							SAMLResponse,
+							RelayState,
 						})
 						.expect(302);
 
