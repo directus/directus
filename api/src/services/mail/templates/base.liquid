@@ -142,8 +142,7 @@ blockquote > p {
 							<tr>
 								<td align="center" valign="middle" style="-webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; mso-table-lspace:0pt; mso-table-rspace:0pt; padding:25px 0; font-family:Open Sans, Helvetica, Arial, sans-serif; color:#FFFFFE">
 									<p style="margin-bottom: 1em; color: #A2B5CD;font-size: 12px; line-height: 16px;">
-										Sent by the team at {{ projectName }} — <a style="-webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; text-decoration:none; color:#A2B5CD" class="unsubscribe" data-unsubscribe="true" href="{{ url }}" data-hs-link-id="0" target="_blank">Manage Emails</a><br>
-										{% block footer %}{% endblock %}
+Sent by the team at {{ projectName }}{% if url %} — <a style="-webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; text-decoration:none; color:#A2B5CD" class="unsubscribe" data-unsubscribe="true" href="{{ url }}" data-hs-link-id="0" target="_blank">Manage Your Account</a>{% endif %}<br>										{% block footer %}{% endblock %}
 									</p>
 								</td>
 							</tr>
