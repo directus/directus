@@ -171,8 +171,12 @@ export function createSAMLAuthRouter(providerName: string) {
 		'/',
 		asyncHandler(async (req, res) => {
 			const { sp, idp } = getAuthProvider(providerName) as SAMLAuthDriver;
-			const { context } = await sp.createLoginRequest(idp, 'redirect');
-			return res.redirect(context);
+			const { context: url } = await sp.createLoginRequest(idp, 'redirect');
+			const parsedUrl = new URL(url);
+			if (req.query.redirect) {
+				parsedUrl.searchParams.append('RelayState', req.query.redirect as string);
+			}
+			return res.redirect(parsedUrl.toString());
 		})
 	);
 
@@ -196,7 +200,8 @@ export function createSAMLAuthRouter(providerName: string) {
 				const authService = new AuthenticationService({ accountability: req.accountability, schema: req.schema });
 				const { accessToken, refreshToken, expires } = await authService.login(providerName, extract.attributes);
 
-				// TODO: json
+				const relayState: string | undefined = req.body?.RelayState;
+
 				res.locals.payload = {
 					data: {
 						access_token: accessToken,
@@ -205,11 +210,9 @@ export function createSAMLAuthRouter(providerName: string) {
 					},
 				};
 
-				// TODO: figure out better redirect...
-				const redirectUrl = env.PUBLIC_URL;
-				if (redirectUrl) {
+				if (relayState) {
 					res.cookie(env.REFRESH_TOKEN_COOKIE_NAME, refreshToken, COOKIE_OPTIONS);
-					return res.redirect(redirectUrl);
+					return res.redirect(relayState);
 				}
 				next();
 			} catch (error: any) {
