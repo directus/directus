@@ -212,7 +212,7 @@ export class AuthorizationService {
 
 			if (ast.type === 'root') {
 				// Validate all required permissions once at the root level
-				checkFieldPermissions(ast.name, schema, action, requiredFieldPermissions);
+				checkFieldPermissions(ast.name, schema, action, requiredFieldPermissions, ast.query.alias);
 			}
 
 			return requiredFieldPermissions;
@@ -359,7 +359,8 @@ export class AuthorizationService {
 				rootCollection: string,
 				schema: SchemaOverview,
 				action: PermissionsAction,
-				requiredPermissions: Record<string, Set<string>>
+				requiredPermissions: Record<string, Set<string>>,
+				alias?: Record<string, string> | null
 			) {
 				if (accountability?.admin === true) return;
 
@@ -396,7 +397,12 @@ export class AuthorizationService {
 					for (const field of requiredPermissions[collection]) {
 						if (field.startsWith('$FOLLOW')) continue;
 						const fieldName = stripFunction(field);
-						if (!allowedFields.includes(fieldName)) {
+
+						if (collection === rootCollection && alias && alias[fieldName]) {
+							if (!allowedFields.includes(alias[fieldName])) {
+								throw new ForbiddenException();
+							}
+						} else if (!allowedFields.includes(fieldName)) {
 							throw new ForbiddenException();
 						}
 					}
