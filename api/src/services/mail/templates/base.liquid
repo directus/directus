@@ -132,7 +132,7 @@ blockquote > p {
 							</tr>
 							<tr>
 								<td id="content" align="left" valign="top" style="-webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; mso-table-lspace:0pt; mso-table-rspace:0pt; padding:40px 50px 50px 50px; font-family:Open Sans, Helvetica, Arial, sans-serif; border-radius:4px; box-shadow:0 4px 0 #15253A; background-color:#FFFFFE; color:#172940; font-size:15px; line-height:26px; margin:0" bgcolor="#FFFFFE">
-									<div id="hs_cos_wrapper_email_template_main_email_body" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_module" style="color: inherit; font-size: inherit; line-height: inherit;" data-hs-cos-general-type="widget" data-hs-cos-type="module">
+									<div style="color: inherit; font-size: inherit; line-height: inherit;">
 
 										{% block content %}{{ html }}{% endblock %}
 
@@ -142,7 +142,8 @@ blockquote > p {
 							<tr>
 								<td align="center" valign="middle" style="-webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; mso-table-lspace:0pt; mso-table-rspace:0pt; padding:25px 0; font-family:Open Sans, Helvetica, Arial, sans-serif; color:#FFFFFE">
 									<p style="margin-bottom: 1em; color: #A2B5CD;font-size: 12px; line-height: 16px;">
-Sent by the team at {{ projectName }}{% if url %} — <a style="-webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; text-decoration:none; color:#A2B5CD" class="unsubscribe" data-unsubscribe="true" href="{{ url }}" data-hs-link-id="0" target="_blank">Manage Your Account</a>{% endif %}<br>										{% block footer %}{% endblock %}
+										Sent by the team at {{ projectName }}{% if url %} — <a style="-webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; text-decoration:none; color:#A2B5CD" href="{{ url }}" target="_blank">Manage Your Account</a>{% endif %}<br>
+										{% block footer %}{% endblock %}
 									</p>
 								</td>
 							</tr>
