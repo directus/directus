@@ -37,55 +37,8 @@ export class SAMLAuthDriver extends LocalAuthDriver {
 		const redirectUrl = new Url(env.PUBLIC_URL).addPath('auth', 'login', config.provider, 'callback');
 		this.redirectUrl = redirectUrl.toString();
 
-		if (this.validateMetadata()) {
-			this.sp = samlify.ServiceProvider(getConfigFromEnv(`AUTH_${config.provider.toUpperCase()}_SP`));
-			this.idp = samlify.IdentityProvider(getConfigFromEnv(`AUTH_${config.provider.toUpperCase()}_IDP`));
-		}
-	}
-
-	// validate if metadata looks correct, first making sure it's not empty then validating it's what we expect...
-	validateMetadata() {
-		const samlSchema = Joi.object({
-			sp: Joi.string()
-				.pattern(/(<.[^(><.)]+>)/)
-				.required(),
-			idp: Joi.string()
-				.pattern(/(<.[^(><.)]+>)/)
-				.required(),
-			registration: Joi.bool(),
-			defaultRoleId: Joi.alternatives().conditional('registration', {
-				is: true,
-				then: Joi.string().required(),
-				otherwise: Joi.string(),
-			}),
-		}).unknown();
-
-		// validate if the metadata field of each key contains valid xml...
-		const { error } = samlSchema.validate({
-			sp: getConfigFromEnv(`AUTH_${this.config.provider.toUpperCase()}_SP`).metadata,
-			idp: getConfigFromEnv(`AUTH_${this.config.provider.toUpperCase()}_IDP`).metadata,
-			registration: this.config.allowPublicRegistration,
-			defaultRoleId: this.config.defaultRoleId,
-		});
-
-		if (error) {
-			throw new InvalidConfigException(error.message);
-		}
-
-		const spString = toXML(
-			'SPSSODescriptor',
-			getConfigFromEnv(`AUTH_${this.config.provider.toUpperCase()}_SP`).metadata
-		);
-		const idpString = toXML(
-			'IDPSSODescriptor',
-			getConfigFromEnv(`AUTH_${this.config.provider.toUpperCase()}_SP`).metadata
-		);
-
-		if (!spString || !idpString) {
-			throw new InvalidConfigException('[SAML] config error: invalid xml');
-		}
-
-		return true;
+		this.sp = samlify.ServiceProvider(getConfigFromEnv(`AUTH_${config.provider.toUpperCase()}_SP`));
+		this.idp = samlify.IdentityProvider(getConfigFromEnv(`AUTH_${config.provider.toUpperCase()}_IDP`));
 	}
 
 	async fetchUserID(identifier: string) {
