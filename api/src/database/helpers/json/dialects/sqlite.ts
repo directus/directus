@@ -60,7 +60,7 @@ export class JsonHelperSQLite extends JsonHelper {
 			this.knex.raw('json_each(??.??, ?) as ??', [table, name, arrayParts[0], aliases[0]]),
 		];
 		let subQuery = this.knex.select([`${table}.${primaryKey}`, this.buildJsonGroupArray(arrayParts, aliases)]);
-		for (let i = 1; i < arrayParts.length - 2; i++) {
+		for (let i = 1; i < arrayParts.length - 1; i++) {
 			fromList.push(this.knex.raw('json_each(??.value, ?) as ??', [aliases[i - 1], arrayParts[i], aliases[i]]));
 		}
 		subQuery = subQuery
