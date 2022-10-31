@@ -109,7 +109,7 @@ import {
 	LogicalFilterOR,
 	Type,
 } from '@directus/shared/types';
-import { getFilterOperatorsForType, getOutputTypeForFunction, toArray } from '@directus/shared/utils';
+import { getFilterOperatorsForType, getOutputTypeForFunction, isValidFilter, toArray } from '@directus/shared/utils';
 import { get } from 'lodash';
 import { computed, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -162,7 +162,7 @@ const filterInfo = computed<FilterInfo[]>({
 	get() {
 		return props.filter.map((node, id) => {
 			const name = getNodeName(node);
-			const isField = name.startsWith('_') === false;
+			const isField = !isValidFilter(name);
 
 			return isField
 				? {

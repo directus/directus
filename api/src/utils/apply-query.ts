@@ -9,7 +9,6 @@ import {
 	SchemaOverview,
 	Type,
 } from '@directus/shared/types';
-import { VALID_FILTER_OPERATORS } from '@directus/shared/constants';
 import { Knex } from 'knex';
 import { clone, isPlainObject, set } from 'lodash';
 import { customAlphabet } from 'nanoid';
@@ -19,7 +18,7 @@ import { InvalidQueryException } from '../exceptions/invalid-query';
 import { getColumn } from './get-column';
 import { getColumnPath } from './get-column-path';
 import { getRelationInfo } from './get-relation-info';
-import { getFilterOperatorsForType, getOutputTypeForFunction } from '@directus/shared/utils';
+import { getFilterOperatorsForType, getOutputTypeForFunction, isValidFilter } from '@directus/shared/utils';
 import { stripFunction } from './strip-function';
 
 const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
@@ -740,11 +739,7 @@ export function getFilterPath(key: string, value: Record<string, any>) {
 
 	const filterKey = Object.keys(value)[0];
 
-	if (
-		typeof filterKey === 'string' &&
-		filterKey.startsWith('_') &&
-		VALID_FILTER_OPERATORS.includes(filterKey.substring(1) as ClientFilterOperator)
-	) {
+	if (typeof filterKey === 'string' && isValidFilter(filterKey)) {
 		return path;
 	}
 
@@ -756,12 +751,7 @@ export function getFilterPath(key: string, value: Record<string, any>) {
 }
 
 export function getOperation(key: string, value: Record<string, any>): { operator: string; value: any } {
-	if (
-		key.startsWith('_') &&
-		key !== '_and' &&
-		key !== '_or' &&
-		VALID_FILTER_OPERATORS.includes(key.substring(1) as ClientFilterOperator)
-	) {
+	if (key.startsWith('_') && key !== '_and' && key !== '_or' && isValidFilter(key)) {
 		return { operator: key as string, value };
 	} else if (isPlainObject(value) === false) {
 		return { operator: '_eq', value };
