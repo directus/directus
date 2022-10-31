@@ -8,7 +8,7 @@ export class JsonHelperPostgres extends JsonHelper {
 			this.nodes.map((node) => {
 				const { dbType } = this.schema.collections[table].fields[node.name];
 				return this.knex.raw(
-					dbType === 'jsonb' ? 'jsonb_path_query_array(??, ?) as ??' : 'json_path_query_array(??, ?) as ??',
+					dbType === 'jsonb' ? 'jsonb_path_query_array(??, ?) as ??' : 'jsonb_path_query_array(to_jsonb(??), ?) as ??',
 					[`${table}.${node.name}`, node.queryPath, node.fieldKey]
 				);
 			})
