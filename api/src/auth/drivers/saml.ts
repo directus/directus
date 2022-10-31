@@ -161,7 +161,7 @@ export function createSAMLAuthRouter(providerName: string) {
 
 	router.get(
 		'/metadata',
-		asyncHandler(async (req, res, next) => {
+		asyncHandler(async (req, res) => {
 			const { sp } = getAuthProvider(providerName) as SAMLAuthDriver;
 			return res.header('Content-Type', 'text/xml').send(sp.getMetadata());
 		})
