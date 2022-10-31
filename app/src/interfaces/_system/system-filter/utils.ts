@@ -1,6 +1,6 @@
 import { get, isPlainObject } from 'lodash';
 import { Filter } from '@directus/shared/types';
-import { isValidFilter } from '@directus/shared/utils';
+import { isValidFilterOperator } from '@directus/shared/utils';
 
 export function getNodeName(node: Filter): string {
 	if (!node) return '';
@@ -9,7 +9,7 @@ export function getNodeName(node: Filter): string {
 
 export function getField(node: Record<string, any>): string {
 	const name = getNodeName(node);
-	if (isValidFilter(name)) return '';
+	if (isValidFilterOperator(name)) return '';
 	if (!isPlainObject(node[name])) return '';
 
 	const subFields = getField(node[name]);

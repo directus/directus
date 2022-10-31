@@ -48,7 +48,7 @@ import { defineComponent, ref, watch, PropType, computed, inject, Ref } from 'vu
 import { Filter } from '@directus/shared/types';
 import { isObject } from 'lodash';
 import { useElementSize } from '@directus/shared/composables';
-import { isValidFilter } from '@directus/shared/utils';
+import { isValidFilterOperator } from '@directus/shared/utils';
 
 export default defineComponent({
 	props: {
@@ -128,7 +128,7 @@ export default defineComponent({
 				for (const [key, value] of Object.entries(level)) {
 					if (key === '_and' || key === '_or') {
 						value.forEach(parseLevel);
-					} else if (isValidFilter(key)) {
+					} else if (isValidFilterOperator(key)) {
 						filterOperators.push(key);
 					} else {
 						if (isObject(value)) {
