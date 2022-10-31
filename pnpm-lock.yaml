@@ -459,8 +459,8 @@ importers:
       json2csv: 5.0.7
       jsonlint-mod: 1.7.6
       lodash: 4.17.21
-      mapbox-gl: 2.10.0
-      maplibre-gl: 2.4.0
+      mapbox-gl: 1.13.2
+      maplibre-gl: 1.15.3
       markdown-it: 13.0.1
       markdown-it-anchor: 8.6.5
       markdown-it-container: 3.0.0
@@ -510,7 +510,7 @@ importers:
       '@joeattardi/emoji-button': 4.6.4
       '@mapbox/mapbox-gl-draw': 1.3.0
       '@mapbox/mapbox-gl-draw-static-mode': 1.0.1
-      '@mapbox/mapbox-gl-geocoder': 5.0.1_mapbox-gl@2.10.0
+      '@mapbox/mapbox-gl-geocoder': 5.0.1_mapbox-gl@1.13.2
       '@pinia/testing': 0.0.14_pinia@2.0.23+vue@3.2.41
       '@popperjs/core': 2.11.6
       '@rollup/plugin-yaml': 4.0.0_rollup@3.2.3
@@ -581,8 +581,8 @@ importers:
       json2csv: 5.0.7
       jsonlint-mod: 1.7.6
       lodash: 4.17.21
-      mapbox-gl: 2.10.0
-      maplibre-gl: 2.4.0
+      mapbox-gl: 1.13.2
+      maplibre-gl: 1.15.3_mapbox-gl@1.13.2
       markdown-it: 13.0.1
       markdown-it-anchor: 8.6.5_ea7kj7wzjkld5jo2noyjqxi764
       markdown-it-container: 3.0.0
@@ -4005,7 +4005,7 @@ packages:
       xtend: 4.0.2
     dev: true
 
-  /@mapbox/mapbox-gl-geocoder/5.0.1_mapbox-gl@2.10.0:
+  /@mapbox/mapbox-gl-geocoder/5.0.1_mapbox-gl@1.13.2:
     resolution: {integrity: sha512-/OUL42eh4OBaIerhcwCpa27oD+u4a2xN8V7vEdsglwd8lCplFAxJCdwT9Kprli1TH5mTYsXyONmh03FwoWBWfA==}
     engines: {node: '>=6'}
     peerDependencies:
@@ -4014,15 +4014,19 @@ packages:
       '@mapbox/mapbox-sdk': 0.13.4
       events: 3.3.0
       lodash.debounce: 4.0.8
-      mapbox-gl: 2.10.0
+      mapbox-gl: 1.13.2
       nanoid: 3.3.4
       subtag: 0.5.0
       suggestions: 1.7.1
       xtend: 4.0.2
     dev: true
 
-  /@mapbox/mapbox-gl-supported/2.0.1:
-    resolution: {integrity: sha512-HP6XvfNIzfoMVfyGjBckjiAOQK9WfX0ywdLubuPMPv+Vqf5fj0uCbgBQYpiqcWZT6cbyyRnTSXDheT1ugvF6UQ==}
+  /@mapbox/mapbox-gl-supported/1.5.0_mapbox-gl@1.13.2:
+    resolution: {integrity: sha512-/PT1P6DNf7vjEEiPkVIRJkvibbqWtqnyGaBz3nfRdcxclNSnSdaLU5tfAgcD7I8Yt5i+L19s406YLl1koLnLbg==}
+    peerDependencies:
+      mapbox-gl: '>=0.32.1 <2.0.0'
+    dependencies:
+      mapbox-gl: 1.13.2
     dev: true
 
   /@mapbox/mapbox-sdk/0.13.4:
@@ -4073,16 +4077,12 @@ packages:
       meow: 6.1.1
     dev: true
 
-  /@mapbox/tiny-sdf/2.0.5:
-    resolution: {integrity: sha512-OhXt2lS//WpLdkqrzo/KwB7SRD8AiNTFFzuo9n14IBupzIMa67yGItcK7I2W9D8Ghpa4T04Sw9FWsKCJG50Bxw==}
+  /@mapbox/tiny-sdf/1.2.5:
+    resolution: {integrity: sha512-cD8A/zJlm6fdJOk6DqPUV8mcpyJkRz2x2R+/fYcWDYG3oWbG7/L7Yl/WqQ1VZCjnL9OTIMAn6c+BC5Eru4sQEw==}
     dev: true
 
   /@mapbox/unitbezier/0.0.0:
     resolution: {integrity: sha512-HPnRdYO0WjFjRTSwO3frz1wKaU649OBFPX3Zo/2WZvuRi6zMiRGui8SnPQiQABgqCf8YikDe5t3HViTVw1WUzA==}
-    dev: true
-
-  /@mapbox/unitbezier/0.0.1:
-    resolution: {integrity: sha512-nMkuDXFv60aBr9soUG5q+GvZYL+2KZHVvsqFCzqnkGEf46U2fvmytHaEVc1/YZbiLn8X+eR3QzX1+dwDO1lxlw==}
     dev: true
 
   /@mapbox/vector-tile/1.3.1:
@@ -6533,18 +6533,6 @@ packages:
       '@types/mapbox-gl': 2.7.3
     dev: true
 
-  /@types/mapbox__point-geometry/0.1.2:
-    resolution: {integrity: sha512-D0lgCq+3VWV85ey1MZVkE8ZveyuvW5VAfuahVTQRpXFQTxw03SuIf1/K4UQ87MMIXVKzpFjXFiFMZzLj2kU+iA==}
-    dev: true
-
-  /@types/mapbox__vector-tile/1.3.0:
-    resolution: {integrity: sha512-kDwVreQO5V4c8yAxzZVQLE5tyWF+IPToAanloQaSnwfXmIcJ7cyOrv8z4Ft4y7PsLYmhWXmON8MBV8RX0Rgr8g==}
-    dependencies:
-      '@types/geojson': 7946.0.10
-      '@types/mapbox__point-geometry': 0.1.2
-      '@types/pbf': 3.0.2
-    dev: true
-
   /@types/markdown-it/12.2.3:
     resolution: {integrity: sha512-GKMHFfv3458yYy+v/N8gjufHO6MSZKCOXpZc5GXIWWy8uldwfmPn98vp81gZ5f9SVw8YYBctgfJ22a2d7AOMeQ==}
     dependencies:
@@ -6642,10 +6630,6 @@ packages:
 
   /@types/parse5/5.0.3:
     resolution: {integrity: sha512-kUNnecmtkunAoQ3CnjmMkzNU/gtxG8guhi+Fk2U/kOpIKjIMKnXGp4IJCgQJrXSgMsWYimYG4TGjz/UzbGEBTw==}
-    dev: true
-
-  /@types/pbf/3.0.2:
-    resolution: {integrity: sha512-EDrLIPaPXOZqDjrkzxxbX7UlJSeQVgah3i0aA4pOSzmK9zq3BIh7/MZIQxED7slJByvKM4Gc6Hypyu2lJzh3SQ==}
     dev: true
 
   /@types/pino-http/5.8.1:
@@ -11872,15 +11856,6 @@ packages:
       once: 1.4.0
     dev: false
 
-  /global-prefix/3.0.0:
-    resolution: {integrity: sha512-awConJSVCHVGND6x3tmMaKcQvwXLhjdkmomy2W+Goaui8YPgYgXJZewhg3fWC+DlfqqQuWg8AwqjGTD2nAPVWg==}
-    engines: {node: '>=6'}
-    dependencies:
-      ini: 1.3.8
-      kind-of: 6.0.3
-      which: 1.3.1
-    dev: true
-
   /global/4.4.0:
     resolution: {integrity: sha512-wv/LAoHdRE3BeTGz53FAamhGlPLhlssK45usmGFThIi4XqnBmjKQ16u+RNbP7WvigRZDxUsM0J3gcQ5yicaL0w==}
     dependencies:
@@ -12577,6 +12552,7 @@ packages:
 
   /ini/1.3.8:
     resolution: {integrity: sha512-JV/yugV2uzW5iMRSiZAyDtQd+nxtUnjeLt0acNdw98kKLrvuRVyB80tsREOE7yvGVgalhZ6RNXCmEHkUKBKxew==}
+    dev: false
 
   /inline-style-parser/0.1.1:
     resolution: {integrity: sha512-7NXolsK4CAS5+xvdj5OMMbI962hU/wvwoxk+LWR9Ek9bVtyuuYScDN6eS0rUm6TxApFpw7CX1o4uJzcd4AyD3Q==}
@@ -14792,15 +14768,16 @@ packages:
       object-visit: 1.0.1
     dev: true
 
-  /mapbox-gl/2.10.0:
-    resolution: {integrity: sha512-ZAlCe55LXlbg60l15okSBs70NQAPLw3yRO3SSJMTB1uU7uj2QQbLCQPy1Ds+3B4wlaa5W3ewv8FNOZPQOoSSPA==}
+  /mapbox-gl/1.13.2:
+    resolution: {integrity: sha512-CPjtWygL+f7naL+sGHoC2JQR0DG7u+9ik6WdkjjVmz2uy0kBC2l+aKfdi3ZzUR7VKSQJ6Mc/CeCN+6iVNah+ww==}
+    engines: {node: '>=6.4.0'}
     dependencies:
       '@mapbox/geojson-rewind': 0.5.2
       '@mapbox/geojson-types': 1.0.2
       '@mapbox/jsonlint-lines-primitives': 2.0.2
-      '@mapbox/mapbox-gl-supported': 2.0.1
+      '@mapbox/mapbox-gl-supported': 1.5.0_mapbox-gl@1.13.2
       '@mapbox/point-geometry': 0.1.0
-      '@mapbox/tiny-sdf': 2.0.5
+      '@mapbox/tiny-sdf': 1.2.5
       '@mapbox/unitbezier': 0.0.0
       '@mapbox/vector-tile': 1.3.1
       '@mapbox/whoots-js': 3.1.0
@@ -14809,6 +14786,7 @@ packages:
       geojson-vt: 3.2.1
       gl-matrix: 3.4.3
       grid-index: 1.1.0
+      minimist: 1.2.6
       murmurhash-js: 1.0.0
       pbf: 3.2.1
       potpack: 1.0.2
@@ -14819,34 +14797,35 @@ packages:
       vt-pbf: 3.1.3
     dev: true
 
-  /maplibre-gl/2.4.0:
-    resolution: {integrity: sha512-csNFylzntPmHWidczfgCZpvbTSmhaWvLRj9e1ezUDBEPizGgshgm3ea1T5TCNEEBq0roauu7BPuRZjA3wO4KqA==}
-    requiresBuild: true
+  /maplibre-gl/1.15.3_mapbox-gl@1.13.2:
+    resolution: {integrity: sha512-ZuOhLCNgp7Yl1L9uyKgZeuo7kKdewP0iWtmEXsZ/snp0JiVkR1Kl+m1rsfKT/wpm/O4zZ7mUGxF16cYbMIFDRA==}
+    engines: {node: '>=6.4.0'}
     dependencies:
       '@mapbox/geojson-rewind': 0.5.2
+      '@mapbox/geojson-types': 1.0.2
       '@mapbox/jsonlint-lines-primitives': 2.0.2
-      '@mapbox/mapbox-gl-supported': 2.0.1
+      '@mapbox/mapbox-gl-supported': 1.5.0_mapbox-gl@1.13.2
       '@mapbox/point-geometry': 0.1.0
-      '@mapbox/tiny-sdf': 2.0.5
-      '@mapbox/unitbezier': 0.0.1
+      '@mapbox/tiny-sdf': 1.2.5
+      '@mapbox/unitbezier': 0.0.0
       '@mapbox/vector-tile': 1.3.1
       '@mapbox/whoots-js': 3.1.0
-      '@types/geojson': 7946.0.10
-      '@types/mapbox__point-geometry': 0.1.2
-      '@types/mapbox__vector-tile': 1.3.0
-      '@types/pbf': 3.0.2
       csscolorparser: 1.0.3
       earcut: 2.2.4
       geojson-vt: 3.2.1
       gl-matrix: 3.4.3
-      global-prefix: 3.0.0
+      grid-index: 1.1.0
+      minimist: 1.2.6
       murmurhash-js: 1.0.0
       pbf: 3.2.1
       potpack: 1.0.2
       quickselect: 2.0.0
+      rw: 1.3.3
       supercluster: 7.1.5
       tinyqueue: 2.0.3
       vt-pbf: 3.1.3
+    transitivePeerDependencies:
+      - mapbox-gl
     dev: true
 
   /markdown-escapes/1.0.4:
@@ -19891,7 +19870,7 @@ packages:
     dependencies:
       bs-logger: 0.2.6
       fast-json-stable-stringify: 2.1.0
-      jest: 29.2.1_5uyhgycj63wuqgvl4exdnr442q
+      jest: 29.2.1_@types+node@18.11.2
       jest-util: 29.2.1
       json5: 2.2.1
       lodash.memoize: 4.1.2
