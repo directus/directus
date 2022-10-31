@@ -1,18 +1,17 @@
+import { Knex } from 'knex';
 import { JsonHelper } from '../types';
-// import { Knex } from 'knex';
-// import { JsonFieldNode } from '../../../../types';
 
 export class JsonHelperPostgres extends JsonHelper {
-	jsonColumn(table: string, column: string, path: string, alias: string) {
-		// using `jsonb_path_query_array` to keep consistent behavior across databases.
-		// does this exception allow to use the `json` fields instead of migrating to `jsonb`?
-		return this.knex.raw('jsonb_path_query_array(??, ?) as ??', [`${table}.${column}`, path, alias]);
+	applyFields(dbQuery: Knex.QueryBuilder<any, any>, table: string): Knex.QueryBuilder<any, any> {
+		if (this.nodes.length === 0) return dbQuery;
+		return dbQuery.select(
+			this.nodes.map((node) => {
+				const { dbType } = this.schema.collections[table].fields[node.name];
+				return this.knex.raw(
+					dbType === 'jsonb' ? 'jsonb_path_query_array(??, ?) as ??' : 'json_path_query_array(??, ?) as ??',
+					[`${table}.${node.name}`, node.queryPath, node.fieldKey]
+				);
+			})
+		);
 	}
-	// jsonQuery(table: string, query: Knex.QueryBuilder, fields: JsonFieldNode[]) {
-	// 	if (fields.length === 0) return query;
-	// 	for (const field of fields) {
-	// 		query = query.select(this.knex.jsonExtract(`${table}.${field.name}`, field.queryPath, field.fieldKey, false));
-	// 	}
-	// 	return query;
-	// }
 }
