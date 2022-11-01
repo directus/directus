@@ -54,8 +54,8 @@ Discussion on our GitHub Discussions board: https://github.com/directus/directus
 
 ### Document the Project
 
-[The Directus Docs](https://github.com/directus/docs) are a living document that can always be improved on. Any parts of
-the docs in dire need of some tender love and care? Feel free to open a Pull Request!
+[The Directus Docs](https://github.com/directus/docs) are a living document that can always be improved on. Notice any
+parts of the docs in dire need of some tender love and care? Feel free to open a Pull Request!
 
 ### Helping Others
 
