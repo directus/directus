@@ -120,6 +120,9 @@ export function createSAMLAuthRouter(providerName: string) {
 		asyncHandler(async (req, res) => {
 			const { sp, idp } = getAuthProvider(providerName) as SAMLAuthDriver;
 			const { context } = await sp.createLogoutRequest(idp, 'redirect', req.body);
+			if (req.cookies[env.REFRESH_TOKEN_COOKIE_NAME]) {
+				res.clearCookie(env.REFRESH_TOKEN_COOKIE_NAME, COOKIE_OPTIONS);
+			}
 			return res.redirect(context);
 		})
 	);
