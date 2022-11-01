@@ -1,6 +1,6 @@
 {
 	"name": "directus",
-	"version": "9.19.1",
+	"version": "9.19.2",
 	"license": "GPL-3.0-only",
 	"homepage": "https://github.com/directus/directus#readme",
 	"description": "Directus is a real-time API and App dashboard for managing SQL database content.",
@@ -180,7 +180,6 @@
 	"devDependencies": {
 		"@otplib/preset-default": "12.0.1",
 		"@types/async": "3.2.15",
-		"@types/body-parser": "1.19.2",
 		"@types/busboy": "1.5.0",
 		"@types/bytes": "3.1.1",
 		"@types/cookie-parser": "1.4.3",
