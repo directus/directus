@@ -44,8 +44,8 @@ Examples of behavior that contributes to creating a positive environment include
 If you happen to run into a bug, please post an Issue on our main GitHub Issue board:
 https://github.com/directus/directus/issues
 
-Please be as explicit and detailed as you can in the bug report. The more information is available, the easier it is for
-other contributors to help you find the solution or fix.
+Please be as explicit and detailed as you can in the bug report. The more information available, the easier it is for
+other contributors to help you find the solution or fix. Consider adding a schema snapshot file, or a database dump.
 
 ### Leaving Feedback
 
