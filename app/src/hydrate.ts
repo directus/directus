@@ -53,7 +53,7 @@ export async function hydrate(): Promise<void> {
 	const serverStore = useServerStore();
 	const permissionsStore = usePermissionsStore();
 	const fieldsStore = useFieldsStore();
-	const { refresh: hydrateTranslationStrings } = useTranslationStrings();
+	const { loadParsedTranslationStrings } = useTranslationStrings();
 
 	if (appStore.hydrated) return;
 	if (appStore.hydrating) return;
@@ -74,17 +74,14 @@ export async function hydrate(): Promise<void> {
 		if (userStore.currentUser?.language) lang = userStore.currentUser?.language;
 
 		if (userStore.currentUser?.role) {
-			await Promise.all([
-				permissionsStore.hydrate(),
-				hydrateTranslationStrings(),
-				fieldsStore.hydrate({ skipTranslation: true }),
-			]);
+			await Promise.all([permissionsStore.hydrate(), fieldsStore.hydrate({ skipTranslation: true })]);
 
 			const hydratedStores = ['userStore', 'permissionsStore', 'fieldsStore'];
 			await Promise.all(stores.filter(({ $id }) => !hydratedStores.includes($id)).map((store) => store.hydrate?.()));
 			await registerModules();
 		}
 
+		loadParsedTranslationStrings();
 		await setLanguage(lang);
 
 		appStore.basemap = getBasemapSources()[0].name;
