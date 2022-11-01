@@ -1,4 +1,5 @@
 import api from '@/api';
+import { unexpectedError } from '@/utils/unexpected-error';
 import { Role } from '@directus/shared/types';
 import { ref, Ref } from 'vue';
 
@@ -24,12 +25,17 @@ export default function useNavigation(): { roles: Ref<Role[] | null>; loading: R
 		if (!loading || !roles) return;
 		if (!roles.value) loading.value = true;
 
-		const rolesResponse = await api.get(`/roles`, {
-			params: {
-				sort: 'name',
-			},
-		});
-		roles.value = rolesResponse.data.data;
-		loading.value = false;
+		try {
+			const rolesResponse = await api.get(`/roles`, {
+				params: {
+					sort: 'name',
+				},
+			});
+			roles.value = rolesResponse.data.data;
+		} catch (error: any) {
+			unexpectedError(error);
+		} finally {
+			loading.value = false;
+		}
 	}
 }

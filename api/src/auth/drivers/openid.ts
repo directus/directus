@@ -117,7 +117,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 
 	async getUserID(payload: Record<string, any>): Promise<string> {
 		if (!payload.code || !payload.codeVerifier) {
-			logger.trace('[OpenID] No code or codeVerifier in payload');
+			logger.warn('[OpenID] No code or codeVerifier in payload');
 			throw new InvalidCredentialsException();
 		}
 
@@ -173,7 +173,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 
 		// Is public registration allowed?
 		if (!allowPublicRegistration || !isEmailVerified) {
-			logger.trace(`[OpenID] User doesn't exist, and public registration not allowed for provider "${provider}"`);
+			logger.warn(`[OpenID] User doesn't exist, and public registration not allowed for provider "${provider}"`);
 			throw new InvalidCredentialsException();
 		}
 
