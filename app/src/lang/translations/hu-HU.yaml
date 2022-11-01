@@ -821,6 +821,8 @@ operation_options: Működési lehetőségek
 operation_name: A művelet neve...
 operation_key: Referencia azonosító...
 operation_key_unique_error: A műveleti kulcsoknak egyedinek kell lenniük a folyamatban
+operation_handle_resolve: 'Megoldás: Kattintson a Hozzáadáshoz vagy húzza az átirányításhoz'
+operation_handle_reject: 'Elutasítás: Kattintson a Hozzáadáshoz vagy húzza az átirányításhoz'
 insights: Kimutatások
 dashboard: Irányítópult
 panel: Panel
@@ -829,6 +831,7 @@ panel_header: Panel fejléce
 panel_name_placeholder: Nevezze el a panelt...
 panel_note_placeholder: Opcionális részletek erről a panelről...
 panel_delete_confirm: Biztosan törölni szeretné ezt a panelt? Ez a művelet nem vonható vissza.
+list_panel_allow_edit: Soron belüli szerkesztés engedélyezése
 dashboard_delete_confirm: Biztosan törölni kívánja ezt az irányítópultot? Ez a művelet nem vonható vissza.
 edit_dashboard: Irányítópult szerkesztése
 delete_dashboard: Irányítópult törlése
@@ -841,8 +844,12 @@ no_dashboards_copy: Önnek egy irányítópultja sincs még.
 create_dashboard: Irányítópult létrehozása
 dashboard_name: Irányítópult neve
 no_data: Nincs adat
+no_data_in_flow: Ebben a folyamatban nem állítottak elő vagy fértek hozzá adatokhoz
 accountability: Elszámoltathatóság
+payload: Adattartalom
+details: Részletek
 full_screen: Teljes képernyő
+full_text_search: Teljes szöveges keresés
 edit_panels: Panel szerkesztése
 center_align: Középre igazítás
 left_align: Balra igazítás
@@ -854,10 +861,16 @@ media: Média
 quality: Minőség
 width: Szélesség
 height: Magasság
+transformation_preset_key: Előre beállított transzformációs kulcs
 source: Forrás
 url_placeholder: Írjon be egy url-t...
 display_text: Szöveg megjelenítése
 display_text_placeholder: Írjon be egy megjelenítendő szöveget...
+interface_group_text_and_numbers: Szöveg és számok
+interface_group_selection: Kiválasztás
+interface_group_relational: Relációs
+interface_group_presentation: Bemutatás
+interface_group_groups: Csoportok
 interface_group_other: Egyéb
 tooltip: Buboréksúgó
 tooltip_placeholder: Írjon be egy buboréksúgó szöveget...
@@ -865,6 +878,8 @@ unlimited: Korlátlan
 open_link_in: Hivatkozás megnyitása itt
 new_tab: Új fül
 current_tab: Jelenlegi fül
+save_image: Kép mentése
+save_media: Média mentése
 wysiwyg_options:
   aligncenter: Középre igazítás
   alignjustify: Sorkizárt
@@ -922,6 +937,7 @@ adding_user: Felhasználó hozzáadása
 unknown_user: Ismeretlen felhasználó
 creating_in: 'Elem hozzáadása ide: {collection}'
 editing_in: 'Elem szerkesztése itt: {collection}'
+viewing_in: 'Elem megtekintése a következőben: {collection}'
 creating_unit: '{unit} létrehozása'
 editing_unit: '{unit} szerkesztése'
 editing_in_batch: '{count} elem szerkesztése'
@@ -932,6 +948,7 @@ settings_project: Projekt beállításai
 settings_webhooks: Webhookok
 settings_flows: Folyamatok
 settings_presets: Alapértelmezések és Könyvjelzők
+settings_translation_strings: Fordítási karakterláncok
 one_or_more_options_are_missing: Egy vagy több opció hiányzik
 scope: Hatókör
 actions: Műveletek
@@ -948,6 +965,7 @@ data: Adat
 unsaved_changes: Nem mentett módosítások
 unsaved_changes_copy: Biztos, hogy elhagyja az oldalt?
 discard_changes: Változtatások elvetése
+discard_all_changes: Minden változtatás elvetése
 discard_changes_copy: Biztos benne, hogy elveti az összes eddig végrehajtott változtatásokat?
 show_x_axis: X tengely megjelenítése
 show_y_axis: Y tengely megjelenítése
@@ -1004,8 +1022,10 @@ directus_collection:
   directus_collections: Gyűjtemény további konfigurációja és metaadatok
   directus_fields: Mező további konfigurációja és metaadatok
   directus_files: Metaadatok az összes kezelt fájleszközhöz
+  directus_flows: Automatizáció
   directus_folders: Virtuális könyvtárakat biztosít a fájlok számára
   directus_migrations: Az adatbázis melyik verzióját használja
+  directus_notifications: A felhasználóknak küldött értesítések
   directus_presets: Gyűjtemény és könyvjelzők alapértelmezései
   directus_relations: Reláció konfigurációja és metaadatok
   directus_revisions: Pillanatkép minden tevékenységhez
@@ -1911,6 +1931,10 @@ triggers:
 a_flow_uuid: Válasszon ki egy folyamatot az aktiváláshoz...
 any_string_or_json: Bármilyen karakterlánc vagy JSON...
 operations:
+  item-create:
+    payload: Adattartalom
+  item-update:
+    payload: Adattartalom
   log:
     message: Üzenet
   notification:
