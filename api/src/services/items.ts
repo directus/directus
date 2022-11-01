@@ -264,7 +264,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	 * Create multiple new items at once. Inserts all provided records sequentially wrapped in a transaction.
 	 */
 	async createMany(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
-		const { primaryKeys, emitActions } = await this.knex.transaction(async (trx) => {
+		const { primaryKeys, nestedActionEvents } = await this.knex.transaction(async (trx) => {
 			const service = new ItemsService(this.collection, {
 				accountability: this.accountability,
 				schema: this.schema,
@@ -272,25 +272,25 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			});
 
 			const primaryKeys: PrimaryKey[] = [];
-			const emitActions: ActionEventParams[] = [];
+			const nestedActionEvents: ActionEventParams[] = [];
 
 			for (const payload of data) {
 				const primaryKey = await service.createOne(payload, {
 					...(opts || {}),
 					autoPurgeCache: false,
-					bypassEmitAction: (action) => emitActions.push(action),
+					bypassEmitAction: (action) => nestedActionEvents.push(action),
 				});
 				primaryKeys.push(primaryKey);
 			}
 
-			return { primaryKeys, emitActions };
+			return { primaryKeys, nestedActionEvents };
 		});
 
-		for (const actionEvent of emitActions) {
+		for (const nestedActionEvent of nestedActionEvents) {
 			if (!opts?.bypassEmitAction) {
-				emitter.emitAction(actionEvent.event, actionEvent.meta, actionEvent.context);
+				emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
 			} else {
-				opts.bypassEmitAction(actionEvent);
+				opts.bypassEmitAction(nestedActionEvent);
 			}
 		}
 
