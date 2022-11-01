@@ -245,7 +245,11 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			}
 
 			for (const nestedActionEvent of nestedActionEvents) {
-				emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
+				if (!opts?.bypassEmitAction) {
+					emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
+				} else {
+					opts.bypassEmitAction(nestedActionEvent);
+				}
 			}
 		}
 
@@ -664,7 +668,11 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			}
 
 			for (const nestedActionEvent of nestedActionEvents) {
-				emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
+				if (!opts?.bypassEmitAction) {
+					emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
+				} else {
+					opts.bypassEmitAction(nestedActionEvent);
+				}
 			}
 		}
 
