@@ -1868,7 +1868,7 @@ panels:
     select_collection: Você deve selecionar uma coleção.
     function: Função
   piechart:
-    function: 'Função'
+    function: Função
 triggers:
   webhook:
     method: Método 
