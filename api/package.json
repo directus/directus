@@ -158,6 +158,7 @@
 		"snappy": "7.2.0",
 		"stream-json": "1.7.4",
 		"strip-bom-stream": "4.0.0",
+		"swagger-ui-express": "^4.5.0",
 		"tmp-promise": "3.0.3",
 		"update-check": "1.5.4",
 		"uuid": "9.0.0",
