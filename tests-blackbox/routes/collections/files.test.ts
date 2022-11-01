@@ -9,7 +9,12 @@ describe('/files', () => {
 			describe('returns created file when required properties are included', () => {
 				it.each(vendors)('%s', async (vendor) => {
 					// Setup
-					const payload = { title: 'Test File', storage: 'local', filename_download: 'test_file' };
+					const payload = {
+						title: 'Test File',
+						storage: 'local',
+						filename_download: 'test_file',
+						type: 'application/octet-stream',
+					};
 
 					// Action
 					const response = await request(getUrl(vendor))
@@ -31,7 +36,7 @@ describe('/files', () => {
 			describe('returns code: FAILED_VALIDATION when required property "storage" is not included', () => {
 				it.each(vendors)('%s', async (vendor) => {
 					// Setup
-					const payload = { title: 'Test File', filename_download: 'test_file' };
+					const payload = { title: 'Test File', filename_download: 'test_file', type: 'application/octet-stream' };
 
 					// Action
 					const response = await request(getUrl(vendor))
