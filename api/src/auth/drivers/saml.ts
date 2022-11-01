@@ -1,6 +1,6 @@
 import * as validator from '@authenio/samlify-node-xmllint';
+import { BaseException } from '@directus/shared/exceptions';
 import express, { Router } from 'express';
-import { parseJSON } from '@directus/shared/utils';
 import * as samlify from 'samlify';
 import logger from '../../logger';
 import { getAuthProvider } from '../../auth';
@@ -10,7 +10,7 @@ import { RecordNotUniqueException } from '../../exceptions/database/record-not-u
 import { InvalidCredentialsException, InvalidProviderException } from '../../exceptions';
 import { respond } from '../../middleware/respond';
 import { AuthenticationService, UsersService } from '../../services';
-import { AuthData, AuthDriverOptions, User } from '../../types';
+import { AuthDriverOptions, User } from '../../types';
 import asyncHandler from '../../utils/async-handler';
 import { getConfigFromEnv } from '../../utils/get-config-from-env';
 import { LocalAuthDriver } from './local';
@@ -142,14 +142,14 @@ export function createSAMLAuthRouter(providerName: string) {
 		'/acs',
 		express.urlencoded({ extended: false }),
 		asyncHandler(async (req, res, next) => {
+			const relayState: string | undefined = req.body?.RelayState;
+
 			try {
 				const { sp, idp } = getAuthProvider(providerName) as SAMLAuthDriver;
 				const { extract } = await sp.parseLoginResponse(idp, 'post', req);
 
 				const authService = new AuthenticationService({ accountability: req.accountability, schema: req.schema });
 				const { accessToken, refreshToken, expires } = await authService.login(providerName, extract.attributes);
-
-				const relayState: string | undefined = req.body?.RelayState;
 
 				res.locals.payload = {
 					data: {
@@ -165,6 +165,17 @@ export function createSAMLAuthRouter(providerName: string) {
 				}
 				next();
 			} catch (error: any) {
+				if (relayState) {
+					let reason = 'UNKNOWN_EXCEPTION';
+
+					if (error instanceof BaseException) {
+						reason = error.code;
+					} else {
+						logger.warn(error, `[SAML] Unexpected error during SAML login`);
+					}
+
+					return res.redirect(`${relayState.split('?')[0]}?reason=${reason}`);
+				}
 				logger.warn(error, `[SAML] Unexpected error during SAML login`);
 				throw error;
 			}
