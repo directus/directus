@@ -21,10 +21,10 @@ code.**
 respectful of those efforts throughout our ecosystem. Trolling, harassing, insulting, or other unacceptable behavior by
 participants will not be tolerated.**
 
-In the interest of fostering an open and welcoming environment, we as pledge to make participation in our project and
-community a harassment-free experience for everyone, regardless of age, body size, disability, ethnicity, sex
-characteristics, gender identity and expression, level of experience, education, socio-economic status, nationality,
-personal appearance, race, religion, or sexual identity and orientation.
+In the interest of fostering an open and welcoming environment, we as contributors and maintainers pledge to making
+participation in our project and community a harassment-free experience for everyone, regardless of age, body size,
+disability, ethnicity, sex characteristics, gender identity and expression, level of experience, education,
+socio-economic status, nationality, personal appearance, race, religion, or sexual identity and orientation.
 
 Examples of behavior that contributes to creating a positive environment include:
 
