@@ -1,6 +1,6 @@
 {
 	"name": "@directus/drive-s3",
-	"version": "9.16.1",
+	"version": "9.19.2",
 	"description": "AWS S3 driver for @directus/drive",
 	"license": "MIT",
 	"main": "dist/index.js",
@@ -39,21 +39,21 @@
 	},
 	"dependencies": {
 		"@directus/drive": "workspace:*",
-		"aws-sdk": "^2.928.0",
-		"normalize-path": "^3.0.0"
+		"aws-sdk": "2.1236.0",
+		"normalize-path": "3.0.0"
 	},
 	"devDependencies": {
 		"@lukeed/uuid": "2.0.0",
 		"@types/fs-extra": "9.0.13",
-		"@types/jest": "27.0.3",
-		"@types/node": "16.11.9",
+		"@types/jest": "29.2.0",
+		"@types/node": "18.11.2",
 		"@types/normalize-path": "3.0.0",
-		"dotenv": "10.0.0",
-		"fs-extra": "10.0.0",
-		"jest": "27.3.1",
+		"dotenv": "16.0.3",
+		"fs-extra": "10.1.0",
+		"jest": "29.2.1",
 		"npm-run-all": "4.1.5",
-		"ts-jest": "27.0.7",
-		"typescript": "4.5.2"
+		"ts-jest": "29.0.3",
+		"typescript": "4.8.4"
 	},
 	"publishConfig": {
 		"access": "public"

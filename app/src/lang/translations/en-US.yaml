@@ -192,6 +192,9 @@ revision_post_create: Here is what this item looked like when it was created.
 revision_post_update: Here is what this item looked like after the update.
 changes_made: Below are the specific changes made in this revision.
 no_relational_data: Keep in mind that relational data is not included here.
+junction_field_location: Junction Fields Location
+top: Top
+bottom: Bottom
 hide_field: Hide Field
 hide_field_on_detail: Hide Field on Detail
 show_field_on_detail: Show Field on Detail
@@ -278,6 +281,7 @@ fields_group: Fields Group
 no_collections_found: No collections found.
 new_data_alert: 'The following will be created within your Data Model:'
 search_collection: Search Collection...
+search_field: Search Field...
 new_field: 'New Field'
 new_collection: 'New Collection'
 add_m2o_to_collection: 'Add M2O to "{collection}"'
@@ -331,6 +335,7 @@ edit_raw_value: Edit Raw Value
 enter_raw_value: Enter raw value...
 clear_value: Clear Value
 clear_changes: Clear Changes
+clear_items: Clear Items
 reset_to_default: Reset to Default
 undo_changes: Undo Changes
 notifications: Notifications
@@ -543,6 +548,7 @@ activity_item: Activity Item
 action: Action
 ip_address: IP Address
 user_agent: User Agent
+origin: Origin
 webhooks: Webhooks
 decimals: Decimals
 value_decimals: Value Decimals
@@ -756,6 +762,8 @@ add_file: Add File
 replace_file: Replace File
 no_results: No Results
 no_results_copy: Adjust or clear search filters to see results.
+no_visible_fields: Empty Form
+no_visible_fields_copy: This form has no visible fields.
 clear_filters: Clear Filters
 saves_automatically: Saves Automatically
 role: Role
@@ -785,8 +793,10 @@ label: Label
 flows: Flows
 flow: Flow
 select_a_flow: Select a Flow
+run_flow_on_current_collection: Run flow on Current Collection
 run_flow_on_current: Run flow on Current Item
-run_flow_on_selected: No Items Selected | Run flow on 1 Selected Item | Run flow on {n} Selected Items
+run_flow_on_current_edited_confirm: This item may be updated by this flow, are you sure you want to execute it?
+run_flow_on_selected: Select One or More Items First | Run flow on 1 Selected Item | Run flow on {n} Selected Items
 run_flow_success: Flow "{flow}" ran successfully
 trigger: Trigger
 trigger_options: Trigger Options
@@ -830,6 +840,7 @@ panel_header: Panel Header
 panel_name_placeholder: Name this panel...
 panel_note_placeholder: Optional details about this panel...
 panel_delete_confirm: Are you sure you want to delete this panel? This action can not be undone.
+list_panel_allow_edit: Allow Inline Editing
 dashboard_delete_confirm: Are you sure you want to delete this dashboard? This action can not be undone.
 edit_dashboard: Edit Dashboard
 delete_dashboard: Delete Dashboard
@@ -1056,6 +1067,7 @@ fields:
     user: Action By
     comment: Comment
     user_agent: User Agent
+    origin: Origin
     ip: IP Address
     revisions: Revisions
   directus_collections:
@@ -1922,33 +1934,33 @@ layouts:
     default_template: Using Collection Default...
     no_compatible_fields: No compatible fields
   kanban:
-    name: Kanban,
-    group_field: Group By,
-    group_field_placeholder: Field to group by...,
-    group_title: Group Title,
-    group_title_placeholder: Field for group titles...,
-    title: Card Title,
-    title_placeholder: Optional title field...,
-    text: Card Text,
-    text_placeholder: Optional text field...,
-    date: Card Date,
-    date_placeholder: Optional date field...,
-    tags: Card Tags,
-    tags_placeholder: Optional tags field...,
-    user: Card User,
-    user_placeholder: Optional user field...,
-    image: Card Image,
-    image_placeholder: Optional image field...,
-    image_fit: Card Image Fit,
-    crop: Crop,
-    advanced: Advanced,
-    edit_group: Edit Group,
-    delete_group: Delete Group,
-    add_group: Add Group,
-    add_group_placeholder: Enter a new group title...,
-    show_ungrouped: Show Ungrouped,
-    show: Show,
-    no_group: No Group,
+    name: Kanban
+    group_field: Group By
+    group_field_placeholder: Field to group by...
+    group_title: Group Title
+    group_title_placeholder: Field for group titles...
+    title: Card Title
+    title_placeholder: Optional title field...
+    text: Card Text
+    text_placeholder: Optional text field...
+    date: Card Date
+    date_placeholder: Optional date field...
+    tags: Card Tags
+    tags_placeholder: Optional tags field...
+    user: Card User
+    user_placeholder: Optional user field...
+    image: Card Image
+    image_placeholder: Optional image field...
+    image_fit: Card Image Fit
+    crop: Crop
+    advanced: Advanced
+    edit_group: Edit Group
+    delete_group: Delete Group
+    add_group: Add Group
+    add_group_placeholder: Enter a new group title...
+    show_ungrouped: Show Ungrouped
+    show: Show
+    no_group: No Group
     not_all_loaded: Could only load the first 1000 items.
 
 panels:
@@ -2012,7 +2024,8 @@ panels:
   meter:
     description: Meter for tracking values
     name: Meter
-    arc: Arc
+    half_circle: Half Circle
+    full_circle: Full Circle
     stroke_width: Stroke Width
     select_max_value: You must select a maximum value.
     max_greater_than_zero: The maximum must be greater than 0.
@@ -2037,6 +2050,12 @@ panels:
     name: Global Variable
     description: Set a global value for use in other Panels' filters
     variable_key: Variable Key
+  relational-variable:
+    name: Global Relational Variable
+    description: Set a global relational value for use in other Panels' filters
+    variable_key: Variable Key
+    multiple: Multiple
+    multiple-label: Select multiple items
 triggers:
   common:
     response_body: Response Body
@@ -2066,7 +2085,9 @@ triggers:
     collection_and_item: Collection & Item Pages
     collection_only: Collection Page Only
     item_only: Item Page Only
-a_flow_uuid: A Flow's Primary Key UUID...
+    collection_page: Collection Page
+    require_selection: Requires Selection
+a_flow_uuid: Select a Flow to trigger...
 any_string_or_json: Any string or JSON...
 item_payload_placeholder: This is the JSON used to update the item's field values...
 operation_variables_note: You can access flow data with variables such as **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** and **{'{'}{'{'}$accountability{'}'}{'}'}**, or reference previous operations using **{'{'}{'{'}operation_key{'}'}{'}'}**.'

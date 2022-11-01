@@ -27,6 +27,7 @@
 				:badge="languageOptions.find((lang) => lang.value === firstLang)?.text"
 				:direction="languageOptions.find((lang) => lang.value === firstLang)?.direction"
 				:autofocus="autofocus"
+				inline
 				@update:model-value="updateValue($event, firstLang)"
 			/>
 			<v-divider />
@@ -56,6 +57,7 @@
 				:badge="languageOptions.find((lang) => lang.value === secondLang)?.text"
 				:direction="languageOptions.find((lang) => lang.value === secondLang)?.direction"
 				:model-value="secondItem"
+				inline
 				@update:model-value="updateValue($event, secondLang)"
 			/>
 			<v-divider />
@@ -65,13 +67,17 @@
 
 <script setup lang="ts">
 import api from '@/api';
-import { DisplayItem, RelationQueryMultiple, useRelationMultiple } from '@/composables/use-relation-multiple';
+import VDivider from '@/components/v-divider.vue';
+import VForm from '@/components/v-form/v-form.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
 import { useRelationM2M } from '@/composables/use-relation-m2m';
+import { DisplayItem, RelationQueryMultiple, useRelationMultiple } from '@/composables/use-relation-multiple';
 import { useWindowSize } from '@/composables/use-window-size';
+import vTooltip from '@/directives/tooltip';
 import { useFieldsStore } from '@/stores/fields';
-import { notEmpty } from '@/utils/is-empty';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { toArray } from '@directus/shared/utils';
+import { isNil } from 'lodash';
 import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import LanguageSelect from './language-select.vue';
@@ -142,15 +148,25 @@ const query = ref<RelationQueryMultiple>({
 	page: 1,
 });
 
-const { create, update, remove, displayItems, loading, fetchedItems } = useRelationMultiple(
+const { create, update, displayItems, loading, fetchedItems, getItemEdits } = useRelationMultiple(
 	value,
 	query,
 	relationInfo,
 	primaryKey
 );
 
-const firstItem = computed(() => getItemWithLang(displayItems.value, firstLang.value));
-const secondItem = computed(() => getItemWithLang(displayItems.value, secondLang.value));
+const firstItem = computed(() => {
+	const item = getItemWithLang(displayItems.value, firstLang.value);
+	if (item === undefined) return undefined;
+
+	return getItemEdits(item);
+});
+const secondItem = computed(() => {
+	const item = getItemWithLang(displayItems.value, secondLang.value);
+	if (item === undefined) return undefined;
+
+	return getItemEdits(item);
+});
 const firstItemInitial = computed(() => getItemWithLang(fetchedItems.value, firstLang.value));
 const secondItemInitial = computed(() => getItemWithLang(fetchedItems.value, secondLang.value));
 
@@ -168,24 +184,31 @@ function updateValue(item: DisplayItem, lang: string | undefined) {
 
 	const itemInfo = getItemWithLang(displayItems.value, lang);
 
-	if (!itemInfo) {
+	if (itemInfo) {
+		const itemUpdates = {
+			...item,
+			[info.junctionField.field]: {
+				[info.relatedPrimaryKeyField.field]: lang,
+			},
+			$type: itemInfo?.$type,
+			$index: itemInfo?.$index,
+			$edits: itemInfo?.$edits,
+		};
+
+		if (itemInfo[info.junctionPrimaryKeyField.field] !== undefined) {
+			itemUpdates[info.junctionPrimaryKeyField.field] = itemInfo[info.junctionPrimaryKeyField.field];
+		} else {
+			itemUpdates[info.reverseJunctionField.field] = primaryKey.value;
+		}
+
+		update(itemUpdates);
+	} else {
 		create({
 			...item,
 			[info.junctionField.field]: {
 				[info.relatedPrimaryKeyField.field]: lang,
 			},
 		});
-		return;
-	}
-
-	if (Object.keys(item).some((key) => ![info.junctionField.field, '$type', '$index'].includes(key))) {
-		update({
-			...item,
-			$type: itemInfo?.$type,
-			$index: itemInfo?.$index,
-		});
-	} else {
-		remove(item);
 	}
 }
 
@@ -227,7 +250,7 @@ function useLanguages() {
 
 			const edits = getItemWithLang(displayItems.value, langCode);
 
-			const filledFields = writableFields.filter((field) => notEmpty((edits ?? {})[field.field])).length;
+			const filledFields = writableFields.filter((field) => !isNil((edits ?? {})[field.field])).length;
 
 			return {
 				text: language[props.languageField ?? relationInfo.value.relatedPrimaryKeyField.field],

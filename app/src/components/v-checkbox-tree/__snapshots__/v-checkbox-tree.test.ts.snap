@@ -1,0 +1,3 @@
+// Vitest Snapshot v1
+
+exports[`Mount component 1`] = `"<ul class=\\"v-list\\" data-v-ff20e609=\\"\\"></ul>"`;

@@ -1,0 +1,7 @@
+// Vitest Snapshot v1
+
+exports[`Mount component 1`] = `
+"<div class=\\"v-notice normal\\" data-v-f0538e61=\\"\\">
+  <v-icon-stub name=\\"info\\" left=\\"\\" data-v-f0538e61=\\"\\"></v-icon-stub>
+</div>"
+`;

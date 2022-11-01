@@ -1,0 +1,9 @@
+// Vitest Snapshot v1
+
+exports[`Mount component 1`] = `
+"<div class=\\"v-info info\\" data-v-30215bfa=\\"\\">
+  <!--v-if-->
+  <h2 class=\\"title type-title\\" data-v-30215bfa=\\"\\">This is an info</h2>
+  <p class=\\"content\\" data-v-30215bfa=\\"\\">content</p>
+</div>"
+`;

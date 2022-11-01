@@ -6,6 +6,8 @@ A summary of the changes and a reference to the Issue that was fixed / implement
 
 NOTE: All Pull Requests require a corresponding open Issue.
 
+Please reference the Issue number below:
+
 -->
 
 Fixes #
@@ -26,4 +28,4 @@ Fixes #
 
 If adding a new feature:
 
-- [ ] Documentation was added/updated
+- [ ] Documentation was added/updated. PR:

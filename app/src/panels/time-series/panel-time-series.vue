@@ -11,7 +11,7 @@ import { abbreviateNumber, adjustDate } from '@directus/shared/utils';
 import { cssVar } from '@directus/shared/utils/browser';
 import ApexCharts from 'apexcharts';
 import { addWeeks } from 'date-fns';
-import { isNil } from 'lodash';
+import { isNil, snakeCase } from 'lodash';
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { orderBy } from 'lodash';
@@ -66,7 +66,7 @@ const chart = ref<ApexCharts>();
 
 const valueLabel = computed(() => {
 	const field = fieldsStore.getField(props.collection, props.valueField)!;
-	const operation = t(props.function);
+	const operation = t(snakeCase(props.function));
 	return `${field.name} (${operation})`;
 });
 
@@ -116,10 +116,16 @@ function setupChart() {
 
 	const isFieldTimestamp = fieldsStore.getField(props.collection, props.dateField)?.type === 'timestamp';
 
+	const allDates = props.data.map((metric) => {
+		return toIncludeTimezoneOffset(metric.group, isFieldTimestamp);
+	});
+
+	const minDate = Math.min(...allDates);
+	const maxDate = Math.max(...allDates);
+
 	metrics.value = orderBy(
 		props.data.map((metric) => ({
-			x: new Date(toISO(metric.group)).getTime() - (isFieldTimestamp ? new Date().getTimezoneOffset() * 60 * 1000 : 0),
-
+			x: toIncludeTimezoneOffset(metric.group, isFieldTimestamp),
 			y: Number(Number(metric[props.function][props.valueField]).toFixed(props.decimals ?? 0)),
 		})),
 		'x'
@@ -222,8 +228,11 @@ function setupChart() {
 			axisBorder: {
 				show: false,
 			},
-			range: props.now.getTime() - adjustDate(props.now, `-${props.range}`)!.getTime(),
-			max: props.now.getTime(),
+			range:
+				props.range === 'auto'
+					? maxDate - minDate
+					: props.now.getTime() - adjustDate(props.now, `-${props.range}`)!.getTime(),
+			max: props.range === 'auto' ? maxDate : props.now.getTime(),
 			labels: {
 				show: props.showXAxis ?? true,
 				offsetY: -4,
@@ -288,6 +297,10 @@ function setupChart() {
 	});
 
 	chart.value.render();
+
+	function toIncludeTimezoneOffset(time: Record<string, any>, isFieldTimestamp: boolean): number {
+		return new Date(toISO(time)).getTime() - (isFieldTimestamp ? new Date().getTimezoneOffset() * 60 * 1000 : 0);
+	}
 
 	function toISO(metric: Record<string, any>) {
 		const year = metric[`${props.dateField}_year`];

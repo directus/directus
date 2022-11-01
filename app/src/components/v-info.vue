@@ -1,7 +1,7 @@
 <template>
 	<div class="v-info" :class="[type, { center }]">
-		<div class="icon">
-			<v-icon large :name="icon" outline />
+		<div v-if="icon !== false" class="icon">
+			<v-icon large :name="icon" />
 		</div>
 		<h2 class="title type-title">{{ title }}</h2>
 		<p class="content"><slot /></p>
@@ -9,28 +9,24 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent, PropType } from 'vue';
+<script setup lang="ts">
+import VIcon from './v-icon/v-icon.vue';
 
-export default defineComponent({
-	props: {
-		icon: {
-			type: String,
-			default: 'box',
-		},
-		title: {
-			type: String,
-			required: true,
-		},
-		type: {
-			type: String as PropType<'info' | 'success' | 'warning' | 'danger'>,
-			default: 'info',
-		},
-		center: {
-			type: Boolean,
-			default: false,
-		},
-	},
+interface Props {
+	/** The title to display in the info */
+	title: string;
+	/** What icon to render above the title */
+	icon?: string | false;
+	/** Styling of the info */
+	type?: 'info' | 'success' | 'warning' | 'danger';
+	/** Displays the info centered */
+	center?: boolean;
+}
+
+withDefaults(defineProps<Props>(), {
+	icon: false,
+	type: 'info',
+	center: false,
 });
 </script>
 

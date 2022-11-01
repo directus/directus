@@ -40,23 +40,26 @@
 
 <script setup lang="ts">
 import { computed, inject, ref } from 'vue';
-import { useElementSize } from '@/composables/use-element-size';
+import { useElementSize } from '@directus/shared/composables';
 import { AppTile } from './v-workspace-tile.vue';
 import { cssVar } from '@directus/shared/utils/browser';
 
-const props = withDefaults(
-	defineProps<{
-		tiles: AppTile[];
-		editMode?: boolean;
-		zoomToFit?: boolean;
-		resizable?: boolean;
-	}>(),
-	{
-		editMode: false,
-		zoomToFit: false,
-		resizable: true,
-	}
-);
+interface Props {
+	/** What tiles to render inside the workspace */
+	tiles: AppTile[];
+	/** Enables the edit mode */
+	editMode?: boolean;
+	/** Sets zoom and position so that all components are perfectly shown */
+	zoomToFit?: boolean;
+	/** Makes the panel resizable */
+	resizable?: boolean;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+	editMode: false,
+	zoomToFit: false,
+	resizable: true,
+});
 
 defineEmits(['update', 'move', 'delete', 'duplicate', 'edit', 'preview']);
 
@@ -68,9 +71,9 @@ const paddingSize = computed(() => Number(cssVar('--content-padding', mainElemen
 const workspaceSize = computed(() => {
 	const furthestTileX = props.tiles.reduce(
 		(aggr, tile) => {
-			if (tile.x! > aggr.x!) {
-				aggr.x = tile.x!;
-				aggr.width = tile.width!;
+			if (tile.x + tile.width > aggr.x + aggr.width) {
+				aggr.x = tile.x;
+				aggr.width = tile.width;
 			}
 
 			return aggr;
@@ -78,11 +81,11 @@ const workspaceSize = computed(() => {
 		{ x: 0, width: 0 }
 	);
 
-	const furthestPanelY = props.tiles.reduce(
+	const furthestTileY = props.tiles.reduce(
 		(aggr, tile) => {
-			if (tile.y! > aggr.y!) {
-				aggr.y = tile.y!;
-				aggr.height = tile.height!;
+			if (tile.y + tile.height > aggr.y + aggr.height) {
+				aggr.y = tile.y;
+				aggr.height = tile.height;
 			}
 
 			return aggr;
@@ -92,14 +95,14 @@ const workspaceSize = computed(() => {
 
 	if (props.editMode === true) {
 		return {
-			width: (furthestTileX.x! + furthestTileX.width! + 25) * 20,
-			height: (furthestPanelY.y! + furthestPanelY.height! + 25) * 20,
+			width: (furthestTileX.x + furthestTileX.width + 25) * 20,
+			height: (furthestTileY.y + furthestTileY.height + 25) * 20,
 		};
 	}
 
 	return {
-		width: (furthestTileX.x! + furthestTileX.width! - 1) * 20,
-		height: (furthestPanelY.y! + furthestPanelY.height! - 1) * 20,
+		width: (furthestTileX.x + furthestTileX.width - 1) * 20,
+		height: (furthestTileY.y + furthestTileY.height - 1) * 20,
 	};
 });
 

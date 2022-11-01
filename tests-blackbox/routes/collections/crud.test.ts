@@ -156,6 +156,73 @@ describe('/collections', () => {
 		});
 	});
 
+	describe('PATCH /', () => {
+		let currentVendor = vendors[0];
+		const collectionNames = ['test_batch_update', 'test_batch_update2', 'test_batch_update3'];
+		const newSortOrder = [3, 1, 2];
+
+		afterEach(async () => {
+			const db = databases.get(currentVendor)!;
+			for (const collection of collectionNames) {
+				await db.schema.dropTableIfExists(collection);
+				await db('directus_collections').del().where({ collection });
+			}
+		});
+
+		describe('Does batch update used for collection sorting', () => {
+			common.TEST_USERS.forEach((userKey) => {
+				describe(common.USER[userKey].NAME, () => {
+					it.each(vendors)('%s', async (vendor) => {
+						// Setup
+						const db = databases.get(vendor)!;
+						currentVendor = vendor;
+
+						// Action
+						await request(getUrl(vendor))
+							.post('/collections')
+							.send(
+								collectionNames.map((collection) => {
+									return { collection, meta: {}, schema: {} };
+								})
+							)
+							.set('Authorization', `Bearer ${common.USER[userKey].TOKEN}`);
+
+						let index = 0;
+
+						const response = await request(getUrl(vendor))
+							.patch('/collections')
+							.send(
+								collectionNames.map((collection) => {
+									return { collection, meta: { sort: newSortOrder[index++] } };
+								})
+							)
+							.set('Authorization', `Bearer ${common.USER[userKey].TOKEN}`);
+
+						// Assert
+						if (userKey === common.USER.ADMIN.KEY) {
+							expect(response.statusCode).toBe(200);
+							for (let i = 0; i < collectionNames.length; i++) {
+								expect(response.body.data[i]).toEqual({
+									collection: collectionNames[i],
+									meta: expect.objectContaining({
+										collection: collectionNames[i],
+										sort: newSortOrder[i],
+									}),
+									schema: expect.objectContaining({
+										name: collectionNames[i],
+									}),
+								});
+								expect(await db.schema.hasTable(collectionNames[i])).toBe(true);
+							}
+						} else {
+							expect(response.statusCode).toBe(403);
+						}
+					});
+				});
+			});
+		});
+	});
+
 	describe('DELETE /', () => {
 		let currentVendor = vendors[0];
 		const TEST_COLLECTION_NAME = 'test_creation';

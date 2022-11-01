@@ -187,6 +187,7 @@ revision_post_create: Ето как е изглеждал записът при 
 revision_post_update: Така ще изглежда записът, след възстановяване.
 changes_made: По-долу, са промените в ревизията.
 no_relational_data: Данните от релационните полета не са включени.
+bottom: Отдолу
 hide_field: Скриване на полето
 hide_field_on_detail: Скриване в детайлен изглед
 show_field_on_detail: Показване в детайлния изглед
@@ -295,6 +296,8 @@ next: Напред
 field_name: Име на поле
 translations: Преводи
 no_translations: Няма преводи
+left_to_right: От ляво на дясно
+right_to_left: От дясно на ляво
 note: Бележка
 enter_a_value: Въвеждане на стойност...
 enter_a_placeholder: Въвеждане на подсказката...
@@ -479,6 +482,7 @@ creating_items: Създаване на записи
 enable_create_button: Показване на бутон за създаване
 selecting_items: Избор на записи
 enable_select_button: Показване на бутон за избор
+allow_duplicates: Позволяване на дублирането
 comments: Коментари
 no_comments: Все още няма коментари
 click_to_expand: Натиснете за разширяване
@@ -579,6 +583,9 @@ errors:
   INVALID_PAYLOAD: Невалидно съдържание
   INVALID_PROVIDER: Потребителят принадлежи към друг доставчик за удостоверение
   INVALID_QUERY: Невалидна заявка
+  INVALID_CONFIG: Невалидна конфигурация
+  INVALID_TOKEN: Невалиден токен
+  INVALID_IP: IP адресът е невалиден
   INVALID_USER: Неуспешно удостоверение на потребителя
   ITEM_LIMIT_REACHED: Достигнат лимит на записи
   ITEM_NOT_FOUND: Записът не е намерен
@@ -595,6 +602,13 @@ errors:
   INVALID_FOREIGN_KEY: Невалиден външен ключ
   UNKNOWN: Неочаквана грешка
   GRAPHQL_VALIDATION_EXCEPTION: Изключение при валидацията в GraphQL
+  SERVICE_UNAVAILABLE: Услугата е недостъпна
+  UNSUPPORTED_MEDIA_TYPE: Неподдържан медиен формат
+  UNEXPECTED_RESPONSE: Неочакван отговор от сървъра
+  TOKEN_EXPIRED: Изтекъл токен
+  RANGE_NOT_SATISFIABLE: Невалиден диапазон
+  METHOD_NOT_ALLOWED: Методът не е разрешен
+  REQUESTS_EXCEEDED: Лимитът на заявките е достигнат
 security: Сигурност
 value_hashed: Хеширана стойност
 bookmark_name: Име на отметката...
@@ -764,7 +778,6 @@ flows: Автоматизирани процеси
 flow: Процес
 select_a_flow: Избор на процес
 run_flow_on_current: Стартиране на процеса за текущия запис
-run_flow_on_selected: Не са избрани записи | Стартиране на процеса за 1 запис | Стартиране на процеса за {n} записа
 run_flow_success: Изпълнението на процеса „{flow}“ е успешно
 trigger: Задействане
 trigger_options: Настройка на задействането
@@ -1408,6 +1421,14 @@ report_error: Докладване на грешка
 start: Начало
 table: Таблица
 list: Списък
+search_filter: Търсене и филтриране
+enable_search_filter: Включване на търсачката
+item_link: Връзка към запис
+show_link_to_item: Показване на връзка до записа
+navigate_to_item: Навигиране до записа
+undo_removed_item: Отмяна на премахването
+remove_item: Премахване на запис
+delete_item: Изтриване на запис
 interfaces:
   filter:
     name: Филтриране
@@ -1489,6 +1510,7 @@ interfaces:
     placeholder: Избор на дата и час...
   system-fields:
     select_a_collection: Избор на колекция
+    no_fields: Няма полета
   system-display-template:
     display-template: Шаблон при показване
     description: Комбиниране на статичен текст и динамични стойности от полета
@@ -1546,6 +1568,7 @@ interfaces:
   list-m2m:
     many-to-many: Много към много
     description: Избор на множество свързващи записи
+    columns_configure_notice: Може да настроите колоните след добавянето на полето.
     display_template_configure_notice: Шаблонът за показване може да бъде настроен и след създаването на полето.
   select-dropdown-m2o:
     many-to-one: Много към един
@@ -1663,6 +1686,7 @@ interfaces:
     user_language: Използване на езика на потребителя
     default_language: Език по подразбиране
     language_field: Поле за език
+    language_direction_field: Поле за текстова дирекция
   list-o2m-tree-view:
     description: Дървовиден изглед за вложени рекурсивни записи от вид - един-към-много
     recursive_only: Дървовидния интерфейс, работи само за рекурсивни релации.
@@ -1873,33 +1897,8 @@ layouts:
     default_template: По подразбиране от колекцията...
     no_compatible_fields: Няма съвместими полета
   kanban:
-    name: Канбан
-    group_field: Групиране по
-    group_field_placeholder: Поле за групиране
-    group_title: Заглавие при групиране
-    group_title_placeholder: Полета за групиране
-    title: Заглавие на карта
-    title_placeholder: Незадължително поле за заглавие
-    text: Текст на картата
-    text_placeholder: Незадължително поле за текст
-    date: Дата на картата
-    date_placeholder: Незадължително поле за дата
-    tags: Етикети на картата
-    tags_placeholder: Незадължително поле за етикети
-    user: Потребител на картата
-    user_placeholder: Незадължително поле за потребител
-    image: Избражение на картата
-    image_placeholder: Незадължително поле за изображение
-    image_fit: Напасване на изображението
     crop: Изрязване
     advanced: Разширени
-    edit_group: Редактиране на група
-    delete_group: Изтриване на група
-    add_group: Добавяне на група
-    add_group_placeholder: Въвеждане на заглавие за група...
-    show_ungrouped: Негрупирано показване
-    show: Показване
-    no_group: Няма група
     not_all_loaded: Може да се заредят само първите 1000 записи.
 panels:
   metric:
@@ -1962,7 +1961,6 @@ panels:
   meter:
     description: Циферблат за показване на стойности
     name: Циферблат
-    arc: Арка
     stroke_width: Ширина на чертите
     select_max_value: Трябва да изберете максимална стойност.
     max_greater_than_zero: Максималната стойност трябва да е по-голяма от 0.
@@ -1986,6 +1984,8 @@ panels:
   variable:
     name: Глобални променливи
     description: Задаване на глобални променливи за използване във филтрите на другите панели
+    variable_key: Ключ на променливата
+  relational-variable:
     variable_key: Ключ на променливата
 triggers:
   common:
@@ -2016,7 +2016,6 @@ triggers:
     collection_and_item: В колекцията и детайлния изглед
     collection_only: Само в изгледа на колекцията
     item_only: Само в детайлния изглед
-a_flow_uuid: Първичен UUID ключ на процеса...
 any_string_or_json: Всякакъв низ или JSON...
 item_payload_placeholder: Това трябва да е JSON документа, който ще се използва при актуализирането на полетата на записа...
 operation_variables_note: Данните от операцията са достъпни чрез променливи като **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** и **{'{'}{'{'}$accountability{'}'}{'}'}**, или за достъп до предишната операция чрез **{'{'}{'{'}operation_key{'}'}{'}'}**.'
@@ -2024,6 +2023,10 @@ operations:
   condition:
     name: Условие
     description: Маршрутизиране на процес базирано на If / Else логика
+  exec:
+    name: Изпълняване на скрипт
+    description: Изпълняване на потребителски код за промяна на съдържанието
+    modules: 'Могат да бъдат използвани следните **Node модули**:'
   item-create:
     name: Създаване на данни
     description: Създаване на записи в базата от данни
@@ -2061,7 +2064,9 @@ operations:
     body: Съдържание
   notification:
     name: Изпращане на известие
+    description: Изпращане на известие в приложението до потребители
     recipient: Потребител
+    recipient_placeholder: Добавете UUID и натиснете enter...
     message: Съобщение
   request:
     name: Уеб-кука / URL заявка

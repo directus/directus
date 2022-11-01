@@ -49,9 +49,11 @@ group: Grupo
 export_items: Exportar itens
 and: E
 or: Ou
+init: Inicializador
 dataset_too_large_currently_showing_n_items: Conjunto de dados é muito grande. Mostrando os primeiros {n} itens.
 modifier: Modificador
 custom: Personalizado
+hook: Gancho
 fill_width: Preencher Largura
 field_name_translations: Traduções do Nome do Campo
 enter_password_to_enable_tfa: Digite sua senha para ativar a Autenticação em Duas Etapas
@@ -80,7 +82,10 @@ delete_panel: Excluir Painel
 create_webhook: Criar Webhook
 create_translation_string: String chave para a tradução
 no_translation_string: Nenhuma tradução
+no_translation_string_copy: Ainda não há nenhuma memória de tradução.
+translation_string_key_placeholder: Chave da tradução...
 translation_string_translations_placeholder: Adicionar uma nova tradução
+edit_translation_string: Editar String de Tradução
 delete_translation_string_copy: >-
   Tem certeza de que deseja excluir a string de tradução "{key}"? Essa ação não pode ser desfeita.
 invite_users: Convidar Usuários
@@ -103,6 +108,9 @@ update_bookmark: Atualizar Favorito
 delete_bookmark: Deletar Favorito
 delete_bookmark_copy: >-
   Tem certeza que deseja deletar o favorito "{bookmark}"? Esta ação não pode ser desfeita.
+delete_personal_bookmark: Excluir marcador pessoal
+delete_role_bookmark: Excluir Função Favorito
+delete_global_bookmark: Excluir Global Bookmark
 logoutReason:
   SIGN_OUT: Deslogado
   SESSION_EXPIRED: Sessão expirada
@@ -129,6 +137,7 @@ recommended_defaults: Padrões Recomendados
 unarchive: Desarquivar
 unarchive_confirm: Você tem certeza que deseja desarquivar este item?
 nested_files_folders_will_be_moved: Arquivos e pastas aninhadas serão movidos um nível acima.
+validation_errors_notice: 'Os seguintes campos têm valores inválidos:'
 validationError:
   eq: O valor tem de ser {valid}
   neq: O valor não pode ser {invalid}
@@ -178,6 +187,8 @@ revision_post_create: Aqui está como este ítem ficou quando foi criado.
 revision_post_update: Aqui está como este item ficou após a atualização.
 changes_made: Abaixo estão as mudanças específicas feitas nesta revisão.
 no_relational_data: Tenha em mente que os dados relacionais não estão inclusos aqui.
+top: Topo
+bottom: Inferior
 hide_field: Ocultar campo
 hide_field_on_detail: Ocultar Campo em Detalhes
 show_field_on_detail: Exibir Campo em Detalhes
@@ -263,6 +274,7 @@ fields_group: Grupo de Campos
 no_collections_found: Nenhuma coleção encontrada.
 new_data_alert: 'O seguinte será criado em seu modelo de dados:'
 search_collection: Pesquisar Coleção...
+search_field: Campo de pesquisa...
 new_field: 'Novo campo'
 new_collection: 'Nova Coleção'
 add_m2o_to_collection: 'Adicionar M2O a "{collection}"'
@@ -286,6 +298,8 @@ next: Próximo
 field_name: Nome do campo
 translations: Traduções
 no_translations: Nenhuma Tradução
+left_to_right: Esquerda para Direita
+right_to_left: Direita para esquerda
 note: Nota
 enter_a_value: Insira um valor...
 enter_a_placeholder: Adicionar um placeholder...
@@ -300,6 +314,7 @@ primary_key: Chave primária
 foreign_key: Chave Extrangeira
 finish_setup: Concluir a instalação
 dismiss: Dispensar
+toggle_raw_editor: Alternar Editor Raw
 raw_value: Valor bruto
 copy_raw_value: Copiar Valor Bruto
 copy_raw_value_success: Copiado
@@ -312,6 +327,7 @@ edit_raw_value: Editar valor bruto
 enter_raw_value: Insira valor bruto...
 clear_value: Limpar Valor
 clear_changes: Limpar alterações
+clear_items: Excluir itens
 reset_to_default: Restaurar Padrões
 undo_changes: Desfazer Alterações
 notifications: Notificações
@@ -328,8 +344,10 @@ revision_delta_created_externally: Criado externamente
 revision_delta_updated: '1 campo atualizado | {count} campos atualizados'
 revision_delta_deleted: Excluído
 revision_delta_reverted: Revertido
+revision_delta_update_message: Este campo foi actualizado, mas o seu valor está a ser ocultado por razões de segurança.
 revision_delta_other: Revisão
 revision_delta_by: '{date} por {user}'
+presentation_text_values_cannot_be_reimported: "Usa texto de apresentação, valores não podem ser importados novamente."
 download_page_as_csv: 'Baixar página como CSV'
 private_user: Usuário privado
 creation_preview: Pré-visualização da criação
@@ -439,7 +457,12 @@ download_file: Baixar arquivo
 open_file_in_tab: Abrir em nova guia
 start_export: Iniciar Exportação
 not_available_for_local_downloads: Não disponível para downloads locais
+exporting_all_items_in_collection: Exportando todos os {total} itens dentro de {collection}.
+exporting_limited_items_in_collection: Exportando {limit} de {total} itens em {collection}.
+exporting_no_items_to_export: Sem itens para exportar. Ajuste a configuração exportadora abaixo.
 exporting_download_hint: Uma vez concluído, este arquivo {format} será automaticamente baixado para o seu dispositivo.
+exporting_batch_hint: Esta exportação será processada em lotes e, assim que concluída, o arquivo {format} será salvo na Biblioteca de Arquivos.
+exporting_batch_hint_forced: Devido ao grande número de itens, esta exportação deve ser processada em lotes, e assim que concluído, o arquivo {format} será salvo na Biblioteca de Arquivos.
 collection_key: Chave da coleção
 name: Nome
 primary_key_field: Campo de chave primária
@@ -460,6 +483,7 @@ creating_items: Criando Itens
 enable_create_button: Habilitar botão de criação
 selecting_items: Selecionando Itens
 enable_select_button: Habilitar botão de seleção
+allow_duplicates: Permitir duplicatas
 comments: Comentários
 no_comments: Nenhum comentário ainda
 click_to_expand: Clique para expandir
@@ -511,6 +535,7 @@ activity_item: Feed de atividade
 action: Ação
 ip_address: Endereço de IP
 user_agent: Agente de Usuário
+origin: Origem
 webhooks: Webhooks
 decimals: Decimais
 value_decimals: Valores decimais
@@ -557,7 +582,11 @@ errors:
   INVALID_CREDENTIALS: Nome de usuário ou senha incorreta
   INVALID_OTP: Senha de uso único incorreta
   INVALID_PAYLOAD: Payload inválido
+  INVALID_PROVIDER: Usuário pertence a um provedor de autenticação diferente
   INVALID_QUERY: Consulta inválida
+  INVALID_CONFIG: Configuração inválida
+  INVALID_TOKEN: Token inválido
+  INVALID_IP: Endereço IP não permitido
   INVALID_USER: Falha ao autenticar usuário
   ITEM_LIMIT_REACHED: Limite de elementos alcançado
   ITEM_NOT_FOUND: Item não encontrado
@@ -571,7 +600,14 @@ errors:
   ILLEGAL_ASSET_TRANSFORMATION: Fonte de imagem muito grande para visualização
   VALUE_TOO_LONG: Valor é muito longo
   VALUE_OUT_OF_RANGE: Valor fora de alcance
+  INVALID_FOREIGN_KEY: Chave estrangeira inválida
   UNKNOWN: Erro inesperado
+  GRAPHQL_VALIDATION_EXCEPTION: Exceção de Validação GraphQL
+  SERVICE_UNAVAILABLE: Serviço indisponível
+  UNSUPPORTED_MEDIA_TYPE: Tipo de mídia incompatível
+  UNEXPECTED_RESPONSE: Resposta inesperada
+  TOKEN_EXPIRED: Token expirado
+  METHOD_NOT_ALLOWED: Método não permitido
 security: Segurança
 value_hashed: Valor secretamente salvo em hash
 bookmark_name: Nome do marcador...
@@ -733,7 +769,6 @@ label: Rótulo
 flows: Fluxos
 flow: Fluxo
 select_a_flow: Selecione um fluxo
-run_flow_on_selected: Sem itens selecionados | Executar fluxo em 1 item selecionado | Executar fluxo em {n} itens selecionados
 trigger: Acionar
 view_trigger: Ver gatilho
 create_trigger: Criar gatilho
@@ -987,6 +1022,7 @@ fields:
     user: Ação Por
     comment: Comentário
     user_agent: Agente de Usuário
+    origin: Origem
     ip: Endereço de IP
     revisions: Revisões
   directus_collections:
@@ -1098,6 +1134,7 @@ fields:
     transformations_all: Permitir todas as transformações
     transformations_none: Desativar transformações
     transformations_presets: Limitar transformações às predefinições abaixo
+    image_editor: Editor de imagem
   directus_shares:
     name: Nome
     role: Função
@@ -1363,6 +1400,9 @@ report_error: Relatar erro
 start: Início
 table: Tabela
 list: Lista
+show_link_to_item: Mostrar um link para o item
+remove_item: Remover Item
+delete_item: Excluir item
 interfaces:
   filter:
     name: Filtro
@@ -1787,6 +1827,9 @@ layouts:
     map: Mapa
     invalid_geometry: Geometria inválida
     find_location: Encontrar localização...
+  kanban:
+    crop: Recortar
+    advanced: Avançado
 panels:
   metric:
     name: Métrico

@@ -1,5 +1,5 @@
 import { test, expect, vi } from 'vitest';
-import { defineComponent } from 'vue';
+import { defineComponent, h } from 'vue';
 import { mount } from '@vue/test-utils';
 
 import { useEventListener } from '@/composables/use-event-listener';
@@ -17,6 +17,7 @@ test('Registers the event listener on mount, unregisters on unmount', () => {
 		setup() {
 			return useEventListener(target, 'click', testHandler);
 		},
+		render: () => h('div'),
 	});
 
 	const wrapper = mount(TestComponent);

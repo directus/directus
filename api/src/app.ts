@@ -137,6 +137,15 @@ export default async function createApp(): Promise<express.Application> {
 
 	app.use(expressLogger);
 
+	app.use((_req, res, next) => {
+		res.setHeader('X-Powered-By', 'Directus');
+		next();
+	});
+
+	if (env.CORS_ENABLED === true) {
+		app.use(cors);
+	}
+
 	app.use((req, res, next) => {
 		(
 			express.json({
@@ -155,15 +164,6 @@ export default async function createApp(): Promise<express.Application> {
 
 	app.use(extractToken);
 
-	app.use((_req, res, next) => {
-		res.setHeader('X-Powered-By', 'Directus');
-		next();
-	});
-
-	if (env.CORS_ENABLED === true) {
-		app.use(cors);
-	}
-
 	app.get('/', (_req, res, next) => {
 		if (env.ROOT_REDIRECT) {
 			res.redirect(env.ROOT_REDIRECT);
@@ -179,7 +179,7 @@ export default async function createApp(): Promise<express.Application> {
 	});
 
 	if (env.SERVE_APP) {
-		const adminPath = require.resolve('@directus/app', require.main ? { paths: [require.main.filename] } : undefined);
+		const adminPath = require.resolve('@directus/app');
 		const adminUrl = new Url(env.PUBLIC_URL).addPath('admin');
 
 		// Set the App's base path according to the APIs public URL

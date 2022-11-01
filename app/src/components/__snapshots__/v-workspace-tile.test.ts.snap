@@ -1,0 +1,18 @@
+// Vitest Snapshot v1
+
+exports[`Mount component 1`] = `
+"<div class=\\"v-workspace-tile draggable br-tl br-tr br-br br-bl\\" style=\\"--pos-x: 1; --pos-y: 1; --width: 10; --height: 10;\\" data-move=\\"\\" data-v-a110deb5=\\"\\">
+  <div class=\\"header\\" data-v-a110deb5=\\"\\">
+    <v-icon-stub class=\\"icon\\" style=\\"--v-icon-color: var(--primary);\\" name=\\"space_dashboard\\" small=\\"\\" data-v-a110deb5=\\"\\"></v-icon-stub>
+    <v-text-overflow-stub class=\\"name\\" text=\\"\\" data-v-a110deb5=\\"\\"></v-text-overflow-stub>
+    <div class=\\"spacer\\" data-v-a110deb5=\\"\\"></div>
+    <!--v-if-->
+  </div>
+  <!--v-if-->
+  <div class=\\"resize-details\\" data-v-a110deb5=\\"\\"> (0:0) 10×10</div>
+  <!--v-if-->
+  <div class=\\"tile-content has-header\\" data-v-a110deb5=\\"\\">
+    <!--v-if-->
+  </div>
+</div>"
+`;

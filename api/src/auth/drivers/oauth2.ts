@@ -104,7 +104,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 
 	async getUserID(payload: Record<string, any>): Promise<string> {
 		if (!payload.code || !payload.codeVerifier) {
-			logger.trace('[OAuth2] No code or codeVerifier in payload');
+			logger.warn('[OAuth2] No code or codeVerifier in payload');
 			throw new InvalidCredentialsException();
 		}
 
@@ -150,7 +150,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 
 		// Is public registration allowed?
 		if (!allowPublicRegistration) {
-			logger.trace(`[OAuth2] User doesn't exist, and public registration not allowed for provider "${provider}"`);
+			logger.warn(`[OAuth2] User doesn't exist, and public registration not allowed for provider "${provider}"`);
 			throw new InvalidCredentialsException();
 		}
 
@@ -276,6 +276,7 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 				accountability: {
 					ip: getIPFromReq(req),
 					userAgent: req.get('user-agent'),
+					origin: req.get('origin'),
 					role: null,
 				},
 				schema: req.schema,
