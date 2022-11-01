@@ -1,7 +1,6 @@
 import { BaseException } from '@directus/shared/exceptions';
 import { parseJSON } from '@directus/shared/utils';
-import { Router } from 'express';
-import bodyParser from 'body-parser';
+import express, { Router } from 'express';
 import flatten from 'flat';
 import jwt from 'jsonwebtoken';
 import ms from 'ms';
@@ -257,7 +256,7 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 
 	router.post(
 		'/callback',
-		bodyParser.urlencoded({ extended: false }),
+		express.urlencoded({ extended: false }),
 		(req, res) => {
 			res.redirect(303, `./callback?${new URLSearchParams(req.body)}`);
 		},
