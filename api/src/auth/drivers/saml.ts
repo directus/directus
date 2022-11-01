@@ -124,8 +124,15 @@ export function createSAMLAuthRouter(providerName: string) {
 		asyncHandler(async (req, res) => {
 			const { sp, idp } = getAuthProvider(providerName) as SAMLAuthDriver;
 			const { context } = await sp.createLogoutRequest(idp, 'redirect', req.body);
+
+			const authService = new AuthenticationService({ accountability: req.accountability, schema: req.schema });
+
 			if (req.cookies[env.REFRESH_TOKEN_COOKIE_NAME]) {
-				res.clearCookie(env.REFRESH_TOKEN_COOKIE_NAME, COOKIE_OPTIONS);
+				const currentRefreshToken = req.cookies[env.REFRESH_TOKEN_COOKIE_NAME];
+				if (currentRefreshToken) {
+					await authService.logout(currentRefreshToken);
+					res.clearCookie(env.REFRESH_TOKEN_COOKIE_NAME, COOKIE_OPTIONS);
+				}
 			}
 			return res.redirect(context);
 		})
