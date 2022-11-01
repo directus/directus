@@ -386,13 +386,25 @@ export function applyFilter(
 					applyFilterToQuery(columnPath, filterOperator, filterValue, logical, targetCollection);
 				} else if (jsonFieldNames.includes(filterPath[0])) {
 					validateFilterOperator('string', filterOperator, []);
-					if (getDatabaseClient(knex) === 'oracle') {
-						const node = jsonFields.find((n) => n.fieldKey === filterPath[0])!;
-						const qp = knex.raw('?', [node.queryPath]).toQuery();
-						const rawQuery = knex.raw(`json_value(??.??, ${qp})`, [collection, node.name]);
-						applyFilterToQuery(filterPath[0], filterOperator, filterValue, logical, undefined, rawQuery);
-					} else {
-						applyFilterToQuery(filterPath[0], filterOperator, filterValue, logical);
+					const node = jsonFields.find((n) => n.fieldKey === filterPath[0])!;
+					// TODO move this into the helpers somehow!
+					switch (getDatabaseClient(knex)) {
+						case 'oracle':
+							{
+								const qp = knex.raw('?', [node.queryPath]).toQuery();
+								const rawQuery = knex.raw(`json_value(??.??, ${qp})`, [collection, node.name]);
+								applyFilterToQuery(filterPath[0], filterOperator, filterValue, logical, undefined, rawQuery);
+							}
+							break;
+						case 'mysql':
+							{
+								const rawQuery = knex.raw(`??.??->?`, [collection, node.name, node.queryPath]);
+								applyFilterToQuery(filterPath[0], filterOperator, filterValue, logical, undefined, rawQuery);
+							}
+							break;
+						default:
+							applyFilterToQuery(filterPath[0], filterOperator, filterValue, logical);
+							break;
 					}
 				} else {
 					const fieldName = stripFunction(filterPath[0]);
