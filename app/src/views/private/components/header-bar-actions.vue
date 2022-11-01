@@ -1,10 +1,9 @@
 <template>
 	<div class="actions" :class="{ active }">
-		<v-button class="expand" icon rounded secondary outlined @click="active = !active">
+		<v-button v-if="propsSiedbarOpen" class="expand" icon rounded secondary outlined @click="active = !active">
 			<v-icon name="arrow_left" />
 		</v-button>
-
-		<div class="action-buttons">
+		<div v-if="propsSiedbarOpen" class="action-buttons">
 			<v-button
 				v-if="showSidebarToggle"
 				class="sidebar-toggle"
@@ -27,13 +26,16 @@ import { defineComponent, ref } from 'vue';
 
 export default defineComponent({
 	props: {
+		propsSiedbarOpen: {
+			type: Boolean,
+		},
 		showSidebarToggle: {
 			type: Boolean,
 			default: false,
 		},
 	},
 	emits: ['toggle:sidebar'],
-	setup() {
+	setup(x) {
 		const active = ref(false);
 		return { active };
 	},

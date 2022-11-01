@@ -1,0 +1,26 @@
+{
+	"name": "directus-extension-test",
+	"version": "1.0.0",
+	"keywords": [
+		"directus",
+		"directus-extension",
+		"directus-custom-module"
+	],
+	"directus:extension": {
+		"type": "module",
+		"path": "../extensions/modules/src/index.js",
+		"source": "src/index.ts",
+		"host": "^9.19.2"
+	},
+	"scripts": {
+		"build": "directus-extension build",
+		"dev": "directus-extension build -w --no-minify"
+	},
+	"devDependencies": {
+		"@directus/extensions-sdk": "9.19.2",
+		"node-sass": "^7.0.3",
+		"sass-loader": "^13.1.0",
+		"typescript": "^4.8.4",
+		"vue": "^3.2.41"
+	}
+}

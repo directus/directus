@@ -27,8 +27,14 @@
 				/>
 			</div>
 		</aside>
-		<div id="main-content" ref="contentEl" class="content">
+		<div
+			id="main-content"
+			ref="contentEl"
+			class="content"
+			:class="`${propsSiedbarOpen ? 'main-content-margin' : 'main-content-no-margin'}`"
+		>
 			<header-bar
+				:props-siedbar-open="propsSiedbarOpen"
 				:small="smallHeader"
 				show-sidebar-toggle
 				:title="title"
@@ -44,7 +50,9 @@
 				<slot />
 			</main>
 		</div>
+		<!-- right side navbar -->
 		<aside
+			v-if="propsSiedbarOpen"
 			id="sidebar"
 			ref="sidebarEl"
 			role="contentinfo"
@@ -98,9 +106,10 @@ import SidebarDetailGroup from './components/sidebar-detail-group.vue';
 interface Props {
 	title?: string | null;
 	smallHeader?: boolean;
+	propsSiedbarOpen?: boolean;
 }
 
-const props = withDefaults(defineProps<Props>(), { title: null, smallHeader: false });
+const props = withDefaults(defineProps<Props>(), { title: null, smallHeader: false, propsSiedbarOpen: true });
 
 const { t } = useI18n();
 
@@ -139,6 +148,10 @@ const appAccess = computed(() => {
 const notificationsPreviewActive = ref(false);
 
 const { sidebarOpen, fullScreen } = storeToRefs(appStore);
+
+if (!props.propsSiedbarOpen) {
+	sidebarOpen.value = false;
+}
 
 const theme = computed(() => {
 	return userStore.currentUser?.theme || 'auto';
@@ -234,6 +247,7 @@ function useModuleNavResize() {
 
 function openSidebar(event: PointerEvent) {
 	if (event.target && (event.target as HTMLElement).classList.contains('close') === false) {
+		if (!props.propsSiedbarOpen) return (sidebarOpen.value = false);
 		sidebarOpen.value = true;
 	}
 }
@@ -341,6 +355,18 @@ function openSidebar(event: PointerEvent) {
 		}
 	}
 
+	.main-content-margin {
+		@media (min-width: 960px) {
+			margin-right: 60px;
+		}
+
+		@media (min-width: 1260px) {
+			margin-right: 0;
+		}
+	}
+	.main-content-no-margin {
+		margin-right: 0;
+	}
 	#main-content {
 		--border-radius: 6px;
 		--input-height: 60px;
@@ -362,13 +388,13 @@ function openSidebar(event: PointerEvent) {
 		}
 
 		/* Offset for partially visible sidebar */
-		@media (min-width: 960px) {
-			margin-right: 60px;
-		}
+		// @media (min-width: 960px) {
+		// 	margin-right: 60px;
+		// }
 
-		@media (min-width: 1260px) {
-			margin-right: 0;
-		}
+		// @media (min-width: 1260px) {
+		// 	margin-right: 0;
+		// }
 	}
 
 	#sidebar {

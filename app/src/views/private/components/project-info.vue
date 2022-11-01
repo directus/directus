@@ -2,7 +2,7 @@
 	<div class="project-info">
 		<latency-indicator />
 		<div class="name-container">
-			<v-text-overflow placement="right" class="name" :text="name" />
+			<v-text-overflow placement="right" class="name" text="CHUJ!!!" />
 			<v-text-overflow v-if="descriptor" placement="right" class="descriptor" :text="descriptor" />
 		</div>
 	</div>

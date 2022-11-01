@@ -28,7 +28,11 @@
 
 		<slot name="actions:prepend" />
 
-		<header-bar-actions :show-sidebar-toggle="showSidebarToggle" @toggle:sidebar="$emit('toggle:sidebar')">
+		<header-bar-actions
+			:props-siedbar-open="propsSiedbarOpen"
+			:show-sidebar-toggle="showSidebarToggle"
+			@toggle:sidebar="$emit('toggle:sidebar')"
+		>
 			<slot name="actions" />
 		</header-bar-actions>
 
@@ -43,6 +47,10 @@ import HeaderBarActions from './header-bar-actions.vue';
 export default defineComponent({
 	components: { HeaderBarActions },
 	props: {
+		propsSiedbarOpen: {
+			type: Boolean,
+			default: true,
+		},
 		title: {
 			type: String,
 			default: null,
