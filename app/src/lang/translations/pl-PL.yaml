@@ -1971,7 +1971,7 @@ panels:
     y_axis_conditional_two: musi być liczbą.
   linechart:
     name: Wykres liniowy
-    description: Wykres liniowy do porównywania zmiany pola.
+    description: Wykres liniowy do porównywania zmiany w polu
     select_field: Musisz wybrać pole.
     select_collection: Musisz wybrać kolekcję.
     select_x_axis: Musisz wybrać oś X.
@@ -1986,12 +1986,12 @@ panels:
     include_dataset: Musisz podać co najmniej jeden zbiór danych.
     include_y_axis: Musisz podać oś Y dla każdego zbioru danych, gdy nie określono żadnej grupy.
     group_and_function: Musisz uwzględnić lub pominąć zarówno grupę, jak i funkcję.
-    smooth: 'Gładki'
-    straight: 'Prosta'
-    step_line: 'Linia kroku'
+    smooth: Gładki
+    straight: Prosta
+    step_line: Linia kroku
   meter:
-    description: Licznik wartości śledzenia
     name: Licznik
+    description: Licznik wartości śledzenia
     half_circle: Połowa koła
     full_circle: Pełne koło
     stroke_width: Szerokość obrysu
@@ -2005,11 +2005,11 @@ panels:
     broad: Szeroki
   piechart:
     name: Wykres kołowy lub pączkowy
-    description: Okrągły wykres przedstawiający współczynniki grup w kolumnie.
-    function: 'Funkcja'
+    description: Wykres okrągły pokazujący współczynniki grup w kolumnie
+    function: Funkcja
     donut: Pączek
-    labels: Pokaż etykiety
-    legend: Pokaż Legendę
+    show_labels: Pokaż etykiety
+    show_legend: Pokaż Legendę
     right: Prawy
     bottom: Dolny
     monochrome: Monochromatyczne
