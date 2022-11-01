@@ -34,7 +34,7 @@
 	"devDependencies": {
 		"@babel/core": "7.19.3",
 		"@babel/preset-env": "7.19.4",
-		"@directus/docs": "9.19.0",
+		"@directus/docs": "9.20.0",
 		"@directus/extensions-sdk": "workspace:*",
 		"@directus/format-title": "10.0.0",
 		"@directus/shared": "workspace:*",
