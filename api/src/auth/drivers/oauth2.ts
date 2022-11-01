@@ -1,6 +1,7 @@
 import { BaseException } from '@directus/shared/exceptions';
 import { parseJSON } from '@directus/shared/utils';
 import { Router } from 'express';
+import bodyParser from 'body-parser';
 import flatten from 'flat';
 import jwt from 'jsonwebtoken';
 import ms from 'ms';
@@ -103,8 +104,8 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 	}
 
 	async getUserID(payload: Record<string, any>): Promise<string> {
-		if (!payload.code || !payload.codeVerifier) {
-			logger.warn('[OAuth2] No code or codeVerifier in payload');
+		if (!payload.code || !payload.codeVerifier || !payload.state) {
+			logger.warn('[OAuth2] No code, codeVerifier or state in payload');
 			throw new InvalidCredentialsException();
 		}
 
@@ -254,6 +255,14 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 		respond
 	);
 
+	router.post(
+		'/callback',
+		bodyParser.urlencoded({ extended: false }),
+		(req, res) => {
+			res.redirect(303, `./callback?${new URLSearchParams(req.body)}`);
+		},
+		respond
+	);
 	router.get(
 		'/callback',
 		asyncHandler(async (req, res, next) => {
@@ -286,11 +295,6 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 
 			try {
 				res.clearCookie(`oauth2.${providerName}`);
-
-				if (!req.query.code || !req.query.state) {
-					logger.warn(`[OAuth2] Couldn't extract OAuth2 code or state from query: ${JSON.stringify(req.query)}`);
-				}
-
 				authResponse = await authenticationService.login(providerName, {
 					code: req.query.code,
 					codeVerifier: verifier,

@@ -1,6 +1,7 @@
 import { BaseException } from '@directus/shared/exceptions';
 import { parseJSON } from '@directus/shared/utils';
 import { Router } from 'express';
+import bodyParser from 'body-parser';
 import flatten from 'flat';
 import jwt from 'jsonwebtoken';
 import ms from 'ms';
@@ -116,8 +117,8 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 	}
 
 	async getUserID(payload: Record<string, any>): Promise<string> {
-		if (!payload.code || !payload.codeVerifier) {
-			logger.warn('[OpenID] No code or codeVerifier in payload');
+		if (!payload.code || !payload.codeVerifier || !payload.state) {
+			logger.warn('[OpenID] No code, codeVerifier or state in payload');
 			throw new InvalidCredentialsException();
 		}
 
@@ -278,6 +279,15 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 		respond
 	);
 
+	router.post(
+		'/callback',
+		bodyParser.urlencoded({ extended: false }),
+		(req, res) => {
+			res.redirect(303, `./callback?${new URLSearchParams(req.body)}`);
+		},
+		respond
+	);
+
 	router.get(
 		'/callback',
 		asyncHandler(async (req, res, next) => {
@@ -310,11 +320,6 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 
 			try {
 				res.clearCookie(`openid.${providerName}`);
-
-				if (!req.query.code || !req.query.state) {
-					logger.warn(`[OpenID] Couldn't extract OpenID code or state from query: ${JSON.stringify(req.query)}`);
-				}
-
 				authResponse = await authenticationService.login(providerName, {
 					code: req.query.code,
 					codeVerifier: verifier,
