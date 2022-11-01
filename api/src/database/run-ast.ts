@@ -272,15 +272,7 @@ function getDBQuery(
 	const queryCopy = clone(query);
 	queryCopy.limit = typeof queryCopy.limit === 'number' ? queryCopy.limit : 100;
 
-	dbQuery = applyQuery(
-		knex,
-		table,
-		dbQuery,
-		queryCopy,
-		schema,
-		false,
-		jsonNodes.map(({ fieldKey }) => fieldKey)
-	);
+	dbQuery = applyQuery(knex, table, dbQuery, queryCopy, schema, false, jsonNodes);
 	dbQuery = jsonHelper.applyQuery(dbQuery);
 
 	return dbQuery;

@@ -20,6 +20,8 @@ import { getColumnPath } from './get-column-path';
 import { getRelationInfo } from './get-relation-info';
 import { getFilterOperatorsForType, getOutputTypeForFunction } from '@directus/shared/utils';
 import { stripFunction } from './strip-function';
+import { getDatabaseClient } from '../database';
+import { JsonFieldNode } from '../types';
 
 const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
 
@@ -33,7 +35,7 @@ export default function applyQuery(
 	query: Query,
 	schema: SchemaOverview,
 	subQuery = false,
-	jsonFields: string[] = []
+	jsonFields: JsonFieldNode[] = []
 ): Knex.QueryBuilder {
 	if (query.sort) {
 		applySort(knex, schema, dbQuery, query.sort, collection, subQuery);
@@ -283,12 +285,13 @@ export function applyFilter(
 	schema: SchemaOverview,
 	rootQuery: Knex.QueryBuilder,
 	rootFilter: Filter,
-	jsonFields: string[],
+	jsonFields: JsonFieldNode[],
 	collection: string,
 	subQuery = false
 ) {
 	const helpers = getHelpers(knex);
 	const relations: Relation[] = schema.relations;
+	const jsonFieldNames = jsonFields.map(({ fieldKey }) => fieldKey);
 
 	const aliasMap: Record<string, string> = {};
 
@@ -381,10 +384,16 @@ export function applyFilter(
 					validateFilterOperator(type, filterOperator, special);
 
 					applyFilterToQuery(columnPath, filterOperator, filterValue, logical, targetCollection);
-				} else if (jsonFields.includes(filterPath[0])) {
+				} else if (jsonFieldNames.includes(filterPath[0])) {
 					validateFilterOperator('string', filterOperator, []);
-
-					applyFilterToQuery(filterPath[0], filterOperator, filterValue, logical);
+					if (getDatabaseClient(knex) === 'oracle') {
+						const node = jsonFields.find((n) => n.fieldKey === filterPath[0])!;
+						const qp = knex.raw('?', [node.queryPath]).toQuery();
+						const rawQuery = knex.raw(`json_value(??.??, ${qp})`, [collection, node.name]);
+						applyFilterToQuery(filterPath[0], filterOperator, filterValue, logical, undefined, rawQuery);
+					} else {
+						applyFilterToQuery(filterPath[0], filterOperator, filterValue, logical);
+					}
 				} else {
 					const fieldName = stripFunction(filterPath[0]);
 					validateFilterOperator(
@@ -464,10 +473,13 @@ export function applyFilter(
 			operator: string,
 			compareValue: any,
 			logical: 'and' | 'or' = 'and',
-			originalCollectionName?: string
+			originalCollectionName?: string,
+			selectionRaw?: any
 		) {
-			let selectionRaw, column;
-			if (key.includes('.')) {
+			let column;
+			if (selectionRaw) {
+				column = key;
+			} else if (key.includes('.')) {
 				const [table, _column] = key.split('.');
 				// Is processed through Knex.Raw, so should be safe to string-inject into these where queries
 				selectionRaw = getColumn(knex, table, _column, false, schema) as any;
