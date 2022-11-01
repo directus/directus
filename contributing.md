@@ -69,8 +69,8 @@ project.
 #### Bug Fixes
 
 We treat Issues on the main repo as actionable items we want to get done. This also means that we welcome PRs for any
-Issue that has been labeled. Labeled issues are bugs of new features that have been triaged, accepted, and are ready to
-be implemented.
+Issue that has been labeled either "Bug", "Improvement", or "New Feature". Labeled issues are bugs or new features that
+have been triaged, accepted, and are ready to be implemented.
 
 #### Implementing Features
 
