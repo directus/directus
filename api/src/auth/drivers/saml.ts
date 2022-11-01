@@ -13,7 +13,6 @@ import { AuthenticationService, UsersService } from '../../services';
 import { AuthDriverOptions, User } from '../../types';
 import asyncHandler from '../../utils/async-handler';
 import { getConfigFromEnv } from '../../utils/get-config-from-env';
-import { Url } from '../../utils/url';
 import { LocalAuthDriver } from './local';
 
 // tell samlify to use validator...
@@ -22,7 +21,6 @@ samlify.setSchemaValidator(validator);
 export class SAMLAuthDriver extends LocalAuthDriver {
 	idp: any;
 	sp: any;
-	redirectUrl: string;
 	usersService: UsersService;
 	config: Record<string, any>;
 
@@ -31,9 +29,6 @@ export class SAMLAuthDriver extends LocalAuthDriver {
 
 		this.config = config;
 		this.usersService = new UsersService({ knex: this.knex, schema: this.schema });
-
-		const redirectUrl = new Url(env.PUBLIC_URL).addPath('auth', 'login', config.provider, 'callback');
-		this.redirectUrl = redirectUrl.toString();
 
 		this.sp = samlify.ServiceProvider(getConfigFromEnv(`AUTH_${config.provider.toUpperCase()}_SP`));
 		this.idp = samlify.IdentityProvider(getConfigFromEnv(`AUTH_${config.provider.toUpperCase()}_IDP`));
@@ -54,11 +49,11 @@ export class SAMLAuthDriver extends LocalAuthDriver {
 
 		const email = payload[emailKey ?? 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'];
 		const identifier = payload[identifierKey ?? 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'];
+
 		const userID = await this.fetchUserID(identifier);
 
 		if (userID) return userID;
 
-		// Is public registration allowed?
 		if (!allowPublicRegistration) {
 			logger.trace(`[SAML] User doesn't exist, and public registration not allowed for provider "${provider}"`);
 			throw new InvalidCredentialsException();
@@ -68,7 +63,7 @@ export class SAMLAuthDriver extends LocalAuthDriver {
 		const lastName = payload[familyNameKey ?? 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname'];
 
 		try {
-			await this.usersService.createOne({
+			return await this.usersService.createOne({
 				provider,
 				first_name: firstName,
 				last_name: lastName,
@@ -76,19 +71,17 @@ export class SAMLAuthDriver extends LocalAuthDriver {
 				external_identifier: identifier.toLowerCase(),
 				role: this.config.defaultRoleId,
 			});
-			const userID = await this.fetchUserID(identifier);
-			if (userID) return userID;
-		} catch (e) {
-			if (e instanceof RecordNotUniqueException) {
-				logger.warn(e, '[SAML] Failed to register user. User not unique');
+		} catch (error) {
+			if (error instanceof RecordNotUniqueException) {
+				logger.warn(error, '[SAML] Failed to register user. User not unique');
 				throw new InvalidProviderException();
 			}
-			throw e;
-		}
 
-		throw new InvalidCredentialsException();
+			throw error;
+		}
 	}
 
+	// There's no local checks to be done when the user is authenticated in the IDP
 	async login(_user: User): Promise<void> {
 		return;
 	}
@@ -99,7 +92,7 @@ export function createSAMLAuthRouter(providerName: string) {
 
 	router.get(
 		'/metadata',
-		asyncHandler(async (req, res) => {
+		asyncHandler(async (_req, res) => {
 			const { sp } = getAuthProvider(providerName) as SAMLAuthDriver;
 			return res.header('Content-Type', 'text/xml').send(sp.getMetadata());
 		})
@@ -111,9 +104,11 @@ export function createSAMLAuthRouter(providerName: string) {
 			const { sp, idp } = getAuthProvider(providerName) as SAMLAuthDriver;
 			const { context: url } = await sp.createLoginRequest(idp, 'redirect');
 			const parsedUrl = new URL(url);
+
 			if (req.query.redirect) {
 				parsedUrl.searchParams.append('RelayState', req.query.redirect as string);
 			}
+
 			return res.redirect(parsedUrl.toString());
 		})
 	);
@@ -128,11 +123,13 @@ export function createSAMLAuthRouter(providerName: string) {
 
 			if (req.cookies[env.REFRESH_TOKEN_COOKIE_NAME]) {
 				const currentRefreshToken = req.cookies[env.REFRESH_TOKEN_COOKIE_NAME];
+
 				if (currentRefreshToken) {
 					await authService.logout(currentRefreshToken);
 					res.clearCookie(env.REFRESH_TOKEN_COOKIE_NAME, COOKIE_OPTIONS);
 				}
 			}
+
 			return res.redirect(context);
 		})
 	);
@@ -162,7 +159,8 @@ export function createSAMLAuthRouter(providerName: string) {
 					res.cookie(env.REFRESH_TOKEN_COOKIE_NAME, refreshToken, COOKIE_OPTIONS);
 					return res.redirect(relayState);
 				}
-				next();
+
+				return next();
 			} catch (error: any) {
 				if (relayState) {
 					let reason = 'UNKNOWN_EXCEPTION';
@@ -175,6 +173,7 @@ export function createSAMLAuthRouter(providerName: string) {
 
 					return res.redirect(`${relayState.split('?')[0]}?reason=${reason}`);
 				}
+
 				logger.warn(error, `[SAML] Unexpected error during SAML login`);
 				throw error;
 			}
