@@ -62,6 +62,7 @@ onMounted(async () => {
 			extraKeys: { Ctrl: 'autocomplete' },
 			cursorBlinkRate: props.disabled ? -1 : 530,
 			placeholder: props.placeholder !== undefined ? props.placeholder : t('raw_editor_placeholder'),
+			readOnly: readOnly.value,
 		});
 
 		// prevent new lines for single lines
