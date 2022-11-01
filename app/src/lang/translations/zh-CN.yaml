@@ -2030,7 +2030,7 @@ triggers:
     item_only: 仅条目页面
 any_string_or_json: 任意字符串或JSON对象...
 item_payload_placeholder: 这是用于更新条目字段值的 JSON对象...
-operation_variables_note: 您可以通过变量引用访问流程数据，例如**{{'}{'{'}$last{'}'}{'}'}**， **{{'}{{'}$trigger{'}'}{'}'}** 和 **{{'}{'{'}$accountability{'}'}{'}'}**, 或使用 **{'{'}{'{'} operation_key{'}'}{'}'}**引用之前的操作。
+operation_variables_note: 您可以通过变量引用访问流程数据，例如 **{'{'}{'{'}$last{'}'}{'}'}** ， **{'{'}{'{'}$trigger{'}'}{'}'}** 和 **{'{'}{'{'}$accountability{'}'}{'}'}**, 或使用 **{'{'}{'{'} operation_key{'}'}{'}'}** 引用之前的操作。
 operations:
   condition:
     name: 条件
