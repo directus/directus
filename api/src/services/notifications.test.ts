@@ -1,5 +1,10 @@
 import { ItemsService, NotificationsService } from '.';
 
+jest.mock('../../src/database/index', () => {
+	return { getDatabaseClient: jest.fn().mockReturnValue('postgres') };
+});
+jest.requireMock('../../src/database/index');
+
 describe('Integration Tests', () => {
 	describe('Services / Notifications', () => {
 		let service: NotificationsService;
