@@ -89,6 +89,10 @@ export class SAMLAuthDriver extends LocalAuthDriver {
 
 		throw new InvalidCredentialsException();
 	}
+
+	async login(_user: User): Promise<void> {
+		return;
+	}
 }
 
 export function createSAMLAuthRouter(providerName: string) {
