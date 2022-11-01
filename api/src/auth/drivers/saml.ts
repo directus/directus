@@ -2,19 +2,19 @@ import * as validator from '@authenio/samlify-node-xmllint';
 import { BaseException } from '@directus/shared/exceptions';
 import express, { Router } from 'express';
 import * as samlify from 'samlify';
-import logger from '../../logger';
 import { getAuthProvider } from '../../auth';
 import { COOKIE_OPTIONS } from '../../constants';
 import env from '../../env';
-import { RecordNotUniqueException } from '../../exceptions/database/record-not-unique';
 import { InvalidCredentialsException, InvalidProviderException } from '../../exceptions';
+import { RecordNotUniqueException } from '../../exceptions/database/record-not-unique';
+import logger from '../../logger';
 import { respond } from '../../middleware/respond';
 import { AuthenticationService, UsersService } from '../../services';
 import { AuthDriverOptions, User } from '../../types';
 import asyncHandler from '../../utils/async-handler';
 import { getConfigFromEnv } from '../../utils/get-config-from-env';
-import { LocalAuthDriver } from './local';
 import { Url } from '../../utils/url';
+import { LocalAuthDriver } from './local';
 
 // tell samlify to use validator...
 samlify.setSchemaValidator(validator);
@@ -50,8 +50,7 @@ export class SAMLAuthDriver extends LocalAuthDriver {
 	}
 
 	async getUserID(payload: Record<string, any>) {
-		const { provider, emailKey, identifierKey, nameKey, givenNameKey, familyNameKey, allowPublicRegistration } =
-			this.config;
+		const { provider, emailKey, identifierKey, givenNameKey, familyNameKey, allowPublicRegistration } = this.config;
 
 		const email = payload[emailKey ?? 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'];
 		const identifier = payload[identifierKey ?? 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'];
