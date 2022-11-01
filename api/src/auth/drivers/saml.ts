@@ -57,13 +57,6 @@ export class SAMLAuthDriver extends LocalAuthDriver {
 		const identifier = payload[identifierKey ?? 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'];
 		const userID = await this.fetchUserID(identifier);
 
-		const userInfo = {
-			name: payload[nameKey ?? 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'],
-			given_name: payload[givenNameKey ?? 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname'],
-			family_name: payload[familyNameKey ?? 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname'],
-			email,
-		};
-
 		if (userID) return userID;
 
 		// Is public registration allowed?
@@ -72,11 +65,14 @@ export class SAMLAuthDriver extends LocalAuthDriver {
 			throw new InvalidCredentialsException();
 		}
 
+		const firstName = payload[givenNameKey ?? 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname'];
+		const lastName = payload[familyNameKey ?? 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname'];
+
 		try {
 			await this.usersService.createOne({
 				provider,
-				first_name: userInfo.given_name,
-				last_name: userInfo.family_name,
+				first_name: firstName,
+				last_name: lastName,
 				email: email,
 				external_identifier: identifier.toLowerCase(),
 				role: this.config.defaultRoleId,
