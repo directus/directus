@@ -1,3 +1,4 @@
+import path from 'path';
 import { Command } from 'commander';
 import { Extension, HookConfig } from '@directus/shared/types';
 import { createCli } from './index';
@@ -24,7 +25,8 @@ vi.mock('@directus/shared/utils/node/get-extensions', () => ({
 	getLocalExtensions: vi.fn(() => Promise.resolve([customCliExtension])),
 }));
 
-vi.mock(`/hooks/custom-cli/index.js`, () => customCliHook);
+const customHookPath = path.resolve('/hooks/custom-cli', 'index.js');
+vi.doMock(customHookPath, () => customCliHook);
 
 const customCliExtension: Extension = {
 	path: `/hooks/custom-cli`,
