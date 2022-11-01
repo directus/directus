@@ -95,14 +95,8 @@ export class SAMLAuthDriver extends LocalAuthDriver {
 	}
 
 	async login(user: User): Promise<void> {
-		let authData = user.auth_data as AuthData;
-
-		if (typeof authData === 'string') {
-			try {
-				authData = parseJSON(authData);
-			} catch {
-				logger.warn(`[SAML] Session data isn't valid JSON: ${authData}`);
-			}
+		if (!user.auth_data) {
+			throw new InvalidCredentialsException();
 		}
 	}
 }
