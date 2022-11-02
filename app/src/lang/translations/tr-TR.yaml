@@ -402,7 +402,7 @@ functions:
 date-fns_date: PPP
 date-fns_time: 's:dd:ss a'
 date-fns_time_no_seconds: 's:dd a'
-date-fns_time_24hour: 'SS:dd:ss'
+date-fns_time_24hour: 'HH:mm:ss'
 date-fns_time_no_seconds_24hour: 'SS:dd'
 date-fns_date_short: 'MMM d, u'
 date-fns_time_short: 's:aa a'
@@ -1925,7 +1925,6 @@ panels:
     y_axis_conditional_two: bir sayı olmalıdır.
   linechart:
     name: Çizgi Grafik
-    description: Bir alanın değişimini karşılaştırmak için çizgi grafiği.
     select_field: Bir alan seçmelisiniz.
     select_collection: Bir koleksiyon seçmelisiniz.
     select_x_axis: Bir X Ekseni seçmelisiniz.
@@ -1936,13 +1935,12 @@ panels:
     datasets: Veri Setleri
     show_legend: Göstergeyi Göster
     show_marker: Araç İpucu İşaretçisini Göster
-    include_dataset: En az bir veri kümesi eklemelisiniz.
     include_y_axis: Hiçbir grup belirtilmediğinde her veri kümesi için bir Y Ekseni eklemelisiniz.
     group_and_function: Hem bir grubu hem de bir işlevi dahil etmeli veya atlamalısınız.
-    straight: 'Düz'
+    straight: Düz
   meter:
-    description: İzleme değerleri için sayaç
     name: Metre
+    description: İzleme değerleri için sayaç
     select_max_value: Bir maksimum değer seçmelisiniz.
     max_greater_than_zero: Maksimum değer 0'dan büyük olmalıdır.
     select_field: Bir alan seçmelisiniz.
@@ -1952,10 +1950,8 @@ panels:
     medium: Orta
     broad: Kalın
   piechart:
-    description: Bir sütundaki grupların oranlarını gösteren dairesel grafik.
-    function: 'İşlev'
-    labels: Etiketleri Göster
-    legend: Göstergeyi Göster
+    function: İşlev
+    show_legend: Göstergeyi Göster
     right: Sağ
     bottom: Alt
     monochrome: Tek Renkli

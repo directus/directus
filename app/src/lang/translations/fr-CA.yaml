@@ -1907,6 +1907,7 @@ layouts:
   kanban:
     crop: Rogner
     advanced: Avancé
+    show_ungrouped: Afficher non-groupé
     not_all_loaded: Impossible de charger les 1000 premiers éléments.
 panels:
   metric:
@@ -1948,7 +1949,6 @@ panels:
     y_axis_conditional_two: doit être un nombre.
   linechart:
     name: Graphique linéaire
-    description: Graphique linéaire pour comparer le changement d'un champ.
     select_field: Vous devez choisir un champ.
     select_collection: Vous devez sélectionner une collection.
     select_x_axis: Vous devez sélectionner un axe X.
@@ -1960,15 +1960,14 @@ panels:
     datasets: Jeux de données
     show_legend: Afficher la légende
     show_marker: Afficher l'info-bulle
-    include_dataset: Vous devez sélectionner au moins un élément.
     include_y_axis: Vous devez inclure un axe Y pour chaque jeu de données quand aucun groupe n'est spécifié.
     group_and_function: Vous devez inclure ou omettre un groupe et une fonction.
-    smooth: 'Lisse'
-    straight: 'Droit'
-    step_line: 'Pas'
+    smooth: Lisse
+    straight: Droit
+    step_line: Pas
   meter:
-    description: Compteur pour les valeurs de suivi
     name: Compteur
+    description: Compteur pour les valeurs de suivi
     stroke_width: Largeur du trait
     select_max_value: Vous devez sélectionner une valeur maximale.
     max_greater_than_zero: La valeur doit être supérieure à 0.
@@ -1980,11 +1979,9 @@ panels:
     broad: Large
   piechart:
     name: Graphique anneau ou circulaire
-    description: Graphique circulaire montrant les ratios de groupes sur une colonne.
-    function: 'Fonction'
+    function: Fonction
     donut: Anneau
-    labels: Afficher les libellés
-    legend: Afficher la légende
+    show_legend: Afficher la légende
     right: Droite
     bottom: Bas
     monochrome: Monochrome

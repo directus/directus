@@ -88,6 +88,7 @@ import { GraphQLVoid } from './types/void';
 
 import { addPathToValidationError } from './utils/add-path-to-validation-error';
 import { GraphQLHash } from './types/hash';
+import { GraphQLBigInt } from './types/bigint';
 
 const validationRules = Array.from(specifiedRules);
 
@@ -819,6 +820,7 @@ export class GraphQLService {
 							case GraphQLBoolean:
 								filterOperatorType = BooleanFilterOperators;
 								break;
+							case GraphQLBigInt:
 							case GraphQLInt:
 							case GraphQLFloat:
 								filterOperatorType = NumberFilterOperators;
@@ -877,6 +879,7 @@ export class GraphQLService {
 						const graphqlType = getGraphQLType(field.type, field.special);
 
 						switch (graphqlType) {
+							case GraphQLBigInt:
 							case GraphQLInt:
 							case GraphQLFloat:
 								acc[field.field] = {
