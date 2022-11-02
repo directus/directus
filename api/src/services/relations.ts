@@ -253,10 +253,8 @@ export class RelationsService {
 						if (existingRelation?.schema) {
 							constraintName = existingRelation.schema.constraint_name || constraintName;
 							table.dropForeign(field, constraintName);
-							// new constraint name for cockroachDB
-							constraintName = constraintName.endsWith('_2')
-								? constraintName.substring(0, constraintName.length - 2)
-								: constraintName + '_2';
+
+							constraintName = this.helpers.schema.constraintName(constraintName);
 							existingRelation.schema.constraint_name = constraintName;
 						}
 
