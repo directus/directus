@@ -30,6 +30,14 @@ jobs:
       - name: Prepare
         uses: ./.github/actions/prepare
 
+      - name: Prune Dependencies
+        shell: bash
+        run: find . -type d -name node_modules -prune -exec rm -rf {} \;
+
+      - name: Install Production Dependencies
+        shell: bash
+        run: pnpm install --prod
+
       - name: Start Services
         run: docker compose -f tests-blackbox/docker-compose.yml up auth-saml -d --quiet-pull --wait
 
