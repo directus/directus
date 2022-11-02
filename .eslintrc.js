@@ -25,7 +25,7 @@ module.exports = {
 	overrides: [
 		// Parse config files as modules
 		{
-			files: ['rollup.config.js', 'vite?(st).config.js'],
+			files: ['rollup.config.js', 'vite?(st).config.js', 'setupTest.js'],
 			parserOptions: {
 				sourceType: 'module',
 			},
