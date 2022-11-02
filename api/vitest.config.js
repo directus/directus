@@ -4,7 +4,7 @@ import path from 'path';
 export default defineConfig({
 	test: {
 		reporters: 'verbose',
-		globalSetup: path.resolve(__dirname, 'setupTest.js'),
+		globalSetup: path.resolve(__dirname, 'globalSetup.js'),
 		alias: [
 			// TODO: Remove this after moving to ESM
 			{
