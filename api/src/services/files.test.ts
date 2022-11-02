@@ -22,20 +22,20 @@ describe('Integration Tests', () => {
 
 	afterEach(() => {
 		tracker.reset();
-		jest.clearAllMocks();
+		vi.clearAllMocks();
 	});
 
 	describe('Services / Files', () => {
 		describe('createOne', () => {
 			let service: FilesService;
-			let superCreateOne: jest.SpyInstance;
+			let superCreateOne: SpyInstance;
 
 			beforeEach(() => {
 				service = new FilesService({
 					knex: db,
 					schema: { collections: {}, relations: [] },
 				});
-				superCreateOne = jest.spyOn(ItemsService.prototype, 'createOne').mockImplementation(jest.fn());
+				superCreateOne = vi.spyOn(ItemsService.prototype, 'createOne').mockReturnValue(Promise.resolve(1));
 			});
 
 			it('throws InvalidPayloadException when "type" is not provided', async () => {
