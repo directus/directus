@@ -39,6 +39,6 @@ unzip directus-custom-extensions-release.zip
 
 ls -la ./directus-custom-extensions-release
 
-mv -v ./directus-custom-extensions-release/collection-ext ${DIRECTUS_INTERFACES}
-mv -v ./directus-custom-extensions-release/filter-ext ${DIRECTUS_INTERFACES}
-mv -v ./directus-custom-extensions-release/loading-api-field ${DIRECTUS_INTERFACES}
+cp -r ./directus-custom-extensions-release/collection-ext ${DIRECTUS_INTERFACES}
+cp -r ./directus-custom-extensions-release/filter-ext ${DIRECTUS_INTERFACES}
+cp -r ./directus-custom-extensions-release/loading-api-field ${DIRECTUS_INTERFACES}
