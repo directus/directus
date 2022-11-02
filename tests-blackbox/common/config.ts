@@ -80,7 +80,7 @@ const config: Config = {
 			},
 			...knexConfig,
 		},
-		maria: {
+		mysql5: {
 			client: 'mysql',
 			connection: {
 				database: 'directus',
@@ -91,6 +91,17 @@ const config: Config = {
 			},
 			...knexConfig,
 		},
+		maria: {
+			client: 'mysql',
+			connection: {
+				database: 'directus',
+				user: 'root',
+				password: 'secret',
+				host: 'localhost',
+				port: 6104,
+			},
+			...knexConfig,
+		},
 		mssql: {
 			client: 'mssql',
 			connection: {
@@ -98,7 +109,7 @@ const config: Config = {
 				user: 'sa',
 				password: 'Test@123',
 				host: 'localhost',
-				port: 6104,
+				port: 6105,
 				requestTimeout: 60000,
 			},
 			...knexConfig,
@@ -108,7 +119,7 @@ const config: Config = {
 			connection: {
 				user: 'secretsysuser',
 				password: 'secretpassword',
-				connectString: 'localhost:6105/XE',
+				connectString: 'localhost:6106/XE',
 			},
 			...knexConfig,
 			waitTestSQL: 'SELECT 1 FROM DUAL',
@@ -120,7 +131,7 @@ const config: Config = {
 				user: 'root',
 				password: '',
 				host: 'localhost',
-				port: 6106,
+				port: 6107,
 			},
 			pool: {
 				afterCreate: async (conn: any, callback: any) => {
@@ -152,11 +163,12 @@ const config: Config = {
 		postgres: 'Postgres',
 		postgres10: 'Postgres (10)',
 		mysql: 'MySQL',
+		mysql5: 'MySQL (5)',
 		maria: 'MariaDB',
 		mssql: 'MS SQL Server',
 		oracle: 'OracleDB',
-		sqlite3: 'SQLite 3',
 		cockroachdb: 'CockroachDB',
+		sqlite3: 'SQLite 3',
 	},
 	envs: {
 		postgres: {
@@ -189,7 +201,7 @@ const config: Config = {
 			DB_DATABASE: 'directus',
 			PORT: '59154',
 		},
-		maria: {
+		mysql5: {
 			...directusConfig,
 			DB_CLIENT: 'mysql',
 			DB_HOST: `localhost`,
@@ -199,28 +211,32 @@ const config: Config = {
 			DB_DATABASE: 'directus',
 			PORT: '59155',
 		},
+		maria: {
+			...directusConfig,
+			DB_CLIENT: 'mysql',
+			DB_HOST: `localhost`,
+			DB_PORT: '6104',
+			DB_USER: 'root',
+			DB_PASSWORD: 'secret',
+			DB_DATABASE: 'directus',
+			PORT: '59156',
+		},
 		mssql: {
 			...directusConfig,
 			DB_CLIENT: 'mssql',
 			DB_HOST: `localhost`,
-			DB_PORT: '6104',
+			DB_PORT: '6105',
 			DB_USER: 'sa',
 			DB_PASSWORD: 'Test@123',
 			DB_DATABASE: 'model',
-			PORT: '59156',
+			PORT: '59157',
 		},
 		oracle: {
 			...directusConfig,
 			DB_CLIENT: 'oracledb',
 			DB_USER: 'secretsysuser',
 			DB_PASSWORD: 'secretpassword',
-			DB_CONNECT_STRING: `localhost:6105/XE`,
-			PORT: '59157',
-		},
-		sqlite3: {
-			...directusConfig,
-			DB_CLIENT: 'sqlite3',
-			DB_FILENAME: './test.db',
+			DB_CONNECT_STRING: `localhost:6106/XE`,
 			PORT: '59158',
 		},
 		cockroachdb: {
@@ -229,9 +245,15 @@ const config: Config = {
 			DB_HOST: `localhost`,
 			DB_USER: 'root',
 			DB_PASSWORD: '',
-			DB_PORT: '6106',
+			DB_PORT: '6107',
 			DB_DATABASE: 'defaultdb',
 			PORT: '59159',
+		},
+		sqlite3: {
+			...directusConfig,
+			DB_CLIENT: 'sqlite3',
+			DB_FILENAME: './test.db',
+			PORT: '59160',
 		},
 	},
 };
