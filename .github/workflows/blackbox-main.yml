@@ -50,6 +50,10 @@ jobs:
         shell: bash
         run: pnpm install --prod
 
+      - name: Install Root Dev Dependencies
+        shell: bash
+        run: pnpm install -w --dev
+
       - name: Install Oracle client
         if: matrix.vendor == 'oracle'
         run: |

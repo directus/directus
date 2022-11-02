@@ -38,6 +38,10 @@ jobs:
         shell: bash
         run: pnpm install --prod
 
+      - name: Install Root Dev Dependencies
+        shell: bash
+        run: pnpm install -w --dev
+
       - name: Start Services
         run: docker compose -f tests-blackbox/docker-compose.yml up auth-saml -d --quiet-pull --wait
 
