@@ -1811,7 +1811,7 @@ panels:
   meter:
     function: Функция
   piechart:
-    function: 'Функция'
+    function: Функция
     right: Справа
     bottom: Снизу
     monochrome: Монохром

@@ -1872,7 +1872,6 @@ panels:
     y_axis_conditional_two: має бути числом.
   linechart:
     name: Лінійна діаграма
-    description: Лінійна діаграма для порівняння зміни поля.
     select_field: Ви повинні вибрати поле.
     select_collection: Ви повинні вибрати колекцію.
     select_x_axis: Потрібно вибрати вісь X.
@@ -1884,7 +1883,6 @@ panels:
     datasets: Набори даних
     show_legend: Показати легенду
     show_marker: Показати маркер підказки
-    include_dataset: Ви повинні включити принаймні один набір даних.
     include_y_axis: Ви повинні включити вісь Y для кожного набору даних, якщо не вказано жодної групи.
     group_and_function: Ви повинні включити або опустити як групу, так і функцію.
   meter:
@@ -1894,9 +1892,8 @@ panels:
     select_collection: Ви повинні вибрати колекцію.
     function: Функція
   piechart:
-    description: Кругова діаграма, що показує співвідношення груп по стовпчику.
-    function: 'Функція'
-    legend: Показати легенду
+    function: Функція
+    show_legend: Показати легенду
     monochrome_color: Монохромний колір
   relational-variable:
     name: Глобальна реляційна змінна

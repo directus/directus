@@ -8,3 +8,11 @@ test('No special characters', () => {
 test('With special characters', () => {
 	expect(getLiteralInterpolatedTranslation('folding@home')).toBe(`folding{'@'}home`);
 });
+
+test('Should not keep curly brackets', () => {
+	expect(getLiteralInterpolatedTranslation('my {custom} string')).toBe(`my {'{'}custom{'}'} string`);
+});
+
+test('Should keep curly brackets', () => {
+	expect(getLiteralInterpolatedTranslation('my {custom} string', true)).toBe(`my {custom} string`);
+});
