@@ -101,14 +101,16 @@ watch([() => props.baseSize, () => props.baseColor, () => props.collectionsOptio
 
 			if (isNil(data) || isNil(collection)) return attributes;
 
-			const { color, label, size, x, y } = calculateAttributes(collection, data, false);
+			const newAttributes = calculateAttributes(collection, data, false);
+
+			if (!newAttributes) return attributes;
 
 			return {
-				color,
-				label,
-				size,
-				x: x ?? attributes.x,
-				y: y ?? attributes.y,
+				color: newAttributes.color,
+				label: newAttributes.label,
+				size: newAttributes.size,
+				x: newAttributes.x ?? attributes.x,
+				y: newAttributes.y ?? attributes.y,
 				data,
 				collection,
 			};
@@ -186,17 +188,17 @@ function addNode(collection: string, key: string, data: Record<string, any>) {
 }
 
 function calculateAttributes(collection: string, data: Record<string, any>, randomPos = true) {
+	const options = props.collectionsOptions[collection];
+
+	if (!options) return undefined;
+
 	let { x, y } = randomPos ? getRandomPosition() : { x: undefined, y: undefined };
 	let size = props.baseSize;
 	let color = props.baseColor;
 	const label = renderStringTemplate(props.displayTemplates[collection], data).displayValue.value;
-	const xField = props.collectionsOptions[collection].xField;
-	const yField = props.collectionsOptions[collection].yField;
-	const sizeField = props.collectionsOptions[collection].sizeField;
-	const colorField = props.collectionsOptions[collection].colorField;
-	const filters = props.collectionsOptions[collection].filters ?? [];
+	const { xField, yField, sizeField, colorField, filters } = options;
 
-	for (let filterInfo of filters) {
+	for (let filterInfo of filters ?? []) {
 		if (!filterInfo.filter) continue;
 
 		const errors = validatePayload(filterInfo.filter, data);
