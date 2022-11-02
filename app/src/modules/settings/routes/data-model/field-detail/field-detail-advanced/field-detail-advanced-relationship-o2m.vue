@@ -83,7 +83,7 @@
 						},
 						{
 							text: t('referential_action_cascade', {
-								collection: collection,
+								collection: relatedCollection,
 								field: relatedField,
 							}),
 							value: 'CASCADE',
