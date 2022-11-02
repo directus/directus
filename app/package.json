@@ -1,6 +1,6 @@
 {
 	"name": "@directus/app",
-	"version": "9.19.2",
+	"version": "9.20.3",
 	"private": false,
 	"description": "Directus is an Open-Source Headless CMS & API for Managing Custom Databases",
 	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
@@ -34,7 +34,7 @@
 	"devDependencies": {
 		"@babel/core": "7.19.3",
 		"@babel/preset-env": "7.19.4",
-		"@directus/docs": "9.19.0",
+		"@directus/docs": "9.20.0",
 		"@directus/extensions-sdk": "workspace:*",
 		"@directus/format-title": "10.0.0",
 		"@directus/shared": "workspace:*",
@@ -119,8 +119,8 @@
 		"json2csv": "5.0.7",
 		"jsonlint-mod": "1.7.6",
 		"lodash": "4.17.21",
-		"mapbox-gl": "2.10.0",
-		"maplibre-gl": "2.4.0",
+		"mapbox-gl": "1.13.2",
+		"maplibre-gl": "1.15.3",
 		"markdown-it": "13.0.1",
 		"markdown-it-anchor": "8.6.5",
 		"markdown-it-container": "3.0.0",
