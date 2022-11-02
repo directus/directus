@@ -13,6 +13,10 @@ export function applyChanges(updates: StateUpdates, state: State, helperFn: Help
 		setDefaults(updates, state, helperFn);
 	}
 
+	if (hasChanged('autoGenerateJunctionRelation')) {
+		setDefaults(updates, state, helperFn);
+	}
+
 	if (hasChanged('field.field')) {
 		updateRelationField(updates);
 		autoGenerateJunctionCollectionName(updates, state, helperFn);
@@ -87,6 +91,8 @@ export function prepareRelation(updates: StateUpdates, state: State) {
 }
 
 export function setDefaults(updates: StateUpdates, state: State, { getCurrent }: HelperFunctions) {
+	if (getCurrent('autoGenerateJunctionRelation') === false) return;
+
 	const fieldsStore = useFieldsStore();
 
 	const currentCollection = state.collection!;
@@ -99,7 +105,11 @@ export function setDefaults(updates: StateUpdates, state: State, { getCurrent }:
 	set(updates, 'relations.o2m.field', `${currentCollection}_${currentCollectionPrimaryKeyField}`);
 	set(updates, 'relations.m2o.collection', junctionName);
 	set(updates, 'relations.m2o.field', 'item');
-	set(updates, 'relations.m2o.meta.one_allowed_collections', []);
+	set(
+		updates,
+		'relations.m2o.meta.one_allowed_collections',
+		getCurrent('relations.m2o.meta.one_allowed_collections') ?? []
+	);
 	set(updates, 'relations.m2o.meta.one_collection_field', 'collection');
 }
 

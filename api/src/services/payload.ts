@@ -277,7 +277,7 @@ export class PayloadService {
 			for (const payload of payloads) {
 				let value: number | string | Date = payload[name];
 
-				if (value === null || value === '0000-00-00') {
+				if (value === null || (typeof value === 'string' && /^[.0 :-]{10,}$/.test(value))) {
 					payload[name] = null;
 					continue;
 				}
