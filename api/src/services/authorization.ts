@@ -360,7 +360,7 @@ export class AuthorizationService {
 				schema: SchemaOverview,
 				action: PermissionsAction,
 				requiredPermissions: Record<string, Set<string>>,
-				alias?: Record<string, string> | null
+				aliasMap?: Record<string, string> | null
 			) {
 				if (accountability?.admin === true) return;
 
@@ -398,8 +398,8 @@ export class AuthorizationService {
 						if (field.startsWith('$FOLLOW')) continue;
 						const fieldName = stripFunction(field);
 
-						if (collection === rootCollection && alias && alias[fieldName]) {
-							if (!allowedFields.includes(alias[fieldName])) {
+						if (collection === rootCollection && aliasMap && aliasMap[fieldName]) {
+							if (!allowedFields.includes(aliasMap[fieldName])) {
 								throw new ForbiddenException();
 							}
 						} else if (!allowedFields.includes(fieldName)) {
