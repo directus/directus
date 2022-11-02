@@ -52,9 +52,14 @@ jobs:
         env:
           ORACLE_DL: oracle-instantclient-basic-21.4.0.0.0-1.el8.x86_64.rpm
 
-      - name: Start Databases
+      - name: Start Services (SQLite)
+        if: matrix.vendor == 'sqlite3'
+        run: docker compose -f tests-blackbox/docker-compose.yml up auth-saml -d --quiet-pull --wait
+
+      - name: Start Services (Other vendors)
         if: matrix.vendor != 'sqlite3'
-        run: docker compose -f tests-blackbox/docker-compose.yml up ${{ matrix.vendor }} -d --quiet-pull --wait
+        run:
+          docker compose -f tests-blackbox/docker-compose.yml up ${{ matrix.vendor }} auth-saml -d --quiet-pull --wait
 
       - name: Run Tests
         run: TEST_DB=${{ matrix.vendor }} pnpm run -w test:blackbox
