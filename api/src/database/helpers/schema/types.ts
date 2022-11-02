@@ -99,4 +99,19 @@ export abstract class SchemaHelper extends DatabaseHelper {
 	castM2aPrimaryKey(): string {
 		return 'CAST(?? AS CHAR(255))';
 	}
+
+	applyMultiRelationalSort(
+		knex: Knex,
+		dbQuery: Knex.QueryBuilder,
+		table: string,
+		primaryKey: string,
+		orderByString: string,
+		orderByFields: Knex.Raw[]
+	): Knex.QueryBuilder {
+		dbQuery.rowNumber(
+			knex.ref('directus_row_number').toQuery(),
+			knex.raw(`partition by ??${orderByString}`, [`${table}.${primaryKey}`, ...orderByFields])
+		);
+		return dbQuery;
+	}
 }

@@ -247,6 +247,7 @@ function getDBQuery(
 ): Knex.QueryBuilder {
 	const preProcess = getColumnPreprocessor(knex, schema, table);
 	const queryCopy = clone(query);
+	const helpers = getHelpers(knex);
 
 	queryCopy.limit = typeof queryCopy.limit === 'number' ? queryCopy.limit : 100;
 
@@ -258,7 +259,7 @@ function getDBQuery(
 
 	const primaryKey = schema.collections[table].primary;
 	const aliasMap: AliasMap = Object.create(null);
-	const dbQuery = knex.from(table);
+	let dbQuery = knex.from(table);
 	let sortRecords: ColumnSortRecord[] | undefined;
 	const innerQuerySortRecords: { alias: string; order: 'asc' | 'desc' }[] = [];
 	let hasMultiRelationalSort: boolean | undefined;
@@ -327,9 +328,13 @@ function getDBQuery(
 					}
 				});
 
-				dbQuery.rowNumber(
-					knex.ref('directus_row_number').toQuery(),
-					knex.raw(`partition by ??${orderByString}`, [`${table}.${primaryKey}`, ...orderByFields])
+				dbQuery = helpers.schema.applyMultiRelationalSort(
+					knex,
+					dbQuery,
+					table,
+					primaryKey,
+					orderByString,
+					orderByFields
 				);
 			}
 		} else {
