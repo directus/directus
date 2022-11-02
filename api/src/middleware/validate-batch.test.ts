@@ -1,4 +1,4 @@
-import type { NextFunction, Request, Response } from 'express';
+import type { Request, Response } from 'express';
 import { validateBatch } from './validate-batch';
 import '../../src/types/express.d.ts';
 import { InvalidPayloadException } from '../exceptions';
@@ -7,7 +7,7 @@ import { vi, beforeEach, test, expect } from 'vitest';
 
 let mockRequest: Partial<Request & { token?: string }>;
 let mockResponse: Partial<Response>;
-const nextFunction: NextFunction = vi.fn();
+const nextFunction = vi.fn();
 
 beforeEach(() => {
 	mockRequest = {};
@@ -75,7 +75,7 @@ test(`Doesn't allow both query and keys in a batch delete`, async () => {
 		query: { filter: {} },
 	};
 
-	await validateBatch('delete')(mockRequest as Request, mockResponse as Response, nextFunction as NextFunction);
+	await validateBatch('delete')(mockRequest as Request, mockResponse as Response, nextFunction);
 
 	expect(nextFunction).toHaveBeenCalledTimes(1);
 	expect(vi.mocked(nextFunction).mock.calls[0][0]).toBeInstanceOf(FailedValidationException);
@@ -88,7 +88,7 @@ test(`Requires 'data' on batch update`, async () => {
 		query: { filter: {} },
 	};
 
-	await validateBatch('update')(mockRequest as Request, mockResponse as Response, nextFunction as NextFunction);
+	await validateBatch('update')(mockRequest as Request, mockResponse as Response, nextFunction);
 
 	expect(nextFunction).toHaveBeenCalledTimes(1);
 	expect(vi.mocked(nextFunction).mock.calls[0][0]).toBeInstanceOf(FailedValidationException);
@@ -102,7 +102,7 @@ test(`Calls next when all is well`, async () => {
 		data: {},
 	};
 
-	await validateBatch('update')(mockRequest as Request, mockResponse as Response, nextFunction as NextFunction);
+	await validateBatch('update')(mockRequest as Request, mockResponse as Response, nextFunction);
 
 	expect(nextFunction).toHaveBeenCalledTimes(1);
 	expect(vi.mocked(nextFunction).mock.calls[0][0]).toBeUndefined();

@@ -13,7 +13,7 @@ vi.mock('../../src/database/index', () => {
 vi.mock('../../src/database/index');
 
 describe('Integration Tests', () => {
-	let db: vi.Mocked<Knex>;
+	let db: Knex;
 	let tracker: Tracker;
 
 	const schemas: Record<string, any> = {
@@ -22,7 +22,7 @@ describe('Integration Tests', () => {
 	};
 
 	beforeAll(async () => {
-		db = knex({ client: MockClient }) as vi.Mocked<Knex>;
+		db = knex({ client: MockClient });
 		tracker = getTracker();
 	});
 

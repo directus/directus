@@ -1,11 +1,11 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import extractToken from '../../src/middleware/extract-token';
 import '../../src/types/express.d.ts';
 import { vi, beforeEach, test, expect } from 'vitest';
 
 let mockRequest: Partial<Request & { token?: string }>;
 let mockResponse: Partial<Response>;
-const nextFunction: NextFunction = vi.fn();
+const nextFunction = vi.fn();
 
 beforeEach(() => {
 	mockRequest = {};

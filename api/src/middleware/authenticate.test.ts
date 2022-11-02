@@ -11,7 +11,9 @@ import { vi, afterEach, test, expect } from 'vitest';
 
 vi.mock('../../src/database');
 vi.mock('../../src/env', () => ({
-	SECRET: 'test',
+	default: {
+		SECRET: 'test',
+	},
 }));
 
 afterEach(() => {

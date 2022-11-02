@@ -1,38 +1,44 @@
 import { Command } from 'commander';
 import { Extension, HookConfig } from '@directus/shared/types';
 import { createCli } from './index';
-import { test, expect, vi, beforeEach } from 'vitest';
+import path from 'path';
+import { test, describe, expect, vi, beforeEach } from 'vitest';
 
 vi.mock('../../src/env', async () => {
-	const actual = await vi.importActual('../../src/env');
+	const actual = (await vi.importActual('../../src/env')) as { default: Record<string, any> };
 
 	return {
-		EXTENSIONS_PATH: '',
-		SERVE_APP: false,
-		DB_CLIENT: 'pg',
-		DB_HOST: 'localhost',
-		DB_PORT: 5432,
-		DB_DATABASE: 'directus',
-		DB_USER: 'postgres',
-		DB_PASSWORD: 'psql1234',
-		...(actual as object),
+		default: {
+			...actual.default,
+			EXTENSIONS_PATH: '',
+			SERVE_APP: false,
+			DB_CLIENT: 'pg',
+			DB_HOST: 'localhost',
+			DB_PORT: 5432,
+			DB_DATABASE: 'directus',
+			DB_USER: 'postgres',
+			DB_PASSWORD: 'psql1234',
+		},
 	};
 });
 
-vi.mock('@directus/shared/utils/node/get-extensions', () => ({
-	getPackageExtensions: vi.fn(() => Promise.resolve([])),
-	getLocalExtensions: vi.fn(() => Promise.resolve([customCliExtension])),
-}));
+vi.mock('@directus/shared/utils/node', async () => {
+	const actual = await vi.importActual('@directus/shared/utils/node');
 
-vi.mock(`/hooks/custom-cli/index.js`, () => customCliHook);
+	const customCliExtension: Extension = {
+		path: '/hooks/custom-cli',
+		name: 'custom-cli',
+		type: 'hook',
+		entrypoint: 'index.js',
+		local: true,
+	};
 
-const customCliExtension: Extension = {
-	path: `/hooks/custom-cli`,
-	name: 'custom-cli',
-	type: 'hook',
-	entrypoint: 'index.js',
-	local: true,
-};
+	return {
+		...(actual as object),
+		getPackageExtensions: vi.fn(() => Promise.resolve([])),
+		getLocalExtensions: vi.fn(() => Promise.resolve([customCliExtension])),
+	};
+});
 
 const beforeHook = vi.fn();
 const afterAction = vi.fn();
@@ -44,6 +50,10 @@ const customCliHook: HookConfig = ({ init }) => {
 	init('cli.before', beforeHook);
 	init('cli.after', afterHook);
 };
+
+vi.mock(path.resolve('/hooks/custom-cli', 'index.js'), () => ({
+	default: customCliHook,
+}));
 
 const writeOut = vi.fn();
 const writeErr = vi.fn();

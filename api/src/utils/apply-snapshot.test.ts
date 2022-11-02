@@ -24,13 +24,11 @@ vi.mock('../../src/database/index');
 class Client_PG extends MockClient {}
 
 describe('applySnapshot', () => {
-	//TODO: replace with correct vitest api call
-	let db: vi.Mocked<Knex>;
+	let db: Knex;
 	let tracker: Tracker;
 
 	beforeEach(() => {
-		//TODO: replace with correct vitest api call
-		db = knex({ client: Client_PG }) as vi.Mocked<Knex>;
+		db = knex({ client: Client_PG });
 		tracker = getTracker();
 	});
 

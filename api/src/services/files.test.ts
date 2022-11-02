@@ -2,7 +2,7 @@ import exifr from 'exifr';
 import knex, { Knex } from 'knex';
 import { MockClient, Tracker, getTracker } from 'knex-mock-client';
 import { FilesService } from '.';
-import { describe, beforeAll, afterEach, expect, it, vi, beforeEach } from 'vitest';
+import { describe, beforeAll, afterEach, expect, it, vi, beforeEach, SpyInstance } from 'vitest';
 
 vi.mock('exifr');
 vi.mock('../../src/database/index', () => {
@@ -11,11 +11,11 @@ vi.mock('../../src/database/index', () => {
 vi.mock('../../src/database/index');
 
 describe('Integration Tests', () => {
-	let db: vi.mocked<Knex>;
+	let db: Knex;
 	let tracker: Tracker;
 
 	beforeAll(async () => {
-		db = knex({ client: MockClient }) as vi.mocked<Knex>;
+		db = knex({ client: MockClient });
 		tracker = getTracker();
 	});
 
@@ -26,7 +26,7 @@ describe('Integration Tests', () => {
 	describe('Services / Files', () => {
 		describe('getMetadata', () => {
 			let service: FilesService;
-			let exifrParseSpy: vi.SpyInstance<any>;
+			let exifrParseSpy: SpyInstance<any>;
 
 			const sampleMetadata = {
 				CustomTagA: 'value a',

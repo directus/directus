@@ -3,21 +3,23 @@ import { getTracker, MockClient, Tracker } from 'knex-mock-client';
 import { CollectionsService, FieldsService, RelationsService, SpecificationService } from '../../src/services';
 import { describe, beforeAll, afterEach, it, expect, vi, beforeEach } from 'vitest';
 
-vi.mock('../../src/database/index', () => {
-	return { getDatabaseClient: vi.fn().mockReturnValue('postgres') };
+vi.mock('../../src/database/index', async () => {
+	const actual = await vi.importActual('@directus/shared/utils/node');
+
+	return {
+		...(actual as object),
+		getDatabaseClient: vi.fn().mockReturnValue('postgres'),
+	};
 });
-vi.mock('../../src/database/index');
 
 class Client_PG extends MockClient {}
 
 describe('Integration Tests', () => {
-	//TODO: replace with correct vitest api call
-	let db: vi.Mocked<Knex>;
+	let db: Knex;
 	let tracker: Tracker;
 
 	beforeAll(async () => {
-		//TODO: replace with correct vitest api call
-		db = knex({ client: Client_PG }) as vi.Mocked<Knex>;
+		db = knex({ client: Client_PG });
 		tracker = getTracker();
 	});
 
