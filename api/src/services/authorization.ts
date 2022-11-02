@@ -397,12 +397,9 @@ export class AuthorizationService {
 					for (const field of requiredPermissions[collection]) {
 						if (field.startsWith('$FOLLOW')) continue;
 						const fieldName = stripFunction(field);
+						const originalFieldName = collection === rootCollection ? aliasMap?.[fieldName] ?? fieldName : fieldName;
 
-						if (collection === rootCollection && aliasMap && aliasMap[fieldName]) {
-							if (!allowedFields.includes(aliasMap[fieldName])) {
-								throw new ForbiddenException();
-							}
-						} else if (!allowedFields.includes(fieldName)) {
+						if (!allowedFields.includes(originalFieldName)) {
 							throw new ForbiddenException();
 						}
 					}
