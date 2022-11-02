@@ -3,7 +3,7 @@ import path from 'path';
 
 export default defineConfig({
 	test: {
-		setupFiles: path.resolve(__dirname, 'setupTest.js'),
+		setupFiles: path.resolve(__dirname, 'setupTest.cjs'),
 		alias: [
 			// TODO: Remove this after moving to ESM
 			{
