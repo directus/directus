@@ -1429,7 +1429,6 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
-weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 table: Tabella
@@ -1978,7 +1977,6 @@ panels:
     y_axis_conditional_two: deve essere un numero.
   linechart:
     name: Grafico a linee
-    description: Grafico a linee per confrontare le variazioni di un campo.
     select_field: Devi selezionare un campo.
     select_collection: Devi selezionare una raccolta.
     select_x_axis: Devi selezionare l'asse X.
@@ -1990,15 +1988,14 @@ panels:
     datasets: Set di dati
     show_legend: Mostra legenda
     show_marker: Mostra indicatore del suggerimento
-    include_dataset: Devi includere almeno un set di dati.
     include_y_axis: Devi includere un asse Y per ogni set di dati quando non è specificato un gruppo.
     group_and_function: Devi includere o escludere sia un gruppo che una funzione.
-    smooth: 'Arrotondato'
-    straight: 'Dritto'
-    step_line: 'A gradini'
+    smooth: Arrotondato
+    straight: Dritto
+    step_line: A gradini
   meter:
-    description: Metro per il rilevamento dei valori
     name: Metro
+    description: Metro per il rilevamento dei valori
     half_circle: Metà cerchio
     full_circle: Cerchio intero
     stroke_width: Spessore della linea
@@ -2012,11 +2009,9 @@ panels:
     broad: Largo
   piechart:
     name: Grafico a torta o ciambella
-    description: Grafico circolare che mostra i rapporti dei gruppi su una colonna.
-    function: 'Funzione'
+    function: Funzione
     donut: Ciambella
-    labels: Mostra etichette
-    legend: Mostra legenda
+    show_legend: Mostra legenda
     right: Destra
     bottom: In basso
     monochrome: Monocromatico
