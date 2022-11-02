@@ -14,16 +14,14 @@ export interface CollectionOptions {
 	sizeField: string | undefined;
 	xField: string | undefined;
 	yField: string | undefined;
-	filter: FilterOptions[];
+	filters: FilterOptions[];
 }
 
-export type FilterOptions = [
-	Filter,
-	{
-		color: string | undefined;
-		size: number | undefined;
-	}
-];
+export type FilterOptions = {
+	filter: Filter;
+	color: string | undefined;
+	size: number | undefined;
+};
 
 export type LayoutQuery = {
 	fields: string[];

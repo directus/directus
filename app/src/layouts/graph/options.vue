@@ -13,7 +13,7 @@
 	</div>
 	<div class="field">
 		<div class="type-label">{{ t('layouts.graph.size') }}</div>
-		<v-slider v-model="sizeWritable" :min="1" :max="20" show-thumb-label />
+		<v-input v-model="sizeWritable" :min="1" :max="20" show-thumb-label type="number" />
 	</div>
 	<div class="field">
 		<div class="type-label">{{ t('layouts.graph.collectionsOptions') }}</div>
@@ -21,6 +21,7 @@
 			<v-list-item
 				v-for="item in props.collectionsForOptions"
 				:key="item.collection"
+				clickable
 				block
 				@click="openCollection = item.collection"
 			>
@@ -180,6 +181,55 @@ const fields = computed(() => {
 			type: 'string',
 		});
 	}
+
+	fields.push({
+		field: 'filters',
+		name: t('layouts.graph.filters'),
+		meta: {
+			width: 'full',
+			interface: 'list',
+			options: {
+				template: '{{color}} - {{size}}',
+				fields: [
+					{
+						field: 'color',
+						name: t('layouts.graph.color'),
+						meta: {
+							width: 'half',
+							interface: 'select-color',
+							display: 'color',
+						},
+						type: 'string',
+					},
+					{
+						field: 'size',
+						name: t('layouts.graph.size'),
+						meta: {
+							width: 'half',
+							interface: 'input',
+							options: {
+								min: 1,
+								max: 20,
+							},
+						},
+						type: 'integer',
+					},
+					{
+						field: 'filter',
+						name: t('layouts.graph.filter'),
+						meta: {
+							interface: 'system-filter',
+							options: {
+								collectionName: collectionInfo.collection,
+							},
+						},
+						type: 'json',
+					},
+				],
+			},
+		},
+		type: 'string',
+	});
 
 	return fields;
 });

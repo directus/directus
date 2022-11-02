@@ -17,7 +17,7 @@ import ForceSupervisor from 'graphology-layout-force/worker';
 import { onMounted, onUnmounted, ref, watch } from 'vue';
 import { renderStringTemplate } from '@/utils/render-string-template';
 import { router } from '@/router';
-import { isEqual, isNil } from 'lodash';
+import { cloneDeep, isEqual, isNil } from 'lodash';
 import { RelationM2A } from '@/composables/use-relation-m2a';
 import { RelationM2M } from '@/composables/use-relation-m2m';
 import { RelationM2O } from '@/composables/use-relation-m2o';
@@ -26,6 +26,7 @@ import { useFieldsStore } from '@/stores/fields';
 import { Field } from '@directus/shared/types';
 import { getRandomPosition } from './bunny';
 import { CollectionOptions } from './types';
+import { validatePayload } from '@directus/shared/utils';
 
 interface Props {
 	collection: string;
@@ -92,6 +93,29 @@ watch(
 	}
 );
 
+watch([() => props.baseSize, () => props.baseColor, () => props.collectionsOptions], () => {
+	for (const node of graph.nodes()) {
+		graph.updateNodeAttributes(node, (attributes) => {
+			const data = attributes.data;
+			const collection = attributes.collection;
+
+			if (isNil(data) || isNil(collection)) return attributes;
+
+			const { color, label, size, x, y } = calculateAttributes(collection, data, false);
+
+			return {
+				color,
+				label,
+				size,
+				x: x ?? attributes.x,
+				y: y ?? attributes.y,
+				data,
+				collection,
+			};
+		});
+	}
+});
+
 watch(
 	() => props.items,
 	(newItems, oldItems) => {
@@ -103,7 +127,7 @@ watch(
 
 		for (const item of newItems) {
 			const key = `${props.collection}:${item[props.primaryKeyField!.field]}`;
-			addNode(props.collection, key, item);
+			addNode(props.collection, key, cloneDeep(item));
 		}
 
 		for (const item of newItems) {
@@ -131,19 +155,19 @@ function createRelatedItem(data: Record<string, any>, item: Record<string, any>)
 		const id = data[props.relationInfo.junctionField.field][idField];
 		key = `${collection}:${id}`;
 
-		addNode(collection, key, data[props.relationInfo.junctionField.field]);
+		addNode(collection, key, cloneDeep(data[props.relationInfo.junctionField.field]));
 	} else if (props.relationInfo?.type === 'm2m') {
 		collection = props.relationInfo!.junctionCollection.collection;
 		const id = data[props.relationInfo!.junctionField!.field][props.relationInfo!.relatedPrimaryKeyField.field];
 		key = `${props.relationInfo!.relatedCollection.collection}:${id}`;
 
-		addNode(collection, key, data);
+		addNode(collection, key, cloneDeep(data));
 	} else {
 		collection = props.relationInfo!.relatedCollection.collection;
 		const id = data[props.relationInfo!.relatedPrimaryKeyField.field];
 		key = `${collection}:${id}`;
 
-		addNode(collection, key, data);
+		addNode(collection, key, cloneDeep(data));
 	}
 
 	graph.addEdge(`${props.collection}:${item[props.primaryKeyField!.field]}`, key);
@@ -152,7 +176,17 @@ function createRelatedItem(data: Record<string, any>, item: Record<string, any>)
 function addNode(collection: string, key: string, data: Record<string, any>) {
 	if (graph.hasNode(key)) return;
 
-	let { x, y } = getRandomPosition();
+	const attributes = calculateAttributes(collection, data);
+
+	graph.addNode(key, {
+		...attributes,
+		collection,
+		data,
+	});
+}
+
+function calculateAttributes(collection: string, data: Record<string, any>, randomPos = true) {
+	let { x, y } = randomPos ? getRandomPosition() : { x: undefined, y: undefined };
 	let size = props.baseSize;
 	let color = props.baseColor;
 	const label = renderStringTemplate(props.displayTemplates[collection], data).displayValue.value;
@@ -160,6 +194,19 @@ function addNode(collection: string, key: string, data: Record<string, any>) {
 	const yField = props.collectionsOptions[collection].yField;
 	const sizeField = props.collectionsOptions[collection].sizeField;
 	const colorField = props.collectionsOptions[collection].colorField;
+	const filters = props.collectionsOptions[collection].filters ?? [];
+
+	for (let filterInfo of filters) {
+		if (!filterInfo.filter) continue;
+
+		const errors = validatePayload(filterInfo.filter, data);
+
+		if (errors.length === 0) {
+			if (!isNil(filterInfo.size)) size = filterInfo.size;
+			if (!isNil(filterInfo.color)) color = filterInfo.color;
+			break;
+		}
+	}
 
 	if (
 		props.fixedPositions &&
@@ -180,13 +227,7 @@ function addNode(collection: string, key: string, data: Record<string, any>) {
 		color = data[colorField];
 	}
 
-	graph.addNode(key, {
-		label,
-		x,
-		y,
-		size,
-		color,
-	});
+	return { x, y, size, color, label };
 }
 
 onMounted(() => {

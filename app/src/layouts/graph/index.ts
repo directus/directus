@@ -12,6 +12,7 @@ import { useCollection, useItems, useSync } from '@directus/shared/composables';
 import { useFieldsStore } from '@/stores/fields';
 import ActionsComponent from './actions.vue';
 import { AppCollection } from '@directus/shared/types';
+import { getFieldsFromFilter } from './getFieldsFromFilter';
 
 export default defineLayout<LayoutOptions, LayoutQuery>({
 	id: 'graph',
@@ -223,8 +224,14 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				const sizeField = collectionsOptions.value?.[collection].sizeField;
 				const xField = collectionsOptions.value?.[collection].xField;
 				const yField = collectionsOptions.value?.[collection].yField;
+				const filterFields = [];
 
-				return [colorField, sizeField, xField, yField].filter((field) => field !== undefined) as string[];
+				for (const filter of collectionsOptions.value?.[collection]?.filters ?? []) {
+					filterFields.push(...getFieldsFromFilter(filter.filter));
+				}
+				return [colorField, sizeField, xField, yField, ...filterFields].filter(
+					(field) => field !== undefined
+				) as string[];
 			}
 
 			return { sort, limit, page, fields, fieldsWithRelational };
