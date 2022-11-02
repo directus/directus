@@ -363,9 +363,9 @@ export class FieldsService {
 
 			if (
 				(hookAdjustedField.type === 'alias' ||
-					this.schema.collections[collection].fields[field.field].type === 'alias') &&
+					this.schema.collections[collection].fields[field.field]?.type === 'alias') &&
 				hookAdjustedField.type &&
-				hookAdjustedField.type !== this.schema.collections[collection].fields[field.field].type
+				hookAdjustedField.type !== this.schema.collections[collection].fields[field.field]?.type
 			) {
 				throw new InvalidPayloadException('Alias type cannot be changed');
 			}
