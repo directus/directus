@@ -13,10 +13,20 @@ import { Knex } from 'knex';
 import { cloneDeep, flatten, isArray, isNil, merge, reduce, uniq, uniqWith } from 'lodash';
 import getDatabase from '../database';
 import { ForbiddenException } from '../exceptions';
-import { AbstractServiceOptions, AST, FieldNode, Item, NestedCollectionNode, PrimaryKey } from '../types';
+import {
+	AbstractServiceOptions,
+	AST,
+	FieldNode,
+	FunctionFieldNode,
+	Item,
+	NestedCollectionNode,
+	PrimaryKey,
+} from '../types';
 import { stripFunction } from '../utils/strip-function';
 import { ItemsService } from './items';
 import { PayloadService } from './payload';
+import { getRelationInfo } from '../utils/get-relation-info';
+import { GENERATE_SPECIAL } from '../constants';
 
 export class AuthorizationService {
 	knex: Knex;
@@ -72,7 +82,7 @@ export class AuthorizationService {
 
 				for (const children of Object.values(ast.children)) {
 					for (const nestedNode of children) {
-						if (nestedNode.type !== 'field') {
+						if (nestedNode.type !== 'field' && nestedNode.type !== 'functionField') {
 							collections.push(...getCollectionsFromAST(nestedNode));
 						}
 					}
@@ -84,7 +94,12 @@ export class AuthorizationService {
 				});
 
 				for (const nestedNode of ast.children) {
-					if (nestedNode.type !== 'field') {
+					if (nestedNode.type === 'functionField') {
+						collections.push({
+							collection: nestedNode.relatedCollection,
+							field: null,
+						});
+					} else if (nestedNode.type !== 'field') {
 						collections.push(...getCollectionsFromAST(nestedNode));
 					}
 				}
@@ -93,8 +108,8 @@ export class AuthorizationService {
 			return collections as { collection: string; field: string }[];
 		}
 
-		function validateFields(ast: AST | NestedCollectionNode | FieldNode) {
-			if (ast.type !== 'field') {
+		function validateFields(ast: AST | NestedCollectionNode | FieldNode | FunctionFieldNode) {
+			if (ast.type !== 'field' && ast.type !== 'functionField') {
 				if (ast.type === 'a2o') {
 					for (const [collection, children] of Object.entries(ast.children)) {
 						checkFields(collection, children, ast.query?.[collection]?.aggregate);
@@ -106,7 +121,7 @@ export class AuthorizationService {
 
 			function checkFields(
 				collection: string,
-				children: (NestedCollectionNode | FieldNode)[],
+				children: (NestedCollectionNode | FieldNode | FunctionFieldNode)[],
 				aggregate?: Aggregate | null
 			) {
 				// We check the availability of the permissions in the step before this is run
@@ -142,14 +157,14 @@ export class AuthorizationService {
 		}
 
 		function validateFilterPermissions(
-			ast: AST | NestedCollectionNode | FieldNode,
+			ast: AST | NestedCollectionNode | FieldNode | FunctionFieldNode,
 			schema: SchemaOverview,
 			action: PermissionsAction,
 			accountability: Accountability | null
 		) {
 			let requiredFieldPermissions: Record<string, Set<string>> = {};
 
-			if (ast.type !== 'field') {
+			if (ast.type !== 'field' && ast.type !== 'functionField') {
 				if (ast.type === 'a2o') {
 					for (const collection of Object.keys(ast.children)) {
 						requiredFieldPermissions = mergeRequiredFieldPermissions(
@@ -228,6 +243,15 @@ export class AuthorizationService {
 							}
 							// Filter value is not a filter, so we should skip it
 							return result;
+						}
+						// virtual o2m/o2a filter in the form of `$FOLLOW(...)`
+						else if (collection && filterKey.startsWith('$FOLLOW')) {
+							(result[collection] || (result[collection] = new Set())).add(filterKey);
+							// add virtual relation to the required permissions
+							const { relation } = getRelationInfo([], collection, filterKey);
+							if (relation?.collection && relation?.field) {
+								(result[relation.collection] || (result[relation.collection] = new Set())).add(relation.field);
+							}
 						}
 						// m2a filter in the form of `item:collection`
 						else if (filterKey.includes(':')) {
@@ -370,17 +394,25 @@ export class AuthorizationService {
 					if (allowedFields.length === 0) allowedFields.push(schema.collections[collection].primary);
 
 					for (const field of requiredPermissions[collection]) {
-						if (!allowedFields.includes(field)) throw new ForbiddenException();
+						if (field.startsWith('$FOLLOW')) continue;
+						const fieldName = stripFunction(field);
+						if (!allowedFields.includes(fieldName)) {
+							throw new ForbiddenException();
+						}
 					}
 				}
 			}
 		}
 
 		function applyFilters(
-			ast: AST | NestedCollectionNode | FieldNode,
+			ast: AST | NestedCollectionNode | FieldNode | FunctionFieldNode,
 			accountability: Accountability | null
-		): AST | NestedCollectionNode | FieldNode {
-			if (ast.type !== 'field') {
+		): AST | NestedCollectionNode | FieldNode | FunctionFieldNode {
+			if (ast.type === 'functionField') {
+				const collection = ast.relatedCollection;
+
+				updateFilterQuery(collection, ast.query);
+			} else if (ast.type !== 'field') {
 				if (ast.type === 'a2o') {
 					const collections = Object.keys(ast.children);
 
@@ -485,9 +517,7 @@ export class AuthorizationService {
 		for (const field of Object.values(this.schema.collections[collection].fields)) {
 			const specials = field?.special ?? [];
 
-			const hasGenerateSpecial = ['uuid', 'date-created', 'role-created', 'user-created'].some((name) =>
-				specials.includes(name)
-			);
+			const hasGenerateSpecial = GENERATE_SPECIAL.some((name) => specials.includes(name));
 
 			const nullable = field.nullable || hasGenerateSpecial || field.generated;
 

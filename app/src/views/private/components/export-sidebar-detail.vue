@@ -28,7 +28,7 @@
 									hidden
 									@change="onChange"
 								/>
-								<label for="import-file" class="import-file-label"></label>
+								<label v-tooltip="file && file.name" for="import-file" class="import-file-label"></label>
 								<span class="import-file-text" :class="{ 'no-file': !file }">
 									{{ file ? file.name : t('import_data_input_placeholder') }}
 								</span>
@@ -223,7 +223,7 @@
 import api from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
 import { notify } from '@/utils/notify';
-import readableMimeType from '@/utils/readable-mime-type';
+import { readableMimeType } from '@/utils/readable-mime-type';
 import { Filter } from '@directus/shared/types';
 import { computed, reactive, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -231,8 +231,8 @@ import { useCollection } from '@directus/shared/composables';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { debounce } from 'lodash';
 import { getEndpoint } from '@directus/shared/utils';
-import FolderPicker from '@/views/private/components/folder-picker/folder-picker.vue';
-import { usePermissionsStore } from '@/stores';
+import FolderPicker from '@/views/private/components/folder-picker.vue';
+import { usePermissionsStore } from '@/stores/permissions';
 
 type LayoutQuery = {
 	fields?: string[];
@@ -280,6 +280,15 @@ const exportSettings = reactive({
 	fields: props.layoutQuery?.fields ?? fields.value?.map((field) => field.field),
 	sort: `${primaryKeyField.value?.field ?? ''}`,
 });
+
+watch(
+	fields,
+	() => {
+		if (props.layoutQuery?.fields) return;
+		exportSettings.fields = fields.value?.map((field) => field.field);
+	},
+	{ immediate: true }
+);
 
 watch(
 	() => props.layoutQuery,
@@ -478,10 +487,11 @@ function exportDataLocal() {
 
 	if (exportSettings.sort && exportSettings.sort !== '') params.sort = exportSettings.sort;
 	if (exportSettings.fields) params.fields = exportSettings.fields;
-	if (exportSettings.limit) params.limit = exportSettings.limit;
 	if (exportSettings.search) params.search = exportSettings.search;
 	if (exportSettings.filter) params.filter = exportSettings.filter;
 	if (exportSettings.search) params.search = exportSettings.search;
+
+	params.limit = exportSettings.limit ?? -1;
 
 	const exportUrl = api.getUri({
 		url,
@@ -629,6 +639,10 @@ const createAllowed = computed<boolean>(() => hasPermission(collection.value, 'c
 
 .import-file-text {
 	flex-grow: 1;
+	overflow: hidden;
+	line-height: normal;
+	white-space: nowrap;
+	text-overflow: ellipsis;
 
 	&.no-file {
 		color: var(--foreground-subdued);

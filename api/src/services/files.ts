@@ -10,7 +10,7 @@ import { promisify } from 'util';
 import { lookup } from 'dns';
 import emitter from '../emitter';
 import env from '../env';
-import { ForbiddenException, ServiceUnavailableException } from '../exceptions';
+import { ForbiddenException, InvalidPayloadException, ServiceUnavailableException } from '../exceptions';
 import logger from '../logger';
 import storage from '../storage';
 import { AbstractServiceOptions, File, PrimaryKey, MutationOptions, Metadata } from '../types';
@@ -18,6 +18,7 @@ import { toArray } from '@directus/shared/utils';
 import { ItemsService } from './items';
 import net from 'net';
 import os from 'os';
+import encodeURL from 'encodeurl';
 
 const lookupDNS = promisify(lookup);
 
@@ -243,7 +244,7 @@ export class FilesService extends ItemsService {
 		let fileResponse: AxiosResponse<NodeJS.ReadableStream>;
 
 		try {
-			fileResponse = await axios.get<NodeJS.ReadableStream>(importURL, {
+			fileResponse = await axios.get<NodeJS.ReadableStream>(encodeURL(importURL), {
 				responseType: 'stream',
 			});
 		} catch (err: any) {
@@ -254,7 +255,7 @@ export class FilesService extends ItemsService {
 		}
 
 		const parsedURL = url.parse(fileResponse.request.res.responseUrl);
-		const filename = path.basename(parsedURL.pathname as string);
+		const filename = decodeURI(path.basename(parsedURL.pathname as string));
 
 		const payload = {
 			filename_download: filename,
@@ -265,6 +266,19 @@ export class FilesService extends ItemsService {
 		};
 
 		return await this.uploadOne(fileResponse.data, payload);
+	}
+
+	/**
+	 * Create a file (only applicable when it is not a multipart/data POST request)
+	 * Useful for associating metadata with existing file in storage
+	 */
+	async createOne(data: Partial<File>, opts?: MutationOptions): Promise<PrimaryKey> {
+		if (!data.type) {
+			throw new InvalidPayloadException(`"type" is required`);
+		}
+
+		const key = await super.createOne(data, opts);
+		return key;
 	}
 
 	/**

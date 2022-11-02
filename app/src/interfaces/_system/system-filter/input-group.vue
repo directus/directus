@@ -12,8 +12,8 @@
 		v-else-if="
 			[
 				'_contains',
-				'_icontains',
 				'_ncontains',
+				'_icontains',
 				'_starts_with',
 				'_nstarts_with',
 				'_ends_with',
@@ -48,7 +48,7 @@
 		</div>
 	</div>
 
-	<template v-else-if="['_between', '_nbetween'].includes(getComparator(field))" class="between">
+	<template v-else-if="['_between', '_nbetween'].includes(getComparator(field))">
 		<input-component
 			:is="interfaceType"
 			:choices="choices"
@@ -69,7 +69,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, PropType } from 'vue';
-import { useFieldsStore } from '@/stores';
+import { useFieldsStore } from '@/stores/fields';
 import { useI18n } from 'vue-i18n';
 import { clone, get } from 'lodash';
 import InputComponent from './input-component.vue';
@@ -143,7 +143,9 @@ export default defineComponent({
 				let value;
 
 				if (['_in', '_nin'].includes(comparator)) {
-					value = (newVal as string[]).filter((val) => val !== null && val !== '');
+					value = (newVal as string[])
+						.flatMap((val) => (typeof val === 'string' ? val.split(',').map((v) => v.trim()) : ''))
+						.filter((val) => val !== null && val !== '');
 				} else {
 					value = newVal;
 				}

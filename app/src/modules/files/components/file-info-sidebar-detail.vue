@@ -128,9 +128,9 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, ref, watch } from 'vue';
-import readableMimeType from '@/utils/readable-mime-type';
-import formatFilesize from '@/utils/format-filesize';
-import localizedFormat from '@/utils/localized-format';
+import { readableMimeType } from '@/utils/readable-mime-type';
+import { formatFilesize } from '@/utils/format-filesize';
+import { localizedFormat } from '@/utils/localized-format';
 import api, { addTokenToURL } from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
 import { userName } from '@/utils/user-name';
@@ -189,13 +189,10 @@ export default defineComponent({
 				async () => {
 					if (!props.file) return null;
 
-					creationDate.value = await localizedFormat(
-						new Date(props.file.uploaded_on),
-						String(t('date-fns_date_short'))
-					);
+					creationDate.value = localizedFormat(new Date(props.file.uploaded_on), String(t('date-fns_date_short')));
 
 					if (props.file.modified_on) {
-						modificationDate.value = await localizedFormat(
+						modificationDate.value = localizedFormat(
 							new Date(props.file.modified_on),
 							String(t('date-fns_date_short'))
 						);

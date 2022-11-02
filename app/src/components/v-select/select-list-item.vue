@@ -3,7 +3,7 @@
 
 	<v-list-item
 		v-else
-		:active="multiple ? (modelValue || []).includes(item.value) : modelValue === item.value"
+		:active="isActive"
 		:disabled="item.disabled"
 		clickable
 		:value="item.value"
@@ -26,30 +26,33 @@
 	</v-list-item>
 </template>
 
-<script lang="ts">
-import { defineComponent, PropType } from 'vue';
+<script setup lang="ts">
+import { computed } from 'vue';
 import { Option } from './types';
 
-export default defineComponent({
-	name: 'SelectListItem',
-	props: {
-		item: {
-			type: Object as PropType<Option>,
-			required: true,
-		},
-		modelValue: {
-			type: [String, Number, Array] as PropType<string | number | (string | number)[]>,
-			default: null,
-		},
-		multiple: {
-			type: Boolean,
-			required: true,
-		},
-		allowOther: {
-			type: Boolean,
-			required: true,
-		},
-	},
-	emits: ['update:modelValue'],
+interface Props {
+	item: Option;
+	modelValue?: string | number | (string | number)[] | null;
+	multiple?: boolean;
+	allowOther?: boolean;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+	modelValue: null,
+	multiple: true,
+	allowOther: false,
+});
+
+defineEmits(['update:modelValue']);
+
+const isActive = computed(() => {
+	if (props.multiple) {
+		if (!Array.isArray(props.modelValue) || !props.item.value) {
+			return false;
+		}
+		return props.modelValue.includes(props.item.value);
+	} else {
+		return props.modelValue === props.item.value;
+	}
 });
 </script>

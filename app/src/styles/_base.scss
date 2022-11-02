@@ -63,6 +63,10 @@ textarea,
 	}
 }
 
+::placeholder {
+	opacity: 1;
+}
+
 :invalid {
 	outline: 0;
 	box-shadow: none;
@@ -101,6 +105,10 @@ a {
 
 strong {
 	font-weight: 600;
+}
+
+code {
+	font-family: var(--family-monospace);
 }
 
 ::selection {

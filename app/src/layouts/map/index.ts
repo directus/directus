@@ -5,13 +5,13 @@ import { Field, Filter, GeometryOptions, Item } from '@directus/shared/types';
 import { defineLayout, getFieldsFromTemplate } from '@directus/shared/utils';
 import { cloneDeep, merge } from 'lodash';
 import { computed, ref, toRefs, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import MapActions from './actions.vue';
 import MapLayout from './map.vue';
 import MapOptions from './options.vue';
 import { getMapStyle } from './style';
 import { LayoutOptions, LayoutQuery } from './types';
+import { formatCollectionItemsCount } from '@/utils/format-collection-items-count';
 import { saveAsCSV } from '@/utils/save-as-csv';
 
 export default defineLayout<LayoutOptions, LayoutQuery>({
@@ -26,8 +26,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		actions: MapActions,
 	},
 	setup(props, { emit }) {
-		const { t, n } = useI18n();
-
 		const router = useRouter();
 
 		const selection = useSync(props, 'selection', emit);
@@ -42,17 +40,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		const limit = syncRefProperty(layoutQuery, 'limit', 1000);
 		const defaultSort = computed(() => (primaryKeyField.value ? [primaryKeyField.value?.field] : []));
 		const sort = syncRefProperty(layoutQuery, 'sort', defaultSort);
-
-		const locationFilter = ref<Filter>();
-
-		const filterWithLocation = computed<Filter | null>(() => {
-			if (!locationFilter.value) return filter.value;
-			if (!filter.value) return locationFilter.value;
-
-			return {
-				_and: [filter.value, locationFilter.value],
-			};
-		});
 
 		const displayTemplate = syncRefProperty(layoutOptions, 'displayTemplate', undefined);
 		const cameraOptions = syncRefProperty(layoutOptions, 'cameraOptions', undefined);
@@ -75,15 +62,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				if (!geometryField.value && fields.length > 0) {
 					geometryField.value = fields[0].field;
 				}
-
-				// clear the location filter when it is no longer using a valid geometryField
-				if (
-					geometryField.value &&
-					locationFilter.value &&
-					!Object.keys(locationFilter.value).includes(geometryField.value)
-				) {
-					locationFilter.value = undefined;
-				}
 			},
 			{ immediate: true }
 		);
@@ -99,7 +77,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			if (!geometryFormat) {
 				return;
 			}
-			return { geometryField, geometryFormat, geometryType };
+			return { geometryField, geometryFormat, geometryType } as GeometryOptions;
 		});
 
 		const isGeometryFieldNative = computed(() => geometryOptions.value?.geometryFormat === 'native');
@@ -114,9 +92,9 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				.filter((e) => !!e) as string[];
 		});
 
-		function getLocationFilter(): Filter | undefined {
+		const locationFilter = computed<Filter | null>(() => {
 			if (!isGeometryFieldNative.value || !cameraOptions.value || !geometryField.value) {
-				return;
+				return null;
 			}
 
 			const bbox = cameraOptions.value.bbox;
@@ -137,14 +115,22 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 					},
 				},
 			} as Filter;
-		}
+		});
+
+		const filterWithLocation = computed<Filter | null>(() => {
+			if (!locationFilter.value) return filter.value;
+			if (!filter.value) return locationFilter.value;
+
+			return {
+				_and: [filter.value, locationFilter.value],
+			};
+		});
 
 		const shouldUpdateCamera = ref(false);
 
 		function fitDataBounds() {
 			shouldUpdateCamera.value = true;
 			if (isGeometryFieldNative.value) {
-				locationFilter.value = undefined;
 				return;
 			}
 			if (geojson.value?.features.length) {
@@ -154,7 +140,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		watch(cameraOptions, () => {
 			shouldUpdateCamera.value = false;
-			locationFilter.value = getLocationFilter();
 		});
 
 		const { items, loading, error, totalPages, itemCount, totalCount, getItems } = useItems(collection, {
@@ -244,24 +229,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		});
 
 		const showingCount = computed(() => {
-			if ((itemCount.value || 0) < (totalCount.value || 0) && filterUser.value) {
-				if (itemCount.value === 1) {
-					return t('one_filtered_item');
-				}
-				return t('start_end_of_count_filtered_items', {
-					start: n((+page.value - 1) * limit.value + 1),
-					end: n(Math.min(page.value * limit.value, itemCount.value || 0)),
-					count: n(itemCount.value || 0),
-				});
-			}
-			if (itemCount.value === 1) {
-				return t('one_item');
-			}
-			return t('start_end_of_count_items', {
-				start: n((+page.value - 1) * limit.value + 1),
-				end: n(Math.min(page.value * limit.value, itemCount.value || 0)),
-				count: n(itemCount.value || 0),
-			});
+			const filtering = Boolean((itemCount.value || 0) < (totalCount.value || 0) && filterUser.value);
+			return formatCollectionItemsCount(itemCount.value || 0, page.value, limit.value, filtering);
 		});
 
 		type ItemPopup = { item?: any; position?: { x: number; y: number } };

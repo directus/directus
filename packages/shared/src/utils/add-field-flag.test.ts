@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { RawField } from '../types/fields';
 import { addFieldFlag } from './add-field-flag';
 

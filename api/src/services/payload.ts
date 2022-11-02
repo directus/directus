@@ -1,18 +1,17 @@
 import { Accountability, Query, SchemaOverview } from '@directus/shared/types';
-import { toArray } from '@directus/shared/utils';
-import { format } from 'date-fns';
+import { format, parseISO, isValid } from 'date-fns';
+import { parseJSON, toArray } from '@directus/shared/utils';
 import { unflatten } from 'flat';
 import Joi from 'joi';
 import { Knex } from 'knex';
 import { clone, cloneDeep, isNil, isObject, isPlainObject, omit, pick } from 'lodash';
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuid } from 'uuid';
 import { parse as wktToGeoJSON } from 'wellknown';
 import getDatabase from '../database';
 import { getHelpers, Helpers } from '../database/helpers';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
-import { AbstractServiceOptions, Alterations, Item, PrimaryKey } from '../types';
+import { AbstractServiceOptions, ActionEventParams, Alterations, Item, MutationOptions, PrimaryKey } from '../types';
 import { generateHash } from '../utils/generate-hash';
-import { parseJSON } from '../utils/parse-json';
 import { ItemsService } from './items';
 
 type Action = 'create' | 'read' | 'update';
@@ -60,7 +59,7 @@ export class PayloadService {
 		},
 		async uuid({ action, value }) {
 			if (action === 'create' && !value) {
-				return uuidv4();
+				return uuid();
 			}
 
 			return value;
@@ -278,7 +277,7 @@ export class PayloadService {
 			for (const payload of payloads) {
 				let value: number | string | Date = payload[name];
 
-				if (value === null || value === '0000-00-00') {
+				if (value === null || (typeof value === 'string' && /^[.0 :-]{10,}$/.test(value))) {
 					payload[name] = null;
 					continue;
 				}
@@ -319,25 +318,19 @@ export class PayloadService {
 				} else {
 					if (value instanceof Date === false && typeof value === 'string') {
 						if (dateColumn.type === 'date') {
-							const [date] = value.split('T');
-							const [year, month, day] = date.split('-');
-
-							payload[name] = new Date(Number(year), Number(month) - 1, Number(day));
+							const parsedDate = parseISO(value);
+							if (!isValid(parsedDate)) {
+								throw new InvalidPayloadException(`Invalid Date format in field "${dateColumn.field}"`);
+							}
+							payload[name] = parsedDate;
 						}
 
 						if (dateColumn.type === 'dateTime') {
-							const [date, time] = value.split('T');
-							const [year, month, day] = date.split('-');
-							const [hours, minutes, seconds] = time.substring(0, 8).split(':');
-
-							payload[name] = new Date(
-								Number(year),
-								Number(month) - 1,
-								Number(day),
-								Number(hours),
-								Number(minutes),
-								Number(seconds)
-							);
+							const parsedDate = parseISO(value);
+							if (!isValid(parsedDate)) {
+								throw new InvalidPayloadException(`Invalid DateTime format in field "${dateColumn.field}"`);
+							}
+							payload[name] = parsedDate;
 						}
 
 						if (dateColumn.type === 'timestamp') {
@@ -371,12 +364,17 @@ export class PayloadService {
 	/**
 	 * Recursively save/update all nested related Any-to-One items
 	 */
-	async processA2O(data: Partial<Item>): Promise<{ payload: Partial<Item>; revisions: PrimaryKey[] }> {
+	async processA2O(
+		data: Partial<Item>,
+		opts?: MutationOptions
+	): Promise<{ payload: Partial<Item>; revisions: PrimaryKey[]; nestedActionEvents: ActionEventParams[] }> {
 		const relations = this.schema.relations.filter((relation) => {
 			return relation.collection === this.collection;
 		});
 
 		const revisions: PrimaryKey[] = [];
+
+		const nestedActionEvents: ActionEventParams[] = [];
 
 		const payload = cloneDeep(data);
 
@@ -434,11 +432,15 @@ export class PayloadService {
 				if (Object.keys(fieldsToUpdate).length > 0) {
 					await itemsService.updateOne(relatedPrimaryKey, relatedRecord, {
 						onRevisionCreate: (pk) => revisions.push(pk),
+						bypassEmitAction: (params) => nestedActionEvents.push(params),
+						emitEvents: opts?.emitEvents,
 					});
 				}
 			} else {
 				relatedPrimaryKey = await itemsService.createOne(relatedRecord, {
 					onRevisionCreate: (pk) => revisions.push(pk),
+					bypassEmitAction: (params) => nestedActionEvents.push(params),
+					emitEvents: opts?.emitEvents,
 				});
 			}
 
@@ -446,17 +448,22 @@ export class PayloadService {
 			payload[relation.field] = relatedPrimaryKey;
 		}
 
-		return { payload, revisions };
+		return { payload, revisions, nestedActionEvents };
 	}
 
 	/**
 	 * Save/update all nested related m2o items inside the payload
 	 */
-	async processM2O(data: Partial<Item>): Promise<{ payload: Partial<Item>; revisions: PrimaryKey[] }> {
+	async processM2O(
+		data: Partial<Item>,
+		opts?: MutationOptions
+	): Promise<{ payload: Partial<Item>; revisions: PrimaryKey[]; nestedActionEvents: ActionEventParams[] }> {
 		const payload = cloneDeep(data);
 
 		// All the revisions saved on this level
 		const revisions: PrimaryKey[] = [];
+
+		const nestedActionEvents: ActionEventParams[] = [];
 
 		// Many to one relations that exist on the current collection
 		const relations = this.schema.relations.filter((relation) => {
@@ -502,11 +509,15 @@ export class PayloadService {
 				if (Object.keys(fieldsToUpdate).length > 0) {
 					await itemsService.updateOne(relatedPrimaryKey, relatedRecord, {
 						onRevisionCreate: (pk) => revisions.push(pk),
+						bypassEmitAction: (params) => nestedActionEvents.push(params),
+						emitEvents: opts?.emitEvents,
 					});
 				}
 			} else {
 				relatedPrimaryKey = await itemsService.createOne(relatedRecord, {
 					onRevisionCreate: (pk) => revisions.push(pk),
+					bypassEmitAction: (params) => nestedActionEvents.push(params),
+					emitEvents: opts?.emitEvents,
 				});
 			}
 
@@ -514,14 +525,20 @@ export class PayloadService {
 			payload[relation.field] = relatedPrimaryKey;
 		}
 
-		return { payload, revisions };
+		return { payload, revisions, nestedActionEvents };
 	}
 
 	/**
 	 * Recursively save/update all nested related o2m items
 	 */
-	async processO2M(data: Partial<Item>, parent: PrimaryKey): Promise<{ revisions: PrimaryKey[] }> {
+	async processO2M(
+		data: Partial<Item>,
+		parent: PrimaryKey,
+		opts?: MutationOptions
+	): Promise<{ revisions: PrimaryKey[]; nestedActionEvents: ActionEventParams[] }> {
 		const revisions: PrimaryKey[] = [];
+
+		const nestedActionEvents: ActionEventParams[] = [];
 
 		const relations = this.schema.relations.filter((relation) => {
 			return relation.related_collection === this.collection;
@@ -605,6 +622,8 @@ export class PayloadService {
 				savedPrimaryKeys.push(
 					...(await itemsService.upsertMany(recordsToUpsert, {
 						onRevisionCreate: (pk) => revisions.push(pk),
+						bypassEmitAction: (params) => nestedActionEvents.push(params),
+						emitEvents: opts?.emitEvents,
 					}))
 				);
 
@@ -628,13 +647,18 @@ export class PayloadService {
 				// Nullify all related items that aren't included in the current payload
 				if (relation.meta.one_deselect_action === 'delete') {
 					// There's no revision for a deletion
-					await itemsService.deleteByQuery(query);
+					await itemsService.deleteByQuery(query, {
+						bypassEmitAction: (params) => nestedActionEvents.push(params),
+						emitEvents: opts?.emitEvents,
+					});
 				} else {
 					await itemsService.updateByQuery(
 						query,
 						{ [relation.field]: null },
 						{
 							onRevisionCreate: (pk) => revisions.push(pk),
+							bypassEmitAction: (params) => nestedActionEvents.push(params),
+							emitEvents: opts?.emitEvents,
 						}
 					);
 				}
@@ -646,15 +670,43 @@ export class PayloadService {
 				if (error) throw new InvalidPayloadException(`Invalid one-to-many update structure: ${error.message}`);
 
 				if (alterations.create) {
-					await itemsService.createMany(
-						alterations.create.map((item) => ({
+					const sortField = relation.meta.sort_field;
+
+					let createPayload: Alterations['create'];
+
+					if (sortField !== null) {
+						const highestOrderNumber: Record<'max', number | null> | undefined = await this.knex
+							.from(relation.collection)
+							.where({ [relation.field]: parent })
+							.whereNotNull(sortField)
+							.max(sortField, { as: 'max' })
+							.first();
+
+						createPayload = alterations.create.map((item, index) => {
+							const record = cloneDeep(item);
+
+							// add sort field value if it is not supplied in the item
+							if (parent !== null && record[sortField] === undefined) {
+								record[sortField] = highestOrderNumber?.max ? highestOrderNumber.max + index + 1 : index + 1;
+							}
+
+							return {
+								...record,
+								[relation.field]: parent || payload[currentPrimaryKeyField],
+							};
+						});
+					} else {
+						createPayload = alterations.create.map((item) => ({
 							...item,
 							[relation.field]: parent || payload[currentPrimaryKeyField],
-						})),
-						{
-							onRevisionCreate: (pk) => revisions.push(pk),
-						}
-					);
+						}));
+					}
+
+					await itemsService.createMany(createPayload, {
+						onRevisionCreate: (pk) => revisions.push(pk),
+						bypassEmitAction: (params) => nestedActionEvents.push(params),
+						emitEvents: opts?.emitEvents,
+					});
 				}
 
 				if (alterations.update) {
@@ -669,6 +721,8 @@ export class PayloadService {
 							},
 							{
 								onRevisionCreate: (pk) => revisions.push(pk),
+								bypassEmitAction: (params) => nestedActionEvents.push(params),
+								emitEvents: opts?.emitEvents,
 							}
 						);
 					}
@@ -693,13 +747,18 @@ export class PayloadService {
 					};
 
 					if (relation.meta.one_deselect_action === 'delete') {
-						await itemsService.deleteByQuery(query);
+						await itemsService.deleteByQuery(query, {
+							bypassEmitAction: (params) => nestedActionEvents.push(params),
+							emitEvents: opts?.emitEvents,
+						});
 					} else {
 						await itemsService.updateByQuery(
 							query,
 							{ [relation.field]: null },
 							{
 								onRevisionCreate: (pk) => revisions.push(pk),
+								bypassEmitAction: (params) => nestedActionEvents.push(params),
+								emitEvents: opts?.emitEvents,
 							}
 						);
 					}
@@ -707,7 +766,7 @@ export class PayloadService {
 			}
 		}
 
-		return { revisions };
+		return { revisions, nestedActionEvents };
 	}
 
 	/**

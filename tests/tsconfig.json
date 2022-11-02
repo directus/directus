@@ -4,7 +4,7 @@
 		"esModuleInterop": true,
 		"target": "ES2019",
 		"moduleResolution": "node",
-		"sourceMap": false,
+		"sourceMap": true,
 		"outDir": "dist",
 		"rootDir": ".",
 		"strict": true,

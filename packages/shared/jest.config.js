@@ -4,7 +4,9 @@ module.exports = {
 	preset: 'ts-jest',
 	verbose: true,
 	setupFiles: ['dotenv/config'],
-	testURL: process.env.TEST_URL || 'http://localhost',
+	testEnvironmentOptions: {
+		url: process.env.TEST_URL || 'http://localhost',
+	},
 	collectCoverageFrom: ['src/**/*.ts'],
 	testPathIgnorePatterns: ['dist'],
 };

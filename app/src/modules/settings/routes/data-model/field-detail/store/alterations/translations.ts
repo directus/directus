@@ -1,6 +1,7 @@
 import { StateUpdates, State, HelperFunctions } from '../types';
 import { set, get } from 'lodash';
-import { useCollectionsStore, useFieldsStore } from '@/stores';
+import { useCollectionsStore } from '@/stores/collections';
+import { useFieldsStore } from '@/stores/fields';
 
 export function applyChanges(updates: StateUpdates, state: State, helperFn: HelperFunctions) {
 	const { hasChanged } = helperFn;
@@ -9,6 +10,10 @@ export function applyChanges(updates: StateUpdates, state: State, helperFn: Help
 		removeSchema(updates);
 		setTypeToAlias(updates);
 		prepareRelation(updates, state);
+		setDefaults(updates, state, helperFn);
+	}
+
+	if (hasChanged('autoGenerateJunctionRelation')) {
 		setDefaults(updates, state, helperFn);
 	}
 
@@ -180,6 +185,43 @@ export function generateCollections(updates: StateUpdates, state: State, { getCu
 					schema: {},
 					meta: {},
 				},
+				// Open for discussion: we might want to limit choices to 'ltr' and 'rtl'
+				{
+					field: 'direction',
+					type: 'string',
+					schema: {
+						default_value: 'ltr',
+					},
+					meta: {
+						interface: 'select-dropdown',
+						options: {
+							choices: [
+								{
+									text: '$t:left_to_right',
+									value: 'ltr',
+								},
+								{
+									text: '$t:right_to_left',
+									value: 'rtl',
+								},
+							],
+						},
+						display: 'labels',
+						display_options: {
+							choices: [
+								{
+									text: '$t:left_to_right',
+									value: 'ltr',
+								},
+								{
+									text: '$t:right_to_left',
+									value: 'rtl',
+								},
+							],
+							format: false,
+						},
+					},
+				},
 			],
 		});
 
@@ -193,30 +235,42 @@ export function generateCollections(updates: StateUpdates, state: State, { getCu
 				{
 					code: 'en-US',
 					name: 'English',
+					direction: 'ltr',
+				},
+				{
+					code: 'ar-SA',
+					name: 'Arabic',
+					direction: 'rtl',
 				},
 				{
 					code: 'de-DE',
 					name: 'German',
+					direction: 'ltr',
 				},
 				{
 					code: 'fr-FR',
 					name: 'French',
+					direction: 'ltr',
 				},
 				{
 					code: 'ru-RU',
 					name: 'Russian',
+					direction: 'ltr',
 				},
 				{
 					code: 'es-ES',
 					name: 'Spanish',
+					direction: 'ltr',
 				},
 				{
 					code: 'it-IT',
 					name: 'Italian',
+					direction: 'ltr',
 				},
 				{
 					code: 'pt-BR',
 					name: 'Portuguese',
+					direction: 'ltr',
 				},
 			],
 		};
@@ -282,6 +336,8 @@ function generateFields(updates: StateUpdates, state: State, { getCurrent }: Hel
 }
 
 export function setDefaults(updates: StateUpdates, state: State, { getCurrent }: HelperFunctions) {
+	if (getCurrent('autoGenerateJunctionRelation') === false) return;
+
 	const fieldsStore = useFieldsStore();
 
 	const currentCollection = state.collection!;
@@ -293,7 +349,7 @@ export function setDefaults(updates: StateUpdates, state: State, { getCurrent }:
 	set(updates, 'relations.o2m.collection', junctionName);
 	set(updates, 'relations.o2m.field', `${currentCollection}_${currentCollectionPrimaryKeyField}`);
 	set(updates, 'relations.m2o.collection', junctionName);
-	set(updates, 'relations.m2o.related_collection', 'languages');
+	set(updates, 'relations.m2o.related_collection', getCurrent('relations.m2o.related_collection') ?? 'languages');
 
 	const languagesCollection = getCurrent('relations.m2o.related_collection');
 	const languagesCollectionPrimaryKeyField =

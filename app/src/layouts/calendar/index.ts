@@ -1,8 +1,8 @@
 import api from '@/api';
 import { router } from '@/router';
 import { useAppStore } from '@/stores/app';
-import getFullcalendarLocale from '@/utils/get-fullcalendar-locale';
-import { renderPlainStringTemplate } from '@/utils/render-string-template';
+import { getFullcalendarLocale } from '@/utils/get-fullcalendar-locale';
+import { renderDisplayStringTemplate } from '@/utils/render-string-template';
 import { saveAsCSV } from '@/utils/save-as-csv';
 import { syncRefProperty } from '@/utils/sync-ref-property';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -107,7 +107,7 @@ export default defineLayout<LayoutOptions>({
 			{
 				sort: computed(() => [primaryKeyField.value?.field || '']),
 				page: ref(1),
-				limit: ref(-1),
+				limit: ref(10000),
 				fields: queryFields,
 				filter: filterWithCalendarView,
 				search: search,
@@ -295,8 +295,8 @@ export default defineLayout<LayoutOptions>({
 			const allDay = endDateFieldInfo.value && endDateFieldInfo.value.type === 'date';
 
 			if (endDateField.value) {
-				if (allDay && isValid(item[endDateField.value])) {
-					const date = parse(item[endDateField.value], 'yyyy-MM-dd', new Date());
+				const date = parse(item[endDateField.value], 'yyyy-MM-dd', new Date());
+				if (allDay && isValid(date)) {
 					// FullCalendar uses exclusive end moments, so we'll have to increment the end date by 1 to get the
 					// expected result in the calendar
 					date.setDate(date.getDate() + 1);
@@ -310,7 +310,12 @@ export default defineLayout<LayoutOptions>({
 
 			return {
 				id: primaryKey,
-				title: renderPlainStringTemplate(template.value || `{{ ${primaryKeyField.value.field} }}`, item) || undefined,
+				title:
+					renderDisplayStringTemplate(
+						collection.value,
+						template.value || `{{ ${primaryKeyField.value.field} }}`,
+						item
+					) || item[primaryKeyField.value.field],
 				start: item[startDateField.value],
 				end: endDate,
 				allDay,

@@ -18,6 +18,7 @@ type LinkButton = {
 type UsableLink = {
 	linkDrawerOpen: Ref<boolean>;
 	linkSelection: Ref<LinkSelection>;
+	linkNode: Ref<HTMLLinkElement | null>;
 	closeLinkDrawer: () => void;
 	saveLink: () => void;
 	linkButton: LinkButton;
@@ -94,7 +95,7 @@ export default function useLink(editor: Ref<any>): UsableLink {
 		},
 	};
 
-	return { linkDrawerOpen, linkSelection, closeLinkDrawer, saveLink, linkButton };
+	return { linkDrawerOpen, linkSelection, linkNode, closeLinkDrawer, saveLink, linkButton };
 
 	function setLinkSelection(overrideLinkSelection: Partial<LinkSelection> = {}) {
 		linkSelection.value = Object.assign({}, defaultLinkSelection, overrideLinkSelection);
@@ -106,11 +107,19 @@ export default function useLink(editor: Ref<any>): UsableLink {
 	}
 
 	function saveLink() {
+		editor.value.fire('focus');
+
 		const link = linkSelection.value;
-		if (link.url === null) return;
-		const linkHtml = `<a href="${link.url}" title="${link.title || ''}" target="${link.newTab ? '_blank' : '_self'}" >${
-			link.displayText || link.url
-		}</a>`;
+		if (link.url === null) {
+			if (linkNode.value) {
+				editor.value.selection.setContent(linkNode.value.innerText);
+				closeLinkDrawer();
+			}
+			return;
+		}
+		const linkHtml = `<a href="${link.url}" ${link.title ? `title="${link.title}"` : ''} target="${
+			link.newTab ? '_blank' : '_self'
+		}" >${link.displayText || link.url}</a>`;
 
 		// New anchor tag or current selection node is an anchor tag
 		if (!linkNode.value || currentSelectionNode.value === linkNode.value) {
@@ -121,7 +130,7 @@ export default function useLink(editor: Ref<any>): UsableLink {
 			currentSelectionNode.value.innerHTML = link.displayText || link.url;
 			linkNode.value.setAttribute('data-mce-href', link.url); // Required for tinymce to update changes
 			linkNode.value.setAttribute('href', link.url);
-			linkNode.value.setAttribute('title', link.title || '');
+			if (link.title) linkNode.value.setAttribute('title', link.title);
 			linkNode.value.setAttribute('target', link.newTab ? '_blank' : '_self');
 			editor.value.selection.select(linkNode.value);
 			editor.value.selection.setNode(linkNode.value);

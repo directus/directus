@@ -101,6 +101,7 @@ export class SharesService extends ItemsService {
 			expires: refreshTokenExpiration,
 			ip: this.accountability?.ip,
 			user_agent: this.accountability?.userAgent,
+			origin: this.accountability?.origin,
 			share: record.share_id,
 		});
 

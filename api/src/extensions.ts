@@ -2,13 +2,17 @@ import express, { Router } from 'express';
 import path from 'path';
 import {
 	ActionHandler,
+	ApiExtension,
 	AppExtensionType,
 	EndpointConfig,
 	Extension,
 	ExtensionType,
 	FilterHandler,
 	HookConfig,
+	HybridExtension,
+	HybridExtensionType,
 	InitHandler,
+	OperationApiConfig,
 	ScheduleHandler,
 } from '@directus/shared/types';
 import {
@@ -16,15 +20,18 @@ import {
 	generateExtensionsEntry,
 	getLocalExtensions,
 	getPackageExtensions,
+	pathToRelativeUrl,
 	resolvePackage,
 } from '@directus/shared/utils/node';
 import {
-	API_EXTENSION_PACKAGE_TYPES,
-	API_EXTENSION_TYPES,
-	APP_EXTENSION_TYPES,
+	API_OR_HYBRID_EXTENSION_PACKAGE_TYPES,
+	API_OR_HYBRID_EXTENSION_TYPES,
+	APP_OR_HYBRID_EXTENSION_TYPES,
 	APP_SHARED_DEPS,
 	EXTENSION_PACKAGE_TYPES,
 	EXTENSION_TYPES,
+	HYBRID_EXTENSION_TYPES,
+	PACKAGE_EXTENSION_TYPES,
 } from '@directus/shared/constants';
 import getDatabase from './database';
 import emitter, { Emitter } from './emitter';
@@ -36,7 +43,7 @@ import fse from 'fs-extra';
 import { getSchema } from './utils/get-schema';
 
 import * as services from './services';
-import { schedule, ScheduledTask, validate } from 'node-cron';
+import { schedule, validate } from 'node-cron';
 import { rollup } from 'rollup';
 import virtual from '@rollup/plugin-virtual';
 import alias from '@rollup/plugin-alias';
@@ -44,7 +51,11 @@ import { Url } from './utils/url';
 import getModuleDefault from './utils/get-module-default';
 import { clone, escapeRegExp } from 'lodash';
 import chokidar, { FSWatcher } from 'chokidar';
-import { pluralize } from '@directus/shared/utils';
+import { isIn, isTypeIn, pluralize } from '@directus/shared/utils';
+import { getFlowManager } from './flows';
+import globby from 'globby';
+import { EventHandler } from './types';
+import { JobQueue } from './utils/job-queue';
 
 let extensionManager: ExtensionManager | undefined;
 
@@ -58,16 +69,11 @@ export function getExtensionManager(): ExtensionManager {
 	return extensionManager;
 }
 
-type EventHandler =
-	| { type: 'filter'; name: string; handler: FilterHandler }
-	| { type: 'action'; name: string; handler: ActionHandler }
-	| { type: 'init'; name: string; handler: InitHandler }
-	| { type: 'schedule'; task: ScheduledTask };
-
-type AppExtensions = Partial<Record<AppExtensionType, string>>;
+type AppExtensions = Partial<Record<AppExtensionType | HybridExtensionType, string>>;
 type ApiExtensions = {
 	hooks: { path: string; events: EventHandler[] }[];
 	endpoints: { path: string }[];
+	operations: { path: string }[];
 };
 
 type Options = {
@@ -87,11 +93,12 @@ class ExtensionManager {
 	private extensions: Extension[] = [];
 
 	private appExtensions: AppExtensions = {};
-	private apiExtensions: ApiExtensions = { hooks: [], endpoints: [] };
+	private apiExtensions: ApiExtensions = { hooks: [], endpoints: [], operations: [] };
 
 	private apiEmitter: Emitter;
 	private endpointRouter: Router;
 
+	private reloadQueue: JobQueue;
 	private watcher: FSWatcher | null = null;
 
 	constructor() {
@@ -99,57 +106,69 @@ class ExtensionManager {
 
 		this.apiEmitter = new Emitter();
 		this.endpointRouter = Router();
+
+		this.reloadQueue = new JobQueue();
 	}
 
 	public async initialize(options: Partial<Options> = {}): Promise<void> {
+		const prevOptions = this.options;
+
 		this.options = {
 			...defaultOptions,
 			...options,
 		};
 
-		this.initializeWatcher();
+		if (!prevOptions.watch && this.options.watch) {
+			this.initializeWatcher();
+		} else if (prevOptions.watch && !this.options.watch) {
+			await this.closeWatcher();
+		}
 
 		if (!this.isLoaded) {
 			await this.load();
-
-			this.updateWatchedExtensions(this.extensions);
 
 			const loadedExtensions = this.getExtensionsList();
 			if (loadedExtensions.length > 0) {
 				logger.info(`Loaded extensions: ${loadedExtensions.join(', ')}`);
 			}
 		}
+
+		if (!prevOptions.watch && this.options.watch) {
+			this.updateWatchedExtensions(this.extensions);
+		}
 	}
 
-	public async reload(): Promise<void> {
-		if (this.isLoaded) {
-			logger.info('Reloading extensions');
+	public reload(): void {
+		this.reloadQueue.enqueue(async () => {
+			if (this.isLoaded) {
+				logger.info('Reloading extensions');
 
-			const prevExtensions = clone(this.extensions);
+				const prevExtensions = clone(this.extensions);
 
-			await this.unload();
-			await this.load();
+				await this.unload();
+				await this.load();
 
-			const added = this.extensions.filter(
-				(extension) => !prevExtensions.some((prevExtension) => extension.path === prevExtension.path)
-			);
-			const removed = prevExtensions.filter(
-				(prevExtension) => !this.extensions.some((extension) => prevExtension.path === extension.path)
-			);
+				const added = this.extensions.filter(
+					(extension) => !prevExtensions.some((prevExtension) => extension.path === prevExtension.path)
+				);
+				const removed = prevExtensions.filter(
+					(prevExtension) => !this.extensions.some((extension) => prevExtension.path === extension.path)
+				);
 
-			this.updateWatchedExtensions(added, removed);
+				this.updateWatchedExtensions(added, removed);
 
-			const addedExtensions = added.map((extension) => extension.name);
-			const removedExtensions = removed.map((extension) => extension.name);
-			if (addedExtensions.length > 0) {
-				logger.info(`Added extensions: ${addedExtensions.join(', ')}`);
+				const addedExtensions = added.map((extension) => extension.name);
+				const removedExtensions = removed.map((extension) => extension.name);
+				if (addedExtensions.length > 0) {
+					logger.info(`Added extensions: ${addedExtensions.join(', ')}`);
+				}
+				if (removedExtensions.length > 0) {
+					logger.info(`Removed extensions: ${removedExtensions.join(', ')}`);
+				}
+			} else {
+				logger.warn('Extensions have to be loaded before they can be reloaded');
 			}
-			if (removedExtensions.length > 0) {
-				logger.info(`Removed extensions: ${removedExtensions.join(', ')}`);
-			}
-		} else {
-			logger.warn('Extensions have to be loaded before they can be reloaded');
-		}
+		});
 	}
 
 	public getExtensionsList(type?: ExtensionType): string[] {
@@ -160,7 +179,7 @@ class ExtensionManager {
 		}
 	}
 
-	public getAppExtensions(type: AppExtensionType): string | undefined {
+	public getAppExtensions(type: AppExtensionType | HybridExtensionType): string | undefined {
 		return this.appExtensions[type];
 	}
 
@@ -170,7 +189,7 @@ class ExtensionManager {
 
 	private async load(): Promise<void> {
 		try {
-			await ensureExtensionDirs(env.EXTENSIONS_PATH, env.SERVE_APP ? EXTENSION_TYPES : API_EXTENSION_TYPES);
+			await ensureExtensionDirs(env.EXTENSIONS_PATH, env.SERVE_APP ? EXTENSION_TYPES : API_OR_HYBRID_EXTENSION_TYPES);
 
 			this.extensions = await this.getExtensions();
 		} catch (err: any) {
@@ -180,6 +199,7 @@ class ExtensionManager {
 
 		this.registerHooks();
 		this.registerEndpoints();
+		await this.registerOperations();
 
 		if (env.SERVE_APP) {
 			this.appExtensions = await this.generateExtensionBundles();
@@ -191,6 +211,7 @@ class ExtensionManager {
 	private async unload(): Promise<void> {
 		this.unregisterHooks();
 		this.unregisterEndpoints();
+		this.unregisterOperations();
 
 		this.apiEmitter.offAll();
 
@@ -202,19 +223,18 @@ class ExtensionManager {
 	}
 
 	private initializeWatcher(): void {
-		if (this.options.watch && !this.watcher) {
+		if (!this.watcher) {
 			logger.info('Watching extensions for changes...');
 
-			const localExtensionPaths = (env.SERVE_APP ? EXTENSION_TYPES : API_EXTENSION_TYPES).map((type) =>
-				path.posix.join(
-					path.relative('.', env.EXTENSIONS_PATH).split(path.sep).join(path.posix.sep),
-					pluralize(type),
-					'*',
-					'index.js'
-				)
-			);
+			const localExtensionPaths = (env.SERVE_APP ? EXTENSION_TYPES : API_OR_HYBRID_EXTENSION_TYPES).flatMap((type) => {
+				const typeDir = path.posix.join(pathToRelativeUrl(env.EXTENSIONS_PATH), pluralize(type));
 
-			this.watcher = chokidar.watch([path.resolve('.', 'package.json'), ...localExtensionPaths], {
+				return isIn(type, HYBRID_EXTENSION_TYPES)
+					? [path.posix.join(typeDir, '*', 'app.js'), path.posix.join(typeDir, '*', 'api.js')]
+					: path.posix.join(typeDir, '*', 'index.js');
+			});
+
+			this.watcher = chokidar.watch([path.resolve('package.json'), ...localExtensionPaths], {
 				ignoreInitial: true,
 			});
 
@@ -225,15 +245,26 @@ class ExtensionManager {
 		}
 	}
 
+	private async closeWatcher(): Promise<void> {
+		if (this.watcher) {
+			await this.watcher.close();
+		}
+	}
+
 	private updateWatchedExtensions(added: Extension[], removed: Extension[] = []): void {
 		if (this.watcher) {
 			const toPackageExtensionPaths = (extensions: Extension[]) =>
 				extensions
 					.filter((extension) => !extension.local)
-					.map((extension) =>
-						extension.type !== 'pack'
-							? path.resolve(extension.path, extension.entrypoint || '')
-							: path.resolve(extension.path, 'package.json')
+					.flatMap((extension) =>
+						isTypeIn(extension, PACKAGE_EXTENSION_TYPES)
+							? path.resolve(extension.path, 'package.json')
+							: isTypeIn(extension, HYBRID_EXTENSION_TYPES)
+							? [
+									path.resolve(extension.path, extension.entrypoint.app),
+									path.resolve(extension.path, extension.entrypoint.api),
+							  ]
+							: path.resolve(extension.path, extension.entrypoint)
 					);
 
 			const addedPackageExtensionPaths = toPackageExtensionPaths(added);
@@ -247,11 +278,11 @@ class ExtensionManager {
 	private async getExtensions(): Promise<Extension[]> {
 		const packageExtensions = await getPackageExtensions(
 			'.',
-			env.SERVE_APP ? EXTENSION_PACKAGE_TYPES : API_EXTENSION_PACKAGE_TYPES
+			env.SERVE_APP ? EXTENSION_PACKAGE_TYPES : API_OR_HYBRID_EXTENSION_PACKAGE_TYPES
 		);
 		const localExtensions = await getLocalExtensions(
 			env.EXTENSIONS_PATH,
-			env.SERVE_APP ? EXTENSION_TYPES : API_EXTENSION_TYPES
+			env.SERVE_APP ? EXTENSION_TYPES : API_OR_HYBRID_EXTENSION_TYPES
 		);
 
 		return [...packageExtensions, ...localExtensions];
@@ -264,9 +295,9 @@ class ExtensionManager {
 			replacement: path,
 		}));
 
-		const bundles: Partial<Record<AppExtensionType, string>> = {};
+		const bundles: Partial<Record<AppExtensionType | HybridExtensionType, string>> = {};
 
-		for (const extensionType of APP_EXTENSION_TYPES) {
+		for (const extensionType of APP_OR_HYBRID_EXTENSION_TYPES) {
 			const entry = generateExtensionsEntry(extensionType, this.extensions);
 
 			try {
@@ -291,7 +322,7 @@ class ExtensionManager {
 	}
 
 	private async getSharedDepsMapping(deps: string[]) {
-		const appDir = await fse.readdir(path.join(resolvePackage('@directus/app'), 'dist', 'assets'));
+		const appDir = await fse.readdir(path.join(resolvePackage('@directus/app', __dirname), 'dist', 'assets'));
 
 		const depsMapping: Record<string, string> = {};
 		for (const dep of deps) {
@@ -311,11 +342,16 @@ class ExtensionManager {
 	}
 
 	private registerHooks(): void {
-		const hooks = this.extensions.filter((extension) => extension.type === 'hook');
+		const hooks = this.extensions.filter((extension): extension is ApiExtension => extension.type === 'hook');
 
 		for (const hook of hooks) {
 			try {
-				this.registerHook(hook);
+				const hookPath = path.resolve(hook.path, hook.entrypoint);
+				const hookInstance: HookConfig | { default: HookConfig } = require(hookPath);
+
+				const config = getModuleDefault(hookInstance);
+
+				this.registerHook(config, hookPath);
 			} catch (error: any) {
 				logger.warn(`Couldn't register hook "${hook.name}"`);
 				logger.warn(error);
@@ -324,11 +360,16 @@ class ExtensionManager {
 	}
 
 	private registerEndpoints(): void {
-		const endpoints = this.extensions.filter((extension) => extension.type === 'endpoint');
+		const endpoints = this.extensions.filter((extension): extension is ApiExtension => extension.type === 'endpoint');
 
 		for (const endpoint of endpoints) {
 			try {
-				this.registerEndpoint(endpoint, this.endpointRouter);
+				const endpointPath = path.resolve(endpoint.path, endpoint.entrypoint);
+				const endpointInstance: EndpointConfig | { default: EndpointConfig } = require(endpointPath);
+
+				const config = getModuleDefault(endpointInstance);
+
+				this.registerEndpoint(config, endpointPath, endpoint.name, this.endpointRouter);
 			} catch (error: any) {
 				logger.warn(`Couldn't register endpoint "${endpoint.name}"`);
 				logger.warn(error);
@@ -336,14 +377,41 @@ class ExtensionManager {
 		}
 	}
 
-	private registerHook(hook: Extension) {
-		const hookPath = path.resolve(hook.path, hook.entrypoint || '');
-		const hookInstance: HookConfig | { default: HookConfig } = require(hookPath);
+	private async registerOperations(): Promise<void> {
+		const internalPaths = await globby(path.posix.join(pathToRelativeUrl(__dirname), 'operations/*/index.(js|ts)'));
 
-		const register = getModuleDefault(hookInstance);
+		const internalOperations = internalPaths.map((internalPath) => {
+			const dirs = internalPath.split(path.sep);
 
+			return {
+				name: dirs[dirs.length - 2],
+				path: dirs.slice(0, -1).join(path.sep),
+				entrypoint: { api: dirs[dirs.length - 1] },
+			};
+		});
+
+		const operations = this.extensions.filter(
+			(extension): extension is HybridExtension => extension.type === 'operation'
+		);
+
+		for (const operation of [...internalOperations, ...operations]) {
+			try {
+				const operationPath = path.resolve(operation.path, operation.entrypoint.api);
+				const operationInstance: OperationApiConfig | { default: OperationApiConfig } = require(operationPath);
+
+				const config = getModuleDefault(operationInstance);
+
+				this.registerOperation(config, operationPath);
+			} catch (error: any) {
+				logger.warn(`Couldn't register operation "${operation.name}"`);
+				logger.warn(error);
+			}
+		}
+	}
+
+	private registerHook(register: HookConfig, path: string) {
 		const hookHandler: { path: string; events: EventHandler[] } = {
-			path: hookPath,
+			path,
 			events: [],
 		};
 
@@ -410,14 +478,9 @@ class ExtensionManager {
 		this.apiExtensions.hooks.push(hookHandler);
 	}
 
-	private registerEndpoint(endpoint: Extension, router: Router) {
-		const endpointPath = path.resolve(endpoint.path, endpoint.entrypoint || '');
-		const endpointInstance: EndpointConfig | { default: EndpointConfig } = require(endpointPath);
-
-		const mod = getModuleDefault(endpointInstance);
-
-		const register = typeof mod === 'function' ? mod : mod.handler;
-		const routeName = typeof mod === 'function' ? endpoint.name : mod.id;
+	private registerEndpoint(config: EndpointConfig, path: string, name: string, router: Router) {
+		const register = typeof config === 'function' ? config : config.handler;
+		const routeName = typeof config === 'function' ? name : config.id;
 
 		const scopedRouter = express.Router();
 		router.use(`/${routeName}`, scopedRouter);
@@ -433,7 +496,17 @@ class ExtensionManager {
 		});
 
 		this.apiExtensions.endpoints.push({
-			path: endpointPath,
+			path,
+		});
+	}
+
+	private registerOperation(config: OperationApiConfig, path: string) {
+		const flowManager = getFlowManager();
+
+		flowManager.addOperation(config.id, config.handler);
+
+		this.apiExtensions.operations.push({
+			path,
 		});
 	}
 
@@ -470,5 +543,17 @@ class ExtensionManager {
 		this.endpointRouter.stack = [];
 
 		this.apiExtensions.endpoints = [];
+	}
+
+	private unregisterOperations(): void {
+		for (const operation of this.apiExtensions.operations) {
+			delete require.cache[require.resolve(operation.path)];
+		}
+
+		const flowManager = getFlowManager();
+
+		flowManager.clearOperations();
+
+		this.apiExtensions.operations = [];
 	}
 }

@@ -15,6 +15,7 @@
 					scope="files-navigation"
 					exact
 					disable-groupable-parent
+					:arrow-placement="nestedFolders && nestedFolders.length > 0 ? 'after' : false"
 				>
 					<template #activator>
 						<v-list-item-icon>
@@ -63,9 +64,9 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, watch } from 'vue';
-import useFolders, { Folder } from '@/composables/use-folders';
+import { useFolders, Folder } from '@/composables/use-folders';
 import NavigationFolder from './navigation-folder.vue';
-import arraysAreEqual from '@/utils/arrays-are-equal';
+import { isEqual } from 'lodash';
 
 export default defineComponent({
 	components: { NavigationFolder },
@@ -103,7 +104,7 @@ export default defineComponent({
 				}
 			}
 
-			if (newOpenFolders.length !== 1 && arraysAreEqual(newOpenFolders, openFolders.value) === false) {
+			if (newOpenFolders.length !== 1 && isEqual(newOpenFolders, openFolders.value) === false) {
 				openFolders.value = newOpenFolders;
 			}
 

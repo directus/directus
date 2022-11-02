@@ -4,9 +4,10 @@
 
 import { Knex } from 'knex';
 import { cloneDeep, mapKeys, omitBy, uniq, isEmpty } from 'lodash';
-import { AST, FieldNode, NestedCollectionNode } from '../types';
+import { AST, FieldNode, FunctionFieldNode, NestedCollectionNode } from '../types';
 import { Query, PermissionsAction, Accountability, SchemaOverview } from '@directus/shared/types';
 import { getRelationType } from '../utils/get-relation-type';
+import { REGEX_BETWEEN_PARENS } from '@directus/shared/constants';
 
 type GetASTOptions = {
 	accountability?: Accountability | null;
@@ -105,11 +106,11 @@ export default async function getASTFromQuery(
 
 		fields = await convertWildcards(parentCollection, fields);
 
-		if (!fields) return [];
+		if (!fields || !Array.isArray(fields)) return [];
 
-		const children: (NestedCollectionNode | FieldNode)[] = [];
+		const children: (NestedCollectionNode | FieldNode | FunctionFieldNode)[] = [];
 
-		const relationalStructure: Record<string, string[] | anyNested> = {};
+		const relationalStructure: Record<string, string[] | anyNested> = Object.create(null);
 
 		for (const fieldKey of fields) {
 			let name = fieldKey;
@@ -165,6 +166,28 @@ export default async function getASTFromQuery(
 					}
 				}
 			} else {
+				if (fieldKey.includes('(') && fieldKey.includes(')')) {
+					const columnName = fieldKey.match(REGEX_BETWEEN_PARENS)![1];
+					const foundField = schema.collections[parentCollection].fields[columnName];
+
+					if (foundField && foundField.type === 'alias') {
+						const foundRelation = schema.relations.find(
+							(relation) => relation.related_collection === parentCollection && relation.meta?.one_field === columnName
+						);
+
+						if (foundRelation) {
+							children.push({
+								type: 'functionField',
+								name,
+								fieldKey,
+								query: {},
+								relatedCollection: foundRelation.collection,
+							});
+							continue;
+						}
+					}
+				}
+
 				children.push({ type: 'field', name, fieldKey });
 			}
 		}

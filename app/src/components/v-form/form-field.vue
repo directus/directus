@@ -11,8 +11,11 @@
 					:edited="isEdited"
 					:has-error="!!validationError"
 					:badge="badge"
+					:raw-editor-enabled="rawEditorEnabled"
+					:raw-editor-active="rawEditorActive"
 					:loading="loading"
 					@toggle-batch="$emit('toggle-batch', $event)"
+					@toggle-raw="$emit('toggle-raw', $event)"
 				/>
 			</template>
 
@@ -39,21 +42,21 @@
 			:batch-active="batchActive"
 			:disabled="isDisabled"
 			:primary-key="primaryKey"
+			:raw-editor-enabled="rawEditorEnabled"
+			:raw-editor-active="rawEditorActive"
+			:direction="direction"
 			@update:model-value="emitValue($event)"
 			@set-field-value="$emit('setFieldValue', $event)"
 		/>
 
-		<v-dialog v-model="showRaw" @esc="showRaw = false">
-			<v-card>
-				<v-card-title>{{ isDisabled ? t('view_raw_value') : t('edit_raw_value') }}</v-card-title>
-				<v-card-text>
-					<v-textarea v-model="rawValue" :disabled="isDisabled" class="raw-value" :placeholder="t('enter_raw_value')" />
-				</v-card-text>
-				<v-card-actions>
-					<v-button @click="showRaw = false">{{ t('done') }}</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
+		<form-field-raw-editor
+			:show-modal="showRaw"
+			:field="field"
+			:current-value="internalValue"
+			:disabled="isDisabled"
+			@cancel="showRaw = false"
+			@set-raw-value="onRawValueSubmit"
+		/>
 
 		<small v-if="field.meta && field.meta.note" v-md="field.meta.note" class="type-note" />
 
@@ -67,17 +70,17 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
-import { getJSType } from '@/utils/get-js-type';
+<script setup lang="ts">
 import { Field, ValidationError } from '@directus/shared/types';
 import { isEqual } from 'lodash';
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import FormFieldInterface from './form-field-interface.vue';
 import FormFieldLabel from './form-field-label.vue';
 import FormFieldMenu from './form-field-menu.vue';
 import { formatFieldFunction } from '@/utils/format-field-function';
-import useClipboard from '@/composables/use-clipboard';
+import { useClipboard } from '@/composables/use-clipboard';
+import FormFieldRawEditor from './form-field-raw-editor.vue';
 
 interface Props {
 	field: Field;
@@ -91,6 +94,9 @@ interface Props {
 	validationError?: ValidationError;
 	autofocus?: boolean;
 	badge?: string;
+	rawEditorEnabled?: boolean;
+	rawEditorActive?: boolean;
+	direction?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -104,9 +110,12 @@ const props = withDefaults(defineProps<Props>(), {
 	validationError: undefined,
 	autofocus: false,
 	badge: undefined,
+	rawEditorEnabled: false,
+	rawEditorActive: false,
+	direction: undefined,
 });
 
-const emit = defineEmits(['toggle-batch', 'unset', 'update:modelValue', 'setFieldValue']);
+const emit = defineEmits(['toggle-batch', 'toggle-raw', 'unset', 'update:modelValue', 'setFieldValue']);
 
 const { t } = useI18n();
 
@@ -117,24 +126,9 @@ const isDisabled = computed(() => {
 	return false;
 });
 
-const defaultValue = computed(() => {
-	const value = props.field?.schema?.default_value;
+const { internalValue, isEdited, defaultValue } = useComputedValues();
 
-	if (value !== undefined) return value;
-	return undefined;
-});
-
-const internalValue = computed(() => {
-	if (props.modelValue !== undefined) return props.modelValue;
-	if (props.initialValue !== undefined) return props.initialValue;
-	return defaultValue.value;
-});
-
-const isEdited = computed<boolean>(() => {
-	return props.modelValue !== undefined && isEqual(props.modelValue, props.initialValue) === false;
-});
-
-const { showRaw, rawValue, copyRaw, pasteRaw } = useRaw();
+const { showRaw, copyRaw, pasteRaw, onRawValueSubmit } = useRaw();
 
 const validationMessage = computed(() => {
 	if (!props.validationError) return null;
@@ -172,54 +166,49 @@ function useRaw() {
 
 	const { copyToClipboard, pasteFromClipboard } = useClipboard();
 
-	const type = computed(() => {
-		return getJSType(props.field);
-	});
-
-	const rawValue = computed({
-		get() {
-			switch (type.value) {
-				case 'object':
-					return JSON.stringify(internalValue.value, null, '\t');
-				case 'string':
-				case 'number':
-				case 'boolean':
-				default:
-					return internalValue.value;
-			}
-		},
-		set(newRawValue: string) {
-			switch (type.value) {
-				case 'string':
-					emit('update:modelValue', newRawValue);
-					break;
-				case 'number':
-					emit('update:modelValue', Number(newRawValue));
-					break;
-				case 'boolean':
-					emit('update:modelValue', newRawValue === 'true');
-					break;
-				case 'object':
-					emit('update:modelValue', JSON.parse(newRawValue));
-					break;
-				default:
-					emit('update:modelValue', newRawValue);
-					break;
-			}
-		},
-	});
+	function onRawValueSubmit(value: any) {
+		showRaw.value = false;
+		emitValue(value);
+	}
 
 	async function copyRaw() {
-		await copyToClipboard(rawValue.value);
+		await copyToClipboard(internalValue.value);
 	}
 
 	async function pasteRaw() {
 		const pastedValue = await pasteFromClipboard();
 		if (!pastedValue) return;
-		rawValue.value = pastedValue;
+		internalValue.value = pastedValue;
+		emitValue(pastedValue);
 	}
 
-	return { showRaw, rawValue, copyRaw, pasteRaw };
+	return { showRaw, copyRaw, pasteRaw, onRawValueSubmit };
+}
+
+function useComputedValues() {
+	const defaultValue = computed<any>(() => props.field?.schema?.default_value);
+	const internalValue = ref<any>(getInternalValue());
+	const isEdited = computed(
+		() => props.modelValue !== undefined && isEqual(props.modelValue, props.initialValue) === false
+	);
+
+	watch(
+		() => props.modelValue,
+		() => {
+			const newVal = getInternalValue();
+			if (!isEqual(internalValue.value, newVal)) {
+				internalValue.value = newVal;
+			}
+		}
+	);
+
+	return { internalValue, isEdited, defaultValue };
+
+	function getInternalValue(): any {
+		if (props.modelValue !== undefined) return props.modelValue;
+		if (props.initialValue !== undefined) return props.initialValue;
+		return defaultValue.value;
+	}
 }
 </script>
 
@@ -233,6 +222,14 @@ function useRaw() {
 	display: block;
 	max-width: 520px;
 	margin-top: 4px;
+
+	:deep(a) {
+		color: var(--primary);
+
+		&:hover {
+			color: var(--primary-125);
+		}
+	}
 }
 
 .invalid {
@@ -249,10 +246,6 @@ function useRaw() {
 	margin-top: 4px;
 	color: var(--danger);
 	font-style: italic;
-}
-
-.raw-value {
-	--v-textarea-font-family: var(--family-monospace);
 }
 
 .label-spacer {

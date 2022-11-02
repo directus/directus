@@ -1,4 +1,6 @@
-import { Router } from 'express';
+import { BaseException } from '@directus/shared/exceptions';
+import { parseJSON } from '@directus/shared/utils';
+import express, { Router } from 'express';
 import flatten from 'flat';
 import jwt from 'jsonwebtoken';
 import ms from 'ms';
@@ -8,10 +10,11 @@ import env from '../../env';
 import {
 	InvalidConfigException,
 	InvalidCredentialsException,
-	InvalidTokenException,
 	InvalidProviderException,
+	InvalidTokenException,
 	ServiceUnavailableException,
 } from '../../exceptions';
+import { RecordNotUniqueException } from '../../exceptions/database/record-not-unique';
 import logger from '../../logger';
 import { respond } from '../../middleware/respond';
 import { AuthenticationService, UsersService } from '../../services';
@@ -19,7 +22,6 @@ import { AuthData, AuthDriverOptions, User } from '../../types';
 import asyncHandler from '../../utils/async-handler';
 import { getConfigFromEnv } from '../../utils/get-config-from-env';
 import { getIPFromReq } from '../../utils/get-ip-from-req';
-import { parseJSON } from '../../utils/parse-json';
 import { Url } from '../../utils/url';
 import { LocalAuthDriver } from './local';
 
@@ -71,7 +73,10 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 						})
 					);
 				})
-				.catch(reject);
+				.catch((e) => {
+					logger.error(e, '[OpenID] Failed to fetch provider config');
+					process.exit(1);
+				});
 		});
 	}
 
@@ -111,8 +116,8 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 	}
 
 	async getUserID(payload: Record<string, any>): Promise<string> {
-		if (!payload.code || !payload.codeVerifier) {
-			logger.trace('[OpenID] No code or codeVerifier in payload');
+		if (!payload.code || !payload.codeVerifier || !payload.state) {
+			logger.warn('[OpenID] No code, codeVerifier or state in payload');
 			throw new InvalidCredentialsException();
 		}
 
@@ -168,19 +173,27 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 
 		// Is public registration allowed?
 		if (!allowPublicRegistration || !isEmailVerified) {
-			logger.trace(`[OpenID] User doesn't exist, and public registration not allowed for provider "${provider}"`);
+			logger.warn(`[OpenID] User doesn't exist, and public registration not allowed for provider "${provider}"`);
 			throw new InvalidCredentialsException();
 		}
 
-		await this.usersService.createOne({
-			provider,
-			first_name: userInfo.given_name,
-			last_name: userInfo.family_name,
-			email: email,
-			external_identifier: identifier,
-			role: this.config.defaultRoleId,
-			auth_data: tokenSet.refresh_token && JSON.stringify({ refreshToken: tokenSet.refresh_token }),
-		});
+		try {
+			await this.usersService.createOne({
+				provider,
+				first_name: userInfo.given_name,
+				last_name: userInfo.family_name,
+				email: email,
+				external_identifier: identifier,
+				role: this.config.defaultRoleId,
+				auth_data: tokenSet.refresh_token && JSON.stringify({ refreshToken: tokenSet.refresh_token }),
+			});
+		} catch (e) {
+			if (e instanceof RecordNotUniqueException) {
+				logger.warn(e, '[OpenID] Failed to register user. User not unique');
+				throw new InvalidProviderException();
+			}
+			throw e;
+		}
 
 		return (await this.fetchUserId(identifier)) as string;
 	}
@@ -265,6 +278,15 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 		respond
 	);
 
+	router.post(
+		'/callback',
+		express.urlencoded({ extended: false }),
+		(req, res) => {
+			res.redirect(303, `./callback?${new URLSearchParams(req.body)}`);
+		},
+		respond
+	);
+
 	router.get(
 		'/callback',
 		asyncHandler(async (req, res, next) => {
@@ -287,6 +309,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 				accountability: {
 					ip: getIPFromReq(req),
 					userAgent: req.get('user-agent'),
+					origin: req.get('origin'),
 					role: null,
 				},
 				schema: req.schema,
@@ -296,11 +319,6 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 
 			try {
 				res.clearCookie(`openid.${providerName}`);
-
-				if (!req.query.code || !req.query.state) {
-					logger.warn(`[OpenID] Couldn't extract OpenID code or state from query: ${JSON.stringify(req.query)}`);
-				}
-
 				authResponse = await authenticationService.login(providerName, {
 					code: req.query.code,
 					codeVerifier: verifier,
@@ -317,14 +335,8 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 				if (redirect) {
 					let reason = 'UNKNOWN_EXCEPTION';
 
-					if (error instanceof ServiceUnavailableException) {
-						reason = 'SERVICE_UNAVAILABLE';
-					} else if (error instanceof InvalidCredentialsException) {
-						reason = 'INVALID_USER';
-					} else if (error instanceof InvalidTokenException) {
-						reason = 'INVALID_TOKEN';
-					} else if (error instanceof InvalidProviderException) {
-						reason = 'INVALID_PROVIDER';
+					if (error instanceof BaseException) {
+						reason = error.code;
 					} else {
 						logger.warn(error, `[OpenID] Unexpected error during OpenID login`);
 					}

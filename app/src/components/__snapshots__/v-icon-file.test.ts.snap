@@ -1,0 +1,7 @@
+// Vitest Snapshot v1
+
+exports[`Mount component 1`] = `
+"<div class=\\"icon\\" data-v-a90644d4=\\"\\">
+  <v-icon-stub name=\\"insert_drive_file\\" data-v-a90644d4=\\"\\"></v-icon-stub><span class=\\"label\\" data-v-a90644d4=\\"\\">png</span>
+</div>"
+`;

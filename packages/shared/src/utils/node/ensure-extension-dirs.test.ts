@@ -1,10 +1,11 @@
-import { ensureExtensionDirs } from './ensure-extension-dirs';
+import { describe, beforeEach, afterEach, it, expect } from 'vitest';
+
+import { DirResult, dirSync } from 'tmp';
 import { EXTENSION_TYPES } from '../../constants/extensions';
-import { ExtensionType } from '../../types';
-import { dirSync, SynchrounousResult } from 'tmp';
+import { ensureExtensionDirs } from './ensure-extension-dirs';
 
 describe('ensureExtensionDirs', () => {
-	let rootDir: SynchrounousResult;
+	let rootDir: DirResult;
 
 	beforeEach(() => {
 		rootDir = dirSync({ unsafeCleanup: true });
@@ -14,14 +15,13 @@ describe('ensureExtensionDirs', () => {
 		rootDir.removeCallback();
 	});
 
-	const types = EXTENSION_TYPES as readonly ExtensionType[];
 	it('returns undefined if the folders exist', async () => {
-		expect(await ensureExtensionDirs(rootDir.name, types)).toBe(undefined);
+		expect(await ensureExtensionDirs(rootDir.name, EXTENSION_TYPES)).toBe(undefined);
 	});
 
-	it('throws an error when a folder cant be opened', () => {
+	it('throws an error when a folder can not be opened', () => {
 		expect(async () => {
-			await ensureExtensionDirs('/.', types);
+			await ensureExtensionDirs('/.', EXTENSION_TYPES);
 		}).rejects.toThrow(`Extension folder "/interfaces" couldn't be opened`);
 	});
 });

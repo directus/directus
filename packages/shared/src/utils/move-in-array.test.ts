@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { moveInArray } from './move-in-array';
 
 describe('moveInArray', () => {

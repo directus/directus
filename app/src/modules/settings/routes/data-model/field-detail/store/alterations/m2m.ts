@@ -1,6 +1,8 @@
 import { StateUpdates, State, HelperFunctions } from '../types';
 import { set } from 'lodash';
-import { useCollectionsStore, useFieldsStore, useRelationsStore } from '@/stores';
+import { useCollectionsStore } from '@/stores/collections';
+import { useFieldsStore } from '@/stores/fields';
+import { useRelationsStore } from '@/stores/relations';
 
 export function applyChanges(updates: StateUpdates, state: State, helperFn: HelperFunctions) {
 	const { hasChanged } = helperFn;
@@ -123,7 +125,8 @@ export function autoGenerateJunctionFields(updates: StateUpdates, state: State, 
 
 	const currentCollection = state.collection!;
 	const currentPrimaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(currentCollection)?.field ?? 'id';
-	const relatedCollection = updates.relations?.m2o?.related_collection;
+	const relatedCollection =
+		updates.relations?.m2o?.related_collection ?? getCurrent('relations.m2o.related_collection');
 
 	if (relatedCollection) {
 		const automaticJunctionCollectionName = getAutomaticJunctionCollectionName(currentCollection, relatedCollection);

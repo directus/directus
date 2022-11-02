@@ -1,7 +1,7 @@
 <template>
 	<private-view :title="title">
 		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon secondary exact @click="router.back()">
+			<v-button class="header-icon" rounded icon secondary exact @click="navigateBack">
 				<v-icon name="arrow_back" />
 			</v-button>
 		</template>
@@ -105,7 +105,7 @@
 			<div v-if="isNew === false" class="user-box">
 				<div class="avatar">
 					<v-skeleton-loader v-if="loading || previewLoading" />
-					<img
+					<v-image
 						v-else-if="avatarSrc && !avatarError"
 						:src="avatarSrc"
 						:alt="t('avatar')"
@@ -182,30 +182,30 @@
 </template>
 
 <script lang="ts">
+import { computed, defineComponent, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { defineComponent, computed, toRefs, ref, watch, ComponentPublicInstance } from 'vue';
 
-import UsersNavigation from '../components/navigation.vue';
-import { setLanguage } from '@/lang/set-language';
-import { useRouter } from 'vue-router';
-import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
-import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail';
-import useItem from '@/composables/use-item';
-import SaveOptions from '@/views/private/components/save-options';
 import api from '@/api';
-import { useFieldsStore, useCollectionsStore, useServerStore } from '@/stores/';
-import useFormFields from '@/composables/use-form-fields';
-import { Field } from '@directus/shared/types';
-import UserInfoSidebarDetail from '../components/user-info-sidebar-detail.vue';
-import { getRootPath } from '@/utils/get-root-path';
-import useShortcut from '@/composables/use-shortcut';
-import { useCollection } from '@directus/shared/composables';
-import { userName } from '@/utils/user-name';
+import { useEditsGuard } from '@/composables/use-edits-guard';
+import { useFormFields } from '@/composables/use-form-fields';
+import { useItem } from '@/composables/use-item';
 import { usePermissions } from '@/composables/use-permissions';
+import { useShortcut } from '@/composables/use-shortcut';
+import { setLanguage } from '@/lang/set-language';
+import { useUserStore } from '@/stores/user';
+import { useCollectionsStore } from '@/stores/collections';
+import { useFieldsStore } from '@/stores/fields';
+import { useServerStore } from '@/stores/server';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { addTokenToURL } from '@/api';
-import { useUserStore } from '@/stores';
-import useEditsGuard from '@/composables/use-edits-guard';
+import { userName } from '@/utils/user-name';
+import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
+import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail.vue';
+import SaveOptions from '@/views/private/components/save-options.vue';
+import { useCollection } from '@directus/shared/composables';
+import { Field } from '@directus/shared/types';
+import { useRouter } from 'vue-router';
+import UsersNavigation from '../components/navigation.vue';
+import UserInfoSidebarDetail from '../components/user-info-sidebar-detail.vue';
 
 export default defineComponent({
 	name: 'UsersItem',
@@ -236,7 +236,7 @@ export default defineComponent({
 
 		const { info: collectionInfo } = useCollection('directus_users');
 
-		const revisionsDrawerDetail = ref<ComponentPublicInstance | null>(null);
+		const revisionsDrawerDetail = ref<InstanceType<typeof RevisionsDrawerDetail> | null>(null);
 
 		const {
 			isNew,
@@ -328,6 +328,7 @@ export default defineComponent({
 			item,
 			loading,
 			isNew,
+			navigateBack,
 			breadcrumb,
 			edits,
 			hasEdits,
@@ -368,6 +369,16 @@ export default defineComponent({
 			avatarError,
 			isSavable,
 		};
+
+		function navigateBack() {
+			const backState = router.options.history.state.back;
+			if (typeof backState !== 'string' || !backState.startsWith('/login')) {
+				router.back();
+				return;
+			}
+
+			router.push('/users');
+		}
 
 		function useBreadcrumb() {
 			const breadcrumb = computed(() => [
@@ -477,7 +488,7 @@ export default defineComponent({
 					});
 
 					avatarSrc.value = response.data.data.avatar?.id
-						? addTokenToURL(getRootPath() + `assets/${response.data.data.avatar.id}?key=system-medium-cover`)
+						? `/assets/${response.data.data.avatar.id}?key=system-medium-cover`
 						: null;
 
 					roleName.value = response.data.data?.role?.name;

@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { abbreviateNumber } from './abbreviate-number';
 
 describe('when no unit is given', () => {

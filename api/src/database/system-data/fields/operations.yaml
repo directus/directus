@@ -1,0 +1,23 @@
+table: directus_operations
+
+fields:
+  - field: id
+    special:
+      - uuid
+  - field: name
+  - field: key
+  - field: type
+  - field: position_x
+  - field: position_y
+  - field: options
+    special:
+      - cast-json
+  - field: resolve
+  - field: reject
+  - field: flow
+  - field: date_created
+    special:
+      - date-created
+  - field: user_created
+    special:
+      - user-created

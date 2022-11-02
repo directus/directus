@@ -1,5 +1,10 @@
 <template>
-	<v-list-group :clickable="item.selectable" :value="item.value">
+	<v-list-group
+		:active="isActive"
+		:clickable="groupSelectable || item.selectable"
+		:value="item.value"
+		@click="onGroupClick(item)"
+	>
 		<template #activator>
 			<v-list-item-icon v-if="multiple === false && allowOther === false && item.icon">
 				<v-icon :name="item.icon" />
@@ -24,6 +29,7 @@
 				:model-value="modelValue"
 				:multiple="multiple"
 				:allow-other="allowOther"
+				:group-selectable="groupSelectable"
 				@update:model-value="$emit('update:modelValue', $event)"
 			/>
 			<select-list-item
@@ -38,32 +44,42 @@
 	</v-list-group>
 </template>
 
-<script lang="ts">
-import { defineComponent, PropType } from 'vue';
+<script setup lang="ts">
+import { computed } from 'vue';
 import { Option } from './types';
 import SelectListItem from './select-list-item.vue';
 
-export default defineComponent({
-	name: 'SelectListItemGroup',
-	components: { SelectListItem },
-	props: {
-		item: {
-			type: Object as PropType<Option>,
-			required: true,
-		},
-		modelValue: {
-			type: [String, Number, Array] as PropType<string | number | (string | number)[]>,
-			default: null,
-		},
-		multiple: {
-			type: Boolean,
-			required: true,
-		},
-		allowOther: {
-			type: Boolean,
-			required: true,
-		},
-	},
-	emits: ['update:modelValue'],
+interface Props {
+	item: Option;
+	modelValue?: string | number | (string | number)[] | null;
+	multiple?: boolean;
+	allowOther?: boolean;
+	groupSelectable?: boolean;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+	modelValue: null,
+	multiple: true,
+	allowOther: true,
+	groupSelectable: false,
 });
+
+const emit = defineEmits(['update:modelValue']);
+
+const isActive = computed(() => {
+	if (props.multiple) {
+		if (!Array.isArray(props.modelValue) || !props.item.value) {
+			return false;
+		}
+		return props.modelValue.includes(props.item.value);
+	} else {
+		return props.modelValue === props.item.value;
+	}
+});
+
+function onGroupClick(item: Option) {
+	if (!props.groupSelectable) return;
+
+	emit('update:modelValue', item.value);
+}
 </script>

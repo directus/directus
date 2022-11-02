@@ -1,0 +1,15 @@
+// Vitest Snapshot v1
+
+exports[`Mount component 1`] = `
+"<div class=\\"v-input full-width\\" data-v-418390f4=\\"\\">
+  <!--v-if-->
+  <div class=\\"input\\" data-v-418390f4=\\"\\">
+    <!--v-if-->
+    <!--v-if--><input autocomplete=\\"off\\" type=\\"text\\" step=\\"1\\" data-v-418390f4=\\"\\">
+    <!--v-if-->
+    <!--v-if-->
+    <!--v-if-->
+  </div>
+  <!--v-if-->
+</div>"
+`;

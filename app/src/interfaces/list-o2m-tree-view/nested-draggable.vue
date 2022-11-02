@@ -19,6 +19,7 @@
 			<li class="row" :class="{ draggable: element.$type !== 'deleted' }">
 				<item-preview
 					:item="element"
+					:edits="getItemEdits(element)"
 					:template="template"
 					:collection="collection"
 					:disabled="disabled"
@@ -27,7 +28,7 @@
 					:deleted="element.$type === 'deleted'"
 					:delete-icon="getDeselectIcon(element)"
 					@update:open="open[element[relationInfo.relatedPrimaryKeyField.field]] = $event"
-					@input="update"
+					@input="stageEdits"
 					@deselect="remove(element)"
 				/>
 				<nested-draggable
@@ -88,21 +89,21 @@ export default {
 <script setup lang="ts">
 import Draggable from 'vuedraggable';
 import { computed, ref, toRefs } from 'vue';
-import hideDragImage from '@/utils/hide-drag-image';
+import { hideDragImage } from '@/utils/hide-drag-image';
 import ItemPreview from './item-preview.vue';
 import { Filter } from '@directus/shared/types';
+import { RelationO2M } from '@/composables/use-relation-o2m';
 import {
 	DisplayItem,
-	RelationO2M,
 	RelationQueryMultiple,
 	useRelationMultiple,
 	ChangesItem,
-} from '@/composables/use-relation';
-import DrawerCollection from '@/views/private/components/drawer-collection';
-import DrawerItem from '@/views/private/components/drawer-item';
+} from '@/composables/use-relation-multiple';
+import DrawerCollection from '@/views/private/components/drawer-collection.vue';
+import DrawerItem from '@/views/private/components/drawer-item.vue';
 import { useI18n } from 'vue-i18n';
 import { moveInArray } from '@directus/shared/utils';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, isEmpty } from 'lodash';
 
 type ChangeEvent =
 	| {
@@ -182,7 +183,7 @@ const query = computed<RelationQueryMultiple>(() => ({
 	page: page.value,
 }));
 
-const { displayItems, create, update, remove, select, cleanItem, localDelete } = useRelationMultiple(
+const { displayItems, create, update, remove, select, cleanItem, localDelete, getItemEdits } = useRelationMultiple(
 	value,
 	query,
 	relationInfo,
@@ -271,6 +272,12 @@ function addNew(item: Record<string, any>) {
 	item[relationInfo.value.reverseJunctionField.field] = primaryKey.value;
 	create(item);
 }
+
+function stageEdits(item: Record<string, any>) {
+	if (isEmpty(item)) return;
+
+	update(item);
+}
 </script>
 
 <style lang="scss" scoped>
@@ -310,5 +317,13 @@ function addNew(item: Record<string, any>) {
 .ghost .preview {
 	background-color: var(--primary-alt);
 	box-shadow: 0 !important;
+}
+
+.actions {
+	margin-top: 12px;
+}
+
+.actions .v-button + .v-button {
+	margin-left: 12px;
 }
 </style>

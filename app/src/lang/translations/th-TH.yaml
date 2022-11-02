@@ -21,22 +21,39 @@
 #'Proxy', 'Intl'
 identifier: ตัวบ่งชี้
 avatar: ภาพประจำตัว
+application: แอพลิเคชัน
 default_provider: ค่าเริ่มต้น
+method: เมธอด
 published: เผยแพร่แล้ว
 draft: ฉบับร่าง
 archived: เก็บถาวร
 modules: โมดูล
+module_bar: โมดูลบาร์
+logs: บันทึกย้อนหลัง
+reset_width: รีเซ็ตความกว้าง
+tile_size: ขนาดกรอบ
 edit_field: แก้ไขฟิลด์
 conditions: เงื่อนไข
+location: ตำแหน่งที่ตั้ง
+condition_rules: ลักษณะเงื่อนไข
+input: Input
 maps: แผนที่
+switch_user: สลับผู้ใช้งาน
+item_creation: สร้างรายการ
 item_revision: ประวัติรายการ
 enter_a_name: กรอกชื่อ...
 duplicate_field: สำเนาฟิลด์
 half_width: กว้างครึ่งหนึ่ง
 full_width: กว้างเต็มหน้า
 group: กลุ่ม
+export_items: นำออกรายการ
 and: และ
 or: หรือ
+init: ริเริ่ม
+dataset_too_large_currently_showing_n_items: ฐานข้อมูลใหญ่เกินไป. สามารถแสดงได้เพียง {n} รายการ.
+modifier: แก้ไขโดย
+custom: กำหนดเอง
+hook: ฮุก
 fill_width: กว้างเติมเต็ม
 field_name_translations: คำแปลชื่อฟิลด์
 enter_password_to_enable_tfa: กรอกรหัสของคุณเพื่อเปิดการยืนยันรหัส 2 ขั้นตอน
@@ -49,14 +66,18 @@ edit_collection: แก้ไขคอลเลกชัน
 exclusive: เฉพาะ
 children: ลูก
 db_only_click_to_configure: 'ฐานข้อมูลเท่านั้น: คลิกเพื่อกำหนดค่า'
+show_active_items: แสดงรายการแอกทีฟ
 show_archived_items: แสดงรายการเก็บถาวร
+show_all_items: แสดงรายการทั้งหมด
 edited: ค่าที่ถูกแก้ไข
 required: จำเป็นต้องระบุ
 required_for_app_access: จำเป็นต้องระบุเพื่อเข้าถึงแอป
 requires_value: ต้องการข้อมูล
 create_preset: สร้างที่ตั้งไว้ล่วงหน้า
+create_panel: สร้างแผงควบคุม
 create_role: สร้างบทบาท
 create_user: สร้างผู้ใช้งาน
+message: ข้อความ
 create_webhook: สร้างเว็บฮุก
 invite_users: เชิญชวนผู้ใช้งาน
 invite: เชิญชวน
@@ -488,7 +509,6 @@ unexpected_error_copy: เกิดข้อผิดพลาดที่ไม
 copy_details: คัดลอกรายละเอียด
 no_app_access: ไม่สามารถเข้าถึงแอป
 no_app_access_copy: ผู้ใช้นี้ไม่ได้รับอนุญาตให้เข้าถึงส่วนแอดมิน
-password_reset_sent: เราได้ส่งขั้นตอนการกำหนดรหัสผ่านใหม่ให้คุณแล้วทางอีเมล
 password_reset_successful: รหัสผ่านถูกรีเซ็ตแล้ว
 back: ย้อนกลับ
 filter: ตัวกรอง
@@ -509,8 +529,6 @@ start_end_of_count_items: '{start}-{end} ของ {count} ไอเท็ม'
 start_end_of_count_filtered_items: '{start}-{end} ของ {count} ไอเท็มที่ถูกกรอง'
 one_item: '1 รายการ'
 one_filtered_item: 'มี 1 ไอเท็มที่ถูกกรอง'
-delete_collection_are_you_sure: >-
-  แน่ใจหรือว่าต้องการลบคอลเลกชันนี้? นี่คือการลบคอลเลกชันและรายการทั้งหมดที่มีอยู่ในคอลเลกชัน ไม่สามารถกู้คืนได้
 collections_shown: แสดงคอลเลกชัน
 visible_collections: คอลเลกชันที่มองเห็นได้
 hidden_collections: คอลเลกชันที่ซ่อนอยู่
@@ -614,6 +632,7 @@ on_create: เมื่อสร้าง
 on_update: เมื่อแก้ไข
 read: อ่าน
 update: แก้ไข
+delete: ลบ
 select_fields: เลือกฟิลด์
 format_text: รูปแบบข้อความ
 bold: ตัวหนา
@@ -621,6 +640,11 @@ toggle: สลับ
 icon_on: แสดงไอคอน
 icon_off: ไม่แสดงไอคอน
 label: ป้าย
+trigger: Trigger
+flow_name: ชื่อ
+flow_tracking_activity: ติดตามกิจกรรมเท่านั้น
+flow_tracking_null: อย่าติดตามอะไรเลย
+code: โค้ด
 dashboard: แดชบอร์ด
 panel: แพแนล
 panel_options: ตัวเลือกแพแนล
@@ -735,6 +759,7 @@ preset_search_placeholder: ค้นหาด้วย...
 editing_preset: แก้ไขค่าที่ตั้งไว้ล่วงหน้า
 layout_preview: ตัวอย่างเค้าโครง
 layout_setup: ตั้งค่าเค้าโครง
+data: ข้อมูล
 unsaved_changes: ไม่ได้บันทึกการเปลี่ยนแปลง
 unsaved_changes_copy: คุณแน่ใจว่าต้องการออกจากหน้านี้?
 discard_changes: ยกเลิกการเปลี่ยนแปลง
@@ -854,7 +879,6 @@ fields:
     status_archived: เก็บถาวร
     role: บทบาท
     token: โทเค็น
-    token_placeholder: ระบุโทเค็นความปลอดภัย
     provider: ผู้ให้บริการ
     last_page: หน้าสุดท้าย
     last_access: การเข้าถึงล่าสุด
@@ -875,6 +899,7 @@ fields:
     files_and_thumbnails: ไฟล์ และ ที่เก็บ
     storage_default_folder: โฟลเดอร์เริ่มต้น
     custom_css: CSS ที่กำหนดเอง
+    module_bar: โมดูลบาร์
   directus_shares:
     name: ชื่อ
     role: บทบาท
@@ -1029,12 +1054,13 @@ sort_direction: รูปแบบการเรียง
 sort_asc: เรียงจากน้อยไปมาก
 sort_desc: เรียงจากมากไปน้อย
 template: แม่แบบ
-require_value_to_be_set: ต้องระบุ
 translation: แปลภาษา
 value: ค่า
 view_project: ดูโครงการ
 report_error: แจ้งข้อผิดพลาด
 start: เริ่มต้น
+table: ตาราง
+list: รายการ
 interfaces:
   filter:
     name: ตัวกรอง
@@ -1088,6 +1114,8 @@ interfaces:
     include_seconds: รวมวินาทีด้วย
     set_to_now: ตั้งค่าเป็นตอนนี้
     use_24: ใช้รูปแบบ 24 ชั่วโมง
+  system-fields:
+    select_a_collection: เลือกคอลเลกชัน
   system-display-template:
     display-template: แม่แบบการแสดงผล
     description: ผสมระหว่างข้อความและค่าของฟิลด์
@@ -1181,6 +1209,7 @@ interfaces:
     description: สร้างหลายรายการโดยใช้โครงสร้างเดียวกัน
     edit_fields: แก้ไขฟิลด์
     add_label: 'ป้ายกำกับ "สร้างใหม่"'
+    sort: เรียง
     field_name_placeholder: กรอกชื่อฟิลด์
     field_note_placeholder: กรอกโน้ตให้ฟิลด์
   slider:
@@ -1227,6 +1256,8 @@ interfaces:
   translations:
     display_template: แม่แบบการแสดงผล
     no_collection: ไม่มีคอลเลกชัน
+    user_language: ใช้ภาษาของบัญชีผู้ใช้
+    default_language: ภาษาเริ่มต้น
   list-o2m-tree-view:
     description: มุมมองแผนภูมิสำหรับรายการข้อมูลหนึ่งต่อหลายรายการแบบซ้ำซ้อน
     recursive_only: อินเทอร์เฟซมุมมองแผนภูมิใช้งานได้กับความสัมพันธ์แบบซ้ำซ้อนเท่านั้น
@@ -1251,6 +1282,8 @@ interfaces:
     value_path: ส่วนค่า
     trigger: Trigger
     rate: ' ให้คะแนน'
+  system-token:
+    system-token: โทเค็น
 displays:
   translations:
     translations: การแปลภาษา
@@ -1286,6 +1319,7 @@ displays:
     short: สั้น
     relative: อิงเวลา
     relative_label: 'แสดงเป็นเวลาที่อิงกัน เช่น 5 นาทีที่แล้ว'
+    suffix: คำต่อท้าย
   file:
     file: ไฟล์
     description: แสดงไฟล์
@@ -1373,6 +1407,8 @@ layouts:
   map:
     map: แผนที่
     find_location: ค้นหาสถานที่
+  kanban:
+    crop: ครอบตัด
 panels:
   metric:
     field: ฟิลด์
@@ -1383,3 +1419,19 @@ panels:
     name: ป้าย
   list:
     name: รายการ
+triggers:
+  webhook:
+    method: เมธอด
+operations:
+  log:
+    message: ข้อความ
+  notification:
+    recipient: ผู้ใช้
+    message: ข้อความ
+  request:
+    url: URL
+    method: เมธอด
+    data: ข้อมูล
+    header: เฮดเดอร์
+  trigger:
+    data: ข้อมูล

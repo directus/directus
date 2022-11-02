@@ -21,13 +21,13 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { computed, defineComponent, PropType } from 'vue';
-import { Role } from '@directus/shared/types';
-import { useUserStore } from '@/stores';
+import { useUserStore } from '@/stores/user';
+import { BasicRole } from '../composables/use-navigation';
 
 export default defineComponent({
 	props: {
 		role: {
-			type: Object as PropType<Role>,
+			type: Object as PropType<BasicRole>,
 			required: true,
 		},
 		lastAdmin: {

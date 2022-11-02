@@ -1,4 +1,5 @@
-import { useFieldsStore, useRelationsStore } from '@/stores/';
+import { useFieldsStore } from '@/stores/fields';
+import { useRelationsStore } from '@/stores/relations';
 import { Field, Relation, Type } from '@directus/shared/types';
 import { getRelationType } from '@directus/shared/utils';
 import { isNil } from 'lodash';
@@ -25,7 +26,7 @@ export type FieldTreeContext = {
 export function useFieldTree(
 	collection: Ref<string | null>,
 	inject?: Ref<{ fields: Field[]; relations: Relation[] } | null>,
-	filter: (field: Field) => boolean = () => true
+	filter: (field: Field, parent?: FieldNode) => boolean = () => true
 ): FieldTreeContext {
 	const fieldsStore = useFieldsStore();
 	const relationsStore = useRelationsStore();
@@ -59,7 +60,7 @@ export function useFieldTree(
 					field.meta?.special?.includes('group') ||
 					(!field.meta?.special?.includes('alias') && !field.meta?.special?.includes('no-data'))
 			)
-			.filter((field) => filter(field));
+			.filter((field) => filter(field, parent));
 
 		const topLevelFields = allFields.filter((field) => {
 			if (parent?.group === true) return field.meta?.group === parent?.field;
@@ -72,7 +73,7 @@ export function useFieldTree(
 	}
 
 	function makeNode(field: Field, parent?: FieldNode): FieldNode | FieldNode[] {
-		const relatedCollections = getRelatedCollections(field);
+		const { relationType, relatedCollections } = getRelationTypeAndRelatedCollections(field);
 		const pathContext = parent?.path ? parent.path + '.' : '';
 		const keyContext = parent?.key ? parent.key + '.' : '';
 
@@ -94,7 +95,7 @@ export function useFieldTree(
 			};
 		}
 
-		if (relatedCollections.length <= 1) {
+		if (relatedCollections.length <= 1 && relationType !== 'm2a') {
 			return {
 				name: field.name,
 				field: field.field,
@@ -119,20 +120,23 @@ export function useFieldTree(
 		});
 	}
 
-	function getRelatedCollections(field: Field): string[] {
+	function getRelationTypeAndRelatedCollections(field: Field): {
+		relationType: 'o2m' | 'm2o' | 'm2a' | null;
+		relatedCollections: string[];
+	} {
 		const relation = getRelationForField(field);
-		if (!relation?.meta) return [];
+		if (!relation?.meta) return { relationType: null, relatedCollections: [] };
 		const relationType = getRelationType({ relation, collection: field.collection, field: field.field });
 
 		switch (relationType) {
 			case 'o2m':
-				return [relation!.meta!.many_collection];
+				return { relationType: 'o2m', relatedCollections: [relation!.meta!.many_collection] };
 			case 'm2o':
-				return [relation!.meta!.one_collection!];
+				return { relationType: 'm2o', relatedCollections: [relation!.meta!.one_collection!] };
 			case 'm2a':
-				return relation!.meta!.one_allowed_collections!;
+				return { relationType: 'm2a', relatedCollections: relation!.meta!.one_allowed_collections! };
 			default:
-				return [];
+				return { relationType: null, relatedCollections: [] };
 		}
 	}
 

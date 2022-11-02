@@ -1,5 +1,8 @@
-import { definePanel } from '@directus/shared/utils';
-import PanelList from './list.vue';
+import { useFieldsStore } from '@/stores/fields';
+import { useCollectionsStore } from '@/stores/collections';
+import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
+import { definePanel, getFieldsFromTemplate } from '@directus/shared/utils';
+import PanelList from './panel-list.vue';
 
 export default definePanel({
 	id: 'list',
@@ -7,6 +10,37 @@ export default definePanel({
 	description: '$t:panels.list.description',
 	icon: 'list',
 	component: PanelList,
+	query(options) {
+		if (!options?.collection) return;
+
+		const collectionsStore = useCollectionsStore();
+		const collectionInfo = collectionsStore.getCollection(options.collection);
+
+		if (!collectionInfo) return;
+		if (collectionInfo?.meta?.singleton) return;
+
+		const fieldsStore = useFieldsStore();
+		const primaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(options.collection);
+		const displayFields = [primaryKeyField!.field];
+
+		const sort = options.sortField ?? primaryKeyField?.field;
+
+		if (options.displayTemplate) {
+			displayFields.push(
+				...adjustFieldsForDisplays(getFieldsFromTemplate(options.displayTemplate), options.collection)
+			);
+		}
+
+		return {
+			collection: options.collection,
+			query: {
+				filter: options.filter ?? {},
+				fields: displayFields,
+				sort: !options.sortDirection || options.sortDirection === 'desc' ? `-${sort}` : sort,
+				limit: options.limit === undefined ? 5 : options.limit,
+			},
+		};
+	},
 	options: [
 		{
 			field: 'collection',
@@ -16,6 +50,7 @@ export default definePanel({
 				interface: 'system-collection',
 				options: {
 					includeSystem: true,
+					includeSingleton: false,
 				},
 				width: 'half',
 			},
@@ -76,11 +111,24 @@ export default definePanel({
 			type: 'string',
 			meta: {
 				interface: 'system-display-template',
-				width: 'full',
+				width: 'half',
 				options: {
 					collectionField: 'collection',
 					placeholder: '{{ field }}',
 				},
+			},
+		},
+		{
+			field: 'linkToItem',
+			name: '$t:list_panel_allow_edit',
+			type: 'boolean',
+			meta: {
+				width: 'half',
+				interface: 'toggle',
+				required: true,
+			},
+			schema: {
+				default_value: false,
 			},
 		},
 		{
@@ -97,4 +145,5 @@ export default definePanel({
 	],
 	minWidth: 12,
 	minHeight: 6,
+	skipUndefinedKeys: ['displayTemplate'],
 });

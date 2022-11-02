@@ -19,7 +19,7 @@
 			</template>
 
 			<template #title-outer:prepend>
-				<v-button class="header-icon" rounded disabled icon secondary>
+				<v-button class="header-icon" rounded icon exact disabled>
 					<v-icon name="bookmark_border" />
 				</v-button>
 			</template>
@@ -89,7 +89,7 @@
 
 			<component :is="`layout-${layout || 'tabular'}`" class="layout" v-bind="layoutState">
 				<template #no-results>
-					<v-info :title="t('no_presets')" icon="bookmark" center type="warning">
+					<v-info :title="t('no_presets')" icon="bookmark" center>
 						{{ t('no_presets_copy') }}
 
 						<template #append>
@@ -99,7 +99,7 @@
 				</template>
 
 				<template #no-items>
-					<v-info :title="t('no_presets')" icon="bookmark" center type="warning">
+					<v-info :title="t('no_presets')" icon="bookmark" center>
 						{{ t('no_presets_copy') }}
 
 						<template v-if="createAllowed" #append>
@@ -123,7 +123,7 @@
 				</layout-sidebar-detail>
 				<component :is="`layout-sidebar-${layout || 'tabular'}`" v-bind="layoutState" />
 				<refresh-sidebar-detail v-model="refreshInterval" @refresh="refresh" />
-				<export-sidebar-detail :collection="collection" :filter="filter" :search="search" />
+				<export-sidebar-detail :collection="collection" :filter="filter" :search="search" @refresh="refresh" />
 			</template>
 
 			<v-dialog :model-value="deleteError !== null">
@@ -148,13 +148,15 @@ import SettingsNavigation from '../../../components/navigation.vue';
 import PresetsInfoSidebarDetail from './components/presets-info-sidebar-detail.vue';
 
 import { useCollection, useLayout } from '@directus/shared/composables';
-import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
-import RefreshSidebarDetail from '@/views/private/components/refresh-sidebar-detail';
-import SearchInput from '@/views/private/components/search-input';
-import { usePermissionsStore, useUserStore, usePresetsStore } from '@/stores';
-import DrawerBatch from '@/views/private/components/drawer-batch';
+import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
+import RefreshSidebarDetail from '@/views/private/components/refresh-sidebar-detail.vue';
+import SearchInput from '@/views/private/components/search-input.vue';
+import { usePermissionsStore } from '@/stores/permissions';
+import { useUserStore } from '@/stores/user';
+import { usePresetsStore } from '@/stores/presets';
+import DrawerBatch from '@/views/private/components/drawer-batch.vue';
 import { getLayouts } from '@/layouts';
-import { Filter } from '@directus/shared/types';
+import { usePreset } from '@/composables/use-preset';
 
 export default defineComponent({
 	name: 'ContentCollection',
@@ -169,11 +171,8 @@ export default defineComponent({
 	setup() {
 		const layout = ref('tabular');
 		const collection = ref('directus_presets');
-		const layoutOptions = ref<Record<string, any>>({});
-		const layoutQuery = ref<Record<string, any>>({});
-		const filter = ref<Filter | null>(null);
-		const search = ref<string | null>(null);
-		const refreshInterval = ref<number | null>(null);
+		const { layoutOptions, layoutQuery, filter, search, refreshInterval } = usePreset(collection);
+
 		const { t } = useI18n();
 
 		const { layouts } = getLayouts();
@@ -309,8 +308,10 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .header-icon {
-	--v-button-color-disabled: var(--primary);
 	--v-button-background-color-disabled: var(--primary-10);
+	--v-button-color-disabled: var(--primary);
+	--v-button-background-color-hover-disabled: var(--primary-25);
+	--v-button-color-hover-disabled: var(--primary);
 }
 
 .action-delete {

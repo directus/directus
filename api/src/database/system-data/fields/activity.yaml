@@ -37,6 +37,9 @@ fields:
 
   - field: timestamp
     display: datetime
+    special:
+      - date-created
+      - cast-timestamp
     options:
       relative: true
     width: half
@@ -57,6 +60,12 @@ fields:
       font: monospace
     width: half
 
+  - field: origin
+    display: formatted-value
+    display_options:
+      font: monospace
+    width: half
+
   - field: ip
     display: formatted-value
     display_options:
@@ -65,7 +74,8 @@ fields:
 
   - field: revisions
     interface: list-o2m
-    special: o2m
+    special:
+      - o2m
     options:
       fields:
         - collection

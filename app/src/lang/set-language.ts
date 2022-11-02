@@ -3,17 +3,20 @@ import { getInterfaces } from '@/interfaces';
 import { getPanels } from '@/panels';
 import { getLayouts } from '@/layouts';
 import { getModules } from '@/modules';
-import { useCollectionsStore, useFieldsStore } from '@/stores';
+import { useCollectionsStore } from '@/stores/collections';
+import { useFieldsStore } from '@/stores/fields';
 import { translate } from '@/utils/translate-object-values';
 import availableLanguages from './available-languages.yaml';
 import { i18n, Language, loadedLanguages } from './index';
+import { getOperations } from '@/operations';
 import { useTranslationStrings } from '@/composables/use-translation-strings';
-
 const { modules, modulesRaw } = getModules();
 const { layouts, layoutsRaw } = getLayouts();
 const { interfaces, interfacesRaw } = getInterfaces();
 const { panels, panelsRaw } = getPanels();
 const { displays, displaysRaw } = getDisplays();
+const { operations, operationsRaw } = getOperations();
+import { loadDateFNSLocale } from '@/utils/get-date-fns-locale';
 
 export async function setLanguage(lang: Language): Promise<boolean> {
 	const collectionsStore = useCollectionsStore();
@@ -45,10 +48,13 @@ export async function setLanguage(lang: Language): Promise<boolean> {
 	interfaces.value = translate(interfacesRaw.value);
 	panels.value = translate(panelsRaw.value);
 	displays.value = translate(displaysRaw.value);
+	operations.value = translate(operationsRaw.value);
 
 	collectionsStore.translateCollections();
 	fieldsStore.translateFields();
 	mergeTranslationStringsForLanguage(lang);
+
+	await loadDateFNSLocale(lang);
 
 	return true;
 }

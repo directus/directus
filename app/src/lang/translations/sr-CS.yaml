@@ -1,7 +1,10 @@
 ---
 avatar: Avatar
+application: Aplikacija
 published: Objavljeno
 edit_field: Izmijeni
+location: Lokacija
+input: Unos
 item_revision: Revizija stavke
 duplicate_field: Dupliraj
 half_width: Pola širine
@@ -412,7 +415,6 @@ unexpected_error_copy: Desila se neočekivana greška. Molimo pokušajte kasnije
 copy_details: Kopiraj Detalje
 no_app_access: Bez pristupa Aplikaciji
 no_app_access_copy: Ovom korisniku nije dozvoljeno da koristi administratorsku aplikaciju.
-password_reset_sent: Poslali smo Vam sigurnosni link za resetovanje lozinke
 password_reset_successful: Lozinka je uspješno resetovana
 back: Nazad
 editing_image: Uređivanje Fotografije
@@ -430,8 +432,6 @@ start_end_of_count_items: '{start}-{end} od {count} stavki'
 start_end_of_count_filtered_items: '{start}-{end} od {count} filtriranih stavki'
 one_item: '1 Stavka'
 one_filtered_item: '1 Filtrirana Stavka'
-delete_collection_are_you_sure: >-
-  Da li ste sigurni da želite da obrišete ovu kolekciju? Ova operacija će obrisati kolekciju i sve stavke unutar iste. Ova operacija je trajna.
 collections_shown: Prikazano Kolekcija
 visible_collections: Vidljive Kolekcije
 hidden_collections: Sakrivene Kolekcije
@@ -528,6 +528,11 @@ toggle: Isključi / Uključi
 icon_on: Ikonica Na
 icon_off: Bez Ikonice
 label: Oznaka
+trigger: Okidač
+flow_name: Ime
+flow_tracking_activity: Samo Prati Aktivnost
+flow_tracking_null: Bez praćenja
+code: Kod
 full_screen: Pun ekran
 image_url: Url slike
 alt_text: Alternativni tekst
@@ -876,6 +881,7 @@ translation: Prevodi
 value: Vrijednost
 view_project: Pregledaj Projekat
 report_error: Prijavi Grešku
+table: Tabela
 interfaces:
   filter:
     add_filter: Dodaj Filter
@@ -921,6 +927,8 @@ interfaces:
     include_seconds: Uključujući Sekunde
     set_to_now: Postavi na Sadašnji
     use_24: Koristi 24-časovni Format
+  system-fields:
+    select_a_collection: Izaberi Kolekciju
   system-display-template:
     display-template: Šablon za Prikaz
     description: Miješanje statičnih tekstualnih i dinamičkih vrijednosti polja
@@ -1006,6 +1014,7 @@ interfaces:
     description: Napravi više upisa od postojeće strukture
     edit_fields: Izmijeni Polja
     add_label: '"Napravi Novi" Labela'
+    sort: Sortiranje
     field_name_placeholder: Unesi ime polja...
     field_note_placeholder: Unesi napomenu polja...
   slider:
@@ -1076,6 +1085,8 @@ interfaces:
     value_path: Putanja Vrijednosti
     trigger: Okidač
     rate: Ocjena
+  system-token:
+    system-token: Token
 displays:
   translations:
     translations: Prevodi
@@ -1108,6 +1119,7 @@ displays:
     short: Kratko
     relative: Relativno
     relative_label: 'Prikaži relativno vrijeme, primjer: prije 5 minuta'
+    suffix: Sufiks
   file:
     file: Fajl
     description: Prikaži fajlove
@@ -1192,6 +1204,13 @@ layouts:
     calendar: Kalendar
     start_date_field: Polje Početnog Datuma
     end_date_field: Polje Završnog Datuma
+  kanban:
+    crop: Isjecanje
 panels:
   label:
     name: Oznaka
+operations:
+  notification:
+    recipient: Korisnik
+  request:
+    url: URL adresa

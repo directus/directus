@@ -13,13 +13,13 @@ export function getFilterOperatorsForType(
 	switch (type) {
 		// Text
 		case 'binary':
-		case 'hash':
 		case 'string':
+		case 'text':
 		case 'csv':
 			return [
 				'contains',
-				'icontains',
 				'ncontains',
+				'icontains',
 				'starts_with',
 				'nstarts_with',
 				'ends_with',
@@ -34,7 +34,9 @@ export function getFilterOperatorsForType(
 				'nin',
 				...validationOnlyStringFilterOperators,
 			];
-
+		// Hash
+		case 'hash':
+			return ['empty', 'nempty', 'null', 'nnull'];
 		// JSON
 		// UUID
 		case 'uuid':
@@ -57,25 +59,10 @@ export function getFilterOperatorsForType(
 		case 'dateTime':
 		case 'date':
 		case 'time':
-			return [
-				'eq',
-				'neq',
-				'null',
-				'nnull',
-				'lt',
-				'lte',
-				'gt',
-				'gte',
-				'between',
-				'nbetween',
-				'null',
-				'nnull',
-				'in',
-				'nin',
-			];
+			return ['eq', 'neq', 'lt', 'lte', 'gt', 'gte', 'between', 'nbetween', 'null', 'nnull', 'in', 'nin'];
 
 		case 'geometry':
-			return ['null', 'nnull', 'intersects', 'nintersects', 'intersects_bbox', 'nintersects_bbox'];
+			return ['eq', 'neq', 'null', 'nnull', 'intersects', 'nintersects', 'intersects_bbox', 'nintersects_bbox'];
 
 		default:
 			return [

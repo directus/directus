@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { adjustDate } from './adjust-date';
 
 describe('Adjust a given date by a given change in duration.', () => {

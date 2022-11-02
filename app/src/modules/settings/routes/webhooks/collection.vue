@@ -14,7 +14,7 @@
 			<template #headline><v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" /></template>
 
 			<template #title-outer:prepend>
-				<v-button class="header-icon" rounded disabled icon secondary>
+				<v-button class="header-icon" rounded icon exact disabled>
 					<v-icon name="anchor" />
 				</v-button>
 			</template>
@@ -95,11 +95,11 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, ref } from 'vue';
 import SettingsNavigation from '../../components/navigation.vue';
-import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
+import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
 import { usePreset } from '@/composables/use-preset';
 import { useLayout } from '@directus/shared/composables';
 import api from '@/api';
-import SearchInput from '@/views/private/components/search-input';
+import SearchInput from '@/views/private/components/search-input.vue';
 
 type Item = {
 	[field: string]: any;
@@ -188,8 +188,10 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .header-icon {
-	--v-button-color-disabled: var(--primary);
 	--v-button-background-color-disabled: var(--primary-10);
+	--v-button-color-disabled: var(--primary);
+	--v-button-background-color-hover-disabled: var(--primary-25);
+	--v-button-color-hover-disabled: var(--primary);
 }
 
 .action-delete {

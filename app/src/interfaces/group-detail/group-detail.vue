@@ -12,6 +12,7 @@
 			>
 				<template v-if="headerIcon" #icon><v-icon :name="headerIcon" class="header-icon" /></template>
 				<template v-if="field.name">
+					<span v-if="edited" v-tooltip="t('edited')" class="edit-dot"></span>
 					<span class="title">{{ field.name }}</span>
 				</template>
 				<v-icon
@@ -35,6 +36,8 @@
 			:loading="loading"
 			:batch-mode="batchMode"
 			:disabled="disabled"
+			:badge="badge"
+			:direction="direction"
 			nested
 			@update:model-value="$emit('apply', $event)"
 		/>
@@ -92,6 +95,10 @@ export default defineComponent({
 			type: Array as PropType<ValidationError[]>,
 			default: () => [],
 		},
+		badge: {
+			type: String,
+			default: null,
+		},
 
 		start: {
 			type: String,
@@ -106,6 +113,10 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
+		direction: {
+			type: String,
+			default: undefined,
+		},
 	},
 	emits: ['apply'],
 	setup(props) {
@@ -117,7 +128,7 @@ export default defineComponent({
 			if (!props.values) return false;
 
 			const editedFields = Object.keys(props.values);
-			return props.fields.some((field) => editedFields.includes(field.field)) ? true : false;
+			return props.fields.some((field) => editedFields.includes(field.field));
 		});
 
 		const validationMessages = computed(() => {
@@ -152,7 +163,7 @@ export default defineComponent({
 			detailOpen.value = validationMessages.value.length > 0;
 		});
 
-		return { edited, validationMessages, detailOpen };
+		return { t, edited, validationMessages, detailOpen };
 	},
 });
 </script>
@@ -176,13 +187,13 @@ export default defineComponent({
 	transform: rotate(0) !important;
 }
 
-.v-divider .title {
+.v-divider :deep(.type-text) {
 	position: relative;
 }
 
-.v-divider.edited:not(.active) .title::before {
+.v-divider.edited:not(.active) .edit-dot {
 	position: absolute;
-	top: 14px;
+	top: 7px;
 	left: -7px;
 	display: block;
 	width: 4px;
@@ -190,7 +201,6 @@ export default defineComponent({
 	background-color: var(--foreground-subdued);
 	border-radius: 4px;
 	content: '';
-	pointer-events: none;
 }
 
 .header-icon {

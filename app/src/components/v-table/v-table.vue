@@ -98,7 +98,7 @@ import TableRow from './table-row.vue';
 import { sortBy, clone, forEach, pick } from 'lodash';
 import { i18n } from '@/lang/';
 import Draggable from 'vuedraggable';
-import hideDragImage from '@/utils/hide-drag-image';
+import { hideDragImage } from '@/utils/hide-drag-image';
 
 const HeaderDefaults: Header = {
 	text: '',
@@ -276,7 +276,7 @@ const columnStyle = computed<string>(() => {
 
 		gridTemplateColumns = gridTemplateColumns + ' 1fr';
 
-		if (hasItemAppendSlot.value || hasHeaderAppendSlot.value) gridTemplateColumns += ' auto';
+		if (hasItemAppendSlot.value || hasHeaderAppendSlot.value) gridTemplateColumns += ' min-content';
 
 		return gridTemplateColumns;
 	}

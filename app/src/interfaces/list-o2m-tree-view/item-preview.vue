@@ -17,7 +17,7 @@
 			v-model:active="editActive"
 			:collection="collection"
 			:primary-key="item[props.relationInfo.relatedPrimaryKeyField.field] || '+'"
-			:edits="item"
+			:edits="edits"
 			:circular-field="props.relationInfo.reverseJunctionField.field"
 			@input="$emit('input', $event)"
 		/>
@@ -26,8 +26,8 @@
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-import DrawerItem from '@/views/private/components/drawer-item';
-import { RelationO2M } from '@/composables/use-relation';
+import DrawerItem from '@/views/private/components/drawer-item.vue';
+import { RelationO2M } from '@/composables/use-relation-o2m';
 import { ref } from 'vue';
 
 const props = withDefaults(
@@ -35,6 +35,7 @@ const props = withDefaults(
 		collection: string;
 		template: string;
 		item: Record<string, any>;
+		edits: Record<string, any>;
 		relationInfo: RelationO2M;
 		disabled?: boolean;
 		open?: boolean;

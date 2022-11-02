@@ -3,6 +3,7 @@ import express, { Request, Response, RequestHandler } from 'express';
 import fse from 'fs-extra';
 import path from 'path';
 import qs from 'qs';
+import { ServerResponse } from 'http';
 import helmet from 'helmet';
 
 import activityRouter from './controllers/activity';
@@ -13,12 +14,14 @@ import dashboardsRouter from './controllers/dashboards';
 import extensionsRouter from './controllers/extensions';
 import fieldsRouter from './controllers/fields';
 import filesRouter from './controllers/files';
+import flowsRouter from './controllers/flows';
 import foldersRouter from './controllers/folders';
 import graphqlRouter from './controllers/graphql';
 import itemsRouter from './controllers/items';
 import notFoundHandler from './controllers/not-found';
 import panelsRouter from './controllers/panels';
 import notificationsRouter from './controllers/notifications';
+import operationsRouter from './controllers/operations';
 import permissionsRouter from './controllers/permissions';
 import presetsRouter from './controllers/presets';
 import relationsRouter from './controllers/relations';
@@ -35,6 +38,7 @@ import emitter from './emitter';
 import env from './env';
 import { InvalidPayloadException } from './exceptions';
 import { getExtensionManager } from './extensions';
+import { getFlowManager } from './flows';
 import logger, { expressLogger } from './logger';
 import authenticate from './middleware/authenticate';
 import getPermissions from './middleware/get-permissions';
@@ -46,11 +50,12 @@ import extractToken from './middleware/extract-token';
 import rateLimiter from './middleware/rate-limiter';
 import sanitizeQuery from './middleware/sanitize-query';
 import schema from './middleware/schema';
+import { ROBOTSTXT } from './constants';
 
 import { track } from './utils/track';
 import { validateEnv } from './utils/validate-env';
 import { validateStorage } from './utils/validate-storage';
-import { register as registerWebhooks } from './webhooks';
+import { init as initWebhooks } from './webhooks';
 import { flushCaches } from './cache';
 import { registerAuthProviders } from './auth';
 import { Url } from './utils/url';
@@ -83,8 +88,10 @@ export default async function createApp(): Promise<express.Application> {
 	await registerAuthProviders();
 
 	const extensionManager = getExtensionManager();
+	const flowManager = getFlowManager();
 
 	await extensionManager.initialize();
+	await flowManager.initialize();
 
 	const app = express();
 
@@ -130,6 +137,15 @@ export default async function createApp(): Promise<express.Application> {
 
 	app.use(expressLogger);
 
+	app.use((_req, res, next) => {
+		res.setHeader('X-Powered-By', 'Directus');
+		next();
+	});
+
+	if (env.CORS_ENABLED === true) {
+		app.use(cors);
+	}
+
 	app.use((req, res, next) => {
 		(
 			express.json({
@@ -148,21 +164,18 @@ export default async function createApp(): Promise<express.Application> {
 
 	app.use(extractToken);
 
-	app.use((_req, res, next) => {
-		res.setHeader('X-Powered-By', 'Directus');
-		next();
-	});
-
-	if (env.CORS_ENABLED === true) {
-		app.use(cors);
-	}
-
 	app.get('/', (_req, res, next) => {
 		if (env.ROOT_REDIRECT) {
 			res.redirect(env.ROOT_REDIRECT);
 		} else {
 			next();
 		}
+	});
+
+	app.get('/robots.txt', (_, res) => {
+		res.set('Content-Type', 'text/plain');
+		res.status(200);
+		res.send(ROBOTSTXT);
 	});
 
 	if (env.SERVE_APP) {
@@ -173,20 +186,28 @@ export default async function createApp(): Promise<express.Application> {
 		const html = await fse.readFile(adminPath, 'utf8');
 		const htmlWithBase = html.replace(/<base \/>/, `<base href="${adminUrl.toString({ rootRelative: true })}/" />`);
 
-		const noCacheIndexHtmlHandler = (_req: Request, res: Response) => {
+		const sendHtml = (_req: Request, res: Response) => {
 			res.setHeader('Cache-Control', 'no-cache');
+			res.setHeader('Vary', 'Origin, Cache-Control');
 			res.send(htmlWithBase);
 		};
 
-		app.get('/admin', noCacheIndexHtmlHandler);
-		app.use('/admin', express.static(path.join(adminPath, '..')));
-		app.use('/admin/*', noCacheIndexHtmlHandler);
+		const setStaticHeaders = (res: ServerResponse) => {
+			res.setHeader('Cache-Control', 'max-age=31536000, immutable');
+			res.setHeader('Vary', 'Origin, Cache-Control');
+		};
+
+		app.get('/admin', sendHtml);
+		app.use('/admin', express.static(path.join(adminPath, '..'), { setHeaders: setStaticHeaders }));
+		app.use('/admin/*', sendHtml);
 	}
 
 	// use the rate limiter - all routes for now
 	if (env.RATE_LIMITER_ENABLED === true) {
 		app.use(rateLimiter);
 	}
+
+	app.get('/server/ping', (req, res) => res.send('pong'));
 
 	app.use(authenticate);
 
@@ -215,9 +236,11 @@ export default async function createApp(): Promise<express.Application> {
 	app.use('/extensions', extensionsRouter);
 	app.use('/fields', fieldsRouter);
 	app.use('/files', filesRouter);
+	app.use('/flows', flowsRouter);
 	app.use('/folders', foldersRouter);
 	app.use('/items', itemsRouter);
 	app.use('/notifications', notificationsRouter);
+	app.use('/operations', operationsRouter);
 	app.use('/panels', panelsRouter);
 	app.use('/permissions', permissionsRouter);
 	app.use('/presets', presetsRouter);
@@ -242,7 +265,7 @@ export default async function createApp(): Promise<express.Application> {
 	await emitter.emitInit('routes.after', { app });
 
 	// Register all webhooks
-	await registerWebhooks();
+	await initWebhooks();
 
 	track('serverStarted');
 

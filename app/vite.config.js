@@ -1,17 +1,29 @@
-import { defineConfig, searchForWorkspaceRoot } from 'vite';
-import vue from '@vitejs/plugin-vue';
-import md from 'vite-plugin-md';
-import yaml from '@rollup/plugin-yaml';
-import path from 'path';
+import {
+	APP_OR_HYBRID_EXTENSION_PACKAGE_TYPES,
+	APP_OR_HYBRID_EXTENSION_TYPES,
+	APP_SHARED_DEPS,
+} from '@directus/shared/constants';
 import {
 	ensureExtensionDirs,
-	getPackageExtensions,
-	getLocalExtensions,
 	generateExtensionsEntry,
+	getLocalExtensions,
+	getPackageExtensions,
 } from '@directus/shared/utils/node';
-import { APP_SHARED_DEPS, APP_EXTENSION_TYPES, APP_EXTENSION_PACKAGE_TYPES } from '@directus/shared/constants';
+import yaml from '@rollup/plugin-yaml';
+import vue from '@vitejs/plugin-vue';
 import hljs from 'highlight.js';
+import path from 'path';
+import fs from 'fs';
+import markdownItAnchor from 'markdown-it-anchor';
+import markdownItContainer from 'markdown-it-container';
+import markdownItTableOfContents from 'markdown-it-table-of-contents';
+import md from 'vite-plugin-vue-markdown';
+import { searchForWorkspaceRoot } from 'vite';
+import { defineConfig } from 'vitest/config';
 import hljsGraphQL from './src/utils/hljs-graphql';
+
+const API_PATH = path.join('..', 'api');
+const EXTENSIONS_PATH = path.join(API_PATH, 'extensions');
 
 hljs.registerLanguage('graphql', hljsGraphQL);
 
@@ -23,7 +35,7 @@ export default defineConfig({
 			include: [/\.vue$/, /\.md$/],
 		}),
 		md({
-			wrapperComponent: 'DocsWrapper',
+			wrapperComponent: 'docs-wrapper',
 			markdownItOptions: {
 				highlight(str, lang) {
 					if (lang && hljs.getLanguage(lang)) {
@@ -41,8 +53,10 @@ export default defineConfig({
 				},
 			},
 			markdownItSetup(md) {
-				md.use(require('markdown-it-table-of-contents'), { includeLevel: [2] });
-				md.use(require('markdown-it-anchor'), { permalink: true, permalinkSymbol: '#' });
+				md.use(markdownItTableOfContents, { includeLevel: [2] });
+				md.use(markdownItAnchor, {
+					permalink: markdownItAnchor.permalink.linkInsideHeader({ placement: 'before' }),
+				});
 
 				function hintRenderer(type) {
 					return (tokens, idx) => {
@@ -59,9 +73,9 @@ export default defineConfig({
 					};
 				}
 
-				md.use(require('markdown-it-container'), 'tip', { render: hintRenderer('tip') });
-				md.use(require('markdown-it-container'), 'warning', { render: hintRenderer('warning') });
-				md.use(require('markdown-it-container'), 'danger', { render: hintRenderer('danger') });
+				md.use(markdownItContainer, 'tip', { render: hintRenderer('tip') });
+				md.use(markdownItContainer, 'warning', { render: hintRenderer('warning') });
+				md.use(markdownItContainer, 'danger', { render: hintRenderer('danger') });
 
 				md.core.ruler.push('router-link', (state) => {
 					state.tokens.forEach((token) => {
@@ -118,6 +132,9 @@ export default defineConfig({
 			},
 		}),
 	],
+	optimizeDeps: {
+		exclude: ['@directus/docs'],
+	},
 	resolve: {
 		alias: [
 			{ find: '@', replacement: path.resolve(__dirname, 'src') },
@@ -129,19 +146,32 @@ export default defineConfig({
 		port: 8080,
 		proxy: {
 			'^/(?!admin)': {
-				target: process.env.API_URL ? process.env.API_URL : 'http://localhost:8055/',
+				target: process.env.API_URL ? process.env.API_URL : 'http://0.0.0.0:8055/',
 				changeOrigin: true,
 			},
 		},
 		fs: {
-			allow: [searchForWorkspaceRoot(process.cwd()), '/admin/'],
+			allow: [searchForWorkspaceRoot(process.cwd()), ...getExtensionsRealPaths()],
 		},
+	},
+	test: {
+		environment: 'happy-dom',
 	},
 });
 
+function getExtensionsRealPaths() {
+	return fs.existsSync(EXTENSIONS_PATH)
+		? fs.readdirSync(EXTENSIONS_PATH).flatMap((typeDir) => {
+				const extensionTypeDir = path.join(EXTENSIONS_PATH, typeDir);
+
+				return fs.readdirSync(extensionTypeDir).map((dir) => fs.realpathSync(path.join(extensionTypeDir, dir)));
+		  })
+		: [];
+}
+
 function directusExtensions() {
 	const prefix = '@directus-extensions-';
-	const virtualIds = APP_EXTENSION_TYPES.map((type) => `${prefix}${type}`);
+	const virtualIds = APP_OR_HYBRID_EXTENSION_TYPES.map((type) => `${prefix}${type}`);
 
 	let extensionEntrypoints = {};
 
@@ -192,16 +222,13 @@ function directusExtensions() {
 	];
 
 	async function loadExtensions() {
-		const apiPath = path.join('..', 'api');
-		const extensionsPath = path.join(apiPath, 'extensions');
-
-		await ensureExtensionDirs(extensionsPath, APP_EXTENSION_TYPES);
-		const packageExtensions = await getPackageExtensions(apiPath, APP_EXTENSION_PACKAGE_TYPES);
-		const localExtensions = await getLocalExtensions(extensionsPath, APP_EXTENSION_TYPES);
+		await ensureExtensionDirs(EXTENSIONS_PATH, APP_OR_HYBRID_EXTENSION_TYPES);
+		const packageExtensions = await getPackageExtensions(API_PATH, APP_OR_HYBRID_EXTENSION_PACKAGE_TYPES);
+		const localExtensions = await getLocalExtensions(EXTENSIONS_PATH, APP_OR_HYBRID_EXTENSION_TYPES);
 
 		const extensions = [...packageExtensions, ...localExtensions];
 
-		for (const extensionType of APP_EXTENSION_TYPES) {
+		for (const extensionType of APP_OR_HYBRID_EXTENSION_TYPES) {
 			extensionEntrypoints[extensionType] = generateExtensionsEntry(extensionType, extensions);
 		}
 	}
