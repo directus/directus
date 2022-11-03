@@ -16,7 +16,7 @@ import {
 	seedDBValues,
 } from './m2a.seed';
 import { CheckQueryFilters } from '@query/filter';
-import { sleep } from '@utils/sleep';
+import { findIndex } from 'lodash';
 
 function createShape(pkType: common.PrimaryKeyType) {
 	const item: Shape = {
@@ -587,9 +587,6 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							});
 						}
 
-						// Oddity in MySQL5, looks to be indexing delays
-						if (vendor === 'mysql5') sleep(2000);
-
 						// Action
 						const response = await request(getUrl(vendor))
 							.get(`/items/${localCollectionShapes}`)
@@ -611,8 +608,25 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 						// Assert
 						expect(response.statusCode).toEqual(200);
-						expect(response.body.data.length).toBe(5);
 						expect(response2.statusCode).toEqual(200);
+
+						// Oddity in MySQL5, looks to be indexing delays resulting in missing values
+						if (vendor === 'mysql5') {
+							let lastIndex = -1;
+							for (const item of response2.body.data.reverse()) {
+								const foundIndex = findIndex(response.body.data, { id: item.id });
+								if (foundIndex === -1) continue;
+
+								expect(foundIndex).toBeGreaterThan(lastIndex);
+
+								if (foundIndex > lastIndex) {
+									lastIndex = foundIndex;
+								}
+							}
+							return;
+						}
+
+						expect(response.body.data.length).toBe(5);
 						expect(response.body.data).toEqual(response2.body.data.reverse());
 					});
 				});
@@ -705,8 +719,25 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 						// Assert
 						expect(response.statusCode).toEqual(200);
-						expect(response.body.data.length).toBe(5);
 						expect(response2.statusCode).toEqual(200);
+
+						// Oddity in MySQL5, looks to be indexing delays resulting in missing values
+						if (vendor === 'mysql5') {
+							let lastIndex = -1;
+							for (const item of response2.body.data.reverse()) {
+								const foundIndex = findIndex(response.body.data, { id: item.id });
+								if (foundIndex === -1) continue;
+
+								expect(foundIndex).toBeGreaterThan(lastIndex);
+
+								if (foundIndex > lastIndex) {
+									lastIndex = foundIndex;
+								}
+							}
+							return;
+						}
+
+						expect(response.body.data.length).toBe(5);
 						expect(response.body.data).toEqual(response2.body.data.reverse());
 					});
 				});
