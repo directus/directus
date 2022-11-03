@@ -190,7 +190,11 @@ export default defineComponent({
 
 			try {
 				if (props.roleKey) {
-					const response = await api.get(`/roles/${props.roleKey}`);
+					const response = await api.get(`/roles/${props.roleKey}`, {
+						params: {
+							fields: ['id', 'name', 'icon', 'description', 'ip_access', 'enforce_tfa', 'admin_access', 'app_access'],
+						},
+					});
 					role.value = response.data.data;
 				}
 
