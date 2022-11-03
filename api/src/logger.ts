@@ -51,6 +51,9 @@ if (loggerEnvConfig.levels) {
 
 const logger = pino(merge(pinoOptions, loggerEnvConfig));
 
+const cliOptions: LoggerOptions = { transport: { target: 'pino-pretty', options: { sync: true } } };
+export const cliLogger = pino(merge(pinoOptions, cliOptions, loggerEnvConfig));
+
 const httpLoggerEnvConfig = getConfigFromEnv('LOGGER_HTTP', ['LOGGER_HTTP_LOGGER']);
 
 export const expressLogger = pinoHTTP({
