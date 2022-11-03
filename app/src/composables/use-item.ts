@@ -14,7 +14,7 @@ import { AxiosResponse } from 'axios';
 import { merge } from 'lodash';
 import { computed, ComputedRef, Ref, ref, watch } from 'vue';
 import { usePermissions } from './use-permissions';
-import { Field, Relation } from '@directus/shared/types';
+import { Field, Query, Relation } from '@directus/shared/types';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
 
 type UsableItem = {
@@ -38,7 +38,11 @@ type UsableItem = {
 	validationErrors: Ref<any[]>;
 };
 
-export function useItem(collection: Ref<string>, primaryKey: Ref<string | number | null>): UsableItem {
+export function useItem(
+	collection: Ref<string>,
+	primaryKey: Ref<string | number | null>,
+	query: Query = {}
+): UsableItem {
 	const { info: collectionInfo, primaryKeyField } = useCollection(collection);
 	const item = ref<Record<string, any> | null>(null);
 	const error = ref<any>(null);
@@ -103,7 +107,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 		error.value = null;
 
 		try {
-			const response = await api.get(itemEndpoint.value);
+			const response = await api.get(itemEndpoint.value, { params: query });
 			setItemValueToResponse(response);
 		} catch (err: any) {
 			error.value = err;
