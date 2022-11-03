@@ -1,7 +1,7 @@
 import { Knex } from 'knex';
-import { JsonHelper } from '../types';
+import { JsonHelperDefault } from './default';
 
-export class JsonHelperPostgres extends JsonHelper {
+export class JsonHelperPostgres extends JsonHelperDefault {
 	applyFields(dbQuery: Knex.QueryBuilder, table: string): Knex.QueryBuilder {
 		if (this.nodes.length === 0) return dbQuery;
 		return dbQuery.select(

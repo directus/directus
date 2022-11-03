@@ -1,15 +1,21 @@
 import { Knex } from 'knex';
-import { JsonHelper } from '../types';
+import { JsonHelperDefault } from './default';
 /**
  * We need to start using JSON_TABLE over JSON_QUERY for Oracle to support more complex wildcard queries
  */
-export class JsonHelperOracle extends JsonHelper {
+export class JsonHelperOracle extends JsonHelperDefault {
 	applyFields(dbQuery: Knex.QueryBuilder, table: string): Knex.QueryBuilder {
 		if (this.nodes.length === 0) return dbQuery;
 		return dbQuery.select(
 			this.nodes.map((node) => {
-				const query = this.knex.raw('? WITH CONDITIONAL WRAPPER', [node.queryPath]).toQuery();
-				return this.knex.raw(`json_query(??.??, ${query}) as ??`, [table, node.name, node.fieldKey]);
+				const query = this.knex.raw('?', [node.queryPath]).toQuery();
+				return this.knex.raw(`COALESCE(json_query(??.??, ${query}),json_value(??.??, ${query})) as ??`, [
+					table,
+					node.name,
+					table,
+					node.name,
+					node.fieldKey,
+				]);
 			})
 		);
 	}

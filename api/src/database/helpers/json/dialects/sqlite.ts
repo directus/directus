@@ -1,7 +1,7 @@
 import { Knex } from 'knex';
 import { JsonFieldNode } from '../../../../types';
-import { JsonHelper } from '../types';
 import { customAlphabet } from 'nanoid';
+import { JsonHelperDefault } from './default';
 
 const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
 
@@ -30,7 +30,7 @@ from jason
 join xyz ON xyz.id = jason.id;
  */
 
-export class JsonHelperSQLite extends JsonHelper {
+export class JsonHelperSQLite extends JsonHelperDefault {
 	applyFields(dbQuery: Knex.QueryBuilder, table: string): Knex.QueryBuilder {
 		if (this.nodes.length === 0) return dbQuery;
 		const selectQueries = this.nodes.filter(({ queryPath }) => queryPath.indexOf('[*]') === -1);

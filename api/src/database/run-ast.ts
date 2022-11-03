@@ -1,5 +1,5 @@
 import { Item, Query, SchemaOverview } from '@directus/shared/types';
-import { parseJSON, toArray } from '@directus/shared/utils';
+import { toArray } from '@directus/shared/utils';
 import { Knex } from 'knex';
 import { clone, cloneDeep, merge, pick, uniq } from 'lodash';
 import getDatabase from '.';
@@ -127,20 +127,7 @@ export default async function runAST(
 		}
 
 		// Transform json query results
-		if (jsonNodes.length > 0) {
-			const keys = jsonNodes.map(({ fieldKey }) => fieldKey);
-			for (const item of toArray(rawItems)) {
-				for (const jsonAlias of keys) {
-					if (jsonAlias in item && typeof item[jsonAlias] === 'string') {
-						try {
-							item[jsonAlias] = parseJSON(item[jsonAlias]);
-						} catch {
-							// in case a single string value was returned
-						}
-					}
-				}
-			}
-		}
+		getJsonHelper(knex, schema, jsonNodes).postProcess(toArray(rawItems));
 
 		// During the fetching of data, we have to inject a couple of required fields for the child nesting
 		// to work (primary / foreign keys) even if they're not explicitly requested. After all fetching
