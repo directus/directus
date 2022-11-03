@@ -101,6 +101,9 @@ export default async function getASTFromQuery(
 		delete query.sort;
 	}
 
+	// ugly global scoped
+	const jsonAlias: Record<string, string> = {};
+
 	ast.children = await parseFields(collection, fields, deep);
 
 	return ast;
@@ -194,19 +197,55 @@ export default async function getASTFromQuery(
 				if (name.startsWith('json(')) {
 					const alias = name !== fieldKey ? fieldKey : generateAlias();
 					const { fieldName, queryPath } = parseJsonFunction(name);
-					children.push({
-						type: 'jsonField',
-						fieldKey: alias,
-						name: fieldName,
-						queryPath,
-						temporary: false,
-					});
-					if (query.alias?.[fieldKey]) {
-						delete query.alias[fieldKey];
+					if (fieldName.includes('.')) {
+						const parts = fieldName.split('.');
+						const rootField = parts[0];
+						const subField = parts.slice(1).join('.');
+						const childKey = `json(${subField}${queryPath})`;
+						if (rootField in relationalStructure === false) {
+							relationalStructure[rootField] = [];
+						}
+						(relationalStructure[rootField] as string[]).push(childKey);
+						if (query.alias?.[fieldKey]) {
+							delete query.alias[fieldKey];
+							jsonAlias[childKey] = fieldKey;
+							// this needs a better solution
+						}
+					} else {
+						children.push({
+							type: 'jsonField',
+							fieldKey: jsonAlias[name] ?? alias,
+							name: fieldName,
+							queryPath,
+							temporary: false,
+						});
+						if (query.alias?.[fieldKey]) {
+							delete query.alias[fieldKey];
+						}
+						if (jsonAlias[name]) {
+							delete jsonAlias[name];
+						}
 					}
 				}
 			} else {
 				children.push({ type: 'field', name, fieldKey });
+			}
+		}
+
+		// transpose json functions used as filter keys
+		if (query.filter) {
+			for (const jsonField of replaceJsonFilters(query.filter)) {
+				if (jsonField.name.includes('.')) {
+					const parts = jsonField.name.split('.');
+					const rootField = parts[0];
+					const childKey = `json(${parts.slice(1).join('.')}${jsonField.queryPath})`;
+					if (rootField in relationalStructure === false) {
+						relationalStructure[rootField] = [];
+					}
+					(relationalStructure[rootField] as string[]).push(childKey);
+				} else {
+					children.push(jsonField);
+				}
 			}
 		}
 
@@ -287,13 +326,6 @@ export default async function getASTFromQuery(
 
 			if (child) {
 				children.push(child);
-			}
-		}
-
-		// transpose json functions used as filter keys
-		if (query.filter) {
-			for (const jsonField of replaceJsonFilters(query.filter)) {
-				children.push(jsonField);
 			}
 		}
 
