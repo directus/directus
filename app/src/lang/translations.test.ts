@@ -21,16 +21,27 @@ function flatten(item: Record<string, any> | string, path: string[] = []): Recor
 	return Object.entries(item).reduce((acc, [key, value]) => merge(acc, flatten(value, [...path, key])), {});
 }
 
+async function importLanguageFile(locale: string): Promise<{ isImported: boolean; translations: Record<string, any> }> {
+	try {
+		const { default: translations } = await import(`./translations/${locale}.yaml`);
+		return { isImported: true, translations };
+	} catch (e) {
+		return { isImported: false, translations: {} };
+	}
+}
+
 describe.each(locales)('Locale %s', async (locale) => {
 	const i18n = createI18n({ locale: locale });
-
-	const { default: translations } = await import(`./translations/${locale}.yaml`);
+	const { isImported, translations } = await importLanguageFile(locale);
 	i18n.global.mergeLocaleMessage(locale, translations);
-
 	const messages = flatten((i18n.global.messages as Record<string, any>)[locale]);
 	const translationKeys = Object.keys(messages);
 
-	test.skipIf(translationKeys.length === 0).each(translationKeys)('%s', (key) => {
+	test(`import ${locale} language file successfully`, () => {
+		expect(isImported).toBe(true);
+	});
+
+	test.each(translationKeys)('%s', (key) => {
 		i18n.global.t(key);
 		expect(consoleErrorSpy).not.toBeCalled();
 	});
