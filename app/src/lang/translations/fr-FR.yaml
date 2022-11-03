@@ -371,7 +371,7 @@ import_data_indeterminate: Importation des données...
 import_data_success: Données importées avec succès depuis {filename}
 import_data_error: La structure des données de ce fichier ne correspond pas à la collection.
 label_import: Importer
-label_export: Exportation
+label_export: Export
 import_export: Importer/Exporter
 format: Format
 last_page: Dernière page
@@ -456,7 +456,7 @@ replace_from_url: Remplacer le fichier à partir d'une URL
 no_file_selected: Aucun fichier sélectionné
 download_file: Télécharger le fichier
 open_file_in_tab: Ouvrir le fichier dans un nouvel onglet
-start_export: Démarrer l'exportation
+start_export: Démarrer l'export
 not_available_for_local_downloads: Indisponible pour les téléchargements en local
 exporting_all_items_in_collection: Exportation de tous les {total} éléments dans {collection}.
 exporting_limited_items_in_collection: Exportation de {limit} éléments sur {total} dans le cadre du {collection}.
