@@ -16,6 +16,7 @@ import {
 	seedDBValues,
 } from './m2a.seed';
 import { CheckQueryFilters } from '@query/filter';
+import { sleep } from '@utils/sleep';
 
 function createShape(pkType: common.PrimaryKeyType) {
 	const item: Shape = {
@@ -585,6 +586,9 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								},
 							});
 						}
+
+						// Oddity in MySQL5, looks to be indexing delays
+						if (vendor === 'mysql5') sleep(2000);
 
 						// Action
 						const response = await request(getUrl(vendor))

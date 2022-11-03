@@ -16,6 +16,7 @@ import {
 	seedDBValues,
 } from './o2m.seed';
 import { CheckQueryFilters } from '@query/filter';
+import { sleep } from '@utils/sleep';
 
 function createCountry(pkType: common.PrimaryKeyType) {
 	const item: Country = {
@@ -597,6 +598,9 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							state.country_id = insertedCountry.id;
 							await CreateItem(vendor, { collection: localCollectionStates, item: state });
 						}
+
+						// Oddity in MySQL5, looks to be indexing delays
+						if (vendor === 'mysql5') sleep(2000);
 
 						// Action
 						const response = await request(getUrl(vendor))
