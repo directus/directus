@@ -1948,7 +1948,6 @@ panels:
     y_axis_conditional_two: debe ser un número.
   linechart:
     name: Gráficos de línea
-    description: Gráfico de líneas para comparar el cambio de un campo.
     select_field: Debe seleccionar un campo.
     select_collection: Debe seleccionar una colección.
     select_x_axis: Debe seleccionar un eje X.
@@ -1960,15 +1959,14 @@ panels:
     datasets: Conjunto de datos
     show_legend: Mostrar leyenda
     show_marker: Mostrar marcador de información sobre herramientas
-    include_dataset: Debes incluir al menos un conjunto de datos.
     include_y_axis: Debe incluir un eje Y para cada conjunto de datos cuando no se especifique ningún grupo.
     group_and_function: Un grupo y una función deben ser ambos incluídos u omitidos.
-    smooth: 'Suave'
-    straight: 'Recto'
-    step_line: 'Línea de paso'
+    smooth: Suave
+    straight: Recto
+    step_line: Línea de paso
   meter:
-    description: Medidor para los valores de seguimiento
     name: Medidor
+    description: Medidor para los valores de seguimiento
     stroke_width: Ancho del trazo
     select_max_value: Debe seleccionar un valor máximo.
     max_greater_than_zero: El máximo debe ser mayor que 0.
@@ -1980,11 +1978,9 @@ panels:
     broad: Amplio
   piechart:
     name: Gráfico de Pie o Donut
-    description: Tabla circular que muestra las proporciones de los grupos en una columna.
-    function: 'Función'
+    function: Función
     donut: Donut
-    labels: Mostrar etiquetas
-    legend: Mostrar leyenda
+    show_legend: Mostrar leyenda
     right: Derecha
     bottom: Fondo
     monochrome: Monocromo
