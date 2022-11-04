@@ -2,6 +2,7 @@ import { Knex } from 'knex';
 import { JsonFieldNode } from '../../../../types';
 import { customAlphabet } from 'nanoid';
 import { JsonHelperDefault } from './default';
+import { getOperation } from '../../../../utils/apply-query';
 
 const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
 
@@ -33,8 +34,12 @@ join xyz ON xyz.id = jason.id;
 export class JsonHelperSQLite extends JsonHelperDefault {
 	applyFields(dbQuery: Knex.QueryBuilder, table: string): Knex.QueryBuilder {
 		if (this.nodes.length === 0) return dbQuery;
-		const selectQueries = this.nodes.filter(({ jsonPath }) => jsonPath.indexOf('[*]') === -1);
-		const joinQueries = this.nodes.filter(({ jsonPath }) => jsonPath.indexOf('[*]') > 0);
+		const selectQueries = this.nodes.filter(
+			({ jsonPath, query }) => jsonPath.indexOf('[*]') === -1 && Object.keys(query).length === 0
+		);
+		const joinQueries = this.nodes.filter(
+			({ jsonPath, query }) => jsonPath.indexOf('[*]') > 0 || Object.keys(query).length > 0
+		);
 		if (joinQueries.length > 0) {
 			for (const node of joinQueries) {
 				dbQuery = this.buildWithJson(dbQuery, node, table);
@@ -63,13 +68,16 @@ export class JsonHelperSQLite extends JsonHelperDefault {
 		for (let i = 1; i < arrayParts.length - 1; i++) {
 			fromList.push(this.knex.raw('json_each(??.value, ?) as ??', [aliases[i - 1], arrayParts[i], aliases[i]]));
 		}
-		subQuery = subQuery
-			.fromRaw(this.knex.raw(fromList.map((f) => f.toQuery()).join(',')))
-			.groupBy(`${table}.${primaryKey}`);
-		return dbQuery
+		subQuery = this.applyFilter(
+			subQuery.fromRaw(this.knex.raw(fromList.map((f) => f.toQuery()).join(','))),
+			node,
+			aliases[aliases.length - 2]
+		).groupBy(`${table}.${primaryKey}`);
+		dbQuery = dbQuery
 			.with(withAlias, subQuery)
 			.select(this.knex.raw('??.?? as ??', [withAlias, aliases[aliases.length - 1], node.fieldKey]))
 			.join(withAlias, `${table}.${primaryKey}`, '=', `${withAlias}.${primaryKey}`);
+		return dbQuery;
 	}
 	private buildJsonGroupArray(queryParts: string[], aliases: string[]): Knex.Raw {
 		const currentAlias = aliases[aliases.length - 1],
@@ -81,5 +89,21 @@ export class JsonHelperSQLite extends JsonHelperDefault {
 			currentQuery,
 			currentAlias,
 		]);
+	}
+	private applyFilter(dbQuery: Knex.QueryBuilder, node: JsonFieldNode, oldAlias: string): Knex.QueryBuilder {
+		if (!node.query?.filter) return dbQuery;
+		for (const [jsonPath, value] of Object.entries(node.query?.filter)) {
+			const alias = generateAlias();
+			const { operator: filterOperator, value: filterValue } = getOperation(jsonPath, value);
+			dbQuery = dbQuery.select(this.knex.raw('json_extract(??.value, ?) as ??', [oldAlias, jsonPath, alias]));
+			if (filterOperator === '_in') {
+				let value = filterValue;
+				if (typeof value === 'string') value = value.split(',');
+
+				dbQuery['and'].whereIn(alias, value as string[]);
+			}
+		}
+
+		return dbQuery;
 	}
 }

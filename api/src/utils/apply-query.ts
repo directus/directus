@@ -786,7 +786,7 @@ function getFilterPath(key: string, value: Record<string, any>) {
 	return path;
 }
 
-function getOperation(key: string, value: Record<string, any>): { operator: string; value: any } {
+export function getOperation(key: string, value: Record<string, any>): { operator: string; value: any } {
 	if (key.startsWith('_') && key !== '_and' && key !== '_or') {
 		return { operator: key as string, value };
 	} else if (isPlainObject(value) === false) {
