@@ -44,14 +44,14 @@ export function useRelationPermissionsM2M(info: Ref<RelationM2M | undefined>) {
 	const relatedPerms = computed(() => getPermsForCollection(info.value?.relatedCollection.collection));
 	const junctionPerms = computed(() => getPermsForCollection(info.value?.junctionCollection.collection));
 
-	const createAllowed = computed(() => (junctionPerms.value?.create ?? false) && (relatedPerms.value?.create ?? false));
-	const selectAllowed = computed(() => junctionPerms.value?.create ?? false);
-	const updateAllowed = computed(() => (junctionPerms.value?.update ?? false) && (relatedPerms.value?.update ?? false));
+	const createAllowed = computed(() => junctionPerms.value.create && relatedPerms.value.create);
+	const selectAllowed = computed(() => junctionPerms.value.create);
+	const updateAllowed = computed(() => junctionPerms.value.update && relatedPerms.value.update);
 	const deleteAllowed = computed(() => {
 		if (info.value?.junction.meta?.one_deselect_action === 'delete') {
-			return junctionPerms.value?.delete ?? false;
+			return junctionPerms.value.delete;
 		}
-		return junctionPerms.value?.update ?? false;
+		return junctionPerms.value.update;
 	});
 
 	return {
@@ -76,9 +76,38 @@ export function useRelationPermissionsM2A(info: Ref<RelationM2A | undefined>) {
 
 	const junctionPerms = computed(() => getPermsForCollection(info.value?.junctionCollection.collection));
 
+	const createAllowed = computed(() => {
+		return Object.fromEntries(
+			Object.entries(relatedPerms.value).map(([key, value]) => [key, value.create && junctionPerms.value.create])
+		);
+	});
+
+	const selectAllowed = computed(() => junctionPerms.value.create);
+
+	const updateAllowed = computed(() => {
+		return Object.fromEntries(
+			Object.entries(relatedPerms.value).map(([key, value]) => [key, value.update && junctionPerms.value.update])
+		);
+	});
+
+	const deleteAllowed = computed(() => {
+		if (info.value?.junction.meta?.one_deselect_action === 'delete') {
+			return Object.fromEntries(
+				Object.entries(relatedPerms.value).map(([key, value]) => [key, value.delete && junctionPerms.value.delete])
+			);
+		}
+		return Object.fromEntries(
+			Object.entries(relatedPerms.value).map(([key, value]) => [key, value.update && junctionPerms.value.update])
+		);
+	});
+
 	return {
+		createAllowed,
+		selectAllowed,
 		relatedPerms,
 		junctionPerms,
+		deleteAllowed,
+		updateAllowed,
 	};
 }
 

@@ -38,7 +38,7 @@
 						/>
 						<div class="spacer" />
 						<v-icon
-							v-if="!disabled"
+							v-if="!disabled && (deleteAllowed[element[relationInfo.collectionField.field]] || localDelete(element))"
 							class="clear-icon"
 							:name="getDeselectIcon(element)"
 							@click.stop="deleteItem(element)"
@@ -61,7 +61,7 @@
 		</v-list>
 
 		<div class="actions">
-			<v-menu v-if="enableCreate" :disabled="disabled" show-arrow>
+			<v-menu v-if="enableCreate && createCollections.length > 0" :disabled="disabled" show-arrow>
 				<template #activator="{ toggle }">
 					<v-button :disabled="disabled" @click="toggle">
 						{{ t('create_new') }}
@@ -71,7 +71,7 @@
 
 				<v-list>
 					<v-list-item
-						v-for="availableCollection of relationInfo.allowedCollections"
+						v-for="availableCollection of createCollections"
 						:key="availableCollection.collection"
 						clickable
 						@click="createItem(availableCollection.collection)"
@@ -84,7 +84,7 @@
 				</v-list>
 			</v-menu>
 
-			<v-menu v-if="enableSelect" :disabled="disabled" show-arrow>
+			<v-menu v-if="enableSelect && selectAllowed" :disabled="disabled" show-arrow>
 				<template #activator="{ toggle }">
 					<v-button class="existing" :disabled="disabled" @click="toggle">
 						{{ t('add_existing') }}
@@ -122,7 +122,7 @@
 
 		<drawer-item
 			v-model:active="editModalActive"
-			:disabled="disabled"
+			:disabled="disabled || (editingCollection !== null && !updateAllowed[editingCollection])"
 			:collection="relationInfo.junctionCollection.collection"
 			:primary-key="currentlyEditing || '+'"
 			:related-primary-key="relatedPrimaryKey || '+'"
@@ -137,6 +137,7 @@
 <script setup lang="ts">
 import { useRelationM2A } from '@/composables/use-relation-m2a';
 import { DisplayItem, RelationQueryMultiple, useRelationMultiple } from '@/composables/use-relation-multiple';
+import { useRelationPermissionsM2A } from '@/composables/use-relation-permissions';
 import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { hideDragImage } from '@/utils/hide-drag-image';
@@ -235,10 +236,6 @@ const {
 
 const pageCount = computed(() => Math.ceil(totalItemCount.value / limit.value));
 
-const allowDrag = computed(
-	() => totalItemCount.value <= limit.value && relationInfo.value?.sortField !== undefined && !props.disabled
-);
-
 function getDeselectIcon(item: DisplayItem) {
 	if (item.$type === 'deleted') return 'settings_backup_restore';
 	if (localDelete(item)) return 'delete';
@@ -259,6 +256,7 @@ function sortItems(items: DisplayItem[]) {
 const editModalActive = ref(false);
 const currentlyEditing = ref<string | number | null>(null);
 const relatedPrimaryKey = ref<string | number | null>(null);
+const editingCollection = ref<string | null>(null);
 const selectingFrom = ref<string | null>(null);
 const editsAtStart = ref<Record<string, any>>({});
 let newItem = false;
@@ -291,10 +289,12 @@ function editItem(item: DisplayItem) {
 	};
 
 	editModalActive.value = true;
+	editingCollection.value = item[relationInfo.value.collectionField.field];
 
 	if (item?.$type === 'created' && !isItemSelected(item)) {
 		currentlyEditing.value = null;
 		relatedPrimaryKey.value = null;
+		editingCollection.value = null;
 	} else {
 		if (!relationPkField) return;
 		currentlyEditing.value = get(item, [junctionPkField], null);
@@ -394,6 +394,25 @@ const customFilter = computed(() => {
 
 	return filter;
 });
+
+const { createAllowed, deleteAllowed, selectAllowed, updateAllowed } = useRelationPermissionsM2A(relationInfo);
+
+const createCollections = computed(() => {
+	const info = relationInfo.value;
+	if (!info) return [];
+
+	return info.allowedCollections.filter((collection) => {
+		return createAllowed.value[collection.collection];
+	});
+});
+
+const allowDrag = computed(
+	() =>
+		totalItemCount.value <= limit.value &&
+		relationInfo.value?.sortField !== undefined &&
+		!props.disabled &&
+		updateAllowed.value
+);
 </script>
 
 <style lang="scss" scoped>

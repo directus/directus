@@ -31,7 +31,7 @@
 				</v-button>
 
 				<v-button
-					v-if="!disabled && enableCreate && createAllowed && updateAllowed"
+					v-if="!disabled && enableCreate && createAllowed"
 					v-tooltip.bottom="createAllowed ? t('create_item') : t('not_allowed')"
 					rounded
 					icon
@@ -73,7 +73,7 @@
 					</router-link>
 
 					<v-icon
-						v-if="!disabled && updateAllowed"
+						v-if="!disabled && (deleteAllowed || localDelete(item))"
 						v-tooltip="t(getDeselectTooltip(item))"
 						class="deselect"
 						:name="getDeselectIcon(item)"
@@ -107,7 +107,7 @@
 						<v-list-item
 							block
 							clickable
-							:disabled="disabled || !updateAllowed"
+							:disabled="disabled"
 							:dense="totalItemCount > 4"
 							:class="{ deleted: element.$type === 'deleted' }"
 							@click="editItem(element)"
@@ -131,7 +131,7 @@
 								<v-icon name="launch" />
 							</router-link>
 							<v-icon
-								v-if="!disabled && updateAllowed"
+								v-if="!disabled && (deleteAllowed || localDelete(element))"
 								v-tooltip="t(getDeselectTooltip(element))"
 								class="deselect"
 								:name="getDeselectIcon(element)"
@@ -156,7 +156,7 @@
 					</template>
 				</template>
 				<template v-else>
-					<v-button v-if="enableCreate && createAllowed && updateAllowed" :disabled="disabled" @click="createItem">
+					<v-button v-if="enableCreate && createAllowed" :disabled="disabled" @click="createItem">
 						{{ t('create_new') }}
 					</v-button>
 					<v-button v-if="enableSelect && updateAllowed" :disabled="disabled" @click="selectModalActive = true">
@@ -169,7 +169,7 @@
 		</div>
 
 		<drawer-item
-			:disabled="disabled"
+			:disabled="disabled || (!updateAllowed && currentlyEditing !== '+')"
 			:active="currentlyEditing !== null"
 			:collection="relationInfo.relatedCollection.collection"
 			:primary-key="currentlyEditing || '+'"
@@ -206,12 +206,11 @@ import { Sort } from '@/components/v-table/types';
 import Draggable from 'vuedraggable';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { isEmpty, clamp, get } from 'lodash';
-import { usePermissionsStore } from '@/stores/permissions';
-import { useUserStore } from '@/stores/user';
 import { useFieldsStore } from '@/stores/fields';
 import { LAYOUTS } from '@/types/interfaces';
 import { formatCollectionItemsCount } from '@/utils/format-collection-items-count';
 import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
+import { useRelationPermissionsO2M } from '@/composables/use-relation-permissions';
 
 const props = withDefaults(
 	defineProps<{
@@ -541,19 +540,7 @@ function getLinkForItem(item: DisplayItem) {
 	return null;
 }
 
-const permissionsStore = usePermissionsStore();
-
-const createAllowed = computed(() => {
-	if (!relationInfo.value) return false;
-
-	return permissionsStore.hasPermission(relationInfo.value.relatedCollection.collection, 'create');
-});
-
-const updateAllowed = computed(() => {
-	if (!relationInfo.value) return false;
-
-	return permissionsStore.hasPermission(relationInfo.value.relatedCollection.collection, 'update');
-});
+const { createAllowed, deleteAllowed, updateAllowed } = useRelationPermissionsO2M(relationInfo);
 </script>
 
 <style lang="scss">
