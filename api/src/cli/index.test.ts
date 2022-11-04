@@ -1,3 +1,4 @@
+import path from 'path';
 import { Command } from 'commander';
 import { Extension, HookConfig } from '@directus/shared/types';
 import { createCli } from './index';
@@ -19,7 +20,8 @@ jest.mock('@directus/shared/utils/node/get-extensions', () => ({
 	getLocalExtensions: jest.fn(() => Promise.resolve([customCliExtension])),
 }));
 
-jest.mock(`/hooks/custom-cli/index.js`, () => customCliHook, { virtual: true });
+const customHookPath = path.resolve('/hooks/custom-cli', 'index.js');
+jest.doMock(customHookPath, () => customCliHook, { virtual: true });
 
 const customCliExtension: Extension = {
 	path: `/hooks/custom-cli`,
