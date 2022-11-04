@@ -16,8 +16,8 @@ export function applyFunctionToColumnName(column: string): string {
 	if (column.includes('(') && column.includes(')')) {
 		const functionName = column.split('(')[0];
 		if (functionName === 'json') {
-			const { fieldName, queryPath } = parseJsonFunction(column);
-			const queryStr = queryPath
+			const { fieldName, jsonPath } = parseJsonFunction(column);
+			const queryStr = jsonPath
 				.replace(/[^a-z0-9\\.\\[\\]]/gi, '')
 				.replace(/[^a-z0-9]+/gi, '_')
 				.replace(/_$/, '');

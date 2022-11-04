@@ -15,6 +15,6 @@ export function parseJsonFunction(data: string) {
 	const pathStart = content.indexOf('$');
 	return {
 		fieldName: content.substring(0, pathStart),
-		queryPath: content.substring(pathStart),
+		jsonPath: content.substring(pathStart),
 	};
 }

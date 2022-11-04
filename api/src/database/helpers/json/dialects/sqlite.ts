@@ -33,8 +33,8 @@ join xyz ON xyz.id = jason.id;
 export class JsonHelperSQLite extends JsonHelperDefault {
 	applyFields(dbQuery: Knex.QueryBuilder, table: string): Knex.QueryBuilder {
 		if (this.nodes.length === 0) return dbQuery;
-		const selectQueries = this.nodes.filter(({ queryPath }) => queryPath.indexOf('[*]') === -1);
-		const joinQueries = this.nodes.filter(({ queryPath }) => queryPath.indexOf('[*]') > 0);
+		const selectQueries = this.nodes.filter(({ jsonPath }) => jsonPath.indexOf('[*]') === -1);
+		const joinQueries = this.nodes.filter(({ jsonPath }) => jsonPath.indexOf('[*]') > 0);
 		if (joinQueries.length > 0) {
 			for (const node of joinQueries) {
 				dbQuery = this.buildWithJson(dbQuery, node, table);
@@ -43,15 +43,15 @@ export class JsonHelperSQLite extends JsonHelperDefault {
 		if (selectQueries.length > 0) {
 			dbQuery = dbQuery.select(
 				selectQueries.map((node) => {
-					return this.knex.raw(this.knex.jsonExtract(`${table}.${node.name}`, node.queryPath, node.fieldKey, false));
+					return this.knex.raw(this.knex.jsonExtract(`${table}.${node.name}`, node.jsonPath, node.fieldKey, false));
 				})
 			);
 		}
 		return dbQuery;
 	}
 	private buildWithJson(dbQuery: Knex.QueryBuilder, node: JsonFieldNode, table: string): Knex.QueryBuilder {
-		const { queryPath, name } = node;
-		const arrayParts = queryPath.split('[*]').map((q) => (q.startsWith('$') ? q : '$' + q));
+		const { jsonPath, name } = node;
+		const arrayParts = jsonPath.split('[*]').map((q) => (q.startsWith('$') ? q : '$' + q));
 		const aliases = arrayParts.map(() => generateAlias()),
 			withAlias = generateAlias();
 		const primaryKey = this.schema.collections[table].primary;

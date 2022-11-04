@@ -8,8 +8,8 @@ import { JsonHelperDefault } from './default';
 export class JsonHelperMSSQL extends JsonHelperDefault {
 	applyFields(dbQuery: Knex.QueryBuilder, table: string): Knex.QueryBuilder {
 		if (this.nodes.length === 0) return dbQuery;
-		const selectQueries = this.nodes.filter(({ queryPath }) => queryPath.indexOf('*') === -1);
-		const joinQueries = this.nodes.filter(({ queryPath }) => queryPath.indexOf('*') > 0);
+		const selectQueries = this.nodes.filter(({ jsonPath }) => jsonPath.indexOf('*') === -1);
+		const joinQueries = this.nodes.filter(({ jsonPath }) => jsonPath.indexOf('*') > 0);
 		if (joinQueries.length > 0) {
 			// no viable solutions found yet without JSON_ARRAY support
 		}
@@ -19,7 +19,7 @@ export class JsonHelperMSSQL extends JsonHelperDefault {
 		return dbQuery;
 	}
 	private jsonQueryOrValue(field: string, node: JsonFieldNode): Knex.Raw {
-		const qPath = this.knex.raw('?', [node.queryPath]).toQuery();
+		const qPath = this.knex.raw('?', [node.jsonPath]).toQuery();
 		return this.knex.raw(`COALESCE(JSON_QUERY(??, ${qPath}), JSON_VALUE(??, ${qPath})) as ??`, [
 			field,
 			field,

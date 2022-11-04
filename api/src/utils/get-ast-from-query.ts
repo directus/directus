@@ -71,7 +71,6 @@ export default async function getASTFromQuery(
 	}
 
 	fields = uniq(fields);
-
 	const deep = query.deep || {};
 
 	// Prevent fields/deep from showing up in the query object in further use
@@ -196,12 +195,12 @@ export default async function getASTFromQuery(
 
 				if (name.startsWith('json(')) {
 					const alias = name !== fieldKey ? fieldKey : generateAlias();
-					const { fieldName, queryPath } = parseJsonFunction(name);
+					const { fieldName, jsonPath } = parseJsonFunction(name);
 					if (fieldName.includes('.')) {
 						const parts = fieldName.split('.');
 						const rootField = parts[0];
 						const subField = parts.slice(1).join('.');
-						const childKey = `json(${subField}${queryPath})`;
+						const childKey = `json(${subField}${jsonPath})`;
 						if (rootField in relationalStructure === false) {
 							relationalStructure[rootField] = [];
 						}
@@ -212,13 +211,19 @@ export default async function getASTFromQuery(
 							// this needs a better solution
 						}
 					} else {
+						const deepKey = query.alias?.[fieldKey] ? fieldKey : jsonAlias[name];
+						const deepFilter = getDeepQuery(deep?.[deepKey] || {});
 						children.push({
 							type: 'jsonField',
 							fieldKey: jsonAlias[name] ?? alias,
 							name: fieldName,
-							queryPath,
+							jsonPath,
+							query: deepFilter,
 							temporary: false,
 						});
+						if (deep?.[deepKey]) {
+							delete deep[deepKey];
+						}
 						if (query.alias?.[fieldKey]) {
 							delete query.alias[fieldKey];
 						}
@@ -238,7 +243,7 @@ export default async function getASTFromQuery(
 				if (jsonField.name.includes('.')) {
 					const parts = jsonField.name.split('.');
 					const rootField = parts[0];
-					const childKey = `json(${parts.slice(1).join('.')}${jsonField.queryPath})`;
+					const childKey = `json(${parts.slice(1).join('.')}${jsonField.jsonPath})`;
 					if (rootField in relationalStructure === false) {
 						relationalStructure[rootField] = [];
 					}
@@ -459,7 +464,7 @@ export default async function getASTFromQuery(
 		const filterKeys = Object.keys(filter);
 		for (const key of filterKeys) {
 			if (key.startsWith('json(')) {
-				const { fieldName, queryPath } = parseJsonFunction(key);
+				const { fieldName, jsonPath } = parseJsonFunction(key);
 				const alias = generateAlias();
 
 				filter[alias] = filter[key];
@@ -469,7 +474,8 @@ export default async function getASTFromQuery(
 					type: 'jsonField',
 					fieldKey: alias,
 					name: fieldName,
-					queryPath,
+					jsonPath,
+					query: {},
 					temporary: true,
 				});
 			}

@@ -11,7 +11,7 @@ export class JsonHelperDefault extends JsonHelper {
 		if (this.nodes.length === 0) return dbQuery;
 		return dbQuery.select(
 			this.nodes.map((node) => {
-				return this.knex.raw(this.knex.jsonExtract(`${table}.${node.name}`, node.queryPath, node.fieldKey, false));
+				return this.knex.raw(this.knex.jsonExtract(`${table}.${node.name}`, node.jsonPath, node.fieldKey, false));
 			})
 		);
 	}

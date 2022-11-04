@@ -8,7 +8,7 @@ export class JsonHelperOracle extends JsonHelperDefault {
 		if (this.nodes.length === 0) return dbQuery;
 		return dbQuery.select(
 			this.nodes.map((node) => {
-				const query = this.knex.raw('?', [node.queryPath]).toQuery();
+				const query = this.knex.raw('?', [node.jsonPath]).toQuery();
 				return this.knex.raw(`COALESCE(json_query(??.??, ${query}),json_value(??.??, ${query})) as ??`, [
 					table,
 					node.name,

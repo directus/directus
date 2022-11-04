@@ -59,7 +59,8 @@ export type JsonFieldNode = {
 	type: 'jsonField';
 	name: string; // field string
 	fieldKey: string; // alias
-	queryPath: string;
+	jsonPath: string;
+	query: Query;
 	temporary: boolean;
 };
 
