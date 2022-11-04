@@ -49,6 +49,7 @@
 				:loading="loading"
 				:items="displayItems"
 				:row-height="tableRowHeight"
+				:disabled="!updateAllowed"
 				show-resize
 				@click:row="editRow"
 			>
@@ -73,7 +74,7 @@
 					</router-link>
 
 					<v-icon
-						v-if="!disabled && selectAllowed"
+						v-if="!disabled && deleteAllowed"
 						v-tooltip="t(getDeselectTooltip(item))"
 						class="deselect"
 						:class="{ deleted: item.$type === 'deleted' }"
@@ -108,6 +109,7 @@
 						<v-list-item
 							block
 							clickable
+							:disabled="updateAllowed === false"
 							:dense="totalItemCount > 4"
 							:class="{ deleted: element.$type === 'deleted' }"
 							@click="editItem(element)"
@@ -131,7 +133,7 @@
 								<v-icon name="launch" />
 							</router-link>
 							<v-icon
-								v-if="!disabled && selectAllowed"
+								v-if="!disabled && deleteAllowed"
 								v-tooltip="t(getDeselectTooltip(element))"
 								class="deselect"
 								:name="getDeselectIcon(element)"
@@ -209,11 +211,11 @@ import Draggable from 'vuedraggable';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { isEmpty, get, clamp } from 'lodash';
 import { usePermissionsStore } from '@/stores/permissions';
-import { useUserStore } from '@/stores/user';
 import { useFieldsStore } from '@/stores/fields';
 import { LAYOUTS } from '@/types/interfaces';
 import { formatCollectionItemsCount } from '@/utils/format-collection-items-count';
 import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
+import { useRelationPermissions } from '@/composables/use-relation-permissions';
 
 const props = withDefaults(
 	defineProps<{
@@ -571,37 +573,7 @@ function getLinkForItem(item: DisplayItem) {
 	return null;
 }
 
-const userStore = useUserStore();
-const permissionsStore = usePermissionsStore();
-
-const createAllowed = computed(() => {
-	const admin = userStore.currentUser?.role.admin_access === true;
-	if (admin) return true;
-
-	const hasJunctionPermissions = !!permissionsStore.permissions.find(
-		(permission) =>
-			permission.action === 'create' && permission.collection === relationInfo.value?.junctionCollection.collection
-	);
-
-	const hasRelatedPermissions = !!permissionsStore.permissions.find(
-		(permission) =>
-			permission.action === 'create' && permission.collection === relationInfo.value?.relatedCollection.collection
-	);
-
-	return hasJunctionPermissions && hasRelatedPermissions;
-});
-
-const selectAllowed = computed(() => {
-	const admin = userStore.currentUser?.role.admin_access === true;
-	if (admin) return true;
-
-	const hasJunctionPermissions = !!permissionsStore.permissions.find(
-		(permission) =>
-			permission.action === 'create' && permission.collection === relationInfo.value?.junctionCollection.collection
-	);
-
-	return hasJunctionPermissions;
-});
+const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelationPermissions(relationInfo);
 </script>
 
 <style lang="scss">
@@ -729,6 +701,7 @@ const selectAllowed = computed(() => {
 	--v-icon-color: var(--foreground-subdued);
 	transition: color var(--fast) var(--transition);
 	margin: 0 4px;
+	cursor: pointer;
 
 	&:hover {
 		--v-icon-color: var(--danger);

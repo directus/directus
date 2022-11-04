@@ -24,6 +24,7 @@
 					<v-list-item
 						:class="{ deleted: element.$type === 'deleted' }"
 						:dense="totalItemCount > 4"
+						:disabled="disabled || !updateAllowed"
 						block
 						clickable
 						@click="editItem(element)"
@@ -36,7 +37,7 @@
 						/>
 						<div class="spacer" />
 						<v-icon
-							v-if="!disabled"
+							v-if="!disabled && deleteAllowed"
 							:name="getDeselectIcon(element)"
 							class="deselect"
 							@click.stop="deleteItem(element)"
@@ -136,10 +137,9 @@ import Draggable from 'vuedraggable';
 import { getAssetUrl } from '@/utils/get-asset-url';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { get, clamp, isEmpty } from 'lodash';
-import { usePermissionsStore } from '@/stores/permissions';
-import { useUserStore } from '@/stores/user';
 import { getFieldsFromTemplate } from '@directus/shared/utils';
 import { Filter } from '@directus/shared/types';
+import { useRelationPermissions } from '@/composables/use-relation-permissions';
 
 const props = withDefaults(
 	defineProps<{
@@ -232,10 +232,6 @@ const {
 } = useRelationMultiple(value, query, relationInfo, primaryKey);
 
 const pageCount = computed(() => Math.ceil(totalItemCount.value / limit.value));
-
-const allowDrag = computed(
-	() => totalItemCount.value <= limit.value && relationInfo.value?.sortField !== undefined && !props.disabled
-);
 
 function getDeselectIcon(item: DisplayItem) {
 	if (item.$type === 'deleted') return 'settings_backup_restore';
@@ -383,37 +379,15 @@ const customFilter = computed(() => {
 	return filter;
 });
 
-const userStore = useUserStore();
-const permissionsStore = usePermissionsStore();
+const { createAllowed, updateAllowed, selectAllowed, deleteAllowed } = useRelationPermissions(relationInfo);
 
-const createAllowed = computed(() => {
-	const admin = userStore.currentUser?.role.admin_access === true;
-	if (admin) return true;
-
-	const hasJunctionPermissions = !!permissionsStore.permissions.find(
-		(permission) =>
-			permission.action === 'create' && permission.collection === relationInfo.value?.junctionCollection.collection
-	);
-
-	const hasRelatedPermissions = !!permissionsStore.permissions.find(
-		(permission) =>
-			permission.action === 'create' && permission.collection === relationInfo.value?.relatedCollection.collection
-	);
-
-	return hasJunctionPermissions && hasRelatedPermissions;
-});
-
-const selectAllowed = computed(() => {
-	const admin = userStore.currentUser?.role.admin_access === true;
-	if (admin) return true;
-
-	const hasJunctionPermissions = !!permissionsStore.permissions.find(
-		(permission) =>
-			permission.action === 'create' && permission.collection === relationInfo.value?.junctionCollection.collection
-	);
-
-	return hasJunctionPermissions;
-});
+const allowDrag = computed(
+	() =>
+		totalItemCount.value <= limit.value &&
+		relationInfo.value?.sortField !== undefined &&
+		!props.disabled &&
+		updateAllowed.value
+);
 </script>
 
 <style lang="scss" scoped>
@@ -450,6 +424,7 @@ const selectAllowed = computed(() => {
 	--v-icon-color: var(--foreground-subdued);
 	margin-right: 4px;
 	transition: color var(--fast) var(--transition);
+	cursor: pointer;
 
 	&:hover {
 		--v-icon-color: var(--danger);

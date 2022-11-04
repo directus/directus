@@ -107,6 +107,7 @@
 						<v-list-item
 							block
 							clickable
+							:disabled="disabled || !updateAllowed"
 							:dense="totalItemCount > 4"
 							:class="{ deleted: element.$type === 'deleted' }"
 							@click="editItem(element)"
@@ -540,27 +541,18 @@ function getLinkForItem(item: DisplayItem) {
 	return null;
 }
 
-const userStore = useUserStore();
 const permissionsStore = usePermissionsStore();
 
 const createAllowed = computed(() => {
-	const admin = userStore.currentUser?.role.admin_access === true;
-	if (admin) return true;
+	if (!relationInfo.value) return false;
 
-	return !!permissionsStore.permissions.find(
-		(permission) =>
-			permission.action === 'create' && permission.collection === relationInfo.value?.relatedCollection.collection
-	);
+	return permissionsStore.hasPermission(relationInfo.value.relatedCollection.collection, 'create');
 });
 
 const updateAllowed = computed(() => {
-	const admin = userStore.currentUser?.role.admin_access === true;
-	if (admin) return true;
+	if (!relationInfo.value) return false;
 
-	return !!permissionsStore.permissions.find(
-		(permission) =>
-			permission.action === 'update' && permission.collection === relationInfo.value?.relatedCollection.collection
-	);
+	return permissionsStore.hasPermission(relationInfo.value.relatedCollection.collection, 'update');
 });
 </script>
 
