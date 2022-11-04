@@ -17,7 +17,7 @@
 				</div>
 			</template>
 		</v-input>
-		<v-input v-if="isDisabled" disabled class="field">
+		<v-input v-if="disabled || isDisabled" disabled class="field">
 			<template #prepend>
 				<v-icon v-tooltip="t('system_fields_locked')" name="lock" />
 			</template>
