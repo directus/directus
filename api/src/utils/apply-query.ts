@@ -261,9 +261,9 @@ export function applySort(
 
 		if (column.length === 1) {
 			const pathRoot = column[0].split(':')[0];
-			const { relation } = getRelationInfo(relations, collection, pathRoot);
+			const { relation, relationType } = getRelationInfo(relations, collection, pathRoot);
 
-			if (!relation) {
+			if (!relation || ['m2o', 'a2o'].includes(relationType ?? '')) {
 				return {
 					order,
 					column: returnRecords ? column[0] : (getColumn(knex, collection, column[0], false, schema) as any),
