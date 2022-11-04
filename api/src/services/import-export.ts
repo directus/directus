@@ -20,12 +20,12 @@ import {
 	UnsupportedMediaTypeException,
 } from '../exceptions';
 import logger from '../logger';
-import { AbstractServiceOptions, File } from '../types';
+import { AbstractServiceOptions, ActionEventParams, File } from '../types';
 import { getDateFormatted } from '../utils/get-date-formatted';
 import { FilesService } from './files';
 import { ItemsService } from './items';
 import { NotificationsService } from './notifications';
-
+import emitter from '../emitter';
 export class ImportService {
 	knex: Knex;
 	accountability: Accountability | null;
@@ -63,10 +63,11 @@ export class ImportService {
 		}
 	}
 
-	importJSON(collection: string, stream: NodeJS.ReadableStream): Promise<void> {
+	async importJSON(collection: string, stream: NodeJS.ReadableStream): Promise<void> {
 		const extractJSON = StreamArray.withParser();
+		const nestedActionEvents: ActionEventParams[] = [];
 
-		return this.knex.transaction((trx) => {
+		await this.knex.transaction((trx) => {
 			const service = new ItemsService(collection, {
 				knex: trx,
 				schema: this.schema,
@@ -74,7 +75,7 @@ export class ImportService {
 			});
 
 			const saveQueue = queue(async (value: Record<string, unknown>) => {
-				return await service.upsertOne(value);
+				return await service.upsertOne(value, { bypassEmitAction: (params) => nestedActionEvents.push(params) });
 			});
 
 			return new Promise<void>((resolve, reject) => {
@@ -102,10 +103,16 @@ export class ImportService {
 				});
 			});
 		});
+
+		for (const nestedActionEvent of nestedActionEvents) {
+			emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
+		}
 	}
 
-	importCSV(collection: string, stream: NodeJS.ReadableStream): Promise<void> {
-		return this.knex.transaction((trx) => {
+	async importCSV(collection: string, stream: NodeJS.ReadableStream): Promise<void> {
+		const nestedActionEvents: ActionEventParams[] = [];
+
+		await this.knex.transaction((trx) => {
 			const service = new ItemsService(collection, {
 				knex: trx,
 				schema: this.schema,
@@ -113,7 +120,7 @@ export class ImportService {
 			});
 
 			const saveQueue = queue(async (value: Record<string, unknown>) => {
-				return await service.upsertOne(value);
+				return await service.upsertOne(value, { bypassEmitAction: (action) => nestedActionEvents.push(action) });
 			});
 
 			return new Promise<void>((resolve, reject) => {
@@ -155,6 +162,10 @@ export class ImportService {
 				});
 			});
 		});
+
+		for (const nestedActionEvent of nestedActionEvents) {
+			emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
+		}
 	}
 }
 
