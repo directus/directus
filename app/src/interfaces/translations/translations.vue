@@ -72,7 +72,7 @@ import VForm from '@/components/v-form/v-form.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import { useRelationM2M } from '@/composables/use-relation-m2m';
 import { DisplayItem, RelationQueryMultiple, useRelationMultiple } from '@/composables/use-relation-multiple';
-import { useRelationPermissions } from '@/composables/use-relation-permissions';
+import { useRelationPermissionsM2M } from '@/composables/use-relation-permissions';
 import { useWindowSize } from '@/composables/use-window-size';
 import vTooltip from '@/directives/tooltip';
 import { useFieldsStore } from '@/stores/fields';
@@ -314,7 +314,7 @@ function useLanguages() {
 	}
 }
 
-const { createAllowed, updateAllowed } = useRelationPermissions(relationInfo);
+const { createAllowed, updateAllowed } = useRelationPermissionsM2M(relationInfo);
 
 const firstChangesAllowed = computed(() => {
 	if (!relationInfo.value) return false;

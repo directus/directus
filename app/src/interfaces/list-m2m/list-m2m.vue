@@ -215,7 +215,7 @@ import { useFieldsStore } from '@/stores/fields';
 import { LAYOUTS } from '@/types/interfaces';
 import { formatCollectionItemsCount } from '@/utils/format-collection-items-count';
 import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
-import { useRelationPermissions } from '@/composables/use-relation-permissions';
+import { useRelationPermissionsM2M } from '@/composables/use-relation-permissions';
 
 const props = withDefaults(
 	defineProps<{
@@ -573,7 +573,7 @@ function getLinkForItem(item: DisplayItem) {
 	return null;
 }
 
-const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelationPermissions(relationInfo);
+const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelationPermissionsM2M(relationInfo);
 </script>
 
 <style lang="scss">

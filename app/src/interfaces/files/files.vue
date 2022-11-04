@@ -139,7 +139,7 @@ import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { get, clamp, isEmpty } from 'lodash';
 import { getFieldsFromTemplate } from '@directus/shared/utils';
 import { Filter } from '@directus/shared/types';
-import { useRelationPermissions } from '@/composables/use-relation-permissions';
+import { useRelationPermissionsM2M } from '@/composables/use-relation-permissions';
 
 const props = withDefaults(
 	defineProps<{
@@ -379,7 +379,7 @@ const customFilter = computed(() => {
 	return filter;
 });
 
-const { createAllowed, updateAllowed, selectAllowed, deleteAllowed } = useRelationPermissions(relationInfo);
+const { createAllowed, updateAllowed, selectAllowed, deleteAllowed } = useRelationPermissionsM2M(relationInfo);
 
 const allowDrag = computed(
 	() =>

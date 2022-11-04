@@ -87,6 +87,7 @@ import { get } from 'lodash';
 import { render } from 'micromustache';
 import { computed, inject, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useRelationPermissionsM2O } from '@/composables/use-relation-permissions';
 
 const props = withDefaults(
 	defineProps<{
@@ -221,17 +222,7 @@ function onSelection(selection: (number | string)[]) {
 	selectModalActive.value = false;
 }
 
-const { hasPermission } = usePermissionsStore();
-
-const createAllowed = computed(() => {
-	if (!relationInfo.value) return false;
-	return hasPermission(relationInfo.value.relatedCollection.collection, 'create');
-});
-
-const updateAllowed = computed(() => {
-	if (!relationInfo.value) return false;
-	return hasPermission(relationInfo.value.relatedCollection.collection, 'update');
-});
+const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo);
 </script>
 
 <style lang="scss" scoped>
