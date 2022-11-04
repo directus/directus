@@ -1,11 +1,11 @@
-import { ActionEventParams, MutationOptions, Field, Relation, SchemaOverview } from '@directus/shared/types';
+import { ActionEventParams, MutationOptions, Collection, Field, Relation, SchemaOverview } from '@directus/shared/types';
 import { Diff, DiffDeleted, DiffNew } from 'deep-diff';
 import { Knex } from 'knex';
 import { merge, set } from 'lodash';
 import getDatabase from '../database';
 import logger from '../logger';
 import { CollectionsService, FieldsService, RelationsService } from '../services';
-import { Collection, Snapshot, SnapshotDiff, SnapshotField } from '../types';
+import { Snapshot, SnapshotDiff, SnapshotField } from '../types';
 import { getSchema } from './get-schema';
 import { getSnapshot } from './get-snapshot';
 import { getSnapshotDiff } from './get-snapshot-diff';

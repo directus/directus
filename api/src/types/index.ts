@@ -1,5 +1,4 @@
 export * from './auth';
-export * from './collection';
 export * from './events';
 export * from './meta';
 export * from './migration';

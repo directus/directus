@@ -10,8 +10,16 @@ import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { FieldsService } from '../services/fields';
 import { ItemsService } from '../services/items';
 import Keyv from 'keyv';
-import { Collection, CollectionMeta } from '../types';
-import { Accountability, ActionEventParams, FieldMeta, MutationOptions, RawField, SchemaOverview } from '@directus/shared/types';
+import {
+	Accountability,
+	ActionEventParams,
+	Collection,
+	CollectionMeta,
+	FieldMeta,
+	MutationOptions,
+	RawField,
+	SchemaOverview,
+} from '@directus/shared/types';
 import { Table } from 'knex-schema-inspector/dist/types/table';
 import { addFieldFlag } from '@directus/shared/utils';
 import { getHelpers, Helpers } from '../database/helpers';

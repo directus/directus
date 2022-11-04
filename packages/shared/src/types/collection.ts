@@ -1,4 +1,5 @@
 import { Table } from 'knex-schema-inspector/dist/types/table';
+import { Field } from '../types';
 
 type Translations = {
 	language: string;
@@ -30,6 +31,7 @@ export type CollectionMeta = {
 
 export interface Collection {
 	collection: string;
+	fields?: Field[];
 	meta: CollectionMeta | null;
 	schema: Table | null;
 }
