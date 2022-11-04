@@ -39,13 +39,6 @@ declare class OASSpecsService implements SpecificationSubService {
 		}
 	);
 	generate(): Promise<OpenAPIObject>;
-	private generateTags;
-	private generatePaths;
-	private generateComponents;
-	private filterCollectionFromParams;
-	private getActionForMethod;
-	private generateField;
-	private fieldTypes;
 }
 declare class GraphQLSpecsService implements SpecificationSubService {
 	accountability: Accountability | null;
