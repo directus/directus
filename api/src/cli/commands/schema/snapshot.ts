@@ -1,5 +1,5 @@
 import getDatabase from '../../../database';
-import logger from '../../../logger';
+import { cliLogger as logger } from '../../../logger';
 import { getSnapshot } from '../../../utils/get-snapshot';
 import { constants as fsConstants, promises as fs } from 'fs';
 import path from 'path';

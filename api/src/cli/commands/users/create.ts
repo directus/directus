@@ -1,7 +1,7 @@
 import { getSchema } from '../../../utils/get-schema';
 import { UsersService } from '../../../services';
 import getDatabase from '../../../database';
-import logger from '../../../logger';
+import { cliLogger as logger } from '../../../logger';
 
 export default async function usersCreate({
 	email,
