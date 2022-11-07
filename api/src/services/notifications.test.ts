@@ -1,9 +1,13 @@
 import { NotificationsService, ItemsService } from '.';
 
+jest.mock('../../src/env', () => ({
+	...jest.requireActual('../../src/env').default,
+	PUBLIC_URL: '/',
+}));
+
 jest.mock('../../src/database/index', () => {
 	return { __esModule: true, default: jest.fn(), getDatabaseClient: jest.fn().mockReturnValue('postgres') };
 });
-jest.requireMock('../../src/database/index');
 
 describe('Integration Tests', () => {
 	describe('Services / Notifications', () => {
@@ -198,7 +202,7 @@ describe('Integration Tests', () => {
 					template: {
 						name: 'base',
 						data: {
-							url: `http://localhost:8055/admin/users/${userDetail.id}`,
+							url: `/admin/users/${userDetail.id}`,
 							html: `<p>${notificationDetail.message}</p>\n`,
 						},
 					},
