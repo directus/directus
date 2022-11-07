@@ -50,9 +50,9 @@ export_items: Exportar elementos
 and: "Y"
 or: O
 init: Inicializador
-dataset_too_large_currently_showing_n_items: El conjunto de datos es demasiado grande. Actualmente muestra los primeros {n} elementos.
+dataset_too_large_currently_showing_n_items: El conjunto de datos es demasiado grande. Actualmente mostraremos los primeros {n} elementos.
 modifier: Modificador
-custom: Personalizado
+custom: Personalizar
 hook: Hook
 fill_width: Rellenar ancho
 field_name_translations: Traducción de campos
@@ -62,10 +62,10 @@ role_name: Nombre de rol
 branch: Rama
 leaf: Hoja
 indeterminate: Indeterminado
-edit_collection: Editar Colección
+edit_collection: Editar colección
 exclusive: Exclusivo
 children: Niños
-db_only_click_to_configure: 'Sólo base de datos: Haga clic para configurar'
+db_only_click_to_configure: 'Solo para la base de datos: Clic para configurar'
 show_active_items: Mostrar elementos activos
 show_archived_items: Mostrar ítems archivados
 show_all_items: Mostrar todos los elementos
@@ -74,20 +74,20 @@ required: Necesario
 required_for_app_access: Necesario para acceder a la aplicación
 requires_value: Requiere un valor
 create_preset: Crear un pre-definido
-create_panel: Crear Panel
+create_panel: Crear panel
 create_role: Crear Rol
 create_user: Crear usuario
 message: Mensaje
-delete_panel: Eliminar Panel
+delete_panel: Eliminar panel
 create_webhook: Crear un webhook(conección)
-create_translation_string: Crear Traducciones
+create_translation_string: Crear cadena de traducción
 no_translation_string: No hay cadenas de traducción
 no_translation_string_copy: Todavía no hay cadenas de traducción.
 translation_string_key_placeholder: Clave de cadena de traducción...
 translation_string_translations_placeholder: Añadir una nueva traducción
-edit_translation_string: Editar traducción
+edit_translation_string: Editar cadena de traducción
 delete_translation_string_copy: >-
-  ¿Está seguro de que desea eliminar la traducción"{key}"? Esta acción no se puede deshacer.
+  ¿Está seguro de que desea eliminar la cadena de traducción "{key}"? Esta acción no se puede deshacer.
 invite_users: Invitar usuarios
 invite: Invitar
 email_already_invited: El correo electrónico "{email}" ya ha sido invitado
@@ -116,7 +116,7 @@ logoutReason:
   SESSION_EXPIRED: Tu sesión ha expirado
 public_label: Público
 public_description: Controlar qué datos de la API están disponibles sin autenticación.
-admin_description: Función administrativa inicial con acceso sin restricciones App/API.
+admin_description: Rol administrativo inicial con acceso sin restricciones a la aplicación/API.
 not_allowed: No permitido
 directus_version: Versión Directus
 node_version: Versión de Node.js
@@ -158,8 +158,8 @@ validationError:
   regex: El valor no tiene el formato correcto
 all_access: Todos los accesos
 no_access: Sin Acceso
-use_custom: Personalizar
-nullable: Acepta valores nulos
+use_custom: Personalizar uso
+nullable: Anulable
 allow_null_value: Permitir valor NULL
 allow_multiple: Permitir Múltiples
 allow_multiple_to_be_open: Permitir que se abran múltiples
@@ -180,13 +180,16 @@ field_validation: Validación de Campo
 field_presets: Predefinidos para Campo
 permissions_for_role: 'Elementos que el Rol {role} puede {action}.'
 fields_for_role: 'Campos que el Rol {role} puede {action}.'
-validation_for_role: 'Reglas de campo al {action} que el Rol {role} tiene que obedecer.'
+validation_for_role: 'Reglas de campo a la {action} que el Rol {role} tiene que obedecer.'
 presets_for_role: 'Valores por defecto del Campo para el Rol {role}.'
 presentation_and_aliases: Presentación y Alias
 revision_post_create: Este es el aspecto de este elemento cuando fue creado.
 revision_post_update: Así se vería el elemento después de la actualización.
 changes_made: A continuación se muestran los cambios específicos realizados en esta revisión.
 no_relational_data: Tenga en cuenta que los datos relacionales no se incluyen aquí.
+junction_field_location: Ubicación de los campos de unión
+top: Parte superior
+bottom: Fondo
 hide_field: Ocultar campo
 hide_field_on_detail: Ocultar campo en el Detalle
 show_field_on_detail: Mostrar campo en el Detalle
@@ -194,10 +197,10 @@ delete_field: Eliminar Campo
 fields_and_layout: Campos y Diseño
 field_create_success: 'Campo Creado: "{field}"'
 field_update_success: 'Campo Actualizado: "{field}"'
-duplicate_where_to: '¿A dónde le gustaría duplicar este campo?'
+duplicate_where_to: '¿En dónde le gustaría duplicar este campo?'
 language: Idioma
 language_placeholder: Seleccione un idioma...
-aggregate_function: Función de agregado
+aggregate_function: Función agregada
 aggregate_precision: Precisión agregada
 group_aggregation: Agregación de grupo
 group_precision: Precisión del grupo
@@ -209,15 +212,15 @@ create_in_advanced_field_creation_mode: Crear campo en modo avanzado
 continue_in_advanced_field_creation_mode: Continuar en modo de creación avanzada de campos
 validation: Validación
 sum: Suma
-sum_distinct: Sumar Diferentes
-avg: Media
-avg_distinct: Media de elementos distintos
+sum_distinct: Sumas distintas
+avg: Promedio
+avg_distinct: Promedios distintos
 count: Contar
 count_distinct: Recuento de elementos distintos
-min: Min
-max: Máx
+min: Mínimo
+max: Máximo
 exposure: Exposición
-shutter: Obturación
+shutter: Obturador
 iso: ISO
 focal_length: Distancia Focal
 schema_setup_key: Nombre de columna de este campo de la base de datos y clave API
@@ -295,6 +298,8 @@ next: Próximo
 field_name: Nombre del Campo
 translations: Traducciones
 no_translations: Sin traducciones
+left_to_right: De izquierda a derecha
+right_to_left: De derecha a izquierda
 note: Nota
 enter_a_value: Ingrese un valor...
 enter_a_placeholder: Ingrese un placeholder...
@@ -309,6 +314,8 @@ primary_key: Clave primaria
 foreign_key: Llave Foránea
 finish_setup: Finalizar Configuración
 dismiss: Cerrar
+toggle_raw_editor: Alternar editor sin formato
+raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
 raw_value: Valor Plano
 copy_raw_value: Copiar valor exacto
 copy_raw_value_success: Copiado
@@ -321,6 +328,7 @@ edit_raw_value: Editar Valor Plano
 enter_raw_value: Ingresar valor plano...
 clear_value: Limpiar valor
 clear_changes: Borrar Cambios
+clear_items: Limpiar elementos
 reset_to_default: Restablecer ajustes predeterminados
 undo_changes: Deshacer cambios
 notifications: Notificaciones
@@ -477,6 +485,7 @@ creating_items: Creando elementos
 enable_create_button: Habilitar el botón Crear
 selecting_items: Seleccionando elementos
 enable_select_button: Habilitar el botón Seleccionar
+allow_duplicates: Permitir duplicados
 comments: Comentarios
 no_comments: Aún Sin Comentarios
 click_to_expand: Haga Clic para Expandir
@@ -529,6 +538,7 @@ activity_item: Elemento de actividad
 action: Acción
 ip_address: Dirección IP
 user_agent: Agente de usuario
+origin: Origen
 webhooks: Webhooks
 decimals: Decimales
 value_decimals: Valor Decimal
@@ -577,6 +587,9 @@ errors:
   INVALID_PAYLOAD: Payload Inválido
   INVALID_PROVIDER: El usuario pertenece a un proveedor de autenticación diferente
   INVALID_QUERY: Consulta Inválida
+  INVALID_CONFIG: Configuración invalida
+  INVALID_TOKEN: Token invalido
+  INVALID_IP: Dirección IP no permitida
   INVALID_USER: Fallo al autenticar usuario
   ITEM_LIMIT_REACHED: Límite de elementos alcanzado
   ITEM_NOT_FOUND: Elemento no encontrado
@@ -593,6 +606,13 @@ errors:
   INVALID_FOREIGN_KEY: Clave externa no válida
   UNKNOWN: Error Inesperado
   GRAPHQL_VALIDATION_EXCEPTION: Excepción de validación GraphQL
+  SERVICE_UNAVAILABLE: Servicio no disponible
+  UNSUPPORTED_MEDIA_TYPE: Tipo de archivo no soportado
+  UNEXPECTED_RESPONSE: Respuesta inesperada
+  TOKEN_EXPIRED: Token caducado
+  RANGE_NOT_SATISFIABLE: Rango invalido
+  METHOD_NOT_ALLOWED: Método no permitido
+  REQUESTS_EXCEEDED: Límite de sugerencias alcanzado
 security: Seguridad
 value_hashed: Valor Hasheado de Manera Segura
 bookmark_name: Nombre del Marcador...
@@ -614,6 +634,7 @@ password_reset_sent: Si tienes una cuenta, te hemos enviado un enlace seguro par
 password_reset_successful: Contraseña restablecida exitósamente
 back: Volver
 filter: Filtro
+edit_image: Editar imagen
 editing_image: Editar Imagen
 square: Cuadrado
 free: Libre
@@ -634,6 +655,9 @@ start_end_of_count_items: '{start}-{end} de {count} elementos'
 start_end_of_count_filtered_items: '{start}-{end} de {count} elementos filtrados'
 one_item: '1 elemento'
 one_filtered_item: '1 elemento filtrado'
+delete_collection_are_you_sure: >-
+  ¿Estás seguro que quieres borrar la colección "{collection}"? Esto borrará la colección y todos los elementos en ella. Esta acción es permanente.
+delete_folder_are_you_sure: '¿Estás seguro que quieres eliminar esta carpeta "{folder}"? Las carpetas y colecciones anidadas se moverán al nivel más alto.'
 collections_shown: Colecciones Mostradas
 visible_collections: Colecciones Visibles
 hidden_collections: Colecciones Ocultas
@@ -674,6 +698,7 @@ operators:
   nnull: No es Nulo
   contains: Contiene
   ncontains: No contiene
+  icontains: Contiene (insensible)
   starts_with: Comienza con
   nstarts_with: No comienza con
   ends_with: Termina con
@@ -727,6 +752,8 @@ add_file: Agregar Archivo
 replace_file: Reemplazar Archivo
 no_results: No hay resultados
 no_results_copy: Ajustar o limpiar filtros de búsqueda para ver los resultados.
+no_visible_fields: Limipiar Formulario
+no_visible_fields_copy: Este formulario no tiene campos visibles.
 clear_filters: Limpiar Filtros
 saves_automatically: Guardar Automáticamente
 role: Rol
@@ -753,10 +780,46 @@ toggle: Alternar
 icon_on: Icono Activado
 icon_off: Icono Desactivado
 label: Etiqueta
+flows: Flujos
+flow: Flujo
+select_a_flow: Selecciona un flujo
+run_flow_on_current: Ejecutar flujo en el elemento actual
+run_flow_on_current_edited_confirm: Este elemento podría haber sido actualizado por este flujo, ¿estás seguro que quieres ejecutarlo?
+run_flow_success: Flujo "{flow}" se ha ejecutado correctamente
 trigger: Disparador
+trigger_options: Opciones de activación
+view_trigger: Ver activador
+create_trigger: Crear activador
+trigger_setup: Setup de activadores
+change_trigger: Cambiar activador
+flow_delete_confirm: '¿Está seguro de que desea eliminar este flujo "{flow}"? Esta acción no se puede deshacer.'
+set_flow_active: Establecer flujo a activo
+set_flow_inactive: Establecer flujo a inactivo
+edit_flow: Editar flujo
+delete_flow: Eliminar flujo
+no_other_flows_copy: Aún no tienes otros flujos.
+no_flows: No hay flujos
+no_flows_copy: Todavía no tienes flujos.
+create_flow: Crear flujo
+creating_new_flow: Creando nuevo flujo
+updating_flow: Actualizando flujo
+flow_setup: Configuración de flujo
 flow_name: Nombre
+flow_tracking: Seguimiento de actividad y registros
+flow_tracking_all: Seguir actividad y registros
 flow_tracking_activity: Sólo seguimiento de actividad
 flow_tracking_null: No realizar seguimiento
+start_flow: Iniciar flujo
+stop_flow: Detener flujo
+create_operation: C
+edit_operation: Editar operación
+code: Código
+operation_options: Opciones de operación
+operation_name: Nombre de operación...
+operation_key: Identificador para referencia...
+operation_key_unique_error: Las claves de operación deben ser únicas en un flujo
+operation_handle_resolve: 'Resolver: Haga clic para añadir o arrastrar para reenrutar'
+operation_handle_reject: 'Rechazar: Haga clic para añadir o arrastrar para reenrutar'
 insights: Informes
 dashboard: Panel de control
 panel: Panel
@@ -777,7 +840,10 @@ no_dashboards_copy: Aún no tienes un Panel.
 create_dashboard: Crear un Panel
 dashboard_name: Nombre del Panel
 no_data: Sin datos
+no_data_in_flow: Ningún dato fue producido o accedido dentro de este flujo
 accountability: Responsabilidad
+payload: Payload
+details: Detalles
 full_screen: Pantalla Completa
 full_text_search: Búsqueda de texto completo
 edit_panels: Editar Panel
@@ -791,6 +857,7 @@ media: Medios
 quality: Calidad
 width: Ancho
 height: Altura
+transformation_preset_key: Clave preestablecida de transformación
 source: Fuente
 url_placeholder: Introduzca una url...
 display_text: Mostrar texto
@@ -875,6 +942,7 @@ settings_data_model: Modelo de Datos
 settings_permissions: Roles y permisos
 settings_project: Configuración de proyecto
 settings_webhooks: Webhooks
+settings_flows: Flujos
 settings_presets: Predefinidos y Marcadores
 settings_translation_strings: Cadenas de traducción
 one_or_more_options_are_missing: Falta una o más opciones
@@ -924,6 +992,8 @@ page_help_settings_presets_item: >-
   **Detalle de Predefinido** — Una manera de administrar Marcadores y Predefinidos por defecto de Colecciones.
 page_help_settings_webhooks_collection: '**Navegar en Webhooks** — Lista todos los webhooks en el proyecto.'
 page_help_settings_webhooks_item: '**Detalle de Webhook** — Una manera de crear y administrar los webhooks del proyecto.'
+page_help_settings_flows_collection: '**Navegar flujos** — Lista de todos los flujos dentro del proyecto.'
+page_help_settings_flows_item: '**Detalle de flujo** — Espacio de trabajo para gestionar una o más operaciones.'
 page_help_settings_translation_strings_collection: '**Examinar cadenas de traducción** — Lista todas las cadenas de traducción dentro del proyecto.'
 page_help_users_collection: '**Directorio de Usuarios** — Lista todos los usuarios del sistema en este proyecto.'
 page_help_users_item: >-
@@ -952,9 +1022,11 @@ directus_collection:
   directus_dashboards: Panel de control dentro del módulo Insights
   directus_fields: Configuración adicional de campos y metadatos
   directus_files: Metadatos para todos los archivos gestionados
+  directus_flows: Flujos de automatización
   directus_folders: Proporciona directorios virtuales para archivos
   directus_migrations: Qué versión de la base de datos estás usando
   directus_notifications: Notificaciones enviadas a usuarios
+  directus_operations: Operaciones que funcionan en flujos
   directus_panels: Paneles individuales dentro de los paneles de Individual
   directus_permissions: Permisos de acceso para cada rol
   directus_presets: Preajustes para la colección por defecto y marcadores
@@ -975,6 +1047,7 @@ fields:
     user: Realizado por
     comment: Comentar
     user_agent: Agente de usuario
+    origin: Origen
     ip: Dirección IP
     revisions: Revisiones
   directus_collections:
@@ -1086,6 +1159,8 @@ fields:
     transformations_all: Permitir todas las transformaciones
     transformations_none: Desactivar transformaciones
     transformations_presets: Limitar las transformaciones a los ajustes de abajo
+    image_editor: Editor de imágenes
+    custom_aspect_ratios: Personalizar radios de aspecto
   directus_shares:
     name: Nombre
     role: Rol
@@ -1325,6 +1400,7 @@ reset: Reiniciar
 reset_password: Restablecer la contraseña
 revisions: Revisiones
 no_revisions: Aún no hay revisiones
+no_logs: Todavía no hay registros
 revert: Revertir
 save: Guardar
 schema: Esquema
@@ -1344,12 +1420,23 @@ export_started_copy: Tu exportación ha comenzado. Serás notificado cuando est�
 sort_asc: Ordenar ascendente
 sort_desc: Orden descendente
 template: Plantilla
+require_value_to_be_set: Requiere un valor para ser establecido en la creación
 translation: Traducción
 translation_placeholder: Introduzca una traducción...
 value: Valor
 view_project: Ver Proyecto
 report_error: Reportar Error
 start: Iniciar
+table: Tabular
+list: Lista
+search_filter: Buscar & Filtrar
+enable_search_filter: Habilitar busqueda y filtración
+item_link: Enlace de elemento
+show_link_to_item: Mostrar un enlace al elemento
+navigate_to_item: Navegar al elemento
+undo_removed_item: Deshacer eliminar elemento
+remove_item: Eliminar elemento
+delete_item: Borrar elemento
 interfaces:
   filter:
     name: Filtro
@@ -1366,6 +1453,7 @@ interfaces:
     no_rules: No hay reglas configuradas
     change_value: Haga clic para cambiar el valor
     placeholder: Arrastre archivos a esta zona
+    add_key_placeholder: Añada una clave y presionar Enter...
   fields:
     name: Campos
   group-accordion:
@@ -1428,6 +1516,9 @@ interfaces:
     set_to_now: Ajustar a Ahora Mismo
     use_24: Usar Formato 24 horas
     placeholder: Elija una fecha...
+  system-fields:
+    select_a_collection: Seleccionar una Colección
+    no_fields: No hay campos
   system-display-template:
     display-template: Plantilla de Presentación
     description: Combinar texto estático y valores de campos dinámicos
@@ -1451,6 +1542,7 @@ interfaces:
     allow_none_label: Permitir "Sin selección"
     choices_name_placeholder: Ingrese un nombre...
     choices_value_placeholder: Ingrese un valor...
+    preview_threshold: Umbral de vista previa
   select-multiple-dropdown:
     select-multiple-dropdown: Lista Desplegable (Múltiple)
     description: Seleccione múltiples valores de una lista de selección
@@ -1484,6 +1576,7 @@ interfaces:
   list-m2m:
     many-to-many: Muchos a Muchos
     description: Seleccionar múltiples elementos de unión relacionados
+    columns_configure_notice: Puedes configurar las columnas después de crear este campo.
     display_template_configure_notice: Puede configurar la plantilla de pantalla después de crear este campo.
   select-dropdown-m2o:
     many-to-one: Muchos a Uno
@@ -1542,6 +1635,7 @@ interfaces:
     edit_fields: Editar campos
     add_label: 'Etiqueta "Crear nuevo"'
     sort: Ordenar
+    sort_placeholder: Manual
     field_name_placeholder: Ingrese el nombre del campo...
     field_note_placeholder: Introducir nota del campo...
     incompatible_data: Los datos actuales no son compatibles con la interfaz del repetidor y serán reemplazados al agregar elementos al repetidor
@@ -1600,6 +1694,7 @@ interfaces:
     user_language: Usar el idioma actual del usuario
     default_language: Idioma predeterminado
     language_field: Campo indicador de idioma
+    language_direction_field: Campo de Dirección de Idioma
   list-o2m-tree-view:
     description: Vista del árbol para elementos anidados recursivos uno a muchos
     recursive_only: La interfaz de vista en árbol sólo funciona para relaciones recursivas.
@@ -1641,6 +1736,16 @@ interfaces:
     start_closed: Iniciar colapsado
   system-token:
     system-token: Token
+    description: Administrar token de acceso estático
+    placeholder: Haga clic en "Generar token" para crear un nuevo token de acceso estático
+    value_securely_saved: Valor guardado de forma segura
+    generate: Generar token
+    regenerate: Regenerar token
+    generate_success_copy: Asegúrese de hacer una copia de seguridad y copiar el token de arriba. Por razones de seguridad, no podrá volver a ver el token después de guardar y navegar fuera de esta página.
+    remove_token: Remover token
+  system-raw-editor:
+    system-raw-editor: Editor bruto
+    description: Permitir la introducción de valores de plantillas en crudo o en mostacho
 displays:
   translations:
     translations: Traducciones
@@ -1679,6 +1784,16 @@ displays:
     relative: Relativa
     relative_label: 'Presentar hora relativa, ej: hace 5 minutos'
     suffix: Sufijo
+    suffix_label: Mostrar indicador relativo
+    suffix_note: Usa palabras cómo 'en' y 'antes'
+    strict: Estricto
+    strict_label: Usa unidades estrictas
+    strict_note: Remover palabras cómo 'casi', 'encima', 'menos que'
+    round: Redondeo
+    round_note: Escoja una función de redondeo para usar
+    down: Abajo
+    nearest: Más cercano
+    up: Arriba
   file:
     file: Archivo
     description: Presentar archivos
@@ -1790,33 +1905,8 @@ layouts:
     default_template: Usando la colección por defecto...
     no_compatible_fields: No hay campos compatibles
   kanban:
-    name: Kanban,
-    group_field: Agrupar,
-    group_field_placeholder: Campo para agrupar,
-    group_title: Título del Grupo,
-    group_title_placeholder: Campo para títulos de grupo...,
-    title: Título de la Tarjeta
-    title_placeholder: Campo de título opcional...,
-    text: Texto de la Tarjeta,
-    text_placeholder: Campo de texto opcional...,
-    date: Fecha de la Tarjeta,
-    date_placeholder: Campo de fecha opcional...,
-    tags: Etiquetas de la Tarjeta,
-    tags_placeholder: Campo de etiquetas opcional...,
-    user: Usuario de la Tarjeta,
-    user_placeholder: Campo de usuario opcional...,
-    image: Imagen de la Tarjeta,
-    image_placeholder: Campo de imagen opcional...,
-    image_fit: Ajuste de Imagen de la Tarjeta,
-    crop: Recortar,
-    advanced: Avanzado,
-    edit_group: Editar Grupo,
-    delete_group: Eliminar Grupo,
-    add_group: Añadir Grupo,
-    add_group_placeholder: Introduzca un nuevo título para el grupo...,
-    show_ungrouped: Mostrar Desagrupado,
-    show: Mostrar,
-    no_group: Sin Agrupar,
+    crop: Recortar
+    advanced: Avanzado
     not_all_loaded: Sólo se pudieron cargar los primeros 1000 elementos.
 panels:
   metric:
@@ -1857,32 +1947,156 @@ panels:
     y_axis_conditional_one: Valor para la condición
     y_axis_conditional_two: debe ser un número.
   linechart:
+    name: Gráficos de línea
     select_field: Debe seleccionar un campo.
     select_collection: Debe seleccionar una colección.
     select_x_axis: Debe seleccionar un eje X.
     function: Función
     x_axis: Eje X
+    x_axis_decimals: Decimales del eje X
+    disabled_no_grouping: Deshabilitado cuando no se selecciona ninguna agrupación.
     y_axis: Eje Y
+    datasets: Conjunto de datos
+    show_legend: Mostrar leyenda
+    show_marker: Mostrar marcador de información sobre herramientas
+    include_y_axis: Debe incluir un eje Y para cada conjunto de datos cuando no se especifique ningún grupo.
     group_and_function: Un grupo y una función deben ser ambos incluídos u omitidos.
+    smooth: Suave
+    straight: Recto
+    step_line: Línea de paso
   meter:
+    name: Medidor
+    description: Medidor para los valores de seguimiento
+    stroke_width: Ancho del trazo
+    select_max_value: Debe seleccionar un valor máximo.
+    max_greater_than_zero: El máximo debe ser mayor que 0.
     select_field: Debe seleccionar un campo.
     select_collection: Debe seleccionar una colección.
     function: Función
+    thin: Ligero
+    medium: Medio
+    broad: Amplio
   piechart:
-    function: 'Función'
+    name: Gráfico de Pie o Donut
+    function: Función
+    donut: Donut
+    show_legend: Mostrar leyenda
+    right: Derecha
+    bottom: Fondo
+    monochrome: Monocromo
+    monochrome_color: Color monocromático
+  variable:
+    name: Variable global
+    description: Establecer un valor global para el uso en los filtros de otros Paneles
+    variable_key: Clave variable
+  relational-variable:
+    name: Variable de relación global
+    description: Establecer un valor de relación global para usar en otros filtros de paneles
+    variable_key: Clave variable
+    multiple: Múltiple
+    multiple-label: Selecciona múltiples elementos
 triggers:
+  common:
+    response_body: Cuerpo de respuesta
+    response_body_all: Todos los datos
+    response_body_last: Datos de la última operación
+  event:
+    name: Gancho de evento
+    description: Activadores en eventos de plataforma o datos
+    action: 'Acción (Sin bloqueo)'
+    filter: 'Filtro (Bloqueando)'
   webhook:
+    name: Webhook
+    description: Activadores en una solicitud HTTP entrante
     method: Método
+    async: Asincrónico
+  operation:
+    name: Otro flujo
+    description: Activado por otro flujo, para encadenar
+    preview: Activado por una operación en un flujo diferente
+  schedule:
+    name: Programación (CRON)
+    description: Se activa en puntos regulares a tiempo
+    cron: Intervalo
+  manual:
+    name: Manual
+    description: Se activa al ejecutar manualmente sin colección(es) seleccionada
+    collection_and_item: Paginas de colección y elementos
+    collection_only: Pagina de colección solamente
+    item_only: Página de elemento solamente
+any_string_or_json: Alguna cadena o JSON...
+item_payload_placeholder: Este es el JSON usado para actualizar los valores del campo del elemento...
+operation_variables_note: Puedes acceder a los datos del flujo con variables como **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** y **{'{'}{'{'}$accountability{'}'}{'}'}**, o hacer referencia a previas operaciones usando **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
+  condition:
+    name: Condición
+    description: Enrutar un flujo basado en si / Otra lógica
+  exec:
+    name: Ejecutar script
+    description: Ejecutar código arbitrario para modificar el payload
+    modules: 'Los siguientes **módulos del nodo** pueden ser usados:'
+  item-create:
+    name: Crear datos
+    description: Crear elementos en la base de datos
+    payload: Payload
+    emit_events: Emitir eventos
+  item-delete:
+    name: Borrar datos
+    description: Borrar elementos en la base de datos
+    emit_events: Emitir eventos
+    key: IDs
+    query: Consulta
+  item-read:
+    name: Leer datos
+    description: Leer elementos de la base de datos
+    key: IDs
+    query: Consulta
+    emit_events: Emitir eventos
+  item-update:
+    name: Actualizar datos
+    description: Actualizar elementos en la base de datos
+    emit_events: Emitir eventos
+    key: IDs
+    payload: Payload
+    query: Consulta
   log:
+    name: Registrar en la consola
+    description: Envía algo a la consola
     message: Mensaje
+    message_placeholder: Envía un mensaje para mostrar en la consola...
+  mail:
+    name: Enviar Email
+    description: Envía un email a una o más personas
+    to: A
+    to_placeholder: Añada la dirección del correo electrónico y presionar Enter...
+    body: Cuerpo
   notification:
+    name: Enviar notificación
+    description: Enviar una notificación dentro de la aplicación a uno o más usuarios
     recipient: Usuario
+    recipient_placeholder: Añadir la UUID del usuario y presionar Enter...
     message: Mensaje
   request:
+    name: Webhook / Solicitud de URL
+    description: "Haz una solicitud a una URL"
     url: URL
+    url_placeholder: https://ejemplo.com/ejemplo
     method: Método
     data: Datos
+    headers: Encabezados
     header: Encabezado
+    header_placeholder: Autorización...
+    value_placeholder: Portador eyJhbGciOi...
+  sleep:
+    name: Dormir
+    description: Espera un número dado de milisegundos
+    milliseconds: Milisegundos
+  transform:
+    name: Transformar payload
+    description: Alterar la payload JSON del flujo
   trigger:
+    name: Activar flujo
+    description: Pasar estos datos a otro flujo
+    flows: Flujos
+    flow: Flujo
     data: Datos

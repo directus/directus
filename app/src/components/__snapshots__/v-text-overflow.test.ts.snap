@@ -1,0 +1,3 @@
+// Vitest Snapshot v1
+
+exports[`Mount component 1`] = `"<div class=\\"v-text-overflow\\" data-v-dcb797ca=\\"\\">My text</div>"`;

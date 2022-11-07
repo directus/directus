@@ -23,7 +23,7 @@
 			</span>
 		</template>
 		<v-dialog v-model="linkDrawerOpen">
-			<v-card>
+			<v-card class="card">
 				<v-card-title class="card-title">{{ t('wysiwyg_options.link') }}</v-card-title>
 				<v-card-text>
 					<div class="grid">
@@ -51,7 +51,7 @@
 				</v-card-text>
 				<v-card-actions>
 					<v-button secondary @click="closeLinkDrawer">{{ t('cancel') }}</v-button>
-					<v-button :disabled="linkSelection.url === null" @click="saveLink">{{ t('save') }}</v-button>
+					<v-button :disabled="linkSelection.url === null && !linkNode" @click="saveLink">{{ t('save') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
@@ -84,7 +84,7 @@
 						</div>
 						<div class="field half-right">
 							<div class="type-label">{{ t('alt_text') }}</div>
-							<v-input v-model="imageSelection.alt" />
+							<v-input v-model="imageSelection.alt" :nullable="false" />
 						</div>
 						<template v-if="storageAssetTransform === 'all'">
 							<div class="field half">
@@ -176,7 +176,7 @@
 <script lang="ts">
 import Editor from '@tinymce/tinymce-vue';
 import { percentage } from '@/utils/percentage';
-import { ComponentPublicInstance, computed, defineComponent, PropType, ref, toRefs } from 'vue';
+import { ComponentPublicInstance, computed, defineComponent, PropType, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import getEditorStyles from './get-editor-styles';
 import useImage from './useImage';
@@ -273,6 +273,10 @@ export default defineComponent({
 			type: Number,
 			default: undefined,
 		},
+		direction: {
+			type: String,
+			default: undefined,
+		},
 	},
 	emits: ['input'],
 	setup(props, { emit }) {
@@ -315,7 +319,7 @@ export default defineComponent({
 			mediaButton,
 		} = useMedia(editorRef, imageToken);
 
-		const { linkButton, linkDrawerOpen, closeLinkDrawer, saveLink, linkSelection } = useLink(editorRef);
+		const { linkButton, linkDrawerOpen, closeLinkDrawer, saveLink, linkSelection, linkNode } = useLink(editorRef);
 
 		const { codeDrawerOpen, code, closeCodeDrawer, saveCode, sourceCodeButton } = useSourceCode(editorRef);
 
@@ -323,10 +327,26 @@ export default defineComponent({
 			get() {
 				return props.value || '';
 			},
-			set() {
+			set(value) {
+				if (props.value !== value) {
+					contentUpdated();
+				}
 				return;
 			},
 		});
+
+		watch(
+			() => [props.direction, editorRef],
+			() => {
+				if (editorRef.value) {
+					if (props.direction === 'rtl') {
+						editorRef.value.editorCommands?.commands?.exec?.mcedirectionrtl();
+					} else {
+						editorRef.value.editorCommands?.commands?.exec?.mcedirectionltr();
+					}
+				}
+			}
+		);
 
 		const editorOptions = computed(() => {
 			let styleFormats = null;
@@ -369,6 +389,7 @@ export default defineComponent({
 				file_picker_types: 'customImage customMedia image media',
 				link_default_protocol: 'https',
 				browser_spellcheck: true,
+				directionality: props.direction,
 				setup,
 				...(props.tinymceOverrides || {}),
 			};
@@ -407,6 +428,7 @@ export default defineComponent({
 			closeLinkDrawer,
 			saveLink,
 			linkSelection,
+			linkNode,
 			codeDrawerOpen,
 			code,
 			closeCodeDrawer,
@@ -551,8 +573,12 @@ export default defineComponent({
 	padding-bottom: var(--content-padding);
 }
 
-:deep(.v-card-title) {
-	margin-bottom: 24px;
-	font-size: 24px;
+.card {
+	overflow: auto;
+
+	.card-title {
+		margin-bottom: 24px;
+		font-size: 24px;
+	}
 }
 </style>

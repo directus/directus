@@ -189,7 +189,7 @@ import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useShortcut } from '@/composables/use-shortcut';
 import { isEmpty, merge, omit, cloneDeep } from 'lodash';
 import { router } from '@/router';
-import { nanoid, customAlphabet } from 'nanoid';
+import { nanoid, customAlphabet } from 'nanoid/non-secure';
 
 import SettingsNotFound from '../not-found.vue';
 import SettingsNavigation from '../../components/navigation.vue';
@@ -280,7 +280,7 @@ const panels = computed(() => {
 			const updates = stagedPanels.value.find((updatedPanel) => updatedPanel.id === panel.id);
 
 			if (updates) {
-				return merge({}, panel, updates);
+				return Object.assign({}, panel, updates);
 			}
 
 			return panel;
@@ -404,7 +404,7 @@ function stageOperationEdits(event: { edits: Partial<OperationRaw>; id?: string 
 		if (stagedPanels.value.some((panel) => panel.id === key)) {
 			stagedPanels.value = stagedPanels.value.map((panel) => {
 				if (panel.id === key) {
-					return merge({ id: key, flow: props.primaryKey }, panel, event.edits);
+					return Object.assign({ id: key, flow: props.primaryKey }, panel, event.edits);
 				}
 
 				return panel;

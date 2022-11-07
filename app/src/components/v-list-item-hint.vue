@@ -4,16 +4,13 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script setup lang="ts">
+interface Props {
+	center?: boolean;
+}
 
-export default defineComponent({
-	props: {
-		center: {
-			type: Boolean,
-			default: false,
-		},
-	},
+withDefaults(defineProps<Props>(), {
+	center: false,
 });
 </script>
 

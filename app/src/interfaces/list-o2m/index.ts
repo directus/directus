@@ -12,10 +12,52 @@ export default defineInterface({
 	localTypes: ['o2m'],
 	group: 'relational',
 	relational: true,
-	options: ({ relations }) => {
+	options: ({ relations, field: { meta } }) => {
 		const collection = relations.o2m?.collection;
+		const options = meta?.options ?? {};
 
-		return [
+		const tableOptions = [
+			{
+				field: 'tableSpacing',
+				name: '$t:layouts.tabular.spacing',
+				schema: {
+					default_value: 'cozy',
+				},
+				meta: {
+					interface: 'select-dropdown',
+					options: {
+						choices: [
+							{
+								text: '$t:layouts.tabular.compact',
+								value: 'compact',
+							},
+							{
+								text: '$t:layouts.tabular.cozy',
+								value: 'cozy',
+							},
+							{
+								text: '$t:layouts.tabular.comfortable',
+								value: 'comfortable',
+							},
+						],
+					},
+					width: 'half',
+				},
+			},
+			{
+				field: 'fields',
+				name: '$t:columns',
+				meta: {
+					interface: 'system-fields',
+					options: {
+						collectionName: collection,
+					},
+					width: 'full',
+				},
+			},
+		];
+
+		const listOptions = [
 			{
 				field: 'template',
 				name: '$t:display_template',
@@ -27,6 +69,33 @@ export default defineInterface({
 					width: 'full',
 				},
 			},
+		];
+
+		return [
+			{
+				field: 'layout',
+				name: '$t:layout',
+				schema: {
+					default_value: 'list',
+				},
+				meta: {
+					interface: 'select-dropdown',
+					options: {
+						choices: [
+							{
+								text: '$t:list',
+								value: 'list',
+							},
+							{
+								text: '$t:table',
+								value: 'table',
+							},
+						],
+					},
+					width: 'half',
+				},
+			},
+			...(options.layout === 'table' ? tableOptions : listOptions),
 			{
 				field: 'enableCreate',
 				name: '$t:creating_items',
@@ -86,6 +155,45 @@ export default defineInterface({
 							hidden: true,
 						},
 					],
+				},
+			},
+			{
+				field: 'enableSearchFilter',
+				name: '$t:search_filter',
+				schema: {
+					default_value: false,
+				},
+				meta: {
+					interface: 'boolean',
+					options: {
+						label: '$t:enable_search_filter',
+					},
+					width: 'half',
+					hidden: true,
+					conditions: [
+						{
+							rule: {
+								layout: {
+									_eq: 'table',
+								},
+							},
+							hidden: false,
+						},
+					],
+				},
+			},
+			{
+				field: 'enableLink',
+				name: '$t:item_link',
+				schema: {
+					default_value: false,
+				},
+				meta: {
+					interface: 'boolean',
+					options: {
+						label: '$t:show_link_to_item',
+					},
+					width: 'half',
 				},
 			},
 		];

@@ -34,6 +34,7 @@ import { deepMap } from '@directus/shared/utils';
 import { useRelationO2M } from '@/composables/use-relation-o2m';
 import { ChangesItem } from '@/composables/use-relation-multiple';
 import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
+import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 
 const props = withDefaults(
 	defineProps<{
@@ -124,10 +125,14 @@ const template = computed(() => {
 });
 
 const fields = computed(() => {
-	return addRelatedPrimaryKeyToFields(
-		relationInfo.value?.relatedCollection.collection ?? '',
-		getFieldsFromTemplate(template.value)
+	if (!relationInfo.value) return [];
+
+	const displayFields = adjustFieldsForDisplays(
+		getFieldsFromTemplate(template.value),
+		relationInfo.value.relatedCollection.collection
 	);
+
+	return addRelatedPrimaryKeyToFields(relationInfo.value?.relatedCollection.collection ?? '', displayFields);
 });
 </script>
 
@@ -140,17 +145,5 @@ const fields = computed(() => {
 :deep(ul) {
 	margin-left: 24px;
 	padding-left: 0;
-}
-
-.actions {
-	margin-top: 12px;
-}
-
-.actions .v-button + .v-button {
-	margin-left: 12px;
-}
-
-.existing {
-	margin-left: 12px;
 }
 </style>

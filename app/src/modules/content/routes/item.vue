@@ -42,7 +42,7 @@
 				icon
 				secondary
 				exact
-				@click="router.back()"
+				@click="navigateBack"
 			>
 				<v-icon name="arrow_back" />
 			</v-button>
@@ -179,7 +179,13 @@
 				<div v-md="t('page_help_collections_item')" class="page-description" />
 			</sidebar-detail>
 			<revisions-drawer-detail
-				v-if="isNew === false && internalPrimaryKey && revisionsAllowed && accountabilityScope === 'all'"
+				v-if="
+					isNew === false &&
+					loading === false &&
+					internalPrimaryKey &&
+					revisionsAllowed &&
+					accountabilityScope === 'all'
+				"
 				ref="revisionsDrawerDetailRef"
 				:collection="collection"
 				:primary-key="internalPrimaryKey"
@@ -187,21 +193,23 @@
 				@revert="revert"
 			/>
 			<comments-sidebar-detail
-				v-if="isNew === false && internalPrimaryKey"
+				v-if="isNew === false && loading === false && internalPrimaryKey"
 				:collection="collection"
 				:primary-key="internalPrimaryKey"
 			/>
 			<shares-sidebar-detail
-				v-if="isNew === false && internalPrimaryKey"
+				v-if="isNew === false && loading === false && internalPrimaryKey"
 				:collection="collection"
 				:primary-key="internalPrimaryKey"
 				:allowed="shareAllowed"
 			/>
 			<flow-sidebar-detail
-				v-if="isNew === false && internalPrimaryKey"
+				v-if="isNew === false && loading === false && internalPrimaryKey"
 				location="item"
 				:collection="collection"
 				:primary-key="internalPrimaryKey"
+				:has-edits="hasEdits"
+				@refresh="refresh"
 			/>
 		</template>
 	</private-view>
@@ -356,6 +364,16 @@ const disabledOptions = computed(() => {
 	if (isNew.value) return ['save-as-copy'];
 	return [];
 });
+
+function navigateBack() {
+	const backState = router.options.history.state.back;
+	if (typeof backState !== 'string' || !backState.startsWith('/login')) {
+		router.back();
+		return;
+	}
+
+	router.push(`/content/${props.collection}`);
+}
 
 function useBreadcrumb() {
 	const breadcrumb = computed(() => [

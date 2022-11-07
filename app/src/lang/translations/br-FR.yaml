@@ -531,6 +531,7 @@ trigger: Distegner
 flow_name: Anv
 flow_tracking_activity: Enrollañ an obererezh hepken
 flow_tracking_null: Enrollañ netra
+code: Kod
 full_screen: Skramm a-bezh
 image_url: Url ar skeudenn
 alt_text: Eil testenn
@@ -877,6 +878,7 @@ translation: Troidigezh
 value: Talvoud
 view_project: Gwelet ar raktres
 report_error: Disklêriañ ar fazi
+table: Taolenn
 interfaces:
   filter:
     add_filter: Ouzhpenn ur sil
@@ -927,6 +929,8 @@ interfaces:
     include_seconds: Enklozañ an eilennoù
     set_to_now: Lakaat da vremañ
     use_24: Implijout ar furmad 24e
+  system-fields:
+    select_a_collection: Dibab un dastumad
   system-display-template:
     display-template: Patrom diskwel
     description: Meskañ testenn statik ha talvoudoù ar maeziennoù dinamek
@@ -1194,6 +1198,8 @@ layouts:
     calendar: Deiziadur
     start_date_field: Maezienn Devezh ar penn kentañ
     end_date_field: Maezienn Devezh fin
+  kanban:
+    crop: Krennañ
 panels:
   label:
     name: Tikedenn

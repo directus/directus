@@ -106,11 +106,11 @@ export default async function getASTFromQuery(
 
 		fields = await convertWildcards(parentCollection, fields);
 
-		if (!fields) return [];
+		if (!fields || !Array.isArray(fields)) return [];
 
 		const children: (NestedCollectionNode | FieldNode | FunctionFieldNode)[] = [];
 
-		const relationalStructure: Record<string, string[] | anyNested> = {};
+		const relationalStructure: Record<string, string[] | anyNested> = Object.create(null);
 
 		for (const fieldKey of fields) {
 			let name = fieldKey;

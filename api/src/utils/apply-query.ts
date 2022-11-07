@@ -1,4 +1,14 @@
-import { Aggregate, FieldFunction, Filter, Query, Relation, SchemaOverview } from '@directus/shared/types';
+import {
+	Aggregate,
+	ClientFilterOperator,
+	FieldFunction,
+	FieldOverview,
+	Filter,
+	Query,
+	Relation,
+	SchemaOverview,
+	Type,
+} from '@directus/shared/types';
 import { Knex } from 'knex';
 import { clone, isPlainObject, set } from 'lodash';
 import { customAlphabet } from 'nanoid';
@@ -8,7 +18,8 @@ import { InvalidQueryException } from '../exceptions/invalid-query';
 import { getColumn } from './get-column';
 import { getColumnPath } from './get-column-path';
 import { getRelationInfo } from './get-relation-info';
-import { getOutputTypeForFunction } from '@directus/shared/utils';
+import { getFilterOperatorsForType, getOutputTypeForFunction } from '@directus/shared/utils';
+import { stripFunction } from './strip-function';
 
 const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
 
@@ -357,8 +368,24 @@ export function applyFilter(
 
 					if (!columnPath) continue;
 
+					const { type, special } = validateFilterField(
+						schema.collections[targetCollection].fields,
+						stripFunction(filterPath[filterPath.length - 1]),
+						targetCollection
+					);
+
+					validateFilterOperator(type, filterOperator, special);
+
 					applyFilterToQuery(columnPath, filterOperator, filterValue, logical, targetCollection);
 				} else {
+					const { type, special } = validateFilterField(
+						schema.collections[collection].fields,
+						stripFunction(filterPath[0]),
+						collection
+					);
+
+					validateFilterOperator(type, filterOperator, special);
+
 					applyFilterToQuery(`${collection}.${filterPath[0]}`, filterOperator, filterValue, logical);
 				}
 			} else if (subQuery === false || filterPath.length > 1) {
@@ -394,6 +421,36 @@ export function applyFilter(
 				}
 			}
 		}
+
+		function validateFilterField(fields: Record<string, FieldOverview>, key: string, collection = 'unknown') {
+			if (fields[key] === undefined) {
+				throw new InvalidQueryException(`Invalid filter key "${key}" on "${collection}"`);
+			}
+
+			return fields[key];
+		}
+
+		function validateFilterOperator(type: Type, filterOperator: string, special: string[]) {
+			if (filterOperator.startsWith('_')) {
+				filterOperator = filterOperator.slice(1);
+			}
+
+			if (!getFilterOperatorsForType(type).includes(filterOperator as ClientFilterOperator)) {
+				throw new InvalidQueryException(
+					`"${type}" field type does not contain the "_${filterOperator}" filter operator`
+				);
+			}
+
+			if (
+				special.includes('conceal') &&
+				!getFilterOperatorsForType('hash').includes(filterOperator as ClientFilterOperator)
+			) {
+				throw new InvalidQueryException(
+					`Field with "conceal" special does not allow the "_${filterOperator}" filter operator`
+				);
+			}
+		}
+
 		function applyFilterToQuery(
 			key: string,
 			operator: string,

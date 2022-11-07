@@ -9,9 +9,6 @@ fields:
     options:
       iconRight: title
       placeholder: $t:field_options.directus_settings.project_name_placeholder
-    translations:
-      language: en-US
-      translations: Name
     width: half
 
   - field: project_descriptor
@@ -19,9 +16,6 @@ fields:
     options:
       iconRight: title
       placeholder: $t:field_options.directus_settings.project_name_placeholder
-    translations:
-      language: en-US
-      translations: Name
     width: half
 
   - field: project_url
@@ -29,9 +23,6 @@ fields:
     options:
       iconRight: link
       placeholder: https://example.com
-    translations:
-      language: en-US
-      translations: Website
     width: half
 
   - field: default_language
@@ -39,9 +30,6 @@ fields:
     options:
       iconRight: language
       placeholder: en-US
-    translations:
-      language: en-US
-      translations: Default Language
     width: half
 
   - field: branding_divider
@@ -57,31 +45,20 @@ fields:
   - field: project_color
     interface: select-color
     note: $t:field_options.directus_settings.project_color_note
-    translations:
-      language: en-US
-      translations: Brand Color
     width: half
 
   - field: project_logo
     interface: file
     note: $t:field_options.directus_settings.project_logo_note
-    translations:
-      language: en-US
-      translations: Brand Logo
     width: half
 
   - field: public_foreground
     interface: file
-    translations:
-      language: en-US
-      translations: Login Foreground
     width: half
 
   - field: public_background
     interface: file
     translations:
-      language: en-US
-      translations: Login Background
     width: half
 
   - field: public_note
@@ -131,7 +108,8 @@ fields:
 
   - field: module_bar
     interface: system-modules
-    special: cast-json
+    special:
+      - cast-json
 
   - field: security_divider
     interface: presentation-divider
@@ -307,7 +285,8 @@ fields:
                 ]
             width: full
       template: '{{key}}'
-    special: cast-json
+    special:
+      - cast-json
     width: full
 
   - field: map_divider
@@ -332,7 +311,8 @@ fields:
 
   - field: basemaps
     interface: list
-    special: cast-json
+    special:
+      - cast-json
     options:
       template: '{{name}}'
       fields:
@@ -390,5 +370,40 @@ fields:
               placeholder: $t:fields.directus_settings.attribution_placeholder
 
   - field: translation_strings
-    special: cast-json
+    special:
+      - cast-json
     hidden: true
+
+  - field: image_editor
+    interface: presentation-divider
+    options:
+      icon: image
+      title: $t:fields.directus_settings.image_editor
+    special:
+      - alias
+      - no-data
+    width: full
+
+  - field: custom_aspect_ratios
+    interface: list
+    special:
+      - cast-json
+    options:
+      template: '{{text}}'
+      fields:
+        - field: text
+          name: $t:text
+          type: string
+          meta:
+            interface: text-input
+            width: half
+            options:
+              placeholder: $t:text
+        - field: value
+          name: $t:value
+          type: float
+          meta:
+            interface: input
+            width: half
+            options:
+              placeholder: $t:value

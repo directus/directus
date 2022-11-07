@@ -670,6 +670,7 @@ trigger: Trigger
 flow_name: Name
 flow_tracking_activity: Only Track Activity
 flow_tracking_null: Do Not Track Anything
+code: Code
 insights: Insights
 dashboard: Dashboard
 panel: Panel
@@ -1237,6 +1238,8 @@ value: Value
 view_project: View Project
 report_error: Report Error
 start: Start
+table: Table
+list: List
 interfaces:
   filter:
     name: Filter
@@ -1312,6 +1315,8 @@ interfaces:
     include_seconds: Include Seconds
     set_to_now: Set to Now
     use_24: Use 24-Hour Format
+  system-fields:
+    select_a_collection: Select a Collection
   system-display-template:
     display-template: Display Template
     description: Mix static text and dynamic field values
@@ -1660,6 +1665,8 @@ layouts:
     find_location: Find location...
     default_template: Using Collection Default...
     no_compatible_fields: No compatible fields
+  kanban:
+    crop: Crop
 panels:
   metric:
     name: Metric

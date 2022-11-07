@@ -1,4 +1,6 @@
+import { useCollectionsStore } from '@/stores/collections';
 import { getGroups } from '@/utils/get-groups';
+import { Filter } from '@directus/shared/types';
 import { definePanel } from '@directus/shared/utils';
 import PanelTimeSeries from './panel-time-series.vue';
 
@@ -12,6 +14,31 @@ export default definePanel({
 			return;
 		}
 
+		const collectionsStore = useCollectionsStore();
+		const collectionInfo = collectionsStore.getCollection(options.collection);
+
+		if (!collectionInfo) return;
+		if (collectionInfo?.meta?.singleton) return;
+
+		const filter: Filter = {
+			_and: [getParsedOptionsFilter(options.filter)],
+		};
+
+		if (options.range !== 'auto') {
+			filter._and.push(
+				{
+					[options.dateField]: {
+						_gte: `$NOW(-${options.range || '1 week'})`,
+					},
+				},
+				{
+					[options.dateField]: {
+						_lte: `$NOW`,
+					},
+				}
+			);
+		}
+
 		return {
 			collection: options.collection,
 			query: {
@@ -19,24 +46,19 @@ export default definePanel({
 				aggregate: {
 					[options.function]: [options.valueField],
 				},
-				filter: {
-					_and: [
-						{
-							[options.dateField]: {
-								_gte: `$NOW(-${options.range || '1 week'})`,
-							},
-						},
-						{
-							[options.dateField]: {
-								_lte: `$NOW`,
-							},
-						},
-						options.filter || {},
-					],
-				},
+				filter,
 				limit: -1,
 			},
 		};
+
+		function getParsedOptionsFilter(filter: string | undefined) {
+			if (!filter) return {};
+			try {
+				return JSON.parse(filter);
+			} catch {
+				return filter;
+			}
+		}
 	},
 	component: PanelTimeSeries,
 	options: [
@@ -48,6 +70,7 @@ export default definePanel({
 				interface: 'system-collection',
 				options: {
 					includeSystem: true,
+					includeSingleton: false,
 				},
 				width: 'half',
 			},
@@ -175,6 +198,10 @@ export default definePanel({
 				width: 'half',
 				options: {
 					choices: [
+						{
+							text: 'Automatic (Based on data)',
+							value: 'auto',
+						},
 						{
 							text: 'Past 5 Minutes',
 							value: '5 minutes',

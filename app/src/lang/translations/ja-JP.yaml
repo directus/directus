@@ -1,13 +1,40 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+identifier: 識別子
 avatar: プロフィール画像
 application: アプリケーション
 default_provider: デフォルト
+method: 方法
+published: 公開済み
 draft: 下書き
 archived: アーカイブ済み
 modules: モジュール
+module_bar: モジュールバー
+logs: ログ
+tile_size: タイルサイズ
 edit_field: フィールドの編集
 conditions: 条件
 location: 場所
+input: 入力
 maps: 地図
 switch_user: ユーザーを切り替える
 item_creation: アイテム作成
@@ -20,6 +47,7 @@ group: グループ
 export_items: アイテムをエクスポート
 and: そして
 or: または
+custom: カスタム
 fill_width: 幅埋め
 field_name_translations: 項目名の翻訳を追加する
 enter_password_to_enable_tfa: 二段階認証を使用するためパスワードを入力してください
@@ -30,11 +58,15 @@ leaf: リーフ
 indeterminate: 不確定
 edit_collection: コレクションを編集
 db_only_click_to_configure: 'データベースのみ: クリックして設定する'
+show_active_items: アクティブアイテムを表示
+show_archived_items: アーカイブ済みアイテムを表示
+show_all_items: 全て表示
 required: 必須
 requires_value: この項目は必須です
 create_preset: プリセットの作成
 create_role: 権限作成
 create_user: ユーザーの作成
+message: メッセージ
 create_webhook: Webhookの作成
 invite_users: ユーザーを招待
 invite: 招待する
@@ -99,6 +131,8 @@ time: 時刻
 timestamp: Timestamp
 uuid: UUID
 hash: ハッシュ値
+auto_refresh: 自動更新
+refresh_interval: 更新間隔
 auto_generate: 自動生成
 click_here: ここをクリック
 to_manually_setup_translations: 独自の翻訳を設定することができます
@@ -370,6 +404,7 @@ fields:
     comment: コメント
     user_agent: ユーザーエージェント
     ip: IPアドレス
+    revisions: 履歴
   directus_collections:
     icon: アイコン
     note: 備考
@@ -413,6 +448,7 @@ fields:
     project_url: プロジェクトの URL
     project_color: プロジェクトの色
     project_logo: プロジェクトのロゴ
+    module_bar: モジュールバー
   directus_shares:
     name: 名前
     password: パスワード
@@ -486,6 +522,7 @@ permissions: 許可
 relationship: 関連
 reset: リセット
 reset_password: パスワードリセット
+revisions: 履歴
 revert: 元に戻す
 save: 保存
 schema: スキーマ
@@ -500,6 +537,7 @@ something_went_wrong: 問題が発生しました
 sort_direction: ソート順
 translation: 翻訳
 value: 値
+table: テーブル
 interfaces:
   filter:
     all: すべて
@@ -572,7 +610,10 @@ layouts:
     compact: コンパクト
     cozy: 普通
 operations:
+  log:
+    message: メッセージ
   notification:
     recipient: ユーザー
+    message: メッセージ
   request:
     url: URL

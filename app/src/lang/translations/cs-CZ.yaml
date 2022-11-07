@@ -187,6 +187,7 @@ revision_post_create: Zde je jak položka vypadala po jejím vytvoření.
 revision_post_update: Zde je jak položka vypadala po její aktualizaci.
 changes_made: Níže jsou uvedeny konkrétní změny provedené v této revizi.
 no_relational_data: Mějte na paměti, že údaje o vztazích zde nejsou zahrnuty.
+bottom: Dole
 hide_field: Skrýt pole
 hide_field_on_detail: Skrýt pole v detailu
 show_field_on_detail: Zobrazit pole v detailu
@@ -762,7 +763,6 @@ flows: Toky
 flow: Tok
 select_a_flow: Vybrat tok
 run_flow_on_current: Spustit tok na aktuální položku
-run_flow_on_selected: Žádné vybrané položky | Spustit tok na 1 vybrané položce | Spustit tok na {n} vybraných položkách
 run_flow_success: Tok "{flow}" proběhl úspěšně
 trigger: Spouštěč
 trigger_options: Možnosti spouštěče
@@ -791,6 +791,7 @@ start_flow: Začít tok
 stop_flow: Zastavit tok
 create_operation: Vytvořit operaci
 edit_operation: Upravit operaci
+code: Kód
 operation_options: Možnosti operace
 operation_name: Název operace...
 operation_key: Identifikátor pro odkaz...
@@ -1399,6 +1400,8 @@ value: Hodnota
 view_project: Zobrazit projekt
 report_error: Nahlásit chybu
 start: Začátek
+table: Tabulka
+list: Seznam
 interfaces:
   filter:
     name: Filtr
@@ -1478,6 +1481,8 @@ interfaces:
     set_to_now: Nastavit na teď
     use_24: Používat 24hodinový formát
     placeholder: Vyberte datum a čas...
+  system-fields:
+    select_a_collection: Vyberte kolekci
   system-display-template:
     display-template: Šablona zobrazení
     description: Směs statických hodnot textu a dynamického pole
@@ -1855,33 +1860,8 @@ layouts:
     default_template: Použití výchozího nastavení kolekce...
     no_compatible_fields: Žádná kompatibilní pole
   kanban:
-    name: Kanban,
-    group_field: Seskupit podle,
-    group_field_placeholder: Pole pro seskupení...,
-    group_title: Název skupiny,
-    group_title_placeholder: Pole pro názvy skupiny...,
-    title: Název karty,
-    title_placeholder: Volitelné pole názvu...,
-    text: Text karty
-    text_placeholder: Volitelné textové pole...,
-    date: Datum karty,
-    date_placeholder: Volitelné pole data...,
-    tags: Štítky karet,
-    tags_placeholder: Volitelné pole štítků...,
-    user: Uživatel karty,
-    user_placeholder: Volitelné uživatelské pole...,
-    image: Obrázek karty,
-    image_placeholder: Volitelné pole obrázku...,
-    image_fit: Přizpůsobení karty obrázku,
-    crop: Oříznout,
-    advanced: Pokročilé,
-    edit_group: Upravit skupinu,
-    delete_group: Odstranit skupinu,
-    add_group: Přidat skupinu,
-    add_group_placeholder: Zadejte nový název skupiny...,
-    show_ungrouped: Zobrazit rozdělené,
-    show: Zobrazit,
-    no_group: Žádná skupina,
+    crop: Oříznout
+    advanced: Rozšířené
     not_all_loaded: Podařilo se načíst pouze prvních 1000 položek.
 panels:
   metric:
@@ -1923,7 +1903,6 @@ panels:
     y_axis_conditional_two: musí být číslo.
   linechart:
     name: Čárový graf
-    description: Čárový graf pro porovnání změny pole.
     select_field: Musíte vybrat pole.
     select_collection: Musíte vybrat kolekci.
     select_x_axis: Musíte vybrat osu X.
@@ -1935,16 +1914,14 @@ panels:
     datasets: Datové sady
     show_legend: Zobrazit legendu
     show_marker: Zobrazit značku popisku
-    include_dataset: Musíte zahrnout alespoň jednu datovou sadu.
     include_y_axis: Musíte zahrnout osu Y pro každou datovou sadu, pokud není zadána žádná skupina.
     group_and_function: Musíte zahrnout nebo vynechat jak skupinu, tak funkci.
-    smooth: 'Hladká'
-    straight: 'Rovná'
-    step_line: 'Kroková čára'
+    smooth: Hladká
+    straight: Rovná
+    step_line: Kroková čára
   meter:
-    description: Měřič pro sledování hodnot
     name: Měřič
-    arc: Oblouk
+    description: Měřič pro sledování hodnot
     stroke_width: Tloušťka tahu
     select_max_value: Musíte vybrat maximální hodnotu.
     max_greater_than_zero: Maximální hodnota musí být větší než 0.
@@ -1956,11 +1933,9 @@ panels:
     broad: Široký
   piechart:
     name: Koláčový nebo prstencový graf
-    description: Kruhový graf zobrazující poměry skupin ve sloupci.
-    function: 'Funkce'
+    function: Funkce
     donut: Prstenec
-    labels: Zobrazit popisky
-    legend: Zobrazit legendu
+    show_legend: Zobrazit legendu
     right: Vpravo
     bottom: Dole
     monochrome: Monochromatický
@@ -1991,8 +1966,6 @@ triggers:
     collection_and_item: Stránka kolekce a položek
     collection_only: Pouze stránka kolekce
     item_only: Pouze stránka položek
-a_users_uuid: Primární UUID klíč uživatele...
-a_flow_uuid: Primární UUID klíč toku...
 any_string_or_json: Jakýkoliv řetězec nebo JSON...
 item_payload_placeholder: Toto je JSON používaný k aktualizaci hodnot polí položky...
 operations:
@@ -2028,7 +2001,6 @@ operations:
     body: Tělo
   notification:
     name: Odeslat oznámení
-    description: Odeslat uživateli notifikaci v aplikaci
     recipient: Uživatel
     message: Zpráva
   request:

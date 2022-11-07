@@ -29,6 +29,7 @@ draft: Rascunho
 archived: Arquivado
 modules: Módulos
 logs: Registo de Eventos
+reset_width: Redefinir Largura
 tile_size: Tamanho do ícone
 edit_field: Editar campo
 conditions: Condições
@@ -37,6 +38,7 @@ condition_rules: Regras de Condição
 input: Input
 maps: Mapas
 switch_user: Mudar de utilizador
+item_creation: Criação de Item
 item_revision: Revisão do documento
 enter_a_name: Introduza um nome...
 duplicate_field: Duplicar este campo
@@ -59,6 +61,7 @@ indeterminate: Indeterminado
 edit_collection: Editar coleção
 exclusive: Exclusivo
 children: Crianças
+db_only_click_to_configure: 'Apenas em Base de Dados: Clique para Configurar'
 show_active_items: Mostrar Itens Ativos
 show_archived_items: Mostrar documentos arquivados
 show_all_items: Mostrar todos os itens
@@ -218,7 +221,7 @@ auto_refresh: Atualização Automática
 refresh_interval: Intervalo de atualização
 no_refresh: Não atualizar
 refresh_interval_seconds: Atualizar instantaneamente | A cada segundo | A cada {seconds} segundos
-refresh_interval_minutes: A cada minuto | a cada {minutes} minutos
+refresh_interval_minutes: A cada minuto | A cada {minutes} minutos
 auto_generate: Geração Automatica
 this_will_auto_setup_fields_relations: Isto irá automaticamente configurar todos os campos e relações obrigatórias.
 click_here: Clique aqui
@@ -228,9 +231,12 @@ click_to_manage_translated_fields: >-
 fields_group: Grupo de Campos
 no_collections_found: Nenhuma coleção encontrada.
 new_data_alert: 'O seguinte será criado dentro do seu modelo de dados:'
-search_collection: Procurar coleção...
+search_collection: Procurar...
 new_field: 'Novo Campo'
 new_collection: 'Nova coleção'
+add_m2o_to_collection: 'Adicionar M2O a "{collection}"'
+add_o2m_to_collection: 'Adicionar O2M a "{collection}"'
+add_m2m_to_collection: 'Adicionar M2M a "{collection}"'
 choose_a_type: Escolha um Tipo...
 determined_by_relationship: Determinado pela Relação
 add_note: Adicionar uma nota para os utilizadores...
@@ -249,6 +255,7 @@ next: Seguinte
 field_name: Nome do campo
 translations: Traduções
 no_translations: Sem traduções
+left_to_right: Da Esquerda para a Direita
 note: Nota
 enter_a_value: Insira um valor...
 enter_a_placeholder: Insira um placeholder...
@@ -434,7 +441,7 @@ display_not_found: 'Visualização "{display}" não encontrado.'
 reset_display: Restaurar visualização
 list-m2a: Construtor (M2A)
 item_count: 'Não existem documentos | Um documento | {count} documentos'
-no_items_copy: Aind não existem documentos nesta coleção.
+no_items_copy: Ainda não existem documentos nesta coleção.
 file_count: 'Nenhum ficheiro | Um ficheiro | {count} ficheiros'
 no_files_copy: Não existem ficheiros aqui.
 user_count: 'Nenhum utilizador | Um utilizador | {count} utilizadores'
@@ -527,9 +534,11 @@ errors:
   INVALID_FOREIGN_KEY: Chave estrangeira inválida
   UNKNOWN: Erro Inesperado
 security: Segurança
+value_hashed: Valor Guardado em Segurança
 bookmarks: Favoritos
 unexpected_error: Erro Inesperado
 unexpected_error_copy: Ocorreu um erro inesperado. Por favor, tente novamente mais tarde.
+password_reset_sent: Se a conta existir, um email terá sido enviado para fazer a reposição da palavra passe.
 back: Voltar
 all_users: Todos os utilizadores
 delete_collection: Remover coleção
@@ -641,6 +650,7 @@ read: Ler
 update: Atualizar
 delete: Eliminar
 select_fields: Selecione os campos
+run_flow_success: O fluxo "{flow}" foi executado
 flow_name: Nome
 flow_tracking_activity: Apenas rastrear Atividade
 flow_tracking_null: Não rastrear nada
@@ -694,6 +704,8 @@ layout_setup: Configuração de Layout
 unsaved_changes: Alterações por guardar
 unsaved_changes_copy: Tem certeza que deseja sair desta página?
 discard_changes: Cancelar alterações
+discard_all_changes: Descartar todas as Alterações
+discard_changes_copy: Tem a certeza de que pretende ignorar as alterações?
 keep_editing: Continuar a editar
 page_help_collections_collection: >-
   **Navegando em itens** — Lista todos os {collection} itens que você tem acesso. Personalize o layout, os filtros e a ordenação para personalizar a sua vista e até mesmo salve marcadores dessas diferentes configurações para acesso rápido.
@@ -710,6 +722,7 @@ batch_delete_confirm: >-
   Nenhum item foi selecionado. Tem certeza de que deseja remover este item? Esta ação não pode ser desfeita. Tem certeza que deseja remover estes {count} itens? Esta ação não pode ser desfeita.
 cancel: Cancelar
 collection: Coleção
+content: Conteúdo
 fields:
   directus_activity:
     item: Chave primária
@@ -720,6 +733,7 @@ fields:
     comment: Comentário
     user_agent: User Agent
     ip: Endereço IP
+    revisions: Revisões
   directus_collections:
     collection: Coleção
     note: Nota
@@ -749,6 +763,7 @@ fields:
     tags: Etiquetas
     language: Idioma
     theme: Tema
+    theme_auto: Automático (baseado no sistema)
     tfa_secret: Autenticação em dois passos
     status: Estado
     status_active: Ativar
@@ -758,9 +773,11 @@ fields:
     last_access: Último Acesso
   directus_settings:
     project_name: Nome do projeto
+    project_descriptor: Descrição do Projeto
     project_url: URL do projeto
     project_color: Cor do Projeto
     project_logo: Logótipo do projeto
+    default_language: Idioma Padrão
     public_background: Fundo Público
     public_note: Nota Pública
     custom_css: CSS Personalizado
@@ -786,6 +803,8 @@ fields:
     status: Estado
 field_options:
   directus_settings:
+    project_name_placeholder: O meu projeto...
+    public_note_placeholder: Uma mensagem pública e curta que suporta a formatação markdown...
     security_divider_title: Segurança
   directus_activity:
     create: Criar
@@ -803,6 +822,7 @@ field_options:
     fields:
       name_name: Nome
   directus_users:
+    dropdown_auto: Automático (baseado no sistema)
     status_dropdown_active: Ativar
   directus_webhooks:
     status_options_active: Ativar
@@ -826,13 +846,26 @@ referential_action_no_action: Prevenir que elimine
 referential_action_cascade: Eliminar o {collection} item (cascade)
 referential_action_set_default: Definir {field} para o seu valor padrão
 choose_action: Escolher ação
+continue_label: Continuar
 continue_as: >-
   {name} está autenticado no momento. Se você reconhecer esta conta, pressione continuar.
 creating_webhook: Criando Webhook
+delete_are_you_sure: >-
+  Esta ação é permanente e não pode ser desfeita. Tem certeza de que deseja prosseguir?
 description: Descrição
 file_library: Biblioteca de Arquivos
+forgot_password: Repor palavra-passe
+revisions: Revisões
+no_revisions: Ainda não há revisões
 save: Guardar
+search: Procurar
+settings: Configurações
+sign_in: Iniciar Sessão
+sign_out: Sair
+sign_out_confirm: Tem certeza que deseja sair?
 report_error: Reportar erro
+table: Tabela
+search_filter: Pesquisa & Filtro
 interfaces:
   filter:
     add_filter: Adicionar filtro
@@ -844,6 +877,11 @@ interfaces:
     collection: Coleção
   select-color:
     color: Cor
+    placeholder: Escolha uma cor...
+  datetime:
+    set_to_now: Definir para agora
+  system-fields:
+    select_a_collection: Selecione uma coleção
   system-display-template:
     display-template: Templates de Exibição
     collection_field_not_setup: A opção do campo da coleção não está configurada corretamente
@@ -870,17 +908,22 @@ interfaces:
     sort: Ordenar
   tags:
     tags: Etiquetas
+  input-translated-string:
+    search_placeholder: Procurar...
   boolean:
     label_default: Activo
   translations:
     display_template: Templates de Exibição
+    default_language: Idioma Padrão
   user:
     user: Utilizador
   system-token:
     system-token: Token
+    value_securely_saved: Valor Guardado em Segurança
 displays:
   translations:
     translations: Traduções
+    default_language: Idioma Padrão
   boolean:
     boolean: Boleano
   collection:
@@ -915,6 +958,9 @@ layouts:
     subtitle: Subtítulo
   tabular:
     tabular: Tabela
+    spacing: Espaçamento
+  kanban:
+    advanced: Avançado
 operations:
   log:
     message: Mensagem

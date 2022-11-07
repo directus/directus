@@ -29,16 +29,19 @@ draft: Esborrany
 archived: Arxivat
 modules: Mòduls
 module_bar: Barra de mòduls
+logs: Registres
 reset_width: Restableix l'amplada
 tile_size: Mida del mosaic
 edit_field: Edita el camp
 conditions: Condicions
 location: Localització
+condition_rules: Regles condicionals
 input: Entrada
 maps: Mapes
 switch_user: Canvia d'usuari
 item_creation: Creació d'element
 item_revision: Revisió de l'element
+enter_a_name: Introdueix un nom...
 duplicate_field: Camp duplicat
 half_width: Mitja amplada
 full_width: Amplada Completa
@@ -46,6 +49,11 @@ group: Grup
 export_items: Exporta els elements
 and: I
 or: O
+init: Iniciar
+dataset_too_large_currently_showing_n_items: Conjunt de dades massa llarg. Actualment es mostren els primers {n} elements.
+modifier: Modificador
+custom: Personalitzat
+hook: Ganxo
 fill_width: Amplada de l'emplenat
 field_name_translations: Traducció de noms de camps
 enter_password_to_enable_tfa: Introdueix la contrasenya per activar l'autenticació de dos factors
@@ -69,9 +77,12 @@ create_preset: Crear un predefinit
 create_panel: Crea un panell
 create_role: Crea un rol
 create_user: Crear usuari
+message: Missatge
 delete_panel: Elimina el panell
 create_webhook: Crear Webhook
 create_translation_string: Crea una cadena de traducció
+no_translation_string: No hi ha traduccions
+no_translation_string_copy: Encara no hi ha traduccions.
 translation_string_key_placeholder: Clau de cadena de traducció...
 translation_string_translations_placeholder: Afegeix una nova traducció
 edit_translation_string: Edita la cadena de traducció
@@ -176,6 +187,9 @@ revision_post_create: Aquest és l'aspecte d'aquest element quan es va crear.
 revision_post_update: Aquest és l'aspecte de l'element després de l'actualització.
 changes_made: A sota hi ha els canvis específics d'aquesta revisió.
 no_relational_data: Tingues present que les dades relacionals no estan incloses aquí.
+junction_field_location: Ubicació dels camps d'encreuament
+top: Part superior
+bottom: Part inferior
 hide_field: Amaga el camp
 hide_field_on_detail: Amaga el camp en el detall
 show_field_on_detail: Mostra el camp en el detall
@@ -284,6 +298,8 @@ next: Següent
 field_name: Nom del camp
 translations: Traduccions
 no_translations: Sense traduccions
+left_to_right: D'esquerra a dreta
+right_to_left: De dreta a esquerra
 note: Nota
 enter_a_value: Introdueix un valor...
 enter_a_placeholder: Introdueix un placeholder...
@@ -298,6 +314,8 @@ primary_key: Clau primària
 foreign_key: Clau forana
 finish_setup: Finalitza la configuració
 dismiss: Descarta
+toggle_raw_editor: Canviar d`editor
+raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
 raw_value: Valor en brut
 copy_raw_value: Copia el valor en brut
 copy_raw_value_success: Copiat
@@ -310,6 +328,7 @@ edit_raw_value: Edita valor en brut
 enter_raw_value: Introdueix valor en brut...
 clear_value: Neteja el valor
 clear_changes: Neteja els canvis
+clear_items: Netejar elements
 reset_to_default: Restaura als valors per defecte
 undo_changes: Desfes els canvis
 notifications: Notificacions
@@ -326,6 +345,7 @@ revision_delta_created_externally: Creat externament
 revision_delta_updated: 'Actualitzat 1 camp | Actualitzats {count} camps'
 revision_delta_deleted: Eliminat
 revision_delta_reverted: Revertit
+revision_delta_update_message: Aquest camp s'ha actualitzat però el seu valor s'està ocultant per motius de seguretat.
 revision_delta_other: Revisió
 revision_delta_by: '{date} per {user}'
 presentation_text_values_cannot_be_reimported: "Utilitza text de presentació, els valors no poden ser re-importats."
@@ -352,6 +372,7 @@ import_data_success: Les dades s'han importat correctament des de {filename}
 import_data_error: L'estructura de les dades d'aquest fitxer no correspon a la col·lecció.
 label_import: Importa
 label_export: Exporta
+import_export: Importar / Exportar
 format: Format
 last_page: Última pàgina
 last_access: Últim accés
@@ -453,6 +474,7 @@ created_on: Creat el
 creating_collection_info: Fica nom a la col·lecció i estableix la seu camp "clau" únic...
 creating_collection_system: Habilita i reanomena qualsevol d'aquests camps opcionals.
 auto_increment_integer: Sencer auto-incremental
+auto_increment_big_integer: Sencer auto-incremental
 generated_uuid: UUID Generat
 manual_string: String entrada manualment
 save_and_create_new: Desa i crea un nou
@@ -463,6 +485,7 @@ creating_items: Creant elements
 enable_create_button: Habilita el botó de creació
 selecting_items: Seleccionant elements
 enable_select_button: Habilita el botó de selecció
+allow_duplicates: Permet duplicats
 comments: Comentaris
 no_comments: No hi ha comentaris, encara
 click_to_expand: Fes clic per ampliar
@@ -473,7 +496,9 @@ disabled: Deshabilitat
 information: Informació
 report_bug: Informa d'un error
 request_feature: Sol·licita una millora
+request_body: Solicita el cos
 interface_not_found: 'Interficie "{interface}" no trobada.'
+operation_not_found: 'Opereació "{operation}" no trobada.'
 reset_interface: Restableix la interfície
 display_not_found: 'Disposició "{display}" no trobada.'
 reset_display: Restableix disposició
@@ -505,6 +530,7 @@ active: Activa
 move_to: Mou a...
 copy: Copia
 copy_to: Copia a...
+no_other_dashboards_copy: Encara no teniu cap altre tauler de control.
 inactive: Inactiva
 users: Usuaris
 activity: Activitat
@@ -512,6 +538,7 @@ activity_item: Element d'activitat
 action: Acció
 ip_address: Adreça IP
 user_agent: Agent de l'usuari
+origin: Origen
 webhooks: Webhooks
 decimals: Decimals
 value_decimals: Valor decimal
@@ -560,6 +587,9 @@ errors:
   INVALID_PAYLOAD: Payload invàlid
   INVALID_PROVIDER: Aquest usuari pertany a un proveïdor d'autenticació diferent
   INVALID_QUERY: Consulta invàlida
+  INVALID_CONFIG: Configuració invàlida
+  INVALID_TOKEN: Token invàlid
+  INVALID_IP: Adreça IP no permesa
   INVALID_USER: No s’ha pogut autenticar l’usuari
   ITEM_LIMIT_REACHED: Límit d'elements assolit
   ITEM_NOT_FOUND: Element no trobat
@@ -575,6 +605,14 @@ errors:
   VALUE_OUT_OF_RANGE: El valor es troba fora de l'interval
   INVALID_FOREIGN_KEY: Clau forana invàlida
   UNKNOWN: Error inesperat
+  GRAPHQL_VALIDATION_EXCEPTION: Excepció de validació de GraphQL
+  SERVICE_UNAVAILABLE: Servei no disponible
+  UNSUPPORTED_MEDIA_TYPE: Tipus de mèdia no suportat
+  UNEXPECTED_RESPONSE: Resposta inesperada
+  TOKEN_EXPIRED: Token expirat
+  RANGE_NOT_SATISFIABLE: Interval no vàlid
+  METHOD_NOT_ALLOWED: Mètode no permès
+  REQUESTS_EXCEEDED: Límit de peticions assolit
 security: Seguretat
 value_hashed: Aplicat hash segur al valor
 bookmark_name: Nom del marcador...
@@ -592,9 +630,11 @@ unexpected_error_copy: Hi ha hagut un error inesperat. Si us plau, prova més ta
 copy_details: Copia detalls
 no_app_access: Sense accés a l'aplicació
 no_app_access_copy: Aquest usuari no pot administrar l'aplicació.
+password_reset_sent: Si teniu un compte, us hem enviat un enllaç segur per restablir la vostra contrasenya
 password_reset_successful: Contrasenya restablerta correctament
 back: Enrere
 filter: Filtre
+edit_image: Edita la imatge
 editing_image: Editant imatge
 square: Quadrat
 free: Lliure
@@ -615,6 +655,9 @@ start_end_of_count_items: '{start}-{end} de {count} elements'
 start_end_of_count_filtered_items: '{start}-{end} de {count} elements filtrats'
 one_item: '1 element'
 one_filtered_item: '1 element filtrat'
+delete_collection_are_you_sure: >-
+  Estàs segur d'eliminar aquesta "{collection}"? Això també eliminarà tots els elements que conté. Aquesta acció és permanent.
+delete_folder_are_you_sure: Estàs segur d'eliminar aquesta "{folder}"? Les carpetes i col·leccions anidades es mouran al nivell més alt.
 collections_shown: Col·leccions mostrades
 visible_collections: Col·leccions visibles
 hidden_collections: Col·leccions amagades
@@ -655,6 +698,7 @@ operators:
   nnull: No és null
   contains: Conté
   ncontains: No conté
+  icontains: Conté (insensible)
   starts_with: Comença amb
   nstarts_with: No comença amb
   ends_with: Acaba amb
@@ -708,6 +752,8 @@ add_file: Afegeix un fitxer
 replace_file: Reemplaça el fitxer
 no_results: Sense resultats
 no_results_copy: Ajusta o neteja els filtres de cerca per veure els resultats.
+no_visible_fields: Formulari buit
+no_visible_fields_copy: Aquest formulari no té camps visibles.
 clear_filters: Neteja els filtres
 saves_automatically: Desa automàticament
 role: Rol
@@ -727,26 +773,54 @@ delete: Elimina
 select_fields: Selecciona els camps
 format_text: Formata el text
 format_value: Formata el valor
+abbreviate_value: Valor abreujat
+operator: Operador
 bold: Negreta
 toggle: Canvia
 icon_on: Icona activada
 icon_off: Icona desactivada
 label: Etiqueta
+flows: Fluxes
+flow: Fluxe
 trigger: Disparador
 flow_name: Nom
 flow_tracking_activity: Només traça l'activitat
 flow_tracking_null: No tracis res
+code: Codi
+suffix_placeholder: Text després del valor...
+decimals_placeholder: Nombre de posicions decimals...
+no_dashboards: Sense taulers de control
+no_dashboards_copy: Encara no teniu cap tauler de control.
+create_dashboard: Crea un tauler de control
+dashboard_name: Nom del tauler de control
+no_data: Sense dades
+no_data_in_flow: Cap dada s'ha creat durant aquest pas
+accountability: Responsabilitat
+payload: Càrrega
+details: Detalls
 full_screen: Pantalla completa
+full_text_search: Text de la cerca
+edit_panels: Edita panells
+center_align: Alinea al centre
+left_align: Alinear a l’esquerra
+right_align: Alineació a la dreta
+fit_to_screen: Ajusta a la mida de la pantalla
 image_url: URL de la imatge
 alt_text: Text alternatiu
 media: Mèdia
 quality: Qualitat
 width: Amplada
 height: Alçada
+transformation_preset_key: Predefinits de transformació
 source: Origen
 url_placeholder: Introdueix una URL...
 display_text: Text a mostrar
 display_text_placeholder: Introdueix el text a mostrar...
+interface_group_text_and_numbers: Text i números
+interface_group_selection: Selecció
+interface_group_relational: Relacional
+interface_group_presentation: Presentació
+interface_group_groups: Grups
 tooltip: Consell
 tooltip_placeholder: Introdueix el consell...
 unlimited: Il·limitat
@@ -821,6 +895,7 @@ settings_data_model: Model de dades
 settings_permissions: Rols i permisos
 settings_project: Ajustaments del projecte
 settings_webhooks: Webhooks
+settings_flows: Fluxes
 settings_presets: Predefinits i Marcadors
 settings_translation_strings: Cadenes de traducció
 one_or_more_options_are_missing: Falta una o més opcions
@@ -870,6 +945,7 @@ page_help_settings_presets_item: >-
   ** Detall de predefinit **: Un formulari per gestionar adreces d'interès i predefinits de col·lecció predeterminats.
 page_help_settings_webhooks_collection: '** Examina Webhooks **: Llista tots els webhooks del projecte.'
 page_help_settings_webhooks_item: '** Detall de webhook **: Un formulari per crear i gestionar webhooks del projecte.'
+page_help_settings_flows_collection: '**Examina els fluxos** — Llista tots els fluxos del projecte.'
 page_help_settings_translation_strings_collection: '**Examina cadenes de traducció** - Llista totes les cadenes de traducció del projecte.'
 page_help_users_collection: '**Directori de l''usuari**.'
 page_help_users_item: >-
@@ -898,9 +974,11 @@ directus_collection:
   directus_dashboards: Quadres de comandament de tota la visió
   directus_fields: Configuració i metadades addicionals del camp
   directus_files: Metadades per a tots els actius de fitxers gestionats
+  directus_flows: Automatització de fluxes
   directus_folders: Proporciona directoris virtuals per a fitxers
   directus_migrations: Quina versió de base de dades estàs utilitzant
   directus_notifications: Notificacions enviades als usuaris
+  directus_operations: Operacions que s'executen en fluxes
   directus_panels: Panells individuals dins dels quadres de comandament de la visió
   directus_permissions: Permisos d'accés per cada rol
   directus_presets: Predefinits per als ajustaments predeterminat de col·leció i marcadors
@@ -921,6 +999,7 @@ fields:
     user: Acció de
     comment: Comentari
     user_agent: Agent de l'usuari
+    origin: Origen
     ip: Adreça IP
     revisions: Revisions
   directus_collections:
@@ -937,6 +1016,8 @@ fields:
     unarchive_value: Valor per desarxivar
     sort_field: Camp d'ordenació
     accountability: Traça d'activitat i revisió
+    archive_field: Camp arxivat
+    item_duplication_fields: Element Camp duplicat
   directus_files:
     $thumbnail: Miniatura
     title: Títol
@@ -1030,6 +1111,8 @@ fields:
     transformations_all: Permet totes les transformacions
     transformations_none: Deshabilita les transformacions
     transformations_presets: Limita les transformacions al predefinits de sota
+    image_editor: Editor d'imatge
+    custom_aspect_ratios: Relació d'aspecte personalitzat
   directus_shares:
     name: Nom
     role: Rol
@@ -1073,18 +1156,33 @@ field_options:
     project_name_placeholder: El meu projecte...
     project_color_note: Inici de sessió i Logotip de fons
     project_logo_note: Blanc 40x40 SVG/PNG
+    public_note_placeholder: Un missatge breu i públic que admet el format markdown...
     security_divider_title: Seguretat
+    auth_password_policy:
+      none_text: Cap - No recomenat
+      weak_text: Feble - Mínim 8 caràcters
+      strong_text: Fort - majúscules / minúscules / nombres / especial
+    storage_asset_presets:
+      fit_label: Ajusta
+      upscaling: Amplia l'escala
+      fit:
+        contain_text: Contenir (conservar la relació d'aspecte)
+        cover_text: Coberta (força la mida exacta)
+        fit_text: Encaixa dins
+        outside_text: Encaixa per fora
     additional_transforms: Transformacions addicionals
     transforms_note: El nom de mètode Sharp i els seus arguments. Per a més informació https://sharp.pixelplumbing.com/api-constructor 
     mapbox_key: Token d'accés Mapbox
     mapbox_placeholder: pk.eyJ1Ijo.....
     basemaps: Mapes base
+    basemaps_name_placeholder: Introduïu el nom del mapa base...
     basemaps_raster: Raster
     basemaps_tile: Raster TileJSON
     basemaps_style: Estil Mapbox
     files_divider_title: Fitxers i miniatures
     overrides_divider_title: Substitucións de l'aplicació
   directus_activity:
+    login: Iniciar Sessió
     create: Crear
     update: Actualitzar
     delete: Elimina
@@ -1093,11 +1191,16 @@ field_options:
     only_track_activity: Només traça l'activitat
     do_not_track_anything: No tracis res
     collection_setup: Configuració de la col·lecció
+    note_placeholder: Descripció d'aquesta col·lecció...
     singleton: Tracta com un objecte únic
     language: Idioma
     translation: Traducció
+    translation_placeholder: Introdueix una traducció...
     collection_name: Nom de la col·lecció
+    singular_unit: Unitat singular
+    plural_unit: Unitat plural
     archive_divider: Arxiu
+    archive_field_placeholder: Tria un camp...
     sort_divider: Ordre
   directus_roles:
     fields:
@@ -1168,12 +1271,23 @@ file: Fitxer
 file_library: Biblioteca de fitxers
 forgot_password: He oblidat la contrasenya
 hidden: Amagat
+hidden_in_group: Amagat al {group}
 icon: Icona
 info: Informació
 normal: Normal
 success: Èxit
 warning: Advertencia
 danger: Perill
+colors:
+  purple: Porpra
+  blue: Blau
+  green: Verd
+  yellow: Groc
+  orange: Taronja
+  red: Vermell
+  black: Negre
+  gray: Gris
+  white: Blanc
 junction_collection: Unió de col·leccions
 latency: Latència
 login: Entra
@@ -1188,6 +1302,8 @@ relationship: Relacions
 reset: Restablir
 reset_password: Restableix la contrasenya
 revisions: Revisions
+no_revisions: Cap revisió encara
+no_logs: Encara no hi ha registres
 revert: Desfés
 save: Desa
 schema: Esquema
@@ -1201,20 +1317,48 @@ sign_out: Tanca la sessió
 sign_out_confirm: Estàs segur que vols tancar la sessió?
 something_went_wrong: Alguna cosa no ha anat bé.
 sort_direction: Direcció de l'ordenació
+export_location: Exporta ubicació
+export_started: S'ha iniciat l'exportació
+export_started_copy: La vostra exportació ha començat. Rebràs una notificació quan estigui llest per descarregar.
 sort_asc: Ordre ascendent
 sort_desc: Ordre descendent
 template: Plantilla
+require_value_to_be_set: Requereix que s'estableixi un valor en la creació
 translation: Traducció
+translation_placeholder: Introdueix una traducció...
 value: Valor
 view_project: Veure el projecte
 report_error: Notifica un error
 start: Comença
+table: Taula
+list: Llista
+search_filter: Cerca i Filtre
+enable_search_filter: Activa cercar i filtrar
+item_link: Enllaç a l'element
+show_link_to_item: Mostra l'enllaç a l'element
+navigate_to_item: Navega a l'element
+undo_removed_item: Desfer Ítem eliminat
+remove_item: Elimina element
+delete_item: Eliminar element
 interfaces:
   filter:
     name: Filtre
+    description: Configurar un objecte de filtre.
     add_filter: Afegeix un filtre
+    add_group: I/o grup
+    add_value: Afegir Valor
+    logic_type_and: I
+    logic_type_or: O
     all: Tots
     any: Qualsevol
+    and: i
+    of_the_following: dels següents
+    no_rules: No hi ha regles configurades
+    change_value: Feu clic per canviar el valor
+    placeholder: Arrossega aquí les regles
+    add_key_placeholder: Afageix una clau i premeu Intro...
+  fields:
+    name: Camps
   group-accordion:
     name: Acordió
     description: Mostra els camps o els grups com a seccions de l'acordió
@@ -1250,6 +1394,7 @@ interfaces:
     code: Codi
     description: Escriu o comparteix snippets de codi
     line_number: Número de línia
+    line_wrapping: Ajustament de línia
     placeholder: Introdueix el codi aquí...
   system-collection:
     collection: Coŀlecció
@@ -1264,6 +1409,7 @@ interfaces:
     description: Entra o selecciona un valor de color
     placeholder: Tria un color...
     preset_colors: Predefinit de colors
+    opacity: Opacitat
     preset_colors_add_label: Afegeix un nou color...
     name_placeholder: Introdueix un nom de color...
   datetime:
@@ -1272,6 +1418,10 @@ interfaces:
     include_seconds: Inclou els segons
     set_to_now: Fixa'l a "Ara"
     use_24: Utilitza el format de 24 hores
+    placeholder: Tria data i hora...
+  system-fields:
+    select_a_collection: Selecciona una col·lecció
+    no_fields: Sense camps
   system-display-template:
     display-template: Mostra la plantilla
     description: Barreja text estàtic i valors de camp dinàmic
@@ -1281,6 +1431,7 @@ interfaces:
   presentation-divider:
     divider: Separador
     description: Etiqueta i divideix els camps en seccions
+    title_placeholder: Introduïu un títol o deixeu-lo en blanc per mostrar només una línia...
     inline_title: Títol en línia
     inline_title_label: Mostra el títol dins la línia
     margin_top: Marge superior
@@ -1294,6 +1445,7 @@ interfaces:
     allow_none_label: Permet cap selecció
     choices_name_placeholder: Introdueix un nom...
     choices_value_placeholder: Introdueix un valor...
+    preview_threshold: Previsualització del llindar
   select-multiple-dropdown:
     select-multiple-dropdown: Desplegable (Múltiple)
     description: Selecciona múltiples valors des del desplegable
@@ -1315,6 +1467,8 @@ interfaces:
   file-image:
     image: Imatge
     description: Selecciona o carrega una imatge
+    crop: Retallar per encaixar
+    crop_label: Talla imatge segons les necessitats
   system-interface:
     interface: Interfície
     description: Selecciona una interfície existent
@@ -1325,6 +1479,8 @@ interfaces:
   list-m2m:
     many-to-many: Molts a molts
     description: Selecciona múltiples elements d'unió relacionats
+    columns_configure_notice: Podeu configurar les columnes després de crear aquest camp.
+    display_template_configure_notice: Podeu configurar la plantilla de visualització després de crear aquest camp.
   select-dropdown-m2o:
     many-to-one: Molts a un
     description: Selecciona un únic element relacionat
@@ -1333,6 +1489,9 @@ interfaces:
     markdown: Markdown
     description: Entra i previsualitza el markdown
     edit: Edita
+    preview: Vista prèvia
+    editorFont: Editor de tipografia
+    previewFont: Previsualita la tipografia
     customSyntax: Blocs personalitzats
     customSyntax_label: Afegeix tipus de sintaxi personalitzats
     customSyntax_add: Afegeix sintaxi personalitzada
@@ -1546,6 +1705,7 @@ displays:
   related-values:
     related-values: Valors relacionats
     description: Mostra valors relacionats
+    display_template_configure_notice: Podeu configurar la plantilla de visualització després de crear aquest camp.
   user:
     user: Usuari
     description: Mostra un usuari
@@ -1581,6 +1741,9 @@ layouts:
     cluster_minpoints: Mida mínima del clúster
     cluster_maxzoom: Zoom màxim per clustering
     invalid_geometry: Geometria invàlida
+  kanban:
+    crop: Retalla
+    advanced: Avançat
 panels:
   label:
     name: Etiqueta
@@ -1588,12 +1751,21 @@ triggers:
   webhook:
     method: Mètode
 operations:
+  item-create:
+    payload: Càrrega
+  item-update:
+    payload: Càrrega
+  log:
+    message: Missatge
   notification:
     recipient: Usuari
+    message: Missatge
   request:
     url: URL
     method: Mètode
     data: Dades
     header: Capçalera
   trigger:
+    flows: Fluxes
+    flow: Fluxe
     data: Dades

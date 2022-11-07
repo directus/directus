@@ -28,18 +28,18 @@ export function getTriggers() {
 				const labels = [
 					{
 						label: t('type'),
-						text: type,
+						text: type ?? '--',
 					},
 				];
 
 				labels.push({
 					label: t('scope'),
-					text: scope ? toArray(scope).join(', ') : '--',
+					text: scope && scope.length > 0 ? toArray(scope).join(', ') : '--',
 				});
 
 				labels.push({
 					label: t('collections'),
-					text: collections ? toArray(collections).join(', ') : '--',
+					text: collections && collections.length > 0 ? toArray(collections).join(', ') : '--',
 				});
 
 				return labels;
@@ -378,6 +378,32 @@ export function getTriggers() {
 					},
 					schema: {
 						default_value: false,
+					},
+				},
+				{
+					field: 'requireSelection',
+					name: t('triggers.manual.collection_page'),
+					type: 'boolean',
+					meta: {
+						interface: 'boolean',
+						width: 'half' as Width,
+						options: {
+							label: t('triggers.manual.require_selection'),
+						},
+						hidden: false,
+						conditions: [
+							{
+								rule: {
+									location: {
+										_eq: 'item',
+									},
+								},
+								hidden: true,
+							},
+						],
+					},
+					schema: {
+						default_value: true,
 					},
 				},
 			],

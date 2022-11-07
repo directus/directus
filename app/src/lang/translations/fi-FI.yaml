@@ -21,6 +21,7 @@
 #'Proxy', 'Intl'
 identifier: Tunniste
 avatar: Avatari
+application: Sovellus
 default_provider: Oletus
 method: Metodi
 published: Julkaistu
@@ -28,12 +29,16 @@ draft: Luonnos
 archived: Arkistoitu
 modules: Moduulit
 module_bar: Moduulipalkki
+logs: Lokit
+reset_width: Palauta leveys
 tile_size: Neliön koko
 edit_field: Muokkaa kenttää
 conditions: Ehdot
 location: Sijainti
+condition_rules: Ehdot
 input: Syöte
 maps: Kartat
+switch_user: Vaihda käyttäjää
 item_creation: Kohteen luonti
 item_revision: Kohteen versio
 enter_a_name: Syötä nimi...
@@ -41,8 +46,12 @@ duplicate_field: Monista kenttä
 half_width: Puolileveä
 full_width: Täysleveä
 group: Ryhmä
+export_items: Vie kohteet
 and: Ja
 or: Tai
+init: Alusta
+dataset_too_large_currently_showing_n_items: Dataset on liian suuri, näytetään ensimmäiset {n} kohdetta.
+custom: Mukautettu
 fill_width: Täysleveä
 field_name_translations: Kentän nimen käännökset
 enter_password_to_enable_tfa: Anna salasanasi ottaaksesi käyttöön kaksivaiheisen todennuksen
@@ -55,7 +64,9 @@ edit_collection: Muokkaa kokoelmaa
 exclusive: Poissulkeva
 children: Lapset
 db_only_click_to_configure: 'Vain tietokanta: klikkaa määrittääksesi'
+show_active_items: Näytä aktiiviset kohteet
 show_archived_items: Näytä arkistoidut kohteet
+show_all_items: Näytä kaikki kohteet
 edited: Arvoa muokattu
 required: Vaadittu
 required_for_app_access: Vaaditaan sovelluspääsyyn
@@ -64,8 +75,17 @@ create_preset: Luo esiasetus
 create_panel: Luo paneeli
 create_role: Luo rooli
 create_user: Luo käyttäjä
+message: Viesti
 delete_panel: Poista paneeli
 create_webhook: Luo webhook
+create_translation_string: Luo käännös
+no_translation_string: Ei käännöksiä
+no_translation_string_copy: Ei vielä käännöksiä.
+translation_string_key_placeholder: Käännöksen merkkijonoavain...
+translation_string_translations_placeholder: Lisää käännös
+edit_translation_string: Muokkaa käännöstä
+delete_translation_string_copy: >-
+  Haluatko poistaa käännöksen "{key}"? Tätä toimintoa ei voi kumota.
 invite_users: Kutsu käyttäjiä
 invite: Kutsu
 email_already_invited: Sähköposti "{email}" on jo kutsuttu
@@ -86,11 +106,15 @@ update_bookmark: Päivitä kirjanmerkki
 delete_bookmark: Poista kirjanmerkki
 delete_bookmark_copy: >-
   Oletko varma, että haluat poistaa "{bookmark}" kirjanmerkin? Tätä toimintoa ei voi perua.
+delete_personal_bookmark: Poista henkilökohtainen kirjanmerkki
+delete_role_bookmark: Poista roolikirjanmerkki
+delete_global_bookmark: Poista globaali kirjanmerkki
 logoutReason:
   SIGN_OUT: Kirjauduttu ulos
   SESSION_EXPIRED: Istunto vanheutunut
 public_label: Julkinen
 public_description: Määrittää mitä API-tietoja on saatavilla ilman autentikointia.
+admin_description: Alkuperäinen hallinnollinen rooli rajoittamattomalla App/API-käyttöoikeudella.
 not_allowed: Ei sallittu
 directus_version: Directus-versio
 node_version: Node-versio
@@ -111,6 +135,7 @@ recommended_defaults: Suositellut oletukset
 unarchive: Palauta arkistosta
 unarchive_confirm: Oletko varma, että haluat palauttaa tämän kohteen?
 nested_files_folders_will_be_moved: Sisäkkäisiä tiedostoja ja kansioita siirretään yksi taso ylöspäin.
+validation_errors_notice: 'Seuraavilla kentillä on virheellisiä arvoja:'
 validationError:
   eq: Arvon on oltava {valid}
   neq: Arvo ei voi olla {invalid}
@@ -160,6 +185,7 @@ revision_post_create: Tässä on miltä tämä kohde näytti kun se luotiin.
 revision_post_update: Tässä on miltä tämä kohde näytti päivityksen jälkeen.
 changes_made: Alla esitetään tässä tarkistuksessa tehdyt erityiset muutokset.
 no_relational_data: Muista, että relaatiotiedot eivät sisälly tähän.
+hide_field: Piilota kenttä
 hide_field_on_detail: Piilota kenttä yksityiskohdissa
 show_field_on_detail: Näytä kenttä yksityiskohdissa
 delete_field: Poista kenttä
@@ -168,6 +194,7 @@ field_create_success: 'Luotu kenttä: "{field}"'
 field_update_success: 'Päivitetty kenttä: "{field}"'
 duplicate_where_to: Mihin haluat monistaa tämän kentän?
 language: Kieli
+language_placeholder: Valitse kieli...
 aggregate_function: Aggregaattifunktio
 aggregate_precision: Aggregaattitarkkuus
 group_aggregation: Ryhmien aggregointi
@@ -178,6 +205,7 @@ camera: Kamera
 show_zero: Näytä nolla
 create_in_advanced_field_creation_mode: Luo kenttä edistyneessä tilassa
 continue_in_advanced_field_creation_mode: Jatka laajennetussa kentänluontitilassa
+validation: Vahvistus
 sum: Summa
 sum_distinct: Summaa yksilölliset
 avg: Keskiarvo
@@ -265,10 +293,13 @@ next: Seuraava
 field_name: Kentän nimi
 translations: Käännökset
 no_translations: Ei käännöksiä
+left_to_right: Vasemmalta oikealle
+right_to_left: Oikealta vasemmalle
 note: Muistiinpano
 enter_a_value: Syötä arvo...
 enter_a_placeholder: Syötä paikkamerkki...
 length: Pituus
+soft_length: Pehmeä rajoitus
 precision_scale: Tarkkuus ja skaala
 readonly: Vain luku
 unique: Yksilöllinen
@@ -278,10 +309,22 @@ primary_key: Ensisijainen avain
 foreign_key: Viiteavain
 finish_setup: Viimeistele asennus
 dismiss: Hylkää
+toggle_raw_editor: Avaa ulkoasumuokkain
+raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
 raw_value: Raaka-arvo
+copy_raw_value: Muokkaa raakaa arvoa
+copy_raw_value_success: Kopioitu
+copy_raw_value_fail: Kopiointi epäonnistui
+paste_raw_value: Liitä raaka arvo
+paste_raw_value_success: Liitetty
+paste_raw_value_fail: Liitos epäonnistui
+view_raw_value: Katso raakaa arvoa
 edit_raw_value: Muokkaa raaka-arvoa
 enter_raw_value: Syötä raakaarvo...
+clear_value: Tyhjennä arvo
 clear_changes: Tyhjennä muutokset
+reset_to_default: Palauta oletukseen
+undo_changes: Kumoa muutokset
 notifications: Ilmoitukset
 show_all_activity: Näytä kaikki toiminta
 page_not_found: Sivua ei löydy
@@ -296,14 +339,17 @@ revision_delta_created_externally: Luotu ulkoisesti
 revision_delta_updated: 'Päivitetty 1 kenttä | Päivitetty {count} kenttää'
 revision_delta_deleted: Poistettu
 revision_delta_reverted: Palautettu
+revision_delta_update_message: Tätä kenttää on päivitetty, mutta sen arvo piilotetaan turvallisuussyistä.
 revision_delta_other: Versio
 revision_delta_by: '{date} käyttäjältä {user}'
+download_page_as_csv: 'Lataa CSV:nä'
 private_user: Yksityinen käyttäjä
 creation_preview: Luomisen esikatselu
 revision_preview: Version esikatselu
 updates_made: Päivitykset tehty
 leave_comment: Jätä kommentti...
 post_comment_success: Kommentti lähetetty
+post_comment_updated: Kommentti päivitetty
 item_create_success: Kohde luotu | Kohteet luotu
 item_update_success: Kohde päivitetty | Kohteet päivitetty
 item_delete_success: Kohde poistettu | Kohteet poistettu
@@ -312,6 +358,8 @@ related_collection: Liittyvät kokoelmat
 related_collections: Liittyvät kokoelmat
 translations_collection: Käännöskokoelma
 languages_collection: Kielten kokoelma
+import_data_input_placeholder: CSV tai JSON...
+import_data_button: Aloita tuonti
 label_import: Tuo
 format: Muoto
 last_page: Viimeinen sivu
@@ -665,6 +713,7 @@ trigger: Laukaisija
 flow_name: Nimi
 flow_tracking_activity: Seuraa vain tapahtumia
 flow_tracking_null: Älä seuraa mitään
+code: Koodi
 insights: Yleiskatsaus
 dashboard: Kojelauta
 panel: Paneeli
@@ -1175,6 +1224,8 @@ value: Arvo
 view_project: Näytä projekti
 report_error: Raportoi virhe
 start: Aloita
+table: Taulukko
+list: Lista
 interfaces:
   filter:
     name: Suodatin
@@ -1243,6 +1294,8 @@ interfaces:
     include_seconds: Sisällytä sekunnit
     set_to_now: Aseta olemaan nyt
     use_24: Käytä 24-tuntista muotoa
+  system-fields:
+    select_a_collection: Valitse kokoelma
   system-display-template:
     display-template: Esitysmalli
     description: Sekoita staattinen teksti ja dynaamiset kenttäarvot
@@ -1574,6 +1627,8 @@ layouts:
     invalid_geometry: Virheellinen geometria
     find_location: Etsi sijainti...
     no_compatible_fields: Ei yhteensopivia kenttiä
+  kanban:
+    crop: Rajaa
 panels:
   metric:
     name: Metrinen
@@ -1596,8 +1651,11 @@ triggers:
   webhook:
     method: Metodi
 operations:
+  log:
+    message: Viesti
   notification:
     recipient: Käyttäjänimi
+    message: Viesti
   request:
     url: URL
     method: Metodi

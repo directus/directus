@@ -4,61 +4,54 @@
 	</ul>
 </template>
 
-<script lang="ts">
-import { defineComponent, PropType, toRefs } from 'vue';
-import { useGroupableParent } from '@/composables/use-groupable';
+<script setup lang="ts">
+import { toRefs } from 'vue';
+import { useGroupableParent } from '@directus/shared/composables';
 
-export default defineComponent({
-	props: {
-		modelValue: {
-			type: Array as PropType<(number | string)[]>,
-			default: null,
-		},
-		nav: {
-			type: Boolean,
-			default: false,
-		},
-		dense: {
-			type: Boolean,
-			default: false,
-		},
-		multiple: {
-			type: Boolean,
-			default: true,
-		},
-		mandatory: {
-			type: Boolean,
-			default: true,
-		},
-		scope: {
-			type: String,
-			default: 'v-list',
-		},
-	},
-	emits: ['update:modelValue', 'toggle'],
-	setup(props, { emit }) {
-		const { modelValue, multiple, mandatory } = toRefs(props);
+interface Props {
+	/** Model what elements should be currently active */
+	modelValue?: (string | number)[];
+	/** If the item is inside the navigation */
+	nav?: boolean;
+	/** Renders the list densely */
+	dense?: boolean;
+	/** Allows to select multiple items in the list */
+	multiple?: boolean;
+	/** At least one item has to be selected */
+	mandatory?: boolean;
+	/** Items that do not have the same scope will be ignored */
+	scope?: string;
+}
 
-		useGroupableParent(
-			{
-				selection: modelValue,
-				onSelectionChange: (newSelection) => {
-					emit('update:modelValue', newSelection);
-				},
-				onToggle: (item) => {
-					emit('toggle', item);
-				},
-			},
-			{
-				mandatory,
-				multiple,
-			},
-			props.scope
-		);
-
-		return {};
-	},
+const props = withDefaults(defineProps<Props>(), {
+	modelValue: undefined,
+	nav: false,
+	dense: false,
+	multiple: true,
+	mandatory: true,
+	scope: 'v-list',
 });
+
+const emit = defineEmits(['update:modelValue', 'toggle']);
+
+const { modelValue, multiple, mandatory } = toRefs(props);
+
+useGroupableParent(
+	{
+		selection: modelValue,
+		onSelectionChange: (newSelection) => {
+			emit('update:modelValue', newSelection);
+		},
+		onToggle: (item) => {
+			emit('toggle', item);
+		},
+	},
+	{
+		mandatory,
+		multiple,
+	},
+	props.scope
+);
 </script>
 
 <style scoped>

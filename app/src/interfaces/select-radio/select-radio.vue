@@ -40,7 +40,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, toRefs, PropType } from 'vue';
-import { useCustomSelection } from '@/composables/use-custom-selection';
+import { useCustomSelection } from '@directus/shared/composables';
 
 type Option = {
 	text: string;
@@ -126,7 +126,7 @@ export default defineComponent({
 
 	display: grid;
 	grid-gap: 12px 32px;
-	grid-template-columns: repeat(var(--columns), 1fr);
+	grid-template-columns: repeat(var(--columns), minmax(0, 1fr));
 }
 
 .grid-2 {

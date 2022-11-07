@@ -1,7 +1,7 @@
 <template>
 	<private-view :title="title">
 		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon secondary exact @click="router.back()">
+			<v-button class="header-icon" rounded icon secondary exact @click="navigateBack">
 				<v-icon name="arrow_back" />
 			</v-button>
 		</template>
@@ -196,7 +196,6 @@ import { useUserStore } from '@/stores/user';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { useServerStore } from '@/stores/server';
-import { getRootPath } from '@/utils/get-root-path';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { userName } from '@/utils/user-name';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
@@ -329,6 +328,7 @@ export default defineComponent({
 			item,
 			loading,
 			isNew,
+			navigateBack,
 			breadcrumb,
 			edits,
 			hasEdits,
@@ -369,6 +369,16 @@ export default defineComponent({
 			avatarError,
 			isSavable,
 		};
+
+		function navigateBack() {
+			const backState = router.options.history.state.back;
+			if (typeof backState !== 'string' || !backState.startsWith('/login')) {
+				router.back();
+				return;
+			}
+
+			router.push('/users');
+		}
 
 		function useBreadcrumb() {
 			const breadcrumb = computed(() => [
@@ -478,7 +488,7 @@ export default defineComponent({
 					});
 
 					avatarSrc.value = response.data.data.avatar?.id
-						? getRootPath() + `assets/${response.data.data.avatar.id}?key=system-medium-cover`
+						? `/assets/${response.data.data.avatar.id}?key=system-medium-cover`
 						: null;
 
 					roleName.value = response.data.data?.role?.name;

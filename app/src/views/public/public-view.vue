@@ -142,12 +142,12 @@ const artStyles = computed(() => {
 
 const foregroundURL = computed(() => {
 	if (!info.value?.project?.public_foreground) return null;
-	return getRootPath() + `assets/${info.value.project?.public_foreground}`;
+	return '/assets/' + info.value.project?.public_foreground;
 });
 
 const logoURL = computed<string | null>(() => {
 	if (!info.value?.project?.project_logo) return null;
-	return getRootPath() + `assets/${info.value.project?.project_logo}`;
+	return '/assets/' + info.value.project?.project_logo;
 });
 </script>
 

@@ -190,7 +190,7 @@ async function buildAppOrApiExtension({
 	}
 
 	if (output.length === 0) {
-		log(`Output file ${chalk.bold(output)} must be a valid path.`, 'error');
+		log(`Output file can not be empty.`, 'error');
 		process.exit(1);
 	}
 
@@ -243,11 +243,11 @@ async function buildHybridExtension({
 	}
 
 	if (outputApp.length === 0) {
-		log(`App output file ${chalk.bold(outputApp)} must be a valid path.`, 'error');
+		log(`App output file can not be empty.`, 'error');
 		process.exit(1);
 	}
 	if (outputApi.length === 0) {
-		log(`API output file ${chalk.bold(outputApi)} must be a valid path.`, 'error');
+		log(`API output file can not be empty.`, 'error');
 		process.exit(1);
 	}
 
@@ -399,7 +399,7 @@ function getRollupOptions({
 			input,
 			external: APP_SHARED_DEPS,
 			plugins: [
-				vue({ preprocessStyles: true }),
+				vue({ preprocessStyles: true }) as Plugin,
 				language === 'typescript' ? typescript({ check: false }) : null,
 				styles(),
 				...plugins,

@@ -192,6 +192,9 @@ revision_post_create: Here is what this item looked like when it was created.
 revision_post_update: Here is what this item looked like after the update.
 changes_made: Below are the specific changes made in this revision.
 no_relational_data: Keep in mind that relational data is not included here.
+junction_field_location: Junction Fields Location
+top: Top
+bottom: Bottom
 hide_field: Hide Field
 hide_field_on_detail: Hide Field on Detail
 show_field_on_detail: Show Field on Detail
@@ -278,6 +281,7 @@ fields_group: Fields Group
 no_collections_found: No collections found.
 new_data_alert: 'The following will be created within your Data Model:'
 search_collection: Search Collection...
+search_field: Search Field...
 new_field: 'New Field'
 new_collection: 'New Collection'
 add_m2o_to_collection: 'Add M2O to "{collection}"'
@@ -301,6 +305,8 @@ next: Next
 field_name: Field Name
 translations: Translations
 no_translations: No Translations
+left_to_right: Left to Right
+right_to_left: Right to Left
 note: Note
 enter_a_value: Enter a value...
 enter_a_placeholder: Enter a placeholder...
@@ -329,6 +335,7 @@ edit_raw_value: Edit Raw Value
 enter_raw_value: Enter raw value...
 clear_value: Clear Value
 clear_changes: Clear Changes
+clear_items: Clear Items
 reset_to_default: Reset to Default
 undo_changes: Undo Changes
 notifications: Notifications
@@ -488,6 +495,7 @@ creating_items: Creating Items
 enable_create_button: Enable Create Button
 selecting_items: Selecting Items
 enable_select_button: Enable Select Button
+allow_duplicates: Allow Duplicates
 comments: Comments
 no_comments: No Comments Yet
 click_to_expand: Click to Expand
@@ -540,6 +548,7 @@ activity_item: Activity Item
 action: Action
 ip_address: IP Address
 user_agent: User Agent
+origin: Origin
 webhooks: Webhooks
 decimals: Decimals
 value_decimals: Value Decimals
@@ -588,6 +597,9 @@ errors:
   INVALID_PAYLOAD: Invalid payload
   INVALID_PROVIDER: User belongs to a different auth provider
   INVALID_QUERY: Invalid query
+  INVALID_CONFIG: Invalid config
+  INVALID_TOKEN: Invalid token
+  INVALID_IP: IP Address not allowed
   INVALID_USER: Failed to authenticate user
   ITEM_LIMIT_REACHED: Item limit reached
   ITEM_NOT_FOUND: Item not found
@@ -604,6 +616,13 @@ errors:
   INVALID_FOREIGN_KEY: Invalid foreign key
   UNKNOWN: Unexpected Error
   GRAPHQL_VALIDATION_EXCEPTION: GraphQL Validation Exception
+  SERVICE_UNAVAILABLE: Service Unavailable
+  UNSUPPORTED_MEDIA_TYPE: Unsupported media type
+  UNEXPECTED_RESPONSE: Unexpected response
+  TOKEN_EXPIRED: Token expired
+  RANGE_NOT_SATISFIABLE: Invalid range
+  METHOD_NOT_ALLOWED: Method not allowed
+  REQUESTS_EXCEEDED: Requests limit reached
 security: Security
 value_hashed: Value Securely Hashed
 bookmark_name: Bookmark name...
@@ -743,6 +762,8 @@ add_file: Add File
 replace_file: Replace File
 no_results: No Results
 no_results_copy: Adjust or clear search filters to see results.
+no_visible_fields: Empty Form
+no_visible_fields_copy: This form has no visible fields.
 clear_filters: Clear Filters
 saves_automatically: Saves Automatically
 role: Role
@@ -772,8 +793,10 @@ label: Label
 flows: Flows
 flow: Flow
 select_a_flow: Select a Flow
+run_flow_on_current_collection: Run flow on Current Collection
 run_flow_on_current: Run flow on Current Item
-run_flow_on_selected: No Items Selected | Run flow on 1 Selected Item | Run flow on {n} Selected Items
+run_flow_on_current_edited_confirm: This item may be updated by this flow, are you sure you want to execute it?
+run_flow_on_selected: Select One or More Items First | Run flow on 1 Selected Item | Run flow on {n} Selected Items
 run_flow_success: Flow "{flow}" ran successfully
 trigger: Trigger
 trigger_options: Trigger Options
@@ -802,6 +825,7 @@ start_flow: Start Flow
 stop_flow: Stop Flow
 create_operation: Create Operation
 edit_operation: Edit Operation
+code: Code
 operation_options: Operation Options
 operation_name: Name of operation...
 operation_key: Identifier for reference...
@@ -816,6 +840,7 @@ panel_header: Panel Header
 panel_name_placeholder: Name this panel...
 panel_note_placeholder: Optional details about this panel...
 panel_delete_confirm: Are you sure you want to delete this panel? This action can not be undone.
+list_panel_allow_edit: Allow Inline Editing
 dashboard_delete_confirm: Are you sure you want to delete this dashboard? This action can not be undone.
 edit_dashboard: Edit Dashboard
 delete_dashboard: Delete Dashboard
@@ -1042,6 +1067,7 @@ fields:
     user: Action By
     comment: Comment
     user_agent: User Agent
+    origin: Origin
     ip: IP Address
     revisions: Revisions
   directus_collections:
@@ -1154,6 +1180,8 @@ fields:
     transformations_all: Allow all transformations
     transformations_none: Disable transformations
     transformations_presets: Limit transformations to presets below
+    image_editor: Image Editor
+    custom_aspect_ratios: Custom Aspect Ratios
   directus_shares:
     name: Name
     role: Role
@@ -1425,6 +1453,16 @@ view_project: View Project
 weeks: {}
 report_error: Report Error
 start: Start
+table: Table
+list: List
+search_filter: Search & Filter
+enable_search_filter: Enable searching & filtering
+item_link: Item link
+show_link_to_item: Show a link to the item
+navigate_to_item: Navigate to Item
+undo_removed_item: Undo Removed Item
+remove_item: Remove Item
+delete_item: Delete Item
 interfaces:
   filter:
     name: Filter
@@ -1504,6 +1542,9 @@ interfaces:
     set_to_now: Set to Now
     use_24: Use 24-Hour Format
     placeholder: Choose a datetime...
+  system-fields:
+    select_a_collection: Select a Collection
+    no_fields: No fields
   system-display-template:
     display-template: Display Template
     description: Mix static text and dynamic field values
@@ -1561,6 +1602,7 @@ interfaces:
   list-m2m:
     many-to-many: Many to Many
     description: Select multiple related junction items
+    columns_configure_notice: You can configure the columns after creating this field.
     display_template_configure_notice: You can configure the display template after creating this field.
   select-dropdown-m2o:
     many-to-one: Many to One
@@ -1680,6 +1722,7 @@ interfaces:
     user_language: Use Current User Language
     default_language: Default Language
     language_field: Language Indicator Field
+    language_direction_field: Language Direction Field
   list-o2m-tree-view:
     description: Tree view for nested recursive one-to-many items
     recursive_only: The tree view interface only works for recursive relationships.
@@ -1891,33 +1934,33 @@ layouts:
     default_template: Using Collection Default...
     no_compatible_fields: No compatible fields
   kanban:
-    name: Kanban,
-    group_field: Group By,
-    group_field_placeholder: Field to group by...,
-    group_title: Group Title,
-    group_title_placeholder: Field for group titles...,
-    title: Card Title,
-    title_placeholder: Optional title field...,
-    text: Card Text,
-    text_placeholder: Optional text field...,
-    date: Card Date,
-    date_placeholder: Optional date field...,
-    tags: Card Tags,
-    tags_placeholder: Optional tags field...,
-    user: Card User,
-    user_placeholder: Optional user field...,
-    image: Card Image,
-    image_placeholder: Optional image field...,
-    image_fit: Card Image Fit,
-    crop: Crop,
-    advanced: Advanced,
-    edit_group: Edit Group,
-    delete_group: Delete Group,
-    add_group: Add Group,
-    add_group_placeholder: Enter a new group title...,
-    show_ungrouped: Show Ungrouped,
-    show: Show,
-    no_group: No Group,
+    name: Kanban
+    group_field: Group By
+    group_field_placeholder: Field to group by...
+    group_title: Group Title
+    group_title_placeholder: Field for group titles...
+    title: Card Title
+    title_placeholder: Optional title field...
+    text: Card Text
+    text_placeholder: Optional text field...
+    date: Card Date
+    date_placeholder: Optional date field...
+    tags: Card Tags
+    tags_placeholder: Optional tags field...
+    user: Card User
+    user_placeholder: Optional user field...
+    image: Card Image
+    image_placeholder: Optional image field...
+    image_fit: Card Image Fit
+    crop: Crop
+    advanced: Advanced
+    edit_group: Edit Group
+    delete_group: Delete Group
+    add_group: Add Group
+    add_group_placeholder: Enter a new group title...
+    show_ungrouped: Show Ungrouped
+    show: Show
+    no_group: No Group
     not_all_loaded: Could only load the first 1000 items.
 
 panels:
@@ -1960,7 +2003,7 @@ panels:
     y_axis_conditional_two: must be a number.
   linechart:
     name: Line Chart
-    description: Line chart for comparing change of a field.
+    description: Line chart for comparing change of a field
     select_field: You must select a field.
     select_collection: You must select a collection.
     select_x_axis: You must select an X-Axis.
@@ -1972,17 +2015,19 @@ panels:
     datasets: Datasets
     show_legend: Show Legend
     show_marker: Show Tooltip Marker
-    include_dataset: You must include atleast one dataset.
+    include_dataset: You must include at least one dataset.
     include_y_axis: You must include a Y-Axis for each dataset when no group is specified.
     group_and_function: You must include or omit both a group and a function.
-    smooth: 'Smooth'
-    straight: 'Straight'
-    step_line: 'Step Line'
+    smooth: Smooth
+    straight: Straight
+    step_line: Step Line
   meter:
-    description: Meter for tracking values
     name: Meter
-    arc: Arc
+    description: Meter for tracking values
+    half_circle: Half Circle
+    full_circle: Full Circle
     stroke_width: Stroke Width
+    rounded_stroke: Rounded Stroke
     select_max_value: You must select a maximum value.
     max_greater_than_zero: The maximum must be greater than 0.
     select_field: You must select a field.
@@ -1993,11 +2038,11 @@ panels:
     broad: Broad
   piechart:
     name: Pie or Donut Chart
-    description: Circular chart showing the ratios of groups on a column.
-    function: 'Function'
+    description: Circular chart showing the ratios of groups on a column
+    function: Function
     donut: Donut
-    labels: Show Labels
-    legend: Show Legend
+    show_labels: Show Labels
+    show_legend: Show Legend
     right: Right
     bottom: Bottom
     monochrome: Monochrome
@@ -2006,6 +2051,12 @@ panels:
     name: Global Variable
     description: Set a global value for use in other Panels' filters
     variable_key: Variable Key
+  relational-variable:
+    name: Global Relational Variable
+    description: Set a global relational value for use in other Panels' filters
+    variable_key: Variable Key
+    multiple: Multiple
+    multiple-label: Select multiple items
 triggers:
   common:
     response_body: Response Body
@@ -2035,8 +2086,9 @@ triggers:
     collection_and_item: Collection & Item Pages
     collection_only: Collection Page Only
     item_only: Item Page Only
-a_users_uuid: A User's Primary Key UUID...
-a_flow_uuid: A Flow's Primary Key UUID...
+    collection_page: Collection Page
+    require_selection: Requires Selection
+a_flow_uuid: Select a Flow to trigger...
 any_string_or_json: Any string or JSON...
 item_payload_placeholder: This is the JSON used to update the item's field values...
 operation_variables_note: You can access flow data with variables such as **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** and **{'{'}{'{'}$accountability{'}'}{'}'}**, or reference previous operations using **{'{'}{'{'}operation_key{'}'}{'}'}**.'
@@ -2044,6 +2096,10 @@ operations:
   condition:
     name: Condition
     description: Route a flow based on If / Else logic
+  exec:
+    name: Run Script
+    description: Execute arbitrary code to modify the payload
+    modules: 'The following **Node modules** can be used:'
   item-create:
     name: Create Data
     description: Create items in the database
@@ -2082,8 +2138,9 @@ operations:
     body: Body
   notification:
     name: Send Notification
-    description: Send an in-app notification to a user
+    description: Send an in-app notification to one or more users
     recipient: User
+    recipient_placeholder: Add user UUID and press enter...
     message: Message
   request:
     name: Webhook / Request URL

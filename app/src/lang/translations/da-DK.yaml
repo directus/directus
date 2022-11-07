@@ -29,6 +29,8 @@ draft: Kladde
 archived: Arkiveret
 modules: Moduler
 module_bar: Modul Bar
+logs: Logger
+reset_width: Tilbagestil bredde
 tile_size: Tile Size
 edit_field: Rediger Felt
 conditions: Betingelser
@@ -46,6 +48,8 @@ group: Gruppe
 export_items: Eksportér Elementer
 and: Og
 or: Eller
+init: Initaliser
+custom: Brugertilpasset
 fill_width: Fuld Bredde
 field_name_translations: Oversættelse af feltnavn
 enter_password_to_enable_tfa: Indtast dit kodeord for at aktivere To-faktor-godkendelse (2FA)
@@ -69,9 +73,12 @@ create_preset: Opret forudindstilling
 create_panel: Opret Panel
 create_role: Opret Rolle
 create_user: Opret bruger
+message: Besked
 delete_panel: Slet Panel
 create_webhook: Opret Webhook
 create_translation_string: Opret Oversættelsesstreng
+no_translation_string: Oversættelse mangler
+no_translation_string_copy: Der er ingen oversættelsesstrenge endnu.
 translation_string_key_placeholder: Oversættelse streng nøgle...
 translation_string_translations_placeholder: Tilføj en ny oversættelse
 edit_translation_string: Rediger Oversættelsesstreng
@@ -176,6 +183,8 @@ revision_post_create: Her er hvordan dette element så ud, da det blev oprettet.
 revision_post_update: Her er hvad dette element så ud efter opdateringen.
 changes_made: Nedenfor er de specifikke ændringer i denne revision.
 no_relational_data: Husk på, at relationsdata ikke er inkluderet her.
+top: Top
+bottom: Bund
 hide_field: Skjul Felt
 hide_field_on_detail: Skjul felt på detalje
 show_field_on_detail: Vis felt på detalje
@@ -239,7 +248,9 @@ uuid: UUID
 hash: Hash
 geometry: Geometri (Alle)
 geometry.Point: Punkt
+geometry.Polygon: Polygon
 geometry.MultiPoint: Multipunkt
+geometry.MultiLineString: Stræng med linjeskift
 not_available_for_type: Ikke tilgængelig for denne type
 create_translations: Opret Oversættelser
 auto_refresh: Opdater Automatisk
@@ -280,6 +291,8 @@ next: Næste
 field_name: Felt Navn
 translations: Oversættelser
 no_translations: Ingen Oversættelser
+left_to_right: Venstre mod højre
+right_to_left: Højre mod venstre
 note: Kommentar
 enter_a_value: Indtast en værdi...
 enter_a_placeholder: Indtast en pladsholder...
@@ -322,14 +335,18 @@ revision_delta_created_externally: Oprettet Eksternt
 revision_delta_updated: 'Opdateret 1 Felt | Opdaterede {count} felter'
 revision_delta_deleted: Slettet
 revision_delta_reverted: Omvendt
+revision_delta_update_message: Dette felt er blevet opdateret, men dets værdi bliver skjult af sikkerhedsmæssige årsager.
 revision_delta_other: Revision
 revision_delta_by: '{date} af {user}'
+presentation_text_values_cannot_be_reimported: "Bruger præsentationstekst, værdier kan ikke genimporteres."
+download_page_as_csv: 'Hent side som CSV'
 private_user: Privat Bruger
 creation_preview: Forhåndsvisning Af Oprettelse
 revision_preview: Revision Forhåndsvisning
 updates_made: Opdateringer Lavet
 leave_comment: Skriv en kommentar...
 post_comment_success: Kommentar sendt
+post_comment_updated: Kommentaren er opdateret
 item_create_success: Element oprettet | Elementer oprettet
 item_update_success: Element opdateret | Elementer opdateret
 item_delete_success: Slettede Elementer Slettet
@@ -338,6 +355,8 @@ related_collection: Relateret Samling
 related_collections: Relaterede Samlinger
 translations_collection: Oversættelse Samling
 languages_collection: Sprog Samling
+import_data_input_placeholder: CSV eller JSON...
+import_data_button: Begynd Import
 import_data_indeterminate: Importerer Data...
 import_data_success: Data importeret fra {filename}
 import_data_error: Denne fils datastruktur matcher ikke samlingen.
@@ -445,6 +464,7 @@ created_on: Oprettet d.
 creating_collection_info: Navngiv samlingen og opsæt dens unikke “nøgle” felt...
 creating_collection_system: Aktivér og omdøb alle disse valgfrie felter.
 auto_increment_integer: Auto-stigende heltal
+auto_increment_big_integer: Auto-stigende heltal
 generated_uuid: Genereret UUID
 manual_string: Manuelt indtastet streng
 save_and_create_new: Gem og opret ny
@@ -455,6 +475,7 @@ creating_items: Opretter Elementer
 enable_create_button: Aktivér Niagaraknappen
 selecting_items: Vælger Elementer
 enable_select_button: Aktivér Markeringsknap
+allow_duplicates: Tillad gengangere
 comments: Kommentarer
 no_comments: Ingen Kommentarer Endnu
 click_to_expand: Klik for at udvide
@@ -465,7 +486,9 @@ disabled: Deaktiveret
 information: Information
 report_bug: Rapportér Fejl
 request_feature: Anmod om funktion
+request_body: Anmod om brødtekst
 interface_not_found: 'Interface "{interface}" blev ikke fundet.'
+operation_not_found: 'Operation "{operation}" ikke fundet.'
 reset_interface: Nulstil Grænseflade
 display_not_found: 'Visning "{display}" ikke fundet.'
 reset_display: Nulstil Visning
@@ -505,6 +528,7 @@ activity_item: Aktivitet Element
 action: Handling
 ip_address: IP adresse
 user_agent: Brugeragent
+origin: Oprindelse
 webhooks: Webhooks
 decimals: Decimaler
 value_decimals: Værdi Decimaler
@@ -551,7 +575,10 @@ errors:
   INVALID_CREDENTIALS: Forkert brugernavn eller adgangskode
   INVALID_OTP: Forkert engangskodeord
   INVALID_PAYLOAD: Invalid payload
+  INVALID_PROVIDER: Bruger tilhører en anden autoritets udbyder
   INVALID_QUERY: Ugyldig forespørgsel
+  INVALID_TOKEN: Ugyldig token
+  INVALID_IP: Ugyldig IP adresse
   ITEM_LIMIT_REACHED: Element grænse nået
   ITEM_NOT_FOUND: Element ikke fundet
   ROUTE_NOT_FOUND: Ikke fundet
@@ -566,6 +593,13 @@ errors:
   VALUE_OUT_OF_RANGE: Værdien er uden for rækkevidde
   INVALID_FOREIGN_KEY: Ugyldig udenlandsk nøgle
   UNKNOWN: Uventet Fejl
+  SERVICE_UNAVAILABLE: Tjenesten er ikke tilgængelig
+  UNSUPPORTED_MEDIA_TYPE: Ikke-understøttet filtype
+  UNEXPECTED_RESPONSE: Uventet serversvar
+  TOKEN_EXPIRED: Token udløbet
+  RANGE_NOT_SATISFIABLE: Ugyldigt interval
+  METHOD_NOT_ALLOWED: Metode ikke tilladt
+  REQUESTS_EXCEEDED: Kvota overskredet
 security: Sikkerhed
 value_hashed: Værdi Sikker Hashed
 bookmark_name: Bogmærke navn...
@@ -583,9 +617,11 @@ unexpected_error_copy: Der opstod en uventet fejl. Prøv igen senere.
 copy_details: Kopiér Detaljer
 no_app_access: Ingen App Adgang
 no_app_access_copy: Denne bruger har ikke tilladelse til at bruge admin appen.
+password_reset_sent: Hvis din konto findes har vi sendt dig et sikkert link til reset af din adgangskode
 password_reset_successful: Adgangskode nulstillet
 back: Tilbage
 filter: Filtrer
+edit_image: Rediger billede
 editing_image: Redigerer Billede
 square: Kvadrat
 free: Gratis
@@ -606,6 +642,9 @@ start_end_of_count_items: '{start}-{end} af {count} varer'
 start_end_of_count_filtered_items: '{start}-{end} af {count} filtrerede emner'
 one_item: '1 vare'
 one_filtered_item: '1 filtreret genstand'
+delete_collection_are_you_sure: >-
+  Er du sikker på du vil slette denne samling "{collection}"? Dette vil slette alle enheder i samlingen. Denne handling er permanent.
+delete_folder_are_you_sure: Er du sikker på du vil slette denne mappe"{folder}"? Dette vil slette alle undermapper og enheder i mappen. Denne handling er permanent.
 collections_shown: Viste Samlinger
 visible_collections: Synlige Samlinger
 hidden_collections: Skjulte Samlinger
@@ -729,6 +768,7 @@ trigger: Udløser
 flow_name: Navn
 flow_tracking_activity: Spor Kun Aktivitet
 flow_tracking_null: Spor Ikke Noget
+code: Kode
 insights: Indsigter
 dashboard: Instrumentbræt
 panel: Stykke
@@ -934,6 +974,7 @@ fields:
     user: Handling Af
     comment: Kommenter
     user_agent: Brugeragent
+    origin: Oprindelse
     ip: IP adresse
     revisions: Revisioner
   directus_collections:
@@ -1289,6 +1330,8 @@ value: Værdi
 view_project: Vis Projekt
 report_error: Fejl I Rapport
 start: Start
+table: Tabel
+list: Liste
 interfaces:
   filter:
     name: Filtrer
@@ -1367,6 +1410,8 @@ interfaces:
     set_to_now: Indstil til nu
     use_24: Brug 24-timers Format
     placeholder: Vælg en datetime...
+  system-fields:
+    select_a_collection: Vælg en samling
   system-display-template:
     display-template: Vis Skabelon
     description: Bland statisk tekst og dynamiske feltværdier
@@ -1712,32 +1757,8 @@ layouts:
     default_template: Brug Samling Standard...
     no_compatible_fields: Ingen kompatible felter
   kanban:
-    group_field: Grupper Af,
-    group_field_placeholder: Felt til gruppe af...,
-    group_title: Gruppe Titel
-    group_title_placeholder: Felt for gruppetitler...,
-    title: Korttitel
-    title_placeholder: Valgfrit titelfelt...,
-    text: Kort Tekst
-    text_placeholder: Valgfrit tekstfelt...,
-    date: Kortdato
-    date_placeholder: Valgfri datofelt...,
-    tags: Kort Tags,
-    tags_placeholder: Valgfri tags felt...,
-    user: Kortbruger
-    user_placeholder: Valgfrit brugerfelt...,
-    image: Kortbillede,
-    image_placeholder: Valgfrit billedfelt...,
-    image_fit: Kortbilled Passer Til
-    crop: Afgrøde
+    crop: Beskær
     advanced: Avanceret
-    edit_group: Rediger Gruppe,
-    delete_group: Slet Gruppe,
-    add_group: Tilføj Gruppe,
-    add_group_placeholder: Indtast en ny gruppetitel...,
-    show_ungrouped: Show Ungrouped,
-    show: Vis,
-    no_group: Ingen Gruppe,
     not_all_loaded: Kunne kun indlæse de første 1000 elementer.
 panels:
   metric:
@@ -1777,7 +1798,6 @@ panels:
     y_axis_conditional_two: skal være et tal.
   linechart:
     name: Linjediagram
-    description: Linjediagram til sammenligning af ændring af et felt.
     select_field: Du skal vælge et felt.
     select_collection: Du skal vælge en samling.
     select_x_axis: Du skal vælge en X-akse.
@@ -1787,16 +1807,14 @@ panels:
     disabled_no_grouping: Deaktiveret når ingen gruppering er valgt.
     y_axis: Y-akse
     show_legend: Vis Forklaring
-    include_dataset: Du skal inkludere mindst et datasæt.
     include_y_axis: Du skal inkludere en Y-akse for hvert datasæt, når ingen gruppe er angivet.
     group_and_function: Du skal inkludere eller udelade både en gruppe og en funktion.
-    smooth: 'Glat'
-    straight: 'Lige'
-    step_line: 'Trin Linje'
+    smooth: Glat
+    straight: Lige
+    step_line: Trin Linje
   meter:
-    description: Måler til sporingsværdier
     name: Måler
-    arc: Bue
+    description: Måler til sporingsværdier
     stroke_width: Slag Bredde
     select_max_value: Du skal vælge en maksimal værdi.
     max_greater_than_zero: Maksimum skal være større end 0.
@@ -1808,10 +1826,8 @@ panels:
     broad: Bred
   piechart:
     name: Tærte eller Donut Chart
-    description: Cirkulære diagram, der viser forholdet mellem grupper på en kolonne.
-    function: 'Funktion'
-    labels: Vis Etiketter
-    legend: Vis Forklaring
+    function: Funktion
+    show_legend: Vis Forklaring
     right: Højre
     bottom: Bund
     monochrome: Monokrom
@@ -1820,8 +1836,11 @@ triggers:
   webhook:
     method: Metode
 operations:
+  log:
+    message: Besked
   notification:
     recipient: Bruger
+    message: Besked
   request:
     url: URL
     method: Metode

@@ -23,16 +23,20 @@ identifier: Identifikator
 avatar: Profilbilde
 application: Applikasjon
 default_provider: Standard
+method: Metode
 published: Publisert
 draft: Utkast
 archived: Arkivert
 modules: Moduler
 module_bar: Modul Bar
+logs: Logger
 reset_width: Reset Width
 tile_size: Flisstørrelse
 edit_field: Rediger felt
 conditions: Betingelser
 location: Lokasjon
+condition_rules: Betingelser Regler
+input: Input
 maps: Kart
 switch_user: Bytt bruker
 item_creation: Objekt opprettelse
@@ -45,6 +49,11 @@ group: Gruppe
 export_items: Eksporter produkter
 and: Og
 or: Eller
+init: Init
+dataset_too_large_currently_showing_n_items: Datasettet er for stort. For øyeblikket vises de {n} første elementene.
+modifier: Modifikator
+custom: Egendefinert
+hook: Hook
 fill_width: Fyll vidde
 field_name_translations: Feltnavn oversettelser
 enter_password_to_enable_tfa: Fyll inn passord for å skru på To-Faktor Autentisering
@@ -68,8 +77,15 @@ create_preset: Opprett forhåndsinnstilling
 create_panel: Opprett panel
 create_role: Opprett rolle
 create_user: Opprett bruker
+message: Melding
 delete_panel: Slett panel
 create_webhook: Lag Webhook
+create_translation_string: Opprett oversettelsestekst
+no_translation_string: Ingen oversettelse tekst
+no_translation_string_copy: Det finnes ingen oversettelsestekst ennå.
+translation_string_key_placeholder: Oversettelse tekst nøkkel...
+translation_string_translations_placeholder: Legg til ny oversettelse
+edit_translation_string: Rediger oversettelsestekst
 invite_users: Invitere brukere
 invite: Inviter
 email_already_invited: E-postadressen "{email}" er allerede invitert
@@ -163,6 +179,9 @@ revision_post_create: Her er hvordan dette produktet så ut etter oppdateringen.
 revision_post_update: Her er hvordan dette produktet så ut etter oppdateringen.
 changes_made: Nedenfor følger de spesifikke endringene i denne revisjonen.
 no_relational_data: Husk at relasjonsdata ikke er tatt med her.
+top: Øverst
+bottom: Nederst
+hide_field: Skjul felt
 hide_field_on_detail: Skjul felt ved detaljert visning
 show_field_on_detail: Vis felt ved detaljert visning
 delete_field: Slett felt
@@ -171,6 +190,9 @@ field_create_success: 'Opprettet felt: "{field}"'
 field_update_success: 'Oppdatert Felt: "{field}"'
 duplicate_where_to: Hvor vil du duplisere dette feltet til?
 language: Språk
+language_placeholder: Velg et språk...
+aggregate_function: Aggregert funksjon
+aggregate_precision: Aggregert presisjon
 global: Globalt
 admins_have_all_permissions: Administratorer har alle rettigheter
 camera: Kamera
@@ -212,6 +234,7 @@ time: Tid
 timestamp: Tidsstempel
 uuid: UUID
 hash: Hash
+geometry.Point: Punkt
 not_available_for_type: Ikke tilgjengelig for denne typen
 create_translations: Lag oversettelser
 auto_refresh: Automatisk oppdatering
@@ -234,6 +257,8 @@ new_collection: 'Ny Kolleksjon'
 choose_a_type: Velg en Type...
 determined_by_relationship: Fastsatt av relasjon
 add_note: Legg til en god beskrivelse til brukerne...
+add_link: Legg til lenke
+custom_link: Egendefinert lenke
 default_value: Standardverdi
 standard_field: Standard felt
 single_file: En fil
@@ -246,6 +271,9 @@ invalid_item: Ugyldig element
 next: Neste
 field_name: Feltnavn
 translations: Oversettelser
+no_translations: Ingen oversettelser
+left_to_right: Venstre mot høyre
+right_to_left: Høyre til Venstre
 note: Notat
 enter_a_value: Legg inn verdi...
 enter_a_placeholder: Legg inn en plassholder...
@@ -260,8 +288,14 @@ foreign_key: Fremmednøkkel
 finish_setup: Fullfør oppsett
 dismiss: Lukk
 raw_value: Rå verdi
+copy_raw_value_success: Kopiert
+paste_raw_value: Lim inn råverdi
+paste_raw_value_success: Limt
 edit_raw_value: Rediger råverdi
 enter_raw_value: Legg inn råverdi...
+clear_value: Tøm innhold
+clear_changes: Fjern endringer
+reset_to_default: Tilbakestill til standard
 notifications: Varsler
 show_all_activity: Vis all aktivitet
 page_not_found: Side ikke funnet
@@ -278,6 +312,7 @@ revision_delta_deleted: Slettet
 revision_delta_reverted: Tilbakestilt
 revision_delta_other: Revisjon
 revision_delta_by: '{date} av {user}'
+download_page_as_csv: 'Last ned side som CSV'
 private_user: Privat bruker
 revision_preview: Revisjon forhåndsvisning
 updates_made: Oppdateringer Laget
@@ -291,6 +326,8 @@ related_collection: Relatert kolleksjon
 related_collections: Relaterte kolleksjoner
 languages_collection: Språkkolleksjon
 label_import: Importer
+label_export: Eksporter
+import_export: Importer / Eksporter
 format: Format
 last_page: Siste side
 last_access: Siste tilgang
@@ -310,10 +347,17 @@ delete_comment: Slett kommentar
 functions:
   year: År
   month: Måned
+  week: Uke
+  day: Dag
+  weekday: Ukedag
+  hour: Time
+  minute: Minutt
+  second: Sekund
   count: Antall
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
+date-fns_time_24hour: 'H:mm:ss'
 date-fns_date_short: 'd MMM, u'
 date-fns_time_short: 'h:mma'
 date-fns_date_short_no_year: d MMM
@@ -344,7 +388,13 @@ file_details: Fil detaljer
 dimensions: Dimensjoner
 size: Størrelse
 created: Opprettet
+modified: Endret
 owner: Eier
+edited_by: Redigert av
+folder: Mappe
+zoom: Zoom
+download: Last ned
+open: Åpen
 background_color: Bakgrunnsfarge
 upload_from_device: Last opp fil fra enhet
 choose_from_library: Velg fil fra bibliotek
@@ -354,6 +404,7 @@ replace_from_library: Erstatt fil fra bibliotek
 replace_from_url: Erstatt fil fra URL
 no_file_selected: Ingen fil valgt
 download_file: Last ned fil
+start_export: Start eksport
 collection_key: Nøkkel Samling
 name: Navn
 primary_key_field: Hovednøkkelfelt (Automatic Translation)
@@ -367,12 +418,14 @@ save_as_copy: Lagre som kopi
 add_existing: Legge til eksisterende
 creating_items: Oppretter elementer
 selecting_items: Velg elementer
+allow_duplicates: Tillat duplikater
 comments: Kommentarer
 select_item: Velg element
 no_items: Ingen elementer
 search_items: Søk etter elementer...
 disabled: Deaktivert
 information: Informasjon
+report_bug: Rapporter feil
 request_feature: Foreslå ny funksjon
 interface_not_found: 'Grensesnitt "{interface}" ble ikke funnet.'
 reset_interface: Tilbakestill grensesnitt
@@ -487,6 +540,7 @@ no_app_access_copy: Denne brukeren har ikke tillatelse til å bruke admin appen.
 password_reset_successful: Passord tilbakestilt
 back: Tilbake
 filter: Filter
+edit_image: Rediger bilde
 editing_image: Redigerer bilde
 square: Firkant
 free: Gratis
@@ -500,6 +554,7 @@ update_collection_success: Oppdatert samling
 delete_collection_success: Slettet samling
 make_collection_visible: Gjør samlingen synlig
 make_collection_hidden: Gjør samlingen skjult
+goto_collection_content: Vis innhold
 start_end_of_count_items: '{start}–{end} av {count} artikler'
 start_end_of_count_filtered_items: '{start}–{end} av {count} filtrerte artikler'
 one_item: '1 element'
@@ -527,6 +582,7 @@ read: Les
 update: Oppdater
 select_fields: Velg felter
 flow_name: Navn
+insights: Nøkkeltall
 wysiwyg_options:
   backcolor: Bakgrunnsfarge
   remove: Fjern
@@ -568,6 +624,7 @@ fields:
     created_on: Opprettet den
     created_by: Opprettet av
     embed: Embed
+    folder: Mappe
     charset: Charset
     duration: Varighet
   directus_users:
@@ -660,6 +717,7 @@ sign_out: Logg ut
 sign_out_confirm: Er du sikker på at du vil logge ut?
 something_went_wrong: Noe gikk galt.
 value: Verdi
+table: Tabell
 interfaces:
   filter:
     name: Filter
@@ -672,6 +730,8 @@ interfaces:
     collection: Kolleksjon
   system-collections:
     collections: Kolleksjoner
+  system-fields:
+    select_a_collection: Velg en Kolleksjon
   system-display-template:
     collection_field_not_setup: Kolleksjonsfeltalternativet er feilkonfigurert
     select_a_collection: Velg en Kolleksjon
@@ -689,6 +749,10 @@ interfaces:
     interface: Grensesnitt
   input-rich-text-md:
     edit: Rediger
+  map:
+    zoom: Zoom
+  system-folder:
+    folder: Mappe
   list:
     sort: Sorter
   tags:
@@ -733,5 +797,9 @@ layouts:
     compact: Kompakt
     cozy: Cozy
 operations:
+  log:
+    message: Melding
+  notification:
+    message: Melding
   request:
     url: URL

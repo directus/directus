@@ -1,0 +1,18 @@
+// Vitest Snapshot v1
+
+exports[`Mount component 1`] = `
+"<div class=\\"v-pagination\\" data-v-278b16a4=\\"\\">
+  <v-button-stub class=\\"previous\\" disabled=\\"false\\" secondary=\\"\\" icon=\\"\\" small=\\"\\" data-v-278b16a4=\\"\\"></v-button-stub>
+  <!--v-if-->
+  <!--v-if-->
+  <v-button-stub class=\\"page\\" secondary=\\"\\" small=\\"\\" disabled=\\"false\\" data-v-278b16a4=\\"\\"></v-button-stub>
+  <v-button-stub class=\\"page\\" secondary=\\"\\" small=\\"\\" disabled=\\"false\\" data-v-278b16a4=\\"\\"></v-button-stub>
+  <v-button-stub class=\\"page\\" secondary=\\"\\" small=\\"\\" disabled=\\"false\\" data-v-278b16a4=\\"\\"></v-button-stub>
+  <v-button-stub class=\\"active page\\" secondary=\\"\\" small=\\"\\" disabled=\\"false\\" data-v-278b16a4=\\"\\"></v-button-stub>
+  <v-button-stub class=\\"page\\" secondary=\\"\\" small=\\"\\" disabled=\\"false\\" data-v-278b16a4=\\"\\"></v-button-stub>
+  <v-button-stub class=\\"page\\" secondary=\\"\\" small=\\"\\" disabled=\\"false\\" data-v-278b16a4=\\"\\"></v-button-stub>
+  <!--v-if-->
+  <!--v-if-->
+  <v-button-stub class=\\"next\\" disabled=\\"false\\" secondary=\\"\\" icon=\\"\\" small=\\"\\" data-v-278b16a4=\\"\\"></v-button-stub>
+</div>"
+`;

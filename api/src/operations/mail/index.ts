@@ -6,24 +6,25 @@ type Options = {
 	body: string;
 	template: boolean;
 	to: string;
+	type: 'wysiwyg' | 'markdown';
 	subject: string;
 };
 
 export default defineOperationApi<Options>({
 	id: 'mail',
+	handler: async ({ body, template, type, to, subject }, { accountability, database, getSchema }) => {
 
-	handler: async ({ body, template, to, subject }, { accountability, database, getSchema }) => {
 		const mailService = new MailService({ schema: await getSchema({ database }), accountability, knex: database });
 		const formated_body = template
 			? {
 					template: {
 						name: 'base',
 						data: {
-							html: body ? md(body) : '',
+							html: type === 'wysiwyg' ? body : md(body)
 						},
 					},
 			  }
-			: { html: md(body) };
+			: { html:type === 'wysiwyg' ? body : md(body) };
 		await mailService.send({
 			...formated_body,
 			to,

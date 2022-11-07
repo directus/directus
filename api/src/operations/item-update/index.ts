@@ -22,13 +22,12 @@ export default defineOperationApi<Options>({
 		{ accountability, database, getSchema }
 	) => {
 		const schema = await getSchema({ database });
-
 		let customAccountability: Accountability | null;
 
 		if (!permissions || permissions === '$trigger') {
 			customAccountability = accountability;
 		} else if (permissions === '$full') {
-			customAccountability = null;
+			customAccountability = await getAccountabilityForRole('system', { database, schema, accountability });
 		} else if (permissions === '$public') {
 			customAccountability = await getAccountabilityForRole(null, { database, schema, accountability });
 		} else {
@@ -53,14 +52,14 @@ export default defineOperationApi<Options>({
 		let result: PrimaryKey | PrimaryKey[] | null;
 
 		if (!key || (Array.isArray(key) && key.length === 0)) {
-			result = await itemsService.updateByQuery(sanitizedQueryObject, payloadObject, { emitEvents });
+			result = await itemsService.updateByQuery(sanitizedQueryObject, payloadObject, { emitEvents: !!emitEvents });
 		} else {
 			const keys = toArray(key);
 
 			if (keys.length === 1) {
-				result = await itemsService.updateOne(keys[0], payloadObject, { emitEvents });
+				result = await itemsService.updateOne(keys[0], payloadObject, { emitEvents: !!emitEvents });
 			} else {
-				result = await itemsService.updateMany(keys, payloadObject, { emitEvents });
+				result = await itemsService.updateMany(keys, payloadObject, { emitEvents: !!emitEvents });
 			}
 		}
 

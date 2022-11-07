@@ -22,13 +22,13 @@ jobs:
         language:
           - javascript
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v3
 
       - name: Prepare
         uses: ./.github/actions/prepare
         with:
-          build: 'false'
+          build: false
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v2
@@ -37,3 +37,18 @@ jobs:
 
       - name: Perform CodeQL analysis
         uses: github/codeql-action/analyze@v2
+        with:
+          upload: false
+          output: sarif-results
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: sarif-results
+          path: sarif-results
+          retention-days: 1
+
+      - name: Upload SARIF
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: sarif-results/javascript.sarif

@@ -14,7 +14,7 @@
 					<div class="preview">
 						<template v-if="inter.preview">
 							<!-- eslint-disable-next-line vue/no-v-html -->
-							<span v-if="isSVG(inter.preview)" v-html="inter.preview" />
+							<span v-if="isSVG(inter.preview)" class="svg" v-html="inter.preview" />
 							<img v-else :src="inter.preview" alt="" />
 						</template>
 
@@ -55,10 +55,14 @@ export default defineComponent({
 			type: Object as PropType<Collection>,
 			required: true,
 		},
+		search: {
+			type: String,
+			required: true,
+		},
 	},
 	emits: ['save', 'toggleAdvanced'],
 	setup(props) {
-		const { collection } = toRefs(props);
+		const { collection, search } = toRefs(props);
 
 		const { t } = useI18n();
 
@@ -74,38 +78,53 @@ export default defineComponent({
 			);
 		});
 
-		const groups = computed(() => [
-			{
-				key: 'standard',
-				name: t('interface_group_text_and_numbers'),
-				interfaces: interfacesSorted.value.filter((inter) => inter.group === 'standard'),
-			},
-			{
-				key: 'selection',
-				name: t('interface_group_selection'),
-				interfaces: interfacesSorted.value.filter((inter) => inter.group === 'selection'),
-			},
-			{
-				key: 'relational',
-				name: t('interface_group_relational'),
-				interfaces: interfacesSorted.value.filter((inter) => inter.group === 'relational'),
-			},
-			{
-				key: 'presentation',
-				name: t('interface_group_presentation'),
-				interfaces: interfacesSorted.value.filter((inter) => inter.group === 'presentation'),
-			},
-			{
-				key: 'group',
-				name: t('interface_group_groups'),
-				interfaces: interfacesSorted.value.filter((inter) => inter.group === 'group'),
-			},
-			{
-				key: 'other',
-				name: t('interface_group_other'),
-				interfaces: interfacesSorted.value.filter((inter) => inter.group === 'other'),
-			},
-		]);
+		const groups = computed(() => {
+			const groupsWithInterfaces = [
+				{
+					key: 'standard',
+					name: t('interface_group_text_and_numbers'),
+					interfaces: filterInterfacesByGroup('standard'),
+				},
+				{
+					key: 'selection',
+					name: t('interface_group_selection'),
+					interfaces: filterInterfacesByGroup('selection'),
+				},
+				{
+					key: 'relational',
+					name: t('interface_group_relational'),
+					interfaces: filterInterfacesByGroup('relational'),
+				},
+				{
+					key: 'presentation',
+					name: t('interface_group_presentation'),
+					interfaces: filterInterfacesByGroup('presentation'),
+				},
+				{
+					key: 'group',
+					name: t('interface_group_groups'),
+					interfaces: filterInterfacesByGroup('group'),
+				},
+				{
+					key: 'other',
+					name: t('interface_group_other'),
+					interfaces: filterInterfacesByGroup('other'),
+				},
+			];
+
+			if (!search.value) return groupsWithInterfaces;
+
+			return groupsWithInterfaces.filter((group) => group.interfaces.length > 0);
+
+			function filterInterfacesByGroup(group: string) {
+				const filteredInterfaces = interfacesSorted.value.filter((inter) => inter.group === group);
+				if (!search.value) return filteredInterfaces;
+				const searchValue = search.value!.toLowerCase();
+				return filteredInterfaces.filter(
+					(inter) => inter.id.toLowerCase().includes(searchValue) || inter.name.toLowerCase().includes(searchValue)
+				);
+			}
+		});
 
 		const chosenInterface = syncFieldDetailStoreProperty('field.meta.interface');
 
@@ -222,7 +241,7 @@ export default defineComponent({
 	object-fit: cover;
 }
 
-.preview span {
+.preview .svg {
 	display: contents;
 }
 

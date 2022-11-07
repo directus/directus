@@ -1,0 +1,10 @@
+// Vitest Snapshot v1
+
+exports[`Mount component 1`] = `
+"<div class=\\"v-workspace\\" style=\\"width: 480px; height: 280px;\\" data-v-c965220a=\\"\\">
+  <div class=\\"workspace\\" style=\\"transform: scale(1); width: 480px; height: 280px;\\" data-v-c965220a=\\"\\">
+    <v-workspace-tile-stub id=\\"1\\" x=\\"1\\" y=\\"1\\" width=\\"10\\" height=\\"10\\" name=\\"My Tile 1\\" edit-mode=\\"false\\" resizable=\\"true\\" data-v-c965220a=\\"\\"></v-workspace-tile-stub>
+    <v-workspace-tile-stub id=\\"2\\" x=\\"15\\" y=\\"5\\" width=\\"10\\" height=\\"10\\" name=\\"My Tile 2\\" edit-mode=\\"false\\" resizable=\\"true\\" data-v-c965220a=\\"\\"></v-workspace-tile-stub>
+  </div>
+</div>"
+`;

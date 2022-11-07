@@ -4,39 +4,33 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent, toRefs } from 'vue';
-import { useGroupable } from '@/composables/use-groupable';
+<script setup lang="ts">
+import { toRefs } from 'vue';
+import { useGroupable } from '@directus/shared/composables';
 
-export default defineComponent({
-	props: {
-		value: {
-			type: String,
-			default: null,
-		},
-		scope: {
-			type: String,
-			default: 'item-group',
-		},
-		active: {
-			type: Boolean,
-			default: undefined,
-		},
-		watch: {
-			type: Boolean,
-			default: true,
-		},
-	},
-	setup(props) {
-		const { active } = toRefs(props);
-		const { active: isActive, toggle } = useGroupable({
-			value: props.value,
-			group: props.scope,
-			watch: props.watch,
-			active,
-		});
+interface Props {
+	/** Which value to represent when active */
+	value?: string | number;
+	/** Only matches to a group when both scopes are the same */
+	scope?: string;
+	/** If the item is currently activated */
+	active?: boolean;
+	/** If the active state should update after initially set */
+	watch?: boolean;
+}
 
-		return { isActive, toggle };
-	},
+const props = withDefaults(defineProps<Props>(), {
+	value: undefined,
+	scope: 'item-group',
+	active: undefined,
+	watch: true,
+});
+
+const { active } = toRefs(props);
+const { active: isActive, toggle } = useGroupable({
+	value: props.value,
+	group: props.scope,
+	watch: props.watch,
+	active,
 });
 </script>

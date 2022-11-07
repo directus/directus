@@ -247,6 +247,8 @@ export class FieldsService {
 			throw new ForbiddenException();
 		}
 
+		const runPostColumnChange = await this.helpers.schema.preColumnChange();
+
 		try {
 			const exists =
 				field.field in this.schema.collections[collection].fields ||
@@ -321,6 +323,10 @@ export class FieldsService {
 				);
 			});
 		} finally {
+			if (runPostColumnChange) {
+				await this.helpers.schema.postColumnChange();
+			}
+
 			if (this.cache && env.CACHE_AUTO_PURGE) {
 				await this.cache.clear();
 			}
@@ -333,6 +339,8 @@ export class FieldsService {
 		if (this.accountability && this.accountability.admin !== true) {
 			throw new ForbiddenException();
 		}
+
+		const runPostColumnChange = await this.helpers.schema.preColumnChange();
 
 		try {
 			const hookAdjustedField = await emitter.emitFilter(
@@ -352,6 +360,15 @@ export class FieldsService {
 			const record = field.meta
 				? await this.knex.select('id').from('directus_fields').where({ collection, field: field.field }).first()
 				: null;
+
+			if (
+				(hookAdjustedField.type === 'alias' ||
+					this.schema.collections[collection].fields[field.field]?.type === 'alias') &&
+				hookAdjustedField.type &&
+				hookAdjustedField.type !== this.schema.collections[collection].fields[field.field]?.type
+			) {
+				throw new InvalidPayloadException('Alias type cannot be changed');
+			}
 
 			if (hookAdjustedField.schema) {
 				const existingColumn = await this.schemaInspector.columnInfo(collection, hookAdjustedField.field);
@@ -407,6 +424,10 @@ export class FieldsService {
 
 			return field.field;
 		} finally {
+			if (runPostColumnChange) {
+				await this.helpers.schema.postColumnChange();
+			}
+
 			if (this.cache && env.CACHE_AUTO_PURGE) {
 				await this.cache.clear();
 			}
@@ -420,7 +441,7 @@ export class FieldsService {
 			throw new ForbiddenException();
 		}
 
-		const runPostColumnDelete = await this.helpers.schema.preColumnDelete();
+		const runPostColumnChange = await this.helpers.schema.preColumnChange();
 
 		try {
 			await emitter.emitFilter(
@@ -463,7 +484,12 @@ export class FieldsService {
 					if (isM2O) {
 						await relationsService.deleteOne(collection, field);
 
-						if (relation.related_collection && relation.meta?.one_field) {
+						if (
+							relation.related_collection &&
+							relation.meta?.one_field &&
+							relation.related_collection !== collection &&
+							relation.meta.one_field !== field
+						) {
 							await fieldsService.deleteField(relation.related_collection, relation.meta.one_field);
 						}
 					}
@@ -537,8 +563,8 @@ export class FieldsService {
 				}
 			);
 		} finally {
-			if (runPostColumnDelete) {
-				await this.helpers.schema.postColumnDelete();
+			if (runPostColumnChange) {
+				await this.helpers.schema.postColumnChange();
 			}
 
 			if (this.cache && env.CACHE_AUTO_PURGE) {

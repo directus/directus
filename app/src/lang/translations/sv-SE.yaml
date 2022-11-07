@@ -611,6 +611,8 @@ start_end_of_count_items: '{start}-{end} av {count} objekt'
 start_end_of_count_filtered_items: '{start}-{end} av {count} filtrerade objekt'
 one_item: '1 objekt'
 one_filtered_item: '1 filtrerat objekt'
+delete_collection_are_you_sure: >-
+  Är du säker på att du vill ta bort denna kollektion? Detta kommer att ta bort kollektionen och alla objekt i den. Denna åtgärd är permanent.
 collections_shown: Visade kollektioner
 visible_collections: Synliga kollektioner
 hidden_collections: Dolda kollektioner
@@ -721,10 +723,14 @@ toggle: Växla
 icon_on: Ikon på
 icon_off: Ikon Av
 label: Etikett
+run_flow_on_current: Kör flöde på aktuellt objekt
+run_flow_on_current_edited_confirm: Detta objekt kan uppdateras av detta flöde, är du säker på att du vill köra det?
+run_flow_success: Flödet "{flow}" kördes framgångsrikt
 trigger: Utlösare
 flow_name: Namn
 flow_tracking_activity: Spåra endast aktivitet
 flow_tracking_null: Spåra ingenting
+code: Kod
 insights: Insikter
 dashboard: Kontrollpanel
 panel: Panel
@@ -1226,6 +1232,8 @@ value: Värde
 view_project: Visa projekt
 report_error: Rapportera fel
 start: Starta
+table: Tabell
+list: Lista
 interfaces:
   filter:
     name: Filtrera
@@ -1297,6 +1305,8 @@ interfaces:
     include_seconds: Inkludera sekunder
     set_to_now: Ställ in till nu
     use_24: Använd 24-timmars format
+  system-fields:
+    select_a_collection: Välj en kollektion
   system-display-template:
     display-template: Visningsmall
     description: Blanda statisk text och dynamiska fältvärden
@@ -1606,6 +1616,8 @@ layouts:
     basemap: Basemap
     layers: Lager
     find_location: Hitta plats...
+  kanban:
+    crop: Beskär
 panels:
   metric:
     name: Metrisk
