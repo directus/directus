@@ -7,23 +7,13 @@ import { JsonHelper } from '../types';
  * The default handler only passes the data to the Knex jsonExtract function
  */
 export class JsonHelperDefault extends JsonHelper {
-	applyFields(dbQuery: Knex.QueryBuilder, table: string): Knex.QueryBuilder {
+	preProcess(dbQuery: Knex.QueryBuilder, table: string): Knex.QueryBuilder {
 		if (this.nodes.length === 0) return dbQuery;
 		return dbQuery.select(
 			this.nodes.map((node) => {
 				return this.knex.raw(this.knex.jsonExtract(`${table}.${node.name}`, node.jsonPath, node.fieldKey, false));
 			})
 		);
-	}
-	applyJoins(dbQuery: Knex.QueryBuilder): Knex.QueryBuilder {
-		if (this.nodes.length === 0) return dbQuery;
-		// empty stub
-		return dbQuery;
-	}
-	applyQuery(dbQuery: Knex.QueryBuilder): Knex.QueryBuilder {
-		if (this.nodes.length === 0) return dbQuery;
-		// empty stub
-		return dbQuery;
 	}
 	postProcess(items: Item[]): void {
 		if (this.nodes.length === 0) return;

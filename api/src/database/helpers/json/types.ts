@@ -10,8 +10,6 @@ export abstract class JsonHelper extends DatabaseHelper {
 		this.nodes = nodes;
 	}
 
-	abstract applyFields(dbQuery: Knex.QueryBuilder, table: string): Knex.QueryBuilder;
-	abstract applyJoins(dbQuery: Knex.QueryBuilder): Knex.QueryBuilder;
-	abstract applyQuery(dbQuery: Knex.QueryBuilder): Knex.QueryBuilder;
+	abstract preProcess(dbQuery: Knex.QueryBuilder, table: string): Knex.QueryBuilder;
 	abstract postProcess(items: Item[]): void;
 }

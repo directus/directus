@@ -252,15 +252,13 @@ function getDBQuery(
 	)[];
 
 	let dbQuery = knex.select(regularNodes.map(preProcess));
-	dbQuery = jsonHelper.applyFields(dbQuery, table);
+	dbQuery = jsonHelper.preProcess(dbQuery, table);
 	dbQuery = dbQuery.from(table);
-	dbQuery = jsonHelper.applyJoins(dbQuery);
 
 	const queryCopy = clone(query);
 	queryCopy.limit = typeof queryCopy.limit === 'number' ? queryCopy.limit : 100;
 
 	dbQuery = applyQuery(knex, table, dbQuery, queryCopy, schema, false, jsonNodes);
-	dbQuery = jsonHelper.applyQuery(dbQuery);
 
 	return dbQuery;
 }

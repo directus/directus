@@ -2,7 +2,7 @@ import { Knex } from 'knex';
 import { JsonHelperDefault } from './default';
 
 export class JsonHelperPostgres extends JsonHelperDefault {
-	applyFields(dbQuery: Knex.QueryBuilder, table: string): Knex.QueryBuilder {
+	preProcess(dbQuery: Knex.QueryBuilder, table: string): Knex.QueryBuilder {
 		if (this.nodes.length === 0) return dbQuery;
 		return dbQuery.select(
 			this.nodes.map((node) => {

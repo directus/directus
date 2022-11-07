@@ -32,7 +32,7 @@ join xyz ON xyz.id = jason.id;
  */
 
 export class JsonHelperSQLite extends JsonHelperDefault {
-	applyFields(dbQuery: Knex.QueryBuilder, table: string): Knex.QueryBuilder {
+	preProcess(dbQuery: Knex.QueryBuilder, table: string): Knex.QueryBuilder {
 		if (this.nodes.length === 0) return dbQuery;
 		const selectQueries = this.nodes.filter(
 			({ jsonPath, query }) => jsonPath.indexOf('[*]') === -1 && Object.keys(query).length === 0
