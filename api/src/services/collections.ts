@@ -172,7 +172,7 @@ export class CollectionsService {
 				await clearSystemCache();
 			}
 
-			if (opts?.emitEvents !== false) {
+			if (opts?.emitEvents !== false && nestedActionEvents.length > 0) {
 				const updatedSchema = await getSchema({ accountability: this.accountability || undefined });
 
 				for (const nestedActionEvent of nestedActionEvents) {
@@ -221,7 +221,7 @@ export class CollectionsService {
 				await clearSystemCache();
 			}
 
-			if (opts?.emitEvents !== false) {
+			if (opts?.emitEvents !== false && nestedActionEvents.length > 0) {
 				const updatedSchema = await getSchema({ accountability: this.accountability || undefined });
 
 				for (const nestedActionEvent of nestedActionEvents) {
@@ -404,7 +404,7 @@ export class CollectionsService {
 				await clearSystemCache();
 			}
 
-			if (opts?.emitEvents !== false) {
+			if (opts?.emitEvents !== false && nestedActionEvents.length > 0) {
 				const updatedSchema = await getSchema({ accountability: this.accountability || undefined });
 
 				for (const nestedActionEvent of nestedActionEvents) {
@@ -460,7 +460,7 @@ export class CollectionsService {
 				await clearSystemCache();
 			}
 
-			if (opts?.emitEvents !== false) {
+			if (opts?.emitEvents !== false && nestedActionEvents.length > 0) {
 				const updatedSchema = await getSchema({ accountability: this.accountability || undefined });
 
 				for (const nestedActionEvent of nestedActionEvents) {
@@ -510,7 +510,7 @@ export class CollectionsService {
 				await clearSystemCache();
 			}
 
-			if (opts?.emitEvents !== false) {
+			if (opts?.emitEvents !== false && nestedActionEvents.length > 0) {
 				const updatedSchema = await getSchema({ accountability: this.accountability || undefined });
 
 				for (const nestedActionEvent of nestedActionEvents) {
@@ -635,7 +635,7 @@ export class CollectionsService {
 				await clearSystemCache();
 			}
 
-			if (opts?.emitEvents !== false) {
+			if (opts?.emitEvents !== false && nestedActionEvents.length > 0) {
 				const updatedSchema = await getSchema({ accountability: this.accountability || undefined });
 
 				for (const nestedActionEvent of nestedActionEvents) {
@@ -683,7 +683,7 @@ export class CollectionsService {
 				await clearSystemCache();
 			}
 
-			if (opts?.emitEvents !== false) {
+			if (opts?.emitEvents !== false && nestedActionEvents.length > 0) {
 				const updatedSchema = await getSchema({ accountability: this.accountability || undefined });
 
 				for (const nestedActionEvent of nestedActionEvents) {

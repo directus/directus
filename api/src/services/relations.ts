@@ -399,11 +399,13 @@ export class RelationsService {
 
 			await clearSystemCache();
 
-			const updatedSchema = await getSchema({ accountability: this.accountability || undefined });
+			if (opts?.emitEvents !== false && nestedActionEvents.length > 0) {
+				const updatedSchema = await getSchema({ accountability: this.accountability || undefined });
 
-			for (const nestedActionEvent of nestedActionEvents) {
-				nestedActionEvent.context.schema = updatedSchema;
-				emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
+				for (const nestedActionEvent of nestedActionEvents) {
+					nestedActionEvent.context.schema = updatedSchema;
+					emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
+				}
 			}
 		}
 	}
