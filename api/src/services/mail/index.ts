@@ -46,7 +46,7 @@ export class MailService {
 		}
 	}
 
-	async send(options: EmailOptions): Promise<any> {
+	async send<T>(options: EmailOptions): Promise<T> {
 		const { template, ...emailOptions } = options;
 		let { html } = options;
 
