@@ -1,7 +1,7 @@
-import { ItemsService, NotificationsService } from '.';
+import { NotificationsService, ItemsService } from '.';
 
 jest.mock('../../src/database/index', () => {
-	return { getDatabaseClient: jest.fn().mockReturnValue('postgres') };
+	return { __esModule: true, default: jest.fn(), getDatabaseClient: jest.fn().mockReturnValue('postgres') };
 });
 jest.requireMock('../../src/database/index');
 
