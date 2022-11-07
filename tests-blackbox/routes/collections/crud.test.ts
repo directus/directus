@@ -80,6 +80,7 @@ describe('/collections', () => {
 	describe('POST /', () => {
 		let currentVendor = vendors[0];
 		const TEST_COLLECTION_NAME = 'test_creation';
+		const TEST_FOLDER_NAME = 'test_folder';
 
 		afterEach(async () => {
 			const db = databases.get(currentVendor)!;
@@ -133,20 +134,20 @@ describe('/collections', () => {
 						// Action
 						const response = await request(getUrl(vendor))
 							.post('/collections')
-							.send({ collection: TEST_COLLECTION_NAME, meta: {}, schema: null })
+							.send({ collection: TEST_FOLDER_NAME, meta: {}, schema: null })
 							.set('Authorization', `Bearer ${common.USER[userKey].TOKEN}`);
 
 						// Assert
 						if (userKey === common.USER.ADMIN.KEY) {
 							expect(response.statusCode).toBe(200);
 							expect(response.body.data).toEqual({
-								collection: TEST_COLLECTION_NAME,
+								collection: TEST_FOLDER_NAME,
 								meta: expect.objectContaining({
-									collection: TEST_COLLECTION_NAME,
+									collection: TEST_FOLDER_NAME,
 								}),
 								schema: null,
 							});
-							expect(await db.schema.hasTable(TEST_COLLECTION_NAME)).toBe(false);
+							expect(await db.schema.hasTable(TEST_FOLDER_NAME)).toBe(false);
 						} else {
 							expect(response.statusCode).toBe(403);
 						}
@@ -226,6 +227,7 @@ describe('/collections', () => {
 	describe('DELETE /', () => {
 		let currentVendor = vendors[0];
 		const TEST_COLLECTION_NAME = 'test_creation';
+		const TEST_FOLDER_NAME = 'test_folder';
 
 		afterEach(async () => {
 			const db = databases.get(currentVendor)!;
@@ -278,27 +280,23 @@ describe('/collections', () => {
 
 						await request(getUrl(vendor))
 							.post('/collections')
-							.send({ collection: TEST_COLLECTION_NAME, meta: {}, schema: null })
+							.send({ collection: TEST_FOLDER_NAME, meta: {}, schema: null })
 							.set('Authorization', `Bearer ${common.USER[userKey].TOKEN}`);
 
 						if (userKey === common.USER.ADMIN.KEY) {
-							expect(
-								await db('directus_collections').select().where({ collection: TEST_COLLECTION_NAME })
-							).toHaveLength(1);
+							expect(await db('directus_collections').select().where({ collection: TEST_FOLDER_NAME })).toHaveLength(1);
 						}
 
 						// Action
 						const response = await request(getUrl(vendor))
-							.delete('/collections/' + TEST_COLLECTION_NAME)
+							.delete('/collections/' + TEST_FOLDER_NAME)
 							.set('Authorization', `Bearer ${common.USER[userKey].TOKEN}`);
 
 						// Assert
 						if (userKey === common.USER.ADMIN.KEY) {
 							expect(response.statusCode).toBe(204);
 							expect(response.body).toEqual({});
-							expect(
-								await db('directus_collections').select().where({ collection: TEST_COLLECTION_NAME })
-							).toHaveLength(0);
+							expect(await db('directus_collections').select().where({ collection: TEST_FOLDER_NAME })).toHaveLength(0);
 						} else {
 							expect(response.statusCode).toBe(403);
 						}
