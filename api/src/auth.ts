@@ -2,7 +2,8 @@ import getDatabase from './database';
 import env from './env';
 import logger from './logger';
 import { AuthDriver } from './auth/auth';
-import { LocalAuthDriver, OAuth2AuthDriver, OpenIDAuthDriver, LDAPAuthDriver } from './auth/drivers';
+import { LocalAuthDriver, OAuth2AuthDriver, OpenIDAuthDriver, LDAPAuthDriver, SAMLAuthDriver } from './auth/drivers';
+
 import { DEFAULT_AUTH_PROVIDER } from './constants';
 import { InvalidConfigException } from './exceptions';
 import { AuthDriverOptions } from './types';
@@ -79,5 +80,8 @@ function getProviderInstance(
 
 		case 'ldap':
 			return new LDAPAuthDriver(options, config);
+
+		case 'saml':
+			return new SAMLAuthDriver(options, config);
 	}
 }

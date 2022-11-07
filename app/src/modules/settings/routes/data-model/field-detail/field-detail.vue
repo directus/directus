@@ -3,6 +3,7 @@
 		<field-detail-simple
 			v-if="!showAdvanced"
 			:collection="collectionInfo"
+			:search="search"
 			@save="save"
 			@toggle-advanced="simple = false"
 		/>
@@ -13,6 +14,24 @@
 
 		<template v-if="showAdvanced" #actions>
 			<field-detail-advanced-actions @save="save" />
+		</template>
+		<template v-else #actions>
+			<v-input
+				v-model="search"
+				class="search"
+				small
+				autofocus
+				type="search"
+				:placeholder="t('search_field')"
+				:full-width="false"
+			>
+				<template #prepend>
+					<v-icon name="search" outline />
+				</template>
+				<template #append>
+					<v-icon v-if="search" clickable class="clear" name="close" @click.stop="search = null" />
+				</template>
+			</v-input>
 		</template>
 
 		<field-detail-advanced v-if="showAdvanced" :collection="collectionInfo" :current-tab="currentTab[0]" @save="save" />
@@ -34,6 +53,7 @@ import { useI18n } from 'vue-i18n';
 import formatTitle from '@directus/format-title';
 import { useDialogRoute } from '@/composables/use-dialog-route';
 import { storeToRefs } from 'pinia';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
 	name: 'FieldDetail',
@@ -54,6 +74,8 @@ export default defineComponent({
 	},
 	setup(props) {
 		const { collection } = toRefs(props);
+
+		const search = ref<string | null>(null);
 
 		const isOpen = useDialogRoute();
 
@@ -95,7 +117,7 @@ export default defineComponent({
 			return editing.value !== '+' || !simple.value;
 		});
 
-		return { simple, cancel, collectionInfo, t, title, save, isOpen, currentTab, showAdvanced };
+		return { search, simple, cancel, collectionInfo, t, title, save, isOpen, currentTab, showAdvanced };
 
 		async function cancel() {
 			await router.push(`/settings/data-model/${props.collection}`);
@@ -103,7 +125,12 @@ export default defineComponent({
 		}
 
 		async function save() {
-			await fieldDetail.save();
+			try {
+				await fieldDetail.save();
+			} catch (err: any) {
+				unexpectedError(err);
+				return;
+			}
 			router.push(`/settings/data-model/${props.collection}`);
 			fieldDetail.$reset();
 		}
@@ -111,8 +138,19 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 :deep(.required-mark) {
 	--v-icon-color: var(--primary);
+}
+
+.v-input.search {
+	--border-radius: calc(44px / 2);
+	width: 200px;
+	margin-left: auto;
+
+	@media (min-width: 600px) {
+		width: 300px;
+		margin-top: 0px;
+	}
 }
 </style>

@@ -4,6 +4,7 @@ import { Collection as CollectionRaw, DeepPartial, Field } from '@directus/share
 import { Collection } from '@/types/collections';
 import { getCollectionType } from '@directus/shared/utils';
 import { notify } from '@/utils/notify';
+import { getLiteralInterpolatedTranslation } from '@/utils/get-literal-interpolated-translation';
 import { unexpectedError } from '@/utils/unexpected-error';
 import formatTitle from '@directus/format-title';
 import { defineStore } from 'pinia';
@@ -52,28 +53,43 @@ export const useCollectionsStore = defineStore({
 			let name = formatTitle(collection.collection);
 			const type = getCollectionType(collection);
 
-			if (collection.meta && !isNil(collection.meta.translations)) {
+			const localesToKeep =
+				collection.meta && !isNil(collection.meta.translations) && Array.isArray(collection.meta.translations)
+					? collection.meta.translations.map((translation) => translation.language)
+					: [];
+
+			for (const locale of i18n.global.availableLocales) {
+				if (i18n.global.te(`collection_names.${collection.collection}`, locale) && !localesToKeep.includes(locale)) {
+					i18n.global.mergeLocaleMessage(locale, { collection_names: { [collection.collection]: undefined } });
+				}
+			}
+
+			if (collection.meta && !isNil(collection.meta.translations) && Array.isArray(collection.meta.translations)) {
 				for (let i = 0; i < collection.meta.translations.length; i++) {
 					const { language, translation, singular, plural } = collection.meta.translations[i];
 
-					const literalInterpolatedTranslation = translation ? translation.replace(/([{}@$|])/g, "{'$1'}") : null;
-
 					i18n.global.mergeLocaleMessage(language, {
-						...(literalInterpolatedTranslation && {
-							collection_names: {
-								[collection.collection]: literalInterpolatedTranslation,
-							},
-						}),
-						...(singular && {
-							collection_names_singular: {
-								[collection.collection]: singular,
-							},
-						}),
-						...(plural && {
-							collection_names_plural: {
-								[collection.collection]: plural,
-							},
-						}),
+						...(translation
+							? {
+									collection_names: {
+										[collection.collection]: getLiteralInterpolatedTranslation(translation),
+									},
+							  }
+							: {}),
+						...(singular
+							? {
+									collection_names_singular: {
+										[collection.collection]: getLiteralInterpolatedTranslation(singular),
+									},
+							  }
+							: {}),
+						...(plural
+							? {
+									collection_names_plural: {
+										[collection.collection]: getLiteralInterpolatedTranslation(plural),
+									},
+							  }
+							: {}),
 					});
 				}
 			}

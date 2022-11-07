@@ -14,6 +14,7 @@ import { Accountability, FieldMeta, RawField, SchemaOverview } from '@directus/s
 import { Table } from 'knex-schema-inspector/dist/types/table';
 import { addFieldFlag } from '@directus/shared/utils';
 import { getHelpers, Helpers } from '../database/helpers';
+import { omit } from 'lodash';
 import { getSchema } from '../utils/get-schema';
 import emitter from '../emitter';
 
@@ -167,7 +168,9 @@ export class CollectionsService {
 				await this.cache.clear();
 			}
 
-			await clearSystemCache();
+			if (opts?.autoPurgeSystemCache !== false) {
+				await clearSystemCache();
+			}
 
 			const updatedSchema = await getSchema({ accountability: this.accountability || undefined });
 
@@ -197,6 +200,7 @@ export class CollectionsService {
 				for (const payload of payloads) {
 					const name = await service.createOne(payload, {
 						autoPurgeCache: false,
+						autoPurgeSystemCache: false,
 						bypassEmitAction: (params) => nestedActionEvents.push(params),
 					});
 					collectionNames.push(name);
@@ -390,7 +394,9 @@ export class CollectionsService {
 				await this.cache.clear();
 			}
 
-			await clearSystemCache();
+			if (opts?.autoPurgeSystemCache !== false) {
+				await clearSystemCache();
+			}
 
 			const updatedSchema = await getSchema({ accountability: this.accountability || undefined });
 
@@ -399,6 +405,50 @@ export class CollectionsService {
 				emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
 			}
 		}
+	}
+
+	/**
+	 * Update multiple collections in a single transaction
+	 */
+	async updateBatch(data: Partial<Collection>[], opts?: MutationOptions): Promise<string[]> {
+		if (this.accountability && this.accountability.admin !== true) {
+			throw new ForbiddenException();
+		}
+
+		if (!Array.isArray(data)) {
+			throw new InvalidPayloadException('Input should be an array of collection changes.');
+		}
+
+		const collectionKey = 'collection';
+		const collectionKeys: string[] = [];
+
+		try {
+			await this.knex.transaction(async (trx) => {
+				const collectionItemsService = new CollectionsService({
+					knex: trx,
+					accountability: this.accountability,
+					schema: this.schema,
+				});
+
+				for (const payload of data) {
+					if (!payload[collectionKey]) throw new InvalidPayloadException(`Collection in update misses collection key.`);
+
+					await collectionItemsService.updateOne(payload[collectionKey], omit(payload, collectionKey), {
+						autoPurgeCache: false,
+						autoPurgeSystemCache: false,
+					});
+					collectionKeys.push(payload[collectionKey]);
+				}
+			});
+		} finally {
+			if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
+				await this.cache.clear();
+			}
+
+			await clearSystemCache();
+		}
+
+		return collectionKeys;
 	}
 
 	/**
@@ -422,6 +472,7 @@ export class CollectionsService {
 				for (const collectionKey of collectionKeys) {
 					await service.updateOne(collectionKey, data, {
 						autoPurgeCache: false,
+						autoPurgeSystemCache: false,
 						bypassEmitAction: (params) => nestedActionEvents.push(params),
 					});
 				}
@@ -554,7 +605,9 @@ export class CollectionsService {
 				await this.cache.clear();
 			}
 
-			await clearSystemCache();
+			if (opts?.autoPurgeSystemCache !== false) {
+				await clearSystemCache();
+			}
 
 			const updatedSchema = await getSchema({ accountability: this.accountability || undefined });
 
@@ -586,6 +639,7 @@ export class CollectionsService {
 				for (const collectionKey of collectionKeys) {
 					await service.deleteOne(collectionKey, {
 						autoPurgeCache: false,
+						autoPurgeSystemCache: false,
 						bypassEmitAction: (params) => nestedActionEvents.push(params),
 					});
 				}

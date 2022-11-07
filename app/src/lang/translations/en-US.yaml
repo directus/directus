@@ -281,6 +281,7 @@ fields_group: Fields Group
 no_collections_found: No collections found.
 new_data_alert: 'The following will be created within your Data Model:'
 search_collection: Search Collection...
+search_field: Search Field...
 new_field: 'New Field'
 new_collection: 'New Collection'
 add_m2o_to_collection: 'Add M2O to "{collection}"'
@@ -761,6 +762,8 @@ add_file: Add File
 replace_file: Replace File
 no_results: No Results
 no_results_copy: Adjust or clear search filters to see results.
+no_visible_fields: Empty Form
+no_visible_fields_copy: This form has no visible fields.
 clear_filters: Clear Filters
 saves_automatically: Saves Automatically
 role: Role
@@ -790,9 +793,10 @@ label: Label
 flows: Flows
 flow: Flow
 select_a_flow: Select a Flow
+run_flow_on_current_collection: Run flow on Current Collection
 run_flow_on_current: Run flow on Current Item
 run_flow_on_current_edited_confirm: This item may be updated by this flow, are you sure you want to execute it?
-run_flow_on_selected: No Items Selected | Run flow on 1 Selected Item | Run flow on {n} Selected Items
+run_flow_on_selected: Select One or More Items First | Run flow on 1 Selected Item | Run flow on {n} Selected Items
 run_flow_success: Flow "{flow}" ran successfully
 trigger: Trigger
 trigger_options: Trigger Options
@@ -836,6 +840,7 @@ panel_header: Panel Header
 panel_name_placeholder: Name this panel...
 panel_note_placeholder: Optional details about this panel...
 panel_delete_confirm: Are you sure you want to delete this panel? This action can not be undone.
+list_panel_allow_edit: Allow Inline Editing
 dashboard_delete_confirm: Are you sure you want to delete this dashboard? This action can not be undone.
 edit_dashboard: Edit Dashboard
 delete_dashboard: Delete Dashboard
@@ -1929,33 +1934,33 @@ layouts:
     default_template: Using Collection Default...
     no_compatible_fields: No compatible fields
   kanban:
-    name: Kanban,
-    group_field: Group By,
-    group_field_placeholder: Field to group by...,
-    group_title: Group Title,
-    group_title_placeholder: Field for group titles...,
-    title: Card Title,
-    title_placeholder: Optional title field...,
-    text: Card Text,
-    text_placeholder: Optional text field...,
-    date: Card Date,
-    date_placeholder: Optional date field...,
-    tags: Card Tags,
-    tags_placeholder: Optional tags field...,
-    user: Card User,
-    user_placeholder: Optional user field...,
-    image: Card Image,
-    image_placeholder: Optional image field...,
-    image_fit: Card Image Fit,
-    crop: Crop,
-    advanced: Advanced,
-    edit_group: Edit Group,
-    delete_group: Delete Group,
-    add_group: Add Group,
-    add_group_placeholder: Enter a new group title...,
-    show_ungrouped: Show Ungrouped,
-    show: Show,
-    no_group: No Group,
+    name: Kanban
+    group_field: Group By
+    group_field_placeholder: Field to group by...
+    group_title: Group Title
+    group_title_placeholder: Field for group titles...
+    title: Card Title
+    title_placeholder: Optional title field...
+    text: Card Text
+    text_placeholder: Optional text field...
+    date: Card Date
+    date_placeholder: Optional date field...
+    tags: Card Tags
+    tags_placeholder: Optional tags field...
+    user: Card User
+    user_placeholder: Optional user field...
+    image: Card Image
+    image_placeholder: Optional image field...
+    image_fit: Card Image Fit
+    crop: Crop
+    advanced: Advanced
+    edit_group: Edit Group
+    delete_group: Delete Group
+    add_group: Add Group
+    add_group_placeholder: Enter a new group title...
+    show_ungrouped: Show Ungrouped
+    show: Show
+    no_group: No Group
     not_all_loaded: Could only load the first 1000 items.
 
 panels:
@@ -1998,7 +2003,7 @@ panels:
     y_axis_conditional_two: must be a number.
   linechart:
     name: Line Chart
-    description: Line chart for comparing change of a field.
+    description: Line chart for comparing change of a field
     select_field: You must select a field.
     select_collection: You must select a collection.
     select_x_axis: You must select an X-Axis.
@@ -2010,17 +2015,19 @@ panels:
     datasets: Datasets
     show_legend: Show Legend
     show_marker: Show Tooltip Marker
-    include_dataset: You must include atleast one dataset.
+    include_dataset: You must include at least one dataset.
     include_y_axis: You must include a Y-Axis for each dataset when no group is specified.
     group_and_function: You must include or omit both a group and a function.
-    smooth: 'Smooth'
-    straight: 'Straight'
-    step_line: 'Step Line'
+    smooth: Smooth
+    straight: Straight
+    step_line: Step Line
   meter:
-    description: Meter for tracking values
     name: Meter
-    arc: Arc
+    description: Meter for tracking values
+    half_circle: Half Circle
+    full_circle: Full Circle
     stroke_width: Stroke Width
+    rounded_stroke: Rounded Stroke
     select_max_value: You must select a maximum value.
     max_greater_than_zero: The maximum must be greater than 0.
     select_field: You must select a field.
@@ -2031,11 +2038,11 @@ panels:
     broad: Broad
   piechart:
     name: Pie or Donut Chart
-    description: Circular chart showing the ratios of groups on a column.
-    function: 'Function'
+    description: Circular chart showing the ratios of groups on a column
+    function: Function
     donut: Donut
-    labels: Show Labels
-    legend: Show Legend
+    show_labels: Show Labels
+    show_legend: Show Legend
     right: Right
     bottom: Bottom
     monochrome: Monochrome
@@ -2079,7 +2086,9 @@ triggers:
     collection_and_item: Collection & Item Pages
     collection_only: Collection Page Only
     item_only: Item Page Only
-a_flow_uuid: A Flow's Primary Key UUID...
+    collection_page: Collection Page
+    require_selection: Requires Selection
+a_flow_uuid: Select a Flow to trigger...
 any_string_or_json: Any string or JSON...
 item_payload_placeholder: This is the JSON used to update the item's field values...
 operation_variables_note: You can access flow data with variables such as **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** and **{'{'}{'{'}$accountability{'}'}{'}'}**, or reference previous operations using **{'{'}{'{'}operation_key{'}'}{'}'}**.'
