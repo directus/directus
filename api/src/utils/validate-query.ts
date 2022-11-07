@@ -46,7 +46,7 @@ function validateFilter(filter: Query['filter'], isNested = false) {
 	if (!filter) throw new InvalidQueryException('Invalid filter object');
 	for (const [key, nested] of Object.entries(filter)) {
 		if (key === '_some' || key === '_none') {
-			if (isNested) throw new InvalidQueryException('Invalid filter object');
+			if (isNested) throw new InvalidQueryException('Invalid nesting filter. Use _and or _or instead');
 		}
 		if (key === '_and' || key === '_or') {
 			nested.forEach(validateFilter, true);
