@@ -122,6 +122,7 @@ importers:
       '@types/uuid': 8.3.4
       '@types/uuid-validate': 0.0.1
       '@types/wellknown': 0.5.3
+      '@vitest/coverage-c8': ^0.25.0
       argon2: 0.30.1
       async: 3.2.4
       async-mutex: 0.4.0
@@ -357,6 +358,7 @@ importers:
       '@types/uuid': 8.3.4
       '@types/uuid-validate': 0.0.1
       '@types/wellknown': 0.5.3
+      '@vitest/coverage-c8': 0.25.0
       copyfiles: 2.4.1
       cross-env: 7.0.3
       form-data: 4.0.0
@@ -8256,6 +8258,25 @@ packages:
     dependencies:
       vite: 3.1.8_sass@1.55.0
       vue: 3.2.41
+    dev: true
+
+  /@vitest/coverage-c8/0.25.0:
+    resolution: {integrity: sha512-rAeekiideYYvuHk0/nfMvlPiJhyeE9oFFL/Zxp5ZvRF3p2AvQaj8Z6Na//08lIxvm6oi9rDijdkYE0CFMtT7uA==}
+    dependencies:
+      c8: 7.12.0
+      vitest: 0.25.0
+    transitivePeerDependencies:
+      - '@edge-runtime/vm'
+      - '@vitest/browser'
+      - '@vitest/ui'
+      - happy-dom
+      - jsdom
+      - less
+      - sass
+      - stylus
+      - sugarss
+      - supports-color
+      - terser
     dev: true
 
   /@vue/compiler-core/3.2.41:
