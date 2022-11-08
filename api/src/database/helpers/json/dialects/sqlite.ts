@@ -32,6 +32,16 @@ join xyz ON xyz.id = jason.id;
  */
 
 export class JsonHelperSQLite extends JsonHelperDefault {
+	static isSupported(version: string): boolean {
+		if (version === '-') return false;
+		// sqlite3 added support by default in 3.38
+		// TODO check json extension before that maybe?
+		const [majorStr, minorStr] = version.split('.');
+		const major = parseInt(majorStr);
+		const minor = parseInt(minorStr);
+		if (major === 3 && minor >= 38) return true; // 3.38 or higher
+		return false;
+	}
 	preProcess(dbQuery: Knex.QueryBuilder, table: string): Knex.QueryBuilder {
 		if (this.nodes.length === 0) return dbQuery;
 		const selectQueries = this.nodes.filter(

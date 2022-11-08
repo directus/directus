@@ -9,6 +9,9 @@ export abstract class JsonHelper extends DatabaseHelper {
 		this.schema = schema;
 		this.nodes = nodes;
 	}
+	static isSupported(_version: string): boolean {
+		return false;
+	}
 
 	abstract preProcess(dbQuery: Knex.QueryBuilder, table: string): Knex.QueryBuilder;
 	abstract postProcess(items: Item[]): void;

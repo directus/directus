@@ -9,6 +9,13 @@ import { JsonHelperFallback } from './fallback';
  */
 export class JsonHelperMSSQL extends JsonHelperFallback {
 	fallbackNodes: JsonFieldNode[] = [];
+	static isSupported(version: string): boolean {
+		if (version === '-') return false;
+		const major = parseInt(version.split('.')[0]);
+		// the json support we need will be added in version 2022
+		// https://learn.microsoft.com/en-us/sql/t-sql/functions/json-array-transact-sql?view=sql-server-ver16
+		return major >= 16; // SQL Server 2022 (16.x) Preview
+	}
 	preProcess(dbQuery: Knex.QueryBuilder, table: string): Knex.QueryBuilder {
 		if (this.nodes.length === 0) return dbQuery;
 		const selectQueries = this.nodes.filter(({ jsonPath }) => jsonPath.indexOf('*') === -1);

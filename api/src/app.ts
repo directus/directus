@@ -35,7 +35,7 @@ import webhooksRouter from './controllers/webhooks';
 import sharesRouter from './controllers/shares';
 import {
 	isInstalled,
-	processDatabaseVersion,
+	validateDatabaseVersion,
 	validateDatabaseConnection,
 	validateDatabaseExtensions,
 	validateMigrations,
@@ -79,7 +79,7 @@ export default async function createApp(): Promise<express.Application> {
 
 	await validateDatabaseConnection();
 	await validateDatabaseExtensions();
-	await processDatabaseVersion();
+	await validateDatabaseVersion();
 
 	if ((await isInstalled()) === false) {
 		logger.error(`Database doesn't have Directus tables installed.`);

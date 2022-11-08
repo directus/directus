@@ -1,12 +1,12 @@
 import { Knex } from 'knex';
 import { JsonHelperDefault } from './default';
 
-export class JsonHelperPostgres extends JsonHelperDefault {
+export class JsonHelperCockroachDB extends JsonHelperDefault {
 	static isSupported(version: string): boolean {
 		if (version === '-') return false;
-		const major = parseInt(version.split('.')[0]);
-		// we're currently only supporting the 14+ version untill other exceptions have been added
-		return major >= 14;
+		const major = parseInt(version.substring(1).split('.')[0]);
+		// apparently cockroach DB supports JSON since v2
+		return major >= 2;
 	}
 	preProcess(dbQuery: Knex.QueryBuilder, table: string): Knex.QueryBuilder {
 		if (this.nodes.length === 0) return dbQuery;
