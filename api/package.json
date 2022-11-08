@@ -220,7 +220,7 @@
 		"@types/uuid": "8.3.4",
 		"@types/uuid-validate": "0.0.1",
 		"@types/wellknown": "0.5.3",
-		"@vitest/coverage-c8": "^0.25.0",
+		"@vitest/coverage-c8": "^0.25.1",
 		"copyfiles": "2.4.1",
 		"cross-env": "7.0.3",
 		"form-data": "4.0.0",
@@ -230,6 +230,6 @@
 		"ts-node": "10.9.1",
 		"ts-node-dev": "2.0.0",
 		"typescript": "4.8.4",
-		"vitest": "0.25.0"
+		"vitest": "0.25.1"
 	}
 }
