@@ -33,7 +33,13 @@ import usersRouter from './controllers/users';
 import utilsRouter from './controllers/utils';
 import webhooksRouter from './controllers/webhooks';
 import sharesRouter from './controllers/shares';
-import { isInstalled, validateDatabaseConnection, validateDatabaseExtensions, validateMigrations } from './database';
+import {
+	isInstalled,
+	processDatabaseVersion,
+	validateDatabaseConnection,
+	validateDatabaseExtensions,
+	validateMigrations,
+} from './database';
 import emitter from './emitter';
 import env from './env';
 import { InvalidPayloadException } from './exceptions';
@@ -73,6 +79,7 @@ export default async function createApp(): Promise<express.Application> {
 
 	await validateDatabaseConnection();
 	await validateDatabaseExtensions();
+	await processDatabaseVersion();
 
 	if ((await isInstalled()) === false) {
 		logger.error(`Database doesn't have Directus tables installed.`);

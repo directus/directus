@@ -12,6 +12,7 @@ import { promisify } from 'util';
 import { getHelpers } from './helpers';
 
 let database: Knex | null = null;
+let databaseVersion = '';
 let inspector: ReturnType<typeof SchemaInspector> | null = null;
 
 export default function getDatabase(): Knex {
@@ -304,4 +305,16 @@ async function validateDatabaseCharset(database?: Knex): Promise<void> {
 	}
 
 	return;
+}
+
+export function getDatabaseVersion(): string {
+	return databaseVersion;
+}
+
+export async function processDatabaseVersion(): Promise<void> {
+	const database = getDatabase();
+	const client = getDatabaseClient(database);
+	const helpers = getHelpers(database);
+	databaseVersion = await helpers.schema.getVersion();
+	logger.info(`Database: ${client} (version: ${databaseVersion})`);
 }

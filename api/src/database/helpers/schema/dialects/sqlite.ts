@@ -14,4 +14,9 @@ export class SchemaHelperSQLite extends SchemaHelper {
 	async postColumnChange(): Promise<void> {
 		await this.knex.raw('PRAGMA foreign_keys = ON');
 	}
+
+	async getVersion(): Promise<string> {
+		const version = await this.knex.select(this.knex.raw('sqlite_version() as version'));
+		return version[0]['version'];
+	}
 }

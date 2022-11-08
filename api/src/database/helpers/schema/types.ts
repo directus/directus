@@ -90,4 +90,9 @@ export abstract class SchemaHelper extends DatabaseHelper {
 	async postColumnChange(): Promise<void> {
 		return;
 	}
+
+	async getVersion(): Promise<string> {
+		const version = await this.knex.select(this.knex.raw('@@version'));
+		return version[0]['@@version'];
+	}
 }
