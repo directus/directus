@@ -163,6 +163,7 @@ importers:
       js-yaml: 4.1.0
       js2xmlparser: 5.0.0
       json2csv: 5.0.7
+      jsonpath-plus: ^7.2.0
       jsonwebtoken: 8.5.1
       keyv: 4.5.0
       keyv-memcache: 1.2.5
@@ -269,6 +270,7 @@ importers:
       js-yaml: 4.1.0
       js2xmlparser: 5.0.0
       json2csv: 5.0.7
+      jsonpath-plus: 7.2.0
       jsonwebtoken: 8.5.1
       keyv: 4.5.0
       knex: 2.3.0_taitv4i4zl7gfuw4en3idq5uti
@@ -14063,6 +14065,11 @@ packages:
     resolution: {integrity: sha512-POQXvpdL69+CluYsillJ7SUhKvytYjW9vG/GKpnf+xP8UWgYEM/RaMzHHofbALDiKbbP1W8UEYmgGl39WkPZsg==}
     engines: {'0': node >= 0.2.0}
 
+  /jsonpath-plus/7.2.0:
+    resolution: {integrity: sha512-zBfiUPM5nD0YZSBT/o/fbCUlCcepMIdP0CJZxM1+KgA4f2T206f6VAg9e7mX35+KlMaIc5qXW34f3BnwJ3w+RA==}
+    engines: {node: '>=12.0.0'}
+    dev: false
+
   /jsonwebtoken/8.5.1:
     resolution: {integrity: sha512-XjwVfRS6jTMsqYs0EsuJ4LGxXV14zQybNd4L2r0UvbVnSF9Af8x7p5MzbJ90Ioz/9TI41/hTCvznF/loiSzn8w==}
     engines: {node: '>=4', npm: '>=1.4.28'}
@@ -19919,7 +19926,7 @@ packages:
     dependencies:
       bs-logger: 0.2.6
       fast-json-stable-stringify: 2.1.0
-      jest: 29.2.1_5uyhgycj63wuqgvl4exdnr442q
+      jest: 29.2.1_@types+node@18.11.2
       jest-util: 29.2.1
       json5: 2.2.1
       lodash.memoize: 4.1.2

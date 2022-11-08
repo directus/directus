@@ -127,6 +127,7 @@
 		"js-yaml": "4.1.0",
 		"js2xmlparser": "5.0.0",
 		"json2csv": "5.0.7",
+		"jsonpath-plus": "^7.2.0",
 		"jsonwebtoken": "8.5.1",
 		"keyv": "4.5.0",
 		"knex": "2.3.0",
