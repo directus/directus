@@ -1351,7 +1351,7 @@ referential_action_set_default: '{field} beállítása alapértelmezett érték�
 choose_action: Művelet választása
 continue_label: Folytatás
 continue_as: >-
-  {név} jelenleg hitelesített. Ha felismeri ezt a fiókot, nyomja meg a folytatás gombot!
+  {name} jelenleg hitelesített. Ha felismeri ezt a fiókot, nyomja meg a folytatás gombot.
 editing_role: '{role} szerepkör'
 creating_webhook: Webhook létrehozása
 default_label: Alapértelmezett
