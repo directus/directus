@@ -1,4 +1,4 @@
-import S3, { ClientConfiguration, ObjectList } from 'aws-sdk/clients/s3';
+import { S3Client, CopyObjectCommand, DeleteObjectCommand, S3ClientConfig } from '@aws-sdk/client-s3';
 import {
 	Storage,
 	UnknownException,
@@ -32,7 +32,7 @@ function handleError(err: Error, path: string, bucket: string): Error {
 }
 
 export class AmazonWebServicesS3Storage extends Storage {
-	protected $driver: S3;
+	protected $driver: S3Client;
 	protected $bucket: string;
 	protected $root: string;
 	protected $acl?: string;
@@ -40,11 +40,13 @@ export class AmazonWebServicesS3Storage extends Storage {
 
 	constructor(config: AmazonWebServicesS3StorageConfig) {
 		super();
-		const S3 = require('aws-sdk/clients/s3');
+		const { S3Client } = require('@aws-sdk/client-s3');
 
-		this.$driver = new S3({
-			accessKeyId: config.key,
-			secretAccessKey: config.secret,
+		this.$driver = new S3Client({
+			credentials: {
+				accessKeyId: config.key,
+				secretAccessKey: config.secret,
+			},
 			...config,
 		});
 
@@ -77,7 +79,7 @@ export class AmazonWebServicesS3Storage extends Storage {
 		};
 
 		try {
-			const result = await this.$driver.copyObject(params).promise();
+			const result = await this.$driver.send(new CopyObjectCommand(params));
 			return { raw: result };
 		} catch (e: any) {
 			throw handleError(e, src, this.$bucket);
@@ -93,7 +95,7 @@ export class AmazonWebServicesS3Storage extends Storage {
 		const params = { Key: location, Bucket: this.$bucket };
 
 		try {
-			const result = await this.$driver.deleteObject(params).promise();
+			const result = await this.$driver.send(new DeleteObjectCommand(params));
 			// Amazon does not inform the client if anything was deleted.
 			return { raw: result, wasDeleted: null };
 		} catch (e: any) {
@@ -104,7 +106,7 @@ export class AmazonWebServicesS3Storage extends Storage {
 	/**
 	 * Returns the driver.
 	 */
-	public driver(): S3 {
+	public driver(): S3Client {
 		return this.$driver;
 	}
 
@@ -310,7 +312,7 @@ export class AmazonWebServicesS3Storage extends Storage {
 	}
 }
 
-export interface AmazonWebServicesS3StorageConfig extends ClientConfiguration {
+export interface AmazonWebServicesS3StorageConfig extends S3ClientConfig {
 	key: string;
 	secret: string;
 	bucket: string;
