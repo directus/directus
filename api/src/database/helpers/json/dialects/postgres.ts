@@ -2,7 +2,7 @@ import { Knex } from 'knex';
 import { JsonHelperDefault } from './default';
 
 export class JsonHelperPostgres extends JsonHelperDefault {
-	static isSupported(version: string): boolean {
+	static isSupported(version: string, _full = ''): boolean {
 		if (version === '-') return false;
 		const major = parseInt(version.split('.')[0]);
 		// we're currently only supporting the 14+ version untill other exceptions have been added

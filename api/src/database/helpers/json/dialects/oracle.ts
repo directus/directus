@@ -4,7 +4,7 @@ import { JsonHelperDefault } from './default';
  * We need to start using JSON_TABLE over JSON_QUERY for Oracle to support more complex wildcard queries
  */
 export class JsonHelperOracle extends JsonHelperDefault {
-	static isSupported(version: string): boolean {
+	static isSupported(version: string, _full = ''): boolean {
 		if (version === '-') return false;
 		const major = parseInt(version.split('.')[0]);
 		// json support added in version 12c

@@ -32,7 +32,7 @@ join xyz ON xyz.id = jason.id;
  */
 
 export class JsonHelperSQLite extends JsonHelperDefault {
-	static isSupported(version: string): boolean {
+	static isSupported(version: string, _full = ''): boolean {
 		if (version === '-') return false;
 		// sqlite3 added support by default in 3.38
 		// TODO check json extension before that maybe?

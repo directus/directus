@@ -12,13 +12,16 @@ export class SchemaHelperOracle extends SchemaHelper {
 		await this.changeToTypeByCopy(table, column, type, options);
 	}
 
-	async getVersion(): Promise<string> {
+	async getVersion(): Promise<{ parsed: string; full: string }> {
 		const versionData = await this.knex.select('BANNER').fromRaw('V$VERSION').whereRaw("banner LIKE 'Oracle%'");
-		const bannerParts = versionData[0]['BANNER'].split(' ');
+		const versionString = versionData[0]['BANNER'];
+		const bannerParts = versionString.split(' ');
 		for (const part of bannerParts) {
-			if (/^[0-9]+(\.[0-9]+)+$/.test(part)) return part;
+			if (/^[0-9]+(\.[0-9]+)+$/.test(part)) {
+				return { parsed: part, full: versionString };
+			}
 		}
 		logger.error('Unable to parse database version string.');
-		return '-';
+		return { parsed: '-', full: versionString };
 	}
 }

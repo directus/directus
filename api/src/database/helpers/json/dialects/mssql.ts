@@ -9,7 +9,7 @@ import { JsonHelperFallback } from './fallback';
  */
 export class JsonHelperMSSQL extends JsonHelperFallback {
 	fallbackNodes: JsonFieldNode[] = [];
-	static isSupported(version: string): boolean {
+	static isSupported(version: string, _full = ''): boolean {
 		if (version === '-') return false;
 		const major = parseInt(version.split('.')[0]);
 		// the json support we need will be added in version 2022

@@ -11,13 +11,16 @@ export class SchemaHelperCockroachDb extends SchemaHelper {
 	): Promise<void> {
 		await this.changeToTypeByCopy(table, column, type, options);
 	}
-	async getVersion(): Promise<string> {
+	async getVersion(): Promise<{ parsed: string; full: string }> {
 		const versionData = await this.knex.select(this.knex.raw('version() as version'));
-		const bannerParts = versionData[0]['version'].split(' ');
+		const versionString = versionData[0]['version'];
+		const bannerParts = versionString.split(' ');
 		for (const part of bannerParts) {
-			if (/^v[0-9]+(\.[0-9]+)+$/.test(part)) return part;
+			if (/^v[0-9]+(\.[0-9]+)+$/.test(part)) {
+				return { parsed: part, full: versionString };
+			}
 		}
 		logger.error('Unable to parse database version string.');
-		return '-';
+		return { parsed: '-', full: versionString };
 	}
 }

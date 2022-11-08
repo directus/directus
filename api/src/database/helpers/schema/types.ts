@@ -1,13 +1,11 @@
 import { getDatabaseClient } from '../../index';
-import { DatabaseHelper } from '../types';
 import { KNEX_TYPES } from '@directus/shared/constants';
-
-type Clients = 'mysql' | 'postgres' | 'cockroachdb' | 'sqlite' | 'oracle' | 'mssql' | 'redshift';
+import { DatabaseClients, DatabaseHelper } from '../types';
 
 export type Options = { nullable?: boolean; default?: any; length?: number };
 
 export abstract class SchemaHelper extends DatabaseHelper {
-	isOneOfClients(clients: Clients[]): boolean {
+	isOneOfClients(clients: DatabaseClients[]): boolean {
 		return clients.includes(getDatabaseClient(this.knex));
 	}
 
@@ -91,8 +89,8 @@ export abstract class SchemaHelper extends DatabaseHelper {
 		return;
 	}
 
-	async getVersion(): Promise<string> {
+	async getVersion(): Promise<{ parsed: string; full: string }> {
 		const version = await this.knex.select(this.knex.raw('@@version'));
-		return version[0]['@@version'];
+		return { parsed: version[0]['@@version'], full: version[0]['@@version'] };
 	}
 }

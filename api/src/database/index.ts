@@ -9,13 +9,13 @@ import fse from 'fs-extra';
 import path from 'path';
 import { merge } from 'lodash';
 import { promisify } from 'util';
-import { checkJsonSupport, getHelpers, getJsonHelper } from './helpers';
+import { checkJsonSupport, getHelpers } from './helpers';
+import { DatabaseClients } from './helpers/types';
 
 let database: Knex | null = null;
-let databaseVersion = '';
+let databaseVersion = '-',
+	databaseBanner = '';
 let inspector: ReturnType<typeof SchemaInspector> | null = null;
-
-export type DatabaseVendors = 'mysql' | 'postgres' | 'cockroachdb' | 'sqlite' | 'oracle' | 'mssql' | 'redshift';
 
 export default function getDatabase(): Knex {
 	if (database) {
@@ -182,7 +182,7 @@ export async function validateDatabaseConnection(database?: Knex): Promise<void>
 	}
 }
 
-export function getDatabaseClient(database?: Knex): DatabaseVendors {
+export function getDatabaseClient(database?: Knex): DatabaseClients {
 	database = database ?? getDatabase();
 
 	switch (database.client.constructor.name) {
@@ -307,20 +307,22 @@ async function validateDatabaseCharset(database?: Knex): Promise<void> {
 	return;
 }
 
-export function getDatabaseVersion(): string {
-	return databaseVersion;
+export function getDatabaseVersion(): { parsed: string; full: string } {
+	return { parsed: databaseVersion, full: databaseBanner };
 }
 
 export async function validateDatabaseVersion(): Promise<void> {
 	const database = getDatabase();
 	const client = getDatabaseClient(database);
 	const helpers = getHelpers(database);
-	databaseVersion = await helpers.schema.getVersion();
-	const supported = checkJsonSupport(client, databaseVersion);
+	const { parsed, full } = await helpers.schema.getVersion();
+	databaseVersion = parsed;
+	databaseBanner = full;
+	const supported = checkJsonSupport(client, databaseVersion, databaseBanner);
 	if (!supported) {
-		logger.warn(`JSON queries are not supported natively by ${client} (version: ${databaseVersion})`);
+		logger.warn(`JSON queries are not supported natively by ${client} (version: ${parsed})`);
 		logger.warn(`Falling back to json post-processing instead, using JSON in "filter" will work.`);
 	} else {
-		logger.info(`Database: ${client} (version: ${databaseVersion})`);
+		logger.info(`Database: ${client} (version: ${parsed})`);
 	}
 }
