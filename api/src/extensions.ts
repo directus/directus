@@ -346,10 +346,7 @@ class ExtensionManager {
 		for (const hook of hooks) {
 			try {
 				const hookPath = path.resolve(hook.path, hook.entrypoint);
-				// TODO: Workaround for tests with Vitest - adjust after moving to ESM
-				const hookInstance: HookConfig | { default: HookConfig } = process.env.VITEST
-					? await import(hookPath)
-					: require(hookPath);
+				const hookInstance: HookConfig | { default: HookConfig } = await import(hookPath);
 
 				const config = getModuleDefault(hookInstance);
 
