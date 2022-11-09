@@ -344,6 +344,38 @@ describe.each(common.PRIMARY_KEY_TYPES)('/collections', (pkType) => {
 				});
 			});
 		});
+
+		describe('Verify schema action hook run', () => {
+			it.each(vendors)('%s', async (vendor) => {
+				// Action
+				const response = await request(getUrl(vendor))
+					.get('/items/tests_extensions_log')
+					.query({
+						filter: JSON.stringify({
+							_and: [
+								{
+									key: {
+										_starts_with: 'action-verify-schema/test_collections_crud',
+									},
+								},
+								{
+									key: {
+										_contains: pkType,
+									},
+								},
+							],
+						}),
+					})
+					.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+				// Assert
+				expect(response.statusCode).toBe(200);
+				expect(response.body.data.length).toBe(10);
+				for (const log of response.body.data) {
+					expect(log.value).toBe('1');
+				}
+			});
+		});
 	});
 });
 
