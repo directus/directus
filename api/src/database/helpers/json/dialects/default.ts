@@ -8,12 +8,14 @@ import { JsonHelper } from '../types';
  */
 export class JsonHelperDefault extends JsonHelper {
 	preProcess(dbQuery: Knex.QueryBuilder, table: string): Knex.QueryBuilder {
-		if (this.nodes.length === 0) return dbQuery;
-		return dbQuery.select(
-			this.nodes.map((node) => {
-				return this.knex.raw(this.knex.jsonExtract(`${table}.${node.name}`, node.jsonPath, node.fieldKey, false));
-			})
-		);
+		if (this.nodes.length === 0) return dbQuery.from(table);
+		return dbQuery
+			.select(
+				this.nodes.map((node) => {
+					return this.knex.raw(this.knex.jsonExtract(`${table}.${node.name}`, node.jsonPath, node.fieldKey, false));
+				})
+			)
+			.from(table);
 	}
 	postProcess(items: Item[]): void {
 		if (this.nodes.length === 0) return;

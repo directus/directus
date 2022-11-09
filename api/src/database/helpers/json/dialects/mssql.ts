@@ -17,7 +17,7 @@ export class JsonHelperMSSQL extends JsonHelperFallback {
 		return major >= 16; // SQL Server 2022 (16.x) Preview
 	}
 	preProcess(dbQuery: Knex.QueryBuilder, table: string): Knex.QueryBuilder {
-		if (this.nodes.length === 0) return dbQuery;
+		if (this.nodes.length === 0) return dbQuery.from(table);
 		const selectQueries = this.nodes.filter(({ jsonPath }) => jsonPath.indexOf('*') === -1);
 		const joinQueries = this.nodes.filter(({ jsonPath }) => jsonPath.indexOf('*') > 0);
 		if (joinQueries.length > 0) {
@@ -28,7 +28,7 @@ export class JsonHelperMSSQL extends JsonHelperFallback {
 		if (selectQueries.length > 0) {
 			dbQuery = dbQuery.select(this.nodes.map((node) => this.jsonQueryOrValue(`${table}.${node.name}`, node)));
 		}
-		return dbQuery;
+		return dbQuery.from(table);
 	}
 	private jsonQueryOrValue(field: string, node: JsonFieldNode): Knex.Raw {
 		const qPath = this.knex.raw('?', [node.jsonPath]).toQuery();

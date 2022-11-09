@@ -3,6 +3,7 @@ import { JsonFieldNode } from '../../../../types';
 import { customAlphabet } from 'nanoid';
 import { JsonHelperDefault } from './default';
 import { getOperation } from '../../../../utils/apply-query';
+import logger from '../../../../logger';
 
 const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
 
@@ -43,13 +44,17 @@ export class JsonHelperSQLite extends JsonHelperDefault {
 		return false;
 	}
 	preProcess(dbQuery: Knex.QueryBuilder, table: string): Knex.QueryBuilder {
-		if (this.nodes.length === 0) return dbQuery;
+		if (this.nodes.length === 0) return dbQuery.from(table);
+
 		const selectQueries = this.nodes.filter(
-			({ jsonPath, query }) => jsonPath.indexOf('[*]') === -1 && Object.keys(query).length === 0
+			({ jsonPath, query }) =>
+				jsonPath.indexOf('[*]') === -1 && jsonPath.indexOf('.*') === -1 && Object.keys(query).length === 0
 		);
 		const joinQueries = this.nodes.filter(
-			({ jsonPath, query }) => jsonPath.indexOf('[*]') > 0 || Object.keys(query).length > 0
+			({ jsonPath, query }) =>
+				jsonPath.indexOf('[*]') > 0 || jsonPath.indexOf('.*') > 0 || Object.keys(query).length > 0
 		);
+
 		if (joinQueries.length > 0) {
 			for (const node of joinQueries) {
 				dbQuery = this.buildWithJson(dbQuery, node, table);
@@ -62,11 +67,15 @@ export class JsonHelperSQLite extends JsonHelperDefault {
 				})
 			);
 		}
-		return dbQuery;
+		return dbQuery.from(table);
 	}
 	private buildWithJson(dbQuery: Knex.QueryBuilder, node: JsonFieldNode, table: string): Knex.QueryBuilder {
 		const { jsonPath, name } = node;
-		const arrayParts = jsonPath.split('[*]').map((q) => (q.startsWith('$') ? q : '$' + q));
+		const arrayParts = jsonPath
+			.split('[*]')
+			.flatMap((p) => p.split('.*'))
+			.map((q) => (q.startsWith('$') ? q : '$' + q));
+		logger.info(arrayParts);
 		const aliases = arrayParts.map(() => generateAlias()),
 			withAlias = generateAlias();
 		const primaryKey = this.schema.collections[table].primary;

@@ -253,7 +253,6 @@ function getDBQuery(
 
 	let dbQuery = knex.select(regularNodes.map(preProcess));
 	dbQuery = jsonHelper.preProcess(dbQuery, table);
-	dbQuery = dbQuery.from(table);
 
 	const queryCopy = clone(query);
 	queryCopy.limit = typeof queryCopy.limit === 'number' ? queryCopy.limit : 100;

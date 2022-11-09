@@ -15,12 +15,14 @@ const jsonPathPlusOptions = {
 export class JsonHelperFallback extends JsonHelper {
 	// some fallback logic for vendors not supporting joins thus not allowing for `filter` or `deep` queries.
 	preProcess(dbQuery: Knex.QueryBuilder, table: string): Knex.QueryBuilder {
-		if (this.nodes.length === 0) return dbQuery;
-		return dbQuery.select(
-			this.nodes.map((node) => {
-				return this.knex.raw('??.?? as ??', [table, node.name, node.fieldKey]);
-			})
-		);
+		if (this.nodes.length === 0) return dbQuery.from(table);
+		return dbQuery
+			.select(
+				this.nodes.map((node) => {
+					return this.knex.raw('??.?? as ??', [table, node.name, node.fieldKey]);
+				})
+			)
+			.from(table);
 	}
 	postProcess(items: Item[]): void {
 		if (this.nodes.length === 0) return;
