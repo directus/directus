@@ -64,6 +64,7 @@
 			<v-divider large :inline-title="false">{{ t('sort_field') }}</v-divider>
 			<related-field-select
 				v-model="sortField"
+				:type-allow-list="['integer', 'bigInteger', 'float', 'decimal']"
 				:disabled-fields="unsortableJunctionFields"
 				:collection="junctionCollection"
 				:placeholder="t('add_sort_field')"
