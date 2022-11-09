@@ -5,6 +5,9 @@ import {
 	S3ClientConfig,
 	HeadObjectCommand,
 	GetObjectCommand,
+	PutObjectCommand,
+	ListObjectsV2Command,
+	_Object,
 } from '@aws-sdk/client-s3';
 import {
 	Storage,
@@ -20,7 +23,6 @@ import {
 	StatResponse,
 	FileListResponse,
 	DeleteResponse,
-	Range,
 } from '@directus/drive';
 const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
 
@@ -224,7 +226,7 @@ export class AmazonWebServicesS3Storage extends Storage {
 	/**
 	 * Returns the stream for the given file.
 	 */
-	public getStream(location: string, range?: Range): NodeJS.ReadableStream {
+	/* public getStream(location: string, range?: Range): NodeJS.ReadableStream {
 		location = this._fullPath(location);
 
 		const params: S3.GetObjectRequest = {
@@ -235,20 +237,20 @@ export class AmazonWebServicesS3Storage extends Storage {
 
 		return this.$driver.getObject(params).createReadStream();
 	}
-
+ */
 	/**
 	 * Returns url for a given key.
 	 */
 	public getUrl(location: string): string {
 		location = this._fullPath(location);
 
-		const { href } = this.$driver.endpoint;
+		const endpoint = this.$driver.config.endpointProvider({});
 
-		if (href.startsWith('https://s3.amazonaws')) {
+		if (endpoint.url.href.startsWith('https://s3.amazonaws')) {
 			return `https://${this.$bucket}.s3.amazonaws.com/${location}`;
 		}
 
-		return `${href}${this.$bucket}/${location}`;
+		return `${endpoint.url.href}${this.$bucket}/${location}`;
 	}
 
 	/**
@@ -284,9 +286,8 @@ export class AmazonWebServicesS3Storage extends Storage {
 			ContentType: type ? type : '',
 			ServerSideEncryption: this.$serverSideEncryption,
 		};
-
 		try {
-			const result = await this.$driver.upload(params).promise();
+			const result = await this.$driver.send(new PutObjectCommand(params));
 			return { raw: result };
 		} catch (e: any) {
 			throw handleError(e, location, this.$bucket);
@@ -303,18 +304,18 @@ export class AmazonWebServicesS3Storage extends Storage {
 
 		do {
 			try {
-				const response = await this.$driver
-					.listObjectsV2({
+				const response = await this.$driver.send(
+					new ListObjectsV2Command({
 						Bucket: this.$bucket,
 						Prefix: prefix,
 						ContinuationToken: continuationToken,
 						MaxKeys: 1000,
 					})
-					.promise();
+				);
 
 				continuationToken = response.NextContinuationToken;
 
-				for (const file of response.Contents as ObjectList) {
+				for (const file of response.Contents as _Object[]) {
 					const path = file.Key as string;
 
 					yield {
