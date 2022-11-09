@@ -1,4 +1,11 @@
-import { S3Client, CopyObjectCommand, DeleteObjectCommand, S3ClientConfig } from '@aws-sdk/client-s3';
+import {
+	S3Client,
+	CopyObjectCommand,
+	DeleteObjectCommand,
+	S3ClientConfig,
+	HeadObjectCommand,
+	GetObjectCommand,
+} from '@aws-sdk/client-s3';
 import {
 	Storage,
 	UnknownException,
@@ -119,7 +126,7 @@ export class AmazonWebServicesS3Storage extends Storage {
 		const params = { Key: location, Bucket: this.$bucket };
 
 		try {
-			const result = await this.$driver.headObject(params).promise();
+			const result = await this.$driver.send(new HeadObjectCommand(params));
 			return { exists: true, raw: result };
 		} catch (e: any) {
 			if (e.statusCode === 404) {
@@ -149,17 +156,24 @@ export class AmazonWebServicesS3Storage extends Storage {
 		location = this._fullPath(location);
 
 		const params = { Key: location, Bucket: this.$bucket };
+		const result = await this.$driver.send(new GetObjectCommand(params));
+		const body = result.Body as NodeJS.ReadableStream;
+		return new Promise((resolve, reject) => {
+			try {
+				const responseDataChunks: string[] = [];
+				body.once('error', (err) => {
+					reject(err);
+				});
+				body.on('data', (chunk) => {
+					responseDataChunks.push(chunk);
+				});
+				body.once('end', () => resolve({ content: Buffer.from(responseDataChunks.join('')), raw: result }));
 
-		try {
-			const result = await this.$driver.getObject(params).promise();
-
-			// S3.getObject returns a Buffer in Node.js
-			const body = result.Body as Buffer;
-
-			return { content: body, raw: result };
-		} catch (e: any) {
-			throw handleError(e, location, this.$bucket);
-		}
+				return { content: body, raw: result };
+			} catch (e: any) {
+				throw handleError(e, location, this.$bucket);
+			}
+		});
 	}
 
 	/**
@@ -193,7 +207,8 @@ export class AmazonWebServicesS3Storage extends Storage {
 		const params = { Key: location, Bucket: this.$bucket };
 
 		try {
-			const result = await this.$driver.headObject(params).promise();
+			const result = await this.$driver.send(new HeadObjectCommand(params));
+
 			return {
 				size: result.ContentLength as number,
 				modified: result.LastModified as Date,
