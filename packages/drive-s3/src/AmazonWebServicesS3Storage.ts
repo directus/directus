@@ -22,6 +22,8 @@ import {
 	DeleteResponse,
 	Range,
 } from '@directus/drive';
+const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
+
 import path from 'path';
 import normalize from 'normalize-path';
 
@@ -190,8 +192,8 @@ export class AmazonWebServicesS3Storage extends Storage {
 				Bucket: this.$bucket,
 				Expires: expiry,
 			};
-
-			const result = await this.$driver.getSignedUrlPromise('getObject', params);
+			const command = new GetObjectCommand(params);
+			const result = await getSignedUrl(this.$driver, command, { expiresIn: expiry });
 			return { signedUrl: result, raw: result };
 		} catch (e: any) {
 			throw handleError(e, location, this.$bucket);

@@ -39,6 +39,7 @@
 	},
 	"dependencies": {
 		"@aws-sdk/client-s3": "^3.204.0",
+		"@aws-sdk/s3-request-presigner": "^3.204.0",
 		"@directus/drive": "workspace:*",
 		"normalize-path": "3.0.0"
 	},
