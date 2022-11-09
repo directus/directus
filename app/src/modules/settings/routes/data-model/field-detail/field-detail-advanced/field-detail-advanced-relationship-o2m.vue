@@ -24,6 +24,7 @@
 			<related-field-select
 				v-model="sortField"
 				:collection="relatedCollection"
+				:type-allow-list="['integer', 'bigInteger', 'float', 'decimal']"
 				:disabled-fields="unsortableJunctionFields"
 				:placeholder="t('add_sort_field') + '...'"
 				:nullable="true"
@@ -142,7 +143,7 @@ export default defineComponent({
 		const currentPrimaryKey = computed(() => fieldsStore.getPrimaryKeyFieldForCollection(collection.value!)?.field);
 
 		const unsortableJunctionFields = computed(() => {
-			let fields = ['item', 'collection'];
+			let fields = [];
 			if (relatedCollection.value) {
 				const relations = relationsStore.getRelationsForCollection(relatedCollection.value);
 				fields.push(...relations.map((field) => field.field));
