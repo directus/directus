@@ -149,7 +149,7 @@ const query = ref<RelationQueryMultiple>({
 	page: 1,
 });
 
-const { create, update, displayItems, loading, fetchedItems, getItemEdits } = useRelationMultiple(
+const { create, update, displayItems, loading, fetchedItems, getItemEdits, isLocalItem } = useRelationMultiple(
 	value,
 	query,
 	relationInfo,

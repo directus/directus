@@ -195,6 +195,7 @@ const query = ref<RelationQuerySingle>({
 const { collection, field } = toRefs(props);
 const { relationInfo } = useRelationM2O(collection, field);
 const { displayItem: file, loading, update, remove } = useRelationSingle(value, query, relationInfo);
+const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo);
 
 const { t } = useI18n();
 
@@ -286,8 +287,6 @@ function useURLImport() {
 		}
 	}
 }
-
-const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo);
 </script>
 
 <style lang="scss" scoped>

@@ -37,7 +37,7 @@
 						/>
 						<div class="spacer" />
 						<v-icon
-							v-if="!disabled && deleteAllowed"
+							v-if="!disabled && (deleteAllowed || isLocalItem(element))"
 							:name="getDeselectIcon(element)"
 							class="deselect"
 							@click.stop="deleteItem(element)"
@@ -79,7 +79,7 @@
 
 		<drawer-item
 			v-model:active="editModalActive"
-			:disabled="disabled"
+			:disabled="disabled || (!updateAllowed && currentlyEditing !== null)"
 			:collection="relationInfo.junctionCollection.collection"
 			:primary-key="currentlyEditing || '+'"
 			:related-primary-key="relatedPrimaryKey || '+'"
@@ -227,15 +227,16 @@ const {
 	loading,
 	selected,
 	isItemSelected,
-	localDelete,
+	isLocalItem,
 	getItemEdits,
 } = useRelationMultiple(value, query, relationInfo, primaryKey);
+const { createAllowed, updateAllowed, selectAllowed, deleteAllowed } = useRelationPermissionsM2M(relationInfo);
 
 const pageCount = computed(() => Math.ceil(totalItemCount.value / limit.value));
 
 function getDeselectIcon(item: DisplayItem) {
 	if (item.$type === 'deleted') return 'settings_backup_restore';
-	if (localDelete(item)) return 'delete';
+	if (isLocalItem(item)) return 'delete';
 	return 'close';
 }
 
@@ -378,8 +379,6 @@ const customFilter = computed(() => {
 
 	return filter;
 });
-
-const { createAllowed, updateAllowed, selectAllowed, deleteAllowed } = useRelationPermissionsM2M(relationInfo);
 
 const allowDrag = computed(
 	() =>

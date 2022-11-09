@@ -74,7 +74,7 @@
 					</router-link>
 
 					<v-icon
-						v-if="!disabled && deleteAllowed"
+						v-if="!disabled && (deleteAllowed || isLocalItem(item))"
 						v-tooltip="t(getDeselectTooltip(item))"
 						class="deselect"
 						:class="{ deleted: item.$type === 'deleted' }"
@@ -133,7 +133,7 @@
 								<v-icon name="launch" />
 							</router-link>
 							<v-icon
-								v-if="!disabled && deleteAllowed"
+								v-if="!disabled && (deleteAllowed || isLocalItem(element))"
 								v-tooltip="t(getDeselectTooltip(element))"
 								class="deselect"
 								:name="getDeselectIcon(element)"
@@ -172,7 +172,7 @@
 
 		<drawer-item
 			v-model:active="editModalActive"
-			:disabled="disabled"
+			:disabled="disabled || (!updateAllowed && currentlyEditing !== null)"
 			:collection="relationInfo.junctionCollection.collection"
 			:primary-key="currentlyEditing || '+'"
 			:related-primary-key="relatedPrimaryKey || '+'"
@@ -210,7 +210,6 @@ import { Sort } from '@/components/v-table/types';
 import Draggable from 'vuedraggable';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { isEmpty, get, clamp } from 'lodash';
-import { usePermissionsStore } from '@/stores/permissions';
 import { useFieldsStore } from '@/stores/fields';
 import { LAYOUTS } from '@/types/interfaces';
 import { formatCollectionItemsCount } from '@/utils/format-collection-items-count';
@@ -354,7 +353,7 @@ const {
 	loading,
 	selected,
 	isItemSelected,
-	localDelete,
+	isLocalItem,
 	getItemEdits,
 } = useRelationMultiple(value, query, relationInfo, primaryKey);
 
@@ -426,13 +425,13 @@ const allowDrag = computed(
 
 function getDeselectIcon(item: DisplayItem) {
 	if (item.$type === 'deleted') return 'settings_backup_restore';
-	if (localDelete(item)) return 'delete';
+	if (isLocalItem(item)) return 'delete';
 	return 'close';
 }
 
 function getDeselectTooltip(item: DisplayItem) {
 	if (item.$type === 'deleted') return 'undo_removed_item';
-	if (localDelete(item)) return 'delete_item';
+	if (isLocalItem(item)) return 'delete_item';
 	return 'remove_item';
 }
 
