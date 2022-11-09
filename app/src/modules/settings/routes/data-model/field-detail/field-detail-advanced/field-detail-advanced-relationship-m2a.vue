@@ -24,6 +24,7 @@
 					item-text="name"
 					item-disabled="meta.singleton"
 					multiple
+					:is-same-width-when-attached="false"
 					:multiple-preview-threshold="0"
 				/>
 			</div>
