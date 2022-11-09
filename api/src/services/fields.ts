@@ -592,7 +592,7 @@ export class FieldsService {
 			column = table.string(field.field, field.schema?.max_length ?? undefined);
 		} else if (['float', 'decimal'].includes(field.type)) {
 			const type = field.type as 'float' | 'decimal';
-			column = table[type](field.field, field.schema?.numeric_precision || 10, field.schema?.numeric_scale || 5);
+			column = table[type](field.field, field.schema?.numeric_precision ?? 10, field.schema?.numeric_scale ?? 5);
 		} else if (field.type === 'csv') {
 			column = table.string(field.field);
 		} else if (field.type === 'hash') {
