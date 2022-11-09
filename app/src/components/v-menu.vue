@@ -83,8 +83,8 @@ interface Props {
 	closeOnContentClick?: boolean;
 	/** Attach the menu to an input */
 	attached?: boolean;
-	/** Make the menu have the same width as the input when attached */
-	isSameWidthWhenAttached?: boolean;
+	/** Should the menu have the same width as the input when attached */
+	isSameWidth?: boolean;
 	/** Show an arrow pointer */
 	showArrow?: boolean;
 	/** Menu does not appear */
@@ -109,7 +109,7 @@ const props = withDefaults(defineProps<Props>(), {
 	closeOnClick: true,
 	closeOnContentClick: true,
 	attached: false,
-	isSameWidthWhenAttached: true,
+	isSameWidth: true,
 	showArrow: false,
 	disabled: false,
 	trigger: null,
@@ -153,7 +153,7 @@ const {
 	computed(() => ({
 		placement: props.placement,
 		attached: props.attached,
-		isSameWidthWhenAttached: props.isSameWidthWhenAttached,
+		isSameWidth: props.isSameWidth,
 		arrow: props.showArrow,
 		offsetY: props.offsetY,
 		offsetX: props.offsetX,
@@ -286,7 +286,7 @@ function usePopper(
 			Readonly<{
 				placement: Placement;
 				attached: boolean;
-				isSameWidthWhenAttached: boolean;
+				isSameWidth: boolean;
 				arrow: boolean;
 				offsetY: number;
 				offsetX: number;
@@ -391,10 +391,10 @@ function usePopper(
 			});
 		}
 
-		if (options.value.attached === true && options.value.isSameWidthWhenAttached === true) {
+		if (options.value.attached === true) {
 			modifiers.push({
 				name: 'sameWidth',
-				enabled: true,
+				enabled: options.value.isSameWidth,
 				fn: ({ state }) => {
 					state.styles.popper.width = `${state.rects.reference.width}px`;
 				},

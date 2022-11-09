@@ -3,7 +3,7 @@
 		class="v-select"
 		:disabled="disabled"
 		:attached="inline === false"
-		:is-same-width-when-attached="isMenuSameWidth"
+		:is-same-width="isMenuSameWidth"
 		:show-arrow="inline === true"
 		:close-on-content-click="closeOnContentClick"
 		:placement="placement"
