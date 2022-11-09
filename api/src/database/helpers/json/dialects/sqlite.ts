@@ -4,6 +4,7 @@ import { customAlphabet } from 'nanoid';
 import { JsonHelperDefault } from './default';
 import { getOperation } from '../../../../utils/apply-query';
 import logger from '../../../../logger';
+import { applyJsonFilterQuery } from '../filters';
 
 const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
 
@@ -115,12 +116,7 @@ export class JsonHelperSQLite extends JsonHelperDefault {
 			const alias = generateAlias();
 			const { operator: filterOperator, value: filterValue } = getOperation(jsonPath, value);
 			dbQuery = dbQuery.select(this.knex.raw('json_extract(??.value, ?) as ??', [oldAlias, jsonPath, alias]));
-			if (filterOperator === '_in') {
-				let value = filterValue;
-				if (typeof value === 'string') value = value.split(',');
-
-				dbQuery['and'].whereIn(alias, value as string[]);
-			}
+			applyJsonFilterQuery(dbQuery, alias, filterOperator, filterValue, 'and');
 		}
 
 		return dbQuery;
