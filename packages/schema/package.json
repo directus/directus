@@ -8,6 +8,9 @@
 		"./package.json": "./package.json"
 	},
 	"types": "dist/index.d.ts",
+	"files": [
+		"dist"
+	],
 	"scripts": {
 		"build": "tsc --build && echo \"Built successfully\"",
 		"dev": "npm-watch build"

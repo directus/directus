@@ -8,6 +8,9 @@
 		".": "./lib/index.js",
 		"./package.json": "./package.json"
 	},
+	"files": [
+		"lib/index.js"
+	],
 	"bin": {
 		"create-directus-extension": "./lib/index.js",
 		"cde": "./lib/index.js"

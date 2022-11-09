@@ -134,7 +134,6 @@ importers:
       chokidar: 3.5.3
       commander: 9.4.1
       cookie-parser: 1.4.6
-      copyfiles: 2.4.1
       cors: 2.8.5
       cross-env: 7.0.3
       csv-parser: 3.0.0
@@ -360,7 +359,6 @@ importers:
       '@types/uuid': 8.3.4
       '@types/uuid-validate': 0.0.1
       '@types/wellknown': 0.5.3
-      copyfiles: 2.4.1
       cross-env: 7.0.3
       form-data: 4.0.0
       jest: 29.2.1_5uyhgycj63wuqgvl4exdnr442q

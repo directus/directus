@@ -33,6 +33,10 @@
 		},
 		"./package.json": "./package.json"
 	},
+	"files": [
+		"dist",
+		"!dist/**/*.test.js"
+	],
 	"sideEffects": false,
 	"scripts": {
 		"build": "run-p \"build:* {@}\"",
