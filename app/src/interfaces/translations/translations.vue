@@ -21,7 +21,7 @@
 				"
 				:disabled="disabled || !firstChangesAllowed"
 				:loading="loading"
-				:fields="fields"
+				:fields="firstFields"
 				:model-value="firstItem"
 				:initial-values="firstItemInitial"
 				:badge="languageOptions.find((lang) => lang.value === firstLang)?.text"
@@ -53,7 +53,7 @@
 				:disabled="disabled || !secondChangesAllowed"
 				:loading="loading"
 				:initial-values="secondItemInitial"
-				:fields="fields"
+				:fields="secondFields"
 				:badge="languageOptions.find((lang) => lang.value === secondLang)?.text"
 				:direction="languageOptions.find((lang) => lang.value === secondLang)?.direction"
 				:model-value="secondItem"
@@ -76,9 +76,10 @@ import { useRelationPermissionsM2M } from '@/composables/use-relation-permission
 import { useWindowSize } from '@/composables/use-window-size';
 import vTooltip from '@/directives/tooltip';
 import { useFieldsStore } from '@/stores/fields';
+import { usePermissionsStore } from '@/stores/permissions';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { toArray } from '@directus/shared/utils';
-import { isNil } from 'lodash';
+import { cloneDeep, isNil } from 'lodash';
 import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import LanguageSelect from './language-select.vue';
@@ -121,6 +122,7 @@ const { relationInfo } = useRelationM2M(collection, field);
 const { t, locale } = useI18n();
 
 const fieldsStore = useFieldsStore();
+const permissionsStore = usePermissionsStore();
 
 const { width } = useWindowSize();
 
@@ -149,7 +151,7 @@ const query = ref<RelationQueryMultiple>({
 	page: 1,
 });
 
-const { create, update, displayItems, loading, fetchedItems, getItemEdits, isLocalItem } = useRelationMultiple(
+const { create, update, displayItems, loading, fetchedItems, getItemEdits } = useRelationMultiple(
 	value,
 	query,
 	relationInfo,
@@ -316,20 +318,77 @@ function useLanguages() {
 
 const { createAllowed, updateAllowed } = useRelationPermissionsM2M(relationInfo);
 
+const firstItemNew = computed(
+	() => relationInfo.value && firstItemInitial.value?.[relationInfo.value.junctionPrimaryKeyField.field] === undefined
+);
+const secondItemNew = computed(
+	() => relationInfo.value && secondItemInitial.value?.[relationInfo.value.junctionPrimaryKeyField.field] === undefined
+);
+
 const firstChangesAllowed = computed(() => {
-	if (!relationInfo.value) return false;
-	if (firstItemInitial.value?.[relationInfo.value.junctionPrimaryKeyField.field] !== undefined) {
+	if (firstItemNew.value) {
 		return updateAllowed.value;
 	}
 	return createAllowed.value;
 });
 
 const secondChangesAllowed = computed(() => {
-	if (!relationInfo.value) return false;
-	if (secondItemInitial.value?.[relationInfo.value.junctionPrimaryKeyField.field] !== undefined) {
+	if (secondItemNew.value) {
 		return updateAllowed.value;
 	}
 	return createAllowed.value;
+});
+
+const firstFields = computed(() => {
+	let fieldsWithPerms = cloneDeep(fields.value);
+	if (!relationInfo.value) return fieldsWithPerms;
+
+	const permissions = permissionsStore.getPermissionsForUser(
+		relationInfo.value.junctionCollection.collection,
+		firstItemNew.value ? 'create' : 'update'
+	);
+
+	if (!permissions) return fieldsWithPerms;
+
+	if (permissions.fields?.includes('*') === false) {
+		fieldsWithPerms = fieldsWithPerms.map((field) => {
+			if (permissions.fields?.includes(field.field) === false) {
+				field.meta = {
+					...(field.meta || {}),
+					readonly: true,
+				} as any;
+			}
+
+			return field;
+		});
+	}
+	return fieldsWithPerms;
+});
+
+const secondFields = computed(() => {
+	let fieldsWithPerms = cloneDeep(fields.value);
+	if (!relationInfo.value) return fieldsWithPerms;
+
+	const permissions = permissionsStore.getPermissionsForUser(
+		relationInfo.value.junctionCollection.collection,
+		secondItemNew.value ? 'create' : 'update'
+	);
+
+	if (!permissions) return fieldsWithPerms;
+
+	if (permissions.fields?.includes('*') === false) {
+		fieldsWithPerms = fieldsWithPerms.map((field) => {
+			if (permissions.fields?.includes(field.field) === false) {
+				field.meta = {
+					...(field.meta || {}),
+					readonly: true,
+				} as any;
+			}
+
+			return field;
+		});
+	}
+	return fieldsWithPerms;
 });
 </script>
 
