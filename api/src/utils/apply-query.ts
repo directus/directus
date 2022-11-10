@@ -471,17 +471,17 @@ export function applyFilter(
 				dbQuery[logical].whereNull(selectionRaw);
 			}
 
-			if (operator === '_nnull' || (operator === '_null' && compareValue === false)) {
+			else if (operator === '_nnull' || (operator === '_null' && compareValue === false)) {
 				dbQuery[logical].whereNotNull(selectionRaw);
 			}
 
-			if (operator === '_empty' || (operator === '_nempty' && compareValue === false)) {
+			else if (operator === '_empty' || (operator === '_nempty' && compareValue === false)) {
 				dbQuery[logical].andWhere((query) => {
 					query.where(key, '=', '');
 				});
 			}
 
-			if (operator === '_nempty' || (operator === '_empty' && compareValue === false)) {
+			else if (operator === '_nempty' || (operator === '_empty' && compareValue === false)) {
 				dbQuery[logical].andWhere((query) => {
 					query.where(key, '!=', '');
 				});
