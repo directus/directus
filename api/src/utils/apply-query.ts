@@ -469,19 +469,13 @@ export function applyFilter(
 			// These operators don't rely on a value, and can thus be used without one (eg `?filter[field][_null]`)
 			if (operator === '_null' || (operator === '_nnull' && compareValue === false)) {
 				dbQuery[logical].whereNull(selectionRaw);
-			}
-
-			else if (operator === '_nnull' || (operator === '_null' && compareValue === false)) {
+			} else if (operator === '_nnull' || (operator === '_null' && compareValue === false)) {
 				dbQuery[logical].whereNotNull(selectionRaw);
-			}
-
-			else if (operator === '_empty' || (operator === '_nempty' && compareValue === false)) {
+			} else if (operator === '_empty' || (operator === '_nempty' && compareValue === false)) {
 				dbQuery[logical].andWhere((query) => {
 					query.where(key, '=', '');
 				});
-			}
-
-			else if (operator === '_nempty' || (operator === '_empty' && compareValue === false)) {
+			} else if (operator === '_nempty' || (operator === '_empty' && compareValue === false)) {
 				dbQuery[logical].andWhere((query) => {
 					query.where(key, '!=', '');
 				});
