@@ -66,7 +66,7 @@ export default function applyQuery(
 	}
 
 	if (query.filter) {
-		({ hasMultiRelationalFilter } = applyFilter(knex, schema, dbQuery, query.filter, collection, aliasMap));
+		hasMultiRelationalFilter = applyFilter(knex, schema, dbQuery, query.filter, collection, aliasMap).hasMultiRelationalFilter;
 	}
 
 	return { query: dbQuery, hasMultiRelationalFilter };
