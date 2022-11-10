@@ -13,8 +13,7 @@ import { checkJsonSupport, getHelpers } from './helpers';
 import { DatabaseClients } from './helpers/types';
 
 let database: Knex | null = null;
-let databaseVersion = '-',
-	databaseBanner = '';
+let databaseVersion: { parsed: number[]; full: string } = { parsed: [], full: '' };
 let inspector: ReturnType<typeof SchemaInspector> | null = null;
 
 export default function getDatabase(): Knex {
@@ -307,22 +306,20 @@ async function validateDatabaseCharset(database?: Knex): Promise<void> {
 	return;
 }
 
-export function getDatabaseVersion(): { parsed: string; full: string } {
-	return { parsed: databaseVersion, full: databaseBanner };
+export function getDatabaseVersion() {
+	return databaseVersion;
 }
 
 export async function validateDatabaseVersion(): Promise<void> {
 	const database = getDatabase();
 	const client = getDatabaseClient(database);
 	const helpers = getHelpers(database);
-	const { parsed, full } = await helpers.schema.getVersion();
-	databaseVersion = parsed;
-	databaseBanner = full;
-	const supported = checkJsonSupport(client, databaseVersion, databaseBanner);
+	databaseVersion = await helpers.schema.getVersion();
+	const supported = checkJsonSupport(client, databaseVersion);
 	if (!supported) {
-		logger.warn(`JSON queries are not supported natively by ${client} (version: ${parsed})`);
+		logger.warn(`JSON queries are not supported natively by ${client} (version: ${databaseVersion.parsed})`);
 		logger.warn(`Falling back to json post-processing instead, using JSON in "filter" will not work!`);
 	} else {
-		logger.info(`Database: ${client} (version: ${parsed})`);
+		logger.info(`Database: ${client} (version: ${databaseVersion.parsed})`);
 	}
 }

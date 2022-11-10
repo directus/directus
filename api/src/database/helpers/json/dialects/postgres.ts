@@ -4,9 +4,9 @@ import { JsonFieldNode } from '../../../../types';
 import { getOperation } from '../../../../utils/apply-query';
 
 export class JsonHelperPostgres extends JsonHelperDefault {
-	static isSupported(version: string, _full = ''): boolean {
-		if (version === '-') return false;
-		const major = parseInt(version.split('.')[0]);
+	static isSupported({ parsed }: { parsed: number[]; full: string }): boolean {
+		if (parsed.length === 0) return false;
+		const [major] = parsed;
 		// we're currently only supporting the 14+ version untill other exceptions have been added
 		return major >= 14;
 	}

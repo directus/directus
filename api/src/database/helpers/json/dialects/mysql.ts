@@ -5,12 +5,10 @@ import { JsonHelperDefault } from './default';
  * We may want a fallback to support wildcard queries (will be super slow unfortunately)
  */
 export class JsonHelperMySQL extends JsonHelperDefault {
-	static isSupported(version: string, fullString: string): boolean {
-		if (version === '-') return false;
-		const [majorStr, minorStr] = version.split('.');
-		const major = parseInt(majorStr),
-			minor = parseInt(minorStr);
-		if (/MariaDB/i.test(fullString)) {
+	static isSupported({ parsed, full }: { parsed: number[]; full: string }): boolean {
+		if (parsed.length === 0) return false;
+		const [major, minor] = parsed;
+		if (/MariaDB/i.test(full)) {
 			if (major == 10 && minor >= 2) return true;
 			return false;
 		}

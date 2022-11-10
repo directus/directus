@@ -9,7 +9,7 @@ export abstract class JsonHelper extends DatabaseHelper {
 		this.schema = schema;
 		this.nodes = nodes;
 	}
-	static isSupported(_version: string, _full = ''): boolean {
+	static isSupported(_version: { parsed: number[]; full: string }): boolean {
 		return false;
 	}
 

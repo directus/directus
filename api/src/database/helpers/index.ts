@@ -25,8 +25,8 @@ export function getJsonHelper(database: Knex, schema: SchemaOverview, nodes: Jso
 	return new jsonHelpers[client](database, schema, nodes);
 }
 
-export function checkJsonSupport(client: DatabaseClients, version: string, fullVersion = ''): boolean {
-	return jsonHelpers[client].isSupported(version, fullVersion);
+export function checkJsonSupport(client: DatabaseClients, version: { parsed: number[]; full: string }): boolean {
+	return jsonHelpers[client].isSupported(version);
 }
 
 export function getFunctions(database: Knex, schema: SchemaOverview) {

@@ -1,4 +1,4 @@
-import { Item } from '@directus/shared/types';
+import { Item, SchemaOverview } from '@directus/shared/types';
 import { parseJSON } from '@directus/shared/utils';
 import { Knex } from 'knex';
 import { JsonHelper } from '../types';
@@ -6,6 +6,7 @@ import { JSONPath } from 'jsonpath-plus';
 import { JsonFieldNode } from '../../../../types';
 import { transformFilterJsonPath } from './postgres';
 import { getOperation } from '../../../../utils/apply-query';
+import { getDatabaseVersion } from '../../..';
 
 const jsonPathPlusOptions = {
 	preventEval: true,
@@ -15,6 +16,11 @@ const jsonPathPlusOptions = {
  * The default handler holds shared functions and fallback features
  */
 export class JsonHelperDefault extends JsonHelper {
+	protected version: { parsed: number[]; full: string };
+	constructor(protected knex: Knex, protected schema: SchemaOverview, protected nodes: JsonFieldNode[] = []) {
+		super(knex, schema, nodes);
+		this.version = getDatabaseVersion();
+	}
 	preProcess(dbQuery: Knex.QueryBuilder, table: string): void {
 		this.preProcessKnex(dbQuery, table);
 		// what do we default to?

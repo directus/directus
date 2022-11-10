@@ -34,9 +34,9 @@ from "jason", "XYZ"
 where "XYZ"."id" = "jason"."id"
  */
 export class JsonHelperOracle extends JsonHelperDefault {
-	static isSupported(version: string, _full = ''): boolean {
-		if (version === '-') return false;
-		const major = parseInt(version.split('.')[0]);
+	static isSupported({ parsed }: { parsed: number[]; full: string }): boolean {
+		if (parsed.length === 0) return false;
+		const [major] = parsed;
 		// json support added in version 12c
 		// https://docs.oracle.com/en/database/oracle/oracle-database/12.2/adjsn/function-JSON_QUERY.html#GUID-D64C7BE9-335D-449C-916D-1123539BF1FB
 		return major > 12;

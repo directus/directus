@@ -89,8 +89,11 @@ export abstract class SchemaHelper extends DatabaseHelper {
 		return;
 	}
 
-	async getVersion(): Promise<{ parsed: string; full: string }> {
+	async getVersion(): Promise<{ parsed: number[]; full: string }> {
 		const version = await this.knex.select(this.knex.raw('@@version'));
-		return { parsed: version[0]['@@version'], full: version[0]['@@version'] };
+		return {
+			parsed: version[0]['@@version'].split('.').map((num: string) => parseInt(num, 10)),
+			full: version[0]['@@version'],
+		};
 	}
 }

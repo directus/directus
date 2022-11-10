@@ -2,9 +2,9 @@ import { Knex } from 'knex';
 import { JsonHelperDefault } from './default';
 
 export class JsonHelperCockroachDB extends JsonHelperDefault {
-	static isSupported(version: string, _full = ''): boolean {
-		if (version === '-') return false;
-		const major = parseInt(version.substring(1).split('.')[0]);
+	static isSupported({ parsed }: { parsed: number[]; full: string }): boolean {
+		if (parsed.length === 0) return false;
+		const [major] = parsed;
 		// apparently cockroach DB supports JSON since v2 but not very well
 		return major >= 2;
 	}
