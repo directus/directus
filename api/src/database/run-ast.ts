@@ -126,8 +126,12 @@ export default async function runAST(
 			}
 		}
 
-		// Transform json query results
-		getJsonHelper(knex, schema, jsonNodes).postProcess(toArray(rawItems));
+		// Some vendors return json results as strings which will need to be parsed
+		// Some vendors also require post-processing to compensate for lack of native support
+		if (jsonNodes.length > 0) {
+			const jsonHelper = getJsonHelper(knex, schema, jsonNodes);
+			jsonHelper.postProcess(toArray(rawItems));
+		}
 
 		// During the fetching of data, we have to inject a couple of required fields for the child nesting
 		// to work (primary / foreign keys) even if they're not explicitly requested. After all fetching
@@ -244,22 +248,24 @@ function getDBQuery(
 	const preProcess = getColumnPreprocessor(knex, schema, table);
 
 	const jsonNodes = fieldNodes.filter((node) => node.type === 'jsonField') as JsonFieldNode[];
-	const jsonHelper = getJsonHelper(knex, schema, jsonNodes);
 	const regularNodes = fieldNodes.filter((node) => node.type !== 'jsonField') as (
 		| FieldNode
 		| FunctionFieldNode
 		| M2ONode
 	)[];
+	const jsonHelper = getJsonHelper(knex, schema, jsonNodes);
+	const dbQuery = knex.select(regularNodes.map(preProcess));
 
-	let dbQuery = knex.select(regularNodes.map(preProcess));
-	dbQuery = jsonHelper.preProcess(dbQuery, table);
+	if (jsonNodes.length > 0) {
+		jsonHelper.preProcess(dbQuery, table);
+	} else {
+		dbQuery.from(table);
+	}
 
 	const queryCopy = clone(query);
 	queryCopy.limit = typeof queryCopy.limit === 'number' ? queryCopy.limit : 100;
 
-	dbQuery = applyQuery(knex, table, dbQuery, queryCopy, schema, false, jsonNodes);
-
-	return dbQuery;
+	return applyQuery(knex, table, dbQuery, queryCopy, schema, false, jsonNodes);
 }
 
 function applyParentFilters(

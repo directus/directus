@@ -18,9 +18,8 @@ export class JsonHelperMySQL extends JsonHelperDefault {
 		if (major === 5 && minor >= 7) return true; // 5.7 or higher
 		return false;
 	}
-	preProcess(dbQuery: Knex.QueryBuilder, table: string): Knex.QueryBuilder {
-		if (this.nodes.length === 0) return dbQuery.from(table);
-		return dbQuery
+	preProcess(dbQuery: Knex.QueryBuilder, table: string): void {
+		dbQuery
 			.select(
 				this.nodes.map((node) => {
 					const q = this.knex.raw('?', [node.jsonPath]).toQuery();

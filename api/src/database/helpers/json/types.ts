@@ -13,6 +13,6 @@ export abstract class JsonHelper extends DatabaseHelper {
 		return false;
 	}
 
-	abstract preProcess(dbQuery: Knex.QueryBuilder, table: string): Knex.QueryBuilder;
+	abstract preProcess(dbQuery: Knex.QueryBuilder, table: string): void;
 	abstract postProcess(items: Item[]): void;
 }

@@ -44,9 +44,7 @@ export class JsonHelperSQLite extends JsonHelperDefault {
 		if (major === 3 && minor >= 38) return true; // 3.38 or higher
 		return false;
 	}
-	preProcess(dbQuery: Knex.QueryBuilder, table: string): Knex.QueryBuilder {
-		if (this.nodes.length === 0) return dbQuery.from(table);
-
+	preProcess(dbQuery: Knex.QueryBuilder, table: string): void {
 		const selectQueries = this.nodes.filter(
 			({ jsonPath, query }) =>
 				jsonPath.indexOf('[*]') === -1 && jsonPath.indexOf('.*') === -1 && Object.keys(query).length === 0
@@ -58,17 +56,17 @@ export class JsonHelperSQLite extends JsonHelperDefault {
 
 		if (joinQueries.length > 0) {
 			for (const node of joinQueries) {
-				dbQuery = this.buildWithJson(dbQuery, node, table);
+				this.buildWithJson(dbQuery, node, table);
 			}
 		}
 		if (selectQueries.length > 0) {
-			dbQuery = dbQuery.select(
+			dbQuery.select(
 				selectQueries.map((node) => {
 					return this.knex.raw(this.knex.jsonExtract(`${table}.${node.name}`, node.jsonPath, node.fieldKey, false));
 				})
 			);
 		}
-		return dbQuery.from(table);
+		dbQuery.from(table);
 	}
 	private buildWithJson(dbQuery: Knex.QueryBuilder, node: JsonFieldNode, table: string): Knex.QueryBuilder {
 		const { jsonPath, name } = node;
