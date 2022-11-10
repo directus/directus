@@ -155,13 +155,14 @@ function addJoin({ path, collection, aliasMap, rootQuery, schema, relations, kne
 		if (!existingAlias) {
 			const alias = generateAlias();
 			const aliasKey = parentFields ? `${parentFields}.${pathParts[0]}` : pathParts[0];
+			const aliasedParentCollection = aliasMap[parentFields ?? '']?.alias || parentCollection;
 
 			aliasMap[aliasKey] = { alias, collection: '' };
 
 			if (relationType === 'm2o') {
 				rootQuery.leftJoin(
 					{ [alias]: relation.related_collection! },
-					`${aliasMap[parentFields ?? '']?.alias || parentCollection}.${relation.field}`,
+					`${aliasedParentCollection}.${relation.field}`,
 					`${alias}.${schema.collections[relation.related_collection!].primary}`
 				);
 				aliasMap[aliasKey].collection = relation.related_collection!;
@@ -178,7 +179,7 @@ function addJoin({ path, collection, aliasMap, rootQuery, schema, relations, kne
 					joinClause
 						.onVal(relation.meta!.one_collection_field!, '=', pathScope)
 						.andOn(
-							`${aliasMap[parentFields ?? '']?.alias || parentCollection}.${relation.field}`,
+							`${aliasedParentCollection}.${relation.field}`,
 							'=',
 							knex.raw(getHelpers(knex).schema.castM2aPrimaryKey(), `${alias}.${schema.collections[pathScope].primary}`)
 						);
@@ -193,9 +194,7 @@ function addJoin({ path, collection, aliasMap, rootQuery, schema, relations, kne
 							'=',
 							knex.raw(
 								getHelpers(knex).schema.castM2aPrimaryKey(),
-								`${aliasMap[parentFields ?? '']?.alias || parentCollection}.${
-									schema.collections[parentCollection].primary
-								}`
+								`${aliasedParentCollection}.${schema.collections[parentCollection].primary}`
 							)
 						);
 				});
@@ -205,9 +204,7 @@ function addJoin({ path, collection, aliasMap, rootQuery, schema, relations, kne
 			} else if (relationType === 'o2m') {
 				rootQuery.leftJoin(
 					{ [alias]: relation.collection },
-					`${aliasMap[parentFields ?? '']?.alias || parentCollection}.${
-						schema.collections[relation.related_collection!].primary
-					}`,
+					`${aliasedParentCollection}.${schema.collections[relation.related_collection!].primary}`,
 					`${alias}.${relation.field}`
 				);
 				aliasMap[aliasKey].collection = relation.collection;

@@ -26,13 +26,12 @@ export abstract class FnHelper extends DatabaseHelper {
 	abstract count(table: string, column: string, options?: FnHelperOptions): Knex.Raw;
 
 	protected _relationalCount(table: string, column: string, options?: FnHelperOptions): Knex.Raw {
+		const collectionName = options?.originalCollectionName || table;
+
 		const relation = this.schema.relations.find(
-			(relation) =>
-				relation.related_collection === (options?.originalCollectionName || table) &&
-				relation?.meta?.one_field === column
+			(relation) => relation.related_collection === collectionName && relation?.meta?.one_field === column
 		);
 
-		const collectionName = options?.originalCollectionName || table;
 		const currentPrimary = this.schema.collections[collectionName].primary;
 
 		if (!relation) {
