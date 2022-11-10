@@ -89,6 +89,7 @@ import { GraphQLVoid } from './types/void';
 import { addPathToValidationError } from './utils/add-path-to-validation-error';
 import { GraphQLHash } from './types/hash';
 import { GraphQLBigInt } from './types/bigint';
+import { FUNCTIONS } from '@directus/shared/constants';
 
 const validationRules = Array.from(specifiedRules);
 
@@ -1675,7 +1676,9 @@ export class GraphQLService {
 
 		function replaceFuncDeep(filter: Record<string, any>) {
 			return transform(filter, (result: Record<string, any>, value, key) => {
-				if (typeof key === 'string' && key.endsWith('_func')) {
+				const isFunctionKey = key.endsWith('_func') && FUNCTIONS.includes(Object.keys(value)[0]! as any);
+
+				if (typeof key === 'string' && isFunctionKey) {
 					const functionName = Object.keys(value)[0]!;
 					const fieldName = key.slice(0, -5);
 
