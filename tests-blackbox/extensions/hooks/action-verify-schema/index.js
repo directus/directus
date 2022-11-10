@@ -60,7 +60,7 @@ module.exports = function registerHooks({ action }) {
 
 					key += `/${data.collection}/${data.event}/${data.key}`;
 
-					if (schema.collections[data.collection].fields[data.key]) {
+					if (schema.collections[data.payload.collection].fields[data.payload.field]) {
 						await database(logConnection).insert({ key, value: '1' });
 					} else {
 						await database(logConnection).insert({ key, value: '0' });
