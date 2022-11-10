@@ -596,6 +596,8 @@ export class CollectionsService {
 						// Delete related o2m fields that point to current collection
 						if (relation.related_collection && relation.meta?.one_field) {
 							await fieldsService.deleteField(relation.related_collection, relation.meta.one_field, {
+								autoPurgeCache: false,
+								autoPurgeSystemCache: false,
 								bypassEmitAction: (params) =>
 									opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 							});
@@ -604,6 +606,8 @@ export class CollectionsService {
 						// Delete related m2o fields that point to current collection
 						if (relation.related_collection === collectionKey) {
 							await fieldsService.deleteField(relation.collection, relation.field, {
+								autoPurgeCache: false,
+								autoPurgeSystemCache: false,
 								bypassEmitAction: (params) =>
 									opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 							});

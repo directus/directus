@@ -600,7 +600,7 @@ export class FieldsService {
 				await this.helpers.schema.postColumnChange();
 			}
 
-			if (this.cache && env.CACHE_AUTO_PURGE) {
+			if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
 				await this.cache.clear();
 			}
 
