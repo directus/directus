@@ -8,6 +8,7 @@ import {
 	PutObjectCommand,
 	ListObjectsV2Command,
 	_Object,
+	HeadObjectCommandInput,
 } from '@aws-sdk/client-s3';
 import {
 	Storage,
@@ -28,6 +29,7 @@ const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
 
 import path from 'path';
 import normalize from 'normalize-path';
+import { PassThrough } from 'stream';
 
 function handleError(err: Error, path: string, bucket: string): Error {
 	switch (err.name) {
@@ -58,7 +60,6 @@ export class AmazonWebServicesS3Storage extends Storage {
 				accessKeyId: config.key,
 				secretAccessKey: config.secret,
 			},
-			...config,
 		});
 
 		this.$bucket = config.bucket;
@@ -126,9 +127,7 @@ export class AmazonWebServicesS3Storage extends Storage {
 	 */
 	public async exists(location: string): Promise<ExistsResponse> {
 		location = this._fullPath(location);
-
-		const params = { Key: location, Bucket: this.$bucket };
-
+		const params: HeadObjectCommandInput = { Key: location, Bucket: this.$bucket };
 		try {
 			const result = await this.$driver.send(new HeadObjectCommand(params));
 			return { exists: true, raw: result };
@@ -226,18 +225,23 @@ export class AmazonWebServicesS3Storage extends Storage {
 	/**
 	 * Returns the stream for the given file.
 	 */
-	/* public getStream(location: string, range?: Range): NodeJS.ReadableStream {
+	public getStream(location: string, range: any): NodeJS.ReadableStream {
 		location = this._fullPath(location);
+		const intermediateStream = new PassThrough({ highWaterMark: 1 });
 
-		const params: S3.GetObjectRequest = {
+		const params = {
 			Key: location,
 			Bucket: this.$bucket,
 			Range: range ? `bytes=${range.start}-${range.end || ''}` : undefined,
 		};
+		this.$driver.send(new GetObjectCommand(params)).then((result) => {
+			const stream = result.Body as NodeJS.ReadableStream;
+			stream.pipe(intermediateStream);
+		});
 
-		return this.$driver.getObject(params).createReadStream();
+		return intermediateStream;
 	}
- */
+
 	/**
 	 * Returns url for a given key.
 	 */
