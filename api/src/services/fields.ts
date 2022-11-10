@@ -501,6 +501,7 @@ export class FieldsService {
 					// If the current field is a m2o, delete the related o2m if it exists and remove the relationship
 					if (isM2O) {
 						await relationsService.deleteOne(collection, field, {
+							autoPurgeSystemCache: false,
 							bypassEmitAction: (params) =>
 								opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 						});

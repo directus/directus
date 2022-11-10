@@ -397,7 +397,9 @@ export class RelationsService {
 				await this.helpers.schema.postColumnChange();
 			}
 
-			await clearSystemCache();
+			if (opts?.autoPurgeSystemCache !== false) {
+				await clearSystemCache();
+			}
 
 			if (opts?.emitEvents !== false && nestedActionEvents.length > 0) {
 				const updatedSchema = await getSchema({ accountability: this.accountability || undefined });
