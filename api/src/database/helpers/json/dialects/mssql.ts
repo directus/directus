@@ -1,34 +1,37 @@
 import { Item } from '@directus/shared/types';
-import { parseJSON } from '@directus/shared/utils';
 import { Knex } from 'knex';
 import { JsonFieldNode } from '../../../../types';
-import { JsonHelperFallback } from './fallback';
+import { JsonHelperDefault } from './default';
 
 /**
  * We may want a fallback to support wildcard queries (will be super slow unfortunately)
  */
-export class JsonHelperMSSQL extends JsonHelperFallback {
+export class JsonHelperMSSQL extends JsonHelperDefault {
 	fallbackNodes: JsonFieldNode[] = [];
-	static isSupported(version: string, _full = ''): boolean {
-		if (version === '-') return false;
-		const major = parseInt(version.split('.')[0]);
+	static isSupported({ parsed }: { parsed: number[]; full: string }): boolean {
+		if (parsed.length === 0) return false;
+		const [major] = parsed;
 		// the json support we need will be added in version 2022
 		// https://learn.microsoft.com/en-us/sql/t-sql/functions/json-array-transact-sql?view=sql-server-ver16
 		return major >= 16; // SQL Server 2022 (16.x) Preview
 	}
-	preProcess(dbQuery: Knex.QueryBuilder, table: string): Knex.QueryBuilder {
-		if (this.nodes.length === 0) return dbQuery.from(table);
+	preProcess(dbQuery: Knex.QueryBuilder, table: string): void {
 		const selectQueries = this.nodes.filter(({ jsonPath }) => jsonPath.indexOf('*') === -1);
 		const joinQueries = this.nodes.filter(({ jsonPath }) => jsonPath.indexOf('*') > 0);
 		if (joinQueries.length > 0) {
 			// no viable solutions found yet without JSON_ARRAY support
 			// fallback to postprocessing for these queries
 			this.fallbackNodes = joinQueries;
+			dbQuery.select(
+				this.nodes.map((node) => {
+					return this.knex.raw('??.?? as ??', [table, node.name, node.fieldKey]);
+				})
+			);
 		}
 		if (selectQueries.length > 0) {
-			dbQuery = dbQuery.select(this.nodes.map((node) => this.jsonQueryOrValue(`${table}.${node.name}`, node)));
+			dbQuery.select(this.nodes.map((node) => this.jsonQueryOrValue(`${table}.${node.name}`, node)));
 		}
-		return dbQuery.from(table);
+		dbQuery.from(table);
 	}
 	private jsonQueryOrValue(field: string, node: JsonFieldNode): Knex.Raw {
 		const qPath = this.knex.raw('?', [node.jsonPath]).toQuery();
@@ -42,17 +45,9 @@ export class JsonHelperMSSQL extends JsonHelperFallback {
 		if (this.nodes.length === 0) return;
 		for (const item of items) {
 			for (const jsonNode of this.fallbackNodes) {
-				this.postProcessItem(item, jsonNode);
-			}
-			for (const { fieldKey: key } of this.nodes) {
-				if (key in item && typeof item[key] === 'string') {
-					try {
-						item[key] = parseJSON(item[key]);
-					} catch {
-						// in case a single string value was returned
-					}
-				}
+				this.postProcessJsonPath(item, jsonNode);
 			}
 		}
+		this.postProcessParseJSON(items);
 	}
 }
