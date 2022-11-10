@@ -319,14 +319,14 @@ describe('Integration Tests', () => {
 
 			// the rest of KNEX_TYPES except the ones above
 			it.each([
-				{ type: 'boolean' },
-				{ type: 'date' },
-				{ type: 'json' },
-				{ type: 'text' },
-				{ type: 'time' },
-				{ type: 'binary' },
-				{ type: 'uuid' },
-			])('$type fields should use $type()', async ({ type }) => {
+				{ type: 'boolean', method: 'boolean' },
+				{ type: 'date', method: 'date' },
+				{ type: 'json', method: 'jsonb' },
+				{ type: 'text', method: 'text' },
+				{ type: 'time', method: 'time' },
+				{ type: 'binary', method: 'binary' },
+				{ type: 'uuid', method: 'uuid' },
+			])('$type fields should use $method()', async ({ type, method }) => {
 				const testCollection = 'test_collection';
 				const testField = 'test_field';
 
@@ -334,7 +334,7 @@ describe('Integration Tests', () => {
 				tracker.on.any(regex).response({});
 
 				await db.schema.alterTable(testCollection, (table) => {
-					knexCreateTableBuilderSpy = jest.spyOn(table, type as keyof Knex.CreateTableBuilder);
+					knexCreateTableBuilderSpy = jest.spyOn(table, method as keyof Knex.CreateTableBuilder);
 
 					service.addColumnToTable(table, {
 						collection: testCollection,
