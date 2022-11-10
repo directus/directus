@@ -50,7 +50,28 @@ export default async function runAST(
 		const results: { [collection: string]: null | Item | Item[] } = {};
 
 		for (const collection of ast.names) {
-			results[collection] = await run(collection, ast.children[collection], ast.query[collection]);
+			let hasMore = true;
+			let batchCount = 0;
+			results[collection] = [];
+
+			while (hasMore) {
+				const query = merge({}, ast.query[collection], {
+					limit: env.RELATIONAL_BATCH_SIZE,
+					offset: batchCount * env.RELATIONAL_BATCH_SIZE,
+					page: null,
+				});
+
+				const nestedItems = await run(collection, ast.children[collection], query);
+
+				if (Array.isArray(nestedItems)) results[collection]?.push(...nestedItems);
+				else results[collection]?.push(nestedItems);
+
+				if (!nestedItems || nestedItems.length < env.RELATIONAL_BATCH_SIZE) {
+					hasMore = false;
+				}
+
+				batchCount++;
+			}
 		}
 
 		return results;
@@ -62,7 +83,7 @@ export default async function runAST(
 		collection: string,
 		children: (NestedCollectionNode | FieldNode | FunctionFieldNode)[],
 		query: Query
-	) {
+	): Promise<null | Item | Item[]> {
 		// Retrieve the database columns to select in the current AST
 		const { fieldNodes, primaryKeyField, nestedCollectionNodes } = await parseCurrentLevel(
 			schema,
