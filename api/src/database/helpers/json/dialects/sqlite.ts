@@ -3,7 +3,6 @@ import { JsonFieldNode } from '../../../../types';
 import { customAlphabet } from 'nanoid';
 import { JsonHelperDefault } from './default';
 import { getOperation } from '../../../../utils/apply-query';
-import logger from '../../../../logger';
 import { applyJsonFilterQuery } from '../filters';
 import { Item } from '@directus/shared/types';
 
@@ -27,6 +26,19 @@ join xyz ON xyz.id = jason.id;
 WITH xyz AS (
     SELECT jason.id, json_group_array(json_extract(K.value, "$.b")) as X
     FROM jason, json_each(jason.data, "$") J, json_each(J.value, "$.a") K
+    GROUP BY jason.id
+)
+select jason.id, xyz.X
+from jason
+join xyz ON xyz.id = jason.id;
+ */
+/**
+ * To support deep queries consistently the above needs to be extended to:
+
+WITH xyz AS (
+    SELECT jason.id, json_group_array(json_extract(K.value, "$.b")) as X
+    FROM jason, json_each(jason.data, "$") J, json_each(J.value, "$.a") K
+	WHERE X >= 10
     GROUP BY jason.id
 )
 select jason.id, xyz.X
@@ -76,7 +88,6 @@ export class JsonHelperSQLite extends JsonHelperDefault {
 			.split('[*]')
 			.flatMap((p) => p.split('.*'))
 			.map((q) => (q.startsWith('$') ? q : '$' + q));
-		logger.info(arrayParts);
 		const aliases = arrayParts.map(() => generateAlias()),
 			withAlias = generateAlias();
 		const primaryKey = this.schema.collections[table].primary;
@@ -84,16 +95,36 @@ export class JsonHelperSQLite extends JsonHelperDefault {
 			this.knex.raw('??', [table]),
 			this.knex.raw('json_each(??.??, ?) as ??', [table, name, arrayParts[0], aliases[0]]),
 		];
-		let subQuery = this.knex.select([`${table}.${primaryKey}`, this.buildJsonGroupArray(arrayParts, aliases)]);
+		const subQuery = this.knex.select(`${table}.${primaryKey}`);
 		for (let i = 1; i < arrayParts.length - 1; i++) {
 			fromList.push(this.knex.raw('json_each(??.value, ?) as ??', [aliases[i - 1], arrayParts[i], aliases[i]]));
 		}
-		subQuery = this.applyFilter(
-			subQuery.fromRaw(this.knex.raw(fromList.map((f) => f.toQuery()).join(','))),
-			node,
-			aliases[aliases.length - 2]
-		).groupBy(`${table}.${primaryKey}`);
-		dbQuery = dbQuery
+		const conditions = [];
+		if (node.query?.filter) {
+			for (const [jsonPath, value] of Object.entries(node.query?.filter)) {
+				const alias = generateAlias();
+				subQuery.select(this.knex.raw('json_group_array(??.value) as ??', [alias, aliases[aliases.length - 1]]));
+				fromList.push(
+					this.knex.raw('json_each(??.value, ?) as ??', [
+						aliases[aliases.length - 2],
+						arrayParts[arrayParts.length - 1],
+						alias,
+					])
+				);
+				const { operator: filterOperator, value: filterValue } = getOperation(jsonPath, value);
+				const alias2 = generateAlias();
+				subQuery.select(this.knex.raw('json_extract(??.value, ?) as ??', [alias, jsonPath, alias2]));
+				conditions.push({ alias: alias2, operator: filterOperator, value: filterValue });
+			}
+		} else {
+			subQuery.select(this.buildJsonGroupArray(arrayParts, aliases));
+		}
+		subQuery.fromRaw(this.knex.raw(fromList.map((f) => f.toQuery()).join(',')));
+		for (const { alias, operator, value } of conditions) {
+			applyJsonFilterQuery(subQuery, alias, operator, value, 'and');
+		}
+		subQuery.groupBy(`${table}.${primaryKey}`);
+		dbQuery
 			.with(withAlias, subQuery)
 			.select(this.knex.raw('??.?? as ??', [withAlias, aliases[aliases.length - 1], node.fieldKey]))
 			.join(withAlias, `${table}.${primaryKey}`, '=', `${withAlias}.${primaryKey}`);
