@@ -1,7 +1,7 @@
 {
 	"name": "@directus/drive-azure",
 	"type": "module",
-	"version": "9.18.1",
+	"version": "9.20.4",
 	"description": "Azure Blob driver for @directus/drive",
 	"license": "MIT",
 	"main": "dist/index.js",
@@ -40,17 +40,22 @@
 		"dist"
 	],
 	"dependencies": {
-		"@azure/storage-blob": "^12.6.0",
-		"@directus/drive": "workspace:*"
+		"@azure/storage-blob": "12.12.0",
+		"@directus/drive": "workspace:*",
+		"normalize-path": "3.0.0"
 	},
 	"devDependencies": {
 		"@types/fs-extra": "9.0.13",
+		"@types/node": "18.11.2",
+		"@types/normalize-path": "3.0.0",
+		"dotenv": "16.0.3",
+		"fs-extra": "10.1.0",
 		"@types/node": "16.11.9",
 		"dotenv": "10.0.0",
 		"fs-extra": "10.0.0",
 		"npm-run-all": "4.1.5",
 		"vitest": "^0.18.1",
-		"typescript": "4.8.2"
+		"typescript": "4.8.4"
 	},
 	"publishConfig": {
 		"access": "public"

@@ -400,12 +400,12 @@ functions:
   second: Saniye
   count: Say
 date-fns_date: PPP
-date-fns_time: 's:dd:ss a'
-date-fns_time_no_seconds: 's:dd a'
-date-fns_time_24hour: 'SS:dd:ss'
-date-fns_time_no_seconds_24hour: 'SS:dd'
+date-fns_time: 'h:mm:ss a'
+date-fns_time_no_seconds: 'h:mm a'
+date-fns_time_24hour: 'HH:mm:ss'
+date-fns_time_no_seconds_24hour: 'HH:mm'
 date-fns_date_short: 'MMM d, u'
-date-fns_time_short: 's:aa a'
+date-fns_time_short: 'h:mma'
 date-fns_date_short_no_year: MMM d
 minutes: Dakika
 hours: Saat
@@ -1884,32 +1884,8 @@ layouts:
     default_template: Koleksiyon Varsayılanı Kullanılıyor...
     no_compatible_fields: Hiç uyumlu alan yok
   kanban:
-    name: Kanban,
-    group_field: Gruplandırma,
-    group_field_placeholder: Gruplandırılacak alan...,
-    group_title: Grup Başlığı,
-    group_title_placeholder: Grup başlıkları için alan...,
-    title: Kart Başlığı,
-    title_placeholder: İsteğe bağlı başlık alanı...,
-    text: Kart Metni,
-    text_placeholder: İsteğe bağlı metin alanı...,
-    date: Kart Tarihi,
-    date_placeholder: İsteğe bağlı tarih alanı...,
-    tags: Kart Etiketleri,
-    tags_placeholder: İsteğe bağlı etiket alanı...,
-    user: Kart Kullanıcısı,
-    user_placeholder: İsteğe bağlı kullanıcı alanı...,
-    image: Kart Resmi,
-    image_placeholder: İsteğe bağlı görüntü alanı...,
-    crop: Kırp,
-    advanced: Gelişmiş,
-    edit_group: Grubu Düzenle,
-    delete_group: Grubu sil,
-    add_group: Grup Ekle,
-    add_group_placeholder: Yeni bir grup adı girin...,
-    show_ungrouped: Gruplandırılmamışları Göster,
-    show: Göster,
-    no_group: Grup Yok,
+    crop: Kırp
+    advanced: Gelişmiş
     not_all_loaded: Yalnızca ilk 1000 öğe yüklenebilir.
 panels:
   metric:
@@ -1949,7 +1925,6 @@ panels:
     y_axis_conditional_two: bir sayı olmalıdır.
   linechart:
     name: Çizgi Grafik
-    description: Bir alanın değişimini karşılaştırmak için çizgi grafiği.
     select_field: Bir alan seçmelisiniz.
     select_collection: Bir koleksiyon seçmelisiniz.
     select_x_axis: Bir X Ekseni seçmelisiniz.
@@ -1960,13 +1935,12 @@ panels:
     datasets: Veri Setleri
     show_legend: Göstergeyi Göster
     show_marker: Araç İpucu İşaretçisini Göster
-    include_dataset: En az bir veri kümesi eklemelisiniz.
     include_y_axis: Hiçbir grup belirtilmediğinde her veri kümesi için bir Y Ekseni eklemelisiniz.
     group_and_function: Hem bir grubu hem de bir işlevi dahil etmeli veya atlamalısınız.
-    straight: 'Düz'
+    straight: Düz
   meter:
-    description: İzleme değerleri için sayaç
     name: Metre
+    description: İzleme değerleri için sayaç
     select_max_value: Bir maksimum değer seçmelisiniz.
     max_greater_than_zero: Maksimum değer 0'dan büyük olmalıdır.
     select_field: Bir alan seçmelisiniz.
@@ -1976,10 +1950,8 @@ panels:
     medium: Orta
     broad: Kalın
   piechart:
-    description: Bir sütundaki grupların oranlarını gösteren dairesel grafik.
-    function: 'İşlev'
-    labels: Etiketleri Göster
-    legend: Göstergeyi Göster
+    function: İşlev
+    show_legend: Göstergeyi Göster
     right: Sağ
     bottom: Alt
     monochrome: Tek Renkli
@@ -2021,7 +1993,6 @@ triggers:
     collection_and_item: Koleksiyon ve Öğe Sayfaları
     collection_only: Yalnızca Koleksiyon Sayfası
     item_only: Yalnızca Öğe Sayfası
-a_flow_uuid: Bir Akışın Birincil Anahtar UUID'si...
 any_string_or_json: Herhangi bir dize veya JSON...
 item_payload_placeholder: Bu, öğenin alan değerlerini güncellemek için kullanılan JSON'dur...
 operations:

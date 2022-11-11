@@ -275,6 +275,7 @@ fields_group: Gruppo campi
 no_collections_found: Nessuna raccolta trovata.
 new_data_alert: 'Verranno creati i seguenti dati all''interno del tuo modello:'
 search_collection: Cerca nella raccolta...
+search_field: Campo di ricerca...
 new_field: 'Nuovo campo'
 new_collection: 'Nuova Raccolta'
 add_m2o_to_collection: 'Aggiungi M2O a "{collection}"'
@@ -752,6 +753,8 @@ add_file: Aggiungi File
 replace_file: Sostituisci File
 no_results: Nessun risultato
 no_results_copy: Regola o cancella i filtri di ricerca per visualizzare i risultati.
+no_visible_fields: Modulo vuoto
+no_visible_fields_copy: Questo modulo non ha campi visibili.
 clear_filters: Pulisci filtri
 saves_automatically: Salvataggio automatico
 role: Ruolo
@@ -781,9 +784,10 @@ label: Etichetta
 flows: Flussi
 flow: Flusso
 select_a_flow: Seleziona un flusso
+run_flow_on_current_collection: Esegui il flusso nella raccolta corrente
 run_flow_on_current: Esegui il flusso sull'elemento corrente
 run_flow_on_current_edited_confirm: Questo elemento potrebbe essere aggiornato dal flusso, sei sicuro di volerlo eseguire?
-run_flow_on_selected: Nessun elemento selezionato | Eseguire il flusso su 1 elemento selezionato | Eseguire il flusso su {n} elementi selezionati
+run_flow_on_selected: Seleziona prima uno o più elementi | Eseguire il flusso sull'elemento selezionato | Eseguire il flusso sui {n} elementi selezionati
 run_flow_success: Flusso "{flow}" eseguito con successo
 trigger: Trigger
 trigger_options: Opzioni del trigger
@@ -827,6 +831,7 @@ panel_header: Intestazione del pannello
 panel_name_placeholder: Dai un nome a questo pannello...
 panel_note_placeholder: Dettagli opzionali di questo pannello...
 panel_delete_confirm: Sei sicuro di voler eliminare questo pannello? Questa azione non può essere annullata.
+list_panel_allow_edit: Consenti la modifica in linea
 dashboard_delete_confirm: Sei sicuro di voler eliminare questa bacheca? Questa azione non può essere annullata.
 edit_dashboard: Modifica bacheca
 delete_dashboard: Elimina bacheca
@@ -1905,33 +1910,33 @@ layouts:
     default_template: Uso il default della raccolta...
     no_compatible_fields: Nessun campo compatibile
   kanban:
-    name: Kanban,
-    group_field: Raggruppa per,
-    group_field_placeholder: Campo di raggruppamento...,
-    group_title: Titolo del gruppo,
-    group_title_placeholder: Campo per i titoli del gruppo...,
-    title: Titolo della scheda,
-    title_placeholder: Campo titolo opzionale...,
-    text: Testo della scheda,
-    text_placeholder: Campo testuale opzionale...,
-    date: Data della scheda,
-    date_placeholder: Campo data opzionale...,
-    tags: Tag della scheda,
-    tags_placeholder: Campo tag opzionale...,
-    user: Utente della scheda,
-    user_placeholder: Campo utente opzionale...,
-    image: Immagine della scheda,
-    image_placeholder: Campo immagine opzionale...,
-    image_fit: Immagine della scheda adattata,
-    crop: Ritaglia,
-    advanced: Avanzate,
-    edit_group: Modifica gruppo,
-    delete_group: Elimina gruppo,
-    add_group: Aggiungi gruppo,
-    add_group_placeholder: Inserisci un nuovo titolo per il gruppo...,
-    show_ungrouped: Mostra separati,
-    show: Mostra,
-    no_group: Nessun gruppo,
+    name: Kanban
+    group_field: Raggruppa per
+    group_field_placeholder: Campo di raggruppamento...
+    group_title: Titolo del gruppo
+    group_title_placeholder: Campo per i titoli del gruppo...
+    title: Titolo della scheda
+    title_placeholder: Campo titolo opzionale...
+    text: Testo della scheda
+    text_placeholder: Campo testo opzionale...
+    date: Data della scheda
+    date_placeholder: Campo data opzionale...
+    tags: Tag della scheda
+    tags_placeholder: Campo tag opzionale...
+    user: Utente della scheda
+    user_placeholder: Campo utente opzionale...
+    image: Immagine della scheda
+    image_placeholder: Campo immagine opzionale...
+    image_fit: Adatta l'immagine della scheda
+    crop: Ritaglia
+    advanced: Avanzate
+    edit_group: Modifica gruppo
+    delete_group: Elimina gruppo
+    add_group: Aggiungi gruppo
+    add_group_placeholder: Inserisci un nuovo titolo per il gruppo...
+    show_ungrouped: Mostra separati
+    show: Mostra
+    no_group: Nessun gruppo
     not_all_loaded: È stato possibile caricare solo i primi 1000 elementi.
 panels:
   metric:
@@ -1973,7 +1978,7 @@ panels:
     y_axis_conditional_two: deve essere un numero.
   linechart:
     name: Grafico a linee
-    description: Grafico a linee per confrontare le variazioni di un campo.
+    description: Grafico a linee per confrontare le variazioni di un campo
     select_field: Devi selezionare un campo.
     select_collection: Devi selezionare una raccolta.
     select_x_axis: Devi selezionare l'asse X.
@@ -1988,14 +1993,16 @@ panels:
     include_dataset: Devi includere almeno un set di dati.
     include_y_axis: Devi includere un asse Y per ogni set di dati quando non è specificato un gruppo.
     group_and_function: Devi includere o escludere sia un gruppo che una funzione.
-    smooth: 'Arrotondato'
-    straight: 'Dritto'
-    step_line: 'A gradini'
+    smooth: Arrotondato
+    straight: Dritto
+    step_line: A gradini
   meter:
-    description: Metro per il rilevamento dei valori
     name: Metro
-    arc: Arco
+    description: Metro per il rilevamento dei valori
+    half_circle: Metà cerchio
+    full_circle: Cerchio intero
     stroke_width: Spessore della linea
+    rounded_stroke: Linea Arrotondata
     select_max_value: Devi selezionare un valore massimo.
     max_greater_than_zero: Il massimo deve essere maggiore di zero.
     select_field: Devi selezionare un campo.
@@ -2006,11 +2013,11 @@ panels:
     broad: Largo
   piechart:
     name: Grafico a torta o ciambella
-    description: Grafico circolare che mostra i rapporti dei gruppi su una colonna.
-    function: 'Funzione'
+    description: Grafico circolare che mostra le proporzioni dei gruppi in una colonna
+    function: Funzione
     donut: Ciambella
-    labels: Mostra etichette
-    legend: Mostra legenda
+    show_labels: Mostra le etichette
+    show_legend: Mostra legenda
     right: Destra
     bottom: In basso
     monochrome: Monocromatico
@@ -2054,7 +2061,9 @@ triggers:
     collection_and_item: Pagine della raccolta e degli elementi
     collection_only: Solo pagina della raccolta
     item_only: Solo pagina dell'elemento
-a_flow_uuid: Chiave primaria UUID di un flusso...
+    collection_page: Pagina della raccolta
+    require_selection: Richiede la selezione
+a_flow_uuid: Seleziona un flusso da attivare...
 any_string_or_json: Qualsiasi stringa o JSON...
 item_payload_placeholder: Questo è il JSON usato per aggiornare i valori dei campi dell'elemento...
 operation_variables_note: Puoi accedere ai dati di flusso con variabili come **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** e **{'{'}{'{'}$accountability{'}'}{'}'}**, o fare riferimento alle operazioni precedenti usando **{'{'}{'{'}operation_key{'}'}{'}'}**.'

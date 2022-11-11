@@ -11,7 +11,7 @@ import { promisify } from 'util';
 import { lookup } from 'dns';
 import emitter from '../emitter.js';
 import env from '../env.js';
-import { ForbiddenException, ServiceUnavailableException } from '../exceptions/index.js';
+import { ForbiddenException, InvalidPayloadException, ServiceUnavailableException } from '../exceptions/index.js';
 import logger from '../logger.js';
 import storage from '../storage.js';
 import type { AbstractServiceOptions, File, PrimaryKey, MutationOptions, Metadata } from '../types/index.js';
@@ -267,6 +267,19 @@ export class FilesService extends ItemsService {
 		};
 
 		return await this.uploadOne(fileResponse.data, payload);
+	}
+
+	/**
+	 * Create a file (only applicable when it is not a multipart/data POST request)
+	 * Useful for associating metadata with existing file in storage
+	 */
+	async createOne(data: Partial<File>, opts?: MutationOptions): Promise<PrimaryKey> {
+		if (!data.type) {
+			throw new InvalidPayloadException(`"type" is required`);
+		}
+
+		const key = await super.createOne(data, opts);
+		return key;
 	}
 
 	/**

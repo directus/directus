@@ -2,16 +2,19 @@ table: directus_dashboards
 
 fields:
   - field: id
-    special: uuid
+    special:
+      - uuid
   - field: name
   - field: icon
   - field: panels
-    special: o2m
+    special:
+      - o2m
   - field: date_created
     special:
       - date-created
       - cast-timestamp
   - field: user_created
-    special: user-created
+    special:
+      - user-created
   - field: note
   - field: color

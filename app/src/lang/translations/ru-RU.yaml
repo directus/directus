@@ -35,6 +35,7 @@ tile_size: Размер плитки
 edit_field: Редактировать поле
 conditions: Условия
 location: Локация
+condition_rules: Правила условий
 input: Ввод
 maps: Карты
 switch_user: Сменить пользователя
@@ -108,6 +109,7 @@ delete_bookmark: Удалить закладку
 delete_bookmark_copy: >-
   Точно удалить закладку «{bookmark}»? Ее нельзя будет восстановить.
 delete_personal_bookmark: Удалить личную закладку
+delete_role_bookmark: Удалить закладку
 logoutReason:
   SIGN_OUT: Вы вышли
   SESSION_EXPIRED: Сессия истекла
@@ -1783,10 +1785,8 @@ layouts:
     default_template: Использование коллекции по умолчанию...
     no_compatible_fields: Нет совместимых полей
   kanban:
-    edit_group: Редактировать группу,
-    delete_group: Удалить группу,
-    add_group: Добавить группу,
-    add_group_placeholder: Ввести новое название группы...,
+    crop: Обрезать
+    advanced: Доп. настройки
 panels:
   metric:
     name: Метрика
@@ -1811,7 +1811,7 @@ panels:
   meter:
     function: Функция
   piechart:
-    function: 'Функция'
+    function: Функция
     right: Справа
     bottom: Снизу
     monochrome: Монохром

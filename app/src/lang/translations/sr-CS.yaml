@@ -1204,6 +1204,8 @@ layouts:
     calendar: Kalendar
     start_date_field: Polje Početnog Datuma
     end_date_field: Polje Završnog Datuma
+  kanban:
+    crop: Isjecanje
 panels:
   label:
     name: Oznaka

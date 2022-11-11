@@ -112,6 +112,7 @@ test('Allows modules that are whitelisted', () => {
 
 	expect(
 		config.handler({ code: testCode }, {
+			data: {},
 			env: {
 				FLOWS_EXEC_ALLOWED_MODULES: 'bytes',
 			},
