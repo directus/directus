@@ -2,6 +2,8 @@ import { Knex } from 'knex';
 import { JsonHelperDefault } from './default';
 import { JsonFieldNode } from '../../../../types';
 import { getOperation } from '../../../../utils/apply-query';
+import logger from '../../../../logger';
+import { Item } from '@directus/shared/types';
 
 export class JsonHelperPostgres extends JsonHelperDefault {
 	static isSupported({ parsed }: { parsed: number[]; full: string }): boolean {
@@ -36,6 +38,9 @@ export class JsonHelperPostgres extends JsonHelperDefault {
 		}
 
 		return node.jsonPath + conditions.map((cond) => ` ? (${cond})`).join('');
+	}
+	postProcess(_items: Item[]): void {
+		// no post-processing needed for postgres
 	}
 }
 

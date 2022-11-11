@@ -5,6 +5,7 @@ import { JsonHelperDefault } from './default';
 import { getOperation } from '../../../../utils/apply-query';
 import logger from '../../../../logger';
 import { applyJsonFilterQuery } from '../filters';
+import { Item } from '@directus/shared/types';
 
 const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
 
@@ -65,6 +66,9 @@ export class JsonHelperSQLite extends JsonHelperDefault {
 			);
 		}
 		dbQuery.from(table);
+	}
+	postProcess(items: Item[]): void {
+		this.postProcessParseJSON(items);
 	}
 	private buildWithJson(dbQuery: Knex.QueryBuilder, node: JsonFieldNode, table: string): Knex.QueryBuilder {
 		const { jsonPath, name } = node;

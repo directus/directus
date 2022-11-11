@@ -317,8 +317,8 @@ export async function validateDatabaseVersion(): Promise<void> {
 	databaseVersion = await helpers.schema.getVersion();
 	const supported = checkJsonSupport(client, databaseVersion);
 	if (!supported) {
-		logger.warn(`JSON queries are not supported natively by ${client} (version: ${databaseVersion.parsed})`);
-		logger.warn(`Falling back to json post-processing instead, using JSON in "filter" will not work!`);
+		logger.warn(`JSON queries are not supported natively by ${client} (version: ${databaseVersion.parsed.join('.')})`);
+		logger.warn(`Falling back to json post-processing instead, using JSON in "filter" will not be supported!`);
 	} else {
 		logger.info(`Database: ${client} (version: ${databaseVersion.parsed})`);
 	}

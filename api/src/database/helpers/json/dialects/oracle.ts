@@ -5,6 +5,7 @@ import { JsonHelperDefault } from './default';
 import { customAlphabet } from 'nanoid';
 import { getOperation } from '../../../../utils/apply-query';
 import { applyJsonFilterQuery } from '../filters';
+import { Item } from '@directus/shared/types';
 
 // ORACLE PREFERS SCREAMING CAPITALS
 const generateAlias = customAlphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZ', 5);
@@ -79,7 +80,10 @@ export class JsonHelperOracle extends JsonHelperDefault {
 				})
 			);
 		}
-	} //
+	}
+	postProcess(items: Item[]): void {
+		this.postProcessParseJSON(items);
+	}
 	private buildWithJson(
 		dbQuery: Knex.QueryBuilder,
 		node: JsonFieldNode,
