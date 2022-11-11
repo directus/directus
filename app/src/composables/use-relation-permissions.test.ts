@@ -9,7 +9,6 @@ import {
 	useRelationPermissionsO2M,
 } from '@/composables/use-relation-permissions';
 import { RelationO2M } from './use-relation-o2m';
-import { DeepPartial } from '@directus/shared/types';
 import { createTestingPinia } from '@pinia/testing';
 import { merge } from 'lodash';
 import { RelationM2O } from './use-relation-m2o';
