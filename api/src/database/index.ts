@@ -320,6 +320,6 @@ export async function validateDatabaseVersion(): Promise<void> {
 		logger.warn(`JSON queries are not supported natively by ${client} (version: ${databaseVersion.parsed.join('.')})`);
 		logger.warn(`Falling back to json post-processing instead, using JSON in "filter" will not be supported!`);
 	} else {
-		logger.info(`Database: ${client} (version: ${databaseVersion.parsed})`);
+		logger.info(`Database: ${client} (version: ${databaseVersion.parsed.join('.')})`);
 	}
 }

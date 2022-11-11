@@ -1,5 +1,4 @@
 import { Knex } from 'knex';
-import logger from '../../../../logger';
 import { JsonFieldNode } from '../../../../types';
 import { JsonHelperDefault } from './default';
 import { customAlphabet } from 'nanoid';
@@ -28,6 +27,25 @@ where "XYZ"."id" = "jason"."id"
 with "XYZ" as (
 	select "o"."id" as "id", json_arrayagg("j"."SCAL") as "res"
 	from "jason" "o", json_table("o"."data", '$[*]' COLUMNS (NESTED PATH '$.a[*]' COLUMNS ( obj FORMAT JSON PATH '$.b', scal varchar(4000) PATH '$.b' ))) as "j"
+	group by "o"."id"
+)
+select "jason".*, "XYZ"."res"
+from "jason", "XYZ"
+where "XYZ"."id" = "jason"."id"
+ */
+/**
+ * To support deep queries consistently the above needs to be extended to:
+
+with "XYZ" as (
+	select "o"."id" as "id", json_arrayagg("j"."SCAL") as "res"
+	from "jason" "o", json_table("o"."data", '$[*]' COLUMNS (
+		NESTED PATH '$.a[*]' COLUMNS (
+			obj FORMAT JSON PATH '$',
+			scal varchar(4000) PATH '$',
+			name type PATH '$.b'
+		)
+	)) as "j"
+	where name = 'val'
 	group by "o"."id"
 )
 select "jason".*, "XYZ"."res"
@@ -64,7 +82,6 @@ export class JsonHelperOracle extends JsonHelperDefault {
 			for (const alias of aliases) {
 				dbQuery.whereRaw('??.?? = ??.??', [table, primaryKey, alias, primaryKey]);
 			}
-			logger.info(dbQuery.toQuery());
 		}
 		if (selectQueries.length > 0) {
 			dbQuery.select(
@@ -90,36 +107,59 @@ export class JsonHelperOracle extends JsonHelperDefault {
 		table: string,
 		alias: string
 	): Knex.QueryBuilder {
-		const { jsonPath, name } = node;
+		const { jsonPath } = node;
 		const queryParts = this.splitQuery(jsonPath);
 		const primaryKey = this.schema.collections[table].primary;
-		logger.info(queryParts);
 
-		const { table: joinTable, field: jsonField, alias: jsonAlias } = this.buildJsonTable(table, name, queryParts);
+		const {
+			table: joinTable,
+			field: jsonField,
+			alias: jsonAlias,
+			conditions,
+		} = this.buildJsonTable(table, node, queryParts);
 
 		const selectList = [this.knex.raw('??.?? as ??', [table, primaryKey, primaryKey]), jsonField];
 
 		const fromList = [this.knex.raw('??', [table]), joinTable];
 
-		const subQuery = this.applyFilter(
-			this.knex.select(selectList).fromRaw(this.knex.raw(fromList.map((f) => f.toQuery()).join(','))),
-			node,
-			table,
-			name
-		).groupBy(this.knex.raw('??.??', [table, primaryKey]));
+		const subQuery = this.knex.select(selectList).fromRaw(this.knex.raw(fromList.map((f) => f.toQuery()).join(',')));
 
-		dbQuery = dbQuery.with(alias, subQuery).select(this.knex.raw('??.?? as ??', [alias, jsonAlias, node.fieldKey]));
+		for (const { alias, operator, value } of conditions) {
+			applyJsonFilterQuery(subQuery, alias, operator, value);
+		}
+
+		dbQuery
+			.with(alias, subQuery.groupBy(this.knex.raw('??.??', [table, primaryKey])))
+			.select(this.knex.raw('??.?? as ??', [alias, jsonAlias, node.fieldKey]));
 
 		return dbQuery;
 	}
 	private buildJsonTable(
 		table: string,
-		column: string,
+		node: JsonFieldNode,
 		parts: string[]
-	): { table: Knex.Raw; field: Knex.Raw; alias: string } {
+	): {
+		table: Knex.Raw;
+		field: Knex.Raw;
+		alias: string;
+		conditions: { alias: string; operator: string; value: string | number }[];
+	} {
 		const rootPath = this.knex.raw('?', [parts[0]]).toQuery(),
 			tableAlias = generateAlias(),
 			fieldAlias = generateAlias();
+		const conditions = [];
+		let filterColumns = '';
+		if (node.query?.filter) {
+			for (const [jsonPath, value] of Object.entries(node.query?.filter)) {
+				const { operator: filterOperator, value: filterValue } = getOperation(jsonPath, value);
+				const conditionPath = this.knex.raw('?', [jsonPath]).toQuery();
+				const conditionAlias = generateAlias();
+				filterColumns += this.knex
+					.raw(`, ?? ${getFilterType(filterOperator)} PATH ${conditionPath}`, [conditionAlias])
+					.toQuery();
+				conditions.push({ jsonPath, operator: filterOperator, value: filterValue, alias: conditionAlias });
+			}
+		}
 		if (parts.length > 2) {
 			let nestedColumns = '';
 			for (let i = 1; i < parts.length - 1; i++) {
@@ -128,36 +168,42 @@ export class JsonHelperOracle extends JsonHelperDefault {
 			}
 			const fieldPair = [generateAlias(), generateAlias()];
 			const fieldPath = this.knex.raw('?', [parts[parts.length - 1]]).toQuery();
-			nestedColumns += this.knex.raw(`?? PATH ${fieldPath}, ?? FORMAT JSON PATH ${fieldPath})`, fieldPair).toQuery();
-			for (let i = 1; i < parts.length - 1; i++) {
+			nestedColumns += this.knex
+				.raw(`?? PATH ${fieldPath}, ?? FORMAT JSON PATH ${fieldPath}${filterColumns}`, fieldPair)
+				.toQuery();
+			for (let i = 1; i < parts.length; i++) {
 				nestedColumns += ')';
 			}
+			const subQuery = this.knex.raw(`json_table(??.??, ${rootPath} COLUMNS (${nestedColumns}) as ??`, [
+				table,
+				node.name,
+				tableAlias,
+			]);
 			return {
-				table: this.knex.raw(`json_table(??.??, ${rootPath} COLUMNS (${nestedColumns}) as ??`, [
-					table,
-					column,
-					tableAlias,
-				]),
+				table: subQuery,
 				alias: fieldAlias,
 				field: this.knex.raw(
 					`CASE WHEN json_arrayagg(??.??) = '[]' THEN json_arrayagg(??.?? FORMAT JSON) ELSE json_arrayagg(??.??) END as ??`,
 					[tableAlias, fieldPair[0], tableAlias, fieldPair[1], tableAlias, fieldPair[0], fieldAlias]
 				),
+				conditions,
 			};
 		}
 		// simplified
 		const fieldPair = [generateAlias(), generateAlias()];
 		const fieldPath = this.knex.raw('?', [parts[1]]).toQuery();
+		const subQuery = this.knex.raw(
+			`json_table(??.??, ${rootPath} COLUMNS (?? PATH ${fieldPath}, ?? FORMAT JSON PATH ${fieldPath}${filterColumns})) as ??`,
+			[table, node.name, fieldPair[0], fieldPair[1], tableAlias]
+		);
 		return {
-			table: this.knex.raw(
-				`json_table(??.??, ${rootPath} COLUMNS (?? PATH ${fieldPath}, ?? FORMAT JSON PATH ${fieldPath})) as ??`,
-				[table, column, fieldPair[0], fieldPair[1], tableAlias]
-			),
+			table: subQuery,
 			alias: fieldAlias,
 			field: this.knex.raw(
 				`CASE WHEN json_arrayagg(??.??) = '[]' THEN json_arrayagg(??.?? FORMAT JSON) ELSE json_arrayagg(??.??) END as ??`,
 				[tableAlias, fieldPair[0], tableAlias, fieldPair[1], tableAlias, fieldPair[0], fieldAlias]
 			),
+			conditions,
 		};
 	}
 	private splitQuery(jsonPath: string): string[] {
@@ -177,22 +223,37 @@ export class JsonHelperOracle extends JsonHelperDefault {
 			})
 			.map((q) => (q.startsWith('$') ? q : '$' + q));
 	}
-	private applyFilter(
-		dbQuery: Knex.QueryBuilder,
-		node: JsonFieldNode,
-		table: string,
-		column: string
-	): Knex.QueryBuilder {
-		if (!node.query?.filter) return dbQuery;
-		logger.info(node.query);
-		for (const [jsonPath, value] of Object.entries(node.query?.filter)) {
-			const alias = generateAlias();
-			const { operator: filterOperator, value: filterValue } = getOperation(jsonPath, value);
-			const query = this.knex.raw('?', jsonPath).toQuery();
-			dbQuery.select(this.knex.raw(`json_value(??.??, ${query})) as ??`, [table, column, alias]));
-			applyJsonFilterQuery(dbQuery, alias, filterOperator, filterValue);
-		}
+}
 
-		return dbQuery;
+function getFilterType(operator: string): 'VARCHAR2' | 'NUMBER' | '' {
+	switch (operator) {
+		case '_eq':
+		case '_neq':
+		case '_ieq':
+		case '_nieq':
+		case '_contains':
+		case '_ncontains':
+		case '_icontains':
+		case '_nicontains':
+		case '_starts_with':
+		case '_nstarts_with':
+		case '_istarts_with':
+		case '_nistarts_with':
+		case '_ends_with':
+		case '_nends_with':
+		case '_iends_with':
+		case '_niends_with':
+		case '_in':
+		case '_nin':
+			return 'VARCHAR2';
+		case '_gt':
+		case '_gte':
+		case '_lt':
+		case '_lte':
+		case '_between':
+		case '_nbetween':
+			return 'NUMBER';
+		default:
+			return '';
 	}
 }

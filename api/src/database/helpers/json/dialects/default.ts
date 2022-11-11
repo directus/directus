@@ -16,8 +16,8 @@ const jsonPathPlusOptions = {
  */
 export class JsonHelperDefault extends JsonHelper {
 	preProcess(dbQuery: Knex.QueryBuilder, table: string): void {
-		this.preProcessKnex(dbQuery, table);
-		// what do we default to?
+		// default behavior is post-processing json
+		this.preProcessFallback(dbQuery, table);
 	}
 	preProcessKnex(dbQuery: Knex.QueryBuilder, table: string): void {
 		dbQuery
@@ -38,8 +38,8 @@ export class JsonHelperDefault extends JsonHelper {
 			.from(table);
 	}
 	postProcess(items: Item[]): void {
-		// what do we default to?
 		this.postProcessParseJSON(items);
+		this.postProcessFallback(items);
 	}
 	postProcessParseJSON(items: Item[]): void {
 		const keys = this.nodes.map(({ fieldKey }) => fieldKey);
