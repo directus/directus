@@ -9,6 +9,7 @@ import {
 	ListObjectsV2Command,
 	_Object,
 	HeadObjectCommandInput,
+	PutObjectCommandInput,
 } from '@aws-sdk/client-s3';
 import {
 	Storage,
@@ -42,6 +43,15 @@ function handleError(err: Error, path: string, bucket: string): Error {
 		default:
 			return new UnknownException(err, err.name, path);
 	}
+}
+
+function streamToBuffer(stream: NodeJS.ReadableStream): Promise<Buffer> {
+	const chunks: Buffer[] = [];
+	return new Promise((resolve, reject) => {
+		stream.on('data', (chunk) => chunks.push(Buffer.from(chunk)));
+		stream.on('error', (err) => reject(err));
+		stream.on('end', () => resolve(Buffer.concat(chunks)));
+	});
 }
 
 export class AmazonWebServicesS3Storage extends Storage {
@@ -161,22 +171,12 @@ export class AmazonWebServicesS3Storage extends Storage {
 		const params = { Key: location, Bucket: this.$bucket };
 		const result = await this.$driver.send(new GetObjectCommand(params));
 		const body = result.Body as NodeJS.ReadableStream;
-		return new Promise((resolve, reject) => {
-			try {
-				const responseDataChunks: string[] = [];
-				body.once('error', (err) => {
-					reject(err);
-				});
-				body.on('data', (chunk) => {
-					responseDataChunks.push(chunk);
-				});
-				body.once('end', () => resolve({ content: Buffer.from(responseDataChunks.join('')), raw: result }));
-
-				return { content: body, raw: result };
-			} catch (e: any) {
-				throw handleError(e, location, this.$bucket);
-			}
-		});
+		try {
+			const content = await streamToBuffer(body);
+			return { content, raw: result };
+		} catch (e: any) {
+			throw handleError(e, location, this.$bucket);
+		}
 	}
 
 	/**
@@ -281,10 +281,16 @@ export class AmazonWebServicesS3Storage extends Storage {
 		type?: string
 	): Promise<Response> {
 		location = this._fullPath(location);
+		let body;
+		if (Buffer.isBuffer(content) || typeof content == 'string') {
+			body = content;
+		} else {
+			body = await streamToBuffer(content);
+		}
 
-		const params = {
+		const params: PutObjectCommandInput = {
 			Key: location,
-			Body: content,
+			Body: body,
 			Bucket: this.$bucket,
 			ACL: this.$acl,
 			ContentType: type ? type : '',
