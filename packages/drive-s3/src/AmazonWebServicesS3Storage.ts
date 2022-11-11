@@ -142,7 +142,7 @@ export class AmazonWebServicesS3Storage extends Storage {
 			const result = await this.$driver.send(new HeadObjectCommand(params));
 			return { exists: true, raw: result };
 		} catch (e: any) {
-			if (e.statusCode === 404) {
+			if (e.$metadata.httpStatusCode === 404) {
 				return { exists: false, raw: e };
 			} else {
 				throw handleError(e, location, this.$bucket);
@@ -324,14 +324,15 @@ export class AmazonWebServicesS3Storage extends Storage {
 				);
 
 				continuationToken = response.NextContinuationToken;
+				if (response.Contents) {
+					for (const file of response.Contents) {
+						const path = file.Key as string;
 
-				for (const file of response.Contents as _Object[]) {
-					const path = file.Key as string;
-
-					yield {
-						raw: file,
-						path: path.substring(this.$root.length),
-					};
+						yield {
+							raw: file,
+							path: path.substring(this.$root.length),
+						};
+					}
 				}
 			} catch (e: any) {
 				throw handleError(e, prefix, this.$bucket);
