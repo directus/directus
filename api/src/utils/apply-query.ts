@@ -408,6 +408,13 @@ export function applyFilter(
 								applyFilterToQuery(filterPath[0], filterOperator, filterValue, logical, undefined, rawQuery);
 							}
 							break;
+						case 'postgres':
+							{
+								const qp = knex.raw('?', [node.jsonPath]).toQuery();
+								const rawQuery = knex.raw(`jsonb_path_query_first(??.??, ${qp})`, [collection, node.name]);
+								applyFilterToQuery(filterPath[0], filterOperator, filterValue, logical, undefined, rawQuery);
+							}
+							break;
 						default:
 							applyFilterToQuery(filterPath[0], filterOperator, filterValue, logical);
 							break;

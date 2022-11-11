@@ -2,7 +2,6 @@ import { Knex } from 'knex';
 import { JsonHelperDefault } from './default';
 import { JsonFieldNode } from '../../../../types';
 import { getOperation } from '../../../../utils/apply-query';
-import logger from '../../../../logger';
 import { Item } from '@directus/shared/types';
 
 export class JsonHelperPostgres extends JsonHelperDefault {
