@@ -63,8 +63,8 @@ export default async function runAST(
 
 				const nestedItems = await run(collection, ast.children[collection], query);
 
-				if (Array.isArray(nestedItems)) results[collection]?.push(...nestedItems);
-				else results[collection]?.push(nestedItems);
+				if (Array.isArray(nestedItems)) results[collection]!.push(...nestedItems);
+				else results[collection]!.push(nestedItems);
 
 				if (!nestedItems || nestedItems.length < env.RELATIONAL_BATCH_SIZE) {
 					hasMore = false;
