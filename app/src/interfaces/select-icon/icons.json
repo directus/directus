@@ -1203,11 +1203,7 @@
 	},
 	{
 		"name": "home",
-		"icons": [
-			"sensor_door",
-			"sensor_window",
-			"shield_moon"
-		]
+		"icons": ["sensor_door", "sensor_window", "shield_moon"]
 	},
 	{
 		"name": "image",
