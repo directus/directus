@@ -11,6 +11,7 @@ import { applyFunctionToColumnName } from '../utils/apply-function-to-column-nam
 import applyQuery from '../utils/apply-query';
 import { getColumn } from '../utils/get-column';
 import { stripFunction } from '../utils/strip-function';
+import { JsonHelper } from './helpers/json/types';
 
 type RunASTOptions = {
 	/**
@@ -66,9 +67,9 @@ export default async function runAST(
 			children,
 			query
 		);
-
+		const jsonHelper = getJsonHelper(knex, schema, jsonNodes);
 		// The actual knex query builder instance. This is a promise that resolves with the raw items from the db
-		const dbQuery = getDBQuery(schema, knex, collection, [...fieldNodes, ...jsonNodes], query);
+		const dbQuery = getDBQuery(schema, knex, collection, [...fieldNodes, ...jsonNodes], query, jsonHelper);
 		// console.log(`[QUERY]`, dbQuery.toQuery());
 		const rawItems: Item | Item[] = await dbQuery;
 
@@ -129,7 +130,6 @@ export default async function runAST(
 		// Some vendors return json results as strings which will need to be parsed
 		// Some vendors also require post-processing to compensate for lack of native support
 		if (jsonNodes.length > 0) {
-			const jsonHelper = getJsonHelper(knex, schema, jsonNodes);
 			jsonHelper.postProcess(toArray(rawItems));
 		}
 
@@ -243,7 +243,8 @@ function getDBQuery(
 	knex: Knex,
 	table: string,
 	fieldNodes: (FieldNode | FunctionFieldNode | JsonFieldNode)[],
-	query: Query
+	query: Query,
+	jsonHelper: JsonHelper
 ): Knex.QueryBuilder {
 	const preProcess = getColumnPreprocessor(knex, schema, table);
 
@@ -253,7 +254,6 @@ function getDBQuery(
 		| FunctionFieldNode
 		| M2ONode
 	)[];
-	const jsonHelper = getJsonHelper(knex, schema, jsonNodes);
 	const dbQuery = knex.select(regularNodes.map(preProcess));
 
 	if (jsonNodes.length > 0) {

@@ -8,7 +8,7 @@ import { transformFilterJsonPath } from './postgres';
 import { getOperation } from '../../../../utils/apply-query';
 
 const jsonPathPlusOptions = {
-	preventEval: true,
+	// preventEval: true,
 };
 
 /**
@@ -66,6 +66,7 @@ export class JsonHelperDefault extends JsonHelper {
 		try {
 			const data = typeof item[node.fieldKey] === 'string' ? parseJSON(item[node.fieldKey]) : item[node.fieldKey];
 			const jsonPath = Object.keys(node.query).length === 0 ? node.jsonPath : this.buildFilterPath(node);
+
 			item[node.fieldKey] = JSONPath({
 				...jsonPathPlusOptions,
 				path: jsonPath,

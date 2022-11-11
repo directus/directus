@@ -23,7 +23,7 @@ export class JsonHelperMSSQL extends JsonHelperDefault {
 			// fallback to postprocessing for these queries
 			this.fallbackNodes = joinQueries;
 			dbQuery.select(
-				this.nodes.map((node) => {
+				joinQueries.map((node) => {
 					return this.knex.raw('??.?? as ??', [table, node.name, node.fieldKey]);
 				})
 			);
@@ -42,7 +42,6 @@ export class JsonHelperMSSQL extends JsonHelperDefault {
 		]);
 	}
 	postProcess(items: Item[]): void {
-		if (this.nodes.length === 0) return;
 		for (const item of items) {
 			for (const jsonNode of this.fallbackNodes) {
 				this.postProcessJsonPath(item, jsonNode);
