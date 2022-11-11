@@ -392,13 +392,13 @@ export function applyFilter(
 						case 'oracle':
 							{
 								const qp = knex.raw('?', [node.jsonPath]).toQuery();
-								const rawQuery = knex.raw(`json_value(??.??, ${qp})`, [collection, node.name]);
+								const rawQuery = knex.raw(`JSON_VALUE(??.??, ${qp})`, [collection, node.name]);
 								applyFilterToQuery(filterPath[0], filterOperator, filterValue, logical, undefined, rawQuery);
 							}
 							break;
 						case 'mysql':
 							{
-								const rawQuery = knex.raw(`??.??->?`, [collection, node.name, node.jsonPath]);
+								const rawQuery = knex.raw(`JSON_EXTRACT(??.??, ?)`, [collection, node.name, node.jsonPath]);
 								applyFilterToQuery(filterPath[0], filterOperator, filterValue, logical, undefined, rawQuery);
 							}
 							break;
