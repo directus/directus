@@ -402,6 +402,12 @@ export function applyFilter(
 								applyFilterToQuery(filterPath[0], filterOperator, filterValue, logical, undefined, rawQuery);
 							}
 							break;
+						case 'mssql':
+							{
+								const rawQuery = knex.raw(`JSON_VALUE(??.??, ?)`, [collection, node.name, node.jsonPath]);
+								applyFilterToQuery(filterPath[0], filterOperator, filterValue, logical, undefined, rawQuery);
+							}
+							break;
 						default:
 							applyFilterToQuery(filterPath[0], filterOperator, filterValue, logical);
 							break;
