@@ -614,7 +614,7 @@ errors:
   METHOD_NOT_ALLOWED: Méthode non autorisée
   REQUESTS_EXCEEDED: Limite de requêtes atteinte
 security: Sécurité
-value_hashed: Valeur hashée de manière sûre
+value_hashed: Valeur cryptée sécurisée
 bookmark_name: Nom du favori...
 create_bookmark: Ajouter comme favori
 edit_bookmark: Modifier le favori
