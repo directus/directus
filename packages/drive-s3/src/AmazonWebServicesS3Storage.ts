@@ -25,6 +25,7 @@ import {
 	StatResponse,
 	FileListResponse,
 	DeleteResponse,
+	Range,
 } from '@directus/drive';
 const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
 
@@ -57,6 +58,7 @@ function streamToBuffer(stream: NodeJS.ReadableStream): Promise<Buffer> {
 export class AmazonWebServicesS3Storage extends Storage {
 	protected $driver: S3Client;
 	protected $bucket: string;
+	protected $region: string;
 	protected $root: string;
 	protected $acl?: string;
 	protected $serverSideEncryption?: string;
@@ -71,8 +73,8 @@ export class AmazonWebServicesS3Storage extends Storage {
 				secretAccessKey: config.secret,
 			},
 		});
-
 		this.$bucket = config.bucket;
+		this.$region = config.region as string;
 		this.$root = config.root ? normalize(config.root).replace(/^\//, '') : '';
 		this.$acl = config.acl;
 		this.$serverSideEncryption = config.serverSideEncryption;
@@ -223,9 +225,9 @@ export class AmazonWebServicesS3Storage extends Storage {
 	}
 
 	/**
-	 * Returns the stream for the given file.
+	 * Returns the stream for the given file
 	 */
-	public getStream(location: string, range: any): NodeJS.ReadableStream {
+	public getStream(location: string, range?: Range): NodeJS.ReadableStream {
 		location = this._fullPath(location);
 		const intermediateStream = new PassThrough({ highWaterMark: 1 });
 
@@ -248,7 +250,7 @@ export class AmazonWebServicesS3Storage extends Storage {
 	public getUrl(location: string): string {
 		location = this._fullPath(location);
 
-		const endpoint = this.$driver.config.endpointProvider({});
+		const endpoint = this.$driver.config.endpointProvider({ Region: this.$region });
 
 		if (endpoint.url.href.startsWith('https://s3.amazonaws')) {
 			return `https://${this.$bucket}.s3.amazonaws.com/${location}`;
