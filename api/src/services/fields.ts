@@ -361,6 +361,15 @@ export class FieldsService {
 				? await this.knex.select('id').from('directus_fields').where({ collection, field: field.field }).first()
 				: null;
 
+			if (
+				hookAdjustedField.type &&
+				(hookAdjustedField.type === 'alias' ||
+					this.schema.collections[collection].fields[field.field]?.type === 'alias') &&
+				hookAdjustedField.type !== (this.schema.collections[collection].fields[field.field]?.type ?? 'alias')
+			) {
+				throw new InvalidPayloadException('Alias type cannot be changed');
+			}
+
 			if (hookAdjustedField.schema) {
 				const existingColumn = await this.schemaInspector.columnInfo(collection, hookAdjustedField.field);
 
@@ -475,7 +484,12 @@ export class FieldsService {
 					if (isM2O) {
 						await relationsService.deleteOne(collection, field);
 
-						if (relation.related_collection && relation.meta?.one_field) {
+						if (
+							relation.related_collection &&
+							relation.meta?.one_field &&
+							relation.related_collection !== collection &&
+							relation.meta.one_field !== field
+						) {
 							await fieldsService.deleteField(relation.related_collection, relation.meta.one_field);
 						}
 					}
@@ -578,7 +592,7 @@ export class FieldsService {
 			column = table.string(field.field, field.schema?.max_length ?? undefined);
 		} else if (['float', 'decimal'].includes(field.type)) {
 			const type = field.type as 'float' | 'decimal';
-			column = table[type](field.field, field.schema?.numeric_precision || 10, field.schema?.numeric_scale || 5);
+			column = table[type](field.field, field.schema?.numeric_precision ?? 10, field.schema?.numeric_scale ?? 5);
 		} else if (field.type === 'csv') {
 			column = table.string(field.field);
 		} else if (field.type === 'hash') {
