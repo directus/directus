@@ -6,7 +6,6 @@ import {
 	execute,
 	ExecutionResult,
 	FieldNode,
-	formatError,
 	FormattedExecutionResult,
 	FragmentDefinitionNode,
 	GraphQLBoolean,
@@ -41,6 +40,7 @@ import {
 	toInputObjectType,
 	ObjectTypeComposerFieldConfigDefinition,
 } from 'graphql-compose';
+import processError from './utils/process-error';
 import { Knex } from 'knex';
 import { flatten, get, mapKeys, merge, omit, pick, set, transform, uniq } from 'lodash';
 import ms from 'ms';
@@ -159,7 +159,7 @@ export class GraphQLService {
 
 		const formattedResult: FormattedExecutionResult = {
 			...result,
-			errors: result.errors?.map(formatError),
+			errors: result.errors?.map((error) => processError(this.accountability, error)),
 		};
 
 		return formattedResult;
