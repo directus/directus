@@ -1,34 +1,31 @@
 {
 	"name": "@directus/app",
 	"version": "9.20.4",
-	"homepage": "https://directus.io",
 	"description": "App dashboard for Directus",
-	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
-	"main": "dist/index.html",
-	"exports": {
-		".": "./dist/index.html",
-		"./package.json": "./package.json"
-	},
-	"files": [
-		"dist"
-	],
+	"homepage": "https://directus.io",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/directus/directus.git",
 		"directory": "app"
 	},
-	"publishConfig": {
-		"access": "public"
+	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
+	"exports": {
+		".": "./dist/index.html",
+		"./package.json": "./package.json"
 	},
+	"main": "dist/index.html",
+	"files": [
+		"dist"
+	],
 	"scripts": {
-		"dev": "vite",
 		"build": "vite build",
+		"build-storybook": "build-storybook",
+		"dev": "vite",
 		"serve": "vite preview",
+		"storybook": "start-storybook -p 6006",
 		"test": "vitest run",
 		"test:coverage": "vitest run --coverage",
-		"test:watch": "vitest",
-		"storybook": "start-storybook -p 6006",
-		"build-storybook": "build-storybook"
+		"test:watch": "vitest"
 	},
 	"devDependencies": {
 		"@babel/core": "7.19.3",
@@ -152,5 +149,8 @@
 		"vuedraggable": "4.1.0",
 		"webpack": "5.74.0",
 		"wellknown": "0.5.0"
+	},
+	"publishConfig": {
+		"access": "public"
 	}
 }

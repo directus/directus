@@ -1,17 +1,25 @@
 {
 	"name": "@directus/drive",
 	"version": "9.20.4",
-	"homepage": "https://directus.io",
 	"description": "Object storage abstraction layer for Directus",
+	"homepage": "https://directus.io",
+	"bugs": {
+		"url": "https://github.com/directus/directus/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus/directus.git",
+		"directory": "packages/drive"
+	},
 	"license": "MIT",
-	"main": "dist/index.js",
+	"contributors": [
+		"Rijk van Zanten <rijkvanzanten@me.com>"
+	],
 	"exports": {
 		".": "./dist/index.js",
 		"./package.json": "./package.json"
 	},
-	"contributors": [
-		"Rijk van Zanten <rijkvanzanten@me.com>"
-	],
+	"main": "dist/index.js",
 	"files": [
 		"dist",
 		"!**/*.d.ts?(.map)"
@@ -29,17 +37,6 @@
 		"fs-extra": "10.1.0",
 		"node-exceptions": "4.0.1"
 	},
-	"publishConfig": {
-		"access": "public"
-	},
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/directus/directus.git",
-		"directory": "packages/drive"
-	},
-	"bugs": {
-		"url": "https://github.com/directus/directus/issues"
-	},
 	"devDependencies": {
 		"@types/fs-extra": "9.0.13",
 		"@types/jest": "29.2.0",
@@ -49,5 +46,8 @@
 		"npm-run-all": "4.1.5",
 		"ts-jest": "29.0.3",
 		"typescript": "4.8.4"
+	},
+	"publishConfig": {
+		"access": "public"
 	}
 }
