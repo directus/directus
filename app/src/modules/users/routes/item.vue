@@ -302,8 +302,8 @@ export default defineComponent({
 
 		const fieldsFiltered = computed(() => {
 			return fields.value.filter((field: Field) => {
-				// These fields should only be editable when creating new users
-				if (!isNew.value && ['provider', 'external_identifier'].includes(field.field)) {
+				// These fields should only be editable when creating new users or by administrators
+				if (!isNew.value && ['provider', 'external_identifier'].includes(field.field) && !userStore.isAdmin) {
 					field.meta.readonly = true;
 				}
 				return !fieldsDenyList.includes(field.field);
