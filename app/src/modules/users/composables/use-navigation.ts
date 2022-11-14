@@ -3,12 +3,14 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import { Role } from '@directus/shared/types';
 import { ref, Ref } from 'vue';
 
-let roles: Ref<Role[] | null> | null = null;
+let roles: Ref<BasicRole[] | null> | null = null;
 let loading: Ref<boolean> | null = null;
 
-export default function useNavigation(): { roles: Ref<Role[] | null>; loading: Ref<boolean> } {
+export type BasicRole = Pick<Role, 'id' | 'name' | 'icon' | 'admin_access'>;
+
+export default function useNavigation(): { roles: Ref<BasicRole[] | null>; loading: Ref<boolean> } {
 	if (roles === null) {
-		roles = ref<Role[] | null>(null);
+		roles = ref<BasicRole[] | null>(null);
 	}
 
 	if (loading === null) {
@@ -29,6 +31,7 @@ export default function useNavigation(): { roles: Ref<Role[] | null>; loading: R
 			const rolesResponse = await api.get(`/roles`, {
 				params: {
 					sort: 'name',
+					fields: ['id', 'name', 'icon', 'admin_access'],
 				},
 			});
 			roles.value = rolesResponse.data.data;

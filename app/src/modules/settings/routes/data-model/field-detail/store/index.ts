@@ -148,6 +148,34 @@ export const useFieldDetailStore = defineStore({
 		async save() {
 			if (!this.collection || !this.field.field) return;
 
+			// Validation to prevent cyclic relation
+			const aliasesFromRelation: string[] = [];
+			for (const relation of Object.values(this.relations)) {
+				if (!relation || !relation.collection || !relation.field) continue;
+				if (
+					// Duplicate checks for O2M & M2O
+					(relation.collection === relation.related_collection && relation.field === relation.meta?.one_field) ||
+					// Duplicate checks for M2M & M2A
+					(relation.meta?.one_field &&
+						(aliasesFromRelation.includes(`${relation.collection}:${relation.field}`) ||
+							aliasesFromRelation.includes(`${this.collection}:${relation.meta.one_field}`)))
+				) {
+					throw new Error('Field key cannot be the same as foreign key');
+				}
+				// Track fields used for M2M & M2A
+				if (this.collection === relation.related_collection && relation.meta?.one_field) {
+					aliasesFromRelation.push(`${relation.collection}:${relation.field}`);
+					aliasesFromRelation.push(`${this.collection}:${relation.meta.one_field}`);
+				}
+			}
+			// Duplicate field check for M2A
+			const addedFields = Object.values(this.fields)
+				.map((field) => (field && field.collection && field.field ? `${field.collection}:${field.field}` : null))
+				.filter((field) => field);
+			if (addedFields.some((field) => addedFields.indexOf(field) !== addedFields.lastIndexOf(field))) {
+				throw new Error('Duplicate fields cannot be created');
+			}
+
 			const collectionsStore = useCollectionsStore();
 			const fieldsStore = useFieldsStore();
 			const relationsStore = useRelationsStore();

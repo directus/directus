@@ -109,8 +109,8 @@ export async function refresh({ navigate }: LogoutOptions = { navigate: true }):
 	try {
 		const response = await api.post<any>('/auth/refresh', undefined, {
 			transformRequest(data, headers) {
-				// This seems wrongly typed in Axios itself..
-				delete (headers?.common as unknown as Record<string, string>)?.['Authorization'];
+				// Remove Authorization header from request
+				headers.set('Authorization');
 				return data;
 			},
 		});

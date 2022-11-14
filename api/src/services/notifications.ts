@@ -2,9 +2,11 @@ import { AbstractServiceOptions, PrimaryKey, MutationOptions } from '../types';
 import { ItemsService } from './items';
 import { Notification } from '@directus/shared/types';
 import { md } from '../utils/md';
+import { Url } from '../utils/url';
 import { UsersService } from './users';
 import { MailService } from './mail';
 import logger from '../logger';
+import env from '../env';
 
 export class NotificationsService extends ItemsService {
 	usersService: UsersService;
@@ -36,16 +38,19 @@ export class NotificationsService extends ItemsService {
 
 	async sendEmail(data: Partial<Notification>) {
 		if (data.recipient) {
-			const user = await this.usersService.readOne(data.recipient, { fields: ['email', 'email_notifications'] });
+			const user = await this.usersService.readOne(data.recipient, {
+				fields: ['id', 'email', 'email_notifications', 'role.app_access'],
+			});
+			const manageUserAccountUrl = new Url(env.PUBLIC_URL).addPath('admin', 'users', user.id).toString();
+
+			const html = data.message ? md(data.message) : '';
 
 			if (user.email && user.email_notifications === true) {
 				try {
 					await this.mailService.send({
 						template: {
 							name: 'base',
-							data: {
-								html: data.message ? md(data.message) : '',
-							},
+							data: user.role?.app_access ? { url: manageUserAccountUrl, html } : { html },
 						},
 						to: user.email,
 						subject: data.subject,
