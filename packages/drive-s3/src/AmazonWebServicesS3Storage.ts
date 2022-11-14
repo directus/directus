@@ -59,20 +59,27 @@ export class AmazonWebServicesS3Storage extends Storage {
 	protected $driver: S3Client;
 	protected $bucket: string;
 	protected $region: string;
-	protected $root: string;
+	protected $root?: string;
+	protected $endpoint?: string;
 	protected $acl?: string;
 	protected $serverSideEncryption?: string;
 
 	constructor(config: AmazonWebServicesS3StorageConfig) {
 		super();
 		const { S3Client } = require('@aws-sdk/client-s3');
-
-		this.$driver = new S3Client({
+		let endpoint = config.endpoint as string;
+		if (endpoint && !/^https?:\/\//i.test(endpoint)) {
+			endpoint = 'https://' + endpoint;
+		}
+		const params: S3ClientConfig = {
 			credentials: {
 				accessKeyId: config.key,
 				secretAccessKey: config.secret,
 			},
-		});
+			endpoint,
+		};
+		this.$driver = new S3Client(params);
+		this.$endpoint = endpoint;
 		this.$bucket = config.bucket;
 		this.$region = config.region as string;
 		this.$root = config.root ? normalize(config.root).replace(/^\//, '') : '';
@@ -84,7 +91,7 @@ export class AmazonWebServicesS3Storage extends Storage {
 	 * Prefixes the given filePath with the storage root location
 	 */
 	protected _fullPath(filePath: string): string {
-		return normalize(path.join(this.$root, filePath));
+		return this.$root ? normalize(path.join(this.$root, filePath)) : filePath;
 	}
 
 	/**
@@ -144,7 +151,7 @@ export class AmazonWebServicesS3Storage extends Storage {
 			const result = await this.$driver.send(new HeadObjectCommand(params));
 			return { exists: true, raw: result };
 		} catch (e: any) {
-			if (e.$metadata.httpStatusCode === 404) {
+			if (e.$metadata && e.$metadata.httpStatusCode === 404) {
 				return { exists: false, raw: e };
 			} else {
 				throw handleError(e, location, this.$bucket);
@@ -253,6 +260,7 @@ export class AmazonWebServicesS3Storage extends Storage {
 		const endpoint = this.$driver.config.endpointProvider({
 			Region: this.$region,
 			Bucket: this.$bucket,
+			Endpoint: this.$endpoint,
 		});
 
 		return `${endpoint.url.href}${location}`;
@@ -331,7 +339,7 @@ export class AmazonWebServicesS3Storage extends Storage {
 
 						yield {
 							raw: file,
-							path: path.substring(this.$root.length),
+							path: path.substring(this.$root ? this.$root.length : 0),
 						};
 					}
 				}
