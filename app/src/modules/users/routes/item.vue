@@ -289,16 +289,7 @@ export default defineComponent({
 			usePermissions(ref('directus_users'), item, isNew);
 
 		// These fields will be shown in the sidebar instead
-		const fieldsDenyList = [
-			'id',
-			'external_id',
-			'last_page',
-			'created_on',
-			'created_by',
-			'modified_by',
-			'modified_on',
-			'last_access',
-		];
+		const fieldsDenyList = ['id', 'last_page', 'created_on', 'created_by', 'modified_by', 'modified_on', 'last_access'];
 
 		const fieldsFiltered = computed(() => {
 			return fields.value.filter((field: Field) => {
