@@ -117,6 +117,119 @@ describe.each(common.PRIMARY_KEY_TYPES)('/fields', (pkType) => {
 					expect(existingData).toStrictEqual(updatedData);
 				});
 			});
+
+			describe('can create new virtual alias field', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// Setup
+					const fieldName = 'test_divider';
+
+					// Action
+					const response = await request(getUrl(vendor))
+						.post(`/fields/${localCollectionCountries}`)
+						.send({
+							field: fieldName,
+							type: 'alias',
+							meta: {
+								interface: 'presentation-divider',
+								special: ['alias', 'no-data'],
+								options: { title: 'Test Divider' },
+							},
+							collection: localCollectionCountries,
+						})
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					const response2 = await request(getUrl(vendor))
+						.get(`/fields/${localCollectionCountries}/${fieldName}`)
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					// Assert
+					expect(response.statusCode).toEqual(200);
+					expect(response2.statusCode).toEqual(200);
+					expect(response2.body.data).toEqual(
+						expect.objectContaining({
+							field: fieldName,
+							type: 'alias',
+							collection: localCollectionCountries,
+						})
+					);
+				});
+			});
+		});
+
+		describe('PATCH /:collection', () => {
+			describe('can sort virtual alias field', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// Setup
+					const fieldName = 'test_divider';
+					const updatedSort = 100;
+
+					// Action
+					const response = await request(getUrl(vendor))
+						.patch(`/fields/${localCollectionCountries}`)
+						.send([{ field: 'test_divider', meta: { sort: updatedSort, group: null } }])
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					const response2 = await request(getUrl(vendor))
+						.get(`/fields/${localCollectionCountries}/${fieldName}`)
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					// Assert
+					expect(response.statusCode).toEqual(200);
+					expect(response2.statusCode).toEqual(200);
+					expect(response2.body.data).toEqual(
+						expect.objectContaining({
+							field: fieldName,
+							type: 'alias',
+							meta: expect.objectContaining({
+								sort: updatedSort,
+							}),
+							collection: localCollectionCountries,
+						})
+					);
+				});
+			});
+		});
+
+		describe('PATCH /:collection/:field', () => {
+			describe('can update virtual alias field', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// Setup
+					const fieldName = 'test_divider';
+					const updatedTitle = 'Updated Divider';
+
+					// Action
+					const response = await request(getUrl(vendor))
+						.patch(`/fields/${localCollectionCountries}/${fieldName}`)
+						.send({
+							collection: localCollectionCountries,
+							field: fieldName,
+							type: 'alias',
+							schema: null,
+							meta: {
+								options: { title: updatedTitle },
+							},
+						})
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					const response2 = await request(getUrl(vendor))
+						.get(`/fields/${localCollectionCountries}/${fieldName}`)
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					// Assert
+					expect(response.statusCode).toEqual(200);
+					expect(response2.statusCode).toEqual(200);
+					expect(response2.body.data).toEqual(
+						expect.objectContaining({
+							field: fieldName,
+							type: 'alias',
+							meta: expect.objectContaining({
+								options: expect.objectContaining({ title: updatedTitle }),
+							}),
+							collection: localCollectionCountries,
+						})
+					);
+				});
+			});
 		});
 	});
 
