@@ -90,18 +90,6 @@ export class PermissionsService extends ItemsService {
 		return res;
 	}
 
-	async updateByQuery(query: Query, data: Partial<Item>, opts?: MutationOptions) {
-		const res = await super.updateByQuery(query, data, opts);
-		await clearSystemCache();
-		return res;
-	}
-
-	async updateOne(key: PrimaryKey, data: Partial<Item>, opts?: MutationOptions) {
-		const res = await super.updateOne(key, data, opts);
-		await clearSystemCache();
-		return res;
-	}
-
 	async updateBatch(data: Partial<Item>[], opts?: MutationOptions) {
 		const res = await super.updateBatch(data, opts);
 		await clearSystemCache();
@@ -114,26 +102,8 @@ export class PermissionsService extends ItemsService {
 		return res;
 	}
 
-	async upsertOne(payload: Partial<Item>, opts?: MutationOptions) {
-		const res = await super.upsertOne(payload, opts);
-		await clearSystemCache();
-		return res;
-	}
-
 	async upsertMany(payloads: Partial<Item>[], opts?: MutationOptions) {
 		const res = await super.upsertMany(payloads, opts);
-		await clearSystemCache();
-		return res;
-	}
-
-	async deleteByQuery(query: Query, opts?: MutationOptions) {
-		const res = await super.deleteByQuery(query, opts);
-		await clearSystemCache();
-		return res;
-	}
-
-	async deleteOne(key: PrimaryKey, opts?: MutationOptions) {
-		const res = await super.deleteOne(key, opts);
 		await clearSystemCache();
 		return res;
 	}
