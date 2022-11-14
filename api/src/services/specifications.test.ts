@@ -126,12 +126,12 @@ describe('Integration Tests', () => {
 							},
 						};
 
-						jest
-							.spyOn(CollectionsService.prototype, 'readByQuery')
-							.mockImplementation(jest.fn().mockReturnValue([collection]));
+						vi.spyOn(CollectionsService.prototype, 'readByQuery').mockImplementation(
+							vi.fn().mockReturnValue([collection])
+						);
 
-						jest.spyOn(FieldsService.prototype, 'readAll').mockImplementation(
-							jest.fn().mockReturnValue([
+						vi.spyOn(FieldsService.prototype, 'readAll').mockImplementation(
+							vi.fn().mockReturnValue([
 								{
 									collection: collection.collection,
 									field: 'id',
@@ -142,7 +142,7 @@ describe('Integration Tests', () => {
 								},
 							])
 						);
-						jest.spyOn(RelationsService.prototype, 'readAll').mockImplementation(jest.fn().mockReturnValue([]));
+						vi.spyOn(RelationsService.prototype, 'readAll').mockImplementation(vi.fn().mockReturnValue([]));
 
 						const spec = await service.oas.generate();
 
