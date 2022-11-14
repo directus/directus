@@ -47,13 +47,6 @@ describe('Integration Tests', () => {
 		tracker = getTracker();
 	});
 
-	// beforeEach(() => {
-	// 	tracker.on.any('directus_users').response({});
-
-	// 	// mock notifications update query in deleteOne/deleteMany/deleteByQuery methods
-	// 	tracker.on.update('directus_notifications').response({});
-	// });
-
 	afterEach(() => {
 		tracker.reset();
 	});
