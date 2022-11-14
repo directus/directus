@@ -117,18 +117,9 @@ export default async function runAST(
 					batchCount++;
 				}
 			} else {
-				let node;
-
-				if (nestedNode.type === 'a2o') {
-					node = merge({}, nestedNode);
-					for (const nestedCollection of nestedNode.names) {
-						node.query[nestedCollection].limit = -1;
-					}
-				} else {
-					node = merge({}, nestedNode, {
-						query: { limit: -1 },
-					});
-				}
+				const node = merge({}, nestedNode, {
+					query: { limit: -1 },
+				});
 
 				nestedItems = (await runAST(node, schema, { knex, nested: true })) as Item[] | null;
 
@@ -315,7 +306,7 @@ function applyParentFilters(
 				const foreignIds = uniq(keysPerCollection[relatedCollection]);
 
 				merge(nestedNode, {
-					query: { [relatedCollection]: { filter: { [foreignField]: { _in: foreignIds } } } },
+					query: { [relatedCollection]: { filter: { [foreignField]: { _in: foreignIds } }, limit: foreignIds.length } },
 				});
 			}
 		}
