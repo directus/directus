@@ -71,6 +71,7 @@
 			<related-field-select
 				v-model="sortField"
 				:collection="junctionCollection"
+				:type-allow-list="['integer', 'bigInteger', 'float', 'decimal']"
 				:disabled-fields="unsortableJunctionFields"
 				:placeholder="t('add_sort_field') + '...'"
 				:nullable="true"

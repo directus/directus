@@ -9,7 +9,7 @@
 	],
 	"scripts": {
 		"lint": "eslint .",
-		"format": "prettier --write \"**/*.{js,ts,vue,md,yaml}\"",
+		"format": "prettier --write \"**/*.{md,y?(a)ml,json}\"",
 		"test:e2e": "jest tests -c tests/jest.config.js",
 		"test:e2e:watch": "jest tests -c tests/jest.config.js --watch",
 		"posttest:e2e:watch": "ts-node --project ./tests/tsconfig.json --transpile-only ./tests/setup/teardown.ts",
@@ -27,7 +27,7 @@
 	},
 	"lint-staged": {
 		"*.{js,ts,vue}": "eslint --fix",
-		"*.{md,yaml}": "prettier --write"
+		"*.{md,y?(a)ml,json}": "prettier --write"
 	},
 	"volta": {
 		"node": "16.15.0",
