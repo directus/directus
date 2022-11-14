@@ -61,6 +61,19 @@ describe('Integration Tests', () => {
 					expect(result).toMatchObject([]);
 				});
 
+				it('Returns array values as is', async () => {
+					const result = await service.transformers['cast-csv']({
+						value: ['test', 'directus'],
+						action: 'read',
+						payload: {},
+						accountability: { role: null },
+						specials: [],
+						helpers,
+					});
+
+					expect(result).toEqual(['test', 'directus']);
+				});
+
 				it('Splits the CSV string', async () => {
 					const result = await service.transformers['cast-csv']({
 						value: 'test,directus',
