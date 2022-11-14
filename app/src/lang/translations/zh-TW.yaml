@@ -745,6 +745,8 @@ add_file: 新增檔案
 replace_file: 取代檔案
 no_results: 無任何結果
 no_results_copy: 調整或清除搜尋篩選器以查看結果。
+no_visible_fields: 空白表單
+no_visible_fields_copy: 此表單沒有可見的欄位
 clear_filters: 清除篩選器
 saves_automatically: 自動儲存
 role: 角色
@@ -776,7 +778,6 @@ flow: 流程
 select_a_flow: 選擇流程
 run_flow_on_current: 在目前項目上執行流程
 run_flow_on_current_edited_confirm: 有些項目可能會被這個工作流程更新，是否確定要執行？
-run_flow_on_selected: 沒有選擇項目 | 在一個選擇的項目上執行流程 | 在 {n} 個選擇的項目上執行流程
 run_flow_success: 流程 {flow} 執行完畢
 trigger: 觸發條件
 trigger_options: 觸發條件選項
@@ -820,6 +821,7 @@ panel_header: 面板標題
 panel_name_placeholder: 設定面板名稱....
 panel_note_placeholder: 關於此面板的其他選填資訊....
 panel_delete_confirm: 是否確定要刪除此面板？此動作無法還原。
+list_panel_allow_edit: 允許快速編輯
 dashboard_delete_confirm: 是否確定要刪除此儀表板？此動作無法還原。
 edit_dashboard: 編輯儀表板
 delete_dashboard: 刪除儀表板
@@ -974,7 +976,14 @@ page_help_files_item: >-
 page_help_settings_project: "**專案設定** - 專案的全域設定選項"
 page_help_settings_datamodel_collections: >-
   **資料模型：資料集** - 列出所有可用的資料集。包含可見、隱藏以及系統資料集，以及尚未加入管理介面的資料庫。
+page_help_settings_datamodel_fields: >-
+  **數據模型: 資料集** - 管理此資料集及欄位
+page_help_settings_roles_item: "**角色詳情** - 管理角色權限和其他設定"
+page_help_settings_flows_collection: '瀏覽流程 - 列出在此項目中的所有流程'
 page_help_settings_flows_item: '流程細節 - 管理各項操作'
+page_help_users_collection: '**使用者目錄** - 列出在此項目中的所有系統用戶。'
+page_help_users_item: >-
+  **用戶細節** - 管理您的帳戶資料或查閱其他用戶細節
 activity_feed: 活動紀錄
 add_new: 新增
 create_new: 新增
@@ -1879,33 +1888,8 @@ layouts:
     default_template: 使用資料集的預設值...
     no_compatible_fields: 沒有相容的欄位
   kanban:
-    name: 看板,
-    group_field: 分組,
-    group_field_placeholder: 要用來分組的欄位,
-    group_title: 分組標題,
-    group_title_placeholder: 群組標題欄位,
-    title: 卡片標題
-    title_placeholder: 可選標題欄位,
-    text: 卡片文字,
-    text_placeholder: 選填文字欄位...,
-    date: 卡片日期,
-    date_placeholder: 選填日期欄位...,
-    tags: 卡片標籤,
-    tags_placeholder: 選填卡片標籤...,
-    user: 卡片使用者,
-    user_placeholder: 選填使用者欄位...,
-    image: 卡片圖片
-    image_placeholder: 選填卡片圖片...,
-    image_fit: 卡片圖片顯示,
-    crop: 裁切,
-    advanced: 進階,
-    edit_group: 編輯群組,
-    delete_group: 刪除群組,
-    add_group: 新增群組,
-    add_group_placeholder: 輸入新的群組名稱,
-    show_ungrouped: 以非群組方式顯示,
-    show: 顯示,
-    no_group: 沒有群組,
+    crop: 裁剪
+    advanced: 進階
     not_all_loaded: 只能讀取前1000個項目。
 panels:
   metric:
@@ -1947,7 +1931,6 @@ panels:
     y_axis_conditional_two: 只允許數字
   linechart:
     name: 折線圖
-    description: 比較欄位修改之折線圖
     select_field: 你必須選擇一個欄位。
     select_collection: 您必須選擇一個資料集。
     select_x_axis: 您必須選擇一個 X 軸。
@@ -1959,16 +1942,14 @@ panels:
     datasets: 資料集
     show_legend: 顯示圖例
     show_marker: 顯示提示文字
-    include_dataset: 您至少需要選擇一個資料集。
     include_y_axis: 當沒有選擇群組時，必須包含一個 Y 軸
     group_and_function: 您必須選擇一個群組或一個函數。
-    smooth: '平滑'
-    straight: '直線'
-    step_line: '線段'
+    smooth: 平滑
+    straight: 直線
+    step_line: 線段
   meter:
-    description: 根據數值產生格線
     name: 格線
-    arc: 弧形
+    description: 根據數值產生格線
     stroke_width: 線條粗細
     select_max_value: 您必須選擇最大值
     max_greater_than_zero: 最大值必須大於0
@@ -1980,11 +1961,9 @@ panels:
     broad: 寬線
   piechart:
     name: 圓餅圖
-    description: 顯示各個欄位比例的圓形圖表
-    function: '函數'
+    function: 函數
     donut: 圓餅圖
-    labels: 顯示標籤
-    legend: 顯示圖例
+    show_legend: 顯示圖例
     right: 右
     bottom: 下方
     monochrome: 黑白
@@ -2028,7 +2007,7 @@ triggers:
     collection_and_item: 資料集與項目頁面
     collection_only: 只在資料集頁面
     item_only: 只在資料項目頁面
-a_flow_uuid: 流程的不重複編碼 UUID
+a_flow_uuid: 選擇要觸發的流程...
 any_string_or_json: 任何字串或 JSON...
 item_payload_placeholder: 這個JSON用來更新資料項目各欄位的值
 operation_variables_note: 您可透過這些方法存取流程中的資料 **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** 及 **{'{'}{'{'}$accountability{'}'}{'}'}**, 或呼叫之前的操作如 **{'{'}{'{'}operation_key{'}'}{'}'}**.'

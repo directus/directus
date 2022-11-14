@@ -3,26 +3,31 @@ table: directus_presets
 fields:
   - field: filter
     hidden: true
-    special: cast-json
+    special:
+      - cast-json
 
   - field: layout_query
     hidden: true
-    special: cast-json
+    special:
+      - cast-json
 
   - field: layout_options
     hidden: true
-    special: cast-json
+    special:
+      - cast-json
 
   - field: role
     width: half
-    special: m2o
+    special:
+      - m2o
     display: related-values
     display_options:
       template: '{{ name }}'
 
   - field: user
     width: half
-    special: m2o
+    special:
+      - m2o
     display: related-values
     display_options:
       template: '{{ email }}'

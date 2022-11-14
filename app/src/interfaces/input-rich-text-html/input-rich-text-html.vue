@@ -23,7 +23,7 @@
 			</span>
 		</template>
 		<v-dialog v-model="linkDrawerOpen">
-			<v-card>
+			<v-card class="card">
 				<v-card-title class="card-title">{{ t('wysiwyg_options.link') }}</v-card-title>
 				<v-card-text>
 					<div class="grid">
@@ -51,7 +51,7 @@
 				</v-card-text>
 				<v-card-actions>
 					<v-button secondary @click="closeLinkDrawer">{{ t('cancel') }}</v-button>
-					<v-button :disabled="linkSelection.url === null" @click="saveLink">{{ t('save') }}</v-button>
+					<v-button :disabled="linkSelection.url === null && !linkNode" @click="saveLink">{{ t('save') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
@@ -334,7 +334,7 @@ export default defineComponent({
 			mediaButton,
 		} = useMedia(editorRef, imageToken);
 
-		const { linkButton, linkDrawerOpen, closeLinkDrawer, saveLink, linkSelection } = useLink(editorRef);
+		const { linkButton, linkDrawerOpen, closeLinkDrawer, saveLink, linkSelection, linkNode } = useLink(editorRef);
 
 		const { codeDrawerOpen, code, closeCodeDrawer, saveCode, sourceCodeButton } = useSourceCode(editorRef);
 
@@ -443,6 +443,7 @@ export default defineComponent({
 			closeLinkDrawer,
 			saveLink,
 			linkSelection,
+			linkNode,
 			codeDrawerOpen,
 			code,
 			closeCodeDrawer,
@@ -587,8 +588,12 @@ export default defineComponent({
 	padding-bottom: var(--content-padding);
 }
 
-:deep(.v-card-title) {
-	margin-bottom: 24px;
-	font-size: 24px;
+.card {
+	overflow: auto;
+
+	.card-title {
+		margin-bottom: 24px;
+		font-size: 24px;
+	}
 }
 </style>

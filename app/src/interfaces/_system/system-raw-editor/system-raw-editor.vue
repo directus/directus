@@ -18,12 +18,16 @@ const props = withDefaults(
 		autofocus?: boolean;
 		disabled?: boolean;
 		type?: string;
+		language?: string;
+		placeholder?: string;
 	}>(),
 	{
 		value: undefined,
 		autofocus: false,
 		disabled: false,
 		type: undefined,
+		placeholder: undefined,
+		language: 'mustache',
 	}
 );
 
@@ -43,7 +47,7 @@ onMounted(async () => {
 		CodeMirror.defineSimpleMode('mustache', mustacheMode);
 
 		codemirror = CodeMirror(codemirrorEl.value, {
-			mode: 'mustache',
+			mode: props.language,
 			value: typeof props.value === 'object' ? JSON.stringify(props.value, null, 4) : String(props.value ?? ''),
 			tabSize: 0,
 			autoRefresh: true,
@@ -57,7 +61,8 @@ onMounted(async () => {
 			scrollbarStyle: isMultiLine.value ? 'native' : 'null',
 			extraKeys: { Ctrl: 'autocomplete' },
 			cursorBlinkRate: props.disabled ? -1 : 530,
-			placeholder: t('raw_editor_placeholder'),
+			placeholder: props.placeholder !== undefined ? props.placeholder : t('raw_editor_placeholder'),
+			readOnly: readOnly.value,
 		});
 
 		// prevent new lines for single lines
