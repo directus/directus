@@ -241,11 +241,11 @@ export class UsersService extends ItemsService {
 			throw new InvalidPayloadException(`You can't change the "tfa_secret" value manually.`);
 		}
 
-		if (data.provider !== undefined) {
+		if (data.provider !== undefined && this.accountability && this.accountability.admin !== true) {
 			throw new InvalidPayloadException(`You can't change the "provider" value manually.`);
 		}
 
-		if (data.external_identifier !== undefined) {
+		if (data.external_identifier !== undefined && this.accountability && this.accountability.admin !== true) {
 			throw new InvalidPayloadException(`You can't change the "external_identifier" value manually.`);
 		}
 
