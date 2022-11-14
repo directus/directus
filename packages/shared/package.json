@@ -35,7 +35,8 @@
 	},
 	"files": [
 		"dist",
-		"!dist/**/*.test.js"
+		"!**/*.test.js",
+		"!**/*.d.ts.map"
 	],
 	"sideEffects": false,
 	"scripts": {

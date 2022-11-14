@@ -17,7 +17,8 @@
 	},
 	"files": [
 		"dist",
-		"templates"
+		"templates",
+		"!**/*.d.ts.map"
 	],
 	"types": "dist/esm/index.d.ts",
 	"bin": {

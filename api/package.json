@@ -72,8 +72,8 @@
 	},
 	"files": [
 		"dist",
-		"!dist/**/*.test.js",
-		"!dist/__*__/"
+		"!**/*.test.js",
+		"!**/__*__/"
 	],
 	"dependencies": {
 		"@authenio/samlify-node-xmllint": "2.0.0",
