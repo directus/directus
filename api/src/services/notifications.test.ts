@@ -29,8 +29,8 @@ describe('Integration Tests', () => {
 			let thisSendEmailSpy: SpyInstance;
 
 			beforeEach(() => {
-				superCreateOneSpy = vi.spyOn(ItemsService.prototype, 'createOne').mockImplementation(vi.fn());
-				thisSendEmailSpy = vi.spyOn(NotificationsService.prototype, 'sendEmail').mockImplementation(vi.fn());
+				superCreateOneSpy = vi.spyOn(ItemsService.prototype, 'createOne').mockResolvedValue(0);
+				thisSendEmailSpy = vi.spyOn(NotificationsService.prototype, 'sendEmail').mockResolvedValue();
 			});
 
 			it('create a notification and send email', async () => {
@@ -54,8 +54,8 @@ describe('Integration Tests', () => {
 			let thisSendEmailSpy: SpyInstance;
 
 			beforeEach(() => {
-				superCreateManySpy = vi.spyOn(ItemsService.prototype, 'createMany').mockImplementation(vi.fn());
-				thisSendEmailSpy = vi.spyOn(NotificationsService.prototype, 'sendEmail').mockImplementation(vi.fn());
+				superCreateManySpy = vi.spyOn(ItemsService.prototype, 'createMany').mockResolvedValue([]);
+				thisSendEmailSpy = vi.spyOn(NotificationsService.prototype, 'sendEmail').mockResolvedValue();
 			});
 
 			it('create many notifications and send email for notification', async () => {
@@ -86,8 +86,8 @@ describe('Integration Tests', () => {
 			let mailServiceSendSpy: SpyInstance;
 
 			beforeEach(() => {
-				usersServiceReadOneSpy = vi.spyOn(service.usersService, 'readOne').mockImplementation(vi.fn());
-				mailServiceSendSpy = vi.spyOn(service.mailService, 'send').mockImplementation(vi.fn());
+				usersServiceReadOneSpy = vi.spyOn(service.usersService, 'readOne').mockResolvedValue({});
+				mailServiceSendSpy = vi.spyOn(service.mailService, 'send').mockResolvedValue(0);
 			});
 
 			it('do nothing when there is no recipient', async () => {

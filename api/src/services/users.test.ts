@@ -1,7 +1,7 @@
 import { SchemaOverview } from '@directus/shared/types';
 import knex, { Knex } from 'knex';
 import { getTracker, MockClient, Tracker } from 'knex-mock-client';
-import { afterEach, beforeAll, describe, it, vi, expect } from 'vitest';
+import { afterEach, beforeAll, describe, it, vi, expect, MockedFunction } from 'vitest';
 import { ItemsService, UsersService } from '.';
 import { InvalidPayloadException } from '../exceptions';
 
@@ -40,11 +40,11 @@ const testSchema = {
 } as SchemaOverview;
 
 describe('Integration Tests', () => {
-	let db: vi.Mocked<Knex>;
+	let db: MockedFunction<Knex>;
 	let tracker: Tracker;
 
 	beforeAll(async () => {
-		db = knex({ client: MockClient }) as vi.Mocked<Knex>;
+		db = vi.mocked(knex({ client: MockClient }));
 		tracker = getTracker();
 	});
 

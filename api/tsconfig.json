@@ -11,7 +11,7 @@
 		"lib": ["es2019"],
 		"skipLibCheck": true,
 		"declaration": true,
-		"resolveJsonModule": true,
+		"resolveJsonModule": true
 	},
-	"exclude": ["node_modules", "dist", "extensions"]
+	"exclude": ["node_modules", "dist", "extensions", "**/__utils__/*.*", "**/__mocks__/*.*", "**/*.test.ts"]
 }
