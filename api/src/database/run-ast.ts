@@ -117,9 +117,18 @@ export default async function runAST(
 					batchCount++;
 				}
 			} else {
-				const node = merge({}, nestedNode, {
-					query: { limit: -1 },
-				});
+				let node;
+
+				if (nestedNode.type === 'a2o') {
+					node = merge({}, nestedNode);
+					for (const nestedCollection of nestedNode.names) {
+						node.query[nestedCollection].limit = -1;
+					}
+				} else {
+					node = merge({}, nestedNode, {
+						query: { limit: -1 },
+					});
+				}
 
 				nestedItems = (await runAST(node, schema, { knex, nested: true })) as Item[] | null;
 
