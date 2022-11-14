@@ -11,6 +11,7 @@ export class SchemaHelperCockroachDb extends SchemaHelper {
 	): Promise<void> {
 		await this.changeToTypeByCopy(table, column, type, options);
 	}
+
 	async getVersion(): Promise<{ parsed: number[]; full: string }> {
 		const versionData = await this.knex.select(this.knex.raw('version() as version'));
 		const versionString = versionData[0]['version'];
@@ -22,5 +23,16 @@ export class SchemaHelperCockroachDb extends SchemaHelper {
 		}
 		logger.error('Unable to parse database version string.');
 		return { parsed: [], full: versionString };
+	}
+
+	constraintName(existingName: string): string {
+		const suffix = '_replaced';
+		// CockroachDB does not allow for dropping/creating constraints with the same
+		// name in a single transaction. reference issue #14873
+		if (existingName.endsWith(suffix)) {
+			return existingName.substring(0, existingName.length - suffix.length);
+		} else {
+			return existingName + suffix;
+		}
 	}
 }

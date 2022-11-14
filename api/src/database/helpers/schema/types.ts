@@ -96,4 +96,10 @@ export abstract class SchemaHelper extends DatabaseHelper {
 			full: version[0]['@@version'],
 		};
 	}
+  
+	constraintName(existingName: string): string {
+		// most vendors allow for dropping/creating constraints with the same name
+		// reference issue #14873
+		return existingName;
+	}
 }
