@@ -759,6 +759,7 @@ importers:
       '@rollup/plugin-json': 5.0.0
       '@rollup/plugin-node-resolve': 15.0.0
       '@rollup/plugin-replace': 5.0.0
+      '@rollup/plugin-terser': 0.1.0
       '@types/fs-extra': 9.0.13
       '@vue/compiler-sfc': 3.2.41
       chalk: 4.1.1
@@ -770,7 +771,6 @@ importers:
       rimraf: 3.0.2
       rollup: 3.2.3
       rollup-plugin-styles: 4.0.0
-      rollup-plugin-terser: 7.0.2
       rollup-plugin-typescript2: 0.34.1
       rollup-plugin-vue: 6.0.0
       typescript: 4.8.4
@@ -780,6 +780,7 @@ importers:
       '@rollup/plugin-json': 5.0.0_rollup@3.2.3
       '@rollup/plugin-node-resolve': 15.0.0_rollup@3.2.3
       '@rollup/plugin-replace': 5.0.0_rollup@3.2.3
+      '@rollup/plugin-terser': 0.1.0_rollup@3.2.3
       '@vue/compiler-sfc': 3.2.41
       chalk: 4.1.1
       commander: 9.4.1
@@ -788,7 +789,6 @@ importers:
       ora: 5.4.0
       rollup: 3.2.3
       rollup-plugin-styles: 4.0.0_rollup@3.2.3
-      rollup-plugin-terser: 7.0.2_rollup@3.2.3
       rollup-plugin-typescript2: 0.34.1_655ssj4e7sdqlljrreeiqtltve
       rollup-plugin-vue: 6.0.0_@vue+compiler-sfc@3.2.41
     devDependencies:
@@ -4463,6 +4463,19 @@ packages:
       '@rollup/pluginutils': 4.2.1
       magic-string: 0.26.7
       rollup: 3.2.3
+    dev: false
+
+  /@rollup/plugin-terser/0.1.0_rollup@3.2.3:
+    resolution: {integrity: sha512-N2KK+qUfHX2hBzVzM41UWGLrEmcjVC37spC8R3c9mt3oEDFKh3N2e12/lLp9aVSt86veR0TQiCNQXrm8C6aiUQ==}
+    engines: {node: '>=14.0.0'}
+    peerDependencies:
+      rollup: ^2.x || ^3.x
+    peerDependenciesMeta:
+      rollup:
+        optional: true
+    dependencies:
+      rollup: 3.2.3
+      terser: 5.15.1
     dev: false
 
   /@rollup/plugin-virtual/3.0.0_rollup@3.2.3:
@@ -13758,6 +13771,7 @@ packages:
       '@types/node': 18.11.2
       merge-stream: 2.0.0
       supports-color: 7.2.0
+    dev: true
 
   /jest-worker/27.5.1:
     resolution: {integrity: sha512-7vuh85V5cdDofPyxn58nrPjBktZo0u9x1g8WtjQol+jZDaE+fhN+cIvTj11GndBnMnyfrUOG1sZQxCdjKh+DKg==}
@@ -17430,6 +17444,7 @@ packages:
     resolution: {integrity: sha512-vYl3iOX+4CKUWuxGi9Ukhie6fsqXqS9FE2Zaic4tNFD2N2QQaXOMFbuKK4QmDHC0JO6B1Zp41J0LpT0oR68amQ==}
     dependencies:
       safe-buffer: 5.2.1
+    dev: true
 
   /randomfill/1.0.4:
     resolution: {integrity: sha512-87lcbR8+MhcWcUiQ+9e+Rwx8MyR2P7qnt15ynUlbm3TU/fjbgz4GsvfSUDTemtCCtVCqb4ZcEFlyPNTh9bBTLw==}
@@ -18108,18 +18123,6 @@ packages:
       tslib: 2.4.0
     dev: false
 
-  /rollup-plugin-terser/7.0.2_rollup@3.2.3:
-    resolution: {integrity: sha512-w3iIaU4OxcF52UUXiZNsNeuXIMDvFrr+ZXK6bFZ0Q60qyVfq4uLptoS4bbq3paG3x216eQllFZX7zt6TIImguQ==}
-    peerDependencies:
-      rollup: ^2.0.0
-    dependencies:
-      '@babel/code-frame': 7.18.6
-      jest-worker: 26.6.2
-      rollup: 3.2.3
-      serialize-javascript: 4.0.0
-      terser: 5.14.2
-    dev: false
-
   /rollup-plugin-typescript2/0.34.1_655ssj4e7sdqlljrreeiqtltve:
     resolution: {integrity: sha512-P4cHLtGikESmqi1CA+tdMDUv8WbQV48mzPYt77TSTOPJpERyZ9TXdDgjSDix8Fkqce6soYz3+fa4lrC93IEkcw==}
     peerDependencies:
@@ -18404,6 +18407,7 @@ packages:
     resolution: {integrity: sha512-GaNA54380uFefWghODBWEGisLZFj00nS5ACs6yHa9nLqlLpVLO8ChDGeKRjZnV4Nh4n0Qi7nhYZD/9fCPzEqkw==}
     dependencies:
       randombytes: 2.1.0
+    dev: true
 
   /serialize-javascript/5.0.1:
     resolution: {integrity: sha512-SaaNal9imEO737H2c05Og0/8LUXG7EnsZyMa8MzkmuHoELfT6txuj0cMqRj6zfPKnmQ1yasR4PCJc8x+M4JSPA==}
@@ -19660,6 +19664,18 @@ packages:
       acorn: 8.8.0
       commander: 2.20.3
       source-map-support: 0.5.21
+    dev: true
+
+  /terser/5.15.1:
+    resolution: {integrity: sha512-K1faMUvpm/FBxjBXud0LWVAGxmvoPbZbfTCYbSgaaYQaIXI3/TdI7a7ZGA73Zrou6Q8Zmz3oeUTsp/dj+ag2Xw==}
+    engines: {node: '>=10'}
+    hasBin: true
+    dependencies:
+      '@jridgewell/source-map': 0.3.2
+      acorn: 8.8.0
+      commander: 2.20.3
+      source-map-support: 0.5.21
+    dev: false
 
   /test-exclude/6.0.0:
     resolution: {integrity: sha512-cAGWPIyOHU6zlmg88jwm7VRyXnMN7iV68OGAbYDk/Mh/xC/pzVPlQtY6ngoIH/5/tciuhGfvESU8GrHrcxD56w==}
