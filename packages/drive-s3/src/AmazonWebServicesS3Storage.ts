@@ -171,9 +171,9 @@ export class AmazonWebServicesS3Storage extends Storage {
 		location = this._fullPath(location);
 
 		const params = { Key: location, Bucket: this.$bucket };
-		const result = await this.$driver.send(new GetObjectCommand(params));
-		const body = result.Body as NodeJS.ReadableStream;
 		try {
+			const result = await this.$driver.send(new GetObjectCommand(params));
+			const body = result.Body as NodeJS.ReadableStream;
 			const content = await streamToBuffer(body);
 			return { content, raw: result };
 		} catch (e: any) {
