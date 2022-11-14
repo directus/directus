@@ -740,6 +740,8 @@ add_file: Adicionar arquivo
 replace_file: Substituir arquivo
 no_results: Sem resultados
 no_results_copy: Ajuste ou limpe os filtros de busca para ver resultados.
+no_visible_fields: Formulário vazio
+no_visible_fields_copy: Este formulário não tem campos visíveis.
 clear_filters: Limpar filtros
 saves_automatically: Salva automaticamente
 role: Função
@@ -774,6 +776,7 @@ view_trigger: Ver gatilho
 create_trigger: Criar gatilho
 trigger_setup: Configuração de gatilho
 change_trigger: Alterar gatilho
+flow_delete_confirm: Tem certeza que deseja deletar o campo "{flow}"? Esta ação não pode ser desfeita.
 set_flow_active: Definir fluxo como ativo
 set_flow_inactive: Definir fluxo como inativo
 edit_flow: Editar fluxo
@@ -1478,6 +1481,7 @@ interfaces:
     use_24: Usar formato de 24 horas
   system-fields:
     select_a_collection: Selecione uma coleção
+    no_fields: Sem campos.
   system-display-template:
     display-template: Modelo de exibição
     description: Combinar texto estático e valores dinâmicos
@@ -1864,7 +1868,7 @@ panels:
     select_collection: Você deve selecionar uma coleção.
     function: Função
   piechart:
-    function: 'Função'
+    function: Função
 triggers:
   webhook:
     method: Método 

@@ -275,6 +275,7 @@ fields_group: 字段组
 no_collections_found: 未找到任何模型
 new_data_alert: '以下将在您的模型中创建：'
 search_collection: 搜索模型...
+search_field: 搜索字段
 new_field: '新建字段'
 new_collection: '新建模型'
 add_m2o_to_collection: '添加 M2O 到 "{collection}"'
@@ -783,8 +784,10 @@ label: 标签
 flows: 流程
 flow: 流程
 select_a_flow: 选择一个流程
+run_flow_on_current_collection: 在当前集合上运行流程
 run_flow_on_current: 在当前条目上运行Flow
 run_flow_on_current_edited_confirm: 此流程可能会更新此项，您确定要执行它吗？
+run_flow_on_selected: 先选择一个或多个条目 | 在 1 个选定条目 上运行流程 | 在 {n} 个选定条目 上运行流程
 run_flow_success: 流程 "{flow}" 运行成功
 trigger: 触发器
 trigger_options: 触发器选项
@@ -828,6 +831,7 @@ panel_header: 面板标题
 panel_name_placeholder: 命名此面板...
 panel_note_placeholder: 面板的详细配置...
 panel_delete_confirm: 您确定要删除? 此操作无法撤消。
+list_panel_allow_edit: 允许行内编辑
 dashboard_delete_confirm: 您确定要删除? 此操作无法撤消。
 edit_dashboard: 编辑仪表板
 delete_dashboard: 删除
@@ -1905,8 +1909,33 @@ layouts:
     default_template: 使用Collection默认值
     no_compatible_fields: 没有兼容的字段
   kanban:
+    name: 看板
+    group_field: 分组依据
+    group_field_placeholder: 用于分组的字段...，
+    group_title: 分组标题：
+    group_title_placeholder: 分组标题字段...，
+    title: 卡片标题
+    title_placeholder: 可选标题字段...
+    text: 卡片文本
+    text_placeholder: 可选文本字段...
+    date: 卡片日期
+    date_placeholder: 可选日期字段...
+    tags: 卡片标签
+    tags_placeholder: 可选标签字段...
+    user: 卡片用户
+    user_placeholder: 可选用户字段...
+    image: 卡片图像
+    image_placeholder: 可选图像字段...
+    image_fit: 适合的卡片图像
     crop: 裁剪
     advanced: 高级
+    edit_group: 编辑分组
+    delete_group: 删除分组
+    add_group: 添加分组
+    add_group_placeholder: 输入一个新的分组标题...
+    show_ungrouped: 显示未分组
+    show: 显示
+    no_group: 无分组
     not_all_loaded: 只能加载前 1000 个条目。
 panels:
   metric:
@@ -1948,7 +1977,6 @@ panels:
     y_axis_conditional_two: 必须是一个数字。
   linechart:
     name: 折线图
-    description: 比较字段值变化的折线图。
     select_field: 您必须选择一个字段。
     select_collection: 您必须选择一个集合。
     select_x_axis: 您必须选择一个X轴。
@@ -1960,15 +1988,16 @@ panels:
     datasets: 数据集
     show_legend: 显示图例
     show_marker: 显示工具提示标志
-    include_dataset: 您必须包含至少一个数据集。
     include_y_axis: 当没有指定组时，您必须为每个数据集包含Y-Axis。
     group_and_function: 您必须同时包含或省略一个分组函数和一个功能函数。
-    smooth: '平滑模式'
-    straight: '直线模式'
-    step_line: '分步线条'
+    smooth: 平滑模式
+    straight: 直线模式
+    step_line: 分步线条
   meter:
-    description: 跟踪值的仪表
     name: 电表模式
+    description: 跟踪值的仪表
+    half_circle: 半圈
+    full_circle: 一整圈
     stroke_width: 笔画宽度
     select_max_value: 您必须选择一个最大值。
     max_greater_than_zero: 最大值必须大于 0。
@@ -1980,11 +2009,9 @@ panels:
     broad: 广泛的
   piechart:
     name: 饼图或环图
-    description: 在栏上显示分组比率的圆形图表。
-    function: '功能函数'
+    function: 功能函数
     donut: 圆环图
-    labels: 显示标签
-    legend: 显示图例
+    show_legend: 显示图例
     right: 右
     bottom: 底部
     monochrome: 黑白的
@@ -2028,9 +2055,12 @@ triggers:
     collection_and_item: 集合和条目页面
     collection_only: 仅集合页面
     item_only: 仅条目页面
+    collection_page: 集合页面
+    require_selection: 需要选择
+a_flow_uuid: 选择要触发的流...
 any_string_or_json: 任意字符串或JSON对象...
 item_payload_placeholder: 这是用于更新条目字段值的 JSON对象...
-operation_variables_note: 您可以通过变量引用访问流程数据，例如**{{'}{'{'}$last{'}'}{'}'}**， **{{'}{{'}$trigger{'}'}{'}'}** 和 **{{'}{'{'}$accountability{'}'}{'}'}**, 或使用 **{'{'}{'{'} operation_key{'}'}{'}'}**引用之前的操作。
+operation_variables_note: 您可以通过变量引用访问流程数据，例如**{'{'}{'{'}$last{'}'}{'}'}**， **{'{'}{'{'}$trigger{'}'}{'}'}** 和 **{'{'}{'{'}$accountability{'}'}{'}'}**, 或使用 **{'{'}{'{'} operation_key{'}'}{'}'}**引用之前的操作。
 operations:
   condition:
     name: 条件
