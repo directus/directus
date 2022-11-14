@@ -250,13 +250,12 @@ export class AmazonWebServicesS3Storage extends Storage {
 	public getUrl(location: string): string {
 		location = this._fullPath(location);
 
-		const endpoint = this.$driver.config.endpointProvider({ Region: this.$region });
+		const endpoint = this.$driver.config.endpointProvider({
+			Region: this.$region,
+			Bucket: this.$bucket,
+		});
 
-		if (endpoint.url.href.startsWith('https://s3.amazonaws')) {
-			return `https://${this.$bucket}.s3.amazonaws.com/${location}`;
-		}
-
-		return `${endpoint.url.href}${this.$bucket}/${location}`;
+		return `${endpoint.url.href}${location}`;
 	}
 
 	/**
