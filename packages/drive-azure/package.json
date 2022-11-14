@@ -1,6 +1,7 @@
 {
 	"name": "@directus/drive-azure",
 	"version": "9.20.4",
+	"homepage": "https://directus.io",
 	"description": "Azure Blob driver for @directus/drive",
 	"license": "MIT",
 	"main": "dist/index.js",
@@ -8,18 +9,6 @@
 		".": "./dist/index.js",
 		"./package.json": "./package.json"
 	},
-	"keywords": [
-		"storage",
-		"filesystem",
-		"file",
-		"azure",
-		"azure-blob",
-		"promise",
-		"async",
-		"spaces",
-		"drive",
-		"directus"
-	],
 	"scripts": {
 		"build": "tsc --project ./tsconfig.json",
 		"cleanup": "run-p cleanup:*",
@@ -59,10 +48,10 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/directus/directus.git"
+		"url": "https://github.com/directus/directus.git",
+		"directory": "packages/drive-azure"
 	},
 	"bugs": {
 		"url": "https://github.com/directus/directus/issues"
-	},
-	"gitHead": "24621f3934dc77eb23441331040ed13c676ceffd"
+	}
 }

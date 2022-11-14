@@ -1,7 +1,6 @@
 {
 	"name": "directus-monorepo",
 	"private": true,
-	"version": "9.14.2",
 	"workspaces": [
 		"./app",
 		"./api",

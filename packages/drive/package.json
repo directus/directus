@@ -1,27 +1,14 @@
 {
 	"name": "@directus/drive",
 	"version": "9.20.4",
-	"description": "Flexible and Fluent way to manage storage in Node.js.",
+	"homepage": "https://directus.io",
+	"description": "Object storage abstraction layer for Directus",
 	"license": "MIT",
 	"main": "dist/index.js",
 	"exports": {
 		".": "./dist/index.js",
 		"./package.json": "./package.json"
 	},
-	"keywords": [
-		"storage",
-		"filesystem",
-		"file",
-		"aws",
-		"s3",
-		"azure",
-		"promise",
-		"async",
-		"spaces",
-		"google",
-		"cloud",
-		"directus"
-	],
 	"contributors": [
 		"Rijk van Zanten <rijkvanzanten@me.com>"
 	],
@@ -47,12 +34,12 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/directus/directus.git"
+		"url": "https://github.com/directus/directus.git",
+		"directory": "packages/drive"
 	},
 	"bugs": {
 		"url": "https://github.com/directus/directus/issues"
 	},
-	"gitHead": "24621f3934dc77eb23441331040ed13c676ceffd",
 	"devDependencies": {
 		"@types/fs-extra": "9.0.13",
 		"@types/jest": "29.2.0",

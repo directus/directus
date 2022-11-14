@@ -24,22 +24,25 @@
 			"silent": true
 		}
 	},
+	"publishConfig": {
+		"access": "public"
+	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/directus/directus.git"
+		"url": "https://github.com/directus/directus.git",
+		"directory": "packages/specs"
 	},
 	"author": "Nils Twelker",
 	"license": "GPL-3.0",
 	"bugs": {
 		"url": "https://github.com/directus/directus/issues"
 	},
-	"homepage": "https://github.com/directus/directus#readme",
+	"homepage": "https://directus.io",
 	"files": [
 		"dist",
 		"index.d.ts",
 		"index.js"
 	],
-	"gitHead": "24621f3934dc77eb23441331040ed13c676ceffd",
 	"devDependencies": {
 		"npm-watch": "0.11.0",
 		"openapi-types": "12.0.2",

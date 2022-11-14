@@ -1,8 +1,8 @@
 {
 	"name": "@directus/app",
 	"version": "9.20.4",
-	"private": false,
-	"description": "Directus is an Open-Source Headless CMS & API for Managing Custom Databases",
+	"homepage": "https://directus.io",
+	"description": "App dashboard for Directus",
 	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
 	"main": "dist/index.html",
 	"exports": {
@@ -14,7 +14,8 @@
 	],
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/directus/directus.git"
+		"url": "https://github.com/directus/directus.git",
+		"directory": "app"
 	},
 	"publishConfig": {
 		"access": "public"

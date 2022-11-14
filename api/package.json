@@ -2,8 +2,8 @@
 	"name": "directus",
 	"version": "9.20.4",
 	"license": "GPL-3.0-only",
-	"homepage": "https://github.com/directus/directus#readme",
-	"description": "Directus is a real-time API and App dashboard for managing SQL database content.",
+	"homepage": "https://directus.io",
+	"description": "Directus is a real-time API and App dashboard for managing SQL database content",
 	"keywords": [
 		"directus",
 		"realtime",
@@ -25,7 +25,8 @@
 	],
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/directus/directus.git"
+		"url": "https://github.com/directus/directus.git",
+		"directory": "api"
 	},
 	"bugs": {
 		"url": "https://github.com/directus/directus/issues"
@@ -178,7 +179,6 @@
 		"sqlite3": "5.1.2",
 		"tedious": "15.1.0"
 	},
-	"gitHead": "24621f3934dc77eb23441331040ed13c676ceffd",
 	"devDependencies": {
 		"@otplib/preset-default": "12.0.1",
 		"@types/async": "3.2.15",
