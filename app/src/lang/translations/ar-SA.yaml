@@ -364,7 +364,7 @@ languages_collection: مجموعة اللغات
 import_data_input_placeholder: CSV أو JSON...
 import_data_button: بدء الاستيراد
 import_data_indeterminate: استيراد البيانات...
-import_data_success: البيانات تم استيرادها بنجاح من {اسم المِلَفّ}
+import_data_success: البيانات تم استيرادها بنجاح من {filename}
 import_data_error: هيكل بيانات هذا الملف لا يتطابق مع المجموعة.
 label_import: إستيراد
 label_export: تصدير

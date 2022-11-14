@@ -28,4 +28,4 @@ Fixes #
 
 If adding a new feature:
 
-- [ ] Documentation was added/updated. PR: 
+- [ ] Documentation was added/updated. PR:
