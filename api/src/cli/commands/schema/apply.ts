@@ -6,7 +6,7 @@ import { load as loadYaml } from 'js-yaml';
 import path from 'path';
 import { flushCaches } from '../../../cache';
 import getDatabase, { isInstalled, validateDatabaseConnection } from '../../../database';
-import { cliLogger as logger } from '../../../logger';
+import logger from '../../../logger';
 import { Snapshot } from '../../../types';
 import { applySnapshot, isNestedMetaUpdate } from '../../../utils/apply-snapshot';
 import { getSnapshot } from '../../../utils/get-snapshot';

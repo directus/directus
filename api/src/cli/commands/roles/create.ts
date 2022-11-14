@@ -1,7 +1,7 @@
 import { getSchema } from '../../../utils/get-schema';
 import { RolesService } from '../../../services';
 import getDatabase from '../../../database';
-import { cliLogger as logger } from '../../../logger';
+import logger from '../../../logger';
 
 export default async function rolesCreate({ role: name, admin }: { role: string; admin: boolean }): Promise<void> {
 	const database = getDatabase();

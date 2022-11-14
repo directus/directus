@@ -39,7 +39,7 @@ import env from './env';
 import { InvalidPayloadException } from './exceptions';
 import { getExtensionManager } from './extensions';
 import { getFlowManager } from './flows';
-import { expressLogger, cliLogger } from './logger';
+import logger, { expressLogger } from './logger';
 import authenticate from './middleware/authenticate';
 import getPermissions from './middleware/get-permissions';
 import cache from './middleware/cache';
@@ -66,7 +66,7 @@ export default async function createApp(): Promise<express.Application> {
 	validateEnv(['KEY', 'SECRET']);
 
 	if (!new Url(env.PUBLIC_URL).isAbsolute()) {
-		cliLogger.warn('PUBLIC_URL should be a full URL');
+		logger.warn('PUBLIC_URL should be a full URL');
 	}
 
 	await validateStorage();
@@ -75,12 +75,12 @@ export default async function createApp(): Promise<express.Application> {
 	await validateDatabaseExtensions();
 
 	if ((await isInstalled()) === false) {
-		cliLogger.error(`Database doesn't have Directus tables installed.`);
+		logger.error(`Database doesn't have Directus tables installed.`);
 		process.exit(1);
 	}
 
 	if ((await validateMigrations()) === false) {
-		cliLogger.warn(`Database migrations have not all been run`);
+		logger.warn(`Database migrations have not all been run`);
 	}
 
 	await flushCaches();

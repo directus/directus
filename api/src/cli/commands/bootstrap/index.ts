@@ -3,7 +3,7 @@ import { nanoid } from 'nanoid';
 import runMigrations from '../../../database/migrations/run';
 import installDatabase from '../../../database/seeds/run';
 import env from '../../../env';
-import { cliLogger as logger } from '../../../logger';
+import logger from '../../../logger';
 import { getSchema } from '../../../utils/get-schema';
 import { RolesService, UsersService, SettingsService } from '../../../services';
 

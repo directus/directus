@@ -2,7 +2,7 @@ import { getSchema } from '../../../utils/get-schema';
 import { generateHash } from '../../../utils/generate-hash';
 import { UsersService } from '../../../services';
 import getDatabase from '../../../database';
-import { cliLogger as logger } from '../../../logger';
+import logger from '../../../logger';
 
 export default async function usersPasswd({ email, password }: { email?: string; password?: string }): Promise<void> {
 	const database = getDatabase();

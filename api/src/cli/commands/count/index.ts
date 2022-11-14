@@ -1,5 +1,5 @@
 import getDatabase from '../../../database';
-import { cliLogger as logger } from '../../../logger';
+import logger from '../../../logger';
 
 export default async function count(collection: string): Promise<void> {
 	const database = getDatabase();

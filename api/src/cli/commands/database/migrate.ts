@@ -1,6 +1,6 @@
 import run from '../../../database/migrations/run';
 import getDatabase from '../../../database';
-import { cliLogger as logger } from '../../../logger';
+import logger from '../../../logger';
 
 export default async function migrate(direction: 'latest' | 'up' | 'down'): Promise<void> {
 	const database = getDatabase();
