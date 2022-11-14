@@ -1,19 +1,18 @@
+import { describe, expect, vi, test } from 'vitest';
+import { getAuthProviders } from '../../src/utils/get-auth-providers';
+
 let factoryEnv: { [k: string]: any } = {};
 
-jest.mock(
-	'../../src/env',
-	() =>
-		new Proxy(
-			{},
-			{
-				get(target, prop) {
-					return factoryEnv[prop as string];
-				},
-			}
-		)
-);
-
-import { getAuthProviders } from '../../src/utils/get-auth-providers';
+vi.mock('../../src/env', () => ({
+	default: new Proxy(
+		{},
+		{
+			get(_target, prop) {
+				return factoryEnv[prop as string];
+			},
+		}
+	),
+}));
 
 const scenarios = [
 	{

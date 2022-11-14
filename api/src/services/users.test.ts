@@ -1,11 +1,12 @@
 import { SchemaOverview } from '@directus/shared/types';
 import knex, { Knex } from 'knex';
 import { getTracker, MockClient, Tracker } from 'knex-mock-client';
-import { UsersService, ItemsService } from '.';
+import { afterEach, beforeAll, describe, it, vi, expect, MockedFunction } from 'vitest';
+import { ItemsService, UsersService } from '.';
 import { InvalidPayloadException } from '../exceptions';
 
-jest.mock('../../src/database/index', () => {
-	return { __esModule: true, default: jest.fn(), getDatabaseClient: jest.fn().mockReturnValue('postgres') };
+vi.mock('../../src/database/index', () => {
+	return { __esModule: true, default: vi.fn(), getDatabaseClient: vi.fn().mockReturnValue('postgres') };
 });
 
 const testSchema = {
@@ -39,11 +40,11 @@ const testSchema = {
 } as SchemaOverview;
 
 describe('Integration Tests', () => {
-	let db: jest.Mocked<Knex>;
+	let db: MockedFunction<Knex>;
 	let tracker: Tracker;
 
 	beforeAll(async () => {
-		db = knex({ client: MockClient }) as jest.Mocked<Knex>;
+		db = vi.mocked(knex({ client: MockClient }));
 		tracker = getTracker();
 	});
 
@@ -162,7 +163,7 @@ describe('Integration Tests', () => {
 						accountability: { role: 'test', admin: false },
 					});
 
-					jest.spyOn(ItemsService.prototype, 'getKeysByQuery').mockImplementation(jest.fn(() => Promise.resolve([1])));
+					vi.spyOn(ItemsService.prototype, 'getKeysByQuery').mockImplementation(vi.fn(() => Promise.resolve([1])));
 
 					const promise = service.updateByQuery({}, { [field]: 'test' });
 
@@ -184,7 +185,7 @@ describe('Integration Tests', () => {
 					accountability: { role: 'admin', admin: true },
 				});
 
-				jest.spyOn(ItemsService.prototype, 'getKeysByQuery').mockImplementation(jest.fn(() => Promise.resolve([1])));
+				vi.spyOn(ItemsService.prototype, 'getKeysByQuery').mockImplementation(vi.fn(() => Promise.resolve([1])));
 
 				const promise = service.updateByQuery({}, { [field]: 'test' });
 
@@ -199,7 +200,7 @@ describe('Integration Tests', () => {
 						schema: testSchema,
 					});
 
-					jest.spyOn(ItemsService.prototype, 'getKeysByQuery').mockImplementation(jest.fn(() => Promise.resolve([1])));
+					vi.spyOn(ItemsService.prototype, 'getKeysByQuery').mockImplementation(vi.fn(() => Promise.resolve([1])));
 
 					const promise = service.updateByQuery({}, { [field]: 'test' });
 
