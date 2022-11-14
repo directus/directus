@@ -1,9 +1,14 @@
 import { DateHelper } from '../types';
 
 export class DateHelperSQLite extends DateHelper {
-	parse(date: string): string {
+	parse(date: string | Date): string {
 		if (!date) {
 			return date;
+		}
+
+		// Date generated from NOW()
+		if (date instanceof Date) {
+			return String(date.getTime());
 		}
 
 		// Return the time as string
