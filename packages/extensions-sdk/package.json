@@ -37,6 +37,7 @@
 		"@rollup/plugin-json": "5.0.0",
 		"@rollup/plugin-node-resolve": "15.0.0",
 		"@rollup/plugin-replace": "5.0.0",
+		"@rollup/plugin-terser": "0.1.0",
 		"@vue/compiler-sfc": "3.2.41",
 		"chalk": "4.1.1",
 		"commander": "9.4.1",
@@ -45,7 +46,6 @@
 		"ora": "5.4.0",
 		"rollup": "3.2.3",
 		"rollup-plugin-styles": "4.0.0",
-		"rollup-plugin-terser": "7.0.2",
 		"rollup-plugin-typescript2": "0.34.1",
 		"rollup-plugin-vue": "6.0.0"
 	},

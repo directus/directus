@@ -1,24 +1,25 @@
 import { Field } from '@directus/shared/types';
 import knex, { Knex } from 'knex';
 import { getTracker, MockClient, Tracker } from 'knex-mock-client';
+import { afterEach, beforeAll, beforeEach, describe, expect, it, MockedFunction, SpyInstance, vi } from 'vitest';
 import { FieldsService } from '.';
 import { InvalidPayloadException } from '../exceptions';
 
-jest.mock('../../src/database/index', () => {
+vi.mock('../../src/database/index', () => {
 	return {
 		__esModule: true,
-		default: jest.fn(),
-		getDatabaseClient: jest.fn().mockReturnValue('postgres'),
-		getSchemaInspector: jest.fn(),
+		default: vi.fn(),
+		getDatabaseClient: vi.fn().mockReturnValue('postgres'),
+		getSchemaInspector: vi.fn(),
 	};
 });
 
 describe('Integration Tests', () => {
-	let db: jest.Mocked<Knex>;
+	let db: MockedFunction<Knex>;
 	let tracker: Tracker;
 
 	beforeAll(() => {
-		db = knex({ client: MockClient }) as jest.Mocked<Knex>;
+		db = vi.mocked(knex({ client: MockClient }));
 		tracker = getTracker();
 	});
 
@@ -36,11 +37,11 @@ describe('Integration Tests', () => {
 		});
 
 		afterEach(() => {
-			jest.clearAllMocks();
+			vi.clearAllMocks();
 		});
 
 		describe('addColumnToTable', () => {
-			let knexCreateTableBuilderSpy: jest.SpyInstance;
+			let knexCreateTableBuilderSpy: SpyInstance;
 
 			it.each(['alias', 'unknown'])('%s fields should be skipped', async (type) => {
 				const testCollection = 'test_collection';
@@ -101,7 +102,7 @@ describe('Integration Tests', () => {
 				tracker.on.any(regex).response({});
 
 				await db.schema.alterTable(testCollection, (table) => {
-					knexCreateTableBuilderSpy = jest.spyOn(table, method as keyof Knex.CreateTableBuilder);
+					knexCreateTableBuilderSpy = vi.spyOn(table, method as keyof Knex.CreateTableBuilder);
 
 					service.addColumnToTable(table, {
 						collection: testCollection,
@@ -129,7 +130,7 @@ describe('Integration Tests', () => {
 				tracker.on.any(regex).response({});
 
 				await db.schema.alterTable(testCollection, (table) => {
-					knexCreateTableBuilderSpy = jest.spyOn(table, type as keyof Knex.CreateTableBuilder);
+					knexCreateTableBuilderSpy = vi.spyOn(table, type as keyof Knex.CreateTableBuilder);
 
 					service.addColumnToTable(table, {
 						collection: testCollection,
@@ -158,7 +159,7 @@ describe('Integration Tests', () => {
 					tracker.on.any(regex).response({});
 
 					await db.schema.alterTable(testCollection, (table) => {
-						knexCreateTableBuilderSpy = jest.spyOn(table, type as keyof Knex.CreateTableBuilder);
+						knexCreateTableBuilderSpy = vi.spyOn(table, type as keyof Knex.CreateTableBuilder);
 
 						service.addColumnToTable(table, {
 							collection: testCollection,
@@ -187,7 +188,7 @@ describe('Integration Tests', () => {
 					tracker.on.any(regex).response({});
 
 					await db.schema.alterTable('test_collection', (table) => {
-						knexCreateTableBuilderSpy = jest.spyOn(table, type as keyof Knex.CreateTableBuilder);
+						knexCreateTableBuilderSpy = vi.spyOn(table, type as keyof Knex.CreateTableBuilder);
 
 						service.addColumnToTable(table, {
 							collection: testCollection,
@@ -217,7 +218,7 @@ describe('Integration Tests', () => {
 				tracker.on.any(regex).response({});
 
 				await db.schema.alterTable(testCollection, (table) => {
-					knexCreateTableBuilderSpy = jest.spyOn(table, 'string');
+					knexCreateTableBuilderSpy = vi.spyOn(table, 'string');
 
 					service.addColumnToTable(table, {
 						collection: testCollection,
@@ -244,7 +245,7 @@ describe('Integration Tests', () => {
 				tracker.on.any(regex).response({});
 
 				await db.schema.alterTable(testCollection, (table) => {
-					knexCreateTableBuilderSpy = jest.spyOn(table, 'string');
+					knexCreateTableBuilderSpy = vi.spyOn(table, 'string');
 
 					service.addColumnToTable(table, {
 						collection: testCollection,
@@ -273,7 +274,7 @@ describe('Integration Tests', () => {
 				tracker.on.any(regex).response({});
 
 				await db.schema.alterTable(testCollection, (table) => {
-					knexCreateTableBuilderSpy = jest.spyOn(table, type as keyof Knex.CreateTableBuilder);
+					knexCreateTableBuilderSpy = vi.spyOn(table, type as keyof Knex.CreateTableBuilder);
 
 					service.addColumnToTable(table, {
 						collection: testCollection,
@@ -298,7 +299,7 @@ describe('Integration Tests', () => {
 				const regex = new RegExp(`alter table "${testCollection}" add column "${testField}" .*`);
 				tracker.on.any(regex).response({});
 
-				const thisHelpersStCreateColumnSpy = jest.spyOn(service.helpers.st, 'createColumn');
+				const thisHelpersStCreateColumnSpy = vi.spyOn(service.helpers.st, 'createColumn');
 
 				await db.schema.alterTable(testCollection, (table) => {
 					service.addColumnToTable(table, {
@@ -334,7 +335,7 @@ describe('Integration Tests', () => {
 				tracker.on.any(regex).response({});
 
 				await db.schema.alterTable(testCollection, (table) => {
-					knexCreateTableBuilderSpy = jest.spyOn(table, type as keyof Knex.CreateTableBuilder);
+					knexCreateTableBuilderSpy = vi.spyOn(table, type as keyof Knex.CreateTableBuilder);
 
 					service.addColumnToTable(table, {
 						collection: testCollection,

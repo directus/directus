@@ -1,14 +1,14 @@
 // @ts-nocheck
 
-jest.mock('../../src/cache');
-jest.mock('../../src/database');
-jest.mock('../../src/utils/validate-env');
-
 import { multipartHandler } from './files';
 import { InvalidPayloadException } from '../exceptions/invalid-payload';
 import { PassThrough } from 'stream';
-
 import FormData from 'form-data';
+import { vi, describe, expect, it } from 'vitest';
+
+vi.mock('../../src/cache');
+vi.mock('../../src/database');
+vi.mock('../../src/utils/validate-env');
 
 describe('multipartHandler', () => {
 	it(`Errors out if request doesn't contain any files to upload`, () => {
@@ -18,7 +18,7 @@ describe('multipartHandler', () => {
 
 		const req = {
 			headers: fakeForm.getHeaders(),
-			is: jest.fn().mockReturnValue(true),
+			is: vi.fn().mockReturnValue(true),
 			body: fakeForm.getBuffer(),
 			params: {},
 			pipe: (input) => stream.pipe(input),
@@ -45,7 +45,7 @@ describe('multipartHandler', () => {
 
 		const req = {
 			headers: fakeForm.getHeaders(),
-			is: jest.fn().mockReturnValue(true),
+			is: vi.fn().mockReturnValue(true),
 			body: fakeForm.getBuffer(),
 			params: {},
 			pipe: (input) => stream.pipe(input),
