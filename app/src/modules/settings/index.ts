@@ -31,6 +31,7 @@ export default defineModule({
 	color: 'var(--primary)',
 	routes: [
 		{
+			name: 'settings-data-model-redirect',
 			path: '',
 			redirect: '/settings/data-model',
 		},

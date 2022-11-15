@@ -17,7 +17,7 @@
 
 			<div class="field">
 				<div class="type-label">{{ t('related_collection') }}</div>
-				<related-collection-select v-model="relatedCollection" :disabled="type === 'files' || isExisting" />
+				<related-collection-select v-model="relatedCollection" :disabled="localType === 'files' || isExisting" />
 			</div>
 
 			<v-input disabled :model-value="currentPrimaryKey" />
@@ -71,6 +71,7 @@
 			<related-field-select
 				v-model="sortField"
 				:collection="junctionCollection"
+				:type-allow-list="['integer', 'bigInteger', 'float', 'decimal']"
 				:disabled-fields="unsortableJunctionFields"
 				:placeholder="t('add_sort_field') + '...'"
 				:nullable="true"
@@ -216,7 +217,7 @@ export default defineComponent({
 		const relationsStore = useRelationsStore();
 		const fieldsStore = useFieldsStore();
 
-		const { field, collection, editing, generationInfo } = storeToRefs(fieldDetailStore);
+		const { collection, editing, generationInfo, localType } = storeToRefs(fieldDetailStore);
 
 		const sortField = syncFieldDetailStoreProperty('relations.o2m.meta.sort_field');
 		const junctionCollection = syncFieldDetailStoreProperty('relations.o2m.collection');
@@ -230,7 +231,6 @@ export default defineComponent({
 		const correspondingField = syncFieldDetailStoreProperty('fields.corresponding');
 		const correspondingFieldKey = syncFieldDetailStoreProperty('fields.corresponding.field');
 
-		const type = computed(() => field.value.type);
 		const isExisting = computed(() => editing.value !== '+');
 
 		const currentPrimaryKey = computed(() => fieldsStore.getPrimaryKeyFieldForCollection(collection.value!)?.field);
@@ -281,7 +281,7 @@ export default defineComponent({
 			t,
 			autoGenerateJunctionRelation,
 			collection,
-			type,
+			localType,
 			isExisting,
 			junctionCollection,
 			junctionFieldCurrent,

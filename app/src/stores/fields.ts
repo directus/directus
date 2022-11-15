@@ -2,6 +2,7 @@ import api from '@/api';
 import { i18n } from '@/lang';
 import { useCollectionsStore } from '@/stores/collections';
 import { useRelationsStore } from '@/stores/relations';
+import { getLiteralInterpolatedTranslation } from '@/utils/get-literal-interpolated-translation';
 import { unexpectedError } from '@/utils/unexpected-error';
 import formatTitle from '@directus/format-title';
 import { DeepPartial, Field, FieldRaw, Relation } from '@directus/shared/types';
@@ -71,21 +72,35 @@ export const useFieldsStore = defineStore({
 		parseField(field: FieldRaw): Field {
 			let name = formatTitle(field.field);
 
-			if (field.meta && !isNil(field.meta.translations) && field.meta.translations.length > 0) {
+			const localesToKeep =
+				field.meta && !isNil(field.meta.translations) && Array.isArray(field.meta.translations)
+					? field.meta.translations.map((translation) => translation.language)
+					: [];
+
+			for (const locale of i18n.global.availableLocales) {
+				if (
+					i18n.global.te(`fields.${field.collection}.${field.field}`, locale) &&
+					!localesToKeep.includes(locale) &&
+					!field.meta?.system
+				) {
+					i18n.global.mergeLocaleMessage(locale, { fields: { [field.collection]: { [field.field]: undefined } } });
+				}
+			}
+
+			if (field.meta && !isNil(field.meta.translations) && Array.isArray(field.meta.translations)) {
 				for (let i = 0; i < field.meta.translations.length; i++) {
 					const { language, translation } = field.meta.translations[i];
 
-					// Interpolate special characters in vue-i18n to prevent parsing error. Ref #11287
-					const literalInterpolatedTranslation = translation ? translation.replace(/([{}@$|])/g, "{'$1'}") : null;
-
 					i18n.global.mergeLocaleMessage(language, {
-						...(literalInterpolatedTranslation && {
-							fields: {
-								[field.collection]: {
-									[field.field]: literalInterpolatedTranslation,
-								},
-							},
-						}),
+						...(translation
+							? {
+									fields: {
+										[field.collection]: {
+											[field.field]: getLiteralInterpolatedTranslation(translation),
+										},
+									},
+							  }
+							: {}),
 					});
 				}
 			}

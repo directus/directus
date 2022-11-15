@@ -108,7 +108,6 @@
 							block
 							clickable
 							:dense="totalItemCount > 4"
-							:disabled="disabled || updateAllowed === false"
 							:class="{ deleted: element.$type === 'deleted' }"
 							@click="editItem(element)"
 						>
@@ -314,7 +313,7 @@ const query = computed<RelationQueryMultiple>(() => {
 	return q;
 });
 
-watch([search, searchFilter], () => {
+watch([search, searchFilter, limit], () => {
 	page.value = 1;
 });
 

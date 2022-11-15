@@ -1,7 +1,7 @@
 <template>
 	<private-view :title="title">
 		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon secondary exact @click="router.back()">
+			<v-button class="header-icon" rounded icon secondary exact @click="navigateBack">
 				<v-icon name="arrow_back" />
 			</v-button>
 		</template>
@@ -289,21 +289,12 @@ export default defineComponent({
 			usePermissions(ref('directus_users'), item, isNew);
 
 		// These fields will be shown in the sidebar instead
-		const fieldsDenyList = [
-			'id',
-			'external_id',
-			'last_page',
-			'created_on',
-			'created_by',
-			'modified_by',
-			'modified_on',
-			'last_access',
-		];
+		const fieldsDenyList = ['id', 'last_page', 'created_on', 'created_by', 'modified_by', 'modified_on', 'last_access'];
 
 		const fieldsFiltered = computed(() => {
 			return fields.value.filter((field: Field) => {
-				// These fields should only be editable when creating new users
-				if (!isNew.value && ['provider', 'external_identifier'].includes(field.field)) {
+				// These fields should only be editable when creating new users or by administrators
+				if (!isNew.value && ['provider', 'external_identifier'].includes(field.field) && !userStore.isAdmin) {
 					field.meta.readonly = true;
 				}
 				return !fieldsDenyList.includes(field.field);
@@ -328,6 +319,7 @@ export default defineComponent({
 			item,
 			loading,
 			isNew,
+			navigateBack,
 			breadcrumb,
 			edits,
 			hasEdits,
@@ -368,6 +360,16 @@ export default defineComponent({
 			avatarError,
 			isSavable,
 		};
+
+		function navigateBack() {
+			const backState = router.options.history.state.back;
+			if (typeof backState !== 'string' || !backState.startsWith('/login')) {
+				router.back();
+				return;
+			}
+
+			router.push('/users');
+		}
 
 		function useBreadcrumb() {
 			const breadcrumb = computed(() => [

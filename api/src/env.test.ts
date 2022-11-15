@@ -1,3 +1,5 @@
+import { describe, test, expect, vi } from 'vitest';
+
 const testEnv = {
 	NUMBER: '1234',
 	NUMBER_CAST_AS_STRING: 'string:1234',
@@ -7,19 +9,9 @@ const testEnv = {
 	MULTIPLE: 'array:string:https://example.com,regex:\\.example2\\.com$',
 };
 
-describe('env processed values', () => {
-	const originalEnv = process.env;
-	let env: Record<string, any>;
-
-	beforeEach(() => {
-		jest.resetModules();
-		process.env = { ...testEnv };
-		env = jest.requireActual('../src/env').default;
-	});
-
-	afterEach(() => {
-		process.env = originalEnv;
-	});
+describe('env processed values', async () => {
+	process.env = { ...testEnv };
+	const env = ((await vi.importActual('../src/env')) as { default: Record<string, any> }).default;
 
 	test('Number value should be a number', () => {
 		expect(env.NUMBER).toStrictEqual(1234);
