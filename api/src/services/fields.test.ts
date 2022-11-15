@@ -5,14 +5,11 @@ import { afterEach, beforeAll, beforeEach, describe, expect, it, MockedFunction,
 import { FieldsService } from '.';
 import { InvalidPayloadException } from '../exceptions';
 
-vi.mock('../../src/database/index', () => {
-	return {
-		__esModule: true,
-		default: vi.fn(),
-		getDatabaseClient: vi.fn().mockReturnValue('postgres'),
-		getSchemaInspector: vi.fn(),
-	};
-});
+vi.mock('../../src/database/index', () => ({
+	default: vi.fn(),
+	getDatabaseClient: vi.fn().mockReturnValue('postgres'),
+	getSchemaInspector: vi.fn(),
+}));
 
 describe('Integration Tests', () => {
 	let db: MockedFunction<Knex>;
