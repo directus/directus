@@ -67,17 +67,28 @@ export class AmazonWebServicesS3Storage extends Storage {
 	constructor(config: AmazonWebServicesS3StorageConfig) {
 		super();
 		const { S3Client } = require('@aws-sdk/client-s3');
-		let endpoint = config.endpoint as string;
-		if (endpoint && !/^https?:\/\//i.test(endpoint)) {
-			endpoint = 'https://' + endpoint;
-		}
+
 		const params: S3ClientConfig = {
 			credentials: {
 				accessKeyId: config.key,
 				secretAccessKey: config.secret,
 			},
-			endpoint,
 		};
+		let endpoint = config.endpoint as string;
+		if (endpoint) {
+			let protocol = 'http:';
+			if (endpoint.startsWith('https://')) {
+				protocol = 'https:';
+			}
+			endpoint = endpoint.replace('https://', '').replace('http://', '');
+			params.endpoint = {
+				hostname: endpoint,
+				protocol,
+				path: '/',
+			};
+			params.forcePathStyle = true;
+		}
+
 		this.$driver = new S3Client(params);
 		this.$endpoint = endpoint;
 		this.$bucket = config.bucket;
@@ -86,7 +97,6 @@ export class AmazonWebServicesS3Storage extends Storage {
 		this.$acl = config.acl;
 		this.$serverSideEncryption = config.serverSideEncryption;
 	}
-
 	/**
 	 * Prefixes the given filePath with the storage root location
 	 */
@@ -262,7 +272,6 @@ export class AmazonWebServicesS3Storage extends Storage {
 			Bucket: this.$bucket,
 			Endpoint: this.$endpoint,
 		});
-
 		return `${endpoint.url.href}${location}`;
 	}
 
