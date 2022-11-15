@@ -11,6 +11,7 @@
 		"url": "https://github.com/directus/directus.git",
 		"directory": "packages/drive-azure"
 	},
+	"funding": "https://github.com/directus/directus?sponsor=1",
 	"license": "MIT",
 	"author": "Robin Grundvåg <robgru52@gmail.com>",
 	"contributors": [

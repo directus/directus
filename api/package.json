@@ -30,6 +30,7 @@
 		"url": "https://github.com/directus/directus.git",
 		"directory": "api"
 	},
+	"funding": "https://github.com/directus/directus?sponsor=1",
 	"license": "GPL-3.0-only",
 	"author": {
 		"name": "Monospace Inc",

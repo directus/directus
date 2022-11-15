@@ -11,6 +11,7 @@
 		"url": "https://github.com/directus/directus.git",
 		"directory": "packages/extensions-sdk"
 	},
+	"funding": "https://github.com/directus/directus?sponsor=1",
 	"author": "Nicola Krumschmidt",
 	"exports": {
 		".": {
