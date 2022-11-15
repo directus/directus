@@ -15,6 +15,11 @@
 		},
 		"./package.json": "./package.json"
 	},
+	"files": [
+		"dist",
+		"templates",
+		"!**/*.d.ts.map"
+	],
 	"types": "dist/esm/index.d.ts",
 	"bin": {
 		"directus-extension": "cli.js"
