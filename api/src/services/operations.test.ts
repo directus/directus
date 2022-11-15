@@ -1,22 +1,23 @@
 import knex, { Knex } from 'knex';
 import { getTracker, MockClient, Tracker } from 'knex-mock-client';
+import { afterEach, beforeAll, beforeEach, describe, expect, it, SpyInstance, vi } from 'vitest';
 import { OperationsService } from '.';
 import { getFlowManager } from '../flows';
 
-jest.mock('../../src/database/index', () => {
-	return { __esModule: true, default: jest.fn(), getDatabaseClient: jest.fn().mockReturnValue('postgres') };
+vi.mock('../../src/database/index', () => {
+	return { __esModule: true, default: vi.fn(), getDatabaseClient: vi.fn().mockReturnValue('postgres') };
 });
 
-jest.mock('../flows', () => {
-	return { getFlowManager: jest.fn().mockReturnValue({ reload: jest.fn() }) };
+vi.mock('../flows', () => {
+	return { getFlowManager: vi.fn().mockReturnValue({ reload: vi.fn() }) };
 });
 
 describe('Integration Tests', () => {
-	let db: jest.Mocked<Knex>;
+	let db: Knex;
 	let tracker: Tracker;
 
 	beforeAll(async () => {
-		db = knex({ client: MockClient }) as jest.Mocked<Knex>;
+		db = knex({ client: MockClient });
 		tracker = getTracker();
 	});
 
@@ -30,7 +31,7 @@ describe('Integration Tests', () => {
 
 	describe('Services / Operations', () => {
 		let service: OperationsService;
-		let flowManagerReloadSpy: jest.SpyInstance;
+		let flowManagerReloadSpy: SpyInstance;
 
 		beforeEach(() => {
 			service = new OperationsService({
@@ -65,7 +66,7 @@ describe('Integration Tests', () => {
 					relations: [],
 				},
 			});
-			flowManagerReloadSpy = jest.spyOn(getFlowManager(), 'reload');
+			flowManagerReloadSpy = vi.spyOn(getFlowManager(), 'reload');
 		});
 
 		afterEach(() => {

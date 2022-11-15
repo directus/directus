@@ -1,17 +1,18 @@
 import knex, { Knex } from 'knex';
 import { getTracker, MockClient, Tracker } from 'knex-mock-client';
-import { PermissionsService, PresetsService, RolesService, UsersService, ItemsService } from '.';
+import { afterEach, beforeAll, beforeEach, describe, expect, it, SpyInstance, vi } from 'vitest';
+import { ItemsService, PermissionsService, PresetsService, RolesService, UsersService } from '.';
 
-jest.mock('../../src/database/index', () => {
-	return { __esModule: true, default: jest.fn(), getDatabaseClient: jest.fn().mockReturnValue('postgres') };
+vi.mock('../../src/database/index', () => {
+	return { __esModule: true, default: vi.fn(), getDatabaseClient: vi.fn().mockReturnValue('postgres') };
 });
 
 describe('Integration Tests', () => {
-	let db: jest.Mocked<Knex>;
+	let db: Knex;
 	let tracker: Tracker;
 
 	beforeAll(async () => {
-		db = knex({ client: MockClient }) as jest.Mocked<Knex>;
+		db = knex({ client: MockClient });
 		tracker = getTracker();
 	});
 
@@ -28,8 +29,8 @@ describe('Integration Tests', () => {
 
 	describe('Services / Roles', () => {
 		let service: RolesService;
-		let checkForOtherAdminRolesSpy: jest.SpyInstance;
-		let checkForOtherAdminUsersSpy: jest.SpyInstance;
+		let checkForOtherAdminRolesSpy: SpyInstance;
+		let checkForOtherAdminUsersSpy: SpyInstance;
 
 		beforeEach(() => {
 			service = new RolesService({
@@ -65,18 +66,18 @@ describe('Integration Tests', () => {
 				},
 			});
 
-			jest.spyOn(PermissionsService.prototype, 'deleteByQuery').mockImplementation(jest.fn());
-			jest.spyOn(PresetsService.prototype, 'deleteByQuery').mockImplementation(jest.fn());
-			jest.spyOn(UsersService.prototype, 'updateByQuery').mockImplementation(jest.fn());
-			jest.spyOn(UsersService.prototype, 'deleteByQuery').mockImplementation(jest.fn());
+			vi.spyOn(PermissionsService.prototype, 'deleteByQuery').mockResolvedValue([]);
+			vi.spyOn(PresetsService.prototype, 'deleteByQuery').mockResolvedValue([]);
+			vi.spyOn(UsersService.prototype, 'updateByQuery').mockResolvedValue([]);
+			vi.spyOn(UsersService.prototype, 'deleteByQuery').mockResolvedValue([]);
 
 			// "as any" are needed since these are private methods
-			checkForOtherAdminRolesSpy = jest
+			checkForOtherAdminRolesSpy = vi
 				.spyOn(RolesService.prototype as any, 'checkForOtherAdminRoles')
-				.mockImplementation(jest.fn());
-			checkForOtherAdminUsersSpy = jest
+				.mockImplementation(() => vi.fn());
+			checkForOtherAdminUsersSpy = vi
 				.spyOn(RolesService.prototype as any, 'checkForOtherAdminUsers')
-				.mockImplementation(jest.fn());
+				.mockImplementation(() => vi.fn());
 		});
 
 		afterEach(() => {
@@ -143,14 +144,14 @@ describe('Integration Tests', () => {
 		describe('updateByQuery', () => {
 			it('should not checkForOtherAdminRoles', async () => {
 				// mock return value for the following empty query
-				jest.spyOn(ItemsService.prototype, 'getKeysByQuery').mockImplementation(jest.fn(() => Promise.resolve([1])));
+				vi.spyOn(ItemsService.prototype, 'getKeysByQuery').mockResolvedValue([1]);
 				await service.updateByQuery({}, {});
 				expect(checkForOtherAdminRolesSpy).not.toBeCalled();
 			});
 
 			it('should checkForOtherAdminRoles once', async () => {
 				// mock return value for the following empty query
-				jest.spyOn(ItemsService.prototype, 'getKeysByQuery').mockImplementation(jest.fn(() => Promise.resolve([1])));
+				vi.spyOn(ItemsService.prototype, 'getKeysByQuery').mockResolvedValue([1]);
 				await service.updateByQuery({}, { admin_access: false });
 				expect(checkForOtherAdminRolesSpy).toBeCalledTimes(1);
 			});
@@ -173,7 +174,7 @@ describe('Integration Tests', () => {
 		describe('deleteByQuery', () => {
 			it('should checkForOtherAdminRoles once', async () => {
 				// mock return value for the following empty query
-				jest.spyOn(ItemsService.prototype, 'getKeysByQuery').mockImplementation(jest.fn(() => Promise.resolve([1])));
+				vi.spyOn(ItemsService.prototype, 'getKeysByQuery').mockResolvedValue([1]);
 				await service.deleteByQuery({});
 				expect(checkForOtherAdminRolesSpy).toBeCalledTimes(1);
 			});

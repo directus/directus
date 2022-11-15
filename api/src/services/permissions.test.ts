@@ -1,18 +1,19 @@
 import knex, { Knex } from 'knex';
 import { getTracker, MockClient, Tracker } from 'knex-mock-client';
+import { afterEach, beforeAll, beforeEach, describe, expect, it, SpyInstance, vi } from 'vitest';
 import { ItemsService, PermissionsService } from '.';
 import * as cache from '../cache';
 
-jest.mock('../../src/database/index', () => {
-	return { __esModule: true, default: jest.fn(), getDatabaseClient: jest.fn().mockReturnValue('postgres') };
+vi.mock('../../src/database/index', () => {
+	return { __esModule: true, default: vi.fn(), getDatabaseClient: vi.fn().mockReturnValue('postgres') };
 });
 
 describe('Integration Tests', () => {
-	let db: jest.Mocked<Knex>;
+	let db: Knex;
 	let tracker: Tracker;
 
 	beforeAll(async () => {
-		db = knex({ client: MockClient }) as jest.Mocked<Knex>;
+		db = knex({ client: MockClient });
 		tracker = getTracker();
 	});
 
@@ -31,7 +32,7 @@ describe('Integration Tests', () => {
 
 	describe('Services / Permissions', () => {
 		let service: PermissionsService;
-		let clearSystemCacheSpy: jest.SpyInstance;
+		let clearSystemCacheSpy: SpyInstance;
 
 		beforeEach(() => {
 			service = new PermissionsService({
@@ -66,7 +67,7 @@ describe('Integration Tests', () => {
 					relations: [],
 				},
 			});
-			clearSystemCacheSpy = jest.spyOn(cache, 'clearSystemCache').mockImplementation(jest.fn());
+			clearSystemCacheSpy = vi.spyOn(cache, 'clearSystemCache').mockResolvedValue();
 		});
 
 		afterEach(() => {
@@ -111,7 +112,7 @@ describe('Integration Tests', () => {
 		describe('updateByQuery', () => {
 			it('should clearSystemCache once', async () => {
 				// mock return value for following empty query
-				jest.spyOn(ItemsService.prototype, 'getKeysByQuery').mockImplementation(jest.fn(() => Promise.resolve([1])));
+				vi.spyOn(ItemsService.prototype, 'getKeysByQuery').mockResolvedValue([1]);
 				await service.updateByQuery({}, {});
 				expect(clearSystemCacheSpy).toBeCalledTimes(1);
 			});
@@ -148,7 +149,7 @@ describe('Integration Tests', () => {
 		describe('deleteByQuery', () => {
 			it('should clearSystemCache once', async () => {
 				// mock return value for following empty query
-				jest.spyOn(ItemsService.prototype, 'getKeysByQuery').mockImplementation(jest.fn(() => Promise.resolve([1])));
+				vi.spyOn(ItemsService.prototype, 'getKeysByQuery').mockResolvedValue([1]);
 				await service.deleteByQuery({});
 				expect(clearSystemCacheSpy).toBeCalledTimes(1);
 			});
