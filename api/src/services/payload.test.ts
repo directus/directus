@@ -2,18 +2,19 @@ import knex, { Knex } from 'knex';
 import { MockClient, Tracker, getTracker } from 'knex-mock-client';
 import { PayloadService } from '../../src/services';
 import { getHelpers, Helpers } from '../../src/database/helpers';
+import { describe, beforeAll, afterEach, it, expect, vi, beforeEach } from 'vitest';
 
-jest.mock('../../src/database/index', () => {
-	return { getDatabaseClient: jest.fn().mockReturnValue('postgres') };
+vi.mock('../../src/database/index', () => {
+	return { getDatabaseClient: vi.fn().mockReturnValue('postgres') };
 });
-jest.requireMock('../../src/database/index');
+vi.mock('../../src/database/index');
 
 describe('Integration Tests', () => {
-	let db: jest.Mocked<Knex>;
+	let db: Knex;
 	let tracker: Tracker;
 
 	beforeAll(async () => {
-		db = knex({ client: MockClient }) as jest.Mocked<Knex>;
+		db = knex({ client: MockClient });
 		tracker = getTracker();
 	});
 
@@ -218,7 +219,6 @@ describe('Integration Tests', () => {
 						],
 						'read'
 					);
-
 					expect(result).toMatchObject([
 						{
 							[dateFieldId]: '2022-01-10',
