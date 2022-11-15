@@ -5,12 +5,8 @@ DIRECTUS_EXTENSIONS="${DIRECTUS_DIR}/extensions"
 DIRECTUS_INTERFACES="${DIRECTUS_EXTENSIONS}/interfaces"
 DIRECTUS_MODULES="${DIRECTUS_EXTENSIONS}/modules"
 DIRECTUS_DISPLAYS="${DIRECTUS_EXTENSIONS}/displays"
-DIRECTUS_SNAPSHOTS="${DIRECTUS_EXTENSIONS}/snapshots"
 
 #DIRECTUS_DIR="/tmp"
-
-# Create if not exists
-mkdir -p ${DIRECTUS_SNAPSHOTS}
 
 # Install https://github.com/utomic-media/directus-extension-field-actions
 mkdir -p ${DIRECTUS_DISPLAYS}/fields-action
@@ -39,6 +35,6 @@ unzip directus-custom-extensions-release.zip
 
 ls -la ./directus-custom-extensions-release
 
-mv -v ./directus-custom-extensions-release/collection-ext ${DIRECTUS_INTERFACES}
-mv -v ./directus-custom-extensions-release/filter-ext ${DIRECTUS_INTERFACES}
-mv -v ./directus-custom-extensions-release/loading-api-field ${DIRECTUS_INTERFACES}
+cp -r ./directus-custom-extensions-release/collection-ext ${DIRECTUS_INTERFACES}
+cp -r ./directus-custom-extensions-release/filter-ext ${DIRECTUS_INTERFACES}
+cp -r ./directus-custom-extensions-release/loading-api-field ${DIRECTUS_INTERFACES}
