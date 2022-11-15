@@ -431,7 +431,7 @@ function applyParentFilters(
 				const foreignIds = uniq(keysPerCollection[relatedCollection]);
 
 				merge(nestedNode, {
-					query: { [relatedCollection]: { filter: { [foreignField]: { _in: foreignIds } } } },
+					query: { [relatedCollection]: { filter: { [foreignField]: { _in: foreignIds } }, limit: foreignIds.length } },
 				});
 			}
 		}

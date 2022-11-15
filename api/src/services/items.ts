@@ -260,7 +260,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	 * Create multiple new items at once. Inserts all provided records sequentially wrapped in a transaction.
 	 */
 	async createMany(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
-		const primaryKeys = await this.knex.transaction(async (trx) => {
+		const { primaryKeys, nestedActionEvents } = await this.knex.transaction(async (trx) => {
 			const service = new ItemsService(this.collection, {
 				accountability: this.accountability,
 				schema: this.schema,
@@ -268,14 +268,30 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			});
 
 			const primaryKeys: PrimaryKey[] = [];
+			const nestedActionEvents: ActionEventParams[] = [];
 
 			for (const payload of data) {
-				const primaryKey = await service.createOne(payload, { ...(opts || {}), autoPurgeCache: false });
+				const primaryKey = await service.createOne(payload, {
+					...(opts || {}),
+					autoPurgeCache: false,
+					bypassEmitAction: (params) =>
+						opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
+				});
 				primaryKeys.push(primaryKey);
 			}
 
-			return primaryKeys;
+			return { primaryKeys, nestedActionEvents };
 		});
+
+		if (opts?.emitEvents !== false) {
+			for (const nestedActionEvent of nestedActionEvents) {
+				if (!opts?.bypassEmitAction) {
+					emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
+				} else {
+					opts.bypassEmitAction(nestedActionEvent);
+				}
+			}
+		}
 
 		if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
 			await this.cache.clear();
@@ -437,22 +453,33 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	 * Update multiple items in a single transaction
 	 */
 	async updateBatch(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
+		if (!Array.isArray(data)) {
+			throw new InvalidPayloadException('Input should be an array of items.');
+		}
+
 		const primaryKeyField = this.schema.collections[this.collection].primary;
 
 		const keys: PrimaryKey[] = [];
 
-		await this.knex.transaction(async (trx) => {
-			const service = new ItemsService(this.collection, {
-				accountability: this.accountability,
-				knex: trx,
-				schema: this.schema,
-			});
+		try {
+			await this.knex.transaction(async (trx) => {
+				const service = new ItemsService(this.collection, {
+					accountability: this.accountability,
+					knex: trx,
+					schema: this.schema,
+				});
 
-			for (const item of data) {
-				if (!item[primaryKeyField]) throw new InvalidPayloadException(`Item in update misses primary key.`);
-				keys.push(await service.updateOne(item[primaryKeyField]!, omit(item, primaryKeyField), opts));
+				for (const item of data) {
+					if (!item[primaryKeyField]) throw new InvalidPayloadException(`Item in update misses primary key.`);
+					const combinedOpts = Object.assign({ autoPurgeCache: false }, opts);
+					keys.push(await service.updateOne(item[primaryKeyField]!, omit(item, primaryKeyField), combinedOpts));
+				}
+			});
+		} finally {
+			if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
+				await this.cache.clear();
 			}
-		});
+		}
 
 		return keys;
 	}

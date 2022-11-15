@@ -1588,6 +1588,7 @@ export class GraphQLService {
 
 						for (const subSelection of selection.selectionSet.selections) {
 							if (subSelection.kind !== 'Field') continue;
+							if (subSelection.name!.value.startsWith('__')) continue;
 							children.push(`${subSelection.name!.value}(${rootField})`);
 						}
 					} else {

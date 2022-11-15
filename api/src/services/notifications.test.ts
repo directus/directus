@@ -1,12 +1,13 @@
-import { NotificationsService, ItemsService } from '.';
+import { afterEach, beforeEach, describe, expect, it, SpyInstance, vi } from 'vitest';
+import { ItemsService, NotificationsService } from '.';
 
-jest.mock('../../src/env', () => ({
-	...jest.requireActual('../../src/env').default,
+vi.mock('../../src/env', async () => ({
+	...(await vi.importActual<any>('../../src/env')),
 	PUBLIC_URL: '/',
 }));
 
-jest.mock('../../src/database/index', () => {
-	return { __esModule: true, default: jest.fn(), getDatabaseClient: jest.fn().mockReturnValue('postgres') };
+vi.mock('../../src/database/index', () => {
+	return { __esModule: true, default: vi.fn(), getDatabaseClient: vi.fn().mockReturnValue('postgres') };
 });
 
 describe('Integration Tests', () => {
@@ -20,16 +21,16 @@ describe('Integration Tests', () => {
 		});
 
 		afterEach(() => {
-			jest.restoreAllMocks();
+			vi.restoreAllMocks();
 		});
 
 		describe('createOne', () => {
-			let superCreateOneSpy: jest.SpyInstance;
-			let thisSendEmailSpy: jest.SpyInstance;
+			let superCreateOneSpy: SpyInstance;
+			let thisSendEmailSpy: SpyInstance;
 
 			beforeEach(() => {
-				superCreateOneSpy = jest.spyOn(ItemsService.prototype, 'createOne').mockImplementation(jest.fn());
-				thisSendEmailSpy = jest.spyOn(NotificationsService.prototype, 'sendEmail').mockImplementation(jest.fn());
+				superCreateOneSpy = vi.spyOn(ItemsService.prototype, 'createOne').mockResolvedValue(0);
+				thisSendEmailSpy = vi.spyOn(NotificationsService.prototype, 'sendEmail').mockResolvedValue();
 			});
 
 			it('create a notification and send email', async () => {
@@ -49,12 +50,12 @@ describe('Integration Tests', () => {
 		});
 
 		describe('createMany', () => {
-			let superCreateManySpy: jest.SpyInstance;
-			let thisSendEmailSpy: jest.SpyInstance;
+			let superCreateManySpy: SpyInstance;
+			let thisSendEmailSpy: SpyInstance;
 
 			beforeEach(() => {
-				superCreateManySpy = jest.spyOn(ItemsService.prototype, 'createMany').mockImplementation(jest.fn());
-				thisSendEmailSpy = jest.spyOn(NotificationsService.prototype, 'sendEmail').mockImplementation(jest.fn());
+				superCreateManySpy = vi.spyOn(ItemsService.prototype, 'createMany').mockResolvedValue([]);
+				thisSendEmailSpy = vi.spyOn(NotificationsService.prototype, 'sendEmail').mockResolvedValue();
 			});
 
 			it('create many notifications and send email for notification', async () => {
@@ -81,12 +82,12 @@ describe('Integration Tests', () => {
 		});
 
 		describe('sendEmail', () => {
-			let usersServiceReadOneSpy: jest.SpyInstance;
-			let mailServiceSendSpy: jest.SpyInstance;
+			let usersServiceReadOneSpy: SpyInstance;
+			let mailServiceSendSpy: SpyInstance;
 
 			beforeEach(() => {
-				usersServiceReadOneSpy = jest.spyOn(service.usersService, 'readOne').mockImplementation(jest.fn());
-				mailServiceSendSpy = jest.spyOn(service.mailService, 'send').mockImplementation(jest.fn());
+				usersServiceReadOneSpy = vi.spyOn(service.usersService, 'readOne').mockResolvedValue({});
+				mailServiceSendSpy = vi.spyOn(service.mailService, 'send').mockResolvedValue(0);
 			});
 
 			it('do nothing when there is no recipient', async () => {

@@ -33,6 +33,11 @@
 		},
 		"./package.json": "./package.json"
 	},
+	"files": [
+		"dist",
+		"!**/*.test.js",
+		"!**/*.d.ts.map"
+	],
 	"sideEffects": false,
 	"scripts": {
 		"build": "run-p \"build:* {@}\"",

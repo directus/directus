@@ -92,6 +92,12 @@ export abstract class SchemaHelper extends DatabaseHelper {
 		return;
 	}
 
+	constraintName(existingName: string): string {
+		// most vendors allow for dropping/creating constraints with the same name
+		// reference issue #14873
+		return existingName;
+	}
+
 	applyOffset(rootQuery: Knex.QueryBuilder, offset: number): void {
 		rootQuery.offset(offset);
 	}
