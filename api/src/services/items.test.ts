@@ -1,16 +1,40 @@
 import { Query } from '@directus/shared/types';
 import knex, { Knex } from 'knex';
 import { getTracker, MockClient, Tracker } from 'knex-mock-client';
+import { cloneDeep } from 'lodash';
+import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 import { ItemsService } from '../../src/services';
+import { InvalidPayloadException } from '../exceptions';
 import { sqlFieldFormatter, sqlFieldList } from '../__utils__/items-utils';
 import { systemSchema, userSchema } from '../__utils__/schemas';
-import { cloneDeep } from 'lodash';
-import { describe, beforeAll, afterEach, it, expect, vi } from 'vitest';
+
+vi.mock('../env', async () => {
+	const actual = (await vi.importActual('../env')) as { default: Record<string, any> };
+
+	return {
+		default: {
+			...actual.default,
+			CACHE_AUTO_PURGE: true,
+		},
+	};
+});
 
 vi.mock('../../src/database/index', () => {
-	return { getDatabaseClient: vi.fn().mockReturnValue('postgres') };
+	return { default: vi.fn(), getDatabaseClient: vi.fn().mockReturnValue('postgres') };
 });
-vi.mock('../../src/database/index');
+
+vi.mock('../cache', () => {
+	return {
+		getCache: vi.fn().mockReturnValue({
+			cache: {
+				clear: vi.fn(),
+			},
+			systemCache: {
+				clear: vi.fn(),
+			},
+		}),
+	};
+});
 
 describe('Integration Tests', () => {
 	let db: Knex;
@@ -968,6 +992,66 @@ describe('Integration Tests', () => {
 				expect(tracker.history.update[0].sql).toBe(`update "${childTable}" set "uploaded_by" = ? where "id" in (?)`);
 
 				expect(response).toStrictEqual(item.id);
+			}
+		);
+	});
+
+	describe('updateBatch', () => {
+		const items = [
+			{ id: '6107c897-9182-40f7-b22e-4f044d1258d2', name: 'Item 1' },
+			{ id: '6e7d4a2c-e62f-43b4-a343-9196f4b1783f', name: 'Item 2' },
+		];
+
+		it.each(Object.keys(schemas))('%s batch update should only clear cache once', async (schema) => {
+			const table = schemas[schema].tables[0];
+			schemas[schema].accountability = null;
+
+			tracker.on.select(table).response(items);
+			tracker.on.update(table).response(items);
+
+			const itemsService = new ItemsService(table, {
+				knex: db,
+				accountability: {
+					role: 'admin',
+					admin: true,
+				},
+				schema: schemas[schema].schema,
+			});
+
+			const itemsServiceCacheClearSpy = vi.spyOn(itemsService.cache, 'clear' as never).mockResolvedValue(() => vi.fn());
+
+			await itemsService.updateBatch(items);
+
+			expect(itemsServiceCacheClearSpy).toHaveBeenCalledOnce();
+		});
+
+		it.each(Object.keys(schemas))(
+			'%s batch update should throw InvalidPayloadException when passing non-array data',
+			async (schema) => {
+				const table = schemas[schema].tables[0];
+				schemas[schema].accountability = null;
+
+				tracker.on.select(table).response({});
+				tracker.on.update(table).response({});
+
+				const itemsService = new ItemsService(table, {
+					knex: db,
+					accountability: {
+						role: 'admin',
+						admin: true,
+					},
+					schema: schemas[schema].schema,
+				});
+
+				expect.assertions(2);
+
+				try {
+					// intentional `as any` to test non-array data on runtime
+					await itemsService.updateBatch(items[0] as any);
+				} catch (err) {
+					expect(err.message).toBe(`Input should be an array of items.`);
+					expect(err).toBeInstanceOf(InvalidPayloadException);
+				}
 			}
 		);
 	});

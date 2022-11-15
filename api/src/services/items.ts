@@ -453,22 +453,33 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	 * Update multiple items in a single transaction
 	 */
 	async updateBatch(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
+		if (!Array.isArray(data)) {
+			throw new InvalidPayloadException('Input should be an array of items.');
+		}
+
 		const primaryKeyField = this.schema.collections[this.collection].primary;
 
 		const keys: PrimaryKey[] = [];
 
-		await this.knex.transaction(async (trx) => {
-			const service = new ItemsService(this.collection, {
-				accountability: this.accountability,
-				knex: trx,
-				schema: this.schema,
-			});
+		try {
+			await this.knex.transaction(async (trx) => {
+				const service = new ItemsService(this.collection, {
+					accountability: this.accountability,
+					knex: trx,
+					schema: this.schema,
+				});
 
-			for (const item of data) {
-				if (!item[primaryKeyField]) throw new InvalidPayloadException(`Item in update misses primary key.`);
-				keys.push(await service.updateOne(item[primaryKeyField]!, omit(item, primaryKeyField), opts));
+				for (const item of data) {
+					if (!item[primaryKeyField]) throw new InvalidPayloadException(`Item in update misses primary key.`);
+					const combinedOpts = Object.assign({ autoPurgeCache: false }, opts);
+					keys.push(await service.updateOne(item[primaryKeyField]!, omit(item, primaryKeyField), combinedOpts));
+				}
+			});
+		} finally {
+			if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
+				await this.cache.clear();
 			}
-		});
+		}
 
 		return keys;
 	}
