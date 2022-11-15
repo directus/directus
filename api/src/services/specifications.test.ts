@@ -1,26 +1,31 @@
 import knex, { Knex } from 'knex';
 import { getTracker, MockClient, Tracker } from 'knex-mock-client';
 import { CollectionsService, FieldsService, RelationsService, SpecificationService } from '../../src/services';
+import { describe, beforeAll, afterEach, it, expect, vi, beforeEach } from 'vitest';
 
-jest.mock('../../src/database/index', () => {
-	return { getDatabaseClient: jest.fn().mockReturnValue('postgres') };
+vi.mock('../../src/database/index', async () => {
+	const actual = await vi.importActual('@directus/shared/utils/node');
+
+	return {
+		...(actual as object),
+		getDatabaseClient: vi.fn().mockReturnValue('postgres'),
+	};
 });
-jest.requireMock('../../src/database/index');
 
 class Client_PG extends MockClient {}
 
 describe('Integration Tests', () => {
-	let db: jest.Mocked<Knex>;
+	let db: Knex;
 	let tracker: Tracker;
 
 	beforeAll(async () => {
-		db = knex({ client: Client_PG }) as jest.Mocked<Knex>;
+		db = knex({ client: Client_PG });
 		tracker = getTracker();
 	});
 
 	afterEach(() => {
 		tracker.reset();
-		jest.clearAllMocks();
+		vi.clearAllMocks();
 	});
 
 	describe('Services / Specifications', () => {
@@ -38,8 +43,8 @@ describe('Integration Tests', () => {
 
 				describe('schema', () => {
 					it('returns untyped schema for json fields', async () => {
-						jest.spyOn(CollectionsService.prototype, 'readByQuery').mockImplementation(
-							jest.fn().mockReturnValue([
+						vi.spyOn(CollectionsService.prototype, 'readByQuery').mockImplementation(
+							vi.fn().mockReturnValue([
 								{
 									collection: 'test_table',
 									meta: {
@@ -60,8 +65,8 @@ describe('Integration Tests', () => {
 							])
 						);
 
-						jest.spyOn(FieldsService.prototype, 'readAll').mockImplementation(
-							jest.fn().mockReturnValue([
+						vi.spyOn(FieldsService.prototype, 'readAll').mockImplementation(
+							vi.fn().mockReturnValue([
 								{
 									collection: 'test_table',
 									field: 'id',
@@ -80,7 +85,7 @@ describe('Integration Tests', () => {
 								},
 							])
 						);
-						jest.spyOn(RelationsService.prototype, 'readAll').mockImplementation(jest.fn().mockReturnValue([]));
+						vi.spyOn(RelationsService.prototype, 'readAll').mockImplementation(vi.fn().mockReturnValue([]));
 
 						const spec = await service.oas.generate();
 						expect(spec.components?.schemas).toEqual({
@@ -121,12 +126,12 @@ describe('Integration Tests', () => {
 							},
 						};
 
-						jest
-							.spyOn(CollectionsService.prototype, 'readByQuery')
-							.mockImplementation(jest.fn().mockReturnValue([collection]));
+						vi.spyOn(CollectionsService.prototype, 'readByQuery').mockImplementation(
+							vi.fn().mockReturnValue([collection])
+						);
 
-						jest.spyOn(FieldsService.prototype, 'readAll').mockImplementation(
-							jest.fn().mockReturnValue([
+						vi.spyOn(FieldsService.prototype, 'readAll').mockImplementation(
+							vi.fn().mockReturnValue([
 								{
 									collection: collection.collection,
 									field: 'id',
@@ -137,7 +142,7 @@ describe('Integration Tests', () => {
 								},
 							])
 						);
-						jest.spyOn(RelationsService.prototype, 'readAll').mockImplementation(jest.fn().mockReturnValue([]));
+						vi.spyOn(RelationsService.prototype, 'readAll').mockImplementation(vi.fn().mockReturnValue([]));
 
 						const spec = await service.oas.generate();
 
