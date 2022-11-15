@@ -63,9 +63,9 @@
 		"cleanup": "rimraf dist",
 		"dev": "cross-env NODE_ENV=development SERVE_APP=false ts-node-dev --files --transpile-only --respawn --watch \".env\" --inspect=0 --exit-child -- src/start.ts",
 		"cli": "cross-env NODE_ENV=development SERVE_APP=false ts-node --script-mode --transpile-only src/cli/run.ts",
-		"test": "jest",
-		"test:coverage": "jest --coverage",
-		"test:watch": "jest --watch"
+		"test": "vitest run",
+		"test:coverage": "vitest run --coverage",
+		"test:watch": "vitest"
 	},
 	"engines": {
 		"node": ">=12.20.0"
@@ -197,7 +197,6 @@
 		"@types/flat": "5.0.2",
 		"@types/fs-extra": "9.0.13",
 		"@types/inquirer": "8.2.1",
-		"@types/jest": "29.2.0",
 		"@types/js-yaml": "4.0.5",
 		"@types/json2csv": "5.0.3",
 		"@types/jsonwebtoken": "8.5.9",
@@ -221,16 +220,16 @@
 		"@types/uuid": "8.3.4",
 		"@types/uuid-validate": "0.0.1",
 		"@types/wellknown": "0.5.3",
+		"@vitest/coverage-c8": "^0.25.1",
 		"copyfiles": "2.4.1",
 		"cross-env": "7.0.3",
 		"form-data": "4.0.0",
-		"jest": "29.2.1",
 		"knex-mock-client": "1.8.4",
 		"rimraf": "3.0.2",
 		"supertest": "6.3.0",
-		"ts-jest": "29.0.3",
 		"ts-node": "10.9.1",
 		"ts-node-dev": "2.0.0",
-		"typescript": "4.8.4"
+		"typescript": "4.8.4",
+		"vitest": "0.25.1"
 	}
 }
