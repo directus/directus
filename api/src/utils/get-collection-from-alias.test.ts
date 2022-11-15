@@ -1,7 +1,8 @@
 import { getCollectionFromAlias } from './get-collection-from-alias';
 import { AliasMap } from './get-column-path';
+import { expect, it } from 'vitest';
 
-test('Returns the correct collection', () => {
+it('Returns the correct collection', () => {
 	const aliasMap: AliasMap = {
 		author: { alias: 'aaaaa', collection: 'directus_users' },
 		'author.role': { alias: 'bbbbb', collection: 'directus_roles' },
@@ -13,7 +14,7 @@ test('Returns the correct collection', () => {
 	expect(collection).toBe('organisation');
 });
 
-test('Returns undefined if alias does not exist', () => {
+it('Returns undefined if alias does not exist', () => {
 	const aliasMap: AliasMap = {};
 
 	const collection = getCollectionFromAlias('abcde', aliasMap);
