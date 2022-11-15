@@ -377,7 +377,7 @@ describe('Integration Tests', () => {
 				// mock newRole query in updateMany (called by ItemsService updateByQuery)
 				tracker.on.select(/select "admin_access" from "directus_roles"/).response({ admin_access: true });
 
-				vi.spyOn(ItemsService.prototype, 'getKeysByQuery').mockImplementation(vi.fn(() => Promise.resolve([1])));
+				vi.spyOn(ItemsService.prototype, 'getKeysByQuery').mockResolvedValue([1]);
 
 				await service.updateByQuery({}, { role: testRoleId });
 				expect(checkRemainingAdminExistenceSpy).not.toBeCalled();
@@ -387,42 +387,42 @@ describe('Integration Tests', () => {
 				// mock newRole query in updateMany (called by ItemsService updateByQuery)
 				tracker.on.select(/select "admin_access" from "directus_roles"/).response({ admin_access: false });
 
-				vi.spyOn(ItemsService.prototype, 'getKeysByQuery').mockImplementation(vi.fn(() => Promise.resolve([1])));
+				vi.spyOn(ItemsService.prototype, 'getKeysByQuery').mockResolvedValue([1]);
 
 				await service.updateByQuery({}, { role: testRoleId });
 				expect(checkRemainingAdminExistenceSpy).toBeCalledTimes(1);
 			});
 
 			it('should not checkRemainingActiveAdmin', async () => {
-				vi.spyOn(ItemsService.prototype, 'getKeysByQuery').mockImplementation(vi.fn(() => Promise.resolve([1])));
+				vi.spyOn(ItemsService.prototype, 'getKeysByQuery').mockResolvedValue([1]);
 
 				await service.updateByQuery({}, {});
 				expect(checkRemainingActiveAdminSpy).not.toBeCalled();
 			});
 
 			it('should checkRemainingActiveAdmin once', async () => {
-				vi.spyOn(ItemsService.prototype, 'getKeysByQuery').mockImplementation(vi.fn(() => Promise.resolve([1])));
+				vi.spyOn(ItemsService.prototype, 'getKeysByQuery').mockResolvedValue([1]);
 
 				await service.updateByQuery({}, { status: 'inactive' });
 				expect(checkRemainingActiveAdminSpy).toBeCalledTimes(1);
 			});
 
 			it('should not checkUniqueEmails', async () => {
-				vi.spyOn(ItemsService.prototype, 'getKeysByQuery').mockImplementation(vi.fn(() => Promise.resolve([1])));
+				vi.spyOn(ItemsService.prototype, 'getKeysByQuery').mockResolvedValue([1]);
 
 				await service.updateByQuery({}, {});
 				expect(checkUniqueEmailsSpy).not.toBeCalled();
 			});
 
 			it('should checkUniqueEmails once', async () => {
-				vi.spyOn(ItemsService.prototype, 'getKeysByQuery').mockImplementation(vi.fn(() => Promise.resolve([1])));
+				vi.spyOn(ItemsService.prototype, 'getKeysByQuery').mockResolvedValue([1]);
 
 				await service.updateByQuery({}, { email: 'test@example.com' });
 				expect(checkUniqueEmailsSpy).toBeCalledTimes(1);
 			});
 
 			it('should throw RecordNotUniqueException for multiple keys with same email', async () => {
-				vi.spyOn(ItemsService.prototype, 'getKeysByQuery').mockImplementation(vi.fn(() => Promise.resolve([1, 2])));
+				vi.spyOn(ItemsService.prototype, 'getKeysByQuery').mockResolvedValue([1, 2]);
 
 				expect.assertions(2); // to ensure both assertions in the catch block are reached
 
@@ -435,14 +435,14 @@ describe('Integration Tests', () => {
 			});
 
 			it('should not checkPasswordPolicy', async () => {
-				vi.spyOn(ItemsService.prototype, 'getKeysByQuery').mockImplementation(vi.fn(() => Promise.resolve([1])));
+				vi.spyOn(ItemsService.prototype, 'getKeysByQuery').mockResolvedValue([1]);
 
 				await service.updateByQuery({}, {});
 				expect(checkPasswordPolicySpy).not.toBeCalled();
 			});
 
 			it('should checkPasswordPolicy once', async () => {
-				vi.spyOn(ItemsService.prototype, 'getKeysByQuery').mockImplementation(vi.fn(() => Promise.resolve([1])));
+				vi.spyOn(ItemsService.prototype, 'getKeysByQuery').mockResolvedValue([1]);
 
 				await service.updateByQuery({}, { password: 'testpassword' });
 				expect(checkPasswordPolicySpy).toBeCalledTimes(1);
@@ -457,7 +457,7 @@ describe('Integration Tests', () => {
 						accountability: { role: 'test', admin: false },
 					});
 
-					vi.spyOn(ItemsService.prototype, 'getKeysByQuery').mockImplementation(vi.fn(() => Promise.resolve([1])));
+					vi.spyOn(ItemsService.prototype, 'getKeysByQuery').mockResolvedValue([1]);
 
 					const promise = service.updateByQuery({}, { [field]: 'test' });
 
@@ -479,7 +479,7 @@ describe('Integration Tests', () => {
 					accountability: { role: 'admin', admin: true },
 				});
 
-				vi.spyOn(ItemsService.prototype, 'getKeysByQuery').mockImplementation(vi.fn(() => Promise.resolve([1])));
+				vi.spyOn(ItemsService.prototype, 'getKeysByQuery').mockResolvedValue([1]);
 
 				const promise = service.updateByQuery({}, { [field]: 'test' });
 
@@ -494,7 +494,7 @@ describe('Integration Tests', () => {
 						schema: testSchema,
 					});
 
-					vi.spyOn(ItemsService.prototype, 'getKeysByQuery').mockImplementation(vi.fn(() => Promise.resolve([1])));
+					vi.spyOn(ItemsService.prototype, 'getKeysByQuery').mockResolvedValue([1]);
 
 					const promise = service.updateByQuery({}, { [field]: 'test' });
 
@@ -520,7 +520,7 @@ describe('Integration Tests', () => {
 		describe('deleteByQuery', () => {
 			it('should checkRemainingAdminExistence once', async () => {
 				// mock return value for the following empty query
-				vi.spyOn(ItemsService.prototype, 'readByQuery').mockImplementation(vi.fn(() => Promise.resolve([{ id: 1 }])));
+				vi.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValue([{ id: 1 }]);
 
 				await service.deleteByQuery({});
 				expect(checkRemainingAdminExistenceSpy).toBeCalledTimes(1);

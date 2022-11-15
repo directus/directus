@@ -1,7 +1,8 @@
 import knex, { Knex } from 'knex';
 import { getTracker, MockClient, Tracker } from 'knex-mock-client';
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { CollectionsService, FieldsService, RelationsService, SpecificationService } from '../../src/services';
-import { describe, beforeAll, afterEach, it, expect, vi, beforeEach } from 'vitest';
+import { Collection } from '../types';
 
 vi.mock('../../src/database/index', async () => {
 	const actual = await vi.importActual('@directus/shared/utils/node');
@@ -43,49 +44,45 @@ describe('Integration Tests', () => {
 
 				describe('schema', () => {
 					it('returns untyped schema for json fields', async () => {
-						vi.spyOn(CollectionsService.prototype, 'readByQuery').mockImplementation(
-							vi.fn().mockReturnValue([
-								{
+						vi.spyOn(CollectionsService.prototype, 'readByQuery').mockResolvedValue([
+							{
+								collection: 'test_table',
+								meta: {
+									accountability: 'all',
 									collection: 'test_table',
-									meta: {
-										accountability: 'all',
-										collection: 'test_table',
-										group: null,
-										hidden: false,
-										icon: null,
-										item_duplication_fields: null,
-										note: null,
-										singleton: false,
-										translations: null,
-									},
-									schema: {
-										name: 'test_table',
-									},
+									group: null,
+									hidden: false,
+									icon: null,
+									item_duplication_fields: null,
+									note: null,
+									singleton: false,
+									translations: null,
 								},
-							])
-						);
+								schema: {
+									name: 'test_table',
+								},
+							},
+						] as any[]);
 
-						vi.spyOn(FieldsService.prototype, 'readAll').mockImplementation(
-							vi.fn().mockReturnValue([
-								{
-									collection: 'test_table',
-									field: 'id',
-									type: 'integer',
-									schema: {
-										is_nullable: false,
-									},
+						vi.spyOn(FieldsService.prototype, 'readAll').mockResolvedValue([
+							{
+								collection: 'test_table',
+								field: 'id',
+								type: 'integer',
+								schema: {
+									is_nullable: false,
 								},
-								{
-									collection: 'test_table',
-									field: 'blob',
-									type: 'json',
-									schema: {
-										is_nullable: true,
-									},
+							},
+							{
+								collection: 'test_table',
+								field: 'blob',
+								type: 'json',
+								schema: {
+									is_nullable: true,
 								},
-							])
-						);
-						vi.spyOn(RelationsService.prototype, 'readAll').mockImplementation(vi.fn().mockReturnValue([]));
+							},
+						]);
+						vi.spyOn(RelationsService.prototype, 'readAll').mockResolvedValue([]);
 
 						const spec = await service.oas.generate();
 						expect(spec.components?.schemas).toEqual({
@@ -108,7 +105,7 @@ describe('Integration Tests', () => {
 
 				describe('path', () => {
 					it('requestBody for CreateItems POST path should not have type in schema', async () => {
-						const collection = {
+						const collection: Collection = {
 							collection: 'test_table',
 							meta: {
 								accountability: 'all',
@@ -119,30 +116,26 @@ describe('Integration Tests', () => {
 								item_duplication_fields: null,
 								note: null,
 								singleton: false,
-								translations: null,
+								translations: {},
 							},
 							schema: {
 								name: 'test_table',
 							},
 						};
 
-						vi.spyOn(CollectionsService.prototype, 'readByQuery').mockImplementation(
-							vi.fn().mockReturnValue([collection])
-						);
+						vi.spyOn(CollectionsService.prototype, 'readByQuery').mockResolvedValue([collection]);
 
-						vi.spyOn(FieldsService.prototype, 'readAll').mockImplementation(
-							vi.fn().mockReturnValue([
-								{
-									collection: collection.collection,
-									field: 'id',
-									type: 'integer',
-									schema: {
-										is_nullable: false,
-									},
+						vi.spyOn(FieldsService.prototype, 'readAll').mockResolvedValue([
+							{
+								collection: collection.collection,
+								field: 'id',
+								type: 'integer',
+								schema: {
+									is_nullable: false,
 								},
-							])
-						);
-						vi.spyOn(RelationsService.prototype, 'readAll').mockImplementation(vi.fn().mockReturnValue([]));
+							},
+						]);
+						vi.spyOn(RelationsService.prototype, 'readAll').mockResolvedValue([]);
 
 						const spec = await service.oas.generate();
 
