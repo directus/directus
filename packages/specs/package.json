@@ -36,8 +36,6 @@
 	"homepage": "https://github.com/directus/directus#readme",
 	"files": [
 		"dist",
-		"LICENSE",
-		"README.md",
 		"index.d.ts",
 		"index.js"
 	],
