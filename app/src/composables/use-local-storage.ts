@@ -1,4 +1,5 @@
 import { ref, watch } from 'vue';
+import { parseJSON } from '@directus/shared/utils';
 
 type LocalStorageObjectType = string | number | boolean | object | null;
 
@@ -12,7 +13,7 @@ export function useLocalStorage(key: string, defaultValue: LocalStorageObjectTyp
 		if (!rawExistingValue) return defaultValue;
 
 		try {
-			return JSON.parse(rawExistingValue);
+			return parseJSON(rawExistingValue);
 		} catch (e) {
 			// eslint-disable-next-line no-console
 			console.warn(`Couldn't parse value from local storage`, e);
