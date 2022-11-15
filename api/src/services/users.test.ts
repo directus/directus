@@ -5,9 +5,10 @@ import { afterEach, beforeAll, describe, it, vi, expect, MockedFunction } from '
 import { ItemsService, UsersService } from '.';
 import { InvalidPayloadException } from '../exceptions';
 
-vi.mock('../../src/database/index', () => {
-	return { __esModule: true, default: vi.fn(), getDatabaseClient: vi.fn().mockReturnValue('postgres') };
-});
+vi.mock('../../src/database/index', () => ({
+	default: vi.fn(),
+	getDatabaseClient: vi.fn().mockReturnValue('postgres'),
+}));
 
 const testSchema = {
 	collections: {

@@ -13,5 +13,5 @@
 		"declaration": true,
 		"resolveJsonModule": true
 	},
-	"exclude": ["node_modules", "dist", "extensions", "**/__utils__/*.*", "**/__mocks__/*.*", "**/*.test.ts"]
+	"exclude": ["node_modules", "dist", "extensions"]
 }

@@ -2,7 +2,7 @@ import { Query } from '@directus/shared/types';
 import knex, { Knex } from 'knex';
 import { getTracker, MockClient, Tracker } from 'knex-mock-client';
 import { cloneDeep } from 'lodash';
-import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeAll, describe, expect, it, vi, MockedFunction } from 'vitest';
 import { ItemsService } from '../../src/services';
 import { InvalidPayloadException } from '../exceptions';
 import { sqlFieldFormatter, sqlFieldList } from '../__utils__/items-utils';
@@ -19,25 +19,24 @@ vi.mock('../env', async () => {
 	};
 });
 
-vi.mock('../../src/database/index', () => {
-	return { default: vi.fn(), getDatabaseClient: vi.fn().mockReturnValue('postgres') };
-});
+vi.mock('../../src/database/index', () => ({
+	default: vi.fn(),
+	getDatabaseClient: vi.fn().mockReturnValue('postgres'),
+}));
 
-vi.mock('../cache', () => {
-	return {
-		getCache: vi.fn().mockReturnValue({
-			cache: {
-				clear: vi.fn(),
-			},
-			systemCache: {
-				clear: vi.fn(),
-			},
-		}),
-	};
-});
+vi.mock('../cache', () => ({
+	getCache: vi.fn().mockReturnValue({
+		cache: {
+			clear: vi.fn(),
+		},
+		systemCache: {
+			clear: vi.fn(),
+		},
+	}),
+}));
 
 describe('Integration Tests', () => {
-	let db: Knex;
+	let db: MockedFunction<Knex>;
 	let tracker: Tracker;
 
 	const schemas: Record<string, any> = {
@@ -45,8 +44,8 @@ describe('Integration Tests', () => {
 		user: { schema: userSchema, tables: Object.keys(userSchema.collections) },
 	};
 
-	beforeAll(async () => {
-		db = knex({ client: MockClient });
+	beforeAll(() => {
+		db = vi.mocked(knex({ client: MockClient }));
 		tracker = getTracker();
 	});
 
@@ -1049,7 +1048,7 @@ describe('Integration Tests', () => {
 					// intentional `as any` to test non-array data on runtime
 					await itemsService.updateBatch(items[0] as any);
 				} catch (err) {
-					expect(err.message).toBe(`Input should be an array of items.`);
+					expect((err as Error).message).toBe(`Input should be an array of items.`);
 					expect(err).toBeInstanceOf(InvalidPayloadException);
 				}
 			}
