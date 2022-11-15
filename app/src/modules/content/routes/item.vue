@@ -42,7 +42,7 @@
 				icon
 				secondary
 				exact
-				@click="router.back()"
+				@click="navigateBack"
 			>
 				<v-icon name="arrow_back" />
 			</v-button>
@@ -364,6 +364,16 @@ const disabledOptions = computed(() => {
 	if (isNew.value) return ['save-as-copy'];
 	return [];
 });
+
+function navigateBack() {
+	const backState = router.options.history.state.back;
+	if (typeof backState !== 'string' || !backState.startsWith('/login')) {
+		router.back();
+		return;
+	}
+
+	router.push(`/content/${props.collection}`);
+}
 
 function useBreadcrumb() {
 	const breadcrumb = computed(() => [

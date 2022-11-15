@@ -1,4 +1,5 @@
 import { VMError } from 'vm2';
+import { test, expect } from 'vitest';
 
 import config from './index';
 
@@ -29,7 +30,7 @@ test('Rejects when code contains syntax errors', async () => {
 				FLOWS_EXEC_ALLOWED_MODULES: '',
 			},
 		} as any)
-	).rejects.toEqual(new Error("Couldn't compile code: Unexpected end of input"));
+	).rejects.toEqual(new SyntaxError('Unexpected end of input'));
 });
 
 test('Rejects when returned function does something illegal', async () => {
@@ -111,6 +112,7 @@ test('Allows modules that are whitelisted', () => {
 
 	expect(
 		config.handler({ code: testCode }, {
+			data: {},
 			env: {
 				FLOWS_EXEC_ALLOWED_MODULES: 'bytes',
 			},

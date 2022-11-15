@@ -87,3 +87,13 @@ services:
     command: start-single-node --cluster-name=example-single-node --insecure
     ports:
       - 6106:26257
+
+  auth-saml:
+    image: kristophjunge/test-saml-idp
+    ports:
+      - 8880:8080
+    environment:
+      - SIMPLESAMLPHP_SP_ENTITY_ID=saml-test
+      - SIMPLESAMLPHP_SP_ASSERTION_CONSUMER_SERVICE=http://localhost:8080/auth/login/saml/acs
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'

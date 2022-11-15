@@ -2,7 +2,7 @@
 	<files-not-found v-if="!loading && !item" />
 	<private-view v-else :title="loading || !item ? t('loading') : item.title">
 		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon secondary exact @click="router.back()">
+			<v-button class="header-icon" rounded icon secondary exact @click="navigateBack">
 				<v-icon name="arrow_back" />
 			</v-button>
 		</template>
@@ -287,6 +287,20 @@ const { createAllowed, deleteAllowed, saveAllowed, updateAllowed, fields, revisi
 const fieldsFiltered = computed(() => {
 	return fields.value.filter((field: Field) => fieldsDenyList.includes(field.field) === false);
 });
+
+function navigateBack() {
+	const backState = router.options.history.state.back;
+	if (typeof backState !== 'string' || !backState.startsWith('/login')) {
+		router.back();
+		return;
+	}
+
+	if (item?.value?.folder) {
+		router.push(`/files/folders/${item.value.folder}`);
+	} else {
+		router.push('/files');
+	}
+}
 
 function useBreadcrumb() {
 	const breadcrumb = computed(() => {
