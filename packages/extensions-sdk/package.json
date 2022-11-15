@@ -1,13 +1,28 @@
 {
 	"name": "@directus/extensions-sdk",
 	"version": "9.20.4",
-	"description": "A toolkit to develop extensions to extend Directus.",
-	"main": "dist/cjs/index.js",
-	"repository": "directus/directus",
+	"description": "A toolkit to develop extensions to extend Directus",
+	"homepage": "https://directus.io",
+	"bugs": {
+		"url": "https://github.com/directus/directus/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus/directus.git",
+		"directory": "packages/extensions-sdk"
+	},
+	"funding": "https://github.com/directus/directus?sponsor=1",
+	"author": "Nicola Krumschmidt",
 	"exports": {
 		".": {
-			"import": "./dist/esm/index.js",
-			"require": "./dist/cjs/index.js"
+			"import": {
+				"types": "./dist/esm/index.d.ts",
+				"default": "./dist/esm/index.js"
+			},
+			"require": {
+				"types": "./dist/cjs/index.d.ts",
+				"default": "./dist/cjs/index.js"
+			}
 		},
 		"./cli": {
 			"import": "./dist/esm/cli/index.js",
@@ -15,15 +30,16 @@
 		},
 		"./package.json": "./package.json"
 	},
+	"main": "dist/cjs/index.js",
+	"types": "dist/cjs/index.d.ts",
+	"bin": {
+		"directus-extension": "cli.js"
+	},
 	"files": [
 		"dist",
 		"templates",
 		"!**/*.d.ts.map"
 	],
-	"types": "dist/esm/index.d.ts",
-	"bin": {
-		"directus-extension": "cli.js"
-	},
 	"scripts": {
 		"build": "run-p \"build:* {@}\"",
 		"build:esm": "tsc --project ./tsconfig.json --module ES2015 --outDir ./dist/esm",
@@ -31,11 +47,6 @@
 		"cleanup": "rimraf ./dist",
 		"dev": "pnpm build -- -w --preserveWatchOutput --incremental"
 	},
-	"engines": {
-		"node": ">=12.20.0"
-	},
-	"author": "Nicola Krumschmidt",
-	"gitHead": "24621f3934dc77eb23441331040ed13c676ceffd",
 	"dependencies": {
 		"@directus/shared": "workspace:*",
 		"@rollup/plugin-commonjs": "23.0.0",
@@ -59,5 +70,11 @@
 		"npm-run-all": "4.1.5",
 		"rimraf": "3.0.2",
 		"typescript": "4.8.4"
+	},
+	"engines": {
+		"node": ">=12.20.0"
+	},
+	"publishConfig": {
+		"access": "public"
 	}
 }

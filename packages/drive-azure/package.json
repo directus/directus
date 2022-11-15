@@ -2,23 +2,29 @@
 	"name": "@directus/drive-azure",
 	"version": "9.20.4",
 	"description": "Azure Blob driver for @directus/drive",
+	"homepage": "https://directus.io",
+	"bugs": {
+		"url": "https://github.com/directus/directus/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus/directus.git",
+		"directory": "packages/drive-azure"
+	},
+	"funding": "https://github.com/directus/directus?sponsor=1",
 	"license": "MIT",
-	"main": "dist/index.js",
+	"author": "Robin Grundvåg <robgru52@gmail.com>",
+	"contributors": [
+		"Rijk van Zanten <rijkvanzanten@me.com>"
+	],
 	"exports": {
 		".": "./dist/index.js",
 		"./package.json": "./package.json"
 	},
-	"keywords": [
-		"storage",
-		"filesystem",
-		"file",
-		"azure",
-		"azure-blob",
-		"promise",
-		"async",
-		"spaces",
-		"drive",
-		"directus"
+	"main": "dist/index.js",
+	"files": [
+		"dist",
+		"!**/*.d.ts?(.map)"
 	],
 	"scripts": {
 		"build": "tsc --project ./tsconfig.json",
@@ -29,14 +35,6 @@
 		"test": "jest --coverage",
 		"dev": "pnpm build -w --preserveWatchOutput --incremental"
 	},
-	"author": "Robin Grundvåg <robgru52@gmail.com>",
-	"contributors": [
-		"Rijk van Zanten <rijkvanzanten@me.com>"
-	],
-	"files": [
-		"dist",
-		"!**/*.d.ts?(.map)"
-	],
 	"dependencies": {
 		"@azure/storage-blob": "12.12.0",
 		"@directus/drive": "workspace:*",
@@ -56,13 +54,5 @@
 	},
 	"publishConfig": {
 		"access": "public"
-	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/directus/directus.git"
-	},
-	"bugs": {
-		"url": "https://github.com/directus/directus/issues"
-	},
-	"gitHead": "24621f3934dc77eb23441331040ed13c676ceffd"
+	}
 }

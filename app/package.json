@@ -1,33 +1,32 @@
 {
 	"name": "@directus/app",
 	"version": "9.20.4",
-	"private": false,
-	"description": "Directus is an Open-Source Headless CMS & API for Managing Custom Databases",
+	"description": "App dashboard for Directus",
+	"homepage": "https://directus.io",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus/directus.git",
+		"directory": "app"
+	},
+	"funding": "https://github.com/directus/directus?sponsor=1",
 	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
-	"main": "dist/index.html",
 	"exports": {
 		".": "./dist/index.html",
 		"./package.json": "./package.json"
 	},
+	"main": "dist/index.html",
 	"files": [
 		"dist"
 	],
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/directus/directus.git"
-	},
-	"publishConfig": {
-		"access": "public"
-	},
 	"scripts": {
-		"dev": "vite",
 		"build": "vite build",
+		"build-storybook": "build-storybook",
+		"dev": "vite",
 		"serve": "vite preview",
+		"storybook": "start-storybook -p 6006",
 		"test": "vitest run",
 		"test:coverage": "vitest run --coverage",
-		"test:watch": "vitest",
-		"storybook": "start-storybook -p 6006",
-		"build-storybook": "build-storybook"
+		"test:watch": "vitest"
 	},
 	"devDependencies": {
 		"@babel/core": "7.19.3",
@@ -151,5 +150,8 @@
 		"vuedraggable": "4.1.0",
 		"webpack": "5.74.0",
 		"wellknown": "0.5.0"
+	},
+	"publishConfig": {
+		"access": "public"
 	}
 }

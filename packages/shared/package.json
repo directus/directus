@@ -1,7 +1,22 @@
 {
 	"name": "@directus/shared",
 	"version": "9.20.4",
-	"description": "Code shared between all directus packages.",
+	"description": "Code shared between all Directus packages",
+	"homepage": "https://directus.io",
+	"bugs": {
+		"url": "https://github.com/directus/directus/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus/directus.git",
+		"directory": "packages/shared"
+	},
+	"funding": "https://github.com/directus/directus?sponsor=1",
+	"author": "Nicola Krumschmidt",
+	"maintainers": [
+		"Rijk van Zanten <rijkvanzanten@me.com>"
+	],
+	"sideEffects": false,
 	"exports": {
 		"./composables": {
 			"import": "./dist/esm/composables/index.js",
@@ -38,7 +53,6 @@
 		"!**/*.test.js",
 		"!**/*.d.ts.map"
 	],
-	"sideEffects": false,
 	"scripts": {
 		"build": "run-p \"build:* {@}\"",
 		"build:esm": "tsc --project ./tsconfig.json --module ES2015 --outDir ./dist/esm",
@@ -49,10 +63,6 @@
 		"test:coverage": "vitest run --coverage",
 		"test:watch": "vitest"
 	},
-	"author": "Nicola Krumschmidt",
-	"maintainers": [
-		"Rijk van Zanten <rijkvanzanten@me.com>"
-	],
 	"dependencies": {
 		"axios": "1.1.3",
 		"date-fns": "2.29.3",
@@ -83,5 +93,8 @@
 		"tmp": "0.2.1",
 		"typescript": "4.8.4",
 		"vitest": "0.24.3"
+	},
+	"publishConfig": {
+		"access": "public"
 	}
 }

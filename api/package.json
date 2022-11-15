@@ -1,9 +1,7 @@
 {
 	"name": "directus",
 	"version": "9.20.4",
-	"license": "GPL-3.0-only",
-	"homepage": "https://github.com/directus/directus#readme",
-	"description": "Directus is a real-time API and App dashboard for managing SQL database content.",
+	"description": "Directus is a real-time API and App dashboard for managing SQL database content",
 	"keywords": [
 		"directus",
 		"realtime",
@@ -23,13 +21,17 @@
 		"framework",
 		"vue"
 	],
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/directus/directus.git"
-	},
+	"homepage": "https://directus.io",
 	"bugs": {
 		"url": "https://github.com/directus/directus/issues"
 	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus/directus.git",
+		"directory": "api"
+	},
+	"funding": "https://github.com/directus/directus?sponsor=1",
+	"license": "GPL-3.0-only",
 	"author": {
 		"name": "Monospace Inc",
 		"email": "info@monospace.io",
@@ -47,34 +49,31 @@
 			"url": "https://github.com/benhaynes"
 		}
 	],
-	"main": "dist/index.js",
 	"exports": {
 		".": "./dist/index.js",
 		"./*": "./dist/*.js",
 		"./package.json": "./package.json"
 	},
+	"main": "dist/index.js",
 	"bin": {
 		"directus": "cli.js"
-	},
-	"scripts": {
-		"start": "npx directus start",
-		"prebuild": "pnpm cleanup",
-		"build": "tsc --build && copyfiles \"src/**/*.{yaml,liquid}\" -u 1 dist",
-		"cleanup": "rimraf dist",
-		"dev": "cross-env NODE_ENV=development SERVE_APP=false ts-node-dev --files --transpile-only --respawn --watch \".env\" --inspect=0 --exit-child -- src/start.ts",
-		"cli": "cross-env NODE_ENV=development SERVE_APP=false ts-node --script-mode --transpile-only src/cli/run.ts",
-		"test": "vitest run",
-		"test:coverage": "vitest run --coverage",
-		"test:watch": "vitest"
-	},
-	"engines": {
-		"node": ">=12.20.0"
 	},
 	"files": [
 		"dist",
 		"!**/*.test.js",
 		"!**/__*__/"
 	],
+	"scripts": {
+		"prebuild": "pnpm cleanup",
+		"build": "tsc --build && copyfiles \"src/**/*.{yaml,liquid}\" -u 1 dist",
+		"cleanup": "rimraf dist",
+		"cli": "cross-env NODE_ENV=development SERVE_APP=false ts-node --script-mode --transpile-only src/cli/run.ts",
+		"dev": "cross-env NODE_ENV=development SERVE_APP=false ts-node-dev --files --transpile-only --respawn --watch \".env\" --inspect=0 --exit-child -- src/start.ts",
+		"start": "npx directus start",
+		"test": "vitest run",
+		"test:coverage": "vitest run --coverage",
+		"test:watch": "vitest"
+	},
 	"dependencies": {
 		"@authenio/samlify-node-xmllint": "2.0.0",
 		"@aws-sdk/client-ses": "3.190.0",
@@ -167,18 +166,6 @@
 		"vm2": "3.9.11",
 		"wellknown": "0.5.0"
 	},
-	"optionalDependencies": {
-		"@keyv/redis": "2.5.2",
-		"keyv-memcache": "1.2.5",
-		"memcached": "2.2.2",
-		"mysql": "2.18.1",
-		"nodemailer-mailgun-transport": "2.1.5",
-		"nodemailer-sendgrid": "1.0.3",
-		"pg": "8.8.0",
-		"sqlite3": "5.1.2",
-		"tedious": "15.1.0"
-	},
-	"gitHead": "24621f3934dc77eb23441331040ed13c676ceffd",
 	"devDependencies": {
 		"@otplib/preset-default": "12.0.1",
 		"@types/async": "3.2.15",
@@ -231,5 +218,19 @@
 		"ts-node-dev": "2.0.0",
 		"typescript": "4.8.4",
 		"vitest": "0.25.1"
+	},
+	"optionalDependencies": {
+		"@keyv/redis": "2.5.2",
+		"keyv-memcache": "1.2.5",
+		"memcached": "2.2.2",
+		"mysql": "2.18.1",
+		"nodemailer-mailgun-transport": "2.1.5",
+		"nodemailer-sendgrid": "1.0.3",
+		"pg": "8.8.0",
+		"sqlite3": "5.1.2",
+		"tedious": "15.1.0"
+	},
+	"engines": {
+		"node": ">=12.20.0"
 	}
 }
