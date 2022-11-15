@@ -1,37 +1,37 @@
-import path from 'path';
+import {
+	API_SHARED_DEPS,
+	APP_EXTENSION_TYPES,
+	APP_SHARED_DEPS,
+	EXTENSION_PKG_KEY,
+	EXTENSION_TYPES,
+	HYBRID_EXTENSION_TYPES,
+} from '@directus/shared/constants';
+import { ApiExtensionType, AppExtensionType, ExtensionManifestRaw } from '@directus/shared/types';
+import { isIn, isTypeIn, validateExtensionManifest } from '@directus/shared/utils';
+import commonjs from '@rollup/plugin-commonjs';
+import json from '@rollup/plugin-json';
+import { nodeResolve } from '@rollup/plugin-node-resolve';
+import replace from '@rollup/plugin-replace';
+import terser from '@rollup/plugin-terser';
 import chalk from 'chalk';
 import fse from 'fs-extra';
 import ora from 'ora';
+import path from 'path';
 import {
-	RollupError,
-	RollupOptions,
 	OutputOptions as RollupOutputOptions,
 	Plugin,
 	rollup,
+	RollupError,
+	RollupOptions,
 	watch as rollupWatch,
 } from 'rollup';
-import { nodeResolve } from '@rollup/plugin-node-resolve';
-import commonjs from '@rollup/plugin-commonjs';
-import json from '@rollup/plugin-json';
-import replace from '@rollup/plugin-replace';
-import typescript from 'rollup-plugin-typescript2';
-import { terser } from 'rollup-plugin-terser';
 import styles from 'rollup-plugin-styles';
+import typescript from 'rollup-plugin-typescript2';
 import vue from 'rollup-plugin-vue';
-import {
-	EXTENSION_PKG_KEY,
-	EXTENSION_TYPES,
-	APP_SHARED_DEPS,
-	API_SHARED_DEPS,
-	APP_EXTENSION_TYPES,
-	HYBRID_EXTENSION_TYPES,
-} from '@directus/shared/constants';
-import { isIn, isTypeIn, validateExtensionManifest } from '@directus/shared/utils';
-import { ApiExtensionType, AppExtensionType, ExtensionManifestRaw } from '@directus/shared/types';
-import { log, clear } from '../utils/logger';
-import { getLanguageFromPath, isLanguage } from '../utils/languages';
 import { Language, RollupConfig, RollupMode } from '../types';
+import { getLanguageFromPath, isLanguage } from '../utils/languages';
 import loadConfig from '../utils/load-config';
+import { clear, log } from '../utils/logger';
 import toObject from '../utils/to-object';
 
 type BuildOptions = {
