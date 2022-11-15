@@ -8,7 +8,6 @@
 		".": "./dist/index.js",
 		"./package.json": "./package.json"
 	},
-	"types": "dist/index.d.ts",
 	"keywords": [
 		"storage",
 		"filesystem",
@@ -35,7 +34,8 @@
 		"Rijk van Zanten <rijkvanzanten@me.com>"
 	],
 	"files": [
-		"dist"
+		"dist",
+		"!**/*.d.ts?(.map)"
 	],
 	"dependencies": {
 		"@azure/storage-blob": "12.12.0",
