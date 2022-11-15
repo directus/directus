@@ -121,7 +121,9 @@ export class PayloadService {
 		async 'cast-csv'({ action, value }) {
 			if (Array.isArray(value) === false && typeof value !== 'string') return;
 
-			if (action === 'read' && Array.isArray(value) === false) {
+			if (action === 'read') {
+				if (Array.isArray(value)) return value;
+
 				if (value === '') return [];
 
 				return value.split(',');
@@ -277,7 +279,7 @@ export class PayloadService {
 			for (const payload of payloads) {
 				let value: number | string | Date = payload[name];
 
-				if (value === null || value === '0000-00-00') {
+				if (value === null || (typeof value === 'string' && /^[.0 :-]{10,}$/.test(value))) {
 					payload[name] = null;
 					continue;
 				}
