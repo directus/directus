@@ -2,7 +2,8 @@ table: directus_shares
 
 fields:
   - field: id
-    special: uuid
+    special:
+      - uuid
     readonly: true
     hidden: true
 
@@ -26,7 +27,9 @@ fields:
           _eq: false
 
   - field: password
-    special: hash,conceal
+    special:
+      - hash
+      - conceal
     interface: input-hash
     options:
       iconRight: lock
@@ -64,7 +67,8 @@ fields:
         hidden: true
 
   - field: user_created
-    special: user-created
+    special:
+      - user-created
     interface: select-dropdown-m2o
     width: half
     display: user

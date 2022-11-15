@@ -13,12 +13,17 @@ import yaml from '@rollup/plugin-yaml';
 import vue from '@vitejs/plugin-vue';
 import hljs from 'highlight.js';
 import path from 'path';
+import fs from 'fs';
 import markdownItAnchor from 'markdown-it-anchor';
 import markdownItContainer from 'markdown-it-container';
 import markdownItTableOfContents from 'markdown-it-table-of-contents';
 import md from 'vite-plugin-vue-markdown';
+import { searchForWorkspaceRoot } from 'vite';
 import { defineConfig } from 'vitest/config';
 import hljsGraphQL from './src/utils/hljs-graphql';
+
+const API_PATH = path.join('..', 'api');
+const EXTENSIONS_PATH = path.join(API_PATH, 'extensions');
 
 hljs.registerLanguage('graphql', hljsGraphQL);
 
@@ -141,15 +146,28 @@ export default defineConfig({
 		port: 8080,
 		proxy: {
 			'^/(?!admin)': {
-				target: process.env.API_URL ? process.env.API_URL : 'http://localhost:8055/',
+				target: process.env.API_URL ? process.env.API_URL : 'http://0.0.0.0:8055/',
 				changeOrigin: true,
 			},
+		},
+		fs: {
+			allow: [searchForWorkspaceRoot(process.cwd()), ...getExtensionsRealPaths()],
 		},
 	},
 	test: {
 		environment: 'happy-dom',
 	},
 });
+
+function getExtensionsRealPaths() {
+	return fs.existsSync(EXTENSIONS_PATH)
+		? fs.readdirSync(EXTENSIONS_PATH).flatMap((typeDir) => {
+				const extensionTypeDir = path.join(EXTENSIONS_PATH, typeDir);
+
+				return fs.readdirSync(extensionTypeDir).map((dir) => fs.realpathSync(path.join(extensionTypeDir, dir)));
+		  })
+		: [];
+}
 
 function directusExtensions() {
 	const prefix = '@directus-extensions-';
@@ -204,12 +222,9 @@ function directusExtensions() {
 	];
 
 	async function loadExtensions() {
-		const apiPath = path.join('..', 'api');
-		const extensionsPath = path.join(apiPath, 'extensions');
-
-		await ensureExtensionDirs(extensionsPath, APP_OR_HYBRID_EXTENSION_TYPES);
-		const packageExtensions = await getPackageExtensions(apiPath, APP_OR_HYBRID_EXTENSION_PACKAGE_TYPES);
-		const localExtensions = await getLocalExtensions(extensionsPath, APP_OR_HYBRID_EXTENSION_TYPES);
+		await ensureExtensionDirs(EXTENSIONS_PATH, APP_OR_HYBRID_EXTENSION_TYPES);
+		const packageExtensions = await getPackageExtensions(API_PATH, APP_OR_HYBRID_EXTENSION_PACKAGE_TYPES);
+		const localExtensions = await getLocalExtensions(EXTENSIONS_PATH, APP_OR_HYBRID_EXTENSION_TYPES);
 
 		const extensions = [...packageExtensions, ...localExtensions];
 

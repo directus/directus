@@ -2,6 +2,198 @@
 
 _Changes marked with a :warning: contain potential breaking changes depending on your use of the package._
 
+## v9.19.0 (October 21, 2022)
+
+### :sparkles: New Features
+
+- **drive**
+  - [#15952](https://github.com/directus/directus/pull/15952) Add support for s3 ServerSideEncryption (by @rperon)
+
+### :rocket: Improvements
+
+- **API**
+  - [#16016](https://github.com/directus/directus/pull/16016) Remove property="og:url" from email base template (by
+    @vanling)
+  - [#15873](https://github.com/directus/directus/pull/15873) Fix CodeQL threadflow steps (by @licitdev)
+  - [#15673](https://github.com/directus/directus/pull/15673) Allow custom label for auth provider (by @joselcvarela)
+- **App**
+  - [#15993](https://github.com/directus/directus/pull/15993) Add Bosnian to available languages (by @ConnorSimply)
+  - [#15981](https://github.com/directus/directus/pull/15981) Add search to field creation drawer (by @azrikahar)
+  - [#15977](https://github.com/directus/directus/pull/15977) Allow triggering manual flow without selection(s) (by
+    @azrikahar)
+  - [#15955](https://github.com/directus/directus/pull/15955) Remove use-m2m (by @Nitwel)
+  - [#15880](https://github.com/directus/directus/pull/15880) Allow removing existing link in WYSIWYG editor by clearing
+    the URL (by @azrikahar)
+  - [#15764](https://github.com/directus/directus/pull/15764) Change trigger flow operations to dropdown using the local
+    store (by @br41nslug)
+  - [#15757](https://github.com/directus/directus/pull/15757) Fix empty form info on translations (by @Nitwel)
+  - [#15701](https://github.com/directus/directus/pull/15701) Separate pasted values for "Is one of" filter (by
+    @br41nslug)
+  - [#15680](https://github.com/directus/directus/pull/15680) Map cluster and calendar drag highlight color tweak (by
+    @azrikahar)
+  - [#15673](https://github.com/directus/directus/pull/15673) Allow custom label for auth provider (by @joselcvarela)
+  - [#15585](https://github.com/directus/directus/pull/15585) Change Trigger Flow operation's Flow uuid input to
+    autocomplete interface (by @u12206050)
+  - [#15571](https://github.com/directus/directus/pull/15571) Remove warning type for empty presets page (by @azrikahar)
+- **Misc.**
+  - [#15946](https://github.com/directus/directus/pull/15946) Replace raw templates deeply when applying data to options
+    (by @nickrum)
+  - [#15793](https://github.com/directus/directus/pull/15793) Allow extensions to be symlinks when running the App in
+    dev mode (by @nickrum)
+
+### :bug: Bug Fixes
+
+- **App**
+  - [#16078](https://github.com/directus/directus/pull/16078) Fix Project Background Image URL Resolution (by
+    @ConnorSimply)
+  - [#16069](https://github.com/directus/directus/pull/16069) Reset selections for Flows manual trigger in collection
+    page (by @azrikahar)
+  - [#16039](https://github.com/directus/directus/pull/16039) Optimise data model sorting (by @licitdev)
+  - [#16037](https://github.com/directus/directus/pull/16037) Add try/catch block to Users Module navigation and
+    system-scope interface (by @azrikahar)
+  - [#16030](https://github.com/directus/directus/pull/16030) Fix extensions translations and time-series panel (by
+    @azrikahar)
+  - [#16002](https://github.com/directus/directus/pull/16002) Use right collection for filter (by @Nitwel)
+  - [#15999](https://github.com/directus/directus/pull/15999) Remove handleObject default value in render-template (by
+    @azrikahar)
+  - [#15959](https://github.com/directus/directus/pull/15959) Add missing adjustFieldsForDisplays (by @Nitwel)
+  - [#15958](https://github.com/directus/directus/pull/15958) treat empty array as null on relational field (by @Nitwel)
+  - [#15957](https://github.com/directus/directus/pull/15957) Check for M2A with single related collection in
+    useFieldTree composable (by @azrikahar)
+  - [#15951](https://github.com/directus/directus/pull/15951) Fix translation display (by @Nitwel)
+  - [#15930](https://github.com/directus/directus/pull/15930) Insights dashboard - List panels link to listed collection
+    items. (by @br41nslug)
+  - [#15904](https://github.com/directus/directus/pull/15904) Reset junction collection/fields for field relationships
+    with junction table (by @azrikahar)
+  - [#15872](https://github.com/directus/directus/pull/15872) Fix special characters in translation strings (by
+    @azrikahar)
+  - [#15868](https://github.com/directus/directus/pull/15868) Fix and improve raw value editor (by @VincentKempers)
+  - [#15841](https://github.com/directus/directus/pull/15841) fix (display-filesize): wrap component value in `span`
+    node (by @abernh)
+  - [#15840](https://github.com/directus/directus/pull/15840) fix (display-filesize): adjust handler argument to be read
+    as `value` (by @abernh)
+  - [#15824](https://github.com/directus/directus/pull/15824) Fix non viewable items (by @Nitwel)
+  - [#15823](https://github.com/directus/directus/pull/15823) Fix scrolling on dialog (by @Nitwel)
+  - [#15758](https://github.com/directus/directus/pull/15758) Make watch be triggered immediately (by @Nitwel)
+  - [#15736](https://github.com/directus/directus/pull/15736) Fix thumbnails not displaying in Files interface (by
+    @d1rOn)
+  - [#15729](https://github.com/directus/directus/pull/15729) Fix translations display's info button vertical alignment
+    (by @d1rOn)
+  - [#15709](https://github.com/directus/directus/pull/15709) Fix image alt being null (by @Nitwel)
+  - [#15681](https://github.com/directus/directus/pull/15681) Use singular/plural collection translations in M2A
+    interface (by @azrikahar)
+  - [#15662](https://github.com/directus/directus/pull/15662) Fix flow operations staged edits (by @azrikahar)
+  - [#15640](https://github.com/directus/directus/pull/15640) Set special flags when configuring db-only fields (by
+    @azrikahar)
+  - [#15637](https://github.com/directus/directus/pull/15637) Fix workspace size logic (by @azrikahar)
+  - [#14778](https://github.com/directus/directus/pull/14778) Add fallback message when no fields are visible in a form
+    (by @br41nslug)
+- **API**
+  - [#16039](https://github.com/directus/directus/pull/16039) Optimise data model sorting (by @licitdev)
+  - [#16015](https://github.com/directus/directus/pull/16015) Skip parsing of date strings that only contain zeros (by
+    @licitdev)
+  - [#16010](https://github.com/directus/directus/pull/16010) Process page only when merging with parent items (by
+    @licitdev)
+  - [#15960](https://github.com/directus/directus/pull/15960) Add alias to always have the same name (by @Nitwel)
+  - [#15928](https://github.com/directus/directus/pull/15928) Updated argon2 to 0.29.X for M1 support (by @br41nslug)
+  - [#15898](https://github.com/directus/directus/pull/15898) public_url_file in .env causes server start error (by
+    @br41nslug)
+  - [#15876](https://github.com/directus/directus/pull/15876) Update ioredis to fix connection uri options (by
+    @br41nslug)
+  - [#15760](https://github.com/directus/directus/pull/15760) adds missing graphQL operators (by @freekrai)
+  - [#15723](https://github.com/directus/directus/pull/15723) Fix non-admin role creation via cli for SQLite (by
+    @azrikahar)
+  - [#15644](https://github.com/directus/directus/pull/15644) Cast special in system fields as array (by @licitdev)
+
+### :sponge: Optimizations
+
+- **Misc.**
+  - [#16083](https://github.com/directus/directus/pull/16083) Small `Release` workflow clean-up (by @paescuj)
+  - [#16081](https://github.com/directus/directus/pull/16081) Update upload-artifact action to v3 (by @licitdev)
+  - [#16080](https://github.com/directus/directus/pull/16080) Prepare Action: Set output via new file method (by
+    @paescuj)
+  - [#16057](https://github.com/directus/directus/pull/16057) Update MAX_PAYLOAD_SIZE env stub to 1mb (by @licitdev)
+  - [#16048](https://github.com/directus/directus/pull/16048) Run blackbox tests in parallel (by @licitdev)
+  - [#15939](https://github.com/directus/directus/pull/15939) Make the repo usable with Node v18 (by @nickrum)
+  - [#15786](https://github.com/directus/directus/pull/15786) Ignore pnpm-lock.yaml when running prettier on the repo
+    (by @nickrum)
+- **App**
+  - [#15944](https://github.com/directus/directus/pull/15944) Move key to component where v-for is defined (by @nickrum)
+
+### :package: Dependency Updates
+
+- [#16052](https://github.com/directus/directus/pull/16052) Patch Tuesday 🐸 (by @rijkvanzanten)
+- [#15943](https://github.com/directus/directus/pull/15943) Upgrade vite (by @rijkvanzanten)
+- [#15928](https://github.com/directus/directus/pull/15928) Updated argon2 to 0.29.X for M1 support (by @br41nslug)
+- [#15876](https://github.com/directus/directus/pull/15876) Update ioredis to fix connection uri options (by @br41nslug)
+
+## v9.18.0 (September 19, 2022)
+
+### :sparkles: New Features
+
+- **App**
+  - [#15452](https://github.com/directus/directus/pull/15452) Relational Selection Panel for Insights Variable (by
+    @br41nslug)
+
+### :rocket: Improvements
+
+- **App**
+  - [#15570](https://github.com/directus/directus/pull/15570) Only pass singleton prop in CollectionOrItem component
+    when necessary (by @azrikahar)
+  - [#15548](https://github.com/directus/directus/pull/15548) Use the improved get method (by @Nitwel)
+  - [#15514](https://github.com/directus/directus/pull/15514) Allow user to send a WYSIWYG email body (by @raflymln)
+- **API**
+  - [#15514](https://github.com/directus/directus/pull/15514) Allow user to send a WYSIWYG email body (by @raflymln)
+
+### :bug: Bug Fixes
+
+- **API**
+  - [#15599](https://github.com/directus/directus/pull/15599) Cache: Fix check if endpoint is `/graphql` or not (by
+    @joselcvarela)
+  - [#15574](https://github.com/directus/directus/pull/15574) Fix starting Directus using a custom start file (by
+    @nickrum)
+  - [#15547](https://github.com/directus/directus/pull/15547) Handle Date objects in compress util (by @azrikahar)
+  - [#15494](https://github.com/directus/directus/pull/15494) Fix rotating called twice (by @Nitwel)
+  - [#15467](https://github.com/directus/directus/pull/15467) revisions for CRUD operations with $full (by @freekrai)
+  - [#15465](https://github.com/directus/directus/pull/15465) GraphQLID is always Non-Nullable (by @kepi)
+  - [#15420](https://github.com/directus/directus/pull/15420) Ensure case insensitive email checks for password reset
+    requests (by @azrikahar)
+  - [#14816](https://github.com/directus/directus/pull/14816) Fix schema re-apply attempts when it's a different
+    database vendor (by @azrikahar)
+  - [#14690](https://github.com/directus/directus/pull/14690) Use original table names for columns with functions (by
+    @licitdev)
+- **App**
+  - [#15593](https://github.com/directus/directus/pull/15593) skip interface options for variable panel (by @br41nslug)
+  - [#15579](https://github.com/directus/directus/pull/15579) Showing the v-error on unexpected errors (by
+    @VincentKempers)
+  - [#15548](https://github.com/directus/directus/pull/15548) Use the improved get method (by @Nitwel)
+  - [#15520](https://github.com/directus/directus/pull/15520) fix redudant message in unexpected error (by
+    @VincentKempers)
+  - [#15500](https://github.com/directus/directus/pull/15500) Fix duplicate indexes (by @Nitwel)
+  - [#15463](https://github.com/directus/directus/pull/15463) Fix display dimensions of SVG in image edit drawer (by
+    @licitdev)
+  - [#15450](https://github.com/directus/directus/pull/15450) Fix M2M drawer autofocusing the wrong field with junction
+    field location `top` (by @NigmaX)
+  - [#15442](https://github.com/directus/directus/pull/15442) Fix v-list-group active state (by @azrikahar)
+  - [#15441](https://github.com/directus/directus/pull/15441) fix: add arrow-placement logic check if folder empty (by
+    @chaiwattsw)
+  - [#15221](https://github.com/directus/directus/pull/15221) Fix O2M edits on unsaved items (by @azrikahar)
+  - [#14947](https://github.com/directus/directus/pull/14947) Item Duplication for manually entered primary keys (by
+    @br41nslug)
+  - [#14871](https://github.com/directus/directus/pull/14871) Add missing download and token parameter in File interface
+    (by @JonathanSchndr)
+  - [#14690](https://github.com/directus/directus/pull/14690) Use original table names for columns with functions (by
+    @licitdev)
+
+### :sponge: Optimizations
+
+- **Misc.**
+  - [#15594](https://github.com/directus/directus/pull/15594) Correct the documented default type for argon2 (by
+    @azrikahar)
+  - [#15402](https://github.com/directus/directus/pull/15402) Add singleton tests (by @licitdev)
+- **shared**
+  - [#15578](https://github.com/directus/directus/pull/15578) Add a pathToRelativeUrl util function (by @nickrum)
+
 ## v9.17.4 (September 6, 2022)
 
 ### :bug: Bug Fixes
