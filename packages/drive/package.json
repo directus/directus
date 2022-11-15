@@ -8,7 +8,6 @@
 		".": "./dist/index.js",
 		"./package.json": "./package.json"
 	},
-	"types": "dist/index.d.ts",
 	"keywords": [
 		"storage",
 		"filesystem",
@@ -27,7 +26,8 @@
 		"Rijk van Zanten <rijkvanzanten@me.com>"
 	],
 	"files": [
-		"dist"
+		"dist",
+		"!**/*.d.ts?(.map)"
 	],
 	"scripts": {
 		"build": "tsc --project ./tsconfig.json",

@@ -59,7 +59,7 @@
 	"scripts": {
 		"start": "npx directus start",
 		"prebuild": "pnpm cleanup",
-		"build": "tsc --build && copyfiles \"src/**/*.*\" -e \"src/**/*.ts\" -u 1 dist",
+		"build": "tsc --build && copyfiles \"src/**/*.{yaml,liquid}\" -u 1 dist",
 		"cleanup": "rimraf dist",
 		"dev": "cross-env NODE_ENV=development SERVE_APP=false ts-node-dev --files --transpile-only --respawn --watch \".env\" --inspect=0 --exit-child -- src/start.ts",
 		"cli": "cross-env NODE_ENV=development SERVE_APP=false ts-node --script-mode --transpile-only src/cli/run.ts",
@@ -72,8 +72,8 @@
 	},
 	"files": [
 		"dist",
-		"LICENSE",
-		"README.md"
+		"!**/*.test.js",
+		"!**/__*__/"
 	],
 	"dependencies": {
 		"@authenio/samlify-node-xmllint": "2.0.0",
