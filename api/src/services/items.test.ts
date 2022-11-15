@@ -4,6 +4,7 @@ import { getTracker, MockClient, Tracker } from 'knex-mock-client';
 import { cloneDeep } from 'lodash';
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 import { ItemsService } from '../../src/services';
+import { InvalidPayloadException } from '../exceptions';
 import { sqlFieldFormatter, sqlFieldList } from '../__utils__/items-utils';
 import { systemSchema, userSchema } from '../__utils__/schemas';
 
@@ -1023,5 +1024,35 @@ describe('Integration Tests', () => {
 
 			expect(itemsServiceCacheClearSpy).toHaveBeenCalledOnce();
 		});
+
+		it.each(Object.keys(schemas))(
+			'%s batch update should throw InvalidPayloadException when passing non-array data',
+			async (schema) => {
+				const table = schemas[schema].tables[0];
+				schemas[schema].accountability = null;
+
+				tracker.on.select(table).response({});
+				tracker.on.update(table).response({});
+
+				const itemsService = new ItemsService(table, {
+					knex: db,
+					accountability: {
+						role: 'admin',
+						admin: true,
+					},
+					schema: schemas[schema].schema,
+				});
+
+				expect.assertions(2);
+
+				try {
+					// intentional `as any` to test non-array data on runtime
+					await itemsService.updateBatch(items[0] as any);
+				} catch (err) {
+					expect(err.message).toBe(`Input should be an array of items.`);
+					expect(err).toBeInstanceOf(InvalidPayloadException);
+				}
+			}
+		);
 	});
 });

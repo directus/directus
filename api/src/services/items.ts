@@ -437,6 +437,10 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	 * Update multiple items in a single transaction
 	 */
 	async updateBatch(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
+		if (!Array.isArray(data)) {
+			throw new InvalidPayloadException('Input should be an array of items.');
+		}
+
 		const primaryKeyField = this.schema.collections[this.collection].primary;
 
 		const keys: PrimaryKey[] = [];
