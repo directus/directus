@@ -316,7 +316,10 @@ function useLanguages() {
 	}
 }
 
-const { createAllowed, updateAllowed } = useRelationPermissionsM2M(relationInfo);
+const { junctionPerms } = useRelationPermissionsM2M(relationInfo);
+
+const createAllowed = computed(() => junctionPerms.value.create);
+const updateAllowed = computed(() => junctionPerms.value.update);
 
 const firstItemNew = computed(
 	() => relationInfo.value && firstItemInitial.value?.[relationInfo.value.junctionPrimaryKeyField.field] === undefined
