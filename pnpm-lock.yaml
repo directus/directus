@@ -122,7 +122,7 @@ importers:
       '@types/uuid': 8.3.4
       '@types/uuid-validate': 0.0.1
       '@types/wellknown': 0.5.4
-      '@vitest/coverage-c8': ^0.25.2
+      '@vitest/coverage-c8': 0.25.2
       argon2: 0.30.2
       async: 3.2.4
       async-mutex: 0.4.0
