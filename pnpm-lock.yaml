@@ -591,11 +591,11 @@ importers:
       '@types/fs-extra': 9.0.13
       '@types/jest': 29.2.0
       '@types/node': 18.11.2
+      del-cli: 5.0.0
       dotenv: 16.0.3
       fs-extra: 10.1.0
       jest: 29.2.1
       node-exceptions: 4.0.1
-      npm-run-all: 4.1.5
       ts-jest: 29.0.3
       typescript: 4.8.4
     dependencies:
@@ -605,9 +605,9 @@ importers:
       '@types/fs-extra': 9.0.13
       '@types/jest': 29.2.0
       '@types/node': 18.11.2
+      del-cli: 5.0.0
       dotenv: 16.0.3
       jest: 29.2.1_@types+node@18.11.2
-      npm-run-all: 4.1.5
       ts-jest: 29.0.3_7yfpbkrrkkmtlepb2un4d37cti
       typescript: 4.8.4
 
@@ -615,15 +615,13 @@ importers:
     specifiers:
       '@azure/storage-blob': 12.12.0
       '@directus/drive': workspace:*
-      '@types/fs-extra': 9.0.13
       '@types/jest': 29.2.0
       '@types/node': 18.11.2
       '@types/normalize-path': 3.0.0
+      del-cli: 5.0.0
       dotenv: 16.0.3
-      fs-extra: 10.1.0
       jest: 29.2.1
       normalize-path: 3.0.0
-      npm-run-all: 4.1.5
       ts-jest: 29.0.3
       typescript: 4.8.4
     dependencies:
@@ -631,14 +629,12 @@ importers:
       '@directus/drive': link:../drive
       normalize-path: 3.0.0
     devDependencies:
-      '@types/fs-extra': 9.0.13
       '@types/jest': 29.2.0
       '@types/node': 18.11.2
       '@types/normalize-path': 3.0.0
+      del-cli: 5.0.0
       dotenv: 16.0.3
-      fs-extra: 10.1.0
       jest: 29.2.1_@types+node@18.11.2
-      npm-run-all: 4.1.5
       ts-jest: 29.0.3_7yfpbkrrkkmtlepb2un4d37cti
       typescript: 4.8.4
 
@@ -646,17 +642,15 @@ importers:
     specifiers:
       '@directus/drive': workspace:*
       '@google-cloud/storage': 6.5.3
-      '@lukeed/uuid': 2.0.0
-      '@types/fs-extra': 9.0.13
       '@types/jest': 29.2.0
       '@types/lodash': 4.14.186
       '@types/node': 18.11.2
       '@types/normalize-path': 3.0.0
+      del-cli: 5.0.0
       dotenv: 16.0.3
       jest: 29.2.1
       lodash: 4.17.21
       normalize-path: 3.0.0
-      npm-run-all: 4.1.5
       ts-jest: 29.0.3
       typescript: 4.8.4
     dependencies:
@@ -665,32 +659,27 @@ importers:
       lodash: 4.17.21
       normalize-path: 3.0.0
     devDependencies:
-      '@lukeed/uuid': 2.0.0
-      '@types/fs-extra': 9.0.13
       '@types/jest': 29.2.0
       '@types/lodash': 4.14.186
       '@types/node': 18.11.2
       '@types/normalize-path': 3.0.0
+      del-cli: 5.0.0
       dotenv: 16.0.3
       jest: 29.2.1_@types+node@18.11.2
-      npm-run-all: 4.1.5
       ts-jest: 29.0.3_7yfpbkrrkkmtlepb2un4d37cti
       typescript: 4.8.4
 
   packages/drive-s3:
     specifiers:
       '@directus/drive': workspace:*
-      '@lukeed/uuid': 2.0.0
-      '@types/fs-extra': 9.0.13
       '@types/jest': 29.2.0
       '@types/node': 18.11.2
       '@types/normalize-path': 3.0.0
       aws-sdk: 2.1236.0
+      del-cli: 5.0.0
       dotenv: 16.0.3
-      fs-extra: 10.1.0
       jest: 29.2.1
       normalize-path: 3.0.0
-      npm-run-all: 4.1.5
       ts-jest: 29.0.3
       typescript: 4.8.4
     dependencies:
@@ -698,15 +687,12 @@ importers:
       aws-sdk: 2.1236.0
       normalize-path: 3.0.0
     devDependencies:
-      '@lukeed/uuid': 2.0.0
-      '@types/fs-extra': 9.0.13
       '@types/jest': 29.2.0
       '@types/node': 18.11.2
       '@types/normalize-path': 3.0.0
+      del-cli: 5.0.0
       dotenv: 16.0.3
-      fs-extra: 10.1.0
       jest: 29.2.1_@types+node@18.11.2
-      npm-run-all: 4.1.5
       ts-jest: 29.0.3_7yfpbkrrkkmtlepb2un4d37cti
       typescript: 4.8.4
 
@@ -724,12 +710,12 @@ importers:
       '@vue/compiler-sfc': 3.2.41
       chalk: 4.1.1
       commander: 9.4.1
+      concurrently: 7.5.0
+      del-cli: 5.0.0
       execa: 5.1.1
       fs-extra: 10.1.0
-      inquirer: ^8.2.4
-      npm-run-all: 4.1.5
+      inquirer: 8.2.4
       ora: 5.4.0
-      rimraf: 3.0.2
       rollup: 3.2.3
       rollup-plugin-styles: 4.0.0
       rollup-plugin-typescript2: 0.34.1
@@ -757,8 +743,8 @@ importers:
     devDependencies:
       '@types/fs-extra': 9.0.13
       '@types/inquirer': 8.2.1
-      npm-run-all: 4.1.5
-      rimraf: 3.0.2
+      concurrently: 7.5.0
+      del-cli: 5.0.0
       typescript: 4.8.4
 
   packages/schema:
@@ -3864,18 +3850,6 @@ packages:
       - supports-color
     dev: false
     optional: true
-
-  /@lukeed/csprng/1.0.1:
-    resolution: {integrity: sha512-uSvJdwQU5nK+Vdf6zxcWAY2A8r7uqe+gePwLWzJ+fsQehq18pc0I2hJKwypZ2aLM90+Er9u1xn4iLJPZ+xlL4g==}
-    engines: {node: '>=8'}
-    dev: true
-
-  /@lukeed/uuid/2.0.0:
-    resolution: {integrity: sha512-dUz8OmYvlY5A9wXaroHIMSPASpSYRLCqbPvxGSyHguhtTQIy24lC+EGxQlwv71AhRCO55WOtgwhzQLpw27JaJQ==}
-    engines: {node: '>=8'}
-    dependencies:
-      '@lukeed/csprng': 1.0.1
-    dev: true
 
   /@mapbox/extent/0.4.0:
     resolution: {integrity: sha512-MSoKw3qPceGuupn04sdaJrFeLKvcSETVLZCGS8JA9x6zXQL3FWiKaIXYIZEDXd5jpXpWlRxinCZIN49yRy0C9A==}
@@ -8556,7 +8530,7 @@ packages:
       mississippi: 3.0.0
       mkdirp: 0.5.6
       move-concurrently: 1.0.1
-      promise-inflight: 1.0.1_bluebird@3.7.2
+      promise-inflight: 1.0.1
       rimraf: 2.7.1
       ssri: 6.0.2
       unique-filename: 1.1.1
@@ -8580,7 +8554,7 @@ packages:
       minipass-pipeline: 1.2.4
       mkdirp: 1.0.4
       p-map: 4.0.0
-      promise-inflight: 1.0.1_bluebird@3.7.2
+      promise-inflight: 1.0.1
       rimraf: 3.0.2
       ssri: 8.0.1
       tar: 6.1.11
@@ -9180,6 +9154,22 @@ packages:
       inherits: 2.0.4
       readable-stream: 2.3.7
       typedarray: 0.0.6
+    dev: true
+
+  /concurrently/7.5.0:
+    resolution: {integrity: sha512-5E3mwiS+i2JYBzr5BpXkFxOnleZTMsG+WnE/dCG4/P+oiVXrbmrBwJ2ozn4SxwB2EZDrKR568X+puVohxz3/Mg==}
+    engines: {node: ^12.20.0 || ^14.13.0 || >=16.0.0}
+    hasBin: true
+    dependencies:
+      chalk: 4.1.2
+      date-fns: 2.29.3
+      lodash: 4.17.21
+      rxjs: 7.5.6
+      shell-quote: 1.7.3
+      spawn-command: 0.0.2-1
+      supports-color: 8.1.1
+      tree-kill: 1.2.2
+      yargs: 17.5.1
     dev: true
 
   /connection-parse/0.0.7:
@@ -17171,15 +17161,13 @@ packages:
     engines: {node: '>=0.4.0'}
     dev: true
 
-  /promise-inflight/1.0.1_bluebird@3.7.2:
+  /promise-inflight/1.0.1:
     resolution: {integrity: sha512-6zWPyEOFaQBJYcGMHBKTKJ3u6TBsnMFOIZSa6ce1e/ZrrsOlnHRHbabMjLiBYKp+n44X9eUI6VUPaukCXHuG4g==}
     peerDependencies:
       bluebird: '*'
     peerDependenciesMeta:
       bluebird:
         optional: true
-    dependencies:
-      bluebird: 3.7.2
 
   /promise-retry/2.0.1:
     resolution: {integrity: sha512-y+WKFlBR8BGXnsNlIHFGPZmyDf3DFMoLhaflAnyZgV6rG6xu+JwesTo2Q9R6XwYmtmwAFCkAk3e35jEdoeh/3g==}
@@ -18858,6 +18846,10 @@ packages:
 
   /space-separated-tokens/1.1.5:
     resolution: {integrity: sha512-q/JSVd1Lptzhf5bkYm4ob4iWPjx0KiRe3sRFBNrVqbJkFaBm5vbbowy1mymoPNLRa52+oadOhJ+K49wsSeSjTA==}
+    dev: true
+
+  /spawn-command/0.0.2-1:
+    resolution: {integrity: sha512-n98l9E2RMSJ9ON1AKisHzz7V42VDiBQGY6PB1BwRglz99wpVsSuGzQ+jOi6lFXBGVTCrRpltvjm+/XA+tpeJrg==}
     dev: true
 
   /spdx-correct/3.1.1:
