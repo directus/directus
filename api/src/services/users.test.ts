@@ -6,9 +6,10 @@ import { ItemsService, UsersService } from '.';
 import { InvalidPayloadException } from '../exceptions';
 import { RecordNotUniqueException } from '../exceptions/database/record-not-unique';
 
-vi.mock('../../src/database/index', () => {
-	return { __esModule: true, default: vi.fn(), getDatabaseClient: vi.fn().mockReturnValue('postgres') };
-});
+vi.mock('../../src/database/index', () => ({
+	default: vi.fn(),
+	getDatabaseClient: vi.fn().mockReturnValue('postgres'),
+}));
 
 const testRoleId = '4ccdb196-14b3-4ed1-b9da-c1978be07ca2';
 

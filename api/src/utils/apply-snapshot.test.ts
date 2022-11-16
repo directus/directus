@@ -12,23 +12,16 @@ import {
 	snapshotBeforeDeleteCollection,
 } from '../__utils__/snapshots';
 import { Snapshot } from '../types';
-import { describe, afterEach, it, expect, vi, beforeEach } from 'vitest';
-
-vi.mock('../../src/database/index', () => {
-	return {
-		getDatabaseClient: vi.fn().mockReturnValue('postgres'),
-	};
-});
-vi.mock('../../src/database/index');
+import { describe, afterEach, it, expect, vi, beforeEach, MockedFunction } from 'vitest';
 
 class Client_PG extends MockClient {}
 
 describe('applySnapshot', () => {
-	let db: Knex;
+	let db: MockedFunction<Knex>;
 	let tracker: Tracker;
 
 	beforeEach(() => {
-		db = knex({ client: Client_PG });
+		db = vi.mocked(knex({ client: Client_PG }));
 		tracker = getTracker();
 	});
 
