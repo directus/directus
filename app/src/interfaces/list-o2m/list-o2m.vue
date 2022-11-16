@@ -313,7 +313,7 @@ const query = computed<RelationQueryMultiple>(() => {
 	return q;
 });
 
-watch([search, searchFilter], () => {
+watch([search, searchFilter, limit], () => {
 	page.value = 1;
 });
 

@@ -141,8 +141,8 @@ validation_errors_notice: 'Los siguientes campos tienen valores no válidos:'
 validationError:
   eq: El valor debe de ser {valid}
   neq: El valor no puede ser {invalid}
-  in: El_Valor_Debe_Ser{válido}
-  nin: El_Valor_No_Puede_Ser{inválido}
+  in: El_Valor_Debe_Ser{valid}
+  nin: El_Valor_No_Puede_Ser{invalid}
   contains: El valor debe de Contener {substring}
   ncontains: El valor no puede contener {substring}
   gt: El_Valor_Debe_Ser_Mayor_Que{valid}

@@ -1,45 +1,45 @@
-import path from 'path';
-import chalk from 'chalk';
-import fse from 'fs-extra';
-import ora from 'ora';
 import {
-	RollupError,
-	RollupOptions,
-	OutputOptions as RollupOutputOptions,
-	Plugin,
-	rollup,
-	watch as rollupWatch,
-} from 'rollup';
-import { nodeResolve } from '@rollup/plugin-node-resolve';
-import commonjs from '@rollup/plugin-commonjs';
-import json from '@rollup/plugin-json';
-import replace from '@rollup/plugin-replace';
-import virtual from '@rollup/plugin-virtual';
-import typescript from 'rollup-plugin-typescript2';
-import { terser } from 'rollup-plugin-terser';
-import styles from 'rollup-plugin-styles';
-import vue from 'rollup-plugin-vue';
-import {
-	EXTENSION_PKG_KEY,
-	APP_SHARED_DEPS,
 	API_SHARED_DEPS,
 	APP_EXTENSION_TYPES,
-	HYBRID_EXTENSION_TYPES,
+	APP_SHARED_DEPS,
 	EXTENSION_PACKAGE_TYPES,
+	EXTENSION_PKG_KEY,
+	HYBRID_EXTENSION_TYPES,
 } from '@directus/shared/constants';
-import { isIn, isTypeIn, validateExtensionManifest } from '@directus/shared/utils';
 import {
 	ApiExtensionType,
 	AppExtensionType,
 	ExtensionManifestRaw,
 	ExtensionOptionsBundleEntry,
 } from '@directus/shared/types';
-import { log, clear } from '../utils/logger';
-import { getLanguageFromPath, isLanguage } from '../utils/languages';
-import tryParseJson from '../utils/try-parse-json';
+import { isIn, isTypeIn, validateExtensionManifest } from '@directus/shared/utils';
+import commonjs from '@rollup/plugin-commonjs';
+import json from '@rollup/plugin-json';
+import { nodeResolve } from '@rollup/plugin-node-resolve';
+import replace from '@rollup/plugin-replace';
+import terser from '@rollup/plugin-terser';
+import virtual from '@rollup/plugin-virtual';
+import chalk from 'chalk';
+import fse from 'fs-extra';
+import ora from 'ora';
+import path from 'path';
+import {
+	OutputOptions as RollupOutputOptions,
+	Plugin,
+	rollup,
+	RollupError,
+	RollupOptions,
+	watch as rollupWatch,
+} from 'rollup';
+import styles from 'rollup-plugin-styles';
+import typescript from 'rollup-plugin-typescript2';
+import vue from 'rollup-plugin-vue';
 import { Language, RollupConfig, RollupMode } from '../types';
-import loadConfig from './helpers/load-config';
+import { getLanguageFromPath, isLanguage } from '../utils/languages';
+import { clear, log } from '../utils/logger';
+import tryParseJson from '../utils/try-parse-json';
 import generateBundleEntrypoint from './helpers/generate-bundle-entrypoint';
+import loadConfig from './helpers/load-config';
 import { validateBundleEntriesOption, validateSplitEntrypointOption } from './helpers/validate-cli-options';
 
 type BuildOptions = {

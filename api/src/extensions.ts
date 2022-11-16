@@ -338,11 +338,10 @@ class ExtensionManager {
 
 	private async registerHooks(): Promise<void> {
 		const hooks = this.extensions.filter((extension): extension is ApiExtension => extension.type === 'hook');
-
 		for (const hook of hooks) {
 			try {
 				const hookPath = path.resolve(hook.path, hook.entrypoint);
-				const hookInstance: HookConfig | { default: HookConfig } = require(hookPath);
+				const hookInstance: HookConfig | { default: HookConfig } = await import(hookPath);
 
 				const config = getModuleDefault(hookInstance);
 

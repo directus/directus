@@ -42,6 +42,15 @@ jobs:
       - name: Prepare
         uses: ./.github/actions/prepare
 
+      - name: Prune Dependencies
+        run: find . -type d -name node_modules -prune -exec rm -rf {} \;
+
+      - name: Install Production Dependencies
+        run: pnpm install --prod
+
+      - name: Install Root Dev Dependencies
+        run: pnpm install -w --dev
+
       - name: Install Oracle client
         if: matrix.vendor == 'oracle'
         run: |
