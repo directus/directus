@@ -1,5 +1,11 @@
 <template>
-	<v-button icon rounded secondary @click="modelRunning = !modelRunning">
+	<v-button
+		v-tooltip="t('layouts.graph.toggle_simulation')"
+		icon
+		rounded
+		secondary
+		@click="modelRunning = !modelRunning"
+	>
 		<v-icon v-if="props.running" name="pause" />
 		<v-icon v-else name="play_arrow" />
 	</v-button>
@@ -7,12 +13,14 @@
 
 <script setup lang="ts">
 import { useSync } from '@directus/shared/composables';
+import { useI18n } from 'vue-i18n';
 
 interface Props {
 	running: boolean;
 }
 
 const props = defineProps<Props>();
+const { t } = useI18n();
 
 const emit = defineEmits(['update:running']);
 

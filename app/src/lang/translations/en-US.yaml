@@ -1899,6 +1899,19 @@ displays:
     both: Both
     circle_label: Show user in a circle
 layouts:
+  graph:
+    relation: Relation
+    color: Color
+    fixed: Fixed Position
+    size: Size
+    collections_options: Collection Options
+    display_template: Display Template
+    color_field: Color Field
+    size_field: Size Field
+    filters: Filters
+    filter: Filter
+    toggle_simulation: Toggle Simulation
+    drawer_title: "{collection} Options"
   cards:
     cards: Cards
     image_source: Image Source

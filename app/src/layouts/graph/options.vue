@@ -4,8 +4,8 @@
 		<v-select v-model="relationField" :items="relationOptions" show-deselect />
 	</div>
 	<div class="field">
-		<div class="type-label">{{ t('layouts.graph.color') }}</div>
-		<v-checkbox v-model="fixedPositionWritable" block :label="t('layouts.graph.fixed_positions')" />
+		<div class="type-label">{{ t('layouts.graph.fixed') }}</div>
+		<v-checkbox v-model="fixedPositionWritable" block :label="fixedPositionWritable ? t('enabled') : t('disabled')" />
 	</div>
 	<div class="field">
 		<div class="type-label">{{ t('layouts.graph.color') }}</div>
@@ -16,7 +16,7 @@
 		<v-input v-model="sizeWritable" :min="1" :max="20" show-thumb-label type="number" />
 	</div>
 	<div class="field">
-		<div class="type-label">{{ t('layouts.graph.collectionsOptions') }}</div>
+		<div class="type-label">{{ t('layouts.graph.collections_options') }}</div>
 		<v-list>
 			<v-list-item
 				v-for="item in props.collectionsForOptions"
@@ -32,7 +32,7 @@
 
 	<v-drawer
 		:model-value="openCollection !== null"
-		:title="t('layouts.graph.drawer_title', openCollection ?? '')"
+		:title="t('layouts.graph.drawer_title', { collection: formatTitle(openCollection ?? '') })"
 		@cancel="openCollection = null"
 	>
 		<div class="content">
@@ -59,6 +59,7 @@ import { cloneDeep } from 'lodash';
 import { CollectionOptions } from './types';
 import { AppCollection, Collection, DeepPartial, Field } from '@directus/shared/types';
 import { useFieldsStore } from '@/stores/fields';
+import formatTitle from '@directus/format-title';
 
 interface Props {
 	collection: string;
@@ -120,7 +121,7 @@ const fields = computed(() => {
 	const fields: DeepPartial<Field>[] = [
 		{
 			field: 'displayTemplate',
-			name: t('layouts.graph.displayTemplate'),
+			name: t('layouts.graph.display_template'),
 			meta: {
 				interface: 'system-display-template',
 				options: {
@@ -131,7 +132,7 @@ const fields = computed(() => {
 		},
 		{
 			field: 'colorField',
-			name: t('layouts.graph.colorField'),
+			name: t('layouts.graph.color_field'),
 			meta: {
 				width: 'half',
 				interface: 'select-dropdown',
@@ -143,7 +144,7 @@ const fields = computed(() => {
 		},
 		{
 			field: 'sizeField',
-			name: t('layouts.graph.sizeField'),
+			name: t('layouts.graph.size_field'),
 			meta: {
 				width: 'half',
 				interface: 'select-dropdown',
@@ -158,7 +159,7 @@ const fields = computed(() => {
 	if (props.fixedPositions) {
 		fields.push({
 			field: 'xField',
-			name: t('layouts.graph.xField'),
+			name: t('layouts.graph.x_field'),
 			meta: {
 				width: 'half',
 				interface: 'select-dropdown',
@@ -170,7 +171,7 @@ const fields = computed(() => {
 		});
 		fields.push({
 			field: 'yField',
-			name: t('layouts.graph.yField'),
+			name: t('layouts.graph.y_field'),
 			meta: {
 				width: 'half',
 				interface: 'select-dropdown',
