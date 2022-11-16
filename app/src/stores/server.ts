@@ -14,7 +14,7 @@ type HydrateOptions = {
 	isLanguageUpdated?: boolean;
 };
 
-type Info = {
+export type Info = {
 	project: null | {
 		project_name: string | null;
 		project_descriptor: string | null;
@@ -39,7 +39,7 @@ type Info = {
 		uptime: number;
 		totalmem: number;
 	};
-	rateLimiter?:
+	rateLimit?:
 		| false
 		| {
 				points: number;
@@ -50,7 +50,7 @@ type Info = {
 	};
 };
 
-type Auth = {
+export type Auth = {
 	providers: { driver: string; name: string }[];
 	disableDefault: boolean;
 };
@@ -61,7 +61,7 @@ export const useServerStore = defineStore('serverStore', () => {
 		directus: undefined,
 		node: undefined,
 		os: undefined,
-		rateLimiter: undefined,
+		rateLimit: undefined,
 		flows: undefined,
 	});
 
