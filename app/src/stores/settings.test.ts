@@ -96,10 +96,10 @@ vi.mock('@/api', () => {
 	};
 });
 
-let ApiGetSpy: SpyInstance;
+let apiGetSpy: SpyInstance;
 
 beforeAll(() => {
-	ApiGetSpy = vi.spyOn(api, 'get');
+	apiGetSpy = vi.spyOn(api, 'get');
 });
 
 afterEach(() => {
@@ -111,7 +111,7 @@ describe('hydrate action', async () => {
 		const settingsStore = useSettingsStore();
 		await settingsStore.hydrate();
 
-		expect(ApiGetSpy).not.toHaveBeenCalled();
+		expect(apiGetSpy).not.toHaveBeenCalled();
 		expect(settingsStore.settings).toEqual(null);
 	});
 
@@ -122,7 +122,7 @@ describe('hydrate action', async () => {
 		const settingsStore = useSettingsStore();
 		await settingsStore.hydrate();
 
-		expect(ApiGetSpy).not.toHaveBeenCalled();
+		expect(apiGetSpy).not.toHaveBeenCalled();
 		expect(settingsStore.settings).toEqual(null);
 	});
 
@@ -133,7 +133,7 @@ describe('hydrate action', async () => {
 		const settingsStore = useSettingsStore();
 		await settingsStore.hydrate();
 
-		expect(ApiGetSpy).toHaveBeenCalledOnce();
+		expect(apiGetSpy).toHaveBeenCalledOnce();
 		expect(settingsStore.settings).toEqual(mockSettings);
 	});
 });
@@ -196,7 +196,7 @@ describe('fetchRawTranslationStrings action', async () => {
 		const settingsStore = useSettingsStore();
 		await settingsStore.fetchRawTranslationStrings();
 
-		expect(ApiGetSpy).toHaveBeenCalledOnce();
+		expect(apiGetSpy).toHaveBeenCalledOnce();
 		expect(settingsStore.settings).toEqual(null);
 		expect(settingsStore.settings?.translation_strings).toEqual(undefined);
 	});
@@ -208,12 +208,12 @@ describe('fetchRawTranslationStrings action', async () => {
 		const settingsStore = useSettingsStore();
 		await settingsStore.hydrate();
 
-		expect(ApiGetSpy).toHaveBeenCalledTimes(1);
+		expect(apiGetSpy).toHaveBeenCalledTimes(1);
 		expect(settingsStore.settings?.translation_strings).toEqual([]);
 
 		const translationStrings = await settingsStore.fetchRawTranslationStrings();
 
-		expect(ApiGetSpy).toHaveBeenCalledTimes(2);
+		expect(apiGetSpy).toHaveBeenCalledTimes(2);
 		expect(settingsStore.settings?.translation_strings).toEqual(mockTranslationStrings);
 		expect(translationStrings).toEqual(mockTranslationStrings);
 	});
