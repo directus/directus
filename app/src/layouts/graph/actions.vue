@@ -1,6 +1,6 @@
 <template>
 	<v-button
-		v-tooltip="t('layouts.graph.toggle_simulation')"
+		v-tooltip.bottom="t('layouts.graph.toggle_simulation')"
 		icon
 		rounded
 		secondary
