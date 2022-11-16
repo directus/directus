@@ -24,4 +24,8 @@ export class SchemaHelperOracle extends SchemaHelper {
 		logger.error('Unable to parse database version string.');
 		return { parsed: [], full: versionString };
 	}
+
+	castM2aPrimaryKey(): string {
+		return 'CAST(?? AS VARCHAR2(255))';
+	}
 }

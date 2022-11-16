@@ -42,7 +42,8 @@ export class FnHelperPostgres extends FnHelper {
 	}
 
 	count(table: string, column: string, options?: FnHelperOptions): Knex.Raw {
-		const type = this.schema.collections?.[table]?.fields?.[column]?.type ?? 'unknown';
+		const collectionName = options?.originalCollectionName || table;
+		const type = this.schema.collections?.[collectionName]?.fields?.[column]?.type ?? 'unknown';
 
 		if (type === 'json') {
 			const { dbType } = this.schema.collections[table].fields[column];

@@ -1,6 +1,9 @@
 import { getDatabaseClient } from '../../index';
 import { KNEX_TYPES } from '@directus/shared/constants';
 import { DatabaseClients, DatabaseHelper } from '../types';
+import { Knex } from 'knex';
+
+type Clients = 'mysql' | 'postgres' | 'cockroachdb' | 'sqlite' | 'oracle' | 'mssql' | 'redshift';
 
 export type Options = { nullable?: boolean; default?: any; length?: number };
 
@@ -101,5 +104,28 @@ export abstract class SchemaHelper extends DatabaseHelper {
 		// most vendors allow for dropping/creating constraints with the same name
 		// reference issue #14873
 		return existingName;
+	}
+
+	applyOffset(rootQuery: Knex.QueryBuilder, offset: number): void {
+		rootQuery.offset(offset);
+	}
+
+	castM2aPrimaryKey(): string {
+		return 'CAST(?? AS CHAR(255))';
+	}
+
+	applyMultiRelationalSort(
+		knex: Knex,
+		dbQuery: Knex.QueryBuilder,
+		table: string,
+		primaryKey: string,
+		orderByString: string,
+		orderByFields: Knex.Raw[]
+	): Knex.QueryBuilder {
+		dbQuery.rowNumber(
+			knex.ref('directus_row_number').toQuery(),
+			knex.raw(`partition by ??${orderByString}`, [`${table}.${primaryKey}`, ...orderByFields])
+		);
+		return dbQuery;
 	}
 }

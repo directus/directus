@@ -6,50 +6,51 @@ import { CreateItem, ReadItem } from '@common/functions';
 import { CachedTestsSchema, TestsSchemaVendorValues } from '@query/filter';
 import * as common from '@common/index';
 import {
-	collectionFoods,
-	collectionIngredients,
-	collectionSuppliers,
-	Food,
-	Ingredient,
-	Supplier,
+	collectionShapes,
+	collectionCircles,
+	collectionSquares,
+	Shape,
+	Circle,
+	Square,
 	getTestsSchema,
 	seedDBValues,
-} from './m2m.seed';
+} from './m2a.seed';
 import { CheckQueryFilters } from '@query/filter';
 import { findIndex } from 'lodash';
 
-function createFood(pkType: common.PrimaryKeyType) {
-	const item: Food = {
-		name: 'food-' + uuid(),
-		ingredients: [],
+function createShape(pkType: common.PrimaryKeyType) {
+	const item: Shape = {
+		name: 'shape-' + uuid(),
 	};
 
 	if (pkType === 'string') {
-		item.id = 'food-' + uuid();
+		item.id = 'shape-' + uuid();
 	}
 
 	return item;
 }
 
-function createIngredient(pkType: common.PrimaryKeyType) {
-	const item: Ingredient = {
-		name: 'ingredient-' + uuid(),
+function createCircle(pkType: common.PrimaryKeyType) {
+	const item: Circle = {
+		name: 'circle-' + uuid(),
+		radius: common.SeedFunctions.generateValues.float({ quantity: 1 })[0],
 	};
 
 	if (pkType === 'string') {
-		item.id = 'ingredient-' + uuid();
+		item.id = 'circle-' + uuid();
 	}
 
 	return item;
 }
 
-function createSupplier(pkType: common.PrimaryKeyType) {
-	const item: Supplier = {
-		name: 'supplier-' + uuid(),
+function createSquare(pkType: common.PrimaryKeyType) {
+	const item: Square = {
+		name: 'square-' + uuid(),
+		width: common.SeedFunctions.generateValues.float({ quantity: 1 })[0],
 	};
 
 	if (pkType === 'string') {
-		item.id = 'supplier-' + uuid();
+		item.id = 'square-' + uuid();
 	}
 
 	return item;
@@ -74,23 +75,23 @@ describe('Seed Database Values', () => {
 });
 
 describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
-	const localCollectionFoods = `${collectionFoods}_${pkType}`;
-	const localCollectionIngredients = `${collectionIngredients}_${pkType}`;
-	const localCollectionSuppliers = `${collectionSuppliers}_${pkType}`;
+	const localCollectionShapes = `${collectionShapes}_${pkType}`;
+	const localCollectionCircles = `${collectionCircles}_${pkType}`;
+	const localCollectionSquares = `${collectionSquares}_${pkType}`;
 
 	describe(`pkType: ${pkType}`, () => {
 		describe('GET /:collection/:id', () => {
-			describe('retrieves one food', () => {
+			describe('retrieves one shape', () => {
 				it.each(vendors)('%s', async (vendor) => {
 					// Setup
-					const food = await CreateItem(vendor, {
-						collection: localCollectionFoods,
-						item: createFood(pkType),
+					const shape = await CreateItem(vendor, {
+						collection: localCollectionShapes,
+						item: createShape(pkType),
 					});
 
 					// Action
 					const response = await request(getUrl(vendor))
-						.get(`/items/${localCollectionFoods}/${food.id}`)
+						.get(`/items/${localCollectionShapes}/${shape.id}`)
 						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
 					// Assert
@@ -99,17 +100,17 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				});
 			});
 
-			describe('retrieves one ingredient', () => {
+			describe('retrieves one circle', () => {
 				it.each(vendors)('%s', async (vendor) => {
 					// Setup
-					const ingredient = await CreateItem(vendor, {
-						collection: localCollectionIngredients,
-						item: createIngredient(pkType),
+					const circle = await CreateItem(vendor, {
+						collection: localCollectionCircles,
+						item: createCircle(pkType),
 					});
 
 					// Action
 					const response = await request(getUrl(vendor))
-						.get(`/items/${localCollectionIngredients}/${ingredient.id}`)
+						.get(`/items/${localCollectionCircles}/${circle.id}`)
 						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
 					// Assert
@@ -118,17 +119,17 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				});
 			});
 
-			describe('retrieves one supplier', () => {
+			describe('retrieves one square', () => {
 				it.each(vendors)('%s', async (vendor) => {
 					// Setup
-					const supplier = await CreateItem(vendor, {
-						collection: localCollectionSuppliers,
-						item: createSupplier(pkType),
+					const square = await CreateItem(vendor, {
+						collection: localCollectionSquares,
+						item: createSquare(pkType),
 					});
 
 					// Action
 					const response = await request(getUrl(vendor))
-						.get(`/items/${localCollectionSuppliers}/${supplier.id}`)
+						.get(`/items/${localCollectionSquares}/${square.id}`)
 						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
 					// Assert
@@ -137,16 +138,16 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				});
 			});
 
-			describe(`retrieves a ingredient's food`, () => {
+			describe(`retrieves a shape's circle`, () => {
 				it.each(vendors)('%s', async (vendor) => {
 					// Setup
-					const ingredient = createIngredient(pkType);
-					const insertedIngredient = await CreateItem(vendor, {
-						collection: localCollectionIngredients,
+					const shape = createShape(pkType);
+					const insertedShape = await CreateItem(vendor, {
+						collection: localCollectionShapes,
 						item: {
-							...ingredient,
-							foods: {
-								create: [{ [`${localCollectionIngredients}_id`]: createFood(pkType) }],
+							...shape,
+							children: {
+								create: [{ collection: localCollectionCircles, item: createCircle(pkType) }],
 								update: [],
 								delete: [],
 							},
@@ -155,12 +156,12 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 					// Action
 					const response = await request(getUrl(vendor))
-						.get(`/items/${localCollectionIngredients}/${insertedIngredient.id}`)
+						.get(`/items/${localCollectionShapes}/${insertedShape.id}`)
 						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
 					// Assert
 					expect(response.statusCode).toEqual(200);
-					expect(response.body.data.foods).toHaveLength(1);
+					expect(response.body.data.children).toHaveLength(1);
 				});
 			});
 
@@ -169,7 +170,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					it.each(vendors)('%s', async (vendor) => {
 						// Action
 						const response = await request(getUrl(vendor))
-							.get(`/items/${localCollectionFoods}/invalid_id`)
+							.get(`/items/${localCollectionShapes}/invalid_id`)
 							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
 						// Assert
@@ -190,42 +191,42 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 			});
 		});
 		describe('PATCH /:collection/:id', () => {
-			describe(`updates one food's name with no relations`, () => {
+			describe(`updates one shape's name with no relations`, () => {
 				it.each(vendors)('%s', async (vendor) => {
 					// Setup
-					const insertedFood = await CreateItem(vendor, {
-						collection: localCollectionFoods,
-						item: createFood(pkType),
+					const insertedShape = await CreateItem(vendor, {
+						collection: localCollectionShapes,
+						item: createShape(pkType),
 					});
 					const body = { name: 'Tommy Cash' };
 
 					// Action
 					const response = await request(getUrl(vendor))
-						.patch(`/items/${localCollectionFoods}/${insertedFood.id}`)
+						.patch(`/items/${localCollectionShapes}/${insertedShape.id}`)
 						.send(body)
 						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
 					// Assert
 					expect(response.statusCode).toEqual(200);
 					expect(response.body.data).toMatchObject({
-						id: insertedFood.id,
+						id: insertedShape.id,
 						name: 'Tommy Cash',
 					});
 				});
 			});
 		});
 		describe('DELETE /:collection/:id', () => {
-			describe('deletes an food with no relations', () => {
+			describe('deletes an shape with no relations', () => {
 				it.each(vendors)('%s', async (vendor) => {
 					// Setup
-					const insertedFood = await CreateItem(vendor, {
-						collection: localCollectionFoods,
-						item: createFood(pkType),
+					const insertedShape = await CreateItem(vendor, {
+						collection: localCollectionShapes,
+						item: createShape(pkType),
 					});
 
 					// Action
 					const response = await request(getUrl(vendor))
-						.delete(`/items/${localCollectionFoods}/${insertedFood.id}`)
+						.delete(`/items/${localCollectionShapes}/${insertedShape.id}`)
 						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
 					// Assert
@@ -235,24 +236,24 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 			});
 		});
 		describe('GET /:collection', () => {
-			describe('retrieves all items from food table with no relations', () => {
+			describe('retrieves all items from shape table with no relations', () => {
 				it.each(vendors)('%s', async (vendor) => {
 					// Setup
-					const foods = [];
-					const foodsCount = 50;
-					for (let i = 0; i < foodsCount; i++) {
-						foods.push(createFood(pkType));
+					const shapes = [];
+					const shapesCount = 50;
+					for (let i = 0; i < shapesCount; i++) {
+						shapes.push(createShape(pkType));
 					}
-					await CreateItem(vendor, { collection: localCollectionFoods, item: foods });
+					await CreateItem(vendor, { collection: localCollectionShapes, item: shapes });
 
 					// Action
 					const response = await request(getUrl(vendor))
-						.get(`/items/${localCollectionFoods}`)
+						.get(`/items/${localCollectionShapes}`)
 						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
 					// Assert
 					expect(response.statusCode).toEqual(200);
-					expect(response.body.data.length).toBeGreaterThanOrEqual(foodsCount);
+					expect(response.body.data.length).toBeGreaterThanOrEqual(shapesCount);
 				});
 			});
 			describe('Error handling', () => {
@@ -273,70 +274,69 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				describe(`on top level`, () => {
 					it.each(vendors)('%s', async (vendor) => {
 						// Setup
-						const ingredient = createIngredient(pkType);
-						ingredient.name = 'ingredient-m2m-top-' + uuid();
-						const insertedIngredient = await CreateItem(vendor, {
-							collection: localCollectionIngredients,
-							item: ingredient,
+						const shape = createShape(pkType);
+						shape.name = 'shape-m2a-top-' + uuid();
+						const insertedShape = await CreateItem(vendor, {
+							collection: localCollectionShapes,
+							item: shape,
 						});
 
 						// Action
 						const response = await request(getUrl(vendor))
-							.get(`/items/${localCollectionIngredients}`)
+							.get(`/items/${localCollectionShapes}`)
 							.query({
-								filter: { id: { _eq: insertedIngredient.id } },
+								filter: { id: { _eq: insertedShape.id } },
 							})
 							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
 						const response2 = await request(getUrl(vendor))
-							.get(`/items/${localCollectionIngredients}`)
+							.get(`/items/${localCollectionShapes}`)
 							.query({
-								filter: { name: { _eq: insertedIngredient.name } },
+								filter: { name: { _eq: insertedShape.name } },
 							})
 							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
 						// Assert
 						expect(response.statusCode).toEqual(200);
 						expect(response.body.data.length).toBe(1);
-						expect(response.body.data[0]).toMatchObject({ id: insertedIngredient.id });
+						expect(response.body.data[0]).toMatchObject({ id: insertedShape.id });
 						expect(response2.statusCode).toEqual(200);
 						expect(response.body.data).toEqual(response2.body.data);
 					});
 				});
 
-				describe(`on m2m level`, () => {
+				describe(`on m2a level`, () => {
 					it.each(vendors)('%s', async (vendor) => {
 						// Setup
-						const food = createFood(pkType);
-						food.name = 'food-m2m-' + uuid();
-						const ingredient = createIngredient(pkType);
-						ingredient.name = 'ingredient-m2m-' + uuid();
-						const insertedIngredient = await CreateItem(vendor, {
-							collection: localCollectionIngredients,
+						const circle = createCircle(pkType);
+						circle.name = 'circle-m2a-' + uuid();
+						const square = createSquare(pkType);
+						square.name = 'square-m2a-' + uuid();
+						const shape = createShape(pkType);
+						shape.name = 'shape-m2a-' + uuid();
+						const insertedShape = await CreateItem(vendor, {
+							collection: localCollectionShapes,
 							item: {
-								...ingredient,
-								foods: {
-									create: [{ [`${localCollectionFoods}_id`]: food }],
+								...shape,
+								children: {
+									create: [
+										{ collection: localCollectionCircles, item: circle },
+										{ collection: localCollectionSquares, item: square },
+									],
 									update: [],
 									delete: [],
 								},
 							},
 						});
 
-						const retrievedIngredient = await ReadItem(vendor, {
-							collection: localCollectionIngredients,
-							fields: '*.*.*',
-							filter: { id: { _eq: insertedIngredient.id } },
-						});
-
 						// Action
 						const response = await request(getUrl(vendor))
-							.get(`/items/${localCollectionIngredients}`)
+							.get(`/items/${localCollectionShapes}`)
 							.query({
 								filter: JSON.stringify({
-									foods: {
-										[`${localCollectionFoods}_id`]: {
-											id: { _eq: retrievedIngredient[0].foods[0][`${localCollectionFoods}_id`]['id'] },
+									children: {
+										[`item:${localCollectionCircles}`]: {
+											name: { _eq: circle.name },
 										},
 									},
 								}),
@@ -344,10 +344,14 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
 						const response2 = await request(getUrl(vendor))
-							.get(`/items/${localCollectionIngredients}`)
+							.get(`/items/${localCollectionShapes}`)
 							.query({
 								filter: JSON.stringify({
-									foods: { [`${localCollectionFoods}_id`]: { name: { _eq: food.name } } },
+									children: {
+										[`item:${localCollectionSquares}`]: {
+											width: { _eq: square.width },
+										},
+									},
 								}),
 							})
 							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
@@ -355,7 +359,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						// Assert
 						expect(response.statusCode).toEqual(200);
 						expect(response.body.data.length).toBe(1);
-						expect(response.body.data[0]).toMatchObject({ id: insertedIngredient.id });
+						expect(response.body.data[0]).toMatchObject({ id: insertedShape.id });
 						expect(response2.statusCode).toEqual(200);
 						expect(response.body.data).toEqual(response2.body.data);
 					});
@@ -366,30 +370,34 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				describe(`on top level`, () => {
 					it.each(vendors)('%s', async (vendor) => {
 						// Setup
-						const ingredient = createIngredient(pkType);
-						ingredient.name = 'ingredient-m2m-top-fn-' + uuid();
-						const insertedIngredient = await CreateItem(vendor, {
-							collection: localCollectionIngredients,
+						const circle = createCircle(pkType);
+						circle.name = 'circle-m2a-top-fn-' + uuid();
+						const square = createSquare(pkType);
+						square.name = 'square-m2a-top-fn-' + uuid();
+						const shape = createShape(pkType);
+						shape.name = 'shape-m2a-top-fn-' + uuid();
+						const insertedShape = await CreateItem(vendor, {
+							collection: localCollectionShapes,
 							item: {
-								...ingredient,
-								foods: {
-									create: [{ [`${localCollectionFoods}_id`]: createFood(pkType) }],
+								...shape,
+								children: {
+									create: [{ collection: localCollectionCircles, item: circle }],
 									update: [],
 									delete: [],
 								},
 							},
 						});
 
-						const ingredient2 = createIngredient(pkType);
-						ingredient2.name = 'ingredient-m2m-top-fn-' + uuid();
-						const insertedIngredient2 = await CreateItem(vendor, {
-							collection: localCollectionIngredients,
+						const shape2 = createShape(pkType);
+						shape2.name = 'shape-m2a-top-fn-' + uuid();
+						const insertedShape2 = await CreateItem(vendor, {
+							collection: localCollectionShapes,
 							item: {
-								...ingredient2,
-								foods: {
+								...shape2,
+								children: {
 									create: [
-										{ [`${localCollectionFoods}_id`]: createFood(pkType) },
-										{ [`${localCollectionFoods}_id`]: createFood(pkType) },
+										{ collection: localCollectionCircles, item: circle },
+										{ collection: localCollectionSquares, item: square },
 									],
 									update: [],
 									delete: [],
@@ -399,19 +407,19 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 						// Action
 						const response = await request(getUrl(vendor))
-							.get(`/items/${localCollectionIngredients}`)
+							.get(`/items/${localCollectionShapes}`)
 							.query({
 								filter: JSON.stringify({
-									_and: [{ name: { _starts_with: 'ingredient-m2m-top-fn-' } }, { 'count(foods)': { _eq: 1 } }],
+									_and: [{ name: { _starts_with: 'shape-m2a-top-fn-' } }, { 'count(children)': { _eq: 1 } }],
 								}),
 							})
 							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
 						const response2 = await request(getUrl(vendor))
-							.get(`/items/${localCollectionIngredients}`)
+							.get(`/items/${localCollectionShapes}`)
 							.query({
 								filter: JSON.stringify({
-									_and: [{ name: { _starts_with: 'ingredient-m2m-top-fn-' } }, { 'count(foods)': { _eq: 2 } }],
+									_and: [{ name: { _starts_with: 'shape-m2a-top-fn-' } }, { 'count(children)': { _eq: 2 } }],
 								}),
 							})
 							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
@@ -419,58 +427,58 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						// Assert
 						expect(response.statusCode).toEqual(200);
 						expect(response.body.data.length).toBe(1);
-						expect(response.body.data[0]).toMatchObject({ id: insertedIngredient.id });
-						expect(response.body.data[0].foods.length).toBe(1);
+						expect(response.body.data[0]).toMatchObject({ id: insertedShape.id });
+						expect(response.body.data[0].children.length).toBe(1);
 						expect(response2.statusCode).toEqual(200);
 						expect(response2.body.data.length).toBe(1);
-						expect(response2.body.data[0]).toMatchObject({ id: insertedIngredient2.id });
-						expect(response2.body.data[0].foods.length).toBe(2);
+						expect(response2.body.data[0]).toMatchObject({ id: insertedShape2.id });
+						expect(response2.body.data[0].children.length).toBe(2);
 					});
 				});
 
-				describe(`on m2m level`, () => {
+				describe(`on m2a level`, () => {
 					it.each(vendors)('%s', async (vendor) => {
 						// Setup
-						const years = [2000, 2010];
-						const retrievedIngredients = [];
+						const years = [2002, 2007];
+						const retrievedShapes = [];
 
 						for (const year of years) {
-							const food = createFood(pkType);
-							food.name = 'food-m2m-fn-' + uuid();
-							food.test_datetime = new Date(new Date().setFullYear(year)).toISOString().slice(0, 19);
-							const ingredient = createIngredient(pkType);
-							ingredient.name = 'ingredient-m2m-fn-' + uuid();
-							const insertedIngredient = await CreateItem(vendor, {
-								collection: localCollectionIngredients,
+							const circle = createCircle(pkType);
+							circle.name = 'circle-m2a-fn-' + uuid();
+							circle.test_datetime = new Date(new Date().setFullYear(year)).toISOString().slice(0, 19);
+							const shape = createShape(pkType);
+							shape.name = 'shape-m2a-fn-' + uuid();
+							const insertedShape = await CreateItem(vendor, {
+								collection: localCollectionShapes,
 								item: {
-									...ingredient,
-									foods: {
-										create: [{ [`${localCollectionFoods}_id`]: food }],
+									...shape,
+									children: {
+										create: [{ collection: localCollectionCircles, item: circle }],
 										update: [],
 										delete: [],
 									},
 								},
 							});
 
-							const retrievedIngredient = await ReadItem(vendor, {
-								collection: localCollectionIngredients,
+							const retrievedShape = await ReadItem(vendor, {
+								collection: localCollectionShapes,
 								fields: '*.*.*',
-								filter: { id: { _eq: insertedIngredient.id } },
+								filter: { id: { _eq: insertedShape.id } },
 							});
 
-							retrievedIngredients.push(retrievedIngredient);
+							retrievedShapes.push(retrievedShape);
 						}
 
 						// Action
 						const response = await request(getUrl(vendor))
-							.get(`/items/${localCollectionIngredients}`)
+							.get(`/items/${localCollectionShapes}`)
 							.query({
 								filter: JSON.stringify({
 									_and: [
-										{ name: { _starts_with: 'ingredient-m2m-fn-' } },
+										{ name: { _starts_with: 'shape-m2a-fn-' } },
 										{
-											foods: {
-												[`${localCollectionFoods}_id`]: {
+											children: {
+												[`item:${localCollectionCircles}`]: {
 													'year(test_datetime)': {
 														_eq: years[0],
 													},
@@ -483,14 +491,14 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
 						const response2 = await request(getUrl(vendor))
-							.get(`/items/${localCollectionIngredients}`)
+							.get(`/items/${localCollectionShapes}`)
 							.query({
 								filter: JSON.stringify({
 									_and: [
-										{ name: { _starts_with: 'ingredient-m2m-fn-' } },
+										{ name: { _starts_with: 'shape-m2a-fn-' } },
 										{
-											foods: {
-												[`${localCollectionFoods}_id`]: {
+											children: {
+												[`item:${localCollectionCircles}`]: {
 													'year(test_datetime)': {
 														_eq: years[1],
 													},
@@ -505,10 +513,10 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						// Assert
 						expect(response.statusCode).toEqual(200);
 						expect(response.body.data.length).toBe(1);
-						expect(response.body.data[0]).toMatchObject({ id: retrievedIngredients[0][0].id });
+						expect(response.body.data[0]).toMatchObject({ id: retrievedShapes[0][0].id });
 						expect(response2.statusCode).toEqual(200);
 						expect(response2.body.data.length).toBe(1);
-						expect(response2.body.data[0]).toMatchObject({ id: retrievedIngredients[1][0].id });
+						expect(response2.body.data[0]).toMatchObject({ id: retrievedShapes[1][0].id });
 					});
 				});
 			});
@@ -518,33 +526,33 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					it.each(vendors)('%s', async (vendor) => {
 						// Setup
 						const sortValues = [4, 2, 3, 5, 1];
-						const ingredients = [];
+						const shapes = [];
 
 						for (const val of sortValues) {
-							const ingredient = createIngredient(pkType);
-							ingredient.name = 'ingredient-m2m-top-sort-' + val;
-							ingredients.push(ingredient);
+							const shape = createShape(pkType);
+							shape.name = 'shape-m2a-top-sort-' + val;
+							shapes.push(shape);
 						}
 
 						await CreateItem(vendor, {
-							collection: localCollectionIngredients,
-							item: ingredients,
+							collection: localCollectionShapes,
+							item: shapes,
 						});
 
 						// Action
 						const response = await request(getUrl(vendor))
-							.get(`/items/${localCollectionIngredients}`)
+							.get(`/items/${localCollectionShapes}`)
 							.query({
 								sort: 'name',
-								filter: { name: { _starts_with: 'ingredient-m2m-top-sort-' } },
+								filter: { name: { _starts_with: 'shape-m2a-top-sort-' } },
 							})
 							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
 						const response2 = await request(getUrl(vendor))
-							.get(`/items/${localCollectionIngredients}`)
+							.get(`/items/${localCollectionShapes}`)
 							.query({
 								sort: '-name',
-								filter: { name: { _starts_with: 'ingredient-m2m-top-sort-' } },
+								filter: { name: { _starts_with: 'shape-m2a-top-sort-' } },
 							})
 							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
@@ -556,22 +564,22 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					});
 				});
 
-				describe(`on m2m level`, () => {
+				describe(`on m2a level`, () => {
 					it.each(vendors)('%s', async (vendor) => {
 						// Setup
 						const sortValues = [4, 2, 3, 5, 1];
 
 						for (const val of sortValues) {
-							const food = createFood(pkType);
-							food.name = 'food-m2m-sort-' + val;
-							const ingredient = createIngredient(pkType);
-							ingredient.name = 'ingredient-m2m-sort-' + uuid();
+							const circle = createCircle(pkType);
+							circle.name = 'circle-m2a-sort-' + val;
+							const shape = createShape(pkType);
+							shape.name = 'shape-m2a-sort-' + uuid();
 							await CreateItem(vendor, {
-								collection: localCollectionIngredients,
+								collection: localCollectionShapes,
 								item: {
-									...ingredient,
-									foods: {
-										create: [{ [`${localCollectionFoods}_id`]: food }],
+									...shape,
+									children: {
+										create: [{ collection: localCollectionCircles, item: circle }],
 										update: [],
 										delete: [],
 									},
@@ -581,18 +589,20 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 						// Action
 						const response = await request(getUrl(vendor))
-							.get(`/items/${localCollectionIngredients}`)
+							.get(`/items/${localCollectionShapes}`)
 							.query({
-								sort: `foods.${localCollectionFoods}_id.name`,
-								filter: { name: { _starts_with: 'ingredient-m2m-sort-' } },
+								sort: `children.item:${localCollectionCircles}.name`,
+								filter: { name: { _starts_with: 'shape-m2a-sort-' } },
+								fields: '*.*.*',
 							})
 							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
 						const response2 = await request(getUrl(vendor))
-							.get(`/items/${localCollectionIngredients}`)
+							.get(`/items/${localCollectionShapes}`)
 							.query({
-								sort: `-foods.${localCollectionFoods}_id.name`,
-								filter: { name: { _starts_with: 'ingredient-m2m-sort-' } },
+								sort: `-children.item:${localCollectionCircles}.name`,
+								filter: { name: { _starts_with: 'shape-m2a-sort-' } },
+								fields: '*.*.*',
 							})
 							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
@@ -600,6 +610,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						expect(response.statusCode).toEqual(200);
 						expect(response2.statusCode).toEqual(200);
 
+						// Oddity in MySQL5, looks to be indexing delays resulting in missing values
 						if (vendor === 'mysql5') {
 							let lastIndex = -1;
 							for (const item of response2.body.data.reverse()) {
@@ -626,36 +637,34 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					it.each(vendors)('%s', async (vendor) => {
 						// Setup
 						const sortValues = [4, 2, 3, 5, 1];
-						const ingredients = [];
+						const shapes = [];
 
 						for (const val of sortValues) {
-							const ingredient = createIngredient(pkType);
-							ingredient.name = 'ingredient-m2m-top-sort-fn-' + uuid();
-							ingredient.test_datetime = new Date(new Date().setFullYear(parseInt(`202${val}`)))
-								.toISOString()
-								.slice(0, 19);
-							ingredients.push(ingredient);
+							const shape = createShape(pkType);
+							shape.name = 'shape-m2a-top-sort-fn-' + uuid();
+							shape.test_datetime = new Date(new Date().setFullYear(parseInt(`202${val}`))).toISOString().slice(0, 19);
+							shapes.push(shape);
 						}
 
 						await CreateItem(vendor, {
-							collection: localCollectionIngredients,
-							item: ingredients,
+							collection: localCollectionShapes,
+							item: shapes,
 						});
 
 						// Action
 						const response = await request(getUrl(vendor))
-							.get(`/items/${localCollectionIngredients}`)
+							.get(`/items/${localCollectionShapes}`)
 							.query({
 								sort: 'year(test_datetime)',
-								filter: { name: { _starts_with: 'ingredient-m2m-top-sort-fn-' } },
+								filter: { name: { _starts_with: 'shape-m2a-top-sort-fn-' } },
 							})
 							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
 						const response2 = await request(getUrl(vendor))
-							.get(`/items/${localCollectionIngredients}`)
+							.get(`/items/${localCollectionShapes}`)
 							.query({
 								sort: '-year(test_datetime)',
-								filter: { name: { _starts_with: 'ingredient-m2m-top-sort-fn-' } },
+								filter: { name: { _starts_with: 'shape-m2a-top-sort-fn-' } },
 							})
 							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
@@ -667,23 +676,23 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					});
 				});
 
-				describe(`on m2m level`, () => {
+				describe(`on m2a level`, () => {
 					it.each(vendors)('%s', async (vendor) => {
 						// Setup
 						const sortValues = [4, 2, 3, 5, 1];
 
 						for (const val of sortValues) {
-							const food = createFood(pkType);
-							food.name = 'food-m2m-sort-fn-' + uuid();
-							food.test_datetime = new Date(new Date().setFullYear(parseInt(`202${val}`))).toISOString().slice(0, 19);
-							const ingredient = createIngredient(pkType);
-							ingredient.name = 'ingredient-m2m-sort-fn-' + uuid();
+							const circle = createCircle(pkType);
+							circle.name = 'circle-m2a-sort-fn-' + uuid();
+							circle.test_datetime = new Date(new Date().setFullYear(parseInt(`202${val}`))).toISOString().slice(0, 19);
+							const shape = createCircle(pkType);
+							shape.name = 'shape-m2a-sort-fn-' + uuid();
 							await CreateItem(vendor, {
-								collection: localCollectionIngredients,
+								collection: localCollectionShapes,
 								item: {
-									...ingredient,
-									foods: {
-										create: [{ [`${localCollectionFoods}_id`]: food }],
+									...shape,
+									children: {
+										create: [{ collection: localCollectionCircles, item: circle }],
 										update: [],
 										delete: [],
 									},
@@ -693,18 +702,18 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 						// Action
 						const response = await request(getUrl(vendor))
-							.get(`/items/${localCollectionIngredients}`)
+							.get(`/items/${localCollectionShapes}`)
 							.query({
-								sort: `foods.${localCollectionFoods}_id.year(test_datetime)`,
-								filter: { name: { _starts_with: 'ingredient-m2m-sort-fn-' } },
+								sort: `children.item:${localCollectionCircles}.year(test_datetime)`,
+								filter: { name: { _starts_with: 'shape-m2a-sort-fn-' } },
 							})
 							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
 						const response2 = await request(getUrl(vendor))
-							.get(`/items/${localCollectionIngredients}`)
+							.get(`/items/${localCollectionShapes}`)
 							.query({
-								sort: `-foods.${localCollectionFoods}_id.year(test_datetime)`,
-								filter: { name: { _starts_with: 'ingredient-m2m-sort-fn-' } },
+								sort: `-children.item:${localCollectionCircles}.year(test_datetime)`,
+								filter: { name: { _starts_with: 'shape-m2a-sort-fn-' } },
 							})
 							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
@@ -737,75 +746,75 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 			CheckQueryFilters(
 				{
 					method: 'get',
-					path: `/items/${localCollectionFoods}`,
+					path: `/items/${localCollectionShapes}`,
 					token: common.USER.ADMIN.TOKEN,
 				},
-				localCollectionFoods,
-				cachedSchema[pkType][localCollectionFoods],
+				localCollectionShapes,
+				cachedSchema[pkType][localCollectionShapes],
 				vendorSchemaValues
 			);
 
 			CheckQueryFilters(
 				{
 					method: 'get',
-					path: `/items/${localCollectionIngredients}`,
+					path: `/items/${localCollectionCircles}`,
 					token: common.USER.ADMIN.TOKEN,
 				},
-				localCollectionIngredients,
-				cachedSchema[pkType][localCollectionIngredients],
+				localCollectionCircles,
+				cachedSchema[pkType][localCollectionCircles],
 				vendorSchemaValues
 			);
 
 			CheckQueryFilters(
 				{
 					method: 'get',
-					path: `/items/${localCollectionSuppliers}`,
+					path: `/items/${localCollectionSquares}`,
 					token: common.USER.ADMIN.TOKEN,
 				},
-				localCollectionSuppliers,
-				cachedSchema[pkType][localCollectionSuppliers],
+				localCollectionSquares,
+				cachedSchema[pkType][localCollectionSquares],
 				vendorSchemaValues
 			);
 		});
 
 		describe('POST /:collection', () => {
 			describe('createOne', () => {
-				describe('creates one food', () => {
+				describe('creates one shape', () => {
 					it.each(vendors)('%s', async (vendor) => {
 						// Setup
-						const food = createFood(pkType);
+						const shape = createShape(pkType);
 
 						// Action
 						const response = await request(getUrl(vendor))
-							.post(`/items/${localCollectionFoods}`)
-							.send(food)
+							.post(`/items/${localCollectionShapes}`)
+							.send(shape)
 							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
 						// Assert
 						expect(response.statusCode).toEqual(200);
-						expect(response.body.data).toMatchObject({ name: food.name });
+						expect(response.body.data).toMatchObject({ name: shape.name });
 					});
 				});
 			});
 			describe('createMany', () => {
-				describe('creates 5 foods', () => {
+				describe('creates 5 shapes', () => {
 					it.each(vendors)('%s', async (vendor) => {
 						// Setup
-						const foods = [];
-						const foodsCount = 5;
-						for (let i = 0; i < foodsCount; i++) {
-							foods.push(createFood(pkType));
+						const shapes = [];
+						const shapesCount = 5;
+						for (let i = 0; i < shapesCount; i++) {
+							shapes.push(createShape(pkType));
 						}
 
 						// Action
 						const response = await request(getUrl(vendor))
-							.post(`/items/${localCollectionFoods}`)
-							.send(foods)
+							.post(`/items/${localCollectionShapes}`)
+							.send(shapes)
 							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
 						// Assert
 						expect(response.statusCode).toEqual(200);
-						expect(response.body.data.length).toBe(foodsCount);
+						expect(response.body.data.length).toBe(shapesCount);
 					});
 				});
 			});
@@ -813,12 +822,12 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				describe('returns an error when an invalid table is used', () => {
 					it.each(vendors)('%s', async (vendor) => {
 						// Setup
-						const food = createFood(pkType);
+						const shape = createShape(pkType);
 
 						// Action
 						const response = await request(getUrl(vendor))
 							.post(`/items/invalid_table`)
-							.send(food)
+							.send(shape)
 							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
 						// Assert
@@ -829,17 +838,17 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 		});
 
 		describe('PATCH /:collection', () => {
-			describe('updates many foods to a different name', () => {
+			describe('updates many shapes to a different name', () => {
 				it.each(vendors)('%s', async (vendor) => {
 					// Setup
-					const foods = [];
-					const foodsCount = 5;
-					for (let i = 0; i < foodsCount; i++) {
-						foods.push(createFood(pkType));
+					const shapes = [];
+					const shapesCount = 5;
+					for (let i = 0; i < shapesCount; i++) {
+						shapes.push(createShape(pkType));
 					}
 
-					const insertedFoods = await CreateItem(vendor, { collection: localCollectionFoods, item: foods });
-					const keys = Object.values(insertedFoods ?? []).map((item: any) => item.id);
+					const insertedShapes = await CreateItem(vendor, { collection: localCollectionShapes, item: shapes });
+					const keys = Object.values(insertedShapes ?? []).map((item: any) => item.id);
 
 					const body = {
 						keys: keys,
@@ -848,7 +857,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 					// Action
 					const response = await request(getUrl(vendor))
-						.patch(`/items/${localCollectionFoods}?fields=name`)
+						.patch(`/items/${localCollectionShapes}?fields=name`)
 						.send(body)
 						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
@@ -865,21 +874,21 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 		});
 
 		describe('DELETE /:collection', () => {
-			describe('deletes many foods with no relations', () => {
+			describe('deletes many shapes with no relations', () => {
 				it.each(vendors)('%s', async (vendor) => {
 					// Setup
-					const foods = [];
-					const foodsCount = 10;
-					for (let i = 0; i < foodsCount; i++) {
-						foods.push(createFood(pkType));
+					const shapes = [];
+					const shapesCount = 10;
+					for (let i = 0; i < shapesCount; i++) {
+						shapes.push(createShape(pkType));
 					}
 
-					const insertedFoods = await CreateItem(vendor, { collection: localCollectionFoods, item: foods });
-					const keys = Object.values(insertedFoods ?? []).map((item: any) => item.id);
+					const insertedShapes = await CreateItem(vendor, { collection: localCollectionShapes, item: shapes });
+					const keys = Object.values(insertedShapes ?? []).map((item: any) => item.id);
 
 					// Action
 					const response = await request(getUrl(vendor))
-						.delete(`/items/${localCollectionFoods}`)
+						.delete(`/items/${localCollectionShapes}`)
 						.send(keys)
 						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
