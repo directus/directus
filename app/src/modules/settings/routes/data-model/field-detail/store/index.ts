@@ -1,6 +1,4 @@
 import { defineStore } from 'pinia';
-import { getInterfaces } from '@/interfaces';
-import { getDisplays } from '@/displays';
 import { has, isEmpty, orderBy, cloneDeep } from 'lodash';
 import {
 	InterfaceConfig,
@@ -22,6 +20,7 @@ import { useRelationsStore } from '@/stores/relations';
 import * as alterations from './alterations';
 import { getLocalTypeForField } from '@/utils/get-local-type';
 import api from '@/api';
+import { useExtensions } from '@/extensions';
 
 export function syncFieldDetailStoreProperty(path: string, defaultValue?: any) {
 	const fieldDetailStore = useFieldDetailStore();
@@ -259,7 +258,7 @@ export const useFieldDetailStore = defineStore({
 			return missing.length === 0;
 		},
 		interfacesForType(): InterfaceConfig[] {
-			const { interfaces } = getInterfaces();
+			const { interfaces } = useExtensions();
 
 			return orderBy(
 				interfaces.value.filter((inter: InterfaceConfig) => {
@@ -275,7 +274,7 @@ export const useFieldDetailStore = defineStore({
 			);
 		},
 		displaysForType(): DisplayConfig[] {
-			const { displays } = getDisplays();
+			const { displays } = useExtensions();
 
 			return orderBy(
 				displays.value.filter((inter: DisplayConfig) => {
