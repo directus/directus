@@ -54,6 +54,7 @@
 		"@rollup/plugin-node-resolve": "15.0.0",
 		"@rollup/plugin-replace": "5.0.0",
 		"@rollup/plugin-terser": "0.1.0",
+		"@rollup/plugin-virtual": "2.1.0",
 		"@vue/compiler-sfc": "3.2.41",
 		"chalk": "4.1.1",
 		"commander": "9.4.1",
