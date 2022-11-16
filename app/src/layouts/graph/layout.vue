@@ -275,7 +275,7 @@ onMounted(() => {
 			return;
 		}
 
-		graph.removeNodeAttribute(draggedNode, 'highlighted');
+		if (draggedNode !== null) graph.removeNodeAttribute(draggedNode, 'highlighted');
 		isDragging = false;
 		draggedNode = null;
 	});
