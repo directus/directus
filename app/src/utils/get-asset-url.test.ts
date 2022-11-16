@@ -9,7 +9,7 @@ vi.stubGlobal('crypto', cryptoStub);
 vi.mock('@/utils/get-root-path');
 
 Object.defineProperty(window, 'URL', {
-	value: URL
+	value: URL,
 });
 
 test('Get asset url', () => {
