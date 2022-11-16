@@ -127,7 +127,7 @@ export function useTranslationStrings(): UsableTranslationStrings {
 			if (!cur.key || !cur.translations) return acc;
 			const translationForCurrentLang = cur.translations.find((t) => t.language === lang);
 			if (!translationForCurrentLang || !translationForCurrentLang.translation) return acc;
-			return { ...acc, [cur.key]: getLiteralInterpolatedTranslation(translationForCurrentLang.translation) };
+			return { ...acc, [cur.key]: getLiteralInterpolatedTranslation(translationForCurrentLang.translation, true) };
 		}, {});
 		i18n.global.mergeLocaleMessage(lang, localeMessages);
 	}

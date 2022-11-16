@@ -1,37 +1,44 @@
 import { FnHelper, FnHelperOptions } from '../types';
 import { Knex } from 'knex';
 
+const parseLocaltime = (columnType?: string) => {
+	if (columnType === 'timestamp') {
+		return `CONVERT_TZ(??.??, @@GLOBAL.time_zone, 'UTC')`;
+	}
+	return '??.??';
+};
+
 export class FnHelperMySQL extends FnHelper {
-	year(table: string, column: string): Knex.Raw {
-		return this.knex.raw('YEAR(??.??)', [table, column]);
+	year(table: string, column: string, options: FnHelperOptions): Knex.Raw {
+		return this.knex.raw(`YEAR(${parseLocaltime(options?.type)})`, [table, column]);
 	}
 
-	month(table: string, column: string): Knex.Raw {
-		return this.knex.raw('MONTH(??.??)', [table, column]);
+	month(table: string, column: string, options: FnHelperOptions): Knex.Raw {
+		return this.knex.raw(`MONTH(${parseLocaltime(options?.type)})`, [table, column]);
 	}
 
-	week(table: string, column: string): Knex.Raw {
-		return this.knex.raw('WEEK(??.??)', [table, column]);
+	week(table: string, column: string, options: FnHelperOptions): Knex.Raw {
+		return this.knex.raw(`WEEK(${parseLocaltime(options?.type)})`, [table, column]);
 	}
 
-	day(table: string, column: string): Knex.Raw {
-		return this.knex.raw('DAYOFMONTH(??.??)', [table, column]);
+	day(table: string, column: string, options: FnHelperOptions): Knex.Raw {
+		return this.knex.raw(`DAYOFMONTH(${parseLocaltime(options?.type)})`, [table, column]);
 	}
 
-	weekday(table: string, column: string): Knex.Raw {
-		return this.knex.raw('DAYOFWEEK(??.??)', [table, column]);
+	weekday(table: string, column: string, options: FnHelperOptions): Knex.Raw {
+		return this.knex.raw(`DAYOFWEEK(${parseLocaltime(options?.type)})`, [table, column]);
 	}
 
-	hour(table: string, column: string): Knex.Raw {
-		return this.knex.raw('HOUR(??.??)', [table, column]);
+	hour(table: string, column: string, options: FnHelperOptions): Knex.Raw {
+		return this.knex.raw(`HOUR(${parseLocaltime(options?.type)})`, [table, column]);
 	}
 
-	minute(table: string, column: string): Knex.Raw {
-		return this.knex.raw('MINUTE(??.??)', [table, column]);
+	minute(table: string, column: string, options: FnHelperOptions): Knex.Raw {
+		return this.knex.raw(`MINUTE(${parseLocaltime(options?.type)})`, [table, column]);
 	}
 
-	second(table: string, column: string): Knex.Raw {
-		return this.knex.raw('SECOND(??.??)', [table, column]);
+	second(table: string, column: string, options: FnHelperOptions): Knex.Raw {
+		return this.knex.raw(`SECOND(${parseLocaltime(options?.type)})`, [table, column]);
 	}
 
 	count(table: string, column: string, options?: FnHelperOptions): Knex.Raw {

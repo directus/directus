@@ -1,5 +1,3 @@
-// @ts-nocheck
-
 import jwt from 'jsonwebtoken';
 import getDatabase from '../database';
 import emitter from '../emitter';
@@ -7,28 +5,32 @@ import env from '../env';
 import { InvalidCredentialsException } from '../exceptions';
 import { handler } from './authenticate';
 import '../../src/types/express.d.ts';
+import { vi, afterEach, test, expect } from 'vitest';
+import { Request, Response } from 'express';
+import { Knex } from 'knex';
 
-jest.mock('../../src/database');
-jest.mock('../../src/env', () => ({
-	SECRET: 'test',
+vi.mock('../../src/database');
+vi.mock('../../src/env', () => ({
+	default: {
+		SECRET: 'test',
+	},
 }));
 
 afterEach(() => {
-	jest.resetAllMocks();
+	vi.resetAllMocks();
 });
 
 test('Short-circuits when authenticate filter is used', async () => {
 	const req = {
 		ip: '127.0.0.1',
-		get: jest.fn(),
-	};
-
-	const res = {};
-	const next = jest.fn();
+		get: vi.fn(),
+	} as unknown as Request;
+	const res = {} as Response;
+	const next = vi.fn();
 
 	const customAccountability = { admin: true };
 
-	jest.spyOn(emitter, 'emitFilter').mockResolvedValue(customAccountability);
+	vi.spyOn(emitter, 'emitFilter').mockResolvedValue(customAccountability);
 
 	await handler(req, res, next);
 
@@ -39,7 +41,7 @@ test('Short-circuits when authenticate filter is used', async () => {
 test('Uses default public accountability when no token is given', async () => {
 	const req = {
 		ip: '127.0.0.1',
-		get: jest.fn((string) => {
+		get: vi.fn((string) => {
 			switch (string) {
 				case 'user-agent':
 					return 'fake-user-agent';
@@ -49,12 +51,11 @@ test('Uses default public accountability when no token is given', async () => {
 					return null;
 			}
 		}),
-	};
+	} as unknown as Request;
+	const res = {} as Response;
+	const next = vi.fn();
 
-	const res = {};
-	const next = jest.fn();
-
-	jest.spyOn(emitter, 'emitFilter').mockImplementation((_, payload) => payload);
+	vi.spyOn(emitter, 'emitFilter').mockImplementation(async (_, payload) => payload);
 
 	await handler(req, res, next);
 
@@ -97,7 +98,7 @@ test('Sets accountability to payload contents if valid token is passed', async (
 
 	const req = {
 		ip: '127.0.0.1',
-		get: jest.fn((string) => {
+		get: vi.fn((string) => {
 			switch (string) {
 				case 'user-agent':
 					return 'fake-user-agent';
@@ -108,10 +109,9 @@ test('Sets accountability to payload contents if valid token is passed', async (
 			}
 		}),
 		token,
-	};
-
-	const res = {};
-	const next = jest.fn();
+	} as unknown as Request;
+	const res = {} as Response;
+	const next = vi.fn();
 
 	await handler(req, res, next);
 
@@ -163,17 +163,17 @@ test('Sets accountability to payload contents if valid token is passed', async (
 });
 
 test('Throws InvalidCredentialsException when static token is used, but user does not exist', async () => {
-	jest.mocked(getDatabase).mockReturnValue({
-		select: jest.fn().mockReturnThis(),
-		from: jest.fn().mockReturnThis(),
-		leftJoin: jest.fn().mockReturnThis(),
-		where: jest.fn().mockReturnThis(),
-		first: jest.fn().mockResolvedValue(undefined),
-	});
+	vi.mocked(getDatabase).mockReturnValue({
+		select: vi.fn().mockReturnThis(),
+		from: vi.fn().mockReturnThis(),
+		leftJoin: vi.fn().mockReturnThis(),
+		where: vi.fn().mockReturnThis(),
+		first: vi.fn().mockResolvedValue(undefined),
+	} as unknown as Knex);
 
 	const req = {
 		ip: '127.0.0.1',
-		get: jest.fn((string) => {
+		get: vi.fn((string) => {
 			switch (string) {
 				case 'user-agent':
 					return 'fake-user-agent';
@@ -184,10 +184,9 @@ test('Throws InvalidCredentialsException when static token is used, but user doe
 			}
 		}),
 		token: 'static-token',
-	};
-
-	const res = {};
-	const next = jest.fn();
+	} as unknown as Request;
+	const res = {} as Response;
+	const next = vi.fn();
 
 	expect(handler(req, res, next)).rejects.toEqual(new InvalidCredentialsException());
 	expect(next).toHaveBeenCalledTimes(0);
@@ -196,7 +195,7 @@ test('Throws InvalidCredentialsException when static token is used, but user doe
 test('Sets accountability to user information when static token is used', async () => {
 	const req = {
 		ip: '127.0.0.1',
-		get: jest.fn((string) => {
+		get: vi.fn((string) => {
 			switch (string) {
 				case 'user-agent':
 					return 'fake-user-agent';
@@ -207,10 +206,9 @@ test('Sets accountability to user information when static token is used', async 
 			}
 		}),
 		token: 'static-token',
-	};
-
-	const res = {};
-	const next = jest.fn();
+	} as unknown as Request;
+	const res = {} as Response;
+	const next = vi.fn();
 
 	const testUser = { id: 'test-id', role: 'test-role', admin_access: true, app_access: false };
 
@@ -224,13 +222,13 @@ test('Sets accountability to user information when static token is used', async 
 		origin: 'fake-origin',
 	};
 
-	jest.mocked(getDatabase).mockReturnValue({
-		select: jest.fn().mockReturnThis(),
-		from: jest.fn().mockReturnThis(),
-		leftJoin: jest.fn().mockReturnThis(),
-		where: jest.fn().mockReturnThis(),
-		first: jest.fn().mockResolvedValue(testUser),
-	});
+	vi.mocked(getDatabase).mockReturnValue({
+		select: vi.fn().mockReturnThis(),
+		from: vi.fn().mockReturnThis(),
+		leftJoin: vi.fn().mockReturnThis(),
+		where: vi.fn().mockReturnThis(),
+		first: vi.fn().mockResolvedValue(testUser),
+	} as unknown as Knex);
 
 	await handler(req, res, next);
 
@@ -239,16 +237,16 @@ test('Sets accountability to user information when static token is used', async 
 
 	// Test for 0 / 1 instead of false / true
 	next.mockClear();
-	testUser.admin_access = 1;
-	testUser.app_access = 0;
+	testUser.admin_access = 1 as never;
+	testUser.app_access = 0 as never;
 	await handler(req, res, next);
 	expect(req.accountability).toEqual(expectedAccountability);
 	expect(next).toHaveBeenCalledTimes(1);
 
 	// Test for "1" / "0" instead of true / false
 	next.mockClear();
-	testUser.admin_access = '0';
-	testUser.app_access = '1';
+	testUser.admin_access = '0' as never;
+	testUser.app_access = '1' as never;
 	expectedAccountability.admin = false;
 	expectedAccountability.app = true;
 	await handler(req, res, next);

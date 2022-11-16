@@ -136,6 +136,8 @@ const allowedEnvironmentVars = [
 	'AUTH_.+_GROUP_DN',
 	'AUTH_.+_GROUP_ATTRIBUTE',
 	'AUTH_.+_GROUP_SCOPE',
+	'AUTH_.+_IDP.+',
+	'AUTH_.+_SP.+',
 	// extensions
 	'EXTENSIONS_PATH',
 	'EXTENSIONS_AUTO_RELOAD',
