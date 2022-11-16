@@ -194,7 +194,7 @@
 import { AppTile } from '@/components/v-workspace-tile.vue';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useShortcut } from '@/composables/use-shortcut';
-import { getPanels } from '@/panels';
+import { useExtensions } from '@/extensions';
 import { router } from '@/router';
 import { useAppStore } from '@/stores/app';
 import { useInsightsStore } from '@/stores/insights';
@@ -217,7 +217,7 @@ const props = withDefaults(defineProps<Props>(), { panelKey: null });
 
 const { t } = useI18n();
 
-const { panels: panelsInfo } = getPanels();
+const { panels: panelsInfo } = useExtensions();
 
 const insightsStore = useInsightsStore();
 const appStore = useAppStore();
