@@ -1403,6 +1403,7 @@ report_error: Relatar erro
 start: Início
 table: Tabela
 list: Lista
+search_filter: Busca & Filtro
 show_link_to_item: Mostrar um link para o item
 remove_item: Remover Item
 delete_item: Excluir item
@@ -1430,6 +1431,8 @@ interfaces:
     all_closed: Todos Fechados
     first_opened: Primeiro Aberto
     all_opened: Todos abertos
+    accordion_mode: Modo do Acordeão
+    max_one_section_open: Máximo 1 Seção Aberta
   presentation-links:
     presentation-links: Links do botão
     links: Links
@@ -1456,6 +1459,7 @@ interfaces:
     code: Código
     description: Escrever ou compartilhar trechos de código
     line_number: Número da linha
+    line_wrapping: Quebra de linhas
     placeholder: Inserir código aqui...
   system-collection:
     collection: Coleção
@@ -1479,6 +1483,7 @@ interfaces:
     include_seconds: Incluir segundos
     set_to_now: Definir como Agora
     use_24: Usar formato de 24 horas
+    placeholder: Escolha uma data e hora...
   system-fields:
     select_a_collection: Selecione uma coleção
     no_fields: Sem campos.
