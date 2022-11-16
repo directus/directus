@@ -254,7 +254,10 @@ onMounted(() => {
 	renderer.getMouseCaptor().on('mousemovebody', (event) => {
 		if (!renderer || !draggedNode) return;
 
-		isDragging = true;
+		if (!isDragging) {
+			isDragging = true;
+			graph.setNodeAttribute(draggedNode, 'highlighted', true);
+		}
 
 		const { x, y } = renderer.viewportToGraph(event);
 
@@ -271,6 +274,8 @@ onMounted(() => {
 			router.push({ path: `/content/${draggedNode.split(':')[0]}/${draggedNode.split(':')[1]}` });
 			return;
 		}
+
+		graph.removeNodeAttribute(draggedNode, 'highlighted');
 		isDragging = false;
 		draggedNode = null;
 	});
