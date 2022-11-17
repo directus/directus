@@ -23,13 +23,13 @@ export type Method =
 	| 'UNLINK';
 
 export interface RequestProxyConfig {
+	protocol: 'http' | 'https';
 	host: string;
 	port: number;
 	auth?: {
 		username: string;
 		password: string;
 	};
-	protocol?: string;
 }
 
 export interface RequestOptions {
