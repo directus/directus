@@ -29,7 +29,8 @@ export class SchemaHelperMySQL extends SchemaHelper {
 		orderByString: string,
 		orderByFields: Knex.Raw[]
 	): Knex.QueryBuilder {
-		if (getDatabaseVersion()?.startsWith('5.7')) {
+		const [major, minor] = getDatabaseVersion().parsed;
+		if (major == 5 && minor === 7) {
 			dbQuery.orderByRaw(`?? asc, ${orderByString.slice(9)}`, [`${table}.${primaryKey}`, ...orderByFields]);
 
 			dbQuery = knex

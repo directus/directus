@@ -258,20 +258,12 @@ function getDBQuery(
 		| FunctionFieldNode
 		| M2ONode
 	)[];
-	const dbQuery = knex.select(regularNodes.map(preProcess));
 
-	if (jsonNodes.length > 0) {
-		jsonHelper.preProcess(dbQuery, table);
-	} else {
-		dbQuery.from(table);
-	}
-
-	const queryCopy = clone(query);
 	queryCopy.limit = typeof queryCopy.limit === 'number' ? queryCopy.limit : 100;
 
 	// Queries with aggregates and groupBy will not have duplicate result
 	if (queryCopy.aggregate || queryCopy.group) {
-		const flatQuery = knex.select(fieldNodes.map(preProcess)).from(table);
+		const flatQuery = knex.select(regularNodes.map(preProcess)).from(table);
 		return applyQuery(knex, table, flatQuery, queryCopy, schema).query;
 	}
 
@@ -301,7 +293,13 @@ function getDBQuery(
 	if (needsInnerQuery) {
 		dbQuery.select(`${table}.${primaryKey}`).distinct();
 	} else {
-		dbQuery.select(fieldNodes.map(preProcess));
+		dbQuery.select(regularNodes.map(preProcess));
+	}
+
+	if (jsonNodes.length > 0) {
+		jsonHelper.preProcess(dbQuery, table);
+	} else {
+		dbQuery.from(table);
 	}
 
 	if (sortRecords) {
@@ -377,7 +375,7 @@ function getDBQuery(
 	if (!needsInnerQuery) return dbQuery;
 
 	const wrapperQuery = knex
-		.select(fieldNodes.map(preProcess))
+		.select(regularNodes.map(preProcess))
 		.from(table)
 		.innerJoin(knex.raw('??', dbQuery.as('inner')), `${table}.${primaryKey}`, `inner.${primaryKey}`);
 

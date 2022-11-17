@@ -20,7 +20,7 @@ import { AliasMap, getColumnPath } from './get-column-path';
 import { getRelationInfo } from './get-relation-info';
 import { getFilterOperatorsForType, getOutputTypeForFunction } from '@directus/shared/utils';
 import { stripFunction } from './strip-function';
-import { getDatabaseClient } from '../database';
+// import { getDatabaseClient } from '../database';
 import { JsonFieldNode } from '../types';
 
 export const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
@@ -73,6 +73,7 @@ export default function applyQuery(
 			schema,
 			dbQuery,
 			query.filter,
+			[],
 			collection,
 			aliasMap
 		).hasMultiRelationalFilter;
@@ -534,8 +535,7 @@ export function applyFilter(
 			operator: string,
 			compareValue: any,
 			logical: 'and' | 'or' = 'and',
-			originalCollectionName?: string,
-			selectionRaw?: any
+			originalCollectionName?: string
 		) {
 			const [table, column] = key.split('.');
 
@@ -828,7 +828,7 @@ function getFilterPath(key: string, value: Record<string, any>) {
 	return path;
 }
 
-function getOperation(key: string, value: Record<string, any>): { operator: string; value: any } {
+export function getOperation(key: string, value: Record<string, any>): { operator: string; value: any } {
 	if (key.startsWith('_') && !['_and', '_or', '_none', '_some'].includes(key)) {
 		return { operator: key as string, value };
 	} else if (isPlainObject(value) === false) {
