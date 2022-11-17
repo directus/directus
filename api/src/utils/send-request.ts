@@ -37,7 +37,10 @@ function getProxyOptions(): false | RequestProxyConfig | undefined {
 			`REQUEST_PROXY_HOST and REQUEST_PROXY_PORT are required, if you specify proxy configuration as an object.`
 		);
 	}
-	if (Object.keys(proxyAuth).length === 1) {
+	if (
+		Object.keys(proxyAuth).length === 1 ||
+		(Object.keys(proxyAuth).length === 2 && (!proxyUsername || !proxyPassword))
+	) {
 		throw new Error(
 			`REQUEST_PROXY_AUTH_USERNAME and REQUEST_PROXY_AUTH_PASSWORD are required, if you specify proxy authentication.`
 		);
