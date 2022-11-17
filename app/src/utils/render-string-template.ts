@@ -1,11 +1,11 @@
 import { useAliasFields } from '@/composables/use-alias-fields';
-import { getDisplay } from '@/displays';
 import { useFieldsStore } from '@/stores/fields';
-import { DisplayConfig, Field } from '@directus/shared/types';
+import { Field } from '@directus/shared/types';
 import { getFieldsFromTemplate } from '@directus/shared/utils';
 import { render, renderFn } from 'micromustache';
 import { computed, ComputedRef, Ref, ref, unref } from 'vue';
 import { get, set } from 'lodash';
+import { useExtension } from '@/composables/use-extension';
 
 type StringTemplate = {
 	fieldsInTemplate: ComputedRef<string[]>;
@@ -77,18 +77,17 @@ export function renderDisplayStringTemplate(
 				? get(item, key)
 				: get(item, aliasFields.value[key].fullAlias);
 
-		let display: DisplayConfig | undefined;
-
-		if (fieldsUsed[key]?.meta?.display) {
-			display = getDisplay(fieldsUsed[key]!.meta!.display);
-		}
+		const display = useExtension(
+			'display',
+			computed(() => fieldsUsed[key]?.meta?.display ?? null)
+		);
 
 		if (value !== undefined && value !== null) {
 			set(
 				parsedItem,
 				key,
-				display?.handler
-					? display.handler(value, fieldsUsed[key]?.meta?.display_options ?? {}, {
+				display.value?.handler
+					? display.value.handler(value, fieldsUsed[key]?.meta?.display_options ?? {}, {
 							interfaceOptions: fieldsUsed[key]?.meta?.options ?? {},
 							field: fieldsUsed[key] ?? undefined,
 							collection: collection,
