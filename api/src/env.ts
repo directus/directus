@@ -310,7 +310,7 @@ const typeMap: Record<string, string> = {
 let env: Record<string, any> = {
 	...defaults,
 	...process.env,
-	...getEnv(),
+	...processConfiguration(),
 };
 
 process.env = env;
@@ -320,6 +320,11 @@ env = processValues(env);
 export default env;
 
 /**
+ * Small wrapper function that makes it easier to write unit tests against changing environments
+ */
+export const getEnv = () => env;
+
+/**
  * When changes have been made during runtime, like in the CLI, we can refresh the env object with
  * the newly created variables
  */
@@ -327,7 +332,7 @@ export function refreshEnv(): void {
 	env = {
 		...defaults,
 		...process.env,
-		...getEnv(),
+		...processConfiguration(),
 	};
 
 	process.env = env;
@@ -335,7 +340,7 @@ export function refreshEnv(): void {
 	env = processValues(env);
 }
 
-function getEnv() {
+function processConfiguration() {
 	const configPath = path.resolve(process.env.CONFIG_PATH || defaults.CONFIG_PATH);
 
 	if (fs.existsSync(configPath) === false) return {};
