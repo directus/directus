@@ -54,7 +54,7 @@
 		"!**/*.d.ts.map"
 	],
 	"scripts": {
-		"build": "concurrently --passthrough-arguments \"pnpm:build:* {@}\"",
+		"build": "concurrently --prefix-colors auto --passthrough-arguments \"pnpm:build:* {@}\"",
 		"build:esm": "tsc --project ./tsconfig.json --module ES2015 --outDir ./dist/esm",
 		"build:cjs": "tsc --project ./tsconfig.json --module CommonJS --outDir ./dist/cjs",
 		"cleanup": "del-cli dist",
