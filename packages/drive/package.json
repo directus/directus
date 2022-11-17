@@ -1,6 +1,6 @@
 {
 	"name": "@directus/drive",
-	"version": "9.20.4",
+	"version": "9.21.0",
 	"description": "Object storage abstraction layer for Directus",
 	"homepage": "https://directus.io",
 	"bugs": {
