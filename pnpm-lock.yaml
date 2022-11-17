@@ -761,6 +761,7 @@ importers:
       '@rollup/plugin-virtual': 3.0.1
       '@types/fs-extra': 9.0.13
       '@types/inquirer': 8.2.1
+      '@vitest/coverage-c8': 0.25.2
       '@vue/compiler-sfc': 3.2.45
       chalk: 4.1.1
       commander: 9.4.1
@@ -775,6 +776,7 @@ importers:
       rollup-plugin-typescript2: 0.34.1
       rollup-plugin-vue: 6.0.0
       typescript: 4.9.3
+      vitest: 0.25.2
     dependencies:
       '@directus/shared': link:../shared
       '@rollup/plugin-commonjs': 23.0.2_rollup@3.3.0
@@ -797,9 +799,11 @@ importers:
     devDependencies:
       '@types/fs-extra': 9.0.13
       '@types/inquirer': 8.2.1
+      '@vitest/coverage-c8': 0.25.2
       npm-run-all: 4.1.5
       rimraf: 3.0.2
       typescript: 4.9.3
+      vitest: 0.25.2
 
   packages/schema:
     specifiers:
