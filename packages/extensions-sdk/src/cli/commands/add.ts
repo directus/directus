@@ -25,6 +25,7 @@ import execa from 'execa';
 import ora from 'ora';
 import copyTemplate from './helpers/copy-template';
 import detectJsonIndent from '../utils/detect-json-indent';
+import getPackageManager from '../utils/get-package-manager';
 
 export default async function add(): Promise<void> {
 	const extensionPath = process.cwd();
@@ -126,7 +127,9 @@ export default async function add(): Promise<void> {
 
 		await fse.writeJSON(packagePath, newExtensionManifest, { spaces: indent ?? '\t' });
 
-		await execa('npm', ['install'], { cwd: extensionPath });
+		const packageManager = getPackageManager();
+
+		await execa(packageManager, ['install'], { cwd: extensionPath });
 
 		spinner.succeed(chalk.bold('Done'));
 	} else {
@@ -263,7 +266,9 @@ export default async function add(): Promise<void> {
 
 		await fse.writeJSON(packagePath, newExtensionManifest, { spaces: indent ?? '\t' });
 
-		await execa('npm', ['install'], { cwd: extensionPath });
+		const packageManager = getPackageManager();
+
+		await execa(packageManager, ['install'], { cwd: extensionPath });
 
 		spinner.succeed(chalk.bold('Done'));
 	}

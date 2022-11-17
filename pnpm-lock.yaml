@@ -707,6 +707,7 @@ importers:
       '@rollup/plugin-virtual': 3.0.1
       '@types/fs-extra': 9.0.13
       '@types/inquirer': 8.2.1
+      '@vitest/coverage-c8': 0.25.2
       '@vue/compiler-sfc': 3.2.45
       chalk: 4.1.1
       commander: 9.4.1
@@ -721,6 +722,7 @@ importers:
       rollup-plugin-typescript2: 0.34.1
       rollup-plugin-vue: 6.0.0
       typescript: 4.9.3
+      vitest: 0.25.2
     dependencies:
       '@directus/shared': link:../shared
       '@rollup/plugin-commonjs': 23.0.2_rollup@3.3.0
@@ -743,9 +745,11 @@ importers:
     devDependencies:
       '@types/fs-extra': 9.0.13
       '@types/inquirer': 8.2.1
+      '@vitest/coverage-c8': 0.25.2
       concurrently: 7.5.0
       del-cli: 5.0.0
       typescript: 4.9.3
+      vitest: 0.25.2
 
   packages/schema:
     specifiers:
@@ -8682,7 +8686,7 @@ packages:
       mississippi: 3.0.0
       mkdirp: 0.5.6
       move-concurrently: 1.0.1
-      promise-inflight: 1.0.1_bluebird@3.7.2
+      promise-inflight: 1.0.1
       rimraf: 2.7.1
       ssri: 6.0.2
       unique-filename: 1.1.1
@@ -8706,7 +8710,7 @@ packages:
       minipass-pipeline: 1.2.4
       mkdirp: 1.0.4
       p-map: 4.0.0
-      promise-inflight: 1.0.1_bluebird@3.7.2
+      promise-inflight: 1.0.1
       rimraf: 3.0.2
       ssri: 8.0.1
       tar: 6.1.11
@@ -17230,15 +17234,13 @@ packages:
     engines: {node: '>=0.4.0'}
     dev: true
 
-  /promise-inflight/1.0.1_bluebird@3.7.2:
+  /promise-inflight/1.0.1:
     resolution: {integrity: sha512-6zWPyEOFaQBJYcGMHBKTKJ3u6TBsnMFOIZSa6ce1e/ZrrsOlnHRHbabMjLiBYKp+n44X9eUI6VUPaukCXHuG4g==}
     peerDependencies:
       bluebird: '*'
     peerDependenciesMeta:
       bluebird:
         optional: true
-    dependencies:
-      bluebird: 3.7.2
 
   /promise-retry/2.0.1:
     resolution: {integrity: sha512-y+WKFlBR8BGXnsNlIHFGPZmyDf3DFMoLhaflAnyZgV6rG6xu+JwesTo2Q9R6XwYmtmwAFCkAk3e35jEdoeh/3g==}

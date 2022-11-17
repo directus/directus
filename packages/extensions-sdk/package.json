@@ -44,6 +44,9 @@
 		"build": "concurrently --prefix-colors auto --passthrough-arguments \"pnpm:build:* {@}\"",
 		"build:esm": "tsc --project ./tsconfig.json --module ES2015 --outDir ./dist/esm",
 		"build:cjs": "tsc --project ./tsconfig.json --module CommonJS --outDir ./dist/cjs",
+		"test": "vitest run",
+		"test:watch": "vitest",
+		"test:coverage": "vitest run --coverage",
 		"cleanup": "del-cli dist",
 		"dev": "pnpm build -- -w --preserveWatchOutput --incremental"
 	},
@@ -72,7 +75,9 @@
 		"@types/inquirer": "8.2.1",
 		"concurrently": "7.5.0",
 		"del-cli": "5.0.0",
-		"typescript": "4.9.3"
+		"@vitest/coverage-c8": "0.25.2",
+		"typescript": "4.9.3",
+		"vitest": "0.25.2"
 	},
 	"engines": {
 		"node": ">=12.20.0"
