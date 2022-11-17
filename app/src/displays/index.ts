@@ -1,13 +1,19 @@
-import { shallowRef, Ref } from 'vue';
+import { App } from 'vue';
 import { DisplayConfig } from '@directus/shared/types';
+import { sortBy } from 'lodash';
 
-const displaysRaw: Ref<DisplayConfig[]> = shallowRef([]);
-const displays: Ref<DisplayConfig[]> = shallowRef([]);
+export function getInternalDisplays(): DisplayConfig[] {
+	const displays = import.meta.glob<DisplayConfig>('./*/index.ts', { import: 'default', eager: true });
 
-export function getDisplays(): { displays: Ref<DisplayConfig[]>; displaysRaw: Ref<DisplayConfig[]> } {
-	return { displays, displaysRaw };
+	return sortBy(Object.values(displays), 'id');
 }
 
-export function getDisplay(name?: string | null): DisplayConfig | undefined {
-	return !name ? undefined : displays.value.find(({ id }) => id === name);
+export function registerDisplays(displays: DisplayConfig[], app: App): void {
+	for (const display of displays) {
+		app.component(`display-${display.id}`, display.component);
+
+		if (typeof display.options !== 'function' && Array.isArray(display.options) === false && display.options !== null) {
+			app.component(`display-options-${display.id}`, display.options);
+		}
+	}
 }

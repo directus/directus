@@ -135,7 +135,7 @@ import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import Draggable from 'vuedraggable';
 import { getAssetUrl } from '@/utils/get-asset-url';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
-import { get, clamp, isEmpty } from 'lodash';
+import { get, clamp, isEmpty, isNil, set } from 'lodash';
 import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
 import { getFieldsFromTemplate } from '@directus/shared/utils';
@@ -244,13 +244,32 @@ function getDeselectIcon(item: DisplayItem) {
 }
 
 function sortItems(items: DisplayItem[]) {
-	const sortField = relationInfo.value?.sortField;
-	if (!sortField) return;
+	const info = relationInfo.value;
+	const sortField = info?.sortField;
+	if (!info || !sortField) return;
 
-	const sortedItems = items.map((item, index) => ({
-		...item,
-		[sortField]: index + 1,
-	}));
+	const sortedItems = items.map((item, index) => {
+		const junctionId = item?.[info.junctionPrimaryKeyField.field];
+		const relatedId = item?.[info.junctionField.field]?.[info.relatedPrimaryKeyField.field];
+
+		const changes: Record<string, any> = {
+			$index: item.$index,
+			$type: item.$type,
+			$edits: item.$edits,
+			...getItemEdits(item),
+			[sortField]: index + 1,
+		};
+
+		if (!isNil(junctionId)) {
+			changes[info.junctionPrimaryKeyField.field] = junctionId;
+		}
+		if (!isNil(relatedId)) {
+			set(changes, info.junctionField.field + '.' + info.relatedPrimaryKeyField.field, relatedId);
+		}
+
+		return changes;
+	});
+
 	update(...sortedItems);
 }
 

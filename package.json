@@ -1,26 +1,21 @@
 {
 	"name": "directus-monorepo",
 	"private": true,
-	"version": "9.14.2",
 	"workspaces": [
 		"./app",
 		"./api",
 		"./packages/*"
 	],
 	"scripts": {
-		"lint": "eslint .",
+		"cli": "cross-env NODE_ENV=development SERVE_APP=false DOTENV_CONFIG_PATH=api/.env ts-node -r dotenv/config --script-mode --transpile-only api/src/cli/run.ts",
 		"format": "prettier --write \"**/*.{md,y?(a)ml,json}\"",
-		"test:e2e": "jest tests -c tests/jest.config.js",
-		"test:e2e:watch": "jest tests -c tests/jest.config.js --watch",
-		"posttest:e2e:watch": "ts-node --project ./tests/tsconfig.json --transpile-only ./tests/setup/teardown.ts",
+		"lint": "eslint .",
 		"test:blackbox": "jest tests -c tests-blackbox/jest.config.js",
 		"test:blackbox:watch": "jest tests -c tests-blackbox/jest.config.js --watch",
 		"posttest:blackbox:watch": "ts-node --project ./tests-blackbox/tsconfig.json --transpile-only ./tests-blackbox/setup/teardown.ts",
-		"cli": "cross-env NODE_ENV=development SERVE_APP=false DOTENV_CONFIG_PATH=api/.env ts-node -r dotenv/config --script-mode --transpile-only api/src/cli/run.ts"
-	},
-	"engines": {
-		"node": ">=16.0.0",
-		"npm": ">=8.5.0"
+		"test:e2e": "jest tests -c tests/jest.config.js",
+		"test:e2e:watch": "jest tests -c tests/jest.config.js --watch",
+		"posttest:e2e:watch": "ts-node --project ./tests/tsconfig.json --transpile-only ./tests/setup/teardown.ts"
 	},
 	"simple-git-hooks": {
 		"pre-commit": "npx lint-staged"
@@ -28,10 +23,6 @@
 	"lint-staged": {
 		"*.{js,ts,vue}": "eslint --fix",
 		"*.{md,y?(a)ml,json}": "prettier --write"
-	},
-	"volta": {
-		"node": "16.15.0",
-		"npm": "8.10.0"
 	},
 	"devDependencies": {
 		"@directus/shared": "workspace:*",
@@ -63,5 +54,13 @@
 		"ts-jest": "29.0.3",
 		"typescript": "4.8.4",
 		"uuid": "9.0.0"
+	},
+	"engines": {
+		"node": ">=16.0.0",
+		"npm": ">=8.5.0"
+	},
+	"volta": {
+		"node": "16.15.0",
+		"npm": "8.10.0"
 	}
 }
