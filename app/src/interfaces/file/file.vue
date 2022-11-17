@@ -117,7 +117,39 @@
 			:filter="filterByFolder"
 			@update:active="activeDialog = null"
 			@input="setSelection"
-		/>
+		>
+			<template #sidebar>
+				<div class="folders-sidebar">
+					<v-item-group v-model="openFolders" scope="files-navigation" multiple>
+						<v-list-group
+							:active="currentFolder === null"
+							value="root"
+							scope="files-navigation"
+							exact
+							disable-groupable-parent
+							:arrow-placement="nestedFolders && nestedFolders.length > 0 ? 'after' : false"
+							@click="currentFolder = null"
+						>
+							<template #activator>
+								<v-list-item-icon>
+									<v-icon name="folder_special" outline />
+								</v-list-item-icon>
+								<v-list-item-content>
+									<v-text-overflow :text="t('file_library')" />
+								</v-list-item-content>
+							</template>
+
+							<navigation-folder
+								v-for="nestedFolder in nestedFolders"
+								:key="nestedFolder.id"
+								:folder="nestedFolder"
+								:current-folder="currentFolder"
+							/>
+						</v-list-group>
+					</v-item-group>
+				</div>
+			</template>
+		</drawer-collection>
 
 		<v-dialog
 			:model-value="activeDialog === 'url'"
@@ -156,6 +188,8 @@ import { addQueryToPath } from '@/utils/add-query-to-path';
 import { useRelationM2O } from '@/composables/use-relation-m2o';
 import { useRelationSingle, RelationQuerySingle } from '@/composables/use-relation-single';
 import { Filter } from '@directus/shared/types';
+import { useFolders } from '@/composables/use-folders';
+import NavigationFolder from '@/modules/files/components/navigation-folder.vue';
 
 type FileInfo = {
 	id: string;
@@ -180,6 +214,10 @@ const props = withDefaults(
 
 const emit = defineEmits(['input']);
 
+const currentFolder = ref(null);
+
+const { nestedFolders, openFolders } = useFolders();
+
 const value = computed({
 	get: () => props.value ?? null,
 	set: (value) => {
@@ -200,7 +238,7 @@ const { t } = useI18n();
 const activeDialog = ref<'upload' | 'choose' | 'url' | null>(null);
 
 const filterByFolder = computed(() => {
-	if (!props.folder) return undefined;
+	if (!props.folder) return { folder: { _null: true } } as Filter;
 	return { folder: { id: { _eq: props.folder } } } as Filter;
 });
 
@@ -339,5 +377,12 @@ function useURLImport() {
 	&:hover {
 		--v-icon-color: var(--foreground-normal);
 	}
+}
+
+.folders-sidebar {
+	--v-list-item-icon-color: var(--primary);
+
+	padding: 12px;
+	list-style: none;
 }
 </style>

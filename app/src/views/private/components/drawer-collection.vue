@@ -22,6 +22,10 @@
 				</v-button>
 			</template>
 
+			<template v-if="$slots.sidebar" #sidebar>
+				<slot name="sidebar" />
+			</template>
+
 			<template #actions:prepend><component :is="`layout-actions-${localLayout}`" v-bind="layoutState" /></template>
 
 			<template #actions>
