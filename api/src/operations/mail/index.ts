@@ -2,7 +2,7 @@ import { defineOperationApi } from '@directus/shared/utils';
 import { MailService, EmailOptions } from '../../services';
 import { md } from '../../utils/md';
 
-type Options = {
+export type Options = {
 	body?: string;
 	template?: string;
 	data?: Record<string, any>;
