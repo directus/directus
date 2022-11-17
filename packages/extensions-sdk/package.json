@@ -47,7 +47,6 @@
 		"test": "vitest run",
 		"test:watch": "vitest",
 		"test:coverage": "vitest run --coverage",
-		"cleanup": "del-cli dist",
 		"dev": "pnpm build -- -w --preserveWatchOutput --incremental"
 	},
 	"dependencies": {
@@ -74,9 +73,8 @@
 	"devDependencies": {
 		"@types/fs-extra": "9.0.13",
 		"@types/inquirer": "8.2.1",
-		"concurrently": "7.5.0",
-		"del-cli": "5.0.0",
 		"@vitest/coverage-c8": "0.25.2",
+		"concurrently": "7.5.0",
 		"typescript": "4.9.3",
 		"vitest": "0.25.2"
 	},

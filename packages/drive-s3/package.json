@@ -28,7 +28,6 @@
 	],
 	"scripts": {
 		"build": "tsc --project ./tsconfig.json",
-		"cleanup": "del-cli dist",
 		"test:watch": "jest --coverage --watchAll",
 		"test": "jest --coverage",
 		"dev": "pnpm build -w --preserveWatchOutput --incremental"
@@ -42,7 +41,6 @@
 		"@types/jest": "29.2.3",
 		"@types/node": "18.11.9",
 		"@types/normalize-path": "3.0.0",
-		"del-cli": "5.0.0",
 		"dotenv": "16.0.3",
 		"jest": "29.3.1",
 		"ts-jest": "29.0.3",
