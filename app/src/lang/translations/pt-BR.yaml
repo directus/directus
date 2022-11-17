@@ -187,6 +187,7 @@ revision_post_create: Aqui está como este ítem ficou quando foi criado.
 revision_post_update: Aqui está como este item ficou após a atualização.
 changes_made: Abaixo estão as mudanças específicas feitas nesta revisão.
 no_relational_data: Tenha em mente que os dados relacionais não estão inclusos aqui.
+junction_field_location: Localização dos campos de junção
 top: Topo
 bottom: Inferior
 hide_field: Ocultar campo
@@ -315,6 +316,7 @@ foreign_key: Chave Extrangeira
 finish_setup: Concluir a instalação
 dismiss: Dispensar
 toggle_raw_editor: Alternar Editor Raw
+raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
 raw_value: Valor bruto
 copy_raw_value: Copiar Valor Bruto
 copy_raw_value_success: Copiado
@@ -473,6 +475,7 @@ created_on: Criado em
 creating_collection_info: Nomeie a coleção e configure seu campo de "chave" única...
 creating_collection_system: Ativar e renomear qualquer um desses campos opcionais.
 auto_increment_integer: Integer auto-incremental
+auto_increment_big_integer: Inteiro auto-incremental
 generated_uuid: UUID gerado
 manual_string: String inserida manualmente
 save_and_create_new: Salvar e criar novo
@@ -494,6 +497,7 @@ disabled: Desabilitado
 information: Informação
 report_bug: Relatar erro
 request_feature: Pedir funcionalidade
+request_body: Corpo da Requisição
 interface_not_found: 'Interface "{interface}" não encontrada.'
 operation_not_found: 'Operação "{operation}" não encontrada.'
 reset_interface: Redefinir interface
@@ -607,12 +611,19 @@ errors:
   UNSUPPORTED_MEDIA_TYPE: Tipo de mídia incompatível
   UNEXPECTED_RESPONSE: Resposta inesperada
   TOKEN_EXPIRED: Token expirado
+  RANGE_NOT_SATISFIABLE: Intervalo inválido
   METHOD_NOT_ALLOWED: Método não permitido
+  REQUESTS_EXCEEDED: Limite de requisições atingido
 security: Segurança
 value_hashed: Valor secretamente salvo em hash
 bookmark_name: Nome do marcador...
 create_bookmark: Criar marcador
 edit_bookmark: Editar marcador
+edit_personal_bookmark: Editar Favorito Pessoal
+edit_role_bookmark: Editar Função Favoritada
+edit_global_bookmark: Editar Favorito Global
+cannot_edit_role_bookmarks: Não é possível editar favoritos de funções
+cannot_edit_global_bookmarks: Não é possível editar favoritos globais
 bookmarks: Favoritos
 presets: Predefinições
 unexpected_error: Erro inesperado
@@ -647,6 +658,7 @@ one_item: '1 item'
 one_filtered_item: '1 item filtrado'
 delete_collection_are_you_sure: >-
   Você tem certeza que quer deletar a coleção "{collection}"? Isso apagará a coleção e todos os itens dela. Esta ação é permanente.
+delete_folder_are_you_sure: Tem certeza que deseja excluir a pasta "{folder}"? Pastas e coleções aninhadas serão movidas para o nível mais elevado.
 collections_shown: Coleções mostradas
 visible_collections: Coleções visíveis
 hidden_collections: Coleções ocultas
@@ -703,6 +715,7 @@ operators:
   intersects_bbox: Cruza a caixa delimitadora
   nintersects_bbox: Não cruza a caixa delimitadora
   regex: Coincide RegExp
+custom_validation_message: Mensagem personalizada de validação
 loading: Carregando...
 drop_to_upload: Solte para enviar
 item: Item
@@ -771,7 +784,13 @@ label: Rótulo
 flows: Fluxos
 flow: Fluxo
 select_a_flow: Selecione um fluxo
+run_flow_on_current_collection: Executar fluxo na coleção atual
+run_flow_on_current: Executar fluxo no Item Atual
+run_flow_on_current_edited_confirm: Este item pode ser alterado por este fluxo, você tem certeza que deseja continuar?
+run_flow_on_selected: Selecione Um ou Mais Itens Primeiro | Execute o fluxo em 1 Item Selecionado | Execute o fluxo em {n} Itens Selecionados
+run_flow_success: Fluxo "{flow}" executado com sucesso
 trigger: Acionar
+trigger_options: Opções de ativação
 view_trigger: Ver gatilho
 create_trigger: Criar gatilho
 trigger_setup: Configuração de gatilho
@@ -785,6 +804,8 @@ no_other_flows_copy: Você ainda não tem outros fluxos.
 no_flows: Sem fluxos
 no_flows_copy: Você ainda não tem fluxos.
 create_flow: Criar fluxo
+creating_new_flow: Criando Novo Fluxo
+updating_flow: Atualizando Flow
 flow_setup: Configuração do fluxo
 flow_name: Nome
 flow_tracking: Rastreamento de atividades e registros
@@ -800,6 +821,7 @@ operation_options: Opções de operação
 operation_name: Nome da operação...
 operation_key: Identificador de referência...
 operation_key_unique_error: Chaves de operação devem ser únicas em um fluxo
+operation_handle_resolve: 'Resolver: Clique para Adicionar ou Arraste para Refazer'
 insights: Estatísticas
 dashboard: Painel
 panel: Painel
