@@ -1866,7 +1866,6 @@ panels:
     y_axis_conditional_two: mora biti broj.
   linechart:
     name: Linijski grafikon
-    description: Linijski grafikon za poređenje promjene polja.
     select_field: Morate odabrati polje.
     select_collection: Morate odabrati kolekciju.
     select_x_axis: Morate odabrati X os.
@@ -1878,15 +1877,14 @@ panels:
     datasets: Skupovi podataka
     show_legend: Prikaži legendu
     show_marker: Prikaži markere opisa alata
-    include_dataset: Morate uključiti barem jedan skup podataka.
     include_y_axis: Morate uključiti Y-os za svaki skup podataka kada grupa nije navedena.
     group_and_function: Morate uključiti ili izostaviti i grupu i funkciju.
-    smooth: 'Glatko'
-    straight: 'Ravno'
-    step_line: 'Linija koraka'
+    smooth: Glatko
+    straight: Ravno
+    step_line: Linija koraka
   meter:
-    description: Mjerač za praćenje vrijednosti
     name: Mjerač
+    description: Mjerač za praćenje vrijednosti
     stroke_width: Širina poteza
     select_max_value: Morate odabrati maksimalnu vrijednost.
     max_greater_than_zero: Maksimalna vrijednost mora biti veća od 0.
@@ -1898,11 +1896,9 @@ panels:
     broad: Široko
   piechart:
     name: Pitasti/Krofnasti dijagram
-    description: Kružni grafikon koji prikazuje odnose grupa u koloni.
-    function: 'Funkcija'
+    function: Funkcija
     donut: Krofna
-    labels: Prikaži oznake
-    legend: Prikaži legendu
+    show_legend: Prikaži legendu
     right: Desno
     bottom: Na dnu
     monochrome: Monohromatski

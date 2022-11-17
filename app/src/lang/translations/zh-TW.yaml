@@ -1931,7 +1931,6 @@ panels:
     y_axis_conditional_two: 只允許數字
   linechart:
     name: 折線圖
-    description: 比較欄位修改之折線圖
     select_field: 你必須選擇一個欄位。
     select_collection: 您必須選擇一個資料集。
     select_x_axis: 您必須選擇一個 X 軸。
@@ -1943,15 +1942,14 @@ panels:
     datasets: 資料集
     show_legend: 顯示圖例
     show_marker: 顯示提示文字
-    include_dataset: 您至少需要選擇一個資料集。
     include_y_axis: 當沒有選擇群組時，必須包含一個 Y 軸
     group_and_function: 您必須選擇一個群組或一個函數。
-    smooth: '平滑'
-    straight: '直線'
-    step_line: '線段'
+    smooth: 平滑
+    straight: 直線
+    step_line: 線段
   meter:
-    description: 根據數值產生格線
     name: 格線
+    description: 根據數值產生格線
     stroke_width: 線條粗細
     select_max_value: 您必須選擇最大值
     max_greater_than_zero: 最大值必須大於0
@@ -1963,11 +1961,9 @@ panels:
     broad: 寬線
   piechart:
     name: 圓餅圖
-    description: 顯示各個欄位比例的圓形圖表
-    function: '函數'
+    function: 函數
     donut: 圓餅圖
-    labels: 顯示標籤
-    legend: 顯示圖例
+    show_legend: 顯示圖例
     right: 右
     bottom: 下方
     monochrome: 黑白

@@ -97,3 +97,14 @@ const setRawValue = () => {
 	}
 };
 </script>
+
+<style lang="scss" scoped>
+.v-card-text {
+	.input-code {
+		:deep(.CodeMirror),
+		:deep(.CodeMirror-scroll) {
+			max-height: var(--input-height-tall);
+		}
+	}
+}
+</style>
