@@ -1,10 +1,52 @@
-import { expect, test } from 'vitest';
+import { expect, test, afterEach, vi } from 'vitest';
+import axios from 'axios';
+import { getEnv } from '../env';
+import { getProxyOptions } from './get-proxy-options';
 import { sendRequest } from './send-request';
+import type { RequestConfig } from '../types';
+import type { AxiosRequestConfig } from 'axios';
 
-test('Returns random activity', async () => {
-	const result = await sendRequest({
-		url: 'https://www.boredapi.com/api/activity',
-		method: 'GET',
+vi.mock('axios');
+vi.mock('../env');
+vi.mock('./get-proxy-options');
+
+afterEach(() => {
+	vi.clearAllMocks();
+});
+
+test('Calls axios with the expected input', async () => {
+	vi.mocked(getEnv).mockReturnValueOnce({});
+	vi.mocked(axios.request).mockResolvedValue({});
+
+	await sendRequest({ method: 'POST', url: 'localhost:1234', data: { status: 'active' } });
+
+	expect(axios.request).toHaveBeenCalledWith({
+		url: 'localhost:1234',
+		method: 'POST',
+		data: { status: 'active' },
+		headers: {},
+		proxy: undefined,
+		timeout: undefined,
+		maxRedirects: undefined,
 	});
-	expect(result.status).equal(200);
+});
+
+test('Defaults to environment variables for timeout/redirects', async () => {
+	vi.mocked(getEnv).mockReturnValueOnce({
+		REQUEST_TIMEOUT: 1500,
+		REQUEST_MAX_REDIRECTS: 2,
+	});
+	vi.mocked(axios.request).mockResolvedValue({});
+
+	await sendRequest({ method: 'POST', url: 'localhost:1234', data: { status: 'active' } });
+
+	expect(axios.request).toHaveBeenCalledWith({
+		url: 'localhost:1234',
+		method: 'POST',
+		data: { status: 'active' },
+		headers: {},
+		proxy: undefined,
+		timeout: 1500,
+		maxRedirects: 2,
+	});
 });
