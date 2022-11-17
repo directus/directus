@@ -1,13 +1,18 @@
-import { shallowRef, Ref } from 'vue';
+import { App } from 'vue';
 import { LayoutConfig } from '@directus/shared/types';
+import { sortBy } from 'lodash';
 
-const layoutsRaw: Ref<LayoutConfig[]> = shallowRef([]);
-const layouts: Ref<LayoutConfig[]> = shallowRef([]);
+export function getInternalLayouts(): LayoutConfig[] {
+	const layouts = import.meta.glob<LayoutConfig>('./*/index.ts', { import: 'default', eager: true });
 
-export function getLayouts(): { layouts: Ref<LayoutConfig[]>; layoutsRaw: Ref<LayoutConfig[]> } {
-	return { layouts, layoutsRaw };
+	return sortBy(Object.values(layouts), 'id');
 }
 
-export function getLayout(name?: string | null): LayoutConfig | undefined {
-	return !name ? undefined : layouts.value.find(({ id }) => id === name);
+export function registerLayouts(layouts: LayoutConfig[], app: App): void {
+	for (const layout of layouts) {
+		app.component(`layout-${layout.id}`, layout.component);
+		app.component(`layout-options-${layout.id}`, layout.slots.options);
+		app.component(`layout-sidebar-${layout.id}`, layout.slots.sidebar);
+		app.component(`layout-actions-${layout.id}`, layout.slots.actions);
+	}
 }

@@ -1,5 +1,4 @@
 import api from '@/api';
-import { getPanels } from '@/panels';
 import { usePermissionsStore } from '@/stores/permissions';
 import { queryToGqlString } from '@/utils/query-to-gql-string';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -12,6 +11,7 @@ import { acceptHMRUpdate, defineStore } from 'pinia';
 import { computed, reactive, ref, unref } from 'vue';
 import { Dashboard } from '../types';
 import escapeStringRegexp from 'escape-string-regexp';
+import { useExtensions } from '@/extensions';
 
 export type CreatePanel = Partial<Panel> &
 	Pick<Panel, 'id' | 'width' | 'height' | 'position_x' | 'position_y' | 'type' | 'options'>;
@@ -72,7 +72,7 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 		];
 	});
 
-	const { panels: panelTypes } = getPanels();
+	const { panels: panelTypes } = useExtensions();
 
 	return {
 		dashboards,
