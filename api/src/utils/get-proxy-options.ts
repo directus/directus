@@ -1,15 +1,14 @@
 import type { RequestProxyConfig } from '../types';
-import { getConfigFromEnv } from './get-config-from-env';
-import env from '../env';
+import { getEnv } from '../env';
 
 /**
  * Get proxy configuration for making outbound requests from the API
  * @returns Proxy object configuration, or undefined if no proxy is configured
  */
 export const getProxyOptions = (): undefined | RequestProxyConfig => {
-	const proxyConfig = getConfigFromEnv('REQUEST_PROXY_');
+	const env = getEnv();
 
-	if (!env.REQUEST_PROXY || Object.keys(proxyConfig).length === 0) {
+	if (!env.REQUEST_PROXY_ENABLED) {
 		return undefined;
 	}
 
