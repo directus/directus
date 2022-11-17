@@ -1,6 +1,6 @@
 {
 	"name": "@directus/drive-s3",
-	"version": "9.20.4",
+	"version": "9.21.0",
 	"description": "AWS S3 driver for @directus/drive",
 	"homepage": "https://directus.io",
 	"bugs": {
