@@ -1,21 +1,14 @@
-function getPackageManagerAgent(): Record<string, string> | null {
-	const userAgent = process.env.npm_config_user_agent;
+import getPackageManagerAgent from './get-package-manager-agent';
 
-	if (!userAgent) return null;
-
-	const values = userAgent.split(' ');
-	const fields = values.filter((field) => field.includes('/'));
-	const [platform, arch] = values.filter((field) => !field.includes('/'));
-
-	return Object.fromEntries(fields.map((field) => field.split('/')).concat([['os', `${platform} (${arch})`]]));
-}
-
+/**
+ * Determine whether to use pnpm, yarn, or npm based on the parsed package manager agent info
+ */
 export default function getPackageManager(): string {
 	const agent = getPackageManagerAgent();
 
 	if (agent !== null) {
-		if (agent.pnpm !== undefined && agent.pnpm !== '?') return 'pnpm';
-		if (agent.yarn !== undefined && agent.yarn !== '?') return 'yarn';
+		if ('pnpm' in agent && agent.pnpm !== '?') return 'pnpm';
+		if ('yarn' in agent && agent.yarn !== '?') return 'yarn';
 	}
 
 	return 'npm';
