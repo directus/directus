@@ -1,6 +1,8 @@
 export type Method =
 	| 'get'
 	| 'GET'
+	| 'search'
+	| 'SEARCH'
 	| 'delete'
 	| 'DELETE'
 	| 'head'
