@@ -2,7 +2,7 @@
 'use strict';
 
 const inquirer = require('inquirer');
-const { EXTENSION_TYPES, EXTENSION_LANGUAGES } = require('@directus/shared/constants');
+const { EXTENSION_LANGUAGES, EXTENSION_PACKAGE_TYPES, EXTENSION_TYPES } = require('@directus/shared/constants');
 const { create } = require('@directus/extensions-sdk/cli');
 
 run();
@@ -16,7 +16,7 @@ async function run() {
 			type: 'list',
 			name: 'type',
 			message: 'Choose the extension type',
-			choices: EXTENSION_TYPES,
+			choices: EXTENSION_PACKAGE_TYPES,
 		},
 		{
 			type: 'input',
@@ -28,6 +28,7 @@ async function run() {
 			name: 'language',
 			message: 'Choose the language to use',
 			choices: EXTENSION_LANGUAGES,
+			when: ({ type }) => EXTENSION_TYPES.includes(type),
 		},
 	]);
 

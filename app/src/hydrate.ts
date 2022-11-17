@@ -1,5 +1,4 @@
 import { setLanguage } from '@/lang/set-language';
-import { register as registerModules, unregister as unregisterModules } from '@/modules/register';
 import { getBasemapSources } from '@/utils/geometry/basemap';
 import { useAppStore } from '@/stores/app';
 import { useCollectionsStore } from '@/stores/collections';
@@ -16,6 +15,7 @@ import { useSettingsStore } from '@/stores/settings';
 import { useUserStore } from '@/stores/user';
 import { useNotificationsStore } from '@/stores/notifications';
 import { useTranslationStrings } from '@/composables/use-translation-strings';
+import { onDehydrateExtensions, onHydrateExtensions } from './extensions';
 
 type GenericStore = {
 	$id: string;
@@ -78,7 +78,8 @@ export async function hydrate(): Promise<void> {
 
 			const hydratedStores = ['userStore', 'permissionsStore', 'fieldsStore'];
 			await Promise.all(stores.filter(({ $id }) => !hydratedStores.includes($id)).map((store) => store.hydrate?.()));
-			await registerModules();
+
+			await onHydrateExtensions();
 		}
 
 		loadParsedTranslationStrings();
@@ -103,7 +104,7 @@ export async function dehydrate(stores = useStores()): Promise<void> {
 		await store.dehydrate?.();
 	}
 
-	unregisterModules();
+	await onDehydrateExtensions();
 
 	appStore.hydrated = false;
 }

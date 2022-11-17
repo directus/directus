@@ -15,8 +15,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue';
-import { getDisplay } from '@/displays';
+import { defineComponent } from 'vue';
+import { translate } from '@/utils/translate-object-values';
+import { useExtension } from '@/composables/use-extension';
 
 export default defineComponent({
 	props: {
@@ -54,8 +55,9 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const displayInfo = computed(() => getDisplay(props.display));
-		return { displayInfo };
+		const displayInfo = useExtension('display', props.display);
+
+		return { displayInfo, translate };
 	},
 });
 </script>
