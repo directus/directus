@@ -1,6 +1,6 @@
 {
 	"name": "@directus/drive-azure",
-	"version": "9.20.4",
+	"version": "9.21.0",
 	"description": "Azure Blob driver for @directus/drive",
 	"homepage": "https://directus.io",
 	"bugs": {
