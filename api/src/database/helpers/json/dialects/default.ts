@@ -4,7 +4,6 @@ import { Knex } from 'knex';
 import { JsonHelper } from '../types';
 import { JSONPath } from 'jsonpath-plus';
 import { JsonFieldNode } from '../../../../types';
-import { transformFilterJsonPath } from './postgres_10';
 import { getOperation } from '../../../../utils/apply-query';
 
 const jsonPathPlusOptions = {
@@ -87,4 +86,97 @@ export class JsonHelperDefault extends JsonHelper {
 
 		return `${node.jsonPath}[?(${conditions.join(' && ')})]`;
 	}
+}
+
+function transformFilterJsonPath(jsonPath: string, filterOperator: string, filterValue: any): string {
+	const path = '@' + (jsonPath[0] === '$' ? jsonPath.substring(1) : jsonPath);
+	let value = JSON.stringify(filterValue),
+		operator;
+	switch (filterOperator) {
+		case '_eq':
+			operator = '==';
+			break;
+		case '_neq':
+			operator = '!=';
+			break;
+		case '_gt':
+			operator = '>';
+			break;
+		case '_gte':
+			operator = '>=';
+			break;
+		case '_lt':
+			operator = '<';
+			break;
+		case '_lte':
+			operator = '<=';
+			break;
+		case '_ieq':
+			operator = 'like_regex';
+			value = `"^${filterValue}$" flag "i"`;
+			break;
+		case '_nieq':
+			operator = '! like_regex';
+			value = `"^${filterValue}$" flag "i"`;
+			break;
+		case '_contains':
+			operator = 'like_regex';
+			break;
+		case '_ncontains':
+			operator = '! like_regex';
+			break;
+		case '_icontains':
+			operator = 'like_regex';
+			value = value + ' flag "i"';
+			break;
+		case '_nicontains':
+			operator = '! like_regex';
+			value = value + ' flag "i"';
+			break;
+		case '_starts_with':
+			operator = 'starts with';
+			break;
+		case '_nstarts_with':
+			operator = '! starts with';
+			break;
+		case '_istarts_with':
+			operator = 'like_regex';
+			value = `"^${filterValue}" flag "i"`;
+			break;
+		case '_nistarts_with':
+			operator = '! like_regex';
+			value = `"^${filterValue}" flag "i"`;
+			break;
+		case '_ends_with':
+			operator = 'like_regex';
+			value = `"${filterValue}$"`;
+			break;
+		case '_nends_with':
+			operator = '! like_regex';
+			value = `"${filterValue}$"`;
+			break;
+		case '_iends_with':
+			operator = 'like_regex';
+			value = `"${filterValue}$" flag "i"`;
+			break;
+		case '_niends_with':
+			operator = '! like_regex';
+			value = `"${filterValue}$" flag "i"`;
+			break;
+		case '_in':
+			return (filterValue as any[]).map((val) => transformFilterJsonPath(jsonPath, '_eq', val)).join(' && ');
+		case '_nin':
+			return (filterValue as any[]).map((val) => transformFilterJsonPath(jsonPath, '_neq', val)).join(' && ');
+		case '_between': {
+			const conditionA = transformFilterJsonPath(jsonPath, '_gt', filterValue[0]);
+			const conditionB = transformFilterJsonPath(jsonPath, '_lt', filterValue[1]);
+			return `${conditionA} && ${conditionB}`;
+		}
+		case '_nbetween': {
+			const conditionA = transformFilterJsonPath(jsonPath, '_lt', filterValue[0]);
+			const conditionB = transformFilterJsonPath(jsonPath, '_gt', filterValue[1]);
+			return `${conditionA} || ${conditionB}`;
+		}
+	}
+	return `${path} ${operator} ${value}`;
 }

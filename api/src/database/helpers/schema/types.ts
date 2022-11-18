@@ -1,6 +1,6 @@
 import { getDatabaseClient } from '../../index';
+import { DatabaseHelper } from '../types';
 import { KNEX_TYPES } from '@directus/shared/constants';
-import { DatabaseClients, DatabaseHelper } from '../types';
 import { Knex } from 'knex';
 
 type Clients = 'mysql' | 'postgres' | 'cockroachdb' | 'sqlite' | 'oracle' | 'mssql' | 'redshift';
@@ -8,7 +8,7 @@ type Clients = 'mysql' | 'postgres' | 'cockroachdb' | 'sqlite' | 'oracle' | 'mss
 export type Options = { nullable?: boolean; default?: any; length?: number };
 
 export abstract class SchemaHelper extends DatabaseHelper {
-	isOneOfClients(clients: DatabaseClients[]): boolean {
+	isOneOfClients(clients: Clients[]): boolean {
 		return clients.includes(getDatabaseClient(this.knex));
 	}
 
@@ -92,20 +92,6 @@ export abstract class SchemaHelper extends DatabaseHelper {
 		return;
 	}
 
-	async getVersion(): Promise<{ parsed: number[]; full: string }> {
-		const version = await this.knex.select(this.knex.raw('@@version'));
-		return {
-			parsed: version[0]['@@version'].split('.').map((num: string) => parseInt(num, 10)),
-			full: version[0]['@@version'],
-		};
-	}
-
-	constraintName(existingName: string): string {
-		// most vendors allow for dropping/creating constraints with the same name
-		// reference issue #14873
-		return existingName;
-	}
-
 	applyOffset(rootQuery: Knex.QueryBuilder, offset: number): void {
 		rootQuery.offset(offset);
 	}
@@ -127,5 +113,19 @@ export abstract class SchemaHelper extends DatabaseHelper {
 			knex.raw(`partition by ??${orderByString}`, [`${table}.${primaryKey}`, ...orderByFields])
 		);
 		return dbQuery;
+	}
+
+	async getVersion(): Promise<{ parsed: number[]; full: string }> {
+		const version = await this.knex.select(this.knex.raw('@@version'));
+		return {
+			parsed: version[0]['@@version'].split('.').map((num: string) => parseInt(num, 10)),
+			full: version[0]['@@version'],
+		};
+	}
+
+	constraintName(existingName: string): string {
+		// most vendors allow for dropping/creating constraints with the same name
+		// reference issue #14873
+		return existingName;
 	}
 }

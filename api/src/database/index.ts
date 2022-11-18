@@ -9,8 +9,8 @@ import fse from 'fs-extra';
 import path from 'path';
 import { merge } from 'lodash';
 import { promisify } from 'util';
-import { checkJsonSupport, getHelpers } from './helpers';
-import { DatabaseClients } from './helpers/types';
+import { getHelpers, getJsonHelperByVersion } from './helpers';
+import { DatabaseVendors } from './helpers/json/types';
 
 let database: Knex | null = null;
 let databaseVersion: { parsed: number[]; full: string } = { parsed: [], full: '' };
@@ -193,7 +193,7 @@ export async function validateDatabaseConnection(database?: Knex): Promise<void>
 	}
 }
 
-export function getDatabaseClient(database?: Knex): DatabaseClients {
+export function getDatabaseClient(database?: Knex): DatabaseVendors {
 	database = database ?? getDatabase();
 
 	switch (database.client.constructor.name) {
@@ -327,11 +327,10 @@ export async function validateDatabaseVersion(): Promise<void> {
 	const client = getDatabaseClient(database);
 	const helpers = getHelpers(database);
 	databaseVersion = await helpers.schema.getVersion();
-	const supported = checkJsonSupport(client, databaseVersion);
-	if (!supported) {
+	if (getJsonHelperByVersion(client) === 'fallback') {
 		logger.warn(`JSON queries are not supported natively by ${client} (version: ${databaseVersion.parsed.join('.')})`);
 		logger.warn(`Falling back to json post-processing instead, using JSON in "filter" will not be supported!`);
 	} else {
-		logger.info(`Database: ${client} (version: ${databaseVersion.parsed.join('.')})`);
+		logger.debug(`Database: ${client} (version: ${databaseVersion.parsed.join('.')})`);
 	}
 }

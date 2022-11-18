@@ -37,7 +37,7 @@ export class JsonHelperPostgres_10 extends JsonHelperDefault {
 	}
 }
 
-export function transformFilterJsonPath(jsonPath: string, filterOperator: string, filterValue: any): string {
+function transformFilterJsonPath(jsonPath: string, filterOperator: string, filterValue: any): string {
 	const path = '@' + (jsonPath[0] === '$' ? jsonPath.substring(1) : jsonPath);
 	let value = JSON.stringify(filterValue),
 		operator;
