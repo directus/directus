@@ -323,6 +323,16 @@ class OASSpecsService implements SpecificationSubService {
 
 		components.schemas = {};
 
+		// Always includes the schemas with these names
+		const includeSchemas = ['Query', 'x-metadata'];
+		if (openapi.components?.schemas !== null) {
+			for (const schemaName of includeSchemas) {
+				if (openapi.components!.schemas![schemaName] !== null) {
+					components.schemas[schemaName] = cloneDeep(openapi.components!.schemas![schemaName]);
+				}
+			}
+		}
+
 		if (!tags) return;
 
 		for (const collection of collections) {
