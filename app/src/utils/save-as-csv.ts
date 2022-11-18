@@ -1,11 +1,11 @@
 import { useAliasFields } from '@/composables/use-alias-fields';
-import { getDisplay } from '@/displays';
 import { useFieldsStore } from '@/stores/fields';
 import { get } from '@directus/shared/utils';
-import { DisplayConfig, Field, Item } from '@directus/shared/types';
+import { Field, Item } from '@directus/shared/types';
 import { saveAs } from 'file-saver';
 import { parse } from 'json2csv';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
+import { useExtension } from '@/composables/use-extension';
 
 /**
  * Saves the given collection + items combination as a CSV file
@@ -48,15 +48,14 @@ export async function saveAsCSV(collection: string, fields: string[], items: Ite
 					? get(item, key)
 					: get(item, aliasFields.value[key].fullAlias);
 
-			let display: DisplayConfig | undefined;
-
-			if (fieldsUsed[key]?.meta?.display) {
-				display = getDisplay(fieldsUsed[key]!.meta!.display);
-			}
+			const display = useExtension(
+				'display',
+				computed(() => fieldsUsed[key]?.meta?.display ?? null)
+			);
 
 			if (value !== undefined && value !== null) {
-				parsedItem[name] = display?.handler
-					? await display.handler(value, fieldsUsed[key]?.meta?.display_options ?? {}, {
+				parsedItem[name] = display.value?.handler
+					? await display.value.handler(value, fieldsUsed[key]?.meta?.display_options ?? {}, {
 							interfaceOptions: fieldsUsed[key]?.meta?.options ?? {},
 							field: fieldsUsed[key] ?? undefined,
 							collection: collection,

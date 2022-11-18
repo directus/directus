@@ -1,19 +1,42 @@
 import { Query } from '@directus/shared/types';
 import knex, { Knex } from 'knex';
 import { getTracker, MockClient, Tracker } from 'knex-mock-client';
+import { cloneDeep } from 'lodash';
+import { afterEach, beforeAll, describe, expect, it, vi, MockedFunction } from 'vitest';
 import { ItemsService } from '../../src/services';
+import { InvalidPayloadException } from '../exceptions';
 import { sqlFieldFormatter, sqlFieldList } from '../__utils__/items-utils';
 import { systemSchema, userSchema } from '../__utils__/schemas';
-import { cloneDeep } from 'lodash';
-import { describe, beforeAll, afterEach, it, expect, vi } from 'vitest';
 
-vi.mock('../../src/database/index', () => {
-	return { getDatabaseClient: vi.fn().mockReturnValue('postgres') };
+vi.mock('../env', async () => {
+	const actual = (await vi.importActual('../env')) as { default: Record<string, any> };
+
+	return {
+		default: {
+			...actual.default,
+			CACHE_AUTO_PURGE: true,
+		},
+	};
 });
-vi.mock('../../src/database/index');
+
+vi.mock('../../src/database/index', () => ({
+	default: vi.fn(),
+	getDatabaseClient: vi.fn().mockReturnValue('postgres'),
+}));
+
+vi.mock('../cache', () => ({
+	getCache: vi.fn().mockReturnValue({
+		cache: {
+			clear: vi.fn(),
+		},
+		systemCache: {
+			clear: vi.fn(),
+		},
+	}),
+}));
 
 describe('Integration Tests', () => {
-	let db: Knex;
+	let db: MockedFunction<Knex>;
 	let tracker: Tracker;
 
 	const schemas: Record<string, any> = {
@@ -21,8 +44,8 @@ describe('Integration Tests', () => {
 		user: { schema: userSchema, tables: Object.keys(userSchema.collections) },
 	};
 
-	beforeAll(async () => {
-		db = knex({ client: MockClient });
+	beforeAll(() => {
+		db = vi.mocked(knex({ client: MockClient }));
 		tracker = getTracker();
 	});
 

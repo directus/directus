@@ -56,6 +56,7 @@ const directusConfig = {
 	LOG_LEVEL: logLevel,
 	SERVE_APP: 'false',
 	DB_EXCLUDE_TABLES: 'knex_migrations,knex_migrations_lock,spatial_ref_sys,sysdiagrams',
+	EXTENSIONS_PATH: './tests-blackbox/extensions',
 	...directusAuthConfig,
 };
 

@@ -24,7 +24,7 @@ get:
                 items:
                   $ref: '../../openapi.yaml#/components/schemas/Users'
               meta:
-                $ref: '../../openapi.yaml#/components/x-metadata'
+                $ref: '../../openapi.yaml#/components/schemas/x-metadata'
     '401':
       $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
     '404':

@@ -10,7 +10,7 @@ post:
             string:
               description: String to hash.
               type: string
-              required: true
+          required: ['string']
   responses:
     '200':
       content:

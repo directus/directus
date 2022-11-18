@@ -1,16 +1,16 @@
 /* eslint-disable no-console */
 
-import Listr from 'listr';
+import { Listr } from 'listr2';
 import vendors from '../get-dbs-to-test';
 import config from '../config';
-import { GlobalConfigTsJest } from 'ts-jest/dist/types';
+import { JestConfigWithTsJest } from 'ts-jest/dist/types';
 import global from './global';
 
 if (require.main === module) {
 	teardown(undefined, true);
 }
 
-export default async function teardown(jestConfig?: GlobalConfigTsJest, _isAfterWatch = false): Promise<void> {
+export default async function teardown(jestConfig?: JestConfigWithTsJest, _isAfterWatch = false): Promise<void> {
 	if (jestConfig?.watch || jestConfig?.watchAll) return;
 
 	if (!process.env.TEST_LOCAL) {

@@ -2,19 +2,18 @@ import knex, { Knex } from 'knex';
 import { MockClient, Tracker, getTracker } from 'knex-mock-client';
 import { PayloadService } from '../../src/services';
 import { getHelpers, Helpers } from '../../src/database/helpers';
-import { describe, beforeAll, afterEach, it, expect, vi, beforeEach } from 'vitest';
+import { describe, beforeAll, afterEach, it, expect, vi, beforeEach, MockedFunction } from 'vitest';
 
-vi.mock('../../src/database/index', () => {
-	return { getDatabaseClient: vi.fn().mockReturnValue('postgres') };
-});
-vi.mock('../../src/database/index');
+vi.mock('../../src/database/index', () => ({
+	getDatabaseClient: vi.fn().mockReturnValue('postgres'),
+}));
 
 describe('Integration Tests', () => {
-	let db: Knex;
+	let db: MockedFunction<Knex>;
 	let tracker: Tracker;
 
 	beforeAll(async () => {
-		db = knex({ client: MockClient });
+		db = vi.mocked(knex({ client: MockClient }));
 		tracker = getTracker();
 	});
 
@@ -187,8 +186,8 @@ describe('Integration Tests', () => {
 			});
 
 			describe('processes dates', () => {
-				it('with zero values', async () => {
-					const result = await service.processDates(
+				it('with zero values', () => {
+					const result = service.processDates(
 						[
 							{
 								[dateFieldId]: '0000-00-00',
@@ -208,8 +207,8 @@ describe('Integration Tests', () => {
 					]);
 				});
 
-				it('with typical values', async () => {
-					const result = await service.processDates(
+				it('with typical values', () => {
+					const result = service.processDates(
 						[
 							{
 								[dateFieldId]: '2022-01-10',
@@ -228,8 +227,8 @@ describe('Integration Tests', () => {
 					]);
 				});
 
-				it('with date object values', async () => {
-					const result = await service.processDates(
+				it('with date object values', () => {
+					const result = service.processDates(
 						[
 							{
 								[dateFieldId]: new Date(1666777777000),
