@@ -93,6 +93,75 @@ describe('Integration Tests', () => {
 								},
 								'x-collection': 'test_table',
 							},
+							Query: {
+								type: 'object',
+								properties: {
+									fields: {
+										type: 'array',
+										items: {
+											type: 'string',
+										},
+										description: 'Control what fields are being returned in the object.',
+										example: ['*', '*.*'],
+									},
+									filter: {
+										type: 'object',
+										example: {
+											'<field>': {
+												'<operator>': '<value>',
+											},
+										},
+									},
+									search: {
+										description: 'Filter by items that contain the given search query in one of their fields.',
+										type: 'string',
+									},
+									sort: {
+										type: 'array',
+										items: {
+											type: 'string',
+										},
+										description: 'How to sort the returned items.',
+										example: ['-date_created'],
+									},
+									limit: {
+										type: 'number',
+										description: 'Set the maximum number of items that will be returned',
+									},
+									offset: {
+										type: 'number',
+										description: 'How many items to skip when fetching data.',
+									},
+									page: {
+										type: 'number',
+										description: 'Cursor for use in pagination. Often used in combination with limit.',
+									},
+									deep: {
+										type: 'object',
+										description:
+											'Deep allows you to set any of the other query parameters on a nested relational dataset.',
+										example: {
+											related_articles: {
+												_limit: 3,
+											},
+										},
+									},
+								},
+							},
+							'x-metadata': {
+								type: 'object',
+								properties: {
+									total_count: {
+										description: "Returns the total item count of the collection you're querying.",
+										type: 'integer',
+									},
+									filter_count: {
+										description:
+											"Returns the item count of the collection you're querying, taking the current filter/search parameters into account.",
+										type: 'integer',
+									},
+								},
+							},
 						});
 					});
 				});
