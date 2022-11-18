@@ -82,7 +82,7 @@ export const useFieldDetailStore = defineStore({
 		saving: false,
 	}),
 	actions: {
-		startEditing(collection: string, field: string, localType?: LocalType) {
+		async startEditing(collection: string, field: string, localType?: LocalType) {
 			// Make sure we clean up any stray values from unexpected paths
 			this.$reset();
 
@@ -96,21 +96,19 @@ export const useFieldDetailStore = defineStore({
 
 				this.field = cloneDeep(fieldsStore.getField(collection, field)!);
 				// re-fetch field meta to get the raw untranslated values
-				// uses callback to avoid blocking the whole startEditing function
-				api.get(`/fields/${collection}/${field}`).then((response) => {
-					const fetchedFieldMeta = response.data?.data?.meta;
-					this.$patch({
-						field: {
-							meta: {
-								...(fetchedFieldMeta?.note ? { note: fetchedFieldMeta.note } : {}),
-								...(fetchedFieldMeta?.options ? { options: fetchedFieldMeta.options } : {}),
-								...(fetchedFieldMeta?.display_options ? { display_options: fetchedFieldMeta.display_options } : {}),
-								...(fetchedFieldMeta?.validation_message
-									? { validation_message: fetchedFieldMeta.validation_message }
-									: {}),
-							},
+				const response = await api.get(`/fields/${collection}/${field}`);
+				const fetchedFieldMeta = response.data?.data?.meta;
+				this.$patch({
+					field: {
+						meta: {
+							...(fetchedFieldMeta?.note ? { note: fetchedFieldMeta.note } : {}),
+							...(fetchedFieldMeta?.options ? { options: fetchedFieldMeta.options } : {}),
+							...(fetchedFieldMeta?.display_options ? { display_options: fetchedFieldMeta.display_options } : {}),
+							...(fetchedFieldMeta?.validation_message
+								? { validation_message: fetchedFieldMeta.validation_message }
+								: {}),
 						},
-					});
+					},
 				});
 				this.localType = getLocalTypeForField(collection, field)!;
 

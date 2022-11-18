@@ -3,7 +3,7 @@ import { onBeforeRouteLeave } from 'vue-router';
 
 const dialogRouteSymbol: InjectionKey<() => void> = Symbol();
 
-export function useDialogRoute(): Ref<boolean> {
+export function useDialogRoute(isOpenAtStart = true): Ref<boolean> {
 	const isOpen = ref(false);
 
 	let resolveGuard: () => void;
@@ -12,7 +12,7 @@ export function useDialogRoute(): Ref<boolean> {
 	});
 
 	onMounted(() => {
-		isOpen.value = true;
+		if (isOpenAtStart) isOpen.value = true;
 	});
 
 	onBeforeRouteLeave(() => {
