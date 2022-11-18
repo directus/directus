@@ -6,15 +6,8 @@ import { JsonHelperDefault } from './default';
 /**
  * We may want a fallback to support wildcard queries (will be super slow unfortunately)
  */
-export class JsonHelperMSSQL extends JsonHelperDefault {
+export class JsonHelperMSSQL_16 extends JsonHelperDefault {
 	fallbackNodes: JsonFieldNode[] = [];
-	static isSupported({ parsed }: { parsed: number[]; full: string }): boolean {
-		if (parsed.length === 0) return false;
-		const [major] = parsed;
-		// the json support we need will be added in version 2022
-		// https://learn.microsoft.com/en-us/sql/t-sql/functions/json-array-transact-sql?view=sql-server-ver16
-		return major >= 16; // SQL Server 2022 (16.x) Preview
-	}
 	preProcess(dbQuery: Knex.QueryBuilder, table: string): void {
 		const selectQueries = this.nodes.filter(({ jsonPath }) => jsonPath.indexOf('*') === -1);
 		const joinQueries = this.nodes.filter(({ jsonPath }) => jsonPath.indexOf('*') > 0);

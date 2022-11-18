@@ -52,14 +52,7 @@ select "jason".*, "XYZ"."res"
 from "jason", "XYZ"
 where "XYZ"."id" = "jason"."id"
  */
-export class JsonHelperOracle extends JsonHelperDefault {
-	static isSupported({ parsed }: { parsed: number[]; full: string }): boolean {
-		if (parsed.length === 0) return false;
-		const [major] = parsed;
-		// json support added in version 12c
-		// https://docs.oracle.com/en/database/oracle/oracle-database/12.2/adjsn/function-JSON_QUERY.html#GUID-D64C7BE9-335D-449C-916D-1123539BF1FB
-		return major > 12;
-	}
+export class JsonHelperOracle_12 extends JsonHelperDefault {
 	preProcess(dbQuery: Knex.QueryBuilder, table: string): void {
 		const selectQueries = this.nodes.filter(
 			({ jsonPath, query }) =>

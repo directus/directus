@@ -4,7 +4,7 @@ import { Knex } from 'knex';
 import { JsonHelper } from '../types';
 import { JSONPath } from 'jsonpath-plus';
 import { JsonFieldNode } from '../../../../types';
-import { transformFilterJsonPath } from './postgres';
+import { transformFilterJsonPath } from './postgres_10';
 import { getOperation } from '../../../../utils/apply-query';
 
 const jsonPathPlusOptions = {

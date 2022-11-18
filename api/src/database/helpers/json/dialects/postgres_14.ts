@@ -4,13 +4,7 @@ import { JsonFieldNode } from '../../../../types';
 import { getOperation } from '../../../../utils/apply-query';
 import { Item } from '@directus/shared/types';
 
-export class JsonHelperPostgres extends JsonHelperDefault {
-	static isSupported({ parsed }: { parsed: number[]; full: string }): boolean {
-		if (parsed.length === 0) return false;
-		const [major] = parsed;
-		// we're currently only supporting the 14+ version untill other exceptions have been added
-		return major >= 14;
-	}
+export class JsonHelperPostgres_14 extends JsonHelperDefault {
 	preProcess(dbQuery: Knex.QueryBuilder, table: string): void {
 		dbQuery
 			.select(
