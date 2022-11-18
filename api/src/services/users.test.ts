@@ -1,7 +1,7 @@
 import { SchemaOverview } from '@directus/shared/types';
 import knex, { Knex } from 'knex';
 import { getTracker, MockClient, Tracker } from 'knex-mock-client';
-import { afterEach, beforeAll, describe, it, vi, expect, MockedFunction } from 'vitest';
+import { afterEach, beforeAll, beforeEach, describe, expect, it, MockedFunction, SpyInstance, vi } from 'vitest';
 import { ItemsService, UsersService } from '.';
 import { InvalidPayloadException } from '../exceptions';
 
@@ -54,6 +54,12 @@ describe('Integration Tests', () => {
 	});
 
 	describe('Services / Users', () => {
+		let superUpdateManySpy: SpyInstance;
+
+		beforeEach(() => {
+			superUpdateManySpy = vi.spyOn(ItemsService.prototype, 'updateMany');
+		});
+
 		describe('updateOne', () => {
 			it.each(['provider', 'external_identifier'])(
 				'should throw InvalidPayloadException for non-admin users when updating "%s" field',
@@ -87,6 +93,7 @@ describe('Integration Tests', () => {
 				const promise = service.updateOne(1, { [field]: 'test' });
 
 				await expect(promise).resolves.not.toThrow();
+				expect(superUpdateManySpy).toBeCalledWith([1], expect.objectContaining({ auth_data: null }), undefined);
 			});
 
 			it.each(['provider', 'external_identifier'])(
@@ -100,6 +107,7 @@ describe('Integration Tests', () => {
 					const promise = service.updateOne(1, { [field]: 'test' });
 
 					await expect(promise).resolves.not.toThrow();
+					expect(superUpdateManySpy).toBeCalledWith([1], expect.objectContaining({ auth_data: null }), undefined);
 				}
 			);
 		});
@@ -137,6 +145,7 @@ describe('Integration Tests', () => {
 				const promise = service.updateMany([1], { [field]: 'test' });
 
 				await expect(promise).resolves.not.toThrow();
+				expect(superUpdateManySpy).toBeCalledWith([1], expect.objectContaining({ auth_data: null }), undefined);
 			});
 
 			it.each(['provider', 'external_identifier'])(
@@ -150,6 +159,7 @@ describe('Integration Tests', () => {
 					const promise = service.updateMany([1], { [field]: 'test' });
 
 					await expect(promise).resolves.not.toThrow();
+					expect(superUpdateManySpy).toBeCalledWith([1], expect.objectContaining({ auth_data: null }), undefined);
 				}
 			);
 		});
@@ -191,6 +201,7 @@ describe('Integration Tests', () => {
 				const promise = service.updateByQuery({}, { [field]: 'test' });
 
 				await expect(promise).resolves.not.toThrow();
+				expect(superUpdateManySpy).toBeCalledWith([1], expect.objectContaining({ auth_data: null }), undefined);
 			});
 
 			it.each(['provider', 'external_identifier'])(
@@ -206,6 +217,7 @@ describe('Integration Tests', () => {
 					const promise = service.updateByQuery({}, { [field]: 'test' });
 
 					await expect(promise).resolves.not.toThrow();
+					expect(superUpdateManySpy).toBeCalledWith([1], expect.objectContaining({ auth_data: null }), undefined);
 				}
 			);
 		});
