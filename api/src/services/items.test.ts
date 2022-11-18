@@ -4,7 +4,7 @@ import { getTracker, MockClient, Tracker } from 'knex-mock-client';
 import { cloneDeep } from 'lodash';
 import { afterEach, beforeAll, describe, expect, it, vi, MockedFunction } from 'vitest';
 import { ItemsService } from '../../src/services';
-import { InvalidPayloadException } from '../exceptions';
+// import { InvalidPayloadException } from '../exceptions';
 import { sqlFieldFormatter, sqlFieldList } from '../__utils__/items-utils';
 import { systemSchema, userSchema } from '../__utils__/schemas';
 
