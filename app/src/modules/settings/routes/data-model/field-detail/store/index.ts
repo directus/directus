@@ -95,21 +95,6 @@ export const useFieldDetailStore = defineStore({
 				const relationsStore = useRelationsStore();
 
 				this.field = cloneDeep(fieldsStore.getField(collection, field)!);
-				// re-fetch field meta to get the raw untranslated values
-				const response = await api.get(`/fields/${collection}/${field}`);
-				const fetchedFieldMeta = response.data?.data?.meta;
-				this.$patch({
-					field: {
-						meta: {
-							...(fetchedFieldMeta?.note ? { note: fetchedFieldMeta.note } : {}),
-							...(fetchedFieldMeta?.options ? { options: fetchedFieldMeta.options } : {}),
-							...(fetchedFieldMeta?.display_options ? { display_options: fetchedFieldMeta.display_options } : {}),
-							...(fetchedFieldMeta?.validation_message
-								? { validation_message: fetchedFieldMeta.validation_message }
-								: {}),
-						},
-					},
-				});
 				this.localType = getLocalTypeForField(collection, field)!;
 
 				const relations = cloneDeep(relationsStore.getRelationsForField(collection, field));
@@ -129,6 +114,22 @@ export const useFieldDetailStore = defineStore({
 						(relation) => relation.collection === collection && relation.field === field
 					) as DeepPartial<Relation> | undefined;
 				}
+
+				// re-fetch field meta to get the raw untranslated values
+				const response = await api.get(`/fields/${collection}/${field}`);
+				const fetchedFieldMeta = response.data?.data?.meta;
+				this.$patch({
+					field: {
+						meta: {
+							...(fetchedFieldMeta?.note ? { note: fetchedFieldMeta.note } : {}),
+							...(fetchedFieldMeta?.options ? { options: fetchedFieldMeta.options } : {}),
+							...(fetchedFieldMeta?.display_options ? { display_options: fetchedFieldMeta.display_options } : {}),
+							...(fetchedFieldMeta?.validation_message
+								? { validation_message: fetchedFieldMeta.validation_message }
+								: {}),
+						},
+					},
+				});
 			} else {
 				this.update({
 					localType: localType ?? 'standard',
