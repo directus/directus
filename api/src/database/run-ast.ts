@@ -286,6 +286,7 @@ function getDBQuery(
 		aliasMap,
 		isInnerQuery: true,
 		hasMultiRelationalSort,
+		jsonFields: jsonNodes,
 	});
 
 	const needsInnerQuery = hasMultiRelationalSort || hasMultiRelationalFilter;

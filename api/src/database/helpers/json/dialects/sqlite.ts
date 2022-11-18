@@ -133,15 +133,7 @@ export class JsonHelperSQLite extends JsonHelperDefault {
 			currentAlias,
 		]);
 	}
-	private applyFilter(dbQuery: Knex.QueryBuilder, node: JsonFieldNode, oldAlias: string): Knex.QueryBuilder {
-		if (!node.query?.filter) return dbQuery;
-		for (const [jsonPath, value] of Object.entries(node.query?.filter)) {
-			const alias = generateAlias();
-			const { operator: filterOperator, value: filterValue } = getOperation(jsonPath, value);
-			dbQuery = dbQuery.select(this.knex.raw('json_extract(??.value, ?) as ??', [oldAlias, jsonPath, alias]));
-			applyJsonFilterQuery(dbQuery, alias, filterOperator, filterValue, 'and');
-		}
-
-		return dbQuery;
+	filterQuery(collection: string, node: JsonFieldNode): Knex.Raw {
+		return this.knex.raw(`JSON_EXTRACT(??.??, ?)`, [collection, node.name, node.jsonPath]);
 	}
 }

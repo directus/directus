@@ -216,6 +216,10 @@ export class JsonHelperOracle_12 extends JsonHelperDefault {
 			})
 			.map((q) => (q.startsWith('$') ? q : '$' + q));
 	}
+	filterQuery(collection: string, node: JsonFieldNode): Knex.Raw {
+		const qp = this.knex.raw('?', [node.jsonPath]).toQuery();
+		return this.knex.raw(`JSON_VALUE(??.??, ${qp})`, [collection, node.name]);
+	}
 }
 
 function getFilterType(operator: string): 'VARCHAR2' | 'NUMBER' | '' {

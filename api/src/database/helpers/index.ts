@@ -27,11 +27,26 @@ export function getFunctions(database: Knex, schema: SchemaOverview) {
 }
 
 export type Helpers = ReturnType<typeof getHelpers>;
+export type AnyJsonHelper =
+	| jsonHelpers.fallback
+	| jsonHelpers.sqlite
+	| jsonHelpers.mssql16
+	| jsonHelpers.mssql13
+	| jsonHelpers.mariadb
+	| jsonHelpers.mysql8
+	| jsonHelpers.mysql5
+	| jsonHelpers.oracle12
+	| jsonHelpers.cockroachdb
+	| jsonHelpers.postgres10
+	| jsonHelpers.postgres14;
 
-export function getJsonHelper(database: Knex, schema: SchemaOverview, nodes: JsonFieldNode[] = []) {
+let jsonHelperSingleton: AnyJsonHelper | undefined;
+export function getJsonHelper(database: Knex, schema: SchemaOverview, nodes: JsonFieldNode[] = []): AnyJsonHelper {
+	if (jsonHelperSingleton) return jsonHelperSingleton;
 	const client = getDatabaseClient(database);
 	const helper = getJsonHelperByVersion(client);
-	return new jsonHelpers[helper](database, schema, nodes);
+	jsonHelperSingleton = new jsonHelpers[helper](database, schema, nodes);
+	return jsonHelperSingleton;
 }
 
 export function getJsonHelperByVersion(client: DatabaseClients): DatabaseVersionedClients {

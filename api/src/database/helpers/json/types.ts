@@ -25,4 +25,5 @@ export abstract class JsonHelper extends DatabaseHelper {
 
 	abstract preProcess(dbQuery: Knex.QueryBuilder, table: string): void;
 	abstract postProcess(items: Item[]): void;
+	abstract filterQuery(collection: string, node: JsonFieldNode): Knex.Raw | null;
 }

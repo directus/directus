@@ -13,7 +13,7 @@ import { Knex } from 'knex';
 import { clone, isPlainObject } from 'lodash';
 import { customAlphabet } from 'nanoid';
 import validate from 'uuid-validate';
-import { getHelpers } from '../database/helpers';
+import { getHelpers, getJsonHelper } from '../database/helpers';
 import { InvalidQueryException } from '../exceptions/invalid-query';
 import { getColumn } from './get-column';
 import { AliasMap, getColumnPath } from './get-column-path';
@@ -34,7 +34,12 @@ export default function applyQuery(
 	dbQuery: Knex.QueryBuilder,
 	query: Query,
 	schema: SchemaOverview,
-	options?: { aliasMap?: AliasMap; isInnerQuery?: boolean; hasMultiRelationalSort?: boolean }
+	options?: {
+		aliasMap?: AliasMap;
+		isInnerQuery?: boolean;
+		hasMultiRelationalSort?: boolean;
+		jsonFields?: JsonFieldNode[];
+	}
 ) {
 	const aliasMap: AliasMap = options?.aliasMap ?? Object.create(null);
 	let hasMultiRelationalFilter = false;
@@ -73,7 +78,7 @@ export default function applyQuery(
 			schema,
 			dbQuery,
 			query.filter,
-			[],
+			options?.jsonFields ?? [],
 			collection,
 			aliasMap
 		).hasMultiRelationalFilter;
@@ -335,6 +340,7 @@ export function applyFilter(
 ) {
 	const helpers = getHelpers(knex);
 	const relations: Relation[] = schema.relations;
+	const jsonFieldNames = jsonFields.map(({ fieldKey }) => fieldKey);
 	let hasMultiRelationalFilter = false;
 
 	// addJsonFilters()
@@ -363,7 +369,7 @@ export function applyFilter(
 
 			if (
 				filterPath.length > 1 ||
-				(!(key.includes('(') && key.includes(')')) && schema.collections[collection].fields[key].type === 'alias')
+				(!(key.includes('(') && key.includes(')')) && schema.collections[collection]?.fields[key]?.type === 'alias')
 			) {
 				const hasMultiRelational = addJoin({
 					path: filterPath,
@@ -420,7 +426,7 @@ export function applyFilter(
 
 			if (
 				filterPath.length > 1 ||
-				(!(key.includes('(') && key.includes(')')) && schema.collections[collection].fields[key].type === 'alias')
+				(!(key.includes('(') && key.includes(')')) && schema.collections[collection]?.fields[key]?.type === 'alias')
 			) {
 				if (!relation) continue;
 
@@ -488,6 +494,16 @@ export function applyFilter(
 				validateFilterOperator(type, filterOperator, special);
 
 				applyFilterToQuery(columnPath, filterOperator, filterValue, logical, targetCollection);
+			} else if (jsonFieldNames.includes(filterPath[0])) {
+				validateFilterOperator('string', filterOperator, []);
+				const node = jsonFields.find((n) => n.fieldKey === filterPath[0])!;
+				const helper = getJsonHelper(knex, schema);
+				const rawQuery = helper.filterQuery(collection, node);
+				if (rawQuery) {
+					applyFilterToQuery(filterPath[0], filterOperator, filterValue, logical, undefined, rawQuery);
+				} else {
+					applyFilterToQuery(filterPath[0], filterOperator, filterValue, logical);
+				}
 			} else {
 				const { type, special } = validateFilterField(
 					schema.collections[collection].fields,
@@ -535,12 +551,18 @@ export function applyFilter(
 			operator: string,
 			compareValue: any,
 			logical: 'and' | 'or' = 'and',
-			originalCollectionName?: string
+			originalCollectionName?: string,
+			selectionRaw?: any // should be Knex.Raw
 		) {
-			const [table, column] = key.split('.');
-
-			// Is processed through Knex.Raw, so should be safe to string-inject into these where queries
-			const selectionRaw = getColumn(knex, table, column, false, schema, { originalCollectionName }) as any;
+			let column = key;
+			if (!selectionRaw) {
+				const [table, _column] = key.split('.');
+				// Is processed through Knex.Raw, so should be safe to string-inject into these where queries
+				if (table && _column) {
+					selectionRaw = getColumn(knex, table, _column, false, schema, { originalCollectionName }) as any;
+				}
+				column = _column ?? table;
+			}
 
 			// Knex supports "raw" in the columnName parameter, but isn't typed as such. Too bad..
 			// See https://github.com/knex/knex/issues/4518 @TODO remove as any once knex is updated

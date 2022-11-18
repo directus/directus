@@ -26,7 +26,7 @@ export class JsonHelperMSSQL_16 extends JsonHelperDefault {
 		}
 		dbQuery.from(table);
 	}
-	private jsonQueryOrValue(field: string, node: JsonFieldNode): Knex.Raw {
+	private jsonQueryOrValue(field: string, node: JsonFieldNode): Knex.Raw | null {
 		const qPath = this.knex.raw('?', [node.jsonPath]).toQuery();
 		return this.knex.raw(`COALESCE(JSON_QUERY(??, ${qPath}), JSON_VALUE(??, ${qPath})) as ??`, [
 			field,
@@ -41,5 +41,8 @@ export class JsonHelperMSSQL_16 extends JsonHelperDefault {
 			}
 		}
 		this.postProcessParseJSON(items);
+	}
+	filterQuery(collection: string, node: JsonFieldNode): Knex.Raw {
+		return this.knex.raw(`JSON_VALUE(??.??, ?)`, [collection, node.name, node.jsonPath]);
 	}
 }

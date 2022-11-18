@@ -1,5 +1,6 @@
 import { Item } from '@directus/shared/types';
 import { Knex } from 'knex';
+import { JsonFieldNode } from '../../../../types';
 import { JsonHelperDefault } from './default';
 
 /**
@@ -18,5 +19,8 @@ export class JsonHelperMariaDB extends JsonHelperDefault {
 	}
 	postProcess(items: Item[]): void {
 		this.postProcessParseJSON(items);
+	}
+	filterQuery(collection: string, node: JsonFieldNode): Knex.Raw {
+		return this.knex.raw(`JSON_EXTRACT(??.??, ?)`, [collection, node.name, node.jsonPath]);
 	}
 }

@@ -5,6 +5,7 @@ import { JsonHelper } from '../types';
 import { JSONPath } from 'jsonpath-plus';
 import { JsonFieldNode } from '../../../../types';
 import { getOperation } from '../../../../utils/apply-query';
+import { InvalidQueryException } from '../../../../exceptions';
 
 const jsonPathPlusOptions = {
 	// preventEval: true,
@@ -85,6 +86,9 @@ export class JsonHelperDefault extends JsonHelper {
 		}
 
 		return `${node.jsonPath}[?(${conditions.join(' && ')})]`;
+	}
+	filterQuery(_collection: string, _node: JsonFieldNode): Knex.Raw | null {
+		throw new InvalidQueryException(`Using JSON Query in regular filters is not supported by this database.`);
 	}
 }
 
