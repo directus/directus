@@ -31,8 +31,8 @@ import {
 	RollupOptions,
 	watch as rollupWatch,
 } from 'rollup';
+import esbuild from 'rollup-plugin-esbuild';
 import styles from 'rollup-plugin-styles';
-import typescript from 'rollup-plugin-typescript2';
 import vue from 'rollup-plugin-vue';
 import { Language, RollupConfig, RollupMode } from '../types';
 import { getLanguageFromPath, isLanguage } from '../utils/languages';
@@ -562,49 +562,27 @@ function getRollupOptions({
 }): RollupOptions {
 	const languages = Array.isArray(language) ? language : [language];
 
-	if (mode === 'browser') {
-		return {
-			input: typeof input !== 'string' ? 'entry' : input,
-			external: APP_SHARED_DEPS,
-			plugins: [
-				typeof input !== 'string' ? virtual(input) : null,
-				vue({ preprocessStyles: true }) as Plugin,
-				languages.includes('typescript') ? typescript({ check: false }) : null,
-				styles(),
-				...plugins,
-				nodeResolve({ browser: true }),
-				commonjs({ esmExternals: true, sourceMap: sourcemap }),
-				json(),
-				replace({
-					values: {
-						'process.env.NODE_ENV': JSON.stringify('production'),
-					},
-					preventAssignment: true,
-				}),
-				minify ? terser() : null,
-			],
-		};
-	} else {
-		return {
-			input: typeof input !== 'string' ? 'entry' : input,
-			external: API_SHARED_DEPS,
-			plugins: [
-				typeof input !== 'string' ? virtual(input) : null,
-				languages.includes('typescript') ? typescript({ check: false }) : null,
-				...plugins,
-				nodeResolve(),
-				commonjs({ sourceMap: sourcemap }),
-				json(),
-				replace({
-					values: {
-						'process.env.NODE_ENV': JSON.stringify('production'),
-					},
-					preventAssignment: true,
-				}),
-				minify ? terser() : null,
-			],
-		};
-	}
+	return {
+		input: typeof input !== 'string' ? 'entry' : input,
+		external: mode === 'browser' ? APP_SHARED_DEPS : API_SHARED_DEPS,
+		plugins: [
+			typeof input !== 'string' ? virtual(input) : null,
+			mode === 'browser' ? (vue({ preprocessStyles: true }) as Plugin) : null,
+			languages.includes('typescript') ? esbuild({ include: /\.tsx?$/, sourceMap: sourcemap }) : null,
+			mode === 'browser' ? styles() : null,
+			...plugins,
+			nodeResolve({ browser: mode === 'browser' }),
+			commonjs({ esmExternals: mode === 'browser', sourceMap: sourcemap }),
+			json(),
+			replace({
+				values: {
+					'process.env.NODE_ENV': JSON.stringify('production'),
+				},
+				preventAssignment: true,
+			}),
+			minify ? terser() : null,
+		],
+	};
 }
 
 function getRollupOutputOptions({
@@ -616,22 +594,13 @@ function getRollupOutputOptions({
 	output: string;
 	sourcemap: boolean;
 }): RollupOutputOptions {
-	if (mode === 'browser') {
-		return {
-			file: output,
-			format: 'es',
-			inlineDynamicImports: true,
-			sourcemap,
-		};
-	} else {
-		return {
-			file: output,
-			format: 'cjs',
-			exports: 'auto',
-			inlineDynamicImports: true,
-			sourcemap,
-		};
-	}
+	return {
+		file: output,
+		format: mode === 'browser' ? 'es' : 'cjs',
+		exports: 'auto',
+		inlineDynamicImports: true,
+		sourcemap,
+	};
 }
 
 function formatRollupError(error: RollupError): string {

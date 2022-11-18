@@ -10,7 +10,7 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent, computed } from 'vue';
 import { useLatencyStore } from '@/stores/latency';
 import { sortBy } from 'lodash';
-import ms from 'ms';
+import prettyMS from 'pretty-ms';
 
 export default defineComponent({
 	setup() {
@@ -46,13 +46,13 @@ export default defineComponent({
 		const latencyTooltip = computed(() => {
 			switch (connectionStrength.value) {
 				case 4:
-					return `${t('connection_excellent')}\n(${ms(avgLatency.value)} ${t('latency')})`;
+					return `${t('connection_excellent')}\n(${prettyMS(avgLatency.value)} ${t('latency')})`;
 				case 3:
-					return `${t('connection_good')}\n(${ms(avgLatency.value)} ${t('latency')})`;
+					return `${t('connection_good')}\n(${prettyMS(avgLatency.value)} ${t('latency')})`;
 				case 2:
-					return `${t('connection_fair')}\n(${ms(avgLatency.value)} ${t('latency')})`;
+					return `${t('connection_fair')}\n(${prettyMS(avgLatency.value)} ${t('latency')})`;
 				case 1:
-					return `${t('connection_poor')}\n(${ms(avgLatency.value)} ${t('latency')})`;
+					return `${t('connection_poor')}\n(${prettyMS(avgLatency.value)} ${t('latency')})`;
 				default:
 					return null;
 			}
