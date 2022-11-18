@@ -4,8 +4,7 @@
 			ref="activator"
 			class="v-menu-activator"
 			:class="{ attached }"
-			@pointerenter.stop="onPointerEnter"
-			@pointerleave.stop="onPointerLeave"
+			v-on="trigger === 'hover' ? { pointerenter: onPointerEnter, pointerleave: onPointerLeave } : {}"
 		>
 			<slot
 				name="activator"
@@ -40,8 +39,7 @@
 						class="v-menu-content"
 						:class="{ 'full-height': fullHeight, seamless }"
 						@click.stop="onContentClick"
-						@pointerenter.stop="onPointerEnter"
-						@pointerleave.stop="onPointerLeave"
+						v-on="trigger === 'hover' ? { pointerenter: onPointerEnter, pointerleave: onPointerLeave } : {}"
 					>
 						<slot
 							v-bind="{
@@ -267,13 +265,13 @@ function useEvents() {
 		toggle();
 	}
 
-	function onPointerEnter() {
-		if (props.trigger !== 'hover') return;
+	function onPointerEnter(event: Event) {
+		event.stopPropagation();
 		isHovered.value = true;
 	}
 
-	function onPointerLeave() {
-		if (props.trigger !== 'hover') return;
+	function onPointerLeave(event: Event) {
+		event.stopPropagation();
 		isHovered.value = false;
 	}
 }
