@@ -5,7 +5,7 @@ import {
 } from '@directus/shared/constants';
 import {
 	ensureExtensionDirs,
-	generateExtensionsEntry,
+	generateExtensionsEntrypoint,
 	getLocalExtensions,
 	getPackageExtensions,
 } from '@directus/shared/utils/node';
@@ -156,6 +156,7 @@ export default defineConfig({
 	},
 	test: {
 		environment: 'happy-dom',
+		setupFiles: ['src/__setup__/mock-globals.ts'],
 	},
 });
 
@@ -170,10 +171,9 @@ function getExtensionsRealPaths() {
 }
 
 function directusExtensions() {
-	const prefix = '@directus-extensions-';
-	const virtualIds = APP_OR_HYBRID_EXTENSION_TYPES.map((type) => `${prefix}${type}`);
+	const virtualExtensionsId = '@directus-extensions';
 
-	let extensionEntrypoints = {};
+	let extensionsEntrypoint = null;
 
 	return [
 		{
@@ -188,15 +188,13 @@ function directusExtensions() {
 				await loadExtensions();
 			},
 			resolveId(id) {
-				if (virtualIds.includes(id)) {
+				if (id === virtualExtensionsId) {
 					return id;
 				}
 			},
 			load(id) {
-				if (virtualIds.includes(id)) {
-					const extensionType = id.substring(prefix.length);
-
-					return extensionEntrypoints[extensionType];
+				if (id === virtualExtensionsId) {
+					return extensionsEntrypoint;
 				}
 			},
 		},
@@ -213,7 +211,7 @@ function directusExtensions() {
 						output: {
 							entryFileNames: 'assets/[name].[hash].entry.js',
 						},
-						external: virtualIds,
+						external: [virtualExtensionsId],
 						preserveEntrySignatures: 'exports-only',
 					},
 				},
@@ -228,8 +226,6 @@ function directusExtensions() {
 
 		const extensions = [...packageExtensions, ...localExtensions];
 
-		for (const extensionType of APP_OR_HYBRID_EXTENSION_TYPES) {
-			extensionEntrypoints[extensionType] = generateExtensionsEntry(extensionType, extensions);
-		}
+		extensionsEntrypoint = generateExtensionsEntrypoint(extensions);
 	}
 }
