@@ -1,6 +1,6 @@
+import { useExtension } from '@/composables/use-extension';
 import { set } from 'lodash';
 import { State, StateUpdates } from '../types';
-import { getInterface } from '@/interfaces';
 
 /**
  * In case a relational field removed the schema object, we'll have to make sure it's re-added
@@ -20,11 +20,11 @@ export function resetSchema(updates: StateUpdates, state: State) {
 export function setLocalTypeForInterface(updates: StateUpdates) {
 	if (!updates.field?.meta?.interface) return;
 
-	const chosenInterface = getInterface(updates.field.meta.interface);
+	const chosenInterface = useExtension('interface', updates.field.meta.interface);
 
-	if (!chosenInterface) return;
+	if (!chosenInterface.value) return;
 
-	const localType = chosenInterface?.localTypes?.[0] ?? 'standard';
+	const localType = chosenInterface.value?.localTypes?.[0] ?? 'standard';
 	set(updates, 'localType', localType);
 }
 
@@ -36,13 +36,13 @@ export function setLocalTypeForInterface(updates: StateUpdates) {
 export function setTypeForInterface(updates: StateUpdates, state: State) {
 	if (!updates.field?.meta?.interface) return;
 
-	const chosenInterface = getInterface(updates.field.meta.interface);
+	const chosenInterface = useExtension('interface', updates.field.meta.interface);
 
-	if (!chosenInterface) return updates;
+	if (!chosenInterface.value) return updates;
 
-	if (state.field.type && chosenInterface.types.includes(state.field.type)) return;
+	if (state.field.type && chosenInterface.value.types.includes(state.field.type)) return;
 
-	const defaultType = chosenInterface?.types[0];
+	const defaultType = chosenInterface.value?.types[0];
 	set(updates, 'field.type', defaultType);
 }
 
