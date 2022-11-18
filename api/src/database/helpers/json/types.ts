@@ -17,7 +17,7 @@ export type DatabaseVersionedClients =
 	| 'fallback';
 
 export abstract class JsonHelper extends DatabaseHelper {
-	constructor(protected knex: Knex, protected schema: SchemaOverview, protected nodes: JsonFieldNode[] = []) {
+	constructor(protected knex: Knex, protected schema: SchemaOverview, public nodes: JsonFieldNode[] = []) {
 		super(knex);
 		this.schema = schema;
 		this.nodes = nodes;

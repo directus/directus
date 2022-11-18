@@ -13,15 +13,13 @@ import { Knex } from 'knex';
 import { clone, isPlainObject } from 'lodash';
 import { customAlphabet } from 'nanoid';
 import validate from 'uuid-validate';
-import { getHelpers, getJsonHelper } from '../database/helpers';
+import { AnyJsonHelper, getHelpers, getJsonHelper } from '../database/helpers';
 import { InvalidQueryException } from '../exceptions/invalid-query';
 import { getColumn } from './get-column';
 import { AliasMap, getColumnPath } from './get-column-path';
 import { getRelationInfo } from './get-relation-info';
 import { getFilterOperatorsForType, getOutputTypeForFunction } from '@directus/shared/utils';
 import { stripFunction } from './strip-function';
-// import { getDatabaseClient } from '../database';
-import { JsonFieldNode } from '../types';
 
 export const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
 
@@ -34,11 +32,11 @@ export default function applyQuery(
 	dbQuery: Knex.QueryBuilder,
 	query: Query,
 	schema: SchemaOverview,
+	jsonHelper?: AnyJsonHelper,
 	options?: {
 		aliasMap?: AliasMap;
 		isInnerQuery?: boolean;
 		hasMultiRelationalSort?: boolean;
-		jsonFields?: JsonFieldNode[];
 	}
 ) {
 	const aliasMap: AliasMap = options?.aliasMap ?? Object.create(null);
@@ -78,9 +76,9 @@ export default function applyQuery(
 			schema,
 			dbQuery,
 			query.filter,
-			options?.jsonFields ?? [],
 			collection,
-			aliasMap
+			aliasMap,
+			jsonHelper
 		).hasMultiRelationalFilter;
 	}
 
@@ -334,17 +332,15 @@ export function applyFilter(
 	schema: SchemaOverview,
 	rootQuery: Knex.QueryBuilder,
 	rootFilter: Filter,
-	jsonFields: JsonFieldNode[],
 	collection: string,
-	aliasMap: AliasMap
+	aliasMap: AliasMap,
+	jsonHelper?: AnyJsonHelper
 ) {
 	const helpers = getHelpers(knex);
 	const relations: Relation[] = schema.relations;
-	const jsonFieldNames = jsonFields.map(({ fieldKey }) => fieldKey);
+	const jsonFieldNames = (jsonHelper?.nodes ?? []).map(({ fieldKey }) => fieldKey);
 	let hasMultiRelationalFilter = false;
 
-	// addJsonFilters()
-	// console.log('addJsonFilters', rootFilter, collection);
 	addJoins(rootQuery, rootFilter, collection);
 	addWhereClauses(knex, rootQuery, rootFilter, collection);
 
@@ -496,7 +492,7 @@ export function applyFilter(
 				applyFilterToQuery(columnPath, filterOperator, filterValue, logical, targetCollection);
 			} else if (jsonFieldNames.includes(filterPath[0])) {
 				validateFilterOperator('string', filterOperator, []);
-				const node = jsonFields.find((n) => n.fieldKey === filterPath[0])!;
+				const node = (jsonHelper?.nodes ?? []).find((n) => n.fieldKey === filterPath[0])!;
 				const helper = getJsonHelper(knex, schema);
 				const rawQuery = helper.filterQuery(collection, node);
 				if (rawQuery) {

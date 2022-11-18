@@ -3,7 +3,7 @@ import { toArray } from '@directus/shared/utils';
 import { Knex } from 'knex';
 import { clone, cloneDeep, merge, pick, uniq } from 'lodash';
 import getDatabase from '.';
-import { getHelpers, getJsonHelper } from '../database/helpers';
+import { AnyJsonHelper, getHelpers, getJsonHelper } from '../database/helpers';
 import env from '../env';
 import { PayloadService } from '../services/payload';
 import { AST, ASTNode, FieldNode, FunctionFieldNode, JsonFieldNode, M2ONode, NestedCollectionNode } from '../types/ast';
@@ -13,7 +13,6 @@ import { getCollectionFromAlias } from '../utils/get-collection-from-alias';
 import { getColumn } from '../utils/get-column';
 import { AliasMap } from '../utils/get-column-path';
 import { stripFunction } from '../utils/strip-function';
-import { JsonHelper } from './helpers/json/types';
 
 type RunASTOptions = {
 	/**
@@ -246,7 +245,7 @@ function getDBQuery(
 	table: string,
 	fieldNodes: (FieldNode | FunctionFieldNode | JsonFieldNode)[],
 	query: Query,
-	jsonHelper: JsonHelper
+	jsonHelper: AnyJsonHelper
 ): Knex.QueryBuilder {
 	const preProcess = getColumnPreprocessor(knex, schema, table);
 	const queryCopy = clone(query);
@@ -282,11 +281,10 @@ function getDBQuery(
 		}
 	}
 
-	const { hasMultiRelationalFilter } = applyQuery(knex, table, dbQuery, queryCopy, schema, {
+	const { hasMultiRelationalFilter } = applyQuery(knex, table, dbQuery, queryCopy, schema, jsonHelper, {
 		aliasMap,
 		isInnerQuery: true,
 		hasMultiRelationalSort,
-		jsonFields: jsonNodes,
 	});
 
 	const needsInnerQuery = hasMultiRelationalSort || hasMultiRelationalFilter;

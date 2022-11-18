@@ -40,13 +40,10 @@ export type AnyJsonHelper =
 	// | jsonHelpers.postgres10
 	| jsonHelpers.postgres14;
 
-let jsonHelperSingleton: AnyJsonHelper | undefined;
 export function getJsonHelper(database: Knex, schema: SchemaOverview, nodes: JsonFieldNode[] = []): AnyJsonHelper {
-	if (jsonHelperSingleton) return jsonHelperSingleton;
 	const client = getDatabaseClient(database);
 	const helper = getJsonHelperByVersion(client);
-	jsonHelperSingleton = new jsonHelpers[helper](database, schema, nodes);
-	return jsonHelperSingleton;
+	return new jsonHelpers[helper](database, schema, nodes);
 }
 
 export function getJsonHelperByVersion(client: DatabaseClients): DatabaseVersionedClients {
