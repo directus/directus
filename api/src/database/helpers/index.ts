@@ -87,7 +87,7 @@ export function getJsonHelperByVersion(client: DatabaseClients): DatabaseVersion
 			}
 			return 'fallback';
 		case 'oracle':
-			if (major >= 12 && minor >= 2) {
+			if ((major == 12 && minor >= 2) || major > 12) {
 				return 'oracle12'; // version 12c+
 			}
 			return 'fallback';
