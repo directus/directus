@@ -1,6 +1,7 @@
 import { Item } from '@directus/shared/types';
 import { Knex } from 'knex';
 import { JsonFieldNode } from '../../../../types';
+import { getOperation } from '../../../../utils/apply-query';
 import { JsonHelperDefault } from './default';
 
 /**
@@ -18,9 +19,20 @@ export class JsonHelperMySQL_5 extends JsonHelperDefault {
 			.from(table);
 	}
 	postProcess(items: Item[]): void {
-		this.postProcessParseJSON(items);
+		this.postProcessFallback(items);
 	}
 	filterQuery(collection: string, node: JsonFieldNode): Knex.Raw {
 		return this.knex.raw(`JSON_EXTRACT(??.??, ?)`, [collection, node.name, node.jsonPath]);
+	}
+	protected override buildFilterPath(node: JsonFieldNode) {
+		if (!node.query?.filter) return node.jsonPath;
+
+		const conditions = [];
+		for (const [jsonPath, value] of Object.entries(node.query?.filter)) {
+			const { operator: filterOperator, value: filterValue } = getOperation(jsonPath, value);
+			conditions.push(this.transformFilterJsonPath(jsonPath, filterOperator, filterValue));
+		}
+
+		return `$[?(${conditions.join(' && ')})]`;
 	}
 }

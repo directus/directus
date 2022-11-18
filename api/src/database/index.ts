@@ -333,7 +333,6 @@ export async function validateDatabaseVersion(): Promise<void> {
 		logger.warn(`Falling back to json post-processing instead, using JSON in "filter" will not be supported!`);
 	} else if (helper === 'mysql5' || helper === 'cockroachdb') {
 		logger.warn(`Using JSON in "filter" is not supported by ${client} (version: ${databaseVersion.parsed.join('.')})`);
-	} else {
-		logger.debug(`Database: ${client} (version: ${databaseVersion.parsed.join('.')})`);
 	}
+	logger.debug(`Database: ${client} (version: ${databaseVersion.parsed.join('.')})`);
 }

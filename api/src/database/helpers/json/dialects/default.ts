@@ -67,11 +67,12 @@ export class JsonHelperDefault extends JsonHelper {
 			const data = typeof item[node.fieldKey] === 'string' ? parseJSON(item[node.fieldKey]) : item[node.fieldKey];
 			const jsonPath = Object.keys(node.query).length === 0 ? node.jsonPath : this.buildFilterPath(node);
 
-			item[node.fieldKey] = JSONPath({
-				...jsonPathPlusOptions,
-				path: jsonPath,
-				json: data,
-			});
+			item[node.fieldKey] =
+				JSONPath({
+					...jsonPathPlusOptions,
+					path: jsonPath,
+					json: data,
+				}) ?? null;
 		} catch (e) {
 			item[node.fieldKey] = null;
 		}
@@ -82,7 +83,7 @@ export class JsonHelperDefault extends JsonHelper {
 		const conditions = [];
 		for (const [jsonPath, value] of Object.entries(node.query?.filter)) {
 			const { operator: filterOperator, value: filterValue } = getOperation(jsonPath, value);
-			conditions.push(transformFilterJsonPath(jsonPath, filterOperator, filterValue));
+			conditions.push(this.transformFilterJsonPath(jsonPath, filterOperator, filterValue));
 		}
 
 		return `${node.jsonPath}[?(${conditions.join(' && ')})]`;
@@ -90,73 +91,72 @@ export class JsonHelperDefault extends JsonHelper {
 	filterQuery(_collection: string, _node: JsonFieldNode): Knex.Raw | null {
 		throw new InvalidQueryException(`Using JSON Query in regular filters is not supported by this database.`);
 	}
-}
-
-function transformFilterJsonPath(jsonPath: string, filterOperator: string, filterValue: any): string {
-	const path = '@' + (jsonPath[0] === '$' ? jsonPath.substring(1) : jsonPath),
-		value = JSON.stringify(filterValue);
-	let operator = '';
-	switch (filterOperator) {
-		case '_eq':
-			operator = '===';
-			break;
-		case '_neq':
-			operator = '!==';
-			break;
-		case '_gt':
-			operator = '>';
-			break;
-		case '_gte':
-			operator = '>=';
-			break;
-		case '_lt':
-			operator = '<';
-			break;
-		case '_lte':
-			operator = '<=';
-			break;
-		case '_ieq':
-			return `${path}.match(/^${filterValue}$/i)`;
-		case '_nieq':
-			return `!${path}.match(/^${filterValue}$/i)`;
-		case '_contains':
-			return `${path}.match(/${filterValue}/)`;
-		case '_ncontains':
-			return `!${path}.match(/${filterValue}/)`;
-		case '_icontains':
-			return `${path}.match(/${filterValue}/i)`;
-		case '_nicontains':
-			return `!${path}.match(/${filterValue}/i)`;
-		case '_starts_with':
-			return `${path}.match(/^${filterValue}/)`;
-		case '_nstarts_with':
-			return `!${path}.match(/^${filterValue}/)`;
-		case '_istarts_with':
-			return `${path}.match(/^${filterValue}/i)`;
-		case '_nistarts_with':
-			return `!${path}.match(/^${filterValue}/i)`;
-		case '_ends_with':
-			return `${path}.match(/${filterValue}$/)`;
-		case '_nends_with':
-			return `!${path}.match(/${filterValue}$/)`;
-		case '_iends_with':
-			return `${path}.match(/${filterValue}$/i)`;
-		case '_niends_with':
-			return `!${path}.match(/${filterValue}$/i)`;
-		case '_in':
-			return (filterValue as any[]).map((val) => transformFilterJsonPath(jsonPath, '_eq', val)).join(' && ');
-		case '_nin':
-			return (filterValue as any[]).map((val) => transformFilterJsonPath(jsonPath, '_neq', val)).join(' && ');
-		case '_between': {
-			const conditionA = transformFilterJsonPath(jsonPath, '_gt', filterValue[0]);
-			const conditionB = transformFilterJsonPath(jsonPath, '_lt', filterValue[1]);
-			return `${conditionA} && ${conditionB}`;
+	protected transformFilterJsonPath(jsonPath: string, filterOperator: string, filterValue: any): string {
+		const path = '@' + (jsonPath[0] === '$' ? jsonPath.substring(1) : jsonPath),
+			value = JSON.stringify(filterValue);
+		let operator = '';
+		switch (filterOperator) {
+			case '_eq':
+				operator = '===';
+				break;
+			case '_neq':
+				operator = '!==';
+				break;
+			case '_gt':
+				operator = '>';
+				break;
+			case '_gte':
+				operator = '>=';
+				break;
+			case '_lt':
+				operator = '<';
+				break;
+			case '_lte':
+				operator = '<=';
+				break;
+			case '_ieq':
+				return `${path}.match(/^${filterValue}$/i)`;
+			case '_nieq':
+				return `!${path}.match(/^${filterValue}$/i)`;
+			case '_contains':
+				return `${path}.match(/${filterValue}/)`;
+			case '_ncontains':
+				return `!${path}.match(/${filterValue}/)`;
+			case '_icontains':
+				return `${path}.match(/${filterValue}/i)`;
+			case '_nicontains':
+				return `!${path}.match(/${filterValue}/i)`;
+			case '_starts_with':
+				return `${path}.match(/^${filterValue}/)`;
+			case '_nstarts_with':
+				return `!${path}.match(/^${filterValue}/)`;
+			case '_istarts_with':
+				return `${path}.match(/^${filterValue}/i)`;
+			case '_nistarts_with':
+				return `!${path}.match(/^${filterValue}/i)`;
+			case '_ends_with':
+				return `${path}.match(/${filterValue}$/)`;
+			case '_nends_with':
+				return `!${path}.match(/${filterValue}$/)`;
+			case '_iends_with':
+				return `${path}.match(/${filterValue}$/i)`;
+			case '_niends_with':
+				return `!${path}.match(/${filterValue}$/i)`;
+			case '_in':
+				return (filterValue as any[]).map((val) => this.transformFilterJsonPath(jsonPath, '_eq', val)).join(' && ');
+			case '_nin':
+				return (filterValue as any[]).map((val) => this.transformFilterJsonPath(jsonPath, '_neq', val)).join(' && ');
+			case '_between': {
+				const conditionA = this.transformFilterJsonPath(jsonPath, '_gt', filterValue[0]);
+				const conditionB = this.transformFilterJsonPath(jsonPath, '_lt', filterValue[1]);
+				return `${conditionA} && ${conditionB}`;
+			}
+			case '_nbetween': {
+				const conditionA = this.transformFilterJsonPath(jsonPath, '_lt', filterValue[0]);
+				const conditionB = this.transformFilterJsonPath(jsonPath, '_gt', filterValue[1]);
+				return `${conditionA} || ${conditionB}`;
+			}
 		}
-		case '_nbetween': {
-			const conditionA = transformFilterJsonPath(jsonPath, '_lt', filterValue[0]);
-			const conditionB = transformFilterJsonPath(jsonPath, '_gt', filterValue[1]);
-			return `${conditionA} || ${conditionB}`;
-		}
+		return `${path} ${operator} ${value}`;
 	}
-	return `${path} ${operator} ${value}`;
 }
