@@ -327,9 +327,12 @@ export async function validateDatabaseVersion(): Promise<void> {
 	const client = getDatabaseClient(database);
 	const helpers = getHelpers(database);
 	databaseVersion = await helpers.schema.getVersion();
-	if (getJsonHelperByVersion(client) === 'fallback') {
+	const helper = getJsonHelperByVersion(client);
+	if (helper === 'fallback') {
 		logger.warn(`JSON queries are not supported natively by ${client} (version: ${databaseVersion.parsed.join('.')})`);
 		logger.warn(`Falling back to json post-processing instead, using JSON in "filter" will not be supported!`);
+	} else if (helper === 'mysql5' || helper === 'cockroachdb') {
+		logger.warn(`Using JSON in "filter" is not supported by ${client} (version: ${databaseVersion.parsed.join('.')})`);
 	} else {
 		logger.debug(`Database: ${client} (version: ${databaseVersion.parsed.join('.')})`);
 	}
