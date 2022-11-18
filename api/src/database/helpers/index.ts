@@ -66,10 +66,10 @@ export function getJsonHelperByVersion(client: DatabaseClients): DatabaseVersion
 			// }
 			return 'fallback';
 		case 'cockroachdb':
-			if (major >= 2) {
-				// apparently cockroach DB supports JSON since v2 but not very well
-				return 'cockroachdb';
-			}
+			// if (major >= 2) {
+			// 	// apparently cockroach DB supports JSON since v2 but not very well
+			// 	return 'cockroachdb';
+			// }
 			return 'fallback'; // should really update if still running < v2
 		case 'mysql':
 			if (/MariaDB/i.test(full)) {

@@ -6,7 +6,7 @@ import { JsonFieldNode } from '../../../types';
 export type DatabaseVersionedClients =
 	| 'postgres14'
 	// | 'postgres10'
-	| 'cockroachdb'
+	// | 'cockroachdb'
 	| 'oracle12'
 	| 'mysql5'
 	| 'mysql8'

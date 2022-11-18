@@ -331,8 +331,8 @@ export async function validateDatabaseVersion(): Promise<void> {
 	if (helper === 'fallback') {
 		logger.warn(`JSON queries are not supported natively by ${client} (version: ${databaseVersion.parsed.join('.')})`);
 		logger.warn(`Falling back to json post-processing instead, using JSON in "filter" will not be supported!`);
-	} else if (helper === 'cockroachdb') {
+	} /* else if (helper === 'cockroachdb') {
 		logger.warn(`Using JSON in "filter" is not supported by ${client} (version: ${databaseVersion.parsed.join('.')})`);
-	}
+	} */
 	logger.debug(`Database: ${client} (version: ${databaseVersion.parsed.join('.')})`);
 }
