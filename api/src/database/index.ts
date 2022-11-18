@@ -10,7 +10,7 @@ import path from 'path';
 import { merge } from 'lodash';
 import { promisify } from 'util';
 import { getHelpers, getJsonHelperByVersion } from './helpers';
-import { DatabaseVendors } from './helpers/json/types';
+import { DatabaseClients } from './helpers/types';
 
 let database: Knex | null = null;
 let databaseVersion: { parsed: number[]; full: string } = { parsed: [], full: '' };
@@ -193,7 +193,7 @@ export async function validateDatabaseConnection(database?: Knex): Promise<void>
 	}
 }
 
-export function getDatabaseClient(database?: Knex): DatabaseVendors {
+export function getDatabaseClient(database?: Knex): DatabaseClients {
 	database = database ?? getDatabase();
 
 	switch (database.client.constructor.name) {

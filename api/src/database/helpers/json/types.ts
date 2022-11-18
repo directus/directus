@@ -3,8 +3,7 @@ import { Knex } from 'knex';
 import { Item, SchemaOverview } from '@directus/shared/types';
 import { JsonFieldNode } from '../../../types';
 
-export type DatabaseVendors = 'mysql' | 'postgres' | 'cockroachdb' | 'sqlite' | 'oracle' | 'mssql' | 'redshift';
-export type JsonVersionedHelper =
+export type DatabaseVersionedClients =
 	| 'postgres14'
 	| 'postgres10'
 	| 'cockroachdb'
