@@ -1,6 +1,7 @@
 import { Query, SchemaOverview } from '@directus/shared/types';
 import { Knex } from 'knex';
 import { applyFilter } from '../../../utils/apply-query';
+import { AliasMap } from '../../../utils/get-column-path';
 import { DatabaseHelper } from '../types';
 
 export type FnHelperOptions = {
@@ -49,9 +50,8 @@ export abstract class FnHelper extends DatabaseHelper {
 				this.schema,
 				countQuery,
 				options.query.filter,
-				[],
 				relation.collection,
-				{}
+				{} as AliasMap
 			).query;
 		}
 

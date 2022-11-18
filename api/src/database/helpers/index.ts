@@ -48,7 +48,7 @@ export function getJsonHelper(database: Knex, schema: SchemaOverview, nodes: Jso
 
 export function getJsonHelperByVersion(client: DatabaseClients): DatabaseVersionedClients {
 	const { parsed, full } = getDatabaseVersion();
-	if (parsed.length === 0) return 'fallback';
+	if (!parsed || parsed.length === 0) return 'fallback';
 	const [major, minor = 0] = parsed;
 	switch (client) {
 		case 'sqlite':
