@@ -93,15 +93,15 @@ export class JsonHelperDefault extends JsonHelper {
 }
 
 function transformFilterJsonPath(jsonPath: string, filterOperator: string, filterValue: any): string {
-	const path = '@' + (jsonPath[0] === '$' ? jsonPath.substring(1) : jsonPath);
-	let value = JSON.stringify(filterValue),
-		operator;
+	const path = '@' + (jsonPath[0] === '$' ? jsonPath.substring(1) : jsonPath),
+		value = JSON.stringify(filterValue);
+	let operator = '';
 	switch (filterOperator) {
 		case '_eq':
-			operator = '==';
+			operator = '===';
 			break;
 		case '_neq':
-			operator = '!=';
+			operator = '!==';
 			break;
 		case '_gt':
 			operator = '>';
@@ -116,57 +116,33 @@ function transformFilterJsonPath(jsonPath: string, filterOperator: string, filte
 			operator = '<=';
 			break;
 		case '_ieq':
-			operator = 'like_regex';
-			value = `"^${filterValue}$" flag "i"`;
-			break;
+			return `${path}.match(/^${filterValue}$/i)`;
 		case '_nieq':
-			operator = '! like_regex';
-			value = `"^${filterValue}$" flag "i"`;
-			break;
+			return `!${path}.match(/^${filterValue}$/i)`;
 		case '_contains':
-			operator = 'like_regex';
-			break;
+			return `${path}.match(/${filterValue}/)`;
 		case '_ncontains':
-			operator = '! like_regex';
-			break;
+			return `!${path}.match(/${filterValue}/)`;
 		case '_icontains':
-			operator = 'like_regex';
-			value = value + ' flag "i"';
-			break;
+			return `${path}.match(/${filterValue}/i)`;
 		case '_nicontains':
-			operator = '! like_regex';
-			value = value + ' flag "i"';
-			break;
+			return `!${path}.match(/${filterValue}/i)`;
 		case '_starts_with':
-			operator = 'starts with';
-			break;
+			return `${path}.match(/^${filterValue}/)`;
 		case '_nstarts_with':
-			operator = '! starts with';
-			break;
+			return `!${path}.match(/^${filterValue}/)`;
 		case '_istarts_with':
-			operator = 'like_regex';
-			value = `"^${filterValue}" flag "i"`;
-			break;
+			return `${path}.match(/^${filterValue}/i)`;
 		case '_nistarts_with':
-			operator = '! like_regex';
-			value = `"^${filterValue}" flag "i"`;
-			break;
+			return `!${path}.match(/^${filterValue}/i)`;
 		case '_ends_with':
-			operator = 'like_regex';
-			value = `"${filterValue}$"`;
-			break;
+			return `${path}.match(/${filterValue}$/)`;
 		case '_nends_with':
-			operator = '! like_regex';
-			value = `"${filterValue}$"`;
-			break;
+			return `!${path}.match(/${filterValue}$/)`;
 		case '_iends_with':
-			operator = 'like_regex';
-			value = `"${filterValue}$" flag "i"`;
-			break;
+			return `${path}.match(/${filterValue}$/i)`;
 		case '_niends_with':
-			operator = '! like_regex';
-			value = `"${filterValue}$" flag "i"`;
-			break;
+			return `!${path}.match(/${filterValue}$/i)`;
 		case '_in':
 			return (filterValue as any[]).map((val) => transformFilterJsonPath(jsonPath, '_eq', val)).join(' && ');
 		case '_nin':
