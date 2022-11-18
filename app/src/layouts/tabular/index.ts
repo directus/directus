@@ -10,7 +10,7 @@ import { formatCollectionItemsCount } from '@/utils/format-collection-items-coun
 import { useCollection, useItems, useSync } from '@directus/shared/composables';
 import { Field } from '@directus/shared/types';
 import { defineLayout } from '@directus/shared/utils';
-import { clone, debounce } from 'lodash';
+import { clone, cloneDeep, debounce } from 'lodash';
 import { computed, ref, toRefs, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import TabularActions from './actions.vue';
@@ -41,16 +41,41 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		const { info, primaryKeyField, fields: fieldsInCollection, sortField } = useCollection(collection);
 
-		const { sort, limit, page, fields, fieldsWithRelational } = useItemOptions();
+		const { sort, limit, page, fields, fieldsDisplayAs, fieldsWithRelational } = useItemOptions();
 
 		const { aliasFields, aliasQuery } = useAliasFields(fieldsWithRelational);
 
 		const fieldsWithRelationalAliased = computed(() => {
 			if (!aliasFields.value) return fieldsWithRelational.value;
-			return fieldsWithRelational.value.map((field) =>
-				aliasFields.value?.[field] ? aliasFields.value[field].fullAlias : field
-			);
+			return fieldsWithRelational.value
+				.map((field) => {
+					const aliasedField = aliasFields.value?.[field] ? aliasFields.value[field].fullAlias : field;
+					const array = [aliasedField];
+
+					if (fieldsDisplayAs.value[field]?.meta?.display === 'translations') {
+						array.push(
+							aliasedField
+								.split('.')
+								.slice(0, fieldsDisplayAs.value[field].translationsIndex + 1)
+								.join('.') + '.*'
+						);
+					}
+
+					return array;
+				})
+				.flat();
 		});
+
+		const {
+			tableSort,
+			tableHeaders,
+			tableRowHeight,
+			onRowClick,
+			onSortChange,
+			onAlignChange,
+			activeFields,
+			tableSpacing,
+		} = useTable();
 
 		const { items, loading, error, totalPages, itemCount, totalCount, changeManualSort, getItems } = useItems(
 			collection,
@@ -64,17 +89,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				search,
 			}
 		);
-
-		const {
-			tableSort,
-			tableHeaders,
-			tableRowHeight,
-			onRowClick,
-			onSortChange,
-			onAlignChange,
-			activeFields,
-			tableSpacing,
-		} = useTable();
 
 		const showingCount = computed(() => {
 			const filtering = Boolean((itemCount.value || 0) < (totalCount.value || 0) && filterUser.value);
@@ -154,12 +168,40 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 			const fields = syncRefProperty(layoutQuery, 'fields', fieldsDefaultValue);
 
+			const fieldsDisplayAs = computed(() => {
+				return fields.value.reduce((accum, fieldKey) => {
+					const fieldParts = fieldKey.split('.');
+
+					if (fieldParts.length > 1) {
+						for (let i = 0; i < fieldParts.length - 1; i++) {
+							const testingKey = fieldParts.slice(0, i + 1).join('.');
+							const field = fieldsStore.getField(collection.value!, testingKey);
+
+							if (field?.meta?.display === 'translations') {
+								accum[fieldKey] = {
+									...field,
+									translationsIndex: i,
+								};
+								return accum;
+							}
+						}
+					}
+
+					accum[fieldKey] = {
+						...fieldsStore.getField(collection.value!, fieldKey),
+						translationsIndex: null,
+					};
+
+					return accum;
+				}, {});
+			});
+
 			const fieldsWithRelational = computed(() => {
 				if (!props.collection) return [];
 				return adjustFieldsForDisplays(fields.value, props.collection);
 			});
 
-			return { sort, limit, page, fields, fieldsWithRelational };
+			return { sort, limit, page, fields, fieldsDisplayAs, fieldsWithRelational };
 		}
 
 		function useTable() {
@@ -203,30 +245,50 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 			const tableHeaders = computed<HeaderRaw[]>({
 				get() {
-					return activeFields.value.map((field) => {
+					return activeFields.value.map((field: any) => {
+						const originalField = cloneDeep(field);
+
 						let description: string | null = null;
 
 						const fieldParts = field.key.split('.');
 
 						if (fieldParts.length > 1) {
-							const fieldNames = fieldParts.map((fieldKey, index) => {
+							const fieldNames = fieldParts.map((fieldKey: string[], index: number) => {
 								const pathPrefix = fieldParts.slice(0, index);
 								const field = fieldsStore.getField(collection.value!, [...pathPrefix, fieldKey].join('.'));
+
 								return field?.name ?? fieldKey;
 							});
 
 							description = fieldNames.join(' -> ');
 						}
 
+						let displayOptions = cloneDeep(field.meta?.display_options) || {};
+						const displayAsField = fieldsDisplayAs.value[field.key];
+
+						if (displayAsField.collection !== field.collection || displayAsField.field !== field.field) {
+							const newPath = originalField.key
+								.split('.')
+								.slice(displayAsField.translationsIndex + 1)
+								.join('.');
+
+							displayOptions = cloneDeep(displayAsField.meta?.display_options) || {};
+							displayOptions.template = `{{${newPath}}}`;
+
+							field = cloneDeep(displayAsField);
+							field.name = originalField.name;
+						}
+
 						return {
 							text: field.name,
-							value: field.key,
+							value: originalField.key,
+							translationsIndex: field.translationsIndex ?? null,
 							description,
 							width: localWidths.value[field.key] || layoutOptions.value?.widths?.[field.key] || null,
 							align: layoutOptions.value?.align?.[field.key] || 'left',
 							field: {
 								display: field.meta?.display || getDefaultDisplayForType(field.type),
-								displayOptions: field.meta?.display_options,
+								displayOptions,
 								interface: field.meta?.interface,
 								interfaceOptions: field.meta?.options,
 								type: field.type,

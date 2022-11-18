@@ -29,7 +29,7 @@
 					:value="
 						!aliasFields || item[header.value] !== undefined
 							? get(item, header.value)
-							: getAliasedValue(item, header.value)
+							: getAliasedValue(item, header.value, header.translationsIndex)
 					"
 					:display="header.field.display"
 					:options="header.field.displayOptions"
@@ -37,7 +37,7 @@
 					:interface-options="header.field.interfaceOptions"
 					:type="header.field.type"
 					:collection="header.field.collection"
-					:field="header.value"
+					:field="header.field.field"
 				/>
 			</template>
 
@@ -266,13 +266,30 @@ const fieldsWithRelational = computed(() => adjustFieldsForDisplays(fieldsWritab
 
 const { aliasFields } = useAliasFields(fieldsWithRelational);
 
-function getAliasedValue(item: Record<string, any>, field: string) {
-	if (aliasFields.value![field]) return get(item, aliasFields.value![field].fullAlias);
+const preprocessForTranslation = (path: string, translationsIndex: number | null) => {
+	return translationsIndex !== null
+		? path
+				.split('.')
+				.slice(0, translationsIndex + 1)
+				.join('.')
+		: path;
+};
+
+function getAliasedValue(item: Record<string, any>, field: string, translationsIndex: number | null) {
+	if (aliasFields.value![field])
+		return get(item, preprocessForTranslation(aliasFields.value![field].fullAlias, translationsIndex));
+
+	if (aliasFields.value![`${field}.*`])
+		return get(
+			item,
+			preprocessForTranslation(aliasFields.value![`${field}.*`].fullAlias.replace(/\.\*$/, ''), translationsIndex)
+		);
 
 	const matchingAliasFields = Object.values(aliasFields.value!).filter(
 		(aliasField: AliasField) => aliasField.fieldName === field
 	);
 	const matchingValues = matchingAliasFields.map(({ fieldAlias }) => item[fieldAlias]);
+
 	// if we have multiple results for each field pivot the data into a list of records
 	if (matchingValues.every((val) => Array.isArray(val))) {
 		return matchingValues.reduce((result, data) => {
@@ -285,6 +302,7 @@ function getAliasedValue(item: Record<string, any>, field: string) {
 
 	// merge into a single record
 	const result = matchingValues.reduce((result, data) => merge(result, data), {});
+
 	return !isEmpty(result) ? result : null;
 }
 
