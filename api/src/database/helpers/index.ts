@@ -30,14 +30,14 @@ export type Helpers = ReturnType<typeof getHelpers>;
 export type AnyJsonHelper =
 	| jsonHelpers.fallback
 	| jsonHelpers.sqlite
-	| jsonHelpers.mssql16
+	// | jsonHelpers.mssql16
 	| jsonHelpers.mssql13
 	| jsonHelpers.mariadb
 	| jsonHelpers.mysql8
 	| jsonHelpers.mysql5
 	| jsonHelpers.oracle12
 	| jsonHelpers.cockroachdb
-	| jsonHelpers.postgres10
+	// | jsonHelpers.postgres10
 	| jsonHelpers.postgres14;
 
 let jsonHelperSingleton: AnyJsonHelper | undefined;
@@ -63,10 +63,10 @@ export function getJsonHelperByVersion(client: DatabaseClients): DatabaseVersion
 			if (major >= 14) {
 				return 'postgres14'; // version 14+
 			}
-			if (major >= 10) {
-				// might be able to support v9 here too
-				return 'postgres10'; // version 10+
-			}
+			// if (major >= 10) {
+			// 	// might be able to support v9 here too
+			// 	return 'postgres10'; // version 10+
+			// }
 			return 'fallback';
 		case 'cockroachdb':
 			if (major >= 2) {
@@ -95,9 +95,9 @@ export function getJsonHelperByVersion(client: DatabaseClients): DatabaseVersion
 			}
 			return 'fallback';
 		case 'mssql':
-			if (major >= 16) {
-				return 'mssql16'; // version 2022 preview
-			}
+			// if (major >= 16) {
+			// 	return 'mssql16'; // version 2022 preview
+			// }
 			if (major >= 13) {
 				return 'mssql13'; // version 2016+
 			}

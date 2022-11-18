@@ -3,9 +3,6 @@ import { Knex } from 'knex';
 import { JsonFieldNode } from '../../../../types';
 import { JsonHelperDefault } from './default';
 
-/**
- * We may want a fallback to support wildcard queries (will be super slow unfortunately)
- */
 export class JsonHelperMSSQL_13 extends JsonHelperDefault {
 	fallbackNodes: JsonFieldNode[] = [];
 	preProcess(dbQuery: Knex.QueryBuilder, table: string): void {

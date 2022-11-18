@@ -5,14 +5,14 @@ import { JsonFieldNode } from '../../../types';
 
 export type DatabaseVersionedClients =
 	| 'postgres14'
-	| 'postgres10'
+	// | 'postgres10'
 	| 'cockroachdb'
 	| 'oracle12'
 	| 'mysql5'
 	| 'mysql8'
 	| 'mariadb'
 	| 'mssql13'
-	| 'mssql16'
+	// | 'mssql16'
 	| 'sqlite'
 	| 'fallback';
 
