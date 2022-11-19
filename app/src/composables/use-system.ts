@@ -1,12 +1,6 @@
 import { provide } from 'vue';
 import api from '@/api';
 import { API_INJECT, EXTENSIONS_INJECT, STORES_INJECT } from '@directus/shared/constants';
-import { getInterfaces } from '@/interfaces';
-import { getDisplays } from '@/displays';
-import { getLayouts } from '@/layouts';
-import { getModules } from '@/modules';
-import { getPanels } from '@/panels';
-import { getOperations } from '@/operations';
 import { useAppStore } from '@/stores/app';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
@@ -21,6 +15,7 @@ import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
 import { useUserStore } from '@/stores/user';
 import { useFlowsStore } from '@/stores/flows';
+import { useExtensions } from '@/extensions';
 
 export function useSystem(): void {
 	provide(STORES_INJECT, {
@@ -42,12 +37,5 @@ export function useSystem(): void {
 
 	provide(API_INJECT, api);
 
-	provide(EXTENSIONS_INJECT, {
-		interfaces: getInterfaces().interfaces,
-		displays: getDisplays().displays,
-		layouts: getLayouts().layouts,
-		modules: getModules().modules,
-		panels: getPanels().panels,
-		operations: getOperations().operations,
-	});
+	provide(EXTENSIONS_INJECT, useExtensions());
 }

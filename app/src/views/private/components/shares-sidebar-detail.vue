@@ -21,7 +21,7 @@
 			collection="directus_shares"
 			:primary-key="shareToEdit"
 			:active="!!shareToEdit"
-			@cancel="unselect"
+			@update:active="unselect"
 			@input="input"
 		/>
 

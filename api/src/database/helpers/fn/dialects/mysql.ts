@@ -3,7 +3,7 @@ import { Knex } from 'knex';
 
 const parseLocaltime = (columnType?: string) => {
 	if (columnType === 'timestamp') {
-		return `CONVERT_TZ(??.??, @@GLOBAL.time_zone, 'UTC')`;
+		return `CONVERT_TZ(??.??, @@GLOBAL.time_zone, '+00:00')`;
 	}
 	return '??.??';
 };
