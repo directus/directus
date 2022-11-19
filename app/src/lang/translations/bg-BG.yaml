@@ -1940,7 +1940,6 @@ panels:
     y_axis_conditional_two: трябва да е число.
   linechart:
     name: Линейна диаграма
-    description: Линейна диаграма за сравняване на промените по поле.
     select_field: Трябва да изберете поле.
     select_collection: Трябва да изберете колекция.
     select_x_axis: Трябва да изберете ос по Х.
@@ -1952,15 +1951,14 @@ panels:
     datasets: Набор от данни
     show_legend: Легенда
     show_marker: Показване на подсказка
-    include_dataset: Трябва да включите поне един вид данни.
     include_y_axis: Трябва да се попълни остта по Y за всеки източник когато не е избрана група.
     group_and_function: Трябва да се попълни или да се пропуснат и двете - група и функция.
-    smooth: 'Плавна'
-    straight: 'Линейна'
-    step_line: 'Стъпкова'
+    smooth: Плавна
+    straight: Линейна
+    step_line: Стъпкова
   meter:
-    description: Циферблат за показване на стойности
     name: Циферблат
+    description: Циферблат за показване на стойности
     stroke_width: Ширина на чертите
     select_max_value: Трябва да изберете максимална стойност.
     max_greater_than_zero: Максималната стойност трябва да е по-голяма от 0.
@@ -1972,11 +1970,9 @@ panels:
     broad: Дебел
   piechart:
     name: Кръгова или пръстеновидна диаграма
-    description: Кръгови диаграми показващи съотношението между групите по колона.
-    function: 'Функция'
+    function: Функция
     donut: Поничка
-    labels: Показване на надписите
-    legend: Легенда
+    show_legend: Легенда
     right: Вдясно
     bottom: Отдолу
     monochrome: Монохром

@@ -28,7 +28,7 @@ get:
                 items:
                   type: object
               meta:
-                $ref: '../../openapi.yaml#/components/x-metadata'
+                $ref: '../../openapi.yaml#/components/schemas/x-metadata'
     '401':
       $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
 
@@ -44,7 +44,6 @@ post:
     content:
       application/json:
         schema:
-          type: object
   responses:
     '200':
       description: Successful request
