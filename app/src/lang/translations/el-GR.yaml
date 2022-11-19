@@ -34,8 +34,10 @@ tile_size: Μέγεθος πλακιδίων
 edit_field: Επεξεργασία Πεδίου
 conditions: Προϋποθέσεις
 location: Τοποθεσία
+input: Εισαγωγή
 maps: Χάρτες
 switch_user: Εναλλαγή Χρήστη
+item_creation: Δημιουργία είδους
 item_revision: Αναθεώρηση Αντικειμένου
 enter_a_name: Πληκτρολογήστε ένα όνομα...
 duplicate_field: Αντίγραφο Πεδίου
