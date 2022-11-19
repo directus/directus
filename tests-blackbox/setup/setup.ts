@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 
 import knex from 'knex';
-import Listr from 'listr';
+import { Listr } from 'listr2';
 import vendors from '../common/get-dbs-to-test';
 import config, { getUrl } from '../common/config';
 import global from './global';

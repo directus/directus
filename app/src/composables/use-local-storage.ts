@@ -1,38 +1,43 @@
 import { ref, watch } from 'vue';
+import { parseJSON } from '@directus/shared/utils';
 
-export function useLocalStorage(key: string) {
+type LocalStorageObjectType = string | number | boolean | object | null;
+
+export function useLocalStorage(key: string, defaultValue: LocalStorageObjectType = null) {
 	const internalKey = `directus-${key}`;
-	const data = ref<string | number | boolean | object | null>(null);
+	const data = ref<LocalStorageObjectType>(null);
 
-	function getExistingValue() {
-		let rawExistingValue;
-		try {
-			rawExistingValue = localStorage.getItem(internalKey);
-		} catch (err: any) {
-			//
-		}
+	function getValue(): LocalStorageObjectType {
+		const rawExistingValue = localStorage.getItem(internalKey);
 
-		if (!rawExistingValue) return;
+		if (!rawExistingValue) return defaultValue;
 
 		try {
-			const existingValue = JSON.parse(rawExistingValue);
-			data.value = existingValue;
-		} catch (err: any) {
-			//
+			return parseJSON(rawExistingValue);
+		} catch (e) {
+			// eslint-disable-next-line no-console
+			console.warn(`Couldn't parse value from local storage`, e);
+
+			return defaultValue;
 		}
 	}
 
-	getExistingValue();
+	function setValue(value: LocalStorageObjectType) {
+		try {
+			localStorage.setItem(internalKey, JSON.stringify(value));
+		} catch (e) {
+			// eslint-disable-next-line no-console
+			console.warn(`Couldn't stringify and set value to local storage`, e);
+		}
+	}
+
+	data.value = getValue();
 
 	watch(data, () => {
-		try {
-			if (data.value == null) {
-				localStorage.removeItem(internalKey);
-			} else {
-				localStorage.setItem(internalKey, JSON.stringify(data.value));
-			}
-		} catch (err: any) {
-			//
+		if (data.value == null) {
+			localStorageObject.clear();
+		} else {
+			setValue(data.value);
 		}
 	});
 
