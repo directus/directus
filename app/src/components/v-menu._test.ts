@@ -4,7 +4,7 @@ import { mount } from '@vue/test-utils';
 import VMenu from './v-menu.vue';
 import TransitionBounce from './transition/bounce.vue';
 import { GlobalMountOptions } from '@vue/test-utils/dist/types';
-import { directive } from '../../../../app/src/directives/click-outside';
+import { directive } from '@/directives/click-outside';
 
 beforeEach(() => {
 	// create teleport target
@@ -15,7 +15,7 @@ beforeEach(() => {
 
 const global: GlobalMountOptions = {
 	directives: {
-		'click-outside': directive as any,
+		'click-outside': directive,
 	},
 	components: {
 		TransitionBounce,
