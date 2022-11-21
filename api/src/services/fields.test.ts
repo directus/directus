@@ -332,7 +332,7 @@ describe('Integration Tests', () => {
 				tracker.on.any(regex).response({});
 
 				await db.schema.alterTable(testCollection, (table) => {
-					knexCreateTableBuilderSpy = vi.spyOn(table, type as keyof Knex.CreateTableBuilder);
+					knexCreateTableBuilderSpy = vi.spyOn(table, method as keyof Knex.CreateTableBuilder);
 
 					service.addColumnToTable(table, {
 						collection: testCollection,

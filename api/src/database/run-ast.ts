@@ -68,7 +68,7 @@ export default async function runAST(
 			children,
 			query
 		);
-		const jsonHelper = getJsonHelper(knex, schema, jsonNodes);
+		const jsonHelper = jsonNodes.length > 0 ? getJsonHelper(knex, schema, jsonNodes) : undefined;
 		// The actual knex query builder instance. This is a promise that resolves with the raw items from the db
 		const dbQuery = getDBQuery(schema, knex, collection, [...fieldNodes, ...jsonNodes], query, jsonHelper);
 		// console.log(`[QUERY]`, dbQuery.toQuery());
@@ -130,7 +130,7 @@ export default async function runAST(
 
 		// Some vendors return json results as strings which will need to be parsed
 		// Some vendors also require post-processing to compensate for lack of native support
-		if (jsonNodes.length > 0) {
+		if (jsonHelper && jsonNodes.length > 0) {
 			jsonHelper.postProcess(toArray(rawItems));
 		}
 
@@ -245,7 +245,7 @@ function getDBQuery(
 	table: string,
 	fieldNodes: (FieldNode | FunctionFieldNode | JsonFieldNode)[],
 	query: Query,
-	jsonHelper: AnyJsonHelper
+	jsonHelper?: AnyJsonHelper
 ): Knex.QueryBuilder {
 	const preProcess = getColumnPreprocessor(knex, schema, table);
 	const queryCopy = clone(query);
@@ -295,7 +295,7 @@ function getDBQuery(
 		dbQuery.select(regularNodes.map(preProcess));
 	}
 
-	if (jsonNodes.length > 0) {
+	if (jsonHelper && jsonNodes.length > 0) {
 		jsonHelper.preProcess(dbQuery, table);
 	} else {
 		dbQuery.from(table);

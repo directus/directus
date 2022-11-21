@@ -493,8 +493,7 @@ export function applyFilter(
 			} else if (jsonFieldNames.includes(filterPath[0])) {
 				validateFilterOperator('string', filterOperator, []);
 				const node = (jsonHelper?.nodes ?? []).find((n) => n.fieldKey === filterPath[0])!;
-				const helper = getJsonHelper(knex, schema);
-				const rawQuery = helper.filterQuery(collection, node);
+				const rawQuery = jsonHelper?.filterQuery(collection, node);
 				if (rawQuery) {
 					applyFilterToQuery(filterPath[0], filterOperator, filterValue, logical, undefined, rawQuery);
 				} else {
