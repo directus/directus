@@ -336,6 +336,8 @@ components:
       $ref: './parameters/fields.yaml'
     Mode:
       $ref: './parameters/mode.yaml'
+    Export:
+      $ref: './parameters/export.yaml'
   responses:
     NotFoundError:
       $ref: './responses/notFoundError.yaml'
