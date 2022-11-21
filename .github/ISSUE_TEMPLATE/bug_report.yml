@@ -28,6 +28,7 @@ body:
     validations:
       required: true
   - type: textarea
+    id: errors
     attributes:
       label: Errors Shown
       description: Are there any errors logged in the browser console, or terminal where you're running Directus?
@@ -52,12 +53,14 @@ body:
     validations:
       required: true
   - type: input
+    id: browser
     attributes:
       label: What browser are you using?
       description: 'For example: Chrome, Safari'
     validations:
       required: true
   - type: input
+    id: deployment
     attributes:
       label: How are you deploying Directus?
       description: 'For example: running locally, Docker, PaaS'

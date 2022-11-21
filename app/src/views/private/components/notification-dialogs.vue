@@ -10,7 +10,7 @@
 				</v-card-text>
 				<v-card-actions>
 					<v-button v-if="notification.type === 'error' && admin && notification.code === 'UNKNOWN'" secondary>
-						<a target="_blank" :href="getGitHubIssueLink(notification)">
+						<a target="_blank" :href="getReportLink(notification)">
 							{{ t('report_error') }}
 						</a>
 					</v-button>
@@ -26,6 +26,7 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent, computed } from 'vue';
 import { useNotificationsStore } from '@/stores/notifications';
 import { useUserStore } from '@/stores/user';
+import { getGitHubIssueLink } from '@/utils/get-github-issue-link';
 import { Snackbar } from '@/types/notifications';
 import { useProjectInfo } from '@/modules/settings/composables/use-project-info';
 
@@ -33,39 +34,27 @@ export default defineComponent({
 	setup() {
 		const { t } = useI18n();
 
-		const { parsedInfo } = useProjectInfo();
+		const { parsedInfo: projectInfo } = useProjectInfo();
+
 		const notificationsStore = useNotificationsStore();
 		const userStore = useUserStore();
 
 		const notifications = computed(() => notificationsStore.dialogs);
 
-		return { t, notifications, admin: userStore.isAdmin, done, getGitHubIssueLink };
+		return { t, notifications, admin: userStore.isAdmin, done, getReportLink };
 
-		function getGitHubIssueLink(notification: Snackbar) {
-			const debugInfo = `<!-- Please put a detailed explanation of the problem here. -->
+		function getReportLink(notification: Snackbar) {
+			const errorLines = [
+				`**Title:** ${notification.title || 'none'}`,
+				`**Message:** ${notification.text || 'none'}`,
+				'<details><summary><b>Stack Trace</b></summary>',
+				'<pre lang="json">',
+				JSON.stringify(notification.error, Object.getOwnPropertyNames(notification.error), 2),
+				'</pre>',
+				'</details>',
+			];
 
----
-
-### Project details
-Directus Version: ${parsedInfo.value?.directus.version}
-Environment: ${import.meta.env.MODE}
-OS: ${parsedInfo.value?.os.type} ${parsedInfo.value?.os.version}
-Node: ${parsedInfo.value?.node.version}
-
-### Error
-
-Title: ${notification.title || 'none'}
-Message: ${notification.text || 'none'}
-
-<details>
-<summary>Stack Trace</summary>
-<pre>
-${JSON.stringify(notification.error, Object.getOwnPropertyNames(notification.error), 2)}
-</pre>
-</details>
-			`;
-
-			return `https://github.com/directus/directus/issues/new?body=${encodeURIComponent(debugInfo)}`;
+			return getGitHubIssueLink(projectInfo, { errors: errorLines.join('\n') });
 		}
 
 		function done(id: string) {
