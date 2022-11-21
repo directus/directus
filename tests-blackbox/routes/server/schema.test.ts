@@ -125,6 +125,7 @@ describe('Schema Snapshots', () => {
 
 				// Assert
 				expect(response.statusCode).toEqual(200);
+				expect(snapshotsCacheEmpty[vendor]).not.toEqual(snapshotsCacheOriginal[vendor]);
 
 				snapshotsCacheEmpty[vendor] = response.body.data;
 			},
@@ -389,6 +390,8 @@ describe('Schema Snapshots', () => {
 			);
 		});
 	});
+
+	common.ClearCaches();
 
 	describe('Hash Tests', () => {
 		describe('with deleted fields', () => {
