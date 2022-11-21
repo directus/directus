@@ -77,7 +77,7 @@ export default defineComponent({
 
 		const search = ref<string | null>(null);
 
-		const isOpen = useDialogRoute(false);
+		const isOpen = useDialogRoute();
 
 		const fieldDetail = useFieldDetailStore();
 
@@ -85,10 +85,7 @@ export default defineComponent({
 
 		watch(
 			() => props.field,
-			async () => {
-				await fieldDetail.startEditing(props.collection, props.field, props.type);
-				if (!isOpen.value) isOpen.value = true;
-			},
+			() => fieldDetail.startEditing(props.collection, props.field, props.type),
 			{ immediate: true }
 		);
 

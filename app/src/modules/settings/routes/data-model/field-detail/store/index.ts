@@ -38,6 +38,9 @@ export function syncFieldDetailStoreProperty(path: string, defaultValue?: any) {
 export const useFieldDetailStore = defineStore({
 	id: 'fieldDetailStore',
 	state: () => ({
+		// whether there are additional field metadata being fetched (used in startEditing)
+		loading: false,
+
 		// The current collection we're operating in
 		collection: undefined as string | undefined,
 
@@ -116,20 +119,25 @@ export const useFieldDetailStore = defineStore({
 				}
 
 				// re-fetch field meta to get the raw untranslated values
-				const response = await api.get(`/fields/${collection}/${field}`);
-				const fetchedFieldMeta = response.data?.data?.meta;
-				this.$patch({
-					field: {
-						meta: {
-							...(fetchedFieldMeta?.note ? { note: fetchedFieldMeta.note } : {}),
-							...(fetchedFieldMeta?.options ? { options: fetchedFieldMeta.options } : {}),
-							...(fetchedFieldMeta?.display_options ? { display_options: fetchedFieldMeta.display_options } : {}),
-							...(fetchedFieldMeta?.validation_message
-								? { validation_message: fetchedFieldMeta.validation_message }
-								: {}),
+				try {
+					this.loading = true;
+					const response = await api.get(`/fields/${collection}/${field}`);
+					const fetchedFieldMeta = response.data?.data?.meta;
+					this.$patch({
+						field: {
+							meta: {
+								...(fetchedFieldMeta?.note ? { note: fetchedFieldMeta.note } : {}),
+								...(fetchedFieldMeta?.options ? { options: fetchedFieldMeta.options } : {}),
+								...(fetchedFieldMeta?.display_options ? { display_options: fetchedFieldMeta.display_options } : {}),
+								...(fetchedFieldMeta?.validation_message
+									? { validation_message: fetchedFieldMeta.validation_message }
+									: {}),
+							},
 						},
-					},
-				});
+					});
+				} finally {
+					this.loading = false;
+				}
 			} else {
 				this.update({
 					localType: localType ?? 'standard',
