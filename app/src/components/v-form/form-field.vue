@@ -172,7 +172,9 @@ function useRaw() {
 	}
 
 	async function copyRaw() {
-		await copyToClipboard(internalValue.value);
+		await copyToClipboard(
+			typeof internalValue.value === 'string' ? internalValue.value : JSON.stringify(internalValue.value)
+		);
 	}
 
 	async function pasteRaw() {
