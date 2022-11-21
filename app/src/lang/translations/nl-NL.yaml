@@ -1122,7 +1122,7 @@ fields:
     auth_login_attempts: Login pogingen
     files_and_thumbnails: Bestanden & Opslag
     storage_default_folder: Standaard map
-    custom_css: Aangepastte CSS
+    custom_css: Aangepaste CSS
     module_bar: Modulebalk
   directus_shares:
     name: Naam
@@ -1180,6 +1180,7 @@ field_options:
     dropdown_dark: Donkere Modus
     admin_divider: Admin opties
     status_dropdown_draft: Concept
+    status_dropdown_invited: Uitgenodigd
     status_dropdown_active: Actief
     status_dropdown_archived: Gearchiveerd
   directus_webhooks:
