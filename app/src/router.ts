@@ -153,11 +153,11 @@ export const onAfterEach: NavigationHookAfter = (to) => {
 		// this call while more important things are loading
 
 		if (trackTimeout) {
-			clearTimeout(trackTimeout);
+			window.clearTimeout(trackTimeout);
 			trackTimeout = null;
 		}
 
-		setTimeout(() => {
+		trackTimeout = window.setTimeout(() => {
 			userStore.trackPage(to.fullPath);
 		}, 500);
 	}
