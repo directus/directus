@@ -182,6 +182,7 @@ permissions_for_role: 'Elemente, die {role} Rolle {action} kann.'
 fields_for_role: 'Felder die von der {role} Rolle {action} werden können.'
 validation_for_role: 'Feld {action} Regeln, welche die {role} Rolle befolgen muss.'
 presets_for_role: 'Standardwert für die {role} Rolle.'
+presets_field_warning: 'Der App-Editor für Feld {field} unterstützt nur die detaillierte Syntax.'
 presentation_and_aliases: Darstellung & Aliase
 revision_post_create: So sah dieses Element bei der Erstellung aus.
 revision_post_update: So sieht dieses Element nach der Überarbeitung aus.
@@ -519,6 +520,7 @@ create_collection: Sammlung erstellen
 no_collections_copy_admin: Keine Sammlungen vorhanden. Auf die untenstehende Schaltfläche klicken, um loszulegen.
 no_collections_copy: Keine Sammlungen vorhanden. Bitte Systemadministrator kontaktieren.
 relationship_not_setup: Die relationale Beziehung wurde nicht korrekt konfiguriert
+incompatible_m2m_value: Der aktuelle Wert dieses Felds kann nicht dargestellt werden. Deshalb kann nur der Rohwert bearbeitet werden.
 display_template_not_setup: Die Anzeige-Vorlage ist falsch konfiguriert
 collection_field_not_setup: Das Sammlungsfeld ist falsch konfiguriert
 select_a_collection: Sammlung auswählen
