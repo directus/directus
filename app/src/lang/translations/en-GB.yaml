@@ -488,7 +488,6 @@ create_collection: Create Collection
 no_collections_copy_admin: You don’t have any Collections yet. Click the button below to get started.
 no_collections_copy: You don’t have any Collections yet. Please contact your system administrator.
 relationship_not_setup: The relationship hasn't been configured correctly
-incompatible_m2m_value: The current value of this field cannot be displayed. Therefore, only the raw value can be modified.
 display_template_not_setup: The display template option is misconfigured
 collection_field_not_setup: The collection field option is misconfigured
 select_a_collection: Select a Collection

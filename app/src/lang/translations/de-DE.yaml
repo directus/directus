@@ -521,7 +521,6 @@ create_collection: Sammlung erstellen
 no_collections_copy_admin: Keine Sammlungen vorhanden. Auf die untenstehende Schaltfläche klicken, um loszulegen.
 no_collections_copy: Keine Sammlungen vorhanden. Bitte Systemadministrator kontaktieren.
 relationship_not_setup: Die relationale Beziehung wurde nicht korrekt konfiguriert
-incompatible_m2m_value: Der aktuelle Wert dieses Felds kann nicht dargestellt werden. Deshalb kann nur der Rohwert bearbeitet werden.
 display_template_not_setup: Die Anzeige-Vorlage ist falsch konfiguriert
 collection_field_not_setup: Das Sammlungsfeld ist falsch konfiguriert
 select_a_collection: Sammlung auswählen
