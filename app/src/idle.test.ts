@@ -2,7 +2,7 @@ import { mount } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, SpyInstance, test, vi } from 'vitest';
 import { DefineComponent, defineComponent, h, onMounted, onUnmounted } from 'vue';
 
-const timeoutDuration = 5 * 60 * 1000; // 5 min in ms
+import { time as timeoutDuration } from './idle';
 
 vi.mock('lodash', () => ({
 	throttle: vi.fn((fn, _wait) => fn),
