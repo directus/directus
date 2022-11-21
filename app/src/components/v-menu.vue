@@ -1,5 +1,5 @@
 <template>
-	<div class="v-menu" @click="onClick">
+	<div ref="v-menu" class="v-menu" v-on="trigger === 'click' ? { click: onClick } : {}">
 		<div
 			ref="activator"
 			class="v-menu-activator"
@@ -38,8 +38,10 @@
 					<div
 						class="v-menu-content"
 						:class="{ 'full-height': fullHeight, seamless }"
-						@click.stop="onContentClick"
-						v-on="trigger === 'hover' ? { pointerenter: onPointerEnter, pointerleave: onPointerLeave } : {}"
+						v-on="{
+							...(closeOnContentClick ? { click: onContentClick } : {}),
+							...(trigger === 'hover' ? { pointerenter: onPointerEnter, pointerleave: onPointerLeave } : {}),
+						}"
 					>
 						<slot
 							v-bind="{
@@ -238,7 +240,8 @@ function onClickOutsideMiddleware(e: Event) {
 }
 
 function onContentClick(e: Event) {
-	if (props.closeOnContentClick === true && e.target !== e.currentTarget) {
+	e.stopPropagation();
+	if (e.target !== e.currentTarget) {
 		deactivate();
 	}
 }
@@ -260,8 +263,6 @@ function useEvents() {
 	return { onClick, onPointerLeave, onPointerEnter };
 
 	function onClick() {
-		if (props.trigger !== 'click') return;
-
 		toggle();
 	}
 
