@@ -1977,6 +1977,7 @@ panels:
     y_axis_conditional_two: 必须是一个数字。
   linechart:
     name: 折线图
+    description: 比较字段变化的线形图
     select_field: 您必须选择一个字段。
     select_collection: 您必须选择一个集合。
     select_x_axis: 您必须选择一个X轴。
@@ -1988,6 +1989,7 @@ panels:
     datasets: 数据集
     show_legend: 显示图例
     show_marker: 显示工具提示标志
+    include_dataset: 您必须包含至少一个数据集。
     include_y_axis: 当没有指定组时，您必须为每个数据集包含Y-Axis。
     group_and_function: 您必须同时包含或省略一个分组函数和一个功能函数。
     smooth: 平滑模式
@@ -2009,8 +2011,10 @@ panels:
     broad: 广泛的
   piechart:
     name: 饼图或环图
+    description: 在列上显示分组比率的圆形图表
     function: 功能函数
     donut: 圆环图
+    show_labels: 显示标签
     show_legend: 显示图例
     right: 右
     bottom: 底部

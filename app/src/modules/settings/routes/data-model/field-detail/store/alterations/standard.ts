@@ -1,6 +1,6 @@
 import { HelperFunctions, State, StateUpdates } from '../types';
-import { getInterface } from '@/interfaces';
 import { set } from 'lodash';
+import { useExtension } from '@/composables/use-extension';
 import { getSpecialForType } from '@/utils/get-special-for-type';
 
 export function applyChanges(updates: StateUpdates, _state: State, helperFn: HelperFunctions) {
@@ -20,9 +20,10 @@ function setSpecialForType(updates: StateUpdates) {
 }
 
 function updateInterface(updates: StateUpdates, fn: HelperFunctions) {
-	const interface_ = getInterface(fn.getCurrent('field.meta.interface'));
+	const inter = useExtension('interface', fn.getCurrent('field.meta.interface'));
+
 	const type = updates.field?.type;
-	if (type && !interface_?.types.includes(type)) {
+	if (type && !inter.value?.types.includes(type)) {
 		set(updates, 'field.meta.interface', undefined);
 	}
 }

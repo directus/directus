@@ -7,16 +7,11 @@ import App from './app.vue';
 import { registerComponents } from './components/register';
 import { DIRECTUS_LOGO } from './constants';
 import { registerDirectives } from './directives/register';
-import { registerPanels } from './panels/register';
-import { registerDisplays } from './displays/register';
-import { registerInterfaces } from './interfaces/register';
 import { i18n } from './lang/';
-import { registerLayouts } from './layouts/register';
-import { loadModules } from './modules/register';
 import { router } from './router';
 import './styles/main.scss';
 import { registerViews } from './views/register';
-import { registerOperations } from './operations/register';
+import { loadExtensions, registerExtensions } from './extensions';
 
 init();
 
@@ -44,14 +39,9 @@ async function init() {
 	registerComponents(app);
 	registerViews(app);
 
-	await Promise.all([
-		registerInterfaces(app),
-		registerPanels(app),
-		registerDisplays(app),
-		registerLayouts(app),
-		registerOperations(app),
-		loadModules(),
-	]);
+	await loadExtensions();
+
+	registerExtensions(app);
 
 	app.mount('#app');
 
