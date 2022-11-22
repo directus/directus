@@ -745,8 +745,8 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							}
 
 							lastIndex = -1;
-							for (const item of gqlResponse2.body.data.reverse()) {
-								const foundIndex = findIndex(gqlResponse.body.data, { id: item.id });
+							for (const item of gqlResponse2.body.data[localCollectionIngredients].reverse()) {
+								const foundIndex = findIndex(gqlResponse.body.data[localCollectionIngredients], { id: item.id });
 								if (foundIndex === -1) continue;
 
 								expect(foundIndex).toBeGreaterThan(lastIndex);
@@ -933,8 +933,8 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							}
 
 							lastIndex = -1;
-							for (const item of gqlResponse2.body.data.reverse()) {
-								const foundIndex = findIndex(gqlResponse.body.data, { id: item.id });
+							for (const item of gqlResponse2.body.data[localCollectionIngredients].reverse()) {
+								const foundIndex = findIndex(gqlResponse.body.data[localCollectionIngredients], { id: item.id });
 								if (foundIndex === -1) continue;
 
 								expect(foundIndex).toBeGreaterThan(lastIndex);
