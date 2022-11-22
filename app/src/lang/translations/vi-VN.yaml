@@ -23,6 +23,7 @@ identifier: Định danh
 avatar: Ảnh đại diện
 application: Ứng dụng
 default_provider: Mặc định
+method: Phương thức
 published: Đã xuất bản
 draft: Bản nháp
 archived: Đã lưu trữ
@@ -48,6 +49,7 @@ group: Chọn nhóm
 export_items: Xuất các mục
 and: Và
 or: Hoặc
+init: Khởi tạo
 dataset_too_large_currently_showing_n_items: Cơ sở dữ liệu quá lớn. Hiển thị {n} dòng đầu tiên.
 custom: Tuỳ chỉnh
 fill_width: Rộng toàn bộ
