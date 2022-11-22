@@ -22,7 +22,7 @@ export async function applySnapshot(
 	options?: { database?: Knex; schema?: SchemaOverview; current?: Snapshot; diff?: SnapshotDiff }
 ): Promise<void> {
 	const database = options?.database ?? getDatabase();
-	const schema = options?.schema ?? (await getSchema({ database }));
+	const schema = options?.schema ?? (await getSchema({ database, bypassCache: true }));
 	const { systemCache } = getCache();
 
 	const current = options?.current ?? (await getSnapshot({ database, schema }));
@@ -187,7 +187,10 @@ export async function applySnapshot(
 			}
 		}
 
-		const fieldsService = new FieldsService({ knex: trx, schema: await getSchema({ database: trx }) });
+		const fieldsService = new FieldsService({
+			knex: trx,
+			schema: await getSchema({ database: trx, bypassCache: true }),
+		});
 
 		for (const { collection, field, diff } of snapshotDiff.fields) {
 			if (diff?.[0].kind === 'N' && !isNestedMetaUpdate(diff?.[0])) {
@@ -236,7 +239,10 @@ export async function applySnapshot(
 			}
 		}
 
-		const relationsService = new RelationsService({ knex: trx, schema: await getSchema({ database: trx }) });
+		const relationsService = new RelationsService({
+			knex: trx,
+			schema: await getSchema({ database: trx, bypassCache: true }),
+		});
 
 		for (const { collection, field, diff } of snapshotDiff.relations) {
 			const structure = {};
@@ -283,7 +289,7 @@ export async function applySnapshot(
 	await systemCache?.clear();
 
 	if (nestedActionEvents.length > 0) {
-		const updatedSchema = await getSchema({ database });
+		const updatedSchema = await getSchema({ database, bypassCache: true });
 
 		for (const nestedActionEvent of nestedActionEvents) {
 			nestedActionEvent.context.schema = updatedSchema;

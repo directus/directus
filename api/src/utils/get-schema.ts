@@ -17,13 +17,19 @@ import getLocalType from './get-local-type';
 export async function getSchema(options?: {
 	accountability?: Accountability;
 	database?: Knex;
+
+	/**
+	 * To bypass any cached schema if bypassCache is enabled.
+	 * Used to ensure schema snapshot/apply is not using outdated schema
+	 */
+	bypassCache?: boolean;
 }): Promise<SchemaOverview> {
 	const database = options?.database || getDatabase();
 	const schemaInspector = SchemaInspector(database);
 
 	let result: SchemaOverview;
 
-	if (env.CACHE_SCHEMA !== false) {
+	if (!options?.bypassCache && env.CACHE_SCHEMA !== false) {
 		let cachedSchema;
 
 		try {
