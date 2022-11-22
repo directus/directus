@@ -281,7 +281,7 @@ finish_setup: Hoàn Tất Cài Đặt
 dismiss: Bỏ qua
 raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
 raw_value: Dữ liệu thực tế
-copy_raw_value_success: 'Đã sao chép'
+copy_raw_value_success: Đã sao chép
 paste_raw_value_success: Dán
 paste_raw_value_fail: Dán thất bại
 edit_raw_value: Thay đổi dữ liệu thực tế
@@ -394,7 +394,7 @@ replace_from_url: Hoán đổi với Tập Tin từ một Đường Dẫn
 no_file_selected: Chưa Có Tập Tin Nào Được Chọn
 download_file: Tải Xuống Tập Tin
 open_file_in_tab: Mở file trong tab mới
-exporting_all_items_in_collection: Xuất tất cả {total} mục trong {collection}.
+exporting_all_items_in_collection: Xuất tất cả {total} bản ghi trong {collection}.
 collection_key: Khóa Của Danh Mục
 name: Tên
 primary_key_field: Khóa Chính
@@ -505,6 +505,7 @@ errors:
   NOT_NULL_VIOLATION: Dữ liệu không thể để rỗng
   ILLEGAL_ASSET_TRANSFORMATION: Nguồn ảnh quá lớn để xem trước
   VALUE_TOO_LONG: Dữ liệu quá dài
+  VALUE_OUT_OF_RANGE: Giá trị ngoài khoảng cho phép
   UNKNOWN: Lỗi Bất Thường
 security: Bảo mật
 value_hashed: Dữ Liệu Mã Hóa An Toàn
@@ -521,6 +522,7 @@ no_app_access_copy: Người dùng này không có quyền truy cập chương t
 password_reset_successful: Mật khẩu được đặt lại thành công
 back: Trở lại
 filter: Bộ lọc
+edit_image: Chỉnh sửa hình ảnh
 editing_image: Chỉnh sửa Hình ảnh
 square: Hình vuông
 free: Miễn phí
@@ -532,6 +534,7 @@ all_users: Tất cả Người dùng
 delete_collection: Xoá Danh Mục
 update_collection_success: Đã Cập Nhật Danh Mục
 delete_collection_success: Đã Xoá Danh Mục
+goto_collection_content: Xem Nội dung
 start_end_of_count_items: 'Bản ghi {start}-{end} trong tổng số {count}'
 start_end_of_count_filtered_items: 'Bản ghi {start}-{end} trong tổng số {count}'
 one_item: '1 sản phẩm'
@@ -541,6 +544,7 @@ visible_collections: Ứng dụng có thể nhìn thấy
 hidden_collections: Bảng Ẩn
 show_hidden_collections: Hiện các Bảng Ẩn
 hide_hidden_collections: Ẩn các Bảng Ẩn
+show_header: Hiện Tiêu đề
 system_collections: Các Bảng Hệ Thống
 placeholder: Chỗ điền
 icon_left: Biểu tượng bên trái
@@ -556,6 +560,7 @@ empty_item: Mục trống
 log_in_with: 'Đăng nhập với {provider}'
 advanced_filter: Bộ Lọc Nâng Cao
 delete_advanced_filter: Xoá Bộ Lọc
+advanced: Nâng cao
 operators:
   eq: Bằng
   neq: Không bằng
@@ -579,10 +584,12 @@ operators:
   empty: Bị rỗng
   nempty: Không rỗng
 loading: Đang tải...
+drop_to_upload: Kéo vào để tải lên
 upload_file_indeterminate: Đang tải tệp lên...
 upload_file_success: Tệp tin được tải lên
 upload_files_indeterminate: 'Đang tải lên thư mục {done}/{total}'
 upload_files_success: '{count} Tệp được tải lên'
+upload_pending: Đang chờ tải lên
 drag_file_here: Kéo & thả tệp vào đây
 click_to_browse: Bấm để Tìm kiếm
 interface_options: Tùy chọn giao diện
@@ -1029,6 +1036,8 @@ layouts:
     calendar: Lịch
   map:
     map: Bản đồ
+  kanban:
+    advanced: Nâng cao
 panels:
   label:
     name: Nhãn
