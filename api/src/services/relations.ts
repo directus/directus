@@ -222,7 +222,7 @@ export class RelationsService {
 			}
 
 			if (opts?.emitEvents !== false && nestedActionEvents.length > 0) {
-				const updatedSchema = await getSchema({ accountability: this.accountability || undefined });
+				const updatedSchema = await getSchema();
 
 				for (const nestedActionEvent of nestedActionEvents) {
 					nestedActionEvent.context.schema = updatedSchema;
@@ -337,7 +337,7 @@ export class RelationsService {
 			}
 
 			if (opts?.emitEvents !== false && nestedActionEvents.length > 0) {
-				const updatedSchema = await getSchema({ accountability: this.accountability || undefined });
+				const updatedSchema = await getSchema();
 
 				for (const nestedActionEvent of nestedActionEvents) {
 					nestedActionEvent.context.schema = updatedSchema;
@@ -421,7 +421,7 @@ export class RelationsService {
 			}
 
 			if (opts?.emitEvents !== false && nestedActionEvents.length > 0) {
-				const updatedSchema = await getSchema({ accountability: this.accountability || undefined });
+				const updatedSchema = await getSchema();
 
 				for (const nestedActionEvent of nestedActionEvents) {
 					nestedActionEvent.context.schema = updatedSchema;
