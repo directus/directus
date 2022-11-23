@@ -118,7 +118,7 @@ archive: Lưu trữ
 archive_confirm: Bạn có chắc chắn muốn lưu trữ mục này không?
 archive_confirm_count: >-
   Chưa chọn mục nào | Bạn có chắc chắn muốn lưu trữ mục này không? | Bạn có chắc chắn muốn lưu trữ {count} mục này không?
-reset_system_permissions_to: 'Đặt lại Quyền Hệ Thống:'
+reset_system_permissions_to: 'Đặt lại Quyền Hệ Thống cho:'
 reset_system_permissions_copy: Thao tác này sẽ ghi đè lên bất cứ quyền hạn đã được tùy biến bởi bạn trước đây tới các bảng hệ thống. Bạn có chắc chắn không?
 the_following_are_minimum_permissions: Đây là những quyền hạn tối thiểu cần có khi "App Access" được kích hoạt. Bạn có thể mở rộng các quyền bổ sung, nhưng không được phép thấp hơn những quyền này.
 app_access_minimum: Quyền truy cập Ứng dụng Tối thiểu
@@ -415,6 +415,7 @@ save_and_stay: Lưu và Tiếp Tục Sửa Đổi
 save_as_copy: Lưu thành bản sao
 add_existing: Thêm Dữ Liệu Sẵn Có
 enable_create_button: Bật Nút Tạo
+allow_duplicates: Cho phép Trùng lặp
 comments: Bình luận
 no_comments: Chưa Có Bình Luận
 click_to_expand: Nhấn vào để Mở rộng
@@ -434,8 +435,10 @@ no_items_copy: Chưa có bản ghi nào trong danh mục này.
 file_count: 'Không Có Tập Tin | Có Một Tập Tin | {count} Tập Tin'
 no_files_copy: Không có tập tin nào ở đây.
 user_count: 'Không Có Người Dùng | Có Một Người Dùng | {count} Người Dùng'
+no_notifications: Không có thông báo
 activity_log: Nhật ký hoạt động
 all_items: Tất cả các mục
+any: Bất kỳ
 csv: CSV
 no_collections: Chưa có Bảng nào
 create_collection: Tạo Danh mục mới
@@ -506,6 +509,7 @@ errors:
   ITEM_LIMIT_REACHED: Đạt mức giới hạn của bản ghi
   ITEM_NOT_FOUND: Bản ghi không tồn tại
   ROUTE_NOT_FOUND: Không tìm thấy
+  RECORD_NOT_UNIQUE: Phát hiện giá trị trùng lặp
   USER_SUSPENDED: Tài khoản bị vô hiệu
   CONTAINS_NULL_VALUES: Trường chứa giá trị rỗng
   INTERNAL_SERVER_ERROR: Lỗi Bất Thường
@@ -897,7 +901,7 @@ share_access_not_found_desc: Vui lòng liên hệ với người dùng được 
 referential_action_set_null: Vô hiệu hóa trường {field}
 continue_label: Tiếp tục
 continue_as: >-
-  Đang đăng nhập {name}. Nhấn tiếp tục đề đăng nhập.
+  Đang đăng nhập {name}. Nhấn tiếp tục để đăng nhập.
 delete_field_are_you_sure: >-
   Bạn có chắc chắn muốn xóa trường "{field}"? Dữ liệu đã xóa sẽ không thể phục hồi lại được.
 description: Mô tả
@@ -959,6 +963,7 @@ interfaces:
     name: Bộ lọc
     add_filter: Thêm bộ lọc
     all: Tất cả
+    any: Bất kỳ
     no_rules: Không có quy tắc nào được thiết lập
   presentation-links:
     primary: Khóa chính
