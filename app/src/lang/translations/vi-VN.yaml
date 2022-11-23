@@ -264,6 +264,7 @@ invalid_item: Mục Không hợp lệ
 next: Tiếp theo
 field_name: Tên Trường
 translations: Các Bản Dịch
+no_translations: Không có bản dịch
 left_to_right: Trái sang phải
 right_to_left: Phải sang trái
 note: Ghi chú
@@ -324,6 +325,7 @@ translations_collection: Dịch thuật
 languages_collection: Ngôn ngữ
 import_data_input_placeholder: CSV hoặc JSON...
 label_import: Nhập
+label_export: Xuất
 import_export: Nhập / Xuất
 format: Định dạng
 last_page: Trang cuối
@@ -547,6 +549,10 @@ all_users: Tất cả Người dùng
 delete_collection: Xoá Danh Mục
 update_collection_success: Đã Cập Nhật Danh Mục
 delete_collection_success: Đã Xoá Danh Mục
+make_collection_visible: Ẩn bộ sưu tập
+make_collection_hidden: Hiện bộ sưu tập
+make_folder_visible: Hiện thư mục
+make_folder_hidden: Ẩn thư mục
 goto_collection_content: Xem Nội dung
 start_end_of_count_items: 'Bản ghi {start}-{end} trong tổng số {count}'
 start_end_of_count_filtered_items: 'Bản ghi {start}-{end} trong tổng số {count}'
