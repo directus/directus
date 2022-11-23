@@ -395,6 +395,8 @@ no_file_selected: Chưa Có Tập Tin Nào Được Chọn
 download_file: Tải Xuống Tập Tin
 open_file_in_tab: Mở file trong tab mới
 exporting_all_items_in_collection: Xuất tất cả {total} bản ghi trong {collection}.
+exporting_no_items_to_export: Không có mục nào để xuất dữ liệu. Điều chỉnh cấu hình xuất dữ liệu ở bên dưới.
+exporting_download_hint: Một khi hoàn thành, tập tin {format} sẽ tự động tải về thiết bị.
 collection_key: Khóa Của Danh Mục
 name: Tên
 primary_key_field: Khóa Chính
@@ -446,6 +448,7 @@ move_to: Chuyển tới...
 copy: Sao chép
 copy_to: Sao chép đến...
 no_other_dashboards_copy: Bạn chưa có Bảng điều khiển nào.
+inactive: Không hoạt động
 users: Tài khoản
 activity: Hoạt động
 action: Hành động
@@ -496,6 +499,9 @@ errors:
   INVALID_OTP: Sai mật khẩu dùng một lần
   INVALID_PAYLOAD: Dữ liệu không hợp lệ
   INVALID_QUERY: Truy vấn không hợp lệ
+  INVALID_CONFIG: Cấu hình không hợp lệ
+  INVALID_TOKEN: Token không hợp lệ
+  INVALID_IP: Địa chỉ IP không được phép
   ITEM_LIMIT_REACHED: Đạt mức giới hạn của bản ghi
   ITEM_NOT_FOUND: Bản ghi không tồn tại
   ROUTE_NOT_FOUND: Không tìm thấy
@@ -507,6 +513,8 @@ errors:
   VALUE_TOO_LONG: Dữ liệu quá dài
   VALUE_OUT_OF_RANGE: Giá trị ngoài khoảng cho phép
   UNKNOWN: Lỗi Bất Thường
+  SERVICE_UNAVAILABLE: Dịch vụ không khả dụng
+  UNSUPPORTED_MEDIA_TYPE: Loại tập tin không được hỗ trợ
 security: Bảo mật
 value_hashed: Dữ Liệu Mã Hóa An Toàn
 bookmark_name: Tên Dấu trang...
@@ -585,6 +593,7 @@ operators:
   nempty: Không rỗng
 loading: Đang tải...
 drop_to_upload: Kéo vào để tải lên
+upload_file: Tải lên tập tin
 upload_file_indeterminate: Đang tải tệp lên...
 upload_file_success: Tệp tin được tải lên
 upload_files_indeterminate: 'Đang tải lên thư mục {done}/{total}'
@@ -738,6 +747,7 @@ cancel: Huỷ
 collection: Danh mục
 collections: Danh mục
 content: Nội dung
+system_fields_locked: Trường hệ thống đang bị khoá và không thể chỉnh sửa được
 fields:
   directus_activity:
     item: Trường khoá chính định danh
@@ -764,6 +774,7 @@ fields:
     location: Vị trí
     storage: Lưu trữ
     metadata: Thông tin metadata
+    type: Định dạng
     filesize: Kích thước tệp
     modified_by: Sửa đổi bởi
     modified_on: Sửa đổi vào
@@ -791,6 +802,8 @@ fields:
     language: Ngôn ngữ
     theme: Theme
     theme_auto: Tự động (Dựa vào hệ thống)
+    theme_light: Chế độ Sáng
+    theme_dark: Chế độ Tối
     tfa_secret: Xác thực hai yếu tố
     status: Trạng thái
     status_draft: Bản nháp
@@ -806,11 +819,17 @@ fields:
   directus_settings:
     project_name: Tên Dự Án
     auth_password_policy: Quy định về mật khẩu
+    storage_default_folder: Thư mục mặc định
+    custom_css: Tuỳ chỉnh CSS
     module_bar: Thanh công cụ
+    image_editor: Trình chỉnh sửa ảnh
   directus_shares:
     name: Tên
     role: Phân quyền
     password: Mật khẩu
+    date_start: Ngày bắt đầu
+    date_end: Ngày kết thúc
+    times_used: Thời gian sử dụng
   directus_fields:
     icon: Biểu tượng của Danh mục
     note: Ghi chú
@@ -840,7 +859,9 @@ field_options:
     language: Ngôn ngữ
     translation: Bản dịch
     archive_divider: Lưu trữ
+    archive_field_placeholder: Chọn một trường...
     sort_divider: Sắp xếp
+    sort_field: Chọn một trường...
   directus_roles:
     fields:
       icon_name: Biểu tượng
@@ -849,6 +870,8 @@ field_options:
   directus_users:
     preferences_divider: Tuỳ chọn người dùng
     dropdown_auto: Tự động (Dựa vào hệ thống)
+    dropdown_light: Chế độ Sáng
+    dropdown_dark: Chế độ Tối
     status_dropdown_draft: Bản nháp
     status_dropdown_invited: Mời
     status_dropdown_active: Kích hoạt
@@ -906,6 +929,8 @@ sign_out: Đăng xuất
 sign_out_confirm: Bạn có chắc bạn muốn đăng xuất không?
 something_went_wrong: Đã xảy ra lỗi.
 sort_direction: Chiều sắp xếp
+sort_asc: Sắp xếp tăng dần
+sort_desc: Sắp xếp giảm dần
 template: Mẫu
 translation: Bản dịch
 value: Giá trị
@@ -915,6 +940,7 @@ interfaces:
     name: Bộ lọc
     add_filter: Thêm bộ lọc
     all: Tất cả
+    no_rules: Không có quy tắc nào được thiết lập
   presentation-links:
     primary: Khóa chính
   input-code:
@@ -960,6 +986,7 @@ interfaces:
     folder: Thư mục
   list:
     sort: Sắp xếp
+    sort_placeholder: Thủ công
   slider:
     slider: Thanh trượt
   tags:
