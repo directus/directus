@@ -26,3 +26,5 @@ services:
       - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/db-password
     expose:
       - 3306
+volumes:
+  db-data:
