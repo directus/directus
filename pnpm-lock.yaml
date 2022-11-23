@@ -107,8 +107,6 @@ importers:
       '@types/node-cron': 3.0.6
       '@types/nodemailer': 6.4.6
       '@types/object-hash': 2.2.1
-      '@types/pino': 7.0.4
-      '@types/pino-http': 5.8.1
       '@types/qs': 6.9.7
       '@types/sanitize-html': 2.6.2
       '@types/sharp': 0.31.0
@@ -332,8 +330,6 @@ importers:
       '@types/node-cron': 3.0.6
       '@types/nodemailer': 6.4.6
       '@types/object-hash': 2.2.1
-      '@types/pino': 7.0.4
-      '@types/pino-http': 5.8.1
       '@types/qs': 6.9.7
       '@types/sanitize-html': 2.6.2
       '@types/sharp': 0.31.0
@@ -697,7 +693,7 @@ importers:
       '@vue/compiler-sfc': 3.2.45
       chalk: 4.1.1
       commander: 9.4.1
-      concurrently: 7.5.0
+      concurrently: 7.6.0
       esbuild: 0.15.14
       execa: 5.1.1
       fs-extra: 10.1.0
@@ -733,7 +729,7 @@ importers:
       '@types/fs-extra': 9.0.13
       '@types/inquirer': 8.2.1
       '@vitest/coverage-c8': 0.25.2
-      concurrently: 7.5.0
+      concurrently: 7.6.0
       typescript: 4.9.3
       vitest: 0.25.2
 
@@ -757,7 +753,7 @@ importers:
       '@types/pino': 7.0.4
       '@types/tmp': 0.2.3
       axios: 1.1.3
-      concurrently: 7.5.0
+      concurrently: 7.6.0
       date-fns: 2.29.3
       express: 4.18.2
       fs-extra: 10.1.0
@@ -798,7 +794,7 @@ importers:
       '@types/lodash': 4.14.189
       '@types/pino': 7.0.4
       '@types/tmp': 0.2.3
-      concurrently: 7.5.0
+      concurrently: 7.6.0
       tmp: 0.2.1
       typescript: 4.9.3
       vitest: 0.25.2
@@ -6653,34 +6649,6 @@ packages:
     resolution: {integrity: sha512-kUNnecmtkunAoQ3CnjmMkzNU/gtxG8guhi+Fk2U/kOpIKjIMKnXGp4IJCgQJrXSgMsWYimYG4TGjz/UzbGEBTw==}
     dev: true
 
-  /@types/pino-http/5.8.1:
-    resolution: {integrity: sha512-A9MW6VCnx5ii7s+Fs5aFIw+aSZcBCpsZ/atpxamu8tTsvWFacxSf2Hrn1Ohn1jkVRB/LiPGOapRXcFawDBnDnA==}
-    dependencies:
-      '@types/pino': 6.3.12
-    dev: true
-
-  /@types/pino-pretty/4.7.5:
-    resolution: {integrity: sha512-rfHe6VIknk14DymxGqc9maGsRe8/HQSvM2u46EAz2XrS92qsAJnW16dpdFejBuZKD8cRJX6Aw6uVZqIQctMpAg==}
-    dependencies:
-      '@types/node': 18.11.9
-      '@types/pino': 6.3.12
-    dev: true
-
-  /@types/pino-std-serializers/2.4.1:
-    resolution: {integrity: sha512-17XcksO47M24IVTVKPeAByWUd3Oez7EbIjXpSbzMPhXVzgjGtrOa49gKBwxH9hb8dKv58OelsWQ+A1G1l9S3wQ==}
-    dependencies:
-      '@types/node': 18.11.9
-    dev: true
-
-  /@types/pino/6.3.12:
-    resolution: {integrity: sha512-dsLRTq8/4UtVSpJgl9aeqHvbh6pzdmjYD3C092SYgLD2TyoCqHpTJk6vp8DvCTGGc7iowZ2MoiYiVUUCcu7muw==}
-    dependencies:
-      '@types/node': 18.11.9
-      '@types/pino-pretty': 4.7.5
-      '@types/pino-std-serializers': 2.4.1
-      sonic-boom: 2.8.0
-    dev: true
-
   /@types/pino/7.0.4:
     resolution: {integrity: sha512-yKw1UbZOTe7vP1xMQT+oz3FexwgIpBTrM+AC62vWgAkNRULgLTJWfYX+H5/sKPm8VXFbIcXkC3VZPyuaNioZFg==}
     dependencies:
@@ -9044,6 +9012,15 @@ packages:
       wrap-ansi: 7.0.0
     dev: true
 
+  /cliui/8.0.1:
+    resolution: {integrity: sha512-BSeNnyus75C4//NQ9gQt1/csTXyo/8Sb+afLAkzAptFuMsod9HFokGNudZpi/oQV73hnVK+sR+5PVRMd+Dr7YQ==}
+    engines: {node: '>=12'}
+    dependencies:
+      string-width: 4.2.3
+      strip-ansi: 6.0.1
+      wrap-ansi: 7.0.0
+    dev: true
+
   /clone-deep/4.0.1:
     resolution: {integrity: sha512-neHB9xuzh/wk0dIHweyAXv2aPGZIVk3pLMe+/RNzINf17fe0OG96QroktYAUm7SM1PBnzTabaLboqqxDyMU+SQ==}
     engines: {node: '>=6'}
@@ -9225,20 +9202,20 @@ packages:
       typedarray: 0.0.6
     dev: true
 
-  /concurrently/7.5.0:
-    resolution: {integrity: sha512-5E3mwiS+i2JYBzr5BpXkFxOnleZTMsG+WnE/dCG4/P+oiVXrbmrBwJ2ozn4SxwB2EZDrKR568X+puVohxz3/Mg==}
+  /concurrently/7.6.0:
+    resolution: {integrity: sha512-BKtRgvcJGeZ4XttiDiNcFiRlxoAeZOseqUvyYRUp/Vtd+9p1ULmeoSqGsDA+2ivdeDFpqrJvGvmI+StKfKl5hw==}
     engines: {node: ^12.20.0 || ^14.13.0 || >=16.0.0}
     hasBin: true
     dependencies:
       chalk: 4.1.2
       date-fns: 2.29.3
       lodash: 4.17.21
-      rxjs: 7.5.6
-      shell-quote: 1.7.3
+      rxjs: 7.5.7
+      shell-quote: 1.7.4
       spawn-command: 0.0.2-1
       supports-color: 8.1.1
       tree-kill: 1.2.2
-      yargs: 17.5.1
+      yargs: 17.6.2
     dev: true
 
   /connection-parse/0.0.7:
@@ -18147,6 +18124,12 @@ packages:
     dependencies:
       tslib: 2.4.0
 
+  /rxjs/7.5.7:
+    resolution: {integrity: sha512-z9MzKh/UcOqB3i20H6rtrlaE/CgjLOvheWK/9ILrbhROGTweAi1BaFsTT9FbwZi5Trr1qNRs+MXkhmR06awzQA==}
+    dependencies:
+      tslib: 2.4.1
+    dev: true
+
   /safe-buffer/5.1.1:
     resolution: {integrity: sha512-kKvNJn6Mm93gAczWVJg7wH+wGYWNrDHdWvpUmHyEsgCtIwwo3bqPtV4tR5tuPaUhTOo/kvhVwd8XwwOllGYkbg==}
     dev: true
@@ -18467,8 +18450,8 @@ packages:
     resolution: {integrity: sha512-7++dFhtcx3353uBaq8DDR4NuxBetBzC7ZQOhmTQInHEd6bSrXdiEyzCvG07Z44UYdLShWUyXt5M/yhz8ekcb1A==}
     engines: {node: '>=8'}
 
-  /shell-quote/1.7.3:
-    resolution: {integrity: sha512-Vpfqwm4EnqGdlsBFNmHhxhElJYrdfcxPThu+ryKS5J8L/fhAwLazFZtq+S+TWZ9ANj2piSQLGj6NQg+lKPmxrw==}
+  /shell-quote/1.7.4:
+    resolution: {integrity: sha512-8o/QEhSSRb1a5i7TFR0iM4G16Z0vYB2OQVs4G3aAFXjn3T6yEx8AZxy1PgDF7I00LZHYA3WxaSYIf5e5sAX8Rw==}
     dev: true
 
   /side-channel/1.0.4:
@@ -18673,6 +18656,7 @@ packages:
     resolution: {integrity: sha512-kuonw1YOYYNOve5iHdSahXPOK49GqwA+LZhI6Wz/l0rP57iKyXXIHaRagOBHAPmGwJC6od2Z9zgvZ5loSgMlVg==}
     dependencies:
       atomic-sleep: 1.0.0
+    dev: false
 
   /sonic-boom/3.2.0:
     resolution: {integrity: sha512-SbbZ+Kqj/XIunvIAgUZRlqd6CGQYq71tRRbXR92Za8J/R3Yh4Av+TWENiSiEgnlwckYLyP0YZQWVfyNC0dzLaA==}
@@ -19955,6 +19939,10 @@ packages:
 
   /tslib/2.4.0:
     resolution: {integrity: sha512-d6xOpEDfsi2CZVlPQzGeux8XMwLT9hssAsaPYExaQMuYskwb+x1x7J371tWlbBdWHroy99KnVB6qIkUbs5X3UQ==}
+
+  /tslib/2.4.1:
+    resolution: {integrity: sha512-tGyy4dAjRIEwI7BzsB0lynWgOpfqjUdq91XXAlIWD2OwKBH7oCl/GZG/HT4BOHrTlPMOASlMQ7veyTqpmRcrNA==}
+    dev: true
 
   /tsutils/3.21.0_typescript@4.9.3:
     resolution: {integrity: sha512-mHKK3iUXL+3UF6xL5k0PEhKRUBKPBCv/+RkEOpjRWxxx27KKRBmmA60A9pgOUvMi8GKhRMPEmjBRPzs2W7O1OA==}
@@ -21349,6 +21337,19 @@ packages:
     engines: {node: '>=12'}
     dependencies:
       cliui: 7.0.4
+      escalade: 3.1.1
+      get-caller-file: 2.0.5
+      require-directory: 2.1.1
+      string-width: 4.2.3
+      y18n: 5.0.8
+      yargs-parser: 21.1.1
+    dev: true
+
+  /yargs/17.6.2:
+    resolution: {integrity: sha512-1/9UrdHjDZc0eOU0HxOHoS78C69UD3JRMvzlJ7S79S2nTaWRA/whGCTV8o9e/N/1Va9YIV7Q4sOxD8VV4pCWOw==}
+    engines: {node: '>=12'}
+    dependencies:
+      cliui: 8.0.1
       escalade: 3.1.1
       get-caller-file: 2.0.5
       require-directory: 2.1.1
