@@ -1,86 +1,100 @@
-.emoji-picker__wrapper {
-	.emoji-picker {
-		--category-button-active-color: var(--primary);
-		--font: var(--family-sans-serif);
-		--text-color: var(--foreground-normal);
-		--dark-text-color: var(--foreground-normal);
-		--secondary-text-color: var(--foreground-normal-alt);
-		--dark-secondary-text-color: var(--foreground-normal-alt);
+.popupContainer.autoTheme {
+	z-index: 10000;
+	--root-border-radius: var(--border-radius);
 
-		box-shadow: var(--card-shadow);
-		border-radius: var(--border-radius);
-		border: var(--border-width) solid var(--border-normal);
-		background-color: var(--background-page);
-	}
+	.picmo-picker {
+			--ui-font: var(--family-sans-serif);
+			--ui-font-size: inherit;
+			--text-color: var(--foreground-normal);
+			--secondary-text-color: var(--foreground-normal-alt);
+			--category-name-text-color: var(--foreground-normal);
 
-	.emoji-picker__search-container {
-		height: 40px;
-		margin: 8px;
+			--background-color: var(--background-page);
+			--variant-popup-background-color: var(--background-normal-alt);
+			--secondary-background-color: var(--background-normal);
+			--category-name-background-color: var(--background-normal);
+			--tag-background-color: var(--background-normal-alt);
+			--hover-background-color: var(--background-normal);
+			--focus-indicator-background-color: var(--primary-25);
+			--overlay-background-color: var(--overlay-color);
 
-		.emoji-picker__search-icon {
-			color: var(--foreground-subdued);
-			top: calc(50% - 2px);
-			transform: translate(0, -50%);
-		}
+			--border-color: var(--border-normal);
+			--border-radius: var(--root-border-radius);
 
-		input.emoji-picker__search {
-			border-radius: var(--border-radius);
+			--search-height: 40px;
+			--search-placeholder-color: var(--foreground-subdued);
+			--search-icon-color: var(--foreground-subdued);
+			--search-background-color: var(--background-page);
+			--search-focus-background-color: var(--background-page);
+
+			box-shadow: var(--card-shadow);
 			border: var(--border-width) solid var(--border-normal);
-			background-color: var(--background-page);
 
-			height: 100%;
+			header {
+				border-bottom: var(--border-width) solid var(--border-normal);
 
-			&:hover {
-				border-color: var(--border-normal-alt);
-			}
+				.searchContainer {
+					padding: 0 8px;
 
-			&:focus {
-				border-color: var(--primary);
-			}
+					.searchField {
+						font-size: inherit;
+						padding: var(--input-padding);
+						border: var(--border-width) solid var(--border-normal);
+						border-radius: var(--border-radius);
 
-			&::placeholder {
-				color: var(--foreground-subdued);
-			}
-		}
-	}
+						&:hover {
+							border-color: var(--border-normal-alt);
+						}
 
-	.emoji-picker__content {
-		padding: 8px 0 0 0;
-		height: unset;
+						&:focus {
+							border-color: var(--primary);
+						}
+					}
 
-		.emoji-picker__category-buttons {
-			padding: 0 8px;
-
-			.emoji-picker__category-button {
-				transition: color var(--fast) var(--transition);
-
-				&:not(.active) {
-					color: var(--foreground-subdued);
+					.searchAccessory {
+						right: calc(8px + var(--input-padding))
+					}
 				}
 
+				.categoryButtons {
+					padding: 0 8px;
+
+					.categoryTab .categoryButton:hover {
+						background: var(--background-normal-alt)
+					}
+
+					.categoryTabActive .categoryButton {
+						background: none;
+					}
+				}
+			}
+
+			.content {
+				.emojiCategory:first-child .categoryName {
+					margin-top: 0;
+				}
+
+				.categoryName {
+					font-size: inherit;
+					padding: 0 8px;
+					margin: 8px 0;
+				}
+			}
+
+			.emojiButton {
 				&:hover {
-					color: var(--foreground-normal);
+					border-radius: var(--border-radius);
+				}
+			}
+
+			.preview {
+				padding: 8px;
+				height: calc(1em + var(--emoji-preview-height));
+				border-top: var(--border-width) solid var(--border-normal);
+
+				.previewName {
+					font-size: inherit;
 				}
 			}
 		}
-
-		.emoji-picker__category-name {
-			margin-left: 12px;
-		}
-
-		.emoji-picker__emojis {
-			border-top: 2px solid var(--border-normal);
-		}
-	}
-
-	.emoji-picker__preview {
-		border-top: 2px solid var(--border-normal);
-	}
-
-	.emoji-picker__emoji {
-		&:hover {
-			background-color: var(--background-normal);
-			border-radius: var(--border-radius);
-		}
-	}
 }

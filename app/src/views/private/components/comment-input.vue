@@ -45,7 +45,9 @@
 				<v-icon name="alternate_email" />
 			</v-button>
 
-			<v-emoji-picker @click="saveCursorPosition" @emoji-selected="insertText($event)" />
+			<Suspense>
+				<v-emoji-picker @click="saveCursorPosition" @emoji-selected="insertText($event)" />
+			</Suspense>
 
 			<div class="spacer"></div>
 

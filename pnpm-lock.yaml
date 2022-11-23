@@ -371,6 +371,7 @@ importers:
       '@mapbox/mapbox-gl-draw': 1.3.0
       '@mapbox/mapbox-gl-draw-static-mode': 1.0.1
       '@mapbox/mapbox-gl-geocoder': 5.0.1
+      '@picmo/popup-picker': 5.7.2
       '@pinia/testing': 0.0.14
       '@popperjs/core': 2.11.6
       '@rollup/plugin-yaml': 4.0.1
@@ -421,6 +422,8 @@ importers:
       diacritics: 1.3.0
       diff: 5.1.0
       dompurify: 2.4.1
+      emojibase: 6.1.0
+      emojibase-data: 7.0.1
       escape-string-regexp: 5.0.0
       file-saver: 2.0.5
       flatpickr: 4.6.13
@@ -444,6 +447,7 @@ importers:
       mitt: 3.0.0
       nanoid: 4.0.0
       p-queue: 7.3.0
+      picmo: 5.7.2
       pinia: 2.0.23
       pretty-bytes: 6.0.0
       pretty-ms: 8.0.0
@@ -480,6 +484,7 @@ importers:
       '@mapbox/mapbox-gl-draw': 1.3.0
       '@mapbox/mapbox-gl-draw-static-mode': 1.0.1
       '@mapbox/mapbox-gl-geocoder': 5.0.1_mapbox-gl@1.13.2
+      '@picmo/popup-picker': 5.7.2_picmo@5.7.2
       '@pinia/testing': 0.0.14_pinia@2.0.23+vue@3.2.45
       '@popperjs/core': 2.11.6
       '@rollup/plugin-yaml': 4.0.1
@@ -530,6 +535,8 @@ importers:
       diacritics: 1.3.0
       diff: 5.1.0
       dompurify: 2.4.1
+      emojibase: 6.1.0
+      emojibase-data: 7.0.1_emojibase@6.1.0
       escape-string-regexp: 5.0.0
       file-saver: 2.0.5
       flatpickr: 4.6.13
@@ -553,6 +560,7 @@ importers:
       mitt: 3.0.0
       nanoid: 4.0.0
       p-queue: 7.3.0
+      picmo: 5.7.2
       pinia: 2.0.23_mgnvym7yiazkylwwogi5r767ue
       pretty-bytes: 6.0.0
       pretty-ms: 8.0.0
@@ -3332,6 +3340,16 @@ packages:
       - supports-color
     dev: true
 
+  /@floating-ui/core/1.0.2:
+    resolution: {integrity: sha512-Skfy0YS3NJ5nV9us0uuPN0HDk1Q4edljaOhRBJGDWs9EBa7ZVMYBHRFlhLvvmwEoaIM9BlH6QJFn9/uZg0bACg==}
+    dev: true
+
+  /@floating-ui/dom/1.0.6:
+    resolution: {integrity: sha512-kt/tg1oip9OAH1xjCTcx1OpcUpu9rjDw3GKJ/rEhUqhO7QyJWfrHU0DpLTNsH67+JyFL5Kv9X1utsXwKFVtyEQ==}
+    dependencies:
+      '@floating-ui/core': 1.0.2
+    dev: true
+
   /@fortawesome/fontawesome-common-types/0.2.36:
     resolution: {integrity: sha512-a/7BiSgobHAgBWeN7N0w+lAhInrGxksn13uK7231n2m8EDPE3BMCl9NZLTGrj9ZXfCmC6LM0QLqXidIizVQ6yg==}
     engines: {node: '>=6'}
@@ -4358,6 +4376,15 @@ packages:
     resolution: {integrity: sha512-m7X9U6BG2+J+R1lSOdCiITLLrxm+cWlNI3HUFA92oLO77ObGNzaKdh8pMLqdZcshtkKuV84olNNXDfMc4FezBQ==}
     engines: {node: '>=10'}
     dev: false
+
+  /@picmo/popup-picker/5.7.2_picmo@5.7.2:
+    resolution: {integrity: sha512-AORn2fsYph2NSHZaXViIhDhr0KE2QBjDQnX02TU78Jt76GWxWVV17Y7Kv9aKTO4K7lMSuCCMnq6cZnz+zjgxOQ==}
+    peerDependencies:
+      picmo: ^5.7.0
+    dependencies:
+      '@floating-ui/dom': 1.0.6
+      picmo: 5.7.2
+    dev: true
 
   /@pinia/testing/0.0.14_pinia@2.0.23+vue@3.2.45:
     resolution: {integrity: sha512-ZmZwVNd/NnKYLIfjfuKl0zlJ3UdiXFpsHzSlL6wCeezSlyrqGMxsIQKv0J6fleu38gyCNTPBEipfxrt8V4+VIg==}
@@ -10265,6 +10292,18 @@ packages:
 
   /emoji-regex/9.2.2:
     resolution: {integrity: sha512-L18DaJsXSUk2+42pv8mLs5jJT2hqFkFE4j21wOmgbUqsZ2hL72NsUU785g9RXgo3s0ZNgVl42TiHp3ZtOv/Vyg==}
+    dev: true
+
+  /emojibase-data/7.0.1_emojibase@6.1.0:
+    resolution: {integrity: sha512-BLZpOdwyFpZ7lzBWyDtnxmKVm/SJMYgAfp1if3o6n1TVUMSXAf0nikONXl90LZuJ/m3XWPBkkubgCet2BsCGGQ==}
+    peerDependencies:
+      emojibase: '*'
+    dependencies:
+      emojibase: 6.1.0
+    dev: true
+
+  /emojibase/6.1.0:
+    resolution: {integrity: sha512-1GkKJPXP6tVkYJHOBSJHoGOr/6uaDxZ9xJ6H7m6PfdGXTmQgbALHLWaVRY4Gi/qf5x/gT/NUXLPuSHYLqtLtrQ==}
     dev: true
 
   /emojis-list/3.0.0:
@@ -16343,6 +16382,12 @@ packages:
     resolution: {integrity: sha512-FdW9r/jQZhSeohs1Z3sI1yxFQNFvMcnmfuj4WBMUTxOrAyLMaTcE1aAMBiTlbMNaXvBCQuVi0R7hd8udDSP7ug==}
     dependencies:
       split2: 4.1.0
+
+  /picmo/5.7.2:
+    resolution: {integrity: sha512-A7c5O8x1Xwq11KBYFY93+GIbHnw9PVz35HaWWHn/dgT08GA67M6cXKjjwzLnEAyXSdxXKrEk8/gPyTs+ibzWfQ==}
+    dependencies:
+      emojibase: 6.1.0
+    dev: true
 
   /picocolors/0.2.1:
     resolution: {integrity: sha512-cMlDqaLEqfSaW8Z7N5Jw+lyIW869EzT73/F5lhtY9cLGoVxSXznfgfXMO0Z5K0o0Q2TkTXq+0KFsdnSe3jDViA==}

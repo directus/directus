@@ -2167,3 +2167,13 @@ operations:
     flows: Flows
     flow: Flow
     data: Data
+emojis:
+  recently_used: Recently Used
+  load_error: Failed to load emojis
+  clear_recents: Clear recent emojis
+  no_recents: You haven't selected any emojis yet.
+  retry: Try again
+  clear_search: Clear search
+  search_error: Failed to search emojis
+  search_not_found: No emojis found
+  search: Search emojis...
