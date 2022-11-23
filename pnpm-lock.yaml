@@ -367,7 +367,6 @@ importers:
       '@fullcalendar/interaction': 5.11.3
       '@fullcalendar/list': 5.11.3
       '@fullcalendar/timegrid': 5.11.3
-      '@joeattardi/emoji-button': 4.6.4
       '@mapbox/mapbox-gl-draw': 1.3.0
       '@mapbox/mapbox-gl-draw-static-mode': 1.0.1
       '@mapbox/mapbox-gl-geocoder': 5.0.1
@@ -480,7 +479,6 @@ importers:
       '@fullcalendar/interaction': 5.11.3
       '@fullcalendar/list': 5.11.3
       '@fullcalendar/timegrid': 5.11.3
-      '@joeattardi/emoji-button': 4.6.4
       '@mapbox/mapbox-gl-draw': 1.3.0
       '@mapbox/mapbox-gl-draw-static-mode': 1.0.1
       '@mapbox/mapbox-gl-geocoder': 5.0.1_mapbox-gl@1.13.2
@@ -3350,24 +3348,10 @@ packages:
       '@floating-ui/core': 1.0.2
     dev: true
 
-  /@fortawesome/fontawesome-common-types/0.2.36:
-    resolution: {integrity: sha512-a/7BiSgobHAgBWeN7N0w+lAhInrGxksn13uK7231n2m8EDPE3BMCl9NZLTGrj9ZXfCmC6LM0QLqXidIizVQ6yg==}
-    engines: {node: '>=6'}
-    requiresBuild: true
-    dev: true
-
   /@fortawesome/fontawesome-common-types/6.2.1:
     resolution: {integrity: sha512-Sz07mnQrTekFWLz5BMjOzHl/+NooTdW8F8kDQxjWwbpOJcnoSg4vUDng8d/WR1wOxM0O+CY9Zw0nR054riNYtQ==}
     engines: {node: '>=6'}
     requiresBuild: true
-    dev: true
-
-  /@fortawesome/fontawesome-svg-core/1.2.36:
-    resolution: {integrity: sha512-YUcsLQKYb6DmaJjIHdDWpBIGCcyE/W+p/LMGvjQem55Mm2XWVAP5kWTMKWLv9lwpCVjpLxPyOMOyUocP1GxrtA==}
-    engines: {node: '>=6'}
-    requiresBuild: true
-    dependencies:
-      '@fortawesome/fontawesome-common-types': 0.2.36
     dev: true
 
   /@fortawesome/fontawesome-svg-core/6.2.1:
@@ -3384,22 +3368,6 @@ packages:
     requiresBuild: true
     dependencies:
       '@fortawesome/fontawesome-common-types': 6.2.1
-    dev: true
-
-  /@fortawesome/free-regular-svg-icons/5.15.4:
-    resolution: {integrity: sha512-9VNNnU3CXHy9XednJ3wzQp6SwNwT3XaM26oS4Rp391GsxVYA+0oDR2J194YCIWf7jNRCYKjUCOduxdceLrx+xw==}
-    engines: {node: '>=6'}
-    requiresBuild: true
-    dependencies:
-      '@fortawesome/fontawesome-common-types': 0.2.36
-    dev: true
-
-  /@fortawesome/free-solid-svg-icons/5.15.4:
-    resolution: {integrity: sha512-JLmQfz6tdtwxoihXLg6lT78BorrFyCf59SAwBM6qV/0zXyVeDygJVb3fk+j5Qat+Yvcxp1buLTY5iDh1ZSAQ8w==}
-    engines: {node: '>=6'}
-    requiresBuild: true
-    dependencies:
-      '@fortawesome/fontawesome-common-types': 0.2.36
     dev: true
 
   /@fullcalendar/common/5.11.3:
@@ -3856,22 +3824,6 @@ packages:
       '@types/node': 18.11.9
       '@types/yargs': 17.0.12
       chalk: 4.1.2
-    dev: true
-
-  /@joeattardi/emoji-button/4.6.4:
-    resolution: {integrity: sha512-vXji10ZwgxRG6xGQ93SIBUQEltWYTs3do/FSEn3qrRWUuavrqIUhh1oMEPmhKARF0pokW6bNRCvVKI6wq//H6w==}
-    deprecated: Emoji Button is now PicMo! Please install the 'picmo' package, see https://picmojs.com for details
-    dependencies:
-      '@fortawesome/fontawesome-svg-core': 1.2.36
-      '@fortawesome/free-regular-svg-icons': 5.15.4
-      '@fortawesome/free-solid-svg-icons': 5.15.4
-      '@popperjs/core': 2.11.6
-      escape-html: 1.0.3
-      focus-trap: 5.1.0
-      fuzzysort: 1.9.0
-      tiny-emitter: 2.1.0
-      tslib: 2.4.0
-      twemoji: 12.1.6
     dev: true
 
   /@joshwooding/vite-plugin-react-docgen-typescript/0.0.5_vf3nqk3ewnpqc5dulqzhw4xcru:
@@ -11478,13 +11430,6 @@ packages:
       readable-stream: 2.3.7
     dev: true
 
-  /focus-trap/5.1.0:
-    resolution: {integrity: sha512-CkB/nrO55069QAUjWFBpX6oc+9V90Qhgpe6fBWApzruMq5gnlh90Oo7iSSDK7pKiV5ugG6OY2AXM5mxcmL3lwQ==}
-    dependencies:
-      tabbable: 4.0.0
-      xtend: 4.0.2
-    dev: true
-
   /follow-redirects/1.15.1:
     resolution: {integrity: sha512-yLAMQs+k0b2m7cVxpS1VKJVvoz7SS9Td1zss3XRwXj+ZDH00RJgnuLx7E44wx02kQLrdM3aOOy+FpzS7+8OizA==}
     engines: {node: '>=4.0'}
@@ -11653,15 +11598,6 @@ packages:
       jsonfile: 6.1.0
       universalify: 2.0.0
 
-  /fs-extra/8.1.0:
-    resolution: {integrity: sha512-yhlQgA6mnOJUKOsRUFsgJdQCvkKhcz8tlZG5HBQfReYZy46OwLcY+Zia0mtdHsOo9y/hP+CxMN0TU9QxoOtG4g==}
-    engines: {node: '>=6 <7 || >=8'}
-    dependencies:
-      graceful-fs: 4.2.10
-      jsonfile: 4.0.0
-      universalify: 0.1.2
-    dev: true
-
   /fs-extra/9.1.0:
     resolution: {integrity: sha512-hcg3ZmepS30/7BSFqRvoo3DOMQu7IjqxO5nCDt+zM9XWjb33Wg7ziNT+Qvqbuc3+gWpzO02JubVyk2G4Zvo1OQ==}
     engines: {node: '>=10'}
@@ -11735,10 +11671,6 @@ packages:
   /fuzzy/0.1.3:
     resolution: {integrity: sha512-/gZffu4ykarLrCiP3Ygsa86UAo1E5vEVlvTrpkKywXSbP9Xhln3oSp9QSV57gEq3JFFpGJ4GZ+5zdEp3FcUh4w==}
     engines: {node: '>= 0.6.0'}
-    dev: true
-
-  /fuzzysort/1.9.0:
-    resolution: {integrity: sha512-MOxCT0qLTwLqmEwc7UtU045RKef7mc8Qz8eR4r2bLNEq9dy/c3ZKMEFp6IEst69otkQdFZ4FfgH2dmZD+ddX1g==}
     dev: true
 
   /gauge/3.0.2:
@@ -14148,20 +14080,6 @@ packages:
   /jsonc-parser/3.2.0:
     resolution: {integrity: sha512-gfFQZrcTc8CnKXp6Y4/CBT3fTc0OVuDofpre4aEeEpSBPV5X5v4+Vmx+8snU7RLPrNHPKSgLxGo9YuQzz20o+w==}
     dev: false
-
-  /jsonfile/4.0.0:
-    resolution: {integrity: sha512-m6F1R3z8jjlf2imQHS2Qez5sjKWQzbuuhuJ/FKYFRZvPE3PuHcSMVZzfsLhGVOkfd20obL5SWEBew5ShlquNxg==}
-    optionalDependencies:
-      graceful-fs: 4.2.10
-    dev: true
-
-  /jsonfile/5.0.0:
-    resolution: {integrity: sha512-NQRZ5CRo74MhMMC3/3r5g2k4fjodJ/wh8MxjFbCViWKFjxrnudWSY5vomh+23ZaXzAS7J3fBZIR2dV6WbmfM0w==}
-    dependencies:
-      universalify: 0.1.2
-    optionalDependencies:
-      graceful-fs: 4.2.10
-    dev: true
 
   /jsonfile/6.1.0:
     resolution: {integrity: sha512-5dgndWOriYSm5cnYaJNhalLNDKOqFwyDB/rr1E9ZsGciGvKPs8R2xYGCacuf3z6K1YKDz182fd+fY3cn3pMqXQ==}
@@ -19460,10 +19378,6 @@ packages:
     resolution: {integrity: sha512-qImOD23aDfnIDNqlG1NOehdB9IYsn1V9oByPjKY1nakv2MQYCEMyX033/q+aEtYCpmYK1cv2+NTmlH+ra6GA5A==}
     dev: true
 
-  /tabbable/4.0.0:
-    resolution: {integrity: sha512-H1XoH1URcBOa/rZZWxLxHCtOdVUEev+9vo5YdYhC9tCY4wnybX+VQrCYuy9ubkg69fCBxCONJOSLGfw0DWMffQ==}
-    dev: true
-
   /tapable/1.1.3:
     resolution: {integrity: sha512-4WK/bYZmj8xLr+HUCODHGF1ZFzsYffasLUgEiMBY4fgtltdO6B4WJtlSbPaDTLpYTcGVwM2qLnFTICEcNxs3kA==}
     engines: {node: '>=6'}
@@ -19712,10 +19626,6 @@ packages:
     engines: {node: '>=0.6.0'}
     dependencies:
       setimmediate: 1.0.5
-    dev: true
-
-  /tiny-emitter/2.1.0:
-    resolution: {integrity: sha512-NB6Dk1A9xgQPMoGqC5CVXn123gWyte215ONT5Pp5a0yt4nlEoO1ZWeCwpncaekPHXO60i47ihFnZPiRPjRMq4Q==}
     dev: true
 
   /tinybench/2.3.1:
@@ -20051,19 +19961,6 @@ packages:
     resolution: {integrity: sha512-KXXFFdAbFXY4geFIwoyNK+f5Z1b7swfXABfL7HXCmoIWMKU3dmS26672A4EeQtDzLKy7SXmfBu51JolvEKwtGA==}
     dev: false
     optional: true
-
-  /twemoji-parser/12.1.3:
-    resolution: {integrity: sha512-ND4LZXF4X92/PFrzSgGkq6KPPg8swy/U0yRw1k/+izWRVmq1HYi3khPwV3XIB6FRudgVICAaBhJfW8e8G3HC7Q==}
-    dev: true
-
-  /twemoji/12.1.6:
-    resolution: {integrity: sha512-FIKi9Jne5IiDGDWekoANJ1a8ltUKVbJLEIR8XUpbFRDMqIPgLWnYgjeWZ1KOrdiTztRCAa9x4v+5w5OuiJOGVw==}
-    dependencies:
-      fs-extra: 8.1.0
-      jsonfile: 5.0.0
-      twemoji-parser: 12.1.3
-      universalify: 0.1.2
-    dev: true
 
   /type-check/0.4.0:
     resolution: {integrity: sha512-XleUoc9uwGXqjWwXaUTZAmzMcFZ5858QA2vvx1Ur5xIcixXIP+8LnFDgRplU30us6teqdlskFfu+ae4K79Ooew==}
