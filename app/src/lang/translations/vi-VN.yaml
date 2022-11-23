@@ -324,6 +324,7 @@ translations_collection: Dịch thuật
 languages_collection: Ngôn ngữ
 import_data_input_placeholder: CSV hoặc JSON...
 label_import: Nhập
+import_export: Nhập / Xuất
 format: Định dạng
 last_page: Trang cuối
 last_access: Truy cập lần cuối
@@ -731,6 +732,7 @@ changes_are_permanent: Thay đổi là lâu dài
 preset_search_placeholder: Tìm kiếm truy vấn...
 layout_preview: Xem Trước Bố Cục
 layout_setup: Cài Đặt Bố Cục
+data: Dữ liệu
 unsaved_changes: Những thay đổi chưa được lưu
 unsaved_changes_copy: Bạn có chắc chắn muốn rời khỏi trang này không?
 discard_changes: Hủy thay đổi
@@ -841,7 +843,9 @@ fields:
     description: Mô tả
   directus_webhooks:
     name: Tên
+    method: Phương thức
     status: Trạng thái
+    data: Dữ liệu
     value: Giá trị
     collections: Danh mục
 field_options:
@@ -882,9 +886,13 @@ field_options:
     status_options_inactive: Không hoạt động
     actions_create: Tạo
     actions_update: Cập nhật
+    actions_login: Đăng nhập
     headers:
       value: Giá trị
+no_value: Không có giá trị
 comment: Bình luận
+expired: Đã hết hạn
+share: Chia sẻ
 share_access_not_found_desc: Vui lòng liên hệ với người dùng được ủy quyền của dự án này để yêu cầu quyền truy cập.
 referential_action_set_null: Vô hiệu hóa trường {field}
 continue_label: Tiếp tục
@@ -905,11 +913,21 @@ forgot_password: Quên mật khẩu
 hidden: Ẩn
 icon: Biểu tượng
 info: Thông tin
+colors:
+  purple: Tím
+  green: Xanh lá
+  yellow: Vàng
+  orange: Cam
+  red: Đỏ
+  black: Đen
+  gray: Xám
+  white: Trắng
 junction_collection: Danh mục liên kết
 latency: Độ trễ
 login: Đăng nhập
 my_activity: Hoạt động cá nhân
 not_authenticated: Chưa xác thực
+authenticated: Đã xác thực
 options: Tuỳ chọn
 otp: Mật khẩu sử dụng một lần
 password: Mật khẩu
@@ -935,6 +953,7 @@ template: Mẫu
 translation: Bản dịch
 value: Giá trị
 table: Bảng
+list: Danh sách
 interfaces:
   filter:
     name: Bộ lọc
@@ -975,15 +994,21 @@ interfaces:
     icon: Biểu tượng
   system-interface:
     interface: Giao diện
+  list-m2m:
+    many-to-many: Quan hệ nhiều - nhiều
   select-dropdown-m2o:
+    many-to-one: Quan hệ nhiều - một
     display_template: Mẫu hiển thị
   input-rich-text-md:
     edit: Sửa
   map:
     map: Bản đồ
     zoom: Thu phóng
+  list-o2m:
+    one-to-many: Quan hệ một - nhiều
   system-folder:
     folder: Thư mục
+    description: Chọn một thư mục
   list:
     sort: Sắp xếp
     sort_placeholder: Thủ công
@@ -991,6 +1016,11 @@ interfaces:
     slider: Thanh trượt
   tags:
     tags: Tags
+  input:
+    minimum_value: Giá trị tối thiểu
+    maximum_value: Giá trị tối đa
+  input-translated-string:
+    search_placeholder: Tìm kiếm...
   boolean:
     label_default: Đã kích hoạt
   translations:
@@ -1040,6 +1070,8 @@ displays:
     circle: Vòng tròn
   labels:
     choices_value_placeholder: Nhập vào một giá trị...
+  mime-type:
+    mime-type: Định dạng
   rating:
     rating: Xếp hạng
   user:
@@ -1068,6 +1100,13 @@ layouts:
 panels:
   label:
     name: Nhãn
+  list:
+    name: Danh sách
+  barchart:
+    name: Biểu đồ cột
+triggers:
+  webhook:
+    method: Phương thức
 operations:
   log:
     message: Tin nhắn
@@ -1076,4 +1115,8 @@ operations:
     message: Tin nhắn
   request:
     url: Đường Dẫn
+    method: Phương thức
+    data: Dữ liệu
     header_placeholder: Đang xác thực...
+  trigger:
+    data: Dữ liệu
