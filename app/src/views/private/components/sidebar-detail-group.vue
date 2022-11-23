@@ -32,7 +32,8 @@ export default defineComponent({
 					// Still allow the user to manually close it afterwards
 					mandatory.value = false;
 				}
-			}
+			},
+			{ immediate: true }
 		);
 
 		return {
