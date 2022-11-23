@@ -1,4 +1,11 @@
-import { ActionEventParams, MutationOptions, Collection, Field, Relation, SchemaOverview } from '@directus/shared/types';
+import {
+	ActionEventParams,
+	MutationOptions,
+	Collection,
+	Field,
+	Relation,
+	SchemaOverview,
+} from '@directus/shared/types';
 import { Diff, DiffDeleted, DiffNew } from 'deep-diff';
 import { Knex } from 'knex';
 import { merge, set } from 'lodash';

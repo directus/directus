@@ -1,6 +1,15 @@
 import SchemaInspector from '@directus/schema';
 import { REGEX_BETWEEN_PARENS } from '@directus/shared/constants';
-import { ActionEventParams, MutationOptions, Accountability, Field, FieldMeta, RawField, SchemaOverview, Type } from '@directus/shared/types';
+import {
+	ActionEventParams,
+	MutationOptions,
+	Accountability,
+	Field,
+	FieldMeta,
+	RawField,
+	SchemaOverview,
+	Type,
+} from '@directus/shared/types';
 import { addFieldFlag, toArray } from '@directus/shared/utils';
 import { AbstractServiceOptions } from '@directus/shared/services';
 import Keyv from 'keyv';
