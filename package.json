@@ -7,7 +7,6 @@
 		"./packages/*"
 	],
 	"scripts": {
-		"cli": "NODE_ENV=development SERVE_APP=false DOTENV_CONFIG_PATH=api/.env ts-node -r dotenv/config --script-mode --transpile-only api/src/cli/run.ts",
 		"format": "prettier --write \"**/*.{md,y?(a)ml,json}\"",
 		"lint": "eslint .",
 		"test:blackbox": "jest tests -c tests-blackbox/jest.config.js",
