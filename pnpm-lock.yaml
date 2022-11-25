@@ -449,7 +449,7 @@ importers:
       react: '18'
       react-dom: '18'
       sass: 1.56.1
-      tinymce: 5.10.2
+      tinymce: 6.3.0
       typescript: 4.9.3
       vite: 3.2.4
       vite-plugin-vue-markdown: 0.22.1
@@ -558,7 +558,7 @@ importers:
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
       sass: 1.56.1
-      tinymce: 5.10.2
+      tinymce: 6.3.0
       typescript: 4.9.3
       vite: 3.2.4_sass@1.56.1
       vite-plugin-vue-markdown: 0.22.1_vite@3.2.4
@@ -8660,7 +8660,7 @@ packages:
       mississippi: 3.0.0
       mkdirp: 0.5.6
       move-concurrently: 1.0.1
-      promise-inflight: 1.0.1_bluebird@3.7.2
+      promise-inflight: 1.0.1
       rimraf: 2.7.1
       ssri: 6.0.2
       unique-filename: 1.1.1
@@ -17090,17 +17090,6 @@ packages:
       bluebird:
         optional: true
 
-  /promise-inflight/1.0.1_bluebird@3.7.2:
-    resolution: {integrity: sha512-6zWPyEOFaQBJYcGMHBKTKJ3u6TBsnMFOIZSa6ce1e/ZrrsOlnHRHbabMjLiBYKp+n44X9eUI6VUPaukCXHuG4g==}
-    peerDependencies:
-      bluebird: '*'
-    peerDependenciesMeta:
-      bluebird:
-        optional: true
-    dependencies:
-      bluebird: 3.7.2
-    dev: true
-
   /promise-retry/2.0.1:
     resolution: {integrity: sha512-y+WKFlBR8BGXnsNlIHFGPZmyDf3DFMoLhaflAnyZgV6rG6xu+JwesTo2Q9R6XwYmtmwAFCkAk3e35jEdoeh/3g==}
     engines: {node: '>=10'}
@@ -19657,6 +19646,10 @@ packages:
 
   /tinymce/5.10.2:
     resolution: {integrity: sha512-5QhnZ6c8F28fYucLLc00MM37fZoAZ4g7QCYzwIl38i5TwJR5xGqzOv6YMideyLM4tytCzLCRwJoQen2LI66p5A==}
+    dev: true
+
+  /tinymce/6.3.0:
+    resolution: {integrity: sha512-UeOKdbDbBoAT2A8WQr/D4AqzqPloTY/B/zJXCGlPz5L4YOmwUCqXAFTxN1tkysRq994UIZZUJZezC7WmCDx5ag==}
     dev: true
 
   /tinypool/0.3.0:

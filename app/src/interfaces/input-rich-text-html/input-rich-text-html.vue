@@ -187,23 +187,21 @@ import { useSettingsStore } from '@/stores/settings';
 import { SettingsStorageAssetPreset } from '@directus/shared/types';
 
 import 'tinymce/tinymce';
+import 'tinymce/icons/default';
 import 'tinymce/themes/silver';
+import 'tinymce/models/dom';
 import 'tinymce/plugins/autoresize/plugin';
 import 'tinymce/plugins/code/plugin';
 import 'tinymce/plugins/directionality/plugin';
 import 'tinymce/plugins/fullscreen/plugin';
-import 'tinymce/plugins/hr/plugin';
 import 'tinymce/plugins/image/plugin';
-import 'tinymce/plugins/imagetools/plugin';
 import 'tinymce/plugins/insertdatetime/plugin';
 import 'tinymce/plugins/link/plugin';
 import 'tinymce/plugins/lists/plugin';
 import 'tinymce/plugins/media/plugin';
 import 'tinymce/plugins/pagebreak/plugin';
-import 'tinymce/plugins/paste/plugin';
 import 'tinymce/plugins/preview/plugin';
 import 'tinymce/plugins/table/plugin';
-import 'tinymce/icons/default';
 
 type CustomFormat = {
 	title: string;
@@ -371,16 +369,28 @@ export default defineComponent({
 
 			return {
 				skin: false,
-				skin_url: false,
-				content_css: false,
 				content_style: getEditorStyles(props.font as 'sans-serif' | 'serif' | 'monospace'),
-				plugins:
-					'media table hr lists image link pagebreak code insertdatetime autoresize paste preview fullscreen directionality',
+				plugins: [
+					'media',
+					'table',
+					'lists',
+					'image',
+					'link',
+					'pagebreak',
+					'code',
+					'insertdatetime',
+					'autoresize',
+					'preview',
+					'fullscreen',
+					'directionality',
+				],
 				branding: false,
 				max_height: 1000,
 				elementpath: false,
 				statusbar: false,
 				menubar: false,
+				// TODO: Verify (https://www.tiny.cloud/docs/tinymce/6/migration-from-5x/#plugins-paste)
+				paste_data_images: false,
 				convert_urls: false,
 				image_dimensions: false,
 				extended_valid_elements: 'audio[loop|controls],source[src|type]',
