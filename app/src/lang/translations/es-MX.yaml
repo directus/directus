@@ -396,7 +396,7 @@ functions:
   month: Mes
   week: Semana
   day: Día
-  weekday: Día laborable
+  weekday: Día de la semana
   hour: Hora
   minute: Minuto
   second: Segundo
@@ -428,7 +428,7 @@ months:
   november: Noviembre
   december: Diciembre
 drag_mode: Modo de arrastre
-cancel_crop: No Cortar
+cancel_crop: Cancelar Recorte
 original: Original
 url: URL
 import_label: Importar
@@ -446,7 +446,7 @@ download: Descargar
 open: Abrir
 open_in_new_window: Abrir en nueva ventana
 open_folder: Abrir carpeta "{folder}"
-foreground_color: Color de Letra
+foreground_color: Color principal
 background_color: Color de fondo
 upload_from_device: Subir archivo desde dispositivo
 choose_from_library: Elegir archivo de la biblioteca
@@ -454,10 +454,10 @@ import_from_url: Importar Archivo desde URL
 replace_from_device: Reemplazar Archivo desde Dispositivo
 replace_from_library: Reemplazar Archivo desde Biblioteca
 replace_from_url: Reemplazar Archivo desde URL
-no_file_selected: Sin Archivos Seleccionados
+no_file_selected: No hay ningún archivo seleccionado
 download_file: Descargar archivo
 open_file_in_tab: Abrir archivo en nueva pestaña
-start_export: Iniciar exportación
+start_export: Comenzar exportación
 not_available_for_local_downloads: No disponible para descargas locales
 exporting_all_items_in_collection: Exportando los {total} elementos dentro de {collection}.
 exporting_limited_items_in_collection: Exportando {limit} de {total} elementos dentro de {collection}.
@@ -467,7 +467,7 @@ exporting_batch_hint: Esta exportación se procesará por lotes, y una vez compl
 exporting_batch_hint_forced: Debido al gran número de artículos, esta exportación debe ser procesada en lotes, y una vez completado, el archivo {format} se guardará en la Biblioteca de Archivos.
 collection_key: Llave de Colección
 name: Nombre
-primary_key_field: Campo Llave Primaria
+primary_key_field: Campo de Llave Primaria
 type: Tipo
 creating_new_collection: Crear Nueva Colección
 created_by: Creado por
@@ -747,7 +747,7 @@ my_files: Mis Archivos
 recent_files: Archivos Recientes
 create_folder: Crear Directorio
 edit_folder: Editar Carpeta
-folder_name: Nombre del Directorio...
+folder_name: Nombre de la carpeta...
 folder_key: Clave de carpeta...
 add_file: Añadir archivo
 replace_file: Reemplazar Archivo
@@ -826,7 +826,7 @@ dashboard: Tablero
 panel: Panel
 panel_options: Opciones del Panel
 panel_header: Encabezado del panel
-panel_name_placeholder: Nombre este panel...
+panel_name_placeholder: Nombrar este panel...
 panel_note_placeholder: Detalles opcionales sobre este panel...
 panel_delete_confirm: '¿Estás seguro que quieres eliminar este panel? Esta acción no se puede deshacer.'
 dashboard_delete_confirm: '¿Estás seguro que quieres eliminar este tablero? Esta acción no se puede deshacer.'
@@ -883,7 +883,7 @@ wysiwyg_options:
   alignleft: Alinear a la Izquierda
   alignnone: No Alinear
   alignright: Alinear a la Derecha
-  forecolor: Color de Letra
+  forecolor: Color principal
   backcolor: Color de fondo
   bold: Negrita
   italic: Cursiva
@@ -1171,7 +1171,7 @@ fields:
     max_uses: Usos máximos
     times_used: Veces usado
   directus_fields:
-    collection: Nombre de Colección
+    collection: Nombre de la colección
     icon: Ícono de colección
     note: Nota
     hidden: Oculto
@@ -1246,7 +1246,7 @@ field_options:
     language: Idioma
     translation: Traducción
     translation_placeholder: Ingresa una traducción...
-    collection_name: Nombre de Colección
+    collection_name: Nombre de la colección
     singular_unit: Unidad Singular
     plural_unit: Unidad plural
     archive_divider: Archivar
