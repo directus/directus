@@ -24,15 +24,15 @@ interface LocalizedEmojiRecord extends EmojiRecord {
 const { t, locale } = useI18n();
 
 const dictionary = {
-	'categories.recents': t('emojis.recently_used'),
-	'error.load': t('emojis.load_error'),
-	'recents.clear': t('emojis.clear_recents'),
-	'recents.none': t('emojis.no_recents'),
-	retry: t('emojis.retry'),
-	'search.clear': t('emojis.clear_search'),
-	'search.error': t('emojis.search_error'),
-	'search.notFound': t('emojis.search_not_found'),
-	search: t('emojis.search'),
+	'categories.recents': t('emoji_picker.recently_used'),
+	'error.load': t('emoji_picker.load_error'),
+	'recents.clear': t('emoji_picker.clear_recents'),
+	'recents.none': t('emoji_picker.no_recents'),
+	retry: t('emoji_picker.retry'),
+	'search.clear': t('emoji_picker.clear_search'),
+	'search.error': t('emoji_picker.search_error'),
+	'search.notFound': t('emoji_picker.search_not_found'),
+	search: t('emoji_picker.search'),
 };
 
 const emojiBase = await loadEmojiBase();
