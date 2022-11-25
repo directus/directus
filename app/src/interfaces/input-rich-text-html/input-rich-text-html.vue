@@ -7,7 +7,7 @@
 			:disabled="disabled"
 			model-events="change keydown blur focus paste ExecCommand SetContent"
 			@focusin="setFocus(true)"
-			@focusout="setFocus(false)"
+			@blur="setFocus(false)"
 			@focus="setupContentWatcher"
 			@set-content="contentUpdated"
 		/>
