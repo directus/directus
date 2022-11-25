@@ -242,7 +242,8 @@ export class FieldsService {
 	async createField(
 		collection: string,
 		field: Partial<Field> & { field: string; type: Type | null },
-		table?: Knex.CreateTableBuilder // allows collection creation to
+		table?: Knex.CreateTableBuilder, // allows collection creation to
+		opts?: MutationOptions
 	): Promise<void> {
 		if (this.accountability && this.accountability.admin !== true) {
 			throw new ForbiddenException();
@@ -310,7 +311,7 @@ export class FieldsService {
 					);
 				}
 
-				nestedActionEvents.push({
+				const actionEvent = {
 					event: 'fields.create',
 					meta: {
 						payload: hookAdjustedField,
@@ -322,29 +323,39 @@ export class FieldsService {
 						schema: this.schema,
 						accountability: this.accountability,
 					},
-				});
+				};
+
+				if (opts?.bypassEmitAction) {
+					opts.bypassEmitAction(actionEvent);
+				} else {
+					nestedActionEvents.push(actionEvent);
+				}
 			});
 		} finally {
 			if (runPostColumnChange) {
 				await this.helpers.schema.postColumnChange();
 			}
 
-			if (this.cache && env.CACHE_AUTO_PURGE) {
+			if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
 				await this.cache.clear();
 			}
 
-			await clearSystemCache();
+			if (opts?.autoPurgeSystemCache !== false) {
+				await clearSystemCache();
+			}
 
-			const updatedSchema = await getSchema({ accountability: this.accountability || undefined });
+			if (opts?.emitEvents !== false && nestedActionEvents.length > 0) {
+				const updatedSchema = await getSchema();
 
-			for (const nestedActionEvent of nestedActionEvents) {
-				nestedActionEvent.context.schema = updatedSchema;
-				emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
+				for (const nestedActionEvent of nestedActionEvents) {
+					nestedActionEvent.context.schema = updatedSchema;
+					emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
+				}
 			}
 		}
 	}
 
-	async updateField(collection: string, field: RawField): Promise<string> {
+	async updateField(collection: string, field: RawField, opts?: MutationOptions): Promise<string> {
 		if (this.accountability && this.accountability.admin !== true) {
 			throw new ForbiddenException();
 		}
@@ -418,7 +429,7 @@ export class FieldsService {
 				}
 			}
 
-			nestedActionEvents.push({
+			const actionEvent = {
 				event: 'fields.update',
 				meta: {
 					payload: hookAdjustedField,
@@ -430,7 +441,13 @@ export class FieldsService {
 					schema: this.schema,
 					accountability: this.accountability,
 				},
-			});
+			};
+
+			if (opts?.bypassEmitAction) {
+				opts.bypassEmitAction(actionEvent);
+			} else {
+				nestedActionEvents.push(actionEvent);
+			}
 
 			return field.field;
 		} finally {
@@ -438,17 +455,21 @@ export class FieldsService {
 				await this.helpers.schema.postColumnChange();
 			}
 
-			if (this.cache && env.CACHE_AUTO_PURGE) {
+			if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
 				await this.cache.clear();
 			}
 
-			await clearSystemCache();
+			if (opts?.autoPurgeSystemCache !== false) {
+				await clearSystemCache();
+			}
 
-			const updatedSchema = await getSchema({ accountability: this.accountability || undefined });
+			if (opts?.emitEvents !== false && nestedActionEvents.length > 0) {
+				const updatedSchema = await getSchema();
 
-			for (const nestedActionEvent of nestedActionEvents) {
-				nestedActionEvent.context.schema = updatedSchema;
-				emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
+				for (const nestedActionEvent of nestedActionEvents) {
+					nestedActionEvent.context.schema = updatedSchema;
+					emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
+				}
 			}
 		}
 	}
@@ -609,7 +630,7 @@ export class FieldsService {
 			}
 
 			if (opts?.emitEvents !== false && nestedActionEvents.length > 0) {
-				const updatedSchema = await getSchema({ accountability: this.accountability || undefined });
+				const updatedSchema = await getSchema();
 
 				for (const nestedActionEvent of nestedActionEvents) {
 					nestedActionEvent.context.schema = updatedSchema;

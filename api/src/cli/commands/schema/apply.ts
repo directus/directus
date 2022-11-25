@@ -4,7 +4,6 @@ import { promises as fs } from 'fs';
 import inquirer from 'inquirer';
 import { load as loadYaml } from 'js-yaml';
 import path from 'path';
-import { flushCaches } from '../../../cache';
 import getDatabase, { isInstalled, validateDatabaseConnection } from '../../../database';
 import logger from '../../../logger';
 import { Snapshot } from '../../../types';
@@ -18,8 +17,6 @@ export async function apply(snapshotPath: string, options?: { yes: boolean; dryR
 	const database = getDatabase();
 
 	await validateDatabaseConnection(database);
-
-	await flushCaches();
 
 	if ((await isInstalled()) === false) {
 		logger.error(`Directus isn't installed on this database. Please run "directus bootstrap" first.`);
