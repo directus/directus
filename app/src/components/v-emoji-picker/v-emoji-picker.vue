@@ -103,7 +103,7 @@ async function loadEmojiBase() {
 					// Note: We need a relative path here due to Rollup dynamic import limitations
 					// https://github.com/rollup/plugins/tree/master/packages/dynamic-import-vars#limitations
 					// https://github.com/vitejs/vite/issues/7680
-					`../../node_modules/emojibase-data/${variant}/data.json`
+					`../../../node_modules/emojibase-data/${variant}/data.json`
 				)
 			).default;
 			data.locale = variant as Locale;
@@ -139,3 +139,7 @@ function getEmojiRecord(emoji: Emoji): EmojiRecord {
 	};
 }
 </script>
+
+<style lang="scss">
+@import './picmo-overrides.scss';
+</style>

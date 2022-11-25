@@ -11,7 +11,7 @@ const Template = (args) => ({
 	setup() {
 		return { args };
 	},
-	template: '<v-emoji-picker v-bind="args" v-on="args" >My Button</v-emoji-picker>',
+	template: '<Suspense><v-emoji-picker v-bind="args" v-on="args" >My Button</v-emoji-picker></Suspense>',
 });
 
 export const Primary = Template.bind({});

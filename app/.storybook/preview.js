@@ -16,7 +16,7 @@ const router = createRouter({
 	],
 });
 
-const i18n = createI18n();
+const i18n = createI18n({ legacy: false });
 
 export const decorators = [
 	(Story, { args, argTypes }) => {

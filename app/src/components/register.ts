@@ -68,7 +68,7 @@ import VTextOverflow from './v-text-overflow.vue';
 import VTextarea from './v-textarea.vue';
 import VUpload from './v-upload.vue';
 import VDatePicker from './v-date-picker.vue';
-import VEmojiPicker from './v-emoji-picker.vue';
+import VEmojiPicker from './v-emoji-picker/v-emoji-picker.vue';
 import VWorkspace from './v-workspace.vue';
 import VWorkspaceTile from './v-workspace-tile.vue';
 

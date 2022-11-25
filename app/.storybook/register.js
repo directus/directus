@@ -47,7 +47,7 @@ import VTabsItems from '../src/components/v-tabs-items.vue';
 import VTemplateInput from '../src/components/v-template-input.vue';
 import VTextOverflow from '../src/components/v-text-overflow.vue';
 import VTextarea from '../src/components/v-textarea.vue';
-import VEmojiPicker from '../src/components/v-emoji-picker.vue';
+import VEmojiPicker from '../src/components/v-emoji-picker/v-emoji-picker.vue';
 import VWorkspace from '../src/components/v-workspace.vue';
 import VWorkspaceTile from '../src/components/v-workspace-tile.vue';
 // import VTable from './v-table/v-table.vue';
