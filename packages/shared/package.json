@@ -50,9 +50,9 @@
 	},
 	"files": [
 		"dist",
-		"*.d.ts",
-		"!**/*.test.js",
-		"!**/*.d.ts.map"
+		"!**/*.test.{d.ts,js}",
+		"!**/*.d.ts.map",
+		"{,utils/}*.d.ts"
 	],
 	"scripts": {
 		"build": "concurrently --prefix-colors auto --passthrough-arguments \"pnpm:build:* {@}\"",
