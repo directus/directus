@@ -65,6 +65,7 @@ describe('Integration Tests', () => {
 
 	describe('Services / Users', () => {
 		let service: UsersService;
+		let superUpdateManySpy: SpyInstance;
 		let checkUniqueEmailsSpy: SpyInstance;
 		let checkPasswordPolicySpy: SpyInstance;
 		let checkRemainingAdminExistenceSpy: SpyInstance;
@@ -103,6 +104,8 @@ describe('Integration Tests', () => {
 					relations: [],
 				},
 			});
+
+			superUpdateManySpy = vi.spyOn(ItemsService.prototype, 'updateMany');
 
 			// "as any" are needed since these are private methods
 			checkUniqueEmailsSpy = vi
@@ -249,6 +252,7 @@ describe('Integration Tests', () => {
 				const promise = service.updateOne(1, { [field]: 'test' });
 
 				await expect(promise).resolves.not.toThrow();
+				expect(superUpdateManySpy).toBeCalledWith([1], expect.objectContaining({ auth_data: null }), undefined);
 			});
 
 			it.each(['provider', 'external_identifier'])(
@@ -262,6 +266,7 @@ describe('Integration Tests', () => {
 					const promise = service.updateOne(1, { [field]: 'test' });
 
 					await expect(promise).resolves.not.toThrow();
+					expect(superUpdateManySpy).toBeCalledWith([1], expect.objectContaining({ auth_data: null }), undefined);
 				}
 			);
 		});
@@ -356,6 +361,7 @@ describe('Integration Tests', () => {
 				const promise = service.updateMany([1], { [field]: 'test' });
 
 				await expect(promise).resolves.not.toThrow();
+				expect(superUpdateManySpy).toBeCalledWith([1], expect.objectContaining({ auth_data: null }), undefined);
 			});
 
 			it.each(['provider', 'external_identifier'])(
@@ -369,6 +375,7 @@ describe('Integration Tests', () => {
 					const promise = service.updateMany([1], { [field]: 'test' });
 
 					await expect(promise).resolves.not.toThrow();
+					expect(superUpdateManySpy).toBeCalledWith([1], expect.objectContaining({ auth_data: null }), undefined);
 				}
 			);
 		});
@@ -485,6 +492,7 @@ describe('Integration Tests', () => {
 				const promise = service.updateByQuery({}, { [field]: 'test' });
 
 				await expect(promise).resolves.not.toThrow();
+				expect(superUpdateManySpy).toBeCalledWith([1], expect.objectContaining({ auth_data: null }), undefined);
 			});
 
 			it.each(['provider', 'external_identifier'])(
@@ -500,6 +508,7 @@ describe('Integration Tests', () => {
 					const promise = service.updateByQuery({}, { [field]: 'test' });
 
 					await expect(promise).resolves.not.toThrow();
+					expect(superUpdateManySpy).toBeCalledWith([1], expect.objectContaining({ auth_data: null }), undefined);
 				}
 			);
 		});

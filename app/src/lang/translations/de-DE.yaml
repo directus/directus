@@ -273,6 +273,7 @@ fields_group: Feldergruppe
 no_collections_found: Keine Sammlungen gefunden.
 new_data_alert: 'Folgendes wird innerhalb Ihres Datenmodells erstellt:'
 search_collection: Sammlung suchen...
+search_field: Suchfeld...
 new_field: 'Neues Feld'
 new_collection: 'Neue Sammlung'
 add_m2o_to_collection: 'M2O zu "{collection}" hinzufügen'
@@ -747,6 +748,8 @@ add_file: Datei hinzufügen
 replace_file: Datei ersetzen
 no_results: Keine Ergebnisse
 no_results_copy: Suchfilter anpassen oder löschen um Ergebnisse zu sehen.
+no_visible_fields: Leeres Formular
+no_visible_fields_copy: Dieses Formular hat keine sichtbaren Felder.
 clear_filters: Filter löschen
 saves_automatically: Wird automatisch gespeichert
 role: Rolle
@@ -776,6 +779,7 @@ label: Label
 flows: Flows
 flow: Flow
 select_a_flow: Flow auswählen
+run_flow_on_current_collection: Flow für aktuelle Sammlung ausführen
 run_flow_on_current: Flow für aktuelles Element ausführen
 run_flow_success: Flow "{flow}" wurde erfolgreich ausgeführt
 trigger: Trigger
@@ -1774,7 +1778,9 @@ displays:
     relative: Relativ
     relative_label: 'Zeige relative Zeit, z. B.: vor 5 Minuten'
     suffix: Suffix
+    suffix_note: Verwendet Wörter wie 'in' und 'vor'
     strict: Strikt
+    strict_note: Entfernt Wörter wie 'fast', 'über', 'weniger als'
     round: Runden
   file:
     file: Datei
@@ -1890,6 +1896,8 @@ layouts:
     name: Kanban
     crop: Zuschneiden
     advanced: Erweitert
+    show: Anzeigen
+    no_group: Keine Gruppe
     not_all_loaded: Konnte nur die ersten 1000 Elemente laden.
 panels:
   metric:
@@ -1927,6 +1935,7 @@ panels:
     group_by: Gruppieren nach
     group_and_function: Sie müssen sowohl eine Gruppe als auch eine Funktion hinzufügen oder weglassen.
     y_axis_NaN: Die y-Achse muss eine Zahl sein.
+    y_axis_conditional_one: Der Wert für die Bedingung
     y_axis_conditional_two: muss eine Zahl sein.
   linechart:
     name: Liniendiagramm
@@ -1956,16 +1965,30 @@ panels:
     name: Kuchen oder Donut Diagramm
     function: Funktion
     donut: Donut
+    show_labels: Beschriftungen anzeigen
     show_legend: Legende anzeigen
     right: Rechts
     bottom: Unten
     monochrome: Monochrom
+    monochrome_color: Monochrome Farbe
   variable:
     name: Globale Variable
+    description: Globalen Wert für die Verwendung in Filtern anderer Panels festlegen
+    variable_key: Variabler Schlüssel
+  relational-variable:
+    name: Globale relationale Variable
+    description: Einen globalen relativen Wert für die Verwendung in Filtern anderer Panels festlegen
+    variable_key: Variabler Schlüssel
+    multiple: Mehrere
+    multiple-label: Mehrere Elemente auswählen
 triggers:
   common:
+    response_body: Response-Body
+    response_body_all: Alle Daten
     response_body_last: Daten der letzten Operation
   event:
+    name: Event-Hook
+    description: Auslösen bei Plattform- oder Datenereignissen
     action: 'Aktion (nicht blockierend)'
     filter: 'Filter (blockierend)'
   webhook:
@@ -1973,18 +1996,33 @@ triggers:
     description: Auslösend bei eingehender HTTP-Anfrage
     method: Methode
     async: Asynchron
+  operation:
+    name: Ein anderer Flow
+    description: Ausgelöst von einem anderen Flow, zur Verkettung
+    preview: Ausgelöst durch eine Operation in einem anderen Flow
   schedule:
     name: Zeitplan (CRON)
+    description: Auslösen an regulären Zeitpunkten
     cron: Intervall
   manual:
     name: Manuell
+    description: Auslösen beim manuellen Ausführungen innerhalb ausgewählter Sammlung(en)
     collection_and_item: Sammlungen & Element Seiten
+    collection_only: Nur Sammlungsseite
+    item_only: Nur Elementseite
+    collection_page: Sammlungsseite
+    require_selection: Benötigt Auswahl
+a_flow_uuid: Auszulösenden Flow auswählen...
 any_string_or_json: Ein String oder JSON...
+item_payload_placeholder: Dies ist der JSON-Wert um die Feldwerte des Elements zu aktualisieren...
+operation_variables_note: Du kannst auf Flow-Daten mit Variablen wie **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** und **{'{'}{'{'}$accountability{'}'}{'}'}**, oder vorherige Operationen mit **{'{'}{'{'}operation_key{'}'}{'}'}**.' referenzieren
 operations:
   condition:
     name: Kondition
+    description: Leiten eines Flows basierend auf If / Else Logik
   exec:
     name: Skript ausführen
+    description: Führe beliebigen Code aus, um die Nutzlast zu ändern
     modules: 'Die folgenden **Node Module** können genutzt werden:'
   item-create:
     name: Daten erstellen
@@ -2023,6 +2061,7 @@ operations:
     body: Inhalt
   notification:
     name: Benachrichtigung senden
+    description: App-Interne Benachrichtigung an einen oder mehrere Benutzer senden
     recipient: Benutzer
     recipient_placeholder: Benutzer UUID eingeben und Enter drücken...
     message: Nachricht
@@ -2033,9 +2072,12 @@ operations:
     url_placeholder: https://example.com/example
     method: Methode
     data: Daten
+    headers: Kopfzeilen
     header: Header
+    header_placeholder: Autorisierung...
     value_placeholder: Bearer eyJhbGciOi...
   sleep:
+    name: Warten
     description: Gegebene Zeit in Millisekunden warten
     milliseconds: Millisekunden
   transform:
