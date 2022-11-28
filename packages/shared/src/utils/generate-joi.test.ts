@@ -147,6 +147,46 @@ describe(`generateJoi`, () => {
 		expect(generateJoi(mockFieldFilter).describe()).toStrictEqual(mockSchema);
 	});
 
+	it(`returns the correct schema for a true _eq match`, () => {
+		const mockFieldFilter = { field: { _eq: true } } as FieldFilter;
+		const mockSchema = Joi.object({
+			field: Joi.any().equal(true),
+		})
+			.unknown()
+			.describe();
+		expect(generateJoi(mockFieldFilter).describe()).toStrictEqual(mockSchema);
+	});
+
+	it(`returns the correct schema for a true _neq match`, () => {
+		const mockFieldFilter = { field: { _neq: true } } as FieldFilter;
+		const mockSchema = Joi.object({
+			field: Joi.any().not(true),
+		})
+			.unknown()
+			.describe();
+		expect(generateJoi(mockFieldFilter).describe()).toStrictEqual(mockSchema);
+	});
+
+	it(`returns the correct schema for a false _eq match`, () => {
+		const mockFieldFilter = { field: { _eq: false } } as FieldFilter;
+		const mockSchema = Joi.object({
+			field: Joi.any().equal(false),
+		})
+			.unknown()
+			.describe();
+		expect(generateJoi(mockFieldFilter).describe()).toStrictEqual(mockSchema);
+	});
+
+	it(`returns the correct schema for a false _neq match`, () => {
+		const mockFieldFilter = { field: { _neq: false } } as FieldFilter;
+		const mockSchema = Joi.object({
+			field: Joi.any().not(false),
+		})
+			.unknown()
+			.describe();
+		expect(generateJoi(mockFieldFilter).describe()).toStrictEqual(mockSchema);
+	});
+
 	it(`returns the correct schema for an _ncontains contain match`, () => {
 		const mockFieldFilter = { field: { _ncontains: 'field' } } as FieldFilter;
 		const mockSchema = Joi.object({

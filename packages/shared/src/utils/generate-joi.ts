@@ -104,7 +104,10 @@ export function generateJoi(filter: FieldFilter | null, options?: JoiOptions): A
 		const getDateSchema = () => (schema[key] ?? Joi.date()) as DateSchema;
 
 		if (operator === '_eq') {
-			const numericValue = compareValue === null || compareValue === '' ? NaN : Number(compareValue);
+			const numericValue =
+				compareValue === null || compareValue === '' || compareValue === true || compareValue === false
+					? NaN
+					: Number(compareValue);
 			if (isNaN(numericValue)) {
 				schema[key] = getAnySchema().equal(compareValue);
 			} else {
@@ -113,7 +116,10 @@ export function generateJoi(filter: FieldFilter | null, options?: JoiOptions): A
 		}
 
 		if (operator === '_neq') {
-			const numericValue = compareValue === null || compareValue === '' ? NaN : Number(compareValue);
+			const numericValue =
+				compareValue === null || compareValue === '' || compareValue === true || compareValue === false
+					? NaN
+					: Number(compareValue);
 			if (isNaN(numericValue)) {
 				schema[key] = getAnySchema().not(compareValue);
 			} else {
