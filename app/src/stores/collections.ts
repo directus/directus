@@ -165,8 +165,8 @@ export const useCollectionsStore = defineStore({
 
 			try {
 				await api.delete(`/collections/${collection}`);
-				await this.hydrate();
-				await relationsStore.hydrate();
+				await Promise.all([this.hydrate(), relationsStore.hydrate()]);
+
 				notify({
 					title: i18n.global.t('delete_collection_success'),
 				});
