@@ -127,6 +127,26 @@ describe(`generateJoi`, () => {
 		expect(generateJoi(mockFieldFilter).describe()).toStrictEqual(mockSchema);
 	});
 
+	it(`returns the correct schema for an empty string _eq match`, () => {
+		const mockFieldFilter = { field: { _eq: '' } } as FieldFilter;
+		const mockSchema = Joi.object({
+			field: Joi.any().equal(''),
+		})
+			.unknown()
+			.describe();
+		expect(generateJoi(mockFieldFilter).describe()).toStrictEqual(mockSchema);
+	});
+
+	it(`returns the correct schema for an empty string _neq match`, () => {
+		const mockFieldFilter = { field: { _neq: '' } } as FieldFilter;
+		const mockSchema = Joi.object({
+			field: Joi.any().not(''),
+		})
+			.unknown()
+			.describe();
+		expect(generateJoi(mockFieldFilter).describe()).toStrictEqual(mockSchema);
+	});
+
 	it(`returns the correct schema for an _ncontains contain match`, () => {
 		const mockFieldFilter = { field: { _ncontains: 'field' } } as FieldFilter;
 		const mockSchema = Joi.object({
