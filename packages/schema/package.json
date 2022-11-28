@@ -1,6 +1,6 @@
 {
 	"name": "@directus/schema",
-	"version": "9.21.1",
+	"version": "9.21.2",
 	"description": "Utility for extracting information about existing DB schema",
 	"keywords": [
 		"sql",
