@@ -11,6 +11,7 @@ import {
 	HookConfig,
 	HybridExtension,
 	InitHandler,
+	EmbedHandler,
 	OperationApiConfig,
 	ScheduleHandler,
 } from '@directus/shared/types';
@@ -191,8 +192,8 @@ class ExtensionManager {
 
 	public getEmbeds() {
 		return {
-			head: this.hookEmbedsHead,
-			body: this.hookEmbedsBody,
+			head: this.hookEmbedsHead.join('\n'),
+			body: this.hookEmbedsBody.join('\n'),
 		};
 	}
 
@@ -497,16 +498,17 @@ class ExtensionManager {
 					logger.warn(`Couldn't register cron hook. Provided cron is invalid: ${cron}`);
 				}
 			},
-			embed: (position: 'head' | 'body', code: string) => {
-				if (code.trim().length === 0) {
+			embed: (position: 'head' | 'body', code: string | EmbedHandler) => {
+				const content = typeof code === 'function' ? code(env) : code;
+				if (content.trim().length === 0) {
 					logger.warn(`Couldn't register embed hook. Provided code is empty!`);
 					return;
 				}
 				if (position === 'head') {
-					this.hookEmbedsHead.push(code);
+					this.hookEmbedsHead.push(content);
 				}
 				if (position === 'body') {
-					this.hookEmbedsHead.push(code);
+					this.hookEmbedsHead.push(content);
 				}
 			},
 		};
