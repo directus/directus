@@ -669,7 +669,7 @@ placeholder: Tijdelijke plaatshouder
 icon_left: Icoon links
 icon_right: Icoon rechts
 count_other_revisions: '{count} andere rivisies'
-font: Letterype
+font: Lettertype
 sans_serif: Sans Serif
 serif: Serif
 monospace: Monospace
@@ -1441,7 +1441,7 @@ displays:
     formatted-value: Opgemaakte waarde
     description: Een geformatteerde versie van de tekst weergeven
     format: Format
-    font: Letterype
+    font: Lettertype
     font_serif: Serif
     font_monospace: Monospace
     bold: Vetgedrukt
