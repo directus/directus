@@ -32,7 +32,12 @@ type ComputedQuery = {
 	page: Ref<Query['page']> | WritableComputedRef<Query['page']>;
 };
 
-export function useItems(collection: Ref<string | null>, query: ComputedQuery, fetchOnInit = true): UsableItems {
+export function useItems(
+	collection: Ref<string | null>,
+	query: ComputedQuery,
+	fetchOnInit = true,
+	loadingDelay = 150
+): UsableItems {
 	const api = useApi();
 	const { primaryKeyField } = useCollection(collection);
 
@@ -63,10 +68,6 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery, f
 
 	const fetchItems = throttle(getItems, 500);
 
-	if (fetchOnInit) {
-		fetchItems();
-	}
-
 	watch(
 		[collection, limit, sort, search, filter, fields, page],
 		async (after, before) => {
@@ -94,7 +95,7 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery, f
 
 			fetchItems();
 		},
-		{ deep: true, immediate: true }
+		{ deep: true, immediate: fetchOnInit }
 	);
 
 	return { itemCount, totalCount, items, totalPages, loading, error, changeManualSort, getItems };
@@ -113,7 +114,7 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery, f
 
 		loadingTimeout = setTimeout(() => {
 			loading.value = true;
-		}, 150);
+		}, loadingDelay);
 
 		let fieldsToFetch = [...(unref(fields) ?? [])];
 
