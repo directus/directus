@@ -14,7 +14,7 @@ import { CollectionsService } from './collections';
 import { FieldsService } from './fields';
 import { GraphQLService } from './graphql';
 import { RelationsService } from './relations';
-import { OAS_INCLUDE_SCHEMAS } from '../constants';
+import { OAS_REQUIRED_SCHEMAS } from '../constants';
 
 export class SpecificationService {
 	accountability: Accountability | null;
@@ -326,7 +326,7 @@ class OASSpecsService implements SpecificationSubService {
 
 		// Always includes the schemas with these names
 		if (openapi.components?.schemas !== null) {
-			for (const schemaName of OAS_INCLUDE_SCHEMAS) {
+			for (const schemaName of OAS_REQUIRED_SCHEMAS) {
 				if (openapi.components!.schemas![schemaName] !== null) {
 					components.schemas[schemaName] = cloneDeep(openapi.components!.schemas![schemaName]);
 				}

@@ -65,4 +65,4 @@ User-agent: *
 Disallow: /
 `.trim();
 
-export const OAS_INCLUDE_SCHEMAS = ['Query', 'x-metadata'];
+export const OAS_REQUIRED_SCHEMAS = ['Query', 'x-metadata'];
