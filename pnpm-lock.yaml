@@ -354,7 +354,7 @@ importers:
     specifiers:
       '@babel/core': 7.20.2
       '@babel/preset-env': 7.20.2
-      '@directus/docs': 9.21.0
+      '@directus/docs': 9.21.1
       '@directus/extensions-sdk': workspace:*
       '@directus/format-title': 10.0.0
       '@directus/shared': workspace:*
@@ -463,7 +463,7 @@ importers:
     devDependencies:
       '@babel/core': 7.20.2
       '@babel/preset-env': 7.20.2_@babel+core@7.20.2
-      '@directus/docs': 9.21.0
+      '@directus/docs': 9.21.1
       '@directus/extensions-sdk': link:../packages/extensions-sdk
       '@directus/format-title': 10.0.0
       '@directus/shared': link:../packages/shared
@@ -3278,8 +3278,8 @@ packages:
       '@jridgewell/trace-mapping': 0.3.9
     dev: true
 
-  /@directus/docs/9.21.0:
-    resolution: {integrity: sha512-Lv4+fKk6OyzkbGbzkKtUE7wufJ/rbwvvwx0dvDAxnjg6oy6kWkSN0pYMsS90H2ZJjw5Es97bTCqdxe4nC3vuIQ==}
+  /@directus/docs/9.21.1:
+    resolution: {integrity: sha512-CVjLbCXsSF4sFQKKFJhtjCe8KiwoZZRRJqtpXKQxWat0Ru/55R4JkBEqBzLxwsr5R2YxzGiBD+ccVjz91NC4BQ==}
     dev: true
 
   /@directus/format-title/10.0.0:
@@ -8660,7 +8660,7 @@ packages:
       mississippi: 3.0.0
       mkdirp: 0.5.6
       move-concurrently: 1.0.1
-      promise-inflight: 1.0.1_bluebird@3.7.2
+      promise-inflight: 1.0.1
       rimraf: 2.7.1
       ssri: 6.0.2
       unique-filename: 1.1.1
@@ -17089,17 +17089,6 @@ packages:
     peerDependenciesMeta:
       bluebird:
         optional: true
-
-  /promise-inflight/1.0.1_bluebird@3.7.2:
-    resolution: {integrity: sha512-6zWPyEOFaQBJYcGMHBKTKJ3u6TBsnMFOIZSa6ce1e/ZrrsOlnHRHbabMjLiBYKp+n44X9eUI6VUPaukCXHuG4g==}
-    peerDependencies:
-      bluebird: '*'
-    peerDependenciesMeta:
-      bluebird:
-        optional: true
-    dependencies:
-      bluebird: 3.7.2
-    dev: true
 
   /promise-retry/2.0.1:
     resolution: {integrity: sha512-y+WKFlBR8BGXnsNlIHFGPZmyDf3DFMoLhaflAnyZgV6rG6xu+JwesTo2Q9R6XwYmtmwAFCkAk3e35jEdoeh/3g==}
