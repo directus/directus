@@ -64,3 +64,5 @@ export const ROBOTSTXT = `
 User-agent: *
 Disallow: /
 `.trim();
+
+export const OAS_INCLUDE_SCHEMAS = ['Query', 'x-metadata'];

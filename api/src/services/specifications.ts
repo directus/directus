@@ -14,6 +14,7 @@ import { CollectionsService } from './collections';
 import { FieldsService } from './fields';
 import { GraphQLService } from './graphql';
 import { RelationsService } from './relations';
+import { OAS_INCLUDE_SCHEMAS } from '../constants';
 
 export class SpecificationService {
 	accountability: Accountability | null;
@@ -324,9 +325,8 @@ class OASSpecsService implements SpecificationSubService {
 		components.schemas = {};
 
 		// Always includes the schemas with these names
-		const includeSchemas = ['Query', 'x-metadata'];
 		if (openapi.components?.schemas !== null) {
-			for (const schemaName of includeSchemas) {
+			for (const schemaName of OAS_INCLUDE_SCHEMAS) {
 				if (openapi.components!.schemas![schemaName] !== null) {
 					components.schemas[schemaName] = cloneDeep(openapi.components!.schemas![schemaName]);
 				}
