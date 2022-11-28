@@ -97,6 +97,8 @@ class ExtensionManager {
 	private apiEmitter: Emitter;
 	private hookEvents: EventHandler[] = [];
 	private endpointRouter: Router;
+	private hookEmbedsHead: string[] = [];
+	private hookEmbedsBody: string[] = [];
 
 	private reloadQueue: JobQueue;
 	private watcher: FSWatcher | null = null;
@@ -185,6 +187,13 @@ class ExtensionManager {
 
 	public getEndpointRouter(): Router {
 		return this.endpointRouter;
+	}
+
+	public getEmbeds() {
+		return {
+			head: this.hookEmbedsHead,
+			body: this.hookEmbedsBody,
+		};
 	}
 
 	private async load(): Promise<void> {
@@ -486,6 +495,18 @@ class ExtensionManager {
 					});
 				} else {
 					logger.warn(`Couldn't register cron hook. Provided cron is invalid: ${cron}`);
+				}
+			},
+			embed: (position: 'head' | 'body', code: string) => {
+				if (code.trim().length === 0) {
+					logger.warn(`Couldn't register embed hook. Provided code is empty!`);
+					return;
+				}
+				if (position === 'head') {
+					this.hookEmbedsHead.push(code);
+				}
+				if (position === 'body') {
+					this.hookEmbedsHead.push(code);
 				}
 			},
 		};
