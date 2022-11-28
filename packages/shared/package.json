@@ -50,6 +50,7 @@
 	},
 	"files": [
 		"dist",
+		"*.d.ts",
 		"!**/*.test.js",
 		"!**/*.d.ts.map"
 	],
