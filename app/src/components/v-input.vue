@@ -170,9 +170,14 @@ const isStepDownAllowed = computed(() => {
 	return props.disabled === false && (props.min === undefined || parseInt(String(props.modelValue), 10) > props.min);
 });
 
+const metaKeyMap: Record<string, string> = {
+	Control: 'meta',
+	Command: 'meta',
+};
+
 function processValue(event: KeyboardEvent) {
 	if (!event.key) return;
-	const key = event.key.toLowerCase();
+	const key = event.key in metaKeyMap ? metaKeyMap[event.key] : event.key.toLowerCase();
 	const systemKeys = ['meta', 'shift', 'alt', 'backspace', 'delete', 'tab'];
 	const value = (event.target as HTMLInputElement).value;
 
@@ -199,8 +204,10 @@ function processValue(event: KeyboardEvent) {
 			event.preventDefault();
 		}
 
+		const isCombinationWithSystemKeys = event.metaKey || event.ctrlKey || event.shiftKey || event.altKey;
+
 		// Prevent leading number
-		if (value.length === 0 && '0123456789'.split('').includes(key)) {
+		if (value.length === 0 && '0123456789'.split('').includes(key) && !isCombinationWithSystemKeys) {
 			event.preventDefault();
 		}
 	}
