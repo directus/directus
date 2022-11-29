@@ -245,10 +245,10 @@ function emitValue(event: InputEvent) {
 
 		if (props.dbSafe === true) {
 			value = value.replace(/\s/g, '_');
-			// prevent pasting of non dbSafeCharacters from bypassing the keydown checks
-			value = value.replace(/[^a-zA-Z0-9_]/g, '');
 			// Replace é -> e etc
 			value = value.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+			// prevent pasting of non dbSafeCharacters from bypassing the keydown checks
+			value = value.replace(/[^a-zA-Z0-9_]/g, '');
 		}
 
 		emit('update:modelValue', value);
