@@ -274,6 +274,7 @@ const inviteSchema = Joi.object({
 	email: Joi.alternatives(Joi.string().email(), Joi.array().items(Joi.string().email())).required(),
 	role: Joi.string().uuid({ version: 'uuidv4' }).required(),
 	invite_url: Joi.string().uri(),
+	subject: Joi.string(),
 });
 
 router.post(
@@ -286,7 +287,7 @@ router.post(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
-		await service.inviteUser(req.body.email, req.body.role, req.body.invite_url || null);
+		await service.inviteUser(req.body.email, req.body.role, req.body.invite_url || null, req.body.subject || null);
 		return next();
 	}),
 	respond
