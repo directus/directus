@@ -20,6 +20,11 @@ describe('applySnapshot', () => {
 	let db: MockedFunction<Knex>;
 	let tracker: Tracker;
 
+	const mutationOptions = {
+		autoPurgeSystemCache: false,
+		bypassEmitAction: expect.any(Function),
+	};
+
 	beforeEach(() => {
 		db = vi.mocked(knex({ client: Client_PG }));
 		tracker = getTracker();
@@ -112,7 +117,7 @@ describe('applySnapshot', () => {
 			});
 
 			expect(createOneCollectionSpy).toHaveBeenCalledTimes(1);
-			expect(createOneCollectionSpy).toHaveBeenCalledWith(expected);
+			expect(createOneCollectionSpy).toHaveBeenCalledWith(expected, mutationOptions);
 
 			// There should be no fields left to create
 			// they will get filtered in createCollections
@@ -263,8 +268,8 @@ describe('applySnapshot', () => {
 			});
 
 			expect(createOneCollectionSpy).toHaveBeenCalledTimes(2);
-			expect(createOneCollectionSpy).toHaveBeenCalledWith(expected);
-			expect(createOneCollectionSpy).toHaveBeenCalledWith(expected2);
+			expect(createOneCollectionSpy).toHaveBeenCalledWith(expected, mutationOptions);
+			expect(createOneCollectionSpy).toHaveBeenCalledWith(expected2, mutationOptions);
 
 			// There should be no fields left to create
 			// they will get filtered in createCollections

@@ -125,7 +125,7 @@ export class RelationsService {
 	/**
 	 * Create a new relationship / foreign key constraint
 	 */
-	async createOne(relation: Partial<Relation>): Promise<void> {
+	async createOne(relation: Partial<Relation>, opts?: MutationOptions): Promise<void> {
 		if (this.accountability && this.accountability.admin !== true) {
 			throw new ForbiddenException();
 		}
@@ -208,7 +208,8 @@ export class RelationsService {
 				});
 
 				await relationsItemService.createOne(metaRow, {
-					bypassEmitAction: (params) => nestedActionEvents.push(params),
+					bypassEmitAction: (params) =>
+						opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 				});
 			});
 		} finally {
@@ -216,13 +217,17 @@ export class RelationsService {
 				await this.helpers.schema.postColumnChange();
 			}
 
-			await clearSystemCache();
+			if (opts?.autoPurgeSystemCache !== false) {
+				await clearSystemCache();
+			}
 
-			const updatedSchema = await getSchema({ accountability: this.accountability || undefined });
+			if (opts?.emitEvents !== false && nestedActionEvents.length > 0) {
+				const updatedSchema = await getSchema();
 
-			for (const nestedActionEvent of nestedActionEvents) {
-				nestedActionEvent.context.schema = updatedSchema;
-				emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
+				for (const nestedActionEvent of nestedActionEvents) {
+					nestedActionEvent.context.schema = updatedSchema;
+					emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
+				}
 			}
 		}
 	}
@@ -232,7 +237,12 @@ export class RelationsService {
 	 *
 	 * Note: You can update anything under meta, but only the `on_delete` trigger under schema
 	 */
-	async updateOne(collection: string, field: string, relation: Partial<Relation>): Promise<void> {
+	async updateOne(
+		collection: string,
+		field: string,
+		relation: Partial<Relation>,
+		opts?: MutationOptions
+	): Promise<void> {
 		if (this.accountability && this.accountability.admin !== true) {
 			throw new ForbiddenException();
 		}
@@ -298,7 +308,8 @@ export class RelationsService {
 				if (relation.meta) {
 					if (existingRelation?.meta) {
 						await relationsItemService.updateOne(existingRelation.meta.id, relation.meta, {
-							bypassEmitAction: (params) => nestedActionEvents.push(params),
+							bypassEmitAction: (params) =>
+								opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 						});
 					} else {
 						await relationsItemService.createOne(
@@ -309,7 +320,8 @@ export class RelationsService {
 								one_collection: existingRelation.related_collection || null,
 							},
 							{
-								bypassEmitAction: (params) => nestedActionEvents.push(params),
+								bypassEmitAction: (params) =>
+									opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 							}
 						);
 					}
@@ -320,13 +332,17 @@ export class RelationsService {
 				await this.helpers.schema.postColumnChange();
 			}
 
-			await clearSystemCache();
+			if (opts?.autoPurgeSystemCache !== false) {
+				await clearSystemCache();
+			}
 
-			const updatedSchema = await getSchema({ accountability: this.accountability || undefined });
+			if (opts?.emitEvents !== false && nestedActionEvents.length > 0) {
+				const updatedSchema = await getSchema();
 
-			for (const nestedActionEvent of nestedActionEvents) {
-				nestedActionEvent.context.schema = updatedSchema;
-				emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
+				for (const nestedActionEvent of nestedActionEvents) {
+					nestedActionEvent.context.schema = updatedSchema;
+					emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
+				}
 			}
 		}
 	}
@@ -405,7 +421,7 @@ export class RelationsService {
 			}
 
 			if (opts?.emitEvents !== false && nestedActionEvents.length > 0) {
-				const updatedSchema = await getSchema({ accountability: this.accountability || undefined });
+				const updatedSchema = await getSchema();
 
 				for (const nestedActionEvent of nestedActionEvents) {
 					nestedActionEvent.context.schema = updatedSchema;
