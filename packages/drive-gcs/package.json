@@ -1,6 +1,6 @@
 {
 	"name": "@directus/drive-gcs",
-	"version": "9.21.0",
+	"version": "9.21.2",
 	"description": "Google Cloud Storage driver for @directus/drive",
 	"homepage": "https://directus.io",
 	"bugs": {

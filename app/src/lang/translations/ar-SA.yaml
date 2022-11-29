@@ -272,6 +272,7 @@ fields_group: مجموعة الحقول
 no_collections_found: لم يتم العثور على أية مجموعة.
 new_data_alert: 'سيتم إنشاء ما يلي ضمن نموذج البيانات الخاص بك:'
 search_collection: مجموعة البحث...
+search_field: حقل البحث...
 new_field: 'حقل جديد'
 new_collection: 'مجموعة جديدة'
 add_m2o_to_collection: 'إضافة M2O إلى "{collection}"'
@@ -312,6 +313,7 @@ foreign_key: مفتاح خارجي
 finish_setup: إنهاء التثبيت
 dismiss: تجاهل
 toggle_raw_editor: فتح \ إغلاق محرر الخريطة
+raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
 raw_value: قيمة خام
 copy_raw_value: نسخ القيمة الخام
 copy_raw_value_success: تَمَّ النَّسخ
@@ -454,6 +456,11 @@ download_file: تحميل الملف
 open_file_in_tab: أفتح الملف في علامة تبويب جديدة
 start_export: بدء التصدير
 not_available_for_local_downloads: غير متوفر للتنزيلات المحلية
+exporting_all_items_in_collection: تصدير جميع العناصر {total} ضمن {collection}.
+exporting_limited_items_in_collection: تصدير {limit} من أصل {total} عناصر داخل {collection}.
+exporting_no_items_to_export: لا توجد عناصر للتصدير. قم بتعديل تكوين التصدير أدناه.
+exporting_download_hint: بمجرد اكتمال هذا الملف {format} سيتم تنزيله تلقائيا إلى جهازك.
+exporting_batch_hint: سيتم معالجة هذا التصدير في الدفعات، وبمجرد اكتماله، سيتم حفظ الملف {format} في مكتبة الملفات.
 collection_key: مفتاح المجموعة
 name: الاسم
 primary_key_field: '‮حقل المفتاح الرئيسي'
@@ -527,6 +534,9 @@ user_agent: وكيل المستخدم
 origin: الأصل
 webhooks: روابط الويب (Webhooks)
 decimals: الأعداد العشرية
+min_value: أدنى قيمة
+max_value: أكبر قيمة
+automatic: تلقائي
 field_width: عرض الحقل
 add_filter: إضافة فلتر
 upper_limit: الحد الأقصى...
@@ -567,15 +577,25 @@ errors:
   INVALID_CREDENTIALS: اسم المستخدم و / أو كلمة المرور خاطئة
   INVALID_OTP: كلمة مرور لمرة واحدة خاطئة
   INVALID_PAYLOAD: Invalid payload
+  INVALID_PROVIDER: المستخدم ينتمي إلى موفر مصادقة مختلف
   INVALID_QUERY: طلب غير صحيح
+  INVALID_CONFIG: تكوين غير صالح
+  INVALID_TOKEN: رمز دخول غير صحيح
+  INVALID_IP: عنوان IP غير مسموح به
+  INVALID_USER: أخفقت مصادقة المستخدم
   ITEM_LIMIT_REACHED: تم الوصول إلى الحد الأقصى للعناصر
   ITEM_NOT_FOUND: لم يتم العثور على العنصر
   ROUTE_NOT_FOUND: غير موجود
   RECORD_NOT_UNIQUE: تم اكتشاف تكرار القيمة
   USER_SUSPENDED: المستخدم موقوف
   CONTAINS_NULL_VALUES: الحقل يحتوي على قيم فارغة
+  UNPROCESSABLE_ENTITY: كيان غير قابل للمعالجة
   INTERNAL_SERVER_ERROR: خطأ غير متوقع
   NOT_NULL_VIOLATION: لا يمكن أن تكون القيمة فارغة
+  ILLEGAL_ASSET_TRANSFORMATION: مصدر الصورة كبير جدًا للمعاينة
+  VALUE_TOO_LONG: الاسم طويل جدا
+  VALUE_OUT_OF_RANGE: القيمة خارج النطاق
+  INVALID_FOREIGN_KEY: مفتاح مرشح غير صحيح
   UNKNOWN: خطأ غير متوقع
 security: الأمان
 value_hashed: تم تجزئة القيمة بشكل آمن

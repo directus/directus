@@ -42,7 +42,7 @@ switch_user: 切换用户
 item_creation: 新建
 item_revision: 条目修订
 enter_a_name: 请输入名称...
-duplicate_field: 复制
+duplicate_field: 复制字段
 half_width: 半宽
 full_width: 全宽
 group: 分组
@@ -1429,6 +1429,7 @@ translation: 翻译
 translation_placeholder: 输入翻译...
 value: 值
 view_project: 查看项目
+weeks: { }
 report_error: 报告错误
 start: 开始
 table: 表
@@ -2001,6 +2002,7 @@ panels:
     half_circle: 半圈
     full_circle: 一整圈
     stroke_width: 笔画宽度
+    rounded_stroke: 圆角描边
     select_max_value: 您必须选择一个最大值。
     max_greater_than_zero: 最大值必须大于 0。
     select_field: 您必须选择一个字段。
