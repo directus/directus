@@ -605,6 +605,7 @@ errors:
   UNKNOWN: Unerwarteter Fehler
   GRAPHQL_VALIDATION_EXCEPTION: GraphQL Validierungsfehler
   SERVICE_UNAVAILABLE: Dienst nicht verfügbar
+  UNSUPPORTED_MEDIA_TYPE: Nicht unterstützter Medientyp
   UNEXPECTED_RESPONSE: Unerwartete Antwort
   TOKEN_EXPIRED: Token abgelaufen
   RANGE_NOT_SATISFIABLE: Ungültiger Bereich
