@@ -6,7 +6,6 @@ import {
 	execute,
 	ExecutionResult,
 	FieldNode,
-	formatError,
 	FormattedExecutionResult,
 	FragmentDefinitionNode,
 	GraphQLBoolean,
@@ -41,6 +40,7 @@ import {
 	toInputObjectType,
 	ObjectTypeComposerFieldConfigDefinition,
 } from 'graphql-compose';
+import processError from './utils/process-error';
 import { Knex } from 'knex';
 import { flatten, get, mapKeys, merge, omit, pick, set, transform, uniq } from 'lodash';
 import ms from 'ms';
@@ -90,6 +90,7 @@ import { PrimaryKey } from '@directus/shared/types';
 
 import { addPathToValidationError } from './utils/add-path-to-validation-error';
 import { GraphQLHash } from './types/hash';
+import { GraphQLBigInt } from './types/bigint';
 
 const validationRules = Array.from(specifiedRules);
 
@@ -158,7 +159,7 @@ export class GraphQLService {
 
 		const formattedResult: FormattedExecutionResult = {
 			...result,
-			errors: result.errors?.map(formatError),
+			errors: result.errors?.map((error) => processError(this.accountability, error)),
 		};
 
 		return formattedResult;
@@ -821,6 +822,7 @@ export class GraphQLService {
 							case GraphQLBoolean:
 								filterOperatorType = BooleanFilterOperators;
 								break;
+							case GraphQLBigInt:
 							case GraphQLInt:
 							case GraphQLFloat:
 								filterOperatorType = NumberFilterOperators;
@@ -879,6 +881,7 @@ export class GraphQLService {
 						const graphqlType = getGraphQLType(field.type, field.special);
 
 						switch (graphqlType) {
+							case GraphQLBigInt:
 							case GraphQLInt:
 							case GraphQLFloat:
 								acc[field.field] = {
@@ -1593,6 +1596,7 @@ export class GraphQLService {
 
 						for (const subSelection of selection.selectionSet.selections) {
 							if (subSelection.kind !== 'Field') continue;
+							if (subSelection.name!.value.startsWith('__')) continue;
 							children.push(`${subSelection.name!.value}(${rootField})`);
 						}
 					} else {

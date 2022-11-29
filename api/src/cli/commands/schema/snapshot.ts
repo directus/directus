@@ -5,14 +5,11 @@ import { constants as fsConstants, promises as fs } from 'fs';
 import path from 'path';
 import inquirer from 'inquirer';
 import { dump as toYaml } from 'js-yaml';
-import { flushCaches } from '../../../cache';
 
 export async function snapshot(
 	snapshotPath?: string,
 	options?: { yes: boolean; format: 'json' | 'yaml'; merged: 'yes' | 'no' }
 ): Promise<void> {
-	await flushCaches();
-
 	const database = getDatabase();
 
 	async function saveSnapshot(snapshot: any, suffix = '') {
