@@ -1,7 +1,7 @@
 import { ActionHandler, FilterHandler, InitHandler, ScheduleHandler } from './events';
 import { ApiExtensionContext } from './extensions';
 
-type HookExtensionContext = ApiExtensionContext & {
+export type HookExtensionContext = ApiExtensionContext & {
 	emitter: any;
 };
 
