@@ -797,6 +797,14 @@ trigger_setup: Mempersiapkan Pemicu
 change_trigger: Ubah Pemicu
 flow_delete_confirm: Apakah anda yakin akan menghapus Alur "{flow}"? Tindakan ini tidak dapat dibatalkan.
 set_flow_active: Setel Alur menjadi Aktif
+set_flow_inactive: Setel Alur menjadi Tidak aktif
+edit_flow: Ubah Alur
+delete_flow: Hapus Alur
+no_other_flows_copy: Anda belum memiliki Alur lainnya.
+no_flows: Tidak ada Alur
+no_flows_copy: Anda belum memiliki Alur.
+create_flow: Buat Alur
+creating_new_flow: Membuat Alur Baru
 updating_flow: Memperbarui Alur
 flow_setup: Penyiapan Alur
 flow_name: Nama
