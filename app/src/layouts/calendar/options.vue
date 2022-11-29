@@ -73,7 +73,7 @@ export default defineComponent({
 		const firstDayWritable = useSync(props, 'firstDay', emit);
 
 		const firstDayOfWeekForDate = startOfWeek(new Date());
-		const firstDayOptions: Record<string, any>[] = [...Array(7).keys()].map((_, i) => ({
+		const firstDayOptions: { text: string; value: number }[] = [...Array(7).keys()].map((_, i) => ({
 			text: localizedFormat(add(firstDayOfWeekForDate, { days: i }), 'EEEE'),
 			value: i,
 		}));
