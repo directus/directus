@@ -2,6 +2,40 @@
 
 _Changes marked with a :warning: contain potential breaking changes depending on your use of the package._
 
+## v9.21.1 (November 28, 2022)
+
+### :rocket: Improvements
+
+- **App**
+  - [#16512](https://github.com/directus/directus/pull/16512) v-menu pointer event tweaks (by @azrikahar)
+  - [#16511](https://github.com/directus/directus/pull/16511) Improve v-icon performance (by @azrikahar)
+- **API**
+  - [#16501](https://github.com/directus/directus/pull/16501) Set `auth_data` to null when updating user `provider` or
+    `external_identifier` (by @azrikahar)
+  - [#16499](https://github.com/directus/directus/pull/16499) Remove named timezone usage on MySQL (by @licitdev)
+- **Extensions**
+  - [#15989](https://github.com/directus/directus/pull/15989) Use esbuild to build typescript extensions (by @nickrum)
+
+### :bug: Bug Fixes
+
+- **shared**
+  - [#16641](https://github.com/directus/directus/pull/16641) Fixup: Re-add entrypoint type definition files in
+    @directus/shared (by @paescuj)
+  - [#16606](https://github.com/directus/directus/pull/16606) Re-add entrypoint type definition files in
+    `@directus/shared` (by @paescuj)
+- **App**
+  - [#16570](https://github.com/directus/directus/pull/16570) fix missing collection after sorting in M2A (by
+    @azrikahar)
+  - [#16518](https://github.com/directus/directus/pull/16518) Fix .module-nav-resize-handle layout (by @d1rOn)
+- **API**
+  - [#16562](https://github.com/directus/directus/pull/16562) Propagate mutation options for schema apply (by @licitdev)
+
+### :sponge: Optimizations
+
+- **Misc.**
+  - [#16591](https://github.com/directus/directus/pull/16591) Optimize stores hydration calls (by @azrikahar)
+  - [#16481](https://github.com/directus/directus/pull/16481) Clean-up dependencies (by @paescuj)
+
 ## v9.21.0 (November 17, 2022)
 
 ### :sparkles: New Features
