@@ -65,4 +65,21 @@ describe('validatePayload', () => {
 			})
 		).toHaveLength(0);
 	});
+	it('returns an empty array when there is no error for filter field that does not exist in payload ', () => {
+		const mockFilter = { field: { _eq: 'field' } } as Filter;
+		// intentionally empty payload to simulate "field" was never included in payload
+		const mockPayload = {};
+
+		expect(validatePayload(mockFilter, mockPayload)).toHaveLength(0);
+	});
+	it('returns an array of 1 when there is required error for filter field that does not exist in payload and requireAll option flag is true', () => {
+		const mockFilter = { field: { _eq: 'field' } } as Filter;
+		// intentionally empty payload to simulate "field" was never included in payload
+		const mockPayload = {};
+
+		const errors = validatePayload(mockFilter, mockPayload, { requireAll: true });
+
+		expect(errors).toHaveLength(1);
+		expect(errors[0]!.message).toBe(`"field" is required`);
+	});
 });

@@ -85,7 +85,9 @@ export function reduceSchema(
 
 		if (
 			relation.related_collection &&
-			Object.keys(allowedFieldsInCollection).includes(relation.related_collection) === false
+			(Object.keys(allowedFieldsInCollection).includes(relation.related_collection) === false ||
+				// Ignore legacy permissions with an empty fields array
+				allowedFieldsInCollection[relation.related_collection].length === 0)
 		) {
 			collectionsAllowed = false;
 		}

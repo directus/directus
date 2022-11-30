@@ -62,9 +62,10 @@ export default {
 </script>
 
 <script lang="ts" setup>
-import { computed, ref, useAttrs } from 'vue';
-import { omit } from 'lodash';
+import { keyMap, systemKeys } from '@/composables/use-shortcut';
 import slugify from '@sindresorhus/slugify';
+import { omit } from 'lodash';
+import { computed, ref, useAttrs } from 'vue';
 
 interface Props {
 	/** Autofocusses the input on render */
@@ -172,8 +173,7 @@ const isStepDownAllowed = computed(() => {
 
 function processValue(event: KeyboardEvent) {
 	if (!event.key) return;
-	const key = event.key.toLowerCase();
-	const systemKeys = ['meta', 'shift', 'alt', 'backspace', 'delete', 'tab'];
+	const key = event.key in keyMap ? keyMap[event.key] : event.key.toLowerCase();
 	const value = (event.target as HTMLInputElement).value;
 
 	if (props.slug === true) {
@@ -199,8 +199,10 @@ function processValue(event: KeyboardEvent) {
 			event.preventDefault();
 		}
 
+		const isCombinationWithSystemKeys = event.metaKey || event.ctrlKey || event.shiftKey || event.altKey;
+
 		// Prevent leading number
-		if (value.length === 0 && '0123456789'.split('').includes(key)) {
+		if (value.length === 0 && '0123456789'.split('').includes(key) && !isCombinationWithSystemKeys) {
 			event.preventDefault();
 		}
 	}
@@ -238,10 +240,10 @@ function emitValue(event: InputEvent) {
 
 		if (props.dbSafe === true) {
 			value = value.replace(/\s/g, '_');
-			// prevent pasting of non dbSafeCharacters from bypassing the keydown checks
-			value = value.replace(/[^a-zA-Z0-9_]/g, '');
 			// Replace é -> e etc
 			value = value.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+			// prevent pasting of non dbSafeCharacters from bypassing the keydown checks
+			value = value.replace(/[^a-zA-Z0-9_]/g, '');
 		}
 
 		emit('update:modelValue', value);

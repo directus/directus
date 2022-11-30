@@ -6,7 +6,7 @@
 			<component
 				:is="`display-${part.component}`"
 				v-else-if="typeof part === 'object' && part.component"
-				v-bind="translate(part.options || {})"
+				v-bind="part.options"
 				:value="part.value"
 				:interface="part.interface"
 				:interface-options="part.interfaceOptions"
@@ -21,13 +21,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { useExtension } from '@/composables/use-extension';
 import { useFieldsStore } from '@/stores/fields';
-import { get } from 'lodash';
-import { Field } from '@directus/shared/types';
-import { getDisplay } from '@/displays';
 import { getDefaultDisplayForType } from '@/utils/get-default-display-for-type';
-import { translate } from '@/utils/translate-object-values';
+import { translate } from '@/utils/translate-literal';
+import { Field } from '@directus/shared/types';
+import { get } from 'lodash';
+import { computed, ref } from 'vue';
 
 interface Props {
 	template: string;
@@ -79,12 +79,15 @@ function handleArray(fieldKeyBefore: string, fieldKeyAfter: string) {
 
 	if (!field) return value;
 
-	const displayInfo = getDisplay(field.meta?.display);
+	const displayInfo = useExtension(
+		'display',
+		computed(() => field.meta?.display ?? null)
+	);
 
 	let component = field.meta?.display;
 	let options = field.meta?.display_options;
 
-	if (!displayInfo) {
+	if (!displayInfo.value) {
 		component = 'related-values';
 		options = { template: `{{${fieldKeyAfter}}}` };
 	}
@@ -102,11 +105,8 @@ function handleArray(fieldKeyBefore: string, fieldKeyAfter: string) {
 }
 
 function handleObject(fieldKey: string) {
-	const value = get(props.item, fieldKey);
 	const field =
 		fieldsStore.getField(props.collection, fieldKey) || props.fields?.find((field) => field.field === fieldKey);
-
-	if (value === undefined) return null;
 
 	/**
 	 * This is for cases where you are rendering a display template directly on
@@ -123,6 +123,10 @@ function handleObject(fieldKey: string) {
 			.join('.');
 	}
 
+	const value = get(props.item, fieldKey);
+
+	if (value === undefined) return null;
+
 	if (!field) return value;
 
 	const display = field?.meta?.display || getDefaultDisplayForType(field.type);
@@ -130,10 +134,13 @@ function handleObject(fieldKey: string) {
 	// No need to render the empty display overhead in this case
 	if (display === 'raw') return value;
 
-	const displayInfo = getDisplay(field.meta?.display);
+	const displayInfo = useExtension(
+		'display',
+		computed(() => field.meta?.display ?? null)
+	);
 
 	// If used display doesn't exist in the current project, return raw value
-	if (!displayInfo) return value;
+	if (!displayInfo.value) return value;
 
 	return {
 		component: field.meta?.display,

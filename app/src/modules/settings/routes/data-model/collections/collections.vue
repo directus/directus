@@ -197,12 +197,14 @@ export default defineComponent({
 			});
 
 			try {
-				await Promise.all(
-					updatesWithSortValue.map((collection) =>
-						api.patch(`/collections/${collection.collection}`, {
+				api.patch(
+					`/collections`,
+					updatesWithSortValue.map((collection) => {
+						return {
+							collection: collection.collection,
 							meta: { sort: collection.meta.sort, group: collection.meta.group },
-						})
-					)
+						};
+					})
 				);
 			} catch (err: any) {
 				unexpectedError(err);

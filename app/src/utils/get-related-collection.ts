@@ -14,12 +14,15 @@ export interface RelatedCollectionData {
  *
  * @param collection - Name of the current parent collection
  * @param field - Name of the relational field in the current collection
- * @returns Related collection name(s)
+ * @returns Related collection name(s) or null if no related collection exists in the relationsStore
  */
-export function getRelatedCollection(collection: string, field: string): RelatedCollectionData {
+export function getRelatedCollection(collection: string, field: string): RelatedCollectionData | null {
 	const relationsStore = useRelationsStore();
 
 	const relations: Relation[] = relationsStore.getRelationsForField(collection, field);
+
+	if (relations.length === 0) return null;
+
 	const localType = getLocalTypeForField(collection, field);
 
 	const o2mTypes = ['o2m', 'm2m', 'm2a', 'translations', 'files'];

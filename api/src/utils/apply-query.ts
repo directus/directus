@@ -2,6 +2,7 @@ import {
 	Aggregate,
 	ClientFilterOperator,
 	FieldFunction,
+	FieldOverview,
 	Filter,
 	Query,
 	Relation,
@@ -367,19 +368,23 @@ export function applyFilter(
 
 					if (!columnPath) continue;
 
-					validateFilterOperator(
-						schema.collections[targetCollection].fields[stripFunction(filterPath[filterPath.length - 1])].type,
-						filterOperator,
-						schema.collections[targetCollection].fields[stripFunction(filterPath[filterPath.length - 1])].special
+					const { type, special } = validateFilterField(
+						schema.collections[targetCollection].fields,
+						stripFunction(filterPath[filterPath.length - 1]),
+						targetCollection
 					);
+
+					validateFilterOperator(type, filterOperator, special);
 
 					applyFilterToQuery(columnPath, filterOperator, filterValue, logical, targetCollection);
 				} else {
-					validateFilterOperator(
-						schema.collections[collection].fields[stripFunction(filterPath[0])].type,
-						filterOperator,
-						schema.collections[collection].fields[stripFunction(filterPath[0])].special
+					const { type, special } = validateFilterField(
+						schema.collections[collection].fields,
+						stripFunction(filterPath[0]),
+						collection
 					);
+
+					validateFilterOperator(type, filterOperator, special);
 
 					applyFilterToQuery(`${collection}.${filterPath[0]}`, filterOperator, filterValue, logical);
 				}
@@ -415,6 +420,14 @@ export function applyFilter(
 					dbQuery[logical].whereIn(pkField as string, subQueryBuilder(value));
 				}
 			}
+		}
+
+		function validateFilterField(fields: Record<string, FieldOverview>, key: string, collection = 'unknown') {
+			if (fields[key] === undefined) {
+				throw new InvalidQueryException(`Invalid filter key "${key}" on "${collection}"`);
+			}
+
+			return fields[key];
 		}
 
 		function validateFilterOperator(type: Type, filterOperator: string, special: string[]) {

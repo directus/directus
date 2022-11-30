@@ -1,7 +1,11 @@
 <template>
-	<value-null v-if="!junctionCollection.collection" />
+	<value-null v-if="!relationInfo?.junctionCollection?.collection" />
 	<div v-else class="display-translations">
-		<render-template :template="internalTemplate" :item="displayItem" :collection="junctionCollection.collection" />
+		<render-template
+			:template="internalTemplate"
+			:item="displayItem"
+			:collection="relationInfo.junctionCollection.collection"
+		/>
 		<v-menu class="menu" show-arrow :disabled="value.length === 0">
 			<template #activator="{ toggle, deactivate, active }">
 				<v-icon small class="icon" :class="{ active }" name="info" @click.stop="toggle" @focusout="deactivate"></v-icon>
@@ -20,7 +24,7 @@
 						<render-template
 							:template="internalTemplate"
 							:item="item.item"
-							:collection="junctionCollection.collection"
+							:collection="relationInfo.junctionCollection.collection"
 						/>
 					</v-list-item-content>
 				</v-list-item>
@@ -29,103 +33,90 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent, computed, PropType, toRefs } from 'vue';
-import { useRelation } from '@/composables/use-m2m';
+<script setup lang="ts">
+import { computed, toRefs } from 'vue';
 import { useUserStore } from '@/stores/user';
 import { isNil } from 'lodash';
+import { useRelationM2M } from '@/composables/use-relation-m2m';
+import { useFieldsStore } from '@/stores/fields';
 
-export default defineComponent({
-	props: {
-		collection: {
-			type: String,
-			required: true,
-		},
-		field: {
-			type: String,
-			required: true,
-		},
-		value: {
-			type: [Array] as PropType<Record<string, any>[]>,
-			default: null,
-		},
-		template: {
-			type: String,
-			default: null,
-		},
-		userLanguage: {
-			type: Boolean,
-			default: false,
-		},
-		defaultLanguage: {
-			type: String,
-			default: null,
-		},
-		languageField: {
-			type: String,
-			default: null,
-		},
-		type: {
-			type: String,
-			required: true,
-		},
-	},
-	setup(props) {
-		const { collection, field } = toRefs(props);
+interface Props {
+	collection: string;
+	field: string;
+	type: string;
+	value?: Record<string, any>[];
+	template?: string;
+	userLanguage?: boolean;
+	defaultLanguage?: string;
+	languageField?: string;
+}
 
-		const {
-			junctionPrimaryKeyField: primaryKeyField,
-			junctionCollection,
-			relation,
-			junctionFields,
-			relationPrimaryKeyField,
-		} = useRelation(collection, field);
+const props = withDefaults(defineProps<Props>(), {
+	value: () => [],
+	template: undefined,
+	userLanguage: false,
+	defaultLanguage: undefined,
+	languageField: undefined,
+});
 
-		const internalTemplate = computed(() => {
-			return (
-				props.template || junctionCollection.value?.meta?.display_template || `{{ ${primaryKeyField.value!.field} }}`
-			);
-		});
+const { collection, field } = toRefs(props);
+const fieldsStore = useFieldsStore();
 
-		const displayItem = computed(() => {
-			const langPkField = relationPrimaryKeyField.value?.field;
-			if (!langPkField) return {};
+const { relationInfo } = useRelationM2M(collection, field);
 
-			let item =
-				props.value.find((val) => val?.[relation.value.field]?.[langPkField] === props.defaultLanguage) ??
-				props.value[0];
+const internalTemplate = computed(() => {
+	if (!relationInfo.value) return '';
 
-			if (props.userLanguage) {
-				const user = useUserStore();
-				item =
-					props.value.find((val) => val?.[relation.value.field]?.[langPkField] === user.currentUser?.language) ?? item;
-			}
-			return item ?? {};
-		});
+	const primaryKeyField = relationInfo.value.junctionPrimaryKeyField.field;
+	const collectionDisplayTemplate = relationInfo.value.junctionCollection?.meta?.display_template;
 
-		const writableFields = computed(() =>
-			junctionFields.value.filter(
-				(field) => field.type !== 'alias' && field.meta?.hidden === false && field.meta.readonly === false
-			)
-		);
+	return props.template || collectionDisplayTemplate || `{{ ${primaryKeyField} }}`;
+});
 
-		const translations = computed(() => {
-			return props.value.map((item) => {
-				const filledFields = writableFields.value.filter((field) => {
-					return field.field in item && !isNil(item?.[field.field]);
-				}).length;
+const displayItem = computed(() => {
+	if (!relationInfo.value) return {};
 
-				return {
-					id: item?.[primaryKeyField.value?.field ?? 'id'],
-					lang: item?.[relation.value.field]?.[props.languageField ?? relationPrimaryKeyField.value?.field],
-					progress: Math.round((filledFields / writableFields.value.length) * 100),
-					item,
-				};
-			});
-		});
+	const langPkField = relationInfo.value.relatedPrimaryKeyField.field;
+	const langField = relationInfo.value.junctionField.field;
 
-		return { primaryKeyField, internalTemplate, junctionCollection, displayItem, translations };
-	},
+	let item = props.value.find((val) => val?.[langField]?.[langPkField] === props.defaultLanguage) ?? props.value[0];
+
+	if (props.userLanguage) {
+		const user = useUserStore();
+		item = props.value.find((val) => val?.[langField]?.[langPkField] === user.currentUser?.language) ?? item;
+	}
+	return item ?? {};
+});
+
+const writableFields = computed(() => {
+	if (!relationInfo.value) return [];
+
+	const junctionFields = fieldsStore.getFieldsForCollection(relationInfo.value.junctionCollection.collection);
+
+	return junctionFields.filter(
+		(field) => field.type !== 'alias' && field.meta?.hidden === false && field.meta.readonly === false
+	);
+});
+
+const translations = computed(() => {
+	if (!relationInfo.value) return [];
+
+	const primaryKeyField = relationInfo.value.junctionPrimaryKeyField.field;
+	const langPkField = relationInfo.value.relatedPrimaryKeyField.field;
+	const langField = relationInfo.value.junctionField.field;
+
+	return props.value.map((item) => {
+		const filledFields = writableFields.value.filter((field) => {
+			return field.field in item && !isNil(item?.[field.field]);
+		}).length;
+
+		return {
+			id: item?.[primaryKeyField ?? 'id'],
+			lang: item?.[langField]?.[props.languageField ?? langPkField],
+			progress: Math.round((filledFields / writableFields.value.length) * 100),
+			item,
+		};
+	});
 });
 </script>
 
@@ -136,6 +127,7 @@ export default defineComponent({
 
 .display-translations {
 	display: inline-flex;
+	align-items: center;
 
 	.icon {
 		color: var(--foreground-subdued);

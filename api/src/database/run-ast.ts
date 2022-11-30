@@ -97,7 +97,11 @@ export default async function runAST(
 
 				while (hasMore) {
 					const node = merge({}, nestedNode, {
-						query: { limit: env.RELATIONAL_BATCH_SIZE, offset: batchCount * env.RELATIONAL_BATCH_SIZE },
+						query: {
+							limit: env.RELATIONAL_BATCH_SIZE,
+							offset: batchCount * env.RELATIONAL_BATCH_SIZE,
+							page: null,
+						},
 					});
 
 					nestedItems = (await runAST(node, schema, { knex, nested: true })) as Item[] | null;
@@ -302,7 +306,7 @@ function applyParentFilters(
 				const foreignIds = uniq(keysPerCollection[relatedCollection]);
 
 				merge(nestedNode, {
-					query: { [relatedCollection]: { filter: { [foreignField]: { _in: foreignIds } } } },
+					query: { [relatedCollection]: { filter: { [foreignField]: { _in: foreignIds } }, limit: foreignIds.length } },
 				});
 			}
 		}
@@ -349,6 +353,12 @@ function mergeWithParentItems(
 			});
 
 			parentItem[nestedNode.fieldKey].push(...itemChildren);
+
+			if (nestedNode.query.page && nestedNode.query.page > 1) {
+				parentItem[nestedNode.fieldKey] = parentItem[nestedNode.fieldKey].slice(
+					(nestedNode.query.limit ?? 100) * (nestedNode.query.page - 1)
+				);
+			}
 
 			if (nestedNode.query.offset && nestedNode.query.offset >= 0) {
 				parentItem[nestedNode.fieldKey] = parentItem[nestedNode.fieldKey].slice(nestedNode.query.offset);

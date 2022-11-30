@@ -39,7 +39,7 @@ condition_rules: Règles de conditions
 input: Texte simple
 maps: Cartes
 switch_user: Changer d'utilisateur
-item_creation: Création d'article
+item_creation: Création d'élément
 item_revision: Historique de l'article
 enter_a_name: Saisir un nom...
 duplicate_field: Dupliquer le champ
@@ -66,7 +66,7 @@ edit_collection: Modifier la collection
 exclusive: Exclusif
 children: Les enfants
 db_only_click_to_configure: 'Base de données uniquement: cliquez pour configurer'
-show_active_items: Afficher Les Éléments Actifs
+show_active_items: Afficher les éléments actifs
 show_archived_items: Afficher les éléments archivés
 show_all_items: Afficher tous les éléments
 edited: Valeur modifiée
@@ -80,14 +80,14 @@ create_user: Créer un utilisateur
 message: Message
 delete_panel: Supprimer le panneau
 create_webhook: Créer un webhook
-create_translation_string: Créer une chaîne de traduction
-no_translation_string: Aucune chaîne de traduction
-no_translation_string_copy: Il n'y a pas encore de chaîne de traduction.
+create_translation_string: Créer une traduction
+no_translation_string: Aucune traduction
+no_translation_string_copy: Il n'y a pas encore de traduction.
 translation_string_key_placeholder: Traduction de la clé...
 translation_string_translations_placeholder: Ajouter une nouvelle traduction
-edit_translation_string: Modifier la chaîne de traduction
+edit_translation_string: Modifier la traduction
 delete_translation_string_copy: >-
-  Êtes-vous sûr de vouloir supprimer la chaîne de traduction "{key}" ? Cette action ne peut pas être annulée.
+  Êtes-vous sûr de vouloir supprimer la traduction "{key}" ? Cette action ne peut pas être annulée.
 invite_users: Inviter des utilisateurs
 invite: Inviter
 email_already_invited: '"{email}" a déjà été invité'
@@ -125,7 +125,7 @@ os_type: Type d'OS
 os_version: Version de l'OS
 os_uptime: Temps de disponibilité de l'OS
 os_totalmem: Mémoire de l'OS
-archive: Archiver
+archive: Archives
 archive_confirm: Êtes-vous sûr de vouloir archiver cet élément ?
 archive_confirm_count: >-
   Aucun élément sélectionné | Êtes-vous sûr de vouloir archiver cet élément ? | Êtes-vous sûr de vouloir archiver ces {count} éléments ?
@@ -183,10 +183,12 @@ fields_for_role: 'Champs dont l''action « {action} » peut être effectué par 
 validation_for_role: 'Règles pour {action} le champ que le rôle {role} doit suivre.'
 presets_for_role: 'Valeur par défaut du champ pour le rôle {role}.'
 presentation_and_aliases: Présentation & Alias
-revision_post_create: Voici à quoi ressemblait cet article lors de sa création.
+revision_post_create: Voici à quoi ressemblait cet élément lors de sa création.
 revision_post_update: Voici à quoi ressemblait cet élément après la mise à jour.
 changes_made: Vous trouverez ci-dessous les modifications spécifiques apportées à cette révision.
 no_relational_data: Attention, les données relationnelles ne sont pas incluses.
+junction_field_location: Emplacement des champs de jonction
+top: En haut
 bottom: Bas
 hide_field: Masquer le champ
 hide_field_on_detail: Masquer le champ dans le détail
@@ -297,7 +299,8 @@ field_name: Nom du champ
 translations: Traductions
 no_translations: Aucune traduction
 left_to_right: Hello
-note: Remarque
+right_to_left: De droite à gauche
+note: Description
 enter_a_value: Saisissez une valeur...
 enter_a_placeholder: Entrez un texte d'indication...
 length: Taille
@@ -325,6 +328,7 @@ edit_raw_value: Modifier la valeur brute
 enter_raw_value: Saisissez une valeur brute...
 clear_value: Effacer la valeur
 clear_changes: Effacer les modifications
+clear_items: Effacer les éléments
 reset_to_default: Revenir à la valeur par défaut
 undo_changes: Annuler les modifications
 notifications: Notifications
@@ -362,12 +366,12 @@ related_collections: Collections associées
 translations_collection: Collection de traduction
 languages_collection: Collection de langues
 import_data_input_placeholder: CSV ou JSON...
-import_data_button: Commencer l'importation
-import_data_indeterminate: Importation des données...
+import_data_button: Commencer l'import
+import_data_indeterminate: Import des données...
 import_data_success: Données importées avec succès depuis {filename}
 import_data_error: La structure des données de ce fichier ne correspond pas à la collection.
 label_import: Importer
-label_export: Exportation
+label_export: Export
 import_export: Importer/Exporter
 format: Format
 last_page: Dernière page
@@ -452,14 +456,14 @@ replace_from_url: Remplacer le fichier à partir d'une URL
 no_file_selected: Aucun fichier sélectionné
 download_file: Télécharger le fichier
 open_file_in_tab: Ouvrir le fichier dans un nouvel onglet
-start_export: Démarrer l'exportation
+start_export: Démarrer l'export
 not_available_for_local_downloads: Indisponible pour les téléchargements en local
-exporting_all_items_in_collection: Exportation de tous les {total} éléments dans {collection}.
-exporting_limited_items_in_collection: Exportation de {limit} éléments sur {total} dans le cadre du {collection}.
+exporting_all_items_in_collection: Export de la totalité des {total} éléments dans la collection {collection}.
+exporting_limited_items_in_collection: Exportat de {limit} éléments sur {total} dans la collection {collection}.
 exporting_no_items_to_export: Aucun élément à exporter. Ajustez la configuration d'export ci-dessous.
 exporting_download_hint: Une fois terminé, ce fichier {format} sera automatiquement téléchargé sur votre appareil.
 exporting_batch_hint: Cet export sera traité en lots et, une fois terminé, le fichier {format} sera sauvegardé dans la bibliothèque de fichiers.
-exporting_batch_hint_forced: En raison du grand nombre d'éléments, cette exportation doit être traitée en lots, et une fois terminé, le fichier {format} sera sauvegardé dans la bibliothèque de fichiers.
+exporting_batch_hint_forced: En raison du grand nombre d'éléments, cet export doit être traité par lots, et une fois terminé, le fichier {format} sera sauvegardé dans la bibliothèque de fichiers.
 collection_key: Clé de la collection
 name: Nom
 primary_key_field: Champ de clé primaire
@@ -467,8 +471,8 @@ type: Type
 creating_new_collection: Création d'une nouvelle Collection
 created_by: Créé par
 created_on: Créé le
-creating_collection_info: Nommez la collection et configurez son champ unique « clé »...
-creating_collection_system: Activer et renommer l'un de ces champs optionnels.
+creating_collection_info: Donnez un nom à la collection et configurez son champ de « clé » unique...
+creating_collection_system: Vous pouvez activer et renommer les champs optionnels suivants.
 auto_increment_integer: Entier auto-incrémenté
 auto_increment_big_integer: Big interger auto-incrémenté
 generated_uuid: UUID généré
@@ -481,6 +485,7 @@ creating_items: Création d'éléments
 enable_create_button: Activer le bouton de création
 selecting_items: Sélection d'éléments
 enable_select_button: Activer le bouton de sélection
+allow_duplicates: Autoriser les doublons
 comments: Commentaires
 no_comments: Pas encore de commentaires
 click_to_expand: Cliquer pour agrandir
@@ -533,6 +538,7 @@ activity_item: Flux d'activité
 action: Action
 ip_address: Adresse IP
 user_agent: Agent utilisateur
+origin: Origine
 webhooks: Webhooks
 decimals: Décimales
 value_decimals: Valeur décimale
@@ -578,9 +584,12 @@ errors:
   FORBIDDEN: Non autorisé
   INVALID_CREDENTIALS: Mauvais nom d'utilisateur ou mot de passe
   INVALID_OTP: Mauvais mot de passe unique
-  INVALID_PAYLOAD: Payload invalide
+  INVALID_PAYLOAD: Données invalides
   INVALID_PROVIDER: L'utilisateur appartient à un autre fournisseur d'authentification
   INVALID_QUERY: Requête invalide
+  INVALID_CONFIG: Configuration non valide
+  INVALID_TOKEN: Jeton non valide
+  INVALID_IP: Adresse IP non autorisée
   INVALID_USER: Échec de l'authentification utilisateur
   ITEM_LIMIT_REACHED: Nombre d'éléments max atteint
   ITEM_NOT_FOUND: Élément introuvable
@@ -597,8 +606,15 @@ errors:
   INVALID_FOREIGN_KEY: Clé étrangère invalide
   UNKNOWN: Erreur inconnue
   GRAPHQL_VALIDATION_EXCEPTION: Exception de validation de GraphQL
+  SERVICE_UNAVAILABLE: Service indisponible
+  UNSUPPORTED_MEDIA_TYPE: Type de format non pris en charge
+  UNEXPECTED_RESPONSE: Réponse inattendue
+  TOKEN_EXPIRED: Jeton expiré
+  RANGE_NOT_SATISFIABLE: Plage non valide
+  METHOD_NOT_ALLOWED: Méthode non autorisée
+  REQUESTS_EXCEEDED: Limite de requêtes atteinte
 security: Sécurité
-value_hashed: Valeur hashée de manière sûre
+value_hashed: Valeur cryptée sécurisée
 bookmark_name: Nom du favori...
 create_bookmark: Ajouter comme favori
 edit_bookmark: Modifier le favori
@@ -736,6 +752,8 @@ add_file: Ajouter un fichier
 replace_file: Remplacer le fichier
 no_results: Aucun résultat
 no_results_copy: Ajuster ou effacer les filtres de recherche pour voir les résultats.
+no_visible_fields: Formulaire vide
+no_visible_fields_copy: Ce formulaire n'a pas de champs visibles.
 clear_filters: Réinitialiser les filtres
 saves_automatically: Sauvegardé automatiquement
 role: Rôle
@@ -765,8 +783,10 @@ label: Étiquette
 flows: Flux
 flow: Flux
 select_a_flow: Sélectionner un flux
+run_flow_on_current_collection: Lancer le flux sur la collection actuelle
 run_flow_on_current: Exécuter le flux sur l'élément actuel
-run_flow_on_selected: Aucun élément sélectionné | Exécuter le flux sur 1 élément sélectionné | Exécuter le flux sur {n} éléments sélectionnés
+run_flow_on_current_edited_confirm: Cet élément peut être mis à jour par ce flux, êtes-vous sûr de vouloir l'exécuter ?
+run_flow_on_selected: Sélectionner un ou plusieurs éléments | Exécuter le flux sur 1 élément sélectionné | Exécuter le flux sur {n} éléments sélectionnés
 run_flow_success: Le Flux "{flow}" s'est exécuté avec succès
 trigger: Déclencheur
 trigger_options: Options de Déclenchement
@@ -810,6 +830,7 @@ panel_header: En-tête de panneau
 panel_name_placeholder: Nommez ce panneau...
 panel_note_placeholder: Détails facultatifs sur ce panneau...
 panel_delete_confirm: Voulez-vous vraiment supprimer ce panneau ? Cette action ne peut pas être annulée.
+list_panel_allow_edit: Permettre la modification rapide
 dashboard_delete_confirm: Êtes-vous sûr de vouloir supprimer ce tableau de bord ? Cette action ne peut pas être annulée.
 edit_dashboard: Modifier le tableau de bord
 delete_dashboard: Supprimer
@@ -976,7 +997,7 @@ page_help_settings_webhooks_collection: '**Parcourez les Webhooks** — Liste to
 page_help_settings_webhooks_item: '**Détail du Webhook** — Un formulaire pour créer et gérer les webhooks du projet.'
 page_help_settings_flows_collection: '**Parcourir les Flux** — Liste tous les Flux du projet.'
 page_help_settings_flows_item: '**Détail du Flux** - Espace de travail permettant de gérer une ou plusieurs opérations.'
-page_help_settings_translation_strings_collection: '**Parcourir les chaînes de traduction** — Liste toutes les chaînes de traduction du projet.'
+page_help_settings_translation_strings_collection: '**Parcourir les de traductions** — Liste toutes les traductions du projet.'
 page_help_users_collection: '**Répertoire utilisateur** — Liste tous les utilisateurs système de ce projet.'
 page_help_users_item: >-
   **Détail de l'utilisateur** — Gérez les informations de votre compte ou consultez les détails des autres utilisateurs.
@@ -1029,12 +1050,13 @@ fields:
     user: Fait par
     comment: Commentaire
     user_agent: Agent utilisateur
+    origin: Origine
     ip: Adresse IP
     revisions: Historique
   directus_collections:
     collection: Collection
     icon: Icône
-    note: Remarque
+    note: Description
     color: Couleur
     display_template: Modèle d'affichage
     hidden: Masqué
@@ -1153,7 +1175,7 @@ fields:
   directus_fields:
     collection: Nom de la Collection
     icon: Icône de Collection
-    note: Remarque
+    note: Description
     hidden: Masqué
     singleton: Singleton
     translation: Traductions du nom de champ
@@ -1229,7 +1251,7 @@ field_options:
     collection_name: Nom de la Collection
     singular_unit: Au singulier
     plural_unit: Au pluriel
-    archive_divider: Archiver
+    archive_divider: Archives
     archive_field_placeholder: Choisissez un champ...
     archive_app_filter: Filtrer tous les éléments archivés
     archive_value: Valeur définie lors de l'archivage...
@@ -1395,9 +1417,9 @@ sign_out: Déconnexion
 sign_out_confirm: Êtes-vous certain de vouloir vous déconnecter ?
 something_went_wrong: Quelque chose s’est mal passé.
 sort_direction: Ordre de tri
-export_location: Emplacement d'exportation
-export_started: L'exportation a commencé
-export_started_copy: Votre exportation a commencé. Vous serez notifié quand elle sera prête à être téléchargée.
+export_location: Emplacement d'export
+export_started: L'export a commencé
+export_started_copy: Votre export a commencé. Vous serez notifié quand il sera prêt à être téléchargé.
 sort_asc: Tri croissant
 sort_desc: Tri décroissant
 template: Modèle
@@ -1410,6 +1432,14 @@ report_error: Signaler l'erreur
 start: Début
 table: Tableau
 list: Liste
+search_filter: Rechercher & Filtrer
+enable_search_filter: Activer la recherche et le filtrage
+item_link: Lien de l'élément
+show_link_to_item: Afficher un lien vers l'élément
+navigate_to_item: Naviguer vers l'élément
+undo_removed_item: Annuler Supprimer l'élément
+remove_item: Retirer l'élément
+delete_item: Supprimer l'élément
 interfaces:
   filter:
     name: Filtre
@@ -1491,6 +1521,7 @@ interfaces:
     placeholder: Choisissez une date et heure...
   system-fields:
     select_a_collection: Sélectionner une collection
+    no_fields: Aucun champ
   system-display-template:
     display-template: Modèle d'affichage
     description: Mélanger du texte statique et des valeurs de champs dynamiques
@@ -1548,6 +1579,7 @@ interfaces:
   list-m2m:
     many-to-many: Plusieurs à plusieurs
     description: Sélectionner plusieurs éléments de jonction liés
+    columns_configure_notice: Vous pouvez configurer les colonnes après avoir créé ce champ.
     display_template_configure_notice: Vous pourrez configurer le modèle d'affichage après avoir créé ce champ.
   select-dropdown-m2o:
     many-to-one: Plusieurs à un
@@ -1606,7 +1638,7 @@ interfaces:
     edit_fields: Modifier les champs
     add_label: 'Libellé "Créer Nouveau"'
     sort: Trier
-    sort_placeholder: Manuelle
+    sort_placeholder: Manuel
     field_name_placeholder: Entrez le nom du champ...
     field_note_placeholder: Entrez la note du champ...
     incompatible_data: Les données actuelles ne sont pas compatibles avec l'interface répéteur et seront remplacées lors de l'ajout d'éléments dans le répéteur
@@ -1647,9 +1679,9 @@ interfaces:
     description: Entrez le texte brut en multiligne
   input-translated-string:
     input-translated-string: Chaînes traduites
-    description: Sélectionner ou ajouter une chaîne de traduction
+    description: Sélectionner ou ajouter une traduction
     search_placeholder: Rechercher...
-    new_translation_string: Nouvelle chaîne de traduction
+    new_translation_string: Nouvelle traduction
   boolean:
     toggle: Case à cocher
     description: Basculer entre l'activation et la désactivation
@@ -1665,6 +1697,7 @@ interfaces:
     user_language: Utiliser la langue actuelle de l'utilisateur
     default_language: Langue par défaut
     language_field: Champ d'indicateur de langue
+    language_direction_field: Champ de direction de la langue
   list-o2m-tree-view:
     description: Arborescence pour les éléments récursifs imbriqués de type "one-to-many"
     recursive_only: La vue en arborescence ne fonctionne que pour les relations récursives.
@@ -1851,7 +1884,7 @@ layouts:
   tabular:
     tabular: Tableau
     spacing: Espacement
-    comfortable: Confortable
+    comfortable: Large
     compact: Compact
     cozy: Intermédiaire
   calendar:
@@ -1875,33 +1908,9 @@ layouts:
     default_template: Utilisation de la collection par défaut ...
     no_compatible_fields: Aucun champ compatible
   kanban:
-    name: Kanban,
-    group_field: Regrouper par,
-    group_field_placeholder: Champ à regrouper par...,
-    group_title: Nom du groupe,
-    group_title_placeholder: Champ pour les titres du groupe...,
-    title: Titre de tuile,
-    title_placeholder: Champ titre optionnel...,
-    text: Texte de tuile,
-    text_placeholder: Champ de texte optionnel...,
-    date: Date de tuile,
-    date_placeholder: Champ de date optionnel...,
-    tags: Étiquettes de tuile,
-    tags_placeholder: Champ de balises optionnelles...,
-    user: Utilisateurs de tuile,
-    user_placeholder: Champ utilisateur optionnel...,
-    image: Image de tuile,
-    image_placeholder: Champ d'image optionnel...,
-    image_fit: Image ajustée en tuile
-    crop: Rogner,
-    advanced: Avancé,
-    edit_group: Éditer le Groupe,
-    delete_group: Supprimer le Groupe,
-    add_group: Ajouter un Groupe,
-    add_group_placeholder: Entrez le nom du nouveau groupe...,
-    show_ungrouped: Afficher non-groupé,
-    show: Afficher,
-    no_group: Aucun Groupe,
+    crop: Rogner
+    advanced: Avancé
+    show_ungrouped: Afficher non-groupé
     not_all_loaded: Impossible de charger les 1000 premiers éléments.
 panels:
   metric:
@@ -1943,7 +1952,6 @@ panels:
     y_axis_conditional_two: doit être un nombre.
   linechart:
     name: Graphique linéaire
-    description: Graphique linéaire pour comparer le changement d'un champ.
     select_field: Vous devez choisir un champ.
     select_collection: Vous devez sélectionner une collection.
     select_x_axis: Vous devez sélectionner un axe X.
@@ -1955,16 +1963,14 @@ panels:
     datasets: Jeux de données
     show_legend: Afficher la légende
     show_marker: Afficher l'info-bulle
-    include_dataset: Vous devez sélectionner au moins un élément.
     include_y_axis: Vous devez inclure un axe Y pour chaque jeu de données quand aucun groupe n'est spécifié.
     group_and_function: Vous devez inclure ou omettre un groupe et une fonction.
-    smooth: 'Lisse'
-    straight: 'Droit'
-    step_line: 'Pas'
+    smooth: Lisse
+    straight: Droit
+    step_line: Pas
   meter:
-    description: Compteur pour les valeurs de suivi
     name: Compteur
-    arc: Arc
+    description: Compteur pour les valeurs de suivi
     stroke_width: Largeur du trait
     select_max_value: Vous devez sélectionner une valeur maximale.
     max_greater_than_zero: La valeur doit être supérieure à 0.
@@ -1976,11 +1982,10 @@ panels:
     broad: Large
   piechart:
     name: Graphique anneau ou circulaire
-    description: Graphique circulaire montrant les ratios de groupes sur une colonne.
-    function: 'Fonction'
+    function: Fonction
     donut: Anneau
-    labels: Afficher les libellés
-    legend: Afficher la légende
+    show_labels: Afficher les libellés
+    show_legend: Afficher la légende
     right: Droite
     bottom: Bas
     monochrome: Monochrome
@@ -1990,7 +1995,11 @@ panels:
     description: Définir une valeur globale pour l'utilisation dans d'autres panneaux de filtres
     variable_key: Clé variable
   relational-variable:
+    name: Variable Relationnelle Globale
+    description: Définir une valeur globale de relation à utiliser dans les filtres d'autres panneaux
     variable_key: Clé variable
+    multiple: Multiple
+    multiple-label: Sélectionner plusieurs éléments
 triggers:
   common:
     response_body: Corps de la Réponse
@@ -2015,21 +2024,26 @@ triggers:
     description: Déclencheurs à des moments réguliers dans le temps
     cron: Intervalle
   manual:
-    name: Manuelle
+    name: Manuel
     description: Déclenchements lors d'une exécution manuelle dans la ou les collections sélectionnées
-    collection_and_item: Pages des Collections et des Articles
+    collection_and_item: Pages des collections et des éléments
     collection_only: Page de la Collection Uniquement
-    item_only: Page de l'Article Uniquement
-a_flow_uuid: La Clé primaire UUID d'un Flux...
+    item_only: Page de l'élément uniquement
+    require_selection: Sélection obligatoire
+a_flow_uuid: Choisir un flux à lancer...
 any_string_or_json: Toute chaîne de caractères ou JSON...
 item_payload_placeholder: C'est le JSON utilisé pour mettre à jour les valeurs des champs de l'élément...
 operation_variables_note: Vous pouvez accéder aux données de flux à l'aide de variables telles que **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** et **{'{'}{'{'}$accountability{'}'}{'}'}**, ou faire référence à des opérations précédentes à l'aide de **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
   condition:
     name: Condition
-    description: Acheminer un flux en fonction de la logique If / Else
+    description: Acheminer un flux en fonction d'une condition de type Si / Sinon
+  exec:
+    name: Lancer le script
+    description: Exécuter du code arbitraire pour modifier les données utiles
+    modules: 'Les **Node modules** suivants peuvent être utilisés :'
   item-create:
-    name: Créer de la donnée
+    name: Créer des données
     description: Créer des éléments dans la base de données
     payload: Données utiles
     emit_events: Émettre des événements
@@ -2065,11 +2079,13 @@ operations:
     body: Corps du mail
   notification:
     name: Envoyer la Notification
+    description: Envoyer une notification dans l'application à un ou plusieurs utilisateurs
     recipient: Utilisateur
+    recipient_placeholder: Ajouter un UUID utilisateur et appuyez sur entrée...
     message: Message
   request:
     name: Webhook / URL de requête
-    description: "Faire une requête à un URL"
+    description: "Envoyer une requête à une URL"
     url: URL
     url_placeholder: https://example.com/example
     method: Méthode
@@ -2083,8 +2099,8 @@ operations:
     description: Attendre un nombre donné de millisecondes
     milliseconds: Millisecondes
   transform:
-    name: Transformer la Charge utile
-    description: Modifier la charge utile JSON du Flux
+    name: Transformer les données utiles
+    description: Modifier les données utiles JSON du Flux
   trigger:
     name: Déclencher le Flux
     description: Transmettre ces données à un autre Flux
