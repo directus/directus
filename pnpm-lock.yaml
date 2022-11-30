@@ -69,6 +69,7 @@ importers:
       '@directus/app': workspace:*
       '@directus/drive': workspace:*
       '@directus/drive-azure': workspace:*
+      '@directus/drive-cloudinary': workspace:*
       '@directus/drive-gcs': workspace:*
       '@directus/drive-s3': workspace:*
       '@directus/extensions-sdk': workspace:*
@@ -212,6 +213,7 @@ importers:
       '@directus/app': link:../app
       '@directus/drive': link:../packages/drive
       '@directus/drive-azure': link:../packages/drive-azure
+      '@directus/drive-cloudinary': link:../packages/drive-cloudinary
       '@directus/drive-gcs': link:../packages/drive-gcs
       '@directus/drive-s3': link:../packages/drive-s3
       '@directus/extensions-sdk': link:../packages/extensions-sdk
