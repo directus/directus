@@ -17,6 +17,7 @@ import {
 } from './o2m.seed';
 import { CheckQueryFilters } from '@query/filter';
 import { findIndex } from 'lodash';
+import { requestGraphQL } from '@common/index';
 
 function createCountry(pkType: common.PrimaryKeyType) {
 	const item: Country = {
@@ -79,58 +80,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 	describe(`pkType: ${pkType}`, () => {
 		describe('GET /:collection/:id', () => {
-			describe('retrieves one country', () => {
-				it.each(vendors)('%s', async (vendor) => {
-					// Setup
-					const country = await CreateItem(vendor, {
-						collection: localCollectionCountries,
-						item: createCountry(pkType),
-					});
-
-					// Action
-					const response = await request(getUrl(vendor))
-						.get(`/items/${localCollectionCountries}/${country.id}`)
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
-
-					// Assert
-					expect(response.statusCode).toEqual(200);
-					expect(response.body.data).toMatchObject({ name: expect.any(String) });
-				});
-			});
-
-			describe('retrieves one state', () => {
-				it.each(vendors)('%s', async (vendor) => {
-					// Setup
-					const state = await CreateItem(vendor, { collection: localCollectionStates, item: createState(pkType) });
-
-					// Action
-					const response = await request(getUrl(vendor))
-						.get(`/items/${localCollectionStates}/${state.id}`)
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
-
-					// Assert
-					expect(response.statusCode).toEqual(200);
-					expect(response.body.data).toMatchObject({ name: expect.any(String) });
-				});
-			});
-
-			describe('retrieves one city', () => {
-				it.each(vendors)('%s', async (vendor) => {
-					// Setup
-					const city = await CreateItem(vendor, { collection: localCollectionCities, item: createCity(pkType) });
-
-					// Action
-					const response = await request(getUrl(vendor))
-						.get(`/items/${localCollectionCities}/${city.id}`)
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
-
-					// Assert
-					expect(response.statusCode).toEqual(200);
-					expect(response.body.data).toMatchObject({ name: expect.any(String) });
-				});
-			});
-
-			describe(`retrieves a state's country`, () => {
+			describe(`retrieves a country's states`, () => {
 				it.each(vendors)('%s', async (vendor) => {
 					// Setup
 					const insertedCountry = await CreateItem(vendor, {
@@ -143,120 +93,39 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 					// Action
 					const response = await request(getUrl(vendor))
-						.get(`/items/${localCollectionStates}/${insertedState.id}`)
+						.get(`/items/${localCollectionCountries}/${insertedCountry.id}`)
 						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+						query: {
+							[localCollectionCountries]: {
+								__args: {
+									filter: {
+										id: {
+											_eq: insertedCountry.id,
+										},
+									},
+								},
+								states: {
+									id: true,
+								},
+							},
+						},
+					});
 
 					// Assert
 					expect(response.statusCode).toEqual(200);
-					expect(response.body.data).toMatchObject({ country_id: insertedCountry.id });
-				});
-			});
+					expect(response.body.data).toMatchObject({ states: [insertedState.id] });
 
-			describe('Error handling', () => {
-				describe('returns an error when an invalid id is used', () => {
-					it.each(vendors)('%s', async (vendor) => {
-						// Action
-						const response = await request(getUrl(vendor))
-							.get(`/items/${localCollectionCountries}/invalid_id`)
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
-
-						// Assert
-						expect(response.statusCode).toBe(403);
-					});
-				});
-				describe('returns an error when an invalid table is used', () => {
-					it.each(vendors)('%s', async (vendor) => {
-						// Action
-						const response = await request(getUrl(vendor))
-							.get(`/items/invalid_table/1`)
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
-
-						// Assert
-						expect(response.status).toBe(403);
+					expect(gqlResponse.statusCode).toEqual(200);
+					expect(gqlResponse.body.data).toMatchObject({
+						[localCollectionCountries]: [{ states: [{ id: String(insertedState.id) }] }],
 					});
 				});
 			});
 		});
-		describe('PATCH /:collection/:id', () => {
-			describe(`updates one country's name with no relations`, () => {
-				it.each(vendors)('%s', async (vendor) => {
-					// Setup
-					const insertedArtist = await CreateItem(vendor, {
-						collection: localCollectionCountries,
-						item: createCountry(pkType),
-					});
-					const body = { name: 'Tommy Cash' };
 
-					// Action
-					const response = await request(getUrl(vendor))
-						.patch(`/items/${localCollectionCountries}/${insertedArtist.id}`)
-						.send(body)
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
-
-					// Assert
-					expect(response.statusCode).toEqual(200);
-					expect(response.body.data).toMatchObject({
-						id: insertedArtist.id,
-						name: 'Tommy Cash',
-					});
-				});
-			});
-		});
-		describe('DELETE /:collection/:id', () => {
-			describe('deletes an country with no relations', () => {
-				it.each(vendors)('%s', async (vendor) => {
-					// Setup
-					const insertedArtist = await CreateItem(vendor, {
-						collection: localCollectionCountries,
-						item: createCountry(pkType),
-					});
-
-					// Action
-					const response = await request(getUrl(vendor))
-						.delete(`/items/${localCollectionCountries}/${insertedArtist.id}`)
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
-
-					// Assert
-					expect(response.statusCode).toEqual(204);
-					expect(response.body.data).toBe(undefined);
-				});
-			});
-		});
 		describe('GET /:collection', () => {
-			describe('retrieves all items from country table with no relations', () => {
-				it.each(vendors)('%s', async (vendor) => {
-					// Setup
-					const countries = [];
-					const countriesCount = 50;
-					for (let i = 0; i < countriesCount; i++) {
-						countries.push(createCountry(pkType));
-					}
-					await CreateItem(vendor, { collection: localCollectionCountries, item: countries });
-
-					// Action
-					const response = await request(getUrl(vendor))
-						.get(`/items/${localCollectionCountries}`)
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
-
-					// Assert
-					expect(response.statusCode).toEqual(200);
-					expect(response.body.data.length).toBeGreaterThanOrEqual(countriesCount);
-				});
-			});
-			describe('Error handling', () => {
-				describe('returns an error when an invalid table is used', () => {
-					it.each(vendors)('%s', async (vendor) => {
-						// Action
-						const response = await request(getUrl(vendor))
-							.get(`/items/invalid_table`)
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
-
-						// Assert
-						expect(response.statusCode).toBe(403);
-					});
-				});
-			});
-
 			describe(`filters`, () => {
 				describe(`on top level`, () => {
 					it.each(vendors)('%s', async (vendor) => {
@@ -283,12 +152,50 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							})
 							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
+						const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							query: {
+								[localCollectionCountries]: {
+									__args: {
+										filter: {
+											id: {
+												_eq: insertedCountry.id,
+											},
+										},
+									},
+									id: true,
+								},
+							},
+						});
+
+						const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							query: {
+								[localCollectionCountries]: {
+									__args: {
+										filter: {
+											name: {
+												_eq: insertedCountry.name,
+											},
+										},
+									},
+									id: true,
+								},
+							},
+						});
+
 						// Assert
 						expect(response.statusCode).toEqual(200);
 						expect(response.body.data.length).toBe(1);
 						expect(response.body.data[0]).toMatchObject({ id: insertedCountry.id });
 						expect(response2.statusCode).toEqual(200);
 						expect(response.body.data).toEqual(response2.body.data);
+
+						expect(gqlResponse.statusCode).toBe(200);
+						expect(gqlResponse.body.data[localCollectionCountries].length).toBe(1);
+						expect(gqlResponse.body.data[localCollectionCountries][0]).toMatchObject({
+							id: String(insertedCountry.id),
+						});
+						expect(gqlResponse2.statusCode).toBe(200);
+						expect(gqlResponse.body.data).toEqual(gqlResponse2.body.data);
 					});
 				});
 
@@ -321,12 +228,46 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							})
 							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
+						const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							query: {
+								[localCollectionCountries]: {
+									__args: {
+										filter: {
+											states: { id: { _eq: insertedState.id } },
+										},
+									},
+									id: true,
+								},
+							},
+						});
+
+						const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							query: {
+								[localCollectionCountries]: {
+									__args: {
+										filter: {
+											states: { name: { _eq: insertedState.name } },
+										},
+									},
+									id: true,
+								},
+							},
+						});
+
 						// Assert
 						expect(response.statusCode).toEqual(200);
 						expect(response.body.data.length).toBe(1);
 						expect(response.body.data[0]).toMatchObject({ id: insertedCountry.id });
 						expect(response2.statusCode).toEqual(200);
 						expect(response.body.data).toEqual(response2.body.data);
+
+						expect(gqlResponse.statusCode).toBe(200);
+						expect(gqlResponse.body.data[localCollectionCountries].length).toBe(1);
+						expect(gqlResponse.body.data[localCollectionCountries][0]).toMatchObject({
+							id: String(insertedCountry.id),
+						});
+						expect(gqlResponse2.statusCode).toBe(200);
+						expect(gqlResponse.body.data).toEqual(gqlResponse2.body.data);
 					});
 				});
 			});
@@ -391,11 +332,49 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							})
 							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
+						const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							query: {
+								[localCollectionCountries]: {
+									__args: {
+										filter: {
+											_and: [
+												{
+													name: { _eq: 'test_country_top' },
+												},
+												{
+													states_func: { count: { _eq: 2 } },
+												},
+											],
+										},
+									},
+									name: true,
+								},
+							},
+						});
+
+						const gqlResponseTotal = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							query: {
+								[localCollectionCountries]: {
+									__args: {
+										filter: {
+											name: { _eq: 'test_country_top' },
+										},
+									},
+									name: true,
+								},
+							},
+						});
+
 						// Assert
 						expect(response.statusCode).toEqual(200);
 						expect(response.body.data.length).toEqual(1);
 						expect(responseTotal.statusCode).toEqual(200);
 						expect(responseTotal.body.data.length).toEqual(2);
+
+						expect(gqlResponse.statusCode).toEqual(200);
+						expect(gqlResponse.body.data[localCollectionCountries].length).toEqual(1);
+						expect(gqlResponseTotal.statusCode).toEqual(200);
+						expect(gqlResponseTotal.body.data[localCollectionCountries].length).toEqual(2);
 					});
 				});
 
@@ -529,11 +508,58 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							})
 							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
+						const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							query: {
+								[localCollectionCountries]: {
+									__args: {
+										filter: {
+											_and: [
+												{
+													name: { _eq: 'test_country_nested' },
+												},
+												{
+													states: {
+														cities_func: { count: { _eq: 2 } },
+													},
+												},
+												{
+													states: {
+														country_id: {
+															states_func: { count: { _eq: 2 } },
+														},
+													},
+												},
+											],
+										},
+									},
+									name: true,
+								},
+							},
+						});
+
+						const gqlResponseTotal = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							query: {
+								[localCollectionCountries]: {
+									__args: {
+										filter: {
+											name: { _eq: 'test_country_nested' },
+										},
+									},
+									name: true,
+								},
+							},
+						});
+
 						// Assert
 						expect(response.statusCode).toEqual(200);
 						expect(response.body.data.length).toEqual(1);
 						expect(responseTotal.statusCode).toEqual(200);
 						expect(responseTotal.body.data.length).toEqual(2);
+
+						expect(gqlResponse.statusCode).toEqual(200);
+						expect(gqlResponse.body.data[localCollectionCountries].length).toEqual(1);
+						expect(gqlResponseTotal.statusCode).toEqual(200);
+						expect(gqlResponseTotal.body.data[localCollectionCountries].length).toEqual(2);
 					});
 				});
 			});
@@ -573,11 +599,42 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							})
 							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
+						const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							query: {
+								[localCollectionCountries]: {
+									__args: {
+										sort: 'name',
+										filter: { name: { _starts_with: 'country-o2m-top-sort-' } },
+									},
+									id: true,
+								},
+							},
+						});
+
+						const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							query: {
+								[localCollectionCountries]: {
+									__args: {
+										sort: '-name',
+										filter: { name: { _starts_with: 'country-o2m-top-sort-' } },
+									},
+									id: true,
+								},
+							},
+						});
+
 						// Assert
 						expect(response.statusCode).toEqual(200);
 						expect(response.body.data.length).toBe(5);
 						expect(response2.statusCode).toEqual(200);
 						expect(response.body.data).toEqual(response2.body.data.reverse());
+
+						expect(gqlResponse.statusCode).toEqual(200);
+						expect(gqlResponse.body.data[localCollectionCountries].length).toBe(5);
+						expect(gqlResponse2.statusCode).toEqual(200);
+						expect(gqlResponse.body.data[localCollectionCountries]).toEqual(
+							gqlResponse2.body.data[localCollectionCountries].reverse()
+						);
 					});
 				});
 
@@ -616,9 +673,35 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							})
 							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
+						const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							query: {
+								[localCollectionCountries]: {
+									__args: {
+										sort: 'states.name',
+										filter: { name: { _starts_with: 'country-o2m-sort-' } },
+									},
+									id: true,
+								},
+							},
+						});
+
+						const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							query: {
+								[localCollectionCountries]: {
+									__args: {
+										sort: '-states.name',
+										filter: { name: { _starts_with: 'country-o2m-sort-' } },
+									},
+									id: true,
+								},
+							},
+						});
+
 						// Assert
 						expect(response.statusCode).toEqual(200);
 						expect(response2.statusCode).toEqual(200);
+						expect(gqlResponse.statusCode).toEqual(200);
+						expect(gqlResponse2.statusCode).toEqual(200);
 
 						if (vendor === 'mysql5') {
 							let lastIndex = -1;
@@ -632,11 +715,27 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									lastIndex = foundIndex;
 								}
 							}
+
+							lastIndex = -1;
+							for (const item of gqlResponse2.body.data[localCollectionCountries].reverse()) {
+								const foundIndex = findIndex(gqlResponse.body.data[localCollectionCountries], { id: item.id });
+								if (foundIndex === -1) continue;
+
+								expect(foundIndex).toBeGreaterThan(lastIndex);
+
+								if (foundIndex > lastIndex) {
+									lastIndex = foundIndex;
+								}
+							}
 							return;
 						}
 
 						expect(response.body.data.length).toBe(5);
 						expect(response.body.data).toEqual(response2.body.data.reverse());
+						expect(gqlResponse.body.data[localCollectionCountries].length).toBe(5);
+						expect(gqlResponse.body.data[localCollectionCountries]).toEqual(
+							gqlResponse2.body.data[localCollectionCountries].reverse()
+						);
 					});
 				});
 			});
@@ -679,11 +778,42 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							})
 							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
+						const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							query: {
+								[localCollectionCountries]: {
+									__args: {
+										sort: 'year(test_datetime)',
+										filter: { name: { _starts_with: 'country-o2m-top-sort-fn-' } },
+									},
+									id: true,
+								},
+							},
+						});
+
+						const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							query: {
+								[localCollectionCountries]: {
+									__args: {
+										sort: '-year(test_datetime)',
+										filter: { name: { _starts_with: 'country-o2m-top-sort-fn-' } },
+									},
+									id: true,
+								},
+							},
+						});
+
 						// Assert
 						expect(response.statusCode).toEqual(200);
 						expect(response.body.data.length).toBe(5);
 						expect(response2.statusCode).toEqual(200);
 						expect(response.body.data).toEqual(response2.body.data.reverse());
+
+						expect(gqlResponse.statusCode).toEqual(200);
+						expect(gqlResponse.body.data[localCollectionCountries].length).toBe(5);
+						expect(gqlResponse2.statusCode).toEqual(200);
+						expect(gqlResponse.body.data[localCollectionCountries]).toEqual(
+							gqlResponse2.body.data[localCollectionCountries].reverse()
+						);
 					});
 				});
 
@@ -723,9 +853,35 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							})
 							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
+						const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							query: {
+								[localCollectionCountries]: {
+									__args: {
+										sort: 'states.year(test_datetime)',
+										filter: { name: { _starts_with: 'country-o2m-sort-fn-' } },
+									},
+									id: true,
+								},
+							},
+						});
+
+						const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							query: {
+								[localCollectionCountries]: {
+									__args: {
+										sort: '-states.year(test_datetime)',
+										filter: { name: { _starts_with: 'country-o2m-sort-fn-' } },
+									},
+									id: true,
+								},
+							},
+						});
+
 						// Assert
 						expect(response.statusCode).toEqual(200);
 						expect(response2.statusCode).toEqual(200);
+						expect(gqlResponse.statusCode).toEqual(200);
+						expect(gqlResponse2.statusCode).toEqual(200);
 
 						// Oddity in MySQL5, looks to be indexing delays resulting in missing values
 						if (vendor === 'mysql5') {
@@ -740,11 +896,27 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									lastIndex = foundIndex;
 								}
 							}
+
+							lastIndex = -1;
+							for (const item of gqlResponse2.body.data[localCollectionCountries].reverse()) {
+								const foundIndex = findIndex(gqlResponse.body.data[localCollectionCountries], { id: item.id });
+								if (foundIndex === -1) continue;
+
+								expect(foundIndex).toBeGreaterThan(lastIndex);
+
+								if (foundIndex > lastIndex) {
+									lastIndex = foundIndex;
+								}
+							}
 							return;
 						}
 
 						expect(response.body.data.length).toBe(5);
 						expect(response.body.data).toEqual(response2.body.data.reverse());
+						expect(gqlResponse.body.data[localCollectionCountries].length).toBe(5);
+						expect(gqlResponse.body.data[localCollectionCountries]).toEqual(
+							gqlResponse2.body.data[localCollectionCountries].reverse()
+						);
 					});
 				});
 			});
@@ -783,128 +955,6 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 			);
 		});
 
-		describe('POST /:collection', () => {
-			describe('createOne', () => {
-				describe('creates one country', () => {
-					it.each(vendors)('%s', async (vendor) => {
-						// Setup
-						const country = createCountry(pkType);
-
-						// Action
-						const response = await request(getUrl(vendor))
-							.post(`/items/${localCollectionCountries}`)
-							.send(country)
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
-
-						// Assert
-						expect(response.statusCode).toEqual(200);
-						expect(response.body.data).toMatchObject({ name: country.name });
-					});
-				});
-			});
-			describe('createMany', () => {
-				describe('creates 5 countries', () => {
-					it.each(vendors)('%s', async (vendor) => {
-						// Setup
-						const countries = [];
-						const countriesCount = 5;
-						for (let i = 0; i < countriesCount; i++) {
-							countries.push(createCountry(pkType));
-						}
-
-						// Action
-						const response = await request(getUrl(vendor))
-							.post(`/items/${localCollectionCountries}`)
-							.send(countries)
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
-
-						// Assert
-						expect(response.statusCode).toEqual(200);
-						expect(response.body.data.length).toBe(countriesCount);
-					});
-				});
-			});
-			describe('Error handling', () => {
-				describe('returns an error when an invalid table is used', () => {
-					it.each(vendors)('%s', async (vendor) => {
-						// Setup
-						const country = createCountry(pkType);
-
-						// Action
-						const response = await request(getUrl(vendor))
-							.post(`/items/invalid_table`)
-							.send(country)
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
-
-						// Assert
-						expect(response.statusCode).toBe(403);
-					});
-				});
-			});
-		});
-
-		describe('PATCH /:collection', () => {
-			describe('updates many countries to a different name', () => {
-				it.each(vendors)('%s', async (vendor) => {
-					// Setup
-					const countries = [];
-					const countriesCount = 5;
-					for (let i = 0; i < countriesCount; i++) {
-						countries.push(createCountry(pkType));
-					}
-
-					const insertedCountries = await CreateItem(vendor, { collection: localCollectionCountries, item: countries });
-					const keys = Object.values(insertedCountries ?? []).map((item: any) => item.id);
-
-					const body = {
-						keys: keys,
-						data: { name: 'Johnny Cash' },
-					};
-
-					// Action
-					const response = await request(getUrl(vendor))
-						.patch(`/items/${localCollectionCountries}?fields=name`)
-						.send(body)
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
-
-					// Assert
-					expect(response.statusCode).toEqual(200);
-					for (let row = 0; row < response.body.data.length; row++) {
-						expect(response.body.data[row]).toMatchObject({
-							name: 'Johnny Cash',
-						});
-					}
-					expect(response.body.data.length).toBe(keys.length);
-				});
-			});
-		});
-
-		describe('DELETE /:collection', () => {
-			describe('deletes many countries with no relations', () => {
-				it.each(vendors)('%s', async (vendor) => {
-					// Setup
-					const countries = [];
-					const countriesCount = 10;
-					for (let i = 0; i < countriesCount; i++) {
-						countries.push(createCountry(pkType));
-					}
-
-					const insertedCountries = await CreateItem(vendor, { collection: localCollectionCountries, item: countries });
-					const keys = Object.values(insertedCountries ?? []).map((item: any) => item.id);
-
-					// Action
-					const response = await request(getUrl(vendor))
-						.delete(`/items/${localCollectionCountries}`)
-						.send(keys)
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
-
-					// Assert
-					expect(response.statusCode).toEqual(204);
-					expect(response.body.data).toBe(undefined);
-				});
-			});
-		});
-
 		describe('Returns no duplicated results from joins', () => {
 			it.each(vendors)('%s', async (vendor) => {
 				// Setup
@@ -931,7 +981,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				});
 
 				// Action
-				const o2mResponse = await request(getUrl(vendor))
+				const responseO2m = await request(getUrl(vendor))
 					.get(`/items/${localCollectionCountries}`)
 					.query({
 						filter: JSON.stringify({
@@ -951,7 +1001,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					})
 					.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
-				const m2oResponse = await request(getUrl(vendor))
+				const responseM2o = await request(getUrl(vendor))
 					.get(`/items/${localCollectionStates}`)
 					.query({
 						filter: JSON.stringify({
@@ -971,11 +1021,64 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					})
 					.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
+				const gqlResponseO2m = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+					query: {
+						[localCollectionCountries]: {
+							__args: {
+								filter: {
+									_and: [
+										{
+											name: { _eq: 'test_country_duplicates' },
+										},
+										{
+											states: {
+												country_id: {
+													id: { _nnull: true },
+												},
+											},
+										},
+									],
+								},
+							},
+							id: true,
+						},
+					},
+				});
+
+				const gqlResponseM2o = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+					query: {
+						[localCollectionStates]: {
+							__args: {
+								filter: {
+									_and: [
+										{
+											name: { _starts_with: 'test_state_duplicates' },
+										},
+										{
+											country_id: {
+												states: {
+													id: { _nnull: true },
+												},
+											},
+										},
+									],
+								},
+							},
+							id: true,
+						},
+					},
+				});
+
 				// Assert
-				expect(o2mResponse.statusCode).toEqual(200);
-				expect(o2mResponse.body.data.length).toEqual(1);
-				expect(m2oResponse.statusCode).toEqual(200);
-				expect(m2oResponse.body.data.length).toEqual(2);
+				expect(responseO2m.statusCode).toEqual(200);
+				expect(responseO2m.body.data.length).toEqual(1);
+				expect(responseM2o.statusCode).toEqual(200);
+				expect(responseM2o.body.data.length).toEqual(2);
+
+				expect(gqlResponseO2m.statusCode).toEqual(200);
+				expect(gqlResponseO2m.body.data[localCollectionCountries].length).toEqual(1);
+				expect(gqlResponseM2o.statusCode).toEqual(200);
+				expect(gqlResponseM2o.body.data[localCollectionStates].length).toEqual(2);
 			});
 		});
 	});
