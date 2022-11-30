@@ -27,6 +27,8 @@ test.each([
 	{ utc: '2023-01-11T01:23:45.678Z', expected: '20230111-12345' },
 	{ utc: '2023-11-01T01:23:45.678Z', expected: '20231101-12345' },
 	{ utc: '2023-11-11T12:34:56.789Z', expected: '20231111-123456' },
+	{ utc: '2023-06-01T01:23:45.678Z', expected: '20230601-12345' },
+	{ utc: '2023-06-11T12:34:56.789Z', expected: '20230611-123456' },
 ])('should format $utc into "$expected"', ({ utc, expected }) => {
 	const nowUTC = getUtcDateForString(utc);
 
