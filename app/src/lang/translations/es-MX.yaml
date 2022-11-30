@@ -275,13 +275,14 @@ fields_group: Grupo de campos
 no_collections_found: No se encontraron colecciones.
 new_data_alert: 'Se creará lo siguiente dentro de su modelo de datos:'
 search_collection: Buscar colección...
+search_field: Campo Buscado...
 new_field: 'Nuevo campo'
 new_collection: 'Nueva colección'
 add_m2o_to_collection: 'Añadir M2O a "{collection}"'
 add_o2m_to_collection: 'Añadir O2M a "{collection}"'
 add_m2m_to_collection: 'Añadir M2M a "{collection}"'
 choose_a_type: Elige un tipo...
-determined_by_relationship: Determinado por la Relación
+determined_by_relationship: Determinado por la relación
 add_note: Añadir una nota útil para los usuarios...
 add_link: Añadir enlace
 custom_link: Enlace personalizado
@@ -289,10 +290,10 @@ default_value: Valor por defecto
 standard_field: Campo estándar
 single_file: Archivo único
 multiple_files: Múltiples archivos
-m2o_relationship: Relación Muchos-a-Uno
-o2m_relationship: Relación Uno-A-Muchos
-m2m_relationship: Relación Muchos-A-Muchos
-m2a_relationship: Relación Muchos-A-Cualquiera
+m2o_relationship: Relación Muchos a Uno
+o2m_relationship: Relación Uno a Muchos
+m2m_relationship: Relacion Muchos a Muchos
+m2a_relationship: Relación Muchos a Cualquiera
 invalid_item: Elemento inválido
 next: Siguiente
 field_name: Nombre del campo
@@ -304,8 +305,8 @@ note: Nota
 enter_a_value: Ingresa un valor...
 enter_a_placeholder: Ingresa un placeholder...
 length: Longitud
-soft_length: Límite suave
-precision_scale: Precisión y Escala
+soft_length: Limite flexible
+precision_scale: Escala de precisión
 readonly: Sólo lectura
 unique: Único
 updated_on: Actualizado el
@@ -326,10 +327,10 @@ paste_raw_value_fail: Error al pegar
 view_raw_value: Ver valor raw
 edit_raw_value: Editar valor raw
 enter_raw_value: Ingresa un valor raw...
-clear_value: Limpiar valor
+clear_value: Valor limpio
 clear_changes: Borrar Cambios
 clear_items: Limpiar elementos
-reset_to_default: Restablecer ajustes predeterminados
+reset_to_default: Restablecer al valor predeterminado
 undo_changes: Deshacer cambios
 notifications: Notificaciones
 show_all_activity: Mostrar toda la actividad
@@ -338,11 +339,11 @@ page_not_found_body: Parece que la página que está buscando no existe.
 confirm_revert: Confirmar reversión
 confirm_revert_body: Esto revertirá el elemento al estado seleccionado.
 display: Mostrar
-settings_update_success: Ajustes actualizados
+settings_update_success: Configuración actualizada
 title: Título
 revision_delta_created: Creado
 revision_delta_created_externally: Creado externamente
-revision_delta_updated: '1 Campo Actualizado | {count} Campos Actualizados'
+revision_delta_updated: 'Campo Actualizado | {count} Campos Actualizados'
 revision_delta_deleted: Eliminado
 revision_delta_reverted: Revertido
 revision_delta_update_message: Este campo ha sido actualizado, pero su valor está siendo ocultado por razones de seguridad.
@@ -366,7 +367,7 @@ related_collections: Colecciones Relacionadas
 translations_collection: Traducción de Colección
 languages_collection: Colección de Idiomas
 import_data_input_placeholder: CSV o JSON...
-import_data_button: Comenzar importación
+import_data_button: Iniciar importación
 import_data_indeterminate: Importando datos...
 import_data_success: Datos importados correctamente desde {filename}
 import_data_error: La estructura de datos de este archivo no coincide con la colección.
@@ -395,7 +396,7 @@ functions:
   month: Mes
   week: Semana
   day: Día
-  weekday: Día laborable
+  weekday: Día de la semana
   hour: Hora
   minute: Minuto
   second: Segundo
@@ -427,7 +428,7 @@ months:
   november: Noviembre
   december: Diciembre
 drag_mode: Modo de arrastre
-cancel_crop: No Cortar
+cancel_crop: Cancelar Recorte
 original: Original
 url: URL
 import_label: Importar
@@ -445,7 +446,7 @@ download: Descargar
 open: Abrir
 open_in_new_window: Abrir en nueva ventana
 open_folder: Abrir carpeta "{folder}"
-foreground_color: Color de Letra
+foreground_color: Color principal
 background_color: Color de fondo
 upload_from_device: Subir archivo desde dispositivo
 choose_from_library: Elegir archivo de la biblioteca
@@ -453,10 +454,10 @@ import_from_url: Importar Archivo desde URL
 replace_from_device: Reemplazar Archivo desde Dispositivo
 replace_from_library: Reemplazar Archivo desde Biblioteca
 replace_from_url: Reemplazar Archivo desde URL
-no_file_selected: Sin Archivos Seleccionados
+no_file_selected: No hay ningún archivo seleccionado
 download_file: Descargar archivo
 open_file_in_tab: Abrir archivo en nueva pestaña
-start_export: Iniciar exportación
+start_export: Comenzar exportación
 not_available_for_local_downloads: No disponible para descargas locales
 exporting_all_items_in_collection: Exportando los {total} elementos dentro de {collection}.
 exporting_limited_items_in_collection: Exportando {limit} de {total} elementos dentro de {collection}.
@@ -466,7 +467,7 @@ exporting_batch_hint: Esta exportación se procesará por lotes, y una vez compl
 exporting_batch_hint_forced: Debido al gran número de artículos, esta exportación debe ser procesada en lotes, y una vez completado, el archivo {format} se guardará en la Biblioteca de Archivos.
 collection_key: Llave de Colección
 name: Nombre
-primary_key_field: Campo Llave Primaria
+primary_key_field: Campo de Llave Primaria
 type: Tipo
 creating_new_collection: Crear Nueva Colección
 created_by: Creado por
@@ -746,7 +747,7 @@ my_files: Mis Archivos
 recent_files: Archivos Recientes
 create_folder: Crear Directorio
 edit_folder: Editar Carpeta
-folder_name: Nombre del Directorio...
+folder_name: Nombre de la carpeta...
 folder_key: Clave de carpeta...
 add_file: Añadir archivo
 replace_file: Reemplazar Archivo
@@ -825,7 +826,7 @@ dashboard: Tablero
 panel: Panel
 panel_options: Opciones del Panel
 panel_header: Encabezado del panel
-panel_name_placeholder: Nombre este panel...
+panel_name_placeholder: Nombrar este panel...
 panel_note_placeholder: Detalles opcionales sobre este panel...
 panel_delete_confirm: '¿Estás seguro que quieres eliminar este panel? Esta acción no se puede deshacer.'
 dashboard_delete_confirm: '¿Estás seguro que quieres eliminar este tablero? Esta acción no se puede deshacer.'
@@ -882,7 +883,7 @@ wysiwyg_options:
   alignleft: Alinear a la Izquierda
   alignnone: No Alinear
   alignright: Alinear a la Derecha
-  forecolor: Color de Letra
+  forecolor: Color principal
   backcolor: Color de fondo
   bold: Negrita
   italic: Cursiva
@@ -1170,7 +1171,7 @@ fields:
     max_uses: Usos máximos
     times_used: Veces usado
   directus_fields:
-    collection: Nombre de Colección
+    collection: Nombre de la colección
     icon: Ícono de colección
     note: Nota
     hidden: Oculto
@@ -1245,7 +1246,7 @@ field_options:
     language: Idioma
     translation: Traducción
     translation_placeholder: Ingresa una traducción...
-    collection_name: Nombre de Colección
+    collection_name: Nombre de la colección
     singular_unit: Unidad Singular
     plural_unit: Unidad plural
     archive_divider: Archivar

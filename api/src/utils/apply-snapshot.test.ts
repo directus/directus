@@ -103,12 +103,8 @@ describe('applySnapshot', () => {
 			// Stop call to db later on in apply-snapshot
 			vi.spyOn(getSchema, 'getSchema').mockReturnValue(Promise.resolve(snapshotApplyTestSchema));
 			// We are not actually testing that createOne works, just that is is called correctly
-			const createOneCollectionSpy = vi
-				.spyOn(CollectionsService.prototype, 'createOne')
-				.mockImplementation(vi.fn().mockReturnValue([]));
-			const createFieldSpy = vi
-				.spyOn(FieldsService.prototype, 'createField')
-				.mockImplementation(vi.fn().mockReturnValue([]));
+			const createOneCollectionSpy = vi.spyOn(CollectionsService.prototype, 'createOne').mockResolvedValue('test');
+			const createFieldSpy = vi.spyOn(FieldsService.prototype, 'createField').mockResolvedValue();
 
 			await applySnapshot(snapshotCreateCollectionNotNested, {
 				database: db,
@@ -254,12 +250,8 @@ describe('applySnapshot', () => {
 			// Stop call to db later on in apply-snapshot
 			vi.spyOn(getSchema, 'getSchema').mockReturnValue(Promise.resolve(snapshotApplyTestSchema));
 			// We are not actually testing that createOne works, just that is is called correctly
-			const createOneCollectionSpy = vi
-				.spyOn(CollectionsService.prototype, 'createOne')
-				.mockImplementation(vi.fn().mockReturnValue([]));
-			const createFieldSpy = vi
-				.spyOn(FieldsService.prototype, 'createField')
-				.mockImplementation(vi.fn().mockReturnValue([]));
+			const createOneCollectionSpy = vi.spyOn(CollectionsService.prototype, 'createOne').mockResolvedValue('test');
+			const createFieldSpy = vi.spyOn(FieldsService.prototype, 'createField').mockResolvedValue();
 
 			await applySnapshot(snapshotCreateCollection, {
 				database: db,
@@ -290,9 +282,7 @@ describe('applySnapshot', () => {
 			// Stop call to db later on in apply-snapshot
 			vi.spyOn(getSchema, 'getSchema').mockReturnValue(Promise.resolve(snapshotApplyTestSchema));
 			// We are not actually testing that deleteOne works, just that is is called correctly
-			const deleteOneCollectionSpy = vi
-				.spyOn(CollectionsService.prototype, 'deleteOne')
-				.mockImplementation(vi.fn().mockReturnValue([]));
+			const deleteOneCollectionSpy = vi.spyOn(CollectionsService.prototype, 'deleteOne').mockResolvedValue('test');
 
 			await applySnapshot(snapshotToApply, {
 				database: db,
