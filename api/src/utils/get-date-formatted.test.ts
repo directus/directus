@@ -21,7 +21,6 @@ function getUtcDateForString(date: string) {
 	return nowUTC;
 }
 
-// currently only uses January and November dates to account for daylight saving
 test.each([
 	{ utc: '2023-01-01T01:23:45.678Z', expected: '20230101-12345' },
 	{ utc: '2023-01-11T01:23:45.678Z', expected: '20230111-12345' },
