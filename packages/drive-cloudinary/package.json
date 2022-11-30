@@ -1,0 +1,44 @@
+{
+	"name": "@directus/drive-cloudinary",
+	"version": "9.21.2",
+	"description": "Cloudinary driver for @directus/drive",
+	"homepage": "https://directus.io",
+	"bugs": {
+		"url": "https://github.com/directus/directus/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus/directus.git",
+		"directory": "packages/drive-s3"
+	},
+	"funding": "https://github.com/directus/directus?sponsor=1",
+	"license": "GPL-3.0-only",
+	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
+	"exports": {
+		".": "./dist/index.js",
+		"./*": "./dist/*.js",
+		"./package.json": "./package.json"
+	},
+	"main": "dist/index.js",
+	"files": [
+		"dist",
+		"!**/*.test.js",
+		"!**/__*__/"
+	],
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"dependencies": {
+		"@directus/drive": "workspace:*",
+		"cloudinary": "1.32.0"
+	},
+	"devDependencies": {
+		"@types/node": "18.11.10",
+		"@vitest/coverage-c8": "0.25.3",
+		"typescript": "4.9.3",
+		"vitest": "0.25.3"
+	},
+	"publishConfig": {
+		"access": "public"
+	}
+}
