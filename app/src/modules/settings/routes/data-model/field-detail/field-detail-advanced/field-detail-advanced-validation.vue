@@ -14,7 +14,8 @@
 
 		<div class="field full">
 			<div class="label type-label">{{ t('custom_validation_message') }}</div>
-			<interface-system-input-translated-string :value="validationMessage" @input="validationMessage = $event" />
+			<v-skeleton-loader v-if="loading" />
+			<interface-system-input-translated-string v-else :value="validationMessage" @input="validationMessage = $event" />
 		</div>
 	</div>
 </template>
@@ -26,7 +27,7 @@ import { syncFieldDetailStoreProperty, useFieldDetailStore } from '../store';
 
 const fieldDetailStore = useFieldDetailStore();
 
-const { collection, field } = storeToRefs(fieldDetailStore);
+const { loading, collection, field } = storeToRefs(fieldDetailStore);
 
 const { t } = useI18n();
 
