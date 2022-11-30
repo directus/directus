@@ -1,7 +1,6 @@
 import * as fse from 'fs-extra';
-//import { promises as fs } from 'fs';
 import { dirname, join, resolve, relative, sep } from 'path';
-import Storage from './Storage';
+import { Storage } from './Storage';
 import { isReadableStream, pipeline } from './utils';
 import { FileNotFound, UnknownException, PermissionMissing } from './exceptions';
 import {

@@ -11,7 +11,7 @@ import {
 	Range,
 } from './types';
 
-export default abstract class Storage {
+export abstract class Storage {
 	/**
 	 * Appends content to a file.
 	 *

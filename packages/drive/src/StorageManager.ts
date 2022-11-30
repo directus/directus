@@ -1,5 +1,5 @@
 import { LocalFileSystemStorage } from './LocalFileSystemStorage';
-import Storage from './Storage';
+import { Storage } from './Storage';
 import { InvalidConfig, DriverNotSupported } from './exceptions';
 import { StorageManagerConfig, StorageManagerDiskConfig, StorageManagerSingleDiskConfig } from './types';
 
@@ -7,7 +7,7 @@ interface StorageConstructor<T extends Storage = Storage> {
 	new (...args: any[]): T;
 }
 
-export default class StorageManager {
+export class StorageManager {
 	/**
 	 * Default disk.
 	 */

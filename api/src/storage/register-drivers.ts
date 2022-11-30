@@ -1,6 +1,6 @@
-import type { StorageManager, Storage } from '@directus/drive';
-import { getStorageDriver } from './get-storage-driver';
+import type { Storage, StorageManager } from '@directus/drive';
 import { getEnv } from '../env';
+import { getStorageDriver } from './get-storage-driver';
 
 export const registerDrivers = (storage: StorageManager) => {
 	const env = getEnv();

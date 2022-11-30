@@ -3,16 +3,18 @@ import { validateEnv } from '../utils/validate-env';
 import { getStorageConfig } from './get-storage-config';
 import { registerDrivers } from './register-drivers';
 
-export let _storage: StorageManager;
+export const _cache: { _storage: StorageManager | null } = {
+	_storage: null,
+};
 
 export const getStorage = async () => {
-	if (_storage) return _storage;
+	if (_cache._storage) return _cache._storage;
 
 	validateEnv(['STORAGE_LOCATIONS']);
 
-	_storage = new StorageManager(getStorageConfig());
+	_cache._storage = new StorageManager(getStorageConfig());
 
-	registerDrivers(_storage);
+	registerDrivers(_cache._storage);
 
-	return _storage;
+	return _cache._storage;
 };

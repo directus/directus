@@ -1,8 +1,8 @@
-import type { StorageManager, LocalFileSystemStorage } from '@directus/drive';
-import { expect, test, vi, afterEach } from 'vitest';
-import { registerDrivers } from './register-drivers';
+import type { LocalFileSystemStorage, StorageManager } from '@directus/drive';
+import { afterEach, expect, test, vi } from 'vitest';
 import { getEnv } from '../env';
 import { getStorageDriver } from './get-storage-driver';
+import { registerDrivers } from './register-drivers';
 
 vi.mock('./get-storage-driver');
 vi.mock('../env');
