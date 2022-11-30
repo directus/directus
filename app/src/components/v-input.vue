@@ -62,9 +62,10 @@ export default {
 </script>
 
 <script lang="ts" setup>
-import { computed, ref, useAttrs } from 'vue';
-import { omit } from 'lodash';
+import { keyMap } from '@/composables/use-shortcut';
 import slugify from '@sindresorhus/slugify';
+import { omit } from 'lodash';
+import { computed, ref, useAttrs } from 'vue';
 
 interface Props {
 	/** Autofocusses the input on render */
@@ -170,14 +171,9 @@ const isStepDownAllowed = computed(() => {
 	return props.disabled === false && (props.min === undefined || parseInt(String(props.modelValue), 10) > props.min);
 });
 
-const metaKeyMap: Record<string, string> = {
-	Control: 'meta',
-	Command: 'meta',
-};
-
 function processValue(event: KeyboardEvent) {
 	if (!event.key) return;
-	const key = event.key in metaKeyMap ? metaKeyMap[event.key] : event.key.toLowerCase();
+	const key = event.key in keyMap ? keyMap[event.key] : event.key.toLowerCase();
 	const systemKeys = ['meta', 'shift', 'alt', 'backspace', 'delete', 'tab'];
 	const value = (event.target as HTMLInputElement).value;
 
