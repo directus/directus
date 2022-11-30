@@ -7,6 +7,8 @@ export const keyMap: Record<string, string> = {
 	Command: 'meta',
 };
 
+export const systemKeys = ['meta', 'shift', 'alt', 'backspace', 'delete', 'tab'];
+
 const keysdown: Set<string> = new Set([]);
 const handlers: Record<string, ShortcutHandler[]> = {};
 

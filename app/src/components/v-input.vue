@@ -62,7 +62,7 @@ export default {
 </script>
 
 <script lang="ts" setup>
-import { keyMap } from '@/composables/use-shortcut';
+import { keyMap, systemKeys } from '@/composables/use-shortcut';
 import slugify from '@sindresorhus/slugify';
 import { omit } from 'lodash';
 import { computed, ref, useAttrs } from 'vue';
@@ -174,7 +174,6 @@ const isStepDownAllowed = computed(() => {
 function processValue(event: KeyboardEvent) {
 	if (!event.key) return;
 	const key = event.key in keyMap ? keyMap[event.key] : event.key.toLowerCase();
-	const systemKeys = ['meta', 'shift', 'alt', 'backspace', 'delete', 'tab'];
 	const value = (event.target as HTMLInputElement).value;
 
 	if (props.slug === true) {
