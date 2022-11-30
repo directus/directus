@@ -3,6 +3,10 @@ import { toArray } from '@directus/shared/utils';
 import { getEnv } from '../env';
 import { getConfigFromEnv } from '../utils/get-config-from-env';
 
+/**
+ * Transforms the storage configuration in the environment to a @directus/drive compatible
+ * configuration object
+ */
 export const getStorageConfig = () => {
 	const env = getEnv();
 
