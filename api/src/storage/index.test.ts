@@ -1,8 +1,8 @@
 import { StorageManager } from '@directus/drive';
-import { test, expect, vi, afterEach } from 'vitest';
-import { getStorage, _cache } from './index';
+import { afterEach, expect, test, vi } from 'vitest';
 import { validateEnv } from '../utils/validate-env';
 import { getStorageConfig } from './get-storage-config';
+import { getStorage, _cache } from './index';
 import { registerDrivers } from './register-drivers';
 
 vi.mock('@directus/drive');
