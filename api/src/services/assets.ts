@@ -11,7 +11,7 @@ import getDatabase from '../database';
 import env from '../env';
 import { ForbiddenException, IllegalAssetTransformation, RangeNotSatisfiableException } from '../exceptions';
 import logger from '../logger';
-import storage from '../storage';
+import { getStorage } from '../storage';
 import { AbstractServiceOptions, File, Transformation, TransformationParams, TransformationPreset } from '../types';
 import * as TransformationUtils from '../utils/transformations';
 import { AuthorizationService } from './authorization';
@@ -38,6 +38,8 @@ export class AssetsService {
 		transformation: TransformationParams | TransformationPreset,
 		range?: Range
 	): Promise<{ stream: NodeJS.ReadableStream; file: any; stat: StatResponse }> {
+		const storage = await getStorage();
+
 		const publicSettings = await this.knex
 			.select('project_logo', 'public_background', 'public_foreground')
 			.from('directus_settings')

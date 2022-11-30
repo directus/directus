@@ -12,7 +12,7 @@ import emitter from '../emitter';
 import env from '../env';
 import { ForbiddenException, InvalidPayloadException, ServiceUnavailableException } from '../exceptions';
 import logger from '../logger';
-import storage from '../storage';
+import { getStorage } from '../storage';
 import { AbstractServiceOptions, File, PrimaryKey, MutationOptions, Metadata } from '../types';
 import { toArray } from '@directus/shared/utils';
 import { ItemsService } from './items';
@@ -36,6 +36,8 @@ export class FilesService extends ItemsService {
 		primaryKey?: PrimaryKey,
 		opts?: MutationOptions
 	): Promise<PrimaryKey> {
+		const storage = await getStorage();
+
 		const payload = clone(data);
 
 		if ('folder' in payload === false) {

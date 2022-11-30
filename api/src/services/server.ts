@@ -10,7 +10,7 @@ import getDatabase, { hasDatabaseConnection } from '../database';
 import env from '../env';
 import logger from '../logger';
 import { rateLimiter } from '../middleware/rate-limiter';
-import storage from '../storage';
+import { getStorage } from '../storage';
 import { AbstractServiceOptions } from '../types';
 import { Accountability, SchemaOverview } from '@directus/shared/types';
 import { toArray } from '@directus/shared/utils';
@@ -285,6 +285,8 @@ export class ServerService {
 		}
 
 		async function testStorage(): Promise<Record<string, HealthCheck[]>> {
+			const storage = await getStorage();
+
 			const checks: Record<string, HealthCheck[]> = {};
 
 			for (const location of toArray(env.STORAGE_LOCATIONS)) {
