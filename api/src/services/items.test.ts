@@ -84,7 +84,7 @@ describe('Integration Tests', () => {
 		);
 
 		it(`the returned UUID primary key for MS SQL should be uppercase`, async () => {
-			vi.mocked(getDatabaseClient).mockReturnValue('mssql');
+			vi.mocked(getDatabaseClient).mockReturnValueOnce('mssql');
 
 			const table = schemas.system.tables[0];
 
