@@ -1,6 +1,6 @@
-import { promisify } from 'util';
 import { pipeline as nodePipeline } from 'stream';
-import { Storage } from './Storage';
+import { promisify } from 'util';
+import { Storage } from './types';
 
 /**
  * Returns a boolean indication if stream param

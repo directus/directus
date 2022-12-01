@@ -2,6 +2,18 @@ import { LocalFileSystemStorageConfig } from './LocalFileSystemStorage';
 
 export type { LocalFileSystemStorageConfig };
 
+export interface Storage {
+	copy(src: string, dest: string): Promise<Response>;
+	delete(location: string): Promise<DeleteResponse>;
+	get(location: string, encoding?: string): Promise<ContentResponse<string>>;
+	getBuffer(location: string): Promise<ContentResponse<Buffer>>;
+	getStream(location: string, range?: Range): NodeJS.ReadableStream;
+	getStat(_location: string): Promise<StatResponse>;
+	move(_src: string, _dest: string): Promise<Response>;
+	put(_location: string, _content: Buffer | NodeJS.ReadableStream | string, _type?: string): Promise<Response>;
+	flatList(_prefix?: string): AsyncIterable<FileListResponse>;
+}
+
 export type StorageManagerSingleDiskConfig =
 	| {
 			driver: 'local';
