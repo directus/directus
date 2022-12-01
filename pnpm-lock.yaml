@@ -77,6 +77,8 @@ importers:
       '@directus/schema': workspace:*
       '@directus/shared': workspace:*
       '@directus/specs': workspace:*
+      '@directus/storage': workspace:*
+      '@directus/storage-driver-local': workspace:*
       '@godaddy/terminus': 4.11.2
       '@keyv/redis': 2.5.3
       '@rollup/plugin-alias': 4.0.2
@@ -221,6 +223,8 @@ importers:
       '@directus/schema': link:../packages/schema
       '@directus/shared': link:../packages/shared
       '@directus/specs': link:../packages/specs
+      '@directus/storage': link:../packages/storage
+      '@directus/storage-driver-local': link:../packages/storage-driver-local
       '@godaddy/terminus': 4.11.2
       '@rollup/plugin-alias': 4.0.2_rollup@3.3.0
       '@rollup/plugin-virtual': 3.0.1_rollup@3.3.0
@@ -844,6 +848,19 @@ importers:
       '@vitest/coverage-c8': 0.25.3
       typescript: 4.9.3
       vitest: 0.25.3
+    devDependencies:
+      '@vitest/coverage-c8': 0.25.3
+      typescript: 4.9.3
+      vitest: 0.25.3
+
+  packages/storage-driver-local:
+    specifiers:
+      '@directus/storage': workspace:*
+      '@vitest/coverage-c8': 0.25.3
+      typescript: 4.9.3
+      vitest: 0.25.3
+    dependencies:
+      '@directus/storage': link:../storage
     devDependencies:
       '@vitest/coverage-c8': 0.25.3
       typescript: 4.9.3

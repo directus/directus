@@ -1,7 +1,7 @@
 import type { Dir, WriteStream } from 'node:fs';
 import { createReadStream, createWriteStream } from 'node:fs';
 import { access, copyFile, mkdir, opendir, readFile, rename, stat, unlink, writeFile } from 'node:fs/promises';
-import { dirname, join, resolve, sep } from 'node:path';
+import { dirname, join, relative, resolve, sep } from 'node:path';
 import { Readable } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
 import { afterEach, describe, expect, test, vi } from 'vitest';
@@ -340,7 +340,7 @@ describe('#listGenerator', () => {
 		});
 	});
 
-	test('Returns full filepath string if path is file', async () => {
+	test('Returns filepath string relative from configured root if path is file', async () => {
 		const driver = new DriverLocal({ root: '/' });
 
 		vi.mocked(opendir).mockResolvedValue(
@@ -351,6 +351,7 @@ describe('#listGenerator', () => {
 
 		vi.mocked(dirname).mockReturnValueOnce('/root/');
 		vi.mocked(join).mockReturnValueOnce('/root/test.jpg');
+		vi.mocked(relative).mockReturnValueOnce('./test.jpg');
 
 		const iterator = driver['listGenerator']('/root/');
 
@@ -360,7 +361,7 @@ describe('#listGenerator', () => {
 			output.push(filename);
 		}
 
-		expect(output).toStrictEqual(['/root/test.jpg']);
+		expect(output).toStrictEqual(['./test.jpg']);
 	});
 
 	test('Recursively calls itself to traverse directories', async () => {
@@ -381,6 +382,7 @@ describe('#listGenerator', () => {
 
 		vi.mocked(dirname).mockReturnValue('/root/');
 		vi.mocked(join).mockReturnValue('/root/test.jpg');
+		vi.mocked(relative).mockReturnValueOnce('./test.jpg');
 
 		const iterator = driver['listGenerator']('/root/');
 
@@ -390,6 +392,6 @@ describe('#listGenerator', () => {
 			output.push(filename);
 		}
 
-		expect(output).toStrictEqual(['/root/test.jpg']);
+		expect(output).toStrictEqual(['./test.jpg']);
 	});
 });

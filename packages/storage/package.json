@@ -4,8 +4,10 @@
 	"type": "module",
 	"scripts": {
 		"build": "tsc --build",
-		"test": "vitest",
-		"coverage": "vitest run --coverage"
+		"dev": "tsc --watch",
+		"test": "vitest run",
+		"test:watch": "vitest",
+		"test:coverage": "vitest run --coverage"
 	},
 	"description": "Object storage abstraction layer for Directus",
 	"repository": {

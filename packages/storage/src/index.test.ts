@@ -1,11 +1,6 @@
 import { describe, expect, test, vi } from 'vitest';
 import { StorageManager } from './index.js';
 
-test('Initializes', () => {
-	const manager = new StorageManager();
-	expect(manager).toBeInstanceOf(StorageManager);
-});
-
 describe('#registerDriver', () => {
 	test('Saves registered drivers locally', () => {
 		const manager = new StorageManager();

@@ -53,9 +53,9 @@ export class FilesService extends ItemsService {
 
 			// If the file you're uploading already exists, we'll consider this upload a replace. In that case, we'll
 			// delete the previously saved file and thumbnails to ensure they're generated fresh
-			const disk = storage.disk(payload.storage);
+			const disk = storage.location(payload.storage);
 
-			for await (const file of disk.flatList(String(primaryKey))) {
+			for await (const file of disk.list(String(primaryKey))) {
 				await disk.delete(file.path);
 			}
 		} else {
@@ -72,19 +72,19 @@ export class FilesService extends ItemsService {
 		}
 
 		try {
-			await storage.disk(data.storage).put(payload.filename_disk, stream, payload.type);
+			await storage.location(data.storage).put(payload.filename_disk, stream, payload.type);
 		} catch (err: any) {
 			logger.warn(`Couldn't save file ${payload.filename_disk}`);
 			logger.warn(err);
 			throw new ServiceUnavailableException(`Couldn't save file ${payload.filename_disk}`, { service: 'files' });
 		}
 
-		const { size } = await storage.disk(data.storage).getStat(payload.filename_disk);
+		const { size } = await storage.location(data.storage).getStat(payload.filename_disk);
 		payload.filesize = size;
 
 		if (['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/tiff'].includes(payload.type)) {
-			const buffer = await storage.disk(data.storage).getBuffer(payload.filename_disk);
-			const { height, width, description, title, tags, metadata } = await this.getMetadata(buffer.content);
+			const buffer = await storage.location(data.storage).getBuffer(payload.filename_disk);
+			const { height, width, description, title, tags, metadata } = await this.getMetadata(buffer);
 
 			payload.height ??= height;
 			payload.width ??= width;
@@ -305,10 +305,10 @@ export class FilesService extends ItemsService {
 		await super.deleteMany(keys);
 
 		for (const file of files) {
-			const disk = storage.disk(file.storage);
+			const disk = storage.location(file.storage);
 
 			// Delete file + thumbnails
-			for await (const { path } of disk.flatList(file.id)) {
+			for await (const path of disk.list(file.id)) {
 				await disk.delete(path);
 			}
 		}

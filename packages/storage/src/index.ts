@@ -29,15 +29,10 @@ export class StorageManager {
 	}
 }
 
-type RangeStart = {
-	start: number;
+export type Range = {
+	start?: number;
+	end?: number;
 };
-
-type RangeEnd = {
-	end: number;
-};
-
-export type Range = RangeStart | RangeEnd | (RangeStart & RangeEnd);
 
 export type Stat = {
 	size: number;
@@ -51,11 +46,11 @@ export declare class Driver {
 	getBuffer(filepath: string): Promise<Buffer>;
 	getStat(filepath: string): Promise<Stat>;
 	exists(filepath: string): Promise<boolean>;
-	put(filepath: string, content: string | Buffer | NodeJS.ReadableStream): Promise<void>;
-	delete(filepath: string): Promise<void>;
 	move(src: string, dest: string): Promise<void>;
 	copy(src: string, dest: string): Promise<void>;
-	flatList(prefix?: string): AsyncIterable<string>;
+	put(filepath: string, content: string | Buffer | NodeJS.ReadableStream): Promise<void>;
+	delete(filepath: string): Promise<void>;
+	list(prefix?: string): AsyncIterable<string>;
 }
 
 export type DriverConfig = {

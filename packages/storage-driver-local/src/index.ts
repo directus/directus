@@ -1,7 +1,7 @@
 import type { Driver, Range } from '@directus/storage';
 import { createReadStream, createWriteStream } from 'node:fs';
 import { access, copyFile, mkdir, opendir, readFile, rename, stat, unlink, writeFile } from 'node:fs/promises';
-import { dirname, join, resolve, sep } from 'node:path';
+import { dirname, join, relative, resolve, sep } from 'node:path';
 import { Readable } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
 
@@ -111,7 +111,7 @@ export class DriverLocal implements Driver {
 			if (fileName.toLowerCase().startsWith(prefix.toLowerCase()) === false) continue;
 
 			if (file.isFile()) {
-				yield fileName;
+				yield relative(this.root, fileName);
 			}
 
 			if (file.isDirectory()) {

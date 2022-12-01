@@ -290,7 +290,7 @@ export class ServerService {
 			const checks: Record<string, HealthCheck[]> = {};
 
 			for (const location of toArray(env.STORAGE_LOCATIONS)) {
-				const disk = storage.disk(location);
+				const disk = storage.location(location);
 				const envThresholdKey = `STORAGE_${location}_HEALTHCHECK_THRESHOLD`.toUpperCase();
 				checks[`storage:${location}:responseTime`] = [
 					{

@@ -64,7 +64,7 @@ export class AssetsService {
 
 		if (!file) throw new ForbiddenException();
 
-		const { exists } = await storage.disk(file.storage).exists(file.filename_disk);
+		const exists = await storage.location(file.storage).exists(file.filename_disk);
 
 		if (!exists) throw new ForbiddenException();
 
@@ -118,7 +118,7 @@ export class AssetsService {
 				getAssetSuffix(transforms) +
 				(maybeNewFormat ? `.${maybeNewFormat}` : path.extname(file.filename_disk));
 
-			const { exists } = await storage.disk(file.storage).exists(assetFilename);
+			const exists = await storage.location(file.storage).exists(assetFilename);
 
 			if (maybeNewFormat) {
 				file.type = contentType(assetFilename) || null;
@@ -126,9 +126,9 @@ export class AssetsService {
 
 			if (exists) {
 				return {
-					stream: storage.disk(file.storage).getStream(assetFilename, range),
+					stream: await storage.location(file.storage).getStream(assetFilename, range),
 					file,
-					stat: await storage.disk(file.storage).getStat(assetFilename),
+					stat: await storage.location(file.storage).getStat(assetFilename),
 				};
 			}
 
@@ -149,7 +149,7 @@ export class AssetsService {
 			}
 
 			return await semaphore.runExclusive(async () => {
-				const readStream = storage.disk(file.storage).getStream(file.filename_disk, range);
+				const readStream = await storage.location(file.storage).getStream(file.filename_disk, range);
 				const transformer = sharp({
 					limitInputPixels: Math.pow(env.ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION, 2),
 					sequentialRead: true,
@@ -159,22 +159,22 @@ export class AssetsService {
 
 				transforms.forEach(([method, ...args]) => (transformer[method] as any).apply(transformer, args));
 
-				readStream.on('error', (e) => {
+				readStream.on('error', (e: Error) => {
 					logger.error(e, `Couldn't transform file ${file.id}`);
 					readStream.unpipe(transformer);
 				});
 
-				await storage.disk(file.storage).put(assetFilename, readStream.pipe(transformer), type);
+				await storage.location(file.storage).put(assetFilename, readStream.pipe(transformer), type);
 
 				return {
-					stream: storage.disk(file.storage).getStream(assetFilename, range),
-					stat: await storage.disk(file.storage).getStat(assetFilename),
+					stream: await storage.location(file.storage).getStream(assetFilename, range),
+					stat: await storage.location(file.storage).getStat(assetFilename),
 					file,
 				};
 			});
 		} else {
-			const readStream = storage.disk(file.storage).getStream(file.filename_disk, range);
-			const stat = await storage.disk(file.storage).getStat(file.filename_disk);
+			const readStream = await storage.location(file.storage).getStream(file.filename_disk, range);
+			const stat = await storage.location(file.storage).getStat(file.filename_disk);
 			return { stream: readStream, file, stat };
 		}
 	}

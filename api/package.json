@@ -81,6 +81,8 @@
 		"@directus/drive-cloudinary": "workspace:*",
 		"@directus/drive-gcs": "workspace:*",
 		"@directus/drive-s3": "workspace:*",
+		"@directus/storage": "workspace:*",
+		"@directus/storage-driver-local": "workspace:*",
 		"@directus/extensions-sdk": "workspace:*",
 		"@directus/format-title": "9.15.0",
 		"@directus/schema": "workspace:*",
