@@ -2,7 +2,7 @@ import { Query } from '@directus/shared/types';
 import knex, { Knex } from 'knex';
 import { getTracker, MockClient, Tracker } from 'knex-mock-client';
 import { cloneDeep } from 'lodash';
-import { afterEach, beforeAll, describe, expect, it, vi, MockedFunction } from 'vitest';
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi, MockedFunction } from 'vitest';
 import { ItemsService } from '../../src/services';
 import { InvalidPayloadException } from '../exceptions';
 import { sqlFieldFormatter, sqlFieldList } from '../__utils__/items-utils';
@@ -46,9 +46,12 @@ describe('Integration Tests', () => {
 	};
 
 	beforeAll(() => {
-		vi.mocked(getDatabaseClient).mockReturnValue('postgres');
 		db = vi.mocked(knex({ client: MockClient }));
 		tracker = getTracker();
+	});
+
+	beforeEach(() => {
+		vi.mocked(getDatabaseClient).mockReturnValue('postgres');
 	});
 
 	afterEach(() => {
@@ -84,7 +87,7 @@ describe('Integration Tests', () => {
 		);
 
 		it(`the returned UUID primary key for MS SQL should be uppercase`, async () => {
-			vi.mocked(getDatabaseClient).mockReturnValueOnce('mssql');
+			vi.mocked(getDatabaseClient).mockReturnValue('mssql');
 
 			const table = schemas.system.tables[0];
 
