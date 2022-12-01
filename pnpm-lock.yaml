@@ -839,6 +839,16 @@ importers:
       swagger-cli: 4.0.4_openapi-types@12.0.2
       swagger-ui-watcher: 2.1.12
 
+  packages/storage:
+    specifiers:
+      '@vitest/coverage-c8': 0.25.3
+      typescript: 4.9.3
+      vitest: 0.25.3
+    devDependencies:
+      '@vitest/coverage-c8': 0.25.3
+      typescript: 4.9.3
+      vitest: 0.25.3
+
 packages:
 
   /@ampproject/remapping/2.2.0:

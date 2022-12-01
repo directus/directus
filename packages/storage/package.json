@@ -1,0 +1,30 @@
+{
+	"name": "@directus/drive",
+	"version": "9.21.2",
+	"description": "Object storage abstraction layer for Directus",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus/directus.git",
+		"directory": "packages/drive"
+	},
+	"funding": "https://github.com/directus/directus?sponsor=1",
+	"license": "GPL-3.0",
+	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
+	"exports": {
+		".": "./dist/index.js",
+		"./package.json": "./package.json"
+	},
+	"main": "dist/index.js",
+	"files": [
+		"dist",
+		"!**/*.d.ts?(.map)"
+	],
+	"publishConfig": {
+		"access": "public"
+	},
+	"devDependencies": {
+		"@vitest/coverage-c8": "0.25.3",
+		"typescript": "4.9.3",
+		"vitest": "0.25.3"
+	}
+}
