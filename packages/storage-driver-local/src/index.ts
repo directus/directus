@@ -1,7 +1,7 @@
 import type { Driver, Range } from '@directus/storage';
 import { createReadStream } from 'node:fs';
-import { resolve, join, sep } from 'node:path';
-import type { ReadStreamOptions } from 'node:fs';
+import { readFile, stat } from 'node:fs/promises';
+import { join, resolve, sep } from 'node:path';
 
 export type DriverLocalConfig = {
 	root: string;
@@ -19,7 +19,7 @@ export class DriverLocal implements Driver {
 	}
 
 	async getStream(filepath: string, range?: Range) {
-		const options: ReadStreamOptions = {};
+		const options: Parameters<typeof createReadStream>[1] = {};
 
 		if (range?.start) {
 			options.start = range.start;
@@ -30,6 +30,28 @@ export class DriverLocal implements Driver {
 		}
 
 		return createReadStream(this.getFullPath(filepath), options);
+	}
+
+	async getBuffer(filepath: string) {
+		return await readFile(this.getFullPath(filepath));
+	}
+
+	async getStat(filepath: string) {
+		const statRes = await stat(this.getFullPath(filepath));
+
+		if (!statRes) {
+			throw new Error(`File "${filepath}" doesn't exist.`);
+		}
+
+		return {
+			size: statRes.size,
+			modified: statRes.mtime,
+		};
+	}
+
+	async exists(filepath: string) {
+		const statRes = await stat(this.getFullPath(filepath));
+		return !!statRes;
 	}
 }
 
