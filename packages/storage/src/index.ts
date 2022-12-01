@@ -1,16 +1,12 @@
-import type { Driver, DriverConfig } from './types';
-
-export type { Driver } from './types';
-
 export class StorageManager {
 	#drivers = new Map<string, typeof Driver>();
 	#locations = new Map<string, Driver>();
 
-	async registerDriver(name: string, driver: typeof Driver) {
+	registerDriver(name: string, driver: typeof Driver) {
 		this.#drivers.set(name, driver);
 	}
 
-	async registerLocation(name: string, config: DriverConfig) {
+	registerLocation(name: string, config: DriverConfig) {
 		const driverName = config.name;
 
 		const Driver = this.#drivers.get(driverName);
@@ -32,3 +28,37 @@ export class StorageManager {
 		return driver;
 	}
 }
+
+type RangeStart = {
+	start: number;
+};
+
+type RangeEnd = {
+	end: number;
+};
+
+export type Range = RangeStart | RangeEnd | (RangeStart & RangeEnd);
+
+export type Stat = {
+	size: number;
+	modified: Date;
+};
+
+export declare class Driver {
+	constructor(config: Record<string, unknown>);
+
+	getStream(filepath: string, range?: Range): Promise<NodeJS.ReadableStream>;
+	getBuffer(filepath: string): Promise<Buffer>;
+	getStat(filepath: string): Promise<Stat>;
+	exists(filepath: string): Promise<boolean>;
+	put(filepath: string, content: string | Buffer | NodeJS.ReadableStream): Promise<void>;
+	delete(filepath: string): Promise<void>;
+	move(src: string, dest: string): Promise<void>;
+	copy(src: string, dest: string): Promise<void>;
+	flatList(prefix?: string): AsyncIterable<string>;
+}
+
+export type DriverConfig = {
+	name: string;
+	options: Record<string, unknown>;
+};

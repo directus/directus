@@ -1,6 +1,10 @@
 {
 	"name": "@directus/drive",
 	"version": "9.21.2",
+	"type": "module",
+	"scripts": {
+		"build": "tsc --build"
+	},
 	"description": "Object storage abstraction layer for Directus",
 	"repository": {
 		"type": "git",

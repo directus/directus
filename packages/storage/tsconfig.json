@@ -23,7 +23,8 @@
 		"importsNotUsedAsValues": "error",
 		"checkJs": true,
 		"outDir": "dist",
-		"allowSyntheticDefaultImports": true
+		"allowSyntheticDefaultImports": true,
+		"declaration": true
 	},
 	"include": ["src"],
 	"exclude": ["node_modules", "dist"]
