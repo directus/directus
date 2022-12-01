@@ -1,28 +1,28 @@
 export class StorageManager {
-	#drivers = new Map<string, typeof Driver>();
-	#locations = new Map<string, Driver>();
+	private drivers = new Map<string, typeof Driver>();
+	private locations = new Map<string, Driver>();
 
 	registerDriver(name: string, driver: typeof Driver) {
-		this.#drivers.set(name, driver);
+		this.drivers.set(name, driver);
 	}
 
 	registerLocation(name: string, config: DriverConfig) {
-		const driverName = config.name;
+		const driverName = config.driver;
 
-		const Driver = this.#drivers.get(driverName);
+		const Driver = this.drivers.get(driverName);
 
 		if (!Driver) {
-			throw new Error(`Driver ${driverName} isn't registered.`);
+			throw new Error(`Driver "${driverName}" isn't registered.`);
 		}
 
-		this.#locations.set(name, new Driver(config));
+		this.locations.set(name, new Driver(config.options));
 	}
 
 	location(name: string) {
-		const driver = this.#locations.get(name);
+		const driver = this.locations.get(name);
 
 		if (!driver) {
-			throw new Error(`Location ${name} doesn't exist.`);
+			throw new Error(`Location "${name}" doesn't exist.`);
 		}
 
 		return driver;
@@ -59,6 +59,6 @@ export declare class Driver {
 }
 
 export type DriverConfig = {
-	name: string;
+	driver: string;
 	options: Record<string, unknown>;
 };

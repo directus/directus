@@ -1,15 +1,17 @@
 {
-	"name": "@directus/drive",
+	"name": "@directus/storage",
 	"version": "9.21.2",
 	"type": "module",
 	"scripts": {
-		"build": "tsc --build"
+		"build": "tsc --build",
+		"test": "vitest",
+		"coverage": "vitest run --coverage"
 	},
 	"description": "Object storage abstraction layer for Directus",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/directus/directus.git",
-		"directory": "packages/drive"
+		"directory": "packages/storage"
 	},
 	"funding": "https://github.com/directus/directus?sponsor=1",
 	"license": "GPL-3.0",

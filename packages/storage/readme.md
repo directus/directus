@@ -1,3 +1,3 @@
-# `@directus/drive`
+# `@directus/storage`
 
-File Storage abstraction for Directus
+Storage abstraction for Directus
