@@ -1,6 +1,5 @@
-import { expect, test, vi, describe } from 'vitest';
+import { describe, expect, test, vi } from 'vitest';
 import { StorageManager } from './index.js';
-import type { Driver } from './index.js';
 
 test('Initializes', () => {
 	const manager = new StorageManager();
