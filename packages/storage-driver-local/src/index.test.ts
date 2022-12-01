@@ -1,12 +1,16 @@
-import { expect, test, describe, vi, afterEach } from 'vitest';
+import type { WriteStream } from 'node:fs';
+import { createReadStream, createWriteStream } from 'node:fs';
+import { access, copyFile, mkdir, readFile, rename, stat, writeFile } from 'node:fs/promises';
+import { dirname, join, resolve, sep } from 'node:path';
+import { Readable } from 'node:stream';
+import { pipeline } from 'node:stream/promises';
+import { afterEach, describe, expect, test, vi } from 'vitest';
 import { DriverLocal } from './index.js';
-import { join, resolve, sep, dirname } from 'node:path';
-import { createReadStream } from 'node:fs';
-import { mkdir, readFile, stat, rename, copyFile, access } from 'node:fs/promises';
 
 vi.mock('node:path');
 vi.mock('node:fs');
 vi.mock('node:fs/promises');
+vi.mock('node:stream/promises');
 
 afterEach(() => {
 	vi.clearAllMocks();
@@ -159,7 +163,7 @@ describe('#exists', () => {
 });
 
 describe('#move', () => {
-	test('Calls #ensureDir with dirname of dest path', async () => {
+	test('Makes sure destination location exists', async () => {
 		const driver = new DriverLocal({ root: '/' });
 		driver['getFullPath'] = vi.fn().mockReturnValueOnce('/full/src/').mockReturnValueOnce('/full/dest/file.jpg');
 		driver['ensureDir'] = vi.fn().mockReturnValue(undefined);
@@ -184,7 +188,7 @@ describe('#move', () => {
 });
 
 describe('#copy', () => {
-	test('Calls #ensureDir with dirname of dest path', async () => {
+	test('Makes sure destination location exists', async () => {
 		const driver = new DriverLocal({ root: '/' });
 		driver['getFullPath'] = vi.fn().mockReturnValueOnce('/full/src/').mockReturnValueOnce('/full/dest/file.jpg');
 		driver['ensureDir'] = vi.fn().mockReturnValue(undefined);
@@ -205,5 +209,53 @@ describe('#copy', () => {
 		expect(driver['getFullPath']).toHaveBeenCalledWith('/src');
 		expect(driver['getFullPath']).toHaveBeenCalledWith('/dest');
 		expect(copyFile).toHaveBeenCalledWith('/full/src/', '/full/dest/');
+	});
+});
+
+describe('#put', () => {
+	test('Makes sure destination location exists', async () => {
+		const driver = new DriverLocal({ root: '/' });
+		driver['getFullPath'] = vi.fn().mockReturnValueOnce('/full/path/to/file.txt');
+		driver['ensureDir'] = vi.fn().mockReturnValue(undefined);
+		vi.mocked(dirname).mockReturnValueOnce('/full/path/to/');
+
+		await driver.put('/path/to/file.txt', 'file contents');
+
+		expect(dirname).toHaveBeenCalledWith('/full/path/to/file.txt');
+		expect(driver['ensureDir']).toHaveBeenCalledWith('/full/path/to/');
+	});
+
+	test('Creates write stream to file path when a readstream is passed', async () => {
+		const driver = new DriverLocal({ root: '/' });
+		driver['getFullPath'] = vi.fn().mockReturnValueOnce('/full/path/to/file.txt');
+
+		const mockStream = new Readable();
+
+		await driver.put('/path/to/file.txt', mockStream);
+
+		expect(createWriteStream).toHaveBeenCalledWith('/full/path/to/file.txt');
+	});
+
+	test('Passes read stream to write stream in pipeline', async () => {
+		const mockReadStream = new Readable();
+		const mockWriteStream = {};
+
+		const driver = new DriverLocal({ root: '/' });
+		driver['getFullPath'] = vi.fn().mockReturnValueOnce('/full/path/to/file.txt');
+
+		vi.mocked(createWriteStream).mockReturnValueOnce(mockWriteStream as unknown as WriteStream);
+
+		await driver.put('/path/to/file.txt', mockReadStream);
+
+		expect(pipeline).toHaveBeenCalledWith(mockReadStream, mockWriteStream);
+	});
+
+	test('Calls writeFile with passed content if not a stream', async () => {
+		const driver = new DriverLocal({ root: '/' });
+		driver['getFullPath'] = vi.fn().mockReturnValueOnce('/full/path/to/file.txt');
+
+		await driver.put('/path/to/file.txt', 'text file contents');
+
+		expect(writeFile).toHaveBeenCalledWith('/full/path/to/file.txt', 'text file contents');
 	});
 });
