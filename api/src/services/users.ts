@@ -241,12 +241,20 @@ export class UsersService extends ItemsService {
 			throw new InvalidPayloadException(`You can't change the "tfa_secret" value manually.`);
 		}
 
-		if (data.provider !== undefined && this.accountability && this.accountability.admin !== true) {
-			throw new InvalidPayloadException(`You can't change the "provider" value manually.`);
+		if (data.provider !== undefined) {
+			if (this.accountability && this.accountability.admin !== true) {
+				throw new InvalidPayloadException(`You can't change the "provider" value manually.`);
+			}
+
+			data.auth_data = null;
 		}
 
-		if (data.external_identifier !== undefined && this.accountability && this.accountability.admin !== true) {
-			throw new InvalidPayloadException(`You can't change the "external_identifier" value manually.`);
+		if (data.external_identifier !== undefined) {
+			if (this.accountability && this.accountability.admin !== true) {
+				throw new InvalidPayloadException(`You can't change the "external_identifier" value manually.`);
+			}
+
+			data.auth_data = null;
 		}
 
 		return await super.updateMany(keys, data, opts);

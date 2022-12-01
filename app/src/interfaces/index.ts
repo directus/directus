@@ -1,13 +1,22 @@
-import { shallowRef, Ref } from 'vue';
+import { App } from 'vue';
 import { InterfaceConfig } from '@directus/shared/types';
+import { sortBy } from 'lodash';
 
-const interfacesRaw: Ref<InterfaceConfig[]> = shallowRef([]);
-const interfaces: Ref<InterfaceConfig[]> = shallowRef([]);
+export function getInternalInterfaces(): InterfaceConfig[] {
+	const interfaces = import.meta.glob<InterfaceConfig>(['./*/index.ts', './_system/*/index.ts'], {
+		import: 'default',
+		eager: true,
+	});
 
-export function getInterfaces(): { interfaces: Ref<InterfaceConfig[]>; interfacesRaw: Ref<InterfaceConfig[]> } {
-	return { interfaces, interfacesRaw };
+	return sortBy(Object.values(interfaces), 'id');
 }
 
-export function getInterface(name?: string | null): InterfaceConfig | undefined {
-	return !name ? undefined : interfaces.value.find(({ id }) => id === name);
+export function registerInterfaces(interfaces: InterfaceConfig[], app: App): void {
+	for (const inter of interfaces) {
+		app.component(`interface-${inter.id}`, inter.component);
+
+		if (typeof inter.options !== 'function' && Array.isArray(inter.options) === false && inter.options !== null) {
+			app.component(`interface-options-${inter.id}`, inter.options);
+		}
+	}
 }
