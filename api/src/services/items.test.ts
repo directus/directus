@@ -7,6 +7,7 @@ import { ItemsService } from '../../src/services';
 import { InvalidPayloadException } from '../exceptions';
 import { sqlFieldFormatter, sqlFieldList } from '../__utils__/items-utils';
 import { systemSchema, userSchema } from '../__utils__/schemas';
+import { getDatabaseClient } from '../../src/database/index';
 
 vi.mock('../env', async () => {
 	const actual = (await vi.importActual('../env')) as { default: Record<string, any> };
@@ -21,7 +22,7 @@ vi.mock('../env', async () => {
 
 vi.mock('../../src/database/index', () => ({
 	default: vi.fn(),
-	getDatabaseClient: vi.fn().mockReturnValue('postgres'),
+	getDatabaseClient: vi.fn(),
 }));
 
 vi.mock('../cache', () => ({
@@ -45,6 +46,7 @@ describe('Integration Tests', () => {
 	};
 
 	beforeAll(() => {
+		vi.mocked(getDatabaseClient).mockReturnValue('postgres');
 		db = vi.mocked(knex({ client: MockClient }));
 		tracker = getTracker();
 	});
@@ -80,6 +82,24 @@ describe('Integration Tests', () => {
 				expect(response).toBe(item.id);
 			}
 		);
+
+		it(`the returned UUID primary key for MS SQL should be uppercase`, async () => {
+			vi.mocked(getDatabaseClient).mockReturnValue('mssql');
+
+			const table = schemas.system.tables[0];
+
+			const itemsService = new ItemsService(table, {
+				knex: db,
+				accountability: { role: 'admin', admin: true },
+				schema: schemas.system.schema,
+			});
+
+			tracker.on.insert(table).responseOnce(item);
+
+			const response = await itemsService.createOne(item, { emitEvents: false });
+
+			expect(response).toBe(item.id.toUpperCase());
+		});
 	});
 
 	describe('readOne', () => {
