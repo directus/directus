@@ -1,9 +1,9 @@
 import type { Driver, Range } from '@directus/storage';
 import { createReadStream, createWriteStream } from 'node:fs';
+import { access, copyFile, mkdir, opendir, readFile, rename, stat, unlink, writeFile } from 'node:fs/promises';
+import { dirname, join, resolve, sep } from 'node:path';
 import { Readable } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
-import { writeFile, readFile, stat, rename, copyFile, access, mkdir } from 'node:fs/promises';
-import { join, resolve, sep, dirname } from 'node:path';
 
 export type DriverLocalConfig = {
 	root: string;
@@ -87,6 +87,36 @@ export class DriverLocal implements Driver {
 			await pipeline(content, writeStream);
 		} else {
 			await writeFile(fullPath, content);
+		}
+	}
+
+	async delete(filepath: string) {
+		const fullPath = this.getFullPath(filepath);
+		await unlink(fullPath);
+	}
+
+	list(prefix = '') {
+		const fullPrefix = this.getFullPath(prefix);
+		return this.listGenerator(fullPrefix);
+	}
+
+	private async *listGenerator(prefix: string): AsyncGenerator<string> {
+		const prefixDirectory = prefix.endsWith(sep) ? prefix : dirname(prefix);
+
+		const directory = await opendir(prefixDirectory);
+
+		for await (const file of directory) {
+			const fileName = join(prefixDirectory, file.name);
+
+			if (fileName.toLowerCase().startsWith(prefix.toLowerCase()) === false) continue;
+
+			if (file.isFile()) {
+				yield fileName;
+			}
+
+			if (file.isDirectory()) {
+				yield* this.listGenerator(join(fileName, sep));
+			}
 		}
 	}
 }

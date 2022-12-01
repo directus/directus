@@ -1,6 +1,6 @@
-import type { WriteStream } from 'node:fs';
+import type { Dir, WriteStream } from 'node:fs';
 import { createReadStream, createWriteStream } from 'node:fs';
-import { access, copyFile, mkdir, readFile, rename, stat, writeFile } from 'node:fs/promises';
+import { access, copyFile, mkdir, opendir, readFile, rename, stat, unlink, writeFile } from 'node:fs/promises';
 import { dirname, join, resolve, sep } from 'node:path';
 import { Readable } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
@@ -257,5 +257,139 @@ describe('#put', () => {
 		await driver.put('/path/to/file.txt', 'text file contents');
 
 		expect(writeFile).toHaveBeenCalledWith('/full/path/to/file.txt', 'text file contents');
+	});
+});
+
+describe('#delete', () => {
+	test('Calls node:fs/promises unlink with full filepath', async () => {
+		const driver = new DriverLocal({ root: '/full' });
+		driver['getFullPath'] = vi.fn().mockReturnValueOnce('/full/path/to/file.txt');
+
+		await driver.delete('/path/to/file.txt');
+
+		expect(unlink).toHaveBeenCalledWith('/full/path/to/file.txt');
+	});
+});
+
+describe('#list', () => {
+	test('Returns iterable listGenerator with full prefix', () => {
+		const driver = new DriverLocal({ root: '/full' });
+		driver['getFullPath'] = vi.fn().mockReturnValueOnce('/full/path/to/dir/');
+
+		driver.list('/prefix');
+
+		expect(driver['getFullPath']).toHaveBeenCalledWith('/prefix');
+	});
+});
+
+describe('#listGenerator', () => {
+	test('Opens directory if directory is passed', async () => {
+		const driver = new DriverLocal({ root: '/' });
+
+		vi.mocked(opendir).mockResolvedValue(
+			(function* () {
+				yield { name: '/test.jpg' };
+			})() as unknown as Dir
+		);
+
+		vi.mocked(join).mockReturnValueOnce('');
+
+		const iterator = driver['listGenerator']('/folder/');
+		await iterator.next();
+
+		expect(opendir).toHaveBeenCalledWith('/folder/');
+	});
+
+	test('Opens directory if file or string prefix is passed', async () => {
+		const driver = new DriverLocal({ root: '/' });
+
+		vi.mocked(opendir).mockResolvedValue(
+			(function* () {
+				yield { name: '/test.jpg' };
+			})() as unknown as Dir
+		);
+
+		vi.mocked(dirname).mockReturnValueOnce('/root/');
+		vi.mocked(join).mockReturnValueOnce('');
+
+		const iterator = driver['listGenerator']('/root/a-file-prefix');
+		await iterator.next();
+
+		expect(dirname).toHaveBeenCalledWith('/root/a-file-prefix');
+		expect(opendir).toHaveBeenCalledWith('/root/');
+	});
+
+	test('Ignores files that do not start with the prefix', async () => {
+		const driver = new DriverLocal({ root: '/' });
+
+		vi.mocked(opendir).mockResolvedValue(
+			(function* () {
+				yield { name: '/test.jpg' };
+			})() as unknown as Dir
+		);
+
+		vi.mocked(dirname).mockReturnValueOnce('/root/');
+		vi.mocked(join).mockReturnValueOnce('/root/');
+
+		const iterator = driver['listGenerator']('/root/a-file-prefix');
+		const output = await iterator.next();
+
+		expect(output).toStrictEqual({
+			done: true,
+			value: undefined,
+		});
+	});
+
+	test('Returns full filepath string if path is file', async () => {
+		const driver = new DriverLocal({ root: '/' });
+
+		vi.mocked(opendir).mockResolvedValue(
+			(function* () {
+				yield { name: '/root/test.jpg', isFile: () => true, isDirectory: () => false };
+			})() as unknown as Dir
+		);
+
+		vi.mocked(dirname).mockReturnValueOnce('/root/');
+		vi.mocked(join).mockReturnValueOnce('/root/test.jpg');
+
+		const iterator = driver['listGenerator']('/root/');
+
+		const output = [];
+
+		for await (const filename of iterator) {
+			output.push(filename);
+		}
+
+		expect(output).toStrictEqual(['/root/test.jpg']);
+	});
+
+	test('Recursively calls itself to traverse directories', async () => {
+		const driver = new DriverLocal({ root: '/' });
+
+		vi.mocked(opendir).mockResolvedValueOnce(
+			(function* () {
+				yield { name: '/root/test.jpg', isFile: () => false, isDirectory: () => true };
+			})() as unknown as Dir
+		);
+
+		// Nested second call
+		vi.mocked(opendir).mockResolvedValueOnce(
+			(function* () {
+				yield { name: '/root/test.jpg', isFile: () => true, isDirectory: () => false };
+			})() as unknown as Dir
+		);
+
+		vi.mocked(dirname).mockReturnValue('/root/');
+		vi.mocked(join).mockReturnValue('/root/test.jpg');
+
+		const iterator = driver['listGenerator']('/root/');
+
+		const output = [];
+
+		for await (const filename of iterator) {
+			output.push(filename);
+		}
+
+		expect(output).toStrictEqual(['/root/test.jpg']);
 	});
 });
