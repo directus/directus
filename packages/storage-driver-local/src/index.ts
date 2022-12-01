@@ -1,7 +1,7 @@
 import type { Driver, Range } from '@directus/storage';
 import { createReadStream } from 'node:fs';
-import { readFile, stat } from 'node:fs/promises';
-import { join, resolve, sep } from 'node:path';
+import { readFile, stat, rename, copyFile, access, mkdir } from 'node:fs/promises';
+import { join, resolve, sep, dirname } from 'node:path';
 
 export type DriverLocalConfig = {
 	root: string;
@@ -16,6 +16,13 @@ export class DriverLocal implements Driver {
 
 	private getFullPath(filepath: string) {
 		return join(this.root, join(sep, filepath));
+	}
+
+	/**
+	 * Ensures that the directory exists. If it doesn't, it's created.
+	 */
+	private async ensureDir(dirpath: string) {
+		await mkdir(dirpath, { recursive: true });
 	}
 
 	async getStream(filepath: string, range?: Range) {
@@ -50,8 +57,28 @@ export class DriverLocal implements Driver {
 	}
 
 	async exists(filepath: string) {
-		const statRes = await stat(this.getFullPath(filepath));
-		return !!statRes;
+		return access(this.getFullPath(filepath))
+			.then(() => true)
+			.catch(() => false);
+	}
+
+	async move(src: string, dest: string) {
+		const fullSrc = this.getFullPath(src);
+		const fullDest = this.getFullPath(dest);
+		await this.ensureDir(dirname(fullDest));
+		await rename(fullSrc, fullDest);
+	}
+
+	async copy(src: string, dest: string) {
+		const fullSrc = this.getFullPath(src);
+		const fullDest = this.getFullPath(dest);
+		await this.ensureDir(dirname(fullDest));
+		await copyFile(fullSrc, fullDest);
+	}
+
+	async put(filepath: string, contents: string | Buffer | NodeJS.ReadableStream) {
+		const fullPath = this.getFullPath(filepath);
+		await this.ensureDir(dirname(fullPath));
 	}
 }
 
