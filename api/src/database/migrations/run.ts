@@ -10,7 +10,11 @@ import { dynamicImport } from '../../utils/dynamic-import';
 // @ts-ignore
 import formatTitle from '@directus/format-title';
 
-export default async function run(database: Knex, direction: 'up' | 'down' | 'latest', log = true): Promise<void> {
+export default async function run(
+	database: Knex,
+	direction: 'up' | 'down' | 'latest' | 'available',
+	log = true
+): Promise<void> {
 	let migrationFiles = await fse.readdir(__dirname);
 
 	const customMigrationsPath = path.resolve(env.EXTENSIONS_PATH, 'migrations');
@@ -48,6 +52,7 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 	if (direction === 'up') await up();
 	if (direction === 'down') await down();
 	if (direction === 'latest') await latest();
+	if (direction === 'available') await available();
 
 	async function up() {
 		const currentVersion = completedMigrations[completedMigrations.length - 1];
@@ -112,5 +117,18 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 				await database.insert({ version: migration.version, name: migration.name }).into('directus_migrations');
 			}
 		}
+	}
+
+	async function available() {
+		let found = false;
+		for (const migration of migrations) {
+			if (migration.completed === false) {
+				found = true;
+				if (log) {
+					logger.info(`Migration ${migration.version}/${migration.name} is available`);
+				}
+			}
+		}
+		if (!found && log) logger.info('Database up to date');
 	}
 }

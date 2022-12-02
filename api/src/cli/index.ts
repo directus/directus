@@ -6,6 +6,7 @@ import bootstrap from './commands/bootstrap';
 import count from './commands/count';
 import dbInstall from './commands/database/install';
 import dbMigrate from './commands/database/migrate';
+import dbTest from './commands/database/test';
 import init from './commands/init';
 import keyGenerate from './commands/security/key';
 import secretGenerate from './commands/security/secret';
@@ -51,6 +52,22 @@ export async function createCli(): Promise<Command> {
 		.command('migrate:down')
 		.description('Downgrade the database')
 		.action(() => dbMigrate('down'));
+	dbCommand
+		.command('test:connection')
+		.description('Test the database connection')
+		.action(() => dbTest('connection'));
+	dbCommand
+		.command('test:installed')
+		.description('Test if database is installed')
+		.action(() => dbTest('installed'));
+	dbCommand
+		.command('test:version')
+		.description('Show the installed database version')
+		.action(() => dbTest('version'));
+	dbCommand
+		.command('test:migrations')
+		.description('Show the available database migrations')
+		.action(() => dbTest('migrations'));
 
 	const usersCommand = program.command('users');
 
