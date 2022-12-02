@@ -11,7 +11,6 @@ import {
 	collectionSuppliers,
 	Food,
 	Ingredient,
-	Supplier,
 	getTestsSchema,
 	seedDBValues,
 } from './m2m.seed';

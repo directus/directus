@@ -11,7 +11,6 @@ import {
 	collectionCities,
 	Country,
 	State,
-	City,
 	getTestsSchema,
 	seedDBValues,
 } from './m2o.seed';
