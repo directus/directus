@@ -8,7 +8,7 @@ import { syncRefProperty } from '@/utils/sync-ref-property';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { useCollection, useItems, useSync } from '@directus/shared/composables';
 import { Field, Item } from '@directus/shared/types';
-import { defineLayout, getFieldsFromTemplate } from '@directus/shared/utils';
+import { defineLayout, getEndpoint, getFieldsFromTemplate } from '@directus/shared/utils';
 import { Calendar, CalendarOptions as FullCalendarOptions, EventInput } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
@@ -185,9 +185,7 @@ export default defineLayout<LayoutOptions>({
 						itemChanges[endDateField.value] = adjustForType(info.event.endStr, endDateFieldInfo.value.type);
 					}
 
-					const endpoint = collection.value.startsWith('directus')
-						? collection.value.substring(9)
-						: `/items/${collection.value}`;
+					const endpoint = getEndpoint(collection.value);
 
 					try {
 						await api.patch(`${endpoint}/${info.event.id}`, itemChanges);
