@@ -291,9 +291,9 @@ function useItem() {
 	return { internalEdits, loading, initialValues, fetchItem };
 
 	async function fetchItem() {
-		loading.value = true;
-
 		if (!props.primaryKey) return;
+
+		loading.value = true;
 
 		const endpoint = props.collection.startsWith('directus_')
 			? `${baseEndpoint}/${props.primaryKey}`
@@ -317,11 +317,11 @@ function useItem() {
 	}
 
 	async function fetchRelatedItem() {
-		loading.value = true;
-
 		const collection = relatedCollection.value;
 
 		if (!collection || !junctionFieldInfo.value) return;
+
+		loading.value = true;
 
 		const endpoint = collection.startsWith('directus_')
 			? `${baseEndpoint}/${props.relatedPrimaryKey}`
