@@ -27,7 +27,7 @@
 	"exports": {
 		".": "./dist/index.js",
 		"./package.json": "./package.json",
-		"./dist/types/overview": {
+		"./types/overview": {
 			"types": "./dist/types/overview.d.ts",
 			"default": "./dist/types/overview.js"
 		}
