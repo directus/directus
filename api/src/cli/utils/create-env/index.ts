@@ -22,15 +22,11 @@ export default async function createEnv(
 ): Promise<void> {
 	const { nanoid } = await import('nanoid');
 
-	const defaults = {
+	const config: Record<string, any> = {
 		security: {
 			KEY: uuid(),
 			SECRET: nanoid(32),
 		},
-	};
-
-	const config: Record<string, any> = {
-		...defaults,
 		database: {
 			DB_CLIENT: client,
 		},
