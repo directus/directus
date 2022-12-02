@@ -20,17 +20,22 @@ import { getRelationInfo } from './get-relation-info';
 import { getFilterOperatorsForType, getOutputTypeForFunction } from '@directus/shared/utils';
 import { stripFunction } from './strip-function';
 
+// @ts-ignore
+import { customAlphabet } from 'nanoid/non-secure/index.cjs';
+
+const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
+
 /**
  * Apply the Query to a given Knex query builder instance
  */
-export default async function applyQuery(
+export default function applyQuery(
 	knex: Knex,
 	collection: string,
 	dbQuery: Knex.QueryBuilder,
 	query: Query,
 	schema: SchemaOverview,
 	subQuery = false
-): Promise<Knex.QueryBuilder> {
+): Knex.QueryBuilder {
 	if (query.sort) {
 		applySort(knex, schema, dbQuery, query.sort, collection, subQuery);
 	}
@@ -116,10 +121,7 @@ type AddJoinProps = {
 	knex: Knex;
 };
 
-async function addJoin({ path, collection, aliasMap, rootQuery, subQuery, schema, relations, knex }: AddJoinProps) {
-	const { customAlphabet } = await import('nanoid');
-	const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
-
+function addJoin({ path, collection, aliasMap, rootQuery, subQuery, schema, relations, knex }: AddJoinProps) {
 	path = clone(path);
 	followRelation(path);
 
