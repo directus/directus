@@ -167,11 +167,11 @@ export default defineLayout<LayoutOptions>({
 					} else {
 						const primaryKey = info.event.id;
 
-						const endpoint = collection.value.startsWith('directus')
+						const route = collection.value.startsWith('directus_')
 							? collection.value.substring(9)
 							: `content/${collection.value}`;
 
-						router.push(`/${endpoint}/${primaryKey}`);
+						router.push(`/${route}/${primaryKey}`);
 					}
 				},
 				async eventChange(info) {
