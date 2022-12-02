@@ -1,4 +1,3 @@
-import formatTitle from '@directus/format-title';
 import fse from 'fs-extra';
 import { Knex } from 'knex';
 import path from 'path';
@@ -6,6 +5,9 @@ import env from '../../env';
 import logger from '../../logger';
 import { Migration } from '../../types';
 import { orderBy } from 'lodash';
+
+// @ts-ignore
+import formatTitle from '@directus/format-title';
 
 export default async function run(database: Knex, direction: 'up' | 'down' | 'latest', log = true): Promise<void> {
 	let migrationFiles = await fse.readdir(__dirname);

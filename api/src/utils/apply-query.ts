@@ -11,7 +11,6 @@ import {
 } from '@directus/shared/types';
 import { Knex } from 'knex';
 import { clone, isPlainObject, set } from 'lodash';
-import { customAlphabet } from 'nanoid';
 import validate from 'uuid-validate';
 import { getHelpers } from '../database/helpers';
 import { InvalidQueryException } from '../exceptions/invalid-query';
@@ -21,19 +20,17 @@ import { getRelationInfo } from './get-relation-info';
 import { getFilterOperatorsForType, getOutputTypeForFunction } from '@directus/shared/utils';
 import { stripFunction } from './strip-function';
 
-const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
-
 /**
  * Apply the Query to a given Knex query builder instance
  */
-export default function applyQuery(
+export default async function applyQuery(
 	knex: Knex,
 	collection: string,
 	dbQuery: Knex.QueryBuilder,
 	query: Query,
 	schema: SchemaOverview,
 	subQuery = false
-): Knex.QueryBuilder {
+): Promise<Knex.QueryBuilder> {
 	if (query.sort) {
 		applySort(knex, schema, dbQuery, query.sort, collection, subQuery);
 	}
@@ -119,7 +116,10 @@ type AddJoinProps = {
 	knex: Knex;
 };
 
-function addJoin({ path, collection, aliasMap, rootQuery, subQuery, schema, relations, knex }: AddJoinProps) {
+async function addJoin({ path, collection, aliasMap, rootQuery, subQuery, schema, relations, knex }: AddJoinProps) {
+	const { customAlphabet } = await import('nanoid');
+	const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
+
 	path = clone(path);
 	followRelation(path);
 
