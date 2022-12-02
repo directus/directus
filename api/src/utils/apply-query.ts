@@ -21,7 +21,7 @@ import { getFilterOperatorsForType, getOutputTypeForFunction } from '@directus/s
 import { stripFunction } from './strip-function';
 
 // @ts-ignore
-import { customAlphabet } from 'nanoid/non-secure/index.cjs';
+import { customAlphabet } from 'nanoid/non-secure';
 
 const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
 
