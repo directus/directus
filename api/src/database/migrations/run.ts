@@ -1,10 +1,11 @@
 import fse from 'fs-extra';
 import { Knex } from 'knex';
+import { orderBy } from 'lodash';
 import path from 'path';
 import env from '../../env';
 import logger from '../../logger';
 import { Migration } from '../../types';
-import { orderBy } from 'lodash';
+import { dynamicImport } from '../../utils/dynamic-import';
 
 // @ts-ignore
 import formatTitle from '@directus/format-title';
@@ -65,7 +66,7 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 			throw Error('Nothing to upgrade');
 		}
 
-		const { up } = require(nextVersion.file);
+		const { up } = await dynamicImport(nextVersion.file);
 
 		if (log) {
 			logger.info(`Applying ${nextVersion.name}...`);
@@ -88,7 +89,7 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 			throw new Error("Couldn't find migration");
 		}
 
-		const { down } = require(migration.file);
+		const { down } = await dynamicImport(migration.file);
 
 		if (log) {
 			logger.info(`Undoing ${migration.name}...`);
@@ -101,7 +102,7 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 	async function latest() {
 		for (const migration of migrations) {
 			if (migration.completed === false) {
-				const { up } = require(migration.file);
+				const { up } = await dynamicImport(migration.file);
 
 				if (log) {
 					logger.info(`Applying ${migration.name}...`);
