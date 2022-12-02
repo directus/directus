@@ -1,3 +1,4 @@
+import { SchemaOverview } from '@directus/schema/types/overview';
 import { parseJSON } from '@directus/shared/utils';
 import { Column } from 'knex-schema-inspector/dist/types/column';
 import env from '../env';
@@ -5,19 +6,7 @@ import logger from '../logger';
 import getLocalType from './get-local-type';
 
 export default function getDefaultValue(
-	column:
-		| {
-				table_name: string;
-				column_name: string;
-				default_value: string | null;
-				is_nullable: boolean;
-				is_generated: boolean;
-				data_type: string;
-				numeric_precision?: number | null;
-				numeric_scale?: number | null;
-				max_length: number | null;
-		  }
-		| Column
+	column: SchemaOverview[string]['columns'][string] | Column
 ): string | boolean | number | Record<string, any> | any[] | null {
 	const type = getLocalType(column);
 
