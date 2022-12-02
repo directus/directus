@@ -341,7 +341,7 @@ class ExtensionManager {
 		for (const hook of hooks) {
 			try {
 				const hookPath = path.resolve(hook.path, hook.entrypoint);
-				const hookInstance: HookConfig | { default: HookConfig } = await import(hookPath);
+				const hookInstance: HookConfig | { default: HookConfig } = require(hookPath);
 
 				const config = getModuleDefault(hookInstance);
 
