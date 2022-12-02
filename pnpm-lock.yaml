@@ -853,13 +853,32 @@ importers:
       typescript: 4.9.3
       vitest: 0.25.3
 
-  packages/storage-driver-local:
+  packages/storage-driver-azure:
     specifiers:
+      '@azure/storage-blob': 12.12.0
+      '@directus/shared': workspace:9.21.2
       '@directus/storage': workspace:*
       '@vitest/coverage-c8': 0.25.3
       typescript: 4.9.3
       vitest: 0.25.3
     dependencies:
+      '@azure/storage-blob': 12.12.0
+      '@directus/shared': link:../shared
+      '@directus/storage': link:../storage
+    devDependencies:
+      '@vitest/coverage-c8': 0.25.3
+      typescript: 4.9.3
+      vitest: 0.25.3
+
+  packages/storage-driver-local:
+    specifiers:
+      '@directus/shared': workspace:9.21.2
+      '@directus/storage': workspace:*
+      '@vitest/coverage-c8': 0.25.3
+      typescript: 4.9.3
+      vitest: 0.25.3
+    dependencies:
+      '@directus/shared': link:../shared
       '@directus/storage': link:../storage
     devDependencies:
       '@vitest/coverage-c8': 0.25.3
