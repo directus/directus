@@ -1,6 +1,5 @@
 import { Knex } from 'knex';
 import { merge } from 'lodash';
-import { nanoid } from 'nanoid';
 import os from 'os';
 import { performance } from 'perf_hooks';
 // @ts-ignore
@@ -89,6 +88,8 @@ export class ServerService {
 	}
 
 	async health(): Promise<Record<string, any>> {
+		const { nanoid } = await import('nanoid');
+
 		const checkID = nanoid(5);
 
 		// Based on https://tools.ietf.org/id/draft-inadarei-api-health-check-05.html#name-componenttype
