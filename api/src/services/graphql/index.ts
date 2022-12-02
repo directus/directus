@@ -1677,9 +1677,10 @@ export class GraphQLService {
 
 		function replaceFuncDeep(filter: Record<string, any>) {
 			return transform(filter, (result: Record<string, any>, value, key) => {
-				const isFunctionKey = key.endsWith('_func') && FUNCTIONS.includes(Object.keys(value)[0]! as any);
+				const isFunctionKey =
+					typeof key === 'string' && key.endsWith('_func') && FUNCTIONS.includes(Object.keys(value)[0]! as any);
 
-				if (typeof key === 'string' && isFunctionKey) {
+				if (isFunctionKey) {
 					const functionName = Object.keys(value)[0]!;
 					const fieldName = key.slice(0, -5);
 

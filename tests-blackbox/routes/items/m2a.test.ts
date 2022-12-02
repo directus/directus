@@ -17,6 +17,7 @@ import {
 } from './m2a.seed';
 import { CheckQueryFilters } from '@query/filter';
 import { findIndex } from 'lodash';
+import { requestGraphQL } from '@common/index';
 
 function createShape(pkType: common.PrimaryKeyType) {
 	const item: Shape = {
@@ -81,63 +82,6 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 	describe(`pkType: ${pkType}`, () => {
 		describe('GET /:collection/:id', () => {
-			describe('retrieves one shape', () => {
-				it.each(vendors)('%s', async (vendor) => {
-					// Setup
-					const shape = await CreateItem(vendor, {
-						collection: localCollectionShapes,
-						item: createShape(pkType),
-					});
-
-					// Action
-					const response = await request(getUrl(vendor))
-						.get(`/items/${localCollectionShapes}/${shape.id}`)
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
-
-					// Assert
-					expect(response.statusCode).toEqual(200);
-					expect(response.body.data).toMatchObject({ name: expect.any(String) });
-				});
-			});
-
-			describe('retrieves one circle', () => {
-				it.each(vendors)('%s', async (vendor) => {
-					// Setup
-					const circle = await CreateItem(vendor, {
-						collection: localCollectionCircles,
-						item: createCircle(pkType),
-					});
-
-					// Action
-					const response = await request(getUrl(vendor))
-						.get(`/items/${localCollectionCircles}/${circle.id}`)
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
-
-					// Assert
-					expect(response.statusCode).toEqual(200);
-					expect(response.body.data).toMatchObject({ name: expect.any(String) });
-				});
-			});
-
-			describe('retrieves one square', () => {
-				it.each(vendors)('%s', async (vendor) => {
-					// Setup
-					const square = await CreateItem(vendor, {
-						collection: localCollectionSquares,
-						item: createSquare(pkType),
-					});
-
-					// Action
-					const response = await request(getUrl(vendor))
-						.get(`/items/${localCollectionSquares}/${square.id}`)
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
-
-					// Assert
-					expect(response.statusCode).toEqual(200);
-					expect(response.body.data).toMatchObject({ name: expect.any(String) });
-				});
-			});
-
 			describe(`retrieves a shape's circle`, () => {
 				it.each(vendors)('%s', async (vendor) => {
 					// Setup
@@ -159,117 +103,44 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						.get(`/items/${localCollectionShapes}/${insertedShape.id}`)
 						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
+					const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+						query: {
+							[localCollectionShapes]: {
+								__args: {
+									filter: {
+										id: {
+											_eq: insertedShape.id,
+										},
+									},
+								},
+								children: {
+									item: {
+										__on: [
+											{
+												__typeName: localCollectionCircles,
+												id: true,
+											},
+											{
+												__typeName: localCollectionSquares,
+												id: true,
+											},
+										],
+									},
+								},
+							},
+						},
+					});
+
 					// Assert
 					expect(response.statusCode).toEqual(200);
 					expect(response.body.data.children).toHaveLength(1);
-				});
-			});
-
-			describe('Error handling', () => {
-				describe('returns an error when an invalid id is used', () => {
-					it.each(vendors)('%s', async (vendor) => {
-						// Action
-						const response = await request(getUrl(vendor))
-							.get(`/items/${localCollectionShapes}/invalid_id`)
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
-
-						// Assert
-						expect(response.statusCode).toBe(403);
-					});
-				});
-				describe('returns an error when an invalid table is used', () => {
-					it.each(vendors)('%s', async (vendor) => {
-						// Action
-						const response = await request(getUrl(vendor))
-							.get(`/items/invalid_table/1`)
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
-
-						// Assert
-						expect(response.status).toBe(403);
-					});
+					expect(gqlResponse.statusCode).toEqual(200);
+					expect(gqlResponse.body.data[localCollectionShapes][0].children).toHaveLength(1);
 				});
 			});
 		});
-		describe('PATCH /:collection/:id', () => {
-			describe(`updates one shape's name with no relations`, () => {
-				it.each(vendors)('%s', async (vendor) => {
-					// Setup
-					const insertedShape = await CreateItem(vendor, {
-						collection: localCollectionShapes,
-						item: createShape(pkType),
-					});
-					const body = { name: 'Tommy Cash' };
 
-					// Action
-					const response = await request(getUrl(vendor))
-						.patch(`/items/${localCollectionShapes}/${insertedShape.id}`)
-						.send(body)
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
-
-					// Assert
-					expect(response.statusCode).toEqual(200);
-					expect(response.body.data).toMatchObject({
-						id: insertedShape.id,
-						name: 'Tommy Cash',
-					});
-				});
-			});
-		});
-		describe('DELETE /:collection/:id', () => {
-			describe('deletes an shape with no relations', () => {
-				it.each(vendors)('%s', async (vendor) => {
-					// Setup
-					const insertedShape = await CreateItem(vendor, {
-						collection: localCollectionShapes,
-						item: createShape(pkType),
-					});
-
-					// Action
-					const response = await request(getUrl(vendor))
-						.delete(`/items/${localCollectionShapes}/${insertedShape.id}`)
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
-
-					// Assert
-					expect(response.statusCode).toEqual(204);
-					expect(response.body.data).toBe(undefined);
-				});
-			});
-		});
 		describe('GET /:collection', () => {
-			describe('retrieves all items from shape table with no relations', () => {
-				it.each(vendors)('%s', async (vendor) => {
-					// Setup
-					const shapes = [];
-					const shapesCount = 50;
-					for (let i = 0; i < shapesCount; i++) {
-						shapes.push(createShape(pkType));
-					}
-					await CreateItem(vendor, { collection: localCollectionShapes, item: shapes });
-
-					// Action
-					const response = await request(getUrl(vendor))
-						.get(`/items/${localCollectionShapes}`)
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
-
-					// Assert
-					expect(response.statusCode).toEqual(200);
-					expect(response.body.data.length).toBeGreaterThanOrEqual(shapesCount);
-				});
-			});
-			describe('Error handling', () => {
-				describe('returns an error when an invalid table is used', () => {
-					it.each(vendors)('%s', async (vendor) => {
-						// Action
-						const response = await request(getUrl(vendor))
-							.get(`/items/invalid_table`)
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
-
-						// Assert
-						expect(response.statusCode).toBe(403);
-					});
-				});
-			});
-
 			describe(`filters`, () => {
 				describe(`on top level`, () => {
 					it.each(vendors)('%s', async (vendor) => {
@@ -296,12 +167,50 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							})
 							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
+						const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							query: {
+								[localCollectionShapes]: {
+									__args: {
+										filter: {
+											id: {
+												_eq: insertedShape.id,
+											},
+										},
+									},
+									id: true,
+								},
+							},
+						});
+
+						const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							query: {
+								[localCollectionShapes]: {
+									__args: {
+										filter: {
+											name: {
+												_eq: insertedShape.name,
+											},
+										},
+									},
+									id: true,
+								},
+							},
+						});
+
 						// Assert
 						expect(response.statusCode).toEqual(200);
 						expect(response.body.data.length).toBe(1);
 						expect(response.body.data[0]).toMatchObject({ id: insertedShape.id });
 						expect(response2.statusCode).toEqual(200);
 						expect(response.body.data).toEqual(response2.body.data);
+
+						expect(gqlResponse.statusCode).toBe(200);
+						expect(gqlResponse.body.data[localCollectionShapes].length).toBe(1);
+						expect(gqlResponse.body.data[localCollectionShapes][0]).toMatchObject({
+							id: String(insertedShape.id),
+						});
+						expect(gqlResponse2.statusCode).toBe(200);
+						expect(gqlResponse.body.data).toEqual(gqlResponse2.body.data);
 					});
 				});
 
@@ -356,12 +265,54 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							})
 							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
+						const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							query: {
+								[localCollectionShapes]: {
+									__args: {
+										filter: {
+											children: {
+												[`item__${localCollectionCircles}`]: {
+													name: { _eq: circle.name },
+												},
+											},
+										},
+									},
+									id: true,
+								},
+							},
+						});
+
+						const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							query: {
+								[localCollectionShapes]: {
+									__args: {
+										filter: {
+											children: {
+												[`item__${localCollectionSquares}`]: {
+													width: { _eq: square.width },
+												},
+											},
+										},
+									},
+									id: true,
+								},
+							},
+						});
+
 						// Assert
 						expect(response.statusCode).toEqual(200);
 						expect(response.body.data.length).toBe(1);
 						expect(response.body.data[0]).toMatchObject({ id: insertedShape.id });
 						expect(response2.statusCode).toEqual(200);
 						expect(response.body.data).toEqual(response2.body.data);
+
+						expect(gqlResponse.statusCode).toBe(200);
+						expect(gqlResponse.body.data[localCollectionShapes].length).toBe(1);
+						expect(gqlResponse.body.data[localCollectionShapes][0]).toMatchObject({
+							id: String(insertedShape.id),
+						});
+						expect(gqlResponse2.statusCode).toBe(200);
+						expect(gqlResponse.body.data).toEqual(gqlResponse2.body.data);
 					});
 				});
 			});
@@ -424,6 +375,48 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							})
 							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
+						const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							query: {
+								[localCollectionShapes]: {
+									__args: {
+										filter: {
+											_and: [
+												{
+													name: { _starts_with: 'shape-m2a-top-fn-' },
+												},
+												{ children_func: { count: { _eq: 1 } } },
+											],
+										},
+									},
+									id: true,
+									children: {
+										id: true,
+									},
+								},
+							},
+						});
+
+						const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							query: {
+								[localCollectionShapes]: {
+									__args: {
+										filter: {
+											_and: [
+												{
+													name: { _starts_with: 'shape-m2a-top-fn-' },
+												},
+												{ children_func: { count: { _eq: 2 } } },
+											],
+										},
+									},
+									id: true,
+									children: {
+										id: true,
+									},
+								},
+							},
+						});
+
 						// Assert
 						expect(response.statusCode).toEqual(200);
 						expect(response.body.data.length).toBe(1);
@@ -433,6 +426,19 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						expect(response2.body.data.length).toBe(1);
 						expect(response2.body.data[0]).toMatchObject({ id: insertedShape2.id });
 						expect(response2.body.data[0].children.length).toBe(2);
+
+						expect(gqlResponse.statusCode).toBe(200);
+						expect(gqlResponse.body.data[localCollectionShapes].length).toBe(1);
+						expect(gqlResponse.body.data[localCollectionShapes][0]).toMatchObject({
+							id: String(insertedShape.id),
+						});
+						expect(gqlResponse.body.data[localCollectionShapes][0].children.length).toBe(1);
+						expect(gqlResponse2.statusCode).toBe(200);
+						expect(gqlResponse2.body.data[localCollectionShapes].length).toBe(1);
+						expect(gqlResponse2.body.data[localCollectionShapes][0]).toMatchObject({
+							id: String(insertedShape2.id),
+						});
+						expect(gqlResponse2.body.data[localCollectionShapes][0].children.length).toBe(2);
 					});
 				});
 
@@ -510,6 +516,58 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							})
 							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
+						const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							query: {
+								[localCollectionShapes]: {
+									__args: {
+										filter: {
+											_and: [
+												{ name: { _starts_with: 'shape-m2a-fn-' } },
+												{
+													children: {
+														[`item__${localCollectionCircles}`]: {
+															test_datetime_func: {
+																year: {
+																	_eq: years[0],
+																},
+															},
+														},
+													},
+												},
+											],
+										},
+									},
+									id: true,
+								},
+							},
+						});
+
+						const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							query: {
+								[localCollectionShapes]: {
+									__args: {
+										filter: {
+											_and: [
+												{ name: { _starts_with: 'shape-m2a-fn-' } },
+												{
+													children: {
+														[`item__${localCollectionCircles}`]: {
+															test_datetime_func: {
+																year: {
+																	_eq: years[1],
+																},
+															},
+														},
+													},
+												},
+											],
+										},
+									},
+									id: true,
+								},
+							},
+						});
+
 						// Assert
 						expect(response.statusCode).toEqual(200);
 						expect(response.body.data.length).toBe(1);
@@ -517,6 +575,17 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						expect(response2.statusCode).toEqual(200);
 						expect(response2.body.data.length).toBe(1);
 						expect(response2.body.data[0]).toMatchObject({ id: retrievedShapes[1][0].id });
+
+						expect(gqlResponse.statusCode).toBe(200);
+						expect(gqlResponse.body.data[localCollectionShapes].length).toBe(1);
+						expect(gqlResponse.body.data[localCollectionShapes][0]).toMatchObject({
+							id: String(retrievedShapes[0][0].id),
+						});
+						expect(gqlResponse2.statusCode).toBe(200);
+						expect(gqlResponse2.body.data[localCollectionShapes].length).toBe(1);
+						expect(gqlResponse2.body.data[localCollectionShapes][0]).toMatchObject({
+							id: String(retrievedShapes[1][0].id),
+						});
 					});
 				});
 			});
@@ -556,11 +625,42 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							})
 							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
+						const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							query: {
+								[localCollectionShapes]: {
+									__args: {
+										sort: 'name',
+										filter: { name: { _starts_with: 'shape-m2a-top-sort-' } },
+									},
+									id: true,
+								},
+							},
+						});
+
+						const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							query: {
+								[localCollectionShapes]: {
+									__args: {
+										sort: '-name',
+										filter: { name: { _starts_with: 'shape-m2a-top-sort-' } },
+									},
+									id: true,
+								},
+							},
+						});
+
 						// Assert
 						expect(response.statusCode).toEqual(200);
 						expect(response.body.data.length).toBe(5);
 						expect(response2.statusCode).toEqual(200);
 						expect(response.body.data).toEqual(response2.body.data.reverse());
+
+						expect(gqlResponse.statusCode).toEqual(200);
+						expect(gqlResponse.body.data[localCollectionShapes].length).toBe(5);
+						expect(gqlResponse2.statusCode).toEqual(200);
+						expect(gqlResponse.body.data[localCollectionShapes]).toEqual(
+							gqlResponse2.body.data[localCollectionShapes].reverse()
+						);
 					});
 				});
 
@@ -606,9 +706,36 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							})
 							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
+						const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							query: {
+								[localCollectionShapes]: {
+									__args: {
+										sort: `children.item:${localCollectionCircles}.name`,
+										filter: { name: { _starts_with: 'shape-m2a-sort-' } },
+									},
+									id: true,
+								},
+							},
+						});
+
+						const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							query: {
+								[localCollectionShapes]: {
+									__args: {
+										sort: `-children.item:${localCollectionCircles}.name`,
+										filter: { name: { _starts_with: 'shape-m2a-sort-' } },
+									},
+									id: true,
+								},
+							},
+						});
+
 						// Assert
 						expect(response.statusCode).toEqual(200);
 						expect(response2.statusCode).toEqual(200);
+
+						expect(gqlResponse.statusCode).toEqual(200);
+						expect(gqlResponse2.statusCode).toEqual(200);
 
 						// Oddity in MySQL5, looks to be indexing delays resulting in missing values
 						if (vendor === 'mysql5') {
@@ -623,11 +750,28 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									lastIndex = foundIndex;
 								}
 							}
+
+							lastIndex = -1;
+							for (const item of gqlResponse2.body.data[localCollectionShapes].reverse()) {
+								const foundIndex = findIndex(gqlResponse.body.data[localCollectionShapes], { id: item.id });
+								if (foundIndex === -1) continue;
+
+								expect(foundIndex).toBeGreaterThan(lastIndex);
+
+								if (foundIndex > lastIndex) {
+									lastIndex = foundIndex;
+								}
+							}
 							return;
 						}
 
 						expect(response.body.data.length).toBe(5);
 						expect(response.body.data).toEqual(response2.body.data.reverse());
+
+						expect(gqlResponse.body.data[localCollectionShapes].length).toBe(5);
+						expect(gqlResponse.body.data[localCollectionShapes]).toEqual(
+							gqlResponse2.body.data[localCollectionShapes].reverse()
+						);
 					});
 				});
 			});
@@ -668,11 +812,42 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							})
 							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
+						const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							query: {
+								[localCollectionShapes]: {
+									__args: {
+										sort: 'year(test_datetime)',
+										filter: { name: { _starts_with: 'shape-m2a-top-sort-fn-' } },
+									},
+									id: true,
+								},
+							},
+						});
+
+						const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							query: {
+								[localCollectionShapes]: {
+									__args: {
+										sort: '-year(test_datetime)',
+										filter: { name: { _starts_with: 'shape-m2a-top-sort-fn-' } },
+									},
+									id: true,
+								},
+							},
+						});
+
 						// Assert
 						expect(response.statusCode).toEqual(200);
 						expect(response.body.data.length).toBe(5);
 						expect(response2.statusCode).toEqual(200);
 						expect(response.body.data).toEqual(response2.body.data.reverse());
+
+						expect(gqlResponse.statusCode).toEqual(200);
+						expect(gqlResponse.body.data[localCollectionShapes].length).toBe(5);
+						expect(gqlResponse2.statusCode).toEqual(200);
+						expect(gqlResponse.body.data[localCollectionShapes]).toEqual(
+							gqlResponse2.body.data[localCollectionShapes].reverse()
+						);
 					});
 				});
 
@@ -717,9 +892,36 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							})
 							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
+						const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							query: {
+								[localCollectionShapes]: {
+									__args: {
+										sort: `children.item:${localCollectionCircles}.year(test_datetime)`,
+										filter: { name: { _starts_with: 'shape-m2a-sort-fn-' } },
+									},
+									id: true,
+								},
+							},
+						});
+
+						const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+							query: {
+								[localCollectionShapes]: {
+									__args: {
+										sort: `-children.item:${localCollectionCircles}.year(test_datetime)`,
+										filter: { name: { _starts_with: 'shape-m2a-sort-fn-' } },
+									},
+									id: true,
+								},
+							},
+						});
+
 						// Assert
 						expect(response.statusCode).toEqual(200);
 						expect(response2.statusCode).toEqual(200);
+
+						expect(gqlResponse.statusCode).toEqual(200);
+						expect(gqlResponse2.statusCode).toEqual(200);
 
 						// Oddity in MySQL5, looks to be indexing delays resulting in missing values
 						if (vendor === 'mysql5') {
@@ -734,11 +936,28 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									lastIndex = foundIndex;
 								}
 							}
+
+							lastIndex = -1;
+							for (const item of gqlResponse2.body.data[localCollectionShapes].reverse()) {
+								const foundIndex = findIndex(gqlResponse.body.data[localCollectionShapes], { id: item.id });
+								if (foundIndex === -1) continue;
+
+								expect(foundIndex).toBeGreaterThan(lastIndex);
+
+								if (foundIndex > lastIndex) {
+									lastIndex = foundIndex;
+								}
+							}
 							return;
 						}
 
 						expect(response.body.data.length).toBe(5);
 						expect(response.body.data).toEqual(response2.body.data.reverse());
+
+						expect(gqlResponse.body.data[localCollectionShapes].length).toBe(5);
+						expect(gqlResponse.body.data[localCollectionShapes]).toEqual(
+							gqlResponse2.body.data[localCollectionShapes].reverse()
+						);
 					});
 				});
 			});
@@ -775,128 +994,6 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				cachedSchema[pkType][localCollectionSquares],
 				vendorSchemaValues
 			);
-		});
-
-		describe('POST /:collection', () => {
-			describe('createOne', () => {
-				describe('creates one shape', () => {
-					it.each(vendors)('%s', async (vendor) => {
-						// Setup
-						const shape = createShape(pkType);
-
-						// Action
-						const response = await request(getUrl(vendor))
-							.post(`/items/${localCollectionShapes}`)
-							.send(shape)
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
-
-						// Assert
-						expect(response.statusCode).toEqual(200);
-						expect(response.body.data).toMatchObject({ name: shape.name });
-					});
-				});
-			});
-			describe('createMany', () => {
-				describe('creates 5 shapes', () => {
-					it.each(vendors)('%s', async (vendor) => {
-						// Setup
-						const shapes = [];
-						const shapesCount = 5;
-						for (let i = 0; i < shapesCount; i++) {
-							shapes.push(createShape(pkType));
-						}
-
-						// Action
-						const response = await request(getUrl(vendor))
-							.post(`/items/${localCollectionShapes}`)
-							.send(shapes)
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
-
-						// Assert
-						expect(response.statusCode).toEqual(200);
-						expect(response.body.data.length).toBe(shapesCount);
-					});
-				});
-			});
-			describe('Error handling', () => {
-				describe('returns an error when an invalid table is used', () => {
-					it.each(vendors)('%s', async (vendor) => {
-						// Setup
-						const shape = createShape(pkType);
-
-						// Action
-						const response = await request(getUrl(vendor))
-							.post(`/items/invalid_table`)
-							.send(shape)
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
-
-						// Assert
-						expect(response.statusCode).toBe(403);
-					});
-				});
-			});
-		});
-
-		describe('PATCH /:collection', () => {
-			describe('updates many shapes to a different name', () => {
-				it.each(vendors)('%s', async (vendor) => {
-					// Setup
-					const shapes = [];
-					const shapesCount = 5;
-					for (let i = 0; i < shapesCount; i++) {
-						shapes.push(createShape(pkType));
-					}
-
-					const insertedShapes = await CreateItem(vendor, { collection: localCollectionShapes, item: shapes });
-					const keys = Object.values(insertedShapes ?? []).map((item: any) => item.id);
-
-					const body = {
-						keys: keys,
-						data: { name: 'Johnny Cash' },
-					};
-
-					// Action
-					const response = await request(getUrl(vendor))
-						.patch(`/items/${localCollectionShapes}?fields=name`)
-						.send(body)
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
-
-					// Assert
-					expect(response.statusCode).toEqual(200);
-					for (let row = 0; row < response.body.data.length; row++) {
-						expect(response.body.data[row]).toMatchObject({
-							name: 'Johnny Cash',
-						});
-					}
-					expect(response.body.data.length).toBe(keys.length);
-				});
-			});
-		});
-
-		describe('DELETE /:collection', () => {
-			describe('deletes many shapes with no relations', () => {
-				it.each(vendors)('%s', async (vendor) => {
-					// Setup
-					const shapes = [];
-					const shapesCount = 10;
-					for (let i = 0; i < shapesCount; i++) {
-						shapes.push(createShape(pkType));
-					}
-
-					const insertedShapes = await CreateItem(vendor, { collection: localCollectionShapes, item: shapes });
-					const keys = Object.values(insertedShapes ?? []).map((item: any) => item.id);
-
-					// Action
-					const response = await request(getUrl(vendor))
-						.delete(`/items/${localCollectionShapes}`)
-						.send(keys)
-						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
-
-					// Assert
-					expect(response.statusCode).toEqual(204);
-					expect(response.body.data).toBe(undefined);
-				});
-			});
 		});
 	});
 });

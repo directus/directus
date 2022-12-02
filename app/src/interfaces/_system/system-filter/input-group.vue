@@ -75,7 +75,6 @@ import { clone, get } from 'lodash';
 import InputComponent from './input-component.vue';
 import { FieldFilter } from '@directus/shared/types';
 import { fieldToFilter, getComparator, getField } from './utils';
-import { translate } from '@/utils/translate-object-values';
 import { useRelationsStore } from '@/stores/relations';
 
 export default defineComponent({
