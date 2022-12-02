@@ -1,8 +1,10 @@
-import type { Storage, StorageManager } from '@directus/drive';
 import { getEnv } from '../env';
 import { getStorageDriver } from './get-storage-driver';
 
-export const registerDrivers = (storage: StorageManager) => {
+// @ts-expect-error https://github.com/microsoft/TypeScript/issues/49721
+import type { StorageManager } from '@directus/storage';
+
+export const registerDrivers = async (storage: StorageManager) => {
 	const env = getEnv();
 
 	const usedDrivers: string[] = [];
@@ -12,11 +14,11 @@ export const registerDrivers = (storage: StorageManager) => {
 		if (value && usedDrivers.includes(value) === false) usedDrivers.push(value);
 	}
 
-	usedDrivers.forEach((driver) => {
-		const storageDriver = getStorageDriver(driver);
+	for (const driverName of usedDrivers) {
+		const storageDriver = await getStorageDriver(driverName);
 
 		if (storageDriver) {
-			storage.registerDriver<Storage>(driver, storageDriver);
+			storage.registerDriver(driverName, storageDriver);
 		}
-	});
+	}
 };

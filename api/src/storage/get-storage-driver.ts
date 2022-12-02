@@ -1,20 +1,16 @@
-import { LocalFileSystemStorage } from '@directus/drive';
-import { AzureBlobWebServicesStorage } from '@directus/drive-azure';
-import { GoogleCloudStorage } from '@directus/drive-gcs';
-import { AmazonWebServicesS3Storage } from '@directus/drive-s3';
-import { CloudinaryStorage } from '@directus/drive-cloudinary';
+// @ts-expect-error https://github.com/microsoft/TypeScript/issues/49721
+import type { Driver } from '@directus/storage';
 
-export const getStorageDriver = (driver: string) => {
-	switch (driver) {
-		case 'local':
-			return LocalFileSystemStorage;
-		case 's3':
-			return AmazonWebServicesS3Storage;
-		case 'gcs':
-			return GoogleCloudStorage;
-		case 'azure':
-			return AzureBlobWebServicesStorage;
-		case 'cloudinary':
-			return CloudinaryStorage;
+export const getStorageDriver = async (driverName: string): Promise<typeof Driver> => {
+	const aliasMap: Record<string, string> = {
+		local: '@directus/storage-driver-local',
+	};
+
+	if (driverName in aliasMap) {
+		driverName = aliasMap[driverName];
+	} else {
+		throw new Error(`Driver "${driverName}" doesn't exist.`);
 	}
+
+	return (await import(driverName)).default;
 };

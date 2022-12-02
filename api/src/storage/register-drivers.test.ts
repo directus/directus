@@ -1,4 +1,6 @@
-import type { LocalFileSystemStorage, StorageManager } from '@directus/drive';
+// @ts-expect-error https://github.com/microsoft/TypeScript/issues/49721
+import type { Driver, StorageManager } from '@directus/storage';
+
 import { afterEach, expect, test, vi } from 'vitest';
 import { getEnv } from '../env';
 import { getStorageDriver } from './get-storage-driver';
@@ -49,12 +51,12 @@ test('Registers all drivers on the passed manager', () => {
 		registerDriver: vi.fn(),
 	} as unknown as StorageManager;
 
-	const mockDriverX = {} as typeof LocalFileSystemStorage;
-	const mockDriverY = {} as typeof LocalFileSystemStorage;
+	const mockDriverX = {} as typeof Driver;
+	const mockDriverY = {} as typeof Driver;
 
 	vi.mocked(getStorageDriver).mockImplementation((driver) => {
-		if (driver === 'x') return mockDriverX;
-		return mockDriverY;
+		if (driver === 'x') return Promise.resolve(mockDriverX);
+		return Promise.resolve(mockDriverY);
 	});
 
 	registerDrivers(mockStorageManager);
