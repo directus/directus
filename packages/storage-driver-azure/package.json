@@ -1,5 +1,5 @@
 {
-	"name": "@directus/storage-driver-local",
+	"name": "@directus/storage-driver-azure",
 	"version": "9.21.2",
 	"type": "module",
 	"scripts": {
@@ -9,11 +9,11 @@
 		"test:watch": "vitest",
 		"test:coverage": "vitest run --coverage"
 	},
-	"description": "Local file storage abstraction for `@directus/storage`",
+	"description": "Azure file storage abstraction for `@directus/storage`",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/directus/directus.git",
-		"directory": "packages/storage-driver-local"
+		"directory": "packages/storage-driver-azure"
 	},
 	"funding": "https://github.com/directus/directus?sponsor=1",
 	"license": "GPL-3.0",
@@ -31,6 +31,7 @@
 		"access": "public"
 	},
 	"dependencies": {
+		"@azure/storage-blob": "12.12.0",
 		"@directus/shared": "workspace:*",
 		"@directus/storage": "workspace:*"
 	},

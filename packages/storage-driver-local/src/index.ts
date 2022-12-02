@@ -2,8 +2,8 @@ import type { Driver, Range } from '@directus/storage';
 import { createReadStream, createWriteStream } from 'node:fs';
 import { access, copyFile, mkdir, opendir, readFile, rename, stat, unlink, writeFile } from 'node:fs/promises';
 import { dirname, join, relative, resolve, sep } from 'node:path';
-import { Readable } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
+import { isReadableStream } from '@directus/shared/utils/node';
 
 export type DriverLocalConfig = {
 	root: string;
@@ -82,7 +82,7 @@ export class DriverLocal implements Driver {
 		const fullPath = this.getFullPath(filepath);
 		await this.ensureDir(dirname(fullPath));
 
-		if (content instanceof Readable) {
+		if (isReadableStream(content)) {
 			const writeStream = createWriteStream(fullPath);
 			await pipeline(content, writeStream);
 		} else {
