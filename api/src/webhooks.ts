@@ -1,5 +1,3 @@
-import { get } from 'lodash';
-import axios from 'axios';
 import getDatabase from './database';
 import emitter from './emitter';
 import logger from './logger';
@@ -71,10 +69,6 @@ function createHandler(webhook: Webhook, event: string): ActionHandler {
 				: null,
 			...meta,
 		};
-
-		const skipCall = get(webhook, 'headers.skip-webhook-call') || get(webhookPayload, 'payload._skip_webhook_call');
-
-		if (skipCall) return;
 
 		try {
 			await axios({
