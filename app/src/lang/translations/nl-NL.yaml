@@ -669,7 +669,7 @@ placeholder: Tijdelijke plaatshouder
 icon_left: Icoon links
 icon_right: Icoon rechts
 count_other_revisions: '{count} andere rivisies'
-font: Letterype
+font: Lettertype
 sans_serif: Sans Serif
 serif: Serif
 monospace: Monospace
@@ -1122,7 +1122,7 @@ fields:
     auth_login_attempts: Login pogingen
     files_and_thumbnails: Bestanden & Opslag
     storage_default_folder: Standaard map
-    custom_css: Aangepastte CSS
+    custom_css: Aangepaste CSS
     module_bar: Modulebalk
   directus_shares:
     name: Naam
@@ -1180,6 +1180,7 @@ field_options:
     dropdown_dark: Donkere Modus
     admin_divider: Admin opties
     status_dropdown_draft: Concept
+    status_dropdown_invited: Uitgenodigd
     status_dropdown_active: Actief
     status_dropdown_archived: Gearchiveerd
   directus_webhooks:
@@ -1440,7 +1441,7 @@ displays:
     formatted-value: Opgemaakte waarde
     description: Een geformatteerde versie van de tekst weergeven
     format: Format
-    font: Letterype
+    font: Lettertype
     font_serif: Serif
     font_monospace: Monospace
     bold: Vetgedrukt

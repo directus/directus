@@ -1,6 +1,6 @@
 {
 	"name": "@directus/shared",
-	"version": "9.21.0",
+	"version": "9.21.2",
 	"description": "Code shared between all Directus packages",
 	"homepage": "https://directus.io",
 	"bugs": {
@@ -50,8 +50,9 @@
 	},
 	"files": [
 		"dist",
-		"!**/*.test.js",
-		"!**/*.d.ts.map"
+		"!**/*.test.{d.ts,js}",
+		"!**/*.d.ts.map",
+		"{,utils/}*.d.ts"
 	],
 	"scripts": {
 		"build": "concurrently --prefix-colors auto --passthrough-arguments \"pnpm:build:* {@}\"",

@@ -185,21 +185,18 @@ export default defineComponent({
 
 		async function deleteAndQuit() {
 			await remove();
-			await collectionsStore.hydrate();
-			await fieldsStore.hydrate();
+			await Promise.all([collectionsStore.hydrate(), fieldsStore.hydrate()]);
 			router.replace(`/settings/data-model`);
 		}
 
 		async function saveAndStay() {
 			await save();
-			await collectionsStore.hydrate();
-			await fieldsStore.hydrate();
+			await Promise.all([collectionsStore.hydrate(), fieldsStore.hydrate()]);
 		}
 
 		async function saveAndQuit() {
 			await save();
-			await collectionsStore.hydrate();
-			await fieldsStore.hydrate();
+			await Promise.all([collectionsStore.hydrate(), fieldsStore.hydrate()]);
 			router.push(`/settings/data-model`);
 		}
 
