@@ -1,7 +1,6 @@
 import argon2 from 'argon2';
 import { Router } from 'express';
 import Joi from 'joi';
-import { nanoid } from 'nanoid';
 import {
 	ForbiddenException,
 	InvalidPayloadException,
@@ -21,6 +20,8 @@ const router = Router();
 router.get(
 	'/random/string',
 	asyncHandler(async (req, res) => {
+		const { nanoid } = await import('nanoid');
+
 		if (req.query && req.query.length && Number(req.query.length) > 500)
 			throw new InvalidQueryException(`"length" can't be more than 500 characters`);
 
