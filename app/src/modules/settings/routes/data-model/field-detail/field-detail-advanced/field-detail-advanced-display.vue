@@ -1,20 +1,24 @@
 <template>
 	<div>
-		<v-fancy-select v-model="display" class="select" :items="selectItems" />
+		<v-skeleton-loader v-if="loading" />
+		<v-fancy-select v-else v-model="display" class="select" :items="selectItems" />
 
-		<v-notice v-if="display && !selectedDisplay" class="not-found" type="danger">
-			{{ t('display_not_found', { display: display }) }}
-			<div class="spacer" />
-			<button @click="display = null">{{ t('reset_display') }}</button>
-		</v-notice>
+		<v-skeleton-loader v-if="loading" />
+		<template v-else>
+			<v-notice v-if="display && !selectedDisplay" class="not-found" type="danger">
+				{{ t('display_not_found', { display: display }) }}
+				<div class="spacer" />
+				<button @click="display = null">{{ t('reset_display') }}</button>
+			</v-notice>
 
-		<extension-options
-			v-if="display && selectedDisplay"
-			v-model="options"
-			type="display"
-			:options="customOptionsFields"
-			:extension="display"
-		/>
+			<extension-options
+				v-if="display && selectedDisplay"
+				v-model="options"
+				type="display"
+				:options="customOptionsFields"
+				:extension="display"
+			/>
+		</template>
 	</div>
 </template>
 
@@ -34,7 +38,7 @@ export default defineComponent({
 
 		const fieldDetailStore = useFieldDetailStore();
 
-		const { field, displaysForType } = storeToRefs(fieldDetailStore);
+		const { loading, field, displaysForType } = storeToRefs(fieldDetailStore);
 
 		const interfaceId = computed(() => field.value.meta?.interface ?? null);
 		const display = syncFieldDetailStoreProperty('field.meta.display');
@@ -104,7 +108,7 @@ export default defineComponent({
 			},
 		});
 
-		return { t, selectItems, selectedDisplay, display, options, customOptionsFields };
+		return { t, loading, selectItems, selectedDisplay, display, options, customOptionsFields };
 	},
 });
 </script>
@@ -125,7 +129,8 @@ export default defineComponent({
 	}
 }
 
-.v-notice {
+.v-notice,
+.v-skeleton-loader {
 	margin-bottom: 36px;
 }
 </style>

@@ -72,7 +72,7 @@ export default async function runAST(
 		);
 
 		// The actual knex query builder instance. This is a promise that resolves with the raw items from the db
-		const dbQuery = getDBQuery(schema, knex, collection, fieldNodes, query);
+		const dbQuery = await getDBQuery(schema, knex, collection, fieldNodes, query);
 
 		const rawItems: Item | Item[] = await dbQuery;
 
@@ -236,20 +236,20 @@ function getColumnPreprocessor(knex: Knex, schema: SchemaOverview, table: string
 	};
 }
 
-function getDBQuery(
+async function getDBQuery(
 	schema: SchemaOverview,
 	knex: Knex,
 	table: string,
 	fieldNodes: (FieldNode | FunctionFieldNode)[],
 	query: Query
-): Knex.QueryBuilder {
+): Promise<Knex.QueryBuilder> {
 	const preProcess = getColumnPreprocessor(knex, schema, table);
 	const dbQuery = knex.select(fieldNodes.map(preProcess)).from(table);
 	const queryCopy = clone(query);
 
 	queryCopy.limit = typeof queryCopy.limit === 'number' ? queryCopy.limit : 100;
 
-	return applyQuery(knex, table, dbQuery, queryCopy, schema);
+	return await applyQuery(knex, table, dbQuery, queryCopy, schema);
 }
 
 function applyParentFilters(

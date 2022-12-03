@@ -4,7 +4,6 @@ import fse from 'fs-extra';
 import path from 'path';
 import qs from 'qs';
 import { ServerResponse } from 'http';
-import helmet from 'helmet';
 
 import activityRouter from './controllers/activity';
 import assetsRouter from './controllers/assets';
@@ -63,6 +62,8 @@ import { getConfigFromEnv } from './utils/get-config-from-env';
 import { merge } from 'lodash';
 
 export default async function createApp(): Promise<express.Application> {
+	const helmet = await import('helmet');
+
 	validateEnv(['KEY', 'SECRET']);
 
 	if (!new Url(env.PUBLIC_URL).isAbsolute()) {
