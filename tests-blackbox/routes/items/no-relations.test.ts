@@ -8,14 +8,20 @@ import { collectionArtists } from './no-relations.seed';
 import { requestGraphQL } from '@common/index';
 
 type Artist = {
-	id?: number;
+	id?: number | string;
 	name: string;
 };
 
-function createArtist(): Artist {
-	return {
+function createArtist(pkType: common.PrimaryKeyType): Artist {
+	const item: Artist = {
 		name: 'artist-' + uuid(),
 	};
+
+	if (pkType === 'string') {
+		item.id = 'artist-' + uuid();
+	}
+
+	return item;
 }
 
 describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
@@ -26,7 +32,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 			describe('retrieves one artist', () => {
 				it.each(vendors)('%s', async (vendor) => {
 					// Setup
-					const artist = createArtist();
+					const artist = createArtist(pkType);
 					const insertedArtist = await CreateItem(vendor, { collection: localCollectionArtists, item: artist });
 
 					// Action
@@ -85,7 +91,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						expect(response.statusCode).toBe(403);
 
 						expect(gqlResponse.statusCode).toBe(200);
-						if (vendor === 'sqlite3') {
+						if (vendor === 'sqlite3' || pkType !== 'integer') {
 							expect(gqlResponse.body.data[localCollectionArtists].length).toEqual(0);
 						} else {
 							expect(gqlResponse.body.errors).toBeDefined();
@@ -128,7 +134,10 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 			describe(`updates one artist's name`, () => {
 				it.each(vendors)('%s', async (vendor) => {
 					// Setup
-					const insertedArtist = await CreateItem(vendor, { collection: localCollectionArtists, item: createArtist() });
+					const insertedArtist = await CreateItem(vendor, {
+						collection: localCollectionArtists,
+						item: createArtist(pkType),
+					});
 					const body = { name: 'Tommy Cash' };
 
 					// Action
@@ -176,12 +185,12 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					// Setup
 					const insertedArtist = await CreateItem(vendor, {
 						collection: localCollectionArtists,
-						item: createArtist(),
+						item: createArtist(pkType),
 					});
 
 					const insertedArtist2 = await CreateItem(vendor, {
 						collection: localCollectionArtists,
-						item: createArtist(),
+						item: createArtist(pkType),
 					});
 
 					// Action
@@ -234,7 +243,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					const artists = [];
 					const artistsCount = 50;
 					for (let i = 0; i < artistsCount; i++) {
-						artists.push(createArtist());
+						artists.push(createArtist(pkType));
 					}
 					await CreateItem(vendor, { collection: localCollectionArtists, item: artists });
 
@@ -291,8 +300,8 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				describe('creates one artist', () => {
 					it.each(vendors)('%s', async (vendor) => {
 						// Setup
-						const artist = createArtist();
-						const artist2 = createArtist();
+						const artist = createArtist(pkType);
+						const artist2 = createArtist(pkType);
 
 						// Action
 						const response = await request(getUrl(vendor))
@@ -331,8 +340,8 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						const artists2 = [];
 						const artistsCount = 5;
 						for (let i = 0; i < artistsCount; i++) {
-							artists.push(createArtist());
-							artists2.push(createArtist());
+							artists.push(createArtist(pkType));
+							artists2.push(createArtist(pkType));
 						}
 
 						// Action
@@ -368,8 +377,8 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				describe('returns an error when an invalid table is used', () => {
 					it.each(vendors)('%s', async (vendor) => {
 						// Setup
-						const artist = createArtist();
-						const artist2 = createArtist();
+						const artist = createArtist(pkType);
+						const artist2 = createArtist(pkType);
 
 						// Action
 						const response = await request(getUrl(vendor))
@@ -407,7 +416,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					const artists = [];
 					const artistsCount = 5;
 					for (let i = 0; i < artistsCount; i++) {
-						artists.push(createArtist());
+						artists.push(createArtist(pkType));
 					}
 
 					const insertedArtists = await CreateItem(vendor, { collection: localCollectionArtists, item: artists });
@@ -468,8 +477,8 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					const artists2 = [];
 					const artistsCount = 10;
 					for (let i = 0; i < artistsCount; i++) {
-						artists.push(createArtist());
-						artists2.push(createArtist());
+						artists.push(createArtist(pkType));
+						artists2.push(createArtist(pkType));
 					}
 
 					const insertedArtists = await CreateItem(vendor, { collection: localCollectionArtists, item: artists });
