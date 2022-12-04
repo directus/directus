@@ -17,6 +17,7 @@ import { SettingsService } from './settings';
 import { stall } from '../utils/stall';
 import { performance } from 'perf_hooks';
 import { getSimpleHash } from '@directus/shared/utils';
+import { verifyJWT } from '../utils/jwt';
 
 export class UsersService extends ItemsService {
 	knex: Knex;
@@ -335,7 +336,7 @@ export class UsersService extends ItemsService {
 	}
 
 	async acceptInvite(token: string, password: string): Promise<void> {
-		const { email, scope } = jwt.verify(token, env.SECRET as string, { issuer: 'directus' }) as {
+		const { email, scope } = verifyJWT(token, env.SECRET as string) as {
 			email: string;
 			scope: string;
 		};
