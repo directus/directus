@@ -18,6 +18,7 @@ export const seedDBStructure = () => {
 					// Create artists collection
 					await CreateCollection(vendor, {
 						collection: localCollectionArtists,
+						primaryKeyType: pkType,
 						meta: {},
 						schema: {},
 					});
