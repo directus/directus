@@ -74,7 +74,7 @@ export default async function runAST(
 		);
 
 		// The actual knex query builder instance. This is a promise that resolves with the raw items from the db
-		const dbQuery = getDBQuery(schema, knex, collection, fieldNodes, query);
+		const dbQuery = await getDBQuery(schema, knex, collection, fieldNodes, query);
 
 		const rawItems: Item | Item[] = await dbQuery;
 
@@ -238,13 +238,13 @@ function getColumnPreprocessor(knex: Knex, schema: SchemaOverview, table: string
 	};
 }
 
-function getDBQuery(
+async function getDBQuery(
 	schema: SchemaOverview,
 	knex: Knex,
 	table: string,
 	fieldNodes: (FieldNode | FunctionFieldNode)[],
 	query: Query
-): Knex.QueryBuilder {
+): Promise<Knex.QueryBuilder> {
 	const preProcess = getColumnPreprocessor(knex, schema, table);
 	const queryCopy = clone(query);
 	const helpers = getHelpers(knex);
@@ -254,7 +254,7 @@ function getDBQuery(
 	// Queries with aggregates and groupBy will not have duplicate result
 	if (queryCopy.aggregate || queryCopy.group) {
 		const flatQuery = knex.select(fieldNodes.map(preProcess)).from(table);
-		return applyQuery(knex, table, flatQuery, queryCopy, schema).query;
+		return await applyQuery(knex, table, flatQuery, queryCopy, schema).query;
 	}
 
 	const primaryKey = schema.collections[table].primary;
@@ -272,7 +272,7 @@ function getDBQuery(
 		}
 	}
 
-	const { hasMultiRelationalFilter } = applyQuery(knex, table, dbQuery, queryCopy, schema, {
+	const { hasMultiRelationalFilter } = await applyQuery(knex, table, dbQuery, queryCopy, schema, {
 		aliasMap,
 		isInnerQuery: true,
 		hasMultiRelationalSort,
