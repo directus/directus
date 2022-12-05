@@ -338,10 +338,10 @@ export class ExportService {
 		}
 
 		if (format === 'csv') {
+			if (input.length === 0) return ''; // prevent CSVParser from erroring (issue #16719)
 			const parser = new CSVParser({
 				transforms: [CSVTransforms.flatten({ separator: '.' })],
 				header: options?.includeHeader !== false,
-				...(input.length > 0 ? {} : { fields: [] }), // prevent CSVParser from erroring (issue #16719)
 			});
 
 			let string = parser.parse(input);
