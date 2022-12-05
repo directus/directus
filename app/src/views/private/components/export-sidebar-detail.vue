@@ -134,7 +134,9 @@
 				<v-notice class="full" :type="lockedToFiles ? 'warning' : 'normal'">
 					<div>
 						<p>
-							<template v-if="itemCount === 0">{{ t('exporting_no_items_to_export') }}</template>
+							<template v-if="itemCount === 0 || exportSettings.limit === 0">
+								{{ t('exporting_no_items_to_export') }}
+							</template>
 
 							<template v-else-if="!exportSettings.limit || (itemCount && exportSettings.limit >= itemCount)">
 								{{
