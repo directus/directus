@@ -93,10 +93,8 @@ export class DriverAzure implements Driver {
 	}
 
 	async *list(prefix = '') {
-		const fullPrefix = this.fullPath(prefix);
-
 		const blobs = this.containerClient.listBlobsFlat({
-			prefix: fullPrefix,
+			prefix: this.fullPath(prefix),
 		});
 
 		for await (const blob of blobs) {

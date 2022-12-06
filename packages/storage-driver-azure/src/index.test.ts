@@ -752,3 +752,73 @@ describe('#delete', () => {
 		expect(mockDeleteIfExists).toHaveBeenCalled();
 	});
 });
+
+describe('#list', () => {
+	test('Uses listBlobsFlat at root path', async () => {
+		const driver = new DriverAzure({
+			containerName: 'test-container',
+			accountName: 'test-account-name',
+			accountKey: 'test-account-key',
+		});
+
+		const mockListBlobsFlat = vi.fn().mockReturnValue([]);
+
+		driver['containerClient'] = {
+			listBlobsFlat: mockListBlobsFlat,
+		} as unknown as ContainerClient;
+
+		driver['fullPath'] = vi.fn().mockReturnValue('root/');
+
+		await driver.list().next();
+
+		expect(driver['fullPath']).toHaveBeenCalledWith('');
+		expect(mockListBlobsFlat).toHaveBeenCalledWith({
+			prefix: 'root/',
+		});
+	});
+
+	test('Allows for optional prefix', async () => {
+		const driver = new DriverAzure({
+			containerName: 'test-container',
+			accountName: 'test-account-name',
+			accountKey: 'test-account-key',
+		});
+
+		const mockListBlobsFlat = vi.fn().mockReturnValue([]);
+
+		driver['containerClient'] = {
+			listBlobsFlat: mockListBlobsFlat,
+		} as unknown as ContainerClient;
+
+		driver['fullPath'] = vi.fn().mockReturnValue('root/optional-prefix');
+
+		await driver.list('optional-prefix').next();
+
+		expect(driver['fullPath']).toHaveBeenCalledWith('optional-prefix');
+		expect(mockListBlobsFlat).toHaveBeenCalledWith({
+			prefix: 'root/optional-prefix',
+		});
+	});
+
+	test('Returns blob.name for each returned blob', async () => {
+		const driver = new DriverAzure({
+			containerName: 'test-container',
+			accountName: 'test-account-name',
+			accountKey: 'test-account-key',
+		});
+
+		const mockListBlobsFlat = vi.fn().mockReturnValue([{ name: 'test-name' }]);
+
+		driver['containerClient'] = {
+			listBlobsFlat: mockListBlobsFlat,
+		} as unknown as ContainerClient;
+
+		const output = [];
+
+		for await (const filepath of driver.list()) {
+			output.push(filepath);
+		}
+
+		expect(output).toStrictEqual(['test-name']);
+	});
+});
