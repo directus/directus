@@ -53,7 +53,9 @@ export class DriverGCS implements Driver {
 		await this.file(src).move(this.file(dest));
 	}
 
-	async copy(src: string, dest: string) {}
+	async copy(src: string, dest: string) {
+		await this.file(src).copy(this.file(dest));
+	}
 
 	async put(filepath: string, content: Buffer | NodeJS.ReadableStream | string, type = 'application/octet-stream') {}
 
