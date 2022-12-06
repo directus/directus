@@ -61,3 +61,22 @@ describe('#constructor', () => {
 		expect(driver['bucket']).toBe(mockBucket);
 	});
 });
+
+describe('#fullPath', () => {
+	test('Returns normalized joined path', () => {
+		vi.mocked(join).mockReturnValue('root/path/to/file.txt');
+		vi.mocked(normalizePath).mockReturnValue('root/path/to/file.txt');
+
+		const driver = new DriverGCS({
+			bucket: 'test-bucket',
+		});
+
+		driver['root'] = 'root/';
+
+		const result = driver['fullPath']('/path/to/file.txt');
+
+		expect(join).toHaveBeenCalledWith('root/', '/path/to/file.txt');
+		expect(normalizePath).toHaveBeenCalledWith('root/path/to/file.txt');
+		expect(result).toBe('root/path/to/file.txt');
+	});
+});
