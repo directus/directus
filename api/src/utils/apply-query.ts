@@ -10,10 +10,10 @@ import {
 	Type,
 } from '@directus/shared/types';
 import { Knex } from 'knex';
-import { clone, isPlainObject, set } from 'lodash';
+import { clone, isPlainObject } from 'lodash';
 import { customAlphabet } from 'nanoid/non-secure';
 import validate from 'uuid-validate';
-import { AnyJsonHelper, getHelpers, getJsonHelper } from '../database/helpers';
+import { AnyJsonHelper, getHelpers } from '../database/helpers';
 import { InvalidQueryException } from '../exceptions/invalid-query';
 import { getColumn } from './get-column';
 import { AliasMap, getColumnPath } from './get-column-path';
@@ -22,7 +22,7 @@ import { getFilterOperatorsForType, getOutputTypeForFunction } from '@directus/s
 import { stripFunction } from './strip-function';
 
 // @ts-ignore
-const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
+export const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
 
 /**
  * Apply the Query to a given Knex query builder instance
