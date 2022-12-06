@@ -5,7 +5,9 @@ import type { ContainerClient } from '@azure/storage-blob';
 import { normalizePath } from '@directus/shared/utils';
 import { join } from 'node:path';
 import type { Readable } from 'node:stream';
+import { isReadableStream } from '@directus/shared/utils/node';
 
+vi.mock('@directus/shared/utils/node');
 vi.mock('@directus/shared/utils');
 vi.mock('@azure/storage-blob');
 vi.mock('node:path');
@@ -589,5 +591,115 @@ describe('#copy', () => {
 		await driver.copy('path/to/src.txt', 'path/to/dest.txt');
 
 		expect(mockPollUntilDone).toHaveBeenCalledOnce();
+	});
+});
+
+describe('#put', () => {
+	test('Gets BlockBlobClient for file path', async () => {
+		const driver = new DriverAzure({
+			containerName: 'test-container',
+			accountName: 'test-account-name',
+			accountKey: 'test-account-key',
+		});
+
+		const mockUploadStream = vi.fn();
+		const mockUpload = vi.fn();
+
+		const mockBlockBlobClient = vi.fn().mockReturnValue({
+			uploadStream: mockUploadStream,
+			upload: mockUpload,
+		});
+
+		driver['containerClient'] = {
+			getBlockBlobClient: mockBlockBlobClient,
+		} as unknown as ContainerClient;
+
+		driver['fullPath'] = vi.fn().mockReturnValue('root/path/to/file.txt');
+
+		await driver.put('path/to/file.txt', 'file-content');
+
+		expect(mockBlockBlobClient).toHaveBeenCalledWith('root/path/to/file.txt');
+	});
+
+	test('Uploads stream through uploadStream when readable stream is passed', async () => {
+		vi.mocked(isReadableStream).mockReturnValue(true);
+
+		const driver = new DriverAzure({
+			containerName: 'test-container',
+			accountName: 'test-account-name',
+			accountKey: 'test-account-key',
+		});
+
+		const mockUploadStream = vi.fn();
+		const mockUpload = vi.fn();
+
+		const mockBlockBlobClient = vi.fn().mockReturnValue({
+			uploadStream: mockUploadStream,
+			upload: mockUpload,
+		});
+
+		driver['containerClient'] = {
+			getBlockBlobClient: mockBlockBlobClient,
+		} as unknown as ContainerClient;
+
+		await driver.put('path/to/file.txt', 'file-content');
+
+		expect(mockUploadStream).toHaveBeenCalledWith('file-content', undefined, undefined, {
+			blobHTTPHeaders: { blobContentType: 'application/octet-stream' },
+		});
+	});
+
+	test('Allows optional mime type to be set', async () => {
+		vi.mocked(isReadableStream).mockReturnValue(true);
+
+		const driver = new DriverAzure({
+			containerName: 'test-container',
+			accountName: 'test-account-name',
+			accountKey: 'test-account-key',
+		});
+
+		const mockUploadStream = vi.fn();
+		const mockUpload = vi.fn();
+
+		const mockBlockBlobClient = vi.fn().mockReturnValue({
+			uploadStream: mockUploadStream,
+			upload: mockUpload,
+		});
+
+		driver['containerClient'] = {
+			getBlockBlobClient: mockBlockBlobClient,
+		} as unknown as ContainerClient;
+
+		await driver.put('path/to/file.txt', 'file-content', 'text/plain');
+
+		expect(mockUploadStream).toHaveBeenCalledWith('file-content', undefined, undefined, {
+			blobHTTPHeaders: { blobContentType: 'text/plain' },
+		});
+	});
+
+	test('Uses upload when buffer or string is passed', async () => {
+		vi.mocked(isReadableStream).mockReturnValue(false);
+
+		const driver = new DriverAzure({
+			containerName: 'test-container',
+			accountName: 'test-account-name',
+			accountKey: 'test-account-key',
+		});
+
+		const mockUploadStream = vi.fn();
+		const mockUpload = vi.fn();
+
+		const mockBlockBlobClient = vi.fn().mockReturnValue({
+			uploadStream: mockUploadStream,
+			upload: mockUpload,
+		});
+
+		driver['containerClient'] = {
+			getBlockBlobClient: mockBlockBlobClient,
+		} as unknown as ContainerClient;
+
+		await driver.put('path/to/file.txt', 'file-content', 'text/plain');
+
+		expect(mockUpload).toHaveBeenCalledWith('file-content', 'file-content'.length);
 	});
 });
