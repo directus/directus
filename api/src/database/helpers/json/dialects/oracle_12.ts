@@ -1,14 +1,14 @@
 import { Knex } from 'knex';
 import { JsonFieldNode } from '../../../../types';
 import { JsonHelperDefault } from './default';
-import { customAlphabet } from 'nanoid';
 import { getOperation } from '../../../../utils/apply-query';
 import { applyJsonFilterQuery } from '../filters';
 import { Item } from '@directus/shared/types';
 
-// ORACLE PREFERS SCREAMING CAPITALS
+// @ts-ignore
+import { customAlphabet } from 'nanoid/non-secure';
+// ORACLE PREFERS CAPITALS
 const generateAlias = customAlphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZ', 5);
-
 /**
  * To support first-level array queries consistently we will need to get to a query like:
 

@@ -1,11 +1,13 @@
 import { Knex } from 'knex';
 import { JsonFieldNode } from '../../../../types';
-import { customAlphabet } from 'nanoid';
 import { JsonHelperDefault } from './default';
 import { getOperation } from '../../../../utils/apply-query';
 import { applyJsonFilterQuery } from '../filters';
 import { Item } from '@directus/shared/types';
 
+// @ts-ignore
+import { customAlphabet } from 'nanoid/non-secure';
+// ORACLE PREFERS CAPITALS
 const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
 
 /**

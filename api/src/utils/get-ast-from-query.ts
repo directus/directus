@@ -8,9 +8,10 @@ import { AST, ASTNode, JsonFieldNode, NestedCollectionNode } from '../types';
 import { Query, PermissionsAction, Accountability, SchemaOverview } from '@directus/shared/types';
 import { getRelationType } from '../utils/get-relation-type';
 import { stripFunction } from './strip-function';
-import { customAlphabet } from 'nanoid';
 import { parseJsonFunction } from './parse-json-function';
 
+// @ts-ignore
+import { customAlphabet } from 'nanoid/non-secure';
 const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
 
 type GetASTOptions = {

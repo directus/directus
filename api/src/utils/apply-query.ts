@@ -11,7 +11,6 @@ import {
 } from '@directus/shared/types';
 import { Knex } from 'knex';
 import { clone, isPlainObject } from 'lodash';
-import { customAlphabet } from 'nanoid/non-secure';
 import validate from 'uuid-validate';
 import { AnyJsonHelper, getHelpers } from '../database/helpers';
 import { InvalidQueryException } from '../exceptions/invalid-query';
@@ -22,6 +21,7 @@ import { getFilterOperatorsForType, getOutputTypeForFunction } from '@directus/s
 import { stripFunction } from './strip-function';
 
 // @ts-ignore
+import { customAlphabet } from 'nanoid/non-secure';
 export const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
 
 /**
