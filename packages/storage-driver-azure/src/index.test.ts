@@ -108,23 +108,7 @@ describe('#constructor', () => {
 			root: testRoot,
 		});
 
-		expect(normalizePath).toHaveBeenCalledWith(testRoot);
-	});
-
-	test('Removes leading / character in path', () => {
-		const testRoot = '\\custom\\root\\path';
-		const mockRoot = '/custom/root/path';
-
-		vi.mocked(normalizePath).mockReturnValue(mockRoot);
-
-		const driver = new DriverAzure({
-			containerName: 'test-container',
-			accountName: 'test-account-name',
-			accountKey: 'test-account-key',
-			root: testRoot,
-		});
-
-		expect(driver['root']).toBe('custom/root/path');
+		expect(normalizePath).toHaveBeenCalledWith(testRoot, { removeLeading: true });
 	});
 });
 

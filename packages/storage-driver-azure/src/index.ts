@@ -27,7 +27,7 @@ export class DriverAzure implements Driver {
 		);
 
 		this.containerClient = client.getContainerClient(config.containerName);
-		this.root = config.root ? normalizePath(config.root).replace(/^\//, '') : '';
+		this.root = config.root ? normalizePath(config.root, { removeLeading: true }) : '';
 	}
 
 	private fullPath(filepath: string) {
