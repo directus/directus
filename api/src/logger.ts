@@ -14,14 +14,32 @@ const pinoOptions: LoggerOptions = {
 		censor: '--redact--',
 	},
 };
+const httpLoggerOptions: LoggerOptions = {
+	level: env.LOG_LEVEL || 'info',
+	redact: {
+		paths: ['req.headers.authorization', `req.cookies.${env.REFRESH_TOKEN_COOKIE_NAME}`],
+		censor: '--redact--',
+	},
+};
 
 if (env.LOG_STYLE !== 'raw') {
 	pinoOptions.transport = {
+		target: 'pino-pretty',
+		options: {
+			ignore: 'hostname,pid',
+			sync: true,
+		},
+	};
+	httpLoggerOptions.transport = {
 		target: 'pino-http-print',
 		options: {
 			all: true,
 			translateTime: 'SYS:HH:MM:ss',
 			relativeUrl: true,
+			prettyOptions: {
+				ignore: 'hostname,pid',
+				sync: true,
+			},
 		},
 	};
 }
@@ -45,6 +63,14 @@ if (loggerEnvConfig.levels) {
 			};
 		},
 	};
+	httpLoggerOptions.formatters = {
+		level(label: string, number: any) {
+			return {
+				severity: customLogLevels[label] || 'info',
+				level: number,
+			};
+		},
+	};
 
 	delete loggerEnvConfig.levels;
 }
@@ -54,7 +80,7 @@ const logger = pino(merge(pinoOptions, loggerEnvConfig));
 const httpLoggerEnvConfig = getConfigFromEnv('LOGGER_HTTP', ['LOGGER_HTTP_LOGGER']);
 
 export const expressLogger = pinoHTTP({
-	logger,
+	logger: pino(merge(httpLoggerOptions, loggerEnvConfig)),
 	...httpLoggerEnvConfig,
 	serializers: {
 		req(request: Request) {

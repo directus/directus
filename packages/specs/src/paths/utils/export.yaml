@@ -22,7 +22,7 @@ post:
               $ref: '../../openapi.yaml#/components/schemas/Query'
             file:
               $ref: '../../openapi.yaml#/components/schemas/Files'
-          required: ['format','query','file']
+          required: ['format', 'query', 'file']
   responses:
     '200':
       description: Successful request
