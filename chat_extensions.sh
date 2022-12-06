@@ -3,8 +3,6 @@
 DIRECTUS_DIR="/directus/api"
 DIRECTUS_EXTENSIONS="${DIRECTUS_DIR}/extensions"
 DIRECTUS_INTERFACES="${DIRECTUS_EXTENSIONS}/interfaces"
-DIRECTUS_MODULES="${DIRECTUS_EXTENSIONS}/modules"
-DIRECTUS_DISPLAYS="${DIRECTUS_EXTENSIONS}/displays"
 
 # Install crawless custom chat extensions
 # Download from project: https://gitlab.com/crawless/directus-custom-extensions
