@@ -493,3 +493,101 @@ describe('#move', () => {
 		expect(mockDeleteIfExists).toHaveBeenCalledOnce();
 	});
 });
+
+describe('#copy', () => {
+	test('Gets BlockBlobClient for src and dest', async () => {
+		const driver = new DriverAzure({
+			containerName: 'test-container',
+			accountName: 'test-account-name',
+			accountKey: 'test-account-key',
+		});
+
+		const mockBeginCopyFromUrl = vi.fn().mockResolvedValue({
+			pollUntilDone: vi.fn(),
+		});
+
+		const mockBlockBlobClient = vi.fn().mockReturnValue({
+			beginCopyFromURL: mockBeginCopyFromUrl,
+		});
+
+		driver['containerClient'] = {
+			getBlockBlobClient: mockBlockBlobClient,
+		} as unknown as ContainerClient;
+
+		driver['fullPath'] = vi
+			.fn()
+			.mockReturnValueOnce('root/path/to/src.txt')
+			.mockReturnValueOnce('root/path/to/dest.txt');
+
+		await driver.copy('path/to/src.txt', 'path/to/dest.txt');
+
+		expect(driver['fullPath']).toHaveBeenCalledTimes(2);
+		expect(driver['fullPath']).toHaveBeenCalledWith('path/to/src.txt');
+		expect(driver['fullPath']).toHaveBeenCalledWith('path/to/dest.txt');
+
+		expect(mockBlockBlobClient).toHaveBeenCalledTimes(2);
+		expect(mockBlockBlobClient).toHaveBeenCalledWith('root/path/to/src.txt');
+		expect(mockBlockBlobClient).toHaveBeenCalledWith('root/path/to/dest.txt');
+	});
+
+	test('Calls beginCopyFromUrl with source url', async () => {
+		const driver = new DriverAzure({
+			containerName: 'test-container',
+			accountName: 'test-account-name',
+			accountKey: 'test-account-key',
+		});
+
+		const mockBeginCopyFromUrl = vi.fn().mockResolvedValue({
+			pollUntilDone: vi.fn(),
+		});
+
+		const mockBlockBlobClient = vi
+			.fn()
+			.mockReturnValueOnce({
+				url: 'source-url',
+			})
+			.mockReturnValueOnce({
+				beginCopyFromURL: mockBeginCopyFromUrl,
+			});
+
+		driver['containerClient'] = {
+			getBlockBlobClient: mockBlockBlobClient,
+		} as unknown as ContainerClient;
+
+		await driver.copy('path/to/src.txt', 'path/to/dest.txt');
+
+		expect(mockBeginCopyFromUrl).toHaveBeenCalledOnce();
+		expect(mockBeginCopyFromUrl).toHaveBeenCalledWith('source-url');
+	});
+
+	test('Waits for the polling to be done', async () => {
+		const driver = new DriverAzure({
+			containerName: 'test-container',
+			accountName: 'test-account-name',
+			accountKey: 'test-account-key',
+		});
+
+		const mockPollUntilDone = vi.fn();
+
+		const mockBeginCopyFromUrl = vi.fn().mockResolvedValue({
+			pollUntilDone: mockPollUntilDone,
+		});
+
+		const mockBlockBlobClient = vi
+			.fn()
+			.mockReturnValueOnce({
+				url: 'source-url',
+			})
+			.mockReturnValueOnce({
+				beginCopyFromURL: mockBeginCopyFromUrl,
+			});
+
+		driver['containerClient'] = {
+			getBlockBlobClient: mockBlockBlobClient,
+		} as unknown as ContainerClient;
+
+		await driver.copy('path/to/src.txt', 'path/to/dest.txt');
+
+		expect(mockPollUntilDone).toHaveBeenCalledOnce();
+	});
+});

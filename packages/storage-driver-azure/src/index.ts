@@ -69,11 +69,8 @@ export class DriverAzure implements Driver {
 	}
 
 	async copy(src: string, dest: string) {
-		const fullSrc = this.fullPath(src);
-		const fullDest = this.fullPath(dest);
-
-		const source = this.containerClient.getBlockBlobClient(fullSrc);
-		const target = this.containerClient.getBlockBlobClient(fullDest);
+		const source = this.containerClient.getBlockBlobClient(this.fullPath(src));
+		const target = this.containerClient.getBlockBlobClient(this.fullPath(dest));
 
 		const poller = await target.beginCopyFromURL(source.url);
 		await poller.pollUntilDone();
