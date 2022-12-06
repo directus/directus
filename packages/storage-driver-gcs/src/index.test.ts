@@ -471,3 +471,32 @@ describe('#put', () => {
 		expect(mockSave).toHaveBeenCalledWith('file-content', { resumable: false });
 	});
 });
+
+describe('#delete', () => {
+	test('Gets file reference', async () => {
+		const driver = new DriverGCS({
+			bucket: 'test-bucket',
+		});
+
+		driver['file'] = vi.fn().mockReturnValue({ delete: vi.fn() });
+
+		await driver.delete('/path/to/file');
+
+		expect(driver['file']).toHaveBeenCalledWith('/path/to/file');
+	});
+
+	test('Calls exists on file', async () => {
+		const driver = new DriverGCS({
+			bucket: 'test-bucket',
+		});
+
+		const mockFile = { delete: vi.fn() };
+
+		driver['file'] = vi.fn().mockReturnValue(mockFile);
+
+		await driver.delete('/path/to/file');
+
+		expect(mockFile.delete).toHaveBeenCalledOnce();
+		expect(mockFile.delete).toHaveBeenCalledWith();
+	});
+});

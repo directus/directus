@@ -68,7 +68,9 @@ export class DriverGCS implements Driver {
 		}
 	}
 
-	async delete(filepath: string) {}
+	async delete(filepath: string) {
+		await this.file(filepath).delete();
+	}
 
 	async *list(prefix = '') {}
 }
