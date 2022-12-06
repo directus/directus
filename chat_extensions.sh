@@ -15,4 +15,4 @@ unzip directus-custom-extensions-release.zip
 ls -la ./directus-custom-extensions-release
 
 cp -r ./directus-custom-extensions-release/chat ${DIRECTUS_INTERFACES}
-mv -v ./directus-custom-extensions-release/chat/migrations ${DIRECTUS_EXTENSIONS}
+cp -r ./directus-custom-extensions-release/chat/migrations/* ${DIRECTUS_EXTENSIONS}/migrations
