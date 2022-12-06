@@ -70,8 +70,10 @@ export default async function runAST(
 		);
 		const jsonHelper = jsonNodes.length > 0 ? getJsonHelper(knex, schema, jsonNodes) : undefined;
 		// The actual knex query builder instance. This is a promise that resolves with the raw items from the db
-		const dbQuery = getDBQuery(schema, knex, collection, [...fieldNodes, ...jsonNodes], query, jsonHelper);
+
+		const dbQuery = await getDBQuery(schema, knex, collection, [...fieldNodes, ...jsonNodes], query, jsonHelper);
 		// console.log(`[QUERY]`, dbQuery.toQuery());
+
 		const rawItems: Item | Item[] = await dbQuery;
 
 		if (!rawItems) return null;
@@ -239,14 +241,14 @@ function getColumnPreprocessor(knex: Knex, schema: SchemaOverview, table: string
 	};
 }
 
-function getDBQuery(
+async function getDBQuery(
 	schema: SchemaOverview,
 	knex: Knex,
 	table: string,
 	fieldNodes: (FieldNode | FunctionFieldNode | JsonFieldNode)[],
 	query: Query,
 	jsonHelper?: AnyJsonHelper
-): Knex.QueryBuilder {
+): Promise<Knex.QueryBuilder> {
 	const preProcess = getColumnPreprocessor(knex, schema, table);
 	const queryCopy = clone(query);
 	const helpers = getHelpers(knex);
@@ -263,7 +265,7 @@ function getDBQuery(
 	// Queries with aggregates and groupBy will not have duplicate result
 	if (queryCopy.aggregate || queryCopy.group) {
 		const flatQuery = knex.select(regularNodes.map(preProcess)).from(table);
-		return applyQuery(knex, table, flatQuery, queryCopy, schema).query;
+		return await applyQuery(knex, table, flatQuery, queryCopy, schema).query;
 	}
 
 	const primaryKey = schema.collections[table].primary;
