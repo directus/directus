@@ -28,7 +28,13 @@ export class DriverGCS implements Driver {
 		return normalizePath(join(this.root, filepath));
 	}
 
-	async getStream(filepath: string, range?: Range) {}
+	private file(filepath: string) {
+		return this.bucket.file(this.fullPath(filepath));
+	}
+
+	async getStream(filepath: string, range?: Range) {
+		return this.file(filepath).createReadStream(range);
+	}
 
 	async getBuffer(filepath: string) {}
 
