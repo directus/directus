@@ -315,3 +315,39 @@ describe('#exists', () => {
 		expect(result).toBe(true);
 	});
 });
+
+describe('#move', () => {
+	test('Gets file references', async () => {
+		const driver = new DriverGCS({
+			bucket: 'test-bucket',
+		});
+
+		driver['file'] = vi.fn().mockReturnValue({ move: vi.fn() });
+
+		await driver.move('/path/to/src', '/path/to/dest');
+
+		expect(driver['file']).toHaveBeenCalledWith('/path/to/src');
+		expect(driver['file']).toHaveBeenCalledWith('/path/to/dest');
+	});
+
+	test('Passes dest file ref to move function', async () => {
+		const driver = new DriverGCS({
+			bucket: 'test-bucket',
+		});
+
+		const mockFileSrc = { move: vi.fn() };
+		const mockFileDest = {};
+
+		driver['file'] = vi.fn().mockImplementation((path) => {
+			if (path === '/path/to/dest') {
+				return mockFileDest;
+			}
+
+			return mockFileSrc;
+		});
+
+		await driver.move('/path/to/src', '/path/to/dest');
+
+		expect(mockFileSrc.move).toHaveBeenCalledWith(mockFileDest);
+	});
+});

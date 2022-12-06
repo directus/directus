@@ -49,7 +49,9 @@ export class DriverGCS implements Driver {
 		return (await this.file(filepath).exists())[0];
 	}
 
-	async move(src: string, dest: string) {}
+	async move(src: string, dest: string) {
+		await this.file(src).move(this.file(dest));
+	}
 
 	async copy(src: string, dest: string) {}
 
