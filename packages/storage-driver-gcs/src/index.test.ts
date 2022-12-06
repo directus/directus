@@ -171,3 +171,48 @@ describe('#getStream', () => {
 		expect(mockFile.createReadStream).toHaveBeenCalledWith({ end: 1500 });
 	});
 });
+
+describe('#getBuffer', () => {
+	test('Gets file reference', async () => {
+		const driver = new DriverGCS({
+			bucket: 'test-bucket',
+		});
+
+		driver['file'] = vi.fn().mockReturnValue({ download: vi.fn().mockResolvedValue([]) });
+
+		driver.getBuffer('/path/to/file');
+
+		expect(driver['file']).toHaveBeenCalledWith('/path/to/file');
+	});
+
+	test('Calls download on file', async () => {
+		const driver = new DriverGCS({
+			bucket: 'test-bucket',
+		});
+
+		const mockFile = { download: vi.fn().mockResolvedValue([]) };
+
+		driver['file'] = vi.fn().mockReturnValue(mockFile);
+
+		driver.getBuffer('/path/to/file');
+
+		expect(mockFile.download).toHaveBeenCalledOnce();
+		expect(mockFile.download).toHaveBeenCalledWith();
+	});
+
+	test('Returns buffer from response array', async () => {
+		const driver = new DriverGCS({
+			bucket: 'test-bucket',
+		});
+
+		const mockBuffer = {};
+
+		const mockFile = { download: vi.fn().mockResolvedValue([mockBuffer]) };
+
+		driver['file'] = vi.fn().mockReturnValue(mockFile);
+
+		const result = await driver.getBuffer('/path/to/file');
+
+		expect(result).toBe(mockBuffer);
+	});
+});

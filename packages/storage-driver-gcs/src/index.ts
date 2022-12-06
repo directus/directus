@@ -36,7 +36,9 @@ export class DriverGCS implements Driver {
 		return this.file(filepath).createReadStream(range);
 	}
 
-	async getBuffer(filepath: string) {}
+	async getBuffer(filepath: string) {
+		return (await this.file(filepath).download())[0];
+	}
 
 	async getStat(filepath: string) {}
 
