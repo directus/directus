@@ -27,3 +27,7 @@ for (const [before, after] of cases) {
 		expect(normalizePath(before)).toBe(after);
 	});
 }
+
+test('Strips leading when option is set', () => {
+	expect(normalizePath('/test', { removeLeading: true })).toBe('test');
+});
