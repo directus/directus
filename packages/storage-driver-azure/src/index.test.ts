@@ -1,11 +1,11 @@
-import { describe, test, expect, vi, afterEach } from 'vitest';
-import { DriverAzure } from './index.js';
-import { BlobServiceClient, StorageSharedKeyCredential } from '@azure/storage-blob';
 import type { ContainerClient } from '@azure/storage-blob';
+import { BlobServiceClient, StorageSharedKeyCredential } from '@azure/storage-blob';
 import { normalizePath } from '@directus/shared/utils';
+import { isReadableStream } from '@directus/shared/utils/node';
 import { join } from 'node:path';
 import type { Readable } from 'node:stream';
-import { isReadableStream } from '@directus/shared/utils/node';
+import { afterEach, describe, expect, test, vi } from 'vitest';
+import { DriverAzure } from './index.js';
 
 vi.mock('@directus/shared/utils/node');
 vi.mock('@directus/shared/utils');
@@ -701,5 +701,54 @@ describe('#put', () => {
 		await driver.put('path/to/file.txt', 'file-content', 'text/plain');
 
 		expect(mockUpload).toHaveBeenCalledWith('file-content', 'file-content'.length);
+	});
+});
+
+describe('#delete', () => {
+	test('Uses blobClient at full path', async () => {
+		const driver = new DriverAzure({
+			containerName: 'test-container',
+			accountName: 'test-account-name',
+			accountKey: 'test-account-key',
+		});
+
+		const mockDeleteIfExists = vi.fn().mockResolvedValue({});
+
+		const mockBlockBlobClient = vi.fn().mockReturnValue({
+			deleteIfExists: mockDeleteIfExists,
+		});
+
+		driver['containerClient'] = {
+			getBlockBlobClient: mockBlockBlobClient,
+		} as unknown as ContainerClient;
+
+		driver['fullPath'] = vi.fn().mockReturnValue('root/path/to/file.txt');
+
+		await driver.delete('/path/to/file.txt');
+
+		expect(driver['fullPath']).toHaveBeenCalledWith('/path/to/file.txt');
+		expect(driver['containerClient'].getBlockBlobClient).toHaveBeenCalledWith('root/path/to/file.txt');
+	});
+
+	test('Returns delete result', async () => {
+		const driver = new DriverAzure({
+			containerName: 'test-container',
+			accountName: 'test-account-name',
+			accountKey: 'test-account-key',
+		});
+
+		const mockDeleteIfExists = vi.fn().mockResolvedValue(true);
+
+		const mockBlockBlobClient = vi.fn().mockReturnValue({
+			deleteIfExists: mockDeleteIfExists,
+		});
+
+		driver['containerClient'] = {
+			getBlockBlobClient: mockBlockBlobClient,
+		} as unknown as ContainerClient;
+
+		await driver.delete('/path/to/file.txt');
+
+		expect(mockDeleteIfExists).toHaveBeenCalled();
 	});
 });
