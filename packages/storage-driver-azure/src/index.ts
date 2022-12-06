@@ -47,8 +47,7 @@ export class DriverAzure implements Driver {
 	}
 
 	async getBuffer(filepath: string) {
-		const client = this.containerClient.getBlobClient(this.fullPath(filepath));
-		return await client.downloadToBuffer();
+		return await this.containerClient.getBlobClient(this.fullPath(filepath)).downloadToBuffer();
 	}
 
 	async getStat(filepath: string) {

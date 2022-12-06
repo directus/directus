@@ -186,8 +186,6 @@ describe('#getStream', () => {
 			getBlobClient: mockBlobClient,
 		} as unknown as ContainerClient;
 
-		driver['fullPath'] = vi.fn().mockReturnValue('root/path/to/file.txt');
-
 		await driver.getStream('/path/to/file.txt');
 
 		expect(mockDownload).toHaveBeenCalledWith(undefined, undefined);
@@ -209,8 +207,6 @@ describe('#getStream', () => {
 		driver['containerClient'] = {
 			getBlobClient: mockBlobClient,
 		} as unknown as ContainerClient;
-
-		driver['fullPath'] = vi.fn().mockReturnValue('root/path/to/file.txt');
 
 		await driver.getStream('/path/to/file.txt', { start: 500 });
 
@@ -234,8 +230,6 @@ describe('#getStream', () => {
 			getBlobClient: mockBlobClient,
 		} as unknown as ContainerClient;
 
-		driver['fullPath'] = vi.fn().mockReturnValue('root/path/to/file.txt');
-
 		await driver.getStream('/path/to/file.txt', { end: 1500 });
 
 		expect(mockDownload).toHaveBeenCalledWith(undefined, 1500);
@@ -257,8 +251,6 @@ describe('#getStream', () => {
 		driver['containerClient'] = {
 			getBlobClient: mockBlobClient,
 		} as unknown as ContainerClient;
-
-		driver['fullPath'] = vi.fn().mockReturnValue('root/path/to/file.txt');
 
 		await driver.getStream('/path/to/file.txt', { start: 500, end: 1500 });
 
@@ -282,10 +274,60 @@ describe('#getStream', () => {
 			getBlobClient: mockBlobClient,
 		} as unknown as ContainerClient;
 
-		driver['fullPath'] = vi.fn().mockReturnValue('root/path/to/file.txt');
-
 		expect(driver.getStream('/path/to/file.txt')).rejects.toThrowErrorMatchingInlineSnapshot(
 			'"No stream returned for file \\"/path/to/file.txt\\""'
 		);
+	});
+});
+
+describe('#getBuffer', () => {
+	test('Uses blobClient at full path', async () => {
+		const driver = new DriverAzure({
+			containerName: 'test-container',
+			accountName: 'test-account-name',
+			accountKey: 'test-account-key',
+		});
+
+		const mockDownload = vi.fn().mockReturnValue({});
+
+		const mockBlobClient = vi.fn().mockReturnValue({
+			downloadToBuffer: mockDownload,
+		});
+
+		driver['containerClient'] = {
+			getBlobClient: mockBlobClient,
+		} as unknown as ContainerClient;
+
+		driver['fullPath'] = vi.fn().mockReturnValue('root/path/to/file.txt');
+
+		await driver.getBuffer('/path/to/file.txt');
+
+		expect(driver['fullPath']).toHaveBeenCalledWith('/path/to/file.txt');
+		expect(driver['containerClient'].getBlobClient).toHaveBeenCalledWith('root/path/to/file.txt');
+	});
+
+	test('Returns downloadToBuffer result', async () => {
+		const driver = new DriverAzure({
+			containerName: 'test-container',
+			accountName: 'test-account-name',
+			accountKey: 'test-account-key',
+		});
+
+		const mockBuffer = {};
+
+		const mockDownload = vi.fn().mockReturnValue(mockBuffer);
+
+		const mockBlobClient = vi.fn().mockReturnValue({
+			downloadToBuffer: mockDownload,
+		});
+
+		driver['containerClient'] = {
+			getBlobClient: mockBlobClient,
+		} as unknown as ContainerClient;
+
+		const result = await driver.getBuffer('/path/to/file.txt');
+
+		expect(mockDownload).toHaveBeenCalled();
+		expect(result).toBe(mockBuffer);
 	});
 });
