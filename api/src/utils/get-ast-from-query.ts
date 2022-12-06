@@ -173,7 +173,7 @@ export default async function getASTFromQuery(
 					}
 				}
 			} else if (isFunction) {
-				const columnName = stripFunction(fieldKey); //fieldKey.match(REGEX_BETWEEN_PARENS)![1];
+				const columnName = stripFunction(fieldKey);
 				const foundField = schema.collections[parentCollection].fields[columnName];
 
 				if (foundField && foundField.type === 'alias') {
@@ -206,9 +206,12 @@ export default async function getASTFromQuery(
 						}
 						(relationalStructure[rootField] as string[]).push(childKey);
 						if (query.alias?.[fieldKey]) {
+							const relatedField = subField.includes('.')
+								? subField.substring(subField.lastIndexOf('.') + 1)
+								: subField;
+							const newFunc = `json(${relatedField}${jsonPath})`;
 							delete query.alias[fieldKey];
-							jsonAlias[childKey] = fieldKey;
-							// this needs a better solution
+							jsonAlias[newFunc] = fieldKey;
 						}
 					} else {
 						const deepKey = query.alias?.[fieldKey] ? fieldKey : jsonAlias[name];
