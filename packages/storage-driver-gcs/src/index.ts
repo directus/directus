@@ -1,7 +1,7 @@
 import { normalizePath } from '@directus/shared/utils';
 import { isReadableStream } from '@directus/shared/utils/node';
 import type { Driver, Range } from '@directus/storage';
-import type { Bucket, StorageOptions } from '@google-cloud/storage';
+import type { Bucket, GetFilesOptions, StorageOptions } from '@google-cloud/storage';
 import { Storage } from '@google-cloud/storage';
 import { join } from 'node:path';
 import { pipeline } from 'node:stream/promises';
@@ -72,7 +72,23 @@ export class DriverGCS implements Driver {
 		await this.file(filepath).delete();
 	}
 
-	async *list(prefix = '') {}
+	async *list(prefix = '') {
+		let query: GetFilesOptions = {
+			prefix: this.fullPath(prefix),
+			autoPaginate: false,
+			maxResults: 500,
+		};
+
+		while (query) {
+			const [files, nextQuery] = await this.bucket.getFiles(query);
+
+			for (const file of files) {
+				yield file.name.substring(this.root.length);
+			}
+
+			query = nextQuery;
+		}
+	}
 }
 
 export default DriverGCS;

@@ -13,7 +13,7 @@ vi.mock('node:path');
 vi.mock('node:stream/promises');
 
 afterEach(() => {
-	vi.clearAllMocks();
+	vi.resetAllMocks();
 });
 
 describe('#constructor', () => {
@@ -498,5 +498,50 @@ describe('#delete', () => {
 
 		expect(mockFile.delete).toHaveBeenCalledOnce();
 		expect(mockFile.delete).toHaveBeenCalledWith();
+	});
+});
+
+describe('#list', () => {
+	test('Calls getFiles with correct options', async () => {
+		const driver = new DriverGCS({
+			bucket: 'test-bucket',
+		});
+
+		driver['bucket'] = {
+			getFiles: vi.fn().mockResolvedValue([[], undefined]),
+		} as unknown as Bucket;
+
+		driver['fullPath'] = vi.fn().mockReturnValue('/root/');
+
+		await driver.list().next();
+
+		expect(driver['bucket'].getFiles).toHaveBeenCalledWith({
+			prefix: '/root/',
+			autoPaginate: false,
+			maxResults: 500,
+		});
+	});
+
+	test('Yields all paginated files', async () => {
+		const driver = new DriverGCS({
+			bucket: 'test-bucket',
+		});
+
+		driver['bucket'] = {
+			getFiles: vi
+				.fn()
+				.mockResolvedValueOnce([[{ name: 'path-1' }], {}])
+				.mockResolvedValueOnce([[{ name: 'path-2' }], undefined]),
+		} as unknown as Bucket;
+
+		driver['fullPath'] = vi.fn().mockReturnValue('/root/');
+
+		const output = [];
+
+		for await (const filepath of driver.list()) {
+			output.push(filepath);
+		}
+
+		expect(output).toStrictEqual(['path-1', 'path-2']);
 	});
 });
