@@ -19,10 +19,7 @@ import { AliasMap, getColumnPath } from './get-column-path';
 import { getRelationInfo } from './get-relation-info';
 import { getFilterOperatorsForType, getOutputTypeForFunction } from '@directus/shared/utils';
 import { stripFunction } from './strip-function';
-
-// @ts-ignore
-import { customAlphabet } from 'nanoid/non-secure';
-export const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
+import { generateAlias } from './generate-alias';
 
 /**
  * Apply the Query to a given Knex query builder instance

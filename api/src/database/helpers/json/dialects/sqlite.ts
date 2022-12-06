@@ -4,11 +4,7 @@ import { JsonHelperDefault } from './default';
 import { getOperation } from '../../../../utils/apply-query';
 import { applyJsonFilterQuery } from '../filters';
 import { Item } from '@directus/shared/types';
-
-// @ts-ignore
-import { customAlphabet } from 'nanoid/non-secure';
-// ORACLE PREFERS CAPITALS
-const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
+import { generateAlias } from '../../../../utils/generate-alias';
 
 /**
  * To support first-level array queries consistently we will need to get to a query like:

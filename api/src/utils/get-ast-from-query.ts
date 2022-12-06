@@ -9,10 +9,7 @@ import { Query, PermissionsAction, Accountability, SchemaOverview } from '@direc
 import { getRelationType } from '../utils/get-relation-type';
 import { stripFunction } from './strip-function';
 import { parseJsonFunction } from './parse-json-function';
-
-// @ts-ignore
-import { customAlphabet } from 'nanoid/non-secure';
-const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
+import { generateAlias } from './generate-alias';
 
 type GetASTOptions = {
 	accountability?: Accountability | null;

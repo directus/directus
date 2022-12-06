@@ -4,11 +4,8 @@ import { JsonHelperDefault } from './default';
 import { getOperation } from '../../../../utils/apply-query';
 import { applyJsonFilterQuery } from '../filters';
 import { Item } from '@directus/shared/types';
+import { generateCapitalAlias } from '../../../../utils/generate-alias';
 
-// @ts-ignore
-import { customAlphabet } from 'nanoid/non-secure';
-// ORACLE PREFERS CAPITALS
-const generateAlias = customAlphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZ', 5);
 /**
  * To support first-level array queries consistently we will need to get to a query like:
 
@@ -66,7 +63,7 @@ export class JsonHelperOracle_12 extends JsonHelperDefault {
 		if (joinQueries.length > 0) {
 			const aliases = [];
 			for (const node of joinQueries) {
-				const alias = generateAlias();
+				const alias = generateCapitalAlias();
 				this.buildWithJson(dbQuery, node, table, alias);
 				aliases.push(alias);
 			}
@@ -138,15 +135,15 @@ export class JsonHelperOracle_12 extends JsonHelperDefault {
 		conditions: { alias: string; operator: string; value: string | number }[];
 	} {
 		const rootPath = this.knex.raw('?', [parts[0]]).toQuery(),
-			tableAlias = generateAlias(),
-			fieldAlias = generateAlias();
+			tableAlias = generateCapitalAlias(),
+			fieldAlias = generateCapitalAlias();
 		const conditions = [];
 		let filterColumns = '';
 		if (node.query?.filter) {
 			for (const [jsonPath, value] of Object.entries(node.query?.filter)) {
 				const { operator: filterOperator, value: filterValue } = getOperation(jsonPath, value);
 				const conditionPath = this.knex.raw('?', [jsonPath]).toQuery();
-				const conditionAlias = generateAlias();
+				const conditionAlias = generateCapitalAlias();
 				filterColumns += this.knex
 					.raw(`, ?? ${getFilterType(filterOperator)} PATH ${conditionPath}`, [conditionAlias])
 					.toQuery();
@@ -159,7 +156,7 @@ export class JsonHelperOracle_12 extends JsonHelperDefault {
 				const fieldPath = this.knex.raw('?', [parts[i]]).toQuery();
 				nestedColumns += `NESTED PATH ${fieldPath} COLUMNS (`;
 			}
-			const fieldPair = [generateAlias(), generateAlias()];
+			const fieldPair = [generateCapitalAlias(), generateCapitalAlias()];
 			const fieldPath = this.knex.raw('?', [parts[parts.length - 1]]).toQuery();
 			nestedColumns += this.knex
 				.raw(`?? PATH ${fieldPath}, ?? FORMAT JSON PATH ${fieldPath}${filterColumns}`, fieldPair)
@@ -183,7 +180,7 @@ export class JsonHelperOracle_12 extends JsonHelperDefault {
 			};
 		}
 		// simplified
-		const fieldPair = [generateAlias(), generateAlias()];
+		const fieldPair = [generateCapitalAlias(), generateCapitalAlias()];
 		const fieldPath = this.knex.raw('?', [parts[1]]).toQuery();
 		const subQuery = this.knex.raw(
 			`json_table(??.??, ${rootPath} COLUMNS (?? PATH ${fieldPath}, ?? FORMAT JSON PATH ${fieldPath}${filterColumns})) as ??`,
