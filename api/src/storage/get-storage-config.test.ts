@@ -7,7 +7,7 @@ vi.mock('../env');
 vi.mock('../utils/get-config-from-env');
 
 afterEach(() => {
-	vi.clearAllMocks();
+	vi.resetAllMocks();
 });
 
 test('Creates disks config from STORAGE_LOCATIONS', () => {

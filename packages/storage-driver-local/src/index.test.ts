@@ -13,7 +13,7 @@ vi.mock('node:fs/promises');
 vi.mock('node:stream/promises');
 
 afterEach(() => {
-	vi.clearAllMocks();
+	vi.resetAllMocks();
 });
 
 describe('#constructor', () => {

@@ -13,7 +13,7 @@ vi.mock('@azure/storage-blob');
 vi.mock('node:path');
 
 afterEach(() => {
-	vi.clearAllMocks();
+	vi.resetAllMocks();
 });
 
 describe('#constructor', () => {
