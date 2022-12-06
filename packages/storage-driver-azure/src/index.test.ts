@@ -176,7 +176,7 @@ describe('#getStream', () => {
 			accountKey: 'test-account-key',
 		});
 
-		const mockDownload = vi.fn().mockReturnValue({ readableStreamBody: {} as Readable });
+		const mockDownload = vi.fn().mockResolvedValue({ readableStreamBody: {} as Readable });
 
 		const mockBlobClient = vi.fn().mockReturnValue({
 			download: mockDownload,
@@ -198,7 +198,7 @@ describe('#getStream', () => {
 			accountKey: 'test-account-key',
 		});
 
-		const mockDownload = vi.fn().mockReturnValue({ readableStreamBody: {} as Readable });
+		const mockDownload = vi.fn().mockResolvedValue({ readableStreamBody: {} as Readable });
 
 		const mockBlobClient = vi.fn().mockReturnValue({
 			download: mockDownload,
@@ -220,7 +220,7 @@ describe('#getStream', () => {
 			accountKey: 'test-account-key',
 		});
 
-		const mockDownload = vi.fn().mockReturnValue({ readableStreamBody: {} as Readable });
+		const mockDownload = vi.fn().mockResolvedValue({ readableStreamBody: {} as Readable });
 
 		const mockBlobClient = vi.fn().mockReturnValue({
 			download: mockDownload,
@@ -242,7 +242,7 @@ describe('#getStream', () => {
 			accountKey: 'test-account-key',
 		});
 
-		const mockDownload = vi.fn().mockReturnValue({ readableStreamBody: {} as Readable });
+		const mockDownload = vi.fn().mockResolvedValue({ readableStreamBody: {} as Readable });
 
 		const mockBlobClient = vi.fn().mockReturnValue({
 			download: mockDownload,
@@ -264,7 +264,7 @@ describe('#getStream', () => {
 			accountKey: 'test-account-key',
 		});
 
-		const mockDownload = vi.fn().mockReturnValue({ readableStreamBody: undefined });
+		const mockDownload = vi.fn().mockResolvedValue({ readableStreamBody: undefined });
 
 		const mockBlobClient = vi.fn().mockReturnValue({
 			download: mockDownload,
@@ -288,7 +288,7 @@ describe('#getBuffer', () => {
 			accountKey: 'test-account-key',
 		});
 
-		const mockDownload = vi.fn().mockReturnValue({});
+		const mockDownload = vi.fn().mockResolvedValue({});
 
 		const mockBlobClient = vi.fn().mockReturnValue({
 			downloadToBuffer: mockDownload,
@@ -315,7 +315,7 @@ describe('#getBuffer', () => {
 
 		const mockBuffer = {};
 
-		const mockDownload = vi.fn().mockReturnValue(mockBuffer);
+		const mockDownload = vi.fn().mockResolvedValue(mockBuffer);
 
 		const mockBlobClient = vi.fn().mockReturnValue({
 			downloadToBuffer: mockDownload,
@@ -329,5 +329,63 @@ describe('#getBuffer', () => {
 
 		expect(mockDownload).toHaveBeenCalled();
 		expect(result).toBe(mockBuffer);
+	});
+});
+
+describe('#getStat', () => {
+	test('Uses blobClient at full path', async () => {
+		const driver = new DriverAzure({
+			containerName: 'test-container',
+			accountName: 'test-account-name',
+			accountKey: 'test-account-key',
+		});
+
+		const mockGetProperties = vi.fn().mockReturnValue({});
+
+		const mockBlobClient = vi.fn().mockReturnValue({
+			getProperties: mockGetProperties,
+		});
+
+		driver['containerClient'] = {
+			getBlobClient: mockBlobClient,
+		} as unknown as ContainerClient;
+
+		driver['fullPath'] = vi.fn().mockReturnValue('root/path/to/file.txt');
+
+		await driver.getStat('/path/to/file.txt');
+
+		expect(driver['fullPath']).toHaveBeenCalledWith('/path/to/file.txt');
+		expect(driver['containerClient'].getBlobClient).toHaveBeenCalledWith('root/path/to/file.txt');
+	});
+
+	test('Returns contentLength/lastModified as size/modified from getProperties', async () => {
+		const driver = new DriverAzure({
+			containerName: 'test-container',
+			accountName: 'test-account-name',
+			accountKey: 'test-account-key',
+		});
+
+		const mockSize = 1500;
+		const mockDate = new Date(2022, 11, 6, 10, 29, 0, 0);
+
+		const mockGetProperties = vi.fn().mockResolvedValue({
+			contentLength: mockSize,
+			lastModified: mockDate,
+		});
+
+		const mockBlobClient = vi.fn().mockReturnValue({
+			getProperties: mockGetProperties,
+		});
+
+		driver['containerClient'] = {
+			getBlobClient: mockBlobClient,
+		} as unknown as ContainerClient;
+
+		const result = await driver.getStat('/path/to/file.txt');
+
+		expect(result).toStrictEqual({
+			size: 1500,
+			modified: mockDate,
+		});
 	});
 });
