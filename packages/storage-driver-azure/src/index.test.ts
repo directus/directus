@@ -389,3 +389,53 @@ describe('#getStat', () => {
 		});
 	});
 });
+
+describe('#exists', () => {
+	test('Uses blobClient at full path', async () => {
+		const driver = new DriverAzure({
+			containerName: 'test-container',
+			accountName: 'test-account-name',
+			accountKey: 'test-account-key',
+		});
+
+		const mockExists = vi.fn().mockResolvedValue({});
+
+		const mockBlockBlobClient = vi.fn().mockReturnValue({
+			exists: mockExists,
+		});
+
+		driver['containerClient'] = {
+			getBlockBlobClient: mockBlockBlobClient,
+		} as unknown as ContainerClient;
+
+		driver['fullPath'] = vi.fn().mockReturnValue('root/path/to/file.txt');
+
+		await driver.exists('/path/to/file.txt');
+
+		expect(driver['fullPath']).toHaveBeenCalledWith('/path/to/file.txt');
+		expect(driver['containerClient'].getBlockBlobClient).toHaveBeenCalledWith('root/path/to/file.txt');
+	});
+
+	test('Returns exists result', async () => {
+		const driver = new DriverAzure({
+			containerName: 'test-container',
+			accountName: 'test-account-name',
+			accountKey: 'test-account-key',
+		});
+
+		const mockExists = vi.fn().mockResolvedValue(true);
+
+		const mockBlockBlobClient = vi.fn().mockReturnValue({
+			exists: mockExists,
+		});
+
+		driver['containerClient'] = {
+			getBlockBlobClient: mockBlockBlobClient,
+		} as unknown as ContainerClient;
+
+		const result = await driver.exists('/path/to/file.txt');
+
+		expect(mockExists).toHaveBeenCalled();
+		expect(result).toBe(true);
+	});
+});
