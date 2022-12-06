@@ -2,8 +2,9 @@ import { PrepareRequest, RequestOptions } from '@utils/prepare-request';
 import vendors from '@common/get-dbs-to-test';
 import * as testsSchema from '@schema/index';
 import { ClientFilterOperator } from '@directus/shared/types';
-import { get, set } from 'lodash';
+import { get, intersection, set } from 'lodash';
 import { PrimaryKeyType } from '@common/types';
+import { getJSONFieldSchema, processJsonFields } from '@query/json';
 
 export type FilterValidator = (inputValue: any, possibleValues: any) => boolean;
 export type FilterEmptyValidator = (inputValue: any, possibleValues: any) => boolean;
@@ -124,6 +125,10 @@ const processSchemaFields = (
 		}
 	}
 
+	if (schema.type === 'json') {
+		filterOperatorList = intersection(filterOperatorList, ['null', 'nnull']);
+	}
+
 	// Process filters
 	for (const filterOperator of filterOperatorList) {
 		const filterKey = parentField ? `${parentField}.${schema.field}` : schema.field;
@@ -181,6 +186,10 @@ const processSchemaFields = (
 		});
 	}
 
+	if (schema.type === 'json') {
+		processJsonFields(requestOptions, collection, schema, getJSONFieldSchema(), parentField);
+	}
+
 	// Continue to process children schema
 	if (schema.children) {
 		for (const child of Object.keys(schema.children)) {
@@ -190,7 +199,7 @@ const processSchemaFields = (
 	}
 };
 
-function processValidation(
+export function processValidation(
 	data: any,
 	key: string,
 	filter: testsSchema.GeneratedFilter,

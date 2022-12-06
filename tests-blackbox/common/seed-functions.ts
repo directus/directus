@@ -1,6 +1,7 @@
 import { v5 as uuid } from 'uuid';
 import * as seedrandom from 'seedrandom';
 import { PrimaryKeyType } from '@common/types';
+import { TestsFieldSchema } from '@query/filter';
 
 const SEED_UUID_NAMESPACE = 'e81a0012-568b-415c-96fa-66508f594067';
 const FIVE_YEARS_IN_MILLISECONDS = 5 * 365 * 24 * 60 * 60 * 1000;
@@ -50,7 +51,9 @@ export type OptionsSeedGenerateGeometry = OptionsSeedGenerateBase;
 
 export type OptionsSeedGenerateHash = OptionsSeedGenerateBase;
 
-export type OptionsSeedGenerateJSON = OptionsSeedGenerateBase;
+export type OptionsSeedGenerateJSON = OptionsSeedGenerateBase & {
+	jsonFieldSchema?: TestsFieldSchema;
+};
 
 export type OptionsSeedGenerateTime = OptionsSeedGenerateBase & {
 	startsFrom?: Date | string;
@@ -78,7 +81,7 @@ export const SeedFunctions = {
 		float: generateFloat,
 		// geometry: null,
 		// hash: null,
-		// json: null,
+		json: generateJSON,
 		time: generateTime,
 		timestamp: generateTimestamp,
 	},
@@ -352,6 +355,32 @@ function generateTimestamp(options: OptionsSeedGenerateTimestamp) {
 	// Overcome MSSQL specific accuracy up to 1/300th of a second
 	for (let index = 0; index < values.length; index++) {
 		values[index] = values[index].slice(0, 20) + '000Z';
+	}
+
+	return values;
+}
+
+function generateJSONSchemaValues(schema: TestsFieldSchema, index = 0) {
+	const item: any = {};
+	for (const key of Object.keys(schema)) {
+		if (schema[key].children) {
+			item[key] = generateJSONSchemaValues(schema[key].children!, index);
+		} else {
+			item[key] = schema[key].possibleValues[index];
+		}
+	}
+	return item;
+}
+
+function generateJSON(options: OptionsSeedGenerateJSON) {
+	const values = [];
+
+	for (let i = 0; i < options.quantity; i++) {
+		if (options.jsonFieldSchema) {
+			values.push(generateJSONSchemaValues(options.jsonFieldSchema, i));
+		} else {
+			values.push({});
+		}
 	}
 
 	return values;

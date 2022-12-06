@@ -1,7 +1,9 @@
 import { CreateField, CreateItem, SeedFunctions, PrimaryKeyType, ReadItem } from '@common/index';
 import { TestsFieldSchema } from '@query/filter';
+import { getJSONFieldSchema } from '@query/json';
 
 const valuesQuantity = 2;
+const jsonFieldSchema = getJSONFieldSchema();
 
 export function getTestsAllTypesSchema(): TestsFieldSchema {
 	const fieldSchema: TestsFieldSchema = {};
@@ -14,6 +16,7 @@ export function getTestsAllTypesSchema(): TestsFieldSchema {
 			filters: true,
 			possibleValues: SeedFunctions.generateValues[key as keyof typeof SeedFunctions.generateValues]({
 				quantity: valuesQuantity,
+				jsonFieldSchema,
 			}),
 		};
 	}
