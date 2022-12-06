@@ -1,15 +1,20 @@
-import { expect, describe, test, vi, afterEach } from 'vitest';
-import { DriverGCS } from './index.js';
 import { normalizePath } from '@directus/shared/utils';
 import { isReadableStream } from '@directus/shared/utils/node';
+import { Bucket, Storage } from '@google-cloud/storage';
 import { join } from 'node:path';
-import type { Readable } from 'node:stream';
-import { Storage, Bucket } from '@google-cloud/storage';
+import { pipeline } from 'node:stream/promises';
+import { afterEach, describe, expect, test, vi } from 'vitest';
+import { DriverGCS } from './index.js';
 
 vi.mock('@directus/shared/utils/node');
 vi.mock('@directus/shared/utils');
 vi.mock('@google-cloud/storage');
 vi.mock('node:path');
+vi.mock('node:stream/promises');
+
+afterEach(() => {
+	vi.clearAllMocks();
+});
 
 describe('#constructor', () => {
 	test('Defaults root path to empty string', () => {
@@ -385,5 +390,84 @@ describe('#copy', () => {
 		await driver.copy('/path/to/src', '/path/to/dest');
 
 		expect(mockFileSrc.copy).toHaveBeenCalledWith(mockFileDest);
+	});
+});
+
+describe('#put', () => {
+	test('Gets file reference for filepath', async () => {
+		const driver = new DriverGCS({
+			bucket: 'test-bucket',
+		});
+
+		const mockCreateWriteStream = vi.fn();
+		const mockSave = vi.fn();
+
+		const mockFile = vi.fn().mockReturnValue({
+			createWriteStream: mockCreateWriteStream,
+			save: mockSave,
+		});
+
+		driver['fullPath'] = vi.fn().mockReturnValue('/path/to/file.txt');
+
+		driver['bucket'] = {
+			file: mockFile,
+		} as unknown as Bucket;
+
+		await driver.put('path/to/file.txt', 'file-content');
+
+		expect(mockFile).toHaveBeenCalledWith('/path/to/file.txt');
+	});
+
+	test('Pipes read stream to write stream in pipeline when stream is passed', async () => {
+		vi.mocked(isReadableStream).mockReturnValue(true);
+
+		const driver = new DriverGCS({
+			bucket: 'test-bucket',
+		});
+
+		const mockWriteStream = {};
+
+		const mockCreateWriteStream = vi.fn().mockReturnValue(mockWriteStream);
+		const mockSave = vi.fn();
+
+		const mockFile = vi.fn().mockReturnValue({
+			createWriteStream: mockCreateWriteStream,
+			save: mockSave,
+		});
+
+		driver['fullPath'] = vi.fn().mockReturnValue('/path/to/file.txt');
+
+		driver['bucket'] = {
+			file: mockFile,
+		} as unknown as Bucket;
+
+		await driver.put('path/to/file.txt', 'file-content');
+
+		expect(mockCreateWriteStream).toHaveBeenCalledWith({ resumable: false });
+		expect(pipeline).toHaveBeenCalledWith('file-content', mockWriteStream);
+	});
+
+	test('Saves file using save if contents is buffer/string', async () => {
+		vi.mocked(isReadableStream).mockReturnValue(false);
+
+		const driver = new DriverGCS({
+			bucket: 'test-bucket',
+		});
+
+		const mockSave = vi.fn();
+
+		const mockFile = vi.fn().mockReturnValue({
+			save: mockSave,
+		});
+
+		driver['fullPath'] = vi.fn().mockReturnValue('/path/to/file.txt');
+
+		driver['bucket'] = {
+			file: mockFile,
+		} as unknown as Bucket;
+
+		await driver.put('path/to/file.txt', 'file-content');
+
+		expect(mockSave).toHaveBeenCalledWith('file-content', { resumable: false });
 	});
 });

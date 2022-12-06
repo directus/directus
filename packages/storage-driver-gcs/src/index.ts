@@ -1,10 +1,10 @@
 import { normalizePath } from '@directus/shared/utils';
 import { isReadableStream } from '@directus/shared/utils/node';
 import type { Driver, Range } from '@directus/storage';
+import type { Bucket, StorageOptions } from '@google-cloud/storage';
 import { Storage } from '@google-cloud/storage';
-import type { StorageOptions, Bucket } from '@google-cloud/storage';
 import { join } from 'node:path';
-import type { Readable } from 'node:stream';
+import { pipeline } from 'node:stream/promises';
 
 export type DriverGCSConfig = {
 	root?: string;
@@ -57,7 +57,16 @@ export class DriverGCS implements Driver {
 		await this.file(src).copy(this.file(dest));
 	}
 
-	async put(filepath: string, content: Buffer | NodeJS.ReadableStream | string, type = 'application/octet-stream') {}
+	async put(filepath: string, content: Buffer | NodeJS.ReadableStream | string) {
+		const file = this.file(filepath);
+
+		if (isReadableStream(content)) {
+			const stream = file.createWriteStream({ resumable: false });
+			await pipeline(content, stream);
+		} else {
+			await file.save(content, { resumable: false });
+		}
+	}
 
 	async delete(filepath: string) {}
 
