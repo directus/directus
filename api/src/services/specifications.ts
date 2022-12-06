@@ -1,4 +1,3 @@
-import formatTitle from '@directus/format-title';
 import openapi from '@directus/specs';
 import { Knex } from 'knex';
 import { cloneDeep, mergeWith } from 'lodash';
@@ -15,6 +14,9 @@ import { FieldsService } from './fields';
 import { GraphQLService } from './graphql';
 import { RelationsService } from './relations';
 import { OAS_REQUIRED_SCHEMAS } from '../constants';
+
+// @ts-ignore
+import formatTitle from '@directus/format-title';
 
 export class SpecificationService {
 	accountability: Accountability | null;

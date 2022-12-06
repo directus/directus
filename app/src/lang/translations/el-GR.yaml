@@ -34,8 +34,10 @@ tile_size: Μέγεθος πλακιδίων
 edit_field: Επεξεργασία Πεδίου
 conditions: Προϋποθέσεις
 location: Τοποθεσία
+input: Εισαγωγή
 maps: Χάρτες
 switch_user: Εναλλαγή Χρήστη
+item_creation: Δημιουργία Στοιχείου
 item_revision: Αναθεώρηση Αντικειμένου
 enter_a_name: Πληκτρολογήστε ένα όνομα...
 duplicate_field: Αντίγραφο Πεδίου
@@ -132,6 +134,21 @@ no_access: Καμία Πρόσβαση
 nullable: Κενό
 allow_null_value: Επέτρεψε κενές τιμές
 field_standard: Τυπικό
+field_presentation: Παρουσίαση & Συνώνυμα
+field_translations: Μεταφράσεις
+field_group: Ομάδα πεδίων
+item_permissions: Δικαιώματα Στοιχείου
+field_permissions: Δικαιώματα Πεδίου
+field_validation: Επικύρωση Πεδίου
+field_presets: Προεπιλογές πεδίου
+permissions_for_role: 'Στοιχεία ο ρόλος {role} μπορεί {action}.'
+fields_for_role: 'Πεδία ο ρόλος {role} μπορεί {action}.'
+presentation_and_aliases: Παρουσίαση & Συνώνυμα
+revision_post_create: Εδώ εμφανίζεται με τι έμοιαζε αυτό το στοιχείο όταν δημιουργήθηκε.
+language: Γλώσσα
+language_placeholder: Επιλέξτε μια γλώσσα...
+global: Καθολικός
+camera: Κάμερα
 create_field: Δημιουργία πεδίου
 hidden_on_detail: Κρυφό στις λεπτομέρειες
 text: Κείμενο
@@ -249,6 +266,7 @@ fields:
     title: Τίτλος
     description: Περιγραφή
     tags: Ετικέτες
+    language: Γλώσσα
     theme: Θέμα
     tfa_secret: Έλεγχος ταυτότητας δυο παραγόντων
     status: Κατάσταση
@@ -276,6 +294,7 @@ field_options:
     create: Δημιουργία
     update: Ενημέρωση
   directus_collections:
+    language: Γλώσσα
     translation: Μετάφραση
     archive_divider: Αρχειοθέτηση
   directus_roles:
