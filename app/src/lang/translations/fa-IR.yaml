@@ -325,6 +325,7 @@ revision_delta_deleted: حذف شده
 revision_delta_reverted: بازگردانده شد
 revision_delta_other: نسخه
 revision_delta_by: 'در {date} توسط {user}'
+download_page_as_csv: 'دانلود صفحه به‌صورت CSV'
 private_user: کاربر خصوصی
 creation_preview: پیش نمایش ساخت
 revision_preview: پیش نمایش ویرایش
