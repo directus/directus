@@ -14,18 +14,19 @@ export type DriverAzureConfig = {
 };
 
 export class DriverAzure implements Driver {
-	private client: BlobServiceClient;
 	private containerClient: ContainerClient;
 	private signedCredentials: StorageSharedKeyCredential;
 	private root: string;
 
 	constructor(config: DriverAzureConfig) {
 		this.signedCredentials = new StorageSharedKeyCredential(config.accountName, config.accountKey);
-		this.client = new BlobServiceClient(
+
+		const client = new BlobServiceClient(
 			config.endpoint ?? `https://${config.accountName}.blob.core.windows.net`,
 			this.signedCredentials
 		);
-		this.containerClient = this.client.getContainerClient(config.containerName);
+
+		this.containerClient = client.getContainerClient(config.containerName);
 		this.root = config.root ? normalizePath(config.root).replace(/^\//, '') : '';
 	}
 
