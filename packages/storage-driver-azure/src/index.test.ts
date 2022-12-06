@@ -439,3 +439,57 @@ describe('#exists', () => {
 		expect(result).toBe(true);
 	});
 });
+
+describe('#move', () => {
+	test('Calls #copy with src and dest', async () => {
+		const driver = new DriverAzure({
+			containerName: 'test-container',
+			accountName: 'test-account-name',
+			accountKey: 'test-account-key',
+		});
+
+		const mockDeleteIfExists = vi.fn();
+
+		const mockBlockBlobClient = vi.fn().mockReturnValue({
+			deleteIfExists: mockDeleteIfExists,
+		});
+
+		driver['containerClient'] = {
+			getBlockBlobClient: mockBlockBlobClient,
+		} as unknown as ContainerClient;
+
+		driver.copy = vi.fn();
+
+		await driver.move('path/to/src.txt', 'path/to/dest.txt');
+
+		expect(driver.copy).toHaveBeenCalledWith('path/to/src.txt', 'path/to/dest.txt');
+	});
+
+	test('Deletes src file after copy is completed', async () => {
+		const driver = new DriverAzure({
+			containerName: 'test-container',
+			accountName: 'test-account-name',
+			accountKey: 'test-account-key',
+		});
+
+		const mockDeleteIfExists = vi.fn();
+
+		const mockBlockBlobClient = vi.fn().mockReturnValue({
+			deleteIfExists: mockDeleteIfExists,
+		});
+
+		driver['containerClient'] = {
+			getBlockBlobClient: mockBlockBlobClient,
+		} as unknown as ContainerClient;
+
+		driver.copy = vi.fn();
+
+		driver['fullPath'] = vi.fn().mockReturnValue('root/path/to/file.txt');
+
+		await driver.move('path/to/src.txt', 'path/to/dest.txt');
+
+		expect(driver['fullPath']).toHaveBeenCalledWith('path/to/src.txt');
+		expect(mockBlockBlobClient).toHaveBeenCalledWith('root/path/to/file.txt');
+		expect(mockDeleteIfExists).toHaveBeenCalledOnce();
+	});
+});
