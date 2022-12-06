@@ -40,7 +40,10 @@ export class DriverGCS implements Driver {
 		return (await this.file(filepath).download())[0];
 	}
 
-	async getStat(filepath: string) {}
+	async getStat(filepath: string) {
+		const [{ size, updated }] = await this.file(filepath).getMetadata();
+		return { size, modified: updated };
+	}
 
 	async exists(filepath: string) {}
 

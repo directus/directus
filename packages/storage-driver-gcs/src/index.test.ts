@@ -216,3 +216,59 @@ describe('#getBuffer', () => {
 		expect(result).toBe(mockBuffer);
 	});
 });
+
+describe('#getStat', () => {
+	test('Gets file reference', async () => {
+		const driver = new DriverGCS({
+			bucket: 'test-bucket',
+		});
+
+		driver['file'] = vi.fn().mockReturnValue({ getMetadata: vi.fn().mockResolvedValue([{}]) });
+
+		await driver.getStat('/path/to/file');
+
+		expect(driver['file']).toHaveBeenCalledWith('/path/to/file');
+	});
+
+	test('Calls getMetadata on file', async () => {
+		const driver = new DriverGCS({
+			bucket: 'test-bucket',
+		});
+
+		const mockFile = { getMetadata: vi.fn().mockResolvedValue([{}]) };
+
+		driver['file'] = vi.fn().mockReturnValue(mockFile);
+
+		await driver.getStat('/path/to/file');
+
+		expect(mockFile.getMetadata).toHaveBeenCalledOnce();
+		expect(mockFile.getMetadata).toHaveBeenCalledWith();
+	});
+
+	test('Returns size/updated as size/modified from metadata response', async () => {
+		const driver = new DriverGCS({
+			bucket: 'test-bucket',
+		});
+
+		const mockSize = 1500;
+		const mockDate = new Date(2022, 11, 6, 15, 50, 0, 0);
+
+		const mockFile = {
+			getMetadata: vi.fn().mockResolvedValue([
+				{
+					size: mockSize,
+					updated: mockDate,
+				},
+			]),
+		};
+
+		driver['file'] = vi.fn().mockReturnValue(mockFile);
+
+		const result = await driver.getStat('/path/to/file');
+
+		expect(result).toStrictEqual({
+			size: mockSize,
+			modified: mockDate,
+		});
+	});
+});
