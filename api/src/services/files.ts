@@ -1,5 +1,3 @@
-import formatTitle from '@directus/format-title';
-import axios, { AxiosResponse } from 'axios';
 import exifr from 'exifr';
 import { clone, pick } from 'lodash';
 import { extension } from 'mime-types';
@@ -19,6 +17,9 @@ import { ItemsService } from './items';
 import net from 'net';
 import os from 'os';
 import encodeURL from 'encodeurl';
+
+// @ts-ignore
+import formatTitle from '@directus/format-title';
 
 const lookupDNS = promisify(lookup);
 
@@ -185,6 +186,8 @@ export class FilesService extends ItemsService {
 	 * Import a single file from an external URL
 	 */
 	async importOne(importURL: string, body: Partial<File>): Promise<PrimaryKey> {
+		const axios = (await import('axios')).default;
+
 		const fileCreatePermissions = this.accountability?.permissions?.find(
 			(permission) => permission.collection === 'directus_files' && permission.action === 'create'
 		);
@@ -241,7 +244,7 @@ export class FilesService extends ItemsService {
 			});
 		}
 
-		let fileResponse: AxiosResponse<NodeJS.ReadableStream>;
+		let fileResponse;
 
 		try {
 			fileResponse = await axios.get<NodeJS.ReadableStream>(encodeURL(importURL), {
