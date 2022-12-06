@@ -272,3 +272,46 @@ describe('#getStat', () => {
 		});
 	});
 });
+
+describe('#exists', () => {
+	test('Gets file reference', async () => {
+		const driver = new DriverGCS({
+			bucket: 'test-bucket',
+		});
+
+		driver['file'] = vi.fn().mockReturnValue({ exists: vi.fn().mockResolvedValue([true]) });
+
+		driver.exists('/path/to/file');
+
+		expect(driver['file']).toHaveBeenCalledWith('/path/to/file');
+	});
+
+	test('Calls exists on file', async () => {
+		const driver = new DriverGCS({
+			bucket: 'test-bucket',
+		});
+
+		const mockFile = { exists: vi.fn().mockResolvedValue([true]) };
+
+		driver['file'] = vi.fn().mockReturnValue(mockFile);
+
+		driver.exists('/path/to/file');
+
+		expect(mockFile.exists).toHaveBeenCalledOnce();
+		expect(mockFile.exists).toHaveBeenCalledWith();
+	});
+
+	test('Returns boolean from response array', async () => {
+		const driver = new DriverGCS({
+			bucket: 'test-bucket',
+		});
+
+		const mockFile = { exists: vi.fn().mockResolvedValue([true]) };
+
+		driver['file'] = vi.fn().mockReturnValue(mockFile);
+
+		const result = await driver.exists('/path/to/file');
+
+		expect(result).toBe(true);
+	});
+});
