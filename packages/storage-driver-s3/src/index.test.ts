@@ -115,10 +115,10 @@ describe('#fullPath', () => {
 });
 
 describe('#getStream', () => {
-	test('Uses fullPath key / bucket in command input', async () => {
-		vi.mocked(isReadableStream).mockReturnValue(true);
+	let driver: DriverS3;
 
-		const driver = new DriverS3({
+	beforeEach(() => {
+		driver = new DriverS3({
 			key: 'test-key',
 			secret: 'test-secret',
 			bucket: 'test-bucket',
@@ -126,7 +126,10 @@ describe('#getStream', () => {
 
 		driver['fullPath'] = vi.fn().mockReturnValue('root/path/to/file.txt');
 		vi.mocked(driver['client'].send).mockReturnValue({ Body: new Readable() } as unknown as void);
+		vi.mocked(isReadableStream).mockReturnValue(true);
+	});
 
+	test('Uses fullPath key / bucket in command input', async () => {
 		await driver.getStream('/path/to/file.txt');
 
 		expect(driver['fullPath']).toHaveBeenCalledWith('/path/to/file.txt');
@@ -137,17 +140,6 @@ describe('#getStream', () => {
 	});
 
 	test('Optionally allows setting start range offset', async () => {
-		vi.mocked(isReadableStream).mockReturnValue(true);
-
-		const driver = new DriverS3({
-			key: 'test-key',
-			secret: 'test-secret',
-			bucket: 'test-bucket',
-		});
-
-		driver['fullPath'] = vi.fn().mockReturnValue('root/path/to/file.txt');
-		vi.mocked(driver['client'].send).mockReturnValue({ Body: new Readable() } as unknown as void);
-
 		await driver.getStream('/path/to/file.txt', { start: 500 });
 
 		expect(driver['fullPath']).toHaveBeenCalledWith('/path/to/file.txt');
@@ -159,17 +151,6 @@ describe('#getStream', () => {
 	});
 
 	test('Optionally allows setting end range offset', async () => {
-		vi.mocked(isReadableStream).mockReturnValue(true);
-
-		const driver = new DriverS3({
-			key: 'test-key',
-			secret: 'test-secret',
-			bucket: 'test-bucket',
-		});
-
-		driver['fullPath'] = vi.fn().mockReturnValue('root/path/to/file.txt');
-		vi.mocked(driver['client'].send).mockReturnValue({ Body: new Readable() } as unknown as void);
-
 		await driver.getStream('/path/to/file.txt', { end: 1500 });
 
 		expect(driver['fullPath']).toHaveBeenCalledWith('/path/to/file.txt');
@@ -181,17 +162,6 @@ describe('#getStream', () => {
 	});
 
 	test('Optionally allows setting start and end range offset', async () => {
-		vi.mocked(isReadableStream).mockReturnValue(true);
-
-		const driver = new DriverS3({
-			key: 'test-key',
-			secret: 'test-secret',
-			bucket: 'test-bucket',
-		});
-
-		driver['fullPath'] = vi.fn().mockReturnValue('root/path/to/file.txt');
-		vi.mocked(driver['client'].send).mockReturnValue({ Body: new Readable() } as unknown as void);
-
 		await driver.getStream('/path/to/file.txt', { start: 500, end: 1500 });
 
 		expect(driver['fullPath']).toHaveBeenCalledWith('/path/to/file.txt');
@@ -203,15 +173,6 @@ describe('#getStream', () => {
 	});
 
 	test('Throws an error when no stream is returned', async () => {
-		vi.mocked(isReadableStream).mockReturnValue(true);
-
-		const driver = new DriverS3({
-			key: 'test-key',
-			secret: 'test-secret',
-			bucket: 'test-bucket',
-		});
-
-		driver['fullPath'] = vi.fn().mockReturnValue('root/path/to/file.txt');
 		vi.mocked(driver['client'].send).mockReturnValue({ Body: undefined } as unknown as void);
 
 		expect(driver.getStream('/path/to/file.txt', { start: 500, end: 1500 })).rejects.toThrowErrorMatchingInlineSnapshot(
@@ -222,33 +183,15 @@ describe('#getStream', () => {
 	test('Throws an error when returned stream is not a readable stream', async () => {
 		vi.mocked(isReadableStream).mockReturnValue(false);
 
-		const driver = new DriverS3({
-			key: 'test-key',
-			secret: 'test-secret',
-			bucket: 'test-bucket',
-		});
-
-		driver['fullPath'] = vi.fn().mockReturnValue('root/path/to/file.txt');
-		vi.mocked(driver['client'].send).mockReturnValue({ Body: {} } as unknown as void);
-
 		expect(driver.getStream('/path/to/file.txt', { start: 500, end: 1500 })).rejects.toThrowErrorMatchingInlineSnapshot(
 			'"No stream returned for file \\"/path/to/file.txt\\""'
 		);
 	});
 
 	test('Returns stream from S3 client', async () => {
-		vi.mocked(isReadableStream).mockReturnValue(true);
-
-		const driver = new DriverS3({
-			key: 'test-key',
-			secret: 'test-secret',
-			bucket: 'test-bucket',
-		});
-
 		const mockGetObjectCommand = {} as GetObjectCommand;
 		const mockStream = {};
 
-		driver['fullPath'] = vi.fn().mockReturnValue('root/path/to/file.txt');
 		vi.mocked(driver['client'].send).mockReturnValue({ Body: mockStream } as unknown as void);
 		vi.mocked(GetObjectCommand).mockReturnValue(mockGetObjectCommand);
 
