@@ -278,6 +278,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 					params: {
 						fields: [relatedPrimaryKeyField!.field, ...fieldsToFetch],
 						[`filter[${relatedPrimaryKeyField!.field}][_in]`]: existingIds.join(','),
+						limit: -1
 					},
 				});
 				existingItems = response.data.data;
