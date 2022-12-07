@@ -2,8 +2,8 @@ import { GetObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { normalizePath } from '@directus/shared/utils';
 import { isReadableStream } from '@directus/shared/utils/node';
 import { join } from 'node:path';
-import { Readable } from 'node:stream';
-import { afterEach, describe, expect, test, vi } from 'vitest';
+import { Readable, PassThrough } from 'node:stream';
+import { afterEach, describe, expect, test, vi, beforeEach } from 'vitest';
 import { DriverS3 } from './index.js';
 
 vi.mock('@directus/shared/utils/node');
@@ -259,7 +259,65 @@ describe('#getStream', () => {
 	});
 });
 
-describe.todo('#getBuffer', () => {});
+describe('#getBuffer', () => {
+	let driver: DriverS3;
+	let mockStream: PassThrough;
+
+	beforeEach(() => {
+		driver = new DriverS3({
+			key: 'test-key',
+			secret: 'test-secret',
+			bucket: 'test-bucket',
+		});
+
+		mockStream = new PassThrough();
+
+		driver.getStream = vi.fn().mockResolvedValue(mockStream);
+	});
+
+	test('Gets stream for given location', async () => {
+		process.nextTick(() => {
+			mockStream.emit('end');
+		});
+
+		await driver.getBuffer('/path/to/file.txt');
+
+		expect(driver.getStream).toHaveBeenCalledWith('/path/to/file.txt');
+	});
+
+	test('Resolves buffer from stream contents', async () => {
+		process.nextTick(() => {
+			mockStream.emit('data', Buffer.from('test-'));
+			mockStream.emit('data', Buffer.from('data'));
+			mockStream.emit('end');
+		});
+
+		const buffer = await driver.getBuffer('/path/to/file.txt');
+
+		expect(buffer).toBeInstanceOf(Buffer);
+		expect(buffer).toStrictEqual(Buffer.from('test-data'));
+	});
+
+	test('Rejects with error on stream error', async () => {
+		const mockError = new Error('Whoops');
+
+		process.nextTick(() => {
+			mockStream.emit('error', mockError);
+		});
+
+		try {
+			await driver.getBuffer('/path/to/file.txt');
+		} catch (err) {
+			expect(err).toBe(mockError);
+		}
+	});
+
+	test('Rejects with error thrown from getStream', async () => {
+		const mockError = new Error('Whoops');
+		vi.mocked(driver.getStream).mockRejectedValue(mockError);
+		expect(driver.getBuffer('/path/to/file.txt')).rejects.toThrowError(mockError);
+	});
+});
 
 describe.todo('#getStat', () => {});
 

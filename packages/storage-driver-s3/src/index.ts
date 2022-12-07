@@ -74,7 +74,19 @@ export class DriverS3 implements Driver {
 		return stream;
 	}
 
-	async getBuffer(filepath: string) {}
+	getBuffer(filepath: string) {
+		return new Promise<Buffer>((resolve, reject) => {
+			const data: any[] = [];
+
+			this.getStream(filepath)
+				.then((stream) => {
+					stream.on('data', (chunk) => data.push(chunk));
+					stream.on('end', () => resolve(Buffer.concat(data)));
+					stream.on('error', (err) => reject(err));
+				})
+				.catch((err) => reject(err));
+		});
+	}
 
 	async getStat(filepath: string) {}
 
