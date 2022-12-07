@@ -98,7 +98,6 @@ export default async function getASTFromQuery(
 		delete query.sort;
 	}
 
-	// ugly global scoped
 	const jsonAlias: Record<string, string> = {};
 
 	ast.children = await parseFields(collection, fields, deep);
@@ -160,6 +159,12 @@ export default async function getASTFromQuery(
 					const childKey = name.startsWith('json(')
 						? `json(${parts.slice(1).join('.')}${jpath})`
 						: parts.slice(1).join('.');
+					if (fieldKey in jsonAlias) {
+						jsonAlias[childKey] = jsonAlias[fieldKey];
+						delete jsonAlias[fieldKey];
+					} else {
+						jsonAlias[childKey] = fieldKey;
+					}
 
 					if (collectionScope) {
 						if (collectionScope in relationalStructure[rootField] === false) {
