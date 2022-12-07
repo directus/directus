@@ -69,11 +69,10 @@ export default async function runAST(
 			children,
 			query
 		);
-		const jsonHelper = jsonNodes.length > 0 ? getJsonHelper(knex, schema, jsonNodes) : undefined;
+		const jsonHelper = getJsonHelper(knex, schema, jsonNodes ?? []);
 		// The actual knex query builder instance. This is a promise that resolves with the raw items from the db
 
 		const dbQuery = await getDBQuery(schema, knex, collection, [...fieldNodes, ...jsonNodes], query, jsonHelper);
-		// console.log(`[QUERY]`, dbQuery.toQuery());
 
 		const rawItems: Item | Item[] = await dbQuery;
 
@@ -134,7 +133,7 @@ export default async function runAST(
 		// Some vendors return json results as strings which will need to be parsed
 		// Some vendors also require post-processing to compensate for lack of native support
 		if (jsonHelper && jsonNodes.length > 0) {
-			jsonHelper.postProcess(toArray(rawItems));
+			jsonHelper.postProcess(toArray(items));
 		}
 
 		// During the fetching of data, we have to inject a couple of required fields for the child nesting
@@ -266,7 +265,7 @@ async function getDBQuery(
 	// Queries with aggregates and groupBy will not have duplicate result
 	if (queryCopy.aggregate || queryCopy.group) {
 		const flatQuery = knex.select(regularNodes.map(preProcess)).from(table);
-		return await applyQuery(knex, table, flatQuery, queryCopy, schema).query;
+		return await applyQuery(knex, table, flatQuery, queryCopy, schema, jsonHelper).query;
 	}
 
 	const primaryKey = schema.collections[table].primary;
@@ -578,7 +577,7 @@ function removeTemporaryFields(
 				if (child.type === 'field' || child.type === 'functionField') {
 					fields[relatedCollection].push(child.name);
 				} else if (child.type === 'jsonField') {
-					// not sure yet
+					fields[relatedCollection].push(child.fieldKey);
 				} else {
 					fields[relatedCollection].push(child.fieldKey);
 					nestedCollectionNodes[relatedCollection].push(child);

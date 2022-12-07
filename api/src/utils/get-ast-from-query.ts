@@ -126,18 +126,17 @@ export default async function getASTFromQuery(
 				}
 			}
 
-			const isFunction = name.includes('(') && name.endsWith(')');
-			const isRelational =
-				(name.includes('.') && !isFunction) || // exception for json query getting handled as relation.
-				// We'll always treat top level o2m fields as a related item. This is an alias field, otherwise it won't return
-				// anything
-				!!schema.relations.find(
-					(relation) => relation.related_collection === parentCollection && relation.meta?.one_field === name
-				);
+			const { isFunction, isRelational } = parseFieldName(name, parentCollection);
 
 			if (isRelational) {
 				// field is relational
-				const parts = fieldKey.split('.');
+				let parts = fieldKey.split('.'),
+					jpath;
+				if (name.startsWith('json(')) {
+					const { fieldName, jsonPath } = parseJsonFunction(name);
+					parts = fieldName.split('.');
+					jpath = jsonPath;
+				}
 
 				let rootField = parts[0];
 				let collectionScope: string | null = null;
@@ -158,13 +157,14 @@ export default async function getASTFromQuery(
 				}
 
 				if (parts.length > 1) {
-					const childKey = parts.slice(1).join('.');
+					const childKey = name.startsWith('json(')
+						? `json(${parts.slice(1).join('.')}${jpath})`
+						: parts.slice(1).join('.');
 
 					if (collectionScope) {
 						if (collectionScope in relationalStructure[rootField] === false) {
 							(relationalStructure[rootField] as anyNested)[collectionScope] = [];
 						}
-
 						(relationalStructure[rootField] as anyNested)[collectionScope].push(childKey);
 					} else {
 						(relationalStructure[rootField] as string[]).push(childKey);
@@ -430,6 +430,24 @@ export default async function getASTFromQuery(
 		}
 
 		return fields;
+	}
+
+	function parseFieldName(name: string, parentCollection: string) {
+		if (name.startsWith('json(')) {
+			const { fieldName } = parseJsonFunction(name);
+			return {
+				isFunction: true,
+				isRelational: fieldName.includes('.'),
+			};
+		}
+		return {
+			isFunction: name.includes('(') && name.endsWith(')'),
+			isRelational:
+				name.includes('.') ||
+				!!schema.relations.find(
+					(relation) => relation.related_collection === parentCollection && relation.meta?.one_field === name
+				),
+		};
 	}
 
 	function getRelation(collection: string, field: string) {
