@@ -1,5 +1,5 @@
-import { S3Client, Bucket } from '@aws-sdk/client-s3';
-import type { S3ClientConfig } from '@aws-sdk/client-s3';
+import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
+import type { S3ClientConfig, GetObjectCommandInput } from '@aws-sdk/client-s3';
 import { normalizePath } from '@directus/shared/utils';
 import { isReadableStream } from '@directus/shared/utils/node';
 import type { Driver, Range } from '@directus/storage';
@@ -55,7 +55,24 @@ export class DriverS3 implements Driver {
 		return normalizePath(join(this.root, filepath));
 	}
 
-	async getStream(filepath: string, range?: Range) {}
+	async getStream(filepath: string, range?: Range): Promise<NodeJS.ReadableStream> {
+		const commandInput: GetObjectCommandInput = {
+			Key: this.fullPath(filepath),
+			Bucket: this.bucket,
+		};
+
+		if (range) {
+			commandInput.Range = `bytes=${range.start ?? ''}-${range.end ?? ''}`;
+		}
+
+		const { Body: stream } = await this.client.send(new GetObjectCommand(commandInput));
+
+		if (!stream || !isReadableStream(stream)) {
+			throw new Error(`No stream returned for file "${filepath}"`);
+		}
+
+		return stream;
+	}
 
 	async getBuffer(filepath: string) {}
 
