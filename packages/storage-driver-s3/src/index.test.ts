@@ -1,4 +1,5 @@
-import { GetObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import { GetObjectCommand, S3Client, HeadObjectCommand } from '@aws-sdk/client-s3';
+import type { HeadObjectCommandOutput } from '@aws-sdk/client-s3';
 import { normalizePath } from '@directus/shared/utils';
 import { isReadableStream } from '@directus/shared/utils/node';
 import { join } from 'node:path';
@@ -11,18 +12,24 @@ vi.mock('@directus/shared/utils');
 vi.mock('@aws-sdk/client-s3');
 vi.mock('node:path');
 
+let driver: DriverS3;
+
+beforeEach(() => {
+	driver = new DriverS3({
+		key: 'test-key',
+		secret: 'test-secret',
+		bucket: 'test-bucket',
+	});
+
+	driver['fullPath'] = vi.fn().mockReturnValue('root/path/to/file.txt');
+});
+
 afterEach(() => {
 	vi.resetAllMocks();
 });
 
 describe('#constructor', () => {
 	test('Creates S3Client with key / secret configuration', () => {
-		const driver = new DriverS3({
-			key: 'test-key',
-			secret: 'test-secret',
-			bucket: 'test-bucket',
-		});
-
 		expect(S3Client).toHaveBeenCalledWith({
 			credentials: {
 				accessKeyId: 'test-key',
@@ -34,12 +41,6 @@ describe('#constructor', () => {
 	});
 
 	test('Sets private bucket reference based on config', () => {
-		const driver = new DriverS3({
-			key: 'test-key',
-			secret: 'test-secret',
-			bucket: 'test-bucket',
-		});
-
 		expect(driver['bucket']).toBe('test-bucket');
 	});
 
@@ -66,12 +67,6 @@ describe('#constructor', () => {
 	});
 
 	test('Defaults root to empty string', () => {
-		const driver = new DriverS3({
-			key: 'test-key',
-			secret: 'test-secret',
-			bucket: 'test-bucket',
-		});
-
 		expect(driver['root']).toBe('');
 	});
 
@@ -95,14 +90,14 @@ describe('#constructor', () => {
 
 describe('#fullPath', () => {
 	test('Returns normalized joined path', () => {
-		vi.mocked(join).mockReturnValue('root/path/to/file.txt');
-		vi.mocked(normalizePath).mockReturnValue('root/path/to/file.txt');
-
 		const driver = new DriverS3({
 			key: 'test-key',
 			secret: 'test-secret',
 			bucket: 'test-bucket',
 		});
+
+		vi.mocked(join).mockReturnValue('root/path/to/file.txt');
+		vi.mocked(normalizePath).mockReturnValue('root/path/to/file.txt');
 
 		driver['root'] = 'root/';
 
@@ -115,15 +110,7 @@ describe('#fullPath', () => {
 });
 
 describe('#getStream', () => {
-	let driver: DriverS3;
-
 	beforeEach(() => {
-		driver = new DriverS3({
-			key: 'test-key',
-			secret: 'test-secret',
-			bucket: 'test-bucket',
-		});
-
 		driver['fullPath'] = vi.fn().mockReturnValue('root/path/to/file.txt');
 		vi.mocked(driver['client'].send).mockReturnValue({ Body: new Readable() } as unknown as void);
 		vi.mocked(isReadableStream).mockReturnValue(true);
@@ -203,18 +190,10 @@ describe('#getStream', () => {
 });
 
 describe('#getBuffer', () => {
-	let driver: DriverS3;
 	let mockStream: PassThrough;
 
 	beforeEach(() => {
-		driver = new DriverS3({
-			key: 'test-key',
-			secret: 'test-secret',
-			bucket: 'test-bucket',
-		});
-
 		mockStream = new PassThrough();
-
 		driver.getStream = vi.fn().mockResolvedValue(mockStream);
 	});
 
@@ -262,9 +241,44 @@ describe('#getBuffer', () => {
 	});
 });
 
-describe.todo('#getStat', () => {});
+describe('#getStat', () => {
+	beforeEach(() => {
+		vi.mocked(driver['client'].send).mockResolvedValue({
+			ContentLength: 500,
+			LastModified: new Date(2022, 11, 7, 14, 52, 0, 0),
+		} as HeadObjectCommandOutput as unknown as void);
+	});
 
-describe.todo('#exists', () => {});
+	test('Uses HeadObjectCommand with fullPath', async () => {
+		await driver.getStat('/path/to/file.txt');
+		expect(driver['fullPath']).toHaveBeenCalledWith('/path/to/file.txt');
+		expect(HeadObjectCommand).toHaveBeenCalledWith({
+			Key: 'root/path/to/file.txt',
+			Bucket: 'test-bucket',
+		});
+	});
+
+	test('Calls #send with HeadObjectCommand', async () => {
+		const mockHeadObjectCommand = {} as HeadObjectCommand;
+		vi.mocked(HeadObjectCommand).mockReturnValue(mockHeadObjectCommand);
+		await driver.getStat('/path/to/file.txt');
+		expect(driver['client'].send).toHaveBeenCalledWith(mockHeadObjectCommand);
+	});
+});
+
+describe('#exists', () => {
+	test('Returns true if stat returns the stats', async () => {
+		driver.getStat = vi.fn().mockResolvedValue({});
+		const exists = await driver.exists('path/to/file.txt');
+		expect(exists).toBe(true);
+	});
+
+	test('Returns false if stat throws an error', async () => {
+		driver.getStat = vi.fn().mockRejectedValue(new Error('Something went wrong'));
+		const exists = await driver.exists('path/to/file.txt');
+		expect(exists).toBe(false);
+	});
+});
 
 describe.todo('#move', () => {});
 
