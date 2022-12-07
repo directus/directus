@@ -47,6 +47,7 @@ export function getJsonHelper(database: Knex, schema: SchemaOverview, nodes: Jso
 }
 
 export function getJsonHelperByVersion(client: DatabaseClients): DatabaseVersionedClients {
+	if (!getDatabaseVersion) return 'fallback'; // happens during unit tests
 	const { parsed, full } = getDatabaseVersion();
 	if (!parsed || parsed.length === 0) return 'fallback';
 	const [major, minor = 0] = parsed;
