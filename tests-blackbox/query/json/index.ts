@@ -84,7 +84,7 @@ export const processJsonFields = (
 				const jsonFieldKey = parentJSONField
 					? `${filterKey}$.${parentJSONField}.${jsonField}`
 					: `${filterKey}$.${jsonField}`;
-				const alias = jsonFieldKey.split('.').join('-');
+				const alias = `alias_${jsonField}`;
 
 				describe(`${jsonFieldKey} (${jsonSchema[jsonField].type})`, () => {
 					it.each(vendors)('%s', async (vendor) => {
@@ -156,8 +156,17 @@ export const processJsonFields = (
 							parsedFilterKeyParts[parsedFilterKeyParts.length - 1] = alias;
 
 							const parsedFilterKey = parsedFilterKeyParts.join('.');
+							let stripArrayValue = false;
 
-							processValidation(response.body.data, parsedFilterKey, filter, possibleValues);
+							switch (vendor) {
+								case 'postgres':
+									if (['string', 'boolean'].includes(jsonSchema[jsonField].type)) {
+										stripArrayValue = true;
+									}
+									break;
+							}
+
+							processValidation(response.body.data, parsedFilterKey, filter, possibleValues, true, stripArrayValue);
 						}
 					});
 				});
