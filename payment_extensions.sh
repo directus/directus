@@ -22,3 +22,12 @@ mv -v ./directus-payment-integration-release/payments-hook/* ${DIRECTUS_HOOKS}/p
 
 mv -v ./directus-payment-integration-release/payments-module ${DIRECTUS_MODULES}
 mv -v ./directus-payment-integration-release/migrations ${DIRECTUS_EXTENSIONS}
+
+curl --header "Private-Token: ${GITLAB_PIPELINE_TOKEN}" -LO ${CI_API_V4_URL}/projects/40500377/packages/generic/Releases/0.0.1/directus-custom-extensions-release.zip
+
+unzip directus-custom-extensions-release.zip
+
+ls -la ./directus-custom-extensions-release
+
+cp -r ./directus-custom-extensions-release/services-module ${DIRECTUS_MODULES}
+cp -r ./directus-custom-extensions-release/orders-module ${DIRECTUS_MODULES}
