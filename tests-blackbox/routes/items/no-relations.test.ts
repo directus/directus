@@ -91,10 +91,28 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						expect(response.statusCode).toBe(403);
 
 						expect(gqlResponse.statusCode).toBe(200);
-						if (vendor === 'sqlite3' || pkType !== 'integer') {
-							expect(gqlResponse.body.data[localCollectionArtists].length).toEqual(0);
-						} else {
-							expect(gqlResponse.body.errors).toBeDefined();
+
+						switch (vendor) {
+							case 'sqlite3':
+								expect(gqlResponse.body.data[localCollectionArtists].length).toEqual(0);
+								break;
+							case 'postgres':
+							case 'postgres10':
+							case 'mssql':
+							case 'cockroachdb':
+								if (pkType === 'string') {
+									expect(gqlResponse.body.data[localCollectionArtists].length).toEqual(0);
+								} else {
+									expect(gqlResponse.body.errors).toBeDefined();
+								}
+								break;
+							default:
+								if (pkType !== 'integer') {
+									expect(gqlResponse.body.data[localCollectionArtists].length).toEqual(0);
+								} else {
+									expect(gqlResponse.body.errors).toBeDefined();
+								}
+								break;
 						}
 					});
 				});
