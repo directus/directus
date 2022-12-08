@@ -51,7 +51,9 @@ and: و
 or: یا
 init: شروع
 dataset_too_large_currently_showing_n_items: مجموعه داده خیلی بزرگ است. در حال حاضر {n} مورد اول نشان داده می شود.
+modifier: اصلاح شده
 custom: سفارشی
+hook: هوک
 fill_width: عرض کامل
 field_name_translations: ترجمه‌های نام فیلد
 enter_password_to_enable_tfa: برای فعال کردن احراز هویت دو عاملی، رمز عبور خود را وارد کنید
@@ -78,7 +80,14 @@ create_user: ایجاد کاربر
 message: پیام
 delete_panel: حذف پنل
 create_webhook: ساخت وب هوک
+create_translation_string: ایجاد رشته ترجمه
+no_translation_string: ویرایش رشته ترجمه
+no_translation_string_copy: هنوز هیچ رشته ترجمه ای وجود ندارد.
+translation_string_key_placeholder: کلید شته ترجمه...
+translation_string_translations_placeholder: اضافه کردن ترجمه جدید
 edit_translation_string: ویرایش متن ترجمه
+delete_translation_string_copy: >-
+  آیا مطمئنید که می خواهید رشته ترجمه "{key}" را حذف کنید؟ این عمل قابل لغو نیست.
 invite_users: دعوت کاربران
 invite: دعوت
 email_already_invited: قبلاً برای ایمیل {email}، دعوت نامه ارسال شده است
@@ -99,6 +108,9 @@ update_bookmark: به روزرسانی نشانک
 delete_bookmark: حذف نشانک
 delete_bookmark_copy: >-
   آیا مطمئن هستید که می‌خواهید نشانکِ {bookmark} را حذف کنید؟ این عملیات قابل بازگردانی نیست.
+delete_personal_bookmark: حذف بوکمارک شخصی
+delete_role_bookmark: حذف بوکمارک
+delete_global_bookmark: حذف بوکمارک بصورت کلی
 logoutReason:
   SIGN_OUT: از سیستم خارج شده
   SESSION_EXPIRED: نشست به پایان رسیده
@@ -175,6 +187,9 @@ revision_post_create: شکل ظاهری این آیتم وقتی که ساخته
 revision_post_update: شکل ظاهری این آیتم پس از بروزرسانی، به این صورت بوده است.
 changes_made: ذیلاً، تغییرات خاصی که در این نسخه انجام شده، قابل مشاهده است.
 no_relational_data: به خاطر داشته باشید که داده های مربوط به ارتباطات، در اینجا گنجانده نشده است.
+junction_field_location: محل اتصال فیلدها
+top: بالا
+bottom: پایین
 hide_field: مخفی کردن فیلد
 hide_field_on_detail: مخفی کردن فیلد در بخش جزییات آیتم
 show_field_on_detail: نمایش فیلد در بخش جزییات آیتم
@@ -184,6 +199,7 @@ field_create_success: 'فیلد ساخته شده: "{field}"'
 field_update_success: 'فیلد بروزرسانی شده: "{field}"'
 duplicate_where_to: کپیِ این فیلد را در کجا میخواهید استفاده کنید؟
 language: زبان
+language_placeholder: یک ترجمه را انتخاب کنید...
 aggregate_function: تابع تجمیع
 aggregate_precision: دقت تجمیع
 group_aggregation: تجمیع گروهی
@@ -194,6 +210,7 @@ camera: دوربین
 show_zero: نمایش صفر
 create_in_advanced_field_creation_mode: ساخت فیلد در حالا پیشرفته
 continue_in_advanced_field_creation_mode: ادامه دادن در حالت پیشرفته ساخت فیلد
+validation: اعتبار سنجی
 sum: مجموع
 sum_distinct: جمع مقادیر یکتا
 avg: میانگین
@@ -258,6 +275,7 @@ fields_group: گروه فیلدها
 no_collections_found: مجموعه ای یافت نشد.
 new_data_alert: 'فیلدهای زیر به مدل داده ای شما اضافه خواهند شد:'
 search_collection: جستجوی مجموعه...
+search_field: جستجوی فیلد...
 new_field: 'فیلد جدید'
 new_collection: 'مجموعه جدید'
 add_m2o_to_collection: 'اضافه کردن رابطه چند-به-یک به "{collection}"'
@@ -281,6 +299,8 @@ next: بعدی
 field_name: نام فیلد
 translations: ترجمه‌ها
 no_translations: ترجمه ای وجود ندارد
+left_to_right: چپ به راست
+right_to_left: راست به چپ
 note: شرح
 enter_a_value: یک مقدار را وارد کنید...
 enter_a_placeholder: متنی جهت توضیح را وارد کنید...
@@ -295,6 +315,7 @@ primary_key: کلید اصلی
 foreign_key: کلید خارجی
 finish_setup: پایان راه‌اندازی
 dismiss: نادیده گرفتن
+toggle_raw_editor: تغییر به ویرایشگر Raw
 raw_value: مقدار خام
 copy_raw_value: کپی مقدار خام
 copy_raw_value_success: کپی شد
@@ -307,6 +328,7 @@ edit_raw_value: ویرایش مقدار خام
 enter_raw_value: مقدار خامی را وارد کنید...
 clear_value: پاک کردن مقدار
 clear_changes: پاک کردن تغییرات
+clear_items: پاک کردن موارد
 reset_to_default: بازنشانی به تنظیمات پیش فرض
 undo_changes: برگرداندن تغییرات به حالت قبل
 notifications: اعلانات
@@ -323,8 +345,10 @@ revision_delta_created_externally: به شکل خارجی ایجاد شد
 revision_delta_updated: 'یک فیلد برورزسانی شد | {count} فیلد بروزرسانی شدند'
 revision_delta_deleted: حذف شده
 revision_delta_reverted: بازگردانده شد
+revision_delta_update_message: این فیلد به روز شده است اما ارزش آن به دلایل امنیتی پنهان شده است.
 revision_delta_other: نسخه
 revision_delta_by: 'در {date} توسط {user}'
+presentation_text_values_cannot_be_reimported: "از متن ارائه استفاده می کند، مقادیر را نمی توان دوباره وارد کرد."
 download_page_as_csv: 'دانلود صفحه به‌صورت CSV'
 private_user: کاربر خصوصی
 creation_preview: پیش نمایش ساخت
@@ -332,6 +356,7 @@ revision_preview: پیش نمایش ویرایش
 updates_made: بروزرسانی ها
 leave_comment: درج دیدگاه...
 post_comment_success: دیدگاه منتشر شد
+post_comment_updated: نظر به روز شد
 item_create_success: آیتم ساخته شد | آیتمها ساخته شدند
 item_update_success: آیتم بروزرسانی شد | آیتمها بروزرسانی شدند
 item_delete_success: آیتم حذف شد | آیتمها حذف شدند
@@ -368,6 +393,12 @@ delete_share: حذف به اشتراک گذاری
 functions:
   year: سال
   month: ماه
+  week: هفته
+  day: روز
+  weekday: هفتگی
+  hour: ساعت
+  minute: دقیقه
+  second: ثانیه
   count: تعداد
 date-fns_date: فرمت PPP برای تاریخ
 date-fns_time: 'فرمت زمان h:mm:ss a'
@@ -424,6 +455,13 @@ replace_from_library: جایگزینی فایل از مجموعه
 replace_from_url: جایگزینی فایل از URL
 no_file_selected: هیچ فایلی انتخاب نشده است
 download_file: دانلود فایل
+open_file_in_tab: فایل را در تب جدید باز کنید
+start_export: شروع برون بری
+not_available_for_local_downloads: برای دانلودهای محلی در دسترس نیست
+exporting_no_items_to_export: موردی برای برون بری وجود ندارد پیکربندی برون بری را در زیر تنظیم کنید.
+exporting_download_hint: پس از تکمیل، این فایل {format} به طور خودکار در دستگاه شما دانلود می شود.
+exporting_batch_hint: این برون بری به صورت دسته‌ای پردازش می‌شود و پس از تکمیل، فایل {format} در کتابخانه فایل ذخیره می‌شود.
+exporting_batch_hint_forced: به دلیل تعداد زیاد موارد، این برون بری باید به صورت دسته‌ای پردازش شود و پس از تکمیل، فایل {format} در کتابخانه فایل ذخیره می‌شود.
 collection_key: کلید اصلی مجموعه
 name: نام
 primary_key_field: فیلد کلید اصلی
@@ -434,6 +472,7 @@ created_on: ایجاد شده در
 creating_collection_info: مجموعه را نامگذاری کنید و "کلید" یکتای آن را معین کنید...
 creating_collection_system: هر یک از این فیلدهای اختیاری را فعال کرده و یا تغییر نام دهید.
 auto_increment_integer: عدد صحیح با افزایش خودکار
+auto_increment_big_integer: عدد صحیح بزرگ به صورت خودکار افزایش می یابد
 generated_uuid: UUID تولید شده
 manual_string: رشته حرفیِ وارد شده به صورت دستی
 save_and_create_new: ذخیره و ساخت آیتم جدید
@@ -444,6 +483,7 @@ creating_items: ساختن موارد
 enable_create_button: فعالسازی ساخت دکمه
 selecting_items: انتخاب موارد
 enable_select_button: فعالسازی دکمه انتخاب
+allow_duplicates: اجازه تکرار
 comments: دیدگاهها
 no_comments: هنوز دیدگاهی ارسال نشده
 click_to_expand: برای بازکردن، کلیک کنید
@@ -454,6 +494,10 @@ disabled: غیرفعال شده
 information: اطلاعات
 report_bug: گزارش باگ
 request_feature: درخواست قابلیت جدید
+interface_not_found: 'رابط "{interface}" یافت نشد.'
+operation_not_found: 'عملیات "{operation}" یافت نشد.'
+reset_interface: بازنشانی رابط
+display_not_found: 'نمایش "{display}" یافت نشد.'
 item_count: 'بدون مقدار | يک آیتم | {count} آیتم'
 no_items_copy: هنوز هیچ آیتمی در این مجموعه وجود ندارد.
 no_users_copy: این نقش، هنوز به هیچ کاربری تعلق نگرفته است.
