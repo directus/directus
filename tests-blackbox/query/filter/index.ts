@@ -204,7 +204,8 @@ export function processValidation(
 	key: string,
 	filter: testsSchema.GeneratedFilter,
 	possibleValues: any[],
-	assert = true
+	assert = true,
+	stripArray = false
 ): boolean {
 	const keys = key.split('.');
 
@@ -213,7 +214,8 @@ export function processValidation(
 			let found = false;
 			for (const item of data) {
 				try {
-					if (filter.validatorFunction(get(item, keys[0]), filter.value)) {
+					const valueToCheck = stripArray ? stripArrayFromValue(item, keys[0]) : get(item, keys[0]);
+					if (filter.validatorFunction(valueToCheck, filter.value)) {
 						found = true;
 						break;
 					}
@@ -239,7 +241,8 @@ export function processValidation(
 		} else {
 			let validationResult;
 			try {
-				validationResult = filter.validatorFunction(get(data, keys[0]), filter.value);
+				const valueToCheck = stripArray ? stripArrayFromValue(data, keys[0]) : get(data, keys[0]);
+				validationResult = filter.validatorFunction(valueToCheck, filter.value);
 			} catch (_err) {
 				validationResult = false;
 			}
@@ -258,13 +261,13 @@ export function processValidation(
 		if (Array.isArray(data)) {
 			let found = false;
 			for (const item of data) {
-				if (processValidation(get(item, currentKey), keys.join('.'), filter, possibleValues, false)) {
+				if (processValidation(get(item, currentKey), keys.join('.'), filter, possibleValues, false, stripArray)) {
 					found = true;
 					break;
 				}
 			}
 			if (assert) {
-				if (filter.emptyAllowedFunction(filter.value, possibleValues)) {
+				if (!found && filter.emptyAllowedFunction(filter.value, possibleValues)) {
 					expect(true).toBe(true);
 					return true;
 				}
@@ -274,12 +277,22 @@ export function processValidation(
 				return found;
 			}
 		} else {
+			const valueToCheck = stripArray ? stripArrayFromValue(data, currentKey) : get(data, currentKey);
 			if (assert) {
-				expect(processValidation(get(data, currentKey), keys.join('.'), filter, possibleValues, assert)).toBe(true);
+				expect(processValidation(valueToCheck, keys.join('.'), filter, possibleValues, assert, stripArray)).toBe(true);
 				return true;
 			} else {
-				return processValidation(get(data, currentKey), keys.join('.'), filter, possibleValues, assert);
+				return processValidation(valueToCheck, keys.join('.'), filter, possibleValues, assert, stripArray);
 			}
 		}
 	}
+}
+
+// Added for inconsistencies in JSON queries where some vendors return the fetched result in array format
+function stripArrayFromValue(item: any, key: string) {
+	let valueToCheck = get(item, key);
+	if (Array.isArray(valueToCheck)) {
+		valueToCheck = valueToCheck[0];
+	}
+	return valueToCheck;
 }
