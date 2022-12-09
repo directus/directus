@@ -64,7 +64,7 @@ beforeEach(() => {
 			acl: randWord(),
 			serverSideEncryption: randWord(),
 			root: randDirectoryPath(),
-			endpoint: `https://${randDomainName()}`,
+			endpoint: randDomainName(),
 		},
 		path: {
 			full: randFilePath(),
@@ -138,6 +138,56 @@ describe('#constructor', () => {
 
 	test('Defaults root to empty string', () => {
 		expect(driver['root']).toBe('');
+	});
+
+	test('Sets http endpoints', () => {
+		const sampleDomain = randDomainName();
+		const sampleHttpEndpoint = `http://${sampleDomain}`;
+
+		new DriverS3({
+			key: sample.config.key,
+			secret: sample.config.secret,
+			bucket: sample.config.bucket,
+			endpoint: sampleHttpEndpoint,
+		});
+
+		expect(S3Client).toHaveBeenCalledWith({
+			forcePathStyle: true,
+			endpoint: {
+				hostname: sampleDomain,
+				protocol: 'http:',
+				path: '/',
+			},
+			credentials: {
+				accessKeyId: sample.config.key,
+				secretAccessKey: sample.config.secret,
+			},
+		});
+	});
+
+	test('Sets https endpoints', () => {
+		const sampleDomain = randDomainName();
+		const sampleHttpEndpoint = `https://${sampleDomain}`;
+
+		new DriverS3({
+			key: sample.config.key,
+			secret: sample.config.secret,
+			bucket: sample.config.bucket,
+			endpoint: sampleHttpEndpoint,
+		});
+
+		expect(S3Client).toHaveBeenCalledWith({
+			forcePathStyle: true,
+			endpoint: {
+				hostname: sampleDomain,
+				protocol: 'https:',
+				path: '/',
+			},
+			credentials: {
+				accessKeyId: sample.config.key,
+				secretAccessKey: sample.config.secret,
+			},
+		});
 	});
 
 	test('Normalizes config path when root is given', () => {
@@ -227,9 +277,12 @@ describe('#getStream', () => {
 	test('Throws an error when no stream is returned', async () => {
 		vi.mocked(driver['client'].send).mockReturnValue({ Body: undefined } as unknown as void);
 
-		expect(driver.getStream(sample.path.input, sample.range)).rejects.toThrowError(
-			new Error(`No stream returned for file "${sample.path.input}"`)
-		);
+		try {
+			await driver.getStream(sample.path.input, sample.range);
+		} catch (err: any) {
+			expect(err).toBeInstanceOf(Error);
+			expect(err.message).toBe(`No stream returned for file "${sample.path.input}"`);
+		}
 	});
 
 	test('Throws an error when returned stream is not a readable stream', async () => {
@@ -298,7 +351,12 @@ describe('#getBuffer', () => {
 	test('Rejects with error thrown from getStream', async () => {
 		const mockError = new Error('Whoops');
 		vi.mocked(driver.getStream).mockRejectedValue(mockError);
-		expect(driver.getBuffer(sample.path.input)).rejects.toThrowError(mockError);
+
+		try {
+			await driver.getBuffer(sample.path.input);
+		} catch (err) {
+			expect(err).toBe(mockError);
+		}
 	});
 });
 
@@ -559,5 +617,47 @@ describe('#list', () => {
 		}
 
 		expect(output).toStrictEqual([sampleFile]);
+	});
+
+	test('Continuously fetches until all pages are returned', async () => {
+		vi.mocked(driver['client'].send)
+			.mockResolvedValueOnce({
+				NextContinuationToken: randWord(),
+				Contents: [
+					{
+						Key: randFilePath(),
+					},
+					{
+						Key: randFilePath(),
+					},
+				],
+			} as unknown as void)
+			.mockResolvedValueOnce({
+				NextContinuationToken: randWord(),
+				Contents: [
+					{
+						Key: randFilePath(),
+					},
+				],
+			} as unknown as void)
+			.mockResolvedValueOnce({
+				NextContinuationToken: undefined,
+				Contents: [
+					{
+						Key: randFilePath(),
+					},
+				],
+			} as unknown as void);
+
+		const iterator = driver.list(sample.path.input);
+
+		const output = [];
+
+		for await (const filepath of iterator) {
+			output.push(filepath);
+		}
+
+		expect(driver['client'].send).toHaveBeenCalledTimes(3);
+		expect(output.length).toBe(4);
 	});
 });
