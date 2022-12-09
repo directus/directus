@@ -4,7 +4,7 @@ import { Item, SchemaOverview } from '@directus/shared/types';
 import { JsonFieldNode } from '../../../types';
 
 export type DatabaseVersionedClients =
-	| 'postgres14'
+	| 'postgres12'
 	// | 'postgres10'
 	// | 'cockroachdb'
 	| 'oracle12'

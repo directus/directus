@@ -1,10 +1,10 @@
 import { Knex } from 'knex';
 import { JsonHelperDefault } from './default';
-import { JsonFieldNode } from '../../../../types';
+import { JsonFieldNode } from '../../../../types/index';
 import { getOperation } from '../../../../utils/apply-query';
 import { Item } from '@directus/shared/types';
 
-export class JsonHelperPostgres_14 extends JsonHelperDefault {
+export class JsonHelperPostgres_12 extends JsonHelperDefault {
 	preProcess(dbQuery: Knex.QueryBuilder, table: string): void {
 		dbQuery
 			.select(
@@ -13,8 +13,8 @@ export class JsonHelperPostgres_14 extends JsonHelperDefault {
 					const jsonPath = Object.keys(node.query).length === 0 ? node.jsonPath : this.buildFilterPath(node);
 					return this.knex.raw(
 						dbType === 'jsonb'
-							? 'jsonb_path_query_array(??.??, ?) as ??'
-							: 'jsonb_path_query_array(to_jsonb(??.??), ?) as ??',
+							? `jsonb_path_query_array(??.??, ?) as ??`
+							: `jsonb_path_query_array(to_jsonb(??.??), ?) as ??`,
 						[table, node.name, jsonPath, node.fieldKey]
 					);
 				})

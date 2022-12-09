@@ -38,7 +38,7 @@ export type AnyJsonHelper =
 	| jsonHelpers.oracle12
 	| jsonHelpers.cockroachdb
 	// | jsonHelpers.postgres10
-	| jsonHelpers.postgres14;
+	| jsonHelpers.postgres12;
 
 export function getJsonHelper(database: Knex, schema: SchemaOverview, nodes: JsonFieldNode[] = []): AnyJsonHelper {
 	const client = getDatabaseClient(database);
@@ -58,8 +58,8 @@ export function getJsonHelperByVersion(client: DatabaseClients): DatabaseVersion
 			}
 			return 'fallback'; // might be able to check for json extension
 		case 'postgres':
-			if (major >= 14) {
-				return 'postgres14'; // version 14+
+			if (major >= 12) {
+				return 'postgres12'; // version 12+
 			}
 			// if (major >= 10) {
 			// 	// might be able to support v9 here too

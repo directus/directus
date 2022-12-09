@@ -1,4 +1,4 @@
-export { JsonHelperPostgres_14 as postgres14 } from './dialects/postgres_14';
+export { JsonHelperPostgres_12 as postgres12 } from './dialects/postgres_12';
 // export { JsonHelperPostgres_10 as postgres10 } from './dialects/postgres_10';
 export { JsonHelperCockroachDB as cockroachdb } from './dialects/cockroach';
 export { JsonHelperOracle_12 as oracle12 } from './dialects/oracle_12';
