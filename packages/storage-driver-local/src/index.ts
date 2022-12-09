@@ -16,7 +16,7 @@ export class DriverLocal implements Driver {
 		this.root = resolve(config.root);
 	}
 
-	private getFullPath(filepath: string) {
+	private fullPath(filepath: string) {
 		return join(this.root, join(sep, filepath));
 	}
 
@@ -38,15 +38,15 @@ export class DriverLocal implements Driver {
 			options.end = range.end;
 		}
 
-		return createReadStream(this.getFullPath(filepath), options);
+		return createReadStream(this.fullPath(filepath), options);
 	}
 
 	async getBuffer(filepath: string) {
-		return await readFile(this.getFullPath(filepath));
+		return await readFile(this.fullPath(filepath));
 	}
 
 	async getStat(filepath: string) {
-		const statRes = await stat(this.getFullPath(filepath));
+		const statRes = await stat(this.fullPath(filepath));
 
 		if (!statRes) {
 			throw new Error(`File "${filepath}" doesn't exist.`);
@@ -59,27 +59,27 @@ export class DriverLocal implements Driver {
 	}
 
 	async exists(filepath: string) {
-		return access(this.getFullPath(filepath))
+		return access(this.fullPath(filepath))
 			.then(() => true)
 			.catch(() => false);
 	}
 
 	async move(src: string, dest: string) {
-		const fullSrc = this.getFullPath(src);
-		const fullDest = this.getFullPath(dest);
+		const fullSrc = this.fullPath(src);
+		const fullDest = this.fullPath(dest);
 		await this.ensureDir(dirname(fullDest));
 		await rename(fullSrc, fullDest);
 	}
 
 	async copy(src: string, dest: string) {
-		const fullSrc = this.getFullPath(src);
-		const fullDest = this.getFullPath(dest);
+		const fullSrc = this.fullPath(src);
+		const fullDest = this.fullPath(dest);
 		await this.ensureDir(dirname(fullDest));
 		await copyFile(fullSrc, fullDest);
 	}
 
 	async put(filepath: string, content: string | Buffer | NodeJS.ReadableStream) {
-		const fullPath = this.getFullPath(filepath);
+		const fullPath = this.fullPath(filepath);
 		await this.ensureDir(dirname(fullPath));
 
 		if (isReadableStream(content)) {
@@ -91,12 +91,12 @@ export class DriverLocal implements Driver {
 	}
 
 	async delete(filepath: string) {
-		const fullPath = this.getFullPath(filepath);
+		const fullPath = this.fullPath(filepath);
 		await unlink(fullPath);
 	}
 
 	list(prefix = '') {
-		const fullPrefix = this.getFullPath(prefix);
+		const fullPrefix = this.fullPath(prefix);
 		return this.listGenerator(fullPrefix);
 	}
 

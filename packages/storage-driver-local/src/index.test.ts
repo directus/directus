@@ -2,15 +2,92 @@ import type { Dir, WriteStream } from 'node:fs';
 import { createReadStream, createWriteStream } from 'node:fs';
 import { access, copyFile, mkdir, opendir, readFile, rename, stat, unlink, writeFile } from 'node:fs/promises';
 import { dirname, join, relative, resolve, sep } from 'node:path';
-import { Readable } from 'node:stream';
+import { Readable, PassThrough } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
-import { afterEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, describe, expect, test, vi, beforeEach } from 'vitest';
 import { DriverLocal } from './index.js';
+import type { DriverLocalConfig } from './index.js';
+import {
+	randAlphaNumeric,
+	randDirectoryPath,
+	randDomainName,
+	randFilePath,
+	randGitBranch as randBucket,
+	randNumber,
+	randPastDate,
+	randWord,
+	randText,
+	randFileType,
+} from '@ngneat/falso';
 
 vi.mock('node:path');
 vi.mock('node:fs');
 vi.mock('node:fs/promises');
 vi.mock('node:stream/promises');
+
+let sample: {
+	config: Required<DriverLocalConfig>;
+	path: {
+		root: string;
+		input: string;
+		inputFull: string;
+		src: string;
+		srcFull: string;
+		dest: string;
+		destFull: string;
+	};
+	range: {
+		start: number;
+		end: number;
+	};
+	text: string;
+	stream: PassThrough;
+	file: {
+		type: string;
+		size: number;
+		modified: Date;
+	};
+};
+
+let driver: DriverLocal;
+
+beforeEach(() => {
+	sample = {
+		config: {
+			root: randDirectoryPath(),
+		},
+		path: {
+			root: randDirectoryPath(),
+			input: randFilePath(),
+			inputFull: randFilePath(),
+			src: randFilePath(),
+			srcFull: randFilePath(),
+			dest: randFilePath(),
+			destFull: randFilePath(),
+		},
+		range: {
+			start: randNumber(),
+			end: randNumber(),
+		},
+		text: randText(),
+		stream: new PassThrough(),
+		file: {
+			type: randFileType(),
+			size: randNumber(),
+			modified: randPastDate(),
+		},
+	};
+
+	driver = new DriverLocal({ root: sample.config.root });
+
+	driver['fullPath'] = vi.fn().mockImplementation((input) => {
+		if (input === sample.path.src) return sample.path.srcFull;
+		if (input === sample.path.dest) return sample.path.destFull;
+		if (input === sample.path.input) return sample.path.inputFull;
+
+		return '';
+	});
+});
 
 afterEach(() => {
 	vi.resetAllMocks();
@@ -18,320 +95,286 @@ afterEach(() => {
 
 describe('#constructor', () => {
 	test('Resolves root based on input', () => {
-		new DriverLocal({ root: '/test-root/' });
-		expect(resolve).toHaveBeenCalledWith('/test-root/');
+		expect(resolve).toHaveBeenCalledWith(sample.config.root);
 	});
 
 	test('Saves resolved path to private var root', () => {
-		vi.mocked(resolve).mockReturnValueOnce('/resolved/test-root/');
-		const driver = new DriverLocal({ root: '/test-root/' });
-		expect(driver['root']).toBe('/resolved/test-root/');
+		const mockResolved = randDirectoryPath();
+		vi.mocked(resolve).mockReturnValueOnce(mockResolved);
+		const driver = new DriverLocal({ root: sample.config.root });
+		expect(driver['root']).toBe(mockResolved);
 	});
 });
 
-describe('#getFullPath', () => {
+describe('#fullPath', () => {
+	beforeEach(() => {
+		vi.mocked(driver['fullPath']).mockRestore();
+	});
+
 	test('Joins passed filepath with system separator', () => {
-		const driver = new DriverLocal({ root: '' });
-		driver['getFullPath']('/test/filepath/');
-		expect(join).toHaveBeenCalledWith(sep, '/test/filepath/');
+		const driver = new DriverLocal({ root: sample.config.root });
+
+		driver['fullPath'](sample.path.input);
+
+		expect(join).toHaveBeenCalledWith(sep, sample.path.input);
 	});
 
 	test('Joins config root with sep prefixed filepath', () => {
-		vi.mocked(join).mockReturnValueOnce('/test/filepath').mockReturnValueOnce('/root/test/filepath');
+		const driver = new DriverLocal({ root: sample.path.root });
+		vi.mocked(join).mockReturnValueOnce(sample.path.input).mockReturnValueOnce(sample.path.inputFull);
+		driver['root'] = sample.path.root;
 
-		const driver = new DriverLocal({ root: '/root/' });
-
-		const filepath = driver['getFullPath']('/test/filepath/');
+		const filepath = driver['fullPath'](sample.path.input);
 
 		expect(join).toHaveBeenCalledTimes(2);
-		expect(filepath).toBe('/root/test/filepath');
+		expect(filepath).toBe(sample.path.inputFull);
 	});
 });
 
 describe('#ensureDir', () => {
 	test('Calls node:fs/promises mkdir with passed path', async () => {
-		const driver = new DriverLocal({ root: '/' });
-		await driver['ensureDir']('/directory/path');
-		expect(mkdir).toHaveBeenCalledWith('/directory/path', { recursive: true });
+		await driver['ensureDir'](sample.path.input);
+		expect(mkdir).toHaveBeenCalledWith(sample.path.input, { recursive: true });
 	});
 });
 
 describe('#getStream', () => {
-	test('Calls createReadStream with full path', () => {
-		const driver = new DriverLocal({ root: '/' });
-		driver['getFullPath'] = vi.fn().mockReturnValue('/full/path/');
+	test('Calls createReadStream with full path', async () => {
+		await driver.getStream(sample.path.input);
 
-		driver.getStream('/path');
-
-		expect(driver['getFullPath']).toHaveBeenCalledWith('/path');
-		expect(createReadStream).toHaveBeenCalledWith('/full/path/', {});
+		expect(driver['fullPath']).toHaveBeenCalledWith(sample.path.input);
+		expect(createReadStream).toHaveBeenCalledWith(sample.path.inputFull, {});
 	});
 
-	test('Calls createReadStream with optional start range', () => {
-		const driver = new DriverLocal({ root: '/' });
-		driver['getFullPath'] = vi.fn().mockReturnValue('/full/path/');
+	test('Calls createReadStream with optional start range', async () => {
+		await driver.getStream(sample.path.input, { start: sample.range.start });
 
-		driver.getStream('/path', { start: 500 });
-
-		expect(createReadStream).toHaveBeenCalledWith('/full/path/', { start: 500 });
+		expect(createReadStream).toHaveBeenCalledWith(sample.path.inputFull, { start: sample.range.start });
 	});
 
-	test('Calls createReadStream with optional end range', () => {
-		const driver = new DriverLocal({ root: '/' });
-		driver['getFullPath'] = vi.fn().mockReturnValue('/full/path/');
+	test('Calls createReadStream with optional end range', async () => {
+		await driver.getStream(sample.path.input, { end: sample.range.end });
 
-		driver.getStream('/path', { end: 1500 });
-
-		expect(createReadStream).toHaveBeenCalledWith('/full/path/', { end: 1500 });
+		expect(createReadStream).toHaveBeenCalledWith(sample.path.inputFull, { end: sample.range.end });
 	});
 
-	test('Calls createReadStream with optional start and end range', () => {
-		const driver = new DriverLocal({ root: '/' });
-		driver['getFullPath'] = vi.fn().mockReturnValue('/full/path/');
+	test('Calls createReadStream with optional start and end range', async () => {
+		await driver.getStream(sample.path.input, sample.range);
 
-		driver.getStream('/path', { start: 500, end: 1500 });
-
-		expect(createReadStream).toHaveBeenCalledWith('/full/path/', { start: 500, end: 1500 });
+		expect(createReadStream).toHaveBeenCalledWith(sample.path.inputFull, sample.range);
 	});
 });
 
 describe('#getBuffer', () => {
 	test('Calls node:fs/promises readFile with full path', async () => {
-		const driver = new DriverLocal({ root: '/' });
-		driver['getFullPath'] = vi.fn().mockReturnValue('/full/path/');
+		await driver.getBuffer(sample.path.input);
 
-		await driver.getBuffer('/path/to/file');
-
-		expect(driver['getFullPath']).toHaveBeenCalledWith('/path/to/file');
-		expect(readFile).toHaveBeenCalledWith('/full/path/');
+		expect(driver['fullPath']).toHaveBeenCalledWith(sample.path.input);
+		expect(readFile).toHaveBeenCalledWith(sample.path.inputFull);
 	});
 });
 
 describe('#getStat', () => {
 	test('Calls node:fs/promises stat with full path', async () => {
-		const driver = new DriverLocal({ root: '/' });
-		driver['getFullPath'] = vi.fn().mockReturnValue('/full/path/');
 		vi.mocked(stat).mockResolvedValueOnce({} as unknown as Awaited<ReturnType<typeof stat>>);
 
-		await driver.getStat('/filepath');
+		await driver.getStat(sample.path.input);
 
-		expect(driver['getFullPath']).toHaveBeenCalledWith('/filepath');
-		expect(stat).toHaveBeenCalledWith('/full/path/');
+		expect(driver['fullPath']).toHaveBeenCalledWith(sample.path.input);
+		expect(stat).toHaveBeenCalledWith(sample.path.inputFull);
 	});
 
 	test(`Throws error if stat does not return info`, async () => {
-		const driver = new DriverLocal({ root: '/' });
-		driver['getFullPath'] = vi.fn().mockReturnValue('/full/path/');
-
-		expect(driver.getStat('/filepath')).rejects.toThrowErrorMatchingInlineSnapshot(
-			`"File \\"/filepath\\" doesn't exist."`
-		);
-
-		expect(driver['getFullPath']).toHaveBeenCalledWith('/filepath');
-		expect(stat).toHaveBeenCalledWith('/full/path/');
+		try {
+			await driver.getStat(sample.path.input);
+		} catch (err: any) {
+			expect(err).toBeInstanceOf(Error);
+			expect(err.message).toBe(`File "${sample.path.input}" doesn't exist.`);
+		}
 	});
 });
 
 describe('#exists', () => {
 	test('Calls node:fs/promises access with full path', async () => {
-		const driver = new DriverLocal({ root: '/' });
-		driver['getFullPath'] = vi.fn().mockReturnValue('/full/path/');
 		vi.mocked(access).mockResolvedValueOnce({} as unknown as Awaited<ReturnType<typeof access>>);
 
-		await driver.exists('/filepath');
+		await driver.exists(sample.path.input);
 
-		expect(driver['getFullPath']).toHaveBeenCalledWith('/filepath');
-		expect(access).toHaveBeenCalledWith('/full/path/');
+		expect(driver['fullPath']).toHaveBeenCalledWith(sample.path.input);
+		expect(access).toHaveBeenCalledWith(sample.path.inputFull);
 	});
 
-	test(`Returns true if access resolves`, async () => {
-		const driver = new DriverLocal({ root: '/' });
-		driver['getFullPath'] = vi.fn().mockReturnValue('/full/path/');
+	test('Returns true if access resolves', async () => {
 		vi.mocked(access).mockResolvedValueOnce({} as unknown as Awaited<ReturnType<typeof access>>);
 
-		const result = await driver.exists('/filepath');
+		const result = await driver.exists(sample.path.input);
+
 		expect(result).toBe(true);
 	});
 
-	test(`Returns false if access rejects`, async () => {
-		const driver = new DriverLocal({ root: '/' });
-		driver['getFullPath'] = vi.fn().mockReturnValue('/full/path/');
+	test('Returns false if access rejects', async () => {
 		vi.mocked(access).mockRejectedValueOnce(null);
-		const result = await driver.exists('/filepath');
+
+		const result = await driver.exists(sample.path.input);
+
 		expect(result).toBe(false);
 	});
 });
 
 describe('#move', () => {
+	beforeEach(() => {
+		driver['ensureDir'] = vi.fn();
+	});
+
 	test('Makes sure destination location exists', async () => {
-		const driver = new DriverLocal({ root: '/' });
-		driver['getFullPath'] = vi.fn().mockReturnValueOnce('/full/src/').mockReturnValueOnce('/full/dest/file.jpg');
-		driver['ensureDir'] = vi.fn().mockReturnValue(undefined);
-		vi.mocked(dirname).mockReturnValueOnce('/full/dest/');
+		const mockDirname = randDirectoryPath();
+		vi.mocked(dirname).mockReturnValueOnce(mockDirname);
 
-		await driver.move('/src', '/dest');
+		await driver.move(sample.path.src, sample.path.dest);
 
-		expect(dirname).toHaveBeenCalledWith('/full/dest/file.jpg');
-		expect(driver['ensureDir']).toHaveBeenCalledWith('/full/dest/');
+		expect(dirname).toHaveBeenCalledWith(sample.path.destFull);
+		expect(driver['ensureDir']).toHaveBeenCalledWith(mockDirname);
 	});
 
 	test('Calls node:fs/promises with full path for both src and dest', async () => {
-		const driver = new DriverLocal({ root: '/' });
-		driver['getFullPath'] = vi.fn().mockReturnValueOnce('/full/src/').mockReturnValueOnce('/full/dest/');
+		await driver.move(sample.path.src, sample.path.dest);
 
-		await driver.move('/src', '/dest');
-
-		expect(driver['getFullPath']).toHaveBeenCalledWith('/src');
-		expect(driver['getFullPath']).toHaveBeenCalledWith('/dest');
-		expect(rename).toHaveBeenCalledWith('/full/src/', '/full/dest/');
+		expect(driver['fullPath']).toHaveBeenCalledWith(sample.path.src);
+		expect(driver['fullPath']).toHaveBeenCalledWith(sample.path.dest);
+		expect(rename).toHaveBeenCalledWith(sample.path.srcFull, sample.path.destFull);
 	});
 });
 
 describe('#copy', () => {
+	beforeEach(() => {
+		driver['ensureDir'] = vi.fn();
+	});
+
 	test('Makes sure destination location exists', async () => {
-		const driver = new DriverLocal({ root: '/' });
-		driver['getFullPath'] = vi.fn().mockReturnValueOnce('/full/src/').mockReturnValueOnce('/full/dest/file.jpg');
-		driver['ensureDir'] = vi.fn().mockReturnValue(undefined);
-		vi.mocked(dirname).mockReturnValueOnce('/full/dest/');
+		const mockDirname = randDirectoryPath();
+		vi.mocked(dirname).mockReturnValueOnce(mockDirname);
 
-		await driver.copy('/src', '/dest');
+		await driver.copy(sample.path.src, sample.path.dest);
 
-		expect(dirname).toHaveBeenCalledWith('/full/dest/file.jpg');
-		expect(driver['ensureDir']).toHaveBeenCalledWith('/full/dest/');
+		expect(dirname).toHaveBeenCalledWith(sample.path.destFull);
+		expect(driver['ensureDir']).toHaveBeenCalledWith(mockDirname);
 	});
 
 	test('Calls node:fs/promises copyFile with full path for both src and dest', async () => {
-		const driver = new DriverLocal({ root: '/' });
-		driver['getFullPath'] = vi.fn().mockReturnValueOnce('/full/src/').mockReturnValueOnce('/full/dest/');
+		await driver.copy(sample.path.src, sample.path.dest);
 
-		await driver.copy('/src', '/dest');
-
-		expect(driver['getFullPath']).toHaveBeenCalledWith('/src');
-		expect(driver['getFullPath']).toHaveBeenCalledWith('/dest');
-		expect(copyFile).toHaveBeenCalledWith('/full/src/', '/full/dest/');
+		expect(driver['fullPath']).toHaveBeenCalledWith(sample.path.src);
+		expect(driver['fullPath']).toHaveBeenCalledWith(sample.path.dest);
+		expect(copyFile).toHaveBeenCalledWith(sample.path.srcFull, sample.path.destFull);
 	});
 });
 
 describe('#put', () => {
+	beforeEach(() => {
+		driver['ensureDir'] = vi.fn();
+	});
+
 	test('Makes sure destination location exists', async () => {
-		const driver = new DriverLocal({ root: '/' });
-		driver['getFullPath'] = vi.fn().mockReturnValueOnce('/full/path/to/file.txt');
-		driver['ensureDir'] = vi.fn().mockReturnValue(undefined);
-		vi.mocked(dirname).mockReturnValueOnce('/full/path/to/');
+		const mockDirname = randDirectoryPath();
+		vi.mocked(dirname).mockReturnValueOnce(mockDirname);
 
-		await driver.put('/path/to/file.txt', 'file contents');
+		await driver.put(sample.path.input, sample.text);
 
-		expect(dirname).toHaveBeenCalledWith('/full/path/to/file.txt');
-		expect(driver['ensureDir']).toHaveBeenCalledWith('/full/path/to/');
+		expect(dirname).toHaveBeenCalledWith(sample.path.inputFull);
+		expect(driver['ensureDir']).toHaveBeenCalledWith(mockDirname);
 	});
 
 	test('Creates write stream to file path when a readstream is passed', async () => {
-		const driver = new DriverLocal({ root: '/' });
-		driver['getFullPath'] = vi.fn().mockReturnValueOnce('/full/path/to/file.txt');
+		await driver.put(sample.path.input, sample.stream);
 
-		const mockStream = new Readable();
-
-		await driver.put('/path/to/file.txt', mockStream);
-
-		expect(createWriteStream).toHaveBeenCalledWith('/full/path/to/file.txt');
+		expect(createWriteStream).toHaveBeenCalledWith(sample.path.inputFull);
 	});
 
 	test('Passes read stream to write stream in pipeline', async () => {
-		const mockReadStream = new Readable();
 		const mockWriteStream = {};
-
-		const driver = new DriverLocal({ root: '/' });
-		driver['getFullPath'] = vi.fn().mockReturnValueOnce('/full/path/to/file.txt');
-
 		vi.mocked(createWriteStream).mockReturnValueOnce(mockWriteStream as unknown as WriteStream);
 
-		await driver.put('/path/to/file.txt', mockReadStream);
+		await driver.put(sample.path.input, sample.stream);
 
-		expect(pipeline).toHaveBeenCalledWith(mockReadStream, mockWriteStream);
+		expect(pipeline).toHaveBeenCalledWith(sample.stream, mockWriteStream);
 	});
 
 	test('Calls writeFile with passed content if not a stream', async () => {
-		const driver = new DriverLocal({ root: '/' });
-		driver['getFullPath'] = vi.fn().mockReturnValueOnce('/full/path/to/file.txt');
+		driver['fullPath'] = vi.fn().mockReturnValueOnce(sample.path.inputFull);
 
-		await driver.put('/path/to/file.txt', 'text file contents');
+		await driver.put(sample.path.input, sample.text);
 
-		expect(writeFile).toHaveBeenCalledWith('/full/path/to/file.txt', 'text file contents');
+		expect(writeFile).toHaveBeenCalledWith(sample.path.inputFull, sample.text);
 	});
 });
 
 describe('#delete', () => {
 	test('Calls node:fs/promises unlink with full filepath', async () => {
-		const driver = new DriverLocal({ root: '/full' });
-		driver['getFullPath'] = vi.fn().mockReturnValueOnce('/full/path/to/file.txt');
+		await driver.delete(sample.path.input);
 
-		await driver.delete('/path/to/file.txt');
-
-		expect(unlink).toHaveBeenCalledWith('/full/path/to/file.txt');
+		expect(unlink).toHaveBeenCalledWith(sample.path.inputFull);
 	});
 });
 
 describe('#list', () => {
 	test('Returns iterable listGenerator with full prefix', () => {
-		const driver = new DriverLocal({ root: '/full' });
-		driver['getFullPath'] = vi.fn().mockReturnValueOnce('/full/path/to/dir/');
+		driver.list(sample.path.input);
 
-		driver.list('/prefix');
-
-		expect(driver['getFullPath']).toHaveBeenCalledWith('/prefix');
+		expect(driver['fullPath']).toHaveBeenCalledWith(sample.path.input);
 	});
 });
 
 describe('#listGenerator', () => {
-	test('Opens directory if directory is passed', async () => {
-		const driver = new DriverLocal({ root: '/' });
+	let mockFiles: string[];
+
+	beforeEach(() => {
+		mockFiles = randFilePath({ length: 3 });
 
 		vi.mocked(opendir).mockResolvedValue(
 			(function* () {
-				yield { name: '/test.jpg' };
+				for (const mockFile of mockFiles) {
+					yield { name: mockFile, isFile: () => true, isDirectory: () => false };
+				}
 			})() as unknown as Dir
 		);
 
-		vi.mocked(join).mockReturnValueOnce('');
+		vi.mocked(join).mockImplementation((_, filepath) => filepath);
+	});
 
-		const iterator = driver['listGenerator']('/folder/');
+	test('Opens directory if directory is passed', async () => {
+		const mockFolder = `${randDirectoryPath()}/`;
+
+		const iterator = driver['listGenerator'](mockFolder);
 		await iterator.next();
 
-		expect(opendir).toHaveBeenCalledWith('/folder/');
+		expect(opendir).toHaveBeenCalledWith(mockFolder);
 	});
 
 	test('Opens directory if file or string prefix is passed', async () => {
-		const driver = new DriverLocal({ root: '/' });
+		const mockRoot = `/${randWord()}/`;
+		const mockPrefix = randWord();
 
-		vi.mocked(opendir).mockResolvedValue(
-			(function* () {
-				yield { name: '/test.jpg' };
-			})() as unknown as Dir
-		);
+		vi.mocked(dirname).mockReturnValueOnce(mockRoot);
 
-		vi.mocked(dirname).mockReturnValueOnce('/root/');
-		vi.mocked(join).mockReturnValueOnce('');
-
-		const iterator = driver['listGenerator']('/root/a-file-prefix');
+		const iterator = driver['listGenerator'](`${mockRoot}${mockPrefix}`);
 		await iterator.next();
 
-		expect(dirname).toHaveBeenCalledWith('/root/a-file-prefix');
-		expect(opendir).toHaveBeenCalledWith('/root/');
+		expect(dirname).toHaveBeenCalledWith(`${mockRoot}${mockPrefix}`);
+		expect(opendir).toHaveBeenCalledWith(mockRoot);
 	});
 
 	test('Ignores files that do not start with the prefix', async () => {
-		const driver = new DriverLocal({ root: '/' });
-
 		vi.mocked(opendir).mockResolvedValue(
 			(function* () {
-				yield { name: '/test.jpg' };
+				for (const mockFile of mockFiles) {
+					yield { name: `/right-prefix/${mockFile}`, isFile: () => true, isDirectory: () => false };
+				}
 			})() as unknown as Dir
 		);
 
-		vi.mocked(dirname).mockReturnValueOnce('/root/');
-		vi.mocked(join).mockReturnValueOnce('/root/');
+		vi.mocked(join).mockImplementation((_, filepath) => filepath);
 
-		const iterator = driver['listGenerator']('/root/a-file-prefix');
+		const iterator = driver['listGenerator'](`/wrong-prefix/${mockFiles[0]}`);
 		const output = await iterator.next();
 
 		expect(output).toStrictEqual({
@@ -341,19 +384,9 @@ describe('#listGenerator', () => {
 	});
 
 	test('Returns filepath string relative from configured root if path is file', async () => {
-		const driver = new DriverLocal({ root: '/' });
+		vi.mocked(relative).mockImplementation((_, x) => x);
 
-		vi.mocked(opendir).mockResolvedValue(
-			(function* () {
-				yield { name: '/root/test.jpg', isFile: () => true, isDirectory: () => false };
-			})() as unknown as Dir
-		);
-
-		vi.mocked(dirname).mockReturnValueOnce('/root/');
-		vi.mocked(join).mockReturnValueOnce('/root/test.jpg');
-		vi.mocked(relative).mockReturnValueOnce('./test.jpg');
-
-		const iterator = driver['listGenerator']('/root/');
+		const iterator = driver['listGenerator']('');
 
 		const output = [];
 
@@ -361,30 +394,31 @@ describe('#listGenerator', () => {
 			output.push(filename);
 		}
 
-		expect(output).toStrictEqual(['./test.jpg']);
+		expect(output).toStrictEqual(mockFiles);
 	});
 
 	test('Recursively calls itself to traverse directories', async () => {
-		const driver = new DriverLocal({ root: '/' });
+		vi.mocked(relative).mockImplementation((_, x) => x);
+
+		const mockDirectory = randDirectoryPath();
+		const mockFile = randFilePath();
+
+		vi.mocked(opendir).mockReset();
 
 		vi.mocked(opendir).mockResolvedValueOnce(
 			(function* () {
-				yield { name: '/root/test.jpg', isFile: () => false, isDirectory: () => true };
+				yield { name: mockDirectory, isFile: () => false, isDirectory: () => true };
 			})() as unknown as Dir
 		);
 
 		// Nested second call
 		vi.mocked(opendir).mockResolvedValueOnce(
 			(function* () {
-				yield { name: '/root/test.jpg', isFile: () => true, isDirectory: () => false };
+				yield { name: mockFile, isFile: () => true, isDirectory: () => false };
 			})() as unknown as Dir
 		);
 
-		vi.mocked(dirname).mockReturnValue('/root/');
-		vi.mocked(join).mockReturnValue('/root/test.jpg');
-		vi.mocked(relative).mockReturnValueOnce('./test.jpg');
-
-		const iterator = driver['listGenerator']('/root/');
+		const iterator = driver['listGenerator']('');
 
 		const output = [];
 
@@ -392,6 +426,6 @@ describe('#listGenerator', () => {
 			output.push(filename);
 		}
 
-		expect(output).toStrictEqual(['./test.jpg']);
+		expect(output).toStrictEqual([mockFile]);
 	});
 });
