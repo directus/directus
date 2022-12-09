@@ -1,5 +1,17 @@
-import type { GetObjectCommandInput, S3ClientConfig, HeadObjectCommandInput } from '@aws-sdk/client-s3';
-import { GetObjectCommand, S3Client, HeadObjectCommand } from '@aws-sdk/client-s3';
+import type {
+	GetObjectCommandInput,
+	S3ClientConfig,
+	CopyObjectCommandInput,
+	PutObjectCommandInput,
+} from '@aws-sdk/client-s3';
+import {
+	GetObjectCommand,
+	S3Client,
+	HeadObjectCommand,
+	CopyObjectCommand,
+	DeleteObjectCommand,
+	PutObjectCommand,
+} from '@aws-sdk/client-s3';
 import { normalizePath } from '@directus/shared/utils';
 import { isReadableStream } from '@directus/shared/utils/node';
 import type { Driver, Range } from '@directus/storage';
@@ -110,13 +122,54 @@ export class DriverS3 implements Driver {
 		}
 	}
 
-	async move(src: string, dest: string) {}
+	async move(src: string, dest: string) {
+		await this.copy(src, dest);
+		await this.delete(src);
+	}
 
-	async copy(src: string, dest: string) {}
+	async copy(src: string, dest: string) {
+		const params: CopyObjectCommandInput = {
+			Key: this.fullPath(dest),
+			Bucket: this.bucket,
+			CopySource: `/${this.bucket}/${this.fullPath(src)}`,
+		};
 
-	async put(filepath: string, content: Buffer | NodeJS.ReadableStream | string, type = 'application/octet-stream') {}
+		if (this.serverSideEncryption) {
+			params.ServerSideEncryption = this.serverSideEncryption;
+		}
 
-	async delete(filepath: string) {}
+		if (this.acl) {
+			params.ACL = this.acl;
+		}
+
+		await this.client.send(new CopyObjectCommand(params));
+	}
+
+	async put(filepath: string, content: Buffer | NodeJS.ReadableStream | string, type?: string) {
+		const params: PutObjectCommandInput = {
+			Key: this.fullPath(filepath),
+			Body: content,
+			Bucket: this.bucket,
+		};
+
+		if (type) {
+			params.ContentType = type;
+		}
+
+		if (this.acl) {
+			params.ACL = this.acl;
+		}
+
+		if (this.serverSideEncryption) {
+			params.ServerSideEncryption = this.serverSideEncryption;
+		}
+
+		await this.client.send(new PutObjectCommand(params));
+	}
+
+	async delete(filepath: string) {
+		await this.client.send(new DeleteObjectCommand({ Key: this.fullPath(filepath), Bucket: this.bucket }));
+	}
 
 	async *list(prefix = '') {}
 }
