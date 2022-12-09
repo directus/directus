@@ -19,7 +19,7 @@ export class JsonHelperMySQL_5 extends JsonHelperDefault {
 			.from(table);
 	}
 	postProcess(items: Item[]): void {
-		this.postProcessFallback(items);
+		this.postProcessParseJSON(items);
 	}
 	filterQuery(collection: string, node: JsonFieldNode): Knex.Raw {
 		return this.knex.raw(`JSON_EXTRACT(??.??, ?)`, [collection, node.name, node.jsonPath]);
