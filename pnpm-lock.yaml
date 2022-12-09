@@ -907,6 +907,7 @@ importers:
       '@aws-sdk/client-s3': 3.224.0
       '@directus/shared': workspace:*
       '@directus/storage': workspace:*
+      '@ngneat/falso': 6.3.0
       '@vitest/coverage-c8': 0.25.3
       typescript: 4.9.3
       vitest: 0.25.3
@@ -915,6 +916,7 @@ importers:
       '@directus/shared': link:../shared
       '@directus/storage': link:../storage
     devDependencies:
+      '@ngneat/falso': 6.3.0
       '@vitest/coverage-c8': 0.25.3
       typescript: 4.9.3
       vitest: 0.25.3
@@ -5209,6 +5211,13 @@ packages:
     requiresBuild: true
     dev: false
     optional: true
+
+  /@ngneat/falso/6.3.0:
+    resolution: {integrity: sha512-xjqAq26KQqfo2YSMHbz993SoeVAyNNcZVi0ukj95q7063NugkQxu9b0iLzUIf9lU4I/VnaPChuFn0yL3kB/NCA==}
+    dependencies:
+      seedrandom: 3.0.5
+      uuid: 8.3.2
+    dev: true
 
   /@nodelib/fs.scandir/2.1.5:
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
