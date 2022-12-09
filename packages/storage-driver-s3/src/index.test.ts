@@ -1,5 +1,5 @@
 import type { HeadObjectCommandOutput } from '@aws-sdk/client-s3';
-import { GetObjectCommand, HeadObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import { GetObjectCommand, HeadObjectCommand, S3Client, CopyObjectCommand } from '@aws-sdk/client-s3';
 import { normalizePath } from '@directus/shared/utils';
 import { isReadableStream } from '@directus/shared/utils/node';
 import {
@@ -29,6 +29,8 @@ let sample: {
 	path: {
 		input: string;
 		full: string;
+		src: string;
+		dest: string;
 	};
 	range: {
 		start: number;
@@ -55,6 +57,8 @@ beforeEach(() => {
 		path: {
 			full: randFilePath(),
 			input: randFilePath(),
+			src: randFilePath(),
+			dest: randFilePath(),
 		},
 		range: {
 			start: randNumber(),
@@ -162,7 +166,6 @@ describe('#fullPath', () => {
 
 describe('#getStream', () => {
 	beforeEach(() => {
-		driver['fullPath'] = vi.fn().mockReturnValue(sample.path.full);
 		vi.mocked(driver['client'].send).mockReturnValue({ Body: new Readable() } as unknown as void);
 		vi.mocked(isReadableStream).mockReturnValue(true);
 	});
@@ -298,6 +301,7 @@ describe('#getStat', () => {
 
 	test('Uses HeadObjectCommand with fullPath', async () => {
 		await driver.getStat(sample.path.input);
+
 		expect(driver['fullPath']).toHaveBeenCalledWith(sample.path.input);
 		expect(HeadObjectCommand).toHaveBeenCalledWith({
 			Key: sample.path.full,
@@ -308,7 +312,9 @@ describe('#getStat', () => {
 	test('Calls #send with HeadObjectCommand', async () => {
 		const mockHeadObjectCommand = {} as HeadObjectCommand;
 		vi.mocked(HeadObjectCommand).mockReturnValue(mockHeadObjectCommand);
+
 		await driver.getStat(sample.path.input);
+
 		expect(driver['client'].send).toHaveBeenCalledWith(mockHeadObjectCommand);
 	});
 
@@ -328,20 +334,84 @@ describe('#exists', () => {
 
 	test('Returns true if stat returns the stats', async () => {
 		vi.mocked(driver.getStat).mockResolvedValue({ size: sample.file.size, modified: sample.file.modified });
+
 		const exists = await driver.exists(sample.path.input);
+
 		expect(exists).toBe(true);
 	});
 
 	test('Returns false if stat throws an error', async () => {
 		vi.mocked(driver.getStat).mockRejectedValue(new Error());
+
 		const exists = await driver.exists(sample.path.input);
+
 		expect(exists).toBe(false);
 	});
 });
 
-describe.todo('#move', () => {});
+describe('#move', () => {
+	beforeEach(async () => {
+		driver.copy = vi.fn();
+		driver.delete = vi.fn();
 
-describe.todo('#copy', () => {});
+		await driver.move(sample.path.src, sample.path.dest);
+	});
+
+	test('Calls copy with given src and dest', async () => {
+		expect(driver.copy).toHaveBeenCalledWith(sample.path.src, sample.path.dest);
+	});
+
+	test('Calls delete on successful copy', async () => {
+		expect(driver.delete).toHaveBeenCalledWith(sample.path.src);
+	});
+});
+
+describe('#copy', () => {
+	test('Constructs params object based on config', async () => {
+		await driver.copy(sample.path.src, sample.path.dest);
+
+		expect(CopyObjectCommand).toHaveBeenCalledWith({
+			Key: sample.path.full,
+			Bucket: sample.config.bucket,
+			CopySource: `/${sample.config.bucket}/${sample.path.full}`,
+		});
+	});
+
+	test('Optionally sets ServerSideEncryption', async () => {
+		driver['serverSideEncryption'] = sample.config.serverSideEncryption;
+
+		await driver.copy(sample.path.src, sample.path.dest);
+
+		expect(CopyObjectCommand).toHaveBeenCalledWith({
+			Key: sample.path.full,
+			Bucket: sample.config.bucket,
+			CopySource: `/${sample.config.bucket}/${sample.path.full}`,
+			ServerSideEncryption: sample.config.serverSideEncryption,
+		});
+	});
+
+	test('Optionally sets ACL', async () => {
+		driver['acl'] = sample.config.acl;
+
+		await driver.copy(sample.path.src, sample.path.dest);
+
+		expect(CopyObjectCommand).toHaveBeenCalledWith({
+			Key: sample.path.full,
+			Bucket: sample.config.bucket,
+			CopySource: `/${sample.config.bucket}/${sample.path.full}`,
+			ACL: sample.config.acl,
+		});
+	});
+
+	test('Executes CopyObjectCommand', async () => {
+		const mockCommand = {} as CopyObjectCommand;
+		vi.mocked(CopyObjectCommand).mockReturnValue(mockCommand);
+
+		await driver.copy(sample.path.src, sample.path.dest);
+
+		expect(driver['client'].send).toHaveBeenCalledWith(mockCommand);
+	});
+});
 
 describe.todo('#put', () => {});
 
