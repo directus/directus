@@ -197,7 +197,6 @@ describe('#getStream', () => {
 	test('Optionally allows setting start range offset', async () => {
 		await driver.getStream(sample.path.input, { start: sample.range.start });
 
-		expect(driver['fullPath']).toHaveBeenCalledWith(sample.path.input);
 		expect(GetObjectCommand).toHaveBeenCalledWith({
 			Key: sample.path.full,
 			Bucket: sample.config.bucket,
@@ -208,7 +207,6 @@ describe('#getStream', () => {
 	test('Optionally allows setting end range offset', async () => {
 		await driver.getStream(sample.path.input, { end: sample.range.end });
 
-		expect(driver['fullPath']).toHaveBeenCalledWith(sample.path.input);
 		expect(GetObjectCommand).toHaveBeenCalledWith({
 			Key: sample.path.full,
 			Bucket: sample.config.bucket,
@@ -219,7 +217,6 @@ describe('#getStream', () => {
 	test('Optionally allows setting start and end range offset', async () => {
 		await driver.getStream(sample.path.input, sample.range);
 
-		expect(driver['fullPath']).toHaveBeenCalledWith(sample.path.input);
 		expect(GetObjectCommand).toHaveBeenCalledWith({
 			Key: sample.path.full,
 			Bucket: sample.config.bucket,
