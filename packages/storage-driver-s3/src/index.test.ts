@@ -6,6 +6,7 @@ import {
 	PutObjectCommand,
 	S3Client,
 	DeleteObjectCommand,
+	ListObjectsV2Command,
 } from '@aws-sdk/client-s3';
 import { normalizePath } from '@directus/shared/utils';
 import { isReadableStream } from '@directus/shared/utils/node';
@@ -514,4 +515,52 @@ describe('#delete', () => {
 	});
 });
 
-describe.todo('#list', () => {});
+describe('#list', () => {
+	test('Constructs list objects params based on input prefix', async () => {
+		vi.mocked(driver['client'].send).mockResolvedValue({} as unknown as void);
+
+		await driver.list(sample.path.input).next();
+
+		expect(ListObjectsV2Command).toHaveBeenCalledWith({
+			Bucket: sample.config.bucket,
+			Prefix: sample.path.full,
+			MaxKeys: 1000,
+		});
+	});
+
+	test('Calls send with the command', async () => {
+		const mockListObjectsV2Command = {} as ListObjectsV2Command;
+		vi.mocked(ListObjectsV2Command).mockReturnValue(mockListObjectsV2Command);
+		vi.mocked(driver['client'].send).mockResolvedValue({} as unknown as void);
+
+		await driver.list(sample.path.input).next();
+
+		expect(driver['client'].send).toHaveBeenCalledWith(mockListObjectsV2Command);
+	});
+
+	test('Yields file Key omitting root', async () => {
+		const sampleRoot = randDirectoryPath();
+		const sampleFile = randFilePath();
+		const sampleFull = `${sampleRoot}${sampleFile}`;
+
+		vi.mocked(driver['client'].send).mockResolvedValue({
+			Contents: [
+				{
+					Key: sampleFull,
+				},
+			],
+		} as unknown as void);
+
+		driver['root'] = sampleRoot;
+
+		const iterator = driver.list(sample.path.input);
+
+		const output = [];
+
+		for await (const filepath of iterator) {
+			output.push(filepath);
+		}
+
+		expect(output).toStrictEqual([sampleFile]);
+	});
+});

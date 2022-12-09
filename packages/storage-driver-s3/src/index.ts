@@ -3,6 +3,7 @@ import type {
 	S3ClientConfig,
 	CopyObjectCommandInput,
 	PutObjectCommandInput,
+	ListObjectsV2CommandInput,
 } from '@aws-sdk/client-s3';
 import {
 	GetObjectCommand,
@@ -11,6 +12,7 @@ import {
 	CopyObjectCommand,
 	DeleteObjectCommand,
 	PutObjectCommand,
+	ListObjectsV2Command,
 } from '@aws-sdk/client-s3';
 import { normalizePath } from '@directus/shared/utils';
 import { isReadableStream } from '@directus/shared/utils/node';
@@ -171,7 +173,33 @@ export class DriverS3 implements Driver {
 		await this.client.send(new DeleteObjectCommand({ Key: this.fullPath(filepath), Bucket: this.bucket }));
 	}
 
-	async *list(prefix = '') {}
+	async *list(prefix = '') {
+		let continuationToken: string | undefined = undefined;
+
+		do {
+			const listObjectsV2CommandInput: ListObjectsV2CommandInput = {
+				Bucket: this.bucket,
+				Prefix: this.fullPath(prefix),
+				MaxKeys: 1000,
+			};
+
+			if (continuationToken) {
+				listObjectsV2CommandInput.ContinuationToken = continuationToken;
+			}
+
+			const response = await this.client.send(new ListObjectsV2Command(listObjectsV2CommandInput));
+
+			continuationToken = response.NextContinuationToken;
+
+			if (response.Contents) {
+				for (const file of response.Contents) {
+					if (file.Key) {
+						yield file.Key.substring(this.root.length);
+					}
+				}
+			}
+		} while (continuationToken);
+	}
 }
 
 export default DriverS3;
