@@ -33,7 +33,6 @@ vi.mock('@directus/shared/utils');
 vi.mock('@aws-sdk/client-s3');
 vi.mock('node:path');
 
-let driver: DriverS3;
 let sample: {
 	config: Required<DriverS3Config>;
 	path: {
@@ -54,6 +53,8 @@ let sample: {
 		modified: Date;
 	};
 };
+
+let driver: DriverS3;
 
 beforeEach(() => {
 	sample = {
