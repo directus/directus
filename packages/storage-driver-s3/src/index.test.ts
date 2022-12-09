@@ -2,20 +2,21 @@ import type { HeadObjectCommandOutput } from '@aws-sdk/client-s3';
 import { GetObjectCommand, HeadObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { normalizePath } from '@directus/shared/utils';
 import { isReadableStream } from '@directus/shared/utils/node';
-import { join } from 'node:path';
-import { PassThrough, Readable } from 'node:stream';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import { DriverS3 } from './index.js';
 import {
 	randAlphaNumeric,
-	randGitBranch as randBucket,
-	randWord,
 	randDirectoryPath,
 	randDomainName,
 	randFilePath,
+	randGitBranch as randBucket,
 	randNumber,
+	randWord,
+	randPastDate,
 } from '@ngneat/falso';
+import { join } from 'node:path';
+import { PassThrough, Readable } from 'node:stream';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import type { DriverS3Config } from './index.js';
+import { DriverS3 } from './index.js';
 
 vi.mock('@directus/shared/utils/node');
 vi.mock('@directus/shared/utils');
@@ -32,6 +33,11 @@ let sample: {
 	range: {
 		start: number;
 		end: number;
+	};
+	stream: PassThrough;
+	file: {
+		size: number;
+		modified: Date;
 	};
 };
 
@@ -53,6 +59,11 @@ beforeEach(() => {
 		range: {
 			start: randNumber(),
 			end: randNumber(),
+		},
+		stream: new PassThrough(),
+		file: {
+			size: randNumber(),
+			modified: randPastDate(),
 		},
 	};
 
@@ -139,11 +150,11 @@ describe('#fullPath', () => {
 		vi.mocked(join).mockReturnValue(sample.path.full);
 		vi.mocked(normalizePath).mockReturnValue(sample.path.full);
 
-		driver['root'] = 'root/';
+		driver['root'] = sample.config.root;
 
 		const result = driver['fullPath'](sample.path.input);
 
-		expect(join).toHaveBeenCalledWith('root/', sample.path.input);
+		expect(join).toHaveBeenCalledWith(sample.config.root, sample.path.input);
 		expect(normalizePath).toHaveBeenCalledWith(sample.path.full);
 		expect(result).toBe(sample.path.full);
 	});
@@ -217,29 +228,25 @@ describe('#getStream', () => {
 
 	test('Returns stream from S3 client', async () => {
 		const mockGetObjectCommand = {} as GetObjectCommand;
-		const mockStream = {};
 
-		vi.mocked(driver['client'].send).mockReturnValue({ Body: mockStream } as unknown as void);
+		vi.mocked(driver['client'].send).mockReturnValue({ Body: sample.stream } as unknown as void);
 		vi.mocked(GetObjectCommand).mockReturnValue(mockGetObjectCommand);
 
 		const stream = await driver.getStream(sample.path.input, sample.range);
 
 		expect(driver['client'].send).toHaveBeenCalledWith(mockGetObjectCommand);
-		expect(stream).toBe(mockStream);
+		expect(stream).toBe(sample.stream);
 	});
 });
 
 describe('#getBuffer', () => {
-	let mockStream: PassThrough;
-
 	beforeEach(() => {
-		mockStream = new PassThrough();
-		driver.getStream = vi.fn().mockResolvedValue(mockStream);
+		driver.getStream = vi.fn().mockResolvedValue(sample.stream);
 	});
 
 	test('Gets stream for given location', async () => {
 		process.nextTick(() => {
-			mockStream.emit('end');
+			sample.stream.emit('end');
 		});
 
 		await driver.getBuffer(sample.path.input);
@@ -249,9 +256,9 @@ describe('#getBuffer', () => {
 
 	test('Resolves buffer from stream contents', async () => {
 		process.nextTick(() => {
-			mockStream.emit('data', Buffer.from('test-'));
-			mockStream.emit('data', Buffer.from('data'));
-			mockStream.emit('end');
+			sample.stream.emit('data', Buffer.from('test-'));
+			sample.stream.emit('data', Buffer.from('data'));
+			sample.stream.emit('end');
 		});
 
 		const buffer = await driver.getBuffer(sample.path.input);
@@ -264,7 +271,7 @@ describe('#getBuffer', () => {
 		const mockError = new Error('Whoops');
 
 		process.nextTick(() => {
-			mockStream.emit('error', mockError);
+			sample.stream.emit('error', mockError);
 		});
 
 		try {
@@ -284,8 +291,8 @@ describe('#getBuffer', () => {
 describe('#getStat', () => {
 	beforeEach(() => {
 		vi.mocked(driver['client'].send).mockResolvedValue({
-			ContentLength: 500,
-			LastModified: new Date(2022, 11, 7, 14, 52, 0, 0),
+			ContentLength: sample.file.size,
+			LastModified: sample.file.modified,
 		} as HeadObjectCommandOutput as unknown as void);
 	});
 
@@ -304,18 +311,30 @@ describe('#getStat', () => {
 		await driver.getStat(sample.path.input);
 		expect(driver['client'].send).toHaveBeenCalledWith(mockHeadObjectCommand);
 	});
+
+	test('Returns size/modified from returned send data', async () => {
+		const result = await driver.getStat(sample.path.input);
+		expect(result).toStrictEqual({
+			size: sample.file.size,
+			modified: sample.file.modified,
+		});
+	});
 });
 
 describe('#exists', () => {
+	beforeEach(() => {
+		driver.getStat = vi.fn();
+	});
+
 	test('Returns true if stat returns the stats', async () => {
-		driver.getStat = vi.fn().mockResolvedValue({});
-		const exists = await driver.exists('path/to/file.txt');
+		vi.mocked(driver.getStat).mockResolvedValue({ size: sample.file.size, modified: sample.file.modified });
+		const exists = await driver.exists(sample.path.input);
 		expect(exists).toBe(true);
 	});
 
 	test('Returns false if stat throws an error', async () => {
-		driver.getStat = vi.fn().mockRejectedValue(new Error('Something went wrong'));
-		const exists = await driver.exists('path/to/file.txt');
+		vi.mocked(driver.getStat).mockRejectedValue(new Error());
+		const exists = await driver.exists(sample.path.input);
 		expect(exists).toBe(false);
 	});
 });
