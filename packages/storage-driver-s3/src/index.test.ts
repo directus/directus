@@ -1,5 +1,5 @@
 import type { HeadObjectCommandOutput } from '@aws-sdk/client-s3';
-import { GetObjectCommand, HeadObjectCommand, S3Client, CopyObjectCommand } from '@aws-sdk/client-s3';
+import { CopyObjectCommand, GetObjectCommand, HeadObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { normalizePath } from '@directus/shared/utils';
 import { isReadableStream } from '@directus/shared/utils/node';
 import {
@@ -9,8 +9,10 @@ import {
 	randFilePath,
 	randGitBranch as randBucket,
 	randNumber,
-	randWord,
 	randPastDate,
+	randWord,
+	randText,
+	randFileType,
 } from '@ngneat/falso';
 import { join } from 'node:path';
 import { PassThrough, Readable } from 'node:stream';
@@ -37,7 +39,9 @@ let sample: {
 		end: number;
 	};
 	stream: PassThrough;
+	text: string;
 	file: {
+		type: string;
 		size: number;
 		modified: Date;
 	};
@@ -65,7 +69,9 @@ beforeEach(() => {
 			end: randNumber(),
 		},
 		stream: new PassThrough(),
+		text: randText(),
 		file: {
+			type: randFileType(),
 			size: randNumber(),
 			modified: randPastDate(),
 		},
@@ -413,7 +419,73 @@ describe('#copy', () => {
 	});
 });
 
-describe.todo('#put', () => {});
+describe('#put', () => {
+	test('Constructs params object based on config', async () => {
+		await driver.put(sample.path.input, sample.text);
+
+		expect(PutObjectCommand).toHaveBeenCalledWith({
+			Key: sample.path.full,
+			Bucket: sample.config.bucket,
+			Body: sample.text,
+		});
+	});
+
+	test('Passes streams to body as is', async () => {
+		await driver.put(sample.path.input, sample.stream);
+
+		expect(PutObjectCommand).toHaveBeenCalledWith({
+			Key: sample.path.full,
+			Bucket: sample.config.bucket,
+			Body: sample.stream,
+		});
+	});
+
+	test('Optionally sets ContentType', async () => {
+		await driver.put(sample.path.input, sample.text, sample.file.type);
+
+		expect(PutObjectCommand).toHaveBeenCalledWith({
+			Key: sample.path.full,
+			Bucket: sample.config.bucket,
+			Body: sample.text,
+			ContentType: sample.file.type,
+		});
+	});
+
+	test('Optionally sets ServerSideEncryption', async () => {
+		driver['serverSideEncryption'] = sample.config.serverSideEncryption;
+
+		await driver.put(sample.path.input, sample.text);
+
+		expect(PutObjectCommand).toHaveBeenCalledWith({
+			Key: sample.path.full,
+			Bucket: sample.config.bucket,
+			Body: sample.text,
+			ServerSideEncryption: sample.config.serverSideEncryption,
+		});
+	});
+
+	test('Optionally sets ACL', async () => {
+		driver['acl'] = sample.config.acl;
+
+		await driver.put(sample.path.input, sample.text);
+
+		expect(PutObjectCommand).toHaveBeenCalledWith({
+			Key: sample.path.full,
+			Bucket: sample.config.bucket,
+			Body: sample.text,
+			ACL: sample.config.acl,
+		});
+	});
+
+	test('Executes PutObjectCommand', async () => {
+		const mockCommand = {} as PutObjectCommand;
+		vi.mocked(PutObjectCommand).mockReturnValue(mockCommand);
+
+		await driver.put(sample.path.input, sample.text);
+
+		expect(driver['client'].send).toHaveBeenCalledWith(mockCommand);
+	});
+});
 
 describe.todo('#delete', () => {});
 
