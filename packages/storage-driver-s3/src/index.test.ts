@@ -1,5 +1,12 @@
 import type { HeadObjectCommandOutput } from '@aws-sdk/client-s3';
-import { CopyObjectCommand, GetObjectCommand, HeadObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import {
+	CopyObjectCommand,
+	GetObjectCommand,
+	HeadObjectCommand,
+	PutObjectCommand,
+	S3Client,
+	DeleteObjectCommand,
+} from '@aws-sdk/client-s3';
 import { normalizePath } from '@directus/shared/utils';
 import { isReadableStream } from '@directus/shared/utils/node';
 import {
@@ -487,6 +494,24 @@ describe('#put', () => {
 	});
 });
 
-describe.todo('#delete', () => {});
+describe('#delete', () => {
+	test('Constructs params based on input', async () => {
+		await driver.delete(sample.path.input);
+
+		expect(DeleteObjectCommand).toHaveBeenCalledWith({
+			Key: sample.path.full,
+			Bucket: sample.config.bucket,
+		});
+	});
+
+	test('Executes DeleteObjectCommand', async () => {
+		const mockDeleteObjectCommand = {} as DeleteObjectCommand;
+		vi.mocked(DeleteObjectCommand).mockReturnValue(mockDeleteObjectCommand);
+
+		await driver.delete(sample.path.input);
+
+		expect(driver['client'].send).toHaveBeenCalledWith(mockDeleteObjectCommand);
+	});
+});
 
 describe.todo('#list', () => {});
