@@ -37,9 +37,11 @@ let sample: {
 	config: Required<DriverS3Config>;
 	path: {
 		input: string;
-		full: string;
+		inputFull: string;
 		src: string;
+		srcFull: string;
 		dest: string;
+		destFull: string;
 	};
 	range: {
 		start: number;
@@ -68,10 +70,12 @@ beforeEach(() => {
 			endpoint: randDomainName(),
 		},
 		path: {
-			full: randFilePath(),
 			input: randFilePath(),
+			inputFull: randFilePath(),
 			src: randFilePath(),
+			srcFull: randFilePath(),
 			dest: randFilePath(),
+			destFull: randFilePath(),
 		},
 		range: {
 			start: randNumber(),
@@ -92,7 +96,13 @@ beforeEach(() => {
 		bucket: sample.config.bucket,
 	});
 
-	driver['fullPath'] = vi.fn().mockReturnValue(sample.path.full);
+	driver['fullPath'] = vi.fn().mockImplementation((input) => {
+		if (input === sample.path.src) return sample.path.srcFull;
+		if (input === sample.path.dest) return sample.path.destFull;
+		if (input === sample.path.input) return sample.path.inputFull;
+
+		return '';
+	});
 });
 
 afterEach(() => {
@@ -216,16 +226,16 @@ describe('#fullPath', () => {
 			bucket: sample.config.bucket,
 		});
 
-		vi.mocked(join).mockReturnValue(sample.path.full);
-		vi.mocked(normalizePath).mockReturnValue(sample.path.full);
+		vi.mocked(join).mockReturnValue(sample.path.inputFull);
+		vi.mocked(normalizePath).mockReturnValue(sample.path.inputFull);
 
 		driver['root'] = sample.config.root;
 
 		const result = driver['fullPath'](sample.path.input);
 
 		expect(join).toHaveBeenCalledWith(sample.config.root, sample.path.input);
-		expect(normalizePath).toHaveBeenCalledWith(sample.path.full);
-		expect(result).toBe(sample.path.full);
+		expect(normalizePath).toHaveBeenCalledWith(sample.path.inputFull);
+		expect(result).toBe(sample.path.inputFull);
 	});
 });
 
@@ -240,7 +250,7 @@ describe('#getStream', () => {
 
 		expect(driver['fullPath']).toHaveBeenCalledWith(sample.path.input);
 		expect(GetObjectCommand).toHaveBeenCalledWith({
-			Key: sample.path.full,
+			Key: sample.path.inputFull,
 			Bucket: sample.config.bucket,
 		});
 	});
@@ -249,7 +259,7 @@ describe('#getStream', () => {
 		await driver.getStream(sample.path.input, { start: sample.range.start });
 
 		expect(GetObjectCommand).toHaveBeenCalledWith({
-			Key: sample.path.full,
+			Key: sample.path.inputFull,
 			Bucket: sample.config.bucket,
 			Range: `bytes=${sample.range.start}-`,
 		});
@@ -259,7 +269,7 @@ describe('#getStream', () => {
 		await driver.getStream(sample.path.input, { end: sample.range.end });
 
 		expect(GetObjectCommand).toHaveBeenCalledWith({
-			Key: sample.path.full,
+			Key: sample.path.inputFull,
 			Bucket: sample.config.bucket,
 			Range: `bytes=-${sample.range.end}`,
 		});
@@ -269,7 +279,7 @@ describe('#getStream', () => {
 		await driver.getStream(sample.path.input, sample.range);
 
 		expect(GetObjectCommand).toHaveBeenCalledWith({
-			Key: sample.path.full,
+			Key: sample.path.inputFull,
 			Bucket: sample.config.bucket,
 			Range: `bytes=${sample.range.start}-${sample.range.end}`,
 		});
@@ -374,7 +384,7 @@ describe('#getStat', () => {
 
 		expect(driver['fullPath']).toHaveBeenCalledWith(sample.path.input);
 		expect(HeadObjectCommand).toHaveBeenCalledWith({
-			Key: sample.path.full,
+			Key: sample.path.inputFull,
 			Bucket: sample.config.bucket,
 		});
 	});
@@ -390,6 +400,7 @@ describe('#getStat', () => {
 
 	test('Returns size/modified from returned send data', async () => {
 		const result = await driver.getStat(sample.path.input);
+
 		expect(result).toStrictEqual({
 			size: sample.file.size,
 			modified: sample.file.modified,
@@ -441,9 +452,9 @@ describe('#copy', () => {
 		await driver.copy(sample.path.src, sample.path.dest);
 
 		expect(CopyObjectCommand).toHaveBeenCalledWith({
-			Key: sample.path.full,
+			Key: sample.path.destFull,
 			Bucket: sample.config.bucket,
-			CopySource: `/${sample.config.bucket}/${sample.path.full}`,
+			CopySource: `/${sample.config.bucket}/${sample.path.srcFull}`,
 		});
 	});
 
@@ -453,9 +464,9 @@ describe('#copy', () => {
 		await driver.copy(sample.path.src, sample.path.dest);
 
 		expect(CopyObjectCommand).toHaveBeenCalledWith({
-			Key: sample.path.full,
+			Key: sample.path.destFull,
 			Bucket: sample.config.bucket,
-			CopySource: `/${sample.config.bucket}/${sample.path.full}`,
+			CopySource: `/${sample.config.bucket}/${sample.path.srcFull}`,
 			ServerSideEncryption: sample.config.serverSideEncryption,
 		});
 	});
@@ -466,9 +477,9 @@ describe('#copy', () => {
 		await driver.copy(sample.path.src, sample.path.dest);
 
 		expect(CopyObjectCommand).toHaveBeenCalledWith({
-			Key: sample.path.full,
+			Key: sample.path.destFull,
 			Bucket: sample.config.bucket,
-			CopySource: `/${sample.config.bucket}/${sample.path.full}`,
+			CopySource: `/${sample.config.bucket}/${sample.path.srcFull}`,
 			ACL: sample.config.acl,
 		});
 	});
@@ -488,7 +499,7 @@ describe('#put', () => {
 		await driver.put(sample.path.input, sample.text);
 
 		expect(PutObjectCommand).toHaveBeenCalledWith({
-			Key: sample.path.full,
+			Key: sample.path.inputFull,
 			Bucket: sample.config.bucket,
 			Body: sample.text,
 		});
@@ -498,7 +509,7 @@ describe('#put', () => {
 		await driver.put(sample.path.input, sample.stream);
 
 		expect(PutObjectCommand).toHaveBeenCalledWith({
-			Key: sample.path.full,
+			Key: sample.path.inputFull,
 			Bucket: sample.config.bucket,
 			Body: sample.stream,
 		});
@@ -508,7 +519,7 @@ describe('#put', () => {
 		await driver.put(sample.path.input, sample.text, sample.file.type);
 
 		expect(PutObjectCommand).toHaveBeenCalledWith({
-			Key: sample.path.full,
+			Key: sample.path.inputFull,
 			Bucket: sample.config.bucket,
 			Body: sample.text,
 			ContentType: sample.file.type,
@@ -521,7 +532,7 @@ describe('#put', () => {
 		await driver.put(sample.path.input, sample.text);
 
 		expect(PutObjectCommand).toHaveBeenCalledWith({
-			Key: sample.path.full,
+			Key: sample.path.inputFull,
 			Bucket: sample.config.bucket,
 			Body: sample.text,
 			ServerSideEncryption: sample.config.serverSideEncryption,
@@ -534,7 +545,7 @@ describe('#put', () => {
 		await driver.put(sample.path.input, sample.text);
 
 		expect(PutObjectCommand).toHaveBeenCalledWith({
-			Key: sample.path.full,
+			Key: sample.path.inputFull,
 			Bucket: sample.config.bucket,
 			Body: sample.text,
 			ACL: sample.config.acl,
@@ -556,7 +567,7 @@ describe('#delete', () => {
 		await driver.delete(sample.path.input);
 
 		expect(DeleteObjectCommand).toHaveBeenCalledWith({
-			Key: sample.path.full,
+			Key: sample.path.inputFull,
 			Bucket: sample.config.bucket,
 		});
 	});
@@ -579,7 +590,7 @@ describe('#list', () => {
 
 		expect(ListObjectsV2Command).toHaveBeenCalledWith({
 			Bucket: sample.config.bucket,
-			Prefix: sample.path.full,
+			Prefix: sample.path.inputFull,
 			MaxKeys: 1000,
 		});
 	});
