@@ -11,40 +11,29 @@ import {
 	StatResponse,
 	FileListResponse,
 } from '@directus/drive';
+import { StorageClient } from '@supabase/storage-js';
+import axios from 'axios';
 import { Duplex } from 'node:stream';
-import { $fetch, $Fetch, Headers } from 'ofetch';
-import { joinURL } from 'ufo';
-
-const createApiClient = (baseURL: string, secret: string): $Fetch => {
-	return $fetch.create({
-		baseURL,
-		onRequest({ options }) {
-			options.headers = new Headers(options.headers);
-			options.headers.set('Authorization', `Bearer ${secret}`);
-		},
-		onRequestError({ request, error }) {
-			throw new UnknownException(error!, error!.name, request.path);
-		},
-		/* onResponseError({ request, error }) {
-			throw new UnknownException(error!, error!.name, request.path);
-		}, */
-	});
-};
 
 export class SupabaseStorage extends Storage {
+	private apiClient;
 	private bucket: string;
-	private apiClient: $Fetch;
 	private endpoint: string;
+	private secret;
 
 	constructor({ endpoint, bucket, secret }: SupabaseStorageConfig) {
 		super();
 
 		this.endpoint = endpoint;
 		this.bucket = bucket;
-		this.apiClient = createApiClient(endpoint, secret);
+		this.secret = secret;
+		this.apiClient = new StorageClient(endpoint, {
+			apikey: secret,
+			Authorization: `Bearer ${secret}`,
+		}).from(bucket);
 	}
 
-	public driver(): $Fetch {
+	public driver() {
 		return this.apiClient;
 	}
 
@@ -53,87 +42,79 @@ export class SupabaseStorage extends Storage {
 		content: string | Buffer | NodeJS.ReadableStream,
 		contentType?: string | undefined
 	): Promise<Response> {
-		const raw = await this.apiClient<{ Key: string }>(joinURL('object', this.bucket, path), {
-			method: 'POST',
-			headers: {
-				'Content-Type': contentType,
-			},
-			body: content,
-		});
+		const { data: raw, error } = await this.apiClient.upload(path, content, { contentType });
+		if (error) {
+			throw new UnknownException(error, error.name, path);
+		}
 		return { raw };
 	}
 
 	public async delete(location: string): Promise<DeleteResponse> {
-		const raw = await this.apiClient<{ message: string }>(`object/${this.bucket}/${location}`, {
-			method: 'DELETE',
-		}).catch((error) => {
-			throw new UnknownException(error, error.data.statusCode, location);
-		});
+		const { data: raw, error } = await this.apiClient.remove([location]);
+		if (error) {
+			throw new UnknownException(error, error.name, location);
+		}
 		return { raw, wasDeleted: true };
 	}
 
 	public async copy(src: string, dest: string): Promise<Response> {
-		const raw = await this.apiClient<{ Key: string }>('object/copy', {
-			method: 'POST',
-			body: {
-				bucketId: this.bucket,
-				sourceKey: src,
-				destinationKey: dest,
-			},
-		}).catch((error) => {
-			throw new UnknownException(error, error.data.statusCode, src);
-		});
+		const { data: raw, error } = await this.apiClient.copy(src, dest);
+		if (error) {
+			throw new UnknownException(error, error.name, src);
+		}
 		return { raw };
 	}
 
 	public async move(src: string, dest: string): Promise<Response> {
-		const raw = await this.apiClient<{ Key: string }>('object/move', {
-			method: 'POST',
-			body: {
-				bucketId: this.bucket,
-				sourceKey: src,
-				destinationKey: dest,
-			},
-		}).catch((error) => {
-			throw new UnknownException(error, error.data.statusCode, src);
-		});
+		const { data: raw, error } = await this.apiClient.move(src, dest);
+		if (error) {
+			throw new UnknownException(error, error.name, src);
+		}
 		return { raw };
 	}
 
 	public async getStat(path: string): Promise<StatResponse> {
-		const raw = await this.apiClient(`object/info/authenticated/${this.bucket}/${path}`).catch((error) => {
-			throw new UnknownException(error, error.data.statusCode, path);
-		});
-		return {
-			size: raw.metadata.size,
-			modified: new Date(raw.updated_at),
-			raw,
-		};
+		try {
+			const { headers } = await axios({
+				method: 'HEAD',
+				url: `${this.endpoint}/object/authenticated/${this.bucket}/${path}`,
+				headers: {
+					Authorization: `Bearer ${this.secret}`,
+				},
+			});
+			return {
+				size: parseInt(headers['content-length'] || ''),
+				modified: new Date(headers['last-modified'] || ''),
+				raw: headers,
+			};
+		} catch (error: any) {
+			if (error.response) {
+				throw new UnknownException(error, error.response.data.statusCode, path);
+			}
+			throw new UnknownException(error, error.code, path);
+		}
 	}
 
 	public async exists(location: string): Promise<ExistsResponse> {
-		const { raw } = await this.getStat(location).catch((_error) => {
+		try {
+			const { raw } = await this.getStat(location);
+			return {
+				exists: true,
+				raw,
+			};
+		} catch (error) {
 			return {
 				exists: false,
 				raw: null,
 			};
-		});
-
-		return {
-			exists: true,
-			raw,
-		};
+		}
 	}
 
 	public async getSignedUrl(location: string, options?: SignedUrlOptions | undefined): Promise<SignedUrlResponse> {
-		const raw = await this.apiClient(joinURL('object/sign', this.bucket, location), {
-			method: 'POST',
-			body: {
-				expiresIn: options?.expiry,
-			},
-		}).catch((error) => {
-			throw new UnknownException(error, error.data.statusCode, location);
-		});
+		const { data: raw, error } = await this.apiClient.createSignedUrl(location, options?.expiry || 900);
+		if (error) {
+			throw new UnknownException(error, error.name, location);
+		}
 		return {
 			signedUrl: raw.signedUrl,
 			raw,
@@ -141,44 +122,55 @@ export class SupabaseStorage extends Storage {
 	}
 
 	public getUrl(path: string): string {
-		return joinURL(this.endpoint, 'object/public', this.bucket, path);
+		const { data } = this.apiClient.getPublicUrl(path);
+		return data.publicUrl;
 	}
 
 	public getStream(location: string, _range?: Range | undefined): NodeJS.ReadableStream {
-		const promise = this.apiClient(joinURL('object/authenticated', this.bucket, location), {
-			responseType: 'blob',
-		}).catch((error) => {
-			throw new UnknownException(error, error.data.statusCode, location);
-		});
+		const promise = this.apiClient
+			.download(location)
+			.then(({ data }) => data?.arrayBuffer())
+			.then((data) => Buffer.from(data!))
+			.catch((error) => {
+				throw new UnknownException(error, error.name, location);
+			});
 		return Duplex.from(promise);
 	}
 
 	public async getBuffer(location: string): Promise<ContentResponse<Buffer>> {
-		const raw = await this.apiClient(joinURL('object/authenticated', this.bucket, location), {
-			responseType: 'arrayBuffer',
-		}).catch((error) => {
-			throw new UnknownException(error, error.data.statusCode, location);
-		});
+		const { data: raw, error } = await this.apiClient.download(location);
+		if (error) {
+			throw new UnknownException(error, error.name, location);
+		}
+		const buffer = await raw.arrayBuffer();
+
 		return {
-			content: Buffer.from(raw),
+			content: Buffer.from(buffer),
 			raw,
 		};
 	}
 
 	public async *flatList(prefix?: string | undefined): AsyncIterable<FileListResponse> {
-		const items = await this.apiClient<{ name: string }[]>(joinURL('object/list', this.bucket), {
-			method: 'POST',
-			body: { prefix },
-		}).catch((error) => {
-			throw new UnknownException(error, error.data.statusCode, prefix ?? '');
-		});
+		const limit = 1000;
+		let offset = 0;
+		let itemCount = 0;
 
-		for (const item of items) {
-			yield {
-				raw: item,
-				path: item.name,
-			};
-		}
+		do {
+			const { data: items, error } = await this.apiClient.list(prefix, { limit, offset });
+			if (error) {
+				throw new UnknownException(error, error.name, prefix ?? '');
+			}
+
+			itemCount = items.length;
+			offset += itemCount;
+
+			for (const item of items) {
+				yield {
+					raw: item,
+					path: item.name,
+				};
+			}
+		} while (itemCount === limit);
 	}
 }
 
