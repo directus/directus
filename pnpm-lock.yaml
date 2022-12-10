@@ -591,6 +591,7 @@ importers:
       ofetch: ^1.0.0
       typescript: ^4.9.3
       ufo: ^1.0.1
+      vitest: 0.25.2
     dependencies:
       '@directus/drive': link:../drive
       ofetch: 1.0.0
@@ -598,6 +599,7 @@ importers:
     devDependencies:
       '@types/node': 18.11.12
       typescript: 4.9.3
+      vitest: 0.25.2
 
   packages/drive:
     specifiers:
@@ -20581,7 +20583,7 @@ packages:
       vite: 3.2.4_sass@1.56.1
     dev: true
 
-  /vite/3.2.4_@types+node@18.11.9:
+  /vite/3.2.4_@types+node@18.11.12:
     resolution: {integrity: sha512-Z2X6SRAffOUYTa+sLy3NQ7nlHFU100xwanq1WDwqaiFiCe+25zdxP1TfCS5ojPV2oDDcXudHIoPnI1Z/66B7Yw==}
     engines: {node: ^14.18.0 || >=16.0.0}
     hasBin: true
@@ -20606,7 +20608,7 @@ packages:
       terser:
         optional: true
     dependencies:
-      '@types/node': 18.11.9
+      '@types/node': 18.11.12
       esbuild: 0.15.14
       postcss: 8.4.19
       resolve: 1.22.1
@@ -20615,7 +20617,7 @@ packages:
       fsevents: 2.3.2
     dev: true
 
-  /vite/3.2.4_ajklay5k626t46b6fyghkbup3i:
+  /vite/3.2.4_ebtirvpngmt6t6e7lw2uvcxgvu:
     resolution: {integrity: sha512-Z2X6SRAffOUYTa+sLy3NQ7nlHFU100xwanq1WDwqaiFiCe+25zdxP1TfCS5ojPV2oDDcXudHIoPnI1Z/66B7Yw==}
     engines: {node: ^14.18.0 || >=16.0.0}
     hasBin: true
@@ -20640,7 +20642,7 @@ packages:
       terser:
         optional: true
     dependencies:
-      '@types/node': 18.11.9
+      '@types/node': 18.11.12
       esbuild: 0.15.14
       postcss: 8.4.19
       resolve: 1.22.1
@@ -20708,7 +20710,7 @@ packages:
     dependencies:
       '@types/chai': 4.3.4
       '@types/chai-subset': 1.3.3
-      '@types/node': 18.11.9
+      '@types/node': 18.11.12
       acorn: 8.8.1
       acorn-walk: 8.2.0
       chai: 4.3.7
@@ -20719,7 +20721,7 @@ packages:
       tinybench: 2.3.1
       tinypool: 0.3.0
       tinyspy: 1.0.2
-      vite: 3.2.4_@types+node@18.11.9
+      vite: 3.2.4_@types+node@18.11.12
     transitivePeerDependencies:
       - less
       - sass
@@ -20753,7 +20755,7 @@ packages:
     dependencies:
       '@types/chai': 4.3.4
       '@types/chai-subset': 1.3.3
-      '@types/node': 18.11.9
+      '@types/node': 18.11.12
       acorn: 8.8.1
       acorn-walk: 8.2.0
       chai: 4.3.7
@@ -20765,7 +20767,7 @@ packages:
       tinybench: 2.3.1
       tinypool: 0.3.0
       tinyspy: 1.0.2
-      vite: 3.2.4_ajklay5k626t46b6fyghkbup3i
+      vite: 3.2.4_ebtirvpngmt6t6e7lw2uvcxgvu
     transitivePeerDependencies:
       - less
       - sass
