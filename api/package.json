@@ -104,6 +104,7 @@
 		"date-fns": "2.29.3",
 		"deep-diff": "1.0.2",
 		"destroy": "1.2.0",
+		"directus-drive-supabase": "workspace:*",
 		"dotenv": "16.0.3",
 		"encodeurl": "1.0.2",
 		"eventemitter2": "6.4.9",

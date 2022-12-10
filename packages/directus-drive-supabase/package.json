@@ -1,0 +1,37 @@
+{
+	"name": "directus-drive-supabase",
+	"version": "0.0.1",
+	"description": "Supabase storage adapter for directus drive",
+	"exports": {
+		".": "./dist/index.js",
+		"./package.json": "./package.json"
+	},
+	"main": "dist/index.js",
+	"files": [
+		"dist",
+		"!**/*.d.ts?(.map)"
+	],
+	"scripts": {
+		"build": "tsc --project ./tsconfig.json",
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"dev": "pnpm build -w --preserveWatchOutput --incremental"
+	},
+	"keywords": [
+		"directus",
+		"drive",
+		"supabase",
+		"storage",
+		"adapter"
+	],
+	"author": "Njenga Muriu <smuriu@tuta.io>",
+	"license": "ISC",
+	"dependencies": {
+		"@directus/drive": "workspace:*",
+		"ofetch": "^1.0.0",
+		"ufo": "^1.0.1"
+	},
+	"devDependencies": {
+		"@types/node": "^18.11.11",
+		"typescript": "^4.9.3"
+	}
+}
