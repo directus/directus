@@ -12,18 +12,28 @@ import {
 	FileListResponse,
 } from '@directus/drive';
 import { Duplex } from 'node:stream';
-import { ofetch, $Fetch } from 'ofetch';
+import { $fetch, $Fetch, Headers } from 'ofetch';
 import { joinURL } from 'ufo';
 
-export interface SupabaseStorageConfig {
-	endpoint: string;
-	bucket: string;
-	secret: string;
-}
+const createApiClient = (baseURL: string, secret: string): $Fetch => {
+	return $fetch.create({
+		baseURL,
+		onRequest({ options }) {
+			options.headers = new Headers(options.headers);
+			options.headers.set('Authorization', `Bearer ${secret}`);
+		},
+		onRequestError({ request, error }) {
+			throw new UnknownException(error!, error!.name, request.path);
+		},
+		/* onResponseError({ request, error }) {
+			throw new UnknownException(error!, error!.name, request.path);
+		}, */
+	});
+};
 
 export class SupabaseStorage extends Storage {
 	private bucket: string;
-	private client: typeof ofetch;
+	private apiClient: $Fetch;
 	private endpoint: string;
 
 	constructor({ endpoint, bucket, secret }: SupabaseStorageConfig) {
@@ -31,16 +41,11 @@ export class SupabaseStorage extends Storage {
 
 		this.endpoint = endpoint;
 		this.bucket = bucket;
-		this.client = ofetch.create({
-			baseURL: endpoint,
-			headers: {
-				Authorization: `Bearer ${secret}`,
-			},
-		});
+		this.apiClient = createApiClient(endpoint, secret);
 	}
 
 	public driver(): $Fetch {
-		return this.client;
+		return this.apiClient;
 	}
 
 	public async put(
@@ -48,20 +53,18 @@ export class SupabaseStorage extends Storage {
 		content: string | Buffer | NodeJS.ReadableStream,
 		contentType?: string | undefined
 	): Promise<Response> {
-		const raw = await this.client<{ Key: string }>(joinURL('object', this.bucket, path), {
+		const raw = await this.apiClient<{ Key: string }>(joinURL('object', this.bucket, path), {
 			method: 'POST',
 			headers: {
 				'Content-Type': contentType,
 			},
 			body: content,
-		}).catch((error) => {
-			throw new UnknownException(error, error.data.statusCode, path);
 		});
 		return { raw };
 	}
 
 	public async delete(location: string): Promise<DeleteResponse> {
-		const raw = await this.client<{ message: string }>(`object/${this.bucket}/${location}`, {
+		const raw = await this.apiClient<{ message: string }>(`object/${this.bucket}/${location}`, {
 			method: 'DELETE',
 		}).catch((error) => {
 			throw new UnknownException(error, error.data.statusCode, location);
@@ -70,7 +73,7 @@ export class SupabaseStorage extends Storage {
 	}
 
 	public async copy(src: string, dest: string): Promise<Response> {
-		const raw = await this.client<{ Key: string }>('object/copy', {
+		const raw = await this.apiClient<{ Key: string }>('object/copy', {
 			method: 'POST',
 			body: {
 				bucketId: this.bucket,
@@ -84,7 +87,7 @@ export class SupabaseStorage extends Storage {
 	}
 
 	public async move(src: string, dest: string): Promise<Response> {
-		const raw = await this.client<{ Key: string }>('object/move', {
+		const raw = await this.apiClient<{ Key: string }>('object/move', {
 			method: 'POST',
 			body: {
 				bucketId: this.bucket,
@@ -98,7 +101,7 @@ export class SupabaseStorage extends Storage {
 	}
 
 	public async getStat(path: string): Promise<StatResponse> {
-		const raw = await this.client(`object/info/authenticated/${this.bucket}/${path}`).catch((error) => {
+		const raw = await this.apiClient(`object/info/authenticated/${this.bucket}/${path}`).catch((error) => {
 			throw new UnknownException(error, error.data.statusCode, path);
 		});
 		return {
@@ -123,7 +126,7 @@ export class SupabaseStorage extends Storage {
 	}
 
 	public async getSignedUrl(location: string, options?: SignedUrlOptions | undefined): Promise<SignedUrlResponse> {
-		const raw = await this.client(joinURL('object/sign', this.bucket, location), {
+		const raw = await this.apiClient(joinURL('object/sign', this.bucket, location), {
 			method: 'POST',
 			body: {
 				expiresIn: options?.expiry,
@@ -142,7 +145,7 @@ export class SupabaseStorage extends Storage {
 	}
 
 	public getStream(location: string, _range?: Range | undefined): NodeJS.ReadableStream {
-		const promise = this.client(joinURL('object/authenticated', this.bucket, location), {
+		const promise = this.apiClient(joinURL('object/authenticated', this.bucket, location), {
 			responseType: 'blob',
 		}).catch((error) => {
 			throw new UnknownException(error, error.data.statusCode, location);
@@ -151,7 +154,7 @@ export class SupabaseStorage extends Storage {
 	}
 
 	public async getBuffer(location: string): Promise<ContentResponse<Buffer>> {
-		const raw = await this.client(joinURL('object/authenticated', this.bucket, location), {
+		const raw = await this.apiClient(joinURL('object/authenticated', this.bucket, location), {
 			responseType: 'arrayBuffer',
 		}).catch((error) => {
 			throw new UnknownException(error, error.data.statusCode, location);
@@ -163,7 +166,7 @@ export class SupabaseStorage extends Storage {
 	}
 
 	public async *flatList(prefix?: string | undefined): AsyncIterable<FileListResponse> {
-		const items = await this.client<{ name: string }[]>(joinURL('object/list', this.bucket), {
+		const items = await this.apiClient<{ name: string }[]>(joinURL('object/list', this.bucket), {
 			method: 'POST',
 			body: { prefix },
 		}).catch((error) => {
@@ -177,4 +180,10 @@ export class SupabaseStorage extends Storage {
 			};
 		}
 	}
+}
+
+export interface SupabaseStorageConfig {
+	endpoint: string;
+	bucket: string;
+	secret: string;
 }
