@@ -1,6 +1,7 @@
 import {
 	Storage,
 	UnknownException,
+	FileNotFound,
 	Response,
 	DeleteResponse,
 	ExistsResponse,
@@ -12,7 +13,7 @@ import {
 	FileListResponse,
 } from '@directus/drive';
 import { StorageClient } from '@supabase/storage-js';
-import axios from 'axios';
+import { IncomingHttpHeaders, request } from 'node:http';
 import { Duplex } from 'node:stream';
 
 export class SupabaseStorage extends Storage {
@@ -73,25 +74,46 @@ export class SupabaseStorage extends Storage {
 		return { raw };
 	}
 
+	private getHead(path: string): Promise<IncomingHttpHeaders> {
+		return new Promise((resolve, reject) => {
+			const req = request(
+				`${this.endpoint}/object/authenticated/${this.bucket}/${path}`,
+				{
+					method: 'HEAD',
+					headers: {
+						Authorization: `Bearer ${this.secret}`,
+					},
+				},
+				(res) => {
+					const { statusCode } = res;
+					if (statusCode !== 200) {
+						const err = new Error(res.statusMessage);
+						err.name = '' + statusCode;
+						reject(new FileNotFound(err, path));
+					}
+					resolve(res.headers);
+				}
+			);
+			req.on('error', (e) => {
+				reject(e);
+			});
+			req.end();
+		});
+	}
+
 	public async getStat(path: string): Promise<StatResponse> {
 		try {
-			const { headers } = await axios({
-				method: 'HEAD',
-				url: `${this.endpoint}/object/authenticated/${this.bucket}/${path}`,
-				headers: {
-					Authorization: `Bearer ${this.secret}`,
-				},
-			});
+			const headers = await this.getHead(path);
 			return {
 				size: parseInt(headers['content-length'] || ''),
 				modified: new Date(headers['last-modified'] || ''),
 				raw: headers,
 			};
 		} catch (error: any) {
-			if (error.response) {
-				throw new UnknownException(error, error.response.data.statusCode, path);
+			if (error instanceof FileNotFound) {
+				throw error;
 			}
-			throw new UnknownException(error, error.code, path);
+			throw new UnknownException(error, error.name, path);
 		}
 	}
 

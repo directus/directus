@@ -13,8 +13,8 @@
 	],
 	"scripts": {
 		"build": "tsc --project ./tsconfig.json",
-		"test:watch": "vitest watch --coverage",
-		"test": "vitest run --coverage",
+		"test:watch": "jest --coverage --watchAll",
+		"test": "jest --coverage",
 		"dev": "pnpm build -w --preserveWatchOutput --incremental"
 	},
 	"keywords": [
@@ -28,12 +28,14 @@
 	"license": "ISC",
 	"dependencies": {
 		"@directus/drive": "workspace:*",
-		"@supabase/storage-js": "^2.0.0",
-		"axios": "1.1.3"
+		"@supabase/storage-js": "^2.0.0"
 	},
 	"devDependencies": {
+		"@types/jest": "29.2.3",
 		"@types/node": "^18.11.11",
-		"typescript": "^4.9.3",
-		"vitest": "0.25.2"
+		"dotenv": "16.0.3",
+		"jest": "29.3.1",
+		"ts-jest": "29.0.3",
+		"typescript": "^4.9.3"
 	}
 }
