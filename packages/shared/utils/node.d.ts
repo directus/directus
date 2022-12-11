@@ -1,1 +1,1 @@
-export * from '../dist/utils/node/index.mjs';
+export * from '../dist/utils/node';

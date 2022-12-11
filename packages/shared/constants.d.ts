@@ -1,1 +1,1 @@
-export * from './dist/constants/index.mjs';
+export * from './dist/constants';

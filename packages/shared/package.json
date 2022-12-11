@@ -19,25 +19,32 @@
 	"sideEffects": false,
 	"exports": {
 		"./composables": {
-			"require": "./dist/composables/index.js"
+			"require": "./dist/composables/index.js",
+			"types": "./dist/composables/index.d.ts"
 		},
 		"./constants": {
-			"require": "./dist/constants/index.js"
+			"require": "./dist/constants/index.js",
+			"types": "./dist/constants/index.d.ts"
 		},
 		"./exceptions": {
-			"require": "./dist/exceptions/index.js"
+			"require": "./dist/exceptions/index.js",
+			"types": "./dist/exceptions/index.d.ts"
 		},
 		"./types": {
-			"require": "./dist/types/index.js"
+			"require": "./dist/types/index.js",
+			"types": "./dist/types/index.d.ts"
 		},
 		"./utils": {
-			"require": "./dist/utils/index.js"
+			"require": "./dist/utils/index.js",
+			"types": "./dist/utils/index.d.ts"
 		},
 		"./utils/browser": {
-			"require": "./dist/utils/browser/index.js"
+			"require": "./dist/utils/browser/index.js",
+			"types": "./dist/utils/browser/index.d.ts"
 		},
 		"./utils/node": {
-			"require": "./dist/utils/node/index.js"
+			"require": "./dist/utils/node/index.js",
+			"types": "./dist/utils/node/index.d.ts"
 		},
 		"./package.json": "./package.json"
 	},

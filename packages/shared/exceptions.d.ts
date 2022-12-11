@@ -1,1 +1,1 @@
-export * from './dist/exceptions/index.mjs';
+export * from './dist/exceptions';
