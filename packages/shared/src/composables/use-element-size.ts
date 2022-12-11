@@ -1,5 +1,7 @@
-import { isNil } from 'lodash';
+import lodash from 'lodash';
 import { isRef, onMounted, onUnmounted, Ref, ref } from 'vue';
+
+const { isNil } = lodash;
 
 declare global {
 	interface Window {
