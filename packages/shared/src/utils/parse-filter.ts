@@ -1,4 +1,4 @@
-import lodash from 'lodash';
+import { isObjectLike } from 'lodash';
 import { REGEX_BETWEEN_PARENS } from '../constants/index.js';
 import { Accountability, Filter, Role, User } from '../types';
 import { adjustDate } from './adjust-date.js';
@@ -6,8 +6,6 @@ import { deepMap } from './deep-map.js';
 import { get } from './get-with-arrays.js';
 import { isDynamicVariable } from './is-dynamic-variable.js';
 import { toArray } from './to-array.js';
-
-const { isObjectLike } = lodash;
 
 type ParseFilterContext = {
 	// The user can add any custom fields to user

@@ -16,9 +16,7 @@ import {
 	addMilliseconds,
 	subMilliseconds,
 } from 'date-fns';
-import lodash from 'lodash';
-
-const { clone } = lodash;
+import { clone } from 'lodash';
 
 /**
  * Adjust a given date by a given change in duration. The adjustment value uses the exact same syntax
