@@ -9,19 +9,19 @@ import {
 	HYBRID_EXTENSION_TYPES,
 	LOCAL_TYPES,
 	PACKAGE_EXTENSION_TYPES,
-} from '../constants';
-import { Accountability } from './accountability';
-import { InterfaceConfig } from './interfaces';
-import { DisplayConfig } from './displays';
-import { LayoutConfig } from './layouts';
-import { ModuleConfig } from './modules';
-import { PanelConfig } from './panels';
-import { DeepPartial } from './misc';
-import { Field } from './fields';
-import { Relation } from './relations';
-import { Collection } from './collection';
-import { SchemaOverview } from './schema';
-import { OperationAppConfig } from './operations';
+} from '../constants/index.js';
+import { Accountability } from './accountability.js';
+import { InterfaceConfig } from './interfaces.js';
+import { DisplayConfig } from './displays.js';
+import { LayoutConfig } from './layouts.js';
+import { ModuleConfig } from './modules.js';
+import { PanelConfig } from './panels.js';
+import { DeepPartial } from './misc.js';
+import { Field } from './fields.js';
+import { Relation } from './relations.js';
+import { Collection } from './collection.js';
+import { SchemaOverview } from './schema.js';
+import { OperationAppConfig } from './operations.js';
 
 export type AppExtensionType = typeof APP_EXTENSION_TYPES[number];
 export type ApiExtensionType = typeof API_EXTENSION_TYPES[number];

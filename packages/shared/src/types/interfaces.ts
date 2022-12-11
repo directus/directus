@@ -1,7 +1,7 @@
-import { Field, LocalType, Type } from './fields';
+import { Field, LocalType, Type } from './fields.js';
 import { Component, ComponentOptions } from 'vue';
-import { DeepPartial } from './misc';
-import { ExtensionOptionsContext } from './extensions';
+import { DeepPartial } from './misc.js';
+import { ExtensionOptionsContext } from './extensions.js';
 
 export interface InterfaceConfig {
 	id: string;

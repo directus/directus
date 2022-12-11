@@ -10,7 +10,7 @@ import {
 	Feature,
 	FeatureCollection,
 } from 'geojson';
-import { GeometryType, GeometryFormat } from './fields';
+import { GeometryType, GeometryFormat } from './fields.js';
 
 export type GeometryOptions = {
 	geometryField: string;
