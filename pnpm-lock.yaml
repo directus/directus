@@ -872,6 +872,25 @@ importers:
       typescript: 4.9.3
       vitest: 0.25.3
 
+  packages/storage-driver-cloudinary:
+    specifiers:
+      '@directus/shared': workspace:*
+      '@directus/storage': workspace:*
+      '@ngneat/falso': 6.3.0
+      '@vitest/coverage-c8': 0.25.3
+      form-data: 4.0.0
+      typescript: 4.9.3
+      vitest: 0.25.3
+    dependencies:
+      '@directus/shared': link:../shared
+      '@directus/storage': link:../storage
+      form-data: 4.0.0
+    devDependencies:
+      '@ngneat/falso': 6.3.0
+      '@vitest/coverage-c8': 0.25.3
+      typescript: 4.9.3
+      vitest: 0.25.3
+
   packages/storage-driver-gcs:
     specifiers:
       '@directus/shared': workspace:*
