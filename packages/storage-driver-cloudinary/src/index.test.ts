@@ -259,6 +259,44 @@ describe('#getFullSignature', () => {
 	});
 });
 
+describe('#getParameterSignature', () => {
+	let mockHash: string;
+	let result: string;
+	let mockCreateHash: {
+		update: Mock;
+		digest: Mock;
+	};
+
+	beforeEach(() => {
+		mockHash = randSha();
+
+		mockCreateHash = {
+			update: vi.fn().mockReturnThis(),
+			digest: vi.fn().mockReturnValue(mockHash),
+		};
+
+		vi.mocked(createHash).mockReturnValue(mockCreateHash as unknown as Hash);
+
+		result = driver['getParameterSignature'](sample.path.input);
+	});
+
+	test('Creates SHA1 hash', () => {
+		expect(createHash).toHaveBeenCalledWith('sha1');
+	});
+
+	test('Updates hash with passed filepath + apiSecret', () => {
+		expect(mockCreateHash.update).toHaveBeenCalledWith(sample.path.input + sample.config.apiSecret);
+	});
+
+	test('Digests hash to base64', () => {
+		expect(mockCreateHash.digest).toHaveBeenCalledWith('base64');
+	});
+
+	test('Returns first 8 characters of base64 sha hash wrapped in Cloudinary prefix/suffix', () => {
+		expect(result).toBe(`s--${mockHash.substring(0, 8)}--`);
+	});
+});
+
 describe.todo('#getStream', () => {});
 
 describe.todo('#getBuffer', () => {});
