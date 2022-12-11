@@ -13,6 +13,7 @@ import { CollectionsService } from './collections';
 import { FieldsService } from './fields';
 import { GraphQLService } from './graphql';
 import { RelationsService } from './relations';
+import { OAS_REQUIRED_SCHEMAS } from '../constants';
 
 // @ts-ignore
 import formatTitle from '@directus/format-title';
@@ -324,6 +325,15 @@ class OASSpecsService implements SpecificationSubService {
 		if (!components) components = {};
 
 		components.schemas = {};
+
+		// Always includes the schemas with these names
+		if (openapi.components?.schemas !== null) {
+			for (const schemaName of OAS_REQUIRED_SCHEMAS) {
+				if (openapi.components!.schemas![schemaName] !== null) {
+					components.schemas[schemaName] = cloneDeep(openapi.components!.schemas![schemaName]);
+				}
+			}
+		}
 
 		if (!tags) return;
 
