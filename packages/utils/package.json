@@ -1,5 +1,5 @@
 {
-	"name": "@directus/storage-driver-gcs",
+	"name": "@directus/utils",
 	"version": "9.21.2",
 	"type": "module",
 	"scripts": {
@@ -9,17 +9,18 @@
 		"test:watch": "vitest",
 		"test:coverage": "vitest run --coverage"
 	},
-	"description": "GCS file storage abstraction for `@directus/storage`",
+	"description": "Utilities shared between the Directus packages",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/directus/directus.git",
-		"directory": "packages/storage-driver-gcs"
+		"directory": "packages/utils"
 	},
 	"funding": "https://github.com/directus/directus?sponsor=1",
 	"license": "GPL-3.0",
 	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
 	"exports": {
 		".": "./dist/index.js",
+		"./node": "./dist/node/index.js",
 		"./package.json": "./package.json"
 	},
 	"main": "dist/index.js",
@@ -31,11 +32,11 @@
 		"access": "public"
 	},
 	"dependencies": {
-		"@directus/utils": "workspace:*",
-		"@directus/storage": "workspace:*",
-		"@google-cloud/storage": "6.7.0"
+		"@directus/shared": "workspace:*",
+		"@directus/storage": "workspace:*"
 	},
 	"devDependencies": {
+		"@ngneat/falso": "6.3.0",
 		"@vitest/coverage-c8": "0.25.3",
 		"typescript": "4.9.3",
 		"vitest": "0.25.3"

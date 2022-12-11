@@ -1,13 +1,13 @@
-import { normalizePath } from '@directus/shared/utils';
-import { isReadableStream } from '@directus/shared/utils/node';
+import { normalizePath } from '@directus/utils';
+import { isReadableStream } from '@directus/utils/node';
 import { Bucket, Storage } from '@google-cloud/storage';
 import { join } from 'node:path';
 import { pipeline } from 'node:stream/promises';
 import { afterEach, describe, expect, test, vi } from 'vitest';
 import { DriverGCS } from './index.js';
 
-vi.mock('@directus/shared/utils/node');
-vi.mock('@directus/shared/utils');
+vi.mock('@directus/utils/node');
+vi.mock('@directus/utils');
 vi.mock('@google-cloud/storage');
 vi.mock('node:path');
 vi.mock('node:stream/promises');

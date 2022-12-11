@@ -1,6 +1,6 @@
 import { BlobServiceClient, ContainerClient, StorageSharedKeyCredential } from '@azure/storage-blob';
-import { normalizePath } from '@directus/shared/utils';
-import { isReadableStream } from '@directus/shared/utils/node';
+import { normalizePath } from '@directus/utils';
+import { isReadableStream } from '@directus/utils/node';
 import type { Driver, Range } from '@directus/storage';
 import { join } from 'node:path';
 import type { Readable } from 'node:stream';

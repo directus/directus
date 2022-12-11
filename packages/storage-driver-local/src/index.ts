@@ -1,9 +1,9 @@
+import { isReadableStream } from '@directus/utils/node';
 import type { Driver, Range } from '@directus/storage';
 import { createReadStream, createWriteStream } from 'node:fs';
 import { access, copyFile, mkdir, opendir, readFile, rename, stat, unlink, writeFile } from 'node:fs/promises';
 import { dirname, join, relative, resolve, sep } from 'node:path';
 import { pipeline } from 'node:stream/promises';
-import { isReadableStream } from '@directus/shared/utils/node';
 
 export type DriverLocalConfig = {
 	root: string;

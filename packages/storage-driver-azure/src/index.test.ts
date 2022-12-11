@@ -1,8 +1,8 @@
 import type { ContainerClient } from '@azure/storage-blob';
 import type { Mock } from 'vitest';
 import { BlobServiceClient, StorageSharedKeyCredential } from '@azure/storage-blob';
-import { normalizePath } from '@directus/shared/utils';
-import { isReadableStream } from '@directus/shared/utils/node';
+import { normalizePath } from '@directus/utils';
+import { isReadableStream } from '@directus/utils/node';
 import { join } from 'node:path';
 import { PassThrough } from 'node:stream';
 import { afterEach, describe, expect, test, vi, beforeEach } from 'vitest';
@@ -22,8 +22,8 @@ import {
 	randUrl,
 } from '@ngneat/falso';
 
-vi.mock('@directus/shared/utils/node');
-vi.mock('@directus/shared/utils');
+vi.mock('@directus/utils/node');
+vi.mock('@directus/utils');
 vi.mock('@azure/storage-blob');
 vi.mock('node:path');
 

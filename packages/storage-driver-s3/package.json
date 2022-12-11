@@ -32,7 +32,7 @@
 	},
 	"dependencies": {
 		"@aws-sdk/client-s3": "3.224.0",
-		"@directus/shared": "workspace:*",
+		"@directus/utils": "workspace:*",
 		"@directus/storage": "workspace:*"
 	},
 	"devDependencies": {

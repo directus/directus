@@ -8,8 +8,8 @@ import {
 	DeleteObjectCommand,
 	ListObjectsV2Command,
 } from '@aws-sdk/client-s3';
-import { normalizePath } from '@directus/shared/utils';
-import { isReadableStream } from '@directus/shared/utils/node';
+import { normalizePath } from '@directus/utils';
+import { isReadableStream } from '@directus/utils/node';
 import {
 	randAlphaNumeric,
 	randDirectoryPath,
@@ -28,8 +28,8 @@ import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import type { DriverS3Config } from './index.js';
 import { DriverS3 } from './index.js';
 
-vi.mock('@directus/shared/utils/node');
-vi.mock('@directus/shared/utils');
+vi.mock('@directus/utils/node');
+vi.mock('@directus/utils');
 vi.mock('@aws-sdk/client-s3');
 vi.mock('node:path');
 

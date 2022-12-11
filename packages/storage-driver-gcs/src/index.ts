@@ -1,5 +1,5 @@
-import { normalizePath } from '@directus/shared/utils';
-import { isReadableStream } from '@directus/shared/utils/node';
+import { normalizePath } from '@directus/utils';
+import { isReadableStream } from '@directus/utils/node';
 import type { Driver, Range } from '@directus/storage';
 import type { Bucket, GetFilesOptions, StorageOptions } from '@google-cloud/storage';
 import { Storage } from '@google-cloud/storage';

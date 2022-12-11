@@ -31,7 +31,7 @@
 		"access": "public"
 	},
 	"dependencies": {
-		"@directus/shared": "workspace:*",
+		"@directus/utils": "workspace:*",
 		"@directus/storage": "workspace:*"
 	},
 	"devDependencies": {

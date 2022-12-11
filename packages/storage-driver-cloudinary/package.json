@@ -31,7 +31,7 @@
 		"access": "public"
 	},
 	"dependencies": {
-		"@directus/shared": "workspace:*",
+		"@directus/utils": "workspace:*",
 		"@directus/storage": "workspace:*",
 		"form-data": "4.0.0",
 		"undici": "5.14.0"

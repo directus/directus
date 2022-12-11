@@ -20,6 +20,7 @@
 	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
 	"exports": {
 		".": "./dist/index.js",
+		"./node": "./dist/node/index.js",
 		"./package.json": "./package.json"
 	},
 	"main": "dist/index.js",
@@ -32,7 +33,7 @@
 	},
 	"dependencies": {
 		"@azure/storage-blob": "12.12.0",
-		"@directus/shared": "workspace:*",
+		"@directus/utils": "workspace:*",
 		"@directus/storage": "workspace:*"
 	},
 	"devDependencies": {
