@@ -56,9 +56,6 @@
 	],
 	"scripts": {
 		"build": "tsup-node src --format cjs,esm --no-splitting",
-		"buildbak": "concurrently --prefix-colors auto --passthrough-arguments \"pnpm:build:* {@}\"",
-		"build:esm": "tsc --project ./tsconfig.json --module ES2015 --outDir ./dist/esm",
-		"build:cjs": "tsc --project ./tsconfig.json --module CommonJS --outDir ./dist/cjs",
 		"dev": "pnpm build -- -w --preserveWatchOutput --incremental",
 		"test": "vitest run",
 		"test:coverage": "vitest run --coverage",
