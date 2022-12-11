@@ -1,5 +1,7 @@
-import { isEqual, isNil } from 'lodash';
+import lodash from 'lodash';
 import { computed, inject, nextTick, onBeforeUnmount, provide, ref, shallowRef, Ref, watch } from 'vue';
+
+const { isEqual, isNil } = lodash;
 
 export type GroupableInstance = {
 	active: Ref<boolean>;

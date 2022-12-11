@@ -1,2 +1,1 @@
-// nothing to see here
-export * from './css-var';
+export * from './css-var.js';

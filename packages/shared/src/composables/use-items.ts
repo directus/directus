@@ -1,10 +1,12 @@
-import { useApi } from './use-system';
+import { useApi } from './use-system.js';
 import axios, { CancelTokenSource } from 'axios';
-import { useCollection } from './use-collection';
+import { useCollection } from './use-collection.js';
 import { Item, Query } from '../types';
-import { moveInArray } from '../utils';
-import { isEqual, throttle } from 'lodash';
+import { moveInArray } from '../utils/move-in-array.js';
+import lodash from 'lodash';
 import { computed, ComputedRef, ref, Ref, watch, WritableComputedRef, unref } from 'vue';
+
+const { isEqual, throttle } = lodash;
 
 type ManualSortData = {
 	item: string | number;
