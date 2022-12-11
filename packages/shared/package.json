@@ -19,39 +19,25 @@
 	"sideEffects": false,
 	"exports": {
 		"./composables": {
-			"import": "./dist/composables/index.mjs",
-			"require": "./dist/composables/index.js",
-			"types": "./dist/composables/index.d.ts"
+			"require": "./dist/composables/index.js"
 		},
 		"./constants": {
-			"import": "./dist/constants/index.mjs",
-			"require": "./dist/constants/index.js",
-			"types": "./dist/constants/index.d.ts"
+			"require": "./dist/constants/index.js"
 		},
 		"./exceptions": {
-			"import": "./dist/exceptions/index.mjs",
-			"require": "./dist/exceptions/index.js",
-			"types": "./dist/exceptions/index.d.ts"
+			"require": "./dist/exceptions/index.js"
 		},
 		"./types": {
-			"import": "./dist/types/index.mjs",
-			"require": "./dist/types/index.js",
-			"types": "./dist/types/index.d.ts"
+			"require": "./dist/types/index.js"
 		},
 		"./utils": {
-			"import": "./dist/utils/index.mjs",
-			"require": "./dist/utils/index.js",
-			"types": "./dist/utils/index.d.ts"
+			"require": "./dist/utils/index.js"
 		},
 		"./utils/browser": {
-			"import": "./dist/utils/browser/index.mjs",
-			"require": "./dist/utils/browser/index.js",
-			"types": "./dist/utils/browser/index.d.ts"
+			"require": "./dist/utils/browser/index.js"
 		},
 		"./utils/node": {
-			"import": "./dist/utils/node/index.mjs",
-			"require": "./dist/utils/node/index.js",
-			"types": "./dist/utils/node/index.d.ts"
+			"require": "./dist/utils/node/index.js"
 		},
 		"./package.json": "./package.json"
 	},
@@ -62,7 +48,7 @@
 		"{,utils/}*.d.ts"
 	],
 	"scripts": {
-		"build": "tsup-node src --format cjs,esm --no-splitting --dts",
+		"build": "tsc --build",
 		"dev": "pnpm build -- -w --preserveWatchOutput --incremental",
 		"test": "vitest run",
 		"test:coverage": "vitest run --coverage",
@@ -94,7 +80,6 @@
 		"@types/tmp": "0.2.3",
 		"concurrently": "7.5.0",
 		"tmp": "0.2.1",
-		"tsup": "6.5.0",
 		"typescript": "4.9.3",
 		"vitest": "0.25.2"
 	},
