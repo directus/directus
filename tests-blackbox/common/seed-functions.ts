@@ -2,6 +2,7 @@ import { v5 as uuid } from 'uuid';
 import * as seedrandom from 'seedrandom';
 import { PrimaryKeyType } from '@common/types';
 import { TestsFieldSchema } from '@query/filter';
+import { isInteger } from 'lodash';
 
 const SEED_UUID_NAMESPACE = 'e81a0012-568b-415c-96fa-66508f594067';
 const FIVE_YEARS_IN_MILLISECONDS = 5 * 365 * 24 * 60 * 60 * 1000;
@@ -361,14 +362,23 @@ function generateTimestamp(options: OptionsSeedGenerateTimestamp) {
 }
 
 function generateJSONSchemaValues(schema: TestsFieldSchema, index = 0) {
-	const item: any = {};
-	for (const key of Object.keys(schema)) {
+	const childKeys = Object.keys(schema);
+	const isArray = childKeys.every((key) => {
+		if (typeof key === 'number') return isInteger(key);
+		if (typeof key === 'string') {
+			return isInteger(parseInt(key));
+		}
+	});
+	const item: any = isArray ? [] : {};
+
+	for (const key of childKeys) {
 		if (schema[key].children) {
 			item[key] = generateJSONSchemaValues(schema[key].children!, index);
 		} else {
 			item[key] = schema[key].possibleValues[index];
 		}
 	}
+
 	return item;
 }
 
