@@ -3,8 +3,10 @@ import { isReadableStream } from '@directus/shared/utils/node';
 import type { Driver, Range } from '@directus/storage';
 import { join } from 'node:path';
 import type { Readable } from 'node:stream';
+import { PassThrough } from 'node:stream';
 import FormData from 'form-data';
 import { createHash } from 'node:crypto';
+import { stream } from 'undici';
 
 export type DriverCloudinaryConfig = {
 	root?: string;

@@ -33,7 +33,8 @@
 	"dependencies": {
 		"@directus/shared": "workspace:*",
 		"@directus/storage": "workspace:*",
-		"form-data": "4.0.0"
+		"form-data": "4.0.0",
+		"undici": "5.14.0"
 	},
 	"devDependencies": {
 		"@ngneat/falso": "6.3.0",

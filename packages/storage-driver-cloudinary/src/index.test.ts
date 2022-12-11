@@ -154,38 +154,45 @@ describe('#fullPath', () => {
 });
 
 describe('#toFormUrlEncoded', () => {
-	test('Parses plain object of strings', () => {
-		const props = randWord({ length: 3 }) as [string, string, string];
-		const values = randWord({ length: 3 }) as [string, string, string];
+	let mockProps: [string, string, string];
+	let mockValues: [string, string, string];
 
+	beforeEach(() => {
+		mockProps = Array.from(Array(3), () => randAlphaNumeric({ length: randNumber({ min: 2, max: 15 }) }).join('')) as [
+			string,
+			string,
+			string
+		];
+
+		mockValues = randWord({ length: 3 }) as [string, string, string];
+	});
+
+	test('Parses plain object of strings', () => {
 		expect(
 			driver['toFormUrlEncoded']({
-				[props[0]]: values[0],
-				[props[1]]: values[1],
-				[props[2]]: values[2],
+				[mockProps[0]]: mockValues[0],
+				[mockProps[1]]: mockValues[1],
+				[mockProps[2]]: mockValues[2],
 			})
-		).toBe(`${props[0]}=${values[0]}&${props[1]}=${values[1]}&${props[2]}=${values[2]}`);
+		).toBe(`${mockProps[0]}=${mockValues[0]}&${mockProps[1]}=${mockValues[1]}&${mockProps[2]}=${mockValues[2]}`);
 	});
 
 	test('Optionally sorts the properties alphabetically', () => {
-		const props = randWord({ length: 3 }) as [string, string, string];
-		const values = randWord({ length: 3 }) as [string, string, string];
-
 		// Expected order should be 2-0-1
-		props[0] = `b_${props[0]}`;
-		props[1] = `c_${props[1]}`;
-		props[2] = `a_${props[2]}`;
+		mockProps[0] = `b_${mockProps[0]}`;
+		mockProps[1] = `c_${mockProps[1]}`;
+		mockProps[2] = `a_${mockProps[2]}`;
 
 		expect(
 			driver['toFormUrlEncoded'](
 				{
-					[props[0]]: values[0],
-					[props[1]]: values[1],
-					[props[2]]: values[2],
+					[mockProps[0]]: mockValues[0],
+					[mockProps[1]]: mockValues[1],
+					[mockProps[2]]: mockValues[2],
 				},
 				{ sort: true }
 			)
-		).toBe(`${props[2]}=${values[2]}&${props[0]}=${values[0]}&${props[1]}=${values[1]}`);
+		).toBe(`${mockProps[2]}=${mockValues[2]}&${mockProps[0]}=${mockValues[0]}&${mockProps[1]}=${mockValues[1]}`);
 	});
 });
 
@@ -297,7 +304,19 @@ describe('#getParameterSignature', () => {
 	});
 });
 
-describe.todo('#getStream', () => {});
+describe('#getTimestamp', () => {
+	let mockDate: Date;
+
+	beforeEach(() => {
+		mockDate = randPastDate();
+		vi.useFakeTimers();
+		vi.setSystemTime(mockDate);
+	});
+
+	test('Returns unix timestamp for current time', () => {
+		expect(driver['getTimestamp']()).toBe(mockDate.getTime());
+	});
+});
 
 describe.todo('#getBuffer', () => {});
 
