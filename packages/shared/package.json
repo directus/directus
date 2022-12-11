@@ -55,7 +55,7 @@
 		"{,utils/}*.d.ts"
 	],
 	"scripts": {
-		"build": "tsup-node src --format cjs,esm --no-splitting",
+		"build": "tsup-node src --format cjs,esm --no-splitting --dts",
 		"dev": "pnpm build -- -w --preserveWatchOutput --incremental",
 		"test": "vitest run",
 		"test:coverage": "vitest run --coverage",
