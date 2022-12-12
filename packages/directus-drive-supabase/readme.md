@@ -22,6 +22,6 @@ STORAGE_SUPABASE_BUCKET="studio"
 
 ## todo
 
-- [ ] improve error handling
-- [ ] add comments in code
-- [ ] tests
+- [x] add comments in code
+- [ ] test if everything is working as expected (manual)
+- [ ] improve error handling; throw more specific directus exceptions where appropriate

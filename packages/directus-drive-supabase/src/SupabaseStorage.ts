@@ -7,8 +7,6 @@ import {
 	ExistsResponse,
 	Range,
 	ContentResponse,
-	SignedUrlOptions,
-	SignedUrlResponse,
 	StatResponse,
 	FileListResponse,
 } from '@directus/drive';
@@ -34,10 +32,12 @@ export class SupabaseStorage extends Storage {
 		}).from(bucket);
 	}
 
-	public driver() {
-		return this.apiClient;
-	}
-
+	/**
+	 * Upload a new file
+	 * @param path filename
+	 * @param content file content
+	 * @param contentType file mime type
+	 */
 	public async put(
 		path: string,
 		content: string | Buffer | NodeJS.ReadableStream,
@@ -50,30 +50,22 @@ export class SupabaseStorage extends Storage {
 		return { raw };
 	}
 
+	/**
+	 * Delete an existing file
+	 * @param location filename
+	 */
 	public async delete(location: string): Promise<DeleteResponse> {
 		const { data: raw, error } = await this.apiClient.remove([location]);
 		if (error) {
-			throw new UnknownException(error, error.name, location);
+			return { raw: null, wasDeleted: false };
 		}
 		return { raw, wasDeleted: true };
 	}
 
-	public async copy(src: string, dest: string): Promise<Response> {
-		const { data: raw, error } = await this.apiClient.copy(src, dest);
-		if (error) {
-			throw new UnknownException(error, error.name, src);
-		}
-		return { raw };
-	}
-
-	public async move(src: string, dest: string): Promise<Response> {
-		const { data: raw, error } = await this.apiClient.move(src, dest);
-		if (error) {
-			throw new UnknownException(error, error.name, src);
-		}
-		return { raw };
-	}
-
+	/**
+	 * Returns file's metadata
+	 * @param path filename
+	 */
 	private getHead(path: string): Promise<IncomingHttpHeaders> {
 		return new Promise((resolve, reject) => {
 			const req = request(
@@ -101,6 +93,10 @@ export class SupabaseStorage extends Storage {
 		});
 	}
 
+	/**
+	 * Returns file's size and modification date.
+	 * @param path filename
+	 */
 	public async getStat(path: string): Promise<StatResponse> {
 		try {
 			const headers = await this.getHead(path);
@@ -117,6 +113,10 @@ export class SupabaseStorage extends Storage {
 		}
 	}
 
+	/**
+	 * Determines if a file already exists.
+	 * @param location filename
+	 */
 	public async exists(location: string): Promise<ExistsResponse> {
 		try {
 			const { raw } = await this.getStat(location);
@@ -132,22 +132,11 @@ export class SupabaseStorage extends Storage {
 		}
 	}
 
-	public async getSignedUrl(location: string, options?: SignedUrlOptions | undefined): Promise<SignedUrlResponse> {
-		const { data: raw, error } = await this.apiClient.createSignedUrl(location, options?.expiry || 900);
-		if (error) {
-			throw new UnknownException(error, error.name, location);
-		}
-		return {
-			signedUrl: raw.signedUrl,
-			raw,
-		};
-	}
-
-	public getUrl(path: string): string {
-		const { data } = this.apiClient.getPublicUrl(path);
-		return data.publicUrl;
-	}
-
+	/**
+	 * Returns the file contents as a Stream.
+	 * @param location filename
+	 * @param _range bytes to stream. Unused in this adapter
+	 */
 	public getStream(location: string, _range?: Range | undefined): NodeJS.ReadableStream {
 		const promise = this.apiClient
 			.download(location)
@@ -159,6 +148,10 @@ export class SupabaseStorage extends Storage {
 		return Duplex.from(promise);
 	}
 
+	/**
+	 * Returns the file contents as a Buffer.
+	 * @param location filename
+	 */
 	public async getBuffer(location: string): Promise<ContentResponse<Buffer>> {
 		const { data: raw, error } = await this.apiClient.download(location);
 		if (error) {
@@ -172,6 +165,10 @@ export class SupabaseStorage extends Storage {
 		};
 	}
 
+	/**
+	 * List files with a given prefix
+	 * @param prefix [partial] filename
+	 */
 	public async *flatList(prefix?: string | undefined): AsyncIterable<FileListResponse> {
 		const limit = 1000;
 		let offset = 0;
