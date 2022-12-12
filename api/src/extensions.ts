@@ -508,7 +508,7 @@ class ExtensionManager {
 					this.hookEmbedsHead.push(content);
 				}
 				if (position === 'body') {
-					this.hookEmbedsHead.push(content);
+					this.hookEmbedsBody.push(content);
 				}
 			},
 		};
