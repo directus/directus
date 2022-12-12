@@ -33,38 +33,4 @@ declare module 'frappe-charts/src/js/charts/AxisChart' {
 	}
 }
 
-declare module '@directus-extensions-operation' {
-	import { OperationAppConfig } from '@directus/shared/types';
-	const operations: OperationAppConfig[];
-	export default operations;
-}
-
-declare module '@directus-extensions-interface' {
-	import { InterfaceConfig } from '@directus/shared/types';
-	const interfaces: InterfaceConfig[];
-	export default interfaces;
-}
-
-declare module '@directus-extensions-display' {
-	import { DisplayConfig } from '@directus/shared/types';
-	const displays: DisplayConfig[];
-	export default displays;
-}
-
-declare module '@directus-extensions-layout' {
-	import { LayoutConfig } from '@directus/shared/types';
-	const layouts: LayoutConfig[];
-	export default layouts;
-}
-
-declare module '@directus-extensions-panel' {
-	import { PanelConfig } from '@directus/shared/types';
-	const panel: PanelConfig[];
-	export default panel;
-}
-
-declare module '@directus-extensions-module' {
-	import { ModuleConfig } from '@directus/shared/types';
-	const modules: ModuleConfig[];
-	export default modules;
-}
+declare module '@directus-extensions' {}

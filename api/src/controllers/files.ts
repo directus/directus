@@ -1,17 +1,19 @@
-import formatTitle from '@directus/format-title';
 import { toArray } from '@directus/shared/utils';
 import Busboy from 'busboy';
 import express, { RequestHandler } from 'express';
 import Joi from 'joi';
 import path from 'path';
 import env from '../env';
-import { ForbiddenException, InvalidPayloadException, UnsupportedMediaTypeException } from '../exceptions';
+import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { respond } from '../middleware/respond';
 import useCollection from '../middleware/use-collection';
 import { validateBatch } from '../middleware/validate-batch';
 import { FilesService, MetaService } from '../services';
 import { File, PrimaryKey } from '../types';
 import asyncHandler from '../utils/async-handler';
+
+// @ts-ignore
+import formatTitle from '@directus/format-title';
 
 const router = express.Router();
 
@@ -121,10 +123,6 @@ router.post(
 	'/',
 	asyncHandler(multipartHandler),
 	asyncHandler(async (req, res, next) => {
-		if (req.is('multipart/form-data') === false) {
-			throw new UnsupportedMediaTypeException(`Unsupported Content-Type header`);
-		}
-
 		const service = new FilesService({
 			accountability: req.accountability,
 			schema: req.schema,

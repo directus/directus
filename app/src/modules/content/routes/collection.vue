@@ -228,7 +228,7 @@
 				v-model:active="batchEditActive"
 				:primary-keys="selection"
 				:collection="collection"
-				@refresh="drawerBatchRefresh"
+				@refresh="batchRefresh"
 			/>
 
 			<template #sidebar>
@@ -252,7 +252,12 @@
 					@download="download"
 					@refresh="refresh"
 				/>
-				<flow-sidebar-detail location="collection" :collection="collection" :selection="selection" @refresh="refresh" />
+				<flow-sidebar-detail
+					location="collection"
+					:collection="collection"
+					:selection="selection"
+					@refresh="batchRefresh"
+				/>
 			</template>
 
 			<v-dialog :model-value="deleteError !== null">
@@ -290,9 +295,9 @@ import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
 import DrawerBatch from '@/views/private/components/drawer-batch.vue';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { getLayouts } from '@/layouts';
 import { mergeFilters } from '@directus/shared/utils';
 import { Filter } from '@directus/shared/types';
+import { useExtension } from '@/composables/use-extension';
 
 type Item = {
 	[field: string]: any;
@@ -331,7 +336,6 @@ export default defineComponent({
 
 		const router = useRouter();
 
-		const { layouts } = getLayouts();
 		const userStore = useUserStore();
 		const permissionsStore = usePermissionsStore();
 		const layoutRef = ref();
@@ -377,7 +381,7 @@ export default defineComponent({
 
 		const { bookmarkDialogActive, creatingBookmark, createBookmark } = useBookmarks();
 
-		const currentLayout = computed(() => layouts.value.find((l) => l.id === layout.value));
+		const currentLayout = useExtension('layout', layout);
 
 		watch(
 			collection,
@@ -465,7 +469,7 @@ export default defineComponent({
 			bookmarkIsMine,
 			bookmarkSaving,
 			clearLocalSave,
-			drawerBatchRefresh,
+			batchRefresh,
 			refresh,
 			refreshInterval,
 			currentLayout,
@@ -483,7 +487,7 @@ export default defineComponent({
 			await layoutRef.value?.state?.download?.();
 		}
 
-		async function drawerBatchRefresh() {
+		async function batchRefresh() {
 			selection.value = [];
 			await refresh();
 		}

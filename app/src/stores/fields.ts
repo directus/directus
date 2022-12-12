@@ -2,12 +2,23 @@ import api from '@/api';
 import { i18n } from '@/lang';
 import { useCollectionsStore } from '@/stores/collections';
 import { useRelationsStore } from '@/stores/relations';
+import { getLiteralInterpolatedTranslation } from '@/utils/get-literal-interpolated-translation';
+import { translate as translateLiteral } from '@/utils/translate-literal';
+import { translate } from '@/utils/translate-object-values';
 import { unexpectedError } from '@/utils/unexpected-error';
 import formatTitle from '@directus/format-title';
 import { DeepPartial, Field, FieldRaw, Relation } from '@directus/shared/types';
 import { isEqual, isNil, merge, omit, orderBy } from 'lodash';
 import { nanoid } from 'nanoid';
 import { defineStore } from 'pinia';
+
+type HydrateOptions = {
+	/**
+	 * Allow disabling field translation on hydrate. Used in global app hydration to account for
+	 * user's custom locale instead of the default en-US locale.
+	 */
+	skipTranslation?: boolean;
+};
 
 /**
  * directus_files is a special case. For it to play nice with interfaces/layouts/displays, we need
@@ -58,12 +69,12 @@ export const useFieldsStore = defineStore({
 		fields: [] as Field[],
 	}),
 	actions: {
-		async hydrate() {
+		async hydrate(options?: HydrateOptions) {
 			const fieldsResponse = await api.get<any>(`/fields`, { params: { limit: -1 } });
 
 			const fields: FieldRaw[] = fieldsResponse.data.data;
 			this.fields = [...fields.map(this.parseField), fakeFilesField];
-			this.translateFields();
+			if (options?.skipTranslation !== true) this.translateFields();
 		},
 		async dehydrate() {
 			this.$reset();
@@ -71,21 +82,35 @@ export const useFieldsStore = defineStore({
 		parseField(field: FieldRaw): Field {
 			let name = formatTitle(field.field);
 
-			if (field.meta && !isNil(field.meta.translations) && field.meta.translations.length > 0) {
+			const localesToKeep =
+				field.meta && !isNil(field.meta.translations) && Array.isArray(field.meta.translations)
+					? field.meta.translations.map((translation) => translation.language)
+					: [];
+
+			for (const locale of i18n.global.availableLocales) {
+				if (
+					i18n.global.te(`fields.${field.collection}.${field.field}`, locale) &&
+					!localesToKeep.includes(locale) &&
+					!field.meta?.system
+				) {
+					i18n.global.mergeLocaleMessage(locale, { fields: { [field.collection]: { [field.field]: undefined } } });
+				}
+			}
+
+			if (field.meta && !isNil(field.meta.translations) && Array.isArray(field.meta.translations)) {
 				for (let i = 0; i < field.meta.translations.length; i++) {
 					const { language, translation } = field.meta.translations[i];
 
-					// Interpolate special characters in vue-i18n to prevent parsing error. Ref #11287
-					const literalInterpolatedTranslation = translation ? translation.replace(/([{}@$|])/g, "{'$1'}") : null;
-
 					i18n.global.mergeLocaleMessage(language, {
-						...(literalInterpolatedTranslation && {
-							fields: {
-								[field.collection]: {
-									[field.field]: literalInterpolatedTranslation,
-								},
-							},
-						}),
+						...(translation
+							? {
+									fields: {
+										[field.collection]: {
+											[field.field]: getLiteralInterpolatedTranslation(translation),
+										},
+									},
+							  }
+							: {}),
 					});
 				}
 			}
@@ -104,6 +129,12 @@ export const useFieldsStore = defineStore({
 				if (i18n.global.te(`fields.${field.collection}.${field.field}`)) {
 					field.name = i18n.global.t(`fields.${field.collection}.${field.field}`);
 				}
+				if (field.meta?.note) field.meta.note = translateLiteral(field.meta.note);
+				if (field.meta?.options) field.meta.options = translate(field.meta.options);
+				if (field.meta?.display_options) field.meta.display_options = translate(field.meta.display_options);
+				if (field.meta?.validation_message)
+					field.meta.validation_message = translateLiteral(field.meta.validation_message);
+
 				return field;
 			});
 		},

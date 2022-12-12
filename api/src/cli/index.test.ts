@@ -1,37 +1,48 @@
 import { Command } from 'commander';
 import { Extension, HookConfig } from '@directus/shared/types';
 import { createCli } from './index';
+import path from 'path';
+import { test, describe, expect, vi, beforeEach } from 'vitest';
 
-jest.mock('../../src/env', () => ({
-	...jest.requireActual('../../src/env').default,
-	EXTENSIONS_PATH: '',
-	SERVE_APP: false,
-	DB_CLIENT: 'pg',
-	DB_HOST: 'localhost',
-	DB_PORT: 5432,
-	DB_DATABASE: 'directus',
-	DB_USER: 'postgres',
-	DB_PASSWORD: 'psql1234',
-}));
+vi.mock('../../src/env', async () => {
+	const actual = (await vi.importActual('../../src/env')) as { default: Record<string, any> };
 
-jest.mock('@directus/shared/utils/node/get-extensions', () => ({
-	getPackageExtensions: jest.fn(() => Promise.resolve([])),
-	getLocalExtensions: jest.fn(() => Promise.resolve([customCliExtension])),
-}));
+	return {
+		default: {
+			...actual.default,
+			EXTENSIONS_PATH: '',
+			SERVE_APP: false,
+			DB_CLIENT: 'pg',
+			DB_HOST: 'localhost',
+			DB_PORT: 5432,
+			DB_DATABASE: 'directus',
+			DB_USER: 'postgres',
+			DB_PASSWORD: 'psql1234',
+		},
+	};
+});
 
-jest.mock(`/hooks/custom-cli/index.js`, () => customCliHook, { virtual: true });
+vi.mock('@directus/shared/utils/node', async () => {
+	const actual = await vi.importActual('@directus/shared/utils/node');
 
-const customCliExtension: Extension = {
-	path: `/hooks/custom-cli`,
-	name: 'custom-cli',
-	type: 'hook',
-	entrypoint: 'index.js',
-	local: true,
-};
+	const customCliExtension: Extension = {
+		path: '/hooks/custom-cli',
+		name: 'custom-cli',
+		type: 'hook',
+		entrypoint: 'index.js',
+		local: true,
+	};
 
-const beforeHook = jest.fn();
-const afterAction = jest.fn();
-const afterHook = jest.fn(({ program }) => {
+	return {
+		...(actual as object),
+		getPackageExtensions: vi.fn(() => Promise.resolve([])),
+		getLocalExtensions: vi.fn(() => Promise.resolve([customCliExtension])),
+	};
+});
+
+const beforeHook = vi.fn();
+const afterAction = vi.fn();
+const afterHook = vi.fn(({ program }) => {
 	(program as Command).command('custom').action(afterAction);
 });
 
@@ -40,8 +51,12 @@ const customCliHook: HookConfig = ({ init }) => {
 	init('cli.after', afterHook);
 };
 
-const writeOut = jest.fn();
-const writeErr = jest.fn();
+vi.mock(path.resolve('/hooks/custom-cli', 'index.js'), () => ({
+	default: customCliHook,
+}));
+
+const writeOut = vi.fn();
+const writeErr = vi.fn();
 
 const setup = async () => {
 	const program = await createCli();
@@ -50,7 +65,9 @@ const setup = async () => {
 	return program;
 };
 
-beforeEach(jest.clearAllMocks);
+beforeEach(() => {
+	vi.clearAllMocks();
+});
 
 describe('cli hooks', () => {
 	test('should call hooks before and after creating the cli', async () => {

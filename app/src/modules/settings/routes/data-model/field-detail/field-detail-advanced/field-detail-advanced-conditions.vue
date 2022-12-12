@@ -10,7 +10,7 @@ import { Field, DeepPartial } from '@directus/shared/types';
 import { useI18n } from 'vue-i18n';
 import { useFieldDetailStore, syncFieldDetailStoreProperty } from '../store';
 import { storeToRefs } from 'pinia';
-import { getInterface } from '@/interfaces';
+import { useExtension } from '@/composables/use-extension';
 
 const { t } = useI18n();
 
@@ -19,7 +19,7 @@ const fieldDetailStore = useFieldDetailStore();
 const { field, collection } = storeToRefs(fieldDetailStore);
 
 const conditions = syncFieldDetailStoreProperty('field.meta.conditions');
-const interfaceID = computed(() => field.value.meta?.interface);
+const interfaceId = computed(() => field.value.meta?.interface ?? null);
 
 const repeaterFields = computed<DeepPartial<Field>[]>(() => [
 	{
@@ -90,23 +90,24 @@ const repeaterFields = computed<DeepPartial<Field>[]>(() => [
 		meta: {
 			interface: 'system-interface-options',
 			options: {
-				interface: interfaceID.value,
+				interface: interfaceId.value,
 			},
 		},
 	},
 ]);
 
+const selectedInterface = useExtension('interface', interfaceId);
+
 const optionDefaults = computed(() => {
-	const selectedInterface = getInterface(interfaceID.value);
-	if (!selectedInterface || !selectedInterface.options) return [];
+	if (!selectedInterface.value || !selectedInterface.value.options) return [];
 
 	// Indicates a custom vue component is used for the interface options
-	if ('render' in selectedInterface.options) return [];
+	if ('render' in selectedInterface.value.options) return [];
 
 	let optionsObjectOrArray;
 
-	if (typeof selectedInterface.options === 'function') {
-		optionsObjectOrArray = selectedInterface.options({
+	if (typeof selectedInterface.value.options === 'function') {
+		optionsObjectOrArray = selectedInterface.value.options({
 			field: {
 				type: 'unknown',
 			},
@@ -133,7 +134,7 @@ const optionDefaults = computed(() => {
 			saving: false,
 		});
 	} else {
-		optionsObjectOrArray = selectedInterface.options;
+		optionsObjectOrArray = selectedInterface.value.options;
 	}
 
 	const optionsArray = Array.isArray(optionsObjectOrArray)

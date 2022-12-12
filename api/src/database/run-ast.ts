@@ -72,7 +72,7 @@ export default async function runAST(
 		);
 
 		// The actual knex query builder instance. This is a promise that resolves with the raw items from the db
-		const dbQuery = getDBQuery(schema, knex, collection, fieldNodes, query);
+		const dbQuery = await getDBQuery(schema, knex, collection, fieldNodes, query);
 
 		const rawItems: Item | Item[] = await dbQuery;
 
@@ -97,7 +97,11 @@ export default async function runAST(
 
 				while (hasMore) {
 					const node = merge({}, nestedNode, {
-						query: { limit: env.RELATIONAL_BATCH_SIZE, offset: batchCount * env.RELATIONAL_BATCH_SIZE },
+						query: {
+							limit: env.RELATIONAL_BATCH_SIZE,
+							offset: batchCount * env.RELATIONAL_BATCH_SIZE,
+							page: null,
+						},
 					});
 
 					nestedItems = (await runAST(node, schema, { knex, nested: true })) as Item[] | null;
@@ -232,20 +236,20 @@ function getColumnPreprocessor(knex: Knex, schema: SchemaOverview, table: string
 	};
 }
 
-function getDBQuery(
+async function getDBQuery(
 	schema: SchemaOverview,
 	knex: Knex,
 	table: string,
 	fieldNodes: (FieldNode | FunctionFieldNode)[],
 	query: Query
-): Knex.QueryBuilder {
+): Promise<Knex.QueryBuilder> {
 	const preProcess = getColumnPreprocessor(knex, schema, table);
 	const dbQuery = knex.select(fieldNodes.map(preProcess)).from(table);
 	const queryCopy = clone(query);
 
 	queryCopy.limit = typeof queryCopy.limit === 'number' ? queryCopy.limit : 100;
 
-	return applyQuery(knex, table, dbQuery, queryCopy, schema);
+	return await applyQuery(knex, table, dbQuery, queryCopy, schema);
 }
 
 function applyParentFilters(
@@ -302,7 +306,7 @@ function applyParentFilters(
 				const foreignIds = uniq(keysPerCollection[relatedCollection]);
 
 				merge(nestedNode, {
-					query: { [relatedCollection]: { filter: { [foreignField]: { _in: foreignIds } } } },
+					query: { [relatedCollection]: { filter: { [foreignField]: { _in: foreignIds } }, limit: foreignIds.length } },
 				});
 			}
 		}
@@ -349,6 +353,12 @@ function mergeWithParentItems(
 			});
 
 			parentItem[nestedNode.fieldKey].push(...itemChildren);
+
+			if (nestedNode.query.page && nestedNode.query.page > 1) {
+				parentItem[nestedNode.fieldKey] = parentItem[nestedNode.fieldKey].slice(
+					(nestedNode.query.limit ?? 100) * (nestedNode.query.page - 1)
+				);
+			}
 
 			if (nestedNode.query.offset && nestedNode.query.offset >= 0) {
 				parentItem[nestedNode.fieldKey] = parentItem[nestedNode.fieldKey].slice(nestedNode.query.offset);

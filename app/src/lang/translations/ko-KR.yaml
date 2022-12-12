@@ -35,25 +35,56 @@ tile_size: 타일 크기
 edit_field: 필드 편집
 conditions: 상태
 location: 위치
-item_revision: 아이템 리비전
+condition_rules: 조건식
+input: 입력
+switch_user: 사용자 전환
+item_creation: 추가
+item_revision: 수정
+enter_a_name: 이름 입력...
 duplicate_field: 중복 필드
-field_name_translations: 항목 명 번역
+half_width: 1/2 폭
+full_width: 전체 폭
+export_items: 내보내기
+dataset_too_large_currently_showing_n_items: 표시할 항목이 너무 많습니다. 앞에서부터  {n}개만 표시합니다.
+field_name_translations: 필드명 번역
 enter_password_to_enable_tfa: 암호를 입력하여 이중 인증을 활성화하십시오
 add_field: 필드 추가
-role_name: 권한 이름
+role_name: 역할명
 branch: 브랜치
 indeterminate: 불확정 상태
+edit_collection: 목록 수정
 children: 하위
+show_active_items: 사용중인 항목만 표시
+show_archived_items: 보관된 (미사용) 항목만 표시
+show_all_items: 전체 항목을 표시
 required: 필수 사항
 requires_value: 필수 항목
 create_preset: 사전설정 생성
+create_panel: 판넬 추가
 create_role: 역할 생성
 create_user: 사용자 생성
+message: 메시지
+delete_panel: 판넬 삭제
 create_webhook: 웹훅 생성
+create_translation_string: 번역 문구 추가
+no_translation_string: 번역 문구 없음.
+no_translation_string_copy: 아직 등록된 번역 문구가 없습니다.
+translation_string_key_placeholder: 번역 문구 키(key)...
+translation_string_translations_placeholder: 새로운 번역 문구를 추가하세요.
+edit_translation_string: 번역 문구 수정
+delete_translation_string_copy: >-
+  번역 문구 "{key}"를 삭제하시겠습니까? 한번 삭제하면 복구되지 않습니다.
 invite_users: 사용자 초대
 invite: 초대
+email_already_invited: 이메일주소 "{email}" 로 이미 초대하였습니다.
+subject: 제목
+inbox: 받은편지함
 emails: 이메일
+connection_excellent: 연결 상태 최상
+connection_good: 연결 상태 좋음
+connection_fair: 연결 상태 보통
 connection_poor: 연결 상태 불량
+primary: 기본
 rename_folder: 폴더 이름 변경
 delete_folder: 폴더 삭제
 prefix: 접두사
@@ -63,36 +94,83 @@ update_bookmark: 북마크 업데이트
 delete_bookmark: 북마크 삭제
 delete_bookmark_copy: >-
   정말로 이 계정을 삭제하시겠습니까? 이 작업은 취소할 수 없습니다.
+delete_personal_bookmark: 내 북마크 삭제
+delete_role_bookmark: 역할 북마크 삭제
+delete_global_bookmark: 공용 북마크 삭제
 logoutReason:
-  SIGN_OUT: 로그아웃
+  SIGN_OUT: 로그아웃됨
   SESSION_EXPIRED: 세션 만료
+public_label: 공개
 not_allowed: 허용되지 않음
+archive: 보관
+archive_confirm: 이 항목을 사용하지 않고 보관하시겠습니까?
+reset_system_permissions_to: '시스템 권한 초기화 :'
+reset_system_permissions_copy: 시스템 데이터 목록에 대한 권한 설정값이 모두 초기화됩니다. 그래도 진행하시겠습니까?
+unarchive: 보관 해제(사용)
+unarchive_confirm: 이 항목을 보관 해제하여 다시 사용하시겠습니까?
+nested_files_folders_will_be_moved: 포함된 파일과 폴더는 모두 상위 폴더로 옮겨집니다.
+validation_errors_notice: '입력값이 유효하지 않은 필드:'
 validationError:
   unique: 생산Key는 유일해야만 합니다.
 all_access: 모든 액세스
 no_access: 접근 불가
 use_custom: 직접 설정
 nullable: NULL허용
+allow_null_value: NULL값 허용
+allow_multiple: 여러 값 허용
 field_standard: 표준
 field_file: 단일 파일
 field_files: 여러 파일들
 field_translations: 번역
+field_group: 그룹
+item_permissions: 항목 관리 권한
+field_permissions: 필드 관리 권한
+field_validation: 필드 검증
+field_presets: 필드 사전 설정
+hide_field: 필드 감추기
 delete_field: 필드 삭제
+fields_and_layout: 필드 및 레이아웃
+field_create_success: '"{field}" 필드 생성됨'
+field_update_success: '"{field}" 필드 수정됨'
+duplicate_where_to: 이 필드를 어느 위치에 복제할까요?
 language: 언어
+language_placeholder: 언어를 선택하세요...
 global: 글로벌
+admins_have_all_permissions: 관리자에게는 모든 권한이 부여됩니다.
 camera: 카메라
+create_in_advanced_field_creation_mode: 고급 모드에서 필드 만들기
+continue_in_advanced_field_creation_mode: 고급 필드 생성 모드 계속
+validation: 검증
+sum: 합계
+avg: 평균
+count: 카운팅(횟수)
+min: 최소(Min)
+max: 최대(Max)
 exposure: 노출
 shutter: 셔터
 iso: ISO
 focal_length: 초점 거리
-create_field: 필드 생성
+schema_setup_key: 이 필드의 DB 컬럼명과 API 키
+create_field: 필드 추가
+creating_new_field: '새 필드 ({collection})'
 reset_page_preferences: 앱 환경설정 초기화
 hidden_field: 숨김 필드
 hidden_on_detail: 실행 시 숨김
 key: 키
 alias: 별칭
+not_available_for_type: 형식이 유효하지 않습니다.
+create_translations: 번역 문구 추가
+auto_refresh: 자동 갱신
+refresh_interval: 갱신 간격
+no_refresh: 갱신하지 않음
+refresh_interval_seconds: 즉시 | 1초 | {seconds}초
+refresh_interval_minutes: 1분  |  {minutes}분 
 auto_generate: 자동 생성
+this_will_auto_setup_fields_relations: 필수 필드 및 관련된 부분은 자동으로 생성 및 설정됩니다.
 click_here: 여기를 클릭하세요
+to_manually_setup_translations: 수동으로 번역 설정하기
+click_to_manage_translated_fields: >-
+  필드명이 아직 번역되지 않았습니다. 번역 문구를 추가하려면 여기를 클릭하세요. | 필드명 번역 문구가 하나 있습니다. 번역 문구를 관리하려면 여기를 클릭하세요. | 필드명 번역 문구가 {count}개 있습니다. 번역 문구를 관리하려면 여기를 클릭하세요.
 fields_group: 필드 그룹
 no_collections_found: 컬렉션 없음
 search_collection: 컬렉션 검색
@@ -100,7 +178,7 @@ new_field: '새 필드'
 new_collection: '새 컬렉션'
 choose_a_type: 유형을 선택...
 default_value: 기본값
-standard_field: 표준 항목들
+standard_field: 표준
 single_file: 단일 파일
 multiple_files: 여러 파일들
 invalid_item: 비정상적인 아이템
@@ -111,7 +189,22 @@ note: 메모
 enter_a_value: 값 입력
 length: 길이
 unique: 고유
+updated_on: 수정일
+updated_by: 수정자
+primary_key: 기본키
+foreign_key: 외래키
+finish_setup: 셋업 종료
+clear_items: 선택 해제
+show_all_activity: 전체 활동기록 보기
+settings_update_success: 설정이 수정됨.
+title: 제목
+private_user: 비공개 사용자
 post_comment_success: 댓글 작성됨
+import_data_button: 가져오기 시작
+import_data_indeterminate: 데이터를 가져오는 중...
+label_import: 가져오기
+label_export: 내보내기
+import_export: 가져오기 / 내보내기
 format: 형식
 last_page: 마지막 페이지
 last_access: 최근 접속
@@ -126,6 +219,7 @@ delete_comment: 댓글 삭제
 functions:
   year: 년
   month: 월
+  count: 카운팅(횟수)
 month: 월
 year: 년
 select_all: 모두 선택
@@ -143,42 +237,375 @@ months:
   november: 11월
   december: 12월
 drag_mode: 끌기 모드
+import_label: 가져오기
+created: 작성됨
+import_from_url: URL로부터 파일 가져오기
+start_export: 내보내기 시작
+exporting_all_items_in_collection: '{collection}의 전체 데이터({total}개 항목) 내보내기 '
+exporting_limited_items_in_collection: '{collection}의 전체 {total}개 중 {limit}개 항목 내보내기'
+exporting_no_items_to_export: 내보낼 데이터가 없습니다. 아래 설정을 확인 해보세요.
+primary_key_field: 기본키 필드
 type: 타입
 creating_new_collection: 새 컬렉션 만들기
+created_by: '작성자:'
+created_on: 작성일
+add_existing: 데이터 선택
+creating_items: 데이터 추가
+selecting_items: 항목 선택
+comments: 코멘트
+no_items: 항목 없음
+search_items: 검색
+item_count: '데이터 없음 | 1개 항목 | {count}개 항목'
+no_items_copy: 이 목록에는 등록된 내용이 없습니다.
+file_count: '파일 없음 | 파일 1개 | 파일 {count}개'
+no_files_copy: 표시할 파일이 없습니다.
+no_users_copy: 이 역할(role)의 사용자가 아직 없습니다.
+activity_log: 활동 기록
+all_items: 전체 내용
+create_collection: 목록 생성
+copy_to: 복사 ...
+users: 사용자
+action: 활동
+ip_address: IP 주소
+add_filter: 필터 추가
+user_directory: 사용자 목록
+collection_created: 목록이 생성됨
+card_size: 카드형식 크기
+sort_field: 정렬 기준
+status: 상태
+select_an_item: 목록에서 선택...
+edit: 수정
+create_account: 계정 추가
+account_created_successfully: 계정이 추가되었습니다.
+errors:
+  COLLECTION_NOT_FOUND: "목록이 존재하지 않습니다."
+  FIELD_NOT_FOUND: 필드가 존재하지 않습니다.
+  FORBIDDEN: 접근이 허용되지 않음.
+  INVALID_CREDENTIALS: 이메일이나 비밀번호가 올바르지 않습니다.
+  INVALID_OTP: 일회용 비밀번호가 맞지 않습니다.
+  INVALID_PAYLOAD: 내용이나 형식이 맞지 않습니다.
+  INVALID_USER: 사용자 인증에 실패하였습니다.
+create_bookmark: 북마크 만들기
+filter: 필터
+edit_image: 이미지 편집
+all_users: 전체 사용자
+goto_collection_content: 내용 보기
+start_end_of_count_items: '{start}-{end} / 총 {count}개'
+start_end_of_count_filtered_items: '{start}-{end} / 총 {count}개 '
+one_item: '1개 항목'
+one_filtered_item: '1개 항목'
+item: 항목
+items: 항목
+drag_file_here: 여기에 파일 끌어서 놓기
+layout_options: 표시방법 선택
 value_unique: 생산Key는 유일해야만 합니다.
+all_activity: 전체 활동
+create_item: 추가
+display_template: 표시 형식
+all_files: 전체 파일
+my_files: 내 파일
+recent_files: 최근 파일
+create_folder: 폴더 만들기
+edit_folder: 폴더 수정
+add_file: 파일 추가
+replace_file: 파일 바꾸기
+no_results_copy: 필터를 설정하시면 검색 결과가 표시됩니다.
+role: 역할
+edit_role: 역할 수정
+user: 사용자
+create: 작성/추가
+on_create: 추가시
+update: 수정
+delete: 삭제
+create_trigger: 트리거 생성
+create_flow: 플로우 작성
+flow_tracking: 활동 및 기록 추적
+insights: 현황판
+dashboard: 대쉬보드
+edit_dashboard: 대시보드 편집
+delete_dashboard: 대시보드 삭제
+no_dashboards: 대시보드 없음
+no_dashboards_copy: 생성된 대시보드가 없습니다.
+create_dashboard: 대시보드 생성
+dashboard_name: 대시보드 이름
+no_data: 데이터 없음
+full_screen: 전체화면
+full_text_search: 전체 검색
+edit_panels: 판넬 수정
+fit_to_screen: 화면크기에 맞추기
+width: 가로(폭)
+height: 세로(높이)
 wysiwyg_options:
   selectall: 모두 선택
+  fullscreen: 전체화면
+adding_user: 사용자 추가
+unknown_user: 알 수 없는 사용자
+creating_in: '{collection} 데이터 추가'
+editing_in: '{collection} 편집'
+viewing_in: '{collection} 조회'
+settings_data_model: 데이터 모델
+settings_permissions: 역할 및 권한
+settings_project: 프로젝트 설정
+settings_presets: 사전설정 및 북마크
+scope: 범위
+layout: 표시 방법
+data: 데이터
+activity_feed: 활동 내역
+batch_delete_confirm: >-
+  선택한 항목이 없습니다. | 선택한 항목을 삭제하시겠습니까? 한번 삭제하면 복구할 수 없습니다. | 선택한 {count}개 항목을 을 삭제하시겠습니까? 한번 삭제하면 복구할 수 없습니다.
+content: 데이터 및 컨텐츠 관리
 fields:
+  directus_activity:
+    item: 기본키
+    action: 활동
+    collection: 목록
+    timestamp: 활동일시
+    user: 사용자
+    comment: 코멘트
+    ip: IP 주소
+    revisions: 수정내역
   directus_collections:
     note: 메모
+    display_template: 표시 형식
+    sort_field: 정렬 기준
+  directus_files:
+    $thumbnail: 미리보기
+    title: 제목
+    description: 설명
+    tags: 태그
+    location: 위치
+    filename_disk: 파일명(저장명)
+    filename_download: 파일명(다운로드)
+    metadata: 메타데이터(Metadata)
+    type: 마임(Mime)타입
+    filesize: 파일 크기
+    modified_by: 수정자
+    modified_on: 수정일
+    created_on: 작성일
+    created_by: 작성자
+    uploaded_by: 작성자(업로드)
+    folder: 폴더
+    width: 가로(폭)
+    uploaded_on: 작성일(업로드)
+    height: 세로(높이)
+    charset: 문자셋
   directus_users:
+    first_name: 이름/별명
+    last_name: 성
+    email: 이메일
+    password: 비밀번호
+    avatar: 아바타/사진
+    location: 위치정보
+    title: 관계/지위/직책
+    description: 상세설명
+    tags: 태그(Tags)
+    user_preferences: 개인 설정
     language: 언어
+    theme: 화면테마
+    theme_auto: 자동(시스템 설정)
+    theme_light: 밝은 배경 테마
+    theme_dark: 어두운 배경 테마
+    tfa_secret: 이중 인증
+    admin_options: 관리 옵션
+    status: 상태
+    role: 역할
+    token: 접속 인증 토큰
+    provider: 외부 인증 제공사
+    external_identifier: 외부 인증 식별자
     last_page: 마지막 페이지
     last_access: 최근 접속
+    email_notifications: 이메일 알림
   directus_settings:
+    project_name: 프로젝트명
+    project_descriptor: 프로젝트 설명
+    project_url: 프로젝트 URL
+    project_color: 테마컬러
+    project_logo: 로고
+    default_language: 기본 언어 설정
+    branding: 브랜딩 및 스타일
+    public_foreground: 공개화면 전경(foreground)
+    public_background: 공개화면 배경(background)
+    public_note: 공개화면 표시글
+    auth_password_policy: 비밀번호 정책
+    auth_login_attempts: 로그인 시도 횟수 제한
+    files_and_thumbnails: 파일 및 저장폴더
+    storage_default_folder: 기본 폴더
+    storage_asset_presets: 파일 변환 설정
+    storage_asset_transform: 변환 허용 파일
+    overrides: App 오버라이드
+    custom_css: 커스텀 CSS
     module_bar: 모듈 바
+    transformations_all: 모든 변환 허용
+    transformations_none: 변환 없음(원본사용)
+    image_editor: 이미지 에디터
+    custom_aspect_ratios: 가로세로 비율 조정
+  directus_shares:
+    role: 역할
+    password: 비밀번호
   directus_fields:
     note: 메모
     translation: 항목 명 번역
   directus_roles:
-    name: 권한 이름
+    name: 역할명
+    description: 설명
+    users: 이 역할의 사용자 목록
+    module_list: '모듈 탐색:'
+  directus_webhooks:
+    status: 상태
+    data: 데이터
 field_options:
+  directus_settings:
+    project_color_note: 로그인/로고 화면 배경
+    overrides_divider_title: App 오버라이드
+  directus_activity:
+    login: 로그인
+    create: 작성
+    update: 업데이트
+    delete: 삭제
   directus_collections:
     language: 언어
+    archive_divider: 보관
+    sort_divider: 정렬
+  directus_users:
+    preferences_divider: 사용자 개인 설정
+    dropdown_auto: 자동(시스템 설정)
+    dropdown_light: 밝은 배경 테마
+    dropdown_dark: 어두운 배경 테마
+    admin_divider: 관리 옵션
+  directus_webhooks:
+    actions_create: 작성/추가
+    actions_update: 업데이트
+    actions_delete: 삭제
+    actions_login: 로그인
+save_current_user_id: 현재 사용자 ID 저장
+save_current_user_role: 현재 사용자 역할(role) 저장
+comment: 코멘트
+delete_label: 삭제
+description: 설명
+duplicate: 복제
+email: 이메일
+file: 파일
+file_library: 파일 관리
+forgot_password: 비밀번호를 잊으셨나요?
+login: 로그인
+my_activity: 내 활동
+password: 비밀번호
+permissions: 사용 권한
+revisions: 수정내역
+no_revisions: 수정 내역 없음
+search: 검색
+settings: 설정
+sign_in: 로그인
+sign_out: 로그아웃
+sign_out_confirm: 로그아웃 하시겠습니까?
+sort_direction: 정렬 순서
+export_started: 내보내기를 시작했습니다.
+export_started_copy: 내보내기 시작합니다. 다운로드 준비가 되면 알려드립니다.
+search_filter: 검색 및 필터링
 interfaces:
+  filter:
+    name: 필터
+    add_filter: 필터 추가
+  presentation-links:
+    primary: 기본
+  system-display-template:
+    display-template: 표시 형식
   select-dropdown:
     choices_value_placeholder: 값 입력
+  file:
+    file: 파일
+  select-icon:
+    search_for_icon: 아이콘 찾기...
   system-interface:
     interface: 인터페이스
+  select-dropdown-m2o:
+    display_template: 표시 형식
+  input-rich-text-md:
+    edit: 수정
+  map:
+    map: 지도
+  presentation-notice:
+    text: 내용을 입력하세요...
+  tags:
+    tags: 태그
+  input-translated-string:
+    search_placeholder: 검색...
+  translations:
+    display_template: 표시 형식
+    user_language: 현재 사용자와 같은 언어 사용
+  user:
+    user: 사용자
+    description: 등록된 사용자 중에서 선택
+  input-rich-text-html:
+    description: HTML 형식으로 작성할 수 있는 리치텍스트 에디터
+  system-token:
+    system-token: 접속 인증 토큰
 displays:
   translations:
     translations: 번역
+    user_language: 현재 사용자와 같은 언어 사용
   datetime:
     format: 형식
     suffix: 접미사
+  file:
+    file: 파일
   formatted-value:
     format: 형식
     prefix: 접두사
     suffix: 접미사
   labels:
     choices_value_placeholder: 값 입력
+  user:
+    user: 사용자
+    avatar: 아바타/사진
+layouts:
+  cards:
+    cards: 카드형식
+    image_source: 표시이미지
+    image_fit: 이미지맞춤
+    crop: 맞춰자르기(crop)
+    contain: 다보이게
+    title: 제목
+    subtitle: 부제
+  tabular:
+    tabular: 테이블
+    spacing: 간격
+    comfortable: 넓게
+    compact: 좁게
+    cozy: 중간
+  calendar:
+    calendar: 달력
+    start_date_field: 시작일 기준
+    end_date_field: 종료일 기준
+  map:
+    map: 지도
+    basemap: 배경 지도
+    cluster: 인근 데이터 묶기
+    default_template: 기본 설정에 따름
+    no_compatible_fields: 해당필드 없음
+  kanban:
+    crop: 맞춰자르기(crop)
+panels:
+  linechart:
+    datasets: 데이터 세트
+triggers:
+  common:
+    response_body_all: 전체 데이터
+operations:
+  item-create:
+    name: 데이터 생성
+  item-delete:
+    name: 데이터 삭제
+  item-read:
+    name: 데이터 읽기
+  item-update:
+    name: 데이터 업데이트
+  log:
+    message: 메시지
+  notification:
+    recipient: 사용자
+    message: 메시지
+  request:
+    data: 데이터
+  trigger:
+    data: 데이터

@@ -2,6 +2,7 @@ import {
 	Aggregate,
 	ClientFilterOperator,
 	FieldFunction,
+	FieldOverview,
 	Filter,
 	Query,
 	Relation,
@@ -10,7 +11,6 @@ import {
 } from '@directus/shared/types';
 import { Knex } from 'knex';
 import { clone, isPlainObject, set } from 'lodash';
-import { customAlphabet } from 'nanoid';
 import validate from 'uuid-validate';
 import { getHelpers } from '../database/helpers';
 import { InvalidQueryException } from '../exceptions/invalid-query';
@@ -19,6 +19,9 @@ import { getColumnPath } from './get-column-path';
 import { getRelationInfo } from './get-relation-info';
 import { getFilterOperatorsForType, getOutputTypeForFunction } from '@directus/shared/utils';
 import { stripFunction } from './strip-function';
+
+// @ts-ignore
+import { customAlphabet } from 'nanoid/non-secure';
 
 const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
 
@@ -367,19 +370,23 @@ export function applyFilter(
 
 					if (!columnPath) continue;
 
-					validateFilterOperator(
-						schema.collections[targetCollection].fields[stripFunction(filterPath[filterPath.length - 1])].type,
-						filterOperator,
-						schema.collections[targetCollection].fields[stripFunction(filterPath[filterPath.length - 1])].special
+					const { type, special } = validateFilterField(
+						schema.collections[targetCollection].fields,
+						stripFunction(filterPath[filterPath.length - 1]),
+						targetCollection
 					);
+
+					validateFilterOperator(type, filterOperator, special);
 
 					applyFilterToQuery(columnPath, filterOperator, filterValue, logical, targetCollection);
 				} else {
-					validateFilterOperator(
-						schema.collections[collection].fields[stripFunction(filterPath[0])].type,
-						filterOperator,
-						schema.collections[collection].fields[stripFunction(filterPath[0])].special
+					const { type, special } = validateFilterField(
+						schema.collections[collection].fields,
+						stripFunction(filterPath[0]),
+						collection
 					);
+
+					validateFilterOperator(type, filterOperator, special);
 
 					applyFilterToQuery(`${collection}.${filterPath[0]}`, filterOperator, filterValue, logical);
 				}
@@ -415,6 +422,14 @@ export function applyFilter(
 					dbQuery[logical].whereIn(pkField as string, subQueryBuilder(value));
 				}
 			}
+		}
+
+		function validateFilterField(fields: Record<string, FieldOverview>, key: string, collection = 'unknown') {
+			if (fields[key] === undefined) {
+				throw new InvalidQueryException(`Invalid filter key "${key}" on "${collection}"`);
+			}
+
+			return fields[key];
 		}
 
 		function validateFilterOperator(type: Type, filterOperator: string, special: string[]) {

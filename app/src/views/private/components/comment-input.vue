@@ -68,6 +68,7 @@
 <script setup lang="ts">
 import api from '@/api';
 import { useShortcut } from '@/composables/use-shortcut';
+import { md } from '@/utils/md';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { userName } from '@/utils/user-name';
@@ -109,7 +110,7 @@ watch(
 	() => props.existingComment,
 	() => {
 		if (props.existingComment?.comment) {
-			newCommentContent.value = props.existingComment.comment;
+			newCommentContent.value = md(props.existingComment.comment);
 		}
 	},
 	{ immediate: true }

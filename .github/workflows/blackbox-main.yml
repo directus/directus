@@ -21,8 +21,20 @@ env:
 
 jobs:
   test:
-    name: All Databases
+    name: ${{ matrix.vendor }}
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        vendor:
+          - sqlite3
+          - postgres
+          - postgres10
+          - mysql
+          - maria
+          - mssql
+          - oracle
+          - cockroachdb
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -30,7 +42,17 @@ jobs:
       - name: Prepare
         uses: ./.github/actions/prepare
 
+      - name: Prune Dependencies
+        run: find . -type d -name node_modules -prune -exec rm -rf {} \;
+
+      - name: Install Production Dependencies
+        run: pnpm install --prod
+
+      - name: Install Root Dev Dependencies
+        run: pnpm install -w --dev
+
       - name: Install Oracle client
+        if: matrix.vendor == 'oracle'
         run: |
           sudo apt update -y && sudo apt install -y alien libaio1 && \
           wget https://download.oracle.com/otn_software/linux/instantclient/214000/$ORACLE_DL && \
@@ -39,8 +61,14 @@ jobs:
         env:
           ORACLE_DL: oracle-instantclient-basic-21.4.0.0.0-1.el8.x86_64.rpm
 
-      - name: Start Databases
-        run: docker compose -f tests-blackbox/docker-compose.yml up -d --quiet-pull --wait
+      - name: Start Services (SQLite)
+        if: matrix.vendor == 'sqlite3'
+        run: docker compose -f tests-blackbox/docker-compose.yml up auth-saml -d --quiet-pull --wait
+
+      - name: Start Services (Other vendors)
+        if: matrix.vendor != 'sqlite3'
+        run:
+          docker compose -f tests-blackbox/docker-compose.yml up ${{ matrix.vendor }} auth-saml -d --quiet-pull --wait
 
       - name: Run Tests
-        run: pnpm run -w test:blackbox
+        run: TEST_DB=${{ matrix.vendor }} pnpm run -w test:blackbox
