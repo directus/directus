@@ -289,12 +289,12 @@ function processJsonArrays(
 			// Process objects within JSON arrays
 			const currentIndex = hasNestedObject ? arrayIndex ?? 0 : index;
 			const alias = `alias_${jsonField}_${currentIndex}`;
-			const fieldSelector = hasNestedObject ? `.${jsonField}` : '';
+			const fieldSelector = hasNestedObject ? `[*].${jsonField}` : '';
 			const jsonFieldKey = parentJSONField
-				? `${filterKey}$.${parentJSONField}[*]${fieldSelector}`
-				: `${filterKey}$[*]${fieldSelector}`;
+				? `${filterKey}$.${parentJSONField}${fieldSelector}`
+				: `${filterKey}$${fieldSelector}`;
 
-			describe(`${jsonFieldKey}[${currentIndex}] (${jsonSchema[jsonField].type})`, () => {
+			describe(`${jsonFieldKey}=>[${currentIndex}] (${jsonSchema[jsonField].type})`, () => {
 				it.each(vendors)('%s', async (vendor) => {
 					// Setup
 					const parsedFilter = {};
