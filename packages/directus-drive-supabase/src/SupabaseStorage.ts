@@ -178,7 +178,7 @@ export class SupabaseStorage extends Storage {
 		let itemCount = 0;
 
 		do {
-			const { data: items, error } = await this.apiClient.list(prefix, { limit, offset });
+			const { data: items, error } = await this.apiClient.list(undefined, { limit, offset, search: prefix });
 			if (error) {
 				throw new UnknownException(error, error.name, prefix ?? '');
 			}
