@@ -1,20 +1,30 @@
 import { PrepareRequest, RequestOptions } from '@utils/prepare-request';
 import * as testsSchema from '@schema/index';
-import { ClientFilterOperator } from '@directus/shared/types';
 import { isInteger, merge, set } from 'lodash';
-import {
-	FilterEmptyValidator,
-	FilterValidator,
-	processValidation,
-	TestsCollectionSchema,
-	TestsFieldSchema,
-} from '@query/filter';
+import { processValidation, TestsCollectionSchema, TestsFieldSchema } from '@query/filter';
 import { SeedFunctions } from '@common/seed-functions';
 import vendors from '@common/get-dbs-to-test';
 
 export const jsonValuesQuantity = 2;
 const JSONFieldDataTypes = ['string', 'integer', 'float', 'boolean'];
 let cachedJSONFieldSchema: TestsFieldSchema | undefined;
+
+function getJSONTargetSchema(type: string) {
+	switch (type) {
+		case 'integer':
+			return testsSchema.SchemaInteger;
+		case 'float':
+			return testsSchema.SchemaFloat;
+		case 'string':
+			return testsSchema.SchemaString;
+		case 'boolean':
+			return testsSchema.SchemaBoolean;
+		case 'json':
+			return testsSchema.SchemaJSON;
+		default:
+			throw new Error(`Unimplemented ${type} filter operator`);
+	}
+}
 
 type generateJSONSchemaOptions =
 	| { isNested: false; isArray: false }
@@ -117,15 +127,22 @@ export const processJsonFields = (
 	parentJSONField?: string
 ) => {
 	const filterKey = parentField ? `${parentField}.${schema.field}` : schema.field;
+	let processedJSONArrays = false;
 
 	describe(
 		parentJSONField
 			? `${filterKey}.$${parentJSONField ?? ''} (${schema.type})`
 			: `Fields & Aliases: ${filterKey} (${schema.type})`,
 		() => {
-			for (const jsonField of Object.keys(jsonSchema)) {
-				const isArrayFieldKey = isInteger(parseInt(jsonField));
+			const childKeys = Object.keys(jsonSchema);
+			const isArrayFieldKey = childKeys.every((key) => isInteger(parseInt(key)));
 
+			if (isArrayFieldKey && !processedJSONArrays) {
+				processJsonArrays(requestOptions, collection, schema, jsonSchema, parentField, parentJSONField);
+				processedJSONArrays = true;
+			}
+
+			for (const jsonField of childKeys) {
 				if (jsonSchema && jsonSchema[jsonField]?.type === 'json' && jsonSchema[jsonField].children) {
 					if (isArrayFieldKey) {
 						processJsonFields(
@@ -171,33 +188,7 @@ export const processJsonFields = (
 							const parsedFilter = {};
 							set(parsedFilter, filterKey, { _nnull: true });
 
-							let targetSchema: {
-								filterOperatorList: any;
-								generateFilterForDataType: any;
-								type?: 'integer' | 'string' | 'float' | 'boolean' | 'json';
-								getValidatorFunction?: (filter: ClientFilterOperator) => FilterValidator;
-								getEmptyAllowedFunction?: (filter: ClientFilterOperator) => FilterEmptyValidator;
-							};
-
-							switch (jsonSchema[jsonField].type) {
-								case 'integer':
-									targetSchema = testsSchema.SchemaInteger;
-									break;
-								case 'float':
-									targetSchema = testsSchema.SchemaFloat;
-									break;
-								case 'string':
-									targetSchema = testsSchema.SchemaString;
-									break;
-								case 'boolean':
-									targetSchema = testsSchema.SchemaBoolean;
-									break;
-								case 'json':
-									targetSchema = testsSchema.SchemaJSON;
-									break;
-								default:
-									throw new Error(`Unimplemented ${jsonSchema[jsonField].type} filter operator`);
-							}
+							const targetSchema = getJSONTargetSchema(jsonSchema[jsonField].type);
 
 							// Action
 							const response = await PrepareRequest(vendor, requestOptions).query({
@@ -254,3 +245,93 @@ export const processJsonFields = (
 		}
 	);
 };
+
+function processJsonArrays(
+	requestOptions: RequestOptions,
+	collection: string,
+	schema: TestsCollectionSchema,
+	jsonSchema: TestsFieldSchema,
+	parentField?: string,
+	parentJSONField?: string,
+	arrayIndex?: number
+) {
+	const filterKey = parentField ? `${parentField}.${schema.field}` : schema.field;
+	const childKeys = Object.keys(jsonSchema);
+
+	for (let index = 0; index < childKeys.length; index++) {
+		const jsonField = childKeys[index];
+
+		if (jsonSchema && jsonSchema[jsonField]?.type === 'json' && jsonSchema[jsonField].children) {
+			processJsonArrays(
+				requestOptions,
+				collection,
+				schema,
+				jsonSchema[jsonField].children!,
+				parentField,
+				parentJSONField,
+				index
+			);
+
+			continue;
+		}
+
+		if (jsonSchema[jsonField].filters !== false) {
+			// Process objects within JSON arrays
+			const currentIndex = arrayIndex ?? 0;
+			const alias = `alias_${jsonField}_${currentIndex}`;
+			const jsonFieldKey = parentJSONField
+				? `${filterKey}$.${parentJSONField}[*].${jsonField}`
+				: `${filterKey}$[*].${jsonField}`;
+
+			describe(`${jsonFieldKey}[${currentIndex}] (${jsonSchema[jsonField].type})`, () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// Setup
+					const parsedFilter = {};
+					set(parsedFilter, filterKey, { _nnull: true });
+
+					const targetSchema = getJSONTargetSchema(jsonSchema[jsonField].type);
+
+					// Action
+					const response = await PrepareRequest(vendor, requestOptions).query({
+						filter: parsedFilter,
+						fields: alias,
+						alias: {
+							[alias]: `json(${jsonFieldKey})`,
+						},
+					});
+
+					// Assert
+					expect(response.status).toBe(200);
+
+					const possibleValues = jsonSchema[jsonField].possibleValues;
+					const generatedFilters = targetSchema.generateFilterForDataType(
+						'eq',
+						possibleValues
+					) as testsSchema.GeneratedFilter[];
+
+					for (const filter of generatedFilters) {
+						const parsedFilterKeyParts = (
+							filterKey.includes(':')
+								? filterKey.split('.').map((key) => {
+										if (!key.includes(':')) return key;
+										return key.split(':')[0];
+								  })
+								: filterKey.split('.')
+						)
+							.map((key) => {
+								if (key.includes('$')) return;
+								return key;
+							})
+							.filter((key) => key);
+
+						parsedFilterKeyParts[parsedFilterKeyParts.length - 1] = alias;
+
+						const parsedFilterKey = `${parsedFilterKeyParts.join('.')}[${currentIndex}]`;
+
+						processValidation(response.body.data, parsedFilterKey, filter, possibleValues, true);
+					}
+				});
+			});
+		}
+	}
+}
