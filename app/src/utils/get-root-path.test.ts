@@ -2,6 +2,11 @@ import { describe, expect, it } from 'vitest';
 
 import { extract, getPublicURL, getRootPath } from '@/utils/get-root-path';
 
+Object.defineProperty(window, 'location', {
+	value: { href: '', pathname: '' },
+	writable: true,
+});
+
 describe('extract', () => {
 	it('Returns the part of the string leading up to /admin', () => {
 		expect(extract('/path/to/admin/something')).toBe('/path/to/');

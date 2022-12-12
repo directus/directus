@@ -318,14 +318,14 @@ dismiss: Elutasít
 toggle_raw_editor: Nyers szerkesztő ki/bekapcsolása
 raw_editor_placeholder: "Nyers szerkesztő helykitöltő"
 raw_value: Nyers érték
-copy_raw_value: Nyers érték másolása
+copy_raw_value: Másolás vágólapra
 copy_raw_value_success: Másolva
 copy_raw_value_fail: Másolás sikertelen
-paste_raw_value: Nyers érték beillesztése
+paste_raw_value: Beillesztés vágólapról
 paste_raw_value_success: Beillesztve
 paste_raw_value_fail: Beillesztés sikertelen
 view_raw_value: Nyers érték megtekintése
-edit_raw_value: Nyers érték szerkesztése
+edit_raw_value: Szerkesztés
 enter_raw_value: Nyers érték megadása...
 clear_value: Érték eltávolítása
 clear_changes: Változások törlése
@@ -1351,7 +1351,7 @@ referential_action_set_default: '{field} beállítása alapértelmezett érték�
 choose_action: Művelet választása
 continue_label: Folytatás
 continue_as: >-
-  {név} jelenleg hitelesített. Ha felismeri ezt a fiókot, nyomja meg a folytatás gombot!
+  {name} jelenleg hitelesített. Ha felismeri ezt a fiókot, nyomja meg a folytatás gombot.
 editing_role: '{role} szerepkör'
 creating_webhook: Webhook létrehozása
 default_label: Alapértelmezett
@@ -1887,7 +1887,7 @@ layouts:
     spacing: Sorköz
     comfortable: Kényelmes
     compact: Kompakt
-    cozy: Kellemes
+    cozy: Normál
   calendar:
     calendar: Naptár
     start_date_field: Kezdő dátum mező

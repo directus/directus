@@ -23,12 +23,13 @@ module.exports = {
 		ecmaVersion: 2020,
 	},
 	overrides: [
-		// Parse rollup configuration as module
+		// Parse config files as modules
 		{
-			files: ['rollup.config.js', 'vite.config.js'],
+			files: ['rollup.config.js', 'vite?(st).config.js', 'api/globalSetup.js'],
 			parserOptions: {
 				sourceType: 'module',
 			},
+			rules: defaultRules,
 		},
 		{
 			files: ['**/*.test.js'],
@@ -36,6 +37,7 @@ module.exports = {
 				jest: true,
 			},
 			plugins: ['jest'],
+			rules: defaultRules,
 		},
 		// Configuration for ts/vue files
 		{

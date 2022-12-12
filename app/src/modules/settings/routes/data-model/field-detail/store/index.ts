@@ -1,6 +1,4 @@
 import { defineStore } from 'pinia';
-import { getInterfaces } from '@/interfaces';
-import { getDisplays } from '@/displays';
 import { has, isEmpty, orderBy, cloneDeep } from 'lodash';
 import {
 	InterfaceConfig,
@@ -22,6 +20,7 @@ import { useRelationsStore } from '@/stores/relations';
 import * as alterations from './alterations';
 import { getLocalTypeForField } from '@/utils/get-local-type';
 import api from '@/api';
+import { useExtensions } from '@/extensions';
 
 export function syncFieldDetailStoreProperty(path: string, defaultValue?: any) {
 	const fieldDetailStore = useFieldDetailStore();
@@ -39,6 +38,9 @@ export function syncFieldDetailStoreProperty(path: string, defaultValue?: any) {
 export const useFieldDetailStore = defineStore({
 	id: 'fieldDetailStore',
 	state: () => ({
+		// whether there are additional field metadata being fetched (used in startEditing)
+		loading: false,
+
 		// The current collection we're operating in
 		collection: undefined as string | undefined,
 
@@ -83,7 +85,7 @@ export const useFieldDetailStore = defineStore({
 		saving: false,
 	}),
 	actions: {
-		startEditing(collection: string, field: string, localType?: LocalType) {
+		async startEditing(collection: string, field: string, localType?: LocalType) {
 			// Make sure we clean up any stray values from unexpected paths
 			this.$reset();
 
@@ -114,6 +116,27 @@ export const useFieldDetailStore = defineStore({
 					this.relations.m2o = relations.find(
 						(relation) => relation.collection === collection && relation.field === field
 					) as DeepPartial<Relation> | undefined;
+				}
+
+				// re-fetch field meta to get the raw untranslated values
+				try {
+					this.loading = true;
+					const response = await api.get(`/fields/${collection}/${field}`);
+					const fetchedFieldMeta = response.data?.data?.meta;
+					this.$patch({
+						field: {
+							meta: {
+								...(fetchedFieldMeta?.note ? { note: fetchedFieldMeta.note } : {}),
+								...(fetchedFieldMeta?.options ? { options: fetchedFieldMeta.options } : {}),
+								...(fetchedFieldMeta?.display_options ? { display_options: fetchedFieldMeta.display_options } : {}),
+								...(fetchedFieldMeta?.validation_message
+									? { validation_message: fetchedFieldMeta.validation_message }
+									: {}),
+							},
+						},
+					});
+				} finally {
+					this.loading = false;
 				}
 			} else {
 				this.update({
@@ -259,7 +282,7 @@ export const useFieldDetailStore = defineStore({
 			return missing.length === 0;
 		},
 		interfacesForType(): InterfaceConfig[] {
-			const { interfaces } = getInterfaces();
+			const { interfaces } = useExtensions();
 
 			return orderBy(
 				interfaces.value.filter((inter: InterfaceConfig) => {
@@ -275,7 +298,7 @@ export const useFieldDetailStore = defineStore({
 			);
 		},
 		displaysForType(): DisplayConfig[] {
-			const { displays } = getDisplays();
+			const { displays } = useExtensions();
 
 			return orderBy(
 				displays.value.filter((inter: DisplayConfig) => {

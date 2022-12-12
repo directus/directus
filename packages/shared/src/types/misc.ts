@@ -31,4 +31,6 @@ export type DeepPartial<T> = T extends Builtin
 
 export type JsonValue = null | string | number | boolean | JsonValue[] | { [key: string]: JsonValue };
 
+export type GenericString<T> = T extends string ? string : T;
+
 export type Plural<T extends string> = `${T}s`;

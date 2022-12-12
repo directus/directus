@@ -1,6 +1,5 @@
 import { Knex } from 'knex';
 import { Logger } from 'pino';
-import { Ref } from 'vue';
 import {
 	API_EXTENSION_TYPES,
 	APP_EXTENSION_TYPES,
@@ -22,6 +21,7 @@ import { Field } from './fields';
 import { Relation } from './relations';
 import { Collection } from './collection';
 import { SchemaOverview } from './schema';
+import { OperationAppConfig } from './operations';
 
 export type AppExtensionType = typeof APP_EXTENSION_TYPES[number];
 export type ApiExtensionType = typeof API_EXTENSION_TYPES[number];
@@ -31,49 +31,69 @@ export type ExtensionType = typeof EXTENSION_TYPES[number];
 export type PackageExtensionType = typeof PACKAGE_EXTENSION_TYPES[number];
 export type ExtensionPackageType = typeof EXTENSION_PACKAGE_TYPES[number];
 
-type ExtensionCommon = {
+export type SplitEntrypoint = { app: string; api: string };
+
+type ExtensionBase = {
 	path: string;
 	name: string;
 };
 
-type AppExtensionCommon = {
+type AppExtensionBase = {
 	type: AppExtensionType;
 	entrypoint: string;
 };
 
-type ApiExtensionCommon = {
+type ApiExtensionBase = {
 	type: ApiExtensionType;
 	entrypoint: string;
 };
 
-type HybridExtensionCommon = {
+type HybridExtensionBase = {
 	type: HybridExtensionType;
-	entrypoint: { app: string; api: string };
+	entrypoint: SplitEntrypoint;
 };
 
-type PackageExtensionCommon = {
-	type: PackageExtensionType;
+type PackExtensionBase = {
+	type: 'pack';
 	children: string[];
 };
 
-type ExtensionLocalCommon = ExtensionCommon & {
+type BundleExtensionBase = {
+	type: 'bundle';
+	entrypoint: SplitEntrypoint;
+	entries: { type: ExtensionType; name: string }[];
+};
+
+type PackageExtensionBase = PackExtensionBase | BundleExtensionBase;
+
+type ExtensionLocalBase = ExtensionBase & {
 	local: true;
 };
 
-type ExtensionPackageCommon = ExtensionCommon & {
+type ExtensionPackageBase = ExtensionBase & {
 	version: string;
 	host: string;
 	local: false;
 };
 
-export type ExtensionLocal = ExtensionLocalCommon & (AppExtensionCommon | ApiExtensionCommon | HybridExtensionCommon);
-export type ExtensionPackage = ExtensionPackageCommon &
-	(AppExtensionCommon | ApiExtensionCommon | HybridExtensionCommon | PackageExtensionCommon);
+export type ExtensionLocal = ExtensionLocalBase & (AppExtensionBase | ApiExtensionBase | HybridExtensionBase);
+export type ExtensionPackage = ExtensionPackageBase &
+	(AppExtensionBase | ApiExtensionBase | HybridExtensionBase | PackageExtensionBase);
 
-export type AppExtension = AppExtensionCommon & (ExtensionLocalCommon | ExtensionPackageCommon);
-export type ApiExtension = ApiExtensionCommon & (ExtensionLocalCommon | ExtensionPackageCommon);
-export type HybridExtension = HybridExtensionCommon & (ExtensionLocalCommon | ExtensionPackageCommon);
+export type AppExtension = AppExtensionBase & (ExtensionLocalBase | ExtensionPackageBase);
+export type ApiExtension = ApiExtensionBase & (ExtensionLocalBase | ExtensionPackageBase);
+export type HybridExtension = HybridExtensionBase & (ExtensionLocalBase | ExtensionPackageBase);
+
+export type PackExtension = PackExtensionBase & ExtensionPackageBase;
+export type BundleExtension = BundleExtensionBase & ExtensionPackageBase;
+
 export type Extension = ExtensionLocal | ExtensionPackage;
+
+export type ExtensionOptionsBundleEntryRaw = {
+	type?: string;
+	name?: string;
+	source?: string | Partial<SplitEntrypoint>;
+};
 
 export type ExtensionManifestRaw = {
 	name?: string;
@@ -82,14 +102,19 @@ export type ExtensionManifestRaw = {
 
 	[EXTENSION_PKG_KEY]?: {
 		type?: string;
-		path?: string | { app: string; api: string };
-		source?: string | { app: string; api: string };
+		path?: string | Partial<SplitEntrypoint>;
+		source?: string | Partial<SplitEntrypoint>;
+		entries?: ExtensionOptionsBundleEntryRaw[];
 		host?: string;
 		hidden?: boolean;
 	};
 };
 
-type ExtensionOptionsCommon = {
+export type ExtensionOptionsBundleEntry =
+	| { type: AppExtensionType | ApiExtensionType; name: string; source: string }
+	| { type: HybridExtensionType; name: string; source: SplitEntrypoint };
+
+type ExtensionOptionsBase = {
 	host: string;
 	hidden?: boolean;
 };
@@ -102,15 +127,23 @@ type ExtensionOptionsAppOrApi = {
 
 type ExtensionOptionsHybrid = {
 	type: HybridExtensionType;
-	path: { app: string; api: string };
-	source: { app: string; api: string };
+	path: SplitEntrypoint;
+	source: SplitEntrypoint;
 };
 
-type ExtensionOptionsPackage = {
-	type: PackageExtensionType;
+type ExtensionOptionsPack = {
+	type: 'pack';
 };
 
-export type ExtensionOptions = ExtensionOptionsCommon &
+type ExtensionOptionsBundle = {
+	type: 'bundle';
+	path: SplitEntrypoint;
+	entries: ExtensionOptionsBundleEntry[];
+};
+
+type ExtensionOptionsPackage = ExtensionOptionsPack | ExtensionOptionsBundle;
+
+export type ExtensionOptions = ExtensionOptionsBase &
 	(ExtensionOptionsAppOrApi | ExtensionOptionsHybrid | ExtensionOptionsPackage);
 
 export type ExtensionManifest = {
@@ -122,11 +155,12 @@ export type ExtensionManifest = {
 };
 
 export type AppExtensionConfigs = {
-	interfaces: Ref<InterfaceConfig[]>;
-	displays: Ref<DisplayConfig[]>;
-	layouts: Ref<LayoutConfig[]>;
-	modules: Ref<ModuleConfig[]>;
-	panels: Ref<PanelConfig[]>;
+	interfaces: InterfaceConfig[];
+	displays: DisplayConfig[];
+	layouts: LayoutConfig[];
+	modules: ModuleConfig[];
+	panels: PanelConfig[];
+	operations: OperationAppConfig[];
 };
 
 export type ApiExtensionContext = {

@@ -99,6 +99,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 				code_challenge_method: 'S256',
 				// Some providers require state even with PKCE
 				state: codeChallenge,
+				nonce: codeChallenge,
 			});
 		} catch (e) {
 			throw handleError(e);
@@ -126,10 +127,11 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 
 		try {
 			const client = await this.client;
+			const codeChallenge = generators.codeChallenge(payload.codeVerifier);
 			tokenSet = await client.callback(
 				this.redirectUrl,
 				{ code: payload.code, state: payload.state },
-				{ code_verifier: payload.codeVerifier, state: generators.codeChallenge(payload.codeVerifier) }
+				{ code_verifier: payload.codeVerifier, state: codeChallenge, nonce: codeChallenge }
 			);
 			userInfo = tokenSet.claims();
 

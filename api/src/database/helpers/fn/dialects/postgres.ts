@@ -1,37 +1,44 @@
 import { FnHelper, FnHelperOptions } from '../types';
 import { Knex } from 'knex';
 
+const parseLocaltime = (columnType?: string) => {
+	if (columnType === 'timestamp') {
+		return ` AT TIME ZONE 'UTC'`;
+	}
+	return '';
+};
+
 export class FnHelperPostgres extends FnHelper {
-	year(table: string, column: string): Knex.Raw {
-		return this.knex.raw('EXTRACT(YEAR FROM ??.??)', [table, column]);
+	year(table: string, column: string, options: FnHelperOptions): Knex.Raw {
+		return this.knex.raw(`EXTRACT(YEAR FROM ??.??${parseLocaltime(options?.type)})`, [table, column]);
 	}
 
-	month(table: string, column: string): Knex.Raw {
-		return this.knex.raw('EXTRACT(MONTH FROM ??.??)', [table, column]);
+	month(table: string, column: string, options: FnHelperOptions): Knex.Raw {
+		return this.knex.raw(`EXTRACT(MONTH FROM ??.??${parseLocaltime(options?.type)})`, [table, column]);
 	}
 
-	week(table: string, column: string): Knex.Raw {
-		return this.knex.raw('EXTRACT(WEEK FROM ??.??)', [table, column]);
+	week(table: string, column: string, options: FnHelperOptions): Knex.Raw {
+		return this.knex.raw(`EXTRACT(WEEK FROM ??.??${parseLocaltime(options?.type)})`, [table, column]);
 	}
 
-	day(table: string, column: string): Knex.Raw {
-		return this.knex.raw('EXTRACT(DAY FROM ??.??)', [table, column]);
+	day(table: string, column: string, options: FnHelperOptions): Knex.Raw {
+		return this.knex.raw(`EXTRACT(DAY FROM ??.??${parseLocaltime(options?.type)})`, [table, column]);
 	}
 
-	weekday(table: string, column: string): Knex.Raw {
-		return this.knex.raw('EXTRACT(DOW FROM ??.??)', [table, column]);
+	weekday(table: string, column: string, options: FnHelperOptions): Knex.Raw {
+		return this.knex.raw(`EXTRACT(DOW FROM ??.??${parseLocaltime(options?.type)})`, [table, column]);
 	}
 
-	hour(table: string, column: string): Knex.Raw {
-		return this.knex.raw('EXTRACT(HOUR FROM ??.??)', [table, column]);
+	hour(table: string, column: string, options: FnHelperOptions): Knex.Raw {
+		return this.knex.raw(`EXTRACT(HOUR FROM ??.??${parseLocaltime(options?.type)})`, [table, column]);
 	}
 
-	minute(table: string, column: string): Knex.Raw {
-		return this.knex.raw('EXTRACT(MINUTE FROM ??.??)', [table, column]);
+	minute(table: string, column: string, options: FnHelperOptions): Knex.Raw {
+		return this.knex.raw(`EXTRACT(MINUTE FROM ??.??${parseLocaltime(options?.type)})`, [table, column]);
 	}
 
-	second(table: string, column: string): Knex.Raw {
-		return this.knex.raw('EXTRACT(SECOND FROM ??.??)', [table, column]);
+	second(table: string, column: string, options: FnHelperOptions): Knex.Raw {
+		return this.knex.raw(`EXTRACT(SECOND FROM ??.??${parseLocaltime(options?.type)})`, [table, column]);
 	}
 
 	count(table: string, column: string, options?: FnHelperOptions): Knex.Raw {
