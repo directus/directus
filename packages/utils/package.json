@@ -19,8 +19,14 @@
 	"license": "GPL-3.0",
 	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
 	"exports": {
-		".": "./dist/index.js",
-		"./node": "./dist/node/index.js",
+		".": {
+			"import": "./dist/index.js",
+			"types": "./dist/index.d.ts"
+		},
+		"./node": {
+			"import": "./dist/node/index.js",
+			"types": "./dist/node/index.d.ts"
+		},
 		"./package.json": "./package.json"
 	},
 	"main": "dist/index.js",
