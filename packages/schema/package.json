@@ -1,6 +1,6 @@
 {
 	"name": "@directus/schema",
-	"version": "9.21.0",
+	"version": "9.21.2",
 	"description": "Utility for extracting information about existing DB schema",
 	"keywords": [
 		"sql",
@@ -26,7 +26,11 @@
 	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
 	"exports": {
 		".": "./dist/index.js",
-		"./package.json": "./package.json"
+		"./package.json": "./package.json",
+		"./types/overview": {
+			"types": "./dist/types/overview.d.ts",
+			"default": "./dist/types/overview.js"
+		}
 	},
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",

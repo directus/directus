@@ -1,4 +1,3 @@
-import axios from 'axios';
 import ms from 'ms';
 import { machineId } from 'node-machine-id';
 import os from 'os';
@@ -9,6 +8,8 @@ import logger from '../logger';
 import { toArray } from '@directus/shared/utils';
 
 export async function track(event: string): Promise<void> {
+	const axios = (await import('axios')).default;
+
 	if (env.TELEMETRY !== false) {
 		const info = await getEnvInfo(event);
 

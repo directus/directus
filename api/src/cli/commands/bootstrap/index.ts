@@ -1,5 +1,4 @@
 import { Knex } from 'knex';
-import { nanoid } from 'nanoid';
 import runMigrations from '../../../database/migrations/run';
 import installDatabase from '../../../database/seeds/run';
 import env from '../../../env';
@@ -65,6 +64,8 @@ async function waitForDatabase(database: Knex) {
 }
 
 async function createDefaultAdmin(schema: SchemaOverview) {
+	const { nanoid } = await import('nanoid');
+
 	logger.info('Setting up first admin role...');
 	const rolesService = new RolesService({ schema });
 	const role = await rolesService.createOne(defaultAdminRole);
