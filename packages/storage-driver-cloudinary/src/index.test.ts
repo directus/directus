@@ -1,32 +1,38 @@
-import type { Mock } from 'vitest';
 import { normalizePath } from '@directus/utils';
-import { isReadableStream } from '@directus/utils/node';
-import { join } from 'node:path';
-import { PassThrough } from 'node:stream';
-import { afterEach, describe, expect, test, vi, beforeEach } from 'vitest';
-import { DriverCloudinary } from './index.js';
-import type { DriverCloudinaryConfig } from './index.js';
 import {
+	rand,
 	randAlphaNumeric,
 	randDirectoryPath,
-	randDomainName,
 	randFilePath,
+	randFileType,
 	randGitBranch as randCloudName,
+	randGitCommitSha as randSha,
 	randNumber,
 	randPastDate,
-	randWord,
 	randText,
-	randFileType,
-	randUrl,
-	randGitCommitSha as randSha,
+	randWord,
+	randFileExt,
 } from '@ngneat/falso';
 import type { Hash } from 'node:crypto';
 import { createHash } from 'node:crypto';
+import { extname, join } from 'node:path';
+import { PassThrough } from 'node:stream';
+import type { Mock } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { IMAGE_EXTENSIONS, VIDEO_EXTENSIONS } from './constants.js';
+import type { DriverCloudinaryConfig } from './index.js';
+import { DriverCloudinary } from './index.js';
+import { fetch } from 'undici';
+import type { Response } from 'undici';
+import { ReadableStream } from 'node:stream/web';
+import { Readable } from 'node:stream';
 
 vi.mock('@directus/utils/node');
 vi.mock('@directus/utils');
 vi.mock('node:path');
 vi.mock('node:crypto');
+vi.mock('node:stream');
+vi.mock('undici');
 
 let sample: {
 	config: Required<DriverCloudinaryConfig>;
@@ -60,6 +66,7 @@ beforeEach(() => {
 			apiKey: randNumber({ length: 15 }).join(''),
 			apiSecret: randAlphaNumeric({ length: 27 }).join(''),
 			cloudName: randCloudName(),
+			accessMode: rand(['public', 'authenticated']),
 		},
 		path: {
 			input: randFilePath(),
@@ -86,6 +93,7 @@ beforeEach(() => {
 		cloudName: sample.config.cloudName,
 		apiKey: sample.config.apiKey,
 		apiSecret: sample.config.apiSecret,
+		accessMode: sample.config.accessMode,
 	});
 
 	driver['fullPath'] = vi.fn().mockImplementation((input) => {
@@ -114,6 +122,10 @@ describe('#constructor', () => {
 		expect(driver['cloudName']).toBe(sample.config.cloudName);
 	});
 
+	test('Saves accessMode internally', () => {
+		expect(driver['accessMode']).toBe(sample.config.accessMode);
+	});
+
 	test('Defaults root to empty string', () => {
 		expect(driver['root']).toBe('');
 	});
@@ -126,6 +138,7 @@ describe('#constructor', () => {
 			apiKey: sample.config.apiKey,
 			apiSecret: sample.config.apiSecret,
 			root: sample.config.root,
+			accessMode: sample.config.accessMode,
 		});
 
 		expect(normalizePath).toHaveBeenCalledWith(sample.config.root, { removeLeading: true });
@@ -141,6 +154,7 @@ describe('#fullPath', () => {
 			cloudName: sample.config.cloudName,
 			apiKey: sample.config.apiKey,
 			apiSecret: sample.config.apiSecret,
+			accessMode: sample.config.accessMode,
 		});
 
 		driver['root'] = sample.config.root;
@@ -148,7 +162,7 @@ describe('#fullPath', () => {
 		const result = driver['fullPath'](sample.path.input);
 
 		expect(join).toHaveBeenCalledWith(sample.config.root, sample.path.input);
-		expect(normalizePath).toHaveBeenCalledWith(sample.path.inputFull);
+		expect(normalizePath).toHaveBeenCalledWith(sample.path.inputFull, { removeLeading: true });
 		expect(result).toBe(sample.path.inputFull);
 	});
 });
@@ -295,8 +309,8 @@ describe('#getParameterSignature', () => {
 		expect(mockCreateHash.update).toHaveBeenCalledWith(sample.path.input + sample.config.apiSecret);
 	});
 
-	test('Digests hash to base64', () => {
-		expect(mockCreateHash.digest).toHaveBeenCalledWith('base64');
+	test('Digests hash to base64url', () => {
+		expect(mockCreateHash.digest).toHaveBeenCalledWith('base64url');
 	});
 
 	test('Returns first 8 characters of base64 sha hash wrapped in Cloudinary prefix/suffix', () => {
@@ -315,6 +329,129 @@ describe('#getTimestamp', () => {
 
 	test('Returns unix timestamp for current time', () => {
 		expect(driver['getTimestamp']()).toBe(mockDate.getTime());
+	});
+});
+
+describe('#getResourceType', () => {
+	test('Returns "image" for extensions contained in the image extensions constant', () => {
+		IMAGE_EXTENSIONS.forEach((ext) => expect(driver['getResourceType'](ext)).toBe('image'));
+	});
+
+	test('Returns "video" for extensions contained in the video extensions constant', () => {
+		VIDEO_EXTENSIONS.forEach((ext) => expect(driver['getResourceType'](ext)).toBe('video'));
+	});
+
+	test('Returns "raw" for unknown / other extensions', () => {
+		randWord({ length: 5 }).forEach((ext) => expect(driver['getResourceType'](ext)).toBe('raw'));
+	});
+});
+
+describe('#getStream', () => {
+	let mockResourceType: 'image' | 'video' | 'raw';
+	let mockParameterSignature: string;
+	let mockResponse: {
+		status: number;
+		body: ReadableStream | null;
+	};
+
+	beforeEach(() => {
+		mockResourceType = rand(['image', 'video', 'raw']);
+		mockParameterSignature = `s--${randAlphaNumeric({ length: 8 }).join('')}--`;
+
+		mockResponse = {
+			status: 200,
+			body: new ReadableStream(),
+		};
+
+		driver['getResourceType'] = vi.fn().mockReturnValue(mockResourceType);
+		driver['getParameterSignature'] = vi.fn().mockReturnValue(mockParameterSignature);
+
+		vi.mocked(fetch).mockResolvedValue(mockResponse as Response);
+	});
+
+	test('Gets resource type for extension of given filepath', async () => {
+		const mockFileExt = randFileExt();
+		vi.mocked(extname).mockReturnValue(mockFileExt);
+
+		await driver.getStream(sample.path.input);
+
+		expect(extname).toHaveBeenCalledWith(sample.path.input);
+		expect(driver['getResourceType']).toHaveBeenCalledWith(mockFileExt);
+	});
+
+	test('Creates signature for full filepath', async () => {
+		await driver.getStream(sample.path.input);
+
+		expect(driver['fullPath']).toHaveBeenCalledWith(sample.path.input);
+		expect(driver['getParameterSignature']).toHaveBeenCalledWith(sample.path.inputFull);
+	});
+
+	test('Calls fetch with generated URL', async () => {
+		await driver.getStream(sample.path.input);
+
+		expect(fetch).toHaveBeenCalledWith(
+			`https://res.cloudinary.com/${sample.config.cloudName}/${mockResourceType}/upload/${mockParameterSignature}/${sample.path.inputFull}`,
+			{ method: 'GET' }
+		);
+	});
+
+	test('Adds optional Range header for start', async () => {
+		await driver.getStream(sample.path.input, { start: sample.range.start });
+
+		expect(fetch).toHaveBeenCalledWith(
+			`https://res.cloudinary.com/${sample.config.cloudName}/${mockResourceType}/upload/${mockParameterSignature}/${sample.path.inputFull}`,
+			{ method: 'GET', headers: { Range: `bytes=${sample.range.start}-` } }
+		);
+	});
+
+	test('Adds optional Range header for end', async () => {
+		await driver.getStream(sample.path.input, { end: sample.range.end });
+
+		expect(fetch).toHaveBeenCalledWith(
+			`https://res.cloudinary.com/${sample.config.cloudName}/${mockResourceType}/upload/${mockParameterSignature}/${sample.path.inputFull}`,
+			{ method: 'GET', headers: { Range: `bytes=-${sample.range.end}` } }
+		);
+	});
+
+	test('Adds optional Range header for start and end', async () => {
+		await driver.getStream(sample.path.input, sample.range);
+
+		expect(fetch).toHaveBeenCalledWith(
+			`https://res.cloudinary.com/${sample.config.cloudName}/${mockResourceType}/upload/${mockParameterSignature}/${sample.path.inputFull}`,
+			{ method: 'GET', headers: { Range: `bytes=${sample.range.start}-${sample.range.end}` } }
+		);
+	});
+
+	test('Throws error when response has status >= 400', async () => {
+		mockResponse.status = randNumber({ min: 400, max: 599 });
+
+		try {
+			await driver.getStream(sample.path.input);
+		} catch (err: any) {
+			expect(err).toBeInstanceOf(Error);
+			expect(err.message).toBe(`No stream returned for file "${sample.path.input}"`);
+		}
+	});
+
+	test('Throws error when response has no readable body', async () => {
+		mockResponse.body = null;
+
+		try {
+			await driver.getStream(sample.path.input);
+		} catch (err: any) {
+			expect(err).toBeInstanceOf(Error);
+			expect(err.message).toBe(`No stream returned for file "${sample.path.input}"`);
+		}
+	});
+
+	test('Returns readable stream from web stream', async () => {
+		const mockStream = {} as Readable;
+		vi.mocked(Readable.fromWeb).mockReturnValue(mockStream);
+
+		const stream = await driver.getStream(sample.path.input);
+
+		expect(Readable.fromWeb).toHaveBeenCalledWith(mockResponse.body);
+		expect(stream).toBe(mockStream);
 	});
 });
 

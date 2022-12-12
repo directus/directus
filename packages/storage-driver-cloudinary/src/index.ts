@@ -1,18 +1,18 @@
-import { normalizePath } from '@directus/utils';
-import { isReadableStream } from '@directus/utils/node';
 import type { Driver, Range } from '@directus/storage';
-import { join } from 'node:path';
-import type { Readable } from 'node:stream';
-import { PassThrough } from 'node:stream';
-import FormData from 'form-data';
+import { normalizePath } from '@directus/utils';
 import { createHash } from 'node:crypto';
-import { stream } from 'undici';
+import { extname, join } from 'node:path';
+import { Readable } from 'node:stream';
+import { fetch } from 'undici';
+import type { RequestInit } from 'undici';
+import { IMAGE_EXTENSIONS, VIDEO_EXTENSIONS } from './constants.js';
 
 export type DriverCloudinaryConfig = {
 	root?: string;
 	cloudName: string;
 	apiKey: string;
 	apiSecret: string;
+	accessMode: 'public' | 'authenticated';
 };
 
 export class DriverCloudinary implements Driver {
@@ -20,16 +20,18 @@ export class DriverCloudinary implements Driver {
 	private apiKey: string;
 	private apiSecret: string;
 	private cloudName: string;
+	private accessMode: 'public' | 'authenticated';
 
 	constructor(config: DriverCloudinaryConfig) {
 		this.root = config.root ? normalizePath(config.root, { removeLeading: true }) : '';
 		this.apiKey = config.apiKey;
 		this.apiSecret = config.apiSecret;
 		this.cloudName = config.cloudName;
+		this.accessMode = config.accessMode;
 	}
 
 	private fullPath(filepath: string) {
-		return normalizePath(join(this.root, filepath));
+		return normalizePath(join(this.root, filepath), { removeLeading: true });
 	}
 
 	private toFormUrlEncoded(obj: Record<string, string>, options?: { sort: boolean }) {
@@ -67,7 +69,7 @@ export class DriverCloudinary implements Driver {
 	private getParameterSignature(filepath: string) {
 		return `s--${createHash('sha1')
 			.update(filepath + this.apiSecret)
-			.digest('base64')
+			.digest('base64url')
 			.substring(0, 8)}--`;
 	}
 
@@ -75,7 +77,38 @@ export class DriverCloudinary implements Driver {
 		return new Date().getTime();
 	}
 
-	async getStream(filepath: string, range?: Range) {}
+	/**
+	 * Used to guess what resource type is appropriate for a given filepath
+	 * @see https://cloudinary.com/documentation/image_transformations#image_upload_note
+	 */
+	private getResourceType(fileExtension: string) {
+		if (IMAGE_EXTENSIONS.includes(fileExtension)) return 'image';
+		if (VIDEO_EXTENSIONS.includes(fileExtension)) return 'video';
+		return 'raw';
+	}
+
+	async getStream(filepath: string, range?: Range) {
+		const resourceType = this.getResourceType(extname(filepath));
+		const fullPath = this.fullPath(filepath);
+		const signature = this.getParameterSignature(fullPath);
+		const url = `https://res.cloudinary.com/${this.cloudName}/${resourceType}/upload/${signature}/${fullPath}`;
+
+		const requestInit: RequestInit = { method: 'GET' };
+
+		if (range) {
+			requestInit.headers = {
+				Range: `bytes=${range.start ?? ''}-${range.end ?? ''}`,
+			};
+		}
+
+		const response = await fetch(url, requestInit);
+
+		if (response.status >= 400 || !response.body) {
+			throw new Error(`No stream returned for file "${filepath}"`);
+		}
+
+		return Readable.fromWeb(response.body);
+	}
 
 	async getBuffer(filepath: string) {}
 
