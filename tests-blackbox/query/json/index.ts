@@ -115,6 +115,14 @@ export function getJSONFieldSchema(): TestsFieldSchema {
 		nestedField: 'nested_array',
 	});
 
+	for (const type of JSONFieldDataTypes) {
+		generateJSONSchema(cachedJSONFieldSchema, [type], {
+			isNested: true,
+			isArray: true,
+			nestedField: `nested_array_${type}`,
+		});
+	}
+
 	return cachedJSONFieldSchema;
 }
 
@@ -253,7 +261,8 @@ function processJsonArrays(
 	jsonSchema: TestsFieldSchema,
 	parentField?: string,
 	parentJSONField?: string,
-	arrayIndex?: number
+	arrayIndex?: number,
+	hasNestedObject?: boolean
 ) {
 	const filterKey = parentField ? `${parentField}.${schema.field}` : schema.field;
 	const childKeys = Object.keys(jsonSchema);
@@ -269,7 +278,8 @@ function processJsonArrays(
 				jsonSchema[jsonField].children!,
 				parentField,
 				parentJSONField,
-				index
+				index,
+				Object.keys(jsonSchema[jsonField].children!).length > 1
 			);
 
 			continue;
@@ -277,11 +287,12 @@ function processJsonArrays(
 
 		if (jsonSchema[jsonField].filters !== false) {
 			// Process objects within JSON arrays
-			const currentIndex = arrayIndex ?? 0;
+			const currentIndex = hasNestedObject ? arrayIndex ?? 0 : index;
 			const alias = `alias_${jsonField}_${currentIndex}`;
+			const fieldSelector = hasNestedObject ? `.${jsonField}` : '';
 			const jsonFieldKey = parentJSONField
-				? `${filterKey}$.${parentJSONField}[*].${jsonField}`
-				: `${filterKey}$[*].${jsonField}`;
+				? `${filterKey}$.${parentJSONField}[*]${fieldSelector}`
+				: `${filterKey}$[*]${fieldSelector}`;
 
 			describe(`${jsonFieldKey}[${currentIndex}] (${jsonSchema[jsonField].type})`, () => {
 				it.each(vendors)('%s', async (vendor) => {
