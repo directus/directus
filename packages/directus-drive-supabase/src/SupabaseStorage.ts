@@ -66,7 +66,7 @@ export class SupabaseStorage extends Storage {
 	 * Returns file's metadata
 	 * @param path filename
 	 */
-	private getHead(path: string): Promise<IncomingHttpHeaders> {
+	private head(path: string): Promise<IncomingHttpHeaders> {
 		return new Promise((resolve, reject) => {
 			const req = request(
 				`${this.endpoint}/object/authenticated/${this.bucket}/${path}`,
@@ -99,7 +99,7 @@ export class SupabaseStorage extends Storage {
 	 */
 	public async getStat(path: string): Promise<StatResponse> {
 		try {
-			const headers = await this.getHead(path);
+			const headers = await this.head(path);
 			return {
 				size: parseInt(headers['content-length'] || ''),
 				modified: new Date(headers['last-modified'] || ''),
@@ -119,10 +119,10 @@ export class SupabaseStorage extends Storage {
 	 */
 	public async exists(location: string): Promise<ExistsResponse> {
 		try {
-			const { raw } = await this.getStat(location);
+			const headers = await this.head(location);
 			return {
 				exists: true,
-				raw,
+				raw: headers,
 			};
 		} catch (error) {
 			return {
@@ -140,8 +140,8 @@ export class SupabaseStorage extends Storage {
 	public getStream(location: string, _range?: Range | undefined): NodeJS.ReadableStream {
 		const promise = this.apiClient
 			.download(location)
-			.then(({ data }) => data?.arrayBuffer())
-			.then((data) => Buffer.from(data!))
+			.then(({ data }) => data!.arrayBuffer())
+			.then((data) => Buffer.from(data))
 			.catch((error) => {
 				throw new UnknownException(error, error.name, location);
 			});
