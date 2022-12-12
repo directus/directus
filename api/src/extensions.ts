@@ -192,10 +192,9 @@ class ExtensionManager {
 	}
 
 	public getEmbeds() {
-		return {
-			head: this.hookEmbedsHead.join('\n'),
-			body: this.hookEmbedsBody.join('\n'),
-		};
+		const head = this.hookEmbedsHead.length > 0 ? this.hookEmbedsHead.join('\n') : '';
+		const body = this.hookEmbedsBody.length > 0 ? this.hookEmbedsBody.join('\n') : '';
+		return { head, body };
 	}
 
 	private async load(): Promise<void> {
@@ -500,7 +499,7 @@ class ExtensionManager {
 				}
 			},
 			embed: (position: 'head' | 'body', code: string | EmbedHandler) => {
-				const content = typeof code === 'function' ? code(env) : code;
+				const content = typeof code === 'function' ? code() : code;
 				if (content.trim().length === 0) {
 					logger.warn(`Couldn't register embed hook. Provided code is empty!`);
 					return;
