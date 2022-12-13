@@ -27,7 +27,7 @@ export class DriverLocal implements Driver {
 		await mkdir(dirpath, { recursive: true });
 	}
 
-	async getStream(filepath: string, range?: Range) {
+	async read(filepath: string, range?: Range) {
 		const options: Parameters<typeof createReadStream>[1] = {};
 
 		if (range?.start) {
@@ -41,11 +41,7 @@ export class DriverLocal implements Driver {
 		return createReadStream(this.fullPath(filepath), options);
 	}
 
-	async getBuffer(filepath: string) {
-		return await readFile(this.fullPath(filepath));
-	}
-
-	async getStat(filepath: string) {
+	async stat(filepath: string) {
 		const statRes = await stat(this.fullPath(filepath));
 
 		if (!statRes) {
@@ -78,16 +74,11 @@ export class DriverLocal implements Driver {
 		await copyFile(fullSrc, fullDest);
 	}
 
-	async put(filepath: string, content: string | Buffer | NodeJS.ReadableStream) {
+	async write(filepath: string, content: string | Buffer | NodeJS.ReadableStream) {
 		const fullPath = this.fullPath(filepath);
 		await this.ensureDir(dirname(fullPath));
-
-		if (isReadableStream(content)) {
-			const writeStream = createWriteStream(fullPath);
-			await pipeline(content, writeStream);
-		} else {
-			await writeFile(fullPath, content);
-		}
+		const writeStream = createWriteStream(fullPath);
+		await pipeline(content, writeStream);
 	}
 
 	async delete(filepath: string) {

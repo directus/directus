@@ -6,10 +6,11 @@ import {
 	randPastDate,
 	randText,
 	randWord,
+	randGitShortSha as randUnique,
 } from '@ngneat/falso';
 import type { Dir, WriteStream } from 'node:fs';
 import { createReadStream, createWriteStream } from 'node:fs';
-import { access, copyFile, mkdir, opendir, readFile, rename, stat, unlink, writeFile } from 'node:fs/promises';
+import { access, copyFile, mkdir, opendir, rename, stat, unlink } from 'node:fs/promises';
 import { dirname, join, relative, resolve, sep } from 'node:path';
 import { PassThrough } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
@@ -54,13 +55,13 @@ beforeEach(() => {
 			root: randDirectoryPath(),
 		},
 		path: {
-			root: randDirectoryPath(),
-			input: randFilePath(),
-			inputFull: randFilePath(),
-			src: randFilePath(),
-			srcFull: randFilePath(),
-			dest: randFilePath(),
-			destFull: randFilePath(),
+			root: randUnique() + randDirectoryPath(),
+			input: randUnique() + randFilePath(),
+			inputFull: randUnique() + randFilePath(),
+			src: randUnique() + randFilePath(),
+			srcFull: randUnique() + randFilePath(),
+			dest: randUnique() + randFilePath(),
+			destFull: randUnique() + randFilePath(),
 		},
 		range: {
 			start: randNumber(),
@@ -135,47 +136,38 @@ describe('#ensureDir', () => {
 	});
 });
 
-describe('#getStream', () => {
+describe('#read', () => {
 	test('Calls createReadStream with full path', async () => {
-		await driver.getStream(sample.path.input);
+		await driver.read(sample.path.input);
 
 		expect(driver['fullPath']).toHaveBeenCalledWith(sample.path.input);
 		expect(createReadStream).toHaveBeenCalledWith(sample.path.inputFull, {});
 	});
 
 	test('Calls createReadStream with optional start range', async () => {
-		await driver.getStream(sample.path.input, { start: sample.range.start });
+		await driver.read(sample.path.input, { start: sample.range.start });
 
 		expect(createReadStream).toHaveBeenCalledWith(sample.path.inputFull, { start: sample.range.start });
 	});
 
 	test('Calls createReadStream with optional end range', async () => {
-		await driver.getStream(sample.path.input, { end: sample.range.end });
+		await driver.read(sample.path.input, { end: sample.range.end });
 
 		expect(createReadStream).toHaveBeenCalledWith(sample.path.inputFull, { end: sample.range.end });
 	});
 
 	test('Calls createReadStream with optional start and end range', async () => {
-		await driver.getStream(sample.path.input, sample.range);
+		await driver.read(sample.path.input, sample.range);
 
 		expect(createReadStream).toHaveBeenCalledWith(sample.path.inputFull, sample.range);
 	});
 });
 
-describe('#getBuffer', () => {
-	test('Calls node:fs/promises readFile with full path', async () => {
-		await driver.getBuffer(sample.path.input);
-
-		expect(driver['fullPath']).toHaveBeenCalledWith(sample.path.input);
-		expect(readFile).toHaveBeenCalledWith(sample.path.inputFull);
-	});
-});
-
-describe('#getStat', () => {
+describe('#stat', () => {
 	test('Calls node:fs/promises stat with full path', async () => {
 		vi.mocked(stat).mockResolvedValueOnce({} as unknown as Awaited<ReturnType<typeof stat>>);
 
-		await driver.getStat(sample.path.input);
+		await driver.stat(sample.path.input);
 
 		expect(driver['fullPath']).toHaveBeenCalledWith(sample.path.input);
 		expect(stat).toHaveBeenCalledWith(sample.path.inputFull);
@@ -183,7 +175,7 @@ describe('#getStat', () => {
 
 	test(`Throws error if stat does not return info`, async () => {
 		try {
-			await driver.getStat(sample.path.input);
+			await driver.stat(sample.path.input);
 		} catch (err: any) {
 			expect(err).toBeInstanceOf(Error);
 			expect(err.message).toBe(`File "${sample.path.input}" doesn't exist.`);
@@ -266,7 +258,7 @@ describe('#copy', () => {
 	});
 });
 
-describe('#put', () => {
+describe('#write', () => {
 	beforeEach(() => {
 		driver['ensureDir'] = vi.fn();
 	});
@@ -275,14 +267,14 @@ describe('#put', () => {
 		const mockDirname = randDirectoryPath();
 		vi.mocked(dirname).mockReturnValueOnce(mockDirname);
 
-		await driver.put(sample.path.input, sample.text);
+		await driver.write(sample.path.input, sample.text);
 
 		expect(dirname).toHaveBeenCalledWith(sample.path.inputFull);
 		expect(driver['ensureDir']).toHaveBeenCalledWith(mockDirname);
 	});
 
 	test('Creates write stream to file path when a readstream is passed', async () => {
-		await driver.put(sample.path.input, sample.stream);
+		await driver.write(sample.path.input, sample.stream);
 
 		expect(createWriteStream).toHaveBeenCalledWith(sample.path.inputFull);
 	});
@@ -291,17 +283,9 @@ describe('#put', () => {
 		const mockWriteStream = {};
 		vi.mocked(createWriteStream).mockReturnValueOnce(mockWriteStream as unknown as WriteStream);
 
-		await driver.put(sample.path.input, sample.stream);
+		await driver.write(sample.path.input, sample.stream);
 
 		expect(pipeline).toHaveBeenCalledWith(sample.stream, mockWriteStream);
-	});
-
-	test('Calls writeFile with passed content if not a stream', async () => {
-		driver['fullPath'] = vi.fn().mockReturnValueOnce(sample.path.inputFull);
-
-		await driver.put(sample.path.input, sample.text);
-
-		expect(writeFile).toHaveBeenCalledWith(sample.path.inputFull, sample.text);
 	});
 });
 
