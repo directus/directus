@@ -12,9 +12,9 @@ export class JsonHelperPostgres_12 extends JsonHelperDefault {
 					const { dbType } = this.schema.collections[table].fields[node.name];
 					let jsonPath = Object.keys(node.query).length === 0 ? node.jsonPath : this.buildFilterPath(node),
 						jsonFn = 'jsonb_path_query';
-					if (jsonPath.endsWith('[*]')) {
+					if (this.hasWildcard(jsonPath)) {
 						jsonFn = 'jsonb_path_query_array';
-						jsonPath = jsonPath.substring(0, jsonPath.length - 3);
+						jsonPath = jsonPath.endsWith('[*]') ? jsonPath.substring(0, jsonPath.length - 3) : jsonPath;
 					}
 					return this.knex.raw(
 						dbType === 'jsonb' ? `${jsonFn}(??.??, ?) as ??` : `${jsonFn}(to_jsonb(??.??), ?) as ??`,

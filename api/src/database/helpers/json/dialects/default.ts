@@ -160,4 +160,7 @@ export class JsonHelperDefault extends JsonHelper {
 		}
 		return `${path} ${operator} ${value}`;
 	}
+	hasWildcard(jsonPath: string) {
+		return jsonPath.includes('[*]') || jsonPath.includes('.*');
+	}
 }
