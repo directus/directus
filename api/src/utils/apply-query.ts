@@ -388,7 +388,15 @@ export function applyFilter(
 
 					validateFilterOperator(type, filterOperator, special);
 
-					applyFilterToQuery(`${collection}.${filterPath[0]}`, filterOperator, filterValue, logical);
+					const processedFilterValue =
+						filterOperator === '_in' &&
+						typeof filterValue[0] === 'object' &&
+						!Array.isArray(filterValue[0]) &&
+						filterValue[0] !== null
+							? Object.values(filterValue[0])
+							: filterValue;
+
+					applyFilterToQuery(`${collection}.${filterPath[0]}`, filterOperator, processedFilterValue, logical);
 				}
 			} else if (subQuery === false || filterPath.length > 1) {
 				if (!relation) continue;
