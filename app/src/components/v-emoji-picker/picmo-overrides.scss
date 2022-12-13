@@ -82,9 +82,7 @@
 			}
 
 			.emojiButton {
-				&:hover {
-					border-radius: var(--border-radius);
-				}
+				border-radius: var(--border-radius);
 			}
 
 			.preview {
