@@ -74,7 +74,7 @@ export class DriverCloudinary implements Driver {
 	}
 
 	private getTimestamp() {
-		return new Date().getTime();
+		return String(new Date().getTime());
 	}
 
 	/**
@@ -134,20 +134,16 @@ export class DriverCloudinary implements Driver {
 		const resourceType = this.getResourceType(fullPath);
 		const publicId = this.getPublicId(fullPath);
 		const url = `https://api.cloudinary.com/v1_1/${this.cloudName}/resources/${resourceType}/upload/${publicId}`;
-
 		const response = await fetch(url, {
 			method: 'GET',
 			headers: {
 				Authorization: this.getBasicAuth(),
 			},
 		});
-
 		if (response.status >= 400) {
 			throw new Error(`No stat returned for file "${filepath}"`);
 		}
-
 		const { bytes, created_at } = (await response.json()) as { bytes: number; created_at: string };
-
 		return { size: bytes, modified: new Date(created_at) };
 	}
 
@@ -160,7 +156,40 @@ export class DriverCloudinary implements Driver {
 		}
 	}
 
-	async move(src: string, dest: string) {}
+	async move(src: string, dest: string) {
+		const fullSrc = this.fullPath(src);
+		const fullDest = this.fullPath(dest);
+		const resourceType = this.getResourceType(fullSrc);
+
+		const url = `https://api.cloudinary.com/v1_1/${this.cloudName}/${resourceType}/rename`;
+
+		const parameters = {
+			from_public_id: this.getPublicId(fullSrc),
+			to_public_id: this.getPublicId(fullDest),
+			api_key: this.apiKey,
+			timestamp: this.getTimestamp(),
+		};
+
+		const signature = this.getFullSignature(parameters);
+
+		const body = this.toFormUrlEncoded({
+			...parameters,
+			signature,
+		});
+
+		const response = await fetch(url, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+			},
+			body,
+		});
+
+		if (response.status >= 400) {
+			const responseData = (await response.json()) as { error?: { message?: string } };
+			throw new Error(`Can't move file "${src}": ${responseData?.error?.message ?? 'Unknown'}`);
+		}
+	}
 
 	async copy(src: string, dest: string) {}
 
