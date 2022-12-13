@@ -1,1 +1,1 @@
-export * from '../dist/esm/utils/node';
+export * from '../dist/utils/node';

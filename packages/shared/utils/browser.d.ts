@@ -1,1 +1,1 @@
-export * from '../dist/esm/utils/browser';
+export * from '../dist/utils/browser';
