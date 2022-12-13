@@ -1,4 +1,4 @@
-import { Query } from '@directus/shared/types';
+import { NestedDeepQuery } from '@directus/shared/types';
 import knex, { Knex } from 'knex';
 import { getTracker, MockClient, Tracker } from 'knex-mock-client';
 import { cloneDeep } from 'lodash';
@@ -442,7 +442,7 @@ describe('Integration Tests', () => {
 				});
 				const response = await itemsService.readOne(rawItems[0].id, {
 					fields: ['id', 'items.*'],
-					deep: { items: { _filter: { title: { _eq: childItems[0].title } } } as Query },
+					deep: { items: { _filter: { title: { _eq: childItems[0].title } } } as NestedDeepQuery },
 				});
 
 				expect(tracker.history.select.length).toBe(2);
@@ -532,7 +532,7 @@ describe('Integration Tests', () => {
 					});
 					const response = await itemsService.readOne(rawItems[0].id, {
 						fields: ['id', 'items.*'],
-						deep: { items: { _filter: { title: { _eq: childItems[0].title } } } as Query },
+						deep: { items: { _filter: { title: { _eq: childItems[0].title } } } as NestedDeepQuery },
 					});
 
 					expect(tracker.history.select.length).toBe(2);
@@ -625,7 +625,7 @@ describe('Integration Tests', () => {
 					expect(() =>
 						itemsService.readOne(rawItems[0].id, {
 							fields: ['id', 'items.*'],
-							deep: { items: { _filter: { title: { _eq: childItems[0].title } } } as Query },
+							deep: { items: { _filter: { title: { _eq: childItems[0].title } } } as NestedDeepQuery },
 						})
 					).rejects.toThrow("You don't have permission to access this.");
 					expect(tracker.history.select.length).toBe(0);
