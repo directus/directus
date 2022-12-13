@@ -83,6 +83,7 @@ importers:
       '@types/async': 3.2.15
       '@types/busboy': 1.5.0
       '@types/bytes': 3.1.1
+      '@types/content-disposition': 0.5.5
       '@types/cookie-parser': 1.4.3
       '@types/cors': 2.8.12
       '@types/deep-diff': 1.0.1
@@ -127,6 +128,7 @@ importers:
       chalk: 4.1.1
       chokidar: 3.5.3
       commander: 9.4.1
+      content-disposition: 0.5.4
       cookie-parser: 1.4.6
       copyfiles: 2.4.1
       cors: 2.8.5
@@ -310,6 +312,7 @@ importers:
       '@types/async': 3.2.15
       '@types/busboy': 1.5.0
       '@types/bytes': 3.1.1
+      '@types/content-disposition': 0.5.5
       '@types/cookie-parser': 1.4.3
       '@types/cors': 2.8.12
       '@types/deep-diff': 1.0.1
@@ -344,6 +347,7 @@ importers:
       '@types/uuid-validate': 0.0.1
       '@types/wellknown': 0.5.4
       '@vitest/coverage-c8': 0.25.2
+      content-disposition: 0.5.4
       copyfiles: 2.4.1
       form-data: 4.0.0
       knex-mock-client: 1.8.4_knex@2.3.0
@@ -6289,6 +6293,10 @@ packages:
     resolution: {integrity: sha512-cdeYyv4KWoEgpBISTxWvqYsVy444DOqehiF3fM3ne10AmJ62RSyNkUnxMJXHQWRQQX2eR94m5y1IZyDwBjV9FQ==}
     dependencies:
       '@types/node': 18.11.9
+    dev: true
+
+  /@types/content-disposition/0.5.5:
+    resolution: {integrity: sha512-v6LCdKfK6BwcqMo+wYW05rLS12S0ZO0Fl4w1h4aaZMD7bqT3gVUns6FvLJKGZHQmYn3SX55JWGpziwJRwVgutA==}
     dev: true
 
   /@types/cookie-parser/1.4.3:

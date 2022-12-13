@@ -1,5 +1,6 @@
 import { Range } from '@directus/drive';
 import { parseJSON } from '@directus/shared/utils';
+import contentDisposition from 'content-disposition';
 import { Router } from 'express';
 import { merge, pick } from 'lodash';
 import ms from 'ms';
@@ -159,7 +160,8 @@ router.get(
 
 		const access = req.accountability?.role ? 'private' : 'public';
 
-		res.attachment(req.params.filename ?? file.filename_download);
+		const filename = req.params.filename ?? file.filename_download;
+		res.attachment(filename);
 		res.setHeader('Content-Type', file.type);
 		res.setHeader('Accept-Ranges', 'bytes');
 		res.setHeader('Cache-Control', `${access}, max-age=${ms(env.ASSETS_CACHE_TTL as string) / 1000}`);
@@ -179,7 +181,7 @@ router.get(
 		}
 
 		if ('download' in req.query === false) {
-			res.removeHeader('Content-Disposition');
+			res.setHeader('Content-Disposition', contentDisposition(filename, { type: 'inline' }));
 		}
 
 		if (req.method.toLowerCase() === 'head') {
