@@ -42,14 +42,13 @@ export type Stat = {
 export declare class Driver {
 	constructor(config: Record<string, unknown>);
 
-	getStream(filepath: string, range?: Range): Promise<NodeJS.ReadableStream>;
-	getBuffer(filepath: string): Promise<Buffer>;
-	getStat(filepath: string): Promise<Stat>;
+	read(filepath: string, range?: Range): Promise<NodeJS.ReadableStream>;
+	write(filepath: string, content: NodeJS.ReadableStream): Promise<void>;
+	delete(filepath: string): Promise<void>;
+	stat(filepath: string): Promise<Stat>;
 	exists(filepath: string): Promise<boolean>;
 	move(src: string, dest: string): Promise<void>;
 	copy(src: string, dest: string): Promise<void>;
-	put(filepath: string, content: string | Buffer | NodeJS.ReadableStream): Promise<void>;
-	delete(filepath: string): Promise<void>;
 	list(prefix?: string): AsyncIterable<string>;
 }
 
