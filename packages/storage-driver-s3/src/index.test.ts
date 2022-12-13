@@ -21,6 +21,7 @@ import {
 	randWord,
 	randText,
 	randFileType,
+	randGitShortSha as randUnique,
 } from '@ngneat/falso';
 import { join } from 'node:path';
 import { PassThrough, Readable } from 'node:stream';
@@ -70,12 +71,12 @@ beforeEach(() => {
 			endpoint: randDomainName(),
 		},
 		path: {
-			input: randFilePath(),
-			inputFull: randFilePath(),
-			src: randFilePath(),
-			srcFull: randFilePath(),
-			dest: randFilePath(),
-			destFull: randFilePath(),
+			input: randUnique() + randFilePath(),
+			inputFull: randUnique() + randFilePath(),
+			src: randUnique() + randFilePath(),
+			srcFull: randUnique() + randFilePath(),
+			dest: randUnique() + randFilePath(),
+			destFull: randUnique() + randFilePath(),
 		},
 		range: {
 			start: randNumber(),
@@ -239,14 +240,14 @@ describe('#fullPath', () => {
 	});
 });
 
-describe('#getStream', () => {
+describe('#read', () => {
 	beforeEach(() => {
 		vi.mocked(driver['client'].send).mockReturnValue({ Body: new Readable() } as unknown as void);
 		vi.mocked(isReadableStream).mockReturnValue(true);
 	});
 
 	test('Uses fullPath key / bucket in command input', async () => {
-		await driver.getStream(sample.path.input);
+		await driver.read(sample.path.input);
 
 		expect(driver['fullPath']).toHaveBeenCalledWith(sample.path.input);
 		expect(GetObjectCommand).toHaveBeenCalledWith({
@@ -256,7 +257,7 @@ describe('#getStream', () => {
 	});
 
 	test('Optionally allows setting start range offset', async () => {
-		await driver.getStream(sample.path.input, { start: sample.range.start });
+		await driver.read(sample.path.input, { start: sample.range.start });
 
 		expect(GetObjectCommand).toHaveBeenCalledWith({
 			Key: sample.path.inputFull,
@@ -266,7 +267,7 @@ describe('#getStream', () => {
 	});
 
 	test('Optionally allows setting end range offset', async () => {
-		await driver.getStream(sample.path.input, { end: sample.range.end });
+		await driver.read(sample.path.input, { end: sample.range.end });
 
 		expect(GetObjectCommand).toHaveBeenCalledWith({
 			Key: sample.path.inputFull,
@@ -276,7 +277,7 @@ describe('#getStream', () => {
 	});
 
 	test('Optionally allows setting start and end range offset', async () => {
-		await driver.getStream(sample.path.input, sample.range);
+		await driver.read(sample.path.input, sample.range);
 
 		expect(GetObjectCommand).toHaveBeenCalledWith({
 			Key: sample.path.inputFull,
@@ -289,7 +290,7 @@ describe('#getStream', () => {
 		vi.mocked(driver['client'].send).mockReturnValue({ Body: undefined } as unknown as void);
 
 		try {
-			await driver.getStream(sample.path.input, sample.range);
+			await driver.read(sample.path.input, sample.range);
 		} catch (err: any) {
 			expect(err).toBeInstanceOf(Error);
 			expect(err.message).toBe(`No stream returned for file "${sample.path.input}"`);
@@ -299,7 +300,7 @@ describe('#getStream', () => {
 	test('Throws an error when returned stream is not a readable stream', async () => {
 		vi.mocked(isReadableStream).mockReturnValue(false);
 
-		expect(driver.getStream(sample.path.input, sample.range)).rejects.toThrowError(
+		expect(driver.read(sample.path.input, sample.range)).rejects.toThrowError(
 			new Error(`No stream returned for file "${sample.path.input}"`)
 		);
 	});
@@ -310,68 +311,14 @@ describe('#getStream', () => {
 		vi.mocked(driver['client'].send).mockReturnValue({ Body: sample.stream } as unknown as void);
 		vi.mocked(GetObjectCommand).mockReturnValue(mockGetObjectCommand);
 
-		const stream = await driver.getStream(sample.path.input, sample.range);
+		const stream = await driver.read(sample.path.input, sample.range);
 
 		expect(driver['client'].send).toHaveBeenCalledWith(mockGetObjectCommand);
 		expect(stream).toBe(sample.stream);
 	});
 });
 
-describe('#getBuffer', () => {
-	beforeEach(() => {
-		driver.getStream = vi.fn().mockResolvedValue(sample.stream);
-	});
-
-	test('Gets stream for given location', async () => {
-		process.nextTick(() => {
-			sample.stream.emit('end');
-		});
-
-		await driver.getBuffer(sample.path.input);
-
-		expect(driver.getStream).toHaveBeenCalledWith(sample.path.input);
-	});
-
-	test('Resolves buffer from stream contents', async () => {
-		process.nextTick(() => {
-			sample.stream.emit('data', Buffer.from('test-'));
-			sample.stream.emit('data', Buffer.from('data'));
-			sample.stream.emit('end');
-		});
-
-		const buffer = await driver.getBuffer(sample.path.input);
-
-		expect(buffer).toBeInstanceOf(Buffer);
-		expect(buffer).toStrictEqual(Buffer.from('test-data'));
-	});
-
-	test('Rejects with error on stream error', async () => {
-		const mockError = new Error('Whoops');
-
-		process.nextTick(() => {
-			sample.stream.emit('error', mockError);
-		});
-
-		try {
-			await driver.getBuffer(sample.path.input);
-		} catch (err) {
-			expect(err).toBe(mockError);
-		}
-	});
-
-	test('Rejects with error thrown from getStream', async () => {
-		const mockError = new Error('Whoops');
-		vi.mocked(driver.getStream).mockRejectedValue(mockError);
-
-		try {
-			await driver.getBuffer(sample.path.input);
-		} catch (err) {
-			expect(err).toBe(mockError);
-		}
-	});
-});
-
-describe('#getStat', () => {
+describe('#stat', () => {
 	beforeEach(() => {
 		vi.mocked(driver['client'].send).mockResolvedValue({
 			ContentLength: sample.file.size,
@@ -380,7 +327,7 @@ describe('#getStat', () => {
 	});
 
 	test('Uses HeadObjectCommand with fullPath', async () => {
-		await driver.getStat(sample.path.input);
+		await driver.stat(sample.path.input);
 
 		expect(driver['fullPath']).toHaveBeenCalledWith(sample.path.input);
 		expect(HeadObjectCommand).toHaveBeenCalledWith({
@@ -393,13 +340,13 @@ describe('#getStat', () => {
 		const mockHeadObjectCommand = {} as HeadObjectCommand;
 		vi.mocked(HeadObjectCommand).mockReturnValue(mockHeadObjectCommand);
 
-		await driver.getStat(sample.path.input);
+		await driver.stat(sample.path.input);
 
 		expect(driver['client'].send).toHaveBeenCalledWith(mockHeadObjectCommand);
 	});
 
 	test('Returns size/modified from returned send data', async () => {
-		const result = await driver.getStat(sample.path.input);
+		const result = await driver.stat(sample.path.input);
 
 		expect(result).toStrictEqual({
 			size: sample.file.size,
@@ -410,11 +357,11 @@ describe('#getStat', () => {
 
 describe('#exists', () => {
 	beforeEach(() => {
-		driver.getStat = vi.fn();
+		driver.stat = vi.fn();
 	});
 
 	test('Returns true if stat returns the stats', async () => {
-		vi.mocked(driver.getStat).mockResolvedValue({ size: sample.file.size, modified: sample.file.modified });
+		vi.mocked(driver.stat).mockResolvedValue({ size: sample.file.size, modified: sample.file.modified });
 
 		const exists = await driver.exists(sample.path.input);
 
@@ -422,7 +369,7 @@ describe('#exists', () => {
 	});
 
 	test('Returns false if stat throws an error', async () => {
-		vi.mocked(driver.getStat).mockRejectedValue(new Error());
+		vi.mocked(driver.stat).mockRejectedValue(new Error());
 
 		const exists = await driver.exists(sample.path.input);
 
@@ -494,19 +441,9 @@ describe('#copy', () => {
 	});
 });
 
-describe('#put', () => {
-	test('Constructs params object based on config', async () => {
-		await driver.put(sample.path.input, sample.text);
-
-		expect(PutObjectCommand).toHaveBeenCalledWith({
-			Key: sample.path.inputFull,
-			Bucket: sample.config.bucket,
-			Body: sample.text,
-		});
-	});
-
+describe('#write', () => {
 	test('Passes streams to body as is', async () => {
-		await driver.put(sample.path.input, sample.stream);
+		await driver.write(sample.path.input, sample.stream);
 
 		expect(PutObjectCommand).toHaveBeenCalledWith({
 			Key: sample.path.inputFull,
@@ -516,12 +453,12 @@ describe('#put', () => {
 	});
 
 	test('Optionally sets ContentType', async () => {
-		await driver.put(sample.path.input, sample.text, sample.file.type);
+		await driver.write(sample.path.input, sample.stream, sample.file.type);
 
 		expect(PutObjectCommand).toHaveBeenCalledWith({
 			Key: sample.path.inputFull,
 			Bucket: sample.config.bucket,
-			Body: sample.text,
+			Body: sample.stream,
 			ContentType: sample.file.type,
 		});
 	});
@@ -529,12 +466,12 @@ describe('#put', () => {
 	test('Optionally sets ServerSideEncryption', async () => {
 		driver['serverSideEncryption'] = sample.config.serverSideEncryption;
 
-		await driver.put(sample.path.input, sample.text);
+		await driver.write(sample.path.input, sample.stream);
 
 		expect(PutObjectCommand).toHaveBeenCalledWith({
 			Key: sample.path.inputFull,
 			Bucket: sample.config.bucket,
-			Body: sample.text,
+			Body: sample.stream,
 			ServerSideEncryption: sample.config.serverSideEncryption,
 		});
 	});
@@ -542,12 +479,12 @@ describe('#put', () => {
 	test('Optionally sets ACL', async () => {
 		driver['acl'] = sample.config.acl;
 
-		await driver.put(sample.path.input, sample.text);
+		await driver.write(sample.path.input, sample.stream);
 
 		expect(PutObjectCommand).toHaveBeenCalledWith({
 			Key: sample.path.inputFull,
 			Bucket: sample.config.bucket,
-			Body: sample.text,
+			Body: sample.stream,
 			ACL: sample.config.acl,
 		});
 	});
@@ -556,7 +493,7 @@ describe('#put', () => {
 		const mockCommand = {} as PutObjectCommand;
 		vi.mocked(PutObjectCommand).mockReturnValue(mockCommand);
 
-		await driver.put(sample.path.input, sample.text);
+		await driver.write(sample.path.input, sample.stream);
 
 		expect(driver['client'].send).toHaveBeenCalledWith(mockCommand);
 	});

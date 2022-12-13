@@ -68,7 +68,7 @@ export class DriverS3 implements Driver {
 		return normalizePath(join(this.root, filepath));
 	}
 
-	async getStream(filepath: string, range?: Range): Promise<NodeJS.ReadableStream> {
+	async read(filepath: string, range?: Range): Promise<NodeJS.ReadableStream> {
 		const commandInput: GetObjectCommandInput = {
 			Key: this.fullPath(filepath),
 			Bucket: this.bucket,
@@ -87,21 +87,7 @@ export class DriverS3 implements Driver {
 		return stream;
 	}
 
-	getBuffer(filepath: string) {
-		return new Promise<Buffer>((resolve, reject) => {
-			const data: any[] = [];
-
-			this.getStream(filepath)
-				.then((stream) => {
-					stream.on('data', (chunk) => data.push(chunk));
-					stream.on('end', () => resolve(Buffer.concat(data)));
-					stream.on('error', (err) => reject(err));
-				})
-				.catch((err) => reject(err));
-		});
-	}
-
-	async getStat(filepath: string) {
+	async stat(filepath: string) {
 		const { ContentLength, LastModified } = await this.client.send(
 			new HeadObjectCommand({
 				Key: this.fullPath(filepath),
@@ -117,7 +103,7 @@ export class DriverS3 implements Driver {
 
 	async exists(filepath: string) {
 		try {
-			await this.getStat(filepath);
+			await this.stat(filepath);
 			return true;
 		} catch {
 			return false;
@@ -147,7 +133,7 @@ export class DriverS3 implements Driver {
 		await this.client.send(new CopyObjectCommand(params));
 	}
 
-	async put(filepath: string, content: Buffer | NodeJS.ReadableStream | string, type?: string) {
+	async write(filepath: string, content: NodeJS.ReadableStream, type?: string) {
 		const params: PutObjectCommandInput = {
 			Key: this.fullPath(filepath),
 			Body: content,
