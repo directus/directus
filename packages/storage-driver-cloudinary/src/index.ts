@@ -1,7 +1,7 @@
 import type { Driver, Range } from '@directus/storage';
 import { normalizePath } from '@directus/utils';
 import { createHash } from 'node:crypto';
-import { extname, join } from 'node:path';
+import { extname, join, parse } from 'node:path';
 import { Readable } from 'node:stream';
 import { fetch } from 'undici';
 import type { RequestInit } from 'undici';
@@ -87,7 +87,26 @@ export class DriverCloudinary implements Driver {
 		return 'raw';
 	}
 
-	async getStream(filepath: string, range?: Range) {
+	/**
+	 * For Cloudinary Admin APIs, the file extension needs to be omitted for images and videos. Raw
+	 * on the other hand requires the extension to be present.
+	 */
+	private getPublicId(filepath: string) {
+		const resourceType = this.getResourceType(filepath);
+		if (resourceType === 'raw') return filepath;
+		return parse(filepath).name;
+	}
+
+	/**
+	 * Generates the Authorization header value for Cloudinary's basic auth endpoints
+	 */
+	private getBasicAuth() {
+		const creds = `${this.apiKey}:${this.apiSecret}`;
+		const base64 = Buffer.from(creds).toString('base64');
+		return `Basic ${base64}`;
+	}
+
+	async read(filepath: string, range?: Range) {
 		const resourceType = this.getResourceType(extname(filepath));
 		const fullPath = this.fullPath(filepath);
 		const signature = this.getParameterSignature(fullPath);
@@ -110,9 +129,23 @@ export class DriverCloudinary implements Driver {
 		return Readable.fromWeb(response.body);
 	}
 
-	async getBuffer(filepath: string) {}
+	async stat(filepath: string) {
+		const fullPath = this.fullPath(filepath);
+		const resourceType = this.getResourceType(fullPath);
+		const publicId = this.getPublicId(fullPath);
+		const url = `https://api.cloudinary.com/v1_1/${this.cloudName}/resources/${resourceType}/upload/${publicId}`;
 
-	async getStat(filepath: string) {}
+		const response = await fetch(url, {
+			method: 'GET',
+			headers: {
+				Authorization: this.getBasicAuth(),
+			},
+		});
+
+		const { bytes, created_at } = (await response.json()) as { bytes: number; created_at: string };
+
+		return { size: bytes, modified: new Date(created_at) };
+	}
 
 	async exists(filepath: string) {}
 
@@ -120,7 +153,7 @@ export class DriverCloudinary implements Driver {
 
 	async copy(src: string, dest: string) {}
 
-	async put(filepath: string, content: Buffer | NodeJS.ReadableStream | string, type = 'application/octet-stream') {}
+	async write(filepath: string, content: Buffer | NodeJS.ReadableStream | string, type = 'application/octet-stream') {}
 
 	async delete(filepath: string) {}
 

@@ -3,29 +3,30 @@ import {
 	rand,
 	randAlphaNumeric,
 	randDirectoryPath,
+	randFileExt,
 	randFilePath,
 	randFileType,
 	randGitBranch as randCloudName,
 	randGitCommitSha as randSha,
+	randGitShortSha as randUnique,
 	randNumber,
 	randPastDate,
 	randText,
 	randWord,
-	randFileExt,
 } from '@ngneat/falso';
 import type { Hash } from 'node:crypto';
 import { createHash } from 'node:crypto';
-import { extname, join } from 'node:path';
-import { PassThrough } from 'node:stream';
+import type { ParsedPath } from 'node:path';
+import { extname, join, parse } from 'node:path';
+import { PassThrough, Readable } from 'node:stream';
+import { ReadableStream } from 'node:stream/web';
+import type { Response } from 'undici';
+import { fetch } from 'undici';
 import type { Mock } from 'vitest';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { IMAGE_EXTENSIONS, VIDEO_EXTENSIONS } from './constants.js';
 import type { DriverCloudinaryConfig } from './index.js';
 import { DriverCloudinary } from './index.js';
-import { fetch } from 'undici';
-import type { Response } from 'undici';
-import { ReadableStream } from 'node:stream/web';
-import { Readable } from 'node:stream';
 
 vi.mock('@directus/utils/node');
 vi.mock('@directus/utils');
@@ -69,12 +70,12 @@ beforeEach(() => {
 			accessMode: rand(['public', 'authenticated']),
 		},
 		path: {
-			input: randFilePath(),
-			inputFull: randFilePath(),
-			src: randFilePath(),
-			srcFull: randFilePath(),
-			dest: randFilePath(),
-			destFull: randFilePath(),
+			input: randUnique() + randFilePath(),
+			inputFull: randUnique() + randFilePath(),
+			src: randUnique() + randFilePath(),
+			srcFull: randUnique() + randFilePath(),
+			dest: randUnique() + randFilePath(),
+			destFull: randUnique() + randFilePath(),
 		},
 		range: {
 			start: randNumber(),
@@ -346,7 +347,61 @@ describe('#getResourceType', () => {
 	});
 });
 
-describe('#getStream', () => {
+describe('#getPublicId', () => {
+	let mockResourceType: string;
+	let mockParsedPath: string;
+
+	beforeEach(() => {
+		mockResourceType = rand(['image', 'video', 'raw']);
+		mockParsedPath = randDirectoryPath();
+		driver['getResourceType'] = vi.fn().mockReturnValue(mockResourceType);
+		vi.mocked(parse).mockReturnValue({ name: mockParsedPath } as ParsedPath);
+	});
+
+	test('Gets resourceType for given filepath', () => {
+		driver['getPublicId'](sample.path.input);
+		expect(driver['getResourceType']).toHaveBeenCalledWith(sample.path.input);
+	});
+
+	test('Returns original file path if type is raw', () => {
+		driver['getResourceType'] = vi.fn().mockReturnValue('raw');
+		const publicId = driver['getPublicId'](sample.path.input);
+		expect(publicId).toBe(sample.path.input);
+	});
+
+	test('Parsed base path if other type', () => {
+		driver['getResourceType'] = vi.fn().mockReturnValue(rand(['image', 'video']));
+		const publicId = driver['getPublicId'](sample.path.input);
+		expect(publicId).toBe(mockParsedPath);
+	});
+});
+
+describe('#getBasicAuth', () => {
+	let mockToString: Mock;
+
+	beforeEach(() => {
+		mockToString = vi.fn();
+		vi.spyOn(Buffer, 'from').mockReturnValue({ toString: mockToString } as unknown as Buffer);
+	});
+
+	test('Creates base64 hash of key:secret', () => {
+		driver['getBasicAuth']();
+
+		expect(Buffer.from).toHaveBeenCalledWith(`${sample.config.apiKey}:${sample.config.apiSecret}`);
+		expect(mockToString).toHaveBeenCalledWith('base64');
+	});
+
+	test(`Returns 'Basic <base64>'`, () => {
+		const mockBase64 = randSha();
+		mockToString.mockReturnValue(mockBase64);
+
+		const result = driver['getBasicAuth']();
+
+		expect(result).toBe(`Basic ${mockBase64}`);
+	});
+});
+
+describe('#read', () => {
 	let mockResourceType: 'image' | 'video' | 'raw';
 	let mockParameterSignature: string;
 	let mockResponse: {
@@ -373,21 +428,21 @@ describe('#getStream', () => {
 		const mockFileExt = randFileExt();
 		vi.mocked(extname).mockReturnValue(mockFileExt);
 
-		await driver.getStream(sample.path.input);
+		await driver.read(sample.path.input);
 
 		expect(extname).toHaveBeenCalledWith(sample.path.input);
 		expect(driver['getResourceType']).toHaveBeenCalledWith(mockFileExt);
 	});
 
 	test('Creates signature for full filepath', async () => {
-		await driver.getStream(sample.path.input);
+		await driver.read(sample.path.input);
 
 		expect(driver['fullPath']).toHaveBeenCalledWith(sample.path.input);
 		expect(driver['getParameterSignature']).toHaveBeenCalledWith(sample.path.inputFull);
 	});
 
 	test('Calls fetch with generated URL', async () => {
-		await driver.getStream(sample.path.input);
+		await driver.read(sample.path.input);
 
 		expect(fetch).toHaveBeenCalledWith(
 			`https://res.cloudinary.com/${sample.config.cloudName}/${mockResourceType}/upload/${mockParameterSignature}/${sample.path.inputFull}`,
@@ -396,7 +451,7 @@ describe('#getStream', () => {
 	});
 
 	test('Adds optional Range header for start', async () => {
-		await driver.getStream(sample.path.input, { start: sample.range.start });
+		await driver.read(sample.path.input, { start: sample.range.start });
 
 		expect(fetch).toHaveBeenCalledWith(
 			`https://res.cloudinary.com/${sample.config.cloudName}/${mockResourceType}/upload/${mockParameterSignature}/${sample.path.inputFull}`,
@@ -405,7 +460,7 @@ describe('#getStream', () => {
 	});
 
 	test('Adds optional Range header for end', async () => {
-		await driver.getStream(sample.path.input, { end: sample.range.end });
+		await driver.read(sample.path.input, { end: sample.range.end });
 
 		expect(fetch).toHaveBeenCalledWith(
 			`https://res.cloudinary.com/${sample.config.cloudName}/${mockResourceType}/upload/${mockParameterSignature}/${sample.path.inputFull}`,
@@ -414,7 +469,7 @@ describe('#getStream', () => {
 	});
 
 	test('Adds optional Range header for start and end', async () => {
-		await driver.getStream(sample.path.input, sample.range);
+		await driver.read(sample.path.input, sample.range);
 
 		expect(fetch).toHaveBeenCalledWith(
 			`https://res.cloudinary.com/${sample.config.cloudName}/${mockResourceType}/upload/${mockParameterSignature}/${sample.path.inputFull}`,
@@ -426,7 +481,7 @@ describe('#getStream', () => {
 		mockResponse.status = randNumber({ min: 400, max: 599 });
 
 		try {
-			await driver.getStream(sample.path.input);
+			await driver.read(sample.path.input);
 		} catch (err: any) {
 			expect(err).toBeInstanceOf(Error);
 			expect(err.message).toBe(`No stream returned for file "${sample.path.input}"`);
@@ -437,7 +492,7 @@ describe('#getStream', () => {
 		mockResponse.body = null;
 
 		try {
-			await driver.getStream(sample.path.input);
+			await driver.read(sample.path.input);
 		} catch (err: any) {
 			expect(err).toBeInstanceOf(Error);
 			expect(err.message).toBe(`No stream returned for file "${sample.path.input}"`);
@@ -448,16 +503,77 @@ describe('#getStream', () => {
 		const mockStream = {} as Readable;
 		vi.mocked(Readable.fromWeb).mockReturnValue(mockStream);
 
-		const stream = await driver.getStream(sample.path.input);
+		const stream = await driver.read(sample.path.input);
 
 		expect(Readable.fromWeb).toHaveBeenCalledWith(mockResponse.body);
 		expect(stream).toBe(mockStream);
 	});
 });
 
-describe.todo('#getBuffer', () => {});
+describe('#stat', () => {
+	let mockResourceType: string;
+	let mockParsedPath: string;
+	let mockBasicAuth: string;
+	let mockResponseBody: {
+		bytes: number;
+		created_at: string;
+	};
 
-describe.todo('#getStat', () => {});
+	beforeEach(() => {
+		mockResourceType = rand(['image', 'video', 'raw']);
+		mockParsedPath = randDirectoryPath();
+		mockBasicAuth = randSha();
+
+		driver['getResourceType'] = vi.fn().mockReturnValue(mockResourceType);
+		driver['getPublicId'] = vi.fn().mockReturnValue(mockParsedPath);
+		driver['getBasicAuth'] = vi.fn().mockReturnValue(mockBasicAuth);
+
+		mockResponseBody = {
+			bytes: sample.file.size,
+			created_at: sample.file.modified.toISOString(),
+		};
+
+		vi.mocked(fetch).mockResolvedValue({
+			json: vi.fn().mockResolvedValue(mockResponseBody),
+		} as unknown as Response);
+	});
+
+	test('Gets full path for given filepath', async () => {
+		await driver.stat(sample.path.input);
+		expect(driver['fullPath']).toHaveBeenCalledWith(sample.path.input);
+	});
+
+	test('Gets resource type for given filepath', async () => {
+		await driver.stat(sample.path.input);
+		expect(driver['getResourceType']).toHaveBeenCalledWith(sample.path.inputFull);
+	});
+
+	test('Gets publicId for given filepath', async () => {
+		await driver.stat(sample.path.input);
+		expect(driver['getPublicId']).toHaveBeenCalledWith(sample.path.inputFull);
+	});
+
+	test('Calls fetch with constructed URL and auth header', async () => {
+		await driver.stat(sample.path.input);
+		expect(fetch).toHaveBeenCalledWith(
+			`https://api.cloudinary.com/v1_1/${sample.config.cloudName}/resources/${mockResourceType}/upload/${mockParsedPath}`,
+			{
+				method: 'GET',
+				headers: {
+					Authorization: mockBasicAuth,
+				},
+			}
+		);
+	});
+
+	test('Returns size/modified from bytes/created_at from Cloudinary', async () => {
+		const result = await driver.stat(sample.path.input);
+		expect(result).toStrictEqual({
+			size: sample.file.size,
+			modified: sample.file.modified,
+		});
+	});
+});
 
 describe.todo('#exists', () => {});
 

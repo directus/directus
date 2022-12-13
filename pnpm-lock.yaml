@@ -880,14 +880,12 @@ importers:
       '@directus/utils': workspace:*
       '@ngneat/falso': 6.3.0
       '@vitest/coverage-c8': 0.25.3
-      form-data: 4.0.0
       typescript: 4.9.3
       undici: 5.14.0
       vitest: 0.25.3
     dependencies:
       '@directus/storage': link:../storage
       '@directus/utils': link:../utils
-      form-data: 4.0.0
       undici: 5.14.0
     devDependencies:
       '@ngneat/falso': 6.3.0
@@ -900,6 +898,7 @@ importers:
       '@directus/storage': workspace:*
       '@directus/utils': workspace:*
       '@google-cloud/storage': 6.7.0
+      '@ngneat/falso': 6.3.0
       '@vitest/coverage-c8': 0.25.3
       typescript: 4.9.3
       vitest: 0.25.3
@@ -908,6 +907,7 @@ importers:
       '@directus/utils': link:../utils
       '@google-cloud/storage': 6.7.0
     devDependencies:
+      '@ngneat/falso': 6.3.0
       '@vitest/coverage-c8': 0.25.3
       typescript: 4.9.3
       vitest: 0.25.3
@@ -7599,6 +7599,10 @@ packages:
 
   /@types/node/18.11.10:
     resolution: {integrity: sha512-juG3RWMBOqcOuXC643OAdSA525V44cVgGV6dUDuiFtss+8Fk5x1hI93Rsld43VeJVIeqlP9I7Fn9/qaVqoEAuQ==}
+
+  /@types/node/18.11.14:
+    resolution: {integrity: sha512-0KXV57tENYmmJMl+FekeW9V3O/rlcqGQQJ/hNh9r8pKIj304pskWuEd8fCyNT86g/TpO0gcOTiLzsHLEURFMIQ==}
+    dev: true
 
   /@types/node/18.11.2:
     resolution: {integrity: sha512-BWN3M23gLO2jVG8g/XHIRFWiiV4/GckeFIqbU/C4V3xpoBBWSMk4OZomouN0wCkfQFPqgZikyLr7DOYDysIkkw==}
@@ -21923,6 +21927,40 @@ packages:
       fsevents: 2.3.2
     dev: true
 
+  /vite/3.2.4_@types+node@18.11.14:
+    resolution: {integrity: sha512-Z2X6SRAffOUYTa+sLy3NQ7nlHFU100xwanq1WDwqaiFiCe+25zdxP1TfCS5ojPV2oDDcXudHIoPnI1Z/66B7Yw==}
+    engines: {node: ^14.18.0 || >=16.0.0}
+    hasBin: true
+    peerDependencies:
+      '@types/node': '>= 14'
+      less: '*'
+      sass: '*'
+      stylus: '*'
+      sugarss: '*'
+      terser: ^5.4.0
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
+      less:
+        optional: true
+      sass:
+        optional: true
+      stylus:
+        optional: true
+      sugarss:
+        optional: true
+      terser:
+        optional: true
+    dependencies:
+      '@types/node': 18.11.14
+      esbuild: 0.15.14
+      postcss: 8.4.19
+      resolve: 1.22.1
+      rollup: 2.79.1
+    optionalDependencies:
+      fsevents: 2.3.2
+    dev: true
+
   /vite/3.2.4_clvymlzunojxjbv3h6i2warera:
     resolution: {integrity: sha512-Z2X6SRAffOUYTa+sLy3NQ7nlHFU100xwanq1WDwqaiFiCe+25zdxP1TfCS5ojPV2oDDcXudHIoPnI1Z/66B7Yw==}
     engines: {node: ^14.18.0 || >=16.0.0}
@@ -22107,7 +22145,7 @@ packages:
     dependencies:
       '@types/chai': 4.3.4
       '@types/chai-subset': 1.3.3
-      '@types/node': 18.11.10
+      '@types/node': 18.11.14
       acorn: 8.8.1
       acorn-walk: 8.2.0
       chai: 4.3.7
@@ -22118,7 +22156,7 @@ packages:
       tinybench: 2.3.1
       tinypool: 0.3.0
       tinyspy: 1.0.2
-      vite: 3.2.4_@types+node@18.11.10
+      vite: 3.2.4_@types+node@18.11.14
     transitivePeerDependencies:
       - less
       - sass
