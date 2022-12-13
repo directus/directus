@@ -1,7 +1,6 @@
 import { BlobServiceClient, ContainerClient, StorageSharedKeyCredential } from '@azure/storage-blob';
-import { normalizePath } from '@directus/utils';
-import { isReadableStream } from '@directus/utils/node';
 import type { Driver, Range } from '@directus/storage';
+import { normalizePath } from '@directus/utils';
 import { join } from 'node:path';
 import type { Readable } from 'node:stream';
 
@@ -34,7 +33,7 @@ export class DriverAzure implements Driver {
 		return normalizePath(join(this.root, filepath));
 	}
 
-	async getStream(filepath: string, range?: Range) {
+	async read(filepath: string, range?: Range) {
 		const { readableStreamBody } = await this.containerClient
 			.getBlobClient(this.fullPath(filepath))
 			.download(range?.start, range?.end ? range.end - (range.start || 0) : undefined);
@@ -46,11 +45,19 @@ export class DriverAzure implements Driver {
 		return readableStreamBody;
 	}
 
-	async getBuffer(filepath: string) {
-		return await this.containerClient.getBlobClient(this.fullPath(filepath)).downloadToBuffer();
+	async write(filepath: string, content: NodeJS.ReadableStream, type = 'application/octet-stream') {
+		const blockBlobClient = this.containerClient.getBlockBlobClient(this.fullPath(filepath));
+
+		await blockBlobClient.uploadStream(content as Readable, undefined, undefined, {
+			blobHTTPHeaders: { blobContentType: type },
+		});
 	}
 
-	async getStat(filepath: string) {
+	async delete(filepath: string) {
+		await this.containerClient.getBlockBlobClient(this.fullPath(filepath)).deleteIfExists();
+	}
+
+	async stat(filepath: string) {
 		const props = await this.containerClient.getBlobClient(this.fullPath(filepath)).getProperties();
 
 		return {
@@ -74,22 +81,6 @@ export class DriverAzure implements Driver {
 
 		const poller = await target.beginCopyFromURL(source.url);
 		await poller.pollUntilDone();
-	}
-
-	async put(filepath: string, content: Buffer | NodeJS.ReadableStream | string, type = 'application/octet-stream') {
-		const blockBlobClient = this.containerClient.getBlockBlobClient(this.fullPath(filepath));
-
-		if (isReadableStream(content)) {
-			await blockBlobClient.uploadStream(content as Readable, undefined, undefined, {
-				blobHTTPHeaders: { blobContentType: type },
-			});
-		} else {
-			await blockBlobClient.upload(content, content.length);
-		}
-	}
-
-	async delete(filepath: string) {
-		await this.containerClient.getBlockBlobClient(this.fullPath(filepath)).deleteIfExists();
 	}
 
 	async *list(prefix = '') {

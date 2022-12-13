@@ -200,7 +200,7 @@ describe('#fullPath', () => {
 	});
 });
 
-describe('#getStream', () => {
+describe('#read', () => {
 	let mockDownload: Mock;
 
 	beforeEach(async () => {
@@ -216,32 +216,32 @@ describe('#getStream', () => {
 	});
 
 	test('Uses blobClient at full path', async () => {
-		await driver.getStream(sample.path.input);
+		await driver.read(sample.path.input);
 
 		expect(driver['fullPath']).toHaveBeenCalledWith(sample.path.input);
 		expect(driver['containerClient'].getBlobClient).toHaveBeenCalledWith(sample.path.inputFull);
 	});
 
 	test('Calls download with undefined undefined when no range is passed', async () => {
-		await driver.getStream(sample.path.input);
+		await driver.read(sample.path.input);
 
 		expect(mockDownload).toHaveBeenCalledWith(undefined, undefined);
 	});
 
 	test('Calls download with offset if start range is provided', async () => {
-		await driver.getStream(sample.path.input, { start: sample.range.start });
+		await driver.read(sample.path.input, { start: sample.range.start });
 
 		expect(mockDownload).toHaveBeenCalledWith(sample.range.start, undefined);
 	});
 
 	test('Calls download with count if end range is provided', async () => {
-		await driver.getStream(sample.path.input, { end: sample.range.end });
+		await driver.read(sample.path.input, { end: sample.range.end });
 
 		expect(mockDownload).toHaveBeenCalledWith(undefined, sample.range.end);
 	});
 
 	test('Calls download with offset and count if start and end ranges are provided', async () => {
-		await driver.getStream(sample.path.input, sample.range);
+		await driver.read(sample.path.input, sample.range);
 
 		expect(mockDownload).toHaveBeenCalledWith(sample.range.start, sample.range.end - sample.range.start);
 	});
@@ -250,7 +250,7 @@ describe('#getStream', () => {
 		mockDownload.mockResolvedValue({ readableStreamBody: undefined });
 
 		try {
-			await driver.getStream(sample.path.input);
+			await driver.read(sample.path.input);
 		} catch (err: any) {
 			expect(err).toBeInstanceOf(Error);
 			expect(err.message).toBe(`No stream returned for file "${sample.path.input}"`);
@@ -258,39 +258,77 @@ describe('#getStream', () => {
 	});
 });
 
-describe('#getBuffer', () => {
-	let mockBuffer: Buffer;
-	let mockDownload: Mock;
+describe('#write', () => {
+	let mockUploadStream: Mock;
+	let mockBlockBlobClient: Mock;
 
 	beforeEach(() => {
-		mockBuffer = {} as Buffer;
-		mockDownload = vi.fn().mockResolvedValue(mockBuffer);
+		mockUploadStream = vi.fn();
 
-		const mockBlobClient = vi.fn().mockReturnValue({
-			downloadToBuffer: mockDownload,
+		mockBlockBlobClient = vi.fn().mockReturnValue({
+			uploadStream: mockUploadStream,
 		});
 
 		driver['containerClient'] = {
-			getBlobClient: mockBlobClient,
+			getBlockBlobClient: mockBlockBlobClient,
+		} as unknown as ContainerClient;
+
+		vi.mocked(isReadableStream).mockReturnValue(true);
+	});
+
+	test('Gets BlockBlobClient for file path', async () => {
+		await driver.write(sample.path.input, sample.stream);
+
+		expect(mockBlockBlobClient).toHaveBeenCalledWith(sample.path.inputFull);
+	});
+
+	test('Uploads stream through uploadStream', async () => {
+		await driver.write(sample.path.input, sample.stream);
+
+		expect(mockUploadStream).toHaveBeenCalledWith(sample.stream, undefined, undefined, {
+			blobHTTPHeaders: { blobContentType: 'application/octet-stream' },
+		});
+	});
+
+	test('Allows optional mime type to be set', async () => {
+		await driver.write(sample.path.input, sample.stream, sample.file.type);
+
+		expect(mockUploadStream).toHaveBeenCalledWith(sample.stream, undefined, undefined, {
+			blobHTTPHeaders: { blobContentType: sample.file.type },
+		});
+	});
+});
+
+describe('#delete', () => {
+	let mockDeleteIfExists: Mock;
+
+	beforeEach(() => {
+		mockDeleteIfExists = vi.fn().mockResolvedValue(true);
+
+		const mockBlockBlobClient = vi.fn().mockReturnValue({
+			deleteIfExists: mockDeleteIfExists,
+		});
+
+		driver['containerClient'] = {
+			getBlockBlobClient: mockBlockBlobClient,
 		} as unknown as ContainerClient;
 	});
 
 	test('Uses blobClient at full path', async () => {
-		await driver.getBuffer(sample.path.input);
+		await driver.delete(sample.path.input);
 
 		expect(driver['fullPath']).toHaveBeenCalledWith(sample.path.input);
-		expect(driver['containerClient'].getBlobClient).toHaveBeenCalledWith(sample.path.inputFull);
+		expect(driver['containerClient'].getBlockBlobClient).toHaveBeenCalledWith(sample.path.inputFull);
 	});
 
-	test('Returns downloadToBuffer result', async () => {
-		const result = await driver.getBuffer(sample.path.input);
+	test('Returns delete result', async () => {
+		await driver.delete(sample.path.input);
 
-		expect(mockDownload).toHaveBeenCalled();
-		expect(result).toBe(mockBuffer);
+		expect(mockDeleteIfExists).toHaveBeenCalled();
 	});
 });
 
-describe('#getStat', () => {
+describe('#stat', () => {
 	beforeEach(() => {
 		const mockGetProperties = vi.fn().mockReturnValue({
 			contentLength: sample.file.size,
@@ -307,14 +345,14 @@ describe('#getStat', () => {
 	});
 
 	test('Uses blobClient at full path', async () => {
-		await driver.getStat(sample.path.input);
+		await driver.stat(sample.path.input);
 
 		expect(driver['fullPath']).toHaveBeenCalledWith(sample.path.input);
 		expect(driver['containerClient'].getBlobClient).toHaveBeenCalledWith(sample.path.inputFull);
 	});
 
 	test('Returns contentLength/lastModified as size/modified from getProperties', async () => {
-		const result = await driver.getStat(sample.path.input);
+		const result = await driver.stat(sample.path.input);
 
 		expect(result).toStrictEqual({
 			size: sample.file.size,
@@ -438,87 +476,6 @@ describe('#copy', () => {
 		await driver.copy(sample.path.src, sample.path.dest);
 
 		expect(mockPollUntilDone).toHaveBeenCalledOnce();
-	});
-});
-
-describe('#put', () => {
-	let mockUploadStream: Mock;
-	let mockUpload: Mock;
-	let mockBlockBlobClient: Mock;
-
-	beforeEach(() => {
-		mockUploadStream = vi.fn();
-		mockUpload = vi.fn();
-
-		mockBlockBlobClient = vi.fn().mockReturnValue({
-			uploadStream: mockUploadStream,
-			upload: mockUpload,
-		});
-
-		driver['containerClient'] = {
-			getBlockBlobClient: mockBlockBlobClient,
-		} as unknown as ContainerClient;
-
-		vi.mocked(isReadableStream).mockReturnValue(true);
-	});
-
-	test('Gets BlockBlobClient for file path', async () => {
-		await driver.put(sample.path.input, sample.text);
-
-		expect(mockBlockBlobClient).toHaveBeenCalledWith(sample.path.inputFull);
-	});
-
-	test('Uploads stream through uploadStream when readable stream is passed', async () => {
-		await driver.put(sample.path.input, sample.text);
-
-		expect(mockUploadStream).toHaveBeenCalledWith(sample.text, undefined, undefined, {
-			blobHTTPHeaders: { blobContentType: 'application/octet-stream' },
-		});
-	});
-
-	test('Allows optional mime type to be set', async () => {
-		await driver.put(sample.path.input, sample.text, sample.file.type);
-
-		expect(mockUploadStream).toHaveBeenCalledWith(sample.text, undefined, undefined, {
-			blobHTTPHeaders: { blobContentType: sample.file.type },
-		});
-	});
-
-	test('Uses upload when buffer or string is passed', async () => {
-		vi.mocked(isReadableStream).mockReturnValue(false);
-
-		await driver.put(sample.path.input, sample.text, sample.file.type);
-
-		expect(mockUpload).toHaveBeenCalledWith(sample.text, sample.text.length);
-	});
-});
-
-describe('#delete', () => {
-	let mockDeleteIfExists: Mock;
-
-	beforeEach(() => {
-		mockDeleteIfExists = vi.fn().mockResolvedValue(true);
-
-		const mockBlockBlobClient = vi.fn().mockReturnValue({
-			deleteIfExists: mockDeleteIfExists,
-		});
-
-		driver['containerClient'] = {
-			getBlockBlobClient: mockBlockBlobClient,
-		} as unknown as ContainerClient;
-	});
-
-	test('Uses blobClient at full path', async () => {
-		await driver.delete(sample.path.input);
-
-		expect(driver['fullPath']).toHaveBeenCalledWith(sample.path.input);
-		expect(driver['containerClient'].getBlockBlobClient).toHaveBeenCalledWith(sample.path.inputFull);
-	});
-
-	test('Returns delete result', async () => {
-		await driver.delete(sample.path.input);
-
-		expect(mockDeleteIfExists).toHaveBeenCalled();
 	});
 });
 
