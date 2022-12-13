@@ -1,7 +1,6 @@
 import { normalizePath } from '@directus/utils';
-import { isReadableStream } from '@directus/utils/node';
 import type { Driver, Range } from '@directus/storage';
-import type { Bucket, GetFilesOptions, StorageOptions } from '@google-cloud/storage';
+import type { Bucket, GetFilesOptions } from '@google-cloud/storage';
 import { Storage } from '@google-cloud/storage';
 import { join } from 'node:path';
 import { pipeline } from 'node:stream/promises';
@@ -9,7 +8,8 @@ import { pipeline } from 'node:stream/promises';
 export type DriverGCSConfig = {
 	root?: string;
 	bucket: string;
-} & StorageOptions;
+	apiEndpoint?: string;
+};
 
 export class DriverGCS implements Driver {
 	private root: string;
@@ -32,44 +32,35 @@ export class DriverGCS implements Driver {
 		return this.bucket.file(this.fullPath(filepath));
 	}
 
-	async getStream(filepath: string, range?: Range) {
-		return this.file(filepath).createReadStream(range);
+	async read(filepath: string, range?: Range) {
+		return this.file(this.fullPath(filepath)).createReadStream(range);
 	}
 
-	async getBuffer(filepath: string) {
-		return (await this.file(filepath).download())[0];
+	async write(filepath: string, content: NodeJS.ReadableStream) {
+		const file = this.file(this.fullPath(filepath));
+		const stream = file.createWriteStream({ resumable: false });
+		await pipeline(content, stream);
 	}
 
-	async getStat(filepath: string) {
-		const [{ size, updated }] = await this.file(filepath).getMetadata();
+	async delete(filepath: string) {
+		await this.file(this.fullPath(filepath)).delete();
+	}
+
+	async stat(filepath: string) {
+		const [{ size, updated }] = await this.file(this.fullPath(filepath)).getMetadata();
 		return { size, modified: updated };
 	}
 
 	async exists(filepath: string) {
-		return (await this.file(filepath).exists())[0];
+		return (await this.file(this.fullPath(filepath)).exists())[0];
 	}
 
 	async move(src: string, dest: string) {
-		await this.file(src).move(this.file(dest));
+		await this.file(this.fullPath(src)).move(this.file(this.fullPath(dest)));
 	}
 
 	async copy(src: string, dest: string) {
-		await this.file(src).copy(this.file(dest));
-	}
-
-	async put(filepath: string, content: Buffer | NodeJS.ReadableStream | string) {
-		const file = this.file(filepath);
-
-		if (isReadableStream(content)) {
-			const stream = file.createWriteStream({ resumable: false });
-			await pipeline(content, stream);
-		} else {
-			await file.save(content, { resumable: false });
-		}
-	}
-
-	async delete(filepath: string) {
-		await this.file(filepath).delete();
+		await this.file(this.fullPath(src)).copy(this.file(this.fullPath(dest)));
 	}
 
 	async *list(prefix = '') {

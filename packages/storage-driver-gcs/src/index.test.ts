@@ -3,8 +3,25 @@ import { isReadableStream } from '@directus/utils/node';
 import { Bucket, Storage } from '@google-cloud/storage';
 import { join } from 'node:path';
 import { pipeline } from 'node:stream/promises';
-import { afterEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, describe, expect, test, vi, beforeEach } from 'vitest';
+import type { Mock } from 'vitest';
 import { DriverGCS } from './index.js';
+import type { DriverGCSConfig } from './index.js';
+import { PassThrough } from 'node:stream';
+import {
+	randAlphaNumeric,
+	randDirectoryPath,
+	randDomainName,
+	randFilePath,
+	randGitBranch as randBucket,
+	randNumber,
+	randPastDate,
+	randWord,
+	randText,
+	randFileType,
+	randUrl,
+	randGitShortSha as randUnique,
+} from '@ngneat/falso';
 
 vi.mock('@directus/utils/node');
 vi.mock('@directus/utils');
@@ -12,40 +29,97 @@ vi.mock('@google-cloud/storage');
 vi.mock('node:path');
 vi.mock('node:stream/promises');
 
+let sample: {
+	config: Required<DriverGCSConfig>;
+	path: {
+		input: string;
+		inputFull: string;
+		src: string;
+		srcFull: string;
+		dest: string;
+		destFull: string;
+	};
+	range: {
+		start: number;
+		end: number;
+	};
+	stream: PassThrough;
+	text: string;
+	file: {
+		type: string;
+		size: number;
+		modified: Date;
+	};
+};
+
+let driver: DriverGCS;
+
+beforeEach(() => {
+	sample = {
+		config: {
+			root: randDirectoryPath(),
+			apiEndpoint: randUrl(),
+			bucket: randBucket(),
+		},
+		path: {
+			input: randUnique() + randFilePath(),
+			inputFull: randUnique() + randFilePath(),
+			src: randFilePath(),
+			srcFull: randFilePath(),
+			dest: randFilePath(),
+			destFull: randFilePath(),
+		},
+		range: {
+			start: randNumber(),
+			end: randNumber(),
+		},
+		stream: new PassThrough(),
+		text: randText(),
+		file: {
+			type: randFileType(),
+			size: randNumber(),
+			modified: randPastDate(),
+		},
+	};
+
+	driver = new DriverGCS({
+		bucket: sample.config.bucket,
+	});
+
+	driver['fullPath'] = vi.fn().mockImplementation((input) => {
+		if (input === sample.path.src) return sample.path.srcFull;
+		if (input === sample.path.dest) return sample.path.destFull;
+		if (input === sample.path.input) return sample.path.inputFull;
+
+		return '';
+	});
+});
+
 afterEach(() => {
 	vi.resetAllMocks();
 });
 
 describe('#constructor', () => {
 	test('Defaults root path to empty string', () => {
-		const driver = new DriverGCS({
-			bucket: 'test-bucket',
-		});
-
 		expect(driver['root']).toBe('');
 	});
 
 	test('Normalizes config path when root is given', () => {
-		const testRoot = '/root/';
-		const mockRoot = 'root/';
-
-		vi.mocked(normalizePath).mockReturnValue(mockRoot);
-
 		new DriverGCS({
-			bucket: 'test-bucket',
-			root: testRoot,
+			bucket: sample.config.bucket,
+			root: sample.config.root,
 		});
 
-		expect(normalizePath).toHaveBeenCalledWith(testRoot, { removeLeading: true });
+		expect(normalizePath).toHaveBeenCalledWith(sample.config.root, { removeLeading: true });
 	});
 
 	test('Instantiates Storage object with config options', () => {
 		new DriverGCS({
-			bucket: 'test-bucket',
-			apiEndpoint: 'test-endpoint',
+			bucket: sample.config.bucket,
+			apiEndpoint: sample.config.apiEndpoint,
 		});
 
-		expect(Storage).toHaveBeenCalledWith({ apiEndpoint: 'test-endpoint' });
+		expect(Storage).toHaveBeenCalledWith({ apiEndpoint: sample.config.apiEndpoint });
 	});
 
 	test('Creates bucket access instance', () => {
@@ -55,493 +129,337 @@ describe('#constructor', () => {
 			bucket: vi.fn().mockReturnValue(mockBucket),
 		} as unknown as Storage;
 
-		vi.mocked(Storage).mockReturnValueOnce(mockStorage);
+		vi.mocked(Storage).mockReturnValue(mockStorage);
 
 		const driver = new DriverGCS({
-			bucket: 'test-bucket',
-			apiEndpoint: 'test-endpoint',
+			bucket: sample.config.bucket,
 		});
 
-		expect(mockStorage.bucket).toHaveBeenCalledWith('test-bucket');
+		expect(mockStorage.bucket).toHaveBeenCalledWith(sample.config.bucket);
 		expect(driver['bucket']).toBe(mockBucket);
 	});
 });
 
 describe('#fullPath', () => {
+	beforeEach(() => {
+		driver = new DriverGCS({ bucket: sample.config.bucket });
+		driver['root'] = sample.config.root;
+
+		vi.mocked(join).mockReturnValue(sample.path.src);
+		vi.mocked(normalizePath).mockReturnValue(sample.path.inputFull);
+	});
+
 	test('Returns normalized joined path', () => {
-		vi.mocked(join).mockReturnValue('root/path/to/file.txt');
-		vi.mocked(normalizePath).mockReturnValue('root/path/to/file.txt');
+		const result = driver['fullPath'](sample.path.input);
 
-		const driver = new DriverGCS({
-			bucket: 'test-bucket',
-		});
-
-		driver['root'] = 'root/';
-
-		const result = driver['fullPath']('/path/to/file.txt');
-
-		expect(join).toHaveBeenCalledWith('root/', '/path/to/file.txt');
-		expect(normalizePath).toHaveBeenCalledWith('root/path/to/file.txt');
-		expect(result).toBe('root/path/to/file.txt');
+		expect(join).toHaveBeenCalledWith(sample.config.root, sample.path.input);
+		expect(normalizePath).toHaveBeenCalledWith(sample.path.src);
+		expect(result).toBe(sample.path.inputFull);
 	});
 });
 
 describe('#file', () => {
-	test('Uses fullPath to inject root', () => {
-		const driver = new DriverGCS({
-			bucket: 'test-bucket',
-		});
+	let mockFile: any;
 
-		driver['fullPath'] = vi.fn();
-		driver['bucket'] = {
-			file: vi.fn(),
-		} as unknown as Bucket;
+	beforeEach(() => {
+		mockFile = {};
 
-		driver['file']('/path/to/file');
-
-		expect(driver['fullPath']).toHaveBeenCalledWith('/path/to/file');
-	});
-
-	test('Returns file instance', () => {
-		const driver = new DriverGCS({
-			bucket: 'test-bucket',
-		});
-
-		const mockFile = {};
-
-		driver['fullPath'] = vi.fn();
 		driver['bucket'] = {
 			file: vi.fn().mockReturnValue(mockFile),
 		} as unknown as Bucket;
+	});
 
+	test('Uses fullPath to inject root', () => {
+		driver['file'](sample.path.input);
+		expect(driver['fullPath']).toHaveBeenCalledWith(sample.path.input);
+	});
+
+	test('Returns file instance', () => {
 		const file = driver['file']('/path/to/file');
-
 		expect(file).toBe(mockFile);
 	});
 });
 
-describe('#getStream', () => {
-	test('Gets file reference', async () => {
-		const driver = new DriverGCS({
-			bucket: 'test-bucket',
-		});
+describe('#read', () => {
+	let mockFile: {
+		createReadStream: Mock;
+	};
 
-		driver['file'] = vi.fn().mockReturnValue({ createReadStream: vi.fn() });
-
-		driver.getStream('/path/to/file');
-
-		expect(driver['file']).toHaveBeenCalledWith('/path/to/file');
-	});
-
-	test('Returns stream from createReadStream', async () => {
-		const driver = new DriverGCS({
-			bucket: 'test-bucket',
-		});
-
-		const mockStream = {};
-
-		const mockFile = {
-			createReadStream: vi.fn().mockReturnValue(mockStream),
+	beforeEach(() => {
+		mockFile = {
+			createReadStream: vi.fn().mockReturnValue(sample.stream),
 		};
 
 		driver['file'] = vi.fn().mockReturnValue(mockFile);
+	});
 
-		const stream = await driver.getStream('/path/to/file');
+	test('Gets file reference', async () => {
+		await driver.read(sample.path.input);
+		expect(driver['file']).toHaveBeenCalledWith(sample.path.inputFull);
+	});
 
-		expect(stream).toBe(mockStream);
+	test('Returns stream from createReadStream', async () => {
+		const stream = await driver.read(sample.path.input);
+
+		expect(stream).toBe(sample.stream);
 		expect(mockFile.createReadStream).toHaveBeenCalledOnce();
 		expect(mockFile.createReadStream).toHaveBeenCalledWith(undefined);
 	});
 
 	test('Passes optional range to createReadStream', async () => {
-		const driver = new DriverGCS({
-			bucket: 'test-bucket',
-		});
+		await driver.read('/path/to/file', { start: sample.range.start });
+		expect(mockFile.createReadStream).toHaveBeenCalledWith({ start: sample.range.start });
 
-		const mockStream = {};
+		await driver.read('/path/to/file', sample.range);
+		expect(mockFile.createReadStream).toHaveBeenCalledWith(sample.range);
 
-		const mockFile = {
-			createReadStream: vi.fn().mockReturnValue(mockStream),
-		};
-
-		driver['file'] = vi.fn().mockReturnValue(mockFile);
-
-		await driver.getStream('/path/to/file', { start: 500 });
-		expect(mockFile.createReadStream).toHaveBeenCalledWith({ start: 500 });
-
-		await driver.getStream('/path/to/file', { start: 500, end: 1500 });
-		expect(mockFile.createReadStream).toHaveBeenCalledWith({ start: 500, end: 1500 });
-
-		await driver.getStream('/path/to/file', { end: 1500 });
-		expect(mockFile.createReadStream).toHaveBeenCalledWith({ end: 1500 });
+		await driver.read('/path/to/file', { end: sample.range.end });
+		expect(mockFile.createReadStream).toHaveBeenCalledWith({ end: sample.range.end });
 	});
 });
 
-describe('#getBuffer', () => {
-	test('Gets file reference', async () => {
-		const driver = new DriverGCS({
-			bucket: 'test-bucket',
-		});
-
-		driver['file'] = vi.fn().mockReturnValue({ download: vi.fn().mockResolvedValue([]) });
-
-		driver.getBuffer('/path/to/file');
-
-		expect(driver['file']).toHaveBeenCalledWith('/path/to/file');
-	});
-
-	test('Calls download on file', async () => {
-		const driver = new DriverGCS({
-			bucket: 'test-bucket',
-		});
-
-		const mockFile = { download: vi.fn().mockResolvedValue([]) };
-
-		driver['file'] = vi.fn().mockReturnValue(mockFile);
-
-		driver.getBuffer('/path/to/file');
-
-		expect(mockFile.download).toHaveBeenCalledOnce();
-		expect(mockFile.download).toHaveBeenCalledWith();
-	});
-
-	test('Returns buffer from response array', async () => {
-		const driver = new DriverGCS({
-			bucket: 'test-bucket',
-		});
-
-		const mockBuffer = {};
-
-		const mockFile = { download: vi.fn().mockResolvedValue([mockBuffer]) };
-
-		driver['file'] = vi.fn().mockReturnValue(mockFile);
-
-		const result = await driver.getBuffer('/path/to/file');
-
-		expect(result).toBe(mockBuffer);
-	});
-});
-
-describe('#getStat', () => {
-	test('Gets file reference', async () => {
-		const driver = new DriverGCS({
-			bucket: 'test-bucket',
-		});
-
-		driver['file'] = vi.fn().mockReturnValue({ getMetadata: vi.fn().mockResolvedValue([{}]) });
-
-		await driver.getStat('/path/to/file');
-
-		expect(driver['file']).toHaveBeenCalledWith('/path/to/file');
-	});
-
-	test('Calls getMetadata on file', async () => {
-		const driver = new DriverGCS({
-			bucket: 'test-bucket',
-		});
-
-		const mockFile = { getMetadata: vi.fn().mockResolvedValue([{}]) };
-
-		driver['file'] = vi.fn().mockReturnValue(mockFile);
-
-		await driver.getStat('/path/to/file');
-
-		expect(mockFile.getMetadata).toHaveBeenCalledOnce();
-		expect(mockFile.getMetadata).toHaveBeenCalledWith();
-	});
-
-	test('Returns size/updated as size/modified from metadata response', async () => {
-		const driver = new DriverGCS({
-			bucket: 'test-bucket',
-		});
-
-		const mockSize = 1500;
-		const mockDate = new Date(2022, 11, 6, 15, 50, 0, 0);
-
-		const mockFile = {
-			getMetadata: vi.fn().mockResolvedValue([
-				{
-					size: mockSize,
-					updated: mockDate,
-				},
-			]),
-		};
-
-		driver['file'] = vi.fn().mockReturnValue(mockFile);
-
-		const result = await driver.getStat('/path/to/file');
-
-		expect(result).toStrictEqual({
-			size: mockSize,
-			modified: mockDate,
-		});
-	});
-});
-
-describe('#exists', () => {
-	test('Gets file reference', async () => {
-		const driver = new DriverGCS({
-			bucket: 'test-bucket',
-		});
-
-		driver['file'] = vi.fn().mockReturnValue({ exists: vi.fn().mockResolvedValue([true]) });
-
-		driver.exists('/path/to/file');
-
-		expect(driver['file']).toHaveBeenCalledWith('/path/to/file');
-	});
-
-	test('Calls exists on file', async () => {
-		const driver = new DriverGCS({
-			bucket: 'test-bucket',
-		});
-
-		const mockFile = { exists: vi.fn().mockResolvedValue([true]) };
-
-		driver['file'] = vi.fn().mockReturnValue(mockFile);
-
-		driver.exists('/path/to/file');
-
-		expect(mockFile.exists).toHaveBeenCalledOnce();
-		expect(mockFile.exists).toHaveBeenCalledWith();
-	});
-
-	test('Returns boolean from response array', async () => {
-		const driver = new DriverGCS({
-			bucket: 'test-bucket',
-		});
-
-		const mockFile = { exists: vi.fn().mockResolvedValue([true]) };
-
-		driver['file'] = vi.fn().mockReturnValue(mockFile);
-
-		const result = await driver.exists('/path/to/file');
-
-		expect(result).toBe(true);
-	});
-});
-
-describe('#move', () => {
-	test('Gets file references', async () => {
-		const driver = new DriverGCS({
-			bucket: 'test-bucket',
-		});
-
-		driver['file'] = vi.fn().mockReturnValue({ move: vi.fn() });
-
-		await driver.move('/path/to/src', '/path/to/dest');
-
-		expect(driver['file']).toHaveBeenCalledWith('/path/to/src');
-		expect(driver['file']).toHaveBeenCalledWith('/path/to/dest');
-	});
-
-	test('Passes dest file ref to move function', async () => {
-		const driver = new DriverGCS({
-			bucket: 'test-bucket',
-		});
-
-		const mockFileSrc = { move: vi.fn() };
-		const mockFileDest = {};
-
-		driver['file'] = vi.fn().mockImplementation((path) => {
-			if (path === '/path/to/dest') {
-				return mockFileDest;
-			}
-
-			return mockFileSrc;
-		});
-
-		await driver.move('/path/to/src', '/path/to/dest');
-
-		expect(mockFileSrc.move).toHaveBeenCalledWith(mockFileDest);
-	});
-});
-
-describe('#copy', () => {
-	test('Gets file references', async () => {
-		const driver = new DriverGCS({
-			bucket: 'test-bucket',
-		});
-
-		driver['file'] = vi.fn().mockReturnValue({ copy: vi.fn() });
-
-		await driver.copy('/path/to/src', '/path/to/dest');
-
-		expect(driver['file']).toHaveBeenCalledWith('/path/to/src');
-		expect(driver['file']).toHaveBeenCalledWith('/path/to/dest');
-	});
-
-	test('Passes dest file ref to copy function', async () => {
-		const driver = new DriverGCS({
-			bucket: 'test-bucket',
-		});
-
-		const mockFileSrc = { copy: vi.fn() };
-		const mockFileDest = {};
-
-		driver['file'] = vi.fn().mockImplementation((path) => {
-			if (path === '/path/to/dest') {
-				return mockFileDest;
-			}
-
-			return mockFileSrc;
-		});
-
-		await driver.copy('/path/to/src', '/path/to/dest');
-
-		expect(mockFileSrc.copy).toHaveBeenCalledWith(mockFileDest);
-	});
-});
-
-describe('#put', () => {
-	test('Gets file reference for filepath', async () => {
-		const driver = new DriverGCS({
-			bucket: 'test-bucket',
-		});
-
-		const mockCreateWriteStream = vi.fn();
-		const mockSave = vi.fn();
-
-		const mockFile = vi.fn().mockReturnValue({
+describe('#write', () => {
+	let mockWriteStream: PassThrough;
+	let mockCreateWriteStream: Mock;
+	let mockSave: Mock;
+	let mockFile: {
+		createWriteStream: Mock;
+		save: Mock;
+	};
+
+	beforeEach(() => {
+		mockWriteStream = new PassThrough();
+
+		mockCreateWriteStream = vi.fn().mockReturnValue(mockWriteStream);
+		mockSave = vi.fn();
+
+		mockFile = {
 			createWriteStream: mockCreateWriteStream,
 			save: mockSave,
-		});
+		};
 
-		driver['fullPath'] = vi.fn().mockReturnValue('/path/to/file.txt');
+		driver['file'] = vi.fn().mockReturnValue(mockFile);
+	});
 
-		driver['bucket'] = {
-			file: mockFile,
-		} as unknown as Bucket;
-
-		await driver.put('path/to/file.txt', 'file-content');
-
-		expect(mockFile).toHaveBeenCalledWith('/path/to/file.txt');
+	test('Gets file reference for filepath', async () => {
+		await driver.write(sample.path.input, sample.stream);
+		expect(driver['file']).toHaveBeenCalledWith(sample.path.inputFull);
 	});
 
 	test('Pipes read stream to write stream in pipeline when stream is passed', async () => {
-		vi.mocked(isReadableStream).mockReturnValue(true);
-
-		const driver = new DriverGCS({
-			bucket: 'test-bucket',
-		});
-
-		const mockWriteStream = {};
-
-		const mockCreateWriteStream = vi.fn().mockReturnValue(mockWriteStream);
-		const mockSave = vi.fn();
-
-		const mockFile = vi.fn().mockReturnValue({
-			createWriteStream: mockCreateWriteStream,
-			save: mockSave,
-		});
-
-		driver['fullPath'] = vi.fn().mockReturnValue('/path/to/file.txt');
-
-		driver['bucket'] = {
-			file: mockFile,
-		} as unknown as Bucket;
-
-		await driver.put('path/to/file.txt', 'file-content');
+		await driver.write(sample.path.inputFull, sample.stream);
 
 		expect(mockCreateWriteStream).toHaveBeenCalledWith({ resumable: false });
-		expect(pipeline).toHaveBeenCalledWith('file-content', mockWriteStream);
-	});
-
-	test('Saves file using save if contents is buffer/string', async () => {
-		vi.mocked(isReadableStream).mockReturnValue(false);
-
-		const driver = new DriverGCS({
-			bucket: 'test-bucket',
-		});
-
-		const mockSave = vi.fn();
-
-		const mockFile = vi.fn().mockReturnValue({
-			save: mockSave,
-		});
-
-		driver['fullPath'] = vi.fn().mockReturnValue('/path/to/file.txt');
-
-		driver['bucket'] = {
-			file: mockFile,
-		} as unknown as Bucket;
-
-		await driver.put('path/to/file.txt', 'file-content');
-
-		expect(mockSave).toHaveBeenCalledWith('file-content', { resumable: false });
+		expect(pipeline).toHaveBeenCalledWith(sample.stream, mockWriteStream);
 	});
 });
 
 describe('#delete', () => {
-	test('Gets file reference', async () => {
-		const driver = new DriverGCS({
-			bucket: 'test-bucket',
-		});
+	let mockFile: {
+		delete: Mock;
+	};
 
-		driver['file'] = vi.fn().mockReturnValue({ delete: vi.fn() });
-
-		await driver.delete('/path/to/file');
-
-		expect(driver['file']).toHaveBeenCalledWith('/path/to/file');
-	});
-
-	test('Calls exists on file', async () => {
-		const driver = new DriverGCS({
-			bucket: 'test-bucket',
-		});
-
-		const mockFile = { delete: vi.fn() };
+	beforeEach(() => {
+		mockFile = {
+			delete: vi.fn(),
+		};
 
 		driver['file'] = vi.fn().mockReturnValue(mockFile);
+	});
 
-		await driver.delete('/path/to/file');
+	test('Gets file reference', async () => {
+		await driver.delete(sample.path.input);
+		expect(driver['file']).toHaveBeenCalledWith(sample.path.inputFull);
+	});
+
+	test('Calls delete on file', async () => {
+		await driver.delete(sample.path.input);
 
 		expect(mockFile.delete).toHaveBeenCalledOnce();
 		expect(mockFile.delete).toHaveBeenCalledWith();
 	});
 });
 
-describe('#list', () => {
-	test('Calls getFiles with correct options', async () => {
-		const driver = new DriverGCS({
-			bucket: 'test-bucket',
+describe('#stat', () => {
+	let mockFile: {
+		getMetadata: Mock;
+	};
+
+	beforeEach(() => {
+		mockFile = {
+			getMetadata: vi.fn().mockResolvedValue([{ size: sample.file.size, updated: sample.file.modified }]),
+		};
+
+		driver['file'] = vi.fn().mockReturnValue(mockFile);
+	});
+
+	test('Gets file reference', async () => {
+		await driver.stat(sample.path.input);
+		expect(driver['file']).toHaveBeenCalledWith(sample.path.inputFull);
+	});
+
+	test('Calls getMetadata on file', async () => {
+		await driver.stat(sample.path.input);
+
+		expect(mockFile.getMetadata).toHaveBeenCalledOnce();
+		expect(mockFile.getMetadata).toHaveBeenCalledWith();
+	});
+
+	test('Returns size/updated as size/modified from metadata response', async () => {
+		const result = await driver.stat(sample.path.input);
+
+		expect(result).toStrictEqual({
+			size: sample.file.size,
+			modified: sample.file.modified,
 		});
+	});
+});
+
+describe('#exists', () => {
+	let mockFile: {
+		exists: Mock;
+	};
+
+	beforeEach(() => {
+		mockFile = {
+			exists: vi.fn().mockResolvedValue([true]),
+		};
+
+		driver['file'] = vi.fn().mockReturnValue(mockFile);
+	});
+
+	test('Gets file reference', async () => {
+		driver.exists(sample.path.input);
+		expect(driver['file']).toHaveBeenCalledWith(sample.path.inputFull);
+	});
+
+	test('Calls exists on file', async () => {
+		driver.exists(sample.path.input);
+
+		expect(mockFile.exists).toHaveBeenCalledOnce();
+		expect(mockFile.exists).toHaveBeenCalledWith();
+	});
+
+	test('Returns boolean from response array', async () => {
+		const result = await driver.exists(sample.path.input);
+		expect(result).toBe(true);
+	});
+});
+
+describe('#move', () => {
+	let mockFileSrc: {
+		move: Mock;
+	};
+
+	let mockFileDest: Record<string, any>;
+
+	beforeEach(() => {
+		mockFileSrc = {
+			move: vi.fn(),
+		};
+
+		mockFileDest = {};
+
+		driver['file'] = vi.fn().mockImplementation((path) => {
+			if (path === sample.path.srcFull) return mockFileSrc;
+			if (path === sample.path.destFull) return mockFileDest;
+			return null;
+		});
+	});
+
+	test('Gets file references', async () => {
+		await driver.move(sample.path.src, sample.path.dest);
+
+		expect(driver['file']).toHaveBeenCalledWith(sample.path.srcFull);
+		expect(driver['file']).toHaveBeenCalledWith(sample.path.destFull);
+	});
+
+	test('Passes dest file ref to move function', async () => {
+		await driver.move(sample.path.src, sample.path.dest);
+		expect(mockFileSrc.move).toHaveBeenCalledWith(mockFileDest);
+	});
+});
+
+describe('#copy', () => {
+	let mockFileSrc: {
+		copy: Mock;
+	};
+
+	let mockFileDest: Record<string, any>;
+
+	beforeEach(() => {
+		mockFileSrc = {
+			copy: vi.fn(),
+		};
+
+		mockFileDest = {};
+
+		driver['file'] = vi.fn().mockImplementation((path) => {
+			if (path === sample.path.srcFull) return mockFileSrc;
+			if (path === sample.path.destFull) return mockFileDest;
+			return null;
+		});
+	});
+
+	test('Gets file references', async () => {
+		await driver.copy(sample.path.src, sample.path.dest);
+
+		expect(driver['file']).toHaveBeenCalledWith(sample.path.srcFull);
+		expect(driver['file']).toHaveBeenCalledWith(sample.path.destFull);
+	});
+
+	test('Passes dest file ref to copy function', async () => {
+		await driver.copy(sample.path.src, sample.path.dest);
+
+		expect(mockFileSrc.copy).toHaveBeenCalledWith(mockFileDest);
+	});
+});
+
+describe('#list', () => {
+	let mockFiles: string[];
+
+	beforeEach(() => {
+		mockFiles = randFilePath({ length: randNumber({ min: 1, max: 10 }) });
 
 		driver['bucket'] = {
-			getFiles: vi.fn().mockResolvedValue([[], undefined]),
+			getFiles: vi.fn(),
 		} as unknown as Bucket;
 
-		driver['fullPath'] = vi.fn().mockReturnValue('/root/');
+		mockFiles.forEach((file, index) => {
+			vi.mocked(driver['bucket'].getFiles).mockResolvedValueOnce([
+				[{ name: file }],
+				index === mockFiles.length - 1 ? undefined : {},
+			] as unknown as void);
+		});
+	});
 
+	test('Calls getFiles with correct options', async () => {
 		await driver.list().next();
 
 		expect(driver['bucket'].getFiles).toHaveBeenCalledWith({
-			prefix: '/root/',
+			prefix: '',
+			autoPaginate: false,
+			maxResults: 500,
+		});
+	});
+
+	test('Gets full path of optional prefix', async () => {
+		await driver.list(sample.path.input).next();
+
+		expect(driver['bucket'].getFiles).toHaveBeenCalledWith({
+			prefix: sample.path.inputFull,
 			autoPaginate: false,
 			maxResults: 500,
 		});
 	});
 
 	test('Yields all paginated files', async () => {
-		const driver = new DriverGCS({
-			bucket: 'test-bucket',
-		});
-
-		driver['bucket'] = {
-			getFiles: vi
-				.fn()
-				.mockResolvedValueOnce([[{ name: 'path-1' }], {}])
-				.mockResolvedValueOnce([[{ name: 'path-2' }], undefined]),
-		} as unknown as Bucket;
-
-		driver['fullPath'] = vi.fn().mockReturnValue('/root/');
-
 		const output = [];
 
 		for await (const filepath of driver.list()) {
 			output.push(filepath);
 		}
 
-		expect(output).toStrictEqual(['path-1', 'path-2']);
+		expect(output).toStrictEqual(mockFiles);
 	});
 });
