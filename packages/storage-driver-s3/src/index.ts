@@ -1,22 +1,22 @@
 import type {
-	GetObjectCommandInput,
-	S3ClientConfig,
 	CopyObjectCommandInput,
-	PutObjectCommandInput,
+	GetObjectCommandInput,
 	ListObjectsV2CommandInput,
+	PutObjectCommandInput,
+	S3ClientConfig,
 } from '@aws-sdk/client-s3';
 import {
-	GetObjectCommand,
-	S3Client,
-	HeadObjectCommand,
 	CopyObjectCommand,
 	DeleteObjectCommand,
-	PutObjectCommand,
+	GetObjectCommand,
+	HeadObjectCommand,
 	ListObjectsV2Command,
+	PutObjectCommand,
+	S3Client,
 } from '@aws-sdk/client-s3';
+import type { Driver, Range } from '@directus/storage';
 import { normalizePath } from '@directus/utils';
 import { isReadableStream } from '@directus/utils/node';
-import type { Driver, Range } from '@directus/storage';
 import { join } from 'node:path';
 
 export type DriverS3Config = {

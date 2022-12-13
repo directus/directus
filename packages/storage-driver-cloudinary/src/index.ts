@@ -142,12 +142,23 @@ export class DriverCloudinary implements Driver {
 			},
 		});
 
+		if (response.status >= 400) {
+			throw new Error(`No stat returned for file "${filepath}"`);
+		}
+
 		const { bytes, created_at } = (await response.json()) as { bytes: number; created_at: string };
 
 		return { size: bytes, modified: new Date(created_at) };
 	}
 
-	async exists(filepath: string) {}
+	async exists(filepath: string) {
+		try {
+			await this.stat(filepath);
+			return true;
+		} catch {
+			return false;
+		}
+	}
 
 	async move(src: string, dest: string) {}
 

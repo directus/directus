@@ -1,27 +1,23 @@
 import { normalizePath } from '@directus/utils';
-import { isReadableStream } from '@directus/utils/node';
 import { Bucket, Storage } from '@google-cloud/storage';
-import { join } from 'node:path';
-import { pipeline } from 'node:stream/promises';
-import { afterEach, describe, expect, test, vi, beforeEach } from 'vitest';
-import type { Mock } from 'vitest';
-import { DriverGCS } from './index.js';
-import type { DriverGCSConfig } from './index.js';
-import { PassThrough } from 'node:stream';
 import {
-	randAlphaNumeric,
 	randDirectoryPath,
-	randDomainName,
 	randFilePath,
+	randFileType,
 	randGitBranch as randBucket,
+	randGitShortSha as randUnique,
 	randNumber,
 	randPastDate,
-	randWord,
 	randText,
-	randFileType,
 	randUrl,
-	randGitShortSha as randUnique,
 } from '@ngneat/falso';
+import { join } from 'node:path';
+import { PassThrough } from 'node:stream';
+import { pipeline } from 'node:stream/promises';
+import type { Mock } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import type { DriverGCSConfig } from './index.js';
+import { DriverGCS } from './index.js';
 
 vi.mock('@directus/utils/node');
 vi.mock('@directus/utils');

@@ -1,12 +1,12 @@
 import type { HeadObjectCommandOutput } from '@aws-sdk/client-s3';
 import {
 	CopyObjectCommand,
+	DeleteObjectCommand,
 	GetObjectCommand,
 	HeadObjectCommand,
+	ListObjectsV2Command,
 	PutObjectCommand,
 	S3Client,
-	DeleteObjectCommand,
-	ListObjectsV2Command,
 } from '@aws-sdk/client-s3';
 import { normalizePath } from '@directus/utils';
 import { isReadableStream } from '@directus/utils/node';
@@ -15,13 +15,13 @@ import {
 	randDirectoryPath,
 	randDomainName,
 	randFilePath,
+	randFileType,
 	randGitBranch as randBucket,
+	randGitShortSha as randUnique,
 	randNumber,
 	randPastDate,
-	randWord,
 	randText,
-	randFileType,
-	randGitShortSha as randUnique,
+	randWord,
 } from '@ngneat/falso';
 import { join } from 'node:path';
 import { PassThrough, Readable } from 'node:stream';

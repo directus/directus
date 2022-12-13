@@ -514,6 +514,7 @@ describe('#stat', () => {
 	let mockResourceType: string;
 	let mockParsedPath: string;
 	let mockBasicAuth: string;
+	let mockResponse: { json: Mock; status: number };
 	let mockResponseBody: {
 		bytes: number;
 		created_at: string;
@@ -533,9 +534,12 @@ describe('#stat', () => {
 			created_at: sample.file.modified.toISOString(),
 		};
 
-		vi.mocked(fetch).mockResolvedValue({
+		mockResponse = {
 			json: vi.fn().mockResolvedValue(mockResponseBody),
-		} as unknown as Response);
+			status: 200,
+		};
+
+		vi.mocked(fetch).mockResolvedValue(mockResponse as unknown as Response);
 	});
 
 	test('Gets full path for given filepath', async () => {
@@ -566,6 +570,16 @@ describe('#stat', () => {
 		);
 	});
 
+	test('Throws error when status is >400', async () => {
+		mockResponse.status = randNumber({ min: 400, max: 599 });
+		try {
+			await driver.stat(sample.path.input);
+		} catch (err: any) {
+			expect(err).toBeInstanceOf(Error);
+			expect(err.message).toBe(`No stat returned for file "${sample.path.input}"`);
+		}
+	});
+
 	test('Returns size/modified from bytes/created_at from Cloudinary', async () => {
 		const result = await driver.stat(sample.path.input);
 		expect(result).toStrictEqual({
@@ -575,7 +589,27 @@ describe('#stat', () => {
 	});
 });
 
-describe.todo('#exists', () => {});
+describe('#exists', () => {
+	beforeEach(() => {
+		driver['stat'] = vi.fn().mockResolvedValue({ size: sample.file.size, modified: sample.file.modified });
+	});
+
+	test('Calls stat', async () => {
+		await driver.exists(sample.path.input);
+		expect(driver['stat']).toHaveBeenCalledWith(sample.path.input);
+	});
+
+	test('Returns true if stat returns the stats', async () => {
+		const exists = await driver.exists(sample.path.input);
+		expect(exists).toBe(true);
+	});
+
+	test('Returns false if stat throws an error', async () => {
+		vi.mocked(driver.stat).mockRejectedValue(new Error());
+		const exists = await driver.exists(sample.path.input);
+		expect(exists).toBe(false);
+	});
+});
 
 describe.todo('#move', () => {});
 
