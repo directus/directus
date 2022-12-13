@@ -124,6 +124,9 @@ export class JsonHelperSQLite extends JsonHelperDefault {
 		const currentAlias = aliases[aliases.length - 1],
 			prevAlias = aliases[aliases.length - 2],
 			currentQuery = queryParts[queryParts.length - 1];
+		if (currentQuery === '$') {
+			return this.knex.raw('json_group_array(??.value) as ??', [prevAlias, currentAlias]);
+		}
 		return this.knex.raw('json_group_array(json_extract(??.??, ?)) as ??', [
 			prevAlias,
 			'value',
@@ -132,6 +135,6 @@ export class JsonHelperSQLite extends JsonHelperDefault {
 		]);
 	}
 	filterQuery(collection: string, node: JsonFieldNode): Knex.Raw {
-		return this.knex.raw(`JSON_EXTRACT(??.??, ?)`, [collection, node.name, node.jsonPath]);
+		return this.knex.raw(`json_extract(??.??, ?)`, [collection, node.name, node.jsonPath]);
 	}
 }

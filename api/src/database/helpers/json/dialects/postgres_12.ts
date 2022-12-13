@@ -10,11 +10,14 @@ export class JsonHelperPostgres_12 extends JsonHelperDefault {
 			.select(
 				this.nodes.map((node) => {
 					const { dbType } = this.schema.collections[table].fields[node.name];
-					const jsonPath = Object.keys(node.query).length === 0 ? node.jsonPath : this.buildFilterPath(node);
+					let jsonPath = Object.keys(node.query).length === 0 ? node.jsonPath : this.buildFilterPath(node),
+						jsonFn = 'jsonb_path_query';
+					if (jsonPath.endsWith('[*]')) {
+						jsonFn = 'jsonb_path_query_array';
+						jsonPath = jsonPath.substring(0, jsonPath.length - 3);
+					}
 					return this.knex.raw(
-						dbType === 'jsonb'
-							? `jsonb_path_query_array(??.??, ?) as ??`
-							: `jsonb_path_query_array(to_jsonb(??.??), ?) as ??`,
+						dbType === 'jsonb' ? `${jsonFn}(??.??, ?) as ??` : `${jsonFn}(to_jsonb(??.??), ?) as ??`,
 						[table, node.name, jsonPath, node.fieldKey]
 					);
 				})
@@ -26,7 +29,7 @@ export class JsonHelperPostgres_12 extends JsonHelperDefault {
 
 		const conditions = [];
 		for (const [jsonPath, value] of Object.entries(node.query?.filter)) {
-			const { operator: filterOperator, value: filterValue } = getOperation(jsonPath, value);
+			const { operator: filterOperator, value: filterValue } = getOperation(jsonPath, value as Record<string, any>);
 			conditions.push(transformFilterJsonPath(jsonPath, filterOperator, filterValue));
 		}
 
