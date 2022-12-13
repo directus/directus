@@ -6,6 +6,8 @@ import jwt from 'jsonwebtoken';
 import ms from 'ms';
 import { Client, errors, generators, Issuer } from 'openid-client';
 import { getAuthProvider } from '../../auth';
+import getDatabase from '../../database/index';
+import emitter from '../../emitter';
 import env from '../../env';
 import {
 	InvalidConfigException,
@@ -179,16 +181,27 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 			throw new InvalidCredentialsException();
 		}
 
+		const userPayload = {
+			provider,
+			first_name: userInfo.given_name,
+			last_name: userInfo.family_name,
+			email: email,
+			external_identifier: identifier,
+			role: this.config.defaultRoleId,
+			auth_data: tokenSet.refresh_token && JSON.stringify({ refreshToken: tokenSet.refresh_token }),
+		};
+
+		// Run hook so the end user has the chance to augment the
+		// user that is about to be created
+		const updatedUserPayload = await emitter.emitFilter(
+			`auth.register`,
+			userPayload,
+			{ identifier, provider: this.config.provider, accessToken: tokenSet.access_token, userInfo },
+			{ database: getDatabase(), schema: this.schema, accountability: null }
+		);
+
 		try {
-			await this.usersService.createOne({
-				provider,
-				first_name: userInfo.given_name,
-				last_name: userInfo.family_name,
-				email: email,
-				external_identifier: identifier,
-				role: this.config.defaultRoleId,
-				auth_data: tokenSet.refresh_token && JSON.stringify({ refreshToken: tokenSet.refresh_token }),
-			});
+			await this.usersService.createOne(updatedUserPayload);
 		} catch (e) {
 			if (e instanceof RecordNotUniqueException) {
 				logger.warn(e, '[OpenID] Failed to register user. User not unique');
