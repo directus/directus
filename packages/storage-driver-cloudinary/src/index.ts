@@ -195,7 +195,7 @@ export class DriverCloudinary implements Driver {
 
 	async copy(src: string, dest: string) {}
 
-	async write(filepath: string, content: Readable, type = 'application/octet-stream') {
+	async write(filepath: string, content: Readable) {
 		const fullPath = this.fullPath(filepath);
 		const resourceType = this.getResourceType(fullPath);
 
@@ -211,32 +211,6 @@ export class DriverCloudinary implements Driver {
 
 		const signature = this.getFullSignature(uploadParameters);
 
-		const uploadChunk = async (blob: Blob, { offset, total }: { offset: number; total: number }) => {
-			const formData = new FormData();
-
-			formData.set('file', blob);
-			formData.set('timestamp', timestamp);
-			formData.set('api_key', uploadParameters.api_key);
-			formData.set('type', uploadParameters.type);
-			formData.set('public_id', uploadParameters.public_id);
-			formData.set('access_mode', uploadParameters.access_mode);
-			formData.set('signature', signature);
-
-			const response = await fetch(`https://api.cloudinary.com/v1_1/${this.cloudName}/${resourceType}/upload`, {
-				method: 'POST',
-				body: formData,
-				headers: {
-					'X-Unique-Upload-Id': timestamp,
-					'Content-Range': `bytes ${offset}-${offset + blob.size - 1}/${total}`,
-				},
-			});
-
-			if (response.status >= 400) {
-				const responseData = (await response.json()) as { error?: { message?: string } };
-				throw new Error(`Can't upload file "${filepath}": ${responseData?.error?.message ?? 'Unknown'}`);
-			}
-		};
-
 		let currentChunkSize = 0;
 		let totalSize = 0;
 		let uploaded = 0;
@@ -244,7 +218,7 @@ export class DriverCloudinary implements Driver {
 
 		const queue = new PQueue({ concurrency: 10 });
 
-		queue.on('error', (err) => {
+		queue.on('error', (err: Error) => {
 			error = err;
 		});
 
@@ -257,15 +231,19 @@ export class DriverCloudinary implements Driver {
 			currentChunkSize += chunk.length;
 
 			if (currentChunkSize >= 5.5e6) {
-				const blob = new Blob(chunks);
-
-				const params = {
-					offset: uploaded,
-					total: -1,
+				const uploadChunkParams: Parameters<typeof this.uploadChunk>[0] = {
+					resourceType,
+					blob: new Blob(chunks),
+					bytesOffset: uploaded,
+					bytesTotal: -1,
+					parameters: {
+						signature,
+						...uploadParameters,
+					},
 				};
 
 				queue
-					.add(() => uploadChunk(blob, params))
+					.add(() => this.uploadChunk(uploadChunkParams))
 					.catch(() => {
 						/* handled in function scope */
 					});
@@ -278,21 +256,62 @@ export class DriverCloudinary implements Driver {
 			totalSize += chunk.length;
 		}
 
-		queue
-			.add(() =>
-				uploadChunk(new Blob(chunks), {
-					offset: uploaded,
-					total: totalSize,
-				})
-			)
-			.catch(() => {
-				/* handled in function scope */
-			});
+		await queue.add(() =>
+			this.uploadChunk({
+				resourceType,
+				blob: new Blob(chunks),
+				bytesOffset: uploaded,
+				bytesTotal: totalSize,
+				parameters: {
+					signature,
+					...uploadParameters,
+				},
+			})
+		);
 
 		await queue.onIdle();
 
 		if (error) {
-			throw error;
+			throw new Error(`Can't upload file "${filepath}": ${(error as Error).message}`, { cause: error });
+		}
+	}
+
+	private async uploadChunk({
+		resourceType,
+		blob,
+		bytesOffset,
+		bytesTotal,
+		parameters,
+	}: {
+		resourceType: string;
+		blob: Blob;
+		bytesOffset: number;
+		bytesTotal: number;
+		parameters: {
+			timestamp: string;
+			[key: string]: string;
+		};
+	}) {
+		const formData = new FormData();
+
+		formData.set('file', blob);
+
+		for (const [key, value] of Object.entries(parameters)) {
+			formData.set(key, value);
+		}
+
+		const response = await fetch(`https://api.cloudinary.com/v1_1/${this.cloudName}/${resourceType}/upload`, {
+			method: 'POST',
+			body: formData,
+			headers: {
+				'X-Unique-Upload-Id': parameters.timestamp,
+				'Content-Range': `bytes ${bytesOffset}-${bytesOffset + blob.size - 1}/${bytesTotal}`,
+			},
+		});
+
+		if (response.status >= 400) {
+			const responseData = (await response.json()) as { error?: { message?: string } };
+			throw new Error(responseData?.error?.message ?? 'Unknown');
 		}
 	}
 

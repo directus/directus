@@ -1,3 +1,3 @@
-# `@directus/storage-driver-azure`
+# `@directus/storage-driver-cloudinary`
 
-Azure file storage driver for `@directus/storage`
+Cloudinary file storage driver for `@directus/storage`
