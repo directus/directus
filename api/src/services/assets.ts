@@ -3,6 +3,7 @@ import type { Range, Stat } from '@directus/storage';
 
 import { Accountability } from '@directus/shared/types';
 import { Semaphore } from 'async-mutex';
+import type { Readable } from 'node:stream';
 import { Knex } from 'knex';
 import { contentType } from 'mime-types';
 import hash from 'object-hash';
@@ -39,7 +40,7 @@ export class AssetsService {
 		id: string,
 		transformation: TransformationParams | TransformationPreset,
 		range?: Range
-	): Promise<{ stream: NodeJS.ReadableStream; file: any; stat: Stat }> {
+	): Promise<{ stream: Readable; file: any; stat: Stat }> {
 		const storage = await getStorage();
 
 		const publicSettings = await this.knex
@@ -128,9 +129,9 @@ export class AssetsService {
 
 			if (exists) {
 				return {
-					stream: await storage.location(file.storage).getStream(assetFilename, range),
+					stream: await storage.location(file.storage).read(assetFilename, range),
 					file,
-					stat: await storage.location(file.storage).getStat(assetFilename),
+					stat: await storage.location(file.storage).stat(assetFilename),
 				};
 			}
 
@@ -151,7 +152,7 @@ export class AssetsService {
 			}
 
 			return await semaphore.runExclusive(async () => {
-				const readStream = await storage.location(file.storage).getStream(file.filename_disk, range);
+				const readStream = await storage.location(file.storage).read(file.filename_disk, range);
 				const transformer = sharp({
 					limitInputPixels: Math.pow(env.ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION, 2),
 					sequentialRead: true,
@@ -166,17 +167,17 @@ export class AssetsService {
 					readStream.unpipe(transformer);
 				});
 
-				await storage.location(file.storage).put(assetFilename, readStream.pipe(transformer), type);
+				await storage.location(file.storage).write(assetFilename, readStream.pipe(transformer), type);
 
 				return {
-					stream: await storage.location(file.storage).getStream(assetFilename, range),
-					stat: await storage.location(file.storage).getStat(assetFilename),
+					stream: await storage.location(file.storage).read(assetFilename, range),
+					stat: await storage.location(file.storage).stat(assetFilename),
 					file,
 				};
 			});
 		} else {
-			const readStream = await storage.location(file.storage).getStream(file.filename_disk, range);
-			const stat = await storage.location(file.storage).getStat(file.filename_disk);
+			const readStream = await storage.location(file.storage).read(file.filename_disk, range);
+			const stat = await storage.location(file.storage).stat(file.filename_disk);
 			return { stream: readStream, file, stat };
 		}
 	}

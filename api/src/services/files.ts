@@ -1,22 +1,23 @@
-import exifr from 'exifr';
-import { clone, pick } from 'lodash';
+import { toArray } from '@directus/shared/utils';
+import { lookup } from 'dns';
+import encodeURL from 'encodeurl';
+import { clone } from 'lodash';
 import { extension } from 'mime-types';
+import net from 'net';
+import type { Readable } from 'node:stream';
+import { pipeline } from 'node:stream/promises';
+import os from 'os';
 import path from 'path';
 import sharp from 'sharp';
 import url, { URL } from 'url';
 import { promisify } from 'util';
-import { lookup } from 'dns';
 import emitter from '../emitter';
 import env from '../env';
 import { ForbiddenException, InvalidPayloadException, ServiceUnavailableException } from '../exceptions';
 import logger from '../logger';
 import { getStorage } from '../storage';
-import { AbstractServiceOptions, File, PrimaryKey, MutationOptions, Metadata } from '../types';
-import { toArray } from '@directus/shared/utils';
+import { AbstractServiceOptions, File, Metadata, MutationOptions, PrimaryKey } from '../types';
 import { ItemsService } from './items';
-import net from 'net';
-import os from 'os';
-import encodeURL from 'encodeurl';
 
 // @ts-ignore
 import formatTitle from '@directus/format-title';
@@ -32,7 +33,7 @@ export class FilesService extends ItemsService {
 	 * Upload a single new file to the configured storage adapter
 	 */
 	async uploadOne(
-		stream: NodeJS.ReadableStream,
+		stream: Readable,
 		data: Partial<File> & { filename_download: string; storage: string },
 		primaryKey?: PrimaryKey,
 		opts?: MutationOptions
@@ -73,19 +74,19 @@ export class FilesService extends ItemsService {
 		}
 
 		try {
-			await storage.location(data.storage).put(payload.filename_disk, stream, payload.type);
+			await storage.location(data.storage).write(payload.filename_disk, stream, payload.type);
 		} catch (err: any) {
 			logger.warn(`Couldn't save file ${payload.filename_disk}`);
 			logger.warn(err);
 			throw new ServiceUnavailableException(`Couldn't save file ${payload.filename_disk}`, { service: 'files' });
 		}
 
-		const { size } = await storage.location(data.storage).getStat(payload.filename_disk);
+		const { size } = await storage.location(data.storage).stat(payload.filename_disk);
 		payload.filesize = size;
 
 		if (['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/tiff'].includes(payload.type)) {
-			const buffer = await storage.location(data.storage).getBuffer(payload.filename_disk);
-			const { height, width, description, title, tags, metadata } = await this.getMetadata(buffer);
+			const stream = await storage.location(data.storage).read(payload.filename_disk);
+			const { height, width, description, title, tags, metadata } = await this.getMetadata(stream);
 
 			payload.height ??= height;
 			payload.width ??= width;
@@ -130,11 +131,33 @@ export class FilesService extends ItemsService {
 	/**
 	 * Extract metadata from a buffer's content
 	 */
-	async getMetadata(bufferContent: any, allowList = env.FILE_METADATA_ALLOW_LIST): Promise<Metadata> {
+	async getMetadata(stream: Readable, allowList = env.FILE_METADATA_ALLOW_LIST): Promise<Metadata> {
 		const metadata: Metadata = {};
 
 		try {
-			const sharpMetadata = await sharp(bufferContent, {}).metadata();
+			let sharpMetadata: sharp.Metadata | null = null;
+			let error: Error | null = null;
+
+			await pipeline(
+				stream,
+				sharp().metadata((err, metadata) => {
+					if (err) {
+						error = err;
+					}
+
+					sharpMetadata = metadata;
+				})
+			);
+
+			if (error) {
+				throw error;
+			}
+
+			if (!sharpMetadata) {
+				throw new Error(`Couldn't extract sharp metadata from file`);
+			}
+
+			sharpMetadata = sharpMetadata as sharp.Metadata;
 
 			if (sharpMetadata.orientation && sharpMetadata.orientation >= 5) {
 				metadata.height = sharpMetadata.width;
@@ -148,38 +171,38 @@ export class FilesService extends ItemsService {
 			logger.warn(err);
 		}
 
-		try {
-			const exifrMetadata = await exifr.parse(bufferContent, {
-				icc: false,
-				iptc: true,
-				ifd1: true,
-				interop: true,
-				translateValues: true,
-				reviveValues: true,
-				mergeOutput: false,
-			});
+		// try {
+		// 	const exifrMetadata = await exifr.parse(bufferContent, {
+		// 		icc: false,
+		// 		iptc: true,
+		// 		ifd1: true,
+		// 		interop: true,
+		// 		translateValues: true,
+		// 		reviveValues: true,
+		// 		mergeOutput: false,
+		// 	});
 
-			if (allowList === '*' || allowList?.[0] === '*') {
-				metadata.metadata = exifrMetadata;
-			} else {
-				metadata.metadata = pick(exifrMetadata, allowList);
-			}
+		// 	if (allowList === '*' || allowList?.[0] === '*') {
+		// 		metadata.metadata = exifrMetadata;
+		// 	} else {
+		// 		metadata.metadata = pick(exifrMetadata, allowList);
+		// 	}
 
-			if (!metadata.description && exifrMetadata?.Caption) {
-				metadata.description = exifrMetadata.Caption;
-			}
+		// 	if (!metadata.description && exifrMetadata?.Caption) {
+		// 		metadata.description = exifrMetadata.Caption;
+		// 	}
 
-			if (exifrMetadata?.Headline) {
-				metadata.title = exifrMetadata.Headline;
-			}
+		// 	if (exifrMetadata?.Headline) {
+		// 		metadata.title = exifrMetadata.Headline;
+		// 	}
 
-			if (exifrMetadata?.Keywords) {
-				metadata.tags = exifrMetadata.Keywords;
-			}
-		} catch (err: any) {
-			logger.warn(`Couldn't extract EXIF metadata from file`);
-			logger.warn(err);
-		}
+		// 	if (exifrMetadata?.Keywords) {
+		// 		metadata.tags = exifrMetadata.Keywords;
+		// 	}
+		// } catch (err: any) {
+		// 	logger.warn(`Couldn't extract EXIF metadata from file`);
+		// 	logger.warn(err);
+		// }
 
 		return metadata;
 	}
@@ -249,7 +272,7 @@ export class FilesService extends ItemsService {
 		let fileResponse;
 
 		try {
-			fileResponse = await axios.get<NodeJS.ReadableStream>(encodeURL(importURL), {
+			fileResponse = await axios.get<Readable>(encodeURL(importURL), {
 				responseType: 'stream',
 			});
 		} catch (err: any) {

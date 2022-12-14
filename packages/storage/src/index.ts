@@ -1,3 +1,5 @@
+import type { Readable } from 'node:stream';
+
 export class StorageManager {
 	private drivers = new Map<string, typeof Driver>();
 	private locations = new Map<string, Driver>();
@@ -42,8 +44,8 @@ export type Stat = {
 export declare class Driver {
 	constructor(config: Record<string, unknown>);
 
-	read(filepath: string, range?: Range): Promise<NodeJS.ReadableStream>;
-	write(filepath: string, content: NodeJS.ReadableStream): Promise<void>;
+	read(filepath: string, range?: Range): Promise<Readable>;
+	write(filepath: string, content: Readable, type?: string): Promise<void>;
 	delete(filepath: string): Promise<void>;
 	stat(filepath: string): Promise<Stat>;
 	exists(filepath: string): Promise<boolean>;

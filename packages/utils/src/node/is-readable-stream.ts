@@ -1,4 +1,6 @@
-export const isReadableStream = (input: any): input is NodeJS.ReadableStream => {
+import type { Readable } from 'node:stream';
+
+export const isReadableStream = (input: any): input is Readable => {
 	return (
 		input !== null &&
 		typeof input === 'object' &&

@@ -267,7 +267,7 @@ describe('#write', () => {
 		const mockDirname = randDirectoryPath();
 		vi.mocked(dirname).mockReturnValueOnce(mockDirname);
 
-		await driver.write(sample.path.input, sample.text);
+		await driver.write(sample.path.input, sample.stream);
 
 		expect(dirname).toHaveBeenCalledWith(sample.path.inputFull);
 		expect(driver['ensureDir']).toHaveBeenCalledWith(mockDirname);

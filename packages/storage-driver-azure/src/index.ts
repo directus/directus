@@ -42,10 +42,10 @@ export class DriverAzure implements Driver {
 			throw new Error(`No stream returned for file "${filepath}"`);
 		}
 
-		return readableStreamBody;
+		return readableStreamBody as Readable;
 	}
 
-	async write(filepath: string, content: NodeJS.ReadableStream, type = 'application/octet-stream') {
+	async write(filepath: string, content: Readable, type = 'application/octet-stream') {
 		const blockBlobClient = this.containerClient.getBlockBlobClient(this.fullPath(filepath));
 
 		await blockBlobClient.uploadStream(content as Readable, undefined, undefined, {

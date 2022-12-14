@@ -16,6 +16,7 @@ import { toArray } from '@directus/shared/utils';
 import getMailer from '../mailer';
 import { SettingsService } from './settings';
 import { getOSInfo } from '../utils/get-os-info';
+import { Readable } from 'node:stream';
 
 export class ServerService {
 	knex: Knex;
@@ -306,8 +307,8 @@ export class ServerService {
 				const startTime = performance.now();
 
 				try {
-					await disk.put(`health-${checkID}`, 'check');
-					await disk.get(`health-${checkID}`);
+					await disk.write(`health-${checkID}`, Readable.from(['check']));
+					await disk.read(`health-${checkID}`);
 					await disk.delete(`health-${checkID}`);
 				} catch (err: any) {
 					checks[`storage:${location}:responseTime`][0].status = 'error';

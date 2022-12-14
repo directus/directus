@@ -3,6 +3,7 @@ import { normalizePath } from '@directus/utils';
 import type { Bucket, GetFilesOptions } from '@google-cloud/storage';
 import { Storage } from '@google-cloud/storage';
 import { join } from 'node:path';
+import type { Readable } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
 
 export type DriverGCSConfig = {
@@ -36,7 +37,7 @@ export class DriverGCS implements Driver {
 		return this.file(this.fullPath(filepath)).createReadStream(range);
 	}
 
-	async write(filepath: string, content: NodeJS.ReadableStream) {
+	async write(filepath: string, content: Readable) {
 		const file = this.file(this.fullPath(filepath));
 		const stream = file.createWriteStream({ resumable: false });
 		await pipeline(content, stream);

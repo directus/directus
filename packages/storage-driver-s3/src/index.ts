@@ -18,6 +18,7 @@ import type { Driver, Range } from '@directus/storage';
 import { normalizePath } from '@directus/utils';
 import { isReadableStream } from '@directus/utils/node';
 import { join } from 'node:path';
+import type { Readable } from 'node:stream';
 
 export type DriverS3Config = {
 	root?: string;
@@ -68,7 +69,7 @@ export class DriverS3 implements Driver {
 		return normalizePath(join(this.root, filepath));
 	}
 
-	async read(filepath: string, range?: Range): Promise<NodeJS.ReadableStream> {
+	async read(filepath: string, range?: Range): Promise<Readable> {
 		const commandInput: GetObjectCommandInput = {
 			Key: this.fullPath(filepath),
 			Bucket: this.bucket,
@@ -133,7 +134,7 @@ export class DriverS3 implements Driver {
 		await this.client.send(new CopyObjectCommand(params));
 	}
 
-	async write(filepath: string, content: NodeJS.ReadableStream, type?: string) {
+	async write(filepath: string, content: Readable, type?: string) {
 		const params: PutObjectCommandInput = {
 			Key: this.fullPath(filepath),
 			Body: content,
