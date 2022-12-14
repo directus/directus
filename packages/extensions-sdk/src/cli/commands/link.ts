@@ -39,7 +39,7 @@ export default async function link(extensionsPath: string): Promise<void> {
     }
 
     if(type === 'pack' || type === 'bundle') {
-        extensionTarget = path.join(absoluteExtensionsPath, extensionName);
+        extensionTarget = path.join(absoluteExtensionsPath, 'bundles', extensionName);
 
         try {
             fs.ensureSymlinkSync(extensionPath, extensionTarget);
