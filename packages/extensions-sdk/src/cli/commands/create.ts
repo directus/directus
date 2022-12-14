@@ -154,7 +154,7 @@ async function createLocalExtension({
 }
 
 function getPackageManifest(name: string, options: ExtensionOptions, deps: Record<string, string>) {
-	return {
+	const packageManifest: Record<string, any> = {
 		name: EXTENSION_NAME_REGEX.test(name) ? name : `directus-extension-${name}`,
 		version: '1.0.0',
 		keywords: ['directus', 'directus-extension', `directus-custom-${options.type}`],
@@ -162,9 +162,16 @@ function getPackageManifest(name: string, options: ExtensionOptions, deps: Recor
 		scripts: {
 			build: 'directus-extension build',
 			dev: 'directus-extension build -w --no-minify',
+			link : 'directus-extension link',
 		},
 		devDependencies: deps,
-	};
+	}
+
+	if(options.type === 'bundle' || options.type === 'pack') {
+		packageManifest.scripts['add'] = 'directus-extension add';
+	}
+
+	return packageManifest;
 }
 
 function getDoneMessage(type: ExtensionPackageType, targetDir: string, targetPath: string, packageManager: string) {
