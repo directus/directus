@@ -231,7 +231,7 @@ class ExtensionManager {
 				if(isIn(type, HYBRID_EXTENSION_TYPES)) {
 					return [path.posix.join(typeDir, '*', 'app.js'), path.posix.join(typeDir, '*', 'api.js')]
 				} else if(isIn(type, PACKAGE_EXTENSION_TYPES)) {
-					return [path.posix.join(typeDir, '*', 'dist', 'app.js'), path.posix.join(typeDir, '*', 'dist', 'api.js')]
+					return path.posix.join(typeDir, '*', 'dist', '*')
 				} else {
 					return path.posix.join(typeDir, '*', 'index.js')
 				}
