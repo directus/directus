@@ -4,6 +4,10 @@ import type { Driver } from '@directus/storage';
 export const getStorageDriver = async (driverName: string): Promise<typeof Driver> => {
 	const aliasMap: Record<string, string> = {
 		local: '@directus/storage-driver-local',
+		s3: '@directus/storage-driver-s3',
+		gcs: '@directus/storage-driver-gcs',
+		azure: '@directus/storage-driver-azure',
+		cloudinary: '@directus/storage-driver-cloudinary',
 	};
 
 	if (driverName in aliasMap) {

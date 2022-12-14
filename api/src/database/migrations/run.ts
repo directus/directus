@@ -10,9 +10,6 @@ import { dynamicImport } from '../../utils/dynamic-import';
 // @ts-ignore
 import formatTitle from '@directus/format-title';
 
-// @ts-ignore
-import formatTitle from '@directus/format-title';
-
 export default async function run(database: Knex, direction: 'up' | 'down' | 'latest', log = true): Promise<void> {
 	let migrationFiles = await fse.readdir(__dirname);
 

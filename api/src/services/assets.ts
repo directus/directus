@@ -1,4 +1,6 @@
-import { Range, StatResponse } from '@directus/drive';
+// @ts-expect-error https://github.com/microsoft/TypeScript/issues/49721
+import type { Range, Stat } from '@directus/storage';
+
 import { Accountability } from '@directus/shared/types';
 import { Semaphore } from 'async-mutex';
 import { Knex } from 'knex';
@@ -37,7 +39,7 @@ export class AssetsService {
 		id: string,
 		transformation: TransformationParams | TransformationPreset,
 		range?: Range
-	): Promise<{ stream: NodeJS.ReadableStream; file: any; stat: StatResponse }> {
+	): Promise<{ stream: NodeJS.ReadableStream; file: any; stat: Stat }> {
 		const storage = await getStorage();
 
 		const publicSettings = await this.knex
