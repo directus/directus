@@ -37,6 +37,7 @@ const dictionary = {
 
 const emojiBase = await loadEmojiBase();
 
+// Custom recents provider with localized data
 class LocalizedRecentsProvider extends LocalStorageProvider {
 	addOrUpdateRecent(emoji: EmojiRecord, maxCount: number): void {
 		const localizedEmoji: LocalizedEmojiRecord = { ...emoji, locale: emojiBase.locale };
@@ -76,6 +77,7 @@ const emojiPicker = createPopup(
 	{
 		position: 'bottom',
 		showCloseButton: false,
+		onPositionLost: 'close',
 	}
 );
 
@@ -96,31 +98,39 @@ async function loadEmojiBase() {
 		dictionary?: Record<string, string>;
 	} = { locale: 'en' };
 	const currentLocale = locale.value.toLocaleLowerCase();
+	// Try to fetch emoji data for current full locale first, then for current language and lastly for 'en'
 	for (const variant of [currentLocale, currentLocale.split('-')[0], 'en']) {
 		try {
 			data.emojiData = (
 				await import(
 					// Note: We need a relative path here due to Rollup dynamic import limitations
 					// https://github.com/rollup/plugins/tree/master/packages/dynamic-import-vars#limitations
-					// https://github.com/vitejs/vite/issues/7680
 					`../../../node_modules/emojibase-data/${variant}/data.json`
 				)
 			).default;
+			// Set locale to the one which could actually be loaded
 			data.locale = variant as Locale;
 			break;
 		} catch {
-			// Ignore
+			// Not expected to fail since at least the static fallback of 'en' should work
+			if (variant === 'en') {
+				// eslint-disable-next-line no-console
+				console.warn('Failed to load emoji data - picmo attempts to fetch data from CDN');
+				break;
+			}
 		}
 	}
 	if (data.locale) {
 		try {
-			data.messages = (await import(`../../node_modules/emojibase-data/${data.locale}/messages.json`)).default;
+			data.messages = (await import(`../../../node_modules/emojibase-data/${data.locale}/messages.json`)).default;
 			data.dictionary = data.messages?.groups.reduce((accumulator, currentValue) => {
 				accumulator[`categories.${currentValue.key}`] = currentValue.message;
 				return accumulator;
 			}, {} as Record<string, string>);
 		} catch {
-			// Ignore
+			// Not expected to fail since emoji data has been loaded successfully as well
+			// eslint-disable-next-line no-console
+			console.warn('Failed to load emoji messages - picmo attempts to fetch data from CDN');
 		}
 	}
 	return data;
