@@ -206,7 +206,7 @@ export class DriverCloudinary implements Driver {
 			api_key: this.apiKey,
 			type: 'upload',
 			access_mode: this.accessMode,
-			public_id: this.getPublicId(this.fullPath(filepath)),
+			public_id: this.getPublicId(fullPath),
 		};
 
 		const signature = this.getFullSignature(uploadParameters);
@@ -218,15 +218,9 @@ export class DriverCloudinary implements Driver {
 
 		const queue = new PQueue({ concurrency: 10 });
 
-		queue.on('error', (err: Error) => {
-			error = err;
-		});
-
 		const chunks: Buffer[] = [];
 
 		for await (const chunk of content) {
-			if (error) break;
-
 			chunks.push(chunk);
 			currentChunkSize += chunk.length;
 
@@ -244,8 +238,8 @@ export class DriverCloudinary implements Driver {
 
 				queue
 					.add(() => this.uploadChunk(uploadChunkParams))
-					.catch(() => {
-						/* handled in function scope */
+					.catch((err) => {
+						error = err;
 					});
 
 				uploaded += currentChunkSize;
@@ -256,18 +250,22 @@ export class DriverCloudinary implements Driver {
 			totalSize += chunk.length;
 		}
 
-		await queue.add(() =>
-			this.uploadChunk({
-				resourceType,
-				blob: new Blob(chunks),
-				bytesOffset: uploaded,
-				bytesTotal: totalSize,
-				parameters: {
-					signature,
-					...uploadParameters,
-				},
-			})
-		);
+		queue
+			.add(() =>
+				this.uploadChunk({
+					resourceType,
+					blob: new Blob(chunks),
+					bytesOffset: uploaded,
+					bytesTotal: totalSize,
+					parameters: {
+						signature,
+						...uploadParameters,
+					},
+				})
+			)
+			.catch((err) => {
+				error = err;
+			});
 
 		await queue.onIdle();
 

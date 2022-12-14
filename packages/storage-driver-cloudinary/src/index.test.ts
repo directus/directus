@@ -27,12 +27,12 @@ import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { IMAGE_EXTENSIONS, VIDEO_EXTENSIONS } from './constants.js';
 import type { DriverCloudinaryConfig } from './index.js';
 import { DriverCloudinary } from './index.js';
+import { Blob } from 'node:buffer';
 
 vi.mock('@directus/utils/node');
 vi.mock('@directus/utils');
 vi.mock('node:path');
 vi.mock('node:crypto');
-vi.mock('node:stream');
 vi.mock('undici');
 
 let sample: {
@@ -584,7 +584,7 @@ describe('#read', () => {
 
 	test('Returns readable stream from web stream', async () => {
 		const mockStream = {} as Readable;
-		vi.mocked(Readable.fromWeb).mockReturnValue(mockStream);
+		vi.spyOn(Readable, 'fromWeb').mockReturnValue(mockStream);
 
 		const stream = await driver.read(sample.path.input);
 
@@ -792,23 +792,158 @@ describe('#move', () => {
 describe.todo('#copy', () => {});
 
 describe('#write', () => {
-	let mockResponse: { json: Mock; status: number };
-	let mockResponseBody: {
-		error?: { message?: string };
-	};
+	let stream: Readable;
+	let chunks: string[];
 
-	beforeEach(() => {
-		mockResponseBody = {};
+	beforeEach(async () => {
+		chunks = randUnique({ length: randNumber({ min: 1, max: 10 }) });
 
-		mockResponse = {
-			json: vi.fn().mockResolvedValue(mockResponseBody),
-			status: 200,
-		};
+		async function* generate() {
+			for (const chunk of chunks) {
+				yield chunk;
+			}
+		}
 
-		vi.mocked(fetch).mockResolvedValue(mockResponse as unknown as Response);
+		stream = Readable.from(generate());
+
+		driver['uploadChunk'] = vi.fn();
 	});
 
-	test('It works', () => {});
+	test('Gets full path for input', async () => {
+		await driver.write(sample.path.input, stream);
+
+		expect(driver['fullPath']).toHaveBeenCalledWith(sample.path.input);
+	});
+
+	test('Gets resource type for full path', async () => {
+		await driver.write(sample.path.input, stream);
+
+		expect(driver['getResourceType']).toHaveBeenCalledWith(sample.path.inputFull);
+	});
+
+	test('Constructs signature from correct upload parameters', async () => {
+		await driver.write(sample.path.input, stream);
+
+		expect(driver['getFullSignature']).toHaveBeenCalledWith({
+			timestamp: sample.timestamp,
+			api_key: sample.config.apiKey,
+			type: 'upload',
+			access_mode: sample.config.accessMode,
+			public_id: sample.publicId.input,
+		});
+	});
+
+	test('Queues upload once stream has buffered', async () => {
+		await driver.write(sample.path.input, stream);
+
+		expect(driver['uploadChunk']).toHaveBeenCalledOnce();
+		expect(driver['uploadChunk']).toHaveBeenCalledWith({
+			resourceType: sample.resourceType,
+			blob: new Blob(chunks),
+			bytesOffset: 0,
+			bytesTotal: new Blob(chunks).size,
+			parameters: {
+				timestamp: sample.timestamp,
+				access_mode: sample.config.accessMode,
+				api_key: sample.config.apiKey,
+				public_id: sample.publicId.input,
+				signature: sample.fullSignature,
+				type: 'upload',
+			},
+		});
+	});
+
+	test('Queues chunk upload each time chunks add up to at least 5.5MB of data', async () => {
+		const chunk1 = Buffer.alloc(3e6).toString(); // nothing happens yet
+		const chunk2 = Buffer.alloc(3e6).toString(); // adds up to 6MB together with chunk1, so sent as chunk
+		const chunk3 = Buffer.alloc(1e6).toString(); // sent as separate final request
+
+		chunks = [chunk1, chunk2, chunk3];
+
+		await driver.write(sample.path.input, stream);
+
+		expect(driver['uploadChunk']).toHaveBeenCalledTimes(2);
+
+		expect(driver['uploadChunk']).toHaveBeenCalledWith({
+			resourceType: sample.resourceType,
+			blob: new Blob([chunk1, chunk2]),
+			bytesOffset: 0,
+			bytesTotal: -1,
+			parameters: {
+				timestamp: sample.timestamp,
+				access_mode: sample.config.accessMode,
+				api_key: sample.config.apiKey,
+				public_id: sample.publicId.input,
+				signature: sample.fullSignature,
+				type: 'upload',
+			},
+		});
+	});
+
+	test('Sends final chunk with total size information', async () => {
+		const chunk1 = Buffer.alloc(3e6).toString(); // nothing happens yet
+		const chunk2 = Buffer.alloc(3e6).toString(); // adds up to 6MB together with chunk1, so sent as chunk
+		const chunk3 = Buffer.alloc(1e6).toString(); // sent as separate final request
+
+		chunks = [chunk1, chunk2, chunk3];
+
+		await driver.write(sample.path.input, stream);
+
+		expect(driver['uploadChunk']).toHaveBeenCalledTimes(2);
+
+		expect(driver['uploadChunk']).toHaveBeenCalledWith({
+			resourceType: sample.resourceType,
+			blob: new Blob([chunk3]),
+			bytesOffset: 6e6,
+			bytesTotal: 7e6,
+			parameters: {
+				timestamp: sample.timestamp,
+				access_mode: sample.config.accessMode,
+				api_key: sample.config.apiKey,
+				public_id: sample.publicId.input,
+				signature: sample.fullSignature,
+				type: 'upload',
+			},
+		});
+	});
+
+	test('Throws error if one of the chunks failed to upload', async () => {
+		const chunk1 = Buffer.alloc(3e6).toString(); // nothing happens yet
+		const chunk2 = Buffer.alloc(3e6).toString(); // adds up to 6MB together with chunk1, so sent as chunk
+		const chunk3 = Buffer.alloc(1e6).toString(); // sent as separate final request
+
+		chunks = [chunk1, chunk2, chunk3];
+
+		const mockErrorMessage = randText();
+		vi.mocked(driver['uploadChunk']).mockRejectedValueOnce(new Error(mockErrorMessage));
+		vi.mocked(driver['uploadChunk']).mockResolvedValueOnce();
+
+		try {
+			await driver.write(sample.path.input, stream);
+		} catch (err: any) {
+			expect(err).toBeInstanceOf(Error);
+			expect(err.message).toBe(`Can't upload file "${sample.path.input}": ${mockErrorMessage}`);
+		}
+	});
+
+	test('Throws error if last chunk failed to upload', async () => {
+		const chunk1 = Buffer.alloc(3e6).toString(); // nothing happens yet
+		const chunk2 = Buffer.alloc(3e6).toString(); // adds up to 6MB together with chunk1, so sent as chunk
+		const chunk3 = Buffer.alloc(1e6).toString(); // sent as separate final request
+
+		chunks = [chunk1, chunk2, chunk3];
+
+		const mockErrorMessage = randText();
+		vi.mocked(driver['uploadChunk']).mockResolvedValueOnce();
+		vi.mocked(driver['uploadChunk']).mockRejectedValueOnce(new Error(mockErrorMessage));
+
+		try {
+			await driver.write(sample.path.input, stream);
+		} catch (err: any) {
+			expect(err).toBeInstanceOf(Error);
+			expect(err.message).toBe(`Can't upload file "${sample.path.input}": ${mockErrorMessage}`);
+		}
+	});
 });
 
 describe('#uploadChunk', () => {
