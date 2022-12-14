@@ -1,9 +1,9 @@
 import path from 'path';
 import fse from 'fs-extra';
 import { pluralize } from '../pluralize';
-import { ExtensionType } from '../../types';
+import { ExtensionType, PackageExtensionType } from '../../types';
 
-export async function ensureExtensionDirs(extensionsPath: string, types: readonly ExtensionType[]): Promise<void> {
+export async function ensureExtensionDirs(extensionsPath: string, types: readonly (ExtensionType | PackageExtensionType)[]): Promise<void> {
 	for (const extensionType of types) {
 		const dirPath = path.resolve(extensionsPath, pluralize(extensionType));
 		try {

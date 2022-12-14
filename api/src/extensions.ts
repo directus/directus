@@ -1,10 +1,9 @@
 import {
 	API_OR_HYBRID_EXTENSION_PACKAGE_TYPES,
-	API_OR_HYBRID_EXTENSION_TYPES,
 	APP_SHARED_DEPS,
 	EXTENSION_PACKAGE_TYPES,
-	EXTENSION_TYPES,
 	HYBRID_EXTENSION_TYPES,
+	PACKAGE_EXTENSION_TYPES,
 } from '@directus/shared/constants';
 import * as sharedExceptions from '@directus/shared/exceptions';
 import {
@@ -190,7 +189,7 @@ class ExtensionManager {
 
 	private async load(): Promise<void> {
 		try {
-			await ensureExtensionDirs(env.EXTENSIONS_PATH, env.SERVE_APP ? EXTENSION_TYPES : API_OR_HYBRID_EXTENSION_TYPES);
+			await ensureExtensionDirs(env.EXTENSIONS_PATH, env.SERVE_APP ? EXTENSION_PACKAGE_TYPES : API_OR_HYBRID_EXTENSION_PACKAGE_TYPES);
 
 			this.extensions = await this.getExtensions();
 		} catch (err: any) {
@@ -226,12 +225,16 @@ class ExtensionManager {
 		if (!this.watcher) {
 			logger.info('Watching extensions for changes...');
 
-			const localExtensionPaths = (env.SERVE_APP ? EXTENSION_TYPES : API_OR_HYBRID_EXTENSION_TYPES).flatMap((type) => {
+			const localExtensionPaths = (env.SERVE_APP ? EXTENSION_PACKAGE_TYPES : API_OR_HYBRID_EXTENSION_PACKAGE_TYPES).flatMap((type) => {
 				const typeDir = path.posix.join(pathToRelativeUrl(env.EXTENSIONS_PATH), pluralize(type));
 
-				return isIn(type, HYBRID_EXTENSION_TYPES)
-					? [path.posix.join(typeDir, '*', 'app.js'), path.posix.join(typeDir, '*', 'api.js')]
-					: path.posix.join(typeDir, '*', 'index.js');
+				if(isIn(type, HYBRID_EXTENSION_TYPES)) {
+					return [path.posix.join(typeDir, '*', 'app.js'), path.posix.join(typeDir, '*', 'api.js')]
+				} else if(isIn(type, PACKAGE_EXTENSION_TYPES)) {
+					return [path.posix.join(typeDir, '*', 'dist', 'app.js'), path.posix.join(typeDir, '*', 'dist', 'api.js')]
+				} else {
+					return path.posix.join(typeDir, '*', 'index.js')
+				}
 			});
 
 			this.watcher = chokidar.watch([path.resolve('package.json'), ...localExtensionPaths], {
