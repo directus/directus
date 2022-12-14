@@ -1075,6 +1075,52 @@ describe('#uploadChunk', () => {
 	});
 });
 
-describe.todo('#delete', () => {});
+describe('#delete', () => {
+	beforeEach(async () => {
+		await driver.delete(sample.path.input);
+	});
+
+	test('Gets full path', () => {
+		expect(driver['fullPath']).toHaveBeenCalledWith(sample.path.input);
+	});
+
+	test('Gets resource type for full path', () => {
+		expect(driver['getResourceType']).toHaveBeenCalledWith(sample.path.inputFull);
+	});
+
+	test('Gets publicId for full path', () => {
+		expect(driver['getPublicId']).toHaveBeenCalledWith(sample.path.inputFull);
+	});
+
+	test('Generates signature for delete parameters', () => {
+		expect(driver['getFullSignature']).toHaveBeenCalledWith({
+			timestamp: sample.timestamp,
+			api_key: sample.config.apiKey,
+			resource_type: sample.resourceType,
+			public_id: sample.publicId.input,
+		});
+	});
+
+	test('Calls fetch with correct parameters', () => {
+		expect(driver['toFormUrlEncoded']).toHaveBeenCalledWith({
+			timestamp: sample.timestamp,
+			api_key: sample.config.apiKey,
+			resource_type: sample.resourceType,
+			public_id: sample.publicId.input,
+			signature: sample.fullSignature,
+		});
+
+		expect(fetch).toHaveBeenCalledWith(
+			`https://api.cloudinary.com/v1_1/${sample.config.cloudName}/${sample.resourceType}/destroy`,
+			{
+				method: 'POST',
+				body: sample.formUrlEncoded,
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+				},
+			}
+		);
+	});
+});
 
 describe.todo('#list', () => {});

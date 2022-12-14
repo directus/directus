@@ -317,7 +317,32 @@ export class DriverCloudinary implements Driver {
 		}
 	}
 
-	async delete(filepath: string) {}
+	async delete(filepath: string) {
+		const fullPath = this.fullPath(filepath);
+		const resourceType = this.getResourceType(fullPath);
+		const publicId = this.getPublicId(fullPath);
+		const url = `https://api.cloudinary.com/v1_1/${this.cloudName}/${resourceType}/destroy`;
+
+		const parameters = {
+			timestamp: this.getTimestamp(),
+			api_key: this.apiKey,
+			resource_type: resourceType,
+			public_id: publicId,
+		};
+
+		const signature = this.getFullSignature(parameters);
+
+		await fetch(url, {
+			method: 'POST',
+			body: this.toFormUrlEncoded({
+				...parameters,
+				signature,
+			}),
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+			},
+		});
+	}
 
 	async *list(prefix = '') {}
 }
