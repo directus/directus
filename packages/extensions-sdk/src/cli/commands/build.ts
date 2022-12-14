@@ -73,11 +73,6 @@ export default async function build(options: BuildOptions): Promise<void> {
 
 		const extensionOptions = extensionManifest[EXTENSION_PKG_KEY];
 
-		if (extensionOptions.type === 'pack') {
-			log(`Building extension type ${chalk.bold('pack')} is not currently supported.`, 'error');
-			process.exit(1);
-		}
-
 		if (extensionOptions.type === 'bundle') {
 			await buildBundleExtension({
 				entries: extensionOptions.entries,
@@ -124,11 +119,6 @@ export default async function build(options: BuildOptions): Promise<void> {
 				).join(', ')}.`,
 				'error'
 			);
-			process.exit(1);
-		}
-
-		if (type === 'pack') {
-			log(`Building extension type ${chalk.bold('pack')} is not currently supported.`, 'error');
 			process.exit(1);
 		}
 

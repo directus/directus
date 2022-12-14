@@ -48,11 +48,6 @@ export default async function add(): Promise<void> {
 
 	const extensionOptions = extensionManifest[EXTENSION_PKG_KEY];
 
-	if (extensionOptions.type === 'pack') {
-		log(`Adding entries to extensions with type ${chalk.bold('pack')} is not currently supported.`, 'error');
-		process.exit(1);
-	}
-
 	const sourceExists = await fse.pathExists(path.resolve('src'));
 
 	if (extensionOptions.type === 'bundle') {

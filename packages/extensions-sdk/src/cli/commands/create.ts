@@ -83,8 +83,7 @@ async function createPackageExtension({
 	await copyTemplate(type, targetPath);
 
 	const host = `^${getSdkVersion()}`;
-	const options: ExtensionOptions =
-		type === 'bundle' ? { type, path: { app: 'dist/app.js', api: 'dist/api.js' }, entries: [], host } : { type, host };
+	const options: ExtensionOptions = { type, path: { app: 'dist/app.js', api: 'dist/api.js' }, entries: [], host };
 	const packageManifest = getPackageManifest(name, options, await getExtensionDevDeps(type));
 
 	await fse.writeJSON(path.join(targetPath, 'package.json'), packageManifest, { spaces: '\t' });
@@ -167,7 +166,7 @@ function getPackageManifest(name: string, options: ExtensionOptions, deps: Recor
 		devDependencies: deps,
 	}
 
-	if(options.type === 'bundle' || options.type === 'pack') {
+	if(options.type === 'bundle') {
 		packageManifest.scripts['add'] = 'directus-extension add';
 	}
 

@@ -257,9 +257,7 @@ class ExtensionManager {
 				extensions
 					.filter((extension) => !extension.local)
 					.flatMap((extension) =>
-						extension.type === 'pack'
-							? path.resolve(extension.path, 'package.json')
-							: isTypeIn(extension, HYBRID_EXTENSION_TYPES) || extension.type === 'bundle'
+						isTypeIn(extension, HYBRID_EXTENSION_TYPES) || extension.type === 'bundle'
 							? [
 									path.resolve(extension.path, extension.entrypoint.app),
 									path.resolve(extension.path, extension.entrypoint.api),
@@ -282,7 +280,7 @@ class ExtensionManager {
 		);
 		const localExtensions = await getLocalExtensions(
 			env.EXTENSIONS_PATH,
-			env.SERVE_APP ? EXTENSION_TYPES : API_OR_HYBRID_EXTENSION_TYPES
+			env.SERVE_APP ? EXTENSION_PACKAGE_TYPES : API_OR_HYBRID_EXTENSION_PACKAGE_TYPES
 		);
 
 		return [...packageExtensions, ...localExtensions];
