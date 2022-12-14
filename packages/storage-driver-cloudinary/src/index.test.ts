@@ -3,7 +3,6 @@ import {
 	rand,
 	randAlphaNumeric,
 	randDirectoryPath,
-	randFileExt,
 	randFilePath,
 	randFileType,
 	randGitBranch as randCloudName,
@@ -14,6 +13,7 @@ import {
 	randText,
 	randWord,
 } from '@ngneat/falso';
+import { Blob } from 'node:buffer';
 import type { Hash } from 'node:crypto';
 import { createHash } from 'node:crypto';
 import type { ParsedPath } from 'node:path';
@@ -27,7 +27,6 @@ import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { IMAGE_EXTENSIONS, VIDEO_EXTENSIONS } from './constants.js';
 import type { DriverCloudinaryConfig } from './index.js';
 import { DriverCloudinary } from './index.js';
-import { Blob } from 'node:buffer';
 
 vi.mock('@directus/utils/node');
 vi.mock('@directus/utils');
@@ -1123,4 +1122,93 @@ describe('#delete', () => {
 	});
 });
 
-describe.todo('#list', () => {});
+describe('#list', () => {
+	let mockResponse: {
+		status: number;
+		json: Mock;
+	};
+
+	let mockFilePaths: string[];
+
+	let mockResponseBody: {
+		resources: { public_id: string }[];
+		next_cursor?: string;
+	};
+
+	beforeEach(() => {
+		mockFilePaths = randFilePath({ length: randNumber({ min: 1, max: 10 }) });
+
+		mockResponseBody = {
+			resources: mockFilePaths.map((filepath) => ({
+				public_id: filepath,
+			})),
+		};
+
+		mockResponse = {
+			status: 200,
+			json: vi.fn().mockResolvedValue(mockResponseBody),
+		};
+
+		vi.mocked(fetch).mockResolvedValue(mockResponse as unknown as Response);
+	});
+
+	test('Gets full path for prefix', async () => {
+		await driver.list(sample.path.input).next();
+		expect(driver['fullPath']).toHaveBeenCalledWith(sample.path.input);
+	});
+
+	test('Gets public id for prefix', async () => {
+		await driver.list(sample.path.input).next();
+		expect(driver['getPublicId']).toHaveBeenCalledWith(sample.path.inputFull);
+	});
+
+	test('Fetches search api results', async () => {
+		await driver.list(sample.path.input).next();
+		expect(fetch).toHaveBeenCalledWith(
+			`https://api.cloudinary.com/v1_1/${sample.config.cloudName}/resources/search?expression=${sample.publicId.input}*&next_cursor=`,
+			{
+				method: 'GET',
+				headers: {
+					Authorization: sample.basicAuth,
+				},
+			}
+		);
+	});
+
+	test('Yields resource public IDs from response', async () => {
+		const output: string[] = [];
+
+		for await (const path of driver.list(sample.path.input)) {
+			output.push(path);
+		}
+
+		expect(output.length).toBe(mockResponseBody.resources.length);
+		expect(output).toStrictEqual(mockFilePaths);
+	});
+
+	test('Keeps calling fetch as long as a next_cursor is returned', async () => {
+		const mockNextCursor = randSha();
+
+		mockResponse.json.mockResolvedValueOnce({
+			...mockResponseBody,
+			next_cursor: mockNextCursor,
+		});
+
+		const output: string[] = [];
+
+		for await (const path of driver.list(sample.path.input)) {
+			output.push(path);
+		}
+
+		expect(fetch).toHaveBeenCalledTimes(2);
+		expect(fetch).toHaveBeenCalledWith(
+			`https://api.cloudinary.com/v1_1/${sample.config.cloudName}/resources/search?expression=${sample.publicId.input}*&next_cursor=${mockNextCursor}`,
+			{
+				method: 'GET',
+				headers: {
+					Authorization: sample.basicAuth,
+				},
+			}
+		);
+	});
+});

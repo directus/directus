@@ -344,7 +344,37 @@ export class DriverCloudinary implements Driver {
 		});
 	}
 
-	async *list(prefix = '') {}
+	async *list(prefix = '') {
+		const fullPath = this.fullPath(prefix);
+		const publicId = this.getPublicId(fullPath);
+
+		let nextCursor = '';
+
+		do {
+			const response = await fetch(
+				`https://api.cloudinary.com/v1_1/${this.cloudName}/resources/search?expression=${publicId}*&next_cursor=${nextCursor}`,
+				{
+					method: 'GET',
+					headers: {
+						Authorization: this.getBasicAuth(),
+					},
+				}
+			);
+
+			const json = (await response.json()) as {
+				next_cursor: string;
+				resources: {
+					public_id: string;
+				}[];
+			};
+
+			nextCursor = json.next_cursor;
+
+			for (const file of json.resources) {
+				yield file.public_id;
+			}
+		} while (nextCursor);
+	}
 }
 
 export default DriverCloudinary;
