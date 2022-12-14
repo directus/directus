@@ -1,10 +1,12 @@
 import type { Driver, Range } from '@directus/storage';
 import { normalizePath } from '@directus/utils';
+import { Blob, Buffer } from 'node:buffer';
 import { createHash } from 'node:crypto';
 import { extname, join, parse } from 'node:path';
 import { Readable } from 'node:stream';
-import { fetch } from 'undici';
+import PQueue from 'p-queue';
 import type { RequestInit } from 'undici';
+import { fetch, FormData } from 'undici';
 import { IMAGE_EXTENSIONS, VIDEO_EXTENSIONS } from './constants.js';
 
 export type DriverCloudinaryConfig = {
@@ -193,7 +195,106 @@ export class DriverCloudinary implements Driver {
 
 	async copy(src: string, dest: string) {}
 
-	async write(filepath: string, content: Buffer | NodeJS.ReadableStream | string, type = 'application/octet-stream') {}
+	async write(filepath: string, content: Readable, type = 'application/octet-stream') {
+		const fullPath = this.fullPath(filepath);
+		const resourceType = this.getResourceType(fullPath);
+
+		const timestamp = this.getTimestamp();
+
+		const uploadParameters = {
+			timestamp: timestamp,
+			api_key: this.apiKey,
+			type: 'upload',
+			access_mode: this.accessMode,
+			public_id: this.getPublicId(this.fullPath(filepath)),
+		};
+
+		const signature = this.getFullSignature(uploadParameters);
+
+		const uploadChunk = async (blob: Blob, { offset, total }: { offset: number; total: number }) => {
+			const formData = new FormData();
+
+			formData.set('file', blob);
+			formData.set('timestamp', timestamp);
+			formData.set('api_key', uploadParameters.api_key);
+			formData.set('type', uploadParameters.type);
+			formData.set('public_id', uploadParameters.public_id);
+			formData.set('access_mode', uploadParameters.access_mode);
+			formData.set('signature', signature);
+
+			const response = await fetch(`https://api.cloudinary.com/v1_1/${this.cloudName}/${resourceType}/upload`, {
+				method: 'POST',
+				body: formData,
+				headers: {
+					'X-Unique-Upload-Id': timestamp,
+					'Content-Range': `bytes ${offset}-${offset + blob.size - 1}/${total}`,
+				},
+			});
+
+			if (response.status >= 400) {
+				const responseData = (await response.json()) as { error?: { message?: string } };
+				throw new Error(`Can't upload file "${filepath}": ${responseData?.error?.message ?? 'Unknown'}`);
+			}
+		};
+
+		let currentChunkSize = 0;
+		let totalSize = 0;
+		let uploaded = 0;
+		let error: Error | null = null;
+
+		const queue = new PQueue({ concurrency: 10 });
+
+		queue.on('error', (err) => {
+			error = err;
+		});
+
+		const chunks: Buffer[] = [];
+
+		for await (const chunk of content) {
+			if (error) break;
+
+			chunks.push(chunk);
+			currentChunkSize += chunk.length;
+
+			if (currentChunkSize >= 5.5e6) {
+				const blob = new Blob(chunks);
+
+				const params = {
+					offset: uploaded,
+					total: -1,
+				};
+
+				queue
+					.add(() => uploadChunk(blob, params))
+					.catch(() => {
+						/* handled in function scope */
+					});
+
+				uploaded += currentChunkSize;
+				currentChunkSize = 0;
+				chunks.length = 0; // empty the array of chunks
+			}
+
+			totalSize += chunk.length;
+		}
+
+		queue
+			.add(() =>
+				uploadChunk(new Blob(chunks), {
+					offset: uploaded,
+					total: totalSize,
+				})
+			)
+			.catch(() => {
+				/* handled in function scope */
+			});
+
+		await queue.onIdle();
+
+		if (error) {
+			throw error;
+		}
+	}
 
 	async delete(filepath: string) {}
 

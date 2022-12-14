@@ -33,6 +33,7 @@
 	"dependencies": {
 		"@directus/storage": "workspace:*",
 		"@directus/utils": "workspace:*",
+		"p-queue": "7.3.0",
 		"undici": "5.14.0"
 	},
 	"devDependencies": {

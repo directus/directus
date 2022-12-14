@@ -27,6 +27,7 @@ import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { IMAGE_EXTENSIONS, VIDEO_EXTENSIONS } from './constants.js';
 import type { DriverCloudinaryConfig } from './index.js';
 import { DriverCloudinary } from './index.js';
+import FormData from 'form-data';
 
 vi.mock('@directus/utils/node');
 vi.mock('@directus/utils');
@@ -791,7 +792,25 @@ describe('#move', () => {
 
 describe.todo('#copy', () => {});
 
-describe.todo('#put', () => {});
+describe('#write', () => {
+	let mockResponse: { json: Mock; status: number };
+	let mockResponseBody: {
+		error?: { message?: string };
+	};
+
+	beforeEach(() => {
+		mockResponseBody = {};
+
+		mockResponse = {
+			json: vi.fn().mockResolvedValue(mockResponseBody),
+			status: 200,
+		};
+
+		vi.mocked(fetch).mockResolvedValue(mockResponse as unknown as Response);
+	});
+
+	test('It works', () => {});
+});
 
 describe.todo('#delete', () => {});
 
