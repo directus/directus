@@ -412,15 +412,25 @@ describe('#getResourceType', () => {
 	});
 
 	test('Returns "image" for extensions contained in the image extensions constant', () => {
-		IMAGE_EXTENSIONS.forEach((ext) => expect(driver['getResourceType'](ext)).toBe('image'));
+		IMAGE_EXTENSIONS.forEach((ext) => {
+			vi.mocked(extname).mockReturnValue(ext);
+			const result = driver['getResourceType'](sample.path.inputFull);
+			expect(extname).toHaveBeenCalledWith(sample.path.inputFull);
+			expect(result).toBe('image');
+		});
 	});
 
 	test('Returns "video" for extensions contained in the video extensions constant', () => {
-		VIDEO_EXTENSIONS.forEach((ext) => expect(driver['getResourceType'](ext)).toBe('video'));
+		VIDEO_EXTENSIONS.forEach((ext) => {
+			vi.mocked(extname).mockReturnValue(ext);
+			const result = driver['getResourceType'](sample.path.inputFull);
+			expect(extname).toHaveBeenCalledWith(sample.path.inputFull);
+			expect(result).toBe('video');
+		});
 	});
 
 	test('Returns "raw" for unknown / other extensions', () => {
-		randWord({ length: 5 }).forEach((ext) => expect(driver['getResourceType'](ext)).toBe('raw'));
+		randWord({ length: 5 }).forEach((filepath) => expect(driver['getResourceType'](filepath)).toBe('raw'));
 	});
 });
 
@@ -508,13 +518,8 @@ describe('#read', () => {
 	});
 
 	test('Gets resource type for extension of given filepath', async () => {
-		const mockFileExt = randFileExt();
-		vi.mocked(extname).mockReturnValue(mockFileExt);
-
 		await driver.read(sample.path.input);
-
-		expect(extname).toHaveBeenCalledWith(sample.path.input);
-		expect(driver['getResourceType']).toHaveBeenCalledWith(mockFileExt);
+		expect(driver['getResourceType']).toHaveBeenCalledWith(sample.path.input);
 	});
 
 	test('Creates signature for full filepath', async () => {
@@ -789,7 +794,22 @@ describe('#move', () => {
 	});
 });
 
-describe.todo('#copy', () => {});
+describe('#copy', () => {
+	beforeEach(() => {
+		driver.read = vi.fn().mockResolvedValue(sample.stream);
+		driver.write = vi.fn();
+	});
+
+	test('Calls read with input path', async () => {
+		await driver.copy(sample.path.src, sample.path.dest);
+		expect(driver.read).toHaveBeenCalledWith(sample.path.src);
+	});
+
+	test('Calls write with dest path and read stream', async () => {
+		await driver.copy(sample.path.src, sample.path.dest);
+		expect(driver.write).toHaveBeenCalledWith(sample.path.dest, sample.stream);
+	});
+});
 
 describe('#write', () => {
 	let stream: Readable;

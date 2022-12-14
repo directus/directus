@@ -83,7 +83,8 @@ export class DriverCloudinary implements Driver {
 	 * Used to guess what resource type is appropriate for a given filepath
 	 * @see https://cloudinary.com/documentation/image_transformations#image_upload_note
 	 */
-	private getResourceType(fileExtension: string) {
+	private getResourceType(filepath: string) {
+		const fileExtension = extname(filepath);
 		if (IMAGE_EXTENSIONS.includes(fileExtension)) return 'image';
 		if (VIDEO_EXTENSIONS.includes(fileExtension)) return 'video';
 		return 'raw';
@@ -109,7 +110,7 @@ export class DriverCloudinary implements Driver {
 	}
 
 	async read(filepath: string, range?: Range) {
-		const resourceType = this.getResourceType(extname(filepath));
+		const resourceType = this.getResourceType(filepath);
 		const fullPath = this.fullPath(filepath);
 		const signature = this.getParameterSignature(fullPath);
 		const url = `https://res.cloudinary.com/${this.cloudName}/${resourceType}/upload/${signature}/${fullPath}`;
@@ -193,7 +194,10 @@ export class DriverCloudinary implements Driver {
 		}
 	}
 
-	async copy(src: string, dest: string) {}
+	async copy(src: string, dest: string) {
+		const stream = await this.read(src);
+		await this.write(dest, stream);
+	}
 
 	async write(filepath: string, content: Readable) {
 		const fullPath = this.fullPath(filepath);
