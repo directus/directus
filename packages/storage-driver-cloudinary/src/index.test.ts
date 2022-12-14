@@ -21,13 +21,12 @@ import { extname, join, parse } from 'node:path';
 import { PassThrough, Readable } from 'node:stream';
 import { ReadableStream } from 'node:stream/web';
 import type { Response } from 'undici';
-import { fetch } from 'undici';
+import { fetch, FormData } from 'undici';
 import type { Mock } from 'vitest';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { IMAGE_EXTENSIONS, VIDEO_EXTENSIONS } from './constants.js';
 import type { DriverCloudinaryConfig } from './index.js';
 import { DriverCloudinary } from './index.js';
-import FormData from 'form-data';
 
 vi.mock('@directus/utils/node');
 vi.mock('@directus/utils');
@@ -810,6 +809,115 @@ describe('#write', () => {
 	});
 
 	test('It works', () => {});
+});
+
+describe('#uploadChunk', () => {
+	let mockResponse: { json: Mock; status: number };
+	let mockResponseBody: {
+		error?: { message?: string };
+	};
+	let mockFormData: {
+		set: Mock;
+	};
+	let input: Parameters<typeof driver['uploadChunk']>[0];
+
+	beforeEach(() => {
+		mockResponseBody = {};
+
+		mockResponse = {
+			json: vi.fn().mockResolvedValue(mockResponseBody),
+			status: 200,
+		};
+
+		mockFormData = {
+			set: vi.fn(),
+		};
+
+		input = {
+			resourceType: sample.resourceType,
+			blob: { size: randNumber({ min: 0, max: 1500 }) } as Blob,
+			bytesOffset: randNumber({ min: 0, max: 500 }),
+			bytesTotal: randNumber(),
+			parameters: {
+				timestamp: sample.timestamp,
+			},
+		};
+
+		vi.mocked(fetch).mockResolvedValue(mockResponse as unknown as Response);
+		vi.mocked(FormData).mockReturnValue(mockFormData as unknown as FormData);
+	});
+
+	test('Creates FormData object', async () => {
+		await driver['uploadChunk'](input);
+
+		expect(FormData).toHaveBeenCalledOnce();
+		expect(FormData).toHaveBeenCalledWith();
+	});
+
+	test('Saves all passed parameters to form data', async () => {
+		const keys = randUnique({ length: randNumber({ min: 1, max: 10 }) });
+		const values = randUnique({ length: randNumber({ min: 1, max: 10 }) });
+
+		keys.forEach((key, index) => {
+			input.parameters[key] = values[index]!;
+		});
+
+		await driver['uploadChunk'](input);
+
+		keys.forEach((key, index) => {
+			expect(mockFormData.set).toHaveBeenCalledWith(key, values[index]!);
+		});
+	});
+
+	test('Calls fetch with formData an range header', async () => {
+		await driver['uploadChunk'](input);
+
+		expect(fetch).toHaveBeenCalledWith(
+			`https://api.cloudinary.com/v1_1/${sample.config.cloudName}/${sample.resourceType}/upload`,
+			{
+				method: 'POST',
+				body: mockFormData,
+				headers: {
+					'X-Unique-Upload-Id': sample.timestamp,
+					'Content-Range': `bytes ${input.bytesOffset}-${input.bytesOffset + input.blob.size - 1}/${input.bytesTotal}`,
+				},
+			}
+		);
+	});
+
+	test('Throws an error when the response statusCode is >=400', async () => {
+		mockResponse.status = randNumber({ min: 400, max: 599 });
+		try {
+			await driver['uploadChunk'](input);
+		} catch (err: any) {
+			expect(err).toBeInstanceOf(Error);
+			expect(err.message).toBe('Unknown');
+		}
+	});
+
+	test('Defaults to Unknown if Cloudinary API response error message is not known', async () => {
+		mockResponse.status = randNumber({ min: 400, max: 599 });
+		mockResponseBody.error = {};
+
+		try {
+			await driver['uploadChunk'](input);
+		} catch (err: any) {
+			expect(err).toBeInstanceOf(Error);
+			expect(err.message).toBe('Unknown');
+		}
+	});
+
+	test('Sets error message to Cloudinary return message', async () => {
+		mockResponse.status = randNumber({ min: 400, max: 599 });
+		mockResponseBody.error = { message: randWord() };
+
+		try {
+			await driver['uploadChunk'](input);
+		} catch (err: any) {
+			expect(err).toBeInstanceOf(Error);
+			expect(err.message).toBe(mockResponseBody.error.message);
+		}
+	});
 });
 
 describe.todo('#delete', () => {});
