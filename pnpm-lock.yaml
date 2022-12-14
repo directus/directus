@@ -76,6 +76,7 @@ importers:
       '@directus/storage-driver-azure': workspace:*
       '@directus/storage-driver-cloudinary': workspace:*
       '@directus/storage-driver-gcs': workspace:*
+      '@directus/storage-driver-local': workspace:*
       '@directus/storage-driver-s3': workspace:*
       '@godaddy/terminus': 4.11.2
       '@keyv/redis': 2.5.3
@@ -220,6 +221,7 @@ importers:
       '@directus/storage-driver-azure': link:../packages/storage-driver-azure
       '@directus/storage-driver-cloudinary': link:../packages/storage-driver-cloudinary
       '@directus/storage-driver-gcs': link:../packages/storage-driver-gcs
+      '@directus/storage-driver-local': link:../packages/storage-driver-local
       '@directus/storage-driver-s3': link:../packages/storage-driver-s3
       '@godaddy/terminus': 4.11.2
       '@rollup/plugin-alias': 4.0.2_rollup@3.3.0

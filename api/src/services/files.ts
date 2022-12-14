@@ -18,6 +18,8 @@ import logger from '../logger';
 import { getStorage } from '../storage';
 import { AbstractServiceOptions, File, Metadata, MutationOptions, PrimaryKey } from '../types';
 import { ItemsService } from './items';
+import { parse } from 'exifr';
+import { pick } from 'lodash';
 
 // @ts-ignore
 import formatTitle from '@directus/format-title';
@@ -132,79 +134,138 @@ export class FilesService extends ItemsService {
 	 * Extract metadata from a buffer's content
 	 */
 	async getMetadata(stream: Readable, allowList = env.FILE_METADATA_ALLOW_LIST): Promise<Metadata> {
-		const metadata: Metadata = {};
-
-		try {
-			let sharpMetadata: sharp.Metadata | null = null;
-			let error: Error | null = null;
-
-			await pipeline(
+		return new Promise((resolve, reject) => {
+			pipeline(
 				stream,
-				sharp().metadata((err, metadata) => {
-					if (err) {
-						error = err;
+				sharp().metadata(async (err, sharpMetadata) => {
+					if (err) reject(err);
+
+					const metadata: Metadata = {};
+
+					if (sharpMetadata.orientation && sharpMetadata.orientation >= 5) {
+						metadata.height = sharpMetadata.width;
+						metadata.width = sharpMetadata.height;
+					} else {
+						metadata.width = sharpMetadata.width;
+						metadata.height = sharpMetadata.height;
 					}
 
-					sharpMetadata = metadata;
+					/**
+					 * @TODO
+					 *
+					 * Exifr requires a buffer to be passed, but we don't want to read the whole file into memory
+					 * just to get the exif information. Sharp already extracts just the exif data into a buffer, but exifr
+					 * expects the whole file instead of just the exif buffer.
+					 * Needs a bit more research
+					 */
+
+					// if (sharpMetadata.exif) {
+					// 	const exifrMetadata = await parse(sharpMetadata.exif, {
+					// 		icc: false,
+					// 		iptc: true,
+					// 		ifd1: true,
+					// 		interop: true,
+					// 		translateValues: true,
+					// 		reviveValues: true,
+					// 		mergeOutput: false,
+					// 	});
+
+					// 	if (allowList === '*' || allowList?.[0] === '*') {
+					// 		metadata.metadata = exifrMetadata;
+					// 	} else {
+					// 		metadata.metadata = pick(exifrMetadata, allowList);
+					// 	}
+
+					// 	if (!metadata.description && exifrMetadata?.Caption) {
+					// 		metadata.description = exifrMetadata.Caption;
+					// 	}
+
+					// 	if (exifrMetadata?.Headline) {
+					// 		metadata.title = exifrMetadata.Headline;
+					// 	}
+
+					// 	if (exifrMetadata?.Keywords) {
+					// 		metadata.tags = exifrMetadata.Keywords;
+					// 	}
+					// }
+
+					resolve(metadata);
 				})
 			);
-
-			if (error) {
-				throw error;
-			}
-
-			if (!sharpMetadata) {
-				throw new Error(`Couldn't extract sharp metadata from file`);
-			}
-
-			sharpMetadata = sharpMetadata as sharp.Metadata;
-
-			if (sharpMetadata.orientation && sharpMetadata.orientation >= 5) {
-				metadata.height = sharpMetadata.width;
-				metadata.width = sharpMetadata.height;
-			} else {
-				metadata.width = sharpMetadata.width;
-				metadata.height = sharpMetadata.height;
-			}
-		} catch (err: any) {
-			logger.warn(`Couldn't extract sharp metadata from file`);
-			logger.warn(err);
-		}
+		});
+		// const metadata: Metadata = {};
 
 		// try {
-		// 	const exifrMetadata = await exifr.parse(bufferContent, {
-		// 		icc: false,
-		// 		iptc: true,
-		// 		ifd1: true,
-		// 		interop: true,
-		// 		translateValues: true,
-		// 		reviveValues: true,
-		// 		mergeOutput: false,
-		// 	});
+		// 	let sharpMetadata: sharp.Metadata | null = null;
+		// 	let error: Error | null = null;
 
-		// 	if (allowList === '*' || allowList?.[0] === '*') {
-		// 		metadata.metadata = exifrMetadata;
+		// 	await pipeline(
+		// 		stream,
+		// 		sharp().metadata((err, metadata) => {
+		// 			if (err) {
+		// 				error = err;
+		// 			}
+
+		// 			sharpMetadata = metadata;
+		// 		})
+		// 	);
+
+		// 	if (error) {
+		// 		throw error;
+		// 	}
+
+		// 	if (!sharpMetadata) {
+		// 		throw new Error(`Couldn't extract sharp metadata from file`);
+		// 	}
+
+		// 	sharpMetadata = sharpMetadata as sharp.Metadata;
+
+		// 	if (sharpMetadata.orientation && sharpMetadata.orientation >= 5) {
+		// 		metadata.height = sharpMetadata.width;
+		// 		metadata.width = sharpMetadata.height;
 		// 	} else {
-		// 		metadata.metadata = pick(exifrMetadata, allowList);
-		// 	}
-
-		// 	if (!metadata.description && exifrMetadata?.Caption) {
-		// 		metadata.description = exifrMetadata.Caption;
-		// 	}
-
-		// 	if (exifrMetadata?.Headline) {
-		// 		metadata.title = exifrMetadata.Headline;
-		// 	}
-
-		// 	if (exifrMetadata?.Keywords) {
-		// 		metadata.tags = exifrMetadata.Keywords;
+		// 		metadata.width = sharpMetadata.width;
+		// 		metadata.height = sharpMetadata.height;
 		// 	}
 		// } catch (err: any) {
-		// 	logger.warn(`Couldn't extract EXIF metadata from file`);
+		// 	logger.warn(`Couldn't extract sharp metadata from file`);
 		// 	logger.warn(err);
 		// }
 
-		return metadata;
+		// // try {
+		// // 	const exifrMetadata = await exifr.parse(bufferContent, {
+		// // 		icc: false,
+		// // 		iptc: true,
+		// // 		ifd1: true,
+		// // 		interop: true,
+		// // 		translateValues: true,
+		// // 		reviveValues: true,
+		// // 		mergeOutput: false,
+		// // 	});
+
+		// // 	if (allowList === '*' || allowList?.[0] === '*') {
+		// // 		metadata.metadata = exifrMetadata;
+		// // 	} else {
+		// // 		metadata.metadata = pick(exifrMetadata, allowList);
+		// // 	}
+
+		// // 	if (!metadata.description && exifrMetadata?.Caption) {
+		// // 		metadata.description = exifrMetadata.Caption;
+		// // 	}
+
+		// // 	if (exifrMetadata?.Headline) {
+		// // 		metadata.title = exifrMetadata.Headline;
+		// // 	}
+
+		// // 	if (exifrMetadata?.Keywords) {
+		// // 		metadata.tags = exifrMetadata.Keywords;
+		// // 	}
+		// // } catch (err: any) {
+		// // 	logger.warn(`Couldn't extract EXIF metadata from file`);
+		// // 	logger.warn(err);
+		// // }
+
+		// return metadata;
 	}
 
 	/**
