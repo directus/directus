@@ -1,9 +1,10 @@
 import exifr from 'exifr';
 import knex, { Knex } from 'knex';
-import { MockClient, Tracker, getTracker } from 'knex-mock-client';
+import { getTracker, MockClient, Tracker } from 'knex-mock-client';
+import { Readable } from 'node:stream';
+import { afterEach, beforeAll, beforeEach, describe, expect, it, MockedFunction, SpyInstance, vi } from 'vitest';
 import { FilesService, ItemsService } from '.';
 import { InvalidPayloadException } from '../exceptions';
-import { describe, beforeAll, afterEach, expect, it, vi, beforeEach, MockedFunction, SpyInstance } from 'vitest';
 
 vi.mock('exifr');
 
@@ -81,10 +82,10 @@ describe('Integration Tests', () => {
 
 			it('accepts allowlist metadata tags', async () => {
 				exifrParseSpy.mockReturnValue(Promise.resolve({ ...sampleMetadata }));
-				const bufferContent = 'file buffer content';
+				const stream = Readable.from(['file buffer content']);
 				const allowList = ['CustomTagB', 'CustomTagA'];
 
-				const metadata = await service.getMetadata(bufferContent, allowList);
+				const metadata = await service.getMetadata(stream, allowList);
 
 				expect(exifrParseSpy).toHaveBeenCalled();
 				expect(metadata.metadata.CustomTagA).toStrictEqual(sampleMetadata.CustomTagA);

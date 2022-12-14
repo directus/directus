@@ -57,8 +57,8 @@ export class FilesService extends ItemsService {
 			// delete the previously saved file and thumbnails to ensure they're generated fresh
 			const disk = storage.location(payload.storage);
 
-			for await (const file of disk.list(String(primaryKey))) {
-				await disk.delete(file.path);
+			for await (const filepath of disk.list(String(primaryKey))) {
+				await disk.delete(filepath);
 			}
 		} else {
 			primaryKey = await this.createOne(payload, { emitEvents: false });
@@ -334,8 +334,8 @@ export class FilesService extends ItemsService {
 			const disk = storage.location(file.storage);
 
 			// Delete file + thumbnails
-			for await (const path of disk.list(file.id)) {
-				await disk.delete(path);
+			for await (const filepath of disk.list(file.id)) {
+				await disk.delete(filepath);
 			}
 		}
 
