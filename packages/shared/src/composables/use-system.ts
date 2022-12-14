@@ -1,6 +1,6 @@
 import { inject } from 'vue';
 import { AxiosInstance } from 'axios';
-import { API_INJECT, EXTENSIONS_INJECT, STORES_INJECT } from '../constants/index.js';
+import { API_INJECT, EXTENSIONS_INJECT, STORES_INJECT } from '../constants';
 import { AppExtensionConfigs, RefRecord } from '../types';
 
 export function useStores(): Record<string, any> {

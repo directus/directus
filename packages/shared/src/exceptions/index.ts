@@ -1,2 +1,2 @@
-export * from './base.js';
-export * from './failed-validation.js';
+export * from './base';
+export * from './failed-validation';

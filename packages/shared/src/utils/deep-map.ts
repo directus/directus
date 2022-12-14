@@ -1,6 +1,4 @@
-import lodash from 'lodash';
-
-const { isObjectLike } = lodash;
+import { isObjectLike } from 'lodash';
 
 export function deepMap(
 	// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types

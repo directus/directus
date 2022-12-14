@@ -1,9 +1,9 @@
 import path from 'path';
-import { APP_OR_HYBRID_EXTENSION_TYPES, HYBRID_EXTENSION_TYPES } from '../../constants/index.js';
+import { APP_OR_HYBRID_EXTENSION_TYPES, HYBRID_EXTENSION_TYPES } from '../../constants';
 import { AppExtension, BundleExtension, Extension, HybridExtension } from '../../types';
-import { isIn, isTypeIn } from '../array-helpers.js';
-import { pluralize } from '../pluralize.js';
-import { pathToRelativeUrl } from './path-to-relative-url.js';
+import { isIn, isTypeIn } from '../array-helpers';
+import { pluralize } from '../pluralize';
+import { pathToRelativeUrl } from './path-to-relative-url';
 
 export function generateExtensionsEntrypoint(extensions: Extension[]): string {
 	const appOrHybridExtensions = extensions.filter((extension): extension is AppExtension | HybridExtension =>

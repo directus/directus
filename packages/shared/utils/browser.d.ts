@@ -1,1 +1,1 @@
-export * from '../dist/utils/browser/index.mjs';
+export * from '../dist/esm/utils/browser';

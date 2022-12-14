@@ -1,10 +1,8 @@
-import lodash from 'lodash';
-import { REGEX_BETWEEN_PARENS } from '../constants/index.js';
+import { cloneDeep, get, isPlainObject, set } from 'lodash';
+import { REGEX_BETWEEN_PARENS } from '../constants';
 import { FieldFunction } from '../types';
 import { Filter } from '../types/filter';
-import { functions } from './functions.js';
-
-const { cloneDeep, get, isPlainObject, set } = lodash;
+import { functions } from './functions';
 
 /**
  * Inject function output fields into a given payload for accurate validation

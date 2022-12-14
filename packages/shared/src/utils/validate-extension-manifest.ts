@@ -4,14 +4,14 @@ import {
 	EXTENSION_TYPES,
 	HYBRID_EXTENSION_TYPES,
 	PACKAGE_EXTENSION_TYPES,
-} from '../constants/index.js';
+} from '../constants';
 import {
 	ExtensionManifest,
 	ExtensionManifestRaw,
 	ExtensionOptionsBundleEntry,
 	ExtensionOptionsBundleEntryRaw,
 } from '../types';
-import { isIn } from './array-helpers.js';
+import { isIn } from './array-helpers';
 
 export function validateExtensionManifest(
 	extensionManifest: ExtensionManifestRaw

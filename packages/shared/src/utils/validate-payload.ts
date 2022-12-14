@@ -1,10 +1,8 @@
 import { FieldFilter, Filter } from '../types/filter';
-import lodash from 'lodash';
-import { generateJoi, JoiOptions } from './generate-joi.js';
-import { injectFunctionResults } from './inject-function-results.js';
+import { flatten } from 'lodash';
+import { generateJoi, JoiOptions } from './generate-joi';
+import { injectFunctionResults } from './inject-function-results';
 import Joi from 'joi';
-
-const { flatten } = lodash;
 
 /**
  * Validate the payload against the given filter rules

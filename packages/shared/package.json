@@ -19,39 +19,32 @@
 	"sideEffects": false,
 	"exports": {
 		"./composables": {
-			"import": "./dist/composables/index.mjs",
-			"require": "./dist/composables/index.js",
-			"types": "./dist/composables/index.d.ts"
+			"import": "./dist/esm/composables/index.js",
+			"require": "./dist/cjs/composables/index.js"
 		},
 		"./constants": {
-			"import": "./dist/constants/index.mjs",
-			"require": "./dist/constants/index.js",
-			"types": "./dist/constants/index.d.ts"
+			"import": "./dist/esm/constants/index.js",
+			"require": "./dist/cjs/constants/index.js"
 		},
 		"./exceptions": {
-			"import": "./dist/exceptions/index.mjs",
-			"require": "./dist/exceptions/index.js",
-			"types": "./dist/exceptions/index.d.ts"
+			"import": "./dist/esm/exceptions/index.js",
+			"require": "./dist/cjs/exceptions/index.js"
 		},
 		"./types": {
-			"import": "./dist/types/index.mjs",
-			"require": "./dist/types/index.js",
-			"types": "./dist/types/index.d.ts"
+			"import": "./dist/esm/types/index.js",
+			"require": "./dist/cjs/types/index.js"
 		},
 		"./utils": {
-			"import": "./dist/utils/index.mjs",
-			"require": "./dist/utils/index.js",
-			"types": "./dist/utils/index.d.ts"
+			"import": "./dist/esm/utils/index.js",
+			"require": "./dist/cjs/utils/index.js"
 		},
 		"./utils/browser": {
-			"import": "./dist/utils/browser/index.mjs",
-			"require": "./dist/utils/browser/index.js",
-			"types": "./dist/utils/browser/index.d.ts"
+			"import": "./dist/esm/utils/browser/index.js",
+			"require": "./dist/cjs/utils/browser/index.js"
 		},
 		"./utils/node": {
-			"import": "./dist/utils/node/index.mjs",
-			"require": "./dist/utils/node/index.js",
-			"types": "./dist/utils/node/index.d.ts"
+			"import": "./dist/esm/utils/node/index.js",
+			"require": "./dist/cjs/utils/node/index.js"
 		},
 		"./package.json": "./package.json"
 	},
@@ -62,7 +55,9 @@
 		"{,utils/}*.d.ts"
 	],
 	"scripts": {
-		"build": "tsup-node src --format cjs,esm --no-splitting --dts",
+		"build": "concurrently --prefix-colors auto --passthrough-arguments \"pnpm:build:* {@}\"",
+		"build:esm": "tsc --project ./tsconfig.json --module ES2015 --outDir ./dist/esm",
+		"build:cjs": "tsc --project ./tsconfig.json --module CommonJS --outDir ./dist/cjs",
 		"dev": "pnpm build -- -w --preserveWatchOutput --incremental",
 		"test": "vitest run",
 		"test:coverage": "vitest run --coverage",
@@ -94,7 +89,6 @@
 		"@types/tmp": "0.2.3",
 		"concurrently": "7.5.0",
 		"tmp": "0.2.1",
-		"tsup": "6.5.0",
 		"typescript": "4.9.3",
 		"vitest": "0.25.2"
 	},

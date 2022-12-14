@@ -1,4 +1,4 @@
-import { useStores } from './use-system.js';
+import { useStores } from './use-system';
 import { AppCollection, Field } from '../types';
 import { computed, ref, Ref, ComputedRef } from 'vue';
 
