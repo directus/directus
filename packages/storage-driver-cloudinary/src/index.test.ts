@@ -1132,6 +1132,9 @@ describe('#list', () => {
 
 	let mockResponseBody: {
 		resources: { public_id: string }[];
+		error?: {
+			message?: string;
+		};
 		next_cursor?: string;
 	};
 
@@ -1210,5 +1213,40 @@ describe('#list', () => {
 				},
 			}
 		);
+	});
+
+	test('Throws error if search api fails', async () => {
+		mockResponse.status = randNumber({ min: 400, max: 599 });
+
+		try {
+			await driver.list(sample.path.input).next();
+		} catch (err: any) {
+			expect(err).toBeInstanceOf(Error);
+			expect(err.message).toBe(`Can't list for prefix "${sample.path.input}": Unknown`);
+		}
+	});
+
+	test('Defaults to Unknown error if the error response does not contain a message', async () => {
+		mockResponse.status = randNumber({ min: 400, max: 599 });
+		mockResponseBody.error = {};
+
+		try {
+			await driver.list(sample.path.input).next();
+		} catch (err: any) {
+			expect(err).toBeInstanceOf(Error);
+			expect(err.message).toBe(`Can't list for prefix "${sample.path.input}": Unknown`);
+		}
+	});
+
+	test('Provides Cloudinary error message', async () => {
+		mockResponse.status = randNumber({ min: 400, max: 599 });
+		mockResponseBody.error = { message: randText() };
+
+		try {
+			await driver.list(sample.path.input).next();
+		} catch (err: any) {
+			expect(err).toBeInstanceOf(Error);
+			expect(err.message).toBe(`Can't list for prefix "${sample.path.input}": ${mockResponseBody.error.message}`);
+		}
 	});
 });

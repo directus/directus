@@ -143,9 +143,11 @@ export class DriverCloudinary implements Driver {
 				Authorization: this.getBasicAuth(),
 			},
 		});
+
 		if (response.status >= 400) {
 			throw new Error(`No stat returned for file "${filepath}"`);
 		}
+
 		const { bytes, created_at } = (await response.json()) as { bytes: number; created_at: string };
 		return { size: bytes, modified: new Date(created_at) };
 	}
@@ -367,6 +369,11 @@ export class DriverCloudinary implements Driver {
 					public_id: string;
 				}[];
 			};
+
+			if (response.status >= 400) {
+				const responseData = (await response.json()) as { error?: { message?: string } };
+				throw new Error(`Can't list for prefix "${prefix}": ${responseData?.error?.message ?? 'Unknown'}`);
+			}
 
 			nextCursor = json.next_cursor;
 
