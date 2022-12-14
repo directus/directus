@@ -1,15 +1,16 @@
 import path from 'path';
 import fse from 'fs-extra';
 import {
+	ApiExtensionType,
+	AppExtensionType,
 	ExtensionLocal,
 	ExtensionManifestRaw,
 	ExtensionPackage,
 	ExtensionPackageType,
-	ExtensionType,
 } from '../../types';
 import { resolvePackage } from './resolve-package';
 import { listFolders } from './list-folders';
-import { EXTENSION_NAME_REGEX, EXTENSION_PKG_KEY, HYBRID_EXTENSION_TYPES } from '../../constants';
+import { EXTENSION_NAME_REGEX, EXTENSION_PKG_KEY, HYBRID_EXTENSION_TYPES, PACKAGE_EXTENSION_TYPES } from '../../constants';
 import { pluralize } from '../pluralize';
 import { validateExtensionManifest } from '../validate-extension-manifest';
 import { isIn, isTypeIn } from '../array-helpers';
@@ -32,24 +33,7 @@ async function resolvePackageExtensions(
 		const extensionOptions = extensionManifest[EXTENSION_PKG_KEY];
 
 		if (isIn(extensionOptions.type, types)) {
-			if (extensionOptions.type === 'pack') {
-				const extensionChildren = Object.keys(extensionManifest.dependencies ?? {}).filter((dep) =>
-					EXTENSION_NAME_REGEX.test(dep)
-				);
-
-				const extension: ExtensionPackage = {
-					path: extensionPath,
-					name: extensionName,
-					version: extensionManifest.version,
-					type: extensionOptions.type,
-					host: extensionOptions.host,
-					children: extensionChildren,
-					local: false,
-				};
-
-				extensions.push(extension);
-				extensions.push(...(await resolvePackageExtensions(extension.children || [], extension.path, types)));
-			} else if (extensionOptions.type === 'bundle') {
+			if (extensionOptions.type === 'bundle') {
 				extensions.push({
 					path: extensionPath,
 					name: extensionName,
@@ -110,7 +94,7 @@ export async function getPackageExtensions(
 	return resolvePackageExtensions(extensionNames, root, types);
 }
 
-export async function getLocalExtensions(root: string, types: readonly ExtensionType[]): Promise<ExtensionLocal[]> {
+export async function getLocalExtensions(root: string, types: readonly ExtensionPackageType[]): Promise<ExtensionLocal[]> {
 	const extensions: ExtensionLocal[] = [];
 
 	for (const extensionType of types) {
@@ -123,12 +107,39 @@ export async function getLocalExtensions(root: string, types: readonly Extension
 			for (const extensionName of extensionNames) {
 				const extensionPath = path.join(typePath, extensionName);
 
-				if (!isIn(extensionType, HYBRID_EXTENSION_TYPES)) {
+				if (!isIn(extensionType, HYBRID_EXTENSION_TYPES) && !isIn(extensionType, PACKAGE_EXTENSION_TYPES)) {
 					extensions.push({
 						path: extensionPath,
 						name: extensionName,
-						type: extensionType,
+						type: extensionType as AppExtensionType | ApiExtensionType,
 						entrypoint: 'index.js',
+						local: true,
+					});
+				} else if (isIn(extensionType, PACKAGE_EXTENSION_TYPES)) {
+
+					const extensionManifest: ExtensionManifestRaw = await fse.readJSON(path.join(extensionPath, 'package.json'));
+
+					if (!validateExtensionManifest(extensionManifest)) {
+						throw new Error(`The extension manifest of "${extensionName}" is not valid.`);
+					}
+
+					const extensionOptions = extensionManifest[EXTENSION_PKG_KEY];
+
+					if(extensionOptions.type !== 'bundle') {
+						throw new Error(`The extension "${extensionName}" is not a bundle extension.`);
+					}
+
+					extensions.push({
+						path: extensionPath,
+						name: extensionName,
+						version: extensionManifest.version,
+						type: 'bundle',
+						entrypoint: {
+							app: extensionOptions.path.app,
+							api: extensionOptions.path.api,
+						},
+						entries: extensionOptions.entries,
+						host: extensionOptions.host,
 						local: true,
 					});
 				} else {

@@ -34,7 +34,7 @@ describe('validateExtensionManifest', () => {
 		const mockExtension = {
 			name: 'test',
 			version: '0.1',
-			'directus:extension': { type: 'pack' },
+			'directus:extension': { type: 'bundle' },
 		};
 
 		expect(validateExtensionManifest(mockExtension)).toBe(false);
@@ -113,16 +113,6 @@ describe('validateExtensionManifest', () => {
 				],
 				host: '^9.0.0',
 			},
-		};
-
-		expect(validateExtensionManifest(mockExtension)).toBe(true);
-	});
-
-	it('returns true when passed a valid ExtensionManifest with a Package type', () => {
-		const mockExtension = {
-			name: 'test',
-			version: '0.1',
-			'directus:extension': { type: 'pack', host: '^9.0.0' },
 		};
 
 		expect(validateExtensionManifest(mockExtension)).toBe(true);

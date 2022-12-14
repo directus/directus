@@ -53,18 +53,13 @@ type HybridExtensionBase = {
 	entrypoint: SplitEntrypoint;
 };
 
-type PackExtensionBase = {
-	type: 'pack';
-	children: string[];
-};
-
 type BundleExtensionBase = {
 	type: 'bundle';
 	entrypoint: SplitEntrypoint;
 	entries: { type: ExtensionType; name: string }[];
+	version: string;
+	host: string;
 };
-
-type PackageExtensionBase = PackExtensionBase | BundleExtensionBase;
 
 type ExtensionLocalBase = ExtensionBase & {
 	local: true;
@@ -76,15 +71,14 @@ type ExtensionPackageBase = ExtensionBase & {
 	local: false;
 };
 
-export type ExtensionLocal = ExtensionLocalBase & (AppExtensionBase | ApiExtensionBase | HybridExtensionBase);
+export type ExtensionLocal = ExtensionLocalBase & (AppExtensionBase | ApiExtensionBase | HybridExtensionBase | BundleExtensionBase);
 export type ExtensionPackage = ExtensionPackageBase &
-	(AppExtensionBase | ApiExtensionBase | HybridExtensionBase | PackageExtensionBase);
+	(AppExtensionBase | ApiExtensionBase | HybridExtensionBase | BundleExtensionBase);
 
 export type AppExtension = AppExtensionBase & (ExtensionLocalBase | ExtensionPackageBase);
 export type ApiExtension = ApiExtensionBase & (ExtensionLocalBase | ExtensionPackageBase);
 export type HybridExtension = HybridExtensionBase & (ExtensionLocalBase | ExtensionPackageBase);
 
-export type PackExtension = PackExtensionBase & ExtensionPackageBase;
 export type BundleExtension = BundleExtensionBase & ExtensionPackageBase;
 
 export type Extension = ExtensionLocal | ExtensionPackage;
@@ -131,20 +125,14 @@ type ExtensionOptionsHybrid = {
 	source: SplitEntrypoint;
 };
 
-type ExtensionOptionsPack = {
-	type: 'pack';
-};
-
 type ExtensionOptionsBundle = {
 	type: 'bundle';
 	path: SplitEntrypoint;
 	entries: ExtensionOptionsBundleEntry[];
 };
 
-type ExtensionOptionsPackage = ExtensionOptionsPack | ExtensionOptionsBundle;
-
 export type ExtensionOptions = ExtensionOptionsBase &
-	(ExtensionOptionsAppOrApi | ExtensionOptionsHybrid | ExtensionOptionsPackage);
+	(ExtensionOptionsAppOrApi | ExtensionOptionsHybrid | ExtensionOptionsBundle);
 
 export type ExtensionManifest = {
 	name: string;
