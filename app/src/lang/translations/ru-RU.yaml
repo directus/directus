@@ -87,10 +87,10 @@ translation_string_key_placeholder: Ключ строки перевода...
 translation_string_translations_placeholder: Добавить новый перевод
 edit_translation_string: Редактировать строку перевода
 delete_translation_string_copy: >-
-  Вы уверены, что хотите удалить строку перевода "{key}"? Это действие не может быть отменено.
+  Вы уверены, что хотите удалить строку перевода «{key}»? Это действие не может быть отменено.
 invite_users: Пригласить пользователей
 invite: Пригласить
-email_already_invited: На адрес "{email}" уже было отправлено приглашение
+email_already_invited: На адрес «{email}» уже было отправлено приглашение
 subject: Тема
 inbox: Входящие
 emails: Email-адреса
@@ -107,7 +107,7 @@ reset_bookmark: Сбросить закладку
 update_bookmark: Обновить закладку
 delete_bookmark: Удалить закладку
 delete_bookmark_copy: >-
-  Вы уверены, что хотите удалить закладку "{bookmark}"? Это действие не может быть отменено.
+  Вы уверены, что хотите удалить закладку «{bookmark}»? Это действие не может быть отменено.
 delete_personal_bookmark: Удалить личную закладку
 delete_role_bookmark: Удалить закладку
 delete_global_bookmark: Удалить глобальную закладку
@@ -168,10 +168,10 @@ field_standard: Стандартный
 field_presentation: Визуализация и псевдонимы
 field_file: Один файл
 field_files: Несколько файлов
-field_m2o: Связка M2O
-field_m2a: Связка M2A
-field_o2m: Связка O2M
-field_m2m: Связка M2M
+field_m2o: Отношение M2O
+field_m2a: Отношение M2A
+field_o2m: Отношение O2M
+field_m2m: Отношение M2M
 field_translations: Переводы
 field_group: Группа полей
 item_permissions: Разрешения элемента
@@ -181,22 +181,22 @@ field_presets: Шаблоны поля
 permissions_for_role: 'Элементы, для которых роль «{role}» имеет разрешение {action}.'
 fields_for_role: 'Поля, для которых роль «{role}» имеет разрешение {action}.'
 validation_for_role: 'Правила, которым должна следовать роль «{role}» для {action} в поле.'
-presets_for_role: 'Значения поля по умолчанию для Роли {role}.'
-presentation_and_aliases: Представление и Алиасы
-revision_post_create: Вот как этот элемент выглядел когда он был создан.
+presets_for_role: 'Значения поля по умолчанию для роли «{role}».'
+presentation_and_aliases: Визуализация и псевдонимы
+revision_post_create: Вот как этот элемент выглядел, когда он был создан.
 revision_post_update: Вот как этот элемент выглядел после обновления.
-changes_made: Ниже приведены конкретные изменения, внесенные в эту редакцию.
+changes_made: Ниже приведены конкретные изменения, внесённые в эту редакцию.
 no_relational_data: Имейте в виду, что реляционные данные здесь не включены.
 junction_field_location: Расположение соединительных полей
 top: Сверху
 bottom: Снизу
 hide_field: Скрыть поле
-hide_field_on_detail: Скрыть Поле в Карточке
-show_field_on_detail: Показать Поле в Карточке
+hide_field_on_detail: Скрыть поле в карточке
+show_field_on_detail: Показать поле в карточке
 delete_field: Удалить поле
-fields_and_layout: Поля и Макет
-field_create_success: 'Создано поле: "{field}"'
-field_update_success: 'Обновлено поле: "{field}"'
+fields_and_layout: Поля и макет
+field_create_success: 'Создано поле: «{field}»'
+field_update_success: 'Обновлено поле: «{field}»'
 duplicate_where_to: Куда вы хотите дублировать это поле?
 language: Язык
 language_placeholder: Выбрать язык...
@@ -207,42 +207,42 @@ group_precision: Точность группы
 global: Глобальный
 admins_have_all_permissions: У администраторов есть все права
 camera: Камера
-show_zero: Показать нулевое
+show_zero: Показать нули
 create_in_advanced_field_creation_mode: Создать поле в расширенном режиме
 continue_in_advanced_field_creation_mode: Создание расширенного поля
 validation: Проверка
 sum: Сумма
 sum_distinct: Сумма уникальных
 avg: Среднее
-avg_distinct: Среднее Уникальных
+avg_distinct: Среднее уникальных
 count: Количество
 count_distinct: Количество уникальных
-min: Мин
-max: Макс
+min: Мин.
+max: Макс.
 exposure: Экспозиция
 shutter: Затвор
 iso: ISO
-focal_length: Фокусное Расстояние
+focal_length: Фокусное расстояние
 schema_setup_key: Имя столбца базы данных этого поля и API ключ
-create_field: Создать Поле
-creating_new_field: 'Новое Поле ({collection})'
+create_field: Создать поле
+creating_new_field: 'Новое поле ({collection})'
 field_in_collection: '{field} ({collection})'
-reset_page_preferences: Сбросить Настройки Страницы
-hidden_field: Скрытое Поле
+reset_page_preferences: Сбросить настройки страницы
+hidden_field: Скрытое поле
 hidden_on_detail: Скрывать в карточке
 disabled_editing_value: Отключить редактирование значения
 key: Ключ
-alias: Алиас
-bigInteger: Big Integer
-boolean: Логическое
+alias: Псевдоним
+bigInteger: Большое целое число
+boolean: Логическое значение
 date: Дата
 date_range: Диапазон дат
-datetime: ДатаВремя
-dateTime: ДатаВремя
+datetime: Дата и время
+dateTime: Дата и время
 precision: Точность
-decimal: Десятичная
-float: Десятичное
-integer: Целое
+decimal: Десятичная дробь с точностью
+float: Десятичная дробь
+integer: Целое число
 json: JSON
 xml: XML
 string: Строка
@@ -251,50 +251,50 @@ time: Время
 timestamp: Отметка времени
 uuid: UUID
 hash: Хэш
-geometry: Геометрия (Все)
+geometry: Геометрия (все)
 geometry.Point: Точка
 geometry.LineString: LineString
 geometry.Polygon: Многоугольник
 geometry.MultiPoint: MultiPoint
 geometry.MultiLineString: MultiLineString
 geometry.MultiPolygon: Мультиполигон
-not_available_for_type: Недоступно для этого Типа
-create_translations: Создать Переводы
-auto_refresh: Авто обновление
+not_available_for_type: Недоступно для этого типа
+create_translations: Создать переводы
+auto_refresh: Автообновление
 refresh_interval: Интервал обновления
 no_refresh: Не обновлять
 refresh_interval_seconds: Мгновенное обновление | Каждую секунду | Каждые {seconds} секунд
 refresh_interval_minutes: Каждую минуту | Каждые {minutes} минут
-auto_generate: Авто-Генерация
+auto_generate: Генерировать автоматически
 this_will_auto_setup_fields_relations: Это автоматически настроит все необходимые поля и отношения.
 click_here: Нажмите здесь
 to_manually_setup_translations: для ручной настройки переводов.
 click_to_manage_translated_fields: >-
   Полей перевода пока нет. Нажмите здесь, чтобы создать их. | Есть одно поле перевода. Нажмите здесь, чтобы управлять им. | Есть {count} полей перевода. Нажмите здесь, чтобы управлять ими.
-fields_group: Группа Полей
+fields_group: Группа полей
 no_collections_found: Нет найденных коллекций.
 new_data_alert: 'В вашей модели данных будет создано следующее:'
 search_collection: Поиск коллекций...
-search_field: Поиск поля...
+search_field: Поиск полей...
 new_field: 'Новое поле'
 new_collection: 'Новая коллекция'
-add_m2o_to_collection: 'Добавить M2O в "{collection}"'
-add_o2m_to_collection: 'Добавить O2M в "{collection}"'
-add_m2m_to_collection: 'Добавить M2M в "{collection}"'
-choose_a_type: Выберите Тип...
+add_m2o_to_collection: 'Добавить M2O в «{collection}»'
+add_o2m_to_collection: 'Добавить O2M в «{collection}»'
+add_m2m_to_collection: 'Добавить M2M в "{collection}»'
+choose_a_type: Выберите тип...
 determined_by_relationship: Определяется отношением
 add_note: Добавить заметку для пользователей...
 add_link: Добавить ссылку
 custom_link: Пользовательская ссылка
-default_value: Значение По умолчанию
-standard_field: Стандартное Поле
-single_file: Один Файл
+default_value: Значение по умолчанию
+standard_field: Стандартное поле
+single_file: Один файл
 multiple_files: Несколько файлов
-m2o_relationship: Отношение Многие к Одному
-o2m_relationship: Связка One to Many
-m2m_relationship: Отношение Многие ко Многим
-m2a_relationship: Отношение Многие к Любому
-invalid_item: Неверное содержимое
+m2o_relationship: Отношение «многие к одному» (M2O)
+o2m_relationship: Отношение «один ко многим» (O2M)
+m2m_relationship: Отношение «многие ко многим» (M2M)
+m2a_relationship: Отношение «многие к любому» (M2A)
+invalid_item: Недействительный элемент
 next: Дальше
 field_name: Название поля
 translations: Переводы
@@ -306,54 +306,54 @@ enter_a_value: Введите значение...
 enter_a_placeholder: Введите плейсхолдер...
 length: Длина
 soft_length: Ограничение
-precision_scale: Точность и Масштаб
+precision_scale: Точность и масштаб
 readonly: Только для чтения
 unique: Уникальный
 updated_on: Дата обновления
 updated_by: Обновлено
 primary_key: Первичный ключ
-foreign_key: Внешний Ключ
-finish_setup: Завершить Настройку
+foreign_key: Внешний ключ
+finish_setup: Завершить настройку
 dismiss: Скрыть
-toggle_raw_editor: Включить/выключить редактор RAW
+toggle_raw_editor: Включить/выключить редактор без форматирования
 raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
-raw_value: Сырое значение
-copy_raw_value: Копировать сырое значение
+raw_value: Неотформатированное значение
+copy_raw_value: Копировать неотформатированное значение
 copy_raw_value_success: Скопировано
-copy_raw_value_fail: Сбой копирования
-paste_raw_value: Вставить сырое значение
+copy_raw_value_fail: Ошибка копирования
+paste_raw_value: Вставить неотформатированное значение
 paste_raw_value_success: Вставлено
 paste_raw_value_fail: Ошибка вставки
-view_raw_value: Посмотреть сырое значение
-edit_raw_value: Редактировать Сырое Значение
-enter_raw_value: Введите сырое значение...
+view_raw_value: Посмотреть неотформатированное значение
+edit_raw_value: Редактировать неотформатированное значение
+enter_raw_value: Введите неотформатированное значение...
 clear_value: Очистить значение
 clear_changes: Сбросить изменения
 clear_items: Очистить элементы
 reset_to_default: Сбросить до значений по умолчанию
 undo_changes: Отменить изменения
 notifications: Уведомления
-show_all_activity: Показать Всю Активность
+show_all_activity: Показать всю активность
 page_not_found: Страница не найдена
 page_not_found_body: Страница, которую вы ищете, кажется, не существует.
-confirm_revert: Подтвердите Откат
-confirm_revert_body: Это вернет элемент в выбранное состояние.
+confirm_revert: Подтвердите откат
+confirm_revert_body: Это вернёт элемент в выбранное состояние.
 display: Отображение
 settings_update_success: Настройки обновлены
 title: Заголовок
 revision_delta_created: Создано
-revision_delta_created_externally: Создано Извне
-revision_delta_updated: 'Обновлено 1 Поле | Обновлено {count} Полей'
+revision_delta_created_externally: Создано извне
+revision_delta_updated: 'Обновлено 1 поле | Обновлено {count} полей'
 revision_delta_deleted: Удалено
-revision_delta_reverted: Возвращено
+revision_delta_reverted: Восстановлено
 revision_delta_update_message: Это поле было обновлено, но его значение скрывается по соображениям безопасности.
-revision_delta_other: Ревизия
+revision_delta_other: Редакция
 revision_delta_by: '{date} пользователем {user}'
 presentation_text_values_cannot_be_reimported: "Использует текст презентации, значения не могут быть повторно импортированы."
 download_page_as_csv: 'Скачать страницу в формате CSV'
 private_user: Скрытый Пользователь
 creation_preview: Предпросмотр
-revision_preview: Просмотр Ревизии
+revision_preview: Просмотр редакции
 updates_made: Обновления Выполнены
 leave_comment: Оставить комментарий...
 post_comment_success: Комментарий отправлен
@@ -488,11 +488,11 @@ selecting_items: Выбор элементов
 enable_select_button: С кнопкой «Выбрать»
 allow_duplicates: Разрешить дубликаты
 comments: Комментарии
-no_comments: Комментариев Пока Нет
+no_comments: Комментариев пока нет
 click_to_expand: Нажмите, чтобы Раскрыть
 select_item: Выбрать Элемент
 no_items: Нет элементов
-search_items: Найти элементы...
+search_items: Поиск элементов...
 disabled: Выключен
 information: Информация
 report_bug: Сообщить об Ошибке
@@ -522,7 +522,7 @@ no_collections: Нет Коллекций
 create_collection: Создать Коллекцию
 no_collections_copy_admin: У вас пока нет Коллекций. Нажмите кнопку ниже, чтобы начать.
 no_collections_copy: У вас пока нет Коллекций. Пожалуйста, обратитесь к системному администратору.
-relationship_not_setup: Связь не была настроена правильно
+relationship_not_setup: Отношение не было настроено правильно
 display_template_not_setup: Опция шаблона отображения настроена некорректно
 collection_field_not_setup: Опция поля коллекции настроена некорректно
 select_a_collection: Выберите Коллекцию
@@ -834,6 +834,7 @@ no_data: Нет данных
 accountability: Подотчетность
 details: Подробности
 full_screen: Во Весь Экран
+full_text_search: Поиск по полному тексту
 edit_panels: Редактировать панели
 center_align: По центру
 left_align: По левому краю
@@ -925,7 +926,7 @@ creating_unit: 'Создание {unit}'
 editing_unit: 'Редактирование {unit}'
 editing_in_batch: 'Пакетное редактирование {count} элементов'
 no_options_available: Нет доступных опций
-settings_data_model: Модель Данных
+settings_data_model: Модель данных
 settings_permissions: Роли и права доступа
 settings_project: Настройки Проекта
 settings_webhooks: Веб-хуки
@@ -940,7 +941,7 @@ layout: Макет
 tree_view: В виде дерева
 changes_are_permanent: Изменения необратимы
 preset_name_placeholder: Используется по умолчанию, когда пусто...
-preset_search_placeholder: Строка поиска...
+preset_search_placeholder: Поисковый запрос...
 editing_preset: Редактирование Пресета
 layout_preview: Предпросмотр Макета
 layout_setup: Настройка Макета
@@ -968,9 +969,9 @@ page_help_files_item: >-
   **Карточка Файла** — Форма для управления метаданными файла, редактирования исходного файла и обновления настроек доступа.
 page_help_settings_project: "**Настройки Проекта** — Глобальные параметры конфигурации проекта."
 page_help_settings_datamodel_collections: >-
-  **Модель Данных: Коллекции** — Список всех доступных коллекций. Включает видимые, скрытые и системные коллекции, а также неуправляемые таблицы базы данных, которые могут быть добавлены.
+  **Модель данных: коллекции** – список всех доступных коллекций. Включает в себя видимые, скрытые и системные коллекции, а также ненастроенные таблицы базы данных, которые можно добавить.
 page_help_settings_datamodel_fields: >-
-  **Модель Данных: Коллекция** — Форма для управления этой коллекцией и ее полями.
+  **Модель данных: коллекция** — форма для управления этой коллекцией и её полями.
 page_help_settings_roles_collection: '**Просмотр Ролей** — Список Администраторов, Публичных и собственных Ролей Пользователей.'
 page_help_settings_roles_item: "**Карточка Роли** — Управление разрешениями роли и другими настройками."
 page_help_settings_presets_collection: >-
@@ -1013,7 +1014,7 @@ directus_collection:
   directus_panels: Индивидуальные панели мониторинга
   directus_permissions: Права доступа для каждой роли
   directus_presets: Пресеты для коллекций по умолчанию и закладки
-  directus_relations: Настройки связей и метаданные
+  directus_relations: Настройки отношений и метаданные
   directus_revisions: Снимки данных для всех действий
   directus_roles: Группы разрешений для системных пользователей
   directus_sessions: Информация о сеансе пользователя
@@ -1031,7 +1032,7 @@ fields:
     user_agent: Пользовательский агент
     origin: Источник
     ip: IP-адрес
-    revisions: Ревизии
+    revisions: Редакции
   directus_collections:
     collection: Коллекция
     icon: Иконка
@@ -1211,7 +1212,7 @@ field_options:
     update: Обновить
     delete: Удалить
   directus_collections:
-    track_activity_revisions: Отслеживание активности и изменений
+    track_activity_revisions: Отслеживание активности и редакций
     only_track_activity: Отслеживать только активность
     do_not_track_anything: Ничего не отслеживать
     collection_setup: Настройки Коллекции
@@ -1361,10 +1362,12 @@ options: Параметры
 otp: Одноразовый пароль
 password: Пароль
 permissions: Права доступа
-relationship: Связи
+relationship: Отношения
 reset: Сбросить
 reset_password: Сбросить Пароль
-revisions: Ревизии
+revisions: Редакции
+no_revisions: Редакций пока нет
+no_logs: Журналов пока нет
 revert: Вернуть
 save: Сохранить
 schema: Схема
@@ -1389,6 +1392,8 @@ report_error: Сообщить об Ошибке
 start: Начало
 table: Таблица
 list: Список
+search_filter: Поиск и фильтрация
+enable_search_filter: Включить поиск и фильтрацию
 interfaces:
   filter:
     name: Фильтр
@@ -1508,7 +1513,7 @@ interfaces:
   select-icon:
     icon: Иконка
     description: Выберите иконку из выпадающего списка
-    search_for_icon: Найти иконку...
+    search_for_icon: Поиск иконки...
   file-image:
     image: Изображение
     description: Выберите или загрузите изображение
@@ -1635,7 +1640,7 @@ interfaces:
     language_field: Языковое поле
   list-o2m-tree-view:
     description: В виде дерева рекурсивно вложенных элементов
-    recursive_only: Дерево можно выбрать для рекурсивных отношений
+    recursive_only: Интерфейс просмотра дерева работает только для рекурсивных отношений.
   user:
     user: Пользователь
     description: Выберите существующего пользователя directus
@@ -1680,7 +1685,7 @@ displays:
     default_language: Язык по умолчанию
     language_field: Языковое поле
   boolean:
-    boolean: Логическое
+    boolean: Логическое значение
     description: Отображать состояния вкл и выкл
     label_on: Метка Вкл
     label_on_placeholder: Введите метку вкл...
@@ -1847,6 +1852,12 @@ panels:
     monochrome_color: Монохромный цвет
   variable:
     name: Глобальная переменная
+  relational-variable:
+    name: Глобальная реляционная переменная
+    description: Установить глобальное реляционное значение для использования в фильтре других панелей
+    variable_key: Ключ переменной
+    multiple: Несколько
+    multiple-label: Выберите несколько элементов
 triggers:
   common:
     response_body_all: Все данные
