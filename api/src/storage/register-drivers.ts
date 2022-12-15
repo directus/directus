@@ -10,7 +10,7 @@ export const registerDrivers = async (storage: StorageManager) => {
 	const usedDrivers: string[] = [];
 
 	for (const [key, value] of Object.entries(env)) {
-		if ((key.startsWith('STORAGE') && key.endsWith('DRIVER')) === false) continue;
+		if ((key.startsWith('STORAGE_') && key.endsWith('_DRIVER')) === false) continue;
 		if (value && usedDrivers.includes(value) === false) usedDrivers.push(value);
 	}
 
