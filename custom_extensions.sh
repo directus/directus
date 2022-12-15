@@ -16,8 +16,8 @@ wget -O ${DIRECTUS_INTERFACES}/fields-action/index.js https://github.com/utomic-
 
 # Install https://github.com/u12206050/directus-extension-global-search
 mkdir -p ${DIRECTUS_MODULES}
-wget -O /tmp/global-search.zip https://github.com/u12206050/directus-extension-global-search/releases/download/1.0.0/global-search.zip
-unzip -d ${DIRECTUS_MODULES}/ /tmp/global-search.zip
+#wget -O /tmp/global-search.zip https://github.com/u12206050/directus-extension-global-search/releases/download/1.0.0/global-search.zip
+#unzip -d ${DIRECTUS_MODULES}/ /tmp/global-search.zip
 
 # Install https://github.com/u12206050/directus-extension-api-viewer-module
 #mkdir -p ${DIRECTUS_MODULES}/api-viewer
