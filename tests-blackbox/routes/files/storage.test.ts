@@ -23,6 +23,9 @@ describe('/files', () => {
 					.attach('file', createReadStream(path.join(__dirname, imageFile.name)))
 					.field('storage', storage);
 
+				// Normalize filesize to string as bigint returns as a string
+				response.body.data.filesize = String(response.body.data.filesize);
+
 				// Assert
 				expect(response.statusCode).toBe(200);
 				expect(response.body.data).toEqual(
