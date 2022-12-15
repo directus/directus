@@ -5,12 +5,14 @@ import { createReadStream } from 'fs';
 import path from 'path';
 import * as common from '@common/index';
 
+const assetsDirectory = [__dirname, '..', '..', 'assets'];
 const storages = ['local'];
 const imageFile = {
 	name: 'directus.png',
 	type: 'image/png',
 	filesize: '7136',
 };
+const imageFilePath = path.join(...assetsDirectory, imageFile.name);
 
 describe('/files', () => {
 	describe('POST /files', () => {
@@ -20,7 +22,7 @@ describe('/files', () => {
 				const response = await request(getUrl(vendor))
 					.post('/files')
 					.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
-					.attach('file', createReadStream(path.join(__dirname, imageFile.name)))
+					.attach('file', createReadStream(imageFilePath))
 					.field('storage', storage);
 
 				// Normalize filesize to string as bigint returns as a string
@@ -49,7 +51,7 @@ describe('/files', () => {
 				const insertResponse = await request(getUrl(vendor))
 					.post('/files')
 					.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
-					.attach('file', createReadStream(path.join(__dirname, imageFile.name)))
+					.attach('file', createReadStream(imageFilePath))
 					.field('storage', storage);
 
 				// Action
