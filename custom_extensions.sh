@@ -29,6 +29,7 @@ wget -O ${DIRECTUS_INTERFACES}/fields-masked/index.js https://github.com/dimitro
 
 # Install crawless custom extensions
 # Download from project: https://gitlab.com/crawless/directus-custom-extensions
+rm -rf directus-custom-extensions-release*
 curl --header "Private-Token: ${GITLAB_PIPELINE_TOKEN}" -LO ${CI_API_V4_URL}/projects/40500377/packages/generic/Releases/0.0.1/directus-custom-extensions-release.zip
 
 unzip directus-custom-extensions-release.zip
