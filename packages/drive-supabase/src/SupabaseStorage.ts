@@ -9,27 +9,50 @@ import {
 	ContentResponse,
 	StatResponse,
 	FileListResponse,
+	NoSuchBucket,
+	PermissionMissing,
 } from '@directus/drive';
 import { StorageClient } from '@supabase/storage-js';
-import { IncomingHttpHeaders, request } from 'node:http';
-import { Duplex } from 'node:stream';
+import { IncomingHttpHeaders, OutgoingHttpHeaders, request } from 'node:http';
+import { PassThrough } from 'node:stream';
+import { withBase } from 'ufo';
+
+function handleError(err: Error, path: string, bucket: string): Error {
+	switch (err.name) {
+		case 'NoSuchBucket':
+			return new NoSuchBucket(err, bucket);
+		case 'NoSuchKey':
+			return new FileNotFound(err, path);
+		case 'AllAccessDisabled':
+			return new PermissionMissing(err, path);
+		default:
+			return new UnknownException(err, err.name, path);
+	}
+}
 
 export class SupabaseStorage extends Storage {
 	private apiClient;
 	private bucket: string;
 	private endpoint: string;
 	private secret;
+	private root;
 
-	constructor({ endpoint, bucket, secret }: SupabaseStorageConfig) {
+	constructor(config: SupabaseStorageConfig) {
 		super();
 
+		const { endpoint, bucket, secret, root } = config;
 		this.endpoint = endpoint;
 		this.bucket = bucket;
 		this.secret = secret;
+		this.root = root;
 		this.apiClient = new StorageClient(endpoint, {
 			apikey: secret,
 			Authorization: `Bearer ${secret}`,
 		}).from(bucket);
+	}
+
+	private withRoot(path: string) {
+		return withBase(path, this.root ?? '');
 	}
 
 	/**
@@ -43,9 +66,10 @@ export class SupabaseStorage extends Storage {
 		content: string | Buffer | NodeJS.ReadableStream,
 		contentType?: string | undefined
 	): Promise<Response> {
+		path = this.withRoot(path);
 		const { data: raw, error } = await this.apiClient.upload(path, content, { contentType });
 		if (error) {
-			throw new UnknownException(error, error.name, path);
+			throw handleError(error, path, this.bucket);
 		}
 		return { raw };
 	}
@@ -55,6 +79,7 @@ export class SupabaseStorage extends Storage {
 	 * @param location filename
 	 */
 	public async delete(location: string): Promise<DeleteResponse> {
+		location = this.withRoot(location);
 		const { data: raw, error } = await this.apiClient.remove([location]);
 		if (error) {
 			return { raw: null, wasDeleted: false };
@@ -67,6 +92,7 @@ export class SupabaseStorage extends Storage {
 	 * @param path filename
 	 */
 	private head(path: string): Promise<IncomingHttpHeaders> {
+		path = this.withRoot(path);
 		return new Promise((resolve, reject) => {
 			const req = request(
 				`${this.endpoint}/object/authenticated/${this.bucket}/${path}`,
@@ -78,12 +104,15 @@ export class SupabaseStorage extends Storage {
 				},
 				(res) => {
 					const { statusCode } = res;
-					if (statusCode !== 200) {
-						const err = new Error(res.statusMessage);
-						err.name = '' + statusCode;
-						reject(new FileNotFound(err, path));
+					if (statusCode === 200) {
+						resolve(res.headers);
 					}
-					resolve(res.headers);
+					if (statusCode === 404) {
+						const err = new Error(res.statusMessage);
+						err.name = 'NoSuchKey';
+						reject(err);
+					}
+					reject(new Error(res.statusMessage));
 				}
 			);
 			req.on('error', (e) => {
@@ -106,10 +135,7 @@ export class SupabaseStorage extends Storage {
 				raw: headers,
 			};
 		} catch (error: any) {
-			if (error instanceof FileNotFound) {
-				throw error;
-			}
-			throw new UnknownException(error, error.name, path);
+			throw handleError(error, path, this.bucket);
 		}
 	}
 
@@ -137,15 +163,26 @@ export class SupabaseStorage extends Storage {
 	 * @param location filename
 	 * @param _range bytes to stream. Unused in this adapter
 	 */
-	public getStream(location: string, _range?: Range | undefined): NodeJS.ReadableStream {
-		const promise = this.apiClient
-			.download(location)
-			.then(({ data }) => data!.arrayBuffer())
-			.then((data) => Buffer.from(data))
-			.catch((error) => {
-				throw new UnknownException(error, error.name, location);
-			});
-		return Duplex.from(promise);
+	public getStream(location: string, range?: Range | undefined): NodeJS.ReadableStream {
+		location = this.withRoot(location);
+		const intermediateStream = new PassThrough({ highWaterMark: 1 });
+
+		const headers: OutgoingHttpHeaders = { Authorization: `Bearer ${this.secret}` };
+		if (range) {
+			headers.range = `bytes=${range.start}-${range.end}`;
+		}
+		const req = request(
+			`${this.endpoint}/object/authenticated/${this.bucket}/${location}`,
+			{
+				method: 'GET',
+				headers,
+			},
+			(res) => res.pipe(intermediateStream)
+		);
+		req.on('error', (err) => intermediateStream.emit('error', err));
+		req.end();
+
+		return intermediateStream;
 	}
 
 	/**
@@ -153,9 +190,10 @@ export class SupabaseStorage extends Storage {
 	 * @param location filename
 	 */
 	public async getBuffer(location: string): Promise<ContentResponse<Buffer>> {
+		location = this.withRoot(location);
 		const { data: raw, error } = await this.apiClient.download(location);
 		if (error) {
-			throw new UnknownException(error, error.name, location);
+			throw handleError(error, location, this.bucket);
 		}
 		const buffer = await raw.arrayBuffer();
 
@@ -170,14 +208,14 @@ export class SupabaseStorage extends Storage {
 	 * @param prefix [partial] filename
 	 */
 	public async *flatList(prefix?: string | undefined): AsyncIterable<FileListResponse> {
-		const limit = 1000;
+		const limit = 100;
 		let offset = 0;
 		let itemCount = 0;
 
 		do {
-			const { data: items, error } = await this.apiClient.list(undefined, { limit, offset, search: prefix });
+			const { data: items, error } = await this.apiClient.list(this.root, { limit, offset, search: prefix });
 			if (error) {
-				throw new UnknownException(error, error.name, prefix ?? '');
+				throw handleError(error, prefix ?? '', this.bucket);
 			}
 
 			itemCount = items.length;
@@ -197,4 +235,5 @@ export interface SupabaseStorageConfig {
 	endpoint: string;
 	bucket: string;
 	secret: string;
+	root?: string;
 }

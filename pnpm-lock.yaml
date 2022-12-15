@@ -71,6 +71,7 @@ importers:
       '@directus/drive-azure': workspace:*
       '@directus/drive-gcs': workspace:*
       '@directus/drive-s3': workspace:*
+      '@directus/drive-supabase': workspace:*
       '@directus/extensions-sdk': workspace:*
       '@directus/format-title': 9.15.0
       '@directus/schema': workspace:*
@@ -134,7 +135,6 @@ importers:
       date-fns: 2.29.3
       deep-diff: 1.0.2
       destroy: 1.2.0
-      directus-drive-supabase: workspace:*
       dotenv: 16.0.3
       encodeurl: 1.0.2
       eventemitter2: 6.4.9
@@ -215,6 +215,7 @@ importers:
       '@directus/drive-azure': link:../packages/drive-azure
       '@directus/drive-gcs': link:../packages/drive-gcs
       '@directus/drive-s3': link:../packages/drive-s3
+      '@directus/drive-supabase': link:../packages/drive-supabase
       '@directus/extensions-sdk': link:../packages/extensions-sdk
       '@directus/format-title': 9.15.0
       '@directus/schema': link:../packages/schema
@@ -239,7 +240,6 @@ importers:
       date-fns: 2.29.3
       deep-diff: 1.0.2
       destroy: 1.2.0
-      directus-drive-supabase: link:../packages/directus-drive-supabase
       dotenv: 16.0.3
       encodeurl: 1.0.2
       eventemitter2: 6.4.9
@@ -584,27 +584,6 @@ importers:
       '@directus/shared': link:../shared
       inquirer: 8.1.2
 
-  packages/directus-drive-supabase:
-    specifiers:
-      '@directus/drive': workspace:*
-      '@supabase/storage-js': ^2.0.0
-      '@types/jest': 29.2.3
-      '@types/node': ^18.11.11
-      dotenv: 16.0.3
-      jest: 29.3.1
-      ts-jest: 29.0.3
-      typescript: ^4.9.3
-    dependencies:
-      '@directus/drive': link:../drive
-      '@supabase/storage-js': 2.0.0
-    devDependencies:
-      '@types/jest': 29.2.3
-      '@types/node': 18.11.12
-      dotenv: 16.0.3
-      jest: 29.3.1_@types+node@18.11.12
-      ts-jest: 29.0.3_4f6uxrzmuwipl5rr3bcogf6k74
-      typescript: 4.9.3
-
   packages/drive:
     specifiers:
       '@types/fs-extra': 9.0.13
@@ -704,6 +683,29 @@ importers:
       '@types/normalize-path': 3.0.0
       dotenv: 16.0.3
       jest: 29.3.1_@types+node@18.11.9
+      ts-jest: 29.0.3_4f6uxrzmuwipl5rr3bcogf6k74
+      typescript: 4.9.3
+
+  packages/drive-supabase:
+    specifiers:
+      '@directus/drive': workspace:*
+      '@supabase/storage-js': ^2.0.0
+      '@types/jest': 29.2.3
+      '@types/node': ^18.11.11
+      dotenv: 16.0.3
+      jest: 29.3.1
+      ts-jest: 29.0.3
+      typescript: ^4.9.3
+      ufo: ^1.0.1
+    dependencies:
+      '@directus/drive': link:../drive
+      '@supabase/storage-js': 2.0.0
+      ufo: 1.0.1
+    devDependencies:
+      '@types/jest': 29.2.3
+      '@types/node': 18.11.12
+      dotenv: 16.0.3
+      jest: 29.3.1_@types+node@18.11.12
       ts-jest: 29.0.3_4f6uxrzmuwipl5rr3bcogf6k74
       typescript: 4.9.3
 
@@ -19981,7 +19983,7 @@ packages:
     dependencies:
       bs-logger: 0.2.6
       fast-json-stable-stringify: 2.1.0
-      jest: 29.3.1_@types+node@18.11.12
+      jest: 29.3.1_@types+node@18.11.2
       jest-util: 29.3.1
       json5: 2.2.1
       lodash.memoize: 4.1.2
@@ -20211,6 +20213,10 @@ packages:
   /uc.micro/1.0.6:
     resolution: {integrity: sha512-8Y75pvTYkLJW2hWQHXxoqRgV7qb9B+9vFEtidML+7koHUFapnVJAZ6cKs+Qjz5Aw3aZWHMC6u0wJE3At+nSGwA==}
     dev: true
+
+  /ufo/1.0.1:
+    resolution: {integrity: sha512-boAm74ubXHY7KJQZLlXrtMz52qFvpsbOxDcZOnw/Wf+LS4Mmyu7JxmzD4tDLtUQtmZECypJ0FrCz4QIe6dvKRA==}
+    dev: false
 
   /uglify-js/3.17.4:
     resolution: {integrity: sha512-T9q82TJI9e/C1TAxYvfb16xO120tMVFZrGA3f9/P4424DNu6ypK103y0GPFVa17yotwSyZW5iYXgjYHkGrJW/g==}

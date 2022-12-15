@@ -20,8 +20,17 @@ STORAGE_SUPABASE_SECRET="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYm
 STORAGE_SUPABASE_BUCKET="studio"
 ```
 
-## todo
+### Optional config
 
-- [x] add comments in code
-- [ ] test if everything is working as expected (manual)
-- [ ] improve error handling; throw more specific directus exceptions where appropriate
+Root folder in supabase bucket:
+
+```bash
+STORAGE_SUPABASE_ROOT="some/path"
+```
+
+## Notes/References
+
+Some inspiration from [this](https://github.com/directus/directus/pull/15631) pull request.
+
+Also, based on [this](https://github.com/directus/directus/discussions/14742#discussion-4262013) discussion, not all
+methods of the Directus `Storage` class are implemented.

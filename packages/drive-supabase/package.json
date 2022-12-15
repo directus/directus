@@ -1,6 +1,6 @@
 {
-	"name": "directus-drive-supabase",
-	"version": "0.0.1",
+	"name": "@directus/drive-supabase",
+	"version": "9.21.2",
 	"description": "Supabase storage adapter for directus drive",
 	"exports": {
 		".": "./dist/index.js",
@@ -28,7 +28,8 @@
 	"license": "ISC",
 	"dependencies": {
 		"@directus/drive": "workspace:*",
-		"@supabase/storage-js": "^2.0.0"
+		"@supabase/storage-js": "^2.0.0",
+		"ufo": "^1.0.1"
 	},
 	"devDependencies": {
 		"@types/jest": "29.2.3",
