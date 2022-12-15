@@ -16,3 +16,5 @@ ls -la ./directus-custom-extensions-release
 
 cp -r ./directus-custom-extensions-release/dashboard ${DIRECTUS_MODULES}
 cp -r ./directus-custom-extensions-release/leads ${DIRECTUS_MODULES}
+
+ln -s ${DIRECTUS_MODULES}
