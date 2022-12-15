@@ -47,7 +47,7 @@ export class DriverCloudinary implements Driver {
 	}
 
 	/**
-	 * Generate the Cloudinary SHA1 signature for the given payload
+	 * Generate the Cloudinary sha256 signature for the given payload
 	 * @see https://cloudinary.com/documentation/signatures
 	 */
 	private getFullSignature(payload: Record<string, string>) {
@@ -59,7 +59,7 @@ export class DriverCloudinary implements Driver {
 
 		const signaturePayloadString = this.toFormUrlEncoded(signaturePayload, { sort: true });
 
-		return createHash('sha1')
+		return createHash('sha256')
 			.update(signaturePayloadString + this.apiSecret)
 			.digest('hex');
 	}
@@ -69,7 +69,7 @@ export class DriverCloudinary implements Driver {
 	 * @see https://cloudinary.com/documentation/advanced_url_delivery_options#generating_delivery_url_signatures
 	 */
 	private getParameterSignature(filepath: string) {
-		return `s--${createHash('sha1')
+		return `s--${createHash('sha256')
 			.update(filepath + this.apiSecret)
 			.digest('base64url')
 			.substring(0, 8)}--`;
