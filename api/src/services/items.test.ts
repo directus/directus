@@ -10,12 +10,13 @@ import { systemSchema, userSchema } from '../__utils__/schemas';
 
 vi.mock('../env', async () => {
 	const actual = (await vi.importActual('../env')) as { default: Record<string, any> };
-
+	const MOCK_ENV = {
+		...actual.default,
+		CACHE_AUTO_PURGE: true,
+	};
 	return {
-		default: {
-			...actual.default,
-			CACHE_AUTO_PURGE: true,
-		},
+		default: MOCK_ENV,
+		getEnv: () => MOCK_ENV,
 	};
 });
 
