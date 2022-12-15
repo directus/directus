@@ -57,15 +57,33 @@ export async function getPermissions(accountability: Accountability, schema: Sch
 	}
 
 	if (accountability.admin !== true) {
+		const roleQuery = database
+			.withRecursive('ancestors', (qb) => {
+				qb.select('id', 'parent_role', 'name').from('directus_roles').where({ id: accountability.role });
+				qb.unionAll((qb) => {
+					qb.select('r.id', 'r.parent_role', 'r.name')
+						.from('directus_roles as r')
+						.join('ancestors as a', 'a.parent_role', 'r.id');
+				});
+			})
+			.select('*')
+			.from('ancestors');
+		const roleHierarchy = await roleQuery;
+
 		const query = database.select('*').from('directus_permissions');
 
-		if (accountability.role) {
-			query.where({ role: accountability.role });
+		if (roleHierarchy.length > 0) {
+			query
+				.whereIn(
+					'role',
+					roleHierarchy.map((p) => p.id)
+				)
+				.orWhereNull('role');
 		} else {
 			query.whereNull('role');
 		}
 
-		const permissionsForRole = await query;
+		const permissionsForRole = (await query).map((permission) => ({ ...permission, role: accountability.role }));
 
 		const {
 			permissions: parsedPermissions,
@@ -73,7 +91,14 @@ export async function getPermissions(accountability: Accountability, schema: Sch
 			containDynamicData,
 		} = parsePermissions(permissionsForRole);
 
-		permissions = parsedPermissions;
+		if (roleHierarchy.length > 0) {
+			permissions = roleHierarchy.reduce((acc, role) => {
+				const filteredPerms = parsedPermissions.filter((p) => p.role === role.id);
+				return acc === null ? filteredPerms : mergePermissions('or', acc, filteredPerms);
+			}, null);
+		} else {
+			permissions = parsedPermissions;
+		}
 
 		if (accountability.app === true) {
 			permissions = mergePermissions(

@@ -7,6 +7,17 @@ fields:
     special:
       - uuid
 
+  - field: parent_role
+    interface: select-dropdown-m2o
+    options:
+      template: '{{ name }}'
+    special:
+      - m2o
+    width: half
+    display: related-values
+    display_options:
+      template: '{{ name }}'
+
   - field: name
     interface: input
     options:

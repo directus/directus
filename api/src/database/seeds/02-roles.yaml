@@ -5,6 +5,12 @@ columns:
     type: uuid
     primary: true
     nullable: false
+  parent_role:
+    type: uuid
+    nullable: true
+    references:
+      table: directus_roles
+      column: id
   name:
     type: string
     length: 100
