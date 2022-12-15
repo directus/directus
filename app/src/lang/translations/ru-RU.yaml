@@ -390,7 +390,7 @@ interface_label: Интерфейс
 today: Сегодня
 yesterday: Вчера
 delete_comment: Удалить комментарий
-delete_share: Удалить шейр
+delete_share: Удалить общий доступ
 functions:
   year: Год
   month: Месяц
@@ -643,7 +643,7 @@ square: Квадрат
 free: Свободно
 flip_horizontal: Отразить по горизонтали
 flip_vertical: Отразить по вертикали
-aspect_ratio: Соотношение сторон
+aspect_ratio: Пропорции
 rotate: Повернуть
 all_users: Все пользователи
 delete_collection: Удалить коллекцию
@@ -1041,7 +1041,7 @@ directus_collection:
   directus_roles: Группы разрешений для системных пользователей
   directus_sessions: Информация о сеансе пользователя
   directus_settings: Параметры конфигурации проекта
-  directus_shares: Отслеживает внешние элементы
+  directus_shares: Отслеживает элементы с общим доступом
   directus_users: Системные пользователи для платформы
   directus_webhooks: Конфигурация для HTTP-запросов на основе событий
 fields:
@@ -1118,7 +1118,7 @@ fields:
     status_draft: Черновик
     status_invited: Приглашен(а)
     status_active: Активный
-    status_suspended: Приостановлен
+    status_suspended: Заблокирован
     status_archived: В архиве
     role: Роль
     token: Ключ доступа
@@ -1166,7 +1166,7 @@ fields:
     transformations_none: Отключить преобразования
     transformations_presets: Ограничить преобразования для шаблонов ниже
     image_editor: Редактор изображений
-    custom_aspect_ratios: Пользовательское соотношение сторон
+    custom_aspect_ratios: Пользовательские пропорции
   directus_shares:
     name: Название
     role: Роль
@@ -1215,15 +1215,15 @@ field_options:
     auth_password_policy:
       none_text: Никакая — не рекомендуется
       weak_text: Слабая — минимум 8 символов
-      strong_text: Надёжная – строчные, прописные, цифры, специальные
+      strong_text: Надёжная – строчные, прописные, цифры, специальные символы
     storage_asset_presets:
       fit_label: Подогнать по размеру
-      upscaling: Увеличение
+      upscaling: Апскейлинг
       fit:
         contain_text: Вместить (с сохранением пропорций)
         cover_text: Покрыть (точный размер)
-        fit_text: Поместить внутри
-        outside_text: Поместить вне
+        fit_text: Вписать внутри
+        outside_text: Вписать снаружи
     additional_transforms: Дополнительные преобразования
     transforms_note: Название метода Sharp и его аргументы. Дополнительную информацию см. в https://sharp.pixelplumbing.com/api-constructor.
     mapbox_key: Токен доступа Mapbox
@@ -1252,11 +1252,11 @@ field_options:
     translation: Перевод
     translation_placeholder: Введите перевод...
     collection_name: Название коллекции
-    singular_unit: Единичный блок
-    plural_unit: Множественное число
+    singular_unit: В единственном числе
+    plural_unit: В множественном числе
     archive_divider: Архив
     archive_field_placeholder: Выберите поле...
-    archive_app_filter: Включить фильтр архива приложения
+    archive_app_filter: Просмотр архивированных элементов
     archive_value: Значение, установленное при архивировании...
     unarchive_value: Значение, установленное при разархивировании...
     sort_divider: Сортировать
@@ -1266,7 +1266,7 @@ field_options:
   directus_files:
     title: Уникальное название...
     description: Описание (необязательно)...
-    location: Необязательное расположение...
+    location: Расположение (необязательно)...
     storage_divider: Именование файлов
     filename_disk: Имя на диске...
     filename_download: Имя при скачивании...
@@ -1291,9 +1291,9 @@ field_options:
     status_dropdown_draft: Черновик
     status_dropdown_invited: Приглашен(а)
     status_dropdown_active: Активный
-    status_dropdown_suspended: Приостановлен
+    status_dropdown_suspended: Заблокирован
     status_dropdown_archived: В архиве
-    token: Укажите достаточно защищенный ключ доступа
+    token: Укажите достаточно надёжный ключ доступа...
   directus_webhooks:
     status_options_active: Активный
     status_options_inactive: Неактивный
@@ -1309,17 +1309,18 @@ field_options:
       add: Добавить заголовок
 no_fields_in_collection: 'В коллекции «{collection}» пока нет полей'
 no_value: Нет значения
-do_nothing: Ничего не Делать
-generate_and_save_uuid: Создать и Сохранить UUID
-save_current_user_id: Сохранить ID Текущего Пользователя
-save_current_user_role: Сохранить Роль Текущего Пользователя
-save_current_datetime: Сохранить Текущую Дату/Время
+do_nothing: Ничего не делать
+generate_and_save_uuid: Создать и сохранить UUID
+save_current_user_id: Сохранить ID текущего пользователя
+save_current_user_role: Сохранить роль текущего пользователя
+save_current_datetime: Сохранить текущую дату/время
 always_open: Всегда открыто
-start_open: Раскрыта
-start_collapsed: Начать свернутым
-block: Блокировать
-inline: Строчный
+start_open: Начать открытым
+start_collapsed: Начать свёрнутым
+block: Блок
+inline: Встроенный
 comment: Комментарий
+unlimited_usage: Неограниченное использование
 new_share: Новая публикация
 expired: Истекло
 share: Поделиться
@@ -1776,6 +1777,7 @@ displays:
     border: Граница
     border_label: Показать границу
     text: Текст
+    text_placeholder: Замещение необязательного значения...
   formatted-json-value:
     formatted-json-value: Форматированное значение JSON
     description: Показывать форматированную версию объекта
@@ -1856,8 +1858,13 @@ layouts:
     default_template: Использование коллекции по умолчанию...
     no_compatible_fields: Нет совместимых полей
   kanban:
+    title_placeholder: Название (необязательно)...
+    text_placeholder: Текст (необязательно)...
+    date_placeholder: Дата (необязательно)...
     tags: Теги карточки
-    tags_placeholder: Необязательное поле тегов...
+    tags_placeholder: Теги (необязательно)...
+    user_placeholder: Пользователь (необязательно)...
+    image_placeholder: Изображение (необязательно)...
     crop: Обрезать
     advanced: Доп. настройки
 panels:
