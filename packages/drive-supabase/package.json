@@ -2,6 +2,21 @@
 	"name": "@directus/drive-supabase",
 	"version": "9.21.2",
 	"description": "Supabase storage adapter for directus drive",
+	"homepage": "https://directus.io",
+	"bugs": {
+		"url": "https://github.com/directus/directus/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus/directus.git",
+		"directory": "packages/drive-supabase"
+	},
+	"funding": "https://github.com/directus/directus?sponsor=1",
+	"license": "MIT",
+	"author": "Njenga Muriu <smuriu@tuta.io>",
+	"contributors": [
+		"Rijk van Zanten <rijkvanzanten@me.com>"
+	],
 	"exports": {
 		".": "./dist/index.js",
 		"./package.json": "./package.json"
@@ -24,8 +39,6 @@
 		"storage",
 		"adapter"
 	],
-	"author": "Njenga Muriu <smuriu@tuta.io>",
-	"license": "ISC",
 	"dependencies": {
 		"@directus/drive": "workspace:*",
 		"@supabase/storage-js": "^2.0.0",
@@ -38,5 +51,8 @@
 		"jest": "29.3.1",
 		"ts-jest": "29.0.3",
 		"typescript": "^4.9.3"
+	},
+	"publishConfig": {
+		"access": "public"
 	}
 }
