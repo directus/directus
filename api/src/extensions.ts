@@ -192,9 +192,15 @@ class ExtensionManager {
 	}
 
 	public getEmbeds() {
-		const head = this.hookEmbedsHead.length > 0 ? this.hookEmbedsHead.join('\n') : '';
-		const body = this.hookEmbedsBody.length > 0 ? this.hookEmbedsBody.join('\n') : '';
-		return { head, body };
+		return {
+			head: wrapEmbeds('Custom Embed Head', this.hookEmbedsHead),
+			body: wrapEmbeds('Custom Embed Body', this.hookEmbedsBody),
+		};
+
+		function wrapEmbeds(label: string, content: string[]): string {
+			if (content.length === 0) return '';
+			return `<!-- Start ${label} -->\n${content.join('\n')}\n<!-- End ${label} -->`;
+		}
 	}
 
 	private async load(): Promise<void> {
