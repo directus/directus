@@ -20,6 +20,8 @@ const querySchema = Joi.object({
 	aggregate: Joi.object(),
 	deep: Joi.object(),
 	alias: Joi.object(),
+	delimiter: Joi.string(),
+	withBom: Joi.boolean(),
 }).id('query');
 
 export function validateQuery(query: Query): Query {

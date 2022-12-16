@@ -13,6 +13,8 @@ export type Query = {
 	aggregate?: Aggregate | null;
 	deep?: NestedDeepQuery | null;
 	alias?: Record<string, string> | null;
+	delimiter?: string;
+	withBom?: boolean;
 };
 
 export type DeepQuery = {

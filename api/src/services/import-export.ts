@@ -180,6 +180,8 @@ export class ExportService {
 		format: 'xml' | 'csv' | 'json',
 		options?: {
 			file?: Partial<File>;
+			delimiter?: string;
+			withBom?: boolean;
 		}
 	) {
 		try {
@@ -237,6 +239,8 @@ export class ExportService {
 							this.transform(result, format, {
 								includeHeader: batch === 0,
 								includeFooter: batch + 1 === batchesRequired,
+								delimiter: options?.delimiter,
+								withBom: options?.withBom,
 							})
 						);
 					}
@@ -307,6 +311,8 @@ export class ExportService {
 		options?: {
 			includeHeader?: boolean;
 			includeFooter?: boolean;
+			delimiter?: string;
+			withBom?: boolean;
 		}
 	): string {
 		if (format === 'json') {
@@ -341,6 +347,8 @@ export class ExportService {
 			const parser = new CSVParser({
 				transforms: [CSVTransforms.flatten({ separator: '.' })],
 				header: options?.includeHeader !== false,
+				delimiter: options?.delimiter,
+				withBOM: options?.withBom,
 			});
 
 			let string = parser.parse(input);

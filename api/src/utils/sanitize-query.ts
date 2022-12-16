@@ -65,6 +65,14 @@ export function sanitizeQuery(rawQuery: Record<string, any>, accountability?: Ac
 		query.alias = sanitizeAlias(rawQuery.alias);
 	}
 
+	if (rawQuery.delimiter) {
+		query.delimiter = rawQuery.delimiter;
+	}
+
+	if (rawQuery.withBom) {
+		query.withBom = rawQuery.withBom === 'true';
+	}
+
 	return query;
 }
 

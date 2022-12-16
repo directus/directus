@@ -214,6 +214,19 @@
 						@input="exportSettings.fields = $event"
 					/>
 				</div>
+
+				<template v-if="format === 'csv'">
+					<v-divider />
+
+					<div class="field half-left">
+						<p class="type-label">{{ t('delimiter') }}</p>
+						<v-input v-model="csvSettings.delimiter" class="monospace" placeholder="," />
+					</div>
+					<div class="field half-right">
+						<p class="type-label">{{ t('csv_unicode_support') }}</p>
+						<v-checkbox v-model="csvSettings.withBom" block :label="t('enabled')" />
+					</div>
+				</template>
 			</div>
 		</v-drawer>
 	</sidebar-detail>
@@ -233,6 +246,7 @@ import { debounce } from 'lodash';
 import { getEndpoint } from '@directus/shared/utils';
 import FolderPicker from '@/views/private/components/folder-picker.vue';
 import { usePermissionsStore } from '@/stores/permissions';
+import { AxiosProgressEvent } from 'axios';
 
 type LayoutQuery = {
 	fields?: string[];
@@ -245,12 +259,15 @@ interface Props {
 	layoutQuery?: LayoutQuery;
 	filter?: Filter;
 	search?: string;
+	delimiter?: string;
+	withBom?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
 	layoutQuery: undefined,
 	filter: undefined,
 	search: undefined,
+	delimiter: undefined,
 });
 
 const emit = defineEmits(['refresh', 'download']);
@@ -279,6 +296,11 @@ const exportSettings = reactive({
 	search: props.search,
 	fields: props.layoutQuery?.fields ?? fields.value?.map((field) => field.field),
 	sort: `${primaryKeyField.value?.field ?? ''}`,
+});
+
+const csvSettings = reactive({
+	delimiter: props.delimiter,
+	withBom: props.withBom,
 });
 
 watch(
@@ -438,8 +460,9 @@ function useUpload() {
 
 		try {
 			await api.post(`/utils/import/${collection.value}`, formData, {
-				onUploadProgress: (progressEvent: ProgressEvent) => {
-					const percentCompleted = Math.floor((progressEvent.loaded * 100) / progressEvent.total);
+				onUploadProgress: (progressEvent: AxiosProgressEvent) => {
+					const { loaded, total } = progressEvent;
+					const percentCompleted = total ? Math.floor((loaded * 100) / total) : 0;
 					progress.value = percentCompleted;
 					importing.value = percentCompleted === 100 ? true : false;
 				},
@@ -479,8 +502,10 @@ function exportDataLocal() {
 		: `items/${collection.value}`;
 	const url = getPublicURL() + endpoint;
 
+	const bearer = api.defaults.headers.common['Authorization'] as string | undefined;
+
 	let params: Record<string, unknown> = {
-		access_token: api.defaults.headers.common['Authorization'].substring(7),
+		access_token: bearer?.substring(7),
 		export: format.value,
 	};
 
@@ -489,6 +514,10 @@ function exportDataLocal() {
 	if (exportSettings.search) params.search = exportSettings.search;
 	if (exportSettings.filter) params.filter = exportSettings.filter;
 	if (exportSettings.search) params.search = exportSettings.search;
+	if (format.value === 'csv') {
+		if (csvSettings.delimiter) params.delimiter = csvSettings.delimiter;
+		if (csvSettings.withBom) params.withBom = csvSettings.withBom;
+	}
 
 	params.limit = exportSettings.limit ?? -1;
 
@@ -513,6 +542,7 @@ async function exportDataFiles() {
 			file: {
 				folder: folder.value,
 			},
+			...csvSettings,
 		});
 
 		exportDialogActive.value = false;
@@ -569,6 +599,10 @@ const createAllowed = computed<boolean>(() => hasPermission(collection.value, 'c
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
+}
+
+.monospace {
+	--v-input-font-family: var(--family-monospace);
 }
 
 .uploading {

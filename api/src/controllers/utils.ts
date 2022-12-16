@@ -157,6 +157,8 @@ router.post(
 		// We're not awaiting this, as it's supposed to run async in the background
 		service.exportToFile(req.params.collection, req.body.query, req.body.format, {
 			file: req.body.file,
+			delimiter: req.body.delimiter,
+			withBom: req.body.withBom,
 		});
 
 		return next();

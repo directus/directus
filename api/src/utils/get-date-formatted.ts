@@ -1,11 +1,11 @@
 export function getDateFormatted() {
 	const date = new Date();
 
-	let month = String(date.getMonth() + 1);
-	if (month.length === 1) month = '0' + month;
+	const month = String(date.getMonth() + 1).padStart(2, '0');
+	const day = String(date.getDate()).padStart(2, '0');
+	const hours = String(date.getHours()).padStart(2, '0');
+	const minutes = String(date.getMinutes()).padStart(2, '0');
+	const seconds = String(date.getHours()).padStart(2, '0');
 
-	let day = String(date.getDate());
-	if (day.length === 1) day = '0' + day;
-
-	return `${date.getFullYear()}${month}${day}-${date.getHours()}${date.getMinutes()}${date.getSeconds()}`;
+	return `${date.getFullYear()}${month}${day}-${hours}${minutes}${seconds}`;
 }

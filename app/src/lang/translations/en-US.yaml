@@ -381,6 +381,8 @@ label_import: Import
 label_export: Export
 import_export: Import / Export
 format: Format
+delimiter: Delimiter
+csv_unicode_support: Unicode Support (BOM character)
 last_page: Last Page
 last_access: Last Access
 fill_template: Fill with Template Value

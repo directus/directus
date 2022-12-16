@@ -55,10 +55,10 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 		if (req.collection) {
 			filename += req.collection;
 		} else {
-			filename += 'Export';
+			filename += 'export';
 		}
 
-		filename += ' ' + getDateFormatted();
+		filename += '-' + getDateFormatted();
 
 		if (req.sanitizedQuery.export === 'json') {
 			res.attachment(`${filename}.json`);
@@ -75,7 +75,12 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 		if (req.sanitizedQuery.export === 'csv') {
 			res.attachment(`${filename}.csv`);
 			res.set('Content-Type', 'text/csv');
-			return res.status(200).send(exportService.transform(res.locals.payload?.data, 'csv'));
+			return res.status(200).send(
+				exportService.transform(res.locals.payload?.data, 'csv', {
+					delimiter: req.sanitizedQuery.delimiter,
+					withBom: req.sanitizedQuery.withBom,
+				})
+			);
 		}
 	}
 
