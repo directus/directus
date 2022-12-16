@@ -24,6 +24,7 @@ vi.mock('./env', async () => {
 			SERVE_APP: true,
 			PUBLIC_URL: 'http://localhost:8055/directus',
 			TELEMETRY: false,
+			LOG_STYLE: 'raw',
 		},
 	};
 });
