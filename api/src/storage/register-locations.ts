@@ -12,9 +12,8 @@ export const registerLocations = async (storage: StorageManager) => {
 
 	locations.forEach((location: string) => {
 		location = location.trim();
-		const options = getConfigFromEnv(`STORAGE_${location.toUpperCase()}_`);
-		const { driver } = options;
-		delete options.driver;
+		const driverConfig = getConfigFromEnv(`STORAGE_${location.toUpperCase()}_`);
+		const { driver, ...options } = driverConfig;
 		storage.registerLocation(location, { driver, options });
 	});
 };

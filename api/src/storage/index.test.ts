@@ -21,7 +21,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-	vi.clearAllMocks();
+	vi.resetAllMocks();
 });
 
 test('Returns storage from cache immediately if cache has been filled', async () => {

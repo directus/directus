@@ -32,7 +32,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-	vi.clearAllMocks();
+	vi.resetAllMocks();
 });
 
 test('Does nothing if no storage drivers are configured in Env', async () => {
