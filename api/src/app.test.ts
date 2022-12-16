@@ -5,14 +5,13 @@ import { describe, expect, test, vi } from 'vitest';
 import createApp from './app';
 import { ROBOTSTXT } from './constants';
 
-vi.mock('../../src/database', () => ({
+vi.mock('./database', () => ({
 	default: vi.fn(),
 	getDatabaseClient: vi.fn().mockReturnValue('postgres'),
 	isInstalled: vi.fn(),
 	validateDatabaseConnection: vi.fn(),
 	validateDatabaseExtensions: vi.fn(),
 	validateMigrations: vi.fn(),
-	getSchemaInspector: vi.fn(),
 }));
 
 vi.mock('./env', async () => {
@@ -21,6 +20,8 @@ vi.mock('./env', async () => {
 	return {
 		default: {
 			...actual.default,
+			KEY: 'xxxxxxx-xxxxxx-xxxxxxxx-xxxxxxxxxx',
+			SECRET: 'abcdef',
 			SERVE_APP: true,
 			PUBLIC_URL: 'http://localhost:8055/directus',
 			TELEMETRY: false,
@@ -29,15 +30,15 @@ vi.mock('./env', async () => {
 	};
 });
 
-const mockGetEndpointRouter = vi.fn();
-const mockGetEmbeds = vi.fn();
+const mockGetEndpointRouter = vi.fn().mockReturnValue(Router());
+const mockGetEmbeds = vi.fn().mockReturnValue({ head: '', body: '' });
 
 vi.mock('./extensions', () => ({
 	getExtensionManager: vi.fn().mockImplementation(() => {
 		return {
 			initialize: vi.fn(),
-			getEndpointRouter: mockGetEndpointRouter.mockReturnValue(Router()),
-			getEmbeds: mockGetEmbeds.mockReturnValue({ head: '', body: '' }),
+			getEndpointRouter: mockGetEndpointRouter,
+			getEmbeds: mockGetEmbeds,
 		};
 	}),
 }));
@@ -48,6 +49,26 @@ vi.mock('./flows', () => ({
 			initialize: vi.fn(),
 		};
 	}),
+}));
+
+vi.mock('./middleware/check-ip', () => ({
+	checkIP: Router(),
+}));
+
+vi.mock('./middleware/schema', () => ({
+	default: Router(),
+}));
+
+vi.mock('./middleware/get-permissions', () => ({
+	default: Router(),
+}));
+
+vi.mock('./auth', () => ({
+	registerAuthProviders: vi.fn(),
+}));
+
+vi.mock('./webhooks', () => ({
+	init: vi.fn(),
 }));
 
 describe('createApp', async () => {
