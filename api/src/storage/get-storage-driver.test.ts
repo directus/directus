@@ -1,6 +1,6 @@
-import { beforeEach, afterEach, vi, expect, test } from 'vitest';
-import { _aliasMap, getStorageDriver } from './get-storage-driver.js';
 import { randWord } from '@ngneat/falso';
+import { expect, test } from 'vitest';
+import { getStorageDriver, _aliasMap } from './get-storage-driver.js';
 
 test('Returns imported installed driver for each supported driver', async () => {
 	for (const driverKey of Object.keys(_aliasMap)) {

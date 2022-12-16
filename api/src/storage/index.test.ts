@@ -1,7 +1,7 @@
 // @ts-expect-error https://github.com/microsoft/TypeScript/issues/49721
 import { StorageManager } from '@directus/storage';
 
-import { expect, beforeEach, afterEach, test, vi } from 'vitest';
+import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import { validateEnv } from '../utils/validate-env.js';
 import { getStorage, _cache } from './index.js';
 import { registerDrivers } from './register-drivers.js';
