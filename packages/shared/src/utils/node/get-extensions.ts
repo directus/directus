@@ -10,7 +10,12 @@ import {
 } from '../../types';
 import { resolvePackage } from './resolve-package';
 import { listFolders } from './list-folders';
-import { EXTENSION_NAME_REGEX, EXTENSION_PKG_KEY, HYBRID_EXTENSION_TYPES, PACKAGE_EXTENSION_TYPES } from '../../constants';
+import {
+	EXTENSION_NAME_REGEX,
+	EXTENSION_PKG_KEY,
+	HYBRID_EXTENSION_TYPES,
+	PACKAGE_EXTENSION_TYPES,
+} from '../../constants';
 import { pluralize } from '../pluralize';
 import { validateExtensionManifest } from '../validate-extension-manifest';
 import { isIn, isTypeIn } from '../array-helpers';
@@ -94,7 +99,10 @@ export async function getPackageExtensions(
 	return resolvePackageExtensions(extensionNames, root, types);
 }
 
-export async function getLocalExtensions(root: string, types: readonly ExtensionPackageType[]): Promise<ExtensionLocal[]> {
+export async function getLocalExtensions(
+	root: string,
+	types: readonly ExtensionPackageType[]
+): Promise<ExtensionLocal[]> {
 	const extensions: ExtensionLocal[] = [];
 
 	for (const extensionType of types) {
@@ -116,7 +124,6 @@ export async function getLocalExtensions(root: string, types: readonly Extension
 						local: true,
 					});
 				} else if (isIn(extensionType, PACKAGE_EXTENSION_TYPES)) {
-
 					const extensionManifest: ExtensionManifestRaw = await fse.readJSON(path.join(extensionPath, 'package.json'));
 
 					if (!validateExtensionManifest(extensionManifest)) {
@@ -125,7 +132,7 @@ export async function getLocalExtensions(root: string, types: readonly Extension
 
 					const extensionOptions = extensionManifest[EXTENSION_PKG_KEY];
 
-					if(extensionOptions.type !== 'bundle') {
+					if (extensionOptions.type !== 'bundle') {
 						throw new Error(`The extension "${extensionName}" is not a bundle extension.`);
 					}
 
@@ -155,7 +162,7 @@ export async function getLocalExtensions(root: string, types: readonly Extension
 					});
 				}
 			}
-		} catch {
+		} catch (e) {
 			throw new Error(`Extension folder "${typePath}" couldn't be opened`);
 		}
 	}

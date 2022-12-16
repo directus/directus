@@ -161,12 +161,12 @@ function getPackageManifest(name: string, options: ExtensionOptions, deps: Recor
 		scripts: {
 			build: 'directus-extension build',
 			dev: 'directus-extension build -w --no-minify',
-			link : 'directus-extension link',
+			link: 'directus-extension link',
 		},
 		devDependencies: deps,
-	}
+	};
 
-	if(options.type === 'bundle') {
+	if (options.type === 'bundle') {
 		packageManifest.scripts['add'] = 'directus-extension add';
 	}
 

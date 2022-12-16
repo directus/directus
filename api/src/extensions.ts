@@ -189,7 +189,10 @@ class ExtensionManager {
 
 	private async load(): Promise<void> {
 		try {
-			await ensureExtensionDirs(env.EXTENSIONS_PATH, env.SERVE_APP ? EXTENSION_PACKAGE_TYPES : API_OR_HYBRID_EXTENSION_PACKAGE_TYPES);
+			await ensureExtensionDirs(
+				env.EXTENSIONS_PATH,
+				env.SERVE_APP ? EXTENSION_PACKAGE_TYPES : API_OR_HYBRID_EXTENSION_PACKAGE_TYPES
+			);
 
 			this.extensions = await this.getExtensions();
 		} catch (err: any) {
@@ -225,15 +228,17 @@ class ExtensionManager {
 		if (!this.watcher) {
 			logger.info('Watching extensions for changes...');
 
-			const localExtensionPaths = (env.SERVE_APP ? EXTENSION_PACKAGE_TYPES : API_OR_HYBRID_EXTENSION_PACKAGE_TYPES).flatMap((type) => {
+			const localExtensionPaths = (
+				env.SERVE_APP ? EXTENSION_PACKAGE_TYPES : API_OR_HYBRID_EXTENSION_PACKAGE_TYPES
+			).flatMap((type) => {
 				const typeDir = path.posix.join(pathToRelativeUrl(env.EXTENSIONS_PATH), pluralize(type));
 
-				if(isIn(type, HYBRID_EXTENSION_TYPES)) {
-					return [path.posix.join(typeDir, '*', 'app.js'), path.posix.join(typeDir, '*', 'api.js')]
-				} else if(isIn(type, PACKAGE_EXTENSION_TYPES)) {
-					return path.posix.join(typeDir, '*', 'dist', '*')
+				if (isIn(type, HYBRID_EXTENSION_TYPES)) {
+					return [path.posix.join(typeDir, '*', 'app.js'), path.posix.join(typeDir, '*', 'api.js')];
+				} else if (isIn(type, PACKAGE_EXTENSION_TYPES)) {
+					return path.posix.join(typeDir, '*', 'dist', '*');
 				} else {
-					return path.posix.join(typeDir, '*', 'index.js')
+					return path.posix.join(typeDir, '*', 'index.js');
 				}
 			});
 

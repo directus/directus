@@ -37,6 +37,6 @@ program
 	.command('link')
 	.description('Creates a symlink to the extension in the Directus extensions folder')
 	.argument('<path>', 'path to the extension folder of directus')
-	.action(link)
+	.action(link);
 
 program.parse(process.argv);

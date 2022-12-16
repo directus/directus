@@ -71,7 +71,8 @@ type ExtensionPackageBase = ExtensionBase & {
 	local: false;
 };
 
-export type ExtensionLocal = ExtensionLocalBase & (AppExtensionBase | ApiExtensionBase | HybridExtensionBase | BundleExtensionBase);
+export type ExtensionLocal = ExtensionLocalBase &
+	(AppExtensionBase | ApiExtensionBase | HybridExtensionBase | BundleExtensionBase);
 export type ExtensionPackage = ExtensionPackageBase &
 	(AppExtensionBase | ApiExtensionBase | HybridExtensionBase | BundleExtensionBase);
 
