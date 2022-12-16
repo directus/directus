@@ -1,66 +1,86 @@
+import type { Mock } from 'vitest';
+import { test, vi, expect, afterEach, beforeEach } from 'vitest';
+import { getStorageDriver } from './get-storage-driver.js';
+import { registerDrivers } from './register-drivers.js';
+import { getEnv } from '../env.js';
+import { randWord } from '@ngneat/falso';
+
 // @ts-expect-error https://github.com/microsoft/TypeScript/issues/49721
-import type { Driver, StorageManager } from '@directus/storage';
+import type { StorageManager, Driver } from '@directus/storage';
 
-import { afterEach, expect, test, vi } from 'vitest';
-import { getEnv } from '../env';
-import { getStorageDriver } from './get-storage-driver';
-import { registerDrivers } from './register-drivers';
-
-vi.mock('./get-storage-driver');
+vi.mock('./get-storage-driver.js');
 vi.mock('../env');
+
+let mockStorage: StorageManager;
+let mockDriver: typeof Driver;
+let sample: {
+	name: string;
+};
+
+beforeEach(() => {
+	mockStorage = {
+		registerDriver: vi.fn(),
+	} as unknown as StorageManager;
+
+	mockDriver = {} as unknown as typeof Driver;
+
+	vi.mocked(getStorageDriver).mockResolvedValue(mockDriver);
+
+	sample = {
+		name: randWord(),
+	};
+});
 
 afterEach(() => {
 	vi.clearAllMocks();
 });
 
-test('Ignores STORAGE variables that are not driver', () => {
-	vi.mocked(getEnv).mockReturnValueOnce({
-		STORAGE_SOMETHING: 'x',
-	});
+test('Does nothing if no storage drivers are configured in Env', async () => {
+	vi.mocked(getEnv).mockReturnValue({});
 
-	const mockStorageManager = {
-		registerDriver: vi.fn(),
-	} as unknown as StorageManager;
+	await registerDrivers(mockStorage);
 
-	registerDrivers(mockStorageManager);
-
-	expect(mockStorageManager.registerDriver).toHaveBeenCalledTimes(0);
+	expect(mockStorage.registerDriver).toHaveBeenCalledTimes(0);
 });
 
-test('Ignores DRIVER variables that do not have the STORAGE prefix', () => {
-	vi.mocked(getEnv).mockReturnValueOnce({
-		SOMETHING_DRIVER: 'x',
+test('Ignores environment variables that do not start with STORAGE_ and end with _DRIVER', async () => {
+	vi.mocked(getEnv).mockReturnValue({
+		[`NOSTORAGE_${randWord().toUpperCase()}_DRIVER`]: randWord(),
+		[`STORAGE_${randWord().toUpperCase()}_NODRIVER`]: randWord(),
 	});
 
-	const mockStorageManager = {
-		registerDriver: vi.fn(),
-	} as unknown as StorageManager;
+	await registerDrivers(mockStorage);
 
-	registerDrivers(mockStorageManager);
-
-	expect(mockStorageManager.registerDriver).toHaveBeenCalledTimes(0);
+	expect(mockStorage.registerDriver).toHaveBeenCalledTimes(0);
 });
 
-test('Registers all drivers on the passed manager', () => {
-	vi.mocked(getEnv).mockReturnValueOnce({
-		STORAGE_A_DRIVER: 'x',
-		STORAGE_Y_DRIVER: 'y',
+test('Only registers driver once per library', async () => {
+	vi.mocked(getEnv).mockReturnValue({
+		[`STORAGE_${randWord().toUpperCase()}_DRIVER`]: sample.name,
+		[`STORAGE_${randWord().toUpperCase()}_DRIVER`]: sample.name,
 	});
 
-	const mockStorageManager = {
-		registerDriver: vi.fn(),
-	} as unknown as StorageManager;
+	await registerDrivers(mockStorage);
 
-	const mockDriverX = {} as typeof Driver;
-	const mockDriverY = {} as typeof Driver;
+	expect(mockStorage.registerDriver).toHaveBeenCalledOnce();
+});
 
-	vi.mocked(getStorageDriver).mockImplementation((driver) => {
-		if (driver === 'x') return Promise.resolve(mockDriverX);
-		return Promise.resolve(mockDriverY);
+test('Gets storage driver for name', async () => {
+	vi.mocked(getEnv).mockReturnValue({
+		[`STORAGE_${randWord().toUpperCase()}_DRIVER`]: sample.name,
 	});
 
-	registerDrivers(mockStorageManager);
+	await registerDrivers(mockStorage);
 
-	expect(mockStorageManager.registerDriver).toHaveBeenCalledWith('x', mockDriverX);
-	expect(mockStorageManager.registerDriver).toHaveBeenCalledWith('y', mockDriverY);
+	expect(getStorageDriver).toHaveBeenCalledWith(sample.name);
+});
+
+test('Registers storage driver to manager', async () => {
+	vi.mocked(getEnv).mockReturnValue({
+		[`STORAGE_${randWord().toUpperCase()}_DRIVER`]: sample.name,
+	});
+
+	await registerDrivers(mockStorage);
+
+	expect(mockStorage.registerDriver).toHaveBeenCalledWith(sample.name, mockDriver);
 });
