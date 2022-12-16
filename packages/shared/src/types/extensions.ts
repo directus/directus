@@ -187,3 +187,15 @@ export type ExtensionOptionsContext = {
 	autoGenerateJunctionRelation: boolean;
 	saving: boolean;
 };
+
+export type ExtensionInfo = {
+	name: string;
+	type: ExtensionPackageType;
+	local: boolean;
+	version?: string;
+	host?: string;
+	entries?: {
+		name: string,
+		type: string
+	}[]
+}

@@ -12,6 +12,8 @@ import {
 	BundleExtension,
 	EndpointConfig,
 	Extension,
+	ExtensionInfo,
+	ExtensionPackageType,
 	ExtensionType,
 	FilterHandler,
 	HookConfig,
@@ -53,6 +55,7 @@ import { EventHandler } from './types';
 import getModuleDefault from './utils/get-module-default';
 import { JobQueue } from './utils/job-queue';
 import { Url } from './utils/url';
+import tar from 'tar'
 
 let extensionManager: ExtensionManager | undefined;
 
@@ -129,7 +132,7 @@ class ExtensionManager {
 
 			const loadedExtensions = this.getExtensionsList();
 			if (loadedExtensions.length > 0) {
-				logger.info(`Loaded extensions: ${loadedExtensions.join(', ')}`);
+				logger.info(`Loaded extensions: ${loadedExtensions.map(ext => ext.name).join(', ')}`);
 			}
 		}
 
@@ -171,12 +174,39 @@ class ExtensionManager {
 		});
 	}
 
-	public getExtensionsList(type?: ExtensionType): string[] {
+	public getExtensionsList(type?: ExtensionPackageType) {
 		if (type === undefined) {
-			return this.extensions.map((extension) => extension.name);
+			return this.extensions.map(mapInfo);
 		} else {
-			return this.extensions.filter((extension) => extension.type === type).map((extension) => extension.name);
+			return this.extensions.map(mapInfo).filter((extension) => extension.type === type);
 		}
+
+		function mapInfo(extension: Extension): ExtensionInfo {
+			const data: ExtensionInfo = {
+				name: extension.name,
+				type: extension.type,
+				local: extension.local,
+			}
+
+
+			if('entries' in extension) {
+				data.entries = extension.entries;
+			}
+
+			if('host' in extension) {
+				data.host = extension.host;
+			}
+
+			if('version' in extension) {
+				data.version = extension.version;
+			}
+
+			return data
+		}
+	}
+
+	public getExtension(name: string): Extension | undefined {
+		return this.extensions.find((extension) => extension.name === name);
 	}
 
 	public getAppExtensions(): string | null {
@@ -185,6 +215,52 @@ class ExtensionManager {
 
 	public getEndpointRouter(): Router {
 		return this.endpointRouter;
+	}
+
+	public async installExtension(name: string, version = 'latest') {
+		const axios = (await import('axios')).default;
+
+		const info = await axios.get(`https://registry.npmjs.org/${name}/${version}`);
+
+		const tarballUrl = info.data.dist.tarball
+
+		const type = info.data['directus:extension'].type as ExtensionPackageType
+		const extensionFolder = path.join(env.EXTENSIONS_PATH, pluralize(type), name.replace(/[\/\\]/g,'_'))
+		const extensionFolderTemp = path.join(env.EXTENSIONS_PATH, pluralize(type), name.replace(/[\/\\]/g,'_') + '_temp')
+		const localTarPath = path.join(extensionFolderTemp, "tar.tgz")
+		
+		const tarFile = await axios.get(tarballUrl, {
+			responseEncoding: 'binary',
+			responseType: 'arraybuffer'
+		})
+		await fse.createFile(localTarPath)
+		await fse.writeFile(localTarPath, tarFile.data, {
+			encoding: 'binary'
+		})
+
+		await tar.extract({
+			file: localTarPath,
+			cwd: extensionFolderTemp
+		})
+
+		if(type === 'bundle') {
+			await fse.move(path.join(extensionFolderTemp, "package"), extensionFolder, {
+				overwrite: true
+			})
+		} else {
+			await fse.move(path.join(extensionFolderTemp, "package", "dist"), extensionFolder)
+		}
+		await fse.remove(extensionFolderTemp)
+
+		return true
+	}
+
+	public async uninstallExtension(name: string) {
+
+	}
+
+	public async updateExtension(name: string) {
+		return true
 	}
 
 	private async load(): Promise<void> {
