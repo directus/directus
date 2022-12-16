@@ -205,10 +205,8 @@ export class DriverCloudinary implements Driver {
 		const fullPath = this.fullPath(filepath);
 		const resourceType = this.getResourceType(fullPath);
 
-		const timestamp = this.getTimestamp();
-
 		const uploadParameters = {
-			timestamp: timestamp,
+			timestamp: this.getTimestamp(),
 			api_key: this.apiKey,
 			type: 'upload',
 			access_mode: this.accessMode,
@@ -230,6 +228,8 @@ export class DriverCloudinary implements Driver {
 			chunks.push(chunk);
 			currentChunkSize += chunk.length;
 
+			// Cloudinary requires each chunk to be at least 5MB. We'll submit the chunk as soon as we
+			// reach 5.5MB to be safe
 			if (currentChunkSize >= 5.5e6) {
 				const uploadChunkParams: Parameters<typeof this.uploadChunk>[0] = {
 					resourceType,
@@ -308,6 +308,7 @@ export class DriverCloudinary implements Driver {
 			method: 'POST',
 			body: formData,
 			headers: {
+				/** @see https://support.cloudinary.com/hc/en-us/articles/208263735-Guidelines-for-self-implementing-chunked-upload-to-Cloudinary */
 				'X-Unique-Upload-Id': parameters.timestamp,
 				'Content-Range': `bytes ${bytesOffset}-${bytesOffset + blob.size - 1}/${bytesTotal}`,
 			},
