@@ -1,51 +1,58 @@
-// import { StorageManager } from '@directus/drive';
-// import { afterEach, expect, test, vi } from 'vitest';
-// import { validateEnv } from '../utils/validate-env';
-// import { getStorageConfig } from './get-storage-config';
-// import { getStorage, _cache } from './index';
-// import { registerDrivers } from './register-drivers';
+// @ts-expect-error https://github.com/microsoft/TypeScript/issues/49721
+import { StorageManager } from '@directus/storage';
 
-// vi.mock('@directus/drive');
-// vi.mock('../utils/validate-env');
-// vi.mock('./get-storage-config');
-// vi.mock('./register-drivers');
+import { expect, beforeEach, afterEach, test, vi } from 'vitest';
+import { validateEnv } from '../utils/validate-env.js';
+import { getStorage, _cache } from './index.js';
+import { registerDrivers } from './register-drivers.js';
+import { registerLocations } from './register-locations.js';
 
-// afterEach(() => {
-// 	vi.clearAllMocks();
-// 	_cache._storage = null;
-// });
+vi.mock('@directus/storage');
+vi.mock('./register-drivers.js');
+vi.mock('./register-locations.js');
+vi.mock('../utils/validate-env.js');
 
-// test('Returns cached storage manager if exists', async () => {
-// 	const mockStorageManager = {} as unknown as StorageManager;
-// 	_cache._storage = mockStorageManager;
+let mockStorage: StorageManager;
 
-// 	const result = await getStorage();
+beforeEach(() => {
+	mockStorage = {} as StorageManager;
+	_cache.storage = null;
+	vi.mocked(StorageManager).mockReturnValue(mockStorage);
+});
 
-// 	expect(result).toBe(mockStorageManager);
-// });
+afterEach(() => {
+	vi.clearAllMocks();
+});
 
-// test('Validates environment for storage locations', async () => {
-// 	await getStorage();
+test('Returns storage from cache immediately if cache has been filled', async () => {
+	_cache.storage = mockStorage;
+	expect(await getStorage());
+});
 
-// 	expect(validateEnv).toHaveBeenCalledWith(['STORAGE_LOCATIONS']);
-// });
+test('Validates STORAGE_LOCATIONS to exist in env', async () => {
+	await getStorage();
+	expect(validateEnv).toHaveBeenCalledWith(['STORAGE_LOCATIONS']);
+});
 
-// test('Creates StorageManager instance with generated options', async () => {
-// 	const mockConfig = {};
-// 	vi.mocked(getStorageConfig).mockReturnValueOnce(mockConfig);
+test('Creates new StorageManager instance in cache', async () => {
+	await getStorage();
+	expect(StorageManager).toHaveBeenCalledOnce();
+	expect(StorageManager).toHaveBeenCalledWith();
+	expect(_cache.storage).toBe(mockStorage);
+});
 
-// 	await getStorage();
+test('Registers drivers against cached storage manager', async () => {
+	await getStorage();
+	expect(registerDrivers).toHaveBeenCalledWith(_cache.storage);
+});
 
-// 	expect(StorageManager).toHaveBeenCalledWith(mockConfig);
-// });
+test('Registers locations against cached storage manager', async () => {
+	await getStorage();
+	expect(registerLocations).toHaveBeenCalledWith(_cache.storage);
+});
 
-// test('Registers drivers on the cached storage manager', async () => {
-// 	const mockConfig = {};
-// 	vi.mocked(getStorageConfig).mockReturnValueOnce(mockConfig);
-// 	const mockStorageManager = {} as unknown as StorageManager;
-// 	vi.mocked(StorageManager).mockReturnValueOnce(mockStorageManager);
-
-// 	await getStorage();
-
-// 	expect(registerDrivers).toHaveBeenCalledWith(mockStorageManager);
-// });
+test('Returns cached storage manager', async () => {
+	const storage = await getStorage();
+	expect(storage).toBe(_cache.storage);
+	expect(storage).toBe(mockStorage);
+});
