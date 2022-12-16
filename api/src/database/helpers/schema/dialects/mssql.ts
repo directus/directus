@@ -19,5 +19,9 @@ export class SchemaHelperMSSQL extends SchemaHelper {
 		}
 		logger.error('Unable to parse database version string.');
 		return { parsed: [], full: versionString };
+  }
+
+	formatUUID(uuid: string): string {
+		return uuid.toUpperCase();
 	}
 }
