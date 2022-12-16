@@ -305,12 +305,12 @@ describe('#getFullSignature', () => {
 		expect(driver['toFormUrlEncoded']).toHaveBeenCalledWith(mockPayload, { sort: true });
 	});
 
-	test('Creates sha1 hash', () => {
+	test('Creates sha256 hash', () => {
 		driver['getFullSignature'](mockPayload);
-		expect(createHash).toHaveBeenCalledWith('sha1');
+		expect(createHash).toHaveBeenCalledWith('sha256');
 	});
 
-	test('Updates sha1 hash with signature payload + api secret', () => {
+	test('Updates sha256 hash with signature payload + api secret', () => {
 		const mockFormUrlEncoded = randWord();
 		vi.mocked(driver['toFormUrlEncoded']).mockReturnValue(mockFormUrlEncoded);
 
@@ -362,8 +362,8 @@ describe('#getParameterSignature', () => {
 		result = driver['getParameterSignature'](sample.path.input);
 	});
 
-	test('Creates SHA1 hash', () => {
-		expect(createHash).toHaveBeenCalledWith('sha1');
+	test('Creates sha256 hash', () => {
+		expect(createHash).toHaveBeenCalledWith('sha256');
 	});
 
 	test('Updates hash with passed filepath + apiSecret', () => {
