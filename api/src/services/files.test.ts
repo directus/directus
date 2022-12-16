@@ -1,12 +1,8 @@
-import exifr from 'exifr';
 import knex, { Knex } from 'knex';
 import { getTracker, MockClient, Tracker } from 'knex-mock-client';
-import { Readable } from 'node:stream';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, MockedFunction, SpyInstance, vi } from 'vitest';
 import { FilesService, ItemsService } from '.';
 import { InvalidPayloadException } from '../exceptions';
-
-vi.mock('exifr');
 
 describe('Integration Tests', () => {
 	let db: MockedFunction<Knex>;
@@ -59,38 +55,6 @@ describe('Integration Tests', () => {
 				});
 
 				expect(superCreateOne).toHaveBeenCalled();
-			});
-		});
-
-		describe('getMetadata', () => {
-			let service: FilesService;
-			let exifrParseSpy: SpyInstance<any>;
-
-			const sampleMetadata = {
-				CustomTagA: 'value a',
-				CustomTagB: 'value b',
-				CustomTagC: 'value c',
-			};
-
-			beforeEach(() => {
-				exifrParseSpy = vi.spyOn(exifr, 'parse');
-				service = new FilesService({
-					knex: db,
-					schema: { collections: {}, relations: [] },
-				});
-			});
-
-			it('accepts allowlist metadata tags', async () => {
-				exifrParseSpy.mockReturnValue(Promise.resolve({ ...sampleMetadata }));
-				const stream = Readable.from(['file buffer content']);
-				const allowList = ['CustomTagB', 'CustomTagA'];
-
-				const metadata = await service.getMetadata(stream, allowList);
-
-				expect(exifrParseSpy).toHaveBeenCalled();
-				expect(metadata.metadata.CustomTagA).toStrictEqual(sampleMetadata.CustomTagA);
-				expect(metadata.metadata.CustomTagB).toStrictEqual(sampleMetadata.CustomTagB);
-				expect(metadata.metadata.CustomTagC).toBeUndefined();
 			});
 		});
 	});
