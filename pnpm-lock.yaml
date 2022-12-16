@@ -80,6 +80,7 @@ importers:
       '@directus/storage-driver-s3': workspace:*
       '@godaddy/terminus': 4.11.2
       '@keyv/redis': 2.5.3
+      '@ngneat/falso': 6.3.0
       '@rollup/plugin-alias': 4.0.2
       '@rollup/plugin-virtual': 3.0.1
       '@types/async': 3.2.15
@@ -312,6 +313,7 @@ importers:
       sqlite3: 5.1.2
       tedious: 15.1.1
     devDependencies:
+      '@ngneat/falso': 6.3.0
       '@types/async': 3.2.15
       '@types/busboy': 1.5.0
       '@types/bytes': 3.1.1
