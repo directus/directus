@@ -5,6 +5,16 @@ import { describe, expect, test, vi } from 'vitest';
 import createApp from './app';
 import { ROBOTSTXT } from './constants';
 
+vi.mock('../../src/database', () => ({
+	default: vi.fn(),
+	getDatabaseClient: vi.fn().mockReturnValue('postgres'),
+	isInstalled: vi.fn(),
+	validateDatabaseConnection: vi.fn(),
+	validateDatabaseExtensions: vi.fn(),
+	validateMigrations: vi.fn(),
+	getSchemaInspector: vi.fn(),
+}));
+
 vi.mock('./env', async () => {
 	const actual = (await vi.importActual('./env')) as { default: Record<string, any> };
 
