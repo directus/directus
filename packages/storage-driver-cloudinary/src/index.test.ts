@@ -514,6 +514,7 @@ describe('#read', () => {
 		};
 
 		vi.mocked(fetch).mockResolvedValue(mockResponse as Response);
+		vi.spyOn(Readable, 'fromWeb');
 	});
 
 	test('Gets resource type for extension of given filepath', async () => {
