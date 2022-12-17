@@ -1,7 +1,7 @@
 <template>
 	<div v-if="type && !imgError" class="file-preview" :class="{ modal: inModal, small: isSmall, svg: isSVG }">
 		<div v-if="type === 'image'" class="image" @click="$emit('click')">
-			<v-image :src="src" :width="width" :height="height" :alt="title" @error="imgError = true" />
+			<v-image :src="src" :width="width" :height="height" :alt="title" @error="onErrorHandle" />
 		</div>
 
 		<div v-else-if="type === 'video'" class="video">
@@ -13,6 +13,11 @@
 		<div v-else class="fallback">
 			<v-icon-file :ext="type" />
 		</div>
+	</div>
+	<!-- Show File related Error to user -->
+	<!-- Below Code solves issue #16440 No visual feedback if thumbnail cannot be generated (e.g. image file too big) -->
+	<div v-else-if="imgError && errorMessage.length">
+		<v-error :error="{ message: errorMessage }" />
 	</div>
 </template>
 
@@ -36,6 +41,13 @@ defineEmits(['click']);
 const props = withDefaults(defineProps<Props>(), { width: undefined, height: undefined, inModal: false });
 
 const imgError = ref(false);
+
+const errorMessage = ref('');
+
+function onErrorHandle(errorResult: string) {
+	imgError.value = true;
+	errorMessage.value = errorResult;
+}
 
 const type = computed<'image' | 'video' | 'audio' | string>(() => {
 	if (props.mime === null) return 'unknown';

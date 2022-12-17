@@ -6,7 +6,7 @@
 import { ref, computed, onMounted, onUnmounted, useAttrs, watch } from 'vue';
 import { omit } from 'lodash';
 import api from '@/api';
-
+import imageLoadingFailedPng from '@/assets/picture-loading-failed.png';
 interface Props {
 	src: string;
 }
@@ -75,7 +75,16 @@ async function loadImage() {
 		const base64 = btoa(raw);
 		srcData.value = `data:${contentType};base64,${base64}`;
 	} catch (err) {
-		emit('error', err);
+		// Below Code solves issue #16440 No visual feedback if thumbnail cannot be generated (e.g. image file too big)
+		srcData.value = imageLoadingFailedPng;
+
+		var decodedString = String.fromCharCode.apply(null, new Uint8Array(err.response.data));
+		var obj = JSON.parse(decodedString);
+
+		if (obj && obj.errors && obj.errors.length && obj.errors[0].message) {
+			const message = obj.errors[0].message;
+			emit('error', message);
+		}
 	}
 }
 
