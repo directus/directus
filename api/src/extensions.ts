@@ -1,9 +1,11 @@
 import {
-	API_OR_HYBRID_EXTENSION_PACKAGE_TYPES,
+	API_EXTENSION_TYPES,
+	APP_EXTENSION_TYPES,
 	APP_SHARED_DEPS,
-	EXTENSION_PACKAGE_TYPES,
+	BUNDLE_EXTENSION_TYPES,
+	EXTENSION_TYPES,
 	HYBRID_EXTENSION_TYPES,
-	PACKAGE_EXTENSION_TYPES,
+	NESTED_EXTENSION_TYPES,
 } from '@directus/shared/constants';
 import * as sharedExceptions from '@directus/shared/exceptions';
 import {
@@ -13,7 +15,6 @@ import {
 	EndpointConfig,
 	Extension,
 	ExtensionInfo,
-	ExtensionPackageType,
 	ExtensionType,
 	FilterHandler,
 	HookConfig,
@@ -29,6 +30,7 @@ import {
 	getPackageExtensions,
 	pathToRelativeUrl,
 	resolvePackage,
+	resolvePackageExtensions,
 } from '@directus/shared/utils/node';
 import express, { Router } from 'express';
 import fse from 'fs-extra';
@@ -174,7 +176,7 @@ class ExtensionManager {
 		});
 	}
 
-	public getExtensionsList(type?: ExtensionPackageType) {
+	public getExtensionsList(type?: ExtensionType) {
 		if (type === undefined) {
 			return this.extensions.map(mapInfo);
 		} else {
@@ -182,26 +184,25 @@ class ExtensionManager {
 		}
 
 		function mapInfo(extension: Extension): ExtensionInfo {
-			const data: ExtensionInfo = {
+			const extensionInfo = {
 				name: extension.name,
 				type: extension.type,
 				local: extension.local,
+				host: extension.host,
+				version: extension.version,
 			}
 
-
-			if('entries' in extension) {
-				data.entries = extension.entries;
+			if(extension.type === 'bundle') {
+				return {
+					...extensionInfo,
+					entries: extension.entries.map((entry) => ({
+						name: entry.name,
+						type: entry.type,
+					})),
+				}
+			} else {
+				return extensionInfo as ExtensionInfo
 			}
-
-			if('host' in extension) {
-				data.host = extension.host;
-			}
-
-			if('version' in extension) {
-				data.version = extension.version;
-			}
-
-			return data
 		}
 	}
 
@@ -224,7 +225,7 @@ class ExtensionManager {
 
 		const tarballUrl = info.data.dist.tarball
 
-		const type = info.data['directus:extension'].type as ExtensionPackageType
+		const type = info.data['directus:extension'].type as ExtensionType
 		const extensionFolder = path.join(env.EXTENSIONS_PATH, pluralize(type), name.replace(/[\/\\]/g,'_'))
 		const extensionFolderTemp = path.join(env.EXTENSIONS_PATH, pluralize(type), name.replace(/[\/\\]/g,'_') + '_temp')
 		const localTarPath = path.join(extensionFolderTemp, "tar.tgz")
@@ -265,10 +266,7 @@ class ExtensionManager {
 
 	private async load(): Promise<void> {
 		try {
-			await ensureExtensionDirs(
-				env.EXTENSIONS_PATH,
-				env.SERVE_APP ? EXTENSION_PACKAGE_TYPES : API_OR_HYBRID_EXTENSION_PACKAGE_TYPES
-			);
+			await ensureExtensionDirs(env.EXTENSIONS_PATH, NESTED_EXTENSION_TYPES);
 
 			this.extensions = await this.getExtensions();
 		} catch (err: any) {
@@ -304,15 +302,11 @@ class ExtensionManager {
 		if (!this.watcher) {
 			logger.info('Watching extensions for changes...');
 
-			const localExtensionPaths = (
-				env.SERVE_APP ? EXTENSION_PACKAGE_TYPES : API_OR_HYBRID_EXTENSION_PACKAGE_TYPES
-			).flatMap((type) => {
+			const localExtensionPaths = NESTED_EXTENSION_TYPES.flatMap((type) => {
 				const typeDir = path.posix.join(pathToRelativeUrl(env.EXTENSIONS_PATH), pluralize(type));
 
 				if (isIn(type, HYBRID_EXTENSION_TYPES)) {
 					return [path.posix.join(typeDir, '*', 'app.js'), path.posix.join(typeDir, '*', 'api.js')];
-				} else if (isIn(type, PACKAGE_EXTENSION_TYPES)) {
-					return path.posix.join(typeDir, '*', 'dist', '*');
 				} else {
 					return path.posix.join(typeDir, '*', 'index.js');
 				}
@@ -358,16 +352,11 @@ class ExtensionManager {
 	}
 
 	private async getExtensions(): Promise<Extension[]> {
-		const packageExtensions = await getPackageExtensions(
-			'.',
-			env.SERVE_APP ? EXTENSION_PACKAGE_TYPES : API_OR_HYBRID_EXTENSION_PACKAGE_TYPES
-		);
-		const localExtensions = await getLocalExtensions(
-			env.EXTENSIONS_PATH,
-			env.SERVE_APP ? EXTENSION_PACKAGE_TYPES : API_OR_HYBRID_EXTENSION_PACKAGE_TYPES
-		);
+		const packageExtensions = await getPackageExtensions('.');
+		const localPackageExtensions = await resolvePackageExtensions(env.EXTENSIONS_PATH);
+		const localExtensions = await getLocalExtensions(env.EXTENSIONS_PATH);
 
-		return [...packageExtensions, ...localExtensions];
+		return [...packageExtensions, ...localPackageExtensions, ...localExtensions].filter(extension => env.SERVE_APP || APP_EXTENSION_TYPES.includes(extension.type as any) === false);
 	}
 
 	private async generateExtensionBundle(): Promise<string | null> {
