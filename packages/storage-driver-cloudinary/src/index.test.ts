@@ -514,7 +514,7 @@ describe('#read', () => {
 		};
 
 		vi.mocked(fetch).mockResolvedValue(mockResponse as Response);
-		vi.spyOn(Readable, 'fromWeb');
+		vi.spyOn(Readable, 'fromWeb').mockReturnValue(sample.stream);
 	});
 
 	test('Gets resource type for extension of given filepath', async () => {
@@ -588,13 +588,9 @@ describe('#read', () => {
 	});
 
 	test('Returns readable stream from web stream', async () => {
-		const mockStream = {} as Readable;
-		vi.spyOn(Readable, 'fromWeb').mockReturnValue(mockStream);
-
 		const stream = await driver.read(sample.path.input);
-
 		expect(Readable.fromWeb).toHaveBeenCalledWith(mockResponse.body);
-		expect(stream).toBe(mockStream);
+		expect(stream).toBe(sample.stream);
 	});
 });
 
