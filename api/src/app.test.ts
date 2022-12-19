@@ -11,6 +11,7 @@ vi.mock('./database', () => ({
 	isInstalled: vi.fn(),
 	validateDatabaseConnection: vi.fn(),
 	validateDatabaseExtensions: vi.fn(),
+	validateDatabaseVersion: vi.fn(),
 	validateMigrations: vi.fn(),
 }));
 
