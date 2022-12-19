@@ -31,7 +31,7 @@
 		"access": "public"
 	},
 	"devDependencies": {
-		"@directus/tsconfig": "0.0.4",
+		"@directus/tsconfig": "0.0.5",
 		"@vitest/coverage-c8": "0.25.3",
 		"typescript": "4.9.3",
 		"vitest": "0.25.3"
