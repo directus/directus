@@ -57,7 +57,7 @@ import { EventHandler } from './types';
 import getModuleDefault from './utils/get-module-default';
 import { JobQueue } from './utils/job-queue';
 import { Url } from './utils/url';
-import tar from 'tar'
+import tar from 'tar';
 
 let extensionManager: ExtensionManager | undefined;
 
@@ -134,7 +134,7 @@ class ExtensionManager {
 
 			const loadedExtensions = this.getExtensionsList();
 			if (loadedExtensions.length > 0) {
-				logger.info(`Loaded extensions: ${loadedExtensions.map(ext => ext.name).join(', ')}`);
+				logger.info(`Loaded extensions: ${loadedExtensions.map((ext) => ext.name).join(', ')}`);
 			}
 		}
 
@@ -190,18 +190,18 @@ class ExtensionManager {
 				local: extension.local,
 				host: extension.host,
 				version: extension.version,
-			}
+			};
 
-			if(extension.type === 'bundle') {
+			if (extension.type === 'bundle') {
 				return {
 					...extensionInfo,
 					entries: extension.entries.map((entry) => ({
 						name: entry.name,
 						type: entry.type,
 					})),
-				}
+				};
 			} else {
-				return extensionInfo as ExtensionInfo
+				return extensionInfo as ExtensionInfo;
 			}
 		}
 	}
@@ -221,47 +221,49 @@ class ExtensionManager {
 	public async installExtension(name: string, version = 'latest') {
 		const axios = (await import('axios')).default;
 
-		const info = await axios.get(`https://registry.npmjs.org/${name}/${version}`);
+		const info = await axios.get(
+			`https://registry.npmjs.org/${encodeURIComponent(name)}/${encodeURIComponent(version)}`
+		);
 
-		const tarballUrl = info.data.dist.tarball
+		const tarballUrl = info.data.dist.tarball;
 
-		const type = info.data['directus:extension'].type as ExtensionType
-		const extensionFolder = path.join(env.EXTENSIONS_PATH, pluralize(type), name.replace(/[\/\\]/g,'_'))
-		const extensionFolderTemp = path.join(env.EXTENSIONS_PATH, pluralize(type), name.replace(/[\/\\]/g,'_') + '_temp')
-		const localTarPath = path.join(extensionFolderTemp, "tar.tgz")
-		
+		const type = info.data['directus:extension'].type as ExtensionType;
+		const extensionFolder = path.join(env.EXTENSIONS_PATH, pluralize(type), name.replace(/[/\\]/g, '_'));
+		const extensionFolderTemp = path.join(env.EXTENSIONS_PATH, pluralize(type), name.replace(/[/\\]/g, '_') + '_temp');
+		const localTarPath = path.join(extensionFolderTemp, 'tar.tgz');
+
 		const tarFile = await axios.get(tarballUrl, {
 			responseEncoding: 'binary',
-			responseType: 'arraybuffer'
-		})
-		await fse.createFile(localTarPath)
+			responseType: 'arraybuffer',
+		});
+		await fse.createFile(localTarPath);
 		await fse.writeFile(localTarPath, tarFile.data, {
-			encoding: 'binary'
-		})
+			encoding: 'binary',
+		});
 
 		await tar.extract({
 			file: localTarPath,
-			cwd: extensionFolderTemp
-		})
+			cwd: extensionFolderTemp,
+		});
 
-		if(type === 'bundle') {
-			await fse.move(path.join(extensionFolderTemp, "package"), extensionFolder, {
-				overwrite: true
-			})
+		if (type === 'bundle') {
+			await fse.move(path.join(extensionFolderTemp, 'package'), extensionFolder, {
+				overwrite: true,
+			});
 		} else {
-			await fse.move(path.join(extensionFolderTemp, "package", "dist"), extensionFolder)
+			await fse.move(path.join(extensionFolderTemp, 'package', 'dist'), extensionFolder);
 		}
-		await fse.remove(extensionFolderTemp)
+		await fse.remove(extensionFolderTemp);
 
-		return true
+		return true;
 	}
 
 	public async uninstallExtension(name: string) {
-
+		return;
 	}
 
 	public async updateExtension(name: string) {
-		return true
+		return true;
 	}
 
 	private async load(): Promise<void> {
@@ -356,7 +358,9 @@ class ExtensionManager {
 		const localPackageExtensions = await resolvePackageExtensions(env.EXTENSIONS_PATH);
 		const localExtensions = await getLocalExtensions(env.EXTENSIONS_PATH);
 
-		return [...packageExtensions, ...localPackageExtensions, ...localExtensions].filter(extension => env.SERVE_APP || APP_EXTENSION_TYPES.includes(extension.type as any) === false);
+		return [...packageExtensions, ...localPackageExtensions, ...localExtensions].filter(
+			(extension) => env.SERVE_APP || APP_EXTENSION_TYPES.includes(extension.type as any) === false
+		);
 	}
 
 	private async generateExtensionBundle(): Promise<string | null> {
