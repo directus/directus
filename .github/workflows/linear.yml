@@ -9,7 +9,7 @@ jobs:
   linear:
     runs-on: ubuntu-latest
     steps:
-      - uses: rijkvanzanten/gh-action-linear@v0.1.1
+      - uses: rijkvanzanten/gh-action-linear@v0.2.0
         with:
           linear-api-key: ${{ secrets.LINEAR_API_KEY }}
           linear-team-id: ${{ secrets.LINEAR_TEAM_ID }}
