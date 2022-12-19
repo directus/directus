@@ -1,4 +1,5 @@
 {
 	"extends": "@directus/tsconfig/node18-esm.json",
-	"include": ["src"]
+	"include": ["src"],
+	"exclude": ["dist", "node_modules"]
 }
