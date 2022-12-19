@@ -39,3 +39,4 @@ ls -la ./directus-custom-extensions-release
 cp -r ./directus-custom-extensions-release/collection-ext ${DIRECTUS_INTERFACES}
 cp -r ./directus-custom-extensions-release/filter-ext ${DIRECTUS_INTERFACES}
 cp -r ./directus-custom-extensions-release/loading-api-field ${DIRECTUS_INTERFACES}
+cp -r ./directus-custom-extensions-release/image-carousel ${DIRECTUS_INTERFACES}
