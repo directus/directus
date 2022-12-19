@@ -75,7 +75,6 @@ async function loadImage() {
 		const base64 = btoa(raw);
 		srcData.value = `data:${contentType};base64,${base64}`;
 	} catch (err) {
-		// Below Code solves issue #16440 No visual feedback if thumbnail cannot be generated (e.g. image file too big)
 		srcData.value = imageLoadingFailedPng;
 
 		var decodedString = String.fromCharCode.apply(null, new Uint8Array(err.response.data));

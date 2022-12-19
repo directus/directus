@@ -14,8 +14,6 @@
 			<v-icon-file :ext="type" />
 		</div>
 	</div>
-	<!-- Show File related Error to user -->
-	<!-- Below Code solves issue #16440 No visual feedback if thumbnail cannot be generated (e.g. image file too big) -->
 	<div v-else-if="imgError && errorMessage.length">
 		<v-error :error="{ message: errorMessage }" />
 	</div>
