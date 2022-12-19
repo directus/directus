@@ -1,12 +1,12 @@
 <template>
-	<img ref="imageElement" :src="srcData" v-bind="attrsWithoutSrc" />
+	<v-icon name="image_not_supported" large v-if="imgError" />
+	<img ref="imageElement" :src="srcData" v-bind="attrsWithoutSrc" v-else />
 </template>
 
 <script lang="ts" setup>
 import { ref, computed, onMounted, onUnmounted, useAttrs, watch } from 'vue';
 import { omit } from 'lodash';
 import api from '@/api';
-import imageLoadingFailedPng from '@/assets/picture-loading-failed.png';
 interface Props {
 	src: string;
 }
@@ -16,7 +16,7 @@ const emit = defineEmits(['error']);
 const attrs = useAttrs();
 
 const imageElement = ref<HTMLImageElement>();
-
+const imgError = ref(false);
 const emptyPixel =
 	'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';
 const srcData = ref<string>(emptyPixel);
@@ -68,8 +68,7 @@ async function loadImage() {
 		const base64 = window.btoa(raw);
 		srcData.value = `data:${contentType};base64,${base64}`;
 	} catch (err) {
-		srcData.value = imageLoadingFailedPng;
-
+		imgError.value = true;
 		var decodedString = String.fromCharCode.apply(null, new Uint8Array(err.response.data));
 		var obj = JSON.parse(decodedString);
 
