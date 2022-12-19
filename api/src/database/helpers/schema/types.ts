@@ -96,4 +96,8 @@ export abstract class SchemaHelper extends DatabaseHelper {
 		// reference issue #14873
 		return existingName;
 	}
+
+	formatUUID(uuid: string): string {
+		return uuid; // no-op by defaut
+	}
 }

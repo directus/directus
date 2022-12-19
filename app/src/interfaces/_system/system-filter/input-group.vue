@@ -75,7 +75,6 @@ import { clone, get } from 'lodash';
 import InputComponent from './input-component.vue';
 import { FieldFilter } from '@directus/shared/types';
 import { fieldToFilter, getComparator, getField } from './utils';
-import { translate } from '@/utils/translate-object-values';
 
 export default defineComponent({
 	components: { InputComponent },
@@ -155,7 +154,7 @@ export default defineComponent({
 			},
 		});
 
-		const choices = computed(() => translate(fieldInfo.value?.meta?.options?.choices ?? []));
+		const choices = computed(() => fieldInfo.value?.meta?.options?.choices ?? []);
 
 		return { t, choices, fieldInfo, interfaceType, value, comparator, setValueAt, getComparator, setListValue };
 
