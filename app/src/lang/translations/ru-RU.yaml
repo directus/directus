@@ -1752,6 +1752,8 @@ displays:
     relative: Относительный
     relative_label: 'Показывать относительное время, прим.: 5 минут назад'
     suffix: Суффикс
+    strict_label: Использовать строгие единицы измерения
+    strict_note: Удаляет слова типа 'almost', 'over', 'less than'
   file:
     file: Файл
     description: Показать файлы
@@ -1770,6 +1772,7 @@ displays:
     bold_label: Использовать жирный шрифт
     italic: Наклонный
     prefix: Префикс
+    prefix_label: Подготовить текст
     suffix: Суффикс
     color: Цвет
     background: Фон
