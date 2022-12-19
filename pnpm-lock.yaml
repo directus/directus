@@ -728,10 +728,12 @@ importers:
 
   packages/storage:
     specifiers:
+      '@directus/tsconfig': 0.0.4
       '@vitest/coverage-c8': 0.25.3
       typescript: 4.9.3
       vitest: 0.25.3
     devDependencies:
+      '@directus/tsconfig': 0.0.4
       '@vitest/coverage-c8': 0.25.3
       typescript: 4.9.3
       vitest: 0.25.3
@@ -740,6 +742,7 @@ importers:
     specifiers:
       '@azure/storage-blob': 12.12.0
       '@directus/storage': workspace:*
+      '@directus/tsconfig': 0.0.4
       '@directus/utils': workspace:*
       '@ngneat/falso': 6.3.0
       '@vitest/coverage-c8': 0.25.3
@@ -750,6 +753,7 @@ importers:
       '@directus/storage': link:../storage
       '@directus/utils': link:../utils
     devDependencies:
+      '@directus/tsconfig': 0.0.4
       '@ngneat/falso': 6.3.0
       '@vitest/coverage-c8': 0.25.3
       typescript: 4.9.3
@@ -758,6 +762,7 @@ importers:
   packages/storage-driver-cloudinary:
     specifiers:
       '@directus/storage': workspace:*
+      '@directus/tsconfig': 0.0.4
       '@directus/utils': workspace:*
       '@ngneat/falso': 6.3.0
       '@vitest/coverage-c8': 0.25.3
@@ -771,6 +776,7 @@ importers:
       p-queue: 7.3.0
       undici: 5.14.0
     devDependencies:
+      '@directus/tsconfig': 0.0.4
       '@ngneat/falso': 6.3.0
       '@vitest/coverage-c8': 0.25.3
       typescript: 4.9.3
@@ -779,6 +785,7 @@ importers:
   packages/storage-driver-gcs:
     specifiers:
       '@directus/storage': workspace:*
+      '@directus/tsconfig': 0.0.4
       '@directus/utils': workspace:*
       '@google-cloud/storage': 6.7.0
       '@ngneat/falso': 6.3.0
@@ -790,6 +797,7 @@ importers:
       '@directus/utils': link:../utils
       '@google-cloud/storage': 6.7.0
     devDependencies:
+      '@directus/tsconfig': 0.0.4
       '@ngneat/falso': 6.3.0
       '@vitest/coverage-c8': 0.25.3
       typescript: 4.9.3
@@ -798,6 +806,7 @@ importers:
   packages/storage-driver-local:
     specifiers:
       '@directus/storage': workspace:*
+      '@directus/tsconfig': 0.0.4
       '@directus/utils': workspace:*
       '@ngneat/falso': 6.3.0
       '@vitest/coverage-c8': 0.25.3
@@ -807,6 +816,7 @@ importers:
       '@directus/storage': link:../storage
       '@directus/utils': link:../utils
     devDependencies:
+      '@directus/tsconfig': 0.0.4
       '@ngneat/falso': 6.3.0
       '@vitest/coverage-c8': 0.25.3
       typescript: 4.9.3
@@ -816,6 +826,7 @@ importers:
     specifiers:
       '@aws-sdk/client-s3': 3.224.0
       '@directus/storage': workspace:*
+      '@directus/tsconfig': 0.0.4
       '@directus/utils': workspace:*
       '@ngneat/falso': 6.3.0
       '@vitest/coverage-c8': 0.25.3
@@ -826,6 +837,7 @@ importers:
       '@directus/storage': link:../storage
       '@directus/utils': link:../utils
     devDependencies:
+      '@directus/tsconfig': 0.0.4
       '@ngneat/falso': 6.3.0
       '@vitest/coverage-c8': 0.25.3
       typescript: 4.9.3
@@ -835,6 +847,7 @@ importers:
     specifiers:
       '@directus/shared': workspace:*
       '@directus/storage': workspace:*
+      '@directus/tsconfig': 0.0.4
       '@ngneat/falso': 6.3.0
       '@vitest/coverage-c8': 0.25.3
       typescript: 4.9.3
@@ -843,6 +856,7 @@ importers:
       '@directus/shared': link:../shared
       '@directus/storage': link:../storage
     devDependencies:
+      '@directus/tsconfig': 0.0.4
       '@ngneat/falso': 6.3.0
       '@vitest/coverage-c8': 0.25.3
       typescript: 4.9.3
@@ -4151,6 +4165,10 @@ packages:
     resolution: {integrity: sha512-2korjLjPrVA3kZlMiGWIJwWdiqwK5t9d84cMriUW4HIWDIvexjHRpOMX0Ju/89RqdXwIYbR19xqyTlK2GKQbIw==}
     engines: {node: '>=6.0.0'}
     dev: false
+
+  /@directus/tsconfig/0.0.4:
+    resolution: {integrity: sha512-TROn5COz/0EP38rzC1FFluqOfE36jh/kSLWA9lKByEJanhjdetB1Uo/djklhzQpl4kSHrTTHEueOuN7cCkUc4g==}
+    dev: true
 
   /@discoveryjs/json-ext/0.5.7:
     resolution: {integrity: sha512-dBVuXR082gk3jsFp7Rd/JI4kytwGHecnCoTtXFb7DB6CNHp4rg5k1bhg0nWdLGLnOV71lmDzGQaLMy8iPLY0pw==}
@@ -9550,7 +9568,7 @@ packages:
       minipass-pipeline: 1.2.4
       mkdirp: 1.0.4
       p-map: 4.0.0
-      promise-inflight: 1.0.1
+      promise-inflight: 1.0.1_bluebird@3.7.2
       rimraf: 3.0.2
       ssri: 8.0.1
       tar: 6.1.11
@@ -17802,14 +17820,6 @@ packages:
     engines: {node: '>=0.4.0'}
     dev: true
 
-  /promise-inflight/1.0.1:
-    resolution: {integrity: sha512-6zWPyEOFaQBJYcGMHBKTKJ3u6TBsnMFOIZSa6ce1e/ZrrsOlnHRHbabMjLiBYKp+n44X9eUI6VUPaukCXHuG4g==}
-    peerDependencies:
-      bluebird: '*'
-    peerDependenciesMeta:
-      bluebird:
-        optional: true
-
   /promise-inflight/1.0.1_bluebird@3.7.2:
     resolution: {integrity: sha512-6zWPyEOFaQBJYcGMHBKTKJ3u6TBsnMFOIZSa6ce1e/ZrrsOlnHRHbabMjLiBYKp+n44X9eUI6VUPaukCXHuG4g==}
     peerDependencies:
@@ -17819,7 +17829,6 @@ packages:
         optional: true
     dependencies:
       bluebird: 3.7.2
-    dev: true
 
   /promise-retry/2.0.1:
     resolution: {integrity: sha512-y+WKFlBR8BGXnsNlIHFGPZmyDf3DFMoLhaflAnyZgV6rG6xu+JwesTo2Q9R6XwYmtmwAFCkAk3e35jEdoeh/3g==}
