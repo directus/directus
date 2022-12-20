@@ -14,15 +14,15 @@
 			<v-icon-file :ext="type" />
 		</div>
 	</div>
-	<div v-else-if="imgError && errorMessage.length">
-		<v-error :error="{ message: errorMessage }" />
+	<div v-else-if="imgError">
+		<v-error :error="imageError" />
 	</div>
 </template>
 
 <script lang="ts" setup>
 import { ref, computed } from 'vue';
 import { readableMimeType } from '@/utils/readable-mime-type';
-import { addTokenToURL } from '@/api';
+import api, { addTokenToURL } from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
 
 interface Props {
@@ -40,11 +40,16 @@ const props = withDefaults(defineProps<Props>(), { width: undefined, height: und
 
 const imgError = ref(false);
 
-const errorMessage = ref('');
+const imageError = ref<string | null>(null);
 
-function onErrorHandle(errorResult: string) {
-	imgError.value = true;
-	errorMessage.value = errorResult;
+async function onErrorHandle() {
+	if (!props.src) return;
+	try {
+		await api.get(props.src);
+	} catch (err: any) {
+		imgError.value = true;
+		imageError.value = err;
+	}
 }
 
 const type = computed<'image' | 'video' | 'audio' | string>(() => {

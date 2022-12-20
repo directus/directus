@@ -69,13 +69,7 @@ async function loadImage() {
 		srcData.value = `data:${contentType};base64,${base64}`;
 	} catch (err) {
 		imgError.value = true;
-		var decodedString = String.fromCharCode.apply(null, new Uint8Array(err.response.data));
-		var obj = JSON.parse(decodedString);
-
-		if (obj && obj.errors && obj.errors.length && obj.errors[0].message) {
-			const message = obj.errors[0].message;
-			emit('error', message);
-		}
+		emit('error', err);
 	}
 }
 
