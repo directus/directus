@@ -11,9 +11,9 @@ import {
 	GetObjectCommand,
 	HeadObjectCommand,
 	ListObjectsV2Command,
-	PutObjectCommand,
 	S3Client,
 } from '@aws-sdk/client-s3';
+import { Upload } from '@aws-sdk/lib-storage';
 import type { Driver, Range } from '@directus/storage';
 import { normalizePath } from '@directus/utils';
 import { isReadableStream } from '@directus/utils/node';
@@ -85,7 +85,7 @@ export class DriverS3 implements Driver {
 			throw new Error(`No stream returned for file "${filepath}"`);
 		}
 
-		return stream;
+		return stream as Readable;
 	}
 
 	async stat(filepath: string) {
@@ -153,7 +153,12 @@ export class DriverS3 implements Driver {
 			params.ServerSideEncryption = this.serverSideEncryption;
 		}
 
-		await this.client.send(new PutObjectCommand(params));
+		const upload = new Upload({
+			client: this.client,
+			params,
+		});
+
+		await upload.done();
 	}
 
 	async delete(filepath: string) {

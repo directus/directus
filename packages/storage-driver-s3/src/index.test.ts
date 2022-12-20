@@ -28,10 +28,12 @@ import { PassThrough, Readable } from 'node:stream';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import type { DriverS3Config } from './index.js';
 import { DriverS3 } from './index.js';
+import { Upload } from '@aws-sdk/lib-storage';
 
 vi.mock('@directus/utils/node');
 vi.mock('@directus/utils');
 vi.mock('@aws-sdk/client-s3');
+vi.mock('@aws-sdk/lib-storage');
 vi.mock('node:path');
 
 let sample: {
@@ -445,21 +447,27 @@ describe('#write', () => {
 	test('Passes streams to body as is', async () => {
 		await driver.write(sample.path.input, sample.stream);
 
-		expect(PutObjectCommand).toHaveBeenCalledWith({
-			Key: sample.path.inputFull,
-			Bucket: sample.config.bucket,
-			Body: sample.stream,
+		expect(Upload).toHaveBeenCalledWith({
+			client: driver['client'],
+			params: {
+				Key: sample.path.inputFull,
+				Bucket: sample.config.bucket,
+				Body: sample.stream,
+			},
 		});
 	});
 
 	test('Optionally sets ContentType', async () => {
 		await driver.write(sample.path.input, sample.stream, sample.file.type);
 
-		expect(PutObjectCommand).toHaveBeenCalledWith({
-			Key: sample.path.inputFull,
-			Bucket: sample.config.bucket,
-			Body: sample.stream,
-			ContentType: sample.file.type,
+		expect(Upload).toHaveBeenCalledWith({
+			client: driver['client'],
+			params: {
+				Key: sample.path.inputFull,
+				Bucket: sample.config.bucket,
+				Body: sample.stream,
+				ContentType: sample.file.type,
+			},
 		});
 	});
 
@@ -468,11 +476,14 @@ describe('#write', () => {
 
 		await driver.write(sample.path.input, sample.stream);
 
-		expect(PutObjectCommand).toHaveBeenCalledWith({
-			Key: sample.path.inputFull,
-			Bucket: sample.config.bucket,
-			Body: sample.stream,
-			ServerSideEncryption: sample.config.serverSideEncryption,
+		expect(Upload).toHaveBeenCalledWith({
+			client: driver['client'],
+			params: {
+				Key: sample.path.inputFull,
+				Bucket: sample.config.bucket,
+				Body: sample.stream,
+				ServerSideEncryption: sample.config.serverSideEncryption,
+			},
 		});
 	});
 
@@ -481,21 +492,24 @@ describe('#write', () => {
 
 		await driver.write(sample.path.input, sample.stream);
 
-		expect(PutObjectCommand).toHaveBeenCalledWith({
-			Key: sample.path.inputFull,
-			Bucket: sample.config.bucket,
-			Body: sample.stream,
-			ACL: sample.config.acl,
+		expect(Upload).toHaveBeenCalledWith({
+			client: driver['client'],
+			params: {
+				Key: sample.path.inputFull,
+				Bucket: sample.config.bucket,
+				Body: sample.stream,
+				ACL: sample.config.acl,
+			},
 		});
 	});
 
-	test('Executes PutObjectCommand', async () => {
-		const mockCommand = {} as PutObjectCommand;
-		vi.mocked(PutObjectCommand).mockReturnValue(mockCommand);
+	test('Waits for upload to be done', async () => {
+		const mockUpload = { done: vi.fn() };
+		vi.mocked(Upload).mockReturnValue(mockUpload as unknown as Upload);
 
 		await driver.write(sample.path.input, sample.stream);
 
-		expect(driver['client'].send).toHaveBeenCalledWith(mockCommand);
+		expect(mockUpload.done).toHaveBeenCalledOnce();
 	});
 });
 
