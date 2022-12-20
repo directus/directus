@@ -137,7 +137,13 @@
 							<template v-if="exportSettings.limit === 0 || itemCount === 0">
 								{{ t('exporting_no_items_to_export') }}
 							</template>
-							<template v-else-if="exportSettings.limit === -1 || (itemCount && exportSettings.limit >= itemCount)">
+							<template
+								v-else-if="
+									!exportSettings.limit ||
+									exportSettings.limit === -1 ||
+									(itemCount && exportSettings.limit >= itemCount)
+								"
+							>
 								{{
 									t('exporting_all_items_in_collection', {
 										total: itemCount ? n(itemCount) : '??',
