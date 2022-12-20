@@ -5,9 +5,9 @@ import {
 	GetObjectCommand,
 	HeadObjectCommand,
 	ListObjectsV2Command,
-	PutObjectCommand,
 	S3Client,
 } from '@aws-sdk/client-s3';
+import { Upload } from '@aws-sdk/lib-storage';
 import { normalizePath } from '@directus/utils';
 import { isReadableStream } from '@directus/utils/node';
 import {
@@ -28,7 +28,6 @@ import { PassThrough, Readable } from 'node:stream';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import type { DriverS3Config } from './index.js';
 import { DriverS3 } from './index.js';
-import { Upload } from '@aws-sdk/lib-storage';
 
 vi.mock('@directus/utils/node');
 vi.mock('@directus/utils');
