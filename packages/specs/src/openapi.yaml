@@ -287,8 +287,21 @@ components:
       $ref: './components/setting.yaml'
     Users:
       $ref: './components/user.yaml'
+    Query:
+      $ref: './definitions/query.yaml'
     Webhooks:
       $ref: './components/webhook.yaml'
+    x-metadata:
+      type: object
+      properties:
+        total_count:
+          description: Returns the total item count of the collection you're querying.
+          type: integer
+        filter_count:
+          description:
+            Returns the item count of the collection you're querying, taking the current filter/search parameters into
+            account.
+          type: integer
   parameters:
     # All path parameters
     Id:
@@ -317,9 +330,6 @@ components:
       $ref: './parameters/fields.yaml'
     Mode:
       $ref: './parameters/mode.yaml'
-  definitions:
-    Query:
-      $ref: './definitions/query.yaml'
   responses:
     NotFoundError:
       $ref: './responses/notFoundError.yaml'
@@ -334,17 +344,6 @@ components:
       type: apiKey
       in: header
       name: 'Authorization'
-  x-metadata:
-    type: object
-    properties:
-      total_count:
-        description: Returns the total item count of the collection you're querying.
-        type: integer
-      filter_count:
-        description:
-          Returns the item count of the collection you're querying, taking the current filter/search parameters into
-          account.
-        type: integer
 security:
   - Auth: []
   - KeyAuth: []

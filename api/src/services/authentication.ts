@@ -3,7 +3,6 @@ import jwt from 'jsonwebtoken';
 import { Knex } from 'knex';
 import { clone, cloneDeep } from 'lodash';
 import ms from 'ms';
-import { nanoid } from 'nanoid';
 import { performance } from 'perf_hooks';
 import { getAuthProvider } from '../auth';
 import { DEFAULT_AUTH_PROVIDER } from '../constants';
@@ -49,6 +48,8 @@ export class AuthenticationService {
 		payload: Record<string, any>,
 		otp?: string
 	): Promise<LoginResult> {
+		const { nanoid } = await import('nanoid');
+
 		const STALL_TIME = env.LOGIN_STALL_TIME;
 		const timeStart = performance.now();
 
@@ -252,6 +253,8 @@ export class AuthenticationService {
 	}
 
 	async refresh(refreshToken: string): Promise<Record<string, any>> {
+		const { nanoid } = await import('nanoid');
+
 		if (!refreshToken) {
 			throw new InvalidCredentialsException();
 		}

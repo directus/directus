@@ -2,18 +2,18 @@ import knex, { Knex } from 'knex';
 import { MockClient, Tracker, getTracker } from 'knex-mock-client';
 import { PayloadService } from '../../src/services';
 import { getHelpers, Helpers } from '../../src/database/helpers';
+import { describe, beforeAll, afterEach, it, expect, vi, beforeEach, MockedFunction } from 'vitest';
 
-jest.mock('../../src/database/index', () => {
-	return { getDatabaseClient: jest.fn().mockReturnValue('postgres') };
-});
-jest.requireMock('../../src/database/index');
+vi.mock('../../src/database/index', () => ({
+	getDatabaseClient: vi.fn().mockReturnValue('postgres'),
+}));
 
 describe('Integration Tests', () => {
-	let db: jest.Mocked<Knex>;
+	let db: MockedFunction<Knex>;
 	let tracker: Tracker;
 
 	beforeAll(async () => {
-		db = knex({ client: MockClient }) as jest.Mocked<Knex>;
+		db = vi.mocked(knex({ client: MockClient }));
 		tracker = getTracker();
 	});
 
@@ -59,6 +59,19 @@ describe('Integration Tests', () => {
 					});
 
 					expect(result).toMatchObject([]);
+				});
+
+				it('Returns array values as is', async () => {
+					const result = await service.transformers['cast-csv']({
+						value: ['test', 'directus'],
+						action: 'read',
+						payload: {},
+						accountability: { role: null },
+						specials: [],
+						helpers,
+					});
+
+					expect(result).toEqual(['test', 'directus']);
 				});
 
 				it('Splits the CSV string', async () => {
@@ -173,8 +186,8 @@ describe('Integration Tests', () => {
 			});
 
 			describe('processes dates', () => {
-				it('with zero values', async () => {
-					const result = await service.processDates(
+				it('with zero values', () => {
+					const result = service.processDates(
 						[
 							{
 								[dateFieldId]: '0000-00-00',
@@ -194,8 +207,8 @@ describe('Integration Tests', () => {
 					]);
 				});
 
-				it('with typical values', async () => {
-					const result = await service.processDates(
+				it('with typical values', () => {
+					const result = service.processDates(
 						[
 							{
 								[dateFieldId]: '2022-01-10',
@@ -205,7 +218,6 @@ describe('Integration Tests', () => {
 						],
 						'read'
 					);
-
 					expect(result).toMatchObject([
 						{
 							[dateFieldId]: '2022-01-10',
@@ -214,7 +226,39 @@ describe('Integration Tests', () => {
 						},
 					]);
 				});
+
+				it('with date object values', () => {
+					const result = service.processDates(
+						[
+							{
+								[dateFieldId]: new Date(1666777777000),
+								[dateTimeFieldId]: new Date(1666666666000),
+								[timestampFieldId]: new Date(1666555444333),
+							},
+						],
+						'read'
+					);
+
+					expect(result).toMatchObject([
+						{
+							[dateFieldId]: toLocalISOString(new Date(1666777777000)).slice(0, 10),
+							[dateTimeFieldId]: toLocalISOString(new Date(1666666666000)),
+							[timestampFieldId]: new Date(1666555444333).toISOString(),
+						},
+					]);
+				});
 			});
 		});
 	});
 });
+
+function toLocalISOString(date: Date) {
+	const year = String(date.getFullYear());
+	const month = String(date.getMonth() + 1).padStart(2, '0');
+	const day = String(date.getDate()).padStart(2, '0');
+	const hours = String(date.getHours()).padStart(2, '0');
+	const minutes = String(date.getMinutes()).padStart(2, '0');
+	const seconds = String(date.getSeconds()).padStart(2, '0');
+
+	return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+}
