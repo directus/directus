@@ -338,7 +338,7 @@ export class ExportService {
 		}
 
 		if (format === 'csv') {
-			if (input.length === 0) return ''; // prevent CSVParser from erroring (issue #16719)
+			if (input.length === 0) return '';
 			const parser = new CSVParser({
 				transforms: [CSVTransforms.flatten({ separator: '.' })],
 				header: options?.includeHeader !== false,
