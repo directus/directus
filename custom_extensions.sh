@@ -10,9 +10,9 @@ DIRECTUS_DISPLAYS="${DIRECTUS_EXTENSIONS}/displays"
 
 # Install https://github.com/utomic-media/directus-extension-field-actions
 mkdir -p ${DIRECTUS_DISPLAYS}/fields-action
-wget -O ${DIRECTUS_DISPLAYS}/fields-action/index.js https://github.com/utomic-media/directus-extension-field-actions/releases/download/1.1.1/display-index.js
+wget -O ${DIRECTUS_DISPLAYS}/fields-action/index.js https://github.com/utomic-media/directus-extension-field-actions/releases/download/1.2.0/display-index.js
 mkdir -p ${DIRECTUS_INTERFACES}/fields-action
-wget -O ${DIRECTUS_INTERFACES}/fields-action/index.js https://github.com/utomic-media/directus-extension-field-actions/releases/download/1.1.1/interface-index.js
+wget -O ${DIRECTUS_INTERFACES}/fields-action/index.js https://github.com/utomic-media/directus-extension-field-actions/releases/download/1.2.0/interface-index.js
 
 # Install https://github.com/u12206050/directus-extension-global-search
 mkdir -p ${DIRECTUS_MODULES}
