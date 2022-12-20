@@ -11,7 +11,6 @@ import { Accountability, SchemaOverview } from '@directus/shared/types';
 import getMailer from '../../mailer';
 import { Transporter, SendMailOptions } from 'nodemailer';
 import { Url } from '../../utils/url';
-import { object } from 'joi';
 import { Address } from 'nodemailer/lib/mailer/index';
 
 const liquidEngine = new Liquid({
