@@ -110,7 +110,7 @@
 
 				<div class="field half-right">
 					<p class="type-label">{{ t('limit') }}</p>
-					<v-input v-model="exportSettings.limit" type="number" :placeholder="t('unlimited')" />
+					<v-input v-model="exportSettings.limit" type="number" :min="-1" :step="1" :placeholder="t('unlimited')" />
 				</div>
 
 				<div class="field half-left">
