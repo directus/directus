@@ -10,7 +10,6 @@ beforeEach(() => {
 			stubActions: false,
 		})
 	);
-	vi.mock('');
 });
 
 import { useUserStore } from '@/stores/user';
@@ -106,16 +105,17 @@ afterEach(() => {
 });
 
 describe('usePermissions', () => {
-	test('Remove fields without read permissions', async () => {
+	test('Remove fields without read permissions #16732', async () => {
 		const userStore = useUserStore();
 		userStore.currentUser = mockUser as any;
 
 		const permissionsStore = usePermissionsStore();
 		await permissionsStore.hydrate();
 
-		useCollection.mockReturnValue({ info: ref(null), fields: ref(mockFields) });
+		vi.mocked(useCollection).mockReturnValue({ info: ref(null), fields: ref(mockFields) } as any);
 
 		const { fields } = usePermissions(ref('test'), ref(null), ref(false));
+		expect(fields.value.length).toBeGreaterThan(0);
 		for (const field of fields.value) {
 			expect(mockReadPermissions.fields.includes(field.field)).toBe(true);
 		}
