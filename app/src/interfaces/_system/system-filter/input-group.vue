@@ -1,5 +1,5 @@
 <template>
-	<template v-if="['_eq', '_neq', '_lt', '_gt', '_lte', '_gte'].includes(getComparator(field))">
+	<template v-if="['_eq', '_neq', '_lt', '_gt', '_lte', '_gte'].includes(comparator)">
 		<input-component
 			:is="interfaceType"
 			:choices="choices"
@@ -19,7 +19,7 @@
 				'_ends_with',
 				'_nends_with',
 				'_regex',
-			].includes(getComparator(field))
+			].includes(comparator)
 		"
 	>
 		<input-component
@@ -32,7 +32,7 @@
 	</template>
 
 	<div
-		v-else-if="['_in', '_nin'].includes(getComparator(field))"
+		v-else-if="['_in', '_nin'].includes(comparator)"
 		class="list"
 		:class="{ moveComma: interfaceType === 'interface-input' }"
 	>
@@ -43,12 +43,12 @@
 				:value="val"
 				:focus="false"
 				:choices="choices"
-				@input="setValueAt(index, $event)"
+				@input="setListValue(index, $event)"
 			/>
 		</div>
 	</div>
 
-	<template v-else-if="['_between', '_nbetween'].includes(getComparator(field))">
+	<template v-else-if="['_between', '_nbetween'].includes(comparator)">
 		<input-component
 			:is="interfaceType"
 			:choices="choices"
@@ -97,6 +97,10 @@ export default defineComponent({
 			return fieldsStore.getField(props.collection, getField(props.field));
 		});
 
+		const comparator = computed(() => {
+			return getComparator(props.field);
+		});
+
 		const interfaceType = computed(() => {
 			if (fieldInfo.value?.meta?.options?.choices) return 'select';
 
@@ -126,10 +130,9 @@ export default defineComponent({
 		const value = computed<any | any[]>({
 			get() {
 				const fieldPath = getField(props.field);
-				const comparator = getComparator(props.field);
 
-				const value = get(props.field, `${fieldPath}.${comparator}`);
-				if (['_in', '_nin'].includes(getComparator(props.field))) {
+				const value = get(props.field, `${fieldPath}.${comparator.value}`);
+				if (['_in', '_nin'].includes(comparator.value)) {
 					return [...(value as string[]).filter((val) => val !== null && val !== ''), null];
 				} else {
 					return value;
@@ -137,29 +140,39 @@ export default defineComponent({
 			},
 			set(newVal) {
 				const fieldPath = getField(props.field);
-				const comparator = getComparator(props.field);
 
 				let value;
 
-				if (['_in', '_nin'].includes(comparator)) {
+				if (['_in', '_nin'].includes(comparator.value)) {
 					value = (newVal as string[])
 						.flatMap((val) => (typeof val === 'string' ? val.split(',').map((v) => v.trim()) : ''))
 						.filter((val) => val !== null && val !== '');
 				} else {
 					value = newVal;
 				}
-				emit('update:field', fieldToFilter(fieldPath, comparator, value));
+				emit('update:field', fieldToFilter(fieldPath, comparator.value, value));
 			},
 		});
 
 		const choices = computed(() => fieldInfo.value?.meta?.options?.choices ?? []);
 
-		return { t, choices, fieldInfo, interfaceType, value, setValueAt, getComparator };
+		return { t, choices, fieldInfo, interfaceType, value, comparator, setValueAt, getComparator, setListValue };
 
 		function setValueAt(index: number, newVal: any) {
 			let newArray = Array.isArray(value.value) ? clone(value.value) : new Array(index + 1);
 			newArray[index] = newVal;
 			value.value = newArray;
+		}
+
+		function setListValue(index: number, newVal: any) {
+			if (typeof newVal === 'string' && newVal.includes(',')) {
+				const parts = newVal.split(',');
+				for (let i = 0; i < parts.length; i++) {
+					setValueAt(index + i, parts[i]);
+				}
+			} else {
+				setValueAt(index, newVal);
+			}
 		}
 	},
 });
