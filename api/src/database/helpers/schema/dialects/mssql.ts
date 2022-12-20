@@ -6,4 +6,8 @@ export class SchemaHelperMSSQL extends SchemaHelper {
 		rootQuery.offset(offset);
 		rootQuery.orderBy(1);
 	}
+
+	formatUUID(uuid: string): string {
+		return uuid.toUpperCase();
+	}
 }

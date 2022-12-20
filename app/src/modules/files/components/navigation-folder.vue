@@ -230,6 +230,7 @@ export default defineComponent({
 									_eq: props.folder.id,
 								},
 							},
+							fields: ['id'],
 						},
 					});
 
@@ -240,6 +241,7 @@ export default defineComponent({
 									_eq: props.folder.id,
 								},
 							},
+							fields: ['id'],
 						},
 					});
 

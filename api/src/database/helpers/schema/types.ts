@@ -120,4 +120,8 @@ export abstract class SchemaHelper extends DatabaseHelper {
 		);
 		return dbQuery;
 	}
+
+	formatUUID(uuid: string): string {
+		return uuid; // no-op by defaut
+	}
 }
