@@ -2,6 +2,7 @@ import { toArray } from '@directus/shared/utils';
 import { lookup } from 'dns';
 import encodeURL from 'encodeurl';
 import exif from 'exif-reader';
+import { parse as parseIcc } from 'icc';
 import { clone, pick } from 'lodash';
 import { extension } from 'mime-types';
 import net from 'net';
@@ -18,6 +19,7 @@ import { ForbiddenException, InvalidPayloadException, ServiceUnavailableExceptio
 import logger from '../logger';
 import { getStorage } from '../storage';
 import { AbstractServiceOptions, File, Metadata, MutationOptions, PrimaryKey } from '../types';
+import { parseIptc, parseXmp } from '../utils/parse-image-metadata';
 import { ItemsService } from './items';
 
 // @ts-ignore
@@ -149,30 +151,63 @@ export class FilesService extends ItemsService {
 						metadata.height = sharpMetadata.height;
 					}
 
+					// Backward-compatible layout as it used to be with 'exifr'
+					const fullMetadata: {
+						ifd0?: Record<string, unknown>;
+						ifd1?: Record<string, unknown>;
+						exif?: Record<string, unknown>;
+						gps?: Record<string, unknown>;
+						interop?: Record<string, unknown>;
+						icc?: Record<string, unknown>;
+						iptc?: Record<string, unknown>;
+						xmp?: Record<string, unknown>;
+					} = {};
 					if (sharpMetadata.exif) {
-						const exifMetadata = exif(sharpMetadata.exif);
-
-						const fullExif: Record<string, unknown> = {
-							...exifMetadata.exif,
-							...exifMetadata.image,
-						};
-
-						if (allowList === '*' || allowList?.[0] === '*') {
-							metadata.metadata = fullExif;
-						} else {
-							metadata.metadata = pick(fullExif, allowList);
+						const { image, thumbnail, interoperability, ...rest } = exif(sharpMetadata.exif);
+						if (image) {
+							fullMetadata.ifd0 = image;
 						}
-
-						if (!metadata.description && fullExif?.Caption && typeof fullExif.Caption === 'string') {
-							metadata.description = fullExif.Caption;
+						if (thumbnail) {
+							fullMetadata.ifd1 = thumbnail;
 						}
-
-						if (fullExif?.Headline && typeof fullExif.Headline === 'string') {
-							metadata.title = fullExif.Headline;
+						if (interoperability) {
+							fullMetadata.interop = interoperability;
 						}
+						Object.assign(fullMetadata, rest);
+					}
+					if (sharpMetadata.icc) {
+						fullMetadata.icc = parseIcc(sharpMetadata.icc);
+					}
+					if (sharpMetadata.iptc) {
+						fullMetadata.iptc = parseIptc(sharpMetadata.iptc);
+					}
+					if (sharpMetadata.xmp) {
+						fullMetadata.xmp = parseXmp(sharpMetadata.xmp);
+					}
 
-						if (fullExif?.Keywords) {
-							metadata.tags = fullExif.Keywords;
+					if (fullMetadata?.iptc?.Caption && typeof fullMetadata.iptc.Caption === 'string') {
+						metadata.description = fullMetadata.iptc?.Caption;
+					}
+					if (fullMetadata?.iptc?.Headline && typeof fullMetadata.iptc.Headline === 'string') {
+						metadata.title = fullMetadata.iptc.Headline;
+					}
+					if (fullMetadata?.iptc?.Keywords) {
+						metadata.tags = fullMetadata.iptc.Keywords;
+					}
+
+					if (allowList === '*' || allowList?.[0] === '*') {
+						metadata.metadata = fullMetadata;
+					} else {
+						metadata.metadata = pick(fullMetadata, allowList);
+					}
+
+					// Fix (incorrectly parsed?) values starting / ending with spaces,
+					// limited to one level and string values only
+					for (const section of Object.keys(metadata.metadata)) {
+						for (const [key, value] of Object.entries(metadata.metadata[section])) {
+							if (typeof value === 'string') {
+								metadata.metadata[section][key] = value.trim();
+							}
 						}
 					}
 

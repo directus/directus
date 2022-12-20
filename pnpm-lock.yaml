@@ -152,6 +152,7 @@ importers:
       graphql: 16.6.0
       graphql-compose: 9.0.10
       helmet: 6.0.0
+      icc: 2.0.0
       inquirer: 8.2.4
       ioredis: 5.2.4
       joi: 17.7.0
@@ -257,6 +258,7 @@ importers:
       graphql: 16.6.0
       graphql-compose: 9.0.10_graphql@16.6.0
       helmet: 6.0.0
+      icc: 2.0.0
       inquirer: 8.2.4
       ioredis: 5.2.4
       joi: 17.7.0
@@ -10028,7 +10030,7 @@ packages:
       minipass-pipeline: 1.2.4
       mkdirp: 1.0.4
       p-map: 4.0.0
-      promise-inflight: 1.0.1_bluebird@3.7.2
+      promise-inflight: 1.0.1
       rimraf: 3.0.2
       ssri: 8.0.1
       tar: 6.1.13
@@ -14033,6 +14035,11 @@ packages:
     dependencies:
       ms: 2.1.3
     optional: true
+
+  /icc/2.0.0:
+    resolution: {integrity: sha512-VSTak7UAcZu1E24YFvcoHVpVg/ZUVyb0G1v0wUIibfz5mHvcFeI/Gpn8C0cAUKw5jCCGx5JBcV4gULu6hX97mA==}
+    engines: {node: '>=10'}
+    dev: false
 
   /iconv-lite/0.4.24:
     resolution: {integrity: sha512-v3MXnZAcvnywkTUEZomIActle7RXXeedOR31wwl7VlyoXO4Qi9arvSenNQWne1TcRwhCL1HwLI21bEqdpj8/rA==}
@@ -18392,6 +18399,14 @@ packages:
     engines: {node: '>=0.4.0'}
     dev: true
 
+  /promise-inflight/1.0.1:
+    resolution: {integrity: sha512-6zWPyEOFaQBJYcGMHBKTKJ3u6TBsnMFOIZSa6ce1e/ZrrsOlnHRHbabMjLiBYKp+n44X9eUI6VUPaukCXHuG4g==}
+    peerDependencies:
+      bluebird: '*'
+    peerDependenciesMeta:
+      bluebird:
+        optional: true
+
   /promise-inflight/1.0.1_bluebird@3.7.2:
     resolution: {integrity: sha512-6zWPyEOFaQBJYcGMHBKTKJ3u6TBsnMFOIZSa6ce1e/ZrrsOlnHRHbabMjLiBYKp+n44X9eUI6VUPaukCXHuG4g==}
     peerDependencies:
@@ -18401,6 +18416,7 @@ packages:
         optional: true
     dependencies:
       bluebird: 3.7.2
+    dev: true
 
   /promise-retry/2.0.1:
     resolution: {integrity: sha512-y+WKFlBR8BGXnsNlIHFGPZmyDf3DFMoLhaflAnyZgV6rG6xu+JwesTo2Q9R6XwYmtmwAFCkAk3e35jEdoeh/3g==}
