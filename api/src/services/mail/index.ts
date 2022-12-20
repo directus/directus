@@ -11,6 +11,8 @@ import { Accountability, SchemaOverview } from '@directus/shared/types';
 import getMailer from '../../mailer';
 import { Transporter, SendMailOptions } from 'nodemailer';
 import { Url } from '../../utils/url';
+import { object } from 'joi';
+import { Address } from 'nodemailer/lib/mailer/index';
 
 const liquidEngine = new Liquid({
 	root: [path.resolve(env.EXTENSIONS_PATH, 'templates'), path.resolve(__dirname, 'templates')],
@@ -52,7 +54,11 @@ export class MailService {
 
 		const defaultTemplateData = await this.getDefaultTemplateData();
 
-		const from = `${defaultTemplateData.projectName} <${options.from || (env.EMAIL_FROM as string)}>`;
+		let from = `${defaultTemplateData.projectName} <${options.from || (env.EMAIL_FROM as string)}>`;
+
+		if (this.isAddress(options.from)) {
+			from = `${options.from.name} <${options.from.address}>`;
+		}
 
 		if (template) {
 			let templateData = template.data;
@@ -75,6 +81,10 @@ export class MailService {
 
 		const info = await this.mailer.sendMail({ ...emailOptions, from, html });
 		return info;
+	}
+
+	private isAddress(from: SendMailOptions['from']): from is Address {
+		return !!from && typeof from !== 'string' && 'name' in from && 'address' in from;
 	}
 
 	private async renderTemplate(template: string, variables: Record<string, any>) {
