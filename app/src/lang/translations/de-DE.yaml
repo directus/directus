@@ -1118,7 +1118,7 @@ fields:
     status_draft: Entwurf
     status_invited: Eingeladen
     status_active: Aktiv
-    status_suspended: Angehalten
+    status_suspended: Gesperrt
     status_archived: Archiviert
     role: Rolle
     token: Token
@@ -1291,7 +1291,7 @@ field_options:
     status_dropdown_draft: Entwurf
     status_dropdown_invited: Eingeladen
     status_dropdown_active: Aktiv
-    status_dropdown_suspended: Angehalten
+    status_dropdown_suspended: Gesperrt
     status_dropdown_archived: Archiviert
     token: Einen sicheren Zugangs-Token eingeben...
   directus_webhooks:
