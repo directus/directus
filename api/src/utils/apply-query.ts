@@ -185,7 +185,7 @@ function addJoin({ path, collection, aliasMap, rootQuery, schema, relations, kne
 						.andOn(
 							`${aliasedParentCollection}.${relation.field}`,
 							'=',
-							knex.raw(getHelpers(knex).schema.castM2aPrimaryKey(), `${alias}.${schema.collections[pathScope].primary}`)
+							knex.raw(getHelpers(knex).schema.castA2oPrimaryKey(), `${alias}.${schema.collections[pathScope].primary}`)
 						);
 				});
 				aliasMap[aliasKey].collection = pathScope;
@@ -197,7 +197,7 @@ function addJoin({ path, collection, aliasMap, rootQuery, schema, relations, kne
 							`${alias}.${relation.field}`,
 							'=',
 							knex.raw(
-								getHelpers(knex).schema.castM2aPrimaryKey(),
+								getHelpers(knex).schema.castA2oPrimaryKey(),
 								`${aliasedParentCollection}.${schema.collections[parentCollection].primary}`
 							)
 						);
@@ -337,6 +337,7 @@ export function applyFilter(
 	const helpers = getHelpers(knex);
 	const relations: Relation[] = schema.relations;
 	const jsonFieldNames = (jsonHelper?.nodes ?? []).map(({ fieldKey }) => fieldKey);
+
 	let hasMultiRelationalFilter = false;
 
 	addJoins(rootQuery, rootFilter, collection);
@@ -430,7 +431,7 @@ export function applyFilter(
 					}`;
 
 					if (relationType === 'o2a') {
-						pkField = knex.raw(getHelpers(knex).schema.castM2aPrimaryKey(), [pkField]);
+						pkField = knex.raw(getHelpers(knex).schema.castA2oPrimaryKey(), [pkField]);
 					}
 
 					const subQueryBuilder = (filter: Filter) => (subQueryKnex: Knex.QueryBuilder<any, unknown[]>) => {

@@ -283,7 +283,7 @@ async function getDBQuery(
 		}
 	}
 
-	const { hasMultiRelationalFilter } = applyQuery(knex, table, dbQuery, queryCopy, schema, jsonHelper, {
+	const { hasMultiRelationalFilter } = await applyQuery(knex, table, dbQuery, queryCopy, schema, jsonHelper, {
 		aliasMap,
 		isInnerQuery: true,
 		hasMultiRelationalSort,

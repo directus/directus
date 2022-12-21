@@ -129,6 +129,29 @@ export abstract class SchemaHelper extends DatabaseHelper {
 		return existingName;
 	}
 
+	applyOffset(rootQuery: Knex.QueryBuilder, offset: number): void {
+		rootQuery.offset(offset);
+	}
+
+	castA2oPrimaryKey(): string {
+		return 'CAST(?? AS CHAR(255))';
+	}
+
+	applyMultiRelationalSort(
+		knex: Knex,
+		dbQuery: Knex.QueryBuilder,
+		table: string,
+		primaryKey: string,
+		orderByString: string,
+		orderByFields: Knex.Raw[]
+	): Knex.QueryBuilder {
+		dbQuery.rowNumber(
+			knex.ref('directus_row_number').toQuery(),
+			knex.raw(`partition by ??${orderByString}`, [`${table}.${primaryKey}`, ...orderByFields])
+		);
+		return dbQuery;
+	}
+
 	formatUUID(uuid: string): string {
 		return uuid; // no-op by defaut
 	}

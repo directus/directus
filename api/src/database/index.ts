@@ -15,6 +15,7 @@ import { DatabaseClients } from './helpers/types';
 let database: Knex | null = null;
 let databaseVersion: { parsed: number[]; full: string } = { parsed: [], full: '' };
 let inspector: ReturnType<typeof SchemaInspector> | null = null;
+let databaseVersion: string | null = null;
 
 export default function getDatabase(): Knex {
 	if (database) {
@@ -159,6 +160,15 @@ export function getSchemaInspector(): ReturnType<typeof SchemaInspector> {
 	inspector = SchemaInspector(database);
 
 	return inspector;
+}
+
+/**
+ * Get database version. Value currently exists for MySQL only.
+ *
+ * @returns Cached database version
+ */
+export function getDatabaseVersion(): string | null {
+	return databaseVersion;
 }
 
 export async function hasDatabaseConnection(database?: Knex): Promise<boolean> {
