@@ -46,7 +46,7 @@
 		"knex-schema-inspector": "3.0.0"
 	},
 	"devDependencies": {
-		"typescript": "4.8.4"
+		"typescript": "4.9.4"
 	},
 	"publishConfig": {
 		"access": "public"
