@@ -5,6 +5,7 @@ DIRECTUS_EXTENSIONS="${DIRECTUS_DIR}/extensions"
 DIRECTUS_INTERFACES="${DIRECTUS_EXTENSIONS}/interfaces"
 DIRECTUS_MODULES="${DIRECTUS_EXTENSIONS}/modules"
 DIRECTUS_DISPLAYS="${DIRECTUS_EXTENSIONS}/displays"
+DIRECTUS_ENDPOINTS="${DIRECTUS_EXTENSIONS}/endpoints"
 
 #DIRECTUS_DIR="/tmp"
 
@@ -41,3 +42,4 @@ cp -r ./directus-custom-extensions-release/filter-ext ${DIRECTUS_INTERFACES}
 cp -r ./directus-custom-extensions-release/loading-api-field ${DIRECTUS_INTERFACES}
 cp -r ./directus-custom-extensions-release/image-carousel ${DIRECTUS_INTERFACES}
 cp -r ./directus-custom-extensions-release/contact-display ${DIRECTUS_DISPLAYS}
+cp -r ./directus-custom-extensions-release/atomic-counters ${DIRECTUS_ENDPOINTS}
