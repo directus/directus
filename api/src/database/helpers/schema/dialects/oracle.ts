@@ -11,7 +11,7 @@ export class SchemaHelperOracle extends SchemaHelper {
 		await this.changeToTypeByCopy(table, column, type, options);
 	}
 
-	castM2aPrimaryKey(): string {
+	castA2oPrimaryKey(): string {
 		return 'CAST(?? AS VARCHAR2(255))';
 	}
 }

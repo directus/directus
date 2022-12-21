@@ -102,7 +102,7 @@ export abstract class SchemaHelper extends DatabaseHelper {
 		rootQuery.offset(offset);
 	}
 
-	castM2aPrimaryKey(): string {
+	castA2oPrimaryKey(): string {
 		return 'CAST(?? AS CHAR(255))';
 	}
 
