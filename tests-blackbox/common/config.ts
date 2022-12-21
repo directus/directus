@@ -252,12 +252,6 @@ const config: Config = {
 			DB_USER: 'secretsysuser',
 			DB_PASSWORD: 'secretpassword',
 			DB_CONNECT_STRING: `127.0.0.1:6106/XE`,
-			PORT: '59157',
-		},
-		sqlite3: {
-			...directusConfig,
-			DB_CLIENT: 'sqlite3',
-			DB_FILENAME: './test.db',
 			PORT: '59158',
 		},
 		cockroachdb: {
@@ -269,6 +263,12 @@ const config: Config = {
 			DB_PORT: '6107',
 			DB_DATABASE: 'defaultdb',
 			PORT: '59159',
+		},
+		sqlite3: {
+			...directusConfig,
+			DB_CLIENT: 'sqlite3',
+			DB_FILENAME: './test.db',
+			PORT: '59160',
 		},
 	},
 };
