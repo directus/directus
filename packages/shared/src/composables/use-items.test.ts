@@ -1,4 +1,4 @@
-import { Field, Filter } from '@directus/shared/types';
+import { Field, Filter } from '../types';
 import { flushPromises } from '@vue/test-utils';
 import type { AxiosRequestConfig } from 'axios';
 import { isEqual } from 'lodash';
