@@ -62,7 +62,7 @@ test('Returns o2m', () => {
 	expect(result).toBe('o2m');
 });
 
-test('Returns null when field/collection doesnt match the relationship', () => {
+test('Returns null when field/collection does not match the relationship', () => {
 	const relation = {
 		collection: 'articles',
 		field: 'author',

@@ -3,20 +3,16 @@ import knex, { Knex } from 'knex';
 import { MockClient, Tracker, getTracker } from 'knex-mock-client';
 import { FilesService, ItemsService } from '.';
 import { InvalidPayloadException } from '../exceptions';
-import { describe, beforeAll, afterEach, expect, it, vi, beforeEach, SpyInstance } from 'vitest';
+import { describe, beforeAll, afterEach, expect, it, vi, beforeEach, MockedFunction, SpyInstance } from 'vitest';
 
 vi.mock('exifr');
-vi.mock('../../src/database/index', () => {
-	return { getDatabaseClient: vi.fn().mockReturnValue('postgres') };
-});
-vi.mock('../../src/database/index');
 
 describe('Integration Tests', () => {
-	let db: Knex;
+	let db: MockedFunction<Knex>;
 	let tracker: Tracker;
 
-	beforeAll(async () => {
-		db = knex({ client: MockClient });
+	beforeAll(() => {
+		db = vi.mocked(knex({ client: MockClient }));
 		tracker = getTracker();
 	});
 

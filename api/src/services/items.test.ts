@@ -1,19 +1,43 @@
-import { Query } from '@directus/shared/types';
+import { NestedDeepQuery } from '@directus/shared/types';
 import knex, { Knex } from 'knex';
 import { getTracker, MockClient, Tracker } from 'knex-mock-client';
+import { cloneDeep } from 'lodash';
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi, MockedFunction } from 'vitest';
 import { ItemsService } from '../../src/services';
+import { InvalidPayloadException } from '../exceptions';
 import { sqlFieldFormatter, sqlFieldList } from '../__utils__/items-utils';
 import { systemSchema, userSchema } from '../__utils__/schemas';
-import { cloneDeep } from 'lodash';
-import { describe, beforeAll, afterEach, it, expect, vi } from 'vitest';
+import { getDatabaseClient } from '../../src/database/index';
 
-vi.mock('../../src/database/index', () => {
-	return { getDatabaseClient: vi.fn().mockReturnValue('postgres') };
+vi.mock('../env', async () => {
+	const actual = (await vi.importActual('../env')) as { default: Record<string, any> };
+
+	return {
+		default: {
+			...actual.default,
+			CACHE_AUTO_PURGE: true,
+		},
+	};
 });
-vi.mock('../../src/database/index');
+
+vi.mock('../../src/database/index', () => ({
+	default: vi.fn(),
+	getDatabaseClient: vi.fn(),
+}));
+
+vi.mock('../cache', () => ({
+	getCache: vi.fn().mockReturnValue({
+		cache: {
+			clear: vi.fn(),
+		},
+		systemCache: {
+			clear: vi.fn(),
+		},
+	}),
+}));
 
 describe('Integration Tests', () => {
-	let db: Knex;
+	let db: MockedFunction<Knex>;
 	let tracker: Tracker;
 
 	const schemas: Record<string, any> = {
@@ -21,9 +45,13 @@ describe('Integration Tests', () => {
 		user: { schema: userSchema, tables: Object.keys(userSchema.collections) },
 	};
 
-	beforeAll(async () => {
-		db = knex({ client: MockClient });
+	beforeAll(() => {
+		db = vi.mocked(knex({ client: MockClient }));
 		tracker = getTracker();
+	});
+
+	beforeEach(() => {
+		vi.mocked(getDatabaseClient).mockReturnValue('postgres');
 	});
 
 	afterEach(() => {
@@ -57,6 +85,24 @@ describe('Integration Tests', () => {
 				expect(response).toBe(item.id);
 			}
 		);
+
+		it(`the returned UUID primary key for MS SQL should be uppercase`, async () => {
+			vi.mocked(getDatabaseClient).mockReturnValue('mssql');
+
+			const table = schemas.system.tables[0];
+
+			const itemsService = new ItemsService(table, {
+				knex: db,
+				accountability: { role: 'admin', admin: true },
+				schema: schemas.system.schema,
+			});
+
+			tracker.on.insert(table).responseOnce(item);
+
+			const response = await itemsService.createOne(item, { emitEvents: false });
+
+			expect(response).toBe(item.id.toUpperCase());
+		});
 	});
 
 	describe('readOne', () => {
@@ -419,7 +465,7 @@ describe('Integration Tests', () => {
 				});
 				const response = await itemsService.readOne(rawItems[0].id, {
 					fields: ['id', 'items.*'],
-					deep: { items: { _filter: { title: { _eq: childItems[0].title } } } as Query },
+					deep: { items: { _filter: { title: { _eq: childItems[0].title } } } as NestedDeepQuery },
 				});
 
 				expect(tracker.history.select.length).toBe(2);
@@ -509,7 +555,7 @@ describe('Integration Tests', () => {
 					});
 					const response = await itemsService.readOne(rawItems[0].id, {
 						fields: ['id', 'items.*'],
-						deep: { items: { _filter: { title: { _eq: childItems[0].title } } } as Query },
+						deep: { items: { _filter: { title: { _eq: childItems[0].title } } } as NestedDeepQuery },
 					});
 
 					expect(tracker.history.select.length).toBe(2);
@@ -602,7 +648,7 @@ describe('Integration Tests', () => {
 					expect(() =>
 						itemsService.readOne(rawItems[0].id, {
 							fields: ['id', 'items.*'],
-							deep: { items: { _filter: { title: { _eq: childItems[0].title } } } as Query },
+							deep: { items: { _filter: { title: { _eq: childItems[0].title } } } as NestedDeepQuery },
 						})
 					).rejects.toThrow("You don't have permission to access this.");
 					expect(tracker.history.select.length).toBe(0);
@@ -968,6 +1014,66 @@ describe('Integration Tests', () => {
 				expect(tracker.history.update[0].sql).toBe(`update "${childTable}" set "uploaded_by" = ? where "id" in (?)`);
 
 				expect(response).toStrictEqual(item.id);
+			}
+		);
+	});
+
+	describe('updateBatch', () => {
+		const items = [
+			{ id: '6107c897-9182-40f7-b22e-4f044d1258d2', name: 'Item 1' },
+			{ id: '6e7d4a2c-e62f-43b4-a343-9196f4b1783f', name: 'Item 2' },
+		];
+
+		it.each(Object.keys(schemas))('%s batch update should only clear cache once', async (schema) => {
+			const table = schemas[schema].tables[0];
+			schemas[schema].accountability = null;
+
+			tracker.on.select(table).response(items);
+			tracker.on.update(table).response(items);
+
+			const itemsService = new ItemsService(table, {
+				knex: db,
+				accountability: {
+					role: 'admin',
+					admin: true,
+				},
+				schema: schemas[schema].schema,
+			});
+
+			const itemsServiceCacheClearSpy = vi.spyOn(itemsService.cache, 'clear' as never).mockResolvedValue(() => vi.fn());
+
+			await itemsService.updateBatch(items);
+
+			expect(itemsServiceCacheClearSpy).toHaveBeenCalledOnce();
+		});
+
+		it.each(Object.keys(schemas))(
+			'%s batch update should throw InvalidPayloadException when passing non-array data',
+			async (schema) => {
+				const table = schemas[schema].tables[0];
+				schemas[schema].accountability = null;
+
+				tracker.on.select(table).response({});
+				tracker.on.update(table).response({});
+
+				const itemsService = new ItemsService(table, {
+					knex: db,
+					accountability: {
+						role: 'admin',
+						admin: true,
+					},
+					schema: schemas[schema].schema,
+				});
+
+				expect.assertions(2);
+
+				try {
+					// intentional `as any` to test non-array data on runtime
+					await itemsService.updateBatch(items[0] as any);
+				} catch (err) {
+					expect((err as Error).message).toBe(`Input should be an array of items.`);
+					expect(err).toBeInstanceOf(InvalidPayloadException);
+				}
 			}
 		);
 	});
