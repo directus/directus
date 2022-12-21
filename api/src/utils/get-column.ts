@@ -11,11 +11,6 @@ type GetColumnOptions = {
 	originalCollectionName?: string;
 };
 
-type GetColumnOptions = {
-	query?: Query;
-	originalCollectionName?: string;
-};
-
 /**
  * Return column prefixed by table. If column includes functions (like `year(date_created)`), the
  * column is replaced with the appropriate SQL
