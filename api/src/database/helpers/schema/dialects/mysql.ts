@@ -20,7 +20,7 @@ export class SchemaHelperMySQL extends SchemaHelper {
 		// classic mysql returns a clean version number
 		return { parsed: versionString.split('.').map((num: string) => parseInt(num, 10)), full: versionString };
 	}
-  
+
 	applyMultiRelationalSort(
 		knex: Knex,
 		dbQuery: Knex.QueryBuilder,
