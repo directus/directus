@@ -7,7 +7,7 @@ export class SchemaHelperMSSQL extends SchemaHelper {
 		rootQuery.offset(offset);
 		rootQuery.orderBy(1);
 	}
-  
+
 	async getVersion(): Promise<{ parsed: number[]; full: string }> {
 		const versionData = await this.knex.select(this.knex.raw('@@version as version'));
 		const versionString = versionData[0]['version'];
