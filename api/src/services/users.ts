@@ -242,11 +242,19 @@ export class UsersService extends ItemsService {
 		}
 
 		if (data.provider !== undefined) {
-			throw new InvalidPayloadException(`You can't change the "provider" value manually.`);
+			if (this.accountability && this.accountability.admin !== true) {
+				throw new InvalidPayloadException(`You can't change the "provider" value manually.`);
+			}
+
+			data.auth_data = null;
 		}
 
 		if (data.external_identifier !== undefined) {
-			throw new InvalidPayloadException(`You can't change the "external_identifier" value manually.`);
+			if (this.accountability && this.accountability.admin !== true) {
+				throw new InvalidPayloadException(`You can't change the "external_identifier" value manually.`);
+			}
+
+			data.auth_data = null;
 		}
 
 		return await super.updateMany(keys, data, opts);
