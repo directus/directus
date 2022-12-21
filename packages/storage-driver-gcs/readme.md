@@ -1,3 +1,3 @@
-# `@directus/storage-driver-azure`
+# `@directus/storage-driver-gcs`
 
-Azure file storage driver for `@directus/storage`
+GCS file storage driver for `@directus/storage`
