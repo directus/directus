@@ -70,6 +70,7 @@ beforeEach(() => {
 			serverSideEncryption: randWord(),
 			root: randDirectoryPath(),
 			endpoint: randDomainName(),
+			region: randWord(),
 		},
 		path: {
 			input: randUnique() + randFilePath(),
@@ -196,6 +197,23 @@ describe('#constructor', () => {
 				protocol: 'https:',
 				path: '/',
 			},
+			credentials: {
+				accessKeyId: sample.config.key,
+				secretAccessKey: sample.config.secret,
+			},
+		});
+	});
+
+	test('Sets region', () => {
+		new DriverS3({
+			key: sample.config.key,
+			secret: sample.config.secret,
+			bucket: sample.config.bucket,
+			region: sample.config.region,
+		});
+
+		expect(S3Client).toHaveBeenCalledWith({
+			region: sample.config.region,
 			credentials: {
 				accessKeyId: sample.config.key,
 				secretAccessKey: sample.config.secret,
