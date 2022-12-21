@@ -20,12 +20,12 @@
 	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
 	"exports": {
 		".": {
-			"import": "./dist/index.js",
-			"types": "./dist/index.d.ts"
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js"
 		},
 		"./node": {
-			"import": "./dist/node/index.js",
-			"types": "./dist/node/index.d.ts"
+			"types": "./dist/node/index.d.ts",
+			"import": "./dist/node/index.js"
 		},
 		"./package.json": "./package.json"
 	},
