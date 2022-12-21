@@ -270,12 +270,6 @@ const config: Config = {
 			DB_DATABASE: 'defaultdb',
 			PORT: '59159',
 		},
-		sqlite3: {
-			...directusConfig,
-			DB_CLIENT: 'sqlite3',
-			DB_FILENAME: './test.db',
-			PORT: '59160',
-		},
 	},
 };
 
