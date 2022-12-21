@@ -10,7 +10,7 @@ describe('/auth/login/saml', () => {
 			describe('returns no authenticated cookie', () => {
 				it.each(vendors)('%s', async (vendor) => {
 					// Action
-					const loginPage = await request('http://localhost:8880')
+					const loginPage = await request('http://127.0.0.1:8880')
 						.get(`/simplesaml/module.php/core/authenticate.php?as=example-userpass`)
 						.expect(302);
 
@@ -18,7 +18,7 @@ describe('/auth/login/saml', () => {
 
 					const AuthState = decodeURIComponent(String(loginPage.headers.location)).split('AuthState=')[1];
 
-					const response = await request('http://localhost:8880')
+					const response = await request('http://127.0.0.1:8880')
 						.post(`/simplesaml/module.php/core/loginuserpass.php?`)
 						.set('Cookie', cookies)
 						.set('Content-Type', 'application/x-www-form-urlencoded')
@@ -42,7 +42,7 @@ describe('/auth/login/saml', () => {
 			describe('returns authenticated cookie', () => {
 				it.each(vendors)('%s', async (vendor) => {
 					// Action
-					const loginPage = await request('http://localhost:8880')
+					const loginPage = await request('http://127.0.0.1:8880')
 						.get(`/simplesaml/module.php/core/authenticate.php?as=example-userpass`)
 						.expect(302);
 
@@ -50,7 +50,7 @@ describe('/auth/login/saml', () => {
 
 					const AuthState = decodeURIComponent(String(loginPage.headers.location)).split('AuthState=')[1];
 
-					const response = await request('http://localhost:8880')
+					const response = await request('http://127.0.0.1:8880')
 						.post(`/simplesaml/module.php/core/loginuserpass.php?`)
 						.set('Cookie', cookies)
 						.set('Content-Type', 'application/x-www-form-urlencoded')
