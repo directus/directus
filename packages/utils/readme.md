@@ -1,3 +1,3 @@
-# `@directus/storage-driver-azure`
+# `@directus/utils`
 
-Azure file storage driver for `@directus/storage`
+Utilities shared between the Directus packages
