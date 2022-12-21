@@ -20,7 +20,6 @@
 	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
 	"exports": {
 		".": "./dist/index.js",
-		"./node": "./dist/node/index.js",
 		"./package.json": "./package.json"
 	},
 	"main": "dist/index.js",
