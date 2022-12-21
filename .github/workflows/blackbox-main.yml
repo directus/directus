@@ -31,6 +31,7 @@ jobs:
           - postgres
           - postgres10
           - mysql
+          - mysql5
           - maria
           - mssql
           - oracle

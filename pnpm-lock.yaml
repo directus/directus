@@ -21,6 +21,7 @@ importers:
       globby: 11.1.0
       jest: 29.3.1
       jest-environment-node: 29.3.1
+      json-to-graphql-query: 2.2.4
       knex: 2.3.0
       lint-staged: 13.0.3
       listr2: 4.0.5
@@ -50,6 +51,7 @@ importers:
       globby: 11.1.0
       jest: 29.3.1
       jest-environment-node: 29.3.1
+      json-to-graphql-query: 2.2.4
       knex: 2.3.0
       lint-staged: 13.0.3
       listr2: 4.0.5
