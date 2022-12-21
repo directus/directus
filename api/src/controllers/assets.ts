@@ -1,4 +1,6 @@
-import { Range } from '@directus/drive';
+// @ts-expect-error https://github.com/microsoft/TypeScript/issues/49721
+import type { Range } from '@directus/storage';
+
 import { parseJSON } from '@directus/shared/utils';
 import { Router } from 'express';
 import { merge, pick } from 'lodash';

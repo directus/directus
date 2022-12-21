@@ -9,13 +9,14 @@ import getDatabase, { hasDatabaseConnection } from '../database';
 import env from '../env';
 import logger from '../logger';
 import { rateLimiter } from '../middleware/rate-limiter';
-import storage from '../storage';
+import { getStorage } from '../storage';
 import { AbstractServiceOptions } from '../types';
 import { Accountability, SchemaOverview } from '@directus/shared/types';
 import { toArray } from '@directus/shared/utils';
 import getMailer from '../mailer';
 import { SettingsService } from './settings';
 import { getOSInfo } from '../utils/get-os-info';
+import { Readable } from 'node:stream';
 
 export class ServerService {
 	knex: Knex;
@@ -286,10 +287,12 @@ export class ServerService {
 		}
 
 		async function testStorage(): Promise<Record<string, HealthCheck[]>> {
+			const storage = await getStorage();
+
 			const checks: Record<string, HealthCheck[]> = {};
 
 			for (const location of toArray(env.STORAGE_LOCATIONS)) {
-				const disk = storage.disk(location);
+				const disk = storage.location(location);
 				const envThresholdKey = `STORAGE_${location}_HEALTHCHECK_THRESHOLD`.toUpperCase();
 				checks[`storage:${location}:responseTime`] = [
 					{
@@ -304,8 +307,8 @@ export class ServerService {
 				const startTime = performance.now();
 
 				try {
-					await disk.put(`health-${checkID}`, 'check');
-					await disk.get(`health-${checkID}`);
+					await disk.write(`health-${checkID}`, Readable.from(['check']));
+					await disk.read(`health-${checkID}`);
 					await disk.delete(`health-${checkID}`);
 				} catch (err: any) {
 					checks[`storage:${location}:responseTime`][0].status = 'error';
