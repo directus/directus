@@ -11,8 +11,8 @@ import { validateItem } from '@/utils/validate-item';
 import { useCollection } from '@directus/shared/composables';
 import { getEndpoint } from '@directus/shared/utils';
 import { AxiosResponse } from 'axios';
-import { merge } from 'lodash';
-import { computed, ComputedRef, Ref, ref, watch } from 'vue';
+import { clone, merge, mergeWith } from 'lodash';
+import { computed, ComputedRef, Ref, ref, toRaw, unref, watch } from 'vue';
 import { usePermissions } from './use-permissions';
 import { Field, Query, Relation } from '@directus/shared/types';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
@@ -120,11 +120,38 @@ export function useItem(
 		saving.value = true;
 		validationErrors.value = [];
 
-		const errors = validateItem(
-			merge({}, defaultValues.value, item.value, edits.value),
-			fieldsWithPermissions.value,
-			isNew.value
+		// const virtualFields = fieldsWithPermissions.value.filter(
+		// 	({ type, schema = null }) => type === 'alias' && schema === null
+		// );
+		// console.log('virtualFields', virtualFields);
+		const newItem: Record<string, any> = mergeWith(
+			{},
+			defaultValues.value,
+			item.value,
+			edits.value,
+			function mergeRelations(obj, src, field) {
+				if (typeof obj !== 'object' || typeof src !== 'object') return;
+				if (Array.isArray(obj) && !Array.isArray(src)) {
+					// prevent an object from getting merged onto the __proto__ of an array
+					if (src.create && src.create.length > 0) {
+						src.create.forEach((nItem: any) => obj.push(nItem));
+					}
+					if (src.update && src.update.length > 0) {
+						// skip lookup and replace for now
+						// need to get some more field data in here like primary key
+					}
+					if (src.delete && src.delete.length > 0) {
+						src.delete.forEach(() => obj.pop());
+						// not the right way i know just a PoC test
+						// need to get some more field data in here like primary key
+					}
+					return obj;
+				}
+			}
 		);
+
+		const errors = validateItem(newItem, fieldsWithPermissions.value, isNew.value);
+		// console.log('test', newItem);
 
 		if (errors.length > 0) {
 			validationErrors.value = errors;
