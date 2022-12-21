@@ -19,7 +19,7 @@ type UsableItems = {
 	loading: Ref<boolean>;
 	error: Ref<any>;
 	changeManualSort: (data: ManualSortData) => Promise<void>;
-	getItems: () => Promise<void>;
+	getItems: (options?: { refreshTotalCount?: boolean; refreshFilterCount?: boolean }) => Promise<void>;
 };
 
 type ComputedQuery = {
@@ -103,7 +103,7 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery, f
 
 	return { itemCount, totalCount, items, totalPages, loading, error, changeManualSort, getItems };
 
-	async function getItems() {
+	async function getItems(options?: { refreshTotalCount?: boolean; refreshFilterCount?: boolean }) {
 		if (!endpoint.value) return;
 
 		currentRequest?.cancel();
@@ -119,8 +119,12 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery, f
 			loading.value = true;
 		}, 150);
 
-		if (unref(totalCount) === null) {
+		if (unref(totalCount) === null || options?.refreshTotalCount) {
 			getTotalCount();
+		}
+
+		if (options?.refreshFilterCount) {
+			getFilterCount();
 		}
 
 		let fieldsToFetch = [...(unref(fields) ?? [])];

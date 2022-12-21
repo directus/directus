@@ -290,7 +290,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		}
 
 		function refresh() {
-			getItems();
+			getItems({ refreshFilterCount: true, refreshTotalCount: true });
 		}
 
 		function download() {
