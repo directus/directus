@@ -1,16 +1,7 @@
-import formatTitle from '@directus/format-title';
 import openapi from '@directus/specs';
 import { Knex } from 'knex';
 import { cloneDeep, mergeWith } from 'lodash';
-import {
-	OpenAPIObject,
-	OperationObject,
-	ParameterObject,
-	PathItemObject,
-	ReferenceObject,
-	SchemaObject,
-	TagObject,
-} from 'openapi3-ts';
+import { OpenAPIObject, ParameterObject, PathItemObject, ReferenceObject, SchemaObject, TagObject } from 'openapi3-ts';
 // @ts-ignore
 import { version } from '../../package.json';
 import getDatabase from '../database';
@@ -22,6 +13,10 @@ import { CollectionsService } from './collections';
 import { FieldsService } from './fields';
 import { GraphQLService } from './graphql';
 import { RelationsService } from './relations';
+import { OAS_REQUIRED_SCHEMAS } from '../constants';
+
+// @ts-ignore
+import formatTitle from '@directus/format-title';
 
 export class SpecificationService {
 	accountability: Accountability | null;
@@ -166,7 +161,7 @@ class OASSpecsService implements SpecificationSubService {
 
 			if (isSystem) {
 				for (const [path, pathItem] of Object.entries<PathItemObject>(openapi.paths)) {
-					for (const [method, operation] of Object.entries<OperationObject>(pathItem)) {
+					for (const [method, operation] of Object.entries(pathItem)) {
 						if (operation.tags?.includes(tag.name)) {
 							if (!paths[path]) {
 								paths[path] = {};
@@ -331,6 +326,15 @@ class OASSpecsService implements SpecificationSubService {
 
 		components.schemas = {};
 
+		// Always includes the schemas with these names
+		if (openapi.components?.schemas !== null) {
+			for (const schemaName of OAS_REQUIRED_SCHEMAS) {
+				if (openapi.components!.schemas![schemaName] !== null) {
+					components.schemas[schemaName] = cloneDeep(openapi.components!.schemas![schemaName]);
+				}
+			}
+		}
+
 		if (!tags) return;
 
 		for (const collection of collections) {
@@ -343,7 +347,7 @@ class OASSpecsService implements SpecificationSubService {
 			const fieldsInCollection = fields.filter((field) => field.collection === collection.collection);
 
 			if (isSystem) {
-				const schemaComponent: SchemaObject = cloneDeep(openapi.components!.schemas![tag.name]);
+				const schemaComponent = cloneDeep(openapi.components!.schemas![tag.name]) as SchemaObject;
 
 				schemaComponent.properties = {};
 
@@ -376,7 +380,7 @@ class OASSpecsService implements SpecificationSubService {
 	private filterCollectionFromParams(
 		parameters: (ParameterObject | ReferenceObject)[]
 	): (ParameterObject | ReferenceObject)[] {
-		return parameters.filter((param) => param?.$ref !== '#/components/parameters/Collection');
+		return parameters.filter((param) => (param as ReferenceObject)?.$ref !== '#/components/parameters/Collection');
 	}
 
 	private getActionForMethod(method: string): 'create' | 'read' | 'update' | 'delete' {
@@ -463,7 +467,7 @@ class OASSpecsService implements SpecificationSubService {
 						},
 						relatedTags.map((tag) => ({
 							$ref: `#/components/schemas/${tag.name}`,
-						})),
+						})) as any,
 					],
 				};
 			}

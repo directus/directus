@@ -1,5 +1,3 @@
-import formatTitle from '@directus/format-title';
-import axios, { AxiosResponse } from 'axios';
 import exifr from 'exifr';
 import { clone, pick } from 'lodash';
 import { extension } from 'mime-types';
@@ -10,7 +8,7 @@ import { promisify } from 'util';
 import { lookup } from 'dns';
 import emitter from '../emitter';
 import env from '../env';
-import { ForbiddenException, ServiceUnavailableException } from '../exceptions';
+import { ForbiddenException, InvalidPayloadException, ServiceUnavailableException } from '../exceptions';
 import logger from '../logger';
 import storage from '../storage';
 import { AbstractServiceOptions, File, PrimaryKey, MutationOptions, Metadata } from '../types';
@@ -19,6 +17,9 @@ import { ItemsService } from './items';
 import net from 'net';
 import os from 'os';
 import encodeURL from 'encodeurl';
+
+// @ts-ignore
+import formatTitle from '@directus/format-title';
 
 const lookupDNS = promisify(lookup);
 
@@ -185,6 +186,8 @@ export class FilesService extends ItemsService {
 	 * Import a single file from an external URL
 	 */
 	async importOne(importURL: string, body: Partial<File>): Promise<PrimaryKey> {
+		const axios = (await import('axios')).default;
+
 		const fileCreatePermissions = this.accountability?.permissions?.find(
 			(permission) => permission.collection === 'directus_files' && permission.action === 'create'
 		);
@@ -241,7 +244,7 @@ export class FilesService extends ItemsService {
 			});
 		}
 
-		let fileResponse: AxiosResponse<NodeJS.ReadableStream>;
+		let fileResponse;
 
 		try {
 			fileResponse = await axios.get<NodeJS.ReadableStream>(encodeURL(importURL), {
@@ -266,6 +269,19 @@ export class FilesService extends ItemsService {
 		};
 
 		return await this.uploadOne(fileResponse.data, payload);
+	}
+
+	/**
+	 * Create a file (only applicable when it is not a multipart/data POST request)
+	 * Useful for associating metadata with existing file in storage
+	 */
+	async createOne(data: Partial<File>, opts?: MutationOptions): Promise<PrimaryKey> {
+		if (!data.type) {
+			throw new InvalidPayloadException(`"type" is required`);
+		}
+
+		const key = await super.createOne(data, opts);
+		return key;
 	}
 
 	/**

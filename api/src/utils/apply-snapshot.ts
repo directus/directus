@@ -5,11 +5,12 @@ import { merge, set } from 'lodash';
 import getDatabase from '../database';
 import logger from '../logger';
 import { CollectionsService, FieldsService, RelationsService } from '../services';
-import { Collection, Snapshot, SnapshotDiff, SnapshotField } from '../types';
+import { ActionEventParams, Collection, MutationOptions, Snapshot, SnapshotDiff, SnapshotField } from '../types';
 import { getSchema } from './get-schema';
 import { getSnapshot } from './get-snapshot';
 import { getSnapshotDiff } from './get-snapshot-diff';
 import { getCache } from '../cache';
+import emitter from '../emitter';
 
 type CollectionDelta = {
 	collection: string;
@@ -21,11 +22,17 @@ export async function applySnapshot(
 	options?: { database?: Knex; schema?: SchemaOverview; current?: Snapshot; diff?: SnapshotDiff }
 ): Promise<void> {
 	const database = options?.database ?? getDatabase();
-	const schema = options?.schema ?? (await getSchema({ database }));
+	const schema = options?.schema ?? (await getSchema({ database, bypassCache: true }));
 	const { systemCache } = getCache();
 
 	const current = options?.current ?? (await getSnapshot({ database, schema }));
 	const snapshotDiff = options?.diff ?? getSnapshotDiff(current, snapshot);
+
+	const nestedActionEvents: ActionEventParams[] = [];
+	const mutationOptions: MutationOptions = {
+		autoPurgeSystemCache: false,
+		bypassEmitAction: (params) => nestedActionEvents.push(params),
+	};
 
 	await database.transaction(async (trx) => {
 		const collectionsService = new CollectionsService({ knex: trx, schema });
@@ -64,10 +71,13 @@ export async function applySnapshot(
 						});
 
 					try {
-						await collectionsService.createOne({
-							...diff[0].rhs,
-							fields,
-						});
+						await collectionsService.createOne(
+							{
+								...diff[0].rhs,
+								fields,
+							},
+							mutationOptions
+						);
 					} catch (err: any) {
 						logger.error(`Failed to create collection "${collection}"`);
 						throw err;
@@ -93,7 +103,7 @@ export async function applySnapshot(
 
 						for (const relation of relations) {
 							try {
-								await relationsService.deleteOne(relation.collection, relation.field);
+								await relationsService.deleteOne(relation.collection, relation.field, mutationOptions);
 							} catch (err) {
 								logger.error(
 									`Failed to delete collection "${collection}" due to relation "${relation.collection}.${relation.field}"`
@@ -111,7 +121,7 @@ export async function applySnapshot(
 					await deleteCollections(getNestedCollectionsToDelete(collection));
 
 					try {
-						await collectionsService.deleteOne(collection);
+						await collectionsService.deleteOne(collection, mutationOptions);
 					} catch (err) {
 						logger.error(`Failed to delete collection "${collection}"`);
 						throw err;
@@ -168,7 +178,7 @@ export async function applySnapshot(
 
 				if (newValues) {
 					try {
-						await collectionsService.updateOne(collection, newValues);
+						await collectionsService.updateOne(collection, newValues, mutationOptions);
 					} catch (err) {
 						logger.error(`Failed to update collection "${collection}"`);
 						throw err;
@@ -177,12 +187,15 @@ export async function applySnapshot(
 			}
 		}
 
-		const fieldsService = new FieldsService({ knex: trx, schema: await getSchema({ database: trx }) });
+		const fieldsService = new FieldsService({
+			knex: trx,
+			schema: await getSchema({ database: trx, bypassCache: true }),
+		});
 
 		for (const { collection, field, diff } of snapshotDiff.fields) {
 			if (diff?.[0].kind === 'N' && !isNestedMetaUpdate(diff?.[0])) {
 				try {
-					await fieldsService.createField(collection, (diff[0] as DiffNew<Field>).rhs);
+					await fieldsService.createField(collection, (diff[0] as DiffNew<Field>).rhs, undefined, mutationOptions);
 				} catch (err) {
 					logger.error(`Failed to create field "${collection}.${field}"`);
 					throw err;
@@ -196,9 +209,13 @@ export async function applySnapshot(
 
 				if (newValues) {
 					try {
-						await fieldsService.updateField(collection, {
-							...newValues,
-						});
+						await fieldsService.updateField(
+							collection,
+							{
+								...newValues,
+							},
+							mutationOptions
+						);
 					} catch (err) {
 						logger.error(`Failed to update field "${collection}.${field}"`);
 						throw err;
@@ -208,7 +225,7 @@ export async function applySnapshot(
 
 			if (diff?.[0].kind === 'D' && !isNestedMetaUpdate(diff?.[0])) {
 				try {
-					await fieldsService.deleteField(collection, field);
+					await fieldsService.deleteField(collection, field, mutationOptions);
 				} catch (err) {
 					logger.error(`Failed to delete field "${collection}.${field}"`);
 					throw err;
@@ -222,7 +239,10 @@ export async function applySnapshot(
 			}
 		}
 
-		const relationsService = new RelationsService({ knex: trx, schema: await getSchema({ database: trx }) });
+		const relationsService = new RelationsService({
+			knex: trx,
+			schema: await getSchema({ database: trx, bypassCache: true }),
+		});
 
 		for (const { collection, field, diff } of snapshotDiff.relations) {
 			const structure = {};
@@ -233,7 +253,7 @@ export async function applySnapshot(
 
 			if (diff?.[0].kind === 'N') {
 				try {
-					await relationsService.createOne((diff[0] as DiffNew<Relation>).rhs);
+					await relationsService.createOne((diff[0] as DiffNew<Relation>).rhs, mutationOptions);
 				} catch (err) {
 					logger.error(`Failed to create relation "${collection}.${field}"`);
 					throw err;
@@ -247,7 +267,7 @@ export async function applySnapshot(
 
 				if (newValues) {
 					try {
-						await relationsService.updateOne(collection, field, newValues);
+						await relationsService.updateOne(collection, field, newValues, mutationOptions);
 					} catch (err) {
 						logger.error(`Failed to update relation "${collection}.${field}"`);
 						throw err;
@@ -257,7 +277,7 @@ export async function applySnapshot(
 
 			if (diff?.[0].kind === 'D') {
 				try {
-					await relationsService.deleteOne(collection, field);
+					await relationsService.deleteOne(collection, field, mutationOptions);
 				} catch (err) {
 					logger.error(`Failed to delete relation "${collection}.${field}"`);
 					throw err;
@@ -267,6 +287,15 @@ export async function applySnapshot(
 	});
 
 	await systemCache?.clear();
+
+	if (nestedActionEvents.length > 0) {
+		const updatedSchema = await getSchema({ database, bypassCache: true });
+
+		for (const nestedActionEvent of nestedActionEvents) {
+			nestedActionEvent.context.schema = updatedSchema;
+			emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
+		}
+	}
 }
 
 export function isNestedMetaUpdate(diff: Diff<SnapshotField | undefined>): boolean {

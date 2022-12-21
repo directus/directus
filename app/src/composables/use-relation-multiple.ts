@@ -1,12 +1,12 @@
 import api from '@/api';
-import { getEndpoint } from '@directus/shared/utils';
-import { unexpectedError } from '@/utils/unexpected-error';
-import { clamp, cloneDeep, isEqual, merge } from 'lodash';
-import { computed, ref, Ref, watch } from 'vue';
-import { Filter, Item } from '@directus/shared/types';
 import { RelationM2A } from '@/composables/use-relation-m2a';
 import { RelationM2M } from '@/composables/use-relation-m2m';
 import { RelationO2M } from '@/composables/use-relation-o2m';
+import { unexpectedError } from '@/utils/unexpected-error';
+import { Filter, Item } from '@directus/shared/types';
+import { getEndpoint } from '@directus/shared/utils';
+import { clamp, cloneDeep, isEqual, merge } from 'lodash';
+import { computed, ref, Ref, unref, watch } from 'vue';
 
 export type RelationQueryMultiple = {
 	page: number;
@@ -117,17 +117,26 @@ export function useRelationMultiple(
 			);
 			const deleteIndex = _value.value.delete.findIndex((id) => id === item[targetPKField]);
 
-			const updatedItem: Record<string, any> = {};
+			let updatedItem: Record<string, any> = cloneDeep(item);
 
 			if (editsIndex !== -1) {
-				merge(
-					updatedItem,
-					cloneDeep(item),
-					{ $type: 'updated', $index: editsIndex, $edits: editsIndex },
-					_value.value.update[editsIndex]
-				);
-			} else {
-				merge(updatedItem, cloneDeep(item));
+				const edits = unref(_value.value.update[editsIndex]);
+
+				updatedItem = {
+					...updatedItem,
+					...edits,
+				};
+
+				if (relation.value?.type === 'm2m' || relation.value?.type === 'm2a') {
+					updatedItem[relation.value.junctionField.field] = {
+						...cloneDeep(item)[relation.value.junctionField.field],
+						...edits[relation.value.junctionField.field],
+					};
+				}
+
+				updatedItem.$type = 'updated';
+				updatedItem.$index = editsIndex;
+				updatedItem.$edits = editsIndex;
 			}
 
 			if (deleteIndex !== -1) {
@@ -213,7 +222,7 @@ export function useRelationMultiple(
 
 			for (const item of items) {
 				if (item.$type === undefined || item.$index === undefined) {
-					target.value.update.push(item);
+					target.value.update.push(cleanItem(item));
 				} else if (item.$type === 'created') {
 					target.value.create[item.$index] = cleanItem(item);
 				} else if (item.$type === 'updated') {

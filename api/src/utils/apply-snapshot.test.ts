@@ -12,28 +12,27 @@ import {
 	snapshotBeforeDeleteCollection,
 } from '../__utils__/snapshots';
 import { Snapshot } from '../types';
-
-jest.mock('../../src/database/index', () => {
-	return {
-		getDatabaseClient: jest.fn().mockReturnValue('postgres'),
-	};
-});
-jest.requireMock('../../src/database/index');
+import { describe, afterEach, it, expect, vi, beforeEach, MockedFunction } from 'vitest';
 
 class Client_PG extends MockClient {}
 
 describe('applySnapshot', () => {
-	let db: jest.Mocked<Knex>;
+	let db: MockedFunction<Knex>;
 	let tracker: Tracker;
 
+	const mutationOptions = {
+		autoPurgeSystemCache: false,
+		bypassEmitAction: expect.any(Function),
+	};
+
 	beforeEach(() => {
-		db = knex({ client: Client_PG }) as jest.Mocked<Knex>;
+		db = vi.mocked(knex({ client: Client_PG }));
 		tracker = getTracker();
 	});
 
 	afterEach(() => {
 		tracker.reset();
-		jest.clearAllMocks();
+		vi.clearAllMocks();
 	});
 
 	describe('Creating new collection(s)', () => {
@@ -102,12 +101,10 @@ describe('applySnapshot', () => {
 			};
 
 			// Stop call to db later on in apply-snapshot
-			jest.spyOn(getSchema, 'getSchema').mockReturnValue(Promise.resolve(snapshotApplyTestSchema));
+			vi.spyOn(getSchema, 'getSchema').mockReturnValue(Promise.resolve(snapshotApplyTestSchema));
 			// We are not actually testing that createOne works, just that is is called correctly
-			const createOneCollectionSpy = jest
-				.spyOn(CollectionsService.prototype, 'createOne')
-				.mockImplementation(jest.fn());
-			const createFieldSpy = jest.spyOn(FieldsService.prototype, 'createField').mockImplementation(jest.fn());
+			const createOneCollectionSpy = vi.spyOn(CollectionsService.prototype, 'createOne').mockResolvedValue('test');
+			const createFieldSpy = vi.spyOn(FieldsService.prototype, 'createField').mockResolvedValue();
 
 			await applySnapshot(snapshotCreateCollectionNotNested, {
 				database: db,
@@ -116,7 +113,7 @@ describe('applySnapshot', () => {
 			});
 
 			expect(createOneCollectionSpy).toHaveBeenCalledTimes(1);
-			expect(createOneCollectionSpy).toHaveBeenCalledWith(expected);
+			expect(createOneCollectionSpy).toHaveBeenCalledWith(expected, mutationOptions);
 
 			// There should be no fields left to create
 			// they will get filtered in createCollections
@@ -251,12 +248,10 @@ describe('applySnapshot', () => {
 			};
 
 			// Stop call to db later on in apply-snapshot
-			jest.spyOn(getSchema, 'getSchema').mockReturnValue(Promise.resolve(snapshotApplyTestSchema));
+			vi.spyOn(getSchema, 'getSchema').mockReturnValue(Promise.resolve(snapshotApplyTestSchema));
 			// We are not actually testing that createOne works, just that is is called correctly
-			const createOneCollectionSpy = jest
-				.spyOn(CollectionsService.prototype, 'createOne')
-				.mockImplementation(jest.fn());
-			const createFieldSpy = jest.spyOn(FieldsService.prototype, 'createField').mockImplementation(jest.fn());
+			const createOneCollectionSpy = vi.spyOn(CollectionsService.prototype, 'createOne').mockResolvedValue('test');
+			const createFieldSpy = vi.spyOn(FieldsService.prototype, 'createField').mockResolvedValue();
 
 			await applySnapshot(snapshotCreateCollection, {
 				database: db,
@@ -265,8 +260,8 @@ describe('applySnapshot', () => {
 			});
 
 			expect(createOneCollectionSpy).toHaveBeenCalledTimes(2);
-			expect(createOneCollectionSpy).toHaveBeenCalledWith(expected);
-			expect(createOneCollectionSpy).toHaveBeenCalledWith(expected2);
+			expect(createOneCollectionSpy).toHaveBeenCalledWith(expected, mutationOptions);
+			expect(createOneCollectionSpy).toHaveBeenCalledWith(expected2, mutationOptions);
 
 			// There should be no fields left to create
 			// they will get filtered in createCollections
@@ -285,11 +280,9 @@ describe('applySnapshot', () => {
 			};
 
 			// Stop call to db later on in apply-snapshot
-			jest.spyOn(getSchema, 'getSchema').mockReturnValue(Promise.resolve(snapshotApplyTestSchema));
+			vi.spyOn(getSchema, 'getSchema').mockReturnValue(Promise.resolve(snapshotApplyTestSchema));
 			// We are not actually testing that deleteOne works, just that is is called correctly
-			const deleteOneCollectionSpy = jest
-				.spyOn(CollectionsService.prototype, 'deleteOne')
-				.mockImplementation(jest.fn());
+			const deleteOneCollectionSpy = vi.spyOn(CollectionsService.prototype, 'deleteOne').mockResolvedValue('test');
 
 			await applySnapshot(snapshotToApply, {
 				database: db,

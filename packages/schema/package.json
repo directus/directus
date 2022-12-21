@@ -1,31 +1,7 @@
 {
 	"name": "@directus/schema",
-	"version": "9.17.4",
+	"version": "9.21.2",
 	"description": "Utility for extracting information about existing DB schema",
-	"main": "dist/index.js",
-	"exports": {
-		".": "./dist/index.js",
-		"./package.json": "./package.json"
-	},
-	"types": "dist/index.d.ts",
-	"scripts": {
-		"build": "tsc --build && echo \"Built successfully\"",
-		"dev": "npm-watch build"
-	},
-	"watch": {
-		"build": {
-			"patterns": [
-				"src/*"
-			],
-			"extensions": "ts",
-			"quiet": true,
-			"silent": true
-		}
-	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/directus/directus.git"
-	},
 	"keywords": [
 		"sql",
 		"knex",
@@ -36,20 +12,43 @@
 		"sqlite3",
 		"javascript"
 	],
-	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
-	"license": "GPL-3.0",
+	"homepage": "https://directus.io",
 	"bugs": {
 		"url": "https://github.com/directus/directus/issues"
 	},
-	"homepage": "https://github.com/directus/directus#readme",
-	"devDependencies": {
-		"npm-watch": "0.11.0",
-		"typescript": "4.5.2"
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus/directus.git",
+		"directory": "packages/schema"
+	},
+	"funding": "https://github.com/directus/directus?sponsor=1",
+	"license": "GPL-3.0",
+	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
+	"exports": {
+		".": "./dist/index.js",
+		"./package.json": "./package.json",
+		"./types/overview": {
+			"types": "./dist/types/overview.d.ts",
+			"default": "./dist/types/overview.js"
+		}
+	},
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"build": "tsc --build",
+		"dev": "pnpm build -w --preserveWatchOutput --incremental"
 	},
 	"dependencies": {
-		"knex": "2.2.0",
-		"knex-schema-inspector": "2.0.4",
-		"lodash": "^4.17.21"
+		"knex": "2.3.0",
+		"knex-schema-inspector": "3.0.0"
 	},
-	"gitHead": "24621f3934dc77eb23441331040ed13c676ceffd"
+	"devDependencies": {
+		"typescript": "4.8.4"
+	},
+	"publishConfig": {
+		"access": "public"
+	}
 }

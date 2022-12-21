@@ -1,18 +1,46 @@
 {
 	"name": "@directus/specs",
-	"version": "9.17.4",
+	"version": "9.21.2",
 	"description": "OpenAPI Specification of the Directus API",
-	"main": "index.js",
+	"homepage": "https://directus.io",
+	"bugs": {
+		"url": "https://github.com/directus/directus/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus/directus.git",
+		"directory": "packages/specs"
+	},
+	"license": "GPL-3.0",
+	"author": "Nils Twelker",
 	"exports": {
 		".": "./index.js",
 		"./package.json": "./package.json"
 	},
+	"main": "index.js",
+	"files": [
+		"dist",
+		"index.d.ts",
+		"index.js"
+	],
 	"scripts": {
-		"ui:watch": "swagger-ui-watcher src/openapi.yaml",
-		"validate": "swagger-cli validate src/openapi.yaml",
 		"build": "swagger-cli bundle src/openapi.yaml -o dist/openapi.json",
 		"build:deref": "swagger-cli bundle src/openapi.yaml -o dist/openapi-deref.json --dereference",
-		"dev": "npm-watch build"
+		"dev": "npm-watch build",
+		"ui:watch": "swagger-ui-watcher src/openapi.yaml",
+		"validate": "swagger-cli validate src/openapi.yaml"
+	},
+	"dependencies": {
+		"openapi3-ts": "3.1.1"
+	},
+	"devDependencies": {
+		"npm-watch": "0.11.0",
+		"openapi-types": "12.0.2",
+		"swagger-cli": "4.0.4",
+		"swagger-ui-watcher": "2.1.12"
+	},
+	"publishConfig": {
+		"access": "public"
 	},
 	"watch": {
 		"build": {
@@ -23,32 +51,5 @@
 			"quiet": true,
 			"silent": true
 		}
-	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/directus/directus.git"
-	},
-	"author": "Nils Twelker",
-	"license": "GPL-3.0",
-	"bugs": {
-		"url": "https://github.com/directus/directus/issues"
-	},
-	"homepage": "https://github.com/directus/directus#readme",
-	"files": [
-		"dist",
-		"LICENSE",
-		"README.md",
-		"index.d.ts",
-		"index.js"
-	],
-	"gitHead": "24621f3934dc77eb23441331040ed13c676ceffd",
-	"devDependencies": {
-		"npm-watch": "0.11.0",
-		"openapi-types": "^12.0.0",
-		"swagger-cli": "4.0.4",
-		"swagger-ui-watcher": "2.1.12"
-	},
-	"dependencies": {
-		"openapi3-ts": "^2.0.1"
 	}
 }

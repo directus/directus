@@ -6,12 +6,19 @@ type RelationInfo = {
 	relationType: string | null;
 };
 
+function checkImplicitRelation(field: string) {
+	if (field.startsWith('$FOLLOW(') && field.endsWith(')')) {
+		return field.slice(8, -1).split(',');
+	}
+	return null;
+}
+
 export function getRelationInfo(relations: Relation[], collection: string, field: string): RelationInfo {
 	if (field.startsWith('$FOLLOW') && field.length > 500) {
 		throw new Error(`Implicit $FOLLOW statement is too big to parse. Got: "${field.substring(500)}..."`);
 	}
 
-	const implicitRelation = field.match(/^\$FOLLOW\((.*?),(.*?)(?:,(.*?))?\)$/)?.slice(1);
+	const implicitRelation = checkImplicitRelation(field);
 
 	if (implicitRelation) {
 		if (implicitRelation[2] === undefined) {

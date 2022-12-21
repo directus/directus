@@ -295,8 +295,8 @@ export default defineLayout<LayoutOptions>({
 			const allDay = endDateFieldInfo.value && endDateFieldInfo.value.type === 'date';
 
 			if (endDateField.value) {
-				if (allDay && isValid(item[endDateField.value])) {
-					const date = parse(item[endDateField.value], 'yyyy-MM-dd', new Date());
+				const date = parse(item[endDateField.value], 'yyyy-MM-dd', new Date());
+				if (allDay && isValid(date)) {
 					// FullCalendar uses exclusive end moments, so we'll have to increment the end date by 1 to get the
 					// expected result in the calendar
 					date.setDate(date.getDate() + 1);

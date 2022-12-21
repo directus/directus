@@ -6,11 +6,12 @@ import { pick } from 'lodash';
 export function getCacheKey(req: Request): string {
 	const path = url.parse(req.originalUrl).pathname;
 	const isGraphQl = path?.includes('/graphql');
+	const isGet = req.method?.toLowerCase() === 'get';
 
 	const info = {
 		user: req.accountability?.user || null,
 		path,
-		query: isGraphQl ? pick(req.query, ['query', 'variables']) : req.sanitizedQuery,
+		query: isGraphQl ? pick(isGet ? req.query : req.body, ['query', 'variables']) : req.sanitizedQuery,
 	};
 
 	const key = hash(info);

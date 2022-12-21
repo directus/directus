@@ -3,7 +3,7 @@
 		<v-dialog v-for="notification in notifications" :key="notification.id" :model-value="true" persist>
 			<v-card :class="[notification.type]">
 				<v-card-title>{{ notification.title }}</v-card-title>
-				<v-card-text v-if="notification.text">
+				<v-card-text v-if="notification.text || notification.error">
 					{{ notification.text }}
 
 					<v-error v-if="notification.error" :error="notification.error" />

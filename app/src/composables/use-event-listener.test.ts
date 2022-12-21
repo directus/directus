@@ -14,10 +14,10 @@ test('Registers the event listener on mount, unregisters on unmount', () => {
 	const testHandler = () => {};
 
 	const TestComponent = defineComponent({
-		render: () => h('div'),
 		setup() {
 			return useEventListener(target, 'click', testHandler);
 		},
+		render: () => h('div'),
 	});
 
 	const wrapper = mount(TestComponent);

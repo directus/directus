@@ -380,6 +380,32 @@ export function getTriggers() {
 						default_value: false,
 					},
 				},
+				{
+					field: 'requireSelection',
+					name: t('triggers.manual.collection_page'),
+					type: 'boolean',
+					meta: {
+						interface: 'boolean',
+						width: 'half' as Width,
+						options: {
+							label: t('triggers.manual.require_selection'),
+						},
+						hidden: false,
+						conditions: [
+							{
+								rule: {
+									location: {
+										_eq: 'item',
+									},
+								},
+								hidden: true,
+							},
+						],
+					},
+					schema: {
+						default_value: true,
+					},
+				},
 			],
 		},
 	];

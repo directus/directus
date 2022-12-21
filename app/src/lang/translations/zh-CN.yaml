@@ -40,12 +40,12 @@ input: Input
 maps: 地图
 switch_user: 切换用户
 item_creation: 新建
-item_revision: 条目调整
+item_revision: 条目修订
 enter_a_name: 请输入名称...
-duplicate_field: 复制
+duplicate_field: 复制字段
 half_width: 半宽
 full_width: 全宽
-group: 群组
+group: 分组
 export_items: 导出
 and: 与
 or: 或
@@ -53,15 +53,15 @@ init: 初始化
 dataset_too_large_currently_showing_n_items: 数据集太大，目前显示前 {n} 项。
 modifier: 修改者
 custom: 自定义
-hook: Hook
-fill_width: 适应页面宽度
+hook: 钩子
+fill_width: 全宽
 field_name_translations: 字段名称翻译
 enter_password_to_enable_tfa: 输入您的密码以启用双因素认证(2FA)
 add_field: 添加字段
 role_name: 角色名称
-branch: 父节点优先
-leaf: 叶节点优先
-indeterminate: 不确定状态，总是保留分支节点
+branch: 分支
+leaf: 叶节点
+indeterminate: 不确定的状态
 edit_collection: 编辑模型
 exclusive: 排他，分支或叶节点间互斥
 children: 子页面
@@ -74,12 +74,12 @@ required: 必填
 required_for_app_access: 应用程序访问所需的
 requires_value: 必填值
 create_preset: 创建预设
-create_panel: 新建
+create_panel: 创建面板
 create_role: 创建角色
 create_user: 创建用户
 message: 消息
-delete_panel: 删除
-create_webhook: 创建Web钩子
+delete_panel: 删除面板
+create_webhook: 创建网络钩子
 create_translation_string: 创建翻译字符串
 no_translation_string: 空
 no_translation_string_copy: 目前没有翻译字符串。
@@ -97,7 +97,7 @@ emails: 邮箱
 connection_excellent: 优秀的连接状态
 connection_good: 好的连接状态
 connection_fair: 一般的连接状态
-connection_poor: 连接失败
+connection_poor: 连接不良
 primary: 主要的
 rename_folder: 重命名文件夹
 delete_folder: 删除文件夹
@@ -187,6 +187,9 @@ revision_post_create: 这是新建条目后看起来的样子。
 revision_post_update: 这是更新后该条目的外观。
 changes_made: 下面是本次修订中所作的具体修改。
 no_relational_data: 请记住，此处不包括关系数据。
+junction_field_location: 交叉字段位置
+top: 顶部
+bottom: 底部
 hide_field: 隐藏字段
 hide_field_on_detail: 在详情中隐藏该字段
 show_field_on_detail: 在详情中显示
@@ -272,6 +275,7 @@ fields_group: 字段组
 no_collections_found: 未找到任何模型
 new_data_alert: '以下将在您的模型中创建：'
 search_collection: 搜索模型...
+search_field: 搜索字段
 new_field: '新建字段'
 new_collection: '新建模型'
 add_m2o_to_collection: '添加 M2O 到 "{collection}"'
@@ -325,6 +329,7 @@ edit_raw_value: 编辑原始值
 enter_raw_value: 输入原始值...
 clear_value: 清除值
 clear_changes: 清除更改
+clear_items: 清除条目
 reset_to_default: 重置为默认值
 undo_changes: 撤销更改
 notifications: 通知
@@ -534,6 +539,7 @@ activity_item: 活动项
 action: 操作
 ip_address: IP 地址
 user_agent: 用户代理（User Agent）
+origin: 原始
 webhooks: Webhook
 decimals: 小数
 value_decimals: 小数的值
@@ -584,6 +590,7 @@ errors:
   INVALID_QUERY: 无效的查询
   INVALID_CONFIG: 无效配置
   INVALID_TOKEN: 令牌无效
+  INVALID_IP: IP地址不允许访问
   INVALID_USER: 用户身份验证失败
   ITEM_LIMIT_REACHED: 条目已达到限制
   ITEM_NOT_FOUND: 找不到条目
@@ -602,8 +609,11 @@ errors:
   GRAPHQL_VALIDATION_EXCEPTION: GraphQL 验证异常
   SERVICE_UNAVAILABLE: 服务不可用
   UNSUPPORTED_MEDIA_TYPE: 不支持的媒体类型。
+  UNEXPECTED_RESPONSE: 响应异常
   TOKEN_EXPIRED: 令牌已过期
   RANGE_NOT_SATISFIABLE: 无效的范围
+  METHOD_NOT_ALLOWED: 不被允许的方法
+  REQUESTS_EXCEEDED: 已达到请求数量限制
 security: 安全
 value_hashed: 哈希值
 bookmark_name: 书签名称
@@ -743,6 +753,8 @@ add_file: 添加文件
 replace_file: 替换文件
 no_results: 找不到查询结果
 no_results_copy: 调整或清除搜索过滤器以查看结果。
+no_visible_fields: 空表单
+no_visible_fields_copy: 此表单没有可见字段。
 clear_filters: 清除过滤器
 saves_automatically: 自动保存
 role: 角色
@@ -772,8 +784,10 @@ label: 标签
 flows: 流程
 flow: 流程
 select_a_flow: 选择一个流程
+run_flow_on_current_collection: 在当前集合上运行流程
 run_flow_on_current: 在当前条目上运行Flow
-run_flow_on_selected: 没有选定项 | 在已选定的 1 项上运行流流程 | 在选定的 {n} 个项目上运行流程
+run_flow_on_current_edited_confirm: 此流程可能会更新此项，您确定要执行它吗？
+run_flow_on_selected: 先选择一个或多个条目 | 在 1 个选定条目 上运行流程 | 在 {n} 个选定条目 上运行流程
 run_flow_success: 流程 "{flow}" 运行成功
 trigger: 触发器
 trigger_options: 触发器选项
@@ -817,6 +831,7 @@ panel_header: 面板标题
 panel_name_placeholder: 命名此面板...
 panel_note_placeholder: 面板的详细配置...
 panel_delete_confirm: 您确定要删除? 此操作无法撤消。
+list_panel_allow_edit: 允许行内编辑
 dashboard_delete_confirm: 您确定要删除? 此操作无法撤消。
 edit_dashboard: 编辑仪表板
 delete_dashboard: 删除
@@ -982,6 +997,7 @@ page_help_settings_presets_item: >-
 page_help_settings_webhooks_collection: '**Browse Webhooks** - 列出项目内的所有网络钩子。'
 page_help_settings_webhooks_item: '**Webhook Detail** - 用于创建和管理项目webhooks的表格。'
 page_help_settings_flows_collection: '**Browse Webhooks** - 列出项目内的所有流。'
+page_help_settings_flows_item: '**流程详情** - 管理一个或多个操作面板的工作空间。'
 page_help_settings_translation_strings_collection: '**浏览翻译字符串** - 列出项目中的所有翻译字符串。'
 page_help_users_collection: '**用户目录** - 列出此项目中的所有系统用户。'
 page_help_users_item: >-
@@ -1035,6 +1051,7 @@ fields:
     user: 操作人
     comment: 注释
     user_agent: 用户代理（User Agent）
+    origin: 原始
     ip: IP 地址
     revisions: 修订版本
   directus_collections:
@@ -1412,6 +1429,7 @@ translation: 翻译
 translation_placeholder: 输入翻译...
 value: 值
 view_project: 查看项目
+weeks: { }
 report_error: 报告错误
 start: 开始
 table: 表
@@ -1563,6 +1581,7 @@ interfaces:
   list-m2m:
     many-to-many: 多对多
     description: 选择多个相关项目
+    columns_configure_notice: 您可以在创建此字段后配置显示模板。
     display_template_configure_notice: 您可以在创建此字段后配置显示模板。
   select-dropdown-m2o:
     many-to-one: 多对一
@@ -1731,6 +1750,7 @@ interfaces:
     remove_token: 删除令牌
   system-raw-editor:
     system-raw-editor: 原始编辑器
+    description: 允许输入原始或mustache 模板值
 displays:
   translations:
     translations: 翻译
@@ -1769,11 +1789,15 @@ displays:
     relative: 相对
     relative_label: '显示相对时间，例如 5 分钟前'
     suffix: 后缀
+    suffix_label: 显示相对指示器
+    suffix_note: 使用 'in' 和 'ago' 等单词
     strict: 严格的
     strict_label: 使用严格的单位
     strict_note: 删除像‘几乎’，‘超过’，‘小于’ 这样的单词
+    round: 圆角
     round_note: 选择 (取整函数) 四舍五入的方式
     down: 向下取整
+    nearest: 最近的
     up: 向上取整
   file:
     file: 文件
@@ -1886,16 +1910,34 @@ layouts:
     default_template: 使用Collection默认值
     no_compatible_fields: 没有兼容的字段
   kanban:
-    group_title: 组标题
+    name: 看板
+    group_field: 分组依据
+    group_field_placeholder: 用于分组的字段...，
+    group_title: 分组标题：
+    group_title_placeholder: 分组标题字段...，
     title: 卡片标题
-    text: 卡片文本，
+    title_placeholder: 可选标题字段...
+    text: 卡片文本
+    text_placeholder: 可选文本字段...
     date: 卡片日期
-    date_placeholder: 可选日期字段...，
+    date_placeholder: 可选日期字段...
     tags: 卡片标签
-    tags_placeholder: 可选标签字段...，
-    user: 卡片使用者，
-    image_fit: 卡片图像匹配
+    tags_placeholder: 可选标签字段...
+    user: 卡片用户
+    user_placeholder: 可选用户字段...
+    image: 卡片图像
+    image_placeholder: 可选图像字段...
+    image_fit: 适合的卡片图像
+    crop: 裁剪
+    advanced: 高级
+    edit_group: 编辑分组
+    delete_group: 删除分组
+    add_group: 添加分组
+    add_group_placeholder: 输入一个新的分组标题...
     show_ungrouped: 显示未分组
+    show: 显示
+    no_group: 无分组
+    not_all_loaded: 只能加载前 1000 个条目。
 panels:
   metric:
     name: 公制
@@ -1917,14 +1959,79 @@ panels:
   barchart:
     name: 条形图
     description: 比较数值组的条形图或柱形图
-    y_axis_conditional_two: 必须是一个数字。
-  linechart:
     select_field: 您必须选择一个字段。
     select_collection: 您必须选择一个集合。
+    select_x_axis: 您必须选择一个X轴。
+    function: 功能函数
+    horizontal: 横向
+    x_axis_grouping: X轴组聚合
+    x_axis: X轴
+    y_axis_function: Y-轴函数
+    y_axis: Y-轴
+    show_x_axis: 显示 X-轴
+    show_y_axis: 显示 Y-轴
+    show_data_label: 显示数据标签
+    group_by: 分组依据
+    group_and_function: 您必须同时包含或省略一个分组函数和一个功能函数。
+    y_axis_NaN: Y轴必须是一个数字。
+    y_axis_conditional_one: 条件值
+    y_axis_conditional_two: 必须是一个数字。
+  linechart:
+    name: 折线图
+    description: 比较字段变化的线形图
+    select_field: 您必须选择一个字段。
+    select_collection: 您必须选择一个集合。
+    select_x_axis: 您必须选择一个X轴。
+    function: 功能函数
+    x_axis: X轴
+    x_axis_decimals: X轴数值
+    disabled_no_grouping: 未选择分组时禁用。
+    y_axis: Y-轴
     datasets: 数据集
+    show_legend: 显示图例
+    show_marker: 显示工具提示标志
+    include_dataset: 您必须包含至少一个数据集。
+    include_y_axis: 当没有指定组时，您必须为每个数据集包含Y-Axis。
+    group_and_function: 您必须同时包含或省略一个分组函数和一个功能函数。
+    smooth: 平滑模式
+    straight: 直线模式
+    step_line: 分步线条
+  meter:
+    name: 电表模式
+    description: 跟踪值的仪表
+    half_circle: 半圈
+    full_circle: 一整圈
+    stroke_width: 笔画宽度
+    rounded_stroke: 圆角描边
+    select_max_value: 您必须选择一个最大值。
+    max_greater_than_zero: 最大值必须大于 0。
+    select_field: 您必须选择一个字段。
+    select_collection: 您必须选择一个集合。
+    function: 功能函数
+    thin: 纤细
+    medium: 中等
+    broad: 广泛的
+  piechart:
+    name: 饼图或环图
+    description: 在列上显示分组比率的圆形图表
+    function: 功能函数
+    donut: 圆环图
+    show_labels: 显示标签
+    show_legend: 显示图例
+    right: 右
+    bottom: 底部
+    monochrome: 黑白的
+    monochrome_color: 单色颜色
   variable:
     name: 全局变量
+    description: 设置用于其他面板筛选器的全局值
     variable_key: 变量键
+  relational-variable:
+    name: 全局关联变量
+    description: 设置用于其他面板筛选器的全局关联值
+    variable_key: 变量键
+    multiple: 多
+    multiple-label: 选择多个条目
 triggers:
   common:
     response_body: 响应体
@@ -1932,39 +2039,71 @@ triggers:
     response_body_last: 上次操作的数据
   event:
     name: 事件钩子
-    filter: '过滤器(锁定)'
+    description: 由平台触发或数据事件触发
+    action: '动作(非阻塞)'
+    filter: '过滤器(阻塞)'
   webhook:
+    name: 互联网钩子
+    description: 由传入的 HTTP 请求触发
     method: 方法
     async: 异步的
   operation:
-    name: 另一个流
+    name: 另一个流程
+    description: 被另一个流程触发，形成流程链
+    preview: 在不同的流程中被一个操作触发
   schedule:
     name: 计划任务(CRON)
+    description: 在常规时间点触发
     cron: 间隔
   manual:
     name: 手动
+    description: 在选定的数据集 (一个或多个) 上手动触发
+    collection_and_item: 集合和条目页面
+    collection_only: 仅集合页面
+    item_only: 仅条目页面
+    collection_page: 集合页面
+    require_selection: 需要选择
+a_flow_uuid: 选择要触发的流...
+any_string_or_json: 任意字符串或JSON对象...
+item_payload_placeholder: 这是用于更新条目字段值的 JSON对象...
+operation_variables_note: 您可以通过变量引用访问流程数据，例如**{'{'}{'{'}$last{'}'}{'}'}**， **{'{'}{'{'}$trigger{'}'}{'}'}** 和 **{'{'}{'{'}$accountability{'}'}{'}'}**, 或使用 **{'{'}{'{'} operation_key{'}'}{'}'}**引用之前的操作。
 operations:
+  condition:
+    name: 条件
+    description: 基于 if /Else 逻辑路由的流程
   exec:
     name: 运行脚本
+    description: 执行任意代码来修改有效负载
+    modules: '以下**Node modules** 可以使用：'
   item-create:
     name: 创建数据
     description: 在数据库中创建项目
     payload: 有效载荷 (Payload)
+    emit_events: 发出事件
   item-delete:
     name: 删除数据
     description: 删除数据库中的项目
+    emit_events: 发出事件
+    key: ID组
     query: 查询
   item-read:
     name: 读取数据
     description: 从数据库读取项目
+    key: ID组
     query: 查询
+    emit_events: 发出事件
   item-update:
     name: 更新数据
     description: 更新数据库中的项目
+    emit_events: 发出事件
+    key: ID组
     payload: 有效载荷 (Payload)
     query: 查询
   log:
+    name: 记录到控制台
+    description: 输出内容到控制台
     message: 消息
+    message_placeholder: 输入要在控制台中显示的消息...
   mail:
     name: 发送电子邮件
     description: 向一个或多个用户发送电子邮件
@@ -1975,15 +2114,28 @@ operations:
     name: 发送通知
     description: 向一个或多个用户发送应用内通知
     recipient: 用户
+    recipient_placeholder: 添加用户 UUID 并按回车...
     message: 消息
   request:
+    name: 互联网钩子 / 请求 URL
+    description: "向一个 URL 地址发出请求"
     url: URl
+    url_placeholder: https://example.com/example
     method: 方法
     data: 数据
     headers: 请求头
     header: 报头
     header_placeholder: 身份验证
+    value_placeholder: Bearer eyJhbGciOi...
+  sleep:
+    name: 休眠
+    description: 等待给定的毫秒数
+    milliseconds: 毫秒
+  transform:
+    name: 转换有效负载
+    description: 修改流程的JSON格式负载
   trigger:
+    name: 触发流程
     description: 将此数据传递到另一个流程
     flows: 流程
     flow: 流程
