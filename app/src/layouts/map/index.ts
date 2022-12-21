@@ -142,14 +142,15 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			shouldUpdateCamera.value = false;
 		});
 
-		const { items, loading, error, totalPages, itemCount, totalCount, getItems } = useItems(collection, {
-			sort,
-			limit,
-			page,
-			search,
-			filter: filterWithLocation,
-			fields: queryFields,
-		});
+		const { items, loading, error, totalPages, itemCount, totalCount, getItems, getTotalCount, getItemCount } =
+			useItems(collection, {
+				sort,
+				limit,
+				page,
+				search,
+				filter: filterWithLocation,
+				fields: queryFields,
+			});
 
 		const geojson = ref<GeoJSON.FeatureCollection>({ type: 'FeatureCollection', features: [] });
 		const geojsonBounds = ref<GeoJSON.BBox>();
@@ -291,6 +292,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		function refresh() {
 			getItems();
+			getTotalCount();
+			getItemCount();
 		}
 
 		function download() {
