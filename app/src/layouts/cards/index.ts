@@ -52,14 +52,15 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		const { size, icon, imageSource, title, subtitle, imageFit } = useLayoutOptions();
 		const { sort, limit, page, fields } = useLayoutQuery();
 
-		const { items, loading, error, totalPages, itemCount, totalCount, getItems } = useItems(collection, {
-			sort,
-			limit,
-			page,
-			fields,
-			filter,
-			search,
-		});
+		const { items, loading, error, totalPages, itemCount, totalCount, getItems, getTotalCount, getItemCount } =
+			useItems(collection, {
+				sort,
+				limit,
+				page,
+				fields,
+				filter,
+				search,
+			});
 
 		const showingCount = computed(() => {
 			const filtering = Boolean((itemCount.value || 0) < (totalCount.value || 0) && filterUser.value);
@@ -112,7 +113,9 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		}
 
 		function refresh() {
-			getItems({ refreshFilterCount: true, refreshTotalCount: true });
+			getItems();
+			getTotalCount();
+			getItemCount();
 		}
 
 		function download() {

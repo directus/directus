@@ -19,7 +19,9 @@ type UsableItems = {
 	loading: Ref<boolean>;
 	error: Ref<any>;
 	changeManualSort: (data: ManualSortData) => Promise<void>;
-	getItems: (options?: { refreshTotalCount?: boolean; refreshFilterCount?: boolean }) => Promise<void>;
+	getItems: () => Promise<void>;
+	getTotalCount: () => Promise<void>;
+	getItemCount: () => Promise<void>;
 };
 
 type ComputedQuery = {
@@ -89,7 +91,7 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery, f
 			}
 
 			if (!isEqual(newFilter, oldFilter) || newSearch !== oldSearch) {
-				getFilterCount();
+				getItemCount();
 			}
 
 			if (newCollection !== oldCollection) {
@@ -101,9 +103,20 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery, f
 		{ deep: true, immediate: true }
 	);
 
-	return { itemCount, totalCount, items, totalPages, loading, error, changeManualSort, getItems };
+	return {
+		itemCount,
+		totalCount,
+		items,
+		totalPages,
+		loading,
+		error,
+		changeManualSort,
+		getItems,
+		getItemCount,
+		getTotalCount,
+	};
 
-	async function getItems(options?: { refreshTotalCount?: boolean; refreshFilterCount?: boolean }) {
+	async function getItems() {
 		if (!endpoint.value) return;
 
 		currentRequest?.cancel();
@@ -119,12 +132,8 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery, f
 			loading.value = true;
 		}, 150);
 
-		if (unref(totalCount) === null || options?.refreshTotalCount) {
+		if (unref(totalCount) === null) {
 			getTotalCount();
-		}
-
-		if (options?.refreshFilterCount) {
-			getFilterCount();
 		}
 
 		let fieldsToFetch = [...(unref(fields) ?? [])];
@@ -231,7 +240,7 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery, f
 		totalCount.value = count;
 	}
 
-	async function getFilterCount() {
+	async function getItemCount() {
 		if (!endpoint.value) return;
 
 		const response = await api.get<any>(endpoint.value, {
