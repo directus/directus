@@ -1,13 +1,19 @@
-import { shallowRef, Ref } from 'vue';
+import { App } from 'vue';
 import { PanelConfig } from '@directus/shared/types';
+import { sortBy } from 'lodash';
 
-const panelsRaw: Ref<PanelConfig[]> = shallowRef([]);
-const panels: Ref<PanelConfig[]> = shallowRef([]);
+export function getInternalPanels(): PanelConfig[] {
+	const panels = import.meta.glob<PanelConfig>('./*/index.ts', { import: 'default', eager: true });
 
-export function getPanels(): { panels: Ref<PanelConfig[]>; panelsRaw: Ref<PanelConfig[]> } {
-	return { panels, panelsRaw };
+	return sortBy(Object.values(panels), 'id');
 }
 
-export function getPanel(name?: string | null): PanelConfig | undefined {
-	return !name ? undefined : panels.value.find(({ id }) => id === name);
+export function registerPanels(panels: PanelConfig[], app: App): void {
+	for (const panel of panels) {
+		app.component(`panel-${panel.id}`, panel.component);
+
+		if (typeof panel.options !== 'function' && Array.isArray(panel.options) === false && panel.options !== null) {
+			app.component(`panel-options-${panel.id}`, panel.options);
+		}
+	}
 }

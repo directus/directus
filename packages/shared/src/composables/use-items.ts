@@ -20,6 +20,8 @@ type UsableItems = {
 	error: Ref<any>;
 	changeManualSort: (data: ManualSortData) => Promise<void>;
 	getItems: () => Promise<void>;
+	getTotalCount: () => Promise<void>;
+	getItemCount: () => Promise<void>;
 };
 
 type ComputedQuery = {
@@ -88,6 +90,10 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery, f
 				}
 			}
 
+			if (!isEqual(newFilter, oldFilter) || newSearch !== oldSearch) {
+				getItemCount();
+			}
+
 			if (newCollection !== oldCollection) {
 				reset();
 			}
@@ -97,7 +103,18 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery, f
 		{ deep: true, immediate: true }
 	);
 
-	return { itemCount, totalCount, items, totalPages, loading, error, changeManualSort, getItems };
+	return {
+		itemCount,
+		totalCount,
+		items,
+		totalPages,
+		loading,
+		error,
+		changeManualSort,
+		getItems,
+		getItemCount,
+		getTotalCount,
+	};
 
 	async function getItems() {
 		if (!endpoint.value) return;
@@ -114,6 +131,10 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery, f
 		loadingTimeout = setTimeout(() => {
 			loading.value = true;
 		}, 150);
+
+		if (unref(totalCount) === null) {
+			getTotalCount();
+		}
 
 		let fieldsToFetch = [...(unref(fields) ?? [])];
 
@@ -142,7 +163,6 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery, f
 					page: unref(page),
 					search: unref(search),
 					filter: unref(filter),
-					meta: ['filter_count', 'total_count'],
 				},
 				cancelToken: currentRequest.token,
 			});
@@ -167,8 +187,6 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery, f
 			}
 
 			items.value = fetchedItems;
-			totalCount.value = response.data.meta!.total_count!;
-			itemCount.value = response.data.meta!.filter_count!;
 
 			if (page && fetchedItems.length === 0 && page?.value !== 1) {
 				page.value = 1;
@@ -204,5 +222,39 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery, f
 
 		const endpoint = computed(() => `/utils/sort/${collection.value}`);
 		await api.post(endpoint.value, { item, to });
+	}
+
+	async function getTotalCount() {
+		if (!endpoint.value) return;
+
+		const response = await api.get<any>(endpoint.value, {
+			params: {
+				aggregate: {
+					count: '*',
+				},
+			},
+		});
+
+		const count = Number(response.data.data[0].count);
+
+		totalCount.value = count;
+	}
+
+	async function getItemCount() {
+		if (!endpoint.value) return;
+
+		const response = await api.get<any>(endpoint.value, {
+			params: {
+				filter: unref(filter),
+				search: unref(search),
+				aggregate: {
+					count: '*',
+				},
+			},
+		});
+
+		const count = Number(response.data.data[0].count);
+
+		itemCount.value = count;
 	}
 }

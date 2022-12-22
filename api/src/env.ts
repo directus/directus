@@ -8,8 +8,7 @@ import fs from 'fs';
 import { clone, toNumber, toString } from 'lodash';
 import path from 'path';
 import { requireYAML } from './utils/require-yaml';
-import { toArray } from '@directus/shared/utils';
-import { parseJSON } from '@directus/shared/utils';
+import { toArray, parseJSON } from '@directus/shared/utils';
 
 // keeping this here for now to prevent a circular import to constants.ts
 const allowedEnvironmentVars = [
@@ -103,6 +102,7 @@ const allowedEnvironmentVars = [
 	'ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION',
 	'ASSETS_TRANSFORM_MAX_OPERATIONS',
 	'ASSETS_CONTENT_SECURITY_POLICY',
+	'ASSETS_INVALID_IMAGE_SENSITIVITY_LEVEL',
 	// auth
 	'AUTH_PROVIDERS',
 	'AUTH_DISABLE_DEFAULT',
@@ -136,6 +136,8 @@ const allowedEnvironmentVars = [
 	'AUTH_.+_GROUP_DN',
 	'AUTH_.+_GROUP_ATTRIBUTE',
 	'AUTH_.+_GROUP_SCOPE',
+	'AUTH_.+_IDP.+',
+	'AUTH_.+_SP.+',
 	// extensions
 	'EXTENSIONS_PATH',
 	'EXTENSIONS_AUTO_RELOAD',
@@ -247,6 +249,7 @@ const defaults: Record<string, any> = {
 	ASSETS_TRANSFORM_MAX_CONCURRENT: 1,
 	ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION: 6000,
 	ASSETS_TRANSFORM_MAX_OPERATIONS: 5,
+	ASSETS_INVALID_IMAGE_SENSITIVITY_LEVEL: 'warning',
 
 	IP_TRUST_PROXY: true,
 	IP_CUSTOM_HEADER: false,
@@ -289,7 +292,7 @@ const typeMap: Record<string, string> = {
 let env: Record<string, any> = {
 	...defaults,
 	...process.env,
-	...getEnv(),
+	...processConfiguration(),
 };
 
 process.env = env;
@@ -299,6 +302,11 @@ env = processValues(env);
 export default env;
 
 /**
+ * Small wrapper function that makes it easier to write unit tests against changing environments
+ */
+export const getEnv = () => env;
+
+/**
  * When changes have been made during runtime, like in the CLI, we can refresh the env object with
  * the newly created variables
  */
@@ -306,7 +314,7 @@ export function refreshEnv(): void {
 	env = {
 		...defaults,
 		...process.env,
-		...getEnv(),
+		...processConfiguration(),
 	};
 
 	process.env = env;
@@ -314,7 +322,7 @@ export function refreshEnv(): void {
 	env = processValues(env);
 }
 
-function getEnv() {
+function processConfiguration() {
 	const configPath = path.resolve(process.env.CONFIG_PATH || defaults.CONFIG_PATH);
 
 	if (fs.existsSync(configPath) === false) return {};

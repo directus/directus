@@ -2,6 +2,219 @@
 
 _Changes marked with a :warning: contain potential breaking changes depending on your use of the package._
 
+## v9.22.0 (December 21, 2022)
+
+### ⚠️ Notice
+
+#### Node Version
+
+Directus requires NodeJS LTS. As of this release, that is Node 18. Our Docker image has been updated to Node 18. If
+you're running Directus in any other way, make sure that your environment is using Node 18.
+
+#### File Storage
+
+The file storage and metadata abstraction services have been replaced. The Directus app / api are backwards compatible,
+but you will have to replace your usage of `@directus/drive` if you were relying on that package separately.
+
+### :sparkles: New Features
+
+- **API**
+  - :warning: [#16825](https://github.com/directus/directus/pull/16825) Upgrade file storage abstraction layers (by
+    @rijkvanzanten)
+  - [#16650](https://github.com/directus/directus/pull/16650) Add support for custom JS embeds in the App (by
+    @br41nslug)
+- **App**
+  - [#16650](https://github.com/directus/directus/pull/16650) Add support for custom JS embeds in the App (by
+    @br41nslug)
+
+### :rocket: Improvements
+
+- **App**
+  - [#16870](https://github.com/directus/directus/pull/16870) Fetch item/total counts separate (by @rijkvanzanten)
+  - [#16714](https://github.com/directus/directus/pull/16714) Tweak datetime picker styles (by @azrikahar)
+  - [#16660](https://github.com/directus/directus/pull/16660) New Crowdin updates (by @rijkvanzanten)
+  - [#16500](https://github.com/directus/directus/pull/16500) New Crowdin updates (by @rijkvanzanten)
+  - [#16278](https://github.com/directus/directus/pull/16278) Follow up user Roles not loading (by @br41nslug)
+- **API**
+  - [#16811](https://github.com/directus/directus/pull/16811) Added extra environment setting for sharp processing of
+    invalid images (by @br41nslug)
+  - [#16717](https://github.com/directus/directus/pull/16717) Fix typo in env stub (by @piotr-cz)
+  - [#16433](https://github.com/directus/directus/pull/16433) Fix repeated logic caused by updateOne & deleteOne
+    overrides (by @azrikahar)
+
+### :bug: Bug Fixes
+
+- **App**
+  - [#16870](https://github.com/directus/directus/pull/16870) Fetch item/total counts separate (by @rijkvanzanten)
+  - [#16724](https://github.com/directus/directus/pull/16724) Export redirects to wrong page when hosted in a subfolder
+    (by @br41nslug)
+  - [#16710](https://github.com/directus/directus/pull/16710) Translations: Fix missing `tfa_setup` (by @joselcvarela)
+  - [#16668](https://github.com/directus/directus/pull/16668) Fix key combinations being prevented in dbSafe v-input
+    when it's a leading number (by @azrikahar)
+  - [#16618](https://github.com/directus/directus/pull/16618) "Is one of" filter is duplicating comma separated input
+    (by @br41nslug)
+  - [#16614](https://github.com/directus/directus/pull/16614) Fix app permissions presets with nested dynamic variables
+    (by @azrikahar)
+  - [#16585](https://github.com/directus/directus/pull/16585) fix wrong default ip (by @Nitwel)
+  - [#16558](https://github.com/directus/directus/pull/16558) Fix json serialization (by @br41nslug)
+  - [#16538](https://github.com/directus/directus/pull/16538) Fix loading logic in image component (by @paescuj)
+  - [#16038](https://github.com/directus/directus/pull/16038) Reduce translate function calls in the App (by @azrikahar)
+  - [#14798](https://github.com/directus/directus/pull/14798) Fix duplicated results and functions in nested filters (by
+    @licitdev)
+- **API**
+  - [#16868](https://github.com/directus/directus/pull/16868) File Storage 2.0: Make metadata extraction
+    backward-compatible (by @paescuj)
+  - [#16691](https://github.com/directus/directus/pull/16691) enforce uppercase UUIDs for MS SQL (by @br41nslug)
+  - [#16524](https://github.com/directus/directus/pull/16524) fix: adds missing Query and x-metadata to
+    /components/schemas (by @NickUfer)
+  - [#16299](https://github.com/directus/directus/pull/16299) Missing logs with Pino asynchronous logging (by
+    @br41nslug)
+  - [#14798](https://github.com/directus/directus/pull/14798) Fix duplicated results and functions in nested filters (by
+    @licitdev)
+- **cli**
+  - [#16299](https://github.com/directus/directus/pull/16299) Missing logs with Pino asynchronous logging (by
+    @br41nslug)
+
+### :sponge: Optimizations
+
+- **API**
+  - [#16871](https://github.com/directus/directus/pull/16871) Fix reinstallation of dependencies in blackbox test
+    workflow (by @paescuj)
+  - [#16810](https://github.com/directus/directus/pull/16810) Use Node.js 18 for Docker image (by @paescuj)
+  - [#16774](https://github.com/directus/directus/pull/16774) Update minimum node version to 16+ (by @Nitwel)
+  - [#16755](https://github.com/directus/directus/pull/16755) Align ASSETS_CACHE_TTL default value in .env stub (by
+    @azrikahar)
+  - [#16696](https://github.com/directus/directus/pull/16696) Use node16 module-resolution (by @rijkvanzanten)
+- **shared**
+  - [#16770](https://github.com/directus/directus/pull/16770) Remove duplicated type for interfaceConfig group (by
+    @azrikahar)
+- **Misc.**
+  - [#16574](https://github.com/directus/directus/pull/16574) Add initial GraphQL tests (by @licitdev)
+
+## v9.21.1 (November 28, 2022)
+
+### :rocket: Improvements
+
+- **App**
+  - [#16512](https://github.com/directus/directus/pull/16512) v-menu pointer event tweaks (by @azrikahar)
+  - [#16511](https://github.com/directus/directus/pull/16511) Improve v-icon performance (by @azrikahar)
+- **API**
+  - [#16501](https://github.com/directus/directus/pull/16501) Set `auth_data` to null when updating user `provider` or
+    `external_identifier` (by @azrikahar)
+  - [#16499](https://github.com/directus/directus/pull/16499) Remove named timezone usage on MySQL (by @licitdev)
+- **Extensions**
+  - [#15989](https://github.com/directus/directus/pull/15989) Use esbuild to build typescript extensions (by @nickrum)
+
+### :bug: Bug Fixes
+
+- **shared**
+  - [#16641](https://github.com/directus/directus/pull/16641) Fixup: Re-add entrypoint type definition files in
+    @directus/shared (by @paescuj)
+  - [#16606](https://github.com/directus/directus/pull/16606) Re-add entrypoint type definition files in
+    `@directus/shared` (by @paescuj)
+- **App**
+  - [#16570](https://github.com/directus/directus/pull/16570) fix missing collection after sorting in M2A (by
+    @azrikahar)
+  - [#16518](https://github.com/directus/directus/pull/16518) Fix .module-nav-resize-handle layout (by @d1rOn)
+- **API**
+  - [#16562](https://github.com/directus/directus/pull/16562) Propagate mutation options for schema apply (by @licitdev)
+
+### :sponge: Optimizations
+
+- **Misc.**
+  - [#16591](https://github.com/directus/directus/pull/16591) Optimize stores hydration calls (by @azrikahar)
+  - [#16481](https://github.com/directus/directus/pull/16481) Clean-up dependencies (by @paescuj)
+
+## v9.21.0 (November 17, 2022)
+
+### :sparkles: New Features
+
+- **Extensions**
+  - [#15672](https://github.com/directus/directus/pull/15672) Add support for a package extension bundle type (by
+    @nickrum)
+
+### :rocket: Improvements
+
+- **API**
+  - [#16453](https://github.com/directus/directus/pull/16453) Optimize number of times cache is being cleared in
+    ItemsService `updateBatch` (by @azrikahar)
+  - [#16436](https://github.com/directus/directus/pull/16436) Allow admin to update Directus User `provider` and
+    `external_identifier` (by @azrikahar)
+  - [#16099](https://github.com/directus/directus/pull/16099) Returns the nodemailer promise (by @keesvanbemmel)
+- **App**
+  - [#16436](https://github.com/directus/directus/pull/16436) Allow admin to update Directus User `provider` and
+    `external_identifier` (by @azrikahar)
+  - [#16379](https://github.com/directus/directus/pull/16379) Fix sortField selection (by @Nitwel)
+  - [#16375](https://github.com/directus/directus/pull/16375) Add editsGuard to drawerItem (by @Nitwel)
+  - [#16365](https://github.com/directus/directus/pull/16365) Allow disabling same width for attached dropdown menu (by
+    @azrikahar)
+  - [#16280](https://github.com/directus/directus/pull/16280) use correct collection for translation (by @Nitwel)
+  - [#15861](https://github.com/directus/directus/pull/15861) Keep SidebarOpen state in local storage (by @goth-pl)
+- **Extensions**
+  - [#15909](https://github.com/directus/directus/pull/15909) Detect used package manager in extension CLI (by @nickrum)
+
+### :bug: Bug Fixes
+
+- **App**
+  - [#16487](https://github.com/directus/directus/pull/16487) Fix shares sidebar drawer's close event (by @azrikahar)
+  - [#16473](https://github.com/directus/directus/pull/16473) Fix preset resetting itself (by @Nitwel)
+  - [#16471](https://github.com/directus/directus/pull/16471) Sanitize value in comment-input (by @azrikahar)
+  - [#16412](https://github.com/directus/directus/pull/16412) Reset page when changing pageSize (by @Nitwel)
+  - [#16283](https://github.com/directus/directus/pull/16283) Only pass needed values when sorting (by @Nitwel)
+- **API**
+  - [#16485](https://github.com/directus/directus/pull/16485) fix syntax in oas (by @cf-ts)
+  - [#16483](https://github.com/directus/directus/pull/16483) Fix condition operation passing even when the checked
+    field isn't present in the payload (by @azrikahar)
+  - [#16461](https://github.com/directus/directus/pull/16461) Fix unsupported date_part() in CrDB (by @licitdev)
+  - [#16438](https://github.com/directus/directus/pull/16438) Fix `cast-csv` read action for csv field's first revision
+    (by @azrikahar)
+  - [#16435](https://github.com/directus/directus/pull/16435) Fix limit in nested a2o queries (by @licitdev)
+  - [#16430](https://github.com/directus/directus/pull/16430) Fix legacy permissions for M2O fields in GraphQL (by
+    @licitdev)
+  - [#16413](https://github.com/directus/directus/pull/16413) Fix \_\_typename selection for functions in GraphQL (by
+    @licitdev)
+  - [#16368](https://github.com/directus/directus/pull/16368) Fix zero value for numeric precision and scale with
+    float/decimal fields (by @azrikahar)
+  - [#16320](https://github.com/directus/directus/pull/16320) Skip checking of virtual alias fields (by @licitdev)
+  - [#16297](https://github.com/directus/directus/pull/16297) Skip serialization for empty or string bigint values in
+    GraphQL (by @licitdev)
+  - [#16234](https://github.com/directus/directus/pull/16234) Check original field name when aliased (by @licitdev)
+  - [#16233](https://github.com/directus/directus/pull/16233) Fix base email template footer link & logo aspect ratio
+    (by @azrikahar)
+  - [#16180](https://github.com/directus/directus/pull/16180) Update last value when triggering nested flows with array
+    values (by @licitdev)
+  - [#16027](https://github.com/directus/directus/pull/16027) Fix date functions for databases not in UTC timezone (by
+    @licitdev)
+  - [#15984](https://github.com/directus/directus/pull/15984) CockroachDB can't recreate constraints with the same name
+    (by @br41nslug)
+  - [#15576](https://github.com/directus/directus/pull/15576) Emit action events with updated schema (by @licitdev)
+- **specs**
+  - [#16294](https://github.com/directus/directus/pull/16294) Fix "create an item" requestBody schema in OAS (by
+    @azrikahar)
+- **Misc.**
+  - [#16271](https://github.com/directus/directus/pull/16271) Remove dev dependencies when running blackbox tests (by
+    @licitdev)
+
+### :sponge: Optimizations
+
+- **Misc.**
+  - [#16486](https://github.com/directus/directus/pull/16486) use pnpm `shell-emulator` instead of `cross-env` (by
+    @azrikahar)
+  - [#16484](https://github.com/directus/directus/pull/16484) fix list-folders test on Windows (by @azrikahar)
+  - [#16462](https://github.com/directus/directus/pull/16462) Clean-up after Jest to Vitest switch in API (by @paescuj)
+  - [#16380](https://github.com/directus/directus/pull/16380) Clean-up lint / format set-up (by @paescuj)
+  - [#16374](https://github.com/directus/directus/pull/16374) Exclude unnecessary files from packages (by @paescuj)
+  - [#16360](https://github.com/directus/directus/pull/16360) Update the Makefile for testing the Docker image build
+    process (by @paescuj)
+- **API**
+  - [#16263](https://github.com/directus/directus/pull/16263) Finish switch from Jest to Vitest in API (by @paescuj)
+
+### :package: Dependency Updates
+
+- [#16475](https://github.com/directus/directus/pull/16475) Patch Tuesday 🐸 (by @rijkvanzanten)
+- [#16441](https://github.com/directus/directus/pull/16441) Replace rollup-plugin-terser with @rollup/plugin-terser (by
+  @rijkvanzanten)
+
 ## v9.19.0 (October 21, 2022)
 
 ### :sparkles: New Features

@@ -2,6 +2,13 @@ import { ComponentPublicInstance, onMounted, onUnmounted, Ref, ref } from 'vue';
 
 type ShortcutHandler = (event: KeyboardEvent, cancelNext: () => void) => void | any | boolean;
 
+export const keyMap: Record<string, string> = {
+	Control: 'meta',
+	Command: 'meta',
+};
+
+export const systemKeys = ['meta', 'shift', 'alt', 'backspace', 'delete', 'tab', 'capslock', 'enter'];
+
 const keysdown: Set<string> = new Set([]);
 const handlers: Record<string, ShortcutHandler[]> = {};
 
@@ -62,15 +69,11 @@ export function useShortcut(
 }
 
 function mapKeys(key: KeyboardEvent) {
-	const map: Record<string, string> = {
-		Control: 'meta',
-		Command: 'meta',
-	};
 	const isLatinAlphabet = /^[a-zA-Z0-9]*?$/g;
 
 	let keyString = key.key.match(isLatinAlphabet) === null ? key.code.replace(/(Key|Digit)/g, '') : key.key;
 
-	keyString = keyString in map ? map[keyString] : keyString;
+	keyString = keyString in keyMap ? keyMap[keyString] : keyString;
 	keyString = keyString.toLowerCase();
 
 	return keyString;

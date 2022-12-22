@@ -14,8 +14,8 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, inject, ref, watch } from 'vue';
-import { getInterfaces } from '@/interfaces';
 import { InterfaceConfig } from '@directus/shared/types';
+import { useExtensions } from '@/extensions';
 
 export default defineComponent({
 	props: {
@@ -32,7 +32,7 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
-		const { interfaces } = getInterfaces();
+		const { interfaces } = useExtensions();
 
 		const values = inject('values', ref<Record<string, any>>({}));
 
