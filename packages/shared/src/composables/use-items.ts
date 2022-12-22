@@ -60,7 +60,7 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery, f
 		return Math.ceil(itemCount.value / (unref(limit) ?? 100));
 	});
 
-	let currentRequest: CancelTokenSource | null = null;
+	let existingRequest: CancelTokenSource | null = null;
 	let loadingTimeout: NodeJS.Timeout | null = null;
 
 	const fetchItems = throttle(getItems, 500);
@@ -121,8 +121,8 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery, f
 
 		let isCurrentRequestCanceled = false;
 
-		currentRequest?.cancel();
-		currentRequest = null;
+		existingRequest?.cancel();
+		existingRequest = null;
 
 		error.value = null;
 
@@ -154,7 +154,7 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery, f
 		fieldsToFetch = fieldsToFetch.filter((field) => field.startsWith('$') === false);
 
 		try {
-			currentRequest = axios.CancelToken.source();
+			existingRequest = axios.CancelToken.source();
 
 			const response = await api.get<any>(endpoint.value, {
 				params: {
@@ -166,7 +166,7 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery, f
 					search: unref(search),
 					filter: unref(filter),
 				},
-				cancelToken: currentRequest.token,
+				cancelToken: existingRequest.token,
 			});
 
 			let fetchedItems = response.data.data;
