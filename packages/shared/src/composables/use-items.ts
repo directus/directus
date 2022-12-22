@@ -1,5 +1,5 @@
 import { useApi } from './use-system';
-import axios, { CancelTokenSource } from 'axios';
+import axios from 'axios';
 import { useCollection } from './use-collection';
 import { Item, Query } from '../types';
 import { moveInArray } from '../utils';
@@ -34,7 +34,7 @@ type ComputedQuery = {
 	page: Ref<Query['page']> | WritableComputedRef<Query['page']>;
 };
 
-export function useItems(collection: Ref<string | null>, query: ComputedQuery, fetchOnInit = true): UsableItems {
+export function useItems(collection: Ref<string | null>, query: ComputedQuery): UsableItems {
 	const api = useApi();
 	const { primaryKeyField } = useCollection(collection);
 
@@ -60,14 +60,14 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery, f
 		return Math.ceil(itemCount.value / (unref(limit) ?? 100));
 	});
 
-	let currentRequest: CancelTokenSource | null = null;
+	const existingRequests: Record<'items' | 'total' | 'filter', AbortController | null> = {
+		items: null,
+		total: null,
+		filter: null,
+	};
 	let loadingTimeout: NodeJS.Timeout | null = null;
 
 	const fetchItems = throttle(getItems, 500);
-
-	if (fetchOnInit) {
-		fetchItems();
-	}
 
 	watch(
 		[collection, limit, sort, search, filter, fields, page],
@@ -78,6 +78,10 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery, f
 			const [oldCollection, oldLimit, oldSort, oldSearch, oldFilter, _oldFields, _oldPage] = before;
 
 			if (!newCollection || !query) return;
+
+			if (newCollection !== oldCollection) {
+				reset();
+			}
 
 			if (
 				!isEqual(newFilter, oldFilter) ||
@@ -90,12 +94,8 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery, f
 				}
 			}
 
-			if (!isEqual(newFilter, oldFilter) || newSearch !== oldSearch) {
+			if (newCollection !== oldCollection || !isEqual(newFilter, oldFilter) || newSearch !== oldSearch) {
 				getItemCount();
-			}
-
-			if (newCollection !== oldCollection) {
-				reset();
 			}
 
 			fetchItems();
@@ -119,8 +119,10 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery, f
 	async function getItems() {
 		if (!endpoint.value) return;
 
-		currentRequest?.cancel();
-		currentRequest = null;
+		let isCurrentRequestCanceled = false;
+
+		if (existingRequests.items) existingRequests.items.abort();
+		existingRequests.items = new AbortController();
 
 		error.value = null;
 
@@ -152,8 +154,6 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery, f
 		fieldsToFetch = fieldsToFetch.filter((field) => field.startsWith('$') === false);
 
 		try {
-			currentRequest = axios.CancelToken.source();
-
 			const response = await api.get<any>(endpoint.value, {
 				params: {
 					limit: unref(limit),
@@ -164,10 +164,11 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery, f
 					search: unref(search),
 					filter: unref(filter),
 				},
-				cancelToken: currentRequest.token,
+				signal: existingRequests.items.signal,
 			});
 
 			let fetchedItems = response.data.data;
+			existingRequests.items = null;
 
 			/**
 			 * @NOTE
@@ -192,16 +193,18 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery, f
 				page.value = 1;
 			}
 		} catch (err: any) {
-			if (!axios.isCancel(err)) {
+			if (axios.isCancel(err)) {
+				isCurrentRequestCanceled = true;
+			} else {
 				error.value = err;
 			}
 		} finally {
-			if (loadingTimeout) {
+			if (loadingTimeout && !isCurrentRequestCanceled) {
 				clearTimeout(loadingTimeout);
 				loadingTimeout = null;
 			}
 
-			loading.value = false;
+			if (!loadingTimeout) loading.value = false;
 		}
 	}
 
@@ -227,34 +230,56 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery, f
 	async function getTotalCount() {
 		if (!endpoint.value) return;
 
-		const response = await api.get<any>(endpoint.value, {
-			params: {
-				aggregate: {
-					count: '*',
+		try {
+			if (existingRequests.total) existingRequests.total.abort();
+			existingRequests.total = new AbortController();
+
+			const response = await api.get<any>(endpoint.value, {
+				params: {
+					aggregate: {
+						count: '*',
+					},
 				},
-			},
-		});
+				signal: existingRequests.total.signal,
+			});
 
-		const count = Number(response.data.data[0].count);
+			const count = Number(response.data.data[0].count);
+			existingRequests.total = null;
 
-		totalCount.value = count;
+			totalCount.value = count;
+		} catch (err: any) {
+			if (!axios.isCancel(err)) {
+				throw err;
+			}
+		}
 	}
 
 	async function getItemCount() {
 		if (!endpoint.value) return;
 
-		const response = await api.get<any>(endpoint.value, {
-			params: {
-				filter: unref(filter),
-				search: unref(search),
-				aggregate: {
-					count: '*',
+		try {
+			if (existingRequests.filter) existingRequests.filter.abort();
+			existingRequests.filter = new AbortController();
+
+			const response = await api.get<any>(endpoint.value, {
+				params: {
+					filter: unref(filter),
+					search: unref(search),
+					aggregate: {
+						count: '*',
+					},
 				},
-			},
-		});
+				signal: existingRequests.filter.signal,
+			});
 
-		const count = Number(response.data.data[0].count);
+			const count = Number(response.data.data[0].count);
+			existingRequests.filter = null;
 
-		itemCount.value = count;
+			itemCount.value = count;
+		} catch (err: any) {
+			if (!axios.isCancel(err)) {
+				throw err;
+			}
+		}
 	}
 }
