@@ -154,8 +154,6 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 		fieldsToFetch = fieldsToFetch.filter((field) => field.startsWith('$') === false);
 
 		try {
-			// existingRequest = axios.CancelToken.source();
-
 			const response = await api.get<any>(endpoint.value, {
 				params: {
 					limit: unref(limit),
@@ -167,7 +165,6 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 					filter: unref(filter),
 				},
 				signal: existingRequests.items.signal,
-				// cancelToken: existingRequest.token,
 			});
 
 			let fetchedItems = response.data.data;
