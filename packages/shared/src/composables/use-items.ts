@@ -237,44 +237,56 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery, f
 	async function getTotalCount() {
 		if (!endpoint.value) return;
 
-		if (existingRequests.total) existingRequests.total.abort();
-		existingRequests.total = new AbortController();
+		try {
+			if (existingRequests.total) existingRequests.total.abort();
+			existingRequests.total = new AbortController();
 
-		const response = await api.get<any>(endpoint.value, {
-			params: {
-				aggregate: {
-					count: '*',
+			const response = await api.get<any>(endpoint.value, {
+				params: {
+					aggregate: {
+						count: '*',
+					},
 				},
-			},
-			signal: existingRequests.total.signal,
-		});
+				signal: existingRequests.total.signal,
+			});
 
-		const count = Number(response.data.data[0].count);
-		existingRequests.total = null;
+			const count = Number(response.data.data[0].count);
+			existingRequests.total = null;
 
-		totalCount.value = count;
+			totalCount.value = count;
+		} catch (err: any) {
+			if (!axios.isCancel(err)) {
+				throw err;
+			}
+		}
 	}
 
 	async function getItemCount() {
 		if (!endpoint.value) return;
 
-		if (existingRequests.filter) existingRequests.filter.abort();
-		existingRequests.filter = new AbortController();
+		try {
+			if (existingRequests.filter) existingRequests.filter.abort();
+			existingRequests.filter = new AbortController();
 
-		const response = await api.get<any>(endpoint.value, {
-			params: {
-				filter: unref(filter),
-				search: unref(search),
-				aggregate: {
-					count: '*',
+			const response = await api.get<any>(endpoint.value, {
+				params: {
+					filter: unref(filter),
+					search: unref(search),
+					aggregate: {
+						count: '*',
+					},
 				},
-			},
-			signal: existingRequests.filter.signal,
-		});
+				signal: existingRequests.filter.signal,
+			});
 
-		const count = Number(response.data.data[0].count);
-		existingRequests.filter = null;
+			const count = Number(response.data.data[0].count);
+			existingRequests.filter = null;
 
-		itemCount.value = count;
+			itemCount.value = count;
+		} catch (err: any) {
+			if (!axios.isCancel(err)) {
+				throw err;
+			}
+		}
 	}
 }
