@@ -1,6 +1,6 @@
 import { useFieldsStore } from '@/stores/fields';
 import { Filter, Query } from '@directus/shared/types';
-import { toArray } from '@directus/shared/utils';
+import { parseJSON, toArray } from '@directus/shared/utils';
 import { jsonToGraphQLQuery } from 'json-to-graphql-query';
 import { isEmpty, pick, set, omitBy, isUndefined, transform } from 'lodash';
 import { extractFieldFromFunction } from './extract-field-from-function';
@@ -62,7 +62,7 @@ export function formatQuery({ collection, query }: QueryInfo): Record<string, an
 
 	if (query.filter) {
 		try {
-			const filterValue = typeof query.filter === 'object' ? query.filter : JSON.parse(String(query.filter));
+			const filterValue = typeof query.filter === 'object' ? query.filter : parseJSON(String(query.filter));
 			formattedQuery.__args.filter = replaceFuncs(filterValue);
 		} catch {
 			// Keep current value there

@@ -11,6 +11,7 @@ import 'codemirror/addon/mode/simple';
 import { computed, onMounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { mustacheMode } from './mustacheMode';
+import { parseJSON } from '@directus/shared/utils';
 
 const props = withDefaults(
 	defineProps<{
@@ -86,7 +87,7 @@ onMounted(async () => {
 			if (origin === 'setValue') return;
 			const content = doc.getValue();
 			if (typeof props.value === 'object') {
-				emit('input', content !== '' ? JSON.parse(content) : null);
+				emit('input', content !== '' ? parseJSON(content) : null);
 			} else {
 				emit('input', content !== '' ? content : null);
 			}

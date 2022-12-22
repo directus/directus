@@ -84,7 +84,12 @@
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 import { Filter, Type, FieldFunction } from '@directus/shared/types';
-import { getFilterOperatorsForType, getOutputTypeForFunction, parseFilterFunctionPath } from '@directus/shared/utils';
+import {
+	getFilterOperatorsForType,
+	getOutputTypeForFunction,
+	parseFilterFunctionPath,
+	parseJSON,
+} from '@directus/shared/utils';
 import { cloneDeep, get, isEmpty, set } from 'lodash';
 import { computed, inject, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -135,7 +140,7 @@ const relationsStore = useRelationsStore();
 
 const innerValue = computed<Filter[]>({
 	get() {
-		const filterValue = typeof props.value === 'string' ? JSON.parse(props.value) : props.value;
+		const filterValue = typeof props.value === 'string' ? parseJSON(props.value) : props.value;
 
 		if (!filterValue || isEmpty(filterValue)) return [];
 
