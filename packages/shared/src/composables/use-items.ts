@@ -1,5 +1,5 @@
 import { useApi } from './use-system';
-import axios, { CancelTokenSource } from 'axios';
+import axios from 'axios';
 import { useCollection } from './use-collection';
 import { Item, Query } from '../types';
 import { moveInArray } from '../utils';
@@ -60,7 +60,11 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery, f
 		return Math.ceil(itemCount.value / (unref(limit) ?? 100));
 	});
 
-	let existingRequest: CancelTokenSource | null = null;
+	const existingRequests: Record<'items' | 'total' | 'filter', AbortController | null> = {
+		items: null,
+		total: null,
+		filter: null,
+	};
 	let loadingTimeout: NodeJS.Timeout | null = null;
 
 	const fetchItems = throttle(getItems, 500);
@@ -121,8 +125,8 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery, f
 
 		let isCurrentRequestCanceled = false;
 
-		existingRequest?.cancel();
-		existingRequest = null;
+		if (existingRequests.items) existingRequests.items.abort();
+		existingRequests.items = new AbortController();
 
 		error.value = null;
 
@@ -154,7 +158,7 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery, f
 		fieldsToFetch = fieldsToFetch.filter((field) => field.startsWith('$') === false);
 
 		try {
-			existingRequest = axios.CancelToken.source();
+			// existingRequest = axios.CancelToken.source();
 
 			const response = await api.get<any>(endpoint.value, {
 				params: {
@@ -166,10 +170,12 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery, f
 					search: unref(search),
 					filter: unref(filter),
 				},
-				cancelToken: existingRequest.token,
+				signal: existingRequests.items.signal,
+				// cancelToken: existingRequest.token,
 			});
 
 			let fetchedItems = response.data.data;
+			existingRequests.items = null;
 
 			/**
 			 * @NOTE
@@ -231,21 +237,29 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery, f
 	async function getTotalCount() {
 		if (!endpoint.value) return;
 
+		if (existingRequests.total) existingRequests.total.abort();
+		existingRequests.total = new AbortController();
+
 		const response = await api.get<any>(endpoint.value, {
 			params: {
 				aggregate: {
 					count: '*',
 				},
 			},
+			signal: existingRequests.total.signal,
 		});
 
 		const count = Number(response.data.data[0].count);
+		existingRequests.total = null;
 
 		totalCount.value = count;
 	}
 
 	async function getItemCount() {
 		if (!endpoint.value) return;
+
+		if (existingRequests.filter) existingRequests.filter.abort();
+		existingRequests.filter = new AbortController();
 
 		const response = await api.get<any>(endpoint.value, {
 			params: {
@@ -255,9 +269,11 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery, f
 					count: '*',
 				},
 			},
+			signal: existingRequests.filter.signal,
 		});
 
 		const count = Number(response.data.data[0].count);
+		existingRequests.filter = null;
 
 		itemCount.value = count;
 	}
