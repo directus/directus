@@ -205,7 +205,7 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery, f
 				loadingTimeout = null;
 			}
 
-			loading.value = false;
+			if (!loadingTimeout) loading.value = false;
 		}
 	}
 
