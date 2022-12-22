@@ -25,7 +25,7 @@ export class SchemaHelperOracle extends SchemaHelper {
 		return { parsed: [], full: versionString };
 	}
 
-	castM2aPrimaryKey(): string {
+	castA2oPrimaryKey(): string {
 		return 'CAST(?? AS VARCHAR2(255))';
 	}
 }
