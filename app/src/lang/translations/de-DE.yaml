@@ -187,6 +187,8 @@ revision_post_create: So sah dieses Element bei der Erstellung aus.
 revision_post_update: So sieht dieses Element nach der Überarbeitung aus.
 changes_made: Dies sind die spezifischen Änderungen, die in dieser Revision vorgenommen wurden.
 no_relational_data: Beachten Sie, dass relationale Daten hier nicht enthalten sind.
+junction_field_location: Lage der Kreuzungsfelder
+top: Oben
 bottom: Unten
 hide_field: Felder ausblenden
 hide_field_on_detail: In Detailansicht ausblenden
@@ -327,6 +329,7 @@ edit_raw_value: Rohwert bearbeiten
 enter_raw_value: Rohwert eingeben...
 clear_value: Wert löschen
 clear_changes: Änderungen löschen
+clear_items: Element entfernen
 reset_to_default: Auf Standardwert zurücksetzen
 undo_changes: Änderungen rückgängig machen
 notifications: Benachrichtigungen
@@ -570,6 +573,8 @@ select_an_item: Element auswählen...
 edit: Bearbeiten
 enabled: Aktiviert
 disable_tfa: 2FA deaktivieren
+admin_disable_tfa_text: Bist du dir sicher, dass du 2FA für diesen Nutzer deaktivieren möchtest?
+tfa_setup: 2FA einrichten
 tfa_scan_code: Scannen Sie den Code in Ihrer Authentifikator-App, um die Einrichtung von 2FA abzuschließen
 enter_otp_to_disable_tfa: OTP zum deaktivieren der 2FA eingeben
 create_account: Konto erstellen
@@ -605,9 +610,11 @@ errors:
   UNKNOWN: Unerwarteter Fehler
   GRAPHQL_VALIDATION_EXCEPTION: GraphQL Validierungsfehler
   SERVICE_UNAVAILABLE: Dienst nicht verfügbar
+  UNSUPPORTED_MEDIA_TYPE: Nicht unterstützter Medientyp
   UNEXPECTED_RESPONSE: Unerwartete Antwort
   TOKEN_EXPIRED: Token abgelaufen
   RANGE_NOT_SATISFIABLE: Ungültiger Bereich
+  METHOD_NOT_ALLOWED: Methode ist nicht erlaubt
   REQUESTS_EXCEEDED: Anfragelimit erreicht
 security: Sicherheit
 value_hashed: Wert sicher gehashed
@@ -781,6 +788,8 @@ flow: Flow
 select_a_flow: Flow auswählen
 run_flow_on_current_collection: Flow für aktuelle Sammlung ausführen
 run_flow_on_current: Flow für aktuelles Element ausführen
+run_flow_on_current_edited_confirm: Dieses Element kann durch diesen Flow aktualisiert werden, bist du dir sicher, dass du es ausführen möchtest?
+run_flow_on_selected: Wählen Sie zuerst eins oder mehrere Elemente aus | Flow für 1 ausgewähltes Element ausführen | Flow für {n} ausgewählte Items ausführen
 run_flow_success: Flow "{flow}" wurde erfolgreich ausgeführt
 trigger: Trigger
 trigger_options: Auslöse-Optionen
@@ -824,6 +833,7 @@ panel_header: Panel-Titel
 panel_name_placeholder: Dieses Panel benennen...
 panel_note_placeholder: Optionale Details zu diesem Panel...
 panel_delete_confirm: Möchten Sie dieses Panel wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.
+list_panel_allow_edit: Schnellbearbeitung zulassen
 dashboard_delete_confirm: Möchten Sie dieses Dashboard wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.
 edit_dashboard: Dashboard bearbeiten
 delete_dashboard: Dashboard löschen
@@ -1108,7 +1118,7 @@ fields:
     status_draft: Entwurf
     status_invited: Eingeladen
     status_active: Aktiv
-    status_suspended: Angehalten
+    status_suspended: Gesperrt
     status_archived: Archiviert
     role: Rolle
     token: Token
@@ -1281,7 +1291,7 @@ field_options:
     status_dropdown_draft: Entwurf
     status_dropdown_invited: Eingeladen
     status_dropdown_active: Aktiv
-    status_dropdown_suspended: Angehalten
+    status_dropdown_suspended: Gesperrt
     status_dropdown_archived: Archiviert
     token: Einen sicheren Zugangs-Token eingeben...
   directus_webhooks:
@@ -1690,6 +1700,7 @@ interfaces:
     user_language: Aktuelle Benutzersprache verwenden
     default_language: Standardsprache
     language_field: Sprachindikatorfeld
+    language_direction_field: Sprachverzeichnis Feld
   list-o2m-tree-view:
     description: Baumansicht für verschachtelte rekursive 1:n-Elemente
     recursive_only: Die Baumansicht funktioniert nur für rekursive Beziehungen.

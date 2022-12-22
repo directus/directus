@@ -2,6 +2,95 @@
 
 _Changes marked with a :warning: contain potential breaking changes depending on your use of the package._
 
+## v9.22.0 (December 21, 2022)
+
+### ⚠️ Notice
+
+#### Node Version
+
+Directus requires NodeJS LTS. As of this release, that is Node 18. Our Docker image has been updated to Node 18. If
+you're running Directus in any other way, make sure that your environment is using Node 18.
+
+#### File Storage
+
+The file storage and metadata abstraction services have been replaced. The Directus app / api are backwards compatible,
+but you will have to replace your usage of `@directus/drive` if you were relying on that package separately.
+
+### :sparkles: New Features
+
+- **API**
+  - :warning: [#16825](https://github.com/directus/directus/pull/16825) Upgrade file storage abstraction layers (by
+    @rijkvanzanten)
+  - [#16650](https://github.com/directus/directus/pull/16650) Add support for custom JS embeds in the App (by
+    @br41nslug)
+- **App**
+  - [#16650](https://github.com/directus/directus/pull/16650) Add support for custom JS embeds in the App (by
+    @br41nslug)
+
+### :rocket: Improvements
+
+- **App**
+  - [#16870](https://github.com/directus/directus/pull/16870) Fetch item/total counts separate (by @rijkvanzanten)
+  - [#16714](https://github.com/directus/directus/pull/16714) Tweak datetime picker styles (by @azrikahar)
+  - [#16660](https://github.com/directus/directus/pull/16660) New Crowdin updates (by @rijkvanzanten)
+  - [#16500](https://github.com/directus/directus/pull/16500) New Crowdin updates (by @rijkvanzanten)
+  - [#16278](https://github.com/directus/directus/pull/16278) Follow up user Roles not loading (by @br41nslug)
+- **API**
+  - [#16811](https://github.com/directus/directus/pull/16811) Added extra environment setting for sharp processing of
+    invalid images (by @br41nslug)
+  - [#16717](https://github.com/directus/directus/pull/16717) Fix typo in env stub (by @piotr-cz)
+  - [#16433](https://github.com/directus/directus/pull/16433) Fix repeated logic caused by updateOne & deleteOne
+    overrides (by @azrikahar)
+
+### :bug: Bug Fixes
+
+- **App**
+  - [#16870](https://github.com/directus/directus/pull/16870) Fetch item/total counts separate (by @rijkvanzanten)
+  - [#16724](https://github.com/directus/directus/pull/16724) Export redirects to wrong page when hosted in a subfolder
+    (by @br41nslug)
+  - [#16710](https://github.com/directus/directus/pull/16710) Translations: Fix missing `tfa_setup` (by @joselcvarela)
+  - [#16668](https://github.com/directus/directus/pull/16668) Fix key combinations being prevented in dbSafe v-input
+    when it's a leading number (by @azrikahar)
+  - [#16618](https://github.com/directus/directus/pull/16618) "Is one of" filter is duplicating comma separated input
+    (by @br41nslug)
+  - [#16614](https://github.com/directus/directus/pull/16614) Fix app permissions presets with nested dynamic variables
+    (by @azrikahar)
+  - [#16585](https://github.com/directus/directus/pull/16585) fix wrong default ip (by @Nitwel)
+  - [#16558](https://github.com/directus/directus/pull/16558) Fix json serialization (by @br41nslug)
+  - [#16538](https://github.com/directus/directus/pull/16538) Fix loading logic in image component (by @paescuj)
+  - [#16038](https://github.com/directus/directus/pull/16038) Reduce translate function calls in the App (by @azrikahar)
+  - [#14798](https://github.com/directus/directus/pull/14798) Fix duplicated results and functions in nested filters (by
+    @licitdev)
+- **API**
+  - [#16868](https://github.com/directus/directus/pull/16868) File Storage 2.0: Make metadata extraction
+    backward-compatible (by @paescuj)
+  - [#16691](https://github.com/directus/directus/pull/16691) enforce uppercase UUIDs for MS SQL (by @br41nslug)
+  - [#16524](https://github.com/directus/directus/pull/16524) fix: adds missing Query and x-metadata to
+    /components/schemas (by @NickUfer)
+  - [#16299](https://github.com/directus/directus/pull/16299) Missing logs with Pino asynchronous logging (by
+    @br41nslug)
+  - [#14798](https://github.com/directus/directus/pull/14798) Fix duplicated results and functions in nested filters (by
+    @licitdev)
+- **cli**
+  - [#16299](https://github.com/directus/directus/pull/16299) Missing logs with Pino asynchronous logging (by
+    @br41nslug)
+
+### :sponge: Optimizations
+
+- **API**
+  - [#16871](https://github.com/directus/directus/pull/16871) Fix reinstallation of dependencies in blackbox test
+    workflow (by @paescuj)
+  - [#16810](https://github.com/directus/directus/pull/16810) Use Node.js 18 for Docker image (by @paescuj)
+  - [#16774](https://github.com/directus/directus/pull/16774) Update minimum node version to 16+ (by @Nitwel)
+  - [#16755](https://github.com/directus/directus/pull/16755) Align ASSETS_CACHE_TTL default value in .env stub (by
+    @azrikahar)
+  - [#16696](https://github.com/directus/directus/pull/16696) Use node16 module-resolution (by @rijkvanzanten)
+- **shared**
+  - [#16770](https://github.com/directus/directus/pull/16770) Remove duplicated type for interfaceConfig group (by
+    @azrikahar)
+- **Misc.**
+  - [#16574](https://github.com/directus/directus/pull/16574) Add initial GraphQL tests (by @licitdev)
+
 ## v9.21.1 (November 28, 2022)
 
 ### :rocket: Improvements
