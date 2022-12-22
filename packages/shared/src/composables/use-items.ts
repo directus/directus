@@ -94,7 +94,7 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery, f
 				}
 			}
 
-			if (!isEqual(newFilter, oldFilter) || newSearch !== oldSearch) {
+			if (newCollection !== oldCollection || !isEqual(newFilter, oldFilter) || newSearch !== oldSearch) {
 				getItemCount();
 			}
 
