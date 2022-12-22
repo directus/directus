@@ -34,7 +34,7 @@ type ComputedQuery = {
 	page: Ref<Query['page']> | WritableComputedRef<Query['page']>;
 };
 
-export function useItems(collection: Ref<string | null>, query: ComputedQuery, fetchOnInit = true): UsableItems {
+export function useItems(collection: Ref<string | null>, query: ComputedQuery): UsableItems {
 	const api = useApi();
 	const { primaryKeyField } = useCollection(collection);
 
@@ -68,11 +68,6 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery, f
 	let loadingTimeout: NodeJS.Timeout | null = null;
 
 	const fetchItems = throttle(getItems, 500);
-
-	// can this be removed to prevent double fetches?
-	if (fetchOnInit) {
-		fetchItems();
-	}
 
 	watch(
 		[collection, limit, sort, search, filter, fields, page],
