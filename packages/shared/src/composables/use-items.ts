@@ -119,6 +119,8 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery, f
 	async function getItems() {
 		if (!endpoint.value) return;
 
+		let isCurrentRequestCanceled = false;
+
 		currentRequest?.cancel();
 		currentRequest = null;
 
@@ -192,11 +194,13 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery, f
 				page.value = 1;
 			}
 		} catch (err: any) {
-			if (!axios.isCancel(err)) {
+			if (axios.isCancel(err)) {
+				isCurrentRequestCanceled = true;
+			} else {
 				error.value = err;
 			}
 		} finally {
-			if (loadingTimeout) {
+			if (loadingTimeout && !isCurrentRequestCanceled) {
 				clearTimeout(loadingTimeout);
 				loadingTimeout = null;
 			}
