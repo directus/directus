@@ -69,6 +69,7 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery, f
 
 	const fetchItems = throttle(getItems, 500);
 
+	// can this be removed to prevent double fetches?
 	if (fetchOnInit) {
 		fetchItems();
 	}
@@ -83,6 +84,10 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery, f
 
 			if (!newCollection || !query) return;
 
+			if (newCollection !== oldCollection) {
+				reset();
+			}
+
 			if (
 				!isEqual(newFilter, oldFilter) ||
 				!isEqual(newSort, oldSort) ||
@@ -96,10 +101,6 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery, f
 
 			if (newCollection !== oldCollection || !isEqual(newFilter, oldFilter) || newSearch !== oldSearch) {
 				getItemCount();
-			}
-
-			if (newCollection !== oldCollection) {
-				reset();
 			}
 
 			fetchItems();
