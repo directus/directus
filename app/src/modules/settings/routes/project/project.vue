@@ -96,7 +96,7 @@ export default defineComponent({
 			if (edits.value === null) return;
 			saving.value = true;
 			await settingsStore.updateSettings(edits.value);
-			await serverStore.hydrate();
+			await serverStore.hydrate({ isLanguageUpdated: 'default_language' in edits.value });
 			edits.value = null;
 			saving.value = false;
 			initialValues.value = clone(settingsStore.settings);

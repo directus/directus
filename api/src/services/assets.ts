@@ -1,6 +1,9 @@
-import { Range, StatResponse } from '@directus/drive';
+// @ts-expect-error https://github.com/microsoft/TypeScript/issues/49721
+import type { Range, Stat } from '@directus/storage';
+
 import { Accountability } from '@directus/shared/types';
 import { Semaphore } from 'async-mutex';
+import type { Readable } from 'node:stream';
 import { Knex } from 'knex';
 import { contentType } from 'mime-types';
 import hash from 'object-hash';
@@ -11,7 +14,7 @@ import getDatabase from '../database';
 import env from '../env';
 import { ForbiddenException, IllegalAssetTransformation, RangeNotSatisfiableException } from '../exceptions';
 import logger from '../logger';
-import storage from '../storage';
+import { getStorage } from '../storage';
 import { AbstractServiceOptions, File, Transformation, TransformationParams, TransformationPreset } from '../types';
 import * as TransformationUtils from '../utils/transformations';
 import { AuthorizationService } from './authorization';
@@ -37,7 +40,9 @@ export class AssetsService {
 		id: string,
 		transformation: TransformationParams | TransformationPreset,
 		range?: Range
-	): Promise<{ stream: NodeJS.ReadableStream; file: any; stat: StatResponse }> {
+	): Promise<{ stream: Readable; file: any; stat: Stat }> {
+		const storage = await getStorage();
+
 		const publicSettings = await this.knex
 			.select('project_logo', 'public_background', 'public_foreground')
 			.from('directus_settings')
@@ -62,7 +67,7 @@ export class AssetsService {
 
 		if (!file) throw new ForbiddenException();
 
-		const { exists } = await storage.disk(file.storage).exists(file.filename_disk);
+		const exists = await storage.location(file.storage).exists(file.filename_disk);
 
 		if (!exists) throw new ForbiddenException();
 
@@ -116,7 +121,7 @@ export class AssetsService {
 				getAssetSuffix(transforms) +
 				(maybeNewFormat ? `.${maybeNewFormat}` : path.extname(file.filename_disk));
 
-			const { exists } = await storage.disk(file.storage).exists(assetFilename);
+			const exists = await storage.location(file.storage).exists(assetFilename);
 
 			if (maybeNewFormat) {
 				file.type = contentType(assetFilename) || null;
@@ -124,9 +129,9 @@ export class AssetsService {
 
 			if (exists) {
 				return {
-					stream: storage.disk(file.storage).getStream(assetFilename, range),
+					stream: await storage.location(file.storage).read(assetFilename, range),
 					file,
-					stat: await storage.disk(file.storage).getStat(assetFilename),
+					stat: await storage.location(file.storage).stat(assetFilename),
 				};
 			}
 
@@ -147,32 +152,33 @@ export class AssetsService {
 			}
 
 			return await semaphore.runExclusive(async () => {
-				const readStream = storage.disk(file.storage).getStream(file.filename_disk, range);
+				const readStream = await storage.location(file.storage).read(file.filename_disk, range);
 				const transformer = sharp({
 					limitInputPixels: Math.pow(env.ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION, 2),
 					sequentialRead: true,
+					failOn: env.ASSETS_INVALID_IMAGE_SENSITIVITY_LEVEL,
 				});
 
 				if (transforms.find((transform) => transform[0] === 'rotate') === undefined) transformer.rotate();
 
 				transforms.forEach(([method, ...args]) => (transformer[method] as any).apply(transformer, args));
 
-				readStream.on('error', (e) => {
+				readStream.on('error', (e: Error) => {
 					logger.error(e, `Couldn't transform file ${file.id}`);
 					readStream.unpipe(transformer);
 				});
 
-				await storage.disk(file.storage).put(assetFilename, readStream.pipe(transformer), type);
+				await storage.location(file.storage).write(assetFilename, readStream.pipe(transformer), type);
 
 				return {
-					stream: storage.disk(file.storage).getStream(assetFilename, range),
-					stat: await storage.disk(file.storage).getStat(assetFilename),
+					stream: await storage.location(file.storage).read(assetFilename, range),
+					stat: await storage.location(file.storage).stat(assetFilename),
 					file,
 				};
 			});
 		} else {
-			const readStream = storage.disk(file.storage).getStream(file.filename_disk, range);
-			const stat = await storage.disk(file.storage).getStat(file.filename_disk);
+			const readStream = await storage.location(file.storage).read(file.filename_disk, range);
+			const stat = await storage.location(file.storage).stat(file.filename_disk);
 			return { stream: readStream, file, stat };
 		}
 	}
