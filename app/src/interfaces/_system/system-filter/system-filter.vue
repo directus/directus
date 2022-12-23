@@ -20,6 +20,7 @@
 				:depth="1"
 				:include-validation="includeValidation"
 				:include-relations="includeRelations"
+				:relational-field-selectable="relationalFieldSelectable"
 				@remove-node="removeNode($event)"
 				@change="emitValue"
 			/>
@@ -44,7 +45,7 @@
 					:collection="collection"
 					include-functions
 					:include-relations="includeRelations"
-					:alias-field-selectable="aliasFieldSelectable"
+					:relational-field-selectable="relationalFieldSelectable"
 					@select-field="addNode($event)"
 				>
 					<template #prepend>
@@ -106,7 +107,7 @@ interface Props {
 	inline?: boolean;
 	includeValidation?: boolean;
 	includeRelations?: boolean;
-	aliasFieldSelectable?: boolean;
+	relationalFieldSelectable?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -119,7 +120,7 @@ const props = withDefaults(defineProps<Props>(), {
 	inline: false,
 	includeValidation: false,
 	includeRelations: true,
-	aliasFieldSelectable: true,
+	relationalFieldSelectable: true,
 });
 
 const emit = defineEmits(['input']);

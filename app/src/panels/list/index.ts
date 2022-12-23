@@ -139,7 +139,7 @@ export default definePanel({
 				interface: 'system-filter',
 				options: {
 					collectionField: 'collection',
-					aliasFieldSelectable: false,
+					relationalFieldSelectable: false,
 				},
 			},
 		},
