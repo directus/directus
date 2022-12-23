@@ -149,8 +149,8 @@ CACHE_ENABLED=false
 # memory | redis | memcache
 CACHE_STORE=memory
 
-# How long assets will be cached for in the browser. Sets the max-age value of the Cache-Control header ["30m"]
-ASSETS_CACHE_TTL="30m"
+# How long assets will be cached for in the browser. Sets the max-age value of the Cache-Control header ["30d"]
+ASSETS_CACHE_TTL="30d"
 
 # CACHE_REDIS="redis://@127.0.0.1:5105"
 # CACHE_MEMCACHE="localhost:5109"
@@ -227,7 +227,7 @@ CORS_METHODS=GET,POST,PATCH,DELETE
 # Value for the Access-Control-Allow-Headers header [Content-Type,Authorization]
 CORS_ALLOWED_HEADERS=Content-Type,Authorization
 
-# Value for the Access-Control-Expose-Headers header [Content-R
+# Value for the Access-Control-Expose-Headers header [Content-Range]
 CORS_EXPOSED_HEADERS=Content-Range
 
 # Whether or not to send the Access-Control-Allow-Credentials header [true]

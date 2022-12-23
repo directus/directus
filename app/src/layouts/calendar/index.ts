@@ -111,8 +111,7 @@ export default defineLayout<LayoutOptions>({
 				fields: queryFields,
 				filter: filterWithCalendarView,
 				search: search,
-			},
-			false
+			}
 		);
 
 		const events: Ref<EventInput> = computed(
