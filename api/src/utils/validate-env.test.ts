@@ -4,9 +4,9 @@ import { validateEnv } from './validate-env';
 import logger from '../logger';
 
 vi.mock('../env', () => ({
-	default: {
+	getEnv: vi.fn().mockReturnValue({
 		PRESENT_TEST_VARIABLE: true,
-	},
+	}),
 }));
 vi.mock('../logger', () => ({
 	default: {
