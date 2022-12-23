@@ -1,8 +1,3 @@
-declare module 'grant' {
-	const grant: any;
-	export default grant;
-}
-
 declare module 'pino-http' {
 	import PinoHttp from '@types/pino-http';
 	const pinoHttp: PinoHttp;
