@@ -196,7 +196,6 @@
 		"@types/node-cron": "3.0.6",
 		"@types/nodemailer": "6.4.7",
 		"@types/object-hash": "3.0.2",
-		"@types/pino-http": "5.8.1",
 		"@types/qs": "6.9.7",
 		"@types/sanitize-html": "2.8.0",
 		"@types/sharp": "0.31.0",
