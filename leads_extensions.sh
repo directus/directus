@@ -17,8 +17,7 @@ ls -la ./directus-custom-extensions-release
 
 cp -r ./directus-custom-extensions-release/dashboard ${DIRECTUS_MODULES}
 cp -r ./directus-custom-extensions-release/leads ${DIRECTUS_MODULES}
-#cp -r ./directus-custom-extensions-release/hide-modules ${DIRECTUS_MODULES}
-#cp -r ./directus-custom-extensions-release/areas ${DIRECTUS_MODULES}
-#cp -r ./directus-custom-extensions-release/saved-searches ${DIRECTUS_MODULES}
+cp -r ./directus-custom-extensions-release/areas ${DIRECTUS_MODULES}
+cp -r ./directus-custom-extensions-release/saved-searches ${DIRECTUS_MODULES}
 
 ln -s ${DIRECTUS_MODULES}
