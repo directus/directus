@@ -12,13 +12,13 @@ const query = `
 `;
 const variables = JSON.stringify({ id: 1 });
 const additionalProperty = 'test';
-const mockedRequestWithQuery = { method: 'GET', query: { query, variables, additionalProperty } } as unknown as Request;
-const mockedRequestWithBody = { method: 'POST', body: { query, variables, additionalProperty } } as unknown as Request;
 
 test('should get query from request query for GET method', async () => {
-	expect(getGraphqlQueryAndVariables(mockedRequestWithQuery)).toEqual({ query, variables });
+	const request = { method: 'GET', query: { query, variables, additionalProperty } } as unknown as Request;
+	expect(getGraphqlQueryAndVariables(request)).toEqual({ query, variables });
 });
 
 test('should get query from request body for other methods', async () => {
-	expect(getGraphqlQueryAndVariables(mockedRequestWithBody)).toEqual({ query, variables });
+	const request = { method: 'POST', body: { query, variables, additionalProperty } } as unknown as Request;
+	expect(getGraphqlQueryAndVariables(request)).toEqual({ query, variables });
 });
