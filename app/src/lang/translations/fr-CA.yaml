@@ -80,14 +80,14 @@ create_user: Créer un utilisateur
 message: Message
 delete_panel: Supprimer le panneau
 create_webhook: Créer un webhook
-create_translation_string: Créer une chaîne de traduction
-no_translation_string: Aucune chaîne de traduction
-no_translation_string_copy: Il n'y a pas encore de chaîne de traduction.
+create_translation_string: Créer une traduction
+no_translation_string: Aucune traduction
+no_translation_string_copy: Il n'y a pas encore de traduction.
 translation_string_key_placeholder: Traduction de la clé...
 translation_string_translations_placeholder: Ajouter une nouvelle traduction
-edit_translation_string: Modifier la chaîne de traduction
+edit_translation_string: Modifier la traduction
 delete_translation_string_copy: >-
-  Êtes-vous sûr de vouloir supprimer la chaîne de traduction "{key}" ? Cette action ne peut pas être annulée.
+  Êtes-vous sûr de vouloir supprimer la traduction "{key}" ? Cette action ne peut pas être annulée.
 invite_users: Inviter des utilisateurs
 invite: Inviter
 email_already_invited: '"{email}" a déjà été invité'
@@ -366,12 +366,12 @@ related_collections: Collections associées
 translations_collection: Collection de traduction
 languages_collection: Collection de langues
 import_data_input_placeholder: CSV ou JSON...
-import_data_button: Commencer l'importation
-import_data_indeterminate: Importation des données...
+import_data_button: Commencer l'import
+import_data_indeterminate: Import des données...
 import_data_success: Données importées avec succès depuis {filename}
 import_data_error: La structure des données de ce fichier ne correspond pas à la collection.
 label_import: Importer
-label_export: Exportation
+label_export: Export
 import_export: Importer/Exporter
 format: Format
 last_page: Dernière page
@@ -456,14 +456,14 @@ replace_from_url: Remplacer le fichier à partir d'une URL
 no_file_selected: Aucun fichier sélectionné
 download_file: Télécharger le fichier
 open_file_in_tab: Ouvrir le fichier dans un nouvel onglet
-start_export: Démarrer l'exportation
+start_export: Démarrer l'export
 not_available_for_local_downloads: Indisponible pour les téléchargements en local
-exporting_all_items_in_collection: Exportation de tous les {total} éléments dans {collection}.
-exporting_limited_items_in_collection: Exportation de {limit} éléments sur {total} dans le cadre du {collection}.
+exporting_all_items_in_collection: Export de la totalité des {total} éléments dans la collection {collection}.
+exporting_limited_items_in_collection: Exportat de {limit} éléments sur {total} dans la collection {collection}.
 exporting_no_items_to_export: Aucun élément à exporter. Ajustez la configuration d'export ci-dessous.
 exporting_download_hint: Une fois terminé, ce fichier {format} sera automatiquement téléchargé sur votre appareil.
 exporting_batch_hint: Cet export sera traité en lots et, une fois terminé, le fichier {format} sera sauvegardé dans la bibliothèque de fichiers.
-exporting_batch_hint_forced: En raison du grand nombre d'éléments, cette exportation doit être traitée en lots, et une fois terminé, le fichier {format} sera sauvegardé dans la bibliothèque de fichiers.
+exporting_batch_hint_forced: En raison du grand nombre d'éléments, cet export doit être traité par lots, et une fois terminé, le fichier {format} sera sauvegardé dans la bibliothèque de fichiers.
 collection_key: Clé de la collection
 name: Nom
 primary_key_field: Champ de clé primaire
@@ -783,8 +783,10 @@ label: Étiquette
 flows: Flux
 flow: Flux
 select_a_flow: Sélectionner un flux
+run_flow_on_current_collection: Lancer le flux sur la collection actuelle
 run_flow_on_current: Exécuter le flux sur l'élément actuel
 run_flow_on_current_edited_confirm: Cet élément peut être mis à jour par ce flux, êtes-vous sûr de vouloir l'exécuter ?
+run_flow_on_selected: Sélectionner un ou plusieurs éléments | Exécuter le flux sur 1 élément sélectionné | Exécuter le flux sur {n} éléments sélectionnés
 run_flow_success: Le Flux "{flow}" s'est exécuté avec succès
 trigger: Déclencheur
 trigger_options: Options de Déclenchement
@@ -828,6 +830,7 @@ panel_header: En-tête de panneau
 panel_name_placeholder: Nommez ce panneau...
 panel_note_placeholder: Détails facultatifs sur ce panneau...
 panel_delete_confirm: Voulez-vous vraiment supprimer ce panneau ? Cette action ne peut pas être annulée.
+list_panel_allow_edit: Permettre la modification rapide
 dashboard_delete_confirm: Êtes-vous sûr de vouloir supprimer ce tableau de bord ? Cette action ne peut pas être annulée.
 edit_dashboard: Modifier le tableau de bord
 delete_dashboard: Supprimer
@@ -994,7 +997,7 @@ page_help_settings_webhooks_collection: '**Parcourez les Webhooks** — Liste to
 page_help_settings_webhooks_item: '**Détail du Webhook** — Un formulaire pour créer et gérer les webhooks du projet.'
 page_help_settings_flows_collection: '**Parcourir les Flux** — Liste tous les Flux du projet.'
 page_help_settings_flows_item: '**Détail du Flux** - Espace de travail permettant de gérer une ou plusieurs opérations.'
-page_help_settings_translation_strings_collection: '**Parcourir les chaînes de traduction** — Liste toutes les chaînes de traduction du projet.'
+page_help_settings_translation_strings_collection: '**Parcourir les de traductions** — Liste toutes les traductions du projet.'
 page_help_users_collection: '**Répertoire utilisateur** — Liste tous les utilisateurs système de ce projet.'
 page_help_users_item: >-
   **Détail de l'utilisateur** — Gérez les informations de votre compte ou consultez les détails des autres utilisateurs.
@@ -1414,9 +1417,9 @@ sign_out: Déconnexion
 sign_out_confirm: Êtes-vous certain de vouloir vous déconnecter ?
 something_went_wrong: Quelque chose s’est mal passé.
 sort_direction: Ordre de tri
-export_location: Emplacement d'exportation
-export_started: L'exportation a commencé
-export_started_copy: Votre exportation a commencé. Vous serez notifié quand elle sera prête à être téléchargée.
+export_location: Emplacement d'export
+export_started: L'export a commencé
+export_started_copy: Votre export a commencé. Vous serez notifié quand il sera prêt à être téléchargé.
 sort_asc: Tri croissant
 sort_desc: Tri décroissant
 template: Modèle
@@ -1635,7 +1638,7 @@ interfaces:
     edit_fields: Modifier les champs
     add_label: 'Libellé "Créer Nouveau"'
     sort: Trier
-    sort_placeholder: Manuelle
+    sort_placeholder: Manuel
     field_name_placeholder: Entrez le nom du champ...
     field_note_placeholder: Entrez la note du champ...
     incompatible_data: Les données actuelles ne sont pas compatibles avec l'interface répéteur et seront remplacées lors de l'ajout d'éléments dans le répéteur
@@ -1676,9 +1679,9 @@ interfaces:
     description: Entrez le texte brut en multiligne
   input-translated-string:
     input-translated-string: Chaînes traduites
-    description: Sélectionner ou ajouter une chaîne de traduction
+    description: Sélectionner ou ajouter une traduction
     search_placeholder: Rechercher...
-    new_translation_string: Nouvelle chaîne de traduction
+    new_translation_string: Nouvelle traduction
   boolean:
     toggle: Case à cocher
     description: Basculer entre l'activation et la désactivation
@@ -1981,6 +1984,7 @@ panels:
     name: Graphique anneau ou circulaire
     function: Fonction
     donut: Anneau
+    show_labels: Afficher les libellés
     show_legend: Afficher la légende
     right: Droite
     bottom: Bas
@@ -2020,24 +2024,26 @@ triggers:
     description: Déclencheurs à des moments réguliers dans le temps
     cron: Intervalle
   manual:
-    name: Manuelle
+    name: Manuel
     description: Déclenchements lors d'une exécution manuelle dans la ou les collections sélectionnées
-    collection_and_item: Pages des Collections et des Articles
+    collection_and_item: Pages des collections et des éléments
     collection_only: Page de la Collection Uniquement
-    item_only: Page de l'Article Uniquement
+    item_only: Page de l'élément uniquement
+    require_selection: Sélection obligatoire
+a_flow_uuid: Choisir un flux à lancer...
 any_string_or_json: Toute chaîne de caractères ou JSON...
 item_payload_placeholder: C'est le JSON utilisé pour mettre à jour les valeurs des champs de l'élément...
 operation_variables_note: Vous pouvez accéder aux données de flux à l'aide de variables telles que **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** et **{'{'}{'{'}$accountability{'}'}{'}'}**, ou faire référence à des opérations précédentes à l'aide de **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
   condition:
     name: Condition
-    description: Acheminer un flux en fonction de la logique If / Else
+    description: Acheminer un flux en fonction d'une condition de type Si / Sinon
   exec:
     name: Lancer le script
-    description: Exécuter du code arbitraire pour modifier le payload
+    description: Exécuter du code arbitraire pour modifier les données utiles
     modules: 'Les **Node modules** suivants peuvent être utilisés :'
   item-create:
-    name: Créer de la donnée
+    name: Créer des données
     description: Créer des éléments dans la base de données
     payload: Données utiles
     emit_events: Émettre des événements
@@ -2079,7 +2085,7 @@ operations:
     message: Message
   request:
     name: Webhook / URL de requête
-    description: "Faire une requête à un URL"
+    description: "Envoyer une requête à une URL"
     url: URL
     url_placeholder: https://example.com/example
     method: Méthode
@@ -2093,8 +2099,8 @@ operations:
     description: Attendre un nombre donné de millisecondes
     milliseconds: Millisecondes
   transform:
-    name: Transformer la Charge utile
-    description: Modifier la charge utile JSON du Flux
+    name: Transformer les données utiles
+    description: Modifier les données utiles JSON du Flux
   trigger:
     name: Déclencher le Flux
     description: Transmettre ces données à un autre Flux

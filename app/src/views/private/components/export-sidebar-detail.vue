@@ -221,7 +221,7 @@
 
 <script lang="ts" setup>
 import api from '@/api';
-import { getRootPath } from '@/utils/get-root-path';
+import { getPublicURL } from '@/utils/get-root-path';
 import { notify } from '@/utils/notify';
 import { readableMimeType } from '@/utils/readable-mime-type';
 import { Filter } from '@directus/shared/types';
@@ -477,7 +477,7 @@ function exportDataLocal() {
 	const endpoint = getEndpoint(collection.value);
 
 	// usually getEndpoint contains leading slash, but here we need to remove it
-	const url = getRootPath() + endpoint.substring(1);
+	const url = getPublicURL() + endpoint.substring(1);
 
 	let params: Record<string, unknown> = {
 		access_token: api.defaults.headers.common['Authorization'].substring(7),

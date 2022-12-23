@@ -3,7 +3,7 @@
 		"module": "commonjs",
 		"esModuleInterop": true,
 		"target": "ES2019",
-		"moduleResolution": "node",
+		"moduleResolution": "node16",
 		"sourceMap": false,
 		"outDir": "dist",
 		"rootDir": "src",
