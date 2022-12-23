@@ -1,7 +1,7 @@
 import { i18n } from '@/lang';
 import { mount } from '@vue/test-utils';
 import { GlobalMountOptions } from '@vue/test-utils/dist/types';
-import { afterEach, beforeEach, expect, test, vi } from 'vitest';
+import { afterAll, beforeAll, expect, test, vi } from 'vitest';
 import { nextTick } from 'vue';
 
 const global: GlobalMountOptions = {
@@ -10,11 +10,11 @@ const global: GlobalMountOptions = {
 
 import Datetime from './datetime.vue';
 
-beforeEach(() => {
+beforeAll(() => {
 	vi.useFakeTimers();
 });
 
-afterEach(() => {
+afterAll(() => {
 	vi.useRealTimers();
 });
 
