@@ -25,7 +25,7 @@ Directus, set the `TEST_LOCAL` flag:
 TEST_DB=cockroachdb TEST_LOCAL=true npm run test:blackbox
 ```
 
-This will use `localhost:8055` as the URL for every test. Note: make sure to connect your local Directus database
+This will use `127.0.0.1:8055` as the URL for every test. Note: make sure to connect your local Directus database
 instance to the test database container found in docker-compose in this folder.
 
 ### Watching for (test) changes
