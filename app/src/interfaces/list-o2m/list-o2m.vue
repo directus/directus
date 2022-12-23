@@ -49,6 +49,7 @@
 				:loading="loading"
 				:items="displayItems"
 				:row-height="tableRowHeight"
+				:server-sort="pageCount > 1"
 				show-resize
 				@click:row="editRow"
 			>

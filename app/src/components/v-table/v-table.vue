@@ -3,8 +3,8 @@
 		<table :summary="internalHeaders.map((header) => header.text).join(', ')">
 			<table-header
 				v-model:headers="internalHeaders"
-				v-model:sort="internalSort"
 				v-model:reordering="reordering"
+				:sort="internalSort"
 				:show-select="showSelect"
 				:show-resize="showResize"
 				:some-items-selected="someItemsSelected"
@@ -16,6 +16,7 @@
 				:manual-sort-key="manualSortKey"
 				:allow-header-reorder="allowHeaderReorder"
 				@toggle-select-all="onToggleSelectAll"
+				@update:sort="updateSort"
 			>
 				<template v-for="header in internalHeaders" #[`header.${header.value}`]>
 					<slot :header="header" :name="`header.${header.value}`" />
@@ -90,7 +91,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, useSlots } from 'vue';
+import { computed, ref, useSlots, watch } from 'vue';
 import { ShowSelect } from '@directus/shared/types';
 import { Header, HeaderRaw, Item, ItemSelectEvent, Sort } from './types';
 import TableHeader from './table-header.vue';
@@ -205,18 +206,19 @@ const internalHeaders = computed({
 
 // In case the sort prop isn't used, we'll use this local sort state as a fallback.
 // This allows the table to allow inline sorting on column ootb without the need for
-const internalLocalSort = ref<Sort>({
+const internalSort = ref<Sort>({
 	by: null,
 	desc: false,
 });
 
-const internalSort = computed({
-	get: () => props.sort || internalLocalSort.value,
-	set: (newSort: Sort) => {
-		emit('update:sort', newSort);
-		internalLocalSort.value = newSort;
+watch(
+	() => props.sort,
+	() => {
+		if (!props.sort) return;
+		internalSort.value = props.sort;
 	},
-});
+	{ immediate: true }
+);
 
 const reordering = ref<boolean>(false);
 
@@ -344,6 +346,12 @@ function onSortChange(event: EndEvent) {
 	const to = internalItems.value[event.newIndex][props.itemKey];
 
 	emit('manual-sort', { item, to });
+}
+function updateSort(newSort: Sort) {
+	if (props.serverSort) {
+		emit('update:sort', newSort);
+	}
+	internalSort.value = newSort;
 }
 </script>
 

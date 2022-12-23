@@ -368,6 +368,7 @@ export function useRelationMultiple(
 						filter,
 						page: previewQuery.value.page,
 						limit: previewQuery.value.limit,
+						sort: previewQuery.value.sort,
 					},
 				});
 
