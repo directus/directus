@@ -1,21 +1,25 @@
 <template>
 	<div>
-		<v-fancy-select v-model="interfaceId" class="select" :items="selectItems" />
+		<v-skeleton-loader v-if="loading" />
+		<v-fancy-select v-else v-model="interfaceId" class="select" :items="selectItems" />
 
-		<v-notice v-if="interfaceId && !selectedInterface" class="not-found" type="danger">
-			{{ t('interface_not_found', { interface: interfaceId }) }}
-			<div class="spacer" />
-			<button @click="interfaceId = null">{{ t('reset_interface') }}</button>
-		</v-notice>
+		<v-skeleton-loader v-if="loading" />
+		<template v-else>
+			<v-notice v-if="interfaceId && !selectedInterface" class="not-found" type="danger">
+				{{ t('interface_not_found', { interface: interfaceId }) }}
+				<div class="spacer" />
+				<button @click="interfaceId = null">{{ t('reset_interface') }}</button>
+			</v-notice>
 
-		<extension-options
-			v-if="interfaceId && selectedInterface"
-			v-model="options"
-			type="interface"
-			:options="customOptionsFields"
-			:extension="interfaceId"
-			show-advanced
-		/>
+			<extension-options
+				v-if="interfaceId && selectedInterface"
+				v-model="options"
+				type="interface"
+				:options="customOptionsFields"
+				:extension="interfaceId"
+				show-advanced
+			/>
+		</template>
 	</div>
 </template>
 
@@ -36,7 +40,7 @@ export default defineComponent({
 
 		const interfaceId = syncFieldDetailStoreProperty('field.meta.interface');
 
-		const { field, interfacesForType } = storeToRefs(fieldDetailStore);
+		const { loading, field, interfacesForType } = storeToRefs(fieldDetailStore);
 		const type = computed(() => field.value.type);
 
 		const selectItems = computed(() => {
@@ -117,7 +121,7 @@ export default defineComponent({
 			},
 		});
 
-		return { t, selectItems, selectedInterface, interfaceId, customOptionsFields, options };
+		return { t, loading, selectItems, selectedInterface, interfaceId, customOptionsFields, options };
 	},
 });
 </script>
@@ -138,7 +142,8 @@ export default defineComponent({
 	}
 }
 
-.v-notice {
+.v-notice,
+.v-skeleton-loader {
 	margin-bottom: 36px;
 }
 </style>

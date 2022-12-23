@@ -1,4 +1,4 @@
-declare module 'grant' {
-	const grant: any;
-	export default grant;
+declare module 'icc' {
+	const parse: (buf: Buffer) => Record<string, string>;
+	export { parse };
 }
