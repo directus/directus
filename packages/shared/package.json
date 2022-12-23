@@ -85,7 +85,6 @@
 		"@types/fs-extra": "9.0.13",
 		"@types/geojson": "7946.0.10",
 		"@types/lodash": "4.14.191",
-		"@types/pino": "7.0.4",
 		"@types/tmp": "0.2.3",
 		"@vue/test-utils": "2.2.6",
 		"concurrently": "7.6.0",
