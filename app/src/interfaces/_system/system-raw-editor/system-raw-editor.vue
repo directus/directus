@@ -87,7 +87,11 @@ onMounted(async () => {
 			if (origin === 'setValue') return;
 			const content = doc.getValue();
 			if (typeof props.value === 'object') {
-				emit('input', content !== '' ? parseJSON(content) : null);
+				try {
+					emit('input', content !== '' ? parseJSON(content) : null);
+				} catch {
+					// Skip emitting invalid JSON
+				}
 			} else {
 				emit('input', content !== '' ? content : null);
 			}
