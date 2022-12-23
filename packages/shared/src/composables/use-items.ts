@@ -2,7 +2,7 @@ import { useApi } from './use-system';
 import axios from 'axios';
 import { useCollection } from './use-collection';
 import { Item, Query } from '../types';
-import { moveInArray } from '../utils';
+import { getEndpoint, moveInArray } from '../utils';
 import { isEqual, throttle } from 'lodash';
 import { computed, ComputedRef, ref, Ref, watch, WritableComputedRef, unref } from 'vue';
 
@@ -42,9 +42,7 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 
 	const endpoint = computed(() => {
 		if (!collection.value) return null;
-		return collection.value.startsWith('directus_')
-			? `/${collection.value.substring(9)}`
-			: `/items/${collection.value}`;
+		return getEndpoint(collection.value);
 	});
 
 	const items = ref<Item[]>([]);
