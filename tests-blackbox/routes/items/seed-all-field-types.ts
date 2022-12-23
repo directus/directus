@@ -182,3 +182,41 @@ export const seedM2MAliasAllFieldTypesValues = async (
 		expect(error).toBeFalsy();
 	}
 };
+
+export const seedM2AAliasAllFieldTypesValues = async (
+	vendor: string,
+	collection: string,
+	junctionCollection: string,
+	relatedCollection: string,
+	possibleKeys: any[],
+	otherPossibleKeys: any[]
+) => {
+	try {
+		const collectionItems = await ReadItem(vendor, { collection: collection, fields: 'id' });
+		const otherCollectionItems = await ReadItem(vendor, { collection: relatedCollection, fields: 'id' });
+		const newCollectionKeys = collectionItems.map((i: any) => i.id).filter((i: any) => !possibleKeys.includes(i));
+		const newOtherCollectionKeys = otherCollectionItems
+			.map((i: any) => i.id)
+			.filter((i: any) => !otherPossibleKeys.includes(i));
+
+		if (newCollectionKeys.length !== newOtherCollectionKeys.length) {
+			expect('Keys should have the same length').toBeFalsy();
+		} else {
+			const items = [];
+
+			for (let i = 0; i < newCollectionKeys.length; i++) {
+				items.push({
+					[`${junctionCollection}_id`]: newCollectionKeys[i],
+					item: newOtherCollectionKeys[i].toString(),
+					collection: relatedCollection,
+				});
+			}
+
+			await CreateItem(vendor, { collection: junctionCollection, item: items });
+
+			expect(true).toBeTruthy();
+		}
+	} catch (error) {
+		expect(error).toBeFalsy();
+	}
+};

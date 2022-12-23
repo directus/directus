@@ -1,5 +1,12 @@
-import express, { Router } from 'express';
-import path from 'path';
+import {
+	API_OR_HYBRID_EXTENSION_PACKAGE_TYPES,
+	API_OR_HYBRID_EXTENSION_TYPES,
+	APP_SHARED_DEPS,
+	EXTENSION_PACKAGE_TYPES,
+	EXTENSION_TYPES,
+	HYBRID_EXTENSION_TYPES,
+} from '@directus/shared/constants';
+import * as sharedExceptions from '@directus/shared/exceptions';
 import {
 	ActionHandler,
 	ApiExtension,
@@ -11,6 +18,7 @@ import {
 	HookConfig,
 	HybridExtension,
 	InitHandler,
+	EmbedHandler,
 	OperationApiConfig,
 	ScheduleHandler,
 } from '@directus/shared/types';
@@ -22,37 +30,31 @@ import {
 	pathToRelativeUrl,
 	resolvePackage,
 } from '@directus/shared/utils/node';
-import {
-	API_OR_HYBRID_EXTENSION_PACKAGE_TYPES,
-	API_OR_HYBRID_EXTENSION_TYPES,
-	APP_SHARED_DEPS,
-	EXTENSION_PACKAGE_TYPES,
-	EXTENSION_TYPES,
-	HYBRID_EXTENSION_TYPES,
-} from '@directus/shared/constants';
+import express, { Router } from 'express';
+import fse from 'fs-extra';
+import path from 'path';
 import getDatabase from './database';
 import emitter, { Emitter } from './emitter';
 import env from './env';
 import * as exceptions from './exceptions';
-import * as sharedExceptions from '@directus/shared/exceptions';
 import logger from './logger';
-import fse from 'fs-extra';
+import { dynamicImport } from './utils/dynamic-import';
 import { getSchema } from './utils/get-schema';
 
-import * as services from './services';
+import { isIn, isTypeIn, pluralize } from '@directus/shared/utils';
+import alias from '@rollup/plugin-alias';
+import virtual from '@rollup/plugin-virtual';
+import chokidar, { FSWatcher } from 'chokidar';
+import globby from 'globby';
+import { clone, escapeRegExp } from 'lodash';
 import { schedule, validate } from 'node-cron';
 import { rollup } from 'rollup';
-import virtual from '@rollup/plugin-virtual';
-import alias from '@rollup/plugin-alias';
-import { Url } from './utils/url';
-import getModuleDefault from './utils/get-module-default';
-import { clone, escapeRegExp } from 'lodash';
-import chokidar, { FSWatcher } from 'chokidar';
-import { isIn, isTypeIn, pluralize } from '@directus/shared/utils';
 import { getFlowManager } from './flows';
-import globby from 'globby';
+import * as services from './services';
 import { EventHandler } from './types';
+import getModuleDefault from './utils/get-module-default';
 import { JobQueue } from './utils/job-queue';
+import { Url } from './utils/url';
 
 let extensionManager: ExtensionManager | undefined;
 
@@ -97,6 +99,8 @@ class ExtensionManager {
 	private apiEmitter: Emitter;
 	private hookEvents: EventHandler[] = [];
 	private endpointRouter: Router;
+	private hookEmbedsHead: string[] = [];
+	private hookEmbedsBody: string[] = [];
 
 	private reloadQueue: JobQueue;
 	private watcher: FSWatcher | null = null;
@@ -185,6 +189,18 @@ class ExtensionManager {
 
 	public getEndpointRouter(): Router {
 		return this.endpointRouter;
+	}
+
+	public getEmbeds() {
+		return {
+			head: wrapEmbeds('Custom Embed Head', this.hookEmbedsHead),
+			body: wrapEmbeds('Custom Embed Body', this.hookEmbedsBody),
+		};
+
+		function wrapEmbeds(label: string, content: string[]): string {
+			if (content.length === 0) return '';
+			return `<!-- Start ${label} -->\n${content.join('\n')}\n<!-- End ${label} -->`;
+		}
 	}
 
 	private async load(): Promise<void> {
@@ -341,7 +357,7 @@ class ExtensionManager {
 		for (const hook of hooks) {
 			try {
 				const hookPath = path.resolve(hook.path, hook.entrypoint);
-				const hookInstance: HookConfig | { default: HookConfig } = await import(hookPath);
+				const hookInstance: HookConfig | { default: HookConfig } = await dynamicImport(hookPath);
 
 				const config = getModuleDefault(hookInstance);
 
@@ -486,6 +502,19 @@ class ExtensionManager {
 					});
 				} else {
 					logger.warn(`Couldn't register cron hook. Provided cron is invalid: ${cron}`);
+				}
+			},
+			embed: (position: 'head' | 'body', code: string | EmbedHandler) => {
+				const content = typeof code === 'function' ? code() : code;
+				if (content.trim().length === 0) {
+					logger.warn(`Couldn't register embed hook. Provided code is empty!`);
+					return;
+				}
+				if (position === 'head') {
+					this.hookEmbedsHead.push(content);
+				}
+				if (position === 'body') {
+					this.hookEmbedsBody.push(content);
 				}
 			},
 		};

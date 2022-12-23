@@ -275,6 +275,7 @@ fields_group: Groupe de champs
 no_collections_found: Aucune collection trouvée.
 new_data_alert: 'Les éléments suivants seront créés dans votre Modèle de données :'
 search_collection: Rechercher une collection...
+search_field: Champ de recherche...
 new_field: 'Nouveau Champ'
 new_collection: 'Nouvelle Collection'
 add_m2o_to_collection: 'Ajouter une relation Many-to-One à "{collection}"'
@@ -572,6 +573,8 @@ select_an_item: Sélectionnez un élément...
 edit: Modifier
 enabled: Activé
 disable_tfa: Désactiver l'A2F
+admin_disable_tfa_text: Voulez-vous vraiment désactiver 2FA pour cet utilisateur ?
+tfa_setup: Configurer 2FA
 tfa_scan_code: Scannez le code dans votre application d'authentification pour terminer la configuration de l'A2F
 enter_otp_to_disable_tfa: Entrez l'OTP pour désactiver l'A2F
 create_account: Créer un Compte
@@ -1428,6 +1431,7 @@ translation: Traduction
 translation_placeholder: Entrez une nouvelle traduction...
 value: Valeur
 view_project: Voir le projet
+weeks: { }
 report_error: Signaler l'erreur
 start: Début
 table: Tableau
@@ -1908,9 +1912,33 @@ layouts:
     default_template: Utilisation de la collection par défaut ...
     no_compatible_fields: Aucun champ compatible
   kanban:
+    name: Kanban
+    group_field: Regrouper par
+    group_field_placeholder: Champ à regrouper par...
+    group_title: Nom du groupe
+    group_title_placeholder: Champ pour les titres du groupe...
+    title: Titre de tuile
+    title_placeholder: Champ titre optionnel...
+    text: Texte de tuile
+    text_placeholder: Champ de texte optionnel...
+    date: Date de tuile
+    date_placeholder: Champ de date optionnel...
+    tags: Étiquettes de tuile
+    tags_placeholder: Champ de balises optionnelles...
+    user: Utilisateurs de tuile
+    user_placeholder: Champ utilisateur optionnel...
+    image: Image de tuile
+    image_placeholder: Champ d'image optionnel...
+    image_fit: Ajustement de l'image de la carte
     crop: Rogner
     advanced: Avancé
+    edit_group: Éditer le Groupe
+    delete_group: Supprimer le Groupe
+    add_group: Ajouter un Groupe
+    add_group_placeholder: Entrez le nom du nouveau groupe...
     show_ungrouped: Afficher non-groupé
+    show: Afficher
+    no_group: Aucun Groupe
     not_all_loaded: Impossible de charger les 1000 premiers éléments.
 panels:
   metric:
@@ -1952,6 +1980,7 @@ panels:
     y_axis_conditional_two: doit être un nombre.
   linechart:
     name: Graphique linéaire
+    description: Graphique linéaire pour comparer le changement d'un champ
     select_field: Vous devez choisir un champ.
     select_collection: Vous devez sélectionner une collection.
     select_x_axis: Vous devez sélectionner un axe X.
@@ -1963,6 +1992,7 @@ panels:
     datasets: Jeux de données
     show_legend: Afficher la légende
     show_marker: Afficher l'info-bulle
+    include_dataset: Vous devez sélectionner au moins un élément.
     include_y_axis: Vous devez inclure un axe Y pour chaque jeu de données quand aucun groupe n'est spécifié.
     group_and_function: Vous devez inclure ou omettre un groupe et une fonction.
     smooth: Lisse
@@ -1971,7 +2001,10 @@ panels:
   meter:
     name: Compteur
     description: Compteur pour les valeurs de suivi
+    half_circle: Demi-cercle
+    full_circle: Cercle plein
     stroke_width: Largeur du trait
+    rounded_stroke: Trait arrondi
     select_max_value: Vous devez sélectionner une valeur maximale.
     max_greater_than_zero: La valeur doit être supérieure à 0.
     select_field: Vous devez choisir un champ.
@@ -1982,6 +2015,7 @@ panels:
     broad: Large
   piechart:
     name: Graphique anneau ou circulaire
+    description: Graphique circulaire montrant les ratios de groupes sur une colonne
     function: Fonction
     donut: Anneau
     show_labels: Afficher les libellés
@@ -2029,6 +2063,7 @@ triggers:
     collection_and_item: Pages des collections et des éléments
     collection_only: Page de la Collection Uniquement
     item_only: Page de l'élément uniquement
+    collection_page: Nom de la Collection
     require_selection: Sélection obligatoire
 a_flow_uuid: Choisir un flux à lancer...
 any_string_or_json: Toute chaîne de caractères ou JSON...

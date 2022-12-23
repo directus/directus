@@ -1,5 +1,7 @@
 import { BaseException } from '@directus/shared/exceptions';
-import { Range } from '@directus/drive';
+
+// @ts-expect-error https://github.com/microsoft/TypeScript/issues/49721
+import type { Range } from '@directus/storage';
 
 export class RangeNotSatisfiableException extends BaseException {
 	constructor(range?: Range) {

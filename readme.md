@@ -58,7 +58,7 @@ important to keep your projects up-to-date.
 
 Directus only requires Node.js and supports most operating systems and SQL database vendors.
 
-- Node.js 12.20+
+- Node.js [active LTS](https://nodejs.dev/en/about/releases/)
 - npm 6.x+
 
 #### Supported Databases
