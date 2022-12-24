@@ -582,6 +582,8 @@ select_an_item: Select an item...
 edit: Edit
 enabled: Enabled
 disable_tfa: Disable 2FA
+admin_disable_tfa_text: Are you sure you want to disable 2FA for this user?
+tfa_setup: Setup 2FA
 tfa_scan_code: Scan the code in your authenticator app to finish setting up 2FA
 enter_otp_to_disable_tfa: Enter the OTP to disable 2FA
 create_account: Create Account
