@@ -1463,6 +1463,7 @@ panels:
     function: ฟังก์ชัน
     x_axis: แกน X
     y_axis: แกน Y
+    datasets: ชุดข้อมูล
 triggers:
   webhook:
     method: เมธอด
