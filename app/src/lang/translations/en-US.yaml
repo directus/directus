@@ -582,8 +582,6 @@ select_an_item: Select an item...
 edit: Edit
 enabled: Enabled
 disable_tfa: Disable 2FA
-admin_disable_tfa_text: Are you sure you want to disable 2FA for this user?
-tfa_setup: Setup 2FA
 tfa_scan_code: Scan the code in your authenticator app to finish setting up 2FA
 enter_otp_to_disable_tfa: Enter the OTP to disable 2FA
 create_account: Create Account
@@ -2045,10 +2043,14 @@ panels:
     donut: Donut
     show_labels: Show Labels
     show_legend: Show Legend
+    show_percentage: Show Percentage
     right: Right
     bottom: Bottom
     monochrome: Monochrome
     monochrome_color: Monochrome Color
+    shade_intensity: Shade Intensity
+    group_field: Group Field
+    aggregation_field: Aggregation Field
   variable:
     name: Global Variable
     description: Set a global value for use in other Panels' filters
