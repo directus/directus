@@ -138,6 +138,7 @@ nullable: Κενό
 allow_null_value: Επέτρεψε κενές τιμές
 field_standard: Τυπικό
 field_presentation: Παρουσίαση & Συνώνυμα
+field_file: Μονό Αρχείο
 field_translations: Μεταφράσεις
 field_group: Ομάδα πεδίων
 item_permissions: Δικαιώματα Στοιχείου
@@ -148,6 +149,12 @@ permissions_for_role: 'Στοιχεία ο ρόλος {role} μπορεί {actio
 fields_for_role: 'Πεδία ο ρόλος {role} μπορεί {action}.'
 presentation_and_aliases: Παρουσίαση & Συνώνυμα
 revision_post_create: Εδώ εμφανίζεται με τι έμοιαζε αυτό το στοιχείο όταν δημιουργήθηκε.
+top: Πάνω
+bottom: Κάτω
+hide_field: Απόκρυψη Πεδίου
+hide_field_on_detail: Απόκρυψη πεδίου στις λεπτομέρειες
+show_field_on_detail: Εμφάνιση πεδίου στις λεπτομέρειες
+delete_field: Διαγραφή Πεδίου
 language: Γλώσσα
 language_placeholder: Επιλέξτε μια γλώσσα...
 global: Καθολικός
