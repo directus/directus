@@ -28,12 +28,14 @@ published: Δημοσιευμένο
 draft: Πρόχειρο
 archived: Αρχειοθετήθηκε
 modules: Ενότητες
+module_bar: Γραμμή Ενθεμάτων
 logs: Αρχεία καταγραφής (Logs)
 reset_width: Επαναφορά πλάτους
 tile_size: Μέγεθος πλακιδίων
 edit_field: Επεξεργασία Πεδίου
 conditions: Προϋποθέσεις
 location: Τοποθεσία
+condition_rules: Κανόνες Κατάστασης
 input: Εισαγωγή
 maps: Χάρτες
 switch_user: Εναλλαγή Χρήστη
@@ -47,6 +49,7 @@ group: Ομάδα
 export_items: Εξαγωγή στοιχείων
 and: Και
 or: Ή
+dataset_too_large_currently_showing_n_items: Τα δεδομένα είναι πολλά. Αυτή τη στιγμή εμφανίζονται τα πρώτα {n} στοιχεία.
 custom: Προσαρμοσμένο
 fill_width: Πλήρες Πλάτος
 field_name_translations: Μεταφράσεις Ονόματος Πεδίου
@@ -273,6 +276,7 @@ fields:
     role: Ρόλος
   directus_settings:
     project_name: Όνομα Έργου
+    module_bar: Γραμμή Ενθεμάτων
   directus_shares:
     name: Όνομα
     role: Ρόλος
