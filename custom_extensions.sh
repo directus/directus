@@ -45,5 +45,6 @@ cp -r ./directus-custom-extensions-release/filter-ext ${DIRECTUS_INTERFACES}
 cp -r ./directus-custom-extensions-release/loading-api-field ${DIRECTUS_INTERFACES}
 cp -r ./directus-custom-extensions-release/image-carousel ${DIRECTUS_INTERFACES}
 cp -r ./directus-custom-extensions-release/contact-display ${DIRECTUS_DISPLAYS}
+cp -r ./directus-custom-extensions-release/toggle-field ${DIRECTUS_DISPLAYS}
 cp -r ./directus-custom-extensions-release/atomic-counters/* ${DIRECTUS_ENDPOINTS}/atomic-counters
 cp -r ./directus-custom-extensions-release/hide-modules ${DIRECTUS_HOOKS}
