@@ -10,6 +10,7 @@ import { RolesService } from '../services/roles';
 import { UsersService } from '../services/users';
 import { mergePermissions } from '../utils/merge-permissions';
 import { mergePermissionsForShare } from './merge-permissions-for-share';
+import logger from '../logger';
 
 export async function getPermissions(accountability: Accountability, schema: SchemaOverview) {
 	const database = getDatabase();
@@ -21,7 +22,13 @@ export async function getPermissions(accountability: Accountability, schema: Sch
 	const cacheKey = `permissions-${hash({ user, role, app, admin, share_scope })}`;
 
 	if (env.CACHE_PERMISSIONS !== false) {
-		const cachedPermissions = await getSystemCache(cacheKey);
+		let cachedPermissions = null;
+
+		try {
+			cachedPermissions = await getSystemCache(cacheKey);
+		} catch (err: any) {
+			logger.warn(err, `[cache] Couldn't read key ${cacheKey}. ${err.message}`);
+		}
 
 		if (cachedPermissions) {
 			if (!cachedPermissions.containDynamicData) {
