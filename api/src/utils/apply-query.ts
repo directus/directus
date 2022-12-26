@@ -43,9 +43,7 @@ export default function applyQuery(
 		applySort(knex, schema, dbQuery, query.sort, collection, aliasMap);
 	}
 
-	if (!options?.hasMultiRelationalSort) {
-		applyLimit(dbQuery, query.limit);
-	}
+	applyLimit(dbQuery, query.limit);
 
 	if (query.offset) {
 		applyOffset(knex, dbQuery, query.offset);
