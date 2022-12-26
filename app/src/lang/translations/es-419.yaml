@@ -188,8 +188,8 @@ revision_post_update: Aspecto_Luego_De_Actualizado.
 changes_made: Cambios.
 no_relational_data: Tenga presente que datos relacionales no están incluídos.
 junction_field_location: Ubicación de los campos de unión
-top: Parte superior
-bottom: Fondo
+top: Arriba
+bottom: Abajo
 hide_field: Ocultar Campo
 hide_field_on_detail: Oculto en Detalle
 show_field_on_detail: Mostrar en Detalle
@@ -199,7 +199,7 @@ field_create_success: 'Campo Creado: "{field}"'
 field_update_success: 'Campo Actualizado: "{field}"'
 duplicate_where_to: '¿Dónde le gustaría duplicar este campo?'
 language: Idioma
-language_placeholder: Seleccione un idioma...
+language_placeholder: Selecciona un idioma...
 aggregate_function: Agregar función
 aggregate_precision: Agregar precisión
 group_aggregation: Agregado de grupo
@@ -275,6 +275,7 @@ fields_group: Grupo de Campos
 no_collections_found: No se encontraron colecciones.
 new_data_alert: 'Los siguientes se crearán dentro de su Modelo de Datos:'
 search_collection: Buscar colección...
+search_field: Campo de Búsqueda...
 new_field: 'Nuevo Campo'
 new_collection: 'Nueva Colección'
 add_m2o_to_collection: 'Agregar_Varios_A_Uno_a_la_"{collection}"'
@@ -298,8 +299,8 @@ next: Siguiente
 field_name: Nombre del Campo
 translations: Traducciónes
 no_translations: No_Traducir
-left_to_right: De izquierda a derecha
-right_to_left: De derecha a izquierda
+left_to_right: Izquierda a Derecha
+right_to_left: Derecha a Izquierda
 note: Nota
 enter_a_value: Ingresa un valor...
 enter_a_placeholder: Ingrese un placeholder...
