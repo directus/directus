@@ -571,6 +571,8 @@ select_an_item: Оберіть об'єкт...
 edit: Редагувати
 enabled: Увімкнено
 disable_tfa: Вимкнути 2FA
+admin_disable_tfa_text: Ви впевнені що хочете вимкнути 2FA для даного користувача?
+tfa_setup: Налаштування 2FA
 tfa_scan_code: Відскануйте код у програмі-аутентифікаторі, щоб завершити налаштування 2FA
 enter_otp_to_disable_tfa: Зайдіть в OTP, щоб вимкнути 2FA
 create_account: Створити обліковий запис
@@ -778,6 +780,11 @@ icon_on: Підключити іконку
 icon_off: Відключити іконку
 label: Ярлик
 trigger: Тригер
+trigger_options: Параметри тригера
+view_trigger: Переглянути тригер
+create_trigger: Створити тригер
+trigger_setup: Налаштування тригера
+change_trigger: Змінити тригер
 flow_name: Назва
 flow_tracking_activity: Лише відстежувати діяльність
 flow_tracking_null: Нічого не відслідковувати
@@ -809,6 +816,7 @@ create_dashboard: Створити панель керування
 dashboard_name: Назва панелі керування
 no_data: Немає даних
 accountability: Підзвітність
+details: Деталі
 full_screen: Повний екран
 full_text_search: Пошук за повним текстом
 edit_panels: Редагувати панелі
