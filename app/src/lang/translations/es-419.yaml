@@ -35,7 +35,7 @@ tile_size: Tamaño de fracción
 edit_field: Editar Campo
 conditions: Condiciones
 location: Ubicación
-condition_rules: Regla de condición
+condition_rules: Reglas de Condición
 input: Entrada
 maps: Mapas
 switch_user: Cambiar usuario
@@ -50,7 +50,7 @@ export_items: Exportar Elementos
 and: "Y"
 or: O
 init: Inicializador
-dataset_too_large_currently_showing_n_items: El conjunto de datos es demasiado grande. Actualmente mostraremos los primeros {n} elementos.
+dataset_too_large_currently_showing_n_items: El conjunto de datos es demasiado grande. Actualmente se muestran los primeros {n} elementos.
 modifier: Modificador
 custom: Personalizar
 hook: Hook
