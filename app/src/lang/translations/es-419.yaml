@@ -36,7 +36,7 @@ edit_field: Editar Campo
 conditions: Condiciones
 location: Ubicación
 condition_rules: Reglas de Condición
-input: Entrada
+input: Input
 maps: Mapas
 switch_user: Cambiar usuario
 item_creation: Creación de Elemento
@@ -82,12 +82,12 @@ delete_panel: Borrar Panel
 create_webhook: Crear un Webhook
 create_translation_string: Crear Traducciones
 no_translation_string: No hay cadenas de traducción
-no_translation_string_copy: Todavía no hay cadenas de traducción.
-translation_string_key_placeholder: Clave de cadena de traducción...
+no_translation_string_copy: Todavía no hay traducciones.
+translation_string_key_placeholder: Identificador de la traducción...
 translation_string_translations_placeholder: Agregar una nueva traducción
 edit_translation_string: Editar Texto de Traducción
 delete_translation_string_copy: >-
-  ¿Está seguro de que desea eliminar la cadena de traducción "{key}"? Esta acción no se puede deshacer.
+  ¿Está seguro de que desea eliminar la traducción "{key}"? Esta acción no se puede deshacer.
 invite_users: Invitar Usuarios
 invite: Invita
 email_already_invited: El correo electrónico "{email}" ya fue invitado con anterioridad
@@ -108,9 +108,9 @@ update_bookmark: Actualizar marcador
 delete_bookmark: Eliminar Marcador
 delete_bookmark_copy: >-
   ¿Estás seguro que quieres eliminar el marcador "{bookmark}"? Esta acción no se puede deshacer.
-delete_personal_bookmark: Eliminar marcador personal
-delete_role_bookmark: Eliminar marcador de rol
-delete_global_bookmark: Eliminar marcador global
+delete_personal_bookmark: Eliminar Marcador Personal
+delete_role_bookmark: Eliminar Marcador de Rol
+delete_global_bookmark: Eliminar Marcador Global
 logoutReason:
   SIGN_OUT: Cerrar sesión
   SESSION_EXPIRED: Sesión expirada
@@ -187,7 +187,7 @@ revision_post_create: Aspecto_Una_Vez_Creado.
 revision_post_update: Aspecto_Luego_De_Actualizado.
 changes_made: Cambios.
 no_relational_data: Tenga presente que datos relacionales no están incluídos.
-junction_field_location: Ubicación de los campos de unión
+junction_field_location: Ubicación de los Campos de Unión
 top: Arriba
 bottom: Abajo
 hide_field: Ocultar Campo
