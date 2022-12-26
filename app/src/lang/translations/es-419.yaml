@@ -350,7 +350,7 @@ revision_delta_update_message: Este campo ha sido actualizado, pero su valor est
 revision_delta_other: Revisión
 revision_delta_by: '{date} por {user}'
 presentation_text_values_cannot_be_reimported: "Utiliza texto de presentación, los valores no pueden ser reimportados."
-download_page_as_csv: 'Descargar página como CSV'
+download_page_as_csv: 'Descargar Página como CSV'
 private_user: Usuario Privado
 creation_preview: Vista Previa de Creación
 revision_preview: Vista Previa de Revisión
