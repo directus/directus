@@ -4,7 +4,7 @@ DIRECTUS_DIR="/directus/api"
 DIRECTUS_EXTENSIONS="${DIRECTUS_DIR}/extensions"
 DIRECTUS_MODULES="${DIRECTUS_EXTENSIONS}/modules"
 
-#mkdir -p ${DIRECTUS_EXTENSIONS}/migrations
+mkdir -p ${DIRECTUS_EXTENSIONS}/migrations
 
 # Install crawless custom chat extensions
 # Download from project: https://gitlab.com/crawless/directus-custom-extensions
@@ -19,5 +19,6 @@ cp -r ./directus-custom-extensions-release/dashboard ${DIRECTUS_MODULES}
 cp -r ./directus-custom-extensions-release/leads ${DIRECTUS_MODULES}
 cp -r ./directus-custom-extensions-release/areas ${DIRECTUS_MODULES}
 cp -r ./directus-custom-extensions-release/saved-searches ${DIRECTUS_MODULES}
+cp -r ./directus-custom-extensions-release/saved-searches/migrations/* ${DIRECTUS_EXTENSIONS}/migrations
 
 ln -s ${DIRECTUS_MODULES}
