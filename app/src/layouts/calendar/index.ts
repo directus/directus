@@ -8,7 +8,7 @@ import { syncRefProperty } from '@/utils/sync-ref-property';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { useCollection, useItems, useSync } from '@directus/shared/composables';
 import { Field, Item } from '@directus/shared/types';
-import { defineLayout, getFieldsFromTemplate } from '@directus/shared/utils';
+import { defineLayout, getEndpoint, getFieldsFromTemplate } from '@directus/shared/utils';
 import { Calendar, CalendarOptions as FullCalendarOptions, EventInput } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
@@ -111,8 +111,7 @@ export default defineLayout<LayoutOptions>({
 				fields: queryFields,
 				filter: filterWithCalendarView,
 				search: search,
-			},
-			false
+			}
 		);
 
 		const events: Ref<EventInput> = computed(
@@ -167,11 +166,11 @@ export default defineLayout<LayoutOptions>({
 					} else {
 						const primaryKey = info.event.id;
 
-						const endpoint = collection.value.startsWith('directus')
+						const route = collection.value.startsWith('directus_')
 							? collection.value.substring(9)
 							: `content/${collection.value}`;
 
-						router.push(`/${endpoint}/${primaryKey}`);
+						router.push(`/${route}/${primaryKey}`);
 					}
 				},
 				async eventChange(info) {
@@ -185,9 +184,7 @@ export default defineLayout<LayoutOptions>({
 						itemChanges[endDateField.value] = adjustForType(info.event.endStr, endDateFieldInfo.value.type);
 					}
 
-					const endpoint = collection.value.startsWith('directus')
-						? collection.value.substring(9)
-						: `/items/${collection.value}`;
+					const endpoint = getEndpoint(collection.value);
 
 					try {
 						await api.patch(`${endpoint}/${info.event.id}`, itemChanges);
