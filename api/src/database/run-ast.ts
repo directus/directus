@@ -367,7 +367,7 @@ async function getDBQuery(
 
 		if (hasMultiRelationalSort) {
 			wrapperQuery.where('inner.directus_row_number', '=', 1);
-			applyLimit(wrapperQuery, queryCopy.limit);
+			applyLimit(knex, wrapperQuery, queryCopy.limit);
 		}
 	}
 

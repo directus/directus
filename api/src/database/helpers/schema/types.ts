@@ -98,6 +98,12 @@ export abstract class SchemaHelper extends DatabaseHelper {
 		return existingName;
 	}
 
+	applyLimit(rootQuery: Knex.QueryBuilder, limit: number): void {
+		if (limit !== -1) {
+			rootQuery.limit(limit);
+		}
+	}
+
 	applyOffset(rootQuery: Knex.QueryBuilder, offset: number): void {
 		rootQuery.offset(offset);
 	}
