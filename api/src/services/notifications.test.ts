@@ -1,6 +1,17 @@
 import { afterEach, beforeEach, describe, expect, it, SpyInstance, vi } from 'vitest';
 import { ItemsService, NotificationsService } from '.';
-import env from '../env';
+
+vi.mock('../env', async () => {
+	const actual = (await vi.importActual('../env')) as { default: Record<string, any> };
+	const MOCK_ENV = {
+		...actual.default,
+		PUBLIC_URL: '/',
+	};
+	return {
+		default: MOCK_ENV,
+		getEnv: () => MOCK_ENV,
+	};
+});
 
 vi.mock('../../src/database/index', () => ({
 	default: vi.fn(),
@@ -200,7 +211,7 @@ describe('Integration Tests', () => {
 					template: {
 						name: 'base',
 						data: {
-							url: `${env.PUBLIC_URL}/admin/users/${userDetail.id}`,
+							url: `/admin/users/${userDetail.id}`,
 							html: `<p>${notificationDetail.message}</p>\n`,
 						},
 					},
