@@ -24,6 +24,10 @@ vi.mock('../env', async () => {
 vi.mock('../../src/database/index', () => ({
 	default: vi.fn(),
 	getDatabaseClient: vi.fn(),
+	getDatabaseVersion: vi.fn().mockReturnValue({
+		parsed: [3, 39, 0],
+		full: 'sqlite',
+	}),
 }));
 
 vi.mock('../cache', () => ({
