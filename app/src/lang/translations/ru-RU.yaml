@@ -26,7 +26,7 @@ default_provider: По умолчанию
 method: Метод
 published: Опубликовано
 draft: Черновик
-archived: В архиве
+archived: Архивировано
 modules: Модули
 module_bar: Панель модулей
 logs: Журналы
@@ -34,17 +34,17 @@ reset_width: Сбросить ширину
 tile_size: Размер плитки
 edit_field: Редактировать поле
 conditions: Условия
-location: Локация
+location: Расположение
 condition_rules: Правила условий
-input: Ввод
+input: Ввод текста
 maps: Карты
 switch_user: Сменить пользователя
 item_creation: Создание элемента
-item_revision: Пересмотр Элемента
+item_revision: Редакция элемента
 enter_a_name: Введите название...
 duplicate_field: Дублировать поле
 half_width: Полширины
-full_width: Вся ширина
+full_width: Полная ширина
 group: Группа
 export_items: Экспорт элементов
 and: и
@@ -59,21 +59,21 @@ field_name_translations: Переводы названия поля
 enter_password_to_enable_tfa: Введите свой пароль для включения двухфакторной аутентификации
 add_field: Добавить поле
 role_name: Название роли
-branch: Ветка
-leaf: Лист
+branch: Ветвь
+leaf: Терминальный узел
 indeterminate: Неопределенный
-edit_collection: Изменить коллекцию
-exclusive: Эксклюзивный
+edit_collection: Редактировать коллекцию
+exclusive: Исключительно
 children: Дочерние элементы
-db_only_click_to_configure: 'Только База данных: Нажмите для настройки'
+db_only_click_to_configure: 'Возможно использование только базы данных: нажмите для настройки'
 show_active_items: Показать активные элементы
-show_archived_items: Показать элементы в архиве
-show_all_items: Показывать все
-edited: Значение изменено
+show_archived_items: Показать архивированные элементы
+show_all_items: Показать все элементы
+edited: Значение отредактировано
 required: Обязательно
 required_for_app_access: Требуется для доступа к приложению
 requires_value: Требуется значение
-create_preset: Создать Пресет
+create_preset: Создать шаблон
 create_panel: Создать панель
 create_role: Создать роль
 create_user: Создать пользователя
@@ -87,14 +87,14 @@ translation_string_key_placeholder: Ключ строки перевода...
 translation_string_translations_placeholder: Добавить новый перевод
 edit_translation_string: Редактировать строку перевода
 delete_translation_string_copy: >-
-  Вы уверены, что хотите удалить строку перевода "{key}"? Это действие не может быть отменено.
+  Вы уверены, что хотите удалить строку перевода «{key}»? Это действие не может быть отменено.
 invite_users: Пригласить пользователей
 invite: Пригласить
-email_already_invited: На адрес "{email}" уже было отправлено приглашение
+email_already_invited: На адрес «{email}» уже было отправлено приглашение
 subject: Тема
 inbox: Входящие
 emails: Email-адреса
-connection_excellent: Отличное Подключение
+connection_excellent: Отличное соединение
 connection_good: Хорошее соединение
 connection_fair: Сносное соединение
 connection_poor: Плохое соединение
@@ -107,16 +107,17 @@ reset_bookmark: Сбросить закладку
 update_bookmark: Обновить закладку
 delete_bookmark: Удалить закладку
 delete_bookmark_copy: >-
-  Точно удалить закладку «{bookmark}»? Ее нельзя будет восстановить.
+  Вы уверены, что хотите удалить закладку «{bookmark}»? Это действие не может быть отменено.
 delete_personal_bookmark: Удалить личную закладку
 delete_role_bookmark: Удалить закладку
+delete_global_bookmark: Удалить глобальную закладку
 logoutReason:
-  SIGN_OUT: Вы вышли
+  SIGN_OUT: Выполнен выход из системы
   SESSION_EXPIRED: Сессия истекла
 public_label: Публичный
-public_description: Управляет какие данные доступны по API без аутентификации.
-admin_description: Инициализация админстративных прав с неограниченным доступом к приложениям/API.
-not_allowed: Не Разрешено
+public_description: Контролирует, какие данные API доступны без входа в личный кабинет.
+admin_description: Начальная административная роль с неограниченным доступом к приложениям/API.
+not_allowed: Не разрешено
 directus_version: Версия Directus
 node_version: Версия Node
 node_uptime: Время работы Node
@@ -128,13 +129,13 @@ archive: Архив
 archive_confirm: Вы уверены, что хотите архивировать этот элемент?
 archive_confirm_count: >-
   Элементы не выбраны | Вы уверены, что хотите архивировать этот элемент? | Вы уверены, что хотите архивировать эти {count} элементов?
-reset_system_permissions_to: 'Сбросить системные разрешения для:'
-reset_system_permissions_copy: Это перезапишет любые индивидуальные разрешения, которые вы могли задать системным коллекциям. Вы уверены?
-the_following_are_minimum_permissions: Ниже приведены разрешения, требуемые при включенном доступе к приложению. Их можно расширить, но не сократить.
-app_access_minimum: Минимальный доступ приложения
+reset_system_permissions_to: 'Сбросить системные разрешения:'
+reset_system_permissions_copy: Это действие перезапишет пользовательские разрешения, которые вы могли задать системным коллекциям. Вы уверены?
+the_following_are_minimum_permissions: Ниже приведены разрешения, требуемые при включённом доступе к приложению. Их можно расширить, но не сократить.
+app_access_minimum: Минимальный доступ к приложению
 recommended_defaults: Рекомендуемые значения по умолчанию
-unarchive: Извлечь их архива
-unarchive_confirm: Точно хотите извлечь этот элемент их архива?
+unarchive: Разархивировать
+unarchive_confirm: Вы уверены, что хотите разархивировать этот элемент?
 nested_files_folders_will_be_moved: Вложенные файлы и папки будут перемещены на один уровень вверх.
 validation_errors_notice: 'В следующих полях есть недопустимые значения:'
 validationError:
@@ -150,50 +151,52 @@ validationError:
   lte: Значение должно быть меньше или равно {valid}
   empty: Значение должно быть пустым
   nempty: Значение не может быть пустым
-  null: Значение должно быть null
-  nnull: Значение не может быть null
+  null: Значение должно быть NULL
+  nnull: Значение не может быть NULL
   required: Значение обязательно
   unique: Значение должно быть уникальным
-  regex: Значение имеет некорректный формат
+  regex: Значение имеет неправильный формат
 all_access: Полный доступ
-no_access: Нет Доступа
+no_access: Без доступа
 use_custom: Настраиваемый
-nullable: Разрешить NULL значение
-allow_null_value: Разрешить NULL значение
+nullable: Разрешить значение NULL
+allow_null_value: Разрешить значение NULL
 allow_multiple: Разрешить несколько
-allow_multiple_to_be_open: Можно открыть несколько
+allow_multiple_to_be_open: Разрешить открытие нескольких
 enter_value_to_replace_nulls: Пожалуйста, введите новое значение для замены всех NULL в текущем поле.
-field_standard: Стандарт
-field_presentation: Представление и Алиасы
-field_file: Один Файл
+field_standard: Стандартный
+field_presentation: Оформление и псевдонимы
+field_file: Один файл
 field_files: Несколько файлов
 field_m2o: Отношение M2O
 field_m2a: Отношение M2A
-field_o2m: Один ко многим
+field_o2m: Отношение O2M
 field_m2m: Отношение M2M
 field_translations: Переводы
 field_group: Группа полей
-item_permissions: Разрешения Элемента
-field_permissions: Разрешения Поля
-field_validation: Валидация Поля
-field_presets: Пресеты Поля
-permissions_for_role: 'Элементы, которые Роль {role} может {action}.'
-fields_for_role: 'Поля, которые Роль {role} может {action}.'
-validation_for_role: 'Правила {action} поля, которые Роль {role} должна соблюдать.'
-presets_for_role: 'Значения поля по умолчанию для Роли {role}.'
-presentation_and_aliases: Представление и Алиасы
-revision_post_create: Вот как этот элемент выглядел когда он был создан.
+item_permissions: Разрешения элемента
+field_permissions: Разрешения поля
+field_validation: Проверка поля
+field_presets: Шаблоны поля
+permissions_for_role: 'Элементы, для которых роль «{role}» имеет разрешение {action}.'
+fields_for_role: 'Поля, для которых роль «{role}» имеет разрешение {action}.'
+validation_for_role: 'Правила, которым должна следовать роль «{role}» для {action} в поле.'
+presets_for_role: 'Значения поля по умолчанию для роли «{role}».'
+presentation_and_aliases: Оформление и псевдонимы
+revision_post_create: Вот как этот элемент выглядел, когда он был создан.
 revision_post_update: Вот как этот элемент выглядел после обновления.
-changes_made: Ниже приведены конкретные изменения, внесенные в эту редакцию.
+changes_made: Ниже приведены конкретные изменения, внесённые в эту редакцию.
 no_relational_data: Имейте в виду, что реляционные данные здесь не включены.
+junction_field_location: Расположение соединительных полей
+top: Сверху
 bottom: Снизу
 hide_field: Скрыть поле
-hide_field_on_detail: Скрыть Поле в Карточке
-show_field_on_detail: Показать Поле в Карточке
+hide_field_on_detail: Скрыть поле в карточке
+show_field_on_detail: Показать поле в карточке
 delete_field: Удалить поле
-fields_and_layout: Поля и Макет
-field_create_success: 'Создано поле: "{field}"'
-field_update_success: 'Обновлено поле: "{field}"'
+fields_and_layout: Поля и макет
+field_create_success: 'Создано поле: «{field}»'
+field_update_success: 'Обновлено поле: «{field}»'
 duplicate_where_to: Куда вы хотите дублировать это поле?
 language: Язык
 language_placeholder: Выбрать язык...
@@ -204,42 +207,42 @@ group_precision: Точность группы
 global: Глобальный
 admins_have_all_permissions: У администраторов есть все права
 camera: Камера
-show_zero: Показать нулевое
+show_zero: Показать нули
 create_in_advanced_field_creation_mode: Создать поле в расширенном режиме
 continue_in_advanced_field_creation_mode: Создание расширенного поля
 validation: Проверка
 sum: Сумма
 sum_distinct: Сумма уникальных
 avg: Среднее
-avg_distinct: Среднее Уникальных
+avg_distinct: Среднее уникальных
 count: Количество
 count_distinct: Количество уникальных
-min: Мин
-max: Макс
+min: Мин.
+max: Макс.
 exposure: Экспозиция
 shutter: Затвор
 iso: ISO
-focal_length: Фокусное Расстояние
+focal_length: Фокусное расстояние
 schema_setup_key: Имя столбца базы данных этого поля и API ключ
-create_field: Создать Поле
-creating_new_field: 'Новое Поле ({collection})'
+create_field: Создать поле
+creating_new_field: 'Новое поле ({collection})'
 field_in_collection: '{field} ({collection})'
-reset_page_preferences: Сбросить Настройки Страницы
-hidden_field: Скрытое Поле
+reset_page_preferences: Сбросить настройки страницы
+hidden_field: Скрытое поле
 hidden_on_detail: Скрывать в карточке
 disabled_editing_value: Отключить редактирование значения
 key: Ключ
-alias: Алиас
-bigInteger: Big Integer
-boolean: Логическое
+alias: Псевдоним
+bigInteger: Большое целое число
+boolean: Логическое значение
 date: Дата
 date_range: Диапазон дат
-datetime: ДатаВремя
-dateTime: ДатаВремя
+datetime: Дата и время
+dateTime: Дата и время
 precision: Точность
-decimal: Десятичная
-float: Десятичное
-integer: Целое
+decimal: Десятичная дробь с точностью
+float: Десятичная дробь
+integer: Целое число
 json: JSON
 xml: XML
 string: Строка
@@ -248,49 +251,50 @@ time: Время
 timestamp: Отметка времени
 uuid: UUID
 hash: Хэш
-geometry: Геометрия (Все)
+geometry: Геометрия (все)
 geometry.Point: Точка
 geometry.LineString: LineString
 geometry.Polygon: Многоугольник
 geometry.MultiPoint: MultiPoint
 geometry.MultiLineString: MultiLineString
 geometry.MultiPolygon: Мультиполигон
-not_available_for_type: Недоступно для этого Типа
-create_translations: Создать Переводы
-auto_refresh: Авто обновление
+not_available_for_type: Недоступно для этого типа
+create_translations: Создать переводы
+auto_refresh: Автообновление
 refresh_interval: Интервал обновления
 no_refresh: Не обновлять
 refresh_interval_seconds: Мгновенное обновление | Каждую секунду | Каждые {seconds} секунд
 refresh_interval_minutes: Каждую минуту | Каждые {minutes} минут
-auto_generate: Авто-Генерация
+auto_generate: Генерировать автоматически
 this_will_auto_setup_fields_relations: Это автоматически настроит все необходимые поля и отношения.
 click_here: Нажмите здесь
 to_manually_setup_translations: для ручной настройки переводов.
 click_to_manage_translated_fields: >-
   Полей перевода пока нет. Нажмите здесь, чтобы создать их. | Есть одно поле перевода. Нажмите здесь, чтобы управлять им. | Есть {count} полей перевода. Нажмите здесь, чтобы управлять ими.
-fields_group: Группа Полей
+fields_group: Группа полей
 no_collections_found: Нет найденных коллекций.
 new_data_alert: 'В вашей модели данных будет создано следующее:'
 search_collection: Поиск коллекций...
+search_field: Поиск полей...
 new_field: 'Новое поле'
 new_collection: 'Новая коллекция'
-add_m2o_to_collection: 'Добавить M2O в "{collection}"'
-add_o2m_to_collection: 'Добавить O2M в "{collection}"'
-add_m2m_to_collection: 'Добавить M2M в "{collection}"'
-choose_a_type: Выберите Тип...
+add_m2o_to_collection: 'Добавить M2O в «{collection}»'
+add_o2m_to_collection: 'Добавить O2M в «{collection}»'
+add_m2m_to_collection: 'Добавить M2M в "{collection}»'
+choose_a_type: Выберите тип...
 determined_by_relationship: Определяется отношением
 add_note: Добавить заметку для пользователей...
 add_link: Добавить ссылку
 custom_link: Пользовательская ссылка
-default_value: Значение По умолчанию
-standard_field: Стандартное Поле
-single_file: Один Файл
+default_value: Значение по умолчанию
+standard_field: Стандартное поле
+single_file: Один файл
 multiple_files: Несколько файлов
-m2o_relationship: Отношение Многие к Одному
-o2m_relationship: Связка One to Many
-m2m_relationship: Отношение Многие ко Многим
-m2a_relationship: Отношение Многие к Любому
-invalid_item: Неверное содержимое
+m2o_relationship: Отношение «многие к одному» (M2O)
+o2m_relationship: Отношение «один ко многим» (O2M)
+m2m_relationship: Отношение «многие ко многим» (M2M)
+m2a_relationship: Отношение «многие к любому» (M2A)
+invalid_item: Недействительный элемент
 next: Дальше
 field_name: Название поля
 translations: Переводы
@@ -302,62 +306,66 @@ enter_a_value: Введите значение...
 enter_a_placeholder: Введите плейсхолдер...
 length: Длина
 soft_length: Ограничение
-precision_scale: Точность и Масштаб
+precision_scale: Точность и масштаб
 readonly: Только для чтения
 unique: Уникальный
 updated_on: Дата обновления
 updated_by: Обновлено
 primary_key: Первичный ключ
-foreign_key: Внешний Ключ
-finish_setup: Завершить Настройку
+foreign_key: Внешний ключ
+finish_setup: Завершить настройку
 dismiss: Скрыть
-raw_value: Сырое значение
-copy_raw_value: Копировать сырое значение
+toggle_raw_editor: Включить/отключить редактор без форматирования
+raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
+raw_value: Неотформатированное значение
+copy_raw_value: Копировать неотформатированное значение
 copy_raw_value_success: Скопировано
-copy_raw_value_fail: Сбой копирования
-paste_raw_value: Вставить сырое значение
+copy_raw_value_fail: Ошибка копирования
+paste_raw_value: Вставить неотформатированное значение
 paste_raw_value_success: Вставлено
 paste_raw_value_fail: Ошибка вставки
-view_raw_value: Посмотреть сырое значение
-edit_raw_value: Редактировать Сырое Значение
-enter_raw_value: Введите сырое значение...
+view_raw_value: Просмотреть неотформатированное значение
+edit_raw_value: Редактировать неотформатированное значение
+enter_raw_value: Введите неотформатированное значение...
 clear_value: Очистить значение
 clear_changes: Сбросить изменения
+clear_items: Очистить элементы
 reset_to_default: Сбросить до значений по умолчанию
 undo_changes: Отменить изменения
 notifications: Уведомления
-show_all_activity: Показать Всю Активность
+show_all_activity: Показать историю всех действий
 page_not_found: Страница не найдена
 page_not_found_body: Страница, которую вы ищете, кажется, не существует.
-confirm_revert: Подтвердите Откат
-confirm_revert_body: Это вернет элемент в выбранное состояние.
+confirm_revert: Подтвердите откат
+confirm_revert_body: Это вернёт элемент в выбранное состояние.
 display: Отображение
 settings_update_success: Настройки обновлены
 title: Заголовок
 revision_delta_created: Создано
-revision_delta_created_externally: Создано Извне
-revision_delta_updated: 'Обновлено 1 Поле | Обновлено {count} Полей'
+revision_delta_created_externally: Создано извне
+revision_delta_updated: 'Обновлено 1 поле | Обновлено {count} полей'
 revision_delta_deleted: Удалено
-revision_delta_reverted: Возвращено
+revision_delta_reverted: Восстановлено
 revision_delta_update_message: Это поле было обновлено, но его значение скрывается по соображениям безопасности.
-revision_delta_other: Ревизия
+revision_delta_other: Редакция
 revision_delta_by: '{date} пользователем {user}'
+presentation_text_values_cannot_be_reimported: "Используется текст для оформления, значения не могут быть повторно импортированы."
 download_page_as_csv: 'Скачать страницу в формате CSV'
-private_user: Скрытый Пользователь
+private_user: Скрытый пользователь
 creation_preview: Предпросмотр
-revision_preview: Просмотр Ревизии
-updates_made: Обновления Выполнены
+revision_preview: Предпросмотр редакции
+updates_made: Обновления выполнены
 leave_comment: Оставить комментарий...
 post_comment_success: Комментарий отправлен
 post_comment_updated: Комментарий обновлен
-item_create_success: Элемент Создан | Элементы Созданы
-item_update_success: Элемент Обновлен | Элементы Обновлены
-item_delete_success: Элемент Удален | Элементы Удалены
+item_create_success: Элемент создан | Элементы созданы
+item_update_success: Элемент обновлен | Элементы обновлены
+item_delete_success: Элемент удалён | Элементы удалены
 this_collection: Эта коллекция
-related_collection: Связанная Коллекция
-related_collections: Связанные Коллекции
+related_collection: Связанная коллекция
+related_collections: Связанные коллекции
 translations_collection: Коллекция переводов
-languages_collection: Коллекция Языков
+languages_collection: Коллекция языков
 import_data_input_placeholder: CSV или JSON...
 import_data_button: Начать импорт
 import_data_indeterminate: Импорт данных...
@@ -367,9 +375,9 @@ label_import: Импорт
 label_export: Экспорт
 import_export: Импорт / Экспорт
 format: Формат
-last_page: Последняя Страница
-last_access: Последний Доступ
-fill_template: Заполнить Шаблонным Значением
+last_page: Последняя страница
+last_access: Последний доступ
+fill_template: Заполнить шаблонным значением
 a_unique_table_name: Уникальное название таблицы...
 a_unique_column_name: Уникальное название столбца...
 enable_custom_values: Включить пользовательские значения
@@ -377,11 +385,12 @@ submit: Отправить
 move_to_folder: Переместить в папку
 move: Переместить
 system: Система
-add_field_related: Добавить поле в Связанную Коллекцию
+add_field_related: Добавить поле в связанную коллекцию
 interface_label: Интерфейс
 today: Сегодня
 yesterday: Вчера
 delete_comment: Удалить комментарий
+delete_share: Удалить общий доступ
 functions:
   year: Год
   month: Месяц
@@ -400,11 +409,11 @@ date-fns_time_no_seconds_24hour: 'HH:mm'
 date-fns_date_short: 'd MMM u'
 date-fns_time_short: 'HH:mm'
 date-fns_date_short_no_year: d MMM
-minutes: Минуты
+minutes: Минут
 hours: Часов
 month: Месяц
 year: Год
-select_all: Выбрать Все
+select_all: Выбрать все
 months:
   january: Январь
   february: Февраль
@@ -418,12 +427,12 @@ months:
   october: Октябрь
   november: Ноябрь
   december: Декабрь
-drag_mode: Режим Перетаскивания
-cancel_crop: Отменить Обрезку
+drag_mode: Режим перетаскивания
+cancel_crop: Отменить обрезку
 original: Исходный
-url: URL
+url: URL-адрес
 import_label: Импорт
-file_details: Информация о Файле
+file_details: Информация о файле
 dimensions: Размеры
 size: Размер
 created: Создано
@@ -433,104 +442,112 @@ owner: Владелец
 edited_by: Изменено
 folder: Папка
 zoom: Масштаб
-download: Загрузить
+download: Скачать
 open: Открыть
 open_in_new_window: Открыть в новом окне
-open_folder: Открыть папку "{folder}"
-foreground_color: Цвет Переднего Плана
-background_color: Цвет Фона
-upload_from_device: Загрузить Файл с Устройства
-choose_from_library: Выбрать Файл из Библиотеки
-import_from_url: Импортировать Файл из URL
-replace_from_device: Заменить Файл с Устройства
-replace_from_library: Заменить Файл из Библиотеки
-replace_from_url: Заменить Файл из URL
-no_file_selected: Файл Не Выбран
-download_file: Скачать Файл
+open_folder: Открыть папку «{folder}»
+foreground_color: Цвет переднего плана
+background_color: Цвет фона
+upload_from_device: Загрузить файл с устройства
+choose_from_library: Выбрать файл из библиотеки
+import_from_url: Импортировать файл из URL-адреса
+replace_from_device: Заменить файл с устройства
+replace_from_library: Заменить файл из библиотеки
+replace_from_url: Заменить файл из URL-адреса
+no_file_selected: Файл не выбран
+download_file: Скачать файл
 open_file_in_tab: Открыть файл в новой вкладке
 start_export: Начать экспорт
-not_available_for_local_downloads: Недоступно для локальных загрузок
+not_available_for_local_downloads: Недоступно для локальных скачиваний
 exporting_all_items_in_collection: Экспортирование всех {total} элементов в {collection}.
 exporting_limited_items_in_collection: Экспортирование {limit} из {total} элементов в {collection}.
 exporting_no_items_to_export: Нет элементов для экспорта. Настройте конфигурацию экспорта ниже.
-collection_key: Ключ Коллекции
-name: Имя
-primary_key_field: Поле Основного Ключа
+exporting_download_hint: По завершении этот {format} файл будет автоматически скачан на ваше устройство.
+exporting_batch_hint: Этот экспорт будет обработан партиями, и по завершении {format} файл будет сохранен в Библиотеку файлов.
+exporting_batch_hint_forced: Из-за большого количества элементов этот экспорт будет обработан партиями, и по завершении {format} файл будет сохранен в Библиотеку файлов.
+collection_key: Ключ коллекции
+name: Название
+primary_key_field: Поле основного ключа
 type: Тип
-creating_new_collection: Создание Новой Коллекции
+creating_new_collection: Создание новой коллекции
 created_by: Кем создано
 created_on: Дата создания
-creating_collection_info: Назовите коллекцию и настройте ее уникальное поле “ключ”...
-creating_collection_system: Включить и переименовать любые из этих дополнительных полей.
+creating_collection_info: Назовите коллекцию и настройте её уникальное поле «ключ»...
+creating_collection_system: Включите и переименуйте любое из этих необязательных полей.
 auto_increment_integer: Авто-возрастающее число
+auto_increment_big_integer: Авто-возрастающее большое целое число
 generated_uuid: Сгенерированный UUID
-manual_string: Введенная вручную строка
-save_and_create_new: Сохранить и Создать Новый
-save_and_stay: Сохранить и Остаться
-save_as_copy: Сохранить и Копировать
-add_existing: Добавить
+manual_string: Введённая вручную строка
+save_and_create_new: Сохранить и создать новый
+save_and_stay: Сохранить и остаться
+save_as_copy: Сохранить и копировать
+add_existing: Добавить существующий
 creating_items: Создание элементов
-enable_create_button: С кнопкой «Создать»
+enable_create_button: Включить кнопку «Создать»
 selecting_items: Выбор элементов
-enable_select_button: С кнопкой «Выбрать»
+enable_select_button: Включить кнопку «Выбрать»
+allow_duplicates: Разрешить дубликаты
 comments: Комментарии
-no_comments: Комментариев Пока Нет
-click_to_expand: Нажмите, чтобы Раскрыть
-select_item: Выбрать Элемент
+no_comments: Комментариев пока нет
+click_to_expand: Нажмите, чтобы раскрыть
+select_item: Выбрать элемент
 no_items: Нет элементов
-search_items: Найти элементы...
-disabled: Выключен
+search_items: Поиск элементов...
+disabled: Отключено
 information: Информация
-report_bug: Сообщить об Ошибке
-request_feature: Запросить Фичи
-interface_not_found: 'Интерфейс "{interface}" не найден.'
-reset_interface: Сбросить Интерфейс
-display_not_found: 'Отображение "{display}" не найдено.'
-reset_display: Сбросить Отображение
+report_bug: Сообщить об ошибке
+request_feature: Предложить идею
+request_body: Тело запроса
+interface_not_found: 'Интерфейс «{interface}» не найден.'
+operation_not_found: 'Операция «{operation}» не найдена.'
+reset_interface: Сбросить интерфейс
+display_not_found: 'Отображение «{display}» не найдено.'
+reset_display: Сбросить отображение
 list-m2a: Конструктор (M2A)
 item_count: 'Нет элементов | Один элемент | {count} элементов'
 no_items_copy: В этой коллекции пока нет элементов.
-file_count: 'Нет Файлов | Один Файл | {count} Файлов'
+file_count: 'Нет файлов | Один файл | {count} файлов'
 no_files_copy: Здесь нет файлов.
-user_count: 'Нет Пользователей | Один Пользователь | {count} Пользователей'
+user_count: 'Нет пользователей | Один пользователь | {count} пользователей'
 no_users_copy: В этой роли пока нет пользователей.
-webhooks_count: 'Нет Веб-хуков | Один Веб-хук | {count} Веб-хуков'
-no_webhooks_copy: Веб-хуки еще не настроены. Начните с создания одного из них ниже.
+webhooks_count: 'Нет веб-хуков | Один веб-хук | {count} веб-хуков'
+no_webhooks_copy: Веб-хуки ещё не настроены. Начните с создания одного из них ниже.
 no_notifications: Нет уведомлений
-no_notifications_copy: У вас всё получилось!
-activity_log: Журнал событий
-all_items: Все Элементы
+no_notifications_copy: Ничего нового!
+activity_log: Журнал действий
+all_items: Все элементы
 any: Любой
 csv: CSV
-no_collections: Нет Коллекций
-create_collection: Создать Коллекцию
-no_collections_copy_admin: У вас пока нет Коллекций. Нажмите кнопку ниже, чтобы начать.
-no_collections_copy: У вас пока нет Коллекций. Пожалуйста, обратитесь к системному администратору.
-relationship_not_setup: Связь не была настроена правильно
-display_template_not_setup: Опция шаблона отображения настроена некорректно
-collection_field_not_setup: Опция поля коллекции настроена некорректно
-select_a_collection: Выберите Коллекцию
+no_collections: Нет коллекций
+create_collection: Создать коллекцию
+no_collections_copy_admin: У вас пока нет коллекций. Нажмите кнопку ниже, чтобы начать.
+no_collections_copy: У вас пока нет коллекций. Пожалуйста, обратитесь к системному администратору.
+relationship_not_setup: Отношение не было настроено правильно
+display_template_not_setup: Опция шаблона отображения настроена неправильно
+collection_field_not_setup: Опция поля коллекции настроена неправильно
+select_a_collection: Выберите коллекцию
 select_a_field: Выберите поле
 active: Активный
 move_to: Переместить в...
 copy: Копировать
 copy_to: Скопировать в...
-no_other_dashboards_copy: У вас пока нет других Досок.
+no_other_dashboards_copy: У вас пока нет других досок.
 inactive: Неактивный
 users: Пользователи
 activity: Активность
-activity_item: Элемент деятельности
+activity_item: Элемент истории действий
 action: Действие
 ip_address: IP-адрес
 user_agent: Пользовательский агент
+origin: Источник
 webhooks: Веб-хуки
-decimals: Десятичные
-value_decimals: Значение (десятичное)
+decimals: Десятичные дроби
+value_decimals: Значение (десятичная дробь)
 min_value: Мин. значение
 max_value: Макс. значение
 automatic: Автоматически
 field_width: Ширина поля
-add_filter: Добавить Фильтр
+add_filter: Добавить фильтр
 upper_limit: Верхний предел...
 lower_limit: Нижний предел...
 user_directory: Пользователи
@@ -539,116 +556,122 @@ sidebar: Боковая панель
 duration: Продолжительность
 charset: Кодировка
 second: секунда
-file_moved: Файл Перемещен
-collection_created: Коллекция Создана
+file_moved: Файл перемещён
+collection_created: Коллекция создана
 modified_on: Дата изменения
-card_size: Размер Карточки
+card_size: Размер карточки
 sort_field: Поле сортировки
 add_sort_field: Добавить поле сортировки
 sort: Сортировать
 status: Статус
 remove: Удалить
-toggle_manual_sorting: Переключить Ручную Сортировку
-bookmark_doesnt_exist: Закладка Не Существует
-bookmark_doesnt_exist_copy: Закладка, которую вы пытаетесь открыть не найдена.
+toggle_manual_sorting: Включить/отключить ручную сортировку
+bookmark_doesnt_exist: Закладка не существует
+bookmark_doesnt_exist_copy: Закладка, которую вы пытаетесь открыть, не найдена.
 bookmark_doesnt_exist_cta: Вернуться в коллекцию
 select_an_item: Выбрать элемент...
 edit: Редактирование
-enabled: Включен
-disable_tfa: Выключить 2FA
-tfa_scan_code: Сканируйте код в приложении аутентификаторе для завершения настройки 2FA
-enter_otp_to_disable_tfa: Введите OTP для выключения 2FA
-create_account: Создать Аккаунт
-account_created_successfully: Аккаунт Успешно Создан
+enabled: Включено
+disable_tfa: Отключить 2FA
+admin_disable_tfa_text: Вы уверены, что хотите отключить 2FA для этого пользователя?
+tfa_setup: Настроить двухфакторную аутентификацию (2FA)
+tfa_scan_code: Сканируйте код в приложении-аутентификаторе для завершения настройки 2FA
+enter_otp_to_disable_tfa: Введите OTP для отключения 2FA
+create_account: Создать учётную запись
+account_created_successfully: Учётная запись успешно создана
 auto_fill: Автозаполнение
-corresponding_field: Соответствующее Поле
+corresponding_field: Соответствующее поле
 errors:
   COLLECTION_NOT_FOUND: "Коллекция не существует"
   FIELD_NOT_FOUND: Поле не найдено
   FORBIDDEN: Запрещено
   INVALID_CREDENTIALS: Неверное имя пользователя или пароль
   INVALID_OTP: Неверный одноразовый пароль
-  INVALID_PAYLOAD: Некорректное содержимое
-  INVALID_QUERY: Некорректный запрос
-  INVALID_CONFIG: Неверная конфигурация
-  INVALID_TOKEN: Неверный токен
+  INVALID_PAYLOAD: Недействительное содержимое
+  INVALID_PROVIDER: Пользователь принадлежит другому провайдеру аутентификации
+  INVALID_QUERY: Недействительный запрос
+  INVALID_CONFIG: Недействительная конфигурация
+  INVALID_TOKEN: Недействительный токен
   INVALID_IP: Недопустимый IP
   INVALID_USER: Не удалось аутентифицировать пользователя
-  ITEM_LIMIT_REACHED: Достигнут лимит элементов
+  ITEM_LIMIT_REACHED: Достигнуто максимальное количество элементов
   ITEM_NOT_FOUND: Элемент не найден
   ROUTE_NOT_FOUND: Не найдено
   RECORD_NOT_UNIQUE: Обнаружен дубликат значения
   USER_SUSPENDED: Пользователь заблокирован
-  CONTAINS_NULL_VALUES: Поле содержит значения null
+  CONTAINS_NULL_VALUES: Поле содержит значения NULL
   UNPROCESSABLE_ENTITY: Необрабатываемый объект
-  INTERNAL_SERVER_ERROR: Неожиданная Ошибка
-  NOT_NULL_VIOLATION: Значение не может быть null
+  INTERNAL_SERVER_ERROR: Неожиданная ошибка
+  NOT_NULL_VIOLATION: Значение не может быть NULL
   ILLEGAL_ASSET_TRANSFORMATION: Исходное изображение слишком большое для предпросмотра
   VALUE_TOO_LONG: Значение слишком длинное
   VALUE_OUT_OF_RANGE: Значение вне допустимого диапазона
-  INVALID_FOREIGN_KEY: Неверный внешний ключ
-  UNKNOWN: Неожиданная Ошибка
-  GRAPHQL_VALIDATION_EXCEPTION: Исключение GraphQL валидации
+  INVALID_FOREIGN_KEY: Недействительный внешний ключ
+  UNKNOWN: Неожиданная ошибка
+  GRAPHQL_VALIDATION_EXCEPTION: Ошибка проверки GraphQL
   SERVICE_UNAVAILABLE: Сервис недоступен
   UNSUPPORTED_MEDIA_TYPE: Неподдерживаемый тип медиа
   UNEXPECTED_RESPONSE: Неожиданный ответ
-  TOKEN_EXPIRED: Token просрочен
+  TOKEN_EXPIRED: Токен с истёкшим сроком действия
   RANGE_NOT_SATISFIABLE: Недопустимый диапазон
-  METHOD_NOT_ALLOWED: Метод не разрешен
-  REQUESTS_EXCEEDED: Достигнут лимит запросов
+  METHOD_NOT_ALLOWED: Метод не разрешён
+  REQUESTS_EXCEEDED: Достигнуто максимальное количество запросов
 security: Безопасность
-value_hashed: Значение Безопасно Хэшировано
+value_hashed: Надёжно зашифрованное значение
 bookmark_name: Название закладки...
-create_bookmark: Создать Закладку
-edit_bookmark: Редактировать Закладку
+create_bookmark: Создать закладку
+edit_bookmark: Редактировать закладку
 edit_personal_bookmark: Редактировать личную закладку
+edit_role_bookmark: Редактировать закладку роли
 edit_global_bookmark: Редактировать глобальную закладку
+cannot_edit_role_bookmarks: Невозможно редактировать закладки роли
 cannot_edit_global_bookmarks: Невозможно редактировать глобальные закладки
 bookmarks: Закладки
-presets: Пресеты
-unexpected_error: Неожиданная Ошибка
+presets: Шаблоны
+unexpected_error: Неожиданная ошибка
 unexpected_error_copy: Произошла неожиданная ошибка. Пожалуйста, попробуйте позже.
-copy_details: Скопировать Подробности
-no_app_access: Нет Доступа к Приложению
+copy_details: Скопировать подробности
+no_app_access: Нет доступа к приложению
 no_app_access_copy: Этому пользователю не разрешено использовать приложение администратора.
+password_reset_sent: Если у вас есть учётная запись, мы отправили вам безопасную ссылку для восстановления пароля
 password_reset_successful: Пароль успешно сброшен
 back: Назад
 filter: Фильтр
 edit_image: Редактировать изображение
-editing_image: Редактирование Изображения
+editing_image: Редактирование изображения
 square: Квадрат
-free: Свободный
-flip_horizontal: Отразить по Горизонтали
-flip_vertical: Отразить по Вертикали
-aspect_ratio: Соотношение Сторон
+free: Свободно
+flip_horizontal: Отразить по горизонтали
+flip_vertical: Отразить по вертикали
+aspect_ratio: Пропорции
 rotate: Повернуть
 all_users: Все пользователи
-delete_collection: Удалить Коллекцию
-update_collection_success: Коллекция Обновлена
-delete_collection_success: Коллекция Удалена
+delete_collection: Удалить коллекцию
+update_collection_success: Коллекция обновлена
+delete_collection_success: Коллекция удалена
 make_collection_visible: Сделать коллекцию видимой
 make_collection_hidden: Сделать коллекцию скрытой
 make_folder_visible: Показать папку
 make_folder_hidden: Скрыть папку
-goto_collection_content: Просмотр содержимого
+goto_collection_content: Просмотреть содержимое
 start_end_of_count_items: '{start}-{end} из {count} элементов'
 start_end_of_count_filtered_items: '{start}-{end} из {count} отфильтрованных элементов'
 one_item: '1 элемент'
 one_filtered_item: '1 отфильтрованный элемент'
 delete_collection_are_you_sure: >-
-  Вы уверены, что хотите удалить коллекцию «{collection}»? Это приведет к удалению коллекции и всех ее элементов. Это действие необратимо.
+  Вы уверены, что хотите удалить коллекцию «{collection}»? Это приведет к удалению коллекции и всех её элементов. Это действие необратимо.
 delete_folder_are_you_sure: Вы уверены, что хотите удалить папку «{folder}»? Вложенные папки и коллекции будут перемещены на самый верхний уровень.
-collections_shown: Показано Коллекций
-visible_collections: Видимые Коллекции
-hidden_collections: Скрытые Коллекции
+collections_shown: Показано коллекций
+visible_collections: Видимые коллекции
+hidden_collections: Скрытые коллекции
 show_hidden_collections: Показать скрытые коллекции
 hide_hidden_collections: Скрыть скрытые коллекции
 show_header: Показать заголовок
-unmanaged_collections: Ненастроенные Коллекции
+unmanaged_collections: Ненастроенные коллекции
 system_collections: Системные коллекции
 placeholder: Плейсхолдер
-icon_left: Значок слева
-icon_right: Значок справа
+icon_left: Иконка слева
+icon_right: Иконка справа
 count_other_revisions: '{count} других редакций'
 font: Шрифт
 sans_serif: Sans Serif
@@ -657,13 +680,13 @@ monospace: Моноширинный
 divider: Разделитель
 color: Цвет
 circle: Круг
-empty_item: Пустой Элемент
+empty_item: Пустой элемент
 log_in_with: 'Войти с помощью {provider}'
 conditional_styles: Условные стили
 advanced_settings: Дополнительные настройки
-advanced_filter: Расширенный Фильтр
-delete_advanced_filter: Удалить Фильтр
-change_advanced_filter_operator: Изменить Оператор
+advanced_filter: Расширенный фильтр
+delete_advanced_filter: Удалить фильтр
+change_advanced_filter_operator: Изменить оператор
 advanced: Доп. настройки
 operators:
   eq: Равно
@@ -674,10 +697,11 @@ operators:
   gte: Больше или равно
   in: Один из
   nin: Не один из
-  null: "Null"
-  nnull: Не null
+  null: "NULL"
+  nnull: Не NULL
   contains: Содержит
   ncontains: Не содержит
+  icontains: Содержит (без учета регистра)
   starts_with: Начинается с
   nstarts_with: Не начинается с
   ends_with: Оканчивается на
@@ -693,97 +717,115 @@ operators:
   intersects_bbox: Пересекает ограничивающую рамку
   nintersects_bbox: Не пересекает ограничивающую рамку
   regex: Соответствует RegExp
-custom_validation_message: Пользовательское сообщение валидации
+custom_validation_message: Пользовательское сообщение проверки
 loading: Загрузка...
-drop_to_upload: Перетащите для Загрузки
+drop_to_upload: Перетащите для загрузки
 item: Элемент
 items: Элементы
-upload_file: Загрузить Файл
-upload_file_indeterminate: Загрузка Файла...
-upload_file_success: Файл Загружен
+upload_file: Загрузить файл
+upload_file_indeterminate: Загрузка файла...
+upload_file_success: Файл загружен
 upload_files_indeterminate: 'Загрузка файлов {done}/{total}'
-upload_files_success: '{count} Файлов Загружено'
-upload_pending: Ожидание Загрузки
-drag_file_here: Перетащите Файлы Сюда
-click_to_browse: Нажмите для Просмотра
-interface_options: Настройки интерфейса
-layout_options: Параметры Макета
+upload_files_success: '{count} файлов загружено'
+upload_pending: Ожидание загрузки
+drag_file_here: Перетащите файлы сюда
+click_to_browse: Нажмите для просмотра
+interface_options: Параметры интерфейса
+layout_options: Параметры макета
 rows: Записи
 columns: Колонки
-collection_setup: Настройки Коллекции
-optional_system_fields: Необязательные Системные Поля
+collection_setup: Настройки коллекции
+optional_system_fields: Необязательные системные поля
 value_unique: Значение должно быть уникальным
-all_activity: Вся Активность
-create_item: Создать Элемент
+all_activity: История всех действий
+create_item: Создать элемент
 display_template: Шаблон отображения
 language_display_template: Шаблон отображения языка
 translations_display_template: Шаблон отображения переводов
-n_items_selected: 'Не Выбраны Элементы | Выбран 1 Элемент | Выбрано {n} Элементов'
-per_page: На Страницу
-all_files: Все Файлы
-my_files: Мои Файлы
-recent_files: Недавние Файлы
-create_folder: Создать Папку
-edit_folder: Изменить папку
-folder_name: Название Папки...
+n_items_selected: 'Не выбраны элементы | Выбран 1 элемент | Выбрано {n} элементов'
+per_page: На страницу
+all_files: Все файлы
+my_files: Мои файлы
+recent_files: Недавние файлы
+create_folder: Создать папку
+edit_folder: Редактировать папку
+folder_name: Название папки...
 folder_key: Ключ папки...
-add_file: Добавить Файл
-replace_file: Заменить Файл
+add_file: Добавить файл
+replace_file: Заменить файл
 no_results: Нет результатов
 no_results_copy: Настройте или сбросьте фильтры поиска, чтобы увидеть результаты.
-clear_filters: Сбросить Фильтры
-saves_automatically: Сохраняется Автоматически
+no_visible_fields: Пустая форма
+no_visible_fields_copy: Эта форма не имеет видимых полей.
+clear_filters: Сбросить фильтры
+saves_automatically: Сохраняется автоматически
 role: Роль
-edit_role: Изменить роль
+edit_role: Редактировать роль
 rule: Правило
 user: Пользователь
-no_presets: Нет Пресетов
-no_presets_copy: Пресеты или закладки пока не были сохранены.
-no_presets_cta: Добавить Пресет
-presets_only: Только пресеты
+no_presets: Нет шаблонов
+no_presets_copy: Шаблоны или закладки пока не были сохранены.
+no_presets_cta: Добавить шаблон
+presets_only: Только шаблоны
 create: Создать
-on_create: При Создании
-on_update: Во время обновления
-read: Чтение
+on_create: При создании
+on_update: При обновлении
+read: Читать
 update: Обновить
 delete: Удалить
 select_fields: Выбрать поля
-format_text: Форматировать Текст
-format_value: Формат значения
-abbreviate_value: Значение кратко
+format_text: Форматировать текст
+format_value: Форматировать значение
+abbreviate_value: Сократить значение
 operator: Оператор
 bold: Жирный
 toggle: Переключить
-icon_on: Значок Вкл
-icon_off: Значок Выкл
-label: Метка
-flows: Поток
-flow: Поток
-select_a_flow: Выберите поток
+icon_on: Включить иконку
+icon_off: Отключить иконку
+label: Описание
+flows: Процессы
+flow: Процесс
+select_a_flow: Выберите процесс
+run_flow_on_current_collection: Запустить процесс с текущей коллекцией
+run_flow_on_current: Запустить процесс с текущим элементом
+run_flow_on_current_edited_confirm: Этот элемент может быть обновлен этим процессом — вы уверены, что хотите выполнить его?
+run_flow_on_selected: Сначала выберите один или несколько элементов | Запустить процесс с выбранным элементом | Запустить процесс с {n} выбранными элементами
+run_flow_success: Процесс «{flow}» успешно завершён
 trigger: Триггер
+trigger_options: Параметры триггера
+view_trigger: Просмотреть триггер
 create_trigger: Создать триггер
 trigger_setup: Настройка триггера
 change_trigger: Изменить триггер
-flow_delete_confirm: Вы уверены, что хотите удалить Поток "{flow}"? Это действие не может быть отменено.
-set_flow_active: Активировать Поток
-set_flow_inactive: Отключить Поток
-no_flows: Нет Потоков
-updating_flow: Обновить Поток
-flow_setup: Настройка Потока
-flow_name: Имя
-flow_tracking: Отслеживание активности и логов
-flow_tracking_all: Отслеживание активности и изменений
-flow_tracking_activity: Отслеживать только активность
+flow_delete_confirm: Вы уверены, что хотите удалить процесс «{flow}»? Это действие не может быть отменено.
+set_flow_active: Активировать процесс
+set_flow_inactive: Отключить процесс
+edit_flow: Редактировать процесс
+delete_flow: Удалить процесс
+no_other_flows_copy: У вас пока нет других процессов.
+no_flows: Нет процессов
+no_flows_copy: У вас пока нет ни одного процесса.
+create_flow: Создать процесс
+creating_new_flow: Создание нового процесса
+updating_flow: Обновление процесса
+flow_setup: Настройка процесса
+flow_name: Название
+flow_tracking: Отслеживание действий и журналов
+flow_tracking_all: Отслеживать действия и журналы
+flow_tracking_activity: Отслеживать только действия
 flow_tracking_null: Ничего не отслеживать
-start_flow: Запустить Поток
-stop_flow: Остановить Поток
+start_flow: Запустить процесс
+stop_flow: Остановить процесс
 create_operation: Создать новую операцию
-edit_operation: Изменить операцию
+edit_operation: Редактировать операцию
 code: Код
 operation_options: Параметры операции
 operation_name: Название операции...
-operation_key_unique_error: Ключи операции должны быть уникальными в Потоке
-insights: Прогнозы
+operation_key: Идентификатор для справки...
+operation_key_unique_error: Ключи операции должны быть уникальными в процессе
+operation_handle_resolve: 'Завершить: нажмите для добавления или перетащите для изменения маршрута'
+operation_handle_reject: 'Отклонить: нажмите для добавления или перетащите для изменения маршрута'
+insights: Аналитика
 dashboard: Доска
 panel: Панель
 panel_options: Параметры панели
@@ -791,6 +833,7 @@ panel_header: Заголовок панели
 panel_name_placeholder: Назовите эту панель...
 panel_note_placeholder: Дополнительная информация об этой панели...
 panel_delete_confirm: Вы уверены, что хотите удалить эту панель? Это действие не может быть отменено.
+list_panel_allow_edit: Разрешить встроенное редактирование
 dashboard_delete_confirm: Вы уверены, что хотите удалить эту доску? Это действие не может быть отменено.
 edit_dashboard: Редактировать доску
 delete_dashboard: Удалить доску
@@ -801,48 +844,52 @@ decimals_placeholder: Количество знаков после запято�
 no_dashboards: Нет досок
 no_dashboards_copy: У вас пока нет ни одной доски.
 create_dashboard: Создать доску
-dashboard_name: Имя Доски
+dashboard_name: Название доски
 no_data: Нет данных
+no_data_in_flow: В этом процессе не были использованы или созданы какие-либо данные
 accountability: Подотчетность
+payload: Содержимое
 details: Подробности
-full_screen: Во Весь Экран
+full_screen: Во весь экран
+full_text_search: Поиск по полному тексту
 edit_panels: Редактировать панели
 center_align: По центру
 left_align: По левому краю
 right_align: По правому краю
 fit_to_screen: По размеру экрана
-image_url: URL изображения
+image_url: URL-адрес изображения
 alt_text: Альтернативный текст
 media: Медиа
 quality: Качество
 width: Ширина
 height: Высота
+transformation_preset_key: Ключ шаблона преобразования
 source: Источник
-url_placeholder: Введите адрес url...
+url_placeholder: Введите URL-адрес...
 display_text: Отображаемый текст
 display_text_placeholder: Введите текст для отображения...
 interface_group_text_and_numbers: Текст и номера
 interface_group_selection: Выделенное
 interface_group_relational: Относительный
-interface_group_presentation: Презентация
+interface_group_presentation: Оформление
 interface_group_groups: Группы
 interface_group_other: Другие
 tooltip: Подсказка
 tooltip_placeholder: Введите подсказку...
-unlimited: Без ограничения
+unlimited: Не ограничено
 open_link_in: Открыть ссылку в
 new_tab: Новая вкладка
 current_tab: Текущая вкладка
 save_image: Сохранить изображение
 save_media: Сохранить медиа
 wysiwyg_options:
-  aligncenter: По Середине
-  alignjustify: По Ширине
-  alignleft: По Левому Краю
-  alignnone: Без Выравнивания
-  alignright: По Правому Краю
-  forecolor: Цвет Переднего Плана
-  backcolor: Цвет Фона
+  aligncenter: По середине
+  alignjustify: По ширине
+  alignleft: По левому краю
+  alignnone: Без выравнивания
+  alignright: По правому краю
+  forecolor: Цвет переднего плана
+  backcolor: Цвет фона
   bold: Жирный
   italic: Наклонный
   underline: Подчеркнутый
@@ -851,13 +898,13 @@ wysiwyg_options:
   superscript: Надстрочный
   codeblock: Код
   blockquote: Цитата
-  bullist: Маркированный Список
-  numlist: Нумерованный Список
-  hr: Горизонтальный Разделитель
-  link: Добавить/изменить адрес
-  unlink: Удалить Ссылку
-  media: Добавить/изменить медиа
-  image: Добавить/изменить изображ.
+  bullist: Маркированный список
+  numlist: Нумерованный список
+  hr: Горизонтальный разделитель
+  link: Добавить/редактировать ссылку
+  unlink: Удалить ссылку
+  media: Добавить/редактировать медиа
+  image: Добавить/редактировать изображ.
   copy: Копировать
   cut: Вырезать
   paste: Вставить
@@ -868,100 +915,102 @@ wysiwyg_options:
   h4: Заголовок 4
   h5: Заголовок 5
   h6: Заголовок 6
-  fontselect: Выберите Шрифт
-  fontsizeselect: Выберите Размер Шрифта
+  fontselect: Выберите шрифт
+  fontsizeselect: Выберите размер шрифта
   indent: Отступ
   outdent: Выступ
   undo: Отменить
   redo: Повторить
   remove: Удалить
-  removeformat: Убрать Форматирование
-  selectall: Выбрать Все
+  removeformat: Убрать форматирование
+  selectall: Выбрать все
   table: Таблица
   visualaid: Показать невидимые элементы
-  source_code: Изменить исходный код
-  fullscreen: Во Весь Экран
+  source_code: Редактировать исходный код
+  fullscreen: Во весь экран
   directionality: Направленность
 dropdown: Выпадающий список
 choices: Варианты
-choices_option_configured_incorrectly: Выбор настроен некорректно
-deselect: Отменить выбор
-deselect_all: Отменить Выбор
+choices_option_configured_incorrectly: Варианты настроены неправильно
+deselect: Снять выделение
+deselect_all: Снять всё выделение
 other: Другой...
-adding_user: Добавление Пользователя
-unknown_user: Неизвестный Пользователь
-creating_in: 'Создание Элемента в {collection}'
-editing_in: 'Редактирование Элемента в {collection}'
+adding_user: Добавление пользователя
+unknown_user: Неизвестный пользователь
+creating_in: 'Создание элемента в {collection}'
+editing_in: 'Редактирование элемента в {collection}'
 viewing_in: 'Просмотр элемента в {collection}'
 creating_unit: 'Создание {unit}'
 editing_unit: 'Редактирование {unit}'
 editing_in_batch: 'Пакетное редактирование {count} элементов'
-no_options_available: Нет доступных опций
-settings_data_model: Модель Данных
+no_options_available: Нет доступных вариантов
+settings_data_model: Модель данных
 settings_permissions: Роли и права доступа
-settings_project: Настройки Проекта
+settings_project: Настройки проекта
 settings_webhooks: Веб-хуки
-settings_flows: Поток
-settings_presets: Пресеты и Закладки
+settings_flows: Процессы
+settings_presets: Шаблоны и закладки
 settings_translation_strings: Строки перевода
 one_or_more_options_are_missing: Один или несколько вариантов отсутствуют
-scope: Область
+scope: Область применения
 actions: Действия
 select: Выбрать...
 layout: Макет
 tree_view: В виде дерева
 changes_are_permanent: Изменения необратимы
 preset_name_placeholder: Используется по умолчанию, когда пусто...
-preset_search_placeholder: Строка поиска...
-editing_preset: Редактирование Пресета
-layout_preview: Предпросмотр Макета
-layout_setup: Настройка Макета
+preset_search_placeholder: Поисковый запрос...
+editing_preset: Редактирование шаблона
+layout_preview: Предпросмотр макета
+layout_setup: Настройка макета
 data: Данные
 unsaved_changes: Несохранённые изменения
 unsaved_changes_copy: Вы уверены, что хотите покинуть эту страницу?
 discard_changes: Отменить изменения
-discard_all_changes: Отменить Все Изменения
+discard_all_changes: Отменить все изменения
 discard_changes_copy: Вы хотите отменить все внесённые изменения?
 show_x_axis: Показать ось X
 show_y_axis: Показать ось Y
-keep_editing: Продолжить Редактирование
-page_help_collections_overview: '**Обзор Коллекций** — Список всех коллекций, к которым у вас есть доступ.'
+keep_editing: Продолжить редакт.
+page_help_collections_overview: '**Обзор коллекций** — список всех коллекций, к которым у вас есть доступ.'
 page_help_collections_collection: >-
-  **Просмотр Элементов** — Список всех элементов в {collection}, к которым у вас есть доступ. Настройте макет, фильтры и сортировку под себя, и даже сохраните закладки в разных конфигурациях для быстрого доступа.
+  **Просмотр элементов** — список всех элементов в {collection}, к которым у вас есть доступ. Настройте макет, фильтры и сортировку под себя, и даже сохраните закладки в разных конфигурациях для быстрого доступа.
 page_help_collections_item: >-
-  **Карточка Элемента** — Форма для просмотра и управления этим элементом. Эта панель также содержит полную историю изменений и встроенные комментарии.
+  **Карточка элемента** — форма для просмотра и управления этим элементом. Эта панель также содержит полную историю редакций и встроенные комментарии.
 page_help_activity_collection: >-
-  **Просмотр Активности** — Полный список всех действий пользователя и контента.
+  **Просмотр действий** — полный список всех действий пользователя, связанных с системой или содержанием.
 page_help_docs_global: >-
-  **Обзор Документации** — Документация, специально созданная к версии и схеме этого проекта.
+  **Обзор документации** — документация, специально созданная к версии и схеме этого проекта.
 page_help_files_collection: >-
-  **Библиотека Файлов** — Список всех файлов, загруженных в этот проект. Настройте макет, фильтры и сортировку под себя, и даже сохраните закладки в разных конфигурациях для быстрого доступа.
+  **Библиотека файлов** — список всех файлов, загруженных в этот проект. Настройте макет, фильтры и сортировку под себя, и даже сохраните закладки в разных конфигурациях для быстрого доступа.
 page_help_files_item: >-
-  **Карточка Файла** — Форма для управления метаданными файла, редактирования исходного файла и обновления настроек доступа.
-page_help_settings_project: "**Настройки Проекта** — Глобальные параметры конфигурации проекта."
+  **Карточка файла** — форма для управления метаданными файла, редактирования исходного файла и обновления настроек доступа.
+page_help_settings_project: "**Настройки проекта** — глобальные параметры конфигурации проекта."
 page_help_settings_datamodel_collections: >-
-  **Модель Данных: Коллекции** — Список всех доступных коллекций. Включает видимые, скрытые и системные коллекции, а также неуправляемые таблицы базы данных, которые могут быть добавлены.
+  **Модель данных: коллекции** – список всех доступных коллекций. Включает в себя видимые, скрытые и системные коллекции, а также ненастроенные таблицы базы данных, которые можно добавить.
 page_help_settings_datamodel_fields: >-
-  **Модель Данных: Коллекция** — Форма для управления этой коллекцией и ее полями.
-page_help_settings_roles_collection: '**Просмотр Ролей** — Список Администраторов, Публичных и собственных Ролей Пользователей.'
-page_help_settings_roles_item: "**Карточка Роли** — Управление разрешениями роли и другими настройками."
+  **Модель данных: коллекция** — форма для управления этой коллекцией и её полями.
+page_help_settings_roles_collection: '**Просмотр ролей** — список администраторских, общедоступных и пользовательских ролей.'
+page_help_settings_roles_item: "**Карточка роли** — управление разрешениями роли и другими настройками."
 page_help_settings_presets_collection: >-
-  **Просмотр Пресетов** — Список всех пресетов проекта, включая: пользователей, ролей и глобальные закладки, а также представления по умолчанию.
+  **Просмотр шаблонов** — список всех шаблонов в проекте, включая: пользователей, роли и глобальные закладки, а также представления по умолчанию.
 page_help_settings_presets_item: >-
-  **Карточка Пресета** — Форма для управления пресетами закладок и коллекций по умолчанию.
-page_help_settings_webhooks_collection: '**Просмотр Веб-хуков** — Список всех веб-хуков в проекте.'
-page_help_settings_webhooks_item: '**Карточка Веб-хука** — Форма для создания и управления вебхуками проекта.'
+  **Карточка шаблона** — форма для управления шаблонами закладок и коллекций по умолчанию.
+page_help_settings_webhooks_collection: '**Просмотр веб-хуков** — список всех веб-хуков в проекте.'
+page_help_settings_webhooks_item: '**Карточка веб-хука** — форма для создания и управления веб-хуками проекта.'
+page_help_settings_flows_collection: '**Просмотреть процессы** — список всех процессов в проекте.'
+page_help_settings_flows_item: '**Карточка процесса** — рабочее пространство для управления одной или несколькими операциями.'
 page_help_settings_translation_strings_collection: '**Просмотр строк перевода** — список всех строк перевода в проекте.'
-page_help_users_collection: '**Пользователи** — Список всех системных пользователей в этом проекте.'
+page_help_users_collection: '**Пользователи** — список всех системных пользователей в этом проекте.'
 page_help_users_item: >-
-  **Карточка Пользователя** — Управляйте данными вашего аккаунта или просматривайте данные других пользователей.
-page_help_insights_overview: '**Аналитики** — список досок, к которым у вас есть доступ.'
-page_help_insights_dashboard: '**Доска** — Рабочее пространство для управления одной или несколькими панелями'
-activity_feed: Лента Активности
+  **Карточка пользователя** — управляйте данными вашей учётной записи или просматривайте данные других пользователей.
+page_help_insights_overview: '**Аналитика** — список досок, к которым у вас есть доступ.'
+page_help_insights_dashboard: '**Доска** — рабочее пространство для управления одной или несколькими панелями'
+activity_feed: Лента действий
 add_new: Создать
 create_new: Создать
 all: Все
-none: Нет
+none: Никакие
 no_layout_collection_selected_yet: Макет/коллекция пока не выбраны
 batch_delete_confirm: >-
   Никаких элементов не выбрано | Вы уверены, что хотите удалить этот элемент? Это действие не может быть отменено. | Вы уверены, что хотите удалить эти элементы {count}? Это действие не может быть отменено.
@@ -974,35 +1023,39 @@ singleton: Синглтон
 singleton_label: Считать одним объектом
 system_fields_locked: Системные поля заблокированы и не могут быть изменены
 directus_collection:
-  directus_activity: Журналы отчетности по всем событиям
+  directus_activity: Журналы отчётности по всем событиям
   directus_collections: Дополнительные настройки коллекции и метаданные
-  directus_dashboards: Панели инструментов в модуле Insights
+  directus_dashboards: Панели инструментов в модуле Аналитика
   directus_fields: Дополнительные настройки полей и метаданные
   directus_files: Метаданные для всех управляемых файлов
+  directus_flows: Автоматизированные процессы
   directus_folders: Предоставляет виртуальные папки для файлов
   directus_migrations: Какую версию базы данных вы используете
   directus_notifications: Уведомления, отправленные пользователям
-  directus_panels: Индивидуальные панели мониторинга
+  directus_operations: Операции, которые выполняются в процессах
+  directus_panels: Панели в досках модуля Аналитика
   directus_permissions: Права доступа для каждой роли
-  directus_presets: Пресеты для коллекций по умолчанию и закладки
-  directus_relations: Настройки связей и метаданные
+  directus_presets: Шаблоны для коллекций по умолчанию и закладки
+  directus_relations: Настройки отношений и метаданные
   directus_revisions: Снимки данных для всех действий
   directus_roles: Группы разрешений для системных пользователей
   directus_sessions: Информация о сеансе пользователя
   directus_settings: Параметры конфигурации проекта
+  directus_shares: Отслеживает элементы с общим доступом
   directus_users: Системные пользователи для платформы
   directus_webhooks: Конфигурация для HTTP-запросов на основе событий
 fields:
   directus_activity:
-    item: Ключ Элемента
+    item: Ключ элемента
     action: Действие
     collection: Коллекция
-    timestamp: Время Действия
+    timestamp: Время действия
     user: Пользователь
     comment: Комментарий
     user_agent: Пользовательский агент
+    origin: Источник
     ip: IP-адрес
-    revisions: Ревизии
+    revisions: Редакции
   directus_collections:
     collection: Коллекция
     icon: Иконка
@@ -1016,7 +1069,7 @@ fields:
     archive_value: Значение для архива
     unarchive_value: Значение для извлеченных из архива
     sort_field: Поле сортировки
-    accountability: Отслеживание активности и редакций
+    accountability: Отслеживание действий и редакций
     archive_field: Архивировать поле
     item_duplication_fields: Поля дублирования предметов
   directus_files:
@@ -1024,10 +1077,10 @@ fields:
     title: Название
     description: Описание
     tags: Теги
-    location: Локация
+    location: Расположение
     storage: Место хранения
     filename_disk: Имя файла (на диске)
-    filename_download: Имя файла (при загрузке)
+    filename_download: Имя файла (при скачивании)
     metadata: Метаданные
     type: MIME-тип
     filesize: Размер файла
@@ -1046,10 +1099,10 @@ fields:
   directus_users:
     first_name: Имя
     last_name: Фамилия
-    email: Email
+    email: E-mail
     password: Пароль
     avatar: Аватар
-    location: Локация
+    location: Расположение
     title: Должность
     description: Описание
     tags: Теги
@@ -1060,41 +1113,43 @@ fields:
     theme_light: Светлая тема
     theme_dark: Тёмная тема
     tfa_secret: Двухфакторная аутентификация
-    admin_options: Настройки администратора
+    admin_options: Параметры администратора
     status: Статус
     status_draft: Черновик
     status_invited: Приглашен(а)
     status_active: Активный
-    status_suspended: Приостановлен
+    status_suspended: Заблокирован
     status_archived: В архиве
     role: Роль
     token: Ключ доступа
     provider: Провайдер
-    external_identifier: Внешний Идентификатор
-    last_page: Последняя Страница
-    last_access: Последний Доступ
-    email_notifications: Уведомления по Email
+    external_identifier: Внешний идентификатор
+    last_page: Последняя страница
+    last_access: Последний доступ
+    email_notifications: Уведомления по e-mail
   directus_settings:
     jpg: JPEG
     png: PNG
     webP: WebP
     tiff: Tiff
-    mapping: Отображения
-    basemaps: Основа карты
+    mapping: Картография
+    basemaps: Базовые карты
     basemaps_raster: Растр
     basemaps_tile: Растр TileJSON
     basemaps_style: Стиль Mapbox
     mapbox_key: Токен доступа Mapbox
     mapbox_placeholder: pk.eyJ1Ijo.....
-    transforms_note: Имя метода Sharp и его аргументы. Дополнительную информацию см. в https://sharp.pixelplumbing.com/api-constructor.
+    attribution: Авторство
+    attribution_placeholder: '© участники OpenStreetMap'
+    transforms_note: Название метода Sharp и его аргументы. Дополнительную информацию см. в https://sharp.pixelplumbing.com/api-constructor.
     additional_transforms: Дополнительные преобразования
     project_name: Название проекта
     project_descriptor: Описание проекта
-    project_url: URL проекта
-    project_color: Цвет Проекта
+    project_url: URL-адрес проекта
+    project_color: Цвет проекта
     project_logo: Логотип проекта
     default_language: Язык по умолчанию
-    branding: Брендинг
+    branding: Фирменный стиль
     public_foreground: Изображение на переднем плане
     public_background: Фоновое изображение
     public_note: Заметка
@@ -1102,102 +1157,106 @@ fields:
     auth_login_attempts: Попыток войти
     files_and_thumbnails: Хранилище файлов
     storage_default_folder: Папка по умолчанию
-    storage_asset_presets: Пресеты трансформации
-    storage_asset_transform: Разрешенные трансформации
-    overrides: Переопределить заводские настройки
+    storage_asset_presets: Шаблоны преобразования
+    storage_asset_transform: Разрешённые преобразования
+    overrides: Переопределения заводских настроек
     custom_css: Пользовательский CSS
     module_bar: Панель модулей
-    transformations_all: Разрешить все трансформации
-    transformations_none: Отключить трансформации
-    transformations_presets: Ограничить преобразования для пресетов ниже
+    transformations_all: Разрешить все преобразования
+    transformations_none: Отключить преобразования
+    transformations_presets: Ограничить преобразования для шаблонов ниже
+    image_editor: Редактор изображений
+    custom_aspect_ratios: Пользовательские пропорции
   directus_shares:
-    name: Имя
+    name: Название
     role: Роль
     password: Пароль
     date_start: Дата начала
-    date_end: Дата Окончания
+    date_end: Дата окончания
+    max_uses: Максимум использований
+    times_used: Использовано раз
   directus_fields:
-    collection: Название Коллекции
-    icon: Значок Коллекции
+    collection: Название коллекции
+    icon: Иконка коллекции
     note: Заметка
     hidden: Скрыто
     singleton: Синглтон
     translation: Переводы названий полей
     display_template: Шаблон
   directus_roles:
-    name: Имя роли
-    icon: Иконка Роли
+    name: Название роли
+    icon: Иконка роли
     description: Описание
-    app_access: Доступ к Приложению
-    admin_access: Доступ Администратора
-    ip_access: Доступ IP
+    app_access: Доступ к приложению
+    admin_access: Доступ администратора
+    ip_access: IP-адреса
     enforce_tfa: Требуется 2FA
-    users: Пользователи в Роли
-    module_list: Навигация по Модулям
+    users: Пользователи в роли
+    module_list: Навигация по модулям
   directus_webhooks:
-    name: Имя
+    name: Название
     method: Метод
     status: Статус
     data: Данные
-    header: Header
+    header: HTTP-заголовок
     value: Значение
-    headers: Заголовки запроса
+    headers: HTTP-заголовки
     data_label: Отправлять данные о событии
     triggers: Триггеры
     actions: Действия
     collections: Коллекции
 field_options:
   directus_settings:
-    project_name_placeholder: Мой проект
-    project_color_note: Логин и фон логотипа
+    project_name_placeholder: Мой проект...
+    project_color_note: Фон страницы входа и логотипа
     project_logo_note: Белый 40х40 SVG/PNG
-    public_note_placeholder: Короткое, публичное сообщение, которое поддерживает markdown форматирование...
+    public_note_placeholder: Короткое сообщение, видимое для всех (поддерживается форматирование с помощью Markdown)...
     security_divider_title: Безопасность
     auth_password_policy:
-      none_text: Нет — не рекомендуется
-      weak_text: Слабый – минимум 8 символов
-      strong_text: Крепкий – строчные, прописные, цифры, специальные
+      none_text: Никакая — не рекомендуется
+      weak_text: Слабая — минимум 8 символов
+      strong_text: Надёжная – строчные, прописные, цифры, специальные символы
     storage_asset_presets:
       fit_label: Подогнать по размеру
-      upscaling: Увеличение
+      upscaling: Апскейлинг
       fit:
         contain_text: Вместить (с сохранением пропорций)
         cover_text: Покрыть (точный размер)
-        fit_text: Поместить внутри
-        outside_text: Поместить вне
+        fit_text: Вписать внутри
+        outside_text: Вписать снаружи
     additional_transforms: Дополнительные преобразования
-    transforms_note: Имя метода Sharp и его аргументы. Дополнительную информацию см. в https://sharp.pixelplumbing.com/api-constructor.
+    transforms_note: Название метода Sharp и его аргументы. Дополнительную информацию см. в https://sharp.pixelplumbing.com/api-constructor.
     mapbox_key: Токен доступа Mapbox
     mapbox_placeholder: pk.eyJ1Ijo.....
-    basemaps: Основа карты
+    basemaps: Базовые карты
     basemaps_name_placeholder: Введите название базовой карты...
     basemaps_raster: Растр
     basemaps_tile: Raster TileJSON
     basemaps_style: Стиль Mapbox
     files_divider_title: Файлы и миниатюры
-    overrides_divider_title: Переопределить заводские настройки
+    overrides_divider_title: Переопределения заводских настроек
   directus_activity:
-    login: Войти
+    login: Войти в систему
     create: Создать
     update: Обновить
     delete: Удалить
   directus_collections:
-    track_activity_revisions: Отслеживание активности и изменений
-    only_track_activity: Отслеживать только активность
+    track_activity_revisions: Отслеживать действия и редакции
+    only_track_activity: Отслеживать только действия
     do_not_track_anything: Ничего не отслеживать
-    collection_setup: Настройки Коллекции
+    collection_setup: Настройки коллекции
     note_placeholder: Описание этой коллекции...
     hidden_label: Скрыть в приложении
     singleton: Считать одним объектом
     language: Язык
     translation: Перевод
     translation_placeholder: Введите перевод...
-    collection_name: Название Коллекции
-    singular_unit: Единичный блок
-    plural_unit: Множественное число
+    collection_name: Название коллекции
+    singular_unit: В единственном числе
+    plural_unit: В множественном числе
     archive_divider: Архив
     archive_field_placeholder: Выберите поле...
-    archive_app_filter: Включить фильтр архива приложения
+    archive_app_filter: Просмотр архивированных элементов
     archive_value: Значение, установленное при архивировании...
     unarchive_value: Значение, установленное при разархивировании...
     sort_divider: Сортировать
@@ -1207,20 +1266,20 @@ field_options:
   directus_files:
     title: Уникальное название...
     description: Описание (необязательно)...
-    location: Необязательная локация...
+    location: Расположение (необязательно)...
     storage_divider: Именование файлов
     filename_disk: Имя на диске...
-    filename_download: Имя при загрузке...
+    filename_download: Имя при скачивании...
   directus_roles:
-    name: Уникальное имя для этой роли...
+    name: Уникальное название для этой роли...
     description: Описание этой роли...
-    ip_access: Добавьте разрешенные IP-адреса, оставьте поле пустым, чтобы разрешить все...
+    ip_access: Добавьте разрешённые IP-адреса — оставьте поле пустым, чтобы разрешить все...
     fields:
       icon_name: Иконка
-      name_name: Имя
+      name_name: Название
       name_placeholder: Введите название...
       link_name: Ссылка
-      link_placeholder: Относительный или абсолютный URL...
+      link_placeholder: Относительный или абсолютный URL-адрес...
     collections_name: Коллекции
     collections_addLabel: Добавить коллекцию...
   directus_users:
@@ -1228,13 +1287,13 @@ field_options:
     dropdown_auto: Автоматически (как в системе)
     dropdown_light: Светлая тема
     dropdown_dark: Тёмная тема
-    admin_divider: Настройки администратора
+    admin_divider: Параметры администратора
     status_dropdown_draft: Черновик
     status_dropdown_invited: Приглашен(а)
     status_dropdown_active: Активный
-    status_dropdown_suspended: Приостановлен
+    status_dropdown_suspended: Заблокирован
     status_dropdown_archived: В архиве
-    token: Укажите достаточно защищенный ключ доступа
+    token: Укажите достаточно надёжный ключ доступа...
   directus_webhooks:
     status_options_active: Активный
     status_options_inactive: Неактивный
@@ -1245,22 +1304,23 @@ field_options:
     actions_delete: Удалить
     actions_login: Войти
     headers:
-      header: Header
+      header: HTTP-заголовок
       value: Значение
       add: Добавить заголовок
-no_fields_in_collection: 'В коллекции "{collection}" пока нет полей'
+no_fields_in_collection: 'В коллекции «{collection}» пока нет полей'
 no_value: Нет значения
-do_nothing: Ничего не Делать
-generate_and_save_uuid: Создать и Сохранить UUID
-save_current_user_id: Сохранить ID Текущего Пользователя
-save_current_user_role: Сохранить Роль Текущего Пользователя
-save_current_datetime: Сохранить Текущую Дату/Время
+do_nothing: Ничего не делать
+generate_and_save_uuid: Создать и сохранить UUID
+save_current_user_id: Сохранить ID текущего пользователя
+save_current_user_role: Сохранить роль текущего пользователя
+save_current_datetime: Сохранить текущую дату/время
 always_open: Всегда открыто
-start_open: Раскрыта
-start_collapsed: Начать свернутым
-block: Блокировать
-inline: Строчный
+start_open: Начать открытым
+start_collapsed: Начать свёрнутым
+block: Блок
+inline: Встроенный
 comment: Комментарий
+unlimited_usage: Неограниченное использование
 new_share: Новая публикация
 expired: Истекло
 share: Поделиться
@@ -1285,7 +1345,7 @@ referential_action_set_default: Установить полю {field} значе
 choose_action: Выбрать действие
 continue_label: Продолжить
 continue_as: >-
-  {name} в настоящее время аутентифицирован. Если вы узнаете этот аккаунт, нажмите продолжить.
+  {name} в данный момент аутентифицирован. Если вы узнаёте эту учётную запись, нажмите продолжить.
 editing_role: '{role} Роль'
 creating_webhook: Создание Веб-хука
 default_label: По умолчанию
@@ -1298,9 +1358,9 @@ description: Описание
 done: Готово
 duplicate: Дублировать
 limit: Лимит
-email: Email
+email: E-mail
 embed: Встроить
-fallback_icon: Резервный Значок
+fallback_icon: Резервная иконка
 field: Поле | Поля
 file: Файл
 file_library: Библиотека Файлов
@@ -1325,17 +1385,19 @@ colors:
 junction_collection: Узловая Коллекция
 latency: Задержка
 login: Войти
-my_activity: Моя Активность
+my_activity: История моих действий
 not_authenticated: Не аутентифицирован
 authenticated: Аутентифицирован
 options: Параметры
 otp: Одноразовый пароль
 password: Пароль
 permissions: Права доступа
-relationship: Связи
+relationship: Отношения
 reset: Сбросить
 reset_password: Сбросить Пароль
-revisions: Ревизии
+revisions: Редакции
+no_revisions: Редакций пока нет
+no_logs: Журналов пока нет
 revert: Вернуть
 save: Сохранить
 schema: Схема
@@ -1349,22 +1411,27 @@ sign_out: Выйти
 sign_out_confirm: Вы уверены, что хотите выйти?
 something_went_wrong: Что-то пошло не так.
 sort_direction: Направление сортировки
+export_location: Расположение экспорта
+export_started: Экспорт начат
+export_started_copy: Ваш экспорт начат. Вы получите уведомление, когда он будет готов к загрузке.
 sort_asc: По Возрастанию
 sort_desc: По Убыванию
 template: Шаблон
 translation: Перевод
 translation_placeholder: Введите перевод...
 value: Значение
-view_project: Просмотр Проекта
+view_project: Просмотреть проект
 report_error: Сообщить об Ошибке
 start: Начало
 table: Таблица
 list: Список
+search_filter: Поиск и фильтрация
+enable_search_filter: Включить поиск и фильтрацию
 interfaces:
   filter:
     name: Фильтр
     description: Настроить фильтр
-    add_filter: Добавить Фильтр
+    add_filter: Добавить фильтр
     add_group: Группа и/или
     add_value: Добавить значение
     logic_type_and: И
@@ -1438,13 +1505,13 @@ interfaces:
     use_24: Использовать 24-Часовой Формат
     placeholder: Выберите дату и время...
   system-fields:
-    select_a_collection: Выберите Коллекцию
+    select_a_collection: Выберите коллекцию
   system-display-template:
     display-template: Шаблон отображения
     description: Смешивать статический текст и динамические значения полей
     collection_field: Поле коллекции
-    collection_field_not_setup: Опция поля коллекции настроена некорректно
-    select_a_collection: Выберите Коллекцию
+    collection_field_not_setup: Опция поля коллекции настроена неправильно
+    select_a_collection: Выберите коллекцию
   presentation-divider:
     divider: Разделитель
     description: Разделить поля на секции с заголовками
@@ -1462,6 +1529,7 @@ interfaces:
     allow_none_label: Можно не указывать значение
     choices_name_placeholder: Введите название...
     choices_value_placeholder: Введите значение...
+    preview_threshold: Порог предпросмотра
   select-multiple-dropdown:
     select-multiple-dropdown: Выпадающий список (несколько)
     description: Выбор нескольких элементов из выпадающего списка
@@ -1479,7 +1547,7 @@ interfaces:
   select-icon:
     icon: Иконка
     description: Выберите иконку из выпадающего списка
-    search_for_icon: Найти иконку...
+    search_for_icon: Поиск иконки...
   file-image:
     image: Изображение
     description: Выберите или загрузите изображение
@@ -1489,7 +1557,7 @@ interfaces:
     description: Выберите существующий интерфейс
     placeholder: Выберите интерфейс...
   system-interface-options:
-    interface-options: Настройки интерфейса
+    interface-options: Параметры интерфейса
     description: Окно выбора параметров интерфейса
   list-m2m:
     many-to-many: Многие ко Многим
@@ -1500,13 +1568,15 @@ interfaces:
     display_template: Шаблон отображения
   input-rich-text-md:
     markdown: Markdown
-    description: Ввод и предварительный просмотр markdown
+    description: Ввод и предпросмотр разметки
     edit: Редактирование
     preview: Предпросмотр
+    previewFont: Шрифт на предпросмотре
     customSyntax: Произвольные блоки
     customSyntax_label: Добавить произвольные типы синтаксиса
     customSyntax_add: Добавить произвольный синтаксис
     box: Блок / Строчный элемент
+    imageToken_label: Статический токен доступа добавляется после URL-адреса файла
   map:
     map: Карта
     description: Указать место на карте
@@ -1514,8 +1584,8 @@ interfaces:
     geometry_type: Тип геометрии
     geometry_format: Формат геометрии
     default_view: Вид по умолчанию
-    invalid_options: Некорректные настройки
-    invalid_format: Некорректный формат ({format})
+    invalid_options: Недействительные варианты
+    invalid_format: Недействительный формат ({format})
     unexpected_geometry: Ожидалось {expected}, а встретилось {got}.
     fit_bounds: Подогнать вид по размеру данных
     native: Родной
@@ -1579,8 +1649,8 @@ interfaces:
     minimum_value: Минимальное значение
     maximum_value: Максимальное значение
     step_interval: Интервал шага
-    slug: Форматировать для URL
-    slug_label: Форматировать для URL
+    slug: Форматировать для URL-адреса
+    slug_label: Форматировать для URL-адреса
   input-multiline:
     textarea: Область текста
     description: Введите простой текст (несколько строк)
@@ -1595,18 +1665,18 @@ interfaces:
     color_on: Цвет Вкл
     color_off: Цвет Выкл
     label_placeholder: Введите метку...
-    label_default: Включен
+    label_default: Включено
   translations:
     display_template: Шаблон отображения
     no_collection: Нет Коллекций
-    toggle_split_view: Переключить Раздельный Вид
+    toggle_split_view: Включить/отключить раздельный вид
     enable: Включить
     user_language: Использовать текущий язык пользователя
     default_language: Язык по умолчанию
     language_field: Языковое поле
   list-o2m-tree-view:
     description: В виде дерева рекурсивно вложенных элементов
-    recursive_only: Дерево можно выбрать для рекурсивных отношений
+    recursive_only: Интерфейс просмотра дерева работает только для рекурсивных отношений.
   user:
     user: Пользователь
     description: Выберите существующего пользователя directus
@@ -1622,6 +1692,7 @@ interfaces:
     custom_formats: Пользовательские форматы
     options_override: Переопределение параметров
     folder_note: Папка для загруженных файлов. Не влияет на существующие файлы.
+    imageToken_label: Статический токен доступа добавляется после URL-адреса файла
   input-autocomplete-api:
     input-autocomplete-api: Автоматическое дополнение ввода (API)
     description: Автодополнение значений поиска через внешний API.
@@ -1642,6 +1713,7 @@ interfaces:
     start_closed: Свёрнута
   system-token:
     system-token: Ключ доступа
+    generate_success_copy: Обязательно создайте резервную копию и скопируйте токен выше. Из соображений безопасности вы не сможете просмотреть токен снова после сохранения и перехода с этой страницы.
 displays:
   translations:
     translations: Переводы
@@ -1651,14 +1723,14 @@ displays:
     default_language: Язык по умолчанию
     language_field: Языковое поле
   boolean:
-    boolean: Логическое
+    boolean: Логическое значение
     description: Отображать состояния вкл и выкл
     label_on: Метка Вкл
     label_on_placeholder: Введите метку вкл...
     label_off: Метка Выкл
     label_off_placeholder: Введите метку выкл...
-    icon_on: Значок Вкл
-    icon_off: Значок Выкл
+    icon_on: Включить иконку
+    icon_off: Отключить иконку
     color_on: Цвет Вкл
     color_off: Цвет Выкл
   collection:
@@ -1680,6 +1752,8 @@ displays:
     relative: Относительный
     relative_label: 'Показывать относительное время, прим.: 5 минут назад'
     suffix: Суффикс
+    strict_label: Использовать строгие единицы измерения
+    strict_note: Удаляет слова типа 'almost', 'over', 'less than'
   file:
     file: Файл
     description: Показать файлы
@@ -1698,6 +1772,7 @@ displays:
     bold_label: Использовать жирный шрифт
     italic: Наклонный
     prefix: Префикс
+    prefix_label: Подготовить текст
     suffix: Суффикс
     color: Цвет
     background: Фон
@@ -1705,6 +1780,7 @@ displays:
     border: Граница
     border_label: Показать границу
     text: Текст
+    text_placeholder: Замещение необязательного значения...
   formatted-json-value:
     formatted-json-value: Форматированное значение JSON
     description: Показывать форматированную версию объекта
@@ -1746,7 +1822,7 @@ displays:
     user: Пользователь
     description: Показать пользователя directus
     avatar: Аватар
-    name: Имя
+    name: Название
     both: Оба
     circle_label: Показывать пользователя в круге
 layouts:
@@ -1774,17 +1850,24 @@ layouts:
     map: Карта
     basemap: Основа карты
     layers: Слои
-    cluster_options: Настройки кластеров
+    cluster_options: Параметры кластеризации
     cluster: Ближайшие данные кластера
     cluster_radius: Радиус кластера
     cluster_minpoints: Минимальный размер кластера
     cluster_maxzoom: Максимальный масштаб для кластеров
     field: Геопространственное поле
-    invalid_geometry: Некорректная геометрия
-    find_location: Найти локацию...
+    invalid_geometry: Недействительная геометрия
+    find_location: Найти место...
     default_template: Использование коллекции по умолчанию...
     no_compatible_fields: Нет совместимых полей
   kanban:
+    title_placeholder: Название (необязательно)...
+    text_placeholder: Текст (необязательно)...
+    date_placeholder: Дата (необязательно)...
+    tags: Теги карточки
+    tags_placeholder: Теги (необязательно)...
+    user_placeholder: Пользователь (необязательно)...
+    image_placeholder: Изображение (необязательно)...
     crop: Обрезать
     advanced: Доп. настройки
 panels:
@@ -1798,7 +1881,7 @@ panels:
     date_field: Поле Дата
     value_field: Поле значения
   label:
-    name: Метка
+    name: Описание
     description: Показать немного текста
   list:
     name: Список
@@ -1808,6 +1891,7 @@ panels:
     group_by: Группировка по
   linechart:
     function: Функция
+    disabled_no_grouping: Отключено, если не выбрана ни одна группировка.
   meter:
     function: Функция
   piechart:
@@ -1818,15 +1902,32 @@ panels:
     monochrome_color: Монохромный цвет
   variable:
     name: Глобальная переменная
+  relational-variable:
+    name: Глобальная реляционная переменная
+    description: Установить глобальное реляционное значение для использования в фильтре других панелей
+    variable_key: Ключ переменной
+    multiple: Несколько
+    multiple-label: Выберите несколько элементов
 triggers:
   common:
     response_body_all: Все данные
     response_body_last: Данные последней операции
   webhook:
     method: Метод
+  operation:
+    name: Другой процесс
+    description: Запускается другим процессом, для цепочки
+    preview: Запускается операцией из другого процесса
+a_flow_uuid: Выберите процесс для запуска...
+operation_variables_note: Вы можете получить доступ к данным процесса с такими переменными как **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** и **{'{'}{'{'}$accountability{'}'}{'}'}**, или ссылаться на предыдущие операции, используя **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
+  condition:
+    description: Маршрутизировать процесс на основе логики If / Else
+  exec:
+    modules: 'Можно использовать следующие **Node модули**:'
   item-create:
     name: Создать данные
+    payload: Содержимое
   item-delete:
     name: Удалить данные
     query: Запрос
@@ -1837,6 +1938,7 @@ operations:
   item-update:
     name: Обновить данные
     description: Обновить элементы в базе данных
+    payload: Содержимое
     query: Запрос
   log:
     name: Лог в консоли
@@ -1851,15 +1953,22 @@ operations:
     recipient: Пользователь
     message: Сообщение
   request:
-    url: URL
+    name: Веб-хук / URL-адрес запроса
+    description: "Сделать запрос на URL-адрес"
+    url: URL-адрес
     url_placeholder: https://example.com/example
     method: Метод
     data: Данные
-    header: Header
+    header: HTTP-заголовок
     header_placeholder: Авторизация...
   sleep:
     milliseconds: Миллисекунды
+  transform:
+    name: Содержание преобразования
+    description: Изменить JSON-содержимое процесса
   trigger:
-    flows: Поток
-    flow: Поток
+    name: Запустить процесс
+    description: Передать данные другому процессу
+    flows: Процессы
+    flow: Процесс
     data: Данные
