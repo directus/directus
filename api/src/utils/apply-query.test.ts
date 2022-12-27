@@ -1,5 +1,5 @@
 import { getFilterPath, getOperation } from './apply-query';
-import { describe, expect } from 'vitest';
+import { describe, expect, test } from 'vitest';
 
 describe('getFilterPath tests', () => {
 	test('basic get filter path', () => {
