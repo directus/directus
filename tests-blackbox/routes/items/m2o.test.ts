@@ -687,7 +687,9 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					describe.each([-1, 1, 3])('where limit = %s', (limit) => {
 						it.each(vendors)('%s', async (vendor) => {
 							// Setup
-							const limit = 3;
+							const expectedLength = limit === -1 ? 5 : limit;
+							const expectedAsc = [1, 2, 3, 4, 5].slice(0, expectedLength);
+							const expectedDesc = [5, 4, 3, 2, 1].slice(0, expectedLength);
 
 							// Action
 							const response = await request(getUrl(vendor))
@@ -744,22 +746,22 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 							// Assert
 							expect(response.statusCode).toEqual(200);
-							expect(response.body.data.length).toBe(limit);
+							expect(response.body.data.length).toBe(expectedLength);
 							expect(response2.statusCode).toEqual(200);
 							expect(response.body.data).not.toEqual(response2.body.data);
 							expect(
 								response.body.data.map((item: any) => {
 									return parseInt(item.country_id.name.slice(-1));
 								})
-							).toEqual([1, 2, 3]);
+							).toEqual(expectedAsc);
 							expect(
 								response2.body.data.map((item: any) => {
 									return parseInt(item.country_id.name.slice(-1));
 								})
-							).toEqual([5, 4, 3]);
+							).toEqual(expectedDesc);
 
 							expect(gqlResponse.statusCode).toEqual(200);
-							expect(gqlResponse.body.data[localCollectionStates].length).toBe(limit);
+							expect(gqlResponse.body.data[localCollectionStates].length).toBe(expectedLength);
 							expect(gqlResponse2.statusCode).toEqual(200);
 							expect(gqlResponse.body.data[localCollectionStates]).not.toEqual(
 								gqlResponse2.body.data[localCollectionStates]
@@ -768,12 +770,12 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								gqlResponse.body.data[localCollectionStates].map((item: any) => {
 									return parseInt(item.country_id.name.slice(-1));
 								})
-							).toEqual([1, 2, 3]);
+							).toEqual(expectedAsc);
 							expect(
 								gqlResponse2.body.data[localCollectionStates].map((item: any) => {
 									return parseInt(item.country_id.name.slice(-1));
 								})
-							).toEqual([5, 4, 3]);
+							).toEqual(expectedDesc);
 						});
 					});
 				});

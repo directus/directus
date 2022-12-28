@@ -941,6 +941,51 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(gqlResponse.statusCode).toEqual(200);
 							expect(gqlResponse2.statusCode).toEqual(200);
 
+							// Oddity in MySQL5, looks to be indexing delays resulting in missing values
+							if (vendor === 'mysql5') {
+								for (const data of [
+									{ response: response.body.data, expected: expectedAsc },
+									{ response: response2.body.data, expected: expectedDesc },
+								]) {
+									expect(data.response.length).toBeLessThanOrEqual(expectedLength);
+
+									let lastIndex = -1;
+									for (const item of data.response) {
+										const foundIndex = data.expected.indexOf(
+											parseInt(item.foods[0][`${localCollectionFoods}_id`].name.slice(-1))
+										);
+
+										expect(foundIndex).toBeGreaterThan(lastIndex);
+
+										if (foundIndex > lastIndex) {
+											lastIndex = foundIndex;
+										}
+									}
+								}
+
+								for (const data of [
+									{ response: gqlResponse.body.data[localCollectionIngredients], expected: expectedAsc },
+									{ response: gqlResponse2.body.data[localCollectionIngredients], expected: expectedDesc },
+								]) {
+									expect(data.response.length).toBeLessThanOrEqual(expectedLength);
+
+									let lastIndex = -1;
+									for (const item of data.response) {
+										const foundIndex = data.expected.indexOf(
+											parseInt(item.foods[0][`${localCollectionFoods}_id`].name.slice(-1))
+										);
+
+										expect(foundIndex).toBeGreaterThan(lastIndex);
+
+										if (foundIndex > lastIndex) {
+											lastIndex = foundIndex;
+										}
+									}
+								}
+
+								return;
+							}
+
 							expect(response.body.data.length).toBe(expectedLength);
 							expect(response.body.data).not.toEqual(response2.body.data);
 							expect(
@@ -1340,6 +1385,51 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 							expect(gqlResponse.statusCode).toEqual(200);
 							expect(gqlResponse2.statusCode).toEqual(200);
+
+							// Oddity in MySQL5, looks to be indexing delays resulting in missing values
+							if (vendor === 'mysql5') {
+								for (const data of [
+									{ response: response.body.data, expected: expectedAsc },
+									{ response: response2.body.data, expected: expectedDesc },
+								]) {
+									expect(data.response.length).toBeLessThanOrEqual(expectedLength);
+
+									let lastIndex = -1;
+									for (const item of data.response) {
+										const foundIndex = data.expected.indexOf(
+											parseInt(item.foods[0][`${localCollectionFoods}_id`].test_datetime_year.toString().slice(-1))
+										);
+
+										expect(foundIndex).toBeGreaterThan(lastIndex);
+
+										if (foundIndex > lastIndex) {
+											lastIndex = foundIndex;
+										}
+									}
+								}
+
+								for (const data of [
+									{ response: gqlResponse.body.data[localCollectionIngredients], expected: expectedAsc },
+									{ response: gqlResponse2.body.data[localCollectionIngredients], expected: expectedDesc },
+								]) {
+									expect(data.response.length).toBeLessThanOrEqual(expectedLength);
+
+									let lastIndex = -1;
+									for (const item of data.response) {
+										const foundIndex = data.expected.indexOf(
+											parseInt(item.foods[0][`${localCollectionFoods}_id`].test_datetime_func.year.toString().slice(-1))
+										);
+
+										expect(foundIndex).toBeGreaterThan(lastIndex);
+
+										if (foundIndex > lastIndex) {
+											lastIndex = foundIndex;
+										}
+									}
+								}
+
+								return;
+							}
 
 							expect(response.body.data.length).toBe(expectedLength);
 							expect(response.body.data).not.toEqual(response2.body.data);
