@@ -41,9 +41,9 @@ export class DriverS3 implements Driver {
 	constructor(config: DriverS3Config) {
 		const s3ClientConfig: S3ClientConfig = {};
 
-		if (config.key || config.secret) {
-			if (!(config.key && config.secret)) throw new Error('Both `key` and `secret` are required when defined');
-
+		if ((config.key && !config.secret) || (config.secret && !config.key)) {
+			throw new Error('Both `key` and `secret` are required when defined');
+		} else if (config.key && config.secret) {
 			s3ClientConfig.credentials = {
 				accessKeyId: config.key,
 				secretAccessKey: config.secret,
