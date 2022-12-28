@@ -581,7 +581,10 @@ function removeTemporaryFields(
 				);
 			}
 
-			item = fields[relatedCollection].length > 0 ? pick(rawItem, fields[relatedCollection]) : rawItem[primaryKeyField];
+			const fieldsWithFunctionsApplied = fields[relatedCollection].map((field) => applyFunctionToColumnName(field));
+
+			item =
+				fields[relatedCollection].length > 0 ? pick(rawItem, fieldsWithFunctionsApplied) : rawItem[primaryKeyField];
 
 			items.push(item);
 		}
