@@ -75,10 +75,24 @@ export class DriverLocal implements Driver {
 	}
 
 	async write(filepath: string, content: Readable) {
-		const fullPath = this.fullPath(filepath);
-		await this.ensureDir(dirname(fullPath));
-		const writeStream = createWriteStream(fullPath);
-		await pipeline(content, writeStream);
+		try {
+			const fullPath = this.fullPath(filepath);
+			await this.ensureDir(dirname(fullPath));
+			const writeStream = createWriteStream(fullPath);
+			writeStream.on('error', (error) => {
+				throw error;
+			});
+			content.on('close', () => {
+				writeStream.end();
+				writeStream.on('finish', () => {
+					writeStream.close();
+				});
+			});
+
+			await pipeline(content, writeStream);
+		} catch (error) {
+			throw new Error(`Failed writing file "${filepath}": ${error}`);
+		}
 	}
 
 	async delete(filepath: string) {
