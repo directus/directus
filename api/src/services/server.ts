@@ -18,6 +18,14 @@ import { SettingsService } from './settings';
 import { getOSInfo } from '../utils/get-os-info';
 import { Readable } from 'node:stream';
 
+function sleep(ms: number) {
+	return new Promise<void>((resolve) => {
+		setTimeout(() => {
+			resolve();
+		}, ms);
+	});
+}
+
 export class ServerService {
 	knex: Knex;
 	accountability: Accountability | null;
@@ -307,9 +315,16 @@ export class ServerService {
 				const startTime = performance.now();
 
 				try {
-					await disk.write(`health-${checkID}`, Readable.from(['check']));
-					await disk.read(`health-${checkID}`);
-					await disk.delete(`health-${checkID}`);
+					await disk.write(`health-${checkID}`, Readable.from(['check'])).catch((err) => {
+						throw err;
+					});
+					await sleep(500); // 500 ms wait for disk to write
+					await disk.read(`health-${checkID}`).catch((err) => {
+						throw err;
+					});
+					await disk.delete(`health-${checkID}`).catch((err) => {
+						throw err;
+					});
 				} catch (err: any) {
 					checks[`storage:${location}:responseTime`][0].status = 'error';
 					checks[`storage:${location}:responseTime`][0].output = err;
