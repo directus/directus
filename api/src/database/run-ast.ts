@@ -293,7 +293,7 @@ async function getDBQuery(
 
 			sortRecords.map((sortRecord) => {
 				if (orderByString.length !== 0) {
-					orderByString += ',';
+					orderByString += ', ';
 				}
 
 				const sortAlias = `sort_${generateAlias()}`;
@@ -305,7 +305,7 @@ async function getDBQuery(
 						})
 					);
 
-					orderByString += ` ?? ${sortRecord.order}`;
+					orderByString += `?? ${sortRecord.order}`;
 					orderByFields.push(
 						getColumn(knex, alias, field, false, schema, {
 							originalCollectionName: getCollectionFromAlias(alias, aliasMap),
@@ -314,7 +314,7 @@ async function getDBQuery(
 				} else {
 					dbQuery.select(getColumn(knex, table, sortRecord.column, sortAlias, schema));
 
-					orderByString += ` ?? ${sortRecord.order}`;
+					orderByString += `?? ${sortRecord.order}`;
 					orderByFields.push(getColumn(knex, table, sortRecord.column, false, schema));
 				}
 				innerQuerySortRecords.push({ alias: sortAlias, order: sortRecord.order });
@@ -323,8 +323,6 @@ async function getDBQuery(
 			dbQuery.orderByRaw(orderByString, orderByFields);
 
 			if (hasMultiRelationalSort) {
-				orderByString = ' order by' + orderByString;
-
 				dbQuery = helpers.schema.applyMultiRelationalSort(
 					knex,
 					dbQuery,
