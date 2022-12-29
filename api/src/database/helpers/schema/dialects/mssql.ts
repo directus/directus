@@ -3,6 +3,8 @@ import { SchemaHelper } from '../types';
 
 export class SchemaHelperMSSQL extends SchemaHelper {
 	applyLimit(rootQuery: Knex.QueryBuilder, limit: number): void {
+		// The ORDER BY clause is invalid in views, inline functions, derived tables, subqueries,
+		// and common table expressions, unless TOP, OFFSET or FOR XML is also specified.
 		if (limit === -1) {
 			rootQuery.limit(Number.MAX_SAFE_INTEGER);
 		} else {
