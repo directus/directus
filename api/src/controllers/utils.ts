@@ -14,6 +14,7 @@ import asyncHandler from '../utils/async-handler';
 import Busboy from 'busboy';
 import { flushCaches } from '../cache';
 import { generateHash } from '../utils/generate-hash';
+import { sanitizeQuery } from '../utils/sanitize-query';
 
 const router = Router();
 
@@ -154,16 +155,10 @@ router.post(
 			schema: req.schema,
 		});
 
-		if (req.body.query?.limit !== undefined) {
-			if (Number(req.body.query.limit) >= -1) {
-				req.body.query.limit = Number(req.body.query.limit);
-			} else {
-				delete req.body.query.limit;
-			}
-		}
+		const sanitizedQuery = sanitizeQuery(req.body.query, req.accountability ?? null);
 
 		// We're not awaiting this, as it's supposed to run async in the background
-		service.exportToFile(req.params.collection, req.body.query, req.body.format, {
+		service.exportToFile(req.params.collection, sanitizedQuery, req.body.format, {
 			file: req.body.file,
 		});
 
