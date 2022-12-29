@@ -299,18 +299,11 @@ async function getDBQuery(
 				const sortAlias = `sort_${generateAlias()}`;
 				if (sortRecord.column.includes('.')) {
 					const [alias, field] = sortRecord.column.split('.');
-					dbQuery.select(
-						getColumn(knex, alias, field, sortAlias, schema, {
-							originalCollectionName: getCollectionFromAlias(alias, aliasMap),
-						})
-					);
+					const originalCollectionName = getCollectionFromAlias(alias, aliasMap);
+					dbQuery.select(getColumn(knex, alias, field, sortAlias, schema, { originalCollectionName }));
 
 					orderByString += `?? ${sortRecord.order}`;
-					orderByFields.push(
-						getColumn(knex, alias, field, false, schema, {
-							originalCollectionName: getCollectionFromAlias(alias, aliasMap),
-						})
-					);
+					orderByFields.push(getColumn(knex, alias, field, false, schema, { originalCollectionName }));
 				} else {
 					dbQuery.select(getColumn(knex, table, sortRecord.column, sortAlias, schema));
 
