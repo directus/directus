@@ -75,6 +75,7 @@ import { clone, get } from 'lodash';
 import InputComponent from './input-component.vue';
 import { FieldFilter } from '@directus/shared/types';
 import { fieldToFilter, getComparator, getField } from './utils';
+import { useRelationsStore } from '@/stores/relations';
 
 export default defineComponent({
 	components: { InputComponent },
@@ -91,10 +92,21 @@ export default defineComponent({
 	emits: ['update:field'],
 	setup(props, { emit }) {
 		const fieldsStore = useFieldsStore();
+		const relationsStore = useRelationsStore();
 		const { t } = useI18n();
 
 		const fieldInfo = computed(() => {
-			return fieldsStore.getField(props.collection, getField(props.field));
+			const fieldInfo = fieldsStore.getField(props.collection, getField(props.field));
+
+			// Alias uses the foreign key type
+			if (fieldInfo?.type === 'alias') {
+				const relations = relationsStore.getRelationsForField(props.collection, getField(props.field));
+				if (relations[0]) {
+					return fieldsStore.getField(relations[0].collection, relations[0].field);
+				}
+			}
+
+			return fieldInfo;
 		});
 
 		const comparator = computed(() => {

@@ -19,6 +19,7 @@ export * from './get-with-arrays';
 export * from './is-dynamic-variable';
 export * from './merge-filters';
 export * from './move-in-array';
+export * from './parse-filter-function-path';
 export * from './parse-filter';
 export * from './parse-json';
 export * from './pluralize';

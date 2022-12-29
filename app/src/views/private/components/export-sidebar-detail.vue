@@ -474,10 +474,10 @@ function startExport() {
 }
 
 function exportDataLocal() {
-	const endpoint = collection.value.startsWith('directus_')
-		? `${collection.value.substring(9)}`
-		: `items/${collection.value}`;
-	const url = getPublicURL() + endpoint;
+	const endpoint = getEndpoint(collection.value);
+
+	// usually getEndpoint contains leading slash, but here we need to remove it
+	const url = getPublicURL() + endpoint.substring(1);
 
 	let params: Record<string, unknown> = {
 		access_token: api.defaults.headers.common['Authorization'].substring(7),
