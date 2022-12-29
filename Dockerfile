@@ -1,6 +1,6 @@
 # NOTE: Testing Only. DO NOT use this in production
 
-ARG NODE_VERSION=16-alpine
+ARG NODE_VERSION=18
 
 FROM node:${NODE_VERSION}
 
