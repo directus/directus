@@ -454,7 +454,7 @@ function useUpload() {
 			});
 		} catch (err: any) {
 			notify({
-				title: t('import_data_error'),
+				title: err?.response?.data?.errors[0]?.message || err?.response?.data?.message || t('import_data_error'),
 				type: 'error',
 			});
 		} finally {
