@@ -189,14 +189,6 @@ describe('offset', () => {
 
 		expect(sanitizedQuery.offset).toBeUndefined();
 	});
-
-	// test('should ignore non-number', () => {
-	// 	const offset = 'a';
-
-	// 	const sanitizedQuery = sanitizeQuery({ offset });
-
-	// 	expect(sanitizedQuery.offset).toBeUndefined();
-	// });
 });
 
 describe('page', () => {
@@ -223,14 +215,6 @@ describe('page', () => {
 
 		expect(sanitizedQuery.page).toBeUndefined();
 	});
-
-	// test('should ignore non-number', () => {
-	// 	const page = 'a';
-
-	// 	const sanitizedQuery = sanitizeQuery({ page });
-
-	// 	expect(sanitizedQuery.page).toBeUndefined();
-	// });
 });
 
 describe('meta', () => {
