@@ -33,14 +33,6 @@ describe('limit', () => {
 
 		expect(sanitizedQuery.limit).toBeUndefined();
 	});
-
-	test('should ignore non-number', () => {
-		const limit = 'a';
-
-		const sanitizedQuery = sanitizeQuery({ limit });
-
-		expect(sanitizedQuery.limit).toBeUndefined();
-	});
 });
 
 describe('fields', () => {
