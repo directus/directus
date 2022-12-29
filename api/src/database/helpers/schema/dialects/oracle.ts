@@ -10,4 +10,8 @@ export class SchemaHelperOracle extends SchemaHelper {
 	): Promise<void> {
 		await this.changeToTypeByCopy(table, column, type, options);
 	}
+
+	castA2oPrimaryKey(): string {
+		return 'CAST(?? AS VARCHAR2(255))';
+	}
 }
