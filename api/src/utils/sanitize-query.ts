@@ -129,7 +129,7 @@ function sanitizeFilter(rawFilter: any, accountability: Accountability | null) {
 function sanitizeLimit(rawLimit: any) {
 	if (rawLimit === undefined || rawLimit === null) return null;
 	const limit = Number(rawLimit);
-	if (limit < -1) return null; // don't accept below -1
+	if (!Number.isInteger(limit) || limit < -1) return null; // don't accept non-integers or below -1
 	return limit;
 }
 
