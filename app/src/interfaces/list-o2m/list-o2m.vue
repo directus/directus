@@ -49,7 +49,7 @@
 				:loading="loading"
 				:items="displayItems"
 				:row-height="tableRowHeight"
-				:server-sort="pageCount > 1"
+				:server-sort="true"
 				show-resize
 				@click:row="editRow"
 			>
@@ -330,7 +330,7 @@ const {
 	isItemSelected,
 	localDelete,
 	getItemEdits,
-} = useRelationMultiple(value, query, relationInfo, primaryKey);
+} = useRelationMultiple(value, query, relationInfo, primaryKey, false);
 
 const pageCount = computed(() => Math.ceil(totalItemCount.value / limit.value));
 

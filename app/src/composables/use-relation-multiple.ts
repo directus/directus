@@ -34,7 +34,8 @@ export function useRelationMultiple(
 	value: Ref<Record<string, any> | any[] | undefined>,
 	previewQuery: Ref<RelationQueryMultiple>,
 	relation: Ref<RelationM2A | RelationM2M | RelationO2M | undefined>,
-	itemId: Ref<string | number>
+	itemId: Ref<string | number>,
+	trackItemCount = true
 ) {
 	const loading = ref(false);
 	const fetchedItems = ref<Record<string, any>[]>([]);
@@ -353,7 +354,9 @@ export function useRelationMultiple(
 		try {
 			loading.value = true;
 
-			await updateItemCount(targetCollection, targetPKField, reverseJunctionField);
+			if (existingItemCount.value <= 0 || trackItemCount) {
+				await updateItemCount(targetCollection, targetPKField, reverseJunctionField);
+			}
 
 			if (itemId.value !== '+') {
 				const filter: Filter = { _and: [{ [reverseJunctionField]: itemId.value } as Filter] };
