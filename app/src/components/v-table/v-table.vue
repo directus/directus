@@ -125,7 +125,6 @@ interface Props {
 	loading?: boolean;
 	loadingText?: string;
 	noItemsText?: string;
-	serverSort?: boolean;
 	rowHeight?: number;
 	selectionUseKeys?: boolean;
 	inline?: boolean;
@@ -147,7 +146,6 @@ const props = withDefaults(defineProps<Props>(), {
 	loading: false,
 	loadingText: i18n.global.t('loading'),
 	noItemsText: i18n.global.t('no_items'),
-	serverSort: false,
 	rowHeight: 48,
 	selectionUseKeys: false,
 	inline: false,
@@ -206,18 +204,12 @@ const internalHeaders = computed({
 
 // In case the sort prop isn't used, we'll use this local sort state as a fallback.
 // This allows the table to allow inline sorting on column ootb without the need for
-const internalSort = ref<Sort>({
-	by: null,
-	desc: false,
-});
-
-watch(
-	() => props.sort,
-	() => {
-		if (!props.sort) return;
-		internalSort.value = props.sort;
-	},
-	{ immediate: true }
+const internalSort = computed<Sort>(
+	() =>
+		props.sort ?? {
+			by: null,
+			desc: false,
+		}
 );
 
 const reordering = ref<boolean>(false);
@@ -237,15 +229,7 @@ const fullColSpan = computed<string>(() => {
 
 const internalItems = computed({
 	get: () => {
-		if (props.serverSort === true || internalSort.value.by === props.manualSortKey) {
-			return props.items;
-		}
-
-		if (internalSort.value.by === null) return props.items;
-
-		const itemsSorted = sortBy(props.items, [internalSort.value.by]);
-		if (internalSort.value.desc === true) return itemsSorted.reverse();
-		return itemsSorted;
+		return props.items;
 	},
 	set: (value: Item[]) => {
 		emit('update:items', value);
@@ -348,10 +332,7 @@ function onSortChange(event: EndEvent) {
 	emit('manual-sort', { item, to });
 }
 function updateSort(newSort: Sort) {
-	if (props.serverSort) {
-		emit('update:sort', newSort?.by ? newSort : null);
-	}
-	internalSort.value = newSort;
+	emit('update:sort', newSort?.by ? newSort : null);
 }
 </script>
 

@@ -49,7 +49,6 @@
 				:loading="loading"
 				:items="displayItems"
 				:row-height="tableRowHeight"
-				:server-sort="true"
 				show-resize
 				@click:row="editRow"
 			>
