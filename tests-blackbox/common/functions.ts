@@ -245,7 +245,7 @@ export async function CreateField(vendor: string, options: OptionsCreateField) {
 export type OptionsCreateRelation = {
 	collection: string;
 	field: string;
-	related_collection: string;
+	related_collection: string | null;
 	meta?: any;
 	schema?: any;
 };
@@ -521,6 +521,126 @@ export async function CreateFieldM2M(vendor: string, options: OptionsCreateField
 	const otherRelation = await CreateRelation(vendor, otherRelationOptions);
 
 	return { field, otherField, junctionCollection, junctionField, otherJunctionField, relation, otherRelation };
+}
+
+export type OptionsCreateFieldM2A = {
+	collection: string;
+	field: string;
+	relatedCollections: string[];
+	fieldMeta?: any;
+	fieldSchema?: any;
+	junctionCollection: string;
+	primaryKeyType?: string;
+	relationMeta?: any;
+	relationSchema?: any;
+	itemRelationMeta?: any;
+	itemRelationSchema?: any;
+};
+
+export async function CreateFieldM2A(vendor: string, options: OptionsCreateFieldM2A) {
+	// Parse options
+	const defaultOptions = {
+		fieldMeta: {},
+		fieldSchema: {},
+		primaryKeyType: 'integer',
+		otherMeta: {},
+		otherSchema: {},
+		relationSchema: null,
+		otherRelationSchema: {
+			on_delete: 'SET NULL',
+		},
+	};
+
+	options = Object.assign({}, defaultOptions, options);
+
+	const fieldOptions: OptionsCreateField = {
+		collection: options.collection,
+		field: options.field,
+		type: 'alias',
+		meta: options.fieldMeta,
+		schema: options.fieldSchema,
+	};
+
+	if (!fieldOptions.meta.special) {
+		fieldOptions.meta.special = ['m2a'];
+	} else if (!fieldOptions.meta.special.includes('m2a')) {
+		fieldOptions.meta.special.push('m2a');
+	}
+
+	// Action
+	const field = await CreateField(vendor, fieldOptions);
+
+	const junctionCollectionOptions: OptionsCreateCollection = {
+		collection: options.junctionCollection,
+		primaryKeyType: 'integer',
+	};
+
+	const junctionCollection = await CreateCollection(vendor, junctionCollectionOptions);
+
+	const junctionFieldName = `${options.junctionCollection}_id`;
+	const junctionFieldOptions: OptionsCreateField = {
+		collection: options.junctionCollection,
+		field: junctionFieldName,
+		type: options.primaryKeyType!,
+		meta: { hidden: true },
+	};
+
+	const junctionField = await CreateField(vendor, junctionFieldOptions);
+
+	const junctionFieldItemOptions: OptionsCreateField = {
+		collection: options.junctionCollection,
+		field: 'item',
+		type: 'string',
+		meta: { hidden: true },
+	};
+
+	const junctionFieldItem = await CreateField(vendor, junctionFieldItemOptions);
+
+	const junctionFieldCollectionOptions: OptionsCreateField = {
+		collection: options.junctionCollection,
+		field: 'collection',
+		type: 'string',
+		meta: { hidden: true },
+	};
+
+	const junctionFieldCollection = await CreateField(vendor, junctionFieldCollectionOptions);
+
+	const relationOptions: OptionsCreateRelation = {
+		collection: options.junctionCollection,
+		field: 'item',
+		related_collection: null,
+		meta: {
+			one_allowed_collections: options.relatedCollections,
+			one_collection_field: 'collection',
+			junction_field: junctionFieldName,
+		},
+		schema: null,
+	};
+
+	const relation = await CreateRelation(vendor, relationOptions);
+
+	const itemRelationOptions: OptionsCreateRelation = {
+		collection: options.junctionCollection,
+		field: junctionFieldName,
+		related_collection: options.collection,
+		meta: {
+			one_field: options.field,
+			junction_field: 'item',
+		},
+		schema: options.itemRelationSchema,
+	};
+
+	const itemRelation = await CreateRelation(vendor, itemRelationOptions);
+
+	return {
+		field,
+		junctionCollection,
+		junctionField,
+		junctionFieldItem,
+		junctionFieldCollection,
+		relation,
+		otherRelation: itemRelation,
+	};
 }
 
 export type OptionsCreateItem = {

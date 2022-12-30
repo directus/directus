@@ -253,6 +253,7 @@ uuid: UUID
 hash: الهاش
 geometry: الهندسة (الكل)
 geometry.Point: نقطة
+geometry.LineString: LineString
 geometry.Polygon: مضلّع
 geometry.MultiPoint: نقاط متعددة
 not_available_for_type: غير متوفّر لنوع الملفات هذا

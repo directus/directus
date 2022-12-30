@@ -1,22 +1,26 @@
-import exifr from 'exifr';
+import { toArray } from '@directus/shared/utils';
+import { lookup } from 'dns';
+import encodeURL from 'encodeurl';
+import exif from 'exif-reader';
+import { parse as parseIcc } from 'icc';
 import { clone, pick } from 'lodash';
 import { extension } from 'mime-types';
+import net from 'net';
+import type { Readable } from 'node:stream';
+import { pipeline } from 'node:stream/promises';
+import os from 'os';
 import path from 'path';
 import sharp from 'sharp';
 import url, { URL } from 'url';
 import { promisify } from 'util';
-import { lookup } from 'dns';
 import emitter from '../emitter';
 import env from '../env';
 import { ForbiddenException, InvalidPayloadException, ServiceUnavailableException } from '../exceptions';
 import logger from '../logger';
-import storage from '../storage';
-import { AbstractServiceOptions, File, PrimaryKey, MutationOptions, Metadata } from '../types';
-import { toArray } from '@directus/shared/utils';
+import { getStorage } from '../storage';
+import { AbstractServiceOptions, File, Metadata, MutationOptions, PrimaryKey } from '../types';
+import { parseIptc, parseXmp } from '../utils/parse-image-metadata';
 import { ItemsService } from './items';
-import net from 'net';
-import os from 'os';
-import encodeURL from 'encodeurl';
 
 // @ts-ignore
 import formatTitle from '@directus/format-title';
@@ -32,11 +36,13 @@ export class FilesService extends ItemsService {
 	 * Upload a single new file to the configured storage adapter
 	 */
 	async uploadOne(
-		stream: NodeJS.ReadableStream,
+		stream: Readable,
 		data: Partial<File> & { filename_download: string; storage: string },
 		primaryKey?: PrimaryKey,
 		opts?: MutationOptions
 	): Promise<PrimaryKey> {
+		const storage = await getStorage();
+
 		const payload = clone(data);
 
 		if ('folder' in payload === false) {
@@ -52,10 +58,10 @@ export class FilesService extends ItemsService {
 
 			// If the file you're uploading already exists, we'll consider this upload a replace. In that case, we'll
 			// delete the previously saved file and thumbnails to ensure they're generated fresh
-			const disk = storage.disk(payload.storage);
+			const disk = storage.location(payload.storage);
 
-			for await (const file of disk.flatList(String(primaryKey))) {
-				await disk.delete(file.path);
+			for await (const filepath of disk.list(String(primaryKey))) {
+				await disk.delete(filepath);
 			}
 		} else {
 			primaryKey = await this.createOne(payload, { emitEvents: false });
@@ -71,19 +77,19 @@ export class FilesService extends ItemsService {
 		}
 
 		try {
-			await storage.disk(data.storage).put(payload.filename_disk, stream, payload.type);
+			await storage.location(data.storage).write(payload.filename_disk, stream, payload.type);
 		} catch (err: any) {
 			logger.warn(`Couldn't save file ${payload.filename_disk}`);
 			logger.warn(err);
 			throw new ServiceUnavailableException(`Couldn't save file ${payload.filename_disk}`, { service: 'files' });
 		}
 
-		const { size } = await storage.disk(data.storage).getStat(payload.filename_disk);
+		const { size } = await storage.location(data.storage).stat(payload.filename_disk);
 		payload.filesize = size;
 
 		if (['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/tiff'].includes(payload.type)) {
-			const buffer = await storage.disk(data.storage).getBuffer(payload.filename_disk);
-			const { height, width, description, title, tags, metadata } = await this.getMetadata(buffer.content);
+			const stream = await storage.location(data.storage).read(payload.filename_disk);
+			const { height, width, description, title, tags, metadata } = await this.getMetadata(stream);
 
 			payload.height ??= height;
 			payload.width ??= width;
@@ -128,58 +134,87 @@ export class FilesService extends ItemsService {
 	/**
 	 * Extract metadata from a buffer's content
 	 */
-	async getMetadata(bufferContent: any, allowList = env.FILE_METADATA_ALLOW_LIST): Promise<Metadata> {
-		const metadata: Metadata = {};
+	async getMetadata(stream: Readable, allowList = env.FILE_METADATA_ALLOW_LIST): Promise<Metadata> {
+		return new Promise((resolve, reject) => {
+			pipeline(
+				stream,
+				sharp().metadata(async (err, sharpMetadata) => {
+					if (err) reject(err);
 
-		try {
-			const sharpMetadata = await sharp(bufferContent, {}).metadata();
+					const metadata: Metadata = {};
 
-			if (sharpMetadata.orientation && sharpMetadata.orientation >= 5) {
-				metadata.height = sharpMetadata.width;
-				metadata.width = sharpMetadata.height;
-			} else {
-				metadata.width = sharpMetadata.width;
-				metadata.height = sharpMetadata.height;
-			}
-		} catch (err: any) {
-			logger.warn(`Couldn't extract sharp metadata from file`);
-			logger.warn(err);
-		}
+					if (sharpMetadata.orientation && sharpMetadata.orientation >= 5) {
+						metadata.height = sharpMetadata.width;
+						metadata.width = sharpMetadata.height;
+					} else {
+						metadata.width = sharpMetadata.width;
+						metadata.height = sharpMetadata.height;
+					}
 
-		try {
-			const exifrMetadata = await exifr.parse(bufferContent, {
-				icc: false,
-				iptc: true,
-				ifd1: true,
-				interop: true,
-				translateValues: true,
-				reviveValues: true,
-				mergeOutput: false,
-			});
+					// Backward-compatible layout as it used to be with 'exifr'
+					const fullMetadata: {
+						ifd0?: Record<string, unknown>;
+						ifd1?: Record<string, unknown>;
+						exif?: Record<string, unknown>;
+						gps?: Record<string, unknown>;
+						interop?: Record<string, unknown>;
+						icc?: Record<string, unknown>;
+						iptc?: Record<string, unknown>;
+						xmp?: Record<string, unknown>;
+					} = {};
+					if (sharpMetadata.exif) {
+						const { image, thumbnail, interoperability, ...rest } = exif(sharpMetadata.exif);
+						if (image) {
+							fullMetadata.ifd0 = image;
+						}
+						if (thumbnail) {
+							fullMetadata.ifd1 = thumbnail;
+						}
+						if (interoperability) {
+							fullMetadata.interop = interoperability;
+						}
+						Object.assign(fullMetadata, rest);
+					}
+					if (sharpMetadata.icc) {
+						fullMetadata.icc = parseIcc(sharpMetadata.icc);
+					}
+					if (sharpMetadata.iptc) {
+						fullMetadata.iptc = parseIptc(sharpMetadata.iptc);
+					}
+					if (sharpMetadata.xmp) {
+						fullMetadata.xmp = parseXmp(sharpMetadata.xmp);
+					}
 
-			if (allowList === '*' || allowList?.[0] === '*') {
-				metadata.metadata = exifrMetadata;
-			} else {
-				metadata.metadata = pick(exifrMetadata, allowList);
-			}
+					if (fullMetadata?.iptc?.Caption && typeof fullMetadata.iptc.Caption === 'string') {
+						metadata.description = fullMetadata.iptc?.Caption;
+					}
+					if (fullMetadata?.iptc?.Headline && typeof fullMetadata.iptc.Headline === 'string') {
+						metadata.title = fullMetadata.iptc.Headline;
+					}
+					if (fullMetadata?.iptc?.Keywords) {
+						metadata.tags = fullMetadata.iptc.Keywords;
+					}
 
-			if (!metadata.description && exifrMetadata?.Caption) {
-				metadata.description = exifrMetadata.Caption;
-			}
+					if (allowList === '*' || allowList?.[0] === '*') {
+						metadata.metadata = fullMetadata;
+					} else {
+						metadata.metadata = pick(fullMetadata, allowList);
+					}
 
-			if (exifrMetadata?.Headline) {
-				metadata.title = exifrMetadata.Headline;
-			}
+					// Fix (incorrectly parsed?) values starting / ending with spaces,
+					// limited to one level and string values only
+					for (const section of Object.keys(metadata.metadata)) {
+						for (const [key, value] of Object.entries(metadata.metadata[section])) {
+							if (typeof value === 'string') {
+								metadata.metadata[section][key] = value.trim();
+							}
+						}
+					}
 
-			if (exifrMetadata?.Keywords) {
-				metadata.tags = exifrMetadata.Keywords;
-			}
-		} catch (err: any) {
-			logger.warn(`Couldn't extract EXIF metadata from file`);
-			logger.warn(err);
-		}
-
-		return metadata;
+					resolve(metadata);
+				})
+			);
+		});
 	}
 
 	/**
@@ -247,7 +282,7 @@ export class FilesService extends ItemsService {
 		let fileResponse;
 
 		try {
-			fileResponse = await axios.get<NodeJS.ReadableStream>(encodeURL(importURL), {
+			fileResponse = await axios.get<Readable>(encodeURL(importURL), {
 				responseType: 'stream',
 			});
 		} catch (err: any) {
@@ -296,6 +331,7 @@ export class FilesService extends ItemsService {
 	 * Delete multiple files
 	 */
 	async deleteMany(keys: PrimaryKey[], opts?: MutationOptions): Promise<PrimaryKey[]> {
+		const storage = await getStorage();
 		const files = await super.readMany(keys, { fields: ['id', 'storage'], limit: -1 });
 
 		if (!files) {
@@ -305,11 +341,11 @@ export class FilesService extends ItemsService {
 		await super.deleteMany(keys);
 
 		for (const file of files) {
-			const disk = storage.disk(file.storage);
+			const disk = storage.location(file.storage);
 
 			// Delete file + thumbnails
-			for await (const { path } of disk.flatList(file.id)) {
-				await disk.delete(path);
+			for await (const filepath of disk.list(file.id)) {
+				await disk.delete(filepath);
 			}
 		}
 
