@@ -172,8 +172,12 @@ export function useItem(
 			...edits.value,
 		};
 
-		// Make sure to delete the primary key if it's generated
-		if (primaryKeyField.value && primaryKeyField.value.schema?.is_generated && primaryKeyField.value.field in newItem) {
+		// Make sure to delete the primary key if it's has auto increment enabled
+		if (
+			primaryKeyField.value &&
+			primaryKeyField.value.field in newItem &&
+			primaryKeyField.value.schema?.has_auto_increment
+		) {
 			delete newItem[primaryKeyField.value.field];
 		}
 
