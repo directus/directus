@@ -173,12 +173,14 @@ export function useItem(
 		};
 
 		// Make sure to delete the primary key if it's has auto increment enabled
-		if (
-			primaryKeyField.value &&
-			primaryKeyField.value.field in newItem &&
-			primaryKeyField.value.schema?.has_auto_increment
-		) {
-			delete newItem[primaryKeyField.value.field];
+		if (primaryKeyField.value && primaryKeyField.value.field in newItem) {
+			if (
+				primaryKeyField.value.schema?.has_auto_increment ||
+				primaryKeyField.value?.schema?.is_generated ||
+				primaryKeyField.value.meta?.special?.includes('uuid')
+			) {
+				delete newItem[primaryKeyField.value.field];
+			}
 		}
 
 		// Make sure to delete nested relational primary keys
