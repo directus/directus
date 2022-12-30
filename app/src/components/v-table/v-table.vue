@@ -349,7 +349,7 @@ function onSortChange(event: EndEvent) {
 }
 function updateSort(newSort: Sort) {
 	if (props.serverSort) {
-		emit('update:sort', newSort);
+		emit('update:sort', newSort?.by ? newSort : null);
 	}
 	internalSort.value = newSort;
 }
