@@ -186,6 +186,6 @@ export class AssetsService {
 
 const getAssetSuffix = (transformation: TransformationParams | TransformationPreset, transforms: Transformation[]) => {
 	if (Object.keys(transforms).length === 0) return '';
-	if (transformation.key && transformation.key.length > 0) return transformation.key;
+	if (transformation.key && transformation.key.length > 0) return `__${transformation.key}`;
 	return `__${hash(transforms)}`;
 };
