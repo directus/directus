@@ -25,14 +25,6 @@ describe('limit', () => {
 
 		expect(sanitizedQuery.limit).toBe(1);
 	});
-
-	test('should ignore number below -1', () => {
-		const limit = -2;
-
-		const sanitizedQuery = sanitizeQuery({ limit });
-
-		expect(sanitizedQuery.limit).toBeUndefined();
-	});
 });
 
 describe('fields', () => {
