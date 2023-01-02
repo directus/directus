@@ -57,13 +57,21 @@ services:
     cap_add:
       - SYS_NICE
 
+  mysql5:
+    image: mysql:5
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: directus
+    ports:
+      - 6103:3306
+
   maria:
     image: mariadb:10.7
     environment:
       MYSQL_ROOT_PASSWORD: secret
       MYSQL_DATABASE: directus
     ports:
-      - 6103:3306
+      - 6104:3306
 
   mssql:
     image: mcr.microsoft.com/mssql/server:2019-latest
@@ -71,12 +79,12 @@ services:
       - ACCEPT_EULA=Y
       - SA_PASSWORD=Test@123
     ports:
-      - 6104:1433
+      - 6105:1433
 
   oracle:
     image: quillbuilduser/oracle-18-xe-micro-sq
     ports:
-      - 6105:1521
+      - 6106:1521
     environment:
       - OPATCH_JRE_MEMORY_OPTIONS=-Xms128m -Xmx256m -XX:PermSize=16m -XX:MaxPermSize=32m -Xss1m
       - ORACLE_ALLOW_REMOTE=true
@@ -86,4 +94,14 @@ services:
     image: cockroachdb/cockroach:latest-v21.1
     command: start-single-node --cluster-name=example-single-node --insecure
     ports:
-      - 6106:26257
+      - 6107:26257
+
+  auth-saml:
+    image: kristophjunge/test-saml-idp
+    ports:
+      - 8880:8080
+    environment:
+      - SIMPLESAMLPHP_SP_ENTITY_ID=saml-test
+      - SIMPLESAMLPHP_SP_ASSERTION_CONSUMER_SERVICE=http://127.0.0.1:8080/auth/login/saml/acs
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'

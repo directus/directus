@@ -1903,7 +1903,6 @@ panels:
     y_axis_conditional_two: musí být číslo.
   linechart:
     name: Čárový graf
-    description: Čárový graf pro porovnání změny pole.
     select_field: Musíte vybrat pole.
     select_collection: Musíte vybrat kolekci.
     select_x_axis: Musíte vybrat osu X.
@@ -1915,15 +1914,14 @@ panels:
     datasets: Datové sady
     show_legend: Zobrazit legendu
     show_marker: Zobrazit značku popisku
-    include_dataset: Musíte zahrnout alespoň jednu datovou sadu.
     include_y_axis: Musíte zahrnout osu Y pro každou datovou sadu, pokud není zadána žádná skupina.
     group_and_function: Musíte zahrnout nebo vynechat jak skupinu, tak funkci.
-    smooth: 'Hladká'
-    straight: 'Rovná'
-    step_line: 'Kroková čára'
+    smooth: Hladká
+    straight: Rovná
+    step_line: Kroková čára
   meter:
-    description: Měřič pro sledování hodnot
     name: Měřič
+    description: Měřič pro sledování hodnot
     stroke_width: Tloušťka tahu
     select_max_value: Musíte vybrat maximální hodnotu.
     max_greater_than_zero: Maximální hodnota musí být větší než 0.
@@ -1935,11 +1933,9 @@ panels:
     broad: Široký
   piechart:
     name: Koláčový nebo prstencový graf
-    description: Kruhový graf zobrazující poměry skupin ve sloupci.
-    function: 'Funkce'
+    function: Funkce
     donut: Prstenec
-    labels: Zobrazit popisky
-    legend: Zobrazit legendu
+    show_legend: Zobrazit legendu
     right: Vpravo
     bottom: Dole
     monochrome: Monochromatický
