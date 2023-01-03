@@ -28,6 +28,12 @@ export type QueryOptions = {
 	stripNonRequested?: boolean;
 	permissionsAction?: PermissionsAction;
 	emitEvents?: boolean;
+
+	/**
+	 * Contextual info for the database query to pass on to `context.info` in action and filter hooks.
+	 * Allows hook handlers to perform context-aware custom logic.
+	 */
+	info?: any;
 };
 
 export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractService {
@@ -113,6 +119,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 								database: trx,
 								schema: this.schema,
 								accountability: this.accountability,
+								info: opts?.info,
 							}
 					  )
 					: payload;
@@ -241,6 +248,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 					database: getDatabase(),
 					schema: this.schema,
 					accountability: this.accountability,
+					info: opts?.info,
 				},
 			};
 
@@ -324,6 +332,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 							database: this.knex,
 							schema: this.schema,
 							accountability: this.accountability,
+							info: opts?.info,
 						}
 				  )
 				: query;
@@ -370,6 +379,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 							database: this.knex,
 							schema: this.schema,
 							accountability: this.accountability,
+							info: opts?.info,
 						}
 				  )
 				: records;
@@ -386,6 +396,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 					database: this.knex || getDatabase(),
 					schema: this.schema,
 					accountability: this.accountability,
+					info: opts?.info,
 				}
 			);
 		}
@@ -528,6 +539,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 							database: this.knex,
 							schema: this.schema,
 							accountability: this.accountability,
+							info: opts?.info,
 						}
 				  )
 				: payload;
@@ -674,6 +686,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 					database: getDatabase(),
 					schema: this.schema,
 					accountability: this.accountability,
+					info: opts?.info,
 				},
 			};
 
@@ -796,6 +809,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 					database: this.knex,
 					schema: this.schema,
 					accountability: this.accountability,
+					info: opts?.info,
 				}
 			);
 		}
@@ -842,6 +856,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 					database: getDatabase(),
 					schema: this.schema,
 					accountability: this.accountability,
+					info: opts?.info,
 				},
 			};
 

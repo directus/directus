@@ -45,6 +45,12 @@ export type MutationOptions = {
 	 * Can be used to queue up the nested events from item service's create, update and delete
 	 */
 	bypassEmitAction?: (params: ActionEventParams) => void;
+
+	/**
+	 * Contextual info for the database action to pass on to `context.info` in action and filter hooks.
+	 * Allows hook handlers to perform context-aware custom logic.
+	 */
+	info?: any;
 };
 
 export type ActionEventParams = {

@@ -6,6 +6,11 @@ export type EventContext = {
 	database: Knex;
 	schema: SchemaOverview | null;
 	accountability: Accountability | null;
+	/**
+	 * Contextual info passed with the performed database action.
+	 * Allows hook handlers to perform context-aware custom logic.
+	 */
+	info?: any;
 };
 
 export type FilterHandler<T = unknown> = (
