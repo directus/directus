@@ -60,13 +60,8 @@ router.post('/', asyncHandler(async (req, res, next) => {
 
 	const extensionManager = getExtensionManager();
 
-	const extension = extensionManager.getExtension(name);
+	await extensionManager.installExtension(name, version);
 
-	if (!extension) {
-		await extensionManager.installExtension(name, version);
-	} else {
-		await extensionManager.updateExtension(name);
-	}
 
 	extensionManager.reload();
 

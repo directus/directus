@@ -238,6 +238,12 @@ class ExtensionManager {
 			throw new Error(`The name "${name}" is reserved for internal use.`);
 		}
 
+		const extension = this.getExtension(name);
+
+		if(extension) {
+			throw new Error(`Extension "${name}" is already installed.`);
+		}
+
 		const axios = (await import('axios')).default;
 
 		const info = await axios.get(
