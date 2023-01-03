@@ -389,7 +389,6 @@ importers:
       '@tinymce/tinymce-vue': 4.0.5
       '@turf/meta': 6.5.0
       '@types/base-64': 1.0.0
-      '@types/codemirror': ^5.60.6
       '@types/color': 3.0.3
       '@types/diacritics': 1.3.1
       '@types/diff': 5.0.2
@@ -498,7 +497,6 @@ importers:
       '@tinymce/tinymce-vue': 4.0.5_vue@3.2.45
       '@turf/meta': 6.5.0
       '@types/base-64': 1.0.0
-      '@types/codemirror': 5.60.6
       '@types/color': 3.0.3
       '@types/diacritics': 1.3.1
       '@types/diff': 5.0.2
@@ -6326,12 +6324,6 @@ packages:
     resolution: {integrity: sha512-KnRanxnpfpjUTqTCXslZSEdLfXExwgNxYPdiO2WGUj8+HDjFi8R3k5RVKPeSCzLjCcshCAtVO2QBbVuAV4kTnw==}
     dev: true
 
-  /@types/codemirror/5.60.6:
-    resolution: {integrity: sha512-JIDPSvkYRlcv/2F0erqD+de2ni/Mz6FJMEGb0vwF6ByQOcHIKfiEfwrO4d6dSRwYeHyNUMpGjev0PyjX2M0XWw==}
-    dependencies:
-      '@types/tern': 0.23.4
-    dev: true
-
   /@types/color-convert/2.0.0:
     resolution: {integrity: sha512-m7GG7IKKGuJUXvkZ1qqG3ChccdIM/qBBo913z+Xft0nKCX4hAU/IxKwZBU4cpRZ7GS5kV4vOblUkILtSShCPXQ==}
     dependencies:
@@ -6875,12 +6867,6 @@ packages:
 
   /@types/tapable/1.0.8:
     resolution: {integrity: sha512-ipixuVrh2OdNmauvtT51o3d8z12p6LtFW9in7U79der/kwejjdNchQC5UMn5u/KxNoM7VHHOs/l8KS8uHxhODQ==}
-    dev: true
-
-  /@types/tern/0.23.4:
-    resolution: {integrity: sha512-JAUw1iXGO1qaWwEOzxTKJZ/5JxVeON9kvGZ/osgZaJImBnyjyn0cjovPsf6FNLmyGY8Vw9DoXZCMlfMkMwHRWg==}
-    dependencies:
-      '@types/estree': 1.0.0
     dev: true
 
   /@types/through/0.0.30:
