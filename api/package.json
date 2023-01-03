@@ -159,6 +159,7 @@
 		"snappy": "7.2.2",
 		"stream-json": "1.7.5",
 		"strip-bom-stream": "4.0.0",
+		"tar": "^6.1.13",
 		"tmp-promise": "3.0.3",
 		"update-check": "1.5.4",
 		"uuid": "9.0.0",

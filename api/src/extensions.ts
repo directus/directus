@@ -55,6 +55,7 @@ import { EventHandler } from './types';
 import getModuleDefault from './utils/get-module-default';
 import { JobQueue } from './utils/job-queue';
 import { Url } from './utils/url';
+import tar from 'tar';
 
 let extensionManager: ExtensionManager | undefined;
 
@@ -227,6 +228,54 @@ class ExtensionManager {
 			if (content.length === 0) return '';
 			return `<!-- Start ${label} -->\n${content.join('\n')}\n<!-- End ${label} -->`;
 		}
+	}
+
+	public async installExtension(name: string, version = 'latest') {
+		const axios = (await import('axios')).default;
+
+		const info = await axios.get(
+			`https://registry.npmjs.org/${encodeURIComponent(name)}/${encodeURIComponent(version)}`
+		);
+
+		const tarballUrl = info.data.dist.tarball;
+
+		const type = info.data['directus:extension'].type as ExtensionType;
+		const extensionFolder = path.join(env.EXTENSIONS_PATH, pluralize(type), name.replace(/[/\\]/g, '_'));
+		const extensionFolderTemp = path.join(env.EXTENSIONS_PATH, pluralize(type), name.replace(/[/\\]/g, '_') + '_temp');
+		const localTarPath = path.join(extensionFolderTemp, 'tar.tgz');
+
+		const tarFile = await axios.get(tarballUrl, {
+			responseEncoding: 'binary',
+			responseType: 'arraybuffer',
+		});
+		await fse.createFile(localTarPath);
+		await fse.writeFile(localTarPath, tarFile.data, {
+			encoding: 'binary',
+		});
+
+		await tar.extract({
+			file: localTarPath,
+			cwd: extensionFolderTemp,
+		});
+
+		if (type === 'bundle') {
+			await fse.move(path.join(extensionFolderTemp, 'package'), extensionFolder, {
+				overwrite: true,
+			});
+		} else {
+			await fse.move(path.join(extensionFolderTemp, 'package', 'dist'), extensionFolder);
+		}
+		await fse.remove(extensionFolderTemp);
+
+		return true;
+	}
+
+	public async uninstallExtension(name: string) {
+		return;
+	}
+
+	public async updateExtension(name: string) {
+		return true;
 	}
 
 	private async load(): Promise<void> {
