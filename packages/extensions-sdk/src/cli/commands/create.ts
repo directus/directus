@@ -12,7 +12,14 @@ import {
 	BUNDLE_EXTENSION_TYPES,
 } from '@directus/shared/constants';
 import { isIn } from '@directus/shared/utils';
-import { ApiExtensionType, AppExtensionType, BundleExtensionType, ExtensionOptions, ExtensionType, HybridExtensionType } from '@directus/shared/types';
+import {
+	ApiExtensionType,
+	AppExtensionType,
+	BundleExtensionType,
+	ExtensionOptions,
+	ExtensionType,
+	HybridExtensionType,
+} from '@directus/shared/types';
 import { log } from '../utils/logger';
 import { isLanguage, languageToShort } from '../utils/languages';
 import getSdkVersion from '../utils/get-sdk-version';
@@ -28,8 +35,8 @@ export default async function create(type: string, name: string, options: Create
 
 	if (!isIn(type, EXTENSION_TYPES)) {
 		log(
-			`Extension type ${chalk.bold(type)} is not supported. Available extension types: ${EXTENSION_TYPES.map(
-				(t) => chalk.bold.magenta(t)
+			`Extension type ${chalk.bold(type)} is not supported. Available extension types: ${EXTENSION_TYPES.map((t) =>
+				chalk.bold.magenta(t)
 			).join(', ')}.`,
 			'error'
 		);

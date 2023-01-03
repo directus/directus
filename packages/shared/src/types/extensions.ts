@@ -27,7 +27,7 @@ import { z } from 'zod';
 export type AppExtensionType = typeof APP_EXTENSION_TYPES[number];
 export type ApiExtensionType = typeof API_EXTENSION_TYPES[number];
 export type HybridExtensionType = typeof HYBRID_EXTENSION_TYPES[number];
-export type BundleExtensionType = typeof BUNDLE_EXTENSION_TYPES[number]
+export type BundleExtensionType = typeof BUNDLE_EXTENSION_TYPES[number];
 export type ExtensionType = typeof EXTENSION_TYPES[number];
 export type NestedExtensionType = typeof NESTED_EXTENSION_TYPES[number];
 
@@ -67,7 +67,7 @@ export type BundleExtension = ExtensionBase & {
 	entries: { type: NestedExtensionType; name: string }[];
 };
 
-export type Extension = (AppExtension | ApiExtension | HybridExtension | BundleExtension);
+export type Extension = AppExtension | ApiExtension | HybridExtension | BundleExtension;
 
 export const ExtensionOptionsBundleEntry = z.union([
 	z.object({
@@ -78,8 +78,8 @@ export const ExtensionOptionsBundleEntry = z.union([
 	z.object({
 		type: z.enum(HYBRID_EXTENSION_TYPES),
 		name: z.string(),
-		source: SplitEntrypoint
-	})
+		source: SplitEntrypoint,
+	}),
 ]);
 
 const ExtensionOptionsBase = z.object({
@@ -105,12 +105,14 @@ const ExtensionOptionsBundle = z.object({
 	entries: z.array(ExtensionOptionsBundleEntry),
 });
 
-const ExtensionOptions = ExtensionOptionsBase.and(z.union([ExtensionOptionsAppOrApi, ExtensionOptionsHybrid, ExtensionOptionsBundle]));
+const ExtensionOptions = ExtensionOptionsBase.and(
+	z.union([ExtensionOptionsAppOrApi, ExtensionOptionsHybrid, ExtensionOptionsBundle])
+);
 
 export type ExtensionOptions = z.infer<typeof ExtensionOptions>;
 export type ExtensionOptionsBundleEntry = z.infer<typeof ExtensionOptionsBundleEntry>;
 
-export const ExtensionOptionsBundleEntries = z.array(ExtensionOptionsBundleEntry)
+export const ExtensionOptionsBundleEntries = z.array(ExtensionOptionsBundleEntry);
 export type ExtensionOptionsBundleEntries = z.infer<typeof ExtensionOptionsBundleEntries>;
 
 export const ExtensionManifest = z.object({
@@ -167,8 +169,8 @@ export type ExtensionOptionsContext = {
 	saving: boolean;
 };
 
-export type ExtensionInfo = 
-	Omit<AppExtension, 'entrypoint' | 'path'> | 
-	Omit<ApiExtension, 'entrypoint' | 'path'> | 
-	Omit<HybridExtension, 'entrypoint' | 'path'> | 
-	Omit<BundleExtension, 'entrypoint' | 'path'>
+export type ExtensionInfo =
+	| Omit<AppExtension, 'entrypoint' | 'path'>
+	| Omit<ApiExtension, 'entrypoint' | 'path'>
+	| Omit<HybridExtension, 'entrypoint' | 'path'>
+	| Omit<BundleExtension, 'entrypoint' | 'path'>;

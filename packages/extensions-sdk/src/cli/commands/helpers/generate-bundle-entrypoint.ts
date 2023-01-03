@@ -1,9 +1,5 @@
 import path from 'path';
-import {
-	API_EXTENSION_TYPES,
-	APP_EXTENSION_TYPES,
-	HYBRID_EXTENSION_TYPES,
-} from '@directus/shared/constants';
+import { API_EXTENSION_TYPES, APP_EXTENSION_TYPES, HYBRID_EXTENSION_TYPES } from '@directus/shared/constants';
 import { ExtensionOptionsBundleEntry } from '@directus/shared/types';
 import { isIn, isTypeIn, pluralize } from '@directus/shared/utils';
 import { pathToRelativeUrl } from '@directus/shared/utils/node';

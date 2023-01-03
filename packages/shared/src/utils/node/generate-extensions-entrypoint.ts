@@ -12,7 +12,8 @@ export function generateExtensionsEntrypoint(extensions: Extension[]): string {
 
 	const bundleExtensions = extensions.filter(
 		(extension): extension is BundleExtension =>
-			extension.type === 'bundle' && extension.entries.some((entry) => isIn(entry.type, [...APP_EXTENSION_TYPES, ...HYBRID_EXTENSION_TYPES]))
+			extension.type === 'bundle' &&
+			extension.entries.some((entry) => isIn(entry.type, [...APP_EXTENSION_TYPES, ...HYBRID_EXTENSION_TYPES]))
 	);
 
 	const appOrHybridExtensionImports = [...APP_EXTENSION_TYPES, ...HYBRID_EXTENSION_TYPES].flatMap((type) =>
@@ -31,7 +32,8 @@ export function generateExtensionsEntrypoint(extensions: Extension[]): string {
 
 	const bundleExtensionImports = bundleExtensions.map(
 		(extension, i) =>
-			`import {${[...APP_EXTENSION_TYPES, ...HYBRID_EXTENSION_TYPES].filter((type) => extension.entries.some((entry) => entry.type === type))
+			`import {${[...APP_EXTENSION_TYPES, ...HYBRID_EXTENSION_TYPES]
+				.filter((type) => extension.entries.some((entry) => entry.type === type))
 				.map((type) => `${pluralize(type)} as ${type}Bundle${i}`)
 				.join(',')}} from './${pathToRelativeUrl(path.resolve(extension.path, extension.entrypoint.app))}';`
 	);

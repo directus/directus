@@ -40,12 +40,10 @@ export default async function add(): Promise<void> {
 	let indent: string | null = null;
 
 	try {
-		
-			const extensionManifestFile = await fse.readFile(packagePath, 'utf8');
-			extensionManifest = ExtensionManifest.parse(JSON.parse(extensionManifestFile));
-			indent = detectJsonIndent(extensionManifestFile);
-
-	} catch(e) {
+		const extensionManifestFile = await fse.readFile(packagePath, 'utf8');
+		extensionManifest = ExtensionManifest.parse(JSON.parse(extensionManifestFile));
+		indent = detectJsonIndent(extensionManifestFile);
+	} catch (e) {
 		log(`Current directory is not a valid Directus extension.`, 'error');
 		process.exit(1);
 	}

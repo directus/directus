@@ -5,7 +5,7 @@ import { NestedExtensionType } from '../../types';
 
 export async function ensureExtensionDirs(
 	extensionsPath: string,
-	types: readonly (NestedExtensionType)[]
+	types: readonly NestedExtensionType[]
 ): Promise<void> {
 	for (const extensionType of types) {
 		const dirPath = path.resolve(extensionsPath, pluralize(extensionType));

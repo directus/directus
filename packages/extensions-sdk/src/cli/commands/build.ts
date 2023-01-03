@@ -65,7 +65,7 @@ export default async function build(options: BuildOptions): Promise<void> {
 			process.exit(1);
 		}
 
-		let extensionManifest: ExtensionManifest
+		let extensionManifest: ExtensionManifest;
 
 		try {
 			extensionManifest = ExtensionManifest.parse(await fse.readJSON(packagePath));
@@ -117,8 +117,8 @@ export default async function build(options: BuildOptions): Promise<void> {
 
 		if (!isIn(type, EXTENSION_TYPES)) {
 			log(
-				`Extension type ${chalk.bold(type)} is not supported. Available extension types: ${EXTENSION_TYPES.map(
-					(t) => chalk.bold.magenta(t)
+				`Extension type ${chalk.bold(type)} is not supported. Available extension types: ${EXTENSION_TYPES.map((t) =>
+					chalk.bold.magenta(t)
 				).join(', ')}.`,
 				'error'
 			);

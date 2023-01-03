@@ -1,11 +1,6 @@
 import path from 'path';
 import fse from 'fs-extra';
-import {
-	ApiExtensionType,
-	AppExtensionType,
-	Extension,
-	ExtensionManifest,
-} from '../../types';
+import { ApiExtensionType, AppExtensionType, Extension, ExtensionManifest } from '../../types';
 import { resolvePackage } from './resolve-package';
 import { listFolders } from './list-folders';
 import {
@@ -17,10 +12,7 @@ import {
 import { pluralize } from '../pluralize';
 import { isIn, isTypeIn } from '../array-helpers';
 
-export async function resolvePackageExtensions(
-	root: string,
-	extensionNames?: string[],
-): Promise<Extension[]> {
+export async function resolvePackageExtensions(root: string, extensionNames?: string[]): Promise<Extension[]> {
 	const extensions: Extension[] = [];
 
 	const local = extensionNames === undefined;
@@ -29,17 +21,17 @@ export async function resolvePackageExtensions(
 		extensionNames = await listFolders(root);
 		extensionNames = extensionNames.filter((name) => EXTENSION_NAME_REGEX.test(name));
 
-		console.log(extensionNames)
+		console.log(extensionNames);
 	}
 
 	for (const extensionName of extensionNames) {
-		const extensionPath = local ? path.join(root, extensionName) :  resolvePackage(extensionName, root);
+		const extensionPath = local ? path.join(root, extensionName) : resolvePackage(extensionName, root);
 		const extensionManifest: Record<string, any> = await fse.readJSON(path.join(extensionPath, 'package.json'));
 
 		let parsedManifest;
 
 		try {
-			parsedManifest = ExtensionManifest.parse(extensionManifest)
+			parsedManifest = ExtensionManifest.parse(extensionManifest);
 		} catch (error) {
 			throw new Error(`The extension manifest of "${extensionName}" is not valid.\n${error}`);
 		}
@@ -89,9 +81,7 @@ export async function resolvePackageExtensions(
 	return extensions;
 }
 
-export async function getPackageExtensions(
-	root: string,
-): Promise<Extension[]> {
+export async function getPackageExtensions(root: string): Promise<Extension[]> {
 	let pkg: { dependencies?: Record<string, string> };
 
 	try {
@@ -105,9 +95,7 @@ export async function getPackageExtensions(
 	return resolvePackageExtensions(root, extensionNames);
 }
 
-export async function getLocalExtensions(
-	root: string,
-): Promise<Extension[]> {
+export async function getLocalExtensions(root: string): Promise<Extension[]> {
 	const extensions: Extension[] = [];
 
 	for (const extensionType of NESTED_EXTENSION_TYPES) {
