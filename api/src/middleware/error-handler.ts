@@ -91,7 +91,7 @@ const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
 	emitter
 		.emitFilter(
 			'request.error',
-			payload.errors,
+			payload,
 			{},
 			{
 				database: getDatabase(),
@@ -99,7 +99,7 @@ const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
 				accountability: req.accountability ?? null,
 			}
 		)
-		.then(() => {
+		.then((payload) => {
 			return res.json(payload);
 		});
 };
