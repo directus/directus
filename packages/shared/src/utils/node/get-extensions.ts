@@ -20,8 +20,6 @@ export async function resolvePackageExtensions(root: string, extensionNames?: st
 	if (extensionNames === undefined) {
 		extensionNames = await listFolders(root);
 		extensionNames = extensionNames.filter((name) => EXTENSION_NAME_REGEX.test(name));
-
-		console.log(extensionNames);
 	}
 
 	for (const extensionName of extensionNames) {
