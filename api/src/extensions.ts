@@ -1,6 +1,7 @@
 import {
 	APP_EXTENSION_TYPES,
 	APP_SHARED_DEPS,
+	EXTENSION_TYPES,
 	HYBRID_EXTENSION_TYPES,
 	NESTED_EXTENSION_TYPES,
 } from '@directus/shared/constants';
@@ -20,6 +21,7 @@ import {
 	EmbedHandler,
 	OperationApiConfig,
 	ScheduleHandler,
+	ExtensionManifest,
 } from '@directus/shared/types';
 import {
 	ensureExtensionDirs,
@@ -231,6 +233,11 @@ class ExtensionManager {
 	}
 
 	public async installExtension(name: string, version = 'latest') {
+
+		if(EXTENSION_TYPES.includes(name as any)) {
+			throw new Error(`The name "${name}" is reserved for internal use.`);
+		}
+
 		const axios = (await import('axios')).default;
 
 		const info = await axios.get(
@@ -239,9 +246,14 @@ class ExtensionManager {
 
 		const tarballUrl = info.data.dist.tarball;
 
-		const type = info.data['directus:extension'].type as ExtensionType;
-		const extensionFolder = path.join(env.EXTENSIONS_PATH, pluralize(type), name.replace(/[/\\]/g, '_'));
-		const extensionFolderTemp = path.join(env.EXTENSIONS_PATH, pluralize(type), name.replace(/[/\\]/g, '_') + '_temp');
+		try {
+			ExtensionManifest.parse(info.data);
+		} catch (error) {
+			throw new Error(`The package "${name}" is not a valid extension.`);
+		}
+
+		const extensionFolder = path.join(env.EXTENSIONS_PATH, name.replace(/[/\\]/g, '_'));
+		const extensionFolderTemp = path.join(env.EXTENSIONS_PATH, name.replace(/[/\\]/g, '_') + '_temp');
 		const localTarPath = path.join(extensionFolderTemp, 'tar.tgz');
 
 		const tarFile = await axios.get(tarballUrl, {
@@ -258,24 +270,48 @@ class ExtensionManager {
 			cwd: extensionFolderTemp,
 		});
 
-		if (type === 'bundle') {
-			await fse.move(path.join(extensionFolderTemp, 'package'), extensionFolder, {
-				overwrite: true,
-			});
-		} else {
-			await fse.move(path.join(extensionFolderTemp, 'package', 'dist'), extensionFolder);
-		}
+		await fse.move(path.join(extensionFolderTemp, 'package'), extensionFolder);
 		await fse.remove(extensionFolderTemp);
-
-		return true;
 	}
 
 	public async uninstallExtension(name: string) {
-		return;
+		const extension = this.getExtension(name);
+
+		if(extension === undefined) {
+			throw new Error(`Extension "${name}" not found.`);
+		}
+
+		if(extension.local === false) {
+			throw new Error(`Extension "${name}" is not local.`);
+		}
+
+		await fse.remove(path.join(env.EXTENSIONS_PATH, name.replace(/[/\\]/g, '_')));
 	}
 
 	public async updateExtension(name: string) {
-		return true;
+		const axios = (await import('axios')).default;
+
+		const extension = this.getExtension(name);
+
+		if(extension === undefined) {
+			throw new Error(`Extension "${name}" not found.`);
+		}
+
+		if(extension.local === false) {
+			throw new Error(`Extension "${name}" is not local.`)
+		}
+
+		const info = await axios.get(
+			`https://registry.npmjs.org/${encodeURIComponent(name)}/latest/`
+		);
+
+		if(info.data.version === extension.version) {
+			throw new Error(`Extension "${name}" is already up to date.`);
+		}
+
+		await this.uninstallExtension(name);
+
+		await this.installExtension(name);
 	}
 
 	private async load(): Promise<void> {

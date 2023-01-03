@@ -62,16 +62,10 @@ router.post('/', asyncHandler(async (req, res, next) => {
 
 	const extension = extensionManager.getExtension(name);
 
-	let result;
-
 	if (!extension) {
-		result = await extensionManager.installExtension(name, version);
-	}
-
-	result = await extensionManager.updateExtension(name);
-
-	if (!result) {
-		throw new RouteNotFoundException(req.path);
+		await extensionManager.installExtension(name, version);
+	} else {
+		await extensionManager.updateExtension(name);
 	}
 
 	extensionManager.reload();
@@ -81,7 +75,42 @@ router.post('/', asyncHandler(async (req, res, next) => {
 	respond
 );
 
-router.delete('/:name', asyncHandler(async (req, res, next) => { }));
+router.patch('/', asyncHandler(async (req, res, next) => {
+	const name = req.body.name;
+
+	if (!name) {
+		throw new RouteNotFoundException(req.path);
+	}
+	
+	const extensionManager = getExtensionManager();
+	
+	await extensionManager.updateExtension(name);
+
+	extensionManager.reload();
+
+	return next();
+
+}),
+	respond
+);
+
+router.delete('/', asyncHandler(async (req, res, next) => {
+	const name = req.body.name;
+
+	if (!name) {
+		throw new RouteNotFoundException(req.path);
+	}
+
+	const extensionManager = getExtensionManager();
+
+	await extensionManager.uninstallExtension(name);
+
+	extensionManager.reload();
+
+	return next();
+}),
+	respond
+);
 
 router.get(
 	'/sources/index.js',
