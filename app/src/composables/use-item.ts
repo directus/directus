@@ -176,7 +176,7 @@ export function useItem(
 		if (primaryKeyField.value && primaryKeyField.value.field in newItem) {
 			if (
 				primaryKeyField.value.schema?.has_auto_increment ||
-				primaryKeyField.value?.schema?.is_generated ||
+				primaryKeyField.value.schema?.is_generated || // When is "is_generated" true?
 				primaryKeyField.value.meta?.special?.includes('uuid')
 			) {
 				delete newItem[primaryKeyField.value.field];

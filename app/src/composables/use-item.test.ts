@@ -56,7 +56,7 @@ describe('Save As Copy', () => {
 		schema: {},
 	} as AppCollection;
 
-	test('should keep primary key', async () => {
+	test('should keep manual primary key', async () => {
 		apiGetSpy.mockResolvedValue(mockResponse);
 		apiPostSpy.mockResolvedValue(mockResponse);
 
@@ -65,11 +65,15 @@ describe('Save As Copy', () => {
 		const mockPrimaryKeyField = {
 			collection: 'test',
 			field: mockPrimaryKeyFieldName,
-			type: 'integer',
-			schema: {},
+			type: 'string',
+			schema: {
+				is_primary_key: true,
+				is_generated: false,
+			},
 			meta: {
 				collection: 'test',
 				field: mockPrimaryKeyFieldName,
+				special: null,
 				options: null,
 				display_options: null,
 				note: null,
@@ -120,60 +124,8 @@ describe('Save As Copy', () => {
 			type: 'integer',
 			schema: {
 				has_auto_increment: true,
-			},
-			meta: {
-				collection: 'test',
-				field: mockPrimaryKeyFieldName,
-				options: null,
-				display_options: null,
-				note: null,
-				validation_message: null,
-			},
-		} as Field;
-
-		const mockFields = [
-			mockPrimaryKeyField,
-			{
-				collection: 'test',
-				field: 'name',
-				type: 'string',
-				schema: {},
-				meta: {
-					collection: 'test',
-					field: 'name',
-					options: null,
-					display_options: null,
-					note: null,
-					validation_message: null,
-				},
-			},
-		] as Field[];
-
-		vi.mocked(useCollection).mockReturnValue({
-			info: computed(() => mockCollection),
-			primaryKeyField: computed(() => mockPrimaryKeyField),
-			fields: computed(() => mockFields),
-		} as any);
-
-		const { saveAsCopy } = useItem(ref('test'), ref(1));
-
-		await saveAsCopy();
-
-		expect(apiPostSpy.mock.lastCall![1]).not.toHaveProperty(mockPrimaryKeyFieldName);
-	});
-
-	test('should omit generated primary key', async () => {
-		apiGetSpy.mockResolvedValue(mockResponse);
-		apiPostSpy.mockResolvedValue(mockResponse);
-
-		const mockPrimaryKeyFieldName = 'id';
-
-		const mockPrimaryKeyField = {
-			collection: 'test',
-			field: mockPrimaryKeyFieldName,
-			type: 'integer',
-			schema: {
-				is_generated: true,
+				is_primary_key: true,
+				is_generated: false,
 			},
 			meta: {
 				collection: 'test',
@@ -225,8 +177,12 @@ describe('Save As Copy', () => {
 		const mockPrimaryKeyField = {
 			collection: 'test',
 			field: mockPrimaryKeyFieldName,
-			type: 'integer',
-			schema: {},
+			type: 'uuid',
+			schema: {
+				is_primary_key: true,
+				has_auto_increment: false,
+				is_generated: false,
+			},
 			meta: {
 				collection: 'test',
 				field: mockPrimaryKeyFieldName,
