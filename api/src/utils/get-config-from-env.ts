@@ -1,12 +1,14 @@
 import camelcase from 'camelcase';
 import { set } from 'lodash';
-import env from '../env';
+import { getEnv } from '../env';
 
 export function getConfigFromEnv(
 	prefix: string,
 	omitPrefix?: string | string[],
 	type: 'camelcase' | 'underscore' = 'camelcase'
 ): Record<string, any> {
+	const env = getEnv();
+
 	const config: any = {};
 
 	for (const [key, value] of Object.entries(env)) {

@@ -20,6 +20,7 @@ import {
 	HookConfig,
 	HybridExtension,
 	InitHandler,
+	EmbedHandler,
 	OperationApiConfig,
 	ScheduleHandler,
 } from '@directus/shared/types';
@@ -102,6 +103,8 @@ class ExtensionManager {
 	private apiEmitter: Emitter;
 	private hookEvents: EventHandler[] = [];
 	private endpointRouter: Router;
+	private hookEmbedsHead: string[] = [];
+	private hookEmbedsBody: string[] = [];
 
 	private reloadQueue: JobQueue;
 	private watcher: FSWatcher | null = null;
@@ -264,6 +267,18 @@ class ExtensionManager {
 
 	public async updateExtension(name: string) {
 		return true;
+	}
+
+	public getEmbeds() {
+		return {
+			head: wrapEmbeds('Custom Embed Head', this.hookEmbedsHead),
+			body: wrapEmbeds('Custom Embed Body', this.hookEmbedsBody),
+		};
+
+		function wrapEmbeds(label: string, content: string[]): string {
+			if (content.length === 0) return '';
+			return `<!-- Start ${label} -->\n${content.join('\n')}\n<!-- End ${label} -->`;
+		}
 	}
 
 	private async load(): Promise<void> {
@@ -562,6 +577,19 @@ class ExtensionManager {
 					});
 				} else {
 					logger.warn(`Couldn't register cron hook. Provided cron is invalid: ${cron}`);
+				}
+			},
+			embed: (position: 'head' | 'body', code: string | EmbedHandler) => {
+				const content = typeof code === 'function' ? code() : code;
+				if (content.trim().length === 0) {
+					logger.warn(`Couldn't register embed hook. Provided code is empty!`);
+					return;
+				}
+				if (position === 'head') {
+					this.hookEmbedsHead.push(content);
+				}
+				if (position === 'body') {
+					this.hookEmbedsBody.push(content);
 				}
 			},
 		};
