@@ -162,6 +162,8 @@ async function createLocalExtension({
 function getPackageManifest(name: string, options: ExtensionOptions, deps: Record<string, string>) {
 	const packageManifest: Record<string, any> = {
 		name: EXTENSION_NAME_REGEX.test(name) ? name : `directus-extension-${name}`,
+		description: 'Please enter a description for your extension',
+		icon: 'extension',
 		version: '1.0.0',
 		keywords: ['directus', 'directus-extension', `directus-custom-${options.type}`],
 		[EXTENSION_PKG_KEY]: options,
