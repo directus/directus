@@ -1,7 +1,7 @@
 import path from 'path';
 import {
-	API_OR_HYBRID_EXTENSION_TYPES,
-	APP_OR_HYBRID_EXTENSION_TYPES,
+	API_EXTENSION_TYPES,
+	APP_EXTENSION_TYPES,
 	HYBRID_EXTENSION_TYPES,
 } from '@directus/shared/constants';
 import { ExtensionOptionsBundleEntry } from '@directus/shared/types';
@@ -9,7 +9,7 @@ import { isIn, isTypeIn, pluralize } from '@directus/shared/utils';
 import { pathToRelativeUrl } from '@directus/shared/utils/node';
 
 export default function generateBundleEntrypoint(mode: 'app' | 'api', entries: ExtensionOptionsBundleEntry[]): string {
-	const types = mode === 'app' ? APP_OR_HYBRID_EXTENSION_TYPES : API_OR_HYBRID_EXTENSION_TYPES;
+	const types = [...(mode === 'app' ? APP_EXTENSION_TYPES : API_EXTENSION_TYPES), ...HYBRID_EXTENSION_TYPES];
 
 	const entriesForTypes = entries.filter((entry) => isIn(entry.type, types));
 

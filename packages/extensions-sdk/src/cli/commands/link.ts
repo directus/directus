@@ -1,7 +1,7 @@
 import path from 'path';
 import fs from 'fs-extra';
 import { log } from '../utils/logger';
-import { ExtensionManifestRaw } from '@directus/shared/types';
+import { ExtensionManifest } from '@directus/shared/types';
 
 export default async function link(extensionsPath: string): Promise<void> {
 	const extensionPath = process.cwd();
@@ -20,8 +20,14 @@ export default async function link(extensionsPath: string): Promise<void> {
 		return;
 	}
 
-	const extensionManifestFile = await fs.readFile(packagePath, 'utf8');
-	const extensionManifest: ExtensionManifestRaw = JSON.parse(extensionManifestFile);
+	let extensionManifest: ExtensionManifest
+
+	try {
+		extensionManifest = ExtensionManifest.parse(fs.readJSON(packagePath))
+	} catch(err) {
+		log(`Current directory is not a valid Directus extension.`, 'error');
+		return;
+	}
 
 	const extensionName = extensionManifest.name;
 
@@ -38,7 +44,7 @@ export default async function link(extensionsPath: string): Promise<void> {
 		return;
 	}
 
-	if (type === 'pack' || type === 'bundle') {
+	if (type === 'bundle') {
 		extensionTarget = path.join(absoluteExtensionsPath, 'bundles', extensionName);
 
 		try {

@@ -58,7 +58,6 @@ import { EventHandler } from './types';
 import getModuleDefault from './utils/get-module-default';
 import { JobQueue } from './utils/job-queue';
 import { Url } from './utils/url';
-import tar from 'tar';
 
 let extensionManager: ExtensionManager | undefined;
 

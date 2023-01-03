@@ -4,12 +4,12 @@ import fse from 'fs-extra';
 import inquirer from 'inquirer';
 import { log } from '../utils/logger';
 import {
-	ExtensionManifestRaw,
+	ExtensionManifest,
 	ExtensionOptions,
 	ExtensionOptionsBundleEntry,
-	ExtensionType,
+	NestedExtensionType,
 } from '@directus/shared/types';
-import { isIn, isTypeIn, validateExtensionManifest } from '@directus/shared/utils';
+import { isIn, isTypeIn } from '@directus/shared/utils';
 import { pathToRelativeUrl } from '@directus/shared/utils/node';
 import {
 	EXTENSION_LANGUAGES,
@@ -36,12 +36,16 @@ export default async function add(): Promise<void> {
 		process.exit(1);
 	}
 
-	const extensionManifestFile = await fse.readFile(packagePath, 'utf8');
-	const extensionManifest: ExtensionManifestRaw = JSON.parse(extensionManifestFile);
+	let extensionManifest: ExtensionManifest;
+	let indent: string | null = null;
 
-	const indent = detectJsonIndent(extensionManifestFile);
+	try {
+		
+			const extensionManifestFile = await fse.readFile(packagePath, 'utf8');
+			extensionManifest = ExtensionManifest.parse(JSON.parse(extensionManifestFile));
+			indent = detectJsonIndent(extensionManifestFile);
 
-	if (!validateExtensionManifest(extensionManifest)) {
+	} catch(e) {
 		log(`Current directory is not a valid Directus extension.`, 'error');
 		process.exit(1);
 	}
@@ -52,7 +56,7 @@ export default async function add(): Promise<void> {
 
 	if (extensionOptions.type === 'bundle') {
 		const { type, name, language, alternativeSource } = await inquirer.prompt<{
-			type: ExtensionType;
+			type: NestedExtensionType;
 			name: string;
 			language: Language;
 			alternativeSource?: string;
@@ -144,7 +148,7 @@ export default async function add(): Promise<void> {
 		const oldName = extensionManifest.name.match(EXTENSION_NAME_REGEX)?.[1] ?? extensionManifest.name;
 
 		const { type, name, language, convertName, extensionName, alternativeSource } = await inquirer.prompt<{
-			type: ExtensionType;
+			type: NestedExtensionType;
 			name: string;
 			language: Language;
 			convertName: string;

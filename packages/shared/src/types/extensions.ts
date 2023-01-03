@@ -3,6 +3,7 @@ import { Logger } from 'pino';
 import {
 	API_EXTENSION_TYPES,
 	APP_EXTENSION_TYPES,
+	BUNDLE_EXTENSION_TYPES,
 	EXTENSION_PKG_KEY,
 	EXTENSION_TYPES,
 	HYBRID_EXTENSION_TYPES,
@@ -26,6 +27,7 @@ import { z } from 'zod';
 export type AppExtensionType = typeof APP_EXTENSION_TYPES[number];
 export type ApiExtensionType = typeof API_EXTENSION_TYPES[number];
 export type HybridExtensionType = typeof HYBRID_EXTENSION_TYPES[number];
+export type BundleExtensionType = typeof BUNDLE_EXTENSION_TYPES[number]
 export type ExtensionType = typeof EXTENSION_TYPES[number];
 export type NestedExtensionType = typeof NESTED_EXTENSION_TYPES[number];
 
@@ -67,7 +69,7 @@ export type BundleExtension = ExtensionBase & {
 
 export type Extension = (AppExtension | ApiExtension | HybridExtension | BundleExtension);
 
-const ExtensionOptionsBundleEntry = z.union([
+export const ExtensionOptionsBundleEntry = z.union([
 	z.object({
 		type: z.union([z.enum(APP_EXTENSION_TYPES), z.enum(API_EXTENSION_TYPES)]),
 		name: z.string(),
@@ -106,6 +108,10 @@ const ExtensionOptionsBundle = z.object({
 const ExtensionOptions = ExtensionOptionsBase.and(z.union([ExtensionOptionsAppOrApi, ExtensionOptionsHybrid, ExtensionOptionsBundle]));
 
 export type ExtensionOptions = z.infer<typeof ExtensionOptions>;
+export type ExtensionOptionsBundleEntry = z.infer<typeof ExtensionOptionsBundleEntry>;
+
+export const ExtensionOptionsBundleEntries = z.array(ExtensionOptionsBundleEntry)
+export type ExtensionOptionsBundleEntries = z.infer<typeof ExtensionOptionsBundleEntries>;
 
 export const ExtensionManifest = z.object({
 	name: z.string(),
