@@ -1,28 +1,29 @@
 import { DeepPartial, Field } from '@directus/shared/types';
 import { defineInterface } from '@directus/shared/utils';
-import CodeMirror from 'codemirror';
-import 'codemirror/mode/meta';
+//import CodeMirror from 'codemirror';
+//import 'codemirror/mode/meta';
 import InterfaceCode from './input-code.vue';
 import PreviewSVG from './preview.svg?raw';
 
-const choicesMap = CodeMirror.modeInfo.reduce((acc: Record<string, string>, choice) => {
-	if (['JSON', 'JSON-LD'].includes(choice.name)) {
-		acc['JSON'] = 'JSON';
-		return acc;
-	}
-
-	if (choice.mode == null || choice.mode == 'null') {
-		choice.mode = 'plaintext';
-	}
-
-	if (choice.mode in acc) {
-		acc[choice.mode] += ' / ' + choice.name;
-	} else {
-		acc[choice.mode] = choice.name;
-	}
-
-	return acc;
-}, {});
+//const choicesMap = CodeMirror.modeInfo.reduce((acc: Record<string, string>, choice) => {
+//	if (['JSON', 'JSON-LD'].includes(choice.name)) {
+//		acc['JSON'] = 'JSON';
+//		return acc;
+//	}
+//
+//	if (choice.mode == null || choice.mode == 'null') {
+//		choice.mode = 'plaintext';
+//	}
+//
+//	if (choice.mode in acc) {
+//		acc[choice.mode] += ' / ' + choice.name;
+//	} else {
+//		acc[choice.mode] = choice.name;
+//	}
+//
+//	return acc;
+//}, {});
+const choicesMap = {};
 
 const choices = Object.entries(choicesMap).map(([key, value]) => ({
 	text: value,
