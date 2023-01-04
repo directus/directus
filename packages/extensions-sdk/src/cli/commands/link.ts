@@ -23,7 +23,7 @@ export default async function link(extensionsPath: string): Promise<void> {
 	let manifestFile: Record<string, any>;
 
 	try {
-		manifestFile = await fs.readJSON(packagePath)
+		manifestFile = await fs.readJSON(packagePath);
 	} catch (err) {
 		log(`Current directory is not a valid Directus extension.`, 'error');
 		return;
@@ -39,14 +39,13 @@ export default async function link(extensionsPath: string): Promise<void> {
 	}
 
 	const type = extensionManifest['directus:extension']?.type;
-	let extensionTarget;
 
 	if (!type) {
 		log(`Extension type not found in package.json`, 'error');
 		return;
 	}
 
-	extensionTarget = path.join(absoluteExtensionsPath, extensionName);
+	const extensionTarget = path.join(absoluteExtensionsPath, extensionName);
 
 	try {
 		fs.ensureSymlinkSync(extensionPath, extensionTarget);
