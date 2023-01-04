@@ -3,8 +3,8 @@
 		<table :summary="internalHeaders.map((header) => header.text).join(', ')">
 			<table-header
 				v-model:headers="internalHeaders"
-				v-model:sort="internalSort"
 				v-model:reordering="reordering"
+				:sort="internalSort"
 				:show-select="showSelect"
 				:show-resize="showResize"
 				:some-items-selected="someItemsSelected"
@@ -16,6 +16,7 @@
 				:manual-sort-key="manualSortKey"
 				:allow-header-reorder="allowHeaderReorder"
 				@toggle-select-all="onToggleSelectAll"
+				@update:sort="updateSort"
 			>
 				<template v-for="header in internalHeaders" #[`header.${header.value}`]>
 					<slot :header="header" :name="`header.${header.value}`" />
@@ -95,7 +96,7 @@ import { ShowSelect } from '@directus/shared/types';
 import { Header, HeaderRaw, Item, ItemSelectEvent, Sort } from './types';
 import TableHeader from './table-header.vue';
 import TableRow from './table-row.vue';
-import { sortBy, clone, forEach, pick } from 'lodash';
+import { clone, forEach, pick } from 'lodash';
 import { i18n } from '@/lang/';
 import Draggable from 'vuedraggable';
 import { hideDragImage } from '@/utils/hide-drag-image';
@@ -124,7 +125,6 @@ interface Props {
 	loading?: boolean;
 	loadingText?: string;
 	noItemsText?: string;
-	serverSort?: boolean;
 	rowHeight?: number;
 	selectionUseKeys?: boolean;
 	inline?: boolean;
@@ -146,7 +146,6 @@ const props = withDefaults(defineProps<Props>(), {
 	loading: false,
 	loadingText: i18n.global.t('loading'),
 	noItemsText: i18n.global.t('no_items'),
-	serverSort: false,
 	rowHeight: 48,
 	selectionUseKeys: false,
 	inline: false,
@@ -205,18 +204,13 @@ const internalHeaders = computed({
 
 // In case the sort prop isn't used, we'll use this local sort state as a fallback.
 // This allows the table to allow inline sorting on column ootb without the need for
-const internalLocalSort = ref<Sort>({
-	by: null,
-	desc: false,
-});
-
-const internalSort = computed({
-	get: () => props.sort || internalLocalSort.value,
-	set: (newSort: Sort) => {
-		emit('update:sort', newSort);
-		internalLocalSort.value = newSort;
-	},
-});
+const internalSort = computed<Sort>(
+	() =>
+		props.sort ?? {
+			by: null,
+			desc: false,
+		}
+);
 
 const reordering = ref<boolean>(false);
 
@@ -235,15 +229,7 @@ const fullColSpan = computed<string>(() => {
 
 const internalItems = computed({
 	get: () => {
-		if (props.serverSort === true || internalSort.value.by === props.manualSortKey) {
-			return props.items;
-		}
-
-		if (internalSort.value.by === null) return props.items;
-
-		const itemsSorted = sortBy(props.items, [internalSort.value.by]);
-		if (internalSort.value.desc === true) return itemsSorted.reverse();
-		return itemsSorted;
+		return props.items;
 	},
 	set: (value: Item[]) => {
 		emit('update:items', value);
@@ -344,6 +330,9 @@ function onSortChange(event: EndEvent) {
 	const to = internalItems.value[event.newIndex][props.itemKey];
 
 	emit('manual-sort', { item, to });
+}
+function updateSort(newSort: Sort) {
+	emit('update:sort', newSort?.by ? newSort : null);
 }
 </script>
 

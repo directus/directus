@@ -40,7 +40,7 @@ export default defineOperationApp({
 				...standard,
 				{
 					field: 'notice',
-					name: '$t:modules',
+					name: '$t:interfaces.presentation-notice.notice',
 					type: 'alias',
 					meta: {
 						width: 'full',
