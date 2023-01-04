@@ -329,7 +329,7 @@ const {
 	isItemSelected,
 	localDelete,
 	getItemEdits,
-} = useRelationMultiple(value, query, relationInfo, primaryKey, false);
+} = useRelationMultiple(value, query, relationInfo, primaryKey);
 
 const pageCount = computed(() => Math.ceil(totalItemCount.value / limit.value));
 
