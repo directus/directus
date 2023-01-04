@@ -1,27 +1,29 @@
-import { Query } from '@directus/shared/types';
+import { NestedDeepQuery } from '@directus/shared/types';
 import knex, { Knex } from 'knex';
 import { getTracker, MockClient, Tracker } from 'knex-mock-client';
 import { cloneDeep } from 'lodash';
-import { afterEach, beforeAll, describe, expect, it, vi, MockedFunction } from 'vitest';
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi, MockedFunction } from 'vitest';
 import { ItemsService } from '../../src/services';
 import { InvalidPayloadException } from '../exceptions';
 import { sqlFieldFormatter, sqlFieldList } from '../__utils__/items-utils';
 import { systemSchema, userSchema } from '../__utils__/schemas';
+import { getDatabaseClient } from '../../src/database/index';
 
 vi.mock('../env', async () => {
 	const actual = (await vi.importActual('../env')) as { default: Record<string, any> };
-
+	const MOCK_ENV = {
+		...actual.default,
+		CACHE_AUTO_PURGE: true,
+	};
 	return {
-		default: {
-			...actual.default,
-			CACHE_AUTO_PURGE: true,
-		},
+		default: MOCK_ENV,
+		getEnv: () => MOCK_ENV,
 	};
 });
 
 vi.mock('../../src/database/index', () => ({
 	default: vi.fn(),
-	getDatabaseClient: vi.fn().mockReturnValue('postgres'),
+	getDatabaseClient: vi.fn(),
 }));
 
 vi.mock('../cache', () => ({
@@ -47,6 +49,10 @@ describe('Integration Tests', () => {
 	beforeAll(() => {
 		db = vi.mocked(knex({ client: MockClient }));
 		tracker = getTracker();
+	});
+
+	beforeEach(() => {
+		vi.mocked(getDatabaseClient).mockReturnValue('postgres');
 	});
 
 	afterEach(() => {
@@ -80,6 +86,24 @@ describe('Integration Tests', () => {
 				expect(response).toBe(item.id);
 			}
 		);
+
+		it(`the returned UUID primary key for MS SQL should be uppercase`, async () => {
+			vi.mocked(getDatabaseClient).mockReturnValue('mssql');
+
+			const table = schemas.system.tables[0];
+
+			const itemsService = new ItemsService(table, {
+				knex: db,
+				accountability: { role: 'admin', admin: true },
+				schema: schemas.system.schema,
+			});
+
+			tracker.on.insert(table).responseOnce(item);
+
+			const response = await itemsService.createOne(item, { emitEvents: false });
+
+			expect(response).toBe(item.id.toUpperCase());
+		});
 	});
 
 	describe('readOne', () => {
@@ -442,7 +466,7 @@ describe('Integration Tests', () => {
 				});
 				const response = await itemsService.readOne(rawItems[0].id, {
 					fields: ['id', 'items.*'],
-					deep: { items: { _filter: { title: { _eq: childItems[0].title } } } as Query },
+					deep: { items: { _filter: { title: { _eq: childItems[0].title } } } as NestedDeepQuery },
 				});
 
 				expect(tracker.history.select.length).toBe(2);
@@ -532,7 +556,7 @@ describe('Integration Tests', () => {
 					});
 					const response = await itemsService.readOne(rawItems[0].id, {
 						fields: ['id', 'items.*'],
-						deep: { items: { _filter: { title: { _eq: childItems[0].title } } } as Query },
+						deep: { items: { _filter: { title: { _eq: childItems[0].title } } } as NestedDeepQuery },
 					});
 
 					expect(tracker.history.select.length).toBe(2);
@@ -625,7 +649,7 @@ describe('Integration Tests', () => {
 					expect(() =>
 						itemsService.readOne(rawItems[0].id, {
 							fields: ['id', 'items.*'],
-							deep: { items: { _filter: { title: { _eq: childItems[0].title } } } as Query },
+							deep: { items: { _filter: { title: { _eq: childItems[0].title } } } as NestedDeepQuery },
 						})
 					).rejects.toThrow("You don't have permission to access this.");
 					expect(tracker.history.select.length).toBe(0);
@@ -1053,5 +1077,167 @@ describe('Integration Tests', () => {
 				}
 			}
 		);
+	});
+
+	describe('test filter queries', () => {
+		const rawItems = [{ id: 'b5a7dd0f-fc9f-4242-b331-83990990198f' }, { id: '6107c897-9182-40f7-b22e-4f044d1258d2' }];
+
+		it.each(Object.keys(schemas))('%s filters on top level', async (schema) => {
+			const table = schemas[schema].tables[0];
+
+			tracker.on.select(table).responseOnce(rawItems);
+
+			const itemsService = new ItemsService(table, {
+				knex: db,
+				accountability: { role: 'admin', admin: true },
+				schema: schemas[schema].schema,
+			});
+			await itemsService.readByQuery({
+				fields: ['id', 'name'],
+				filter: { name: { _eq: 'something' } },
+			});
+
+			expect(tracker.history.select.length).toBe(1);
+			expect(tracker.history.select[0].bindings).toStrictEqual(['something', 100]);
+			expect(tracker.history.select[0].sql).toBe(
+				`select "${table}"."id", "${table}"."name" from "${table}" where "${table}"."name" = ? order by "${table}"."id" asc limit ?`
+			);
+		});
+
+		it.each(Object.keys(schemas))('%s filters on nested m2o level', async (schema) => {
+			const table = schemas[schema].tables[0];
+			const otherTable = schemas[schema].tables[1];
+
+			tracker.on.select(otherTable).responseOnce(rawItems);
+
+			const itemsService = new ItemsService(otherTable, {
+				knex: db,
+				accountability: { role: 'admin', admin: true },
+				schema: schemas[schema].schema,
+			});
+			await itemsService.readByQuery({
+				fields: ['id', 'title'],
+				filter: { uploaded_by: { name: { _eq: 'something' } } },
+			});
+
+			expect(tracker.history.select.length).toBe(1);
+			expect(tracker.history.select[0].bindings).toStrictEqual(['something', 100]);
+			expect(tracker.history.select[0].sql).toMatch(
+				new RegExp(
+					`select "${otherTable}"."id", "${otherTable}"."title" from "${otherTable}" ` +
+						`left join "${table}" as ".{5}" on "${otherTable}"."uploaded_by" = ".{5}"."id" ` +
+						`where ".{5}"."name" = \\? order by "${otherTable}"."id" asc limit \\?`
+				)
+			);
+		});
+
+		it.each(Object.keys(schemas))('%s filters on nested o2m level', async (schema) => {
+			const table = schemas[schema].tables[0];
+			const otherTable = schemas[schema].tables[1];
+
+			tracker.on.select(table).responseOnce(rawItems);
+
+			const itemsService = new ItemsService(table, {
+				knex: db,
+				accountability: { role: 'admin', admin: true },
+				schema: schemas[schema].schema,
+			});
+			await itemsService.readByQuery({
+				fields: ['id', 'name'],
+				filter: { items: { title: { _eq: 'something' } } },
+			});
+
+			expect(tracker.history.select.length).toBe(1);
+			expect(tracker.history.select[0].bindings).toStrictEqual(['something', 100]);
+			expect(tracker.history.select[0].sql).toMatch(
+				new RegExp(
+					`select "${table}"."id", "${table}"."name" from "${table}" inner join ` +
+						`\\(select distinct "${table}"."id", "${table}"."id" as "sort_.{5}" from "${table}" left join "${otherTable}" as ".{5}" ` +
+						`on "${table}"."id" = ".{5}"."uploaded_by" where ".{5}"."title" = \\? limit \\?\\) as "inner" ` +
+						`on "${table}"."id" = "inner"."id" order by "inner"."sort_.{5}" asc`
+				)
+			);
+		});
+	});
+
+	describe('test sort queries', () => {
+		const rawItems = [{ id: 'b5a7dd0f-fc9f-4242-b331-83990990198f' }, { id: '6107c897-9182-40f7-b22e-4f044d1258d2' }];
+
+		it.each(Object.keys(schemas))('%s sorts on top level', async (schema) => {
+			const table = schemas[schema].tables[0];
+
+			tracker.on.select(table).responseOnce(rawItems);
+
+			const itemsService = new ItemsService(table, {
+				knex: db,
+				accountability: { role: 'admin', admin: true },
+				schema: schemas[schema].schema,
+			});
+			await itemsService.readByQuery({
+				fields: ['id', 'name'],
+				sort: ['name'],
+			});
+
+			expect(tracker.history.select.length).toBe(1);
+			expect(tracker.history.select[0].bindings).toStrictEqual([100]);
+			expect(tracker.history.select[0].sql).toBe(
+				`select "${table}"."id", "${table}"."name" from "${table}" order by "${table}"."name" asc limit ?`
+			);
+		});
+
+		it.each(Object.keys(schemas))('%s sorts on nested m2o level', async (schema) => {
+			const table = schemas[schema].tables[0];
+			const otherTable = schemas[schema].tables[1];
+
+			tracker.on.select(otherTable).responseOnce(rawItems);
+
+			const itemsService = new ItemsService(otherTable, {
+				knex: db,
+				accountability: { role: 'admin', admin: true },
+				schema: schemas[schema].schema,
+			});
+			await itemsService.readByQuery({
+				fields: ['id', 'title'],
+				sort: ['uploaded_by.name'],
+			});
+
+			expect(tracker.history.select.length).toBe(1);
+			expect(tracker.history.select[0].bindings).toStrictEqual([100]);
+			expect(tracker.history.select[0].sql).toMatch(
+				new RegExp(
+					`select "${otherTable}"."id", "${otherTable}"."title" from "${otherTable}" ` +
+						`left join "${table}" as ".{5}" on "${otherTable}"."uploaded_by" = ".{5}"."id" order by ".{5}"."name" asc limit \\?`
+				)
+			);
+		});
+
+		it.each(Object.keys(schemas))('%s sorts on nested o2m level', async (schema) => {
+			const table = schemas[schema].tables[0];
+			const otherTable = schemas[schema].tables[1];
+
+			tracker.on.select(table).responseOnce(rawItems);
+
+			const itemsService = new ItemsService(table, {
+				knex: db,
+				accountability: { role: 'admin', admin: true },
+				schema: schemas[schema].schema,
+			});
+			await itemsService.readByQuery({
+				fields: ['id', 'name'],
+				sort: ['items.title'],
+			});
+
+			expect(tracker.history.select.length).toBe(1);
+			expect(tracker.history.select[0].bindings).toStrictEqual([1, 100]);
+			expect(tracker.history.select[0].sql).toMatch(
+				new RegExp(
+					`select "${table}"."id", "${table}"."name" from "${table}" ` +
+						`inner join \\(select distinct "${table}"."id", ".{5}"."title" as "sort_.{5}", ` +
+						`row_number\\(\\) over \\(partition by "${table}"."id" order by ".{5}"."title" asc\\) as "directus_row_number" from "${table}" ` +
+						`left join "${otherTable}" as ".{5}" on "${table}"."id" = ".{5}"."uploaded_by"\\) as "inner" on "${table}"."id" = "inner"."id" ` +
+						`where "inner"."directus_row_number" = \\? order by "inner"."sort_.{5}" asc limit \\?`
+				)
+			);
+		});
 	});
 });

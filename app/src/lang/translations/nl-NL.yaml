@@ -1157,6 +1157,7 @@ field_options:
     mapbox_key: Toegangstoken Mapbox
     basemaps_style: Mapbox stijl
   directus_activity:
+    login: Inloggen
     create: Maak
     update: Updaten
   directus_collections:
@@ -1171,34 +1172,56 @@ field_options:
     archive_divider: Archiveren
     sort_divider: Sorteren
   directus_roles:
+    ip_access: Toegestane IP-adressen toevoegen, leeg laten om alles toe te staan...
     fields:
       icon_name: Icoon
       name_name: Naam
+      link_placeholder: Relatieve of absolute URL...
     collections_name: Collecties
   directus_users:
+    dropdown_auto: Automatisch (Gebaseerd op systeem)
     dropdown_light: Lichte modus
     dropdown_dark: Donkere Modus
     admin_divider: Admin opties
     status_dropdown_draft: Concept
     status_dropdown_invited: Uitgenodigd
     status_dropdown_active: Actief
+    status_dropdown_suspended: Geschorst
     status_dropdown_archived: Gearchiveerd
   directus_webhooks:
     status_options_active: Actief
     status_options_inactive: Inactief
     actions_create: Maak
     actions_update: Updaten
+    actions_delete: Verwijderen
+    actions_login: Inloggen
     headers:
+      header: Header
       value: Waarde
+      add: Header toevoegen
 no_fields_in_collection: 'Er zijn nog geen velden in "{collection}"'
+no_value: Geen waarde
 do_nothing: Niets doen
 generate_and_save_uuid: Genereer een UUID
 save_current_user_id: Huidige gebruikers-ID opslaan
 save_current_user_role: Huidige gebruikersrol opslaan
 save_current_datetime: Huidige datum/tijd opslaan
+always_open: Altijd open
+start_open: Start geopend
+start_collapsed: Start gesloten
 block: Blok
 inline: Doorlopend
 comment: Reactie
+unlimited_usage: Onbeperkt gebruik
+expired: Verlopen
+shared_leave_blank_for_unlimited: Laat leeg voor geen limiet
+shared_times_remaining: Deze link kan slechts {n} keer worden gebruikt
+shared_last_remaining: Deze link kan slechts één keer worden gebruikt
+shared_uses_left: Voor extra veiligheid is deze gedeelde pagina geconfigureerd met een beperkt aantal weergaven. Er zijn momenteel {n} weergaven resterend, waarna de pagina niet langer toegankelijk zal zijn.
+share_access_not_found: Deze gedeelde pagina bestaat niet of heeft het maximum aantal toegestane weergaven al overschreden.
+share_access_not_found_desc: Neem contact op met een geautoriseerde gebruiker van dit project om toegang te vragen.
+share_copy_link: Link kopiëren
+share_copy_link_success: Link gekopieerd
 relational_triggers: Relationele triggers
 referential_action_field_label_m2o: Wanneer {collection} wordt verwijderd...
 referential_action_field_label_o2m: Wanneer {collection} wordt gedeselecteerd...
@@ -1227,6 +1250,12 @@ normal: Normaal
 success: Geslaagd
 warning: Waarschuwing
 danger: Gevaar
+colors:
+  purple: Paars
+  blue: Blauw
+  green: Groen
+  yellow: Geel
+  orange: Oranje
 junction_collection: Verbindingscollectie
 latency: Vertraging
 login: Log in
@@ -1374,6 +1403,8 @@ interfaces:
     clear_label: Opslaan als lege tekst
     minimum_value: Minimale waarde
     maximum_value: Maximale waarde
+  input-translated-string:
+    search_placeholder: Zoeken...
   boolean:
     toggle: Schakel
     color_on: Kleur Aan

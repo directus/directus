@@ -1,31 +1,98 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+identifier: Identifikator
 avatar: Avatar
 application: Aplikacija
+default_provider: Podrazumevano
+method: Metoda
 published: Objavljeno
-edit_field: Izmijeni
+draft: Nacrt
+archived: Arhivirano
+modules: Moduli
+module_bar: Modul Bar
+logs: Događaji
+reset_width: Resetuj Širinu
+tile_size: Veličina pločice
+edit_field: Izmeni polje
+conditions: Uslovi
 location: Lokacija
+condition_rules: Pravila Uslova
 input: Unos
-item_revision: Revizija stavke
+maps: Mape
+switch_user: Promeni Korisnika
+item_creation: Kreiranje Predmeta
+item_revision: Revizija Stavke
+enter_a_name: Unesi ime...
 duplicate_field: Dupliraj
 half_width: Pola širine
 full_width: Puna širina
+group: Grupa
+export_items: Eksportuj Stavke
+and: I
+or: Ili
+init: Inicijalizuj
+dataset_too_large_currently_showing_n_items: Skup podataka je prevelik. Trenutno se prikazuje prvih {n} stavki.
+modifier: Modifikator
+custom: Prilagođeno
+hook: Hook
 fill_width: Popunjeno
 field_name_translations: Prevodi Polja
 enter_password_to_enable_tfa: Unesite vašu lozinku kako biste uključili dvostruku potvrdu autentičnosti
 add_field: Dodaj Polje
 role_name: Naziv uloge
+branch: Grana
+leaf: List
+indeterminate: Neodređeno
+edit_collection: Izmeni Kolekciju
+exclusive: Ekskluzivan
+children: Deca
+db_only_click_to_configure: 'Samo za bazu podataka: Kliknite za Podešavanje'
+show_active_items: Prikaži Aktivne Stavke
 show_archived_items: Prikaži arhivirane stavke
+show_all_items: Prikaži Sve Stavke
 edited: Vrijednost izmijenjena
 required: Obavezno
 required_for_app_access: Obavezno za pristup aplikaciji
 requires_value: Zahtijeva vrijednost
 create_preset: Napravi Izgled
+create_panel: Kreiraj Panel
 create_role: Napravi ulogu
 create_user: Napravi korisnika
+message: Poruka
+delete_panel: Obriši Panel
 create_webhook: Napravi Webhook
+create_translation_string: Kreiraj String za Prevod
+no_translation_string: Nema Stringova za Prevod
+no_translation_string_copy: Još uvek nema Stringova za Prevod.
+translation_string_key_placeholder: Ključ stringa za prevod...
+translation_string_translations_placeholder: Dodaj prevod
+edit_translation_string: Izmeni String za Prevod
+delete_translation_string_copy: >-
+  Da li ste zigurni da želite da izbrišete String za Prevod "{key}"? Ova radnja se ne može opozvati.
 invite_users: Pozovi korisnike
 invite: Pozovi
 email_already_invited: Na ovu "{email}" adresu je već poslat poziv
+subject: Naslov
+inbox: Primljeno
 emails: Email adrese
 connection_excellent: Odlična konekcija
 connection_good: Dobra konekcija
@@ -41,9 +108,13 @@ update_bookmark: Ažuriraj oznaku
 delete_bookmark: Obriši oznaku
 delete_bookmark_copy: >-
   Da li ste sigurni da želite da obrišete "{bookmark}" oznaku? Ova operacija je trajna.
+delete_personal_bookmark: Izbrišite Lični Obeleživač
+delete_role_bookmark: Izbrišite Lični Obeleživač
+delete_global_bookmark: Izbrišite Globalni Obeleživač
 logoutReason:
   SIGN_OUT: Odjavljen
   SESSION_EXPIRED: Sesija je istekla
+public_label: Javno
 public_description: Kontroliše koji podaci sa API su dostupni bez potrebe za provjerom autentičnosti korisnika.
 not_allowed: Nije dozvoljeno
 directus_version: Directus verzija
@@ -751,6 +822,7 @@ fields:
     auth_password_policy: Polisa Lozinke za autentikaciju
     auth_login_attempts: Broj pokušaja prijave
     custom_css: Prilagođeni CSS
+    module_bar: Modul Bar
   directus_shares:
     name: Ime
     role: Uloga
@@ -1210,7 +1282,10 @@ panels:
   label:
     name: Oznaka
 operations:
+  log:
+    message: Poruka
   notification:
     recipient: Korisnik
+    message: Poruka
   request:
     url: URL adresa
