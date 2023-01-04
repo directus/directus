@@ -1,3 +1,5 @@
 node_modules
 dist
 packages/extensions-sdk/templates
+extensions
+api/extensions
