@@ -44,26 +44,14 @@ export default async function link(extensionsPath: string): Promise<void> {
 		return;
 	}
 
-	if (type === 'bundle') {
-		extensionTarget = path.join(absoluteExtensionsPath, 'bundles', extensionName);
+	extensionTarget = path.join(absoluteExtensionsPath, extensionName);
 
-		try {
-			fs.ensureSymlinkSync(extensionPath, extensionTarget);
-		} catch (error: any) {
-			log(error.message, 'error');
-			log(`Try running this command with administrator privileges`, 'info');
-			return;
-		}
-	} else {
-		extensionTarget = path.join(absoluteExtensionsPath, type + 's', extensionName);
-
-		try {
-			fs.ensureSymlinkSync(path.join(extensionPath, 'dist'), extensionTarget);
-		} catch (error: any) {
-			log(error.message, 'error');
-			log(`Try running this command with administrator privileges`, 'info');
-			return;
-		}
+	try {
+		fs.ensureSymlinkSync(extensionPath, extensionTarget);
+	} catch (error: any) {
+		log(error.message, 'error');
+		log(`Try running this command with administrator privileges`, 'info');
+		return;
 	}
 
 	log(`Linked ${extensionName} to ${extensionTarget}`);
