@@ -1,17 +1,18 @@
-import type { NextFunction, Request, Response } from 'express';
+import type { Request, Response } from 'express';
 import { validateBatch } from './validate-batch';
 import '../../src/types/express.d.ts';
 import { InvalidPayloadException } from '../exceptions';
 import { FailedValidationException } from '@directus/shared/exceptions';
+import { vi, beforeEach, test, expect } from 'vitest';
 
 let mockRequest: Partial<Request & { token?: string }>;
 let mockResponse: Partial<Response>;
-const nextFunction: NextFunction = jest.fn();
+const nextFunction = vi.fn();
 
 beforeEach(() => {
 	mockRequest = {};
 	mockResponse = {};
-	jest.clearAllMocks();
+	vi.clearAllMocks();
 });
 
 test('Sets body to empty, calls next on GET requests', async () => {
@@ -39,7 +40,7 @@ test('Throws InvalidPayloadException on missing body', async () => {
 	await validateBatch('read')(mockRequest as Request, mockResponse as Response, nextFunction);
 
 	expect(nextFunction).toHaveBeenCalledTimes(1);
-	expect(jest.mocked(nextFunction).mock.calls[0][0]).toBeInstanceOf(InvalidPayloadException);
+	expect(vi.mocked(nextFunction).mock.calls[0][0]).toBeInstanceOf(InvalidPayloadException);
 });
 
 test(`Short circuits on Array body in update/delete use`, async () => {
@@ -74,10 +75,10 @@ test(`Doesn't allow both query and keys in a batch delete`, async () => {
 		query: { filter: {} },
 	};
 
-	await validateBatch('delete')(mockRequest as Request, mockResponse as Response, nextFunction as NextFunction);
+	await validateBatch('delete')(mockRequest as Request, mockResponse as Response, nextFunction);
 
 	expect(nextFunction).toHaveBeenCalledTimes(1);
-	expect(jest.mocked(nextFunction).mock.calls[0][0]).toBeInstanceOf(FailedValidationException);
+	expect(vi.mocked(nextFunction).mock.calls[0][0]).toBeInstanceOf(FailedValidationException);
 });
 
 test(`Requires 'data' on batch update`, async () => {
@@ -87,10 +88,10 @@ test(`Requires 'data' on batch update`, async () => {
 		query: { filter: {} },
 	};
 
-	await validateBatch('update')(mockRequest as Request, mockResponse as Response, nextFunction as NextFunction);
+	await validateBatch('update')(mockRequest as Request, mockResponse as Response, nextFunction);
 
 	expect(nextFunction).toHaveBeenCalledTimes(1);
-	expect(jest.mocked(nextFunction).mock.calls[0][0]).toBeInstanceOf(FailedValidationException);
+	expect(vi.mocked(nextFunction).mock.calls[0][0]).toBeInstanceOf(FailedValidationException);
 });
 
 test(`Calls next when all is well`, async () => {
@@ -101,8 +102,8 @@ test(`Calls next when all is well`, async () => {
 		data: {},
 	};
 
-	await validateBatch('update')(mockRequest as Request, mockResponse as Response, nextFunction as NextFunction);
+	await validateBatch('update')(mockRequest as Request, mockResponse as Response, nextFunction);
 
 	expect(nextFunction).toHaveBeenCalledTimes(1);
-	expect(jest.mocked(nextFunction).mock.calls[0][0]).toBeUndefined();
+	expect(vi.mocked(nextFunction).mock.calls[0][0]).toBeUndefined();
 });

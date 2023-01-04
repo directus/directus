@@ -276,7 +276,7 @@ span.flatpickr-weekday {
 
 .flatpickr-time input {
 	color: var(--v-input-color);
-	background: var(--v-input-background-color);
+	background: var(--background-subdued);
 	transition: var(--fast) var(--transition);
 	transition-property: color, background;
 }
@@ -311,6 +311,8 @@ span.flatpickr-weekday {
 
 .flatpickr-time input:focus,
 .flatpickr-time .flatpickr-am-pm:focus {
+	border: var(--border-width) solid var(--primary);
+	border-radius: var(--border-radius);
 	background-color: var(--background-input);
 }
 
@@ -327,5 +329,5 @@ span.flatpickr-weekday {
 }
 
 .flatpickr-calendar .set-to-now-button:hover {
-	background-color: var(--background-highlight);
+	background-color: var(--background-normal);
 }

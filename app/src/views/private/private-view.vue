@@ -311,6 +311,7 @@ function openSidebar(event: PointerEvent) {
 			right: -2px;
 			bottom: 0;
 			width: 4px;
+			z-index: 3;
 			background-color: var(--primary);
 			cursor: ew-resize;
 			opacity: 0;

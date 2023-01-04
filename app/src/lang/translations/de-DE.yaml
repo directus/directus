@@ -178,7 +178,7 @@ item_permissions: Item Berechtigungen
 field_permissions: Feldberechtigungen
 field_validation: Feldüberprüfung
 field_presets: Feld-Vorlagen
-permissions_for_role: 'Items die {role} Rolle kann {action}.'
+permissions_for_role: 'Elemente, die {role} Rolle {action} kann.'
 fields_for_role: 'Felder die von der {role} Rolle {action} werden können.'
 validation_for_role: 'Feld {action} Regeln, welche die {role} Rolle befolgen muss.'
 presets_for_role: 'Standardwert für die {role} Rolle.'
@@ -187,6 +187,8 @@ revision_post_create: So sah dieses Element bei der Erstellung aus.
 revision_post_update: So sieht dieses Element nach der Überarbeitung aus.
 changes_made: Dies sind die spezifischen Änderungen, die in dieser Revision vorgenommen wurden.
 no_relational_data: Beachten Sie, dass relationale Daten hier nicht enthalten sind.
+junction_field_location: Lage der Kreuzungsfelder
+top: Oben
 bottom: Unten
 hide_field: Felder ausblenden
 hide_field_on_detail: In Detailansicht ausblenden
@@ -273,6 +275,7 @@ fields_group: Feldergruppe
 no_collections_found: Keine Sammlungen gefunden.
 new_data_alert: 'Folgendes wird innerhalb Ihres Datenmodells erstellt:'
 search_collection: Sammlung suchen...
+search_field: Suchfeld...
 new_field: 'Neues Feld'
 new_collection: 'Neue Sammlung'
 add_m2o_to_collection: 'M2O zu "{collection}" hinzufügen'
@@ -326,6 +329,7 @@ edit_raw_value: Rohwert bearbeiten
 enter_raw_value: Rohwert eingeben...
 clear_value: Wert löschen
 clear_changes: Änderungen löschen
+clear_items: Element entfernen
 reset_to_default: Auf Standardwert zurücksetzen
 undo_changes: Änderungen rückgängig machen
 notifications: Benachrichtigungen
@@ -569,6 +573,8 @@ select_an_item: Element auswählen...
 edit: Bearbeiten
 enabled: Aktiviert
 disable_tfa: 2FA deaktivieren
+admin_disable_tfa_text: Bist du dir sicher, dass du 2FA für diesen Nutzer deaktivieren möchtest?
+tfa_setup: 2FA einrichten
 tfa_scan_code: Scannen Sie den Code in Ihrer Authentifikator-App, um die Einrichtung von 2FA abzuschließen
 enter_otp_to_disable_tfa: OTP zum deaktivieren der 2FA eingeben
 create_account: Konto erstellen
@@ -604,9 +610,11 @@ errors:
   UNKNOWN: Unerwarteter Fehler
   GRAPHQL_VALIDATION_EXCEPTION: GraphQL Validierungsfehler
   SERVICE_UNAVAILABLE: Dienst nicht verfügbar
+  UNSUPPORTED_MEDIA_TYPE: Nicht unterstützter Medientyp
   UNEXPECTED_RESPONSE: Unerwartete Antwort
   TOKEN_EXPIRED: Token abgelaufen
   RANGE_NOT_SATISFIABLE: Ungültiger Bereich
+  METHOD_NOT_ALLOWED: Methode ist nicht erlaubt
   REQUESTS_EXCEEDED: Anfragelimit erreicht
 security: Sicherheit
 value_hashed: Wert sicher gehashed
@@ -747,6 +755,8 @@ add_file: Datei hinzufügen
 replace_file: Datei ersetzen
 no_results: Keine Ergebnisse
 no_results_copy: Suchfilter anpassen oder löschen um Ergebnisse zu sehen.
+no_visible_fields: Leeres Formular
+no_visible_fields_copy: Dieses Formular hat keine sichtbaren Felder.
 clear_filters: Filter löschen
 saves_automatically: Wird automatisch gespeichert
 role: Rolle
@@ -776,8 +786,10 @@ label: Label
 flows: Flows
 flow: Flow
 select_a_flow: Flow auswählen
+run_flow_on_current_collection: Flow für aktuelle Sammlung ausführen
 run_flow_on_current: Flow für aktuelles Element ausführen
-run_flow_on_selected: Keine Items ausgewählt | Flow für 1 ausgewähltes Element ausführen | Flow für {n} ausgewählte Items ausführen
+run_flow_on_current_edited_confirm: Dieses Element kann durch diesen Flow aktualisiert werden, bist du dir sicher, dass du es ausführen möchtest?
+run_flow_on_selected: Wählen Sie zuerst eins oder mehrere Elemente aus | Flow für 1 ausgewähltes Element ausführen | Flow für {n} ausgewählte Items ausführen
 run_flow_success: Flow "{flow}" wurde erfolgreich ausgeführt
 trigger: Trigger
 trigger_options: Auslöse-Optionen
@@ -821,6 +833,7 @@ panel_header: Panel-Titel
 panel_name_placeholder: Dieses Panel benennen...
 panel_note_placeholder: Optionale Details zu diesem Panel...
 panel_delete_confirm: Möchten Sie dieses Panel wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.
+list_panel_allow_edit: Schnellbearbeitung zulassen
 dashboard_delete_confirm: Möchten Sie dieses Dashboard wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.
 edit_dashboard: Dashboard bearbeiten
 delete_dashboard: Dashboard löschen
@@ -1105,7 +1118,7 @@ fields:
     status_draft: Entwurf
     status_invited: Eingeladen
     status_active: Aktiv
-    status_suspended: Angehalten
+    status_suspended: Gesperrt
     status_archived: Archiviert
     role: Rolle
     token: Token
@@ -1278,7 +1291,7 @@ field_options:
     status_dropdown_draft: Entwurf
     status_dropdown_invited: Eingeladen
     status_dropdown_active: Aktiv
-    status_dropdown_suspended: Angehalten
+    status_dropdown_suspended: Gesperrt
     status_dropdown_archived: Archiviert
     token: Einen sicheren Zugangs-Token eingeben...
   directus_webhooks:
@@ -1687,6 +1700,7 @@ interfaces:
     user_language: Aktuelle Benutzersprache verwenden
     default_language: Standardsprache
     language_field: Sprachindikatorfeld
+    language_direction_field: Sprachverzeichnis Feld
   list-o2m-tree-view:
     description: Baumansicht für verschachtelte rekursive 1:n-Elemente
     recursive_only: Die Baumansicht funktioniert nur für rekursive Beziehungen.
@@ -1735,6 +1749,8 @@ interfaces:
     regenerate: Token neu generieren
     generate_success_copy: Stellen Sie sicher, dass Sie den obige Token sichern und kopieren. Aus Sicherheitsgründen können Sie den Token nach dem Speichern und Navigieren von dieser Seite nicht mehr anzeigen.
     remove_token: Token löschen
+  system-raw-editor:
+    system-raw-editor: Quelltext-Editor
 displays:
   translations:
     translations: Übersetzungen
@@ -1773,7 +1789,10 @@ displays:
     relative: Relativ
     relative_label: 'Zeige relative Zeit, z. B.: vor 5 Minuten'
     suffix: Suffix
+    suffix_note: Verwendet Wörter wie 'in' und 'vor'
     strict: Strikt
+    strict_note: Entfernt Wörter wie 'fast', 'über', 'weniger als'
+    round: Runden
   file:
     file: Datei
     description: Dateien anzeigen
@@ -1885,33 +1904,11 @@ layouts:
     default_template: Verwenden des Sammlungs-Standards...
     no_compatible_fields: Keine kompatiblen Felder
   kanban:
-    name: Kanban,
-    group_field: Gruppieren nach,
-    group_field_placeholder: Feld zum Gruppieren...,
-    group_title: Gruppentitel,
-    group_title_placeholder: Feld für Gruppentitel...,
-    title: Karten-Titel,
-    title_placeholder: Optionales Titelfeld...,
-    text: Karten-Text,
-    text_placeholder: Optionales Textfeld...,
-    date: Karten-Datum,
-    date_placeholder: Optionales Datumsfeld...,
-    tags: Karten-Tags,
-    tags_placeholder: Optionales Tag-Feld...,
-    user: Karten-Benutzer,
-    user_placeholder: Optionales Benutzerfeld...,
-    image: Karten-Bild,
-    image_placeholder: Optionales Bildfeld...,
-    image_fit: Karten-Bildfüllmodus,
-    crop: Beschneiden,
-    advanced: Erweitert,
-    edit_group: Gruppe bearbeiten,
-    delete_group: Gruppe löschen,
-    add_group: Gruppe hinzufügen,
-    add_group_placeholder: Neuen Gruppentitel eingeben...,
-    show_ungrouped: Nicht gruppierte Elemente zeigen,
-    show: Anzeigen,
-    no_group: Keine Gruppe,
+    name: Kanban
+    crop: Zuschneiden
+    advanced: Erweitert
+    show: Anzeigen
+    no_group: Keine Gruppe
     not_all_loaded: Konnte nur die ersten 1000 Elemente laden.
 panels:
   metric:
@@ -1949,6 +1946,7 @@ panels:
     group_by: Gruppieren nach
     group_and_function: Sie müssen sowohl eine Gruppe als auch eine Funktion hinzufügen oder weglassen.
     y_axis_NaN: Die y-Achse muss eine Zahl sein.
+    y_axis_conditional_one: Der Wert für die Bedingung
     y_axis_conditional_two: muss eine Zahl sein.
   linechart:
     name: Liniendiagramm
@@ -1960,10 +1958,9 @@ panels:
     y_axis: Y-Achse
     datasets: Datensätze
     show_legend: Legende anzeigen
-    include_dataset: Mindestens ein Datensatz muss angegeben werden.
     group_and_function: Sie müssen sowohl eine Gruppe als auch eine Funktion hinzufügen oder weglassen.
-    smooth: 'Weich'
-    straight: 'Gerade'
+    smooth: Weich
+    straight: Gerade
   meter:
     name: Meter
     stroke_width: Strichbreite
@@ -1977,19 +1974,32 @@ panels:
     broad: Breit
   piechart:
     name: Kuchen oder Donut Diagramm
-    function: 'Funktion'
+    function: Funktion
     donut: Donut
-    labels: Label anzeigen
-    legend: Legende anzeigen
+    show_labels: Beschriftungen anzeigen
+    show_legend: Legende anzeigen
     right: Rechts
     bottom: Unten
     monochrome: Monochrom
+    monochrome_color: Monochrome Farbe
   variable:
     name: Globale Variable
+    description: Globalen Wert für die Verwendung in Filtern anderer Panels festlegen
+    variable_key: Variabler Schlüssel
+  relational-variable:
+    name: Globale relationale Variable
+    description: Einen globalen relativen Wert für die Verwendung in Filtern anderer Panels festlegen
+    variable_key: Variabler Schlüssel
+    multiple: Mehrere
+    multiple-label: Mehrere Elemente auswählen
 triggers:
   common:
+    response_body: Response-Body
+    response_body_all: Alle Daten
     response_body_last: Daten der letzten Operation
   event:
+    name: Event-Hook
+    description: Auslösen bei Plattform- oder Datenereignissen
     action: 'Aktion (nicht blockierend)'
     filter: 'Filter (blockierend)'
   webhook:
@@ -1997,18 +2007,33 @@ triggers:
     description: Auslösend bei eingehender HTTP-Anfrage
     method: Methode
     async: Asynchron
+  operation:
+    name: Ein anderer Flow
+    description: Ausgelöst von einem anderen Flow, zur Verkettung
+    preview: Ausgelöst durch eine Operation in einem anderen Flow
   schedule:
     name: Zeitplan (CRON)
+    description: Auslösen an regulären Zeitpunkten
     cron: Intervall
   manual:
     name: Manuell
+    description: Auslösen beim manuellen Ausführungen innerhalb ausgewählter Sammlung(en)
     collection_and_item: Sammlungen & Element Seiten
+    collection_only: Nur Sammlungsseite
+    item_only: Nur Elementseite
+    collection_page: Sammlungsseite
+    require_selection: Benötigt Auswahl
+a_flow_uuid: Auszulösenden Flow auswählen...
 any_string_or_json: Ein String oder JSON...
+item_payload_placeholder: Dies ist der JSON-Wert um die Feldwerte des Elements zu aktualisieren...
+operation_variables_note: Du kannst auf Flow-Daten mit Variablen wie **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** und **{'{'}{'{'}$accountability{'}'}{'}'}**, oder vorherige Operationen mit **{'{'}{'{'}operation_key{'}'}{'}'}**.' referenzieren
 operations:
   condition:
     name: Kondition
+    description: Leiten eines Flows basierend auf If / Else Logik
   exec:
     name: Skript ausführen
+    description: Führe beliebigen Code aus, um die Nutzlast zu ändern
     modules: 'Die folgenden **Node Module** können genutzt werden:'
   item-create:
     name: Daten erstellen
@@ -2047,6 +2072,7 @@ operations:
     body: Inhalt
   notification:
     name: Benachrichtigung senden
+    description: App-Interne Benachrichtigung an einen oder mehrere Benutzer senden
     recipient: Benutzer
     recipient_placeholder: Benutzer UUID eingeben und Enter drücken...
     message: Nachricht
@@ -2057,9 +2083,12 @@ operations:
     url_placeholder: https://example.com/example
     method: Methode
     data: Daten
+    headers: Kopfzeilen
     header: Header
+    header_placeholder: Autorisierung...
     value_placeholder: Bearer eyJhbGciOi...
   sleep:
+    name: Warten
     description: Gegebene Zeit in Millisekunden warten
     milliseconds: Millisekunden
   transform:

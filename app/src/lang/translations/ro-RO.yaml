@@ -29,11 +29,13 @@ draft: Ciornă
 archived: Arhivat
 modules: Module
 module_bar: Bară module
+logs: Log-uri
 reset_width: Resetează lățimea
 tile_size: Dimensiune titlu
 edit_field: Editează câmp
 conditions: Condiții
 location: Locație
+condition_rules: Reguli
 input: Input
 maps: Hărți
 switch_user: Schimbă utilizatorul
@@ -47,6 +49,11 @@ group: Grup
 export_items: Exportă elemente
 and: Și
 or: Sau
+init: Inițializare
+dataset_too_large_currently_showing_n_items: Baza de date este prea mare. În prezent se afișează primele {n} elemente.
+modifier: Modificator
+custom: Personalizat
+hook: Cârlig
 fill_width: Umple lățimea
 field_name_translations: Traduceri nume câmp
 enter_password_to_enable_tfa: Introduceți parola pentru a activa autentificarea în doi pași
@@ -70,9 +77,12 @@ create_preset: Creează presetare
 create_panel: Creează panou
 create_role: Creează rol
 create_user: Creează utilizator
+message: Mesaj
 delete_panel: Șterge panou
 create_webhook: Creează Webhook
 create_translation_string: Crează șirul de traducere
+no_translation_string: Nu există traducere
+no_translation_string_copy: Nu există traducere momentan.
 translation_string_key_placeholder: Cheie traducere șir...
 translation_string_translations_placeholder: Adauga o nouă traducere
 edit_translation_string: Editează Șirul de Traduceri
@@ -177,6 +187,9 @@ revision_post_create: Iată cum arăta acest element când a fost creat.
 revision_post_update: Iată cum arăta acest element după actualizare.
 changes_made: Mai jos sunt modificările specifice aduse acestei revizuiri.
 no_relational_data: Rețineți că datele relaționale nu sunt incluse aici.
+junction_field_location: Locația câmpurilor de intersecție
+top: Sus
+bottom: Jos
 hide_field: Ascundeți câmpul
 hide_field_on_detail: Ascunde câmpul în detalii
 show_field_on_detail: Arată câmpul în detalii
@@ -262,6 +275,7 @@ fields_group: Grup de câmpuri
 no_collections_found: Nicio colecție găsită.
 new_data_alert: 'Următoarele vor fi create în cadrul modelului dumneavoastră de date:'
 search_collection: Căutare în colecție...
+search_field: Câmp căutare...
 new_field: 'Câmp nou'
 new_collection: 'Colecție nouă'
 add_m2o_to_collection: 'Adaugă M2O la "{collection}"'
@@ -285,6 +299,8 @@ next: Urmatorul
 field_name: Nume câmp
 translations: Traduceri
 no_translations: Nici o traducere
+left_to_right: Stânga-dreapta
+right_to_left: Dreapta-Stânga
 note: Notă
 enter_a_value: Introduceți o valoare...
 enter_a_placeholder: Introduceți un substituent...
@@ -299,6 +315,7 @@ primary_key: Cheie principală
 foreign_key: Cheie străină
 finish_setup: Finalizează configurarea
 dismiss: Renunţaţi
+raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
 raw_value: Valoare brută
 copy_raw_value: Copiază valoarea brută
 copy_raw_value_success: Copiat
@@ -1746,22 +1763,7 @@ layouts:
     default_template: Se folosește Implicit Colecția...
     no_compatible_fields: Nu există câmpuri compatibile
   kanban:
-    name: Kanban,
-    group_field: Grupare după
-    group_field_placeholder: Câmp pentru grup de...,
-    group_title: Titlul grupului
-    group_title_placeholder: Câmp pentru titlurile grupului...,
-    title: Titlu card
-    title_placeholder: Câmp titlu opțional...,
-    text: Text Card,
-    text_placeholder: Câmp text opțional...,
-    date: Data cardului,
-    date_placeholder: Câmp de dată opțional...,
-    tags: Tag-uri de card,
-    tags_placeholder: Câmp etichete opționale...,
-    user: Utilizator Card,
-    user_placeholder: Câmp opțional de utilizator...,
-    image: Imaginea cardului,
+    crop: Decupare
 panels:
   metric:
     name: Metric
@@ -1784,12 +1786,19 @@ triggers:
   webhook:
     method: Metodă
 operations:
+  log:
+    message: Mesaj
   notification:
     recipient: Utilizator
+    message: Mesaj
   request:
     url: URL
     method: Metodă
     data: Date
     header: Antet
   trigger:
+    name: Declanșare flux
+    description: Transmite aceste date la un alt flux
+    flows: Fluxuri
+    flow: Flux
     data: Date

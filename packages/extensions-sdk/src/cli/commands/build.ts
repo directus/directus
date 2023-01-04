@@ -1,38 +1,46 @@
-import path from 'path';
+import {
+	API_SHARED_DEPS,
+	APP_EXTENSION_TYPES,
+	APP_SHARED_DEPS,
+	EXTENSION_PACKAGE_TYPES,
+	EXTENSION_PKG_KEY,
+	HYBRID_EXTENSION_TYPES,
+} from '@directus/shared/constants';
+import {
+	ApiExtensionType,
+	AppExtensionType,
+	ExtensionManifestRaw,
+	ExtensionOptionsBundleEntry,
+} from '@directus/shared/types';
+import { isIn, isTypeIn, validateExtensionManifest } from '@directus/shared/utils';
+import commonjs from '@rollup/plugin-commonjs';
+import json from '@rollup/plugin-json';
+import { nodeResolve } from '@rollup/plugin-node-resolve';
+import replace from '@rollup/plugin-replace';
+import terser from '@rollup/plugin-terser';
+import virtual from '@rollup/plugin-virtual';
 import chalk from 'chalk';
 import fse from 'fs-extra';
 import ora from 'ora';
+import path from 'path';
 import {
-	RollupError,
-	RollupOptions,
 	OutputOptions as RollupOutputOptions,
 	Plugin,
 	rollup,
+	RollupError,
+	RollupOptions,
 	watch as rollupWatch,
 } from 'rollup';
-import { nodeResolve } from '@rollup/plugin-node-resolve';
-import commonjs from '@rollup/plugin-commonjs';
-import json from '@rollup/plugin-json';
-import replace from '@rollup/plugin-replace';
-import typescript from 'rollup-plugin-typescript2';
-import { terser } from 'rollup-plugin-terser';
+import esbuild from 'rollup-plugin-esbuild';
 import styles from 'rollup-plugin-styles';
 import vue from 'rollup-plugin-vue';
-import {
-	EXTENSION_PKG_KEY,
-	EXTENSION_TYPES,
-	APP_SHARED_DEPS,
-	API_SHARED_DEPS,
-	APP_EXTENSION_TYPES,
-	HYBRID_EXTENSION_TYPES,
-} from '@directus/shared/constants';
-import { isIn, isTypeIn, validateExtensionManifest } from '@directus/shared/utils';
-import { ApiExtensionType, AppExtensionType, ExtensionManifestRaw } from '@directus/shared/types';
-import { log, clear } from '../utils/logger';
-import { getLanguageFromPath, isLanguage } from '../utils/languages';
 import { Language, RollupConfig, RollupMode } from '../types';
-import loadConfig from '../utils/load-config';
-import toObject from '../utils/to-object';
+import { getLanguageFromPath, isLanguage } from '../utils/languages';
+import { clear, log } from '../utils/logger';
+import tryParseJson from '../utils/try-parse-json';
+import generateBundleEntrypoint from './helpers/generate-bundle-entrypoint';
+import loadConfig from './helpers/load-config';
+import { validateBundleEntriesOption, validateSplitEntrypointOption } from './helpers/validate-cli-options';
 
 type BuildOptions = {
 	type?: string;
@@ -50,35 +58,36 @@ export default async function build(options: BuildOptions): Promise<void> {
 
 	if (!options.type && !options.input && !options.output) {
 		const packagePath = path.resolve('package.json');
-		let extensionManifest: ExtensionManifestRaw = {};
 
 		if (!(await fse.pathExists(packagePath))) {
 			log(`Current directory is not a valid package.`, 'error');
 			process.exit(1);
-		} else {
-			extensionManifest = await fse.readJSON(packagePath);
+		}
 
-			if (!validateExtensionManifest(extensionManifest)) {
-				log(`Current directory is not a valid Directus extension.`, 'error');
-				process.exit(1);
-			}
+		const extensionManifest: ExtensionManifestRaw = await fse.readJSON(packagePath);
+
+		if (!validateExtensionManifest(extensionManifest)) {
+			log(`Current directory is not a valid Directus extension.`, 'error');
+			process.exit(1);
 		}
 
 		const extensionOptions = extensionManifest[EXTENSION_PKG_KEY];
 
-		if (!isTypeIn(extensionOptions, EXTENSION_TYPES)) {
-			log(
-				`Extension type ${chalk.bold(
-					extensionOptions.type
-				)} is not supported. Available extension types: ${EXTENSION_TYPES.map((t) => chalk.bold.magenta(t)).join(
-					', '
-				)}.`,
-				'error'
-			);
+		if (extensionOptions.type === 'pack') {
+			log(`Building extension type ${chalk.bold('pack')} is not currently supported.`, 'error');
 			process.exit(1);
 		}
 
-		if (isTypeIn(extensionOptions, HYBRID_EXTENSION_TYPES)) {
+		if (extensionOptions.type === 'bundle') {
+			await buildBundleExtension({
+				entries: extensionOptions.entries,
+				outputApp: extensionOptions.path.app,
+				outputApi: extensionOptions.path.api,
+				watch,
+				sourcemap,
+				minify,
+			});
+		} else if (isTypeIn(extensionOptions, HYBRID_EXTENSION_TYPES)) {
 			await buildHybridExtension({
 				inputApp: extensionOptions.source.app,
 				inputApi: extensionOptions.source.api,
@@ -106,13 +115,20 @@ export default async function build(options: BuildOptions): Promise<void> {
 		if (!type) {
 			log(`Extension type has to be specified using the ${chalk.blue('[-t, --type <type>]')} option.`, 'error');
 			process.exit(1);
-		} else if (!isIn(type, EXTENSION_TYPES)) {
+		}
+
+		if (!isIn(type, EXTENSION_PACKAGE_TYPES)) {
 			log(
-				`Extension type ${chalk.bold(type)} is not supported. Available extension types: ${EXTENSION_TYPES.map((t) =>
-					chalk.bold.magenta(t)
+				`Extension type ${chalk.bold(type)} is not supported. Available extension types: ${EXTENSION_PACKAGE_TYPES.map(
+					(t) => chalk.bold.magenta(t)
 				).join(', ')}.`,
 				'error'
 			);
+			process.exit(1);
+		}
+
+		if (type === 'pack') {
+			log(`Building extension type ${chalk.bold('pack')} is not currently supported.`, 'error');
 			process.exit(1);
 		}
 
@@ -128,30 +144,65 @@ export default async function build(options: BuildOptions): Promise<void> {
 			process.exit(1);
 		}
 
-		if (isIn(type, HYBRID_EXTENSION_TYPES)) {
-			const inputObject = toObject(input);
-			const outputObject = toObject(output);
+		if (type === 'bundle') {
+			const entries = tryParseJson(input);
+			const splitOutput = tryParseJson(output);
 
-			if (!inputObject || !inputObject.app || !inputObject.api) {
+			if (!validateBundleEntriesOption(entries)) {
 				log(
-					`Input option needs to be of the format ${chalk.blue('[-i app:<app-entrypoint>,api:<api-entrypoint>]')}.`,
+					`Input option needs to be of the format ${chalk.blue(
+						`[-i '[{"type":"<extension-type>","name":"<extension-name>","source":<entrypoint>}]']`
+					)}.`,
 					'error'
 				);
 				process.exit(1);
 			}
-			if (!outputObject || !outputObject.app || !outputObject.api) {
+			if (!validateSplitEntrypointOption(splitOutput)) {
 				log(
-					`Output option needs to be of the format ${chalk.blue('[-o app:<app-output-file>,api:<api-output-file>]')}.`,
+					`Output option needs to be of the format ${chalk.blue(
+						`[-o '{"app":"<app-entrypoint>","api":"<api-entrypoint>"}']`
+					)}.`,
+					'error'
+				);
+				process.exit(1);
+			}
+
+			await buildBundleExtension({
+				entries,
+				outputApp: splitOutput.app,
+				outputApi: splitOutput.api,
+				watch,
+				sourcemap,
+				minify,
+			});
+		} else if (isIn(type, HYBRID_EXTENSION_TYPES)) {
+			const splitInput = tryParseJson(input);
+			const splitOutput = tryParseJson(output);
+
+			if (!validateSplitEntrypointOption(splitInput)) {
+				log(
+					`Input option needs to be of the format ${chalk.blue(
+						`[-i '{"app":"<app-entrypoint>","api":"<api-entrypoint>"}']`
+					)}.`,
+					'error'
+				);
+				process.exit(1);
+			}
+			if (!validateSplitEntrypointOption(splitOutput)) {
+				log(
+					`Output option needs to be of the format ${chalk.blue(
+						`[-o '{"app":"<app-entrypoint>","api":"<api-entrypoint>"}']`
+					)}.`,
 					'error'
 				);
 				process.exit(1);
 			}
 
 			await buildHybridExtension({
-				inputApp: inputObject.app,
-				inputApi: inputObject.api,
-				outputApp: outputObject.app,
-				outputApi: outputObject.api,
+				inputApp: splitInput.app,
+				inputApi: splitInput.api,
+				outputApp: splitOutput.app,
+				outputApi: splitOutput.api,
 				watch,
 				sourcemap,
 				minify,
@@ -259,7 +310,7 @@ async function buildHybridExtension({
 		process.exit(1);
 	}
 	if (!isLanguage(languageApi)) {
-		log(`API language ${chalk.bold(languageApp)} is not supported.`, 'error');
+		log(`API language ${chalk.bold(languageApi)} is not supported.`, 'error');
 		process.exit(1);
 	}
 
@@ -278,6 +329,121 @@ async function buildHybridExtension({
 		mode: 'node',
 		input: inputApi,
 		language: languageApi,
+		sourcemap,
+		minify,
+		plugins,
+	});
+	const rollupOutputOptionsApp = getRollupOutputOptions({ mode: 'browser', output: outputApp, sourcemap });
+	const rollupOutputOptionsApi = getRollupOutputOptions({ mode: 'node', output: outputApi, sourcemap });
+
+	const rollupOptionsAll = [
+		{ rollupOptions: rollupOptionsApp, rollupOutputOptions: rollupOutputOptionsApp },
+		{ rollupOptions: rollupOptionsApi, rollupOutputOptions: rollupOutputOptionsApi },
+	];
+
+	if (watch) {
+		await watchExtension(rollupOptionsAll);
+	} else {
+		await buildExtension(rollupOptionsAll);
+	}
+}
+
+async function buildBundleExtension({
+	entries,
+	outputApp,
+	outputApi,
+	watch,
+	sourcemap,
+	minify,
+}: {
+	entries: ExtensionOptionsBundleEntry[];
+	outputApp: string;
+	outputApi: string;
+	watch: boolean;
+	sourcemap: boolean;
+	minify: boolean;
+}) {
+	if (outputApp.length === 0) {
+		log(`App output file can not be empty.`, 'error');
+		process.exit(1);
+	}
+	if (outputApi.length === 0) {
+		log(`API output file can not be empty.`, 'error');
+		process.exit(1);
+	}
+
+	const languagesApp = new Set<Language>();
+	const languagesApi = new Set<Language>();
+
+	for (const entry of entries) {
+		if (isTypeIn(entry, HYBRID_EXTENSION_TYPES)) {
+			const inputApp = entry.source.app;
+			const inputApi = entry.source.api;
+
+			if (!(await fse.pathExists(inputApp)) || !(await fse.stat(inputApp)).isFile()) {
+				log(`App entrypoint ${chalk.bold(inputApp)} does not exist.`, 'error');
+				process.exit(1);
+			}
+			if (!(await fse.pathExists(inputApi)) || !(await fse.stat(inputApi)).isFile()) {
+				log(`API entrypoint ${chalk.bold(inputApi)} does not exist.`, 'error');
+				process.exit(1);
+			}
+
+			const languageApp = getLanguageFromPath(inputApp);
+			const languageApi = getLanguageFromPath(inputApi);
+
+			if (!isLanguage(languageApp)) {
+				log(`App language ${chalk.bold(languageApp)} is not supported.`, 'error');
+				process.exit(1);
+			}
+			if (!isLanguage(languageApi)) {
+				log(`API language ${chalk.bold(languageApi)} is not supported.`, 'error');
+				process.exit(1);
+			}
+
+			languagesApp.add(languageApp);
+			languagesApi.add(languageApi);
+		} else {
+			const input = entry.source;
+
+			if (!(await fse.pathExists(input)) || !(await fse.stat(input)).isFile()) {
+				log(`Entrypoint ${chalk.bold(input)} does not exist.`, 'error');
+				process.exit(1);
+			}
+
+			const language = getLanguageFromPath(input);
+
+			if (!isLanguage(language)) {
+				log(`Language ${chalk.bold(language)} is not supported.`, 'error');
+				process.exit(1);
+			}
+
+			if (isIn(entry.type, APP_EXTENSION_TYPES)) {
+				languagesApp.add(language);
+			} else {
+				languagesApi.add(language);
+			}
+		}
+	}
+
+	const config = await loadConfig();
+	const plugins = config.plugins ?? [];
+
+	const entrypointApp = generateBundleEntrypoint('app', entries);
+	const entrypointApi = generateBundleEntrypoint('api', entries);
+
+	const rollupOptionsApp = getRollupOptions({
+		mode: 'browser',
+		input: { entry: entrypointApp },
+		language: Array.from(languagesApp),
+		sourcemap,
+		minify,
+		plugins,
+	});
+	const rollupOptionsApi = getRollupOptions({
+		mode: 'node',
+		input: { entry: entrypointApi },
+		language: Array.from(languagesApi),
 		sourcemap,
 		minify,
 		plugins,
@@ -388,53 +554,35 @@ function getRollupOptions({
 	plugins,
 }: {
 	mode: RollupMode;
-	input: string;
-	language: Language;
+	input: string | Record<string, string>;
+	language: Language | Language[];
 	sourcemap: boolean;
 	minify: boolean;
 	plugins: Plugin[];
 }): RollupOptions {
-	if (mode === 'browser') {
-		return {
-			input,
-			external: APP_SHARED_DEPS,
-			plugins: [
-				vue({ preprocessStyles: true }),
-				language === 'typescript' ? typescript({ check: false }) : null,
-				styles(),
-				...plugins,
-				nodeResolve({ browser: true }),
-				commonjs({ esmExternals: true, sourceMap: sourcemap }),
-				json(),
-				replace({
-					values: {
-						'process.env.NODE_ENV': JSON.stringify('production'),
-					},
-					preventAssignment: true,
-				}),
-				minify ? terser() : null,
-			],
-		};
-	} else {
-		return {
-			input,
-			external: API_SHARED_DEPS,
-			plugins: [
-				language === 'typescript' ? typescript({ check: false }) : null,
-				...plugins,
-				nodeResolve(),
-				commonjs({ sourceMap: sourcemap }),
-				json(),
-				replace({
-					values: {
-						'process.env.NODE_ENV': JSON.stringify('production'),
-					},
-					preventAssignment: true,
-				}),
-				minify ? terser() : null,
-			],
-		};
-	}
+	const languages = Array.isArray(language) ? language : [language];
+
+	return {
+		input: typeof input !== 'string' ? 'entry' : input,
+		external: mode === 'browser' ? APP_SHARED_DEPS : API_SHARED_DEPS,
+		plugins: [
+			typeof input !== 'string' ? virtual(input) : null,
+			mode === 'browser' ? (vue({ preprocessStyles: true }) as Plugin) : null,
+			languages.includes('typescript') ? esbuild({ include: /\.tsx?$/, sourceMap: sourcemap }) : null,
+			mode === 'browser' ? styles() : null,
+			...plugins,
+			nodeResolve({ browser: mode === 'browser' }),
+			commonjs({ esmExternals: mode === 'browser', sourceMap: sourcemap }),
+			json(),
+			replace({
+				values: {
+					'process.env.NODE_ENV': JSON.stringify('production'),
+				},
+				preventAssignment: true,
+			}),
+			minify ? terser() : null,
+		],
+	};
 }
 
 function getRollupOutputOptions({
@@ -446,22 +594,13 @@ function getRollupOutputOptions({
 	output: string;
 	sourcemap: boolean;
 }): RollupOutputOptions {
-	if (mode === 'browser') {
-		return {
-			file: output,
-			format: 'es',
-			inlineDynamicImports: true,
-			sourcemap,
-		};
-	} else {
-		return {
-			file: output,
-			format: 'cjs',
-			exports: 'default',
-			inlineDynamicImports: true,
-			sourcemap,
-		};
-	}
+	return {
+		file: output,
+		format: mode === 'browser' ? 'es' : 'cjs',
+		exports: 'auto',
+		inlineDynamicImports: true,
+		sourcemap,
+	};
 }
 
 function formatRollupError(error: RollupError): string {

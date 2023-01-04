@@ -1,67 +1,66 @@
 {
 	"name": "directus-monorepo",
 	"private": true,
-	"version": "9.14.2",
 	"workspaces": [
 		"./app",
 		"./api",
 		"./packages/*"
 	],
 	"scripts": {
+		"cli": "NODE_ENV=development SERVE_APP=false DOTENV_CONFIG_PATH=api/.env ts-node -r dotenv/config --script-mode --transpile-only api/src/cli/run.ts",
+		"format": "prettier --write \"**/*.{md,y?(a)ml,json}\"",
 		"lint": "eslint .",
-		"format": "prettier --write \"**/*.{js,ts,vue,md,yaml}\"",
-		"test:e2e": "jest tests -c tests/jest.config.js",
-		"test:e2e:watch": "jest tests -c tests/jest.config.js --watch",
-		"posttest:e2e:watch": "ts-node --project ./tests/tsconfig.json --transpile-only ./tests/setup/teardown.ts",
 		"test:blackbox": "jest tests -c tests-blackbox/jest.config.js",
 		"test:blackbox:watch": "jest tests -c tests-blackbox/jest.config.js --watch",
 		"posttest:blackbox:watch": "ts-node --project ./tests-blackbox/tsconfig.json --transpile-only ./tests-blackbox/setup/teardown.ts",
-		"cli": "cross-env NODE_ENV=development SERVE_APP=false DOTENV_CONFIG_PATH=api/.env ts-node -r dotenv/config --script-mode --transpile-only api/src/cli/run.ts"
-	},
-	"engines": {
-		"node": ">=16.0.0",
-		"npm": ">=8.5.0"
+		"test:e2e": "jest tests -c tests/jest.config.js",
+		"test:e2e:watch": "jest tests -c tests/jest.config.js --watch",
+		"posttest:e2e:watch": "ts-node --project ./tests/tsconfig.json --transpile-only ./tests/setup/teardown.ts"
 	},
 	"simple-git-hooks": {
 		"pre-commit": "npx lint-staged"
 	},
 	"lint-staged": {
 		"*.{js,ts,vue}": "eslint --fix",
-		"*.{md,yaml}": "prettier --write"
+		"*.{md,y?(a)ml,json}": "prettier --write"
+	},
+	"devDependencies": {
+		"@directus/shared": "workspace:*",
+		"@types/jest": "29.2.4",
+		"@types/lodash": "4.14.191",
+		"@types/seedrandom": "3.0.2",
+		"@types/supertest": "2.0.12",
+		"@types/uuid": "9.0.0",
+		"@typescript-eslint/eslint-plugin": "5.47.0",
+		"@typescript-eslint/parser": "5.47.0",
+		"axios": "1.2.1",
+		"eslint": "8.30.0",
+		"eslint-config-prettier": "8.5.0",
+		"eslint-plugin-jest": "27.1.7",
+		"eslint-plugin-prettier": "4.2.1",
+		"eslint-plugin-vue": "9.8.0",
+		"globby": "11.1.0",
+		"jest": "29.3.1",
+		"jest-environment-node": "29.3.1",
+		"json-to-graphql-query": "2.2.4",
+		"knex": "2.3.0",
+		"lint-staged": "13.1.0",
+		"listr2": "5.0.6",
+		"lodash": "4.17.21",
+		"prettier": "2.8.1",
+		"seedrandom": "3.0.5",
+		"simple-git-hooks": "2.8.1",
+		"supertest": "6.3.3",
+		"ts-jest": "29.0.3",
+		"typescript": "4.9.4",
+		"uuid": "9.0.0"
+	},
+	"engines": {
+		"node": ">=16.0.0",
+		"npm": ">=8.5.0"
 	},
 	"volta": {
 		"node": "16.15.0",
 		"npm": "8.10.0"
-	},
-	"devDependencies": {
-		"@directus/shared": "workspace:*",
-		"@types/jest": "27.5.2",
-		"@types/listr": "^0.14.4",
-		"@types/lodash": "^4.14.182",
-		"@types/seedrandom": "^3.0.2",
-		"@types/supertest": "2.0.12",
-		"@types/uuid": "8.3.4",
-		"@typescript-eslint/eslint-plugin": "^5.30.5",
-		"@typescript-eslint/parser": "^5.30.5",
-		"axios": "^0.27.2",
-		"cross-env": "7.0.3",
-		"eslint": "^8.19.0",
-		"eslint-config-prettier": "^8.5.0",
-		"eslint-plugin-prettier": "^4.2.1",
-		"eslint-plugin-vue": "^9.2.0",
-		"globby": "^11.0.4",
-		"jest": "28.1.2",
-		"jest-environment-node": "^28.1.2",
-		"knex": "2.2.0",
-		"lint-staged": "^13.0.3",
-		"listr": "^0.14.3",
-		"lodash": "^4.17.21",
-		"prettier": "2.4.1",
-		"seedrandom": "^3.0.5",
-		"simple-git-hooks": "^2.8.0",
-		"supertest": "^6.2.3",
-		"ts-jest": "28.0.5",
-		"typescript": "^4.7.4",
-		"uuid": "^8.3.2"
 	}
 }

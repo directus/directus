@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 
 import knex from 'knex';
-import Listr from 'listr';
+import { Listr } from 'listr2';
 import vendors from '../common/get-dbs-to-test';
 import config, { getUrl } from '../common/config';
 import global from './global';
@@ -64,6 +64,7 @@ export default async (): Promise<void> => {
 
 									// Set up separate directus instance without system cache
 									const noCacheEnv = clone(config.envs[vendor]!);
+									noCacheEnv.CACHE_SCHEMA = 'false';
 									noCacheEnv.PORT = String(parseInt(noCacheEnv.PORT!) + 50);
 									const serverNoCache = spawn('node', ['api/cli', 'start'], { env: noCacheEnv });
 									global.directusNoCache[vendor] = serverNoCache;

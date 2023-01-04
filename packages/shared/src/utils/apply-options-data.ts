@@ -1,8 +1,14 @@
 import { renderFn, get, Scope, ResolveFn } from 'micromustache';
+import { JsonValue } from '../types';
 import { parseJSON } from './parse-json';
 
-type Mustacheable = string | number | boolean | null | Mustacheable[] | { [key: string]: Mustacheable };
-type GenericString<T> = T extends string ? string : T;
+type Mustache<T> = T extends string
+	? JsonValue
+	: T extends Array<infer U>
+	? Array<Mustache<U>>
+	: T extends Record<any, any>
+	? { [K in keyof T]: Mustache<T[K]> }
+	: T;
 
 export function applyOptionsData(
 	options: Record<string, any>,
@@ -10,51 +16,43 @@ export function applyOptionsData(
 	skipUndefinedKeys: string[] = []
 ): Record<string, any> {
 	return Object.fromEntries(
-		Object.entries(options).map(([key, value]) => {
-			if (typeof value === 'string') {
-				const single = value.match(/^\{\{\s*([^}\s]+)\s*\}\}$/);
-
-				if (single !== null && single.length > 0) {
-					const foundValue = get(data, single[1]!);
-
-					if (foundValue !== undefined || !skipUndefinedKeys.includes(key)) {
-						return [key, foundValue];
-					} else {
-						return [key, value];
-					}
-				}
-			}
-
-			return [key, renderMustache(value, data, skipUndefinedKeys.includes(key))];
-		})
+		Object.entries(options).map(([key, value]) => [key, renderMustache(value, data, skipUndefinedKeys.includes(key))])
 	);
 }
 
-function resolveFn(skipUndefined: boolean): ResolveFn {
-	return (path: string, scope?: Scope) => {
-		if (!scope) return skipUndefined ? `{{${path}}}` : undefined;
-
+function resolveFn(skipUndefined: boolean): (path: string, scope: Scope) => any {
+	return (path, scope) => {
 		const value = get(scope, path);
 
 		if (value !== undefined || !skipUndefined) {
 			return typeof value === 'object' ? JSON.stringify(value) : value;
 		} else {
-			return `{{${path}}}`;
+			return `{{ ${path} }}`;
 		}
 	};
 }
 
-function renderMustache<T extends Mustacheable>(item: T, scope: Scope, skipUndefined: boolean): GenericString<T> {
+function renderMustache<T extends JsonValue>(item: T, scope: Scope, skipUndefined: boolean): Mustache<T> {
 	if (typeof item === 'string') {
-		return renderFn(item, resolveFn(skipUndefined), scope, { explicit: true }) as GenericString<T>;
+		const raw = item.match(/^\{\{\s*([^}\s]+)\s*\}\}$/);
+
+		if (raw !== null) {
+			const value = get(scope, raw[1]!);
+
+			if (value !== undefined) {
+				return value;
+			}
+		}
+
+		return renderFn(item, resolveFn(skipUndefined) as ResolveFn, scope, { explicit: true }) as Mustache<T>;
 	} else if (Array.isArray(item)) {
-		return item.map((element) => renderMustache(element, scope, skipUndefined)) as GenericString<T>;
+		return item.map((element) => renderMustache(element, scope, skipUndefined)) as Mustache<T>;
 	} else if (typeof item === 'object' && item !== null) {
 		return Object.fromEntries(
 			Object.entries(item).map(([key, value]) => [key, renderMustache(value, scope, skipUndefined)])
-		) as GenericString<T>;
+		) as Mustache<T>;
 	} else {
-		return item as GenericString<T>;
+		return item as Mustache<T>;
 	}
 }
 
