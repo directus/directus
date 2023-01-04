@@ -42,21 +42,24 @@ fields:
     width: full
 
   - field: hidden
-    special: cast-boolean
+    special:
+      - cast-boolean
     interface: boolean
     options:
       label: $t:field_options.directus_collections.hidden_label
     width: half
 
   - field: singleton
-    special: cast-boolean
+    special:
+      - cast-boolean
     interface: boolean
     options:
       label: $t:singleton_label
     width: half
 
   - field: translations
-    special: cast-json
+    special:
+      - cast-json
     interface: list
     options:
       template: '{{ translation }} ({{ language }})'
@@ -115,7 +118,8 @@ fields:
 
   - field: archive_app_filter
     interface: boolean
-    special: cast-boolean
+    special:
+      - cast-boolean
     options:
       label: $t:field_options.directus_collections.archive_app_filter
     width: half

@@ -1753,6 +1753,8 @@ layouts:
     find_location: Find location...
     default_template: Using Collection Default...
     no_compatible_fields: No compatible fields
+  kanban:
+    crop: Crop
 panels:
   metric:
     name: Metric

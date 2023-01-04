@@ -1,12 +1,12 @@
 import { BaseException } from '@directus/shared/exceptions';
-import { Accountability, Action, Aggregate, Filter, Query, SchemaOverview } from '@directus/shared/types';
+import { Accountability, Action, Aggregate, Filter, Query, SchemaOverview, PrimaryKey } from '@directus/shared/types';
+import { parseFilterFunctionPath } from '@directus/shared/utils';
 import argon2 from 'argon2';
 import {
 	ArgumentNode,
 	execute,
 	ExecutionResult,
 	FieldNode,
-	formatError,
 	FormattedExecutionResult,
 	FragmentDefinitionNode,
 	GraphQLBoolean,
@@ -39,13 +39,14 @@ import {
 	ObjectTypeComposerFieldConfigMapDefinition,
 	SchemaComposer,
 	toInputObjectType,
+	ObjectTypeComposerFieldConfigDefinition,
 } from 'graphql-compose';
+import processError from './utils/process-error';
 import { Knex } from 'knex';
 import { flatten, get, mapKeys, merge, omit, pick, set, transform, uniq } from 'lodash';
 import ms from 'ms';
 import { clearSystemCache, getCache } from '../../cache';
 import { DEFAULT_AUTH_PROVIDER, GENERATE_SPECIAL } from '../../constants';
-import { REGEX_BETWEEN_PARENS } from '@directus/shared/constants';
 import getDatabase from '../../database';
 import env from '../../env';
 import { ForbiddenException, GraphQLValidationException, InvalidPayloadException } from '../../exceptions';
@@ -85,10 +86,10 @@ import { GraphQLGeoJSON } from './types/geojson';
 import { GraphQLStringOrFloat } from './types/string-or-float';
 import { GraphQLVoid } from './types/void';
 
-import { PrimaryKey } from '@directus/shared/types';
-
 import { addPathToValidationError } from './utils/add-path-to-validation-error';
 import { GraphQLHash } from './types/hash';
+import { GraphQLBigInt } from './types/bigint';
+import { FUNCTIONS } from '@directus/shared/constants';
 
 const validationRules = Array.from(specifiedRules);
 
@@ -157,7 +158,7 @@ export class GraphQLService {
 
 		const formattedResult: FormattedExecutionResult = {
 			...result,
-			errors: result.errors?.map(formatError),
+			errors: result.errors?.map((error) => processError(this.accountability, error)),
 		};
 
 		return formattedResult;
@@ -411,14 +412,14 @@ export class GraphQLService {
 							!GENERATE_SPECIAL.some((flag) => field.special.includes(flag)) &&
 							action !== 'update'
 						) {
-							type = GraphQLNonNull(type);
+							type = new GraphQLNonNull(type);
 						}
 
 						if (collection.primary === field.field) {
 							if (!field.defaultValue && !field.special.includes('uuid') && action === 'create')
-								type = GraphQLNonNull(GraphQLID);
+								type = new GraphQLNonNull(GraphQLID);
 							else if (['create', 'update'].includes(action)) type = GraphQLID;
-							else type = GraphQLNonNull(GraphQLID);
+							else type = new GraphQLNonNull(GraphQLID);
 						}
 
 						acc[field.field] = {
@@ -427,7 +428,7 @@ export class GraphQLService {
 							resolve: (obj: Record<string, any>) => {
 								return obj[field.field];
 							},
-						};
+						} as ObjectTypeComposerFieldConfigDefinition<any, any>;
 
 						if (action === 'read') {
 							if (field.type === 'date') {
@@ -524,7 +525,7 @@ export class GraphQLService {
 									}
 
 									const collection = parent[relation.meta!.one_collection_field!];
-									return CollectionTypes[collection].getType();
+									return CollectionTypes[collection].getType().name;
 								},
 							}),
 							resolve: (obj: Record<string, any>, _, __, info) => {
@@ -560,6 +561,9 @@ export class GraphQLService {
 						type: GraphQLString,
 					},
 					_contains: {
+						type: GraphQLString,
+					},
+					_icontains: {
 						type: GraphQLString,
 					},
 					_ncontains: {
@@ -643,6 +647,12 @@ export class GraphQLService {
 					_nnull: {
 						type: GraphQLBoolean,
 					},
+					_in: {
+						type: new GraphQLList(GraphQLString),
+					},
+					_nin: {
+						type: new GraphQLList(GraphQLString),
+					},
 					_between: {
 						type: new GraphQLList(GraphQLStringOrFloat),
 					},
@@ -715,6 +725,12 @@ export class GraphQLService {
 					},
 					_nintersects_bbox: {
 						type: GraphQLGeoJSON,
+					},
+					_null: {
+						type: GraphQLBoolean,
+					},
+					_nnull: {
+						type: GraphQLBoolean,
 					},
 				},
 			});
@@ -805,6 +821,7 @@ export class GraphQLService {
 							case GraphQLBoolean:
 								filterOperatorType = BooleanFilterOperators;
 								break;
+							case GraphQLBigInt:
 							case GraphQLInt:
 							case GraphQLFloat:
 								filterOperatorType = NumberFilterOperators;
@@ -863,6 +880,7 @@ export class GraphQLService {
 						const graphqlType = getGraphQLType(field.type, field.special);
 
 						switch (graphqlType) {
+							case GraphQLBigInt:
 							case GraphQLInt:
 							case GraphQLFloat:
 								acc[field.field] = {
@@ -1018,7 +1036,7 @@ export class GraphQLService {
 						name: `${collection.collection}_by_id`,
 						type: ReadCollectionTypes[collection.collection],
 						args: {
-							id: GraphQLNonNull(GraphQLID),
+							id: new GraphQLNonNull(GraphQLID),
 						},
 						resolve: async ({ info, context }: { info: GraphQLResolveInfo; context: Record<string, any> }) => {
 							const result = await self.resolveQuery(info);
@@ -1206,7 +1224,7 @@ export class GraphQLService {
 								...(collectionIsReadable
 									? ReadCollectionTypes[collection.collection].getResolver(collection.collection).getArgs()
 									: {}),
-								ids: GraphQLNonNull(new GraphQLList(GraphQLID)),
+								ids: new GraphQLNonNull(new GraphQLList(GraphQLID)),
 								data: toInputObjectType(UpdateCollectionTypes[collection.collection]).setTypeName(
 									`update_${collection.collection}_input`
 								).NonNull,
@@ -1219,7 +1237,7 @@ export class GraphQLService {
 							name: `update_${collection.collection}_item`,
 							type: collectionIsReadable ? ReadCollectionTypes[collection.collection] : GraphQLBoolean,
 							args: {
-								id: GraphQLNonNull(GraphQLID),
+								id: new GraphQLNonNull(GraphQLID),
 								data: toInputObjectType(UpdateCollectionTypes[collection.collection]).setTypeName(
 									`update_${collection.collection}_input`
 								).NonNull,
@@ -1234,14 +1252,14 @@ export class GraphQLService {
 			DeleteCollectionTypes.many = schemaComposer.createObjectTC({
 				name: `delete_many`,
 				fields: {
-					ids: GraphQLNonNull(new GraphQLList(GraphQLID)),
+					ids: new GraphQLNonNull(new GraphQLList(GraphQLID)),
 				},
 			});
 
 			DeleteCollectionTypes.one = schemaComposer.createObjectTC({
 				name: `delete_one`,
 				fields: {
-					id: GraphQLNonNull(GraphQLID),
+					id: new GraphQLNonNull(GraphQLID),
 				},
 			});
 
@@ -1250,7 +1268,7 @@ export class GraphQLService {
 					name: `delete_${collection.collection}_items`,
 					type: DeleteCollectionTypes.many,
 					args: {
-						ids: GraphQLNonNull(new GraphQLList(GraphQLID)),
+						ids: new GraphQLNonNull(new GraphQLList(GraphQLID)),
 					},
 					resolve: async ({ args, info }: { args: Record<string, any>; info: GraphQLResolveInfo }) =>
 						await self.resolveMutation(args, info),
@@ -1260,7 +1278,7 @@ export class GraphQLService {
 					name: `delete_${collection.collection}_item`,
 					type: DeleteCollectionTypes.one,
 					args: {
-						id: GraphQLNonNull(GraphQLID),
+						id: new GraphQLNonNull(GraphQLID),
 					},
 					resolve: async ({ args, info }: { args: Record<string, any>; info: GraphQLResolveInfo }) =>
 						await self.resolveMutation(args, info),
@@ -1315,14 +1333,7 @@ export class GraphQLService {
 		// Transform count(a.b.c) into a.b.count(c)
 		if (query.fields?.length) {
 			for (let fieldIndex = 0; fieldIndex < query.fields.length; fieldIndex++) {
-				if (query.fields[fieldIndex].includes('(') && query.fields[fieldIndex].includes(')')) {
-					const functionName = query.fields[fieldIndex].split('(')[0];
-					const columnNames = query.fields[fieldIndex].match(REGEX_BETWEEN_PARENS)![1].split('.');
-					if (columnNames.length > 1) {
-						const column = columnNames.pop();
-						query.fields[fieldIndex] = columnNames.join('.') + '.' + functionName + '(' + column + ')';
-					}
-				}
+				query.fields[fieldIndex] = parseFilterFunctionPath(query.fields[fieldIndex]);
 			}
 		}
 
@@ -1485,7 +1496,7 @@ export class GraphQLService {
 					return Boolean(node.value);
 				case 'EnumValue':
 				default:
-					return node.value;
+					return 'value' in node ? node.value : null;
 			}
 		};
 
@@ -1577,6 +1588,7 @@ export class GraphQLService {
 
 						for (const subSelection of selection.selectionSet.selections) {
 							if (subSelection.kind !== 'Field') continue;
+							if (subSelection.name!.value.startsWith('__')) continue;
 							children.push(`${subSelection.name!.value}(${rootField})`);
 						}
 					} else {
@@ -1610,31 +1622,10 @@ export class GraphQLService {
 			return uniq(fields);
 		};
 
-		const replaceFuncs = (filter?: Filter | null): null | undefined | Filter => {
-			if (!filter) return filter;
-
-			return replaceFuncDeep(filter);
-
-			function replaceFuncDeep(filter: Record<string, any>) {
-				return transform(filter, (result: Record<string, any>, value, key) => {
-					let currentKey = key;
-
-					if (typeof key === 'string' && key.endsWith('_func')) {
-						const functionName = Object.keys(value)[0]!;
-						currentKey = `${functionName}(${currentKey.slice(0, -5)})`;
-
-						result[currentKey] = Object.values(value)[0]!;
-					} else {
-						result[currentKey] =
-							value?.constructor === Object || value?.constructor === Array ? replaceFuncDeep(value) : value;
-					}
-				});
-			}
-		};
-
 		query.alias = parseAliases(selections);
 		query.fields = parseFields(selections);
-		query.filter = replaceFuncs(query.filter);
+		query.filter = this.replaceFuncs(query.filter);
+		query.deep = this.replaceFuncs(query.deep as any) as any;
 
 		validateQuery(query);
 
@@ -1669,10 +1660,38 @@ export class GraphQLService {
 					}) ?? [];
 		}
 
+		query.filter = this.replaceFuncs(query.filter);
+
 		validateQuery(query);
 
 		return query;
 	}
+
+	/**
+	 * Replace functions from GraphQL format to Directus-Filter format
+	 */
+	replaceFuncs(filter?: Filter | null): null | undefined | Filter {
+		if (!filter) return filter;
+
+		return replaceFuncDeep(filter);
+
+		function replaceFuncDeep(filter: Record<string, any>) {
+			return transform(filter, (result: Record<string, any>, value, key) => {
+				const isFunctionKey =
+					typeof key === 'string' && key.endsWith('_func') && FUNCTIONS.includes(Object.keys(value)[0]! as any);
+
+				if (isFunctionKey) {
+					const functionName = Object.keys(value)[0]!;
+					const fieldName = key.slice(0, -5);
+
+					result[`${functionName}(${fieldName})`] = Object.values(value)[0]!;
+				} else {
+					result[key] = value?.constructor === Object || value?.constructor === Array ? replaceFuncDeep(value) : value;
+				}
+			});
+		}
+	}
+
 	/**
 	 * Convert Directus-Exception into a GraphQL format, so it can be returned by GraphQL properly.
 	 */
@@ -1954,8 +1973,8 @@ export class GraphQLService {
 			auth_login: {
 				type: AuthTokens,
 				args: {
-					email: GraphQLNonNull(GraphQLString),
-					password: GraphQLNonNull(GraphQLString),
+					email: new GraphQLNonNull(GraphQLString),
+					password: new GraphQLNonNull(GraphQLString),
 					mode: AuthMode,
 					otp: GraphQLString,
 				},
@@ -2052,7 +2071,7 @@ export class GraphQLService {
 			auth_password_request: {
 				type: GraphQLBoolean,
 				args: {
-					email: GraphQLNonNull(GraphQLString),
+					email: new GraphQLNonNull(GraphQLString),
 					reset_url: GraphQLString,
 				},
 				resolve: async (_, args, { req }) => {
@@ -2078,8 +2097,8 @@ export class GraphQLService {
 			auth_password_reset: {
 				type: GraphQLBoolean,
 				args: {
-					token: GraphQLNonNull(GraphQLString),
-					password: GraphQLNonNull(GraphQLString),
+					token: new GraphQLNonNull(GraphQLString),
+					password: new GraphQLNonNull(GraphQLString),
 				},
 				resolve: async (_, args, { req }) => {
 					const accountability = {
@@ -2102,7 +2121,7 @@ export class GraphQLService {
 					},
 				}),
 				args: {
-					password: GraphQLNonNull(GraphQLString),
+					password: new GraphQLNonNull(GraphQLString),
 				},
 				resolve: async (_, args) => {
 					if (!this.accountability?.user) return null;
@@ -2122,8 +2141,8 @@ export class GraphQLService {
 			users_me_tfa_enable: {
 				type: GraphQLBoolean,
 				args: {
-					otp: GraphQLNonNull(GraphQLString),
-					secret: GraphQLNonNull(GraphQLString),
+					otp: new GraphQLNonNull(GraphQLString),
+					secret: new GraphQLNonNull(GraphQLString),
 				},
 				resolve: async (_, args) => {
 					if (!this.accountability?.user) return null;
@@ -2139,7 +2158,7 @@ export class GraphQLService {
 			users_me_tfa_disable: {
 				type: GraphQLBoolean,
 				args: {
-					otp: GraphQLNonNull(GraphQLString),
+					otp: new GraphQLNonNull(GraphQLString),
 				},
 				resolve: async (_, args) => {
 					if (!this.accountability?.user) return null;
@@ -2158,7 +2177,7 @@ export class GraphQLService {
 			utils_hash_generate: {
 				type: GraphQLString,
 				args: {
-					string: GraphQLNonNull(GraphQLString),
+					string: new GraphQLNonNull(GraphQLString),
 				},
 				resolve: async (_, args) => {
 					return await generateHash(args.string);
@@ -2167,8 +2186,8 @@ export class GraphQLService {
 			utils_hash_verify: {
 				type: GraphQLBoolean,
 				args: {
-					string: GraphQLNonNull(GraphQLString),
-					hash: GraphQLNonNull(GraphQLString),
+					string: new GraphQLNonNull(GraphQLString),
+					hash: new GraphQLNonNull(GraphQLString),
 				},
 				resolve: async (_, args) => {
 					return await argon2.verify(args.hash, args.string);
@@ -2177,9 +2196,9 @@ export class GraphQLService {
 			utils_sort: {
 				type: GraphQLBoolean,
 				args: {
-					collection: GraphQLNonNull(GraphQLString),
-					item: GraphQLNonNull(GraphQLID),
-					to: GraphQLNonNull(GraphQLID),
+					collection: new GraphQLNonNull(GraphQLString),
+					item: new GraphQLNonNull(GraphQLID),
+					to: new GraphQLNonNull(GraphQLID),
 				},
 				resolve: async (_, args) => {
 					const service = new UtilsService({
@@ -2194,7 +2213,7 @@ export class GraphQLService {
 			utils_revert: {
 				type: GraphQLBoolean,
 				args: {
-					revision: GraphQLNonNull(GraphQLID),
+					revision: new GraphQLNonNull(GraphQLID),
 				},
 				resolve: async (_, args) => {
 					const service = new RevisionsService({
@@ -2223,8 +2242,8 @@ export class GraphQLService {
 			users_invite_accept: {
 				type: GraphQLBoolean,
 				args: {
-					token: GraphQLNonNull(GraphQLString),
-					password: GraphQLNonNull(GraphQLString),
+					token: new GraphQLNonNull(GraphQLString),
+					password: new GraphQLNonNull(GraphQLString),
 				},
 				resolve: async (_, args) => {
 					const service = new UsersService({
@@ -2246,9 +2265,9 @@ export class GraphQLService {
 						acc[field.field] = {
 							type: field.nullable
 								? getGraphQLType(field.type, field.special)
-								: GraphQLNonNull(getGraphQLType(field.type, field.special)),
+								: new GraphQLNonNull(getGraphQLType(field.type, field.special)),
 							description: field.note,
-						};
+						} as ObjectTypeComposerFieldConfigDefinition<any, any, any>;
 
 						return acc;
 					}, {} as ObjectTypeComposerFieldConfigMapDefinition<any, any>),
@@ -2278,7 +2297,7 @@ export class GraphQLService {
 				collections_by_name: {
 					type: Collection,
 					args: {
-						name: GraphQLNonNull(GraphQLString),
+						name: new GraphQLNonNull(GraphQLString),
 					},
 					resolve: async (_, args) => {
 						const collectionsService = new CollectionsService({
@@ -2303,9 +2322,9 @@ export class GraphQLService {
 						acc[field.field] = {
 							type: field.nullable
 								? getGraphQLType(field.type, field.special)
-								: GraphQLNonNull(getGraphQLType(field.type, field.special)),
+								: new GraphQLNonNull(getGraphQLType(field.type, field.special)),
 							description: field.note,
-						};
+						} as ObjectTypeComposerFieldConfigDefinition<any, any, any>;
 
 						return acc;
 					}, {} as ObjectTypeComposerFieldConfigMapDefinition<any, any>),
@@ -2345,7 +2364,7 @@ export class GraphQLService {
 				fields_in_collection: {
 					type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(Field.getType()))),
 					args: {
-						collection: GraphQLNonNull(GraphQLString),
+						collection: new GraphQLNonNull(GraphQLString),
 					},
 					resolve: async (_, args) => {
 						const service = new FieldsService({
@@ -2359,8 +2378,8 @@ export class GraphQLService {
 				fields_by_name: {
 					type: Field,
 					args: {
-						collection: GraphQLNonNull(GraphQLString),
-						field: GraphQLNonNull(GraphQLString),
+						collection: new GraphQLNonNull(GraphQLString),
+						field: new GraphQLNonNull(GraphQLString),
 					},
 					resolve: async (_, args) => {
 						const service = new FieldsService({
@@ -2381,13 +2400,13 @@ export class GraphQLService {
 				schema: schemaComposer.createObjectTC({
 					name: 'directus_relations_schema',
 					fields: {
-						table: GraphQLNonNull(GraphQLString),
-						column: GraphQLNonNull(GraphQLString),
-						foreign_key_table: GraphQLNonNull(GraphQLString),
-						foreign_key_column: GraphQLNonNull(GraphQLString),
+						table: new GraphQLNonNull(GraphQLString),
+						column: new GraphQLNonNull(GraphQLString),
+						foreign_key_table: new GraphQLNonNull(GraphQLString),
+						foreign_key_column: new GraphQLNonNull(GraphQLString),
 						constraint_name: GraphQLString,
-						on_update: GraphQLNonNull(GraphQLString),
-						on_delete: GraphQLNonNull(GraphQLString),
+						on_update: new GraphQLNonNull(GraphQLString),
+						on_delete: new GraphQLNonNull(GraphQLString),
 					},
 				}),
 				meta: schemaComposer.createObjectTC({
@@ -2396,7 +2415,7 @@ export class GraphQLService {
 						acc[field.field] = {
 							type: getGraphQLType(field.type, field.special),
 							description: field.note,
-						};
+						} as ObjectTypeComposerFieldConfigDefinition<any, any, any>;
 
 						return acc;
 					}, {} as ObjectTypeComposerFieldConfigMapDefinition<any, any>),
@@ -2418,7 +2437,7 @@ export class GraphQLService {
 				relations_in_collection: {
 					type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(Relation.getType()))),
 					args: {
-						collection: GraphQLNonNull(GraphQLString),
+						collection: new GraphQLNonNull(GraphQLString),
 					},
 					resolve: async (_, args) => {
 						const service = new RelationsService({
@@ -2432,8 +2451,8 @@ export class GraphQLService {
 				relations_by_name: {
 					type: Relation,
 					args: {
-						collection: GraphQLNonNull(GraphQLString),
-						field: GraphQLNonNull(GraphQLString),
+						collection: new GraphQLNonNull(GraphQLString),
+						field: new GraphQLNonNull(GraphQLString),
 					},
 					resolve: async (_, args) => {
 						const service = new RelationsService({
@@ -2471,7 +2490,7 @@ export class GraphQLService {
 				update_collections_item: {
 					type: Collection,
 					args: {
-						collection: GraphQLNonNull(GraphQLString),
+						collection: new GraphQLNonNull(GraphQLString),
 						data: toInputObjectType(Collection.clone('update_directus_collections'), {
 							postfix: '_input',
 						}).removeField(['collection', 'schema']).NonNull,
@@ -2493,7 +2512,7 @@ export class GraphQLService {
 						},
 					}),
 					args: {
-						collection: GraphQLNonNull(GraphQLString),
+						collection: new GraphQLNonNull(GraphQLString),
 					},
 					resolve: async (_, args) => {
 						const collectionsService = new CollectionsService({
@@ -2510,7 +2529,7 @@ export class GraphQLService {
 				create_fields_item: {
 					type: Field,
 					args: {
-						collection: GraphQLNonNull(GraphQLString),
+						collection: new GraphQLNonNull(GraphQLString),
 						data: toInputObjectType(Field.clone('create_directus_fields'), { postfix: '_input' }).NonNull,
 					},
 					resolve: async (_, args) => {
@@ -2525,8 +2544,8 @@ export class GraphQLService {
 				update_fields_item: {
 					type: Field,
 					args: {
-						collection: GraphQLNonNull(GraphQLString),
-						field: GraphQLNonNull(GraphQLString),
+						collection: new GraphQLNonNull(GraphQLString),
+						field: new GraphQLNonNull(GraphQLString),
 						data: toInputObjectType(Field.clone('update_directus_fields'), { postfix: '_input' }).NonNull,
 					},
 					resolve: async (_, args) => {
@@ -2550,8 +2569,8 @@ export class GraphQLService {
 						},
 					}),
 					args: {
-						collection: GraphQLNonNull(GraphQLString),
-						field: GraphQLNonNull(GraphQLString),
+						collection: new GraphQLNonNull(GraphQLString),
+						field: new GraphQLNonNull(GraphQLString),
 					},
 					resolve: async (_, args) => {
 						const service = new FieldsService({
@@ -2584,8 +2603,8 @@ export class GraphQLService {
 				update_relations_item: {
 					type: Relation,
 					args: {
-						collection: GraphQLNonNull(GraphQLString),
-						field: GraphQLNonNull(GraphQLString),
+						collection: new GraphQLNonNull(GraphQLString),
+						field: new GraphQLNonNull(GraphQLString),
 						data: toInputObjectType(Relation.clone('update_directus_relations'), { postfix: '_input' }).NonNull,
 					},
 					resolve: async (_, args) => {
@@ -2607,8 +2626,8 @@ export class GraphQLService {
 						},
 					}),
 					args: {
-						collection: GraphQLNonNull(GraphQLString),
-						field: GraphQLNonNull(GraphQLString),
+						collection: new GraphQLNonNull(GraphQLString),
+						field: new GraphQLNonNull(GraphQLString),
 					},
 					resolve: async (_, args) => {
 						const relationsService = new RelationsService({
@@ -2677,9 +2696,9 @@ export class GraphQLService {
 				create_comment: {
 					type: ReadCollectionTypes['directus_activity'] ?? GraphQLBoolean,
 					args: {
-						collection: GraphQLNonNull(GraphQLString),
-						item: GraphQLNonNull(GraphQLID),
-						comment: GraphQLNonNull(GraphQLString),
+						collection: new GraphQLNonNull(GraphQLString),
+						item: new GraphQLNonNull(GraphQLID),
+						comment: new GraphQLNonNull(GraphQLString),
 					},
 					resolve: async (_, args, __, info) => {
 						const service = new ActivityService({
@@ -2717,8 +2736,8 @@ export class GraphQLService {
 				update_comment: {
 					type: ReadCollectionTypes['directus_activity'] ?? GraphQLBoolean,
 					args: {
-						id: GraphQLNonNull(GraphQLID),
-						comment: GraphQLNonNull(GraphQLString),
+						id: new GraphQLNonNull(GraphQLID),
+						comment: new GraphQLNonNull(GraphQLString),
 					},
 					resolve: async (_, args, __, info) => {
 						const service = new ActivityService({
@@ -2748,7 +2767,7 @@ export class GraphQLService {
 				delete_comment: {
 					type: DeleteCollectionTypes.one,
 					args: {
-						id: GraphQLNonNull(GraphQLID),
+						id: new GraphQLNonNull(GraphQLID),
 					},
 					resolve: async (_, args) => {
 						const service = new ActivityService({
@@ -2767,7 +2786,7 @@ export class GraphQLService {
 				import_file: {
 					type: ReadCollectionTypes['directus_files'] ?? GraphQLBoolean,
 					args: {
-						url: GraphQLNonNull(GraphQLString),
+						url: new GraphQLNonNull(GraphQLString),
 						data: toInputObjectType(CreateCollectionTypes['directus_files']).setTypeName('create_directus_files_input'),
 					},
 					resolve: async (_, args, __, info) => {
@@ -2797,8 +2816,8 @@ export class GraphQLService {
 				users_invite: {
 					type: GraphQLBoolean,
 					args: {
-						email: GraphQLNonNull(GraphQLString),
-						role: GraphQLNonNull(GraphQLString),
+						email: new GraphQLNonNull(GraphQLString),
+						role: new GraphQLNonNull(GraphQLString),
 						invite_url: GraphQLString,
 					},
 					resolve: async (_, args) => {

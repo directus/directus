@@ -68,10 +68,6 @@ export class RolesService extends ItemsService {
 	}
 
 	async updateOne(key: PrimaryKey, data: Record<string, any>, opts?: MutationOptions): Promise<PrimaryKey> {
-		if ('admin_access' in data && data.admin_access === false) {
-			await this.checkForOtherAdminRoles([key]);
-		}
-
 		if ('users' in data) {
 			await this.checkForOtherAdminUsers(key, data.users);
 		}

@@ -125,7 +125,8 @@ export function autoGenerateJunctionFields(updates: StateUpdates, state: State, 
 
 	const currentCollection = state.collection!;
 	const currentPrimaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(currentCollection)?.field ?? 'id';
-	const relatedCollection = updates.relations?.m2o?.related_collection;
+	const relatedCollection =
+		updates.relations?.m2o?.related_collection ?? getCurrent('relations.m2o.related_collection');
 
 	if (relatedCollection) {
 		const automaticJunctionCollectionName = getAutomaticJunctionCollectionName(currentCollection, relatedCollection);

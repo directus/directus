@@ -12,8 +12,8 @@ import {
 import { CachedTestsSchema, TestsSchema, TestsSchemaVendorValues } from '@query/filter';
 import { set } from 'lodash';
 
-export const collectionCountries = 'test_fields_delete_field_countries';
-export const collectionStates = 'test_fields_delete_field_states';
+export const collectionCountries = 'test_fields_change_field_countries';
+export const collectionStates = 'test_fields_change_field_states';
 
 export type Country = {
 	id?: number | string;

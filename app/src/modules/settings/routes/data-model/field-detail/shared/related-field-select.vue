@@ -65,6 +65,10 @@ export default defineComponent({
 			type: Array as PropType<string[]>,
 			default: () => [],
 		},
+		typeAllowList: {
+			type: Array as PropType<string[]>,
+			default: () => [],
+		},
 		placeholder: {
 			type: String,
 			default: () => i18n.global.t('foreign_key') + '...',
@@ -89,7 +93,8 @@ export default defineComponent({
 					!field.schema ||
 					!!field.schema?.is_primary_key ||
 					props.disabledFields.includes(field.field) ||
-					props.typeDenyList.includes(field.type),
+					props.typeDenyList.includes(field.type) ||
+					!props.typeAllowList.includes(field.type),
 			}));
 		});
 

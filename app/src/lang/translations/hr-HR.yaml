@@ -784,7 +784,6 @@ flow: Tok
 select_a_flow: Odaberite tok
 run_flow_on_current: Pokreni tok na trenutnoj stavci
 run_flow_on_current_edited_confirm: Ova se stavka može ažurirati ovim tokom, jeste li sigurni da je želite izvršiti?
-run_flow_on_selected: Nema odabranih stavki | Pokreni tok na 1 odabranoj stavci | Pokreni tok na {n} odabranih stavki
 run_flow_success: Tok "{flow}" je uspješno izvršen
 trigger: Okidač
 trigger_options: Opcije okidača
@@ -1905,33 +1904,8 @@ layouts:
     default_template: Korištenje zadane zbirke...
     no_compatible_fields: Nema kompatibilnih polja
   kanban:
-    name: Kanban,
-    group_field: Grupiraj po,
-    group_field_placeholder: Polje za grupiranje prema...,
-    group_title: Naslov Grupe,
-    group_title_placeholder: Polje za naslove grupa...,
-    title: Naslov kartice,
-    title_placeholder: Neobavezno polje naslova...,
-    text: Tekst kartice,
-    text_placeholder: Neobavezno tekstno polje...,
-    date: Datum kartice,
-    date_placeholder: Neobavezno polje datuma...,
-    tags: Tagovi kartice,
-    tags_placeholder: Neobavezno polje oznaka...,
-    user: Korisnik kartice,
-    user_placeholder: Neobavezno polje korisnika...,
-    image: Slika kartice,
-    image_placeholder: Neobavezno polje slike...,
-    image_fit: Prilagodba slike kartice,
-    crop: Obreži,
-    advanced: Napredno,
-    edit_group: Uredi grupu,
-    delete_group: Obriši grupu,
-    add_group: Dodaj grupu,
-    add_group_placeholder: Unesite novi naslov grupe...,
-    show_ungrouped: Prikaži negrupirano,
-    show: Prikaži,
-    no_group: Nema grupe,
+    crop: Obreži
+    advanced: Napredno
     not_all_loaded: Moguće učitati samo prvih 1000 stavki.
 panels:
   metric:
@@ -1973,7 +1947,6 @@ panels:
     y_axis_conditional_two: mora biti broj.
   linechart:
     name: Linijski grafikon
-    description: Linijski grafikon za usporedbu promjene polja.
     select_field: Morate odabrati polje.
     select_collection: Morate odabrati kolekciju.
     select_x_axis: Morate odabrati X os.
@@ -1985,16 +1958,14 @@ panels:
     datasets: Skupovi podataka
     show_legend: Prikaži legendu
     show_marker: Prikaži markere opisa alata
-    include_dataset: Morate uključiti barem jedan skup podataka.
     include_y_axis: Morate uključiti Y-os za svaki skup podataka kada grupa nije navedena.
     group_and_function: Morate uključiti ili izostaviti i grupu i funkciju.
-    smooth: 'Glatko'
-    straight: 'Ravno'
-    step_line: 'Linija koraka'
+    smooth: Glatko
+    straight: Ravno
+    step_line: Linija koraka
   meter:
-    description: Mjerač za praćenje vrijednosti
     name: Mjerač
-    arc: Luk
+    description: Mjerač za praćenje vrijednosti
     stroke_width: Širina poteza
     select_max_value: Morate odabrati maksimalnu vrijednost.
     max_greater_than_zero: Maksimalna vrijednost mora biti veća od 0.
@@ -2006,11 +1977,9 @@ panels:
     broad: Široko
   piechart:
     name: Tortni ili krafnasti dijagram
-    description: Kružni grafikon koji prikazuje omjere grupa u stupcu.
-    function: 'Funkcija'
+    function: Funkcija
     donut: Krafna
-    labels: Prikaži oznake
-    legend: Prikaži legendu
+    show_legend: Prikaži legendu
     right: Desno
     bottom: Na dnu
     monochrome: Monokromatski
@@ -2050,7 +2019,6 @@ triggers:
     collection_and_item: Stranice o zbirkama i stavkama
     collection_only: Samo stranica zbirke
     item_only: Samo stranica stavki
-a_flow_uuid: UUID primarnog ključa toka...
 any_string_or_json: Bilo koji string ili JSON...
 item_payload_placeholder: Ovo je JSON koji se koristi za ažuriranje vrijednosti polja stavke...
 operation_variables_note: Podacima o toku možete pristupiti pomoću varijabli kao što su **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger {'}'}{'}'}** i **{'{'}{'{'}$accountability{'}'}{'}'}**, ili referencirajte prethodne operacije koristeći **{'{ '}{'{'}operation_key{'}'}{'}'}**.'
