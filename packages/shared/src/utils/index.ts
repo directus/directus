@@ -24,5 +24,4 @@ export * from './parse-filter';
 export * from './parse-json';
 export * from './pluralize';
 export * from './to-array';
-export * from './validate-extension-manifest';
 export * from './validate-payload';
