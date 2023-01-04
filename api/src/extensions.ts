@@ -1,10 +1,8 @@
 import {
-	API_OR_HYBRID_EXTENSION_PACKAGE_TYPES,
-	API_OR_HYBRID_EXTENSION_TYPES,
+	APP_EXTENSION_TYPES,
 	APP_SHARED_DEPS,
-	EXTENSION_PACKAGE_TYPES,
-	EXTENSION_TYPES,
 	HYBRID_EXTENSION_TYPES,
+	NESTED_EXTENSION_TYPES,
 } from '@directus/shared/constants';
 import * as sharedExceptions from '@directus/shared/exceptions';
 import {
@@ -13,6 +11,7 @@ import {
 	BundleExtension,
 	EndpointConfig,
 	Extension,
+	ExtensionInfo,
 	ExtensionType,
 	FilterHandler,
 	HookConfig,
@@ -29,6 +28,7 @@ import {
 	getPackageExtensions,
 	pathToRelativeUrl,
 	resolvePackage,
+	resolvePackageExtensions,
 } from '@directus/shared/utils/node';
 import express, { Router } from 'express';
 import fse from 'fs-extra';
@@ -133,7 +133,7 @@ class ExtensionManager {
 
 			const loadedExtensions = this.getExtensionsList();
 			if (loadedExtensions.length > 0) {
-				logger.info(`Loaded extensions: ${loadedExtensions.join(', ')}`);
+				logger.info(`Loaded extensions: ${loadedExtensions.map((ext) => ext.name).join(', ')}`);
 			}
 		}
 
@@ -175,12 +175,38 @@ class ExtensionManager {
 		});
 	}
 
-	public getExtensionsList(type?: ExtensionType): string[] {
+	public getExtensionsList(type?: ExtensionType) {
 		if (type === undefined) {
-			return this.extensions.map((extension) => extension.name);
+			return this.extensions.map(mapInfo);
 		} else {
-			return this.extensions.filter((extension) => extension.type === type).map((extension) => extension.name);
+			return this.extensions.map(mapInfo).filter((extension) => extension.type === type);
 		}
+
+		function mapInfo(extension: Extension): ExtensionInfo {
+			const extensionInfo = {
+				name: extension.name,
+				type: extension.type,
+				local: extension.local,
+				host: extension.host,
+				version: extension.version,
+			};
+
+			if (extension.type === 'bundle') {
+				return {
+					...extensionInfo,
+					entries: extension.entries.map((entry) => ({
+						name: entry.name,
+						type: entry.type,
+					})),
+				};
+			} else {
+				return extensionInfo as ExtensionInfo;
+			}
+		}
+	}
+
+	public getExtension(name: string): Extension | undefined {
+		return this.extensions.find((extension) => extension.name === name);
 	}
 
 	public getAppExtensions(): string | null {
@@ -205,7 +231,7 @@ class ExtensionManager {
 
 	private async load(): Promise<void> {
 		try {
-			await ensureExtensionDirs(env.EXTENSIONS_PATH, env.SERVE_APP ? EXTENSION_TYPES : API_OR_HYBRID_EXTENSION_TYPES);
+			await ensureExtensionDirs(env.EXTENSIONS_PATH, NESTED_EXTENSION_TYPES);
 
 			this.extensions = await this.getExtensions();
 		} catch (err: any) {
@@ -241,12 +267,14 @@ class ExtensionManager {
 		if (!this.watcher) {
 			logger.info('Watching extensions for changes...');
 
-			const localExtensionPaths = (env.SERVE_APP ? EXTENSION_TYPES : API_OR_HYBRID_EXTENSION_TYPES).flatMap((type) => {
+			const localExtensionPaths = NESTED_EXTENSION_TYPES.flatMap((type) => {
 				const typeDir = path.posix.join(pathToRelativeUrl(env.EXTENSIONS_PATH), pluralize(type));
 
-				return isIn(type, HYBRID_EXTENSION_TYPES)
-					? [path.posix.join(typeDir, '*', 'app.js'), path.posix.join(typeDir, '*', 'api.js')]
-					: path.posix.join(typeDir, '*', 'index.js');
+				if (isIn(type, HYBRID_EXTENSION_TYPES)) {
+					return [path.posix.join(typeDir, '*', 'app.js'), path.posix.join(typeDir, '*', 'api.js')];
+				} else {
+					return path.posix.join(typeDir, '*', 'index.js');
+				}
 			});
 
 			this.watcher = chokidar.watch([path.resolve('package.json'), ...localExtensionPaths], {
@@ -272,9 +300,7 @@ class ExtensionManager {
 				extensions
 					.filter((extension) => !extension.local)
 					.flatMap((extension) =>
-						extension.type === 'pack'
-							? path.resolve(extension.path, 'package.json')
-							: isTypeIn(extension, HYBRID_EXTENSION_TYPES) || extension.type === 'bundle'
+						isTypeIn(extension, HYBRID_EXTENSION_TYPES) || extension.type === 'bundle'
 							? [
 									path.resolve(extension.path, extension.entrypoint.app),
 									path.resolve(extension.path, extension.entrypoint.api),
@@ -291,16 +317,13 @@ class ExtensionManager {
 	}
 
 	private async getExtensions(): Promise<Extension[]> {
-		const packageExtensions = await getPackageExtensions(
-			'.',
-			env.SERVE_APP ? EXTENSION_PACKAGE_TYPES : API_OR_HYBRID_EXTENSION_PACKAGE_TYPES
-		);
-		const localExtensions = await getLocalExtensions(
-			env.EXTENSIONS_PATH,
-			env.SERVE_APP ? EXTENSION_TYPES : API_OR_HYBRID_EXTENSION_TYPES
-		);
+		const packageExtensions = await getPackageExtensions('.');
+		const localPackageExtensions = await resolvePackageExtensions(env.EXTENSIONS_PATH);
+		const localExtensions = await getLocalExtensions(env.EXTENSIONS_PATH);
 
-		return [...packageExtensions, ...localExtensions];
+		return [...packageExtensions, ...localPackageExtensions, ...localExtensions].filter(
+			(extension) => env.SERVE_APP || APP_EXTENSION_TYPES.includes(extension.type as any) === false
+		);
 	}
 
 	private async generateExtensionBundle(): Promise<string | null> {
