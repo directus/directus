@@ -20,14 +20,16 @@ export default async function link(extensionsPath: string): Promise<void> {
 		return;
 	}
 
-	let extensionManifest: ExtensionManifest;
+	let manifestFile: Record<string, any>;
 
 	try {
-		extensionManifest = ExtensionManifest.parse(fs.readJSON(packagePath));
+		manifestFile = fs.readJSON(packagePath)
 	} catch (err) {
 		log(`Current directory is not a valid Directus extension.`, 'error');
 		return;
 	}
+
+	const extensionManifest = ExtensionManifest.parse(manifestFile);
 
 	const extensionName = extensionManifest.name;
 
