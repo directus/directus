@@ -21,7 +21,7 @@ export default definePanel({
 		if (collectionInfo?.meta?.singleton) return;
 
 		const filter: Filter = {
-			_and: [options.filter || {}],
+			_and: [getParsedOptionsFilter(options.filter)],
 		};
 
 		if (options.range !== 'auto') {
@@ -50,6 +50,15 @@ export default definePanel({
 				limit: -1,
 			},
 		};
+
+		function getParsedOptionsFilter(filter: string | undefined) {
+			if (!filter) return {};
+			try {
+				return JSON.parse(filter);
+			} catch {
+				return filter;
+			}
+		}
 	},
 	component: PanelTimeSeries,
 	options: [

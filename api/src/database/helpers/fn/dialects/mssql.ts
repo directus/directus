@@ -1,41 +1,49 @@
 import { FnHelper, FnHelperOptions } from '../types';
 import { Knex } from 'knex';
 
+const parseLocaltime = (columnType?: string) => {
+	if (columnType === 'timestamp') {
+		return ` AT TIME ZONE 'UTC'`;
+	}
+	return '';
+};
+
 export class FnHelperMSSQL extends FnHelper {
-	year(table: string, column: string): Knex.Raw {
-		return this.knex.raw('DATEPART(year, ??.??)', [table, column]);
+	year(table: string, column: string, options: FnHelperOptions): Knex.Raw {
+		return this.knex.raw(`DATEPART(year, ??.??${parseLocaltime(options?.type)})`, [table, column]);
 	}
 
-	month(table: string, column: string): Knex.Raw {
-		return this.knex.raw('DATEPART(month, ??.??)', [table, column]);
+	month(table: string, column: string, options: FnHelperOptions): Knex.Raw {
+		return this.knex.raw(`DATEPART(month, ??.??${parseLocaltime(options?.type)})`, [table, column]);
 	}
 
-	week(table: string, column: string): Knex.Raw {
-		return this.knex.raw('DATEPART(week, ??.??)', [table, column]);
+	week(table: string, column: string, options: FnHelperOptions): Knex.Raw {
+		return this.knex.raw(`DATEPART(week, ??.??${parseLocaltime(options?.type)})`, [table, column]);
 	}
 
-	day(table: string, column: string): Knex.Raw {
-		return this.knex.raw('DATEPART(day, ??.??)', [table, column]);
+	day(table: string, column: string, options: FnHelperOptions): Knex.Raw {
+		return this.knex.raw(`DATEPART(day, ??.??${parseLocaltime(options?.type)})`, [table, column]);
 	}
 
-	weekday(table: string, column: string): Knex.Raw {
-		return this.knex.raw('DATEPART(weekday, ??.??)', [table, column]);
+	weekday(table: string, column: string, options: FnHelperOptions): Knex.Raw {
+		return this.knex.raw(`DATEPART(weekday, ??.??${parseLocaltime(options?.type)})`, [table, column]);
 	}
 
-	hour(table: string, column: string): Knex.Raw {
-		return this.knex.raw('DATEPART(hour, ??.??)', [table, column]);
+	hour(table: string, column: string, options: FnHelperOptions): Knex.Raw {
+		return this.knex.raw(`DATEPART(hour, ??.??${parseLocaltime(options?.type)})`, [table, column]);
 	}
 
-	minute(table: string, column: string): Knex.Raw {
-		return this.knex.raw('DATEPART(minute, ??.??)', [table, column]);
+	minute(table: string, column: string, options: FnHelperOptions): Knex.Raw {
+		return this.knex.raw(`DATEPART(minute, ??.??${parseLocaltime(options?.type)})`, [table, column]);
 	}
 
-	second(table: string, column: string): Knex.Raw {
-		return this.knex.raw('DATEPART(second, ??.??)', [table, column]);
+	second(table: string, column: string, options: FnHelperOptions): Knex.Raw {
+		return this.knex.raw(`DATEPART(second, ??.??${parseLocaltime(options?.type)})`, [table, column]);
 	}
 
 	count(table: string, column: string, options?: FnHelperOptions): Knex.Raw<any> {
-		const type = this.schema.collections?.[table]?.fields?.[column]?.type ?? 'unknown';
+		const collectionName = options?.originalCollectionName || table;
+		const type = this.schema.collections?.[collectionName]?.fields?.[column]?.type ?? 'unknown';
 
 		if (type === 'json') {
 			return this.knex.raw(`(SELECT COUNT(*) FROM OPENJSON(??.??, '$'))`, [table, column]);

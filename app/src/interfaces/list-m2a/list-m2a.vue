@@ -144,7 +144,7 @@ import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
 import { Filter } from '@directus/shared/types';
 import { getFieldsFromTemplate } from '@directus/shared/utils';
-import { clamp, get, isEmpty } from 'lodash';
+import { clamp, get, isEmpty, isNil, set } from 'lodash';
 import { computed, ref, toRefs, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
@@ -172,7 +172,7 @@ const props = withDefaults(
 );
 
 const emit = defineEmits(['input']);
-const { t } = useI18n();
+const { t, te } = useI18n();
 const { collection, field, primaryKey, limit } = toRefs(props);
 const { relationInfo } = useRelationM2A(collection, field);
 
@@ -246,13 +246,36 @@ function getDeselectIcon(item: DisplayItem) {
 }
 
 function sortItems(items: DisplayItem[]) {
-	const sortField = relationInfo.value?.sortField;
-	if (!sortField) return;
+	const info = relationInfo.value;
+	const sortField = info?.sortField;
+	if (!info || !sortField) return;
 
-	const sortedItems = items.map((item, index) => ({
-		...item,
-		[sortField]: index + 1,
-	}));
+	const sortedItems = items.map((item, index) => {
+		const junctionId = item?.[info.junctionPrimaryKeyField.field];
+		const collection = item?.[info.collectionField.field];
+		const pkField = info.relationPrimaryKeyFields[collection].field;
+		const relatedId = item?.[info.junctionField.field]?.[pkField];
+
+		const changes: Record<string, any> = {
+			$index: item.$index,
+			$type: item.$type,
+			$edits: item.$edits,
+			...getItemEdits(item),
+			[sortField]: index + 1,
+		};
+
+		if (!isNil(junctionId)) {
+			changes[info.junctionPrimaryKeyField.field] = junctionId;
+		}
+		if (!isNil(collection)) {
+			changes[info.collectionField.field] = collection;
+		}
+		if (!isNil(relatedId)) {
+			set(changes, info.junctionField.field + '.' + pkField, relatedId);
+		}
+
+		return changes;
+	});
 	update(...sortedItems);
 }
 
@@ -336,7 +359,13 @@ function hasAllowedCollection(item: DisplayItem) {
 function getCollectionName(item: DisplayItem) {
 	const info = relationInfo.value;
 	if (!info) return false;
-	return info.allowedCollections.find((coll) => coll.collection === item[info.collectionField.field])?.name;
+
+	const collection = info.allowedCollections.find((coll) => coll.collection === item[info.collectionField.field]);
+	if (te(`collection_names_singular.${collection?.collection}`))
+		return t(`collection_names_singular.${collection?.collection}`);
+	if (te(`collection_names_plural.${collection?.collection}`))
+		return t(`collection_names_plural.${collection?.collection}`);
+	return collection?.name;
 }
 
 const customFilter = computed(() => {

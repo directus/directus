@@ -18,16 +18,11 @@ post:
               description: What file format to save the export to. One of csv, xml, json
               type: string
               enum: ['csv', 'xml', 'json']
-              required: true
             query:
-              description: The query object to use for the export
-              required: true
-              $ref: '../../openapi.yaml#/components/definitions/Query'
+              $ref: '../../openapi.yaml#/components/schemas/Query'
             file:
-              description: Partial file object to tweak where / how the export file is saved
-              type: object
-              required: true
               $ref: '../../openapi.yaml#/components/schemas/Files'
+          required: ['format', 'query', 'file']
   responses:
     '200':
       description: Successful request

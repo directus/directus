@@ -21,25 +21,39 @@
 #'Proxy', 'Intl'
 identifier: ตัวบ่งชี้
 avatar: ภาพประจำตัว
+application: แอพลิเคชัน
 default_provider: ค่าเริ่มต้น
 method: เมธอด
 published: เผยแพร่แล้ว
 draft: ฉบับร่าง
 archived: เก็บถาวร
 modules: โมดูล
+module_bar: โมดูลบาร์
+logs: บันทึกย้อนหลัง
+reset_width: รีเซ็ตความกว้าง
+tile_size: ขนาดกรอบ
 edit_field: แก้ไขฟิลด์
 conditions: เงื่อนไข
 location: ตำแหน่งที่ตั้ง
+condition_rules: ลักษณะเงื่อนไข
 input: Input
 maps: แผนที่
+switch_user: สลับผู้ใช้งาน
+item_creation: สร้างรายการ
 item_revision: ประวัติรายการ
 enter_a_name: กรอกชื่อ...
 duplicate_field: สำเนาฟิลด์
 half_width: กว้างครึ่งหนึ่ง
 full_width: กว้างเต็มหน้า
 group: กลุ่ม
+export_items: นำออกรายการ
 and: และ
 or: หรือ
+init: ริเริ่ม
+dataset_too_large_currently_showing_n_items: ฐานข้อมูลใหญ่เกินไป. สามารถแสดงได้เพียง {n} รายการ.
+modifier: แก้ไขโดย
+custom: กำหนดเอง
+hook: ฮุก
 fill_width: กว้างเติมเต็ม
 field_name_translations: คำแปลชื่อฟิลด์
 enter_password_to_enable_tfa: กรอกรหัสของคุณเพื่อเปิดการยืนยันรหัส 2 ขั้นตอน
@@ -52,14 +66,18 @@ edit_collection: แก้ไขคอลเลกชัน
 exclusive: เฉพาะ
 children: ลูก
 db_only_click_to_configure: 'ฐานข้อมูลเท่านั้น: คลิกเพื่อกำหนดค่า'
+show_active_items: แสดงรายการแอกทีฟ
 show_archived_items: แสดงรายการเก็บถาวร
+show_all_items: แสดงรายการทั้งหมด
 edited: ค่าที่ถูกแก้ไข
 required: จำเป็นต้องระบุ
 required_for_app_access: จำเป็นต้องระบุเพื่อเข้าถึงแอป
 requires_value: ต้องการข้อมูล
 create_preset: สร้างที่ตั้งไว้ล่วงหน้า
+create_panel: สร้างแผงควบคุม
 create_role: สร้างบทบาท
 create_user: สร้างผู้ใช้งาน
+message: ข้อความ
 create_webhook: สร้างเว็บฮุก
 invite_users: เชิญชวนผู้ใช้งาน
 invite: เชิญชวน
@@ -881,6 +899,7 @@ fields:
     files_and_thumbnails: ไฟล์ และ ที่เก็บ
     storage_default_folder: โฟลเดอร์เริ่มต้น
     custom_css: CSS ที่กำหนดเอง
+    module_bar: โมดูลบาร์
   directus_shares:
     name: ชื่อ
     role: บทบาท
@@ -1388,6 +1407,8 @@ layouts:
   map:
     map: แผนที่
     find_location: ค้นหาสถานที่
+  kanban:
+    crop: ครอบตัด
 panels:
   metric:
     field: ฟิลด์
@@ -1402,8 +1423,11 @@ triggers:
   webhook:
     method: เมธอด
 operations:
+  log:
+    message: ข้อความ
   notification:
     recipient: ผู้ใช้
+    message: ข้อความ
   request:
     url: URL
     method: เมธอด

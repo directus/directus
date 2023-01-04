@@ -5,6 +5,7 @@ import { cloneDeep } from 'lodash';
 import { validateDateDifference } from '@utils/validate-date-difference';
 import { CreateCollection, CreateField, DeleteCollection } from '@common/functions';
 import * as common from '@common/index';
+import { sleep } from '@utils/sleep';
 
 const collectionName = 'schema_timezone_tests';
 
@@ -255,6 +256,8 @@ describe('schema', () => {
 
 		describe('stores the correct timezone data when updated', () => {
 			it.each(vendors)('%s', async (vendor) => {
+				await sleep(1000);
+
 				const payload = {
 					date: sampleDates[0]!.date,
 				};

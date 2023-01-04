@@ -45,7 +45,7 @@
 			<v-notice v-if="operationType && !selectedOperation" class="not-found" type="danger">
 				{{ t('operation_not_found', { operation: operationType }) }}
 				<div class="spacer" />
-				<button @click="operationType = undefined">{{ t('reset_interface') }}</button>
+				<button @click="operationType = null">{{ t('reset_interface') }}</button>
 			</v-notice>
 
 			<extension-options
@@ -68,13 +68,14 @@
 <script setup lang="ts">
 import { useDialogRoute } from '@/composables/use-dialog-route';
 import ExtensionOptions from '@/modules/settings/routes/data-model/field-detail/shared/extension-options.vue';
-import { getOperation, getOperations } from '@/operations';
 import { translate } from '@/utils/translate-object-values';
 import { FlowRaw } from '@directus/shared/types';
 import slugify from '@sindresorhus/slugify';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { customAlphabet } from 'nanoid';
+import { useExtensions } from '@/extensions';
+import { useExtension } from '@/composables/use-extension';
+import { customAlphabet } from 'nanoid/non-secure';
 
 const generateSuffix = customAlphabet('abcdefghijklmnopqrstuvwxyz1234567890', 5);
 
@@ -98,7 +99,7 @@ const isOpen = useDialogRoute();
 const { t } = useI18n();
 
 const options = ref<Record<string, any>>(props.operation?.options ?? {});
-const operationType = ref<string | undefined>(props.operation?.type);
+const operationType = ref<string | null>(props.operation?.type ?? null);
 const operationKey = ref<string | null>(props.operation?.key ?? null);
 const operationName = ref<string | null>(props.operation?.name ?? null);
 
@@ -149,7 +150,7 @@ watch(
 	{ immediate: true }
 );
 
-const selectedOperation = computed(() => getOperation(operationType.value));
+const selectedOperation = useExtension('operation', operationType);
 
 const generatedName = computed(() => (selectedOperation.value ? selectedOperation.value?.name : t('operation_name')));
 
@@ -159,7 +160,7 @@ const generatedKey = computed(() =>
 		: t('operation_key')
 );
 
-const { operations } = getOperations();
+const { operations } = useExtensions();
 
 const displayOperations = computed(() => {
 	return operations.value.map((operation) => ({

@@ -31,8 +31,8 @@ PUBLIC_URL="/"
 # "pretty", "raw"
 # LOG_STYLE="pretty"
 
-# Controls the maximum request body size. Accepts number of bytes, or human readable string ["100kb"]
-# MAX_PAYLOAD_SIZE="100kb"
+# Controls the maximum request body size. Accepts number of bytes, or human readable string ["1mb"]
+# MAX_PAYLOAD_SIZE="1mb"
 
 # Where to redirect to when navigating to /. Accepts a relative path, absolute URL, or false to disable ["./admin"]
 # ROOT_REDIRECT="./admin"
@@ -149,8 +149,8 @@ CACHE_ENABLED=false
 # memory | redis | memcache
 CACHE_STORE=memory
 
-# How long assets will be cached for in the browser. Sets the max-age value of the Cache-Control header ["30m"]
-ASSETS_CACHE_TTL="30m"
+# How long assets will be cached for in the browser. Sets the max-age value of the Cache-Control header ["30d"]
+ASSETS_CACHE_TTL="30d"
 
 # CACHE_REDIS="redis://@127.0.0.1:5105"
 # CACHE_MEMCACHE="localhost:5109"
@@ -227,7 +227,7 @@ CORS_METHODS=GET,POST,PATCH,DELETE
 # Value for the Access-Control-Allow-Headers header [Content-Type,Authorization]
 CORS_ALLOWED_HEADERS=Content-Type,Authorization
 
-# Value for the Access-Control-Expose-Headers header [Content-R
+# Value for the Access-Control-Expose-Headers header [Content-Range]
 CORS_EXPOSED_HEADERS=Content-Range
 
 # Whether or not to send the Access-Control-Allow-Credentials header [true]
@@ -251,7 +251,7 @@ CORS_MAX_AGE=18000
 # The amount of threads to compute the hash on. Each thread has a memory pool with HASH_MEMORY_COST size [1]
 # HASH_PARALLELISM=2
 
-# The variant of the hash function (0: argon2d, 1: argon2i, or 2: argon2id) [1]
+# The variant of the hash function (0: argon2d, 1: argon2i, or 2: argon2id) [2]
 # HASH_TYPE=2
 
 # An extra and optional non-secret value. The value will be included B64 encoded in the parameters portion of the digest []
@@ -273,6 +273,7 @@ AUTH_PROVIDERS=""
 # AUTH_GITHUB_ALLOW_PUBLIC_REGISTRATION=true
 # AUTH_GITHUB_DEFAULT_ROLE_ID="82424427-c9d4-4289-8bc5-ed1bf8422c90"
 # AUTH_GITHUB_ICON="github"
+# AUTH_GITHUB_LABEL="GitHub"
 # AUTH_GITHUB_EMAIL_KEY="email"
 # AUTH_GITHUB_IDENTIFIER_KEY="login"
 

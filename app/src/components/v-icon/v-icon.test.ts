@@ -1,5 +1,6 @@
-import { test, expect } from 'vitest';
+import { test, expect, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
+import { library } from '@fortawesome/fontawesome-svg-core';
 
 import VIcon from './v-icon.vue';
 
@@ -48,4 +49,24 @@ test('social icon', () => {
 	});
 
 	expect(wrapper.find('svg').exists()).toBeTruthy();
+});
+
+test('should only load fontawesome brand icons when using social icon', () => {
+	const libraryAddSpy = vi.spyOn(library, 'add');
+
+	mount(VIcon, {
+		props: {
+			name: 'close', // non-social icon
+		},
+	});
+
+	expect(libraryAddSpy).not.toHaveBeenCalled();
+
+	mount(VIcon, {
+		props: {
+			name: 'vuejs', // social icon
+		},
+	});
+
+	expect(libraryAddSpy).toHaveBeenCalledOnce();
 });

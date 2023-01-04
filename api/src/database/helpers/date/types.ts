@@ -2,7 +2,11 @@ import { DatabaseHelper } from '../types';
 import { parseISO } from 'date-fns';
 
 export abstract class DateHelper extends DatabaseHelper {
-	parse(date: string): string {
+	parse(date: string | Date): string {
+		// Date generated from NOW()
+		if (date instanceof Date) {
+			return date.toISOString();
+		}
 		return date;
 	}
 	readTimestampString(date: string): string {

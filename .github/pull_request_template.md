@@ -8,9 +8,9 @@ NOTE: All Pull Requests require a corresponding open Issue.
 
 Please reference the Issue number below:
 
-Fixes #
-
 -->
+
+Fixes #
 
 ## Type of Change
 
@@ -28,4 +28,4 @@ Fixes #
 
 If adding a new feature:
 
-- [ ] Documentation was added/updated. PR: 
+- [ ] Documentation was added/updated. PR:

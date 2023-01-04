@@ -1,4 +1,4 @@
-ARG NODE_VERSION=16-alpine
+ARG NODE_VERSION=18-alpine
 
 FROM node:${NODE_VERSION} as builder
 
@@ -13,7 +13,7 @@ RUN \
   build-base \
   && ln -sf /usr/bin/python3 /usr/bin/python \
   ; fi
-RUN npm i --only=production --no-package-lock
+RUN npm install --no-package-lock
 RUN rm *.tgz
 
 # Directus image

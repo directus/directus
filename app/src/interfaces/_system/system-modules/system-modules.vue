@@ -60,7 +60,6 @@
 
 <script lang="ts">
 import { defineComponent, PropType, computed, ref } from 'vue';
-import { getModules } from '@/modules';
 import { Settings, SettingsModuleBarModule, SettingsModuleBarLink } from '@directus/shared/types';
 import { hideDragImage } from '@/utils/hide-drag-image';
 import Draggable from 'vuedraggable';
@@ -69,6 +68,7 @@ import { useI18n } from 'vue-i18n';
 import { nanoid } from 'nanoid';
 import { Field, DeepPartial } from '@directus/shared/types';
 import { MODULE_BAR_DEFAULT } from '@/constants';
+import { useExtensions } from '@/extensions';
 
 type PreviewExtra = {
 	to: string;
@@ -130,7 +130,7 @@ export default defineComponent({
 		const values = ref<SettingsModuleBarLink | null>();
 		const initialValues = ref<SettingsModuleBarLink | null>();
 
-		const { modules: registeredModules } = getModules();
+		const { modules: registeredModules } = useExtensions();
 
 		const availableModulesAsBarModule = computed<SettingsModuleBarModule[]>(() => {
 			return registeredModules.value
