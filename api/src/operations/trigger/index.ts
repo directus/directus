@@ -1,7 +1,6 @@
 import { defineOperationApi, optionToObject } from '@directus/shared/utils';
 import { omit } from 'lodash';
 import { getFlowManager } from '../../flows';
-import logger from '../../logger';
 
 type Options = {
 	flow: string;
@@ -21,7 +20,6 @@ export default defineOperationApi<Options>({
 		let result: unknown | unknown[];
 
 		if (Array.isArray(payloadObject)) {
-
 			switch (iterationMode) {
 				default:
 				case 'serial': {
@@ -30,26 +28,26 @@ export default defineOperationApi<Options>({
 					for (const payload of payloadObject) {
 						(result as any[]).push(await flowManager.runOperationFlow(flow, payload, omit(context, 'data')));
 					}
-					break
+					break;
 				}
 				case 'batch': {
-
 					const size = batchSize ?? 10;
 
 					result = [];
 
-					for(let i = 0; i < payloadObject.length; i += size) {
+					for (let i = 0; i < payloadObject.length; i += size) {
 						const batch = payloadObject.slice(i, i + size);
 
-						const batchResults = await Promise.all(batch.map((payload) => {
-							return flowManager.runOperationFlow(flow, payload, omit(context, 'data'))
-						}));
-						
-						
-						(result as any[]).push(...batchResults)
+						const batchResults = await Promise.all(
+							batch.map((payload) => {
+								return flowManager.runOperationFlow(flow, payload, omit(context, 'data'));
+							})
+						);
+
+						(result as any[]).push(...batchResults);
 					}
 
-					break
+					break;
 				}
 				case 'parallel': {
 					result = await Promise.all(
@@ -57,10 +55,9 @@ export default defineOperationApi<Options>({
 							return flowManager.runOperationFlow(flow, payload, omit(context, 'data'));
 						})
 					);
-					break
+					break;
 				}
 			}
-			
 		} else {
 			result = await flowManager.runOperationFlow(flow, payloadObject, omit(context, 'data'));
 		}

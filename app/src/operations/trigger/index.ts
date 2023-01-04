@@ -47,34 +47,38 @@ export default defineOperationApp({
 							{
 								text: '$t:operations.trigger.serial',
 								value: 'serial',
-							}, {
+							},
+							{
 								text: '$t:operations.trigger.batch',
 								value: 'batch',
-							}, {
+							},
+							{
 								text: '$t:operations.trigger.parallel',
 								value: 'parallel',
-							}
+							},
 						],
 					},
 				},
 				schema: {
 					default_value: 'serial',
-				}
+				},
 			},
-			...(panel.iterationMode === 'batch' ? [
-				{
-					field: 'batchSize',
-					name: '$t:operations.trigger.batch_size',
-					type: 'integer',
-					meta: {
-						width: 'half',
-						interface: 'input',
-					},
-					schema: {
-						default_value: 10,
-					}
-				}
-			] : []),
+			...(panel.iterationMode === 'batch'
+				? [
+						{
+							field: 'batchSize',
+							name: '$t:operations.trigger.batch_size',
+							type: 'integer',
+							meta: {
+								width: 'half',
+								interface: 'input',
+							},
+							schema: {
+								default_value: 10,
+							},
+						},
+				  ]
+				: []),
 			{
 				field: 'payload',
 				name: '$t:payload',
