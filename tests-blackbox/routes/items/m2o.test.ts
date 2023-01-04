@@ -111,8 +111,8 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 			});
 		});
 		describe('GET /:collection', () => {
-			describe(`filters`, () => {
-				describe(`on top level`, () => {
+			describe('filters', () => {
+				describe('on top level', () => {
 					it.each(vendors)('%s', async (vendor) => {
 						// Setup
 						const state = createState(pkType);
@@ -184,7 +184,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					});
 				});
 
-				describe(`on m2o level`, () => {
+				describe('on m2o level', () => {
 					it.each(vendors)('%s', async (vendor) => {
 						// Setup
 						const country = createCountry(pkType);
@@ -434,304 +434,710 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				});
 			});
 
-			describe(`sorts`, () => {
-				describe(`on top level`, () => {
-					it.each(vendors)('%s', async (vendor) => {
-						// Setup
-						const sortValues = [4, 2, 3, 5, 1];
-						const states = [];
+			describe('sorts', () => {
+				describe('on top level', () => {
+					beforeAll(async () => {
+						for (const vendor of vendors) {
+							// Setup
+							const sortValues = [4, 2, 3, 5, 1];
+							const states = [];
 
-						for (const val of sortValues) {
-							const state = createState(pkType);
-							state.name = 'state-m2o-top-sort-' + val;
-							states.push(state);
+							for (const val of sortValues) {
+								const state = createState(pkType);
+								state.name = 'state-m2o-top-sort-' + val;
+								states.push(state);
+							}
+
+							await CreateItem(vendor, {
+								collection: localCollectionStates,
+								item: states,
+							});
 						}
+					});
 
-						await CreateItem(vendor, {
-							collection: localCollectionStates,
-							item: states,
-						});
+					describe('without limit', () => {
+						it.each(vendors)('%s', async (vendor) => {
+							// Action
+							const response = await request(getUrl(vendor))
+								.get(`/items/${localCollectionStates}`)
+								.query({
+									sort: 'name',
+									filter: { name: { _starts_with: 'state-m2o-top-sort-' } },
+								})
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
-						// Action
-						const response = await request(getUrl(vendor))
-							.get(`/items/${localCollectionStates}`)
-							.query({
-								sort: 'name',
-								filter: { name: { _starts_with: 'state-m2o-top-sort-' } },
-							})
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+							const response2 = await request(getUrl(vendor))
+								.get(`/items/${localCollectionStates}`)
+								.query({
+									sort: '-name',
+									filter: { name: { _starts_with: 'state-m2o-top-sort-' } },
+								})
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
-						const response2 = await request(getUrl(vendor))
-							.get(`/items/${localCollectionStates}`)
-							.query({
-								sort: '-name',
-								filter: { name: { _starts_with: 'state-m2o-top-sort-' } },
-							})
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
-
-						const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
-							query: {
-								[localCollectionStates]: {
-									__args: {
-										sort: 'name',
-										filter: { name: { _starts_with: 'state-m2o-top-sort-' } },
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								query: {
+									[localCollectionStates]: {
+										__args: {
+											sort: 'name',
+											filter: { name: { _starts_with: 'state-m2o-top-sort-' } },
+										},
+										id: true,
 									},
-									id: true,
 								},
-							},
-						});
+							});
 
-						const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
-							query: {
-								[localCollectionStates]: {
-									__args: {
-										sort: '-name',
-										filter: { name: { _starts_with: 'state-m2o-top-sort-' } },
+							const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								query: {
+									[localCollectionStates]: {
+										__args: {
+											sort: '-name',
+											filter: { name: { _starts_with: 'state-m2o-top-sort-' } },
+										},
+										id: true,
 									},
-									id: true,
 								},
-							},
+							});
+
+							// Assert
+							expect(response.statusCode).toEqual(200);
+							expect(response.body.data.length).toBe(5);
+							expect(response2.statusCode).toEqual(200);
+							expect(response.body.data).toEqual(response2.body.data.reverse());
+
+							expect(gqlResponse.statusCode).toEqual(200);
+							expect(gqlResponse.body.data[localCollectionStates].length).toBe(5);
+							expect(gqlResponse2.statusCode).toEqual(200);
+							expect(gqlResponse.body.data[localCollectionStates]).toEqual(
+								gqlResponse2.body.data[localCollectionStates].reverse()
+							);
 						});
+					});
 
-						// Assert
-						expect(response.statusCode).toEqual(200);
-						expect(response.body.data.length).toBe(5);
-						expect(response2.statusCode).toEqual(200);
-						expect(response.body.data).toEqual(response2.body.data.reverse());
+					describe.each([-1, 1, 3])('where limit = %s', (limit) => {
+						it.each(vendors)('%s', async (vendor) => {
+							// Setup
+							const expectedLength = limit === -1 ? 5 : limit;
+							const expectedAsc = [1, 2, 3, 4, 5].slice(0, expectedLength);
+							const expectedDesc = [5, 4, 3, 2, 1].slice(0, expectedLength);
 
-						expect(gqlResponse.statusCode).toEqual(200);
-						expect(gqlResponse.body.data[localCollectionStates].length).toBe(5);
-						expect(gqlResponse2.statusCode).toEqual(200);
-						expect(gqlResponse.body.data[localCollectionStates]).toEqual(
-							gqlResponse2.body.data[localCollectionStates].reverse()
-						);
+							// Action
+							const response = await request(getUrl(vendor))
+								.get(`/items/${localCollectionStates}`)
+								.query({
+									sort: 'name',
+									filter: { name: { _starts_with: 'state-m2o-top-sort-' } },
+									limit,
+									fields: 'name',
+								})
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+							const response2 = await request(getUrl(vendor))
+								.get(`/items/${localCollectionStates}`)
+								.query({
+									sort: '-name',
+									filter: { name: { _starts_with: 'state-m2o-top-sort-' } },
+									limit,
+									fields: 'name',
+								})
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								query: {
+									[localCollectionStates]: {
+										__args: {
+											sort: 'name',
+											filter: { name: { _starts_with: 'state-m2o-top-sort-' } },
+											limit,
+										},
+										id: true,
+										name: true,
+									},
+								},
+							});
+
+							const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								query: {
+									[localCollectionStates]: {
+										__args: {
+											sort: '-name',
+											filter: { name: { _starts_with: 'state-m2o-top-sort-' } },
+											limit,
+										},
+										id: true,
+										name: true,
+									},
+								},
+							});
+
+							// Assert
+							expect(response.statusCode).toEqual(200);
+							expect(response.body.data.length).toBe(expectedLength);
+							expect(response2.statusCode).toEqual(200);
+							expect(response.body.data).not.toEqual(response2.body.data);
+							expect(
+								response.body.data.map((item: any) => {
+									return parseInt(item.name.slice(-1));
+								})
+							).toEqual(expectedAsc);
+							expect(
+								response2.body.data.map((item: any) => {
+									return parseInt(item.name.slice(-1));
+								})
+							).toEqual(expectedDesc);
+
+							expect(gqlResponse.statusCode).toEqual(200);
+							expect(gqlResponse.body.data[localCollectionStates].length).toBe(expectedLength);
+							expect(gqlResponse2.statusCode).toEqual(200);
+							expect(gqlResponse.body.data[localCollectionStates]).not.toEqual(
+								gqlResponse2.body.data[localCollectionStates]
+							);
+							expect(
+								gqlResponse.body.data[localCollectionStates].map((item: any) => {
+									return parseInt(item.name.slice(-1));
+								})
+							).toEqual(expectedAsc);
+							expect(
+								gqlResponse2.body.data[localCollectionStates].map((item: any) => {
+									return parseInt(item.name.slice(-1));
+								})
+							).toEqual(expectedDesc);
+						});
 					});
 				});
 
-				describe(`on m2o level`, () => {
-					it.each(vendors)('%s', async (vendor) => {
-						// Setup
-						const sortValues = [4, 2, 3, 5, 1];
+				describe('on m2o level', () => {
+					beforeAll(async () => {
+						for (const vendor of vendors) {
+							// Setup
+							const sortValues = [4, 2, 3, 5, 1];
 
-						for (const val of sortValues) {
-							const country = createCountry(pkType);
-							country.name = 'country-m2o-sort-' + val;
-							const insertedCountry = await CreateItem(vendor, {
-								collection: localCollectionCountries,
-								item: country,
-							});
-							const state = createState(pkType);
-							state.name = 'state-m2o-sort-' + uuid();
-							state.country_id = insertedCountry.id;
-							await CreateItem(vendor, { collection: localCollectionStates, item: state });
+							for (const val of sortValues) {
+								const country = createCountry(pkType);
+								country.name = 'country-m2o-sort-' + val;
+								const insertedCountry = await CreateItem(vendor, {
+									collection: localCollectionCountries,
+									item: country,
+								});
+								const state = createState(pkType);
+								state.name = 'state-m2o-sort-' + uuid();
+								state.country_id = insertedCountry.id;
+								await CreateItem(vendor, { collection: localCollectionStates, item: state });
+							}
 						}
+					});
 
-						// Action
-						const response = await request(getUrl(vendor))
-							.get(`/items/${localCollectionStates}`)
-							.query({
-								sort: 'country_id.name',
-								filter: { name: { _starts_with: 'state-m2o-sort-' } },
-							})
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+					describe('without limit', () => {
+						it.each(vendors)('%s', async (vendor) => {
+							// Action
+							const response = await request(getUrl(vendor))
+								.get(`/items/${localCollectionStates}`)
+								.query({
+									sort: 'country_id.name',
+									filter: { name: { _starts_with: 'state-m2o-sort-' } },
+								})
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
-						const response2 = await request(getUrl(vendor))
-							.get(`/items/${localCollectionStates}`)
-							.query({
-								sort: '-country_id.name',
-								filter: { name: { _starts_with: 'state-m2o-sort-' } },
-							})
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+							const response2 = await request(getUrl(vendor))
+								.get(`/items/${localCollectionStates}`)
+								.query({
+									sort: '-country_id.name',
+									filter: { name: { _starts_with: 'state-m2o-sort-' } },
+								})
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
-						const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
-							query: {
-								[localCollectionStates]: {
-									__args: {
-										sort: 'country_id.name',
-										filter: { name: { _starts_with: 'state-m2o-sort-' } },
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								query: {
+									[localCollectionStates]: {
+										__args: {
+											sort: 'country_id.name',
+											filter: { name: { _starts_with: 'state-m2o-sort-' } },
+										},
+										id: true,
 									},
-									id: true,
 								},
-							},
-						});
+							});
 
-						const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
-							query: {
-								[localCollectionStates]: {
-									__args: {
-										sort: '-country_id.name',
-										filter: { name: { _starts_with: 'state-m2o-sort-' } },
+							const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								query: {
+									[localCollectionStates]: {
+										__args: {
+											sort: '-country_id.name',
+											filter: { name: { _starts_with: 'state-m2o-sort-' } },
+										},
+										id: true,
 									},
-									id: true,
 								},
-							},
+							});
+
+							// Assert
+							expect(response.statusCode).toEqual(200);
+							expect(response.body.data.length).toBe(5);
+							expect(response2.statusCode).toEqual(200);
+							expect(response.body.data).toEqual(response2.body.data.reverse());
+
+							expect(gqlResponse.statusCode).toEqual(200);
+							expect(gqlResponse.body.data[localCollectionStates].length).toBe(5);
+							expect(gqlResponse2.statusCode).toEqual(200);
+							expect(gqlResponse.body.data[localCollectionStates]).toEqual(
+								gqlResponse2.body.data[localCollectionStates].reverse()
+							);
 						});
+					});
 
-						// Assert
-						expect(response.statusCode).toEqual(200);
-						expect(response.body.data.length).toBe(5);
-						expect(response2.statusCode).toEqual(200);
-						expect(response.body.data).toEqual(response2.body.data.reverse());
+					describe.each([-1, 1, 3])('where limit = %s', (limit) => {
+						it.each(vendors)('%s', async (vendor) => {
+							// Setup
+							const expectedLength = limit === -1 ? 5 : limit;
+							const expectedAsc = [1, 2, 3, 4, 5].slice(0, expectedLength);
+							const expectedDesc = [5, 4, 3, 2, 1].slice(0, expectedLength);
 
-						expect(gqlResponse.statusCode).toEqual(200);
-						expect(gqlResponse.body.data[localCollectionStates].length).toBe(5);
-						expect(gqlResponse2.statusCode).toEqual(200);
-						expect(gqlResponse.body.data[localCollectionStates]).toEqual(
-							gqlResponse2.body.data[localCollectionStates].reverse()
-						);
+							// Action
+							const response = await request(getUrl(vendor))
+								.get(`/items/${localCollectionStates}`)
+								.query({
+									sort: 'country_id.name',
+									filter: { name: { _starts_with: 'state-m2o-sort-' } },
+									limit,
+									fields: 'country_id.name',
+								})
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+							const response2 = await request(getUrl(vendor))
+								.get(`/items/${localCollectionStates}`)
+								.query({
+									sort: '-country_id.name',
+									filter: { name: { _starts_with: 'state-m2o-sort-' } },
+									limit,
+									fields: 'country_id.name',
+								})
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								query: {
+									[localCollectionStates]: {
+										__args: {
+											sort: 'country_id.name',
+											filter: { name: { _starts_with: 'state-m2o-sort-' } },
+											limit,
+										},
+										id: true,
+										country_id: {
+											name: true,
+										},
+									},
+								},
+							});
+
+							const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								query: {
+									[localCollectionStates]: {
+										__args: {
+											sort: '-country_id.name',
+											filter: { name: { _starts_with: 'state-m2o-sort-' } },
+											limit,
+										},
+										id: true,
+										country_id: {
+											name: true,
+										},
+									},
+								},
+							});
+
+							// Assert
+							expect(response.statusCode).toEqual(200);
+							expect(response.body.data.length).toBe(expectedLength);
+							expect(response2.statusCode).toEqual(200);
+							expect(response.body.data).not.toEqual(response2.body.data);
+							expect(
+								response.body.data.map((item: any) => {
+									return parseInt(item.country_id.name.slice(-1));
+								})
+							).toEqual(expectedAsc);
+							expect(
+								response2.body.data.map((item: any) => {
+									return parseInt(item.country_id.name.slice(-1));
+								})
+							).toEqual(expectedDesc);
+
+							expect(gqlResponse.statusCode).toEqual(200);
+							expect(gqlResponse.body.data[localCollectionStates].length).toBe(expectedLength);
+							expect(gqlResponse2.statusCode).toEqual(200);
+							expect(gqlResponse.body.data[localCollectionStates]).not.toEqual(
+								gqlResponse2.body.data[localCollectionStates]
+							);
+							expect(
+								gqlResponse.body.data[localCollectionStates].map((item: any) => {
+									return parseInt(item.country_id.name.slice(-1));
+								})
+							).toEqual(expectedAsc);
+							expect(
+								gqlResponse2.body.data[localCollectionStates].map((item: any) => {
+									return parseInt(item.country_id.name.slice(-1));
+								})
+							).toEqual(expectedDesc);
+						});
 					});
 				});
 			});
 
-			describe(`sorts with functions`, () => {
-				describe(`on top level`, () => {
-					it.each(vendors)('%s', async (vendor) => {
-						// Setup
-						const sortValues = [4, 2, 3, 5, 1];
-						const states = [];
+			describe('sorts with functions', () => {
+				describe('on top level', () => {
+					beforeAll(async () => {
+						for (const vendor of vendors) {
+							// Setup
+							const sortValues = [4, 2, 3, 5, 1];
+							const states = [];
 
-						for (const val of sortValues) {
-							const state = createState(pkType);
-							state.name = 'state-m2o-top-sort-fn-' + uuid();
-							state.test_datetime = new Date(new Date().setFullYear(parseInt(`202${val}`))).toISOString().slice(0, 19);
-							states.push(state);
+							for (const val of sortValues) {
+								const state = createState(pkType);
+								state.name = 'state-m2o-top-sort-fn-' + uuid();
+								state.test_datetime = new Date(new Date().setFullYear(parseInt(`202${val}`)))
+									.toISOString()
+									.slice(0, 19);
+								states.push(state);
+							}
+
+							await CreateItem(vendor, {
+								collection: localCollectionStates,
+								item: states,
+							});
 						}
+					});
 
-						await CreateItem(vendor, {
-							collection: localCollectionStates,
-							item: states,
-						});
+					describe('without limit', () => {
+						it.each(vendors)('%s', async (vendor) => {
+							// Action
+							const response = await request(getUrl(vendor))
+								.get(`/items/${localCollectionStates}`)
+								.query({
+									sort: 'year(test_datetime)',
+									filter: { name: { _starts_with: 'state-m2o-top-sort-fn-' } },
+								})
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
-						// Action
-						const response = await request(getUrl(vendor))
-							.get(`/items/${localCollectionStates}`)
-							.query({
-								sort: 'year(test_datetime)',
-								filter: { name: { _starts_with: 'state-m2o-top-sort-fn-' } },
-							})
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+							const response2 = await request(getUrl(vendor))
+								.get(`/items/${localCollectionStates}`)
+								.query({
+									sort: '-year(test_datetime)',
+									filter: { name: { _starts_with: 'state-m2o-top-sort-fn-' } },
+								})
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
-						const response2 = await request(getUrl(vendor))
-							.get(`/items/${localCollectionStates}`)
-							.query({
-								sort: '-year(test_datetime)',
-								filter: { name: { _starts_with: 'state-m2o-top-sort-fn-' } },
-							})
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
-
-						const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
-							query: {
-								[localCollectionStates]: {
-									__args: {
-										sort: 'year(test_datetime)',
-										filter: { name: { _starts_with: 'state-m2o-top-sort-fn-' } },
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								query: {
+									[localCollectionStates]: {
+										__args: {
+											sort: 'year(test_datetime)',
+											filter: { name: { _starts_with: 'state-m2o-top-sort-fn-' } },
+										},
+										id: true,
 									},
-									id: true,
 								},
-							},
-						});
+							});
 
-						const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
-							query: {
-								[localCollectionStates]: {
-									__args: {
-										sort: '-year(test_datetime)',
-										filter: { name: { _starts_with: 'state-m2o-top-sort-fn-' } },
+							const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								query: {
+									[localCollectionStates]: {
+										__args: {
+											sort: '-year(test_datetime)',
+											filter: { name: { _starts_with: 'state-m2o-top-sort-fn-' } },
+										},
+										id: true,
 									},
-									id: true,
 								},
-							},
+							});
+
+							// Assert
+							expect(response.statusCode).toEqual(200);
+							expect(response.body.data.length).toBe(5);
+							expect(response2.statusCode).toEqual(200);
+							expect(response.body.data).toEqual(response2.body.data.reverse());
+
+							expect(gqlResponse.statusCode).toEqual(200);
+							expect(gqlResponse.body.data[localCollectionStates].length).toBe(5);
+							expect(gqlResponse2.statusCode).toEqual(200);
+							expect(gqlResponse.body.data[localCollectionStates]).toEqual(
+								gqlResponse2.body.data[localCollectionStates].reverse()
+							);
 						});
+					});
 
-						// Assert
-						expect(response.statusCode).toEqual(200);
-						expect(response.body.data.length).toBe(5);
-						expect(response2.statusCode).toEqual(200);
-						expect(response.body.data).toEqual(response2.body.data.reverse());
+					describe.each([-1, 1, 3])('where limit = %s', (limit) => {
+						it.each(vendors)('%s', async (vendor) => {
+							// Setup
+							const expectedLength = limit === -1 ? 5 : limit;
+							const expectedAsc = [1, 2, 3, 4, 5].slice(0, expectedLength);
+							const expectedDesc = [5, 4, 3, 2, 1].slice(0, expectedLength);
 
-						expect(gqlResponse.statusCode).toEqual(200);
-						expect(gqlResponse.body.data[localCollectionStates].length).toBe(5);
-						expect(gqlResponse2.statusCode).toEqual(200);
-						expect(gqlResponse.body.data[localCollectionStates]).toEqual(
-							gqlResponse2.body.data[localCollectionStates].reverse()
-						);
+							// Action
+							const response = await request(getUrl(vendor))
+								.get(`/items/${localCollectionStates}`)
+								.query({
+									sort: 'year(test_datetime)',
+									filter: { name: { _starts_with: 'state-m2o-top-sort-fn-' } },
+									limit,
+									fields: 'year(test_datetime)',
+								})
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+							const response2 = await request(getUrl(vendor))
+								.get(`/items/${localCollectionStates}`)
+								.query({
+									sort: '-year(test_datetime)',
+									filter: { name: { _starts_with: 'state-m2o-top-sort-fn-' } },
+									limit,
+									fields: 'year(test_datetime)',
+								})
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								query: {
+									[localCollectionStates]: {
+										__args: {
+											sort: 'year(test_datetime)',
+											filter: { name: { _starts_with: 'state-m2o-top-sort-fn-' } },
+											limit,
+										},
+										id: true,
+										test_datetime_func: {
+											year: true,
+										},
+									},
+								},
+							});
+
+							const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								query: {
+									[localCollectionStates]: {
+										__args: {
+											sort: '-year(test_datetime)',
+											filter: { name: { _starts_with: 'state-m2o-top-sort-fn-' } },
+											limit,
+										},
+										id: true,
+										test_datetime_func: {
+											year: true,
+										},
+									},
+								},
+							});
+
+							// Assert
+							expect(response.statusCode).toEqual(200);
+							expect(response.body.data.length).toBe(expectedLength);
+							expect(response2.statusCode).toEqual(200);
+							expect(response.body.data).not.toEqual(response2.body.data);
+							expect(
+								response.body.data.map((item: any) => {
+									return parseInt(item.test_datetime_year.toString().slice(-1));
+								})
+							).toEqual(expectedAsc);
+							expect(
+								response2.body.data.map((item: any) => {
+									return parseInt(item.test_datetime_year.toString().slice(-1));
+								})
+							).toEqual(expectedDesc);
+
+							expect(gqlResponse.statusCode).toEqual(200);
+							expect(gqlResponse.body.data[localCollectionStates].length).toBe(expectedLength);
+							expect(gqlResponse2.statusCode).toEqual(200);
+							expect(gqlResponse.body.data[localCollectionStates]).not.toEqual(
+								gqlResponse2.body.data[localCollectionStates]
+							);
+							expect(
+								gqlResponse.body.data[localCollectionStates].map((item: any) => {
+									return parseInt(item.test_datetime_func.year.toString().slice(-1));
+								})
+							).toEqual(expectedAsc);
+							expect(
+								gqlResponse2.body.data[localCollectionStates].map((item: any) => {
+									return parseInt(item.test_datetime_func.year.toString().slice(-1));
+								})
+							).toEqual(expectedDesc);
+						});
 					});
 				});
 
-				describe(`on m2o level`, () => {
-					it.each(vendors)('%s', async (vendor) => {
-						// Setup
-						const sortValues = [4, 2, 3, 5, 1];
+				describe('on m2o level', () => {
+					beforeAll(async () => {
+						for (const vendor of vendors) {
+							// Setup
+							const sortValues = [4, 2, 3, 5, 1];
 
-						for (const val of sortValues) {
-							const country = createCountry(pkType);
-							country.name = 'country-m2o-sort-fn-' + uuid();
-							country.test_datetime = new Date(new Date().setFullYear(parseInt(`202${val}`)))
-								.toISOString()
-								.slice(0, 19);
-							const insertedCountry = await CreateItem(vendor, {
-								collection: localCollectionCountries,
-								item: country,
-							});
-							const state = createState(pkType);
-							state.name = 'state-m2o-sort-fn-' + uuid();
-							state.country_id = insertedCountry.id;
-							await CreateItem(vendor, { collection: localCollectionStates, item: state });
+							for (const val of sortValues) {
+								const country = createCountry(pkType);
+								country.name = 'country-m2o-sort-fn-' + uuid();
+								country.test_datetime = new Date(new Date().setFullYear(parseInt(`202${val}`)))
+									.toISOString()
+									.slice(0, 19);
+								const insertedCountry = await CreateItem(vendor, {
+									collection: localCollectionCountries,
+									item: country,
+								});
+								const state = createState(pkType);
+								state.name = 'state-m2o-sort-fn-' + uuid();
+								state.country_id = insertedCountry.id;
+								await CreateItem(vendor, { collection: localCollectionStates, item: state });
+							}
 						}
+					});
 
-						// Action
-						const response = await request(getUrl(vendor))
-							.get(`/items/${localCollectionStates}`)
-							.query({
-								sort: 'country_id.year(test_datetime)',
-								filter: { name: { _starts_with: 'state-m2o-sort-fn-' } },
-							})
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+					describe('without limit', () => {
+						it.each(vendors)('%s', async (vendor) => {
+							// Action
+							const response = await request(getUrl(vendor))
+								.get(`/items/${localCollectionStates}`)
+								.query({
+									sort: 'country_id.year(test_datetime)',
+									filter: { name: { _starts_with: 'state-m2o-sort-fn-' } },
+								})
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
-						const response2 = await request(getUrl(vendor))
-							.get(`/items/${localCollectionStates}`)
-							.query({
-								sort: '-country_id.year(test_datetime)',
-								filter: { name: { _starts_with: 'state-m2o-sort-fn-' } },
-							})
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+							const response2 = await request(getUrl(vendor))
+								.get(`/items/${localCollectionStates}`)
+								.query({
+									sort: '-country_id.year(test_datetime)',
+									filter: { name: { _starts_with: 'state-m2o-sort-fn-' } },
+								})
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
-						const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
-							query: {
-								[localCollectionStates]: {
-									__args: {
-										sort: 'country_id.year(test_datetime)',
-										filter: { name: { _starts_with: 'state-m2o-sort-fn-' } },
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								query: {
+									[localCollectionStates]: {
+										__args: {
+											sort: 'country_id.year(test_datetime)',
+											filter: { name: { _starts_with: 'state-m2o-sort-fn-' } },
+										},
+										id: true,
 									},
-									id: true,
 								},
-							},
-						});
+							});
 
-						const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
-							query: {
-								[localCollectionStates]: {
-									__args: {
-										sort: '-country_id.year(test_datetime)',
-										filter: { name: { _starts_with: 'state-m2o-sort-fn-' } },
+							const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								query: {
+									[localCollectionStates]: {
+										__args: {
+											sort: '-country_id.year(test_datetime)',
+											filter: { name: { _starts_with: 'state-m2o-sort-fn-' } },
+										},
+										id: true,
 									},
-									id: true,
 								},
-							},
+							});
+
+							// Assert
+							expect(response.statusCode).toEqual(200);
+							expect(response.body.data.length).toBe(5);
+							expect(response2.statusCode).toEqual(200);
+							expect(response.body.data).toEqual(response2.body.data.reverse());
+
+							expect(gqlResponse.statusCode).toEqual(200);
+							expect(gqlResponse.body.data[localCollectionStates].length).toBe(5);
+							expect(gqlResponse2.statusCode).toEqual(200);
+							expect(gqlResponse.body.data[localCollectionStates]).toEqual(
+								gqlResponse2.body.data[localCollectionStates].reverse()
+							);
 						});
+					});
 
-						// Assert
-						expect(response.statusCode).toEqual(200);
-						expect(response.body.data.length).toBe(5);
-						expect(response2.statusCode).toEqual(200);
-						expect(response.body.data).toEqual(response2.body.data.reverse());
+					describe.each([-1, 1, 3])('where limit = %s', (limit) => {
+						it.each(vendors)('%s', async (vendor) => {
+							// Setup
+							const expectedLength = limit === -1 ? 5 : limit;
+							const expectedAsc = [1, 2, 3, 4, 5].slice(0, expectedLength);
+							const expectedDesc = [5, 4, 3, 2, 1].slice(0, expectedLength);
 
-						expect(gqlResponse.statusCode).toEqual(200);
-						expect(gqlResponse.body.data[localCollectionStates].length).toBe(5);
-						expect(gqlResponse2.statusCode).toEqual(200);
-						expect(gqlResponse.body.data[localCollectionStates]).toEqual(
-							gqlResponse2.body.data[localCollectionStates].reverse()
-						);
+							// Action
+							const response = await request(getUrl(vendor))
+								.get(`/items/${localCollectionStates}`)
+								.query({
+									sort: 'country_id.year(test_datetime)',
+									filter: { name: { _starts_with: 'state-m2o-sort-fn-' } },
+									limit,
+									fields: 'country_id.year(test_datetime)',
+								})
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+							const response2 = await request(getUrl(vendor))
+								.get(`/items/${localCollectionStates}`)
+								.query({
+									sort: '-country_id.year(test_datetime)',
+									filter: { name: { _starts_with: 'state-m2o-sort-fn-' } },
+									limit,
+									fields: 'country_id.year(test_datetime)',
+								})
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								query: {
+									[localCollectionStates]: {
+										__args: {
+											sort: 'country_id.year(test_datetime)',
+											filter: { name: { _starts_with: 'state-m2o-sort-fn-' } },
+											limit,
+										},
+										id: true,
+										country_id: {
+											test_datetime_func: {
+												year: true,
+											},
+										},
+									},
+								},
+							});
+
+							const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								query: {
+									[localCollectionStates]: {
+										__args: {
+											sort: '-country_id.year(test_datetime)',
+											filter: { name: { _starts_with: 'state-m2o-sort-fn-' } },
+											limit,
+										},
+										id: true,
+										country_id: {
+											test_datetime_func: {
+												year: true,
+											},
+										},
+									},
+								},
+							});
+
+							// Assert
+							expect(response.statusCode).toEqual(200);
+							expect(response.body.data.length).toBe(expectedLength);
+							expect(response2.statusCode).toEqual(200);
+							expect(response.body.data).not.toEqual(response2.body.data);
+							expect(
+								response.body.data.map((item: any) => {
+									return parseInt(item.country_id.test_datetime_year.toString().slice(-1));
+								})
+							).toEqual(expectedAsc);
+							expect(
+								response2.body.data.map((item: any) => {
+									return parseInt(item.country_id.test_datetime_year.toString().slice(-1));
+								})
+							).toEqual(expectedDesc);
+
+							expect(gqlResponse.statusCode).toEqual(200);
+							expect(gqlResponse.body.data[localCollectionStates].length).toBe(expectedLength);
+							expect(gqlResponse2.statusCode).toEqual(200);
+							expect(gqlResponse.body.data[localCollectionStates]).not.toEqual(
+								gqlResponse2.body.data[localCollectionStates]
+							);
+							expect(
+								gqlResponse.body.data[localCollectionStates].map((item: any) => {
+									return parseInt(item.country_id.test_datetime_func.year.toString().slice(-1));
+								})
+							).toEqual(expectedAsc);
+							expect(
+								gqlResponse2.body.data[localCollectionStates].map((item: any) => {
+									return parseInt(item.country_id.test_datetime_func.year.toString().slice(-1));
+								})
+							).toEqual(expectedDesc);
+						});
 					});
 				});
 			});
