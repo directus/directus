@@ -126,8 +126,8 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 		});
 
 		describe('GET /:collection', () => {
-			describe(`filters`, () => {
-				describe(`on top level`, () => {
+			describe('filters', () => {
+				describe('on top level', () => {
 					it.each(vendors)('%s', async (vendor) => {
 						// Setup
 						const country = createCountry(pkType);
@@ -199,7 +199,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					});
 				});
 
-				describe(`on o2m level`, () => {
+				describe('on o2m level', () => {
 					it.each(vendors)('%s', async (vendor) => {
 						// Setup
 						const country = createCountry(pkType);
@@ -564,359 +564,851 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				});
 			});
 
-			describe(`sorts`, () => {
-				describe(`on top level`, () => {
-					it.each(vendors)('%s', async (vendor) => {
-						// Setup
-						const sortValues = [4, 2, 3, 5, 1];
-						const countries = [];
+			describe('sorts', () => {
+				describe('on top level', () => {
+					beforeAll(async () => {
+						for (const vendor of vendors) {
+							// Setup
+							const sortValues = [4, 2, 3, 5, 1];
+							const countries = [];
 
-						for (const val of sortValues) {
-							const country = createCountry(pkType);
-							country.name = 'country-o2m-top-sort-' + val;
-							countries.push(country);
+							for (const val of sortValues) {
+								const country = createCountry(pkType);
+								country.name = 'country-o2m-top-sort-' + val;
+								countries.push(country);
+							}
+
+							await CreateItem(vendor, {
+								collection: localCollectionCountries,
+								item: countries,
+							});
 						}
+					});
 
-						await CreateItem(vendor, {
-							collection: localCollectionCountries,
-							item: countries,
-						});
+					describe('without limit', () => {
+						it.each(vendors)('%s', async (vendor) => {
+							// Action
+							const response = await request(getUrl(vendor))
+								.get(`/items/${localCollectionCountries}`)
+								.query({
+									sort: 'name',
+									filter: { name: { _starts_with: 'country-o2m-top-sort-' } },
+								})
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
-						// Action
-						const response = await request(getUrl(vendor))
-							.get(`/items/${localCollectionCountries}`)
-							.query({
-								sort: 'name',
-								filter: { name: { _starts_with: 'country-o2m-top-sort-' } },
-							})
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+							const response2 = await request(getUrl(vendor))
+								.get(`/items/${localCollectionCountries}`)
+								.query({
+									sort: '-name',
+									filter: { name: { _starts_with: 'country-o2m-top-sort-' } },
+								})
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
-						const response2 = await request(getUrl(vendor))
-							.get(`/items/${localCollectionCountries}`)
-							.query({
-								sort: '-name',
-								filter: { name: { _starts_with: 'country-o2m-top-sort-' } },
-							})
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
-
-						const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
-							query: {
-								[localCollectionCountries]: {
-									__args: {
-										sort: 'name',
-										filter: { name: { _starts_with: 'country-o2m-top-sort-' } },
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								query: {
+									[localCollectionCountries]: {
+										__args: {
+											sort: 'name',
+											filter: { name: { _starts_with: 'country-o2m-top-sort-' } },
+										},
+										id: true,
 									},
-									id: true,
 								},
-							},
-						});
+							});
 
-						const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
-							query: {
-								[localCollectionCountries]: {
-									__args: {
-										sort: '-name',
-										filter: { name: { _starts_with: 'country-o2m-top-sort-' } },
+							const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								query: {
+									[localCollectionCountries]: {
+										__args: {
+											sort: '-name',
+											filter: { name: { _starts_with: 'country-o2m-top-sort-' } },
+										},
+										id: true,
 									},
-									id: true,
 								},
-							},
+							});
+
+							// Assert
+							expect(response.statusCode).toEqual(200);
+							expect(response.body.data.length).toBe(5);
+							expect(response2.statusCode).toEqual(200);
+							expect(response.body.data).toEqual(response2.body.data.reverse());
+
+							expect(gqlResponse.statusCode).toEqual(200);
+							expect(gqlResponse.body.data[localCollectionCountries].length).toBe(5);
+							expect(gqlResponse2.statusCode).toEqual(200);
+							expect(gqlResponse.body.data[localCollectionCountries]).toEqual(
+								gqlResponse2.body.data[localCollectionCountries].reverse()
+							);
 						});
+					});
 
-						// Assert
-						expect(response.statusCode).toEqual(200);
-						expect(response.body.data.length).toBe(5);
-						expect(response2.statusCode).toEqual(200);
-						expect(response.body.data).toEqual(response2.body.data.reverse());
+					describe.each([-1, 1, 3])('where limit = %s', (limit) => {
+						it.each(vendors)('%s', async (vendor) => {
+							// Setup
+							const expectedLength = limit === -1 ? 5 : limit;
+							const expectedAsc = [1, 2, 3, 4, 5].slice(0, expectedLength);
+							const expectedDesc = [5, 4, 3, 2, 1].slice(0, expectedLength);
 
-						expect(gqlResponse.statusCode).toEqual(200);
-						expect(gqlResponse.body.data[localCollectionCountries].length).toBe(5);
-						expect(gqlResponse2.statusCode).toEqual(200);
-						expect(gqlResponse.body.data[localCollectionCountries]).toEqual(
-							gqlResponse2.body.data[localCollectionCountries].reverse()
-						);
+							// Action
+							const response = await request(getUrl(vendor))
+								.get(`/items/${localCollectionCountries}`)
+								.query({
+									sort: 'name',
+									filter: { name: { _starts_with: 'country-o2m-top-sort-' } },
+									limit,
+								})
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+							const response2 = await request(getUrl(vendor))
+								.get(`/items/${localCollectionCountries}`)
+								.query({
+									sort: '-name',
+									filter: { name: { _starts_with: 'country-o2m-top-sort-' } },
+									limit,
+								})
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								query: {
+									[localCollectionCountries]: {
+										__args: {
+											sort: 'name',
+											filter: { name: { _starts_with: 'country-o2m-top-sort-' } },
+											limit,
+										},
+										id: true,
+										name: true,
+									},
+								},
+							});
+
+							const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								query: {
+									[localCollectionCountries]: {
+										__args: {
+											sort: '-name',
+											filter: { name: { _starts_with: 'country-o2m-top-sort-' } },
+											limit,
+										},
+										id: true,
+										name: true,
+									},
+								},
+							});
+
+							// Assert
+							expect(response.statusCode).toEqual(200);
+							expect(response.body.data.length).toBe(expectedLength);
+							expect(response2.statusCode).toEqual(200);
+							expect(response.body.data).not.toEqual(response2.body.data);
+							expect(
+								response.body.data.map((item: any) => {
+									return parseInt(item.name.slice(-1));
+								})
+							).toEqual(expectedAsc);
+							expect(
+								response2.body.data.map((item: any) => {
+									return parseInt(item.name.slice(-1));
+								})
+							).toEqual(expectedDesc);
+
+							expect(gqlResponse.statusCode).toEqual(200);
+							expect(gqlResponse.body.data[localCollectionCountries].length).toBe(expectedLength);
+							expect(gqlResponse2.statusCode).toEqual(200);
+							expect(gqlResponse.body.data[localCollectionCountries]).not.toEqual(
+								gqlResponse2.body.data[localCollectionCountries]
+							);
+							expect(
+								gqlResponse.body.data[localCollectionCountries].map((item: any) => {
+									return parseInt(item.name.slice(-1));
+								})
+							).toEqual(expectedAsc);
+							expect(
+								gqlResponse2.body.data[localCollectionCountries].map((item: any) => {
+									return parseInt(item.name.slice(-1));
+								})
+							).toEqual(expectedDesc);
+						});
 					});
 				});
 
-				describe(`on o2m level`, () => {
-					it.each(vendors)('%s', async (vendor) => {
-						// Setup
-						const sortValues = [4, 2, 3, 5, 1];
+				describe('on o2m level', () => {
+					beforeAll(async () => {
+						for (const vendor of vendors) {
+							// Setup
+							const sortValues = [4, 2, 3, 5, 1];
 
-						for (const val of sortValues) {
-							const country = createCountry(pkType);
-							country.name = 'country-o2m-sort-' + uuid();
-							const insertedCountry = await CreateItem(vendor, {
-								collection: localCollectionCountries,
-								item: country,
+							for (const val of sortValues) {
+								const country = createCountry(pkType);
+								country.name = 'country-o2m-sort-' + uuid();
+								const insertedCountry = await CreateItem(vendor, {
+									collection: localCollectionCountries,
+									item: country,
+								});
+								const state = createState(pkType);
+								state.name = 'state-o2m-sort-' + val;
+								state.country_id = insertedCountry.id;
+								await CreateItem(vendor, { collection: localCollectionStates, item: state });
+							}
+						}
+					});
+
+					describe('without limit', () => {
+						it.each(vendors)('%s', async (vendor) => {
+							// Action
+							const response = await request(getUrl(vendor))
+								.get(`/items/${localCollectionCountries}`)
+								.query({
+									sort: 'states.name',
+									filter: { name: { _starts_with: 'country-o2m-sort-' } },
+								})
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+							const response2 = await request(getUrl(vendor))
+								.get(`/items/${localCollectionCountries}`)
+								.query({
+									sort: '-states.name',
+									filter: { name: { _starts_with: 'country-o2m-sort-' } },
+								})
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								query: {
+									[localCollectionCountries]: {
+										__args: {
+											sort: 'states.name',
+											filter: { name: { _starts_with: 'country-o2m-sort-' } },
+										},
+										id: true,
+									},
+								},
 							});
-							const state = createState(pkType);
-							state.name = 'state-o2m-sort-' + val;
-							state.country_id = insertedCountry.id;
-							await CreateItem(vendor, { collection: localCollectionStates, item: state });
-						}
 
-						// Action
-						const response = await request(getUrl(vendor))
-							.get(`/items/${localCollectionCountries}`)
-							.query({
-								sort: 'states.name',
-								filter: { name: { _starts_with: 'country-o2m-sort-' } },
-							})
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
-
-						const response2 = await request(getUrl(vendor))
-							.get(`/items/${localCollectionCountries}`)
-							.query({
-								sort: '-states.name',
-								filter: { name: { _starts_with: 'country-o2m-sort-' } },
-							})
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
-
-						const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
-							query: {
-								[localCollectionCountries]: {
-									__args: {
-										sort: 'states.name',
-										filter: { name: { _starts_with: 'country-o2m-sort-' } },
+							const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								query: {
+									[localCollectionCountries]: {
+										__args: {
+											sort: '-states.name',
+											filter: { name: { _starts_with: 'country-o2m-sort-' } },
+										},
+										id: true,
 									},
-									id: true,
 								},
-							},
-						});
+							});
 
-						const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
-							query: {
-								[localCollectionCountries]: {
-									__args: {
-										sort: '-states.name',
-										filter: { name: { _starts_with: 'country-o2m-sort-' } },
-									},
-									id: true,
-								},
-							},
-						});
+							// Assert
+							expect(response.statusCode).toEqual(200);
+							expect(response2.statusCode).toEqual(200);
+							expect(gqlResponse.statusCode).toEqual(200);
+							expect(gqlResponse2.statusCode).toEqual(200);
 
-						// Assert
-						expect(response.statusCode).toEqual(200);
-						expect(response2.statusCode).toEqual(200);
-						expect(gqlResponse.statusCode).toEqual(200);
-						expect(gqlResponse2.statusCode).toEqual(200);
+							// Oddity in MySQL5, looks to be indexing delays resulting in missing values
+							if (vendor === 'mysql5') {
+								let lastIndex = -1;
+								for (const item of response2.body.data.reverse()) {
+									const foundIndex = findIndex(response.body.data, { id: item.id });
+									if (foundIndex === -1) continue;
 
-						if (vendor === 'mysql5') {
-							let lastIndex = -1;
-							for (const item of response2.body.data.reverse()) {
-								const foundIndex = findIndex(response.body.data, { id: item.id });
-								if (foundIndex === -1) continue;
+									expect(foundIndex).toBeGreaterThan(lastIndex);
 
-								expect(foundIndex).toBeGreaterThan(lastIndex);
-
-								if (foundIndex > lastIndex) {
-									lastIndex = foundIndex;
+									if (foundIndex > lastIndex) {
+										lastIndex = foundIndex;
+									}
 								}
+
+								lastIndex = -1;
+								for (const item of gqlResponse2.body.data[localCollectionCountries].reverse()) {
+									const foundIndex = findIndex(gqlResponse.body.data[localCollectionCountries], { id: item.id });
+									if (foundIndex === -1) continue;
+
+									expect(foundIndex).toBeGreaterThan(lastIndex);
+
+									if (foundIndex > lastIndex) {
+										lastIndex = foundIndex;
+									}
+								}
+								return;
 							}
 
-							lastIndex = -1;
-							for (const item of gqlResponse2.body.data[localCollectionCountries].reverse()) {
-								const foundIndex = findIndex(gqlResponse.body.data[localCollectionCountries], { id: item.id });
-								if (foundIndex === -1) continue;
+							expect(response.body.data.length).toBe(5);
+							expect(response.body.data).toEqual(response2.body.data.reverse());
+							expect(gqlResponse.body.data[localCollectionCountries].length).toBe(5);
+							expect(gqlResponse.body.data[localCollectionCountries]).toEqual(
+								gqlResponse2.body.data[localCollectionCountries].reverse()
+							);
+						});
+					});
 
-								expect(foundIndex).toBeGreaterThan(lastIndex);
+					describe.each([-1, 1, 3])('where limit = %s', (limit) => {
+						it.each(vendors)('%s', async (vendor) => {
+							// Setup
+							const expectedLength = limit === -1 ? 5 : limit;
+							const expectedAsc = [1, 2, 3, 4, 5].slice(0, expectedLength);
+							const expectedDesc = [5, 4, 3, 2, 1].slice(0, expectedLength);
 
-								if (foundIndex > lastIndex) {
-									lastIndex = foundIndex;
+							// Action
+							const response = await request(getUrl(vendor))
+								.get(`/items/${localCollectionCountries}`)
+								.query({
+									sort: 'states.name',
+									filter: { name: { _starts_with: 'country-o2m-sort-' } },
+									limit,
+									fields: 'states.name',
+								})
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+							const response2 = await request(getUrl(vendor))
+								.get(`/items/${localCollectionCountries}`)
+								.query({
+									sort: '-states.name',
+									filter: { name: { _starts_with: 'country-o2m-sort-' } },
+									limit,
+									fields: 'states.name',
+								})
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								query: {
+									[localCollectionCountries]: {
+										__args: {
+											sort: 'states.name',
+											filter: { name: { _starts_with: 'country-o2m-sort-' } },
+											limit,
+										},
+										id: true,
+										states: {
+											name: true,
+										},
+									},
+								},
+							});
+
+							const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								query: {
+									[localCollectionCountries]: {
+										__args: {
+											sort: '-states.name',
+											filter: { name: { _starts_with: 'country-o2m-sort-' } },
+											limit,
+										},
+										id: true,
+										states: {
+											name: true,
+										},
+									},
+								},
+							});
+
+							// Assert
+							expect(response.statusCode).toEqual(200);
+							expect(response2.statusCode).toEqual(200);
+							expect(gqlResponse.statusCode).toEqual(200);
+							expect(gqlResponse2.statusCode).toEqual(200);
+
+							// Oddity in MySQL5, looks to be indexing delays resulting in missing values
+							if (vendor === 'mysql5') {
+								for (const data of [
+									{ response: response.body.data, expected: expectedAsc },
+									{ response: response2.body.data, expected: expectedDesc },
+								]) {
+									expect(data.response.length).toBeLessThanOrEqual(expectedLength);
+
+									let lastIndex = -1;
+									for (const item of data.response) {
+										const foundIndex = data.expected.indexOf(parseInt(item.states[0].name.slice(-1)));
+
+										expect(foundIndex).toBeGreaterThan(lastIndex);
+
+										if (foundIndex > lastIndex) {
+											lastIndex = foundIndex;
+										}
+									}
 								}
-							}
-							return;
-						}
 
-						expect(response.body.data.length).toBe(5);
-						expect(response.body.data).toEqual(response2.body.data.reverse());
-						expect(gqlResponse.body.data[localCollectionCountries].length).toBe(5);
-						expect(gqlResponse.body.data[localCollectionCountries]).toEqual(
-							gqlResponse2.body.data[localCollectionCountries].reverse()
-						);
+								for (const data of [
+									{ response: gqlResponse.body.data[localCollectionCountries], expected: expectedAsc },
+									{ response: gqlResponse2.body.data[localCollectionCountries], expected: expectedDesc },
+								]) {
+									expect(data.response.length).toBeLessThanOrEqual(expectedLength);
+
+									let lastIndex = -1;
+									for (const item of data.response) {
+										const foundIndex = data.expected.indexOf(parseInt(item.states[0].name.slice(-1)));
+
+										expect(foundIndex).toBeGreaterThan(lastIndex);
+
+										if (foundIndex > lastIndex) {
+											lastIndex = foundIndex;
+										}
+									}
+								}
+
+								return;
+							}
+
+							expect(response.body.data.length).toBe(expectedLength);
+							expect(response.body.data).not.toEqual(response2.body.data);
+							expect(
+								response.body.data.map((item: any) => {
+									return parseInt(item.states[0].name.slice(-1));
+								})
+							).toEqual(expectedAsc);
+							expect(
+								response2.body.data.map((item: any) => {
+									return parseInt(item.states[0].name.slice(-1));
+								})
+							).toEqual(expectedDesc);
+
+							expect(gqlResponse.body.data[localCollectionCountries].length).toBe(expectedLength);
+							expect(gqlResponse.body.data[localCollectionCountries]).not.toEqual(
+								gqlResponse2.body.data[localCollectionCountries]
+							);
+							expect(
+								gqlResponse.body.data[localCollectionCountries].map((item: any) => {
+									return parseInt(item.states[0].name.slice(-1));
+								})
+							).toEqual(expectedAsc);
+							expect(
+								gqlResponse2.body.data[localCollectionCountries].map((item: any) => {
+									return parseInt(item.states[0].name.slice(-1));
+								})
+							).toEqual(expectedDesc);
+						});
 					});
 				});
 			});
 
-			describe(`sorts with functions`, () => {
-				describe(`on top level`, () => {
-					it.each(vendors)('%s', async (vendor) => {
+			describe('sorts with functions', () => {
+				describe('on top level', () => {
+					beforeAll(async () => {
 						// Setup
-						const sortValues = [4, 2, 3, 5, 1];
-						const countries = [];
+						for (const vendor of vendors) {
+							const sortValues = [4, 2, 3, 5, 1];
+							const countries = [];
 
-						for (const val of sortValues) {
-							const country = createCountry(pkType);
-							country.name = 'country-o2m-top-sort-fn-' + uuid();
-							country.test_datetime = new Date(new Date().setFullYear(parseInt(`202${val}`)))
-								.toISOString()
-								.slice(0, 19);
-							countries.push(country);
+							for (const val of sortValues) {
+								const country = createCountry(pkType);
+								country.name = 'country-o2m-top-sort-fn-' + uuid();
+								country.test_datetime = new Date(new Date().setFullYear(parseInt(`202${val}`)))
+									.toISOString()
+									.slice(0, 19);
+								countries.push(country);
+							}
+
+							await CreateItem(vendor, {
+								collection: localCollectionCountries,
+								item: countries,
+							});
 						}
+					});
 
-						await CreateItem(vendor, {
-							collection: localCollectionCountries,
-							item: countries,
-						});
+					describe('without limit', () => {
+						it.each(vendors)('%s', async (vendor) => {
+							// Action
+							const response = await request(getUrl(vendor))
+								.get(`/items/${localCollectionCountries}`)
+								.query({
+									sort: 'year(test_datetime)',
+									filter: { name: { _starts_with: 'country-o2m-top-sort-fn-' } },
+								})
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
-						// Action
-						const response = await request(getUrl(vendor))
-							.get(`/items/${localCollectionCountries}`)
-							.query({
-								sort: 'year(test_datetime)',
-								filter: { name: { _starts_with: 'country-o2m-top-sort-fn-' } },
-							})
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+							const response2 = await request(getUrl(vendor))
+								.get(`/items/${localCollectionCountries}`)
+								.query({
+									sort: '-year(test_datetime)',
+									filter: { name: { _starts_with: 'country-o2m-top-sort-fn-' } },
+								})
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
-						const response2 = await request(getUrl(vendor))
-							.get(`/items/${localCollectionCountries}`)
-							.query({
-								sort: '-year(test_datetime)',
-								filter: { name: { _starts_with: 'country-o2m-top-sort-fn-' } },
-							})
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
-
-						const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
-							query: {
-								[localCollectionCountries]: {
-									__args: {
-										sort: 'year(test_datetime)',
-										filter: { name: { _starts_with: 'country-o2m-top-sort-fn-' } },
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								query: {
+									[localCollectionCountries]: {
+										__args: {
+											sort: 'year(test_datetime)',
+											filter: { name: { _starts_with: 'country-o2m-top-sort-fn-' } },
+										},
+										id: true,
 									},
-									id: true,
 								},
-							},
-						});
+							});
 
-						const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
-							query: {
-								[localCollectionCountries]: {
-									__args: {
-										sort: '-year(test_datetime)',
-										filter: { name: { _starts_with: 'country-o2m-top-sort-fn-' } },
+							const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								query: {
+									[localCollectionCountries]: {
+										__args: {
+											sort: '-year(test_datetime)',
+											filter: { name: { _starts_with: 'country-o2m-top-sort-fn-' } },
+										},
+										id: true,
 									},
-									id: true,
 								},
-							},
+							});
+
+							// Assert
+							expect(response.statusCode).toEqual(200);
+							expect(response.body.data.length).toBe(5);
+							expect(response2.statusCode).toEqual(200);
+							expect(response.body.data).toEqual(response2.body.data.reverse());
+
+							expect(gqlResponse.statusCode).toEqual(200);
+							expect(gqlResponse.body.data[localCollectionCountries].length).toBe(5);
+							expect(gqlResponse2.statusCode).toEqual(200);
+							expect(gqlResponse.body.data[localCollectionCountries]).toEqual(
+								gqlResponse2.body.data[localCollectionCountries].reverse()
+							);
 						});
+					});
 
-						// Assert
-						expect(response.statusCode).toEqual(200);
-						expect(response.body.data.length).toBe(5);
-						expect(response2.statusCode).toEqual(200);
-						expect(response.body.data).toEqual(response2.body.data.reverse());
+					describe.each([-1, 1, 3])('where limit = %s', (limit) => {
+						it.each(vendors)('%s', async (vendor) => {
+							// Setup
+							const expectedLength = limit === -1 ? 5 : limit;
+							const expectedAsc = [1, 2, 3, 4, 5].slice(0, expectedLength);
+							const expectedDesc = [5, 4, 3, 2, 1].slice(0, expectedLength);
 
-						expect(gqlResponse.statusCode).toEqual(200);
-						expect(gqlResponse.body.data[localCollectionCountries].length).toBe(5);
-						expect(gqlResponse2.statusCode).toEqual(200);
-						expect(gqlResponse.body.data[localCollectionCountries]).toEqual(
-							gqlResponse2.body.data[localCollectionCountries].reverse()
-						);
+							// Action
+							const response = await request(getUrl(vendor))
+								.get(`/items/${localCollectionCountries}`)
+								.query({
+									sort: 'year(test_datetime)',
+									filter: { name: { _starts_with: 'country-o2m-top-sort-fn-' } },
+									limit,
+									fields: 'year(test_datetime)',
+								})
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+							const response2 = await request(getUrl(vendor))
+								.get(`/items/${localCollectionCountries}`)
+								.query({
+									sort: '-year(test_datetime)',
+									filter: { name: { _starts_with: 'country-o2m-top-sort-fn-' } },
+									limit,
+									fields: 'year(test_datetime)',
+								})
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								query: {
+									[localCollectionCountries]: {
+										__args: {
+											sort: 'year(test_datetime)',
+											filter: { name: { _starts_with: 'country-o2m-top-sort-fn-' } },
+											limit,
+										},
+										id: true,
+										test_datetime_func: {
+											year: true,
+										},
+									},
+								},
+							});
+
+							const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								query: {
+									[localCollectionCountries]: {
+										__args: {
+											sort: '-year(test_datetime)',
+											filter: { name: { _starts_with: 'country-o2m-top-sort-fn-' } },
+											limit,
+										},
+										id: true,
+										test_datetime_func: {
+											year: true,
+										},
+									},
+								},
+							});
+
+							// Assert
+							expect(response.statusCode).toEqual(200);
+							expect(response.body.data.length).toBe(expectedLength);
+							expect(response2.statusCode).toEqual(200);
+							expect(response.body.data).not.toEqual(response2.body.data);
+							expect(
+								response.body.data.map((item: any) => {
+									return parseInt(item.test_datetime_year.toString().slice(-1));
+								})
+							).toEqual(expectedAsc);
+							expect(
+								response2.body.data.map((item: any) => {
+									return parseInt(item.test_datetime_year.toString().slice(-1));
+								})
+							).toEqual(expectedDesc);
+
+							expect(gqlResponse.statusCode).toEqual(200);
+							expect(gqlResponse.body.data[localCollectionCountries].length).toBe(expectedLength);
+							expect(gqlResponse2.statusCode).toEqual(200);
+							expect(gqlResponse.body.data[localCollectionCountries]).not.toEqual(
+								gqlResponse2.body.data[localCollectionCountries]
+							);
+							expect(
+								gqlResponse.body.data[localCollectionCountries].map((item: any) => {
+									return parseInt(item.test_datetime_func.year.toString().slice(-1));
+								})
+							).toEqual(expectedAsc);
+							expect(
+								gqlResponse2.body.data[localCollectionCountries].map((item: any) => {
+									return parseInt(item.test_datetime_func.year.toString().slice(-1));
+								})
+							).toEqual(expectedDesc);
+						});
 					});
 				});
 
-				describe(`on o2m level`, () => {
-					it.each(vendors)('%s', async (vendor) => {
-						// Setup
-						const sortValues = [4, 2, 3, 5, 1];
+				describe('on o2m level', () => {
+					beforeAll(async () => {
+						for (const vendor of vendors) {
+							// Setup
+							const sortValues = [4, 2, 3, 5, 1];
 
-						for (const val of sortValues) {
-							const country = createCountry(pkType);
-							country.name = 'country-o2m-sort-fn-' + uuid();
-							const insertedCountry = await CreateItem(vendor, {
-								collection: localCollectionCountries,
-								item: country,
+							for (const val of sortValues) {
+								const country = createCountry(pkType);
+								country.name = 'country-o2m-sort-fn-' + uuid();
+								const insertedCountry = await CreateItem(vendor, {
+									collection: localCollectionCountries,
+									item: country,
+								});
+								const state = createState(pkType);
+								state.name = 'state-o2m-sort-fn-' + uuid();
+								state.test_datetime = new Date(new Date().setFullYear(parseInt(`202${val}`)))
+									.toISOString()
+									.slice(0, 19);
+								state.country_id = insertedCountry.id;
+								await CreateItem(vendor, { collection: localCollectionStates, item: state });
+							}
+						}
+					});
+
+					describe('without limit', () => {
+						it.each(vendors)('%s', async (vendor) => {
+							// Action
+							const response = await request(getUrl(vendor))
+								.get(`/items/${localCollectionCountries}`)
+								.query({
+									sort: 'states.year(test_datetime)',
+									filter: { name: { _starts_with: 'country-o2m-sort-fn-' } },
+								})
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+							const response2 = await request(getUrl(vendor))
+								.get(`/items/${localCollectionCountries}`)
+								.query({
+									sort: '-states.year(test_datetime)',
+									filter: { name: { _starts_with: 'country-o2m-sort-fn-' } },
+								})
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								query: {
+									[localCollectionCountries]: {
+										__args: {
+											sort: 'states.year(test_datetime)',
+											filter: { name: { _starts_with: 'country-o2m-sort-fn-' } },
+										},
+										id: true,
+									},
+								},
 							});
-							const state = createState(pkType);
-							state.name = 'state-o2m-sort-fn-' + uuid();
-							state.test_datetime = new Date(new Date().setFullYear(parseInt(`202${val}`))).toISOString().slice(0, 19);
-							state.country_id = insertedCountry.id;
-							await CreateItem(vendor, { collection: localCollectionStates, item: state });
-						}
 
-						// Action
-						const response = await request(getUrl(vendor))
-							.get(`/items/${localCollectionCountries}`)
-							.query({
-								sort: 'states.year(test_datetime)',
-								filter: { name: { _starts_with: 'country-o2m-sort-fn-' } },
-							})
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
-
-						const response2 = await request(getUrl(vendor))
-							.get(`/items/${localCollectionCountries}`)
-							.query({
-								sort: '-states.year(test_datetime)',
-								filter: { name: { _starts_with: 'country-o2m-sort-fn-' } },
-							})
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
-
-						const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
-							query: {
-								[localCollectionCountries]: {
-									__args: {
-										sort: 'states.year(test_datetime)',
-										filter: { name: { _starts_with: 'country-o2m-sort-fn-' } },
+							const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								query: {
+									[localCollectionCountries]: {
+										__args: {
+											sort: '-states.year(test_datetime)',
+											filter: { name: { _starts_with: 'country-o2m-sort-fn-' } },
+										},
+										id: true,
 									},
-									id: true,
 								},
-							},
-						});
+							});
 
-						const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
-							query: {
-								[localCollectionCountries]: {
-									__args: {
-										sort: '-states.year(test_datetime)',
-										filter: { name: { _starts_with: 'country-o2m-sort-fn-' } },
-									},
-									id: true,
-								},
-							},
-						});
+							// Assert
+							expect(response.statusCode).toEqual(200);
+							expect(response2.statusCode).toEqual(200);
+							expect(gqlResponse.statusCode).toEqual(200);
+							expect(gqlResponse2.statusCode).toEqual(200);
 
-						// Assert
-						expect(response.statusCode).toEqual(200);
-						expect(response2.statusCode).toEqual(200);
-						expect(gqlResponse.statusCode).toEqual(200);
-						expect(gqlResponse2.statusCode).toEqual(200);
+							// Oddity in MySQL5, looks to be indexing delays resulting in missing values
+							if (vendor === 'mysql5') {
+								let lastIndex = -1;
+								for (const item of response2.body.data.reverse()) {
+									const foundIndex = findIndex(response.body.data, { id: item.id });
+									if (foundIndex === -1) continue;
 
-						// Oddity in MySQL5, looks to be indexing delays resulting in missing values
-						if (vendor === 'mysql5') {
-							let lastIndex = -1;
-							for (const item of response2.body.data.reverse()) {
-								const foundIndex = findIndex(response.body.data, { id: item.id });
-								if (foundIndex === -1) continue;
+									expect(foundIndex).toBeGreaterThan(lastIndex);
 
-								expect(foundIndex).toBeGreaterThan(lastIndex);
-
-								if (foundIndex > lastIndex) {
-									lastIndex = foundIndex;
+									if (foundIndex > lastIndex) {
+										lastIndex = foundIndex;
+									}
 								}
+
+								lastIndex = -1;
+								for (const item of gqlResponse2.body.data[localCollectionCountries].reverse()) {
+									const foundIndex = findIndex(gqlResponse.body.data[localCollectionCountries], { id: item.id });
+									if (foundIndex === -1) continue;
+
+									expect(foundIndex).toBeGreaterThan(lastIndex);
+
+									if (foundIndex > lastIndex) {
+										lastIndex = foundIndex;
+									}
+								}
+								return;
 							}
 
-							lastIndex = -1;
-							for (const item of gqlResponse2.body.data[localCollectionCountries].reverse()) {
-								const foundIndex = findIndex(gqlResponse.body.data[localCollectionCountries], { id: item.id });
-								if (foundIndex === -1) continue;
+							expect(response.body.data.length).toBe(5);
+							expect(response.body.data).toEqual(response2.body.data.reverse());
+							expect(gqlResponse.body.data[localCollectionCountries].length).toBe(5);
+							expect(gqlResponse.body.data[localCollectionCountries]).toEqual(
+								gqlResponse2.body.data[localCollectionCountries].reverse()
+							);
+						});
+					});
 
-								expect(foundIndex).toBeGreaterThan(lastIndex);
+					describe.each([-1, 1, 3])('where limit = %s', (limit) => {
+						it.each(vendors)('%s', async (vendor) => {
+							// Setup
+							const expectedLength = limit === -1 ? 5 : limit;
+							const expectedAsc = [1, 2, 3, 4, 5].slice(0, expectedLength);
+							const expectedDesc = [5, 4, 3, 2, 1].slice(0, expectedLength);
 
-								if (foundIndex > lastIndex) {
-									lastIndex = foundIndex;
+							// Action
+							const response = await request(getUrl(vendor))
+								.get(`/items/${localCollectionCountries}`)
+								.query({
+									sort: 'states.year(test_datetime)',
+									filter: { name: { _starts_with: 'country-o2m-sort-fn-' } },
+									limit,
+									fields: 'states.year(test_datetime)',
+								})
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+							const response2 = await request(getUrl(vendor))
+								.get(`/items/${localCollectionCountries}`)
+								.query({
+									sort: '-states.year(test_datetime)',
+									filter: { name: { _starts_with: 'country-o2m-sort-fn-' } },
+									limit,
+									fields: 'states.year(test_datetime)',
+								})
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								query: {
+									[localCollectionCountries]: {
+										__args: {
+											sort: 'states.year(test_datetime)',
+											filter: { name: { _starts_with: 'country-o2m-sort-fn-' } },
+											limit,
+										},
+										id: true,
+										states: {
+											test_datetime_func: {
+												year: true,
+											},
+										},
+									},
+								},
+							});
+
+							const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								query: {
+									[localCollectionCountries]: {
+										__args: {
+											sort: '-states.year(test_datetime)',
+											filter: { name: { _starts_with: 'country-o2m-sort-fn-' } },
+											limit,
+										},
+										id: true,
+										states: {
+											test_datetime_func: {
+												year: true,
+											},
+										},
+									},
+								},
+							});
+
+							// Assert
+							expect(response.statusCode).toEqual(200);
+							expect(response2.statusCode).toEqual(200);
+							expect(gqlResponse.statusCode).toEqual(200);
+							expect(gqlResponse2.statusCode).toEqual(200);
+
+							if (vendor === 'mysql5') {
+								for (const data of [
+									{ response: response.body.data, expected: expectedAsc },
+									{ response: response2.body.data, expected: expectedDesc },
+								]) {
+									expect(data.response.length).toBeLessThanOrEqual(expectedLength);
+
+									let lastIndex = -1;
+									for (const item of data.response) {
+										const foundIndex = data.expected.indexOf(
+											parseInt(item.states[0].test_datetime_year.toString().slice(-1))
+										);
+
+										expect(foundIndex).toBeGreaterThan(lastIndex);
+
+										if (foundIndex > lastIndex) {
+											lastIndex = foundIndex;
+										}
+									}
 								}
-							}
-							return;
-						}
 
-						expect(response.body.data.length).toBe(5);
-						expect(response.body.data).toEqual(response2.body.data.reverse());
-						expect(gqlResponse.body.data[localCollectionCountries].length).toBe(5);
-						expect(gqlResponse.body.data[localCollectionCountries]).toEqual(
-							gqlResponse2.body.data[localCollectionCountries].reverse()
-						);
+								for (const data of [
+									{ response: gqlResponse.body.data[localCollectionCountries], expected: expectedAsc },
+									{ response: gqlResponse2.body.data[localCollectionCountries], expected: expectedDesc },
+								]) {
+									expect(data.response.length).toBeLessThanOrEqual(expectedLength);
+
+									let lastIndex = -1;
+									for (const item of data.response) {
+										const foundIndex = data.expected.indexOf(
+											parseInt(item.states[0].test_datetime_func.year.toString().slice(-1))
+										);
+
+										expect(foundIndex).toBeGreaterThan(lastIndex);
+
+										if (foundIndex > lastIndex) {
+											lastIndex = foundIndex;
+										}
+									}
+								}
+
+								return;
+							}
+
+							expect(response.body.data.length).toBe(expectedLength);
+							expect(response.body.data).not.toEqual(response2.body.data);
+							expect(
+								response.body.data.map((item: any) => {
+									return parseInt(item.states[0].test_datetime_year.toString().slice(-1));
+								})
+							).toEqual(expectedAsc);
+							expect(
+								response2.body.data.map((item: any) => {
+									return parseInt(item.states[0].test_datetime_year.toString().slice(-1));
+								})
+							).toEqual(expectedDesc);
+
+							expect(gqlResponse.body.data[localCollectionCountries].length).toBe(expectedLength);
+							expect(gqlResponse.body.data[localCollectionCountries]).not.toEqual(
+								gqlResponse2.body.data[localCollectionCountries]
+							);
+							expect(
+								gqlResponse.body.data[localCollectionCountries].map((item: any) => {
+									return parseInt(item.states[0].test_datetime_func.year.toString().slice(-1));
+								})
+							).toEqual(expectedAsc);
+							expect(
+								gqlResponse2.body.data[localCollectionCountries].map((item: any) => {
+									return parseInt(item.states[0].test_datetime_func.year.toString().slice(-1));
+								})
+							).toEqual(expectedDesc);
+						});
 					});
 				});
 			});
