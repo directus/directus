@@ -36,30 +36,42 @@ Directus is a real-time API and App dashboard for managing SQL database content.
 
 ## ⚙️ Installation
 
-Create a new Directus project by running the following npm command:
+You can use the following configuration to get started using Docker Compose. Make sure to change all sensitive values
+like `KEY`, `SECRET`, `ADMIN_PASSWORD`, _etc._
+
+```yaml
+version: '3'
+services:
+  directus:
+    image: directus/directus:latest
+    volumes:
+      - ./uploads:/directus/uploads
+      - ./database:/directus/database
+    environment:
+      KEY: '255d861b-5ea1-5996-9aa3-922530ec40b1'
+      SECRET: '6116487b-cda1-52c2-b5b5-c8022c45e263'
+
+      DB_CLIENT: 'sqlite3'
+      DB_FILENAME: './data.db'
+
+      ADMIN_EMAIL: 'admin@example.com'
+      ADMIN_PASSWORD: 'd1r3ctu5'
+```
+
+Save this in your project as a file named `docker-compose.yml` and run:
 
 ```
-npm init directus-project my-project
+docker-compose up -d
 ```
 
-Or, using yarn:
-
-```
-yarn create directus-project my-project
-```
-
-Simply follow the setup prompts and the CLI will create your new project directory (eg: `my-project`), configuration
-file, and initial database. To get the most out of Directus, and to ensure you have the latest security patches, it is
-important to keep your projects up-to-date.
+To learn more, visit the [Docker Guide](/self-hosted/installation/docker).
 
 <br />
 
 ## 📌 Requirements
 
-Directus only requires Node.js and supports most operating systems and SQL database vendors.
-
-- Node.js [active LTS](https://nodejs.dev/en/about/releases/)
-- npm 6.x+
+- [Docker](https://docs.docker.com/get-docker/)
+- [Docker Compose](https://docs.docker.com/compose/install/) (often included with newer Docker installations)
 
 #### Supported Databases
 
