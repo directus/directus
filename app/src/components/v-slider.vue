@@ -223,6 +223,7 @@ body {
 		}
 
 		.thumb-label {
+			z-index: 1;
 			position: absolute;
 			top: 0px;
 			left: calc(var(--_v-slider-percentage) * 1%);
