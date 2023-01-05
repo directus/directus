@@ -56,7 +56,7 @@ describe('useLocalStorage', () => {
 					const stringifiedValue = JSON.stringify(currentValue);
 					localStorage.setItem(keyWithPrefix, stringifiedValue);
 
-					const newValue = {};
+					const newValue: Record<string, any> = {};
 					newValue.a = { b: newValue };
 
 					const { data } = useLocalStorage(key);
@@ -68,10 +68,15 @@ describe('useLocalStorage', () => {
 		});
 
 		describe('if value is null', () => {
-			it('clears local storage value', () => {
+			it('clears the current key but not the other existing keys', () => {
+				const anotherKey = `anotherLocalStorageKey`;
+				const anotherValue = '123';
+				localStorage.setItem(anotherKey, anotherValue);
+
 				const { data } = useLocalStorage(key);
 				data.value = null;
 
+				expect(localStorage.getItem(anotherKey)).toBe(anotherValue);
 				expect(localStorage.getItem(keyWithPrefix)).toBe(null);
 			});
 		});
