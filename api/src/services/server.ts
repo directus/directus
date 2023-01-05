@@ -310,6 +310,7 @@ export class ServerService {
 					await disk.write(`health-${checkID}`, Readable.from(['check']));
 					const fileStream = await disk.read(`health-${checkID}`);
 					fileStream.on('data', async () => {
+						fileStream.destroy();
 						await disk.delete(`health-${checkID}`);
 					});
 				} catch (err: any) {
