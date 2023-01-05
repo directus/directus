@@ -1431,6 +1431,7 @@ translation: Translation
 translation_placeholder: Enter a translation...
 value: Value
 view_project: View Project
+weeks: { }
 report_error: Report Error
 start: Start
 table: Table
@@ -1915,8 +1916,30 @@ layouts:
     group_field: Group By
     group_field_placeholder: Field to group by...
     group_title: Group Title
+    group_title_placeholder: Field for group titles...
+    title: Card Title
+    title_placeholder: Optional title field...
+    text: Card Text
+    text_placeholder: Optional text field...
+    date: Card Date
+    date_placeholder: Optional date field...
+    tags: Card Tags
+    tags_placeholder: Optional tags field...
+    user: Card User
+    user_placeholder: Optional user field...
+    image: Card Image
+    image_placeholder: Optional image field...
+    image_fit: Card Image Fit
     crop: Crop
     advanced: Advanced
+    edit_group: Edit Group
+    delete_group: Delete Group
+    add_group: Add Group
+    add_group_placeholder: Enter a new group title...
+    show_ungrouped: Show Ungrouped
+    show: Show
+    no_group: No Group
+    not_all_loaded: Could only load the first 1000 items.
 panels:
   metric:
     name: Metric
@@ -1935,7 +1958,29 @@ panels:
   list:
     name: List
     description: Filter and list fields from a collection
+  barchart:
+    name: Bar Chart
+    description: Bar or column charts for comparing groups of values
+    select_field: You must select a field.
+    select_collection: You must select a collection.
+    select_x_axis: You must select an X-Axis.
+    function: Function
+    horizontal: Horizontal
+    x_axis_grouping: X-Axis Group Aggregation
+    x_axis: X-Axis
+    y_axis_function: Y-Axis Function
+    y_axis: Y-Axis
+    show_x_axis: Show X-Axis
+    show_y_axis: Show Y-Axis
+    show_data_label: Show Data Label
+    group_by: Grouped By
+    group_and_function: You must include or omit both a group and a function.
+    y_axis_NaN: The Y axis must be a number.
+    y_axis_conditional_one: The value for condition
+    y_axis_conditional_two: must be a number.
   linechart:
+    name: Line Chart
+    description: Line chart for comparing change of a field
     select_field: You must select a field.
     select_collection: You must select a collection.
     select_x_axis: You must select an X-Axis.
@@ -1992,6 +2037,7 @@ panels:
 triggers:
   common:
     response_body: Response Body
+    response_body_all: All Data
     response_body_last: Data of Last Operation
   event:
     name: Event Hook
