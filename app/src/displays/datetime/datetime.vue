@@ -16,7 +16,7 @@ interface Props {
 	format?: string;
 	relative?: boolean;
 	strict?: boolean;
-	round?: string;
+	round?: 'floor' | 'round' | 'ceil';
 	suffix?: boolean;
 }
 
@@ -49,23 +49,28 @@ const localValue = computed(() => {
 });
 
 const relativeFormat = (value: Date) => {
-	const fn = props.strict ? localizedFormatDistanceStrict : localizedFormatDistance;
-	return fn(value, new Date(), {
-		addSuffix: props.suffix,
-		roundingMethod: props.round,
-	});
+	if (props.strict) {
+		return localizedFormatDistanceStrict(value, new Date(), {
+			addSuffix: props.suffix,
+			roundingMethod: props.round,
+		});
+	} else {
+		return localizedFormatDistance(value, new Date(), {
+			addSuffix: props.suffix,
+		});
+	}
 };
 
 watch(
 	localValue,
-	async (newValue) => {
+	(newValue) => {
 		if (newValue === null) {
 			displayValue.value = null;
 			return;
 		}
 
 		if (props.relative) {
-			displayValue.value = await relativeFormat(newValue);
+			displayValue.value = relativeFormat(newValue);
 		} else {
 			let format;
 			if (props.format === 'long') {
@@ -88,12 +93,12 @@ watch(
 
 let refreshInterval: number | null = null;
 
-onMounted(async () => {
+onMounted(() => {
 	if (!props.relative) return;
 
-	refreshInterval = window.setInterval(async () => {
+	refreshInterval = window.setInterval(() => {
 		if (!localValue.value) return;
-		displayValue.value = await relativeFormat(localValue.value);
+		displayValue.value = relativeFormat(localValue.value);
 	}, 60000);
 });
 

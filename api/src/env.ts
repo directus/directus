@@ -8,8 +8,7 @@ import fs from 'fs';
 import { clone, toNumber, toString } from 'lodash';
 import path from 'path';
 import { requireYAML } from './utils/require-yaml';
-import { toArray } from '@directus/shared/utils';
-import { parseJSON } from '@directus/shared/utils';
+import { toArray, parseJSON } from '@directus/shared/utils';
 
 // keeping this here for now to prevent a circular import to constants.ts
 const allowedEnvironmentVars = [
@@ -103,6 +102,7 @@ const allowedEnvironmentVars = [
 	'ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION',
 	'ASSETS_TRANSFORM_MAX_OPERATIONS',
 	'ASSETS_CONTENT_SECURITY_POLICY',
+	'ASSETS_INVALID_IMAGE_SENSITIVITY_LEVEL',
 	// auth
 	'AUTH_PROVIDERS',
 	'AUTH_DISABLE_DEFAULT',
@@ -179,6 +179,7 @@ const allowedEnvironmentVars = [
 	'EXPORT_BATCH_SIZE',
 	// flows
 	'FLOWS_EXEC_ALLOWED_MODULES',
+	'FLOWS_ENV_ALLOW_LIST',
 ].map((name) => new RegExp(`^${name}$`));
 
 const acceptedEnvTypes = ['string', 'number', 'regex', 'array', 'json'];
@@ -249,6 +250,7 @@ const defaults: Record<string, any> = {
 	ASSETS_TRANSFORM_MAX_CONCURRENT: 1,
 	ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION: 6000,
 	ASSETS_TRANSFORM_MAX_OPERATIONS: 5,
+	ASSETS_INVALID_IMAGE_SENSITIVITY_LEVEL: 'warning',
 
 	IP_TRUST_PROXY: true,
 	IP_CUSTOM_HEADER: false,
@@ -266,6 +268,7 @@ const defaults: Record<string, any> = {
 	GRAPHQL_INTROSPECTION: true,
 
 	FLOWS_EXEC_ALLOWED_MODULES: false,
+	FLOWS_ENV_ALLOW_LIST: false,
 };
 
 // Allows us to force certain environment variable into a type, instead of relying

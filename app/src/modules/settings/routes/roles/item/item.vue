@@ -152,7 +152,8 @@ export default defineComponent({
 
 		const { edits, hasEdits, item, saving, loading, error, save, remove, deleting, isBatch } = useItem(
 			ref('directus_roles'),
-			primaryKey
+			primaryKey,
+			{ deep: { users: { _limit: 0 } } }
 		);
 
 		const confirmDelete = ref(false);
