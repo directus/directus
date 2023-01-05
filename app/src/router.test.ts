@@ -1,11 +1,8 @@
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
 
-import * as auth from '@/auth';
 import { useAppStore } from '@/stores/app';
-import { useServerStore } from '@/stores/server';
-import { useUserStore } from '@/stores/user';
-import { afterEach, beforeEach, describe, expect, SpyInstance, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { defineComponent, h } from 'vue';
 import { createMemoryHistory, createRouter, Router } from 'vue-router';
 
@@ -20,105 +17,125 @@ const nonPublicRoutes = ['first', 'second', 'third'].map((route) => ({
 	meta: {}, // make sure 'meta.public' is not set so that they are tracked
 }));
 
-describe('router', () => {
-	let router: Router;
-	let authRefreshSpy: SpyInstance;
+let router: Router;
+const authRefresh = vi.fn();
+const userStoreTrackPage = vi.fn();
 
-	beforeEach(async () => {
-		setActivePinia(
-			createTestingPinia({
-				createSpy: vi.fn,
-			})
-		);
+vi.mock('@/auth', () => ({
+	refresh: authRefresh,
+}));
 
-		const importedRouter = await import('./router');
+vi.mock('@/hydrate', () => ({
+	hydrate: vi.fn(),
+}));
 
-		router = createRouter({
-			history: createMemoryHistory(), // intentionally use memory for tests
-			routes: [...importedRouter.defaultRoutes, ...nonPublicRoutes],
-		});
+vi.mock('@/stores/server', () => ({
+	useServerStore: vi.fn().mockReturnValue({
+		info: {
+			project: null,
+		},
+		hydrate: vi.fn(),
+	}),
+}));
 
-		router.beforeEach(importedRouter.onBeforeEach);
-		router.afterEach(importedRouter.onAfterEach);
+vi.mock('@/stores/user', () => ({
+	useUserStore: vi.fn().mockImplementation(() => {
+		return {
+			trackPage: userStoreTrackPage,
+		};
+	}),
+}));
 
-		authRefreshSpy = vi.spyOn(auth, 'refresh').mockResolvedValue('');
+beforeEach(async () => {
+	setActivePinia(
+		createTestingPinia({
+			createSpy: vi.fn,
+		})
+	);
 
-		vi.spyOn(useServerStore(), 'hydrate').mockResolvedValue();
+	const importedRouter = await import('./router');
+
+	router = createRouter({
+		history: createMemoryHistory(), // intentionally use memory for tests
+		routes: [...importedRouter.defaultRoutes, ...nonPublicRoutes],
+	});
+
+	router.beforeEach(importedRouter.onBeforeEach);
+	router.afterEach(importedRouter.onAfterEach);
+});
+
+afterEach(() => {
+	// Ensure the internal firstLoad variable in the imported router
+	// is reset before every test
+	vi.resetModules();
+
+	vi.clearAllMocks();
+});
+
+describe('onBeforeEach', () => {
+	test('should try retrieving a fresh access token on first load', async () => {
+		router.push('/');
+		await router.isReady();
+
+		expect(authRefresh).toHaveBeenCalledOnce();
+	});
+
+	test('should not try retrieving a fresh access token after the first load', async () => {
+		router.push('/');
+		await router.isReady();
+
+		// clear calls since there was an initial auth refresh
+		authRefresh.mockClear();
+
+		await router.push('/login');
+
+		expect(authRefresh).not.toHaveBeenCalled();
+	});
+
+	test('should not try retrieving a fresh access token after the first load', async () => {
+		router.push('/');
+		await router.isReady();
+
+		// clear calls since there was an initial auth refresh
+		authRefresh.mockClear();
+
+		await router.push('/login');
+
+		expect(authRefresh).not.toHaveBeenCalled();
+	});
+});
+
+describe('onAfterEach', () => {
+	beforeEach(() => {
+		vi.useFakeTimers();
 	});
 
 	afterEach(() => {
-		// Ensure the internal firstLoad variable in the imported router
-		// is reset before every test
-		vi.resetModules();
+		vi.useRealTimers();
 	});
 
-	describe('onBeforeEach', () => {
-		test('should try retrieving a fresh access token on first load', async () => {
-			router.push('/');
-			await router.isReady();
+	test('should not trackPage for public routes', async () => {
+		router.push('/');
+		await router.isReady();
 
-			expect(authRefreshSpy).toHaveBeenCalledOnce();
-		});
-
-		test('should not try retrieving a fresh access token after the first load', async () => {
-			router.push('/');
-			await router.isReady();
-
-			// clear spy calls to ensure it's back to 0
-			authRefreshSpy.mockClear();
-
-			await router.push('/login');
-
-			expect(authRefreshSpy).not.toHaveBeenCalled();
-		});
-
-		test('should not try retrieving a fresh access token after the first load', async () => {
-			router.push('/');
-			await router.isReady();
-
-			// clear spy calls to ensure it's back to 0
-			authRefreshSpy.mockClear();
-
-			await router.push('/login');
-
-			expect(authRefreshSpy).not.toHaveBeenCalled();
-		});
+		expect(userStoreTrackPage).not.toHaveBeenCalled();
 	});
 
-	describe('onAfterEach', () => {
-		let userStoreTrackPageSpy: SpyInstance;
+	test('should only trackPage once when routing multiple times before the setTimeout duration ends', async () => {
+		router.push('/');
+		await router.isReady();
 
-		beforeEach(() => {
-			vi.useFakeTimers();
-			userStoreTrackPageSpy = vi.spyOn(useUserStore(), 'trackPage').mockResolvedValue();
-		});
+		// mock authenticated to prevent redirection back to login page
+		const appStore = useAppStore();
+		appStore.hydrated = true;
+		appStore.authenticated = true;
 
-		afterEach(() => {
-			vi.useRealTimers();
-		});
+		for (const route of nonPublicRoutes.map((route) => route.path)) {
+			await router.push(route);
+		}
 
-		test('should not trackPage for public routes', async () => {
-			router.push('/');
-			await router.isReady();
-
-			expect(userStoreTrackPageSpy).not.toHaveBeenCalled();
-		});
-
-		test('should only trackPage once when routing multiple times before the setTimeout duration ends', async () => {
-			router.push('/');
-			await router.isReady();
-
-			// mock authenticated to prevent redirection back to login page
-			const appStore = useAppStore();
-			appStore.authenticated = true;
-
-			for (const route of nonPublicRoutes.map((route) => route.path)) {
-				await router.push(route);
-			}
-
-			// advance past the trackTimeout duration
-			vi.advanceTimersByTime(1000);
-			expect(userStoreTrackPageSpy).toHaveBeenCalledOnce();
-		});
+		// advance past the trackTimeout duration
+		vi.advanceTimersByTime(1000);
+		expect(userStoreTrackPage).toHaveBeenCalledOnce();
 	});
 });
