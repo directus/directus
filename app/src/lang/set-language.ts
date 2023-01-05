@@ -30,9 +30,9 @@ export async function setLanguage(lang: Language): Promise<boolean> {
 		(document.querySelector('html') as HTMLElement).setAttribute('lang', lang);
 	}
 
+	mergeTranslationStringsForLanguage(lang);
 	collectionsStore.translateCollections();
 	fieldsStore.translateFields();
-	mergeTranslationStringsForLanguage(lang);
 
 	await loadDateFNSLocale(lang);
 
