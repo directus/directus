@@ -3,6 +3,8 @@ table: directus_extensions
 fields:
   - field: name
   - field: enabled
+    special:
+      - cast-boolean
   - field: options
     special:
       - cast-json

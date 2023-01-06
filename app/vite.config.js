@@ -1,7 +1,10 @@
 import {
+	APP_EXTENSION_TYPES,
 	APP_OR_HYBRID_EXTENSION_PACKAGE_TYPES,
 	APP_OR_HYBRID_EXTENSION_TYPES,
 	APP_SHARED_DEPS,
+	BUNDLE_EXTENSION_TYPES,
+	HYBRID_EXTENSION_TYPES,
 	NESTED_EXTENSION_TYPES,
 } from '@directus/shared/constants';
 import {
@@ -9,6 +12,7 @@ import {
 	generateExtensionsEntrypoint,
 	getLocalExtensions,
 	getPackageExtensions,
+	resolvePackageExtensions,
 } from '@directus/shared/utils/node';
 import yaml from '@rollup/plugin-yaml';
 import vue from '@vitejs/plugin-vue';
@@ -222,10 +226,13 @@ function directusExtensions() {
 
 	async function loadExtensions() {
 		await ensureExtensionDirs(EXTENSIONS_PATH, NESTED_EXTENSION_TYPES);
-		const packageExtensions = await getPackageExtensions(API_PATH, APP_OR_HYBRID_EXTENSION_PACKAGE_TYPES);
-		const localExtensions = await getLocalExtensions(EXTENSIONS_PATH, APP_OR_HYBRID_EXTENSION_TYPES);
+		const packageExtensions = await getPackageExtensions(API_PATH);
+		const localPackageExtensions = await resolvePackageExtensions(EXTENSIONS_PATH);
+		const localExtensions = await getLocalExtensions(EXTENSIONS_PATH);
 
-		const extensions = [...packageExtensions, ...localExtensions];
+		const types = [...APP_EXTENSION_TYPES, ...HYBRID_EXTENSION_TYPES, ...BUNDLE_EXTENSION_TYPES]
+
+		const extensions = [...packageExtensions, ...localExtensions, ...localPackageExtensions].filter(extension => types.includes(extension.type));
 
 		extensionsEntrypoint = generateExtensionsEntrypoint(extensions);
 	}

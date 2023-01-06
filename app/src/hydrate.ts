@@ -16,6 +16,7 @@ import { useUserStore } from '@/stores/user';
 import { useNotificationsStore } from '@/stores/notifications';
 import { useTranslationStrings } from '@/composables/use-translation-strings';
 import { onDehydrateExtensions, onHydrateExtensions } from './extensions';
+import { useExtensionsStore } from './stores/extensions';
 
 type GenericStore = {
 	$id: string;
@@ -40,6 +41,7 @@ export function useStores(
 		useInsightsStore,
 		useFlowsStore,
 		useNotificationsStore,
+		useExtensionsStore
 	]
 ): GenericStore[] {
 	return stores.map((useStore) => useStore()) as GenericStore[];
