@@ -5,7 +5,7 @@ import { createI18n } from 'vue-i18n';
 import formFieldRawEditor from './form-field-raw-editor.vue';
 import { GlobalMountOptions } from '@vue/test-utils/dist/types';
 
-const i18n = createI18n();
+const i18n = createI18n({ legacy: false });
 
 const global: GlobalMountOptions = {
 	plugins: [i18n],

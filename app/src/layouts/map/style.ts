@@ -96,7 +96,7 @@ export function getMapStyle() {
 			filter: ['has', 'point_count'],
 			paint: {
 				'circle-radius': ['step', ['get', 'point_count'], 20, 100, 30, 750, 40],
-				'circle-color': ['step', ['get', 'point_count'], '#7fe3ca', 100, '#fde2a7', 750, '#f0a7b3'],
+				'circle-color': ['step', ['get', 'point_count'], '#b3a2ff', 100, '#fde2a7', 750, '#f1a8b4'],
 				'circle-opacity': 0.7,
 			},
 		},

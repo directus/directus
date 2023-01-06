@@ -60,12 +60,14 @@ fields:
     interface: boolean
     options:
       label: $t:fields.directus_webhooks.data_label
-    special: cast-boolean
+    special:
+      - cast-boolean
     width: half
     display: boolean
 
   - field: headers
-    special: cast-json
+    special:
+      - cast-json
     interface: list
     options:
       template: '{{ header }}: {{ value }}'
@@ -105,7 +107,8 @@ fields:
           value: update
         - text: $t:delete_label
           value: delete
-    special: cast-csv
+    special:
+      - cast-csv
     width: full
     display: labels
     display_options:
@@ -129,7 +132,8 @@ fields:
 
   - field: collections
     interface: system-collections
-    special: cast-csv
+    special:
+      - cast-csv
     width: full
     display: labels
     display_options:

@@ -1198,6 +1198,8 @@ layouts:
     calendar: Deiziadur
     start_date_field: Maezienn Devezh ar penn kentañ
     end_date_field: Maezienn Devezh fin
+  kanban:
+    crop: Krennañ
 panels:
   label:
     name: Tikedenn

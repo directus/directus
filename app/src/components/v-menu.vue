@@ -1,11 +1,10 @@
 <template>
-	<div class="v-menu" @click="onClick">
+	<div ref="v-menu" class="v-menu" v-on="trigger === 'click' ? { click: onClick } : {}">
 		<div
 			ref="activator"
 			class="v-menu-activator"
 			:class="{ attached }"
-			@pointerenter.stop="onPointerEnter"
-			@pointerleave.stop="onPointerLeave"
+			v-on="trigger === 'hover' ? { pointerenter: onPointerEnter, pointerleave: onPointerLeave } : {}"
 		>
 			<slot
 				name="activator"
@@ -39,9 +38,10 @@
 					<div
 						class="v-menu-content"
 						:class="{ 'full-height': fullHeight, seamless }"
-						@click.stop="onContentClick"
-						@pointerenter.stop="onPointerEnter"
-						@pointerleave.stop="onPointerLeave"
+						v-on="{
+							...(closeOnContentClick ? { click: onContentClick } : {}),
+							...(trigger === 'hover' ? { pointerenter: onPointerEnter, pointerleave: onPointerLeave } : {}),
+						}"
 					>
 						<slot
 							v-bind="{
@@ -83,6 +83,8 @@ interface Props {
 	closeOnContentClick?: boolean;
 	/** Attach the menu to an input */
 	attached?: boolean;
+	/** Should the menu have the same width as the input when attached */
+	isSameWidth?: boolean;
 	/** Show an arrow pointer */
 	showArrow?: boolean;
 	/** Menu does not appear */
@@ -107,6 +109,7 @@ const props = withDefaults(defineProps<Props>(), {
 	closeOnClick: true,
 	closeOnContentClick: true,
 	attached: false,
+	isSameWidth: true,
 	showArrow: false,
 	disabled: false,
 	trigger: null,
@@ -150,6 +153,7 @@ const {
 	computed(() => ({
 		placement: props.placement,
 		attached: props.attached,
+		isSameWidth: props.isSameWidth,
 		arrow: props.showArrow,
 		offsetY: props.offsetY,
 		offsetX: props.offsetX,
@@ -236,7 +240,8 @@ function onClickOutsideMiddleware(e: Event) {
 }
 
 function onContentClick(e: Event) {
-	if (props.closeOnContentClick === true && e.target !== e.currentTarget) {
+	e.stopPropagation();
+	if (e.target !== e.currentTarget) {
 		deactivate();
 	}
 }
@@ -258,18 +263,16 @@ function useEvents() {
 	return { onClick, onPointerLeave, onPointerEnter };
 
 	function onClick() {
-		if (props.trigger !== 'click') return;
-
 		toggle();
 	}
 
-	function onPointerEnter() {
-		if (props.trigger !== 'hover') return;
+	function onPointerEnter(event: Event) {
+		event.stopPropagation();
 		isHovered.value = true;
 	}
 
-	function onPointerLeave() {
-		if (props.trigger !== 'hover') return;
+	function onPointerLeave(event: Event) {
+		event.stopPropagation();
 		isHovered.value = false;
 	}
 }
@@ -278,7 +281,16 @@ function usePopper(
 	reference: Ref<HTMLElement | null>,
 	popper: Ref<HTMLElement | null>,
 	options: Readonly<
-		Ref<Readonly<{ placement: Placement; attached: boolean; arrow: boolean; offsetY: number; offsetX: number }>>
+		Ref<
+			Readonly<{
+				placement: Placement;
+				attached: boolean;
+				isSameWidth: boolean;
+				arrow: boolean;
+				offsetY: number;
+				offsetX: number;
+			}>
+		>
 	>
 ): Record<string, any> {
 	const popperInstance = ref<Instance | null>(null);
@@ -381,7 +393,7 @@ function usePopper(
 		if (options.value.attached === true) {
 			modifiers.push({
 				name: 'sameWidth',
-				enabled: true,
+				enabled: options.value.isSameWidth,
 				fn: ({ state }) => {
 					state.styles.popper.width = `${state.rects.reference.width}px`;
 				},

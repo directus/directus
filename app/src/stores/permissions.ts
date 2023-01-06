@@ -1,5 +1,6 @@
 import api from '@/api';
 import { Permission } from '@directus/shared/types';
+import { deepMap } from '@directus/shared/utils';
 import { parseFilter } from '@/utils/parse-filter';
 import { parsePreset } from '@/utils/parse-preset';
 import { defineStore } from 'pinia';
@@ -18,7 +19,13 @@ export const usePermissionsStore = defineStore({
 				params: { limit: -1, filter: { role: { _eq: userStore.currentUser!.role.id } } },
 			});
 
-			this.permissions = response.data.data.map((rawPermission: any) => {
+			const fields = getNestedDynamicVariableFieldsInPresets(response.data.data);
+
+			if (fields.length > 0) {
+				await userStore.hydrateAdditionalFields(fields);
+			}
+
+			this.permissions = response.data.data.map((rawPermission: Permission) => {
 				if (rawPermission.permissions) {
 					rawPermission.permissions = parseFilter(rawPermission.permissions);
 				}
@@ -33,6 +40,25 @@ export const usePermissionsStore = defineStore({
 
 				return rawPermission;
 			});
+
+			function getNestedDynamicVariableFieldsInPresets(rawPermissions: Permission[]) {
+				const fields: string[] = [];
+				const rawPermissionsWithPresets = rawPermissions.filter((rawPermission: Permission) => rawPermission.presets);
+
+				for (const rawPermissions of rawPermissionsWithPresets) {
+					deepMap(rawPermissions.presets, (value) => {
+						if (typeof value !== 'string') return;
+
+						if (value.startsWith('$CURRENT_USER.')) {
+							fields.push(value.replace('$CURRENT_USER.', ''));
+						} else if (value.startsWith('$CURRENT_ROLE.')) {
+							fields.push(value.replace('$CURRENT_ROLE.', 'role.'));
+						}
+					});
+				}
+
+				return fields;
+			}
 		},
 		dehydrate() {
 			this.$reset();

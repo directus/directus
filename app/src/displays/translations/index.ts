@@ -1,4 +1,3 @@
-import { getDisplay } from '@/displays';
 import { i18n } from '@/lang';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
@@ -7,6 +6,7 @@ import { renderPlainStringTemplate } from '@/utils/render-string-template';
 import { defineDisplay, getFieldsFromTemplate } from '@directus/shared/utils';
 import { get, set } from 'lodash';
 import DisplayTranslations from './translations.vue';
+import { useExtension } from '@/composables/use-extension';
 
 export default defineDisplay({
 	id: 'translations',
@@ -17,7 +17,7 @@ export default defineDisplay({
 	handler: (values, options, { collection, field }) => {
 		if (!field || !collection || !Array.isArray(values)) return values;
 
-		const relatedCollections = getRelatedCollection(collection, field.field);
+		const relatedCollection = getRelatedCollection(collection, field.field);
 
 		const fieldsStore = useFieldsStore();
 		const relationsStore = useRelationsStore();
@@ -34,9 +34,11 @@ export default defineDisplay({
 			(relation) => relation.collection === junction.collection && relation.field === junction.meta?.junction_field
 		);
 
-		const primaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(relatedCollections.relatedCollection);
+		if (!relatedCollection) return values;
 
-		if (!relatedCollections || !primaryKeyField || !relation?.related_collection) return values;
+		const primaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(relatedCollection.relatedCollection);
+
+		if (!primaryKeyField || !relation?.related_collection) return values;
 
 		const relatedPrimaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(relation.related_collection);
 
@@ -61,7 +63,7 @@ export default defineDisplay({
 		const fields = fieldKeys.map((fieldKey) => {
 			return {
 				key: fieldKey,
-				field: fieldsStore.getField(relatedCollections.relatedCollection, fieldKey),
+				field: fieldsStore.getField(relatedCollection.relatedCollection, fieldKey),
 			};
 		});
 
@@ -77,10 +79,10 @@ export default defineDisplay({
 				continue;
 			}
 
-			const display = getDisplay(field.meta.display);
+			const display = useExtension('display', field.meta.display);
 
-			const stringValue = display?.handler
-				? display.handler(fieldValue, field?.meta?.display_options ?? {}, {
+			const stringValue = display.value?.handler
+				? display.value.handler(fieldValue, field?.meta?.display_options ?? {}, {
 						interfaceOptions: field?.meta?.options ?? {},
 						field: field ?? undefined,
 						collection: collection,
