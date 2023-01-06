@@ -22,7 +22,7 @@ export async function getPermissions(accountability: Accountability, schema: Sch
 	const cacheKey = `permissions-${hash({ user, role, app, admin, share_scope })}`;
 
 	if (env.CACHE_PERMISSIONS !== false) {
-		let cachedPermissions = null;
+		let cachedPermissions;
 
 		try {
 			cachedPermissions = await getSystemCache(cacheKey);
