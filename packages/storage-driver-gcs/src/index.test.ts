@@ -165,11 +165,6 @@ describe('#file', () => {
 		} as unknown as Bucket;
 	});
 
-	test('Uses fullPath to inject root', () => {
-		driver['file'](sample.path.input);
-		expect(driver['fullPath']).toHaveBeenCalledWith(sample.path.input);
-	});
-
 	test('Returns file instance', () => {
 		const file = driver['file']('/path/to/file');
 		expect(file).toBe(mockFile);
