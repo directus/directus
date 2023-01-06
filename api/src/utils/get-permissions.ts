@@ -2,7 +2,7 @@ import { Accountability, Permission, SchemaOverview } from '@directus/shared/typ
 import { deepMap, parseFilter, parseJSON, parsePreset } from '@directus/shared/utils';
 import { cloneDeep } from 'lodash';
 import hash from 'object-hash';
-import { getCache, getSystemCache, setSystemCache } from '../cache';
+import { getCache, getSystemCache, setSystemCache, getCacheValue, setCacheValue } from '../cache';
 import getDatabase from '../database';
 import { appAccessMinimalPermissions } from '../database/system-data/app-access-permissions';
 import env from '../env';
@@ -21,7 +21,7 @@ export async function getPermissions(accountability: Accountability, schema: Sch
 	const { user, role, app, admin, share_scope } = accountability;
 	const cacheKey = `permissions-${hash({ user, role, app, admin, share_scope })}`;
 
-	if (env.CACHE_PERMISSIONS !== false) {
+	if (cache && env.CACHE_PERMISSIONS !== false) {
 		let cachedPermissions;
 
 		try {
@@ -35,7 +35,8 @@ export async function getPermissions(accountability: Accountability, schema: Sch
 				return processPermissions(accountability, cachedPermissions.permissions, {});
 			}
 
-			const cachedFilterContext = await cache?.get(
+			const cachedFilterContext = await getCacheValue(
+				cache,
 				`filterContext-${hash({ user, role, permissions: cachedPermissions.permissions })}`
 			);
 
@@ -55,7 +56,7 @@ export async function getPermissions(accountability: Accountability, schema: Sch
 					: {};
 
 				if (containDynamicData && env.CACHE_ENABLED !== false) {
-					await cache?.set(`filterContext-${hash({ user, role, permissions })}`, filterContext);
+					await setCacheValue(cache, `filterContext-${hash({ user, role, permissions })}`, filterContext);
 				}
 
 				return processPermissions(accountability, permissions, filterContext);
