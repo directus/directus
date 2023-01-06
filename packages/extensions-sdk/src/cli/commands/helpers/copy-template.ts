@@ -1,7 +1,7 @@
 import path from 'path';
 import fse from 'fs-extra';
 import getTemplatePath from '../../utils/get-template-path';
-import { ExtensionPackageType } from '@directus/shared/types';
+import { ExtensionType } from '@directus/shared/types';
 import { Language } from '../../types';
 
 type TemplateFile = { type: 'config' | 'source'; path: string };
@@ -49,7 +49,7 @@ async function getTypeTemplateFiles(templateTypePath: string, language?: Languag
 	return [...commonTemplateFiles, ...(languageTemplateFiles ? languageTemplateFiles : [])];
 }
 
-async function getTemplateFiles(type: ExtensionPackageType, language?: Language): Promise<TemplateFile[]> {
+async function getTemplateFiles(type: ExtensionType, language?: Language): Promise<TemplateFile[]> {
 	const templatePath = getTemplatePath();
 
 	const [commonTemplateFiles, typeTemplateFiles] = await Promise.all([
@@ -61,7 +61,7 @@ async function getTemplateFiles(type: ExtensionPackageType, language?: Language)
 }
 
 export default async function copyTemplate(
-	type: ExtensionPackageType,
+	type: ExtensionType,
 	extensionPath: string,
 	sourcePath?: string,
 	language?: Language

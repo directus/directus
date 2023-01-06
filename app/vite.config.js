@@ -2,6 +2,7 @@ import {
 	APP_OR_HYBRID_EXTENSION_PACKAGE_TYPES,
 	APP_OR_HYBRID_EXTENSION_TYPES,
 	APP_SHARED_DEPS,
+	NESTED_EXTENSION_TYPES,
 } from '@directus/shared/constants';
 import {
 	ensureExtensionDirs,
@@ -220,7 +221,7 @@ function directusExtensions() {
 	];
 
 	async function loadExtensions() {
-		await ensureExtensionDirs(EXTENSIONS_PATH, APP_OR_HYBRID_EXTENSION_TYPES);
+		await ensureExtensionDirs(EXTENSIONS_PATH, NESTED_EXTENSION_TYPES);
 		const packageExtensions = await getPackageExtensions(API_PATH, APP_OR_HYBRID_EXTENSION_PACKAGE_TYPES);
 		const localExtensions = await getLocalExtensions(EXTENSIONS_PATH, APP_OR_HYBRID_EXTENSION_TYPES);
 

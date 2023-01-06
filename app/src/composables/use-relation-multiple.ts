@@ -189,24 +189,6 @@ export function useRelationMultiple(
 
 	const { create, remove, select, update } = useActions(_value);
 
-	return {
-		create,
-		update,
-		remove,
-		select,
-		displayItems,
-		totalItemCount,
-		loading,
-		selected,
-		fetchedSelectItems,
-		fetchedItems,
-		useActions,
-		cleanItem,
-		isItemSelected,
-		localDelete,
-		getItemEdits,
-	};
-
 	function useActions(target: Ref<Item>) {
 		return { create, update, remove, select };
 
@@ -311,20 +293,17 @@ export function useRelationMultiple(
 		if (!relation.value) return;
 
 		if (!itemId.value || itemId.value === '+') {
-			existingItemCount.value = 0;
 			fetchedItems.value = [];
 			return;
 		}
 
 		let targetCollection: string;
-		let targetPKField: string;
 		let reverseJunctionField: string;
 		const fields = new Set(previewQuery.value.fields);
 
 		switch (relation.value.type) {
 			case 'm2a':
 				targetCollection = relation.value.junctionCollection.collection;
-				targetPKField = relation.value.junctionPrimaryKeyField.field;
 				reverseJunctionField = relation.value.reverseJunctionField.field;
 				fields.add(relation.value.junctionPrimaryKeyField.field);
 				fields.add(relation.value.collectionField.field);
@@ -335,14 +314,12 @@ export function useRelationMultiple(
 				break;
 			case 'm2m':
 				targetCollection = relation.value.junctionCollection.collection;
-				targetPKField = relation.value.junctionPrimaryKeyField.field;
 				reverseJunctionField = relation.value.reverseJunctionField.field;
 				fields.add(relation.value.junctionPrimaryKeyField.field);
 				fields.add(`${relation.value.junctionField.field}.${relation.value.relatedPrimaryKeyField.field}`);
 				break;
 			case 'o2m':
 				targetCollection = relation.value.relatedCollection.collection;
-				targetPKField = relation.value.relatedPrimaryKeyField.field;
 				reverseJunctionField = relation.value.reverseJunctionField.field;
 				fields.add(relation.value.relatedPrimaryKeyField.field);
 				break;
@@ -352,8 +329,6 @@ export function useRelationMultiple(
 
 		try {
 			loading.value = true;
-
-			await updateItemCount(targetCollection, targetPKField, reverseJunctionField);
 
 			if (itemId.value !== '+') {
 				const filter: Filter = { _and: [{ [reverseJunctionField]: itemId.value } as Filter] };
@@ -368,6 +343,7 @@ export function useRelationMultiple(
 						filter,
 						page: previewQuery.value.page,
 						limit: previewQuery.value.limit,
+						sort: previewQuery.value.sort,
 					},
 				});
 
@@ -380,7 +356,55 @@ export function useRelationMultiple(
 		}
 	}
 
-	async function updateItemCount(targetCollection: string, targetPKField: string, reverseJunctionField: string) {
+	watch(
+		[previewQuery, itemId, relation],
+		(newData, oldData) => {
+			const [newPreviewQuery, newItemId, newRelation] = newData;
+			const [oldPreviewQuery, oldItemId, oldRelation] = oldData;
+
+			if (
+				isEqual(newRelation, oldRelation) &&
+				newPreviewQuery.filter === oldPreviewQuery?.filter &&
+				newPreviewQuery.search === oldPreviewQuery?.search &&
+				newItemId === oldItemId
+			)
+				return;
+
+			updateItemCount();
+		},
+		{ immediate: true }
+	);
+
+	async function updateItemCount() {
+		if (!relation.value) return;
+
+		if (!itemId.value || itemId.value === '+') {
+			existingItemCount.value = 0;
+			return;
+		}
+
+		let targetCollection: string;
+		let targetPKField: string;
+		let reverseJunctionField: string;
+
+		switch (relation.value.type) {
+			case 'm2a':
+				targetCollection = relation.value.junctionCollection.collection;
+				targetPKField = relation.value.junctionPrimaryKeyField.field;
+				reverseJunctionField = relation.value.reverseJunctionField.field;
+				break;
+			case 'm2m':
+				targetCollection = relation.value.junctionCollection.collection;
+				targetPKField = relation.value.junctionPrimaryKeyField.field;
+				reverseJunctionField = relation.value.reverseJunctionField.field;
+				break;
+			case 'o2m':
+				targetCollection = relation.value.relatedCollection.collection;
+				targetPKField = relation.value.relatedPrimaryKeyField.field;
+				reverseJunctionField = relation.value.reverseJunctionField.field;
+				break;
+		}
+
 		const filter: Filter = { _and: [{ [reverseJunctionField]: itemId.value } as Filter] };
 		if (previewQuery.value.filter) {
 			filter._and.push(previewQuery.value.filter);
@@ -629,4 +653,22 @@ export function useRelationMultiple(
 
 		return { cleanItem, getPage, localDelete, getItemEdits, isEmpty };
 	}
+
+	return {
+		create,
+		update,
+		remove,
+		select,
+		displayItems,
+		totalItemCount,
+		loading,
+		selected,
+		fetchedSelectItems,
+		fetchedItems,
+		useActions,
+		cleanItem,
+		isItemSelected,
+		localDelete,
+		getItemEdits,
+	};
 }
