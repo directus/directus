@@ -35,7 +35,7 @@ export function useLocalStorage(key: string, defaultValue: LocalStorageObjectTyp
 
 	watch(data, () => {
 		if (data.value == null) {
-			localStorage.clear();
+			localStorage.removeItem(internalKey);
 		} else {
 			setValue(data.value);
 		}
