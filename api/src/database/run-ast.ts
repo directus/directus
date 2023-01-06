@@ -288,46 +288,34 @@ async function getDBQuery(
 
 	if (sortRecords) {
 		if (needsInnerQuery) {
+			let orderByString = '';
+			const orderByFields: Knex.Raw[] = [];
+
 			sortRecords.map((sortRecord) => {
+				if (orderByString.length !== 0) {
+					orderByString += ', ';
+				}
+
 				const sortAlias = `sort_${generateAlias()}`;
 				if (sortRecord.column.includes('.')) {
 					const [alias, field] = sortRecord.column.split('.');
-					dbQuery.select(
-						getColumn(knex, alias, field, sortAlias, schema, {
-							originalCollectionName: getCollectionFromAlias(alias, aliasMap),
-						})
-					);
+					const originalCollectionName = getCollectionFromAlias(alias, aliasMap);
+					dbQuery.select(getColumn(knex, alias, field, sortAlias, schema, { originalCollectionName }));
+
+					orderByString += `?? ${sortRecord.order}`;
+					orderByFields.push(getColumn(knex, alias, field, false, schema, { originalCollectionName }));
 				} else {
 					dbQuery.select(getColumn(knex, table, sortRecord.column, sortAlias, schema));
+
+					orderByString += `?? ${sortRecord.order}`;
+					orderByFields.push(getColumn(knex, table, sortRecord.column, false, schema));
 				}
 				innerQuerySortRecords.push({ alias: sortAlias, order: sortRecord.order });
 			});
 
+			dbQuery.orderByRaw(orderByString, orderByFields);
+
 			if (hasMultiRelationalSort) {
-				let orderByString = '';
-				const orderByFields: Knex.Raw[] = [];
-
-				sortRecords.map((sortRecord) => {
-					if (orderByString.length === 0) {
-						orderByString += ' order by';
-					} else {
-						orderByString += ',';
-					}
-
-					if (sortRecord.column.includes('.')) {
-						orderByString += ` ?? ${sortRecord.order}`;
-						const [alias, field] = sortRecord.column.split('.');
-						orderByFields.push(
-							getColumn(knex, alias, field, false, schema, {
-								originalCollectionName: getCollectionFromAlias(alias, aliasMap),
-							})
-						);
-					} else {
-						orderByString += ` ?? ${sortRecord.order}`;
-						orderByFields.push(getColumn(knex, table, sortRecord.column, false, schema));
-					}
-				});
-
 				dbQuery = helpers.schema.applyMultiRelationalSort(
 					knex,
 					dbQuery,
@@ -370,7 +358,7 @@ async function getDBQuery(
 
 		if (hasMultiRelationalSort) {
 			wrapperQuery.where('inner.directus_row_number', '=', 1);
-			applyLimit(wrapperQuery, queryCopy.limit);
+			applyLimit(knex, wrapperQuery, queryCopy.limit);
 		}
 	}
 
@@ -584,7 +572,10 @@ function removeTemporaryFields(
 				);
 			}
 
-			item = fields[relatedCollection].length > 0 ? pick(rawItem, fields[relatedCollection]) : rawItem[primaryKeyField];
+			const fieldsWithFunctionsApplied = fields[relatedCollection].map((field) => applyFunctionToColumnName(field));
+
+			item =
+				fields[relatedCollection].length > 0 ? pick(rawItem, fieldsWithFunctionsApplied) : rawItem[primaryKeyField];
 
 			items.push(item);
 		}
