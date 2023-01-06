@@ -1,8 +1,5 @@
 import { afterEach, describe, expect, test, vi } from 'vitest';
 
-import { ItemsService } from '../../services';
-import config from './index';
-
 vi.mock('../../services', () => {
 	const ItemsService = vi.fn();
 	ItemsService.prototype.updateByQuery = vi.fn();
@@ -11,16 +8,19 @@ vi.mock('../../services', () => {
 	return { ItemsService };
 });
 
-const getSchema = vi.fn().mockResolvedValue({});
-
 vi.mock('../../utils/get-accountability-for-role', () => ({
 	getAccountabilityForRole: vi.fn((role: string | null, _context) => Promise.resolve(role)),
 }));
+
+import { ItemsService } from '../../services';
+import config from './index';
 
 const testCollection = 'test';
 const testPayload = {};
 const testId = '00000000-0000-0000-0000-000000000000';
 const testAccountability = { user: testId, role: testId };
+
+const getSchema = vi.fn().mockResolvedValue({});
 
 describe('Operations / Item Update', () => {
 	afterEach(() => {
@@ -39,7 +39,7 @@ describe('Operations / Item Update', () => {
 			{ accountability: testAccountability, getSchema } as any
 		);
 
-		expect(ItemsService).toHaveBeenCalledWith(
+		expect(vi.mocked(ItemsService)).toHaveBeenCalledWith(
 			testCollection,
 			expect.objectContaining({ schema: {}, accountability: expected, knex: undefined })
 		);
@@ -52,9 +52,9 @@ describe('Operations / Item Update', () => {
 		);
 
 		expect(result).toBe(null);
-		expect(ItemsService.prototype.updateByQuery).not.toHaveBeenCalled();
-		expect(ItemsService.prototype.updateOne).not.toHaveBeenCalled();
-		expect(ItemsService.prototype.updateMany).not.toHaveBeenCalled();
+		expect(vi.mocked(ItemsService).prototype.updateByQuery).not.toHaveBeenCalled();
+		expect(vi.mocked(ItemsService).prototype.updateOne).not.toHaveBeenCalled();
+		expect(vi.mocked(ItemsService).prototype.updateMany).not.toHaveBeenCalled();
 	});
 
 	test.each([undefined, []])('should call updateByQuery with correct query when key is $payload', async (key) => {
@@ -64,9 +64,9 @@ describe('Operations / Item Update', () => {
 			{ accountability: testAccountability, getSchema } as any
 		);
 
-		expect(ItemsService.prototype.updateByQuery).toHaveBeenCalledWith(query, testPayload, expect.anything());
-		expect(ItemsService.prototype.updateOne).not.toHaveBeenCalled();
-		expect(ItemsService.prototype.updateMany).not.toHaveBeenCalled();
+		expect(vi.mocked(ItemsService).prototype.updateByQuery).toHaveBeenCalledWith(query, testPayload, expect.anything());
+		expect(vi.mocked(ItemsService).prototype.updateOne).not.toHaveBeenCalled();
+		expect(vi.mocked(ItemsService).prototype.updateMany).not.toHaveBeenCalled();
 	});
 
 	test('should emit events for updateByQuery when true', async () => {
@@ -76,7 +76,9 @@ describe('Operations / Item Update', () => {
 			{ accountability: testAccountability, getSchema } as any
 		);
 
-		expect(ItemsService.prototype.updateByQuery).toHaveBeenCalledWith(query, testPayload, { emitEvents: true });
+		expect(vi.mocked(ItemsService).prototype.updateByQuery).toHaveBeenCalledWith(query, testPayload, {
+			emitEvents: true,
+		});
 	});
 
 	test.each([undefined, false])('should not emit events for updateByQuery when %s', async (emitEvents) => {
@@ -86,7 +88,9 @@ describe('Operations / Item Update', () => {
 			{ accountability: testAccountability, getSchema } as any
 		);
 
-		expect(ItemsService.prototype.updateByQuery).toHaveBeenCalledWith(query, testPayload, { emitEvents: false });
+		expect(vi.mocked(ItemsService).prototype.updateByQuery).toHaveBeenCalledWith(query, testPayload, {
+			emitEvents: false,
+		});
 	});
 
 	test.each([1, [1]])('should call updateOne when key is $payload', async (key) => {
@@ -95,9 +99,9 @@ describe('Operations / Item Update', () => {
 			{ accountability: testAccountability, getSchema } as any
 		);
 
-		expect(ItemsService.prototype.updateByQuery).not.toHaveBeenCalled();
-		expect(ItemsService.prototype.updateOne).toHaveBeenCalled();
-		expect(ItemsService.prototype.updateMany).not.toHaveBeenCalled();
+		expect(vi.mocked(ItemsService).prototype.updateByQuery).not.toHaveBeenCalled();
+		expect(vi.mocked(ItemsService).prototype.updateOne).toHaveBeenCalled();
+		expect(vi.mocked(ItemsService).prototype.updateMany).not.toHaveBeenCalled();
 	});
 
 	test('should emit events for updateOne when true', async () => {
@@ -107,7 +111,7 @@ describe('Operations / Item Update', () => {
 			{ accountability: testAccountability, getSchema } as any
 		);
 
-		expect(ItemsService.prototype.updateOne).toHaveBeenCalledWith(key, testPayload, { emitEvents: true });
+		expect(vi.mocked(ItemsService).prototype.updateOne).toHaveBeenCalledWith(key, testPayload, { emitEvents: true });
 	});
 
 	test.each([undefined, false])('should not emit events for updateOne when %s', async (emitEvents) => {
@@ -117,7 +121,7 @@ describe('Operations / Item Update', () => {
 			{ accountability: testAccountability, getSchema } as any
 		);
 
-		expect(ItemsService.prototype.updateOne).toHaveBeenCalledWith(key, testPayload, { emitEvents: false });
+		expect(vi.mocked(ItemsService).prototype.updateOne).toHaveBeenCalledWith(key, testPayload, { emitEvents: false });
 	});
 
 	test('should call updateMany when key is an array with more than one item', async () => {
@@ -126,9 +130,9 @@ describe('Operations / Item Update', () => {
 			{ accountability: testAccountability, getSchema } as any
 		);
 
-		expect(ItemsService.prototype.updateByQuery).not.toHaveBeenCalled();
-		expect(ItemsService.prototype.updateOne).not.toHaveBeenCalled();
-		expect(ItemsService.prototype.updateMany).toHaveBeenCalled();
+		expect(vi.mocked(ItemsService).prototype.updateByQuery).not.toHaveBeenCalled();
+		expect(vi.mocked(ItemsService).prototype.updateOne).not.toHaveBeenCalled();
+		expect(vi.mocked(ItemsService).prototype.updateMany).toHaveBeenCalled();
 	});
 
 	test('should emit events for updateMany when true', async () => {
@@ -138,7 +142,7 @@ describe('Operations / Item Update', () => {
 			{ accountability: testAccountability, getSchema } as any
 		);
 
-		expect(ItemsService.prototype.updateMany).toHaveBeenCalledWith(keys, testPayload, { emitEvents: true });
+		expect(vi.mocked(ItemsService).prototype.updateMany).toHaveBeenCalledWith(keys, testPayload, { emitEvents: true });
 	});
 
 	test.each([undefined, false])('should not emit events for updateMany when %s', async (emitEvents) => {
@@ -148,6 +152,6 @@ describe('Operations / Item Update', () => {
 			{ accountability: testAccountability, getSchema } as any
 		);
 
-		expect(ItemsService.prototype.updateMany).toHaveBeenCalledWith(keys, testPayload, { emitEvents: false });
+		expect(vi.mocked(ItemsService).prototype.updateMany).toHaveBeenCalledWith(keys, testPayload, { emitEvents: false });
 	});
 });

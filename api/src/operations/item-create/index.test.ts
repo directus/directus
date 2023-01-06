@@ -1,7 +1,4 @@
-import { afterEach, describe, expect, test, vi } from 'vitest';
-
-import { ItemsService } from '../../services';
-import config from './index';
+import { afterEach, expect, test, vi } from 'vitest';
 
 vi.mock('../../services', () => {
 	const ItemsService = vi.fn();
@@ -9,70 +6,71 @@ vi.mock('../../services', () => {
 	return { ItemsService };
 });
 
-const getSchema = vi.fn().mockResolvedValue({});
-
 vi.mock('../../utils/get-accountability-for-role', () => ({
 	getAccountabilityForRole: vi.fn((role: string | null, _context) => Promise.resolve(role)),
 }));
+
+import { ItemsService } from '../../services';
+import config from './index';
 
 const testCollection = 'test';
 const testId = '00000000-0000-0000-0000-000000000000';
 const testAccountability = { user: testId, role: testId };
 
-describe('Operations / Item Create', () => {
-	afterEach(() => {
-		vi.clearAllMocks();
-	});
+const getSchema = vi.fn().mockResolvedValue({});
 
-	test.each([
-		{ permissions: undefined, expected: testAccountability },
-		{ permissions: '$trigger', expected: testAccountability },
-		{ permissions: '$full', expected: 'system' },
-		{ permissions: '$public', expected: null },
-		{ permissions: 'test', expected: 'test' },
-	])('accountability for permissions "$permissions" should be $expected', async ({ permissions, expected }) => {
-		await config.handler(
-			{ collection: testCollection, permissions } as any,
-			{ accountability: testAccountability, getSchema } as any
-		);
+afterEach(() => {
+	vi.clearAllMocks();
+});
 
-		expect(ItemsService).toHaveBeenCalledWith(
-			testCollection,
-			expect.objectContaining({ schema: {}, accountability: expected, knex: undefined })
-		);
-	});
+test.each([
+	{ permissions: undefined, expected: testAccountability },
+	{ permissions: '$trigger', expected: testAccountability },
+	{ permissions: '$full', expected: 'system' },
+	{ permissions: '$public', expected: null },
+	{ permissions: 'test', expected: 'test' },
+])('accountability for permissions "$permissions" should be $expected', async ({ permissions, expected }) => {
+	await config.handler(
+		{ collection: testCollection, permissions } as any,
+		{ accountability: testAccountability, getSchema } as any
+	);
 
-	test.each([
-		{ payload: null, expected: null },
-		{ payload: { test: 'test' }, expected: [{ test: 'test' }] },
-	])('payload $payload should be passed as $expected', async ({ payload, expected }) => {
-		await config.handler(
-			{ collection: testCollection, payload } as any,
-			{ accountability: testAccountability, getSchema } as any
-		);
+	expect(vi.mocked(ItemsService)).toHaveBeenCalledWith(
+		testCollection,
+		expect.objectContaining({ schema: {}, accountability: expected, knex: undefined })
+	);
+});
 
-		if (expected) {
-			expect(ItemsService.prototype.createMany).toHaveBeenCalledWith(expected, expect.anything());
-		} else {
-			expect(ItemsService.prototype.createMany).not.toHaveBeenCalled();
-		}
-	});
+test.each([
+	{ payload: null, expected: null },
+	{ payload: { test: 'test' }, expected: [{ test: 'test' }] },
+])('payload $payload should be passed as $expected', async ({ payload, expected }) => {
+	await config.handler(
+		{ collection: testCollection, payload } as any,
+		{ accountability: testAccountability, getSchema } as any
+	);
 
-	test('should emit events when true', async () => {
-		await config.handler(
-			{ collection: testCollection, payload: {}, emitEvents: true } as any,
-			{ accountability: testAccountability, getSchema } as any
-		);
+	if (expected) {
+		expect(vi.mocked(ItemsService).prototype.createMany).toHaveBeenCalledWith(expected, expect.anything());
+	} else {
+		expect(vi.mocked(ItemsService).prototype.createMany).not.toHaveBeenCalled();
+	}
+});
 
-		expect(ItemsService.prototype.createMany).toHaveBeenCalledWith([{}], { emitEvents: true });
-	});
+test('should emit events when true', async () => {
+	await config.handler(
+		{ collection: testCollection, payload: {}, emitEvents: true } as any,
+		{ accountability: testAccountability, getSchema } as any
+	);
 
-	test.each([undefined, false])('should not emit events when %s', async (emitEvents) => {
-		await config.handler(
-			{ collection: testCollection, payload: {}, emitEvents } as any,
-			{ accountability: testAccountability, getSchema } as any
-		);
+	expect(vi.mocked(ItemsService).prototype.createMany).toHaveBeenCalledWith([{}], { emitEvents: true });
+});
 
-		expect(ItemsService.prototype.createMany).toHaveBeenCalledWith([{}], { emitEvents: false });
-	});
+test.each([undefined, false])('should not emit events when %s', async (emitEvents) => {
+	await config.handler(
+		{ collection: testCollection, payload: {}, emitEvents } as any,
+		{ accountability: testAccountability, getSchema } as any
+	);
+
+	expect(vi.mocked(ItemsService).prototype.createMany).toHaveBeenCalledWith([{}], { emitEvents: false });
 });

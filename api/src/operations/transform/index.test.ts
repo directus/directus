@@ -1,21 +1,19 @@
-import { describe, expect, test } from 'vitest';
+import { expect, test } from 'vitest';
 
 import config from './index';
 
-describe('Operations / Transform', () => {
-	test('runs the same object as the input', async () => {
-		const json = { test: 'item' };
+test('runs the same object as the input', async () => {
+	const json = { test: 'item' };
 
-		const result = await config.handler({ json }, {} as any);
+	const result = await config.handler({ json }, {} as any);
 
-		expect(result).toEqual(json);
-	});
+	expect(result).toEqual(json);
+});
 
-	test('runs parsed JSON for stringified JSON input', async () => {
-		const json = '{"test":"item"}';
+test('runs parsed JSON for stringified JSON input', async () => {
+	const json = '{"test":"item"}';
 
-		const result = await config.handler({ json }, {} as any);
+	const result = await config.handler({ json }, {} as any);
 
-		expect(result).toEqual({ test: 'item' });
-	});
+	expect(result).toEqual({ test: 'item' });
 });

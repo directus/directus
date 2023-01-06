@@ -1,38 +1,31 @@
-import { afterEach, beforeAll, describe, expect, SpyInstance, test, vi } from 'vitest';
+import { afterEach, expect, test, vi } from 'vitest';
 
-import logger from '../../logger';
-import config from './index';
+const loggerInfo = vi.fn();
 
 vi.mock('../../logger', () => ({
 	default: {
-		info: vi.fn(),
+		info: loggerInfo,
 	},
 }));
 
-describe('Operations / Log', () => {
-	let loggerInfoSpy: SpyInstance;
+import config from './index';
 
-	beforeAll(() => {
-		loggerInfoSpy = vi.spyOn(logger, 'info');
-	});
+afterEach(() => {
+	vi.clearAllMocks();
+});
 
-	afterEach(() => {
-		vi.clearAllMocks();
-	});
+test('logs number message as string', () => {
+	const message = 1;
 
-	test('logs number message as string', () => {
-		const message = 1;
+	config.handler({ message }, {} as any);
 
-		config.handler({ message }, {} as any);
+	expect(loggerInfo).toHaveBeenCalledWith(String(1));
+});
 
-		expect(loggerInfoSpy).toHaveBeenCalledWith(String(1));
-	});
+test('logs json message as stringified json', () => {
+	const message = { test: 'message' };
 
-	test('logs json message as stringified json', () => {
-		const message = { test: 'message' };
+	config.handler({ message }, {} as any);
 
-		config.handler({ message }, {} as any);
-
-		expect(loggerInfoSpy).toHaveBeenCalledWith(JSON.stringify(message));
-	});
+	expect(loggerInfo).toHaveBeenCalledWith(JSON.stringify(message));
 });
