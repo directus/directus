@@ -141,8 +141,8 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 		});
 
 		describe('GET /:collection', () => {
-			describe(`filters`, () => {
-				describe(`on top level`, () => {
+			describe('filters', () => {
+				describe('on top level', () => {
 					it.each(vendors)('%s', async (vendor) => {
 						// Setup
 						const shape = createShape(pkType);
@@ -214,7 +214,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					});
 				});
 
-				describe(`on m2a level`, () => {
+				describe('on m2a level', () => {
 					it.each(vendors)('%s', async (vendor) => {
 						// Setup
 						const circle = createCircle(pkType);
@@ -317,8 +317,8 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				});
 			});
 
-			describe(`filters with functions`, () => {
-				describe(`on top level`, () => {
+			describe('filters with functions', () => {
+				describe('on top level', () => {
 					it.each(vendors)('%s', async (vendor) => {
 						// Setup
 						const circle = createCircle(pkType);
@@ -442,7 +442,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					});
 				});
 
-				describe(`on m2a level`, () => {
+				describe('on m2a level', () => {
 					it.each(vendors)('%s', async (vendor) => {
 						// Setup
 						const years = [2002, 2007];
@@ -590,374 +590,899 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				});
 			});
 
-			describe(`sorts`, () => {
-				describe(`on top level`, () => {
-					it.each(vendors)('%s', async (vendor) => {
-						// Setup
-						const sortValues = [4, 2, 3, 5, 1];
-						const shapes = [];
+			describe('sorts', () => {
+				describe('on top level', () => {
+					beforeAll(async () => {
+						for (const vendor of vendors) {
+							// Setup
+							const sortValues = [4, 2, 3, 5, 1];
+							const shapes = [];
 
-						for (const val of sortValues) {
-							const shape = createShape(pkType);
-							shape.name = 'shape-m2a-top-sort-' + val;
-							shapes.push(shape);
-						}
+							for (const val of sortValues) {
+								const shape = createShape(pkType);
+								shape.name = 'shape-m2a-top-sort-' + val;
+								shapes.push(shape);
+							}
 
-						await CreateItem(vendor, {
-							collection: localCollectionShapes,
-							item: shapes,
-						});
-
-						// Action
-						const response = await request(getUrl(vendor))
-							.get(`/items/${localCollectionShapes}`)
-							.query({
-								sort: 'name',
-								filter: { name: { _starts_with: 'shape-m2a-top-sort-' } },
-							})
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
-
-						const response2 = await request(getUrl(vendor))
-							.get(`/items/${localCollectionShapes}`)
-							.query({
-								sort: '-name',
-								filter: { name: { _starts_with: 'shape-m2a-top-sort-' } },
-							})
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
-
-						const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
-							query: {
-								[localCollectionShapes]: {
-									__args: {
-										sort: 'name',
-										filter: { name: { _starts_with: 'shape-m2a-top-sort-' } },
-									},
-									id: true,
-								},
-							},
-						});
-
-						const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
-							query: {
-								[localCollectionShapes]: {
-									__args: {
-										sort: '-name',
-										filter: { name: { _starts_with: 'shape-m2a-top-sort-' } },
-									},
-									id: true,
-								},
-							},
-						});
-
-						// Assert
-						expect(response.statusCode).toEqual(200);
-						expect(response.body.data.length).toBe(5);
-						expect(response2.statusCode).toEqual(200);
-						expect(response.body.data).toEqual(response2.body.data.reverse());
-
-						expect(gqlResponse.statusCode).toEqual(200);
-						expect(gqlResponse.body.data[localCollectionShapes].length).toBe(5);
-						expect(gqlResponse2.statusCode).toEqual(200);
-						expect(gqlResponse.body.data[localCollectionShapes]).toEqual(
-							gqlResponse2.body.data[localCollectionShapes].reverse()
-						);
-					});
-				});
-
-				describe(`on m2a level`, () => {
-					it.each(vendors)('%s', async (vendor) => {
-						// Setup
-						const sortValues = [4, 2, 3, 5, 1];
-
-						for (const val of sortValues) {
-							const circle = createCircle(pkType);
-							circle.name = 'circle-m2a-sort-' + val;
-							const shape = createShape(pkType);
-							shape.name = 'shape-m2a-sort-' + uuid();
 							await CreateItem(vendor, {
 								collection: localCollectionShapes,
-								item: {
-									...shape,
-									children: {
-										create: [{ collection: localCollectionCircles, item: circle }],
-										update: [],
-										delete: [],
+								item: shapes,
+							});
+						}
+					});
+
+					describe('without limit', () => {
+						it.each(vendors)('%s', async (vendor) => {
+							// Action
+							const response = await request(getUrl(vendor))
+								.get(`/items/${localCollectionShapes}`)
+								.query({
+									sort: 'name',
+									filter: { name: { _starts_with: 'shape-m2a-top-sort-' } },
+								})
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+							const response2 = await request(getUrl(vendor))
+								.get(`/items/${localCollectionShapes}`)
+								.query({
+									sort: '-name',
+									filter: { name: { _starts_with: 'shape-m2a-top-sort-' } },
+								})
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								query: {
+									[localCollectionShapes]: {
+										__args: {
+											sort: 'name',
+											filter: { name: { _starts_with: 'shape-m2a-top-sort-' } },
+										},
+										id: true,
 									},
 								},
 							});
+
+							const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								query: {
+									[localCollectionShapes]: {
+										__args: {
+											sort: '-name',
+											filter: { name: { _starts_with: 'shape-m2a-top-sort-' } },
+										},
+										id: true,
+									},
+								},
+							});
+
+							// Assert
+							expect(response.statusCode).toEqual(200);
+							expect(response.body.data.length).toBe(5);
+							expect(response2.statusCode).toEqual(200);
+							expect(response.body.data).toEqual(response2.body.data.reverse());
+
+							expect(gqlResponse.statusCode).toEqual(200);
+							expect(gqlResponse.body.data[localCollectionShapes].length).toBe(5);
+							expect(gqlResponse2.statusCode).toEqual(200);
+							expect(gqlResponse.body.data[localCollectionShapes]).toEqual(
+								gqlResponse2.body.data[localCollectionShapes].reverse()
+							);
+						});
+					});
+
+					describe.each([-1, 1, 3])('where limit = %s', (limit) => {
+						it.each(vendors)('%s', async (vendor) => {
+							// Setup
+							const expectedLength = limit === -1 ? 5 : limit;
+							const expectedAsc = [1, 2, 3, 4, 5].slice(0, expectedLength);
+							const expectedDesc = [5, 4, 3, 2, 1].slice(0, expectedLength);
+
+							// Action
+							const response = await request(getUrl(vendor))
+								.get(`/items/${localCollectionShapes}`)
+								.query({
+									sort: 'name',
+									filter: { name: { _starts_with: 'shape-m2a-top-sort-' } },
+									limit,
+									fields: 'name',
+								})
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+							const response2 = await request(getUrl(vendor))
+								.get(`/items/${localCollectionShapes}`)
+								.query({
+									sort: '-name',
+									filter: { name: { _starts_with: 'shape-m2a-top-sort-' } },
+									limit,
+									fields: 'name',
+								})
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								query: {
+									[localCollectionShapes]: {
+										__args: {
+											sort: 'name',
+											filter: { name: { _starts_with: 'shape-m2a-top-sort-' } },
+											limit,
+										},
+										id: true,
+										name: true,
+									},
+								},
+							});
+
+							const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								query: {
+									[localCollectionShapes]: {
+										__args: {
+											sort: '-name',
+											filter: { name: { _starts_with: 'shape-m2a-top-sort-' } },
+											limit,
+										},
+										id: true,
+										name: true,
+									},
+								},
+							});
+
+							// Assert
+							expect(response.statusCode).toEqual(200);
+							expect(response.body.data.length).toBe(expectedLength);
+							expect(response2.statusCode).toEqual(200);
+							expect(response.body.data).not.toEqual(response2.body.data);
+							expect(
+								response.body.data.map((item: any) => {
+									return parseInt(item.name.slice(-1));
+								})
+							).toEqual(expectedAsc);
+							expect(
+								response2.body.data.map((item: any) => {
+									return parseInt(item.name.slice(-1));
+								})
+							).toEqual(expectedDesc);
+
+							expect(gqlResponse.statusCode).toEqual(200);
+							expect(gqlResponse.body.data[localCollectionShapes].length).toBe(expectedLength);
+							expect(gqlResponse2.statusCode).toEqual(200);
+							expect(gqlResponse.body.data[localCollectionShapes]).not.toEqual(
+								gqlResponse2.body.data[localCollectionShapes]
+							);
+							expect(gqlResponse.body.data[localCollectionShapes]).not.toEqual(
+								gqlResponse2.body.data[localCollectionShapes]
+							);
+							expect(
+								gqlResponse.body.data[localCollectionShapes].map((item: any) => {
+									return parseInt(item.name.slice(-1));
+								})
+							).toEqual(expectedAsc);
+							expect(
+								gqlResponse2.body.data[localCollectionShapes].map((item: any) => {
+									return parseInt(item.name.slice(-1));
+								})
+							).toEqual(expectedDesc);
+						});
+					});
+				});
+
+				describe('on m2a level', () => {
+					beforeAll(async () => {
+						for (const vendor of vendors) {
+							// Setup
+							const sortValues = [4, 2, 3, 5, 1];
+
+							for (const val of sortValues) {
+								const circle = createCircle(pkType);
+								circle.name = 'circle-m2a-sort-' + val;
+								const shape = createShape(pkType);
+								shape.name = 'shape-m2a-sort-' + uuid();
+								await CreateItem(vendor, {
+									collection: localCollectionShapes,
+									item: {
+										...shape,
+										children: {
+											create: [{ collection: localCollectionCircles, item: circle }],
+											update: [],
+											delete: [],
+										},
+									},
+								});
+							}
 						}
+					});
 
-						// Action
-						const response = await request(getUrl(vendor))
-							.get(`/items/${localCollectionShapes}`)
-							.query({
-								sort: `children.item:${localCollectionCircles}.name`,
-								filter: { name: { _starts_with: 'shape-m2a-sort-' } },
-								fields: '*.*.*',
-							})
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+					describe('without limit', () => {
+						it.each(vendors)('%s', async (vendor) => {
+							// Action
+							const response = await request(getUrl(vendor))
+								.get(`/items/${localCollectionShapes}`)
+								.query({
+									sort: `children.item:${localCollectionCircles}.name`,
+									filter: { name: { _starts_with: 'shape-m2a-sort-' } },
+									fields: '*.*.*',
+								})
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
-						const response2 = await request(getUrl(vendor))
-							.get(`/items/${localCollectionShapes}`)
-							.query({
-								sort: `-children.item:${localCollectionCircles}.name`,
-								filter: { name: { _starts_with: 'shape-m2a-sort-' } },
-								fields: '*.*.*',
-							})
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+							const response2 = await request(getUrl(vendor))
+								.get(`/items/${localCollectionShapes}`)
+								.query({
+									sort: `-children.item:${localCollectionCircles}.name`,
+									filter: { name: { _starts_with: 'shape-m2a-sort-' } },
+									fields: '*.*.*',
+								})
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
-						const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
-							query: {
-								[localCollectionShapes]: {
-									__args: {
-										sort: `children.item:${localCollectionCircles}.name`,
-										filter: { name: { _starts_with: 'shape-m2a-sort-' } },
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								query: {
+									[localCollectionShapes]: {
+										__args: {
+											sort: `children.item:${localCollectionCircles}.name`,
+											filter: { name: { _starts_with: 'shape-m2a-sort-' } },
+										},
+										id: true,
 									},
-									id: true,
 								},
-							},
-						});
+							});
 
-						const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
-							query: {
-								[localCollectionShapes]: {
-									__args: {
-										sort: `-children.item:${localCollectionCircles}.name`,
-										filter: { name: { _starts_with: 'shape-m2a-sort-' } },
+							const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								query: {
+									[localCollectionShapes]: {
+										__args: {
+											sort: `-children.item:${localCollectionCircles}.name`,
+											filter: { name: { _starts_with: 'shape-m2a-sort-' } },
+										},
+										id: true,
 									},
-									id: true,
 								},
-							},
-						});
+							});
 
-						// Assert
-						expect(response.statusCode).toEqual(200);
-						expect(response2.statusCode).toEqual(200);
+							// Assert
+							expect(response.statusCode).toEqual(200);
+							expect(response2.statusCode).toEqual(200);
 
-						expect(gqlResponse.statusCode).toEqual(200);
-						expect(gqlResponse2.statusCode).toEqual(200);
+							expect(gqlResponse.statusCode).toEqual(200);
+							expect(gqlResponse2.statusCode).toEqual(200);
 
-						// Oddity in MySQL5, looks to be indexing delays resulting in missing values
-						if (vendor === 'mysql5') {
-							let lastIndex = -1;
-							for (const item of response2.body.data.reverse()) {
-								const foundIndex = findIndex(response.body.data, { id: item.id });
-								if (foundIndex === -1) continue;
+							// Oddity in MySQL5, looks to be indexing delays resulting in missing values
+							if (vendor === 'mysql5') {
+								let lastIndex = -1;
+								for (const item of response2.body.data.reverse()) {
+									const foundIndex = findIndex(response.body.data, { id: item.id });
+									if (foundIndex === -1) continue;
 
-								expect(foundIndex).toBeGreaterThan(lastIndex);
+									expect(foundIndex).toBeGreaterThan(lastIndex);
 
-								if (foundIndex > lastIndex) {
-									lastIndex = foundIndex;
+									if (foundIndex > lastIndex) {
+										lastIndex = foundIndex;
+									}
 								}
+
+								lastIndex = -1;
+								for (const item of gqlResponse2.body.data[localCollectionShapes].reverse()) {
+									const foundIndex = findIndex(gqlResponse.body.data[localCollectionShapes], { id: item.id });
+									if (foundIndex === -1) continue;
+
+									expect(foundIndex).toBeGreaterThan(lastIndex);
+
+									if (foundIndex > lastIndex) {
+										lastIndex = foundIndex;
+									}
+								}
+								return;
 							}
 
-							lastIndex = -1;
-							for (const item of gqlResponse2.body.data[localCollectionShapes].reverse()) {
-								const foundIndex = findIndex(gqlResponse.body.data[localCollectionShapes], { id: item.id });
-								if (foundIndex === -1) continue;
+							expect(response.body.data.length).toBe(5);
+							expect(response.body.data).toEqual(response2.body.data.reverse());
 
-								expect(foundIndex).toBeGreaterThan(lastIndex);
+							expect(gqlResponse.body.data[localCollectionShapes].length).toBe(5);
+							expect(gqlResponse.body.data[localCollectionShapes]).toEqual(
+								gqlResponse2.body.data[localCollectionShapes].reverse()
+							);
+						});
+					});
 
-								if (foundIndex > lastIndex) {
-									lastIndex = foundIndex;
+					describe.each([-1, 1, 3])('where limit = %s', (limit) => {
+						it.each(vendors)('%s', async (vendor) => {
+							// Setup
+							const expectedLength = limit === -1 ? 5 : limit;
+							const expectedAsc = [1, 2, 3, 4, 5].slice(0, expectedLength);
+							const expectedDesc = [5, 4, 3, 2, 1].slice(0, expectedLength);
+
+							// Action
+							const response = await request(getUrl(vendor))
+								.get(`/items/${localCollectionShapes}`)
+								.query({
+									sort: `children.item:${localCollectionCircles}.name`,
+									filter: { name: { _starts_with: 'shape-m2a-sort-' } },
+									limit,
+									fields: '*.*.*',
+								})
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+							const response2 = await request(getUrl(vendor))
+								.get(`/items/${localCollectionShapes}`)
+								.query({
+									sort: `-children.item:${localCollectionCircles}.name`,
+									filter: { name: { _starts_with: 'shape-m2a-sort-' } },
+									limit,
+									fields: '*.*.*',
+								})
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								query: {
+									[localCollectionShapes]: {
+										__args: {
+											sort: `children.item:${localCollectionCircles}.name`,
+											filter: { name: { _starts_with: 'shape-m2a-sort-' } },
+											limit,
+										},
+										id: true,
+										children: {
+											item: {
+												__on: {
+													__typeName: localCollectionCircles,
+													id: true,
+													name: true,
+												},
+											},
+										},
+									},
+								},
+							});
+
+							const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								query: {
+									[localCollectionShapes]: {
+										__args: {
+											sort: `-children.item:${localCollectionCircles}.name`,
+											filter: { name: { _starts_with: 'shape-m2a-sort-' } },
+											limit,
+										},
+										id: true,
+										children: {
+											item: {
+												__on: {
+													__typeName: localCollectionCircles,
+													id: true,
+													name: true,
+												},
+											},
+										},
+									},
+								},
+							});
+
+							// Assert
+							expect(response.statusCode).toEqual(200);
+							expect(response2.statusCode).toEqual(200);
+
+							expect(gqlResponse.statusCode).toEqual(200);
+							expect(gqlResponse2.statusCode).toEqual(200);
+
+							// Oddity in MySQL5, looks to be indexing delays resulting in missing values
+							if (vendor === 'mysql5') {
+								for (const data of [
+									{ response: response.body.data, expected: expectedAsc },
+									{ response: response2.body.data, expected: expectedDesc },
+								]) {
+									expect(data.response.length).toBeLessThanOrEqual(expectedLength);
+
+									let lastIndex = -1;
+									for (const item of data.response) {
+										const foundIndex = data.expected.indexOf(parseInt(item.children[0].item.name.slice(-1)));
+
+										expect(foundIndex).toBeGreaterThan(lastIndex);
+
+										if (foundIndex > lastIndex) {
+											lastIndex = foundIndex;
+										}
+									}
 								}
+
+								for (const data of [
+									{ response: gqlResponse.body.data[localCollectionShapes], expected: expectedAsc },
+									{ response: gqlResponse2.body.data[localCollectionShapes], expected: expectedDesc },
+								]) {
+									expect(data.response.length).toBeLessThanOrEqual(expectedLength);
+
+									let lastIndex = -1;
+									for (const item of data.response) {
+										const foundIndex = data.expected.indexOf(parseInt(item.children[0].item.name.slice(-1)));
+
+										expect(foundIndex).toBeGreaterThan(lastIndex);
+
+										if (foundIndex > lastIndex) {
+											lastIndex = foundIndex;
+										}
+									}
+								}
+
+								return;
 							}
-							return;
-						}
 
-						expect(response.body.data.length).toBe(5);
-						expect(response.body.data).toEqual(response2.body.data.reverse());
+							expect(response.body.data.length).toBe(expectedLength);
+							expect(response.body.data).not.toEqual(response2.body.data);
+							expect(
+								response.body.data.map((item: any) => {
+									return parseInt(item.children[0].item.name.slice(-1));
+								})
+							).toEqual(expectedAsc);
+							expect(
+								response2.body.data.map((item: any) => {
+									return parseInt(item.children[0].item.name.slice(-1));
+								})
+							).toEqual(expectedDesc);
 
-						expect(gqlResponse.body.data[localCollectionShapes].length).toBe(5);
-						expect(gqlResponse.body.data[localCollectionShapes]).toEqual(
-							gqlResponse2.body.data[localCollectionShapes].reverse()
-						);
+							expect(gqlResponse.body.data[localCollectionShapes].length).toBe(expectedLength);
+							expect(gqlResponse.body.data[localCollectionShapes]).not.toEqual(
+								gqlResponse2.body.data[localCollectionShapes]
+							);
+							expect(
+								gqlResponse.body.data[localCollectionShapes].map((item: any) => {
+									return parseInt(item.children[0].item.name.slice(-1));
+								})
+							).toEqual(expectedAsc);
+							expect(
+								gqlResponse2.body.data[localCollectionShapes].map((item: any) => {
+									return parseInt(item.children[0].item.name.slice(-1));
+								})
+							).toEqual(expectedDesc);
+						});
 					});
 				});
 			});
 
-			describe(`sorts with functions`, () => {
-				describe(`on top level`, () => {
-					it.each(vendors)('%s', async (vendor) => {
-						// Setup
-						const sortValues = [4, 2, 3, 5, 1];
-						const shapes = [];
+			describe('sorts with functions', () => {
+				describe('on top level', () => {
+					beforeAll(async () => {
+						for (const vendor of vendors) {
+							// Setup
+							const sortValues = [4, 2, 3, 5, 1];
+							const shapes = [];
 
-						for (const val of sortValues) {
-							const shape = createShape(pkType);
-							shape.name = 'shape-m2a-top-sort-fn-' + uuid();
-							shape.test_datetime = new Date(new Date().setFullYear(parseInt(`202${val}`))).toISOString().slice(0, 19);
-							shapes.push(shape);
-						}
+							for (const val of sortValues) {
+								const shape = createShape(pkType);
+								shape.name = 'shape-m2a-top-sort-fn-' + uuid();
+								shape.test_datetime = new Date(new Date().setFullYear(parseInt(`202${val}`)))
+									.toISOString()
+									.slice(0, 19);
+								shapes.push(shape);
+							}
 
-						await CreateItem(vendor, {
-							collection: localCollectionShapes,
-							item: shapes,
-						});
-
-						// Action
-						const response = await request(getUrl(vendor))
-							.get(`/items/${localCollectionShapes}`)
-							.query({
-								sort: 'year(test_datetime)',
-								filter: { name: { _starts_with: 'shape-m2a-top-sort-fn-' } },
-							})
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
-
-						const response2 = await request(getUrl(vendor))
-							.get(`/items/${localCollectionShapes}`)
-							.query({
-								sort: '-year(test_datetime)',
-								filter: { name: { _starts_with: 'shape-m2a-top-sort-fn-' } },
-							})
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
-
-						const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
-							query: {
-								[localCollectionShapes]: {
-									__args: {
-										sort: 'year(test_datetime)',
-										filter: { name: { _starts_with: 'shape-m2a-top-sort-fn-' } },
-									},
-									id: true,
-								},
-							},
-						});
-
-						const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
-							query: {
-								[localCollectionShapes]: {
-									__args: {
-										sort: '-year(test_datetime)',
-										filter: { name: { _starts_with: 'shape-m2a-top-sort-fn-' } },
-									},
-									id: true,
-								},
-							},
-						});
-
-						// Assert
-						expect(response.statusCode).toEqual(200);
-						expect(response.body.data.length).toBe(5);
-						expect(response2.statusCode).toEqual(200);
-						expect(response.body.data).toEqual(response2.body.data.reverse());
-
-						expect(gqlResponse.statusCode).toEqual(200);
-						expect(gqlResponse.body.data[localCollectionShapes].length).toBe(5);
-						expect(gqlResponse2.statusCode).toEqual(200);
-						expect(gqlResponse.body.data[localCollectionShapes]).toEqual(
-							gqlResponse2.body.data[localCollectionShapes].reverse()
-						);
-					});
-				});
-
-				describe(`on m2a level`, () => {
-					it.each(vendors)('%s', async (vendor) => {
-						// Setup
-						const sortValues = [4, 2, 3, 5, 1];
-
-						for (const val of sortValues) {
-							const circle = createCircle(pkType);
-							circle.name = 'circle-m2a-sort-fn-' + uuid();
-							circle.test_datetime = new Date(new Date().setFullYear(parseInt(`202${val}`))).toISOString().slice(0, 19);
-							const shape = createCircle(pkType);
-							shape.name = 'shape-m2a-sort-fn-' + uuid();
 							await CreateItem(vendor, {
 								collection: localCollectionShapes,
-								item: {
-									...shape,
-									children: {
-										create: [{ collection: localCollectionCircles, item: circle }],
-										update: [],
-										delete: [],
+								item: shapes,
+							});
+						}
+					});
+
+					describe('without limit', () => {
+						it.each(vendors)('%s', async (vendor) => {
+							// Action
+							const response = await request(getUrl(vendor))
+								.get(`/items/${localCollectionShapes}`)
+								.query({
+									sort: 'year(test_datetime)',
+									filter: { name: { _starts_with: 'shape-m2a-top-sort-fn-' } },
+								})
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+							const response2 = await request(getUrl(vendor))
+								.get(`/items/${localCollectionShapes}`)
+								.query({
+									sort: '-year(test_datetime)',
+									filter: { name: { _starts_with: 'shape-m2a-top-sort-fn-' } },
+								})
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								query: {
+									[localCollectionShapes]: {
+										__args: {
+											sort: 'year(test_datetime)',
+											filter: { name: { _starts_with: 'shape-m2a-top-sort-fn-' } },
+										},
+										id: true,
 									},
 								},
 							});
+
+							const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								query: {
+									[localCollectionShapes]: {
+										__args: {
+											sort: '-year(test_datetime)',
+											filter: { name: { _starts_with: 'shape-m2a-top-sort-fn-' } },
+										},
+										id: true,
+									},
+								},
+							});
+
+							// Assert
+							expect(response.statusCode).toEqual(200);
+							expect(response.body.data.length).toBe(5);
+							expect(response2.statusCode).toEqual(200);
+							expect(response.body.data).toEqual(response2.body.data.reverse());
+
+							expect(gqlResponse.statusCode).toEqual(200);
+							expect(gqlResponse.body.data[localCollectionShapes].length).toBe(5);
+							expect(gqlResponse2.statusCode).toEqual(200);
+							expect(gqlResponse.body.data[localCollectionShapes]).toEqual(
+								gqlResponse2.body.data[localCollectionShapes].reverse()
+							);
+						});
+					});
+
+					describe.each([-1, 1, 3])('where limit = %s', (limit) => {
+						it.each(vendors)('%s', async (vendor) => {
+							// Setup
+							const expectedLength = limit === -1 ? 5 : limit;
+							const expectedAsc = [1, 2, 3, 4, 5].slice(0, expectedLength);
+							const expectedDesc = [5, 4, 3, 2, 1].slice(0, expectedLength);
+
+							// Action
+							const response = await request(getUrl(vendor))
+								.get(`/items/${localCollectionShapes}`)
+								.query({
+									sort: 'year(test_datetime)',
+									filter: { name: { _starts_with: 'shape-m2a-top-sort-fn-' } },
+									limit,
+									fields: 'year(test_datetime)',
+								})
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+							const response2 = await request(getUrl(vendor))
+								.get(`/items/${localCollectionShapes}`)
+								.query({
+									sort: '-year(test_datetime)',
+									filter: { name: { _starts_with: 'shape-m2a-top-sort-fn-' } },
+									limit,
+									fields: 'year(test_datetime)',
+								})
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								query: {
+									[localCollectionShapes]: {
+										__args: {
+											sort: 'year(test_datetime)',
+											filter: { name: { _starts_with: 'shape-m2a-top-sort-fn-' } },
+											limit,
+										},
+										id: true,
+										test_datetime_func: {
+											year: true,
+										},
+									},
+								},
+							});
+
+							const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								query: {
+									[localCollectionShapes]: {
+										__args: {
+											sort: '-year(test_datetime)',
+											filter: { name: { _starts_with: 'shape-m2a-top-sort-fn-' } },
+											limit,
+										},
+										id: true,
+										test_datetime_func: {
+											year: true,
+										},
+									},
+								},
+							});
+
+							// Assert
+							expect(response.statusCode).toEqual(200);
+							expect(response.body.data.length).toBe(expectedLength);
+							expect(response2.statusCode).toEqual(200);
+							expect(response.body.data).not.toEqual(response2.body.data);
+							expect(
+								response.body.data.map((item: any) => {
+									return parseInt(item.test_datetime_year.toString().slice(-1));
+								})
+							).toEqual(expectedAsc);
+							expect(
+								response2.body.data.map((item: any) => {
+									return parseInt(item.test_datetime_year.toString().slice(-1));
+								})
+							).toEqual(expectedDesc);
+
+							expect(gqlResponse.statusCode).toEqual(200);
+							expect(gqlResponse.body.data[localCollectionShapes].length).toBe(expectedLength);
+							expect(gqlResponse2.statusCode).toEqual(200);
+							expect(gqlResponse.body.data[localCollectionShapes]).not.toEqual(
+								gqlResponse2.body.data[localCollectionShapes]
+							);
+							expect(
+								gqlResponse.body.data[localCollectionShapes].map((item: any) => {
+									return parseInt(item.test_datetime_func.year.toString().slice(-1));
+								})
+							).toEqual(expectedAsc);
+							expect(
+								gqlResponse2.body.data[localCollectionShapes].map((item: any) => {
+									return parseInt(item.test_datetime_func.year.toString().slice(-1));
+								})
+							).toEqual(expectedDesc);
+						});
+					});
+				});
+
+				describe('on m2a level', () => {
+					beforeAll(async () => {
+						for (const vendor of vendors) {
+							// Setup
+							const sortValues = [4, 2, 3, 5, 1];
+
+							for (const val of sortValues) {
+								const circle = createCircle(pkType);
+								circle.name = 'circle-m2a-sort-fn-' + uuid();
+								circle.test_datetime = new Date(new Date().setFullYear(parseInt(`202${val}`)))
+									.toISOString()
+									.slice(0, 19);
+								const shape = createCircle(pkType);
+								shape.name = 'shape-m2a-sort-fn-' + uuid();
+								await CreateItem(vendor, {
+									collection: localCollectionShapes,
+									item: {
+										...shape,
+										children: {
+											create: [{ collection: localCollectionCircles, item: circle }],
+											update: [],
+											delete: [],
+										},
+									},
+								});
+							}
 						}
+					});
 
-						// Action
-						const response = await request(getUrl(vendor))
-							.get(`/items/${localCollectionShapes}`)
-							.query({
-								sort: `children.item:${localCollectionCircles}.year(test_datetime)`,
-								filter: { name: { _starts_with: 'shape-m2a-sort-fn-' } },
-							})
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+					describe('without limit', () => {
+						it.each(vendors)('%s', async (vendor) => {
+							// Action
+							const response = await request(getUrl(vendor))
+								.get(`/items/${localCollectionShapes}`)
+								.query({
+									sort: `children.item:${localCollectionCircles}.year(test_datetime)`,
+									filter: { name: { _starts_with: 'shape-m2a-sort-fn-' } },
+								})
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
-						const response2 = await request(getUrl(vendor))
-							.get(`/items/${localCollectionShapes}`)
-							.query({
-								sort: `-children.item:${localCollectionCircles}.year(test_datetime)`,
-								filter: { name: { _starts_with: 'shape-m2a-sort-fn-' } },
-							})
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+							const response2 = await request(getUrl(vendor))
+								.get(`/items/${localCollectionShapes}`)
+								.query({
+									sort: `-children.item:${localCollectionCircles}.year(test_datetime)`,
+									filter: { name: { _starts_with: 'shape-m2a-sort-fn-' } },
+								})
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
-						const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
-							query: {
-								[localCollectionShapes]: {
-									__args: {
-										sort: `children.item:${localCollectionCircles}.year(test_datetime)`,
-										filter: { name: { _starts_with: 'shape-m2a-sort-fn-' } },
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								query: {
+									[localCollectionShapes]: {
+										__args: {
+											sort: `children.item:${localCollectionCircles}.year(test_datetime)`,
+											filter: { name: { _starts_with: 'shape-m2a-sort-fn-' } },
+										},
+										id: true,
 									},
-									id: true,
 								},
-							},
-						});
+							});
 
-						const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
-							query: {
-								[localCollectionShapes]: {
-									__args: {
-										sort: `-children.item:${localCollectionCircles}.year(test_datetime)`,
-										filter: { name: { _starts_with: 'shape-m2a-sort-fn-' } },
+							const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								query: {
+									[localCollectionShapes]: {
+										__args: {
+											sort: `-children.item:${localCollectionCircles}.year(test_datetime)`,
+											filter: { name: { _starts_with: 'shape-m2a-sort-fn-' } },
+										},
+										id: true,
 									},
-									id: true,
 								},
-							},
-						});
+							});
 
-						// Assert
-						expect(response.statusCode).toEqual(200);
-						expect(response2.statusCode).toEqual(200);
+							// Assert
+							expect(response.statusCode).toEqual(200);
+							expect(response2.statusCode).toEqual(200);
 
-						expect(gqlResponse.statusCode).toEqual(200);
-						expect(gqlResponse2.statusCode).toEqual(200);
+							expect(gqlResponse.statusCode).toEqual(200);
+							expect(gqlResponse2.statusCode).toEqual(200);
 
-						// Oddity in MySQL5, looks to be indexing delays resulting in missing values
-						if (vendor === 'mysql5') {
-							let lastIndex = -1;
-							for (const item of response2.body.data.reverse()) {
-								const foundIndex = findIndex(response.body.data, { id: item.id });
-								if (foundIndex === -1) continue;
+							// Oddity in MySQL5, looks to be indexing delays resulting in missing values
+							if (vendor === 'mysql5') {
+								let lastIndex = -1;
+								for (const item of response2.body.data.reverse()) {
+									const foundIndex = findIndex(response.body.data, { id: item.id });
+									if (foundIndex === -1) continue;
 
-								expect(foundIndex).toBeGreaterThan(lastIndex);
+									expect(foundIndex).toBeGreaterThan(lastIndex);
 
-								if (foundIndex > lastIndex) {
-									lastIndex = foundIndex;
+									if (foundIndex > lastIndex) {
+										lastIndex = foundIndex;
+									}
 								}
+
+								lastIndex = -1;
+								for (const item of gqlResponse2.body.data[localCollectionShapes].reverse()) {
+									const foundIndex = findIndex(gqlResponse.body.data[localCollectionShapes], { id: item.id });
+									if (foundIndex === -1) continue;
+
+									expect(foundIndex).toBeGreaterThan(lastIndex);
+
+									if (foundIndex > lastIndex) {
+										lastIndex = foundIndex;
+									}
+								}
+								return;
 							}
 
-							lastIndex = -1;
-							for (const item of gqlResponse2.body.data[localCollectionShapes].reverse()) {
-								const foundIndex = findIndex(gqlResponse.body.data[localCollectionShapes], { id: item.id });
-								if (foundIndex === -1) continue;
+							expect(response.body.data.length).toBe(5);
+							expect(response.body.data).toEqual(response2.body.data.reverse());
 
-								expect(foundIndex).toBeGreaterThan(lastIndex);
+							expect(gqlResponse.body.data[localCollectionShapes].length).toBe(5);
+							expect(gqlResponse.body.data[localCollectionShapes]).toEqual(
+								gqlResponse2.body.data[localCollectionShapes].reverse()
+							);
+						});
+					});
 
-								if (foundIndex > lastIndex) {
-									lastIndex = foundIndex;
+					describe.each([-1, 1, 3])('where limit = %s', (limit) => {
+						it.each(vendors)('%s', async (vendor) => {
+							// Setup
+							const expectedLength = limit === -1 ? 5 : limit;
+							const expectedAsc = [1, 2, 3, 4, 5].slice(0, expectedLength);
+							const expectedDesc = [5, 4, 3, 2, 1].slice(0, expectedLength);
+
+							// Action
+							const response = await request(getUrl(vendor))
+								.get(`/items/${localCollectionShapes}`)
+								.query({
+									sort: `children.item:${localCollectionCircles}.year(test_datetime)`,
+									filter: { name: { _starts_with: 'shape-m2a-sort-fn-' } },
+									limit,
+									fields: `children.item:${localCollectionCircles}.year(test_datetime)`,
+								})
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+							const response2 = await request(getUrl(vendor))
+								.get(`/items/${localCollectionShapes}`)
+								.query({
+									sort: `-children.item:${localCollectionCircles}.year(test_datetime)`,
+									filter: { name: { _starts_with: 'shape-m2a-sort-fn-' } },
+									limit,
+									fields: `children.item:${localCollectionCircles}.year(test_datetime)`,
+								})
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								query: {
+									[localCollectionShapes]: {
+										__args: {
+											sort: `children.item:${localCollectionCircles}.year(test_datetime)`,
+											filter: { name: { _starts_with: 'shape-m2a-sort-fn-' } },
+											limit,
+										},
+										id: true,
+										children: {
+											item: {
+												__on: {
+													__typeName: localCollectionCircles,
+													id: true,
+													test_datetime_func: {
+														year: true,
+													},
+												},
+											},
+										},
+									},
+								},
+							});
+
+							const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								query: {
+									[localCollectionShapes]: {
+										__args: {
+											sort: `-children.item:${localCollectionCircles}.year(test_datetime)`,
+											filter: { name: { _starts_with: 'shape-m2a-sort-fn-' } },
+											limit,
+										},
+										id: true,
+										children: {
+											item: {
+												__on: {
+													__typeName: localCollectionCircles,
+													id: true,
+													test_datetime_func: {
+														year: true,
+													},
+												},
+											},
+										},
+									},
+								},
+							});
+
+							// Assert
+							expect(response.statusCode).toEqual(200);
+							expect(response2.statusCode).toEqual(200);
+
+							expect(gqlResponse.statusCode).toEqual(200);
+							expect(gqlResponse2.statusCode).toEqual(200);
+
+							// Oddity in MySQL5, looks to be indexing delays resulting in missing values
+							if (vendor === 'mysql5') {
+								for (const data of [
+									{ response: response.body.data, expected: expectedAsc },
+									{ response: response2.body.data, expected: expectedDesc },
+								]) {
+									expect(data.response.length).toBeLessThanOrEqual(expectedLength);
+
+									let lastIndex = -1;
+									for (const item of data.response) {
+										const foundIndex = data.expected.indexOf(
+											parseInt(item.children[0].item.test_datetime_year.toString().slice(-1))
+										);
+
+										expect(foundIndex).toBeGreaterThan(lastIndex);
+
+										if (foundIndex > lastIndex) {
+											lastIndex = foundIndex;
+										}
+									}
 								}
+
+								for (const data of [
+									{ response: gqlResponse.body.data[localCollectionShapes], expected: expectedAsc },
+									{ response: gqlResponse2.body.data[localCollectionShapes], expected: expectedDesc },
+								]) {
+									expect(data.response.length).toBeLessThanOrEqual(expectedLength);
+
+									let lastIndex = -1;
+									for (const item of data.response) {
+										const foundIndex = data.expected.indexOf(
+											parseInt(item.children[0].item.test_datetime_func.year.toString().slice(-1))
+										);
+
+										expect(foundIndex).toBeGreaterThan(lastIndex);
+
+										if (foundIndex > lastIndex) {
+											lastIndex = foundIndex;
+										}
+									}
+								}
+
+								return;
 							}
-							return;
-						}
 
-						expect(response.body.data.length).toBe(5);
-						expect(response.body.data).toEqual(response2.body.data.reverse());
+							expect(response.body.data.length).toBe(expectedLength);
+							expect(response.body.data).not.toEqual(response2.body.data);
+							expect(
+								response.body.data.map((item: any) => {
+									return parseInt(item.children[0].item.test_datetime_year.toString().slice(-1));
+								})
+							).toEqual(expectedAsc);
+							expect(
+								response2.body.data.map((item: any) => {
+									return parseInt(item.children[0].item.test_datetime_year.toString().slice(-1));
+								})
+							).toEqual(expectedDesc);
 
-						expect(gqlResponse.body.data[localCollectionShapes].length).toBe(5);
-						expect(gqlResponse.body.data[localCollectionShapes]).toEqual(
-							gqlResponse2.body.data[localCollectionShapes].reverse()
-						);
+							expect(gqlResponse.body.data[localCollectionShapes].length).toBe(expectedLength);
+							expect(gqlResponse.body.data[localCollectionShapes]).not.toEqual(
+								gqlResponse2.body.data[localCollectionShapes]
+							);
+							expect(
+								gqlResponse.body.data[localCollectionShapes].map((item: any) => {
+									return parseInt(item.children[0].item.test_datetime_func.year.toString().slice(-1));
+								})
+							).toEqual(expectedAsc);
+							expect(
+								gqlResponse2.body.data[localCollectionShapes].map((item: any) => {
+									return parseInt(item.children[0].item.test_datetime_func.year.toString().slice(-1));
+								})
+							).toEqual(expectedDesc);
+						});
 					});
 				});
 			});

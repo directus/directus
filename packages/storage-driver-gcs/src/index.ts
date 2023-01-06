@@ -30,7 +30,7 @@ export class DriverGCS implements Driver {
 	}
 
 	private file(filepath: string) {
-		return this.bucket.file(this.fullPath(filepath));
+		return this.bucket.file(filepath);
 	}
 
 	async read(filepath: string, range?: Range) {
