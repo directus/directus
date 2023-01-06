@@ -20,14 +20,16 @@ export default async function link(extensionsPath: string): Promise<void> {
 		return;
 	}
 
-	let extensionManifest: ExtensionManifest;
+	let manifestFile: Record<string, any>;
 
 	try {
-		extensionManifest = ExtensionManifest.parse(fs.readJSON(packagePath));
+		manifestFile = await fs.readJSON(packagePath);
 	} catch (err) {
 		log(`Current directory is not a valid Directus extension.`, 'error');
 		return;
 	}
+
+	const extensionManifest = ExtensionManifest.parse(manifestFile);
 
 	const extensionName = extensionManifest.name;
 
@@ -37,33 +39,20 @@ export default async function link(extensionsPath: string): Promise<void> {
 	}
 
 	const type = extensionManifest['directus:extension']?.type;
-	let extensionTarget;
 
 	if (!type) {
 		log(`Extension type not found in package.json`, 'error');
 		return;
 	}
 
-	if (type === 'bundle') {
-		extensionTarget = path.join(absoluteExtensionsPath, 'bundles', extensionName);
+	const extensionTarget = path.join(absoluteExtensionsPath, extensionName);
 
-		try {
-			fs.ensureSymlinkSync(extensionPath, extensionTarget);
-		} catch (error: any) {
-			log(error.message, 'error');
-			log(`Try running this command with administrator privileges`, 'info');
-			return;
-		}
-	} else {
-		extensionTarget = path.join(absoluteExtensionsPath, type + 's', extensionName);
-
-		try {
-			fs.ensureSymlinkSync(path.join(extensionPath, 'dist'), extensionTarget);
-		} catch (error: any) {
-			log(error.message, 'error');
-			log(`Try running this command with administrator privileges`, 'info');
-			return;
-		}
+	try {
+		fs.ensureSymlinkSync(extensionPath, extensionTarget);
+	} catch (error: any) {
+		log(error.message, 'error');
+		log(`Try running this command with administrator privileges`, 'info');
+		return;
 	}
 
 	log(`Linked ${extensionName} to ${extensionTarget}`);
