@@ -26,6 +26,7 @@ import { getDateFormatted } from '../utils/get-date-formatted';
 import { FilesService } from './files';
 import { ItemsService } from './items';
 import { NotificationsService } from './notifications';
+import type { Readable } from 'node:stream';
 
 export class ImportService {
 	knex: Knex;
@@ -38,7 +39,7 @@ export class ImportService {
 		this.schema = options.schema;
 	}
 
-	async import(collection: string, mimetype: string, stream: NodeJS.ReadableStream): Promise<void> {
+	async import(collection: string, mimetype: string, stream: Readable): Promise<void> {
 		if (this.accountability?.admin !== true && collection.startsWith('directus_')) throw new ForbiddenException();
 
 		const createPermissions = this.accountability?.permissions?.find(
@@ -64,7 +65,7 @@ export class ImportService {
 		}
 	}
 
-	importJSON(collection: string, stream: NodeJS.ReadableStream): Promise<void> {
+	importJSON(collection: string, stream: Readable): Promise<void> {
 		const extractJSON = StreamArray.withParser();
 
 		return this.knex.transaction((trx) => {
@@ -105,7 +106,7 @@ export class ImportService {
 		});
 	}
 
-	importCSV(collection: string, stream: NodeJS.ReadableStream): Promise<void> {
+	importCSV(collection: string, stream: Readable): Promise<void> {
 		return this.knex.transaction((trx) => {
 			const service = new ItemsService(collection, {
 				knex: trx,

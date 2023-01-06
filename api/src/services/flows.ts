@@ -26,15 +26,6 @@ export class FlowsService extends ItemsService<FlowRaw> {
 		return result;
 	}
 
-	async updateOne(key: PrimaryKey, data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
-		const flowManager = getFlowManager();
-
-		const result = await super.updateOne(key, data, opts);
-		await flowManager.reload();
-
-		return result;
-	}
-
 	async updateBatch(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
 		const flowManager = getFlowManager();
 
@@ -48,18 +39,6 @@ export class FlowsService extends ItemsService<FlowRaw> {
 		const flowManager = getFlowManager();
 
 		const result = await super.updateMany(keys, data, opts);
-		await flowManager.reload();
-
-		return result;
-	}
-
-	async deleteOne(key: PrimaryKey, opts?: MutationOptions): Promise<PrimaryKey> {
-		const flowManager = getFlowManager();
-
-		// this is to prevent foreign key constraint error on directus_operations resolve/reject during cascade deletion
-		await this.knex('directus_operations').update({ resolve: null, reject: null }).where('flow', key);
-
-		const result = await super.deleteOne(key, opts);
 		await flowManager.reload();
 
 		return result;

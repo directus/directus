@@ -1,5 +1,5 @@
 import SchemaInspector from '@directus/schema';
-import { Accountability, Filter, SchemaOverview } from '@directus/shared/types';
+import { Filter, SchemaOverview } from '@directus/shared/types';
 import { parseJSON, toArray } from '@directus/shared/utils';
 import { Knex } from 'knex';
 import { mapValues } from 'lodash';
@@ -15,7 +15,6 @@ import getDefaultValue from './get-default-value';
 import getLocalType from './get-local-type';
 
 export async function getSchema(options?: {
-	accountability?: Accountability;
 	database?: Knex;
 
 	/**

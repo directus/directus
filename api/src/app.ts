@@ -4,7 +4,6 @@ import fse from 'fs-extra';
 import path from 'path';
 import qs from 'qs';
 import { ServerResponse } from 'http';
-import helmet from 'helmet';
 
 import activityRouter from './controllers/activity';
 import assetsRouter from './controllers/assets';
@@ -63,6 +62,8 @@ import { getConfigFromEnv } from './utils/get-config-from-env';
 import { merge } from 'lodash';
 
 export default async function createApp(): Promise<express.Application> {
+	const helmet = await import('helmet');
+
 	validateEnv(['KEY', 'SECRET']);
 
 	if (!new Url(env.PUBLIC_URL).isAbsolute()) {
@@ -182,14 +183,19 @@ export default async function createApp(): Promise<express.Application> {
 		const adminPath = require.resolve('@directus/app');
 		const adminUrl = new Url(env.PUBLIC_URL).addPath('admin');
 
+		const embeds = extensionManager.getEmbeds();
+
 		// Set the App's base path according to the APIs public URL
 		const html = await fse.readFile(adminPath, 'utf8');
-		const htmlWithBase = html.replace(/<base \/>/, `<base href="${adminUrl.toString({ rootRelative: true })}/" />`);
+		const htmlWithVars = html
+			.replace(/<base \/>/, `<base href="${adminUrl.toString({ rootRelative: true })}/" />`)
+			.replace(/<embed-head \/>/, embeds.head)
+			.replace(/<embed-body \/>/, embeds.body);
 
 		const sendHtml = (_req: Request, res: Response) => {
 			res.setHeader('Cache-Control', 'no-cache');
 			res.setHeader('Vary', 'Origin, Cache-Control');
-			res.send(htmlWithBase);
+			res.send(htmlWithVars);
 		};
 
 		const setStaticHeaders = (res: ServerResponse) => {

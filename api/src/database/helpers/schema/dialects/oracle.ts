@@ -12,6 +12,10 @@ export class SchemaHelperOracle extends SchemaHelper {
 		await this.changeToTypeByCopy(table, column, type, options);
 	}
 
+	castA2oPrimaryKey(): string {
+		return 'CAST(?? AS VARCHAR2(255))';
+	}
+
 	preRelationChange(relation: Partial<Relation>): void {
 		if (relation.collection === relation.related_collection) {
 			// Constraints are not allowed on self referencing relationships
