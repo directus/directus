@@ -26,15 +26,6 @@ export class OperationsService extends ItemsService<OperationRaw> {
 		return result;
 	}
 
-	async updateOne(key: PrimaryKey, data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
-		const flowManager = getFlowManager();
-
-		const result = await super.updateOne(key, data, opts);
-		await flowManager.reload();
-
-		return result;
-	}
-
 	async updateBatch(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
 		const flowManager = getFlowManager();
 
@@ -48,15 +39,6 @@ export class OperationsService extends ItemsService<OperationRaw> {
 		const flowManager = getFlowManager();
 
 		const result = await super.updateMany(keys, data, opts);
-		await flowManager.reload();
-
-		return result;
-	}
-
-	async deleteOne(key: PrimaryKey, opts?: MutationOptions): Promise<PrimaryKey> {
-		const flowManager = getFlowManager();
-
-		const result = await super.deleteOne(key, opts);
 		await flowManager.reload();
 
 		return result;

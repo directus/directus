@@ -31,6 +31,7 @@ jobs:
           - postgres
           - postgres10
           - mysql
+          - mysql5
           - maria
           - mssql
           - oracle
@@ -42,14 +43,11 @@ jobs:
       - name: Prepare
         uses: ./.github/actions/prepare
 
-      - name: Prune Dependencies
-        run: find . -type d -name node_modules -prune -exec rm -rf {} \;
-
-      - name: Install Production Dependencies
+      - name: Reinstall production dependencies only
         run: pnpm install --prod
 
-      - name: Install Root Dev Dependencies
-        run: pnpm install -w --dev
+      - name: Reinstall dev dependencies for workspace root
+        run: pnpm install --workspace-root --dev
 
       - name: Install Oracle client
         if: matrix.vendor == 'oracle'
@@ -61,14 +59,14 @@ jobs:
         env:
           ORACLE_DL: oracle-instantclient-basic-21.4.0.0.0-1.el8.x86_64.rpm
 
-      - name: Start Services (SQLite)
+      - name: Start services (SQLite)
         if: matrix.vendor == 'sqlite3'
         run: docker compose -f tests-blackbox/docker-compose.yml up auth-saml -d --quiet-pull --wait
 
-      - name: Start Services (Other vendors)
+      - name: Start services (other vendors)
         if: matrix.vendor != 'sqlite3'
         run:
           docker compose -f tests-blackbox/docker-compose.yml up ${{ matrix.vendor }} auth-saml -d --quiet-pull --wait
 
-      - name: Run Tests
+      - name: Run tests
         run: TEST_DB=${{ matrix.vendor }} pnpm run -w test:blackbox

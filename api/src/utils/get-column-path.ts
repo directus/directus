@@ -1,30 +1,38 @@
-import { Relation } from '@directus/shared/types';
+import { Relation, SchemaOverview } from '@directus/shared/types';
 import { getRelationInfo } from './get-relation-info';
 import { InvalidQueryException } from '../exceptions';
-import { get } from 'lodash';
 
-type AliasMap = string | { [key: string]: AliasMap };
+export type AliasMap = { [key: string]: { alias: string; collection: string } };
 
 export type ColPathProps = {
 	path: string[];
 	collection: string;
 	aliasMap: AliasMap;
 	relations: Relation[];
+	schema?: SchemaOverview;
+};
+
+export type ColPathResult = {
+	columnPath: string;
+	targetCollection: string;
+	addNestedPkField?: string;
 };
 
 /**
  * Converts a Directus field list path to the correct SQL names based on the constructed alias map.
  * For example: ['author', 'role', 'name'] -> 'ljnsv.name'
  * Also returns the target collection of the column: 'directus_roles'
+ * If the last filter path is an alias field, a nested PK is appended to the path
  */
-export function getColumnPath({ path, collection, aliasMap, relations }: ColPathProps) {
+export function getColumnPath({ path, collection, aliasMap, relations, schema }: ColPathProps) {
 	return followRelation(path);
 
 	function followRelation(
 		pathParts: string[],
 		parentCollection: string = collection,
-		parentAlias?: string
-	): { columnPath: string; targetCollection: string } {
+		parentFields?: string,
+		addNestedPkField?: string
+	): ColPathResult {
 		/**
 		 * For A2M fields, the path can contain an optional collection scope <field>:<scope>
 		 */
@@ -35,7 +43,7 @@ export function getColumnPath({ path, collection, aliasMap, relations }: ColPath
 			throw new InvalidQueryException(`"${parentCollection}.${pathRoot}" is not a relational field`);
 		}
 
-		const alias = get(aliasMap, parentAlias ? [parentAlias, ...pathParts] : pathParts);
+		const alias = parentFields ? aliasMap[`${parentFields}.${pathParts[0]}`]?.alias : aliasMap[pathParts[0]]?.alias;
 		const remainingParts = pathParts.slice(1);
 
 		let parent: string;
@@ -54,14 +62,36 @@ export function getColumnPath({ path, collection, aliasMap, relations }: ColPath
 			parent = relation.collection;
 		}
 
+		// Top level alias field
+		if (schema && !((remainingParts[0] ?? parent).includes('(') && (remainingParts[0] ?? parent).includes(')'))) {
+			if (remainingParts.length === 0) {
+				remainingParts.push(schema.collections[parent].primary);
+				addNestedPkField = schema.collections[parent].primary;
+			}
+			// Nested level alias field
+			else if (remainingParts.length === 1 && schema.collections[parent].fields[remainingParts[0]].type === 'alias') {
+				remainingParts.push(schema.collections[relation!.related_collection!].primary);
+				addNestedPkField = schema.collections[relation!.related_collection!].primary;
+			}
+		}
+
 		if (remainingParts.length === 1) {
-			return { columnPath: `${alias || parent}.${remainingParts[0]}`, targetCollection: parent };
+			return {
+				columnPath: `${alias || parent}.${remainingParts[0]}`,
+				targetCollection: parent,
+				addNestedPkField,
+			};
 		}
 
 		if (remainingParts.length) {
-			return followRelation(remainingParts, parent, alias);
+			return followRelation(
+				remainingParts,
+				parent,
+				`${parentFields ? parentFields + '.' : ''}${pathParts[0]}`,
+				addNestedPkField
+			);
 		}
 
-		return { columnPath: '', targetCollection: '' };
+		return { columnPath: '', targetCollection: '', addNestedPkField };
 	}
 }

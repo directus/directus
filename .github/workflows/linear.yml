@@ -1,0 +1,19 @@
+on:
+  issues:
+    types:
+      - opened
+      - closed
+      - reopened
+
+jobs:
+  linear:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: rijkvanzanten/gh-action-linear@v0.2.0
+        with:
+          linear-api-key: ${{ secrets.LINEAR_API_KEY }}
+          linear-team-id: ${{ secrets.LINEAR_TEAM_ID }}
+          linear-status-opened: ${{ secrets.LINEAR_STATUS_OPENED }}
+          linear-status-closed: ${{ secrets.LINEAR_STATUS_CLOSED }}
+          linear-status-reopened: ${{ secrets.LINEAR_STATUS_REOPENED }}
+          linear-issue-label: ${{ secrets.LINEAR_ISSUE_LABEL }}

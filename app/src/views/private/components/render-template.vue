@@ -6,7 +6,7 @@
 			<component
 				:is="`display-${part.component}`"
 				v-else-if="typeof part === 'object' && part.component"
-				v-bind="translate(part.options || {})"
+				v-bind="part.options"
 				:value="part.value"
 				:interface="part.interface"
 				:interface-options="part.interfaceOptions"
@@ -21,13 +21,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
-import { useFieldsStore } from '@/stores/fields';
-import { get } from 'lodash';
-import { Field } from '@directus/shared/types';
-import { getDefaultDisplayForType } from '@/utils/get-default-display-for-type';
-import { translate } from '@/utils/translate-object-values';
 import { useExtension } from '@/composables/use-extension';
+import { useFieldsStore } from '@/stores/fields';
+import { getDefaultDisplayForType } from '@/utils/get-default-display-for-type';
+import { translate } from '@/utils/translate-literal';
+import { Field } from '@directus/shared/types';
+import { get } from 'lodash';
+import { computed, ref } from 'vue';
 
 interface Props {
 	template: string;
