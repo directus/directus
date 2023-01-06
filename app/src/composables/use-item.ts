@@ -172,9 +172,11 @@ export function useItem(
 			...edits.value,
 		};
 
-		// Make sure to delete the primary key if it's generated
-		if (primaryKeyField.value && primaryKeyField.value.schema?.is_generated && primaryKeyField.value.field in newItem) {
-			delete newItem[primaryKeyField.value.field];
+		// Make sure to delete the primary key if it's has auto increment enabled
+		if (primaryKeyField.value && primaryKeyField.value.field in newItem) {
+			if (primaryKeyField.value.schema?.has_auto_increment || primaryKeyField.value.meta?.special?.includes('uuid')) {
+				delete newItem[primaryKeyField.value.field];
+			}
 		}
 
 		// Make sure to delete nested relational primary keys
