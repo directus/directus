@@ -1,14 +1,15 @@
 import { afterEach, beforeEach, describe, expect, it, SpyInstance, vi } from 'vitest';
 import { ItemsService, NotificationsService } from '.';
 
-vi.mock('../../src/env', async () => {
-	const actual = await vi.importActual<any>('../../src/env');
-
+vi.mock('../env', async () => {
+	const actual = (await vi.importActual('../env')) as { default: Record<string, any> };
+	const MOCK_ENV = {
+		...actual.default,
+		PUBLIC_URL: '/',
+	};
 	return {
-		default: {
-			...actual.default,
-			PUBLIC_URL: '/',
-		},
+		default: MOCK_ENV,
+		getEnv: () => MOCK_ENV,
 	};
 });
 
