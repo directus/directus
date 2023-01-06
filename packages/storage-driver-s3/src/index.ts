@@ -22,8 +22,8 @@ import type { Readable } from 'node:stream';
 
 export type DriverS3Config = {
 	root?: string;
-	key: string;
-	secret: string;
+	key?: string;
+	secret?: string;
 	bucket: string;
 	acl?: string;
 	serverSideEncryption?: string;
@@ -39,12 +39,18 @@ export class DriverS3 implements Driver {
 	private serverSideEncryption: string | undefined;
 
 	constructor(config: DriverS3Config) {
-		const s3ClientConfig: S3ClientConfig = {
-			credentials: {
+		const s3ClientConfig: S3ClientConfig = {};
+
+		if ((config.key && !config.secret) || (config.secret && !config.key)) {
+			throw new Error('Both `key` and `secret` are required when defined');
+		}
+
+		if (config.key && config.secret) {
+			s3ClientConfig.credentials = {
 				accessKeyId: config.key,
 				secretAccessKey: config.secret,
-			},
-		};
+			};
+		}
 
 		if (config.endpoint) {
 			const protocol = config.endpoint.startsWith('https://') ? 'https:' : 'http:';
