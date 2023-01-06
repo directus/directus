@@ -1,14 +1,13 @@
 import { Router } from 'express';
 import asyncHandler from '../utils/async-handler';
-import { RouteNotFoundException } from '../exceptions';
-import { getExtensionManager } from '../extensions';
+import { ForbiddenException, RouteNotFoundException } from '../exceptions';
+import { getExtensionManager } from '../extensions/extensions';
 import ms from 'ms';
 import env from '../env';
 import { getCacheControlHeader } from '../utils/get-cache-headers';
 import { respond } from '../middleware/respond';
-import { depluralize, isIn } from '@directus/shared/utils';
-import { Plural } from '@directus/shared/types';
-import { EXTENSION_TYPES } from '@directus/shared/constants';
+import { PrimaryKey } from '@directus/shared/types';
+import { ExtensionsService } from '../extensions/service';
 
 const router = Router();
 
@@ -16,7 +15,7 @@ router.get('/', asyncHandler(async (req, res, next) => {
 
 	const extensionManager = getExtensionManager();
 
-	const extensions = extensionManager.getExtensionsList();
+	const extensions = extensionManager.getDisplayExtensions();
 
 	res.locals.payload = {
 		data: extensions,
@@ -28,20 +27,18 @@ router.get('/', asyncHandler(async (req, res, next) => {
 );
 
 router.get(
-	'/:type',
+	'/:name',
 	asyncHandler(async (req, res, next) => {
-		const type = depluralize(req.params.type as Plural<string>);
+		if(req.accountability?.admin !== true) throw new RouteNotFoundException(req.path)
 
-		if (!isIn(type, EXTENSION_TYPES)) {
-			throw new RouteNotFoundException(req.path);
-		}
+		const name = req.params.name
 
 		const extensionManager = getExtensionManager();
 
-		const extensions = extensionManager.getExtensionsList(type);
+		const extension = extensionManager.getDisplayExtension(name);
 
 		res.locals.payload = {
-			data: extensions,
+			data: extension,
 		};
 
 		return next();
@@ -49,10 +46,11 @@ router.get(
 	respond
 );
 
-router.post('/', asyncHandler(async (req, res, next) => {
+router.post('/:name/:version?', asyncHandler(async (req, res, next) => {
+	if(req.accountability?.admin !== true) throw new RouteNotFoundException(req.path)
 
-	const name = req.body.name;
-	const version = req.body.version ?? 'latest';
+	const name = req.params.name;
+	const version = req.params.version;
 
 	if (!name) {
 		throw new RouteNotFoundException(req.path);
@@ -60,8 +58,13 @@ router.post('/', asyncHandler(async (req, res, next) => {
 
 	const extensionManager = getExtensionManager();
 
-	await extensionManager.installExtension(name, version);
+	const extension = extensionManager.getExtension(name);
 
+	if(extension !== undefined) {
+		await extensionManager.installation.updateExtension(name);
+	} else {
+		await extensionManager.installation.installExtension(name, version);
+	}
 
 	extensionManager.reload();
 
@@ -71,26 +74,42 @@ router.post('/', asyncHandler(async (req, res, next) => {
 );
 
 router.patch('/', asyncHandler(async (req, res, next) => {
-	const name = req.body.name;
+	if(req.accountability?.admin !== true) throw new RouteNotFoundException(req.path)
 
-	if (!name) {
-		throw new RouteNotFoundException(req.path);
-	}
-	
 	const extensionManager = getExtensionManager();
-	
-	await extensionManager.updateExtension(name);
 
-	extensionManager.reload();
+	let keys: PrimaryKey[] = [];
+
+	const service = new ExtensionsService({ accountability: req.accountability, schema: req.schema });
+
+	if (Array.isArray(req.body)) {
+		keys = await service.updateBatch(req.body);
+	} else if (req.body.keys) {
+		keys = await service.updateMany(req.body.keys, req.body.data);
+	} else {
+		keys = await service.updateByQuery(req.body.query, req.body.data);
+	}
+
+	try {
+		const result = await service.readMany(keys, req.sanitizedQuery);
+		res.locals.payload = { data: result };
+
+		extensionManager.reload();
+	} catch (error: any) {
+		if (error instanceof ForbiddenException) {
+			return next();
+		}
+
+		throw error;
+	}
 
 	return next();
+}), respond);
 
-}),
-	respond
-);
+router.delete('/:name', asyncHandler(async (req, res, next) => {
+	if(req.accountability?.admin !== true) throw new RouteNotFoundException(req.path)
 
-router.delete('/', asyncHandler(async (req, res, next) => {
-	const name = req.body.name;
+	const name = req.params.name;
 
 	if (!name) {
 		throw new RouteNotFoundException(req.path);
@@ -98,7 +117,7 @@ router.delete('/', asyncHandler(async (req, res, next) => {
 
 	const extensionManager = getExtensionManager();
 
-	await extensionManager.uninstallExtension(name);
+	await extensionManager.installation.uninstallExtension(name);
 
 	extensionManager.reload();
 

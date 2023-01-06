@@ -50,7 +50,7 @@ import { DEFAULT_AUTH_PROVIDER, GENERATE_SPECIAL } from '../../constants';
 import getDatabase from '../../database';
 import env from '../../env';
 import { ForbiddenException, GraphQLValidationException, InvalidPayloadException } from '../../exceptions';
-import { getExtensionManager } from '../../extensions';
+import { getExtensionManager } from '../../extensions/extensions';
 import { AbstractServiceOptions, GraphQLParams, Item } from '../../types';
 import { generateHash } from '../../utils/generate-hash';
 import { getGraphQLType } from '../../utils/get-graphql-type';

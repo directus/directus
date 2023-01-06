@@ -1,7 +1,7 @@
 import { Command, Option } from 'commander';
 import { startServer } from '../server';
 import emitter from '../emitter';
-import { getExtensionManager } from '../extensions';
+import { getExtensionManager } from '../extensions/extensions';
 import bootstrap from './commands/bootstrap';
 import count from './commands/count';
 import dbInstall from './commands/database/install';

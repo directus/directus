@@ -1,0 +1,8 @@
+table: directus_extensions
+
+fields:
+  - field: name
+  - field: enabled
+  - field: options
+    special:
+      - cast-json

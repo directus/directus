@@ -1060,6 +1060,7 @@ directus_collection:
   directus_shares: Tracks externally shared items
   directus_users: System users for the platform
   directus_webhooks: Configuration for event-based HTTP requests
+  directus_extensions: Configuration for custom extensions
 fields:
   directus_activity:
     item: Item Primary Key

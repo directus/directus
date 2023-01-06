@@ -36,7 +36,7 @@ import { isInstalled, validateDatabaseConnection, validateDatabaseExtensions, va
 import emitter from './emitter';
 import env from './env';
 import { InvalidPayloadException } from './exceptions';
-import { getExtensionManager } from './extensions';
+import { getExtensionManager } from './extensions/extensions';
 import { getFlowManager } from './flows';
 import logger, { expressLogger } from './logger';
 import authenticate from './middleware/authenticate';

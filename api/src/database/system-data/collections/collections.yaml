@@ -72,3 +72,5 @@ data:
     note: $t:directus_collection.directus_flows
   - collection: directus_operations
     note: $t:directus_collection.directus_operations
+  - collection: directus_extensions
+    note: $t:directus_collection.directus_extensions

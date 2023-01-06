@@ -169,8 +169,14 @@ export type ExtensionOptionsContext = {
 	saving: boolean;
 };
 
-export type ExtensionInfo =
-	| Omit<AppExtension, 'entrypoint' | 'path'>
+export type ExtensionInfo = ExtensionRaw & ( Omit<AppExtension, 'entrypoint' | 'path'>
 	| Omit<ApiExtension, 'entrypoint' | 'path'>
 	| Omit<HybridExtension, 'entrypoint' | 'path'>
-	| Omit<BundleExtension, 'entrypoint' | 'path'>;
+	| Omit<BundleExtension, 'entrypoint' | 'path'>);
+
+export const ExtensionRaw = z.object({
+	name: z.string(),
+	enabled: z.boolean(),
+});
+
+export type ExtensionRaw = z.infer<typeof ExtensionRaw>;
