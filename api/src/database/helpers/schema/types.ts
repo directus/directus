@@ -98,6 +98,12 @@ export abstract class SchemaHelper extends DatabaseHelper {
 		return existingName;
 	}
 
+	applyLimit(rootQuery: Knex.QueryBuilder, limit: number): void {
+		if (limit !== -1) {
+			rootQuery.limit(limit);
+		}
+	}
+
 	applyOffset(rootQuery: Knex.QueryBuilder, offset: number): void {
 		rootQuery.offset(offset);
 	}
@@ -116,7 +122,7 @@ export abstract class SchemaHelper extends DatabaseHelper {
 	): Knex.QueryBuilder {
 		dbQuery.rowNumber(
 			knex.ref('directus_row_number').toQuery(),
-			knex.raw(`partition by ??${orderByString}`, [`${table}.${primaryKey}`, ...orderByFields])
+			knex.raw(`partition by ?? order by ${orderByString}`, [`${table}.${primaryKey}`, ...orderByFields])
 		);
 		return dbQuery;
 	}

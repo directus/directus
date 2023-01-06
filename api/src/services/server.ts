@@ -308,8 +308,11 @@ export class ServerService {
 
 				try {
 					await disk.write(`health-${checkID}`, Readable.from(['check']));
-					await disk.read(`health-${checkID}`);
-					await disk.delete(`health-${checkID}`);
+					const fileStream = await disk.read(`health-${checkID}`);
+					fileStream.on('data', async () => {
+						fileStream.destroy();
+						await disk.delete(`health-${checkID}`);
+					});
 				} catch (err: any) {
 					checks[`storage:${location}:responseTime`][0].status = 'error';
 					checks[`storage:${location}:responseTime`][0].output = err;
