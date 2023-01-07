@@ -440,8 +440,16 @@ wysiwyg_options:
   blockquote: Citácia
   bullist: Odrážkový zoznam
   numlist: Číslovaný zoznam
+  hr: Vodorovná Čiara
+  link: Pridať/Upraviť odkaz
   selectall: Vybrať všetko
 settings_webhooks: Webháky
+settings_presets: Presety a Záložky
+actions: Akcie
+select: Vybrať...
+layout: Rozloženie
+tree_view: Stromový pohľad
+changes_are_permanent: Zmeny sú trvalé
 add_new: Pridať nový
 all: Všetko
 cancel: Zrušiť
