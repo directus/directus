@@ -450,53 +450,262 @@ select: Vybrať...
 layout: Rozloženie
 tree_view: Stromový pohľad
 changes_are_permanent: Zmeny sú trvalé
+preset_search_placeholder: Hľadaný výraz...
+layout_preview: Náhľad rozloženia
+data: Údaje
+unsaved_changes: Neuložené zmeny
+unsaved_changes_copy: Naozaj chcete opustiť túto stránku?
+discard_changes: Zahodiť zmeny
+discard_all_changes: Zahodiť všetky zmeny
+discard_changes_copy: Naozaj chcete zahodiť všetky vykonané zmeny?
+show_x_axis: Zobraziť os X
+show_y_axis: Zobraziť os Y
+keep_editing: Pokračovať v úprave
+activity_feed: Záznam aktivít
 add_new: Pridať nový
+create_new: Vytvoriť nový
 all: Všetko
+none: Žiadne
+no_layout_collection_selected_yet: Žiadne vybraté rozloženie/zbierka
 cancel: Zrušiť
 collection: Zbierka
+directus_collection:
+  directus_roles: Skupiny práv pre systémových používateľov
+  directus_sessions: Informácie o používateľskom sedení
 fields:
   directus_activity:
+    item: Primárny kľúč položky
+    action: Akcia
     collection: Zbierka
+    timestamp: Čas akcie
     user: Akciu vykonal/a
+    comment: Komentár
     user_agent: Užívateľský agent
     origin: Pôvod
     ip: IP adresa
+    revisions: Revízie
   directus_collections:
     collection: Zbierka
+    icon: Ikona
+    note: Poznámka
     color: Farba
+    display_template: Šablóna zobrazenia
+    hidden: Skryté
+    translations: Preklady názvu zbierky
+    sort_field: Zoraďovacie pole
   directus_files:
+    $thumbnail: Miniatúra
     title: Názov
+    description: Popis
+    tags: Tagy
+    location: Umiestnenie
+    storage: Úložisko
+    filename_disk: Názov súboru (Disk)
+    filename_download: Názov súboru (stiahnuté)
+    metadata: Metadáta
+    type: Typ MIME
+    filesize: Veľkosť súboru
+    modified_by: Upravil
+    modified_on: Upravené
+    created_on: Vytvorené
+    created_by: Vytvoril
+    embed: Vložiť
+    uploaded_by: Nahral
     folder: Priečinok
+    width: Šírka
+    uploaded_on: Nahraté
+    height: Výška
+    charset: Znaková sada
+    duration: Trvanie
   directus_users:
     first_name: Meno
     last_name: Priezvisko
     email: E-mail
     password: Heslo
     avatar: Avatar
+    location: Umiestnenie
     title: Názov
+    description: Popis
+    tags: Tagy
     theme: Téma
     tfa_secret: Dvojfaktorová autentifikácia
+    status_invited: Pozvaný
     status_active: Aktívne
     role: Rola
+  directus_settings:
+    public_foreground: Verejné popredie
+    public_background: Verejné pozadie
+    public_note: Verejná poznámka
+    files_and_thumbnails: Súbory a úložisko
+    storage_default_folder: Predvolený priečinok
+    storage_asset_presets: Transformačné presety
+    storage_asset_transform: Povolené transformácie
+    custom_css: Vlastné CSS
+    transformations_all: Povoliť všetky transformácie
+    transformations_none: Vypnúť transformácie
+    transformations_presets: Obmedziť transformácie na presety nižšie
+    image_editor: Editor obrázkov
+    custom_aspect_ratios: Vlastné pomery strán
   directus_shares:
+    name: Názov
     role: Rola
     password: Heslo
+    date_start: Dátum začiatku
+    date_end: Dátum konca
   directus_fields:
+    collection: Názov zbierky
+    icon: Ikona zbierky
+    note: Poznámka
+    hidden: Skryté
     translation: Preklady názvov polí
+    display_template: Šablóna
   directus_roles:
     name: Názov roly
+    icon: Ikony role
+    description: Popis
+    app_access: Prístup k aplikácii
+    admin_access: Administrátorský prístup
+    enforce_tfa: Vyžadovať 2FA
+    users: Používatelia v roli
+  directus_webhooks:
+    name: Názov
+    method: Metóda
+    status: Stav
+    data: Údaje
+    header: Hlavička
+    value: Hodnota
+    headers: Hlavičky požiadavky
+    data_label: Poslať údaje udalosti
+    triggers: Spúšťače
+    actions: Akcie
+    collections: Zbierky
 field_options:
   directus_settings:
+    project_name_placeholder: Môj projekt...
+    project_color_note: Prihlásenie a logo na pozadí
+    project_logo_note: Biele 40x40 SVG/PNG
     security_divider_title: Zabezpečenie
+  directus_activity:
+    login: Prihlásiť
   directus_collections:
+    translation: Preklad
+    collection_name: Názov zbierky
     archive_divider: Archív
+    archive_field_placeholder: Vyberte pole...
+    unarchive_value: Hodnota nastavená pri odarchivovaní...
+    sort_divider: Zoradiť
+    sort_field: Vyberte pole...
+  directus_files:
+    title: Unikátny nadpis...
+    description: Voliteľný popis...
+    location: Voliteľné miesto...
+    filename_disk: Názov na diskovom úložisku...
+    filename_download: Názov pri sťahovaní...
+  directus_roles:
+    name: Unikátny názov tejto role...
+    description: Popis tejto role...
+    ip_access: Pridajte povolené IP adresy, nechajte prázdne pre povolenie všetkých...
+    fields:
+      icon_name: Ikona
+      name_name: Názov
+      name_placeholder: Zadajte nadpis...
+      link_name: Odkaz
+      link_placeholder: Relatívna alebo absolútna URL...
+    collections_name: Zbierky
+    collections_addLabel: Pridať zbierku...
   directus_users:
+    dropdown_light: Svetlý režim
+    dropdown_dark: Tmavý režim
+    admin_divider: Možnosti admina
+    status_dropdown_draft: Koncept
+    status_dropdown_invited: Pozvaný
     status_dropdown_active: Aktívne
+    status_dropdown_suspended: Pozastavený
+    status_dropdown_archived: Archivovaný
+    token: Zadajte bezpečnostný prístupový token...
   directus_webhooks:
     status_options_active: Aktívne
     status_options_inactive: Neaktívne
+    data_label: Poslať údaje udalosti
+    triggers_divider: Spúšťače
+    actions_create: Vytvoriť
+    actions_update: Aktualizovať
+    actions_delete: Odstrániť
+    actions_login: Prihlásiť
+    headers:
+      header: Hlavička
+      value: Hodnota
+      add: Pridať hlavičku
+no_fields_in_collection: 'V "{collection}" zatiaľ nie sú žiadne polia'
+no_value: Žiadna hodnota
+do_nothing: Nerobiť nič
+generate_and_save_uuid: Generovať a uložiť UUID
+save_current_user_id: Uložiť ID aktuálneho používateľa
+save_current_user_role: Uložiť rolu aktuálneho používateľa
+save_current_datetime: Uložiť aktuálny dátum/čas
+always_open: Vždy otvorené
+start_open: Začať otvorené
+start_collapsed: Začať zložené
+block: Blokovať
+inline: V riadku
+comment: Komentár
+shares: Zdieľania
+description: Popis
 email: E-mail
+hidden: Skryté
+icon: Ikona
+info: Info
+normal: Normálne
+success: Úspech
+warning: Varovanie
+danger: Nebezpečenstvo
+colors:
+  purple: Fialová
+  blue: Modrá
+  green: Zelená
+  yellow: Žltá
+  orange: Oranžová
+  red: Červená
+  black: Čierna
+  gray: Sivá
+  white: Biela
+junction_collection: Prepájacia zbierka
+latency: Latencia
+login: Prihlásiť sa
+my_activity: Moja aktivita
+not_authenticated: Neprihlásený
+authenticated: Prihlásený
+options: Možnosti
+otp: Jednorazové heslo
 password: Heslo
+permissions: Oprávnenia
+relationship: Vzťah
+reset: Resetovať
+reset_password: Obnoviť heslo
+revisions: Revízie
+no_revisions: Zatiaľ žiadne revízie
+no_logs: Zatiaľ žiadne logy
+revert: Vrátiť
+save: Uložiť
+schema: Schéma
+search: Hľadať
+select_existing: Vybrať existujúce
+select_field_type: Vyberte typ poľa
+select_interface: Vybrať rozhranie
+settings: Nastavenia
+sign_in: Prihlásiť sa
+sign_out: Odhlásiť sa
+sign_out_confirm: Naozaj sa chcete odhlásiť?
+something_went_wrong: Niečo sa pokazilo.
+sort_direction: Smer zoradenia
+export_location: Miesto exportu
+export_started: Export začal
+export_started_copy: Váš export začal. Keď bude pripravený na stiahnutie dostanete upozornenie.
+sort_asc: Zoradiť vzostupne
+sort_desc: Zoradiť zostupne
+template: Šablóna
+require_value_to_be_set: Vyžaduje nastavenú hodnotu pri vytvorení
+translation: Preklad
 interfaces:
   filter:
     add_filter: Pridať filter
@@ -512,12 +721,21 @@ interfaces:
     select_a_collection: Vyberte zbierku
   system-display-template:
     select_a_collection: Vyberte zbierku
+  select-dropdown:
+    choices_name_placeholder: Zadajte názov...
+    choices_value_placeholder: Zadajte hodnotu...
+  file:
+    file: Súbor
   input-hash:
     hash: Hash
+  select-icon:
+    icon: Ikona
   map:
     zoom: Priblíženie
   system-folder:
     folder: Priečinok
+  tags:
+    tags: Tagy
 displays:
   boolean:
     boolean: Boolean
@@ -528,7 +746,10 @@ displays:
   formatted-value:
     italic: Kurzíva
     color: Farba
+    icon: Ikona
     text: Text
+  icon:
+    icon: Ikona
   image:
     circle: Kruh
   user:
@@ -544,6 +765,14 @@ layouts:
 panels:
   label:
     name: Popis
+triggers:
+  webhook:
+    method: Metóda
 operations:
   request:
     url: URL
+    method: Metóda
+    data: Údaje
+    header: Hlavička
+  trigger:
+    data: Údaje
