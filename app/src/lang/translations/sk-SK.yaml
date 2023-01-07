@@ -755,6 +755,7 @@ interfaces:
     select_a_collection: Vyberte zbierku
   presentation-divider:
     divider: Oddeľovač
+    description: Označuje a delí polia do sekcií
   select-dropdown:
     choices_name_placeholder: Zadajte názov...
     choices_value_placeholder: Zadajte hodnotu...
