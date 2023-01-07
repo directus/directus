@@ -66,6 +66,17 @@ export default function getMailer(): Transporter {
 				apiKey: env.EMAIL_SENDGRID_API_KEY,
 			}) as any
 		);
+	} else if (transportName === 'mailjet') {
+		const mj = require('nodemailer-mailjet-transport');
+		transporter = nodemailer.createTransport(
+			mj({
+				auth: {
+					apiKey: env.EMAIL_MAILJET_API_KEY,
+					apiSecret: env.EMAIL_MAILJET_API_SECRET,
+				},
+				SandboxMode: env.EMAIL_MAILJET_SANDBOX_MODE || false,
+			}) as any
+		);
 	} else {
 		logger.warn('Illegal transport given for email. Check the EMAIL_TRANSPORT env var.');
 	}
