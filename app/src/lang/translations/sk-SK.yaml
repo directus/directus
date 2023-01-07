@@ -711,16 +711,50 @@ interfaces:
     add_filter: Pridať filter
     all: Všetko
     any: Akékoľvek
+  select-multiple-checkbox-tree:
+    value_combining: Hodnota kombinácie
+    value_combining_note: Aká hodnota sa uloží kde je označených viac možností.
+    show_all: Zobraziť všetky
+    show_selected: Zobraziť označené
   input-code:
     code: Kód
+    description: Píšte alebo zdieľajte kúsky kódu
+    line_number: Číslo riadku
+    line_wrapping: Zalamovanie riadkov
+    placeholder: Sem zadajte kód...
   system-collection:
     collection: Zbierka
+    description: Vyberte medzi existujúcimi zbierkami
+    include_system_collections: Vrátane systémových zbierok
+  system-collections:
+    collections: Zbierky
+    description: Vyberte medzi existujúcimi zbierkami
+    include_system_collections: Vrátane systémových zbierok
   select-color:
     color: Farba
+    description: Zadajte alebo vyberte hodnotu farby
+    placeholder: Vyberte farbu...
+    preset_colors: Prednastavené farby
+    opacity: Priehľadnosť
+    preset_colors_add_label: Pridať novú farbu...
+    name_placeholder: Zadajte názov farby...
+  datetime:
+    datetime: Dátum a čas
+    description: Zadajte dátumy a časy
+    include_seconds: Vrátane sekúnd
+    set_to_now: Nastaviť na teraz
+    use_24: Použiť 24 hodinový formát
+    placeholder: Vyberte dátum a čas...
   system-fields:
     select_a_collection: Vyberte zbierku
+    no_fields: Žiadne polia
   system-display-template:
+    display-template: Šablóna zobrazenia
+    description: Kombinácia statického textu a dynamických hodnôt
+    collection_field: Pole zbierky
     select_a_collection: Vyberte zbierku
+  presentation-divider:
+    divider: Oddeľovač
   select-dropdown:
     choices_name_placeholder: Zadajte názov...
     choices_value_placeholder: Zadajte hodnotu...
@@ -743,6 +777,8 @@ displays:
     collection: Zbierka
   color:
     color: Farba
+  datetime:
+    datetime: Dátum a čas
   formatted-value:
     italic: Kurzíva
     color: Farba
