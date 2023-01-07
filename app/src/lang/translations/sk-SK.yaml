@@ -1,13 +1,122 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+identifier: Identifikátor
 avatar: Avatar
+application: Aplikácia
+default_provider: Predvolený
+method: Metóda
+published: Zverejnené
+draft: Koncept
+archived: Archivované
+modules: Moduly
+logs: Logy
+tile_size: Veľkosť dlaždice
+edit_field: Upraviť pole
+conditions: Podmienky
+location: Umiestnenie
+condition_rules: Pravidlá podmienok
+input: Vstup
+maps: Mapy
+switch_user: Prepnúť používaeľa
+item_creation: Vytvorenie položky
+item_revision: Revízia položky
+enter_a_name: Zadajte meno...
+duplicate_field: Duplicitné pole
+half_width: Polovičná šírka
+full_width: Plná šírka
+group: Skupina
+export_items: Exportovať položky
+and: A
+or: Alebo
+init: Inicializácia
+dataset_too_large_currently_showing_n_items: Dataset je príliš veľký. Zobrazuje sa prvých {n} položiek.
+modifier: Modifikátor
+custom: Vlastné
+hook: Hák
+field_name_translations: Preklady názvov polí
+enter_password_to_enable_tfa: Na zapnutie dvoj-faktorovej autentifikácie zadajte svoje heslo
+add_field: Pridať pole
+role_name: Názov roly
+branch: Vetva
+leaf: List
+indeterminate: Neurčité
+edit_collection: Upraviť zbierku
+exclusive: Exkluzívne
+children: Potomkovia
+db_only_click_to_configure: 'Len databáza: kliknutím nastavíte'
+show_active_items: Zobraziť aktívne položky
+show_archived_items: Zobraziť archivované položky
+show_all_items: Zobraziť všetky položky
+edited: Hodnota upravená
+os_type: Typ OS
+os_version: Verzia OS
+os_totalmem: Pamäť OS
+archive: Archív
+archive_confirm: Naozaj chcete archivovať túto položku?
+archive_confirm_count: >-
+  Žiadne označené položky | Naozaj chcete archivovať túto položku? | Naozaj chcete archivovať týchto {count} položiek?
+reset_system_permissions_to: 'Resetovať systémové práva na:'
+reset_system_permissions_copy: Táto akcia prepíše všetky vlastné práva, ktoré ste použili na systémové zbierky. Ste si istý?
+recommended_defaults: Odporúčané prevolenia
+unarchive: Odarchivovať
+unarchive_confirm: Naozaj chcete odarchivovať túto položku?
+nested_files_folders_will_be_moved: Vnorené súbory a priečinky sa presunú o jednu úroveň vyššie.
+validation_errors_notice: 'Nasledujúce polia majú neplatné hodnoty:'
+validationError:
+  eq: Hodnota musí byť {valid}
+  neq: Hodnota nemôže byť {invalid}
+  in: Hodnota musí byť jedna z {valid}
+  nin: Hodnota nemôže byť jedna z {invalid}
+  contains: Hodnota musí obsahovať {substring}
+  ncontains: Hodnota nemôže obsahovať {substring}
+  gt: Hodnota musí byť väčšia ako {valid}
+  gte: Hodnota musí byť väčšia alebo rovná {valid}
+  lt: Hodnota musí byť menšia ako {valid}
+  lte: Hodnota musí byť menšia alebo rovná {valid}
+  empty: Hodnota musí byť prázdna
+  nempty: Hodnota nemôže byť prázdna
+  null: Hodnota musí byť null
+  nnull: Hodnota nemôže byť null
+  required: Hodnota je povinná
+  unique: Hodnota musí byť unikátna
+  regex: Hodnota nemá správny formát
+all_access: Plný prístup
+no_access: Žiadny prístup
+use_custom: Použiť vlastné
+nullable: Nullovateľné
+allow_null_value: Povolená NULL hodnota
+allow_multiple: Povoliť viacero
+field_standard: Štandardné
 auto_generate: Automaticky generovať
 add_note: Pridať užitočnú poznámku pre užívateľov...
 comments: Komentáre
 activity: Aktivita
 ip_address: IP adresa
 user_agent: Užívateľský agent
+errors:
+  NOT_NULL_VIOLATION: Hodnota nemôže byť null
 bookmarks: Záložky
 back: Späť
+value_unique: Hodnota musí byť unikátna
 role: Rola
 add_new: Pridať nový
 all: Všetko
@@ -33,6 +142,13 @@ fields:
   directus_shares:
     role: Rola
     password: Heslo
+  directus_fields:
+    translation: Preklady názvov polí
+  directus_roles:
+    name: Názov roly
+field_options:
+  directus_collections:
+    archive_divider: Archív
 email: E-mail
 password: Heslo
 interfaces:
