@@ -375,9 +375,71 @@ upload_pending: Čaká na nahratie
 drag_file_here: Pretiahnute a pustite súbor sem
 value_unique: Hodnota musí byť unikátna
 role: Rola
+label: Popis
+trigger: Spúšťač
+trigger_options: Možnosti spúšťača
+view_trigger: Zobraziť spúšťač
+create_trigger: Vytvoriť spúšťač
+trigger_setup: Nastavenia spúšťača
+change_trigger: Zmeniť spúšťač
+flow_name: Názov
+create_operation: Vytvoriť operáciu
+edit_operation: Upraviť operáciu
+code: Kód
+operation_options: Možnosti operácie
+operation_name: Názov operácie...
+operation_key: Identifikátor pre odkazovanie...
+insights: Prehľady
+dashboard: Nástenka
+panel: Panel
+panel_options: Možnosti panela
+panel_header: Hlavička panela
+details: Podrobnosti
+full_screen: Celá obrazovka
+full_text_search: Full-text hľadanie
+edit_panels: Upraviť panely
+center_align: Zarovnať na stred
+left_align: Zarovnať vľavo
+right_align: Zarovnať vpravo
+fit_to_screen: Prispôsobiť obrazovke
+image_url: URL obrázku
+alt_text: Alternatívny text
+media: Médium
+quality: Kvalita
+width: Šírka
+height: Výška
+source: Zdroj
+url_placeholder: Zadajte url...
+display_text: Zobrazený text
+display_text_placeholder: Zadajte zobrazený text...
+interface_group_text_and_numbers: Text a čísla
+interface_group_selection: Výber
+interface_group_presentation: Prezentácia
+interface_group_groups: Skupiny
+interface_group_other: Ostatné
+tooltip: Nápoveda
+tooltip_placeholder: Zadajte nápovedu...
+unlimited: Neobmedzené
+open_link_in: Otvoriť odkaz v
+new_tab: Nová karta
+current_tab: Aktuálna karta
+save_image: Uložiť obrázok
+save_media: Uložiť médium
 wysiwyg_options:
+  aligncenter: Zarovnať na stred
+  alignleft: Zarovnať vľavo
+  alignnone: Žiadne zarovnanie
+  alignright: Zarovnať vpravo
   forecolor: Farba popredia
   backcolor: Farba pozadia
+  bold: Tučné
+  italic: Kurzíva
+  underline: Podčiarknuté
+  strikethrough: Preškrtnuté
+  codeblock: Kód
+  blockquote: Citácia
+  bullist: Odrážkový zoznam
+  numlist: Číslovaný zoznam
   selectall: Vybrať všetko
 settings_webhooks: Webháky
 add_new: Pridať nový
@@ -432,6 +494,8 @@ interfaces:
     add_filter: Pridať filter
     all: Všetko
     any: Akékoľvek
+  input-code:
+    code: Kód
   system-collection:
     collection: Zbierka
   select-color:
@@ -454,6 +518,7 @@ displays:
   color:
     color: Farba
   formatted-value:
+    italic: Kurzíva
     color: Farba
     text: Text
   image:
@@ -468,6 +533,9 @@ layouts:
     comfortable: Pohodlná
   kanban:
     advanced: Rozšírené
+panels:
+  label:
+    name: Popis
 operations:
   request:
     url: URL
