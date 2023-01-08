@@ -67,6 +67,42 @@ show_active_items: Zobraziť aktívne položky
 show_archived_items: Zobraziť archivované položky
 show_all_items: Zobraziť všetky položky
 edited: Hodnota upravená
+requires_value: Vyžaduje hodnotu
+create_preset: Vytvoriť preset
+create_panel: Vytvoriť panel
+create_role: Vytvoriť rolu
+create_user: Vytvoriť používateľa
+message: Správa
+delete_panel: Odstrániť panel
+create_webhook: Vytvoriť Webhook
+create_translation_string: Vytvoriť prekladový text
+no_translation_string: Žiadne prekladové texty
+no_translation_string_copy: Zatiaľ tu nie sú žiadne prekladové texty.
+translation_string_translations_placeholder: Pridať nový preklad
+edit_translation_string: Upraviť prekladový text
+invite_users: Pozvať používateľov
+invite: Pozvať
+email_already_invited: Email "{email}" už bol pozvaný
+subject: Predmet
+inbox: Doručená pošta
+emails: Emaily
+connection_excellent: Excelentné spojenie
+connection_good: Dobré spojenie
+connection_fair: Priemerné spojenie
+connection_poor: Slabé spojenie
+rename_folder: Premenovať priečinok
+delete_folder: Odstrániť priečinok
+prefix: Prefix
+suffix: Sufix
+update_bookmark: Aktualizovať záložku
+delete_bookmark: Odstrániť záložku
+logoutReason:
+  SIGN_OUT: Odhlásený
+  SESSION_EXPIRED: Relácia vypršala
+public_label: Verejné
+not_allowed: Nepovolené
+directus_version: Verzia Directus
+node_version: Verzia Node
 os_type: Typ OS
 os_version: Verzia OS
 os_totalmem: Pamäť OS
@@ -113,6 +149,16 @@ field_m2o: Vzťah M2O
 field_m2a: Vzťah M2A
 field_o2m: Vzťah O2M
 field_m2m: Vzťah M2M
+field_translations: Preklady
+aggregate_precision: Presnosť agregácie
+admins_have_all_permissions: Admini majú všetky práva
+camera: Kamera
+validation: Validácia
+sum: Suma
+sum_distinct: Suma unikátnych
+avg: Priemer
+avg_distinct: Priemer unikátnych
+count: Počet
 count_distinct: Počet unikátnych
 min: Min
 max: Max
@@ -159,7 +205,24 @@ refresh_interval_seconds: Obnoviť hneď | Každú sekundu | Každých {seconds}
 refresh_interval_minutes: Každú minútu | Každých {minutes} minút
 auto_generate: Automaticky generovať
 this_will_auto_setup_fields_relations: Toto automaticky nastaví všetky povinné polia a vzťahy.
+fields_group: Skupina polí
+no_collections_found: Nenašli sa žiadne zbierky.
+search_collection: Hľadať v zbierke...
+new_collection: 'Nová zbierka'
+choose_a_type: Vyberte typ...
+determined_by_relationship: Určené vzťahom
 add_note: Pridať užitočnú poznámku pre užívateľov...
+add_link: Pridať odkaz
+custom_link: Vlastný odkaz
+default_value: Predvolená hodnota
+standard_field: Štandardné pole
+single_file: Jeden súbor
+multiple_files: Viac súborov
+invalid_item: Chybná položka
+next: Ďalej
+field_name: Názov poľa
+translations: Preklady
+no_translations: Žiadne preklady
 dismiss: Zamietnuť
 toggle_raw_editor: Prepnúť surový editor
 raw_value: Surová hodnota
@@ -193,10 +256,37 @@ item_delete_success: Položka odstránená | Položky odstránené
 this_collection: Táto zbierka
 related_collection: Súvisiaca zbierka
 related_collections: Súvisiace zbierky
+translations_collection: Zbierka prekladov
+languages_collection: Zbierka jazykov
+import_data_input_placeholder: CSV alebo JSON...
+import_data_button: Spustiť import
+import_data_indeterminate: Prebieha import dát...
 label_import: Importovať
+label_export: Export
+import_export: Import / Export
+format: Formát
+last_page: Posledná strana
+last_access: Posledný prístup
+a_unique_table_name: Unikátny názov tabuľky...
+a_unique_column_name: Unikátny názov stĺpca...
+enable_custom_values: Zapnúť vlastné hodnoty
+submit: Odoslať
+move_to_folder: Presunúť do priečinka
+move: Presunúť
+system: Systém
+add_field_related: Pridať pole to súvisiacej zbierky
+interface_label: Rozhranie
+today: Dnes
+yesterday: Včera
+delete_comment: Odstrániť komentár
+delete_share: Odstrániť zdieľanie
 functions:
   year: Rok
   month: Mesiac
+  week: Týždeň
+  day: Deň
+  weekday: Pracovný deň
+  hour: Hodina
   minute: Minúta
   second: Sekunda
   count: Počet
@@ -222,6 +312,8 @@ months:
   october: Október
   november: November
   december: December
+drag_mode: Spôsob pretiahnutia
+cancel_crop: Zrušiť orezanie
 original: Pôvodné
 url: URL
 import_label: Importovať
@@ -243,7 +335,17 @@ foreground_color: Farba popredia
 background_color: Farba pozadia
 upload_from_device: Nahrať súbor zo zariadenia
 choose_from_library: Vybrať súbor z knižnice
+import_from_url: Import súboru z URL
+replace_from_device: Nahradiť súbor zo zariadenia
+replace_from_library: Nahradiť súbor z knižnice
+replace_from_url: Nahradiť súbor z URL
+no_file_selected: Nevybrali ste žiadny súbor
+download_file: Stiahnuť súbor
+open_file_in_tab: Otvoriť súbor v novej záložke
+start_export: Spustiť export
 comments: Komentáre
+request_body: Telo požiadavky
+no_notifications: Žiadne oznámenie
 activity_log: Log aktivity
 all_items: Všetky položky
 any: Akékoľvek
@@ -277,6 +379,33 @@ add_filter: Pridať filter
 upper_limit: Horný limit...
 lower_limit: Dolný limit...
 user_directory: Priečinok používateľa
+documentation: Dokumentácia
+sidebar: Bočný panel
+duration: Trvanie
+charset: Znaková sada
+second: sekunda
+file_moved: Súbor presunutý
+collection_created: Zbierka vytvorená
+modified_on: Upravené
+card_size: Veľkosť karty
+sort_field: Zoraďovacie pole
+add_sort_field: Pridať zoraďovacie pole
+sort: Zoradiť
+status: Stav
+remove: Odstrániť
+toggle_manual_sorting: Zapnúť ručné zoraďovanie
+bookmark_doesnt_exist: Záložka neexistuje
+bookmark_doesnt_exist_cta: Vrátiť sa do zbierky
+select_an_item: Vyberte položku...
+edit: Upraviť
+enabled: Zapnuté
+disable_tfa: Vypnúť 2FA
+admin_disable_tfa_text: Naozaj chcete vypnúť 2FA pre tohoto používateľa?
+tfa_setup: Nastaviť 2FA
+enter_otp_to_disable_tfa: Na vypnutie 2FA zadajte OTP
+create_account: Vytvoriť účet
+account_created_successfully: Účet úspešne vytvorený
+auto_fill: Automatické vypĺňanie
 errors:
   COLLECTION_NOT_FOUND: "Zbierka neexistuje"
   FIELD_NOT_FOUND: Pole sa nenašlo
@@ -323,6 +452,24 @@ unexpected_error: Neočakávaná chyba
 no_app_access_copy: Tento používateľ nemôže používať admin.
 password_reset_sent: Ak máte účet, poslali sme vám bezpečný odkaz na obnoveni vášho hesla
 back: Späť
+one_item: '1 položka'
+one_filtered_item: '1 odfiltrovaná položka'
+collections_shown: Zobrazené zbierky
+visible_collections: Viditeľné zbierky
+hidden_collections: Skryté zbierky
+show_hidden_collections: Zobraziť skryté zbierky
+hide_hidden_collections: Skryť skryté zbierky
+show_header: Zobraziť hlavičku
+unmanaged_collections: Nenastavené zbierky
+system_collections: Systémové zbierky
+icon_left: Ikona vľavo
+icon_right: Ikona vpravo
+count_other_revisions: '{count} iných revízií'
+font: Písmo
+sans_serif: Sans Serif
+serif: Serif
+monospace: Monospace
+divider: Oddeľovač
 color: Farba
 circle: Kruh
 empty_item: Prázdna položka
@@ -331,6 +478,7 @@ conditional_styles: Podmienené štýly
 advanced_settings: Rozšírené nastavenia
 advanced_filter: Pokročilý filter
 delete_advanced_filter: Odstrániť filter
+change_advanced_filter_operator: Zmeniť operátor
 advanced: Rozšírené
 operators:
   eq: Rovná sa
@@ -373,7 +521,28 @@ upload_files_indeterminate: 'Nahrávanie súborov {done}/{total}'
 upload_files_success: '{count} súborov nahratých'
 upload_pending: Čaká na nahratie
 drag_file_here: Pretiahnute a pustite súbor sem
+interface_options: Možnosti rozhrania
+layout_options: Možnosti rozloženia
+rows: Riadky
+columns: Stĺpce
+collection_setup: Nastavenia zbierky
 value_unique: Hodnota musí byť unikátna
+all_activity: Všetky aktivity
+create_item: Vytvoriť položku
+per_page: Na stránku
+all_files: Všetky súbory
+my_files: Moje súbory
+recent_files: Nedávne súbory
+create_folder: Vytvoriť priečinok
+edit_folder: Upraviť priečinok
+folder_name: Názov priečinka...
+folder_key: Kľúč priečinka...
+add_file: Pridať súbor
+replace_file: Nahradiť súbor
+no_results: Žiadne výsledky
+no_results_copy: Aby ste videli výsledky upravte alebo vyčistite filter.
+no_visible_fields: Prázdny formulár
+no_visible_fields_copy: Tento formulár nemá žiadne viditeľné položky.
 role: Rola
 label: Popis
 trigger: Spúšťač
@@ -383,6 +552,8 @@ create_trigger: Vytvoriť spúšťač
 trigger_setup: Nastavenia spúšťača
 change_trigger: Zmeniť spúšťač
 flow_name: Názov
+flow_tracking_activity: Sledovať len aktivitu
+flow_tracking_null: Nesledovať nič
 create_operation: Vytvoriť operáciu
 edit_operation: Upraviť operáciu
 code: Kód
@@ -394,6 +565,10 @@ dashboard: Nástenka
 panel: Panel
 panel_options: Možnosti panela
 panel_header: Hlavička panela
+visible: Viditeľné
+prefix_placeholder: Text pred hodnotou...
+suffix_placeholder: Text za hodnotou...
+decimals_placeholder: Počet desatinných miest...
 details: Podrobnosti
 full_screen: Celá obrazovka
 full_text_search: Full-text hľadanie
@@ -442,9 +617,29 @@ wysiwyg_options:
   numlist: Číslovaný zoznam
   hr: Vodorovná Čiara
   link: Pridať/Upraviť odkaz
+  copy: Kopírovat
+  cut: Vystrihnúť
+  paste: Prilepiť
+  heading: Nadpis
+  h1: Nadpis 1
+  h2: Nadpis 2
+  h3: Nadpis 3
+  h4: Nadpis 4
+  h5: Nadpis 5
+  h6: Nadpis 6
   selectall: Vybrať všetko
+choices: Možnosti
+deselect: Odznačiť
+deselect_all: Odznačiť všetko
+other: Ostatné...
+adding_user: Pridávanie používateľa
+unknown_user: Neznámy používateľ
+settings_data_model: Dátový model
+settings_permissions: Roly a oprávnenia
+settings_project: Nastavenia projektu
 settings_webhooks: Webháky
 settings_presets: Presety a Záložky
+settings_translation_strings: Prekladové texty
 actions: Akcie
 select: Vybrať...
 layout: Rozloženie
@@ -468,7 +663,11 @@ all: Všetko
 none: Žiadne
 no_layout_collection_selected_yet: Žiadne vybraté rozloženie/zbierka
 cancel: Zrušiť
+no_upscale: Nezväčšovať obrázky
 collection: Zbierka
+collections: Zbierky
+content: Obsah
+system_fields_locked: Systémové polia sú zamknuté a nedajú sa upravovať
 directus_collection:
   directus_roles: Skupiny práv pre systémových používateľov
   directus_sessions: Informácie o používateľskom sedení
@@ -527,12 +726,38 @@ fields:
     title: Názov
     description: Popis
     tags: Tagy
+    language: Jazyk
     theme: Téma
+    theme_light: Svetlý režim
+    theme_dark: Tmavý režim
     tfa_secret: Dvojfaktorová autentifikácia
+    status: Stav
+    status_draft: Koncept
     status_invited: Pozvaný
     status_active: Aktívne
+    status_suspended: Pozastavený
+    status_archived: Archivovaný
     role: Rola
+    token: Token
+    provider: Poskytovateľ
+    external_identifier: Externý identifikátor
+    last_page: Posledná strana
+    last_access: Posledný prístup
+    email_notifications: E-mailové upozornenia
   directus_settings:
+    jpg: JPEG
+    png: PNG
+    webP: WebP
+    tiff: TIFF
+    basemaps: Podkladové mapy
+    basemaps_raster: Raster
+    attribution_placeholder: '© Prispievatelia do OpenStreetMap'
+    project_name: Názov projektu
+    project_descriptor: Popis projektu
+    project_url: URL projektu
+    project_color: Farba projektu
+    project_logo: Logo projektu
+    default_language: Predvolený jazyk
     public_foreground: Verejné popredie
     public_background: Verejné pozadie
     public_note: Verejná poznámka
@@ -585,10 +810,23 @@ field_options:
     project_color_note: Prihlásenie a logo na pozadí
     project_logo_note: Biele 40x40 SVG/PNG
     security_divider_title: Zabezpečenie
+    basemaps: Podkladové mapy
+    basemaps_raster: Raster
   directus_activity:
     login: Prihlásiť
+    create: Vytvoriť
+    update: Aktualizovať
+    delete: Odstrániť
   directus_collections:
+    track_activity_revisions: Sledovať aktivitu a revízie
+    only_track_activity: Sledovať len aktivitu
+    do_not_track_anything: Nesledovať nič
+    collection_setup: Nastavenia zbierky
+    note_placeholder: Popis tejto zbierky...
+    hidden_label: Skryť v aplikácii
+    language: Jazyk
     translation: Preklad
+    translation_placeholder: Zadajte preklad...
     collection_name: Názov zbierky
     archive_divider: Archív
     archive_field_placeholder: Vyberte pole...
@@ -706,6 +944,7 @@ sort_desc: Zoradiť zostupne
 template: Šablóna
 require_value_to_be_set: Vyžaduje nastavenú hodnotu pri vytvorení
 translation: Preklad
+translation_placeholder: Zadajte preklad...
 interfaces:
   filter:
     add_filter: Pridať filter
@@ -759,29 +998,149 @@ interfaces:
   select-dropdown:
     choices_name_placeholder: Zadajte názov...
     choices_value_placeholder: Zadajte hodnotu...
+  select-multiple-dropdown:
+    select-multiple-dropdown: Vysúvací zoznam (viacero)
+    description: Zvolí viac hodnôť z vysúvacieho zoznamu
   file:
     file: Súbor
+    description: Vyberie alebo nahrá súbor
   input-hash:
     hash: Hash
   select-icon:
     icon: Ikona
+  input-rich-text-md:
+    edit: Upraviť
   map:
     zoom: Priblíženie
+    geometry_type: Typ geometrie
+    geometry_format: Formát geometrie
+    default_view: Predvolený pohľad
+    invalid_options: Neplatné možnosti
+    invalid_format: Neplatný formát ({format})
+    unexpected_geometry: Očakávané {expected}, dodané {got}.
+    fit_bounds: Prispôsobiť pohľad údajom
+    native: Natívne
+    geojson: GeoJSON
+    lnglat: Zemepisná šírka a dĺžka
+  presentation-notice:
+    notice: Oznámenie
+    description: Zobraziť krátke oznámenie
+    text: Zadajte obsah oznámenia sem...
+  list-o2m:
+    one-to-many: Jeden k viacerým
+    description: Vyberie viacej súvisiacich položiek
+    no_collection: Zbierka sa nenašla
   system-folder:
     folder: Priečinok
+    description: Vyberte priečinok
+    field_hint: Priečinok na nahrávanie súborov. Neovplyvní to existujúce súbory.
+    system_default: Predvolené systémom
+  select-radio:
+    radio-buttons: Prepínače
+    description: Vyberie jednu z viacerých možností
+  list:
+    repeater: Opakovač
+    description: Vytvorí viac položiek rovnakej štruktúry
+    edit_fields: Upraviť polia
+    add_label: 'Nadpis "Vytvoriť nový"'
+    sort: Zoradiť
+    sort_placeholder: Ručne
+    field_name_placeholder: Zadajte názov poľa...
+    field_note_placeholder: Zadajte poznámku poľa...
+    incompatible_data: Aktuálne údaje nie sú kompatibilné s rozhraním opakovača a prepíšu sa pri pridaní položiek do opakovača
+  slider:
+    slider: Posuvník
+    description: Vyberie číslo pomocou posuvníka
+    always_show_value: Vždy zobraziť hodnotu
   tags:
     tags: Tagy
+    description: Vybrať alebo pridať značky
+    whitespace: Medzera
+    hyphen: Nahradiť pomlčkou
+    underscore: Nahradiť podčiarkovníkom
+    remove: Odstrániť medzery
+    capitalization: Kapitálky
+    uppercase: Konvertovať na veľké písmená
+    lowercase: Konvertovať na malé písmená
+    auto_formatter: Použiť automatický formatter
+    alphabetize: Abecedne
+    alphabetize_label: Vynútiť abecedné poradie
+    add_tags: Pridajte značku a stlačte Enter...
+  input:
+    input: Vstup
+  boolean:
+    color_on: Farba zapnutá
+    color_off: Farba vypnutá
+    label_default: Zapnuté
+  translations:
+    enable: Zapnúť
+    user_language: Použiť jazyk aktuálneho používateľa
+    default_language: Predvolený jazyk
+  input-rich-text-html:
+    folder_note: Priečinok na nahrávanie súborov. Neovplyvní to existujúce súbory.
+    imageToken: Statický prístupový token
+    imageToken_label: Statický prístupový token sa pridá do URL súborov
+  input-autocomplete-api:
+    input-autocomplete-api: Dopĺňaný vstup (API)
+    results_path: Cesta k výsledkom
+    value_path: Cesta k hodnote
+    text_path: Cesta k textu
+    trigger: Spúšťač
+    rate: Rýchlosť
+  group-raw:
+    description: Vyrenderuje pole tak ako je
+  group-detail:
+    name: Podrobnosti skupiny
+    description: Vyrenderuje polia ako skrývateľnú sekciu
+    show_header: Zobraziť hlavičku skupiny
+    header_icon: Ikony hlavičky
+    header_color: Farba hlavičky
+    start_open: Začať otvorené
+    start_closed: Začať zavreté
+  system-token:
+    system-token: Token
+    generate: Vygenerovať Token
+    regenerate: Pregenerovať Token
+    generate_success_copy: Uistite sa o zálohovaní kópie vyššie uvedeného tokenu. Z bezpečnostných dôvodov, nebudete môcť druhý krát zobraziť token po uložení odchode z tejto stránky.
+    remove_token: Odstrániť token
 displays:
+  translations:
+    translations: Preklady
+    description: Preklady náhľadov
+    enable: Zapnúť
+    user_language: Použiť jazyk aktuálneho používateľa
+    default_language: Predvolený jazyk
+    language_field: Pole jazyka
   boolean:
     boolean: Boolean
+    description: Zobraziť stavy zap a vyp
+    label_on: Nápis zapnutý
+    label_off: Nápis vypnutý
+    icon_on: Ikona zapnutá
+    icon_off: Ikona vypnutá
+    color_on: Farba zapnutá
+    color_off: Farba vypnutá
   collection:
     collection: Zbierka
+    description: Zobraziť zbierku
+    icon_label: Zobraziť ikonu zbierky
   color:
     color: Farba
+    description: Zobraziť farebnú bodku
+    default_color: Predvolená farba
   datetime:
     datetime: Dátum a čas
+    description: Zobraziť hodnoty súvisiace s časom
+    format: Formát
+    suffix: Sufix
   formatted-value:
+    format: Formát
+    font: Písmo
+    font_serif: Serif
+    font_monospace: Monospace
     italic: Kurzíva
+    prefix: Prefix
+    suffix: Sufix
     color: Farba
     icon: Ikona
     text: Text
@@ -789,27 +1148,137 @@ displays:
     icon: Ikona
   image:
     circle: Kruh
+  labels:
+    labels: Popisky
+    description: Zobrazí jeden alebo zoznam popiskov
+    default_foreground: Predvolené popredie
+    default_background: Predvolené pozadie
+    show_as_dot: Zobraziť ako bodku
+    choices_value_placeholder: Zadajte hodnotu...
+    choices_text_placeholder: Zadajte text...
+  mime-type:
+    mime-type: Typ MIME
+    description: Zobraziť MIME typ súboru
+    extension_only: Len prípony
+    extension_only_label: Zobrazí len prípony súboru
+  rating:
+    rating: Hodnotenie
+    description: Vizualizuje číslo ako hviezdičky relatívne k maximálnej hodnote
+    simple: Jednoduché
+    simple_label: Zobrazí hviezdičky v jednoduchej forme
+  raw:
+    raw: Surová hodnota
+  related-values:
+    related-values: Súvisiace hodnoty
+    display_template_configure_notice: Šablónu zobrazenia môžete nastaviť po vytvorení tohoto poľa.
   user:
+    user: Používateľ
+    description: Zobrazí directus používateľa
     avatar: Avatar
+    name: Meno
     both: Oboje
+    circle_label: Zobraz používateľa v kruhu
 layouts:
   cards:
+    cards: Karty
+    image_source: Zdroj obrázku
+    image_fit: Prispôsobenie obrázku
+    crop: Orezať
+    contain: Vyplniť
     title: Názov
+    subtitle: Podnadpis
   tabular:
+    tabular: Tabuľka
+    spacing: Rozostupy
     comfortable: Pohodlná
+    compact: Kompaktné
+    cozy: Útulné
+  calendar:
+    calendar: Kalendár
+    start_date_field: Pole počiatočného dátumu
+    end_date_field: Pole koncového dátumu
+    optional: Voliteľné
+    first_day: Prvý deň týždňa
+  map:
+    map: Mapa
+    basemap: Podkladová mapa
+    layers: Vrstvy
+    cluster_options: Možnosti klastrovania
+    cluster: Klastrovať blízke body
+    cluster_radius: Priemer klastrovania
+    cluster_minpoints: Minimálna veľkosť klastra
+    cluster_maxzoom: Maximálny zoom pre klastrovanie
+    invalid_geometry: Neplatná geometria
+    find_location: Nájsť polohu...
   kanban:
+    crop: Orezať
     advanced: Rozšírené
 panels:
   label:
     name: Popis
+  barchart:
+    group_by: Zoskupené podľa
+  linechart:
+    function: Funkcia
+    show_legend: Zobraziť legendu
+    smooth: Hladké
+    straight: Rovné
+    step_line: Kroková čiara
+  meter:
+    half_circle: Polkruh
+    full_circle: Celý kruh
+    stroke_width: Hrúbka ťahu
+    rounded_stroke: Zaoblený ťah
+    select_max_value: Musíte vybrať maximálnu hodnotu.
+    max_greater_than_zero: Maximálna hodnota musí byť väčšia ako 0.
+    select_field: Musíte vybrať pole.
+    select_collection: Musíte vybrať zbierku.
+    function: Funkcia
+    thin: Tenké
+    medium: Stredné
+    broad: Široké
+  piechart:
+    function: Funkcia
+    donut: Donut
+    show_labels: Zobraziť názvy
+    show_legend: Zobraziť legendu
 triggers:
   webhook:
     method: Metóda
+    async: Asynchrónne
+  schedule:
+    name: Časovač (CRON)
+    description: Spúšťa v pravidelných časových intervaloch
+    cron: Interval
+  manual:
+    name: Ručne
 operations:
+  condition:
+    name: Podmienka
+  exec:
+    name: Spustiť skript
+  log:
+    message: Správa
+  mail:
+    name: Poslať Email
+    description: Pošle email jednému alebo viacerým ľuďom
+    to: Komu
+    to_placeholder: Zadajte emailové adresy a stlačte enter...
+    body: Telo správy
+  notification:
+    name: Odoslať oznámenie
+    description: Pošle internú notifikáciu jednému alebo viacerým používateľom
+    recipient: Používateľ
+    recipient_placeholder: Pridajte UUID používateľa a stlačte enter...
+    message: Správa
   request:
+    name: Webhook / URL požiadavka
+    description: "Spraví požiadavku na URL"
     url: URL
+    url_placeholder: https://example.com/example
     method: Metóda
     data: Údaje
+    headers: Hlavičky
     header: Hlavička
   trigger:
     data: Údaje
