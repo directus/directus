@@ -950,6 +950,20 @@ interfaces:
     add_filter: Pridať filter
     all: Všetko
     any: Akékoľvek
+  fields:
+    name: Polia
+  group-accordion:
+    name: Akordeón
+    description: Zobrazí polia alebo skupiny ako sekcie v akordeóne
+    start: Začať
+    all_closed: Všetko zavreté
+    first_opened: Prvé otvorené
+    all_opened: Všetko otvorené
+    accordion_mode: Režim akordeónu
+    max_one_section_open: Max 1 sekcia otvorená
+  presentation-links:
+    links: Odkazy
+    link: Odkazy
   select-multiple-checkbox-tree:
     value_combining: Hodnota kombinácie
     value_combining_note: Aká hodnota sa uloží kde je označených viac možností.
