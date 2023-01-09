@@ -34,7 +34,9 @@ export type CustomAspectRatio = {
 export type Settings = {
 	id: 1;
 	project_name: string;
+	project_descriptor: string | null;
 	project_url: string | null;
+	default_language: string | null;
 	project_color: string | null;
 	project_logo: string | null;
 	public_foreground: string | null;

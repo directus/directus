@@ -528,7 +528,7 @@ function useForm() {
 		{
 			field: 'filter',
 			name: t('filter'),
-			type: 'string',
+			type: 'json',
 			meta: {
 				interface: 'system-filter',
 				width: 'half',

@@ -41,7 +41,9 @@ export class RolesService extends ItemsService {
 		const usersThatWereInRoleBefore = (await this.knex.select('id').from('directus_users').where('role', '=', key)).map(
 			(user) => user.id
 		);
-		const usersThatAreRemoved = usersThatWereInRoleBefore.filter((id) => userKeys.includes(id) === false);
+		const usersThatAreRemoved = usersThatWereInRoleBefore.filter((id) =>
+			Array.isArray(users) ? userKeys.includes(id) === false : users.delete.includes(id) === true
+		);
 
 		const usersThatAreAdded = Array.isArray(users) ? users : users.create;
 
@@ -68,10 +70,6 @@ export class RolesService extends ItemsService {
 	}
 
 	async updateOne(key: PrimaryKey, data: Record<string, any>, opts?: MutationOptions): Promise<PrimaryKey> {
-		if ('admin_access' in data && data.admin_access === false) {
-			await this.checkForOtherAdminRoles([key]);
-		}
-
 		if ('users' in data) {
 			await this.checkForOtherAdminUsers(key, data.users);
 		}

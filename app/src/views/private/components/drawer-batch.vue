@@ -30,6 +30,7 @@ import api from '@/api';
 import { VALIDATION_TYPES } from '@/constants';
 import { APIError } from '@/types/error';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { getEndpoint } from '@directus/shared/utils';
 
 export default defineComponent({
 	props: {
@@ -104,19 +105,13 @@ export default defineComponent({
 			const saving = ref(false);
 			const validationErrors = ref([]);
 
-			const endpoint = computed(() => {
-				return collection.value.startsWith('directus_')
-					? `/${collection.value.substring(9)}`
-					: `/items/${collection.value}`;
-			});
-
 			return { save, cancel, saving, validationErrors };
 
 			async function save() {
 				saving.value = true;
 
 				try {
-					await api.patch(endpoint.value, {
+					await api.patch(getEndpoint(collection.value), {
 						keys: props.primaryKeys,
 						data: internalEdits.value,
 					});

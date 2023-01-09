@@ -252,18 +252,18 @@ export default defineComponent({
 					},
 				});
 
+				const storeHydrations: Promise<void>[] = [];
+
 				const relations = getSystemRelations();
 
 				if (relations.length > 0) {
-					for (const relation of relations) {
-						await api.post('/relations', relation);
-					}
-
-					await relationsStore.hydrate();
+					const requests = relations.map((relation) => api.post('/relations', relation));
+					await Promise.all(requests);
+					storeHydrations.push(relationsStore.hydrate());
 				}
 
-				await collectionsStore.hydrate();
-				await fieldsStore.hydrate();
+				storeHydrations.push(collectionsStore.hydrate(), fieldsStore.hydrate());
+				await Promise.all(storeHydrations);
 
 				notify({
 					title: t('collection_created'),

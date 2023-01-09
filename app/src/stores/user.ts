@@ -2,6 +2,7 @@ import api from '@/api';
 import { useLatencyStore } from '@/stores/latency';
 import { User } from '@directus/shared/types';
 import { userName } from '@/utils/user-name';
+import { merge } from 'lodash';
 import { defineStore } from 'pinia';
 
 type ShareUser = {
@@ -61,6 +62,15 @@ export const useUserStore = defineStore({
 		},
 		async dehydrate() {
 			this.$reset();
+		},
+		async hydrateAdditionalFields(fields: string[]) {
+			try {
+				const { data } = await api.get(`/users/me`, { params: { fields } });
+
+				this.currentUser = merge({}, this.currentUser, data.data);
+			} catch (error: any) {
+				// Do nothing
+			}
 		},
 		async trackPage(page: string) {
 			const latencyStore = useLatencyStore();
