@@ -65,9 +65,9 @@
 	],
 	"scripts": {
 		"build": "tsc --build && copyfiles \"src/**/*.{yaml,liquid}\" -u 1 dist",
-		"cli": "NODE_ENV=development SERVE_APP=false node --require @swc-node/register src/cli/run.ts",
-		"dev": "NODE_ENV=development SERVE_APP=false ts-node-dev --transpile-only --respawn --watch \".env\" --inspect=0 -- src/start.ts",
-		"start": "node cli.js start",
+		"cli": "NODE_ENV=development SERVE_APP=false ts-node --script-mode --transpile-only src/cli/run.ts",
+		"dev": "NODE_ENV=development SERVE_APP=false ts-node-dev --files --transpile-only --respawn --watch \".env\" --inspect=0 --exit-child -- src/start.ts",
+		"start": "npx directus start",
 		"test": "vitest run",
 		"test:coverage": "vitest run --coverage",
 		"test:watch": "vitest"
@@ -168,8 +168,6 @@
 	},
 	"devDependencies": {
 		"@ngneat/falso": "6.3.2",
-		"@swc-node/register": "1.5.5",
-		"@swc/core": "1.3.25",
 		"@types/async": "3.2.16",
 		"@types/busboy": "1.5.0",
 		"@types/bytes": "3.1.1",
