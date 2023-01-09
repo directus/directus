@@ -26,8 +26,8 @@ cp -r ./directus-custom-extensions-release/saved-searches ${DIRECTUS_MODULES}
 cp -r ./directus-custom-extensions-release/saved-searches/migrations/* ${DIRECTUS_EXTENSIONS}/migrations
 #cp -r ./directus-custom-extensions-release/hide-modules/* ${DIRECTUS_HOOKS}/hide-modules
 #cp -r ./directus-custom-extensions-release/area-hook/* ${DIRECTUS_HOOKS}/area-hook
-cp -r ./directus-custom-extensions-release/hide-modules ${DIRECTUS_HOOKS}/hide-modules/
-cp -r ./directus-custom-extensions-release/area-hook ${DIRECTUS_HOOKS}/area-hook/
+cp -r ./directus-custom-extensions-release/hide-modules ${DIRECTUS_HOOKS}/
+cp -r ./directus-custom-extensions-release/area-hook ${DIRECTUS_HOOKS}/
 
 ln -s ${DIRECTUS_MODULES}
 ln -s ${DIRECTUS_HOOKS}
