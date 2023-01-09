@@ -30,3 +30,4 @@ cp -r ./directus-custom-extensions-release/hide-modules ${DIRECTUS_HOOKS}/hide-m
 cp -r ./directus-custom-extensions-release/area-hook ${DIRECTUS_HOOKS}/area-hook/
 
 ln -s ${DIRECTUS_MODULES}
+ln -s ${DIRECTUS_HOOKS}
