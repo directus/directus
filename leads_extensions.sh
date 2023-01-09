@@ -3,6 +3,7 @@
 DIRECTUS_DIR="/directus/api"
 DIRECTUS_EXTENSIONS="${DIRECTUS_DIR}/extensions"
 DIRECTUS_MODULES="${DIRECTUS_EXTENSIONS}/modules"
+DIRECTUS_HOOKS="${DIRECTUS_EXTENSIONS}/hooks"
 
 mkdir -p ${DIRECTUS_EXTENSIONS}/migrations
 
@@ -20,5 +21,6 @@ cp -r ./directus-custom-extensions-release/leads ${DIRECTUS_MODULES}
 cp -r ./directus-custom-extensions-release/areas ${DIRECTUS_MODULES}
 cp -r ./directus-custom-extensions-release/saved-searches ${DIRECTUS_MODULES}
 cp -r ./directus-custom-extensions-release/saved-searches/migrations/* ${DIRECTUS_EXTENSIONS}/migrations
+cp -r ./directus-custom-extensions-release/area-hook ${DIRECTUS_HOOKS}
 
 ln -s ${DIRECTUS_MODULES}
