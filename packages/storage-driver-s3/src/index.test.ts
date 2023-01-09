@@ -113,6 +113,32 @@ afterEach(() => {
 });
 
 describe('#constructor', () => {
+	test('Throws error if key defined but secret missing', () => {
+		try {
+			new DriverS3({ key: 'key', bucket: 'bucket' });
+		} catch (err: any) {
+			expect(err).toBeInstanceOf(Error);
+			expect(err.message).toBe('Both `key` and `secret` are required when defined');
+		}
+	});
+
+	test('Throws error if secret defined but key missing', () => {
+		try {
+			new DriverS3({ secret: 'secret', bucket: 'bucket' });
+		} catch (err: any) {
+			expect(err).toBeInstanceOf(Error);
+			expect(err.message).toBe('Both `key` and `secret` are required when defined');
+		}
+	});
+
+	test('Creates S3Client without key / secret (based on machine config)', () => {
+		const driver = new DriverS3({ bucket: 'bucket' });
+
+		expect(S3Client).toHaveBeenCalledWith({});
+
+		expect(driver['client']).toBeInstanceOf(S3Client);
+	});
+
 	test('Creates S3Client with key / secret configuration', () => {
 		expect(S3Client).toHaveBeenCalledWith({
 			credentials: {

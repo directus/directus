@@ -92,6 +92,18 @@ export abstract class SchemaHelper extends DatabaseHelper {
 		return;
 	}
 
+	constraintName(existingName: string): string {
+		// most vendors allow for dropping/creating constraints with the same name
+		// reference issue #14873
+		return existingName;
+	}
+
+	applyLimit(rootQuery: Knex.QueryBuilder, limit: number): void {
+		if (limit !== -1) {
+			rootQuery.limit(limit);
+		}
+	}
+
 	applyOffset(rootQuery: Knex.QueryBuilder, offset: number): void {
 		rootQuery.offset(offset);
 	}
@@ -110,7 +122,7 @@ export abstract class SchemaHelper extends DatabaseHelper {
 	): Knex.QueryBuilder {
 		dbQuery.rowNumber(
 			knex.ref('directus_row_number').toQuery(),
-			knex.raw(`partition by ??${orderByString}`, [`${table}.${primaryKey}`, ...orderByFields])
+			knex.raw(`partition by ?? order by ${orderByString}`, [`${table}.${primaryKey}`, ...orderByFields])
 		);
 		return dbQuery;
 	}
@@ -121,12 +133,6 @@ export abstract class SchemaHelper extends DatabaseHelper {
 			parsed: version[0]['@@version'].split('.').map((num: string) => parseInt(num, 10)),
 			full: version[0]['@@version'],
 		};
-	}
-
-	constraintName(existingName: string): string {
-		// most vendors allow for dropping/creating constraints with the same name
-		// reference issue #14873
-		return existingName;
 	}
 
 	formatUUID(uuid: string): string {

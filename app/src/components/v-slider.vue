@@ -3,7 +3,7 @@
 		<div v-if="$slots.prepend" class="prepend">
 			<slot name="prepend" :value="modelValue" />
 		</div>
-		<div class="slider" :class="{ disabled }">
+		<div class="slider" :class="{ disabled, 'thumb-label-visible': showThumbLabel && alwaysShowValue }">
 			<input
 				:disabled="disabled"
 				type="range"
@@ -113,6 +113,10 @@ body {
 			--v-slider-fill-color: var(--foreground-subdued);
 		}
 
+		&.thumb-label-visible {
+			margin-bottom: 30px;
+		}
+
 		input {
 			width: 100%;
 			height: 4px;
@@ -219,6 +223,7 @@ body {
 		}
 
 		.thumb-label {
+			z-index: 1;
 			position: absolute;
 			top: 0px;
 			left: calc(var(--_v-slider-percentage) * 1%);
