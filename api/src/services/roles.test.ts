@@ -1,8 +1,8 @@
 import knex, { Knex } from 'knex';
-import { MockClient, Tracker, getTracker } from 'knex-mock-client';
+import { getTracker, MockClient, Tracker } from 'knex-mock-client';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, MockedFunction, SpyInstance, vi } from 'vitest';
-import { UnprocessableEntityException } from '../exceptions';
 import { ItemsService, PermissionsService, PresetsService, RolesService, UsersService } from '.';
+import { UnprocessableEntityException } from '../exceptions';
 
 vi.mock('../../src/database/index', () => {
 	return { __esModule: true, default: vi.fn(), getDatabaseClient: vi.fn().mockReturnValue('postgres') };
@@ -44,11 +44,11 @@ describe('Integration Tests', () => {
 						relations: [],
 					},
 				});
-				superUpdateOne = vi.spyOn(ItemsService.prototype, 'updateOne').mockReturnValue(Promise.resolve(adminRoleId));
+				superUpdateOne = vi.spyOn(ItemsService.prototype, 'updateOne').mockResolvedValueOnce(adminRoleId);
 			});
 
 			afterEach(() => {
-				superUpdateOne.mockClear();
+				superUpdateOne.mockRestore();
 			});
 
 			describe('checkForOtherAdminUsers', () => {
@@ -587,23 +587,23 @@ describe('Integration Tests', () => {
 				},
 			});
 
-			vi.spyOn(PermissionsService.prototype, 'deleteByQuery').mockResolvedValue([]);
-			vi.spyOn(PresetsService.prototype, 'deleteByQuery').mockResolvedValue([]);
-			vi.spyOn(UsersService.prototype, 'updateByQuery').mockResolvedValue([]);
-			vi.spyOn(UsersService.prototype, 'deleteByQuery').mockResolvedValue([]);
+			vi.spyOn(PermissionsService.prototype, 'deleteByQuery').mockResolvedValueOnce([]);
+			vi.spyOn(PresetsService.prototype, 'deleteByQuery').mockResolvedValueOnce([]);
+			vi.spyOn(UsersService.prototype, 'updateByQuery').mockResolvedValueOnce([]);
+			vi.spyOn(UsersService.prototype, 'deleteByQuery').mockResolvedValueOnce([]);
 
 			// "as any" are needed since these are private methods
 			checkForOtherAdminRolesSpy = vi
 				.spyOn(RolesService.prototype as any, 'checkForOtherAdminRoles')
-				.mockImplementation(() => vi.fn());
+				.mockResolvedValueOnce(true);
 			checkForOtherAdminUsersSpy = vi
 				.spyOn(RolesService.prototype as any, 'checkForOtherAdminUsers')
-				.mockImplementation(() => vi.fn());
+				.mockResolvedValueOnce(true);
 		});
 
 		afterEach(() => {
-			checkForOtherAdminRolesSpy.mockClear();
-			checkForOtherAdminUsersSpy.mockClear();
+			checkForOtherAdminRolesSpy.mockRestore();
+			checkForOtherAdminUsersSpy.mockRestore();
 		});
 
 		describe('createOne', () => {
@@ -665,14 +665,14 @@ describe('Integration Tests', () => {
 		describe('updateByQuery', () => {
 			it('should not checkForOtherAdminRoles', async () => {
 				// mock return value for the following empty query
-				vi.spyOn(ItemsService.prototype, 'getKeysByQuery').mockResolvedValue([1]);
+				vi.spyOn(ItemsService.prototype, 'getKeysByQuery').mockResolvedValueOnce([1]);
 				await service.updateByQuery({}, {});
 				expect(checkForOtherAdminRolesSpy).not.toBeCalled();
 			});
 
 			it('should checkForOtherAdminRoles once', async () => {
 				// mock return value for the following empty query
-				vi.spyOn(ItemsService.prototype, 'getKeysByQuery').mockResolvedValue([1]);
+				vi.spyOn(ItemsService.prototype, 'getKeysByQuery').mockResolvedValueOnce([1]);
 				await service.updateByQuery({}, { admin_access: false });
 				expect(checkForOtherAdminRolesSpy).toBeCalledTimes(1);
 			});
@@ -695,7 +695,7 @@ describe('Integration Tests', () => {
 		describe('deleteByQuery', () => {
 			it('should checkForOtherAdminRoles once', async () => {
 				// mock return value for the following empty query
-				vi.spyOn(ItemsService.prototype, 'getKeysByQuery').mockResolvedValue([1]);
+				vi.spyOn(ItemsService.prototype, 'getKeysByQuery').mockResolvedValueOnce([1]);
 				await service.deleteByQuery({});
 				expect(checkForOtherAdminRolesSpy).toBeCalledTimes(1);
 			});
