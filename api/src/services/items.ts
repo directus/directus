@@ -4,6 +4,7 @@ import { Knex } from 'knex';
 import { assign, clone, cloneDeep, omit, pick, without } from 'lodash';
 import { getCache } from '../cache';
 import getDatabase from '../database';
+import { getHelpers } from '../database/helpers';
 import runAST from '../database/run-ast';
 import emitter from '../emitter';
 import env from '../env';
@@ -145,7 +146,12 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 					.then((result) => result[0]);
 
 				const returnedKey = typeof result === 'object' ? result[primaryKeyField] : result;
-				primaryKey = primaryKey ?? returnedKey;
+
+				if (this.schema.collections[this.collection].fields[primaryKeyField].type === 'uuid') {
+					primaryKey = getHelpers(trx).schema.formatUUID(primaryKey ?? returnedKey);
+				} else {
+					primaryKey = primaryKey ?? returnedKey;
+				}
 			} catch (err: any) {
 				throw await translateDatabaseError(err);
 			}

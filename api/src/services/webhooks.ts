@@ -22,20 +22,8 @@ export class WebhooksService extends ItemsService<Webhook> {
 		return result;
 	}
 
-	async updateOne(key: PrimaryKey, data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
-		const result = await super.updateOne(key, data, opts);
-		this.messenger.publish('webhooks', { type: 'reload' });
-		return result;
-	}
-
 	async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
 		const result = await super.updateMany(keys, data, opts);
-		this.messenger.publish('webhooks', { type: 'reload' });
-		return result;
-	}
-
-	async deleteOne(key: PrimaryKey, opts?: MutationOptions): Promise<PrimaryKey> {
-		const result = await super.deleteOne(key, opts);
 		this.messenger.publish('webhooks', { type: 'reload' });
 		return result;
 	}

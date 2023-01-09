@@ -29,7 +29,7 @@ import { useI18n } from 'vue-i18n';
 import { ref } from 'vue';
 
 import api from '@/api';
-import { Activity, ActivityByDate } from './types';
+import { Activity, ActivityByDate } from '@/types/activity';
 import CommentInput from './comment-input.vue';
 import { groupBy, orderBy, flatten } from 'lodash';
 import { localizedFormat } from '@/utils/localized-format';

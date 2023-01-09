@@ -2,17 +2,18 @@ import {
 	API_SHARED_DEPS,
 	APP_EXTENSION_TYPES,
 	APP_SHARED_DEPS,
-	EXTENSION_PACKAGE_TYPES,
 	EXTENSION_PKG_KEY,
+	EXTENSION_TYPES,
 	HYBRID_EXTENSION_TYPES,
 } from '@directus/shared/constants';
 import {
 	ApiExtensionType,
 	AppExtensionType,
-	ExtensionManifestRaw,
+	ExtensionManifest,
+	ExtensionOptionsBundleEntries,
 	ExtensionOptionsBundleEntry,
 } from '@directus/shared/types';
-import { isIn, isTypeIn, validateExtensionManifest } from '@directus/shared/utils';
+import { isIn, isTypeIn } from '@directus/shared/utils';
 import commonjs from '@rollup/plugin-commonjs';
 import json from '@rollup/plugin-json';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
@@ -40,7 +41,7 @@ import { clear, log } from '../utils/logger';
 import tryParseJson from '../utils/try-parse-json';
 import generateBundleEntrypoint from './helpers/generate-bundle-entrypoint';
 import loadConfig from './helpers/load-config';
-import { validateBundleEntriesOption, validateSplitEntrypointOption } from './helpers/validate-cli-options';
+import { validateSplitEntrypointOption } from './helpers/validate-cli-options';
 
 type BuildOptions = {
 	type?: string;
@@ -64,19 +65,16 @@ export default async function build(options: BuildOptions): Promise<void> {
 			process.exit(1);
 		}
 
-		const extensionManifest: ExtensionManifestRaw = await fse.readJSON(packagePath);
+		let extensionManifest: ExtensionManifest;
 
-		if (!validateExtensionManifest(extensionManifest)) {
+		try {
+			extensionManifest = ExtensionManifest.parse(await fse.readJSON(packagePath));
+		} catch (err) {
 			log(`Current directory is not a valid Directus extension.`, 'error');
 			process.exit(1);
 		}
 
 		const extensionOptions = extensionManifest[EXTENSION_PKG_KEY];
-
-		if (extensionOptions.type === 'pack') {
-			log(`Building extension type ${chalk.bold('pack')} is not currently supported.`, 'error');
-			process.exit(1);
-		}
 
 		if (extensionOptions.type === 'bundle') {
 			await buildBundleExtension({
@@ -117,18 +115,13 @@ export default async function build(options: BuildOptions): Promise<void> {
 			process.exit(1);
 		}
 
-		if (!isIn(type, EXTENSION_PACKAGE_TYPES)) {
+		if (!isIn(type, EXTENSION_TYPES)) {
 			log(
-				`Extension type ${chalk.bold(type)} is not supported. Available extension types: ${EXTENSION_PACKAGE_TYPES.map(
-					(t) => chalk.bold.magenta(t)
+				`Extension type ${chalk.bold(type)} is not supported. Available extension types: ${EXTENSION_TYPES.map((t) =>
+					chalk.bold.magenta(t)
 				).join(', ')}.`,
 				'error'
 			);
-			process.exit(1);
-		}
-
-		if (type === 'pack') {
-			log(`Building extension type ${chalk.bold('pack')} is not currently supported.`, 'error');
 			process.exit(1);
 		}
 
@@ -145,10 +138,10 @@ export default async function build(options: BuildOptions): Promise<void> {
 		}
 
 		if (type === 'bundle') {
-			const entries = tryParseJson(input);
+			const entries = ExtensionOptionsBundleEntries.safeParse(tryParseJson(input));
 			const splitOutput = tryParseJson(output);
 
-			if (!validateBundleEntriesOption(entries)) {
+			if (entries.success === false) {
 				log(
 					`Input option needs to be of the format ${chalk.blue(
 						`[-i '[{"type":"<extension-type>","name":"<extension-name>","source":<entrypoint>}]']`
@@ -168,7 +161,7 @@ export default async function build(options: BuildOptions): Promise<void> {
 			}
 
 			await buildBundleExtension({
-				entries,
+				entries: entries.data,
 				outputApp: splitOutput.app,
 				outputApi: splitOutput.api,
 				watch,

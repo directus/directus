@@ -1,7 +1,8 @@
 import knex, { Knex } from 'knex';
 import { getTracker, MockClient, Tracker } from 'knex-mock-client';
+import { afterEach, beforeAll, beforeEach, describe, expect, it, MockedFunction, vi } from 'vitest';
 import { CollectionsService, FieldsService, RelationsService, SpecificationService } from '../../src/services';
-import { describe, beforeAll, afterEach, it, expect, vi, beforeEach, MockedFunction } from 'vitest';
+import { Collection } from '../types';
 
 class Client_PG extends MockClient {}
 
@@ -34,49 +35,121 @@ describe('Integration Tests', () => {
 
 				describe('schema', () => {
 					it('returns untyped schema for json fields', async () => {
-						vi.spyOn(CollectionsService.prototype, 'readByQuery').mockImplementation(
-							vi.fn().mockReturnValue([
-								{
+						vi.spyOn(CollectionsService.prototype, 'readByQuery').mockResolvedValue([
+							{
+								collection: 'test_table',
+								meta: {
+									accountability: 'all',
 									collection: 'test_table',
-									meta: {
-										accountability: 'all',
-										collection: 'test_table',
-										group: null,
-										hidden: false,
-										icon: null,
-										item_duplication_fields: null,
-										note: null,
-										singleton: false,
-										translations: null,
-									},
-									schema: {
-										name: 'test_table',
-									},
+									group: null,
+									hidden: false,
+									icon: null,
+									item_duplication_fields: null,
+									note: null,
+									singleton: false,
+									translations: null,
 								},
-							])
-						);
+								schema: {
+									name: 'test_table',
+								},
+							},
+						] as any[]);
 
-						vi.spyOn(FieldsService.prototype, 'readAll').mockImplementation(
-							vi.fn().mockReturnValue([
-								{
+						vi.spyOn(FieldsService.prototype, 'readAll').mockResolvedValue([
+							{
+								collection: 'test_table',
+								field: 'id',
+								name: 'id',
+								type: 'integer',
+								meta: {
+									id: 1,
 									collection: 'test_table',
+									conditions: null,
+									display: null,
+									display_options: null,
 									field: 'id',
-									type: 'integer',
-									schema: {
-										is_nullable: false,
-									},
+									group: null,
+									hidden: true,
+									interface: null,
+									note: null,
+									options: null,
+									readonly: false,
+									required: false,
+									sort: null,
+									special: null,
+									translations: null,
+									validation: null,
+									validation_message: null,
+									width: 'full',
 								},
-								{
+								schema: {
+									comment: null,
+									data_type: 'integer',
+									default_value: null,
+									foreign_key_column: null,
+									foreign_key_schema: null,
+									foreign_key_table: null,
+									generation_expression: null,
+									has_auto_increment: false,
+									is_generated: false,
+									is_nullable: false,
+									is_primary_key: true,
+									is_unique: true,
+									max_length: null,
+									name: 'id',
+									numeric_precision: null,
+									numeric_scale: null,
+									table: 'test_table',
+								},
+							},
+							{
+								collection: 'test_table',
+								field: 'blob',
+								name: 'blob',
+								type: 'json',
+								meta: {
+									id: 2,
 									collection: 'test_table',
+									conditions: null,
+									display: null,
+									display_options: null,
 									field: 'blob',
-									type: 'json',
-									schema: {
-										is_nullable: true,
-									},
+									group: null,
+									hidden: true,
+									interface: null,
+									note: null,
+									options: null,
+									readonly: false,
+									required: false,
+									sort: null,
+									special: null,
+									translations: null,
+									validation: null,
+									validation_message: null,
+									width: 'full',
 								},
-							])
-						);
-						vi.spyOn(RelationsService.prototype, 'readAll').mockImplementation(vi.fn().mockReturnValue([]));
+								schema: {
+									comment: null,
+									data_type: 'json',
+									default_value: null,
+									foreign_key_column: null,
+									foreign_key_schema: null,
+									foreign_key_table: null,
+									generation_expression: null,
+									has_auto_increment: false,
+									is_generated: false,
+									is_nullable: true,
+									is_primary_key: false,
+									is_unique: false,
+									max_length: null,
+									name: 'blob',
+									numeric_precision: null,
+									numeric_scale: null,
+									table: 'test_table',
+								},
+							},
+						]);
+						vi.spyOn(RelationsService.prototype, 'readAll').mockResolvedValue([]);
 
 						const spec = await service.oas.generate();
 						expect(spec.components?.schemas).toEqual({
@@ -93,13 +166,82 @@ describe('Integration Tests', () => {
 								},
 								'x-collection': 'test_table',
 							},
+							Query: {
+								type: 'object',
+								properties: {
+									fields: {
+										type: 'array',
+										items: {
+											type: 'string',
+										},
+										description: 'Control what fields are being returned in the object.',
+										example: ['*', '*.*'],
+									},
+									filter: {
+										type: 'object',
+										example: {
+											'<field>': {
+												'<operator>': '<value>',
+											},
+										},
+									},
+									search: {
+										description: 'Filter by items that contain the given search query in one of their fields.',
+										type: 'string',
+									},
+									sort: {
+										type: 'array',
+										items: {
+											type: 'string',
+										},
+										description: 'How to sort the returned items.',
+										example: ['-date_created'],
+									},
+									limit: {
+										type: 'number',
+										description: 'Set the maximum number of items that will be returned',
+									},
+									offset: {
+										type: 'number',
+										description: 'How many items to skip when fetching data.',
+									},
+									page: {
+										type: 'number',
+										description: 'Cursor for use in pagination. Often used in combination with limit.',
+									},
+									deep: {
+										type: 'object',
+										description:
+											'Deep allows you to set any of the other query parameters on a nested relational dataset.',
+										example: {
+											related_articles: {
+												_limit: 3,
+											},
+										},
+									},
+								},
+							},
+							'x-metadata': {
+								type: 'object',
+								properties: {
+									total_count: {
+										description: "Returns the total item count of the collection you're querying.",
+										type: 'integer',
+									},
+									filter_count: {
+										description:
+											"Returns the item count of the collection you're querying, taking the current filter/search parameters into account.",
+										type: 'integer',
+									},
+								},
+							},
 						});
 					});
 				});
 
 				describe('path', () => {
 					it('requestBody for CreateItems POST path should not have type in schema', async () => {
-						const collection = {
+						const collection: Collection = {
 							collection: 'test_table',
 							meta: {
 								accountability: 'all',
@@ -110,30 +252,64 @@ describe('Integration Tests', () => {
 								item_duplication_fields: null,
 								note: null,
 								singleton: false,
-								translations: null,
+								translations: {},
 							},
 							schema: {
 								name: 'test_table',
 							},
 						};
 
-						vi.spyOn(CollectionsService.prototype, 'readByQuery').mockImplementation(
-							vi.fn().mockReturnValue([collection])
-						);
+						vi.spyOn(CollectionsService.prototype, 'readByQuery').mockResolvedValue([collection]);
 
-						vi.spyOn(FieldsService.prototype, 'readAll').mockImplementation(
-							vi.fn().mockReturnValue([
-								{
-									collection: collection.collection,
+						vi.spyOn(FieldsService.prototype, 'readAll').mockResolvedValue([
+							{
+								collection: collection.collection,
+								field: 'id',
+								name: 'id',
+								type: 'integer',
+								meta: {
+									id: 1,
+									collection: 'test_table',
+									conditions: null,
+									display: null,
+									display_options: null,
 									field: 'id',
-									type: 'integer',
-									schema: {
-										is_nullable: false,
-									},
+									group: null,
+									hidden: true,
+									interface: null,
+									note: null,
+									options: null,
+									readonly: false,
+									required: false,
+									sort: null,
+									special: null,
+									translations: null,
+									validation: null,
+									validation_message: null,
+									width: 'full',
 								},
-							])
-						);
-						vi.spyOn(RelationsService.prototype, 'readAll').mockImplementation(vi.fn().mockReturnValue([]));
+								schema: {
+									comment: null,
+									data_type: 'integer',
+									default_value: null,
+									foreign_key_column: null,
+									foreign_key_schema: null,
+									foreign_key_table: null,
+									generation_expression: null,
+									has_auto_increment: false,
+									is_generated: false,
+									is_nullable: false,
+									is_primary_key: true,
+									is_unique: true,
+									max_length: null,
+									name: 'id',
+									numeric_precision: null,
+									numeric_scale: null,
+									table: 'test_table',
+								},
+							},
+						]);
+						vi.spyOn(RelationsService.prototype, 'readAll').mockResolvedValue([]);
 
 						const spec = await service.oas.generate();
 
