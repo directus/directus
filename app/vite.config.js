@@ -21,12 +21,9 @@ import markdownItTableOfContents from 'markdown-it-table-of-contents';
 import md from 'vite-plugin-vue-markdown';
 import { searchForWorkspaceRoot } from 'vite';
 import { defineConfig } from 'vitest/config';
-import hljsGraphQL from './src/utils/hljs-graphql';
 
 const API_PATH = path.join('..', 'api');
 const EXTENSIONS_PATH = path.join(API_PATH, 'extensions');
-
-hljs.registerLanguage('graphql', hljsGraphQL);
 
 // https://vitejs.dev/config/
 export default defineConfig({
