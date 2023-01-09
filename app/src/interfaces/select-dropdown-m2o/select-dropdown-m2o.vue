@@ -253,10 +253,6 @@ const updateAllowed = computed(() => {
 	flex-grow: 1;
 	height: calc(100% - 16px);
 	overflow: hidden;
-
-	> .render-template {
-		height: 100%;
-	}
 }
 
 .expand {
