@@ -14,6 +14,8 @@ curl --header "Private-Token: ${GITLAB_PIPELINE_TOKEN}" -LO ${CI_API_V4_URL}/pro
 
 unzip directus-custom-extensions-release.zip
 
+mkdir -p ${DIRECTUS_HOOKS}/hide-modules
+
 ls -la ./directus-custom-extensions-release
 
 cp -r ./directus-custom-extensions-release/dashboard ${DIRECTUS_MODULES}
@@ -22,7 +24,7 @@ cp -r ./directus-custom-extensions-release/areas ${DIRECTUS_MODULES}
 cp -r ./directus-custom-extensions-release/saved-searches ${DIRECTUS_MODULES}
 cp -r ./directus-custom-extensions-release/saved-searches/migrations/* ${DIRECTUS_EXTENSIONS}/migrations
 cp -r ./directus-custom-extensions-release/area-hook ${DIRECTUS_HOOKS}/
-cp -r ./directus-custom-extensions-release/hide-modules ${DIRECTUS_HOOKS}/
+cp -r ./directus-custom-extensions-release/hide-modules/* ${DIRECTUS_HOOKS}/hide-modules
 
 ls -la ${DIRECTUS_MODULES}
 ls -la ${DIRECTUS_HOOKS}
