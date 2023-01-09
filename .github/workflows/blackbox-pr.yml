@@ -30,17 +30,14 @@ jobs:
       - name: Prepare
         uses: ./.github/actions/prepare
 
-      - name: Prune Dependencies
-        run: find . -type d -name node_modules -prune -exec rm -rf {} \;
-
-      - name: Install Production Dependencies
+      - name: Reinstall production dependencies only
         run: pnpm install --prod
 
-      - name: Install Root Dev Dependencies
-        run: pnpm install -w --dev
+      - name: Reinstall dev dependencies in workspace root
+        run: pnpm install --workspace-root --dev
 
-      - name: Start Services
+      - name: Start services
         run: docker compose -f tests-blackbox/docker-compose.yml up auth-saml -d --quiet-pull --wait
 
-      - name: Run Tests
+      - name: Run tests
         run: TEST_DB=sqlite3 pnpm run -w test:blackbox

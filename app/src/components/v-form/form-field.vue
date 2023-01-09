@@ -81,6 +81,7 @@ import FormFieldMenu from './form-field-menu.vue';
 import { formatFieldFunction } from '@/utils/format-field-function';
 import { useClipboard } from '@/composables/use-clipboard';
 import FormFieldRawEditor from './form-field-raw-editor.vue';
+import { parseJSON } from '@directus/shared/utils';
 
 interface Props {
 	field: Field;
@@ -178,8 +179,12 @@ function useRaw() {
 	async function pasteRaw() {
 		const pastedValue = await pasteFromClipboard();
 		if (!pastedValue) return;
-		internalValue.value = pastedValue;
-		emitValue(pastedValue);
+		try {
+			internalValue.value = parseJSON(pastedValue);
+		} catch (e) {
+			internalValue.value = pastedValue;
+		}
+		emitValue(internalValue.value);
 	}
 
 	return { showRaw, copyRaw, pasteRaw, onRawValueSubmit };
