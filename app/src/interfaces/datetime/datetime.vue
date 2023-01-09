@@ -79,7 +79,7 @@ export default defineComponent({
 
 			return { displayValue, isValidValue };
 
-			async function setDisplayValue() {
+			function setDisplayValue() {
 				if (!props.value || !isValidValue.value) {
 					displayValue.value = null;
 					return;

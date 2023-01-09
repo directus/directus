@@ -1,7 +1,8 @@
-import { Range } from '@directus/drive';
+// @ts-expect-error https://github.com/microsoft/TypeScript/issues/49721
+import type { Range } from '@directus/storage';
+
 import { parseJSON } from '@directus/shared/utils';
 import { Router } from 'express';
-import helmet from 'helmet';
 import { merge, pick } from 'lodash';
 import ms from 'ms';
 import { ASSET_TRANSFORM_QUERY_KEYS, SYSTEM_ASSET_ALLOW_LIST } from '../constants';
@@ -110,17 +111,21 @@ router.get(
 		}
 	}),
 
-	helmet.contentSecurityPolicy(
-		merge(
-			{
-				useDefaults: false,
-				directives: {
-					defaultSrc: ['none'],
+	asyncHandler(async (req, res, next) => {
+		const helmet = await import('helmet');
+
+		return helmet.contentSecurityPolicy(
+			merge(
+				{
+					useDefaults: false,
+					directives: {
+						defaultSrc: ['none'],
+					},
 				},
-			},
-			getConfigFromEnv('ASSETS_CONTENT_SECURITY_POLICY')
-		)
-	),
+				getConfigFromEnv('ASSETS_CONTENT_SECURITY_POLICY')
+			)
+		)(req, res, next);
+	}),
 
 	// Return file
 	asyncHandler(async (req, res) => {

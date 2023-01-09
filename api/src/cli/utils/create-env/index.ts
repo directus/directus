@@ -1,6 +1,5 @@
 import fs from 'fs';
 import { Liquid } from 'liquidjs';
-import { nanoid } from 'nanoid';
 import path from 'path';
 import { promisify } from 'util';
 import { v4 as uuid } from 'uuid';
@@ -16,20 +15,18 @@ const liquidEngine = new Liquid({
 	extname: '.liquid',
 });
 
-const defaults = {
-	security: {
-		KEY: uuid(),
-		SECRET: nanoid(32),
-	},
-};
-
 export default async function createEnv(
 	client: keyof typeof drivers,
 	credentials: Credentials,
 	directory: string
 ): Promise<void> {
+	const { nanoid } = await import('nanoid');
+
 	const config: Record<string, any> = {
-		...defaults,
+		security: {
+			KEY: uuid(),
+			SECRET: nanoid(32),
+		},
 		database: {
 			DB_CLIENT: client,
 		},

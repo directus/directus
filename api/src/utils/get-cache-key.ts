@@ -1,17 +1,16 @@
 import { Request } from 'express';
-import url from 'url';
 import hash from 'object-hash';
-import { pick } from 'lodash';
+import url from 'url';
+import { getGraphqlQueryAndVariables } from './get-graphql-query-and-variables';
 
 export function getCacheKey(req: Request): string {
 	const path = url.parse(req.originalUrl).pathname;
-	const isGraphQl = path?.includes('/graphql');
-	const isGet = req.method?.toLowerCase() === 'get';
+	const isGraphQl = path?.startsWith('/graphql');
 
 	const info = {
 		user: req.accountability?.user || null,
 		path,
-		query: isGraphQl ? pick(isGet ? req.query : req.body, ['query', 'variables']) : req.sanitizedQuery,
+		query: isGraphQl ? getGraphqlQueryAndVariables(req) : req.sanitizedQuery,
 	};
 
 	const key = hash(info);
