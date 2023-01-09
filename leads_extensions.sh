@@ -17,7 +17,7 @@ unzip directus-custom-extensions-release.zip
 ls -la ./directus-custom-extensions-release
 
 mkdir -p ${DIRECTUS_HOOKS}/hide-modules
-mkdir -p ${DIRECTUS_HOOKS}/area-modules
+mkdir -p ${DIRECTUS_HOOKS}/area-hook
 
 cp -r ./directus-custom-extensions-release/dashboard ${DIRECTUS_MODULES}
 cp -r ./directus-custom-extensions-release/leads ${DIRECTUS_MODULES}
