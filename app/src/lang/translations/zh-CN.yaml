@@ -1164,7 +1164,7 @@ fields:
     module_bar: 模块栏
     transformations_all: 允许所有转换
     transformations_none: 禁用转换
-    transformations_presets: 限制转换到下面预设
+    transformations_presets: 将转换限制为以下预设
     image_editor: 图像编辑器
     custom_aspect_ratios: 自定义长宽比
   directus_shares:
