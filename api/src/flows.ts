@@ -12,7 +12,7 @@ import {
 import { applyOptionsData, toArray } from '@directus/shared/utils';
 import fastRedact from 'fast-redact';
 import { Knex } from 'knex';
-import { omit } from 'lodash';
+import { omit, pick } from 'lodash';
 import { get } from 'micromustache';
 import { schedule, validate } from 'node-cron';
 import getDatabase from './database';
@@ -56,6 +56,7 @@ type TriggerHandler = {
 const TRIGGER_KEY = '$trigger';
 const ACCOUNTABILITY_KEY = '$accountability';
 const LAST_KEY = '$last';
+const ENV_KEY = '$env';
 
 class FlowManager {
 	private isLoaded = false;
@@ -296,6 +297,7 @@ class FlowManager {
 			[TRIGGER_KEY]: data,
 			[LAST_KEY]: data,
 			[ACCOUNTABILITY_KEY]: context?.accountability ?? null,
+			[ENV_KEY]: pick(env, env.FLOWS_ENV_ALLOW_LIST ? toArray(env.FLOWS_ENV_ALLOW_LIST) : []),
 		};
 
 		let nextOperation = flow.operation;
