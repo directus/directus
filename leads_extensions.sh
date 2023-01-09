@@ -16,12 +16,15 @@ unzip directus-custom-extensions-release.zip
 
 ls -la ./directus-custom-extensions-release
 
+mkdir -p ${DIRECTUS_HOOKS}/hide-modules
+mkdir -p ${DIRECTUS_HOOKS}/area-modules
+
 cp -r ./directus-custom-extensions-release/dashboard ${DIRECTUS_MODULES}
 cp -r ./directus-custom-extensions-release/leads ${DIRECTUS_MODULES}
 cp -r ./directus-custom-extensions-release/areas ${DIRECTUS_MODULES}
 cp -r ./directus-custom-extensions-release/saved-searches ${DIRECTUS_MODULES}
 cp -r ./directus-custom-extensions-release/saved-searches/migrations/* ${DIRECTUS_EXTENSIONS}/migrations
-cp -r ./directus-custom-extensions-release/hide-modules ${DIRECTUS_HOOKS}
-cp -r ./directus-custom-extensions-release/area-hook ${DIRECTUS_HOOKS}
+cp -r ./directus-custom-extensions-release/hide-modules/* ${DIRECTUS_HOOKS}/hide-modules
+cp -r ./directus-custom-extensions-release/area-hook/* ${DIRECTUS_HOOKS}/area-hook
 
 ln -s ${DIRECTUS_MODULES}
