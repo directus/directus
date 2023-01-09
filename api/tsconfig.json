@@ -13,5 +13,8 @@
 		"declaration": true,
 		"resolveJsonModule": true
 	},
-	"exclude": ["node_modules", "dist", "extensions"]
+	"exclude": ["node_modules", "dist", "extensions"],
+	"ts-node": {
+		"swc": true
+	}
 }
