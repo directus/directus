@@ -29,6 +29,7 @@ draft: Koncept
 archived: Archivované
 modules: Moduly
 logs: Logy
+reset_width: Obnoviť šírku
 tile_size: Veľkosť dlaždice
 edit_field: Upraviť pole
 conditions: Podmienky
@@ -52,6 +53,7 @@ dataset_too_large_currently_showing_n_items: Dataset je príliš veľký. Zobraz
 modifier: Modifikátor
 custom: Vlastné
 hook: Hák
+fill_width: Vyplniť šírku
 field_name_translations: Preklady názvov polí
 enter_password_to_enable_tfa: Na zapnutie dvoj-faktorovej autentifikácie zadajte svoje heslo
 add_field: Pridať pole
@@ -67,6 +69,7 @@ show_active_items: Zobraziť aktívne položky
 show_archived_items: Zobraziť archivované položky
 show_all_items: Zobraziť všetky položky
 edited: Hodnota upravená
+required: Povinné
 requires_value: Vyžaduje hodnotu
 create_preset: Vytvoriť preset
 create_panel: Vytvoriť panel
@@ -78,8 +81,11 @@ create_webhook: Vytvoriť Webhook
 create_translation_string: Vytvoriť prekladový text
 no_translation_string: Žiadne prekladové texty
 no_translation_string_copy: Zatiaľ tu nie sú žiadne prekladové texty.
+translation_string_key_placeholder: Prekladaný kľúč...
 translation_string_translations_placeholder: Pridať nový preklad
 edit_translation_string: Upraviť prekladový text
+delete_translation_string_copy: >-
+  Naozaj chcete odstrániť prekladový kľúč "{key}"? Táto akcia sa nedá vrátiť.
 invite_users: Pozvať používateľov
 invite: Pozvať
 email_already_invited: Email "{email}" už bol pozvaný
@@ -90,12 +96,14 @@ connection_excellent: Excelentné spojenie
 connection_good: Dobré spojenie
 connection_fair: Priemerné spojenie
 connection_poor: Slabé spojenie
+primary: Primárne
 rename_folder: Premenovať priečinok
 delete_folder: Odstrániť priečinok
 prefix: Prefix
 suffix: Sufix
 update_bookmark: Aktualizovať záložku
 delete_bookmark: Odstrániť záložku
+delete_personal_bookmark: Odstrániť osobnú záložku
 logoutReason:
   SIGN_OUT: Odhlásený
   SESSION_EXPIRED: Relácia vypršala
@@ -150,7 +158,34 @@ field_m2a: Vzťah M2A
 field_o2m: Vzťah O2M
 field_m2m: Vzťah M2M
 field_translations: Preklady
+field_group: Skupina poľa
+item_permissions: Práva na položku
+field_permissions: Práva na pole
+field_validation: Validácia poľa
+field_presets: Presety poľa
+permissions_for_role: 'Položky, ktoré rola {role} môže {action}.'
+fields_for_role: 'Polia, ktoré rola {role} môže {action}.'
+validation_for_role: 'Pravidlá {action}, ktoré rola {role} musí poslúchať.'
+presentation_and_aliases: Prezentácia a aliasy
+revision_post_create: Takto vyzerala táto položka pri vytvorení.
+revision_post_update: Takto vyzerala táto položka po úprave.
+changes_made: Nižšie sú presné zmeny vykonané v tejto revízii.
+no_relational_data: Pamätajte, že relačné údaje tu nie sú zahrnuté.
+top: Hore
+bottom: Dole
+hide_field: Skryť pole
+hide_field_on_detail: Skryť v podrobnostiach
+show_field_on_detail: Zobraziť pole v podrobnostiach
+delete_field: Odstrániť pole
+fields_and_layout: Polia a rozloženie
+field_create_success: 'Vytvorené pole: "{field}"'
+field_update_success: 'Upravené pole: "{field}"'
+duplicate_where_to: Kam by ste radi duplikovali toto pole?
+language: Jazyk
+language_placeholder: Zvoľte jazyk...
+aggregate_function: Agregačná funkcia
 aggregate_precision: Presnosť agregácie
+group_aggregation: Skupinová agregácia
 admins_have_all_permissions: Admini majú všetky práva
 camera: Kamera
 validation: Validácia
@@ -223,6 +258,10 @@ next: Ďalej
 field_name: Názov poľa
 translations: Preklady
 no_translations: Žiadne preklady
+updated_by: Upravil
+primary_key: Primárny kľúč
+foreign_key: Cudzí klúč
+finish_setup: Dokončiť nastavenie
 dismiss: Zamietnuť
 toggle_raw_editor: Prepnúť surový editor
 raw_value: Surová hodnota
@@ -235,13 +274,22 @@ paste_raw_value_fail: Vloženie zlyhalo
 view_raw_value: Zobraziť surovú hodnotu
 edit_raw_value: Upraviť surovú hodnotu
 enter_raw_value: Zadajte surovú hodnotu...
+clear_value: Vyčistiť hodnotu
+clear_changes: Vyčistiť zmeny
+clear_items: Vyčistiť položky
 reset_to_default: Resetovať predvolené
 undo_changes: Vrátiť zmeny
 notifications: Notifikácie
 show_all_activity: Zobraziť všetky aktivity
 page_not_found: Stránka sa nenašla
+page_not_found_body: Stránka, ktorú hľadáte neexistuje.
+confirm_revert: Potvrdiť vrátenie
+confirm_revert_body: Toto vráti položku do zvoleného stavu.
+display: Zobrazenie
+settings_update_success: Nastavenia aktualizované
 title: Názov
 revision_delta_created: Vytvorené
+revision_delta_created_externally: Vytvorené externe
 revision_delta_deleted: Odstránené
 revision_delta_reverted: Vrátené
 revision_delta_other: Revízia
@@ -343,6 +391,24 @@ no_file_selected: Nevybrali ste žiadny súbor
 download_file: Stiahnuť súbor
 open_file_in_tab: Otvoriť súbor v novej záložke
 start_export: Spustiť export
+exporting_download_hint: Po dokončení, bude tento {format} súbor automaticky stiahnutý na vaše zariadenie.
+exporting_batch_hint: Tento export bude vykonaný po dávkach. Po skončení bude {format} súbor uložený v knižnici súborov.
+exporting_batch_hint_forced: Kvôli veľkému množstu položiek musí byť tento export vykonaný po dávkach. Po skončení bude {format} súbor uložený v knižnici súborov.
+collection_key: Kľúč zbierky
+name: Názov
+primary_key_field: Pole primárneho kľúča
+type: Typ
+creating_new_collection: Vytváranie novej zbierky
+created_by: Vytvoril
+created_on: Vytvorené
+creating_collection_info: Nazvite zbierku a nastavte jej pole unikátneho "kľúča"...
+creating_collection_system: Zapnite a premenujte ktorékoľvek z týchto voliteľných polí.
+auto_increment_integer: Auto inkrementované celé číslo
+auto_increment_big_integer: Auto inkrementované veľké celé číslo
+generated_uuid: Generované UUID
+manual_string: Ručne zadaný text
+save_and_create_new: Uložiť a vytvoriť nové
+save_and_stay: Uložiť a zostať
 comments: Komentáre
 request_body: Telo požiadavky
 no_notifications: Žiadne oznámenie
@@ -451,9 +517,33 @@ presets: Presety
 unexpected_error: Neočakávaná chyba
 no_app_access_copy: Tento používateľ nemôže používať admin.
 password_reset_sent: Ak máte účet, poslali sme vám bezpečný odkaz na obnoveni vášho hesla
+password_reset_successful: Heslo úspešne obnovené
 back: Späť
+filter: Filter
+edit_image: Upraviť obrázok
+editing_image: Úprava obrázku
+square: Štvorec
+free: Voľné
+flip_horizontal: Preklopiť horizontálne
+flip_vertical: Preklopiť vertikálne
+aspect_ratio: Pomer strán
+rotate: Otočiť
+all_users: Všetci používatelia
+delete_collection: Odstrániť zbierku
+update_collection_success: Aktualizovaná zbierka
+delete_collection_success: Odstránená zbierka
+make_collection_visible: Zviditeľniť zbierku
+make_collection_hidden: Skryť zbierku
+make_folder_visible: Zviditeľniť priečinok
+make_folder_hidden: Skryť priečinok
+goto_collection_content: Zobraziť obsah
+start_end_of_count_items: '{start}-{end} z {count} položiek'
+start_end_of_count_filtered_items: '{start}-{end} z {count} filtrovaných položiek'
 one_item: '1 položka'
 one_filtered_item: '1 odfiltrovaná položka'
+delete_collection_are_you_sure: >-
+  Naozaj chcete odstrániť zbierku "{collection}"? Odstránite zbierku so všetkými jej položkami. Táto akcia je trvalá.
+delete_folder_are_you_sure: Naozaj chcete odstrániť priečinok "{folder}"? Vnorené priečinky a zbierky sa presunú na najvyššiu úroveň.
 collections_shown: Zobrazené zbierky
 visible_collections: Viditeľné zbierky
 hidden_collections: Skryté zbierky
@@ -462,6 +552,7 @@ hide_hidden_collections: Skryť skryté zbierky
 show_header: Zobraziť hlavičku
 unmanaged_collections: Nenastavené zbierky
 system_collections: Systémové zbierky
+placeholder: Zástupca
 icon_left: Ikona vľavo
 icon_right: Ikona vpravo
 count_other_revisions: '{count} iných revízií'
@@ -526,9 +617,11 @@ layout_options: Možnosti rozloženia
 rows: Riadky
 columns: Stĺpce
 collection_setup: Nastavenia zbierky
+optional_system_fields: Voliteľné systémové polia
 value_unique: Hodnota musí byť unikátna
 all_activity: Všetky aktivity
 create_item: Vytvoriť položku
+display_template: Šablóna zobrazenia
 per_page: Na stránku
 all_files: Všetky súbory
 my_files: Moje súbory
@@ -543,7 +636,12 @@ no_results: Žiadne výsledky
 no_results_copy: Aby ste videli výsledky upravte alebo vyčistite filter.
 no_visible_fields: Prázdny formulár
 no_visible_fields_copy: Tento formulár nemá žiadne viditeľné položky.
+clear_filters: Vyčistiť filtre
+saves_automatically: Ukladá sa automaticky
 role: Rola
+edit_role: Upraviť rolu
+rule: Pravidlo
+user: Používateľ
 label: Popis
 trigger: Spúšťač
 trigger_options: Možnosti spúšťača
@@ -565,10 +663,22 @@ dashboard: Nástenka
 panel: Panel
 panel_options: Možnosti panela
 panel_header: Hlavička panela
+panel_name_placeholder: Pomenujte tento panel...
+panel_note_placeholder: Voliteľný popis tohoto panelu...
+panel_delete_confirm: Naozaj chcete odstrániť tento panel? Túto akciu nie je možné vrátiť späť.
+list_panel_allow_edit: Povoliť rýchle úpravy
+dashboard_delete_confirm: Ste si istý, že chcete vymazať túto tabuľu? Táto akcia sa nedá vrátiť späť.
+edit_dashboard: Upraviť tabuľu
+delete_dashboard: Odstrániť tabuľu
 visible: Viditeľné
 prefix_placeholder: Text pred hodnotou...
 suffix_placeholder: Text za hodnotou...
 decimals_placeholder: Počet desatinných miest...
+no_dashboards: Žiadne tabule
+no_dashboards_copy: Zatiaľ nemáte žiadne tabule.
+create_dashboard: Vytvoriť tabuľu
+dashboard_name: Názov tabule
+no_data: Žiadne údaje
 details: Podrobnosti
 full_screen: Celá obrazovka
 full_text_search: Full-text hľadanie
@@ -627,7 +737,19 @@ wysiwyg_options:
   h4: Nadpis 4
   h5: Nadpis 5
   h6: Nadpis 6
+  fontselect: Vybrať písmo
+  fontsizeselect: Vybrať veľkosť písma
+  indent: Odsadiť
+  outdent: Predsadiť
+  undo: Späť
+  redo: Znovu
+  remove: Odstrániť
+  removeformat: Odstrániť formát
   selectall: Vybrať všetko
+  table: Tabuľka
+  visualaid: Zobraziť neviditeľné prvky
+  source_code: Upraviť zdrojový kód
+  fullscreen: Celá obrazovka
 choices: Možnosti
 deselect: Odznačiť
 deselect_all: Odznačiť všetko
@@ -945,8 +1067,10 @@ template: Šablóna
 require_value_to_be_set: Vyžaduje nastavenú hodnotu pri vytvorení
 translation: Preklad
 translation_placeholder: Zadajte preklad...
+table: Tabuľka
 interfaces:
   filter:
+    name: Filter
     add_filter: Pridať filter
     all: Všetko
     any: Akékoľvek
@@ -965,6 +1089,7 @@ interfaces:
     presentation-links: Tlačidlá s odkazom
     links: Odkazy
     description: Konfigurovateľné tlačidlá na otváranie dynamických URL adries
+    primary: Primárne
     link: Odkazy
   select-multiple-checkbox-tree:
     value_combining: Hodnota kombinácie
@@ -1034,6 +1159,8 @@ interfaces:
   file-image:
     image: Obrázok
     description: Vyberie alebo nahrá obrázok
+  select-dropdown-m2o:
+    display_template: Šablóna zobrazenia
   input-rich-text-md:
     edit: Upraviť
   map:
@@ -1100,9 +1227,12 @@ interfaces:
     color_off: Farba vypnutá
     label_default: Zapnuté
   translations:
+    display_template: Šablóna zobrazenia
     enable: Zapnúť
     user_language: Použiť jazyk aktuálneho používateľa
     default_language: Predvolený jazyk
+  user:
+    user: Používateľ
   input-rich-text-html:
     folder_note: Priečinok na nahrávanie súborov. Neovplyvní to existujúce súbory.
     imageToken: Statický prístupový token
