@@ -433,6 +433,7 @@ start_export: Spustiť export
 not_available_for_local_downloads: Nedostupné na lokálne stiahnutie
 exporting_all_items_in_collection: Exportuje sa všetkých {total} položiek z {collection}.
 exporting_limited_items_in_collection: Exportuje sa {limit} z celkovo {total} položiek z {collection}.
+exporting_no_items_to_export: Žiadne položky na export. Upravte nastavenia exportu nižšie.
 exporting_download_hint: Po dokončení, bude tento {format} súbor automaticky stiahnutý na vaše zariadenie.
 exporting_batch_hint: Tento export bude vykonaný po dávkach. Po skončení bude {format} súbor uložený v knižnici súborov.
 exporting_batch_hint_forced: Kvôli veľkému množstu položiek musí byť tento export vykonaný po dávkach. Po skončení bude {format} súbor uložený v knižnici súborov.
@@ -451,8 +452,26 @@ generated_uuid: Generované UUID
 manual_string: Ručne zadaný text
 save_and_create_new: Uložiť a vytvoriť nové
 save_and_stay: Uložiť a zostať
+save_as_copy: Uložiť ako kópiu
+add_existing: Pridať existujúce
+creating_items: Vytváranie položiek
+enable_create_button: Zapnúť tlačidlo Vytvoriť
+selecting_items: Označovanie položiek
+enable_select_button: Zapnúť tlačidlo Vybrať
+allow_duplicates: Povoliť duplicity
 comments: Komentáre
+no_comments: Zatiaľ žiadne komentáre
+click_to_expand: Kliknutím rozbalíte
+select_item: Vybrať položku
+no_items: Žiadne položky
+search_items: Hľadať položky...
+disabled: Vypnuté
+information: Informácia
+report_bug: Nahlásiť chybu
+request_feature: Požiadať o funkciu
 request_body: Telo požiadavky
+interface_not_found: 'Rozhranie "{interface}" sa nenašlo.'
+operation_not_found: 'Operácia "{operation}" sa nenašla.'
 reset_interface: Obnoviť rozhranie
 display_not_found: 'Zobrazenie "{display}" sa nenašlo.'
 reset_display: Obnoviť zobrazenie
@@ -736,15 +755,26 @@ view_trigger: Zobraziť spúšťač
 create_trigger: Vytvoriť spúšťač
 trigger_setup: Nastavenia spúšťača
 change_trigger: Zmeniť spúšťač
+create_flow: Vytvoriť tok
+creating_new_flow: Vytváranie nového toku
+updating_flow: Úprava toku
+flow_setup: Nastavenia toku
 flow_name: Názov
+flow_tracking: Sledovanie aktivity a logov
+flow_tracking_all: Sledovať aktivitu a logy
 flow_tracking_activity: Sledovať len aktivitu
 flow_tracking_null: Nesledovať nič
+start_flow: Spustiť tok
+stop_flow: Zastaviť tok
 create_operation: Vytvoriť operáciu
 edit_operation: Upraviť operáciu
 code: Kód
 operation_options: Možnosti operácie
 operation_name: Názov operácie...
 operation_key: Identifikátor pre odkazovanie...
+operation_key_unique_error: Kľúče operácie musia byť v toku unikátne
+operation_handle_resolve: 'Úspech: kliknutím pridáte, potiahnutím presmerujete'
+operation_handle_reject: 'Chyba: kliknutím pridáte, potiahnutím presmerujete'
 insights: Prehľady
 dashboard: Nástenka
 panel: Panel
@@ -766,6 +796,7 @@ no_dashboards_copy: Zatiaľ nemáte žiadne tabule.
 create_dashboard: Vytvoriť tabuľu
 dashboard_name: Názov tabule
 no_data: Žiadne údaje
+no_data_in_flow: V rámci tohoto toku neboli vytvorené ani prečítané žiadne dáta
 accountability: Zodpovednosť
 details: Podrobnosti
 full_screen: Celá obrazovka
@@ -787,6 +818,7 @@ display_text: Zobrazený text
 display_text_placeholder: Zadajte zobrazený text...
 interface_group_text_and_numbers: Text a čísla
 interface_group_selection: Výber
+interface_group_relational: Relačné
 interface_group_presentation: Prezentácia
 interface_group_groups: Skupiny
 interface_group_other: Ostatné
@@ -800,6 +832,7 @@ save_image: Uložiť obrázok
 save_media: Uložiť médium
 wysiwyg_options:
   aligncenter: Zarovnať na stred
+  alignjustify: Zarovnať do bloku
   alignleft: Zarovnať vľavo
   alignnone: Žiadne zarovnanie
   alignright: Zarovnať vpravo
@@ -809,12 +842,17 @@ wysiwyg_options:
   italic: Kurzíva
   underline: Podčiarknuté
   strikethrough: Preškrtnuté
+  subscript: Dolný index
+  superscript: Horný index
   codeblock: Kód
   blockquote: Citácia
   bullist: Odrážkový zoznam
   numlist: Číslovaný zoznam
   hr: Vodorovná Čiara
   link: Pridať/Upraviť odkaz
+  unlink: Odstrániť odkaz
+  media: Pridať/Upraviť médium
+  image: Pridať/Upraviť obrázok
   copy: Kopírovat
   cut: Vystrihnúť
   paste: Prilepiť
@@ -838,12 +876,18 @@ wysiwyg_options:
   visualaid: Zobraziť neviditeľné prvky
   source_code: Upraviť zdrojový kód
   fullscreen: Celá obrazovka
+  directionality: Smer
+dropdown: Rozbaľovacia ponuka
 choices: Možnosti
+choices_option_configured_incorrectly: Možnosti sú nesprávne nastavené
 deselect: Odznačiť
 deselect_all: Odznačiť všetko
 other: Ostatné...
 adding_user: Pridávanie používateľa
 unknown_user: Neznámy používateľ
+creating_in: 'Vytváranie položky v {collection}'
+editing_in: 'Úprava položky v {collection}'
+viewing_in: 'Pozeranie položky v {collection}'
 creating_unit: 'Vytváranie {unit}'
 editing_unit: 'Úprava {unit}'
 editing_in_batch: 'Hromadná úprava {count} položiek'
@@ -903,8 +947,15 @@ no_upscale: Nezväčšovať obrázky
 collection: Zbierka
 collections: Zbierky
 content: Obsah
+singleton: Jeden objekt
+singleton_label: Považovať za jeden objekt
 system_fields_locked: Systémové polia sú zamknuté a nedajú sa upravovať
 directus_collection:
+  directus_activity: Logovať zodpovednosti za všetky aktivity
+  directus_collections: Dodatočné nastavenia zbierky a metadát
+  directus_dashboards: Tabule v module prehľadov
+  directus_fields: Dodatočné nastavenia polí a metadát
+  directus_files: Metadáta pre všetky spravované súbory
   directus_flows: Automatizácia tokov
   directus_folders: Poskytuje virtuálne priečinky na súboru
   directus_migrations: Akú verziu databázy používate
@@ -914,6 +965,7 @@ directus_collection:
   directus_permissions: Prístupové práva pre kažú rolu
   directus_presets: Presety pre predvolené hodnoty zbierok a záložky
   directus_relations: Nastavenia vzťahov a metadát
+  directus_revisions: Snímky dát pre všetky aktivity
   directus_roles: Skupiny práv pre systémových používateľov
   directus_sessions: Informácie o používateľskom sedení
 fields:
@@ -935,6 +987,7 @@ fields:
     color: Farba
     display_template: Šablóna zobrazenia
     hidden: Skryté
+    singleton: Jeden objekt
     translations: Preklady názvu zbierky
     sort_field: Zoraďovacie pole
   directus_files:
@@ -1029,6 +1082,7 @@ fields:
     icon: Ikona zbierky
     note: Poznámka
     hidden: Skryté
+    singleton: Jeden objekt
     translation: Preklady názvov polí
     display_template: Šablóna
   directus_roles:
@@ -1094,6 +1148,7 @@ field_options:
     collection_setup: Nastavenia zbierky
     note_placeholder: Popis tejto zbierky...
     hidden_label: Skryť v aplikácii
+    singleton: Považovať za jeden objekt
     language: Jazyk
     translation: Preklad
     translation_placeholder: Zadajte preklad...
@@ -1182,9 +1237,37 @@ shared_uses_left: Na zvýšenie bezpečnosti je táto zdieľaná stránka nastav
 share_access_page: Prístup k zdieľanej stránke
 share_access_not_found: Táto zdieľaná stránka buď neexistuje alebo už prekročila povolený počet použítí.
 share_access_not_found_desc: Prosím kontaktujte povereného používateľa tohoto projektu na udelenie prístupu.
+share_send_link: Poslať odkaz
+relational_triggers: Relačné spúšťače
+referential_action_field_label_m2o: Pri odstránení {collection}...
+referential_action_field_label_o2m: Pri odznačení {collection}...
+referential_action_no_action: Zabrániť odstránenie
+referential_action_cascade: Odstrániť položku {collection} (kaskáda)
+referential_action_set_null: NULLovať pole {field}
+referential_action_set_default: Nastaviť {field} na jeho predvolenú hodnotu
+choose_action: Vyberte akciu
+continue_label: Pokračovať
+continue_as: >-
+  {name} je aktuálne overený. Ak spoznávate túto aktivitu, stlačte pokračovať.
+editing_role: 'Rola {role}'
+creating_webhook: Vytváranie webhooku
+default_label: Predvolené
+delete_label: Odstrániť
+delete_are_you_sure: >-
+  Táto akcia je trvalá a nedá sa vrátiť. Naozaj chcete pokračovať?
+delete_field_are_you_sure: >-
+  Naozaj chcete odstrániť "{field}"? Táto akcia sa nedá vrátiť.
 description: Popis
+done: Hotovo
+duplicate: Duplikovať
+limit: Limit
 email: E-mail
+field: Pole | Polia
+file: Súbor
+file_library: Knižnica súborov
+forgot_password: Zabudnuté heslo
 hidden: Skryté
+hidden_in_group: Skryté v {group}
 icon: Ikona
 info: Info
 normal: Normálne
@@ -1239,11 +1322,26 @@ template: Šablóna
 require_value_to_be_set: Vyžaduje nastavenú hodnotu pri vytvorení
 translation: Preklad
 translation_placeholder: Zadajte preklad...
+value: Hodnota
+view_project: Zobraziť projekt
+report_error: Nahlásiť chybu
+start: Štart
 table: Tabuľka
+list: Zoznam
+search_filter: Hľadanie a filter
+enable_search_filter: Zapnúť hľadanie a filtrovanie
+item_link: Odkaz položky
+show_link_to_item: Zobraziť odkaz na položku
+navigate_to_item: Navigovať na položku
+undo_removed_item: Vrátiť odstránenie položky
+remove_item: Odstrániť položku
+delete_item: Odstrániť položku
 interfaces:
   filter:
     name: Filter
+    description: Konfigurácia objektu filtra.
     add_filter: Pridať filter
+    add_group: A / Alebo skupina
     add_value: Pridať hodnotu
     logic_type_and: A
     logic_type_or: ALEBO
@@ -1390,7 +1488,15 @@ interfaces:
     preview: Náhľad
     editorFont: Písmo editoru
     previewFont: Písmo náhľadu
+    customSyntax: Vlastné bloky
+    customSyntax_label: Pridať vlastné typy syntaxe
+    customSyntax_add: Pridať vlastnú syntax
+    box: Blok / Inline
+    imageToken: Statický prístupový token
+    imageToken_label: Statický prístupový token sa pridá do URL súborov
   map:
+    map: Mapa
+    description: Vyberte miesto na mape
     zoom: Priblíženie
     geometry_type: Typ geometrie
     geometry_format: Formát geometrie
@@ -1461,6 +1567,8 @@ interfaces:
     default_language: Predvolený jazyk
   user:
     user: Používateľ
+    modes:
+      dropdown: Rozbaľovacia ponuka
   input-rich-text-html:
     folder_note: Priečinok na nahrávanie súborov. Neovplyvní to existujúce súbory.
     imageToken: Statický prístupový token
@@ -1652,12 +1760,57 @@ layouts:
     default_template: Používa sa prevolenie zbierky...
     no_compatible_fields: Žiadne kompatibilné polia
   kanban:
+    text: Text karty
+    text_placeholder: Voliteľné textové polia...
+    date: Dátum karty
+    date_placeholder: Voliteľné dátumové pole...
+    tags: Značky karty
+    tags_placeholder: Voliteľné pole značiek...
+    user: Používateľ karty
+    user_placeholder: Voliteľné pole používateľa...
+    image: Obrázok karty
+    image_placeholder: Voliteľné pole obrázku...
+    image_fit: Prispôsobenie obrázku karty
     crop: Orezať
     advanced: Rozšírené
+    edit_group: Upraviť skupinu
+    delete_group: Odstrániť skupinu
+    add_group: Pridať skupinu
+    add_group_placeholder: Zadajte názov novej skupiny...
+    show_ungrouped: Zobraziť nezoskupené
+    show: Zobraziť
+    no_group: Žiadna skupina
+    not_all_loaded: Načítalo sa len prvých 1000 položiek.
 panels:
+  metric:
+    name: Metrické
+    description: Zobraziť jednu hodnotu na základe dotazu
+    field: Pole
+  time_series:
+    name: Časové rady
+    description: Vykresliť čiarový graf podľa hodnôt v čase
+    date_field: Dátumové pole
+    value_field: Pole hodnoty
+    fill_type: Typ výplne
+    curve_type: Typ krivky
   label:
     name: Popis
+    description: Zobrazí nejaký text
+  list:
+    name: Zoznam
   barchart:
+    name: Stĺpcový graf
+    description: Stĺpcový graf na porovnávanie skupín hodnôt
+    select_field: Musíte vybrať pole.
+    select_collection: Musíte vybrať zbierku.
+    select_x_axis: Musíte vybrať os X.
+    function: Funkcia
+    horizontal: Horizontálne
+    x_axis_grouping: Skupinová agregácia na osi X
+    x_axis: Os X
+    y_axis_function: Funkcia osi Y
+    y_axis: Os Y
+    show_x_axis: Zobraziť os X
     show_y_axis: Zobraziť os Y
     show_data_label: Zobraziť popisok dát
     group_by: Zoskupené podľa
@@ -1748,6 +1901,13 @@ triggers:
     name: Ručne
     description: Spustí sa ručne nad vybranou zbierkou(ami)
     collection_and_item: Zbierky a stránky položiek
+    collection_only: Len stránka zbierky
+    item_only: Len stránka položky
+    collection_page: Stránka zbierky
+    require_selection: Vyžaduje výber
+a_flow_uuid: Vyberte tok na spustenie...
+any_string_or_json: Akýkoľvek text alebo JSON...
+item_payload_placeholder: Toto je JSON použitý na aktualizáciu hodnôt polí v položke...
 operations:
   condition:
     name: Podmienka
