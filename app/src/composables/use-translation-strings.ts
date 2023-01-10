@@ -4,6 +4,7 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import { Language, i18n } from '@/lang';
 import { useUserStore } from '@/stores/user';
 import { useSettingsStore } from '@/stores/settings';
+import api from '@/api';
 
 export type Translation = {
 	language: string;
@@ -25,6 +26,7 @@ type UsableTranslationStrings = {
 	error: Ref<any>;
 	translationStrings: Ref<TranslationString[] | null>;
 	loadParsedTranslationStrings: () => void;
+	loadLanguageTranslationStrings: (lang: Language) => Promise<void>;
 	refresh: () => Promise<void>;
 	updating: Ref<boolean>;
 	update: (newTranslationStrings: TranslationString[]) => Promise<void>;
@@ -40,17 +42,52 @@ export function useTranslationStrings(): UsableTranslationStrings {
 	if (error === null) error = ref(null);
 	if (translationStrings === null) translationStrings = ref<TranslationString[] | null>(null);
 	const updating = ref(false);
+	const usersStore = useUserStore();
 
 	return {
 		loading,
 		error,
 		translationStrings,
 		loadParsedTranslationStrings,
+		loadLanguageTranslationStrings,
 		refresh,
 		updating,
 		update,
 		mergeTranslationStringsForLanguage,
 	};
+
+	async function loadLanguageTranslationStrings(lang: Language) {
+		if (loading === null) return;
+		if (translationStrings === null) return;
+		if (error === null) return;
+		// const t0 = performance.now();
+		const response = await api.get(`/settings`, {
+			params: {
+				fields: ['translations'],
+				alias: {
+					translations: 'json(translation_strings2$[*])',
+				},
+				deep: {
+					translations: {
+						_filter: {
+							'$.lang': { _eq: lang },
+						},
+					},
+				},
+			},
+		});
+		// const t1 = performance.now();
+		const localeMessages: Record<string, any> = response.data.data.translations.reduce(
+			(result: Record<string, string>, { key, value }: { key: string; value: string }) => {
+				result[key] = getLiteralInterpolatedTranslation(value, true);
+				return result;
+			},
+			{} as Record<string, string>
+		);
+		i18n.global.mergeLocaleMessage(lang, localeMessages);
+		// const t2 = performance.now();
+		// console.log(`translations lang ${lang} - request ${t1 - t0}ms - transform ${t2 - t1}ms`);
+	}
 
 	function loadParsedTranslationStrings() {
 		if (loading === null) return;
@@ -78,7 +115,9 @@ export function useTranslationStrings(): UsableTranslationStrings {
 
 		try {
 			const settingsStore = useSettingsStore();
-			const rawTranslationStrings = await settingsStore.fetchRawTranslationStrings();
+			const rawTranslationStrings = await settingsStore.fetchRawTranslationStrings(
+				usersStore.currentUser?.language ?? 'en-US'
+			);
 
 			if (rawTranslationStrings) {
 				translationStrings.value = rawTranslationStrings.map((p: TranslationStringRaw) => ({

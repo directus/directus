@@ -14,7 +14,6 @@ import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
 import { useUserStore } from '@/stores/user';
 import { useNotificationsStore } from '@/stores/notifications';
-import { useTranslationStrings } from '@/composables/use-translation-strings';
 import { onDehydrateExtensions, onHydrateExtensions } from './extensions';
 
 type GenericStore = {
@@ -53,7 +52,6 @@ export async function hydrate(): Promise<void> {
 	const serverStore = useServerStore();
 	const permissionsStore = usePermissionsStore();
 	const fieldsStore = useFieldsStore();
-	const { loadParsedTranslationStrings } = useTranslationStrings();
 
 	if (appStore.hydrated) return;
 	if (appStore.hydrating) return;
@@ -81,8 +79,6 @@ export async function hydrate(): Promise<void> {
 
 			await onHydrateExtensions();
 		}
-
-		loadParsedTranslationStrings();
 		await setLanguage(lang);
 
 		appStore.basemap = getBasemapSources()[0].name;
