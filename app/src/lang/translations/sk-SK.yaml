@@ -331,14 +331,20 @@ revision_delta_created: Vytvorené
 revision_delta_created_externally: Vytvorené externe
 revision_delta_deleted: Odstránené
 revision_delta_reverted: Vrátené
+revision_delta_update_message: Toto pole je zmenené, ale jeho hodnota je utajená z bezpečnostných dôvodov.
 revision_delta_other: Revízia
 revision_delta_by: '{date} od {user}'
+presentation_text_values_cannot_be_reimported: "Používa prezentačný text, hodnoty sa nedajú preimportovať."
 download_page_as_csv: 'Stiahnuť stranu ako CSV'
 private_user: Súkromný používateľ
+creation_preview: Náhľad výtvoru
+revision_preview: Náhľad revízie
 updates_made: Vykonané zmeny
 leave_comment: Pridajte komentár...
 post_comment_success: Komentár odoslaný
 post_comment_updated: Komentár upravený
+item_create_success: Položka vytvorená | Položky vytvorené
+item_update_success: Položka aktualizovaná | Položky aktualizované
 item_delete_success: Položka odstránená | Položky odstránené
 this_collection: Táto zbierka
 related_collection: Súvisiaca zbierka
@@ -348,12 +354,15 @@ languages_collection: Zbierka jazykov
 import_data_input_placeholder: CSV alebo JSON...
 import_data_button: Spustiť import
 import_data_indeterminate: Prebieha import dát...
+import_data_success: Dáta zo súboru {filename} sú úspešne importované
+import_data_error: Dátová štruktúra tohoto súboru nesedí zo zbierkou.
 label_import: Importovať
 label_export: Export
 import_export: Import / Export
 format: Formát
 last_page: Posledná strana
 last_access: Posledný prístup
+fill_template: Vyplniť hodnotou šablóny
 a_unique_table_name: Unikátny názov tabuľky...
 a_unique_column_name: Unikátny názov stĺpca...
 enable_custom_values: Zapnúť vlastné hodnoty
@@ -743,18 +752,37 @@ read: Čítať
 update: Upraviť
 delete: Odstrániť
 select_fields: Vyberte polia
+format_text: Formátovať text
+format_value: Formátovať hodnotu
 abbreviate_value: Skrátiť hodnotu
 operator: Operátor
 bold: Tučné
 toggle: Prepnúť
 icon_on: Ikona zapnutá
+icon_off: Ikona vypnutá
 label: Popis
+flows: Toky
+flow: Tok
+select_a_flow: Vyberte tok
+run_flow_on_current_collection: Spustiť tok na aktuálnej zbierke
+run_flow_on_current: Spustiť tok na aktuálnej položke
+run_flow_on_current_edited_confirm: Táto položka sa môže vykonaním tohoto toku zmeniť, naozaj to chcete vykonať?
+run_flow_on_selected: Najprv označte jednu alebo viac položiek | Spustiť tok na 1 označenej položke | Spustiť tok na {n} označených položkách
+run_flow_success: Tok "{flow}" prebehol úspešne
 trigger: Spúšťač
 trigger_options: Možnosti spúšťača
 view_trigger: Zobraziť spúšťač
 create_trigger: Vytvoriť spúšťač
 trigger_setup: Nastavenia spúšťača
 change_trigger: Zmeniť spúšťač
+flow_delete_confirm: Naozaj chcete odstrániť tok "{flow}"? Táto akcia sa nedá vrátiť.
+set_flow_active: Nastaviť tok ako aktívny
+set_flow_inactive: Nastaviť tok ako neaktívny
+edit_flow: Upraviť tok
+delete_flow: Odstrániť tok
+no_other_flows_copy: Zatiaľ nemáte žiadne ďalšie toky.
+no_flows: Žiadne toky
+no_flows_copy: Zatiaľ nemáte žiadne toky.
 create_flow: Vytvoriť tok
 creating_new_flow: Vytváranie nového toku
 updating_flow: Úprava toku
@@ -968,6 +996,8 @@ directus_collection:
   directus_revisions: Snímky dát pre všetky aktivity
   directus_roles: Skupiny práv pre systémových používateľov
   directus_sessions: Informácie o používateľskom sedení
+  directus_settings: Možnosti konfigurácie projektu
+  directus_shares: Sleduje externe zdieľané položky
 fields:
   directus_activity:
     item: Primárny kľúč položky
@@ -1026,9 +1056,11 @@ fields:
     tags: Tagy
     language: Jazyk
     theme: Téma
+    theme_auto: Automaticky (podľa systému)
     theme_light: Svetlý režim
     theme_dark: Tmavý režim
     tfa_secret: Dvojfaktorová autentifikácia
+    admin_options: Možnosti admina
     status: Stav
     status_draft: Koncept
     status_invited: Pozvaný
@@ -1047,18 +1079,29 @@ fields:
     png: PNG
     webP: WebP
     tiff: TIFF
+    mapping: Mapovanie
     basemaps: Podkladové mapy
     basemaps_raster: Raster
+    basemaps_tile: Raster TileJSON
+    basemaps_style: Štýl Mapboxu
+    mapbox_key: Prístupový token Mapbox
+    mapbox_placeholder: pk.eyJ1Ijo.....
+    attribution: Prisúdenie
     attribution_placeholder: '© Prispievatelia do OpenStreetMap'
+    transforms_note: Názov Sharp metódy a jej argumenty. Viac informácií nájdete na ttps://sharp.pixelplumbing.com/api-constructor.
+    additional_transforms: Ďalšie transformácie
     project_name: Názov projektu
     project_descriptor: Popis projektu
     project_url: URL projektu
     project_color: Farba projektu
     project_logo: Logo projektu
     default_language: Predvolený jazyk
+    branding: Branding a štýl
     public_foreground: Verejné popredie
     public_background: Verejné pozadie
     public_note: Verejná poznámka
+    auth_password_policy: Politika prihlasovacieho hesla
+    auth_login_attempts: Počet pokusov o prihlásenie
     files_and_thumbnails: Súbory a úložisko
     storage_default_folder: Predvolený priečinok
     storage_asset_presets: Transformačné presety
@@ -1076,6 +1119,7 @@ fields:
     password: Heslo
     date_start: Dátum začiatku
     date_end: Dátum konca
+    max_uses: Max použití
     times_used: Počet použití
   directus_fields:
     collection: Názov zbierky
@@ -1157,6 +1201,7 @@ field_options:
     plural_unit: Množné číslo
     archive_divider: Archív
     archive_field_placeholder: Vyberte pole...
+    archive_value: Hodnota nastavená pri archivovaní...
     unarchive_value: Hodnota nastavená pri odarchivovaní...
     sort_divider: Zoradiť
     sort_field: Vyberte pole...
@@ -1237,6 +1282,10 @@ shared_uses_left: Na zvýšenie bezpečnosti je táto zdieľaná stránka nastav
 share_access_page: Prístup k zdieľanej stránke
 share_access_not_found: Táto zdieľaná stránka buď neexistuje alebo už prekročila povolený počet použítí.
 share_access_not_found_desc: Prosím kontaktujte povereného používateľa tohoto projektu na udelenie prístupu.
+share_access_not_found_title: Neznáma stránka zdieľania
+share_copy_link: Skopírovať odkaz
+share_copy_link_success: Odkaz skopírovaný
+share_copy_link_error: Nepodarilo sa skopírovať odkaz
 share_send_link: Poslať odkaz
 relational_triggers: Relačné spúšťače
 referential_action_field_label_m2o: Pri odstránení {collection}...
@@ -1262,6 +1311,8 @@ done: Hotovo
 duplicate: Duplikovať
 limit: Limit
 email: E-mail
+embed: Vložiť
+fallback_icon: Záložná ikona
 field: Pole | Polia
 file: Súbor
 file_library: Knižnica súborov
@@ -1508,6 +1559,9 @@ interfaces:
     native: Natívne
     geojson: GeoJSON
     lnglat: Zemepisná šírka a dĺžka
+    wkt: WKT
+    wkb: WKB
+    click_to_select: Kliknutím vyberte {geometry}
   presentation-notice:
     notice: Oznámenie
     description: Zobraziť krátke oznámenie
@@ -1520,6 +1574,7 @@ interfaces:
     folder: Priečinok
     description: Vyberte priečinok
     field_hint: Priečinok na nahrávanie súborov. Neovplyvní to existujúce súbory.
+    root_name: Koreňový adresár knižnice súborov
     system_default: Predvolené systémom
   select-radio:
     radio-buttons: Prepínače
@@ -1554,17 +1609,41 @@ interfaces:
     add_tags: Pridajte značku a stlačte Enter...
   input:
     input: Vstup
+    description: Ručné zadanie hodnoty
+    trim: Orezať
+    trim_label: Orezať začiatok a koniec
     mask: Maskované
+    mask_label: Skryť skutočné hodnoty
+    clear: Vyčistená hodnota
+    clear_label: Uložiť ako prázdny text
+    minimum_value: Minimálna hodnota
+    maximum_value: Maximálna hodnota
+    step_interval: Interval kroku
+    slug: Slugify
+    slug_label: Prerobí zadanú hodnotu na bezpečnú pre URL
+  input-multiline:
+    textarea: Textová oblasť
+    description: Vloží viacradkový jednoduchý text
+  input-translated-string:
+    input-translated-string: Preložené texty
+    description: Vyberie alebo pridá prekladový text
+    search_placeholder: Hľadať...
+    new_translation_string: Nový prekladový text
   boolean:
     toggle: Prepnúť
+    description: Prepínanie medzi zap a vyp
     color_on: Farba zapnutá
     color_off: Farba vypnutá
+    label_placeholder: Zadajte popisok...
     label_default: Zapnuté
   translations:
     display_template: Šablóna zobrazenia
+    no_collection: Žiadna zbierka
+    toggle_split_view: Prepnúť rozdelené zobrazenie
     enable: Zapnúť
     user_language: Použiť jazyk aktuálneho používateľa
     default_language: Predvolený jazyk
+    language_field: Pole jazyka
   user:
     user: Používateľ
     modes:
@@ -1914,7 +1993,10 @@ operations:
   exec:
     name: Spustiť skript
   log:
+    name: Logovať do konzoly
+    description: Vypíše niečo do konzoly
     message: Správa
+    message_placeholder: Zadajte správu, ktorá sa zobrazí v konzole...
   mail:
     name: Poslať Email
     description: Pošle email jednému alebo viacerým ľuďom
@@ -1936,5 +2018,18 @@ operations:
     data: Údaje
     headers: Hlavičky
     header: Hlavička
+    header_placeholder: Autorizácia...
+    value_placeholder: Bearer eyJhbGciOi...
+  sleep:
+    name: Spať
+    description: Počká určený počet milisekúnd
+    milliseconds: Milisekúnd
+  transform:
+    name: Transformovať payload
+    description: Zmení JSON payload toku
   trigger:
+    name: Spúšťač toku
+    description: Presunie tieto dáta do iného toku
+    flows: Toky
+    flow: Tok
     data: Údaje
