@@ -16,17 +16,19 @@ vi.mock('./database', () => ({
 
 vi.mock('./env', async () => {
 	const actual = (await vi.importActual('./env')) as { default: Record<string, any> };
+	const MOCK_ENV = {
+		...actual.default,
+		KEY: 'xxxxxxx-xxxxxx-xxxxxxxx-xxxxxxxxxx',
+		SECRET: 'abcdef',
+		SERVE_APP: true,
+		PUBLIC_URL: 'http://localhost:8055/directus',
+		TELEMETRY: false,
+		LOG_STYLE: 'raw',
+	};
 
 	return {
-		default: {
-			...actual.default,
-			KEY: 'xxxxxxx-xxxxxx-xxxxxxxx-xxxxxxxxxx',
-			SECRET: 'abcdef',
-			SERVE_APP: true,
-			PUBLIC_URL: 'http://localhost:8055/directus',
-			TELEMETRY: false,
-			LOG_STYLE: 'raw',
-		},
+		default: MOCK_ENV,
+		getEnv: () => MOCK_ENV,
 	};
 });
 

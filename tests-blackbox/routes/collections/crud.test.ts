@@ -5,6 +5,7 @@ import vendors from '@common/get-dbs-to-test';
 import knex, { Knex } from 'knex';
 import { Collection } from '@directus/shared/types';
 import { findIndex } from 'lodash';
+import { requestGraphQL } from '@common/index';
 
 describe.each(common.PRIMARY_KEY_TYPES)('/collections', (pkType) => {
 	common.DisableTestCachingSetup();
@@ -36,10 +37,21 @@ describe.each(common.PRIMARY_KEY_TYPES)('/collections', (pkType) => {
 								.get('/collections')
 								.set('Authorization', `Bearer ${common.USER[userKey].TOKEN}`);
 
+							const gqlResponse = await requestGraphQL(getUrl(vendor), true, common.USER[userKey].TOKEN, {
+								query: {
+									collections: {
+										collection: true,
+									},
+								},
+							});
+
 							// Assert
 							if (userKey === common.USER.ADMIN.KEY) {
 								const responseData = JSON.parse(response.text);
 								const tableNames = responseData.data.map((collection: Collection) => collection.collection).sort();
+								const tableNames2 = gqlResponse.body.data['collections']
+									.map((collection: Collection) => collection.collection)
+									.sort();
 
 								expect(response.statusCode).toBe(200);
 								expect(responseData.data.length).toBeGreaterThanOrEqual(common.DEFAULT_DB_TABLES.length);
@@ -48,9 +60,22 @@ describe.each(common.PRIMARY_KEY_TYPES)('/collections', (pkType) => {
 										return tableNames.indexOf(name) !== -1;
 									})
 								).toEqual(true);
+
+								expect(gqlResponse.statusCode).toBe(200);
+								expect(gqlResponse.body.data['collections'].length).toBeGreaterThanOrEqual(
+									common.DEFAULT_DB_TABLES.length
+								);
+								expect(
+									common.DEFAULT_DB_TABLES.every((name: string) => {
+										return tableNames2.indexOf(name) !== -1;
+									})
+								).toEqual(true);
 							} else if (userKey === common.USER.APP_ACCESS.KEY) {
 								const responseData = JSON.parse(response.text);
 								const tableNames = responseData.data.map((collection: Collection) => collection.collection).sort();
+								const tableNames2 = gqlResponse.body.data['collections']
+									.map((collection: Collection) => collection.collection)
+									.sort();
 								const appAccessPermissions = [
 									'directus_activity',
 									'directus_collections',
@@ -70,6 +95,14 @@ describe.each(common.PRIMARY_KEY_TYPES)('/collections', (pkType) => {
 								expect(
 									appAccessPermissions.every((name: string) => {
 										return tableNames.indexOf(name) !== -1;
+									})
+								).toEqual(true);
+
+								expect(gqlResponse.statusCode).toBe(200);
+								expect(gqlResponse.body.data['collections'].length).toBeGreaterThanOrEqual(appAccessPermissions.length);
+								expect(
+									appAccessPermissions.every((name: string) => {
+										return tableNames2.indexOf(name) !== -1;
 									})
 								).toEqual(true);
 							} else {

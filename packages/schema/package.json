@@ -1,6 +1,6 @@
 {
 	"name": "@directus/schema",
-	"version": "9.21.2",
+	"version": "9.22.1",
 	"description": "Utility for extracting information about existing DB schema",
 	"keywords": [
 		"sql",
@@ -46,7 +46,7 @@
 		"knex-schema-inspector": "3.0.0"
 	},
 	"devDependencies": {
-		"typescript": "4.8.4"
+		"typescript": "4.9.4"
 	},
 	"publishConfig": {
 		"access": "public"

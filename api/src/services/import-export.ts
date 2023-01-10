@@ -26,6 +26,8 @@ import { FilesService } from './files';
 import { ItemsService } from './items';
 import { NotificationsService } from './notifications';
 import emitter from '../emitter';
+import type { Readable } from 'node:stream';
+
 export class ImportService {
 	knex: Knex;
 	accountability: Accountability | null;
@@ -37,7 +39,7 @@ export class ImportService {
 		this.schema = options.schema;
 	}
 
-	async import(collection: string, mimetype: string, stream: NodeJS.ReadableStream): Promise<void> {
+	async import(collection: string, mimetype: string, stream: Readable): Promise<void> {
 		if (this.accountability?.admin !== true && collection.startsWith('directus_')) throw new ForbiddenException();
 
 		const createPermissions = this.accountability?.permissions?.find(
@@ -63,11 +65,11 @@ export class ImportService {
 		}
 	}
 
-	async importJSON(collection: string, stream: NodeJS.ReadableStream): Promise<void> {
+	importJSON(collection: string, stream: Readable): Promise<void> {
 		const extractJSON = StreamArray.withParser();
 		const nestedActionEvents: ActionEventParams[] = [];
 
-		await this.knex.transaction((trx) => {
+		return this.knex.transaction((trx) => {
 			const service = new ItemsService(collection, {
 				knex: trx,
 				schema: this.schema,
@@ -98,21 +100,21 @@ export class ImportService {
 
 				extractJSON.on('end', () => {
 					saveQueue.drain(() => {
+						for (const nestedActionEvent of nestedActionEvents) {
+							emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
+						}
+
 						return resolve();
 					});
 				});
 			});
 		});
-
-		for (const nestedActionEvent of nestedActionEvents) {
-			emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
-		}
 	}
 
-	async importCSV(collection: string, stream: NodeJS.ReadableStream): Promise<void> {
+	importCSV(collection: string, stream: Readable): Promise<void> {
 		const nestedActionEvents: ActionEventParams[] = [];
 
-		await this.knex.transaction((trx) => {
+		return this.knex.transaction((trx) => {
 			const service = new ItemsService(collection, {
 				knex: trx,
 				schema: this.schema,
@@ -153,6 +155,10 @@ export class ImportService {
 					})
 					.on('end', () => {
 						saveQueue.drain(() => {
+							for (const nestedActionEvent of nestedActionEvents) {
+								emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
+							}
+
 							return resolve();
 						});
 					});
@@ -162,10 +168,6 @@ export class ImportService {
 				});
 			});
 		});
-
-		for (const nestedActionEvent of nestedActionEvents) {
-			emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
-		}
 	}
 }
 
@@ -349,6 +351,7 @@ export class ExportService {
 		}
 
 		if (format === 'csv') {
+			if (input.length === 0) return '';
 			const parser = new CSVParser({
 				transforms: [CSVTransforms.flatten({ separator: '.' })],
 				header: options?.includeHeader !== false,

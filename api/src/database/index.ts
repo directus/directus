@@ -13,6 +13,7 @@ import { getHelpers } from './helpers';
 
 let database: Knex | null = null;
 let inspector: ReturnType<typeof SchemaInspector> | null = null;
+let databaseVersion: string | null = null;
 
 export default function getDatabase(): Knex {
 	if (database) {
@@ -110,6 +111,18 @@ export default function getDatabase(): Knex {
 		};
 	}
 
+	if (client === 'mysql') {
+		poolConfig.afterCreate = async (conn: any, callback: any) => {
+			logger.trace('Retrieving database version');
+			const run = promisify(conn.query.bind(conn));
+
+			const version = await run('SELECT @@version;');
+			databaseVersion = version[0]['@@version'];
+
+			callback(null, conn);
+		};
+	}
+
 	if (client === 'mssql') {
 		// This brings MS SQL in line with the other DB vendors. We shouldn't do any automatic
 		// timezone conversion on the database level, especially not when other database vendors don't
@@ -145,6 +158,15 @@ export function getSchemaInspector(): ReturnType<typeof SchemaInspector> {
 	inspector = SchemaInspector(database);
 
 	return inspector;
+}
+
+/**
+ * Get database version. Value currently exists for MySQL only.
+ *
+ * @returns Cached database version
+ */
+export function getDatabaseVersion(): string | null {
+	return databaseVersion;
 }
 
 export async function hasDatabaseConnection(database?: Knex): Promise<boolean> {

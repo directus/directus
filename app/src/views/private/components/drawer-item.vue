@@ -95,6 +95,7 @@ import { Field, Relation } from '@directus/shared/types';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useRouter } from 'vue-router';
+import { getEndpoint } from '@directus/shared/utils';
 
 interface Props {
 	collection: string;
@@ -269,6 +270,7 @@ function useItem() {
 	const internalEdits = ref<Record<string, any>>({});
 	const loading = ref(false);
 	const initialValues = ref<Record<string, any> | null>(null);
+	const baseEndpoint = getEndpoint(props.collection);
 
 	watch(
 		() => props.active,
@@ -289,13 +291,13 @@ function useItem() {
 	return { internalEdits, loading, initialValues, fetchItem };
 
 	async function fetchItem() {
-		loading.value = true;
-
 		if (!props.primaryKey) return;
 
+		loading.value = true;
+
 		const endpoint = props.collection.startsWith('directus_')
-			? `/${props.collection.substring(9)}/${props.primaryKey}`
-			: `/items/${props.collection}/${encodeURIComponent(props.primaryKey)}`;
+			? `${baseEndpoint}/${props.primaryKey}`
+			: `${baseEndpoint}/${encodeURIComponent(props.primaryKey)}`;
 
 		let fields = '*';
 
@@ -315,15 +317,15 @@ function useItem() {
 	}
 
 	async function fetchRelatedItem() {
-		loading.value = true;
-
 		const collection = relatedCollection.value;
 
 		if (!collection || !junctionFieldInfo.value) return;
 
+		loading.value = true;
+
 		const endpoint = collection.startsWith('directus_')
-			? `/${collection.substring(9)}/${props.relatedPrimaryKey}`
-			: `/items/${collection}/${encodeURIComponent(props.relatedPrimaryKey)}`;
+			? `${baseEndpoint}/${props.relatedPrimaryKey}`
+			: `${baseEndpoint}/${encodeURIComponent(props.relatedPrimaryKey)}`;
 
 		try {
 			const response = await api.get(endpoint);

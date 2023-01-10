@@ -110,7 +110,7 @@
 
 				<div class="field half-right">
 					<p class="type-label">{{ t('limit') }}</p>
-					<v-input v-model="exportSettings.limit" type="number" :placeholder="t('unlimited')" />
+					<v-input v-model="exportSettings.limit" type="number" :min="-1" :step="1" :placeholder="t('unlimited')" />
 				</div>
 
 				<div class="field half-left">
@@ -134,9 +134,16 @@
 				<v-notice class="full" :type="lockedToFiles ? 'warning' : 'normal'">
 					<div>
 						<p>
-							<template v-if="itemCount === 0">{{ t('exporting_no_items_to_export') }}</template>
-
-							<template v-else-if="!exportSettings.limit || (itemCount && exportSettings.limit >= itemCount)">
+							<template v-if="exportSettings.limit === 0 || itemCount === 0">
+								{{ t('exporting_no_items_to_export') }}
+							</template>
+							<template
+								v-else-if="
+									!exportSettings.limit ||
+									exportSettings.limit === -1 ||
+									(itemCount && exportSettings.limit >= itemCount)
+								"
+							>
 								{{
 									t('exporting_all_items_in_collection', {
 										total: itemCount ? n(itemCount) : '??',
@@ -474,10 +481,10 @@ function startExport() {
 }
 
 function exportDataLocal() {
-	const endpoint = collection.value.startsWith('directus_')
-		? `${collection.value.substring(9)}`
-		: `items/${collection.value}`;
-	const url = getPublicURL() + endpoint;
+	const endpoint = getEndpoint(collection.value);
+
+	// usually getEndpoint contains leading slash, but here we need to remove it
+	const url = getPublicURL() + endpoint.substring(1);
 
 	let params: Record<string, unknown> = {
 		access_token: api.defaults.headers.common['Authorization'].substring(7),
