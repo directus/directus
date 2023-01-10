@@ -12,6 +12,7 @@ import { normalizePath } from '@directus/utils';
 import { isReadableStream } from '@directus/utils/node';
 import {
 	randAlphaNumeric,
+	randBoolean,
 	randDirectoryPath,
 	randDomainName,
 	randFilePath,
@@ -71,6 +72,7 @@ beforeEach(() => {
 			root: randDirectoryPath(),
 			endpoint: randDomainName(),
 			region: randWord(),
+			forcePathStyle: randBoolean(),
 		},
 		path: {
 			input: randUnique() + randFilePath(),
@@ -250,11 +252,11 @@ describe('#constructor', () => {
 			key: sample.config.key,
 			secret: sample.config.secret,
 			bucket: sample.config.bucket,
-			forcePathStyle: true,
+			forcePathStyle: sample.config.forcePathStyle,
 		});
 
 		expect(S3Client).toHaveBeenCalledWith({
-			forcePathStyle: true,
+			forcePathStyle: sample.config.forcePathStyle,
 			credentials: {
 				accessKeyId: sample.config.key,
 				secretAccessKey: sample.config.secret,
