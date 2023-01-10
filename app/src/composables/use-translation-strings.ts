@@ -24,8 +24,7 @@ export type TranslationString = {
 type UsableTranslationStrings = {
 	loading: Ref<boolean>;
 	error: Ref<any>;
-	translationStrings: Ref<TranslationString[] | null>;
-	loadParsedTranslationStrings: () => void;
+	translationStrings: Ref<Record<string, string> | null>;
 	loadLanguageTranslationStrings: (lang: Language) => Promise<void>;
 	refresh: () => Promise<void>;
 	updating: Ref<boolean>;
@@ -34,13 +33,13 @@ type UsableTranslationStrings = {
 };
 
 let loading: Ref<boolean> | null = null;
-let translationStrings: Ref<TranslationString[] | null> | null = null;
+let translationStrings: Ref<Record<string, string> | null> | null = null;
 let error: Ref<any> | null = null;
 
 export function useTranslationStrings(): UsableTranslationStrings {
 	if (loading === null) loading = ref(false);
 	if (error === null) error = ref(null);
-	if (translationStrings === null) translationStrings = ref<TranslationString[] | null>(null);
+	if (translationStrings === null) translationStrings = ref<Record<string, string> | null>(null);
 	const updating = ref(false);
 	const usersStore = useUserStore();
 
@@ -48,7 +47,6 @@ export function useTranslationStrings(): UsableTranslationStrings {
 		loading,
 		error,
 		translationStrings,
-		loadParsedTranslationStrings,
 		loadLanguageTranslationStrings,
 		refresh,
 		updating,
@@ -61,23 +59,9 @@ export function useTranslationStrings(): UsableTranslationStrings {
 		if (translationStrings === null) return;
 		if (error === null) return;
 		// const t0 = performance.now();
-		const response = await api.get(`/settings`, {
-			params: {
-				fields: ['translations'],
-				alias: {
-					translations: 'json(translation_strings2$[*])',
-				},
-				deep: {
-					translations: {
-						_filter: {
-							'$.lang': { _eq: lang },
-						},
-					},
-				},
-			},
-		});
+		const translations = await fetchTranslationStrings(lang);
 		// const t1 = performance.now();
-		const localeMessages: Record<string, any> = response.data.data.translations.reduce(
+		const localeMessages: Record<string, any> = translations.reduce(
 			(result: Record<string, string>, { key, value }: { key: string; value: string }) => {
 				result[key] = getLiteralInterpolatedTranslation(value, true);
 				return result;
@@ -85,24 +69,9 @@ export function useTranslationStrings(): UsableTranslationStrings {
 			{} as Record<string, string>
 		);
 		i18n.global.mergeLocaleMessage(lang, localeMessages);
+		translationStrings.value = translations;
 		// const t2 = performance.now();
 		// console.log(`translations lang ${lang} - request ${t1 - t0}ms - transform ${t2 - t1}ms`);
-	}
-
-	function loadParsedTranslationStrings() {
-		if (loading === null) return;
-		if (translationStrings === null) return;
-		if (error === null) return;
-
-		const settingsStore = useSettingsStore();
-		const rawTranslationStrings = settingsStore.settings?.translation_strings;
-
-		if (rawTranslationStrings) {
-			translationStrings.value = rawTranslationStrings.map((p: TranslationStringRaw) => ({
-				key: p.key,
-				translations: getTranslationsFromKeyValues(p.translations ?? null),
-			}));
-		}
 	}
 
 	async function refresh() {
@@ -114,16 +83,10 @@ export function useTranslationStrings(): UsableTranslationStrings {
 		error.value = null;
 
 		try {
-			const settingsStore = useSettingsStore();
-			const rawTranslationStrings = await settingsStore.fetchRawTranslationStrings(
-				usersStore.currentUser?.language ?? 'en-US'
-			);
+			const rawTranslationStrings = await fetchTranslationStrings(usersStore.currentUser?.language ?? 'en-US');
 
 			if (rawTranslationStrings) {
-				translationStrings.value = rawTranslationStrings.map((p: TranslationStringRaw) => ({
-					key: p.key,
-					translations: getTranslationsFromKeyValues(p.translations ?? null),
-				}));
+				translationStrings.value = rawTranslationStrings;
 			}
 		} catch (err: any) {
 			error.value = err;
@@ -167,6 +130,25 @@ export function useTranslationStrings(): UsableTranslationStrings {
 		} finally {
 			updating.value = false;
 		}
+	}
+
+	async function fetchTranslationStrings(lang: Language) {
+		const response = await api.get(`/settings`, {
+			params: {
+				fields: ['translations'],
+				alias: {
+					translations: 'json(translation_strings2$[*])',
+				},
+				deep: {
+					translations: {
+						_filter: {
+							'$.lang': { _eq: lang },
+						},
+					},
+				},
+			},
+		});
+		return response.data.data.translations ?? [];
 	}
 
 	function mergeTranslationStringsForLanguage(lang: Language) {
