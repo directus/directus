@@ -44,7 +44,7 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed, ref, watchEffect } from 'vue';
 import { useSync } from '@directus/shared/composables';
-import { Revision } from './types';
+import { Revision } from '@/types/revisions';
 import RevisionsDrawerPicker from './revisions-drawer-picker.vue';
 import RevisionsDrawerPreview from './revisions-drawer-preview.vue';
 import RevisionsDrawerUpdates from './revisions-drawer-updates.vue';
