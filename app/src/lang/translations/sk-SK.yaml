@@ -115,11 +115,15 @@ logoutReason:
   SIGN_OUT: Odhlásený
   SESSION_EXPIRED: Relácia vypršala
 public_label: Verejné
+public_description: Určuje, ktoré údaje z API sú dostupné bez overovania.
+admin_description: Počiatočné administratívne role s neobmedzeným prístupom k Appke/API.
 not_allowed: Nepovolené
 directus_version: Verzia Directus
 node_version: Verzia Node
+node_uptime: Doba prevádzky nodu
 os_type: Typ OS
 os_version: Verzia OS
+os_uptime: Doba prevádzky OS
 os_totalmem: Pamäť OS
 archive: Archív
 archive_confirm: Naozaj chcete archivovať túto položku?
@@ -127,6 +131,7 @@ archive_confirm_count: >-
   Žiadne označené položky | Naozaj chcete archivovať túto položku? | Naozaj chcete archivovať týchto {count} položiek?
 reset_system_permissions_to: 'Resetovať systémové práva na:'
 reset_system_permissions_copy: Táto akcia prepíše všetky vlastné práva, ktoré ste použili na systémové zbierky. Ste si istý?
+the_following_are_minimum_permissions: Nasledujúce minimálne oprávnenia sa vyžadujú ked je zapnutý "Prístup z aplikácie". Môžete rozšíriť oprávnenia za túto hranicu, ale nie menej.
 recommended_defaults: Odporúčané prevolenia
 unarchive: Odarchivovať
 unarchive_confirm: Naozaj chcete odarchivovať túto položku?
@@ -156,6 +161,8 @@ use_custom: Použiť vlastné
 nullable: Nullovateľné
 allow_null_value: Povolená NULL hodnota
 allow_multiple: Povoliť viacero
+allow_multiple_to_be_open: Povoliť viac otvorených
+enter_value_to_replace_nulls: Prosím zadajte novú hodnotu, ktorá nahradí všetky NULLy aktuálne v tomto poli.
 field_standard: Štandardné
 field_presentation: Prezentácia a aliasy
 field_file: Jeden súbor
@@ -173,6 +180,7 @@ field_presets: Presety poľa
 permissions_for_role: 'Položky, ktoré rola {role} môže {action}.'
 fields_for_role: 'Polia, ktoré rola {role} môže {action}.'
 validation_for_role: 'Pravidlá {action}, ktoré rola {role} musí poslúchať.'
+presets_for_role: 'Predvolená hodnota poľa pre rolu {role}.'
 presentation_and_aliases: Prezentácia a aliasy
 revision_post_create: Takto vyzerala táto položka pri vytvorení.
 revision_post_update: Takto vyzerala táto položka po úprave.
@@ -193,8 +201,13 @@ language_placeholder: Zvoľte jazyk...
 aggregate_function: Agregačná funkcia
 aggregate_precision: Presnosť agregácie
 group_aggregation: Skupinová agregácia
+group_precision: Presnosť skupiny
+global: Globálne
 admins_have_all_permissions: Admini majú všetky práva
 camera: Kamera
+show_zero: Zobraziť nulu
+create_in_advanced_field_creation_mode: Vytvoriť pole v pokročilom režime
+continue_in_advanced_field_creation_mode: Pokračovať v pokročilom režim tvorby poľa
 validation: Validácia
 sum: Suma
 sum_distinct: Suma unikátnych
@@ -208,6 +221,7 @@ exposure: Expozícia
 shutter: Uzávierka
 iso: ISO
 focal_length: Ohnisková vzdialenosť
+schema_setup_key: Názov stĺpca v databáze a API kľúč tohoto poľa
 create_field: Vytvoriť pole
 creating_new_field: 'Nové pole ({collection})'
 field_in_collection: '{field} ({collection})'
@@ -247,9 +261,16 @@ refresh_interval_seconds: Obnoviť hneď | Každú sekundu | Každých {seconds}
 refresh_interval_minutes: Každú minútu | Každých {minutes} minút
 auto_generate: Automaticky generovať
 this_will_auto_setup_fields_relations: Toto automaticky nastaví všetky povinné polia a vzťahy.
+click_here: Kliknite sem
+to_manually_setup_translations: pre ručné nastavenia prekladov.
+click_to_manage_translated_fields: >-
+  Zatiaľ nie sú žiadne preložené polia. Kliknite sem na ich vytvorenie. | Je tu jedno preložené pole. Kliknutím ho nastavíte. | Je tu {count} preložených polí. Kliknutím ich nastavíte.
 fields_group: Skupina polí
 no_collections_found: Nenašli sa žiadne zbierky.
+new_data_alert: 'Vo vašom dátovom modeli sa vytvoria nasledujúce:'
 search_collection: Hľadať v zbierke...
+search_field: Vyhľadávacie pole...
+new_field: 'Nové pole'
 new_collection: 'Nová zbierka'
 choose_a_type: Vyberte typ...
 determined_by_relationship: Určené vzťahom
@@ -265,6 +286,17 @@ next: Ďalej
 field_name: Názov poľa
 translations: Preklady
 no_translations: Žiadne preklady
+left_to_right: Zľava doprava
+right_to_left: Zprava doľava
+note: Poznámka
+enter_a_value: Zadajte hodnotu...
+enter_a_placeholder: Zadajte placeholder...
+length: Dĺžka
+soft_length: Mäkký limit
+precision_scale: Presnosť a rozsah
+readonly: Len na čítanie
+unique: Unikátne
+updated_on: Aktualizované
 updated_by: Upravil
 primary_key: Primárny kľúč
 foreign_key: Cudzí klúč
@@ -418,7 +450,19 @@ save_and_create_new: Uložiť a vytvoriť nové
 save_and_stay: Uložiť a zostať
 comments: Komentáre
 request_body: Telo požiadavky
+reset_interface: Obnoviť rozhranie
+display_not_found: 'Zobrazenie "{display}" sa nenašlo.'
+reset_display: Obnoviť zobrazenie
+item_count: 'Žiadne položky | Jedna položka | {count} položiek'
+no_items_copy: V zbierke zatiaľ nie sú žiadne položky.
+file_count: 'Žiadne súbory | Jeden súbor | {count} súborov'
+no_files_copy: Nie sú tu žiadne súbory.
+user_count: 'Žiadny používatelia | Jeden používateľ | {count} používateľov'
+no_users_copy: Pod touto rolou zatiaľ nie sú žiadni používatelia.
+webhooks_count: 'Žiadne webhooky | Jeden webhook | {count} webhookov'
+no_webhooks_copy: Zatiaľ neboli nastavené žiadne webhooky. Začnite vytvorením niektorého nižšie.
 no_notifications: Žiadne oznámenie
+no_notifications_copy: Všetko ste dohnali!
 activity_log: Log aktivity
 all_items: Všetky položky
 any: Akékoľvek
@@ -428,6 +472,8 @@ create_collection: Vytvoriť zbierku
 no_collections_copy_admin: Nemáte zatiaľ žiadne zbierky. Začnite kliknutím na tlačidlo nižšie.
 no_collections_copy: Zatiaľ nemáte žiadne zbierky. Prosím kontaktujte svojho správu.
 relationship_not_setup: Tento vzťah nebol správne nastavený
+display_template_not_setup: Šablóna zobrazenia je zle nakonfigurovaná
+collection_field_not_setup: Voľby poľa zbierky sú zle nastavené
 select_a_collection: Vyberte zbierku
 select_a_field: Vyberte pole
 active: Aktívne
@@ -438,12 +484,14 @@ no_other_dashboards_copy: Zatiaľ nemáte žiadne panely.
 inactive: Neaktívne
 users: Použivatelia
 activity: Aktivita
+activity_item: Položka aktivity
 action: Akcia
 ip_address: IP adresa
 user_agent: Užívateľský agent
 origin: Pôvod
 webhooks: Webháky
 decimals: Desatinné miesta
+value_decimals: Desatinná hodnota
 min_value: Minimálna hodnota
 max_value: Maximálna hodnota
 automatic: Automatické
@@ -468,6 +516,7 @@ status: Stav
 remove: Odstrániť
 toggle_manual_sorting: Zapnúť ručné zoraďovanie
 bookmark_doesnt_exist: Záložka neexistuje
+bookmark_doesnt_exist_copy: Záložka, ktorú sa snažíte otvoriť sa nenašla.
 bookmark_doesnt_exist_cta: Vrátiť sa do zbierky
 select_an_item: Vyberte položku...
 edit: Upraviť
@@ -475,16 +524,19 @@ enabled: Zapnuté
 disable_tfa: Vypnúť 2FA
 admin_disable_tfa_text: Naozaj chcete vypnúť 2FA pre tohoto používateľa?
 tfa_setup: Nastaviť 2FA
+tfa_scan_code: Naskenujte kód vo vašej overovacej aplikácii na dokončenie nastavení 2FA
 enter_otp_to_disable_tfa: Na vypnutie 2FA zadajte OTP
 create_account: Vytvoriť účet
 account_created_successfully: Účet úspešne vytvorený
 auto_fill: Automatické vypĺňanie
+corresponding_field: Zodpovedajúce pole
 errors:
   COLLECTION_NOT_FOUND: "Zbierka neexistuje"
   FIELD_NOT_FOUND: Pole sa nenašlo
   FORBIDDEN: Zakázané
   INVALID_CREDENTIALS: Nesprávne používateľské meno alebo heslo
   INVALID_OTP: Nesprávne jednorazové heslo
+  INVALID_PAYLOAD: Neplatný payload
   INVALID_PROVIDER: Používateľ patrí k inému auth poskytovateľovi
   INVALID_QUERY: Neplatný dotaz
   INVALID_CONFIG: Neplatná konfigurácia
@@ -495,6 +547,7 @@ errors:
   ITEM_NOT_FOUND: Položka nenájdená
   ROUTE_NOT_FOUND: Nenájdené
   RECORD_NOT_UNIQUE: Zistila sa duplicitná hodnota
+  USER_SUSPENDED: Používateľ pozastavený
   CONTAINS_NULL_VALUES: Pole obsahuje null hodnoty
   UNPROCESSABLE_ENTITY: Nespracovaná entita
   INTERNAL_SERVER_ERROR: Neočakávaná chyba
@@ -1140,6 +1193,7 @@ interfaces:
     display-template: Šablóna zobrazenia
     description: Kombinácia statického textu a dynamických hodnôt
     collection_field: Pole zbierky
+    collection_field_not_setup: Voľby poľa zbierky sú zle nastavené
     select_a_collection: Vyberte zbierku
   presentation-divider:
     divider: Oddeľovač
