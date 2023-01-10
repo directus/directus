@@ -430,6 +430,9 @@ no_file_selected: Nevybrali ste žiadny súbor
 download_file: Stiahnuť súbor
 open_file_in_tab: Otvoriť súbor v novej záložke
 start_export: Spustiť export
+not_available_for_local_downloads: Nedostupné na lokálne stiahnutie
+exporting_all_items_in_collection: Exportuje sa všetkých {total} položiek z {collection}.
+exporting_limited_items_in_collection: Exportuje sa {limit} z celkovo {total} položiek z {collection}.
 exporting_download_hint: Po dokončení, bude tento {format} súbor automaticky stiahnutý na vaše zariadenie.
 exporting_batch_hint: Tento export bude vykonaný po dávkach. Po skončení bude {format} súbor uložený v knižnici súborov.
 exporting_batch_hint_forced: Kvôli veľkému množstu položiek musí byť tento export vykonaný po dávkach. Po skončení bude {format} súbor uložený v knižnici súborov.
@@ -1489,6 +1492,7 @@ interfaces:
     remove_token: Odstrániť token
   system-raw-editor:
     system-raw-editor: Surový editor
+    description: Povolí zadávanie surovej hodnoty mustache šablóny
 displays:
   translations:
     translations: Preklady
@@ -1501,7 +1505,9 @@ displays:
     boolean: Boolean
     description: Zobraziť stavy zap a vyp
     label_on: Nápis zapnutý
+    label_on_placeholder: Zadajte zapnutý popisok...
     label_off: Nápis vypnutý
+    label_off_placeholder: Zadajte vypnutý popisok...
     icon_on: Ikona zapnutá
     icon_off: Ikona vypnutá
     color_on: Farba zapnutá
@@ -1518,28 +1524,72 @@ displays:
     datetime: Dátum a čas
     description: Zobraziť hodnoty súvisiace s časom
     format: Formát
+    format_note: >-
+      Vlastný formát dovoľuje __[Symbol dátumového poľa](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
+    long: Dlhý
+    short: Krátky
+    relative: Relatívny
+    relative_label: 'Zobrazí relatívny čas, napr. pred 5 minútami'
     suffix: Sufix
+    suffix_label: Zobraziť relatívny indikátor
+    suffix_note: Používa slová ako 'o' a 'pred'
+    strict: Striktné
+    strict_label: Používať striktné hodnoty
+    strict_note: Odstráni slová ako 'skoro', 'vyše', 'menej než'
+    round: Zaokrúhlenie
+    round_note: Vyberte zaukrúhľovaciu funkciu
+    down: Nadol
+    nearest: Najbližšie
+    up: Nahor
+  file:
+    file: Súbor
+    description: Zobraziť súbory
+  filesize:
+    filesize: Veľkosť súboru
+    description: Zobraziť veľkosť súboru
   formatted-value:
+    formatted-value: Formátovaná hodnota
+    description: Zobrazí formátovanú hodnotu textu
     format: Formát
+    format_label: Automatický formát
     font: Písmo
+    font_sans_serif: Bezpätkové
     font_serif: Serif
     font_monospace: Monospace
     bold: Tučné
+    bold_label: Použiť tučný štýl
     italic: Kurzíva
+    italic_label: Použiť štýl kurzívy
     prefix: Prefix
+    prefix_label: Pridať text pred
     suffix: Sufix
+    suffix_label: Pridať text za
     color: Farba
+    background: Pozadie
     icon: Ikona
+    border: Okraj
+    border_label: Zobraziť okraj
     text: Text
+    text_placeholder: Voliteľné preťaženie hodnoty...
+  formatted-json-value:
+    formatted-json-value: Formátovaná hodnota JSON
+    description: Zobrazí formátovanú hodnotu objektu
   icon:
     icon: Ikona
+    description: Zobraziť ikonu
+    filled: Vyplnené
+    filled_label: Použiť vyplnenú variantu
   image:
+    image: Obrázok
+    description: Zobraziť maličký náhľadový obrázok
     circle: Kruh
+    circle_label: Zobraziť v kruhu
   labels:
     labels: Popisky
     description: Zobrazí jeden alebo zoznam popiskov
     default_foreground: Predvolené popredie
     default_background: Predvolené pozadie
+    format_label: Formátovať každý popisok
     show_as_dot: Zobraziť ako bodku
     choices_value_placeholder: Zadajte hodnotu...
     choices_text_placeholder: Zadajte text...
@@ -1557,6 +1607,7 @@ displays:
     raw: Surová hodnota
   related-values:
     related-values: Súvisiace hodnoty
+    description: Zobraziť relatívne hodnoty
     display_template_configure_notice: Šablónu zobrazenia môžete nastaviť po vytvorení tohoto poľa.
   user:
     user: Používateľ
@@ -1595,8 +1646,11 @@ layouts:
     cluster_radius: Priemer klastrovania
     cluster_minpoints: Minimálna veľkosť klastra
     cluster_maxzoom: Maximálny zoom pre klastrovanie
+    field: Geopriestorové pole
     invalid_geometry: Neplatná geometria
     find_location: Nájsť polohu...
+    default_template: Používa sa prevolenie zbierky...
+    no_compatible_fields: Žiadne kompatibilné polia
   kanban:
     crop: Orezať
     advanced: Rozšírené
@@ -1604,14 +1658,36 @@ panels:
   label:
     name: Popis
   barchart:
+    show_y_axis: Zobraziť os Y
+    show_data_label: Zobraziť popisok dát
     group_by: Zoskupené podľa
+    group_and_function: Musíte zahrnúť alebo vynechať obe aj skupinu aj funkciu.
+    y_axis_NaN: Os Y musí byť číslo.
+    y_axis_conditional_one: Hodnota podmienky
+    y_axis_conditional_two: musí byť číslo.
   linechart:
+    name: Čiarový graf
+    description: Čiarový graf na sledovanie zmeny poľa
+    select_field: Musíte vybrať pole.
+    select_collection: Musíte vybrať zbierku.
+    select_x_axis: Musíte vybrať os X.
     function: Funkcia
+    x_axis: Os X
+    x_axis_decimals: Desatiny osi X
+    disabled_no_grouping: Vypnuté, keď nie je žiadna skupina zvolená.
+    y_axis: Os Y
+    datasets: Dátové sady
     show_legend: Zobraziť legendu
+    show_marker: Zobraziť značku popisku
+    include_dataset: Musíte zahrnúť aspoň jednu dátovú sadu.
+    include_y_axis: Musíte zahrnúť os Y pre každú dátovú sadu keď nie je špecifikovaná žiadna skupina.
+    group_and_function: Musíte zahrnúť alebo vynechať obe aj skupinu aj funkciu.
     smooth: Hladké
     straight: Rovné
     step_line: Kroková čiara
   meter:
+    name: Merač
+    description: Merač na sledovanie hodnôť
     half_circle: Polkruh
     full_circle: Celý kruh
     stroke_width: Hrúbka ťahu
@@ -1625,20 +1701,53 @@ panels:
     medium: Stredné
     broad: Široké
   piechart:
+    name: Koláčový nebo prstencový graf
+    description: Kruhový graf ukazuje pomery medzi skupinami stĺpca
     function: Funkcia
     donut: Donut
     show_labels: Zobraziť názvy
     show_legend: Zobraziť legendu
+    right: Vpravo
+    bottom: Dole
+    monochrome: Čiernobiele
+    monochrome_color: Monochromatická farba
+  variable:
+    name: Globálna premenná
+    description: Nastaví globálnu hodnotu, ktorá sa dá použiť vo filtroch iných panelov
+    variable_key: Kľúč premennej
+  relational-variable:
+    name: Globálna relačná hodnota
+    description: Nastaví globálnu relačnú hodnotu, ktorá sa dá použiť vo filtroch iných panelov
+    variable_key: Kľúč premennej
+    multiple: Viacnásobné
+    multiple-label: Vyberte viacero položiek
 triggers:
+  common:
+    response_body: Telo odpovede
+    response_body_all: Všetky dáta
+    response_body_last: Dáta z poslednej operácie
+  event:
+    name: Hook udalosť
+    description: Spustí sa pri udalosti platformy alebo dát
+    action: 'Akcia (neblokujúca)'
+    filter: 'Filter (blokujúci)'
   webhook:
+    name: Webhook
+    description: Spustí sa na prichádzajúcu HTTP požiadavku
     method: Metóda
     async: Asynchrónne
+  operation:
+    name: Ďalší tok
+    description: Spustí sa druhým tokom, na reťazenie
+    preview: Spustí sa operáciou v inom toku
   schedule:
     name: Časovač (CRON)
     description: Spúšťa v pravidelných časových intervaloch
     cron: Interval
   manual:
     name: Ručne
+    description: Spustí sa ručne nad vybranou zbierkou(ami)
+    collection_and_item: Zbierky a stránky položiek
 operations:
   condition:
     name: Podmienka
