@@ -192,7 +192,6 @@ describe('#constructor', () => {
 		});
 
 		expect(S3Client).toHaveBeenCalledWith({
-			forcePathStyle: true,
 			endpoint: {
 				hostname: sampleDomain,
 				protocol: 'http:',
@@ -217,7 +216,6 @@ describe('#constructor', () => {
 		});
 
 		expect(S3Client).toHaveBeenCalledWith({
-			forcePathStyle: true,
 			endpoint: {
 				hostname: sampleDomain,
 				protocol: 'https:',
@@ -240,6 +238,23 @@ describe('#constructor', () => {
 
 		expect(S3Client).toHaveBeenCalledWith({
 			region: sample.config.region,
+			credentials: {
+				accessKeyId: sample.config.key,
+				secretAccessKey: sample.config.secret,
+			},
+		});
+	});
+
+	test('Sets force path style', () => {
+		new DriverS3({
+			key: sample.config.key,
+			secret: sample.config.secret,
+			bucket: sample.config.bucket,
+			forcePathStyle: true,
+		});
+
+		expect(S3Client).toHaveBeenCalledWith({
+			forcePathStyle: true,
 			credentials: {
 				accessKeyId: sample.config.key,
 				secretAccessKey: sample.config.secret,
