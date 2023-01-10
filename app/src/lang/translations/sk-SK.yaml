@@ -28,6 +28,7 @@ published: Zverejnené
 draft: Koncept
 archived: Archivované
 modules: Moduly
+module_bar: Panel modulov
 logs: Logy
 reset_width: Obnoviť šírku
 tile_size: Veľkosť dlaždice
@@ -70,6 +71,7 @@ show_archived_items: Zobraziť archivované položky
 show_all_items: Zobraziť všetky položky
 edited: Hodnota upravená
 required: Povinné
+required_for_app_access: Vyžaduje sa na prístup z aplikácie
 requires_value: Vyžaduje hodnotu
 create_preset: Vytvoriť preset
 create_panel: Vytvoriť panel
@@ -101,9 +103,14 @@ rename_folder: Premenovať priečinok
 delete_folder: Odstrániť priečinok
 prefix: Prefix
 suffix: Sufix
+reset_bookmark: Obnoviť záložku
 update_bookmark: Aktualizovať záložku
 delete_bookmark: Odstrániť záložku
+delete_bookmark_copy: >-
+  Naozaj chcete odstrániť "{bookmark}"? Táto akcia sa nedá vrátiť.
 delete_personal_bookmark: Odstrániť osobnú záložku
+delete_role_bookmark: Odstrániť záložku role
+delete_global_bookmark: Odstrániť globálnu záložku
 logoutReason:
   SIGN_OUT: Odhlásený
   SESSION_EXPIRED: Relácia vypršala
@@ -888,6 +895,7 @@ fields:
     storage_asset_presets: Transformačné presety
     storage_asset_transform: Povolené transformácie
     custom_css: Vlastné CSS
+    module_bar: Panel modulov
     transformations_all: Povoliť všetky transformácie
     transformations_none: Vypnúť transformácie
     transformations_presets: Obmedziť transformácie na presety nižšie
