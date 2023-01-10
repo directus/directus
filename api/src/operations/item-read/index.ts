@@ -42,7 +42,7 @@ export default defineOperationApi<Options>({
 		let result: Item | Item[] | null;
 
 		if (!key || (Array.isArray(key) && key.length === 0)) {
-			result = await itemsService.readByQuery(sanitizedQueryObject);
+			result = await itemsService.readByQuery(sanitizedQueryObject, { emitEvents: !!emitEvents });
 		} else {
 			const keys = toArray(key);
 
