@@ -67,6 +67,7 @@ docker_test_build:
     - docker push $IMAGE_NAME:$IMAGE_TAG
     - doctl kubernetes cluster kubeconfig save k8s-stage-fra1
     - kubectl rollout restart deployment directustests-admin-directus-next -n workflow-websites
+    - kubectl rollout restart deployment privateautoleads-admin-directus-next -n workflow-websites
   tags:
     - crawless
   only:
