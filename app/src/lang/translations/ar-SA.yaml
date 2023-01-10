@@ -782,6 +782,16 @@ icon_off: إيقاف الأيقونة
 label: تسمية
 flows: التدفق
 flow: التدفق
+select_a_flow: حدد التدفق
+run_flow_on_current_collection: تشغيل التدفق على المجموعة الحالية
+run_flow_on_current: تشغيل التدفق على العنصر الحالي
+run_flow_on_current_edited_confirm: قد يتم تحديث هذا العنصر بواسطة هذا التدفق، هل أنت متيقِّن من أنك تريد تنفيذه؟
+run_flow_on_selected: حدد عنصر واحد أو أكثر أولا | تشغيل تدفق على 1 عنصر محدد | تشغيل تدفق على {n} العناصر المحددة
+run_flow_success: تدفق "{flow}" تم بنجاح
+trigger: المحفز
+trigger_options: خيارات المحفز
+view_trigger: عرض المحفز
+create_trigger: إنشاء محفز
 flow_name: الاسم
 flow_tracking_activity: تتبع النشاط فقط
 flow_tracking_null: عدم تتبع أي شيء
