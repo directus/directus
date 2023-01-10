@@ -132,6 +132,7 @@ archive_confirm_count: >-
 reset_system_permissions_to: 'Resetovať systémové práva na:'
 reset_system_permissions_copy: Táto akcia prepíše všetky vlastné práva, ktoré ste použili na systémové zbierky. Ste si istý?
 the_following_are_minimum_permissions: Nasledujúce minimálne oprávnenia sa vyžadujú ked je zapnutý "Prístup z aplikácie". Môžete rozšíriť oprávnenia za túto hranicu, ale nie menej.
+app_access_minimum: Minimálny prístup v aplikácii
 recommended_defaults: Odporúčané prevolenia
 unarchive: Odarchivovať
 unarchive_confirm: Naozaj chcete odarchivovať túto položku?
@@ -186,6 +187,7 @@ revision_post_create: Takto vyzerala táto položka pri vytvorení.
 revision_post_update: Takto vyzerala táto položka po úprave.
 changes_made: Nižšie sú presné zmeny vykonané v tejto revízii.
 no_relational_data: Pamätajte, že relačné údaje tu nie sú zahrnuté.
+junction_field_location: Pozícia prepájacích polí
 top: Hore
 bottom: Dole
 hide_field: Skryť pole
@@ -251,7 +253,11 @@ uuid: UUID
 hash: Hash
 geometry: Geometria (Všetko)
 geometry.Point: Bod
+geometry.LineString: LineString
 geometry.Polygon: Polygón
+geometry.MultiPoint: MultiPoint
+geometry.MultiLineString: MultiLineString
+geometry.MultiPolygon: MultiPolygon
 not_available_for_type: Nedostupné pre tento typ
 create_translations: Vytvoriť preklady
 auto_refresh: Auto obnovenie
@@ -272,6 +278,9 @@ search_collection: Hľadať v zbierke...
 search_field: Vyhľadávacie pole...
 new_field: 'Nové pole'
 new_collection: 'Nová zbierka'
+add_m2o_to_collection: 'Pridať M2O do "{collection}"'
+add_o2m_to_collection: 'Pridať 02M do "{collection}"'
+add_m2m_to_collection: 'Pridať M2M do "{collection}"'
 choose_a_type: Vyberte typ...
 determined_by_relationship: Určené vzťahom
 add_note: Pridať užitočnú poznámku pre užívateľov...
@@ -281,6 +290,10 @@ default_value: Predvolená hodnota
 standard_field: Štandardné pole
 single_file: Jeden súbor
 multiple_files: Viac súborov
+m2o_relationship: Relácia veľa k jednému
+o2m_relationship: Relácia jeden ku veľa
+m2m_relationship: Relácia veľa ku veľa
+m2a_relationship: Relácia veľa ku akémukoľvek
 invalid_item: Chybná položka
 next: Ďalej
 field_name: Názov poľa
@@ -303,6 +316,7 @@ foreign_key: Cudzí klúč
 finish_setup: Dokončiť nastavenie
 dismiss: Zamietnuť
 toggle_raw_editor: Prepnúť surový editor
+raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
 raw_value: Surová hodnota
 copy_raw_value: Kopírovať surovú hodnotu
 copy_raw_value_success: Skopírované
@@ -329,6 +343,7 @@ settings_update_success: Nastavenia aktualizované
 title: Názov
 revision_delta_created: Vytvorené
 revision_delta_created_externally: Vytvorené externe
+revision_delta_updated: 'Zmenené 1 pole | Zmenené {count} polia'
 revision_delta_deleted: Odstránené
 revision_delta_reverted: Vrátené
 revision_delta_update_message: Toto pole je zmenené, ale jeho hodnota je utajená z bezpečnostných dôvodov.
@@ -386,10 +401,14 @@ functions:
   minute: Minúta
   second: Sekunda
   count: Počet
+date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
 date-fns_time_24hour: 'HH:mm:ss'
 date-fns_time_no_seconds_24hour: 'HH:mm'
+date-fns_date_short: 'd. MMM, u'
+date-fns_time_short: 'H:mm'
+date-fns_date_short_no_year: d. MMM
 minutes: Minúty
 hours: Hodiny
 month: Mesiac
@@ -588,6 +607,7 @@ errors:
   VALUE_OUT_OF_RANGE: Hodnota mimo rozsahu
   INVALID_FOREIGN_KEY: Neplatný cudzí kľúč
   UNKNOWN: Neočakávaná chyba
+  GRAPHQL_VALIDATION_EXCEPTION: GraphQL Validation Exception
   SERVICE_UNAVAILABLE: Služba je nedostupná
   UNSUPPORTED_MEDIA_TYPE: Nepodporovaný typ súboru
   UNEXPECTED_RESPONSE: Neočakávaná odpoveď
@@ -610,6 +630,7 @@ presets: Presety
 unexpected_error: Neočakávaná chyba
 unexpected_error_copy: Vyskytla sa neočakávaná chyba. Prosím skúste znova neskôr.
 copy_details: Kopírovať podrobnosti
+no_app_access: Žiadny prístup applikácie
 no_app_access_copy: Tento používateľ nemôže používať admin.
 password_reset_sent: Ak máte účet, poslali sme vám bezpečný odkaz na obnoveni vášho hesla
 password_reset_successful: Heslo úspešne obnovené
@@ -826,6 +847,7 @@ dashboard_name: Názov tabule
 no_data: Žiadne údaje
 no_data_in_flow: V rámci tohoto toku neboli vytvorené ani prečítané žiadne dáta
 accountability: Zodpovednosť
+payload: Payload
 details: Podrobnosti
 full_screen: Celá obrazovka
 full_text_search: Full-text hľadanie
@@ -962,6 +984,26 @@ page_help_files_collection: >-
 page_help_files_item: >-
   **Podrobnosti súboru** — Formulár na spravovanie metedát súboru, úpravu pôvodného súboru a akualizáciu prístupových nastavení.
 page_help_settings_project: "**Nastavenia projektu** — Globálne nastavenia vášho projektu."
+page_help_settings_datamodel_collections: >-
+  **Data Model: Zbierky** — Zoznamy dostupných zbierok. Zahŕňa to viditeľné, skryté a systémové zbierky, a taktiež nespravované databázové tabuľky, ktore sa dajú pridať.
+page_help_settings_datamodel_fields: >-
+  **Data Model: Zbierka** — Formulár na správu tejto zbierky a jej polí.
+page_help_settings_roles_collection: '**Prehliadanie rolí** — Vypíše role adminov, verejné a vlastné používateľské role.'
+page_help_settings_roles_item: "**Podrobnosti role** — Spravuje oprávnenia rolí a iné nastavenia."
+page_help_settings_presets_collection: >-
+  **Prehliadanie presetov** — Vypíše všetky presety v projekte vrátane: používateľských, rolových a globálnych záložiek, a taktiež predvolené pohľady.
+page_help_settings_presets_item: >-
+  **Podrobnosti presetu** — Formulár spravujúci záložky a predvolené presety zbierky.
+page_help_settings_webhooks_collection: '**Prehliadanie Webhookov** — Zoznam všetkých webhookov v projekte.'
+page_help_settings_webhooks_item: '**Podrobnosti webhooku** — Formulár na vytváranie a správu webhookov v projekte.'
+page_help_settings_flows_collection: '**Prehliadanie tokov** — Zoznam všetkých tokov v projekte.'
+page_help_settings_flows_item: '**Podrobnosti toku** — Pracovný priestor na správu jedného alebo viac operácií.'
+page_help_settings_translation_strings_collection: '**Prehliadanie prekladových textov** — Zoznam všetkých prekladový textov v rámci projektu.'
+page_help_users_collection: '**Priečinok používateľov** — Zoznam všetkých používateľov v projekte.'
+page_help_users_item: >-
+  **Podrobnosti používateľa** — Spravuje informácie o vašom účte, alebo zobrazuje podrobnosti iných používateľov.
+page_help_insights_overview: '**Prehľady** — Zoznam tabúľ, ku ktorým máte prístup.'
+page_help_insights_dashboard: '**Tabuľa** — Pracovný priestor na spravovanie jedného alebo viac panelov'
 activity_feed: Záznam aktivít
 add_new: Pridať nový
 create_new: Vytvoriť nový
@@ -998,6 +1040,8 @@ directus_collection:
   directus_sessions: Informácie o používateľskom sedení
   directus_settings: Možnosti konfigurácie projektu
   directus_shares: Sleduje externe zdieľané položky
+  directus_users: Systémoví používatelia na platforme
+  directus_webhooks: Konfigurácia HTTP požiadavkov z udalostí
 fields:
   directus_activity:
     item: Primárny kľúč položky
@@ -1019,7 +1063,13 @@ fields:
     hidden: Skryté
     singleton: Jeden objekt
     translations: Preklady názvu zbierky
+    archive_app_filter: Filter archivačnej appky
+    archive_value: Hodnota pri archivovaní
+    unarchive_value: Hodnota pri odarchivovaní
     sort_field: Zoraďovacie pole
+    accountability: Sledovanie aktivity a revízií
+    archive_field: Archivačné pole
+    item_duplication_fields: Duplikované polia položky
   directus_files:
     $thumbnail: Miniatúra
     title: Názov
@@ -1054,6 +1104,7 @@ fields:
     title: Názov
     description: Popis
     tags: Tagy
+    user_preferences: Nastavenia používateľa
     language: Jazyk
     theme: Téma
     theme_auto: Automaticky (podľa systému)
@@ -1201,6 +1252,7 @@ field_options:
     plural_unit: Množné číslo
     archive_divider: Archív
     archive_field_placeholder: Vyberte pole...
+    archive_app_filter: Povoliť filter archivácie
     archive_value: Hodnota nastavená pri archivovaní...
     unarchive_value: Hodnota nastavená pri odarchivovaní...
     sort_divider: Zoradiť
@@ -1644,22 +1696,35 @@ interfaces:
     user_language: Použiť jazyk aktuálneho používateľa
     default_language: Predvolený jazyk
     language_field: Pole jazyka
+    language_direction_field: Pole smeru jazyka
+  list-o2m-tree-view:
+    description: Stromové zobrazenie vnorených rekurzívnych one-to-many položiek
+    recursive_only: Rozhranie stromového zobrazenia funguje len na rekurzívne relácie.
   user:
     user: Používateľ
+    description: Vyberte existujúceho directus používateľa
+    select_mode: Vybrať režim
     modes:
+      auto: Auto
       dropdown: Rozbaľovacia ponuka
   input-rich-text-html:
+    wysiwyg: WYSIWYG
+    description: Textový editor s HTML obsahom
+    toolbar: Panel nástrojov
+    custom_formats: Vlastné formáty
     folder_note: Priečinok na nahrávanie súborov. Neovplyvní to existujúce súbory.
     imageToken: Statický prístupový token
     imageToken_label: Statický prístupový token sa pridá do URL súborov
   input-autocomplete-api:
     input-autocomplete-api: Dopĺňaný vstup (API)
+    description: Dopredné vyhľadávanie hodnôt z externej API.
     results_path: Cesta k výsledkom
     value_path: Cesta k hodnote
     text_path: Cesta k textu
     trigger: Spúšťač
     rate: Rýchlosť
   group-raw:
+    name: Surová skupina
     description: Vyrenderuje pole tak ako je
   group-detail:
     name: Podrobnosti skupiny
@@ -1671,6 +1736,7 @@ interfaces:
     start_closed: Začať zavreté
   system-token:
     system-token: Token
+    description: Správa statického prístupového tokenu
     placeholder: Kliknite na "Generovať token" na vytvorenie nového statického prístupového tokenu
     value_securely_saved: Hodnota bezpečne uložená
     generate: Vygenerovať Token
@@ -1839,6 +1905,13 @@ layouts:
     default_template: Používa sa prevolenie zbierky...
     no_compatible_fields: Žiadne kompatibilné polia
   kanban:
+    name: Kanban
+    group_field: Zoskupiť podľa
+    group_field_placeholder: Pole podľa ktoré sa zoskupuje...
+    group_title: Názov skupiny
+    group_title_placeholder: Pole pre názvy skupín...
+    title: Názov karty
+    title_placeholder: Voliteľné pole názvu...
     text: Text karty
     text_placeholder: Voliteľné textové polia...
     date: Dátum karty
@@ -1877,6 +1950,7 @@ panels:
     description: Zobrazí nejaký text
   list:
     name: Zoznam
+    description: Filtruje a vypisuje polia zo zbierky
   barchart:
     name: Stĺpcový graf
     description: Stĺpcový graf na porovnávanie skupín hodnôt
@@ -1987,11 +2061,39 @@ triggers:
 a_flow_uuid: Vyberte tok na spustenie...
 any_string_or_json: Akýkoľvek text alebo JSON...
 item_payload_placeholder: Toto je JSON použitý na aktualizáciu hodnôt polí v položke...
+operation_variables_note: K dátam toku sa viete dostať použitím premenný ako **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** a **{'{'}{'{'}$accountability{'}'}{'}'}**, alebo odkazovať predošlé operácie použitím **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
   condition:
     name: Podmienka
+    description: Presmeruje tok podľa logiky If / Else
   exec:
     name: Spustiť skript
+    description: Vykoná ľubovoľný kód, ktorý upraví payload
+    modules: 'Nasledujúce **Node modules** môžete použiť:'
+  item-create:
+    name: Vytvoriť dáta
+    description: Vytvorí položky v databáze
+    payload: Payload
+    emit_events: Vysielať udalosti
+  item-delete:
+    name: Vymazať dáta
+    description: Odstráni položky v databáze
+    emit_events: Vysielať udalosti
+    key: IDčka
+    query: Dotaz
+  item-read:
+    name: Čítať dáta
+    description: Prečíta údaje z databázy
+    key: IDčka
+    query: Dotaz
+    emit_events: Vysielať udalosti
+  item-update:
+    name: Aktualizovať dáta
+    description: Upraví položky v databáze
+    emit_events: Vysielať udalosti
+    key: IDčka
+    payload: Payload
+    query: Dotaz
   log:
     name: Logovať do konzoly
     description: Vypíše niečo do konzoly
