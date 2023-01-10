@@ -572,9 +572,13 @@ edit_bookmark: Upraviť záložku
 edit_personal_bookmark: Upraviť osobnú záložku
 edit_role_bookmark: Upraviť záložku role
 edit_global_bookmark: Upraviť globálnu záložku
+cannot_edit_role_bookmarks: Nadá sa upraviť záložka role
+cannot_edit_global_bookmarks: Nadá sa upraviť globálna záložka
 bookmarks: Záložky
 presets: Presety
 unexpected_error: Neočakávaná chyba
+unexpected_error_copy: Vyskytla sa neočakávaná chyba. Prosím skúste znova neskôr.
+copy_details: Kopírovať podrobnosti
 no_app_access_copy: Tento používateľ nemôže používať admin.
 password_reset_sent: Ak máte účet, poslali sme vám bezpečný odkaz na obnoveni vášho hesla
 password_reset_successful: Heslo úspešne obnovené
@@ -672,6 +676,7 @@ upload_files_indeterminate: 'Nahrávanie súborov {done}/{total}'
 upload_files_success: '{count} súborov nahratých'
 upload_pending: Čaká na nahratie
 drag_file_here: Pretiahnute a pustite súbor sem
+click_to_browse: Kliknite na prehliadanie
 interface_options: Možnosti rozhrania
 layout_options: Možnosti rozloženia
 rows: Riadky
@@ -682,6 +687,9 @@ value_unique: Hodnota musí byť unikátna
 all_activity: Všetky aktivity
 create_item: Vytvoriť položku
 display_template: Šablóna zobrazenia
+language_display_template: Šablóna zobrazenia jazyka
+translations_display_template: Šablóna zobrazenia prekladov
+n_items_selected: 'Žiadne označené položky | 1 označená položka | {n} označených položiek'
 per_page: Na stránku
 all_files: Všetky súbory
 my_files: Moje súbory
@@ -702,6 +710,22 @@ role: Rola
 edit_role: Upraviť rolu
 rule: Pravidlo
 user: Používateľ
+no_presets: Žiadne presety
+no_presets_copy: Zatiaľ neboli uložené žiadne presety alebo záložky.
+no_presets_cta: Pridať preset
+presets_only: Len presety
+create: Vytvoriť
+on_create: Pri vytvorení
+on_update: Pri úprave
+read: Čítať
+update: Upraviť
+delete: Odstrániť
+select_fields: Vyberte polia
+abbreviate_value: Skrátiť hodnotu
+operator: Operátor
+bold: Tučné
+toggle: Prepnúť
+icon_on: Ikona zapnutá
 label: Popis
 trigger: Spúšťač
 trigger_options: Možnosti spúšťača
@@ -739,6 +763,7 @@ no_dashboards_copy: Zatiaľ nemáte žiadne tabule.
 create_dashboard: Vytvoriť tabuľu
 dashboard_name: Názov tabule
 no_data: Žiadne údaje
+accountability: Zodpovednosť
 details: Podrobnosti
 full_screen: Celá obrazovka
 full_text_search: Full-text hľadanie
@@ -816,19 +841,29 @@ deselect_all: Odznačiť všetko
 other: Ostatné...
 adding_user: Pridávanie používateľa
 unknown_user: Neznámy používateľ
+creating_unit: 'Vytváranie {unit}'
+editing_unit: 'Úprava {unit}'
+editing_in_batch: 'Hromadná úprava {count} položiek'
+no_options_available: Žiadne dostupné možnosti
 settings_data_model: Dátový model
 settings_permissions: Roly a oprávnenia
 settings_project: Nastavenia projektu
 settings_webhooks: Webháky
+settings_flows: Toky
 settings_presets: Presety a Záložky
 settings_translation_strings: Prekladové texty
+one_or_more_options_are_missing: Chýba jedna alebo viac možností
+scope: Prístup
 actions: Akcie
 select: Vybrať...
 layout: Rozloženie
 tree_view: Stromový pohľad
 changes_are_permanent: Zmeny sú trvalé
+preset_name_placeholder: Slúži ako predvolená hodnota keď je prázdne...
 preset_search_placeholder: Hľadaný výraz...
+editing_preset: Úprava presetu
 layout_preview: Náhľad rozloženia
+layout_setup: Nastavenia rozloženia
 data: Údaje
 unsaved_changes: Neuložené zmeny
 unsaved_changes_copy: Naozaj chcete opustiť túto stránku?
@@ -838,12 +873,28 @@ discard_changes_copy: Naozaj chcete zahodiť všetky vykonané zmeny?
 show_x_axis: Zobraziť os X
 show_y_axis: Zobraziť os Y
 keep_editing: Pokračovať v úprave
+page_help_collections_overview: '**Prehľad zbierok** — Zoznam všetkých zbierok, ku ktorým máte prístup.'
+page_help_collections_collection: >-
+  **Prehľad položiek** — Zoznam všetkých položiek {collection}, ku ktorým máte prístup. Prispôsobte rozloženie, filtre a zoradenie podľa potreby alebo dokonca uložke záložky týchto rôznych konfigurácií na rýchlejší prístup.
+page_help_collections_item: >-
+  **Podrobnosti položky** — Formulár na pozeranie a správu tejto položky. Tento bočný panel obsahuje celú históriu revízií a súvisiace komentáre.
+page_help_activity_collection: >-
+  **Prehliadať aktivitu** — Zoznam všetkej aktivity vašich systémových používateľov a aktivity nad obsahom.
+page_help_docs_global: >-
+  **Prehľad dokumentácie** — Dokumenty vytvorené špecificky pre verziu tohoto projektu a túto schému.
+page_help_files_collection: >-
+  **Knižnica súborov** — Zoznamy všetkých súborov nahratých do tohoto projektu. Prispôsobte rozloženie, filtery a zoraďovanie, alebo si aj uložte záložky týchto rôznych konfigurácií na rýchly prístup.
+page_help_files_item: >-
+  **Podrobnosti súboru** — Formulár na spravovanie metedát súboru, úpravu pôvodného súboru a akualizáciu prístupových nastavení.
+page_help_settings_project: "**Nastavenia projektu** — Globálne nastavenia vášho projektu."
 activity_feed: Záznam aktivít
 add_new: Pridať nový
 create_new: Vytvoriť nový
 all: Všetko
 none: Žiadne
 no_layout_collection_selected_yet: Žiadne vybraté rozloženie/zbierka
+batch_delete_confirm: >-
+  Nie sú označené žiadne položky | Naozaj chcete odstrániť túto položku? Táto akcia sa nedá vrátiť. | Naozaj chcete odstrániť týchto {count} položiek? Táto akcia sa nedá vrátiť.
 cancel: Zrušiť
 no_upscale: Nezväčšovať obrázky
 collection: Zbierka
@@ -851,6 +902,15 @@ collections: Zbierky
 content: Obsah
 system_fields_locked: Systémové polia sú zamknuté a nedajú sa upravovať
 directus_collection:
+  directus_flows: Automatizácia tokov
+  directus_folders: Poskytuje virtuálne priečinky na súboru
+  directus_migrations: Akú verziu databázy používate
+  directus_notifications: Notifikácie poslané používateľom
+  directus_operations: Operácie, ktoré bežia v tokoch
+  directus_panels: Jednotlivé panely na tabuliach
+  directus_permissions: Prístupové práva pre kažú rolu
+  directus_presets: Presety pre predvolené hodnoty zbierok a záložky
+  directus_relations: Nastavenia vzťahov a metadát
   directus_roles: Skupiny práv pre systémových používateľov
   directus_sessions: Informácie o používateľskom sedení
 fields:
@@ -960,6 +1020,7 @@ fields:
     password: Heslo
     date_start: Dátum začiatku
     date_end: Dátum konca
+    times_used: Počet použití
   directus_fields:
     collection: Názov zbierky
     icon: Ikona zbierky
@@ -973,8 +1034,10 @@ fields:
     description: Popis
     app_access: Prístup k aplikácii
     admin_access: Administrátorský prístup
+    ip_access: IP prístup
     enforce_tfa: Vyžadovať 2FA
     users: Používatelia v roli
+    module_list: Navigácia modulu
   directus_webhooks:
     name: Názov
     method: Metóda
@@ -992,9 +1055,30 @@ field_options:
     project_name_placeholder: Môj projekt...
     project_color_note: Prihlásenie a logo na pozadí
     project_logo_note: Biele 40x40 SVG/PNG
+    public_note_placeholder: Krátka, verejná správa, ktorá podporuje markdown formátovanie...
     security_divider_title: Zabezpečenie
+    auth_password_policy:
+      none_text: Žiadne – Neodporúčame
+      weak_text: Slabé – Najmenej 8 znakov
+      strong_text: Silné – Veľké / Malé písmená / Čísla / Špeciálne znaky
+    storage_asset_presets:
+      fit_label: Prispôsobiť
+      upscaling: Zväčšenie
+      fit:
+        contain_text: Vmestiť (zachovať pomer strán)
+        cover_text: Pokryť (prinúti presnú veľkosť)
+        fit_text: Prispôsobiť dovnútra
+        outside_text: Prispôsobiť zvonka
+    additional_transforms: Ďalšie transformácie
+    transforms_note: Názov Sharp metódy a jej argumenty. Viac informácií nájdete na ttps://sharp.pixelplumbing.com/api-constructor.
+    mapbox_key: Prístupový token Mapbox
+    mapbox_placeholder: pk.eyJ1Ijo.....
     basemaps: Podkladové mapy
+    basemaps_name_placeholder: Zadajte názov základovej mapy...
     basemaps_raster: Raster
+    basemaps_tile: Raster TileJSON
+    basemaps_style: Štýl Mapboxu
+    files_divider_title: Súbory a náhľady
   directus_activity:
     login: Prihlásiť
     create: Vytvoriť
@@ -1011,15 +1095,20 @@ field_options:
     translation: Preklad
     translation_placeholder: Zadajte preklad...
     collection_name: Názov zbierky
+    singular_unit: Jednotné číslo
+    plural_unit: Množné číslo
     archive_divider: Archív
     archive_field_placeholder: Vyberte pole...
     unarchive_value: Hodnota nastavená pri odarchivovaní...
     sort_divider: Zoradiť
     sort_field: Vyberte pole...
+    accountability_divider: Zodpovednosť
+    duplication_divider: Duplikovanie
   directus_files:
     title: Unikátny nadpis...
     description: Voliteľný popis...
     location: Voliteľné miesto...
+    storage_divider: Pomenovanie súboru
     filename_disk: Názov na diskovom úložisku...
     filename_download: Názov pri sťahovaní...
   directus_roles:
@@ -1035,6 +1124,8 @@ field_options:
     collections_name: Zbierky
     collections_addLabel: Pridať zbierku...
   directus_users:
+    preferences_divider: Nastavenia používateľa
+    dropdown_auto: Automaticky (podľa systému)
     dropdown_light: Svetlý režim
     dropdown_dark: Tmavý režim
     admin_divider: Možnosti admina
@@ -1071,6 +1162,23 @@ block: Blokovať
 inline: V riadku
 comment: Komentár
 shares: Zdieľania
+unlimited_usage: Neobmedzené používanie
+uses_left: Nezostali žiadne použitia | Zostáva 1 použitie | Zostáva {n} použití
+no_shares: Žiadne zdieľania
+new_share: Nové zdieľanie
+expired: Vypršalo
+upcoming: Nadchádzajúce
+share: Zdielať
+share_item: Zdieľať položku
+shared_with_you: Niekto s vami zdieľa položku
+shared_enter_passcode: Pre pokračovanie zadajte heslo...
+shared_leave_blank_for_unlimited: Nechajte prázdne pre neobmedzené
+shared_times_remaining: Tento odkaz sa dá použiť iba {n} krát
+shared_last_remaining: Tento odkaz sa dá použiť iba raz
+shared_uses_left: Na zvýšenie bezpečnosti je táto zdieľaná stránka nastavená na obmedzený počet zobrazení. Aktuálne zostáva {n} zobrazení, po ktorých stránka už nebude prístupná.
+share_access_page: Prístup k zdieľanej stránke
+share_access_not_found: Táto zdieľaná stránka buď neexistuje alebo už prekročila povolený počet použítí.
+share_access_not_found_desc: Prosím kontaktujte povereného používateľa tohoto projektu na udelenie prístupu.
 description: Popis
 email: E-mail
 hidden: Skryté
@@ -1133,8 +1241,17 @@ interfaces:
   filter:
     name: Filter
     add_filter: Pridať filter
+    add_value: Pridať hodnotu
+    logic_type_and: A
+    logic_type_or: ALEBO
     all: Všetko
     any: Akékoľvek
+    and: a
+    of_the_following: z nasledujúcich
+    no_rules: Žiadne nakonfigurované pravidlá
+    change_value: Kliknutím zmeníte hodnotu
+    placeholder: Sem presuňte pravidlá
+    add_key_placeholder: Pridajte kľúč a stlačte enter...
   fields:
     name: Polia
   group-accordion:
@@ -1150,9 +1267,20 @@ interfaces:
     presentation-links: Tlačidlá s odkazom
     links: Odkazy
     description: Konfigurovateľné tlačidlá na otváranie dynamických URL adries
+    style: Štýl
     primary: Primárne
     link: Odkazy
+    button: Tlačidlá
+    error: Nedá sa vykonať akcia
+  select-multiple-checkbox:
+    checkboxes: Zaškrtávacie políčka
+    description: Zvolí spomedzi viacerých možností cez zaškrtávacie políčka
+    allow_other: Povoliť iné
+    show_more: 'Zobraziť ďalších {count}'
+    items_shown: Zobrazené položky
   select-multiple-checkbox-tree:
+    name: Zaškrtávacie políčka (strom)
+    description: Zvolí spomedzi viacerých možností cez vnorené zaškrtávacie políčka
     value_combining: Hodnota kombinácie
     value_combining_note: Aká hodnota sa uloží kde je označených viac možností.
     show_all: Zobraziť všetky
@@ -1199,9 +1327,20 @@ interfaces:
     divider: Oddeľovač
     description: Označuje a delí polia do sekcií
     title_placeholder: Zadajte nadpis alebo nechajte prázdne aby sa zobrazila iba čiara...
+    inline_title: Vložený názov
+    inline_title_label: Zobrazí názov vnútri oddeľovača
+    margin_top: Okraj hore
+    margin_top_label: Zvýšiť okraj hore
   select-dropdown:
+    description: Zvolí hodnotu z vysúvacieho zoznamu
+    choices_placeholder: Pridať novú možnosť
+    allow_other: Povoliť iné
+    allow_other_label: Povolí iné hodnoty
+    allow_none: Povoliť žiadnu
+    allow_none_label: Povolí žiadnu vybratú možnosť
     choices_name_placeholder: Zadajte názov...
     choices_value_placeholder: Zadajte hodnotu...
+    preview_threshold: Hranica náhľadu
   select-multiple-dropdown:
     select-multiple-dropdown: Vysúvací zoznam (viacero)
     description: Zvolí viac hodnôť z vysúvacieho zoznamu
@@ -1218,13 +1357,36 @@ interfaces:
     masked_label: Skryje skutočné hodnoty
   select-icon:
     icon: Ikona
+    description: Vyberte ikonu zo zoznamu
+    search_for_icon: Hľadať ikonu...
   file-image:
     image: Obrázok
     description: Vyberie alebo nahrá obrázok
+    crop: Orezať na prispôsobenie
+    crop_label: Oreže obrázok podľa potreby
+  system-interface:
+    interface: Rozhranie
+    description: Vyberie existujúce rozhranie
+    placeholder: Vyberte rozhranie...
+  system-interface-options:
+    interface-options: Možnosti rozhrania
+    description: Modal pre vybratie možností rozhrania
+  list-m2m:
+    many-to-many: Veľa na veľa
+    description: Vyberie viacej súvisiacich položiek
+    columns_configure_notice: Stĺpce môžete nastaviť po vytvorení tohoto poľa.
+    display_template_configure_notice: Šablónu zobrazenia môžete nastaviť po vytvorení tohoto poľa.
   select-dropdown-m2o:
+    many-to-one: Veľa na jedno
+    description: Vyberie jednu súvisiacu položku
     display_template: Šablóna zobrazenia
   input-rich-text-md:
+    markdown: Markdown
+    description: Vloží a zobrazí markdown
     edit: Upraviť
+    preview: Náhľad
+    editorFont: Písmo editoru
+    previewFont: Písmo náhľadu
   map:
     zoom: Priblíženie
     geometry_type: Typ geometrie
@@ -1285,6 +1447,7 @@ interfaces:
     input: Vstup
     mask: Maskované
   boolean:
+    toggle: Prepnúť
     color_on: Farba zapnutá
     color_off: Farba vypnutá
     label_default: Zapnuté
@@ -1318,10 +1481,14 @@ interfaces:
     start_closed: Začať zavreté
   system-token:
     system-token: Token
+    placeholder: Kliknite na "Generovať token" na vytvorenie nového statického prístupového tokenu
+    value_securely_saved: Hodnota bezpečne uložená
     generate: Vygenerovať Token
     regenerate: Pregenerovať Token
     generate_success_copy: Uistite sa o zálohovaní kópie vyššie uvedeného tokenu. Z bezpečnostných dôvodov, nebudete môcť druhý krát zobraziť token po uložení odchode z tejto stránky.
     remove_token: Odstrániť token
+  system-raw-editor:
+    system-raw-editor: Surový editor
 displays:
   translations:
     translations: Preklady
@@ -1357,6 +1524,7 @@ displays:
     font: Písmo
     font_serif: Serif
     font_monospace: Monospace
+    bold: Tučné
     italic: Kurzíva
     prefix: Prefix
     suffix: Sufix
