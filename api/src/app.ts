@@ -66,7 +66,7 @@ export default async function createApp(): Promise<express.Application> {
 
 	validateEnv(['KEY', 'SECRET']);
 
-	logger.warn('USER_INVITE_URL_ALLOW_LIST', env.USER_INVITE_URL_ALLOW_LIST);
+	logger.warn('USER_INVITE_URL_ALLOW_LIST: ' + env.USER_INVITE_URL_ALLOW_LIST);
 
 	if (!new Url(env.PUBLIC_URL).isAbsolute()) {
 		logger.warn('PUBLIC_URL should be a full URL');
