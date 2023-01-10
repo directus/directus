@@ -15,7 +15,7 @@ Directus is a real-time API and App dashboard for managing SQL database content.
 - **Completely extensible.** Built to white-label, it is easy to customize our modular platform.
 - **A modern dashboard.** Our no-code Vue.js app is safe and intuitive for non-technical users, no training required.
 
-**[Learn more about Directus](https://directus.io)**
+**[Learn more about Directus](https://directus.io)** • **[Documentation](https://docs.directus.io)**
 
 <br />
 
@@ -31,71 +31,6 @@ Directus is a real-time API and App dashboard for managing SQL database content.
 - Select your desired region and provision a new project in ~90 seconds
 
 **[Create your Free Project](https://directus.cloud)**
-
-<br />
-
-## ⚙️ Installation
-
-You can use the following configuration to get started using Docker Compose. Make sure to change all sensitive values
-like `KEY`, `SECRET`, `ADMIN_PASSWORD`, _etc._
-
-```yaml
-version: '3'
-services:
-  directus:
-    image: directus/directus:latest
-    volumes:
-      - ./uploads:/directus/uploads
-      - ./database:/directus/database
-    environment:
-      KEY: '255d861b-5ea1-5996-9aa3-922530ec40b1'
-      SECRET: '6116487b-cda1-52c2-b5b5-c8022c45e263'
-
-      DB_CLIENT: 'sqlite3'
-      DB_FILENAME: './data.db'
-
-      ADMIN_EMAIL: 'admin@example.com'
-      ADMIN_PASSWORD: 'd1r3ctu5'
-```
-
-Save this in your project as a file named `docker-compose.yml` and run:
-
-```
-docker-compose up -d
-```
-
-To learn more, visit the [Docker Guide](/self-hosted/installation/docker).
-
-<br />
-
-## 📌 Requirements
-
-- [Docker](https://docs.docker.com/get-docker/)
-- [Docker Compose](https://docs.docker.com/compose/install/) (often included with newer Docker installations)
-
-#### Supported Databases
-
-- PostgreSQL 10+
-- MySQL 5.7.8+ / 8+ (with
-  [mysql_native_password](https://dev.mysql.com/doc/refman/8.0/en/upgrading-from-previous-series.html#upgrade-caching-sha2-password-compatible-connectors))
-- MariaDB 10.2.7+
-- SQLite 3+
-- CockroachDB 21.1.13+<sup>[1]</sup>
-- MS SQL 13+<sup>[1]</sup>
-- OracleDB 19+<sup>[1]</sup>
-
-<sup>[1]</sup> Older versions may work, but aren't officially tested/supported.
-
-#### Supported OS
-
-- Ubuntu 18.04
-- CentOS / RHEL 8
-- macOS Catalina or newer
-- Windows 10/11
-- Docker ([DockerHub](https://hub.docker.com/r/directus/directus) +
-  [Dockerfile](https://github.com/directus/directus/blob/main/docker/Dockerfile))
-
-_Other operating systems may also work, but are not officially supported._
 
 <br />
 
