@@ -26,9 +26,9 @@
 				<search-input v-model="search" v-model:filter="filter" collection="directus_activity" />
 			</template>
 
-			<template #navigation>
+			<portal to="navigation">
 				<activity-navigation v-model:filter="roleFilter" />
-			</template>
+			</portal>
 
 			<component :is="`layout-${layout}`" v-bind="layoutState" class="layout">
 				<template #no-results>

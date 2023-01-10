@@ -2,22 +2,22 @@
 	<div class="private-view">
 		<aside id="navigation" role="navigation" aria-label="Module Navigation" :class="{ 'is-open': navOpen }">
 			<module-bar />
-			<!-- <div ref="moduleNavEl" class="module-nav alt-colors"> -->
-			<!-- <project-info /> -->
+			<div ref="moduleNavEl" class="module-nav alt-colors">
+				<project-info />
 
-			<!-- <div class="module-nav-content">
-					<slot name="navigation" />
-				</div> -->
+				<div class="module-nav-content">
+					<portal-target name="navigation"></portal-target>
+				</div>
 
-			<!-- <div
+				<div
 					class="module-nav-resize-handle"
 					:class="{ active: handleHover }"
 					@pointerenter="handleHover = true"
 					@pointerleave="handleHover = false"
 					@pointerdown.self="onResizeHandlePointerDown"
 					@dblclick="resetModuleNavWidth"
-				/> -->
-			<!-- </div> -->
+				/>
+			</div>
 		</aside>
 		<RouterView />
 	</div>
@@ -25,10 +25,12 @@
 
 <script>
 import ModuleBar from '@/views/private/components/module-bar.vue';
+import ProjectInfo from '@/views/private/components/project-info.vue';
 
 export default {
 	components: {
 		ModuleBar,
+		ProjectInfo,
 	},
 };
 </script>

@@ -1,10 +1,10 @@
 import { router } from '@/router';
 import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
-import RouterPass from '@/utils/router-passthrough';
 import { ModuleConfig } from '@directus/shared/types';
 import { ShallowRef, shallowRef } from 'vue';
 import { sortBy } from 'lodash';
+import RootLayout from '@/layouts/root.vue';
 
 export function getInternalModules(): ModuleConfig[] {
 	const modules = import.meta.glob<ModuleConfig>('./*/index.ts', { import: 'default', eager: true });
@@ -43,7 +43,7 @@ export function registerModules(modules: ModuleConfig[]): {
 			router.addRoute({
 				name: module.id,
 				path: `/${module.id}`,
-				component: RouterPass,
+				component: RootLayout,
 				children: module.routes,
 			});
 		}

@@ -87,9 +87,9 @@
 			<refresh-sidebar-detail v-model="refreshInterval" @refresh="insightsStore.refresh(primaryKey)" />
 		</template>
 
-		<template #navigation>
+		<portal to="navigation">
 			<insights-navigation />
-		</template>
+		</portal>
 
 		<v-workspace
 			:edit-mode="editMode"

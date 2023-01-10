@@ -1,7 +1,6 @@
 import { defineModule } from '@directus/shared/utils';
 import { addQueryToPath } from '@/utils/add-query-to-path';
-// import RouterPass from '@/utils/router-passthrough';
-import RootLayout from '@/layouts/root.vue';
+import RouterPass from '@/utils/router-passthrough';
 import { LocationQuery, NavigationGuard } from 'vue-router';
 import CollectionOrItem from './routes/collection-or-item.vue';
 import Item from './routes/item.vue';
@@ -141,7 +140,7 @@ export default defineModule({
 		},
 		{
 			path: ':collection',
-			component: RootLayout,
+			component: RouterPass,
 			children: [
 				{
 					name: 'content-collection',

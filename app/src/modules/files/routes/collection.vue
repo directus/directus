@@ -110,9 +110,9 @@
 				</v-button>
 			</template>
 
-			<template #navigation>
+			<portal to="navigation">
 				<files-navigation :current-folder="folder" />
-			</template>
+			</portal>
 
 			<component :is="`layout-${layout}`" class="layout" v-bind="layoutState">
 				<template #no-results>

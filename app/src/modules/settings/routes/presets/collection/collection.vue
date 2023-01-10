@@ -83,9 +83,9 @@
 				</v-button>
 			</template>
 
-			<template #navigation>
+			<portal to="navigation">
 				<settings-navigation />
-			</template>
+			</portal>
 
 			<component :is="`layout-${layout || 'tabular'}`" class="layout" v-bind="layoutState">
 				<template #no-results>

@@ -1,8 +1,8 @@
 <template>
 	<private-view :title="t('page_not_found')">
-		<template #navigation>
+		<portal to="navigation">
 			<content-navigation />
-		</template>
+		</portal>
 
 		<div class="not-found">
 			<v-info :title="t('page_not_found')" icon="not_interested">

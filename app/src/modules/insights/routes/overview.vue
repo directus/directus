@@ -6,9 +6,9 @@
 			</v-button>
 		</template>
 
-		<template #navigation>
+		<portal to="navigation">
 			<insights-navigation @create="createDialogActive = true" />
-		</template>
+		</portal>
 
 		<template #actions>
 			<dashboard-dialog v-model="createDialogActive">

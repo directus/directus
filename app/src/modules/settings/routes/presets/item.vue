@@ -19,9 +19,9 @@
 				</v-button>
 			</template>
 
-			<template #navigation>
+			<portal to="navigation">
 				<settings-navigation />
-			</template>
+			</portal>
 
 			<template #actions>
 				<v-dialog v-model="confirmDelete" @esc="confirmDelete = false">

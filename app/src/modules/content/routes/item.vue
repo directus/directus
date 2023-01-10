@@ -144,9 +144,9 @@
 			</v-button>
 		</template>
 
-		<template #navigation>
+		<portal to="navigation">
 			<content-navigation :current-collection="collection" />
-		</template>
+		</portal>
 
 		<v-form
 			ref="form"

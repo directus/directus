@@ -182,9 +182,9 @@
 				</v-button>
 			</template>
 
-			<template #navigation>
+			<portal to="navigation">
 				<content-navigation :current-collection="collection" />
-			</template>
+			</portal>
 
 			<v-info
 				v-if="bookmark && bookmarkExists === false"

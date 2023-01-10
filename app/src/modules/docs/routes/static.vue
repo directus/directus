@@ -11,9 +11,9 @@
 			<v-chip v-if="modularExtension" disabled small>Modular Extension</v-chip>
 		</template>
 
-		<template #navigation>
+		<portal to="navigation">
 			<docs-navigation :path="route.path" />
-		</template>
+		</portal>
 
 		<div class="docs-content selectable">
 			<router-view @update:title="title = $event" @update:modular-extension="modularExtension = $event" />

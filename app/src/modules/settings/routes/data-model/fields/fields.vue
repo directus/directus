@@ -52,9 +52,9 @@
 			</v-button>
 		</template>
 
-		<template #navigation>
+		<portal to="navigation">
 			<settings-navigation />
-		</template>
+		</portal>
 
 		<div class="collections-item">
 			<div class="fields">

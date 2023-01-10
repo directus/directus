@@ -14,9 +14,9 @@
 			</v-button>
 		</template>
 
-		<template #navigation>
+		<portal to="navigation">
 			<settings-navigation />
-		</template>
+		</portal>
 
 		<template #sidebar>
 			<sidebar-detail icon="info_outline" :title="t('information')" close>
