@@ -2,6 +2,21 @@
 
 _Changes marked with a :warning: contain potential breaking changes depending on your use of the package._
 
+## v9.22.4 (January 11, 2023)
+
+### :bug: Bug Fixes
+
+- **API**
+  - [#17101](https://github.com/directus/directus/pull/17101) offset should be 0 not 1 by default (by @freekrai)
+- **Extensions**
+  - [#17098](https://github.com/directus/directus/pull/17098) Fix running npm init directus-extension (by @Nitwel)
+
+### :sponge: Optimizations
+
+- **Misc.**
+  - [#17104](https://github.com/directus/directus/pull/17104) Make sure azure tests use unique file paths (by
+    @rijkvanzanten)
+
 ## v9.22.2 (January 11, 2023)
 
 ### :sparkles: New Features
