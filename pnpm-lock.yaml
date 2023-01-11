@@ -364,7 +364,7 @@ importers:
     specifiers:
       '@babel/core': 7.20.5
       '@babel/preset-env': 7.20.2
-      '@directus/docs': 9.22.0
+      '@directus/docs': 9.22.2
       '@directus/extensions-sdk': workspace:*
       '@directus/format-title': 10.0.0
       '@directus/shared': workspace:*
@@ -473,7 +473,7 @@ importers:
     devDependencies:
       '@babel/core': 7.20.5
       '@babel/preset-env': 7.20.2_@babel+core@7.20.5
-      '@directus/docs': 9.22.0
+      '@directus/docs': 9.22.2
       '@directus/extensions-sdk': link:../packages/extensions-sdk
       '@directus/format-title': 10.0.0
       '@directus/shared': link:../packages/shared
@@ -3652,8 +3652,8 @@ packages:
       '@jridgewell/trace-mapping': 0.3.9
     dev: true
 
-  /@directus/docs/9.22.0:
-    resolution: {integrity: sha512-L4C7AHi6/wC2Y4CgI3NJnS1pWXKIirNBvDdi41x9C9hgGyU49catXOJQb9W+HHcVsbh93Q7JwZzihnUhalAOug==}
+  /@directus/docs/9.22.2:
+    resolution: {integrity: sha512-xpOhLO7cosv7Y4toUwL4ZTwyCOYIdLOaVP8yuggo7O2UVYjH9e0fYYHzF9uFgw1Jv+wGKYWBElUTsjoWL0h5Rg==}
     dev: true
 
   /@directus/format-title/10.0.0:
@@ -9030,7 +9030,7 @@ packages:
       mississippi: 3.0.0
       mkdirp: 0.5.6
       move-concurrently: 1.0.1
-      promise-inflight: 1.0.1_bluebird@3.7.2
+      promise-inflight: 1.0.1
       rimraf: 2.7.1
       ssri: 6.0.2
       unique-filename: 1.1.1
@@ -9054,7 +9054,7 @@ packages:
       minipass-pipeline: 1.2.4
       mkdirp: 1.0.4
       p-map: 4.0.0
-      promise-inflight: 1.0.1_bluebird@3.7.2
+      promise-inflight: 1.0.1
       rimraf: 3.0.2
       ssri: 8.0.1
       tar: 6.1.13
@@ -17110,15 +17110,13 @@ packages:
     engines: {node: '>=0.4.0'}
     dev: true
 
-  /promise-inflight/1.0.1_bluebird@3.7.2:
+  /promise-inflight/1.0.1:
     resolution: {integrity: sha512-6zWPyEOFaQBJYcGMHBKTKJ3u6TBsnMFOIZSa6ce1e/ZrrsOlnHRHbabMjLiBYKp+n44X9eUI6VUPaukCXHuG4g==}
     peerDependencies:
       bluebird: '*'
     peerDependenciesMeta:
       bluebird:
         optional: true
-    dependencies:
-      bluebird: 3.7.2
 
   /promise-retry/2.0.1:
     resolution: {integrity: sha512-y+WKFlBR8BGXnsNlIHFGPZmyDf3DFMoLhaflAnyZgV6rG6xu+JwesTo2Q9R6XwYmtmwAFCkAk3e35jEdoeh/3g==}
