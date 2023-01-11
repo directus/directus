@@ -14,19 +14,18 @@ export const useExtensionsStore = defineStore({
 
 			if (isAdmin !== true) {
 				this.extensions = [];
-                return 
+				return;
 			}
 
-            try {
-                const response = await api.get<any>('/extensions', {
-                    params: { limit: -1, fields: ['*'] },
-                });
+			try {
+				const response = await api.get<any>('/extensions', {
+					params: { limit: -1, fields: ['*'] },
+				});
 
-                this.extensions = response.data.data;
-            } catch {
-                this.extensions = [];
-            }
-			
+				this.extensions = response.data.data;
+			} catch {
+				this.extensions = [];
+			}
 		},
 		async dehydrate() {
 			this.$reset();

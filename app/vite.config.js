@@ -1,7 +1,5 @@
 import {
 	APP_EXTENSION_TYPES,
-	APP_OR_HYBRID_EXTENSION_PACKAGE_TYPES,
-	APP_OR_HYBRID_EXTENSION_TYPES,
 	APP_SHARED_DEPS,
 	BUNDLE_EXTENSION_TYPES,
 	HYBRID_EXTENSION_TYPES,
@@ -227,9 +225,11 @@ function directusExtensions() {
 		const localPackageExtensions = await resolvePackageExtensions(EXTENSIONS_PATH);
 		const localExtensions = await getLocalExtensions(EXTENSIONS_PATH);
 
-		const types = [...APP_EXTENSION_TYPES, ...HYBRID_EXTENSION_TYPES, ...BUNDLE_EXTENSION_TYPES]
+		const types = [...APP_EXTENSION_TYPES, ...HYBRID_EXTENSION_TYPES, ...BUNDLE_EXTENSION_TYPES];
 
-		const extensions = [...packageExtensions, ...localExtensions, ...localPackageExtensions].filter(extension => types.includes(extension.type));
+		const extensions = [...packageExtensions, ...localExtensions, ...localPackageExtensions].filter((extension) =>
+			types.includes(extension.type)
+		);
 
 		extensionsEntrypoint = generateExtensionsEntrypoint(extensions);
 	}

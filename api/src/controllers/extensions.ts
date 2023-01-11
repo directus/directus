@@ -11,27 +11,28 @@ import { ExtensionsService } from '../extensions/service';
 
 const router = Router();
 
-router.get('/', asyncHandler(async (req, res, next) => {
+router.get(
+	'/',
+	asyncHandler(async (req, res, next) => {
+		const extensionManager = getExtensionManager();
 
-	const extensionManager = getExtensionManager();
+		const extensions = extensionManager.getDisplayExtensions();
 
-	const extensions = extensionManager.getDisplayExtensions();
+		res.locals.payload = {
+			data: extensions,
+		};
 
-	res.locals.payload = {
-		data: extensions,
-	};
-
-	return next();
-}),
+		return next();
+	}),
 	respond
 );
 
 router.get(
 	'/:name',
 	asyncHandler(async (req, res, next) => {
-		if(req.accountability?.admin !== true) throw new RouteNotFoundException(req.path)
+		if (req.accountability?.admin !== true) throw new RouteNotFoundException(req.path);
 
-		const name = req.params.name
+		const name = req.params.name;
 
 		const extensionManager = getExtensionManager();
 
@@ -46,85 +47,94 @@ router.get(
 	respond
 );
 
-router.post('/:name/:version?', asyncHandler(async (req, res, next) => {
-	if(req.accountability?.admin !== true) throw new RouteNotFoundException(req.path)
+/*router.post(
+	'/:name/:version?',
+	asyncHandler(async (req, res, next) => {
+		if (req.accountability?.admin !== true) throw new RouteNotFoundException(req.path);
 
-	const name = req.params.name;
-	const version = req.params.version;
+		const name = req.params.name;
+		const version = req.params.version;
 
-	if (!name) {
-		throw new RouteNotFoundException(req.path);
-	}
-
-	const extensionManager = getExtensionManager();
-
-	const extension = extensionManager.getExtension(name);
-
-	if(extension !== undefined) {
-		await extensionManager.installation.updateExtension(name);
-	} else {
-		await extensionManager.installation.installExtension(name, version);
-	}
-
-	extensionManager.reload();
-
-	return next();
-}),
-	respond
-);
-
-router.patch('/', asyncHandler(async (req, res, next) => {
-	if(req.accountability?.admin !== true) throw new RouteNotFoundException(req.path)
-
-	const extensionManager = getExtensionManager();
-
-	let keys: PrimaryKey[] = [];
-
-	const service = new ExtensionsService({ accountability: req.accountability, schema: req.schema });
-
-	if (Array.isArray(req.body)) {
-		keys = await service.updateBatch(req.body);
-	} else if (req.body.keys) {
-		keys = await service.updateMany(req.body.keys, req.body.data);
-	} else {
-		keys = await service.updateByQuery(req.body.query, req.body.data);
-	}
-
-	try {
-		const result = await service.readMany(keys, req.sanitizedQuery);
-		res.locals.payload = { data: result };
-
-		extensionManager.reload();
-	} catch (error: any) {
-		if (error instanceof ForbiddenException) {
-			return next();
+		if (!name) {
+			throw new RouteNotFoundException(req.path);
 		}
 
-		throw error;
-	}
+		const extensionManager = getExtensionManager();
 
-	return next();
-}), respond);
+		const extension = extensionManager.getExtension(name);
 
-router.delete('/:name', asyncHandler(async (req, res, next) => {
-	if(req.accountability?.admin !== true) throw new RouteNotFoundException(req.path)
+		if (extension !== undefined) {
+			await extensionManager.installation.updateExtension(name);
+		} else {
+			await extensionManager.installation.installExtension(name, version);
+		}
 
-	const name = req.params.name;
+		await extensionManager.reload();
 
-	if (!name) {
-		throw new RouteNotFoundException(req.path);
-	}
+		return next();
+	}),
+	respond
+);*/
 
-	const extensionManager = getExtensionManager();
+router.patch(
+	'/',
+	asyncHandler(async (req, res, next) => {
+		if (req.accountability?.admin !== true) throw new RouteNotFoundException(req.path);
 
-	await extensionManager.installation.uninstallExtension(name);
+		const extensionManager = getExtensionManager();
 
-	extensionManager.reload();
+		let keys: PrimaryKey[] = [];
 
-	return next();
-}),
+		const service = new ExtensionsService({ accountability: req.accountability, schema: req.schema });
+
+		if (Array.isArray(req.body)) {
+			keys = await service.updateBatch(req.body);
+		} else if (req.body.keys) {
+			keys = await service.updateMany(req.body.keys, req.body.data);
+		} else {
+			keys = await service.updateByQuery(req.body.query, req.body.data);
+		}
+
+		try {
+			await extensionManager.reload();
+
+			res.locals.payload = {
+				data: extensionManager.getDisplayExtensions().filter((extension) => keys.includes(extension.name)),
+			};
+		} catch (error: any) {
+			if (error instanceof ForbiddenException) {
+				return next();
+			}
+
+			throw error;
+		}
+
+		return next();
+	}),
 	respond
 );
+
+/*router.delete(
+	'/:name',
+	asyncHandler(async (req, res, next) => {
+		if (req.accountability?.admin !== true) throw new RouteNotFoundException(req.path);
+
+		const name = req.params.name;
+
+		if (!name) {
+			throw new RouteNotFoundException(req.path);
+		}
+
+		const extensionManager = getExtensionManager();
+
+		await extensionManager.installation.uninstallExtension(name);
+
+		await extensionManager.reload();
+
+		return next();
+	}),
+	respond
+);*/
 
 router.get(
 	'/sources/index.js',

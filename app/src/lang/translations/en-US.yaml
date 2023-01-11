@@ -1466,6 +1466,12 @@ navigate_to_item: Navigate to Item
 undo_removed_item: Undo Removed Item
 remove_item: Remove Item
 delete_item: Delete Item
+extensions: Extensions
+enable_extension: Enable Extension
+disable_extension: Disable Extension
+page_help_settings_extensions: View a list of all installed extensions and either enable or disable them.
+no_extensions: No Extensions
+no_extensions_copy: No extensions have been installed yet.
 interfaces:
   filter:
     name: Filter

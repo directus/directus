@@ -41,6 +41,8 @@ export type SplitEntrypoint = z.infer<typeof SplitEntrypoint>;
 type ExtensionBase = {
 	path: string;
 	name: string;
+	description?: string;
+	icon?: string;
 	version?: string;
 	host?: string;
 	local: boolean;
@@ -118,6 +120,8 @@ export type ExtensionOptionsBundleEntries = z.infer<typeof ExtensionOptionsBundl
 export const ExtensionManifest = z.object({
 	name: z.string(),
 	version: z.string(),
+	description: z.string().optional(),
+	icon: z.string().optional(),
 	dependencies: z.record(z.string()).optional(),
 	[EXTENSION_PKG_KEY]: ExtensionOptions,
 });
@@ -169,10 +173,13 @@ export type ExtensionOptionsContext = {
 	saving: boolean;
 };
 
-export type ExtensionInfo = ExtensionRaw & ( Omit<AppExtension, 'entrypoint' | 'path'>
-	| Omit<ApiExtension, 'entrypoint' | 'path'>
-	| Omit<HybridExtension, 'entrypoint' | 'path'>
-	| Omit<BundleExtension, 'entrypoint' | 'path'>);
+export type ExtensionInfo = ExtensionRaw &
+	(
+		| Omit<AppExtension, 'entrypoint' | 'path'>
+		| Omit<ApiExtension, 'entrypoint' | 'path'>
+		| Omit<HybridExtension, 'entrypoint' | 'path'>
+		| Omit<BundleExtension, 'entrypoint' | 'path'>
+	);
 
 export const ExtensionRaw = z.object({
 	name: z.string(),

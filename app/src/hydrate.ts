@@ -41,7 +41,7 @@ export function useStores(
 		useInsightsStore,
 		useFlowsStore,
 		useNotificationsStore,
-		useExtensionsStore
+		useExtensionsStore,
 	]
 ): GenericStore[] {
 	return stores.map((useStore) => useStore()) as GenericStore[];

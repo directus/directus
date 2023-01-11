@@ -2,7 +2,7 @@
 	<private-view :title="t('extensions')">
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded disabled icon>
-				<v-icon name="bolt" />
+				<v-icon name="extension" />
 			</v-button>
 		</template>
 
@@ -20,6 +20,7 @@
 				rounded
 				icon
                 :disabled="hasEdits === false"
+				:loading="saving"
 				@click="saveExtensions"
 			>
 				<v-icon name="check" />
@@ -28,18 +29,21 @@
 
 		<template #sidebar>
 			<sidebar-detail icon="info_outline" :title="t('information')" close>
-				<div v-md="t('page_help_settings_flows_collection')" class="page-description" />
+				<div v-md="t('page_help_settings_extensions')" class="page-description" />
 			</sidebar-detail>
 		</template>
 
-		<v-info v-if="extensions.length === 0" icon="bolt" :title="t('no_flows')" center>
+		<v-info v-if="extensions.length === 0" icon="extension" :title="t('no_extensions')" center>
 			{{ t('no_extensions_copy') }}
 		</v-info>
 
         <v-list>
-            <v-list-item boxed v-for="extension in extensions" :key="extension.name">
-                {{ extension.name }}
-                <v-checkbox :model-value="extension.enabled" @update:model-value="setEnabled(extension.name, $event)" />
+            <v-list-item block v-for="extension in extensions" :key="extension.name">
+				<v-button disabled icon rounded><v-icon :name="extension.icon ?? 'extension'" /></v-button>
+                {{ formatName(extension.name) }}
+				<span class="description" v-if="extension.description">{{ extension.description }}</span>
+				<span class="spacer"></span>
+                <v-checkbox v-tooltip="extension.enabled ? t('disable_extension') : t('enable_extension')" :model-value="extension.enabled" @update:model-value="setEnabled(extension.name, $event)" />
             </v-list-item>
         </v-list>
 
@@ -50,6 +54,7 @@
 <script lang="ts" setup>
 import api from '@/api';
 import { useExtensionsStore } from '@/stores/extensions';
+import formatTitle from '@directus/format-title';
 import { ExtensionInfo } from '@directus/shared/types';
 import { isEqual } from 'lodash';
 import { computed, ref } from 'vue';
@@ -82,6 +87,10 @@ function setEnabled(name: string, enabled: boolean) {
     }
 }
 
+function formatName(name: string) {
+	return formatTitle(name.replace(/^directus-extension-/, ''))
+}
+
 const hasEdits = computed(() => isEqual(extensions.value, extensionsStore.extensions) === false)
 
 const saving = ref(false);
@@ -92,32 +101,33 @@ async function saveExtensions() {
     saving.value = true;
     await api.patch('/extensions', Object.values(edits.value))
     await extensionsStore.hydrate()
-
-    edits.value = {};
+	edits.value = {};
     saving.value = false;
 }
 
 </script>
 
 <style scoped>
-.v-table {
+main .v-list {
 	padding: var(--content-padding);
 	padding-top: 0;
-}
-
-.ctx-toggle {
-	--v-icon-color: var(--foreground-subdued);
-	--v-icon-color-hover: var(--foreground-normal);
-}
-
-.v-list-item.danger {
-	--v-list-item-color: var(--danger);
-	--v-list-item-color-hover: var(--danger);
-	--v-list-item-icon-color: var(--danger);
 }
 
 .header-icon {
 	--v-button-color-disabled: var(--primary);
 	--v-button-background-color-disabled: var(--primary-10);
+}
+
+.v-list-item {
+	display: flex;
+	gap: 8px;
+}
+
+.spacer {
+	flex-grow: 1;
+}
+
+.description {
+	color: var(--foreground-subdued);
 }
 </style>
