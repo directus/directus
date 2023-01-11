@@ -539,7 +539,7 @@ action: Akcia
 ip_address: IP adresa
 user_agent: Užívateľský agent
 origin: Pôvod
-webhooks: Webháky
+webhooks: Webhooky
 decimals: Desatinné miesta
 value_decimals: Desatinná hodnota
 min_value: Minimálna hodnota
@@ -549,7 +549,7 @@ field_width: Šírka poľa
 add_filter: Pridať filter
 upper_limit: Horný limit...
 lower_limit: Dolný limit...
-user_directory: Priečinok používateľa
+user_directory: Zoznam používateľov
 documentation: Dokumentácia
 sidebar: Bočný panel
 duration: Trvanie
@@ -943,9 +943,9 @@ editing_unit: 'Úprava {unit}'
 editing_in_batch: 'Hromadná úprava {count} položiek'
 no_options_available: Žiadne dostupné možnosti
 settings_data_model: Dátový model
-settings_permissions: Roly a oprávnenia
+settings_permissions: Role a oprávnenia
 settings_project: Nastavenia projektu
-settings_webhooks: Webháky
+settings_webhooks: Webhooky
 settings_flows: Toky
 settings_presets: Presety a Záložky
 settings_translation_strings: Prekladové texty
