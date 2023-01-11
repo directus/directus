@@ -22,7 +22,7 @@
 identifier: المعرِّف
 avatar: الصورة الرمزية
 application: التطبيق
-default_provider: الافتراضي
+default_provider: الإفتراضي
 method: طريقة
 published: تم نشره
 draft: مسوّدة
@@ -843,6 +843,7 @@ no_dashboards_copy: ليس لديك أي لوحة تحكم حتى الآن.
 create_dashboard: إنشاء لوحة تحكم
 dashboard_name: اسم لوحة التحكم
 no_data: لا توجد بيانات
+accountability: المساءلة
 image_url: رابط الصورة
 alt_text: النص البديل
 media: وسائط الإعلام
@@ -1119,21 +1120,54 @@ field_options:
       strong_text: قوي – حروف كبيرة/ صغيرة / أرقام / رموز خاصة
     storage_asset_presets:
       fit_label: مناسب
+      upscaling: تمدد
+      fit:
+        contain_text: يحتوي على (الحفاظ على تناسب الجوانب)
+        cover_text: الغلاف (يفرض الحجم الدقيق)
+        fit_text: تلائم بالداخل
+        outside_text: تلائم بالخارج
+    additional_transforms: تحولات إضافية
+    mapbox_key: رمز وصول الخريطة
+    files_divider_title: الملفات و الصور المصغرة
+    overrides_divider_title: تجاوزات التطبيق
   directus_activity:
+    login: تسجيل الدخول
     create: انشاء
     update: تحديث
+    delete: حذف
   directus_collections:
     track_activity_revisions: تتبع النشاط والتنقيحات
     only_track_activity: تتبع النشاط فقط
     do_not_track_anything: عدم تتبع أي شيء
     collection_setup: لا توجد مجموعات الإعداد
+    note_placeholder: وصف لهذه المجموعة...
+    hidden_label: إخفاء داخل التطبيق
     singleton: معاملته ككائن واحد
     language: لغة
     translation: الترجمة
+    translation_placeholder: أدخل ترجمة...
     collection_name: اسم المجموعة
+    singular_unit: وحدة المفرد
+    plural_unit: وحدة الجمع
     archive_divider: أرشفة
+    archive_field_placeholder: اختر حقل...
+    archive_app_filter: تفعيل تصفية أرشيف التطبيق
+    archive_value: تعيين القيمة خلال الأرشفة...
+    unarchive_value: تعيين القيمة خلال إلغاء الأرشفة...
     sort_divider: رتب
+    sort_field: إختر حقل...
+    accountability_divider: المساءلة
+    duplication_divider: تكرار
+  directus_files:
+    title: عنوان فريد...
+    description: وصف اختياري...
+    location: موقع اختياري...
+    storage_divider: تسمية الملف
+    filename_disk: الإسم على قرص التخزين...
+    filename_download: الاسم عند التنزيل...
   directus_roles:
+    name: الاسم الفريد لهذا الدور...
+    description: وصف لهذا الدور...
     fields:
       icon_name: أيقونة
       name_name: الاسم
@@ -1156,6 +1190,7 @@ field_options:
     triggers_divider: المحفزات
     actions_create: انشاء
     actions_update: تحديث
+    actions_delete: حذف
     headers:
       value: قيمة
 no_fields_in_collection: 'لا توجد حقول في "{collection}" حتى الآن'
@@ -1171,6 +1206,8 @@ referential_action_set_default: تعيين {field} إلى قيمته الافت�
 choose_action: اختر الإجراء
 editing_role: 'دور {role}'
 creating_webhook: إنشاء Webhook
+default_label: الافتراضي
+delete_label: حذف
 delete_are_you_sure: >-
   هذا الإجراء دائم ولا يمكن التراجع عنه. هل أنت متأكد من رغبتك في المتابعة؟
 delete_field_are_you_sure: >-
@@ -1181,20 +1218,35 @@ duplicate: مكرر
 limit: الحد
 email: البريد الإلكتروني
 embed: تضمين
+fallback_icon: أيقونة احتياطية
 field: حقل | حقول
 file: ملف
 file_library: مكتبة الملفات
 forgot_password: نسيت كلمة المرور
 hidden: مخفي
+hidden_in_group: مخفي في {group}
 icon: أيقونة
 info: معلومات
+normal: عادي
+success: نجاح
 warning: تحذير
 danger: خطر
+colors:
+  purple: بنفسجي
+  blue: أزرق
+  green: أخضر
+  yellow: أصفر
+  orange: برتقالي
+  red: أحمر
+  black: أسود
+  gray: رمادي
+  white: أبيض
 junction_collection: مجموعة تلاقي
 latency: وقت الإستجابة
 login: تسجيل الدخول
 my_activity: نشاطي
 not_authenticated: لم تتم المصادقة
+authenticated: مصادق
 options: خيارات
 otp: كلمة السر لمرة واحدة OTP
 password: كلمة المرور
@@ -1203,6 +1255,8 @@ relationship: العلاقة
 reset: إعادة تعيين
 reset_password: إعادة تعيين كلمة المرور
 revisions: المراجعات
+no_revisions: لا توجد تنقيحات حتى الآن
+no_logs: لا توجد سجلات حتى الآن
 revert: عودة
 save: حفظ
 schema: مخطط
@@ -1216,20 +1270,55 @@ sign_out: تسجيل الخروج
 sign_out_confirm: هل أنت متأكد من رغبتك في تسجيل الخروج?
 something_went_wrong: حدث خطأ.
 sort_direction: الترتيب وفق الإتجاه
+export_location: موقع التصدير
+export_started: بدأ التصدير
+export_started_copy: لقد بدأ التصدير الخاص بك. سيتم إعلامك عندما يكون جاهز للتحميل.
 sort_asc: ترتيب تصاعدي
 sort_desc: ترتيب تنازلي
 template: قالب
+require_value_to_be_set: تتطلب القيمة ليتم تعيينها عند الإنشاء
 translation: الترجمة
+translation_placeholder: أدخل ترجمة...
 value: قيمة
 view_project: عرض المشروع
 report_error: الإبلاغ عن خطأ
+start: إبدأ
 table: الجدول
+list: قائمة
+search_filter: البحث والتصفية
+enable_search_filter: تمكين البحث والتصفية
+item_link: رابط العنصر
+show_link_to_item: إظهار رابط للعنصر
+navigate_to_item: الانتقال إلى العنصر
+undo_removed_item: التراجع عن إزالة العنصر
+remove_item: إزالة العنصر
+delete_item: حذف العنصر
 interfaces:
   filter:
     name: فلترة
+    description: إعداد كائن التصفية.
     add_filter: إضافة فلتر
+    add_group: و / أو مجموعة
+    add_value: إضافة قيمة
+    logic_type_and: و
+    logic_type_or: أو
     all: الجميع
     any: أي
+    and: و
+    of_the_following: من التالي
+    no_rules: لا توجد قواعد مكونة
+    change_value: انقر لتغيير القيمة
+    placeholder: اسحب القواعد هنا
+    add_key_placeholder: أضف مفتاح واضغط على إدخال...
+  fields:
+    name: حقول
+  group-accordion:
+    name: أكورديون
+    description: عرض الحقول أو المجموعات كأقسام أكورديون
+    start: بدء
+    all_closed: تم إغلاق الكل
+    first_opened: تم فتح الأول
+    all_opened: تم فتح الكل
   presentation-links:
     links: روابط
     primary: الأساسي
