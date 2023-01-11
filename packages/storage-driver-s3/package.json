@@ -1,6 +1,6 @@
 {
 	"name": "@directus/storage-driver-s3",
-	"version": "9.22.2",
+	"version": "9.22.3",
 	"type": "module",
 	"scripts": {
 		"build": "tsc --build",
