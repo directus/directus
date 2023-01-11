@@ -1,5 +1,5 @@
 import path from 'path';
-import { APP_OR_HYBRID_EXTENSION_TYPES, HYBRID_EXTENSION_TYPES } from '../../constants';
+import { HYBRID_EXTENSION_TYPES, APP_EXTENSION_TYPES } from '../../constants';
 import { AppExtension, BundleExtension, Extension, HybridExtension } from '../../types';
 import { isIn, isTypeIn } from '../array-helpers';
 import { pluralize } from '../pluralize';
@@ -7,15 +7,16 @@ import { pathToRelativeUrl } from './path-to-relative-url';
 
 export function generateExtensionsEntrypoint(extensions: Extension[]): string {
 	const appOrHybridExtensions = extensions.filter((extension): extension is AppExtension | HybridExtension =>
-		isIn(extension.type, APP_OR_HYBRID_EXTENSION_TYPES)
+		isIn(extension.type, [...APP_EXTENSION_TYPES, ...HYBRID_EXTENSION_TYPES])
 	);
 
 	const bundleExtensions = extensions.filter(
 		(extension): extension is BundleExtension =>
-			extension.type === 'bundle' && extension.entries.some((entry) => isIn(entry.type, APP_OR_HYBRID_EXTENSION_TYPES))
+			extension.type === 'bundle' &&
+			extension.entries.some((entry) => isIn(entry.type, [...APP_EXTENSION_TYPES, ...HYBRID_EXTENSION_TYPES]))
 	);
 
-	const appOrHybridExtensionImports = APP_OR_HYBRID_EXTENSION_TYPES.flatMap((type) =>
+	const appOrHybridExtensionImports = [...APP_EXTENSION_TYPES, ...HYBRID_EXTENSION_TYPES].flatMap((type) =>
 		appOrHybridExtensions
 			.filter((extension) => extension.type === type)
 			.map(
@@ -31,12 +32,13 @@ export function generateExtensionsEntrypoint(extensions: Extension[]): string {
 
 	const bundleExtensionImports = bundleExtensions.map(
 		(extension, i) =>
-			`import {${APP_OR_HYBRID_EXTENSION_TYPES.filter((type) => extension.entries.some((entry) => entry.type === type))
+			`import {${[...APP_EXTENSION_TYPES, ...HYBRID_EXTENSION_TYPES]
+				.filter((type) => extension.entries.some((entry) => entry.type === type))
 				.map((type) => `${pluralize(type)} as ${type}Bundle${i}`)
 				.join(',')}} from './${pathToRelativeUrl(path.resolve(extension.path, extension.entrypoint.app))}';`
 	);
 
-	const extensionExports = APP_OR_HYBRID_EXTENSION_TYPES.map(
+	const extensionExports = [...APP_EXTENSION_TYPES, ...HYBRID_EXTENSION_TYPES].map(
 		(type) =>
 			`export const ${pluralize(type)} = [${appOrHybridExtensions
 				.filter((extension) => extension.type === type)

@@ -29,7 +29,7 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, PropType, ref, onMounted } from 'vue';
+import { defineComponent, PropType } from 'vue';
 import { Field } from '@directus/shared/types';
 import { useSync } from '@directus/shared/composables';
 import { localizedFormat } from '@/utils/localized-format';
@@ -72,17 +72,11 @@ export default defineComponent({
 		const endDateFieldWritable = useSync(props, 'endDateField', emit);
 		const firstDayWritable = useSync(props, 'firstDay', emit);
 
-		const firstDayOptions = ref<Record<string, any>[]>([]);
-
-		onMounted(async () => {
-			const firstDayOfWeekForDate = startOfWeek(new Date());
-			firstDayOptions.value = await Promise.all(
-				[...Array(7).keys()].map(async (_, i) => ({
-					text: localizedFormat(add(firstDayOfWeekForDate, { days: i }), 'EEEE'),
-					value: i,
-				}))
-			);
-		});
+		const firstDayOfWeekForDate = startOfWeek(new Date());
+		const firstDayOptions: { text: string; value: number }[] = [...Array(7).keys()].map((_, i) => ({
+			text: localizedFormat(add(firstDayOfWeekForDate, { days: i }), 'EEEE'),
+			value: i,
+		}));
 
 		return { t, templateWritable, startDateFieldWritable, endDateFieldWritable, firstDayWritable, firstDayOptions };
 	},
