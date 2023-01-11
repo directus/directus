@@ -801,10 +801,48 @@ edit_flow: تعديل التدفق
 delete_flow: حذف التدفق
 no_other_flows_copy: ليس لديك أي تدفقات أخرى حتى الآن.
 no_flows: لا توجد تدفقات
+no_flows_copy: ليس لديك أي تدفقات حتى الآن.
+create_flow: إنشاء تدفق
+creating_new_flow: إنشاء تدفق جديد
+updating_flow: تحديث التدفق
+flow_setup: إعداد التدفق
 flow_name: الاسم
+flow_tracking: تتبع النشاط و السجلات
+flow_tracking_all: تتبع النشاط و السجلات
 flow_tracking_activity: تتبع النشاط فقط
 flow_tracking_null: عدم تتبع أي شيء
+start_flow: بَدْء التدفق
+stop_flow: إيقاف التدفق
+create_operation: إنشاء عملية
+edit_operation: تحرير العملية
 code: نص برمجي
+operation_options: خيارات العملية
+operation_name: اسم العملية...
+operation_key: معرف للمراجعة...
+operation_key_unique_error: مفاتيح العملية يجب أن تكون فريدة في التدفق
+operation_handle_resolve: 'الحل: أنقر للإضافة أو سحب لإعادة التوجيه'
+operation_handle_reject: 'الرفض: أنقر للإضافة أو سحب لإعادة التوجيه'
+insights: بصائر
+dashboard: لوحة التحكم
+panel: لوحة
+panel_options: خيارات اللوحة
+panel_header: رأس اللوحة
+panel_name_placeholder: سمِّ هذه اللوحة...
+panel_note_placeholder: تفاصيل اختيارية حول هذه اللوحة...
+panel_delete_confirm: هل أنت متيقِّن من أنك تريد حذف هذه اللوحة؟ لا يمكن التراجع عن هذا الإجراء.
+list_panel_allow_edit: السماح بالتحرير المضمن
+dashboard_delete_confirm: هل أنت متيقِّن من أنك تريد حذف لوحة التحكم هذه؟ لا يمكن التراجع عن هذا الإجراء.
+edit_dashboard: تحرير لوحة التحكم
+delete_dashboard: حذف لوحة التحكم
+visible: مرئي
+prefix_placeholder: النص قبل القيمة...
+suffix_placeholder: النص بعد القيمة...
+decimals_placeholder: عدد المنازل العشرية...
+no_dashboards: لا توجد لوحة تحكم
+no_dashboards_copy: ليس لديك أي لوحة تحكم حتى الآن.
+create_dashboard: إنشاء لوحة تحكم
+dashboard_name: اسم لوحة التحكم
+no_data: لا توجد بيانات
 image_url: رابط الصورة
 alt_text: النص البديل
 media: وسائط الإعلام
@@ -867,17 +905,25 @@ settings_flows: التدفقات
 settings_presets: الإعدادات المسبقة والعلامات
 one_or_more_options_are_missing: واحد أو أكثر من الخيارات مفقودة
 scope: مجال
+actions: الإجراءات
 select: حدد...
 layout: نموذج العرض
 changes_are_permanent: التغييرات دائمة
 preset_name_placeholder: يعمل كإعداد افتراضي عندما يكون فارغًا...
+preset_search_placeholder: استعلام البحث...
 editing_preset: تحرير الإعداد المسبق
 layout_preview: معاينة نموذج العرض
 layout_setup: إعداد نموذج العرض
+data: البيانات
 unsaved_changes: لم يتم حفظ التعديلات
 unsaved_changes_copy: هل ترغب حقّا بمغادرة هذه الصفحة؟
 discard_changes: تجاهل التغييرات
+discard_all_changes: تجاهل كل التغييرات
+discard_changes_copy: هل أنت متيقِّن من أنك تريد تجاهل جميع التغييرات التي أجريت؟
+show_x_axis: إظهار المحور X
+show_y_axis: إظهار المحور Y
 keep_editing: استمر في التحرير
+page_help_collections_overview: '**نظرة عامة للمجموعات** - قائمة بجميع المجموعات التي لديك حق الوصول إليها.'
 page_help_collections_collection: >-
   **استعراض العناصر** — قائمة بجميع عناصر {collection} التي لديك حق الوصول إليها. تخصيص نموذج العرض، التصفية، والترتيب لتصميم العرض الخاص بك، وحتى حفظ الإشارات المرجعية لهذه الإعدادات المختلفة للوصول السريع.
 page_help_collections_item: >-
@@ -903,22 +949,52 @@ page_help_settings_presets_item: >-
   **تفاصيل الإعداد المسبق** - نموذج لإدارة الإشارات المرجعية والضبط المسبق الافتراضي للمجموعات.
 page_help_settings_webhooks_collection: '**تصفح Webhooks** - عرض جميع webhooks داخل المشروع.'
 page_help_settings_webhooks_item: '**تفاصيل Webhook ** - نموذج لإنشاء وإدارة webhook للمشروع.'
+page_help_settings_flows_collection: '**تصفح التدفقات** - عرض جميع التدفقات داخل المشروع.'
+page_help_settings_flows_item: '**تفاصيل التدفق** - مساحة عمل لإدارة عملية واحدة أو أكثر.'
+page_help_settings_translation_strings_collection: '**تصفح مقاطع الترجمة** - عرض جميع مقاطع الترجمة داخل المشروع.'
 page_help_users_collection: '**دليل المستخدم** - يعرض جميع مستخدمي النظام داخل هذا المشروع.'
 page_help_users_item: >-
   **تفاصيل المستخدم** - إدارة معلومات حسابك، أو عرض تفاصيل المستخدمين الآخرين.
+page_help_insights_overview: '**البصائر** - قائمة لوحات التحكم التي لديك حق الوصول إليها.'
 page_help_insights_dashboard: '**لوحة البيانات** - مساحة العمل لإدارة لوحة واحدة أو أكثر'
+activity_feed: موجز النشاط
 add_new: إضافة جديدة
 create_new: أنشئ جديد
 all: الجميع
+none: لا شيء
 no_layout_collection_selected_yet: لم يتم تحديد نموذج عرض/مجموعة بعد
 batch_delete_confirm: >-
   لم يتم اختيار عناصر | هل أنت متأكد أنك تريد حذف هذا البند؟ لا يمكن التراجع عن هذا الإجراء. | هل تريد بالتأكيد حذف هذه {count} عنصر ؟ لا يمكن التراجع عن هذا الإجراء.
 cancel: إلغاء
+no_upscale: عدم تكبير أبعاد الصور
 collection: المجموعة
 collections: مجموعات
 content: المحتوى
+singleton: متفرد
 singleton_label: معاملته ككائن واحد
 system_fields_locked: حقول النظام مقفلة ولا يمكن تعديلها
+directus_collection:
+  directus_activity: سجلات المساءلة لجميع الأحداث
+  directus_collections: تكوين وبيانات المجموعة الإضافية الوصفية
+  directus_dashboards: لوحات التحكم داخل وحدة البصائر
+  directus_fields: تكوين وبيانات الحقل الإضافي الوصفية
+  directus_files: البيانات الوصفية لجميع أصول الملفات المدارة
+  directus_flows: تدفقات الأتمتة
+  directus_folders: يوفر مجلدات افتراضية للملفات
+  directus_migrations: ما هي نسخة قاعدة البيانات التي تستخدمها
+  directus_notifications: الإشعارات المرسلة إلى المستخدمين
+  directus_operations: العمليات التي تشتغل في التدفقات
+  directus_panels: لوحات فردية ضمن لوحة تحكم البصائر
+  directus_permissions: أذونات الوصول لكل دور
+  directus_presets: الإعداد المسبق للقيم الافتراضية للمجموعة والعلامات المرجعية
+  directus_relations: تكوين وبيانات العَلاقة الوصفية
+  directus_revisions: لقطات بيانات لجميع الأنشطة
+  directus_roles: مجموعات الأذونات لمستخدمي النظام
+  directus_sessions: معلومات جلسة المستخدم
+  directus_settings: خيارات تكوين المشروع
+  directus_shares: تتبع العناصر المشتركة خارجيًا
+  directus_users: مستخدمي النظام للمنصة
+  directus_webhooks: إعدادات لطلبات HTTP المستندة إلى الأحداث
 fields:
   directus_activity:
     item: المفتاح الأساسي للعنصر
@@ -938,11 +1014,15 @@ fields:
     color: لون
     display_template: عرض القالب
     hidden: مخفي
+    singleton: متفرد
     translations: ترجمات تسمية المجموعات
+    archive_app_filter: مرشح تطبيق الأرشيف
     archive_value: أرشفة القيمة
     unarchive_value: إلغاء أرشفة القيمة
     sort_field: فرز الحقل
     accountability: تتبع النشاط والتنقيح
+    archive_field: حقل الأرشيف
+    item_duplication_fields: الحقول الممكن تكرارها للعنصر
   directus_files:
     $thumbnail: صورة مصغرة
     title: العنوان
@@ -953,6 +1033,7 @@ fields:
     filename_disk: اسم الملف (القرص)
     filename_download: اسم الملف (تحميل)
     metadata: البيانات التعريفية
+    type: نوع التنسيق الملف
     filesize: حجم الملف
     modified_by: تم التعديل بواسطة
     modified_on: التعديل في
@@ -976,11 +1057,20 @@ fields:
     title: العنوان
     description: التفاصيل
     tags: الوسوم
+    user_preferences: تفضيلات المستخدم
     language: لغة
     theme: السمة
+    theme_auto: تلقائي (مبني على النظام)
+    theme_light: الوضع المضيء
+    theme_dark: الوضع المُعتِم
     tfa_secret: التحقق بخطوتين
+    admin_options: خيارات المدير
     status: حالة
+    status_draft: مسوّدة
+    status_invited: مَدعُوّ
     status_active: مفعل
+    status_suspended: معلّق
+    status_archived: مؤرشف
     role: الدور
     last_page: آخر صفحة
     last_access: آخر وصول
@@ -999,6 +1089,7 @@ fields:
     icon: أيقونة المجموعة
     note: ملحوظة
     hidden: مخفي
+    singleton: متفرد
     translation: ترجمة اسم الحقل
     display_template: قالب
   directus_roles:
@@ -1010,10 +1101,24 @@ fields:
     name: الاسم
     status: حالة
     value: قيمة
+    headers: ترويسات الطلب
+    data_label: إرسال بيانات الحدث
+    triggers: المحفزات
+    actions: الإجراءات
     collections: مجموعات
 field_options:
   directus_settings:
+    project_name_placeholder: مشروعي...
+    project_color_note: خلفية تسجيل الدخول والشعار
+    project_logo_note: الأبيض 40x40 SVG/PNG
+    public_note_placeholder: رسالة عامة قصيرة تدعم تنسيق مارك داون...
     security_divider_title: الأمان
+    auth_password_policy:
+      none_text: لا شيء - غير مستحسن
+      weak_text: ضعيف - الحد الأدنى 8 أحرف
+      strong_text: قوي – حروف كبيرة/ صغيرة / أرقام / رموز خاصة
+    storage_asset_presets:
+      fit_label: مناسب
   directus_activity:
     create: انشاء
     update: تحديث
@@ -1035,10 +1140,20 @@ field_options:
       name_placeholder: أدخل عنوانًا...
     collections_name: مجموعات
   directus_users:
+    preferences_divider: تفضيلات المستخدم
+    dropdown_auto: تلقائي (مبني على النظام)
+    dropdown_light: الوضع المضيء
+    dropdown_dark: الوضع المُعتِم
+    admin_divider: خيارات المدير
+    status_dropdown_draft: مسوّدة
     status_dropdown_active: مفعل
+    status_dropdown_suspended: معلّق
+    status_dropdown_archived: مؤرشف
   directus_webhooks:
     status_options_active: مفعل
     status_options_inactive: غير نشط
+    data_label: إرسال بيانات الحدث
+    triggers_divider: المحفزات
     actions_create: انشاء
     actions_update: تحديث
     headers:
