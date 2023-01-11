@@ -41,7 +41,7 @@ maps: Mapy
 switch_user: Prepnúť používaeľa
 item_creation: Vytvorenie položky
 item_revision: Revízia položky
-enter_a_name: Zadajte meno...
+enter_a_name: Zadajte názov...
 duplicate_field: Duplicitné pole
 half_width: Polovičná šírka
 full_width: Plná šírka
@@ -58,7 +58,7 @@ fill_width: Vyplniť šírku
 field_name_translations: Preklady názvov polí
 enter_password_to_enable_tfa: Na zapnutie dvoj-faktorovej autentifikácie zadajte svoje heslo
 add_field: Pridať pole
-role_name: Názov roly
+role_name: Názov role
 branch: Vetva
 leaf: List
 indeterminate: Neurčité
@@ -116,7 +116,7 @@ logoutReason:
   SESSION_EXPIRED: Relácia vypršala
 public_label: Verejné
 public_description: Určuje, ktoré údaje z API sú dostupné bez overovania.
-admin_description: Počiatočné administratívne role s neobmedzeným prístupom k Appke/API.
+admin_description: Počiatočná administratívna rola s neobmedzeným prístupom k Appke/API.
 not_allowed: Nepovolené
 directus_version: Verzia Directus
 node_version: Verzia Node
@@ -173,7 +173,7 @@ field_m2a: Vzťah M2A
 field_o2m: Vzťah O2M
 field_m2m: Vzťah M2M
 field_translations: Preklady
-field_group: Skupina poľa
+field_group: Skupina polí
 item_permissions: Práva na položku
 field_permissions: Práva na pole
 field_validation: Validácia poľa
@@ -245,7 +245,7 @@ float: Float - plávajúca čiarka
 integer: Celé čislo
 json: JSON
 xml: XML
-string: Reťazec
+string: Text
 text: Text
 time: Čas
 timestamp: Časová pečiatka
@@ -871,7 +871,7 @@ interface_group_selection: Výber
 interface_group_relational: Relačné
 interface_group_presentation: Prezentácia
 interface_group_groups: Skupiny
-interface_group_other: Ostatné
+interface_group_other: Iné
 tooltip: Nápoveda
 tooltip_placeholder: Zadajte nápovedu...
 unlimited: Neobmedzené
@@ -1006,7 +1006,7 @@ page_help_insights_overview: '**Prehľady** — Zoznam tabúľ, ku ktorým máte
 page_help_insights_dashboard: '**Tabuľa** — Pracovný priestor na spravovanie jedného alebo viac panelov'
 activity_feed: Záznam aktivít
 add_new: Pridať nový
-create_new: Vytvoriť nový
+create_new: Vytvoriť nové
 all: Všetko
 none: Žiadne
 no_layout_collection_selected_yet: Žiadne vybraté rozloženie/zbierka
@@ -1049,7 +1049,7 @@ fields:
     collection: Zbierka
     timestamp: Čas akcie
     user: Akciu vykonal/a
-    comment: Komentár
+    comment: Komentovanie
     user_agent: Užívateľský agent
     origin: Pôvod
     ip: IP adresa
@@ -1181,8 +1181,8 @@ fields:
     translation: Preklady názvov polí
     display_template: Šablóna
   directus_roles:
-    name: Názov roly
-    icon: Ikony role
+    name: Názov role
+    icon: Ikona role
     description: Popis
     app_access: Prístup k aplikácii
     admin_access: Administrátorský prístup
@@ -1207,12 +1207,12 @@ field_options:
     project_name_placeholder: Môj projekt...
     project_color_note: Prihlásenie a logo na pozadí
     project_logo_note: Biele 40x40 SVG/PNG
-    public_note_placeholder: Krátka, verejná správa, ktorá podporuje markdown formátovanie...
+    public_note_placeholder: Krátka, verejná správa s podporou markdown formátu...
     security_divider_title: Zabezpečenie
     auth_password_policy:
-      none_text: Žiadne – Neodporúčame
-      weak_text: Slabé – Najmenej 8 znakov
-      strong_text: Silné – Veľké / Malé písmená / Čísla / Špeciálne znaky
+      none_text: Žiadna – Neodporúčame
+      weak_text: Slabá – Najmenej 8 znakov
+      strong_text: Silná – Veľké / Malé písmená / Čísla / Špeciálne znaky
     storage_asset_presets:
       fit_label: Prispôsobiť
       upscaling: Zväčšenie
@@ -1232,10 +1232,10 @@ field_options:
     basemaps_style: Štýl Mapboxu
     files_divider_title: Súbory a náhľady
   directus_activity:
-    login: Prihlásiť
-    create: Vytvoriť
-    update: Aktualizovať
-    delete: Odstrániť
+    login: Prihlásenie
+    create: Vytvorenie
+    update: Úprava
+    delete: Odstránenie
   directus_collections:
     track_activity_revisions: Sledovať aktivitu a revízie
     only_track_activity: Sledovať len aktivitu
@@ -1315,7 +1315,7 @@ start_open: Začať otvorené
 start_collapsed: Začať zložené
 block: Blokovať
 inline: V riadku
-comment: Komentár
+comment: Komentovanie
 shares: Zdieľania
 unlimited_usage: Neobmedzené používanie
 uses_left: Nezostali žiadne použitia | Zostáva 1 použitie | Zostáva {n} použití
@@ -1626,7 +1626,7 @@ interfaces:
     folder: Priečinok
     description: Vyberte priečinok
     field_hint: Priečinok na nahrávanie súborov. Neovplyvní to existujúce súbory.
-    root_name: Koreňový adresár knižnice súborov
+    root_name: Koreňový priečinok knižnice súborov
     system_default: Predvolené systémom
   select-radio:
     radio-buttons: Prepínače
@@ -1635,7 +1635,7 @@ interfaces:
     repeater: Opakovač
     description: Vytvorí viac položiek rovnakej štruktúry
     edit_fields: Upraviť polia
-    add_label: 'Nadpis "Vytvoriť nový"'
+    add_label: 'Nadpis "Vytvoriť nové"'
     sort: Zoradiť
     sort_placeholder: Ručne
     field_name_placeholder: Zadajte názov poľa...
