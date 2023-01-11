@@ -32,40 +32,64 @@
 					<v-button @click="openTranslationStringDialog">{{ t('create_translation_string') }}</v-button>
 				</template>
 			</v-info>
-			<v-table
-				v-else
-				:headers="tableHeaders"
-				fixed-header
-				item-key="key"
-				:items="tableItems"
-				:loading="loading"
-				@click:row="openTranslationStringDialog"
-			>
-				<template #[`item.key`]="{ item }">
-					<span class="key">
-						{{ item.key }}
-					</span>
-				</template>
-				<template #[`item.translations`]="{ item }">
-					<TranslationStringsTooltip :translations="item.translations" />
-				</template>
-			</v-table>
+			<template v-else>
+				<v-table
+					:headers="tableHeaders"
+					fixed-header
+					item-key="key"
+					:items="tableItems"
+					:loading="loading"
+					@click:row="openTranslationStringDialog"
+				>
+					<template #[`item.key`]="{ item }">
+						<span class="key">
+							{{ item.key }}
+						</span>
+					</template>
+					<template #[`item.translations`]="{ item }">
+						<TranslationStringsTooltip :translations="item.translations" />
+					</template>
+					<template #footer>
+						<div class="footer">
+							<div class="pagination">
+								<v-pagination
+									v-if="totalPages > 1"
+									:length="totalPages"
+									:total-visible="7"
+									show-first-last
+									:model-value="page"
+									@update:model-value="toPage"
+								/>
+							</div>
+							<div v-if="loading === false && tableItems.length >= 25" class="per-page">
+								<span>{{ t('per_page') }}</span>
+								<v-select
+									:model-value="`${limit}`"
+									:items="['25', '50', '100', '250', '500', ' 1000']"
+									inline
+									@update:model-value="limit = +$event"
+								/>
+							</div>
+						</div>
+					</template>
+				</v-table>
+			</template>
 		</div>
 
 		<TranslationStringsDrawer
 			:model-value="isTranslationStringDialogOpen"
 			:translation-string="editingTranslationString"
-			@update:model-value="updateTranslationStringsDialog"
+			@close-dialog="closedDialog"
 		/>
 	</private-view>
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { HeaderRaw as TableHeader } from '@/components/v-table/types';
 import SettingsNavigation from '../../components/navigation.vue';
-import { TranslationString, useTranslationStrings } from '@/composables/use-translation-strings';
+import { DisplayTranslationString, useTranslationStrings } from '@/composables/use-translation-strings';
 import TranslationStringsDrawer from './translation-strings-drawer.vue';
 import TranslationStringsTooltip from './translation-strings-tooltip.vue';
 
@@ -89,23 +113,53 @@ const tableHeaders: TableHeader[] = [
 ];
 
 const isTranslationStringDialogOpen = ref<boolean>(false);
+const editingTranslationString = ref<DisplayTranslationString | null>(null);
+// const translationStrings = ref<DisplayTranslationString[]>([]);
+const limit = ref<number>(25);
+const page = ref<number>(1);
+const loading = ref<boolean>(true);
 
-const editingTranslationString = ref<TranslationString | null>(null);
+const { translationKeys, translationStrings, displayTranslationStrings, fetchAllTranslationStrings } =
+	useTranslationStrings();
 
-const { loading, translationStrings } = useTranslationStrings();
+onMounted(() => loadAllTranslations());
 
-const tableItems = computed(() => (translationStrings.value ? translationStrings.value : []));
+const totalPages = computed(() => {
+	const keyCount = translationKeys.value?.length ?? 0;
+	if (!limit.value) return 0;
+	return Math.ceil(keyCount / limit.value);
+});
 
-function openTranslationStringDialog({ item }: { item?: TranslationString }) {
+const tableItems = computed(() => {
+	if (!displayTranslationStrings.value || !translationKeys.value) return [];
+	const offset = (page.value - 1) * limit.value;
+	const pageKeys = translationKeys.value.slice(offset, offset + limit.value);
+	return displayTranslationStrings.value.filter((ts) => ts.key && pageKeys.includes(ts.key));
+});
+
+function openTranslationStringDialog({ item }: { item?: DisplayTranslationString }) {
 	editingTranslationString.value = item ? item : null;
 	isTranslationStringDialogOpen.value = true;
 }
 
-function updateTranslationStringsDialog(val: boolean) {
-	if (val) return;
-
+function closedDialog() {
 	editingTranslationString.value = null;
-	isTranslationStringDialogOpen.value = val;
+	isTranslationStringDialogOpen.value = false;
+}
+
+async function loadAllTranslations() {
+	translationStrings.value = await fetchAllTranslationStrings();
+	loading.value = false;
+}
+
+function toPage(newPage: number) {
+	if (newPage < 1) {
+		page.value = 1;
+	} else if (newPage > totalPages.value) {
+		page.value = totalPages.value;
+	} else {
+		page.value = newPage;
+	}
 }
 </script>
 
@@ -141,5 +195,32 @@ function updateTranslationStringsDialog(val: boolean) {
 
 .key {
 	font-family: var(--family-monospace);
+}
+
+.footer {
+	position: sticky;
+	left: 0;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	width: 100%;
+	padding: 32px var(--content-padding);
+	.pagination {
+		display: inline-block;
+	}
+	.per-page {
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
+		width: 240px;
+		color: var(--foreground-subdued);
+		span {
+			width: auto;
+			margin-right: 4px;
+		}
+		.v-select {
+			color: var(--foreground-normal);
+		}
+	}
 }
 </style>

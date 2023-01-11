@@ -21,7 +21,7 @@
 						<v-button secondary @click="confirmDelete = false">
 							{{ t('cancel') }}
 						</v-button>
-						<v-button kind="danger" :loading="updating" @click="deleteCurrentTranslationString">
+						<v-button kind="danger" :loading="updating" @click="deleteTranslationString">
 							{{ t('delete_label') }}
 						</v-button>
 					</v-card-actions>
@@ -34,7 +34,7 @@
 				:disabled="!values.key || !values.translations || isEqual(values, initialValues)"
 				icon
 				rounded
-				@click="saveNewTranslationString"
+				@click="saveTranslationString"
 			>
 				<v-icon name="check" />
 			</v-button>
@@ -47,20 +47,20 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, watch, toRefs } from 'vue';
+import { unref, toRaw, ref, computed, watch, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { isEqual } from 'lodash';
 import { Field, DeepPartial } from '@directus/shared/types';
-import { useTranslationStrings, TranslationString } from '@/composables/use-translation-strings';
+import { useTranslationStrings, DisplayTranslationString } from '@/composables/use-translation-strings';
 
 interface Props {
 	modelValue: boolean;
-	translationString?: TranslationString | null;
+	translationString?: DisplayTranslationString | null;
 }
 
 const props = withDefaults(defineProps<Props>(), { modelValue: false, translationString: () => null });
 
-const emit = defineEmits(['update:modelValue', 'savedKey']);
+const emit = defineEmits(['remove:translation', 'update:translation', 'close-dialog']);
 
 const { t } = useI18n();
 
@@ -68,12 +68,12 @@ const { translationString } = toRefs(props);
 
 const confirmDelete = ref<boolean>(false);
 
-const values = ref<TranslationString>({
+const values = ref<DisplayTranslationString>({
 	key: null,
 	translations: null,
 });
 
-const formValues = computed<TranslationString>({
+const formValues = computed<DisplayTranslationString>({
 	get() {
 		return values.value;
 	},
@@ -90,7 +90,7 @@ const formValues = computed<TranslationString>({
 	},
 });
 
-const initialValues = ref<TranslationString>({
+const initialValues = ref<DisplayTranslationString>({
 	key: null,
 	translations: null,
 });
@@ -159,11 +159,11 @@ const fields = computed<DeepPartial<Field>[]>(() => {
 	];
 });
 
-const { translationStrings, updating, update } = useTranslationStrings();
+const { updating, addTranslation, updateTranslation, removeTranslation } = useTranslationStrings();
 
 watch(
 	translationString,
-	(newVal: TranslationString | null) => {
+	(newVal: DisplayTranslationString | null) => {
 		values.value.key = newVal?.key ?? null;
 		values.value.translations = newVal?.translations ?? null;
 		initialValues.value.key = newVal?.key ?? null;
@@ -177,31 +177,26 @@ function closeDialog() {
 	values.value.translations = null;
 	initialValues.value.key = null;
 	initialValues.value.translations = null;
-	emit('update:modelValue', false);
+	emit('close-dialog');
 }
 
-async function saveNewTranslationString() {
-	const newTranslationStrings = translationStrings.value ? [...translationStrings.value, values.value] : [values.value];
-	try {
-		await update(newTranslationStrings);
-		emit('savedKey', values.value.key);
-		closeDialog();
-	} catch {
-		// Update shows unexpected error dialog
+async function saveTranslationString() {
+	// console.log('saveTranslationString', toRaw(unref(initialValues)), toRaw(unref(values)));
+	if (!values.value) return;
+	if (initialValues.value.key) {
+		updateTranslation(initialValues.value.key, values.value);
+	} else {
+		addTranslation(values.value);
 	}
+	closeDialog();
 }
 
-async function deleteCurrentTranslationString() {
-	const newTranslationStrings = translationStrings.value
-		? translationStrings.value.filter((val) => val.key !== values.value.key)
-		: [];
-	try {
-		await update(newTranslationStrings);
-		confirmDelete.value = false;
-		closeDialog();
-	} catch {
-		// Update shows unexpected error dialog
-	}
+async function deleteTranslationString() {
+	// console.log('deleteTranslationString', toRaw(unref(values)));
+	if (!values.value || !initialValues.value || !initialValues.value.key) return;
+	removeTranslation(initialValues.value.key);
+	confirmDelete.value = false;
+	closeDialog();
 }
 </script>
 

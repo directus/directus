@@ -1,22 +1,23 @@
-import { ref, Ref } from 'vue';
+import { ref, Ref, computed, ComputedRef } from 'vue';
 import { getLiteralInterpolatedTranslation } from '@/utils/get-literal-interpolated-translation';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { Language, i18n } from '@/lang';
 import { useUserStore } from '@/stores/user';
 import { useSettingsStore } from '@/stores/settings';
 import api from '@/api';
+import { sortBy } from 'lodash';
 
 export type Translation = {
 	language: string;
 	translation: string;
 };
-
-export type TranslationStringRaw = {
-	key?: string | null;
-	translations?: Record<string, string> | null;
+export type RawTranslation = {
+	key: string;
+	value: string;
+	lang: Language;
 };
 
-export type TranslationString = {
+export type DisplayTranslationString = {
 	key?: string | null;
 	translations?: Translation[] | null;
 };
@@ -24,34 +25,67 @@ export type TranslationString = {
 type UsableTranslationStrings = {
 	loading: Ref<boolean>;
 	error: Ref<any>;
-	translationStrings: Ref<Record<string, string> | null>;
+	translationKeys: ComputedRef<string[] | null>;
+	translationStrings: Ref<RawTranslation[] | null>;
+	displayTranslationStrings: ComputedRef<DisplayTranslationString[] | null>;
 	loadLanguageTranslationStrings: (lang: Language) => Promise<void>;
+	fetchAllTranslationStrings: () => Promise<RawTranslation[]>;
 	refresh: () => Promise<void>;
 	updating: Ref<boolean>;
-	update: (newTranslationStrings: TranslationString[]) => Promise<void>;
-	mergeTranslationStringsForLanguage: (lang: Language) => void;
+
+	addTranslation: (translation: DisplayTranslationString) => void;
+	updateTranslation: (originalKey: string, translation: DisplayTranslationString) => void;
+	removeTranslation: (translationKey: string) => void;
+
+	// update: (newTranslationStrings: DisplayTranslationString[]) => Promise<void>;
 };
 
 let loading: Ref<boolean> | null = null;
-let translationStrings: Ref<Record<string, string> | null> | null = null;
+let translationStrings: Ref<RawTranslation[] | null> | null = null;
 let error: Ref<any> | null = null;
 
 export function useTranslationStrings(): UsableTranslationStrings {
 	if (loading === null) loading = ref(false);
 	if (error === null) error = ref(null);
-	if (translationStrings === null) translationStrings = ref<Record<string, string> | null>(null);
+	if (translationStrings === null) translationStrings = ref<RawTranslation[] | null>(null);
 	const updating = ref(false);
 	const usersStore = useUserStore();
+
+	const translationKeys = computed(() => {
+		if (!translationStrings || !translationStrings.value) return [];
+		return translationStrings.value.map(({ key }) => key);
+	});
+	const displayTranslationStrings = computed(() => {
+		if (!translationStrings || !translationStrings.value) return [];
+		const translationObject = translationStrings.value.reduce(
+			(acc: Record<string, Translation[]>, { key, value, lang }: RawTranslation) => {
+				if (!acc[key]) acc[key] = [];
+				acc[key].push({ language: lang, translation: value });
+				return acc;
+			},
+			{} as Record<string, Translation[]>
+		);
+		return sortBy(
+			Object.entries(translationObject).map(
+				([key, translations]) => ({ key, translations } as DisplayTranslationString)
+			),
+			'key'
+		);
+	});
 
 	return {
 		loading,
 		error,
+		translationKeys,
 		translationStrings,
+		displayTranslationStrings,
 		loadLanguageTranslationStrings,
+		fetchAllTranslationStrings,
 		refresh,
 		updating,
-		update,
-		mergeTranslationStringsForLanguage,
+		addTranslation,
+		updateTranslation,
+		removeTranslation,
 	};
 
 	async function loadLanguageTranslationStrings(lang: Language) {
@@ -83,7 +117,9 @@ export function useTranslationStrings(): UsableTranslationStrings {
 		error.value = null;
 
 		try {
-			const rawTranslationStrings = await fetchTranslationStrings(usersStore.currentUser?.language ?? 'en-US');
+			const language =
+				usersStore.currentUser && 'language' in usersStore.currentUser ? usersStore.currentUser.language : 'en-US';
+			const rawTranslationStrings = await fetchTranslationStrings(language);
 
 			if (rawTranslationStrings) {
 				translationStrings.value = rawTranslationStrings;
@@ -95,44 +131,95 @@ export function useTranslationStrings(): UsableTranslationStrings {
 		}
 	}
 
-	async function update(newTranslationStrings: TranslationString[]) {
-		if (loading === null) return;
-		if (translationStrings === null) return;
-		if (error === null) return;
+	async function addTranslation(translation: DisplayTranslationString) {
+		// console.log('addTranslation', translation);
+		if (!translation.key || !translation.translations) return;
+		if (!translationKeys.value || !translationStrings || !translationStrings.value) {
+			return;
+		}
+		if (translationKeys.value.includes(translation.key)) {
+			unexpectedError(new Error('translation key already exists!'));
+			return;
+		}
+		for (const { language: lang, translation: value } of translation.translations) {
+			translationStrings.value.push({ key: translation.key, lang, value });
+		}
+		await updateStrings(translationStrings.value);
+	}
+	async function removeTranslation(translationKey: string) {
+		// console.log('removeTranslation', translationKey);
+		if (!translationKeys.value || !translationStrings || !translationStrings.value) {
+			return;
+		}
+		if (translationKeys.value.includes(translationKey)) {
+			translationStrings.value = translationStrings.value.filter(({ key }) => key !== translationKey);
+		}
+		await updateStrings(translationStrings.value);
+	}
+	async function updateTranslation(originalKey: string, translation: DisplayTranslationString) {
+		// console.log('updateTranslation', translation);
+		if (!translation.key || !translation.translations) return;
+		if (!translationKeys.value || !translationStrings || !translationStrings.value) {
+			return;
+		}
+		if (translationKeys.value.includes(originalKey)) {
+			translationStrings.value = translationStrings.value.filter(({ key }) => key !== originalKey);
+		}
+		for (const { language: lang, translation: value } of translation.translations) {
+			translationStrings.value.push({ key: translation.key, lang, value });
+		}
+		await updateStrings(translationStrings.value);
+	}
 
+	async function updateStrings(strings: RawTranslation[]) {
 		updating.value = true;
-
-		const resultingTranslationStrings = getUniqueTranslationStrings([...newTranslationStrings]);
-
-		const payload = resultingTranslationStrings.map((p: TranslationString) => ({
-			key: p.key,
-			translations: getKeyValuesFromTranslations(p.translations),
-		}));
-
 		try {
 			const settingsStore = useSettingsStore();
-			await settingsStore.updateSettings({ translation_strings: payload }, false);
-			if (settingsStore.settings?.translation_strings) {
-				translationStrings.value = settingsStore.settings.translation_strings.map((p: TranslationStringRaw) => ({
-					key: p.key,
-					translations: getTranslationsFromKeyValues(p.translations ?? null),
-				}));
-
-				const { currentUser } = useUserStore();
-				if (currentUser && 'language' in currentUser && currentUser.language) {
-					mergeTranslationStringsForLanguage(currentUser.language);
-				} else {
-					mergeTranslationStringsForLanguage('en-US');
-				}
-			}
+			await settingsStore.updateSettings({ translation_strings2: strings }, false);
+			const { currentUser } = useUserStore();
+			const language =
+				currentUser && 'language' in currentUser && currentUser.language ? currentUser.language : 'en-US';
+			const localeMessages: Record<string, any> = strings
+				.filter(({ lang }) => lang === language)
+				.reduce((result: Record<string, string>, { key, value }: { key: string; value: string }) => {
+					result[key] = getLiteralInterpolatedTranslation(value, true);
+					return result;
+				}, {} as Record<string, string>);
+			i18n.global.mergeLocaleMessage(language, localeMessages);
 		} catch (err: any) {
 			unexpectedError(err);
 		} finally {
 			updating.value = false;
 		}
 	}
-
-	async function fetchTranslationStrings(lang: Language) {
+	// async function update(newTranslationStrings: RawTranslation[]) {
+	// 	// console.log('update', newTranslationStrings);
+	// 	if (loading === null) return;
+	// 	if (translationStrings === null) return;
+	// 	if (error === null) return;
+	// 	updating.value = true;
+	// 	try {
+	// 		const settingsStore = useSettingsStore();
+	// 		await settingsStore.updateSettings({ translation_strings2: newTranslationStrings }, false);
+	// 		// if (settingsStore.settings?.translation_strings) {
+	// 		// 	translationStrings.value = settingsStore.settings.translation_strings.map((p: TranslationStringRaw) => ({
+	// 		// 		key: p.key,
+	// 		// 		translations: getTranslationsFromKeyValues(p.translations ?? null),
+	// 		// 	}));
+	// 		// 	const { currentUser } = useUserStore();
+	// 		// 	if (currentUser && 'language' in currentUser && currentUser.language) {
+	// 		// 		mergeTranslationStringsForLanguage(currentUser.language);
+	// 		// 	} else {
+	// 		// 		mergeTranslationStringsForLanguage('en-US');
+	// 		// 	}
+	// 		// }
+	// 	} catch (err: any) {
+	// 		unexpectedError(err);
+	// 	} finally {
+	// 		updating.value = false;
+	// 	}
+	// }
+	async function fetchTranslationStrings(lang: Language): Promise<RawTranslation[]> {
 		const response = await api.get(`/settings`, {
 			params: {
 				fields: ['translations'],
@@ -148,35 +235,42 @@ export function useTranslationStrings(): UsableTranslationStrings {
 				},
 			},
 		});
-		return response.data.data.translations ?? [];
+		return (response.data.data.translations ?? []) as RawTranslation[];
 	}
 
-	function mergeTranslationStringsForLanguage(lang: Language) {
-		if (!translationStrings?.value) return;
-		const localeMessages: Record<string, any> = translationStrings.value.reduce((acc, cur) => {
-			if (!cur.key || !cur.translations) return acc;
-			const translationForCurrentLang = cur.translations.find((t) => t.language === lang);
-			if (!translationForCurrentLang || !translationForCurrentLang.translation) return acc;
-			return { ...acc, [cur.key]: getLiteralInterpolatedTranslation(translationForCurrentLang.translation, true) };
-		}, {});
-		i18n.global.mergeLocaleMessage(lang, localeMessages);
+	async function fetchAllTranslationStrings() {
+		const response = await api.get(`/settings`, {
+			params: { fields: ['translation_strings2'] },
+		});
+		return response.data.data?.translation_strings2 ?? [];
 	}
 
-	function getUniqueTranslationStrings(arr: TranslationString[]): TranslationString[] {
-		return [...new Map(arr.map((item: TranslationString) => [item.key, item])).values()];
-	}
+	// function mergeTranslationStringsForLanguage(lang: Language) {
+	// 	if (!translationStrings?.value) return;
+	// 	const localeMessages: Record<string, any> = translationStrings.value.reduce((acc, cur) => {
+	// 		if (!cur.key || !cur.translations) return acc;
+	// 		const translationForCurrentLang = cur.translations.find((t) => t.language === lang);
+	// 		if (!translationForCurrentLang || !translationForCurrentLang.translation) return acc;
+	// 		return { ...acc, [cur.key]: getLiteralInterpolatedTranslation(translationForCurrentLang.translation, true) };
+	// 	}, {});
+	// 	i18n.global.mergeLocaleMessage(lang, localeMessages);
+	// }
 
-	function getKeyValuesFromTranslations(val: TranslationString['translations'] | null): Record<string, string> {
-		if (!val || (val && val.length === 0)) return {};
+	// function getUniqueTranslationStrings(arr: TranslationString[]): TranslationString[] {
+	// 	return [...new Map(arr.map((item: TranslationString) => [item.key, item])).values()];
+	// }
 
-		return val.reduce((acc, cur) => {
-			return { ...acc, [cur.language]: cur.translation };
-		}, {});
-	}
+	// function getKeyValuesFromTranslations(val: TranslationString['translations'] | null): Record<string, string> {
+	// 	if (!val || (val && val.length === 0)) return {};
 
-	function getTranslationsFromKeyValues(val: Record<string, string> | null): TranslationString['translations'] {
-		if (!val || Object.keys(val).length === 0) return [];
+	// 	return val.reduce((acc, cur) => {
+	// 		return { ...acc, [cur.language]: cur.translation };
+	// 	}, {});
+	// }
 
-		return Object.entries(val).map(([k, v]) => ({ language: k, translation: v }));
-	}
+	// function getTranslationsFromKeyValues(val: Record<string, string> | null): TranslationString['translations'] {
+	// 	if (!val || Object.keys(val).length === 0) return [];
+
+	// 	return Object.entries(val).map(([k, v]) => ({ language: k, translation: v }));
+	// }
 }

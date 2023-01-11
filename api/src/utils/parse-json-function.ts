@@ -3,7 +3,7 @@ import { stripFunction } from './strip-function';
 
 // export const JSON_QUERY_REGEX = /^(\w+)(\.(\w+|\*)|\[-?(\d+|\*)\])+$/i; // with negative indexes
 // export const JSON_QUERY_REGEX = /^json\((\w+)(\.(\w+|\*)|\[(\d+|\*)\])+\)$/i;
-export const JSON_QUERY_REGEX = /^json\([\w:]+(\.[\w:]+)*\$(\.(\w+|\*)|\[(\d+|\*)\])+\)/i;
+export const JSON_QUERY_REGEX = /^json\([\w\d:_]+(\.[\w\d:_]+)*\$(\.([\w\d_]+|\*)|\[(\d+|\*)\])+\)/i;
 
 /**
  */
