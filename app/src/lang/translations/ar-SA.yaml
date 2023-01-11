@@ -780,9 +780,9 @@ toggle: تبديل
 icon_on: تشغيل الأيقونة
 icon_off: إيقاف الأيقونة
 label: تسمية
-flows: التدفق
+flows: التدفقات
 flow: التدفق
-select_a_flow: حدد التدفق
+select_a_flow: حدد تدفق
 run_flow_on_current_collection: تشغيل التدفق على المجموعة الحالية
 run_flow_on_current: تشغيل التدفق على العنصر الحالي
 run_flow_on_current_edited_confirm: قد يتم تحديث هذا العنصر بواسطة هذا التدفق، هل أنت متيقِّن من أنك تريد تنفيذه؟
@@ -792,6 +792,15 @@ trigger: المحفز
 trigger_options: خيارات المحفز
 view_trigger: عرض المحفز
 create_trigger: إنشاء محفز
+trigger_setup: إعداد المحفز
+change_trigger: تغيير المحفز
+flow_delete_confirm: هل أنت متيقِّن من أنك تريد حذف التدفق"{flow}"؟ لا يمكن التراجع عن هذا الإجراء.
+set_flow_active: تعيين التدفق كنشطٌ
+set_flow_inactive: تعيين التدفق كغير نشطٌ
+edit_flow: تعديل التدفق
+delete_flow: حذف التدفق
+no_other_flows_copy: ليس لديك أي تدفقات أخرى حتى الآن.
+no_flows: لا توجد تدفقات
 flow_name: الاسم
 flow_tracking_activity: تتبع النشاط فقط
 flow_tracking_null: عدم تتبع أي شيء
@@ -854,7 +863,7 @@ settings_data_model: نموذج البيانات
 settings_permissions: الأدوار والأذونات
 settings_project: إعدادات المشروع
 settings_webhooks: روابط الويب (Webhooks)
-settings_flows: التدفق
+settings_flows: التدفقات
 settings_presets: الإعدادات المسبقة والعلامات
 one_or_more_options_are_missing: واحد أو أكثر من الخيارات مفقودة
 scope: مجال
@@ -1346,5 +1355,5 @@ operations:
   request:
     url: الرابط
   trigger:
-    flows: التدفق
+    flows: التدفقات
     flow: التدفق
