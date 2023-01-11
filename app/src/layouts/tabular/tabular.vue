@@ -15,7 +15,7 @@
 			:loading="loading"
 			:row-height="tableRowHeight"
 			:item-key="primaryKeyField?.field"
-			:show-manual-sort="sortField !== null"
+			:show-manual-sort="sortField !== null && !checkPermission(collection, 'read')"
 			:manual-sort-key="sortField"
 			allow-header-reorder
 			selection-use-keys
@@ -188,6 +188,7 @@ import { get } from '@directus/shared/utils';
 import { useAliasFields, AliasField } from '@/composables/use-alias-fields';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { isEmpty, merge } from 'lodash';
+import { usePermissionsStore } from '@/stores/permissions';
 
 interface Props {
 	collection: string;
@@ -233,6 +234,14 @@ const props = withDefaults(defineProps<Props>(), {
 	onSortChange: () => undefined,
 	onAlignChange: () => undefined,
 });
+
+const permissionsStore = usePermissionsStore();
+
+const checkPermission = (collection: string, action: string) => {
+	const permissionOfCollection = permissionsStore.permissions.filter((item) => item.collection === collection);
+	const permissionOfAction = permissionOfCollection.filter((item) => item.action === action);
+	return permissionOfAction.length && permissionOfCollection.length === 1;
+};
 
 const emit = defineEmits(['update:selection', 'update:tableHeaders', 'update:limit', 'update:fields']);
 
