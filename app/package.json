@@ -31,7 +31,7 @@
 	"devDependencies": {
 		"@babel/core": "7.20.5",
 		"@babel/preset-env": "7.20.2",
-		"@directus/docs": "9.22.2",
+		"@directus/docs": "9.22.3",
 		"@directus/extensions-sdk": "workspace:*",
 		"@directus/format-title": "10.0.0",
 		"@directus/shared": "workspace:*",
