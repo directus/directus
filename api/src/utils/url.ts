@@ -64,7 +64,8 @@ export class Url {
 		const port = this.port !== null ? `:${this.port}` : '';
 		const origin = `${this.host !== null ? `${protocol}//` : ''}${host}${port}`;
 
-		const path = `/${this.path.join('/')}`;
+		const path = this.path.length ? `/${this.path.join('/')}` : '';
+
 		const query = Object.keys(this.query).length !== 0 ? `?${new URLSearchParams(this.query).toString()}` : '';
 
 		const hash = this.hash !== null ? `#${this.hash}` : '';
