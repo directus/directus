@@ -1551,13 +1551,47 @@ panels:
   label:
     name: تسمية
 operations:
+  item-delete:
+    query: الاستعلام
+  item-read:
+    name: قراءة البيانات
+    description: قراءة العناصر من قاعدة البيانات
+    key: المعرفات
+    query: الاستعلام
+    emit_events: إرسال الأحداث
+  item-update:
+    name: تحديث البيانات
+    description: تحديث العناصر في قاعدة البيانات
+    emit_events: إرسال الأحداث
+    key: المعرفات
+    payload: حمولة
+    query: الاستعلام
   log:
     message: الرسالة
+  mail:
+    name: إرسال بريد إلكتروني
+    description: إرسال بريد إلكتروني إلى شخص واحد أو أكثر
+    to: إلى
+    to_placeholder: إضافة عناوين البريد الإلكتروني واضغط على إدخال...
+    body: النص
   notification:
+    name: إرسال إشعار
+    description: إرسال إشعار داخل التطبيق إلى واحد أو أكثر من المستخدمين
     recipient: مستخدم
+    recipient_placeholder: أضف مفتاح المستخدم الفريد واضغط على إدخال...
     message: الرسالة
   request:
+    description: "تقديم طلب إلى عنوان URL"
     url: الرابط
+    url_placeholder: https://example.com/example
+    method: الطريقة
+    data: البيانات
+    headers: ترويسات
+    header: الترويسة
+    header_placeholder: الترخيص...
+    value_placeholder: Bearer eyJhbGciOi...
+  sleep:
+    name: النوم
   trigger:
     flows: التدفقات
     flow: التدفق
