@@ -2,7 +2,7 @@ node_modules
 .cache
 .env
 .DS_Store
-uploads
+/uploads
 /extensions
 debug.db
 *.db
