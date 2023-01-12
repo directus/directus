@@ -21,13 +21,20 @@
 			</draggable>
 		</v-list>
 		<v-menu placement="bottom-start" show-arrow>
+			<button @click="selectAll" class="selectAllBtn">
+				<v-icon name="check_box" />
+				{{ t('select_all') }}
+			</button>
+			<button @click="deSelectAll" class="selectAllBtn">
+				<v-icon name="check_box_outline_blank" />
+				{{ t('deselect_all') }}
+			</button>
 			<template #activator="{ toggle }">
 				<button class="toggle" @click="toggle">
 					{{ t('add_field') }}
 					<v-icon name="expand_more" />
 				</button>
 			</template>
-
 			<v-field-list :disabled-fields="value" :collection="collectionName" @select-field="addField" />
 		</v-menu>
 	</template>
@@ -100,6 +107,15 @@ const fields = computed<(Field & { key: string })[]>({
 
 const { t } = useI18n();
 
+function selectAll() {
+	const newArray = fieldsStore.getFieldsForCollection(props.collectionName)?.map((field) => field.field);
+	emit('input', newArray);
+}
+
+function deSelectAll() {
+	emit('input', null);
+}
+
 function addField(fieldKey: string) {
 	emit('input', [...(props.value ?? []), fieldKey]);
 }
@@ -121,10 +137,16 @@ function removeField(fieldKey: string) {
 	font-weight: 600;
 	margin-left: 10px;
 	margin-top: 6px;
-
 	.v-icon {
 		position: absolute;
 	}
+}
+
+.selectAllBtn {
+	color: var(--primary);
+	font-weight: 500;
+	margin-left: 10px;
+	margin-top: 10px;
 }
 
 .v-notice.no-fields {
