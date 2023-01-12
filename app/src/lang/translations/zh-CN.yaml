@@ -22,7 +22,7 @@
 identifier: 标识符（identifier）
 avatar: 头像
 application: 应用程序
-default_provider: 默认值
+default_provider: 默认
 method: 方法
 published: 已发布
 draft: 草稿
@@ -573,6 +573,8 @@ select_an_item: 选择一个条目...
 edit: 编辑
 enabled: 已启用
 disable_tfa: 停用双重认证
+admin_disable_tfa_text: 您确定要为此用户禁用2FA吗？
+tfa_setup: 设置 2FA
 tfa_scan_code: 扫描您的身份验证程序中的代码来完成设置 2FA
 enter_otp_to_disable_tfa: 输入OTP以禁用双重认证
 create_account: 创建账号
@@ -1162,7 +1164,7 @@ fields:
     module_bar: 模块栏
     transformations_all: 允许所有转换
     transformations_none: 禁用转换
-    transformations_presets: 限制转换到下面预设
+    transformations_presets: 将转换限制为以下预设
     image_editor: 图像编辑器
     custom_aspect_ratios: 自定义长宽比
   directus_shares:
@@ -1429,6 +1431,7 @@ translation: 翻译
 translation_placeholder: 输入翻译...
 value: 值
 view_project: 查看项目
+weeks: { }
 report_error: 报告错误
 start: 开始
 table: 表

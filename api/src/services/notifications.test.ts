@@ -1,6 +1,18 @@
 import { afterEach, beforeEach, describe, expect, it, SpyInstance, vi } from 'vitest';
 import { ItemsService, NotificationsService } from '.';
 
+vi.mock('../env', async () => {
+	const actual = (await vi.importActual('../env')) as { default: Record<string, any> };
+	const MOCK_ENV = {
+		...actual.default,
+		PUBLIC_URL: '/',
+	};
+	return {
+		default: MOCK_ENV,
+		getEnv: () => MOCK_ENV,
+	};
+});
+
 vi.mock('../../src/database/index', () => ({
 	default: vi.fn(),
 	getDatabaseClient: vi.fn().mockReturnValue('postgres'),
