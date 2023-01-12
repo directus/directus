@@ -1,12 +1,12 @@
 import { Knex } from 'knex';
 
-export type NewTranslationString = {
+type NewTranslationString = {
 	key: string;
 	value: string;
 	lang: string;
 };
 
-export type OldTranslationString = {
+type OldTranslationString = {
 	key?: string | null;
 	translations?: Record<string, string> | null;
 };
