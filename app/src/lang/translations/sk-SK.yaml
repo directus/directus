@@ -283,7 +283,7 @@ add_o2m_to_collection: 'Pridať 02M do "{collection}"'
 add_m2m_to_collection: 'Pridať M2M do "{collection}"'
 choose_a_type: Vyberte typ...
 determined_by_relationship: Určené vzťahom
-add_note: Pridať užitočnú poznámku pre užívateľov...
+add_note: Pridajte pomocnú poznámku pre používateľov...
 add_link: Pridať odkaz
 custom_link: Vlastný odkaz
 default_value: Predvolená hodnota
@@ -402,7 +402,7 @@ functions:
   second: Sekunda
   count: Počet
 date-fns_date: PPP
-date-fns_time: 'h:mm:ss a'
+date-fns_time: 'H:mm:ss'
 date-fns_time_no_seconds: 'h:mm a'
 date-fns_time_24hour: 'HH:mm:ss'
 date-fns_time_no_seconds_24hour: 'HH:mm'
@@ -469,7 +469,7 @@ collection_key: Kľúč zbierky
 name: Názov
 primary_key_field: Pole primárneho kľúča
 type: Typ
-creating_new_collection: Vytváranie novej zbierky
+creating_new_collection: Tvorba nová zbierka
 created_by: Vytvoril
 created_on: Vytvorené
 creating_collection_info: Nazvite zbierku a nastavte jej pole unikátneho "kľúča"...
@@ -482,7 +482,7 @@ save_and_create_new: Uložiť a vytvoriť nové
 save_and_stay: Uložiť a zostať
 save_as_copy: Uložiť ako kópiu
 add_existing: Pridať existujúce
-creating_items: Vytváranie položiek
+creating_items: Tvorba položiek
 enable_create_button: Zapnúť tlačidlo Vytvoriť
 selecting_items: Označovanie položiek
 enable_select_button: Zapnúť tlačidlo Vybrať
@@ -507,7 +507,7 @@ item_count: 'Žiadne položky | Jedna položka | {count} položiek'
 no_items_copy: V zbierke zatiaľ nie sú žiadne položky.
 file_count: 'Žiadne súbory | Jeden súbor | {count} súborov'
 no_files_copy: Nie sú tu žiadne súbory.
-user_count: 'Žiadny používatelia | Jeden používateľ | {count} používateľov'
+user_count: 'Žiadni používatelia | Jeden používateľ | {count} používateľov'
 no_users_copy: Pod touto rolou zatiaľ nie sú žiadni používatelia.
 webhooks_count: 'Žiadne webhooky | Jeden webhook | {count} webhookov'
 no_webhooks_copy: Zatiaľ neboli nastavené žiadne webhooky. Začnite vytvorením niektorého nižšie.
@@ -519,7 +519,7 @@ any: Akékoľvek
 csv: CSV
 no_collections: Žiadna zbierka
 create_collection: Vytvoriť zbierku
-no_collections_copy_admin: Nemáte zatiaľ žiadne zbierky. Začnite kliknutím na tlačidlo nižšie.
+no_collections_copy_admin: Zatiaľ nemáte žiadne zbierky. Začnite kliknutím na tlačidlo nižšie.
 no_collections_copy: Zatiaľ nemáte žiadne zbierky. Prosím kontaktujte svojho správu.
 relationship_not_setup: Tento vzťah nebol správne nastavený
 display_template_not_setup: Šablóna zobrazenia je zle nakonfigurovaná
@@ -805,7 +805,7 @@ no_other_flows_copy: Zatiaľ nemáte žiadne ďalšie toky.
 no_flows: Žiadne toky
 no_flows_copy: Zatiaľ nemáte žiadne toky.
 create_flow: Vytvoriť tok
-creating_new_flow: Vytváranie nového toku
+creating_new_flow: Tvorba nového toku
 updating_flow: Úprava toku
 flow_setup: Nastavenia toku
 flow_name: Názov
@@ -852,7 +852,7 @@ details: Podrobnosti
 full_screen: Celá obrazovka
 full_text_search: Full-text hľadanie
 edit_panels: Upraviť panely
-center_align: Zarovnať na stred
+center_align: Zarovnať nastred
 left_align: Zarovnať vľavo
 right_align: Zarovnať vpravo
 fit_to_screen: Prispôsobiť obrazovke
@@ -935,10 +935,10 @@ deselect_all: Odznačiť všetko
 other: Ostatné...
 adding_user: Pridávanie používateľa
 unknown_user: Neznámy používateľ
-creating_in: 'Vytváranie položky v {collection}'
+creating_in: 'Tvorba položky v {collection}'
 editing_in: 'Úprava položky v {collection}'
 viewing_in: 'Pozeranie položky v {collection}'
-creating_unit: 'Vytváranie {unit}'
+creating_unit: 'Vytvára sa {unit}'
 editing_unit: 'Úprava {unit}'
 editing_in_batch: 'Hromadná úprava {count} položiek'
 no_options_available: Žiadne dostupné možnosti
@@ -1351,7 +1351,7 @@ continue_label: Pokračovať
 continue_as: >-
   {name} je aktuálne overený. Ak spoznávate túto aktivitu, stlačte pokračovať.
 editing_role: 'Rola {role}'
-creating_webhook: Vytváranie webhooku
+creating_webhook: Tvorba webhooku
 default_label: Predvolené
 delete_label: Odstrániť
 delete_are_you_sure: >-
@@ -1422,7 +1422,7 @@ export_started_copy: Váš export začal. Keď bude pripravený na stiahnutie do
 sort_asc: Zoradiť vzostupne
 sort_desc: Zoradiť zostupne
 template: Šablóna
-require_value_to_be_set: Vyžaduje nastavenú hodnotu pri vytvorení
+require_value_to_be_set: Vyžadovať hodnotu pri vytvorení
 translation: Preklad
 translation_placeholder: Zadajte preklad...
 value: Hodnota
@@ -1775,7 +1775,7 @@ displays:
     default_color: Predvolená farba
   datetime:
     datetime: Dátum a čas
-    description: Zobraziť hodnoty súvisiace s časom
+    description: Zobrazuje časové hodnoty
     format: Formát
     format_note: >-
       Vlastný formát dovoľuje __[Symbol dátumového poľa](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
@@ -2033,7 +2033,7 @@ triggers:
     response_body_all: Všetky dáta
     response_body_last: Dáta z poslednej operácie
   event:
-    name: Hook udalosť
+    name: Reakcia na udalosť
     description: Spustí sa pri udalosti platformy alebo dát
     action: 'Akcia (neblokujúca)'
     filter: 'Filter (blokujúci)'
