@@ -181,7 +181,6 @@ function closeDialog() {
 }
 
 async function saveTranslationString() {
-	// console.log('saveTranslationString', toRaw(unref(initialValues)), toRaw(unref(values)));
 	if (!values.value) return;
 	if (initialValues.value.key) {
 		updateTranslation(initialValues.value.key, values.value);
@@ -192,7 +191,6 @@ async function saveTranslationString() {
 }
 
 async function deleteTranslationString() {
-	// console.log('deleteTranslationString', toRaw(unref(values)));
 	if (!values.value || !initialValues.value || !initialValues.value.key) return;
 	removeTranslation(initialValues.value.key);
 	confirmDelete.value = false;

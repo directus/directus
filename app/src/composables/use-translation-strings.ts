@@ -53,7 +53,7 @@ export function useTranslationStrings(): UsableTranslationStrings {
 
 	const translationKeys = computed(() => {
 		if (!translationStrings || !translationStrings.value) return [];
-		return translationStrings.value.map(({ key }) => key);
+		return Array.from(new Set(translationStrings.value.map(({ key }) => key))).sort();
 	});
 	const displayTranslationStrings = computed(() => {
 		if (!translationStrings || !translationStrings.value) return [];
@@ -65,11 +65,8 @@ export function useTranslationStrings(): UsableTranslationStrings {
 			},
 			{} as Record<string, Translation[]>
 		);
-		return sortBy(
-			Object.entries(translationObject).map(
-				([key, translations]) => ({ key, translations } as DisplayTranslationString)
-			),
-			'key'
+		return Object.entries(translationObject).map(
+			([key, translations]) => ({ key, translations } as DisplayTranslationString)
 		);
 	});
 

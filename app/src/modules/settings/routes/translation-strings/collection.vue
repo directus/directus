@@ -61,7 +61,7 @@
 									@update:model-value="toPage"
 								/>
 							</div>
-							<div v-if="loading === false && tableItems.length >= 25" class="per-page">
+							<div v-if="loading === false" class="per-page">
 								<span>{{ t('per_page') }}</span>
 								<v-select
 									:model-value="`${limit}`"
