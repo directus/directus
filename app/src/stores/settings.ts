@@ -77,7 +77,7 @@ export const useSettingsStore = defineStore({
 				params: {
 					fields: ['translations'],
 					alias: {
-						translations: 'json(translation_strings2$[*])',
+						translations: 'json(translation_strings$[*])',
 					},
 					deep: {
 						translations: {

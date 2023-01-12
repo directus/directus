@@ -175,7 +175,7 @@ export function useTranslationStrings(): UsableTranslationStrings {
 		updating.value = true;
 		try {
 			const settingsStore = useSettingsStore();
-			await settingsStore.updateSettings({ translation_strings2: strings }, false);
+			await settingsStore.updateSettings({ translation_strings: strings }, false);
 			const { currentUser } = useUserStore();
 			const language =
 				currentUser && 'language' in currentUser && currentUser.language ? currentUser.language : 'en-US';
@@ -192,39 +192,12 @@ export function useTranslationStrings(): UsableTranslationStrings {
 			updating.value = false;
 		}
 	}
-	// async function update(newTranslationStrings: RawTranslation[]) {
-	// 	// console.log('update', newTranslationStrings);
-	// 	if (loading === null) return;
-	// 	if (translationStrings === null) return;
-	// 	if (error === null) return;
-	// 	updating.value = true;
-	// 	try {
-	// 		const settingsStore = useSettingsStore();
-	// 		await settingsStore.updateSettings({ translation_strings2: newTranslationStrings }, false);
-	// 		// if (settingsStore.settings?.translation_strings) {
-	// 		// 	translationStrings.value = settingsStore.settings.translation_strings.map((p: TranslationStringRaw) => ({
-	// 		// 		key: p.key,
-	// 		// 		translations: getTranslationsFromKeyValues(p.translations ?? null),
-	// 		// 	}));
-	// 		// 	const { currentUser } = useUserStore();
-	// 		// 	if (currentUser && 'language' in currentUser && currentUser.language) {
-	// 		// 		mergeTranslationStringsForLanguage(currentUser.language);
-	// 		// 	} else {
-	// 		// 		mergeTranslationStringsForLanguage('en-US');
-	// 		// 	}
-	// 		// }
-	// 	} catch (err: any) {
-	// 		unexpectedError(err);
-	// 	} finally {
-	// 		updating.value = false;
-	// 	}
-	// }
 	async function fetchTranslationStrings(lang: Language): Promise<RawTranslation[]> {
 		const response = await api.get(`/settings`, {
 			params: {
 				fields: ['translations'],
 				alias: {
-					translations: 'json(translation_strings2$[*])',
+					translations: 'json(translation_strings$[*])',
 				},
 				deep: {
 					translations: {
@@ -240,9 +213,9 @@ export function useTranslationStrings(): UsableTranslationStrings {
 
 	async function fetchAllTranslationStrings() {
 		const response = await api.get(`/settings`, {
-			params: { fields: ['translation_strings2'] },
+			params: { fields: ['translation_strings'] },
 		});
-		return response.data.data?.translation_strings2 ?? [];
+		return response.data.data?.translation_strings ?? [];
 	}
 
 	// function mergeTranslationStringsForLanguage(lang: Language) {
