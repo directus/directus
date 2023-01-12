@@ -69,6 +69,7 @@ export default async function getASTFromQuery(
 	}
 
 	fields = uniq(fields);
+
 	const deep = query.deep || {};
 
 	// Prevent fields/deep from showing up in the query object in further use
@@ -125,13 +126,13 @@ export default async function getASTFromQuery(
 				}
 			}
 
-			const { isFunction, isRelational } = parseFieldName(name, parentCollection);
+			const { isFunction, isRelational, isJson } = parseFieldName(name, parentCollection);
 
 			if (isRelational) {
 				// field is relational
 				let parts = fieldKey.split('.'),
 					jpath;
-				if (name.startsWith('json(')) {
+				if (isJson) {
 					const { fieldName, jsonPath } = parseJsonFunction(name);
 					parts = fieldName.split('.');
 					jpath = jsonPath;
@@ -156,9 +157,7 @@ export default async function getASTFromQuery(
 				}
 
 				if (parts.length > 1) {
-					const childKey = name.startsWith('json(')
-						? `json(${parts.slice(1).join('.')}${jpath})`
-						: parts.slice(1).join('.');
+					const childKey = isJson ? `json(${parts.slice(1).join('.')}${jpath})` : parts.slice(1).join('.');
 					if (fieldKey in jsonAlias) {
 						jsonAlias[childKey] = jsonAlias[fieldKey];
 						delete jsonAlias[fieldKey];
@@ -175,70 +174,72 @@ export default async function getASTFromQuery(
 						(relationalStructure[rootField] as string[]).push(childKey);
 					}
 				}
-			} else if (isFunction) {
-				const columnName = stripFunction(fieldKey);
-				const foundField = schema.collections[parentCollection].fields[columnName];
+			} else {
+				if (isFunction) {
+					const columnName = stripFunction(fieldKey);
+					const foundField = schema.collections[parentCollection].fields[columnName];
 
-				if (foundField && foundField.type === 'alias') {
-					const foundRelation = schema.relations.find(
-						(relation) => relation.related_collection === parentCollection && relation.meta?.one_field === columnName
-					);
+					if (foundField && foundField.type === 'alias') {
+						const foundRelation = schema.relations.find(
+							(relation) => relation.related_collection === parentCollection && relation.meta?.one_field === columnName
+						);
 
-					if (foundRelation) {
-						children.push({
-							type: 'functionField',
-							name,
-							fieldKey,
-							query: {},
-							relatedCollection: foundRelation.collection,
-						});
+						if (foundRelation) {
+							children.push({
+								type: 'functionField',
+								name,
+								fieldKey,
+								query: {},
+								relatedCollection: foundRelation.collection,
+							});
+							continue;
+						}
+					}
+
+					if (isJson) {
+						const alias = name !== fieldKey ? fieldKey : generateAlias();
+						const { fieldName, jsonPath } = parseJsonFunction(name);
+						if (fieldName.includes('.')) {
+							const parts = fieldName.split('.');
+							const rootField = parts[0];
+							const subField = parts.slice(1).join('.');
+							const childKey = `json(${subField}${jsonPath})`;
+							if (rootField in relationalStructure === false) {
+								relationalStructure[rootField] = [];
+							}
+							(relationalStructure[rootField] as string[]).push(childKey);
+							if (query.alias?.[fieldKey]) {
+								const relatedField = subField.includes('.')
+									? subField.substring(subField.lastIndexOf('.') + 1)
+									: subField;
+								const newFunc = `json(${relatedField}${jsonPath})`;
+								delete query.alias[fieldKey];
+								jsonAlias[newFunc] = fieldKey;
+							}
+						} else {
+							const deepKey = query.alias?.[fieldKey] ? fieldKey : jsonAlias[name];
+							const deepFilter = getDeepQuery(deep?.[deepKey] || {});
+							children.push({
+								type: 'jsonField',
+								fieldKey: jsonAlias[name] ?? alias,
+								name: fieldName,
+								jsonPath,
+								query: deepFilter,
+								temporary: false,
+							});
+							if (deep?.[deepKey]) {
+								delete deep[deepKey];
+							}
+							if (query.alias?.[fieldKey]) {
+								delete query.alias[fieldKey];
+							}
+							if (jsonAlias[name]) {
+								delete jsonAlias[name];
+							}
+						}
 						continue;
 					}
 				}
-
-				if (name.startsWith('json(')) {
-					const alias = name !== fieldKey ? fieldKey : generateAlias();
-					const { fieldName, jsonPath } = parseJsonFunction(name);
-					if (fieldName.includes('.')) {
-						const parts = fieldName.split('.');
-						const rootField = parts[0];
-						const subField = parts.slice(1).join('.');
-						const childKey = `json(${subField}${jsonPath})`;
-						if (rootField in relationalStructure === false) {
-							relationalStructure[rootField] = [];
-						}
-						(relationalStructure[rootField] as string[]).push(childKey);
-						if (query.alias?.[fieldKey]) {
-							const relatedField = subField.includes('.')
-								? subField.substring(subField.lastIndexOf('.') + 1)
-								: subField;
-							const newFunc = `json(${relatedField}${jsonPath})`;
-							delete query.alias[fieldKey];
-							jsonAlias[newFunc] = fieldKey;
-						}
-					} else {
-						const deepKey = query.alias?.[fieldKey] ? fieldKey : jsonAlias[name];
-						const deepFilter = getDeepQuery(deep?.[deepKey] || {});
-						children.push({
-							type: 'jsonField',
-							fieldKey: jsonAlias[name] ?? alias,
-							name: fieldName,
-							jsonPath,
-							query: deepFilter,
-							temporary: false,
-						});
-						if (deep?.[deepKey]) {
-							delete deep[deepKey];
-						}
-						if (query.alias?.[fieldKey]) {
-							delete query.alias[fieldKey];
-						}
-						if (jsonAlias[name]) {
-							delete jsonAlias[name];
-						}
-					}
-				}
-			} else {
 				children.push({ type: 'field', name, fieldKey });
 			}
 		}
@@ -441,14 +442,18 @@ export default async function getASTFromQuery(
 		if (name.startsWith('json(')) {
 			const { fieldName } = parseJsonFunction(name);
 			return {
+				isJson: true,
 				isFunction: true,
 				isRelational: fieldName.includes('.'),
 			};
 		}
 		return {
+			isJson: false,
 			isFunction: name.includes('(') && name.endsWith(')'),
 			isRelational:
 				name.includes('.') ||
+				// We'll always treat top level o2m fields as a related item. This is an alias field, otherwise it won't return
+				// anything
 				!!schema.relations.find(
 					(relation) => relation.related_collection === parentCollection && relation.meta?.one_field === name
 				),
