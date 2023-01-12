@@ -1949,7 +1949,7 @@ export class GraphQLService {
 						accountability: this.accountability,
 						schema: this.schema,
 					});
-					return await service.serverInfo();
+					return await service.health();
 				},
 			},
 		});
