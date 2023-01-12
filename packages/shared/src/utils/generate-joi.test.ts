@@ -67,6 +67,126 @@ describe(`generateJoi`, () => {
 		expect(generateJoi(mockFieldFilter).describe()).toStrictEqual(mockSchema);
 	});
 
+	it(`returns the correct schema for an integer _eq match`, () => {
+		const mockFieldFilter = { field: { _eq: '123' } } as FieldFilter;
+		const mockSchema = Joi.object({
+			field: Joi.any().equal('123', 123),
+		})
+			.unknown()
+			.describe();
+		expect(generateJoi(mockFieldFilter).describe()).toStrictEqual(mockSchema);
+	});
+
+	it(`returns the correct schema for an integer _neq match`, () => {
+		const mockFieldFilter = { field: { _neq: '123' } } as FieldFilter;
+		const mockSchema = Joi.object({
+			field: Joi.any().not('123', 123),
+		})
+			.unknown()
+			.describe();
+		expect(generateJoi(mockFieldFilter).describe()).toStrictEqual(mockSchema);
+	});
+
+	it(`returns the correct schema for a float _eq match`, () => {
+		const mockFieldFilter = { field: { _eq: '123.456' } } as FieldFilter;
+		const mockSchema = Joi.object({
+			field: Joi.any().equal('123.456', 123.456),
+		})
+			.unknown()
+			.describe();
+		expect(generateJoi(mockFieldFilter).describe()).toStrictEqual(mockSchema);
+	});
+
+	it(`returns the correct schema for a float _neq match`, () => {
+		const mockFieldFilter = { field: { _neq: '123.456' } } as FieldFilter;
+		const mockSchema = Joi.object({
+			field: Joi.any().not('123.456', 123.456),
+		})
+			.unknown()
+			.describe();
+		expect(generateJoi(mockFieldFilter).describe()).toStrictEqual(mockSchema);
+	});
+
+	it(`returns the correct schema for a null _eq match`, () => {
+		const mockFieldFilter = { field: { _eq: null } } as FieldFilter;
+		const mockSchema = Joi.object({
+			field: Joi.any().equal(null),
+		})
+			.unknown()
+			.describe();
+		expect(generateJoi(mockFieldFilter).describe()).toStrictEqual(mockSchema);
+	});
+
+	it(`returns the correct schema for a null _neq match`, () => {
+		const mockFieldFilter = { field: { _neq: null } } as FieldFilter;
+		const mockSchema = Joi.object({
+			field: Joi.any().not(null),
+		})
+			.unknown()
+			.describe();
+		expect(generateJoi(mockFieldFilter).describe()).toStrictEqual(mockSchema);
+	});
+
+	it(`returns the correct schema for an empty string _eq match`, () => {
+		const mockFieldFilter = { field: { _eq: '' } } as FieldFilter;
+		const mockSchema = Joi.object({
+			field: Joi.any().equal(''),
+		})
+			.unknown()
+			.describe();
+		expect(generateJoi(mockFieldFilter).describe()).toStrictEqual(mockSchema);
+	});
+
+	it(`returns the correct schema for an empty string _neq match`, () => {
+		const mockFieldFilter = { field: { _neq: '' } } as FieldFilter;
+		const mockSchema = Joi.object({
+			field: Joi.any().not(''),
+		})
+			.unknown()
+			.describe();
+		expect(generateJoi(mockFieldFilter).describe()).toStrictEqual(mockSchema);
+	});
+
+	it(`returns the correct schema for a true _eq match`, () => {
+		const mockFieldFilter = { field: { _eq: true } } as FieldFilter;
+		const mockSchema = Joi.object({
+			field: Joi.any().equal(true),
+		})
+			.unknown()
+			.describe();
+		expect(generateJoi(mockFieldFilter).describe()).toStrictEqual(mockSchema);
+	});
+
+	it(`returns the correct schema for a true _neq match`, () => {
+		const mockFieldFilter = { field: { _neq: true } } as FieldFilter;
+		const mockSchema = Joi.object({
+			field: Joi.any().not(true),
+		})
+			.unknown()
+			.describe();
+		expect(generateJoi(mockFieldFilter).describe()).toStrictEqual(mockSchema);
+	});
+
+	it(`returns the correct schema for a false _eq match`, () => {
+		const mockFieldFilter = { field: { _eq: false } } as FieldFilter;
+		const mockSchema = Joi.object({
+			field: Joi.any().equal(false),
+		})
+			.unknown()
+			.describe();
+		expect(generateJoi(mockFieldFilter).describe()).toStrictEqual(mockSchema);
+	});
+
+	it(`returns the correct schema for a false _neq match`, () => {
+		const mockFieldFilter = { field: { _neq: false } } as FieldFilter;
+		const mockSchema = Joi.object({
+			field: Joi.any().not(false),
+		})
+			.unknown()
+			.describe();
+		expect(generateJoi(mockFieldFilter).describe()).toStrictEqual(mockSchema);
+	});
+
 	it(`returns the correct schema for an _ncontains contain match`, () => {
 		const mockFieldFilter = { field: { _ncontains: 'field' } } as FieldFilter;
 		const mockSchema = Joi.object({
