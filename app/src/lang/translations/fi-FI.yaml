@@ -270,6 +270,7 @@ fields_group: Kenttien ryhmä
 no_collections_found: Kokoelmia ei löytynyt.
 new_data_alert: 'Seuraava tullaa luomaan tietomallisi sisällä:'
 search_collection: Hae kokoelmasta...
+search_field: Hakukenttä...
 new_field: 'Uusi kenttä'
 new_collection: 'Uusi kokoelma'
 add_m2o_to_collection: 'Lisää moni-yhteen (M2O) kokoelmaan "{collection}"'
@@ -323,6 +324,7 @@ edit_raw_value: Muokkaa raaka-arvoa
 enter_raw_value: Syötä raakaarvo...
 clear_value: Tyhjennä arvo
 clear_changes: Tyhjennä muutokset
+clear_items: Tyhjennä kohteet
 reset_to_default: Palauta oletukseen
 undo_changes: Kumoa muutokset
 notifications: Ilmoitukset
@@ -342,6 +344,7 @@ revision_delta_reverted: Palautettu
 revision_delta_update_message: Tätä kenttää on päivitetty, mutta sen arvo piilotetaan turvallisuussyistä.
 revision_delta_other: Versio
 revision_delta_by: '{date} käyttäjältä {user}'
+presentation_text_values_cannot_be_reimported: "Käyttää esitystekstiä, arvoja ei voida tuoda uudelleen."
 download_page_as_csv: 'Lataa CSV:nä'
 private_user: Yksityinen käyttäjä
 creation_preview: Luomisen esikatselu
@@ -360,7 +363,12 @@ translations_collection: Käännöskokoelma
 languages_collection: Kielten kokoelma
 import_data_input_placeholder: CSV tai JSON...
 import_data_button: Aloita tuonti
+import_data_indeterminate: Tuodaan tietoja...
+import_data_success: Tiedot tuotu onnistuneesti tiedostosta {filename}
+import_data_error: Tämän tiedoston tietorakenne ei vastaa kokoelmaa.
 label_import: Tuo
+label_export: Vie (export)
+import_export: Tuo / Vie
 format: Muoto
 last_page: Viimeinen sivu
 last_access: Viimeksi käytetty
@@ -377,13 +385,22 @@ interface_label: Käyttöliittymä
 today: Tänään
 yesterday: Eilen
 delete_comment: Poista kommentti
+delete_share: Poista jako
 functions:
   year: Vuosi
   month: Kuukausi
+  week: Viikko
+  day: Päivä
+  weekday: Viikonpäivä
+  hour: Tunti
+  minute: Minuutti
+  second: Sekunti
   count: Määrä
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'HH:mm'
+date-fns_time_24hour: 'HH:mm:ss'
+date-fns_time_no_seconds_24hour: 'HH:mm'
 date-fns_date_short: 'MMM d, u'
 date-fns_time_short: 'HH:mm'
 date-fns_date_short_no_year: MMM d
@@ -434,6 +451,14 @@ replace_from_library: Korvaa tiedosto kirjastosta
 replace_from_url: Korvaa tiedosto osoitteesta
 no_file_selected: Ei valittua tiedostoa
 download_file: Lataa tiedosto
+open_file_in_tab: Avaa tiedosto uudessa välilehdessä
+start_export: Aloita vienti
+exporting_all_items_in_collection: Viedään kaikki {total} kohdetta kokoelmasta {collection}.
+exporting_limited_items_in_collection: Viedään {limit} kohdetta kokoelman {collection} {total} kohteesta.
+exporting_no_items_to_export: Ei vietäviä kohteita. Muokkaa viennin asetuksia alla.
+exporting_download_hint: Valmistumisen jälkeen, tämä {format} tiedosto ladataan automaattisesti laitteellesi.
+exporting_batch_hint: Tämä vienti käsitellään erissä, ja kun vienti on valmis, tiedosto {format} tallennetaan Tiedostokirjastoon.
+exporting_batch_hint_forced: Koska kohteita on paljon, vienti on käsiteltävä erissä, ja kun vienti on valmis, {format} tiedosto tallennetaan Tiedostokirjastoon.
 collection_key: Kokoeilman avain
 name: Nimi
 primary_key_field: Ensisijainen avaimen kenttä
@@ -464,7 +489,9 @@ disabled: Pois käytöstä
 information: Tietoja
 report_bug: Raportoi bugi
 request_feature: Pyydä ominaisuutta
+request_body: Pyynnön Body-kenttä
 interface_not_found: 'Liittymää "{interface}" ei löytynyt.'
+operation_not_found: 'Operaatiota "{operation}" ei löydy.'
 reset_interface: Nollaa liittymä
 display_not_found: 'Näyttöä "{display}" ei löytynyt.'
 reset_display: Nollaa näyttö
@@ -504,6 +531,7 @@ activity_item: Aktiviteettikohde
 action: Toiminto
 ip_address: IP-osoite
 user_agent: Asiakasohjelma
+origin: Alkuperä
 webhooks: Webhookit
 decimals: Desimaalit
 value_decimals: Arvon desimaalit
@@ -562,6 +590,8 @@ errors:
   NOT_NULL_VIOLATION: Arvo ei voi olla null
   ILLEGAL_ASSET_TRANSFORMATION: Kuvan lähde on liian suuri esikatseltavaksi
   UNKNOWN: Odottamaton virhe
+  GRAPHQL_VALIDATION_EXCEPTION: GraphQL-validointivirhe
+  SERVICE_UNAVAILABLE: Palvelu ei ole saatavilla
 security: Turvallisuus
 value_hashed: Arvo tiivistetty turvallisesti
 bookmark_name: Kirjanmerkin nimi...
@@ -915,6 +945,7 @@ fields:
     user: Toiminnon toteuttaja
     comment: Kommentti
     user_agent: Asiakasohjelma
+    origin: Alkuperä
     ip: IP-osoite
     revisions: Versiot
   directus_collections:
