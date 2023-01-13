@@ -47,35 +47,6 @@ router.get(
 	respond
 );
 
-/*router.post(
-	'/:name/:version?',
-	asyncHandler(async (req, res, next) => {
-		if (req.accountability?.admin !== true) throw new RouteNotFoundException(req.path);
-
-		const name = req.params.name;
-		const version = req.params.version;
-
-		if (!name) {
-			throw new RouteNotFoundException(req.path);
-		}
-
-		const extensionManager = getExtensionManager();
-
-		const extension = extensionManager.getExtension(name);
-
-		if (extension !== undefined) {
-			await extensionManager.installation.updateExtension(name);
-		} else {
-			await extensionManager.installation.installExtension(name, version);
-		}
-
-		await extensionManager.reload();
-
-		return next();
-	}),
-	respond
-);*/
-
 router.patch(
 	'/',
 	asyncHandler(async (req, res, next) => {
@@ -113,28 +84,6 @@ router.patch(
 	}),
 	respond
 );
-
-/*router.delete(
-	'/:name',
-	asyncHandler(async (req, res, next) => {
-		if (req.accountability?.admin !== true) throw new RouteNotFoundException(req.path);
-
-		const name = req.params.name;
-
-		if (!name) {
-			throw new RouteNotFoundException(req.path);
-		}
-
-		const extensionManager = getExtensionManager();
-
-		await extensionManager.installation.uninstallExtension(name);
-
-		await extensionManager.reload();
-
-		return next();
-	}),
-	respond
-);*/
 
 router.get(
 	'/sources/index.js',
