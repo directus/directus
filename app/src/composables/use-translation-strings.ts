@@ -5,7 +5,6 @@ import { Language, i18n } from '@/lang';
 import { useUserStore } from '@/stores/user';
 import { useSettingsStore } from '@/stores/settings';
 import api from '@/api';
-import { sortBy } from 'lodash';
 
 export type Translation = {
 	language: string;
@@ -28,16 +27,15 @@ type UsableTranslationStrings = {
 	translationKeys: ComputedRef<string[] | null>;
 	translationStrings: Ref<RawTranslation[] | null>;
 	displayTranslationStrings: ComputedRef<DisplayTranslationString[] | null>;
+
 	loadLanguageTranslationStrings: (lang: Language) => Promise<void>;
 	fetchAllTranslationStrings: () => Promise<RawTranslation[]>;
 	refresh: () => Promise<void>;
-	updating: Ref<boolean>;
 
+	updating: Ref<boolean>;
 	addTranslation: (translation: DisplayTranslationString) => void;
 	updateTranslation: (originalKey: string, translation: DisplayTranslationString) => void;
 	removeTranslation: (translationKey: string) => void;
-
-	// update: (newTranslationStrings: DisplayTranslationString[]) => Promise<void>;
 };
 
 let loading: Ref<boolean> | null = null;
@@ -89,9 +87,8 @@ export function useTranslationStrings(): UsableTranslationStrings {
 		if (loading === null) return;
 		if (translationStrings === null) return;
 		if (error === null) return;
-		// const t0 = performance.now();
+
 		const translations = await fetchTranslationStrings(lang);
-		// const t1 = performance.now();
 		const localeMessages: Record<string, any> = translations.reduce(
 			(result: Record<string, string>, { key, value }: { key: string; value: string }) => {
 				result[key] = getLiteralInterpolatedTranslation(value, true);
@@ -99,10 +96,9 @@ export function useTranslationStrings(): UsableTranslationStrings {
 			},
 			{} as Record<string, string>
 		);
+
 		i18n.global.mergeLocaleMessage(lang, localeMessages);
 		translationStrings.value = translations;
-		// const t2 = performance.now();
-		// console.log(`translations lang ${lang} - request ${t1 - t0}ms - transform ${t2 - t1}ms`);
 	}
 
 	async function refresh() {
@@ -129,7 +125,6 @@ export function useTranslationStrings(): UsableTranslationStrings {
 	}
 
 	async function addTranslation(translation: DisplayTranslationString) {
-		// console.log('addTranslation', translation);
 		if (!translation.key || !translation.translations) return;
 		if (!translationKeys.value || !translationStrings || !translationStrings.value) {
 			return;
@@ -141,20 +136,18 @@ export function useTranslationStrings(): UsableTranslationStrings {
 		for (const { language: lang, translation: value } of translation.translations) {
 			translationStrings.value.push({ key: translation.key, lang, value });
 		}
-		await updateStrings(translationStrings.value);
+		await updateLocaleStrings(translationStrings.value);
 	}
 	async function removeTranslation(translationKey: string) {
-		// console.log('removeTranslation', translationKey);
 		if (!translationKeys.value || !translationStrings || !translationStrings.value) {
 			return;
 		}
 		if (translationKeys.value.includes(translationKey)) {
 			translationStrings.value = translationStrings.value.filter(({ key }) => key !== translationKey);
 		}
-		await updateStrings(translationStrings.value);
+		await updateLocaleStrings(translationStrings.value);
 	}
 	async function updateTranslation(originalKey: string, translation: DisplayTranslationString) {
-		// console.log('updateTranslation', translation);
 		if (!translation.key || !translation.translations) return;
 		if (!translationKeys.value || !translationStrings || !translationStrings.value) {
 			return;
@@ -165,10 +158,10 @@ export function useTranslationStrings(): UsableTranslationStrings {
 		for (const { language: lang, translation: value } of translation.translations) {
 			translationStrings.value.push({ key: translation.key, lang, value });
 		}
-		await updateStrings(translationStrings.value);
+		await updateLocaleStrings(translationStrings.value);
 	}
 
-	async function updateStrings(strings: RawTranslation[]) {
+	async function updateLocaleStrings(strings: RawTranslation[]) {
 		updating.value = true;
 		try {
 			const settingsStore = useSettingsStore();
@@ -189,6 +182,7 @@ export function useTranslationStrings(): UsableTranslationStrings {
 			updating.value = false;
 		}
 	}
+
 	async function fetchTranslationStrings(lang: Language): Promise<RawTranslation[]> {
 		const response = await api.get(`/settings`, {
 			params: {
@@ -205,13 +199,13 @@ export function useTranslationStrings(): UsableTranslationStrings {
 				},
 			},
 		});
-		return (response.data.data.translations ?? []) as RawTranslation[];
+		return response.data.data.translations ?? [];
 	}
 
-	async function fetchAllTranslationStrings() {
+	async function fetchAllTranslationStrings(): Promise<RawTranslation[]> {
 		const response = await api.get(`/settings`, {
 			params: { fields: ['translation_strings'] },
 		});
-		return (response.data.data?.translation_strings ?? []) as RawTranslation[];
+		return response.data.data?.translation_strings ?? [];
 	}
 }
