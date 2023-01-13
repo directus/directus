@@ -15,7 +15,7 @@
 			<v-list-item
 				v-for="fn of supportedFunctions"
 				:key="fn"
-				:disabled="field.disabled"
+				:disabled="field.disabled && field.type !== 'alias'"
 				clickable
 				@click="$emit('add', `${fn}(${field.key})`)"
 			>
