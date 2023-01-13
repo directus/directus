@@ -1,6 +1,6 @@
 {
 	"name": "@directus/utils",
-	"version": "9.22.1",
+	"version": "9.22.4",
 	"type": "module",
 	"scripts": {
 		"build": "tsc --build",

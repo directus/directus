@@ -18,6 +18,10 @@ router.use(
 
 		res.locals.payload = await service.execute(res.locals.graphqlParams);
 
+		if (res.locals.payload?.errors?.length > 0) {
+			res.locals.cache = false;
+		}
+
 		return next();
 	}),
 	respond
@@ -34,6 +38,10 @@ router.use(
 		});
 
 		res.locals.payload = await service.execute(res.locals.graphqlParams);
+
+		if (res.locals.payload?.errors?.length > 0) {
+			res.locals.cache = false;
+		}
 
 		return next();
 	}),
