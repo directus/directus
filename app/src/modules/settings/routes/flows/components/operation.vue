@@ -101,11 +101,20 @@
 				</div>
 			</dl>
 		</div>
-		<component
-			:is="`operation-overview-${currentOperation.id}`"
+		<v-error-boundary
 			v-else-if="currentOperation && 'id' in currentOperation"
-			:options="currentOperation"
-		/>
+			:name="`operation-overview-${currentOperation.id}`"
+		>
+			<component :is="`operation-overview-${currentOperation.id}`" :options="currentOperation" />
+
+			<template #fallback="{ error: operationOverviewError }">
+				<div class="options-overview-error">
+					<v-icon name="warning" />
+					{{ t('unexpected_error') }}
+					<v-error :error="operationOverviewError" />
+				</div>
+			</template>
+		</v-error-boundary>
 		<template v-if="panel.id === '$trigger'" #footer>
 			<div class="status-footer" :class="flowStatus">
 				<display-color
@@ -504,6 +513,23 @@ function pointerLeave() {
 		--v-icon-color: var(--foreground-subdued);
 		--v-icon-color-hover: var(--foreground-normal);
 		margin-left: 4px;
+	}
+}
+
+.options-overview-error {
+	padding: 20px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+	width: 100%;
+	height: 100%;
+
+	--v-icon-color: var(--danger);
+
+	.v-error {
+		margin-top: 8px;
+		max-width: 100%;
 	}
 }
 
