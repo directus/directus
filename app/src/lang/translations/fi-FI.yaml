@@ -1059,6 +1059,7 @@ fields:
     mapbox_key: Mapbox-käyttötunniste
     mapbox_placeholder: pk.eyJ1Ijo.....
     project_name: Projektin nimi
+    project_descriptor: Projektin kuvaus
     project_url: Projektin osoite
     project_color: Projektin väri
     project_logo: Projektin logo
