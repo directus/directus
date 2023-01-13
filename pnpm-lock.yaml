@@ -364,7 +364,7 @@ importers:
     specifiers:
       '@babel/core': 7.20.5
       '@babel/preset-env': 7.20.2
-      '@directus/docs': 9.22.0
+      '@directus/docs': 9.22.3
       '@directus/extensions-sdk': workspace:*
       '@directus/format-title': 10.0.0
       '@directus/shared': workspace:*
@@ -473,7 +473,7 @@ importers:
     devDependencies:
       '@babel/core': 7.20.5
       '@babel/preset-env': 7.20.2_@babel+core@7.20.5
-      '@directus/docs': 9.22.0
+      '@directus/docs': 9.22.3
       '@directus/extensions-sdk': link:../packages/extensions-sdk
       '@directus/format-title': 10.0.0
       '@directus/shared': link:../packages/shared
@@ -683,6 +683,7 @@ importers:
       vue: 3.2.45
       vue-i18n: 9.2.2
       vue-router: 4.1.6
+      zod: ^3.20.2
     dependencies:
       axios: 1.2.1
       date-fns: 2.29.3
@@ -699,6 +700,7 @@ importers:
       vue: 3.2.45
       vue-i18n: 9.2.2_vue@3.2.45
       vue-router: 4.1.6_vue@3.2.45
+      zod: 3.20.2
     devDependencies:
       '@types/express': 4.17.15
       '@types/fs-extra': 9.0.13
@@ -3650,8 +3652,8 @@ packages:
       '@jridgewell/trace-mapping': 0.3.9
     dev: true
 
-  /@directus/docs/9.22.0:
-    resolution: {integrity: sha512-L4C7AHi6/wC2Y4CgI3NJnS1pWXKIirNBvDdi41x9C9hgGyU49catXOJQb9W+HHcVsbh93Q7JwZzihnUhalAOug==}
+  /@directus/docs/9.22.3:
+    resolution: {integrity: sha512-zuL1iK9xDgGSG/0xW7QJdU7mt5k3FGoxnuN1EYoGeaMXn6KAAnME3R1kZijf3FhCt8cw8GLj2yX453bZK+SmlA==}
     dev: true
 
   /@directus/format-title/10.0.0:
@@ -8732,6 +8734,7 @@ packages:
 
   /bindings/1.5.0:
     resolution: {integrity: sha512-p2q/t/mhvuOj/UeLlV6566GD/guowlr0hHxClI0W9m7MWYkL1F0hLo+0Aexs9HSPCtR1SXQ0TD3MMKrXZajbiQ==}
+    requiresBuild: true
     dependencies:
       file-uri-to-path: 1.0.0
     dev: true
@@ -9027,7 +9030,7 @@ packages:
       mississippi: 3.0.0
       mkdirp: 0.5.6
       move-concurrently: 1.0.1
-      promise-inflight: 1.0.1_bluebird@3.7.2
+      promise-inflight: 1.0.1
       rimraf: 2.7.1
       ssri: 6.0.2
       unique-filename: 1.1.1
@@ -9051,7 +9054,7 @@ packages:
       minipass-pipeline: 1.2.4
       mkdirp: 1.0.4
       p-map: 4.0.0
-      promise-inflight: 1.0.1_bluebird@3.7.2
+      promise-inflight: 1.0.1
       rimraf: 3.0.2
       ssri: 8.0.1
       tar: 6.1.13
@@ -11520,6 +11523,7 @@ packages:
 
   /file-uri-to-path/1.0.0:
     resolution: {integrity: sha512-0Zt+s3L7Vf1biwWZ29aARiVYLx7iMGnEUl9x33fbB/j3jR81u/O2LbqK+Bm1CDSNDKVtJ/YjwY7TUd5SkeLQLw==}
+    requiresBuild: true
     dev: true
     optional: true
 
@@ -15316,6 +15320,7 @@ packages:
 
   /nan/2.17.0:
     resolution: {integrity: sha512-2ZTgtl0nJsO0KQCjEpxcIr5D+Yv90plTitZt9JBfQvVJDS5seMl3FOvsh3+9CoYWXf/1l5OaZzzF6nDm4cagaQ==}
+    requiresBuild: true
     dev: true
     optional: true
 
@@ -17105,15 +17110,13 @@ packages:
     engines: {node: '>=0.4.0'}
     dev: true
 
-  /promise-inflight/1.0.1_bluebird@3.7.2:
+  /promise-inflight/1.0.1:
     resolution: {integrity: sha512-6zWPyEOFaQBJYcGMHBKTKJ3u6TBsnMFOIZSa6ce1e/ZrrsOlnHRHbabMjLiBYKp+n44X9eUI6VUPaukCXHuG4g==}
     peerDependencies:
       bluebird: '*'
     peerDependenciesMeta:
       bluebird:
         optional: true
-    dependencies:
-      bluebird: 3.7.2
 
   /promise-retry/2.0.1:
     resolution: {integrity: sha512-y+WKFlBR8BGXnsNlIHFGPZmyDf3DFMoLhaflAnyZgV6rG6xu+JwesTo2Q9R6XwYmtmwAFCkAk3e35jEdoeh/3g==}
@@ -21352,6 +21355,10 @@ packages:
   /yocto-queue/0.1.0:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
+
+  /zod/3.20.2:
+    resolution: {integrity: sha512-1MzNQdAvO+54H+EaK5YpyEy0T+Ejo/7YLHS93G3RnYWh5gaotGHwGeN/ZO687qEDU2y4CdStQYXVHIgrUl5UVQ==}
+    dev: false
 
   /zwitch/1.0.5:
     resolution: {integrity: sha512-V50KMwwzqJV0NpZIZFwfOD5/lyny3WlSzRiXgA0G7VUnRlqttta1L6UQIHzd6EuBY/cHGfwTIck7w1yH6Q5zUw==}
