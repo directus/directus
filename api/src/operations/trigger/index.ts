@@ -17,51 +17,46 @@ export default defineOperationApi<Options>({
 
 		const payloadObject = optionToObject(payload) ?? null;
 
-		let result: unknown | unknown[];
-
 		if (Array.isArray(payloadObject)) {
-			switch (iterationMode) {
-				default:
-				case 'serial': {
-					result = [];
+			if (iterationMode === 'serial') {
+				const result = [];
 
-					for (const payload of payloadObject) {
-						(result as any[]).push(await flowManager.runOperationFlow(flow, payload, omit(context, 'data')));
-					}
-					break;
+				for (const payload of payloadObject) {
+					result.push(await flowManager.runOperationFlow(flow, payload, omit(context, 'data')));
 				}
-				case 'batch': {
-					const size = batchSize ?? 10;
 
-					result = [];
+				return result;
+			}
 
-					for (let i = 0; i < payloadObject.length; i += size) {
-						const batch = payloadObject.slice(i, i + size);
+			if (iterationMode === 'batch') {
+				const size = batchSize ?? 10;
 
-						const batchResults = await Promise.all(
-							batch.map((payload) => {
-								return flowManager.runOperationFlow(flow, payload, omit(context, 'data'));
-							})
-						);
+				const result = [];
 
-						(result as any[]).push(...batchResults);
-					}
+				for (let i = 0; i < payloadObject.length; i += size) {
+					const batch = payloadObject.slice(i, i + size);
 
-					break;
-				}
-				case 'parallel': {
-					result = await Promise.all(
-						payloadObject.map((payload) => {
+					const batchResults = await Promise.all(
+						batch.map((payload) => {
 							return flowManager.runOperationFlow(flow, payload, omit(context, 'data'));
 						})
 					);
-					break;
+
+					result.push(...batchResults);
 				}
+
+				return result;
 			}
-		} else {
-			result = await flowManager.runOperationFlow(flow, payloadObject, omit(context, 'data'));
+
+			if (iterationMode === 'parallel' || !iterationMode) {
+				return await Promise.all(
+					payloadObject.map((payload) => {
+						return flowManager.runOperationFlow(flow, payload, omit(context, 'data'));
+					})
+				);
+			}
 		}
 
-		return result;
+		return await flowManager.runOperationFlow(flow, payloadObject, omit(context, 'data'));
 	},
 });
