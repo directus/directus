@@ -52,7 +52,7 @@ export async function down(knex: Knex): Promise<void> {
 
 	if (data?.translation_strings && data?.id) {
 		const parsedTranslationStrings =
-			typeof data.translation_strings === 'string' ? JSON.parse(data.translaion_strings) : data.translation_strings;
+			typeof data.translation_strings === 'string' ? JSON.parse(data.translation_strings) : data.translation_strings;
 
 		const oldTranslationStrings = transformStringsOldFormat(parsedTranslationStrings);
 
