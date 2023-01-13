@@ -7,29 +7,30 @@
 	>
 		<v-skeleton-loader v-if="loading && field.hideLoader !== true" />
 
-		<component
-			:is="
-				field.meta && field.meta.interface
-					? `interface-${field.meta.interface}`
-					: `interface-${getDefaultInterfaceForType(field.type)}`
-			"
-			v-if="interfaceExists && !rawEditorActive"
-			v-bind="(field.meta && field.meta.options) || {}"
-			:autofocus="disabled !== true && autofocus"
-			:disabled="disabled"
-			:loading="loading"
-			:value="modelValue === undefined ? field.schema?.default_value : modelValue"
-			:width="(field.meta && field.meta.width) || 'full'"
-			:type="field.type"
-			:collection="field.collection"
-			:field="field.field"
-			:field-data="field"
-			:primary-key="primaryKey"
-			:length="field.schema && field.schema.max_length"
-			:direction="direction"
-			@input="$emit('update:modelValue', $event)"
-			@set-field-value="$emit('setFieldValue', $event)"
-		/>
+		<v-error-boundary v-if="interfaceExists && !rawEditorActive" :name="componentName">
+			<component
+				:is="componentName"
+				v-bind="(field.meta && field.meta.options) || {}"
+				:autofocus="disabled !== true && autofocus"
+				:disabled="disabled"
+				:loading="loading"
+				:value="modelValue === undefined ? field.schema?.default_value : modelValue"
+				:width="(field.meta && field.meta.width) || 'full'"
+				:type="field.type"
+				:collection="field.collection"
+				:field="field.field"
+				:field-data="field"
+				:primary-key="primaryKey"
+				:length="field.schema && field.schema.max_length"
+				:direction="direction"
+				@input="$emit('update:modelValue', $event)"
+				@set-field-value="$emit('setFieldValue', $event)"
+			/>
+
+			<template #fallback>
+				<v-notice type="warning">{{ t('unexpected_error') }}</v-notice>
+			</template>
+		</v-error-boundary>
 
 		<interface-system-raw-editor
 			v-else-if="rawEditorEnabled && rawEditorActive"
@@ -88,6 +89,12 @@ const inter = useExtension(
 );
 
 const interfaceExists = computed(() => !!inter.value);
+
+const componentName = computed(() => {
+	return props.field?.meta?.interface
+		? `interface-${props.field.meta.interface}`
+		: `interface-${getDefaultInterfaceForType(props.field.type)}`;
+});
 </script>
 
 <style lang="scss" scoped>
