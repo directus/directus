@@ -34,7 +34,10 @@ export async function up(knex: Knex): Promise<void> {
 	const data = await knex.select('translation_strings', 'id').from('directus_settings').first();
 
 	if (data?.translation_strings && data?.id) {
-		const newTranslationStrings = transformStringsNewFormat(data.translation_strings);
+		const parsedTranslationStrings =
+			typeof data.translation_strings === 'string' ? JSON.parse(data.translation_strings) : data.translation_strings;
+
+		const newTranslationStrings = transformStringsNewFormat(parsedTranslationStrings);
 
 		await knex('directus_settings')
 			.where({ id: data.id })
@@ -48,7 +51,10 @@ export async function down(knex: Knex): Promise<void> {
 	const data = await knex.select('translation_strings', 'id').from('directus_settings').first();
 
 	if (data?.translation_strings && data?.id) {
-		const oldTranslationStrings = transformStringsOldFormat(data.translation_strings);
+		const parsedTranslationStrings =
+			typeof data.translation_strings === 'string' ? JSON.parse(data.translaion_strings) : data.translation_strings;
+
+		const oldTranslationStrings = transformStringsOldFormat(parsedTranslationStrings);
 
 		await knex('directus_settings')
 			.where({ id: data.id })
