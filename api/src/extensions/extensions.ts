@@ -1,12 +1,5 @@
-import {
-	APP_EXTENSION_TYPES,
-	NESTED_EXTENSION_TYPES,
-} from '@directus/shared/constants';
-import {
-	Extension,
-	ExtensionInfo,
-	ExtensionRaw
-} from '@directus/shared/types';
+import { APP_EXTENSION_TYPES, NESTED_EXTENSION_TYPES } from '@directus/shared/constants';
+import { Extension, ExtensionInfo, ExtensionRaw } from '@directus/shared/types';
 import {
 	ensureExtensionDirs,
 	getLocalExtensions,
@@ -26,7 +19,7 @@ import { RegistrationManager } from './registration';
 import { InstallationManager } from './installation';
 import { WatcherManager } from './watcher';
 
-let extensionManager: ExtensionManager
+let extensionManager: ExtensionManager;
 
 export function getExtensionManager(): ExtensionManager {
 	if (extensionManager) {
@@ -38,7 +31,7 @@ export function getExtensionManager(): ExtensionManager {
 	return extensionManager;
 }
 
-type FullExtension = (Extension & ExtensionRaw);
+type FullExtension = Extension & ExtensionRaw;
 
 type AppExtensions = string | null;
 
@@ -57,18 +50,18 @@ export class ExtensionManager {
 
 	private extensions: FullExtension[] = [];
 
-    private appExtensions: AppExtensions = null;
+	private appExtensions: AppExtensions = null;
 
 	public apiEmitter: Emitter;
-	
+
 	public hookEmbedsHead: string[] = [];
 	public hookEmbedsBody: string[] = [];
 
 	private reloadQueue: JobQueue;
-	
+
 	public registration: RegistrationManager;
-	public installation: InstallationManager
-	public watcher: WatcherManager
+	public installation: InstallationManager;
+	public watcher: WatcherManager;
 
 	constructor() {
 		this.options = defaultOptions;
@@ -98,8 +91,18 @@ export class ExtensionManager {
 			await this.load();
 
 			if (this.extensions.length > 0) {
-				logger.info(`Enabled extensions: ${this.extensions.filter(ext => ext.enabled).map((ext) => ext.name).join(', ')}`);
-				logger.info(`Disabled extensions: ${this.extensions.filter(ext => ext.enabled === false).map((ext) => ext.name).join(', ')}`);
+				logger.info(
+					`Enabled extensions: ${this.extensions
+						.filter((ext) => ext.enabled)
+						.map((ext) => ext.name)
+						.join(', ')}`
+				);
+				logger.info(
+					`Disabled extensions: ${this.extensions
+						.filter((ext) => ext.enabled === false)
+						.map((ext) => ext.name)
+						.join(', ')}`
+				);
 			}
 		}
 
@@ -113,21 +116,21 @@ export class ExtensionManager {
 			this.reloadQueue.enqueue(async () => {
 				if (this.isLoaded) {
 					logger.info('Reloading extensions');
-	
+
 					const prevExtensions = clone(this.extensions);
-	
+
 					await this.unload();
 					await this.load();
-	
+
 					const added = this.extensions.filter(
 						(extension) => !prevExtensions.some((prevExtension) => extension.path === prevExtension.path)
 					);
 					const removed = prevExtensions.filter(
 						(prevExtension) => !this.extensions.some((extension) => prevExtension.path === extension.path)
 					);
-	
+
 					this.watcher.updateWatchedExtensions(added, removed);
-	
+
 					const addedExtensions = added.map((extension) => extension.name);
 					const removedExtensions = removed.map((extension) => extension.name);
 					if (addedExtensions.length > 0) {
@@ -146,11 +149,11 @@ export class ExtensionManager {
 	}
 
 	public getDisplayExtensions() {
-		return this.extensions.map(this.reduceExtensionInfo)
+		return this.extensions.map(this.reduceExtensionInfo);
 	}
 
 	public getDisplayExtension(name: string) {
-		const extension = this.extensions.find((extension) => extension.name === name)
+		const extension = this.extensions.find((extension) => extension.name === name);
 		if (!extension) {
 			return undefined;
 		}
@@ -159,7 +162,9 @@ export class ExtensionManager {
 	}
 
 	public getExtensionsList(type?: string) {
-		return this.extensions.filter((extension) => type === undefined || extension.type === type).map(extension => extension.name);
+		return this.extensions
+			.filter((extension) => type === undefined || extension.type === type)
+			.map((extension) => extension.name);
 	}
 
 	private reduceExtensionInfo(extension: FullExtension): ExtensionInfo {
@@ -252,39 +257,44 @@ export class ExtensionManager {
 
 		const extensions = [...packageExtensions, ...localPackageExtensions, ...localExtensions].filter(
 			(extension) => env.SERVE_APP || APP_EXTENSION_TYPES.includes(extension.type as any) === false
-		)
+		);
 
-		const extensionsService = new ExtensionsService({ knex: getDatabase(), schema: await getSchema() })
+		const extensionsService = new ExtensionsService({ knex: getDatabase(), schema: await getSchema() });
 
-		let registeredExtensions = await extensionsService.readByQuery({limit: -1, fields: ['*']})
+		let registeredExtensions = await extensionsService.readByQuery({ limit: -1, fields: ['*'] });
 
-		if(registeredExtensions.length === 0 && extensions.length > 0) {
-			logger.info('No extensions registered in the database, registering all extensions found on disk and enabling them')
+		if (registeredExtensions.length === 0 && extensions.length > 0) {
+			logger.info(
+				'No extensions registered in the database, registering all extensions found on disk and enabling them'
+			);
 
-			await extensionsService.createMany(extensions.map(extension => {
-				return {
-					name: extension.name,
-					enabled: true,
-				}
-			}))
+			await extensionsService.createMany(
+				extensions.map((extension) => {
+					return {
+						name: extension.name,
+						enabled: true,
+					};
+				})
+			);
 
-			registeredExtensions = extensions.map(extension => ({
+			registeredExtensions = extensions.map((extension) => ({
 				name: extension.name,
 				enabled: true,
-			}))
+			}));
 		}
 
-		return extensions.map(extension => {
-			const registeredExtension = registeredExtensions.find(registeredExtension => registeredExtension.name === extension.name)
-			
-			if(!registeredExtension)
-				throw new Error(`Extension ${extension.name} is not registered in the database`);
+		return extensions.map((extension) => {
+			const registeredExtension = registeredExtensions.find(
+				(registeredExtension) => registeredExtension.name === extension.name
+			);
 
-			return {...registeredExtension ,...extension}
-		})
+			if (!registeredExtension) throw new Error(`Extension ${extension.name} is not registered in the database`);
+
+			return { ...registeredExtension, ...extension };
+		});
 	}
 
 	public getEnabledExtensions(): FullExtension[] {
 		return this.extensions.filter((extension) => extension.enabled);
-	}	
+	}
 }

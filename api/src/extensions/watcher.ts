@@ -1,23 +1,22 @@
-import { ExtensionManager } from "./extensions";
+import { ExtensionManager } from './extensions';
 import logger from '../logger';
 import path from 'path';
-import { isIn, isTypeIn, pluralize } from "@directus/shared/utils";
-import { HYBRID_EXTENSION_TYPES, NESTED_EXTENSION_TYPES } from "@directus/shared/constants";
-import { pathToRelativeUrl } from "@directus/shared/utils/node";
+import { isIn, isTypeIn, pluralize } from '@directus/shared/utils';
+import { HYBRID_EXTENSION_TYPES, NESTED_EXTENSION_TYPES } from '@directus/shared/constants';
+import { pathToRelativeUrl } from '@directus/shared/utils/node';
 import env from '../env';
 import chokidar, { FSWatcher } from 'chokidar';
-import { Extension } from "@directus/shared/types";
-
+import { Extension } from '@directus/shared/types';
 
 export class WatcherManager {
-    private extensionManager: ExtensionManager;
-    private watcher: FSWatcher | null = null;
+	private extensionManager: ExtensionManager;
+	private watcher: FSWatcher | null = null;
 
-    constructor(extensionManager: ExtensionManager) {
-        this.extensionManager = extensionManager;
-    }
+	constructor(extensionManager: ExtensionManager) {
+		this.extensionManager = extensionManager;
+	}
 
-    public initializeWatcher(): void {
+	public initializeWatcher(): void {
 		if (!this.watcher) {
 			logger.info('Watching extensions for changes...');
 

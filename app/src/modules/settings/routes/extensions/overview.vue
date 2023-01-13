@@ -19,7 +19,7 @@
 				v-tooltip.bottom="t('save')"
 				rounded
 				icon
-                :disabled="hasEdits === false"
+				:disabled="hasEdits === false"
 				:loading="saving"
 				@click="saveExtensions"
 			>
@@ -37,15 +37,19 @@
 			{{ t('no_extensions_copy') }}
 		</v-info>
 
-        <v-list>
-            <v-list-item block v-for="extension in extensions" :key="extension.name">
+		<v-list>
+			<v-list-item v-for="extension in extensions" :key="extension.name" block>
 				<v-button disabled icon rounded><v-icon :name="extension.icon ?? 'extension'" /></v-button>
-                {{ formatName(extension.name) }}
-				<span class="description" v-if="extension.description">{{ extension.description }}</span>
+				{{ formatName(extension.name) }}
+				<span v-if="extension.description" class="description">{{ extension.description }}</span>
 				<span class="spacer"></span>
-                <v-checkbox v-tooltip="extension.enabled ? t('disable_extension') : t('enable_extension')" :model-value="extension.enabled" @update:model-value="setEnabled(extension.name, $event)" />
-            </v-list-item>
-        </v-list>
+				<v-checkbox
+					v-tooltip="extension.enabled ? t('disable_extension') : t('enable_extension')"
+					:model-value="extension.enabled"
+					@update:model-value="setEnabled(extension.name, $event)"
+				/>
+			</v-list-item>
+		</v-list>
 
 		<router-view name="add" />
 	</private-view>
@@ -67,44 +71,43 @@ const extensionsStore = useExtensionsStore();
 
 const edits = ref<Record<string, ExtensionInfo>>({});
 const extensions = computed(() => {
-    return extensionsStore.extensions.map(extension => {
-        if (edits.value[extension.name]) {
-            return {
-                ...extension,
-                ...edits.value[extension.name]
-            };
-        }
+	return extensionsStore.extensions.map((extension) => {
+		if (edits.value[extension.name]) {
+			return {
+				...extension,
+				...edits.value[extension.name],
+			};
+		}
 
-        return extension;
-    });
-})
+		return extension;
+	});
+});
 
 function setEnabled(name: string, enabled: boolean) {
-    edits.value[name] = {
-        ...edits.value[name],
-        name,
-        enabled,
-    }
+	edits.value[name] = {
+		...edits.value[name],
+		name,
+		enabled,
+	};
 }
 
 function formatName(name: string) {
-	return formatTitle(name.replace(/^directus-extension-/, ''))
+	return formatTitle(name.replace(/^directus-extension-/, ''));
 }
 
-const hasEdits = computed(() => isEqual(extensions.value, extensionsStore.extensions) === false)
+const hasEdits = computed(() => isEqual(extensions.value, extensionsStore.extensions) === false);
 
 const saving = ref(false);
 
 async function saveExtensions() {
-    if (saving.value) return;
+	if (saving.value) return;
 
-    saving.value = true;
-    await api.patch('/extensions', Object.values(edits.value))
-    await extensionsStore.hydrate()
+	saving.value = true;
+	await api.patch('/extensions', Object.values(edits.value));
+	await extensionsStore.hydrate();
 	edits.value = {};
-    saving.value = false;
+	saving.value = false;
 }
-
 </script>
 
 <style scoped>

@@ -1,8 +1,6 @@
 import { EXTENSION_TYPES } from '@directus/shared/constants';
 import { ExtensionManager } from './extensions';
-import {
-	ExtensionManifest,
-} from '@directus/shared/types';
+import { ExtensionManifest } from '@directus/shared/types';
 import path from 'path';
 import fse from 'fs-extra';
 import env from '../env';
@@ -12,22 +10,20 @@ import getDatabase from '../database/index';
 import { getSchema } from '../utils/get-schema';
 
 export class InstallationManager {
+	private extensionManager: ExtensionManager;
 
-    private extensionManager: ExtensionManager;
+	constructor(extensionManager: ExtensionManager) {
+		this.extensionManager = extensionManager;
+	}
 
-    constructor(extensionManager: ExtensionManager) {
-        this.extensionManager = extensionManager;
-    }
-
-    public async installExtension(name: string, version = 'latest') {
-
-		if(EXTENSION_TYPES.includes(name as any)) {
+	public async installExtension(name: string, version = 'latest') {
+		if (EXTENSION_TYPES.includes(name as any)) {
 			throw new Error(`The name "${name}" is reserved for internal use.`);
 		}
 
 		const extension = this.extensionManager.getExtension(name);
 
-		if(extension) {
+		if (extension) {
 			throw new Error(`Extension "${name}" is already installed.`);
 		}
 
@@ -60,28 +56,28 @@ export class InstallationManager {
 
 		await tar.extract({
 			file: localTarPath,
-			cwd: extensionFolderTemp
+			cwd: extensionFolderTemp,
 		});
 
 		await fse.move(path.join(extensionFolderTemp, 'package'), extensionFolder);
 		await fse.remove(extensionFolderTemp);
 
-        const extensionsService = new ExtensionsService({ knex: getDatabase(), schema: await getSchema() })
+		const extensionsService = new ExtensionsService({ knex: getDatabase(), schema: await getSchema() });
 
-        await extensionsService.createOne({
-            name,
-            enabled: true,
-        })
+		await extensionsService.createOne({
+			name,
+			enabled: true,
+		});
 	}
 
 	public async uninstallExtension(name: string) {
 		const extension = this.extensionManager.getExtension(name);
 
-		if(extension === undefined) {
+		if (extension === undefined) {
 			throw new Error(`Extension "${name}" not found.`);
 		}
 
-		if(extension.local === false) {
+		if (extension.local === false) {
 			throw new Error(`Extension "${name}" is not local.`);
 		}
 
@@ -93,27 +89,25 @@ export class InstallationManager {
 
 		const extension = this.extensionManager.getExtension(name);
 
-		if(extension === undefined) {
+		if (extension === undefined) {
 			throw new Error(`Extension "${name}" not found.`);
 		}
 
-		if(extension.local === false) {
-			throw new Error(`Extension "${name}" is not local.`)
+		if (extension.local === false) {
+			throw new Error(`Extension "${name}" is not local.`);
 		}
 
-        if(version === undefined) {
-            const info = await axios.get(
-                `https://registry.npmjs.org/${encodeURIComponent(name)}/latest/`
-            );
-    
-            if(info.data.version === extension.version) {
-                throw new Error(`Extension "${name}" is already up to date.`);
-            }
-        }
+		if (version === undefined) {
+			const info = await axios.get(`https://registry.npmjs.org/${encodeURIComponent(name)}/latest/`);
 
-        if(version === extension.version) {
-            throw new Error(`Extension "${name}" is already up to date.`);
-        }
+			if (info.data.version === extension.version) {
+				throw new Error(`Extension "${name}" is already up to date.`);
+			}
+		}
+
+		if (version === extension.version) {
+			throw new Error(`Extension "${name}" is already up to date.`);
+		}
 
 		await this.uninstallExtension(name);
 
