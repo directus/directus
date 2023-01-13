@@ -212,35 +212,6 @@ export function useTranslationStrings(): UsableTranslationStrings {
 		const response = await api.get(`/settings`, {
 			params: { fields: ['translation_strings'] },
 		});
-		return response.data.data?.translation_strings ?? [];
+		return (response.data.data?.translation_strings ?? []) as RawTranslation[];
 	}
-
-	// function mergeTranslationStringsForLanguage(lang: Language) {
-	// 	if (!translationStrings?.value) return;
-	// 	const localeMessages: Record<string, any> = translationStrings.value.reduce((acc, cur) => {
-	// 		if (!cur.key || !cur.translations) return acc;
-	// 		const translationForCurrentLang = cur.translations.find((t) => t.language === lang);
-	// 		if (!translationForCurrentLang || !translationForCurrentLang.translation) return acc;
-	// 		return { ...acc, [cur.key]: getLiteralInterpolatedTranslation(translationForCurrentLang.translation, true) };
-	// 	}, {});
-	// 	i18n.global.mergeLocaleMessage(lang, localeMessages);
-	// }
-
-	// function getUniqueTranslationStrings(arr: TranslationString[]): TranslationString[] {
-	// 	return [...new Map(arr.map((item: TranslationString) => [item.key, item])).values()];
-	// }
-
-	// function getKeyValuesFromTranslations(val: TranslationString['translations'] | null): Record<string, string> {
-	// 	if (!val || (val && val.length === 0)) return {};
-
-	// 	return val.reduce((acc, cur) => {
-	// 		return { ...acc, [cur.language]: cur.translation };
-	// 	}, {});
-	// }
-
-	// function getTranslationsFromKeyValues(val: Record<string, string> | null): TranslationString['translations'] {
-	// 	if (!val || Object.keys(val).length === 0) return [];
-
-	// 	return Object.entries(val).map(([k, v]) => ({ language: k, translation: v }));
-	// }
 }
