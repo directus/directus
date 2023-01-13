@@ -1,12 +1,8 @@
 import { InvalidQueryException } from '../exceptions';
 import { stripFunction } from './strip-function';
 
-// export const JSON_QUERY_REGEX = /^(\w+)(\.(\w+|\*)|\[-?(\d+|\*)\])+$/i; // with negative indexes
-// export const JSON_QUERY_REGEX = /^json\((\w+)(\.(\w+|\*)|\[(\d+|\*)\])+\)$/i;
-export const JSON_QUERY_REGEX = /^json\([\w\d:_]+(\.[\w\d:_]+)*\$(\.([\w\d_]+|\*)|\[(\d+|\*)\])+\)/i;
+export const JSON_QUERY_REGEX = /^json\([\w\d:_-]+(\.[\w\d:_-]+)*\$(\.([\w\d_-]+|\*)|\[(\d+|\*)\])+\)/i;
 
-/**
- */
 export function parseJsonFunction(data: string) {
 	if (!JSON_QUERY_REGEX.test(data)) {
 		throw new InvalidQueryException(`The json query used is not valid. "${data}"`);
