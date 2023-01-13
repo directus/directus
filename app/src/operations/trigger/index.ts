@@ -45,6 +45,10 @@ export default defineOperationApp({
 					options: {
 						choices: [
 							{
+								text: '$t:operations.trigger.parallel',
+								value: 'parallel',
+							},
+							{
 								text: '$t:operations.trigger.serial',
 								value: 'serial',
 							},
@@ -52,15 +56,11 @@ export default defineOperationApp({
 								text: '$t:operations.trigger.batch',
 								value: 'batch',
 							},
-							{
-								text: '$t:operations.trigger.parallel',
-								value: 'parallel',
-							},
 						],
 					},
 				},
 				schema: {
-					default_value: 'serial',
+					default_value: 'parallel',
 				},
 			},
 			...(panel.iterationMode === 'batch'
