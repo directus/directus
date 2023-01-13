@@ -2,6 +2,105 @@
 
 _Changes marked with a :warning: contain potential breaking changes depending on your use of the package._
 
+## v9.22.4 (January 11, 2023)
+
+### :bug: Bug Fixes
+
+- **API**
+  - [#17101](https://github.com/directus/directus/pull/17101) offset should be 0 not 1 by default (by @freekrai)
+- **Extensions**
+  - [#17098](https://github.com/directus/directus/pull/17098) Fix running npm init directus-extension (by @Nitwel)
+
+### :sponge: Optimizations
+
+- **Misc.**
+  - [#17104](https://github.com/directus/directus/pull/17104) Make sure azure tests use unique file paths (by
+    @rijkvanzanten)
+
+## v9.22.2 (January 11, 2023)
+
+### :sparkles: New Features
+
+- **API**
+  - [#16822](https://github.com/directus/directus/pull/16822) Extension Improvements (by @Nitwel)
+
+### :rocket: Improvements
+
+- **API**
+  - [#17044](https://github.com/directus/directus/pull/17044) use setCacheValue in get-permissions util (by @azrikahar)
+  - [#16822](https://github.com/directus/directus/pull/16822) Extension Improvements (by @Nitwel)
+  - [#16111](https://github.com/directus/directus/pull/16111) Allow env access in Flows Run Script operation (by
+    @licitdev)
+- **App**
+  - [#17007](https://github.com/directus/directus/pull/17007) Add Khmer (Cambodia) language for i18n (by @licitdev)
+  - [#16617](https://github.com/directus/directus/pull/16617) Simplify calendar layout's first day options (by
+    @azrikahar)
+  - [#16555](https://github.com/directus/directus/pull/16555) Throttle idle event listeners (by @azrikahar)
+  - [#16552](https://github.com/directus/directus/pull/16552) Fix page tracking debounced timeout (by @azrikahar)
+  - [#16111](https://github.com/directus/directus/pull/16111) Allow env access in Flows Run Script operation (by
+    @licitdev)
+- **Extensions**
+  - [#16667](https://github.com/directus/directus/pull/16667) Export context types for extensions (by @br41nslug)
+- **shared**
+  - [#16667](https://github.com/directus/directus/pull/16667) Export context types for extensions (by @br41nslug)
+
+### :bug: Bug Fixes
+
+- **App**
+  - [#17084](https://github.com/directus/directus/pull/17084) Wrap mime-type display in `span` node (by @azrikahar)
+  - [#17024](https://github.com/directus/directus/pull/17024) Add bottom margin to Slider interface to account for field
+    note (by @azrikahar)
+  - [#16966](https://github.com/directus/directus/pull/16966) Remove auto-increment primary key when saving as copy (by
+    @br41nslug)
+  - [#16897](https://github.com/directus/directus/pull/16897) Implements server sort in o2m table interface (by
+    @br41nslug)
+  - [#16881](https://github.com/directus/directus/pull/16881) Fix use-items loading state when an existing request gets
+    canceled (by @azrikahar)
+  - [#16581](https://github.com/directus/directus/pull/16581) Fix removal of keys in local storage (by @azrikahar)
+  - [#16525](https://github.com/directus/directus/pull/16525) Fix translations-display width (by @d1rOn)
+  - [#16476](https://github.com/directus/directus/pull/16476) Render-template layout fix (by @d1rOn)
+  - [#14314](https://github.com/directus/directus/pull/14314) Disable field selection for alias fields in the
+    system-filter component when functions are used (by @u12206050)
+- **API**
+  - [#17081](https://github.com/directus/directus/pull/17081) Make forcePathStyle configurable (by @rijkvanzanten)
+  - [#17039](https://github.com/directus/directus/pull/17039) Don't double-root file ref (by @rijkvanzanten)
+  - [#16944](https://github.com/directus/directus/pull/16944) healthcheck crashes with local file storage (by @freekrai)
+  - [#16927](https://github.com/directus/directus/pull/16927) Cache / Permissions: Prevent server crash when command
+    times out (by @joselcvarela)
+  - [#16922](https://github.com/directus/directus/pull/16922) Fix inner query sort limit (by @licitdev)
+  - [#16877](https://github.com/directus/directus/pull/16877) Allow explicit region configuration (by @rijkvanzanten)
+  - [#16859](https://github.com/directus/directus/pull/16859) Handle plain object body in "Send Email" operation (by
+    @paescuj)
+  - [#16722](https://github.com/directus/directus/pull/16722) Collection export limit 0 leads to 500 error (by
+    @br41nslug)
+  - [#16679](https://github.com/directus/directus/pull/16679) Remove TZ conversion for timestamps in MySQL (by
+    @licitdev)
+  - [#16657](https://github.com/directus/directus/pull/16657) Cast numeric filter values as number for \_eq and \_neq
+    operators (by @licitdev)
+  - [#16647](https://github.com/directus/directus/pull/16647) Fix getCacheKey path matching for graphql (by @azrikahar)
+  - [#16595](https://github.com/directus/directus/pull/16595) Fix last admin check for alterations type inputs (by
+    @licitdev)
+  - [#16579](https://github.com/directus/directus/pull/16579) Pass emitEvents to query methods in item-read &
+    item-delete operations (by @azrikahar)
+
+### :sponge: Optimizations
+
+- **API**
+  - [#17013](https://github.com/directus/directus/pull/17013) Ignore extension folders on lint (by @Nitwel)
+  - [#16858](https://github.com/directus/directus/pull/16858) Remove deprecated npm flag in Dockerfile (by @paescuj)
+- **App**
+  - [#16700](https://github.com/directus/directus/pull/16700) Re-use getEndpoint utility function (by @azrikahar)
+  - [#16678](https://github.com/directus/directus/pull/16678) Minor codestyle tweaks to datetime display & interface (by
+    @azrikahar)
+  - [#16545](https://github.com/directus/directus/pull/16545) Type fixes in app (part 1) (by @paescuj)
+- **Misc.**
+  - [#16576](https://github.com/directus/directus/pull/16576) Small clean-up of dependencies (by @paescuj)
+
+### :package: Dependency Updates
+
+- [#16878](https://github.com/directus/directus/pull/16878) Patch Tuesday Additions 🐸🐸 (by @paescuj)
+- [#16875](https://github.com/directus/directus/pull/16875) Patch Tuesday 🐸 (by @rijkvanzanten)
+
 ## v9.22.0 (December 21, 2022)
 
 ### ⚠️ Notice
