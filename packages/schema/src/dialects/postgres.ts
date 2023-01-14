@@ -42,7 +42,7 @@ export default class Postgres extends KnexPostgres implements SchemaInspector {
         LEFT JOIN information_schema.tables t
           ON c.table_name = t.table_name
         WHERE
-          t.table_type = 'BASE TABLE'
+          t.table_type IN ('BASE TABLE', 'FOREIGN')
           AND c.table_schema IN (${bindings});
       `,
 				this.explodedSchema
@@ -93,7 +93,7 @@ export default class Postgres extends KnexPostgres implements SchemaInspector {
 				FROM geometries g
 				JOIN information_schema.tables t
 					ON g.f_table_name = t.table_name
-					AND t.table_type = 'BASE TABLE'
+					AND t.table_type IN ('BASE TABLE', 'FOREIGN')
 				WHERE f_table_schema in (${bindings})
 				`,
 				this.explodedSchema
