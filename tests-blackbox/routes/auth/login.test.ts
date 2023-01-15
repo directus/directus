@@ -104,7 +104,7 @@ describe('/auth', () => {
 							expect(gqlResponse.body).toMatchObject({
 								errors: [
 									{
-										message: 'An unexpected error occurred.',
+										message: 'Invalid user credentials.',
 										extensions: {
 											code: 'INTERNAL_SERVER_ERROR',
 										},
@@ -160,7 +160,7 @@ describe('/auth', () => {
 							expect(gqlResponse.body).toMatchObject({
 								errors: [
 									{
-										message: 'An unexpected error occurred.',
+										message: 'Invalid user credentials.',
 										extensions: {
 											code: 'INTERNAL_SERVER_ERROR',
 										},
@@ -216,7 +216,7 @@ describe('/auth', () => {
 							expect(gqlResponse.body).toMatchObject({
 								errors: [
 									{
-										message: 'An unexpected error occurred.',
+										message: 'Invalid user credentials.',
 										extensions: {
 											code: 'INTERNAL_SERVER_ERROR',
 										},

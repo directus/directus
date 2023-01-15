@@ -14,7 +14,7 @@ const processError = (accountability: Accountability | null, error: Readonly<Gra
 		};
 	} else {
 		return {
-			message: 'An unexpected error occurred.',
+			message: error.message,
 			extensions: {
 				code: 'INTERNAL_SERVER_ERROR',
 			},
