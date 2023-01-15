@@ -1,4 +1,5 @@
 import { Knex } from 'knex';
+import { Request } from 'express';
 import { Accountability, Query, SchemaOverview } from '@directus/shared/types';
 import { Item, PrimaryKey } from './items';
 
@@ -6,6 +7,7 @@ export type AbstractServiceOptions = {
 	knex?: Knex;
 	accountability?: Accountability | null;
 	schema: SchemaOverview;
+	req?: Request;
 };
 
 export interface AbstractService {

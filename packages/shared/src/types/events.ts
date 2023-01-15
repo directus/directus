@@ -1,4 +1,5 @@
 import { Knex } from 'knex';
+import { Request } from 'express';
 import { Accountability } from './accountability';
 import { SchemaOverview } from './schema';
 
@@ -6,6 +7,7 @@ export type EventContext = {
 	database: Knex;
 	schema: SchemaOverview | null;
 	accountability: Accountability | null;
+	req?: Request;
 };
 
 export type FilterHandler<T = unknown> = (

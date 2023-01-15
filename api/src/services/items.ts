@@ -1,5 +1,6 @@
 import { Accountability, Action, PermissionsAction, Query, SchemaOverview } from '@directus/shared/types';
 import Keyv from 'keyv';
+import { Request } from 'express';
 import { Knex } from 'knex';
 import { assign, clone, cloneDeep, omit, pick, without } from 'lodash';
 import { getCache } from '../cache';
@@ -37,6 +38,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	eventScope: string;
 	schema: SchemaOverview;
 	cache: Keyv<any> | null;
+	req?: Request;
 
 	constructor(collection: string, options: AbstractServiceOptions) {
 		this.collection = collection;
@@ -44,6 +46,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		this.accountability = options.accountability || null;
 		this.eventScope = this.collection.startsWith('directus_') ? this.collection.substring(9) : 'items';
 		this.schema = options.schema;
+		this.req = options.req;
 		this.cache = getCache().cache;
 
 		return this;
@@ -58,6 +61,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		const itemsService = new ItemsService(this.collection, {
 			knex: this.knex,
 			schema: this.schema,
+			req: this.req,
 		});
 
 		// We read the IDs of the items based on the query, and then run `updateMany`. `updateMany` does it's own
@@ -89,12 +93,14 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				accountability: this.accountability,
 				knex: trx,
 				schema: this.schema,
+				req: this.req,
 			});
 
 			const authorizationService = new AuthorizationService({
 				accountability: this.accountability,
 				knex: trx,
 				schema: this.schema,
+				req: this.req,
 			});
 
 			// Run all hooks that are attached to this event so the end user has the chance to augment the
@@ -113,6 +119,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 								database: trx,
 								schema: this.schema,
 								accountability: this.accountability,
+								req: this.req,
 							}
 					  )
 					: payload;
@@ -183,6 +190,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				const activityService = new ActivityService({
 					knex: trx,
 					schema: this.schema,
+					req: this.req,
 				});
 
 				const activity = await activityService.createOne({
@@ -200,6 +208,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 					const revisionsService = new RevisionsService({
 						knex: trx,
 						schema: this.schema,
+						req: this.req,
 					});
 
 					const revision = await revisionsService.createOne({
@@ -241,6 +250,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 					database: getDatabase(),
 					schema: this.schema,
 					accountability: this.accountability,
+					req: this.req,
 				},
 			};
 
@@ -271,6 +281,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				accountability: this.accountability,
 				schema: this.schema,
 				knex: trx,
+				req: this.req,
 			});
 
 			const primaryKeys: PrimaryKey[] = [];
@@ -324,6 +335,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 							database: this.knex,
 							schema: this.schema,
 							accountability: this.accountability,
+							req: this.req,
 						}
 				  )
 				: query;
@@ -342,6 +354,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				accountability: this.accountability,
 				knex: this.knex,
 				schema: this.schema,
+				req: this.req,
 			});
 
 			ast = await authorizationService.processAST(ast, opts?.permissionsAction);
@@ -370,6 +383,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 							database: this.knex,
 							schema: this.schema,
 							accountability: this.accountability,
+							req: this.req,
 						}
 				  )
 				: records;
@@ -386,6 +400,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 					database: this.knex || getDatabase(),
 					schema: this.schema,
 					accountability: this.accountability,
+					req: this.req,
 				}
 			);
 		}
@@ -473,6 +488,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 					accountability: this.accountability,
 					knex: trx,
 					schema: this.schema,
+					req: this.req,
 				});
 
 				for (const item of data) {
@@ -509,6 +525,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			accountability: this.accountability,
 			knex: this.knex,
 			schema: this.schema,
+			req: this.req,
 		});
 
 		// Run all hooks that are attached to this event so the end user has the chance to augment the
@@ -528,6 +545,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 							database: this.knex,
 							schema: this.schema,
 							accountability: this.accountability,
+							req: this.req,
 						}
 				  )
 				: payload;
@@ -548,6 +566,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				accountability: this.accountability,
 				knex: trx,
 				schema: this.schema,
+				req: this.req,
 			});
 
 			const {
@@ -592,6 +611,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				const activityService = new ActivityService({
 					knex: trx,
 					schema: this.schema,
+					req: this.req,
 				});
 
 				const activity = await activityService.createMany(
@@ -610,6 +630,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 					const itemsService = new ItemsService(this.collection, {
 						knex: trx,
 						schema: this.schema,
+						req: this.req,
 					});
 
 					const snapshots = await itemsService.readMany(keys);
@@ -617,6 +638,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 					const revisionsService = new RevisionsService({
 						knex: trx,
 						schema: this.schema,
+						req: this.req,
 					});
 
 					const revisions = (
@@ -674,6 +696,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 					database: getDatabase(),
 					schema: this.schema,
 					accountability: this.accountability,
+					req: this.req,
 				},
 			};
 
@@ -726,6 +749,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				accountability: this.accountability,
 				schema: this.schema,
 				knex: trx,
+				req: this.req,
 			});
 
 			const primaryKeys: PrimaryKey[] = [];
@@ -780,6 +804,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				accountability: this.accountability,
 				schema: this.schema,
 				knex: this.knex,
+				req: this.req,
 			});
 
 			await authorizationService.checkAccess('delete', this.collection, keys);
@@ -796,6 +821,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 					database: this.knex,
 					schema: this.schema,
 					accountability: this.accountability,
+					req: this.req,
 				}
 			);
 		}
@@ -807,6 +833,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				const activityService = new ActivityService({
 					knex: trx,
 					schema: this.schema,
+					req: this.req,
 				});
 
 				await activityService.createMany(
@@ -842,6 +869,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 					database: getDatabase(),
 					schema: this.schema,
 					accountability: this.accountability,
+					req: this.req,
 				},
 			};
 
