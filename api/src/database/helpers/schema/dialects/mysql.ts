@@ -12,7 +12,7 @@ export class SchemaHelperMySQL extends SchemaHelper {
 		orderByFields: Knex.Raw[]
 	): Knex.QueryBuilder {
 		if (getDatabaseVersion()?.startsWith('5.7')) {
-			dbQuery.orderByRaw(`?? asc, ${orderByString.slice(9)}`, [`${table}.${primaryKey}`, ...orderByFields]);
+			dbQuery.orderByRaw(`?? asc, ${orderByString}`, [`${table}.${primaryKey}`, ...orderByFields]);
 
 			dbQuery = knex
 				.select(
