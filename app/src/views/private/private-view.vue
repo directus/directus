@@ -8,25 +8,6 @@
 	</v-info>
 
 	<div v-else class="private-view" :class="{ theme, 'full-screen': fullScreen }">
-		<!-- <aside id="navigation" role="navigation" aria-label="Module Navigation" :class="{ 'is-open': navOpen }">
-			<module-bar />
-			<div ref="moduleNavEl" class="module-nav alt-colors">
-				<project-info />
-
-				<div class="module-nav-content">
-					<slot name="navigation" />
-				</div>
-
-				<div
-					class="module-nav-resize-handle"
-					:class="{ active: handleHover }"
-					@pointerenter="handleHover = true"
-					@pointerleave="handleHover = false"
-					@pointerdown.self="onResizeHandlePointerDown"
-					@dblclick="resetModuleNavWidth"
-				/>
-			</div>
-		</aside> -->
 		<div id="main-content" ref="contentEl" class="content">
 			<header-bar
 				:small="smallHeader"
