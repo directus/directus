@@ -20,7 +20,7 @@ test('Make sure arrays are propperly mapped', () => {
 });
 
 test('Set all 2nd indices of arrays to "Hi"', () => {
-	const obj = { a: [undefined, 'test', {a: ['hello', 'world']}], b: ['test'] };
+	const obj = { a: [undefined, 'test', { a: ['hello', 'world'] }], b: ['test'] };
 	const result = mapDeep(obj, (key, value) => (key.endsWith('a[1]') ? 'Hi' : value));
-	expect(result).toEqual({ a: [undefined, 'Hi', {a: ['hello', 'Hi']}], b: ['test'] });
+	expect(result).toEqual({ a: [undefined, 'Hi', { a: ['hello', 'Hi'] }], b: ['test'] });
 });
