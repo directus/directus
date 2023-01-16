@@ -93,7 +93,7 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 			}
 
 			if (newCollection !== oldCollection || !isEqual(newFilter, oldFilter) || newSearch !== oldSearch) {
-				getItemCount(primaryKeyField.value?.field);
+				getItemCount();
 			}
 
 			fetchItems();
@@ -133,7 +133,7 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 		}, 150);
 
 		if (unref(totalCount) === null) {
-			getTotalCount(primaryKeyField.value?.field);
+			getTotalCount();
 		}
 
 		let fieldsToFetch = [...(unref(fields) ?? [])];
@@ -225,16 +225,16 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 		await api.post(endpoint.value, { item, to });
 	}
 
-	async function getTotalCount(primaryKeyField?: string) {
+	async function getTotalCount() {
 		if (!endpoint.value) return;
 
 		try {
 			if (existingRequests.total) existingRequests.total.abort();
 			existingRequests.total = new AbortController();
 
-			const aggregate = primaryKeyField
+			const aggregate = primaryKeyField.value
 				? {
-						countDistinct: primaryKeyField,
+						countDistinct: primaryKeyField.value.field,
 				  }
 				: {
 						count: '*',
@@ -247,8 +247,8 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 				signal: existingRequests.total.signal,
 			});
 
-			const count = primaryKeyField
-				? Number(response.data.data[0].countDistinct[primaryKeyField])
+			const count = primaryKeyField.value
+				? Number(response.data.data[0].countDistinct[primaryKeyField.value.field])
 				: Number(response.data.data[0].count);
 			existingRequests.total = null;
 
@@ -260,16 +260,16 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 		}
 	}
 
-	async function getItemCount(primaryKeyField?: string) {
+	async function getItemCount() {
 		if (!endpoint.value) return;
 
 		try {
 			if (existingRequests.filter) existingRequests.filter.abort();
 			existingRequests.filter = new AbortController();
 
-			const aggregate = primaryKeyField
+			const aggregate = primaryKeyField.value
 				? {
-						countDistinct: primaryKeyField,
+						countDistinct: primaryKeyField.value.field,
 				  }
 				: {
 						count: '*',
@@ -284,8 +284,8 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 				signal: existingRequests.filter.signal,
 			});
 
-			const count = primaryKeyField
-				? Number(response.data.data[0].countDistinct[primaryKeyField])
+			const count = primaryKeyField.value
+				? Number(response.data.data[0].countDistinct[primaryKeyField.value.field])
 				: Number(response.data.data[0].count);
 			existingRequests.filter = null;
 

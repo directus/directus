@@ -114,8 +114,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		function refresh() {
 			getItems();
-			getTotalCount(primaryKeyField.value?.field);
-			getItemCount(primaryKeyField.value?.field);
+			getTotalCount();
+			getItemCount();
 		}
 
 		function download() {
