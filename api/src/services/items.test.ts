@@ -1153,7 +1153,7 @@ describe('Integration Tests', () => {
 				new RegExp(
 					`select "${table}"."id", "${table}"."name" from "${table}" inner join ` +
 						`\\(select distinct "${table}"."id", "${table}"."id" as "sort_.{5}" from "${table}" left join "${otherTable}" as ".{5}" ` +
-						`on "${table}"."id" = ".{5}"."uploaded_by" where ".{5}"."title" = \\? limit \\?\\) as "inner" ` +
+						`on "${table}"."id" = ".{5}"."uploaded_by" where ".{5}"."title" = \\? order by "${table}"."id" asc limit \\?\\) as "inner" ` +
 						`on "${table}"."id" = "inner"."id" order by "inner"."sort_.{5}" asc`
 				)
 			);
@@ -1228,13 +1228,14 @@ describe('Integration Tests', () => {
 			});
 
 			expect(tracker.history.select.length).toBe(1);
-			expect(tracker.history.select[0].bindings).toStrictEqual([1, 100]);
+			expect(tracker.history.select[0].bindings).toStrictEqual([100, 1, 100]);
 			expect(tracker.history.select[0].sql).toMatch(
 				new RegExp(
 					`select "${table}"."id", "${table}"."name" from "${table}" ` +
 						`inner join \\(select distinct "${table}"."id", ".{5}"."title" as "sort_.{5}", ` +
 						`row_number\\(\\) over \\(partition by "${table}"."id" order by ".{5}"."title" asc\\) as "directus_row_number" from "${table}" ` +
-						`left join "${otherTable}" as ".{5}" on "${table}"."id" = ".{5}"."uploaded_by"\\) as "inner" on "${table}"."id" = "inner"."id" ` +
+						`left join "${otherTable}" as ".{5}" on "${table}"."id" = ".{5}"."uploaded_by" order by ".{5}"."title" asc limit \\?\\)` +
+						` as "inner" on "${table}"."id" = "inner"."id" ` +
 						`where "inner"."directus_row_number" = \\? order by "inner"."sort_.{5}" asc limit \\?`
 				)
 			);

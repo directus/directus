@@ -7,12 +7,13 @@ describe('generateExtensionsEntrypoint', () => {
 	it('returns an empty extension entrypoint if there is no App, Hybrid or Bundle extension', () => {
 		const mockExtensions: Extension[] = [
 			{
-				path: './extensions/pack',
-				name: 'mock-pack-extension',
-				type: 'pack',
+				path: './extensions/bundle',
+				name: 'mock-bundle0-extension',
 				version: '1.0.0',
+				type: 'bundle',
+				entrypoint: { app: 'app.js', api: 'api.js' },
+				entries: [],
 				host: '^9.0.0',
-				children: [],
 				local: false,
 			},
 		];
@@ -73,15 +74,6 @@ describe('generateExtensionsEntrypoint', () => {
 
 	it('returns an extension entrypoint exporting multiple extensions', () => {
 		const mockExtensions: Extension[] = [
-			{
-				path: './extensions/pack',
-				name: 'mock-pack-extension',
-				type: 'pack',
-				version: '1.0.0',
-				host: '^9.0.0',
-				children: [],
-				local: false,
-			},
 			{
 				path: './extensions/display',
 				name: 'mock-display-extension',
