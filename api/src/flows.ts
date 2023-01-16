@@ -29,7 +29,7 @@ import { EventHandler } from './types';
 import { constructFlowTree } from './utils/construct-flow-tree';
 import { getSchema } from './utils/get-schema';
 import { JobQueue } from './utils/job-queue';
-import { mapObjectDeep } from './utils/map-object-deep';
+import { mapDeep } from './utils/map-deep';
 
 let flowManager: FlowManager | undefined;
 
@@ -406,7 +406,7 @@ class FlowManager {
 			// JSON structures don't allow for undefined values, so we need to replace them with null
 			// Otherwise the applyOptionsData function will not work correctly on the next operation
 			if (typeof result === 'object' && result !== null) {
-				result = mapObjectDeep(result, (_, value) => (value === undefined ? null : value));
+				result = mapDeep(result, (_, value) => (value === undefined ? null : value));
 			}
 
 			return { successor: operation.resolve, status: 'resolve', data: result ?? null, options };
