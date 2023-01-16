@@ -176,7 +176,7 @@ field_translations: وەرگێڕانەکان
 field_group: دەستەی خانە
 item_permissions: دەسەڵاتەکانی مادە
 field_permissions: دەسەڵاتەکانی خانە
-field_validation: سەلاماندنی خانە
+field_validation: سەلماندنی خانە
 field_presets: پێشسێتەکانی خانە
 permissions_for_role: 'مادەکانی پلەی {role} دەتوانن {action}.'
 fields_for_role: 'خانەکانی پلەی {role} دەتوانن {action}.'
@@ -187,6 +187,9 @@ revision_post_create: ئەمە شێوەی دەرکەوتنی مادەیەکە ک
 revision_post_update: ئەمە شێوەی دەرکەوتنی مادەیەکە دوای ئەوەی نوێدەکرێتەوە.
 changes_made: لە خوارەوە کۆمەڵێک گۆڕانکاری دیارن کە لەم گەڕاندنەوەیەدا دەکرێن.
 no_relational_data: لەبیرتبێت کە داتا بەیەکەوە بەستراوەکان بەشێک نین لێرە.
+junction_field_location: شوێنی یەکگرتنی خانەکان
+top: سەروو
+bottom: خواروو
 hide_field: شاردنەوەی خانە
 hide_field_on_detail: شاردنەوەی خانە لە وردەکاریدا
 show_field_on_detail: نیشاندانی خانە لە وردەکاریدا
@@ -207,7 +210,7 @@ camera: کامێرا
 show_zero: نیشاندانی سفر
 create_in_advanced_field_creation_mode: دروستکردنی خانە لە دۆخی پێشکەوتوو
 continue_in_advanced_field_creation_mode: بەردەوام بوون لە دۆخی دروستکردنی پێشکەوتوی خانە
-validation: سەلاماندن
+validation: سەلماندن
 sum: کۆ
 sum_distinct: کۆی بەها جیاوازەکان
 avg: تێکڕا
@@ -272,6 +275,7 @@ fields_group: دەستەی خانەکان
 no_collections_found: هیچ کۆمەڵەیەک نەدۆزرایەوە.
 new_data_alert: 'ئەمانەی خوارەوە لەناو مۆدێلی داتاکانتدا دروست دەکرێن:'
 search_collection: گەڕانی کۆمەڵەکان...
+search_field: خانەی گەڕان...
 new_field: 'خانەی نوێ'
 new_collection: 'کۆمەڵەی نوێ'
 add_m2o_to_collection: 'پەیوەندی زۆر بۆ یەک M2O زیاد بکە بۆ "{collection}"'
@@ -295,6 +299,8 @@ next: دواتر
 field_name: ناوی خانە
 translations: وەرگێڕانەکان
 no_translations: هیچ وەرگێڕانێک نییە
+left_to_right: چەپ بۆ ڕاست
+right_to_left: ڕاست بۆ چەپ
 note: تێبینی
 enter_a_value: بەهایەک دابنێ...
 enter_a_placeholder: شوێنگرێک دابنێ...
@@ -323,6 +329,7 @@ edit_raw_value: دەستکاریکردنی بەهای خام
 enter_raw_value: بەهای خام دابنێ...
 clear_value: لابردنی بەها
 clear_changes: لابردنی گۆڕانکارییەکان
+clear_items: سڕینەوەی مادەکان
 reset_to_default: بنەڕەتی کردنەوە
 undo_changes: پاشەکشەکردنی گۆڕانکارییەکان
 notifications: ئاگادارکردنەوەکان
@@ -479,6 +486,7 @@ creating_items: دروستکردنی مادەکان
 enable_create_button: کاراکردنی دوگمەی دروستکردن
 selecting_items: دیاریکردنی مادەکان
 enable_select_button: کاراکردنی دوگمەی دیاریکردن
+allow_duplicates: ڕێگەدان بە دووبارەبوونەوە
 comments: لێدوانەکان
 no_comments: هێشتا هیچ لێدوانێک نییە
 click_to_expand: کرتە بکە بۆ فراوانکردن
@@ -531,6 +539,7 @@ activity_item: چالاکی مادە
 action: کردەوە
 ip_address: ناونیشانی IP
 user_agent: نوێنەری بەکارهێنەر
+origin: ڕەسەن
 webhooks: وێبهووکەکان
 decimals: دەییەکان
 value_decimals: بەها دەییەکان
@@ -564,6 +573,8 @@ select_an_item: مادەیەک دیاری بکە...
 edit: دەستکاری
 enabled: چالاککراوە
 disable_tfa: لەکارخستنی 2FA
+admin_disable_tfa_text: ئایا دڵنیای کە دەتەوێت 2FA بۆ ئەم بەکارهێنەرە لەکار بخەیت؟
+tfa_setup: دامەزراندنی 2FA
 tfa_scan_code: کۆدەکە سکان بکە لە ڕێگەی بەرنامەیەکی پشتڕاستکەرەوە (authenticator app) بۆ کۆتایی پێهێنان بە ڕێکخستنی 2FA
 enter_otp_to_disable_tfa: OTP ـیەکە دابنێ بۆ ڕاگرتنی 2FA
 create_account: دروستکردنی هەژمار
@@ -579,6 +590,9 @@ errors:
   INVALID_PAYLOAD: سودباری نادروست
   INVALID_PROVIDER: بەکارهێنەر سەر بەدابینکەرێکی جیاوازی پشتڕاستکەرەوەیە
   INVALID_QUERY: پرسی نادروست
+  INVALID_CONFIG: ڕێکخستنی نادروست
+  INVALID_TOKEN: تۆکنی نادروست
+  INVALID_IP: IP Address ڕێگەپێدراو نییە
   INVALID_USER: هەڵەڕویدا لە پشتڕاستکردنەوەی بەکارهێنەر
   ITEM_LIMIT_REACHED: ماددە گەیشتە سنور
   ITEM_NOT_FOUND: ماددە نەدۆزرایەوە
@@ -595,6 +609,12 @@ errors:
   INVALID_FOREIGN_KEY: کلیلی دەرەکی نادروست
   UNKNOWN: هەڵەی پێشبینی نەکراو
   GRAPHQL_VALIDATION_EXCEPTION: جیاکاری سەلماندنی GraphQL
+  SERVICE_UNAVAILABLE: خزمەتگوزاری بەردەست نییە
+  UNSUPPORTED_MEDIA_TYPE: جۆری میدیای پشتگیری نەکراو
+  UNEXPECTED_RESPONSE: وەڵامێکی چاوەڕواننەکراو
+  TOKEN_EXPIRED: تۆکن بەسەرچوو
+  RANGE_NOT_SATISFIABLE: مەودای نادروست
+  METHOD_NOT_ALLOWED: شێوازەكە ڕێگا پێنەدراوە
 security: پارێزراوی
 value_hashed: بەها بە پارێزراوی هاشكراوە
 bookmark_name: ناوی نیشانکردن...
@@ -1026,6 +1046,7 @@ fields:
     user: کردەوە لەلایەن
     comment: لێدوان
     user_agent: نوێنەری بەکارهێنەر
+    origin: ڕەسەن
     ip: ناونیشانی IP
     revisions: پێداچونەوەکان
   directus_collections:
