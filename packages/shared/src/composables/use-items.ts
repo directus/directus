@@ -20,8 +20,8 @@ type UsableItems = {
 	error: Ref<any>;
 	changeManualSort: (data: ManualSortData) => Promise<void>;
 	getItems: () => Promise<void>;
-	getTotalCount: () => Promise<void>;
-	getItemCount: () => Promise<void>;
+	getTotalCount: (primaryKeyField?: string) => Promise<void>;
+	getItemCount: (primaryKeyField?: string) => Promise<void>;
 };
 
 type ComputedQuery = {
@@ -93,7 +93,7 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 			}
 
 			if (newCollection !== oldCollection || !isEqual(newFilter, oldFilter) || newSearch !== oldSearch) {
-				getItemCount();
+				getItemCount(primaryKeyField.value?.field);
 			}
 
 			fetchItems();
@@ -133,7 +133,7 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 		}, 150);
 
 		if (unref(totalCount) === null) {
-			getTotalCount();
+			getTotalCount(primaryKeyField.value?.field);
 		}
 
 		let fieldsToFetch = [...(unref(fields) ?? [])];
@@ -225,23 +225,31 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 		await api.post(endpoint.value, { item, to });
 	}
 
-	async function getTotalCount() {
+	async function getTotalCount(primaryKeyField?: string) {
 		if (!endpoint.value) return;
 
 		try {
 			if (existingRequests.total) existingRequests.total.abort();
 			existingRequests.total = new AbortController();
 
+			const aggregate = primaryKeyField
+				? {
+						countDistinct: primaryKeyField,
+				  }
+				: {
+						count: '*',
+				  };
+
 			const response = await api.get<any>(endpoint.value, {
 				params: {
-					aggregate: {
-						count: '*',
-					},
+					aggregate,
 				},
 				signal: existingRequests.total.signal,
 			});
 
-			const count = Number(response.data.data[0].count);
+			const count = primaryKeyField
+				? Number(response.data.data[0].countDistinct[primaryKeyField])
+				: Number(response.data.data[0].count);
 			existingRequests.total = null;
 
 			totalCount.value = count;
@@ -252,25 +260,33 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 		}
 	}
 
-	async function getItemCount() {
+	async function getItemCount(primaryKeyField?: string) {
 		if (!endpoint.value) return;
 
 		try {
 			if (existingRequests.filter) existingRequests.filter.abort();
 			existingRequests.filter = new AbortController();
 
+			const aggregate = primaryKeyField
+				? {
+						countDistinct: primaryKeyField,
+				  }
+				: {
+						count: '*',
+				  };
+
 			const response = await api.get<any>(endpoint.value, {
 				params: {
 					filter: unref(filter),
 					search: unref(search),
-					aggregate: {
-						count: '*',
-					},
+					aggregate,
 				},
 				signal: existingRequests.filter.signal,
 			});
 
-			const count = Number(response.data.data[0].count);
+			const count = primaryKeyField
+				? Number(response.data.data[0].countDistinct[primaryKeyField])
+				: Number(response.data.data[0].count);
 			existingRequests.filter = null;
 
 			itemCount.value = count;
