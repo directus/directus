@@ -47,7 +47,9 @@ vi.mock('./use-system', () => ({
 }));
 
 vi.mock('./use-collection', () => ({
-	useCollection: vi.fn().mockReturnValue(() => computed(() => mockPrimaryKeyField)),
+	useCollection: vi.fn().mockReturnValue({
+		primaryKeyField: computed(() => mockPrimaryKeyField),
+	}),
 }));
 
 afterEach(() => {
