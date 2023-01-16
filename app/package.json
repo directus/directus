@@ -1,6 +1,6 @@
 {
 	"name": "@directus/app",
-	"version": "9.22.1",
+	"version": "9.22.4",
 	"description": "App dashboard for Directus",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -31,7 +31,7 @@
 	"devDependencies": {
 		"@babel/core": "7.20.5",
 		"@babel/preset-env": "7.20.2",
-		"@directus/docs": "9.22.0",
+		"@directus/docs": "9.22.3",
 		"@directus/extensions-sdk": "workspace:*",
 		"@directus/format-title": "10.0.0",
 		"@directus/shared": "workspace:*",
