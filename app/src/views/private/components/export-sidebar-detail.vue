@@ -370,7 +370,6 @@ const getItemCount = debounce(async () => {
 				if (response.data.data?.[0]?.count) {
 					return Number(response.data.data[0].count);
 				}
-
 				if (response.data.data?.[0]?.countDistinct) {
 					return Number(response.data.data[0].countDistinct[primaryKeyField.value!.field]);
 				}
