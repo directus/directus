@@ -1793,6 +1793,7 @@ displays:
     strict: Strikt
     strict_note: Entfernt Wörter wie 'fast', 'über', 'weniger als'
     round: Runden
+    round_note: Wählen Sie eine Rundungsfunktion
   file:
     file: Datei
     description: Dateien anzeigen
@@ -1905,6 +1906,8 @@ layouts:
     no_compatible_fields: Keine kompatiblen Felder
   kanban:
     name: Kanban
+    group_field: Gruppieren nach
+    group_title: Gruppentitel
     crop: Zuschneiden
     advanced: Erweitert
     show: Anzeigen
