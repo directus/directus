@@ -20,8 +20,8 @@ type UsableItems = {
 	error: Ref<any>;
 	changeManualSort: (data: ManualSortData) => Promise<void>;
 	getItems: () => Promise<void>;
-	getTotalCount: (primaryKeyField?: string) => Promise<void>;
-	getItemCount: (primaryKeyField?: string) => Promise<void>;
+	getTotalCount: () => Promise<void>;
+	getItemCount: () => Promise<void>;
 };
 
 type ComputedQuery = {
