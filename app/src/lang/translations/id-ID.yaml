@@ -822,6 +822,7 @@ code: Kode
 operation_options: Opsi Operasi
 operation_name: Nama dari operasi...
 operation_key: Pengenal untuk referensi...
+operation_key_unique_error: Tombol operasi harus unik
 insights: Wawasan
 dashboard: Dasbor
 panel: Panel
