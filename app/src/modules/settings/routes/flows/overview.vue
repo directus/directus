@@ -10,9 +10,9 @@
 			<v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" />
 		</template>
 
-		<portal to="navigation">
+		<Teleport to="#module-navigation-content">
 			<settings-navigation />
-		</portal>
+		</Teleport>
 
 		<template #actions>
 			<v-button

@@ -6,9 +6,9 @@
 			</v-button>
 		</template>
 
-		<portal to="navigation">
+		<Teleport to="#module-navigation-content">
 			<content-navigation />
-		</portal>
+		</Teleport>
 
 		<v-info icon="box" :title="t('no_collections')" center>
 			<template v-if="isAdmin">

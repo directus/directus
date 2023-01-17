@@ -12,7 +12,6 @@ import { router } from './router';
 import './styles/main.scss';
 import { registerViews } from './views/register';
 import { loadExtensions, registerExtensions } from './extensions';
-import PortalVue from 'portal-vue';
 init();
 
 async function init() {
@@ -34,7 +33,6 @@ async function init() {
 	app.use(router);
 	app.use(i18n);
 	app.use(createPinia());
-	app.use(PortalVue);
 
 	registerDirectives(app);
 	registerComponents(app);

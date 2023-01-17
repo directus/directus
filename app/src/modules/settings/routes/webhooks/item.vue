@@ -47,9 +47,9 @@
 			</v-button>
 		</template>
 
-		<portal to="navigation">
+		<Teleport to="#module-navigation-content">
 			<settings-navigation />
-		</portal>
+		</Teleport>
 
 		<v-form
 			v-model="edits"

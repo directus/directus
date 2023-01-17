@@ -1,8 +1,8 @@
 <template>
 	<private-view :title="t('insights')">
-		<portal to="navigation">
+		<Teleport to="#module-navigation-content">
 			<insights-navigation />
-		</portal>
+		</Teleport>
 
 		<div v-if="!currentDashboard" class="not-found">
 			<v-info :title="t('page_not_found')" icon="not_interested">

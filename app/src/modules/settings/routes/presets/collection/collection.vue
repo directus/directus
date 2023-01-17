@@ -83,9 +83,9 @@
 				</v-button>
 			</template>
 
-			<portal to="navigation">
+			<Teleport to="#module-navigation-content">
 				<settings-navigation />
-			</portal>
+			</Teleport>
 
 			<component :is="`layout-${layout || 'tabular'}`" class="layout" v-bind="layoutState">
 				<template #no-results>

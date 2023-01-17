@@ -62,9 +62,9 @@
 			</v-button>
 		</template>
 
-		<portal to="navigation">
+		<Teleport to="#module-navigation-content">
 			<settings-navigation />
-		</portal>
+		</Teleport>
 
 		<users-invite v-model="userInviteModalActive" :role="primaryKey" />
 

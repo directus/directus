@@ -97,9 +97,9 @@
 			</v-button>
 		</template>
 
-		<portal to="navigation">
+		<Teleport to="#module-navigation-content">
 			<users-navigation :current-role="(item && item.role) || role" />
-		</portal>
+		</Teleport>
 
 		<div class="user-item">
 			<div v-if="isNew === false" class="user-box">

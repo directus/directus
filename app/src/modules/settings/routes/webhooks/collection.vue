@@ -19,9 +19,9 @@
 				</v-button>
 			</template>
 
-			<portal to="navigation">
+			<Teleport to="#module-navigation-content">
 				<settings-navigation />
-			</portal>
+			</Teleport>
 
 			<template #actions>
 				<search-input v-model="search" collection="directus_webhooks" />

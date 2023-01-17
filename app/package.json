@@ -140,8 +140,5 @@
 	},
 	"publishConfig": {
 		"access": "public"
-	},
-	"dependencies": {
-		"portal-vue": "^3.0.0"
 	}
 }

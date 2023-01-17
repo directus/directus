@@ -7,9 +7,9 @@
 			</v-button>
 		</template>
 
-		<portal to="navigation">
+		<Teleport to="#module-navigation-content">
 			<settings-navigation />
-		</portal>
+		</Teleport>
 
 		<div class="roles">
 			<permissions-overview :role="null" :permission="permissionKey" />

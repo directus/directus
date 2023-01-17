@@ -109,9 +109,9 @@
 			</v-button>
 		</template>
 
-		<portal to="navigation">
+		<Teleport to="#module-navigation-content">
 			<files-navigation :current-folder="item && item.folder" />
-		</portal>
+		</Teleport>
 
 		<div class="file-item">
 			<div class="preview">

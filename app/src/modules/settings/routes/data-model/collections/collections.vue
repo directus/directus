@@ -22,9 +22,9 @@
 			</v-button>
 		</template>
 
-		<portal to="navigation">
+		<Teleport to="#module-navigation-content">
 			<settings-navigation />
-		</portal>
+		</Teleport>
 
 		<div class="padding-box">
 			<v-info v-if="collections.length === 0" icon="box" :title="t('no_collections')">

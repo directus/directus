@@ -63,9 +63,9 @@
 			<logs-sidebar-detail :flow="flow" />
 		</template>
 
-		<portal to="navigation">
+		<Teleport to="#module-navigation-content">
 			<settings-navigation />
-		</portal>
+		</Teleport>
 
 		<div class="container">
 			<arrows

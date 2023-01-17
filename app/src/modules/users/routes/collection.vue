@@ -94,9 +94,9 @@
 				</v-button>
 			</template>
 
-			<portal to="navigation">
+			<Teleport to="#module-navigation-content">
 				<users-navigation :current-role="role" />
-			</portal>
+			</Teleport>
 
 			<users-invite v-if="canInviteUsers" v-model="userInviteModalActive" @update:model-value="refresh" />
 

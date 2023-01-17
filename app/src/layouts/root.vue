@@ -5,9 +5,7 @@
 			<div ref="moduleNavEl" class="module-nav alt-colors">
 				<project-info />
 
-				<div class="module-nav-content">
-					<portal-target name="navigation"></portal-target>
-				</div>
+				<div id="module-navigation-content" class="module-nav-content"></div>
 
 				<div
 					class="module-nav-resize-handle"
