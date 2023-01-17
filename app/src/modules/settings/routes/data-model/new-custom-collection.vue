@@ -66,7 +66,21 @@
 							language="sql"
 							type="sql"
 							@input="definition = $event"
-						/>
+						>
+							<template #append>
+								<v-icon
+									name="preview"
+									outline
+									color="var(--primary)"
+									clickable
+									:title="t('preview')"
+									@click="preview"
+								/>
+							</template>
+						</interface-input-code>
+						<div v-if="showPreview" class="preview-container" :class="{ 'has-header': showPreviewHeader }">
+							<v-table v-model:headers="previewData.headers" :show-resize="true" :items="previewData.items.rows" />
+						</div>
 					</div>
 					<!--
 					<div class="field half">
@@ -120,63 +134,15 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { cloneDeep } from 'lodash';
-import { defineComponent, ref, reactive, watch } from 'vue';
+import { defineComponent, ref, watch } from 'vue';
 import api from '@/api';
-import { Field, Relation } from '@directus/shared/types';
 import { useFieldsStore } from '@/stores/fields';
 import { useCollectionsStore } from '@/stores/collections';
-import { useRelationsStore } from '@/stores/relations';
 import { notify } from '@/utils/notify';
 import { useDialogRoute } from '@/composables/use-dialog-route';
 import { useRouter } from 'vue-router';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { DeepPartial } from '@directus/shared/types';
-
-const defaultSystemFields = {
-	status: {
-		enabled: false,
-		inputDisabled: false,
-		name: 'status',
-		label: 'status',
-		icon: 'flag',
-	},
-	sort: {
-		enabled: false,
-		inputDisabled: false,
-		name: 'sort',
-		label: 'sort',
-		icon: 'low_priority',
-	},
-	dateCreated: {
-		enabled: false,
-		inputDisabled: false,
-		name: 'date_created',
-		label: 'created_on',
-		icon: 'access_time',
-	},
-	userCreated: {
-		enabled: false,
-		inputDisabled: false,
-		name: 'user_created',
-		label: 'created_by',
-		icon: 'account_circle',
-	},
-	dateUpdated: {
-		enabled: false,
-		inputDisabled: false,
-		name: 'date_updated',
-		label: 'updated_on',
-		icon: 'access_time',
-	},
-	userUpdated: {
-		enabled: false,
-		inputDisabled: false,
-		name: 'user_updated',
-		label: 'updated_by',
-		icon: 'account_circle',
-	},
-};
+import { AxiosResponse } from 'axios';
 
 export default defineComponent({
 	setup() {
@@ -186,7 +152,6 @@ export default defineComponent({
 
 		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
-		const relationsStore = useRelationsStore();
 
 		const isOpen = useDialogRoute();
 
@@ -198,14 +163,8 @@ export default defineComponent({
 		const primaryKeyFieldType = ref<'auto_int' | 'auto_big_int' | 'uuid' | 'manual'>('auto_int');
 		const kind = ref<'table' | 'view' | 'materialized_view' | 'foreign_table'>('view');
 		const definition = ref('SELECT * FROM existing_table');
-
-		// const sortField = ref<string>();
-
-		// const archiveField = ref<string>();
-		// const archiveValue = ref<string>();
-		// const unarchiveValue = ref<string>();
-
-		const systemFields = reactive(cloneDeep(defaultSystemFields));
+		const showPreview = ref(false);
+		const previewData = ref<AxiosResponse<any, any>>();
 
 		const saving = ref(false);
 
@@ -217,7 +176,7 @@ export default defineComponent({
 			isOpen,
 			currentTab,
 			save,
-			systemFields,
+			preview,
 			primaryKeyFieldName,
 			primaryKeyFieldType,
 			collectionName,
@@ -225,11 +184,21 @@ export default defineComponent({
 			singleton,
 			kind,
 			definition,
+			showPreview,
+			showPreviewHeader: Boolean(previewData.value),
+			previewData,
 		};
 
-		function setOptionsForSingleton() {
-			systemFields.sort = { ...defaultSystemFields.sort };
-			systemFields.sort.inputDisabled = singleton.value;
+		// eslint-disable-next-line @typescript-eslint/no-empty-function
+		function setOptionsForSingleton() {}
+
+		async function preview() {
+			const { data } = await api.post(`/collections/preview`, {
+				query: definition.value,
+			});
+
+			showPreview.value = true;
+			previewData.value = data;
 		}
 
 		async function save() {
@@ -253,14 +222,6 @@ export default defineComponent({
 
 				const storeHydrations: Promise<void>[] = [];
 
-				const relations = getSystemRelations();
-
-				if (relations.length > 0) {
-					const requests = relations.map((relation) => api.post('/relations', relation));
-					await Promise.all(requests);
-					storeHydrations.push(relationsStore.hydrate());
-				}
-
 				storeHydrations.push(collectionsStore.hydrate(), fieldsStore.hydrate());
 				await Promise.all(storeHydrations);
 
@@ -274,236 +235,6 @@ export default defineComponent({
 			} finally {
 				saving.value = false;
 			}
-		}
-
-		// function getPrimaryKeyField() {
-		// 	if (primaryKeyFieldType.value === 'uuid') {
-		// 		return {
-		// 			field: primaryKeyFieldName.value,
-		// 			type: 'uuid',
-		// 			meta: {
-		// 				hidden: true,
-		// 				readonly: true,
-		// 				interface: 'input',
-		// 				special: ['uuid'],
-		// 			},
-		// 			schema: {
-		// 				is_primary_key: true,
-		// 				length: 36,
-		// 				has_auto_increment: false,
-		// 			},
-		// 		};
-		// 	} else if (primaryKeyFieldType.value === 'manual') {
-		// 		return {
-		// 			field: primaryKeyFieldName.value,
-		// 			type: 'string',
-		// 			meta: {
-		// 				interface: 'input',
-		// 				readonly: false,
-		// 				hidden: false,
-		// 			},
-		// 			schema: {
-		// 				is_primary_key: true,
-		// 				length: 255,
-		// 				has_auto_increment: false,
-		// 			},
-		// 		};
-		// 	} else {
-		// 		return {
-		// 			field: primaryKeyFieldName.value,
-		// 			type: primaryKeyFieldType.value === 'auto_big_int' ? 'bigInteger' : 'integer',
-		// 			meta: {
-		// 				hidden: true,
-		// 				interface: 'input',
-		// 				readonly: true,
-		// 			},
-		// 			schema: {
-		// 				is_primary_key: true,
-		// 				has_auto_increment: true,
-		// 			},
-		// 		};
-		// 	}
-		// }
-
-		// function getSystemFields() {
-		// 	const fields: DeepPartial<Field>[] = [];
-
-		// 	// Status
-		// 	if (systemFields.status.enabled === true) {
-		// 		fields.push({
-		// 			field: systemFields.status.name,
-		// 			type: 'string',
-		// 			meta: {
-		// 				width: 'full',
-		// 				options: {
-		// 					choices: [
-		// 						{
-		// 							text: '$t:published',
-		// 							value: 'published',
-		// 						},
-		// 						{
-		// 							text: '$t:draft',
-		// 							value: 'draft',
-		// 						},
-		// 						{
-		// 							text: '$t:archived',
-		// 							value: 'archived',
-		// 						},
-		// 					],
-		// 				},
-		// 				interface: 'select-dropdown',
-		// 				display: 'labels',
-		// 				display_options: {
-		// 					showAsDot: true,
-		// 					choices: [
-		// 						{
-		// 							text: '$t:published',
-		// 							value: 'published',
-		// 							foreground: '#FFFFFF',
-		// 							background: 'var(--primary)',
-		// 						},
-		// 						{
-		// 							text: '$t:draft',
-		// 							value: 'draft',
-		// 							foreground: '#18222F',
-		// 							background: '#D3DAE4',
-		// 						},
-		// 						{
-		// 							text: '$t:archived',
-		// 							value: 'archived',
-		// 							foreground: '#FFFFFF',
-		// 							background: 'var(--warning)',
-		// 						},
-		// 					],
-		// 				},
-		// 			},
-		// 			schema: {
-		// 				default_value: 'draft',
-		// 				is_nullable: false,
-		// 			},
-		// 		});
-
-		// 		archiveField.value = 'status';
-		// 		archiveValue.value = 'archived';
-		// 		unarchiveValue.value = 'draft';
-		// 	}
-
-		// 	// Sort
-		// 	if (systemFields.sort.enabled === true) {
-		// 		fields.push({
-		// 			field: systemFields.sort.name,
-		// 			type: 'integer',
-		// 			meta: {
-		// 				interface: 'input',
-		// 				hidden: true,
-		// 			},
-		// 			schema: {},
-		// 		});
-
-		// 		sortField.value = systemFields.sort.name;
-		// 	}
-
-		// 	if (systemFields.userCreated.enabled === true) {
-		// 		fields.push({
-		// 			field: systemFields.userCreated.name,
-		// 			type: 'uuid',
-		// 			meta: {
-		// 				special: ['user-created'],
-		// 				interface: 'select-dropdown-m2o',
-		// 				options: {
-		// 					template: '{{avatar.$thumbnail}} {{first_name}} {{last_name}}',
-		// 				},
-		// 				display: 'user',
-		// 				readonly: true,
-		// 				hidden: true,
-		// 				width: 'half',
-		// 			},
-		// 			schema: {},
-		// 		});
-		// 	}
-
-		// 	if (systemFields.dateCreated.enabled === true) {
-		// 		fields.push({
-		// 			field: systemFields.dateCreated.name,
-		// 			type: 'timestamp',
-		// 			meta: {
-		// 				special: ['date-created'],
-		// 				interface: 'datetime',
-		// 				readonly: true,
-		// 				hidden: true,
-		// 				width: 'half',
-		// 				display: 'datetime',
-		// 				display_options: {
-		// 					relative: true,
-		// 				},
-		// 			},
-		// 			schema: {},
-		// 		});
-		// 	}
-
-		// 	if (systemFields.userUpdated.enabled === true) {
-		// 		fields.push({
-		// 			field: systemFields.userUpdated.name,
-		// 			type: 'uuid',
-		// 			meta: {
-		// 				special: ['user-updated'],
-		// 				interface: 'select-dropdown-m2o',
-		// 				options: {
-		// 					template: '{{avatar.$thumbnail}} {{first_name}} {{last_name}}',
-		// 				},
-		// 				display: 'user',
-		// 				readonly: true,
-		// 				hidden: true,
-		// 				width: 'half',
-		// 			},
-		// 			schema: {},
-		// 		});
-		// 	}
-
-		// 	if (systemFields.dateUpdated.enabled === true) {
-		// 		fields.push({
-		// 			field: systemFields.dateUpdated.name,
-		// 			type: 'timestamp',
-		// 			meta: {
-		// 				special: ['date-updated'],
-		// 				interface: 'datetime',
-		// 				readonly: true,
-		// 				hidden: true,
-		// 				width: 'half',
-		// 				display: 'datetime',
-		// 				display_options: {
-		// 					relative: true,
-		// 				},
-		// 			},
-		// 			schema: {},
-		// 		});
-		// 	}
-
-		// 	return fields;
-		// }
-
-		function getSystemRelations() {
-			const relations: Partial<Relation>[] = [];
-
-			if (systemFields.userCreated.enabled === true) {
-				relations.push({
-					collection: collectionName.value!,
-					field: systemFields.userCreated.name,
-					related_collection: 'directus_users',
-					schema: {},
-				});
-			}
-
-			if (systemFields.userUpdated.enabled === true) {
-				relations.push({
-					collection: collectionName.value!,
-					field: systemFields.userUpdated.name,
-					related_collection: 'directus_users',
-					schema: {},
-				});
-			}
-
-			return relations;
 		}
 	},
 });
@@ -552,5 +283,12 @@ export default defineComponent({
 
 .v-notice {
 	margin-bottom: 36px;
+}
+
+.preview-container {
+	width: 100%;
+	height: 100%;
+	overflow-x: auto;
+	overflow-y: auto;
 }
 </style>

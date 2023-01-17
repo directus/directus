@@ -9,6 +9,26 @@ import asyncHandler from '../utils/async-handler';
 const router = Router();
 
 router.post(
+	'/preview',
+	asyncHandler(async (req, res) => {
+		const collectionsService = new CollectionsService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		const data = await collectionsService.knex.schema.raw(req.body.query);
+
+		res.json({
+			items: data,
+			headers: data.fields.map((v) => {
+				return { text: v.name, value: v.name };
+			}),
+		});
+	}),
+	respond
+);
+
+router.post(
 	'/',
 	asyncHandler(async (req, res, next) => {
 		const collectionsService = new CollectionsService({
