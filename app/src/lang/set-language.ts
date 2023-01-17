@@ -8,7 +8,7 @@ import { loadDateFNSLocale } from '@/utils/get-date-fns-locale';
 export async function setLanguage(lang: Language): Promise<boolean> {
 	const collectionsStore = useCollectionsStore();
 	const fieldsStore = useFieldsStore();
-	const { loadLanguageTranslationStrings } = useTranslationStrings();
+	const { mergeTranslationStringsForLanguage } = useTranslationStrings();
 
 	if (Object.keys(availableLanguages).includes(lang) === false) {
 		// eslint-disable-next-line no-console
@@ -30,16 +30,11 @@ export async function setLanguage(lang: Language): Promise<boolean> {
 		(document.querySelector('html') as HTMLElement).setAttribute('lang', lang);
 	}
 
-	try {
-		await loadLanguageTranslationStrings(lang);
-		collectionsStore.translateCollections();
-		fieldsStore.translateFields();
+	mergeTranslationStringsForLanguage(lang);
+	collectionsStore.translateCollections();
+	fieldsStore.translateFields();
 
-		await loadDateFNSLocale(lang);
-	} catch {
-		// eslint-disable-next-line no-console
-		console.error('Failed loading translations');
-	}
+	await loadDateFNSLocale(lang);
 
 	return true;
 }
