@@ -1,4 +1,4 @@
-export function mapDeep(obj: Record<string, any>, fn: (key: string, value: any) => any): Record<string, any> {
+export function mapValuesDeep(obj: Record<string, any>, fn: (key: string, value: any) => any): Record<string, any> {
 	return recurse(obj);
 
 	function recurse(obj: Record<string, any>, prefix = ''): Record<string, any> {
