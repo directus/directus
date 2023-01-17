@@ -26,12 +26,14 @@
 				</button>
 
 				<transition-expand>
-					<field-configuration
-						v-if="chosenInterface && !!group.interfaces.some((inter) => inter.id === chosenInterface)"
-						:row="configRow"
-						@save="$emit('save')"
-						@toggle-advanced="$emit('toggleAdvanced')"
-					/>
+					<template v-if="chosenInterface && !!group.interfaces.some((inter) => inter.id === chosenInterface)">
+						<field-configuration
+							:key="chosenInterface"
+							:row="configRow"
+							@save="$emit('save')"
+							@toggle-advanced="$emit('toggleAdvanced')"
+						/>
+					</template>
 				</transition-expand>
 			</div>
 		</div>
