@@ -34,9 +34,9 @@ type UsableTranslationStrings = {
 	refresh: () => Promise<void>;
 
 	updating: Ref<boolean>;
-	addTranslation: (translation: DisplayTranslationString) => void;
-	updateTranslation: (originalKey: string, translation: DisplayTranslationString) => void;
-	removeTranslation: (translationKey: string) => void;
+	addTranslation: (translation: DisplayTranslationString) => Promise<void>;
+	updateTranslation: (originalKey: string, translation: DisplayTranslationString) => Promise<void>;
+	removeTranslation: (translationKey: string) => Promise<void>;
 };
 
 let loading: Ref<boolean> | null = null;
