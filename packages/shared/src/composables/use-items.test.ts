@@ -6,9 +6,11 @@ import { afterEach, expect, test, vi } from 'vitest';
 import { computed, ref, unref } from 'vue';
 
 import { useItems } from './use-items';
+import { useCollection } from './use-collection';
 
 const mockData = { id: 1 };
-const mockCountData = { count: 1 };
+const mockCountData = { count: 2 };
+const mockCountDistinctData = { countDistinct: { id: 3 } };
 const mockPrimaryKeyField: Field = {
 	collection: 'test_collection',
 	field: 'id',
@@ -37,6 +39,7 @@ vi.mock('./use-system', () => ({
 	useApi: vi.fn().mockImplementation(() => ({
 		get: mockApiGet.mockImplementation((_path: string, config: AxiosRequestConfig) => {
 			if (isTotalCountRequest(config) || isFilterCountRequest(config)) {
+				if (config.params.aggregate?.countDistinct) return Promise.resolve({ data: { data: [mockCountDistinctData] } });
 				return Promise.resolve({ data: { data: [mockCountData] } });
 			}
 
@@ -45,16 +48,15 @@ vi.mock('./use-system', () => ({
 		post: mockApiPost,
 	})),
 }));
-
-vi.mock('./use-collection', () => ({
-	useCollection: vi.fn().mockReturnValue(() => computed(() => mockPrimaryKeyField)),
-}));
+vi.mock('./use-collection');
 
 afterEach(() => {
 	vi.clearAllMocks();
 });
 
 test('should fetch filter count and total count only once', async () => {
+	vi.mocked(useCollection).mockReturnValueOnce({ primaryKeyField: computed(() => null) } as any);
+
 	const { totalCount, itemCount } = useItems(ref('test_collection'), {
 		fields: ref(['*']),
 		limit: ref(1),
@@ -74,7 +76,31 @@ test('should fetch filter count and total count only once', async () => {
 	expect(mockApiGet.mock.calls.filter((call) => isFilterCountRequest(call[1])).length).toBe(1);
 });
 
+test('should fetch distinct filter count and total count only once', async () => {
+	vi.mocked(useCollection).mockReturnValueOnce({ primaryKeyField: computed(() => mockPrimaryKeyField) } as any);
+
+	const { totalCount, itemCount } = useItems(ref('test_collection'), {
+		fields: ref(['*']),
+		limit: ref(1),
+		sort: ref(null),
+		search: ref(null),
+		filter: ref(null),
+		page: ref(1),
+	});
+
+	// Wait until computed values are updated
+	await flushPromises();
+
+	expect(unref(totalCount)).toBe(mockCountDistinctData.countDistinct.id);
+	expect(unref(itemCount)).toBe(mockCountDistinctData.countDistinct.id);
+	expect(mockApiGet.mock.calls.filter((call) => isGetItemsRequest(call[1])).length).toBe(1);
+	expect(mockApiGet.mock.calls.filter((call) => isTotalCountRequest(call[1])).length).toBe(1);
+	expect(mockApiGet.mock.calls.filter((call) => isFilterCountRequest(call[1])).length).toBe(1);
+});
+
 test('should not re-fetch filter count when changing fields query', async () => {
+	vi.mocked(useCollection).mockReturnValueOnce({ primaryKeyField: computed(() => null) } as any);
+
 	const fields = ref(['*']);
 
 	useItems(ref('test_collection'), {
@@ -96,6 +122,8 @@ test('should not re-fetch filter count when changing fields query', async () => 
 });
 
 test('should re-fetch filter count when changing filters query', async () => {
+	vi.mocked(useCollection).mockReturnValueOnce({ primaryKeyField: computed(() => null) } as any);
+
 	const filter = ref<Filter | null>(null);
 
 	useItems(ref('test_collection'), {
@@ -118,6 +146,8 @@ test('should re-fetch filter count when changing filters query', async () => {
 });
 
 test('should re-fetch filter count when changing search query', async () => {
+	vi.mocked(useCollection).mockReturnValueOnce({ primaryKeyField: computed(() => null) } as any);
+
 	const search = ref<string | null>(null);
 
 	useItems(ref('test_collection'), {
@@ -140,6 +170,8 @@ test('should re-fetch filter count when changing search query', async () => {
 });
 
 test('should reset when collection changes', async () => {
+	vi.mocked(useCollection).mockReturnValueOnce({ primaryKeyField: computed(() => null) } as any);
+
 	const collection = ref('old_collection');
 
 	const { items } = useItems(collection, {
@@ -166,6 +198,8 @@ test('should reset when collection changes', async () => {
 });
 
 test('should append $thumbnail to fetched items when collection is directus_files', async () => {
+	vi.mocked(useCollection).mockReturnValueOnce({ primaryKeyField: computed(() => null) } as any);
+
 	const collection = ref('directus_files');
 
 	const { items } = useItems(collection, {
