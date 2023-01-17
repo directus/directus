@@ -19,6 +19,21 @@
 
 			<v-button v-tooltip.bottom="t('create_collection')" rounded icon to="/settings/data-model/+">
 				<v-icon name="add" />
+
+				<template #append-outer>
+					<v-menu show-arrow>
+						<template #activator="{ toggle }">
+							<v-icon name="more_vert" clickable @click="toggle" />
+						</template>
+
+						<v-list>
+							<v-list-item clickable @click="createCustomCollection">
+								<v-list-item-icon><v-icon name="add" /></v-list-item-icon>
+								<v-list-item-content>{{ t('create_custom_collection') }}</v-list-item-content>
+							</v-list-item>
+						</v-list>
+					</v-menu>
+				</template>
 			</v-button>
 		</template>
 
@@ -110,6 +125,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, ref } from 'vue';
+import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../../components/navigation.vue';
 import { useCollectionsStore } from '@/stores/collections';
 import { Collection } from '@/types/collections';
@@ -126,6 +142,8 @@ export default defineComponent({
 	components: { SettingsNavigation, CollectionItem, CollectionOptions, Draggable, CollectionDialog },
 	setup() {
 		const { t } = useI18n();
+
+		const router = useRouter();
 
 		const collectionDialogActive = ref(false);
 		const editCollection = ref<Collection | null>();
@@ -181,7 +199,12 @@ export default defineComponent({
 			onSort,
 			rootCollections,
 			editCollection,
+			createCustomCollection,
 		};
+
+		async function createCustomCollection() {
+			router.push('/settings/data-model/custom/+');
+		}
 
 		async function onSort(updates: Collection[], removeGroup = false) {
 			const updatesWithSortValue = updates.map((collection, index) =>

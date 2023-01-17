@@ -479,6 +479,7 @@ name: Name
 primary_key_field: Primary Key Field
 type: Type
 creating_new_collection: Creating New Collection
+creating_new_custom_collection: Creating New Custom Collection
 created_by: Created By
 created_on: Created On
 creating_collection_info: Name the collection and setup its unique “key” field...
@@ -529,6 +530,11 @@ any: Any
 csv: CSV
 no_collections: No Collections
 create_collection: Create Collection
+create_custom_collection: Create a Custom Collection
+view: View
+materialized_view: Materialized View
+foreign_table: Foreign Table
+definition: Definition
 no_collections_copy_admin: You don’t have any Collections yet. Click the button below to get started.
 no_collections_copy: You don’t have any Collections yet. Please contact your system administrator.
 relationship_not_setup: The relationship hasn't been configured correctly

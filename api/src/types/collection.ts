@@ -11,6 +11,8 @@ export type CollectionMeta = {
 	item_duplication_fields: string[] | null;
 	accountability: 'all' | 'accountability' | null;
 	group: string | null;
+	kind?: 'table' | 'view' | 'materialized_view' | 'foreign_table';
+	definition?: string;
 };
 
 export type Collection = {

@@ -8,6 +8,7 @@ import Collections from './routes/data-model/collections/collections.vue';
 import FieldDetail from './routes/data-model/field-detail/field-detail.vue';
 import Fields from './routes/data-model/fields/fields.vue';
 import NewCollection from './routes/data-model/new-collection.vue';
+import NewCustomCollection from './routes/data-model/new-custom-collection.vue';
 import NotFound from './routes/not-found.vue';
 import PresetsCollection from './routes/presets/collection/collection.vue';
 import PresetsItem from './routes/presets/item.vue';
@@ -58,6 +59,13 @@ export default defineModule({
 							name: 'settings-add-new',
 							components: {
 								add: NewCollection,
+							},
+						},
+						{
+							path: 'custom/+',
+							name: 'settings-add-new-custom',
+							components: {
+								add: NewCustomCollection,
 							},
 						},
 					],

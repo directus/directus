@@ -73,94 +73,120 @@ export class CollectionsService {
 				throw new InvalidPayloadException(`Collection "${payload.collection}" already exists.`);
 			}
 
-			// Create the collection/fields in a transaction so it'll be reverted in case of errors or
-			// permission problems. This might not work reliably in MySQL, as it doesn't support DDL in
-			// transactions.
-			await this.knex.transaction(async (trx) => {
-				if (payload.schema) {
-					// Directus heavily relies on the primary key of a collection, so we have to make sure that
-					// every collection that is created has a primary key. If no primary key field is created
-					// while making the collection, we default to an auto incremented id named `id`
-					if (!payload.fields)
-						payload.fields = [
-							{
-								field: 'id',
-								type: 'integer',
-								meta: {
-									hidden: true,
-									interface: 'numeric',
-									readonly: true,
+			const kind = payload.meta?.kind || 'table';
+
+			switch (kind) {
+				// case 'table':
+				case 'view':
+					await this.knex.schema.raw(`
+                      CREATE VIEW ${payload.collection} AS ${payload.meta?.definition};
+					`);
+					break;
+
+				case 'materialized_view':
+					await this.knex.schema.raw(`
+                      CREATE MATERIALIZED VIEW ${payload.collection} AS ${payload.meta?.definition};
+					`);
+					break;
+
+				case 'foreign_table':
+					await this.knex.schema.raw(`
+                      CREATE FOREIGN TABLE ${payload.collection} (${payload.meta?.definition});
+					`);
+					break;
+
+				default:
+					// Create the collection/fields in a transaction so it'll be reverted in case of errors or
+					// permission problems. This might not work reliably in MySQL, as it doesn't support DDL in
+					// transactions.
+					await this.knex.transaction(async (trx) => {
+						if (payload.schema) {
+							// Directus heavily relies on the primary key of a collection, so we have to make sure that
+							// every collection that is created has a primary key. If no primary key field is created
+							// while making the collection, we default to an auto incremented id named `id`
+							if (!payload.fields)
+								payload.fields = [
+									{
+										field: 'id',
+										type: 'integer',
+										meta: {
+											hidden: true,
+											interface: 'numeric',
+											readonly: true,
+										},
+										schema: {
+											is_primary_key: true,
+											has_auto_increment: true,
+										},
+									},
+								];
+
+							// Ensure that every field meta has the field/collection fields filled correctly
+							payload.fields = payload.fields.map((field) => {
+								if (field.meta) {
+									field.meta = {
+										...field.meta,
+										field: field.field,
+										collection: payload.collection!,
+									};
+								}
+
+								// Add flag for specific database type overrides
+								const flagToAdd = this.helpers.date.fieldFlagForField(field.type);
+								if (flagToAdd) {
+									addFieldFlag(field, flagToAdd);
+								}
+
+								return field;
+							});
+
+							const fieldsService = new FieldsService({ knex: trx, schema: this.schema });
+
+							await trx.schema.createTable(payload.collection, (table) => {
+								for (const field of payload.fields!) {
+									if (field.type && ALIAS_TYPES.includes(field.type) === false) {
+										fieldsService.addColumnToTable(table, field);
+									}
+								}
+							});
+
+							const fieldItemsService = new ItemsService('directus_fields', {
+								knex: trx,
+								accountability: this.accountability,
+								schema: this.schema,
+							});
+
+							const fieldPayloads = payload
+								.fields!.filter((field) => field.meta)
+								.map((field) => field.meta) as FieldMeta[];
+							await fieldItemsService.createMany(fieldPayloads, {
+								bypassEmitAction: (params) =>
+									opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
+							});
+						}
+
+						if (payload.meta) {
+							const collectionItemsService = new ItemsService('directus_collections', {
+								knex: trx,
+								accountability: this.accountability,
+								schema: this.schema,
+							});
+
+							await collectionItemsService.createOne(
+								{
+									...payload.meta,
+									collection: payload.collection,
 								},
-								schema: {
-									is_primary_key: true,
-									has_auto_increment: true,
-								},
-							},
-						];
-
-					// Ensure that every field meta has the field/collection fields filled correctly
-					payload.fields = payload.fields.map((field) => {
-						if (field.meta) {
-							field.meta = {
-								...field.meta,
-								field: field.field,
-								collection: payload.collection!,
-							};
+								{
+									bypassEmitAction: (params) =>
+										opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
+								}
+							);
 						}
 
-						// Add flag for specific database type overrides
-						const flagToAdd = this.helpers.date.fieldFlagForField(field.type);
-						if (flagToAdd) {
-							addFieldFlag(field, flagToAdd);
-						}
-
-						return field;
+						return payload.collection;
 					});
-
-					const fieldsService = new FieldsService({ knex: trx, schema: this.schema });
-
-					await trx.schema.createTable(payload.collection, (table) => {
-						for (const field of payload.fields!) {
-							if (field.type && ALIAS_TYPES.includes(field.type) === false) {
-								fieldsService.addColumnToTable(table, field);
-							}
-						}
-					});
-
-					const fieldItemsService = new ItemsService('directus_fields', {
-						knex: trx,
-						accountability: this.accountability,
-						schema: this.schema,
-					});
-
-					const fieldPayloads = payload.fields!.filter((field) => field.meta).map((field) => field.meta) as FieldMeta[];
-					await fieldItemsService.createMany(fieldPayloads, {
-						bypassEmitAction: (params) =>
-							opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
-					});
-				}
-
-				if (payload.meta) {
-					const collectionItemsService = new ItemsService('directus_collections', {
-						knex: trx,
-						accountability: this.accountability,
-						schema: this.schema,
-					});
-
-					await collectionItemsService.createOne(
-						{
-							...payload.meta,
-							collection: payload.collection,
-						},
-						{
-							bypassEmitAction: (params) =>
-								opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
-						}
-					);
-				}
-
-				return payload.collection;
-			});
+			}
 
 			return payload.collection;
 		} finally {
