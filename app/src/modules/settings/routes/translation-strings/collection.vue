@@ -114,7 +114,6 @@ const tableHeaders: TableHeader[] = [
 
 const isTranslationStringDialogOpen = ref<boolean>(false);
 const editingTranslationString = ref<DisplayTranslationString | null>(null);
-// const translationStrings = ref<DisplayTranslationString[]>([]);
 const limit = ref<number>(25);
 const page = ref<number>(1);
 const loading = ref<boolean>(true);
