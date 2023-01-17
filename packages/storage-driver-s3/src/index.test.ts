@@ -12,6 +12,7 @@ import { normalizePath } from '@directus/utils';
 import { isReadableStream } from '@directus/utils/node';
 import {
 	randAlphaNumeric,
+	randBoolean,
 	randDirectoryPath,
 	randDomainName,
 	randFilePath,
@@ -71,6 +72,7 @@ beforeEach(() => {
 			root: randDirectoryPath(),
 			endpoint: randDomainName(),
 			region: randWord(),
+			forcePathStyle: randBoolean(),
 		},
 		path: {
 			input: randUnique() + randFilePath(),
@@ -113,6 +115,32 @@ afterEach(() => {
 });
 
 describe('#constructor', () => {
+	test('Throws error if key defined but secret missing', () => {
+		try {
+			new DriverS3({ key: 'key', bucket: 'bucket' });
+		} catch (err: any) {
+			expect(err).toBeInstanceOf(Error);
+			expect(err.message).toBe('Both `key` and `secret` are required when defined');
+		}
+	});
+
+	test('Throws error if secret defined but key missing', () => {
+		try {
+			new DriverS3({ secret: 'secret', bucket: 'bucket' });
+		} catch (err: any) {
+			expect(err).toBeInstanceOf(Error);
+			expect(err.message).toBe('Both `key` and `secret` are required when defined');
+		}
+	});
+
+	test('Creates S3Client without key / secret (based on machine config)', () => {
+		const driver = new DriverS3({ bucket: 'bucket' });
+
+		expect(S3Client).toHaveBeenCalledWith({});
+
+		expect(driver['client']).toBeInstanceOf(S3Client);
+	});
+
 	test('Creates S3Client with key / secret configuration', () => {
 		expect(S3Client).toHaveBeenCalledWith({
 			credentials: {
@@ -166,7 +194,6 @@ describe('#constructor', () => {
 		});
 
 		expect(S3Client).toHaveBeenCalledWith({
-			forcePathStyle: true,
 			endpoint: {
 				hostname: sampleDomain,
 				protocol: 'http:',
@@ -191,7 +218,6 @@ describe('#constructor', () => {
 		});
 
 		expect(S3Client).toHaveBeenCalledWith({
-			forcePathStyle: true,
 			endpoint: {
 				hostname: sampleDomain,
 				protocol: 'https:',
@@ -214,6 +240,23 @@ describe('#constructor', () => {
 
 		expect(S3Client).toHaveBeenCalledWith({
 			region: sample.config.region,
+			credentials: {
+				accessKeyId: sample.config.key,
+				secretAccessKey: sample.config.secret,
+			},
+		});
+	});
+
+	test('Sets force path style', () => {
+		new DriverS3({
+			key: sample.config.key,
+			secret: sample.config.secret,
+			bucket: sample.config.bucket,
+			forcePathStyle: sample.config.forcePathStyle,
+		});
+
+		expect(S3Client).toHaveBeenCalledWith({
+			forcePathStyle: sample.config.forcePathStyle,
 			credentials: {
 				accessKeyId: sample.config.key,
 				secretAccessKey: sample.config.secret,

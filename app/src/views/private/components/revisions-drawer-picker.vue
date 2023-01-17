@@ -25,7 +25,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed, watch, ref } from 'vue';
-import { Revision } from './types';
+import { Revision } from '@/types/revisions';
 import { useSync } from '@directus/shared/composables';
 import { localizedFormat } from '@/utils/localized-format';
 import { userName } from '@/utils/user-name';
