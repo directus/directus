@@ -583,7 +583,7 @@ auto_fill: 自动填充
 corresponding_field: 相应字段
 errors:
   COLLECTION_NOT_FOUND: "模型不存在"
-  FIELD_NOT_FOUND: 空格未找到
+  FIELD_NOT_FOUND: 字段未找到
   FORBIDDEN: 禁止
   INVALID_CREDENTIALS: 错误的用户名或密码
   INVALID_OTP: 错误的一次性密码
