@@ -454,9 +454,13 @@ function useUpload() {
 			});
 		} catch (err: any) {
 			notify({
-				title: err?.response?.data?.errors[0]?.message || err?.response?.data?.message || t('import_data_error'),
+				title: t(`errors.${err?.response?.data?.errors?.[0]?.extensions?.code}`) || t('import_data_error'),
 				type: 'error',
 			});
+
+			if (err?.response?.data?.errors?.[0]?.extensions?.code === 'INTERNAL_SERVER_ERROR') {
+				unexpectedError(err);
+			}
 		} finally {
 			uploading.value = false;
 			importing.value = false;
