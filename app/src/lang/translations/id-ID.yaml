@@ -573,6 +573,8 @@ select_an_item: Pilih sebuah item...
 edit: Edit
 enabled: Diaktifkan
 disable_tfa: Nonaktifkan 2FA
+admin_disable_tfa_text: Apa Anda yakin ingin menonaktifkan 2FA pada user ini?
+tfa_setup: Mempersiapkan 2FA
 tfa_scan_code: Scan kode pada aplikasi peng-autentifikasi untuk menyelesaikan pengaturan 2FA
 enter_otp_to_disable_tfa: Masukkan kode OTP untuk menonaktifkan 2FA
 create_account: Buat Akun
