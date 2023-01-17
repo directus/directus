@@ -9,8 +9,8 @@ import { useItems } from './use-items';
 import { useCollection } from './use-collection';
 
 const mockData = { id: 1 };
-const mockCountData = { count: 1 };
-const mockCountDistinctData = { countDistinct: { id: 1 } };
+const mockCountData = { count: 2 };
+const mockCountDistinctData = { countDistinct: { id: 3 } };
 const mockPrimaryKeyField: Field = {
 	collection: 'test_collection',
 	field: 'id',
