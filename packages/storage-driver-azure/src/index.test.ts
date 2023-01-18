@@ -20,6 +20,7 @@ import {
 	randText,
 	randFileType,
 	randUrl,
+	randGitShortSha as randUnique,
 } from '@ngneat/falso';
 
 vi.mock('@directus/utils/node');
@@ -62,12 +63,12 @@ beforeEach(() => {
 			endpoint: `https://${randDomainName()}`,
 		},
 		path: {
-			input: randFilePath(),
-			inputFull: randFilePath(),
-			src: randFilePath(),
-			srcFull: randFilePath(),
-			dest: randFilePath(),
-			destFull: randFilePath(),
+			input: randUnique() + randFilePath(),
+			inputFull: randUnique() + randFilePath(),
+			src: randUnique() + randFilePath(),
+			srcFull: randUnique() + randFilePath(),
+			dest: randUnique() + randFilePath(),
+			destFull: randUnique() + randFilePath(),
 		},
 		range: {
 			start: randNumber(),
