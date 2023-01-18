@@ -78,6 +78,11 @@ export default defineComponent({
 				name: t('extensions'),
 				to: `/settings/extensions`,
 			},
+			{
+				icon: 'storefront',
+				name: t('marketplace'),
+				to: `/settings/market`,
+			}
 		];
 
 		const externalItems = computed(() => {

@@ -24,6 +24,9 @@ import FlowsDetail from './routes/flows/flow.vue';
 import FlowOperationDetail from './routes/flows/components/operation-detail.vue';
 import TranslationStringsCollection from './routes/translation-strings/collection.vue';
 import ExtensionsOverview from './routes/extensions/overview.vue';
+import MarketOverview from './routes/market/overview.vue';
+import MarketUser from './routes/market/user.vue';
+import MarketExtension from './routes/market/extension.vue';
 
 export default defineModule({
 	id: 'settings',
@@ -230,6 +233,29 @@ export default defineModule({
 					name: 'settings-translation-strings-collection',
 					path: '',
 					component: TranslationStringsCollection,
+				},
+			],
+		},
+		{
+			path: 'market',
+			component: RouterPass,
+			children: [
+				{
+					name: 'extensions-overview',
+					path: '',
+					component: MarketOverview
+				},
+				{
+					name: 'extension',
+					path: 'extensions/:name',
+					component: MarketExtension,
+					props: true,
+				},
+				{
+					name: 'user',
+					path: 'users/:name',
+					component: MarketUser,
+					props: true,
 				},
 			],
 		},
