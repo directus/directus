@@ -232,16 +232,24 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 			if (existingRequests.total) existingRequests.total.abort();
 			existingRequests.total = new AbortController();
 
+			const aggregate = primaryKeyField.value
+				? {
+						countDistinct: primaryKeyField.value.field,
+				  }
+				: {
+						count: '*',
+				  };
+
 			const response = await api.get<any>(endpoint.value, {
 				params: {
-					aggregate: {
-						count: '*',
-					},
+					aggregate,
 				},
 				signal: existingRequests.total.signal,
 			});
 
-			const count = Number(response.data.data[0].count);
+			const count = primaryKeyField.value
+				? Number(response.data.data[0].countDistinct[primaryKeyField.value.field])
+				: Number(response.data.data[0].count);
 			existingRequests.total = null;
 
 			totalCount.value = count;
@@ -259,18 +267,26 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 			if (existingRequests.filter) existingRequests.filter.abort();
 			existingRequests.filter = new AbortController();
 
+			const aggregate = primaryKeyField.value
+				? {
+						countDistinct: primaryKeyField.value.field,
+				  }
+				: {
+						count: '*',
+				  };
+
 			const response = await api.get<any>(endpoint.value, {
 				params: {
 					filter: unref(filter),
 					search: unref(search),
-					aggregate: {
-						count: '*',
-					},
+					aggregate,
 				},
 				signal: existingRequests.filter.signal,
 			});
 
-			const count = Number(response.data.data[0].count);
+			const count = primaryKeyField.value
+				? Number(response.data.data[0].countDistinct[primaryKeyField.value.field])
+				: Number(response.data.data[0].count);
 			existingRequests.filter = null;
 
 			itemCount.value = count;
