@@ -14,9 +14,7 @@
 			<v-icon-file :ext="type" />
 		</div>
 	</div>
-	<div v-else-if="imgError">
-		<v-error :error="imageError" />
-	</div>
+	<v-error v-else-if="imgError" :error="imageError" />
 </template>
 
 <script lang="ts" setup>
