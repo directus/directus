@@ -29,11 +29,13 @@ draft: Draft
 archived: Archived
 modules: Modules
 module_bar: Module Bar
+logs: Logs
 reset_width: Reset Width
 tile_size: Tile Size
 edit_field: Edit Field
 conditions: Conditions
 location: Location
+condition_rules: Condition Rules
 input: Input
 maps: Maps
 switch_user: Switch User
@@ -47,6 +49,11 @@ group: Group
 export_items: Export Items
 and: And
 or: Or
+init: Init
+dataset_too_large_currently_showing_n_items: Dataset is too large. Currently showing the first {n} items.
+modifier: Modifier
+custom: Custom
+hook: Hook
 fill_width: Fill Width
 field_name_translations: Field Name Translations
 enter_password_to_enable_tfa: Enter your password to enable Two-Factor Authentication
@@ -70,9 +77,12 @@ create_preset: Create Preset
 create_panel: Create Panel
 create_role: Create Role
 create_user: Create User
+message: Message
 delete_panel: Delete Panel
 create_webhook: Create Webhook
 create_translation_string: Create Translation String
+no_translation_string: No Translation Strings
+no_translation_string_copy: There are no translation strings yet.
 translation_string_key_placeholder: Translation string key...
 translation_string_translations_placeholder: Add a new translation
 edit_translation_string: Edit Translation String
@@ -99,6 +109,8 @@ delete_bookmark: Delete Bookmark
 delete_bookmark_copy: >-
   Are you sure you want to delete the "{bookmark}" bookmark? This action cannot be undone.
 delete_personal_bookmark: Delete Personal Bookmark
+delete_role_bookmark: Delete Role Bookmark
+delete_global_bookmark: Delete Global Bookmark
 logoutReason:
   SIGN_OUT: Signed out
   SESSION_EXPIRED: Session expired
@@ -175,6 +187,9 @@ revision_post_create: Here is what this item looked like when it was created.
 revision_post_update: Here is what this item looked like after the update.
 changes_made: Below are the specific changes made in this revision.
 no_relational_data: Keep in mind that relational data is not included here.
+junction_field_location: Junction Fields Location
+top: Top
+bottom: Bottom
 hide_field: Hide Field
 hide_field_on_detail: Hide Field on Detail
 show_field_on_detail: Show Field on Detail
@@ -195,6 +210,7 @@ camera: Camera
 show_zero: Show Zero
 create_in_advanced_field_creation_mode: Create Field in Advanced Mode
 continue_in_advanced_field_creation_mode: Continue in Advanced Field Creation Mode
+validation: Validation
 sum: Sum
 sum_distinct: Sum Distinct
 avg: Average
@@ -259,6 +275,7 @@ fields_group: Fields Group
 no_collections_found: No collections found.
 new_data_alert: 'The following will be created within your Data Model:'
 search_collection: Search Collection...
+search_field: Search Field...
 new_field: 'New Field'
 new_collection: 'New Collection'
 add_m2o_to_collection: 'Add M2O to "{collection}"'
@@ -282,6 +299,8 @@ next: Next
 field_name: Field Name
 translations: Translations
 no_translations: No Translations
+left_to_right: Left to Right
+right_to_left: Right to Left
 note: Note
 enter_a_value: Enter a value...
 enter_a_placeholder: Enter a placeholder...
@@ -296,6 +315,8 @@ primary_key: Primary Key
 foreign_key: Foreign Key
 finish_setup: Finish Setup
 dismiss: Dismiss
+toggle_raw_editor: Toggle Raw Editor
+raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
 raw_value: Raw value
 copy_raw_value: Copy Raw Value
 copy_raw_value_success: Copied
@@ -308,6 +329,7 @@ edit_raw_value: Edit Raw Value
 enter_raw_value: Enter raw value...
 clear_value: Clear Value
 clear_changes: Clear Changes
+clear_items: Clear Items
 reset_to_default: Reset to Default
 undo_changes: Undo Changes
 notifications: Notifications
@@ -324,14 +346,18 @@ revision_delta_created_externally: Created Externally
 revision_delta_updated: 'Updated 1 Field | Updated {count} Fields'
 revision_delta_deleted: Deleted
 revision_delta_reverted: Reverted
+revision_delta_update_message: This field has been updated but its value is being concealed for security reasons.
 revision_delta_other: Revision
 revision_delta_by: '{date} by {user}'
+presentation_text_values_cannot_be_reimported: "Uses presentation text, values can not be re-imported."
+download_page_as_csv: 'Download Page as CSV'
 private_user: Private User
 creation_preview: Creation Preview
 revision_preview: Revision Preview
 updates_made: Updates Made
 leave_comment: Leave a comment...
 post_comment_success: Comment posted
+post_comment_updated: Comment updated
 item_create_success: Item Created | Items Created
 item_update_success: Item Updated | Items Updated
 item_delete_success: Item Deleted | Items Deleted
@@ -368,6 +394,12 @@ delete_share: Delete Share
 functions:
   year: Year
   month: Month
+  week: Week
+  day: Day
+  weekday: Weekday
+  hour: Hour
+  minute: Minute
+  second: Second
   count: Count
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
@@ -443,6 +475,7 @@ created_on: Created On
 creating_collection_info: Name the collection and setup its unique “key” field...
 creating_collection_system: Enable and rename any of these optional fields.
 auto_increment_integer: Auto-incremented integer
+auto_increment_big_integer: Auto-incremented big integer
 generated_uuid: Generated UUID
 manual_string: Manually entered string
 save_and_create_new: Save and Create New
@@ -453,6 +486,7 @@ creating_items: Creating Items
 enable_create_button: Enable Create Button
 selecting_items: Selecting Items
 enable_select_button: Enable Select Button
+allow_duplicates: Allow Duplicates
 comments: Comments
 no_comments: No Comments Yet
 click_to_expand: Click to Expand
@@ -463,7 +497,9 @@ disabled: Disabled
 information: Information
 report_bug: Report Bug
 request_feature: Request Feature
+request_body: Request Body
 interface_not_found: 'Interface "{interface}" not found.'
+operation_not_found: 'Operation "{operation}" not found.'
 reset_interface: Reset Interface
 display_not_found: 'Display "{display}" not found.'
 reset_display: Reset Display
@@ -503,6 +539,7 @@ activity_item: Activity Item
 action: Action
 ip_address: IP Address
 user_agent: User Agent
+origin: Origin
 webhooks: Webhooks
 decimals: Decimals
 value_decimals: Value Decimals
@@ -536,6 +573,8 @@ select_an_item: Select an item...
 edit: Edit
 enabled: Enabled
 disable_tfa: Disable 2FA
+admin_disable_tfa_text: Are you sure you want to disable 2FA for this user?
+tfa_setup: Setup 2FA
 tfa_scan_code: Scan the code in your authenticator app to finish setting up 2FA
 enter_otp_to_disable_tfa: Enter the OTP to disable 2FA
 create_account: Create Account
@@ -549,7 +588,12 @@ errors:
   INVALID_CREDENTIALS: Wrong username or password
   INVALID_OTP: Wrong one-time password
   INVALID_PAYLOAD: Invalid payload
+  INVALID_PROVIDER: User belongs to a different auth provider
   INVALID_QUERY: Invalid query
+  INVALID_CONFIG: Invalid config
+  INVALID_TOKEN: Invalid token
+  INVALID_IP: IP Address not allowed
+  INVALID_USER: Failed to authenticate user
   ITEM_LIMIT_REACHED: Item limit reached
   ITEM_NOT_FOUND: Item not found
   ROUTE_NOT_FOUND: Not found
@@ -564,11 +608,24 @@ errors:
   VALUE_OUT_OF_RANGE: Value is out of range
   INVALID_FOREIGN_KEY: Invalid foreign key
   UNKNOWN: Unexpected Error
+  GRAPHQL_VALIDATION_EXCEPTION: GraphQL Validation Exception
+  SERVICE_UNAVAILABLE: Service Unavailable
+  UNSUPPORTED_MEDIA_TYPE: Unsupported media type
+  UNEXPECTED_RESPONSE: Unexpected response
+  TOKEN_EXPIRED: Token expired
+  RANGE_NOT_SATISFIABLE: Invalid range
+  METHOD_NOT_ALLOWED: Method not allowed
+  REQUESTS_EXCEEDED: Requests limit reached
 security: Security
 value_hashed: Value Securely Hashed
 bookmark_name: Bookmark name...
 create_bookmark: Create Bookmark
 edit_bookmark: Edit Bookmark
+edit_personal_bookmark: Edit Personal Bookmark
+edit_role_bookmark: Edit Role Bookmark
+edit_global_bookmark: Edit Global Bookmark
+cannot_edit_role_bookmarks: Can't Edit Role Bookmarks
+cannot_edit_global_bookmarks: Can't Edit Global Bookmarks
 bookmarks: Bookmarks
 presets: Presets
 unexpected_error: Unexpected Error
@@ -576,9 +633,11 @@ unexpected_error_copy: An unexpected error has occurred. Please try again later.
 copy_details: Copy Details
 no_app_access: No App Access
 no_app_access_copy: This user isn't allowed to use the admin app.
+password_reset_sent: If you have an account, we've sent you a secure link to reset your password
 password_reset_successful: Password successfully reset
 back: Back
 filter: Filter
+edit_image: Edit Image
 editing_image: Editing Image
 square: Square
 free: Free
@@ -599,6 +658,9 @@ start_end_of_count_items: '{start}-{end} of {count} items'
 start_end_of_count_filtered_items: '{start}-{end} of {count} filtered items'
 one_item: '1 item'
 one_filtered_item: '1 filtered item'
+delete_collection_are_you_sure: >-
+  Are you sure you want to delete the collection "{collection}"? This will delete the collection and all items in it. This action is permanent.
+delete_folder_are_you_sure: Are you sure you want to delete the folder "{folder}"? Nested folders and collections will be moved to the top most level.
 collections_shown: Collections Shown
 visible_collections: Visible Collections
 hidden_collections: Hidden Collections
@@ -625,6 +687,7 @@ advanced_settings: Advanced Settings
 advanced_filter: Advanced Filter
 delete_advanced_filter: Delete Filter
 change_advanced_filter_operator: Change Operator
+advanced: Advanced
 operators:
   eq: Equals
   neq: Doesn't equal
@@ -638,6 +701,7 @@ operators:
   nnull: Isn't null
   contains: Contains
   ncontains: Doesn't contain
+  icontains: Contains (insensitive)
   starts_with: Starts with
   nstarts_with: Doesn't start with
   ends_with: Ends with
@@ -652,6 +716,8 @@ operators:
   nintersects: Doesn't intersect
   intersects_bbox: Intersects bounding box
   nintersects_bbox: Doesn't intersect bounding box
+  regex: Matches RegExp
+custom_validation_message: Custom Validation Message
 loading: Loading...
 drop_to_upload: Drop to Upload
 item: Item
@@ -689,6 +755,8 @@ add_file: Add File
 replace_file: Replace File
 no_results: No Results
 no_results_copy: Adjust or clear search filters to see results.
+no_visible_fields: Empty Form
+no_visible_fields_copy: This form has no visible fields.
 clear_filters: Clear Filters
 saves_automatically: Saves Automatically
 role: Role
@@ -715,11 +783,48 @@ toggle: Toggle
 icon_on: Icon On
 icon_off: Icon Off
 label: Label
+flows: Flows
+flow: Flow
+select_a_flow: Select a Flow
+run_flow_on_current_collection: Run flow on Current Collection
+run_flow_on_current: Run flow on Current Item
+run_flow_on_current_edited_confirm: This item may be updated by this flow, are you sure you want to execute it?
+run_flow_on_selected: Select One or More Items First | Run flow on 1 Selected Item | Run flow on {n} Selected Items
+run_flow_success: Flow "{flow}" ran successfully
 trigger: Trigger
+trigger_options: Trigger Options
+view_trigger: View Trigger
+create_trigger: Create Trigger
+trigger_setup: Trigger Setup
+change_trigger: Change Trigger
+flow_delete_confirm: Are you sure you want to delete Flow "{flow}"? This action can not be undone.
+set_flow_active: Set Flow to Active
+set_flow_inactive: Set Flow to Inactive
+edit_flow: Edit Flow
+delete_flow: Delete Flow
+no_other_flows_copy: You don't have any other Flows yet.
+no_flows: No Flows
+no_flows_copy: You don't have any Flows yet.
+create_flow: Create Flow
+creating_new_flow: Creating New Flow
+updating_flow: Updating Flow
+flow_setup: Flow Setup
 flow_name: Name
+flow_tracking: Activity & Logs Tracking
+flow_tracking_all: Track Activity & Logs
 flow_tracking_activity: Only Track Activity
 flow_tracking_null: Do Not Track Anything
+start_flow: Start Flow
+stop_flow: Stop Flow
+create_operation: Create Operation
+edit_operation: Edit Operation
 code: Code
+operation_options: Operation Options
+operation_name: Name of operation...
+operation_key: Identifier for reference...
+operation_key_unique_error: Operation keys must be unique in a Flow
+operation_handle_resolve: 'Resolve: Click to Add or Drag to Reroute'
+operation_handle_reject: 'Reject: Click to Add or Drag to Reroute'
 insights: Insights
 dashboard: Dashboard
 panel: Panel
@@ -728,6 +833,7 @@ panel_header: Panel Header
 panel_name_placeholder: Name this panel...
 panel_note_placeholder: Optional details about this panel...
 panel_delete_confirm: Are you sure you want to delete this panel? This action can not be undone.
+list_panel_allow_edit: Allow Inline Editing
 dashboard_delete_confirm: Are you sure you want to delete this dashboard? This action can not be undone.
 edit_dashboard: Edit Dashboard
 delete_dashboard: Delete Dashboard
@@ -740,7 +846,10 @@ no_dashboards_copy: You don’t have any Dashboards yet.
 create_dashboard: Create Dashboard
 dashboard_name: Dashboard Name
 no_data: No Data
+no_data_in_flow: No data was produced or accessed within this Flow
 accountability: Accountability
+payload: Payload
+details: Details
 full_screen: Full Screen
 full_text_search: Full-Text Search
 edit_panels: Edit Panels
@@ -754,6 +863,7 @@ media: Media
 quality: Quality
 width: Width
 height: Height
+transformation_preset_key: Transformation Preset Key
 source: Source
 url_placeholder: Enter an url...
 display_text: Display Text
@@ -838,6 +948,7 @@ settings_data_model: Data Model
 settings_permissions: Roles & Permissions
 settings_project: Project Settings
 settings_webhooks: Webhooks
+settings_flows: Flows
 settings_presets: Presets & Bookmarks
 settings_translation_strings: Translation Strings
 one_or_more_options_are_missing: One or more options are missing
@@ -887,6 +998,8 @@ page_help_settings_presets_item: >-
   **Preset Detail** — A form for managing bookmarks and default collection presets.
 page_help_settings_webhooks_collection: '**Browse Webhooks** — Lists all webhooks within the project.'
 page_help_settings_webhooks_item: '**Webhook Detail** — A form for creating and managing project webhooks.'
+page_help_settings_flows_collection: '**Browse Flows** — Lists all Flows within the project.'
+page_help_settings_flows_item: '**Flow Detail** — Workspace for managing one or more operations.'
 page_help_settings_translation_strings_collection: '**Browse Translation Strings** — Lists all translation strings within the project.'
 page_help_users_collection: '**User Directory** — Lists all system users within this project.'
 page_help_users_item: >-
@@ -915,9 +1028,11 @@ directus_collection:
   directus_dashboards: Dashboards within the Insights module
   directus_fields: Additional field configuration and metadata
   directus_files: Metadata for all managed file assets
+  directus_flows: Automation flows
   directus_folders: Provides virtual directories for files
   directus_migrations: What version of the database you're using
   directus_notifications: Notifications sent to users
+  directus_operations: Operations that run in Flows
   directus_panels: Individual panels within Insights dashboards
   directus_permissions: Access permissions for each role
   directus_presets: Presets for collection defaults and bookmarks
@@ -938,6 +1053,7 @@ fields:
     user: Action By
     comment: Comment
     user_agent: User Agent
+    origin: Origin
     ip: IP Address
     revisions: Revisions
   directus_collections:
@@ -1049,6 +1165,8 @@ fields:
     transformations_all: Allow all transformations
     transformations_none: Disable transformations
     transformations_presets: Limit transformations to presets below
+    image_editor: Image Editor
+    custom_aspect_ratios: Custom Aspect Ratios
   directus_shares:
     name: Name
     role: Role
@@ -1288,6 +1406,7 @@ reset: Reset
 reset_password: Reset Password
 revisions: Revisions
 no_revisions: No Revisions Yet
+no_logs: No Logs Yet
 revert: Revert
 save: Save
 schema: Schema
@@ -1307,14 +1426,24 @@ export_started_copy: Your export has started. You'll be notified when it's ready
 sort_asc: Sort Ascending
 sort_desc: Sort Descending
 template: Template
+require_value_to_be_set: Require value to be set on creation
 translation: Translation
 translation_placeholder: Enter a translation...
 value: Value
 view_project: View Project
+weeks: { }
 report_error: Report Error
 start: Start
 table: Table
 list: List
+search_filter: Search & Filter
+enable_search_filter: Enable searching & filtering
+item_link: Item link
+show_link_to_item: Show a link to the item
+navigate_to_item: Navigate to Item
+undo_removed_item: Undo Removed Item
+remove_item: Remove Item
+delete_item: Delete Item
 interfaces:
   filter:
     name: Filter
@@ -1331,6 +1460,7 @@ interfaces:
     no_rules: No configured rules
     change_value: Click to change value
     placeholder: Drag rules here
+    add_key_placeholder: Add a key and press enter...
   fields:
     name: Fields
   group-accordion:
@@ -1395,6 +1525,7 @@ interfaces:
     placeholder: Choose a datetime...
   system-fields:
     select_a_collection: Select a Collection
+    no_fields: No fields
   system-display-template:
     display-template: Display Template
     description: Mix static text and dynamic field values
@@ -1418,6 +1549,7 @@ interfaces:
     allow_none_label: Allow No Selection
     choices_name_placeholder: Enter a name...
     choices_value_placeholder: Enter a value...
+    preview_threshold: Preview Threshold
   select-multiple-dropdown:
     select-multiple-dropdown: Dropdown (Multiple)
     description: Select multiple values from a dropdown
@@ -1451,6 +1583,7 @@ interfaces:
   list-m2m:
     many-to-many: Many to Many
     description: Select multiple related junction items
+    columns_configure_notice: You can configure the columns after creating this field.
     display_template_configure_notice: You can configure the display template after creating this field.
   select-dropdown-m2o:
     many-to-one: Many to One
@@ -1509,8 +1642,10 @@ interfaces:
     edit_fields: Edit Fields
     add_label: '"Create New" Label'
     sort: Sort
+    sort_placeholder: Manual
     field_name_placeholder: Enter field name...
     field_note_placeholder: Enter field note...
+    incompatible_data: The current data is not compatible with the repeater interface and will be overridden when adding items to the repeater
   slider:
     slider: Slider
     description: Select a number using a slider
@@ -1566,6 +1701,7 @@ interfaces:
     user_language: Use Current User Language
     default_language: Default Language
     language_field: Language Indicator Field
+    language_direction_field: Language Direction Field
   list-o2m-tree-view:
     description: Tree view for nested recursive one-to-many items
     recursive_only: The tree view interface only works for recursive relationships.
@@ -1607,6 +1743,16 @@ interfaces:
     start_closed: Start Closed
   system-token:
     system-token: Token
+    description: Manage static access token
+    placeholder: Click "Generate Token" to create a new static access token
+    value_securely_saved: Value Securely Saved
+    generate: Generate Token
+    regenerate: Regenerate Token
+    generate_success_copy: Make sure to backup and copy the token above. For security reasons, you will not be able to view the token again after saving and navigate off this page.
+    remove_token: Remove Token
+  system-raw-editor:
+    system-raw-editor: Raw Editor
+    description: Allow entering of raw or mustache templating values
 displays:
   translations:
     translations: Translations
@@ -1645,6 +1791,16 @@ displays:
     relative: Relative
     relative_label: 'Show relative time, eg: 5 minutes ago'
     suffix: Suffix
+    suffix_label: Show relative indicator
+    suffix_note: Uses words like 'in' and 'ago'
+    strict: Strict
+    strict_label: Use strict units
+    strict_note: Removes words like 'almost', 'over', 'less than'
+    round: Round
+    round_note: Choose a rounding function to use
+    down: Down
+    nearest: Nearest
+    up: Up
   file:
     file: File
     description: Display files
@@ -1739,6 +1895,8 @@ layouts:
     calendar: Calendar
     start_date_field: Start Date Field
     end_date_field: End Date Field
+    optional: Optional
+    first_day: First Day of the Week
   map:
     map: Map
     basemap: Basemap
@@ -1754,7 +1912,34 @@ layouts:
     default_template: Using Collection Default...
     no_compatible_fields: No compatible fields
   kanban:
+    name: Kanban
+    group_field: Group By
+    group_field_placeholder: Field to group by...
+    group_title: Group Title
+    group_title_placeholder: Field for group titles...
+    title: Card Title
+    title_placeholder: Optional title field...
+    text: Card Text
+    text_placeholder: Optional text field...
+    date: Card Date
+    date_placeholder: Optional date field...
+    tags: Card Tags
+    tags_placeholder: Optional tags field...
+    user: Card User
+    user_placeholder: Optional user field...
+    image: Card Image
+    image_placeholder: Optional image field...
+    image_fit: Card Image Fit
     crop: Crop
+    advanced: Advanced
+    edit_group: Edit Group
+    delete_group: Delete Group
+    add_group: Add Group
+    add_group_placeholder: Enter a new group title...
+    show_ungrouped: Show Ungrouped
+    show: Show
+    no_group: No Group
+    not_all_loaded: Could only load the first 1000 items.
 panels:
   metric:
     name: Metric
@@ -1773,16 +1958,187 @@ panels:
   list:
     name: List
     description: Filter and list fields from a collection
+  barchart:
+    name: Bar Chart
+    description: Bar or column charts for comparing groups of values
+    select_field: You must select a field.
+    select_collection: You must select a collection.
+    select_x_axis: You must select an X-Axis.
+    function: Function
+    horizontal: Horizontal
+    x_axis_grouping: X-Axis Group Aggregation
+    x_axis: X-Axis
+    y_axis_function: Y-Axis Function
+    y_axis: Y-Axis
+    show_x_axis: Show X-Axis
+    show_y_axis: Show Y-Axis
+    show_data_label: Show Data Label
+    group_by: Grouped By
+    group_and_function: You must include or omit both a group and a function.
+    y_axis_NaN: The Y axis must be a number.
+    y_axis_conditional_one: The value for condition
+    y_axis_conditional_two: must be a number.
+  linechart:
+    name: Line Chart
+    description: Line chart for comparing change of a field
+    select_field: You must select a field.
+    select_collection: You must select a collection.
+    select_x_axis: You must select an X-Axis.
+    function: Function
+    x_axis: X-Axis
+    x_axis_decimals: X-Axis Decimals
+    disabled_no_grouping: Disabled when no grouping is selected.
+    y_axis: Y-Axis
+    datasets: Datasets
+    show_legend: Show Legend
+    show_marker: Show Tooltip Marker
+    include_dataset: You must include at least one dataset.
+    include_y_axis: You must include a Y-Axis for each dataset when no group is specified.
+    group_and_function: You must include or omit both a group and a function.
+    smooth: Smooth
+    straight: Straight
+    step_line: Step Line
+  meter:
+    name: Meter
+    description: Meter for tracking values
+    half_circle: Half Circle
+    full_circle: Full Circle
+    stroke_width: Stroke Width
+    rounded_stroke: Rounded Stroke
+    select_max_value: You must select a maximum value.
+    max_greater_than_zero: The maximum must be greater than 0.
+    select_field: You must select a field.
+    select_collection: You must select a collection.
+    function: Function
+    thin: Thin
+    medium: Medium
+    broad: Broad
+  piechart:
+    name: Pie or Donut Chart
+    description: Circular chart showing the ratios of groups on a column
+    function: Function
+    donut: Donut
+    show_labels: Show Labels
+    show_legend: Show Legend
+    right: Right
+    bottom: Bottom
+    monochrome: Monochrome
+    monochrome_color: Monochrome Colour
+  variable:
+    name: Global Variable
+    description: Set a global value for use in other Panels' filters
+    variable_key: Variable Key
+  relational-variable:
+    name: Global Relational Variable
+    description: Set a global relational value for use in other Panels' filters
+    variable_key: Variable Key
+    multiple: Multiple
+    multiple-label: Select multiple items
 triggers:
+  common:
+    response_body: Response Body
+    response_body_all: All Data
+    response_body_last: Data of Last Operation
+  event:
+    name: Event Hook
+    description: Triggers on platform or data events
+    action: 'Action (Non-Blocking)'
+    filter: 'Filter (Blocking)'
   webhook:
+    name: Webhook
+    description: Triggers on an incoming HTTP request
     method: Method
+    async: Asynchronous
+  operation:
+    name: Another Flow
+    description: Triggered by another Flow, for chaining
+    preview: Triggered by an operation in a different Flow
+  schedule:
+    name: Schedule (CRON)
+    description: Triggers at regular points in time
+    cron: Interval
+  manual:
+    name: Manual
+    description: Triggers on manual run within selected collection(s)
+    collection_and_item: Collection & Item Pages
+    collection_only: Collection Page Only
+    item_only: Item Page Only
+    collection_page: Collection Page
+    require_selection: Requires Selection
+a_flow_uuid: Select a Flow to trigger...
+any_string_or_json: Any string or JSON...
+item_payload_placeholder: This is the JSON used to update the item's field values...
+operation_variables_note: You can access flow data with variables such as **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** and **{'{'}{'{'}$accountability{'}'}{'}'}**, or reference previous operations using **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
+  condition:
+    name: Condition
+    description: Route a flow based on If / Else logic
+  exec:
+    name: Run Script
+    description: Execute arbitrary code to modify the payload
+    modules: 'The following **Node modules** can be used:'
+  item-create:
+    name: Create Data
+    description: Create items in the database
+    payload: Payload
+    emit_events: Emit Events
+  item-delete:
+    name: Delete Data
+    description: Delete items in the database
+    emit_events: Emit Events
+    key: IDs
+    query: Query
+  item-read:
+    name: Read Data
+    description: Read items from the database
+    key: IDs
+    query: Query
+    emit_events: Emit Events
+  item-update:
+    name: Update Data
+    description: Update items in the database
+    emit_events: Emit Events
+    key: IDs
+    payload: Payload
+    query: Query
+  log:
+    name: Log to Console
+    description: Output something to the console
+    message: Message
+    message_placeholder: Enter a message to show in the console...
+  mail:
+    name: Send Email
+    description: Send an email to one or more people
+    to: To
+    to_placeholder: Add e-mail addresses and press enter...
+    body: Body
   notification:
+    name: Send Notification
+    description: Send an in-app notification to one or more users
     recipient: User
+    recipient_placeholder: Add user UUID and press enter...
+    message: Message
   request:
+    name: Webhook / Request URL
+    description: "Make a request to a URL"
     url: URL
+    url_placeholder: https://example.com/example
     method: Method
     data: Data
+    headers: Headers
     header: Header
+    header_placeholder: Authorization...
+    value_placeholder: Bearer eyJhbGciOi...
+  sleep:
+    name: Sleep
+    description: Wait a given number of milliseconds
+    milliseconds: Milliseconds
+  transform:
+    name: Transform Payload
+    description: Alter the Flow's JSON payload
   trigger:
+    name: Trigger Flow
+    description: Pass this data to another flow
+    flows: Flows
+    flow: Flow
     data: Data

@@ -14,7 +14,7 @@ import { AxiosResponse } from 'axios';
 import { merge } from 'lodash';
 import { computed, ComputedRef, Ref, ref, watch } from 'vue';
 import { usePermissions } from './use-permissions';
-import { Field, Relation } from '@directus/shared/types';
+import { Field, Query, Relation } from '@directus/shared/types';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
 
 type UsableItem = {
@@ -38,7 +38,11 @@ type UsableItem = {
 	validationErrors: Ref<any[]>;
 };
 
-export function useItem(collection: Ref<string>, primaryKey: Ref<string | number | null>): UsableItem {
+export function useItem(
+	collection: Ref<string>,
+	primaryKey: Ref<string | number | null>,
+	query: Query = {}
+): UsableItem {
 	const { info: collectionInfo, primaryKeyField } = useCollection(collection);
 	const item = ref<Record<string, any> | null>(null);
 	const error = ref<any>(null);
@@ -103,7 +107,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 		error.value = null;
 
 		try {
-			const response = await api.get(itemEndpoint.value);
+			const response = await api.get(itemEndpoint.value, { params: query });
 			setItemValueToResponse(response);
 		} catch (err: any) {
 			error.value = err;
@@ -168,9 +172,11 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 			...edits.value,
 		};
 
-		// Make sure to delete the primary key if it's generated
-		if (primaryKeyField.value && primaryKeyField.value.schema?.is_generated && primaryKeyField.value.field in newItem) {
-			delete newItem[primaryKeyField.value.field];
+		// Make sure to delete the primary key if it's has auto increment enabled
+		if (primaryKeyField.value && primaryKeyField.value.field in newItem) {
+			if (primaryKeyField.value.schema?.has_auto_increment || primaryKeyField.value.meta?.special?.includes('uuid')) {
+				delete newItem[primaryKeyField.value.field];
+			}
 		}
 
 		// Make sure to delete nested relational primary keys
