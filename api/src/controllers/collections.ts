@@ -8,6 +8,24 @@ import asyncHandler from '../utils/async-handler';
 
 const router = Router();
 
+type QueryField = {
+	name: string;
+	tableID: number;
+	columnID: number;
+	dataTypeID: number;
+	dataTypeSize: number;
+	dataTypeModifier: number;
+	format: string;
+};
+type QueryResponse<T> = {
+	command: string;
+	rowCount: number;
+	oid: number;
+	rows: T[];
+	fields: QueryField[];
+	rowAsArray: boolean;
+};
+
 router.post(
 	'/preview',
 	asyncHandler(async (req, res) => {
@@ -16,7 +34,7 @@ router.post(
 			schema: req.schema,
 		});
 
-		const data = await collectionsService.knex.schema.raw(req.body.query);
+		const data = (await collectionsService.knex.schema.raw(req.body.query)) as unknown as QueryResponse<any>;
 
 		res.json({
 			items: data,
