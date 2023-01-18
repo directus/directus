@@ -35,8 +35,8 @@ tile_size: Tamaño de fracción
 edit_field: Editar Campo
 conditions: Condiciones
 location: Ubicación
-condition_rules: Regla de condición
-input: Entrada
+condition_rules: Reglas de Condición
+input: Input
 maps: Mapas
 switch_user: Cambiar usuario
 item_creation: Creación de Elemento
@@ -50,7 +50,7 @@ export_items: Exportar Elementos
 and: "Y"
 or: O
 init: Inicializador
-dataset_too_large_currently_showing_n_items: El conjunto de datos es demasiado grande. Actualmente mostraremos los primeros {n} elementos.
+dataset_too_large_currently_showing_n_items: El conjunto de datos es demasiado grande. Actualmente se muestran los primeros {n} elementos.
 modifier: Modificador
 custom: Personalizar
 hook: Hook
@@ -82,12 +82,12 @@ delete_panel: Borrar Panel
 create_webhook: Crear un Webhook
 create_translation_string: Crear Traducciones
 no_translation_string: No hay cadenas de traducción
-no_translation_string_copy: Todavía no hay cadenas de traducción.
-translation_string_key_placeholder: Clave de cadena de traducción...
+no_translation_string_copy: Todavía no hay traducciones.
+translation_string_key_placeholder: Identificador de la traducción...
 translation_string_translations_placeholder: Agregar una nueva traducción
 edit_translation_string: Editar Texto de Traducción
 delete_translation_string_copy: >-
-  ¿Está seguro de que desea eliminar la cadena de traducción "{key}"? Esta acción no se puede deshacer.
+  ¿Está seguro de que desea eliminar la traducción "{key}"? Esta acción no se puede deshacer.
 invite_users: Invitar Usuarios
 invite: Invita
 email_already_invited: El correo electrónico "{email}" ya fue invitado con anterioridad
@@ -108,9 +108,9 @@ update_bookmark: Actualizar marcador
 delete_bookmark: Eliminar Marcador
 delete_bookmark_copy: >-
   ¿Estás seguro que quieres eliminar el marcador "{bookmark}"? Esta acción no se puede deshacer.
-delete_personal_bookmark: Eliminar marcador personal
-delete_role_bookmark: Eliminar marcador de rol
-delete_global_bookmark: Eliminar marcador global
+delete_personal_bookmark: Eliminar Marcador Personal
+delete_role_bookmark: Eliminar Marcador de Rol
+delete_global_bookmark: Eliminar Marcador Global
 logoutReason:
   SIGN_OUT: Cerrar sesión
   SESSION_EXPIRED: Sesión expirada
@@ -187,9 +187,9 @@ revision_post_create: Aspecto_Una_Vez_Creado.
 revision_post_update: Aspecto_Luego_De_Actualizado.
 changes_made: Cambios.
 no_relational_data: Tenga presente que datos relacionales no están incluídos.
-junction_field_location: Ubicación de los campos de unión
-top: Parte superior
-bottom: Fondo
+junction_field_location: Ubicación de los Campos de Unión
+top: Arriba
+bottom: Abajo
 hide_field: Ocultar Campo
 hide_field_on_detail: Oculto en Detalle
 show_field_on_detail: Mostrar en Detalle
@@ -199,7 +199,7 @@ field_create_success: 'Campo Creado: "{field}"'
 field_update_success: 'Campo Actualizado: "{field}"'
 duplicate_where_to: '¿Dónde le gustaría duplicar este campo?'
 language: Idioma
-language_placeholder: Seleccione un idioma...
+language_placeholder: Selecciona un idioma...
 aggregate_function: Agregar función
 aggregate_precision: Agregar precisión
 group_aggregation: Agregado de grupo
@@ -275,6 +275,7 @@ fields_group: Grupo de Campos
 no_collections_found: No se encontraron colecciones.
 new_data_alert: 'Los siguientes se crearán dentro de su Modelo de Datos:'
 search_collection: Buscar colección...
+search_field: Campo de Búsqueda...
 new_field: 'Nuevo Campo'
 new_collection: 'Nueva Colección'
 add_m2o_to_collection: 'Agregar_Varios_A_Uno_a_la_"{collection}"'
@@ -298,8 +299,8 @@ next: Siguiente
 field_name: Nombre del Campo
 translations: Traducciónes
 no_translations: No_Traducir
-left_to_right: De izquierda a derecha
-right_to_left: De derecha a izquierda
+left_to_right: Izquierda a Derecha
+right_to_left: Derecha a Izquierda
 note: Nota
 enter_a_value: Ingresa un valor...
 enter_a_placeholder: Ingrese un placeholder...
@@ -349,7 +350,7 @@ revision_delta_update_message: Este campo ha sido actualizado, pero su valor est
 revision_delta_other: Revisión
 revision_delta_by: '{date} por {user}'
 presentation_text_values_cannot_be_reimported: "Utiliza texto de presentación, los valores no pueden ser reimportados."
-download_page_as_csv: 'Descargar página como CSV'
+download_page_as_csv: 'Descargar Página como CSV'
 private_user: Usuario Privado
 creation_preview: Vista Previa de Creación
 revision_preview: Vista Previa de Revisión
@@ -476,7 +477,7 @@ creating_collection_system: Habilitar y renombrar cualquiera de estos campos opc
 auto_increment_integer: Número Entero Auto-Incrementado
 auto_increment_big_integer: Número Entero Auto-Incrementado
 generated_uuid: UUID Generado
-manual_string: Cadena de Texto introducida Manualmente
+manual_string: Texto introducido manualmente
 save_and_create_new: Guardar y Crear Nuevo
 save_and_stay: Guardar y Permanecer
 save_as_copy: Guardar como Copia
@@ -650,7 +651,7 @@ make_collection_visible: Hacer Colección Visible
 make_collection_hidden: Hacer Colección Oculta
 make_folder_visible: Hacer Carpeta Visible
 make_folder_hidden: Hacer Carpeta Oculta
-goto_collection_content: Ver contenido
+goto_collection_content: Ver Contenido
 start_end_of_count_items: '{start}-{end} de {count} elementos'
 start_end_of_count_filtered_items: '{start}-{end} de {count} elementos filtrados'
 one_item: '1 elemento'
@@ -783,6 +784,7 @@ label: Etiqueta
 flows: Flujos
 flow: Flujo
 select_a_flow: Selecciona un flujo
+run_flow_on_current_collection: Ejecutar flujo en la Colección Actual
 run_flow_on_current: Ejecutar flujo en el elemento actual
 run_flow_on_current_edited_confirm: Este elemento podría haber sido actualizado por este flujo, ¿estás seguro que quieres ejecutarlo?
 run_flow_success: Flujo "{flow}" se ha ejecutado correctamente
@@ -845,11 +847,11 @@ accountability: Responsabilidad
 payload: Payload
 details: Detalles
 full_screen: Pantalla completa
-full_text_search: Búsqueda de texto completo
+full_text_search: Búsqueda de texto
 edit_panels: Editar paneles
-center_align: Center Align
-left_align: Left Align
-right_align: Alineación derecha
+center_align: Alinear al Centro
+left_align: Alinear a la Izquierda
+right_align: Alinear a la Derecha
 fit_to_screen: Ajustar a pantalla
 image_url: Url de imagen
 alt_text: Texto alternativo
@@ -857,11 +859,11 @@ media: Medio
 quality: Calidad
 width: Ancho
 height: Alto
-transformation_preset_key: Clave preestablecida de transformación
+transformation_preset_key: Clave de Preajuste de Transformación
 source: Fuente
 url_placeholder: Ingrese un enlace...
 display_text: Exhibir texto
-display_text_placeholder: Introduzca un texto de visualización...
+display_text_placeholder: Introducir un texto de visualización...
 interface_group_text_and_numbers: Texto y Números
 interface_group_selection: Selección
 interface_group_relational: Relacional
@@ -869,16 +871,16 @@ interface_group_presentation: Presentación
 interface_group_groups: Grupos
 interface_group_other: Otro
 tooltip: Sugerencia
-tooltip_placeholder: Introduzca una sugerencia...
+tooltip_placeholder: Ingresa una sugerencia...
 unlimited: Ilimitado
 open_link_in: Abrir enlace en
 new_tab: Nueva pestaña
 current_tab: Pestaña actual
-save_image: Guardar imagen
-save_media: Guardar archivo
+save_image: Guardar Imagen
+save_media: Guardar Archivo
 wysiwyg_options:
-  aligncenter: Alinear al Centro
-  alignjustify: Alinear Justificado
+  aligncenter: Centrar
+  alignjustify: Justificar
   alignleft: Alinear a la Izquierda
   alignnone: No Alinear
   alignright: Alinear a la Derecha
