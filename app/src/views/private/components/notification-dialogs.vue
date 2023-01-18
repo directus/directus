@@ -10,7 +10,7 @@
 				</v-card-text>
 				<v-card-actions>
 					<v-button v-if="notification.type === 'error' && admin && notification.code === 'UNKNOWN'" secondary>
-						<a target="_blank" :href="getGitHubIssueLink(notification.id, notification)">
+						<a target="_blank" :href="getGitHubIssueLink(notification)">
 							{{ t('report_error') }}
 						</a>
 					</v-button>
@@ -26,7 +26,7 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent, computed } from 'vue';
 import { useNotificationsStore } from '@/stores/notifications';
 import { useUserStore } from '@/stores/user';
-import { Notification } from '@/types/notifications';
+import { Snackbar } from '@/types/notifications';
 import { useProjectInfo } from '@/modules/settings/composables/use-project-info';
 
 export default defineComponent({
@@ -41,7 +41,7 @@ export default defineComponent({
 
 		return { t, notifications, admin: userStore.isAdmin, done, getGitHubIssueLink };
 
-		function getGitHubIssueLink(id: string, notification: Notification) {
+		function getGitHubIssueLink(notification: Snackbar) {
 			const debugInfo = `<!-- Please put a detailed explanation of the problem here. -->
 
 ---
