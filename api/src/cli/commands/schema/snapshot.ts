@@ -8,7 +8,7 @@ import { dump as toYaml } from 'js-yaml';
 
 export async function snapshot(
 	snapshotPath?: string,
-	options?: { yes: boolean; format: 'json' | 'yaml'; merged: 'yes' | 'no' }
+	options?: { yes: boolean; format: 'json' | 'yaml'; split: 'yes' | 'no' }
 ): Promise<void> {
 	const database = getDatabase();
 
@@ -61,7 +61,7 @@ export async function snapshot(
 	try {
 		const snapshot = await getSnapshot({ database });
 
-		if (options?.merged === 'no') {
+		if (options?.split === 'yes') {
 			const { collections, fields, relations, ...meta } = snapshot;
 
 			const map: Record<string, any> = {};
