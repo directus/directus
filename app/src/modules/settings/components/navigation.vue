@@ -73,6 +73,11 @@ export default defineComponent({
 				name: t('settings_flows'),
 				to: `/settings/flows`,
 			},
+			{
+				icon: 'storefront',
+				name: t('marketplace'),
+				to: `/settings/market`,
+			},
 		];
 
 		const externalItems = computed(() => {

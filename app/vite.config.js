@@ -143,13 +143,18 @@ export default defineConfig({
 	server: {
 		port: 8080,
 		proxy: {
+			'^/market': {
+				target: 'https://market.directus.app/',
+				rewrite: (path) => path.replace(/^\/market/, ''),
+				changeOrigin: true,
+			},
 			'^/(?!admin)': {
 				target: process.env.API_URL ? process.env.API_URL : 'http://127.0.0.1:8055/',
 				changeOrigin: true,
 			},
 		},
 		fs: {
-			allow: [searchForWorkspaceRoot(process.cwd()), ...getExtensionsRealPaths()],
+			allow: [searchForWorkspaceRoot(process.cwd()), ...getExtensionsRealPaths(),'D:/Programmieren/Directus/'],
 		},
 	},
 	test: {
