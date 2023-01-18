@@ -40,7 +40,7 @@ export class JsonHelperPostgres_12 extends JsonHelperDefault {
 	}
 	filterQuery(collection: string, node: JsonFieldNode): Knex.Raw | null {
 		const qp = this.knex.raw('?', [node.jsonPath]).toQuery();
-		return this.knex.raw(`jsonb_path_query_first(??.??, ${qp})`, [collection, node.name]);
+		return this.knex.raw(`jsonb_path_query_first(??.??, ${qp})::text`, [collection, node.name]);
 	}
 }
 
