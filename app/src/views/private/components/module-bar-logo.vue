@@ -12,7 +12,13 @@
 			<transition name="fade">
 				<v-progress-linear v-if="showLoader" indeterminate rounded @animationiteration="stopSpinnerIfQueueIsEmpty" />
 			</transition>
-			<v-image class="custom-logo" :src="customLogoPath" alt="Project Logo" />
+			<v-image
+				class="custom-logo"
+				:src="customLogoPath"
+				:cached-src="customLogoCached"
+				alt="Project Logo"
+				@loaded="imageLoaded"
+			/>
 		</template>
 		<div v-else class="logo" :class="{ running: showLoader }" @animationiteration="stopSpinnerIfQueueIsEmpty" />
 	</component>
@@ -21,6 +27,7 @@
 <script lang="ts">
 import { useRequestsStore } from '@/stores/requests';
 import { useSettingsStore } from '@/stores/settings';
+import { useCacheStore } from '@/stores/cache';
 import { computed, defineComponent, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -30,11 +37,17 @@ export default defineComponent({
 
 		const requestsStore = useRequestsStore();
 		const settingsStore = useSettingsStore();
+		const cacheStore = useCacheStore();
 
 		const customLogoPath = computed<string | null>(() => {
 			if (settingsStore.settings === null) return null;
 			if (!settingsStore.settings?.project_logo) return null;
 			return '/assets/' + settingsStore.settings.project_logo;
+		});
+
+		const customLogoCacheKey = 'module-bar-logo';
+		const customLogoCached = computed<string | undefined>(() => {
+			return cacheStore.getImage(customLogoCacheKey);
 		});
 
 		const showLoader = ref(false);
@@ -56,14 +69,20 @@ export default defineComponent({
 
 		return {
 			customLogoPath,
+			customLogoCached,
 			showLoader,
 			stopSpinnerIfQueueIsEmpty,
+			imageLoaded,
 			url,
 			urlTooltip,
 		};
 
 		function stopSpinnerIfQueueIsEmpty() {
 			if (queueHasItems.value === false) showLoader.value = false;
+		}
+
+		function imageLoaded(src: string) {
+			cacheStore.cacheImage(customLogoCacheKey, src);
 		}
 	},
 });

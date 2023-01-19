@@ -39,9 +39,11 @@
 					<v-image
 						v-if="avatarURL && !avatarError"
 						:src="avatarURL"
+						:cached-src="avatarCached"
 						:alt="userFullName"
 						class="avatar-image"
 						@error="avatarError = $event"
+						@loaded="imageLoaded"
 					/>
 					<v-icon v-else name="account_circle" />
 				</v-avatar>
@@ -53,6 +55,7 @@
 <script lang="ts">
 import { useAppStore } from '@/stores/app';
 import { useNotificationsStore } from '@/stores/notifications';
+import { useCacheStore } from '@/stores/cache';
 import { useUserStore } from '@/stores/user';
 import { storeToRefs } from 'pinia';
 import { computed, defineComponent, ref } from 'vue';
@@ -64,6 +67,7 @@ export default defineComponent({
 
 		const appStore = useAppStore();
 		const notificationsStore = useNotificationsStore();
+		const cacheStore = useCacheStore();
 
 		const { notificationsDrawerOpen } = storeToRefs(appStore);
 		const { unread } = storeToRefs(notificationsStore);
@@ -75,6 +79,11 @@ export default defineComponent({
 		const avatarURL = computed<string | null>(() => {
 			if (!userStore.currentUser || !('avatar' in userStore.currentUser) || !userStore.currentUser?.avatar) return null;
 			return `/assets/${userStore.currentUser.avatar.id}?key=system-medium-cover`;
+		});
+
+		const avatarCacheKey = 'module-bar-avatar';
+		const avatarCached = computed<string | undefined>(() => {
+			return cacheStore.getImage(avatarCacheKey);
 		});
 
 		const avatarError = ref(null);
@@ -94,13 +103,19 @@ export default defineComponent({
 			t,
 			userFullName,
 			avatarURL,
+			avatarCached,
 			userProfileLink,
 			signOutActive,
 			signOutLink,
 			notificationsDrawerOpen,
 			unread,
 			avatarError,
+			imageLoaded,
 		};
+
+		function imageLoaded(src: string) {
+			cacheStore.cacheImage(avatarCacheKey, src);
+		}
 	},
 });
 </script>
