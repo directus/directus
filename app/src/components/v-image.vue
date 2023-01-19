@@ -1,6 +1,6 @@
 <template>
-	<v-icon name="image_not_supported" large v-if="imgError" />
-	<img ref="imageElement" :src="srcData" v-bind="attrsWithoutSrc" v-else />
+	<v-icon v-if="imgError" name="image_not_supported" large />
+	<img v-else ref="imageElement" :src="srcData" v-bind="attrsWithoutSrc" />
 </template>
 
 <script lang="ts" setup>
