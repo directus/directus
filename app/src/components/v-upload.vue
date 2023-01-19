@@ -28,7 +28,14 @@
 		<template v-else>
 			<div class="actions">
 				<v-button v-tooltip="t('click_to_browse')" icon rounded secondary @click="openFileBrowser">
-					<input ref="input" class="browse" type="file" :multiple="multiple" @input="onBrowseSelect" />
+					<input
+						ref="input"
+						class="browse"
+						type="file"
+						:accept="fileType === 'image' ? 'image/*' : ''"
+						:multiple="multiple"
+						@input="onBrowseSelect"
+					/>
 					<v-icon name="file_upload" />
 				</v-button>
 				<v-button
@@ -82,6 +89,7 @@
 			</template>
 		</template>
 	</div>
+	<small v-if="error" v-md="errorMessage" class="error-message" />
 </template>
 
 <script setup lang="ts">
@@ -102,6 +110,7 @@ interface Props {
 	fromUrl?: boolean;
 	fromLibrary?: boolean;
 	folder?: string;
+	fileType: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -111,6 +120,7 @@ const props = withDefaults(defineProps<Props>(), {
 	fromUrl: false,
 	fromLibrary: false,
 	folder: undefined,
+	fileType: 'file',
 });
 
 const emit = defineEmits(['input']);
@@ -123,6 +133,9 @@ const { url, isValidURL, loading: urlLoading, importFromURL } = useURLImport();
 const { setSelection } = useSelection();
 const activeDialog = ref<'choose' | 'url' | null>(null);
 const input = ref<HTMLInputElement>();
+
+const error = ref(false);
+const errorMessage = ref('');
 
 const filterByFolder = computed(() => {
 	if (!props.folder) return undefined;
@@ -190,8 +203,16 @@ function useUpload() {
 	function onBrowseSelect(event: Event) {
 		const files = (event.target as HTMLInputElement)?.files;
 
+		var allowedExtensions = /(\.jpg|\.jpeg|\.png|\.tiff|\.tif)$/i;
 		if (files) {
-			upload(files);
+			if (props.fileType === 'image' && !allowedExtensions.exec(files[0].name)) {
+				error.value = true;
+				errorMessage.value = 'Please upload image file only.';
+			} else {
+				error.value = false;
+				errorMessage.value = '';
+				upload(files);
+			}
 		}
 	}
 }
@@ -224,9 +245,16 @@ function useDragging() {
 		dragging.value = false;
 
 		const files = event.dataTransfer?.files;
-
+		var allowedExtensions = /(\.jpg|\.jpeg|\.png|\.tiff|\.tif)$/i;
 		if (files) {
-			upload(files);
+			if (props.fileType === 'image' && !allowedExtensions.exec(files[0].name)) {
+				error.value = true;
+				errorMessage.value = 'Please upload image file only.';
+			} else {
+				error.value = false;
+				errorMessage.value = '';
+				upload(files);
+			}
 		}
 	}
 }
@@ -375,5 +403,13 @@ function openFileBrowser() {
 		left: 32px;
 		width: calc(100% - 64px);
 	}
+}
+
+.error-message {
+	position: relative;
+	display: block;
+	max-width: 520px;
+	margin-top: 4px;
+	color: red;
 }
 </style>
