@@ -49,7 +49,7 @@ export async function apply(snapshotPath: string, options?: { yes: boolean; dryR
 			const regex = new RegExp(`${name}-(.+)${ext}$`);
 
 			for (const file of files) {
-				if (file.match(regex) !== null) {
+				if (file.match(regex)) {
 					const { fields, relations, ...collection } = await loadSnapshot<SnapshotCollection>(path.resolve(dir, file));
 					fields?.forEach((field: SnapshotField) => {
 						field.collection = collection.collection;
