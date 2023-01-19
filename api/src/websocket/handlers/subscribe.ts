@@ -128,9 +128,9 @@ export class SubscribeHandler {
 			try {
 				const collection = message.collection!;
 				const accountability = client.accountability;
-				const schema = await getSchema();
+				const schema = await getSchema(accountability ? { accountability } : {});
 				// console.log(accountability, JSON.stringify(schema, null, 2));
-				if (!accountability?.admin && !schema.collections[collection]) {
+				if (!accountability?.admin && !(await schema.hasCollection(collection))) {
 					throw new WebSocketException(
 						'subscribe',
 						'INVALID_COLLECTION',
