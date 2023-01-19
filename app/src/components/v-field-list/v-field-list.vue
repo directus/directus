@@ -77,7 +77,7 @@ const treeList = computed(() => {
 	function setDisabled(
 		field: typeof treeListOriginal.value[number]
 	): typeof treeListOriginal.value[number] & { disabled: boolean } {
-		let disabled = field.group || (props.includeFunctions && field.type === 'alias') || false;
+		let disabled = field.group || false;
 
 		if (props.disabledFields?.includes(field.key)) disabled = true;
 
