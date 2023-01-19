@@ -275,6 +275,7 @@ fields_group: Grupo de Campos
 no_collections_found: No se encontraron colecciones.
 new_data_alert: 'Los siguientes se crearán dentro de su Modelo de Datos:'
 search_collection: Buscar colección...
+search_field: Buscar campo...
 new_field: 'Nuevo Campo'
 new_collection: 'Colección Nueva'
 add_m2o_to_collection: 'Añadir M2O a "{collection}"'
@@ -572,6 +573,8 @@ select_an_item: Seleccionar un Elemento...
 edit: Editar
 enabled: Habilitado
 disable_tfa: Desactivar 2FA
+admin_disable_tfa_text: '¿Está seguro que desea desactivar 2FA para este usuario?'
+tfa_setup: Configurar 2FA
 tfa_scan_code: Escanee el código en tu aplicación de Autentificación para finalizar la configuración de 2FA
 enter_otp_to_disable_tfa: Ingrese el OTP para desactivar 2FA
 create_account: Crear Cuenta
@@ -783,8 +786,10 @@ label: Etiqueta
 flows: Flujos
 flow: Flujo
 select_a_flow: Selecciona un flujo
+run_flow_on_current_collection: Ejecutar flujo en la colección actual
 run_flow_on_current: Ejecutar flujo en el elemento actual
 run_flow_on_current_edited_confirm: Este elemento podría haber sido actualizado por este flujo, ¿estás seguro que quieres ejecutarlo?
+run_flow_on_selected: Seleccionar uno o más artículos primero | Ejecutar flujo en 1 elemento seleccionado | Ejecutar flujo en {n} artículos seleccionados
 run_flow_success: Flujo "{flow}" se ha ejecutado correctamente
 trigger: Disparador
 trigger_options: Opciones de activación
@@ -828,6 +833,7 @@ panel_header: Encabezado del Panel
 panel_name_placeholder: Nombre este panel...
 panel_note_placeholder: Detalles opcionales sobre este panel...
 panel_delete_confirm: '¿Está seguro de que desea eliminar este panel? Esta acción no se puede deshacer.'
+list_panel_allow_edit: Permitir edición en línea
 dashboard_delete_confirm: '¿Está seguro de que desea eliminar este panel? Esta acción no se puede deshacer.'
 edit_dashboard: Editar panel de control
 delete_dashboard: Eliminar el panel
@@ -1905,6 +1911,8 @@ layouts:
     default_template: Usando la colección por defecto...
     no_compatible_fields: No hay campos compatibles
   kanban:
+    name: Kanban
+    group_field: Agrupar por
     crop: Recortar
     advanced: Avanzado
     not_all_loaded: Sólo se pudieron cargar los primeros 1000 elementos.
