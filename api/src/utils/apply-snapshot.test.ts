@@ -20,6 +20,11 @@ describe('applySnapshot', () => {
 	let db: MockedFunction<Knex>;
 	let tracker: Tracker;
 
+	const mutationOptions = {
+		autoPurgeSystemCache: false,
+		bypassEmitAction: expect.any(Function),
+	};
+
 	beforeEach(() => {
 		db = vi.mocked(knex({ client: Client_PG }));
 		tracker = getTracker();
@@ -98,12 +103,8 @@ describe('applySnapshot', () => {
 			// Stop call to db later on in apply-snapshot
 			vi.spyOn(getSchema, 'getSchema').mockReturnValue(Promise.resolve(snapshotApplyTestSchema));
 			// We are not actually testing that createOne works, just that is is called correctly
-			const createOneCollectionSpy = vi
-				.spyOn(CollectionsService.prototype, 'createOne')
-				.mockImplementation(vi.fn().mockReturnValue([]));
-			const createFieldSpy = vi
-				.spyOn(FieldsService.prototype, 'createField')
-				.mockImplementation(vi.fn().mockReturnValue([]));
+			const createOneCollectionSpy = vi.spyOn(CollectionsService.prototype, 'createOne').mockResolvedValue('test');
+			const createFieldSpy = vi.spyOn(FieldsService.prototype, 'createField').mockResolvedValue();
 
 			await applySnapshot(snapshotCreateCollectionNotNested, {
 				database: db,
@@ -112,7 +113,7 @@ describe('applySnapshot', () => {
 			});
 
 			expect(createOneCollectionSpy).toHaveBeenCalledTimes(1);
-			expect(createOneCollectionSpy).toHaveBeenCalledWith(expected);
+			expect(createOneCollectionSpy).toHaveBeenCalledWith(expected, mutationOptions);
 
 			// There should be no fields left to create
 			// they will get filtered in createCollections
@@ -249,12 +250,8 @@ describe('applySnapshot', () => {
 			// Stop call to db later on in apply-snapshot
 			vi.spyOn(getSchema, 'getSchema').mockReturnValue(Promise.resolve(snapshotApplyTestSchema));
 			// We are not actually testing that createOne works, just that is is called correctly
-			const createOneCollectionSpy = vi
-				.spyOn(CollectionsService.prototype, 'createOne')
-				.mockImplementation(vi.fn().mockReturnValue([]));
-			const createFieldSpy = vi
-				.spyOn(FieldsService.prototype, 'createField')
-				.mockImplementation(vi.fn().mockReturnValue([]));
+			const createOneCollectionSpy = vi.spyOn(CollectionsService.prototype, 'createOne').mockResolvedValue('test');
+			const createFieldSpy = vi.spyOn(FieldsService.prototype, 'createField').mockResolvedValue();
 
 			await applySnapshot(snapshotCreateCollection, {
 				database: db,
@@ -263,8 +260,8 @@ describe('applySnapshot', () => {
 			});
 
 			expect(createOneCollectionSpy).toHaveBeenCalledTimes(2);
-			expect(createOneCollectionSpy).toHaveBeenCalledWith(expected);
-			expect(createOneCollectionSpy).toHaveBeenCalledWith(expected2);
+			expect(createOneCollectionSpy).toHaveBeenCalledWith(expected, mutationOptions);
+			expect(createOneCollectionSpy).toHaveBeenCalledWith(expected2, mutationOptions);
 
 			// There should be no fields left to create
 			// they will get filtered in createCollections
@@ -285,9 +282,7 @@ describe('applySnapshot', () => {
 			// Stop call to db later on in apply-snapshot
 			vi.spyOn(getSchema, 'getSchema').mockReturnValue(Promise.resolve(snapshotApplyTestSchema));
 			// We are not actually testing that deleteOne works, just that is is called correctly
-			const deleteOneCollectionSpy = vi
-				.spyOn(CollectionsService.prototype, 'deleteOne')
-				.mockImplementation(vi.fn().mockReturnValue([]));
+			const deleteOneCollectionSpy = vi.spyOn(CollectionsService.prototype, 'deleteOne').mockResolvedValue('test');
 
 			await applySnapshot(snapshotToApply, {
 				database: db,

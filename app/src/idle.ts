@@ -1,20 +1,23 @@
+import { throttle } from 'lodash';
 import mitt from 'mitt';
 
 const events = ['pointermove', 'pointerdown', 'keydown'];
-const time = 5 * 60 * 1000; // 5 min in ms
+export const time = 5 * 60 * 1000; // 5 min in ms
 
-let timeout: NodeJS.Timeout;
+let timeout: number | null;
 
 let visible = true;
 let idle = false;
 
 export const idleTracker = mitt();
 
+const throttledOnIdleEvents = throttle(onIdleEvents, 500);
+
 export function startIdleTracking(): void {
 	document.addEventListener('visibilitychange', onVisibilityChange);
 
 	for (const event of events) {
-		document.addEventListener(event, onIdleEvents);
+		document.addEventListener(event, throttledOnIdleEvents);
 	}
 
 	resetTimeout();
@@ -24,7 +27,7 @@ export function stopIdleTracking(): void {
 	document.removeEventListener('visibilitychange', onVisibilityChange);
 
 	for (const event of events) {
-		document.removeEventListener(event, onIdleEvents);
+		document.removeEventListener(event, throttledOnIdleEvents);
 	}
 }
 
@@ -51,10 +54,11 @@ function onVisibilityChange() {
 
 function resetTimeout() {
 	if (timeout) {
-		clearTimeout(timeout);
+		window.clearTimeout(timeout);
+		timeout = null;
 	}
 
-	timeout = setTimeout(() => {
+	timeout = window.setTimeout(() => {
 		idle = true;
 		idleTracker.emit('idle');
 	}, time);

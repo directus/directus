@@ -1,0 +1,51 @@
+{
+	"name": "@directus/utils",
+	"version": "9.22.4",
+	"type": "module",
+	"scripts": {
+		"build": "tsc --build",
+		"dev": "tsc --watch",
+		"test": "vitest run",
+		"test:watch": "vitest",
+		"test:coverage": "vitest run --coverage"
+	},
+	"description": "Utilities shared between the Directus packages",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus/directus.git",
+		"directory": "packages/utils"
+	},
+	"funding": "https://github.com/directus/directus?sponsor=1",
+	"license": "GPL-3.0",
+	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js"
+		},
+		"./node": {
+			"types": "./dist/node/index.d.ts",
+			"import": "./dist/node/index.js"
+		},
+		"./package.json": "./package.json"
+	},
+	"main": "dist/index.js",
+	"files": [
+		"dist",
+		"!**/*.d.ts?(.map)"
+	],
+	"publishConfig": {
+		"access": "public"
+	},
+	"dependencies": {
+		"@directus/shared": "workspace:*",
+		"@directus/storage": "workspace:*"
+	},
+	"devDependencies": {
+		"@directus/tsconfig": "0.0.6",
+		"@ngneat/falso": "6.3.2",
+		"@vitest/coverage-c8": "0.26.2",
+		"typescript": "4.9.4",
+		"vitest": "0.26.2"
+	}
+}

@@ -17,6 +17,7 @@ export default defineOperationApi<Options>({
 	handler: async ({ body, template, data, to, type, subject }, { accountability, database, getSchema }) => {
 		const mailService = new MailService({ schema: await getSchema({ database }), accountability, knex: database });
 		const mailObject: EmailOptions = { to, subject };
+    const safeBody = typeof body !== 'string' ? JSON.stringify(body) : body;
 
 		if (type === 'template') {
 			mailObject.template = {
@@ -24,7 +25,7 @@ export default defineOperationApi<Options>({
 				data: data || {},
 			};
 		} else {
-			mailObject.html = type === 'wysiwyg' ? body || '' : md(body || '');
+			mailObject.html = type === 'wysiwyg' ? safeBody : md(safeBody);
 		}
 
 		await mailService.send(mailObject);
