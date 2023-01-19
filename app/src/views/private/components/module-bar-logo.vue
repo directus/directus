@@ -27,7 +27,7 @@
 <script lang="ts">
 import { useRequestsStore } from '@/stores/requests';
 import { useSettingsStore } from '@/stores/settings';
-import { useCacheStore } from '@/stores/cache';
+import { useImageCacheStore } from '@/views/private/components/image/image-cache';
 import { computed, defineComponent, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -37,7 +37,7 @@ export default defineComponent({
 
 		const requestsStore = useRequestsStore();
 		const settingsStore = useSettingsStore();
-		const cacheStore = useCacheStore();
+		const imageCacheStore = useImageCacheStore();
 
 		const customLogoPath = computed<string | null>(() => {
 			if (settingsStore.settings === null) return null;
@@ -45,9 +45,8 @@ export default defineComponent({
 			return '/assets/' + settingsStore.settings.project_logo;
 		});
 
-		const customLogoCacheKey = 'module-bar-logo';
 		const customLogoCached = computed<string | undefined>(() => {
-			return cacheStore.getImage(customLogoCacheKey);
+			return imageCacheStore.getModuleBarLogo();
 		});
 
 		const showLoader = ref(false);
@@ -82,7 +81,7 @@ export default defineComponent({
 		}
 
 		function imageLoaded(src: string) {
-			cacheStore.cacheImage(customLogoCacheKey, src);
+			imageCacheStore.cacheModuleBarLogo(src);
 		}
 	},
 });
