@@ -70,7 +70,7 @@
 		"fs-extra": "11.1.0",
 		"geojson": "0.5.0",
 		"joi": "17.7.0",
-		"knex": "2.3.0",
+		"knex": "2.4.1",
 		"knex-schema-inspector": "3.0.0",
 		"lodash": "4.17.21",
 		"micromustache": "8.0.3",

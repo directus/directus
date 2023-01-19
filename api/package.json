@@ -128,7 +128,7 @@
 		"json2csv": "5.0.7",
 		"jsonwebtoken": "9.0.0",
 		"keyv": "4.5.2",
-		"knex": "2.3.0",
+		"knex": "2.4.1",
 		"knex-schema-inspector": "3.0.0",
 		"ldapjs": "2.3.3",
 		"liquidjs": "10.3.3",
