@@ -29,11 +29,13 @@ draft: Utkast
 archived: Arkiverad
 modules: Moduler
 module_bar: Modulfält
+logs: Loggar
 reset_width: Återställ bredd
 tile_size: Rutstorlek
 edit_field: Redigera fält
 conditions: Villkor
 location: Position
+condition_rules: Villkor
 input: Inmatning
 maps: Kartor
 switch_user: Byt användare
@@ -47,6 +49,8 @@ group: Gruppera
 export_items: Exportera objekt
 and: Och
 or: Eller
+dataset_too_large_currently_showing_n_items: Dataset är för stort. Visar för närvarande de första {n} objekten.
+modifier: Modifierare
 fill_width: Full bredd
 field_name_translations: Översättningar fältnamn
 enter_password_to_enable_tfa: Ange ditt lösenord för att aktivera tvåfaktorsautentisering
