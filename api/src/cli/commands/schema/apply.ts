@@ -51,16 +51,15 @@ export async function apply(snapshotPath: string, options?: { yes: boolean; dryR
 			for (const file of files) {
 				if (file.match(regex)) {
 					const { fields, relations, ...collection } = await loadSnapshot<SnapshotCollection>(path.resolve(dir, file));
+					snapshot.collections.push(collection);
 					fields?.forEach((field: SnapshotField) => {
 						field.collection = collection.collection;
-						snapshot.fields?.push(field);
+						snapshot.fields.push(field);
 					});
 					relations?.forEach((relation: SnapshotRelation) => {
 						relation.collection = collection.collection;
-						snapshot.relations?.push(relation);
+						snapshot.relations.push(relation);
 					});
-
-					snapshot.collections.push(collection);
 				}
 			}
 		}
