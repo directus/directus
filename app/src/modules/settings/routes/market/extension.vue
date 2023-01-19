@@ -1,13 +1,13 @@
 <template>
-	<private-view :title="t('marketplace')">
+	<private-view :title="title">
 		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded disabled icon>
-				<v-icon name="bolt" />
+			<v-button class="header-icon" rounded icon exact to="/settings/market">
+				<v-icon name="arrow_back" />
 			</v-button>
 		</template>
 
 		<template #headline>
-			<v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" />
+			<v-breadcrumb :items="[{ name: t('marketplace'), to: '/settings/market' }]" />
 		</template>
 
 		<template #navigation>
@@ -15,11 +15,8 @@
 		</template>
 
 		<template #actions>
-			<v-button
-				rounded
-				icon
-			>
-				<v-icon name="add" />
+			<v-button rounded icon>
+				<v-icon name="save_alt" @click="installDialog = true" />
 			</v-button>
 		</template>
 
@@ -35,6 +32,20 @@
 				Loading...
 			</template>
 		</Suspense>
+
+		<v-dialog :modelValue="installDialog">
+			<v-card>
+				<v-card-title>Install {{ title }}</v-card-title>
+				<v-card-text>
+					Are you sure that you want to install this extension?
+					The extension has full access to your database and can do anything.
+				</v-card-text>
+				<v-card-actions>
+					<v-button secondary @click="installDialog = false">Close</v-button>
+					<v-button danger @click="install()">Install</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
 	</private-view>
 </template>
 
@@ -42,36 +53,41 @@
 import { useI18n } from 'vue-i18n';
 import SettingsNavigation from '../../components/navigation.vue';
 import Extension from '@nitwel/directus-marketplace/components/extension.vue';
-import { provide, ref } from 'vue';
+import { formatTitle } from '@nitwel/directus-marketplace/utils/format';
+import { computed, provide, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import axios from 'axios';
-import { getRootPath } from '@/utils/get-root-path';
+import { marketApi } from './market-api';
+import api from '@/api';
 
 interface Props {
 	name: string;
 }
 
 const props = defineProps<Props>();
+const installDialog = ref(false);
 
 const {} = useRouter();
 
-const api = axios.create({
-	baseURL: getRootPath() + 'market/',
-	headers: {
-		'Cache-Control': 'no-store',
-	},
-});
-
-provide('api', api);
+provide('api', marketApi);
 
 const { t } = useI18n();
+
+async function install() {
+	await api.post(`/extensions/${encodeURIComponent(props.name)}`)
+	location.reload();
+	installDialog.value = false;
+}
+
+const title = computed(() => {
+	return formatTitle(props.name);
+});
 
 </script>
 
 <style scoped>
 .header-icon {
-	--v-button-color-disabled: var(--primary);
-	--v-button-background-color-disabled: var(--primary-10);
+	--v-button-color: var(--primary);
+	--v-button-background-color: var(--primary-10);
 }
 .extension {
 	padding: var(--content-padding);

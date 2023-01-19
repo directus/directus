@@ -1472,6 +1472,7 @@ disable_extension: Disable Extension
 page_help_settings_extensions: View a list of all installed extensions and either enable or disable them.
 no_extensions: No Extensions
 no_extensions_copy: No extensions have been installed yet.
+marketplace: Marketplace
 interfaces:
   filter:
     name: Filter

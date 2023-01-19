@@ -247,7 +247,7 @@ export default defineModule({
 				},
 				{
 					name: 'extension',
-					path: 'extensions/:name',
+					path: 'extensions/:name(.+)',
 					component: MarketExtension,
 					props: true,
 				},

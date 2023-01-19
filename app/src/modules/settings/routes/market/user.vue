@@ -1,26 +1,17 @@
 <template>
-	<private-view :title="t('marketplace')">
+	<private-view :title="name">
 		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded disabled icon>
-				<v-icon name="bolt" />
+			<v-button class="header-icon" rounded icon exact to="/settings/market">
+				<v-icon name="arrow_back" />
 			</v-button>
 		</template>
 
 		<template #headline>
-			<v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" />
+			<v-breadcrumb :items="[{ name: t('marketplace'), to: '/settings/market' }]" />
 		</template>
 
 		<template #navigation>
 			<settings-navigation />
-		</template>
-
-		<template #actions>
-			<v-button
-				rounded
-				icon
-			>
-				<v-icon name="add" />
-			</v-button>
 		</template>
 
 		<template #sidebar>
@@ -44,8 +35,7 @@ import SettingsNavigation from '../../components/navigation.vue';
 import User from '@nitwel/directus-marketplace/components/user.vue';
 import { provide } from 'vue';
 import { useRouter } from 'vue-router';
-import axios from 'axios';
-import { getRootPath } from '@/utils/get-root-path';
+import { marketApi } from './market-api';
 
 interface Props {
 	name: string;
@@ -55,14 +45,7 @@ const props = defineProps<Props>();
 
 const {} = useRouter();
 
-const api = axios.create({
-	baseURL: getRootPath() + 'market/',
-	headers: {
-		'Cache-Control': 'no-store',
-	},
-});
-
-provide('api', api);
+provide('api', marketApi);
 
 const { t } = useI18n();
 
@@ -70,8 +53,8 @@ const { t } = useI18n();
 
 <style scoped>
 .header-icon {
-	--v-button-color-disabled: var(--primary);
-	--v-button-background-color-disabled: var(--primary-10);
+	--v-button-color: var(--primary);
+	--v-button-background-color: var(--primary-10);
 }
 .user {
 	padding: var(--content-padding);

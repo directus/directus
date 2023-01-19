@@ -14,15 +14,6 @@
 			<settings-navigation />
 		</template>
 
-		<template #actions>
-			<v-button
-				rounded
-				icon
-			>
-				<v-icon name="add" />
-			</v-button>
-		</template>
-
 		<template #sidebar>
 			<sidebar-detail icon="info_outline" :title="t('information')" close>
 				<div v-md="t('page_help_settings_flows_collection')" class="page-description" />
@@ -44,8 +35,8 @@ import SettingsNavigation from '../../components/navigation.vue';
 import Overview from '@nitwel/directus-marketplace/components/overview.vue';
 import { provide, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import axios from 'axios';
-import { getRootPath } from '@/utils/get-root-path';
+import { marketApi } from './market-api';
+
 
 interface Props {
 	type?: string;
@@ -55,14 +46,9 @@ const props = defineProps<Props>();
 
 const {} = useRouter();
 
-const api = axios.create({
-	baseURL: getRootPath() + 'market/',
-	headers: {
-		'Cache-Control': 'no-store',
-	},
-});
 
-provide('api', api);
+
+provide('api', marketApi);
 
 const { t } = useI18n();
 
