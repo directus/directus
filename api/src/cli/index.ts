@@ -92,7 +92,7 @@ export async function createCli(): Promise<Command> {
 		.description('Create a new Schema Snapshot')
 		.option('-y, --yes', `Assume "yes" as answer to all prompts and run non-interactively`, false)
 		.addOption(new Option('--format <format>', 'JSON or YAML format').choices(['json', 'yaml']).default('yaml'))
-		.addOption('-s, --split', 'Export as a single schema file', false)
+		.addOption(new Option('-s, --split', 'Export as a single schema file'))
 		.argument('[path]', 'Path to snapshot file')
 		.action(snapshot);
 
