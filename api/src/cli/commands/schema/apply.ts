@@ -26,7 +26,7 @@ export async function apply(snapshotPath: string, options?: { yes: boolean; dryR
 
 	let snapshot: Snapshot;
 
-	async function loadSnapshot<T extends Snapshot | SnapshotCollection>(filename: any): Promise<T> {
+	async function loadSnapshot<T extends Snapshot | SnapshotCollection>(filename: string): Promise<T> {
 		const fileContents = await fs.readFile(filename, 'utf8');
 
 		if (filename.endsWith('.yaml') || filename.endsWith('.yml')) {
