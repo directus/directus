@@ -21,6 +21,17 @@ export type Subscription = {
 	client: WebSocketClient;
 };
 
+export type FocusMessage =
+	| {
+			type: 'FOCUS';
+			collection: string;
+			item: string;
+			field: string | false;
+	  }
+	| {
+			type: 'BLUR';
+	  };
+
 export type UpgradeContext = {
 	request: IncomingMessage;
 	socket: internal.Duplex;

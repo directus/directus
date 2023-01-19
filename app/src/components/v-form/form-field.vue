@@ -47,6 +47,7 @@
 			:direction="direction"
 			@update:model-value="emitValue($event)"
 			@set-field-value="$emit('setFieldValue', $event)"
+			@set-focus="$emit('setFocus', $event)"
 		/>
 
 		<form-field-raw-editor
@@ -116,7 +117,7 @@ const props = withDefaults(defineProps<Props>(), {
 	direction: undefined,
 });
 
-const emit = defineEmits(['toggle-batch', 'toggle-raw', 'unset', 'update:modelValue', 'setFieldValue']);
+const emit = defineEmits(['toggle-batch', 'toggle-raw', 'unset', 'update:modelValue', 'setFieldValue', 'setFocus']);
 
 const { t } = useI18n();
 

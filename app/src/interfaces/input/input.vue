@@ -16,6 +16,8 @@
 		:dir="direction"
 		:autocomplete="masked ? 'new-password' : 'off'"
 		@update:model-value="$emit('input', $event)"
+		@focus="$emit('focus', $event)"
+		@blur="$emit('blur', 'test')"
 	>
 		<template v-if="iconLeft" #prepend><v-icon :name="iconLeft" /></template>
 		<template v-if="(percentageRemaining !== null && percentageRemaining <= 20) || iconRight || softLength" #append>
@@ -117,7 +119,7 @@ export default defineComponent({
 			default: undefined,
 		},
 	},
-	emits: ['input'],
+	emits: ['input', 'focus', 'blur'],
 	setup(props) {
 		const charsRemaining = computed(() => {
 			if (typeof props.value === 'number') return null;

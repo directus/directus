@@ -29,6 +29,8 @@
 			:direction="direction"
 			@input="$emit('update:modelValue', $event)"
 			@set-field-value="$emit('setFieldValue', $event)"
+			@focus="$emit('setFocus', field.field)"
+			@blur="$emit('setFocus', false)"
 		/>
 
 		<interface-system-raw-editor
@@ -78,7 +80,7 @@ const props = withDefaults(defineProps<Props>(), {
 	direction: undefined,
 });
 
-defineEmits(['update:modelValue', 'setFieldValue']);
+defineEmits(['update:modelValue', 'setFieldValue', 'setFocus']);
 
 const { t } = useI18n();
 

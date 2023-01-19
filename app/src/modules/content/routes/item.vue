@@ -159,6 +159,7 @@
 			:fields="fields"
 			:primary-key="internalPrimaryKey"
 			:validation-errors="validationErrors"
+			@focus-field="handleFocus($event)"
 		/>
 
 		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
@@ -216,7 +217,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, unref, toRefs } from 'vue';
+import { computed, ref, unref, toRefs, onUnmounted, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { useEditsGuard } from '@/composables/use-edits-guard';
@@ -235,6 +236,8 @@ import { useCollection } from '@directus/shared/composables';
 import { useRouter } from 'vue-router';
 import ContentNavigation from '../components/navigation.vue';
 import ContentNotFound from './not-found.vue';
+import { getWebSocket } from '@/websocket';
+import { WebSocketClient } from '@directus/shared/types';
 
 interface Props {
 	collection: string;
@@ -278,6 +281,92 @@ const {
 	refresh,
 	validationErrors,
 } = useItem(collection, primaryKey);
+
+const ws = getWebSocket();
+let subscriptionId: number | null = null,
+	activeClient: WebSocketClient | false = false;
+// webSocketsActive = false;
+
+ws.onConnect((client) => {
+	// console.log('connect');
+	watch(
+		[collection, primaryKey],
+		([newCollection, pkVal]) => {
+			// console.log('watch', newCollection, pkVal);
+			if (subscriptionId !== null) client.unsubscribe(subscriptionId);
+			if (!newCollection || pkVal === null) return;
+
+			subscriptionId = client.subscribe(
+				{
+					type: 'SUBSCRIBE',
+					query: { fields: [] },
+					collection: 'directus_users',
+					item: pkVal!,
+					status: true,
+				},
+				(data) => {
+					// console.error(data);
+				}
+			);
+		},
+		{ immediate: true }
+	);
+
+	activeClient = client;
+
+	handleFocus(false);
+	onUnmounted(() => {
+		if (subscriptionId !== null) client.unsubscribe(subscriptionId);
+		client.send('BLUR', {}, false);
+	});
+});
+
+ws.onDisconnect(() => {
+	activeClient = false;
+});
+
+function handleFocus(field: string | false) {
+	// console.log('handleFocus', field);
+	if (activeClient && props.primaryKey && props.primaryKey !== '+') {
+		activeClient.send(
+			'FOCUS',
+			{
+				collection: props.collection,
+				item: props.primaryKey,
+				field,
+			},
+			false
+		);
+	}
+}
+
+// const x = useSubscription([collection, primaryKey], ());
+// function useSubscription(options: SubscribeOptions, callback: MessageCallback) {
+
+// }
+
+// function useFocus(collection: Ref<string>, id: Ref<string | null>) {
+// 	const wrap = getWebSocket();
+// 	let uid: number | undefined, ws: WebSocketClient;
+// 	wrap.onConnect((ws) => {});
+// 	wrap.onDisconnect(() => {});
+// 	watch(
+// 		[collection, id],
+// 		() => {
+// 			uid = ws.subscribe(
+// 				{
+// 					collection: collection.value,
+// 					item: unref(id)!,
+// 				},
+// 				(data) => {
+// 					console.error(data);
+// 				}
+// 			);
+// 		},
+// 		{ immediate: true }
+// 	);
+// 	onUnmounted(() => {});
+// }
 
 const { templateData, loading: templateDataLoading } = useTemplateData(collectionInfo, primaryKey);
 

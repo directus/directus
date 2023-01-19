@@ -78,6 +78,7 @@
 				@unset="unsetValue(fieldsMap[fieldName])"
 				@toggle-batch="toggleBatchField(fieldsMap[fieldName])"
 				@toggle-raw="toggleRawField(fieldsMap[fieldName])"
+				@set-focus="$emit('focusField', $event)"
 			/>
 		</template>
 		<v-divider v-if="showDivider && !noVisibleFields" />
@@ -144,7 +145,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const { t } = useI18n();
 
-const emit = defineEmits(['update:modelValue']);
+const emit = defineEmits(['update:modelValue', 'focusField']);
 
 const values = computed(() => {
 	return Object.assign({}, props.initialValues, props.modelValue);

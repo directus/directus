@@ -1,6 +1,6 @@
 import type { Query } from './query';
 
-type MessageType = 'SUBSCRIBE' | 'UNSUBSCRIBE' | 'PING' | 'PONG' | 'AUTH';
+type MessageType = 'SUBSCRIBE' | 'UNSUBSCRIBE' | 'PING' | 'PONG' | 'AUTH' | 'FOCUS' | 'BLUR';
 
 type MessageCallback = (data: Record<string, any>) => void;
 
@@ -23,7 +23,7 @@ interface WebSocketWrapper {
 interface WebSocketClient {
 	subscribe(options: SubscribeOptions, callback: MessageCallback): number;
 	unsubscribe(uid: number): void;
-	send(type: MessageType, data?: Record<string, any>, timeout?: number): Promise<Record<string, any>>;
+	send(type: MessageType, data?: Record<string, any>, timeout?: number | false): Promise<Record<string, any>> | void;
 }
 
 export type { MessageType, MessageCallback, WSQuery, SubscribeOptions, WebSocketWrapper, WebSocketClient };
