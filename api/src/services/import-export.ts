@@ -28,6 +28,8 @@ import { ItemsService } from './items';
 import { NotificationsService } from './notifications';
 import type { Readable } from 'node:stream';
 
+type ExportFormat = 'csv' | 'json' | 'xml' | 'yaml';
+
 export class ImportService {
 	knex: Knex;
 	accountability: Accountability | null;
@@ -179,7 +181,7 @@ export class ExportService {
 	async exportToFile(
 		collection: string,
 		query: Partial<Query>,
-		format: 'csv' | 'json' | 'xml' | 'yaml',
+		format: ExportFormat,
 		options?: {
 			file?: Partial<File>;
 		}
@@ -306,7 +308,7 @@ export class ExportService {
 	 */
 	transform(
 		input: Record<string, any>[],
-		format: 'csv' | 'json' | 'xml' | 'yaml',
+		format: ExportFormat,
 		options?: {
 			includeHeader?: boolean;
 			includeFooter?: boolean;
