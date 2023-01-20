@@ -110,7 +110,7 @@ interface Props {
 	fromUrl?: boolean;
 	fromLibrary?: boolean;
 	folder?: string;
-	fileType: string;
+	fileType?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
