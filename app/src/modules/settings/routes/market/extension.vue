@@ -15,9 +15,20 @@
 		</template>
 
 		<template #actions>
-			<v-button rounded icon>
+			<v-button v-if="extension === undefined" rounded icon v-tooltip.bottom="'Install Extension'">
 				<v-icon name="save_alt" @click="installDialog = true" />
 			</v-button>
+			<template v-else>
+				<v-button danger rounded icon v-tooltip.bottom="'Delete Extension'">
+					<v-icon name="delete" @click="uninstallDialog = true" />
+				</v-button>
+				<v-button secondary rounded icon v-tooltip.bottom="'Update Extension'">
+					<v-icon name="update" @click="updateDialog = true" />
+				</v-button>
+				<v-button :secondary="extension.enabled === false" rounded icon v-tooltip.bottom="extension.enabled ? 'Disable Extension' : 'Enable Extension'">
+					<v-icon :name="extension.enabled ? 'check_box' : 'check_box_outline_blank'" @click="toggleExtension" />
+				</v-button>
+			</template>
 		</template>
 
 		<template #sidebar>
@@ -27,7 +38,7 @@
 		</template>
 
 		<Suspense>
-			<Extension :name="name" app/>
+			<Extension :name="name" @select-version="version = $event" :existingExtension="extension" app/>
 			<template #fallback>
 				Loading...
 			</template>
@@ -46,6 +57,31 @@
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
+
+		<v-dialog :modelValue="updateDialog">
+			<v-card>
+				<v-card-title>Update {{ title }}</v-card-title>
+				<v-card-text>
+					Are you sure that you want to update this extension?
+				</v-card-text>
+				<v-card-actions>
+					<v-button secondary @click="updateDialog = false">Close</v-button>
+					<v-button @click="update()">Update</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
+		<v-dialog :modelValue="uninstallDialog">
+			<v-card>
+				<v-card-title>Uninstall {{ title }}</v-card-title>
+				<v-card-text>
+					Are you sure that you want to uninstall this extension?
+				</v-card-text>
+				<v-card-actions>
+					<v-button secondary @click="uninstallDialog = false">Close</v-button>
+					<v-button danger @click="uninstall()">Uninstall</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
 	</private-view>
 </template>
 
@@ -58,6 +94,7 @@ import { computed, provide, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { marketApi } from './market-api';
 import api from '@/api';
+import { useExtensionsStore } from '@/stores/extensions';
 
 interface Props {
 	name: string;
@@ -65,6 +102,14 @@ interface Props {
 
 const props = defineProps<Props>();
 const installDialog = ref(false);
+const updateDialog = ref(false);
+const uninstallDialog = ref(false);
+const version = ref<string | undefined>()
+const extensionsStore = useExtensionsStore();
+
+const extension = computed(() => {
+	return extensionsStore.extensions.find((extension) => extension.name === props.name);
+});
 
 const {} = useRouter();
 
@@ -73,9 +118,37 @@ provide('api', marketApi);
 const { t } = useI18n();
 
 async function install() {
-	await api.post(`/extensions/${encodeURIComponent(props.name)}`)
+	if(version.value) {
+		await api.post(`/extensions/${encodeURIComponent(props.name)}/${encodeURIComponent(version.value)}`)
+	} else {
+		await api.post(`/extensions/${encodeURIComponent(props.name)}`)
+	}
 	location.reload();
 	installDialog.value = false;
+}
+
+async function update() {
+	await api.patch(`/extensions/${encodeURIComponent(props.name)}`)
+
+	location.reload();
+	updateDialog.value = false;
+}
+
+async function uninstall() {
+	await api.delete(`/extensions/${encodeURIComponent(props.name)}`)
+
+	location.reload();
+	uninstallDialog.value = false;
+}
+
+async function toggleExtension() {
+	await api.patch(`/extensions/`, [
+		{
+			name: props.name,
+			enabled: !extension.value?.enabled ?? false
+		}
+	])
+	location.reload();
 }
 
 const title = computed(() => {

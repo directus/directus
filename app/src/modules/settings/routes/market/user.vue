@@ -21,7 +21,7 @@
 		</template>
 
 		<Suspense>
-			<User :name="name" app/>
+			<User :name="name" app :existingExtensions="extensionsStore.extensions"/>
 			<template #fallback>
 				Loading...
 			</template>
@@ -34,8 +34,8 @@ import { useI18n } from 'vue-i18n';
 import SettingsNavigation from '../../components/navigation.vue';
 import User from '@nitwel/directus-marketplace/components/user.vue';
 import { provide } from 'vue';
-import { useRouter } from 'vue-router';
 import { marketApi } from './market-api';
+import { useExtensionsStore } from '@/stores/extensions';
 
 interface Props {
 	name: string;
@@ -43,7 +43,8 @@ interface Props {
 
 const props = defineProps<Props>();
 
-const {} = useRouter();
+const extensionsStore = useExtensionsStore();
+
 
 provide('api', marketApi);
 
