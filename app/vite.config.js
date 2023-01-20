@@ -2,10 +2,11 @@ import {
 	APP_OR_HYBRID_EXTENSION_PACKAGE_TYPES,
 	APP_OR_HYBRID_EXTENSION_TYPES,
 	APP_SHARED_DEPS,
+	NESTED_EXTENSION_TYPES,
 } from '@directus/shared/constants';
 import {
 	ensureExtensionDirs,
-	generateExtensionsEntry,
+	generateExtensionsEntrypoint,
 	getLocalExtensions,
 	getPackageExtensions,
 } from '@directus/shared/utils/node';
@@ -20,12 +21,9 @@ import markdownItTableOfContents from 'markdown-it-table-of-contents';
 import md from 'vite-plugin-vue-markdown';
 import { searchForWorkspaceRoot } from 'vite';
 import { defineConfig } from 'vitest/config';
-import hljsGraphQL from './src/utils/hljs-graphql';
 
 const API_PATH = path.join('..', 'api');
 const EXTENSIONS_PATH = path.join(API_PATH, 'extensions');
-
-hljs.registerLanguage('graphql', hljsGraphQL);
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -146,7 +144,7 @@ export default defineConfig({
 		port: 8080,
 		proxy: {
 			'^/(?!admin)': {
-				target: process.env.API_URL ? process.env.API_URL : 'http://0.0.0.0:8055/',
+				target: process.env.API_URL ? process.env.API_URL : 'http://127.0.0.1:8055/',
 				changeOrigin: true,
 			},
 		},
@@ -156,6 +154,7 @@ export default defineConfig({
 	},
 	test: {
 		environment: 'happy-dom',
+		setupFiles: ['src/__setup__/mock-globals.ts'],
 	},
 });
 
@@ -170,10 +169,9 @@ function getExtensionsRealPaths() {
 }
 
 function directusExtensions() {
-	const prefix = '@directus-extensions-';
-	const virtualIds = APP_OR_HYBRID_EXTENSION_TYPES.map((type) => `${prefix}${type}`);
+	const virtualExtensionsId = '@directus-extensions';
 
-	let extensionEntrypoints = {};
+	let extensionsEntrypoint = null;
 
 	return [
 		{
@@ -188,15 +186,13 @@ function directusExtensions() {
 				await loadExtensions();
 			},
 			resolveId(id) {
-				if (virtualIds.includes(id)) {
+				if (id === virtualExtensionsId) {
 					return id;
 				}
 			},
 			load(id) {
-				if (virtualIds.includes(id)) {
-					const extensionType = id.substring(prefix.length);
-
-					return extensionEntrypoints[extensionType];
+				if (id === virtualExtensionsId) {
+					return extensionsEntrypoint;
 				}
 			},
 		},
@@ -213,7 +209,7 @@ function directusExtensions() {
 						output: {
 							entryFileNames: 'assets/[name].[hash].entry.js',
 						},
-						external: virtualIds,
+						external: [virtualExtensionsId],
 						preserveEntrySignatures: 'exports-only',
 					},
 				},
@@ -222,14 +218,12 @@ function directusExtensions() {
 	];
 
 	async function loadExtensions() {
-		await ensureExtensionDirs(EXTENSIONS_PATH, APP_OR_HYBRID_EXTENSION_TYPES);
+		await ensureExtensionDirs(EXTENSIONS_PATH, NESTED_EXTENSION_TYPES);
 		const packageExtensions = await getPackageExtensions(API_PATH, APP_OR_HYBRID_EXTENSION_PACKAGE_TYPES);
 		const localExtensions = await getLocalExtensions(EXTENSIONS_PATH, APP_OR_HYBRID_EXTENSION_TYPES);
 
 		const extensions = [...packageExtensions, ...localExtensions];
 
-		for (const extensionType of APP_OR_HYBRID_EXTENSION_TYPES) {
-			extensionEntrypoints[extensionType] = generateExtensionsEntry(extensionType, extensions);
-		}
+		extensionsEntrypoint = generateExtensionsEntrypoint(extensions);
 	}
 }

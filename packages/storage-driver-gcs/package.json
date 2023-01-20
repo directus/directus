@@ -1,0 +1,45 @@
+{
+	"name": "@directus/storage-driver-gcs",
+	"version": "9.22.4",
+	"type": "module",
+	"scripts": {
+		"build": "tsc --build",
+		"dev": "tsc --watch",
+		"test": "vitest run",
+		"test:watch": "vitest",
+		"test:coverage": "vitest run --coverage"
+	},
+	"description": "GCS file storage abstraction for `@directus/storage`",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus/directus.git",
+		"directory": "packages/storage-driver-gcs"
+	},
+	"funding": "https://github.com/directus/directus?sponsor=1",
+	"license": "GPL-3.0",
+	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
+	"exports": {
+		".": "./dist/index.js",
+		"./package.json": "./package.json"
+	},
+	"main": "dist/index.js",
+	"files": [
+		"dist",
+		"!**/*.d.ts?(.map)"
+	],
+	"publishConfig": {
+		"access": "public"
+	},
+	"dependencies": {
+		"@directus/storage": "workspace:*",
+		"@directus/utils": "workspace:*",
+		"@google-cloud/storage": "6.8.0"
+	},
+	"devDependencies": {
+		"@directus/tsconfig": "0.0.6",
+		"@ngneat/falso": "6.3.2",
+		"@vitest/coverage-c8": "0.26.2",
+		"typescript": "4.9.4",
+		"vitest": "0.26.2"
+	}
+}

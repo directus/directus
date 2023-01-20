@@ -48,7 +48,7 @@
 			show-resize
 			fixed-header
 			@click:row="navigateToFlow"
-			@update:sort="internalSort = $event"
+			@update:sort="updateSort($event)"
 		>
 			<template #[`item.icon`]="{ item }">
 				<v-icon class="icon" :name="item.icon ?? 'bolt'" :color="item.color ?? 'var(--primary)'" />
@@ -137,6 +137,7 @@ import { useFlowsStore } from '@/stores/flows';
 import { usePermissionsStore } from '@/stores/permissions';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { FlowRaw } from '@directus/shared/types';
+import { sortBy } from 'lodash';
 import { computed, ref, Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import SettingsNavigation from '../../components/navigation.vue';
@@ -210,7 +211,14 @@ const internalSort: Ref<Sort> = ref({ by: 'name', desc: false });
 
 const flowsStore = useFlowsStore();
 
-const flows = computed(() => flowsStore.flows);
+const flows = computed(() => {
+	const sortedFlows = sortBy(flowsStore.flows, [internalSort.value.by]);
+	return internalSort.value.desc ? sortedFlows.reverse() : sortedFlows;
+});
+
+function updateSort(sort: Sort | null) {
+	internalSort.value = sort ?? { by: 'name', desc: false };
+}
 
 function navigateToFlow({ item: flow }: { item: FlowRaw }) {
 	router.push(`/settings/flows/${flow.id}`);
