@@ -10,11 +10,15 @@ import { Request, Response } from 'express';
 import { Knex } from 'knex';
 
 vi.mock('../../src/database');
-vi.mock('../../src/env', () => ({
-	default: {
+vi.mock('../../src/env', () => {
+	const MOCK_ENV = {
 		SECRET: 'test',
-	},
-}));
+	};
+	return {
+		default: MOCK_ENV,
+		getEnv: () => MOCK_ENV,
+	};
+});
 
 afterEach(() => {
 	vi.resetAllMocks();

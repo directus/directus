@@ -573,6 +573,8 @@ select_an_item: Válassz egy elemet...
 edit: Szerkesztés
 enabled: Engedélyezve
 disable_tfa: Kétlépcsős hitelesítés kikapcsolása
+admin_disable_tfa_text: Biztosan kikapcsolja a kétfaktoros azonosítást a felhasználónak?
+tfa_setup: 2FA beállítása
 tfa_scan_code: Olvasd be a kódot a hitelesítő alkalmazással a kétszintű beléptetés beállításának befejezéséhez
 enter_otp_to_disable_tfa: Írd be az egyszeri jelszót a kétszintű hitelesítés kikapcsolásához
 create_account: Fiók létrehozása
@@ -1429,6 +1431,7 @@ translation: Fordítás
 translation_placeholder: Fordítás megadása...
 value: Érték
 view_project: Projekt megtekintése
+weeks: { }
 report_error: Hiba jelentése
 start: Start
 table: Táblázat
@@ -1977,6 +1980,7 @@ panels:
     y_axis_conditional_two: számnak kell lennie.
   linechart:
     name: Vonaldiagram
+    description: Vonaldiagram egy mező változásának összehasonlításához
     select_field: Ki kell választanod egy mezőt!
     select_collection: Ki kell választanod egy gyűjteményt!
     select_x_axis: Ki kell választanod egy X-tengelyt.
@@ -1988,6 +1992,7 @@ panels:
     datasets: Adatkészletek
     show_legend: Mutasd a magyarázatot
     show_marker: Eszköztipp-jelölő megjelenítése
+    include_dataset: Legalább egy adatkészletet kell tartalmaznia.
     include_y_axis: Minden adatkészlethez meg kell adnia Y-tengelyt, ha nincs csoport megadva.
     group_and_function: Mind a csoportot, mind a függvényt fel kell vennie vagy ki kell hagynia.
     smooth: Gördülékeny
@@ -1999,6 +2004,7 @@ panels:
     half_circle: Félkör
     full_circle: Teljes kör
     stroke_width: Tollvastagság
+    rounded_stroke: Görbe vonal
     select_max_value: Ki kell választania egy maximális értéket.
     max_greater_than_zero: A maximumnak 0-nál nagyobbnak kell lennie.
     select_field: Ki kell választani egy mezőt.
@@ -2009,8 +2015,10 @@ panels:
     broad: Széles
   piechart:
     name: Torta vagy fánk diagram
+    description: Kör diagram, amely a csoportok arányát mutatja egy oszlopon
     function: Függvény
     donut: Fánk
+    show_labels: Címkék megjelenítése
     show_legend: Mutasd a magyarázatot
     right: Jobb
     bottom: Alsó
