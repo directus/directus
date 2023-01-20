@@ -38,7 +38,7 @@
 		</template>
 
 		<Suspense>
-			<Extension :name="name" @select-version="version = $event" :existingExtension="extension" app/>
+			<Extension :name="name" @select-version="version = $event" :existingExtension="extension" app :directus-version="serverStore.info.directus?.version"/>
 			<template #fallback>
 				Loading...
 			</template>
@@ -95,6 +95,7 @@ import { useRouter } from 'vue-router';
 import { marketApi } from './market-api';
 import api from '@/api';
 import { useExtensionsStore } from '@/stores/extensions';
+import { useServerStore } from '@/stores/server';
 
 interface Props {
 	name: string;
@@ -106,6 +107,7 @@ const updateDialog = ref(false);
 const uninstallDialog = ref(false);
 const version = ref<string | undefined>()
 const extensionsStore = useExtensionsStore();
+const serverStore = useServerStore()
 
 const extension = computed(() => {
 	return extensionsStore.extensions.find((extension) => extension.name === props.name);
