@@ -82,6 +82,10 @@ export class InstallationManager {
 		}
 
 		await fse.remove(path.join(env.EXTENSIONS_PATH, name.replace(/[/\\]/g, '_')));
+
+		const extensionsService = new ExtensionsService({ knex: getDatabase(), schema: await getSchema() });
+
+		await extensionsService.deleteOne(name);
 	}
 
 	public async updateExtension(name: string, version?: string) {
