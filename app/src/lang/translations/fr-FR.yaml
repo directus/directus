@@ -2062,7 +2062,7 @@ triggers:
     collection_and_item: Pages des collections et des éléments
     collection_only: Page de la Collection Uniquement
     item_only: Page de l'élément uniquement
-    collection_page: Nom de la Collection
+    collection_page: Page de la collection
     require_selection: Sélection obligatoire
 a_flow_uuid: Choisir un flux à lancer...
 any_string_or_json: Toute chaîne de caractères ou JSON...
