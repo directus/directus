@@ -34,7 +34,7 @@ reset_width: Réinitialiser la largeur
 tile_size: Taille des tuiles
 edit_field: Modifier le champ
 conditions: Conditions
-location: Localisation
+location: Emplacement
 condition_rules: Règles de conditions
 input: Texte simple
 maps: Cartes
@@ -125,7 +125,7 @@ os_type: Type d'OS
 os_version: Version de l'OS
 os_uptime: Temps de disponibilité de l'OS
 os_totalmem: Mémoire de l'OS
-archive: Archives
+archive: Archiver
 archive_confirm: Êtes-vous sûr de vouloir archiver cet élément ?
 archive_confirm_count: >-
   Aucun élément sélectionné | Êtes-vous sûr de vouloir archiver cet élément ? | Êtes-vous sûr de vouloir archiver ces {count} éléments ?
@@ -194,7 +194,7 @@ hide_field: Masquer le champ
 hide_field_on_detail: Masquer le champ dans le détail
 show_field_on_detail: Afficher le champ dans le détail
 delete_field: Supprimer le champ
-fields_and_layout: Champs et disposition
+fields_and_layout: Champs et mise en page
 field_create_success: 'Champ créé : "{field}"'
 field_update_success: 'Champ mis à jour : "{field}"'
 duplicate_where_to: Vers où souhaitez-vous dupliquer ce champ ?
@@ -825,7 +825,7 @@ operation_key: Identifiant pour référence...
 operation_key_unique_error: Les clés d'Opération doivent être uniques dans un Flux
 operation_handle_resolve: 'Résoudre : Cliquez pour Ajouter ou faites Glisser pour Réacheminer'
 operation_handle_reject: 'Refuser : Cliquez pour Ajouter ou faites Glisser pour Réacheminer'
-insights: Analyses
+insights: Tableaux de bord
 dashboard: Tableau de bord
 panel: Panneau
 panel_options: Options de panneau
@@ -1077,7 +1077,7 @@ fields:
     title: Titre
     description: Description
     tags: Étiquettes
-    location: Localisation
+    location: Emplacement
     storage: Espace de stockage
     filename_disk: Nom du fichier (disque)
     filename_download: Nom du fichier (Télécharger)
@@ -1102,7 +1102,7 @@ fields:
     email: E-mail
     password: Mot de passe
     avatar: Avatar
-    location: Localisation
+    location: Emplacement
     title: Titre
     description: Description
     tags: Étiquettes
@@ -1254,7 +1254,7 @@ field_options:
     collection_name: Nom de la Collection
     singular_unit: Au singulier
     plural_unit: Au pluriel
-    archive_divider: Archives
+    archive_divider: Archiver
     archive_field_placeholder: Choisissez un champ...
     archive_app_filter: Filtrer tous les éléments archivés
     archive_value: Valeur définie lors de l'archivage...
@@ -1363,7 +1363,7 @@ delete_are_you_sure: >-
 delete_field_are_you_sure: >-
   Êtes-vous sûr de vouloir supprimer le champ « {field} » ? Cette action ne peut pas être annulée !
 description: Description
-done: Fait
+done: Terminé
 duplicate: Dupliquer
 limit: Limite
 email: E-mail
@@ -2040,7 +2040,7 @@ triggers:
     response_body_last: Données de la Dernière Opération
   event:
     name: Crochet d'Événement
-    description: Déclencheurs sur la plate-forme ou sur les données d'événements
+    description: Déclencheurs en provenance de la plate-forme ou des données d'événements
     action: 'Action (Non Bloquante)'
     filter: 'Filtre (Bloquant)'
   webhook:
@@ -2058,7 +2058,7 @@ triggers:
     cron: Intervalle
   manual:
     name: Manuel
-    description: Déclenchements lors d'une exécution manuelle dans la ou les collections sélectionnées
+    description: Déclenchement manuel grâce à un bouton dans les collections sélectionnées
     collection_and_item: Pages des collections et des éléments
     collection_only: Page de la Collection Uniquement
     item_only: Page de l'élément uniquement
@@ -2106,13 +2106,13 @@ operations:
     message: Message
     message_placeholder: Entrez un message à afficher dans la console...
   mail:
-    name: Envoyer l'e-mail
+    name: Envoyer un e-mail
     description: Envoyer un email à une ou plusieurs personnes
     to: À
     to_placeholder: Ajoutez des adresses e-mail et appuyez sur entrée...
     body: Corps du mail
   notification:
-    name: Envoyer la Notification
+    name: Envoyer une notification
     description: Envoyer une notification dans l'application à un ou plusieurs utilisateurs
     recipient: Utilisateur
     recipient_placeholder: Ajouter un UUID utilisateur et appuyez sur entrée...
