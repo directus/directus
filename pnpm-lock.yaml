@@ -22,7 +22,7 @@ importers:
       jest: 29.3.1
       jest-environment-node: 29.3.1
       json-to-graphql-query: 2.2.4
-      knex: 2.3.0
+      knex: 2.4.1
       lint-staged: 13.1.0
       listr2: 5.0.6
       lodash: 4.17.21
@@ -52,7 +52,7 @@ importers:
       jest: 29.3.1
       jest-environment-node: 29.3.1
       json-to-graphql-query: 2.2.4
-      knex: 2.3.0
+      knex: 2.4.1
       lint-staged: 13.1.0
       listr2: 5.0.6
       lodash: 4.17.21
@@ -162,7 +162,7 @@ importers:
       jsonwebtoken: 9.0.0
       keyv: 4.5.2
       keyv-memcache: 1.3.3
-      knex: 2.3.0
+      knex: 2.4.1
       knex-mock-client: 1.11.0
       knex-schema-inspector: 3.0.0
       ldapjs: 2.3.3
@@ -267,7 +267,7 @@ importers:
       json2csv: 5.0.7
       jsonwebtoken: 9.0.0
       keyv: 4.5.2
-      knex: 2.3.0_i7frrkiwsbjh7pywr5yuup4dni
+      knex: 2.4.1_i7frrkiwsbjh7pywr5yuup4dni
       knex-schema-inspector: 3.0.0
       ldapjs: 2.3.3
       liquidjs: 10.3.3
@@ -354,7 +354,7 @@ importers:
       '@vitest/coverage-c8': 0.26.2
       copyfiles: 2.4.1
       form-data: 4.0.0
-      knex-mock-client: 1.11.0_knex@2.3.0
+      knex-mock-client: 1.11.0_knex@2.4.1
       ts-node: 10.9.1_moeqx3xmzxqxagf2sz6mqkbb7m
       ts-node-dev: 2.0.0_moeqx3xmzxqxagf2sz6mqkbb7m
       typescript: 4.9.4
@@ -647,11 +647,11 @@ importers:
 
   packages/schema:
     specifiers:
-      knex: 2.3.0
+      knex: 2.4.1
       knex-schema-inspector: 3.0.0
       typescript: 4.9.4
     dependencies:
-      knex: 2.3.0
+      knex: 2.4.1
       knex-schema-inspector: 3.0.0
     devDependencies:
       typescript: 4.9.4
@@ -671,7 +671,7 @@ importers:
       fs-extra: 11.1.0
       geojson: 0.5.0
       joi: 17.7.0
-      knex: 2.3.0
+      knex: 2.4.1
       knex-schema-inspector: 3.0.0
       lodash: 4.17.21
       micromustache: 8.0.3
@@ -691,7 +691,7 @@ importers:
       fs-extra: 11.1.0
       geojson: 0.5.0
       joi: 17.7.0
-      knex: 2.3.0
+      knex: 2.4.1
       knex-schema-inspector: 3.0.0
       lodash: 4.17.21
       micromustache: 8.0.3
@@ -14264,13 +14264,13 @@ packages:
     engines: {node: '>= 8'}
     dev: true
 
-  /knex-mock-client/1.11.0_knex@2.3.0:
+  /knex-mock-client/1.11.0_knex@2.4.1:
     resolution: {integrity: sha512-6Mf2jscz6XMVfk7Jhp7pnRe37HsupVfScPf8pyiL6X51B7sporDVQPra4oyj7Ea5ssuqE3XnVhRgUeP50+Yrog==}
     engines: {node: '>=12'}
     peerDependencies:
       knex: ^2.0.0
     dependencies:
-      knex: 2.3.0_i7frrkiwsbjh7pywr5yuup4dni
+      knex: 2.4.1_i7frrkiwsbjh7pywr5yuup4dni
       lodash.clonedeep: 4.5.0
     dev: true
 
@@ -14281,8 +14281,8 @@ packages:
       lodash.isnil: 4.0.0
     dev: false
 
-  /knex/2.3.0:
-    resolution: {integrity: sha512-WMizPaq9wRMkfnwKXKXgBZeZFOSHGdtoSz5SaLAVNs3WRDfawt9O89T4XyH52PETxjV8/kRk0Yf+8WBEP/zbYw==}
+  /knex/2.4.1:
+    resolution: {integrity: sha512-5wylehvnTOE8EdypPFakccA1zgo6Lp+TNultncvBUCUD0PasY+PLVa9qPrTFCioxPSPVha1u9ye2niAVVbLM0Q==}
     engines: {node: '>=12'}
     hasBin: true
     peerDependencies:
@@ -14326,8 +14326,8 @@ packages:
     transitivePeerDependencies:
       - supports-color
 
-  /knex/2.3.0_i7frrkiwsbjh7pywr5yuup4dni:
-    resolution: {integrity: sha512-WMizPaq9wRMkfnwKXKXgBZeZFOSHGdtoSz5SaLAVNs3WRDfawt9O89T4XyH52PETxjV8/kRk0Yf+8WBEP/zbYw==}
+  /knex/2.4.1_i7frrkiwsbjh7pywr5yuup4dni:
+    resolution: {integrity: sha512-5wylehvnTOE8EdypPFakccA1zgo6Lp+TNultncvBUCUD0PasY+PLVa9qPrTFCioxPSPVha1u9ye2niAVVbLM0Q==}
     engines: {node: '>=12'}
     hasBin: true
     peerDependencies:
