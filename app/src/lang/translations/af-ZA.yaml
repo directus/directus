@@ -60,7 +60,24 @@ db_only_click_to_configure: 'Slegs databasis: Klik om te konfigureer'
 show_active_items: Wys aktiewe items
 show_archived_items: Wys Geargiveerde Items
 show_all_items: Wys alle items
+required: Verpligtend
+create_panel: Skep Paneel
 create_role: Skep Rol
+create_user: Skep Gebruiker
+message: Boodskap
+delete_panel: Skrap paneel
+invite: Nooi uit
+email_already_invited: E-pos "{email}" is reeds uit genooi
+subject: Onderwerp
+emails: E-pos
+connection_excellent: Uitstekende Konneksie
+connection_good: Goeie Konneksie
+connection_poor: Swak Konneksie
+rename_folder: Hernoem Gids
+delete_folder: Skrap Gids
+prefix: Voorvoegsel
+suffix: Agtervoegsel
+field_translations: Vertalings
 language: Taal
 create_field: Skep Veld
 auto_generate: Auto-Genereer
@@ -180,6 +197,11 @@ interfaces:
 displays:
   collection:
     collection: Versameling
+  datetime:
+    suffix: Agtervoegsel
+  formatted-value:
+    prefix: Voorvoegsel
+    suffix: Agtervoegsel
   user:
     avatar: Profiel prentjie
     both: Beide
@@ -194,3 +216,8 @@ layouts:
     comfortable: Gemaklik
     compact: Kompak
     cozy: Snoesig
+operations:
+  log:
+    message: Boodskap
+  notification:
+    message: Boodskap
