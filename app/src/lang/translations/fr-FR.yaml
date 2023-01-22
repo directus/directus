@@ -637,7 +637,7 @@ password_reset_sent: Si vous avez un compte, nous vous avons envoyé un lien sé
 password_reset_successful: Mot de passe réinitialisé avec succès
 back: Retour
 filter: Filtre
-edit_image: Éditer l'image
+edit_image: Modifier l'image
 editing_image: Modification de l'image
 square: Carré
 free: Libre
@@ -760,7 +760,7 @@ no_visible_fields_copy: Ce formulaire n'a pas de champs visibles.
 clear_filters: Réinitialiser les filtres
 saves_automatically: Sauvegardé automatiquement
 role: Rôle
-edit_role: Editer le rôle
+edit_role: Modifier le rôle
 rule: Règle
 user: Utilisateur
 no_presets: Aucun préréglage
@@ -781,7 +781,7 @@ operator: Opérateur
 bold: Gras
 toggle: Activer/Désactiver
 icon_on: Icône de sélection
-icon_off: Icône de désélection
+icon_off: Icône de dé-sélection
 label: Étiquette
 flows: Flux
 flow: Flux
@@ -817,7 +817,7 @@ flow_tracking_null: Ne rien enregistrer
 start_flow: Démarrer le Flux
 stop_flow: Arrêt du Flux
 create_operation: Créer une Opération
-edit_operation: Modifier l'Opération
+edit_operation: Modifier l'opération
 code: Code
 operation_options: Les Options d'Opération
 operation_name: Nom de l'Opération...
@@ -932,8 +932,8 @@ wysiwyg_options:
 dropdown: Liste déroulante
 choices: Liste de choix
 choices_option_configured_incorrectly: Choix configurés incorrectement
-deselect: Désélectionner
-deselect_all: Tout désélectionner
+deselect: Dé-sélectionner
+deselect_all: Tout dé-sélectionner
 other: Autre...
 adding_user: Ajout de l'utilisateur
 unknown_user: Utilisateur inconnu
@@ -1688,8 +1688,8 @@ interfaces:
   boolean:
     toggle: Case à cocher
     description: Basculer entre l'activation et la désactivation
-    color_on: Couleur activée
-    color_off: Couleur désactivée
+    color_on: Couleur à la sélection
+    color_off: Couleur à la dé-sélection
     label_placeholder: Entrer un libellé...
     label_default: Activé
   translations:
@@ -1762,15 +1762,15 @@ displays:
     language_field: Champ d'indicateur de langue
   boolean:
     boolean: Booléen
-    description: Afficher les états sélectionnés et désélectionnés
+    description: Afficher les états sélectionnés et dé-sélectionnés
     label_on: Avec libellé
     label_on_placeholder: Entrez un libellé ...
     label_off: Sans libellé
     label_off_placeholder: Entrez un libellé pour la désactivation...
     icon_on: Icône de sélection
-    icon_off: Icône de désélection
-    color_on: Couleur activée
-    color_off: Couleur désactivée
+    icon_off: Icône de dé-sélection
+    color_on: Couleur à la sélection
+    color_off: Couleur à la dé-sélection
   collection:
     collection: Collection
     description: Afficher une collection
@@ -1931,7 +1931,7 @@ layouts:
     image_fit: Ajustement de l'image de la carte
     crop: Rogner
     advanced: Avancé
-    edit_group: Éditer le Groupe
+    edit_group: Modifier le groupe
     delete_group: Supprimer le Groupe
     add_group: Ajouter un Groupe
     add_group_placeholder: Entrez le nom du nouveau groupe...
