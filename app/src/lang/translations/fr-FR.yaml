@@ -1431,6 +1431,7 @@ translation: Traduction
 translation_placeholder: Entrez une nouvelle traduction...
 value: Valeur
 view_project: Voir le projet
+weeks: { }
 report_error: Signaler l'erreur
 start: Début
 table: Tableau
@@ -2141,3 +2142,9 @@ operations:
     flows: Flux
     flow: Flux
     data: Données
+    iteration_mode: Mode d'itération
+    iteration_mode_note: Méthode pour itérer sur des tableaux.
+    serial: En série
+    parallel: En parallèle
+    batch: Par lots
+    batch_size: Taille de chaque lot
