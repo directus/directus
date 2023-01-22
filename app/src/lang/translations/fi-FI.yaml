@@ -52,6 +52,7 @@ or: Tai
 init: Alusta
 dataset_too_large_currently_showing_n_items: Dataset on liian suuri, näytetään ensimmäiset {n} kohdetta.
 custom: Mukautettu
+hook: Koukku
 fill_width: Täysleveä
 field_name_translations: Kentän nimen käännökset
 enter_password_to_enable_tfa: Anna salasanasi ottaaksesi käyttöön kaksivaiheisen todennuksen
@@ -611,6 +612,9 @@ value_hashed: Arvo tiivistetty turvallisesti
 bookmark_name: Kirjanmerkin nimi...
 create_bookmark: Luo kirjanmerkki
 edit_bookmark: Muokkaa kirjanmerkkiä
+edit_personal_bookmark: Muokkaa henkilökohtaista kirjanmerkkiä
+edit_global_bookmark: Muokkaa yleistä kirjanmerkkiä
+cannot_edit_global_bookmarks: Yleisten kirjanmerkkien muokkaus epäonnistui
 bookmarks: Kirjainmerkit
 presets: Esiasetukset
 unexpected_error: Odottamaton virhe
@@ -618,9 +622,11 @@ unexpected_error_copy: Tapahtui odottamaton virhe. Yritä myöhemmin uudelleen.
 copy_details: Kopioi tiedot
 no_app_access: Ei sovelluspääsyä
 no_app_access_copy: Tällä käyttäjällä ei ole oikeutta käyttää järjestelmänvalvojasovellusta.
+password_reset_sent: Olemme lähettäneet salasanan palautuslinkin, mikäli omaat tilin
 password_reset_successful: Salasanan palauttaminen onnistui
 back: Takaisin
 filter: Suodatin
+edit_image: Muokkaa kuvaa
 editing_image: Muokataan kuvaa
 square: Neliö
 free: Vapaa
@@ -634,10 +640,16 @@ update_collection_success: Päivitetty kokoelma
 delete_collection_success: Poistetut kokoelmat
 make_collection_visible: Tee kokoelmasta näkyvä
 make_collection_hidden: Tee kokoelma piilotettu
+make_folder_visible: Näytä kansio
+make_folder_hidden: Piilota kansio
+goto_collection_content: Näytä sisältö
 start_end_of_count_items: '{start}-{end} / {count} kohdetta'
 start_end_of_count_filtered_items: '{start}-{end} / {count} suodatettua kohdetta'
 one_item: '1 kohde'
 one_filtered_item: '1 suodatettu kohde'
+delete_collection_are_you_sure: >-
+  Haluatko poistaa kokoelman "{collection}"? Kokoelma ja kaikki siihen kuuluvat kohteet poistetaan pysyvästi.
+delete_folder_are_you_sure: Haluatko poistaa kansion "{folder}"? Kansion kansiot ja kokoelmat siirretään ylimmälle tasolle.
 collections_shown: Näytettävät kokoelmat
 visible_collections: Näkyvät kokoelmat
 hidden_collections: Piilotetut kokoelmat
@@ -664,6 +676,7 @@ advanced_settings: Edistyneet asetukset
 advanced_filter: Edistynyt suodatin
 delete_advanced_filter: Poista suodatin
 change_advanced_filter_operator: Vaihda operaattoria
+advanced: Lisäasetukset
 operators:
   eq: Yhtä suuri kuin
   neq: Ei ole yhtä kuin
@@ -728,9 +741,12 @@ add_file: Lisää tiedosto
 replace_file: Korvaa tiedosto
 no_results: Ei tuloksia
 no_results_copy: Säädä tai tyhjennä hakusuodattimet nähdäksesi tulokset.
+no_visible_fields: Tyhjä lomake
+no_visible_fields_copy: Lomakkeella ei ole näkyviä kenttiä.
 clear_filters: Tyhjennä suodattimet
 saves_automatically: Tallentaa automaattisesti
 role: Rooli
+edit_role: Muokkaa roolia
 rule: Sääntö
 user: Käyttäjänimi
 no_presets: Ei esiasetuksia
@@ -1691,6 +1707,7 @@ layouts:
     no_compatible_fields: Ei yhteensopivia kenttiä
   kanban:
     crop: Rajaa
+    advanced: Lisäasetukset
 panels:
   metric:
     name: Metrinen
