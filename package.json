@@ -45,7 +45,7 @@
 		"jest-environment-node": "29.3.1",
 		"js-yaml": "4.1.0",
 		"json-to-graphql-query": "2.2.4",
-		"knex": "2.3.0",
+		"knex": "2.4.1",
 		"lint-staged": "13.1.0",
 		"listr2": "5.0.6",
 		"lodash": "4.17.21",
