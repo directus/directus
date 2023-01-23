@@ -23,6 +23,7 @@ interface WebSocketWrapper {
 interface WebSocketClient {
 	subscribe(options: SubscribeOptions, callback: MessageCallback): number;
 	unsubscribe(uid: number): void;
+	listen(callback: MessageCallback): () => void;
 	send(type: MessageType, data?: Record<string, any>, timeout?: number | false): Promise<Record<string, any>> | void;
 }
 

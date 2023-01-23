@@ -18,7 +18,8 @@ const uidCounter = (function* () {
 let ws: WebSocket | null = null;
 let authenticated = false;
 
-const onMessageCallbacks = new Map<number, MessageCallback>();
+const onMessageResponse = new Map<number, MessageCallback>();
+const onMessageCallbacks = new Set<MessageCallback>([]);
 const onAuthCallbacks = new Set<() => void>();
 const oncloseCallbacks = new Set<() => void>();
 
@@ -46,8 +47,11 @@ function connectWebSocket() {
 		}
 
 		if (uid !== undefined) {
-			const callback = onMessageCallbacks.get(uid);
+			const callback = onMessageResponse.get(uid);
 			if (callback !== undefined) callback(message);
+		}
+		for (const callback of onMessageCallbacks) {
+			callback(message);
 		}
 	};
 
@@ -149,10 +153,14 @@ class Client implements WebSocketClient {
 		this.ws = ws;
 	}
 
+	listen(callback: MessageCallback) {
+		onMessageCallbacks.add(callback);
+		return () => onMessageCallbacks.delete(callback);
+	}
 	subscribe(options: SubscribeOptions, callback: MessageCallback) {
 		const counter = uidCounter.next().value;
 
-		onMessageCallbacks.set(counter, callback);
+		onMessageResponse.set(counter, callback);
 		const data: Record<string, any> = {
 			type: 'SUBSCRIBE',
 			uid: counter,
@@ -179,7 +187,7 @@ class Client implements WebSocketClient {
 	}
 
 	unsubscribe(uid: number) {
-		onMessageCallbacks.delete(uid);
+		onMessageResponse.delete(uid);
 		this.ws.send(JSON.stringify({ type: 'UNSUBSCRIBE', uid }));
 	}
 
@@ -191,13 +199,13 @@ class Client implements WebSocketClient {
 
 		const counter = uidCounter.next().value;
 		return new Promise<Record<string, any>>((resolve, reject) => {
-			onMessageCallbacks.set(counter, (data) => {
-				onMessageCallbacks.delete(counter);
+			onMessageResponse.set(counter, (data) => {
+				onMessageResponse.delete(counter);
 				resolve(data);
 			});
 
 			setTimeout(() => {
-				if (onMessageCallbacks.has(counter)) reject(new Error(`Timeout while waiting for ${type} response`));
+				if (onMessageResponse.has(counter)) reject(new Error(`Timeout while waiting for ${type} response`));
 			}, timeout);
 
 			this.ws.send(JSON.stringify({ ...data, type, uid: counter }));

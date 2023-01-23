@@ -148,6 +148,11 @@
 			<content-navigation :current-collection="collection" />
 		</template>
 
+		<transition-expand>
+			<div v-if="collabNotice" class="collab-notice" :class="collabNoticeClass">
+				<v-notice ref="collabNoticeEl" type="warning" class="field full">{{ collabNotice }}</v-notice>
+			</div>
+		</transition-expand>
 		<v-form
 			ref="form"
 			:key="collection"
@@ -159,7 +164,8 @@
 			:fields="fields"
 			:primary-key="internalPrimaryKey"
 			:validation-errors="validationErrors"
-			@focus-field="handleFocus($event)"
+			:collaboration="collaboration"
+			@focus-field="sendFocus($event)"
 		/>
 
 		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
@@ -217,7 +223,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, unref, toRefs, onUnmounted, watch } from 'vue';
+import { computed, ref, unref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { useEditsGuard } from '@/composables/use-edits-guard';
@@ -236,8 +242,7 @@ import { useCollection } from '@directus/shared/composables';
 import { useRouter } from 'vue-router';
 import ContentNavigation from '../components/navigation.vue';
 import ContentNotFound from './not-found.vue';
-import { getWebSocket } from '@/websocket';
-import { WebSocketClient } from '@directus/shared/types';
+import { useCollaboration } from '@/composables/use-collaboration';
 
 interface Props {
 	collection: string;
@@ -255,6 +260,7 @@ const { t, te } = useI18n();
 const router = useRouter();
 
 const form = ref<HTMLElement>();
+const collabNoticeEl = ref<Element>();
 
 const { collection, primaryKey } = toRefs(props);
 const { breadcrumb } = useBreadcrumb();
@@ -282,91 +288,13 @@ const {
 	validationErrors,
 } = useItem(collection, primaryKey);
 
-const ws = getWebSocket();
-let subscriptionId: number | null = null,
-	activeClient: WebSocketClient | false = false;
-// webSocketsActive = false;
-
-ws.onConnect((client) => {
-	// console.log('connect');
-	watch(
-		[collection, primaryKey],
-		([newCollection, pkVal]) => {
-			// console.log('watch', newCollection, pkVal);
-			if (subscriptionId !== null) client.unsubscribe(subscriptionId);
-			if (!newCollection || pkVal === null) return;
-
-			subscriptionId = client.subscribe(
-				{
-					type: 'SUBSCRIBE',
-					query: { fields: [] },
-					collection: 'directus_users',
-					item: pkVal!,
-					status: true,
-				},
-				(data) => {
-					// console.error(data);
-				}
-			);
-		},
-		{ immediate: true }
-	);
-
-	activeClient = client;
-
-	handleFocus(false);
-	onUnmounted(() => {
-		if (subscriptionId !== null) client.unsubscribe(subscriptionId);
-		client.send('BLUR', {}, false);
-	});
-});
-
-ws.onDisconnect(() => {
-	activeClient = false;
-});
-
-function handleFocus(field: string | false) {
-	// console.log('handleFocus', field);
-	if (activeClient && props.primaryKey && props.primaryKey !== '+') {
-		activeClient.send(
-			'FOCUS',
-			{
-				collection: props.collection,
-				item: props.primaryKey,
-				field,
-			},
-			false
-		);
-	}
-}
-
-// const x = useSubscription([collection, primaryKey], ());
-// function useSubscription(options: SubscribeOptions, callback: MessageCallback) {
-
-// }
-
-// function useFocus(collection: Ref<string>, id: Ref<string | null>) {
-// 	const wrap = getWebSocket();
-// 	let uid: number | undefined, ws: WebSocketClient;
-// 	wrap.onConnect((ws) => {});
-// 	wrap.onDisconnect(() => {});
-// 	watch(
-// 		[collection, id],
-// 		() => {
-// 			uid = ws.subscribe(
-// 				{
-// 					collection: collection.value,
-// 					item: unref(id)!,
-// 				},
-// 				(data) => {
-// 					console.error(data);
-// 				}
-// 			);
-// 		},
-// 		{ immediate: true }
-// 	);
-// 	onUnmounted(() => {});
-// }
+const {
+	sendFocus,
+	focus: collabFocus,
+	notice: collabNotice,
+	userAvatars,
+	userNames,
+} = useCollaboration(collection, primaryKey);
 
 const { templateData, loading: templateDataLoading } = useTemplateData(collectionInfo, primaryKey);
 
@@ -438,6 +366,40 @@ const {
 	fields,
 	revisionsAllowed,
 } = usePermissions(collection, item, isNew);
+
+// const fields = computed(() => {
+// 	const readOnlyFields = Object.values(collabFocus.value);
+// 	const x = origFields.value.map((f) => {
+// 		if (readOnlyFields.includes(f.field) && f.meta) {
+// 			f.meta.readonly = true;
+// 		}
+// 		return f;
+// 	});
+// 	console.log('haha', collabFocus.value, readOnlyFields);
+// 	return x;
+// });
+
+const collaboration = computed(() => {
+	let result: Record<string, { user: string; name: string; avatar: string }> = {};
+	for (const [user, field] of Object.entries(collabFocus.value)) {
+		if (field === false) continue;
+		result[field] = {
+			user,
+			name: userNames.value[user] ?? 'Unknown',
+			avatar: userAvatars.value[user],
+		};
+	}
+	return result;
+});
+
+// const { width } = useElementSize(collabNoticeEl);
+// watch(width, (w) => console.log('w', w));
+const collabNoticeClass = computed<string>(() => {
+	return 'with-fill';
+	// 	if (collabNoticeEl.value === null) return '';
+	// console.log(width.value);
+	// 	return width.value > 792 ? 'with-fill' : '';
+});
 
 const internalPrimaryKey = computed(() => {
 	if (unref(loading)) return '+';
@@ -573,6 +535,17 @@ function revert(values: Record<string, any>) {
 </script>
 
 <style lang="scss" scoped>
+@import '@/styles/mixins/form-grid';
+.collab-notice {
+	@include form-grid;
+	padding: var(--content-padding);
+	padding-bottom: 0;
+
+	:deep(.v-notice) {
+		grid-column: start/full;
+	}
+}
+
 .action-delete {
 	--v-button-background-color-hover: var(--danger) !important;
 	--v-button-color-hover: var(--white) !important;

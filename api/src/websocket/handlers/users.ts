@@ -1,7 +1,7 @@
 import type { FocusMessage, WebSocketClient } from '../types';
 import emitter from '../../emitter';
-// import logger from '../../logger';
 import { handleWebsocketException } from '../exceptions';
+import logger from '../../logger';
 
 type UserFocus = {
 	user: string;
@@ -13,12 +13,14 @@ type UserFocus = {
 type UserStatus = 'online' | 'idle' | 'offline';
 
 export class UsersHandler {
-	userStatus: Record<string, UserStatus>;
-	userFocus: Record<string, UserFocus>;
+	userStatus: Map<string, UserStatus>;
+	userFocus: UserFocus[];
 
 	constructor() {
-		this.userStatus = {};
-		this.userFocus = {};
+		this.userStatus = new Map();
+		this.userFocus = [];
+		// this.userFocus = new Map();
+		// this.focusMap = {};
 		this.bindWebsocketEvents();
 	}
 	bindWebsocketEvents() {
@@ -42,57 +44,58 @@ export class UsersHandler {
 	async onMessage(client: WebSocketClient, message: FocusMessage) {
 		const userId = client.accountability?.user;
 		if (!userId) return;
-		if (message.type === 'BLUR') {
-			this.updateFocus(userId, false);
-		}
+		logger.info('msg: ' + JSON.stringify(message));
 		if (message.type === 'FOCUS') {
 			const { collection, item, field } = message;
-			this.updateFocus(userId, {
-				user: userId,
-				client,
-				collection,
-				item,
-				field,
-			});
+			let oldCollection: string | undefined, oldItem: string | undefined;
+			const idx = this.userFocus.findIndex(({ client: _c }) => _c === client);
+			if (idx === -1) {
+				this.userFocus.push({ client, user: userId, collection, item, field });
+			} else {
+				oldCollection = this.userFocus[idx]?.collection;
+				oldItem = this.userFocus[idx]?.item;
+				this.userFocus[idx] = { client, user: userId, collection, item, field };
+			}
+
+			if (oldCollection !== undefined && oldItem !== undefined && (oldCollection !== collection || oldItem !== item)) {
+				this.dispatchFocus(oldCollection, oldItem);
+			}
+			this.dispatchFocus(collection, item);
+		}
+		if (message.type === 'BLUR') {
+			const oldFocus = this.userFocus.find((focus) => focus.user === userId);
+			this.userFocus = this.userFocus.filter(({ user }) => user !== userId);
+			if (oldFocus) {
+				this.dispatchFocus(oldFocus.collection, oldFocus.item);
+			}
 		}
 	}
 	clearClient(client: WebSocketClient) {
 		const userId = client.accountability?.user;
 		if (!userId) return;
 		this.updateStatus(userId, 'offline');
-		if (userId in this.userFocus) {
-			delete this.userFocus[userId];
-		}
+		this.userFocus = this.userFocus.filter(({ user }) => user !== userId);
 	}
 	updateStatus(userId: string, status: UserStatus) {
 		if (status === 'offline') {
 			// we don't need to store all offline users
-			if (userId in this.userStatus) delete this.userStatus[userId];
+			if (this.userStatus.has(userId)) this.userStatus.delete(userId);
 		} else {
-			this.userStatus[userId] = status;
+			this.userStatus.set(userId, status);
 		}
 		// this.dispatch(userId);
 	}
-	updateFocus(userId: string, focus: UserFocus | false) {
-		if (focus === false) {
-			if (userId in this.userFocus) {
-				const { collection, item } = this.userFocus[userId]!;
-				delete this.userFocus[userId];
-				this.dispatchFocus(userId, collection, item);
-			}
-		} else {
-			this.userFocus[userId] = focus;
-			this.dispatchFocus(userId, focus.collection, focus.item);
-		}
-	}
-	dispatchFocus(user: string, collection: string, item: string) {
-		for (const focus of Object.values(this.userFocus)) {
-			if (focus.user === user || focus.collection !== collection || focus.item !== item) continue;
-			if (user in this.userFocus) {
-				focus.client.send(JSON.stringify({ type: 'FOCUS', user, field: this.userFocus[user]!.field }));
-			} else {
-				focus.client.send(JSON.stringify({ type: 'BLUR', user }));
-			}
+	dispatchFocus(collection: string, item: string) {
+		const collaborators = this.userFocus.filter((focus) => focus.collection === collection && focus.item === item);
+		for (const focus of collaborators) {
+			focus.client.send(
+				JSON.stringify({
+					type: 'FOCUS',
+					collaborators: collaborators
+						.filter((collab) => collab.user !== focus.user)
+						.reduce((result, { user, field }) => ({ ...result, [user]: field }), {}),
+				})
+			);
 		}
 	}
 }
