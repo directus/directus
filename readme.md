@@ -15,7 +15,7 @@ Directus is a real-time API and App dashboard for managing SQL database content.
 - **Completely extensible.** Built to white-label, it is easy to customize our modular platform.
 - **A modern dashboard.** Our no-code Vue.js app is safe and intuitive for non-technical users, no training required.
 
-**[Learn more about Directus](https://directus.io)**
+**[Learn more about Directus](https://directus.io)** • **[Documentation](https://docs.directus.io)**
 
 <br />
 
@@ -31,59 +31,6 @@ Directus is a real-time API and App dashboard for managing SQL database content.
 - Select your desired region and provision a new project in ~90 seconds
 
 **[Create your Free Project](https://directus.cloud)**
-
-<br />
-
-## ⚙️ Installation
-
-Create a new Directus project by running the following npm command:
-
-```
-npm init directus-project my-project
-```
-
-Or, using yarn:
-
-```
-yarn create directus-project my-project
-```
-
-Simply follow the setup prompts and the CLI will create your new project directory (eg: `my-project`), configuration
-file, and initial database. To get the most out of Directus, and to ensure you have the latest security patches, it is
-important to keep your projects up-to-date.
-
-<br />
-
-## 📌 Requirements
-
-Directus only requires Node.js and supports most operating systems and SQL database vendors.
-
-- Node.js 12.20+
-- npm 6.x+
-
-#### Supported Databases
-
-- PostgreSQL 10+
-- MySQL 5.7.8+ / 8+ (with
-  [mysql_native_password](https://dev.mysql.com/doc/refman/8.0/en/upgrading-from-previous-series.html#upgrade-caching-sha2-password-compatible-connectors))
-- MariaDB 10.2.7+
-- SQLite 3+
-- CockroachDB 21.1.13+<sup>[1]</sup>
-- MS SQL 13+<sup>[1]</sup>
-- OracleDB 19+<sup>[1]</sup>
-
-<sup>[1]</sup> Older versions may work, but aren't officially tested/supported.
-
-#### Supported OS
-
-- Ubuntu 18.04
-- CentOS / RHEL 8
-- macOS Catalina or newer
-- Windows 10/11
-- Docker ([DockerHub](https://hub.docker.com/r/directus/directus) +
-  [Dockerfile](https://github.com/directus/directus/blob/main/docker/Dockerfile))
-
-_Other operating systems may also work, but are not officially supported._
 
 <br />
 

@@ -1,9 +1,11 @@
 import { Request } from 'express';
-import { getCacheKey } from '../../src/utils/get-cache-key';
-import { describe, test, expect } from 'vitest';
+import { getCacheKey } from './get-cache-key';
+import * as getGraphqlQueryUtil from './get-graphql-query-and-variables';
+import { afterEach, beforeAll, describe, expect, SpyInstance, test, vi } from 'vitest';
 
-const restUrl = 'http://localhost/items/example';
-const graphQlUrl = 'http://localhost/graphql';
+const baseUrl = 'http://localhost';
+const restUrl = `${baseUrl}/items/example`;
+const graphQlUrl = `${baseUrl}/graphql`;
 const accountability = { user: '00000000-0000-0000-0000-000000000000' };
 const method = 'GET';
 
@@ -52,7 +54,32 @@ const requests = [
 
 const cases = requests.map(({ name, params, key }) => [name, params, key]);
 
+afterEach(() => {
+	vi.clearAllMocks();
+});
+
 describe('get cache key', () => {
+	describe('isGraphQl', () => {
+		let getGraphqlQuerySpy: SpyInstance;
+
+		beforeAll(() => {
+			getGraphqlQuerySpy = vi.spyOn(getGraphqlQueryUtil, 'getGraphqlQueryAndVariables');
+		});
+
+		test.each(['/items/test', '/items/graphql', '/collections/test', '/collections/graphql'])(
+			'path "%s" should not be interpreted as a graphql query',
+			(path) => {
+				getCacheKey({ originalUrl: `${baseUrl}${path}` } as Request);
+				expect(getGraphqlQuerySpy).not.toHaveBeenCalled();
+			}
+		);
+
+		test.each(['/graphql', '/graphql/system'])('path "%s" should be interpreted as a graphql query', (path) => {
+			getCacheKey({ originalUrl: `${baseUrl}${path}` } as Request);
+			expect(getGraphqlQuerySpy).toHaveBeenCalledOnce();
+		});
+	});
+
 	test.each(cases)('should create a cache key for %s', (_, params, key) => {
 		expect(getCacheKey(params as unknown as Request)).toEqual(key);
 	});

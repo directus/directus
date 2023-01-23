@@ -61,6 +61,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				totalCount,
 				changeManualSort,
 				getItems,
+			  getItemCount,
+			  getTotalCount,
 			} = useItems(collection, {
 				sort,
 				limit,
@@ -131,6 +133,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		function refresh() {
 			getItems();
+			getTotalCount();
+			getItemCount();
 		}
 
 		function download() {

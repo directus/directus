@@ -28,12 +28,14 @@ published: Δημοσιευμένο
 draft: Πρόχειρο
 archived: Αρχειοθετήθηκε
 modules: Ενότητες
+module_bar: Γραμμή Ενθεμάτων
 logs: Αρχεία καταγραφής (Logs)
 reset_width: Επαναφορά πλάτους
 tile_size: Μέγεθος πλακιδίων
 edit_field: Επεξεργασία Πεδίου
 conditions: Προϋποθέσεις
 location: Τοποθεσία
+condition_rules: Κανόνες Κατάστασης
 input: Εισαγωγή
 maps: Χάρτες
 switch_user: Εναλλαγή Χρήστη
@@ -47,6 +49,7 @@ group: Ομάδα
 export_items: Εξαγωγή στοιχείων
 and: Και
 or: Ή
+dataset_too_large_currently_showing_n_items: Τα δεδομένα είναι πολλά. Αυτή τη στιγμή εμφανίζονται τα πρώτα {n} στοιχεία.
 custom: Προσαρμοσμένο
 fill_width: Πλήρες Πλάτος
 field_name_translations: Μεταφράσεις Ονόματος Πεδίου
@@ -135,6 +138,7 @@ nullable: Κενό
 allow_null_value: Επέτρεψε κενές τιμές
 field_standard: Τυπικό
 field_presentation: Παρουσίαση & Συνώνυμα
+field_file: Μονό Αρχείο
 field_translations: Μεταφράσεις
 field_group: Ομάδα πεδίων
 item_permissions: Δικαιώματα Στοιχείου
@@ -145,6 +149,12 @@ permissions_for_role: 'Στοιχεία ο ρόλος {role} μπορεί {actio
 fields_for_role: 'Πεδία ο ρόλος {role} μπορεί {action}.'
 presentation_and_aliases: Παρουσίαση & Συνώνυμα
 revision_post_create: Εδώ εμφανίζεται με τι έμοιαζε αυτό το στοιχείο όταν δημιουργήθηκε.
+top: Πάνω
+bottom: Κάτω
+hide_field: Απόκρυψη Πεδίου
+hide_field_on_detail: Απόκρυψη πεδίου στις λεπτομέρειες
+show_field_on_detail: Εμφάνιση πεδίου στις λεπτομέρειες
+delete_field: Διαγραφή Πεδίου
 language: Γλώσσα
 language_placeholder: Επιλέξτε μια γλώσσα...
 global: Καθολικός
@@ -273,6 +283,7 @@ fields:
     role: Ρόλος
   directus_settings:
     project_name: Όνομα Έργου
+    module_bar: Γραμμή Ενθεμάτων
   directus_shares:
     name: Όνομα
     role: Ρόλος

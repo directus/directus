@@ -11,7 +11,7 @@
 import { onMounted, onUnmounted, computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import '@fullcalendar/core/vdom';
+import '@fullcalendar/core';
 
 const { n, t } = useI18n();
 

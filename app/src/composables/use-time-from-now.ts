@@ -1,4 +1,4 @@
-import { localizedFormatDistance } from '@/utils/localized-format-distance/';
+import { localizedFormatDistance } from '@/utils/localized-format-distance';
 import { onMounted, onUnmounted, Ref, ref } from 'vue';
 
 export function useTimeFromNow(date: Date | number, autoUpdate = 60000): Ref<string> {
