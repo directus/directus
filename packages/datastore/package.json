@@ -1,0 +1,43 @@
+{
+	"name": "@directus/database-driver",
+	"version": "0.0.1",
+	"type": "module",
+	"scripts": {
+		"build": "tsc --build",
+		"dev": "tsc --watch",
+		"test": "vitest run",
+		"test:watch": "vitest",
+		"test:coverage": "vitest run --coverage"
+	},
+	"description": "Database layer for Directus.",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus/directus.git",
+		"directory": "packages/persistance"
+	},
+	"funding": "https://github.com/directus/directus?sponsor=1",
+	"license": "GPL-3.0",
+	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
+	"exports": {
+		".": "./dist/index.js",
+		"./package.json": "./package.json"
+	},
+	"main": "dist/index.js",
+	"files": [
+		"dist",
+		"!**/*.d.ts?(.map)"
+	],
+	"publishConfig": {
+		"access": "public"
+	},
+	"dependencies": {
+		"@directus/utils": "workspace:*"
+	},
+	"devDependencies": {
+		"@directus/tsconfig": "0.0.6",
+		"@vitest/coverage-c8": "0.26.2",
+		"typescript": "4.9.4",
+		"vitest": "0.26.2"
+	}
+}
+
