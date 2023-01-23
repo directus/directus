@@ -1,7 +1,6 @@
 import { Filter, LogicalFilterAND } from '@directus/shared/types';
 import { parseJSON } from '@directus/shared/utils';
 import { Knex } from 'knex';
-import { nanoid } from 'nanoid';
 
 type OldFilter = {
 	key: string;
@@ -75,6 +74,8 @@ export async function up(knex: Knex): Promise<void> {
 }
 
 export async function down(knex: Knex): Promise<void> {
+	const { nanoid } = await import('nanoid');
+
 	await knex.schema.alterTable('directus_presets', (table) => {
 		table.json('filters');
 	});

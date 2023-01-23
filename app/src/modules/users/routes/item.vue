@@ -446,8 +446,7 @@ export default defineComponent({
 			if (newLang && newLang !== locale.value) {
 				await setLanguage(newLang);
 
-				await fieldsStore.hydrate();
-				await collectionsStore.hydrate();
+				await Promise.all([fieldsStore.hydrate(), collectionsStore.hydrate()]);
 			}
 		}
 

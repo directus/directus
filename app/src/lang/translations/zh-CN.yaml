@@ -22,7 +22,7 @@
 identifier: 标识符（identifier）
 avatar: 头像
 application: 应用程序
-default_provider: 默认值
+default_provider: 默认
 method: 方法
 published: 已发布
 draft: 草稿
@@ -42,7 +42,7 @@ switch_user: 切换用户
 item_creation: 新建
 item_revision: 条目修订
 enter_a_name: 请输入名称...
-duplicate_field: 复制
+duplicate_field: 复制字段
 half_width: 半宽
 full_width: 全宽
 group: 分组
@@ -573,6 +573,8 @@ select_an_item: 选择一个条目...
 edit: 编辑
 enabled: 已启用
 disable_tfa: 停用双重认证
+admin_disable_tfa_text: 您确定要为此用户禁用2FA吗？
+tfa_setup: 设置 2FA
 tfa_scan_code: 扫描您的身份验证程序中的代码来完成设置 2FA
 enter_otp_to_disable_tfa: 输入OTP以禁用双重认证
 create_account: 创建账号
@@ -1162,7 +1164,7 @@ fields:
     module_bar: 模块栏
     transformations_all: 允许所有转换
     transformations_none: 禁用转换
-    transformations_presets: 限制转换到下面预设
+    transformations_presets: 将转换限制为以下预设
     image_editor: 图像编辑器
     custom_aspect_ratios: 自定义长宽比
   directus_shares:
@@ -1429,6 +1431,7 @@ translation: 翻译
 translation_placeholder: 输入翻译...
 value: 值
 view_project: 查看项目
+weeks: { }
 report_error: 报告错误
 start: 开始
 table: 表
@@ -1977,6 +1980,7 @@ panels:
     y_axis_conditional_two: 必须是一个数字。
   linechart:
     name: 折线图
+    description: 比较字段变化的线形图
     select_field: 您必须选择一个字段。
     select_collection: 您必须选择一个集合。
     select_x_axis: 您必须选择一个X轴。
@@ -1988,6 +1992,7 @@ panels:
     datasets: 数据集
     show_legend: 显示图例
     show_marker: 显示工具提示标志
+    include_dataset: 您必须包含至少一个数据集。
     include_y_axis: 当没有指定组时，您必须为每个数据集包含Y-Axis。
     group_and_function: 您必须同时包含或省略一个分组函数和一个功能函数。
     smooth: 平滑模式
@@ -1999,6 +2004,7 @@ panels:
     half_circle: 半圈
     full_circle: 一整圈
     stroke_width: 笔画宽度
+    rounded_stroke: 圆角描边
     select_max_value: 您必须选择一个最大值。
     max_greater_than_zero: 最大值必须大于 0。
     select_field: 您必须选择一个字段。
@@ -2009,8 +2015,10 @@ panels:
     broad: 广泛的
   piechart:
     name: 饼图或环图
+    description: 在列上显示分组比率的圆形图表
     function: 功能函数
     donut: 圆环图
+    show_labels: 显示标签
     show_legend: 显示图例
     right: 右
     bottom: 底部
