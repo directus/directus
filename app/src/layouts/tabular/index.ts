@@ -61,8 +61,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				totalCount,
 				changeManualSort,
 				getItems,
-			  getItemCount,
-			  getTotalCount,
+				getItemCount,
+				getTotalCount,
 			} = useItems(collection, {
 				sort,
 				limit,
