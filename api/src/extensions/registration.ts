@@ -100,7 +100,7 @@ export class RegistrationManager {
 	}
 
 	public async registerOperations(): Promise<void> {
-		const internalPaths = await globby(path.posix.join(pathToRelativeUrl(__dirname), 'operations/*/index.(js|ts)'));
+		const internalPaths = await globby(path.posix.join(pathToRelativeUrl(__dirname), '..', 'operations/*/index.(js|ts)'));
 
 		const internalOperations = internalPaths.map((internalPath) => {
 			const dirs = internalPath.split(path.sep);
