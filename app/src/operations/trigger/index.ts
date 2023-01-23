@@ -12,7 +12,7 @@ export default defineOperationApp({
 			text: flow,
 		},
 	],
-	options: () => {
+	options: (panel) => {
 		const flowStore = useFlowsStore();
 		const flowChoices = flowStore.flows
 			.filter((flow) => flow.trigger === 'operation')
@@ -25,7 +25,7 @@ export default defineOperationApp({
 				name: '$t:operations.trigger.flow',
 				type: 'string',
 				meta: {
-					width: 'full',
+					width: 'half',
 					interface: 'select-dropdown',
 					options: {
 						choices: flowChoices,
@@ -34,6 +34,51 @@ export default defineOperationApp({
 					},
 				},
 			},
+			{
+				field: 'iterationMode',
+				name: '$t:operations.trigger.iteration_mode',
+				type: 'json',
+				meta: {
+					width: 'half',
+					interface: 'select-dropdown',
+					note: '$t:operations.trigger.iteration_mode_note',
+					options: {
+						choices: [
+							{
+								text: '$t:operations.trigger.parallel',
+								value: 'parallel',
+							},
+							{
+								text: '$t:operations.trigger.serial',
+								value: 'serial',
+							},
+							{
+								text: '$t:operations.trigger.batch',
+								value: 'batch',
+							},
+						],
+					},
+				},
+				schema: {
+					default_value: 'parallel',
+				},
+			},
+			...(panel.iterationMode === 'batch'
+				? [
+						{
+							field: 'batchSize',
+							name: '$t:operations.trigger.batch_size',
+							type: 'integer',
+							meta: {
+								width: 'half',
+								interface: 'input',
+							},
+							schema: {
+								default_value: 10,
+							},
+						},
+				  ]
+				: []),
 			{
 				field: 'payload',
 				name: '$t:payload',
