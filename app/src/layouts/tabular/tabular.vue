@@ -178,7 +178,7 @@ import { useShortcut } from '@/composables/use-shortcut';
 import { Collection } from '@/types/collections';
 import { useSync } from '@directus/shared/composables';
 import { Field, Filter, Item, ShowSelect } from '@directus/shared/types';
-import { ComponentPublicInstance, inject, ref, Ref, watch, computed } from 'vue';
+import { ComponentPublicInstance, inject, ref, Ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { get } from '@directus/shared/utils';
 
