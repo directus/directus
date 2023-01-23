@@ -69,9 +69,9 @@ export default defineComponent({
 		const fieldDetailStore = useFieldDetailStore();
 
 		const { collection, field } = storeToRefs(fieldDetailStore);
-		const { extension } = toRefs(props);
+		const { extension, type } = toRefs(props);
 
-		const extensionInfo = useExtension(props.type, extension);
+		const extensionInfo = useExtension(type, extension);
 
 		const usesCustomComponent = computed(() => {
 			if (!extensionInfo.value) return false;
