@@ -90,10 +90,9 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
 import SettingsNavigation from '../../components/navigation.vue';
-import Extension from '@nitwel/directus-marketplace/components/extension.vue';
+import Extension from '@nitwel/directus-marketplace/market/extension.vue';
 import { formatTitle } from '@nitwel/directus-marketplace/utils/format';
 import { computed, provide, ref } from 'vue';
-import { useRouter } from 'vue-router';
 import { marketApi } from './market-api';
 import api from '@/api';
 import { useExtensionsStore } from '@/stores/extensions';
