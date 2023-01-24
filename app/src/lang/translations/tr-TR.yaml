@@ -274,6 +274,7 @@ fields_group: Alanlar Grubu
 no_collections_found: Hiç Koleksiyon bulunamadı.
 new_data_alert: 'Veri Modelinizde aşağıdakiler oluşturulacaktır:'
 search_collection: Koleksiyonu Ara...
+search_field: Öğe ara...
 new_field: 'Yeni Alan'
 new_collection: 'Yeni Koleksiyon'
 add_m2o_to_collection: '"{collection}" Koleksiyonuna M2O İlişki Ekle'
@@ -571,6 +572,7 @@ select_an_item: Bir Öğe Seçin...
 edit: Düzenle
 enabled: Etkin
 disable_tfa: 2FA'yı Devre Dışı Bırak
+tfa_setup: 2 Adımlı doğrulamayı kur
 tfa_scan_code: 2 Adımlı doğrulama için doğrulayıcı uygulamanızdan kodu taratın
 enter_otp_to_disable_tfa: 2FA'yı devre dışı bırakmak için OTP girin
 create_account: Hesap Oluştur
@@ -712,6 +714,7 @@ operators:
   nintersects: Kesişmeyen
   intersects_bbox: Sınırlayıcı kutuyla kesişen
   nintersects_bbox: Sınırlayıcı kutuyla kesişmeyen
+  regex: Eşleşen Düzenli ifadeler (RegExp)
 custom_validation_message: Özel Doğrulama Mesajı
 loading: Yükleniyor...
 drop_to_upload: Yüklemek için Dosyayı Buraya Bırakın
@@ -750,6 +753,8 @@ add_file: Dosya Ekle
 replace_file: Dosyayı Değiştir
 no_results: Sonuç Yok
 no_results_copy: Sonuçları görmek için arama filtrelerini ayarlayın veya temizleyin.
+no_visible_fields: Boş Form
+no_visible_fields_copy: Bu formun gösterilebilir öğesi yok.
 clear_filters: Filtreleri Temizle
 saves_automatically: Otomati̇k Olarak Kaydedilir
 role: Rol
@@ -779,8 +784,10 @@ label: Etiket
 flows: Akışlar
 flow: Akış
 select_a_flow: Bir Akış Seç
+run_flow_on_current_collection: Akış şemasını geçerli modelde çalıştır
 run_flow_on_current: Geçerli Öğede akışı çalıştır
 run_flow_on_current_edited_confirm: Bu öğe bu akış tarafından güncellenebilir, yürütmek istediğinizden emin misiniz?
+run_flow_success: Akış "{flow}" çalıştırma başarılı
 trigger: Tetikleme
 trigger_options: Tetikleyici Seçenekleri
 view_trigger: Tetikleyiciyi Görüntüle
@@ -1015,9 +1022,11 @@ directus_collection:
   directus_dashboards: Panolar modülündeki panolar
   directus_fields: Ek alan ayarları ve metaveri
   directus_files: Yönetilen tüm dosyalar için metaveri
+  directus_flows: Otomasyon akışları
   directus_folders: Dosyalar için sanal klasörler sunar
   directus_migrations: Veritabanının hangi sürümünü kullanıyorsunuz
   directus_notifications: Bildirimler kullanıcılara gönderildi
+  directus_operations: Akışların içerisindeki operasyonlar
   directus_panels: Panolar modülündeki panolardaki tekil paneller
   directus_permissions: Her bir rol için yetkilere eriş
   directus_presets: Koleksiyon varsayılanları ve yer işaretleri için ön ayarlar
@@ -1720,6 +1729,7 @@ interfaces:
     start_closed: Kapalı Başla
   system-token:
     system-token: Erişim Anahtarı (Token)
+    description: Kalıcı erişim anahtarlarını (token) yönet
     value_securely_saved: Değer Güvenli Bir Şekilde Kaydedildi
     generate: Erişim Anahtarı Üret
     regenerate: Yeniden Erişim Anahtarı Üret

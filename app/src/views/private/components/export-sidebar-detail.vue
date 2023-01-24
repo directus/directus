@@ -110,7 +110,7 @@
 
 				<div class="field half-right">
 					<p class="type-label">{{ t('limit') }}</p>
-					<v-input v-model="exportSettings.limit" type="number" :placeholder="t('unlimited')" />
+					<v-input v-model="exportSettings.limit" type="number" :min="-1" :step="1" :placeholder="t('unlimited')" />
 				</div>
 
 				<div class="field half-left">
@@ -134,9 +134,16 @@
 				<v-notice class="full" :type="lockedToFiles ? 'warning' : 'normal'">
 					<div>
 						<p>
-							<template v-if="itemCount === 0">{{ t('exporting_no_items_to_export') }}</template>
-
-							<template v-else-if="!exportSettings.limit || (itemCount && exportSettings.limit >= itemCount)">
+							<template v-if="exportSettings.limit === 0 || itemCount === 0">
+								{{ t('exporting_no_items_to_export') }}
+							</template>
+							<template
+								v-else-if="
+									!exportSettings.limit ||
+									exportSettings.limit === -1 ||
+									(itemCount && exportSettings.limit >= itemCount)
+								"
+							>
 								{{
 									t('exporting_all_items_in_collection', {
 										total: itemCount ? n(itemCount) : '??',
@@ -344,18 +351,27 @@ const getItemCount = debounce(async () => {
 	itemCountLoading.value = true;
 
 	try {
+		const aggregate = primaryKeyField.value?.field
+			? {
+					countDistinct: [primaryKeyField.value.field],
+			  }
+			: {
+					count: ['*'],
+			  };
+
 		const count = await api
 			.get(getEndpoint(collection.value), {
 				params: {
 					...exportSettings,
-					aggregate: {
-						count: ['*'],
-					},
+					aggregate,
 				},
 			})
 			.then((response) => {
 				if (response.data.data?.[0]?.count) {
 					return Number(response.data.data[0].count);
+				}
+				if (response.data.data?.[0]?.countDistinct) {
+					return Number(response.data.data[0].countDistinct[primaryKeyField.value!.field]);
 				}
 			});
 
