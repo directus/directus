@@ -60,7 +60,7 @@ export class ExtensionManager {
 	private reloadQueue: JobQueue;
 
 	public registration: RegistrationManager;
-	public installation: InstallationManager;
+	public installation: InstallationManager | null = null;
 	public watcher: WatcherManager;
 
 	constructor() {
@@ -69,7 +69,9 @@ export class ExtensionManager {
 		this.reloadQueue = new JobQueue();
 
 		this.registration = new RegistrationManager(this);
-		this.installation = new InstallationManager(this);
+		if(env.EXTENSIONS_AUTO_INSTALL === true) {
+			this.installation = new InstallationManager(this);
+		}
 		this.watcher = new WatcherManager(this);
 	}
 
@@ -177,6 +179,7 @@ export class ExtensionManager {
 			host: extension.host,
 			version: extension.version,
 			enabled: extension.enabled,
+			registry: extension.registry,
 		};
 
 		if (extension.type === 'bundle') {
@@ -279,6 +282,7 @@ export class ExtensionManager {
 
 			registeredExtensions = extensions.map((extension) => ({
 				name: extension.name,
+				registry: undefined,
 				enabled: true,
 			}));
 		}

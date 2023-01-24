@@ -2,6 +2,7 @@ table: directus_extensions
 
 fields:
   - field: name
+  - field: registry
   - field: enabled
     special:
       - cast-boolean

@@ -9,6 +9,16 @@ import { ExtensionsService } from './service';
 import getDatabase from '../database/index';
 import { getSchema } from '../utils/get-schema';
 
+export type ExtensionInstallationOptions = {
+	registry?: string;
+	version?: string;
+};
+
+const defaultOptions = {
+	registry: 'https://registry.npmjs.org',
+	version: 'latest',
+};
+
 export class InstallationManager {
 	private extensionManager: ExtensionManager;
 
@@ -16,9 +26,16 @@ export class InstallationManager {
 		this.extensionManager = extensionManager;
 	}
 
-	public async installExtension(name: string, version = 'latest') {
+	public async installExtension(name: string, options: ExtensionInstallationOptions = {}) {
+		options.registry ??= defaultOptions.registry;
+		options.version ??= defaultOptions.version;
+
 		if (EXTENSION_TYPES.includes(name as any)) {
 			throw new Error(`The name "${name}" is reserved for internal use.`);
+		}
+
+		if ((env.EXTENSIONS_ALLOWED_REGISTRIES ?? []).includes(options.registry) === false) {
+			throw new Error(`The registry "${options.registry}" is not allowed.`);
 		}
 
 		const extension = this.extensionManager.getExtension(name);
@@ -30,7 +47,7 @@ export class InstallationManager {
 		const axios = (await import('axios')).default;
 
 		const info = await axios.get(
-			`https://registry.npmjs.org/${encodeURIComponent(name)}/${encodeURIComponent(version)}`
+			`${options.registry}/${encodeURIComponent(name)}/${encodeURIComponent(options.version)}`
 		);
 
 		const tarballUrl = info.data.dist.tarball;
@@ -67,6 +84,7 @@ export class InstallationManager {
 		await extensionsService.createOne({
 			name,
 			enabled: true,
+			registry: options.registry,
 		});
 	}
 
@@ -88,7 +106,10 @@ export class InstallationManager {
 		await extensionsService.deleteOne(name);
 	}
 
-	public async updateExtension(name: string, version?: string) {
+	public async updateExtension(name: string, options: ExtensionInstallationOptions = {}) {
+		options.registry ??= defaultOptions.registry;
+		options.version ??= defaultOptions.version;
+
 		const axios = (await import('axios')).default;
 
 		const extension = this.extensionManager.getExtension(name);
@@ -98,23 +119,27 @@ export class InstallationManager {
 		}
 
 		if (extension.local === false) {
-			throw new Error(`Extension "${name}" is not local.`);
+			throw new Error(`Extension "${name}" is a npm dependency.`);
 		}
 
-		if (version === undefined) {
-			const info = await axios.get(`https://registry.npmjs.org/${encodeURIComponent(name)}/latest/`);
+		if ((env.EXTENSIONS_ALLOWED_REGISTRIES ?? []).includes(options.registry) === false) {
+			throw new Error(`The registry "${options.registry}" is not allowed.`);
+		}
+
+		if (options.version === undefined) {
+			const info = await axios.get(`${options.registry}/${encodeURIComponent(name)}/latest/`);
 
 			if (info.data.version === extension.version) {
 				throw new Error(`Extension "${name}" is already up to date.`);
 			}
 		}
 
-		if (version === extension.version) {
+		if (options.version === extension.version) {
 			throw new Error(`Extension "${name}" is already up to date.`);
 		}
 
 		await this.uninstallExtension(name);
 
-		await this.installExtension(name, version);
+		await this.installExtension(name, options);
 	}
 }

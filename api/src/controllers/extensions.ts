@@ -54,6 +54,7 @@ router.post(
 
 		const name = req.params.name;
 		const version = req.params.version;
+		let registry = req.query.registry;
 
 		if (!name) {
 			throw new RouteNotFoundException(req.path);
@@ -61,12 +62,20 @@ router.post(
 
 		const extensionManager = getExtensionManager();
 
+		if(extensionManager.installation === null) 
+			throw new Error(`Extension installation is disabled`);
+
+
+		if (typeof registry !== 'string') {
+			registry = undefined;
+		}
+
 		const extension = extensionManager.getExtension(name);
 
 		if (extension !== undefined) {
 			await extensionManager.installation.updateExtension(name);
 		} else {
-			await extensionManager.installation.installExtension(name, version);
+			await extensionManager.installation.installExtension(name, {version, registry});
 		}
 
 		await extensionManager.reload();
@@ -126,6 +135,9 @@ router.delete(
 		}
 
 		const extensionManager = getExtensionManager();
+
+		if(extensionManager.installation === null) 
+			throw new Error(`Extension installation is disabled`);
 
 		await extensionManager.installation.uninstallExtension(name);
 

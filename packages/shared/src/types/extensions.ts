@@ -184,6 +184,7 @@ export type ExtensionInfo = ExtensionRaw &
 export const ExtensionRaw = z.object({
 	name: z.string(),
 	enabled: z.boolean(),
+	registry: z.string().optional(),
 });
 
 export type ExtensionRaw = z.infer<typeof ExtensionRaw>;
