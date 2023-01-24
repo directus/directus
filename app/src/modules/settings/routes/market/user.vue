@@ -20,12 +20,7 @@
 			</sidebar-detail>
 		</template>
 
-		<Suspense>
-			<User :name="name" app :existingExtensions="extensionsStore.extensions"/>
-			<template #fallback>
-				Loading...
-			</template>
-		</Suspense>
+		<User :name="name" app :existingExtensions="extensionsStore.extensions"/>
 	</private-view>
 </template>
 

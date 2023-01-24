@@ -37,12 +37,7 @@
 			</sidebar-detail>
 		</template>
 
-		<Suspense>
-			<Extension :name="name" @select-version="version = $event" :existingExtension="extension" app :directus-version="serverStore.info.directus?.version"/>
-			<template #fallback>
-				Loading...
-			</template>
-		</Suspense>
+		<Extension :name="name" @select-version="version = $event" :existingExtension="extension" app :directus-version="serverStore.info.directus?.version"/>
 
 		<v-dialog :modelValue="installDialog">
 			<v-card>
