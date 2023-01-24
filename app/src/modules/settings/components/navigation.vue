@@ -82,7 +82,7 @@ export default defineComponent({
 				icon: 'storefront',
 				name: t('marketplace'),
 				to: `/settings/market`,
-			}
+			},
 		];
 
 		const externalItems = computed(() => {

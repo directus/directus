@@ -156,7 +156,7 @@ export default defineConfig({
 			},
 		},
 		fs: {
-			allow: [searchForWorkspaceRoot(process.cwd()), ...getExtensionsRealPaths(),'D:/Programmieren/Directus/'],
+			allow: [searchForWorkspaceRoot(process.cwd()), ...getExtensionsRealPaths(), 'D:/Programmieren/Directus/'],
 		},
 	},
 	test: {

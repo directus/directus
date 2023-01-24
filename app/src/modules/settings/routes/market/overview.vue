@@ -20,7 +20,7 @@
 			</sidebar-detail>
 		</template>
 
-		<Overview :type="type" app :existingExtensions="extensionsStore.extensions"/>
+		<Overview :type="type" app :existing-extensions="extensionsStore.extensions" />
 	</private-view>
 </template>
 
@@ -28,7 +28,7 @@
 import { useI18n } from 'vue-i18n';
 import SettingsNavigation from '../../components/navigation.vue';
 import Overview from '@nitwel/directus-marketplace/components/overview.vue';
-import { computed, provide } from 'vue';
+import { provide } from 'vue';
 import { marketApi } from './market-api';
 import { useExtensionsStore } from '@/stores/extensions';
 
@@ -36,15 +36,13 @@ interface Props {
 	type?: string;
 }
 
-const props = defineProps<Props>();
+defineProps<Props>();
 
 const extensionsStore = useExtensionsStore();
-
 
 provide('api', marketApi);
 
 const { t } = useI18n();
-
 </script>
 
 <style scoped>

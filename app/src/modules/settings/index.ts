@@ -243,7 +243,7 @@ export default defineModule({
 				{
 					name: 'extensions-overview',
 					path: '',
-					component: MarketOverview
+					component: MarketOverview,
 				},
 				{
 					name: 'extension',

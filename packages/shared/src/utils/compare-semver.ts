@@ -4,15 +4,15 @@
  * @param ver2 Second semver version
  */
 export function compareSemver(ver1: string | undefined, ver2: string | undefined): number {
-    const current = (ver1 || '0.0.0').split('.').map(Number)
-    const required = (ver2 || '0.0.0').split('.').map(Number)
+	const current = (ver1 || '0.0.0').split('.').map(Number);
+	const required = (ver2 || '0.0.0').split('.').map(Number);
 
-    for (let i = 0; i < 3; i++) {
-        if (current[i]! > required[i]!) {
-            return 1
-        } else if (current[i]! < required[i]!) {
-            return -1
-        }
-    }
-    return 0
+	for (let i = 0; i < 3; i++) {
+		if (current[i]! > required[i]!) {
+			return 1;
+		} else if (current[i]! < required[i]!) {
+			return -1;
+		}
+	}
+	return 0;
 }

@@ -69,7 +69,7 @@ export class ExtensionManager {
 		this.reloadQueue = new JobQueue();
 
 		this.registration = new RegistrationManager(this);
-		if(env.EXTENSIONS_AUTO_INSTALL === true) {
+		if (env.EXTENSIONS_AUTO_INSTALL === true) {
 			this.installation = new InstallationManager(this);
 		}
 		this.watcher = new WatcherManager(this);

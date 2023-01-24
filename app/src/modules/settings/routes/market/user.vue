@@ -20,7 +20,7 @@
 			</sidebar-detail>
 		</template>
 
-		<User :name="name" app :existingExtensions="extensionsStore.extensions"/>
+		<User :name="name" app :existing-extensions="extensionsStore.extensions" />
 	</private-view>
 </template>
 
@@ -36,15 +36,13 @@ interface Props {
 	name: string;
 }
 
-const props = defineProps<Props>();
+defineProps<Props>();
 
 const extensionsStore = useExtensionsStore();
-
 
 provide('api', marketApi);
 
 const { t } = useI18n();
-
 </script>
 
 <style scoped>

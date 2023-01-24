@@ -5,7 +5,6 @@ import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { addQueryToPath } from './utils/add-query-to-path';
 import PQueue, { Options, DefaultAddOptions } from 'p-queue';
 
-
 const api = axios.create({
 	baseURL: getRootPath(),
 	withCredentials: true,
