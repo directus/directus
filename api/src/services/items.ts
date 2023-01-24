@@ -183,6 +183,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				const activityService = new ActivityService({
 					knex: trx,
 					schema: this.schema,
+					accountability: this.accountability,
 				});
 
 				const activity = await activityService.createOne({
@@ -200,6 +201,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 					const revisionsService = new RevisionsService({
 						knex: trx,
 						schema: this.schema,
+						accountability: this.accountability,
 					});
 
 					const revision = await revisionsService.createOne({
@@ -592,6 +594,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				const activityService = new ActivityService({
 					knex: trx,
 					schema: this.schema,
+					accountability: this.accountability,
 				});
 
 				const activity = await activityService.createMany(
@@ -617,6 +620,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 					const revisionsService = new RevisionsService({
 						knex: trx,
 						schema: this.schema,
+						accountability: this.accountability,
 					});
 
 					const revisions = (
@@ -807,6 +811,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				const activityService = new ActivityService({
 					knex: trx,
 					schema: this.schema,
+					accountability: this.accountability,
 				});
 
 				await activityService.createMany(
