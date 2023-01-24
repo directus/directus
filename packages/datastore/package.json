@@ -9,7 +9,7 @@
 		"test:watch": "vitest",
 		"test:coverage": "vitest run --coverage"
 	},
-	"description": "Database layer for Directus.",
+	"description": "Database layer for Directus",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/directus/directus.git",
