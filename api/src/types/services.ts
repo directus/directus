@@ -5,6 +5,7 @@ import { Item, PrimaryKey } from './items';
 export type AbstractServiceOptions = {
 	knex?: Knex;
 	accountability?: Accountability | null;
+	elevatedPrivileges?: boolean;
 	schema: SchemaOverview;
 };
 

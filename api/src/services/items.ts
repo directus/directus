@@ -19,7 +19,6 @@ import {
 	PrimaryKey,
 } from '../types';
 import getASTFromQuery from '../utils/get-ast-from-query';
-import { setAdmin } from '../utils/set-admin';
 import { validateKeys } from '../utils/validate-keys';
 import { AuthorizationService } from './authorization';
 import { ActivityService, RevisionsService } from './index';
@@ -38,6 +37,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	eventScope: string;
 	schema: SchemaOverview;
 	cache: Keyv<any> | null;
+	protected elevatedPrivileges: boolean;
 
 	constructor(collection: string, options: AbstractServiceOptions) {
 		this.collection = collection;
@@ -46,6 +46,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		this.eventScope = this.collection.startsWith('directus_') ? this.collection.substring(9) : 'items';
 		this.schema = options.schema;
 		this.cache = getCache().cache;
+		this.elevatedPrivileges = Boolean(options.elevatedPrivileges);
 
 		return this;
 	}
@@ -79,6 +80,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 		const payload: AnyItem = cloneDeep(data);
 		const nestedActionEvents: ActionEventParams[] = [];
+		const accountability = this.elevatedPrivileges ? null : this.accountability;
 
 		// By wrapping the logic in a transaction, we make sure we automatically roll back all the
 		// changes in the DB if any of the parts contained within throws an error. This also means
@@ -87,13 +89,13 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		const primaryKey: PrimaryKey = await this.knex.transaction(async (trx) => {
 			// We're creating new services instances so they can use the transaction as their Knex interface
 			const payloadService = new PayloadService(this.collection, {
-				accountability: this.accountability,
+				accountability: accountability,
 				knex: trx,
 				schema: this.schema,
 			});
 
 			const authorizationService = new AuthorizationService({
-				accountability: this.accountability,
+				accountability: accountability,
 				knex: trx,
 				schema: this.schema,
 			});
@@ -118,7 +120,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 					  )
 					: payload;
 
-			const payloadWithPresets = this.accountability
+			const payloadWithPresets = accountability
 				? await authorizationService.validatePayload('create', this.collection, payloadAfterHooks)
 				: payloadAfterHooks;
 
@@ -184,7 +186,8 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				const activityService = new ActivityService({
 					knex: trx,
 					schema: this.schema,
-					accountability: setAdmin(this.accountability),
+					elevatedPrivileges: true,
+					accountability: this.accountability,
 				});
 
 				const activity = await activityService.createOne({
@@ -202,7 +205,8 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 					const revisionsService = new RevisionsService({
 						knex: trx,
 						schema: this.schema,
-						accountability: setAdmin(this.accountability),
+						elevatedPrivileges: true,
+						accountability: this.accountability,
 					});
 
 					const revision = await revisionsService.createOne({
@@ -274,6 +278,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				accountability: this.accountability,
 				schema: this.schema,
 				knex: trx,
+				elevatedPrivileges: this.elevatedPrivileges,
 			});
 
 			const primaryKeys: PrimaryKey[] = [];
@@ -332,7 +337,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				: query;
 
 		let ast = await getASTFromQuery(this.collection, updatedQuery, this.schema, {
-			accountability: this.accountability,
+			accountability: this.elevatedPrivileges ? null : this.accountability,
 			// By setting the permissions action, you can read items using the permissions for another
 			// operation's permissions. This is used to dynamically check if you have update/delete
 			// access to (a) certain item(s)
@@ -340,7 +345,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			knex: this.knex,
 		});
 
-		if (this.accountability && this.accountability.admin !== true) {
+		if (this.accountability && !this.elevatedPrivileges && this.accountability.admin !== true) {
 			const authorizationService = new AuthorizationService({
 				accountability: this.accountability,
 				knex: this.knex,
@@ -476,6 +481,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 					accountability: this.accountability,
 					knex: trx,
 					schema: this.schema,
+					elevatedPrivileges: this.elevatedPrivileges,
 				});
 
 				for (const item of data) {
@@ -508,8 +514,10 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		const payload: Partial<AnyItem> = cloneDeep(data);
 		const nestedActionEvents: ActionEventParams[] = [];
 
+		const accountability = this.elevatedPrivileges ? null : this.accountability;
+
 		const authorizationService = new AuthorizationService({
-			accountability: this.accountability,
+			accountability,
 			knex: this.knex,
 			schema: this.schema,
 		});
@@ -538,11 +546,11 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		// Sort keys to ensure that the order is maintained
 		keys.sort();
 
-		if (this.accountability) {
+		if (accountability) {
 			await authorizationService.checkAccess('update', this.collection, keys);
 		}
 
-		const payloadWithPresets = this.accountability
+		const payloadWithPresets = accountability
 			? await authorizationService.validatePayload('update', this.collection, payloadAfterHooks)
 			: payloadAfterHooks;
 
@@ -591,11 +599,12 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			}
 
 			// If this is an authenticated action, and accountability tracking is enabled, save activity row
-			if (this.accountability && this.schema.collections[this.collection].accountability !== null) {
+			if (accountability && this.schema.collections[this.collection].accountability !== null) {
 				const activityService = new ActivityService({
 					knex: trx,
 					schema: this.schema,
-					accountability: setAdmin(this.accountability),
+					accountability: this.accountability,
+					elevatedPrivileges: true,
 				});
 
 				const activity = await activityService.createMany(
@@ -621,7 +630,8 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 					const revisionsService = new RevisionsService({
 						knex: trx,
 						schema: this.schema,
-						accountability: setAdmin(this.accountability),
+						elevatedPrivileges: true,
+						accountability: this.accountability,
 					});
 
 					const revisions = (
@@ -731,6 +741,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				accountability: this.accountability,
 				schema: this.schema,
 				knex: trx,
+				elevatedPrivileges: this.elevatedPrivileges,
 			});
 
 			const primaryKeys: PrimaryKey[] = [];
@@ -780,7 +791,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		const primaryKeyField = this.schema.collections[this.collection].primary;
 		validateKeys(this.schema, this.collection, primaryKeyField, keys);
 
-		if (this.accountability && this.accountability.admin !== true) {
+		if (this.accountability && !this.elevatedPrivileges && this.accountability.admin !== true) {
 			const authorizationService = new AuthorizationService({
 				accountability: this.accountability,
 				schema: this.schema,
@@ -808,11 +819,16 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		await this.knex.transaction(async (trx) => {
 			await trx(this.collection).whereIn(primaryKeyField, keys).delete();
 
-			if (this.accountability && this.schema.collections[this.collection].accountability !== null) {
+			if (
+				this.accountability &&
+				!this.elevatedPrivileges &&
+				this.schema.collections[this.collection].accountability !== null
+			) {
 				const activityService = new ActivityService({
 					knex: trx,
 					schema: this.schema,
-					accountability: setAdmin(this.accountability),
+					elevatedPrivileges: true,
+					accountability: this.accountability,
 				});
 
 				await activityService.createMany(
