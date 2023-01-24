@@ -1,5 +1,5 @@
 {
-	"name": "@directus/database-driver",
+	"name": "@directus/datastore",
 	"version": "0.0.1",
 	"type": "module",
 	"scripts": {
@@ -13,7 +13,7 @@
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/directus/directus.git",
-		"directory": "packages/persistance"
+		"directory": "packages/datastore"
 	},
 	"funding": "https://github.com/directus/directus?sponsor=1",
 	"license": "GPL-3.0",

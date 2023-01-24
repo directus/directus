@@ -1,3 +1,3 @@
-# `@directus/database-driver`
+# `@directus/datastore`
 
-Database layer for `@directus/directus`. All database calls will go trough this layer in the near feature.
+Database layer for `@directus/directus`. All database calls will go through this layer in the near feature.
