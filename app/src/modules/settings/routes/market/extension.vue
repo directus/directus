@@ -46,7 +46,7 @@
 			:name="name"
 			:existing-extension="extension"
 			app
-			:directus-version="serverStore.info.directus?.version"
+			:directus-version="serverStore.info?.directus?.version"
 			@select-version="version = $event"
 		/>
 
