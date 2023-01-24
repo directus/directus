@@ -590,7 +590,7 @@ importers:
       '@directus/shared': link:../shared
       inquirer: 8.1.2
 
-  packages/database-driver:
+  packages/datastore:
     specifiers:
       '@directus/tsconfig': 0.0.6
       '@directus/utils': workspace:*
