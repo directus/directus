@@ -335,8 +335,8 @@ undo_changes: Deshacer cambios
 notifications: Notificaciones
 show_all_activity: Mostrar toda la actividad
 page_not_found: Página no encontrada
-page_not_found_body: Parece que la página que está buscando no existe.
-confirm_revert: Confirmar reversión
+page_not_found_body: Parece que no existe la página que buscas.
+confirm_revert: Confirmar Revertir
 confirm_revert_body: Esto revertirá el elemento al estado seleccionado.
 display: Mostrar
 settings_update_success: Configuración actualizada
