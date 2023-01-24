@@ -19,6 +19,7 @@ import {
 	PrimaryKey,
 } from '../types';
 import getASTFromQuery from '../utils/get-ast-from-query';
+import { setAdmin } from '../utils/set-admin';
 import { validateKeys } from '../utils/validate-keys';
 import { AuthorizationService } from './authorization';
 import { ActivityService, RevisionsService } from './index';
@@ -183,7 +184,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				const activityService = new ActivityService({
 					knex: trx,
 					schema: this.schema,
-					accountability: this.accountability,
+					accountability: setAdmin(this.accountability),
 				});
 
 				const activity = await activityService.createOne({
@@ -201,7 +202,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 					const revisionsService = new RevisionsService({
 						knex: trx,
 						schema: this.schema,
-						accountability: this.accountability,
+						accountability: setAdmin(this.accountability),
 					});
 
 					const revision = await revisionsService.createOne({
@@ -594,7 +595,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				const activityService = new ActivityService({
 					knex: trx,
 					schema: this.schema,
-					accountability: this.accountability,
+					accountability: setAdmin(this.accountability),
 				});
 
 				const activity = await activityService.createMany(
@@ -620,7 +621,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 					const revisionsService = new RevisionsService({
 						knex: trx,
 						schema: this.schema,
-						accountability: this.accountability,
+						accountability: setAdmin(this.accountability),
 					});
 
 					const revisions = (
@@ -811,7 +812,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				const activityService = new ActivityService({
 					knex: trx,
 					schema: this.schema,
-					accountability: this.accountability,
+					accountability: setAdmin(this.accountability),
 				});
 
 				await activityService.createMany(
