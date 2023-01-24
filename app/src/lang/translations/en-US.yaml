@@ -1473,6 +1473,7 @@ page_help_settings_extensions: View a list of all installed extensions and eithe
 no_extensions: No Extensions
 no_extensions_copy: No extensions have been installed yet.
 marketplace: Marketplace
+page_help_settings_marketplace: '**Marketplace** — Browse and manage Extensions.'
 interfaces:
   filter:
     name: Filter

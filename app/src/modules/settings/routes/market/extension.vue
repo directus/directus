@@ -22,7 +22,7 @@
 				<v-button danger rounded icon v-tooltip.bottom="'Delete Extension'">
 					<v-icon name="delete" @click="uninstallDialog = true" />
 				</v-button>
-				<v-button secondary rounded icon v-tooltip.bottom="'Update Extension'">
+				<v-button v-if="local === false" secondary rounded icon v-tooltip.bottom="'Update Extension'">
 					<v-icon name="update" @click="updateDialog = true" />
 				</v-button>
 				<v-button :secondary="extension.enabled === false" rounded icon v-tooltip.bottom="extension.enabled ? 'Disable Extension' : 'Enable Extension'">
@@ -33,7 +33,7 @@
 
 		<template #sidebar>
 			<sidebar-detail icon="info_outline" :title="t('information')" close>
-				<div v-md="t('page_help_settings_flows_collection')" class="page-description" />
+				<div v-md="t('page_help_settings_marketplace')" class="page-description" />
 			</sidebar-detail>
 		</template>
 
@@ -113,6 +113,8 @@ const {} = useRouter();
 provide('api', marketApi);
 
 const { t } = useI18n();
+
+const local = computed(() => Boolean(extension.value && !extension.value.registry));
 
 async function install() {
 	if(version.value) {
