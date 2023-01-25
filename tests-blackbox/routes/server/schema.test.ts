@@ -421,7 +421,7 @@ describe('Schema Snapshots', () => {
 
 					// Assert
 					expect(response.statusCode).toEqual(400);
-					expect(response.text).toContain('Please regenerate a new diff and try again.');
+					expect(response.text).toContain('Please generate a new diff and try again.');
 				},
 				1200000
 			);
@@ -465,7 +465,7 @@ describe('Schema Snapshots', () => {
 
 					// Assert
 					expect(response.statusCode).toEqual(400);
-					expect(response.text).toContain('Please regenerate a new diff and try again.');
+					expect(response.text).toContain('Please generate a new diff and try again.');
 				},
 				1200000
 			);
