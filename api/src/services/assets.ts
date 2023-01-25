@@ -112,8 +112,12 @@ export class AssetsService {
 		const type = file.type;
 		const transforms = TransformationUtils.resolvePreset(transformation, file);
 
-		// We can only transform JPEG, PNG, and WebP
-		if (type && transforms.length > 0 && ['image/jpeg', 'image/png', 'image/webp', 'image/tiff'].includes(type)) {
+		// We can transform to JPEG, PNG, WebP, TIFF and AVIF
+		if (
+			type &&
+			transforms.length > 0 &&
+			['image/jpeg', 'image/png', 'image/webp', 'image/tiff', 'image/avif'].includes(type)
+		) {
 			const maybeNewFormat = TransformationUtils.maybeExtractFormat(transforms);
 
 			const assetFilename =

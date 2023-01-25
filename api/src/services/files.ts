@@ -87,7 +87,7 @@ export class FilesService extends ItemsService {
 		const { size } = await storage.location(data.storage).stat(payload.filename_disk);
 		payload.filesize = size;
 
-		if (['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/tiff'].includes(payload.type)) {
+		if (['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/tiff', 'image/avif'].includes(payload.type)) {
 			const stream = await storage.location(data.storage).read(payload.filename_disk);
 			const { height, width, description, title, tags, metadata } = await this.getMetadata(stream);
 
