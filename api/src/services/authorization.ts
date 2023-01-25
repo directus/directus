@@ -253,7 +253,7 @@ export class AuthorizationService {
 								(result[relation.collection] || (result[relation.collection] = new Set())).add(relation.field);
 							}
 						}
-						// m2a filter in the form of `item:collection`
+						// a2o filter in the form of `item:collection`
 						else if (filterKey.includes(':')) {
 							const [field, collectionScope] = filterKey.split(':');
 
