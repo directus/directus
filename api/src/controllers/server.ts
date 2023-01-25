@@ -152,7 +152,7 @@ const schemaMultipartHandler: RequestHandler = (req, res, next) => {
 				}
 			}
 
-			if (!uploadedSnapshot) throw new InvalidPayloadException(`No file were included in the body`);
+			if (!uploadedSnapshot) throw new InvalidPayloadException(`No file was included in the body`);
 
 			res.locals.uploadedSnapshot = uploadedSnapshot;
 
@@ -165,7 +165,7 @@ const schemaMultipartHandler: RequestHandler = (req, res, next) => {
 	busboy.on('error', (error: Error) => next(error));
 
 	busboy.on('close', () => {
-		if (fileCount === 0) return next(new InvalidPayloadException(`No file were included in the body`));
+		if (fileCount === 0) return next(new InvalidPayloadException(`No file was included in the body`));
 	});
 
 	req.pipe(busboy);
