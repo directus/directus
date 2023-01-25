@@ -24,7 +24,7 @@ import { ItemsService } from './items';
 
 // @ts-ignore
 import formatTitle from '@directus/format-title';
-import { SUPPORTED_IMAGE_UPLOAD_FORMATS } from '../constants'
+import { SUPPORTED_IMAGE_UPLOAD_FORMATS } from '../constants';
 
 const lookupDNS = promisify(lookup);
 
