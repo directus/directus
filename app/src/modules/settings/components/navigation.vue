@@ -74,11 +74,6 @@ export default defineComponent({
 				to: `/settings/flows`,
 			},
 			{
-				icon: 'extension',
-				name: t('extensions'),
-				to: `/settings/extensions`,
-			},
-			{
 				icon: 'storefront',
 				name: t('marketplace'),
 				to: `/settings/market`,

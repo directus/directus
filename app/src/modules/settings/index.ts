@@ -222,10 +222,6 @@ export default defineModule({
 			],
 		},
 		{
-			path: 'extensions',
-			component: ExtensionsOverview,
-		},
-		{
 			path: 'translation-strings',
 			component: RouterPass,
 			children: [
