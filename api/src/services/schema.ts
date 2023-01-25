@@ -114,6 +114,7 @@ export class SchemaService {
 		if (this.accountability?.admin !== true) throw new ForbiddenException();
 
 		const { error } = applyJoiSchema.validate(payload);
+
 		if (error) throw new InvalidPayloadException(error.message);
 
 		const currentSnapshot = await this.snapshot();
@@ -128,6 +129,7 @@ export class SchemaService {
 					const existingCollection = snapshotWithHash.collections.find(
 						(c) => c.collection === diffCollection.collection
 					);
+
 					if (existingCollection) {
 						throw new InvalidPayloadException(
 							`Provided diff is trying to create collection "${collection}" but it already exists. Please regenerate a new diff and try again.`
@@ -137,6 +139,7 @@ export class SchemaService {
 					const existingCollection = snapshotWithHash.collections.find(
 						(c) => c.collection === diffCollection.collection
 					);
+
 					if (!existingCollection) {
 						throw new InvalidPayloadException(
 							`Provided diff is trying to delete collection "${collection}" but it does not exist. Please regenerate a new diff and try again.`
@@ -144,6 +147,7 @@ export class SchemaService {
 					}
 				} else {
 					const matchingCollection = snapshotWithHash.collections.find((c) => c.hash === diffCollection.hash);
+
 					if (!matchingCollection) {
 						throw new InvalidPayloadException(
 							`Provided diff to update collection "${collection}" does not match the current instance's collection, indicating it has changed after this diff was generated. Please regenerate a new diff and try again.`
@@ -158,6 +162,7 @@ export class SchemaService {
 					const existingField = snapshotWithHash.fields.find(
 						(f) => f.collection === diffField.collection && f.field === diffField.field
 					);
+
 					if (existingField) {
 						throw new InvalidPayloadException(
 							`Provided diff is trying to create field "${field}" but it already exists. Please regenerate a new diff and try again.`
@@ -167,6 +172,7 @@ export class SchemaService {
 					const existingField = snapshotWithHash.fields.find(
 						(f) => f.collection === diffField.collection && f.field === diffField.field
 					);
+
 					if (!existingField) {
 						throw new InvalidPayloadException(
 							`Provided diff is trying to delete field "${field}" but it does not exist. Please regenerate a new diff and try again.`
@@ -174,6 +180,7 @@ export class SchemaService {
 					}
 				} else {
 					const matchingField = snapshotWithHash.fields.find((f) => f.hash === diffField.hash);
+
 					if (!matchingField) {
 						throw new InvalidPayloadException(
 							`Provided diff to update field "${field}" does not match the current instance's field, indicating it has changed after this diff was generated. Please regenerate a new diff and try again.`
@@ -189,6 +196,7 @@ export class SchemaService {
 					const existingRelation = snapshotWithHash.relations.find(
 						(r) => r.collection === diffRelation.collection && r.field === diffRelation.field
 					);
+
 					if (existingRelation) {
 						throw new InvalidPayloadException(
 							`Provided diff is trying to create relation "${relation}" but it already exists. Please regenerate a new diff and try again.`
@@ -198,6 +206,7 @@ export class SchemaService {
 					const existingRelation = snapshotWithHash.relations.find(
 						(r) => r.collection === diffRelation.collection && r.field === diffRelation.field
 					);
+
 					if (!existingRelation) {
 						throw new InvalidPayloadException(
 							`Provided diff is trying to delete relation "${relation}" but it does not exist. Please regenerate a new diff and try again.`
@@ -205,6 +214,7 @@ export class SchemaService {
 					}
 				} else {
 					const matchingRelation = snapshotWithHash.relations.find((r) => r.hash === diffRelation.hash);
+
 					if (!matchingRelation) {
 						throw new InvalidPayloadException(
 							`Provided diff for relation "${relation}" does not match the current instance's relation, indicating it has changed after this diff was generated. Please regenerate a new diff and try again.`
@@ -249,6 +259,7 @@ export class SchemaService {
 			}
 
 			const currentVendor = getDatabaseClient();
+
 			if (snapshot.vendor !== currentVendor) {
 				throw new InvalidPayloadException(
 					`Provided snapshot's vendor ${snapshot.vendor} does not match the current instance's vendor ${currentVendor}. You can bypass this check by passing the "force" query parameter.`
@@ -257,6 +268,7 @@ export class SchemaService {
 		}
 
 		const { error } = snapshotJoiSchema.validate(snapshot);
+
 		if (error) throw new InvalidPayloadException(error.message);
 
 		const currentSnapshot = options?.currentSnapshot ?? (await getSnapshot({ database: this.knex }));
