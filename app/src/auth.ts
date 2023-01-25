@@ -61,10 +61,13 @@ let firstRefresh = true;
 
 // Prevent the auto-refresh when the app isn't in use
 idleTracker.on('idle', () => {
+	clearTimeout(refreshTimeout);
 	idle = true;
 });
 
 idleTracker.on('hide', () => {
+	clearTimeout(refreshTimeout);
+
 	idle = true;
 });
 
