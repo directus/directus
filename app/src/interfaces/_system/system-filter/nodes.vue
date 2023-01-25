@@ -29,6 +29,7 @@
 								:field="field"
 								include-functions
 								:include-relations="includeRelations"
+								:relational-field-selectable="relationalFieldSelectable"
 								@select-field="updateField(index, $event)"
 							/>
 						</v-menu>
@@ -142,6 +143,7 @@ interface Props {
 	inline?: boolean;
 	includeValidation?: boolean;
 	includeRelations?: boolean;
+	relationalFieldSelectable?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -150,6 +152,7 @@ const props = withDefaults(defineProps<Props>(), {
 	inline: false,
 	includeValidation: false,
 	includeRelations: true,
+	relationalFieldSelectable: true,
 });
 
 const emit = defineEmits(['remove-node', 'update:filter', 'change']);

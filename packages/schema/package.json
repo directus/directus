@@ -1,6 +1,6 @@
 {
 	"name": "@directus/schema",
-	"version": "9.22.1",
+	"version": "9.22.4",
 	"description": "Utility for extracting information about existing DB schema",
 	"keywords": [
 		"sql",
@@ -42,7 +42,7 @@
 		"dev": "pnpm build -w --preserveWatchOutput --incremental"
 	},
 	"dependencies": {
-		"knex": "2.3.0",
+		"knex": "2.4.1",
 		"knex-schema-inspector": "3.0.0"
 	},
 	"devDependencies": {
