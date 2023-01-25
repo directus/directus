@@ -18,6 +18,7 @@ import { getStorage } from '../storage';
 import { AbstractServiceOptions, File, Transformation, TransformationParams, TransformationPreset } from '../types';
 import * as TransformationUtils from '../utils/transformations';
 import { AuthorizationService } from './authorization';
+import { SUPPORTED_IMAGE_TRANSFORM_FORMATS } from '../constants'
 
 sharp.concurrency(1);
 
@@ -116,7 +117,7 @@ export class AssetsService {
 		if (
 			type &&
 			transforms.length > 0 &&
-			['image/jpeg', 'image/png', 'image/webp', 'image/tiff', 'image/avif'].includes(type)
+			SUPPORTED_IMAGE_TRANSFORM_FORMATS.includes(type)
 		) {
 			const maybeNewFormat = TransformationUtils.maybeExtractFormat(transforms);
 

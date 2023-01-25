@@ -66,3 +66,9 @@ Disallow: /
 `.trim();
 
 export const OAS_REQUIRED_SCHEMAS = ['Query', 'x-metadata'];
+
+
+// Formats we support being transformed to
+export const SUPPORTED_IMAGE_TRANSFORM_FORMATS = ['image/jpeg', 'image/png', 'image/webp', 'image/tiff', 'image/avif'];
+// Formats we support being uploaded
+export const SUPPORTED_IMAGE_UPLOAD_FORMATS = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/tiff', 'image/avif'];
