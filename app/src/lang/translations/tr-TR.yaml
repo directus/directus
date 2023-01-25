@@ -1126,6 +1126,7 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
+    avif: AVIF
     mapping: Haritalama
     basemaps: Taban Haritalar
     basemaps_raster: Raster

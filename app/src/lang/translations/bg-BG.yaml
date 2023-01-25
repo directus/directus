@@ -1118,6 +1118,7 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
+    avif: AVIF
     mapping: Картография
     basemaps: Базови карти
     basemaps_raster: Растерен
