@@ -60,6 +60,14 @@ export class ServerService {
 			} else {
 				info.rateLimit = false;
 			}
+			if (env.RATE_LIMITER_GLOBAL_ENABLED) {
+				info.rateLimitGlobal = {
+					points: env.RATE_LIMITER_GLOBAL_POINTS,
+					duration: env.RATE_LIMITER_GLOBAL_DURATION,
+				};
+			} else {
+				info.rateLimit = false;
+			}
 
 			info.flows = {
 				execAllowedModules: env.FLOWS_EXEC_ALLOWED_MODULES ? toArray(env.FLOWS_EXEC_ALLOWED_MODULES) : [],
