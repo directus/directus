@@ -98,8 +98,8 @@ export class SchemaService {
 	accountability: Accountability | null;
 
 	constructor(options: Omit<AbstractServiceOptions, 'schema'>) {
-		this.knex = options.knex || getDatabase();
-		this.accountability = options.accountability || null;
+		this.knex = options.knex ?? getDatabase();
+		this.accountability = options.accountability ?? null;
 	}
 
 	async snapshot(): Promise<Snapshot> {
