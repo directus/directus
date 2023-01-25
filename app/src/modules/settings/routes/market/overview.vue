@@ -20,6 +20,7 @@
 			</sidebar-detail>
 		</template>
 
+		<Types v-model:type="type" app />
 		<Overview :type="type" app :existing-extensions="extensionsStore.extensions" />
 	</private-view>
 </template>
@@ -28,16 +29,12 @@
 import { useI18n } from 'vue-i18n';
 import SettingsNavigation from '../../components/navigation.vue';
 import Overview from '@nitwel/directus-marketplace/market/overview.vue';
-import { provide } from 'vue';
+import Types from '@nitwel/directus-marketplace/market/types.vue';
+import { provide, ref } from 'vue';
 import { marketApi } from './market-api';
 import { useExtensionsStore } from '@/stores/extensions';
 
-interface Props {
-	type?: string;
-}
-
-defineProps<Props>();
-
+const type = ref('all')
 const extensionsStore = useExtensionsStore();
 
 provide('api', marketApi);
@@ -50,6 +47,11 @@ const { t } = useI18n();
 	--v-button-color-disabled: var(--primary);
 	--v-button-background-color-disabled: var(--primary-10);
 }
+
+.extension-types {
+	padding: 0 var(--content-padding) 0 var(--content-padding);
+}
+
 .overview {
 	padding: var(--content-padding);
 	padding-top: 0;
