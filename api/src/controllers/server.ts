@@ -126,12 +126,14 @@ const schemaMultipartHandler: RequestHandler = (req, res, next) => {
 				'content-type': 'application/octet-stream',
 		  };
 
-	const busboy = Busboy({ headers, limits: { files: 1 } });
+	const busboy = Busboy({ headers });
 
 	let isFileIncluded = false;
 	let uploadedSnapshot: Snapshot | null = null;
 
 	busboy.on('file', async (_, fileStream, { mimeType }) => {
+		if (isFileIncluded) return next(new InvalidPayloadException(`More than one file was included in the body`));
+
 		isFileIncluded = true;
 
 		try {
