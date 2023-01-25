@@ -1065,6 +1065,7 @@ fields:
     png: PNG
     webP: JaringanP
     tiff: Bercekcok
+    avif: AVIF
     mapping: Pemetaan
     basemaps: Peta dasar
     basemaps_raster: Raster

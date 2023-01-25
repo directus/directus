@@ -1126,6 +1126,7 @@ fields:
     png: PNG
     webP: WebP
     tiff: Wskazówka
+    avif: AVIF
     mapping: Mapowanie
     basemaps: Podstawowe
     basemaps_raster: Raster
