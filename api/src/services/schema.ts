@@ -132,7 +132,7 @@ export class SchemaService {
 
 					if (existingCollection) {
 						throw new InvalidPayloadException(
-							`Provided diff is trying to create collection "${collection}" but it already exists. Please regenerate a new diff and try again.`
+							`Provided diff is trying to create collection "${collection}" but it already exists. Please generate a new diff and try again.`
 						);
 					}
 				} else if (diffCollection.diff[0]?.kind === 'D') {
@@ -142,7 +142,7 @@ export class SchemaService {
 
 					if (!existingCollection) {
 						throw new InvalidPayloadException(
-							`Provided diff is trying to delete collection "${collection}" but it does not exist. Please regenerate a new diff and try again.`
+							`Provided diff is trying to delete collection "${collection}" but it does not exist. Please generate a new diff and try again.`
 						);
 					}
 				} else {
@@ -150,7 +150,7 @@ export class SchemaService {
 
 					if (!matchingCollection) {
 						throw new InvalidPayloadException(
-							`Provided diff to update collection "${collection}" does not match the current instance's collection, indicating it has changed after this diff was generated. Please regenerate a new diff and try again.`
+							`Provided diff to update collection "${collection}" does not match the current instance's collection, indicating it has changed after this diff was generated. Please generate a new diff and try again.`
 						);
 					}
 				}
@@ -165,7 +165,7 @@ export class SchemaService {
 
 					if (existingField) {
 						throw new InvalidPayloadException(
-							`Provided diff is trying to create field "${field}" but it already exists. Please regenerate a new diff and try again.`
+							`Provided diff is trying to create field "${field}" but it already exists. Please generate a new diff and try again.`
 						);
 					}
 				} else if (diffField.diff[0]?.kind === 'D') {
@@ -175,7 +175,7 @@ export class SchemaService {
 
 					if (!existingField) {
 						throw new InvalidPayloadException(
-							`Provided diff is trying to delete field "${field}" but it does not exist. Please regenerate a new diff and try again.`
+							`Provided diff is trying to delete field "${field}" but it does not exist. Please generate a new diff and try again.`
 						);
 					}
 				} else {
@@ -183,7 +183,7 @@ export class SchemaService {
 
 					if (!matchingField) {
 						throw new InvalidPayloadException(
-							`Provided diff to update field "${field}" does not match the current instance's field, indicating it has changed after this diff was generated. Please regenerate a new diff and try again.`
+							`Provided diff to update field "${field}" does not match the current instance's field, indicating it has changed after this diff was generated. Please generate a new diff and try again.`
 						);
 					}
 				}
@@ -199,7 +199,7 @@ export class SchemaService {
 
 					if (existingRelation) {
 						throw new InvalidPayloadException(
-							`Provided diff is trying to create relation "${relation}" but it already exists. Please regenerate a new diff and try again.`
+							`Provided diff is trying to create relation "${relation}" but it already exists. Please generate a new diff and try again.`
 						);
 					}
 				} else if (diffRelation.diff[0]?.kind === 'D') {
@@ -209,7 +209,7 @@ export class SchemaService {
 
 					if (!existingRelation) {
 						throw new InvalidPayloadException(
-							`Provided diff is trying to delete relation "${relation}" but it does not exist. Please regenerate a new diff and try again.`
+							`Provided diff is trying to delete relation "${relation}" but it does not exist. Please generate a new diff and try again.`
 						);
 					}
 				} else {
@@ -217,14 +217,14 @@ export class SchemaService {
 
 					if (!matchingRelation) {
 						throw new InvalidPayloadException(
-							`Provided diff for relation "${relation}" does not match the current instance's relation, indicating it has changed after this diff was generated. Please regenerate a new diff and try again.`
+							`Provided diff for relation "${relation}" does not match the current instance's relation, indicating it has changed after this diff was generated. Please generate a new diff and try again.`
 						);
 					}
 				}
 			}
 
 			throw new InvalidPayloadException(
-				`Provided hash "${payload.hash}" does not match the current instance's schema hash "${snapshotWithHash.hash}". Please regenerate a new diff and try again.`
+				`Provided hash "${payload.hash}" does not match the current instance's schema hash "${snapshotWithHash.hash}". Please generate a new diff and try again.`
 			);
 		}
 
