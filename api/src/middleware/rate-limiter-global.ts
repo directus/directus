@@ -7,18 +7,19 @@ import { createRateLimiter } from '../rate-limiter';
 import asyncHandler from '../utils/async-handler';
 import { validateEnv } from '../utils/validate-env';
 
-const GLOBAL_RATE_LIMITER_KEY = 'global-rate-limit';
+const RATE_LIMITER_GLOBAL_KEY = 'global-rate-limit';
+
 let checkRateLimit: RequestHandler = (_req, _res, next) => next();
-export let globalRateLimiter: RateLimiterRedis | RateLimiterMemcache | RateLimiterMemory;
+export let rateLimiterGlobal: RateLimiterRedis | RateLimiterMemcache | RateLimiterMemory;
 
 if (env.RATE_LIMITER_GLOBAL_ENABLED === true) {
 	validateEnv(['RATE_LIMITER_GLOBAL_STORE', 'RATE_LIMITER_GLOBAL_DURATION', 'RATE_LIMITER_GLOBAL_POINTS']);
 
-	globalRateLimiter = createRateLimiter('RATE_LIMITER_GLOBAL');
+	rateLimiterGlobal = createRateLimiter('RATE_LIMITER_GLOBAL');
 
 	checkRateLimit = asyncHandler(async (_req, res, next) => {
 		try {
-			await globalRateLimiter.consume(GLOBAL_RATE_LIMITER_KEY, 1);
+			await rateLimiterGlobal.consume(RATE_LIMITER_GLOBAL_KEY, 1);
 		} catch (rateLimiterRes: any) {
 			if (rateLimiterRes instanceof Error) throw rateLimiterRes;
 
