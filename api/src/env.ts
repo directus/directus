@@ -57,6 +57,7 @@ const allowedEnvironmentVars = [
 	'CORS_CREDENTIALS',
 	'CORS_MAX_AGE',
 	// rate limiting
+	'RATE_LIMITER_GLOBAL_.+',
 	'RATE_LIMITER_.+',
 	// cache
 	'CACHE_ENABLED',
@@ -203,6 +204,11 @@ const defaults: Record<string, any> = {
 	RATE_LIMITER_POINTS: 25,
 	RATE_LIMITER_DURATION: 1,
 	RATE_LIMITER_STORE: 'memory',
+
+	RATE_LIMITER_GLOBAL_ENABLED: false,
+	RATE_LIMITER_GLOBAL_POINTS: 50,
+	RATE_LIMITER_GLOBAL_DURATION: 2,
+	RATE_LIMITER_GLOBAL_STORE: 'memory',
 
 	ACCESS_TOKEN_TTL: '15m',
 	REFRESH_TOKEN_TTL: '7d',
