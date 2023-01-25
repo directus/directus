@@ -113,6 +113,7 @@ router.post(
 const schemaMultipartHandler: RequestHandler = (req, res, next) => {
 	if (req.is('application/json')) {
 		if (Object.keys(req.body).length === 0) throw new InvalidPayloadException(`No data were included in the body`);
+		res.locals.uploadedSnapshot = req.body;
 		return next();
 	}
 
@@ -176,7 +177,7 @@ router.post(
 	asyncHandler(schemaMultipartHandler),
 	asyncHandler(async (req, res, next) => {
 		const service = new SchemaService({ accountability: req.accountability });
-		const snapshot: Snapshot = req.is('application/json') ? req.body : res.locals.uploadedSnapshot;
+		const snapshot: Snapshot = res.locals.uploadedSnapshot;
 
 		const currentSnapshot = await service.snapshot();
 		const snapshotDiff = await service.diff(snapshot, { currentSnapshot, force: 'force' in req.query });
