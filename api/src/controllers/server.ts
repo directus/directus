@@ -127,11 +127,11 @@ const schemaMultipartHandler: RequestHandler = (req, res, next) => {
 
 	const busboy = Busboy({ headers, limits: { files: 1 } });
 
-	let fileCount = 0;
+	let isFileIncluded = false;
 	let uploadedSnapshot: Snapshot | null = null;
 
 	busboy.on('file', async (_, fileStream, { mimeType }) => {
-		fileCount++;
+		isFileIncluded = true;
 
 		try {
 			const uploadedString = await getStringFromStream(fileStream);
@@ -165,7 +165,7 @@ const schemaMultipartHandler: RequestHandler = (req, res, next) => {
 	busboy.on('error', (error: Error) => next(error));
 
 	busboy.on('close', () => {
-		if (fileCount === 0) return next(new InvalidPayloadException(`No file was included in the body`));
+		if (!isFileIncluded) return next(new InvalidPayloadException(`No file was included in the body`));
 	});
 
 	req.pipe(busboy);
