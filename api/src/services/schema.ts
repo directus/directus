@@ -285,8 +285,8 @@ export class SchemaService {
 		const snapshotHash = getVersionedHash(snapshot);
 
 		return {
-			hash: snapshotHash,
 			...snapshot,
+			hash: snapshotHash,
 			collections: snapshot.collections.map(addHash),
 			fields: snapshot.fields.map(addHash),
 			relations: snapshot.relations.map(addHash),
