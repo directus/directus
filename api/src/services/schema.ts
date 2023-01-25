@@ -121,6 +121,14 @@ export class SchemaService {
 
 		const snapshotWithHash = this.getHashedSnapshot(currentSnapshot);
 
+		if (
+			payload.diff.collections.length === 0 &&
+			payload.diff.fields.length === 0 &&
+			payload.diff.relations.length === 0
+		) {
+			return;
+		}
+
 		if (payload.hash !== snapshotWithHash.hash) {
 			for (const diffCollection of payload.diff.collections) {
 				const collection = diffCollection.collection;
@@ -226,14 +234,6 @@ export class SchemaService {
 			throw new InvalidPayloadException(
 				`Provided hash "${payload.hash}" does not match the current instance's schema hash "${snapshotWithHash.hash}". Please generate a new diff and try again.`
 			);
-		}
-
-		if (
-			payload.diff.collections.length === 0 &&
-			payload.diff.fields.length === 0 &&
-			payload.diff.relations.length === 0
-		) {
-			return;
 		}
 
 		await applyDiff(currentSnapshot, payload.diff, { database: this.knex });
