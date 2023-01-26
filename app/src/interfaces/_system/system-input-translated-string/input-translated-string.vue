@@ -63,7 +63,7 @@
 						<TranslationStringsTooltip :translations="translation.translations" hide-display-text />
 					</v-list-item-icon>
 				</v-list-item>
-				<v-list-item class="new-translation-string" clickable @click="openNewTranslationStringDialog">
+				<v-list-item class="new-translation-string" clickable @click="openNewTranslationStringDrawer">
 					<v-list-item-icon>
 						<v-icon name="add" />
 					</v-list-item-icon>
@@ -75,9 +75,9 @@
 		</v-menu>
 
 		<TranslationStringsDrawer
-			:model-value="isTranslationStringDialogOpen"
+			:model-value="isTranslationStringDrawerOpen"
 			:translation-string="editingTranslationString"
-			@close-dialog="closeDialog"
+			@close-drawer="closeDrawer"
 			@saved-key="setValue(`${translationPrefix}${$event}`)"
 		/>
 	</div>
@@ -117,7 +117,7 @@ const searchValue = ref<string | null>(null);
 
 const { displayTranslationStrings } = useTranslationStrings();
 
-const isTranslationStringDialogOpen = ref<boolean>(false);
+const isTranslationStringDrawerOpen = ref<boolean>(false);
 
 const editingTranslationString = ref<DisplayTranslationString | null>(null);
 
@@ -170,14 +170,14 @@ function checkKeyValidity() {
 	hasValidKey.value = localValue.value?.startsWith(translationPrefix) ?? false;
 }
 
-function openNewTranslationStringDialog() {
+function openNewTranslationStringDrawer() {
 	menuEl.value.deactivate();
-	isTranslationStringDialogOpen.value = true;
+	isTranslationStringDrawerOpen.value = true;
 }
 
-function closeDialog() {
+function closeDrawer() {
 	editingTranslationString.value = null;
-	isTranslationStringDialogOpen.value = false;
+	isTranslationStringDrawerOpen.value = false;
 }
 </script>
 

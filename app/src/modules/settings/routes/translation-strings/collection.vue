@@ -9,7 +9,7 @@
 		</template>
 
 		<template #actions>
-			<v-button v-tooltip.bottom="t('create_translation_string')" rounded icon @click="openTranslationStringDialog">
+			<v-button v-tooltip.bottom="t('create_translation_string')" rounded icon @click="openTranslationStringDrawer">
 				<v-icon name="add" />
 			</v-button>
 		</template>
@@ -29,7 +29,7 @@
 				{{ t('no_translation_string_copy') }}
 
 				<template #append>
-					<v-button @click="openTranslationStringDialog">{{ t('create_translation_string') }}</v-button>
+					<v-button @click="openTranslationStringDrawer">{{ t('create_translation_string') }}</v-button>
 				</template>
 			</v-info>
 			<template v-else>
@@ -39,7 +39,7 @@
 					item-key="key"
 					:items="tableItems"
 					:loading="loading"
-					@click:row="openTranslationStringDialog"
+					@click:row="openTranslationStringDrawer"
 				>
 					<template #[`item.key`]="{ item }">
 						<span class="key">
@@ -77,9 +77,9 @@
 		</div>
 
 		<TranslationStringsDrawer
-			:model-value="isTranslationStringDialogOpen"
+			:model-value="isTranslationStringDrawerOpen"
 			:translation-string="editingTranslationString"
-			@close-dialog="closeDialog"
+			@close-drawer="closeDrawer"
 		/>
 	</private-view>
 </template>
@@ -112,7 +112,7 @@ const tableHeaders: TableHeader[] = [
 	},
 ];
 
-const isTranslationStringDialogOpen = ref<boolean>(false);
+const isTranslationStringDrawerOpen = ref<boolean>(false);
 const editingTranslationString = ref<DisplayTranslationString | null>(null);
 const limit = ref<number>(25);
 const page = ref<number>(1);
@@ -136,14 +136,14 @@ const tableItems = computed(() => {
 	return displayTranslationStrings.value.filter((ts) => ts.key && pageKeys.includes(ts.key));
 });
 
-function openTranslationStringDialog({ item }: { item?: DisplayTranslationString }) {
+function openTranslationStringDrawer({ item }: { item?: DisplayTranslationString }) {
 	editingTranslationString.value = item ? item : null;
-	isTranslationStringDialogOpen.value = true;
+	isTranslationStringDrawerOpen.value = true;
 }
 
-function closeDialog() {
+function closeDrawer() {
 	editingTranslationString.value = null;
-	isTranslationStringDialogOpen.value = false;
+	isTranslationStringDrawerOpen.value = false;
 }
 
 async function loadAllTranslations() {

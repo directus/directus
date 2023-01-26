@@ -3,8 +3,8 @@
 		:title="translationString ? t('edit_translation_string') : t('create_translation_string')"
 		icon="translate"
 		:model-value="modelValue"
-		@update:model-value="closeDialog"
-		@cancel="closeDialog"
+		@update:model-value="closeDrawer"
+		@cancel="closeDrawer"
 	>
 		<template #actions>
 			<v-dialog v-if="translationString" v-model="confirmDelete" @esc="confirmDelete = false">
@@ -60,7 +60,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), { modelValue: false, translationString: () => null });
 
-const emit = defineEmits(['remove:translation', 'update:translation', 'close-dialog']);
+const emit = defineEmits(['remove:translation', 'update:translation', 'close-drawer']);
 
 const { t } = useI18n();
 
@@ -172,12 +172,12 @@ watch(
 	{ immediate: true }
 );
 
-function closeDialog() {
+function closeDrawer() {
 	values.value.key = null;
 	values.value.translations = null;
 	initialValues.value.key = null;
 	initialValues.value.translations = null;
-	emit('close-dialog');
+	emit('close-drawer');
 }
 
 async function saveTranslationString() {
@@ -187,14 +187,14 @@ async function saveTranslationString() {
 	} else {
 		addTranslation(values.value);
 	}
-	closeDialog();
+	closeDrawer();
 }
 
 async function deleteTranslationString() {
 	if (!values.value || !initialValues.value || !initialValues.value.key) return;
 	removeTranslation(initialValues.value.key);
 	confirmDelete.value = false;
-	closeDialog();
+	closeDrawer();
 }
 </script>
 
