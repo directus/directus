@@ -34,20 +34,20 @@ describe('Schema Snapshots', () => {
 		[vendor: string]: any;
 	} = {};
 
-	describe('GET /server/schema/snapshot', () => {
+	describe('GET /schema/snapshot', () => {
 		common.DisableTestCachingSetup();
 
 		describe('denies non-admin users', () => {
 			it.each(vendors)('%s', async (vendor) => {
 				// Action
 				const response = await request(getUrl(vendor))
-					.get('/server/schema/snapshot')
+					.get('/schema/snapshot')
 					.set('Authorization', `Bearer ${common.USER.APP_ACCESS.TOKEN}`);
 				const response2 = await request(getUrl(vendor))
-					.get('/server/schema/snapshot')
+					.get('/schema/snapshot')
 					.set('Authorization', `Bearer ${common.USER.API_ONLY.TOKEN}`);
 				const response3 = await request(getUrl(vendor))
-					.get('/server/schema/snapshot')
+					.get('/schema/snapshot')
 					.set('Authorization', `Bearer ${common.USER.NO_ROLE.TOKEN}`);
 
 				// Assert
@@ -63,7 +63,7 @@ describe('Schema Snapshots', () => {
 				async (vendor) => {
 					// Action
 					const response = await request(getUrl(vendor))
-						.get('/server/schema/snapshot')
+						.get('/schema/snapshot')
 						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
 					// Assert
@@ -81,7 +81,7 @@ describe('Schema Snapshots', () => {
 				async (vendor) => {
 					// Action
 					const response = await request(getUrl(vendor))
-						.get('/server/schema/snapshot')
+						.get('/schema/snapshot')
 						.query({ export: 'yaml' })
 						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
@@ -120,7 +120,7 @@ describe('Schema Snapshots', () => {
 			async (vendor) => {
 				// Action
 				const response = await request(getUrl(vendor))
-					.get('/server/schema/snapshot')
+					.get('/schema/snapshot')
 					.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
 				// Assert
@@ -133,12 +133,12 @@ describe('Schema Snapshots', () => {
 		);
 	});
 
-	describe('POST /server/schema/diff', () => {
+	describe('POST /schema/diff', () => {
 		describe('denies non-admin users', () => {
 			it.each(vendors)('%s', async (vendor) => {
 				// Action
 				const response = await request(getUrl(vendor))
-					.post('/server/schema/diff')
+					.post('/schema/diff')
 					.send({
 						version: 1,
 						directus: currentDirectusVersion,
@@ -151,7 +151,7 @@ describe('Schema Snapshots', () => {
 					.set('Content-type', 'application/json')
 					.set('Authorization', `Bearer ${common.USER.APP_ACCESS.TOKEN}`);
 				const response2 = await request(getUrl(vendor))
-					.post('/server/schema/diff')
+					.post('/schema/diff')
 					.send({
 						version: 1,
 						directus: currentDirectusVersion,
@@ -164,7 +164,7 @@ describe('Schema Snapshots', () => {
 					.set('Content-type', 'application/json')
 					.set('Authorization', `Bearer ${common.USER.API_ONLY.TOKEN}`);
 				const response3 = await request(getUrl(vendor))
-					.post('/server/schema/diff')
+					.post('/schema/diff')
 					.send({
 						version: 1,
 						directus: currentDirectusVersion,
@@ -190,7 +190,7 @@ describe('Schema Snapshots', () => {
 				async (vendor) => {
 					// Action
 					const response = await request(getUrl(vendor))
-						.post('/server/schema/diff')
+						.post('/schema/diff')
 						.send(snapshotsCacheEmpty[vendor])
 						.set('Content-type', 'application/json')
 						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
@@ -207,7 +207,7 @@ describe('Schema Snapshots', () => {
 				async (vendor) => {
 					// Action
 					const response = await request(getUrl(vendor))
-						.post('/server/schema/diff')
+						.post('/schema/diff')
 						.send(snapshotsCacheOriginal[vendor])
 						.set('Content-type', 'application/json')
 						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
@@ -223,22 +223,22 @@ describe('Schema Snapshots', () => {
 		});
 	});
 
-	describe('POST /server/schema/apply', () => {
+	describe('POST /schema/apply', () => {
 		describe('denies non-admin users', () => {
 			it.each(vendors)('%s', async (vendor) => {
 				// Action
 				const response = await request(getUrl(vendor))
-					.post('/server/schema/apply')
+					.post('/schema/apply')
 					.send({ data: true })
 					.set('Content-type', 'application/json')
 					.set('Authorization', `Bearer ${common.USER.APP_ACCESS.TOKEN}`);
 				const response2 = await request(getUrl(vendor))
-					.post('/server/schema/apply')
+					.post('/schema/apply')
 					.send({ data: true })
 					.set('Content-type', 'application/json')
 					.set('Authorization', `Bearer ${common.USER.API_ONLY.TOKEN}`);
 				const response3 = await request(getUrl(vendor))
-					.post('/server/schema/apply')
+					.post('/schema/apply')
 					.send({ data: true })
 					.set('Content-type', 'application/json')
 					.set('Authorization', `Bearer ${common.USER.NO_ROLE.TOKEN}`);
@@ -258,13 +258,13 @@ describe('Schema Snapshots', () => {
 
 					// Action
 					const responseDiff = await request(getUrl(vendor))
-						.post('/server/schema/diff')
+						.post('/schema/diff')
 						.send(snapshotsCacheOriginal[vendor])
 						.set('Content-type', 'application/json')
 						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
 					const response = await request(getUrl(vendor))
-						.post('/server/schema/apply')
+						.post('/schema/apply')
 						.send(responseDiff.body.data)
 						.set('Content-type', 'application/json')
 						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
@@ -284,7 +284,7 @@ describe('Schema Snapshots', () => {
 
 					// Action
 					const response = await request(getUrl(vendor))
-						.get('/server/schema/snapshot')
+						.get('/schema/snapshot')
 						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
 					const curSnapshot = cloneDeep(response.body.data);
@@ -309,13 +309,13 @@ describe('Schema Snapshots', () => {
 
 					// Action
 					const responseDiff = await request(getUrl(vendor))
-						.post('/server/schema/diff')
+						.post('/schema/diff')
 						.send(snapshotsCacheEmpty[vendor])
 						.set('Content-type', 'application/json')
 						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
 					const response = await request(getUrl(vendor))
-						.post('/server/schema/apply')
+						.post('/schema/apply')
 						.send(responseDiff.body.data)
 						.set('Content-type', 'application/json')
 						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
@@ -347,12 +347,12 @@ describe('Schema Snapshots', () => {
 
 					// Action
 					const responseDiff = await request(getUrl(vendor))
-						.post('/server/schema/diff')
+						.post('/schema/diff')
 						.attach('file', Buffer.from(snapshotsCacheOriginalYaml[vendor]))
 						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
 					const response = await request(getUrl(vendor))
-						.post('/server/schema/apply')
+						.post('/schema/apply')
 						.send(responseDiff.body.data)
 						.set('Content-type', 'application/json')
 						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
@@ -372,7 +372,7 @@ describe('Schema Snapshots', () => {
 
 					// Action
 					const response = await request(getUrl(vendor))
-						.get('/server/schema/snapshot')
+						.get('/schema/snapshot')
 						.query({ export: 'yaml' })
 						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
@@ -402,7 +402,7 @@ describe('Schema Snapshots', () => {
 
 					// Action
 					const responseDiff = await request(getUrl(vendor))
-						.post('/server/schema/diff')
+						.post('/schema/diff')
 						.send(snapshotsCacheEmpty[vendor])
 						.set('Content-type', 'application/json')
 						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
@@ -414,7 +414,7 @@ describe('Schema Snapshots', () => {
 					}
 
 					const response = await request(getUrl(vendor))
-						.post('/server/schema/apply')
+						.post('/schema/apply')
 						.send(responseDiff.body.data)
 						.set('Content-type', 'application/json')
 						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
@@ -435,7 +435,7 @@ describe('Schema Snapshots', () => {
 
 					// Action
 					const responseDiff = await request(getUrl(vendor))
-						.post('/server/schema/diff')
+						.post('/schema/diff')
 						.send(snapshotsCacheEmpty[vendor])
 						.set('Content-type', 'application/json')
 						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
@@ -458,7 +458,7 @@ describe('Schema Snapshots', () => {
 						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
 					const response = await request(getUrl(vendor))
-						.post('/server/schema/apply')
+						.post('/schema/apply')
 						.send(responseDiff.body.data)
 						.set('Content-type', 'application/json')
 						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);

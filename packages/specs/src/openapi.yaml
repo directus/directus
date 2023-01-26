@@ -73,6 +73,8 @@ tags:
   - name: Roles
     description: Roles are groups of users that share permissions.
     x-collection: directus_roles
+  - name: Schema
+    description: Retrieve and update the schema of the current instance.
   - name: Server
     description:
       Access to where Directus runs. Allows you to make sure your server has everything needed to run the platform, and

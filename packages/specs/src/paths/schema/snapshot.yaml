@@ -3,7 +3,7 @@ get:
   description: Retrieve the current schema. This endpoint is only available to admin users.
   operationId: serverSchemaSnapshot
   parameters:
-    - $ref: '../../../openapi.yaml#/components/parameters/Export'
+    - $ref: '../../openapi.yaml#/components/parameters/Export'
   responses:
     '200':
       description: Successful request
@@ -24,20 +24,20 @@ get:
                   collections:
                     type: array
                     items:
-                      $ref: '../../../openapi.yaml#/components/schemas/Collections'
+                      $ref: '../../openapi.yaml#/components/schemas/Collections'
                   fields:
                     type: array
                     items:
-                      $ref: '../../../openapi.yaml#/components/schemas/Fields'
+                      $ref: '../../openapi.yaml#/components/schemas/Fields'
                   relations:
                     type: array
                     items:
-                      $ref: '../../../openapi.yaml#/components/schemas/Relations'
+                      $ref: '../../openapi.yaml#/components/schemas/Relations'
         text/yaml:
           schema:
             type: string
             format: binary
     '403':
-      $ref: '../../../openapi.yaml#/components/responses/UnauthorizedError'
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
   tags:
-    - Server
+    - Schema

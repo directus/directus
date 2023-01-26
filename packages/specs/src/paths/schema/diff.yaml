@@ -91,6 +91,6 @@ post:
     '204':
       description: No schema difference.
     '403':
-      $ref: '../../../openapi.yaml#/components/responses/UnauthorizedError'
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
   tags:
-    - Server
+    - Schema
