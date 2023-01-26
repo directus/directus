@@ -1,18 +1,27 @@
 import { Accountability, Aggregate, Filter, Query } from '@directus/shared/types';
 import { parseFilter, parseJSON } from '@directus/shared/utils';
 import { flatten, get, isPlainObject, merge, set } from 'lodash';
+import env from '../env';
 import logger from '../logger';
 import { Meta } from '../types';
 
 export function sanitizeQuery(rawQuery: Record<string, any>, accountability?: Accountability | null): Query {
 	const query: Query = {};
 
+	const hasMaxLimit = 'MAX_QUERY_LIMIT' in env && env.MAX_QUERY_LIMIT !== -1;
 	if (rawQuery.limit !== undefined) {
 		const limit = sanitizeLimit(rawQuery.limit);
 
 		if (typeof limit === 'number') {
-			query.limit = limit;
+			if (limit === -1 && hasMaxLimit) {
+				query.limit = Number(env.MAX_QUERY_LIMIT);
+			} else {
+				query.limit = limit;
+			}
 		}
+	} else if (hasMaxLimit) {
+		// fall back to the max limit when omitted
+		query.limit = Number(env.MAX_QUERY_LIMIT);
 	}
 
 	if (rawQuery.fields) {

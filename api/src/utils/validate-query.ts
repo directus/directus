@@ -11,7 +11,10 @@ const querySchema = Joi.object({
 	group: Joi.array().items(Joi.string()),
 	sort: Joi.array().items(Joi.string()),
 	filter: Joi.object({}).unknown(),
-	limit: Joi.number().integer().min(-1),
+	limit:
+		env.MAX_QUERY_LIMIT === -1
+			? Joi.number().integer().min(-1)
+			: Joi.number().integer().min(-1).max(env.MAX_QUERY_LIMIT), // min should be 0
 	offset: Joi.number().integer().min(0),
 	page: Joi.number().integer().min(0),
 	meta: Joi.array().items(Joi.string().valid('total_count', 'filter_count')),
