@@ -79,7 +79,7 @@
 		<TranslationStringsDrawer
 			:model-value="isTranslationStringDialogOpen"
 			:translation-string="editingTranslationString"
-			@close-dialog="closedDialog"
+			@close-dialog="closeDialog"
 		/>
 	</private-view>
 </template>
@@ -141,7 +141,7 @@ function openTranslationStringDialog({ item }: { item?: DisplayTranslationString
 	isTranslationStringDialogOpen.value = true;
 }
 
-function closedDialog() {
+function closeDialog() {
 	editingTranslationString.value = null;
 	isTranslationStringDialogOpen.value = false;
 }
