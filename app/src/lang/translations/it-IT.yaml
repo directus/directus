@@ -1431,6 +1431,7 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 table: Tabella
@@ -2141,3 +2142,9 @@ operations:
     flows: Flussi
     flow: Flusso
     data: Dati
+    iteration_mode: Modalità iterazione
+    iteration_mode_note: Modalità per l'iterazione su array.
+    serial: Seriale
+    parallel: Parallela
+    batch: A gruppi
+    batch_size: Dimensione dei gruppi
