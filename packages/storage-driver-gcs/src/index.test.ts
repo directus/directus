@@ -60,10 +60,10 @@ beforeEach(() => {
 		path: {
 			input: randUnique() + randFilePath(),
 			inputFull: randUnique() + randFilePath(),
-			src: randFilePath(),
-			srcFull: randFilePath(),
-			dest: randFilePath(),
-			destFull: randFilePath(),
+			src: randUnique() + randFilePath(),
+			srcFull: randUnique() + randFilePath(),
+			dest: randUnique() + randFilePath(),
+			destFull: randUnique() + randFilePath(),
 		},
 		range: {
 			start: randNumber(),

@@ -270,7 +270,6 @@ function useItem() {
 	const internalEdits = ref<Record<string, any>>({});
 	const loading = ref(false);
 	const initialValues = ref<Record<string, any> | null>(null);
-	const baseEndpoint = getEndpoint(props.collection);
 
 	watch(
 		() => props.active,
@@ -295,6 +294,7 @@ function useItem() {
 
 		loading.value = true;
 
+		const baseEndpoint = getEndpoint(props.collection);
 		const endpoint = props.collection.startsWith('directus_')
 			? `${baseEndpoint}/${props.primaryKey}`
 			: `${baseEndpoint}/${encodeURIComponent(props.primaryKey)}`;
@@ -323,6 +323,7 @@ function useItem() {
 
 		loading.value = true;
 
+		const baseEndpoint = getEndpoint(collection);
 		const endpoint = collection.startsWith('directus_')
 			? `${baseEndpoint}/${props.relatedPrimaryKey}`
 			: `${baseEndpoint}/${encodeURIComponent(props.relatedPrimaryKey)}`;
