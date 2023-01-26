@@ -29,7 +29,6 @@ type UsableTranslationStrings = {
 	displayTranslationStrings: ComputedRef<DisplayTranslationString[] | null>;
 
 	loadLanguageTranslationStrings: (lang: Language) => Promise<void>;
-	mergeTranslationStringsForLanguage: (lang: Language) => void;
 	fetchAllTranslationStrings: () => Promise<RawTranslation[]>;
 	refresh: () => Promise<void>;
 
@@ -76,7 +75,6 @@ export function useTranslationStrings(): UsableTranslationStrings {
 		translationStrings,
 		displayTranslationStrings,
 		loadLanguageTranslationStrings,
-		mergeTranslationStringsForLanguage,
 		fetchAllTranslationStrings,
 		refresh,
 		updating,
@@ -91,20 +89,16 @@ export function useTranslationStrings(): UsableTranslationStrings {
 		if (error === null) return;
 
 		const translations = await fetchTranslationStrings(lang);
-		translationStrings.value = translations;
-		mergeTranslationStringsForLanguage(lang);
-	}
-
-	function mergeTranslationStringsForLanguage(lang: Language) {
-		if (!translationStrings?.value) return;
-		const localeMessages: Record<string, any> = translationStrings.value.reduce(
+		const localeMessages: Record<string, any> = translations.reduce(
 			(result: Record<string, string>, { key, value }: { key: string; value: string }) => {
 				result[key] = getLiteralInterpolatedTranslation(value, true);
 				return result;
 			},
 			{} as Record<string, string>
 		);
+
 		i18n.global.mergeLocaleMessage(lang, localeMessages);
+		translationStrings.value = translations;
 	}
 
 	async function refresh() {
@@ -120,7 +114,9 @@ export function useTranslationStrings(): UsableTranslationStrings {
 				usersStore.currentUser && 'language' in usersStore.currentUser ? usersStore.currentUser.language : 'en-US';
 			const rawTranslationStrings = await fetchTranslationStrings(language);
 
-			if (rawTranslationStrings) translationStrings.value = rawTranslationStrings;
+			if (rawTranslationStrings) {
+				translationStrings.value = rawTranslationStrings;
+			}
 		} catch (err: any) {
 			error.value = err;
 		} finally {
