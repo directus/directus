@@ -207,17 +207,19 @@ paths:
   /roles/{id}:
     $ref: './paths/roles/role.yaml'
 
+  # Schema
+  /schema/snapshot:
+    $ref: './paths/schema/snapshot.yaml'
+  /schema/apply:
+    $ref: './paths/schema/apply.yaml'
+  /schema/diff:
+    $ref: './paths/schema/diff.yaml'
+
   # Server
   /server/info:
     $ref: './paths/server/info.yaml'
   /server/ping:
     $ref: './paths/server/ping.yaml'
-  /server/schema/snapshot:
-    $ref: './paths/server/schema/snapshot.yaml'
-  /server/schema/apply:
-    $ref: './paths/server/schema/apply.yaml'
-  /server/schema/diff:
-    $ref: './paths/server/schema/diff.yaml'
 
   # Settings
   /settings:
