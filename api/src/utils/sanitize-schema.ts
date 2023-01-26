@@ -1,9 +1,9 @@
 import { Field, Relation } from '@directus/shared/types';
-import { omit } from 'lodash';
+import { pick } from 'lodash';
 import { Collection } from '../types';
 
 /**
- * Omit certain database vendor specific collection properties that should not be compared when performing diff
+ * Pick certain database vendor specific collection properties that should be compared when performing diff
  *
  * @param collection collection to sanitize
  * @returns sanitized collection
@@ -12,30 +12,13 @@ import { Collection } from '../types';
  */
 
 export function sanitizeCollection(collection: Collection | undefined) {
-	const omittedPaths = [
-		// Not supported in SQLite + comment in MSSQL
-		'schema.comment',
-		'schema.schema',
+	if (!collection) return collection;
 
-		// MySQL Only
-		'schema.collation',
-		'schema.engine',
-
-		// Postgres Only
-		'schema.owner',
-
-		// SQLite Only
-		'schema.sql',
-
-		//MSSQL only
-		'schema.catalog',
-	];
-
-	return collection ? omit(collection, omittedPaths) : collection;
+	return pick(collection, ['collection', 'fields', 'meta', 'schema.name']);
 }
 
 /**
- * Omit certain database vendor specific field properties that should not be compared when performing diff
+ * Pick certain database vendor specific field properties that should be compared when performing diff
  *
  * @param field field to sanitize
  * @param sanitizeAllSchema Whether or not the whole field schema should be sanitized. Mainly used to prevent modifying autoincrement fields
@@ -44,22 +27,35 @@ export function sanitizeCollection(collection: Collection | undefined) {
  * @see {@link https://github.com/knex/knex-schema-inspector/blob/master/lib/types/column.ts}
  */
 export function sanitizeField(field: Field | undefined, sanitizeAllSchema = false) {
-	const omittedPaths = sanitizeAllSchema
-		? ['schema']
-		: [
-				// Not supported in SQLite or MSSQL
-				'schema.comment',
+	if (!field) return field;
 
-				// Postgres Only
-				'schema.schema',
-				'schema.foreign_key_schema',
+	const defaultPaths = ['collection', 'field', 'type', 'meta', 'name', 'children'];
+	const pickedPaths = sanitizeAllSchema
+		? defaultPaths
+		: [
+				...defaultPaths,
+				'schema.name',
+				'schema.table',
+				'schema.data_type',
+				'schema.default_value',
+				'schema.max_length',
+				'schema.numeric_precision',
+				'schema.numeric_scale',
+				'schema.is_nullable',
+				'schema.is_unique',
+				'schema.is_primary_key',
+				'schema.is_generated',
+				'schema.generation_expression',
+				'schema.has_auto_increment',
+				'schema.foreign_key_table',
+				'schema.foreign_key_column',
 		  ];
 
-	return field ? omit(field, omittedPaths) : field;
+	return pick(field, pickedPaths);
 }
 
 /**
- * Omit certain database vendor specific relation properties that should not be compared when performing diff
+ * Pick certain database vendor specific relation properties that should be compared when performing diff
  *
  * @param relation relation to sanitize
  * @returns sanitized relation
@@ -67,10 +63,19 @@ export function sanitizeField(field: Field | undefined, sanitizeAllSchema = fals
  * @see {@link https://github.com/knex/knex-schema-inspector/blob/master/lib/types/foreign-key.ts}
  */
 export function sanitizeRelation(relation: Relation | undefined) {
-	const omittedPaths = [
-		// Postgres + MSSSQL
-		'schema.foreign_key_schema',
-	];
+	if (!relation) return relation;
 
-	return relation ? omit(relation, omittedPaths) : relation;
+	return pick(relation, [
+		'collection',
+		'field',
+		'related_collection',
+		'meta',
+		'schema.table',
+		'schema.column',
+		'schema.foreign_key_table',
+		'schema.foreign_key_column',
+		'schema.constraint_name',
+		'schema.on_update',
+		'schema.on_delete',
+	]);
 }
