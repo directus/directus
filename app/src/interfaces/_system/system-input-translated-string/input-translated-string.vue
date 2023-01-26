@@ -77,7 +77,7 @@
 		<TranslationStringsDrawer
 			:model-value="isTranslationStringDialogOpen"
 			:translation-string="editingTranslationString"
-			@update:model-value="updateTranslationStringsDialog"
+			@close-dialog="closedDialog"
 			@saved-key="setValue(`${translationPrefix}${$event}`)"
 		/>
 	</div>
@@ -175,11 +175,9 @@ function openNewTranslationStringDialog() {
 	isTranslationStringDialogOpen.value = true;
 }
 
-function updateTranslationStringsDialog(val: boolean) {
-	if (val) return;
-
+function closedDialog() {
 	editingTranslationString.value = null;
-	isTranslationStringDialogOpen.value = val;
+	isTranslationStringDialogOpen.value = false;
 }
 </script>
 
