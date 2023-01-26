@@ -823,6 +823,7 @@ operation_options: Opsi Operasi
 operation_name: Nama dari operasi...
 operation_key: Pengenal untuk referensi...
 operation_key_unique_error: Tombol operasi harus unik
+operation_handle_resolve: 'Solusi: klik untuk menambahkan atau geser untuk mengatur ulang'
 insights: Wawasan
 dashboard: Dasbor
 panel: Panel
