@@ -12,7 +12,7 @@ import { getSnapshot, getVersionedHash } from '../utils/get-snapshot';
 import { getSnapshotDiff } from '../utils/get-snapshot-diff';
 
 const snapshotJoiSchema = Joi.object({
-	version: Joi.number().required(),
+	version: Joi.number().valid(1).required(),
 	directus: Joi.string().required(),
 	vendor: Joi.string()
 		.valid(...DatabaseClients)
