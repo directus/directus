@@ -47,7 +47,7 @@
 </template>
 
 <script lang="ts" setup>
-import { unref, toRaw, ref, computed, watch, toRefs } from 'vue';
+import { ref, computed, watch, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { isEqual } from 'lodash';
 import { Field, DeepPartial } from '@directus/shared/types';
