@@ -42,7 +42,7 @@
 		"dev": "pnpm build -w --preserveWatchOutput --incremental"
 	},
 	"dependencies": {
-		"knex": "2.3.0",
+		"knex": "2.4.1",
 		"knex-schema-inspector": "3.0.0"
 	},
 	"devDependencies": {
