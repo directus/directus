@@ -86,7 +86,7 @@
 <script lang="ts" setup>
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useTranslationStrings, TranslationString } from '@/composables/use-translation-strings';
+import { useTranslationStrings, DisplayTranslationString } from '@/composables/use-translation-strings';
 import TranslationStringsDrawer from '@/modules/settings/routes/translation-strings/translation-strings-drawer.vue';
 import TranslationStringsTooltip from '@/modules/settings/routes/translation-strings/translation-strings-tooltip.vue';
 
@@ -115,14 +115,14 @@ const hasValidKey = ref<boolean>(false);
 const isFocused = ref<boolean>(false);
 const searchValue = ref<string | null>(null);
 
-const { translationStrings } = useTranslationStrings();
+const { displayTranslationStrings } = useTranslationStrings();
 
 const isTranslationStringDialogOpen = ref<boolean>(false);
 
-const editingTranslationString = ref<TranslationString | null>(null);
+const editingTranslationString = ref<DisplayTranslationString | null>(null);
 
 const translations = computed(() => {
-	const keys = translationStrings.value ?? [];
+	const keys = displayTranslationStrings.value ?? [];
 
 	return !searchValue.value ? keys : keys.filter((key) => key.key?.includes(searchValue.value!));
 });
