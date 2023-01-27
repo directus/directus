@@ -48,5 +48,6 @@ cp -r ./directus-custom-extensions-release/contact-display ${DIRECTUS_DISPLAYS}
 cp -r ./directus-custom-extensions-release/toggle-field ${DIRECTUS_DISPLAYS}
 cp -r ./directus-custom-extensions-release/filtered-count ${DIRECTUS_DISPLAYS}
 cp -r ./directus-custom-extensions-release/m2o-link-display ${DIRECTUS_DISPLAYS}
+cp -r ./directus-custom-extensions-release/m2o-link-display ${DIRECTUS_DISPLAYS}
 cp -r ./directus-custom-extensions-release/atomic-counters/* ${DIRECTUS_ENDPOINTS}/atomic-counters
 
