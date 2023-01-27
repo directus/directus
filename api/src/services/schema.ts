@@ -8,8 +8,9 @@ import getDatabase, { getDatabaseClient } from '../database';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { AbstractServiceOptions, DatabaseClients, Snapshot, SnapshotDiff, SnapshotWithHash } from '../types';
 import { applyDiff } from '../utils/apply-diff';
-import { getSnapshot, getVersionedHash } from '../utils/get-snapshot';
+import { getSnapshot } from '../utils/get-snapshot';
 import { getSnapshotDiff } from '../utils/get-snapshot-diff';
+import { getVersionedHash } from '../utils/get-versioned-hash';
 
 const snapshotJoiSchema = Joi.object({
 	version: Joi.number().valid(1).required(),

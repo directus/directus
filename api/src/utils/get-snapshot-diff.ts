@@ -1,7 +1,7 @@
 import { diff } from 'deep-diff';
 import { omit, orderBy } from 'lodash';
 import { Snapshot, SnapshotDiff } from '../types';
-import { getVersionedHash } from './get-snapshot';
+import { getVersionedHash } from './get-versioned-hash';
 import { sanitizeCollection, sanitizeField, sanitizeRelation } from './sanitize-schema';
 
 export function getSnapshotDiff(current: Snapshot, after: Snapshot): SnapshotDiff {

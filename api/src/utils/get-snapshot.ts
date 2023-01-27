@@ -4,7 +4,6 @@ import { CollectionsService, FieldsService, RelationsService } from '../services
 import { version } from '../../package.json';
 import { Collection, Snapshot, SnapshotField, SnapshotRelation } from '../types';
 import { Knex } from 'knex';
-import hash from 'object-hash';
 import { omit, sortBy, toPairs, fromPairs, mapValues, isPlainObject, isArray } from 'lodash';
 import { SchemaOverview } from '@directus/shared/types';
 import { sanitizeCollection, sanitizeField, sanitizeRelation } from './sanitize-schema';
@@ -64,8 +63,4 @@ function sortDeep(raw: any): any {
 	}
 
 	return raw;
-}
-
-export function getVersionedHash(item: Record<string, any>): string {
-	return `${hash(item)}_${version}`;
 }

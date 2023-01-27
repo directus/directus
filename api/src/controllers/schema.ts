@@ -8,7 +8,7 @@ import { respond } from '../middleware/respond';
 import { SchemaService } from '../services/schema';
 import { Snapshot } from '../types';
 import asyncHandler from '../utils/async-handler';
-import { getVersionedHash } from '../utils/get-snapshot';
+import { getVersionedHash } from '../utils/get-versioned-hash';
 
 const router = express.Router();
 
