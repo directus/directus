@@ -138,13 +138,13 @@ describe('Schema Snapshots', () => {
 		describe('denies non-admin users', () => {
 			it.each(vendors)('%s', async (vendor) => {
 				// Action
+				const currentVendor = vendor.replace(/[0-9]/g, '');
 				const response = await request(getUrl(vendor))
 					.post('/schema/diff')
 					.send({
 						version: 1,
 						directus: currentDirectusVersion,
-						// TODO: align vendor names
-						vendor: 'postgres',
+						vendor: currentVendor,
 						collections: [],
 						fields: [],
 						relations: [],
@@ -156,8 +156,7 @@ describe('Schema Snapshots', () => {
 					.send({
 						version: 1,
 						directus: currentDirectusVersion,
-						// TODO: align vendor names
-						vendor: 'postgres',
+						vendor: currentVendor,
 						collections: [],
 						fields: [],
 						relations: [],
@@ -169,8 +168,7 @@ describe('Schema Snapshots', () => {
 					.send({
 						version: 1,
 						directus: currentDirectusVersion,
-						// TODO: align vendor names
-						vendor: 'postgres',
+						vendor: currentVendor,
 						collections: [],
 						fields: [],
 						relations: [],
