@@ -1,13 +1,14 @@
 import { Accountability, Aggregate, Filter, Query } from '@directus/shared/types';
 import { parseFilter, parseJSON } from '@directus/shared/utils';
 import { flatten, get, isPlainObject, merge, set } from 'lodash';
-import env from '../env';
+import { getEnv } from '../env';
 import logger from '../logger';
 import { Meta } from '../types';
 
 export function sanitizeQuery(rawQuery: Record<string, any>, accountability?: Accountability | null): Query {
 	const query: Query = {};
 
+	const env = getEnv();
 	const hasMaxLimit = 'MAX_QUERY_LIMIT' in env && env.MAX_QUERY_LIMIT !== -1;
 	if (rawQuery.limit !== undefined) {
 		const limit = sanitizeLimit(rawQuery.limit);
