@@ -548,11 +548,11 @@ export function applyFilter(
 
 			if ((operator === '_empty' && compareValue !== false) || (operator === '_nempty' && compareValue === false)) {
 				dbQuery[logical].andWhere((query) => {
-					query.where(key, '=', '');
+					query.whereNull(key).orWhere(key, '=', '');
 				});
 			} else if (operator === '_nempty' || operator === '_empty') {
 				dbQuery[logical].andWhere((query) => {
-					query.where(key, '!=', '');
+					query.whereNotNull(key).orWhere(key, '!=', '');
 				});
 			}
 
