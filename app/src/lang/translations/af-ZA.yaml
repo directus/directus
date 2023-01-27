@@ -100,6 +100,13 @@ rename_folder: Hernoem Gids
 delete_folder: Skrap Gids
 prefix: Voorvoegsel
 suffix: Agtervoegsel
+reset_bookmark: Stel Boekmerk Terug
+update_bookmark: Opdateer Boekmerk
+delete_bookmark: Wis Boekmerk Uit
+delete_bookmark_copy: >-
+  Is jy seker jy wil die "{bookmark}" boekmerk uitvee? Hierdie aksie kan nie ongedaan gemaak word nie.
+delete_personal_bookmark: Wis Persoonlike Boekmerk Uit
+delete_role_bookmark: Wis Rolboekmerk Uit
 field_translations: Vertalings
 language: Taal
 create_field: Skep Veld
