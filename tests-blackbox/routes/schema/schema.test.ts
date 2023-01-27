@@ -15,6 +15,7 @@ import {
 	junctionM2M,
 	junctionM2M2,
 	junctionSelfM2M,
+	tempTestCollection,
 } from './schema.seed';
 import { cloneDeep } from 'lodash';
 import { PrimaryKeyType, PRIMARY_KEY_TYPES } from '@common/index';
@@ -184,7 +185,7 @@ describe('Schema Snapshots', () => {
 			});
 		});
 
-		describe('returns diffs if with empty snapshot', () => {
+		describe('returns diffs with empty snapshot', () => {
 			it.each(vendors)(
 				'%s',
 				async (vendor) => {
@@ -443,7 +444,7 @@ describe('Schema Snapshots', () => {
 					await request(getUrl(vendor))
 						.post(`/collections`)
 						.send({
-							collection: 'temp_test_collection',
+							collection: tempTestCollection,
 							fields: [
 								{
 									field: 'id',

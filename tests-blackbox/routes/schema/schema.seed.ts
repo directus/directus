@@ -23,6 +23,7 @@ export const junctionM2M = 'test_schema_jm2m';
 export const junctionM2M2 = 'test_schema_jm2m2';
 export const collectionSelf = 'test_schema_self';
 export const junctionSelfM2M = 'test_schema_jm2m_self';
+export const tempTestCollection = 'temp_test_collection';
 
 export type SampleItem = {
 	id?: number | string;
@@ -56,6 +57,7 @@ export const deleteAllCollections = async (vendor: string, pkType: PrimaryKeyTyp
 	const localJunctionSelfM2M = `${junctionSelfM2M}_${pkType}${suffix}`;
 
 	// Delete existing collections
+	await DeleteField(vendor, { collection: localCollectionSelf, field: 'self_id' });
 	await DeleteField(vendor, { collection: localCollectionSelf, field: 'self_id' });
 	await DeleteCollection(vendor, { collection: localJunctionSelfM2M });
 	await DeleteCollection(vendor, { collection: localCollectionSelf });
@@ -91,8 +93,11 @@ export const seedDBStructure = () => {
 						const localCollectionSelf = `${collectionSelf}_${pkType}${suffix}`;
 						const localJunctionSelfM2M = `${junctionSelfM2M}_${pkType}${suffix}`;
 
-						// // Delete existing collections
+						// Delete existing collections
 						await deleteAllCollections(vendor, pkType, setDefaultValues);
+
+						// Delete the temp collection created in previous test run
+						await DeleteCollection(vendor, { collection: tempTestCollection });
 
 						// Create All collection
 						await CreateCollection(vendor, {
