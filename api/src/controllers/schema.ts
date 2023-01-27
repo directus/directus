@@ -9,7 +9,6 @@ import { SchemaService } from '../services/schema';
 import { Snapshot } from '../types';
 import asyncHandler from '../utils/async-handler';
 import { getVersionedHash } from '../utils/get-snapshot';
-import { getStringFromStream } from '../utils/get-string-from-stream';
 
 const router = express.Router();
 
@@ -60,8 +59,10 @@ const schemaMultipartHandler: RequestHandler = (req, res, next) => {
 
 		isFileIncluded = true;
 
+		const { readableStreamToString } = await import('@directus/utils/node');
+
 		try {
-			const uploadedString = await getStringFromStream(fileStream);
+			const uploadedString = await readableStreamToString(fileStream);
 
 			if (mimeType === 'application/json') {
 				try {
