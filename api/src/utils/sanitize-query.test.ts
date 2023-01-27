@@ -1,5 +1,5 @@
-import { describe, expect, test, vi } from 'vitest';
-
+import { describe, expect, test, vi, afterEach, beforeEach } from 'vitest';
+import { refreshEnv } from '../env';
 import { sanitizeQuery } from './sanitize-query';
 
 vi.mock('@directus/shared/utils', async () => {
@@ -24,6 +24,30 @@ describe('limit', () => {
 		const sanitizedQuery = sanitizeQuery({ limit });
 
 		expect(sanitizedQuery.limit).toBe(1);
+	});
+});
+
+describe('max limit', () => {
+	beforeEach(() => {
+		vi.stubEnv('MAX_QUERY_LIMIT', '100');
+		refreshEnv();
+	});
+
+	afterEach(() => {
+		vi.unstubAllEnvs();
+		refreshEnv();
+	});
+
+	test('should replace -1', () => {
+		const sanitizedQuery = sanitizeQuery({ limit: -1 });
+
+		expect(sanitizedQuery.limit).toBe(100);
+	});
+
+	test.each([1, 25, 150])('should accept number %i', (limit) => {
+		const sanitizedQuery = sanitizeQuery({ limit });
+
+		expect(sanitizedQuery.limit).toBe(limit);
 	});
 });
 
