@@ -24,7 +24,7 @@ import { ItemsService } from './items';
 
 // @ts-ignore
 import formatTitle from '@directus/format-title';
-import { SUPPORTED_IMAGE_UPLOAD_FORMATS } from '../constants';
+import { SUPPORTED_IMAGE_METADATA_FORMATS } from '../constants';
 
 const lookupDNS = promisify(lookup);
 
@@ -88,7 +88,7 @@ export class FilesService extends ItemsService {
 		const { size } = await storage.location(data.storage).stat(payload.filename_disk);
 		payload.filesize = size;
 
-		if (SUPPORTED_IMAGE_UPLOAD_FORMATS.includes(payload.type)) {
+		if (SUPPORTED_IMAGE_METADATA_FORMATS.includes(payload.type)) {
 			const stream = await storage.location(data.storage).read(payload.filename_disk);
 			const { height, width, description, title, tags, metadata } = await this.getMetadata(stream);
 

@@ -113,7 +113,6 @@ export class AssetsService {
 		const type = file.type;
 		const transforms = TransformationUtils.resolvePreset(transformation, file);
 
-		// We can transform to JPEG, PNG, WebP, TIFF and AVIF
 		if (type && transforms.length > 0 && SUPPORTED_IMAGE_TRANSFORM_FORMATS.includes(type)) {
 			const maybeNewFormat = TransformationUtils.maybeExtractFormat(transforms);
 
