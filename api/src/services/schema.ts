@@ -3,12 +3,13 @@ import { Accountability } from '@directus/shared/types';
 import Joi from 'joi';
 import { Knex } from 'knex';
 import { version as currentDirectusVersion } from '../../package.json';
-import { ALIAS_TYPES, KIND } from '../constants';
+import { ALIAS_TYPES } from '../constants';
 import getDatabase, { getDatabaseClient } from '../database';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import {
 	AbstractServiceOptions,
 	DatabaseClients,
+	DiffKind,
 	Snapshot,
 	SnapshotDiff,
 	SnapshotDiffWithHash,
@@ -65,10 +66,10 @@ const snapshotJoiSchema = Joi.object({
 const deepDiffSchema = Joi.object({
 	kind: Joi.string().valid('N', 'D', 'E', 'A').required(),
 	path: Joi.array().items(Joi.string()),
-	lhs: Joi.any().when('kind', { is: 'N', then: Joi.optional(), otherwise: Joi.any() }),
-	rhs: Joi.any().when('kind', { is: 'D', then: Joi.optional(), otherwise: Joi.any() }),
-	index: Joi.any().when('kind', { is: 'A', then: Joi.number(), otherwise: Joi.optional() }),
-	item: Joi.any().when('kind', { is: 'A', then: Joi.any(), otherwise: Joi.optional() }),
+	lhs: Joi.object().when('kind', { is: ['D', 'E'], then: Joi.required() }),
+	rhs: Joi.object().when('kind', { is: ['N', 'E'], then: Joi.required() }),
+	index: Joi.number().when('kind', { is: 'A', then: Joi.required() }),
+	item: Joi.link('/').when('kind', { is: 'A', then: Joi.required() }),
 });
 
 const applyJoiSchema = Joi.object({
@@ -138,7 +139,7 @@ export class SchemaService {
 			for (const diffCollection of payload.diff.collections) {
 				const collection = diffCollection.collection;
 
-				if (diffCollection.diff[0]?.kind === KIND.NEW) {
+				if (diffCollection.diff[0]?.kind === DiffKind.NEW) {
 					const existingCollection = snapshotWithHash.collections.find(
 						(c) => c.collection === diffCollection.collection
 					);
@@ -148,7 +149,7 @@ export class SchemaService {
 							`Provided diff is trying to create collection "${collection}" but it already exists. Please generate a new diff and try again.`
 						);
 					}
-				} else if (diffCollection.diff[0]?.kind === KIND.DELETE) {
+				} else if (diffCollection.diff[0]?.kind === DiffKind.DELETE) {
 					const existingCollection = snapshotWithHash.collections.find(
 						(c) => c.collection === diffCollection.collection
 					);
@@ -163,7 +164,7 @@ export class SchemaService {
 			for (const diffField of payload.diff.fields) {
 				const field = `${diffField.collection}.${diffField.field}`;
 
-				if (diffField.diff[0]?.kind === KIND.NEW) {
+				if (diffField.diff[0]?.kind === DiffKind.NEW) {
 					const existingField = snapshotWithHash.fields.find(
 						(f) => f.collection === diffField.collection && f.field === diffField.field
 					);
@@ -173,7 +174,7 @@ export class SchemaService {
 							`Provided diff is trying to create field "${field}" but it already exists. Please generate a new diff and try again.`
 						);
 					}
-				} else if (diffField.diff[0]?.kind === KIND.DELETE) {
+				} else if (diffField.diff[0]?.kind === DiffKind.DELETE) {
 					const existingField = snapshotWithHash.fields.find(
 						(f) => f.collection === diffField.collection && f.field === diffField.field
 					);
@@ -189,7 +190,7 @@ export class SchemaService {
 				let relation = `${diffRelation.collection}.${diffRelation.field}`;
 				if (diffRelation.related_collection) relation += `-> ${diffRelation.related_collection}`;
 
-				if (diffRelation.diff[0]?.kind === KIND.NEW) {
+				if (diffRelation.diff[0]?.kind === DiffKind.NEW) {
 					const existingRelation = snapshotWithHash.relations.find(
 						(r) => r.collection === diffRelation.collection && r.field === diffRelation.field
 					);
@@ -199,7 +200,7 @@ export class SchemaService {
 							`Provided diff is trying to create relation "${relation}" but it already exists. Please generate a new diff and try again.`
 						);
 					}
-				} else if (diffRelation.diff[0]?.kind === KIND.DELETE) {
+				} else if (diffRelation.diff[0]?.kind === DiffKind.DELETE) {
 					const existingRelation = snapshotWithHash.relations.find(
 						(r) => r.collection === diffRelation.collection && r.field === diffRelation.field
 					);
