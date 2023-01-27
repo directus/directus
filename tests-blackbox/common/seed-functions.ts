@@ -381,7 +381,7 @@ function generateTimestamp(options: OptionsSeedGenerateTimestamp) {
 	}
 
 	if (options.isDefaultValue && options.vendor) {
-		if (['mysql', 'maria'].includes(options.vendor)) {
+		if (['mysql', 'mysql5', 'maria'].includes(options.vendor)) {
 			for (let index = 0; index < values.length; index++) {
 				values[index] = new Date(values[index]).toISOString().replace(/([^T]+)T([^.]+).*/g, '$1 $2');
 			}
