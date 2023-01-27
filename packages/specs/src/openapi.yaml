@@ -273,6 +273,8 @@ components:
       $ref: './components/preset.yaml'
     Collections:
       $ref: './components/collection.yaml'
+    Diff:
+      $ref: './components/diff.yaml'
     Fields:
       $ref: './components/field.yaml'
     Files:
@@ -293,6 +295,8 @@ components:
       $ref: './components/revision.yaml'
     Roles:
       $ref: './components/role.yaml'
+    Schema:
+      $ref: './components/schema.yaml'
     Settings:
       $ref: './components/setting.yaml'
     Users:

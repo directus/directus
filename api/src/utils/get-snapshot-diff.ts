@@ -1,8 +1,7 @@
 import { diff } from 'deep-diff';
-import { omit, orderBy } from 'lodash';
+import { orderBy } from 'lodash';
 import { KIND } from '../constants';
 import { Snapshot, SnapshotDiff } from '../types';
-import { getVersionedHash } from './get-versioned-hash';
 import { sanitizeCollection, sanitizeField, sanitizeRelation } from './sanitize-schema';
 
 export function getSnapshotDiff(current: Snapshot, after: Snapshot): SnapshotDiff {
@@ -16,7 +15,6 @@ export function getSnapshotDiff(current: Snapshot, after: Snapshot): SnapshotDif
 
 					return {
 						collection: currentCollection.collection,
-						hash: getVersionedHash(currentCollection),
 						diff: diff(sanitizeCollection(currentCollection), sanitizeCollection(afterCollection)),
 					};
 				}),
@@ -45,16 +43,9 @@ export function getSnapshotDiff(current: Snapshot, after: Snapshot): SnapshotDif
 					const isAutoIncrementPrimaryKey =
 						!!currentField.schema?.is_primary_key && !!currentField.schema?.has_auto_increment;
 
-					// Do not include default value in hash for autoincrement fields.
-					// This is specifically for CockroachDB sequences that may be different between instances.
-					const hash = isAutoIncrementPrimaryKey
-						? getVersionedHash(omit(currentField, ['schema.default_value']))
-						: getVersionedHash(currentField);
-
 					return {
 						collection: currentField.collection,
 						field: currentField.field,
-						hash,
 						diff: diff(
 							sanitizeField(currentField, isAutoIncrementPrimaryKey),
 							sanitizeField(afterField, isAutoIncrementPrimaryKey)
@@ -90,7 +81,6 @@ export function getSnapshotDiff(current: Snapshot, after: Snapshot): SnapshotDif
 						collection: currentRelation.collection,
 						field: currentRelation.field,
 						related_collection: currentRelation.related_collection,
-						hash: getVersionedHash(currentRelation),
 						diff: diff(sanitizeRelation(currentRelation), sanitizeRelation(afterRelation)),
 					};
 				}),

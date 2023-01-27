@@ -25,7 +25,7 @@ router.get(
 
 router.post(
 	'/apply',
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req, _res, next) => {
 		const service = new SchemaService({ accountability: req.accountability });
 		await service.apply(req.body);
 		return next();

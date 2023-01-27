@@ -6,7 +6,14 @@ import { version as currentDirectusVersion } from '../../package.json';
 import { ALIAS_TYPES, KIND } from '../constants';
 import getDatabase, { getDatabaseClient } from '../database';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
-import { AbstractServiceOptions, DatabaseClients, Snapshot, SnapshotDiff, SnapshotWithHash } from '../types';
+import {
+	AbstractServiceOptions,
+	DatabaseClients,
+	Snapshot,
+	SnapshotDiff,
+	SnapshotDiffWithHash,
+	SnapshotWithHash,
+} from '../types';
 import { applyDiff } from '../utils/apply-diff';
 import { getSnapshot } from '../utils/get-snapshot';
 import { getSnapshotDiff } from '../utils/get-snapshot-diff';
@@ -69,14 +76,12 @@ const applyJoiSchema = Joi.object({
 	diff: Joi.object({
 		collections: Joi.array().items(
 			Joi.object({
-				hash: Joi.string().when('diff.0.kind', { is: 'N', then: Joi.optional(), otherwise: Joi.any() }),
 				collection: Joi.string(),
 				diff: Joi.array().items(deepDiffSchema),
 			})
 		),
 		fields: Joi.array().items(
 			Joi.object({
-				hash: Joi.string().when('diff.0.kind', { is: 'N', then: Joi.optional(), otherwise: Joi.any() }),
 				collection: Joi.string(),
 				field: Joi.string(),
 				diff: Joi.array().items(deepDiffSchema),
@@ -84,7 +89,6 @@ const applyJoiSchema = Joi.object({
 		),
 		relations: Joi.array().items(
 			Joi.object({
-				hash: Joi.string().when('diff.0.kind', { is: 'N', then: Joi.optional(), otherwise: Joi.any() }),
 				collection: Joi.string(),
 				field: Joi.string(),
 				related_collection: Joi.any(),
@@ -111,7 +115,7 @@ export class SchemaService {
 		return currentSnapshot;
 	}
 
-	async apply(payload: { hash: string; diff: SnapshotDiff }): Promise<void> {
+	async apply(payload: SnapshotDiffWithHash): Promise<void> {
 		if (this.accountability?.admin !== true) throw new ForbiddenException();
 
 		const { error } = applyJoiSchema.validate(payload);
@@ -154,14 +158,6 @@ export class SchemaService {
 							`Provided diff is trying to delete collection "${collection}" but it does not exist. Please generate a new diff and try again.`
 						);
 					}
-				} else {
-					const matchingCollection = snapshotWithHash.collections.find((c) => c.hash === diffCollection.hash);
-
-					if (!matchingCollection) {
-						throw new InvalidPayloadException(
-							`Provided diff to update collection "${collection}" does not match the current instance's collection, indicating it has changed after this diff was generated. Please generate a new diff and try again.`
-						);
-					}
 				}
 			}
 			for (const diffField of payload.diff.fields) {
@@ -185,14 +181,6 @@ export class SchemaService {
 					if (!existingField) {
 						throw new InvalidPayloadException(
 							`Provided diff is trying to delete field "${field}" but it does not exist. Please generate a new diff and try again.`
-						);
-					}
-				} else {
-					const matchingField = snapshotWithHash.fields.find((f) => f.hash === diffField.hash);
-
-					if (!matchingField) {
-						throw new InvalidPayloadException(
-							`Provided diff to update field "${field}" does not match the current instance's field, indicating it has changed after this diff was generated. Please generate a new diff and try again.`
 						);
 					}
 				}
@@ -221,19 +209,11 @@ export class SchemaService {
 							`Provided diff is trying to delete relation "${relation}" but it does not exist. Please generate a new diff and try again.`
 						);
 					}
-				} else {
-					const matchingRelation = snapshotWithHash.relations.find((r) => r.hash === diffRelation.hash);
-
-					if (!matchingRelation) {
-						throw new InvalidPayloadException(
-							`Provided diff for relation "${relation}" does not match the current instance's relation, indicating it has changed after this diff was generated. Please generate a new diff and try again.`
-						);
-					}
 				}
 			}
 
 			throw new InvalidPayloadException(
-				`Provided hash "${payload.hash}" does not match the current instance's schema hash "${snapshotWithHash.hash}". Please generate a new diff and try again.`
+				`Provided hash does not match the current instance's schema hash, indicating the schema has changed after this diff was generated. Please generate a new diff and try again.`
 			);
 		}
 
@@ -288,16 +268,6 @@ export class SchemaService {
 		return {
 			...snapshot,
 			hash: snapshotHash,
-			collections: snapshot.collections.map(addHash),
-			fields: snapshot.fields.map(addHash),
-			relations: snapshot.relations.map(addHash),
 		};
-
-		function addHash<T extends Record<string, any>>(item: T): T & { hash: string } {
-			return {
-				hash: getVersionedHash(item),
-				...item,
-			};
-		}
 	}
 }

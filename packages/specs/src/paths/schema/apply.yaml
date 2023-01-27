@@ -1,7 +1,9 @@
 post:
   summary: Apply Schema Difference
-  description: Apply schema difference based on JSON request body. This endpoint is only available to admin users.
-  operationId: serverSchemaApply
+  description:
+    Update the schema by passing the differences previously retrieved via diff endpoint as JSON request body. This
+    endpoint is only available to admin users.
+  operationId: schemaApply
   requestBody:
     required: true
     content:
@@ -9,56 +11,8 @@ post:
         schema:
           type: object
           properties:
-            hash:
-              type: string
-            diff:
-              type: object
-              properties:
-                collections:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      hash:
-                        type: string
-                      collection:
-                        type: string
-                      diff:
-                        type: array
-                        items:
-                          type: object
-                fields:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      hash:
-                        type: string
-                      collection:
-                        type: string
-                      field:
-                        type: string
-                      diff:
-                        type: array
-                        items:
-                          type: object
-                relations:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      hash:
-                        type: string
-                      collection:
-                        type: string
-                      field:
-                        type: string
-                      related_collection:
-                        type: string
-                      diff:
-                        type: array
-                        items:
-                          type: object
+            data:
+              $ref: '../../openapi.yaml#/components/schemas/Diff'
   responses:
     '204':
       description: Successful request

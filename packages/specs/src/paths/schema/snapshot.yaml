@@ -1,7 +1,7 @@
 get:
   summary: Retrieve Schema Snapshot
   description: Retrieve the current schema. This endpoint is only available to admin users.
-  operationId: serverSchemaSnapshot
+  operationId: schemaSnapshot
   parameters:
     - $ref: '../../openapi.yaml#/components/parameters/Export'
   responses:
@@ -13,26 +13,7 @@ get:
             type: object
             properties:
               data:
-                type: object
-                properties:
-                  version:
-                    type: integer
-                  directus:
-                    type: string
-                  vendor:
-                    type: string
-                  collections:
-                    type: array
-                    items:
-                      $ref: '../../openapi.yaml#/components/schemas/Collections'
-                  fields:
-                    type: array
-                    items:
-                      $ref: '../../openapi.yaml#/components/schemas/Fields'
-                  relations:
-                    type: array
-                    items:
-                      $ref: '../../openapi.yaml#/components/schemas/Relations'
+                $ref: '../../openapi.yaml#/components/schemas/Schema'
         text/yaml:
           schema:
             type: string
