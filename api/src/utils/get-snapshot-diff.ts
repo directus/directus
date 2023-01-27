@@ -1,5 +1,6 @@
 import { diff } from 'deep-diff';
 import { omit, orderBy } from 'lodash';
+import { KIND } from '../constants';
 import { Snapshot, SnapshotDiff } from '../types';
 import { getVersionedHash } from './get-versioned-hash';
 import { sanitizeCollection, sanitizeField, sanitizeRelation } from './sanitize-schema';
@@ -118,7 +119,7 @@ export function getSnapshotDiff(current: Snapshot, after: Snapshot): SnapshotDif
 	 */
 
 	const deletedCollections = diffedSnapshot.collections
-		.filter((collection) => collection.diff?.[0].kind === 'D')
+		.filter((collection) => collection.diff?.[0].kind === KIND.DELETE)
 		.map(({ collection }) => collection);
 
 	diffedSnapshot.fields = diffedSnapshot.fields.filter(

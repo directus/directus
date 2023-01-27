@@ -3,7 +3,7 @@ import { Accountability } from '@directus/shared/types';
 import Joi from 'joi';
 import { Knex } from 'knex';
 import { version as currentDirectusVersion } from '../../package.json';
-import { ALIAS_TYPES } from '../constants';
+import { ALIAS_TYPES, KIND } from '../constants';
 import getDatabase, { getDatabaseClient } from '../database';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { AbstractServiceOptions, DatabaseClients, Snapshot, SnapshotDiff, SnapshotWithHash } from '../types';
@@ -134,7 +134,7 @@ export class SchemaService {
 			for (const diffCollection of payload.diff.collections) {
 				const collection = diffCollection.collection;
 
-				if (diffCollection.diff[0]?.kind === 'N') {
+				if (diffCollection.diff[0]?.kind === KIND.NEW) {
 					const existingCollection = snapshotWithHash.collections.find(
 						(c) => c.collection === diffCollection.collection
 					);
@@ -144,7 +144,7 @@ export class SchemaService {
 							`Provided diff is trying to create collection "${collection}" but it already exists. Please generate a new diff and try again.`
 						);
 					}
-				} else if (diffCollection.diff[0]?.kind === 'D') {
+				} else if (diffCollection.diff[0]?.kind === KIND.DELETE) {
 					const existingCollection = snapshotWithHash.collections.find(
 						(c) => c.collection === diffCollection.collection
 					);
@@ -167,7 +167,7 @@ export class SchemaService {
 			for (const diffField of payload.diff.fields) {
 				const field = `${diffField.collection}.${diffField.field}`;
 
-				if (diffField.diff[0]?.kind === 'N') {
+				if (diffField.diff[0]?.kind === KIND.NEW) {
 					const existingField = snapshotWithHash.fields.find(
 						(f) => f.collection === diffField.collection && f.field === diffField.field
 					);
@@ -177,7 +177,7 @@ export class SchemaService {
 							`Provided diff is trying to create field "${field}" but it already exists. Please generate a new diff and try again.`
 						);
 					}
-				} else if (diffField.diff[0]?.kind === 'D') {
+				} else if (diffField.diff[0]?.kind === KIND.DELETE) {
 					const existingField = snapshotWithHash.fields.find(
 						(f) => f.collection === diffField.collection && f.field === diffField.field
 					);
@@ -201,7 +201,7 @@ export class SchemaService {
 				let relation = `${diffRelation.collection}.${diffRelation.field}`;
 				if (diffRelation.related_collection) relation += `-> ${diffRelation.related_collection}`;
 
-				if (diffRelation.diff[0]?.kind === 'N') {
+				if (diffRelation.diff[0]?.kind === KIND.NEW) {
 					const existingRelation = snapshotWithHash.relations.find(
 						(r) => r.collection === diffRelation.collection && r.field === diffRelation.field
 					);
@@ -211,7 +211,7 @@ export class SchemaService {
 							`Provided diff is trying to create relation "${relation}" but it already exists. Please generate a new diff and try again.`
 						);
 					}
-				} else if (diffRelation.diff[0]?.kind === 'D') {
+				} else if (diffRelation.diff[0]?.kind === KIND.DELETE) {
 					const existingRelation = snapshotWithHash.relations.find(
 						(r) => r.collection === diffRelation.collection && r.field === diffRelation.field
 					);
