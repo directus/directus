@@ -128,6 +128,6 @@ export abstract class SchemaHelper extends DatabaseHelper {
 	}
 
 	formatUUID(uuid: string): string {
-		return uuid; // no-op by defaut
+		return uuid; // no-op by default
 	}
 }
