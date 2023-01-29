@@ -1,5 +1,5 @@
 import { KNEX_TYPES } from '@directus/shared/constants';
-import { Field, Relation } from '@directus/shared/types';
+import { Field, Relation, Type } from '@directus/shared/types';
 import { Knex } from 'knex';
 import { DatabaseClient } from '../../../types';
 import { getDatabaseClient } from '../../index';
@@ -96,8 +96,8 @@ export abstract class SchemaHelper extends DatabaseHelper {
 		return;
 	}
 
-	processField(_field: Field): void {
-		return;
+	processFieldType(field: Field): Type {
+		return field.type;
 	}
 
 	constraintName(existingName: string): string {

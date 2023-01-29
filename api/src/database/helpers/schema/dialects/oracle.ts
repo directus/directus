@@ -1,5 +1,5 @@
 import { KNEX_TYPES } from '@directus/shared/constants';
-import { Field, Relation } from '@directus/shared/types';
+import { Field, Relation, Type } from '@directus/shared/types';
 import { Options, SchemaHelper } from '../types';
 
 export class SchemaHelperOracle extends SchemaHelper {
@@ -26,15 +26,17 @@ export class SchemaHelperOracle extends SchemaHelper {
 		}
 	}
 
-	processField(field: Field): void {
+	processFieldType(field: Field): Type {
 		if (field.type === 'integer') {
 			if (field.schema?.numeric_precision === 20) {
-				field.type = 'bigInteger';
+				return 'bigInteger';
 			} else if (field.schema?.numeric_precision === 1) {
-				field.type = 'boolean';
+				return 'boolean';
 			} else if (field.schema?.numeric_precision || field.schema?.numeric_scale) {
-				field.type = 'decimal';
+				return 'decimal';
 			}
 		}
+
+		return field.type;
 	}
 }
