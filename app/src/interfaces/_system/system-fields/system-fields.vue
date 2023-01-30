@@ -21,11 +21,11 @@
 			</draggable>
 		</v-list>
 		<v-menu placement="bottom-start" show-arrow>
-			<button @click="selectAll" class="selectAllBtn">
+			<button class="selectAllBtn" @click="selectAll">
 				<v-icon name="check_box" />
 				{{ t('select_all') }}
 			</button>
-			<button @click="deSelectAll" class="selectAllBtn">
+			<button class="selectAllBtn" @click="deselectAll">
 				<v-icon name="check_box_outline_blank" />
 				{{ t('deselect_all') }}
 			</button>
@@ -112,7 +112,7 @@ function selectAll() {
 	emit('input', newArray);
 }
 
-function deSelectAll() {
+function deselectAll() {
 	emit('input', null);
 }
 
