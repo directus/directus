@@ -319,7 +319,9 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					it.each(vendors)('%s', async (vendor) => {
 						// Setup
 						const artist = createArtist(pkType);
+						artist.name = 'one-' + artist.name;
 						const artist2 = createArtist(pkType);
+						artist2.name = 'one-' + artist2.name;
 
 						// Action
 						const response = await request(getUrl(vendor))
@@ -357,9 +359,15 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						const artists = [];
 						const artists2 = [];
 						const artistsCount = 5;
+
 						for (let i = 0; i < artistsCount; i++) {
-							artists.push(createArtist(pkType));
-							artists2.push(createArtist(pkType));
+							const artist = createArtist(pkType);
+							artists.push(artist);
+							artist.name = 'many-' + artist.name;
+
+							const artist2 = createArtist(pkType);
+							artist2.name = 'many-' + artist2.name;
+							artists2.push(artist2);
 						}
 
 						// Action
@@ -546,6 +554,52 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					expect(gqlResponse.statusCode).toBe(200);
 					expect(gqlResponse.body.data[localCollectionArtists].length).toEqual(0);
 				});
+			});
+		});
+
+		describe('Verify createOne action hook run', () => {
+			it.each(vendors)('%s', async (vendor) => {
+				// Action
+				const response = await request(getUrl(vendor))
+					.get('/items/tests_extensions_log')
+					.query({
+						filter: JSON.stringify({
+							key: {
+								_starts_with: `action-verify-create/${collectionArtists}_${pkType}/one`,
+							},
+						}),
+					})
+					.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+				// Assert
+				expect(response.statusCode).toBe(200);
+				expect(response.body.data.length).toBe(2);
+				for (const log of response.body.data) {
+					expect(log.value).toBe('1');
+				}
+			});
+		});
+
+		describe('Verify createMany action hook run', () => {
+			it.each(vendors)('%s', async (vendor) => {
+				// Action
+				const response = await request(getUrl(vendor))
+					.get('/items/tests_extensions_log')
+					.query({
+						filter: JSON.stringify({
+							key: {
+								_starts_with: `action-verify-create/${collectionArtists}_${pkType}/many`,
+							},
+						}),
+					})
+					.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+				// Assert
+				expect(response.statusCode).toBe(200);
+				expect(response.body.data.length).toBe(10);
+				for (const log of response.body.data) {
+					expect(log.value).toBe('1');
+				}
 			});
 		});
 	});

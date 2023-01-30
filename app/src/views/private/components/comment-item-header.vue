@@ -64,7 +64,7 @@ import { userName } from '@/utils/user-name';
 import format from 'date-fns/format';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { Activity } from './types';
+import { Activity } from '@/types/activity';
 
 import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';

@@ -139,7 +139,10 @@ export class FilesService extends ItemsService {
 			pipeline(
 				stream,
 				sharp().metadata(async (err, sharpMetadata) => {
-					if (err) reject(err);
+					if (err) {
+						reject(err);
+						return;
+					}
 
 					const metadata: Metadata = {};
 
