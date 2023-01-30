@@ -108,7 +108,7 @@ const fields = computed<(Field & { key: string })[]>({
 const { t } = useI18n();
 
 function selectAll() {
-	const newArray = fieldsStore.getFieldsForCollection(props.collectionName)?.map((field) => field.field);
+	const newArray = fieldsStore.getFieldsForCollection(props.collectionName).map((field) => field.field);
 	emit('input', newArray);
 }
 
@@ -147,6 +147,16 @@ function removeField(fieldKey: string) {
 	font-weight: 500;
 	margin-left: 10px;
 	margin-top: 10px;
+}
+
+.selectAllBtn.v-icon {
+	color: var(--primary);
+	margin: 0 2px;
+}
+
+.selectAllBtn:hover,
+.selectAllBtn.v-icon:hover {
+	color: var(--primary-dark);
 }
 
 .v-notice.no-fields {
