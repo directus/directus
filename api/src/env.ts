@@ -24,6 +24,8 @@ const allowedEnvironmentVars = [
 	'SERVE_APP',
 	'GRAPHQL_INTROSPECTION',
 	'LOGGER_.+',
+	'MAX_QUERY_LIMIT',
+	'DEFAULT_QUERY_LIMIT',
 	// server
 	'SERVER_.+',
 	// database
@@ -192,6 +194,7 @@ const defaults: Record<string, any> = {
 	PUBLIC_URL: '/',
 	MAX_PAYLOAD_SIZE: '1mb',
 	MAX_RELATIONAL_DEPTH: 10,
+	DEFAULT_QUERY_LIMIT: 100,
 
 	DB_EXCLUDE_TABLES: 'spatial_ref_sys,sysdiagrams',
 

@@ -21,8 +21,7 @@ export function sanitizeQuery(rawQuery: Record<string, any>, accountability?: Ac
 			}
 		}
 	} else if (hasMaxLimit) {
-		// fall back to the max limit when omitted
-		query.limit = Number(env.MAX_QUERY_LIMIT);
+		query.limit = Math.min(Number(env.DEFAULT_QUERY_LIMIT), Number(env.MAX_QUERY_LIMIT));
 	}
 
 	if (rawQuery.fields) {
