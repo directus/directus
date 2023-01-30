@@ -12,6 +12,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { computed, defineComponent, ref, watch } from 'vue';
+import { idleTracker } from '@/idle';
 
 export default defineComponent({
 	props: {
@@ -35,6 +36,20 @@ export default defineComponent({
 
 		const activeInterval = ref<NodeJS.Timeout | null>(null);
 
+		const setRefreshInterval = (interval: number) => {
+			activeInterval.value = setInterval(() => {
+				emit('refresh');
+			}, interval * 1000);
+		};
+
+		idleTracker.on('hide', () => {
+			if (activeInterval.value) clearInterval(activeInterval.value);
+		});
+
+		idleTracker.on('show', () => {
+			if (interval.value) setRefreshInterval(interval.value);
+		});
+
 		watch(
 			interval,
 			(newInterval) => {
@@ -42,9 +57,7 @@ export default defineComponent({
 					clearInterval(activeInterval.value);
 				}
 				if (newInterval !== null && newInterval > 0) {
-					activeInterval.value = setInterval(() => {
-						emit('refresh');
-					}, newInterval * 1000);
+					setRefreshInterval(newInterval);
 				}
 			},
 			{ immediate: true }
