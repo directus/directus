@@ -93,7 +93,7 @@
 		"argon2": "0.30.2",
 		"async": "3.2.4",
 		"async-mutex": "0.4.0",
-		"axios": "1.2.1",
+		"axios": "1.2.6",
 		"busboy": "1.6.0",
 		"bytes": "3.1.2",
 		"camelcase": "6.3.0",
