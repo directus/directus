@@ -540,18 +540,23 @@ export function applyFilter(
 			// See https://github.com/knex/knex/issues/4518 @TODO remove as any once knex is updated
 
 			// These operators don't rely on a value, and can thus be used without one (eg `?filter[field][_null]`)
-			if ((operator === '_null' && compareValue !== false) || (operator === '_nnull' && compareValue === false)) {
-				dbQuery[logical].whereNull(selectionRaw);
-			} else if (operator === '_nnull' || operator === '_null') {
-				dbQuery[logical].whereNotNull(selectionRaw);
+			const defaultValue = compareValue === false ? false : true;
+			if ((operator === '_null' && defaultValue) || (operator === '_nnull' && !defaultValue)) {
+				return dbQuery[logical].whereNull(selectionRaw);
 			}
 
-			if ((operator === '_empty' && compareValue !== false) || (operator === '_nempty' && compareValue === false)) {
-				dbQuery[logical].andWhere((query) => {
+			if ((operator === '_nnull' && defaultValue) || (operator === '_null' && !defaultValue)) {
+				return dbQuery[logical].whereNotNull(selectionRaw);
+			}
+
+			if ((operator === '_empty' && defaultValue) || (operator === '_nempty' && !defaultValue)) {
+				return dbQuery[logical].andWhere((query) => {
 					query.whereNull(key).orWhere(key, '=', '');
 				});
-			} else if (operator === '_nempty' || operator === '_empty') {
-				dbQuery[logical].andWhere((query) => {
+			}
+
+			if ((operator === '_nempty' && defaultValue) || (operator === '_empty' && !defaultValue)) {
+				return dbQuery[logical].andWhere((query) => {
 					query.whereNotNull(key).orWhere(key, '!=', '');
 				});
 			}
@@ -602,132 +607,129 @@ export function applyFilter(
 				}
 			}
 
-			if (operator === '_eq') {
-				dbQuery[logical].where(selectionRaw, '=', compareValue);
-			}
+			let value = compareValue;
+			switch (operator) {
+				case '_eq':
+					dbQuery[logical].where(selectionRaw, '=', compareValue);
+					break;
 
-			if (operator === '_neq') {
-				dbQuery[logical].whereNot(selectionRaw, compareValue);
-			}
+				case '_neq':
+					dbQuery[logical].whereNot(selectionRaw, compareValue);
+					break;
 
-			if (operator === '_ieq') {
-				dbQuery[logical].whereRaw(`LOWER(??) = ?`, [selectionRaw, `${compareValue.toLowerCase()}`]);
-			}
+				case '_ieq':
+					dbQuery[logical].whereRaw(`LOWER(??) = ?`, [selectionRaw, `${compareValue.toLowerCase()}`]);
+					break;
 
-			if (operator === '_nieq') {
-				dbQuery[logical].whereRaw(`LOWER(??) <> ?`, [selectionRaw, `${compareValue.toLowerCase()}`]);
-			}
+				case '_nieq':
+					dbQuery[logical].whereRaw(`LOWER(??) <> ?`, [selectionRaw, `${compareValue.toLowerCase()}`]);
+					break;
 
-			if (operator === '_contains') {
-				dbQuery[logical].where(selectionRaw, 'like', `%${compareValue}%`);
-			}
+				case '_contains':
+					dbQuery[logical].where(selectionRaw, 'like', `%${compareValue}%`);
+					break;
 
-			if (operator === '_ncontains') {
-				dbQuery[logical].whereNot(selectionRaw, 'like', `%${compareValue}%`);
-			}
+				case '_ncontains':
+					dbQuery[logical].whereNot(selectionRaw, 'like', `%${compareValue}%`);
+					break;
 
-			if (operator === '_icontains') {
-				dbQuery[logical].whereRaw(`LOWER(??) LIKE ?`, [selectionRaw, `%${compareValue.toLowerCase()}%`]);
-			}
+				case '_icontains':
+					dbQuery[logical].whereRaw(`LOWER(??) LIKE ?`, [selectionRaw, `%${compareValue.toLowerCase()}%`]);
+					break;
 
-			if (operator === '_nicontains') {
-				dbQuery[logical].whereRaw(`LOWER(??) NOT LIKE ?`, [selectionRaw, `%${compareValue.toLowerCase()}%`]);
-			}
+				case '_nicontains':
+					dbQuery[logical].whereRaw(`LOWER(??) NOT LIKE ?`, [selectionRaw, `%${compareValue.toLowerCase()}%`]);
+					break;
 
-			if (operator === '_starts_with') {
-				dbQuery[logical].where(key, 'like', `${compareValue}%`);
-			}
+				case '_starts_with':
+					dbQuery[logical].where(key, 'like', `${compareValue}%`);
+					break;
 
-			if (operator === '_nstarts_with') {
-				dbQuery[logical].whereNot(key, 'like', `${compareValue}%`);
-			}
+				case '_nstarts_with':
+					dbQuery[logical].whereNot(key, 'like', `${compareValue}%`);
+					break;
 
-			if (operator === '_istarts_with') {
-				dbQuery[logical].whereRaw(`LOWER(??) LIKE ?`, [selectionRaw, `${compareValue.toLowerCase()}%`]);
-			}
+				case '_istarts_with':
+					dbQuery[logical].whereRaw(`LOWER(??) LIKE ?`, [selectionRaw, `${compareValue.toLowerCase()}%`]);
+					break;
 
-			if (operator === '_nistarts_with') {
-				dbQuery[logical].whereRaw(`LOWER(??) NOT LIKE ?`, [selectionRaw, `${compareValue.toLowerCase()}%`]);
-			}
+				case '_nistarts_with':
+					dbQuery[logical].whereRaw(`LOWER(??) NOT LIKE ?`, [selectionRaw, `${compareValue.toLowerCase()}%`]);
+					break;
 
-			if (operator === '_ends_with') {
-				dbQuery[logical].where(key, 'like', `%${compareValue}`);
-			}
+				case '_ends_with':
+					dbQuery[logical].where(key, 'like', `%${compareValue}`);
+					break;
 
-			if (operator === '_nends_with') {
-				dbQuery[logical].whereNot(key, 'like', `%${compareValue}`);
-			}
+				case '_nends_with':
+					dbQuery[logical].whereNot(key, 'like', `%${compareValue}`);
+					break;
 
-			if (operator === '_iends_with') {
-				dbQuery[logical].whereRaw(`LOWER(??) LIKE ?`, [selectionRaw, `%${compareValue.toLowerCase()}`]);
-			}
+				case '_iends_with':
+					dbQuery[logical].whereRaw(`LOWER(??) LIKE ?`, [selectionRaw, `%${compareValue.toLowerCase()}`]);
+					break;
 
-			if (operator === '_niends_with') {
-				dbQuery[logical].whereRaw(`LOWER(??) NOT LIKE ?`, [selectionRaw, `%${compareValue.toLowerCase()}`]);
-			}
+				case '_niends_with':
+					dbQuery[logical].whereRaw(`LOWER(??) NOT LIKE ?`, [selectionRaw, `%${compareValue.toLowerCase()}`]);
+					break;
 
-			if (operator === '_gt') {
-				dbQuery[logical].where(selectionRaw, '>', compareValue);
-			}
+				case '_gt':
+					dbQuery[logical].where(selectionRaw, '>', compareValue);
+					break;
 
-			if (operator === '_gte') {
-				dbQuery[logical].where(selectionRaw, '>=', compareValue);
-			}
+				case '_gte':
+					dbQuery[logical].where(selectionRaw, '>=', compareValue);
+					break;
 
-			if (operator === '_lt') {
-				dbQuery[logical].where(selectionRaw, '<', compareValue);
-			}
+				case '_lt':
+					dbQuery[logical].where(selectionRaw, '<', compareValue);
+					break;
 
-			if (operator === '_lte') {
-				dbQuery[logical].where(selectionRaw, '<=', compareValue);
-			}
+				case '_lte':
+					dbQuery[logical].where(selectionRaw, '<=', compareValue);
+					break;
 
-			if (operator === '_in') {
-				let value = compareValue;
-				if (typeof value === 'string') value = value.split(',');
+				case '_in':
+					if (typeof value === 'string') value = value.split(',');
 
-				dbQuery[logical].whereIn(selectionRaw, value as string[]);
-			}
+					dbQuery[logical].whereIn(selectionRaw, value as string[]);
+					break;
 
-			if (operator === '_nin') {
-				let value = compareValue;
-				if (typeof value === 'string') value = value.split(',');
+				case '_nin':
+					if (typeof value === 'string') value = value.split(',');
 
-				dbQuery[logical].whereNotIn(selectionRaw, value as string[]);
-			}
+					dbQuery[logical].whereNotIn(selectionRaw, value as string[]);
+					break;
 
-			if (operator === '_between') {
-				if (compareValue.length !== 2) return;
+				case '_between':
+					if (compareValue.length !== 2) return;
 
-				let value = compareValue;
-				if (typeof value === 'string') value = value.split(',');
+					if (typeof value === 'string') value = value.split(',');
+					dbQuery[logical].whereBetween(selectionRaw, value);
+					break;
 
-				dbQuery[logical].whereBetween(selectionRaw, value);
-			}
+				case '_nbetween':
+					if (compareValue.length !== 2) return;
 
-			if (operator === '_nbetween') {
-				if (compareValue.length !== 2) return;
+					if (typeof value === 'string') value = value.split(',');
+					dbQuery[logical].whereNotBetween(selectionRaw, value);
+					break;
 
-				let value = compareValue;
-				if (typeof value === 'string') value = value.split(',');
+				case '_intersects':
+					dbQuery[logical].whereRaw(helpers.st.intersects(key, compareValue));
+					break;
 
-				dbQuery[logical].whereNotBetween(selectionRaw, value);
-			}
+				case '_nintersects':
+					dbQuery[logical].whereRaw(helpers.st.nintersects(key, compareValue));
+					break;
 
-			if (operator == '_intersects') {
-				dbQuery[logical].whereRaw(helpers.st.intersects(key, compareValue));
-			}
+				case '_intersects_bbox':
+					dbQuery[logical].whereRaw(helpers.st.intersects_bbox(key, compareValue));
+					break;
 
-			if (operator == '_nintersects') {
-				dbQuery[logical].whereRaw(helpers.st.nintersects(key, compareValue));
-			}
-
-			if (operator == '_intersects_bbox') {
-				dbQuery[logical].whereRaw(helpers.st.intersects_bbox(key, compareValue));
-			}
-
-			if (operator == '_nintersects_bbox') {
-				dbQuery[logical].whereRaw(helpers.st.nintersects_bbox(key, compareValue));
+				case '_nintersects_bbox':
+					dbQuery[logical].whereRaw(helpers.st.nintersects_bbox(key, compareValue));
+					break;
 			}
 		}
 	}
@@ -760,44 +762,46 @@ export function applyAggregate(dbQuery: Knex.QueryBuilder, aggregate: Aggregate,
 		if (!fields) continue;
 
 		for (const field of fields) {
-			if (operation === 'avg') {
-				dbQuery.avg(`${collection}.${field}`, { as: `avg->${field}` });
-			}
+			switch (operation) {
+				case 'avg':
+					dbQuery.avg(`${collection}.${field}`, { as: `avg->${field}` });
+					break;
 
-			if (operation === 'avgDistinct') {
-				dbQuery.avgDistinct(`${collection}.${field}`, { as: `avgDistinct->${field}` });
-			}
+				case 'avgDistinct':
+					dbQuery.avgDistinct(`${collection}.${field}`, { as: `avgDistinct->${field}` });
+					break;
 
-			if (operation === 'countAll') {
-				dbQuery.count('*', { as: 'countAll' });
-			}
+				case 'countAll':
+					dbQuery.count('*', { as: 'countAll' });
+					break;
 
-			if (operation === 'count') {
-				if (field === '*') {
-					dbQuery.count('*', { as: 'count' });
-				} else {
-					dbQuery.count(`${collection}.${field}`, { as: `count->${field}` });
-				}
-			}
+				case 'count':
+					if (field === '*') {
+						dbQuery.count('*', { as: 'count' });
+					} else {
+						dbQuery.count(`${collection}.${field}`, { as: `count->${field}` });
+					}
+					break;
 
-			if (operation === 'countDistinct') {
-				dbQuery.countDistinct(`${collection}.${field}`, { as: `countDistinct->${field}` });
-			}
+				case 'countDistinct':
+					dbQuery.countDistinct(`${collection}.${field}`, { as: `countDistinct->${field}` });
+					break;
 
-			if (operation === 'sum') {
-				dbQuery.sum(`${collection}.${field}`, { as: `sum->${field}` });
-			}
+				case 'sum':
+					dbQuery.sum(`${collection}.${field}`, { as: `sum->${field}` });
+					break;
 
-			if (operation === 'sumDistinct') {
-				dbQuery.sumDistinct(`${collection}.${field}`, { as: `sumDistinct->${field}` });
-			}
+				case 'sumDistinct':
+					dbQuery.sumDistinct(`${collection}.${field}`, { as: `sumDistinct->${field}` });
+					break;
 
-			if (operation === 'min') {
-				dbQuery.min(`${collection}.${field}`, { as: `min->${field}` });
-			}
+				case 'min':
+					dbQuery.min(`${collection}.${field}`, { as: `min->${field}` });
+					break;
 
-			if (operation === 'max') {
-				dbQuery.max(`${collection}.${field}`, { as: `max->${field}` });
+				case 'max':
+					dbQuery.max(`${collection}.${field}`, { as: `max->${field}` });
+					break;
 			}
 		}
 	}
