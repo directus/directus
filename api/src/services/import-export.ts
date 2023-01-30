@@ -20,11 +20,12 @@ import {
 	UnsupportedMediaTypeException,
 } from '../exceptions';
 import logger from '../logger';
-import { AbstractServiceOptions, File } from '../types';
+import { AbstractServiceOptions, ActionEventParams, File } from '../types';
 import { getDateFormatted } from '../utils/get-date-formatted';
 import { FilesService } from './files';
 import { ItemsService } from './items';
 import { NotificationsService } from './notifications';
+import emitter from '../emitter';
 import type { Readable } from 'node:stream';
 
 export class ImportService {
@@ -66,6 +67,7 @@ export class ImportService {
 
 	importJSON(collection: string, stream: Readable): Promise<void> {
 		const extractJSON = StreamArray.withParser();
+		const nestedActionEvents: ActionEventParams[] = [];
 
 		return this.knex.transaction((trx) => {
 			const service = new ItemsService(collection, {
@@ -75,7 +77,7 @@ export class ImportService {
 			});
 
 			const saveQueue = queue(async (value: Record<string, unknown>) => {
-				return await service.upsertOne(value);
+				return await service.upsertOne(value, { bypassEmitAction: (params) => nestedActionEvents.push(params) });
 			});
 
 			return new Promise<void>((resolve, reject) => {
@@ -98,6 +100,10 @@ export class ImportService {
 
 				extractJSON.on('end', () => {
 					saveQueue.drain(() => {
+						for (const nestedActionEvent of nestedActionEvents) {
+							emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
+						}
+
 						return resolve();
 					});
 				});
@@ -106,6 +112,8 @@ export class ImportService {
 	}
 
 	importCSV(collection: string, stream: Readable): Promise<void> {
+		const nestedActionEvents: ActionEventParams[] = [];
+
 		return this.knex.transaction((trx) => {
 			const service = new ItemsService(collection, {
 				knex: trx,
@@ -114,7 +122,7 @@ export class ImportService {
 			});
 
 			const saveQueue = queue(async (value: Record<string, unknown>) => {
-				return await service.upsertOne(value);
+				return await service.upsertOne(value, { bypassEmitAction: (action) => nestedActionEvents.push(action) });
 			});
 
 			return new Promise<void>((resolve, reject) => {
@@ -147,6 +155,10 @@ export class ImportService {
 					})
 					.on('end', () => {
 						saveQueue.drain(() => {
+							for (const nestedActionEvent of nestedActionEvents) {
+								emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
+							}
+
 							return resolve();
 						});
 					});
