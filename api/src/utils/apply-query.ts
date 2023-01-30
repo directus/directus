@@ -607,7 +607,6 @@ export function applyFilter(
 				}
 			}
 
-			let value = compareValue;
 			switch (operator) {
 				case '_eq':
 					dbQuery[logical].where(selectionRaw, '=', compareValue);
@@ -690,29 +689,29 @@ export function applyFilter(
 					break;
 
 				case '_in':
-					if (typeof value === 'string') value = value.split(',');
+					if (typeof compareValue === 'string') compareValue = compareValue.split(',');
 
-					dbQuery[logical].whereIn(selectionRaw, value as string[]);
+					dbQuery[logical].whereIn(selectionRaw, compareValue as string[]);
 					break;
 
 				case '_nin':
-					if (typeof value === 'string') value = value.split(',');
+					if (typeof compareValue === 'string') compareValue = compareValue.split(',');
 
-					dbQuery[logical].whereNotIn(selectionRaw, value as string[]);
+					dbQuery[logical].whereNotIn(selectionRaw, compareValue as string[]);
 					break;
 
 				case '_between':
 					if (compareValue.length !== 2) return;
 
-					if (typeof value === 'string') value = value.split(',');
-					dbQuery[logical].whereBetween(selectionRaw, value);
+					if (typeof compareValue === 'string') compareValue = compareValue.split(',');
+					dbQuery[logical].whereBetween(selectionRaw, compareValue);
 					break;
 
 				case '_nbetween':
 					if (compareValue.length !== 2) return;
 
-					if (typeof value === 'string') value = value.split(',');
-					dbQuery[logical].whereNotBetween(selectionRaw, value);
+					if (typeof compareValue === 'string') compareValue = compareValue.split(',');
+					dbQuery[logical].whereNotBetween(selectionRaw, compareValue);
 					break;
 
 				case '_intersects':
