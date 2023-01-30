@@ -64,12 +64,12 @@ const snapshotJoiSchema = Joi.object({
 });
 
 const deepDiffSchema = Joi.object({
-	kind: Joi.string().valid('N', 'D', 'E', 'A').required(),
+	kind: Joi.string().valid(DiffKind.NEW, DiffKind.DELETE, DiffKind.EDIT, DiffKind.ARRAY).required(),
 	path: Joi.array().items(Joi.string()),
-	lhs: Joi.object().when('kind', { is: ['D', 'E'], then: Joi.required() }),
-	rhs: Joi.object().when('kind', { is: ['N', 'E'], then: Joi.required() }),
-	index: Joi.number().when('kind', { is: 'A', then: Joi.required() }),
-	item: Joi.link('/').when('kind', { is: 'A', then: Joi.required() }),
+	lhs: Joi.object().when('kind', { is: [DiffKind.DELETE, DiffKind.EDIT], then: Joi.required() }),
+	rhs: Joi.object().when('kind', { is: [DiffKind.NEW, DiffKind.EDIT], then: Joi.required() }),
+	index: Joi.number().when('kind', { is: DiffKind.ARRAY, then: Joi.required() }),
+	item: Joi.link('/').when('kind', { is: DiffKind.ARRAY, then: Joi.required() }),
 });
 
 const applyJoiSchema = Joi.object({
