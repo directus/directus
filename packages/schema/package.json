@@ -43,7 +43,7 @@
 	},
 	"dependencies": {
 		"knex": "2.4.1",
-		"knex-schema-inspector": "3.0.0"
+		"knex-schema-inspector": "3.0.1"
 	},
 	"devDependencies": {
 		"typescript": "4.9.4"
