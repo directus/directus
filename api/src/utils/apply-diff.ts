@@ -16,6 +16,7 @@ import { applyChange, Diff, DiffDeleted, DiffNew } from 'deep-diff';
 import { cloneDeep, merge, set } from 'lodash';
 import logger from '../logger';
 import emitter from '../emitter';
+import { clearSystemCache } from '../cache';
 
 type CollectionDelta = {
 	collection: string;
@@ -295,6 +296,8 @@ export async function applyDiff(
 			}
 		}
 	});
+
+	await clearSystemCache();
 
 	if (nestedActionEvents.length > 0) {
 		const updatedSchema = await getSchema({ database, bypassCache: true });
