@@ -654,11 +654,11 @@ importers:
   packages/schema:
     specifiers:
       knex: 2.4.1
-      knex-schema-inspector: 3.0.0
+      knex-schema-inspector: 3.0.1
       typescript: 4.9.4
     dependencies:
       knex: 2.4.1
-      knex-schema-inspector: 3.0.0
+      knex-schema-inspector: 3.0.1
     devDependencies:
       typescript: 4.9.4
 
@@ -678,7 +678,7 @@ importers:
       geojson: 0.5.0
       joi: 17.7.0
       knex: 2.4.1
-      knex-schema-inspector: 3.0.0
+      knex-schema-inspector: 3.0.1
       lodash: 4.17.21
       micromustache: 8.0.3
       nanoid: 4.0.0
@@ -698,7 +698,7 @@ importers:
       geojson: 0.5.0
       joi: 17.7.0
       knex: 2.4.1
-      knex-schema-inspector: 3.0.0
+      knex-schema-inspector: 3.0.1
       lodash: 4.17.21
       micromustache: 8.0.3
       nanoid: 4.0.0
@@ -9060,7 +9060,7 @@ packages:
       minipass-pipeline: 1.2.4
       mkdirp: 1.0.4
       p-map: 4.0.0
-      promise-inflight: 1.0.1
+      promise-inflight: 1.0.1_bluebird@3.7.2
       rimraf: 3.0.2
       ssri: 8.0.1
       tar: 6.1.13
@@ -14280,13 +14280,6 @@ packages:
       lodash.clonedeep: 4.5.0
     dev: true
 
-  /knex-schema-inspector/3.0.0:
-    resolution: {integrity: sha512-J3Aeh4kIZD2sYUjnpak+sdVtegGVkkhCF5/VSziocSZpseW4MwTcnxHbttsaT3tA85INuPxxUBxFgyCm9tMZDQ==}
-    dependencies:
-      lodash.flatten: 4.4.0
-      lodash.isnil: 4.0.0
-    dev: false
-
   /knex-schema-inspector/3.0.1:
     resolution: {integrity: sha512-ofglN/HoHYhNxQJbuuKEj0vtVsBpEVlbvfoFd9lPn1ABzJHdwZmKLquCYbVLTXZIN0O6y6DDEuN4EqBKMhH+xQ==}
     dependencies:
@@ -17123,14 +17116,6 @@ packages:
     engines: {node: '>=0.4.0'}
     dev: true
 
-  /promise-inflight/1.0.1:
-    resolution: {integrity: sha512-6zWPyEOFaQBJYcGMHBKTKJ3u6TBsnMFOIZSa6ce1e/ZrrsOlnHRHbabMjLiBYKp+n44X9eUI6VUPaukCXHuG4g==}
-    peerDependencies:
-      bluebird: '*'
-    peerDependenciesMeta:
-      bluebird:
-        optional: true
-
   /promise-inflight/1.0.1_bluebird@3.7.2:
     resolution: {integrity: sha512-6zWPyEOFaQBJYcGMHBKTKJ3u6TBsnMFOIZSa6ce1e/ZrrsOlnHRHbabMjLiBYKp+n44X9eUI6VUPaukCXHuG4g==}
     peerDependencies:
@@ -17140,7 +17125,6 @@ packages:
         optional: true
     dependencies:
       bluebird: 3.7.2
-    dev: true
 
   /promise-retry/2.0.1:
     resolution: {integrity: sha512-y+WKFlBR8BGXnsNlIHFGPZmyDf3DFMoLhaflAnyZgV6rG6xu+JwesTo2Q9R6XwYmtmwAFCkAk3e35jEdoeh/3g==}
