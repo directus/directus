@@ -24,12 +24,13 @@ export type DisplayTranslationString = {
 type UsableTranslationStrings = {
 	loading: Ref<boolean>;
 	error: Ref<any>;
+	translationMap: ComputedRef<Record<string, Translation[]>>;
 	translationKeys: ComputedRef<string[] | null>;
 	translationStrings: Ref<RawTranslation[] | null>;
 	displayTranslationStrings: ComputedRef<DisplayTranslationString[] | null>;
 
 	loadLanguageTranslationStrings: (lang: Language) => Promise<void>;
-	fetchAllTranslationStrings: () => Promise<RawTranslation[]>;
+	loadAllTranslations: () => Promise<void>;
 	refresh: () => Promise<void>;
 
 	updating: Ref<boolean>;
@@ -41,6 +42,7 @@ type UsableTranslationStrings = {
 let loading: Ref<boolean> | null = null;
 let translationStrings: Ref<RawTranslation[] | null> | null = null;
 let error: Ref<any> | null = null;
+let allLanguagesLoaded = false;
 
 export function useTranslationStrings(): UsableTranslationStrings {
 	if (loading === null) loading = ref(false);
@@ -52,6 +54,16 @@ export function useTranslationStrings(): UsableTranslationStrings {
 	const translationKeys = computed(() => {
 		if (!translationStrings || !translationStrings.value) return [];
 		return Array.from(new Set(translationStrings.value.map(({ key }) => key))).sort();
+	});
+	const translationMap = computed(() => {
+		const result: Record<string, Translation[]> = {};
+		if (translationStrings && translationStrings.value) {
+			for (const { key, value, lang } of translationStrings.value) {
+				if (!(key in result)) result[key] = [];
+				result[key].push({ language: lang, translation: value } as Translation);
+			}
+		}
+		return result;
 	});
 	const displayTranslationStrings = computed(() => {
 		if (!translationStrings || !translationStrings.value) return [];
@@ -71,11 +83,12 @@ export function useTranslationStrings(): UsableTranslationStrings {
 	return {
 		loading,
 		error,
+		translationMap,
 		translationKeys,
 		translationStrings,
 		displayTranslationStrings,
 		loadLanguageTranslationStrings,
-		fetchAllTranslationStrings,
+		loadAllTranslations,
 		refresh,
 		updating,
 		addTranslation,
@@ -88,7 +101,13 @@ export function useTranslationStrings(): UsableTranslationStrings {
 		if (translationStrings === null) return;
 		if (error === null) return;
 
-		const translations = await fetchTranslationStrings(lang);
+		let translations;
+		if (!allLanguagesLoaded) {
+			translations = await fetchTranslationStrings(lang);
+			translationStrings.value = translations;
+		} else {
+			translations = (translationStrings.value ?? []).filter((item) => item.lang === lang);
+		}
 		const localeMessages: Record<string, any> = translations.reduce(
 			(result: Record<string, string>, { key, value }: { key: string; value: string }) => {
 				result[key] = getLiteralInterpolatedTranslation(value, true);
@@ -98,7 +117,6 @@ export function useTranslationStrings(): UsableTranslationStrings {
 		);
 
 		i18n.global.mergeLocaleMessage(lang, localeMessages);
-		translationStrings.value = translations;
 	}
 
 	async function refresh() {
@@ -106,7 +124,7 @@ export function useTranslationStrings(): UsableTranslationStrings {
 		if (translationStrings === null) return;
 		if (error === null) return;
 
-		loading.value = false;
+		loading.value = true;
 		error.value = null;
 
 		try {
@@ -207,5 +225,22 @@ export function useTranslationStrings(): UsableTranslationStrings {
 			params: { fields: ['translation_strings'] },
 		});
 		return response.data.data?.translation_strings ?? [];
+	}
+
+	async function loadAllTranslations(): Promise<void> {
+		if (loading === null) return;
+		if (translationStrings === null) return;
+		if (error === null) return;
+		if (allLanguagesLoaded === true) return;
+		loading.value = true;
+		try {
+			const strings = await fetchAllTranslationStrings();
+			translationStrings.value = strings;
+			allLanguagesLoaded = true;
+		} catch (err: any) {
+			error.value = err;
+		} finally {
+			loading.value = false;
+		}
 	}
 }

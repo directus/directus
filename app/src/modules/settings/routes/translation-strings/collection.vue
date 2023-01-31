@@ -118,10 +118,13 @@ const limit = ref<number>(25);
 const page = ref<number>(1);
 const loading = ref<boolean>(true);
 
-const { translationKeys, translationStrings, displayTranslationStrings, fetchAllTranslationStrings } =
-	useTranslationStrings();
+const { translationKeys, displayTranslationStrings, loadAllTranslations } = useTranslationStrings();
 
-onMounted(() => loadAllTranslations());
+onMounted(() => {
+	loadAllTranslations().then(() => {
+		loading.value = false;
+	});
+});
 
 const totalPages = computed(() => {
 	const keyCount = translationKeys.value?.length ?? 0;
@@ -144,11 +147,6 @@ function openTranslationStringDrawer({ item }: { item?: DisplayTranslationString
 function closeDrawer() {
 	editingTranslationString.value = null;
 	isTranslationStringDrawerOpen.value = false;
-}
-
-async function loadAllTranslations() {
-	translationStrings.value = await fetchAllTranslationStrings();
-	loading.value = false;
 }
 
 function toPage(newPage: number) {
