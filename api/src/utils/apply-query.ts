@@ -539,22 +539,22 @@ export function applyFilter(
 			// Knex supports "raw" in the columnName parameter, but isn't typed as such. Too bad..
 			// See https://github.com/knex/knex/issues/4518 @TODO remove as any once knex is updated
 
-			const defaultValue = compareValue === false ? false : true;
-			if ((operator === '_null' && defaultValue) || (operator === '_nnull' && !defaultValue)) {
+			const boolValue = Boolean(compareValue ?? true);
+			if ((operator === '_null' && boolValue) || (operator === '_nnull' && !boolValue)) {
 				return dbQuery[logical].whereNull(selectionRaw);
 			}
 
-			if ((operator === '_nnull' && defaultValue) || (operator === '_null' && !defaultValue)) {
+			if ((operator === '_nnull' && boolValue) || (operator === '_null' && !boolValue)) {
 				return dbQuery[logical].whereNotNull(selectionRaw);
 			}
 
-			if ((operator === '_empty' && defaultValue) || (operator === '_nempty' && !defaultValue)) {
+			if ((operator === '_empty' && boolValue) || (operator === '_nempty' && !boolValue)) {
 				return dbQuery[logical].andWhere((query) => {
 					query.whereNull(key).orWhere(key, '=', '');
 				});
 			}
 
-			if ((operator === '_nempty' && defaultValue) || (operator === '_empty' && !defaultValue)) {
+			if ((operator === '_nempty' && boolValue) || (operator === '_empty' && !boolValue)) {
 				return dbQuery[logical].andWhere((query) => {
 					query.whereNotNull(key).orWhere(key, '!=', '');
 				});
