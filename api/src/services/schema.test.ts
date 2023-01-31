@@ -1,8 +1,10 @@
+import { Diff } from 'deep-diff';
 import knex, { Knex } from 'knex';
 import { getTracker, MockClient, Tracker } from 'knex-mock-client';
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 import { SchemaService } from '.';
 import { ForbiddenException } from '..';
+import { Collection } from '../types/collection';
 import { Snapshot, SnapshotDiffWithHash } from '../types/snapshot';
 import { applyDiff } from '../utils/apply-diff';
 import { getSnapshot } from '../utils/get-snapshot';
@@ -26,6 +28,39 @@ class Client_PG extends MockClient {}
 let db: Knex;
 let tracker: Tracker;
 
+const testSnapshot = {
+	directus: '0.0.0',
+	version: 1,
+	vendor: 'postgres',
+	collections: [],
+	fields: [],
+	relations: [],
+} satisfies Snapshot;
+
+const testCollectionDiff = {
+	collection: 'test',
+	diff: [
+		{
+			kind: 'N',
+			rhs: {
+				collection: 'test',
+				meta: {
+					accountability: 'all',
+					collection: 'test',
+					group: null,
+					hidden: false,
+					icon: null,
+					item_duplication_fields: null,
+					note: null,
+					singleton: false,
+					translations: {},
+				},
+				schema: { name: 'test' },
+			},
+		},
+	] satisfies Diff<Collection>[],
+};
+
 beforeAll(() => {
 	db = knex({ client: Client_PG });
 	tracker = getTracker();
@@ -39,15 +74,6 @@ afterEach(() => {
 describe('Services / Schema', () => {
 	describe('snapshot', () => {
 		it('should throw ForbiddenException for non-admin user', async () => {
-			const testSnapshot = {
-				directus: '0.0.0',
-				version: 1,
-				vendor: 'postgres',
-				collections: [],
-				fields: [],
-				relations: [],
-			} satisfies Snapshot;
-
 			vi.mocked(getSnapshot).mockResolvedValueOnce(testSnapshot);
 
 			const service = new SchemaService({ knex: db, accountability: { role: 'test', admin: false } });
@@ -56,15 +82,6 @@ describe('Services / Schema', () => {
 		});
 
 		it('should return snapshot for admin user', async () => {
-			const testSnapshot = {
-				directus: '0.0.0',
-				version: 1,
-				vendor: 'postgres',
-				collections: [],
-				fields: [],
-				relations: [],
-			} satisfies Snapshot;
-
 			vi.mocked(getSnapshot).mockResolvedValueOnce(testSnapshot);
 
 			const service = new SchemaService({ knex: db, accountability: { role: 'admin', admin: true } });
@@ -74,49 +91,16 @@ describe('Services / Schema', () => {
 	});
 
 	describe('apply', () => {
-		it('should throw ForbiddenException for non-admin user', async () => {
-			const testSnapshot = {
-				directus: '0.0.0',
-				version: 1,
-				vendor: 'postgres',
-				collections: [],
+		const snapshotDiffWithHash = {
+			hash: '813b3cdf7013310fafde7813b7d5e6bd4eb1e73f',
+			diff: {
+				collections: [testCollectionDiff],
 				fields: [],
 				relations: [],
-			} satisfies Snapshot;
+			},
+		} satisfies SnapshotDiffWithHash;
 
-			const snapshotDiffWithHash = {
-				hash: '',
-				diff: {
-					collections: [
-						{
-							collection: 'test',
-							diff: [
-								{
-									kind: 'N',
-									rhs: {
-										collection: 'test',
-										meta: {
-											accountability: 'all',
-											collection: 'test',
-											group: null,
-											hidden: false,
-											icon: null,
-											item_duplication_fields: null,
-											note: null,
-											singleton: false,
-											translations: {},
-										},
-										schema: { name: 'test' },
-									},
-								},
-							],
-						},
-					],
-					fields: [],
-					relations: [],
-				},
-			} satisfies SnapshotDiffWithHash;
-
+		it('should throw ForbiddenException for non-admin user', async () => {
 			vi.mocked(getSnapshot).mockResolvedValueOnce(testSnapshot);
 
 			const service = new SchemaService({ knex: db, accountability: { role: 'test', admin: false } });
@@ -126,48 +110,6 @@ describe('Services / Schema', () => {
 		});
 
 		it('should apply for admin user', async () => {
-			const testSnapshot = {
-				directus: '0.0.0',
-				version: 1,
-				vendor: 'postgres',
-				collections: [],
-				fields: [],
-				relations: [],
-			} satisfies Snapshot;
-
-			const snapshotDiffWithHash = {
-				hash: '813b3cdf7013310fafde7813b7d5e6bd4eb1e73f',
-				diff: {
-					collections: [
-						{
-							collection: 'test',
-							diff: [
-								{
-									kind: 'N',
-									rhs: {
-										collection: 'test',
-										meta: {
-											accountability: 'all',
-											collection: 'test',
-											group: null,
-											hidden: false,
-											icon: null,
-											item_duplication_fields: null,
-											note: null,
-											singleton: false,
-											translations: {},
-										},
-										schema: { name: 'test' },
-									},
-								},
-							],
-						},
-					],
-					fields: [],
-					relations: [],
-				},
-			} satisfies SnapshotDiffWithHash;
-
 			vi.mocked(getSnapshot).mockResolvedValueOnce(testSnapshot);
 
 			const service = new SchemaService({ knex: db, accountability: { role: 'admin', admin: true } });
@@ -179,145 +121,60 @@ describe('Services / Schema', () => {
 	});
 
 	describe('diff', () => {
-		it('should throw ForbiddenException for non-admin user', async () => {
-			const currentSnapshot = {
-				directus: '0.0.0',
-				version: 1,
-				vendor: 'postgres',
-				collections: [],
-				fields: [],
-				relations: [],
-			} satisfies Snapshot;
-
-			const snapshotToApply = {
-				directus: '0.0.0',
-				version: 1,
-				vendor: 'postgres',
-				collections: [
-					{
+		const snapshotToApply = {
+			directus: '0.0.0',
+			version: 1,
+			vendor: 'postgres',
+			collections: [
+				{
+					collection: 'test',
+					meta: {
+						accountability: 'all',
 						collection: 'test',
-						meta: {
-							accountability: 'all',
-							collection: 'test',
-							group: null,
-							hidden: false,
-							icon: null,
-							item_duplication_fields: null,
-							note: null,
-							singleton: false,
-							translations: {},
-						},
-						schema: {
-							name: 'test',
-						},
+						group: null,
+						hidden: false,
+						icon: null,
+						item_duplication_fields: null,
+						note: null,
+						singleton: false,
+						translations: {},
 					},
-				],
-				fields: [],
-				relations: [],
-			} satisfies Snapshot;
+					schema: {
+						name: 'test',
+					},
+				},
+			],
+			fields: [],
+			relations: [],
+		} satisfies Snapshot;
 
+		it('should throw ForbiddenException for non-admin user', async () => {
 			const service = new SchemaService({ knex: db, accountability: { role: 'test', admin: false } });
 
-			expect(service.diff(snapshotToApply, { currentSnapshot, force: true })).rejects.toThrowError(ForbiddenException);
+			expect(service.diff(snapshotToApply, { currentSnapshot: testSnapshot, force: true })).rejects.toThrowError(
+				ForbiddenException
+			);
 		});
 
 		it('should return diff for admin user', async () => {
-			const currentSnapshot = {
-				directus: '0.0.0',
-				version: 1,
-				vendor: 'postgres',
-				collections: [],
-				fields: [],
-				relations: [],
-			} satisfies Snapshot;
-
-			const snapshotToApply = {
-				directus: '0.0.0',
-				version: 1,
-				vendor: 'postgres',
-				collections: [
-					{
-						collection: 'test',
-						meta: {
-							accountability: 'all',
-							collection: 'test',
-							group: null,
-							hidden: false,
-							icon: null,
-							item_duplication_fields: null,
-							note: null,
-							singleton: false,
-							translations: {},
-						},
-						schema: {
-							name: 'test',
-						},
-					},
-				],
-				fields: [],
-				relations: [],
-			} satisfies Snapshot;
-
 			const service = new SchemaService({ knex: db, accountability: { role: 'admin', admin: true } });
 
-			expect(service.diff(snapshotToApply, { currentSnapshot, force: true })).resolves.toEqual({
-				collections: [
-					{
-						collection: 'test',
-						diff: [
-							{
-								kind: 'N',
-								rhs: {
-									collection: 'test',
-									meta: {
-										accountability: 'all',
-										collection: 'test',
-										group: null,
-										hidden: false,
-										icon: null,
-										item_duplication_fields: null,
-										note: null,
-										singleton: false,
-										translations: {},
-									},
-									schema: { name: 'test' },
-								},
-							},
-						],
-					},
-				],
+			expect(service.diff(snapshotToApply, { currentSnapshot: testSnapshot, force: true })).resolves.toEqual({
+				collections: [testCollectionDiff],
 				fields: [],
 				relations: [],
 			});
 		});
 
 		it('should return null for empty diff', async () => {
-			const currentSnapshot = {
-				directus: '0.0.0',
-				version: 1,
-				vendor: 'postgres',
-				collections: [],
-				fields: [],
-				relations: [],
-			} satisfies Snapshot;
-
 			const service = new SchemaService({ knex: db, accountability: { role: 'admin', admin: true } });
 
-			expect(service.diff(currentSnapshot, { currentSnapshot, force: true })).resolves.toBeNull();
+			expect(service.diff(testSnapshot, { currentSnapshot: testSnapshot, force: true })).resolves.toBeNull();
 		});
 	});
 
 	describe('getHashedSnapshot', () => {
 		it('should return snapshot for admin user', async () => {
-			const testSnapshot = {
-				directus: '0.0.0',
-				version: 1,
-				vendor: 'postgres',
-				collections: [],
-				fields: [],
-				relations: [],
-			} satisfies Snapshot;
-
 			const service = new SchemaService({ knex: db, accountability: { role: 'admin', admin: true } });
 
 			expect(service.getHashedSnapshot(testSnapshot)).toEqual(
