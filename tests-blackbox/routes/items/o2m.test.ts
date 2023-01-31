@@ -1573,5 +1573,67 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				expect(gqlResponseM2o.body.data[localCollectionStates].length).toEqual(2);
 			});
 		});
+
+		describe('Aggregation Tests', () => {
+			describe('retrieves relational count correctly', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// Setup
+					const count = 8;
+					const country = createCountry(pkType);
+					const states = [];
+
+					for (let i = 0; i < count; i++) {
+						states.push(createState(pkType));
+					}
+
+					await CreateItem(vendor, {
+						collection: localCollectionCountries,
+						item: {
+							...country,
+							states: {
+								create: states,
+								update: [],
+								delete: [],
+							},
+						},
+					});
+
+					// Action
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionCountries}`)
+						.query({
+							filter: {
+								name: { _eq: country.name },
+							},
+							fields: 'count(states)',
+						})
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+						query: {
+							[localCollectionCountries]: {
+								__args: {
+									filter: {
+										name: { _eq: country.name },
+									},
+								},
+								states_func: {
+									count: true,
+								},
+							},
+						},
+					});
+
+					// Assert
+					expect(response.statusCode).toBe(200);
+					expect(response.body.data[0]).toMatchObject({
+						states_count: count,
+					});
+
+					expect(gqlResponse.statusCode).toBe(200);
+					expect(gqlResponse.body.data[localCollectionCountries][0].states_func.count).toEqual(count);
+				});
+			});
+		});
 	});
 });

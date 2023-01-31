@@ -707,5 +707,63 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				});
 			});
 		});
+
+		describe('Aggregation Tests', () => {
+			describe('retrieves count correctly', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// Setup
+					const count = 10;
+					const artistName = 'aggregate-count';
+					const artists = [];
+
+					for (let i = 0; i < count; i++) {
+						const artist = createArtist(pkType);
+						artist.name = artistName;
+						artists.push(artist);
+					}
+					await CreateItem(vendor, { collection: localCollectionArtists, item: artists });
+
+					// Action
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionArtists}`)
+						.query({
+							aggregate: {
+								count: 'id',
+							},
+							filter: {
+								name: { _eq: artistName },
+							},
+						})
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					const queryKey = `${localCollectionArtists}_aggregated`;
+					const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+						query: {
+							[queryKey]: {
+								__args: {
+									filter: {
+										name: { _eq: artistName },
+									},
+								},
+								count: {
+									id: true,
+								},
+							},
+						},
+					});
+
+					// Assert
+					expect(response.statusCode).toBe(200);
+					expect(response.body.data[0]).toMatchObject({
+						count: {
+							id: count,
+						},
+					});
+
+					expect(gqlResponse.statusCode).toBe(200);
+					expect(gqlResponse.body.data[queryKey][0].count.id).toEqual(count);
+				});
+			});
+		});
 	});
 });
