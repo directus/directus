@@ -1,26 +1,29 @@
+### Builder
 ARG NODE_VERSION=18-alpine
-
 FROM node:${NODE_VERSION} as builder
 
-ARG TARGETPLATFORM
+ARG LIBVIPS_VERSION
+
+RUN apk --no-cache add \
+  # Deps required to compile some Node.js packages
+  python3 \
+  build-base \
+  # Use custom build of libvips (dev files required to build sharp)
+  "vips-dev=~${LIBVIPS_VERSION}"
+RUN ln -sf /usr/bin/python3 /usr/bin/python
 
 WORKDIR /directus
 COPY /dist .
-RUN \
-  if [ "$TARGETPLATFORM" = 'linux/arm64' ]; then \
-  apk --no-cache add \
-  python3 \
-  build-base \
-  && ln -sf /usr/bin/python3 /usr/bin/python \
-  ; fi
+
 RUN npm install --no-package-lock
 RUN rm *.tgz
 
-# Directus image
+### Directus Image
 FROM node:${NODE_VERSION}
 
 ARG VERSION
 ARG REPOSITORY=directus/directus
+ARG LIBVIPS_VERSION
 
 LABEL directus.version="${VERSION}"
 
@@ -32,13 +35,17 @@ ENV \
   EXTENSIONS_PATH="/directus/extensions" \
   STORAGE_LOCAL_ROOT="/directus/uploads"
 
-RUN \
-  # Upgrade system and install 'ssmtp' to be able to send mails
-  apk upgrade --no-cache && apk add --no-cache \
+# Upgrade system and install additionals packages
+RUN apk upgrade --no-cache && apk add --no-cache \
+  # To be able to send mails
   ssmtp \
-  # Add support for specifying the timezone of the container
-  # using the "TZ" environment variable.
+  # Support for specifying the timezone (via "TZ" env variable)
   tzdata \
+  # Custom libvips (C++ bindings for sharp)
+  # with heif and magick (PPM, FITS, JP2K) support
+  "vips-cpp=~${LIBVIPS_VERSION}" \
+  "vips-magick=~${LIBVIPS_VERSION}" \
+  "vips-heif=~${LIBVIPS_VERSION}" \
   # Create directory for Directus with corresponding ownership
   # (can be omitted on newer Docker versions since WORKDIR below will do the same)
   && mkdir /directus && chown node:node /directus
@@ -47,17 +54,16 @@ RUN \
 USER node
 WORKDIR /directus
 
-# disable npm update warnings
+# Disable npm update warnings
 RUN echo "update-notifier=false" >> ~/.npmrc
 
 COPY --from=builder --chown=node:node /directus .
 
-RUN \
-  # Create data directories
-  mkdir -p \
-    database \
-    extensions \
-    uploads
+# Create data directories
+RUN mkdir -p \
+  database \
+  extensions \
+  uploads
 
 # Expose data directories as volumes
 VOLUME \

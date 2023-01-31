@@ -26,6 +26,8 @@ jobs:
   build:
     name: Build Packages
     runs-on: ubuntu-latest
+    outputs:
+      libvips-version: ${{ steps.libvips.outputs.version }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -34,8 +36,11 @@ jobs:
         uses: ./.github/actions/prepare
 
       - name: Build
-        run: |
-          node docker/pack
+        run: node docker/pack
+
+      - name: Get libvips version
+        id: libvips
+        run: echo "version=$(node docker/get-libvips-version)" >> $GITHUB_OUTPUT
 
       - name: Cache build artifacts
         uses: actions/cache@v3
@@ -133,6 +138,9 @@ jobs:
           file: ./docker/Dockerfile
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            VERSION=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.version'] }}
+            LIBVIPS_VERSION=${{ needs.build.outputs.libvips-version }}
           platforms: linux/amd64,linux/arm64
           push: true
           cache-from: type=local,src=/tmp/.buildx-cache
