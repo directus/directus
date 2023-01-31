@@ -772,23 +772,23 @@ importers:
       '@directus/storage': workspace:*
       '@directus/tsconfig': 0.0.6
       '@directus/utils': workspace:*
-      '@ngneat/falso': 6.3.2
-      '@vitest/coverage-c8': 0.26.2
+      '@ngneat/falso': 6.4.0
+      '@vitest/coverage-c8': 0.28.3
       p-queue: 7.3.0
-      typescript: 4.9.4
-      undici: 5.14.0
-      vitest: 0.26.2
+      typescript: 4.9.5
+      undici: 5.16.0
+      vitest: 0.28.3
     dependencies:
       '@directus/storage': link:../storage
       '@directus/utils': link:../utils
       p-queue: 7.3.0
-      undici: 5.14.0
+      undici: 5.16.0
     devDependencies:
       '@directus/tsconfig': 0.0.6
-      '@ngneat/falso': 6.3.2
-      '@vitest/coverage-c8': 0.26.2
-      typescript: 4.9.4
-      vitest: 0.26.2
+      '@ngneat/falso': 6.4.0
+      '@vitest/coverage-c8': 0.28.3
+      typescript: 4.9.5
+      vitest: 0.28.3
 
   packages/storage-driver-gcs:
     specifiers:
@@ -21111,8 +21111,8 @@ packages:
     resolution: {integrity: sha512-+A5Sja4HP1M08MaXya7p5LvjuM7K6q/2EaC0+iovj/wOcMsTzMvDFbasi/oSapiwOlt252IqsKqPjCl7huKS0A==}
     dev: true
 
-  /undici/5.14.0:
-    resolution: {integrity: sha512-yJlHYw6yXPPsuOH0x2Ib1Km61vu4hLiRRQoafs+WUgX1vO64vgnxiCEN9dpIrhZyHFsai3F0AEj4P9zy19enEQ==}
+  /undici/5.16.0:
+    resolution: {integrity: sha512-KWBOXNv6VX+oJQhchXieUznEmnJMqgXMbs0xxH2t8q/FUAWSJvOSr/rMaZKnX5RIVq7JDn0JbP4BOnKG2SGXLQ==}
     engines: {node: '>=12.18'}
     dependencies:
       busboy: 1.6.0
