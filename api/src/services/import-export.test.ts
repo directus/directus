@@ -1,6 +1,7 @@
 import { parse } from 'json2csv';
 import knex, { Knex } from 'knex';
 import { getTracker, MockClient, Tracker } from 'knex-mock-client';
+import { EOL } from 'node:os';
 import { Readable } from 'stream';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, MockedFunction, vi } from 'vitest';
 import { ExportService, ImportService } from '.';
@@ -143,7 +144,7 @@ describe('Integration Tests', () => {
 
 				const service = new ExportService({ knex: db, schema: { collections: {}, relations: [] } });
 
-				expect(service.transform(input, 'csv')).toBe('"key"\r\n"value"');
+				expect(service.transform(input, 'csv')).toBe(`"key"${EOL}"value"`);
 			});
 
 			it('should return csv string without header', () => {
