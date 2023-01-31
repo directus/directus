@@ -22,3 +22,14 @@ describe('max limit', () => {
 		expect(() => validateQuery({ limit: 101 })).toThrowError('limit');
 	});
 });
+
+describe('export', () => {
+	test.each(['csv', 'json', 'xml', 'yaml'])('should accept format %i', (format) => {
+		expect(() => validateQuery({ export: format } as any)).not.toThrowError();
+	});
+
+	test('should error with invalid-format', () => {
+		expect(() => validateQuery({ export: 'invalid-format' } as any)).toThrowError('"export" must be one of');
+	});
+});
+

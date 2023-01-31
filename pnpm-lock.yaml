@@ -6,6 +6,7 @@ importers:
     specifiers:
       '@directus/shared': workspace:*
       '@types/jest': 29.2.4
+      '@types/js-yaml': 4.0.5
       '@types/lodash': 4.14.191
       '@types/seedrandom': 3.0.2
       '@types/supertest': 2.0.12
@@ -21,6 +22,7 @@ importers:
       globby: 11.1.0
       jest: 29.3.1
       jest-environment-node: 29.3.1
+      js-yaml: 4.1.0
       json-to-graphql-query: 2.2.4
       knex: 2.4.1
       lint-staged: 13.1.0
@@ -36,6 +38,7 @@ importers:
     devDependencies:
       '@directus/shared': link:packages/shared
       '@types/jest': 29.2.4
+      '@types/js-yaml': 4.0.5
       '@types/lodash': 4.14.191
       '@types/seedrandom': 3.0.2
       '@types/supertest': 2.0.12
@@ -51,6 +54,7 @@ importers:
       globby: 11.1.0
       jest: 29.3.1
       jest-environment-node: 29.3.1
+      js-yaml: 4.1.0
       json-to-graphql-query: 2.2.4
       knex: 2.4.1
       lint-staged: 13.1.0
@@ -80,6 +84,7 @@ importers:
       '@directus/storage-driver-gcs': workspace:*
       '@directus/storage-driver-local': workspace:*
       '@directus/storage-driver-s3': workspace:*
+      '@directus/utils': workspace:*
       '@godaddy/terminus': 4.11.2
       '@keyv/redis': 2.5.4
       '@ngneat/falso': 6.3.2
@@ -164,7 +169,7 @@ importers:
       keyv-memcache: 1.3.3
       knex: 2.4.1
       knex-mock-client: 1.11.0
-      knex-schema-inspector: 3.0.0
+      knex-schema-inspector: 3.0.1
       ldapjs: 2.3.3
       liquidjs: 10.3.3
       lodash: 4.17.21
@@ -226,6 +231,7 @@ importers:
       '@directus/storage-driver-gcs': link:../packages/storage-driver-gcs
       '@directus/storage-driver-local': link:../packages/storage-driver-local
       '@directus/storage-driver-s3': link:../packages/storage-driver-s3
+      '@directus/utils': link:../packages/utils
       '@godaddy/terminus': 4.11.2
       '@rollup/plugin-alias': 4.0.2_rollup@3.7.5
       '@rollup/plugin-virtual': 3.0.1_rollup@3.7.5
@@ -268,7 +274,7 @@ importers:
       jsonwebtoken: 9.0.0
       keyv: 4.5.2
       knex: 2.4.1_i7frrkiwsbjh7pywr5yuup4dni
-      knex-schema-inspector: 3.0.0
+      knex-schema-inspector: 3.0.1
       ldapjs: 2.3.3
       liquidjs: 10.3.3
       lodash: 4.17.21
@@ -648,11 +654,11 @@ importers:
   packages/schema:
     specifiers:
       knex: 2.4.1
-      knex-schema-inspector: 3.0.0
+      knex-schema-inspector: 3.0.1
       typescript: 4.9.4
     dependencies:
       knex: 2.4.1
-      knex-schema-inspector: 3.0.0
+      knex-schema-inspector: 3.0.1
     devDependencies:
       typescript: 4.9.4
 
@@ -672,7 +678,7 @@ importers:
       geojson: 0.5.0
       joi: 17.7.0
       knex: 2.4.1
-      knex-schema-inspector: 3.0.0
+      knex-schema-inspector: 3.0.1
       lodash: 4.17.21
       micromustache: 8.0.3
       nanoid: 4.0.0
@@ -692,7 +698,7 @@ importers:
       geojson: 0.5.0
       joi: 17.7.0
       knex: 2.4.1
-      knex-schema-inspector: 3.0.0
+      knex-schema-inspector: 3.0.1
       lodash: 4.17.21
       micromustache: 8.0.3
       nanoid: 4.0.0
@@ -9040,7 +9046,7 @@ packages:
       mississippi: 3.0.0
       mkdirp: 0.5.6
       move-concurrently: 1.0.1
-      promise-inflight: 1.0.1
+      promise-inflight: 1.0.1_bluebird@3.7.2
       rimraf: 2.7.1
       ssri: 6.0.2
       unique-filename: 1.1.1
@@ -9064,7 +9070,7 @@ packages:
       minipass-pipeline: 1.2.4
       mkdirp: 1.0.4
       p-map: 4.0.0
-      promise-inflight: 1.0.1
+      promise-inflight: 1.0.1_bluebird@3.7.2
       rimraf: 3.0.2
       ssri: 8.0.1
       tar: 6.1.13
@@ -14284,8 +14290,8 @@ packages:
       lodash.clonedeep: 4.5.0
     dev: true
 
-  /knex-schema-inspector/3.0.0:
-    resolution: {integrity: sha512-J3Aeh4kIZD2sYUjnpak+sdVtegGVkkhCF5/VSziocSZpseW4MwTcnxHbttsaT3tA85INuPxxUBxFgyCm9tMZDQ==}
+  /knex-schema-inspector/3.0.1:
+    resolution: {integrity: sha512-ofglN/HoHYhNxQJbuuKEj0vtVsBpEVlbvfoFd9lPn1ABzJHdwZmKLquCYbVLTXZIN0O6y6DDEuN4EqBKMhH+xQ==}
     dependencies:
       lodash.flatten: 4.4.0
       lodash.isnil: 4.0.0
@@ -17120,13 +17126,15 @@ packages:
     engines: {node: '>=0.4.0'}
     dev: true
 
-  /promise-inflight/1.0.1:
+  /promise-inflight/1.0.1_bluebird@3.7.2:
     resolution: {integrity: sha512-6zWPyEOFaQBJYcGMHBKTKJ3u6TBsnMFOIZSa6ce1e/ZrrsOlnHRHbabMjLiBYKp+n44X9eUI6VUPaukCXHuG4g==}
     peerDependencies:
       bluebird: '*'
     peerDependenciesMeta:
       bluebird:
         optional: true
+    dependencies:
+      bluebird: 3.7.2
 
   /promise-retry/2.0.1:
     resolution: {integrity: sha512-y+WKFlBR8BGXnsNlIHFGPZmyDf3DFMoLhaflAnyZgV6rG6xu+JwesTo2Q9R6XwYmtmwAFCkAk3e35jEdoeh/3g==}
