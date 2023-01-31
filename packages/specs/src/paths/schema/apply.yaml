@@ -1,8 +1,8 @@
 post:
   summary: Apply Schema Difference
   description:
-    Update the schema by passing the differences previously retrieved via diff endpoint as JSON request body. This
-    endpoint is only available to admin users.
+    Update the instance's schema by passing the diff previously retrieved via `/schema/diff` endpoint in the request
+    body. This endpoint is only available to admin users.
   operationId: schemaApply
   requestBody:
     required: true

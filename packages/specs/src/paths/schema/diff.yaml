@@ -1,8 +1,8 @@
 post:
   summary: Retrieve Schema Difference
   description:
-    Compare the current schema against the schema in JSON request body or a JSON/YAML file and retrieve the difference.
-    This endpoint is only available to admin users.
+    Compare the current instance's schema against the schema snapshot in JSON request body or a JSON/YAML file and
+    retrieve the difference. This endpoint is only available to admin users.
   operationId: schemaDiff
   parameters:
     - name: force
