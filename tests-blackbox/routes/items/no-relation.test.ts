@@ -4,12 +4,13 @@ import vendors from '@common/get-dbs-to-test';
 import { v4 as uuid } from 'uuid';
 import { CreateItem } from '@common/functions';
 import * as common from '@common/index';
-import { collectionArtists } from './no-relations.seed';
+import { collectionArtists } from './no-relation.seed';
 import { requestGraphQL } from '@common/index';
 
 type Artist = {
 	id?: number | string;
 	name: string;
+	company?: string;
 };
 
 function createArtist(pkType: common.PrimaryKeyType): Artist {
@@ -600,6 +601,110 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				for (const log of response.body.data) {
 					expect(log.value).toBe('1');
 				}
+			});
+		});
+
+		describe('Logical Filters', () => {
+			describe('retrieves artists with name equality _AND company equality', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// Setup
+					const count = 6;
+					const artistName = 'logical-filter-and';
+					const artistCompany = 'and-equality';
+					const artists = [];
+
+					for (let i = 0; i < count; i++) {
+						const artist = createArtist(pkType);
+						artist.name = artistName;
+						artist.company = artistCompany;
+						artists.push(artist);
+					}
+					await CreateItem(vendor, { collection: localCollectionArtists, item: artists });
+
+					// Action
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionArtists}`)
+						.query({
+							filter: JSON.stringify({
+								_and: [{ name: { _eq: artistName } }, { company: { _eq: artistCompany } }],
+							}),
+						})
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+						query: {
+							[localCollectionArtists]: {
+								__args: {
+									filter: {
+										_and: [{ name: { _eq: artistName } }, { company: { _eq: artistCompany } }],
+									},
+								},
+								id: true,
+							},
+						},
+					});
+
+					// Assert
+					expect(response.statusCode).toBe(200);
+					expect(response.body.data.length).toBe(count);
+
+					expect(gqlResponse.statusCode).toBe(200);
+					expect(gqlResponse.body.data[localCollectionArtists].length).toEqual(count);
+				});
+			});
+
+			describe('retrieves artists with name equality _OR company equality', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// Setup
+					const count = 5;
+					const artistName = 'logical-filter-or';
+					const artistCompany = 'or-equality';
+					const artists1 = [];
+					const artists2 = [];
+
+					for (let i = 0; i < count; i++) {
+						const artist = createArtist(pkType);
+						artist.name = artistName;
+						artists1.push(artist);
+					}
+					await CreateItem(vendor, { collection: localCollectionArtists, item: artists1 });
+					for (let i = 0; i < count; i++) {
+						const artist = createArtist(pkType);
+						artist.company = artistCompany;
+						artists2.push(artist);
+					}
+					await CreateItem(vendor, { collection: localCollectionArtists, item: artists2 });
+
+					// Action
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionArtists}`)
+						.query({
+							filter: JSON.stringify({
+								_or: [{ name: { _eq: artistName } }, { company: { _eq: artistCompany } }],
+							}),
+						})
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+						query: {
+							[localCollectionArtists]: {
+								__args: {
+									filter: {
+										_or: [{ name: { _eq: artistName } }, { company: { _eq: artistCompany } }],
+									},
+								},
+								id: true,
+							},
+						},
+					});
+
+					// Assert
+					expect(response.statusCode).toBe(200);
+					expect(response.body.data.length).toBe(count * 2);
+
+					expect(gqlResponse.statusCode).toBe(200);
+					expect(gqlResponse.body.data[localCollectionArtists].length).toEqual(count * 2);
+				});
 			});
 		});
 	});
