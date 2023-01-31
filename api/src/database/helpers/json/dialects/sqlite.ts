@@ -78,6 +78,9 @@ export class JsonHelperSQLite extends JsonHelperDefault {
 			.split('[*]')
 			.flatMap((p) => p.split('.*'))
 			.map((q) => (q.startsWith('$') ? q : '$' + q));
+		if (arrayParts.length > 1 && arrayParts[arrayParts.length - 1] === '$') {
+			arrayParts.pop();
+		}
 		const aliases = arrayParts.map(() => generateAlias()),
 			withAlias = generateAlias();
 		const primaryKey = this.schema.collections[table].primary;
@@ -92,15 +95,18 @@ export class JsonHelperSQLite extends JsonHelperDefault {
 		const conditions = [];
 		if (node.query?.filter) {
 			for (const [jsonPath, value] of Object.entries(node.query?.filter)) {
-				const alias = generateAlias();
+				let alias = aliases[0];
+				if (arrayParts.length > 1) {
+					fromList.push(
+						this.knex.raw('json_each(??.value, ?) as ??', [
+							aliases[aliases.length - 2],
+							arrayParts[arrayParts.length - 1],
+							alias,
+						])
+					);
+					alias = generateAlias();
+				}
 				subQuery.select(this.knex.raw('json_group_array(??.value) as ??', [alias, aliases[aliases.length - 1]]));
-				fromList.push(
-					this.knex.raw('json_each(??.value, ?) as ??', [
-						aliases[aliases.length - 2],
-						arrayParts[arrayParts.length - 1],
-						alias,
-					])
-				);
 				const { operator: filterOperator, value: filterValue } = getOperation(jsonPath, value);
 				const alias2 = generateAlias();
 				subQuery.select(this.knex.raw('json_extract(??.value, ?) as ??', [alias, jsonPath, alias2]));
