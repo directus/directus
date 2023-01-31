@@ -1,6 +1,7 @@
 import { knex, Knex } from 'knex';
 import path from 'path';
 import { promisify } from 'util';
+import { Driver } from '../../types';
 
 export type Credentials = {
 	filename?: string;
@@ -12,10 +13,7 @@ export type Credentials = {
 	ssl?: boolean;
 	options__encrypt?: boolean;
 };
-export default function createDBConnection(
-	client: 'sqlite3' | 'mysql' | 'pg' | 'oracledb' | 'mssql' | 'cockroachdb',
-	credentials: Credentials
-): Knex<any, unknown[]> {
+export default function createDBConnection(client: Driver, credentials: Credentials): Knex<any, unknown[]> {
 	let connection: Knex.Config['connection'] = {};
 
 	if (client === 'sqlite3') {

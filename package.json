@@ -27,6 +27,7 @@
 	"devDependencies": {
 		"@directus/shared": "workspace:*",
 		"@types/jest": "29.2.4",
+		"@types/js-yaml": "4.0.5",
 		"@types/lodash": "4.14.191",
 		"@types/seedrandom": "3.0.2",
 		"@types/supertest": "2.0.12",
@@ -42,6 +43,7 @@
 		"globby": "11.1.0",
 		"jest": "29.3.1",
 		"jest-environment-node": "29.3.1",
+		"js-yaml": "4.1.0",
 		"json-to-graphql-query": "2.2.4",
 		"knex": "2.4.1",
 		"lint-staged": "13.1.0",
