@@ -637,7 +637,7 @@ password_reset_sent: Si vous avez un compte, nous vous avons envoyé un lien sé
 password_reset_successful: Mot de passe réinitialisé avec succès
 back: Retour
 filter: Filtre
-edit_image: Éditer l'image
+edit_image: Modifier l'image
 editing_image: Modification de l'image
 square: Carré
 free: Libre
@@ -760,7 +760,7 @@ no_visible_fields_copy: Ce formulaire n'a pas de champs visibles.
 clear_filters: Réinitialiser les filtres
 saves_automatically: Sauvegardé automatiquement
 role: Rôle
-edit_role: Editer le rôle
+edit_role: Modifier le rôle
 rule: Règle
 user: Utilisateur
 no_presets: Aucun préréglage
@@ -817,7 +817,7 @@ flow_tracking_null: Ne rien enregistrer
 start_flow: Démarrer le Flux
 stop_flow: Arrêt du Flux
 create_operation: Créer une Opération
-edit_operation: Modifier l'Opération
+edit_operation: Modifier l'opération
 code: Code
 operation_options: Les Options d'Opération
 operation_name: Nom de l'Opération...
@@ -1931,7 +1931,7 @@ layouts:
     image_fit: Ajustement de l'image de la carte
     crop: Rogner
     advanced: Avancé
-    edit_group: Éditer le Groupe
+    edit_group: Modifier le groupe
     delete_group: Supprimer le Groupe
     add_group: Ajouter un Groupe
     add_group_placeholder: Entrez le nom du nouveau groupe...
@@ -2040,7 +2040,7 @@ triggers:
     response_body_last: Données de la Dernière Opération
   event:
     name: Crochet d'Événement
-    description: Déclencheurs sur la plate-forme ou sur les données d'événements
+    description: Déclencheurs en provenance de la plate-forme ou des données d'événements
     action: 'Action (Non Bloquante)'
     filter: 'Filtre (Bloquant)'
   webhook:
@@ -2058,11 +2058,11 @@ triggers:
     cron: Intervalle
   manual:
     name: Manuel
-    description: Déclenchements lors d'une exécution manuelle dans la ou les collections sélectionnées
+    description: Déclenchement manuel grâce à un bouton dans les collections sélectionnées
     collection_and_item: Pages des collections et des éléments
     collection_only: Page de la Collection Uniquement
     item_only: Page de l'élément uniquement
-    collection_page: Nom de la Collection
+    collection_page: Page de la collection
     require_selection: Sélection obligatoire
 a_flow_uuid: Choisir un flux à lancer...
 any_string_or_json: Toute chaîne de caractères ou JSON...
@@ -2106,13 +2106,13 @@ operations:
     message: Message
     message_placeholder: Entrez un message à afficher dans la console...
   mail:
-    name: Envoyer l'e-mail
+    name: Envoyer un e-mail
     description: Envoyer un email à une ou plusieurs personnes
     to: À
     to_placeholder: Ajoutez des adresses e-mail et appuyez sur entrée...
     body: Corps du mail
   notification:
-    name: Envoyer la Notification
+    name: Envoyer une notification
     description: Envoyer une notification dans l'application à un ou plusieurs utilisateurs
     recipient: Utilisateur
     recipient_placeholder: Ajouter un UUID utilisateur et appuyez sur entrée...
@@ -2141,3 +2141,9 @@ operations:
     flows: Flux
     flow: Flux
     data: Données
+    iteration_mode: Mode d'itération
+    iteration_mode_note: Méthode pour itérer sur des tableaux.
+    serial: En série
+    parallel: En parallèle
+    batch: Par lots
+    batch_size: Taille de chaque lot
