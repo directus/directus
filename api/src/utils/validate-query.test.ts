@@ -32,4 +32,3 @@ describe('export', () => {
 		expect(() => validateQuery({ export: 'invalid-format' } as any)).toThrowError('"export" must be one of');
 	});
 });
-
