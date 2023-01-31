@@ -35,7 +35,7 @@ router.post(
 
 const schemaMultipartHandler: RequestHandler = (req, res, next) => {
 	if (req.is('application/json')) {
-		if (Object.keys(req.body).length === 0) throw new InvalidPayloadException(`No data were included in the body`);
+		if (Object.keys(req.body).length === 0) throw new InvalidPayloadException(`No data was included in the body`);
 		res.locals.uploadedSnapshot = req.body;
 		return next();
 	}
