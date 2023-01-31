@@ -124,7 +124,7 @@ importers:
       argon2: 0.30.2
       async: 3.2.4
       async-mutex: 0.4.0
-      axios: 1.2.1
+      axios: 1.2.6
       busboy: 1.6.0
       bytes: 3.1.2
       camelcase: 6.3.0
@@ -232,7 +232,7 @@ importers:
       argon2: 0.30.2
       async: 3.2.4
       async-mutex: 0.4.0
-      axios: 1.2.1
+      axios: 1.2.6
       busboy: 1.6.0
       bytes: 3.1.2
       camelcase: 6.3.0
@@ -8445,6 +8445,16 @@ packages:
       proxy-from-env: 1.1.0
     transitivePeerDependencies:
       - debug
+
+  /axios/1.2.6:
+    resolution: {integrity: sha512-rC/7F08XxZwjMV4iuWv+JpD3E0Ksqg9nac4IIg6RwNuF0JTeWoCo/mBNG54+tNhhI11G3/VDRbdDQTs9hGp4pQ==}
+    dependencies:
+      follow-redirects: 1.15.2
+      form-data: 4.0.0
+      proxy-from-env: 1.1.0
+    transitivePeerDependencies:
+      - debug
+    dev: false
 
   /babel-core/7.0.0-bridge.0_@babel+core@7.20.5:
     resolution: {integrity: sha512-poPX9mZH/5CSanm50Q+1toVci6pv5KSRv/5TWCwtzQS5XEwn40BcCrgIeMFWP9CKKIniKXNxoIOnOq4VVlGXhg==}
