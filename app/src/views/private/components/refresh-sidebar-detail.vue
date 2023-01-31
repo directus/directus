@@ -46,6 +46,14 @@ export default defineComponent({
 			if (activeInterval.value) clearInterval(activeInterval.value);
 		});
 
+		idleTracker.on('idle', () => {
+			if (activeInterval.value) clearInterval(activeInterval.value);
+		});
+
+		idleTracker.on('active', () => {
+			if (interval.value) setRefreshInterval(interval.value);
+		});
+
 		idleTracker.on('show', () => {
 			if (interval.value) setRefreshInterval(interval.value);
 		});
