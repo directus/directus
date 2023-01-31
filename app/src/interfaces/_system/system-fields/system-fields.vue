@@ -21,20 +21,22 @@
 			</draggable>
 		</v-list>
 		<v-menu placement="bottom-start" show-arrow>
-			<button class="selectAllBtn" @click="selectAll">
-				<v-icon name="check_box" />
-				{{ t('select_all') }}
-			</button>
-			<button class="selectAllBtn" @click="deselectAll">
-				<v-icon name="check_box_outline_blank" />
-				{{ t('deselect_all') }}
-			</button>
 			<template #activator="{ toggle }">
 				<button class="toggle" @click="toggle">
 					{{ t('add_field') }}
 					<v-icon name="expand_more" />
 				</button>
 			</template>
+			<v-list>
+				<v-list-item clickable @click="selectAll">
+					<v-list-item-icon>
+						<v-icon name="check_box" />
+					</v-list-item-icon>
+					<v-list-item-content>
+						{{ t('select_all') }}
+					</v-list-item-content>
+				</v-list-item>
+			</v-list>
 			<v-field-list :disabled-fields="value" :collection="collectionName" @select-field="addField" />
 		</v-menu>
 	</template>
@@ -108,12 +110,16 @@ const fields = computed<(Field & { key: string })[]>({
 const { t } = useI18n();
 
 function selectAll() {
-	const newArray = fieldsStore.getFieldsForCollection(props.collectionName).map((field) => field.field);
-	emit('input', newArray);
-}
+	const newArray = props.value ?? [];
 
-function deselectAll() {
-	emit('input', null);
+	const fullArray = fieldsStore.getFieldsForCollection(props.collectionName).map((field) => field.field);
+
+	fullArray.map((field) => {
+		if (props.value?.includes(field) === false) {
+			newArray.push(field);
+		}
+	});
+	emit('input', newArray);
 }
 
 function addField(fieldKey: string) {
@@ -141,24 +147,6 @@ function removeField(fieldKey: string) {
 		position: absolute;
 	}
 }
-
-.selectAllBtn {
-	color: var(--primary);
-	font-weight: 500;
-	margin-left: 10px;
-	margin-top: 10px;
-}
-
-.selectAllBtn.v-icon {
-	color: var(--primary);
-	margin: 0 2px;
-}
-
-.selectAllBtn:hover,
-.selectAllBtn.v-icon:hover {
-	color: var(--primary-dark);
-}
-
 .v-notice.no-fields {
 	background-color: var(--background-page);
 	border: var(--border-width) solid var(--v-list-item-border-color);
