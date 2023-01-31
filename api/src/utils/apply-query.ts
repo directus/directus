@@ -539,7 +539,6 @@ export function applyFilter(
 			// Knex supports "raw" in the columnName parameter, but isn't typed as such. Too bad..
 			// See https://github.com/knex/knex/issues/4518 @TODO remove as any once knex is updated
 
-			// These operators don't rely on a value, and can thus be used without one (eg `?filter[field][_null]`)
 			const defaultValue = compareValue === false ? false : true;
 			if ((operator === '_null' && defaultValue) || (operator === '_nnull' && !defaultValue)) {
 				return dbQuery[logical].whereNull(selectionRaw);
