@@ -765,5 +765,56 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				});
 			});
 		});
+
+		describe('Offset Tests', () => {
+			describe('retrieves offset correctly', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// Setup
+					const count = 7;
+					const offset = 3;
+					const artistName = 'offset-test';
+					const artists = [];
+
+					for (let i = 0; i < count; i++) {
+						const artist = createArtist(pkType);
+						artist.name = artistName;
+						artists.push(artist);
+					}
+					await CreateItem(vendor, { collection: localCollectionArtists, item: artists });
+
+					// Action
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionArtists}`)
+						.query({
+							filter: JSON.stringify({
+								name: { _eq: artistName },
+							}),
+							offset,
+						})
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+						query: {
+							[localCollectionArtists]: {
+								__args: {
+									filter: {
+										name: { _eq: artistName },
+									},
+									offset,
+								},
+								id: true,
+							},
+						},
+					});
+
+					// Assert
+					expect(response.statusCode).toBe(200);
+					expect(response.body.data.length).toBe(count - offset);
+
+					expect(gqlResponse.statusCode).toBe(200);
+					expect(gqlResponse.body.data[localCollectionArtists].length).toEqual(count - offset);
+				});
+			});
+		});
 	});
 });
