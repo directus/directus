@@ -19,8 +19,8 @@ dist
 .e2e-containers.json
 coverage
 TODO
-schema.yaml
-schema.json
+/schema.yaml
+/schema.json
 .*.swp
 debug
 debug.ts
