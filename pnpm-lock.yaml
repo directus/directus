@@ -664,40 +664,40 @@ importers:
 
   packages/shared:
     specifiers:
-      '@types/express': 4.17.15
-      '@types/fs-extra': 9.0.13
+      '@types/express': 4.17.16
+      '@types/fs-extra': 11.0.1
       '@types/geojson': 7946.0.10
       '@types/lodash': 4.14.191
       '@types/tmp': 0.2.3
-      '@vue/test-utils': 2.2.6
-      axios: 1.2.1
+      '@vue/test-utils': 2.2.8
+      axios: 1.3.0
       concurrently: 7.6.0
       date-fns: 2.29.3
       express: 4.18.2
       fs-extra: 11.1.0
       geojson: 0.5.0
       joi: 17.7.0
-      knex: 2.4.1
+      knex: 2.4.2
       knex-schema-inspector: 3.0.1
       lodash: 4.17.21
       micromustache: 8.0.3
       nanoid: 4.0.0
       pino: 8.8.0
       tmp: 0.2.1
-      typescript: 4.9.4
-      vitest: 0.26.2
+      typescript: 4.9.5
+      vitest: 0.28.3
       vue: 3.2.45
       vue-i18n: 9.2.2
       vue-router: 4.1.6
       zod: ^3.20.2
     dependencies:
-      axios: 1.2.1
+      axios: 1.3.0
       date-fns: 2.29.3
       express: 4.18.2
       fs-extra: 11.1.0
       geojson: 0.5.0
       joi: 17.7.0
-      knex: 2.4.1
+      knex: 2.4.2
       knex-schema-inspector: 3.0.1
       lodash: 4.17.21
       micromustache: 8.0.3
@@ -708,16 +708,16 @@ importers:
       vue-router: 4.1.6_vue@3.2.45
       zod: 3.20.2
     devDependencies:
-      '@types/express': 4.17.15
-      '@types/fs-extra': 9.0.13
+      '@types/express': 4.17.16
+      '@types/fs-extra': 11.0.1
       '@types/geojson': 7946.0.10
       '@types/lodash': 4.14.191
       '@types/tmp': 0.2.3
-      '@vue/test-utils': 2.2.6_vue@3.2.45
+      '@vue/test-utils': 2.2.8_vue@3.2.45
       concurrently: 7.6.0
       tmp: 0.2.1
-      typescript: 4.9.4
-      vitest: 0.26.2
+      typescript: 4.9.5
+      vitest: 0.28.3
 
   packages/specs:
     specifiers:
@@ -8589,15 +8589,6 @@ packages:
       '@types/range-parser': 1.2.4
     dev: true
 
-  /@types/express/4.17.15:
-    resolution: {integrity: sha512-Yv0k4bXGOH+8a+7bELd2PqHQsuiANB+A8a4gnQrkRWzrkKlb6KHaVvyXhqs04sVW/OWlbPyYxRgYlIXLfrufMQ==}
-    dependencies:
-      '@types/body-parser': 1.19.2
-      '@types/express-serve-static-core': 4.17.33
-      '@types/qs': 6.9.7
-      '@types/serve-static': 1.15.0
-    dev: true
-
   /@types/express/4.17.16:
     resolution: {integrity: sha512-LkKpqRZ7zqXJuvoELakaFYuETHjZkSol8EV6cNnyishutDBCCdv6+dsKPbKkCcIk57qRphOLY5sEgClw1bO3gA==}
     dependencies:
@@ -9378,6 +9369,16 @@ packages:
     peerDependencies:
       vue: ^3.0.1
     dependencies:
+      vue: 3.2.45
+    dev: true
+
+  /@vue/test-utils/2.2.8_vue@3.2.45:
+    resolution: {integrity: sha512-/R8DKzp41Ip/RqTt1jvOVi5gxby3EwNWiYHNYsG9FAjEvt0gzDvYN55lCKzX7IdnI5zVIOo5tHtts0SLT+JrWw==}
+    peerDependencies:
+      '@vue/compiler-dom': ^3.0.1
+      vue: ^3.0.1
+    dependencies:
+      js-beautify: 1.14.6
       vue: 3.2.45
     dev: true
 
@@ -10221,6 +10222,7 @@ packages:
       proxy-from-env: 1.1.0
     transitivePeerDependencies:
       - debug
+    dev: true
 
   /axios/1.3.0:
     resolution: {integrity: sha512-oCye5nHhTypzkdLIvF9SaHfr8UAquqCn1KY3j8vsrjeol8yohAdGxIpRPbF1bOLsx33HOAatdfMX1yzsj2cHwg==}
@@ -10644,7 +10646,6 @@ packages:
     resolution: {integrity: sha512-XnAIvQ8eM+kC6aULx6wuQiwVsnzsi9d3WxzV3FpWTGA19F621kwdbsAcFKXgKUHZWsy+mY6iL1sHTxWEFCytDA==}
     dependencies:
       balanced-match: 1.0.2
-    dev: false
 
   /braces/2.3.2:
     resolution: {integrity: sha512-aNdbnj9P8PjdXU4ybaWLK2IF3jc/EoDYbC7AazW6to3TRsfXxscC9UXOB5iDiEQrkyIbWp2SLQda4+QAa7nc3w==}
@@ -11460,6 +11461,13 @@ packages:
       supports-color: 8.1.1
       tree-kill: 1.2.2
       yargs: 17.6.2
+    dev: true
+
+  /config-chain/1.1.13:
+    resolution: {integrity: sha512-qj+f8APARXHrM0hraqXYb2/bOVSV4PvJQlNZ/DVj0QrmNM2q2euizkeuVckQ57J+W0mRH6Hvi+k50M4Jul2VRQ==}
+    dependencies:
+      ini: 1.3.8
+      proto-list: 1.2.4
     dev: true
 
   /connection-parse/0.0.7:
@@ -12465,6 +12473,16 @@ packages:
     resolution: {integrity: sha512-nagl3RYrbNv6kQkeJIpt6NJZy8twLB/2vtz6yN9Z4vRKHN4/QZJIEbqohALSgwKdnksuY3k5Addp5lg8sVoVcQ==}
     dependencies:
       safe-buffer: 5.2.1
+
+  /editorconfig/0.15.3:
+    resolution: {integrity: sha512-M9wIMFx96vq0R4F+gRpY3o2exzb8hEj/n9S8unZtHSvYjibBp/iMufSzvmOcV/laG0ZtuTVGtiJggPOSW2r93g==}
+    hasBin: true
+    dependencies:
+      commander: 2.20.3
+      lru-cache: 4.1.5
+      semver: 5.7.1
+      sigmund: 1.0.1
+    dev: true
 
   /ee-first/1.1.1:
     resolution: {integrity: sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==}
@@ -13992,7 +14010,6 @@ packages:
       inherits: 2.0.4
       minimatch: 5.1.2
       once: 1.4.0
-    dev: false
 
   /global/4.4.0:
     resolution: {integrity: sha512-wv/LAoHdRE3BeTGz53FAamhGlPLhlssK45usmGFThIi4XqnBmjKQ16u+RNbP7WvigRZDxUsM0J3gcQ5yicaL0w==}
@@ -14671,7 +14688,6 @@ packages:
 
   /ini/1.3.8:
     resolution: {integrity: sha512-JV/yugV2uzW5iMRSiZAyDtQd+nxtUnjeLt0acNdw98kKLrvuRVyB80tsREOE7yvGVgalhZ6RNXCmEHkUKBKxew==}
-    dev: false
 
   /inline-style-parser/0.1.1:
     resolution: {integrity: sha512-7NXolsK4CAS5+xvdj5OMMbI962hU/wvwoxk+LWR9Ek9bVtyuuYScDN6eS0rUm6TxApFpw7CX1o4uJzcd4AyD3Q==}
@@ -15802,6 +15818,17 @@ packages:
     engines: {node: '>=10'}
     dev: false
 
+  /js-beautify/1.14.6:
+    resolution: {integrity: sha512-GfofQY5zDp+cuHc+gsEXKPpNw2KbPddreEo35O6jT6i0RVK6LhsoYBhq5TvK4/n74wnA0QbK8gGd+jUZwTMKJw==}
+    engines: {node: '>=10'}
+    hasBin: true
+    dependencies:
+      config-chain: 1.1.13
+      editorconfig: 0.15.3
+      glob: 8.0.3
+      nopt: 6.0.0
+    dev: true
+
   /js-md4/0.3.2:
     resolution: {integrity: sha512-/GDnfQYsltsjRswQhN9fhv3EMw2sCpUdrdxyWDOUK7eyD++r3gRhzgiQgc/x4MAv2i1iuQ4lxO5mvqM3vj4bwA==}
 
@@ -16155,52 +16182,6 @@ packages:
     dependencies:
       lodash.flatten: 4.4.0
       lodash.isnil: 4.0.0
-    dev: false
-
-  /knex/2.4.1:
-    resolution: {integrity: sha512-5wylehvnTOE8EdypPFakccA1zgo6Lp+TNultncvBUCUD0PasY+PLVa9qPrTFCioxPSPVha1u9ye2niAVVbLM0Q==}
-    engines: {node: '>=12'}
-    hasBin: true
-    peerDependencies:
-      better-sqlite3: '*'
-      mysql: '*'
-      mysql2: '*'
-      pg: '*'
-      pg-native: '*'
-      sqlite3: '*'
-      tedious: '*'
-    peerDependenciesMeta:
-      better-sqlite3:
-        optional: true
-      mysql:
-        optional: true
-      mysql2:
-        optional: true
-      pg:
-        optional: true
-      pg-native:
-        optional: true
-      sqlite3:
-        optional: true
-      tedious:
-        optional: true
-    dependencies:
-      colorette: 2.0.19
-      commander: 9.5.0
-      debug: 4.3.4
-      escalade: 3.1.1
-      esm: 3.2.25
-      get-package-type: 0.1.0
-      getopts: 2.3.0
-      interpret: 2.2.0
-      lodash: 4.17.21
-      pg-connection-string: 2.5.0
-      rechoir: 0.8.0
-      resolve-from: 5.0.0
-      tarn: 3.0.2
-      tildify: 2.0.0
-    transitivePeerDependencies:
-      - supports-color
     dev: false
 
   /knex/2.4.2:
@@ -17078,7 +17059,6 @@ packages:
     engines: {node: '>=10'}
     dependencies:
       brace-expansion: 2.0.1
-    dev: false
 
   /minimist-options/4.1.0:
     resolution: {integrity: sha512-Q4r8ghd80yhO/0j1O3B2BjweX3fiHg9cdOwjJd2J76Q135c+NDxGCqdYKQ1SKBuFfgWbAUzBfvYjPUEeNgqN1A==}
@@ -17568,6 +17548,14 @@ packages:
     hasBin: true
     dependencies:
       abbrev: 1.1.1
+
+  /nopt/6.0.0:
+    resolution: {integrity: sha512-ZwLpbTgdhuZUnZzjd7nb1ZV+4DoiC6/sfiVKok72ym/4Tlf+DFdlHYmT2JPmcNNWV6Pi3SDf1kT+A4r9RTuT9g==}
+    engines: {node: ^12.13.0 || ^14.15.0 || >=16.0.0}
+    hasBin: true
+    dependencies:
+      abbrev: 1.1.1
+    dev: true
 
   /normalize-package-data/2.5.0:
     resolution: {integrity: sha512-/5CMN3T0R4XTj4DcGaexo+roZSdSFW/0AOOTROrjxzCG1wrWXEsGbRKevjlIL+ZDE4sZlJr5ED4YW0yqmkK+eA==}
@@ -19124,6 +19112,10 @@ packages:
       xtend: 4.0.2
     dev: true
 
+  /proto-list/1.2.4:
+    resolution: {integrity: sha512-vtK/94akxsTMhe0/cbfpR+syPuszcuwhqVjJq26CuNDgFGj682oRBXOP5MJpv2r7JtE8MsiepGIqvvOTBwn2vA==}
+    dev: true
+
   /protocol-buffers-schema/3.6.0:
     resolution: {integrity: sha512-TdDRD+/QNdrCGCE7v8340QyuXd4kIWIgapsE2+n/SaGiSSbomYl4TjHlvIoCWRpE7wFt02EpB35VVA2ImcBVqw==}
     dev: true
@@ -20467,6 +20459,10 @@ packages:
 
   /siginfo/2.0.0:
     resolution: {integrity: sha512-ybx0WO1/8bSBLEWXZvEd7gMW3Sn3JFlW3TvX1nREbDLRNQNaeNN8WK0meBwPdAaOI7TtRRRJn/Es1zhrrCHu7g==}
+    dev: true
+
+  /sigmund/1.0.1:
+    resolution: {integrity: sha512-fCvEXfh6NWpm+YSuY2bpXb/VIihqWA6hLsgboC+0nl71Q7N7o2eaCW8mJa/NLvQhs6jpd3VZV4UiUQlV6+lc8g==}
     dev: true
 
   /signal-exit/3.0.7:
