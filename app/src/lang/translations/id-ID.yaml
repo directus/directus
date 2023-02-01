@@ -1445,6 +1445,7 @@ layouts:
     cozy: Normal
   kanban:
     advanced: Tingkat lanjut
+both: Keduanya
 panels:
   label:
     name: Label
