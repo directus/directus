@@ -1933,6 +1933,8 @@ layouts:
     show: Zobraziť
     no_group: Žiadna skupina
     not_all_loaded: Načítalo sa len prvých 1000 položiek.
+horizontal: Horizontálne
+both: Oboje
 panels:
   metric:
     name: Metrické
@@ -1954,69 +1956,23 @@ panels:
   barchart:
     name: Stĺpcový graf
     description: Stĺpcový graf na porovnávanie skupín hodnôt
-    select_field: Musíte vybrať pole.
-    select_collection: Musíte vybrať zbierku.
-    select_x_axis: Musíte vybrať os X.
-    function: Funkcia
     horizontal: Horizontálne
-    x_axis_grouping: Skupinová agregácia na osi X
-    x_axis: Os X
-    y_axis_function: Funkcia osi Y
-    y_axis: Os Y
-    show_x_axis: Zobraziť os X
-    show_y_axis: Zobraziť os Y
-    show_data_label: Zobraziť popisok dát
-    group_by: Zoskupené podľa
-    group_and_function: Musíte zahrnúť alebo vynechať obe aj skupinu aj funkciu.
-    y_axis_NaN: Os Y musí byť číslo.
-    y_axis_conditional_one: Hodnota podmienky
-    y_axis_conditional_two: musí byť číslo.
+    select_collection: Musíte vybrať zbierku.
   linechart:
     name: Čiarový graf
     description: Čiarový graf na sledovanie zmeny poľa
-    select_field: Musíte vybrať pole.
-    select_collection: Musíte vybrať zbierku.
-    select_x_axis: Musíte vybrať os X.
-    function: Funkcia
-    x_axis: Os X
-    x_axis_decimals: Desatiny osi X
     disabled_no_grouping: Vypnuté, keď nie je žiadna skupina zvolená.
-    y_axis: Os Y
-    datasets: Dátové sady
-    show_legend: Zobraziť legendu
     show_marker: Zobraziť značku popisku
-    include_dataset: Musíte zahrnúť aspoň jednu dátovú sadu.
-    include_y_axis: Musíte zahrnúť os Y pre každú dátovú sadu keď nie je špecifikovaná žiadna skupina.
-    group_and_function: Musíte zahrnúť alebo vynechať obe aj skupinu aj funkciu.
+    curve_type: Typ krivky
     smooth: Hladké
     straight: Rovné
     step_line: Kroková čiara
   meter:
     name: Merač
     description: Merač na sledovanie hodnôť
-    half_circle: Polkruh
-    full_circle: Celý kruh
-    stroke_width: Hrúbka ťahu
-    rounded_stroke: Zaoblený ťah
-    select_max_value: Musíte vybrať maximálnu hodnotu.
-    max_greater_than_zero: Maximálna hodnota musí byť väčšia ako 0.
-    select_field: Musíte vybrať pole.
-    select_collection: Musíte vybrať zbierku.
-    function: Funkcia
-    thin: Tenké
-    medium: Stredné
-    broad: Široké
   piechart:
     name: Koláčový nebo prstencový graf
     description: Kruhový graf ukazuje pomery medzi skupinami stĺpca
-    function: Funkcia
-    donut: Donut
-    show_labels: Zobraziť názvy
-    show_legend: Zobraziť legendu
-    right: Vpravo
-    bottom: Dole
-    monochrome: Čiernobiele
-    monochrome_color: Monochromatická farba
   variable:
     name: Globálna premenná
     description: Nastaví globálnu hodnotu, ktorá sa dá použiť vo filtroch iných panelov
