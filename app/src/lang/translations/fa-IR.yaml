@@ -507,6 +507,7 @@ no_users_copy: این نقش، هنوز به هیچ کاربری تعلق نگر
 no_notifications: اعلانی موجود نیست
 no_notifications_copy: شما همه اعلانها و پیامها را دیده اید!
 activity_log: لاگ فعالیت ها
+relationship_not_setup: این رابطه به درستی پیکربندی نشده است
 copy: کپی
 action: فعالیت
 add_filter: افزودن فیلتر
