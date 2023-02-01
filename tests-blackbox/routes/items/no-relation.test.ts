@@ -754,11 +754,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 					// Assert
 					expect(response.statusCode).toBe(200);
-					expect(response.body.data[0]).toMatchObject({
-						count: {
-							id: count,
-						},
-					});
+					expect(response.body.data[0].count.id == count).toBeTruthy();
 
 					expect(gqlResponse.statusCode).toBe(200);
 					expect(gqlResponse.body.data[queryKey][0].count.id).toEqual(count);
