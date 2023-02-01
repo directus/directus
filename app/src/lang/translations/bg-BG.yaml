@@ -1939,6 +1939,8 @@ layouts:
     show: Показване
     no_group: Без групиране
     not_all_loaded: Може да се заредят само първите 1000 записи.
+horizontal: Хоризонтала
+both: Всички
 panels:
   metric:
     name: Метричен индикатор
@@ -1960,69 +1962,23 @@ panels:
   barchart:
     name: Лентова диаграма
     description: Лентова или колонна диаграма за сравняване на групи от сойности
-    select_field: Трябва да изберете поле.
-    select_collection: Трябва да изберете колекция.
-    select_x_axis: Трябва да изберете ос по Х.
-    function: Функция
     horizontal: Хоризонтала
-    x_axis_grouping: Групираща агрегация за X-остта
-    x_axis: Ос по X
-    y_axis_function: Функция по Y-остта
-    y_axis: Ос по Y
-    show_x_axis: Показване на оста по X
-    show_y_axis: Показване на оста по Y
-    show_data_label: Показване на надписите за данните
-    group_by: Групиране по
-    group_and_function: Трябва да се попълни или да се пропуснат и двете - група и функция.
-    y_axis_NaN: Оста по Y трябва да е число.
-    y_axis_conditional_one: Стойност за условието
-    y_axis_conditional_two: трябва да е число.
+    select_collection: Трябва да изберете колекция.
   linechart:
     name: Линейна диаграма
     description: Линейна диаграма за сравняване на промените по поле
-    select_field: Трябва да изберете поле.
-    select_collection: Трябва да изберете колекция.
-    select_x_axis: Трябва да изберете ос по Х.
-    function: Функция
-    x_axis: Ос по X
-    x_axis_decimals: Функция по X-остта
     disabled_no_grouping: Изключване когато няма избрана група.
-    y_axis: Ос по Y
-    datasets: Набор от данни
-    show_legend: Легенда
     show_marker: Показване на подсказка
-    include_dataset: Трябва да включите поне един вид данни.
-    include_y_axis: Трябва да се попълни остта по Y за всеки източник когато не е избрана група.
-    group_and_function: Трябва да се попълни или да се пропуснат и двете - група и функция.
+    curve_type: Вид на кривата
     smooth: Плавна
     straight: Линейна
     step_line: Стъпкова
   meter:
     name: Циферблат
     description: Циферблат за показване на стойности
-    half_circle: Полукръг
-    full_circle: Кръг
-    stroke_width: Ширина на чертите
-    rounded_stroke: Заоблена линия
-    select_max_value: Трябва да изберете максимална стойност.
-    max_greater_than_zero: Максималната стойност трябва да е по-голяма от 0.
-    select_field: Трябва да изберете поле.
-    select_collection: Трябва да изберете колекция.
-    function: Функция
-    thin: Тънък
-    medium: Среден
-    broad: Дебел
   piechart:
     name: Кръгова или пръстеновидна диаграма
     description: Кръгови диаграми показващи съотношението между групите по колона
-    function: Функция
-    donut: Поничка
-    show_labels: Показване на надписите
-    show_legend: Легенда
-    right: Вдясно
-    bottom: Отдолу
-    monochrome: Монохром
-    monochrome_color: Монохромен цвят
   variable:
     name: Глобални променливи
     description: Задаване на глобални променливи за използване във филтрите на другите панели
