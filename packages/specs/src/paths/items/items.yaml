@@ -43,6 +43,7 @@ post:
   requestBody:
     content:
       application/json:
+        # Intentionally empty, see https://github.com/directus/directus/pull/16294
         schema:
   responses:
     '200':

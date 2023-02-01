@@ -442,6 +442,8 @@ export async function CreateFieldM2M(vendor: string, options: OptionsCreateField
 		schema: options.fieldSchema,
 	};
 
+	const isSelfReferencing = options.collection === options.otherCollection;
+
 	if (!fieldOptions.meta.special) {
 		fieldOptions.meta.special = ['m2m'];
 	} else if (!fieldOptions.meta.special.includes('m2m')) {
@@ -483,7 +485,7 @@ export async function CreateFieldM2M(vendor: string, options: OptionsCreateField
 
 	const junctionField = await CreateField(vendor, junctionFieldOptions);
 
-	const otherJunctionFieldName = `${options.otherCollection}_id`;
+	const otherJunctionFieldName = `${options.otherCollection}_id${isSelfReferencing ? '2' : ''}`;
 	const otherJunctionFieldOptions: OptionsCreateField = {
 		collection: options.junctionCollection,
 		field: otherJunctionFieldName,

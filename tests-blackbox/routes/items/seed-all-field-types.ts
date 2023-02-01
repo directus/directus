@@ -21,16 +21,38 @@ export function getTestsAllTypesSchema(): TestsFieldSchema {
 	return fieldSchema;
 }
 
-export const seedAllFieldTypesStructure = async (vendor: string, collection: string) => {
+export const seedAllFieldTypesStructure = async (vendor: string, collection: string, setDefaultValues = false) => {
 	try {
 		const fieldSchema = getTestsAllTypesSchema();
 
 		// Create fields
 		for (const key of Object.keys(fieldSchema)) {
+			let meta = {};
+			let schema = {};
+
+			const fieldType = fieldSchema[key].type;
+
+			if (fieldType === 'uuid') {
+				meta = { special: ['uuid'] };
+			}
+
+			if (setDefaultValues && SeedFunctions.generateValues[fieldType as keyof typeof SeedFunctions.generateValues]) {
+				schema = {
+					default_value: SeedFunctions.generateValues[fieldType as keyof typeof SeedFunctions.generateValues]({
+						quantity: 1,
+						seed: `${collection}_${fieldType}`,
+						vendor,
+						isDefaultValue: true,
+					})[0],
+				};
+			}
+
 			await CreateField(vendor, {
 				collection: collection,
 				field: fieldSchema[key].field.toLowerCase(),
-				type: fieldSchema[key].type,
+				type: fieldType,
+				meta,
+				schema,
 			});
 		}
 
