@@ -1918,6 +1918,7 @@ layouts:
     crop: بڕین
     advanced: پێشکەوتوو
     not_all_loaded: تەنها دەتوانرێت یەکەم 1000 ماددە باربکرێت.
+both: هەموویان
 panels:
   metric:
     name: مەتری
@@ -1935,8 +1936,8 @@ panels:
     description: هەندێ نوسین نیشان بدە
   list:
     name: لیست
-  barchart:
-    show_data_label: داتای پێناس نیشانبدە
+  linechart:
+    curve_type: جۆری کەوانە
 triggers:
   webhook:
     method: ڕێگە
