@@ -244,14 +244,18 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				},
 			};
 
-			if (!opts?.bypassEmitAction) {
-				emitter.emitAction(actionEvent.event, actionEvent.meta, actionEvent.context);
-			} else {
+			if (opts?.bypassEmitAction) {
 				opts.bypassEmitAction(actionEvent);
+			} else {
+				emitter.emitAction(actionEvent.event, actionEvent.meta, actionEvent.context);
 			}
 
 			for (const nestedActionEvent of nestedActionEvents) {
-				emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
+				if (opts?.bypassEmitAction) {
+					opts.bypassEmitAction(nestedActionEvent);
+				} else {
+					emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
+				}
 			}
 		}
 
@@ -280,8 +284,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				const primaryKey = await service.createOne(payload, {
 					...(opts || {}),
 					autoPurgeCache: false,
-					bypassEmitAction: (params) =>
-						opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
+					bypassEmitAction: (params) => nestedActionEvents.push(params),
 				});
 				primaryKeys.push(primaryKey);
 			}
@@ -291,10 +294,10 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 		if (opts?.emitEvents !== false) {
 			for (const nestedActionEvent of nestedActionEvents) {
-				if (!opts?.bypassEmitAction) {
-					emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
-				} else {
+				if (opts?.bypassEmitAction) {
 					opts.bypassEmitAction(nestedActionEvent);
+				} else {
+					emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
 				}
 			}
 		}
@@ -677,14 +680,18 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				},
 			};
 
-			if (!opts?.bypassEmitAction) {
-				emitter.emitAction(actionEvent.event, actionEvent.meta, actionEvent.context);
-			} else {
+			if (opts?.bypassEmitAction) {
 				opts.bypassEmitAction(actionEvent);
+			} else {
+				emitter.emitAction(actionEvent.event, actionEvent.meta, actionEvent.context);
 			}
 
 			for (const nestedActionEvent of nestedActionEvents) {
-				emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
+				if (opts?.bypassEmitAction) {
+					opts.bypassEmitAction(nestedActionEvent);
+				} else {
+					emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
+				}
 			}
 		}
 
@@ -845,10 +852,10 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				},
 			};
 
-			if (!opts?.bypassEmitAction) {
-				emitter.emitAction(actionEvent.event, actionEvent.meta, actionEvent.context);
-			} else {
+			if (opts?.bypassEmitAction) {
 				opts.bypassEmitAction(actionEvent);
+			} else {
+				emitter.emitAction(actionEvent.event, actionEvent.meta, actionEvent.context);
 			}
 		}
 

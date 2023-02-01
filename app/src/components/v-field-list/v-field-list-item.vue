@@ -1,7 +1,7 @@
 <template>
 	<v-list-group
 		v-if="field.children || supportedFunctions.length > 0"
-		:clickable="!field.disabled"
+		:clickable="!field.disabled && (relationalFieldSelectable || !field.relatedCollection)"
 		:value="field.path"
 		@click="$emit('add', field.key)"
 	>
@@ -39,6 +39,7 @@
 			:field="childField"
 			:search="search"
 			:include-functions="includeFunctions"
+			:relational-field-selectable="relationalFieldSelectable"
 			@add="$emit('add', $event)"
 		/>
 	</v-list-group>
@@ -72,11 +73,13 @@ interface Props {
 	field: FieldInfo;
 	search?: string;
 	includeFunctions?: boolean;
+	relationalFieldSelectable?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
 	search: undefined,
 	includeFunctions: false,
+	relationalFieldSelectable: true,
 });
 
 defineEmits(['add']);
