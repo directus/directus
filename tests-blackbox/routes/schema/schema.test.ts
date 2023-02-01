@@ -214,7 +214,7 @@ describe('Schema Snapshots', () => {
 					// Assert
 					expect(response.statusCode).toEqual(200);
 					expect(response.body.data?.diff?.collections?.length).toBe(66);
-					expect(response.body.data?.diff?.fields?.length).toBe(342);
+					expect(response.body.data?.diff?.fields?.length).toBe(354);
 					expect(response.body.data?.diff?.relations?.length).toBe(66);
 				},
 				300000
