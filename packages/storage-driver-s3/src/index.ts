@@ -54,7 +54,7 @@ export class DriverS3 implements Driver {
 		}
 
 		if (config.endpoint) {
-			const protocol = config.endpoint.startsWith('https://') ? 'https:' : 'http:';
+			const protocol = config.endpoint.startsWith('http://') ? 'http:' : 'https:';
 			const hostname = config.endpoint.replace('https://', '').replace('http://', '');
 
 			s3ClientConfig.endpoint = {
