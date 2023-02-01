@@ -1890,6 +1890,8 @@ layouts:
   kanban:
     crop: Recortar
     advanced: Avançado
+horizontal: Horizontal
+both: Ambos
 panels:
   metric:
     name: Métrico
@@ -1902,29 +1904,8 @@ panels:
     description: Filtrar e listar campos de uma coleção
   barchart:
     name: Gráfico de barras
-    select_field: Você deve selecionar um campo.
-    select_collection: Você deve selecionar uma coleção.
-    select_x_axis: Você deve selecionar um eixo X.
-    function: Função
     horizontal: Horizontal
-    x_axis: Eixo X
-    y_axis_function: Função do eixo Y
-    y_axis: Eixo Y
-    show_x_axis: Mostrar eixo X
-    show_y_axis: Mostrar eixo Y
-  linechart:
-    select_field: Você deve selecionar um campo.
     select_collection: Você deve selecionar uma coleção.
-    select_x_axis: Você deve selecionar um eixo X.
-    function: Função
-    x_axis: Eixo X
-    y_axis: Eixo Y
-  meter:
-    select_field: Você deve selecionar um campo.
-    select_collection: Você deve selecionar uma coleção.
-    function: Função
-  piechart:
-    function: Função
 triggers:
   webhook:
     method: Método 
