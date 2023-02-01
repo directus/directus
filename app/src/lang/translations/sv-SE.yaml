@@ -1671,6 +1671,7 @@ layouts:
   kanban:
     crop: Beskär
     advanced: Avancerat
+both: Båda
 panels:
   metric:
     name: Metrisk
