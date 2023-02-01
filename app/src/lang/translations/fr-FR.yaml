@@ -1939,6 +1939,8 @@ layouts:
     show: Afficher
     no_group: Aucun Groupe
     not_all_loaded: Impossible de charger les 1000 premiers éléments.
+horizontal: Horizontal
+both: Tous
 panels:
   metric:
     name: Indicateurs
@@ -1960,69 +1962,23 @@ panels:
   barchart:
     name: Graphique en barres
     description: Graphique en barre ou en colonne pour la comparaison de groupes de valeurs
-    select_field: Vous devez choisir un champ.
-    select_collection: Vous devez sélectionner une collection.
-    select_x_axis: Vous devez sélectionner un axe X.
-    function: Fonction
     horizontal: Horizontal
-    x_axis_grouping: Agrégation du groupe d'axe X
-    x_axis: Axe X
-    y_axis_function: Fonction Axe-Y
-    y_axis: Axe Y
-    show_x_axis: Afficher l'axe X
-    show_y_axis: Afficher l'axe Y
-    show_data_label: Afficher l'étiquette des données
-    group_by: 'Groupés par:'
-    group_and_function: Vous devez inclure ou omettre un groupe et une fonction.
-    y_axis_NaN: L'ordonnée doit être un nombre.
-    y_axis_conditional_one: La valeur de la condition
-    y_axis_conditional_two: doit être un nombre.
+    select_collection: Vous devez sélectionner une collection.
   linechart:
     name: Graphique linéaire
     description: Graphique linéaire pour comparer le changement d'un champ
-    select_field: Vous devez choisir un champ.
-    select_collection: Vous devez sélectionner une collection.
-    select_x_axis: Vous devez sélectionner un axe X.
-    function: Fonction
-    x_axis: Axe X
-    x_axis_decimals: Décimales de l'axe X
     disabled_no_grouping: Désactivé si aucun groupement n'est sélectionné.
-    y_axis: Axe Y
-    datasets: Jeux de données
-    show_legend: Afficher la légende
     show_marker: Afficher l'info-bulle
-    include_dataset: Vous devez sélectionner au moins un élément.
-    include_y_axis: Vous devez inclure un axe Y pour chaque jeu de données quand aucun groupe n'est spécifié.
-    group_and_function: Vous devez inclure ou omettre un groupe et une fonction.
+    curve_type: Format de courbe
     smooth: Lisse
     straight: Droit
     step_line: Pas
   meter:
     name: Compteur
     description: Compteur pour les valeurs de suivi
-    half_circle: Demi-cercle
-    full_circle: Cercle plein
-    stroke_width: Largeur du trait
-    rounded_stroke: Trait arrondi
-    select_max_value: Vous devez sélectionner une valeur maximale.
-    max_greater_than_zero: La valeur doit être supérieure à 0.
-    select_field: Vous devez choisir un champ.
-    select_collection: Vous devez sélectionner une collection.
-    function: Fonction
-    thin: Fin
-    medium: Moyen
-    broad: Large
   piechart:
     name: Graphique anneau ou circulaire
     description: Graphique circulaire montrant les ratios de groupes sur une colonne
-    function: Fonction
-    donut: Anneau
-    show_labels: Afficher les libellés
-    show_legend: Afficher la légende
-    right: Droite
-    bottom: Bas
-    monochrome: Monochrome
-    monochrome_color: Couleur Monochrome
   variable:
     name: Variable globale
     description: Définir une valeur globale pour l'utilisation dans d'autres panneaux de filtres
