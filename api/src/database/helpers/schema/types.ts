@@ -1,14 +1,14 @@
+import { KNEX_TYPES } from '@directus/shared/constants';
+import { Field, Relation, Type } from '@directus/shared/types';
+import { Knex } from 'knex';
+import { DatabaseClient } from '../../../types';
 import { getDatabaseClient } from '../../index';
 import { DatabaseHelper } from '../types';
-import { KNEX_TYPES } from '@directus/shared/constants';
-import { Knex } from 'knex';
-
-type Clients = 'mysql' | 'postgres' | 'cockroachdb' | 'sqlite' | 'oracle' | 'mssql' | 'redshift';
 
 export type Options = { nullable?: boolean; default?: any; length?: number };
 
 export abstract class SchemaHelper extends DatabaseHelper {
-	isOneOfClients(clients: Clients[]): boolean {
+	isOneOfClients(clients: DatabaseClient[]): boolean {
 		return clients.includes(getDatabaseClient(this.knex));
 	}
 
@@ -90,6 +90,14 @@ export abstract class SchemaHelper extends DatabaseHelper {
 
 	async postColumnChange(): Promise<void> {
 		return;
+	}
+
+	preRelationChange(_relation: Partial<Relation>): void {
+		return;
+	}
+
+	processFieldType(field: Field): Type {
+		return field.type;
 	}
 
 	constraintName(existingName: string): string {
