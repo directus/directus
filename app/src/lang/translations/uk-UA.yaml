@@ -1939,6 +1939,8 @@ layouts:
     show: Показати
     no_group: Без Групи
     not_all_loaded: Можна завантажити лише перші 1000 елементів.
+horizontal: Горизонтальний
+both: Обидва
 panels:
   metric:
     name: Метрична
@@ -1960,48 +1962,13 @@ panels:
   barchart:
     name: Гістограма
     description: Гістограми або стовпчасті графіки для порівняння групованих значень
-    select_field: Ви повинні обрати поле.
-    select_collection: Виберіть колекцію.
-    select_x_axis: Виберіть вісь X.
-    function: Функція
     horizontal: Горизонтальний
-    x_axis_grouping: Об'єднання по осі X
-    x_axis: Вісь X
-    y_axis_function: Функція осі Y
-    y_axis: Вісь Y
-    show_x_axis: Показати вісь X
-    show_y_axis: Показати вісь X
-    show_data_label: Показати мітку даних
-    group_by: Згруповано за
-    group_and_function: Ви повинні включити або пропустити, як групу, так і функцію.
-    y_axis_NaN: Вісь Y має бути числом.
-    y_axis_conditional_one: Значення для умови
-    y_axis_conditional_two: має бути числом.
+    select_collection: Виберіть колекцію.
   linechart:
     name: Лінійна діаграма
-    select_field: Ви повинні вибрати поле.
-    select_collection: Ви повинні вибрати колекцію.
-    select_x_axis: Потрібно вибрати вісь X.
-    function: Функція
-    x_axis: Вісь X
-    x_axis_decimals: Вісь координат X
     disabled_no_grouping: Вимкнено, якщо групування не вибрано.
-    y_axis: Вісь Y
-    datasets: Набори даних
-    show_legend: Показати легенду
     show_marker: Показати маркер підказки
-    include_y_axis: Ви повинні включити вісь Y для кожного набору даних, якщо не вказано жодної групи.
-    group_and_function: Ви повинні включити або опустити як групу, так і функцію.
-  meter:
-    select_max_value: Ви повинні вибрати максимальне значення.
-    max_greater_than_zero: Максимальне значення повинно бути більше 0.
-    select_field: Ви повинні вибрати поле.
-    select_collection: Ви повинні вибрати колекцію.
-    function: Функція
-  piechart:
-    function: Функція
-    show_legend: Показати легенду
-    monochrome_color: Монохромний колір
+    curve_type: Тип кривої
   relational-variable:
     name: Глобальна реляційна змінна
     description: Встановити глобальне реляційне значення для використання у фільтрі інших панелей
