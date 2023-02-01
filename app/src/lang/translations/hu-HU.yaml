@@ -245,6 +245,7 @@ float: Törtszám
 integer: Egész szám
 json: JSON
 xml: XML
+yaml: YAML
 string: Karaktersor
 text: Szöveg
 time: Idő
