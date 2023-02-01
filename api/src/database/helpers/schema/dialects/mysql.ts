@@ -31,7 +31,7 @@ export class SchemaHelperMySQL extends SchemaHelper {
 	): Knex.QueryBuilder {
 		const [major, minor] = getDatabaseVersion().parsed;
 		if (major == 5 && minor === 7) {
-			dbQuery.orderByRaw(`?? asc, ${orderByString}`, [`${table}.${primaryKey}`, ...orderByFields]);
+			dbQuery.orderByRaw(`?? asc, ${orderByString.slice(9)}`, [`${table}.${primaryKey}`, ...orderByFields]);
 
 			dbQuery = knex
 				.select(
