@@ -248,6 +248,7 @@ layouts:
     comfortable: Gemaklik
     compact: Kompak
     cozy: Snoesig
+both: Beide
 operations:
   log:
     message: Boodskap
