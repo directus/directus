@@ -968,6 +968,7 @@ layouts:
     spacing: Espaçamento
   kanban:
     advanced: Avançado
+both: Ambos
 operations:
   log:
     message: Mensagem
