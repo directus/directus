@@ -1939,6 +1939,8 @@ layouts:
     show: 显示
     no_group: 无分组
     not_all_loaded: 只能加载前 1000 个条目。
+horizontal: 横向
+both: 两个
 panels:
   metric:
     name: 公制
@@ -1960,69 +1962,23 @@ panels:
   barchart:
     name: 条形图
     description: 比较数值组的条形图或柱形图
-    select_field: 您必须选择一个字段。
-    select_collection: 您必须选择一个集合。
-    select_x_axis: 您必须选择一个X轴。
-    function: 功能函数
     horizontal: 横向
-    x_axis_grouping: X轴组聚合
-    x_axis: X轴
-    y_axis_function: Y-轴函数
-    y_axis: Y-轴
-    show_x_axis: 显示 X-轴
-    show_y_axis: 显示 Y-轴
-    show_data_label: 显示数据标签
-    group_by: 分组依据
-    group_and_function: 您必须同时包含或省略一个分组函数和一个功能函数。
-    y_axis_NaN: Y轴必须是一个数字。
-    y_axis_conditional_one: 条件值
-    y_axis_conditional_two: 必须是一个数字。
+    select_collection: 您必须选择一个集合。
   linechart:
     name: 折线图
     description: 比较字段变化的线形图
-    select_field: 您必须选择一个字段。
-    select_collection: 您必须选择一个集合。
-    select_x_axis: 您必须选择一个X轴。
-    function: 功能函数
-    x_axis: X轴
-    x_axis_decimals: X轴数值
     disabled_no_grouping: 未选择分组时禁用。
-    y_axis: Y-轴
-    datasets: 数据集
-    show_legend: 显示图例
     show_marker: 显示工具提示标志
-    include_dataset: 您必须包含至少一个数据集。
-    include_y_axis: 当没有指定组时，您必须为每个数据集包含Y-Axis。
-    group_and_function: 您必须同时包含或省略一个分组函数和一个功能函数。
+    curve_type: 曲线类型
     smooth: 平滑模式
     straight: 直线模式
     step_line: 分步线条
   meter:
     name: 电表模式
     description: 跟踪值的仪表
-    half_circle: 半圈
-    full_circle: 一整圈
-    stroke_width: 笔画宽度
-    rounded_stroke: 圆角描边
-    select_max_value: 您必须选择一个最大值。
-    max_greater_than_zero: 最大值必须大于 0。
-    select_field: 您必须选择一个字段。
-    select_collection: 您必须选择一个集合。
-    function: 功能函数
-    thin: 纤细
-    medium: 中等
-    broad: 广泛的
   piechart:
     name: 饼图或环图
     description: 在列上显示分组比率的圆形图表
-    function: 功能函数
-    donut: 圆环图
-    show_labels: 显示标签
-    show_legend: 显示图例
-    right: 右
-    bottom: 底部
-    monochrome: 黑白的
-    monochrome_color: 单色颜色
   variable:
     name: 全局变量
     description: 设置用于其他面板筛选器的全局值
