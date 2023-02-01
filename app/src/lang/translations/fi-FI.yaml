@@ -1708,6 +1708,7 @@ layouts:
   kanban:
     crop: Rajaa
     advanced: Lisäasetukset
+both: Molemmat
 panels:
   metric:
     name: Metrinen
@@ -1726,6 +1727,8 @@ panels:
   list:
     name: Lista
     description: Suodata ja luetteloi kentät kokoelmasta
+  linechart:
+    curve_type: Käyrän tyyppi
 triggers:
   webhook:
     method: Metodi
