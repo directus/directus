@@ -1394,6 +1394,7 @@ layouts:
   kanban:
     crop: Kärpimine
     advanced: Lisavalikud
+both: Mõlemad
 panels:
   label:
     name: Silt
