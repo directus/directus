@@ -66,7 +66,7 @@ export class ServerService {
 					duration: env.RATE_LIMITER_GLOBAL_DURATION,
 				};
 			} else {
-				info.rateLimit = false;
+				info.rateLimitGlobal = false;
 			}
 
 			info.flows = {
