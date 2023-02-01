@@ -1547,6 +1547,7 @@ layouts:
   kanban:
     crop: Bijsnijden
     advanced: Geavanceerd
+both: Beiden
 panels:
   label:
     name: Label
