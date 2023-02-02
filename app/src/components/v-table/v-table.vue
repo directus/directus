@@ -52,37 +52,61 @@
 				:item-key="itemKey"
 				tag="tbody"
 				handle=".drag-handle"
+				:class="{
+					subdued: loading || reordering,
+					clickable: !disabled && clickable,
+					selectable: !disabled && showSelect !== 'none',
+					'drag-manually': !disabled && showManualSort,
+					'sorted-manually': internalSort.by === manualSortKey,
+				}"
 				:disabled="disabled || internalSort.by !== manualSortKey"
 				:set-data="hideDragImage"
+				:has-click-listener="!disabled && clickable"
 				@end="onSortChange"
 			>
 				<template #item="{ element }">
-					<table-row
-						:headers="internalHeaders"
-						:item="element"
-						:show-select="!disabled && showSelect"
-						:show-manual-sort="!disabled && showManualSort"
-						:is-selected="getSelectedState(element)"
-						:subdued="loading || reordering"
-						:sorted-manually="internalSort.by === manualSortKey"
-						:has-click-listener="!disabled && clickable"
-						:height="rowHeight"
-						@click="clickable ? $emit('click:row', { item: element, event: $event }) : null"
-						@item-selected="
-							onItemSelected({
-								item: element,
-								value: !getSelectedState(element),
-							})
-						"
-					>
-						<template v-for="header in internalHeaders" #[`item.${header.value}`]>
-							<slot :item="element" :name="`item.${header.value}`" />
-						</template>
+					<tr :key="element[itemKey]" class="table-row">
+						<td class="manual cell" @click.stop>
+							<v-icon name="drag_handle" class="drag-handle" />
+						</td>
 
-						<template v-if="hasItemAppendSlot" #item-append>
+						<td class="select cell" @click.stop>
+							<v-checkbox
+								:icon-on="showSelect === 'one' ? 'radio_button_checked' : undefined"
+								:icon-off="showSelect === 'one' ? 'radio_button_unchecked' : undefined"
+								:model-value="getSelectedState(element)"
+								@update:model-value="
+									onItemSelected({
+										item: element,
+										value: !getSelectedState(element),
+									})
+								"
+							/>
+						</td>
+
+						<td v-for="header in internalHeaders" :key="header.value" class="cell" :class="`align-${header.align}`">
+							<slot :name="`item.${header.value}`" :item="element">
+								<v-text-overflow
+									v-if="
+										header.value.split('.').reduce((acc, val) => {
+											return acc[val];
+										}, element)
+									"
+									:text="
+										header.value.split('.').reduce((acc, val) => {
+											return acc[val];
+										}, element)
+									"
+								/>
+								<value-null v-else />
+							</slot>
+						</td>
+
+						<td class="spacer cell" />
+						<td v-if="hasItemAppendSlot" class="append cell" @click.stop>
 							<slot name="item-append" :item="element" />
-						</template>
-					</table-row>
+						</td>
+					</tr>
 				</template>
 			</draggable>
 		</table>
@@ -95,7 +119,6 @@ import { computed, ref, useSlots } from 'vue';
 import { ShowSelect } from '@directus/shared/types';
 import { Header, HeaderRaw, Item, ItemSelectEvent, Sort } from './types';
 import TableHeader from './table-header.vue';
-import TableRow from './table-row.vue';
 import { clone, forEach, pick } from 'lodash';
 import { i18n } from '@/lang/';
 import Draggable from 'vuedraggable';
@@ -266,6 +289,13 @@ const columnStyle = computed<string>(() => {
 
 		return gridTemplateColumns;
 	}
+});
+
+const cssHeight = computed(() => {
+	return {
+		tableRow: props.rowHeight + 2 + 'px',
+		renderTemplateImage: props.rowHeight - 16 + 'px',
+	};
 });
 
 function onItemSelected(event: ItemSelectEvent) {
@@ -464,5 +494,89 @@ table :deep(.sortable-ghost .cell) {
 .disabled {
 	--v-table-color: var(--foreground-subdued);
 	--v-table-background-color: var(--background-subdued);
+}
+</style>
+
+<style lang="scss" scoped>
+tbody {
+	&.subdued .table-row .cell {
+		opacity: 0.3;
+	}
+
+	&.clickable:not(.subdued) .table-row:hover .cell {
+		background-color: var(--background-subdued);
+		cursor: pointer;
+	}
+
+	&.sorted-manually {
+		.drag-handle {
+			--v-icon-color: var(--foreground-normal);
+
+			&:hover {
+				cursor: ns-resize;
+			}
+		}
+	}
+
+	.table-row .manual.cell {
+		display: none;
+	}
+
+	&.drag-manually {
+		.table-row .manual.cell {
+			display: flex;
+		}
+	}
+
+	.table-row .select.cell {
+		display: none;
+	}
+
+	&.selectable {
+		.table-row .select.cell {
+			display: flex;
+		}
+	}
+}
+.table-row {
+	height: v-bind('cssHeight.tableRow');
+
+	.cell {
+		display: flex;
+		align-items: center;
+		padding: 8px 12px;
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+		background-color: var(--v-table-background-color);
+		border-bottom: var(--border-width) solid var(--border-subdued);
+
+		&:last-child {
+			padding: 0 12px;
+		}
+
+		&.select {
+			display: flex;
+			align-items: center;
+		}
+	}
+
+	.drag-handle {
+		--v-icon-color: var(--foreground-subdued);
+	}
+
+	.append {
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
+	}
+
+	:deep(.render-template) {
+		height: v-bind('cssHeight.tableRow');
+
+		img {
+			height: v-bind('cssHeight.renderTemplateImage');
+		}
+	}
 }
 </style>

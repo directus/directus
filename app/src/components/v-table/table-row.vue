@@ -1,5 +1,5 @@
 <template>
-	<tr class="table-row" :class="{ subdued: subdued, clickable: hasClickListener }" @click="$emit('click', $event)">
+	<tr class="table-row" :class="{ subdued: subdued, clickable: hasClickListener }">
 		<td v-if="showManualSort" class="manual cell" @click.stop>
 			<v-icon name="drag_handle" class="drag-handle" :class="{ 'sorted-manually': sortedManually }" />
 		</td>
@@ -65,7 +65,7 @@ const props = withDefaults(defineProps<Props>(), {
 	height: 48,
 });
 
-defineEmits(['click', 'item-selected']);
+defineEmits(['item-selected']);
 
 const cssHeight = computed(() => {
 	return {
