@@ -447,7 +447,7 @@ open: Openen
 open_in_new_window: Openen in nieuw venster
 open_folder: Open map "{folder}"
 foreground_color: Voorgrondkleur
-background_color: Achtergrond kleur
+background_color: Achtergrondkleur
 upload_from_device: Bestand uploaden van apparaat
 choose_from_library: Kies bestand uit de bibliotheek
 import_from_url: Importeer bestand van URL
@@ -710,8 +710,8 @@ operators:
   nbetween: Ligt niet tussen
   empty: Is leeg
   nempty: Is niet leeg
-  all: Bevat deze keys
-  has: Bevat enkele van deze keys
+  all: Bevat deze sleutels
+  has: Bevat enkele van deze sleutels
   intersects: Overlapt
   nintersects: Overlapt niet
   intersects_bbox: Overlapt begrenzingsvak
@@ -884,7 +884,7 @@ wysiwyg_options:
   alignnone: Align None
   alignright: Align Right
   forecolor: Voorgrondkleur
-  backcolor: Achtergrond kleur
+  backcolor: Achtergrondkleur
   bold: Vetgedrukt
   italic: Cursief
   underline: Onderstreept
@@ -1117,7 +1117,7 @@ fields:
     project_url: Project URL
     project_color: Project kleur
     project_logo: Project logo
-    default_language: Standaard Taal
+    default_language: Standaardtaal
     branding: Merk & Stijl
     public_foreground: Openbare voorgrond
     public_background: Openbare achtergrond
@@ -1154,6 +1154,7 @@ fields:
     name: Naam
     method: Methode
     status: Status
+    data: Data
     value: Waarde
     headers: Verzoekheaders
     actions: Acties
@@ -1225,6 +1226,7 @@ inline: Doorlopend
 comment: Reactie
 unlimited_usage: Onbeperkt gebruik
 expired: Verlopen
+share: Delen
 shared_leave_blank_for_unlimited: Laat leeg voor geen limiet
 shared_times_remaining: Deze link kan slechts {n} keer worden gebruikt
 shared_last_remaining: Deze link kan slechts één keer worden gebruikt
@@ -1308,15 +1310,20 @@ value: Waarde
 view_project: Bekijk project
 report_error: Rapporteer fout
 table: Tabel
+list: Lijst
 interfaces:
   filter:
     name: Filter
     add_filter: Filter toevoegen
+    add_group: En/of-groep
+    add_value: Waarde toevoegen
     logic_type_and: EN
     logic_type_or: OF
     all: Alle
     any: Eender
     and: en
+  fields:
+    name: Velden
   presentation-links:
     style: Stijl
     primary: Primair
@@ -1391,7 +1398,12 @@ interfaces:
     customSyntax: Aangepaste blokken
     box: Blok / Inline
   map:
+    map: Kaart
     zoom: Zoom
+    geojson: GeoJSON
+    lnglat: Lengtegraad, breedtegraad
+    wkt: WKT
+    wkb: WKB
   presentation-notice:
     notice: Melding
     description: Een korte melding weergeven
@@ -1403,6 +1415,7 @@ interfaces:
     repeater: Herhaler
     edit_fields: Velden bewerken
     sort: Sorteren
+    sort_placeholder: Handmatig
   slider:
     slider: Schuifregelaar
     description: Selecteer een nummer met een slider
@@ -1421,12 +1434,15 @@ interfaces:
     alphabetize: Alfabetische volgorde
     alphabetize_label: Alfabetische volgorde forceren
   input:
+    input: Invoer
     mask: Gemaskeerd
     mask_label: Verberg de werkelijke waarde
     clear_label: Opslaan als lege tekst
     minimum_value: Minimale waarde
     maximum_value: Maximale waarde
+    slug: Slug maken
   input-translated-string:
+    input-translated-string: Vertaalde tekenreeksen
     search_placeholder: Zoeken...
   boolean:
     toggle: Schakel
@@ -1437,6 +1453,7 @@ interfaces:
   translations:
     display_template: Weergavesjabloon
     no_collection: Geen collectie
+    enable: Inschakelen
     default_language: Standaardtaal
   user:
     user: Gebruiker
@@ -1456,6 +1473,8 @@ interfaces:
 displays:
   translations:
     translations: Vertalingen
+    enable: Inschakelen
+    default_language: Standaardtaal
   boolean:
     boolean: Boolean
     description: Toon aan/uit status
@@ -1505,7 +1524,10 @@ displays:
     prefix: Voorvoegsel
     suffix: Achtervoegsel
     color: Kleur
+    background: Achtergrond
     icon: Icoon
+    border: Rand
+    border_label: Rand tonen
     text: Tekst
   formatted-json-value:
     formatted-json-value: Geformatteerde JSON waarde
@@ -1568,25 +1590,81 @@ layouts:
     cozy: Knus
   calendar:
     calendar: Kalender
+    optional: Optioneel
+    first_day: Eerste dag van de week
+  map:
+    map: Kaart
+    layers: Lagen
   kanban:
+    name: Kanban
+    group_field: Groeperen op
+    group_title: Groepstitel
+    title: Kaarttitel
+    text: Kaarttekst
+    date: Kaartdatum
     crop: Bijsnijden
     advanced: Geavanceerd
+    edit_group: Groep bewerken
+    delete_group: Groep verwijderen
+    add_group: Groep toevoegen
+    no_group: Geen groep
+horizontal: Horizontaal
+vertical: Verticaal
+x_axis: X-as
+y_axis: Y-as
+y_axis_function: Y-asfunctie
+show_x_only: Alleen X-as tonen
+show_y_only: Alleen Y-as tonen
 both: Beiden
+function: Functie
+half_circle: Halve cirkel
+full_circle: Volle cirkel
+thin: Dun
+medium: Middel
+broad: Breed
+show_labels: Labels tonen
+show_legend: Legenda tonen
+right: Rechts
+left: Links
 panels:
+  metric:
+    field: Veld
   label:
     name: Label
+  list:
+    name: Lijst
+  barchart:
+    horizontal: Horizontaal
+  linechart:
+    straight: Recht
 triggers:
   webhook:
+    name: Webhook
     method: Methode
+    async: Asynchroon
+  manual:
+    name: Handmatig
 operations:
+  condition:
+    name: Conditie
+  item-delete:
+    name: Data verwijderen
   log:
     message: Bericht
+  mail:
+    to: Aan
   notification:
     recipient: Gebruiker
     message: Bericht
   request:
     url: URL
+    url_placeholder: https://example.com/voorbeeld
     method: Methode
+    data: Data
+    headers: Headers
+    header: Header
+    value_placeholder: Bearer eyJhbGciOi...
   trigger:
     flows: Flows
     flow: Flow
+    data: Data
