@@ -1500,5 +1500,709 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				vendorSchemaValues
 			);
 		});
+
+		describe.only('Depth Tests', () => {
+			describe('allow queries up to the field depth limit', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// Setup
+					const food = createFood(pkType);
+					const insertedFood = await CreateItem(vendor, {
+						collection: localCollectionFoods,
+						item: {
+							...food,
+							ingredients: {
+								create: [{ [`${localCollectionFoods}_id`]: createIngredient(pkType) }],
+								update: [],
+								delete: [],
+							},
+						},
+					});
+
+					// Action
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionFoods}/${insertedFood.id}`)
+						.query({
+							fields: '*.*.*.*.*',
+						})
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+						query: {
+							[localCollectionFoods]: {
+								__args: {
+									filter: {
+										id: {
+											_eq: insertedFood.id,
+										},
+									},
+								},
+								ingredients: {
+									[`${localCollectionFoods}_id`]: {
+										ingredients: {
+											[`${localCollectionFoods}_id`]: {
+												id: true,
+											},
+										},
+									},
+								},
+							},
+						},
+					});
+
+					// Assert
+					expect(response.statusCode).toEqual(200);
+					expect(response.body.data).toEqual(
+						expect.objectContaining({
+							ingredients: expect.arrayContaining([
+								expect.objectContaining({
+									[`${localCollectionFoods}_id`]: expect.objectContaining({
+										ingredients: expect.arrayContaining([
+											expect.objectContaining({
+												[`${localCollectionFoods}_id`]: expect.objectContaining({
+													ingredients: [expect.any(Number)],
+												}),
+											}),
+										]),
+									}),
+								}),
+							]),
+						})
+					);
+
+					expect(gqlResponse.statusCode).toEqual(200);
+					expect(gqlResponse.body.data).toEqual(
+						expect.objectContaining({
+							[localCollectionFoods]: expect.arrayContaining([
+								expect.objectContaining({
+									ingredients: expect.arrayContaining([
+										expect.objectContaining({
+											[`${localCollectionFoods}_id`]: expect.objectContaining({
+												ingredients: expect.arrayContaining([
+													expect.objectContaining({
+														[`${localCollectionFoods}_id`]: expect.objectContaining({
+															id: expect.any(String),
+														}),
+													}),
+												]),
+											}),
+										}),
+									]),
+								}),
+							]),
+						})
+					);
+				});
+			});
+
+			describe('deny queries over the field depth limit', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// Setup
+					const food = createFood(pkType);
+					const insertedFood = await CreateItem(vendor, {
+						collection: localCollectionFoods,
+						item: {
+							...food,
+							ingredients: {
+								create: [{ [`${localCollectionFoods}_id`]: createIngredient(pkType) }],
+								update: [],
+								delete: [],
+							},
+						},
+					});
+
+					// Action
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionFoods}/${insertedFood.id}`)
+						.query({
+							fields: '*.*.*.*.*.*',
+						})
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+						query: {
+							[localCollectionFoods]: {
+								__args: {
+									filter: {
+										id: {
+											_eq: insertedFood.id,
+										},
+									},
+								},
+								ingredients: {
+									[`${localCollectionFoods}_id`]: {
+										ingredients: {
+											[`${localCollectionFoods}_id`]: {
+												ingredients: {
+													id: true,
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					});
+
+					// Assert
+					expect(response.statusCode).toEqual(400);
+					expect(response.body.errors).toHaveLength(1);
+					expect(response.body.errors[0].message).toBe('Max relational depth exceeded.');
+
+					expect(gqlResponse.body.errors).toBeDefined();
+					expect(gqlResponse.body.errors.length).toEqual(1);
+					expect(gqlResponse.body.errors[0].message).toBe('Max relational depth exceeded.');
+				});
+			});
+
+			describe('allow queries up to deep depth limit', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// Setup
+					const food = createFood(pkType);
+					const insertedFood = await CreateItem(vendor, {
+						collection: localCollectionFoods,
+						item: {
+							...food,
+							ingredients: {
+								create: [{ [`${localCollectionFoods}_id`]: createIngredient(pkType) }],
+								update: [],
+								delete: [],
+							},
+						},
+					});
+
+					// Action
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionFoods}/${insertedFood.id}`)
+						.query({
+							fields: '*.*.*.*.*',
+							deep: JSON.stringify({
+								ingredients: {
+									_filter: {
+										[`${localCollectionFoods}_id`]: {
+											ingredients: {
+												[`${localCollectionFoods}_id`]: {
+													id: {
+														_eq: insertedFood.id,
+													},
+												},
+											},
+										},
+									},
+								},
+							}),
+						})
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					// Assert
+					expect(response.statusCode).toEqual(200);
+					expect(response.body.data).toEqual(
+						expect.objectContaining({
+							ingredients: expect.arrayContaining([
+								expect.objectContaining({
+									[`${localCollectionFoods}_id`]: expect.objectContaining({
+										ingredients: expect.arrayContaining([
+											expect.objectContaining({
+												[`${localCollectionFoods}_id`]: expect.objectContaining({
+													ingredients: [expect.any(Number)],
+												}),
+											}),
+										]),
+									}),
+								}),
+							]),
+						})
+					);
+				});
+			});
+
+			describe('deny queries over the deep depth limit', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// Setup
+					const food = createFood(pkType);
+					const ingredient = createIngredient(pkType);
+					const insertedFood = await CreateItem(vendor, {
+						collection: localCollectionFoods,
+						item: {
+							...food,
+							ingredients: {
+								create: [{ [`${localCollectionFoods}_id`]: ingredient }],
+								update: [],
+								delete: [],
+							},
+						},
+					});
+
+					// Action
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionFoods}/${insertedFood.id}`)
+						.query({
+							fields: '*.*.*.*.*',
+							deep: JSON.stringify({
+								ingredients: {
+									_filter: {
+										[`${localCollectionFoods}_id`]: {
+											ingredients: {
+												[`${localCollectionFoods}_id`]: {
+													ingredients: {
+														id: {
+															_eq: ingredient.id,
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+							}),
+						})
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					// Assert
+					expect(response.statusCode).toEqual(400);
+					expect(response.body.errors).toHaveLength(1);
+					expect(response.body.errors[0].message).toBe('Max relational depth exceeded.');
+				});
+			});
+
+			describe('allow queries up to filter depth limit', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// Setup
+					const food = createFood(pkType);
+					const insertedFood = await CreateItem(vendor, {
+						collection: localCollectionFoods,
+						item: {
+							...food,
+							ingredients: {
+								create: [{ [`${localCollectionFoods}_id`]: createIngredient(pkType) }],
+								update: [],
+								delete: [],
+							},
+						},
+					});
+
+					// Action
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionFoods}/${insertedFood.id}`)
+						.query({
+							fields: '*.*.*.*.*',
+							filter: JSON.stringify({
+								ingredients: {
+									[`${localCollectionFoods}_id`]: {
+										ingredients: {
+											[`${localCollectionFoods}_id`]: {
+												id: {
+													_eq: insertedFood.id,
+												},
+											},
+										},
+									},
+								},
+							}),
+						})
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+						query: {
+							[localCollectionFoods]: {
+								__args: {
+									filter: {
+										id: {
+											_eq: insertedFood.id,
+										},
+									},
+								},
+								ingredients: {
+									[`${localCollectionFoods}_id`]: {
+										ingredients: {
+											[`${localCollectionFoods}_id`]: {
+												__args: {
+													filter: {
+														id: {
+															_eq: insertedFood.id,
+														},
+													},
+												},
+												id: true,
+											},
+										},
+									},
+								},
+							},
+						},
+					});
+
+					// Assert
+					expect(response.statusCode).toEqual(200);
+					expect(response.body.data).toEqual(
+						expect.objectContaining({
+							ingredients: expect.arrayContaining([
+								expect.objectContaining({
+									[`${localCollectionFoods}_id`]: expect.objectContaining({
+										ingredients: expect.arrayContaining([
+											expect.objectContaining({
+												[`${localCollectionFoods}_id`]: expect.objectContaining({
+													ingredients: [expect.any(Number)],
+												}),
+											}),
+										]),
+									}),
+								}),
+							]),
+						})
+					);
+
+					expect(gqlResponse.statusCode).toEqual(200);
+					expect(gqlResponse.body.data).toEqual(
+						expect.objectContaining({
+							[localCollectionFoods]: expect.arrayContaining([
+								expect.objectContaining({
+									ingredients: expect.arrayContaining([
+										expect.objectContaining({
+											[`${localCollectionFoods}_id`]: expect.objectContaining({
+												ingredients: expect.arrayContaining([
+													expect.objectContaining({
+														[`${localCollectionFoods}_id`]: expect.objectContaining({
+															id: expect.any(String),
+														}),
+													}),
+												]),
+											}),
+										}),
+									]),
+								}),
+							]),
+						})
+					);
+				});
+			});
+
+			describe('deny queries over the filter depth limit', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// Setup
+					const food = createFood(pkType);
+					const ingredient = createIngredient(pkType);
+					const insertedFood = await CreateItem(vendor, {
+						collection: localCollectionFoods,
+						item: {
+							...food,
+							ingredients: {
+								create: [{ [`${localCollectionFoods}_id`]: ingredient }],
+								update: [],
+								delete: [],
+							},
+						},
+					});
+
+					// Action
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionFoods}/${insertedFood.id}`)
+						.query({
+							fields: '*.*.*.*.*',
+							filter: JSON.stringify({
+								ingredients: {
+									[`${localCollectionFoods}_id`]: {
+										ingredients: {
+											[`${localCollectionFoods}_id`]: {
+												ingredients: {
+													id: {
+														_eq: ingredient.id,
+													},
+												},
+											},
+										},
+									},
+								},
+							}),
+						})
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+						query: {
+							[localCollectionFoods]: {
+								__args: {
+									filter: {
+										id: {
+											_eq: insertedFood.id,
+										},
+									},
+								},
+								ingredients: {
+									[`${localCollectionFoods}_id`]: {
+										ingredients: {
+											[`${localCollectionFoods}_id`]: {
+												__args: {
+													filter: {
+														ingredients: {
+															id: {
+																_eq: insertedFood.id,
+															},
+														},
+													},
+												},
+												id: true,
+											},
+										},
+									},
+								},
+							},
+						},
+					});
+
+					// Assert
+					expect(response.statusCode).toEqual(400);
+					expect(response.body.errors).toHaveLength(1);
+					expect(response.body.errors[0].message).toBe('Max relational depth exceeded.');
+
+					expect(gqlResponse.body.errors).toBeDefined();
+					expect(gqlResponse.body.errors.length).toEqual(1);
+					expect(gqlResponse.body.errors[0].message).toBe('Max relational depth exceeded.');
+				});
+			});
+
+			describe('allow queries up to sort depth limit', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// Setup
+					const food = createFood(pkType);
+					const insertedFood = await CreateItem(vendor, {
+						collection: localCollectionFoods,
+						item: {
+							...food,
+							ingredients: {
+								create: [{ [`${localCollectionFoods}_id`]: createIngredient(pkType) }],
+								update: [],
+								delete: [],
+							},
+						},
+					});
+
+					// Action
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionFoods}/${insertedFood.id}`)
+						.query({
+							fields: '*.*.*.*.*',
+							sort: `ingredients.${localCollectionFoods}_id.ingredients.${localCollectionFoods}_id.id`,
+						})
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+						query: {
+							[localCollectionFoods]: {
+								__args: {
+									filter: {
+										id: {
+											_eq: insertedFood.id,
+										},
+									},
+								},
+								ingredients: {
+									[`${localCollectionFoods}_id`]: {
+										ingredients: {
+											[`${localCollectionFoods}_id`]: {
+												__args: {
+													sort: 'id',
+												},
+												id: true,
+											},
+										},
+									},
+								},
+							},
+						},
+					});
+
+					// Assert
+					expect(response.statusCode).toEqual(200);
+					expect(response.body.data).toEqual(
+						expect.objectContaining({
+							ingredients: expect.arrayContaining([
+								expect.objectContaining({
+									[`${localCollectionFoods}_id`]: expect.objectContaining({
+										ingredients: expect.arrayContaining([
+											expect.objectContaining({
+												[`${localCollectionFoods}_id`]: expect.objectContaining({
+													ingredients: [expect.any(Number)],
+												}),
+											}),
+										]),
+									}),
+								}),
+							]),
+						})
+					);
+
+					expect(gqlResponse.statusCode).toEqual(200);
+					expect(gqlResponse.body.data).toEqual(
+						expect.objectContaining({
+							[localCollectionFoods]: expect.arrayContaining([
+								expect.objectContaining({
+									ingredients: expect.arrayContaining([
+										expect.objectContaining({
+											[`${localCollectionFoods}_id`]: expect.objectContaining({
+												ingredients: expect.arrayContaining([
+													expect.objectContaining({
+														[`${localCollectionFoods}_id`]: expect.objectContaining({
+															id: expect.any(String),
+														}),
+													}),
+												]),
+											}),
+										}),
+									]),
+								}),
+							]),
+						})
+					);
+				});
+			});
+
+			describe('deny queries over the sort depth limit', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// Setup
+					const food = createFood(pkType);
+					const insertedFood = await CreateItem(vendor, {
+						collection: localCollectionFoods,
+						item: {
+							...food,
+							ingredients: {
+								create: [{ [`${localCollectionFoods}_id`]: createIngredient(pkType) }],
+								update: [],
+								delete: [],
+							},
+						},
+					});
+
+					// Action
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionFoods}/${insertedFood.id}`)
+						.query({
+							fields: '*.*.*.*.*',
+							sort: `ingredients.${localCollectionFoods}_id.ingredients.${localCollectionFoods}_id.ingredients.id`,
+						})
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+						query: {
+							[localCollectionFoods]: {
+								__args: {
+									filter: {
+										id: {
+											_eq: insertedFood.id,
+										},
+									},
+								},
+								ingredients: {
+									[`${localCollectionFoods}_id`]: {
+										ingredients: {
+											[`${localCollectionFoods}_id`]: {
+												__args: {
+													sort: 'ingredients.id',
+												},
+												id: true,
+											},
+										},
+									},
+								},
+							},
+						},
+					});
+
+					// Assert
+					expect(response.statusCode).toEqual(400);
+					expect(response.body.errors).toHaveLength(1);
+					expect(response.body.errors[0].message).toBe('Max relational depth exceeded.');
+
+					expect(gqlResponse.body.errors).toBeDefined();
+					expect(gqlResponse.body.errors.length).toEqual(1);
+					expect(gqlResponse.body.errors[0].message).toBe('Max relational depth exceeded.');
+				});
+			});
+
+			describe('allow queries up to deep sort depth limit', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// Setup
+					const food = createFood(pkType);
+					const insertedFood = await CreateItem(vendor, {
+						collection: localCollectionFoods,
+						item: {
+							...food,
+							ingredients: {
+								create: [{ [`${localCollectionFoods}_id`]: createIngredient(pkType) }],
+								update: [],
+								delete: [],
+							},
+						},
+					});
+
+					// Action
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionFoods}/${insertedFood.id}`)
+						.query({
+							fields: '*.*.*.*.*',
+							deep: JSON.stringify({
+								ingredients: {
+									_sort: `${localCollectionFoods}_id.ingredients.${localCollectionFoods}_id.id`,
+								},
+							}),
+						})
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					// Assert
+					expect(response.statusCode).toEqual(200);
+					expect(response.body.data).toEqual(
+						expect.objectContaining({
+							ingredients: expect.arrayContaining([
+								expect.objectContaining({
+									[`${localCollectionFoods}_id`]: expect.objectContaining({
+										ingredients: expect.arrayContaining([
+											expect.objectContaining({
+												[`${localCollectionFoods}_id`]: expect.objectContaining({
+													ingredients: [expect.any(Number)],
+												}),
+											}),
+										]),
+									}),
+								}),
+							]),
+						})
+					);
+				});
+			});
+
+			describe('deny queries over the deep sort depth limit', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// Setup
+					const food = createFood(pkType);
+					const insertedFood = await CreateItem(vendor, {
+						collection: localCollectionFoods,
+						item: {
+							...food,
+							ingredients: {
+								create: [{ [`${localCollectionFoods}_id`]: createIngredient(pkType) }],
+								update: [],
+								delete: [],
+							},
+						},
+					});
+
+					// Action
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionFoods}/${insertedFood.id}`)
+						.query({
+							fields: '*.*.*.*.*',
+							deep: JSON.stringify({
+								ingredients: {
+									_sort: `${localCollectionFoods}_id.ingredients.${localCollectionFoods}_id.ingredients.id`,
+								},
+							}),
+						})
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					// Assert
+					expect(response.statusCode).toEqual(400);
+					expect(response.body.errors).toHaveLength(1);
+					expect(response.body.errors[0].message).toBe('Max relational depth exceeded.');
+				});
+			});
+		});
 	});
 });
