@@ -49,6 +49,7 @@ group: Groep
 export_items: Exporteer items
 and: En
 or: Of
+init: Initialiseren
 dataset_too_large_currently_showing_n_items: Gegevensset is te groot. Alleen de eerste {n} items worden nu weergegeven.
 modifier: Aanpasser
 custom: Aangepast
@@ -244,6 +245,7 @@ float: Float
 integer: Integer
 json: JSON
 xml: XML
+yaml: YAML
 string: String
 text: Tekst
 time: Tijd
@@ -571,7 +573,9 @@ select_an_item: Selecteer een item...
 edit: Wijzig
 enabled: Ingeschakeld
 disable_tfa: 2FA uitzetten
-tfa_scan_code: Scan de code in uw authenticatie-app om de instelling van 2FA te voltooien
+admin_disable_tfa_text: Weet je zeker dat je 2FA voor deze gebruiker wilt uitschakelen?
+tfa_setup: 2FA instellen
+tfa_scan_code: Scan de code in je authenticatie-app om het instellen van 2FA te voltooien
 enter_otp_to_disable_tfa: Voer de OTP in om 2FA uit te schakelen
 create_account: Account aanmaken
 account_created_successfully: Account succesvol aangemaakt
@@ -1088,7 +1092,7 @@ fields:
     theme: Thema
     theme_light: Lichte modus
     theme_dark: Donkere Modus
-    tfa_secret: 2FA (Twee-Factor Authenticatie)
+    tfa_secret: Twee-factor-authenticatie (2FA)
     admin_options: Admin opties
     status: Status
     status_draft: Concept
@@ -1148,11 +1152,15 @@ fields:
     module_list: Module Navigatie
   directus_webhooks:
     name: Naam
+    method: Methode
     status: Status
     value: Waarde
+    headers: Verzoekheaders
+    actions: Acties
     collections: Collecties
 field_options:
   directus_settings:
+    project_name_placeholder: Mijn project...
     security_divider_title: Beveiliging
     mapbox_key: Toegangstoken Mapbox
     basemaps_style: Mapbox stijl
@@ -1160,6 +1168,7 @@ field_options:
     login: Inloggen
     create: Maak
     update: Updaten
+    delete: Verwijderen
   directus_collections:
     track_activity_revisions: Track Activiteiten & Revisies
     only_track_activity: Track alleen activiteiten
@@ -1171,6 +1180,8 @@ field_options:
     collection_name: Collectie naam
     archive_divider: Archiveren
     sort_divider: Sorteren
+  directus_files:
+    title: Een unieke titel...
   directus_roles:
     ip_access: Toegestane IP-adressen toevoegen, leeg laten om alles toe te staan...
     fields:
@@ -1229,6 +1240,8 @@ referential_action_no_action: Voorkom de verwijdering
 referential_action_cascade: Verwijder het {collection} item (cascade)
 editing_role: '{role} Rol'
 creating_webhook: Webhook Aanmaken
+default_label: Standaard
+delete_label: Verwijderen
 delete_are_you_sure: >-
   Deze actie is permanent en kan niet ongedaan worden gemaakt. Weet u zeker dat u wilt doorgaan?
 delete_field_are_you_sure: >-
@@ -1256,6 +1269,10 @@ colors:
   green: Groen
   yellow: Geel
   orange: Oranje
+  red: Rood
+  black: Zwart
+  gray: Grijs
+  white: Wit
 junction_collection: Verbindingscollectie
 latency: Vertraging
 login: Log in
@@ -1295,10 +1312,15 @@ interfaces:
   filter:
     name: Filter
     add_filter: Filter toevoegen
+    logic_type_and: EN
+    logic_type_or: OF
     all: Alle
     any: Eender
+    and: en
   presentation-links:
+    style: Stijl
     primary: Primair
+    button: Knoppen
   input-code:
     code: Code
   system-collection:
@@ -1320,6 +1342,7 @@ interfaces:
     use_24: 24-uurs formaat gebruiken
   system-fields:
     select_a_collection: Selecteer een collectie
+    no_fields: Geen velden
   system-display-template:
     display-template: Weergavesjabloon
     collection_field_not_setup: De collectie-veld optie is onjuist geconfigureerd
@@ -1414,6 +1437,7 @@ interfaces:
   translations:
     display_template: Weergavesjabloon
     no_collection: Geen collectie
+    default_language: Standaardtaal
   user:
     user: Gebruiker
     description: Selecteer een bestaande Directus gebruiker
@@ -1551,6 +1575,9 @@ both: Beiden
 panels:
   label:
     name: Label
+triggers:
+  webhook:
+    method: Methode
 operations:
   log:
     message: Bericht
@@ -1559,6 +1586,7 @@ operations:
     message: Bericht
   request:
     url: URL
+    method: Methode
   trigger:
     flows: Flows
     flow: Flow
