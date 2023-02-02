@@ -46,7 +46,7 @@
 				</tr>
 			</tbody>
 			<draggable
-				v-else
+				v-else-if="!disabled && showManualSort"
 				v-model="internalItems"
 				:force-fallback="true"
 				:item-key="itemKey"
@@ -109,6 +109,53 @@
 					</tr>
 				</template>
 			</draggable>
+			<tbody
+				v-else
+				:class="{
+					subdued: loading || reordering,
+					clickable: !disabled && clickable,
+					selectable: !disabled && showSelect !== 'none',
+				}"
+			>
+				<tr v-for="element in internalItems" :key="element[itemKey]" class="table-row">
+					<td class="select cell" @click.stop>
+						<v-checkbox
+							:icon-on="showSelect === 'one' ? 'radio_button_checked' : undefined"
+							:icon-off="showSelect === 'one' ? 'radio_button_unchecked' : undefined"
+							:model-value="getSelectedState(element)"
+							@update:model-value="
+								onItemSelected({
+									item: element,
+									value: !getSelectedState(element),
+								})
+							"
+						/>
+					</td>
+
+					<td v-for="header in internalHeaders" :key="header.value" class="cell" :class="`align-${header.align}`">
+						<slot :name="`item.${header.value}`" :item="element">
+							<v-text-overflow
+								v-if="
+									header.value.split('.').reduce((acc, val) => {
+										return acc[val];
+									}, element)
+								"
+								:text="
+									header.value.split('.').reduce((acc, val) => {
+										return acc[val];
+									}, element)
+								"
+							/>
+							<value-null v-else />
+						</slot>
+					</td>
+
+					<td class="spacer cell" />
+					<td v-if="hasItemAppendSlot" class="append cell" @click.stop>
+						<slot name="item-append" :item="element" />
+					</td>
+				</tr>
+			</tbody>
 		</table>
 		<slot name="footer" />
 	</div>
