@@ -687,7 +687,7 @@ export default defineComponent({
 }
 
 .layout {
-	--layout-offset-top: 64px;
+	--layout-offset-top: calc(var(--header-bar-height) - 1px);
 }
 
 .bookmark-controls {
