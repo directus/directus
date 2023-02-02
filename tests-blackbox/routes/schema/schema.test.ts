@@ -204,6 +204,13 @@ describe('Schema Snapshots', () => {
 			it.each(vendors)(
 				'%s',
 				async (vendor) => {
+					// Setup
+					const collectionsCount =
+						snapshotsCacheOriginal[vendor].collections.length - snapshotsCacheEmpty[vendor].collections.length;
+					const fieldsCount = snapshotsCacheOriginal[vendor].fields.length - snapshotsCacheEmpty[vendor].fields.length;
+					const relationsCount =
+						snapshotsCacheOriginal[vendor].relations.length - snapshotsCacheEmpty[vendor].relations.length;
+
 					// Action
 					const response = await request(getUrl(vendor))
 						.post('/schema/diff')
@@ -213,9 +220,9 @@ describe('Schema Snapshots', () => {
 
 					// Assert
 					expect(response.statusCode).toEqual(200);
-					expect(response.body.data?.diff?.collections?.length).toBe(66);
-					expect(response.body.data?.diff?.fields?.length).toBe(342);
-					expect(response.body.data?.diff?.relations?.length).toBe(66);
+					expect(response.body.data?.diff?.collections?.length).toBe(collectionsCount);
+					expect(response.body.data?.diff?.fields?.length).toBe(fieldsCount);
+					expect(response.body.data?.diff?.relations?.length).toBe(relationsCount);
 				},
 				300000
 			);
