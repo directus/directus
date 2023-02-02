@@ -245,6 +245,7 @@ float: Float
 integer: Integer
 json: JSON
 xml: XML
+yaml: YAML
 string: String
 text: Text
 time: Time
@@ -1431,6 +1432,7 @@ translation: Translation
 translation_placeholder: Enter a translation...
 value: Value
 view_project: View Project
+weeks: { }
 report_error: Report Error
 start: Start
 table: Table
@@ -1940,7 +1942,28 @@ layouts:
     no_group: No Group
     not_all_loaded: Could only load the first 1000 items.
 horizontal: Horizontal
+vertical: Vertical
+x_axis: X-Axis
+y_axis: Y-Axis
+y_axis_function: Y-Axis Function
+show_x_only: Show X-Axis Only
+show_y_only: Show Y-Axis Only
+show_data_label: Show Data Label
 both: Both
+show_axis_labels: Show Axis Labels
+function: Function
+half_circle: Half Circle
+full_circle: Full Circle
+stroke_width: Stroke Width
+rounded_stroke: Rounded Stroke
+thin: Thin
+medium: Medium
+broad: Broad
+show_labels: Show Labels
+show_legend: Show Legend
+right: Right
+left: Left
+donut: Donut
 panels:
   metric:
     name: Metric
@@ -1967,6 +1990,7 @@ panels:
   linechart:
     name: Line Chart
     description: Line chart for comparing change of a field
+    disabled_grouping: Disabled when grouping is selected.
     disabled_no_grouping: Disabled when no grouping is selected.
     show_marker: Show Tooltip Marker
     curve_type: Curve Type
@@ -2097,3 +2121,9 @@ operations:
     flows: Flows
     flow: Flow
     data: Data
+    iteration_mode: Iteration Mode
+    iteration_mode_note: Mode for iterating over arrays.
+    serial: Serial
+    parallel: Parallel
+    batch: Batch
+    batch_size: Batch Size
