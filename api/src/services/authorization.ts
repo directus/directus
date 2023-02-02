@@ -104,6 +104,11 @@ export class AuthorizationService {
 								collection: nestedNode.relatedCollection,
 								field: null,
 							});
+						} else if (nestedNode.type === 'jsonField') {
+							collections.push({
+								collection: ast.name,
+								field: nestedNode.name,
+							});
 						} else if (nestedNode.type !== 'field') {
 							collections.push(...getCollectionsFromAST(nestedNode));
 						}
