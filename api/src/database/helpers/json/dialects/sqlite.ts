@@ -78,11 +78,11 @@ export class JsonHelperSQLite extends JsonHelperDefault {
 			.split('[*]')
 			.flatMap((p) => p.split('.*'))
 			.map((q) => (q.startsWith('$') ? q : '$' + q));
+		const aliases = arrayParts.map(() => generateAlias()),
+			withAlias = generateAlias();
 		if (arrayParts.length > 1 && arrayParts[arrayParts.length - 1] === '$') {
 			arrayParts.pop();
 		}
-		const aliases = arrayParts.map(() => generateAlias()),
-			withAlias = generateAlias();
 		const primaryKey = this.schema.collections[table].primary;
 		const fromList = [
 			this.knex.raw('??', [table]),
@@ -127,9 +127,9 @@ export class JsonHelperSQLite extends JsonHelperDefault {
 		return dbQuery;
 	}
 	private buildJsonGroupArray(queryParts: string[], aliases: string[]): Knex.Raw {
-		const currentAlias = aliases[aliases.length - 1],
-			prevAlias = aliases[aliases.length - 2],
-			currentQuery = queryParts[queryParts.length - 1];
+		const currentAlias = aliases[aliases.length - 1];
+		const prevAlias = aliases[aliases.length - 2];
+		const currentQuery = queryParts[queryParts.length - 1];
 		if (currentQuery === '$') {
 			return this.knex.raw('json_group_array(??.value) as ??', [prevAlias, currentAlias]);
 		}
