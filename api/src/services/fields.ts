@@ -178,6 +178,8 @@ export class FieldsService {
 			} else if (field.meta?.special?.includes('cast-datetime')) {
 				field.type = 'dateTime';
 			}
+
+			field.type = this.helpers.schema.processFieldType(field);
 		}
 
 		return result;
