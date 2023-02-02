@@ -1,5 +1,5 @@
 <template>
-	<div class="layout-tabular">
+	<div :class="$attrs.class" class="layout-tabular">
 		<v-table
 			v-if="loading || (itemCount && itemCount > 0)"
 			ref="table"
