@@ -65,7 +65,11 @@
 				@end="onSortChange"
 			>
 				<template #item="{ element }">
-					<tr :key="element[itemKey]" class="table-row">
+					<tr
+						:key="element[itemKey]"
+						class="table-row"
+						@click="clickable ? $emit('click:row', { item: element, event: $event }) : null"
+					>
 						<td class="manual cell" @click.stop>
 							<v-icon name="drag_handle" class="drag-handle" />
 						</td>
@@ -117,7 +121,12 @@
 					selectable: !disabled && showSelect !== 'none',
 				}"
 			>
-				<tr v-for="element in internalItems" :key="element[itemKey]" class="table-row">
+				<tr
+					v-for="element in internalItems"
+					:key="element[itemKey]"
+					class="table-row"
+					@click="clickable ? $emit('click:row', { item: element, event: $event }) : null"
+				>
 					<td class="select cell" @click.stop>
 						<v-checkbox
 							:icon-on="showSelect === 'one' ? 'radio_button_checked' : undefined"
