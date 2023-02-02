@@ -245,6 +245,7 @@ float: Float
 integer: Integer
 json: JSON
 xml: XML
+yaml: YAML
 string: String
 text: 文本
 time: 时间
@@ -1940,7 +1941,28 @@ layouts:
     no_group: 无分组
     not_all_loaded: 只能加载前 1000 个条目。
 horizontal: 横向
+vertical: 垂直
+x_axis: X-轴
+y_axis: Y-轴
+y_axis_function: Y-轴函数
+show_x_only: 仅显示 X-轴
+show_y_only: 仅显示 Y-轴
+show_data_label: 显示数据标签
 both: 两个
+show_axis_labels: 显示轴标签
+function: 函数
+half_circle: 半圆
+full_circle: 全圆
+stroke_width: 描边宽度
+rounded_stroke: 圆角描边
+thin: 细
+medium: 中
+broad: 大
+show_labels: 显示标签
+show_legend: 显示图例
+right: 右
+left: 左
+donut: 圆环图
 panels:
   metric:
     name: 公制
@@ -1967,6 +1989,7 @@ panels:
   linechart:
     name: 折线图
     description: 比较字段变化的线形图
+    disabled_grouping: 选择分组时禁用。
     disabled_no_grouping: 未选择分组时禁用。
     show_marker: 显示工具提示标志
     curve_type: 曲线类型
@@ -2097,3 +2120,8 @@ operations:
     flows: 流程
     flow: 流程
     data: 数据
+    iteration_mode: 迭代模式
+    iteration_mode_note: 数组上的迭代模式。
+    serial: 串行
+    parallel: 并行
+    batch: 批处理
