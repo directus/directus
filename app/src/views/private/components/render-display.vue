@@ -4,7 +4,7 @@
 	<component
 		:is="`display-${display}`"
 		v-else
-		v-bind="translate(options ?? {})"
+		v-bind="options"
 		:interface="interface"
 		:interface-options="interfaceOptions"
 		:value="value"
@@ -15,9 +15,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue';
-import { getDisplay } from '@/displays';
-import { translate } from '@/utils/translate-object-values';
+import { useExtension } from '@/composables/use-extension';
+import { defineComponent } from 'vue';
 
 export default defineComponent({
 	props: {
@@ -55,8 +54,9 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const displayInfo = computed(() => getDisplay(props.display));
-		return { displayInfo, translate };
+		const displayInfo = useExtension('display', props.display);
+
+		return { displayInfo };
 	},
 });
 </script>

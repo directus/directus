@@ -7,7 +7,7 @@ import { isThisYear, isToday, isYesterday, parseISO, format } from 'date-fns';
 import { groupBy, orderBy } from 'lodash';
 import { ref, Ref, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { Revision, RevisionsByDate } from '../views/private/components/revisions-drawer-detail/types';
+import { Revision, RevisionsByDate } from '@/types/revisions';
 
 type UseRevisionsOptions = {
 	action?: Action;

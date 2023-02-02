@@ -1,27 +1,41 @@
+# For testing purposes only!
+
 SHELL=bash
 
-version=$(shell git describe --tags --abbrev=0)
+image=directus-test
+version=$(shell git rev-parse HEAD)
 tag=latest
-cmd=
-user=directus
-registry=docker.io
-repository=directus/directus
 
-.PHONY: build-images
+.PHONY: build-image test-image
 
-build-images:
-	npm run build
-	npm run pack
+build-image:
+	pnpm install
+	pnpm -r build
+	node pack.js
 	docker build \
 		--build-arg VERSION=$(version) \
-		--build-arg REPOSITORY=$(repository) \
-		-t directus:temp \
+		--build-arg REPOSITORY=$(image) \
+		-t $(image):$(version) \
 		-f ./Dockerfile \
 		..
+	docker tag $(image):$(version) $(image):$(tag)
 
-	docker tag directus:temp $(registry)/$(repository):$(version)
-	docker tag directus:temp $(registry)/$(repository):$(tag)
-	docker image rm directus:temp
-
+# To override or pass additional arguments:
+# DOCKER_ARGS='-p 8051:8055 -e LOG_STYLE=raw' make test-image
 test-image:
-	docker run --rm -it $(registry)/$(repository):$(tag) $(cmd)
+	ARGS=($$DOCKER_ARGS); docker run \
+		--rm \
+		-t \
+		-p 8055:8055 \
+		-e "KEY=$$(uuidgen | tr '[:upper:]' '[:lower:]')" \
+		-e "SECRET=$$(uuidgen | tr '[:upper:]' '[:lower:]')" \
+		"$${ARGS[@]}" \
+		$(image):$(tag)
+
+enter-image:
+	ARGS=($$DOCKER_ARGS); docker run \
+		--rm \
+		-it \
+		"$${ARGS[@]}" \
+		$(image):$(tag) \
+		/bin/sh

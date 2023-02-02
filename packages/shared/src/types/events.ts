@@ -16,3 +16,4 @@ export type FilterHandler<T = unknown> = (
 export type ActionHandler = (meta: Record<string, any>, context: EventContext) => void;
 export type InitHandler = (meta: Record<string, any>) => void;
 export type ScheduleHandler = () => void | Promise<void>;
+export type EmbedHandler = () => string;

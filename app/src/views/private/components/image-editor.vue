@@ -20,7 +20,7 @@
 
 		<v-notice v-else-if="error" type="error">error</v-notice>
 
-		<div v-show="imageData && !loading && !error" class="editor-container">
+		<div v-if="imageData && !loading && !error" class="editor-container">
 			<div class="editor">
 				<img ref="imageElement" :src="imageURL" role="presentation" alt="" @load="onImageLoad" />
 			</div>
@@ -133,7 +133,7 @@ import { getRootPath } from '@/utils/get-root-path';
 import { unexpectedError } from '@/utils/unexpected-error';
 import Cropper from 'cropperjs';
 import throttle from 'lodash/throttle';
-import { nanoid } from 'nanoid';
+import { nanoid } from 'nanoid/non-secure';
 
 type Image = {
 	type: string;

@@ -28,6 +28,7 @@
 			:field="fieldNode"
 			:search="search"
 			:include-functions="includeFunctions"
+			:relational-field-selectable="relationalFieldSelectable"
 			@add="$emit('select-field', $event)"
 		/>
 	</v-list>
@@ -49,6 +50,7 @@ interface Props {
 	includeFunctions?: boolean;
 	includeRelations?: boolean;
 	allowSelectAll?: boolean;
+	relationalFieldSelectable?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -57,6 +59,7 @@ const props = withDefaults(defineProps<Props>(), {
 	includeFunctions: false,
 	includeRelations: true,
 	allowSelectAll: false,
+	relationalFieldSelectable: true,
 });
 
 const emit = defineEmits(['select-field', 'select-all']);

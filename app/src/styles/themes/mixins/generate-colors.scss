@@ -16,7 +16,7 @@
 				$mixing-color: $mix-color-high;
 			}
 			// This is the CSS variable that will be output
-			--#{$identifier}#{$resolved-suffix}: #{mix($mixing-color, $color, 100 - abs($step))};
+			--#{$identifier}#{$resolved-suffix}: #{mix($mixing-color, $color, 100% - abs($step))};
 		}
 	}
 }

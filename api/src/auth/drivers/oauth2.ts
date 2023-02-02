@@ -1,6 +1,6 @@
 import { BaseException } from '@directus/shared/exceptions';
 import { parseJSON } from '@directus/shared/utils';
-import { Router } from 'express';
+import express, { Router } from 'express';
 import flatten from 'flat';
 import jwt from 'jsonwebtoken';
 import ms from 'ms';
@@ -103,8 +103,8 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 	}
 
 	async getUserID(payload: Record<string, any>): Promise<string> {
-		if (!payload.code || !payload.codeVerifier) {
-			logger.trace('[OAuth2] No code or codeVerifier in payload');
+		if (!payload.code || !payload.codeVerifier || !payload.state) {
+			logger.warn('[OAuth2] No code, codeVerifier or state in payload');
 			throw new InvalidCredentialsException();
 		}
 
@@ -150,7 +150,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 
 		// Is public registration allowed?
 		if (!allowPublicRegistration) {
-			logger.trace(`[OAuth2] User doesn't exist, and public registration not allowed for provider "${provider}"`);
+			logger.warn(`[OAuth2] User doesn't exist, and public registration not allowed for provider "${provider}"`);
 			throw new InvalidCredentialsException();
 		}
 
@@ -254,6 +254,14 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 		respond
 	);
 
+	router.post(
+		'/callback',
+		express.urlencoded({ extended: false }),
+		(req, res) => {
+			res.redirect(303, `./callback?${new URLSearchParams(req.body)}`);
+		},
+		respond
+	);
 	router.get(
 		'/callback',
 		asyncHandler(async (req, res, next) => {
@@ -286,11 +294,6 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 
 			try {
 				res.clearCookie(`oauth2.${providerName}`);
-
-				if (!req.query.code || !req.query.state) {
-					logger.warn(`[OAuth2] Couldn't extract OAuth2 code or state from query: ${JSON.stringify(req.query)}`);
-				}
-
 				authResponse = await authenticationService.login(providerName, {
 					code: req.query.code,
 					codeVerifier: verifier,

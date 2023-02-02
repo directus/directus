@@ -179,6 +179,9 @@ revision_post_create: Her er hvordan dette produktet så ut etter oppdateringen.
 revision_post_update: Her er hvordan dette produktet så ut etter oppdateringen.
 changes_made: Nedenfor følger de spesifikke endringene i denne revisjonen.
 no_relational_data: Husk at relasjonsdata ikke er tatt med her.
+top: Øverst
+bottom: Nederst
+hide_field: Skjul felt
 hide_field_on_detail: Skjul felt ved detaljert visning
 show_field_on_detail: Vis felt ved detaljert visning
 delete_field: Slett felt
@@ -187,6 +190,9 @@ field_create_success: 'Opprettet felt: "{field}"'
 field_update_success: 'Oppdatert Felt: "{field}"'
 duplicate_where_to: Hvor vil du duplisere dette feltet til?
 language: Språk
+language_placeholder: Velg et språk...
+aggregate_function: Aggregert funksjon
+aggregate_precision: Aggregert presisjon
 global: Globalt
 admins_have_all_permissions: Administratorer har alle rettigheter
 camera: Kamera
@@ -228,6 +234,7 @@ time: Tid
 timestamp: Tidsstempel
 uuid: UUID
 hash: Hash
+geometry.Point: Punkt
 not_available_for_type: Ikke tilgjengelig for denne typen
 create_translations: Lag oversettelser
 auto_refresh: Automatisk oppdatering
@@ -281,8 +288,14 @@ foreign_key: Fremmednøkkel
 finish_setup: Fullfør oppsett
 dismiss: Lukk
 raw_value: Rå verdi
+copy_raw_value_success: Kopiert
+paste_raw_value: Lim inn råverdi
+paste_raw_value_success: Limt
 edit_raw_value: Rediger råverdi
 enter_raw_value: Legg inn råverdi...
+clear_value: Tøm innhold
+clear_changes: Fjern endringer
+reset_to_default: Tilbakestill til standard
 notifications: Varsler
 show_all_activity: Vis all aktivitet
 page_not_found: Side ikke funnet
@@ -299,6 +312,7 @@ revision_delta_deleted: Slettet
 revision_delta_reverted: Tilbakestilt
 revision_delta_other: Revisjon
 revision_delta_by: '{date} av {user}'
+download_page_as_csv: 'Last ned side som CSV'
 private_user: Privat bruker
 revision_preview: Revisjon forhåndsvisning
 updates_made: Oppdateringer Laget
@@ -390,6 +404,7 @@ replace_from_library: Erstatt fil fra bibliotek
 replace_from_url: Erstatt fil fra URL
 no_file_selected: Ingen fil valgt
 download_file: Last ned fil
+start_export: Start eksport
 collection_key: Nøkkel Samling
 name: Navn
 primary_key_field: Hovednøkkelfelt (Automatic Translation)
@@ -525,6 +540,7 @@ no_app_access_copy: Denne brukeren har ikke tillatelse til å bruke admin appen.
 password_reset_successful: Passord tilbakestilt
 back: Tilbake
 filter: Filter
+edit_image: Rediger bilde
 editing_image: Redigerer bilde
 square: Firkant
 free: Gratis
@@ -538,6 +554,7 @@ update_collection_success: Oppdatert samling
 delete_collection_success: Slettet samling
 make_collection_visible: Gjør samlingen synlig
 make_collection_hidden: Gjør samlingen skjult
+goto_collection_content: Vis innhold
 start_end_of_count_items: '{start}–{end} av {count} artikler'
 start_end_of_count_filtered_items: '{start}–{end} av {count} filtrerte artikler'
 one_item: '1 element'

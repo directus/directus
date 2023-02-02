@@ -1,6 +1,8 @@
 import { Command } from 'commander';
 import create from './commands/create';
+import add from './commands/add';
 import build from './commands/build';
+import link from './commands/link';
 
 const pkg = require('../../../package.json');
 
@@ -13,8 +15,10 @@ program
 	.command('create')
 	.arguments('<type> <name>')
 	.description('Scaffold a new Directus extension')
-	.option('-l, --language <language>', 'specify the language to use', 'javascript')
+	.option('-l, --language <language>', 'specify the language to use')
 	.action(create);
+
+program.command('add').description('Add entries to an existing Directus extension').action(add);
 
 program
 	.command('build')
@@ -28,5 +32,11 @@ program
 	.option('--no-minify', 'disable minification')
 	.option('--sourcemap', 'include source maps in output')
 	.action(build);
+
+program
+	.command('link')
+	.description('Creates a symlink to the extension in the Directus extensions folder')
+	.argument('<path>', 'path to the extension folder of directus')
+	.action(link);
 
 program.parse(process.argv);
