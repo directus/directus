@@ -104,6 +104,10 @@
 								text: t('xml'),
 								value: 'xml',
 							},
+							{
+								text: t('yaml'),
+								value: 'yaml',
+							},
 						]"
 					/>
 				</div>
@@ -351,18 +355,27 @@ const getItemCount = debounce(async () => {
 	itemCountLoading.value = true;
 
 	try {
+		const aggregate = primaryKeyField.value?.field
+			? {
+					countDistinct: [primaryKeyField.value.field],
+			  }
+			: {
+					count: ['*'],
+			  };
+
 		const count = await api
 			.get(getEndpoint(collection.value), {
 				params: {
 					...exportSettings,
-					aggregate: {
-						count: ['*'],
-					},
+					aggregate,
 				},
 			})
 			.then((response) => {
 				if (response.data.data?.[0]?.count) {
 					return Number(response.data.data[0].count);
+				}
+				if (response.data.data?.[0]?.countDistinct) {
+					return Number(response.data.data[0].countDistinct[primaryKeyField.value!.field]);
 				}
 			});
 

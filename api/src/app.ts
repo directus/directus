@@ -26,6 +26,7 @@ import presetsRouter from './controllers/presets';
 import relationsRouter from './controllers/relations';
 import revisionsRouter from './controllers/revisions';
 import rolesRouter from './controllers/roles';
+import schemaRouter from './controllers/schema';
 import serverRouter from './controllers/server';
 import settingsRouter from './controllers/settings';
 import usersRouter from './controllers/users';
@@ -253,6 +254,7 @@ export default async function createApp(): Promise<express.Application> {
 	app.use('/relations', relationsRouter);
 	app.use('/revisions', revisionsRouter);
 	app.use('/roles', rolesRouter);
+	app.use('/schema', schemaRouter);
 	app.use('/server', serverRouter);
 	app.use('/settings', settingsRouter);
 	app.use('/shares', sharesRouter);

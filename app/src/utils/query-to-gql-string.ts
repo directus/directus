@@ -1,8 +1,9 @@
 import { useFieldsStore } from '@/stores/fields';
-import { Query } from '@directus/shared/types';
-import { toArray } from '@directus/shared/utils';
+import { Filter, Query } from '@directus/shared/types';
+import { parseJSON, toArray } from '@directus/shared/utils';
 import { jsonToGraphQLQuery } from 'json-to-graphql-query';
-import { isEmpty, pick, set, omitBy, isUndefined } from 'lodash';
+import { isEmpty, pick, set, omitBy, isUndefined, transform } from 'lodash';
+import { extractFieldFromFunction } from './extract-field-from-function';
 
 type QueryInfo = { collection: string; key: string; query: Query };
 
@@ -61,12 +62,39 @@ export function formatQuery({ collection, query }: QueryInfo): Record<string, an
 
 	if (query.filter) {
 		try {
-			const json = String(query.filter);
-			formattedQuery.__args.filter = JSON.parse(json);
+			const filterValue = typeof query.filter === 'object' ? query.filter : parseJSON(String(query.filter));
+			formattedQuery.__args.filter = replaceFuncs(filterValue);
 		} catch {
 			// Keep current value there
 		}
 	}
 
 	return formattedQuery;
+}
+
+/**
+ * Replace functions from Directus-Filter format to GraphQL format
+ */
+function replaceFuncs(filter?: Filter | null): null | undefined | Filter {
+	if (!filter) return filter;
+
+	return replaceFuncDeep(filter);
+
+	function replaceFuncDeep(filter: Record<string, any>) {
+		return transform(filter, (result: Record<string, any>, value, key) => {
+			if (typeof key === 'string' && key.includes('(') && key.includes(')')) {
+				const { fn, field } = extractFieldFromFunction(key);
+
+				if (fn) {
+					result[`${field}_func`] = {
+						[fn]: value,
+					};
+				} else {
+					result[key] = value;
+				}
+			} else {
+				result[key] = value?.constructor === Object || value?.constructor === Array ? replaceFuncDeep(value) : value;
+			}
+		});
+	}
 }

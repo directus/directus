@@ -214,14 +214,14 @@ const _empty = (inputValue: any, _possibleValues: any): boolean => {
 	if (inputValue === '') {
 		return true;
 	}
-	return false;
+	return _null(inputValue, _possibleValues);
 };
 
 const _nempty = (inputValue: any, _possibleValues: any): boolean => {
 	if (inputValue !== '') {
 		return true;
 	}
-	return false;
+	return _nnull(inputValue, _possibleValues);
 };
 
 const _null = (inputValue: any, _possibleValues: any): boolean => {
