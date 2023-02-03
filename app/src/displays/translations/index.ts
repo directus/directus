@@ -182,8 +182,8 @@ export default defineDisplay({
 		const fields = new Set<string>();
 		fields.add('*');
 
-		if(options?.template) {
-			const templateFields = adjustFieldsForDisplays(getFieldsFromTemplate(options.template), translationCollection)
+		if (options?.template) {
+			const templateFields = adjustFieldsForDisplays(getFieldsFromTemplate(options.template), translationCollection);
 			templateFields.forEach((field) => fields.add(field));
 		}
 
@@ -194,7 +194,7 @@ export default defineDisplay({
 				fields.add(`${languagesRelation.field}.${options.languageField}`);
 			}
 		}
-		
+
 		return Array.from(fields);
 	},
 });
