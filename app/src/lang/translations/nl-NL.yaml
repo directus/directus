@@ -328,7 +328,7 @@ paste_raw_value_fail: Plakken mislukt
 view_raw_value: Bekijk Onbewerkte Waarde
 edit_raw_value: Bewerk Ruwe Waarde
 enter_raw_value: Ruwe waarde invoeren...
-clear_value: Wis Waarde
+clear_value: Waarde wissen
 clear_changes: Verwijder Veranderingen
 clear_items: Verwijder Items
 reset_to_default: Herstel naar Standaard
@@ -939,9 +939,9 @@ creating_unit: '{unit} aan het aanmaken'
 editing_unit: '{unit} aan het bewerken'
 editing_in_batch: '{count} items aan het wijzigen'
 no_options_available: Geen opties beschikbaar
-settings_data_model: Data model
+settings_data_model: Datamodel
 settings_permissions: Rollen & Permissies
-settings_project: Project Instellingen
+settings_project: Projectinstellingen
 settings_webhooks: Webhooks
 settings_flows: Flows
 settings_presets: Voorkeuren & Bladwijzers
@@ -1120,7 +1120,7 @@ fields:
     project_name: Projectnaam
     project_url: Project URL
     project_color: Projectkleur
-    project_logo: Project logo
+    project_logo: Projectlogo
     default_language: Standaardtaal
     branding: Merk & Stijl
     public_foreground: Openbare voorgrond
