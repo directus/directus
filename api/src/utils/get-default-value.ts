@@ -1,4 +1,4 @@
-import { SchemaOverview } from '@directus/schema/dist/types/overview';
+import { SchemaOverview } from '@directus/schema/types/overview';
 import { parseJSON } from '@directus/shared/utils';
 import { Column } from 'knex-schema-inspector/dist/types/column';
 import env from '../env';

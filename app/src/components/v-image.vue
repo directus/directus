@@ -1,5 +1,5 @@
 <template>
-	<img ref="imageElement" :src="inView ? srcData : emptyPixel" v-bind="attrsWithoutSrc" />
+	<img ref="imageElement" :src="srcData" v-bind="attrsWithoutSrc" />
 </template>
 
 <script lang="ts" setup>
@@ -17,22 +17,17 @@ const attrs = useAttrs();
 
 const imageElement = ref<HTMLImageElement>();
 
-const inView = ref(false);
-
 const emptyPixel =
 	'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';
 const srcData = ref<string>(emptyPixel);
 
-let loaded = false;
-
-const observer = new IntersectionObserver((entries) => {
+const observer = new IntersectionObserver((entries, observer) => {
 	if (entries.length === 0) return;
 
 	const isIntersecting = entries.at(-1)!.isIntersecting;
 
-	inView.value = isIntersecting;
-
-	if (isIntersecting && !loaded && props.src) {
+	if (isIntersecting && props.src) {
+		observer.disconnect();
 		loadImage();
 	}
 });
@@ -45,8 +40,6 @@ watch(
 
 async function loadImage() {
 	try {
-		loaded = true;
-
 		const res = await api.get(props.src, {
 			responseType: 'arraybuffer',
 			params: {
@@ -72,7 +65,7 @@ async function loadImage() {
 			raw += String.fromCharCode(byte);
 		});
 
-		const base64 = btoa(raw);
+		const base64 = window.btoa(raw);
 		srcData.value = `data:${contentType};base64,${base64}`;
 	} catch (err) {
 		emit('error', err);

@@ -1,9 +1,9 @@
 import { ref, Ref } from 'vue';
-import api from '@/api';
 import { getLiteralInterpolatedTranslation } from '@/utils/get-literal-interpolated-translation';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { Language, i18n } from '@/lang';
 import { useUserStore } from '@/stores/user';
+import { useSettingsStore } from '@/stores/settings';
 
 export type Translation = {
 	language: string;
@@ -24,6 +24,7 @@ type UsableTranslationStrings = {
 	loading: Ref<boolean>;
 	error: Ref<any>;
 	translationStrings: Ref<TranslationString[] | null>;
+	loadParsedTranslationStrings: () => void;
 	refresh: () => Promise<void>;
 	updating: Ref<boolean>;
 	update: (newTranslationStrings: TranslationString[]) => Promise<void>;
@@ -40,35 +41,30 @@ export function useTranslationStrings(): UsableTranslationStrings {
 	if (translationStrings === null) translationStrings = ref<TranslationString[] | null>(null);
 	const updating = ref(false);
 
-	return { loading, error, translationStrings, refresh, updating, update, mergeTranslationStringsForLanguage };
+	return {
+		loading,
+		error,
+		translationStrings,
+		loadParsedTranslationStrings,
+		refresh,
+		updating,
+		update,
+		mergeTranslationStringsForLanguage,
+	};
 
-	async function fetchTranslationStrings() {
+	function loadParsedTranslationStrings() {
 		if (loading === null) return;
 		if (translationStrings === null) return;
 		if (error === null) return;
 
-		loading.value = true;
-		error.value = null;
+		const settingsStore = useSettingsStore();
+		const rawTranslationStrings = settingsStore.settings?.translation_strings;
 
-		try {
-			const response = await api.get('/settings', {
-				params: {
-					fields: ['translation_strings'],
-				},
-			});
-
-			const { translation_strings } = response.data.data;
-
-			if (translation_strings) {
-				translationStrings.value = translation_strings.map((p: TranslationStringRaw) => ({
-					key: p.key,
-					translations: getTranslationsFromKeyValues(p.translations ?? null),
-				}));
-			}
-		} catch (err: any) {
-			error.value = err;
-		} finally {
-			loading.value = false;
+		if (rawTranslationStrings) {
+			translationStrings.value = rawTranslationStrings.map((p: TranslationStringRaw) => ({
+				key: p.key,
+				translations: getTranslationsFromKeyValues(p.translations ?? null),
+			}));
 		}
 	}
 
@@ -80,7 +76,21 @@ export function useTranslationStrings(): UsableTranslationStrings {
 		loading.value = false;
 		error.value = null;
 
-		await fetchTranslationStrings();
+		try {
+			const settingsStore = useSettingsStore();
+			const rawTranslationStrings = await settingsStore.fetchRawTranslationStrings();
+
+			if (rawTranslationStrings) {
+				translationStrings.value = rawTranslationStrings.map((p: TranslationStringRaw) => ({
+					key: p.key,
+					translations: getTranslationsFromKeyValues(p.translations ?? null),
+				}));
+			}
+		} catch (err: any) {
+			error.value = err;
+		} finally {
+			loading.value = false;
+		}
 	}
 
 	async function update(newTranslationStrings: TranslationString[]) {
@@ -98,11 +108,10 @@ export function useTranslationStrings(): UsableTranslationStrings {
 		}));
 
 		try {
-			const settingsResponse = await api.patch('/settings', {
-				translation_strings: payload,
-			});
-			if (settingsResponse.data.data.translation_strings) {
-				translationStrings.value = settingsResponse.data.data.translation_strings.map((p: TranslationStringRaw) => ({
+			const settingsStore = useSettingsStore();
+			await settingsStore.updateSettings({ translation_strings: payload }, false);
+			if (settingsStore.settings?.translation_strings) {
+				translationStrings.value = settingsStore.settings.translation_strings.map((p: TranslationStringRaw) => ({
 					key: p.key,
 					translations: getTranslationsFromKeyValues(p.translations ?? null),
 				}));

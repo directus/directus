@@ -1,7 +1,6 @@
 import argon2 from 'argon2';
 import { Router } from 'express';
 import Joi from 'joi';
-import { nanoid } from 'nanoid';
 import {
 	ForbiddenException,
 	InvalidPayloadException,
@@ -15,12 +14,15 @@ import asyncHandler from '../utils/async-handler';
 import Busboy from 'busboy';
 import { flushCaches } from '../cache';
 import { generateHash } from '../utils/generate-hash';
+import { sanitizeQuery } from '../utils/sanitize-query';
 
 const router = Router();
 
 router.get(
 	'/random/string',
 	asyncHandler(async (req, res) => {
+		const { nanoid } = await import('nanoid');
+
 		if (req.query && req.query.length && Number(req.query.length) > 500)
 			throw new InvalidQueryException(`"length" can't be more than 500 characters`);
 
@@ -153,8 +155,10 @@ router.post(
 			schema: req.schema,
 		});
 
+		const sanitizedQuery = sanitizeQuery(req.body.query, req.accountability ?? null);
+
 		// We're not awaiting this, as it's supposed to run async in the background
-		service.exportToFile(req.params.collection, req.body.query, req.body.format, {
+		service.exportToFile(req.params.collection, sanitizedQuery, req.body.format, {
 			file: req.body.file,
 		});
 

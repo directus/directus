@@ -23,7 +23,7 @@ get:
                 items:
                   $ref: '../../openapi.yaml#/components/schemas/Activity'
               meta:
-                $ref: '../../openapi.yaml#/components/x-metadata'
+                $ref: '../../openapi.yaml#/components/schemas/x-metadata'
       description: Successful request
     '401':
       $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'

@@ -1,4 +1,3 @@
-import formatTitle from '@directus/format-title';
 import { toArray } from '@directus/shared/utils';
 import Busboy from 'busboy';
 import express, { RequestHandler } from 'express';
@@ -12,6 +11,9 @@ import { validateBatch } from '../middleware/validate-batch';
 import { FilesService, MetaService } from '../services';
 import { File, PrimaryKey } from '../types';
 import asyncHandler from '../utils/async-handler';
+
+// @ts-ignore
+import formatTitle from '@directus/format-title';
 
 const router = express.Router();
 
@@ -108,7 +110,7 @@ export const multipartHandler: RequestHandler = (req, res, next) => {
 	function tryDone() {
 		if (savedFiles.length === fileCount) {
 			if (fileCount === 0) {
-				return next(new InvalidPayloadException(`No files where included in the body`));
+				return next(new InvalidPayloadException(`No files were included in the body`));
 			}
 
 			res.locals.savedFiles = savedFiles;

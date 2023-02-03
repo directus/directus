@@ -573,6 +573,8 @@ select_an_item: Seleziona un elemento...
 edit: Modifica
 enabled: Abilitato
 disable_tfa: Disabilita 2FA
+admin_disable_tfa_text: Sei sicuro di voler disabilitare l'autenticazione a due fattori per questo utente?
+tfa_setup: Configura l'autenticazione a due fattori
 tfa_scan_code: Scansiona il codice nell'app di autenticazione per completare la configurazione 2FA
 enter_otp_to_disable_tfa: Inserisci OTP per disabilitare 2FA
 create_account: Crea Account

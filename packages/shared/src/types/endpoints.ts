@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { ApiExtensionContext } from './extensions';
 
-type EndpointExtensionContext = ApiExtensionContext & {
+export type EndpointExtensionContext = ApiExtensionContext & {
 	emitter: any;
 };
 
