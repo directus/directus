@@ -570,6 +570,8 @@ select_an_item: Wybierz element...
 edit: Edytuj
 enabled: Włączone
 disable_tfa: Wyłącz weryfikację dwuetapową
+admin_disable_tfa_text: Czy na pewno chcesz wyłączyć 2FA dla tego użytkownika?
+tfa_setup: Konfiguracja 2FA
 tfa_scan_code: Zeskanuj kod w swojej aplikacji uwierzytelniającej, aby zakończyć konfigurację 2FA
 enter_otp_to_disable_tfa: Wprowadź kod jednorazowy, aby wyłączyć 2FA
 create_account: Utwórz konto
@@ -1048,6 +1050,7 @@ fields:
     user: Czynność przez
     comment: Komentarz
     user_agent: User agent
+    origin: Pochodzenie
     ip: Adres IP
     revisions: Wersje
   directus_collections:
@@ -1932,7 +1935,25 @@ layouts:
     no_group: Brak grupy
     not_all_loaded: Można załadować tylko pierwszych 1000 elementów.
 horizontal: Poziomy
+x_axis: Oś X
+y_axis: Oś Y
+y_axis_function: Funkcja osi Y
+show_x_only: Pokaż tylko oś X
+show_y_only: Pokaż tylko oś Y
+show_data_label: Pokaż etykietę danych
 both: Oba
+show_axis_labels: Pokaż etykiety osi
+function: Funkcja
+half_circle: Połowa koła
+full_circle: Pełne okrążenie
+thin: Cienka
+medium: Średni
+broad: Szeroki
+show_labels: Pokaż etykiety
+show_legend: Pokaż Legendę
+right: Prawy
+left: Lewy
+donut: Pączek
 panels:
   metric:
     name: Metryczny
@@ -1959,6 +1980,7 @@ panels:
   linechart:
     name: Wykres liniowy
     description: Wykres liniowy do porównywania zmiany w polu
+    disabled_grouping: Wyłączone, gdy grupowanie jest zaznaczone.
     disabled_no_grouping: Wyłączone, gdy nie wybrano grupowania.
     show_marker: Pokaż znacznik podpowiedzi
     curve_type: Typ Krzywej
