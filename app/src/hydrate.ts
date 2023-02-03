@@ -15,6 +15,7 @@ import { useSettingsStore } from '@/stores/settings';
 import { useUserStore } from '@/stores/user';
 import { useNotificationsStore } from '@/stores/notifications';
 import { onDehydrateExtensions, onHydrateExtensions } from './extensions';
+import { i18n } from './lang';
 
 type GenericStore = {
 	$id: string;
@@ -68,7 +69,10 @@ export async function hydrate(): Promise<void> {
 		await userStore.hydrate();
 
 		let lang = 'en-US';
-		if (serverStore.info?.project?.default_language) lang = serverStore.info.project.default_language;
+		if (serverStore.info?.project?.default_language) {
+			lang = serverStore.info.project.default_language;
+			i18n.global.fallbackLocale.value = lang;
+		}
 		if (userStore.currentUser && 'language' in userStore.currentUser && userStore.currentUser?.language) {
 			lang = userStore.currentUser?.language;
 		}
