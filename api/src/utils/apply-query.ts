@@ -43,9 +43,7 @@ export default function applyQuery(
 		applySort(knex, schema, dbQuery, query.sort, collection, aliasMap);
 	}
 
-	if (!options?.hasMultiRelationalSort) {
-		applyLimit(dbQuery, query.limit);
-	}
+	applyLimit(knex, dbQuery, query.limit);
 
 	if (query.offset) {
 		applyOffset(knex, dbQuery, query.offset);
@@ -311,9 +309,9 @@ export function applySort(
 	rootQuery.orderBy(sortRecords);
 }
 
-export function applyLimit(rootQuery: Knex.QueryBuilder, limit: any) {
-	if (typeof limit === 'number' && limit !== -1) {
-		rootQuery.limit(limit);
+export function applyLimit(knex: Knex, rootQuery: Knex.QueryBuilder, limit: any) {
+	if (typeof limit === 'number') {
+		getHelpers(knex).schema.applyLimit(rootQuery, limit);
 	}
 }
 
@@ -552,13 +550,13 @@ export function applyFilter(
 
 			if (operator === '_empty' || (operator === '_nempty' && compareValue === false)) {
 				dbQuery[logical].andWhere((query) => {
-					query.where(key, '=', '');
+					query.whereNull(key).orWhere(key, '=', '');
 				});
 			}
 
 			if (operator === '_nempty' || (operator === '_empty' && compareValue === false)) {
 				dbQuery[logical].andWhere((query) => {
-					query.where(key, '!=', '');
+					query.whereNotNull(key).orWhere(key, '!=', '');
 				});
 			}
 

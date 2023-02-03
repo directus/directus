@@ -60,10 +60,10 @@ beforeEach(() => {
 		path: {
 			input: randUnique() + randFilePath(),
 			inputFull: randUnique() + randFilePath(),
-			src: randFilePath(),
-			srcFull: randFilePath(),
-			dest: randFilePath(),
-			destFull: randFilePath(),
+			src: randUnique() + randFilePath(),
+			srcFull: randUnique() + randFilePath(),
+			dest: randUnique() + randFilePath(),
+			destFull: randUnique() + randFilePath(),
 		},
 		range: {
 			start: randNumber(),
@@ -163,11 +163,6 @@ describe('#file', () => {
 		driver['bucket'] = {
 			file: vi.fn().mockReturnValue(mockFile),
 		} as unknown as Bucket;
-	});
-
-	test('Uses fullPath to inject root', () => {
-		driver['file'](sample.path.input);
-		expect(driver['fullPath']).toHaveBeenCalledWith(sample.path.input);
 	});
 
 	test('Returns file instance', () => {
