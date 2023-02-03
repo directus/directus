@@ -31,6 +31,14 @@ export const seedDBStructure = () => {
 						schema: {},
 					});
 
+					await CreateField(vendor, {
+						collection: localCollectionArtists,
+						field: 'company',
+						type: 'string',
+						meta: {},
+						schema: {},
+					});
+
 					expect(true).toBeTruthy();
 				} catch (error) {
 					expect(error).toBeFalsy();
