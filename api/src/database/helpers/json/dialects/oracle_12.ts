@@ -61,16 +61,11 @@ export class JsonHelperOracle_12 extends JsonHelperDefault {
 		);
 
 		if (joinQueries.length > 0) {
-			const aliases = [];
+			const primaryKey = this.schema.collections[table].primary;
 			for (const node of joinQueries) {
 				const alias = generateCapitalAlias();
 				this.buildWithJson(dbQuery, node, table, alias);
-				aliases.push(alias);
-			}
-			dbQuery.fromRaw([table, ...aliases].map((alias) => this.knex.raw('??', [alias]).toQuery()).join(','));
-			const primaryKey = this.schema.collections[table].primary;
-			for (const alias of aliases) {
-				dbQuery.whereRaw('??.?? = ??.??', [table, primaryKey, alias, primaryKey]);
+				dbQuery.leftJoin(alias, `${table}.${primaryKey}`, `${alias}.${primaryKey}`);
 			}
 		}
 		if (selectQueries.length > 0) {
@@ -118,9 +113,10 @@ export class JsonHelperOracle_12 extends JsonHelperDefault {
 			applyJsonFilterQuery(subQuery, alias, operator, value);
 		}
 
-		dbQuery
-			.with(alias, subQuery.groupBy(this.knex.raw('??.??', [table, primaryKey])))
-			.select(this.knex.raw('??.?? as ??', [alias, jsonAlias, node.fieldKey]));
+		const selectJsonField = node.query?.filter
+			? this.knex.raw("COALESCE(??.??, '[]') as ??", [alias, jsonAlias, node.fieldKey])
+			: this.knex.raw('??.?? as ??', [alias, jsonAlias, node.fieldKey]);
+		dbQuery.with(alias, subQuery.groupBy(this.knex.raw('??.??', [table, primaryKey]))).select(selectJsonField);
 
 		return dbQuery;
 	}
