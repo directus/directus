@@ -503,6 +503,7 @@ list-m2a: سازنده (M2A)
 item_count: 'بدون مقدار | يک آیتم | {count} آیتم'
 no_items_copy: هنوز هیچ آیتمی در این مجموعه وجود ندارد.
 file_count: 'بدون فایل | یک فایل | {count} فایل'
+no_files_copy: فایلی برای نمایش موجود نمیباشد.
 no_users_copy: این نقش، هنوز به هیچ کاربری تعلق نگرفته است.
 no_notifications: اعلانی موجود نیست
 no_notifications_copy: شما همه اعلانها و پیامها را دیده اید!
