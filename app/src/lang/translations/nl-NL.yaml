@@ -872,7 +872,7 @@ interface_group_other: Overige
 tooltip: Tooltip
 tooltip_placeholder: Voer een tooltip in...
 unlimited: Onbeperkt
-open_link_in: Open link in
+open_link_in: Link openen in
 new_tab: Nieuw tabblad
 current_tab: Huidig tabblad
 save_image: Afbeelding opslaan
@@ -1054,6 +1054,7 @@ fields:
     unarchive_value: Dearchiveer waarde
     sort_field: Sorteerveld
     accountability: Activiteit & Revisie Tracking
+    archive_field: Veld archiveren
   directus_files:
     $thumbnail: Thumbnail
     title: Titel
@@ -1088,8 +1089,10 @@ fields:
     title: Titel
     description: Beschrijving
     tags: Tags
+    user_preferences: Gebruikersvoorkeuren
     language: Taal
     theme: Thema
+    theme_auto: Automatisch (gebaseerd op systeem)
     theme_light: Lichte modus
     theme_dark: Donkere Modus
     tfa_secret: Twee-factor-authenticatie (2FA)
@@ -1112,6 +1115,7 @@ fields:
     tiff: Tiff
     basemaps_style: Mapbox stijl
     mapbox_key: Toegangstoken Mapbox
+    mapbox_placeholder: pk.eyJ1Ijo.....
     attribution_placeholder: '© OpenStreetMap bijdragers'
     project_name: Project Naam
     project_url: Project URL
@@ -1162,9 +1166,14 @@ fields:
 field_options:
   directus_settings:
     project_name_placeholder: Mijn project...
+    project_logo_note: Wit 40x40 SVG/PNG
     security_divider_title: Beveiliging
     mapbox_key: Toegangstoken Mapbox
+    mapbox_placeholder: pk.eyJ1Ijo.....
+    basemaps_raster: Raster
+    basemaps_tile: Raster TileJSON
     basemaps_style: Mapbox stijl
+    files_divider_title: Bestanden en miniaturen
   directus_activity:
     login: Inloggen
     create: Maak
@@ -1175,12 +1184,19 @@ field_options:
     only_track_activity: Track alleen activiteiten
     do_not_track_anything: Niets tracken
     collection_setup: Collectie setup
+    note_placeholder: Een beschrijving van deze collectie...
+    hidden_label: In de app verbergen
     singleton: Behandel als één object
     language: Taal
     translation: Vertaling
     collection_name: Collectie naam
+    singular_unit: Enkelvoudige eenheid
+    plural_unit: Meervoudige eenheid
     archive_divider: Archiveren
+    archive_field_placeholder: Kies een veld...
     sort_divider: Sorteren
+    sort_field: Kies een veld...
+    accountability_divider: Verantwoording
   directus_files:
     title: Een unieke titel...
   directus_roles:
@@ -1188,9 +1204,11 @@ field_options:
     fields:
       icon_name: Icoon
       name_name: Naam
+      link_name: Link
       link_placeholder: Relatieve of absolute URL...
     collections_name: Collecties
   directus_users:
+    preferences_divider: Gebruikersvoorkeuren
     dropdown_auto: Automatisch (Gebaseerd op systeem)
     dropdown_light: Lichte modus
     dropdown_dark: Donkere Modus
@@ -1235,6 +1253,7 @@ share_access_not_found: Deze gedeelde pagina bestaat niet of heeft het maximum a
 share_access_not_found_desc: Neem contact op met een geautoriseerde gebruiker van dit project om toegang te vragen.
 share_copy_link: Link kopiëren
 share_copy_link_success: Link gekopieerd
+share_send_link: Link versturen
 relational_triggers: Relationele triggers
 referential_action_field_label_m2o: Wanneer {collection} wordt verwijderd...
 referential_action_field_label_o2m: Wanneer {collection} wordt gedeselecteerd...
@@ -1325,8 +1344,11 @@ interfaces:
   fields:
     name: Velden
   presentation-links:
+    presentation-links: Knoplinks
+    links: Links
     style: Stijl
     primary: Primair
+    link: Links
     button: Knoppen
   input-code:
     code: Code
