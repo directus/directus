@@ -1501,7 +1501,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 			);
 		});
 
-		describe.only('Depth Tests', () => {
+		describe('Depth Tests', () => {
 			describe('allow queries up to the field depth limit', () => {
 				it.each(vendors)('%s', async (vendor) => {
 					// Setup
