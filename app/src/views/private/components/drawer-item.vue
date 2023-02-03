@@ -80,7 +80,7 @@
 <script setup lang="ts">
 import api from '@/api';
 import FilePreview from '@/views/private/components/file-preview.vue';
-import { isEmpty, merge, set } from 'lodash';
+import { assign, isEmpty, merge, set } from 'lodash';
 import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -415,7 +415,7 @@ function useActions() {
 			Object.entries(defaultValues.value).filter(([_, value]) => value !== null)
 		);
 
-		emit('input', merge({}, noNullDefaultValues, internalEdits.value));
+		emit('input', assign({}, noNullDefaultValues, internalEdits.value));
 
 		internalActive.value = false;
 		internalEdits.value = {};
