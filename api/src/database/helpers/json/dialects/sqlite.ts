@@ -120,10 +120,13 @@ export class JsonHelperSQLite extends JsonHelperDefault {
 			applyJsonFilterQuery(subQuery, alias, operator, value, 'and');
 		}
 		subQuery.groupBy(`${table}.${primaryKey}`);
+		const selectJsonField = node.query?.filter
+			? this.knex.raw("COALESCE(??.??, '[]') as ??", [withAlias, aliases[aliases.length - 1], node.fieldKey])
+			: this.knex.raw('??.?? as ??', [withAlias, aliases[aliases.length - 1], node.fieldKey]);
 		dbQuery
 			.with(withAlias, subQuery)
-			.select(this.knex.raw('??.?? as ??', [withAlias, aliases[aliases.length - 1], node.fieldKey]))
-			.join(withAlias, `${table}.${primaryKey}`, '=', `${withAlias}.${primaryKey}`);
+			.select(selectJsonField)
+			.leftJoin(withAlias, `${table}.${primaryKey}`, '=', `${withAlias}.${primaryKey}`);
 		return dbQuery;
 	}
 	private buildJsonGroupArray(queryParts: string[], aliases: string[]): Knex.Raw {
