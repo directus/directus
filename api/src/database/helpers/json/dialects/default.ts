@@ -86,8 +86,11 @@ export class JsonHelperDefault extends JsonHelper {
 			const { operator: filterOperator, value: filterValue } = getOperation(jsonPath, value);
 			conditions.push(this.transformFilterJsonPath(jsonPath, filterOperator, filterValue));
 		}
-
-		return `${node.jsonPath}[?(${conditions.join(' && ')})]`;
+		let path = node.jsonPath;
+		if (node.jsonPath.endsWith('[*]')) {
+			path = node.jsonPath.substring(0, node.jsonPath.length - 3);
+		}
+		return `${path}[?(${conditions.join(' && ')})]`;
 	}
 	filterQuery(_collection: string, _node: JsonFieldNode): Knex.Raw | null {
 		throw new InvalidQueryException(`Using JSON Query in regular filters is not supported by this database.`);
