@@ -64,18 +64,18 @@ export class JsonHelperDefault extends JsonHelper {
 		}
 	}
 	protected postProcessJsonPath(item: Item, node: JsonFieldNode) {
+		const fallbackResponse = node.query?.filter ? [] : null;
 		try {
 			const data = typeof item[node.fieldKey] === 'string' ? parseJSON(item[node.fieldKey]) : item[node.fieldKey];
 			const jsonPath = Object.keys(node.query).length === 0 ? node.jsonPath : this.buildFilterPath(node);
-
 			item[node.fieldKey] =
 				JSONPath({
 					...jsonPathPlusOptions,
 					path: jsonPath,
 					json: data,
-				}) ?? null;
+				}) ?? fallbackResponse;
 		} catch (e) {
-			item[node.fieldKey] = null;
+			item[node.fieldKey] = fallbackResponse;
 		}
 	}
 	protected buildFilterPath(node: JsonFieldNode) {
