@@ -2,6 +2,7 @@ import { StateUpdates, State, HelperFunctions } from '../types';
 import { set } from 'lodash';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
+import { setRelatedOneFieldForCorrespondingField } from './m2m';
 
 export function applyChanges(updates: StateUpdates, state: State, helperFn: HelperFunctions) {
 	const { hasChanged } = helperFn;
@@ -35,6 +36,10 @@ export function applyChanges(updates: StateUpdates, state: State, helperFn: Help
 
 	if (hasChanged('relations.o2m.collection') || hasChanged('relations.m2o.collection')) {
 		matchJunctionCollectionName(updates);
+	}
+
+	if (hasChanged('fields.corresponding')) {
+		setRelatedOneFieldForCorrespondingField(updates);
 	}
 
 	if (
