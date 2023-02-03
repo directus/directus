@@ -382,7 +382,7 @@ export function useRelationMultiple(
 
 		let targetCollection: string;
 		let targetPKField: string;
-		let reverseJunctionField = relation.value.reverseJunctionField.field;
+		const reverseJunctionField = relation.value.reverseJunctionField.field;
 
 		switch (relation.value.type) {
 			case 'm2a':
