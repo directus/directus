@@ -1117,9 +1117,9 @@ fields:
     mapbox_key: Toegangstoken Mapbox
     mapbox_placeholder: pk.eyJ1Ijo.....
     attribution_placeholder: '© OpenStreetMap bijdragers'
-    project_name: Project Naam
+    project_name: Projectnaam
     project_url: Project URL
-    project_color: Project kleur
+    project_color: Projectkleur
     project_logo: Project logo
     default_language: Standaardtaal
     branding: Merk & Stijl
@@ -1166,6 +1166,7 @@ fields:
 field_options:
   directus_settings:
     project_name_placeholder: Mijn project...
+    project_color_note: Inlog- en logoachtergrond
     project_logo_note: Wit 40x40 SVG/PNG
     security_divider_title: Beveiliging
     mapbox_key: Toegangstoken Mapbox
