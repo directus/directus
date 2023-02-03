@@ -17,7 +17,7 @@ on:
       - .github/workflows/blackbox-main.yml
 
 concurrency:
-  group: blackbox-main-duplicate # Revert line before marking PR as ready for review
+  group: blackbox-main-json-with-translations # Revert line before marking PR as ready for review
   cancel-in-progress: true
 
 env:
