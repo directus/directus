@@ -48,6 +48,11 @@ export const seedAllFieldTypesStructure = async (vendor: string, collection: str
 						isDefaultValue: true,
 					})[0],
 				};
+
+				// BLOB, TEXT, GEOMETRY or JSON column 'values' can't have a default value
+				if (fieldType === 'json' && ['mysql', 'mysql5', 'maria', 'oracle'].includes(vendor)) {
+					schema = {};
+				}
 			}
 
 			await CreateField(vendor, {
