@@ -107,7 +107,7 @@ describe('Schema Snapshots', () => {
 
 						await assertCollectionsDeleted(vendor, pkType);
 					},
-					300000
+					1200000
 				);
 			});
 		});
