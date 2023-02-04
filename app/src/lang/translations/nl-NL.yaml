@@ -1159,8 +1159,10 @@ fields:
     method: Methode
     status: Status
     data: Data
+    header: Header
     value: Waarde
     headers: Verzoekheaders
+    triggers: Triggers
     actions: Acties
     collections: Collecties
 field_options:
@@ -1222,6 +1224,7 @@ field_options:
   directus_webhooks:
     status_options_active: Actief
     status_options_inactive: Inactief
+    triggers_divider: Triggers
     actions_create: Maak
     actions_update: Updaten
     actions_delete: Verwijderen
