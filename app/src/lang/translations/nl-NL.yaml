@@ -1263,6 +1263,7 @@ referential_action_field_label_m2o: Wanneer {collection} wordt verwijderd...
 referential_action_field_label_o2m: Wanneer {collection} wordt gedeselecteerd...
 referential_action_no_action: Voorkom de verwijdering
 referential_action_cascade: Verwijder het {collection} item (cascade)
+continue_label: Doorgaan
 editing_role: '{role} Rol'
 creating_webhook: Webhook Aanmaken
 default_label: Standaard
@@ -1274,6 +1275,7 @@ delete_field_are_you_sure: >-
 description: Beschrijving
 done: Klaar
 duplicate: Dupliceer
+limit: Limiet
 email: Email
 embed: Insluiten
 fallback_icon: Standaard Icoon
@@ -1282,6 +1284,7 @@ file: Bestand
 file_library: Bestandsbibliotheek
 forgot_password: Wachtwoord vergeten
 hidden: Verborgen
+hidden_in_group: Verborgen in {group}
 icon: Icoon
 info: Info
 normal: Normaal
@@ -1356,6 +1359,7 @@ interfaces:
     button: Knoppen
   input-code:
     code: Code
+    line_number: Regelnummer
   system-collection:
     collection: Collectie
     description: Selecteer tussen bestaande collecties
@@ -1378,6 +1382,7 @@ interfaces:
     no_fields: Geen velden
   system-display-template:
     display-template: Weergavesjabloon
+    collection_field: Collectieveld
     collection_field_not_setup: De collectie-veld optie is onjuist geconfigureerd
     select_a_collection: Selecteer een collectie
   presentation-divider:
