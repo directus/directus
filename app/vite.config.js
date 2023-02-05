@@ -2,6 +2,7 @@ import {
 	APP_OR_HYBRID_EXTENSION_PACKAGE_TYPES,
 	APP_OR_HYBRID_EXTENSION_TYPES,
 	APP_SHARED_DEPS,
+	NESTED_EXTENSION_TYPES,
 } from '@directus/shared/constants';
 import {
 	ensureExtensionDirs,
@@ -20,12 +21,9 @@ import markdownItTableOfContents from 'markdown-it-table-of-contents';
 import md from 'vite-plugin-vue-markdown';
 import { searchForWorkspaceRoot } from 'vite';
 import { defineConfig } from 'vitest/config';
-import hljsGraphQL from './src/utils/hljs-graphql';
 
 const API_PATH = path.join('..', 'api');
 const EXTENSIONS_PATH = path.join(API_PATH, 'extensions');
-
-hljs.registerLanguage('graphql', hljsGraphQL);
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -220,7 +218,7 @@ function directusExtensions() {
 	];
 
 	async function loadExtensions() {
-		await ensureExtensionDirs(EXTENSIONS_PATH, APP_OR_HYBRID_EXTENSION_TYPES);
+		await ensureExtensionDirs(EXTENSIONS_PATH, NESTED_EXTENSION_TYPES);
 		const packageExtensions = await getPackageExtensions(API_PATH, APP_OR_HYBRID_EXTENSION_PACKAGE_TYPES);
 		const localExtensions = await getLocalExtensions(EXTENSIONS_PATH, APP_OR_HYBRID_EXTENSION_TYPES);
 

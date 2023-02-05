@@ -159,6 +159,7 @@ function handleObject(fieldKey: string) {
 @import '@/styles/mixins/no-wrap';
 
 .render-template {
+	height: 100%;
 	position: relative;
 	max-width: 100%;
 	padding-right: 8px;

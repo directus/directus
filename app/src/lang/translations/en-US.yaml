@@ -250,6 +250,7 @@ float: Float
 integer: Integer
 json: JSON
 xml: XML
+yaml: YAML
 string: String
 text: Text
 time: Time
@@ -1965,6 +1966,30 @@ layouts:
     no_group: No Group
     not_all_loaded: Could only load the first 1000 items.
 
+horizontal: Horizontal
+vertical: Vertical
+x_axis: X-Axis
+y_axis: Y-Axis
+y_axis_function: Y-Axis Function
+show_x_only: Show X-Axis Only
+show_y_only: Show Y-Axis Only
+show_data_label: Show Data Label
+both: Both
+show_axis_labels: Show Axis Labels
+function: Function
+half_circle: Half Circle
+full_circle: Full Circle
+stroke_width: Stroke Width
+rounded_stroke: Rounded Stroke
+thin: Thin
+medium: Medium
+broad: Broad
+show_labels: Show Labels
+show_legend: Show Legend
+right: Right
+left: Left
+donut: Donut
+
 panels:
   metric:
     name: Metric
@@ -1986,69 +2011,24 @@ panels:
   barchart:
     name: Bar Chart
     description: Bar or column charts for comparing groups of values
-    select_field: You must select a field.
-    select_collection: You must select a collection.
-    select_x_axis: You must select an X-Axis.
-    function: Function
     horizontal: Horizontal
-    x_axis_grouping: X-Axis Group Aggregation
-    x_axis: X-Axis
-    y_axis_function: Y-Axis Function
-    y_axis: Y-Axis
-    show_x_axis: Show X-Axis
-    show_y_axis: Show Y-Axis
-    show_data_label: Show Data Label
-    group_by: Grouped By
-    group_and_function: You must include or omit both a group and a function.
-    y_axis_NaN: The Y axis must be a number.
-    y_axis_conditional_one: The value for condition
-    y_axis_conditional_two: must be a number.
+    select_collection: You must select a collection.
   linechart:
     name: Line Chart
     description: Line chart for comparing change of a field
-    select_field: You must select a field.
-    select_collection: You must select a collection.
-    select_x_axis: You must select an X-Axis.
-    function: Function
-    x_axis: X-Axis
-    x_axis_decimals: X-Axis Decimals
+    disabled_grouping: Disabled when grouping is selected.
     disabled_no_grouping: Disabled when no grouping is selected.
-    y_axis: Y-Axis
-    datasets: Datasets
-    show_legend: Show Legend
     show_marker: Show Tooltip Marker
-    include_dataset: You must include at least one dataset.
-    include_y_axis: You must include a Y-Axis for each dataset when no group is specified.
-    group_and_function: You must include or omit both a group and a function.
+    curve_type: Curve Type
     smooth: Smooth
     straight: Straight
     step_line: Step Line
   meter:
     name: Meter
     description: Meter for tracking values
-    half_circle: Half Circle
-    full_circle: Full Circle
-    stroke_width: Stroke Width
-    rounded_stroke: Rounded Stroke
-    select_max_value: You must select a maximum value.
-    max_greater_than_zero: The maximum must be greater than 0.
-    select_field: You must select a field.
-    select_collection: You must select a collection.
-    function: Function
-    thin: Thin
-    medium: Medium
-    broad: Broad
   piechart:
     name: Pie or Donut Chart
     description: Circular chart showing the ratios of groups on a column
-    function: Function
-    donut: Donut
-    show_labels: Show Labels
-    show_legend: Show Legend
-    right: Right
-    bottom: Bottom
-    monochrome: Monochrome
-    monochrome_color: Monochrome Color
   variable:
     name: Global Variable
     description: Set a global value for use in other Panels' filters
@@ -2167,3 +2147,9 @@ operations:
     flows: Flows
     flow: Flow
     data: Data
+    iteration_mode: Iteration Mode
+    iteration_mode_note: Mode for iterating over arrays.
+    serial: Serial
+    parallel: Parallel
+    batch: Batch
+    batch_size: Batch Size

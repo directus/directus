@@ -202,7 +202,7 @@ const fields = computed(() => {
 	for (const collection of relationInfo.value.allowedCollections) {
 		const displayFields: string[] = adjustFieldsForDisplays(
 			getFieldsFromTemplate(templates.value[collection.collection]),
-			relationInfo.value?.junctionCollection.collection ?? ''
+			collection.collection
 		).map((field) => `${relationInfo.value?.junctionField.field}:${collection.collection}.${field}`);
 
 		fields.push(...addRelatedPrimaryKeyToFields(collection.collection, displayFields));
