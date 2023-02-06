@@ -63,7 +63,12 @@
 						<TranslationStringsTooltip :translations="translationMap[translationKey]" hide-display-text />
 					</v-list-item-icon>
 				</v-list-item>
-				<v-list-item class="new-translation-string" clickable @click="openNewTranslationStringDrawer">
+				<v-list-item
+					v-if="allowTranslationStringCreation"
+					class="new-translation-string"
+					clickable
+					@click="openNewTranslationStringDrawer"
+				>
 					<v-list-item-icon>
 						<v-icon name="add" />
 					</v-list-item-icon>
@@ -89,6 +94,7 @@ import { useI18n } from 'vue-i18n';
 import { useTranslationStrings, DisplayTranslationString } from '@/composables/use-translation-strings';
 import TranslationStringsDrawer from '@/modules/settings/routes/translation-strings/translation-strings-drawer.vue';
 import TranslationStringsTooltip from '@/modules/settings/routes/translation-strings/translation-strings-tooltip.vue';
+import { isAllowed } from '@/utils/is-allowed';
 
 const translationPrefix = '$t:';
 
@@ -124,6 +130,7 @@ onMounted(() => {
 const isTranslationStringDrawerOpen = ref<boolean>(false);
 
 const editingTranslationString = ref<DisplayTranslationString | null>(null);
+const allowTranslationStringCreation = isAllowed('directus_settings', 'update', { translation_strings: true }, true);
 
 const translations = computed(() => {
 	const keys = translationKeys.value ?? [];
