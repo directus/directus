@@ -7,7 +7,7 @@ on:
 
 env:
   GHCR_IMAGE: ghcr.io/${{ github.repository }}
-  DOCKERHUB_IMAGE: ${{ github.repository }}
+  DOCKERHUB_IMAGE: codename-co/directus
   NODE_OPTIONS: --max_old_space_size=6144
 
 jobs:
