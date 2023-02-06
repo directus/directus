@@ -112,18 +112,6 @@ export default function getDatabase(): Knex {
 		};
 	}
 
-	if (client === 'mysql') {
-		poolConfig.afterCreate = async (conn: any, callback: any) => {
-			logger.trace('Retrieving database version');
-			const run = promisify(conn.query.bind(conn));
-
-			const version = await run('SELECT @@version;');
-			databaseVersion = version[0]['@@version'];
-
-			callback(null, conn);
-		};
-	}
-
 	if (client === 'mssql') {
 		// This brings MS SQL in line with the other DB vendors. We shouldn't do any automatic
 		// timezone conversion on the database level, especially not when other database vendors don't
