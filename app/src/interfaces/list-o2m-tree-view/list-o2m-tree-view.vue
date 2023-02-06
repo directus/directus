@@ -34,7 +34,7 @@ import { deepMap } from '@directus/shared/utils';
 import { useRelationO2M } from '@/composables/use-relation-o2m';
 import { ChangesItem } from '@/composables/use-relation-multiple';
 import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
-import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
+import { adjustFieldsForDisplays } from '@directus/shared/utils';
 
 const props = withDefaults(
 	defineProps<{

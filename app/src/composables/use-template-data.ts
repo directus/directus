@@ -1,6 +1,6 @@
 import api from '@/api';
 import { Collection } from '@/types/collections';
-import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
+import { adjustFieldsForDisplays } from '@directus/shared/utils';
 import { getEndpoint, getFieldsFromTemplate } from '@directus/shared/utils';
 import { computed, Ref, ref, watch } from 'vue';
 

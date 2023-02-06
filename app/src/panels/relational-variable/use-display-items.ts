@@ -1,6 +1,6 @@
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
-import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
+import { adjustFieldsForDisplays } from '@directus/shared/utils';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { getEndpoint, getFieldsFromTemplate } from '@directus/shared/utils';
 import { useApi } from '@directus/shared/composables';

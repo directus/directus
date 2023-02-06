@@ -6,6 +6,8 @@ import { AppExtensionConfigs, RefRecord } from '../types';
 export function useStores(): Record<string, any> {
 	const stores = inject<Record<string, any>>(STORES_INJECT);
 
+	console.log("stores ", stores)
+
 	if (!stores) throw new Error('[useStores]: The stores could not be found.');
 
 	return stores;
