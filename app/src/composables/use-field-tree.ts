@@ -166,17 +166,18 @@ export function useFieldTree(
 	function getNodeAtPath([field, ...path]: string[], root?: FieldNode[]): FieldNode | undefined {
 		let node = root?.find((node) => node.field === field);
 
-		if(!node) {
-			node = root?.reduce<FieldNode[]>((acc, node) => {
-				if (node.group === true && node.children && node.children.length > 0) {
-					acc.push(...node.children)
-				}
-				return acc;
-			}, []).find((node) => node.field === field);
-
+		if (!node) {
+			node = root
+				?.reduce<FieldNode[]>((acc, node) => {
+					if (node.group === true && node.children && node.children.length > 0) {
+						acc.push(...node.children);
+					}
+					return acc;
+				}, [])
+				.find((node) => node.field === field);
 		}
-		
-		if(!node) return undefined;
+
+		if (!node) return undefined;
 
 		if (path.length) {
 			return getNodeAtPath(path, node.children);
