@@ -13,6 +13,13 @@ import emitter from './emitter';
 import checkForUpdate from 'update-check';
 import pkg from '../package.json';
 import { getConfigFromEnv } from './utils/get-config-from-env';
+import {
+	createSubscriptionController,
+	createWebsocketController,
+	getSubscriptionController,
+	getWebsocketController,
+} from './websocket/controllers';
+import { startWebsocketHandlers } from './websocket/handlers';
 
 export async function createServer(): Promise<http.Server> {
 	const server = http.createServer(await createApp());
@@ -81,6 +88,12 @@ export async function createServer(): Promise<http.Server> {
 		res.once('close', complete.bind(null, false));
 	});
 
+	if (env['WEBSOCKETS_ENABLED']) {
+		createSubscriptionController(server);
+		createWebsocketController(server);
+		startWebsocketHandlers();
+	}
+
 	const terminusOptions: TerminusOptions = {
 		timeout: 1000,
 		signals: ['SIGINT', 'SIGTERM', 'SIGHUP'],
@@ -100,6 +113,8 @@ export async function createServer(): Promise<http.Server> {
 	}
 
 	async function onSignal() {
+		getSubscriptionController()?.terminate();
+		getWebsocketController()?.terminate();
 		const database = getDatabase();
 		await database.destroy();
 

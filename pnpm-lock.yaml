@@ -125,6 +125,7 @@ importers:
       '@types/uuid': 9.0.0
       '@types/uuid-validate': 0.0.1
       '@types/wellknown': 0.5.4
+      '@types/ws': ^8.5.4
       '@vitest/coverage-c8': 0.28.3
       argon2: 0.30.3
       async: 3.2.4
@@ -156,6 +157,7 @@ importers:
       globby: 11.1.0
       graphql: 16.6.0
       graphql-compose: 9.0.10
+      graphql-ws: 5.11.3
       helmet: 6.0.1
       icc: 2.0.0
       inquirer: 8.2.5
@@ -216,6 +218,7 @@ importers:
       vitest: 0.28.3
       vm2: 3.9.13
       wellknown: 0.5.0
+      ws: 8.12.0
     dependencies:
       '@authenio/samlify-node-xmllint': 2.0.0_samlify@2.8.8
       '@aws-sdk/client-ses': 3.261.0
@@ -263,6 +266,7 @@ importers:
       globby: 11.1.0
       graphql: 16.6.0
       graphql-compose: 9.0.10_graphql@16.6.0
+      graphql-ws: 5.11.3_graphql@16.6.0
       helmet: 6.0.1
       icc: 2.0.0
       inquirer: 8.2.5
@@ -310,6 +314,7 @@ importers:
       uuid-validate: 0.0.3
       vm2: 3.9.13
       wellknown: 0.5.0
+      ws: 8.12.0
     optionalDependencies:
       '@keyv/redis': 2.5.4
       keyv-memcache: 1.3.3
@@ -357,6 +362,7 @@ importers:
       '@types/uuid': 9.0.0
       '@types/uuid-validate': 0.0.1
       '@types/wellknown': 0.5.4
+      '@types/ws': 8.5.4
       '@vitest/coverage-c8': 0.28.3
       copyfiles: 2.4.1
       form-data: 4.0.0
@@ -6306,7 +6312,7 @@ packages:
       util-deprecate: 1.0.2
       watchpack: 2.4.0
       webpack: 4.46.0
-      ws: 8.11.0
+      ws: 8.12.0
       x-default-browser: 0.4.0
     transitivePeerDependencies:
       - '@storybook/mdx2-csf'
@@ -7579,6 +7585,12 @@ packages:
 
   /@types/wellknown/0.5.4:
     resolution: {integrity: sha512-zcsf4oHeEcvpvWhDOB1+qNK04oFJtsmv7Otb1Vy8w8GAqQkgRrVkI/C76PdwtpiT216aM1SbhkKgKWzGLhHKng==}
+    dev: true
+
+  /@types/ws/8.5.4:
+    resolution: {integrity: sha512-zdQDHKUgcX/zBc4GrwsE/7dVdAD8JR4EuiAXiiUhhfyIJXXb2+PrGshFyeXWQPMmmZ2XxgaqclgpIC7eTXc1mg==}
+    dependencies:
+      '@types/node': 18.11.18
     dev: true
 
   /@types/yargs-parser/21.0.0:
@@ -12590,6 +12602,15 @@ packages:
     resolution: {integrity: sha512-J+vjof74oMlCWXSvt0DOf2APEdZOCdubEvGDUAlqH//VBYcOYsGgRW7Xzorr44LvkjiuvecWc8fChxuZZbChtg==}
     peerDependencies:
       graphql: '>=0.8.0'
+    dependencies:
+      graphql: 16.6.0
+    dev: false
+
+  /graphql-ws/5.11.3_graphql@16.6.0:
+    resolution: {integrity: sha512-fU8zwSgAX2noXAsuFiCZ8BtXeXZOzXyK5u1LloCdacsVth4skdBMPO74EG51lBoWSIZ8beUocdpV8+cQHBODnQ==}
+    engines: {node: '>=10'}
+    peerDependencies:
+      graphql: '>=0.11 <=16'
     dependencies:
       graphql: 16.6.0
     dev: false
@@ -21625,18 +21646,17 @@ packages:
       signal-exit: 3.0.7
     dev: true
 
-  /ws/8.11.0:
-    resolution: {integrity: sha512-HPG3wQd9sNQoT9xHyNCXoDUa+Xw/VevmY9FoHyQ+g+rrMn4j6FB4np7Z0OhdTgjx6MgQLK7jwSy1YecU1+4Asg==}
+  /ws/8.12.0:
+    resolution: {integrity: sha512-kU62emKIdKVeEIOIKVegvqpXMSTAMLJozpHZaJNDYqBjzlSYXQGviYwN1osDLJ9av68qHd4a2oSjd7yD4pacig==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
       bufferutil: ^4.0.1
-      utf-8-validate: ^5.0.2
+      utf-8-validate: '>=5.0.2'
     peerDependenciesMeta:
       bufferutil:
         optional: true
       utf-8-validate:
         optional: true
-    dev: true
 
   /ws/8.2.3:
     resolution: {integrity: sha512-wBuoj1BDpC6ZQ1B7DWQBYVLphPWkm8i9Y0/3YdHjHKHiohOJ1ws+3OccDWtH+PoC9DZD5WOTrJvNbWvjS6JWaA==}

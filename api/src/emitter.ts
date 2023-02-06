@@ -1,5 +1,6 @@
 import { ActionHandler, EventContext, FilterHandler, InitHandler } from '@directus/shared/types';
 import { EventEmitter2 } from 'eventemitter2';
+import getDatabase from './database';
 import logger from './logger';
 
 export class Emitter {
@@ -22,11 +23,19 @@ export class Emitter {
 		this.initEmitter = new EventEmitter2(emitterOptions);
 	}
 
+	private getDefaultContext(): EventContext {
+		return {
+			database: getDatabase(),
+			accountability: null,
+			schema: null,
+		};
+	}
+
 	public async emitFilter<T>(
 		event: string | string[],
 		payload: T,
 		meta: Record<string, any>,
-		context: EventContext
+		context: EventContext | null = null
 	): Promise<T> {
 		const events = Array.isArray(event) ? event : [event];
 		const eventListeners = events.map((event) => ({
@@ -37,7 +46,7 @@ export class Emitter {
 		let updatedPayload = payload;
 		for (const { event, listeners } of eventListeners) {
 			for (const listener of listeners) {
-				const result = await listener(updatedPayload, { event, ...meta }, context);
+				const result = await listener(updatedPayload, { event, ...meta }, context ?? this.getDefaultContext());
 
 				if (result !== undefined) {
 					updatedPayload = result;
@@ -48,11 +57,11 @@ export class Emitter {
 		return updatedPayload;
 	}
 
-	public emitAction(event: string | string[], meta: Record<string, any>, context: EventContext): void {
+	public emitAction(event: string | string[], meta: Record<string, any>, context: EventContext | null = null): void {
 		const events = Array.isArray(event) ? event : [event];
 
 		for (const event of events) {
-			this.actionEmitter.emitAsync(event, { event, ...meta }, context).catch((err) => {
+			this.actionEmitter.emitAsync(event, { event, ...meta }, context ?? this.getDefaultContext()).catch((err) => {
 				logger.warn(`An error was thrown while executing action "${event}"`);
 				logger.warn(err);
 			});

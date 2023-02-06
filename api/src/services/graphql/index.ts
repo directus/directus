@@ -43,7 +43,7 @@ import {
 } from 'graphql-compose';
 import processError from './utils/process-error';
 import { Knex } from 'knex';
-import { flatten, get, mapKeys, merge, omit, pick, set, transform, uniq } from 'lodash';
+import { camelCase, flatten, get, mapKeys, merge, omit, pick, set, transform, uniq } from 'lodash';
 import ms from 'ms';
 import { clearSystemCache, getCache } from '../../cache';
 import { DEFAULT_AUTH_PROVIDER, GENERATE_SPECIAL } from '../../constants';
@@ -90,6 +90,7 @@ import { addPathToValidationError } from './utils/add-path-to-validation-error';
 import { GraphQLHash } from './types/hash';
 import { GraphQLBigInt } from './types/bigint';
 import { FUNCTIONS } from '@directus/shared/constants';
+import { createSubscriptionGenerator } from './subscription';
 
 const validationRules = Array.from(specifiedRules);
 
@@ -1044,6 +1045,24 @@ export class GraphQLService {
 							return result;
 						},
 					});
+				}
+
+				if (!collection.collection.startsWith('directus_')) {
+					for (const event of ['created', 'updated', 'deleted']) {
+						const eventName = `${collection.collection}_${event}`.toUpperCase();
+						const subscriptionName = camelCase(eventName);
+						schemaComposer.Subscription.addFields({
+							[subscriptionName]: {
+								type: ReadCollectionTypes[collection.collection],
+								subscribe: createSubscriptionGenerator(
+									self,
+									event as 'created' | 'updated' | 'deleted',
+									eventName,
+									subscriptionName
+								),
+							},
+						} as any);
+					}
 				}
 			}
 
