@@ -37,6 +37,8 @@ export const seedAllFieldTypesStructure = async (vendor: string, collection: str
 
 			if (fieldType === 'uuid') {
 				meta = { special: ['uuid'] };
+			} else if (fieldType === 'json') {
+				meta = { special: ['cast-json'] };
 			}
 
 			if (setDefaultValues && SeedFunctions.generateValues[fieldType as keyof typeof SeedFunctions.generateValues]) {
