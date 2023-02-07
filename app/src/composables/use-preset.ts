@@ -94,7 +94,9 @@ export function usePreset(
 
 	// update current bookmark title when it is edited in navigation-bookmark
 	presetsStore.$subscribe(() => {
-		initLocalPreset();
+		if (!bookmarkExists.value) return;
+		const newBookmark = presetsStore.getBookmark(Number(bookmark.value));
+		localPreset.value.bookmark = newBookmark?.bookmark;
 	});
 
 	const layoutOptions = computed<Record<string, any>>({

@@ -1,4 +1,0 @@
-paths-ignore:
-  - '**/*.test.ts'
-  - '**/*.test.js'
-  - '**/node_modules'

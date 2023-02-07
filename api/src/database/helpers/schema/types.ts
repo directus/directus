@@ -1,13 +1,14 @@
+import { KNEX_TYPES } from '@directus/shared/constants';
+import { Field, Relation, Type } from '@directus/shared/types';
+import { Knex } from 'knex';
+import { DatabaseClient } from '../../../types';
 import { getDatabaseClient } from '../../index';
 import { DatabaseHelper } from '../types';
-import { KNEX_TYPES } from '@directus/shared/constants';
-
-type Clients = 'mysql' | 'postgres' | 'cockroachdb' | 'sqlite' | 'oracle' | 'mssql' | 'redshift';
 
 export type Options = { nullable?: boolean; default?: any; length?: number };
 
 export abstract class SchemaHelper extends DatabaseHelper {
-	isOneOfClients(clients: Clients[]): boolean {
+	isOneOfClients(clients: DatabaseClient[]): boolean {
 		return clients.includes(getDatabaseClient(this.knex));
 	}
 
@@ -89,5 +90,52 @@ export abstract class SchemaHelper extends DatabaseHelper {
 
 	async postColumnChange(): Promise<void> {
 		return;
+	}
+
+	preRelationChange(_relation: Partial<Relation>): void {
+		return;
+	}
+
+	processFieldType(field: Field): Type {
+		return field.type;
+	}
+
+	constraintName(existingName: string): string {
+		// most vendors allow for dropping/creating constraints with the same name
+		// reference issue #14873
+		return existingName;
+	}
+
+	applyLimit(rootQuery: Knex.QueryBuilder, limit: number): void {
+		if (limit !== -1) {
+			rootQuery.limit(limit);
+		}
+	}
+
+	applyOffset(rootQuery: Knex.QueryBuilder, offset: number): void {
+		rootQuery.offset(offset);
+	}
+
+	castA2oPrimaryKey(): string {
+		return 'CAST(?? AS CHAR(255))';
+	}
+
+	applyMultiRelationalSort(
+		knex: Knex,
+		dbQuery: Knex.QueryBuilder,
+		table: string,
+		primaryKey: string,
+		orderByString: string,
+		orderByFields: Knex.Raw[]
+	): Knex.QueryBuilder {
+		dbQuery.rowNumber(
+			knex.ref('directus_row_number').toQuery(),
+			knex.raw(`partition by ?? order by ${orderByString}`, [`${table}.${primaryKey}`, ...orderByFields])
+		);
+		return dbQuery;
+	}
+
+	formatUUID(uuid: string): string {
+		return uuid; // no-op by default
 	}
 }

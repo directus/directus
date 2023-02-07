@@ -12,6 +12,7 @@ import { GraphQLDate } from '../services/graphql/types/date';
 import { GraphQLGeoJSON } from '../services/graphql/types/geojson';
 import { Type } from '@directus/shared/types';
 import { GraphQLHash } from '../services/graphql/types/hash';
+import { GraphQLBigInt } from '../services/graphql/types/bigint';
 
 export function getGraphQLType(
 	localType: Type | 'alias' | 'unknown',
@@ -25,7 +26,7 @@ export function getGraphQLType(
 		case 'boolean':
 			return GraphQLBoolean;
 		case 'bigInteger':
-			return GraphQLString;
+			return GraphQLBigInt;
 		case 'integer':
 			return GraphQLInt;
 		case 'decimal':

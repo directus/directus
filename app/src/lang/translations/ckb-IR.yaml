@@ -764,7 +764,6 @@ flows: لێشاوەکان
 flow: لێشاو
 select_a_flow: لێشاوێک دیاری بکە
 run_flow_on_current: جێبەجێکردنی لێشاو لەم مادەیەدا
-run_flow_on_selected: هیچ مادەیەک دیاری نەکراوە | جێبەجێکردنی لێشاو لەسەر یەک مادەی دیاریکراو | جێبەجێکردنی لێشاو لەسەر {n} مادەی دیاری کراو
 run_flow_success: لێشاوی {flow} بەسەرکەوتوویی بەڕێوەچوو
 trigger: وروژاندن
 trigger_options: بژاردەکانی وروژان
@@ -1873,33 +1872,8 @@ layouts:
     default_template: بەکارهێنانی بنەڕەتی کۆمەڵە...
     no_compatible_fields: هیچ خانەیەکی گونجاو نییە
   kanban:
-    name: کانبان،
-    group_field: دەستەکردن بەپێی،
-    group_field_placeholder: خانە بۆ دەستەکردن پێی...،
-    group_title: ناونیشانی دەستە،
-    group_title_placeholder: خانە بۆ ناونیشانەکانی دەستە...،
-    title: ناونیشانی کارت،
-    title_placeholder: خانە ئارەزوومەندانەکانی ناونیشان...،
-    text: نوسینی کارت،
-    text_placeholder: خانە ئارەزوومەندانەکانی نوسین...،
-    date: ڕێکەوتی کارت،
-    date_placeholder: خانە ئارەزوومەندانەکانی ڕێکەوت...،
-    tags: نیشانەکانی کارت،
-    tags_placeholder: خانە ئارەزوومەندانەکانی نیشانەکان...،
-    user: کارتی بەکارهێنەر،
-    user_placeholder: خانە ئارەزوومەندانەکانی بەکارهێنەر...،
-    image: وێنەی کارت،
-    image_placeholder: خانە ئارەزوومەندانەکانی وێنە...،
-    image_fit: گونجانی وێنەی کارت،
-    crop: بڕین،
-    advanced: پێشکەوتوو،
-    edit_group: دەستکاری دەستە،
-    delete_group: سڕینەوەی دەستە،
-    add_group: زیادکردنی دەستە،
-    add_group_placeholder: ناونیشانی دەستەیەکی نوێ دابنێ...،
-    show_ungrouped: بە نادەستەیی نیشان بدە،
-    show: نیشان بدە،
-    no_group: هیچ دەستەیەک،
+    crop: بڕین
+    advanced: پێشکەوتوو
     not_all_loaded: تەنها دەتوانرێت یەکەم 1000 ماددە باربکرێت.
 panels:
   metric:
@@ -1920,8 +1894,6 @@ panels:
     name: لیست
   barchart:
     show_data_label: داتای پێناس نیشانبدە
-  piechart:
-    labels: پێناسەکان نیشانبدە
 triggers:
   webhook:
     method: ڕێگە

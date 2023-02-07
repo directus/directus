@@ -1757,32 +1757,8 @@ layouts:
     default_template: Brug Samling Standard...
     no_compatible_fields: Ingen kompatible felter
   kanban:
-    group_field: Grupper Af,
-    group_field_placeholder: Felt til gruppe af...,
-    group_title: Gruppe Titel
-    group_title_placeholder: Felt for gruppetitler...,
-    title: Korttitel
-    title_placeholder: Valgfrit titelfelt...,
-    text: Kort Tekst
-    text_placeholder: Valgfrit tekstfelt...,
-    date: Kortdato
-    date_placeholder: Valgfri datofelt...,
-    tags: Kort Tags,
-    tags_placeholder: Valgfri tags felt...,
-    user: Kortbruger
-    user_placeholder: Valgfrit brugerfelt...,
-    image: Kortbillede,
-    image_placeholder: Valgfrit billedfelt...,
-    image_fit: Kortbilled Passer Til
-    crop: Afgrøde
+    crop: Beskær
     advanced: Avanceret
-    edit_group: Rediger Gruppe,
-    delete_group: Slet Gruppe,
-    add_group: Tilføj Gruppe,
-    add_group_placeholder: Indtast en ny gruppetitel...,
-    show_ungrouped: Show Ungrouped,
-    show: Vis,
-    no_group: Ingen Gruppe,
     not_all_loaded: Kunne kun indlæse de første 1000 elementer.
 panels:
   metric:
@@ -1822,7 +1798,6 @@ panels:
     y_axis_conditional_two: skal være et tal.
   linechart:
     name: Linjediagram
-    description: Linjediagram til sammenligning af ændring af et felt.
     select_field: Du skal vælge et felt.
     select_collection: Du skal vælge en samling.
     select_x_axis: Du skal vælge en X-akse.
@@ -1832,15 +1807,14 @@ panels:
     disabled_no_grouping: Deaktiveret når ingen gruppering er valgt.
     y_axis: Y-akse
     show_legend: Vis Forklaring
-    include_dataset: Du skal inkludere mindst et datasæt.
     include_y_axis: Du skal inkludere en Y-akse for hvert datasæt, når ingen gruppe er angivet.
     group_and_function: Du skal inkludere eller udelade både en gruppe og en funktion.
-    smooth: 'Glat'
-    straight: 'Lige'
-    step_line: 'Trin Linje'
+    smooth: Glat
+    straight: Lige
+    step_line: Trin Linje
   meter:
-    description: Måler til sporingsværdier
     name: Måler
+    description: Måler til sporingsværdier
     stroke_width: Slag Bredde
     select_max_value: Du skal vælge en maksimal værdi.
     max_greater_than_zero: Maksimum skal være større end 0.
@@ -1852,10 +1826,8 @@ panels:
     broad: Bred
   piechart:
     name: Tærte eller Donut Chart
-    description: Cirkulære diagram, der viser forholdet mellem grupper på en kolonne.
-    function: 'Funktion'
-    labels: Vis Etiketter
-    legend: Vis Forklaring
+    function: Funktion
+    show_legend: Vis Forklaring
     right: Højre
     bottom: Bund
     monochrome: Monokrom

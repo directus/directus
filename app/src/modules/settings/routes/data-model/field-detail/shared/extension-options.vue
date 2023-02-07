@@ -25,14 +25,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed } from 'vue';
-import { getOperation } from '@/operations';
-import { getInterface } from '@/interfaces';
-import { getDisplay } from '@/displays';
-import { getPanel } from '@/panels';
+import { defineComponent, PropType, computed, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useFieldDetailStore } from '../store';
 import { storeToRefs } from 'pinia';
+import { useExtension } from '@/composables/use-extension';
 
 export default defineComponent({
 	props: {
@@ -72,21 +69,9 @@ export default defineComponent({
 		const fieldDetailStore = useFieldDetailStore();
 
 		const { collection, field } = storeToRefs(fieldDetailStore);
+		const { extension, type } = toRefs(props);
 
-		const extensionInfo = computed(() => {
-			switch (props.type) {
-				case 'interface':
-					return getInterface(props.extension);
-				case 'display':
-					return getDisplay(props.extension);
-				case 'panel':
-					return getPanel(props.extension);
-				case 'operation':
-					return getOperation(props.extension);
-				default:
-					return null;
-			}
-		});
+		const extensionInfo = useExtension(type, extension);
 
 		const usesCustomComponent = computed(() => {
 			if (!extensionInfo.value) return false;

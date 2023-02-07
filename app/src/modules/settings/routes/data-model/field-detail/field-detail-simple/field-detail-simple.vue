@@ -42,11 +42,11 @@
 import { defineComponent, PropType, computed, toRefs, watch } from 'vue';
 import { Collection } from '@directus/shared/types';
 import { useI18n } from 'vue-i18n';
-import { getInterfaces } from '@/interfaces';
 import { orderBy } from 'lodash';
 import { useFieldDetailStore, syncFieldDetailStoreProperty } from '../store/';
 import { syncRefProperty } from '@/utils/sync-ref-property';
 import FieldConfiguration from './field-configuration.vue';
+import { useExtensions } from '@/extensions';
 
 export default defineComponent({
 	components: { FieldConfiguration },
@@ -55,17 +55,21 @@ export default defineComponent({
 			type: Object as PropType<Collection>,
 			required: true,
 		},
+		search: {
+			type: String,
+			required: true,
+		},
 	},
 	emits: ['save', 'toggleAdvanced'],
 	setup(props) {
-		const { collection } = toRefs(props);
+		const { collection, search } = toRefs(props);
 
 		const { t } = useI18n();
 
 		const fieldDetail = useFieldDetailStore();
 		watch(collection, () => fieldDetail.update({ collection: collection.value.collection }), { immediate: true });
 
-		const { interfaces } = getInterfaces();
+		const { interfaces } = useExtensions();
 
 		const interfacesSorted = computed(() => {
 			return orderBy(
@@ -74,38 +78,53 @@ export default defineComponent({
 			);
 		});
 
-		const groups = computed(() => [
-			{
-				key: 'standard',
-				name: t('interface_group_text_and_numbers'),
-				interfaces: interfacesSorted.value.filter((inter) => inter.group === 'standard'),
-			},
-			{
-				key: 'selection',
-				name: t('interface_group_selection'),
-				interfaces: interfacesSorted.value.filter((inter) => inter.group === 'selection'),
-			},
-			{
-				key: 'relational',
-				name: t('interface_group_relational'),
-				interfaces: interfacesSorted.value.filter((inter) => inter.group === 'relational'),
-			},
-			{
-				key: 'presentation',
-				name: t('interface_group_presentation'),
-				interfaces: interfacesSorted.value.filter((inter) => inter.group === 'presentation'),
-			},
-			{
-				key: 'group',
-				name: t('interface_group_groups'),
-				interfaces: interfacesSorted.value.filter((inter) => inter.group === 'group'),
-			},
-			{
-				key: 'other',
-				name: t('interface_group_other'),
-				interfaces: interfacesSorted.value.filter((inter) => inter.group === 'other'),
-			},
-		]);
+		const groups = computed(() => {
+			const groupsWithInterfaces = [
+				{
+					key: 'standard',
+					name: t('interface_group_text_and_numbers'),
+					interfaces: filterInterfacesByGroup('standard'),
+				},
+				{
+					key: 'selection',
+					name: t('interface_group_selection'),
+					interfaces: filterInterfacesByGroup('selection'),
+				},
+				{
+					key: 'relational',
+					name: t('interface_group_relational'),
+					interfaces: filterInterfacesByGroup('relational'),
+				},
+				{
+					key: 'presentation',
+					name: t('interface_group_presentation'),
+					interfaces: filterInterfacesByGroup('presentation'),
+				},
+				{
+					key: 'group',
+					name: t('interface_group_groups'),
+					interfaces: filterInterfacesByGroup('group'),
+				},
+				{
+					key: 'other',
+					name: t('interface_group_other'),
+					interfaces: filterInterfacesByGroup('other'),
+				},
+			];
+
+			if (!search.value) return groupsWithInterfaces;
+
+			return groupsWithInterfaces.filter((group) => group.interfaces.length > 0);
+
+			function filterInterfacesByGroup(group: string) {
+				const filteredInterfaces = interfacesSorted.value.filter((inter) => inter.group === group);
+				if (!search.value) return filteredInterfaces;
+				const searchValue = search.value!.toLowerCase();
+				return filteredInterfaces.filter(
+					(inter) => inter.id.toLowerCase().includes(searchValue) || inter.name.toLowerCase().includes(searchValue)
+				);
+			}
+		});
 
 		const chosenInterface = syncFieldDetailStoreProperty('field.meta.interface');
 
