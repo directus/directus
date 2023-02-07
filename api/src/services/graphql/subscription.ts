@@ -1,9 +1,9 @@
 import { EventEmitter, on } from 'events';
 import type { Query } from '@directus/shared/types';
-import { ItemsService } from '../items.js';
-import emitter from '../../emitter.js';
-import { getSchema } from '../../utils/get-schema.js';
-import type { GraphQLService } from './index.js';
+import { ItemsService } from '../items';
+import emitter from '../../emitter';
+import { getSchema } from '../../utils/get-schema';
+import type { GraphQLService } from './index';
 
 export const createPubSub = <TTopicPayload extends { [key: string]: unknown }>(emitter: EventEmitter) => {
 	return {
