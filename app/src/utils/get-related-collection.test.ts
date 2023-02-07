@@ -79,3 +79,11 @@ test('Returns M2O from related_collection rather than collection', () => {
 		relatedCollection: 'articles',
 	});
 });
+
+test('Returns null if no relation exists in the relationsStore', () => {
+	const relationsStore = useRelationsStore();
+
+	(relationsStore.getRelationsForField as Mock).mockReturnValue([]);
+
+	expect(getRelatedCollection('users', 'favorite_article')).toEqual(null);
+});

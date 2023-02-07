@@ -1,7 +1,7 @@
 import { inject } from 'vue';
 import { AxiosInstance } from 'axios';
 import { API_INJECT, EXTENSIONS_INJECT, STORES_INJECT } from '../constants';
-import { AppExtensionConfigs } from '../types';
+import { AppExtensionConfigs, RefRecord } from '../types';
 
 export function useStores(): Record<string, any> {
 	const stores = inject<Record<string, any>>(STORES_INJECT);
@@ -19,8 +19,8 @@ export function useApi(): AxiosInstance {
 	return api;
 }
 
-export function useExtensions(): AppExtensionConfigs {
-	const extensions = inject<AppExtensionConfigs>(EXTENSIONS_INJECT);
+export function useExtensions(): RefRecord<AppExtensionConfigs> {
+	const extensions = inject<RefRecord<AppExtensionConfigs>>(EXTENSIONS_INJECT);
 
 	if (!extensions) throw new Error('[useExtensions]: The extensions could not be found.');
 

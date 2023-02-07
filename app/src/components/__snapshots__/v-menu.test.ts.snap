@@ -1,0 +1,9 @@
+// Vitest Snapshot v1
+
+exports[`Mount component 1`] = `
+"<div class=\\"v-menu\\" data-v-41b8fe03=\\"\\">
+  <div class=\\"v-menu-activator\\" data-v-41b8fe03=\\"\\"></div>
+  <!--teleport start-->
+  <!--teleport end-->
+</div>"
+`;

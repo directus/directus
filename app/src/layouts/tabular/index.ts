@@ -52,18 +52,26 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			);
 		});
 
-		const { items, loading, error, totalPages, itemCount, totalCount, changeManualSort, getItems } = useItems(
-			collection,
-			{
-				sort,
-				limit,
-				page,
-				fields: fieldsWithRelationalAliased,
-				alias: aliasQuery,
-				filter,
-				search,
-			}
-		);
+		const {
+			items,
+			loading,
+			error,
+			totalPages,
+			itemCount,
+			totalCount,
+			changeManualSort,
+			getItems,
+			getItemCount,
+			getTotalCount,
+		} = useItems(collection, {
+			sort,
+			limit,
+			page,
+			fields: fieldsWithRelationalAliased,
+			alias: aliasQuery,
+			filter,
+			search,
+		});
 
 		const {
 			tableSort,
@@ -122,6 +130,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		function refresh() {
 			getItems();
+			getTotalCount();
+			getItemCount();
 		}
 
 		function download() {

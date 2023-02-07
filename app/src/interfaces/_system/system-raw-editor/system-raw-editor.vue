@@ -11,19 +11,24 @@ import 'codemirror/addon/mode/simple';
 import { computed, onMounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { mustacheMode } from './mustacheMode';
+import { parseJSON } from '@directus/shared/utils';
 
 const props = withDefaults(
 	defineProps<{
-		value?: string;
+		value?: string | object;
 		autofocus?: boolean;
 		disabled?: boolean;
 		type?: string;
+		language?: string;
+		placeholder?: string;
 	}>(),
 	{
 		value: undefined,
 		autofocus: false,
 		disabled: false,
 		type: undefined,
+		placeholder: undefined,
+		language: 'mustache',
 	}
 );
 
@@ -43,7 +48,7 @@ onMounted(async () => {
 		CodeMirror.defineSimpleMode('mustache', mustacheMode);
 
 		codemirror = CodeMirror(codemirrorEl.value, {
-			mode: 'mustache',
+			mode: props.language,
 			value: typeof props.value === 'object' ? JSON.stringify(props.value, null, 4) : String(props.value ?? ''),
 			tabSize: 0,
 			autoRefresh: true,
@@ -57,7 +62,8 @@ onMounted(async () => {
 			scrollbarStyle: isMultiLine.value ? 'native' : 'null',
 			extraKeys: { Ctrl: 'autocomplete' },
 			cursorBlinkRate: props.disabled ? -1 : 530,
-			placeholder: t('raw_editor_placeholder'),
+			placeholder: props.placeholder !== undefined ? props.placeholder : t('raw_editor_placeholder'),
+			readOnly: readOnly.value,
 		});
 
 		// prevent new lines for single lines
@@ -80,7 +86,15 @@ onMounted(async () => {
 		codemirror.on('change', (doc, { origin }) => {
 			if (origin === 'setValue') return;
 			const content = doc.getValue();
-			emit('input', content !== '' ? content : null);
+			if (typeof props.value === 'object') {
+				try {
+					emit('input', content !== '' ? parseJSON(content) : null);
+				} catch {
+					// Skip emitting invalid JSON
+				}
+			} else {
+				emit('input', content !== '' ? content : null);
+			}
 		});
 	}
 });

@@ -4,11 +4,11 @@ import { promises as fs } from 'fs';
 import inquirer from 'inquirer';
 import { load as loadYaml } from 'js-yaml';
 import path from 'path';
-import { flushCaches } from '../../../cache';
 import getDatabase, { isInstalled, validateDatabaseConnection } from '../../../database';
 import logger from '../../../logger';
-import { Snapshot } from '../../../types';
-import { applySnapshot, isNestedMetaUpdate } from '../../../utils/apply-snapshot';
+import { DiffKind, Snapshot } from '../../../types';
+import { isNestedMetaUpdate } from '../../../utils/apply-diff';
+import { applySnapshot } from '../../../utils/apply-snapshot';
 import { getSnapshot } from '../../../utils/get-snapshot';
 import { getSnapshotDiff } from '../../../utils/get-snapshot-diff';
 
@@ -18,8 +18,6 @@ export async function apply(snapshotPath: string, options?: { yes: boolean; dryR
 	const database = getDatabase();
 
 	await validateDatabaseConnection(database);
-
-	await flushCaches();
 
 	if ((await isInstalled()) === false) {
 		logger.error(`Directus isn't installed on this database. Please run "directus bootstrap" first.`);
@@ -60,20 +58,20 @@ export async function apply(snapshotPath: string, options?: { yes: boolean; dryR
 				message += chalk.black.underline.bold('Collections:');
 
 				for (const { collection, diff } of snapshotDiff.collections) {
-					if (diff[0]?.kind === 'E') {
+					if (diff[0]?.kind === DiffKind.EDIT) {
 						message += `\n  - ${chalk.blue('Update')} ${collection}`;
 
 						for (const change of diff) {
-							if (change.kind === 'E') {
+							if (change.kind === DiffKind.EDIT) {
 								const path = change.path!.slice(1).join('.');
 								message += `\n    - Set ${path} to ${change.rhs}`;
 							}
 						}
-					} else if (diff[0]?.kind === 'D') {
+					} else if (diff[0]?.kind === DiffKind.DELETE) {
 						message += `\n  - ${chalk.red('Delete')} ${collection}`;
-					} else if (diff[0]?.kind === 'N') {
+					} else if (diff[0]?.kind === DiffKind.NEW) {
 						message += `\n  - ${chalk.green('Create')} ${collection}`;
-					} else if (diff[0]?.kind === 'A') {
+					} else if (diff[0]?.kind === DiffKind.ARRAY) {
 						message += `\n  - ${chalk.blue('Update')} ${collection}`;
 					}
 				}
@@ -83,24 +81,24 @@ export async function apply(snapshotPath: string, options?: { yes: boolean; dryR
 				message += '\n\n' + chalk.black.underline.bold('Fields:');
 
 				for (const { collection, field, diff } of snapshotDiff.fields) {
-					if (diff[0]?.kind === 'E' || isNestedMetaUpdate(diff[0])) {
+					if (diff[0]?.kind === DiffKind.EDIT || isNestedMetaUpdate(diff[0])) {
 						message += `\n  - ${chalk.blue('Update')} ${collection}.${field}`;
 
 						for (const change of diff) {
 							const path = change.path!.slice(1).join('.');
-							if (change.kind === 'E') {
+							if (change.kind === DiffKind.EDIT) {
 								message += `\n    - Set ${path} to ${change.rhs}`;
-							} else if (change.kind === 'D') {
+							} else if (change.kind === DiffKind.DELETE) {
 								message += `\n    - Remove ${path}`;
-							} else if (change.kind === 'N') {
+							} else if (change.kind === DiffKind.NEW) {
 								message += `\n    - Add ${path} and set it to ${change.rhs}`;
 							}
 						}
-					} else if (diff[0]?.kind === 'D') {
+					} else if (diff[0]?.kind === DiffKind.DELETE) {
 						message += `\n  - ${chalk.red('Delete')} ${collection}.${field}`;
-					} else if (diff[0]?.kind === 'N') {
+					} else if (diff[0]?.kind === DiffKind.NEW) {
 						message += `\n  - ${chalk.green('Create')} ${collection}.${field}`;
-					} else if (diff[0]?.kind === 'A') {
+					} else if (diff[0]?.kind === DiffKind.ARRAY) {
 						message += `\n  - ${chalk.blue('Update')} ${collection}.${field}`;
 					}
 				}
@@ -110,20 +108,20 @@ export async function apply(snapshotPath: string, options?: { yes: boolean; dryR
 				message += '\n\n' + chalk.black.underline.bold('Relations:');
 
 				for (const { collection, field, related_collection, diff } of snapshotDiff.relations) {
-					if (diff[0]?.kind === 'E') {
+					if (diff[0]?.kind === DiffKind.EDIT) {
 						message += `\n  - ${chalk.blue('Update')} ${collection}.${field}`;
 
 						for (const change of diff) {
-							if (change.kind === 'E') {
+							if (change.kind === DiffKind.EDIT) {
 								const path = change.path!.slice(1).join('.');
 								message += `\n    - Set ${path} to ${change.rhs}`;
 							}
 						}
-					} else if (diff[0]?.kind === 'D') {
+					} else if (diff[0]?.kind === DiffKind.DELETE) {
 						message += `\n  - ${chalk.red('Delete')} ${collection}.${field}`;
-					} else if (diff[0]?.kind === 'N') {
+					} else if (diff[0]?.kind === DiffKind.NEW) {
 						message += `\n  - ${chalk.green('Create')} ${collection}.${field}`;
-					} else if (diff[0]?.kind === 'A') {
+					} else if (diff[0]?.kind === DiffKind.ARRAY) {
 						message += `\n  - ${chalk.blue('Update')} ${collection}.${field}`;
 					} else {
 						continue;

@@ -12,7 +12,7 @@ import {
 import { applyOptionsData, toArray } from '@directus/shared/utils';
 import fastRedact from 'fast-redact';
 import { Knex } from 'knex';
-import { omit } from 'lodash';
+import { omit, pick } from 'lodash';
 import { get } from 'micromustache';
 import { schedule, validate } from 'node-cron';
 import getDatabase from './database';
@@ -29,6 +29,7 @@ import { EventHandler } from './types';
 import { constructFlowTree } from './utils/construct-flow-tree';
 import { getSchema } from './utils/get-schema';
 import { JobQueue } from './utils/job-queue';
+import { mapValuesDeep } from './utils/map-values-deep';
 
 let flowManager: FlowManager | undefined;
 
@@ -56,6 +57,7 @@ type TriggerHandler = {
 const TRIGGER_KEY = '$trigger';
 const ACCOUNTABILITY_KEY = '$accountability';
 const LAST_KEY = '$last';
+const ENV_KEY = '$env';
 
 class FlowManager {
 	private isLoaded = false;
@@ -296,6 +298,7 @@ class FlowManager {
 			[TRIGGER_KEY]: data,
 			[LAST_KEY]: data,
 			[ACCOUNTABILITY_KEY]: context?.accountability ?? null,
+			[ENV_KEY]: pick(env, env.FLOWS_ENV_ALLOW_LIST ? toArray(env.FLOWS_ENV_ALLOW_LIST) : []),
 		};
 
 		let nextOperation = flow.operation;
@@ -388,7 +391,7 @@ class FlowManager {
 		const options = applyOptionsData(operation.options, keyedData);
 
 		try {
-			const result = await handler(options, {
+			let result = await handler(options, {
 				services,
 				exceptions: { ...exceptions, ...sharedExceptions },
 				env,
@@ -399,6 +402,12 @@ class FlowManager {
 				accountability: null,
 				...context,
 			});
+
+			// JSON structures don't allow for undefined values, so we need to replace them with null
+			// Otherwise the applyOptionsData function will not work correctly on the next operation
+			if (typeof result === 'object' && result !== null) {
+				result = mapValuesDeep(result, (_, value) => (value === undefined ? null : value));
+			}
 
 			return { successor: operation.resolve, status: 'resolve', data: result ?? null, options };
 		} catch (error: unknown) {

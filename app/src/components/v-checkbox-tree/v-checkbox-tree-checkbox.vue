@@ -112,7 +112,7 @@ const groupShown = computed(() => {
 	return !props.hidden;
 });
 
-const childrenValues = computed(() => props.children?.map((child) => child[props.itemValue]) || []);
+const childrenValues = computed(() => props.children.map((child) => child[props.itemValue]));
 
 const treeValue = computed({
 	get() {
@@ -122,7 +122,7 @@ const treeValue = computed({
 		const added = difference(newValue, props.modelValue);
 		const removed = difference(props.modelValue, newValue);
 
-		if (props.children) {
+		if (props.children.length > 0) {
 			switch (props.valueCombining) {
 				case 'all':
 					return emitAll(newValue, { added, removed });
@@ -264,7 +264,7 @@ function emitBranch(rawValue: (string | number)[], { added, removed }: Delta) {
 
 		const newValue = [
 			...rawValue.filter((val) => val !== props.value),
-			...(props.children || [])
+			...props.children
 				.filter((child) => {
 					if (!child[props.itemChildren]) return true;
 					return child[props.itemValue] !== childThatContainsSelection?.[props.itemValue];

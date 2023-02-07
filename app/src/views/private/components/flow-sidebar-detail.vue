@@ -3,11 +3,11 @@
 		<div class="fields">
 			<div v-for="manualFlow in manualFlows" :key="manualFlow.id" class="field full">
 				<v-button
-					v-tooltip="primaryKey ? t('run_flow_on_current') : t('run_flow_on_selected', selection.length)"
+					v-tooltip="getFlowTooltip(manualFlow)"
 					small
 					full-width
 					:loading="runningFlows.includes(manualFlow.id)"
-					:disabled="!primaryKey && selection.length === 0"
+					:disabled="isFlowDisabled(manualFlow)"
 					@click="onFlowClick(manualFlow.id)"
 				>
 					<v-icon :name="manualFlow.icon ?? 'bolt'" small left />
@@ -40,6 +40,7 @@ import { useFlowsStore } from '@/stores/flows';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { useCollection } from '@directus/shared/composables';
+import { FlowRaw } from '@directus/shared/types';
 import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -61,7 +62,7 @@ const emit = defineEmits(['refresh']);
 
 const { t } = useI18n();
 
-const { collection, primaryKey, selection, hasEdits } = toRefs(props);
+const { collection, primaryKey, selection, location, hasEdits } = toRefs(props);
 
 const { primaryKeyField } = useCollection(collection);
 
@@ -79,6 +80,18 @@ const manualFlows = computed(() =>
 const runningFlows = ref<string[]>([]);
 
 const confirmRunFlow = ref<string | null>(null);
+
+function getFlowTooltip(manualFlow: FlowRaw) {
+	if (location.value === 'item') return t('run_flow_on_current');
+	if (manualFlow.options?.requireSelection === false && selection.value.length === 0)
+		return t('run_flow_on_current_collection');
+	return t('run_flow_on_selected', selection.value.length);
+}
+
+function isFlowDisabled(manualFlow: FlowRaw) {
+	if (location.value === 'item' || manualFlow.options?.requireSelection === false) return false;
+	return !primaryKey.value && selection.value.length === 0;
+}
 
 async function onFlowClick(flowId: string) {
 	if (hasEdits.value) {
@@ -98,9 +111,16 @@ async function runManualFlow(flowId: string) {
 	runningFlows.value = [...runningFlows.value, flowId];
 
 	try {
-		const keys = primaryKey.value ? [primaryKey.value] : selection.value;
-
-		await api.post(`/flows/trigger/${flowId}`, { collection: collection.value, keys });
+		if (
+			location.value === 'collection' &&
+			selectedFlow.options?.requireSelection === false &&
+			selection.value.length === 0
+		) {
+			await api.post(`/flows/trigger/${flowId}`, { collection: collection.value });
+		} else {
+			const keys = primaryKey.value ? [primaryKey.value] : selection.value;
+			await api.post(`/flows/trigger/${flowId}`, { collection: collection.value, keys });
+		}
 
 		emit('refresh');
 

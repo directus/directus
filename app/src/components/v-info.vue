@@ -1,7 +1,7 @@
 <template>
 	<div class="v-info" :class="[type, { center }]">
-		<div class="icon">
-			<v-icon large :name="icon" outline />
+		<div v-if="icon !== false" class="icon">
+			<v-icon large :name="icon" />
 		</div>
 		<h2 class="title type-title">{{ title }}</h2>
 		<p class="content"><slot /></p>
@@ -10,11 +10,13 @@
 </template>
 
 <script setup lang="ts">
+import VIcon from './v-icon/v-icon.vue';
+
 interface Props {
 	/** The title to display in the info */
 	title: string;
 	/** What icon to render above the title */
-	icon?: string;
+	icon?: string | false;
 	/** Styling of the info */
 	type?: 'info' | 'success' | 'warning' | 'danger';
 	/** Displays the info centered */
@@ -22,7 +24,7 @@ interface Props {
 }
 
 withDefaults(defineProps<Props>(), {
-	icon: 'box',
+	icon: false,
 	type: 'info',
 	center: false,
 });

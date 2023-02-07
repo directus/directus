@@ -1,0 +1,46 @@
+type: object
+properties:
+  hash:
+    type: string
+  diff:
+    type: object
+    properties:
+      collections:
+        type: array
+        items:
+          type: object
+          properties:
+            collection:
+              type: string
+            diff:
+              type: array
+              items:
+                type: object
+      fields:
+        type: array
+        items:
+          type: object
+          properties:
+            collection:
+              type: string
+            field:
+              type: string
+            diff:
+              type: array
+              items:
+                type: object
+      relations:
+        type: array
+        items:
+          type: object
+          properties:
+            collection:
+              type: string
+            field:
+              type: string
+            related_collection:
+              type: string
+            diff:
+              type: array
+              items:
+                type: object
