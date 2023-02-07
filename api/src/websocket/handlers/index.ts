@@ -1,5 +1,7 @@
 import env from '../../env';
-import { HeartbeatHandler, ItemsHandler, SubscribeHandler } from '../handlers';
+import { ItemsHandler } from './items';
+import { HeartbeatHandler } from './heartbeat';
+import { SubscribeHandler } from './subscribe';
 
 export function startWebsocketHandlers() {
 	if (env['WEBSOCKETS_HEARTBEAT_ENABLED']) {

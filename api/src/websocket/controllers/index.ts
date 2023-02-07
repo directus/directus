@@ -1,9 +1,11 @@
 import type { Server as httpServer } from 'http';
 import env from '../../env';
 import { ServiceUnavailableException } from '../../exceptions';
-import { GraphQLSubscriptionController, WebsocketController } from '../controllers';
+import { GraphQLSubscriptionController } from './graphql';
+import { WebsocketController } from './rest';
 
 let websocketController: WebsocketController | undefined;
+let subscriptionController: GraphQLSubscriptionController | undefined;
 
 export function createWebsocketController(server: httpServer) {
 	if (env['WEBSOCKETS_REST_ENABLED']) {
@@ -24,8 +26,6 @@ export function getWebsocketController() {
 	}
 	return websocketController;
 }
-
-let subscriptionController: GraphQLSubscriptionController | undefined;
 
 export function createSubscriptionController(server: httpServer) {
 	if (env['WEBSOCKETS_GRAPHQL_ENABLED']) {
