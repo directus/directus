@@ -56,9 +56,9 @@ export class JsonHelperDefault extends JsonHelper {
 			}
 		}
 	}
-	postProcessFallback(items: Item[]): void {
+	postProcessFallback(items: Item[], nodes: JsonFieldNode[] = this.nodes): void {
 		for (const item of items) {
-			for (const jsonNode of this.nodes) {
+			for (const jsonNode of nodes) {
 				this.postProcessJsonPath(item, jsonNode);
 			}
 		}
