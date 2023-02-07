@@ -9,18 +9,17 @@ import api from '@/api';
 
 interface Props {
 	src: string;
-	cachedSrc?: string;
 }
 
 const props = defineProps<Props>();
-const emit = defineEmits(['error', 'loaded']);
+const emit = defineEmits(['error']);
 const attrs = useAttrs();
 
 const imageElement = ref<HTMLImageElement>();
 
 const emptyPixel =
 	'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';
-const srcData = ref<string>(props.cachedSrc ?? emptyPixel);
+const srcData = ref<string>(emptyPixel);
 
 const observer = new IntersectionObserver((entries, observer) => {
 	if (entries.length === 0) return;
@@ -68,8 +67,6 @@ async function loadImage() {
 
 		const base64 = window.btoa(raw);
 		srcData.value = `data:${contentType};base64,${base64}`;
-
-		emit('loaded', srcData.value);
 	} catch (err) {
 		emit('error', err);
 	}
