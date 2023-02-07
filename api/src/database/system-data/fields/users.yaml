@@ -136,6 +136,7 @@ fields:
     special:
       - m2o
     width: half
+    required: true
     display: related-values
     display_options:
       template: '{{ name }}'
