@@ -117,7 +117,7 @@ function onKeyDown(event: KeyboardEvent) {
 	if (event.key === 'Enter') {
 		event.preventDefault();
 	}
-	
+
 	if (event.key === '{' || event.key === '}') {
 		event.preventDefault();
 		menuActive.value = true;
