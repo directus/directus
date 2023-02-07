@@ -1,28 +1,32 @@
 <template>
 	<div class="public-view" :class="{ branded: isBranded }">
 		<div class="container" :class="{ wide }">
-			<div class="title-box">
-				<div v-if="info?.project?.project_logo" class="logo" :style="{ backgroundColor: info?.project.project_color }">
-					<v-image :src="logoURL" :alt="info?.project.project_name || 'Logo'" />
+			<div class="login-box">
+				<div class="title-box">
+					<img src="./brand.svg" style="width: 100%" />
+					<!-- <div v-if="info?.project?.project_logo" class="logo"
+						:style="{ backgroundColor: info?.project.project_color }">
+						<v-image :src="logoURL" :alt="info?.project.project_name || 'Logo'" />
+					</div>
+					<div v-else class="logo" :style="{ backgroundColor: info?.project?.project_color }">
+						<img src="./logo-light.svg" alt="Directus" class="directus-logo" />
+					</div>
+					<div class="title">
+						<h1 class="type-title">{{ info?.project?.project_name }}</h1>
+						<p class="subtitle">{{ info?.project?.project_descriptor ?? t('application') }}</p>
+					</div> -->
 				</div>
-				<div v-else class="logo" :style="{ backgroundColor: info?.project?.project_color }">
-					<img src="./logo-light.svg" alt="Directus" class="directus-logo" />
-				</div>
-				<div class="title">
-					<h1 class="type-title">{{ info?.project?.project_name }}</h1>
-					<p class="subtitle">{{ info?.project?.project_descriptor ?? t('application') }}</p>
-				</div>
-			</div>
 
-			<div class="content">
-				<slot />
-			</div>
-			<div class="notice">
-				<slot name="notice" />
+				<div class="content">
+					<slot />
+				</div>
+				<div class="notice">
+					<slot name="notice" />
+				</div>
 			</div>
 		</div>
 		<div class="art" :style="artStyles">
-			<img src="./bg-login.png" />
+			<img style="height: 100%" src="./bg.svg" />
 
 			<transition name="scale">
 				<v-image v-if="foregroundURL" class="foreground" :src="foregroundURL" :alt="info?.project?.project_name" />
@@ -130,6 +134,14 @@ const logoURL = computed<string | null>(() => {
 </script>
 
 <style lang="scss" scoped>
+.login-box {
+	display: flex;
+	height: 100vh;
+	flex-direction: column;
+	justify-content: space-around;
+	margin: 0 auto;
+}
+
 .public-view {
 	display: flex;
 	width: 100%;
@@ -144,7 +156,8 @@ const logoURL = computed<string | null>(() => {
 	.container {
 		--border-radius: 6px;
 		--input-height: 60px;
-		--input-padding: 16px; /* (60 - 4 - 24) / 2 */
+		--input-padding: 16px;
+		/* (60 - 4 - 24) / 2 */
 
 		z-index: 2;
 		display: flex;
@@ -152,8 +165,8 @@ const logoURL = computed<string | null>(() => {
 		flex-direction: column;
 		justify-content: space-between;
 		width: 100%;
-		max-width: 500px;
-		height: 100%;
+		max-width: 50%;
+		height: 100vh;
 		padding: 20px;
 		overflow-x: hidden;
 		overflow-y: auto;

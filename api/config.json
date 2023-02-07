@@ -1,0 +1,10 @@
+{
+	"HOST": "0.0.0.0",
+	"PORT": 8055,
+
+	"DB_CLIENT": "pg",
+	"DB_HOST": "localhost",
+	"DB_PORT": 5432,
+	"KEY": "Bal",
+	"SECRET": "dhurr"
+}
