@@ -37,7 +37,7 @@
 					v-if="junctionField"
 					:disabled="disabled"
 					:loading="loading"
-					:nested="true"
+					hide-no-visible-fields
 					:initial-values="initialValues?.[junctionField]"
 					:primary-key="relatedPrimaryKey"
 					:model-value="internalEdits?.[junctionField]"
@@ -52,7 +52,7 @@
 					v-model="internalEdits"
 					:disabled="disabled"
 					:loading="loading"
-					:nested="true"
+					hide-no-visible-fields
 					:initial-values="initialValues"
 					:autofocus="swapFormOrder"
 					:show-divider="swapFormOrder"

@@ -29,7 +29,8 @@
 						:batch-mode="batchMode"
 						:disabled="disabled"
 						:direction="direction"
-						nested
+						hide-no-visible-fields
+						hide-validation-errors
 						@update:model-value="$emit('apply', $event)"
 					/>
 				</div>
