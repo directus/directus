@@ -52,7 +52,7 @@ export const seedAllFieldTypesStructure = async (vendor: string, collection: str
 				};
 
 				// BLOB, TEXT, GEOMETRY or JSON column 'values' can't have a default value
-				if (fieldType === 'json' && ['mysql', 'mysql5', 'maria', 'oracle'].includes(vendor)) {
+				if (fieldType === 'json' && ['mysql', 'mysql5', 'maria'].includes(vendor)) {
 					schema = {};
 				}
 			}
