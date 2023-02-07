@@ -11,8 +11,5 @@ export default defineConfig({
 				replacement: path.resolve(__dirname, '../app/node_modules/@directus/format-title'),
 			},
 		],
-		deps: {
-			interopDefault: true,
-		},
 	},
 });
