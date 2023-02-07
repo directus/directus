@@ -1,13 +1,13 @@
 <template>
 	<div ref="el" class="v-form" :class="gridClass">
 		<validation-errors
-			v-if="!hideValidationErrors && validationErrors.length > 0"
+			v-if="!showValidationErrors && validationErrors.length > 0"
 			:validation-errors="validationErrors"
 			:fields="fields ? fields : []"
 			@scroll-to-field="scrollToField"
 		/>
 		<v-info
-			v-if="noVisibleFields && !hideNoVisibleFields && !loading"
+			v-if="noVisibleFields && !showNoVisibleFields && !loading"
 			:title="t('no_visible_fields')"
 			:icon="inline ? false : 'search'"
 			center
@@ -115,8 +115,8 @@ interface Props {
 	autofocus?: boolean;
 	group?: string | null;
 	badge?: string;
-	hideValidationErrors?: boolean;
-	hideNoVisibleFields?: boolean;
+	showValidationErrors?: boolean;
+	showNoVisibleFields?: boolean;
 	rawEditorEnabled?: boolean;
 	direction?: string;
 	showDivider?: boolean;
@@ -136,8 +136,8 @@ const props = withDefaults(defineProps<Props>(), {
 	autofocus: false,
 	group: null,
 	badge: undefined,
-	hideValidationErrors: false,
-	hideNoVisibleFields: false,
+	showValidationErrors: true,
+	showNoVisibleFields: true,
 	rawEditorEnabled: false,
 	direction: undefined,
 	showDivider: false,
@@ -205,7 +205,7 @@ const noVisibleFields = computed(() => {
 watch(
 	() => props.validationErrors,
 	(newVal, oldVal) => {
-		if (props.hideValidationErrors) return;
+		if (props.showValidationErrors) return;
 		if (isEqual(newVal, oldVal)) return;
 		if (newVal?.length > 0) el?.value?.scrollIntoView({ behavior: 'smooth' });
 	}

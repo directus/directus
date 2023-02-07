@@ -29,8 +29,8 @@
 						:batch-mode="batchMode"
 						:disabled="disabled"
 						:direction="direction"
-						hide-no-visible-fields
-						hide-validation-errors
+						:show-no-visible-fields="false"
+						:show-validation-errors="false"
 						@update:model-value="$emit('apply', $event)"
 					/>
 				</div>

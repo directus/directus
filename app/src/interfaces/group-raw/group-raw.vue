@@ -12,8 +12,8 @@
 			:badge="badge"
 			:raw-editor-enabled="rawEditorEnabled"
 			:direction="direction"
-			hide-no-visible-fields
-			hide-validation-errors
+			:show-no-visible-fields="false"
+			:show-validation-errors="false"
 			@update:model-value="$emit('apply', $event)"
 		/>
 	</div>
