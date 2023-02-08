@@ -38,6 +38,15 @@ describe('Wait for messages', () => {
 		});
 		expect(() => waitForAnyMessage(fakeClient, TEST_TIMEOUT)).rejects.toBe(undefined);
 	});
+	test('should fail parsing', async () => {
+		const TEST_TIMEOUT = 5;
+		const fakeClient = mockClient((callback) => {
+			setTimeout(() => {
+				callback(Buffer.from('{invalid:json}'));
+			}, 10);
+		});
+		expect(() => waitForAnyMessage(fakeClient, TEST_TIMEOUT)).rejects.toBe(undefined);
+	});
 });
 
 describe('Wait for specific types messages', () => {
@@ -56,6 +65,14 @@ describe('Wait for specific types messages', () => {
 		const fakeClient = mockClient((callback) => {
 			setTimeout(() => {
 				callback(bufferMessage(MSG_B));
+			}, 5);
+		});
+		expect(() => waitForMessageType(fakeClient, 'test', 10)).rejects.toBe(undefined);
+	});
+	test('should fail parsing', async () => {
+		const fakeClient = mockClient((callback) => {
+			setTimeout(() => {
+				callback(bufferMessage({ id: 2 }));
 			}, 5);
 		});
 		expect(() => waitForMessageType(fakeClient, 'test', 10)).rejects.toBe(undefined);
