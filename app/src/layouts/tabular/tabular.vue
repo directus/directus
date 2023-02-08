@@ -1,7 +1,7 @@
 <template>
 	<div class="layout-tabular">
 		<v-table
-			v-if="loading || (itemCount && itemCount > 0)"
+			v-if="loading || (itemCount && itemCount > 0 && !error)"
 			ref="table"
 			v-model="selectionWritable"
 			v-model:headers="tableHeadersWritable"
