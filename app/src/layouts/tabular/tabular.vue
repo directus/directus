@@ -46,7 +46,7 @@
 						:disabled="!header.sortable"
 						:active="tableSort?.by === header.value && tableSort?.desc === false"
 						clickable
-						@click="onSortChange?.({ by: header.value, desc: false })"
+						@click="onSortChange({ by: header.value, desc: false })"
 					>
 						<v-list-item-icon>
 							<v-icon name="sort" class="flip" />
@@ -60,7 +60,7 @@
 						:active="tableSort?.by === header.value && tableSort?.desc === true"
 						:disabled="!header.sortable"
 						clickable
-						@click="onSortChange?.({ by: header.value, desc: true })"
+						@click="onSortChange({ by: header.value, desc: true })"
 					>
 						<v-list-item-icon>
 							<v-icon name="sort" />
@@ -215,7 +215,7 @@ interface Props {
 	selectAll: () => void;
 	filterUser?: Filter;
 	search?: string;
-	onSortChange?: (newSort: { by: string; desc: boolean }) => void;
+	onSortChange: (newSort: { by: string; desc: boolean }) => void;
 	onAlignChange?: (field: 'string', align: 'left' | 'center' | 'right') => void;
 }
 
@@ -230,7 +230,6 @@ const props = withDefaults(defineProps<Props>(), {
 	sortField: undefined,
 	filterUser: undefined,
 	search: undefined,
-	onSortChange: () => undefined,
 	onAlignChange: () => undefined,
 });
 
