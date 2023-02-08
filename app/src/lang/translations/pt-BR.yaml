@@ -573,6 +573,8 @@ select_an_item: Selecione um item...
 edit: Editar
 enabled: Habilitado
 disable_tfa: Desativar verificação em duas etapas
+admin_disable_tfa_text: Tem certeza de que deseja desativar a 2FA para este usuário?
+tfa_setup: Configurar 2FA
 tfa_scan_code: Escaneie o código no seu aplicativo de autenticação para terminar de configurar a 2FA
 enter_otp_to_disable_tfa: Digite o OTP para desativar a 2FA
 create_account: Criar conta
@@ -1789,6 +1791,10 @@ displays:
     relative_label: 'Mostrar tempo relativo, por exemplo: 5 minutos atrás'
     suffix: Sufixo
     suffix_label: Mostrar indicador relativo
+    suffix_note: Usa palavras como 'dentro' e 'atrás'
+    strict: Estrito
+    strict_label: Usar unidades rigorosas
+    strict_note: Remove palavras como 'quase', 'sobre', 'menos que'
     round_note: Escolha uma função de arredondamento para usar
   file:
     file: Arquivo
