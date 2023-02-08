@@ -15,14 +15,15 @@ export const fmtMessage = (type: string, data: Record<string, any> = {}, uid?: s
 
 // we may need this later for slow connections
 export const safeSend = async (client: WebSocketClient, data: string, delay = 100) => {
-	if (client.readyState !== client.OPEN) return;
+	if (client.readyState !== client.OPEN) return false;
 	if (client.bufferedAmount > 0) {
 		// wait for the buffer to clear
 		return new Promise((resolve) => {
 			setTimeout(() => {
-				safeSend(client, data, delay).finally(() => resolve(null));
+				safeSend(client, data, delay).then((success) => resolve(success));
 			}, delay);
 		});
 	}
 	client.send(data);
+	return true;
 };
