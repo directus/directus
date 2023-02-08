@@ -1,5 +1,5 @@
 import type { WebSocket, RawData } from 'ws';
-import type { WebSocketMessage } from '../types';
+import { WebSocketMessage } from '../messages';
 import { trimUpper } from './message';
 
 export const waitForAnyMessage = (client: WebSocket, timeout: number): Promise<WebSocketMessage> => {
@@ -33,7 +33,7 @@ export const waitForMessageType = (client: WebSocket, type: string, timeout: num
 		function awaitMessage(event: RawData) {
 			let msg: WebSocketMessage;
 			try {
-				msg = JSON.parse(event.toString());
+				msg = WebSocketMessage.parse(JSON.parse(event.toString()));
 			} catch {
 				return;
 			}

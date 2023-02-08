@@ -2,13 +2,14 @@ import type { Accountability } from '@directus/shared/types';
 import { AuthenticationService } from '../services';
 import { getSchema } from '../utils/get-schema';
 import { DEFAULT_AUTH_PROVIDER } from '../constants';
-import type { AuthenticationState, AuthMessage, ResponseMessage } from './types';
+import type { AuthenticationState } from './types';
 import { getAccountabilityForToken } from '../utils/get-accountability-for-token';
 import { getAccountabilityForRole } from '../utils/get-accountability-for-role';
 import getDatabase from '../database';
 import { getExpiresAtForToken } from './utils/get-expires-at-for-token';
 import { WebSocketException } from './exceptions';
 import { InvalidCredentialsException } from '../exceptions';
+import type { WebSocketAuthMessage, WebSocketResponse } from './messages';
 
 export async function authenticateWithToken(token: string, expires?: number) {
 	const accountability = await getAccountabilityForToken(token);
@@ -19,7 +20,7 @@ export async function authenticateWithToken(token: string, expires?: number) {
 	return { accountability, expiresAt } as AuthenticationState;
 }
 
-export async function authenticateConnection(message: AuthMessage): Promise<AuthenticationState> {
+export async function authenticateConnection(message: WebSocketAuthMessage): Promise<AuthenticationState> {
 	let access_token: string | undefined, expires_at: number | undefined;
 	try {
 		if ('email' in message && 'password' in message) {
@@ -59,7 +60,7 @@ export async function refreshAccountability(
 }
 
 export function authenticationSuccess(uid?: string): string {
-	const message: ResponseMessage = {
+	const message: WebSocketResponse = {
 		type: 'auth',
 		status: 'ok',
 	};

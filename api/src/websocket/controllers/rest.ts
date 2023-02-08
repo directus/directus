@@ -1,6 +1,6 @@
 import type WebSocket from 'ws';
 import type { Server as httpServer } from 'http';
-import type { AuthenticationState, WebSocketClient, WebSocketMessage } from '../types';
+import type { AuthenticationState, WebSocketClient } from '../types';
 import env from '../../env';
 import SocketController from './base';
 import emitter from '../../emitter';
@@ -8,6 +8,7 @@ import { refreshAccountability } from '../authenticate';
 import { handleWebsocketException, WebSocketException } from '../exceptions';
 import logger from '../../logger';
 import { trimUpper } from '../utils/message';
+import { WebSocketMessage } from '../messages';
 
 export class WebsocketController extends SocketController {
 	constructor(httpServer: httpServer) {
@@ -24,7 +25,7 @@ export class WebsocketController extends SocketController {
 	private bindEvents(client: WebSocketClient) {
 		client.on('parsed-message', async (message: WebSocketMessage) => {
 			try {
-				message = await emitter.emitFilter('websocket.message', message, { client });
+				message = WebSocketMessage.parse(await emitter.emitFilter('websocket.message', message, { client }));
 				client.accountability = await refreshAccountability(client.accountability);
 				emitter.emitAction('websocket.message', { message, client });
 			} catch (error) {

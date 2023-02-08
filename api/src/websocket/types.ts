@@ -21,41 +21,6 @@ export type Subscription = {
 	client: WebSocketClient;
 };
 
-export type WebSocketMessage = { type: string; uid?: string } & Record<string, any>;
-
-export type ResponseMessage =
-	| {
-			type: string;
-			status: 'ok';
-			uid?: string;
-	  }
-	| {
-			type: string;
-			status: 'error';
-			error: {
-				code: string;
-				message: string;
-			};
-			uid?: string;
-	  };
-
-export type SubscribeMessage =
-	| {
-			type: 'SUBSCRIBE';
-			collection: string;
-			item?: string | number;
-			status?: boolean;
-			// events?: string | string[];
-			query?: Query;
-			uid?: string;
-	  }
-	| { type: 'UNSUBSCRIBE'; uid?: string };
-
-export type AuthMessage =
-	| { type: 'AUTH'; email: string; password: string; uid?: string }
-	| { type: 'AUTH'; access_token: string; uid?: string }
-	| { type: 'AUTH'; refresh_token: string; uid?: string };
-
 export type UpgradeContext = {
 	request: IncomingMessage;
 	socket: internal.Duplex;

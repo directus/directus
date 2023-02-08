@@ -1,6 +1,6 @@
 import { getSchema } from '../../utils/get-schema';
 import { ItemsService } from '../../services/items';
-import type { SubscribeMessage, Subscription, WebSocketClient } from '../types';
+import type { Subscription, WebSocketClient } from '../types';
 import emitter from '../../emitter';
 import logger from '../../logger';
 import { fmtMessage } from '../utils/message';
@@ -9,6 +9,7 @@ import { MetaService } from '../../services';
 import { sanitizeQuery } from '../../utils/sanitize-query';
 import { handleWebsocketException, WebSocketException } from '../exceptions';
 import type { Accountability, SchemaOverview } from '@directus/shared/types';
+import { WebSocketSubscribeMessage } from '../messages';
 
 export class SubscribeHandler {
 	subscriptions: Record<string, Set<Subscription>>;
@@ -36,7 +37,7 @@ export class SubscribeHandler {
 	bindWebsocket() {
 		emitter.onAction('websocket.message', ({ client, message }) => {
 			try {
-				this.onMessage(client, message as SubscribeMessage);
+				this.onMessage(client, WebSocketSubscribeMessage.parse(message));
 			} catch (error) {
 				handleWebsocketException(client, error, 'subscribe');
 			}
@@ -121,7 +122,7 @@ export class SubscribeHandler {
 			}
 		}
 	}
-	async onMessage(client: WebSocketClient, message: SubscribeMessage) {
+	async onMessage(client: WebSocketClient, message: WebSocketSubscribeMessage) {
 		if (message.type === 'SUBSCRIBE') {
 			logger.debug(`[WS REST] SubscribeHandler ${JSON.stringify(message)}`);
 			try {

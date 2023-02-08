@@ -1,8 +1,8 @@
 import type { Server as httpServer } from 'http';
-import env from '../../env';
 import { ServiceUnavailableException } from '../../exceptions';
 import { GraphQLSubscriptionController } from './graphql';
 import { WebsocketController } from './rest';
+import env from '../../env';
 
 let websocketController: WebsocketController | undefined;
 let subscriptionController: GraphQLSubscriptionController | undefined;

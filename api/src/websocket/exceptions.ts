@@ -1,7 +1,8 @@
 import { BaseException } from '@directus/shared/exceptions';
 import type { WebSocket } from 'ws';
 import logger from '../logger';
-import type { ResponseMessage, WebSocketClient } from './types';
+import type { WebSocketResponse } from './messages';
+import type { WebSocketClient } from './types';
 
 export class WebSocketException extends Error {
 	type: string;
@@ -13,8 +14,8 @@ export class WebSocketException extends Error {
 		this.code = code;
 		this.uid = uid;
 	}
-	toJSON(): ResponseMessage {
-		const message: ResponseMessage = {
+	toJSON(): WebSocketResponse {
+		const message: WebSocketResponse = {
 			type: this.type,
 			status: 'error',
 			error: {

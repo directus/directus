@@ -1,23 +1,17 @@
 import type { Server as httpServer } from 'http';
+import { makeServer, Server } from 'graphql-ws';
+import type { WebSocket } from 'ws';
 import logger from '../../logger';
 import { getAccountabilityForToken } from '../../utils/get-accountability-for-token';
-import { makeServer, Server } from 'graphql-ws';
 import { getSchema } from '../../utils/get-schema';
 import { GraphQLService } from '../../services';
 import env from '../../env';
 import SocketController from './base';
-import type {
-	AuthenticationState,
-	AuthMessage,
-	ConnectionParams,
-	UpgradeContext,
-	WebSocketClient,
-	WebSocketMessage,
-} from '../types';
-import type { WebSocket } from 'ws';
+import type { AuthenticationState, ConnectionParams, UpgradeContext, WebSocketClient } from '../types';
 import { handleWebsocketException, WebSocketException } from '../exceptions';
 import { authenticateConnection, refreshAccountability } from '../authenticate';
 import { waitForAnyMessage } from '../utils/wait-for-message';
+import { WebSocketAuthMessage, WebSocketMessage } from '../messages';
 
 export class GraphQLSubscriptionController extends SocketController {
 	gql: Server<ConnectionParams>;
@@ -77,7 +71,7 @@ export class GraphQLSubscriptionController extends SocketController {
 				const msg: WebSocketMessage = await waitForAnyMessage(ws, this.authentication.timeout);
 				if (msg.type !== 'connection_init') throw new Error();
 
-				const state = await authenticateConnection(msg['payload'] as AuthMessage);
+				const state = await authenticateConnection(WebSocketAuthMessage.parse(msg['payload']));
 				this.server.emit('connection', ws, state);
 				ws.send(JSON.stringify({ type: 'connection_ack' }));
 				this.server.emit('message-parsed', msg);

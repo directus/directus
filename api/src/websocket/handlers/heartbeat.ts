@@ -1,8 +1,9 @@
 import emitter from '../../emitter';
 import { fmtMessage, trimUpper } from '../utils/message';
-import type { WebSocketClient, WebSocketMessage } from '../types';
+import type { WebSocketClient } from '../types';
 import { WebsocketController, getWebsocketController } from '../controllers';
 import type { ActionHandler } from '@directus/shared/types';
+import { WebSocketMessage } from '../messages';
 import env from '../../env';
 
 const HEARTBEAT_FREQUENCY = Number(env['WEBSOCKETS_HEARTBEAT_FREQUENCY']) * 1000;
@@ -14,7 +15,11 @@ export class HeartbeatHandler {
 	constructor() {
 		this.controller = getWebsocketController();
 		emitter.onAction('websocket.message', ({ client, message }) => {
-			this.onMessage(client, message);
+			try {
+				this.onMessage(client, WebSocketMessage.parse(message));
+			} catch {
+				/* ignore errors */
+			}
 		});
 		emitter.onAction('websocket.connect', () => this.checkClients());
 		emitter.onAction('websocket.error', () => this.checkClients());

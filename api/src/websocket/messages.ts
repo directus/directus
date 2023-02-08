@@ -50,48 +50,47 @@ export const WebSocketSubscribeMessage = z.union([
 export type WebSocketSubscribeMessage = z.infer<typeof WebSocketSubscribeMessage>;
 
 const ZodItem = z.custom<Partial<Item>>();
-export const WebSocketItemsMessage = WebSocketMessage.extend({
+const PartialItemsMessage = WebSocketMessage.extend({
 	type: z.literal('ITEMS'),
 	collection: z.string(),
-}).and(
+});
+export const WebSocketItemsMessage = z.union([
+	PartialItemsMessage.extend({
+		action: z.literal('create'),
+		data: z.union([z.array(ZodItem), ZodItem]),
+		query: z.custom<Query>().optional(),
+	}),
+	PartialItemsMessage.extend({
+		action: z.literal('read'),
+		query: z.custom<Query>(),
+	}),
 	z.union([
-		z.object({
-			action: z.literal('create'),
-			data: z.union([z.array(ZodItem), ZodItem]),
+		PartialItemsMessage.extend({
+			action: z.literal('update'),
+			data: z.array(ZodItem),
+			ids: z.array(z.union([z.string(), z.number()])),
 			query: z.custom<Query>().optional(),
 		}),
-		z.object({
-			action: z.literal('read'),
+		PartialItemsMessage.extend({
+			action: z.literal('update'),
+			data: ZodItem,
+			id: z.union([z.string(), z.number()]),
+			query: z.custom<Query>().optional(),
+		}),
+	]),
+	z.union([
+		PartialItemsMessage.extend({
+			action: z.literal('delete'),
+			ids: z.array(z.union([z.string(), z.number()])),
+		}),
+		PartialItemsMessage.extend({
+			action: z.literal('delete'),
+			id: z.union([z.string(), z.number()]),
+		}),
+		PartialItemsMessage.extend({
+			action: z.literal('delete'),
 			query: z.custom<Query>(),
 		}),
-		z.union([
-			z.object({
-				action: z.literal('update'),
-				data: z.array(ZodItem),
-				ids: z.array(z.union([z.string(), z.number()])),
-				query: z.custom<Query>().optional(),
-			}),
-			z.object({
-				action: z.literal('update'),
-				data: ZodItem,
-				id: z.union([z.string(), z.number()]),
-				query: z.custom<Query>().optional(),
-			}),
-		]),
-		z.union([
-			z.object({
-				action: z.literal('delete'),
-				ids: z.array(z.union([z.string(), z.number()])),
-			}),
-			z.object({
-				action: z.literal('delete'),
-				id: z.union([z.string(), z.number()]),
-			}),
-			z.object({
-				action: z.literal('delete'),
-				query: z.custom<Query>(),
-			}),
-		]),
-	])
-);
+	]),
+]);
 export type WebSocketItemsMessage = z.infer<typeof WebSocketItemsMessage>;

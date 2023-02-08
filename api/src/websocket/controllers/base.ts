@@ -1,22 +1,23 @@
 import type { Accountability } from '@directus/shared/types';
 import type { IncomingMessage, Server as httpServer } from 'http';
+import type { RateLimiterAbstract } from 'rate-limiter-flexible';
 import type { ParsedUrlQuery } from 'querystring';
 import WebSocket, { WebSocketServer } from 'ws';
 import type internal from 'stream';
+import { v4 as uuid } from 'uuid';
 import { parse } from 'url';
 import logger from '../../logger';
 import { getAccountabilityForToken } from '../../utils/get-accountability-for-token';
 import { getExpiresAtForToken } from '../utils/get-expires-at-for-token';
 import { authenticateConnection, authenticationSuccess } from '../authenticate';
-import type { AuthenticationState, AuthMessage, UpgradeContext, WebSocketClient, WebSocketMessage } from '../types';
+import type { AuthenticationState, UpgradeContext, WebSocketClient } from '../types';
 import { waitForAnyMessage, waitForMessageType } from '../utils/wait-for-message';
 import { TokenExpiredException } from '../../exceptions';
 import { handleWebsocketException, WebSocketException } from '../exceptions';
 import emitter from '../../emitter';
 import { createRateLimiter } from '../../rate-limiter';
-import type { RateLimiterAbstract } from 'rate-limiter-flexible';
-import { v4 as uuid } from 'uuid';
 import { trimUpper } from '../utils/message';
+import { WebSocketAuthMessage, WebSocketMessage } from '../messages';
 
 export default abstract class SocketController {
 	name: string;
@@ -93,10 +94,10 @@ export default abstract class SocketController {
 	protected async handleHandshakeUpgrade({ request, socket, head }: UpgradeContext) {
 		this.server.handleUpgrade(request, socket, head, async (ws) => {
 			try {
-				const payload: WebSocketMessage = await waitForAnyMessage(ws, this.authentication.timeout);
+				const payload = await waitForAnyMessage(ws, this.authentication.timeout);
 				if (payload.type !== 'AUTH') throw new Error();
 
-				const state = await authenticateConnection(payload as AuthMessage);
+				const state = await authenticateConnection(WebSocketAuthMessage.parse(payload));
 				ws.send(authenticationSuccess(payload['uid']));
 				this.server.emit('connection', ws, state);
 			} catch {
@@ -136,7 +137,11 @@ export default abstract class SocketController {
 			}
 			this.log(JSON.stringify(message));
 			if (trimUpper(message.type) === 'AUTH') {
-				await this.handleAuthRequest(client, message as AuthMessage);
+				try {
+					await this.handleAuthRequest(client, WebSocketAuthMessage.parse(message));
+				} catch {
+					// ignore errors?
+				}
 				return;
 			}
 			ws.emit('parsed-message', message);
@@ -159,13 +164,13 @@ export default abstract class SocketController {
 	protected parseMessage(data: string) {
 		let message: WebSocketMessage;
 		try {
-			message = JSON.parse(data);
+			message = WebSocketMessage.parse(JSON.parse(data));
 		} catch (err: any) {
 			throw new WebSocketException('server', 'INVALID_PAYLOAD', 'Unable to parse the incoming message!');
 		}
 		return message;
 	}
-	protected async handleAuthRequest(client: WebSocketClient, message: AuthMessage) {
+	protected async handleAuthRequest(client: WebSocketClient, message: WebSocketAuthMessage) {
 		try {
 			const { accountability, expiresAt } = await authenticateConnection(message);
 			client.accountability = accountability;
