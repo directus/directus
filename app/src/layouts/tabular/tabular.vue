@@ -15,7 +15,7 @@
 			:loading="loading"
 			:row-height="tableRowHeight"
 			:item-key="primaryKeyField?.field"
-			:show-manual-sort="sortField !== null"
+			:show-manual-sort="showManualSort"
 			:manual-sort-key="sortField"
 			allow-header-reorder
 			selection-use-keys
@@ -188,6 +188,8 @@ import { get } from '@directus/shared/utils';
 import { useAliasFields, AliasField } from '@/composables/use-alias-fields';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { isEmpty, merge } from 'lodash';
+import { usePermissionsStore } from '@/stores/permissions';
+import { useUserStore } from '@/stores/user';
 
 interface Props {
 	collection: string;
@@ -257,6 +259,25 @@ useShortcut(
 	},
 	table
 );
+const permissionsStore = usePermissionsStore();
+const userStore = useUserStore();
+
+
+const showManualSort = computed(() => {
+	if(!props.sortField) return false;
+
+	const isAdmin = userStore.currentUser?.role?.admin_access;
+
+	if(isAdmin) return true;
+
+	const permission = permissionsStore.getPermissionsForUser(props.collection, 'update');
+
+	if(!permission) return false;
+
+	if(Array.isArray(permission.fields) && permission.fields.length > 0) return permission.fields.includes(props.sortField)
+
+	return true;
+})
 
 const fieldsWritable = useSync(props, 'fields', emit);
 
