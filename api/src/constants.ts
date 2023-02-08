@@ -60,9 +60,4 @@ export const COOKIE_OPTIONS = {
 	sameSite: (env.REFRESH_TOKEN_COOKIE_SAME_SITE as 'lax' | 'strict' | 'none') || 'strict',
 };
 
-export const ROBOTSTXT = `
-User-agent: *
-Disallow: /
-`.trim();
-
 export const OAS_REQUIRED_SCHEMAS = ['Query', 'x-metadata'];
