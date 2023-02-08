@@ -1,6 +1,4 @@
 # This is based on Vue's great RFC template https://github.com/vuejs/rfcs/blob/master/0000-template.md
-name: Feature Request
-description: Share ideas for new Core features
 body:
   - type: markdown
     attributes:
