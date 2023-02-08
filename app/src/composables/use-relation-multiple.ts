@@ -77,7 +77,7 @@ export function useRelationMultiple(
 
 	watch([previewQuery, itemId, relation], updateFetchedItems, { immediate: true });
 
-	const { fetchedSelectItems, selected, isItemSelected } = useSelected();
+	const { fetchedSelectItems, selected, isItemSelected, selectedOnPage } = useSelected();
 
 	const totalItemCount = computed(() => {
 		if (relation.value?.type === 'o2m') {
@@ -146,7 +146,7 @@ export function useRelationMultiple(
 			return updatedItem;
 		});
 
-		const selectedOnPage = selected.value.map((edit) => {
+		const fullSelectedOnPage = selectedOnPage.value.map((edit) => {
 			const fetchedItem = fetchedSelectItems.value.find((item) => {
 				switch (relation.value?.type) {
 					case 'o2m':
@@ -176,7 +176,7 @@ export function useRelationMultiple(
 
 		const newItems = getPage(existingItemCount.value + selected.value.length, createdItems.value);
 
-		items.push(...selectedOnPage, ...newItems);
+		items.push(...fullSelectedOnPage, ...newItems);
 
 		const sortField = relation.value.sortField;
 
@@ -451,7 +451,7 @@ export function useRelationMultiple(
 			{ immediate: true }
 		);
 
-		return { fetchedSelectItems, selected, isItemSelected };
+		return { fetchedSelectItems, selected, isItemSelected, selectedOnPage };
 
 		function isItemSelected(item: DisplayItem) {
 			return relation.value !== undefined && item[relation.value.reverseJunctionField.field] !== undefined;
