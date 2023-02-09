@@ -61,7 +61,7 @@ const search = ref<string | null>('');
 }
 
 .overview {
-	padding: var(--content-padding);
-	padding-top: 0;
+	margin: var(--content-padding);
+	margin-top: 0;
 }
 </style>
