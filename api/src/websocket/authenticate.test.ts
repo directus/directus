@@ -1,6 +1,8 @@
 import { Accountability } from '@directus/shared/types';
-import { expect, describe, test, vi } from 'vitest';
+import { expect, describe, test, vi, Mock } from 'vitest';
 import { InvalidCredentialsException } from '../index';
+import { getAccountabilityForRole } from '../utils/get-accountability-for-role';
+import { getAccountabilityForToken } from '../utils/get-accountability-for-token';
 import {
 	authenticateConnection,
 	authenticateWithToken,
@@ -8,26 +10,38 @@ import {
 	refreshAccountability,
 } from './authenticate';
 import { WebSocketAuthMessage } from './messages';
+import { getExpiresAtForToken } from './utils/get-expires-at-for-token';
 
-vi.mock('../utils/get-accountability-for-token');
-vi.mock('../utils/get-accountability-for-role');
-vi.mock('./utils/get-expires-at-for-token');
+vi.mock('../utils/get-accountability-for-token', () => ({
+	getAccountabilityForToken: vi.fn(),
+}));
+vi.mock('../utils/get-accountability-for-role', () => ({
+	getAccountabilityForRole: vi.fn(),
+}));
+vi.mock('./utils/get-expires-at-for-token', () => ({
+	getExpiresAtForToken: vi.fn(),
+}));
 vi.mock('../utils/get-schema');
-vi.mock('../services/authentication');
+vi.mock('../services/authentication', () => ({
+	AuthenticationService: vi.fn(() => ({
+		login: vi.fn().mockReturnValue({ accessToken: '123', expires: 123456 }),
+		refresh: vi.fn().mockReturnValue({ accessToken: '456' }),
+	})),
+}));
 vi.mock('../database');
 
-describe('authenticateWithToken', async () => {
-	const AFT = await import('../utils/get-accountability-for-token.js');
-	AFT.getAccountabilityForToken = vi.fn().mockReturnValue({
-		role: null, // minimum viable accountability
-	} as Accountability);
-	const EFT = await import('./utils/get-expires-at-for-token.js');
+describe('authenticateWithToken', () => {
 	test('Provided expiry', async () => {
 		const TIMESTAMP = 987654321;
-		EFT.getExpiresAtForToken = vi.fn().mockReturnValue(123456789);
+		(getAccountabilityForToken as Mock).mockReturnValue({
+			role: null, // minimum viable accountability
+		} as Accountability);
+		(getExpiresAtForToken as Mock).mockReturnValue(123456789);
+
 		const result = await authenticateWithToken('token', TIMESTAMP);
-		expect(AFT.getAccountabilityForToken).toBeCalled();
-		expect(EFT.getExpiresAtForToken).not.toBeCalled();
+
+		expect(getAccountabilityForToken).toBeCalled();
+		expect(getExpiresAtForToken).not.toBeCalled();
 		expect(result).toStrictEqual({
 			accountability: { role: null },
 			expiresAt: TIMESTAMP,
@@ -35,12 +49,15 @@ describe('authenticateWithToken', async () => {
 	});
 	test('Fetch expiry', async () => {
 		const TIMESTAMP = 123456789;
-		const AFT = await import('../utils/get-accountability-for-token.js');
-		const EFT = await import('./utils/get-expires-at-for-token.js');
-		EFT.getExpiresAtForToken = vi.fn().mockReturnValue(TIMESTAMP);
+		(getAccountabilityForToken as Mock).mockReturnValue({
+			role: null, // minimum viable accountability
+		} as Accountability);
+		(getExpiresAtForToken as Mock).mockReturnValue(TIMESTAMP);
+
 		const result = await authenticateWithToken('token');
-		expect(AFT.getAccountabilityForToken).toBeCalled();
-		expect(EFT.getExpiresAtForToken).toBeCalled();
+
+		expect(getAccountabilityForToken).toBeCalled();
+		expect(getExpiresAtForToken).toBeCalled();
 		expect(result).toStrictEqual({
 			accountability: { role: null },
 			expiresAt: TIMESTAMP,
@@ -48,14 +65,7 @@ describe('authenticateWithToken', async () => {
 	});
 });
 
-describe('authenticateConnection', async () => {
-	const services = await import('../services/authentication.js');
-	const EFT = await import('./utils/get-expires-at-for-token.js');
-	// @ts-ignore
-	services.AuthenticationService = vi.fn(() => ({
-		login: vi.fn().mockReturnValue({ accessToken: '123', expires: 123456 }),
-		refresh: vi.fn().mockReturnValue({ accessToken: '456' }),
-	}));
+describe('authenticateConnection', () => {
 	test('Success with email/password', async () => {
 		const result = await authenticateConnection({
 			type: 'AUTH',
@@ -69,11 +79,13 @@ describe('authenticateConnection', async () => {
 	});
 	test('Success with refresh_token', async () => {
 		const TIMESTAMP = 987654;
-		EFT.getExpiresAtForToken = vi.fn().mockReturnValue(TIMESTAMP);
+		(getExpiresAtForToken as Mock).mockReturnValue(TIMESTAMP);
+
 		const result = await authenticateConnection({
 			type: 'AUTH',
 			refresh_token: 'refresh_token',
 		} as WebSocketAuthMessage);
+
 		expect(result).toStrictEqual({
 			accountability: { role: null },
 			expiresAt: TIMESTAMP,
@@ -81,19 +93,20 @@ describe('authenticateConnection', async () => {
 	});
 	test('Success with access_token', async () => {
 		const TIMESTAMP = 456987;
-		EFT.getExpiresAtForToken = vi.fn().mockReturnValue(TIMESTAMP);
+		(getExpiresAtForToken as Mock).mockReturnValue(TIMESTAMP);
+
 		const result = await authenticateConnection({
 			type: 'AUTH',
 			access_token: 'access_token',
 		} as WebSocketAuthMessage);
+
 		expect(result).toStrictEqual({
 			accountability: { role: null },
 			expiresAt: TIMESTAMP,
 		});
 	});
 	test('Failure token expired', async () => {
-		const AFT = await import('../utils/get-accountability-for-token.js');
-		AFT.getAccountabilityForToken = vi.fn().mockImplementation(() => {
+		(getAccountabilityForToken as Mock).mockImplementation(() => {
 			throw new InvalidCredentialsException('Token expired.');
 		});
 		expect(() =>
@@ -104,6 +117,9 @@ describe('authenticateConnection', async () => {
 		).rejects.toThrow('Token expired.');
 	});
 	test('Failure authentication failed', async () => {
+		(getAccountabilityForToken as Mock).mockReturnValue({
+			role: null, // minimum viable accountability
+		} as Accountability);
 		expect(() =>
 			authenticateConnection({
 				type: 'AUTH',
@@ -115,14 +131,15 @@ describe('authenticateConnection', async () => {
 
 describe('refreshAccountability', () => {
 	test('should just work', async () => {
-		const AFT = await import('../utils/get-accountability-for-role.js');
-		AFT.getAccountabilityForRole = vi.fn().mockReturnValue({
+		(getAccountabilityForRole as Mock).mockReturnValue({
 			role: '123-456-789',
 		} as Accountability);
+
 		const result = await refreshAccountability({
 			role: null,
 			user: 'abc-def-ghi',
 		});
+
 		expect(result).toStrictEqual({
 			role: '123-456-789',
 			user: 'abc-def-ghi',

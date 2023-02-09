@@ -29,6 +29,7 @@ export default abstract class SocketController {
 		verbose: boolean;
 	};
 	endpoint: string;
+	maxConnections: number;
 	private authTimer: NodeJS.Timer | null;
 	private rateLimiter: RateLimiterAbstract;
 
@@ -51,11 +52,18 @@ export default abstract class SocketController {
 		this.rateLimiter = createRateLimiter({
 			keyPrefix: 'websocket',
 		});
+		this.maxConnections = Number.POSITIVE_INFINITY;
 		httpServer.on('upgrade', this.handleUpgrade.bind(this));
 	}
 	protected async handleUpgrade(request: IncomingMessage, socket: internal.Duplex, head: Buffer) {
 		const { pathname, query } = parse(request.url!, true);
 		if (pathname !== this.endpoint) return;
+		if (this.clients.size >= this.maxConnections) {
+			logger.warn('Websocket upgrade denied - max connections reached');
+			socket.write('HTTP/1.1 403 Forbidden\r\n\r\n');
+			socket.destroy();
+			return;
+		}
 		const context: UpgradeContext = { request, socket, head };
 		if (this.authentication.mode === 'strict') {
 			await this.handleStrictUpgrade(context, query);

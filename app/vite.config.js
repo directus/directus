@@ -12,13 +12,8 @@ import {
 } from '@directus/shared/utils/node';
 import yaml from '@rollup/plugin-yaml';
 import vue from '@vitejs/plugin-vue';
-import hljs from 'highlight.js';
 import path from 'path';
 import fs from 'fs';
-import markdownItAnchor from 'markdown-it-anchor';
-import markdownItContainer from 'markdown-it-container';
-import markdownItTableOfContents from 'markdown-it-table-of-contents';
-import md from 'vite-plugin-vue-markdown';
 import { searchForWorkspaceRoot } from 'vite';
 import { defineConfig } from 'vitest/config';
 
@@ -29,101 +24,7 @@ const EXTENSIONS_PATH = path.join(API_PATH, 'extensions');
 export default defineConfig({
 	plugins: [
 		directusExtensions(),
-		vue({
-			include: [/\.vue$/, /\.md$/],
-		}),
-		md({
-			wrapperComponent: 'docs-wrapper',
-			markdownItOptions: {
-				highlight(str, lang) {
-					if (lang && hljs.getLanguage(lang)) {
-						try {
-							return hljs.highlight(str, { language: lang }).value;
-						} catch (err) {
-							// eslint-disable-next-line no-console
-							console.warn('There was an error highlighting in Markdown');
-							// eslint-disable-next-line no-console
-							console.error(err);
-						}
-					}
-
-					return '';
-				},
-			},
-			markdownItSetup(md) {
-				md.use(markdownItTableOfContents, { includeLevel: [2] });
-				md.use(markdownItAnchor, {
-					permalink: markdownItAnchor.permalink.linkInsideHeader({ placement: 'before' }),
-				});
-
-				function hintRenderer(type) {
-					return (tokens, idx) => {
-						const token = tokens[idx];
-						let title = token.info.trim().slice(type.length).trim() || '';
-
-						if (title) title = `<div class="hint-title">${title}</div>`;
-
-						if (token.nesting === 1) {
-							return `<div class="${type} hint">${title}\n`;
-						} else {
-							return '</div>\n';
-						}
-					};
-				}
-
-				md.use(markdownItContainer, 'tip', { render: hintRenderer('tip') });
-				md.use(markdownItContainer, 'warning', { render: hintRenderer('warning') });
-				md.use(markdownItContainer, 'danger', { render: hintRenderer('danger') });
-
-				md.core.ruler.push('router-link', (state) => {
-					state.tokens.forEach((token) => {
-						if (token.type === 'inline') {
-							const inlineTokens = token.children;
-
-							let isTraversingLink = false;
-							for (let i = 0; i < inlineTokens.length; i++) {
-								if (isTraversingLink && inlineTokens[i].type === 'link_close') {
-									inlineTokens[i].tag = 'router-link';
-
-									isTraversingLink = false;
-								} else if (inlineTokens[i].type === 'link_open') {
-									const href = inlineTokens[i].attrs.find((attr) => attr[0] === 'href');
-
-									if (href) {
-										if (href[1].startsWith('http')) {
-											inlineTokens[i].attrs.push(['target', '_blank']);
-											inlineTokens[i].attrs.push(['rel', 'noopener noreferrer']);
-										} else if (!href[1].startsWith('#')) {
-											inlineTokens[i].tag = 'router-link';
-											inlineTokens[i].attrs = [['to', `/docs${href[1]}`]];
-
-											isTraversingLink = true;
-										}
-									}
-								}
-							}
-						}
-					});
-				});
-			},
-			transforms: {
-				before(code) {
-					const titleRegex = /^# ([^\n]+?)( <small><\/small>)?\n/m;
-
-					const titleLine = code.match(titleRegex);
-
-					const title = titleLine?.[1] ?? null;
-					const modularExtension = Boolean(titleLine?.[2]);
-					const codeWithoutTitle = code.replace(titleRegex, '');
-
-					const newCode = `---\ntitle: "${title}"\nmodularExtension: ${modularExtension}${
-						code.startsWith('---\n') ? codeWithoutTitle.substring(3) : `\n---\n\n${codeWithoutTitle}`
-					}`;
-
-					return newCode;
-				},
-			},
-		}),
+		vue(),
 		yaml({
 			transform(data) {
 				return data === null ? {} : undefined;

@@ -21,6 +21,9 @@ export class GraphQLSubscriptionController extends SocketController {
 			timeout: env['WEBSOCKETS_GRAPHQL_AUTH_TIMEOUT'] * 1000,
 			verbose: false,
 		});
+		if ('WEBSOCKETS_GRAPHQL_CONN_LIMIT' in env) {
+			this.maxConnections = Number(env['WEBSOCKETS_GRAPHQL_CONN_LIMIT']);
+		}
 		this.server.on('connection', (ws: WebSocket, auth: AuthenticationState) => {
 			this.bindEvents(this.createClient(ws, auth));
 		});
