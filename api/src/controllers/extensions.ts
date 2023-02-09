@@ -4,7 +4,6 @@ import { RouteNotFoundException } from '../exceptions';
 import { getExtensionManager } from '../extensions';
 import ms from 'ms';
 import env from '../env';
-import { getCacheControlHeader } from '../utils/get-cache-headers';
 import { respond } from '../middleware/respond';
 import { depluralize, isIn } from '@directus/shared/utils';
 import { Plural } from '@directus/shared/types';
