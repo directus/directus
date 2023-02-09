@@ -77,6 +77,12 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 			res.set('Content-Type', 'text/csv');
 			return res.status(200).send(exportService.transform(res.locals.payload?.data, 'csv'));
 		}
+
+		if (req.sanitizedQuery.export === 'yaml') {
+			res.attachment(`${filename}.yaml`);
+			res.set('Content-Type', 'text/yaml');
+			return res.status(200).send(exportService.transform(res.locals.payload?.data, 'yaml'));
+		}
 	}
 
 	if (Buffer.isBuffer(res.locals.payload)) {

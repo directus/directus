@@ -29,6 +29,7 @@ import { EventHandler } from './types';
 import { constructFlowTree } from './utils/construct-flow-tree';
 import { getSchema } from './utils/get-schema';
 import { JobQueue } from './utils/job-queue';
+import { mapValuesDeep } from './utils/map-values-deep';
 
 let flowManager: FlowManager | undefined;
 
@@ -143,26 +144,28 @@ class FlowManager {
 
 		for (const flow of flowTrees) {
 			if (flow.trigger === 'event') {
-				const events: string[] = flow.options?.scope
-					? toArray(flow.options.scope)
-							.map((scope: string) => {
-								if (['items.create', 'items.update', 'items.delete'].includes(scope)) {
-									return (
-										flow.options?.collections?.map((collection: string) => {
-											if (collection.startsWith('directus_')) {
-												const action = scope.split('.')[1];
-												return collection.substring(9) + '.' + action;
-											}
+				let events: string[] = [];
 
-											return `${collection}.${scope}`;
-										}) ?? []
-									);
-								}
+				if (flow.options?.scope) {
+					events = toArray(flow.options.scope)
+						.map((scope: string) => {
+							if (['items.create', 'items.update', 'items.delete'].includes(scope)) {
+								if (!flow.options?.collections) return [];
 
-								return scope;
-							})
-							.flat()
-					: [];
+								return toArray(flow.options.collections).map((collection: string) => {
+									if (collection.startsWith('directus_')) {
+										const action = scope.split('.')[1];
+										return collection.substring(9) + '.' + action;
+									}
+
+									return `${collection}.${scope}`;
+								});
+							}
+
+							return scope;
+						})
+						.flat();
+				}
 
 				if (flow.options.type === 'filter') {
 					const handler: FilterHandler = (payload, meta, context) =>
@@ -390,7 +393,7 @@ class FlowManager {
 		const options = applyOptionsData(operation.options, keyedData);
 
 		try {
-			const result = await handler(options, {
+			let result = await handler(options, {
 				services,
 				exceptions: { ...exceptions, ...sharedExceptions },
 				env,
@@ -401,6 +404,12 @@ class FlowManager {
 				accountability: null,
 				...context,
 			});
+
+			// JSON structures don't allow for undefined values, so we need to replace them with null
+			// Otherwise the applyOptionsData function will not work correctly on the next operation
+			if (typeof result === 'object' && result !== null) {
+				result = mapValuesDeep(result, (_, value) => (value === undefined ? null : value));
+			}
 
 			return { successor: operation.resolve, status: 'resolve', data: result ?? null, options };
 		} catch (error: unknown) {

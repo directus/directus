@@ -67,7 +67,7 @@ export default defineComponent({
 		},
 		typeAllowList: {
 			type: Array as PropType<string[]>,
-			default: () => [],
+			default: undefined,
 		},
 		placeholder: {
 			type: String,
@@ -94,7 +94,7 @@ export default defineComponent({
 					!!field.schema?.is_primary_key ||
 					props.disabledFields.includes(field.field) ||
 					props.typeDenyList.includes(field.type) ||
-					!props.typeAllowList.includes(field.type),
+					!props.typeAllowList?.includes(field.type),
 			}));
 		});
 
