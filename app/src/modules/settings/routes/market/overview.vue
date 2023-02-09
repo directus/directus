@@ -10,6 +10,11 @@
 			<v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" />
 		</template>
 
+		<template #actions>
+			<search-input v-model="search" :showFilter="false" always-active />
+		</template>
+
+
 		<template #navigation>
 			<settings-navigation />
 		</template>
@@ -21,7 +26,7 @@
 		</template>
 
 		<Types v-model:type="type" app />
-		<Overview :type="type" app :existing-extensions="extensionsStore.extensions" />
+		<Overview :type="type" app :existing-extensions="extensionsStore.extensions" :search="search" />
 	</private-view>
 </template>
 
@@ -33,6 +38,7 @@ import Types from '@nitwel/directus-marketplace/market/types.vue';
 import { provide, ref } from 'vue';
 import { marketApi } from './market-api';
 import { useExtensionsStore } from '@/stores/extensions';
+import SearchInput from '@/views/private/components/search-input.vue';
 
 const type = ref('all')
 const extensionsStore = useExtensionsStore();
@@ -40,6 +46,8 @@ const extensionsStore = useExtensionsStore();
 provide('api', marketApi);
 
 const { t } = useI18n();
+
+const search = ref<string | null>('');
 </script>
 
 <style scoped>

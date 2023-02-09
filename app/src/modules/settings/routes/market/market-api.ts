@@ -1,7 +1,7 @@
 import { getRootPath } from '@/utils/get-root-path';
 import axios from 'axios';
 
-const baseURL = import.meta.env.DEV ? getRootPath() + 'market/' : 'https://market.directus.app/';
+const baseURL = getRootPath() + 'market/';
 
 export const marketApi = axios.create({
 	baseURL,
