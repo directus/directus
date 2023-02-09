@@ -10,21 +10,28 @@ import { dynamicImport } from '../../utils/dynamic-import';
 // @ts-ignore
 import formatTitle from '@directus/format-title';
 
-export default async function run(database: Knex, direction: 'up' | 'down' | 'latest', log = true): Promise<void> {
+export default async function run(
+	database: Knex,
+	direction: 'up' | 'down' | 'latest',
+	systemOnly = false,
+	log = true
+): Promise<void> {
 	let migrationFiles = await fse.readdir(__dirname);
-
-	const customMigrationsPath = path.resolve(env.EXTENSIONS_PATH, 'migrations');
-	let customMigrationFiles =
-		((await fse.pathExists(customMigrationsPath)) && (await fse.readdir(customMigrationsPath))) || [];
-
 	migrationFiles = migrationFiles.filter((file: string) => /^[0-9]+[A-Z]-[^.]+\.(?:js|ts)$/.test(file));
-	customMigrationFiles = customMigrationFiles.filter((file: string) => file.endsWith('.js'));
+
+	let customMigrationFiles: string[] = [];
+	const customMigrationsPath = path.resolve(env.EXTENSIONS_PATH, 'migrations');
+	if (!systemOnly) {
+		customMigrationFiles =
+			((await fse.pathExists(customMigrationsPath)) && (await fse.readdir(customMigrationsPath))) || [];
+		customMigrationFiles = customMigrationFiles.filter((file: string) => file.endsWith('.js'));
+	}
 
 	const completedMigrations = await database.select<Migration[]>('*').from('directus_migrations').orderBy('version');
 
 	const migrations = [
-		...migrationFiles.map((path) => parseFilePath(path)),
-		...customMigrationFiles.map((path) => parseFilePath(path, true)),
+		...migrationFiles.map((path: string) => parseFilePath(path)),
+		...customMigrationFiles.map((path: string) => parseFilePath(path, true)),
 	].sort((a, b) => (a.version > b.version ? 1 : -1));
 
 	const migrationKeys = new Set(migrations.map((m) => m.version));

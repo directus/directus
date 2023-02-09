@@ -42,15 +42,18 @@ export async function createCli(): Promise<Command> {
 	dbCommand
 		.command('migrate:latest')
 		.description('Upgrade the database')
-		.action(() => dbMigrate('latest'));
+		.option('-s, --system-only, run directus system migrations only')
+		.action((options) => dbMigrate('latest', options.systemOnly));
 	dbCommand
 		.command('migrate:up')
 		.description('Upgrade the database')
-		.action(() => dbMigrate('up'));
+		.option('-s, --system-only, run directus system migrations only')
+		.action((options) => dbMigrate('up', options.systemOnly));
 	dbCommand
 		.command('migrate:down')
 		.description('Downgrade the database')
-		.action(() => dbMigrate('down'));
+		.option('-s, --system-only, run directus system migrations only')
+		.action((options) => dbMigrate('down', options.systemOnly));
 
 	const usersCommand = program.command('users');
 
