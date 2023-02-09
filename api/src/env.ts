@@ -142,6 +142,7 @@ const allowedEnvironmentVars = [
 	// extensions
 	'EXTENSIONS_PATH',
 	'EXTENSIONS_AUTO_RELOAD',
+	'EXTENSIONS_CACHE_TTL',
 	// messenger
 	'MESSENGER_STORE',
 	'MESSENGER_NAMESPACE',

@@ -47,7 +47,7 @@ router.get(
 		res.setHeader('Content-Type', 'application/javascript; charset=UTF-8');
 		res.setHeader(
 			'Cache-Control',
-			env.EXTENSIONS_CACHE_TTL ? getCacheControlHeader(req, ms(env.EXTENSIONS_CACHE_TTL as string)) : 'no-store'
+			env.EXTENSIONS_CACHE_TTL ? `max-age=${ms(env.EXTENSIONS_CACHE_TTL as string) / 1000}` : 'no-store'
 		);
 		res.setHeader('Vary', 'Origin, Cache-Control');
 		res.end(extensionSource);
