@@ -811,6 +811,109 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					expect(gqlResponse.body.data[localCollectionArtists].length).toEqual(count - offset);
 				});
 			});
+
+			describe('retrieves offset with limit and sort correctly', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// Setup
+					const count = 9;
+					const offset = 4;
+					const limit = 3;
+					const sort = 'name';
+					const artistName = 'offset-limit-sort-test';
+					const artists = [];
+					const expectedResultAsc = Array.from(Array(count).keys()).slice(offset, offset + limit);
+					const expectedResultDesc = Array.from(Array(count).keys())
+						.sort((v) => -v)
+						.slice(offset, offset + limit);
+
+					for (let i = 0; i < count; i++) {
+						const artist = createArtist(pkType);
+						artist.name = `${i}-${artistName}`;
+						artists.push(artist);
+					}
+					await CreateItem(vendor, { collection: localCollectionArtists, item: artists });
+
+					// Action
+					const responseAsc = await request(getUrl(vendor))
+						.get(`/items/${localCollectionArtists}`)
+						.query({
+							filter: JSON.stringify({
+								name: { _contains: artistName },
+							}),
+							offset,
+							limit,
+							sort,
+						})
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					const gqlResponseAsc = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+						query: {
+							[localCollectionArtists]: {
+								__args: {
+									filter: {
+										name: { _contains: artistName },
+									},
+									offset,
+									limit,
+									sort,
+								},
+								id: true,
+								name: true,
+							},
+						},
+					});
+
+					const responseDesc = await request(getUrl(vendor))
+						.get(`/items/${localCollectionArtists}`)
+						.query({
+							filter: JSON.stringify({
+								name: { _contains: artistName },
+							}),
+							offset,
+							limit,
+							sort: `-${sort}`,
+						})
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					const gqlResponseDesc = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+						query: {
+							[localCollectionArtists]: {
+								__args: {
+									filter: {
+										name: { _contains: artistName },
+									},
+									offset,
+									limit,
+									sort: `-${sort}`,
+								},
+								id: true,
+								name: true,
+							},
+						},
+					});
+
+					// Assert
+					expect(responseAsc.statusCode).toBe(200);
+					expect(responseAsc.body.data.length).toBe(limit);
+					expect(responseAsc.body.data.map((v: any) => parseInt(v.name.split('-')[0]))).toEqual(expectedResultAsc);
+
+					expect(gqlResponseAsc.statusCode).toBe(200);
+					expect(gqlResponseAsc.body.data[localCollectionArtists].length).toEqual(limit);
+					expect(
+						gqlResponseAsc.body.data[localCollectionArtists].map((v: any) => parseInt(v.name.split('-')[0]))
+					).toEqual(expectedResultAsc);
+
+					expect(responseDesc.statusCode).toBe(200);
+					expect(responseDesc.body.data.length).toBe(limit);
+					expect(responseDesc.body.data.map((v: any) => parseInt(v.name.split('-')[0]))).toEqual(expectedResultDesc);
+
+					expect(gqlResponseDesc.statusCode).toBe(200);
+					expect(gqlResponseDesc.body.data[localCollectionArtists].length).toEqual(limit);
+					expect(
+						gqlResponseDesc.body.data[localCollectionArtists].map((v: any) => parseInt(v.name.split('-')[0]))
+					).toEqual(expectedResultDesc);
+				});
+			});
 		});
 	});
 });
