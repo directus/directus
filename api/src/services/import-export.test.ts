@@ -1,10 +1,12 @@
-import knex, { Knex } from 'knex';
-import { MockClient, Tracker, getTracker } from 'knex-mock-client';
-import { ImportService } from '.';
-import { describe, beforeAll, afterEach, it, expect, vi, beforeEach, MockedFunction } from 'vitest';
-import { Readable } from 'stream';
-import emitter from '../emitter';
 import { parse } from 'json2csv';
+import knex, { Knex } from 'knex';
+import { getTracker, MockClient, Tracker } from 'knex-mock-client';
+import { EOL } from 'node:os';
+import { Readable } from 'stream';
+import { afterEach, beforeAll, beforeEach, describe, expect, it, MockedFunction, vi } from 'vitest';
+import { ExportService, ImportService } from '.';
+import { ServiceUnavailableException } from '..';
+import emitter from '../emitter';
 
 vi.mock('../../src/database/index', () => ({
 	default: vi.fn(),
@@ -113,6 +115,60 @@ describe('Integration Tests', () => {
 				await service.importCSV(collection, stream);
 
 				expect(emitActionSpy).toBeCalledTimes(insertedId - 1);
+			});
+		});
+	});
+
+	describe('Services / ExportService', () => {
+		describe('transform', () => {
+			it('should return json string with header and footer', () => {
+				const input = [{ key: 'value' }];
+
+				const service = new ExportService({ knex: db, schema: { collections: {}, relations: [] } });
+
+				expect(service.transform(input, 'json')).toBe(`[\n\t{\n\t\t"key": "value"\n\t}\n]`);
+			});
+
+			it('should return xml string with header and footer', () => {
+				const input = [{ key: 'value' }];
+
+				const service = new ExportService({ knex: db, schema: { collections: {}, relations: [] } });
+
+				expect(service.transform(input, 'xml')).toBe(
+					`<?xml version='1.0'?>\n<data>\n    <data>\n        <key>value</key>\n    </data>\n</data>`
+				);
+			});
+
+			it('should return csv string with header', () => {
+				const input = [{ key: 'value' }];
+
+				const service = new ExportService({ knex: db, schema: { collections: {}, relations: [] } });
+
+				expect(service.transform(input, 'csv')).toBe(`"key"${EOL}"value"`);
+			});
+
+			it('should return csv string without header', () => {
+				const input = [{ key: 'value' }];
+
+				const service = new ExportService({ knex: db, schema: { collections: {}, relations: [] } });
+
+				expect(service.transform(input, 'csv', { includeHeader: false })).toBe('\n"value"');
+			});
+
+			it('should return yaml string', () => {
+				const input = [{ key: 'value' }];
+
+				const service = new ExportService({ knex: db, schema: { collections: {}, relations: [] } });
+
+				expect(service.transform(input, 'yaml')).toBe('- key: value\n');
+			});
+
+			it('should throw ServiceUnavailableException error when using a non-existent export type', () => {
+				const input = [{ key: 'value' }];
+
+				const service = new ExportService({ knex: db, schema: { collections: {}, relations: [] } });
+
+				expect(() => service.transform(input, 'invalid-format' as any)).toThrowError(ServiceUnavailableException);
 			});
 		});
 	});

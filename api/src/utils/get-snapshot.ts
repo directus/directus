@@ -1,14 +1,16 @@
-import getDatabase from '../database';
+import getDatabase, { getDatabaseClient } from '../database';
 import { getSchema } from './get-schema';
 import { CollectionsService, FieldsService, RelationsService } from '../services';
 import { version } from '../../package.json';
-import { Snapshot, SnapshotField, SnapshotRelation } from '../types';
+import { Collection, Snapshot, SnapshotField, SnapshotRelation } from '../types';
 import { Knex } from 'knex';
 import { omit, sortBy, toPairs, fromPairs, mapValues, isPlainObject, isArray } from 'lodash';
 import { SchemaOverview } from '@directus/shared/types';
+import { sanitizeCollection, sanitizeField, sanitizeRelation } from './sanitize-schema';
 
 export async function getSnapshot(options?: { database?: Knex; schema?: SchemaOverview }): Promise<Snapshot> {
 	const database = options?.database ?? getDatabase();
+	const vendor = getDatabaseClient(database);
 	const schema = options?.schema ?? (await getSchema({ database, bypassCache: true }));
 
 	const collectionsService = new CollectionsService({ knex: database, schema });
@@ -32,9 +34,10 @@ export async function getSnapshot(options?: { database?: Knex; schema?: SchemaOv
 	return {
 		version: 1,
 		directus: version,
-		collections: collectionsSorted,
-		fields: fieldsSorted,
-		relations: relationsSorted,
+		vendor,
+		collections: collectionsSorted.map((collection) => sanitizeCollection(collection)) as Collection[],
+		fields: fieldsSorted.map((field) => sanitizeField(field)) as SnapshotField[],
+		relations: relationsSorted.map((relation) => sanitizeRelation(relation)) as SnapshotRelation[],
 	};
 }
 

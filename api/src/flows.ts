@@ -144,26 +144,28 @@ class FlowManager {
 
 		for (const flow of flowTrees) {
 			if (flow.trigger === 'event') {
-				const events: string[] = flow.options?.scope
-					? toArray(flow.options.scope)
-							.map((scope: string) => {
-								if (['items.create', 'items.update', 'items.delete'].includes(scope)) {
-									return (
-										flow.options?.collections?.map((collection: string) => {
-											if (collection.startsWith('directus_')) {
-												const action = scope.split('.')[1];
-												return collection.substring(9) + '.' + action;
-											}
+				let events: string[] = [];
 
-											return `${collection}.${scope}`;
-										}) ?? []
-									);
-								}
+				if (flow.options?.scope) {
+					events = toArray(flow.options.scope)
+						.map((scope: string) => {
+							if (['items.create', 'items.update', 'items.delete'].includes(scope)) {
+								if (!flow.options?.collections) return [];
 
-								return scope;
-							})
-							.flat()
-					: [];
+								return toArray(flow.options.collections).map((collection: string) => {
+									if (collection.startsWith('directus_')) {
+										const action = scope.split('.')[1];
+										return collection.substring(9) + '.' + action;
+									}
+
+									return `${collection}.${scope}`;
+								});
+							}
+
+							return scope;
+						})
+						.flat();
+				}
 
 				if (flow.options.type === 'filter') {
 					const handler: FilterHandler = (payload, meta, context) =>
