@@ -17,6 +17,9 @@ export class WebsocketController extends SocketController {
 			timeout: env['WEBSOCKETS_REST_AUTH_TIMEOUT'] * 10000,
 			verbose: true,
 		});
+		if ('WEBSOCKETS_REST_CONN_LIMIT' in env) {
+			this.maxConnections = Number(env['WEBSOCKETS_REST_CONN_LIMIT']);
+		}
 		this.server.on('connection', (ws: WebSocket, auth: AuthenticationState) => {
 			this.bindEvents(this.createClient(ws, auth));
 		});
