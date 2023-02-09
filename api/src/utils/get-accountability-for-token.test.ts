@@ -4,6 +4,15 @@ import env from '../env';
 import { getAccountabilityForToken } from './get-accountability-for-token';
 import getDatabase from '../database/index';
 
+vi.mock('../env', () => {
+	const MOCK_ENV = {
+		SECRET: 'super-secure-secret',
+	};
+	return {
+		default: MOCK_ENV,
+		getEnv: () => MOCK_ENV,
+	};
+});
 vi.mock('../database', () => {
 	const self: Record<string, any> = {
 		select: vi.fn(() => self),
