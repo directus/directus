@@ -52,6 +52,7 @@ or: Tai
 init: Alusta
 dataset_too_large_currently_showing_n_items: Dataset on liian suuri, näytetään ensimmäiset {n} kohdetta.
 custom: Mukautettu
+hook: Koukku
 fill_width: Täysleveä
 field_name_translations: Kentän nimen käännökset
 enter_password_to_enable_tfa: Anna salasanasi ottaaksesi käyttöön kaksivaiheisen todennuksen
@@ -270,6 +271,7 @@ fields_group: Kenttien ryhmä
 no_collections_found: Kokoelmia ei löytynyt.
 new_data_alert: 'Seuraava tullaa luomaan tietomallisi sisällä:'
 search_collection: Hae kokoelmasta...
+search_field: Hakukenttä...
 new_field: 'Uusi kenttä'
 new_collection: 'Uusi kokoelma'
 add_m2o_to_collection: 'Lisää moni-yhteen (M2O) kokoelmaan "{collection}"'
@@ -323,6 +325,7 @@ edit_raw_value: Muokkaa raaka-arvoa
 enter_raw_value: Syötä raakaarvo...
 clear_value: Tyhjennä arvo
 clear_changes: Tyhjennä muutokset
+clear_items: Tyhjennä kohteet
 reset_to_default: Palauta oletukseen
 undo_changes: Kumoa muutokset
 notifications: Ilmoitukset
@@ -342,6 +345,7 @@ revision_delta_reverted: Palautettu
 revision_delta_update_message: Tätä kenttää on päivitetty, mutta sen arvo piilotetaan turvallisuussyistä.
 revision_delta_other: Versio
 revision_delta_by: '{date} käyttäjältä {user}'
+presentation_text_values_cannot_be_reimported: "Käyttää esitystekstiä, arvoja ei voida tuoda uudelleen."
 download_page_as_csv: 'Lataa CSV:nä'
 private_user: Yksityinen käyttäjä
 creation_preview: Luomisen esikatselu
@@ -360,7 +364,12 @@ translations_collection: Käännöskokoelma
 languages_collection: Kielten kokoelma
 import_data_input_placeholder: CSV tai JSON...
 import_data_button: Aloita tuonti
+import_data_indeterminate: Tuodaan tietoja...
+import_data_success: Tiedot tuotu onnistuneesti tiedostosta {filename}
+import_data_error: Tämän tiedoston tietorakenne ei vastaa kokoelmaa.
 label_import: Tuo
+label_export: Vie (export)
+import_export: Tuo / Vie
 format: Muoto
 last_page: Viimeinen sivu
 last_access: Viimeksi käytetty
@@ -377,13 +386,22 @@ interface_label: Käyttöliittymä
 today: Tänään
 yesterday: Eilen
 delete_comment: Poista kommentti
+delete_share: Poista jako
 functions:
   year: Vuosi
   month: Kuukausi
+  week: Viikko
+  day: Päivä
+  weekday: Viikonpäivä
+  hour: Tunti
+  minute: Minuutti
+  second: Sekunti
   count: Määrä
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'HH:mm'
+date-fns_time_24hour: 'HH:mm:ss'
+date-fns_time_no_seconds_24hour: 'HH:mm'
 date-fns_date_short: 'MMM d, u'
 date-fns_time_short: 'HH:mm'
 date-fns_date_short_no_year: MMM d
@@ -434,6 +452,14 @@ replace_from_library: Korvaa tiedosto kirjastosta
 replace_from_url: Korvaa tiedosto osoitteesta
 no_file_selected: Ei valittua tiedostoa
 download_file: Lataa tiedosto
+open_file_in_tab: Avaa tiedosto uudessa välilehdessä
+start_export: Aloita vienti
+exporting_all_items_in_collection: Viedään kaikki {total} kohdetta kokoelmasta {collection}.
+exporting_limited_items_in_collection: Viedään {limit} kohdetta kokoelman {collection} {total} kohteesta.
+exporting_no_items_to_export: Ei vietäviä kohteita. Muokkaa viennin asetuksia alla.
+exporting_download_hint: Valmistumisen jälkeen, tämä {format} tiedosto ladataan automaattisesti laitteellesi.
+exporting_batch_hint: Tämä vienti käsitellään erissä, ja kun vienti on valmis, tiedosto {format} tallennetaan Tiedostokirjastoon.
+exporting_batch_hint_forced: Koska kohteita on paljon, vienti on käsiteltävä erissä, ja kun vienti on valmis, {format} tiedosto tallennetaan Tiedostokirjastoon.
 collection_key: Kokoeilman avain
 name: Nimi
 primary_key_field: Ensisijainen avaimen kenttä
@@ -444,6 +470,7 @@ created_on: Luotu
 creating_collection_info: Nimeä kokoelma ja määritä sen ainutlaatuinen “avain”-kenttää...
 creating_collection_system: Ota käyttöön ja nimeä uudelleen mitkä tahansa näistä valinnaisista kentistä.
 auto_increment_integer: Automaattisesti kasvava kokonaisluku
+auto_increment_big_integer: Automaattisesti kasvava kokonaisluku (big integer)
 generated_uuid: Luotu UUID
 manual_string: Manuaalisesti syötetty merkkijono
 save_and_create_new: Tallenna ja luo uusi
@@ -454,6 +481,7 @@ creating_items: Luodaan kohteita
 enable_create_button: Ota käyttöön luontinappula
 selecting_items: Valitaan kohteita
 enable_select_button: Ota käyttöön valintanappula
+allow_duplicates: Salli kaksoiskappaleet
 comments: Kommentit
 no_comments: Ei vielä kommentteja
 click_to_expand: Klikkaa laajentaaksesi
@@ -464,7 +492,9 @@ disabled: Pois käytöstä
 information: Tietoja
 report_bug: Raportoi bugi
 request_feature: Pyydä ominaisuutta
+request_body: Pyynnön Body-kenttä
 interface_not_found: 'Liittymää "{interface}" ei löytynyt.'
+operation_not_found: 'Operaatiota "{operation}" ei löydy.'
 reset_interface: Nollaa liittymä
 display_not_found: 'Näyttöä "{display}" ei löytynyt.'
 reset_display: Nollaa näyttö
@@ -504,6 +534,7 @@ activity_item: Aktiviteettikohde
 action: Toiminto
 ip_address: IP-osoite
 user_agent: Asiakasohjelma
+origin: Alkuperä
 webhooks: Webhookit
 decimals: Desimaalit
 value_decimals: Arvon desimaalit
@@ -537,6 +568,8 @@ select_an_item: Valitse kohde...
 edit: Muokkaa
 enabled: Käytössä
 disable_tfa: Poista 2FA käytöstä
+admin_disable_tfa_text: Oletko varma, että haluat poistaa tältä käyttäjältä kaksivaiheisen tunnistautumisen käytön?
+tfa_setup: Määritä kaksivaiheinen tunnistautuminen
 tfa_scan_code: Skannaa koodi autentikointisovelluksessasi viimeistelläksesi 2FA:n asetukset
 enter_otp_to_disable_tfa: Syötä OTP poistaaksesi 2FA:n käytöstä
 create_account: Luo tili
@@ -550,7 +583,12 @@ errors:
   INVALID_CREDENTIALS: Väärä käyttäjätunnus tai salasana
   INVALID_OTP: Väärä kertakäyttösalasana
   INVALID_PAYLOAD: Virheellinen kuorma
+  INVALID_PROVIDER: Käyttäjä kuuluu eri tunnistautumis-tarjoajalle
   INVALID_QUERY: Virheellinen kysely
+  INVALID_CONFIG: Virheelliset asetukset
+  INVALID_TOKEN: Tunnus ei kelpaa
+  INVALID_IP: IP-osoite ei ole sallittu
+  INVALID_USER: Todennus epäonnistui
   ITEM_LIMIT_REACHED: Kohteiden rajoitus saavutettu
   ITEM_NOT_FOUND: Kohdetta ei löydy
   ROUTE_NOT_FOUND: Ei löytynyt
@@ -561,12 +599,22 @@ errors:
   INTERNAL_SERVER_ERROR: Odottamaton virhe
   NOT_NULL_VIOLATION: Arvo ei voi olla null
   ILLEGAL_ASSET_TRANSFORMATION: Kuvan lähde on liian suuri esikatseltavaksi
+  VALUE_TOO_LONG: Arvo on liian pitkä
+  VALUE_OUT_OF_RANGE: Arvo on alueen ulkopuolella
+  INVALID_FOREIGN_KEY: Virheellinen vierasavain
   UNKNOWN: Odottamaton virhe
+  GRAPHQL_VALIDATION_EXCEPTION: GraphQL-validointivirhe
+  SERVICE_UNAVAILABLE: Palvelu ei ole saatavilla
+  UNSUPPORTED_MEDIA_TYPE: Median tyyppiä ei tueta
+  UNEXPECTED_RESPONSE: Odottamaton vastaus
 security: Turvallisuus
 value_hashed: Arvo tiivistetty turvallisesti
 bookmark_name: Kirjanmerkin nimi...
 create_bookmark: Luo kirjanmerkki
 edit_bookmark: Muokkaa kirjanmerkkiä
+edit_personal_bookmark: Muokkaa henkilökohtaista kirjanmerkkiä
+edit_global_bookmark: Muokkaa yleistä kirjanmerkkiä
+cannot_edit_global_bookmarks: Yleisten kirjanmerkkien muokkaus epäonnistui
 bookmarks: Kirjainmerkit
 presets: Esiasetukset
 unexpected_error: Odottamaton virhe
@@ -574,9 +622,11 @@ unexpected_error_copy: Tapahtui odottamaton virhe. Yritä myöhemmin uudelleen.
 copy_details: Kopioi tiedot
 no_app_access: Ei sovelluspääsyä
 no_app_access_copy: Tällä käyttäjällä ei ole oikeutta käyttää järjestelmänvalvojasovellusta.
+password_reset_sent: Olemme lähettäneet salasanan palautuslinkin, mikäli omaat tilin
 password_reset_successful: Salasanan palauttaminen onnistui
 back: Takaisin
 filter: Suodatin
+edit_image: Muokkaa kuvaa
 editing_image: Muokataan kuvaa
 square: Neliö
 free: Vapaa
@@ -590,10 +640,16 @@ update_collection_success: Päivitetty kokoelma
 delete_collection_success: Poistetut kokoelmat
 make_collection_visible: Tee kokoelmasta näkyvä
 make_collection_hidden: Tee kokoelma piilotettu
+make_folder_visible: Näytä kansio
+make_folder_hidden: Piilota kansio
+goto_collection_content: Näytä sisältö
 start_end_of_count_items: '{start}-{end} / {count} kohdetta'
 start_end_of_count_filtered_items: '{start}-{end} / {count} suodatettua kohdetta'
 one_item: '1 kohde'
 one_filtered_item: '1 suodatettu kohde'
+delete_collection_are_you_sure: >-
+  Haluatko poistaa kokoelman "{collection}"? Kokoelma ja kaikki siihen kuuluvat kohteet poistetaan pysyvästi.
+delete_folder_are_you_sure: Haluatko poistaa kansion "{folder}"? Kansion kansiot ja kokoelmat siirretään ylimmälle tasolle.
 collections_shown: Näytettävät kokoelmat
 visible_collections: Näkyvät kokoelmat
 hidden_collections: Piilotetut kokoelmat
@@ -620,6 +676,7 @@ advanced_settings: Edistyneet asetukset
 advanced_filter: Edistynyt suodatin
 delete_advanced_filter: Poista suodatin
 change_advanced_filter_operator: Vaihda operaattoria
+advanced: Lisäasetukset
 operators:
   eq: Yhtä suuri kuin
   neq: Ei ole yhtä kuin
@@ -684,9 +741,12 @@ add_file: Lisää tiedosto
 replace_file: Korvaa tiedosto
 no_results: Ei tuloksia
 no_results_copy: Säädä tai tyhjennä hakusuodattimet nähdäksesi tulokset.
+no_visible_fields: Tyhjä lomake
+no_visible_fields_copy: Lomakkeella ei ole näkyviä kenttiä.
 clear_filters: Tyhjennä suodattimet
 saves_automatically: Tallentaa automaattisesti
 role: Rooli
+edit_role: Muokkaa roolia
 rule: Sääntö
 user: Käyttäjänimi
 no_presets: Ei esiasetuksia
@@ -709,7 +769,23 @@ toggle: Vaihda
 icon_on: Päällä-kuvake
 icon_off: Pois-kuvake
 label: Tunniste
+flow: Vuo
+select_a_flow: Valitse Vuo
+run_flow_on_current_collection: Aja Vuo nykyiselle kokoelmalle
+run_flow_on_current: Aja Vuo nykyiselle kohteelle
+run_flow_on_current_edited_confirm: Tämä kohde voidaan päivittää tällä Vuolla, oletko varma, että haluat suorittaa Vuon?
+run_flow_on_selected: Valitse yksi tai useampi kohde ensin | Aja Vuo 1 valitulle kohteelle | Aja Vuo {n} valitulle kohteelle
+run_flow_success: Vuon "{flow}" suoritus onnistui
 trigger: Laukaisija
+trigger_options: Liipaisun asetukset
+view_trigger: Näytä liipaisin
+create_trigger: Luo liipaisin
+trigger_setup: Liipaisimen asetukset
+change_trigger: Muokkaa liipaisinta
+create_flow: Luo Vuo
+creating_new_flow: Luodaan uutta Vuota
+updating_flow: Vuota päivitetään
+flow_setup: Vuon asetukset
 flow_name: Nimi
 flow_tracking_activity: Seuraa vain tapahtumia
 flow_tracking_null: Älä seuraa mitään
@@ -915,6 +991,7 @@ fields:
     user: Toiminnon toteuttaja
     comment: Kommentti
     user_agent: Asiakasohjelma
+    origin: Alkuperä
     ip: IP-osoite
     revisions: Versiot
   directus_collections:
@@ -998,6 +1075,7 @@ fields:
     mapbox_key: Mapbox-käyttötunniste
     mapbox_placeholder: pk.eyJ1Ijo.....
     project_name: Projektin nimi
+    project_descriptor: Projektin kuvaus
     project_url: Projektin osoite
     project_color: Projektin väri
     project_logo: Projektin logo
@@ -1629,6 +1707,8 @@ layouts:
     no_compatible_fields: Ei yhteensopivia kenttiä
   kanban:
     crop: Rajaa
+    advanced: Lisäasetukset
+both: Molemmat
 panels:
   metric:
     name: Metrinen
@@ -1647,6 +1727,8 @@ panels:
   list:
     name: Lista
     description: Suodata ja luetteloi kentät kokoelmasta
+  linechart:
+    curve_type: Käyrän tyyppi
 triggers:
   webhook:
     method: Metodi
@@ -1662,4 +1744,5 @@ operations:
     data: Tiedot
     header: Ylätunniste
   trigger:
+    flow: Vuo
     data: Tiedot

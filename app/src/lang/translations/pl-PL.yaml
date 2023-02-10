@@ -570,6 +570,8 @@ select_an_item: Wybierz element...
 edit: Edytuj
 enabled: Włączone
 disable_tfa: Wyłącz weryfikację dwuetapową
+admin_disable_tfa_text: Czy na pewno chcesz wyłączyć 2FA dla tego użytkownika?
+tfa_setup: Konfiguracja 2FA
 tfa_scan_code: Zeskanuj kod w swojej aplikacji uwierzytelniającej, aby zakończyć konfigurację 2FA
 enter_otp_to_disable_tfa: Wprowadź kod jednorazowy, aby wyłączyć 2FA
 create_account: Utwórz konto
@@ -1048,6 +1050,7 @@ fields:
     user: Czynność przez
     comment: Komentarz
     user_agent: User agent
+    origin: Pochodzenie
     ip: Adres IP
     revisions: Wersje
   directus_collections:
@@ -1931,6 +1934,26 @@ layouts:
     show: Pokaż
     no_group: Brak grupy
     not_all_loaded: Można załadować tylko pierwszych 1000 elementów.
+horizontal: Poziomy
+x_axis: Oś X
+y_axis: Oś Y
+y_axis_function: Funkcja osi Y
+show_x_only: Pokaż tylko oś X
+show_y_only: Pokaż tylko oś Y
+show_data_label: Pokaż etykietę danych
+both: Oba
+show_axis_labels: Pokaż etykiety osi
+function: Funkcja
+half_circle: Połowa koła
+full_circle: Pełne okrążenie
+thin: Cienka
+medium: Średni
+broad: Szeroki
+show_labels: Pokaż etykiety
+show_legend: Pokaż Legendę
+right: Prawy
+left: Lewy
+donut: Pączek
 panels:
   metric:
     name: Metryczny
@@ -1952,68 +1975,24 @@ panels:
   barchart:
     name: Wykres słupkowy
     description: Pasek lub wykresy kolumnowe do porównywania grup wartości
-    select_field: Musisz wybrać pole.
-    select_collection: Musisz wybrać kolekcję.
-    select_x_axis: Musisz wybrać oś X.
-    function: Funkcja
     horizontal: Poziomy
-    x_axis_grouping: Agregacja grup osi X
-    x_axis: Oś X
-    y_axis_function: Funkcja osi Y
-    y_axis: Oś Y
-    show_x_axis: Pokaż oś X
-    show_y_axis: Pokaż Oś Y
-    show_data_label: Pokaż etykietę danych
-    group_by: Pogrupowane według
-    group_and_function: Musisz uwzględnić lub pominąć zarówno grupę, jak i funkcję.
-    y_axis_NaN: Oś Y musi być liczbą.
-    y_axis_conditional_one: Wartość warunku
-    y_axis_conditional_two: musi być liczbą.
+    select_collection: Musisz wybrać kolekcję.
   linechart:
     name: Wykres liniowy
     description: Wykres liniowy do porównywania zmiany w polu
-    select_field: Musisz wybrać pole.
-    select_collection: Musisz wybrać kolekcję.
-    select_x_axis: Musisz wybrać oś X.
-    function: Funkcja
-    x_axis: Oś X
-    x_axis_decimals: Ułamki dziesiętne osi X
+    disabled_grouping: Wyłączone, gdy grupowanie jest zaznaczone.
     disabled_no_grouping: Wyłączone, gdy nie wybrano grupowania.
-    y_axis: Oś Y
-    datasets: Zestawy danych
-    show_legend: Pokaż Legendę
     show_marker: Pokaż znacznik podpowiedzi
-    include_dataset: Musisz podać co najmniej jeden zbiór danych.
-    include_y_axis: Musisz podać oś Y dla każdego zbioru danych, gdy nie określono żadnej grupy.
-    group_and_function: Musisz uwzględnić lub pominąć zarówno grupę, jak i funkcję.
+    curve_type: Typ Krzywej
     smooth: Gładki
     straight: Prosta
     step_line: Linia kroku
   meter:
     name: Licznik
     description: Licznik wartości śledzenia
-    half_circle: Połowa koła
-    full_circle: Pełne koło
-    stroke_width: Szerokość obrysu
-    select_max_value: Musisz wybrać maksymalną wartość.
-    max_greater_than_zero: Maksymalna wartość musi być większa niż 0.
-    select_field: Musisz wybrać pole.
-    select_collection: Musisz wybrać kolekcję.
-    function: Funkcja
-    thin: Cienka
-    medium: Średni
-    broad: Szeroki
   piechart:
     name: Wykres kołowy lub pączkowy
     description: Wykres okrągły pokazujący współczynniki grup w kolumnie
-    function: Funkcja
-    donut: Pączek
-    show_labels: Pokaż etykiety
-    show_legend: Pokaż Legendę
-    right: Prawy
-    bottom: Dolny
-    monochrome: Monochromatyczne
-    monochrome_color: Kolor monochromatyczny
   variable:
     name: Zmienna globalna
     description: Ustaw wartość globalną dla filtrów innych paneli

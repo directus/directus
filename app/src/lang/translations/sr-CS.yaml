@@ -1278,6 +1278,7 @@ layouts:
     end_date_field: Polje Završnog Datuma
   kanban:
     crop: Isjecanje
+both: Oba
 panels:
   label:
     name: Oznaka
