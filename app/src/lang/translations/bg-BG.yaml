@@ -187,6 +187,8 @@ revision_post_create: Ето как е изглеждал записът при 
 revision_post_update: Така ще изглежда записът, след възстановяване.
 changes_made: По-долу, са промените в ревизията.
 no_relational_data: Данните от релационните полета не са включени.
+junction_field_location: Свързващи полета
+top: Отгоре
 bottom: Отдолу
 hide_field: Скриване на полето
 hide_field_on_detail: Скриване в детайлен изглед
@@ -273,6 +275,7 @@ fields_group: Групи от полета
 no_collections_found: Не са намерени колекции.
 new_data_alert: 'Следващото ще бъде създадено във вашият модел:'
 search_collection: Търсене на колекция...
+search_field: Търсене на поле...
 new_field: 'Ново поле'
 new_collection: 'Нова колекция'
 add_m2o_to_collection: 'Добавяне на М2О в „{collection}“'
@@ -326,6 +329,7 @@ edit_raw_value: Редактиране в суров вид
 enter_raw_value: Въвеждане на стойността в суров вид...
 clear_value: Изчистване
 clear_changes: Изчистване на промените
+clear_items: Изчистване на всички
 reset_to_default: Връщане към стойността по подразбиране
 undo_changes: Отмяна на текущите промени
 notifications: Известия
@@ -474,7 +478,7 @@ auto_increment_integer: Автоматичен пореден номер
 auto_increment_big_integer: Автоматичен пореден номер (голямо число)
 generated_uuid: Генериран UUID
 manual_string: Ръчно въвеждане на стойност
-save_and_create_new: Запазване и преминаване към нов
+save_and_create_new: Запазване на текущия и дублиране в нов
 save_and_stay: Запазване и оставане
 save_as_copy: Запазване като копие
 add_existing: Добавяне на съществуващ
@@ -535,6 +539,7 @@ activity_item: Предмет на дейността
 action: Действие
 ip_address: IP адрес
 user_agent: Потребителски агент
+origin: Произход
 webhooks: Уеб-куки
 decimals: Десетични знаци
 value_decimals: Десетични знаци
@@ -568,6 +573,8 @@ select_an_item: Избиране...
 edit: Редактиране
 enabled: Включване
 disable_tfa: Изключване на 2FA
+admin_disable_tfa_text: Сигурни ли сте, че искате да деактивирате 2FA за потребителя?
+tfa_setup: Настройка на 2FA
 tfa_scan_code: За да завършите настройването на 2FA, сканирайте кода в приложението за оторизация
 enter_otp_to_disable_tfa: Въвеждане на OTP за изключване на 2FA
 create_account: Създаване на профил
@@ -748,6 +755,8 @@ add_file: Добавяне на файл
 replace_file: Заместване на файл
 no_results: Няма резултати
 no_results_copy: Променете или изчистете филтрите за да видите резултат.
+no_visible_fields: Празен формуляр
+no_visible_fields_copy: Формулярът няма видими полета.
 clear_filters: Изчистване на филтрите
 saves_automatically: Запазването е автоматично
 role: Роля
@@ -777,7 +786,10 @@ label: Надпис
 flows: Автоматизирани процеси
 flow: Процес
 select_a_flow: Избор на процес
+run_flow_on_current_collection: Стартиране на процеса за текущата колекция
 run_flow_on_current: Стартиране на процеса за текущия запис
+run_flow_on_current_edited_confirm: Записът може да бъде редактиран от процеса, сигурни ли сте, че искате да го изпълните?
+run_flow_on_selected: Първо изберете един или повече записи | Стартиране за 1 избран запис | Стартиране за {n} избрани записи
 run_flow_success: Изпълнението на процеса „{flow}“ е успешно
 trigger: Задействане
 trigger_options: Настройка на задействането
@@ -821,6 +833,7 @@ panel_header: Заглавие на панела
 panel_name_placeholder: Име на панела...
 panel_note_placeholder: Незадължително описание на панела...
 panel_delete_confirm: Сигурни ли сте, че искате да изтриете панела? Това действие не може да бъде отменено.
+list_panel_allow_edit: Позволяване на вложено редактиране
 dashboard_delete_confirm: Сигурни ли сте, че искате да изтриете това табло? Това действие не може да бъде отменено.
 edit_dashboard: Промяна на таблото
 delete_dashboard: Изтриване на таблото
@@ -1040,6 +1053,7 @@ fields:
     user: Действие от
     comment: Коментиране
     user_agent: Потребителски агент
+    origin: Произход
     ip: IP адрес
     revisions: Ревизии
   directus_collections:
@@ -1057,7 +1071,7 @@ fields:
     sort_field: Поле за сортиране
     accountability: Следене за активност и ревизии
     archive_field: Поле за архивен статус
-    item_duplication_fields: Дублиране на полета от запис
+    item_duplication_fields: Дублиране на полета при създаване на нов от стар запис
   directus_files:
     $thumbnail: Умалена картинка
     title: Заглавие
@@ -1897,9 +1911,36 @@ layouts:
     default_template: По подразбиране от колекцията...
     no_compatible_fields: Няма съвместими полета
   kanban:
+    name: Канбан
+    group_field: Групиране по
+    group_field_placeholder: Поле за групиране...
+    group_title: Заглавие на група
+    group_title_placeholder: Полета за групиране...
+    title: Заглавие на карта
+    title_placeholder: Незадължително поле за заглавие...
+    text: Текст на картата
+    text_placeholder: Незадължително поле за текст...
+    date: Дата на картата
+    date_placeholder: Незадължително поле за дата...
+    tags: Етикети на картата
+    tags_placeholder: Незадължително поле за етикети...
+    user: Потребител на картата
+    user_placeholder: Незадължително поле за потребител...
+    image: Избражение на картата
+    image_placeholder: Незадължително поле за изображение...
+    image_fit: Напасване на изображението
     crop: Изрязване
     advanced: Разширени
+    edit_group: Редактиране на група
+    delete_group: Изтриване на група
+    add_group: Добавяне на група
+    add_group_placeholder: Въвеждане на заглавие за група...
+    show_ungrouped: Негрупирано показване
+    show: Показване
+    no_group: Без групиране
     not_all_loaded: Може да се заредят само първите 1000 записи.
+horizontal: Хоризонтала
+both: Всички
 panels:
   metric:
     name: Метричен индикатор
@@ -1921,68 +1962,33 @@ panels:
   barchart:
     name: Лентова диаграма
     description: Лентова или колонна диаграма за сравняване на групи от сойности
-    select_field: Трябва да изберете поле.
-    select_collection: Трябва да изберете колекция.
-    select_x_axis: Трябва да изберете ос по Х.
-    function: Функция
     horizontal: Хоризонтала
-    x_axis_grouping: Групираща агрегация за X-остта
-    x_axis: Ос по X
-    y_axis_function: Функция по Y-остта
-    y_axis: Ос по Y
-    show_x_axis: Показване на оста по X
-    show_y_axis: Показване на оста по Y
-    show_data_label: Показване на надписите за данните
-    group_by: Групиране по
-    group_and_function: Трябва да се попълни или да се пропуснат и двете - група и функция.
-    y_axis_NaN: Оста по Y трябва да е число.
-    y_axis_conditional_one: Стойност за условието
-    y_axis_conditional_two: трябва да е число.
+    select_collection: Трябва да изберете колекция.
   linechart:
     name: Линейна диаграма
-    select_field: Трябва да изберете поле.
-    select_collection: Трябва да изберете колекция.
-    select_x_axis: Трябва да изберете ос по Х.
-    function: Функция
-    x_axis: Ос по X
-    x_axis_decimals: Функция по X-остта
+    description: Линейна диаграма за сравняване на промените по поле
     disabled_no_grouping: Изключване когато няма избрана група.
-    y_axis: Ос по Y
-    datasets: Набор от данни
-    show_legend: Легенда
     show_marker: Показване на подсказка
-    include_y_axis: Трябва да се попълни остта по Y за всеки източник когато не е избрана група.
-    group_and_function: Трябва да се попълни или да се пропуснат и двете - група и функция.
+    curve_type: Вид на кривата
     smooth: Плавна
     straight: Линейна
     step_line: Стъпкова
   meter:
     name: Циферблат
     description: Циферблат за показване на стойности
-    stroke_width: Ширина на чертите
-    select_max_value: Трябва да изберете максимална стойност.
-    max_greater_than_zero: Максималната стойност трябва да е по-голяма от 0.
-    select_field: Трябва да изберете поле.
-    select_collection: Трябва да изберете колекция.
-    function: Функция
-    thin: Тънък
-    medium: Среден
-    broad: Дебел
   piechart:
     name: Кръгова или пръстеновидна диаграма
-    function: Функция
-    donut: Поничка
-    show_legend: Легенда
-    right: Вдясно
-    bottom: Отдолу
-    monochrome: Монохром
-    monochrome_color: Монохромен цвят
+    description: Кръгови диаграми показващи съотношението между групите по колона
   variable:
     name: Глобални променливи
     description: Задаване на глобални променливи за използване във филтрите на другите панели
     variable_key: Ключ на променливата
   relational-variable:
+    name: Глобална релационна променлива
+    description: Задаване на глобална променлива от релационни данни за използване в други панели и филтри
     variable_key: Ключ на променливата
+    multiple: Множество
+    multiple-label: Избор на един или няколко елемента
 triggers:
   common:
     response_body: Изходни данни
@@ -2012,6 +2018,9 @@ triggers:
     collection_and_item: В колекцията и детайлния изглед
     collection_only: Само в изгледа на колекцията
     item_only: Само в детайлния изглед
+    collection_page: Страница на колекция
+    require_selection: Изискване за избор
+a_flow_uuid: Избор на процес за задействане...
 any_string_or_json: Всякакъв низ или JSON...
 item_payload_placeholder: Това трябва да е JSON документа, който ще се използва при актуализирането на полетата на записа...
 operation_variables_note: Данните от операцията са достъпни чрез променливи като **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** и **{'{'}{'{'}$accountability{'}'}{'}'}**, или за достъп до предишната операция чрез **{'{'}{'{'}operation_key{'}'}{'}'}**.'

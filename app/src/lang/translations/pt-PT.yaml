@@ -103,6 +103,8 @@ delete_bookmark: Eliminar o marcador
 delete_bookmark_copy: >-
   Tem a certeza que pretende remover o marcador "{bookmark}"?
   Esta ação não pode ser desfeita.
+delete_personal_bookmark: Apagar marcador pessoal
+delete_global_bookmark: Apagar marcador global
 logoutReason:
   SIGN_OUT: Sessão terminada
   SESSION_EXPIRED: Sessão expirada
@@ -535,6 +537,11 @@ errors:
   UNKNOWN: Erro Inesperado
 security: Segurança
 value_hashed: Valor Guardado em Segurança
+create_bookmark: Criar marcador
+edit_bookmark: Editar marcador
+edit_personal_bookmark: Editar marcador pessoal
+edit_global_bookmark: Editar marcador global
+cannot_edit_global_bookmarks: Sem permissão para editar marcadores globais
 bookmarks: Favoritos
 unexpected_error: Erro Inesperado
 unexpected_error_copy: Ocorreu um erro inesperado. Por favor, tente novamente mais tarde.
@@ -961,6 +968,7 @@ layouts:
     spacing: Espaçamento
   kanban:
     advanced: Avançado
+both: Ambos
 operations:
   log:
     message: Mensagem
