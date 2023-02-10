@@ -245,6 +245,7 @@ float: Nombre décimal
 integer: Entier
 json: JSON
 xml: XML
+yaml: YAML
 string: Chaîne de caractères
 text: Texte
 time: Heure
@@ -1431,6 +1432,7 @@ translation: Traduction
 translation_placeholder: Entrez une nouvelle traduction...
 value: Valeur
 view_project: Voir le projet
+weeks: { }
 report_error: Signaler l'erreur
 start: Début
 table: Tableau
@@ -1940,7 +1942,28 @@ layouts:
     no_group: Aucun Groupe
     not_all_loaded: Impossible de charger les 1000 premiers éléments.
 horizontal: Horizontal
+vertical: Vertical
+x_axis: Axe X
+y_axis: Axe Y
+y_axis_function: Fonction Axe Y
+show_x_only: Afficher seulement l'axe X
+show_y_only: Afficher seulement l'axe Y
+show_data_label: Afficher l'étiquette des données
 both: Tous
+show_axis_labels: Afficher les libellés des axes
+function: Fonction
+half_circle: Demi-cercle
+full_circle: Cercle entier
+stroke_width: Largeur du trait
+rounded_stroke: Trait arrondi
+thin: Fin
+medium: Moyen
+broad: Large
+show_labels: Afficher les libellés
+show_legend: Afficher la légende
+right: Droite
+left: Gauche
+donut: Donut
 panels:
   metric:
     name: Indicateurs
@@ -1967,6 +1990,7 @@ panels:
   linechart:
     name: Graphique linéaire
     description: Graphique linéaire pour comparer le changement d'un champ
+    disabled_grouping: Désactivé lorsque le groupement est sélectionné.
     disabled_no_grouping: Désactivé si aucun groupement n'est sélectionné.
     show_marker: Afficher l'info-bulle
     curve_type: Format de courbe
