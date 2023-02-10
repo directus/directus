@@ -25,7 +25,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed } from 'vue';
+import { defineComponent, PropType, computed, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useFieldDetailStore } from '../store';
 import { storeToRefs } from 'pinia';
@@ -69,8 +69,9 @@ export default defineComponent({
 		const fieldDetailStore = useFieldDetailStore();
 
 		const { collection, field } = storeToRefs(fieldDetailStore);
+		const { extension, type } = toRefs(props);
 
-		const extensionInfo = useExtension(props.type, props.extension);
+		const extensionInfo = useExtension(type, extension);
 
 		const usesCustomComponent = computed(() => {
 			if (!extensionInfo.value) return false;
