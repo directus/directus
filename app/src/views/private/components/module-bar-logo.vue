@@ -82,7 +82,7 @@ export default defineComponent({
 	width: 60px;
 	height: 60px;
 	padding: 12px;
-	background-color: var(--brand);
+	//background-color: var(--brand);
 
 	.v-progress-linear {
 		position: absolute;
@@ -101,14 +101,14 @@ export default defineComponent({
 
 	.logo {
 		position: absolute;
-		top: 18px;
-		left: 10px;
-		width: 40px;
-		height: 32px;
+		top: 6px;
+		left: 6px;
+		width: 48px;
+		height: 48px;
 		margin: 0 auto;
-		background-image: url('../../../assets/sprite.svg');
+		background-image: url('../../../assets/logo.svg');
 		background-position: 0% 0%;
-		background-size: 600px 32px;
+		//background-size: 600px 32px;
 	}
 
 	.running {

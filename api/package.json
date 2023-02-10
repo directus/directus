@@ -64,9 +64,9 @@
 		"!**/__*__/"
 	],
 	"scripts": {
-		"build": "tsc --build && copyfiles \"src/**/*.{yaml,liquid}\" -u 1 dist",
-		"cli": "NODE_ENV=development SERVE_APP=true ts-node --script-mode --transpile-only src/cli/run.ts",
-		"dev": "NODE_ENV=development SERVE_APP=true ts-node-dev --files --transpile-only --respawn --watch \".env\" --inspect=0 --exit-child -- src/start.ts",
+		"build": "tsc --build && copyfiles NODE_OPTIONS=--max_old_space_size=4096  \"src/**/*.{yaml,liquid}\" -u 1 dist",
+		"cli": "NODE_ENV=development NODE_OPTIONS=--max_old_space_size=4096  SERVE_APP=true ts-node --script-mode --transpile-only src/cli/run.ts",
+		"dev": "NODE_ENV=development NODE_OPTIONS=--max_old_space_size=4096 SERVE_APP=true ts-node-dev --files --transpile-only --respawn --watch \".env\" --inspect=0 --exit-child -- src/start.ts",
 		"start": "npx directus start",
 		"test": "vitest run",
 		"test:coverage": "vitest run --coverage",
