@@ -1,4 +1,4 @@
-import { HeaderRaw, Item } from '@/components/v-table/types';
+import { HeaderRaw, Item, Sort } from '@/components/v-table/types';
 import { useFieldsStore } from '@/stores/fields';
 import { useAliasFields } from '@/composables/use-alias-fields';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
@@ -309,12 +309,13 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				}
 			}
 
-			function onSortChange(newSort: { by: string; desc: boolean }) {
-				let sortString = newSort.by;
-				if (!newSort.by) {
+			function onSortChange(newSort: Sort | null) {
+				if (!newSort?.by) {
 					sort.value = [];
 					return;
 				}
+
+				let sortString = newSort.by;
 				if (newSort.desc === true) {
 					sortString = '-' + sortString;
 				}

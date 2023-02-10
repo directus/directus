@@ -26,6 +26,7 @@ const allowedEnvironmentVars = [
 	'LOGGER_.+',
 	'MAX_QUERY_LIMIT',
 	'DEFAULT_QUERY_LIMIT',
+	'ROBOTS_TXT',
 	// server
 	'SERVER_.+',
 	// database
@@ -195,6 +196,7 @@ const defaults: Record<string, any> = {
 	MAX_PAYLOAD_SIZE: '1mb',
 	MAX_RELATIONAL_DEPTH: 10,
 	DEFAULT_QUERY_LIMIT: 100,
+	ROBOTS_TXT: 'User-agent: *\nDisallow: /',
 
 	DB_EXCLUDE_TABLES: 'spatial_ref_sys,sysdiagrams',
 
