@@ -1,10 +1,10 @@
 import { useAliasFields } from '@/composables/use-alias-fields';
 import { useFieldsStore } from '@/stores/fields';
 import { Field } from '@directus/shared/types';
-import { getFieldsFromTemplate } from '@directus/shared/utils';
+import { get, getFieldsFromTemplate } from '@directus/shared/utils';
 import { render, renderFn } from 'micromustache';
 import { computed, ComputedRef, Ref, ref, unref } from 'vue';
-import { get, set } from 'lodash';
+import { set } from 'lodash';
 import { useExtension } from '@/composables/use-extension';
 
 type StringTemplate = {
