@@ -118,8 +118,8 @@ public_label: Openbaar
 public_description: Bepaalt welke data beschikbaar is in de API zonder in te loggen.
 admin_description: Initiële administratieve rol met onbeperkte App/API toegang.
 not_allowed: Niet toegestaan
-directus_version: Directus Versie
-node_version: Node Versie
+directus_version: Directus-versie
+node_version: Node-versie
 node_uptime: Node Uptime
 os_type: OS Type
 os_version: OS Versie
@@ -1116,7 +1116,7 @@ fields:
     basemaps_style: Mapbox stijl
     mapbox_key: Toegangstoken Mapbox
     mapbox_placeholder: pk.eyJ1Ijo.....
-    attribution_placeholder: '© OpenStreetMap bijdragers'
+    attribution_placeholder: '© OpenStreetMap-bijdragers'
     project_name: Projectnaam
     project_url: Project URL
     project_color: Projectkleur
