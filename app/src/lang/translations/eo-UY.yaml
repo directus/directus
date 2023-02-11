@@ -1,1 +1,473 @@
 ---
+application: Aplikaĵo
+default_provider: Defaŭlta
+method: Metodo
+published: Publikigita
+draft: Malneto
+archived: Arĥivita
+modules: Moduloj
+conditions: Kondiĉoj
+location: Loko
+group: Grupo
+and: Kaj
+or: Aŭ
+hook: Hoko
+add_field: Aldoni kampon
+branch: Branĉo
+exclusive: Ekskluziva
+create_panel: Krei panelon
+create_role: Krei rolon
+create_user: Krei uzanton
+message: Mesaĝo
+create_webhook: Krei rethokon
+invite_users: Inviti uzantojn
+invite: Inviti
+subject: Temo
+prefix: Prefikso
+suffix: Sufikso
+public_label: Publika
+directus_version: Directus-versio
+node_version: Node-versio
+archive: Arĥivi
+unarchive: Malarĥivi
+field_translations: Tradukoj
+language: Lingvo
+create_field: Krei kampon
+key: Ŝlosilo
+json: JSON
+xml: XML
+yaml: YAML
+text: Teksto
+uuid: UUID
+new_field: 'Nova kampo'
+new_collection: 'Nova kolekto'
+add_link: Aldoni ligilon
+default_value: Defaŭlta valoro
+translations: Tradukoj
+no_translations: Neniu traduko
+unique: Unika
+copy_raw_value_success: Kopiita
+paste_raw_value_success: Algluita
+notifications: Sciigoj
+title: Titolo
+revision_delta_deleted: Forigita
+revision_delta_by: '{date} de {user}'
+private_user: Privata uzanto
+import_data_input_placeholder: CSV aŭ JSON...
+last_page: Lasta paĝo
+system: Sistemo
+interface_label: Interfaco
+today: Hodiaŭ
+yesterday: Hieraŭ
+functions:
+  year: Jaro
+  month: Monato
+  week: Semajno
+  day: Tago
+  hour: Horo
+  minute: Minuto
+  second: Sekundo
+minutes: Minutoj
+hours: Horoj
+month: Monato
+year: Jaro
+months:
+  january: januaro
+  february: februaro
+  march: marto
+  april: aprilo
+  may: majo
+  june: junio
+  july: julio
+  august: aŭgusto
+  september: septembro
+  october: oktobro
+  november: novembro
+  december: decembro
+owner: Posedanto
+download: Elŝuti
+open: Malfermi
+foreground_color: Malfona koloro
+background_color: Fona koloro
+name: Nomo
+comments: Komentoj
+disabled: Malŝaltita
+no_notifications: Neniu sciigo
+any: Ajna
+csv: CSV
+active: Aktiva
+copy: Kopii
+users: Uzantoj
+action: Ago
+ip_address: IP-adreso
+webhooks: Rethokoj
+min_value: Minimuma valoro
+max_value: Maksimuma valoro
+automatic: Aŭtomata
+duration: Daŭro
+second: sekundo
+sort: Ordigi
+remove: Forigi
+edit: Redakti
+enabled: Ŝaltita
+create_account: Krei konton
+errors:
+  FORBIDDEN: Malpermesita
+  INVALID_TOKEN: Nevalida ĵetono
+security: Sekureco
+back: Reveni
+all_users: Ĉiuj uzantoj
+delete_collection_success: Forigita kolekto
+visible_collections: Videblaj kolektoj
+hidden_collections: Kaŝitaj kolektoj
+font: Tiparo
+sans_serif: Senserifa
+serif: Serifa
+monospace: Egallarĝa
+color: Koloro
+circle: Cirklo
+operators:
+  contains: Enhavas
+  ncontains: Ne enhavas
+  starts_with: Komenciĝas per
+  nstarts_with: Ne komenciĝas per
+  ends_with: Finiĝas per
+  nends_with: Ne finiĝas per
+  between: Estas inter
+  nbetween: Ne estas inter
+  empty: Estas malplena
+  nempty: Ne estas malplena
+rows: Vicoj
+columns: Kolumnoj
+all_files: Ĉiuj dosieroj
+my_files: Miaj dosieroj
+add_file: Aldoni dosieron
+role: Rolo
+rule: Rolo
+user: Uzanto
+create: Krei
+read: Legi
+delete: Forigi
+label: Etikedo
+flows: Fluoj
+flow: Fluo
+no_flows: Neniu fluo
+create_flow: Krei fluon
+flow_name: Nomo
+code: Kodo
+panel: Panelo
+visible: Videbla
+source: Fonto
+interface_group_groups: Grupoj
+new_tab: Nova langeto
+current_tab: Nuna langeto
+wysiwyg_options:
+  forecolor: Malfona koloro
+  backcolor: Fona koloro
+  codeblock: Kodo
+  link: Aldoni/redakti ligilon
+  copy: Kopii
+  cut: Eltondi
+  paste: Alglui
+  undo: Malfari
+  redo: Refari
+  remove: Forigi
+  table: Tabelo
+choices: Elektoj
+unknown_user: Nekonata uzanto
+settings_webhooks: Rethokoj
+settings_flows: Fluoj
+actions: Agoj
+data: Datumoj
+add_new: Aldoni novan
+create_new: Krei novan
+cancel: Nuligi
+collection: Kolekto
+collections: Kolektoj
+content: Enhavo
+fields:
+  directus_activity:
+    action: Ago
+    collection: Kolekto
+    ip: IP-adreso
+  directus_collections:
+    collection: Kolekto
+    color: Koloro
+    hidden: Kaŝita
+  directus_files:
+    title: Titolo
+    description: Priskribo
+    tags: Etikedoj
+    location: Loko
+    metadata: Metadatumoj
+    duration: Daŭro
+  directus_users:
+    password: Pasvorto
+    location: Loko
+    title: Titolo
+    description: Priskribo
+    tags: Etikedoj
+    language: Lingvo
+    theme_light: Hela reĝimo
+    theme_dark: Malhela reĝimo
+    status_draft: Malneto
+    status_invited: Invitita
+    status_active: Aktiva
+    status_archived: Arĥivita
+    role: Rolo
+    token: Ĵetono
+    provider: Provizanto
+    last_page: Lasta paĝo
+  directus_settings:
+    jpg: JPEG
+    png: PNG
+    webP: WebP
+    tiff: Tiff
+    mapbox_placeholder: pk.eyJ1Ijo.....
+    attribution_placeholder: '© OpenStreetMap-kontribuantoj'
+    default_language: Defaŭlta lingvo
+    public_foreground: Publika malfono
+    public_background: Publika fono
+  directus_shares:
+    name: Nomo
+    role: Rolo
+    password: Pasvorto
+  directus_fields:
+    hidden: Kaŝita
+    display_template: Ŝablono
+  directus_roles:
+    description: Priskribo
+  directus_webhooks:
+    name: Nomo
+    method: Metodo
+    data: Datumoj
+    value: Valoro
+    actions: Agoj
+    collections: Kolektoj
+field_options:
+  directus_settings:
+    project_name_placeholder: Mia projekto...
+    security_divider_title: Sekureco
+    mapbox_placeholder: pk.eyJ1Ijo.....
+  directus_activity:
+    login: Ensaluti
+    create: Krei
+    delete: Forigi
+  directus_collections:
+    language: Lingvo
+    translation: Traduko
+    archive_divider: Arĥivi
+    sort_divider: Ordigi
+  directus_files:
+    title: Unika titolo...
+  directus_roles:
+    fields:
+      name_name: Nomo
+      link_name: Ligilo
+    collections_name: Kolektoj
+    collections_addLabel: Aldoni kolekton...
+  directus_users:
+    dropdown_light: Hela reĝimo
+    dropdown_dark: Malhela reĝimo
+    status_dropdown_draft: Malneto
+    status_dropdown_invited: Invitita
+    status_dropdown_active: Aktiva
+    status_dropdown_archived: Arĥivita
+  directus_webhooks:
+    status_options_active: Aktiva
+    actions_create: Krei
+    actions_delete: Forigi
+    actions_login: Ensaluti
+    headers:
+      value: Valoro
+no_value: Neniu valoro
+do_nothing: Fari nenion
+comment: Komento
+shares: Konigoj
+new_share: Nova konigo
+share: Konigi
+share_copy_link: Kopii la ligilon
+share_copy_link_success: Ligilo kopiita
+continue_label: Daŭrigi
+default_label: Defaŭlta
+delete_label: Forigi
+description: Priskribo
+done: Preta
+hidden: Kaŝita
+colors:
+  black: Nigra
+  gray: Griza
+  white: Blanka
+login: Ensaluti
+password: Pasvorto
+permissions: Permesoj
+relationship: Rilato
+save: Konservi
+schema: Skemo
+search: Serĉi
+settings: Agordoj
+sign_in: Ensaluti
+sign_out: Elsaluti
+sign_out_confirm: Ĉu vi certas, ke vi volas elsaluti?
+template: Ŝablono
+translation: Traduko
+value: Valoro
+report_error: Raporti eraron
+table: Tabelo
+list: Listo
+interfaces:
+  filter:
+    add_group: Kaj/aŭ-grupo
+    add_value: Aldoni valoron
+    logic_type_and: KAJ
+    logic_type_or: AŬ
+    all: Ĉiuj
+    any: Ajna
+    and: kaj
+  fields:
+    name: Kampoj
+  presentation-links:
+    links: Ligiloj
+    style: Stilo
+    link: Ligiloj
+    button: Butonoj
+  input-code:
+    code: Kodo
+  system-collection:
+    collection: Kolekto
+  system-collections:
+    collections: Kolektoj
+  select-color:
+    color: Koloro
+    preset_colors_add_label: Aldoni novan koloron...
+  system-fields:
+    no_fields: Neniu kampo
+  file:
+    file: Dosiero
+  files:
+    files: Dosieroj
+  file-image:
+    image: Bildo
+  system-interface:
+    interface: Interfaco
+  input-rich-text-md:
+    edit: Redakti
+  map:
+    geojson: GeoJSON
+    lnglat: Longitudo, latitudo
+    wkt: WKT
+    wkb: WKB
+  list:
+    sort: Ordigi
+  tags:
+    tags: Etikedoj
+  input:
+    minimum_value: Minimuma valoro
+    maximum_value: Maksimuma valoro
+  input-translated-string:
+    search_placeholder: Serĉi...
+  boolean:
+    label_default: Ŝaltita
+  translations:
+    no_collection: Neniu kolekto
+    enable: Ŝalti
+    default_language: Defaŭlta lingvo
+  user:
+    user: Uzanto
+    modes:
+      auto: Aŭtomata
+  system-token:
+    system-token: Ĵetono
+displays:
+  translations:
+    translations: Tradukoj
+    enable: Ŝalti
+    default_language: Defaŭlta lingvo
+  collection:
+    collection: Kolekto
+    description: Montri kolekton
+  color:
+    color: Koloro
+  datetime:
+    suffix: Sufikso
+  file:
+    file: Dosiero
+    description: Montri dosierojn
+  formatted-value:
+    font: Tiparo
+    font_sans_serif: Senserifa
+    font_serif: Serifa
+    font_monospace: Egallarĝa
+    bold: Grasa
+    italic: Kursiva
+    prefix: Prefikso
+    suffix: Sufikso
+    color: Koloro
+    background: Fono
+    text: Teksto
+  image:
+    image: Bildo
+    circle: Cirklo
+  labels:
+    labels: Etikedoj
+    default_foreground: Defaŭlta malfono
+    default_background: Defaŭlta fono
+  user:
+    user: Uzanto
+    name: Nomo
+    both: Ambaŭ
+layouts:
+  cards:
+    title: Titolo
+    subtitle: Subtitolo
+  tabular:
+    tabular: Tabelo
+  calendar:
+    calendar: Kalendaro
+    first_day: Unua tago de la semajno
+  map:
+    layers: Tavoloj
+    invalid_geometry: Nevalida geometrio
+horizontal: Horizontala
+vertical: Vertikala
+x_axis: X-akso
+y_axis: Y-akso
+both: Ambaŭ
+function: Funkcio
+panels:
+  metric:
+    field: Kampo
+  label:
+    name: Etikedo
+  list:
+    name: Listo
+  barchart:
+    horizontal: Horizontala
+triggers:
+  common:
+    response_body_all: Ĉiuj datumoj
+  webhook:
+    name: Rethoko
+    method: Metodo
+  operation:
+    name: Alia fluo
+operations:
+  condition:
+    name: Kondiĉo
+  log:
+    message: Mesaĝo
+  mail:
+    to: Al
+  notification:
+    recipient: Uzanto
+    message: Mesaĝo
+  request:
+    url_placeholder: https://example.com/ekzemplo
+    method: Metodo
+    data: Datumoj
+  sleep:
+    milliseconds: Milisekundoj
+  trigger:
+    flows: Fluoj
+    flow: Fluo
+    data: Datumoj
