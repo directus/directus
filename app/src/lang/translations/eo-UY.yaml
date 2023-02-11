@@ -37,7 +37,13 @@ or: Aŭ
 hook: Hoko
 add_field: Aldoni kampon
 branch: Branĉo
+leaf: Folio
+edit_collection: Redakti la kolekton
 exclusive: Ekskluziva
+children: Idoj
+show_active_items: Montri aktivajn erojn
+show_archived_items: Montri arĥivitajn erojn
+show_all_items: Montri ĉiujn erojn
 required: Deviga
 create_panel: Krei panelon
 create_role: Krei rolon
@@ -54,14 +60,23 @@ delete_folder: Forigi la dosierujon
 prefix: Prefikso
 suffix: Sufikso
 public_label: Publika
+not_allowed: Ne permesita
 directus_version: Directus-versio
 node_version: Node-versio
 archive: Arĥivi
 unarchive: Malarĥivi
+allow_multiple: Permesi plurajn
+field_file: Unuopa dosiero
+field_files: Pluraj dosieroj
 field_translations: Tradukoj
 hide_field: Kaŝi la kampon
 delete_field: Forigi la kampon
 language: Lingvo
+camera: Kamerao
+sum: Sumo
+avg: Averaĝo
+min: Minimumo
+max: Maksimumo
 create_field: Krei kampon
 creating_new_field: 'Nova kampo ({collection})'
 field_in_collection: '{field} ({collection})'
