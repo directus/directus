@@ -1297,6 +1297,7 @@ interfaces:
     opacity: "स्पष्टता\n"
   datetime:
     datetime: मिति र समय
+    description: मिति र समय प्रविष्ट गर्नुहोस्
     use_24: २४-घण्टे ढाँचा प्रयोग गर्नुहोस्
     placeholder: मिति समय छान्नुहोस्...
   system-fields:
