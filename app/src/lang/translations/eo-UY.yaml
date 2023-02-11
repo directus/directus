@@ -55,6 +55,10 @@ translation_string_translations_placeholder: Aldoni novan tradukon
 invite_users: Inviti uzantojn
 invite: Inviti
 subject: Temo
+connection_excellent: Bonega konekto
+connection_good: Bona konekto
+connection_fair: Mezbona konekto
+connection_poor: Malbona konekto
 primary: Ĉefa
 delete_folder: Forigi la dosierujon
 prefix: Prefikso
@@ -68,15 +72,22 @@ unarchive: Malarĥivi
 allow_multiple: Permesi plurajn
 field_file: Unuopa dosiero
 field_files: Pluraj dosieroj
+field_m2o: Pluraj-al-unu-rilato
+field_m2a: Pluraj-al-ajnaj-rilato
+field_o2m: Unu-al-pluraj-rilatoj
+field_m2m: Pluraj-al-pluraj-rilato
 field_translations: Tradukoj
 hide_field: Kaŝi la kampon
 delete_field: Forigi la kampon
 language: Lingvo
+language_placeholder: Elekti lingvon...
+admins_have_all_permissions: Administrantoj havas ĉiujn permesojn
 camera: Kamerao
 sum: Sumo
 avg: Averaĝo
 min: Minimumo
 max: Maksimumo
+iso: ISO
 create_field: Krei kampon
 creating_new_field: 'Nova kampo ({collection})'
 field_in_collection: '{field} ({collection})'
@@ -88,10 +99,20 @@ xml: XML
 yaml: YAML
 text: Teksto
 uuid: UUID
+no_collections_found: Neniu kolekto trovita.
 new_field: 'Nova kampo'
 new_collection: 'Nova kolekto'
+determined_by_relationship: Determinita de la rilato
 add_link: Aldoni ligilon
 default_value: Defaŭlta valoro
+single_file: Unuopa dosiero
+multiple_files: Pluraj dosieroj
+m2o_relationship: Pluraj-al-unu-rilato
+o2m_relationship: Unu-al-pluraj-rilatoj
+m2m_relationship: Pluraj-al-pluraj-rilato
+m2a_relationship: Pluraj-al-ajnaj-rilato
+invalid_item: Nevalida ero
+next: Sekva
 translations: Tradukoj
 no_translations: Neniu traduko
 unique: Unika
@@ -100,11 +121,15 @@ raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
 copy_raw_value_success: Kopiita
 paste_raw_value_success: Algluita
 notifications: Sciigoj
+page_not_found: Paĝo ne trovita
 title: Titolo
 revision_delta_created: Kreita
 revision_delta_deleted: Forigita
+revision_delta_reverted: Malfarita
 revision_delta_by: '{date} de {user}'
 private_user: Privata uzanto
+related_collection: Rilata kolekto
+related_collections: Rilataj kolektoj
 import_data_input_placeholder: CSV aŭ JSON...
 label_import: Importi
 label_export: Eksporti
@@ -122,10 +147,19 @@ functions:
   hour: Horo
   minute: Minuto
   second: Sekundo
+date-fns_date: PPP
+date-fns_time: 'H:mm:ss'
+date-fns_time_no_seconds: 'H:mm'
+date-fns_time_24hour: 'HH:mm:ss'
+date-fns_time_no_seconds_24hour: 'HH:mm'
+date-fns_date_short: 'd MMM u'
+date-fns_time_short: 'H:mm'
+date-fns_date_short_no_year: d MMM
 minutes: Minutoj
 hours: Horoj
 month: Monato
 year: Jaro
+select_all: Elekti ĉiujn
 months:
   january: januaro
   february: februaro
@@ -143,28 +177,40 @@ url: URL
 import_label: Importi
 created: Kreita
 owner: Posedanto
+edited_by: Redaktita de
 folder: Dosierujo
 download: Elŝuti
 open: Malfermi
 open_folder: Malfermi la dosierujon "{folder}"
 foreground_color: Malfona koloro
 background_color: Fona koloro
+no_file_selected: Neniu dosiero elektita
+download_file: Elŝuti la dosieron
 name: Nomo
+type: Tipo
 created_by: Kreita de
 generated_uuid: Generita UUID
 save_and_create_new: Konservi kaj krei novan
+add_existing: Aldoni ekzistantan
 comments: Komentoj
+select_item: Elekti kampon
 no_items: Neniu ero
 search_items: Serĉi erojn...
 disabled: Malŝaltita
+information: Informoj
+report_bug: Raporti cimon
+interface_not_found: 'Interfaco "{interface}" ne trovita.'
 no_notifications: Neniu sciigo
 all_items: Ĉiuj eroj
 any: Ajna
 csv: CSV
 no_collections: Neniu kolekto
 create_collection: Krei kolekton
+select_a_collection: Elekti kolekton
+select_a_field: Elekti kampon
 active: Aktiva
 copy: Kopii
+inactive: Neaktiva
 users: Uzantoj
 action: Ago
 ip_address: IP-adreso
@@ -173,17 +219,29 @@ min_value: Minimuma valoro
 max_value: Maksimuma valoro
 automatic: Aŭtomata
 duration: Daŭro
+charset: Signaro
 second: sekundo
+collection_created: Kolekto kreita
 sort: Ordigi
+status: Stato
 remove: Forigi
+select_an_item: Elekti eron...
 edit: Redakti
 enabled: Ŝaltita
 create_account: Krei konton
 errors:
+  COLLECTION_NOT_FOUND: "Kolekto ne ekzistas"
+  FIELD_NOT_FOUND: Kampo ne trovita
   FORBIDDEN: Malpermesita
   INVALID_TOKEN: Nevalida ĵetono
+  ITEM_NOT_FOUND: Ero ne trovita
+  ROUTE_NOT_FOUND: Ne trovita
+  INTERNAL_SERVER_ERROR: Neatendita eraro
+  UNKNOWN: Neatendita eraro
 security: Sekureco
+unexpected_error: Neatendita eraro
 back: Reveni
+edit_image: Redakti la bildon
 all_users: Ĉiuj uzantoj
 delete_collection: Forigi la kolekton
 delete_collection_success: Forigita kolekto
@@ -209,6 +267,7 @@ operators:
   nbetween: Ne estas inter
   empty: Estas malplena
   nempty: Ne estas malplena
+loading: Ŝargado...
 item: Ero
 items: Eroj
 rows: Vicoj
@@ -226,9 +285,13 @@ user: Uzanto
 create: Krei
 read: Legi
 delete: Forigi
+select_fields: Elekti kampojn
+bold: Grasa
 label: Etikedo
 flows: Fluoj
 flow: Fluo
+select_a_flow: Elekti fluon
+edit_flow: Redakti la fluon
 delete_flow: Forigi la fluon
 no_flows: Neniu fluo
 create_flow: Krei fluon
@@ -236,7 +299,9 @@ flow_name: Nomo
 code: Kodo
 panel: Panelo
 visible: Videbla
+quality: Kvalito
 source: Fonto
+interface_group_selection: Elekto
 interface_group_relational: Rilata
 interface_group_groups: Grupoj
 new_tab: Nova langeto
@@ -244,22 +309,33 @@ current_tab: Nuna langeto
 wysiwyg_options:
   forecolor: Malfona koloro
   backcolor: Fona koloro
+  bold: Grasa
+  italic: Kursiva
+  underline: Substrekita
+  strikethrough: Trastrekita
   codeblock: Kodo
   link: Aldoni/redakti ligilon
   unlink: Forigi la ligilon
   copy: Kopii
   cut: Eltondi
   paste: Alglui
+  fontselect: Elekti tiparon
   undo: Malfari
   redo: Refari
   remove: Forigi
+  selectall: Elekti ĉiujn
   table: Tabelo
 choices: Elektoj
+deselect: Malelekti
+deselect_all: Malelekti ĉiujn
 unknown_user: Nekonata uzanto
 settings_webhooks: Rethokoj
 settings_flows: Fluoj
 actions: Agoj
+select: Elekti...
 data: Datumoj
+show_x_axis: Montri la X-akson
+show_y_axis: Montri la Y-akson
 add_new: Aldoni novan
 create_new: Krei novan
 cancel: Nuligi
@@ -287,6 +363,7 @@ fields:
     embed: Enkorpigi
     uploaded_by: Alŝutita de
     folder: Dosierujo
+    charset: Signaro
     duration: Daŭro
   directus_users:
     password: Pasvorto
@@ -298,6 +375,7 @@ fields:
     language: Lingvo
     theme_light: Hela reĝimo
     theme_dark: Malhela reĝimo
+    status: Stato
     status_draft: Malneto
     status_invited: Invitita
     status_active: Aktiva
@@ -330,6 +408,7 @@ fields:
   directus_webhooks:
     name: Nomo
     method: Metodo
+    status: Stato
     data: Datumoj
     value: Valoro
     actions: Agoj
@@ -350,6 +429,8 @@ field_options:
     sort_divider: Ordigi
   directus_files:
     title: Unika titolo...
+    description: Nedeviga priskribo...
+    location: Nedeviga loko...
   directus_roles:
     fields:
       name_name: Nomo
@@ -365,6 +446,7 @@ field_options:
     status_dropdown_archived: Arĥivita
   directus_webhooks:
     status_options_active: Aktiva
+    status_options_inactive: Neaktiva
     actions_create: Krei
     actions_delete: Forigi
     actions_login: Ensaluti
@@ -396,6 +478,7 @@ relationship: Rilato
 save: Konservi
 schema: Skemo
 search: Serĉi
+select_existing: Elekti ekzistantan
 settings: Agordoj
 sign_in: Ensaluti
 sign_out: Elsaluti
@@ -425,6 +508,8 @@ interfaces:
     primary: Ĉefa
     link: Ligiloj
     button: Butonoj
+  select-multiple-checkbox-tree:
+    show_all: Montri ĉiujn
   input-code:
     code: Kodo
   system-collection:
@@ -433,17 +518,28 @@ interfaces:
     collections: Kolektoj
   select-color:
     color: Koloro
+    placeholder: Elekti koloron...
     preset_colors_add_label: Aldoni novan koloron...
   system-fields:
+    select_a_collection: Elekti kolekton
     no_fields: Neniu kampo
+  system-display-template:
+    select_a_collection: Elekti kolekton
+  select-dropdown:
+    choices_placeholder: Aldoni novan elekton
   file:
     file: Dosiero
+    description: Elekti aŭ alŝuti dosieron
   files:
     files: Dosieroj
+    description: Elekti aŭ alŝuti plurajn dosierojn
   file-image:
     image: Bildo
+    description: Elekti aŭ alŝuti bildon
   system-interface:
     interface: Interfaco
+    description: Elekti ekzistantan interfacon
+    placeholder: Elekti interfacon...
   input-rich-text-md:
     edit: Redakti
   map:
@@ -453,10 +549,13 @@ interfaces:
     wkb: WKB
   system-folder:
     folder: Dosierujo
+    description: Elekti dosierujon
   list:
     sort: Ordigi
+    sort_placeholder: Mana
   tags:
     tags: Etikedoj
+    description: Elekti aŭ aldoni etikedojn
   input:
     minimum_value: Minimuma valoro
     maximum_value: Maksimuma valoro
@@ -505,6 +604,7 @@ displays:
   image:
     image: Bildo
     circle: Cirklo
+    circle_label: Montri kiel cirklo
   labels:
     labels: Etikedoj
     default_foreground: Defaŭlta malfono
@@ -514,26 +614,49 @@ displays:
     avatar: Profilbildo
     name: Nomo
     both: Ambaŭ
+    circle_label: Montri la uzanton en cirklo
 layouts:
   cards:
+    cards: Kartoj
+    crop: Stuci
+    contain: Enhavas
     title: Titolo
     subtitle: Subtitolo
   tabular:
     tabular: Tabelo
+    comfortable: Komforta
+    compact: Kompakta
+    cozy: Intima
   calendar:
     calendar: Kalendaro
+    optional: Nedeviga
     first_day: Unua tago de la semajno
   map:
     layers: Tavoloj
     invalid_geometry: Nevalida geometrio
   kanban:
+    name: Kanban
+    crop: Stuci
+    edit_group: Redakti la grupon
     delete_group: Forigi la grupon
+    add_group: Aldoni grupon
+    show: Montri
+    no_group: Neniu grupo
 horizontal: Horizontala
 vertical: Vertikala
 x_axis: X-akso
 y_axis: Y-akso
+y_axis_function: Y-aksa funkcio
+show_x_only: Montri nur la X-akson
+show_y_only: Montri nur la Y-akson
 both: Ambaŭ
+show_axis_labels: Montri la aksajn etikedojn
 function: Funkcio
+half_circle: Duona cirklo
+full_circle: Plena cirklo
+show_labels: Montri etikedojn
+right: Dekstra
+left: Maldekstra
 panels:
   metric:
     field: Kampo
@@ -543,6 +666,8 @@ panels:
     name: Listo
   barchart:
     horizontal: Horizontala
+  relational-variable:
+    multiple-label: Elekti plurajn erojn
 triggers:
   common:
     response_body_all: Ĉiuj datumoj
@@ -552,6 +677,10 @@ triggers:
     async: Nesinkrona
   operation:
     name: Alia fluo
+  schedule:
+    cron: Intervalo
+  manual:
+    name: Mana
 operations:
   condition:
     name: Kondiĉo
@@ -573,9 +702,12 @@ operations:
     url_placeholder: https://example.com/ekzemplo
     method: Metodo
     data: Datumoj
+    value_placeholder: Bearer eyJhbGciOi...
   sleep:
     milliseconds: Milisekundoj
   trigger:
     flows: Fluoj
     flow: Fluo
     data: Datumoj
+    serial: Seria
+    parallel: Paralela
