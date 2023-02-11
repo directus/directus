@@ -28,6 +28,7 @@ published: Publikigita
 draft: Malneto
 archived: Arĥivita
 modules: Moduloj
+edit_field: Redakti la kampon
 conditions: Kondiĉoj
 location: Loko
 group: Grupo
@@ -37,11 +38,14 @@ hook: Hoko
 add_field: Aldoni kampon
 branch: Branĉo
 exclusive: Ekskluziva
+required: Deviga
 create_panel: Krei panelon
 create_role: Krei rolon
 create_user: Krei uzanton
 message: Mesaĝo
+delete_panel: Forigi la panelon
 create_webhook: Krei rethokon
+translation_string_translations_placeholder: Aldoni novan tradukon
 invite_users: Inviti uzantojn
 invite: Inviti
 subject: Temo
@@ -54,9 +58,15 @@ node_version: Node-versio
 archive: Arĥivi
 unarchive: Malarĥivi
 field_translations: Tradukoj
+hide_field: Kaŝi la kampon
+delete_field: Forigi la kampon
 language: Lingvo
 create_field: Krei kampon
+creating_new_field: 'Nova kampo ({collection})'
+field_in_collection: '{field} ({collection})'
+hidden_field: Kaŝita kampo
 key: Ŝlosilo
+date: Dato
 json: JSON
 xml: XML
 yaml: YAML
@@ -70,19 +80,23 @@ translations: Tradukoj
 no_translations: Neniu traduko
 unique: Unika
 primary_key: Ĉefa ŝlosilo
+raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
 copy_raw_value_success: Kopiita
 paste_raw_value_success: Algluita
 notifications: Sciigoj
 title: Titolo
+revision_delta_created: Kreita
 revision_delta_deleted: Forigita
 revision_delta_by: '{date} de {user}'
 private_user: Privata uzanto
 import_data_input_placeholder: CSV aŭ JSON...
+label_import: Importi
 last_page: Lasta paĝo
 system: Sistemo
 interface_label: Interfaco
 today: Hodiaŭ
 yesterday: Hieraŭ
+delete_comment: Forigi la komenton
 functions:
   year: Jaro
   month: Monato
@@ -108,13 +122,18 @@ months:
   october: oktobro
   november: novembro
   december: decembro
+url: URL
+import_label: Importi
+created: Kreita
 owner: Posedanto
 download: Elŝuti
 open: Malfermi
 foreground_color: Malfona koloro
 background_color: Fona koloro
 name: Nomo
+created_by: Kreita de
 generated_uuid: Generita UUID
+save_and_create_new: Konservi kaj krei novan
 comments: Komentoj
 disabled: Malŝaltita
 no_notifications: Neniu sciigo
@@ -142,6 +161,7 @@ errors:
 security: Sekureco
 back: Reveni
 all_users: Ĉiuj uzantoj
+delete_collection: Forigi la kolekton
 delete_collection_success: Forigita kolekto
 visible_collections: Videblaj kolektoj
 hidden_collections: Kaŝitaj kolektoj
@@ -167,6 +187,7 @@ columns: Kolumnoj
 all_files: Ĉiuj dosieroj
 my_files: Miaj dosieroj
 add_file: Aldoni dosieron
+no_visible_fields: Malplena formularo
 role: Rolo
 rule: Rolo
 user: Uzanto
@@ -176,6 +197,7 @@ delete: Forigi
 label: Etikedo
 flows: Fluoj
 flow: Fluo
+delete_flow: Forigi la fluon
 no_flows: Neniu fluo
 create_flow: Krei fluon
 flow_name: Nomo
@@ -183,6 +205,7 @@ code: Kodo
 panel: Panelo
 visible: Videbla
 source: Fonto
+interface_group_relational: Rilata
 interface_group_groups: Grupoj
 new_tab: Nova langeto
 current_tab: Nuna langeto
@@ -214,6 +237,8 @@ fields:
   directus_activity:
     action: Ago
     collection: Kolekto
+    user: Ago de
+    comment: Komento
     ip: IP-adreso
   directus_collections:
     collection: Kolekto
@@ -225,6 +250,9 @@ fields:
     tags: Etikedoj
     location: Loko
     metadata: Metadatumoj
+    created_by: Kreita de
+    embed: Enkorpigi
+    uploaded_by: Alŝutita de
     duration: Daŭro
   directus_users:
     password: Pasvorto
@@ -458,6 +486,8 @@ layouts:
   map:
     layers: Tavoloj
     invalid_geometry: Nevalida geometrio
+  kanban:
+    delete_group: Forigi la grupon
 horizontal: Horizontala
 vertical: Vertikala
 x_axis: X-akso
@@ -479,6 +509,7 @@ triggers:
   webhook:
     name: Rethoko
     method: Metodo
+    async: Nesinkrona
   operation:
     name: Alia fluo
 operations:
@@ -498,6 +529,7 @@ operations:
     recipient: Uzanto
     message: Mesaĝo
   request:
+    url: URL
     url_placeholder: https://example.com/ekzemplo
     method: Metodo
     data: Datumoj
