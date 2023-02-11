@@ -1108,6 +1108,7 @@ field_options:
     sort_divider: क्रमबद्ध
   directus_roles:
     fields:
+      icon_name: आइकन
       name_name: नाम
     collections_name: सङ्ग्रहहरू
   directus_users:
@@ -1131,11 +1132,19 @@ field_options:
       header: हेडर
 comment: टिप्पणी
 description: विवरणः
+done: भयो
 email: इमेल
+file: फाइल
 hidden: लुकेको
+icon: आइकन
+info: जानकारी
+colors:
+  blue: निलो
+  gray: कैलो
 password: पासवर्ड
 template: टेम्प्लेट
 table: टेबल
+list: सूची
 interfaces:
   filter:
     name: फिल्‍टर
@@ -1162,8 +1171,12 @@ interfaces:
     divider: विभाजक
   select-dropdown:
     choices_value_placeholder: मान प्रविष्ट गर्नुहोस्...
+  file:
+    file: फाइल
   input-hash:
     hash: ह्यास
+  select-icon:
+    icon: आइकन
   select-dropdown-m2o:
     display_template: टेम्प्लेट प्रदर्शन गर्नुहोस्
   input-rich-text-md:
@@ -1176,6 +1189,8 @@ interfaces:
     sort: क्रमबद्ध
   tags:
     tags: ट्याग
+  input:
+    trim: छाँट्नुहोस्
   boolean:
     toggle: टगल
     label_default: सक्षम गरियो
@@ -1184,6 +1199,7 @@ interfaces:
   user:
     user: प्रयोगकर्ता
     modes:
+      auto: स्वतः
       dropdown: ड्रपडाउन
   system-token:
     system-token: टोकन
@@ -1203,6 +1219,8 @@ displays:
     format_note: >-
       आफू अनुकूल ढाँचाले __[मिति फिल्ड चिन्ह तालिका](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__ स्वीकार गर्दछ
     suffix: प्रत्यय
+  file:
+    file: फाइल
   formatted-value:
     format: ढाँचा
     font: फन्ट
@@ -1213,7 +1231,10 @@ displays:
     prefix: उपसर्ग
     suffix: प्रत्यय
     color: रंग
+    icon: आइकन
     text: पाठ
+  icon:
+    icon: आइकन
   image:
     circle: वृत्त
   labels:
@@ -1224,14 +1245,22 @@ displays:
     name: नाम
 layouts:
   cards:
+    crop: क्रप गर्नुहोस्
     title: सेटिङहरू अद्यावधिक गरियो
   tabular:
     tabular: टेबल
+    cozy: सहज
   kanban:
+    crop: क्रप गर्नुहोस्
     advanced: उन्नत
+    show: देखाउने
+both: दुबै
+thin: पातलो
 panels:
   label:
     name: लेबल
+  list:
+    name: सूची
 triggers:
   webhook:
     method: विधि
