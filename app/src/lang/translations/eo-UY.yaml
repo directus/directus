@@ -50,6 +50,7 @@ invite_users: Inviti uzantojn
 invite: Inviti
 subject: Temo
 primary: Ĉefa
+delete_folder: Forigi la dosierujon
 prefix: Prefikso
 suffix: Sufikso
 public_label: Publika
@@ -91,6 +92,7 @@ revision_delta_by: '{date} de {user}'
 private_user: Privata uzanto
 import_data_input_placeholder: CSV aŭ JSON...
 label_import: Importi
+label_export: Eksporti
 last_page: Lasta paĝo
 system: Sistemo
 interface_label: Interfaco
@@ -126,8 +128,10 @@ url: URL
 import_label: Importi
 created: Kreita
 owner: Posedanto
+folder: Dosierujo
 download: Elŝuti
 open: Malfermi
+open_folder: Malfermi la dosierujon "{folder}"
 foreground_color: Malfona koloro
 background_color: Fona koloro
 name: Nomo
@@ -135,10 +139,15 @@ created_by: Kreita de
 generated_uuid: Generita UUID
 save_and_create_new: Konservi kaj krei novan
 comments: Komentoj
+no_items: Neniu ero
+search_items: Serĉi erojn...
 disabled: Malŝaltita
 no_notifications: Neniu sciigo
+all_items: Ĉiuj eroj
 any: Ajna
 csv: CSV
+no_collections: Neniu kolekto
+create_collection: Krei kolekton
 active: Aktiva
 copy: Kopii
 users: Uzantoj
@@ -163,6 +172,8 @@ back: Reveni
 all_users: Ĉiuj uzantoj
 delete_collection: Forigi la kolekton
 delete_collection_success: Forigita kolekto
+one_item: '1 ero'
+one_filtered_item: '1 filtrita ero'
 visible_collections: Videblaj kolektoj
 hidden_collections: Kaŝitaj kolektoj
 font: Tiparo
@@ -171,6 +182,7 @@ serif: Serifa
 monospace: Egallarĝa
 color: Koloro
 circle: Cirklo
+empty_item: Malplena ero
 operators:
   contains: Enhavas
   ncontains: Ne enhavas
@@ -182,10 +194,15 @@ operators:
   nbetween: Ne estas inter
   empty: Estas malplena
   nempty: Ne estas malplena
+item: Ero
+items: Eroj
 rows: Vicoj
 columns: Kolumnoj
+create_item: Krei eron
 all_files: Ĉiuj dosieroj
 my_files: Miaj dosieroj
+create_folder: Krei dosierujon
+edit_folder: Redakti la dosierujon
 add_file: Aldoni dosieron
 no_visible_fields: Malplena formularo
 role: Rolo
@@ -214,6 +231,7 @@ wysiwyg_options:
   backcolor: Fona koloro
   codeblock: Kodo
   link: Aldoni/redakti ligilon
+  unlink: Forigi la ligilon
   copy: Kopii
   cut: Eltondi
   paste: Alglui
@@ -253,6 +271,7 @@ fields:
     created_by: Kreita de
     embed: Enkorpigi
     uploaded_by: Alŝutita de
+    folder: Dosierujo
     duration: Daŭro
   directus_users:
     password: Pasvorto
@@ -283,6 +302,7 @@ fields:
     default_language: Defaŭlta lingvo
     public_foreground: Publika malfono
     public_background: Publika fono
+    storage_default_folder: Defaŭlta dosierujo
   directus_shares:
     name: Nomo
     role: Rolo
@@ -371,6 +391,8 @@ value: Valoro
 report_error: Raporti eraron
 table: Tabelo
 list: Listo
+remove_item: Forigi la eron
+delete_item: Forigi la eron
 interfaces:
   filter:
     add_group: Kaj/aŭ-grupo
@@ -414,6 +436,8 @@ interfaces:
     lnglat: Longitudo, latitudo
     wkt: WKT
     wkb: WKB
+  system-folder:
+    folder: Dosierujo
   list:
     sort: Ordigi
   tags:
@@ -435,6 +459,7 @@ interfaces:
       auto: Aŭtomata
   system-token:
     system-token: Ĵetono
+    remove_token: Forigi la ĵetonon
 displays:
   translations:
     translations: Tradukoj
