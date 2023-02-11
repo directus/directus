@@ -1068,17 +1068,21 @@ fields:
     role: भूमिका
     token: टोकन
     provider: प्रदायक
+    external_identifier: बाह्य पहिचानकर्ता
     last_page: अन्तिम पाना
     last_access: अन्तिम पहुँच
+    email_notifications: इमेल सूचनाहरू
   directus_settings:
     jpg: JPEG
     png: PNG
     webP: WebP
     tiff: Tiff
+    mapbox_key: "म्यापबक्स Access टोकन\n"
     attribution_placeholder: "© OpenStreetMap योगदानकर्ताहरू\n"
     transforms_note: "Sharp Method नाम र यसको Argumentहरु। थप जानकारीको लागि https://sharp.pixelplumbing.com/api-constructor हेर्नुहोस्।\n"
     project_name: परियोजनाको नाम
     project_logo: "परियोजनाको लोगो\n"
+    auth_login_attempts: प्रमाणीकरण लगइन प्रयासहरू
     module_bar: मोड्युल बार
   directus_shares:
     name: नाम
@@ -1117,18 +1121,24 @@ fields:
     collections: सङ्ग्रहहरू
 field_options:
   directus_settings:
+    project_logo_note: "सेतो 40x40 SVG/PNG\n"
     public_note_placeholder: "एउटा छोटो, सार्वजनिक सन्देश जुन मार्कडाउन ढाँचामा छ...\n"
     security_divider_title: सुरक्षा
     auth_password_policy:
       strong_text: "\nबलियो - ठूला अक्षरहरू / सानो अक्षरहरू / संख्याहरू / विशेष क्यारेक्टरहरू"
     transforms_note: "Sharp Method नाम र यसको Argumentहरु। थप जानकारीको लागि https://sharp.pixelplumbing.com/api-constructor हेर्नुहोस्।\n"
+    mapbox_key: "म्यापबक्स Access टोकन\n"
+    files_divider_title: फाइलहरू र थम्बनेलहरू
   directus_activity:
     login: लग - इन
     create: सिर्जना गर्नुहोस्
     update: अद्यावधिक
   directus_collections:
+    only_track_activity: मात्र गतिविधि ट्र्याक गर्नुहोस्
+    do_not_track_anything: केहि पनि ट्र्याक नगर्नुहोस्
     collection_setup: संग्रह सेटअप
     note_placeholder: "यस संग्रहको विवरण...\n"
+    hidden_label: एप भित्र लुकाउनुहोस्
     singleton: एकल वस्तुको रूपमा व्यवहार गर्नुहोस्
     language: भाषा
     translation: अनुवाद
@@ -1233,6 +1243,7 @@ settings: सेटिंग्सहरु
 sign_in: साइन इन
 sign_out: साईन आउट
 sign_out_confirm: "के तपाई साईन आउट गर्न निश्चित हुनुहुन्छ?\n"
+something_went_wrong: केही त्रुटी भयो ।
 sort_direction: "क्रमबद्ध गर्ने दिशा\n"
 export_started_copy: "तपाईंको निर्यात सुरु भएको छ। यो डाउनलोड गर्न तयार हुँदा तपाईंलाई सूचित गरिनेछ।\n"
 template: टेम्प्लेट
@@ -1252,6 +1263,7 @@ interfaces:
     all: सबै
     any: कुनै पनि
     and: र
+    change_value: मान परिवर्तन गर्न क्लिक गर्नुहोस्
     add_key_placeholder: "एउटा Key थप्नुहोस् र इन्टर थिच्नुहोस्...\n"
   group-accordion:
     description: "एकॉर्डियन खण्डहरूको रूपमा क्षेत्र वा समूहहरू प्रदर्शन गर्नुहोस्\n"
@@ -1262,6 +1274,7 @@ interfaces:
     primary: प्राथमिक
     link: लिङ्कहरू
     button: बटनहरू
+    error: कार्य गर्न सकिँदैन
   select-multiple-checkbox:
     checkboxes: चेकबक्सहरू
     description: चेकबक्सहरू मार्फत धेरै विकल्पहरूबाट छान्नुहोस्
@@ -1272,6 +1285,7 @@ interfaces:
   input-code:
     code: काेड
     description: "कोड स्निपेटहरू लेख्नुहोस् वा साझेदारी गर्नुहोस्\n"
+    placeholder: यहाँ कोड प्रविष्ट गर्नुहोस्...
   system-collection:
     collection: संग्रह
   system-collections:
@@ -1279,9 +1293,12 @@ interfaces:
   select-color:
     color: रंग
     description: "रङको मान प्रविष्ट गर्नुहोस् वा चयन गर्नुहोस्\n"
+    placeholder: रंग छान्नुहोस्...
     opacity: "स्पष्टता\n"
   datetime:
     datetime: मिति र समय
+    use_24: २४-घण्टे ढाँचा प्रयोग गर्नुहोस्
+    placeholder: मिति समय छान्नुहोस्...
   system-fields:
     select_a_collection: एउटा सङ्ग्रह चयन गर्नुहोस्
   system-display-template:
@@ -1293,6 +1310,7 @@ interfaces:
     title_placeholder: "शीर्षक प्रविष्ट गर्नुहोस्, वा रेखा मात्र देखाउन खाली छोड्नुहोस्...\n"
   select-dropdown:
     allow_other: अन्यलाई अनुमति दिनुहोस्
+    allow_other_label: अन्य मानहरूलाई अनुमति दिनुहोस्
     choices_value_placeholder: मान प्रविष्ट गर्नुहोस्...
   file:
     file: फाइल
@@ -1303,8 +1321,10 @@ interfaces:
   select-icon:
     icon: आइकन
     description: "ड्रपडाउनबाट एउटा Icon चयन गर्नुहोस्\n"
+    search_for_icon: आइकन खोज्नुहोस्...
   file-image:
     image: तस्बिर
+    crop_label: आवश्यकता अनुसार तस्वीर काट्नुहोस्
   select-dropdown-m2o:
     many-to-one: धेरै देखि एक
     display_template: टेम्प्लेट प्रदर्शन गर्नुहोस्
@@ -1329,6 +1349,7 @@ interfaces:
     incompatible_data: "हालको डाटा रिपीटर इन्टरफेससँग उपयुक्त छैन र रिपीटरमा वस्तुहरू थप्दा ओभरराइड गरिनेछ।\n"
   tags:
     tags: ट्याग
+    description: ट्यागहरू चयन गर्नुहोस् वा थप्नुहोस्
     capitalization: क्‍यापिटलाइजेसन
     add_tags: "एउटा ट्याग थप्नुहोस् र इन्टर थिच्नुहोस्...\n"
   input:
@@ -1341,6 +1362,7 @@ interfaces:
   input-multiline:
     textarea: Textarea
   input-translated-string:
+    input-translated-string: अनुवादित स्ट्रिङ
     description: "अनुवाद स्ट्रिङ चयन गर्नुहोस् वा थप्नुहोस्\n"
     search_placeholder: खोज्नुहोस्...
   boolean:
@@ -1365,6 +1387,7 @@ interfaces:
   system-token:
     system-token: टोकन
     placeholder: "नयाँ static पहुँच टोकन सिर्जना गर्न \"टोकन उत्पन्न गर्नुहोस्\" मा क्लिक गर्नुहोस्\n"
+    value_securely_saved: मान सुरक्षित रूपमा बचत गरियो
     generate: टोकन उत्पन्न गर्नुहोस्
     generate_success_copy: माथिको टोकन ब्याकअप र प्रतिलिपि गर्नुहोस्। सुरक्षा कारणहरूका लागि, तपाईंले यो पृष्ठ बचत गरियो र हेरिसकेपछि फेरि टोकन हेर्न सक्षम हुनुहुने छैन।
   system-raw-editor:
@@ -1372,6 +1395,7 @@ interfaces:
 displays:
   translations:
     translations: अनुवादहरू
+    description: अनुवाद पूर्वावलोकन
   boolean:
     boolean: Boolean
     icon_on: आइकन सक्रिय छ
@@ -1419,6 +1443,8 @@ displays:
     image: तस्बिर
     circle: वृत्त
   labels:
+    default_foreground: पूर्वनिर्धारित अग्रभूमि
+    default_background: पूर्वनिर्धारित पृष्ठभूमि
     show_as_dot: बिन्दुको रूपमा देखाउनुहोस्
     choices_value_placeholder: मान प्रविष्ट गर्नुहोस्...
   mime-type:
@@ -1473,6 +1499,7 @@ panels:
     name: बार चार्ट
     description: "मानहरूको समूह तुलना गर्नका लागि पट्टी वा स्तम्भ चार्टहरू\n"
   piechart:
+    name: पाई वा डोनट चार्ट
     description: "स्तम्भमा समूहहरूको अनुपात देखाउने गोलाकार चार्ट\n"
 triggers:
   webhook:
@@ -1481,6 +1508,8 @@ triggers:
     method: विधि
   schedule:
     description: पूर्वनिर्धारित समयमा नियमित समयमा ट्रिगर हुन्छ
+  manual:
+    require_selection: चयन आवश्यक छ
 a_flow_uuid: "ट्रिगर गर्न फ्लो चयन गर्नुहोस्...\n"
 item_payload_placeholder: "यो JSON वस्तुको फिल्ड मानहरू अद्यावधिक गर्न प्रयोग गरिन्छ...\n"
 operations:
