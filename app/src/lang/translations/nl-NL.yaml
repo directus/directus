@@ -1153,7 +1153,7 @@ fields:
     ip_access: IP Toegang
     enforce_tfa: 2FA vereist
     users: Gebruikers in rol
-    module_list: Module Navigatie
+    module_list: Modulenavigatie
   directus_webhooks:
     name: Naam
     method: Methode
