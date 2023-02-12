@@ -35,12 +35,15 @@ location: Loko
 condition_rules: Kondiĉaj reguloj
 input: Enigo
 enter_a_name: Entajpu nomon...
+duplicate_field: Duobligi la kampon
 group: Grupo
 export_items: Eksporti erojn
 and: Kaj
 or: Aŭ
+custom: Propra
 hook: Hoko
 add_field: Aldoni kampon
+role_name: Nomo de la rolo
 branch: Branĉo
 leaf: Folio
 edit_collection: Redakti la kolekton
@@ -73,7 +76,28 @@ not_allowed: Ne permesita
 directus_version: Directus-versio
 node_version: Node-versio
 archive: Arĥivi
+archive_confirm: Ĉu vi certas, ke vi volas arĥivi la eron?
+archive_confirm_count: >-
+  Neniu ero elektita | Ĉu vi certas, ke vi volas arĥivi la eron? | Ĉu vi certas, ke vi volas arĥivi {count} erojn?
 unarchive: Malarĥivi
+unarchive_confirm: Ĉu vi certas, ke vi volas malarĥivi la eron?
+validationError:
+  eq: Valoro devas esti {valid}
+  neq: Valoro ne povas esti {invalid}
+  in: Valoro devas esti unu el {valid}
+  nin: Valoro ne povas esti unu el {invalid}
+  contains: Valoro devas enhavi {substring}
+  ncontains: Valoro ne povas enhavi {substring}
+  gt: Valoro devas esti pli granda ol {valid}
+  gte: Valoro devas esti pli granda ol aŭ egala al {valid}
+  lt: Valoro devas esti malpli granda ol {valid}
+  lte: Valoro devas esti malpli granda ol aŭ egala al {valid}
+  empty: Valoro devas esti malplena
+  nempty: Valoro ne povas esti malplena
+  null: Valoro devas esti NULL
+  nnull: Valoro ne povas esti NULL
+nullable: Povas esti NULL
+allow_null_value: Permesi la valoron NULL
 allow_multiple: Permesi plurajn
 field_file: Unuopa dosiero
 field_files: Pluraj dosieroj
@@ -108,6 +132,8 @@ text: Teksto
 uuid: UUID
 geometry: Geometrio (ĉiuj)
 geometry.Point: Punkto
+click_to_manage_translated_fields: >-
+  Ankoraŭ ne estas tradukitaj kampoj. Alklaku ĉi tie por krei ilin. | Estas tradukita kampo. Alklaku ĉi tie por administri ĝin. | Estas {count} tradukitaj kampoj. Alklaku ĉi tie por administri ilin.
 no_collections_found: Neniu kolekto trovita.
 new_field: 'Nova kampo'
 new_collection: 'Nova kolekto'
@@ -147,6 +173,7 @@ related_collections: Rilataj kolektoj
 import_data_input_placeholder: CSV aŭ JSON...
 label_import: Importi
 label_export: Eksporti
+import_export: Importi / eksporti
 last_page: Lasta paĝo
 system: Sistemo
 interface_label: Interfaco
@@ -159,6 +186,7 @@ functions:
   month: Monato
   week: Semajno
   day: Tago
+  weekday: Semajntago
   hour: Horo
   minute: Minuto
   second: Sekundo
@@ -190,7 +218,9 @@ months:
   december: decembro
 url: URL
 import_label: Importi
+dimensions: Dimensioj
 created: Kreita
+checksum: Kontrolsumo
 owner: Posedanto
 edited_by: Redaktita de
 folder: Dosierujo
@@ -207,6 +237,7 @@ created_by: Kreita de
 generated_uuid: Generita UUID
 save_and_create_new: Konservi kaj krei novan
 add_existing: Aldoni ekzistantan
+allow_duplicates: Permesi duoblaĵojn
 comments: Komentoj
 select_item: Elekti kampon
 no_items: Neniu ero
@@ -215,6 +246,10 @@ disabled: Malŝaltita
 information: Informoj
 report_bug: Raporti cimon
 interface_not_found: 'Interfaco "{interface}" ne trovita.'
+item_count: 'Neniu ero | 1 ero | {count} eroj'
+file_count: 'Neniu dosiero | 1 dosiero | {count} dosieroj'
+user_count: 'Neniu uzanto | 1 uzanto | {count} uzantoj'
+webhooks_count: 'Neniu rethoko | 1 rethoko | {count} rethokoj'
 no_notifications: Neniu sciigo
 all_items: Ĉiuj eroj
 any: Ajna
@@ -225,6 +260,8 @@ select_a_collection: Elekti kolekton
 select_a_field: Elekti kampon
 active: Aktiva
 copy: Kopii
+copy_to: Kopii al...
+no_other_dashboards_copy: Vi ankoraŭ ne havas alian stirpanelon.
 inactive: Neaktiva
 users: Uzantoj
 action: Ago
@@ -253,16 +290,22 @@ errors:
   INVALID_TOKEN: Nevalida ĵetono
   ITEM_NOT_FOUND: Ero ne trovita
   ROUTE_NOT_FOUND: Ne trovita
+  CONTAINS_NULL_VALUES: La kampo enhavas NULL-valorojn
   INTERNAL_SERVER_ERROR: Neatendita eraro
+  NOT_NULL_VIOLATION: Valoro ne povas esti NULL
+  VALUE_TOO_LONG: Valoro estas tro longa
   INVALID_FOREIGN_KEY: Nevalida fremda ŝlosilo
   UNKNOWN: Neatendita eraro
 security: Sekureco
 unexpected_error: Neatendita eraro
 back: Reveni
 edit_image: Redakti la bildon
+rotate: Turni
 all_users: Ĉiuj uzantoj
 delete_collection: Forigi la kolekton
 delete_collection_success: Forigita kolekto
+start_end_of_count_items: '{start}-{end} de {count} eroj'
+start_end_of_count_filtered_items: '{start}-{end} de {count} filtritaj eroj'
 one_item: '1 ero'
 one_filtered_item: '1 filtrita ero'
 visible_collections: Videblaj kolektoj
@@ -275,6 +318,8 @@ color: Koloro
 circle: Cirklo
 empty_item: Malplena ero
 operators:
+  null: Estas NULL
+  nnull: Ne estas NULL
   contains: Enhavas
   ncontains: Ne enhavas
   starts_with: Komenciĝas per
@@ -305,6 +350,8 @@ read: Legi
 delete: Forigi
 select_fields: Elekti kampojn
 bold: Grasa
+icon_on: Emblemo ŝaltita
+icon_off: Emblemo malŝaltita
 label: Etikedo
 flows: Fluoj
 flow: Fluo
@@ -312,14 +359,24 @@ select_a_flow: Elekti fluon
 trigger: Ekagilo
 view_trigger: Vidi la ekagilon
 create_trigger: Krei ekagilon
+flow_delete_confirm: Ĉu vi certas, ke vi volas forigi la fluon "{flow}"? La ago ne estas malfarebla.
 edit_flow: Redakti la fluon
 delete_flow: Forigi la fluon
 no_flows: Neniu fluo
 create_flow: Krei fluon
 flow_name: Nomo
 code: Kodo
+dashboard: Stirpanelo
 panel: Panelo
+panel_delete_confirm: Ĉu vi certas, ke vi volas forigi la panelon? La ago ne estas malfarebla.
+dashboard_delete_confirm: Ĉu vi certas, ke vi volas forigi la stirpanelon? La ago ne estas malfarebla.
+edit_dashboard: Redakti la stirpanelon
+delete_dashboard: Forigi la stirpanelon
 visible: Videbla
+no_dashboards: Neniu stirpanelo
+no_dashboards_copy: Vi ankoraŭ ne havas stirpanelon.
+create_dashboard: Krei stirpanelon
+dashboard_name: Nomo de la stirpanelo
 quality: Kvalito
 source: Fonto
 url_placeholder: Entajpu URL...
@@ -357,10 +414,17 @@ settings_flows: Fluoj
 actions: Agoj
 select: Elekti...
 data: Datumoj
+discard_changes: Forĵeti la ŝanĝojn
+discard_all_changes: Forĵeti ĉiujn ŝanĝojn
+discard_changes_copy: Ĉu vi certas, ke vi volas forĵeti ĉiujn viajn ŝanĝojn?
 show_x_axis: Montri la X-akson
 show_y_axis: Montri la Y-akson
+page_help_collections_overview: '**Superrigaro de kolektoj** — Listo de ĉiuj kolektoj, kiujn vi povas atingi.'
+page_help_insights_dashboard: '**Stirpanelo** — Laborspaco por administri unu aŭ pliajn panelojn'
 add_new: Aldoni novan
 create_new: Krei novan
+batch_delete_confirm: >-
+  Neniu ero estas elektita | Ĉu vi certas, ke vi volas forigi la eron? La ago ne estas malfarebla. | Ĉu vi certas, ke vi volas forigi {count} erojn? La ago ne estas malfarebla.
 cancel: Nuligi
 collection: Kolekto
 collections: Kolektoj
@@ -375,8 +439,12 @@ fields:
     ip: IP-adreso
   directus_collections:
     collection: Kolekto
+    icon: Emblemo
     color: Koloro
     hidden: Kaŝita
+    archive_value: Arĥivi la valoron
+    unarchive_value: Malarĥivi la valoron
+    archive_field: Arĥivi la kampon
   directus_files:
     title: Titolo
     description: Priskribo
@@ -424,8 +492,13 @@ fields:
     default_language: Defaŭlta lingvo
     public_foreground: Publika malfono
     public_background: Publika fono
+    files_and_thumbnails: Dosieroj kaj konservado
     storage_default_folder: Defaŭlta dosierujo
+    storage_asset_transform: Permesitaj transformoj
+    custom_css: Propra CSS
     module_bar: Modula breto
+    transformations_all: Permesi ĉiujn transformojn
+    transformations_none: Malŝalti transformojn
   directus_shares:
     name: Nomo
     role: Rolo
@@ -434,6 +507,7 @@ fields:
     hidden: Kaŝita
     display_template: Ŝablono
   directus_roles:
+    name: Nomo de la rolo
     description: Priskribo
   directus_webhooks:
     name: Nomo
@@ -450,22 +524,29 @@ field_options:
     project_logo_note: Blanka 40x40 SVG/PNG
     security_divider_title: Sekureco
     mapbox_placeholder: pk.eyJ1Ijo.....
+    files_divider_title: Dosieroj kaj bildetoj
   directus_activity:
     login: Ensaluti
     create: Krei
     delete: Forigi
   directus_collections:
+    note_placeholder: Priskribo de la kolekto...
     language: Lingvo
     translation: Traduko
     translation_placeholder: Entajpu tradukon...
+    singular_unit: Singulara unuo
+    plural_unit: Plurala unuo
     archive_divider: Arĥivi
+    archive_field_placeholder: Elekti kampon...
     sort_divider: Ordigi
+    sort_field: Elekti kampon...
   directus_files:
     title: Unika titolo...
     description: Nedeviga priskribo...
     location: Nedeviga loko...
   directus_roles:
     fields:
+      icon_name: Emblemo
       name_name: Nomo
       name_placeholder: Entajpu titolon...
       link_name: Ligilo
@@ -499,22 +580,47 @@ share_copy_link: Kopii la ligilon
 share_copy_link_success: Ligilo kopiita
 share_send_link: Sendi la ligilon
 relational_triggers: Rilataj ekagiloj
+referential_action_set_null: Igi la kampon {field} NULL
+choose_action: Elekti agon
 continue_label: Daŭrigi
+editing_role: 'Rolo {role}'
+creating_webhook: Krei rethokon
 default_label: Defaŭlta
 delete_label: Forigi
+delete_field_are_you_sure: >-
+  Ĉu vi certas, ke vi volas forigi la kampon "{field}"? La ago ne estas malfarebla.
 description: Priskribo
 done: Preta
+duplicate: Duobligi
 email: Retpoŝtadreso
+embed: Enkorpigi
+field: Kampo | Kampoj
+file: Dosiero
 forgot_password: Pasvorto forgesita
 hidden: Kaŝita
+hidden_in_group: Kaŝita en {group}
+icon: Emblemo
+info: Informoj
+normal: Normala
+success: Sukceso
+warning: Averto
+danger: Danĝero
 colors:
+  purple: Viola
+  blue: Blua
+  green: Verda
+  yellow: Flava
+  orange: Oranĝa
+  red: Ruĝa
   black: Nigra
   gray: Griza
   white: Blanka
 login: Ensaluti
+options: Opcioj
 password: Pasvorto
 permissions: Permesoj
 relationship: Rilato
+revert: Malfari
 save: Konservi
 schema: Skemo
 search: Serĉi
@@ -544,6 +650,9 @@ interfaces:
     and: kaj
   fields:
     name: Kampoj
+  group-accordion:
+    name: Akordiono
+    accordion_mode: Akordiona reĝimo
   presentation-links:
     links: Ligiloj
     style: Stilo
@@ -578,6 +687,8 @@ interfaces:
   files:
     files: Dosieroj
     description: Elekti aŭ alŝuti plurajn dosierojn
+  select-icon:
+    icon: Emblemo
   file-image:
     image: Bildo
     description: Elekti aŭ alŝuti bildon
@@ -664,7 +775,10 @@ displays:
     suffix: Sufikso
     color: Koloro
     background: Fono
+    icon: Emblemo
     text: Teksto
+  icon:
+    icon: Emblemo
   image:
     image: Bildo
     circle: Cirklo
@@ -702,6 +816,12 @@ layouts:
     invalid_geometry: Nevalida geometrio
   kanban:
     name: Kanban
+    title: Titolo de la karto
+    text: Teksto de la karto
+    date: Dato de la karto
+    tags: Etikedoj de la karto
+    user: Uzanto de la karto
+    image: Bildo de la karto
     crop: Stuci
     edit_group: Redakti la grupon
     delete_group: Forigi la grupon
@@ -747,6 +867,7 @@ triggers:
     cron: Intervalo
   manual:
     name: Mana
+operation_variables_note: Vi povas atingi datumojn de la fluo per variabloj kiel **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** kaj **{'{'}{'{'}$accountability{'}'}{'}'}**, aŭ referenci antaŭajn operaciojn per **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
   condition:
     name: Kondiĉo
