@@ -117,6 +117,7 @@ translations: Tradukoj
 no_translations: Neniu traduko
 unique: Unika
 primary_key: Ĉefa ŝlosilo
+foreign_key: Fremda ŝlosilo
 raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
 copy_raw_value_success: Kopiita
 paste_raw_value_success: Algluita
@@ -139,6 +140,7 @@ interface_label: Interfaco
 today: Hodiaŭ
 yesterday: Hieraŭ
 delete_comment: Forigi la komenton
+delete_share: Forigi la konigon
 functions:
   year: Jaro
   month: Monato
@@ -214,6 +216,7 @@ inactive: Neaktiva
 users: Uzantoj
 action: Ago
 ip_address: IP-adreso
+user_agent: Aplikaĵo de la uzanto
 webhooks: Rethokoj
 min_value: Minimuma valoro
 max_value: Maksimuma valoro
@@ -233,10 +236,12 @@ errors:
   COLLECTION_NOT_FOUND: "Kolekto ne ekzistas"
   FIELD_NOT_FOUND: Kampo ne trovita
   FORBIDDEN: Malpermesita
+  INVALID_CREDENTIALS: Malĝusta uzantnomo aŭ pasvorto
   INVALID_TOKEN: Nevalida ĵetono
   ITEM_NOT_FOUND: Ero ne trovita
   ROUTE_NOT_FOUND: Ne trovita
   INTERNAL_SERVER_ERROR: Neatendita eraro
+  INVALID_FOREIGN_KEY: Nevalida fremda ŝlosilo
   UNKNOWN: Neatendita eraro
 security: Sekureco
 unexpected_error: Neatendita eraro
@@ -348,6 +353,7 @@ fields:
     collection: Kolekto
     user: Ago de
     comment: Komento
+    user_agent: Aplikaĵo de la uzanto
     ip: IP-adreso
   directus_collections:
     collection: Kolekto
@@ -366,6 +372,7 @@ fields:
     charset: Signaro
     duration: Daŭro
   directus_users:
+    email: Retpoŝtadreso
     password: Pasvorto
     avatar: Profilbildo
     location: Loko
@@ -459,13 +466,17 @@ comment: Komento
 shares: Konigoj
 new_share: Nova konigo
 share: Konigi
+share_item: Konigi la eron
 share_copy_link: Kopii la ligilon
 share_copy_link_success: Ligilo kopiita
+share_send_link: Sendi la ligilon
 continue_label: Daŭrigi
 default_label: Defaŭlta
 delete_label: Forigi
 description: Priskribo
 done: Preta
+email: Retpoŝtadreso
+forgot_password: Pasvorto forgesita
 hidden: Kaŝita
 colors:
   black: Nigra
@@ -704,6 +715,7 @@ operations:
     data: Datumoj
     value_placeholder: Bearer eyJhbGciOi...
   sleep:
+    name: Atendi
     milliseconds: Milisekundoj
   trigger:
     flows: Fluoj
