@@ -68,6 +68,7 @@ connection_good: Bona konekto
 connection_fair: Mezbona konekto
 connection_poor: Malbona konekto
 primary: Ĉefa
+rename_folder: Alinomi la dosierujon
 delete_folder: Forigi la dosierujon
 prefix: Prefikso
 suffix: Sufikso
@@ -224,6 +225,7 @@ checksum: Kontrolsumo
 owner: Posedanto
 edited_by: Redaktita de
 folder: Dosierujo
+zoom: Zomi
 download: Elŝuti
 open: Malfermi
 open_folder: Malfermi la dosierujon "{folder}"
@@ -703,6 +705,9 @@ interfaces:
   input-rich-text-md:
     edit: Redakti
   map:
+    zoom: Zomi
+    default_view: Defaŭlta vido
+    invalid_options: Nevalidaj opcioj
     geojson: GeoJSON
     lnglat: Longitudo, latitudo
     wkt: WKT
