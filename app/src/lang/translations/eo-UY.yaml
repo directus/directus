@@ -33,7 +33,10 @@ edit_field: Redakti la kampon
 conditions: Kondiĉoj
 location: Loko
 condition_rules: Kondiĉaj reguloj
+input: Enigo
+enter_a_name: Entajpu nomon...
 group: Grupo
+export_items: Eksporti erojn
 and: Kaj
 or: Aŭ
 hook: Hoko
@@ -76,7 +79,7 @@ field_file: Unuopa dosiero
 field_files: Pluraj dosieroj
 field_m2o: Pluraj-al-unu-rilato
 field_m2a: Pluraj-al-ajnaj-rilato
-field_o2m: Unu-al-pluraj-rilatoj
+field_o2m: Unu-al-pluraj-rilato
 field_m2m: Pluraj-al-pluraj-rilato
 field_translations: Tradukoj
 hide_field: Kaŝi la kampon
@@ -95,28 +98,36 @@ creating_new_field: 'Nova kampo ({collection})'
 field_in_collection: '{field} ({collection})'
 hidden_field: Kaŝita kampo
 key: Ŝlosilo
+boolean: Bulea valoro
 date: Dato
+precision: Precizeco
 json: JSON
 xml: XML
 yaml: YAML
 text: Teksto
 uuid: UUID
+geometry: Geometrio (ĉiuj)
+geometry.Point: Punkto
 no_collections_found: Neniu kolekto trovita.
 new_field: 'Nova kampo'
 new_collection: 'Nova kolekto'
+add_m2o_to_collection: 'Aldoni pluraj-al-unu-rilaton al "{collection}'
+add_o2m_to_collection: 'Aldoni unu-al-pluraj-rilaton al "{collection}"'
+add_m2m_to_collection: 'Aldoni pluraj-al-pluraj-rilaton al "{collection}"'
 determined_by_relationship: Determinita de la rilato
 add_link: Aldoni ligilon
 default_value: Defaŭlta valoro
 single_file: Unuopa dosiero
 multiple_files: Pluraj dosieroj
 m2o_relationship: Pluraj-al-unu-rilato
-o2m_relationship: Unu-al-pluraj-rilatoj
+o2m_relationship: Unu-al-pluraj-rilato
 m2m_relationship: Pluraj-al-pluraj-rilato
 m2a_relationship: Pluraj-al-ajnaj-rilato
 invalid_item: Nevalida ero
 next: Sekva
 translations: Tradukoj
 no_translations: Neniu traduko
+enter_a_value: Entajpu valoron...
 unique: Unika
 primary_key: Ĉefa ŝlosilo
 foreign_key: Fremda ŝlosilo
@@ -311,6 +322,7 @@ panel: Panelo
 visible: Videbla
 quality: Kvalito
 source: Fonto
+url_placeholder: Entajpu URL...
 interface_group_selection: Elekto
 interface_group_relational: Rilata
 interface_group_groups: Grupoj
@@ -445,6 +457,7 @@ field_options:
   directus_collections:
     language: Lingvo
     translation: Traduko
+    translation_placeholder: Entajpu tradukon...
     archive_divider: Arĥivi
     sort_divider: Ordigi
   directus_files:
@@ -454,6 +467,7 @@ field_options:
   directus_roles:
     fields:
       name_name: Nomo
+      name_placeholder: Entajpu titolon...
       link_name: Ligilo
     collections_name: Kolektoj
     collections_addLabel: Aldoni kolekton...
@@ -511,6 +525,7 @@ sign_out: Elsaluti
 sign_out_confirm: Ĉu vi certas, ke vi volas elsaluti?
 template: Ŝablono
 translation: Traduko
+translation_placeholder: Entajpu tradukon...
 value: Valoro
 view_project: Vidi la projekton
 report_error: Raporti eraron
@@ -547,6 +562,7 @@ interfaces:
     color: Koloro
     placeholder: Elekti koloron...
     preset_colors_add_label: Aldoni novan koloron...
+    name_placeholder: Entajpu nomon de koloro...
   system-fields:
     select_a_collection: Elekti kolekton
     no_fields: Neniu kampo
@@ -554,6 +570,8 @@ interfaces:
     select_a_collection: Elekti kolekton
   select-dropdown:
     choices_placeholder: Aldoni novan elekton
+    choices_name_placeholder: Entajpu nomon...
+    choices_value_placeholder: Entajpu valoron...
   file:
     file: Dosiero
     description: Elekti aŭ alŝuti dosieron
@@ -567,6 +585,10 @@ interfaces:
     interface: Interfaco
     description: Elekti ekzistantan interfacon
     placeholder: Elekti interfacon...
+  list-m2m:
+    many-to-many: Pluraj-al-pluraj-rilato
+  select-dropdown-m2o:
+    many-to-one: Pluraj-al-unu-rilato
   input-rich-text-md:
     edit: Redakti
   map:
@@ -574,6 +596,8 @@ interfaces:
     lnglat: Longitudo, latitudo
     wkt: WKT
     wkb: WKB
+  list-o2m:
+    one-to-many: Unu-al-pluraj-rilato
   system-folder:
     folder: Dosierujo
     description: Elekti dosierujon
@@ -589,6 +613,9 @@ interfaces:
   input-translated-string:
     search_placeholder: Serĉi...
   boolean:
+    color_on: Koloro ŝaltita
+    color_off: Koloro malŝaltita
+    label_placeholder: Entajpu etikedon...
     label_default: Ŝaltita
   translations:
     no_collection: Neniu kolekto
@@ -608,6 +635,14 @@ displays:
     translations: Tradukoj
     enable: Ŝalti
     default_language: Defaŭlta lingvo
+  boolean:
+    boolean: Bulea valoro
+    label_on: Etikedo ŝaltita
+    label_off: Etikedo malŝaltita
+    icon_on: Emblemo ŝaltita
+    icon_off: Emblemo malŝaltita
+    color_on: Koloro ŝaltita
+    color_off: Koloro malŝaltita
   collection:
     collection: Kolekto
     description: Montri kolekton
@@ -638,6 +673,8 @@ displays:
     labels: Etikedoj
     default_foreground: Defaŭlta malfono
     default_background: Defaŭlta fono
+    choices_value_placeholder: Entajpu valoron...
+    choices_text_placeholder: Entajpu tekston...
   user:
     user: Uzanto
     avatar: Profilbildo
