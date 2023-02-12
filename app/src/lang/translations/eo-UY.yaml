@@ -28,9 +28,11 @@ published: Publikigita
 draft: Malneto
 archived: Arĥivita
 modules: Moduloj
+module_bar: Modula breto
 edit_field: Redakti la kampon
 conditions: Kondiĉoj
 location: Loko
+condition_rules: Kondiĉaj reguloj
 group: Grupo
 and: Kaj
 or: Aŭ
@@ -296,6 +298,9 @@ label: Etikedo
 flows: Fluoj
 flow: Fluo
 select_a_flow: Elekti fluon
+trigger: Ekagilo
+view_trigger: Vidi la ekagilon
+create_trigger: Krei ekagilon
 edit_flow: Redakti la fluon
 delete_flow: Forigi la fluon
 no_flows: Neniu fluo
@@ -334,6 +339,7 @@ choices: Elektoj
 deselect: Malelekti
 deselect_all: Malelekti ĉiujn
 unknown_user: Nekonata uzanto
+settings_project: Agordoj de la projekto
 settings_webhooks: Rethokoj
 settings_flows: Fluoj
 actions: Agoj
@@ -399,10 +405,15 @@ fields:
     tiff: Tiff
     mapbox_placeholder: pk.eyJ1Ijo.....
     attribution_placeholder: '© OpenStreetMap-kontribuantoj'
+    project_name: Nomo de la projekto
+    project_url: URL de la projekto
+    project_color: Koloro de la projekto
+    project_logo: Emblemo de la projekto
     default_language: Defaŭlta lingvo
     public_foreground: Publika malfono
     public_background: Publika fono
     storage_default_folder: Defaŭlta dosierujo
+    module_bar: Modula breto
   directus_shares:
     name: Nomo
     role: Rolo
@@ -418,11 +429,13 @@ fields:
     status: Stato
     data: Datumoj
     value: Valoro
+    triggers: Ekagiloj
     actions: Agoj
     collections: Kolektoj
 field_options:
   directus_settings:
     project_name_placeholder: Mia projekto...
+    project_logo_note: Blanka 40x40 SVG/PNG
     security_divider_title: Sekureco
     mapbox_placeholder: pk.eyJ1Ijo.....
   directus_activity:
@@ -454,6 +467,7 @@ field_options:
   directus_webhooks:
     status_options_active: Aktiva
     status_options_inactive: Neaktiva
+    triggers_divider: Ekagiloj
     actions_create: Krei
     actions_delete: Forigi
     actions_login: Ensaluti
@@ -470,6 +484,7 @@ share_item: Konigi la eron
 share_copy_link: Kopii la ligilon
 share_copy_link_success: Ligilo kopiita
 share_send_link: Sendi la ligilon
+relational_triggers: Rilataj ekagiloj
 continue_label: Daŭrigi
 default_label: Defaŭlta
 delete_label: Forigi
@@ -497,6 +512,7 @@ sign_out_confirm: Ĉu vi certas, ke vi volas elsaluti?
 template: Ŝablono
 translation: Traduko
 value: Valoro
+view_project: Vidi la projekton
 report_error: Raporti eraron
 table: Tabelo
 list: Listo
@@ -582,6 +598,8 @@ interfaces:
     user: Uzanto
     modes:
       auto: Aŭtomata
+  input-autocomplete-api:
+    trigger: Ekagilo
   system-token:
     system-token: Ĵetono
     remove_token: Forigi la ĵetonon
