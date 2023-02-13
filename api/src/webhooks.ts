@@ -57,6 +57,7 @@ export function unregister(): void {
 function createHandler(webhook: Webhook, event: string): ActionHandler {
 	return async (meta, context) => {
 		if (webhook.collections.includes(meta.collection) === false) return;
+		const axios = await getAxios();
 
 		const webhookPayload = {
 			event,
@@ -70,7 +71,6 @@ function createHandler(webhook: Webhook, event: string): ActionHandler {
 		};
 
 		try {
-			const axios = await getAxios();
 			await axios({
 				url: webhook.url,
 				method: webhook.method,
