@@ -155,12 +155,16 @@ export class UsersService extends ItemsService {
 		const emails = data.map((payload) => payload.email).filter((email) => email);
 		const passwords = data.map((payload) => payload.password).filter((password) => password);
 
-		if (emails.length) {
-			await this.checkUniqueEmails(emails);
-		}
+		try {
+			if (emails.length) {
+				await this.checkUniqueEmails(emails);
+			}
 
-		if (passwords.length) {
-			await this.checkPasswordPolicy(passwords);
+			if (passwords.length) {
+				await this.checkPasswordPolicy(passwords);
+			}
+		} catch (err: any) {
+			(opts || (opts = {})).preMutationException = err;
 		}
 
 		return await super.createMany(data, opts);
@@ -207,54 +211,58 @@ export class UsersService extends ItemsService {
 	 * Update many users by primary key
 	 */
 	async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
-		if (data.role) {
-			// data.role will be an object with id with GraphQL mutations
-			const roleId = data.role?.id ?? data.role;
+		try {
+			if (data.role) {
+				// data.role will be an object with id with GraphQL mutations
+				const roleId = data.role?.id ?? data.role;
 
-			const newRole = await this.knex.select('admin_access').from('directus_roles').where('id', roleId).first();
+				const newRole = await this.knex.select('admin_access').from('directus_roles').where('id', roleId).first();
 
-			if (!newRole?.admin_access) {
-				await this.checkRemainingAdminExistence(keys);
-			}
-		}
-
-		if (data.status !== undefined && data.status !== 'active') {
-			await this.checkRemainingActiveAdmin(keys);
-		}
-
-		if (data.email) {
-			if (keys.length > 1) {
-				throw new RecordNotUniqueException('email', {
-					collection: 'directus_users',
-					field: 'email',
-					invalid: data.email,
-				});
-			}
-			await this.checkUniqueEmails([data.email], keys[0]);
-		}
-
-		if (data.password) {
-			await this.checkPasswordPolicy([data.password]);
-		}
-
-		if (data.tfa_secret !== undefined) {
-			throw new InvalidPayloadException(`You can't change the "tfa_secret" value manually.`);
-		}
-
-		if (data.provider !== undefined) {
-			if (this.accountability && this.accountability.admin !== true) {
-				throw new InvalidPayloadException(`You can't change the "provider" value manually.`);
+				if (!newRole?.admin_access) {
+					await this.checkRemainingAdminExistence(keys);
+				}
 			}
 
-			data.auth_data = null;
-		}
-
-		if (data.external_identifier !== undefined) {
-			if (this.accountability && this.accountability.admin !== true) {
-				throw new InvalidPayloadException(`You can't change the "external_identifier" value manually.`);
+			if (data.status !== undefined && data.status !== 'active') {
+				await this.checkRemainingActiveAdmin(keys);
 			}
 
-			data.auth_data = null;
+			if (data.email) {
+				if (keys.length > 1) {
+					throw new RecordNotUniqueException('email', {
+						collection: 'directus_users',
+						field: 'email',
+						invalid: data.email,
+					});
+				}
+				await this.checkUniqueEmails([data.email], keys[0]);
+			}
+
+			if (data.password) {
+				await this.checkPasswordPolicy([data.password]);
+			}
+
+			if (data.tfa_secret !== undefined) {
+				throw new InvalidPayloadException(`You can't change the "tfa_secret" value manually.`);
+			}
+
+			if (data.provider !== undefined) {
+				if (this.accountability && this.accountability.admin !== true) {
+					throw new InvalidPayloadException(`You can't change the "provider" value manually.`);
+				}
+
+				data.auth_data = null;
+			}
+
+			if (data.external_identifier !== undefined) {
+				if (this.accountability && this.accountability.admin !== true) {
+					throw new InvalidPayloadException(`You can't change the "external_identifier" value manually.`);
+				}
+
+				data.auth_data = null;
+			}
+		} catch (err: any) {
+			(opts || (opts = {})).preMutationException = err;
 		}
 
 		return await super.updateMany(keys, data, opts);
@@ -413,7 +421,13 @@ export class UsersService extends ItemsService {
 
 		if (scope !== 'password-reset' || !hash) throw new ForbiddenException();
 
-		await this.checkPasswordPolicy([password]);
+		const opts: MutationOptions = {};
+
+		try {
+			await this.checkPasswordPolicy([password]);
+		} catch (err: any) {
+			opts.preMutationException = err;
+		}
 
 		const user = await this.knex.select('id', 'status', 'password').from('directus_users').where({ email }).first();
 
@@ -431,6 +445,6 @@ export class UsersService extends ItemsService {
 			},
 		});
 
-		await service.updateOne(user.id, { password, status: 'active' });
+		await service.updateOne(user.id, { password, status: 'active' }, opts);
 	}
 }
