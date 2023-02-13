@@ -1,19 +1,16 @@
 import type { AxiosInstance } from 'axios';
-import { validateIP } from './validate-ip';
+import { responseInterceptor } from './response-interceptor';
 
-let axiosInstance: AxiosInstance;
+export const _cache: { axiosInstance: AxiosInstance | null } = {
+	axiosInstance: null,
+};
 
 export async function getAxios() {
-	if (!axiosInstance) {
+	if (!_cache.axiosInstance) {
 		const axios = (await import('axios')).default;
-
-		axiosInstance = axios.create();
-
-		axiosInstance.interceptors.response.use(async (config) => {
-			await validateIP(config.request.socket.remoteAddress, config.request.url);
-			return config;
-		});
+		_cache.axiosInstance = axios.create();
+		_cache.axiosInstance.interceptors.response.use(responseInterceptor);
 	}
 
-	return axiosInstance;
+	return _cache.axiosInstance;
 }
