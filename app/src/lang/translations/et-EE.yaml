@@ -351,10 +351,17 @@ delete_comment: Kustuta Kommentaar
 functions:
   year: Aasta
   month: Kuu
+  week: Nädal
+  day: Päev
+  weekday: Nädalapäev
+  hour: Tund
+  minute: Minut
+  second: Sekund
   count: Arv
 date-fns_date: PPP
 date-fns_time: 'HH:mm:ss'
 date-fns_time_no_seconds: 'HH:mm'
+date-fns_time_24hour: 'HH:mm:ss'
 date-fns_date_short: 'd. MMM'
 date-fns_time_short: 'H:mm'
 date-fns_date_short_no_year: d. MMM
@@ -448,6 +455,7 @@ no_files_copy: Faile pole.
 user_count: 'Kasutajaid pole | Üks kasutaja | {count} kasutajat'
 no_users_copy: Selles rollis pole ühtegi kasutajat.
 webhooks_count: 'Webhooke ei leitud | Üks webhook | {count} webhooki'
+activity_log: Tegevuste logi
 all_items: Kõik kirjed
 csv: CSV
 no_collections: Andmekogusid pole
@@ -459,7 +467,10 @@ display_template_not_setup: Vaadete mall on seadistamata
 collection_field_not_setup: Andmekogu väli on valesti seadistatud
 select_a_collection: Vali andmekogu
 active: aktiivne
+move_to: Teisalda...
 copy: Kopeeri
+copy_to: Kopeeri...
+inactive: Mitteaktiivne
 users: Kasutajad
 activity: Tegevus
 action: Tegevus
@@ -548,6 +559,8 @@ all_users: Kõik kasutajad
 delete_collection: Kustuta andmekogu
 update_collection_success: Andmekogu uuendatud
 delete_collection_success: Andmekogu kustutatud
+make_folder_visible: Tee kaust nähtavaks
+make_folder_hidden: Peida kaust
 goto_collection_content: Vaata Sisu
 start_end_of_count_items: '{start}-{end} / {count}'
 start_end_of_count_filtered_items: '{start}-{end} / {count}'
@@ -948,6 +961,7 @@ field_options:
     status_dropdown_archived: Arhiveeritud
   directus_webhooks:
     status_options_active: aktiivne
+    status_options_inactive: Mitteaktiivne
     actions_create: Loo
     actions_update: Uuenda
     actions_delete: Kustuta
@@ -1380,6 +1394,7 @@ layouts:
   kanban:
     crop: Kärpimine
     advanced: Lisavalikud
+both: Mõlemad
 panels:
   label:
     name: Silt

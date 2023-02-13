@@ -609,6 +609,7 @@ layouts:
     comfortable: 広め
     compact: コンパクト
     cozy: 普通
+both: 両方
 operations:
   log:
     message: メッセージ
