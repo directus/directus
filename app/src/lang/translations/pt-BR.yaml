@@ -573,6 +573,8 @@ select_an_item: Selecione um item...
 edit: Editar
 enabled: Habilitado
 disable_tfa: Desativar verificação em duas etapas
+admin_disable_tfa_text: Tem certeza de que deseja desativar a 2FA para este usuário?
+tfa_setup: Configurar 2FA
 tfa_scan_code: Escaneie o código no seu aplicativo de autenticação para terminar de configurar a 2FA
 enter_otp_to_disable_tfa: Digite o OTP para desativar a 2FA
 create_account: Criar conta
@@ -1789,6 +1791,10 @@ displays:
     relative_label: 'Mostrar tempo relativo, por exemplo: 5 minutos atrás'
     suffix: Sufixo
     suffix_label: Mostrar indicador relativo
+    suffix_note: Usa palavras como 'dentro' e 'atrás'
+    strict: Estrito
+    strict_label: Usar unidades rigorosas
+    strict_note: Remove palavras como 'quase', 'sobre', 'menos que'
     round_note: Escolha uma função de arredondamento para usar
   file:
     file: Arquivo
@@ -1890,6 +1896,8 @@ layouts:
   kanban:
     crop: Recortar
     advanced: Avançado
+horizontal: Horizontal
+both: Ambos
 panels:
   metric:
     name: Métrico
@@ -1902,29 +1910,8 @@ panels:
     description: Filtrar e listar campos de uma coleção
   barchart:
     name: Gráfico de barras
-    select_field: Você deve selecionar um campo.
-    select_collection: Você deve selecionar uma coleção.
-    select_x_axis: Você deve selecionar um eixo X.
-    function: Função
     horizontal: Horizontal
-    x_axis: Eixo X
-    y_axis_function: Função do eixo Y
-    y_axis: Eixo Y
-    show_x_axis: Mostrar eixo X
-    show_y_axis: Mostrar eixo Y
-  linechart:
-    select_field: Você deve selecionar um campo.
     select_collection: Você deve selecionar uma coleção.
-    select_x_axis: Você deve selecionar um eixo X.
-    function: Função
-    x_axis: Eixo X
-    y_axis: Eixo Y
-  meter:
-    select_field: Você deve selecionar um campo.
-    select_collection: Você deve selecionar uma coleção.
-    function: Função
-  piechart:
-    function: Função
 triggers:
   webhook:
     method: Método 

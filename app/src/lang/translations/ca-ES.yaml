@@ -1744,6 +1744,7 @@ layouts:
   kanban:
     crop: Retalla
     advanced: Avançat
+both: Ambdós
 panels:
   label:
     name: Etiqueta
