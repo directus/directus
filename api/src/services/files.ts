@@ -1,22 +1,19 @@
 import { toArray } from '@directus/shared/utils';
-import { lookup } from 'dns';
 import encodeURL from 'encodeurl';
 import exif from 'exif-reader';
 import { parse as parseIcc } from 'icc';
 import { clone, pick } from 'lodash';
 import { extension } from 'mime-types';
-import net from 'net';
 import type { Readable } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
-import os from 'os';
 import path from 'path';
 import sharp from 'sharp';
-import url, { URL } from 'url';
-import { promisify } from 'util';
+import url from 'url';
 import emitter from '../emitter';
 import env from '../env';
 import { ForbiddenException, InvalidPayloadException, ServiceUnavailableException } from '../exceptions';
 import logger from '../logger';
+import { getAxios } from '../request/index';
 import { getStorage } from '../storage';
 import { AbstractServiceOptions, File, Metadata, MutationOptions, PrimaryKey } from '../types';
 import { parseIptc, parseXmp } from '../utils/parse-image-metadata';
@@ -24,8 +21,6 @@ import { ItemsService } from './items';
 
 // @ts-ignore
 import formatTitle from '@directus/format-title';
-
-const lookupDNS = promisify(lookup);
 
 export class FilesService extends ItemsService {
 	constructor(options: AbstractServiceOptions) {
@@ -224,8 +219,6 @@ export class FilesService extends ItemsService {
 	 * Import a single file from an external URL
 	 */
 	async importOne(importURL: string, body: Partial<File>): Promise<PrimaryKey> {
-		const axios = (await import('axios')).default;
-
 		const fileCreatePermissions = this.accountability?.permissions?.find(
 			(permission) => permission.collection === 'directus_files' && permission.action === 'create'
 		);
@@ -234,62 +227,15 @@ export class FilesService extends ItemsService {
 			throw new ForbiddenException();
 		}
 
-		let resolvedUrl;
-
-		try {
-			resolvedUrl = new URL(importURL);
-		} catch (err: any) {
-			logger.warn(err, `Requested URL ${importURL} isn't a valid URL`);
-			throw new ServiceUnavailableException(`Couldn't fetch file from url "${importURL}"`, {
-				service: 'external-file',
-			});
-		}
-
-		let ip = resolvedUrl.hostname;
-
-		if (net.isIP(ip) === 0) {
-			try {
-				ip = (await lookupDNS(ip)).address;
-			} catch (err: any) {
-				logger.warn(err, `Couldn't lookup the DNS for url ${importURL}`);
-				throw new ServiceUnavailableException(`Couldn't fetch file from url "${importURL}"`, {
-					service: 'external-file',
-				});
-			}
-		}
-
-		if (env.IMPORT_IP_DENY_LIST.includes('0.0.0.0')) {
-			const networkInterfaces = os.networkInterfaces();
-
-			for (const networkInfo of Object.values(networkInterfaces)) {
-				if (!networkInfo) continue;
-
-				for (const info of networkInfo) {
-					if (info.address === ip) {
-						logger.warn(`Requested URL ${importURL} resolves to localhost.`);
-						throw new ServiceUnavailableException(`Couldn't fetch file from url "${importURL}"`, {
-							service: 'external-file',
-						});
-					}
-				}
-			}
-		}
-
-		if (env.IMPORT_IP_DENY_LIST.includes(ip)) {
-			logger.warn(`Requested URL ${importURL} resolves to a denied IP address.`);
-			throw new ServiceUnavailableException(`Couldn't fetch file from url "${importURL}"`, {
-				service: 'external-file',
-			});
-		}
-
 		let fileResponse;
 
 		try {
+			const axios = await getAxios();
 			fileResponse = await axios.get<Readable>(encodeURL(importURL), {
 				responseType: 'stream',
 			});
 		} catch (err: any) {
-			logger.warn(err, `Couldn't fetch file from url "${importURL}"`);
+			logger.warn(err, `Couldn't fetch file from URL "${importURL}"`);
 			throw new ServiceUnavailableException(`Couldn't fetch file from url "${importURL}"`, {
 				service: 'external-file',
 			});
