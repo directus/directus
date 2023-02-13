@@ -20,7 +20,7 @@ import { ItemsService } from './items';
 
 // @ts-ignore
 import formatTitle from '@directus/format-title';
-import { getAxios } from '../request';
+import { getAxios } from '../request/request';
 
 export class FilesService extends ItemsService {
 	constructor(options: AbstractServiceOptions) {

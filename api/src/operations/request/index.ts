@@ -1,6 +1,6 @@
 import { defineOperationApi, parseJSON } from '@directus/shared/utils';
 import encodeUrl from 'encodeurl';
-import { getAxios } from '../../request';
+import { getAxios } from '../../request/request';
 
 type Options = {
 	url: string;
