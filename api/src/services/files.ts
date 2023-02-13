@@ -13,6 +13,7 @@ import emitter from '../emitter';
 import env from '../env';
 import { ForbiddenException, InvalidPayloadException, ServiceUnavailableException } from '../exceptions';
 import logger from '../logger';
+import { getAxios } from '../request/index';
 import { getStorage } from '../storage';
 import { AbstractServiceOptions, File, Metadata, MutationOptions, PrimaryKey } from '../types';
 import { parseIptc, parseXmp } from '../utils/parse-image-metadata';
@@ -20,7 +21,6 @@ import { ItemsService } from './items';
 
 // @ts-ignore
 import formatTitle from '@directus/format-title';
-import { getAxios } from '../request/request';
 
 export class FilesService extends ItemsService {
 	constructor(options: AbstractServiceOptions) {

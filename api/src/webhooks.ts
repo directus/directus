@@ -3,7 +3,7 @@ import getDatabase from './database';
 import emitter from './emitter';
 import logger from './logger';
 import { getMessenger } from './messenger';
-import { getAxios } from './request/request';
+import { getAxios } from './request/index';
 import { WebhooksService } from './services';
 import { Webhook, WebhookHeader } from './types';
 import { getSchema } from './utils/get-schema';
