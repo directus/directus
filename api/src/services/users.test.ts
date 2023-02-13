@@ -3,7 +3,7 @@ import knex, { Knex } from 'knex';
 import { getTracker, MockClient, Tracker } from 'knex-mock-client';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, MockedFunction, SpyInstance, vi } from 'vitest';
 import { ItemsService, UsersService } from '.';
-import { InvalidPayloadException } from '../exceptions';
+import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { RecordNotUniqueException } from '../exceptions/database/record-not-unique';
 
 vi.mock('../../src/database/index', () => ({
@@ -231,14 +231,20 @@ describe('Integration Tests', () => {
 
 					const promise = service.updateOne(1, { [field]: 'test' });
 
-					expect.assertions(2); // to ensure both assertions in the catch block are reached
+					expect.assertions(5); // to ensure both assertions in the catch block are reached
 
 					try {
 						await promise;
 					} catch (err: any) {
-						expect(err.message).toBe(`You can't change the "${field}" value manually.`);
-						expect(err).toBeInstanceOf(InvalidPayloadException);
+						expect(err.message).toBe(`You don't have permission to access this.`);
+						expect(err).toBeInstanceOf(ForbiddenException);
 					}
+
+					expect(superUpdateManySpy).toHaveBeenCalled();
+					expect(superUpdateManySpy.mock.lastCall![2].preMutationException.message).toBe(
+						`You can't change the "${field}" value manually.`
+					);
+					expect(superUpdateManySpy.mock.lastCall![2].preMutationException).toBeInstanceOf(InvalidPayloadException);
 				}
 			);
 
@@ -340,14 +346,20 @@ describe('Integration Tests', () => {
 
 					const promise = service.updateMany([1], { [field]: 'test' });
 
-					expect.assertions(2); // to ensure both assertions in the catch block are reached
+					expect.assertions(5); // to ensure both assertions in the catch block are reached
 
 					try {
 						await promise;
 					} catch (err: any) {
-						expect(err.message).toBe(`You can't change the "${field}" value manually.`);
-						expect(err).toBeInstanceOf(InvalidPayloadException);
+						expect(err.message).toBe(`You don't have permission to access this.`);
+						expect(err).toBeInstanceOf(ForbiddenException);
 					}
+
+					expect(superUpdateManySpy).toHaveBeenCalled();
+					expect(superUpdateManySpy.mock.lastCall![2].preMutationException.message).toBe(
+						`You can't change the "${field}" value manually.`
+					);
+					expect(superUpdateManySpy.mock.lastCall![2].preMutationException).toBeInstanceOf(InvalidPayloadException);
 				}
 			);
 
@@ -469,14 +481,20 @@ describe('Integration Tests', () => {
 
 					const promise = service.updateByQuery({}, { [field]: 'test' });
 
-					expect.assertions(2); // to ensure both assertions in the catch block are reached
+					expect.assertions(5); // to ensure both assertions in the catch block are reached
 
 					try {
 						await promise;
 					} catch (err: any) {
-						expect(err.message).toBe(`You can't change the "${field}" value manually.`);
-						expect(err).toBeInstanceOf(InvalidPayloadException);
+						expect(err.message).toBe(`You don't have permission to access this.`);
+						expect(err).toBeInstanceOf(ForbiddenException);
 					}
+
+					expect(superUpdateManySpy).toHaveBeenCalled();
+					expect(superUpdateManySpy.mock.lastCall![2].preMutationException.message).toBe(
+						`You can't change the "${field}" value manually.`
+					);
+					expect(superUpdateManySpy.mock.lastCall![2].preMutationException).toBeInstanceOf(InvalidPayloadException);
 				}
 			);
 
