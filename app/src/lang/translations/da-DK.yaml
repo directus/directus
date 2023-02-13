@@ -1000,7 +1000,7 @@ page_help_settings_presets_item: >-
 page_help_settings_webhooks_collection: '**Gennemse Webhooks** — Viser alle webhooks i projektet.'
 page_help_settings_webhooks_item: '**Webhook Detail** — En formular til oprettelse og håndtering af projektwebhooks.'
 page_help_settings_flows_collection: '**Gennemse flows** — Viser alle flows i projektet.'
-page_help_settings_flows_item:'**Flowdetalje** — Arbejdsområde til styring af en eller flere operationer.'
+page_help_settings_flows_item: '**Flowdetalje** — Arbejdsområde til styring af en eller flere operationer.'
 page_help_settings_translation_strings_collection: '**Gennemse oversættelsesstrenge** — Viser alle oversættelsesstrenge i projektet.'
 page_help_users_collection: '**Bruger Directory** — Viser en liste over alle systembrugere i dette projekt.'
 page_help_users_item: >-
