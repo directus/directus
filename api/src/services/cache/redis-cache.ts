@@ -23,9 +23,18 @@ export class RedisCache extends CacheService {
 	async get(key: string): Promise<any | null> {
 		const value = await this.client.get(this.addPrefix(key));
 
-        if(value === null) return null;
+		if (value === null) return null;
 
 		return await decompress(parse(value));
+	}
+	async keys(pattern?: string | undefined): Promise<string[]> {
+		const keys: string[] = [];
+
+		for await (const key of this.client.scanIterator({ MATCH: this.addPrefix(pattern || '*') })) {
+			keys.push(key);
+		}
+
+		return keys;
 	}
 	async set(key: string, value: any, ttl: number | undefined = this.ttl): Promise<void> {
 		if (await this.isLocked()) return;
@@ -54,15 +63,15 @@ export class RedisCache extends CacheService {
 		}
 
 		values.push('#full', 'true');
-
 		await this.client.sendCommand(['HSET', _key, ...values]);
 
 		if (ttl !== undefined) await this.client.expire(_key, ttl);
 	}
+
 	async getHash(key: string): Promise<Record<string, any> | null> {
 		const value = await this.client.hGetAll(this.addPrefix(key));
 		if (value === null) return null;
-		const entries = Object.entries(value).filter(([key]) => key.startsWith('#') === false);
+		const entries = Object.entries(value).filter(([key]) => !key.startsWith('#'));
 
 		return Object.fromEntries(
 			await map(entries, async ([key, val]: [string, any]) => [key, await decompress(parse(val))])
@@ -73,23 +82,24 @@ export class RedisCache extends CacheService {
 		return (await this.client.hGet(this.addPrefix(key), '#full')) === 'true';
 	}
 
-        values.push('#full', 'true')
-        await this.client.sendCommand(['HSET', _key, ...values])
+	async setHashField(key: string, field: string, value: any, ttl?: number | undefined): Promise<void> {
+		if (await this.isLocked()) return;
 
-        if(ttl !== undefined) await this.client.expire(_key, ttl);
-    }
+		const _key = this.addPrefix(key);
 
-    async getHash(key: string): Promise<Record<string, any> | null> {
-        const value = await this.client.hGetAll(this.addPrefix(key))
-        if(value === null) return null;
-        const entries = Object.entries(value).filter(([key]) => !key.startsWith('#'))
+		await this.client.hSet(_key, field, stringify(await compress(value)));
+		if (ttl !== undefined) await this.client.expire(_key, ttl);
+	}
+	async getHashField(key: string, field: string): Promise<any | null> {
+		const value = await this.client.hGet(this.addPrefix(key), field);
 
 		if (value === undefined) return null;
 
 		return await decompress(parse(value));
 	}
 
-	async deleteHashField(key: string, field: string): Promise<void> {
-		await this.client.sendCommand(['HDEL', this.addPrefix(key), field, '$full']);
+	async deleteHashField(key: string, field: string | string[]): Promise<void> {
+		const fields = Array.isArray(field) ? field : [field];
+		await this.client.sendCommand(['HDEL', this.addPrefix(key), '$full', ...fields]);
 	}
 }

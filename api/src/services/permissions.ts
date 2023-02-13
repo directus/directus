@@ -3,8 +3,9 @@ import { ItemsService, QueryOptions } from '../services/items';
 import { AbstractServiceOptions, Item, PrimaryKey, MutationOptions } from '../types';
 import { Query, PermissionsAction } from '@directus/shared/types';
 import { filterItems } from '../utils/filter-items';
-import { getCache, clearSystemCache } from '../cache';
+import { getCache } from '../cache';
 import { CacheService } from './cache/cache';
+import { clearSystemCache } from '../utils/clearSystemCache';
 
 export class PermissionsService extends ItemsService {
 	systemCache: CacheService;

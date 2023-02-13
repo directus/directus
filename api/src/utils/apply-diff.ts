@@ -16,7 +16,7 @@ import { applyChange, Diff, DiffDeleted, DiffNew } from 'deep-diff';
 import { cloneDeep, merge, set } from 'lodash';
 import logger from '../logger';
 import emitter from '../emitter';
-import { clearSystemCache } from '../cache';
+import { clearSystemCache } from './clearSystemCache';
 
 type CollectionDelta = {
 	collection: string;

@@ -9,12 +9,14 @@ import SchemaInspector from '@directus/schema';
 import { ForeignKey } from 'knex-schema-inspector/dist/types/foreign-key';
 import getDatabase, { getSchemaInspector } from '../database';
 import { getDefaultIndexName } from '../utils/get-default-index-name';
-import { getCache, clearSystemCache } from '../cache';
-import { AbstractServiceOptions } from '../types';
+import { getCache } from '../cache';
+import { AbstractServiceOptions, ActionEventParams, MutationOptions } from '../types';
 import { getHelpers, Helpers } from '../database/helpers';
 import { CacheService } from './cache/cache';
 import emitter from '../emitter';
 import { getSchema } from '../utils/get-schema';
+import { clearSystemCache } from '../utils/clearSystemCache';
+import { stitchRelations } from '../utils/stitch-relations';
 
 export class RelationsService {
 	knex: Knex;

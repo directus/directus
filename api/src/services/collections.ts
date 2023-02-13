@@ -1,6 +1,6 @@
 import SchemaInspector from '@directus/schema';
 import { Knex } from 'knex';
-import { getCache, clearSystemCache } from '../cache';
+import { getCache } from '../cache';
 import { ALIAS_TYPES } from '../constants';
 import getDatabase, { getSchemaInspector } from '../database';
 import { systemCollectionRows } from '../database/system-data/collections';
@@ -17,6 +17,7 @@ import { omit } from 'lodash';
 import { getSchema } from '../utils/get-schema';
 import emitter from '../emitter';
 import { CacheService } from './cache/cache';
+import { clearSystemCache } from '../utils/clearSystemCache';
 
 export type RawCollection = {
 	collection: string;
@@ -24,7 +25,6 @@ export type RawCollection = {
 	schema?: Partial<Table> | null;
 	meta?: Partial<CollectionMeta> | null;
 };
-
 export class CollectionsService {
 	knex: Knex;
 	helpers: Helpers;

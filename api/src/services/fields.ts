@@ -5,7 +5,7 @@ import { addFieldFlag, toArray } from '@directus/shared/utils';
 import { Knex } from 'knex';
 import { Column } from 'knex-schema-inspector/dist/types/column';
 import { isEqual, isNil } from 'lodash';
-import { clearSystemCache, getCache } from '../cache';
+import { getCache } from '../cache';
 import { ALIAS_TYPES } from '../constants';
 import getDatabase, { getSchemaInspector } from '../database';
 import { getHelpers, Helpers } from '../database/helpers';
@@ -23,6 +23,7 @@ import { RelationsService } from './relations';
 import { KNEX_TYPES } from '@directus/shared/constants';
 import { getSchema } from '../utils/get-schema';
 import { CacheService } from './cache/cache';
+import { clearSystemCache } from '../utils/clearSystemCache';
 
 export class FieldsService {
 	knex: Knex;

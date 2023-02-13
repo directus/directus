@@ -1,6 +1,6 @@
 import { RequestHandler } from 'express';
 import ms from 'ms';
-import { getCache, setCacheValue } from '../cache';
+import { getCache } from '../cache';
 import env from '../env';
 import asyncHandler from '../utils/async-handler';
 import { getCacheKey } from '../utils/get-cache-key';
@@ -33,7 +33,7 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 		const key = getCacheKey(req);
 
 		try {
-			await cache.set(key, res.locals['payload'], ms(env['CACHE_TTL']));
+			await cache.set(key, res.locals['payload'], ms(env['CACHE_TTL'] as string));
 			await cache.set(`${key}__expires_at`, { exp: Date.now() + ms(env['CACHE_TTL']) });
 		} catch (err: any) {
 			logger.warn(err, `[cache] Couldn't set key ${key}. ${err}`);

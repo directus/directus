@@ -45,7 +45,7 @@ import processError from './utils/process-error';
 import { Knex } from 'knex';
 import { flatten, get, mapKeys, merge, omit, pick, set, transform, uniq } from 'lodash';
 import ms from 'ms';
-import { clearSystemCache, getCache } from '../../cache';
+import { getCache } from '../../cache';
 import { DEFAULT_AUTH_PROVIDER, GENERATE_SPECIAL } from '../../constants';
 import getDatabase from '../../database';
 import env from '../../env';
@@ -90,6 +90,7 @@ import { addPathToValidationError } from './utils/add-path-to-validation-error';
 import { GraphQLHash } from './types/hash';
 import { GraphQLBigInt } from './types/bigint';
 import { FUNCTIONS } from '@directus/shared/constants';
+import { clearSystemCache } from '../../utils/clearSystemCache';
 
 const validationRules = Array.from(specifiedRules);
 
