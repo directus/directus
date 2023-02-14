@@ -1452,6 +1452,8 @@ layouts:
     edit_group: แก้ไขกลุ่ม
     delete_group: ลบกลุ่ม
     add_group: เพิ่มกลุ่ม
+horizontal: แนวนอน
+both: ทั้งคู่
 panels:
   metric:
     field: ฟิลด์
@@ -1465,15 +1467,6 @@ panels:
   barchart:
     name: แผนภูมิแท่ง
     horizontal: แนวนอน
-    x_axis: แกน X
-    y_axis: แกน Y
-    show_x_axis: แสดงแกน X
-    show_y_axis: แสดงแกน Y
-  linechart:
-    function: ฟังก์ชัน
-    x_axis: แกน X
-    y_axis: แกน Y
-    datasets: ชุดข้อมูล
 triggers:
   webhook:
     method: เมธอด

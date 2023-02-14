@@ -34,7 +34,7 @@ reset_width: Réinitialiser la largeur
 tile_size: Taille des tuiles
 edit_field: Modifier le champ
 conditions: Conditions
-location: Localisation
+location: Emplacement
 condition_rules: Règles de conditions
 input: Texte simple
 maps: Cartes
@@ -125,7 +125,7 @@ os_type: Type d'OS
 os_version: Version de l'OS
 os_uptime: Temps de disponibilité de l'OS
 os_totalmem: Mémoire de l'OS
-archive: Archives
+archive: Archiver
 archive_confirm: Êtes-vous sûr de vouloir archiver cet élément ?
 archive_confirm_count: >-
   Aucun élément sélectionné | Êtes-vous sûr de vouloir archiver cet élément ? | Êtes-vous sûr de vouloir archiver ces {count} éléments ?
@@ -194,7 +194,7 @@ hide_field: Masquer le champ
 hide_field_on_detail: Masquer le champ dans le détail
 show_field_on_detail: Afficher le champ dans le détail
 delete_field: Supprimer le champ
-fields_and_layout: Champs et disposition
+fields_and_layout: Champs et mise en page
 field_create_success: 'Champ créé : "{field}"'
 field_update_success: 'Champ mis à jour : "{field}"'
 duplicate_where_to: Vers où souhaitez-vous dupliquer ce champ ?
@@ -245,6 +245,7 @@ float: Nombre décimal
 integer: Entier
 json: JSON
 xml: XML
+yaml: YAML
 string: Chaîne de caractères
 text: Texte
 time: Heure
@@ -637,7 +638,7 @@ password_reset_sent: Si vous avez un compte, nous vous avons envoyé un lien sé
 password_reset_successful: Mot de passe réinitialisé avec succès
 back: Retour
 filter: Filtre
-edit_image: Éditer l'image
+edit_image: Modifier l'image
 editing_image: Modification de l'image
 square: Carré
 free: Libre
@@ -760,7 +761,7 @@ no_visible_fields_copy: Ce formulaire n'a pas de champs visibles.
 clear_filters: Réinitialiser les filtres
 saves_automatically: Sauvegardé automatiquement
 role: Rôle
-edit_role: Editer le rôle
+edit_role: Modifier le rôle
 rule: Règle
 user: Utilisateur
 no_presets: Aucun préréglage
@@ -781,7 +782,7 @@ operator: Opérateur
 bold: Gras
 toggle: Activer/Désactiver
 icon_on: Icône de sélection
-icon_off: Icône de désélection
+icon_off: Icône de dé-sélection
 label: Étiquette
 flows: Flux
 flow: Flux
@@ -817,7 +818,7 @@ flow_tracking_null: Ne rien enregistrer
 start_flow: Démarrer le Flux
 stop_flow: Arrêt du Flux
 create_operation: Créer une Opération
-edit_operation: Modifier l'Opération
+edit_operation: Modifier l'opération
 code: Code
 operation_options: Les Options d'Opération
 operation_name: Nom de l'Opération...
@@ -825,7 +826,7 @@ operation_key: Identifiant pour référence...
 operation_key_unique_error: Les clés d'Opération doivent être uniques dans un Flux
 operation_handle_resolve: 'Résoudre : Cliquez pour Ajouter ou faites Glisser pour Réacheminer'
 operation_handle_reject: 'Refuser : Cliquez pour Ajouter ou faites Glisser pour Réacheminer'
-insights: Analyses
+insights: Tableaux de bord
 dashboard: Tableau de bord
 panel: Panneau
 panel_options: Options de panneau
@@ -932,8 +933,8 @@ wysiwyg_options:
 dropdown: Liste déroulante
 choices: Liste de choix
 choices_option_configured_incorrectly: Choix configurés incorrectement
-deselect: Désélectionner
-deselect_all: Tout désélectionner
+deselect: Dé-sélectionner
+deselect_all: Tout dé-sélectionner
 other: Autre...
 adding_user: Ajout de l'utilisateur
 unknown_user: Utilisateur inconnu
@@ -1077,7 +1078,7 @@ fields:
     title: Titre
     description: Description
     tags: Étiquettes
-    location: Localisation
+    location: Emplacement
     storage: Espace de stockage
     filename_disk: Nom du fichier (disque)
     filename_download: Nom du fichier (Télécharger)
@@ -1102,7 +1103,7 @@ fields:
     email: E-mail
     password: Mot de passe
     avatar: Avatar
-    location: Localisation
+    location: Emplacement
     title: Titre
     description: Description
     tags: Étiquettes
@@ -1254,7 +1255,7 @@ field_options:
     collection_name: Nom de la Collection
     singular_unit: Au singulier
     plural_unit: Au pluriel
-    archive_divider: Archives
+    archive_divider: Archiver
     archive_field_placeholder: Choisissez un champ...
     archive_app_filter: Filtrer tous les éléments archivés
     archive_value: Valeur définie lors de l'archivage...
@@ -1363,7 +1364,7 @@ delete_are_you_sure: >-
 delete_field_are_you_sure: >-
   Êtes-vous sûr de vouloir supprimer le champ « {field} » ? Cette action ne peut pas être annulée !
 description: Description
-done: Fait
+done: Terminé
 duplicate: Dupliquer
 limit: Limite
 email: E-mail
@@ -1689,8 +1690,8 @@ interfaces:
   boolean:
     toggle: Case à cocher
     description: Basculer entre l'activation et la désactivation
-    color_on: Couleur activée
-    color_off: Couleur désactivée
+    color_on: Couleur à la sélection
+    color_off: Couleur à la dé-sélection
     label_placeholder: Entrer un libellé...
     label_default: Activé
   translations:
@@ -1763,15 +1764,15 @@ displays:
     language_field: Champ d'indicateur de langue
   boolean:
     boolean: Booléen
-    description: Afficher les états sélectionnés et désélectionnés
+    description: Afficher les états sélectionnés et dé-sélectionnés
     label_on: Avec libellé
     label_on_placeholder: Entrez un libellé ...
     label_off: Sans libellé
     label_off_placeholder: Entrez un libellé pour la désactivation...
     icon_on: Icône de sélection
-    icon_off: Icône de désélection
-    color_on: Couleur activée
-    color_off: Couleur désactivée
+    icon_off: Icône de dé-sélection
+    color_on: Couleur à la sélection
+    color_off: Couleur à la dé-sélection
   collection:
     collection: Collection
     description: Afficher une collection
@@ -1932,7 +1933,7 @@ layouts:
     image_fit: Ajustement de l'image de la carte
     crop: Rogner
     advanced: Avancé
-    edit_group: Éditer le Groupe
+    edit_group: Modifier le groupe
     delete_group: Supprimer le Groupe
     add_group: Ajouter un Groupe
     add_group_placeholder: Entrez le nom du nouveau groupe...
@@ -1940,6 +1941,29 @@ layouts:
     show: Afficher
     no_group: Aucun Groupe
     not_all_loaded: Impossible de charger les 1000 premiers éléments.
+horizontal: Horizontal
+vertical: Vertical
+x_axis: Axe X
+y_axis: Axe Y
+y_axis_function: Fonction Axe Y
+show_x_only: Afficher seulement l'axe X
+show_y_only: Afficher seulement l'axe Y
+show_data_label: Afficher l'étiquette des données
+both: Tous
+show_axis_labels: Afficher les libellés des axes
+function: Fonction
+half_circle: Demi-cercle
+full_circle: Cercle entier
+stroke_width: Largeur du trait
+rounded_stroke: Trait arrondi
+thin: Fin
+medium: Moyen
+broad: Large
+show_labels: Afficher les libellés
+show_legend: Afficher la légende
+right: Droite
+left: Gauche
+donut: Donut
 panels:
   metric:
     name: Indicateurs
@@ -1961,69 +1985,24 @@ panels:
   barchart:
     name: Graphique en barres
     description: Graphique en barre ou en colonne pour la comparaison de groupes de valeurs
-    select_field: Vous devez choisir un champ.
-    select_collection: Vous devez sélectionner une collection.
-    select_x_axis: Vous devez sélectionner un axe X.
-    function: Fonction
     horizontal: Horizontal
-    x_axis_grouping: Agrégation du groupe d'axe X
-    x_axis: Axe X
-    y_axis_function: Fonction Axe-Y
-    y_axis: Axe Y
-    show_x_axis: Afficher l'axe X
-    show_y_axis: Afficher l'axe Y
-    show_data_label: Afficher l'étiquette des données
-    group_by: 'Groupés par:'
-    group_and_function: Vous devez inclure ou omettre un groupe et une fonction.
-    y_axis_NaN: L'ordonnée doit être un nombre.
-    y_axis_conditional_one: La valeur de la condition
-    y_axis_conditional_two: doit être un nombre.
+    select_collection: Vous devez sélectionner une collection.
   linechart:
     name: Graphique linéaire
     description: Graphique linéaire pour comparer le changement d'un champ
-    select_field: Vous devez choisir un champ.
-    select_collection: Vous devez sélectionner une collection.
-    select_x_axis: Vous devez sélectionner un axe X.
-    function: Fonction
-    x_axis: Axe X
-    x_axis_decimals: Décimales de l'axe X
+    disabled_grouping: Désactivé lorsque le groupement est sélectionné.
     disabled_no_grouping: Désactivé si aucun groupement n'est sélectionné.
-    y_axis: Axe Y
-    datasets: Jeux de données
-    show_legend: Afficher la légende
     show_marker: Afficher l'info-bulle
-    include_dataset: Vous devez sélectionner au moins un élément.
-    include_y_axis: Vous devez inclure un axe Y pour chaque jeu de données quand aucun groupe n'est spécifié.
-    group_and_function: Vous devez inclure ou omettre un groupe et une fonction.
+    curve_type: Format de courbe
     smooth: Lisse
     straight: Droit
     step_line: Pas
   meter:
     name: Compteur
     description: Compteur pour les valeurs de suivi
-    half_circle: Demi-cercle
-    full_circle: Cercle plein
-    stroke_width: Largeur du trait
-    rounded_stroke: Trait arrondi
-    select_max_value: Vous devez sélectionner une valeur maximale.
-    max_greater_than_zero: La valeur doit être supérieure à 0.
-    select_field: Vous devez choisir un champ.
-    select_collection: Vous devez sélectionner une collection.
-    function: Fonction
-    thin: Fin
-    medium: Moyen
-    broad: Large
   piechart:
     name: Graphique anneau ou circulaire
     description: Graphique circulaire montrant les ratios de groupes sur une colonne
-    function: Fonction
-    donut: Anneau
-    show_labels: Afficher les libellés
-    show_legend: Afficher la légende
-    right: Droite
-    bottom: Bas
-    monochrome: Monochrome
-    monochrome_color: Couleur Monochrome
   variable:
     name: Variable globale
     description: Définir une valeur globale pour l'utilisation dans d'autres panneaux de filtres
@@ -2041,7 +2020,7 @@ triggers:
     response_body_last: Données de la Dernière Opération
   event:
     name: Crochet d'Événement
-    description: Déclencheurs sur la plate-forme ou sur les données d'événements
+    description: Déclencheurs en provenance de la plate-forme ou des données d'événements
     action: 'Action (Non Bloquante)'
     filter: 'Filtre (Bloquant)'
   webhook:
@@ -2059,11 +2038,11 @@ triggers:
     cron: Intervalle
   manual:
     name: Manuel
-    description: Déclenchements lors d'une exécution manuelle dans la ou les collections sélectionnées
+    description: Déclenchement manuel grâce à un bouton dans les collections sélectionnées
     collection_and_item: Pages des collections et des éléments
     collection_only: Page de la Collection Uniquement
     item_only: Page de l'élément uniquement
-    collection_page: Nom de la Collection
+    collection_page: Page de la collection
     require_selection: Sélection obligatoire
 a_flow_uuid: Choisir un flux à lancer...
 any_string_or_json: Toute chaîne de caractères ou JSON...
@@ -2107,13 +2086,13 @@ operations:
     message: Message
     message_placeholder: Entrez un message à afficher dans la console...
   mail:
-    name: Envoyer l'e-mail
+    name: Envoyer un e-mail
     description: Envoyer un email à une ou plusieurs personnes
     to: À
     to_placeholder: Ajoutez des adresses e-mail et appuyez sur entrée...
     body: Corps du mail
   notification:
-    name: Envoyer la Notification
+    name: Envoyer une notification
     description: Envoyer une notification dans l'application à un ou plusieurs utilisateurs
     recipient: Utilisateur
     recipient_placeholder: Ajouter un UUID utilisateur et appuyez sur entrée...
@@ -2142,3 +2121,9 @@ operations:
     flows: Flux
     flow: Flux
     data: Données
+    iteration_mode: Mode d'itération
+    iteration_mode_note: Méthode pour itérer sur des tableaux.
+    serial: En série
+    parallel: En parallèle
+    batch: Par lots
+    batch_size: Taille de chaque lot
