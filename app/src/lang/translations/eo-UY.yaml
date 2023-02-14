@@ -62,6 +62,7 @@ create_webhook: Krei rethokon
 translation_string_translations_placeholder: Aldoni novan tradukon
 invite_users: Inviti uzantojn
 invite: Inviti
+email_already_invited: La retpoŝtadreso "{email}" jam estas invitita
 subject: Temo
 connection_excellent: Bonega konekto
 connection_good: Bona konekto
@@ -80,6 +81,7 @@ archive: Arĥivi
 archive_confirm: Ĉu vi certas, ke vi volas arĥivi la eron?
 archive_confirm_count: >-
   Neniu ero elektita | Ĉu vi certas, ke vi volas arĥivi la eron? | Ĉu vi certas, ke vi volas arĥivi {count} erojn?
+recommended_defaults: Rekomendataj defaŭltoj
 unarchive: Malarĥivi
 unarchive_confirm: Ĉu vi certas, ke vi volas malarĥivi la eron?
 validationError:
@@ -97,6 +99,7 @@ validationError:
   nempty: Valoro ne povas esti malplena
   null: Valoro devas esti NULL
   nnull: Valoro ne povas esti NULL
+use_custom: Uzi propran
 nullable: Povas esti NULL
 allow_null_value: Permesi la valoron NULL
 allow_multiple: Permesi plurajn
@@ -113,6 +116,7 @@ language: Lingvo
 language_placeholder: Elekti lingvon...
 admins_have_all_permissions: Administrantoj havas ĉiujn permesojn
 camera: Kamerao
+validation: Validigo
 sum: Sumo
 avg: Averaĝo
 min: Minimumo
@@ -155,6 +159,7 @@ next: Sekva
 translations: Tradukoj
 no_translations: Neniu traduko
 enter_a_value: Entajpu valoron...
+readonly: Nur legi
 unique: Unika
 primary_key: Ĉefa ŝlosilo
 foreign_key: Fremda ŝlosilo
@@ -228,13 +233,16 @@ folder: Dosierujo
 zoom: Zomi
 download: Elŝuti
 open: Malfermi
+open_in_new_window: Malfermi en nova fenestro
 open_folder: Malfermi la dosierujon "{folder}"
 foreground_color: Malfona koloro
 background_color: Fona koloro
 no_file_selected: Neniu dosiero elektita
 download_file: Elŝuti la dosieron
+open_file_in_tab: Malfermi la dosieron en nova langeto
 name: Nomo
 type: Tipo
+creating_new_collection: Krei novan kolekton
 created_by: Kreita de
 generated_uuid: Generita UUID
 save_and_create_new: Konservi kaj krei novan
@@ -366,6 +374,7 @@ edit_flow: Redakti la fluon
 delete_flow: Forigi la fluon
 no_flows: Neniu fluo
 create_flow: Krei fluon
+creating_new_flow: Krei novan fluon
 flow_name: Nomo
 code: Kodo
 dashboard: Stirpanelo
@@ -718,6 +727,7 @@ interfaces:
     folder: Dosierujo
     description: Elekti dosierujon
   list:
+    add_label: 'Etikedo por "Krei novan"'
     sort: Ordigi
     sort_placeholder: Mana
   tags:
@@ -831,6 +841,7 @@ layouts:
     edit_group: Redakti la grupon
     delete_group: Forigi la grupon
     add_group: Aldoni grupon
+    add_group_placeholder: Entajpu novan titolon por la grupo...
     show: Montri
     no_group: Neniu grupo
 horizontal: Horizontala
@@ -879,6 +890,8 @@ operations:
   item-delete:
     key: Identigiloj
   item-read:
+    name: Legi datumojn
+    description: Legi erojn de la datumbazo
     key: Identigiloj
   item-update:
     key: Identigiloj
