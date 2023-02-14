@@ -39,7 +39,7 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 			logger.warn(err, `[cache] Couldn't set key ${key}. ${err}`);
 		}
 
-		res.setHeader('Cache-Control', getCacheControlHeader(req, ms(env.CACHE_TTL as string)));
+		res.setHeader('Cache-Control', getCacheControlHeader(req, ms(env.CACHE_TTL as string), true, true));
 		res.setHeader('Vary', 'Origin, Cache-Control');
 	} else {
 		// Don't cache anything by default
