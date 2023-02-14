@@ -30,7 +30,7 @@ const scenarios = [
 		output: 'no-store',
 	},
 	{
-		name: 'when Cache-Control header includes no-store',
+		name: 'when cache-Control header includes no-store',
 		input: {
 			env: {},
 			headers: { 'Cache-Control': 'no-store' },
@@ -42,7 +42,7 @@ const scenarios = [
 		output: 'no-store',
 	},
 	{
-		name: 'when Cache-Control header does not include no-store',
+		name: 'when cache-Control header does not include no-store',
 		input: {
 			env: {},
 			headers: { other: 'value' },
