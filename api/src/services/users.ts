@@ -280,7 +280,11 @@ export class UsersService extends ItemsService {
 	 * Delete multiple users by primary key
 	 */
 	async deleteMany(keys: PrimaryKey[], opts?: MutationOptions): Promise<PrimaryKey[]> {
-		await this.checkRemainingAdminExistence(keys);
+		try {
+			await this.checkRemainingAdminExistence(keys);
+		} catch (err: any) {
+			(opts || (opts = {})).preMutationException = err;
+		}
 
 		await this.knex('directus_notifications').update({ sender: null }).whereIn('sender', keys);
 
