@@ -101,8 +101,7 @@ reset_bookmark: Restaurar marcador
 update_bookmark: Atualizar o marcador
 delete_bookmark: Eliminar o marcador
 delete_bookmark_copy: >-
-  Tem a certeza que pretende remover o marcador "{bookmark}"?
-  Esta ação não pode ser desfeita.
+  Tem a certeza que pretende remover o marcador "{bookmark}"? Esta ação não pode ser desfeita.
 delete_personal_bookmark: Apagar marcador pessoal
 delete_global_bookmark: Apagar marcador global
 logoutReason:
