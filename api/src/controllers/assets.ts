@@ -164,7 +164,7 @@ router.get(
 		res.attachment(req.params.filename ?? file.filename_download);
 		res.setHeader('Content-Type', file.type);
 		res.setHeader('Accept-Ranges', 'bytes');
-		res.setHeader('Cache-Control', `${access}, max-age=${getMilliseconds(env.ASSETS_CACHE_TTL as string) / 1000}`);
+		res.setHeader('Cache-Control', `${access}, max-age=${getMilliseconds(env.ASSETS_CACHE_TTL) / 1000}`);
 
 		const unixTime = Date.parse(file.modified_on);
 		if (!Number.isNaN(unixTime)) {
