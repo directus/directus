@@ -164,7 +164,7 @@ auto_refresh: 자동 갱신
 refresh_interval: 갱신 간격
 no_refresh: 갱신하지 않음
 refresh_interval_seconds: 즉시 | 1초 | {seconds}초
-refresh_interval_minutes: 1분  |  {minutes}분 
+refresh_interval_minutes: 1분  |  {minutes}분
 auto_generate: 자동 생성
 this_will_auto_setup_fields_relations: 필수 필드 및 관련된 부분은 자동으로 생성 및 설정됩니다.
 click_here: 여기를 클릭하세요
