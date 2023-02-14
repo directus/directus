@@ -579,10 +579,26 @@ describe('Integration Tests', () => {
 
 		describe('deleteByQuery', () => {
 			it('should checkRemainingAdminExistence once', async () => {
-				// mock return value for the following empty query
-				vi.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValue([{ id: 1 }]);
+				const service = new UsersService({
+					knex: db,
+					schema: testSchema,
+					accountability: { role: 'test', admin: false },
+				});
 
-				await service.deleteByQuery({});
+				// mock return value for the following empty query
+				vi.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValueOnce([{ id: 1 }]);
+
+				const promise = service.deleteByQuery({ filter: { id: { _eq: 1 } } });
+
+				expect.assertions(3); // to ensure both assertions in the catch block are reached
+
+				try {
+					await promise;
+				} catch (err: any) {
+					expect(err.message).toBe(`You don't have permission to access this.`);
+					expect(err).toBeInstanceOf(ForbiddenException);
+				}
+
 				expect(checkRemainingAdminExistenceSpy).toBeCalledTimes(1);
 			});
 		});
