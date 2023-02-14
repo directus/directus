@@ -1017,6 +1017,12 @@ export class GraphQLService {
 						limit: {
 							type: GraphQLInt,
 						},
+						offset: {
+							type: GraphQLInt,
+						},
+						page: {
+							type: GraphQLInt,
+						},
 						search: {
 							type: GraphQLString,
 						},
