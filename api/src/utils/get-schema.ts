@@ -1,12 +1,5 @@
 import SchemaInspector from '@directus/schema';
-import type {
-	Accountability,
-	CollectionsOverview,
-	SchemaOverview,
-	FieldOverview,
-	Relation,
-	Filter,
-} from '@directus/shared/types';
+import type { Accountability, SchemaOverview, Filter } from '@directus/shared/types';
 import { parseJSON, toArray } from '@directus/shared/utils';
 import { Knex } from 'knex';
 import { mapValues } from 'lodash';
@@ -19,8 +12,6 @@ import logger from '../logger';
 import getDefaultValue from './get-default-value';
 import getLocalType from './get-local-type';
 import { getCache } from '../cache';
-import { systemRelationRows } from '../database/system-data/relations/index';
-import { stitchRelations } from './stitch-relations';
 import { RelationsService } from '../index';
 
 export async function getSchema(options?: {

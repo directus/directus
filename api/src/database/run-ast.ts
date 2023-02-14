@@ -13,7 +13,6 @@ import { getCollectionFromAlias } from '../utils/get-collection-from-alias';
 import { getColumn } from '../utils/get-column';
 import { AliasMap } from '../utils/get-column-path';
 import { stripFunction } from '../utils/strip-function';
-import { map } from 'async';
 
 type RunASTOptions = {
 	/**

@@ -1,6 +1,5 @@
 import ms from 'ms';
 import env from './env';
-import { getConfigFromEnv } from './utils/get-config-from-env';
 import { validateEnv } from './utils/validate-env';
 import type { CacheOptions, CacheService } from './services/cache/cache';
 import { RedisCache } from './services/cache/redis-cache';
