@@ -416,7 +416,10 @@ class FlowManager {
 
 			return { successor: operation.resolve, status: 'resolve', data: result ?? null, options };
 		} catch (error: unknown) {
-			return { successor: operation.reject, status: 'reject', data: error ?? null, options };
+			// Adding the below line will correctly stringify any errors because errors are not enumerable those can not be stringified later down the line
+			const errorObject = JSON.parse(JSON.stringify(error, Object.getOwnPropertyNames(error))) ?? null;
+
+			return { successor: operation.reject, status: 'reject', data: errorObject ?? null, options };
 		}
 	}
 }
