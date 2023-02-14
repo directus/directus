@@ -33,7 +33,17 @@ export const multipartHandler: RequestHandler = (req, res, next) => {
 		};
 	}
 
-	const busboy = Busboy({ headers, defParamCharset: 'utf8' });
+	const limits = {
+		fieldNameSize: env.ASSETS_LIMIT_FIELDNAME_SIZE,
+		fieldSize: env.ASSETS_LIMIT_FIELD_SIZE,
+		fields: env.ASSETS_LIMIT_FIELDS,
+		fileSize: env.ASSETS_LIMIT_FILE_SIZE,
+		files: env.ASSETS_LIMIT_FILES,
+		parts: env.ASSETS_LIMIT_PARTS,
+		headerPairs: env.ASSETS_LIMIT_HEADER_PAIRS,
+	};
+
+	const busboy = Busboy({ headers, defParamCharset: 'utf8', limits });
 	const savedFiles: PrimaryKey[] = [];
 	const service = new FilesService({ accountability: req.accountability, schema: req.schema });
 
