@@ -533,14 +533,46 @@ describe('Integration Tests', () => {
 
 		describe('deleteOne', () => {
 			it('should checkRemainingAdminExistence once', async () => {
-				await service.deleteOne(1);
+				const service = new UsersService({
+					knex: db,
+					schema: testSchema,
+					accountability: { role: 'test', admin: false },
+				});
+
+				const promise = service.deleteOne(1);
+
+				expect.assertions(3); // to ensure both assertions in the catch block are reached
+
+				try {
+					await promise;
+				} catch (err: any) {
+					expect(err.message).toBe(`You don't have permission to access this.`);
+					expect(err).toBeInstanceOf(ForbiddenException);
+				}
+
 				expect(checkRemainingAdminExistenceSpy).toBeCalledTimes(1);
 			});
 		});
 
 		describe('deleteMany', () => {
 			it('should checkRemainingAdminExistence once', async () => {
-				await service.deleteMany([1]);
+				const service = new UsersService({
+					knex: db,
+					schema: testSchema,
+					accountability: { role: 'test', admin: false },
+				});
+
+				const promise = service.deleteMany([1]);
+
+				expect.assertions(3); // to ensure both assertions in the catch block are reached
+
+				try {
+					await promise;
+				} catch (err: any) {
+					expect(err.message).toBe(`You don't have permission to access this.`);
+					expect(err).toBeInstanceOf(ForbiddenException);
+				}
+
 				expect(checkRemainingAdminExistenceSpy).toBeCalledTimes(1);
 			});
 		});
