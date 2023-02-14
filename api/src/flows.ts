@@ -405,6 +405,9 @@ class FlowManager {
 				...context,
 			});
 
+			// Validate that the operations result is serializable and thus catching the error inside the flow execution
+			JSON.stringify(result ?? null);
+
 			// JSON structures don't allow for undefined values, so we need to replace them with null
 			// Otherwise the applyOptionsData function will not work correctly on the next operation
 			if (typeof result === 'object' && result !== null) {
