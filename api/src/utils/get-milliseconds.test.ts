@@ -12,8 +12,17 @@ test.each([
 	// fallback to 0
 	[0, 0],
 	['', 0],
+	['invalid string', 0],
 	[false, 0],
 	[[], 0],
+	[{}, 0],
+	[Symbol(123), 0],
+	[
+		() => {
+			return 456;
+		},
+		0,
+	],
 ])('input "%s" should result into %i', (input, expected) => {
 	expect(getMilliseconds(input)).toBe(expected);
 });
