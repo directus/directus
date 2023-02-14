@@ -12,7 +12,7 @@ import logger from '../logger';
 import getDefaultValue from './get-default-value';
 import getLocalType from './get-local-type';
 import { getCache } from '../cache';
-import { RelationsService } from '../index';
+import { RelationsService } from '../services/relations';
 
 export async function getSchema(options?: {
 	database?: Knex;
