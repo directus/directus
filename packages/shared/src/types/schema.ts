@@ -17,21 +17,21 @@ export type FieldOverview = {
 	alias: boolean;
 };
 
-export type CollectionOverview = {
-	collection: string;
-	primary: string;
-	singleton: boolean;
-	sortField: string | null;
-	note: string | null;
-	accountability: 'all' | 'activity' | null;
-}
+export type CollectionsOverview = {
+	[name: string]: {
+		collection: string;
+		primary: string;
+		singleton: boolean;
+		sortField: string | null;
+		note: string | null;
+		accountability: 'all' | 'activity' | null;
+		fields: {
+			[name: string]: FieldOverview;
+		};
+	};
+};
 
 export type SchemaOverview = {
-	getCollections: () => Promise<Record<string, CollectionOverview>>
-	getCollection: (collection: string) => Promise<CollectionOverview | null>
-	getFields: (collection: string) => Promise<Record<string, FieldOverview>>
-	getField: (collection: string, field: string) => Promise<FieldOverview | null>
-	getRelationsForCollection: (collection: string) => Promise<Record<string, Relation>>
-	getRelationsForField: (collection: string, field: string) => Promise<Relation | null>
-	getPrimaryKeyField: (collection: string) => Promise<FieldOverview | null>
+	collections: CollectionsOverview;
+	relations: Relation[];
 };
