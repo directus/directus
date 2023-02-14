@@ -312,8 +312,14 @@ export class UsersService extends ItemsService {
 	}
 
 	async inviteUser(email: string | string[], role: string, url: string | null, subject?: string | null): Promise<void> {
-		if (url && isUrlAllowed(url, env.USER_INVITE_URL_ALLOW_LIST) === false) {
-			throw new InvalidPayloadException(`Url "${url}" can't be used to invite users.`);
+		const opts: MutationOptions = {};
+
+		try {
+			if (url && isUrlAllowed(url, env.USER_INVITE_URL_ALLOW_LIST) === false) {
+				throw new InvalidPayloadException(`Url "${url}" can't be used to invite users.`);
+			}
+		} catch (err: any) {
+			opts.preMutationException = err;
 		}
 
 		const emails = toArray(email);
@@ -330,7 +336,7 @@ export class UsersService extends ItemsService {
 			inviteURL.setQuery('token', token);
 
 			// Create user first to verify uniqueness
-			await this.createOne({ email, role, status: 'invited' });
+			await this.createOne({ email, role, status: 'invited' }, opts);
 
 			await mailService.send({
 				to: email,
@@ -370,10 +376,6 @@ export class UsersService extends ItemsService {
 	}
 
 	async requestPasswordReset(email: string, url: string | null, subject?: string | null): Promise<void> {
-		if (url && isUrlAllowed(url, env.PASSWORD_RESET_URL_ALLOW_LIST) === false) {
-			throw new InvalidPayloadException(`Url "${url}" can't be used to reset passwords.`);
-		}
-
 		const STALL_TIME = 500;
 		const timeStart = performance.now();
 
@@ -386,6 +388,10 @@ export class UsersService extends ItemsService {
 		if (user?.status !== 'active') {
 			await stall(STALL_TIME, timeStart);
 			throw new ForbiddenException();
+		}
+
+		if (url && isUrlAllowed(url, env.PASSWORD_RESET_URL_ALLOW_LIST) === false) {
+			throw new InvalidPayloadException(`Url "${url}" can't be used to reset passwords.`);
 		}
 
 		const mailService = new MailService({
