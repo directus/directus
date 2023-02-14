@@ -39,10 +39,6 @@ export default function applyQuery(
 	const aliasMap: AliasMap = options?.aliasMap ?? Object.create(null);
 	let hasMultiRelationalFilter = false;
 
-	if (query.sort && !options?.isInnerQuery && !options?.hasMultiRelationalSort) {
-		applySort(knex, schema, dbQuery, query.sort, collection, aliasMap);
-	}
-
 	applyLimit(knex, dbQuery, query.limit);
 
 	if (query.offset) {
@@ -50,7 +46,11 @@ export default function applyQuery(
 	}
 
 	if (query.page && query.limit && query.limit !== -1) {
-		dbQuery.offset(query.limit * (query.page - 1));
+		applyOffset(knex, dbQuery, query.limit * (query.page - 1));
+	}
+
+	if (query.sort && !options?.isInnerQuery && !options?.hasMultiRelationalSort) {
+		applySort(knex, schema, dbQuery, query.sort, collection, aliasMap);
 	}
 
 	if (query.search) {
@@ -305,6 +305,9 @@ export function applySort(
 	});
 
 	if (returnRecords) return { sortRecords, hasMultiRelationalSort };
+
+	// Clears the order if any, eg: from MSSQL offset
+	rootQuery.clear('order');
 
 	rootQuery.orderBy(sortRecords);
 }

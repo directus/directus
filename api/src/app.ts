@@ -51,7 +51,6 @@ import rateLimiter from './middleware/rate-limiter-ip';
 import rateLimiterGlobal from './middleware/rate-limiter-global';
 import sanitizeQuery from './middleware/sanitize-query';
 import schema from './middleware/schema';
-import { ROBOTSTXT } from './constants';
 
 import { track } from './utils/track';
 import { validateEnv } from './utils/validate-env';
@@ -178,7 +177,7 @@ export default async function createApp(): Promise<express.Application> {
 	app.get('/robots.txt', (_, res) => {
 		res.set('Content-Type', 'text/plain');
 		res.status(200);
-		res.send(ROBOTSTXT);
+		res.send(env.ROBOTS_TXT);
 	});
 
 	if (env.SERVE_APP) {
