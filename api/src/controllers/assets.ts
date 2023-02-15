@@ -14,6 +14,7 @@ import useCollection from '../middleware/use-collection';
 import { AssetsService, PayloadService } from '../services';
 import { TransformationMethods, TransformationParams, TransformationPreset } from '../types/assets';
 import asyncHandler from '../utils/async-handler';
+import { getCacheControlHeader } from '../utils/get-cache-headers';
 import { getConfigFromEnv } from '../utils/get-config-from-env';
 
 const router = Router();
@@ -159,12 +160,10 @@ router.get(
 
 		const { stream, file, stat } = await service.getAsset(id, transformation, range);
 
-		const access = req.accountability?.role ? 'private' : 'public';
-
 		res.attachment(req.params.filename ?? file.filename_download);
 		res.setHeader('Content-Type', file.type);
 		res.setHeader('Accept-Ranges', 'bytes');
-		res.setHeader('Cache-Control', `${access}, max-age=${ms(env.ASSETS_CACHE_TTL as string) / 1000}`);
+		res.setHeader('Cache-Control', getCacheControlHeader(req, ms(env.ASSETS_CACHE_TTL as string), false, true));
 
 		const unixTime = Date.parse(file.modified_on);
 		if (!Number.isNaN(unixTime)) {

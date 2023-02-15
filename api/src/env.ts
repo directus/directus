@@ -144,6 +144,7 @@ const allowedEnvironmentVars = [
 	// extensions
 	'EXTENSIONS_PATH',
 	'EXTENSIONS_AUTO_RELOAD',
+	'EXTENSIONS_CACHE_TTL',
 	// messenger
 	'MESSENGER_STORE',
 	'MESSENGER_NAMESPACE',
@@ -260,7 +261,7 @@ const defaults: Record<string, any> = {
 	IP_TRUST_PROXY: true,
 	IP_CUSTOM_HEADER: false,
 
-	IMPORT_IP_DENY_LIST: '0.0.0.0',
+	IMPORT_IP_DENY_LIST: ['0.0.0.0', '169.254.169.254'],
 
 	SERVE_APP: true,
 
