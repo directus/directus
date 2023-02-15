@@ -270,6 +270,10 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	 * Create multiple new items at once. Inserts all provided records sequentially wrapped in a transaction.
 	 */
 	async createMany(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
+		if (!opts?.bypassLimits && data.length > env.MAX_BATCH_MUTATION) {
+			throw new InvalidPayloadException('Max batch mutation limit exceeded');
+		}
+
 		const { primaryKeys, nestedActionEvents } = await this.knex.transaction(async (trx) => {
 			const service = new ItemsService(this.collection, {
 				accountability: this.accountability,
@@ -466,6 +470,10 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			throw new InvalidPayloadException('Input should be an array of items.');
 		}
 
+		if (!opts?.bypassLimits && data.length > env.MAX_BATCH_MUTATION) {
+			throw new InvalidPayloadException('Max batch mutation limit exceeded');
+		}
+
 		const primaryKeyField = this.schema.collections[this.collection].primary;
 
 		const keys: PrimaryKey[] = [];
@@ -497,6 +505,10 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	 * Update many items by primary key, setting all items to the same change
 	 */
 	async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
+		if (!opts?.bypassLimits && keys.length > env.MAX_BATCH_MUTATION) {
+			throw new InvalidPayloadException('Max batch mutation limit exceeded');
+		}
+
 		const primaryKeyField = this.schema.collections[this.collection].primary;
 		validateKeys(this.schema, this.collection, primaryKeyField, keys);
 
@@ -650,7 +662,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 							// with all other revisions on the current level as regular "flat" updates, and
 							// nested revisions as children of this first "root" item.
 							if (childrenRevisions.length > 0) {
-								await revisionsService.updateMany(childrenRevisions, { parent: revisionID });
+								await revisionsService.updateMany(childrenRevisions, { parent: revisionID }, { bypassLimits: true });
 							}
 						}
 					}
@@ -779,6 +791,10 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	 * Delete multiple items by primary key
 	 */
 	async deleteMany(keys: PrimaryKey[], opts?: MutationOptions): Promise<PrimaryKey[]> {
+		if (!opts?.bypassLimits && keys.length > env.MAX_BATCH_MUTATION) {
+			throw new InvalidPayloadException('Max batch mutation limit exceeded');
+		}
+
 		const primaryKeyField = this.schema.collections[this.collection].primary;
 		validateKeys(this.schema, this.collection, primaryKeyField, keys);
 

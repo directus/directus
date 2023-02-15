@@ -45,6 +45,11 @@ export type MutationOptions = {
 	 * Can be used to queue up the nested events from item service's create, update and delete
 	 */
 	bypassEmitAction?: (params: ActionEventParams) => void;
+
+	/**
+	 * To bypass limits so that functions would work as intended
+	 */
+	bypassLimits?: boolean;
 };
 
 export type ActionEventParams = {

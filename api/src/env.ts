@@ -23,6 +23,7 @@ const allowedEnvironmentVars = [
 	'ROOT_REDIRECT',
 	'SERVE_APP',
 	'GRAPHQL_INTROSPECTION',
+	'MAX_BATCH_MUTATION',
 	'LOGGER_.+',
 	'ROBOTS_TXT',
 	// server
@@ -194,6 +195,7 @@ const defaults: Record<string, any> = {
 	PUBLIC_URL: '/',
 	MAX_PAYLOAD_SIZE: '1mb',
 	MAX_RELATIONAL_DEPTH: 10,
+	MAX_BATCH_MUTATION: Infinity,
 	ROBOTS_TXT: 'User-agent: *\nDisallow: /',
 
 	DB_EXCLUDE_TABLES: 'spatial_ref_sys,sysdiagrams',
@@ -292,6 +294,7 @@ const typeMap: Record<string, string> = {
 	FILE_METADATA_ALLOW_LIST: 'array',
 
 	GRAPHQL_INTROSPECTION: 'boolean',
+	MAX_BATCH_MUTATION: 'number',
 };
 
 let env: Record<string, any> = {
