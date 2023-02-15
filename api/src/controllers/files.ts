@@ -34,13 +34,13 @@ export const multipartHandler: RequestHandler = (req, res, next) => {
 	}
 
 	const limits = {
-		fieldNameSize: env.ASSETS_LIMIT_FIELDNAME_SIZE,
-		fieldSize: env.ASSETS_LIMIT_FIELD_SIZE,
-		fields: env.ASSETS_LIMIT_FIELDS,
+		fieldNameSize: 100,
+		fieldSize: 1048576,
+		fields: Infinity, // will pull from number of fields in file collection
 		fileSize: env.ASSETS_LIMIT_FILE_SIZE,
 		files: env.ASSETS_LIMIT_FILES,
-		parts: env.ASSETS_LIMIT_PARTS,
-		headerPairs: env.ASSETS_LIMIT_HEADER_PAIRS,
+		parts: Infinity,
+		headerPairs: 2000,
 	};
 
 	const busboy = Busboy({ headers, defParamCharset: 'utf8', limits });
