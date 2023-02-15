@@ -4,15 +4,20 @@ body:
   - type: markdown
     attributes:
       value: |
-        Hi, thank you for taking the time to create an issue!
-
-        Before opening this issue, please make sure that:
-
-        - You've completed all [Troubleshooting Steps](https://docs.directus.io/getting-started/support/#troubleshooting-steps).
-        - You're using [the latest version of Directus](https://github.com/directus/directus/releases).
-        - There's [no other issue](https://github.com/directus/directus/issues?q=is%3Aissue) that already describes the problem.
+        Hi, thank you for taking the time to create an issue! Please make sure to fill out this form in as much detail you can. 
 
         _For issues specific to Directus Cloud projects, please reach out through the Live Chat in our Cloud Dashboard._
+  - type: checkboxes
+    id: requirements
+    attributes:
+      label: Requirements
+      options:
+        - label: I'm using the [latest version of Directus](https://github.com/directus/directus/releases)
+          required: true
+        - label: There's [no other issue](https://github.com/directus/directus/issues?q=is%3Aissue) that already describes the problem.
+          required: true
+        - label: I've completed all [Troubleshooting Steps](https://docs.directus.io/getting-started/support/#troubleshooting-steps).
+          required: true
   - type: textarea
     attributes:
       label: Describe the Bug
@@ -27,39 +32,14 @@ body:
         the bug.
     validations:
       required: true
-  - type: textarea
+  - type: dropdown
+    id: deployment
     attributes:
-      label: Errors Shown
-      description: Are there any errors logged in the browser console, or terminal where you're running Directus?
-  - type: input
-    id: directus-version
-    attributes:
-      label: What version of Directus are you using?
-      description: 'Version is displayed under "Settings". For example: 9.0.1'
-    validations:
-      required: true
-  - type: input
-    id: node-version
-    attributes:
-      label: What version of Node.js are you using?
-      description: 'For example: 12.0.0'
-    validations:
-      required: true
-  - type: input
-    attributes:
-      label: What database are you using?
-      description: 'For example: Postgres 13, SQLite 3.31.0'
-    validations:
-      required: true
-  - type: input
-    attributes:
-      label: What browser are you using?
-      description: 'For example: Chrome, Safari'
-    validations:
-      required: true
-  - type: input
-    attributes:
-      label: How are you deploying Directus?
-      description: 'For example: running locally, Docker, PaaS'
+      label: Hosting Strategy
+      options:
+        - Self-Hosted Directus Docker Image
+        - Self-Hosted through NPM
+        - Self-Hosted Custom
+        - Directus Cloud
     validations:
       required: true
