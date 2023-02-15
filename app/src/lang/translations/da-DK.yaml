@@ -28,60 +28,64 @@ published: Publiceret
 draft: Kladde
 archived: Arkiveret
 modules: Moduler
-module_bar: Modul Bar
+module_bar: Modulbar
 logs: Logger
 reset_width: Tilbagestil bredde
-tile_size: Tile Size
-edit_field: Rediger Felt
+tile_size: Title størrelse
+edit_field: Rediger felt
 conditions: Betingelser
 location: Placering
+condition_rules: Tilstandsregler
 input: Input
 maps: Kort
-switch_user: Skift Bruger
-item_creation: Element Oprettelse
+switch_user: Skift bruger
+item_creation: Opret element
 item_revision: Genstandsrevision
-enter_a_name: Indtast et navn...
-duplicate_field: Dupliker Felt
-half_width: Halv Bredde
-full_width: Fuld Bredde
+enter_a_name: Indtast navn...
+duplicate_field: Dupliker felt
+half_width: Halv bredde
+full_width: Fuld bredde
 group: Gruppe
-export_items: Eksportér Elementer
-and: Og
-or: Eller
+export_items: Eksportér elementer
+and: og
+or: eller
 init: Initaliser
+dataset_too_large_currently_showing_n_items: Datasættet er for stort. Viser i øjeblikket de første {n} elementer.
+modifier: Modifikator
 custom: Brugertilpasset
-fill_width: Fuld Bredde
+hook: Krog
+fill_width: Fuld bredde
 field_name_translations: Oversættelse af feltnavn
-enter_password_to_enable_tfa: Indtast dit kodeord for at aktivere To-faktor-godkendelse (2FA)
-add_field: Tilføj Felt
+enter_password_to_enable_tfa: Indtast dit kodeord for at aktivere to-faktor-godkendelse (2FA)
+add_field: Tilføj felt
 role_name: Rollenavn
 branch: Gren
 leaf: Bladtræ
 indeterminate: Ubestemt
-edit_collection: Rediger Samling
+edit_collection: Rediger samling
 exclusive: Eksklusiv
 children: Underordnede
 db_only_click_to_configure: 'Kun database: Klik for at indstille'
-show_active_items: Vis Aktive Elementer
+show_active_items: Vis aktive elementer
 show_archived_items: Vis arkiverede element
-show_all_items: Vis Alle Punkter
-edited: Værdi Redigeret
+show_all_items: Vis alle punkter
+edited: Værdi redigeret
 required: Påkrævet
-required_for_app_access: Påkrævet for App adgang
+required_for_app_access: Påkrævet for adgang
 requires_value: Påkrævet værdi
 create_preset: Opret forudindstilling
-create_panel: Opret Panel
-create_role: Opret Rolle
+create_panel: Opret panel
+create_role: Opret rolle
 create_user: Opret bruger
 message: Besked
-delete_panel: Slet Panel
-create_webhook: Opret Webhook
-create_translation_string: Opret Oversættelsesstreng
+delete_panel: Slet panel
+create_webhook: Opret webhook
+create_translation_string: Opret oversættelsesstreng
 no_translation_string: Oversættelse mangler
 no_translation_string_copy: Der er ingen oversættelsesstrenge endnu.
 translation_string_key_placeholder: Oversættelse streng nøgle...
 translation_string_translations_placeholder: Tilføj en ny oversættelse
-edit_translation_string: Rediger Oversættelsesstreng
+edit_translation_string: Rediger oversættelsesstreng
 delete_translation_string_copy: >-
   Er du sikker på du vil slette oversættelsesstrengen "{key}"? Denne handling kan ikke fortrydes.
 invite_users: Inviter brugere
@@ -89,7 +93,7 @@ invite: Inviter
 email_already_invited: Email "{email}" er allerede blevet inviteret
 subject: Emne
 inbox: Indbakke
-emails: E-mail
+emails: E-mails
 connection_excellent: Udmærket forbindelse
 connection_good: God forbindelse
 connection_fair: Ok forbindelse
@@ -104,19 +108,19 @@ update_bookmark: Opdater bogmærke
 delete_bookmark: Slet Bogmærke
 delete_bookmark_copy: >-
   Er du sikker på at du vil slette "{bookmark}"-bogmærket? Denne handling kan ikke fortrydes.
-delete_personal_bookmark: Slet Personligt Bogmærke
-delete_role_bookmark: Slet Rolle Bogmærke
-delete_global_bookmark: Slet Globalt Bogmærke
+delete_personal_bookmark: Slet personligt bogmærke
+delete_role_bookmark: Slet rolle bogmærke
+delete_global_bookmark: Slet globalt bogmærke
 logoutReason:
   SIGN_OUT: Logget ud
   SESSION_EXPIRED: Sessionen er udløbet
 public_label: Offentlig
-public_description: Kontrollerer, hvilke API-data der er tilgængelige uden godkendelse.
+public_description: Styrer, hvilke API-data der er tilgængelige uden godkendelse.
 admin_description: Oprindelig administrativ rolle med ubegrænset App/API-adgang.
 not_allowed: Ikke tilladt
-directus_version: Directus Version
+directus_version: Directus version
 node_version: Node version
-node_uptime: Node Oppetid
+node_uptime: Node oppetid
 os_type: OS type
 os_version: OS version
 os_uptime: OS oppetid
@@ -128,8 +132,8 @@ archive_confirm_count: >-
 reset_system_permissions_to: 'Nulstil systemtilladelser til:'
 reset_system_permissions_copy: Denne handling vil overskrive eventuelle tilpassede tilladelser, du måtte have anvendt på systemsamlingerne. Er du sikker?
 the_following_are_minimum_permissions: Følgende er minimum tilladelser der kræves, når "App Adgang" er aktiveret. Du kan udvide tilladelser ud over dette, men ikke nedenfor.
-app_access_minimum: Minimum App-adgang
-recommended_defaults: Anbefalede Standarder
+app_access_minimum: Minimum app-adgang
+recommended_defaults: Anbefalede standarder
 unarchive: Fjern fra arkiv
 unarchive_confirm: Er du sikker på, at du vil fjerne arkiveringen af dette element?
 nested_files_folders_will_be_moved: Indlejrede filer og mapper vil blive flyttet et niveau op.
@@ -152,78 +156,79 @@ validationError:
   required: Værdi er påkrævet
   unique: Værdien skal være unik
   regex: Værdien har ikke det korrekte format
-all_access: Alle Adgang
-no_access: Ingen Adgang
-use_custom: Brug Brugerdefineret
+all_access: Fuld adgang
+no_access: Ingen adgang
+use_custom: Brug brugerdefineret
 nullable: Nullbar
 allow_null_value: Tillad NULL værdi
-allow_multiple: Tillad Flere
+allow_multiple: Tillad flere
 allow_multiple_to_be_open: Tillad åbning af flere
 enter_value_to_replace_nulls: Indtast venligst en ny værdi for at erstatte eventuelle NULL'er, der er i øjeblikket i dette felt.
 field_standard: Standard
-field_presentation: Presentation & Aliases
-field_file: Enkelt Fil
-field_files: Flere Filer
-field_m2o: M2O Forhold
-field_m2a: M2A Forhold
-field_o2m: O2M Forhold
-field_m2m: M2M Forhold
+field_presentation: Presentation og kaldenavne
+field_file: Enkelt fil
+field_files: Flere filer
+field_m2o: M2O forhold
+field_m2a: M2A forhold
+field_o2m: O2M forhold
+field_m2m: M2M forhold
 field_translations: Oversættelser
-field_group: Felt Gruppe
-item_permissions: Element Tilladelser
-field_permissions: Felt Tilladelser
-field_validation: Felt Validering
-field_presets: Felt Forudindstillinger
+field_group: Felt gruppe
+item_permissions: Element tilladelser
+field_permissions: Felt tilladelser
+field_validation: Felt validering
+field_presets: Felt forudindstillinger
 permissions_for_role: 'Elementer {role} Rollen kan {action}.'
 fields_for_role: 'Felter {role} Rollen kan {action}.'
-validation_for_role: 'Felt {action} reglerne for {role} Rollen skal adlyde.'
+validation_for_role: 'Felt {action} reglerne for {role} Rollen skal følge.'
 presets_for_role: 'Feltets værdi er standard for {role} Rollen.'
-presentation_and_aliases: Presentation & Aliases
+presentation_and_aliases: Presentation og kaldenavne
 revision_post_create: Her er hvordan dette element så ud, da det blev oprettet.
 revision_post_update: Her er hvad dette element så ud efter opdateringen.
 changes_made: Nedenfor er de specifikke ændringer i denne revision.
 no_relational_data: Husk på, at relationsdata ikke er inkluderet her.
+junction_field_location: Krydsningsfelter placering
 top: Top
 bottom: Bund
-hide_field: Skjul Felt
+hide_field: Skjul felt
 hide_field_on_detail: Skjul felt på detalje
 show_field_on_detail: Vis felt på detalje
-delete_field: Slet Felt
-fields_and_layout: Felter & Layout
-field_create_success: 'Oprettet Felt: "{field}"'
-field_update_success: 'Opdateret Felt: "{field}"'
+delete_field: Slet felt
+fields_and_layout: Felter og layout
+field_create_success: 'Oprettet felt: "{field}"'
+field_update_success: 'Opdateret felt: "{field}"'
 duplicate_where_to: Hvor vil du kopiere dette felt til?
 language: Sprog
-language_placeholder: Vælg et sprog...
-aggregate_function: Samlet Funktion
-aggregate_precision: Aggregeret Præcision
-group_aggregation: Gruppe Sammenlægning
-group_precision: Gruppe Præcision
+language_placeholder: Vælg sprog...
+aggregate_function: Samlet funktion
+aggregate_precision: Aggregeret åræcision
+group_aggregation: Gruppe sammenlægning
+group_precision: Gruppe præcision
 global: Globalt
 admins_have_all_permissions: Admins har alle tilladelser
 camera: Kamera
-show_zero: Vis Nul
+show_zero: Vis nul
 create_in_advanced_field_creation_mode: Opret felt i avanceret tilstand
 continue_in_advanced_field_creation_mode: Fortsæt i avanceret feltskabelsestilstand
 validation: Validering
 sum: Sum
-sum_distinct: Sum Distinkt
+sum_distinct: Sum distinkt
 avg: Gennemsnit
-avg_distinct: Gennemsnitlig Afstand
+avg_distinct: Gennemsnitlig afstand
 count: Antal
-count_distinct: Tæl Distinkt
+count_distinct: Tæl distinkt
 min: Min
 max: Max
 exposure: Eksponering
 shutter: Lukker
 iso: ISO
-focal_length: Fokal Længde
+focal_length: Fokal længde
 schema_setup_key: Dette felts database kolonne-navn og API-nøgle
 create_field: Opret felt
-creating_new_field: 'Nyt Felt ({collection})'
+creating_new_field: 'Nyt felt ({collection})'
 field_in_collection: '{field} ({collection})'
-reset_page_preferences: Nulstil Sideindstillinger
-hidden_field: Skjult Felt
+reset_page_preferences: Nulstil sideindstillinger
+hidden_field: Skjult felt
 hidden_on_detail: Skjult på detalje
 disabled_editing_value: Deaktiver redigering af værdi
 key: Nøgle
@@ -232,14 +237,15 @@ bigInteger: Big Integer
 boolean: Boolean
 date: Dato
 date_range: Datointerval
-datetime: DatoTid
-dateTime: DatoTid
+datetime: Dato/Tid
+dateTime: Dato/Tid
 precision: Præcision
 decimal: Decimal
 float: Flydende
 integer: Heltal
 json: JSON
 xml: XML
+yaml: YAML
 string: Streng
 text: Tekst
 time: Tid
@@ -248,90 +254,95 @@ uuid: UUID
 hash: Hash
 geometry: Geometri (Alle)
 geometry.Point: Punkt
+geometry.LineString: Linjestring
 geometry.Polygon: Polygon
 geometry.MultiPoint: Multipunkt
 geometry.MultiLineString: Stræng med linjeskift
+geometry.MultiPolygon: Multipolygon
 not_available_for_type: Ikke tilgængelig for denne type
-create_translations: Opret Oversættelser
-auto_refresh: Opdater Automatisk
-refresh_interval: Opdater Interval
+create_translations: Opret oversættelser
+auto_refresh: Opdater automatisk
+refresh_interval: Opdater interval
 no_refresh: Genindlæs ikke
-refresh_interval_seconds: Genopfrisk Straks Hvert sekund - Hver {seconds} Sekunder
-refresh_interval_minutes: Hvert minut Hvert {minutes} minut
-auto_generate: Auto- Generér
+refresh_interval_seconds: Genindlæs øjeblikkeligt | Hvert sekundt | Hver {seconds} sekunder
+refresh_interval_minutes: Hvert minut | Hvert {minutes} minut
+auto_generate: Generér automatisk
 this_will_auto_setup_fields_relations: Dette vil automatisk opsætte alle obligatoriske felter og relationer.
 click_here: Klik her
 to_manually_setup_translations: for manuelt at opsætte oversættelser.
 click_to_manage_translated_fields: >-
-  Der er endnu ingen oversatte felter. Klik her for at oprette dem. ● Der er et oversatte felt. Klik her for at administrere den. ● Der er {count} oversatte felter. Klik her for at administrere dem.
-fields_group: Felter Gruppe
+  Der er endnu ingen oversatte felter. Klik her for at oprette dem. | Der er et oversat felt. Klik her for at administrere den. | Der er {count} oversatte felter. Klik her for at administrere dem.
+fields_group: Feltgruppe
 no_collections_found: Ingen samlinger fundet.
 new_data_alert: 'Følgende oprettes inden for din datamodel:'
-search_collection: Søg Samling...
+search_collection: Søg samling...
+search_field: Søg felt...
 new_field: 'Nyt felt'
-new_collection: 'Ny Samling'
+new_collection: 'Ny samling'
 add_m2o_to_collection: 'Tilføj M2O til "{collection}"'
 add_o2m_to_collection: 'Tilføj O2M til "{collection}"'
 add_m2m_to_collection: 'Tilføj M2M til "{collection}"'
 choose_a_type: Vælg en type...
 determined_by_relationship: Bestemt af forhold
-add_note: Tilføj en nyttig note til brugere...
-add_link: Tilføj Link
-custom_link: Tilpasset Link
+add_note: Tilføj en hjælpsom note til brugere...
+add_link: Tilføj link
+custom_link: Tilpasset link
 default_value: Standardværdi
-standard_field: Standard Felt
-single_file: Enkelt Fil
-multiple_files: Flere Filer
+standard_field: Standardfelt
+single_file: Enkelt fil
+multiple_files: Flere filer
 m2o_relationship: Mange til ét forhold
 o2m_relationship: En til mange relationer
 m2m_relationship: Mange til mange relationer
 m2a_relationship: Mange til ethvert forhold
-invalid_item: Ugyldigt Element
+invalid_item: Ugyldigt element
 next: Næste
-field_name: Felt Navn
+field_name: Feltnavn
 translations: Oversættelser
-no_translations: Ingen Oversættelser
+no_translations: Ingen oversættelser
 left_to_right: Venstre mod højre
 right_to_left: Højre mod venstre
 note: Kommentar
 enter_a_value: Indtast en værdi...
 enter_a_placeholder: Indtast en pladsholder...
 length: Længde
-soft_length: Blød Grænse
-precision_scale: Præcision & Skala
+soft_length: Blød grænse
+precision_scale: Præcision og skala
 readonly: Skrivebeskyttet
 unique: Unik
-updated_on: Opdateret Den
-updated_by: Opdateret Af
+updated_on: Opdateret den
+updated_by: Opdateret af
 primary_key: Primærnøgle
-foreign_key: Fremmed Nøgle
-finish_setup: Afslut Opsætning
+foreign_key: Fremmednøgle
+finish_setup: Afslut opsætning
 dismiss: Afvis
 raw_value: Rå værdi
-copy_raw_value: Kopier Rå Værdi
+raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
+copy_raw_value: Kopier rå værdi
 copy_raw_value_success: Kopieret
-copy_raw_value_fail: Kopiering Mislykkedes
-paste_raw_value: Indsæt Rå Værdi
+copy_raw_value_fail: Kopiering mislykkedes
+paste_raw_value: Indsæt rå værdi
 paste_raw_value_success: Indsat
-paste_raw_value_fail: Indsæt Mislykkedes
-view_raw_value: Vis Rå Værdi
-edit_raw_value: Rediger Rå Værdi
+paste_raw_value_fail: Indsæt mislykkedes
+view_raw_value: Vis rå værdi
+edit_raw_value: Rediger rå værdi
 enter_raw_value: Indtast rå værdi...
-clear_value: Ryd Værdi
-clear_changes: Ryd Ændringer
+clear_value: Ryd værdi
+clear_changes: Ryd ændringer
+clear_items: Ryd elementer
 reset_to_default: Nulstil til standard
-undo_changes: Fortryd Ændringer
+undo_changes: Fortryd ændringer
 notifications: Notifikationer
 show_all_activity: Vis al aktivitet
 page_not_found: Siden blev ikke fundet
 page_not_found_body: Den side, du leder efter, synes ikke at eksistere.
-confirm_revert: Bekræft Tilbagefør
+confirm_revert: Bekræft tilbagevenden
 confirm_revert_body: Dette vil vende elementet tilbage til den valgte tilstand.
 display: Vis
 settings_update_success: Indstillinger opdateret
 title: Titel
 revision_delta_created: Oprettet
-revision_delta_created_externally: Oprettet Eksternt
+revision_delta_created_externally: Oprettet eksternt
 revision_delta_updated: 'Opdateret 1 Felt | Opdaterede {count} felter'
 revision_delta_deleted: Slettet
 revision_delta_reverted: Omvendt
@@ -340,24 +351,24 @@ revision_delta_other: Revision
 revision_delta_by: '{date} af {user}'
 presentation_text_values_cannot_be_reimported: "Bruger præsentationstekst, værdier kan ikke genimporteres."
 download_page_as_csv: 'Hent side som CSV'
-private_user: Privat Bruger
-creation_preview: Forhåndsvisning Af Oprettelse
-revision_preview: Revision Forhåndsvisning
-updates_made: Opdateringer Lavet
+private_user: Privat bruger
+creation_preview: Forhåndsvisning af oprettelse
+revision_preview: Revision forhåndsvisning
+updates_made: Opdateringer lavet
 leave_comment: Skriv en kommentar...
 post_comment_success: Kommentar sendt
 post_comment_updated: Kommentaren er opdateret
-item_create_success: Element oprettet | Elementer oprettet
+item_create_success: Element oprettet | Elementer oprettet
 item_update_success: Element opdateret | Elementer opdateret
-item_delete_success: Slettede Elementer Slettet
-this_collection: Denne Samling
-related_collection: Relateret Samling
-related_collections: Relaterede Samlinger
-translations_collection: Oversættelse Samling
-languages_collection: Sprog Samling
+item_delete_success: Slettede elementer er slettet
+this_collection: Denne samling
+related_collection: Relateret samling
+related_collections: Relaterede samlinger
+translations_collection: Oversættelse samling
+languages_collection: Sprog samling
 import_data_input_placeholder: CSV eller JSON...
-import_data_button: Begynd Import
-import_data_indeterminate: Importerer Data...
+import_data_button: Begynd import
+import_data_indeterminate: Importerer data...
 import_data_success: Data importeret fra {filename}
 import_data_error: Denne fils datastruktur matcher ikke samlingen.
 label_import: Importér
@@ -365,7 +376,7 @@ label_export: Eksporter
 import_export: Import / Eksport
 format: Format
 last_page: Sidste side
-last_access: Seneste Adgang
+last_access: Seneste adgang
 fill_template: Udfyld med skabelonværdi
 a_unique_table_name: Et unikt bordnavn...
 a_unique_column_name: Et unikt kolonnenavn...
@@ -379,7 +390,7 @@ interface_label: Grænseflade
 today: Idag
 yesterday: Igår
 delete_comment: Slet kommentar
-delete_share: Slet Del
+delete_share: Slet deling
 functions:
   year: År
   month: Måned
@@ -391,12 +402,12 @@ functions:
   second: Sekund
   count: Antal
 date-fns_date: PPP
-date-fns_time: 'h:mm:ss a'
-date-fns_time_no_seconds: 'tt:mm a'
+date-fns_time: 'H:mm:ss a'
+date-fns_time_no_seconds: 'HH:mm a'
 date-fns_time_24hour: 'HH:mm:ss'
 date-fns_time_no_seconds_24hour: 'HH:mm'
 date-fns_date_short: 'MMM d, u'
-date-fns_time_short: 'h:mma'
+date-fns_time_short: 'H:mma'
 date-fns_date_short_no_year: MMM d
 minutes: Minutter
 hours: Timer
@@ -421,7 +432,7 @@ cancel_crop: Annuller beskæring
 original: Original
 url: URL
 import_label: Importér
-file_details: Fil Detaljer
+file_details: Fil detaljer
 dimensions: Dimensioner
 size: Størrelse
 created: Oprettet
@@ -443,24 +454,24 @@ import_from_url: Importér fil fra URL
 replace_from_device: Erstat fil fra enhed
 replace_from_library: Erstat fil fra enhed
 replace_from_url: Erstat fil fra URL
-no_file_selected: Ingen Fil Valgt
-download_file: Download Fil
+no_file_selected: Ingen fil Valgt
+download_file: Download fil
 open_file_in_tab: Åbn fil i nyt faneblad
-start_export: Start Eksport
+start_export: Start eksport
 not_available_for_local_downloads: Ikke tilgængelig for lokale downloads
-exporting_all_items_in_collection: Eksporterer alle {total} varer inden for {collection}.
-exporting_limited_items_in_collection: Eksporterer {limit} ud af {total} varer inden for {collection}.
-exporting_no_items_to_export: Ingen varer at eksportere. Juster eksportkonfigurationen nedenfor.
-exporting_download_hint: Når den er færdig, vil denne {format} -fil automatisk blive hentet til din enhed.
-exporting_batch_hint: Denne eksport vil blive behandlet i batcher, og når den er fuldført, vil {format} -filen blive gemt i filbiblioteket.
-exporting_batch_hint_forced: På grund af det store antal varer skal denne eksport forarbejdes i partier og når den er færdig, gemmes {format} -filen i Filbiblioteket.
-collection_key: Samlings Nøgle
+exporting_all_items_in_collection: Eksporterer alle {total} elementer inden for {collection}.
+exporting_limited_items_in_collection: Eksporterer {limit} ud af {total} elementer inden for {collection}.
+exporting_no_items_to_export: Ingen elementer at eksportere. Juster eksportkonfigurationen nedenfor.
+exporting_download_hint: Når den er færdig, vil denne {format}-fil automatisk blive hentet til din enhed.
+exporting_batch_hint: Denne eksport vil blive behandlet i batcher, og når den er fuldført, vil {format}-filen blive gemt i filbiblioteket.
+exporting_batch_hint_forced: På grund af det stort antal elementer skal denne eksport forarbejdes i partier og når den er færdig, gemmes {format}-filen i Filbiblioteket.
+collection_key: Samlings nøgle
 name: Navn
-primary_key_field: Primær Nøglefelt
+primary_key_field: Primær nøglefelt
 type: Type
-creating_new_collection: Opretter Ny Samling
+creating_new_collection: Opretter ny samling
 created_by: Oprettet af
-created_on: Oprettet d.
+created_on: Oprettet den
 creating_collection_info: Navngiv samlingen og opsæt dens unikke “nøgle” felt...
 creating_collection_system: Aktivér og omdøb alle disse valgfrie felter.
 auto_increment_integer: Auto-stigende heltal
@@ -470,44 +481,44 @@ manual_string: Manuelt indtastet streng
 save_and_create_new: Gem og opret ny
 save_and_stay: Gem og bliv
 save_as_copy: Gem som kopi
-add_existing: Tilføj Eksisterende
-creating_items: Opretter Elementer
-enable_create_button: Aktivér Niagaraknappen
-selecting_items: Vælger Elementer
-enable_select_button: Aktivér Markeringsknap
+add_existing: Tilføj eksisterende
+creating_items: Opretter elementer
+enable_create_button: Aktivér opret-knap
+selecting_items: Vælger elementer
+enable_select_button: Aktivér vælg-knap
 allow_duplicates: Tillad gengangere
 comments: Kommentarer
-no_comments: Ingen Kommentarer Endnu
+no_comments: Ingen kommentarer endnu
 click_to_expand: Klik for at udvide
-select_item: Vælg Element
+select_item: Vælg element
 no_items: Ingen elementer
 search_items: Søg efter emner...
 disabled: Deaktiveret
 information: Information
-report_bug: Rapportér Fejl
+report_bug: Rapportér fejl
 request_feature: Anmod om funktion
 request_body: Anmod om brødtekst
 interface_not_found: 'Interface "{interface}" blev ikke fundet.'
 operation_not_found: 'Operation "{operation}" ikke fundet.'
-reset_interface: Nulstil Grænseflade
+reset_interface: Nulstil grænseflade
 display_not_found: 'Visning "{display}" ikke fundet.'
-reset_display: Nulstil Visning
+reset_display: Nulstil visning
 list-m2a: Bygger (M2A)
-item_count: 'Ingen Elementer | Et Element | {count} Elementer'
+item_count: 'Ingen elementer | Et element | {count} elementer'
 no_items_copy: Der er endnu ingen elementer i denne samling.
-file_count: 'Ingen Filer, én Fil, {count} Filer'
+file_count: 'Ingen filer, én fil, {count} filer'
 no_files_copy: Der er ingen filer her.
 user_count: 'Ingen brugere: Én bruger, {count} brugere'
 no_users_copy: Der er endnu ingen brugere i denne rolle.
-webhooks_count: 'Ingen Webhooks ● One Webhook ● {count} Webhooks'
+webhooks_count: 'Ingen webhooks | En webhook | {count} webhooks'
 no_webhooks_copy: Ingen webhooks er konfigureret endnu. Kom i gang ved at oprette en nedenfor.
-no_notifications: Ingen Notifikationer
-no_notifications_copy: Du er alle fanget op!
+no_notifications: Ingen notifikationer
+no_notifications_copy: Du er helt ajour!
 activity_log: Aktivitetslog
-all_items: Alle Punkter
+all_items: Alle punkter
 any: Alle
 csv: CSV
-no_collections: Ingen Samlinger
+no_collections: Ingen samlinger
 create_collection: Opret samling
 no_collections_copy_admin: Du har endnu ikke nogen samlinger. Klik på knappen nedenfor for at komme i gang.
 no_collections_copy: Du har endnu ikke nogen samlinger. Kontakt venligst din systemadministrator.
@@ -517,57 +528,59 @@ collection_field_not_setup: Indstillingen for samlingsfelt er forkert konfigurer
 select_a_collection: Vælg en samling
 select_a_field: Vælg et felt
 active: Aktiv
-move_to: Flyt Til...
+move_to: Flyt til...
 copy: Kopiér
-copy_to: Kopiér Til...
+copy_to: Kopiér til...
 no_other_dashboards_copy: Du har endnu ikke andre Dashboarder.
 inactive: Inaktiv
 users: Brugere
 activity: Aktivitet
-activity_item: Aktivitet Element
+activity_item: Aktivitet element
 action: Handling
 ip_address: IP adresse
 user_agent: Brugeragent
 origin: Oprindelse
 webhooks: Webhooks
 decimals: Decimaler
-value_decimals: Værdi Decimaler
-min_value: Min Værdi
-max_value: Max Værdi
+value_decimals: Værdi decimaler
+min_value: Minimumsværdi
+max_value: Maksimumsværdi
 automatic: Automatisk
-field_width: Felt Bredde
-add_filter: Tilføj Filter
+field_width: Felt bredde
+add_filter: Tilføj filter
 upper_limit: Øvre grænse...
 lower_limit: Nedre grænse...
-user_directory: Bruger Mappe
+user_directory: Bruger mappe
 documentation: Dokumentation
 sidebar: Sidebar
 duration: Varighed
 charset: Tegnsæt
 second: sekund
-file_moved: Fil Flyttet
-collection_created: Samling Oprettet
+file_moved: Fil flyttet
+collection_created: Samling oprettet
 modified_on: Ændringsdato
-card_size: Kort Størrelse
-sort_field: Sortér Felt
-add_sort_field: Tilføj Sorteringsfelt
+card_size: Kort størrelse
+sort_field: Sortér felt
+add_sort_field: Tilføj sorteringsfelt
 sort: Sortér
 status: Status
 remove: Fjern
-toggle_manual_sorting: Skift Manuel Sortering
-bookmark_doesnt_exist: Bogmærke Eksisterer Ikke
+toggle_manual_sorting: Skift manuel sortering
+bookmark_doesnt_exist: Bogmærke eksisterer ikke
 bookmark_doesnt_exist_copy: Bogmærket, du forsøger at åbne, kunne ikke findes.
 bookmark_doesnt_exist_cta: Tilbage til afhentning
 select_an_item: Vælg et element...
 edit: Rediger
 enabled: Aktiveret
 disable_tfa: Deaktivér 2FA
+admin_disable_tfa_text: Er du sikker på, at du vil deaktivere 2FA for denne bruger?
+tfa_setup: Opsæt 2FA
 tfa_scan_code: Scan koden i din autentificeringsapp for at afslutte opsætningen af 2FA
 enter_otp_to_disable_tfa: Indtast OTP for at deaktivere 2FA
-create_account: Opret Konto
-account_created_successfully: Konto Oprettet
-auto_fill: Udfyld Automatisk
-corresponding_field: Tilsvarende Felt
+create_account: Opret konto
+account_created_successfully: Konto oprettet
+auto_fill: Udfyld automatisk
+corresponding_field: Tilsvarende felt
 errors:
   COLLECTION_NOT_FOUND: "Samlingen findes ikke"
   FIELD_NOT_FOUND: Felt ikke fundet
@@ -577,8 +590,10 @@ errors:
   INVALID_PAYLOAD: Invalid payload
   INVALID_PROVIDER: Bruger tilhører en anden autoritets udbyder
   INVALID_QUERY: Ugyldig forespørgsel
+  INVALID_CONFIG: Ugyldig config
   INVALID_TOKEN: Ugyldig token
   INVALID_IP: Ugyldig IP adresse
+  INVALID_USER: Kunne ikke godkende bruger
   ITEM_LIMIT_REACHED: Element grænse nået
   ITEM_NOT_FOUND: Element ikke fundet
   ROUTE_NOT_FOUND: Ikke fundet
@@ -591,8 +606,9 @@ errors:
   ILLEGAL_ASSET_TRANSFORMATION: Billedkilde for stor til forhåndsvisning
   VALUE_TOO_LONG: Værdien er for lang
   VALUE_OUT_OF_RANGE: Værdien er uden for rækkevidde
-  INVALID_FOREIGN_KEY: Ugyldig udenlandsk nøgle
+  INVALID_FOREIGN_KEY: Ugyldig fremmed nøgle
   UNKNOWN: Uventet Fejl
+  GRAPHQL_VALIDATION_EXCEPTION: GraphQL-valideringsundtagelse
   SERVICE_UNAVAILABLE: Tjenesten er ikke tilgængelig
   UNSUPPORTED_MEDIA_TYPE: Ikke-understøttet filtype
   UNEXPECTED_RESPONSE: Uventet serversvar
@@ -601,76 +617,76 @@ errors:
   METHOD_NOT_ALLOWED: Metode ikke tilladt
   REQUESTS_EXCEEDED: Kvota overskredet
 security: Sikkerhed
-value_hashed: Værdi Sikker Hashed
+value_hashed: Værdi sikker hashed
 bookmark_name: Bogmærke navn...
-create_bookmark: Opret Bogmærke
-edit_bookmark: Rediger Bogmærke
-edit_personal_bookmark: Rediger Personligt Bogmærke
-edit_role_bookmark: Rediger Rolle Bogmærke
-edit_global_bookmark: Rediger Globalt Bogmærke
-cannot_edit_role_bookmarks: Kan Ikke Redigere Rolle Bogmærker
-cannot_edit_global_bookmarks: Kan Ikke Redigere Globale Bogmærker
+create_bookmark: Opret bogmærke
+edit_bookmark: Rediger bogmærke
+edit_personal_bookmark: Rediger personligt bogmærke
+edit_role_bookmark: Rediger rolle bogmærke
+edit_global_bookmark: Rediger globalt bogmærke
+cannot_edit_role_bookmarks: Kan ikke redigere rolle bogmærker
+cannot_edit_global_bookmarks: Kan ikke redigere globale bogmærker
 bookmarks: Foretrukne
 presets: Forudindstillinger
-unexpected_error: Uventet Fejl
+unexpected_error: Uventet fejl
 unexpected_error_copy: Der opstod en uventet fejl. Prøv igen senere.
-copy_details: Kopiér Detaljer
-no_app_access: Ingen App Adgang
+copy_details: Kopiér detaljer
+no_app_access: Ingen app adgang
 no_app_access_copy: Denne bruger har ikke tilladelse til at bruge admin appen.
-password_reset_sent: Hvis din konto findes har vi sendt dig et sikkert link til reset af din adgangskode
+password_reset_sent: Hvis din konto findes har vi sendt dig et sikkert link til nulstilling af din adgangskode
 password_reset_successful: Adgangskode nulstillet
 back: Tilbage
 filter: Filtrer
 edit_image: Rediger billede
-editing_image: Redigerer Billede
+editing_image: Redigerer billede
 square: Kvadrat
 free: Gratis
-flip_horizontal: Vend Vandret
-flip_vertical: Vend Lodret
-aspect_ratio: Aspekt Forhold
+flip_horizontal: Vend vandret
+flip_vertical: Vend lodret
+aspect_ratio: Billedformat
 rotate: Rotér
-all_users: Alle Brugere
-delete_collection: Slet Samling
-update_collection_success: Opdateret Samling
-delete_collection_success: Slettet Samling
-make_collection_visible: Gør Samlingen Synlig
-make_collection_hidden: Gør Samlingen Skjult
-make_folder_visible: Gør Mappen Synlig
-make_folder_hidden: Lav Mappe Skjult
-goto_collection_content: Vis Indhold
-start_end_of_count_items: '{start}-{end} af {count} varer'
-start_end_of_count_filtered_items: '{start}-{end} af {count} filtrerede emner'
-one_item: '1 vare'
-one_filtered_item: '1 filtreret genstand'
+all_users: Alle brugere
+delete_collection: Slet samling
+update_collection_success: Opdateret samling
+delete_collection_success: Slettet samling
+make_collection_visible: Gør samlingen synlig
+make_collection_hidden: Gør samlingen skjult
+make_folder_visible: Gør mappen synlig
+make_folder_hidden: Lav mappe skjult
+goto_collection_content: Vis indhold
+start_end_of_count_items: '{start}-{end} af {count} elementer'
+start_end_of_count_filtered_items: '{start}-{end} af {count} filtrerede elementer'
+one_item: '1 element'
+one_filtered_item: '1 filtreret element'
 delete_collection_are_you_sure: >-
   Er du sikker på du vil slette denne samling "{collection}"? Dette vil slette alle enheder i samlingen. Denne handling er permanent.
 delete_folder_are_you_sure: Er du sikker på du vil slette denne mappe"{folder}"? Dette vil slette alle undermapper og enheder i mappen. Denne handling er permanent.
-collections_shown: Viste Samlinger
-visible_collections: Synlige Samlinger
-hidden_collections: Skjulte Samlinger
-show_hidden_collections: Vis Skjulte Samlinger
-hide_hidden_collections: Skjul Skjulte Samlinger
-show_header: Vis Overskrift
-unmanaged_collections: Ukonfigurerede Samlinger
-system_collections: System Samlinger
+collections_shown: Viste samlinger
+visible_collections: Synlige samlinger
+hidden_collections: Skjulte samlinger
+show_hidden_collections: Vis skjulte samlinger
+hide_hidden_collections: Skjul skjulte samlinger
+show_header: Vis overskrift
+unmanaged_collections: Ukonfigurerede samlinger
+system_collections: System samlinger
 placeholder: Placeholder
 icon_left: Ikon til venstre
 icon_right: Ikon til højre
-count_other_revisions: '{count} Andre revisioner'
-font: Font
+count_other_revisions: '{count} andre revisioner'
+font: Skrifttype
 sans_serif: Sans Serif
 serif: Serif
 monospace: Monospace
 divider: Opdeler
 color: Farve
 circle: Cirkel
-empty_item: Tomt Element
+empty_item: Tomt element
 log_in_with: 'Log ind med {provider}'
-conditional_styles: Betingede Stilarter
-advanced_settings: Avancerede Indstillinger
-advanced_filter: Avanceret Filter
-delete_advanced_filter: Slet Filter
-change_advanced_filter_operator: Skift Operatør
+conditional_styles: Betingede stilarter
+advanced_settings: Avancerede indstillinger
+advanced_filter: Avanceret filter
+delete_advanced_filter: Slet filter
+change_advanced_filter_operator: Skift operatør
 advanced: Avanceret
 operators:
   eq: Lig
@@ -685,6 +701,7 @@ operators:
   nnull: Er ikke nul
   contains: Indeholder
   ncontains: Indeholder ikke
+  icontains: Indeholder (ufølsom)
   starts_with: Starter med
   nstarts_with: Start ikke med
   ends_with: Slutter med
@@ -704,107 +721,154 @@ custom_validation_message: Brugerdefineret Valideringsbesked
 loading: Indlæser...
 drop_to_upload: Slip for upload
 item: Vare
-items: Varer
-upload_file: Upload Fil
-upload_file_indeterminate: Uploader Fil...
+items: elementer
+upload_file: Upload fil
+upload_file_indeterminate: Uploader fil...
 upload_file_success: Fil Uploadet
 upload_files_indeterminate: 'Uploader filer {done}/{total}'
-upload_files_success: '{count} Filer Uploadet'
-upload_pending: Upload Afventer
+upload_files_success: '{count} filer Uploadet'
+upload_pending: Upload afventer
 drag_file_here: Træk og slip en fil her
 click_to_browse: Klik for at gennemse
 interface_options: Grænsefladeindstillinger
-layout_options: Layout Indstillinger
+layout_options: Layout indstillinger
 rows: Rækker
 columns: Kolonner
-collection_setup: Opsætning Af Samling
-optional_system_fields: Valgfrie Systemfelter
+collection_setup: Opsætning af samling
+optional_system_fields: Valgfrie systemfelter
 value_unique: Værdien skal være unik
-all_activity: Al Aktivitet
-create_item: Opret Element
-display_template: Vis Skabelon
-language_display_template: Sprogvisning Skabelon
-translations_display_template: Skabelon Til Oversættelsesvisning
-n_items_selected: 'Ingen Elementer Valgt Øverst 1 Element Valgt Øverst {n} Elementer Valgt'
-per_page: Pr. Side
-all_files: Alle Filer
-my_files: Mine Filer
-recent_files: Seneste Filer
-create_folder: Opret Mappe
-edit_folder: Rediger Mappe
+all_activity: Al aktivitet
+create_item: Opret element
+display_template: Vis skabelon
+language_display_template: Sprogvisning skabelon
+translations_display_template: Skabelon til oversættelsesvisning
+n_items_selected: 'Ingen elementer valgt | Et element Valgt | {n} elementer Valgt'
+per_page: Pr. side
+all_files: Alle filer
+my_files: Mine filer
+recent_files: Seneste filer
+create_folder: Opret mappe
+edit_folder: Rediger mappe
 folder_name: Mappenavn...
-folder_key: Mappe Nøgle...
-add_file: Tilføj Fil
-replace_file: Erstat Fil
+folder_key: Mappe nøgle...
+add_file: Tilføj fil
+replace_file: Erstat fil
 no_results: Ingen resultater
 no_results_copy: Justér eller ryd søgefiltre for at se resultater.
-clear_filters: Ryd Filtre
-saves_automatically: Gemmer Automatisk
+no_visible_fields: Tom formular
+no_visible_fields_copy: Denne formular har ingen synlige felter.
+clear_filters: Ryd filtre
+saves_automatically: Gemmer automatisk
 role: Rolle
-edit_role: Rediger Rolle
+edit_role: Rediger rolle
 rule: Regel
 user: Bruger
-no_presets: Ingen Forudindstillinger
+no_presets: Ingen forudindstillinger
 no_presets_copy: Ingen forudindstillinger eller bogmærker er blevet gemt endnu.
-no_presets_cta: Tilføj Forudindstilling
-presets_only: Kun Forudindstillinger
+no_presets_cta: Tilføj forudindstilling
+presets_only: Kun forudindstillinger
 create: Opret
-on_create: Ved Oprettelse
-on_update: Ved Opdatering
+on_create: Ved oprettelse
+on_update: Ved opdatering
 read: Læs
 update: Opdater
 delete: Slet
 select_fields: Vælg felter
-format_text: Formatér Tekst
-format_value: Formatér Værdi
-abbreviate_value: Forkort Værdi
+format_text: Formatér tekst
+format_value: Formatér værdi
+abbreviate_value: Forkort værdi
 operator: Operatør
 bold: Fed
 toggle: Skift
-icon_on: Ikon Til
-icon_off: Ikon Fra
+icon_on: Ikon til
+icon_off: Ikon fra
 label: Etiket
+flows: Flows
+flow: Flow
+select_a_flow: Vælg et Flow
+run_flow_on_current_collection: Kør flow på aktuel samling
+run_flow_on_current: Kør flow på nuværende element
+run_flow_on_current_edited_confirm: Dette element kan blive opdateret af dette flow, er du sikker på, at du vil udføre det?
+run_flow_on_selected: Vælg et eller flere elementer først | Kør flow på et udvalgt element | Kør flow på {n} udvalgte elementer
+run_flow_success: Flow "{flow}" kørte med succes
 trigger: Udløser
+trigger_options: Udløserindstillinger
+view_trigger: Vis udløser
+create_trigger: Opret udløser
+trigger_setup: Udløser Setup
+change_trigger: Skift udløser
+flow_delete_confirm: Er du sikker på, at du vil slette flow "{flow}"? Denne handling kan ikke fortrydes.
+set_flow_active: Indstil Flow til aktiv
+set_flow_inactive: Indstil Flow til inaktiv
+edit_flow: Rediger Flow
+delete_flow: Slet Flow
+no_other_flows_copy: Du har ikke andre Flows endnu.
+no_flows: Ingen Flows
+no_flows_copy: Du har ingen Flows endnu.
+create_flow: Opret Flow
+creating_new_flow: Opret nyt Flow
+updating_flow: Opdater Flow
+flow_setup: Flow opsætning
 flow_name: Navn
-flow_tracking_activity: Spor Kun Aktivitet
-flow_tracking_null: Spor Ikke Noget
+flow_tracking: Aktivitets- og logsporing
+flow_tracking_all: Spor aktivitet og logs
+flow_tracking_activity: Spor kun aktivitet
+flow_tracking_null: Spor ikke
+start_flow: Start Flow
+stop_flow: Stop Flow
+create_operation: Opret handling
+edit_operation: Rediger handling
 code: Kode
+operation_options: Betjeningsindstillinger
+operation_name: Navn på operation...
+operation_key: Identifikator for reference...
+operation_key_unique_error: Betjeningsnøgler skal være unikke i et flow
+operation_handle_resolve: 'Løs: Klik for at tilføje eller træk for at omdirigere'
+operation_handle_reject: 'Afvis: Klik for at tilføje eller træk for at omdirigere'
 insights: Indsigter
 dashboard: Instrumentbræt
 panel: Stykke
-panel_options: Panel Indstillinger
-panel_header: Panel- Header
+panel_options: Panel indstillinger
+panel_header: Panelhoved
 panel_name_placeholder: Navngiv dette panel...
 panel_note_placeholder: Valgfrie detaljer om dette panel...
 panel_delete_confirm: Er du sikker på, at du vil slette dette element? Denne handling kan ikke fortrydes.
+list_panel_allow_edit: Tillad indlejret redigering
 dashboard_delete_confirm: Er du sikker på, at du vil slette dette dashboard? Denne handling kan ikke fortrydes.
-edit_dashboard: Rediger Kontrolpanel
-delete_dashboard: Slet Kontrolpanel
+edit_dashboard: Rediger kontrolpanel
+delete_dashboard: Slet kontrolpanel
 visible: Synlig
 prefix_placeholder: Tekst før værdi...
 suffix_placeholder: Tekst efter værdi...
 decimals_placeholder: Antal decimaler...
-no_dashboards: Ingen Dashboards
-no_dashboards_copy: Du har ikke nogen Dashboards endnu.
-create_dashboard: Opret Dashboard
-dashboard_name: Betjeningspanels Navn
-no_data: Ingen Data
+no_dashboards: Ingen dashboards
+no_dashboards_copy: Du har ikke nogen dashboards endnu.
+create_dashboard: Opret dashboard
+dashboard_name: Dashboardnavn
+no_data: Ingen data
+no_data_in_flow: Ingen data blev produceret eller tilgået i dette Flow
 accountability: Ansvarlighed
-full_screen: Fuld Skærm
-full_text_search: Fuldtekst Søgning
-edit_panels: Rediger Paneler
+payload: Nyttelast
+details: Detajler
+full_screen: Fuld skærm
+full_text_search: Fuldtekst søgning
+edit_panels: Rediger paneler
+center_align: Centerjuster
+left_align: Venstrejustering
+right_align: Højrejustering
 fit_to_screen: Tilpas til skærm
-image_url: Billede Url
-alt_text: Alternativ Tekst
+image_url: Billede url
+alt_text: Alternativ tekst
 media: Medier
 quality: Kvalitet
 width: Bredde
 height: Højde
+transformation_preset_key: Forudindstillingstast for transformation
 source: Kilde
 url_placeholder: Indtast en url...
-display_text: Vis Tekst
+display_text: Vis tekst
 display_text_placeholder: Indtast en visningstekst...
-interface_group_text_and_numbers: Tekst & Tal
+interface_group_text_and_numbers: Tekst og tal
 interface_group_selection: Markering
 interface_group_relational: Forhold
 interface_group_presentation: Præsentation
@@ -816,26 +880,31 @@ unlimited: Ubegrænset
 open_link_in: Åbn link i
 new_tab: Ny fane
 current_tab: Aktuel fane
-save_image: Gem Billede
-save_media: Gem Medier
+save_image: Gem billede
+save_media: Gem medier
 wysiwyg_options:
   aligncenter: Juster centreret
+  alignjustify: Juster retfærdig
+  alignleft: Venstrejuster
+  alignnone: Juster ingen
+  alignright: Juster til højre
   forecolor: Forgrundsfarve
-  backcolor: Baggrunds Farve
+  backcolor: Baggrundsfarve
   bold: Fed
+  italic: Kursiv
   underline: Understreget
   strikethrough: Gennemstreget
   subscript: Sænket
   superscript: Hævet
   codeblock: Kode
   blockquote: Blokér
-  bullist: Kugleliste
-  numlist: Nummereret Liste
-  hr: Horisontal Regel
-  link: Tilføj/Rediger Link
-  unlink: Fjern Link
-  media: Tilføj/Rediger Medie
-  image: Tilføj/Rediger Billede
+  bullist: Kugle liste
+  numlist: Nummereret liste
+  hr: Horisontal regel
+  link: Tilføj/Rediger link
+  unlink: Fjern link
+  media: Tilføj/Rediger medie
+  image: Tilføj/Rediger billede
   copy: Kopiér
   cut: Klip
   paste: Indsæt
@@ -846,26 +915,28 @@ wysiwyg_options:
   h4: Overskrift 4
   h5: Overskrift 5
   h6: Overskrift 6
-  fontsizeselect: Vælg Skrifttypestørrelse
+  fontselect: Vælg skrifttype
+  fontsizeselect: Vælg skrifttypestørrelse
   indent: Indryk
+  outdent: Udryk
   undo: Fortryd
   redo: Gendan
   remove: Fjern
-  removeformat: Fjern Format
+  removeformat: Fjern format
   selectall: Vælg alle
   table: Tabel
   visualaid: Se usynlige elementer
-  source_code: Rediger Kildekode
-  fullscreen: Fuld Skærm
+  source_code: Rediger kildekode
+  fullscreen: Fuld skærm
   directionality: Retningslinjer
 dropdown: Rulleliste
 choices: Valgmuligheder
 choices_option_configured_incorrectly: Valg konfigureret forkert
 deselect: Afmarkér
-deselect_all: Fravælg Alle
+deselect_all: Fravælg alle
 other: Andet...
-adding_user: Tilføjer Bruger
-unknown_user: Ukendt Bruger
+adding_user: Tilføjer bruger
+unknown_user: Ukendt bruger
 creating_in: 'Opretter element i {collection}'
 editing_in: 'Redigerer element i {collection}'
 viewing_in: 'Viser element i {collection}'
@@ -873,34 +944,37 @@ creating_unit: 'Opretter {unit}'
 editing_unit: 'Redigerer {unit}'
 editing_in_batch: 'Masseredigerer {count} elementer'
 no_options_available: Ingen tilgængelige valgmuligheder
-settings_permissions: Roller og Tilladelser
+settings_data_model: Data model
+settings_permissions: Roller og tilladelser
 settings_project: Projektindstillinger
 settings_webhooks: Webhooks
-settings_presets: Forudindstillinger Og Bogmærker
+settings_flows: Flows
+settings_presets: Forudindstillinger og bogmærker
 settings_translation_strings: Oversættelsesstrenge
 one_or_more_options_are_missing: En eller flere muligheder mangler
 scope: Anvendelsesområde
 actions: Handlinger
 select: Vælg...
-tree_view: Træ Visning
+layout: Layout
+tree_view: Træ visning
 changes_are_permanent: Ændringer er permanente
 preset_name_placeholder: Serverer som standard når tom...
 preset_search_placeholder: Søg forespørgsel...
-editing_preset: Redigerer Forudindstilling
+editing_preset: Redigerer forudindstilling
 layout_preview: Layout Forhåndsvisning
 layout_setup: Layout Opsætning
 data: Data
 unsaved_changes: Ikke gemte ændringer
 unsaved_changes_copy: Er du sikker på du vil forlade denne side?
-discard_changes: Kassér Ændringer
-discard_all_changes: Kassér Alle Ændringer
+discard_changes: Kassér ændringer
+discard_all_changes: Kassér alle ændringer
 discard_changes_copy: Er du sikker på, at du vil kassere alle de foretagne ændringer?
-show_x_axis: Vis X- Akse
-show_y_axis: Vis Y-akse
-keep_editing: Fortsæt Redigering
+show_x_axis: Vis x-Akse
+show_y_axis: Vis y-akse
+keep_editing: Fortsæt redigering
 page_help_collections_overview: '**Samlinger Oversigt** — Liste over alle samlinger, du har adgang til.'
 page_help_collections_collection: >-
-  **Gennemse varer ** — Viser alle {collection} elementer, du har adgang til. Tilpas layout, filtre og sortering for at skræddersy din visning, og gem endda bogmærker af disse forskellige konfigurationer for hurtig adgang.
+  **Gennemse elementer ** — Viser alle {collection} elementer, du har adgang til. Tilpas layout, filtre og sortering for at skræddersy din visning, og gem endda bogmærker af disse forskellige konfigurationer for hurtig adgang.
 page_help_collections_item: >-
   **Item Detail** — En formular til visning og håndtering af dette element. Denne sidebar indeholder også en fuld historie af revisioner og indlejrede kommentarer.
 page_help_activity_collection: >-
@@ -924,6 +998,8 @@ page_help_settings_presets_item: >-
   **Forudindstilling Detaljer** — En formular til håndtering af bogmærker og standard samlingsindstillinger.
 page_help_settings_webhooks_collection: '**Gennemse Webhooks** — Viser alle webhooks i projektet.'
 page_help_settings_webhooks_item: '**Webhook Detail** — En formular til oprettelse og håndtering af projektwebhooks.'
+page_help_settings_flows_collection: '**Gennemse flows** — Viser alle flows i projektet.'
+page_help_settings_flows_item: '**Flowdetalje** — Arbejdsområde til styring af en eller flere operationer.'
 page_help_settings_translation_strings_collection: '**Gennemse oversættelsesstrenge** — Viser alle oversættelsesstrenge i projektet.'
 page_help_users_collection: '**Bruger Directory** — Viser en liste over alle systembrugere i dette projekt.'
 page_help_users_item: >-
@@ -931,8 +1007,8 @@ page_help_users_item: >-
 page_help_insights_overview: '**Insights** — Liste over dashboards du har adgang til.'
 page_help_insights_dashboard: '**Dashboard** — Arbejdsrum til håndtering af et eller flere paneler'
 activity_feed: Aktivitetsfeed
-add_new: Tilføj Ny
-create_new: Opret Ny
+add_new: Tilføj ny
+create_new: Opret ny
 all: Alle
 none: Ingen
 no_layout_collection_selected_yet: Ingen layout/samling valgt endnu
@@ -943,6 +1019,7 @@ no_upscale: Opskalér ikke billeder
 collection: Samling
 collections: Samlinger
 content: Indhold
+singleton: Enkelt
 singleton_label: Behandl som enkelt objekt
 system_fields_locked: Systemfelter er låst og kan ikke redigeres
 directus_collection:
@@ -951,9 +1028,11 @@ directus_collection:
   directus_dashboards: Instrumentbrætter i Insights modulet
   directus_fields: Yderligere feltkonfiguration og metadata
   directus_files: Metadata for alle administrerede fil-asset'er
+  directus_flows: Automatiseringsflows
   directus_folders: Giver virtuelle mapper til filer
   directus_migrations: Hvilken version af den database, du bruger
   directus_notifications: Notifikationer sendt til brugere
+  directus_operations: Operationer, der kører i Flows
   directus_panels: Individuelle paneler i Insights dashboards
   directus_permissions: Adgangstilladelser for hver rolle
   directus_presets: Forudindstillinger for opsamling standardindstillinger og bogmærker
@@ -967,11 +1046,11 @@ directus_collection:
   directus_webhooks: Konfiguration for event-baserede HTTP-forespørgsler
 fields:
   directus_activity:
-    item: Element Primær Nøgle
+    item: Element primær nøgle
     action: Handling
     collection: Samling
-    timestamp: Handling Til
-    user: Handling Af
+    timestamp: Handling til
+    user: Handling af
     comment: Kommenter
     user_agent: Brugeragent
     origin: Oprindelse
@@ -982,17 +1061,19 @@ fields:
     icon: Ikon
     note: Kommentar
     color: Farve
-    display_template: Vis Skabelon
+    display_template: Vis skabelon
     hidden: Skjult
-    translations: Samling Navngivning Oversættelser
-    archive_app_filter: Arkivér Appfilter
-    archive_value: Arkiv Værdi
-    unarchive_value: Fjern Arkiveringsværdi
-    sort_field: Sortér Felt
-    accountability: Aktivitet & Revision Tracking
-    archive_field: Arkivér Felt
-    item_duplication_fields: Element Duplikationsfelter
+    singleton: Enkelt
+    translations: Samling navngivning oversættelser
+    archive_app_filter: Arkivér appfilter
+    archive_value: Arkiv værdi
+    unarchive_value: Fjern arkiveringsværdi
+    sort_field: Sortér felt
+    accountability: Aktivitet og revisions tracking
+    archive_field: Arkivér felt
+    item_duplication_fields: Element duplikationsfelter
   directus_files:
+    $thumbnail: Miniaturebillede
     title: Titel
     description: Beskrivelse
     tags: Tags
@@ -1001,16 +1082,17 @@ fields:
     filename_disk: Filnavn (Disk)
     filename_download: Filnavn (Download)
     metadata: Metadata
+    type: Mime type
     filesize: Filstørrelse
     modified_by: Ændret Af
     modified_on: Ændringsdato
-    created_on: Oprettet d.
+    created_on: Oprettet den
     created_by: Oprettet af
     embed: Indlejr
     uploaded_by: Uploadet af
     folder: Mappe
     width: Bredde
-    uploaded_on: Uploadet d.
+    uploaded_on: Uploadet den
     height: Højde
     charset: Tegnsæt
     duration: Varighed
@@ -1024,14 +1106,14 @@ fields:
     title: Titel
     description: Beskrivelse
     tags: Tags
-    user_preferences: Bruger Præferencer
+    user_preferences: Bruger præferencer
     language: Sprog
     theme: Tema
     theme_auto: Automatisk (Basseret på system)
     theme_light: Lys Tilstand
     theme_dark: Mørk Tilstand
-    tfa_secret: To-faktor godkendelse
-    admin_options: Admin Indstillinger
+    tfa_secret: Tofaktorgodkendelse
+    admin_options: Admin indstillinger
     status: Status
     status_draft: Kladde
     status_invited: Inviteret
@@ -1039,66 +1121,78 @@ fields:
     status_suspended: Suspenderet
     status_archived: Arkiveret
     role: Rolle
+    token: Nøgle
     provider: Udbyder
-    external_identifier: External Identifier
+    external_identifier: Ekstern identifikator
     last_page: Sidste side
-    last_access: Seneste Adgang
-    email_notifications: E-Mail Notifikationer
+    last_access: Seneste adgang
+    email_notifications: E-Mail notifikationer
   directus_settings:
     jpg: JPEG
     png: PNG
     webP: WebP
     tiff: Tiff
     mapping: Kortlægning
-    mapbox_key: Mapbox Access Token
+    basemaps: Grundkort
+    basemaps_raster: Raster
+    basemaps_tile: Raster TileJSON
+    basemaps_style: Mapbox stil
+    mapbox_key: Mapbox adgangsnøgle
+    mapbox_placeholder: pk.eyJ1Ijo.....
     attribution: Tildeling
     attribution_placeholder: '© OpenStreetMap bidragsydere'
-    transforms_note: Navn på Skarpe metode og dens argumenter. Se https://sharp.pixelplumbing.com/api-constructor for mere information.
-    additional_transforms: Yderligere Transformationer
+    transforms_note: Navn på sharp metode og dens argumenter. Se https://sharp.pixelplumbing.com/api-constructor for mere information.
+    additional_transforms: Yderligere transformationer
     project_name: Projektnavn
-    project_descriptor: Projektdeskriptor
+    project_descriptor: Projektbeskrivelse
     project_url: Projekt URL
-    project_color: Projekt Farve
-    project_logo: Projekt Logo
-    default_language: Standard Sprog
-    branding: Branding & Stil
-    public_foreground: Offentlig Forgrund
-    public_background: Offentlig Baggrund
-    public_note: Offentlig Note
-    auth_password_policy: Auth Adgangskode Politik
-    auth_login_attempts: Auth Login Forsøg
-    files_and_thumbnails: Filer Og Lagerplads
-    storage_default_folder: Standard Mappe
-    storage_asset_presets: Forudindstillinger For Transformation
-    storage_asset_transform: Tilladte Transformationer
-    overrides: App Tilsidesættelser
-    module_bar: Modul Bar
+    project_color: Projekt farve
+    project_logo: Projekt logo
+    default_language: Standard sprog
+    branding: Branding og stil
+    public_foreground: Offentlig forgrund
+    public_background: Offentlig baggrund
+    public_note: Offentlig note
+    auth_password_policy: Autentificering adgangskode politik
+    auth_login_attempts: Autentificering login forsøg
+    files_and_thumbnails: Filer og lagerplads
+    storage_default_folder: Standard mappe
+    storage_asset_presets: Forudindstillinger for transformation
+    storage_asset_transform: Tilladte transformationer
+    overrides: App tilsidesættelser
+    custom_css: Brugerdefineret CSS
+    module_bar: Modulbar
     transformations_all: Tillad alle transformationer
     transformations_none: Deaktivér transformationer
     transformations_presets: Begræns transformationer til forudindstillinger nedenfor
+    image_editor: Billedredigering
+    custom_aspect_ratios: Brugerdefinerede billedformater
   directus_shares:
     name: Navn
     role: Rolle
     password: Adgangskode
-    date_start: Dato Start
-    date_end: Dato Slut
-    max_uses: Maks. Anvendelser
-    times_used: Brugte Tider
+    date_start: Dato start
+    date_end: Dato slut
+    max_uses: Maksimal anvendelser
+    times_used: Brugte tider
   directus_fields:
-    collection: Samlingens Navn
+    collection: Samlingensnavn
     icon: Samlingsikon
     note: Kommentar
     hidden: Skjult
+    singleton: Enkelt
     translation: Oversættelse af feltnavn
     display_template: Skabelon
   directus_roles:
     name: Rollenavn
+    icon: Rolle ikon
     description: Beskrivelse
-    app_access: App Adgang
-    admin_access: Admin Adgang
-    ip_access: Ip Adgang
-    enforce_tfa: Kræv 2FA
-    users: Brugere i Rolle
+    app_access: App adgang
+    admin_access: Admin adgang
+    ip_access: Ip adgang
+    enforce_tfa: Kræver 2FA
+    users: Brugere i rolle
+    module_list: Modul navigation
   directus_webhooks:
     name: Navn
     method: Metode
@@ -1106,16 +1200,17 @@ fields:
     data: Data
     header: Overskrift
     value: Værdi
-    headers: Anmod Om Headers
-    data_label: Send Begivenhedsdata
+    headers: Anmod om headers
+    data_label: Send begivenhedsdata
     triggers: Udløsere
     actions: Handlinger
     collections: Samlinger
 field_options:
   directus_settings:
     project_name_placeholder: Mit projekt...
-    project_color_note: Login- & Logo Baggrund
-    public_note_placeholder: En kort, offentlig besked, der understøtter markdown formatering...
+    project_color_note: Login- & logo baggrund
+    project_logo_note: Hvid 40x40 SVG/PNG
+    public_note_placeholder: En kort offentlig besked, der understøtter markdown formatering...
     security_divider_title: Sikkerhed
     auth_password_policy:
       none_text: Ingen – Anbefales Ikke
@@ -1125,38 +1220,43 @@ field_options:
       fit_label: Tilpas
       upscaling: Opskalering
       fit:
-        contain_text: Indeholder (bevare aspektforhold)
+        contain_text: Indeholder (bevare billedformat)
         cover_text: Dæksel (kræfter nøjagtig størrelse)
         fit_text: Tilpas indersiden
         outside_text: Tilpas udenfor
-    additional_transforms: Yderligere Transformationer
-    transforms_note: Navn på Skarpe metode og dens argumenter. Se https://sharp.pixelplumbing.com/api-constructor for mere information.
-    mapbox_key: Mapbox Access Token
+    additional_transforms: Yderligere transformationer
+    transforms_note: Navn på sharp metode og dens argumenter. Se https://sharp.pixelplumbing.com/api-constructor for mere information.
+    mapbox_key: Mapbox adgangs token
+    mapbox_placeholder: pk.eyJ1Ijo.....
+    basemaps: Grundkort
     basemaps_name_placeholder: Indtast det basemap navn...
-    files_divider_title: Filer Og Miniaturer
-    overrides_divider_title: App Tilsidesættelser
+    basemaps_raster: Raster
+    basemaps_tile: Raster TileJSON
+    basemaps_style: Mapbox stil
+    files_divider_title: Filer og miniaturer
+    overrides_divider_title: App tilsidesættelser
   directus_activity:
     login: Log ind
     create: Opret
     update: Opdater
     delete: Slet
   directus_collections:
-    track_activity_revisions: Spor Aktivitet Og Revisioner
-    only_track_activity: Spor Kun Aktivitet
-    do_not_track_anything: Spor Ikke Noget
-    collection_setup: Opsætning Af Samling
+    track_activity_revisions: Spor aktivitet og revisioner
+    only_track_activity: Spor kun aktivitet
+    do_not_track_anything: Spor ikke noget
+    collection_setup: Opsætning af samling
     note_placeholder: En beskrivelse af denne samling...
     hidden_label: Skjul i appen
     singleton: Behandl som enkelt objekt
     language: Sprog
     translation: Oversættelse
     translation_placeholder: Indtast en oversættelse...
-    collection_name: Samlingens Navn
-    singular_unit: Ental Enhed
+    collection_name: Samlingens navn
+    singular_unit: Entalenhed
     plural_unit: Flertalsenhed
     archive_divider: Arkiver
     archive_field_placeholder: Vælg et felt...
-    archive_app_filter: Aktiver App Arkivfilter
+    archive_app_filter: Aktiver app arkivfilter
     archive_value: Værdi sat når arkiverer...
     unarchive_value: Værdi sat når afarkiverer...
     sort_divider: Sortér
@@ -1167,7 +1267,7 @@ field_options:
     title: En unik titel...
     description: En valgfri beskrivelse...
     location: En valgfri placering...
-    storage_divider: Navngivning Af Fil
+    storage_divider: Navngivning af Fil
     filename_disk: Navn på disklagerplads...
     filename_download: Navn når du downloader...
   directus_roles:
@@ -1181,13 +1281,13 @@ field_options:
       link_name: Link
       link_placeholder: Relativ eller absolut URL...
     collections_name: Samlinger
-    collections_addLabel: Tilføj Samling...
+    collections_addLabel: Tilføj samling...
   directus_users:
-    preferences_divider: Bruger Præferencer
+    preferences_divider: Bruger præferencer
     dropdown_auto: Automatisk (Basseret på system)
-    dropdown_light: Lys Tilstand
-    dropdown_dark: Mørk Tilstand
-    admin_divider: Admin Indstillinger
+    dropdown_light: Lys tilstand
+    dropdown_dark: Mørk tilstand
+    admin_divider: Admin indstillinger
     status_dropdown_draft: Kladde
     status_dropdown_invited: Inviteret
     status_dropdown_active: Aktiv
@@ -1197,7 +1297,7 @@ field_options:
   directus_webhooks:
     status_options_active: Aktiv
     status_options_inactive: Inaktiv
-    data_label: Send Begivenhedsdata
+    data_label: Send begivenhedsdata
     triggers_divider: Udløsere
     actions_create: Opret
     actions_update: Opdater
@@ -1206,17 +1306,17 @@ field_options:
     headers:
       header: Overskrift
       value: Værdi
-      add: Tilføj Overskrift
+      add: Tilføj overskrift
 no_fields_in_collection: 'Der er ingen felter i "{collection}" endnu'
 no_value: Ingen værdi
-do_nothing: Gør Intet
+do_nothing: Gør intet
 generate_and_save_uuid: Generer og gem UUID
-save_current_user_id: Gem Nuværende Bruger-Id
-save_current_user_role: Gem Nuværende Brugerrolle
-save_current_datetime: Gem Nuværende Dato/Tid
-always_open: Åbn Altid
-start_open: Start Åben
-start_collapsed: Start Sammenbrudt
+save_current_user_id: Gem nuværende bruger-Id
+save_current_user_role: Gem Nuværende brugerrolle
+save_current_datetime: Gem nuværende dato og tid
+always_open: Åbn altid
+start_open: Start åben
+start_collapsed: Start sammenbrudt
 block: Blokér
 inline: Indlejret
 comment: Kommenter
@@ -1228,33 +1328,34 @@ new_share: Ny Del
 expired: Udløbet
 upcoming: Kommende
 share: Del
-share_item: Del Element
+share_item: Del element
 shared_with_you: Et element er blevet delt med dig
 shared_enter_passcode: Indtast din adgangskode for at fortsætte...
 shared_leave_blank_for_unlimited: Lad stå tomt for ubegrænset
 shared_times_remaining: Dette link kan kun bruges {n} gange
 shared_last_remaining: Dette link kan kun bruges én gang
 shared_uses_left: For ekstra sikkerhed er denne delte side konfigureret med et begrænset antal visninger. Der er i øjeblikket {n} visninger tilbage, hvorefter siden ikke længere vil være tilgængelig.
-share_access_page: Adgang Delt Side
+share_access_page: Adgang til delt side
 share_access_not_found: Denne delte side findes enten ikke eller har allerede overskredet det maksimale antal tilladte anvendelser.
 share_access_not_found_desc: Kontakt en autoriseret bruger af dette projekt for at anmode om adgang.
-share_access_not_found_title: Ukendt Del Side
-share_copy_link: Kopier Link
-share_copy_link_success: Link Kopieret
+share_access_not_found_title: Ukendt delt side
+share_copy_link: Kopier link
+share_copy_link_success: Link kopieret
 share_copy_link_error: Kan ikke kopiere link
-relational_triggers: Relationelle Udløsere
+share_send_link: Send link
+relational_triggers: Relationelle udløsere
 referential_action_field_label_m2o: Ved sletning af {collection}...
-referential_action_field_label_o2m: Ved Fravælg {collection}...
-referential_action_no_action: Forhindr sletning
+referential_action_field_label_o2m: Ved fravalg af {collection}...
+referential_action_no_action: Forhindre sletning
 referential_action_cascade: Slet {collection} elementet (kaskade)
 referential_action_set_null: Nulstil feltet {field}
 referential_action_set_default: Sæt {field} til standardværdien
-choose_action: Vælg Handling
+choose_action: Vælg handling
 continue_label: Fortsæt
 continue_as: >-
   {name} er i øjeblikket godkendt. Hvis du genkender denne konto, skal du fortsætte.
 editing_role: '{role} Rolle'
-creating_webhook: Opretter Webhook
+creating_webhook: Opretter webhook
 default_label: Standard
 delete_label: Slet
 delete_are_you_sure: >-
@@ -1267,10 +1368,10 @@ duplicate: Dupliker
 limit: Grænse
 email: E-mail
 embed: Indlejr
-fallback_icon: Baglæns Ikon
+fallback_icon: Baglæns ikon
 field: Felt | Felter
 file: Fil
-file_library: Fil Bibliotek
+file_library: Fil bibliotek
 forgot_password: Glemt adgangskode
 hidden: Skjult
 hidden_in_group: Skjult i {group}
@@ -1290,77 +1391,89 @@ colors:
   black: Sort
   gray: Grå
   white: Hvid
-junction_collection: Junction Samling
-latency: Latency
+junction_collection: Krydssamling
+latency: Reaktionstid
 login: Log ind
-my_activity: Min Aktivitet
+my_activity: Min aktivitet
 not_authenticated: Ikke godkendt
 authenticated: Godkendt
 options: Valgmuligheder
-otp: Engangs Adgangskode
+otp: Engangs adgangskode
 password: Adgangskode
 permissions: Rettigheder
 relationship: Forhold
 reset: Nulstil
 reset_password: Nulstil adgangskode
 revisions: Revisioner
-no_revisions: Ingen Revisioner Endnu
+no_revisions: Ingen revisioner endnu
+no_logs: Ingen logs endnu
 revert: Gendan
 save: Gem
 schema: Schema
 search: Søg
-select_existing: Vælg Eksisterende
+select_existing: Vælg eksisterende
 select_field_type: Vælg en felttype
-select_interface: Vælg et Interface
+select_interface: Vælg et brugerflade
 settings: Indstillinger
 sign_in: Log ind
 sign_out: Log ud
 sign_out_confirm: Er du sikker på, at du vil logge ud?
 something_went_wrong: Noget gik galt.
 sort_direction: Sorteringsretning
-export_location: Eksporter Placering
-export_started: Eksport Startet
+export_location: Eksporter placering
+export_started: Eksport startet
 export_started_copy: Din eksport er startet. Du får besked, når den er klar til download.
-sort_asc: Sortér Stigende
-sort_desc: Sortér Faldende
+sort_asc: Sortér stigende
+sort_desc: Sortér faldende
 template: Skabelon
+require_value_to_be_set: Kræv værdi for at blive sat på oprettelse
 translation: Oversættelse
 translation_placeholder: Indtast en oversættelse...
 value: Værdi
-view_project: Vis Projekt
-report_error: Fejl I Rapport
+view_project: Vis projekt
+weeks: { }
+report_error: Fejl i rapport
 start: Start
 table: Tabel
 list: Liste
+search_filter: Søg og filtrer
+enable_search_filter: Aktiver søgning og filtrering
+item_link: Element link
+show_link_to_item: Vis et link til element
+navigate_to_item: Navigate to Item
+undo_removed_item: Fortryd fjernet element
+remove_item: Fjern element
+delete_item: Slet element
 interfaces:
   filter:
     name: Filtrer
     description: Indstil et filterobjekt.
-    add_filter: Tilføj Filter
+    add_filter: Tilføj filter
     add_group: Og / Eller gruppe
     add_value: Tilføj Værdi
-    logic_type_and: OG
-    logic_type_or: ELLER
-    all: Alle
-    any: Alle
+    logic_type_and: og
+    logic_type_or: eller
+    all: alle
+    any: alle
     and: og
     of_the_following: af følgende
     no_rules: Ingen konfigurerede regler
     change_value: Klik for at ændre værdi
     placeholder: Træk regler her
+    add_key_placeholder: Tilføj en nøgle, og tryk på enter...
   fields:
     name: Felter
   group-accordion:
     name: Harmonika
     description: Vis felter eller grupper som harmonika sektioner
     start: Start
-    all_closed: Alle Lukkede
-    first_opened: Første Åbnet
-    all_opened: Alle Åbnede
-    accordion_mode: Harmonika Tilstand
-    max_one_section_open: Maks. 1 Sektion Åben
+    all_closed: Alle lukkede
+    first_opened: Første åbnet
+    all_opened: Alle åbnede
+    accordion_mode: Harmonika tilstand
+    max_one_section_open: Maks en sektion åben
   presentation-links:
-    presentation-links: Knap Links
+    presentation-links: Knap links
     links: Links
     description: Konfigurerbare linkknapper til at starte dynamiske URL'er
     style: Stil
@@ -1371,49 +1484,50 @@ interfaces:
   select-multiple-checkbox:
     checkboxes: Afkrydsningsfelter
     description: Vælg mellem flere indstillinger via afkrydsningsfelter
-    allow_other: Tillad Andre
+    allow_other: Tillad andre
     show_more: 'Vis {count} mere'
-    items_shown: Vist Elementer
+    items_shown: Vist elementer
   select-multiple-checkbox-tree:
     name: Afkrydsningsfelter (Træ)
     description: Vælg mellem flere indstillinger via indlejrede afkrydsningsfelter
-    value_combining: Værdi Kombinerer
+    value_combining: Værdi kombinerer
     value_combining_note: Kontrollerer, hvilken værdi der gemmes, når indlejrede valg foretages.
-    show_all: Vis Alle
-    show_selected: Vis Valgte
+    show_all: Vis alle
+    show_selected: Vis valgte
   input-code:
     code: Kode
     description: Skriv eller del kodesnippets
-    line_number: Linje Nummer
+    line_number: Linje nummer
     line_wrapping: Linjeindpakning
     placeholder: Indtast kode her...
   system-collection:
     collection: Samling
     description: Vælg mellem eksisterende samlinger
-    include_system_collections: Inkludér Systemsamlinger
+    include_system_collections: Inkludér systemsamlinger
   system-collections:
     collections: Samlinger
     description: Vælg mellem eksisterende samlinger
-    include_system_collections: Inkludér Systemsamlinger
+    include_system_collections: Inkludér systemsamlinger
   select-color:
     color: Farve
     description: Indtast eller vælg en farveværdi
     placeholder: Vælg en farve...
-    preset_colors: Forudindstillede Farver
+    preset_colors: Forudindstillede farver
     opacity: Gennemsigtighed
     preset_colors_add_label: Tilføj ny farve...
     name_placeholder: Indtast farvenavn...
   datetime:
     datetime: Datotid
     description: Indtast datoer og tidspunkter
-    include_seconds: Inkluder Sekunder
+    include_seconds: Inkluder sekunder
     set_to_now: Indstil til nu
-    use_24: Brug 24-timers Format
+    use_24: Brug 24-timers format
     placeholder: Vælg en datetime...
   system-fields:
     select_a_collection: Vælg en samling
+    no_fields: Ingen felter
   system-display-template:
-    display-template: Vis Skabelon
+    display-template: Vis skabelon
     description: Bland statisk tekst og dynamiske feltværdier
     collection_field: Afhentningsfelt
     collection_field_not_setup: Indstillingen for samlingsfelt er forkert konfigureret
@@ -1422,20 +1536,22 @@ interfaces:
     divider: Opdeler
     description: Etiket og opdel felter i sektioner
     title_placeholder: Indtast en titel, eller efterlad blank for kun at vise en linje...
-    inline_title: Indlejret Titel
+    inline_title: Indlejret titel
     inline_title_label: Vis titel inde i linien
-    margin_top: Margen Top
-    margin_top_label: Forøg Top Margen
+    margin_top: Margen top
+    margin_top_label: Forøg top margen
   select-dropdown:
     description: Vælg en værdi fra en rullemenu
     choices_placeholder: Tilføj et nyt valg
-    allow_other: Tillad Andre
-    allow_other_label: Tillad Andre Værdier
-    allow_none: Tillad Ingen
-    allow_none_label: Tillad Intet Markering
+    allow_other: Tillad andre
+    allow_other_label: Tillad andre værdier
+    allow_none: Tillad ingen
+    allow_none_label: Tillad intet markering
     choices_name_placeholder: Indtast et navn...
     choices_value_placeholder: Indtast en værdi...
+    preview_threshold: Forhåndsvisningstærskel
   select-multiple-dropdown:
+    select-multiple-dropdown: Rullemenu (flere)
     description: Vælg flere værdier fra en rullemenu
   file:
     file: Fil
@@ -1467,36 +1583,40 @@ interfaces:
   list-m2m:
     many-to-many: Mange til mange
     description: Vælg flere relaterede forbindelseselementer
+    columns_configure_notice: Du kan konfigurere kolonnerne efter oprettelse af dette felt.
     display_template_configure_notice: Du kan konfigurere skærmskabelonen efter oprettelse af dette felt.
   select-dropdown-m2o:
-    many-to-one: Mange til One
+    many-to-one: Mange til én
     description: Vælg et enkelt relateret element
     display_template: Vis Skabelon
   input-rich-text-md:
+    markdown: Markdown
     description: Indtast og vis markdown
     edit: Rediger
     preview: Eksempelvisning
-    editorFont: Editor Skrifttype
-    previewFont: Forhåndsvis Skrifttype
-    customSyntax: Brugerdefinerede Blokke
+    editorFont: Rediger skrifttype
+    previewFont: Forhåndsvis skrifttype
+    customSyntax: Brugerdefinerede blokke
     customSyntax_label: Tilføj brugerdefinerede syntakstyper
     customSyntax_add: Tilføj brugerdefineret syntaks
     box: Blokér / Inline
-    imageToken: Statisk Adgangstoken
+    imageToken: Statisk adgangstoken
     imageToken_label: Statisk adgangstoken er vedlagt aktivernes URL
   map:
     map: Kort
     description: Vælg en placering på et kort
     zoom: Zoom
     geometry_type: Geometritype
-    geometry_format: Geometri Format
-    default_view: Standard Visning
+    geometry_format: Geometri format
+    default_view: Standard visning
     invalid_options: Ugyldige indstillinger
     invalid_format: Ugyldigt format ({format})
     unexpected_geometry: Forventede {expected}, fik {got}.
     fit_bounds: Tilpas visning til data
     native: Indbygget
-    lnglat: Længdegrad, Breddegrad
+    geojson: GeoJSON
+    lnglat: Længdegrad, breddegrad
+    wkt: WKT
     wkb: WKB
     click_to_select: Klik for at vælge {geometry}
   presentation-notice:
@@ -1519,12 +1639,13 @@ interfaces:
   list:
     repeater: Gentager
     description: Opret flere indgange af samme struktur
-    edit_fields: Rediger Felter
-    add_label: '"Opret Ny" Etiket'
+    edit_fields: Rediger felter
+    add_label: '"Opret ny" etiket'
     sort: Sortér
+    sort_placeholder: Manuel
     field_name_placeholder: Indtast feltnavn...
     field_note_placeholder: Indtast felt note...
-    incompatible_data: De aktuelle data er ikke kompatible med repeater-grænsefladen og vil blive tilsidesat, når du tilføjer elementer til repeateren
+    incompatible_data: De aktuelle data er ikke kompatible med gentager-grænsefladen og vil blive tilsidesat, når du tilføjer elementer til gentager
   slider:
     slider: Skyder
     description: Vælg et nummer ved hjælp af en skyder
@@ -1532,16 +1653,17 @@ interfaces:
   tags:
     tags: Tags
     description: Vælg eller tilføj tags
+    whitespace: Mellemrum
     hyphen: Erstat med bindestreg
     underscore: Erstat med understregning
     remove: Fjern blanke tegn
     capitalization: Kapitalisering
-    uppercase: Konvertér Store Bogstaver
-    lowercase: Konverter Små
-    auto_formatter: Brug Titel Auto-Formatter
-    alphabetize: Alphabetize
-    alphabetize_label: Gennemtving Alfabetisk Ordre
-    add_tags: Tilføj et tag og tryk på Enter...
+    uppercase: Konvertér store bogstaver
+    lowercase: Konverter små
+    auto_formatter: Brug titel auto-formatter
+    alphabetize: Alfabetisere
+    alphabetize_label: Gennemtving alfabetisk rækkefølge
+    add_tags: Tilføj et tag og tryk på enter...
   input:
     input: Input
     description: Indtast en værdi manuelt
@@ -1549,91 +1671,107 @@ interfaces:
     trim_label: Trim start og slut
     mask: Maskeret
     mask_label: Skjul den reelle værdi
-    clear: Ryddet Værdi
+    clear: Ryddet værdi
     clear_label: Gem som tom streng
-    minimum_value: Minimum Værdi
-    maximum_value: Maksimal Værdi
-    step_interval: Trin Interval
+    minimum_value: Minimum værdi
+    maximum_value: Maksimal værdi
+    step_interval: Trin interval
+    slug: Slugify
     slug_label: Gør den angivne værdi URL sikker
   input-multiline:
     textarea: Tekstareal
     description: Indtast tekst med flere linjer
   input-translated-string:
-    input-translated-string: Oversatte Strenge
+    input-translated-string: Oversatte strenge
     description: Vælg eller tilføj oversættelsesstreng
     search_placeholder: Søg...
-    new_translation_string: Ny Oversættelsesstreng
+    new_translation_string: Ny oversættelsesstreng
   boolean:
     toggle: Skift
     description: Skift mellem tænd og sluk
-    color_on: Farve Til
-    color_off: Farve Fra
+    color_on: Farve til
+    color_off: Farve fra
     label_placeholder: Indtast en etiket...
     label_default: Aktiveret
   translations:
-    display_template: Vis Skabelon
-    no_collection: Ingen Samling
-    toggle_split_view: Slå Opdelt Visning Til/Fra
+    display_template: Vis skabelon
+    no_collection: Ingen samling
+    toggle_split_view: Slå opdelt visning til/fra
     enable: Aktiver
-    user_language: Brug Nuværende Brugersprog
-    default_language: Standard Sprog
-    language_field: Sprog Indikator Felt
+    user_language: Brug nuværende brugersprog
+    default_language: Standard sprog
+    language_field: Sprog indikator felt
+    language_direction_field: Felt for sprogretning
   list-o2m-tree-view:
     description: Trævisning for indlejrede rekursive en-til-mange elementer
     recursive_only: Trævisningsgrænsefladen virker kun for rekursive relationer.
   user:
     user: Bruger
     description: Vælg en eksisterende directus bruger
-    select_mode: Vælg Tilstand
+    select_mode: Vælg tilstand
     modes:
       auto: Automatisk
       dropdown: Rulleliste
       modal: Modal
   input-rich-text-html:
     wysiwyg: WYSIWYG
-    description: En rich-tekst editor skriver HTML-indhold
+    description: En brødtekst redigeringsværktøj som skriver HTML-indhold
     toolbar: Værktøjslinje
-    custom_formats: Brugerdefinerede Formater
+    custom_formats: Brugerdefinerede formater
     options_override: Tilsidesæt
     folder_note: Mappe for uploadede filer. Påvirker ikke eksisterende filer.
     imageToken: Statisk Adgangstoken
     imageToken_label: Statisk adgangstoken er vedlagt aktivernes URL
   input-autocomplete-api:
+    input-autocomplete-api: Autofuldførelsesinput (API)
     description: En søgetype foran for eksterne API-værdier.
-    results_path: Sti Til Resultater
-    value_path: Værdi Sti
-    text_path: Tekst Sti
+    results_path: Sti til resultater
+    value_path: Værdi sti
+    text_path: Tekst sti
     trigger: Udløser
     rate: Sats
   group-raw:
-    name: Rå Gruppe
+    name: Rå gruppe
     description: Vis felterne som-is
   group-detail:
     name: Detaljegruppe
     description: Vis felterne som en sammenklappelig sektion
-    show_header: Vis Gruppeoverskrift
-    header_color: Header Farve
-    start_open: Start Åben
-    start_closed: Start Lukket
+    show_header: Vis gruppeoverskrift
+    header_icon: Hoved ikon
+    header_color: Hoved farve
+    start_open: Start åben
+    start_closed: Start lukket
+  system-token:
+    system-token: Nøgle
+    description: Administrer statisk adgangsnøgle
+    placeholder: Klik på "Generer nøgle" for at oprette en ny statisk adgangsnøgle
+    value_securely_saved: Værdi sikkert gemt
+    generate: Generer nøgle
+    regenerate: Regenerer nøgle
+    generate_success_copy: Sørg for at sikkerhedskopiere og kopiere nøglen ovenfor. Af sikkerhedsmæssige årsager vil du ikke være i stand til at se nøglen igen efter at have gemt og navigeret væk fra denne side.
+    remove_token: Fjern nøgle
+  system-raw-editor:
+    system-raw-editor: Rå redigering
+    description: Tillad indtastning af rå- eller overskægsskabelonværdier
 displays:
   translations:
     translations: Oversættelser
     description: Forhåndsvis oversættelse
     enable: Aktiver
-    user_language: Brug Nuværende Brugersprog
-    default_language: Standard Sprog
-    language_field: Sprog Indikator Felt
+    user_language: Brug nuværende brugersprog
+    default_language: Standard sprog
+    language_field: Sprog indikator felt
   boolean:
     boolean: Boolean
     description: Vis tændt og slukket tilstand
-    label_on: Etiket Til
+    label_on: Etiket til
     label_on_placeholder: Indtast en på etiket...
-    label_off: Etiket Fra
+    label_off: Etiket fra
     label_off_placeholder: Indtast en slukket etiket...
-    icon_on: Ikon Til
-    icon_off: Ikon Fra
-    color_on: Farve Til
-    color_off: Farve Fra
+    icon_on: Ikon til
+    icon_off: Ikon fra
+    color_on: Farve til
+    color_off: Farve fra
   collection:
     collection: Samling
     description: Vis en samling
@@ -1653,29 +1791,43 @@ displays:
     relative: Relativ
     relative_label: 'Vis relativ tid, fx: 5 minutter siden'
     suffix: Suffiks
+    suffix_label: Vis relativ indikator
+    suffix_note: Bruger ord som 'i' og 'siden'
+    strict: Streng
+    strict_label: Brug strenge enheder
+    strict_note: Fjerner ord som 'næsten', 'over', 'mindre end'
+    round: Rund
+    round_note: Vælg en afrundingsfunktion at bruge
+    down: Ned
+    nearest: Nærmeste
+    up: Op
   file:
     file: Fil
     description: Vis filer
   filesize:
-    filesize: Fil Størrelse
+    filesize: Fil størrelse
     description: Vis størrelsen på en fil
   formatted-value:
-    formatted-value: Formateret Værdi
+    formatted-value: Formateret værdi
     description: Vis en formateret version af teksten
     format: Format
     format_label: Automatisk format
     font: Font
+    font_sans_serif: Sans serif
     font_serif: Serif
     font_monospace: Monospace
     bold: Fed
-    bold_label: Use bold style
+    bold_label: Brug fed skrift
+    italic: Kursiv
+    italic_label: Brug kursiv skrift
     prefix: Præfiks
     prefix_label: Forbered tekst
     suffix: Suffiks
-    suffix_label: Tilføjede Tekst
+    suffix_label: Tilføjede tekst
     color: Farve
     background: Baggrund
     icon: Ikon
+    border: Kant
     border_label: Vis kant
     text: Tekst
     text_placeholder: Valgfri værdi tilsidesættelse...
@@ -1695,15 +1847,16 @@ displays:
   labels:
     labels: Etiketter
     description: Vis enten en enkelt eller en liste over etiketter
-    default_foreground: Standard Forgrund
-    default_background: Standard Baggrund
+    default_foreground: Standard forgrund
+    default_background: Standard baggrund
     format_label: Formatér hver etiket
-    show_as_dot: Vis Som Dot
+    show_as_dot: Vis som prikker
     choices_value_placeholder: Indtast en værdi...
     choices_text_placeholder: Indtast en tekst...
   mime-type:
-    description: Vis MIME- typen for en fil
-    extension_only: Kun Udvidelse
+    mime-type: MIME Type
+    description: Vis MIME-typen for en fil
+    extension_only: Kun udvidelse
     extension_only_label: Vis kun filendelsen
   rating:
     rating: Bedømmelse
@@ -1713,7 +1866,7 @@ displays:
   raw:
     raw: Rå Værdi
   related-values:
-    related-values: Relaterede Værdier
+    related-values: Relaterede værdier
     description: Vis relative værdier
     display_template_configure_notice: Du kan konfigurere skærmskabelonen efter oprettelse af dette felt.
   user:
@@ -1727,7 +1880,7 @@ layouts:
   cards:
     cards: Kort
     image_source: Billedkilde
-    image_fit: Billede Passer Til
+    image_fit: Billede passer til
     crop: Beskær
     contain: Indeholder
     title: Titel
@@ -1737,31 +1890,79 @@ layouts:
     spacing: Afstand
     comfortable: Behageligt
     compact: Kompakt
-    cozy: Hyggelig
+    cozy: Tætsiddende
   calendar:
     calendar: Kalender
-    start_date_field: Start Dato Felt
-    end_date_field: Slut Dato Felt
+    start_date_field: Start dato felt
+    end_date_field: Slut dato felt
     optional: Valgfri
     first_day: Første dag i ugen
   map:
     map: Kort
+    basemap: Grundkort
     layers: Lag
     cluster_options: Indstillinger for klyngedannelse
-    cluster: Klynge Nærliggende Data
+    cluster: Klynge nærliggende data
+    cluster_radius: Klynge radius
     cluster_minpoints: Mindste klyngestørrelse
     cluster_maxzoom: Maksimum zoom til klyngedannelse
-    field: Geospatialt Felt
+    field: Geospatialt felt
     invalid_geometry: Ugyldig geometri
     find_location: Find placering...
-    default_template: Brug Samling Standard...
+    default_template: Brug samling standard...
     no_compatible_fields: Ingen kompatible felter
-  kanban:
-    crop: Beskær
-    advanced: Avanceret
-    not_all_loaded: Kunne kun indlæse de første 1000 elementer.
-horizontal: Horisontal
+kanban:
+     name: Kanban
+     group_field: Grupper efter
+     group_field_placeholder: Felt at gruppere efter...
+     group_title: Gruppetitel
+     group_title_placeholder: Felt for gruppetitler...
+     title: Korttitel
+     title_placeholder: Valgfrit titelfelt...
+     text: Korttekst
+     text_placeholder: Valgfrit tekstfelt...
+     date: Kortdato
+     date_placeholder: Valgfrit datofelt...
+     tags: Kortmærker
+     tags_placeholder: Valgfrit tags-felt...
+     user: Kortbruger
+     user_placeholder: Valgfrit brugerfelt...
+     image: Kortbillede
+     image_placeholder: Valgfrit billedfelt...
+     image_fit: Tilpasning til kortbillede
+     crop: Afgrøde
+     advanced: Avanceret
+     edit_group: Rediger gruppe
+     delete_group: Slet gruppe
+     add_group: Tilføj gruppe
+     add_group_placeholder: Indtast en ny gruppetitel...
+     show_ungrouped: Vis ugrupperet
+     vis: Vis
+     no_group: Ingen gruppe
+     not_all_loaded: Kunne kun indlæse de første 1000 elementer.
+vandret: Vandret
+vertical: Lodret
+x_axis: X-akse
+y_axis: Y-akse
+y_axis_function: Y-akse funktion
+show_x_only: Vis kun X-akse
+show_y_only: Vis kun Y-akse
+show_data_label: Vis dataetiket
 both: Begge
+show_axis_labels: Vis akseetiketter
+function: Funktion
+half_circle: Halv cirkel
+full_cirkel: Fuld cirkel
+stroke_width: Slagbredde
+rounded_stroke: Afrundet slaglængde
+thin: tynd
+medium: Medium
+broad: Bred
+show_labels: Vis etiketter
+show_legend: Vis legende
+right: Højre
+left: venstre
+donut: Donut
 panels:
   metric:
     name: Metrisk
@@ -1770,10 +1971,10 @@ panels:
   time_series:
     name: Tidsserie
     description: Vis et linjediagram baseret på værdier over tid
-    date_field: Dato Felt
-    value_field: Værdi Felt
-    fill_type: Udfyld Type
-    curve_type: Kurve Type
+    date_field: Dato felt
+    value_field: Værdi felt
+    fill_type: Udfyld type
+    curve_type: Kurve type
   label:
     name: Etiket
     description: Vis noget tekst
@@ -1781,34 +1982,147 @@ panels:
     name: Liste
     description: Filtrer og liste felter fra en samling
   barchart:
+    name: Søjlediagram
     description: Bar eller kolonne diagrammer til sammenligning af grupper af værdier
     horizontal: Horisontal
     select_collection: Du skal vælge en samling.
   linechart:
     name: Linjediagram
+    description: Linjediagram til sammenligning af ændring af et felt
+    disabled_grouping: Deaktiveret, når gruppering er valgt.
     disabled_no_grouping: Deaktiveret når ingen gruppering er valgt.
-    curve_type: Kurve Type
+    show_marker: Vis værktøjstip-markør
+    curve_type: Kurve type
     smooth: Glat
     straight: Lige
-    step_line: Trin Linje
+    step_line: Trin linje
   meter:
     name: Måler
     description: Måler til sporingsværdier
   piechart:
-    name: Tærte eller Donut Chart
+    name: Cirkel eller krans graf
+    description: Cirkulært diagram, der viser forholdet mellem grupper på en kolonne
+  variable:
+    name: Global variabel
+    description: Indstil en global værdi til brug i andre panelers filtre
+    variable_key: Variabel nøgle
+  relational-variable:
+    name: Global relationsvariabel
+    description: Indstil en global relationsværdi til brug i andre panelers filtre
+    variable_key: Variabel nøgle
+    multiple: Mange
+    multiple-label: Vælg flere elementer
 triggers:
+  common:
+    response_body: Svar organ
+    response_body_all: All Data
+    response_body_last: Data of Last Operation
+  event:
+    name: Begivenhedskrog
+    description: Udløsere på platform eller datahændelser
+    action: 'Handling (ikke-blokerende)'
+    filter: 'Filter (blokerende)'
   webhook:
+    name: Webkrog
+    description: Udløses på en indgående HTTP-anmodning
     method: Metode
+    async: Asynkron
+  operation:
+    name: Andet Flow
+    description: Udløst af et andet flow, til kæde
+    preview: Udløst af en operation i et andet flow
+  schedule:
+    name: Tidsplan (CRON)
+    description: Udløses på regelmæssige tidspunkter
+    cron: Interval
+  manual:
+    name: Manuel
+    description: Udløsere ved manuel kørsel inden for udvalgte samling(er)
+    collection_and_item: Samlings- og elementsider
+    collection_only: Kun samlingsside
+    item_only: Kun element side
+    collection_page: Samlingsside
+    require_selection: Kræver valg
+a_flow_uuid: Vælg et flow, der skal udløses...
+any_string_or_json: Enhver streng eller JSON...
+item_payload_placeholder: Dette er den JSON, der bruges til at opdatere elementets feltværdier...
+operation_variables_note: Du kan få adgang til flowdata med variabler såsom **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** og **{'{'}{'{'}$accountability{'}'}{'}'}**, eller referer til tidligere handlinger ved hjælp af **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
+  condition:
+    name: Betingelse
+    description: Rut et flow baseret på If / Else logik
+  exec:
+    name: Kør script
+    description: Udfør vilkårlig kode for at ændre nyttelasten
+    modules: 'Følgende **node-moduler** kan bruges:'
+  item-create:
+    name: Opret data
+    description: Opret elementer i databasen
+    payload: Nyttelast
+    emit_events: Udsende begivenheder
+  item-delete:
+    name: Slet data
+    description: Slet elementer i databasen
+    emit_events: Udsende begivenheder
+    key: ID
+    query: Query
+  item-read:
+    name:  Læs Data
+    description: Læs elementer fra databasen
+    key: ID
+    query: Query
+    emit_events: Udsende begivenheder
+  item-update:
+    name: Opdater data
+    description: Opdater elementer i databasen
+    emit_events: Udsende begivenheder
+    key: ID
+    payload: Nyttelast
+    query: Query
   log:
+    name: Log på konsol
+    description: Output noget til konsollen
     message: Besked
+    message_placeholder: Indtast en besked, der skal vises i konsollen...
+  mail:
+    name: Send e-mail
+    description: Send en mail til en eller flere personer
+    to: Til
+    to_placeholder: Tilføj e-mail-adresser og tryk på enter...
+    body: Body
   notification:
+    name: Send meddelelse
+    description: Send en meddelelse i appen til en eller flere brugere
     recipient: Bruger
-    message: Besked
+    recipient_placeholder: Tilføj bruger-UUID og tryk enter...
+    message: besked
   request:
+    name: Webhook / Request URL
+    description: "Lav en anmodning til en URL"
     url: URL
+    url_placeholder: https://eksempel.dk/eksempel
     method: Metode
     data: Data
-    header: Overskrift
+    headers: Headers
+    header: Header
+    header_placeholder: Godkendelse...
+    value_placeholder: Bearer eyJhbGciOi...
+  sleep:
+    name: Sleep
+    description: Wait a given number of milliseconds
+    milliseconds: Millisekunder
+  transform:
+    name: Transformer nyttelast
+    description: Ændre Flows JSON-nyttelast
   trigger:
+    name: Trigger Flow
+    description: Send disse data til et andet flow
+    flows: Flows
+    flow: Flow
     data: Data
+    iteration_mode: Iterationstilstand
+    iteration_mode_note: Mode til iteration over arrays.
+    serial: Seriel
+    parallel: Parallel
+    batch: Batch
+    batch_size: Batch Size

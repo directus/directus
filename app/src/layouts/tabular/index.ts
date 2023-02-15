@@ -10,7 +10,7 @@ import { formatCollectionItemsCount } from '@/utils/format-collection-items-coun
 import { useCollection, useItems, useSync } from '@directus/shared/composables';
 import { Field } from '@directus/shared/types';
 import { defineLayout } from '@directus/shared/utils';
-import { clone, debounce } from 'lodash';
+import { debounce } from 'lodash';
 import { computed, ref, toRefs, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import TabularActions from './actions.vue';
@@ -146,7 +146,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		function selectAll() {
 			if (!primaryKeyField.value) return;
 			const pk = primaryKeyField.value;
-			selection.value = clone(items.value).map((item) => item[pk.field]);
+			selection.value = items.value.map((item) => item[pk.field]);
 		}
 
 		function useItemOptions() {
