@@ -161,17 +161,22 @@ export class FilesService extends ItemsService {
 						xmp?: Record<string, unknown>;
 					} = {};
 					if (sharpMetadata.exif) {
-						const { image, thumbnail, interoperability, ...rest } = exif(sharpMetadata.exif);
-						if (image) {
-							fullMetadata.ifd0 = image;
+						try {
+							const { image, thumbnail, interoperability, ...rest } = exif(sharpMetadata.exif);
+							if (image) {
+								fullMetadata.ifd0 = image;
+							}
+							if (thumbnail) {
+								fullMetadata.ifd1 = thumbnail;
+							}
+							if (interoperability) {
+								fullMetadata.interop = interoperability;
+							}
+							Object.assign(fullMetadata, rest);
+						} catch (err) {
+							logger.warn(`Couldn't extract EXIF metadata from file`);
+							logger.warn(err);
 						}
-						if (thumbnail) {
-							fullMetadata.ifd1 = thumbnail;
-						}
-						if (interoperability) {
-							fullMetadata.interop = interoperability;
-						}
-						Object.assign(fullMetadata, rest);
 					}
 					if (sharpMetadata.icc) {
 						fullMetadata.icc = parseIcc(sharpMetadata.icc);
