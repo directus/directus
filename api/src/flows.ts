@@ -9,7 +9,7 @@ import {
 	OperationHandler,
 	SchemaOverview,
 } from '@directus/shared/types';
-import { applyOptionsData, toArray } from '@directus/shared/utils';
+import { applyOptionsData, toArray, parseJSON } from '@directus/shared/utils';
 import fastRedact from 'fast-redact';
 import { Knex } from 'knex';
 import { omit, pick } from 'lodash';
@@ -416,10 +416,21 @@ class FlowManager {
 
 			return { successor: operation.resolve, status: 'resolve', data: result ?? null, options };
 		} catch (error: unknown) {
-			// Adding the below line will correctly stringify any errors because errors are not enumerable those can not be stringified later down the line
-			const errorObject = JSON.parse(JSON.stringify(error, Object.getOwnPropertyNames(error))) ?? null;
+			// Is the error a JSON string? If so, parse it and use that as the error
+			const jsonError = isJSON(error)
+				? parseJSON(error)
+				: JSON.parse(JSON.stringify(error, Object.getOwnPropertyNames(error)));
 
-			return { successor: operation.reject, status: 'reject', data: errorObject ?? null, options };
+			return { successor: operation.reject, status: 'reject', data: jsonError ?? null, options };
 		}
+	}
+}
+
+function isJSON(value: any): boolean {
+	try {
+		parseJSON(value);
+		return true;
+	} catch {
+		return false;
 	}
 }
