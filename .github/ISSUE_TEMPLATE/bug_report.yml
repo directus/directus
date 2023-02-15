@@ -10,7 +10,7 @@ body:
   - type: checkboxes
     id: requirements
     attributes:
-      label: Requirements
+      label: Checklist
       options:
         - label: I'm using the [latest version of Directus](https://github.com/directus/directus/releases)
           required: true
@@ -37,9 +37,8 @@ body:
     attributes:
       label: Hosting Strategy
       options:
-        - Self-Hosted Directus Docker Image
-        - Self-Hosted through NPM
-        - Self-Hosted Custom
+        - Self-Hosted (Docker Image)
+        - Self-Hosted (Custom)
         - Directus Cloud
     validations:
       required: true
