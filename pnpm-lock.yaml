@@ -757,22 +757,22 @@ importers:
       '@directus/tsconfig': 0.0.6
       '@directus/utils': workspace:*
       '@ngneat/falso': 6.4.0
-      '@vitest/coverage-c8': 0.28.3
-      p-queue: 7.3.0
+      '@vitest/coverage-c8': 0.28.5
+      p-queue: 7.3.4
       typescript: 4.9.5
-      undici: 5.16.0
-      vitest: 0.28.3
+      undici: 5.19.1
+      vitest: 0.28.5
     dependencies:
       '@directus/storage': link:../storage
       '@directus/utils': link:../utils
-      p-queue: 7.3.0
-      undici: 5.16.0
+      p-queue: 7.3.4
+      undici: 5.19.1
     devDependencies:
       '@directus/tsconfig': 0.0.6
       '@ngneat/falso': 6.4.0
-      '@vitest/coverage-c8': 0.28.3
+      '@vitest/coverage-c8': 0.28.5
       typescript: 4.9.5
-      vitest: 0.28.3
+      vitest: 0.28.5
 
   packages/storage-driver-gcs:
     specifiers:
@@ -16945,21 +16945,12 @@ packages:
       p-timeout: 3.2.0
     dev: false
 
-  /p-queue/7.3.0:
-    resolution: {integrity: sha512-5fP+yVQ0qp0rEfZoDTlP2c3RYBgxvRsw30qO+VtPPc95lyvSG+x6USSh1TuLB4n96IO6I8/oXQGsTgtna4q2nQ==}
-    engines: {node: '>=12'}
-    dependencies:
-      eventemitter3: 4.0.7
-      p-timeout: 5.1.0
-    dev: false
-
   /p-queue/7.3.4:
     resolution: {integrity: sha512-esox8CWt0j9EZECFvkFl2WNPat8LN4t7WWeXq73D9ha0V96qPRufApZi4ZhPwXAln1uVVal429HVVKPa2X0yQg==}
     engines: {node: '>=12'}
     dependencies:
       eventemitter3: 4.0.7
       p-timeout: 5.1.0
-    dev: true
 
   /p-timeout/3.2.0:
     resolution: {integrity: sha512-rhIwUycgwwKcP9yTOOFK/AKsAopjjCakVqLHePO3CC6Mir1Z99xT+R63jZxAT5lFZLa2inS5h+ZS2GvR99/FBg==}
@@ -21021,8 +21012,8 @@ packages:
     resolution: {integrity: sha512-+A5Sja4HP1M08MaXya7p5LvjuM7K6q/2EaC0+iovj/wOcMsTzMvDFbasi/oSapiwOlt252IqsKqPjCl7huKS0A==}
     dev: true
 
-  /undici/5.16.0:
-    resolution: {integrity: sha512-KWBOXNv6VX+oJQhchXieUznEmnJMqgXMbs0xxH2t8q/FUAWSJvOSr/rMaZKnX5RIVq7JDn0JbP4BOnKG2SGXLQ==}
+  /undici/5.19.1:
+    resolution: {integrity: sha512-YiZ61LPIgY73E7syxCDxxa3LV2yl3sN8spnIuTct60boiiRaE1J8mNWHO8Im2Zi/sFrPusjLlmRPrsyraSqX6A==}
     engines: {node: '>=12.18'}
     dependencies:
       busboy: 1.6.0
