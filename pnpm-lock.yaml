@@ -164,7 +164,7 @@ importers:
       js-yaml: 4.1.0
       js2xmlparser: 5.0.0
       json2csv: 5.0.7
-      jsonpath-plus: ^7.2.0
+      jsonpath-plus: 7.2.0
       jsonwebtoken: 9.0.0
       keyv: 4.5.2
       keyv-memcache: 1.3.3
