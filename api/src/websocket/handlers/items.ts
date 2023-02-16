@@ -11,7 +11,7 @@ import { WebSocketItemsMessage } from '../messages';
 
 export class ItemsHandler {
 	constructor() {
-		emitter.onSocket('websocket.message', ({ client, message }) => {
+		emitter.onAction('websocket.message', ({ client, message }) => {
 			if (trimUpper(message.type) !== 'ITEMS') return;
 			try {
 				this.onMessage(client, WebSocketItemsMessage.parse(message));

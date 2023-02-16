@@ -48,7 +48,7 @@ export class SubscribeHandler {
 		]);
 	}
 	bindWebsocket() {
-		emitter.onSocket('websocket.message', ({ client, message }) => {
+		emitter.onAction('websocket.message', ({ client, message }) => {
 			if (!['SUBSCRIBE', 'UNSUBSCRIBE'].includes(trimUpper(message?.type))) return;
 			try {
 				this.onMessage(client, WebSocketSubscribeMessage.parse(message));
@@ -56,8 +56,8 @@ export class SubscribeHandler {
 				handleWebsocketException(client, error, 'subscribe');
 			}
 		});
-		emitter.onSocket('websocket.error', ({ client }) => this.unsubscribe(client));
-		emitter.onSocket('websocket.close', ({ client }) => this.unsubscribe(client));
+		emitter.onAction('websocket.error', ({ client }) => this.unsubscribe(client));
+		emitter.onAction('websocket.close', ({ client }) => this.unsubscribe(client));
 	}
 	bindModules(modules: string[]) {
 		const bindAction = (event: string, mutator?: (args: any) => Record<string, any>) => {
