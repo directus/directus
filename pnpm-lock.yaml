@@ -86,7 +86,6 @@ importers:
       '@directus/storage-driver-s3': workspace:*
       '@directus/utils': workspace:*
       '@godaddy/terminus': 4.11.2
-      '@keyv/redis': 2.5.5
       '@ngneat/falso': 6.4.0
       '@rollup/plugin-alias': 4.0.3
       '@rollup/plugin-virtual': 3.0.1
@@ -109,7 +108,6 @@ importers:
       '@types/json-buffer': ^3.0.0
       '@types/json2csv': 5.0.3
       '@types/jsonwebtoken': 9.0.1
-      '@types/keyv': 3.1.4
       '@types/ldapjs': 2.2.5
       '@types/lodash': 4.14.191
       '@types/marked': 4.0.8
@@ -167,8 +165,6 @@ importers:
       json-buffer: ^3.0.1
       json2csv: 5.0.7
       jsonwebtoken: 9.0.0
-      keyv: 4.5.2
-      keyv-memcache: 1.3.3
       knex: 2.4.2
       knex-mock-client: 1.11.0
       knex-schema-inspector: 3.0.1
@@ -177,7 +173,6 @@ importers:
       lodash: 4.17.21
       lru-cache: ^7.14.0
       marked: 4.2.12
-      memcached: 2.2.2
       micromustache: 8.0.3
       mime-types: 2.1.35
       ms: 2.1.3
@@ -277,7 +272,6 @@ importers:
       json-buffer: 3.0.1
       json2csv: 5.0.7
       jsonwebtoken: 9.0.0
-      keyv: 4.5.2
       knex: 2.4.2_jrrg2q4isic7ilmdtijwkh3zhq
       knex-schema-inspector: 3.0.1
       ldapjs: 2.3.3
@@ -318,9 +312,6 @@ importers:
       vm2: 3.9.14
       wellknown: 0.5.0
     optionalDependencies:
-      '@keyv/redis': 2.5.5
-      keyv-memcache: 1.3.3
-      memcached: 2.2.2
       mysql: 2.18.1
       nodemailer-mailgun-transport: 2.1.5_lodash@4.17.21
       nodemailer-sendgrid: 1.0.3
@@ -348,7 +339,6 @@ importers:
       '@types/json-buffer': 3.0.0
       '@types/json2csv': 5.0.3
       '@types/jsonwebtoken': 9.0.1
-      '@types/keyv': 3.1.4
       '@types/ldapjs': 2.2.5
       '@types/lodash': 4.14.191
       '@types/marked': 4.0.8
@@ -4656,17 +4646,6 @@ packages:
     resolution: {integrity: sha512-4JQNk+3mVzK3xh2rqd6RB4J46qUR19azEHBneZyTZM+c456qOrbbM/5xcR8huNCCcbVt7+UmizG6GuUvPvKUYg==}
     dev: true
 
-  /@keyv/redis/2.5.5:
-    resolution: {integrity: sha512-J7dNB6iU18AbkxiN2moPcWUShgOVZtf4ySpsZIXPnuwqrvkF4X0q7nH/+mYJEjJpZwUWg6HjVxXkJYE9C2jMDw==}
-    engines: {node: '>= 12'}
-    requiresBuild: true
-    dependencies:
-      ioredis: 5.3.1
-    transitivePeerDependencies:
-      - supports-color
-    dev: false
-    optional: true
-
   /@mapbox/extent/0.4.0:
     resolution: {integrity: sha512-MSoKw3qPceGuupn04sdaJrFeLKvcSETVLZCGS8JA9x6zXQL3FWiKaIXYIZEDXd5jpXpWlRxinCZIN49yRy0C9A==}
     dev: true
@@ -5144,7 +5123,6 @@ packages:
     dependencies:
       '@redis/client': 1.5.5
     dev: false
-
 
   /@rollup/plugin-alias/4.0.3_rollup@3.15.0:
     resolution: {integrity: sha512-ZuDWE1q4PQDhvm/zc5Prun8sBpLJy41DMptYrS6MhAy9s9kL/doN1613BWfEchGVfKxzliJ3BjbOPizXX38DbQ==}
@@ -7568,10 +7546,6 @@ packages:
       source-map: 0.6.1
     dev: true
 
-  /@types/wellknown/0.5.3:
-    resolution: {integrity: sha512-7JP3zlX5+IhRZzlncreuT7N0jA6bJ4ypBGi+BtAmQOz82OPK39ughYrIEjXW9jDv+6kL7FKSfpe0P2F/WMciFw==}
-    dev: true
-
   /@types/wellknown/0.5.4:
     resolution: {integrity: sha512-zcsf4oHeEcvpvWhDOB1+qNK04oFJtsmv7Otb1Vy8w8GAqQkgRrVkI/C76PdwtpiT216aM1SbhkKgKWzGLhHKng==}
     dev: true
@@ -9969,11 +9943,6 @@ packages:
       ini: 1.3.8
       proto-list: 1.2.4
     dev: true
-
-  /connection-parse/0.0.7:
-    resolution: {integrity: sha512-bTTG28diWg7R7/+qE5NZumwPbCiJOT8uPdZYu674brDjBWQctbaQbYlDKhalS+4i5HxIx+G8dZsnBHKzWpp01A==}
-    dev: false
-    optional: true
 
   /console-browserify/1.2.0:
     resolution: {integrity: sha512-ZMkYO/LkF17QvCPqM0gxw8yUzigAOZOSWSHg91FH6orS7vcEj5dVZTidN2fQ14yBSdg97RqhSNwLUXInd52OTA==}
@@ -12839,14 +12808,6 @@ packages:
       minimalistic-assert: 1.0.1
     dev: true
 
-  /hashring/3.2.0:
-    resolution: {integrity: sha512-xCMovURClsQZ+TR30icCZj+34Fq1hs0y6YCASD6ZqdRfYRybb5Iadws2WS+w09mGM/kf9xyA5FCdJQGcgcraSA==}
-    dependencies:
-      connection-parse: 0.0.7
-      simple-lru-cache: 0.0.2
-    dev: false
-    optional: true
-
   /hast-to-hyperscript/9.0.1:
     resolution: {integrity: sha512-zQgLKqF+O2F72S1aa4y2ivxzSlko3MAvxkwG8ehGmNiqd98BIN3JM1rAJPmplEyLmGLO2QZYJtIneOSZ2YbJuA==}
     dependencies:
@@ -13757,13 +13718,6 @@ packages:
       iterate-iterator: 1.0.2
     dev: true
 
-  /jackpot/0.0.6:
-    resolution: {integrity: sha512-rbWXX+A9ooq03/dfavLg9OXQ8YB57Wa7PY5c4LfU3CgFpwEhhl3WyXTQVurkaT7zBM5I9SSOaiLyJ4I0DQmC0g==}
-    dependencies:
-      retry: 0.6.0
-    dev: false
-    optional: true
-
   /jest-changed-files/29.4.2:
     resolution: {integrity: sha512-Qdd+AXdqD16PQa+VsWJpxR3kN0JyOCX1iugQfx5nUgAsI4gwsKviXkpclxOK9ZnwaY2IQVHz+771eAvqeOlfuw==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
@@ -14603,20 +14557,11 @@ packages:
     resolution: {integrity: sha512-hRkd6/XW4HTsA9vjVpY9tuXJYLSlelnkTmVFu4M9/7MIYQtFcHpbugAU7UbOfjOiVSVYl2fqgBuJ32JUmRo5Ew==}
     dev: true
 
-  /keyv-memcache/1.3.3:
-    resolution: {integrity: sha512-7k+0Ju2KPkS+a22MdgUW/MPAYyo736joxfrWFUsgiUY7ssu/tT6hxfWjxubQBNeG93dHRTBAF0oFUtSSVYTW0Q==}
-    deprecated: This project has been renamed to @keyv/memcache which will be updated moving forward.
-    requiresBuild: true
-    dependencies:
-      json-buffer: 3.0.1
-      memjs: 1.3.0
-    dev: false
-    optional: true
-
   /keyv/4.5.2:
     resolution: {integrity: sha512-5MHbFaKn8cNSmVW7BYnijeAVlE4cYA/SVkifVgrh7yotnfhKmjuXpDKjrABLnT0SfHWV21P8ow07OGfRrNDg8g==}
     dependencies:
       json-buffer: 3.0.1
+    dev: true
 
   /kind-of/3.2.2:
     resolution: {integrity: sha512-NOW9QQXMoZGg/oqnVNoNTTIFEIid1627WCffUBJEdMxYApq7mNE7CpzucIPc+ZQg25Phej7IJSmX3hO+oblOtQ==}
@@ -15297,27 +15242,12 @@ packages:
     resolution: {integrity: sha512-dq+qelQ9akHpcOl/gUVRTxVIOkAJ1wR3QAvb4RsVjS8oVoFjDGTc679wJYmUmknUF5HwMLOgb5O+a3KxfWapPQ==}
     engines: {node: '>= 0.6'}
 
-  /memcached/2.2.2:
-    resolution: {integrity: sha512-lHwUmqkT9WdUUgRsAvquO4xsKXYaBd644Orz31tuth+w/BIfFNuJMWwsG7sa7H3XXytaNfPTZ5R/yOG3d9zJMA==}
-    requiresBuild: true
-    dependencies:
-      hashring: 3.2.0
-      jackpot: 0.0.6
-    dev: false
-    optional: true
-
   /memfs/3.4.12:
     resolution: {integrity: sha512-BcjuQn6vfqP+k100e0E9m61Hyqa//Brp+I3f0OBmN0ATHlFA8vx3Lt8z57R3u2bPqe3WGDBC+nF72fTH7isyEw==}
     engines: {node: '>= 4.0.0'}
     dependencies:
       fs-monkey: 1.0.3
     dev: true
-
-  /memjs/1.3.0:
-    resolution: {integrity: sha512-y/V9a0auepA9Lgyr4QieK6K2FczjHucEdTpSS+hHVNmVEkYxruXhkHu8n6DSRQ4HXHEE3cc6Sf9f88WCJXGXsQ==}
-    engines: {node: '>=0.10.0'}
-    dev: false
-    optional: true
 
   /memoizerific/1.11.3:
     resolution: {integrity: sha512-/EuHYwAPdLtXwAwSZkh/Gutery6pD2KYd44oQLhAvQp/50mpyduZh8Q7PYHXTCJ+wuXxt7oij2LXyIJOOYFPog==}
@@ -18422,11 +18352,6 @@ packages:
     engines: {node: '>= 4'}
     dev: false
 
-  /retry/0.6.0:
-    resolution: {integrity: sha512-RgncoxLF1GqwAzTZs/K2YpZkWrdIYbXsmesdomi+iPilSzjUyr/wzNIuteoTVaWokzdwZIJ9NHRNQa/RUiOB2g==}
-    dev: false
-    optional: true
-
   /reusify/1.0.4:
     resolution: {integrity: sha512-U9nH88a3fc/ekCF1l0/UP1IosiuIjyTh7hBvXVMHYgVcfGvt897Xguj2UOLDeI5BG2m7/uwyaLVT6fbtCwTyzw==}
     engines: {iojs: '>=1.0.0', node: '>=0.10.0'}
@@ -18913,11 +18838,6 @@ packages:
     hasBin: true
     requiresBuild: true
     dev: true
-
-  /simple-lru-cache/0.0.2:
-    resolution: {integrity: sha512-uEv/AFO0ADI7d99OHDmh1QfYzQk/izT1vCmu/riQfh7qjBVUUgRT87E5s5h7CxWCA/+YoZerykpEthzVrW3LIw==}
-    dev: false
-    optional: true
 
   /simple-swizzle/0.2.2:
     resolution: {integrity: sha512-JA//kQgZtbuY83m+xT+tXJkmJncGMTFT+C+g2h2R9uxkYIrE2yy9sgmcLhCnw57/WSD+Eh3J97FPEDFnbXnDUg==}

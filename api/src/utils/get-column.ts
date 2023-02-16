@@ -65,5 +65,6 @@ export function getColumn(
 	if (alias && column !== alias) {
 		return knex.ref(`${table}.${column}`).as(alias);
 	}
+
 	return knex.ref(`${table}.${column}`);
 }

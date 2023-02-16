@@ -129,7 +129,6 @@
 		"json-buffer": "^3.0.1",
 		"json2csv": "5.0.7",
 		"jsonwebtoken": "9.0.0",
-		"keyv": "4.5.2",
 		"knex": "2.4.2",
 		"knex-schema-inspector": "3.0.1",
 		"ldapjs": "2.3.3",
@@ -191,7 +190,6 @@
 		"@types/json-buffer": "^3.0.0",
 		"@types/json2csv": "5.0.3",
 		"@types/jsonwebtoken": "9.0.1",
-		"@types/keyv": "3.1.4",
 		"@types/ldapjs": "2.2.5",
 		"@types/lodash": "4.14.191",
 		"@types/marked": "4.0.8",
@@ -218,9 +216,6 @@
 		"vitest": "0.28.5"
 	},
 	"optionalDependencies": {
-		"@keyv/redis": "2.5.5",
-		"keyv-memcache": "1.3.3",
-		"memcached": "2.2.2",
 		"mysql": "2.18.1",
 		"nodemailer-mailgun-transport": "2.1.5",
 		"nodemailer-sendgrid": "1.0.3",
