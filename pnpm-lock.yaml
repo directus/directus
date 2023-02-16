@@ -583,7 +583,7 @@ importers:
   packages/extensions-sdk:
     specifiers:
       '@directus/shared': workspace:*
-      '@rollup/plugin-commonjs': 24.0.1
+      '@rollup/plugin-commonjs': 23.0.4
       '@rollup/plugin-json': 6.0.0
       '@rollup/plugin-node-resolve': 15.0.1
       '@rollup/plugin-replace': 5.0.2
@@ -609,7 +609,7 @@ importers:
       vitest: 0.28.5
     dependencies:
       '@directus/shared': link:../shared
-      '@rollup/plugin-commonjs': 24.0.1_rollup@3.15.0
+      '@rollup/plugin-commonjs': 23.0.4_rollup@3.15.0
       '@rollup/plugin-json': 6.0.0_rollup@3.15.0
       '@rollup/plugin-node-resolve': 15.0.1_rollup@3.15.0
       '@rollup/plugin-replace': 5.0.2_rollup@3.15.0
@@ -5101,8 +5101,8 @@ packages:
       slash: 4.0.0
     dev: false
 
-  /@rollup/plugin-commonjs/24.0.1_rollup@3.15.0:
-    resolution: {integrity: sha512-15LsiWRZk4eOGqvrJyu3z3DaBu5BhXIMeWnijSRvd8irrrg9SHpQ1pH+BUK4H6Z9wL9yOxZJMTLU+Au86XHxow==}
+  /@rollup/plugin-commonjs/23.0.4_rollup@3.15.0:
+    resolution: {integrity: sha512-bOPJeTZg56D2MCm+TT4psP8e8Jmf1Jsi7pFUMl8BN5kOADNzofNHe47+84WVCt7D095xPghC235/YKuNDEhczg==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
       rollup: ^2.68.0||^3.0.0
@@ -5115,7 +5115,7 @@ packages:
       estree-walker: 2.0.2
       glob: 8.0.3
       is-reference: 1.2.1
-      magic-string: 0.27.0
+      magic-string: 0.26.7
       rollup: 3.15.0
     dev: false
 
@@ -7054,7 +7054,7 @@ packages:
     resolution: {integrity: sha512-9K4zoImiZc3HlIp6AVUDE4CWYx22a+lhSZMYNpbjW04+YF0KWj4pJXnEMjdnFTiQibFFmElcsasJXDbdI/EPhA==}
     dependencies:
       '@types/eslint': 8.4.10
-      '@types/estree': 0.0.51
+      '@types/estree': 1.0.0
     dev: true
 
   /@types/eslint/8.4.10:
@@ -15011,7 +15011,6 @@ packages:
     engines: {node: '>=12'}
     dependencies:
       sourcemap-codec: 1.4.8
-    dev: true
 
   /magic-string/0.27.0:
     resolution: {integrity: sha512-8UnnX2PeRAPZuN12svgR9j7M1uWMovg/CEnIwIG0LFkXSJJe4PdfUGiTGl8V9bsBHFUtfVINcSyYxd7q+kx9fA==}
