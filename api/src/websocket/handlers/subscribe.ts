@@ -49,7 +49,6 @@ export class SubscribeHandler {
 	}
 	bindWebsocket() {
 		emitter.onSocket('websocket.message', ({ client, message }) => {
-			logger.info(`websocket.message [${trimUpper(message?.type)}] - ${JSON.stringify(message, null, 2)}`);
 			if (!['SUBSCRIBE', 'UNSUBSCRIBE'].includes(trimUpper(message?.type))) return;
 			try {
 				this.onMessage(client, WebSocketSubscribeMessage.parse(message));
@@ -78,11 +77,10 @@ export class SubscribeHandler {
 		}
 		this.messenger.subscribe('websocket', (message: Record<string, any>) => {
 			try {
-				logger.info('websocket messenger - ' + JSON.stringify(message, null, 2));
 				const eventMessage = WebSocketEvent.parse(message);
 				this.dispatch(eventMessage.collection, eventMessage);
 			} catch (err) {
-				logger.error('messenger error - ' + JSON.stringify(err, null, 2));
+				// logger.error('messenger error - ' + JSON.stringify(err, null, 2));
 			}
 		});
 	}
