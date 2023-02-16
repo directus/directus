@@ -146,7 +146,7 @@ const theme = computed(() => {
 
 provide('main-element', contentEl);
 
-router.afterEach(async (to, from) => {
+router.afterEach(() => {
 	contentEl.value?.scrollTo({ top: 0 });
 	fullScreen.value = false;
 });
