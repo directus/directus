@@ -29,6 +29,7 @@ draft: Malneto
 archived: Arĥivita
 modules: Moduloj
 module_bar: Modula breto
+logs: Protokoloj
 edit_field: Redakti la kampon
 conditions: Kondiĉoj
 location: Loko
@@ -40,6 +41,7 @@ group: Grupo
 export_items: Eksporti erojn
 and: Kaj
 or: Aŭ
+modifier: Ŝanĝilo
 custom: Propra
 hook: Hoko
 add_field: Aldoni kampon
@@ -73,6 +75,9 @@ rename_folder: Alinomi la dosierujon
 delete_folder: Forigi la dosierujon
 prefix: Prefikso
 suffix: Sufikso
+logoutReason:
+  SIGN_OUT: Elsalutinta
+  SESSION_EXPIRED: Seanco eksvalidiĝinta
 public_label: Publika
 not_allowed: Ne permesita
 directus_version: Directus-versio
@@ -112,6 +117,7 @@ field_m2m: Pluraj-al-pluraj-rilato
 field_translations: Tradukoj
 hide_field: Kaŝi la kampon
 delete_field: Forigi la kampon
+field_create_success: 'Kampo kreita: "{field}"'
 language: Lingvo
 language_placeholder: Elekti lingvon...
 admins_have_all_permissions: Administrantoj havas ĉiujn permesojn
@@ -170,10 +176,12 @@ notifications: Sciigoj
 page_not_found: Paĝo ne trovita
 title: Titolo
 revision_delta_created: Kreita
+revision_delta_created_externally: Ekstere kreita
 revision_delta_deleted: Forigita
 revision_delta_reverted: Malfarita
 revision_delta_by: '{date} de {user}'
 private_user: Privata uzanto
+item_create_success: Ero kreita | Eroj kreitaj
 related_collection: Rilata kolekto
 related_collections: Rilataj kolektoj
 import_data_input_placeholder: CSV aŭ JSON...
@@ -226,6 +234,7 @@ url: URL
 import_label: Importi
 dimensions: Dimensioj
 created: Kreita
+modified: Ŝanĝita
 checksum: Kontrolsumo
 owner: Posedanto
 edited_by: Redaktita de
@@ -244,6 +253,7 @@ name: Nomo
 type: Tipo
 creating_new_collection: Krei novan kolekton
 created_by: Kreita de
+created_on: Kreita je
 generated_uuid: Generita UUID
 save_and_create_new: Konservi kaj krei novan
 add_existing: Aldoni ekzistantan
@@ -285,6 +295,7 @@ duration: Daŭro
 charset: Signaro
 second: sekundo
 collection_created: Kolekto kreita
+modified_on: Ŝanĝita je
 sort: Ordigi
 status: Stato
 remove: Forigi
@@ -292,6 +303,7 @@ select_an_item: Elekti eron...
 edit: Redakti
 enabled: Ŝaltita
 create_account: Krei konton
+account_created_successfully: Konto sukcese kreita
 errors:
   COLLECTION_NOT_FOUND: "Kolekto ne ekzistas"
   FIELD_NOT_FOUND: Kampo ne trovita
@@ -327,6 +339,7 @@ monospace: Egallarĝa
 color: Koloro
 circle: Cirklo
 empty_item: Malplena ero
+log_in_with: 'Ensaluti per {provider}'
 operators:
   null: Estas NULL
   nnull: Ne estas NULL
@@ -462,6 +475,9 @@ fields:
     tags: Etikedoj
     location: Loko
     metadata: Metadatumoj
+    modified_by: Ŝanĝita de
+    modified_on: Ŝanĝita je
+    created_on: Kreita je
     created_by: Kreita de
     embed: Enkorpigi
     uploaded_by: Alŝutita de
@@ -487,7 +503,7 @@ fields:
     role: Rolo
     token: Ĵetono
     provider: Provizanto
-    external_identifier: Eksterna identigilo
+    external_identifier: Ekstera identigilo
     last_page: Lasta paĝo
   directus_settings:
     jpg: JPEG
@@ -631,6 +647,7 @@ options: Opcioj
 password: Pasvorto
 permissions: Permesoj
 relationship: Rilato
+no_logs: Ankoraŭ neniu protokolo
 revert: Malfari
 save: Konservi
 schema: Skemo
@@ -896,6 +913,7 @@ operations:
   item-update:
     key: Identigiloj
   log:
+    name: Protokoli al la konzolo
     message: Mesaĝo
   mail:
     to: Al
