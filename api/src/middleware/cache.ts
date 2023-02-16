@@ -43,7 +43,7 @@ const checkCacheMiddleware: RequestHandler = asyncHandler(async (req, res, next)
 
 		const cacheTTL = cacheExpiryDate ? cacheExpiryDate - Date.now() : null;
 
-		res.setHeader('Cache-Control', getCacheControlHeader(req, cacheTTL));
+		res.setHeader('Cache-Control', getCacheControlHeader(req, cacheTTL, true, true));
 		res.setHeader('Vary', 'Origin, Cache-Control');
 		if (env.CACHE_STATUS_HEADER) res.setHeader(`${env.CACHE_STATUS_HEADER}`, 'HIT');
 
