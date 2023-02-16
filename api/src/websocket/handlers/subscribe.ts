@@ -3,23 +3,36 @@ import { ItemsService } from '../../services/items';
 import type { Subscription, WebSocketClient } from '../types';
 import emitter from '../../emitter';
 import logger from '../../logger';
-import { fmtMessage } from '../utils/message';
+import { fmtMessage, trimUpper } from '../utils/message';
 import { refreshAccountability } from '../authenticate';
 import { MetaService } from '../../services';
 import { sanitizeQuery } from '../../utils/sanitize-query';
 import { handleWebsocketException, WebSocketException } from '../exceptions';
 import type { Accountability, SchemaOverview } from '@directus/shared/types';
 import { WebSocketSubscribeMessage } from '../messages';
+import { getMessenger, Messenger } from '../../messenger';
+import { z } from 'zod';
+
+const WebSocketEvent = z
+	.object({
+		action: z.enum(['create', 'update', 'delete']),
+		collection: z.string(),
+		payload: z.object({}).passthrough(),
+	})
+	.passthrough();
+type WebSocketEvent = z.infer<typeof WebSocketEvent>;
 
 export class SubscribeHandler {
 	subscriptions: Record<string, Set<Subscription>>;
+	protected messenger: Messenger;
 
 	constructor() {
 		this.subscriptions = {};
+		this.messenger = getMessenger();
 		this.bindWebsocket();
 		this.bindModules([
 			'items',
-			'activity',
+			/*'activity',
 			'collections',
 			'fields',
 			'files',
@@ -31,29 +44,31 @@ export class SubscribeHandler {
 			'roles',
 			'settings',
 			'users',
-			'webhooks',
+			'webhooks',*/
 		]);
 	}
 	bindWebsocket() {
-		emitter.onAction('websocket.message', ({ client, message }) => {
+		emitter.onSocket('websocket.message', ({ client, message }) => {
+			logger.info(`websocket.message [${trimUpper(message?.type)}] - ${JSON.stringify(message, null, 2)}`);
+			if (!['SUBSCRIBE', 'UNSUBSCRIBE'].includes(trimUpper(message?.type))) return;
 			try {
 				this.onMessage(client, WebSocketSubscribeMessage.parse(message));
 			} catch (error) {
 				handleWebsocketException(client, error, 'subscribe');
 			}
 		});
-		emitter.onAction('websocket.error', ({ client }) => this.unsubscribe(client));
-		emitter.onAction('websocket.close', ({ client }) => this.unsubscribe(client));
+		emitter.onSocket('websocket.error', ({ client }) => this.unsubscribe(client));
+		emitter.onSocket('websocket.close', ({ client }) => this.unsubscribe(client));
 	}
 	bindModules(modules: string[]) {
-		const bindAction = (event: string, mutator?: (args: any) => any) => {
+		const bindAction = (event: string, mutator?: (args: any) => Record<string, any>) => {
 			emitter.onAction(event, async (args: any) => {
-				const message = mutator ? mutator(args) : {};
-				message.action = event.split('.').pop();
-				message.collection = args.collection;
-				message.payload = args.payload;
+				const message: Partial<WebSocketEvent> = mutator ? mutator(args) : {};
+				message.action = event.split('.').pop() as 'create' | 'update' | 'delete';
+				message.collection = args.collection as string;
+				message.payload = (args.payload ?? {}) as Record<string, any>;
 				logger.debug(`[ WS ] event ${event} ` /*- ${JSON.stringify(message)}`*/);
-				this.dispatch(message.collection, message);
+				this.messenger.publish('websocket', message as WebSocketEvent);
 			});
 		};
 		for (const module of modules) {
@@ -61,6 +76,15 @@ export class SubscribeHandler {
 			bindAction(module + '.update', ({ keys }: any) => ({ keys }));
 			bindAction(module + '.delete');
 		}
+		this.messenger.subscribe('websocket', (message: Record<string, any>) => {
+			try {
+				logger.info('websocket messenger - ' + JSON.stringify(message, null, 2));
+				const eventMessage = WebSocketEvent.parse(message);
+				this.dispatch(eventMessage.collection, eventMessage);
+			} catch (err) {
+				logger.error('messenger error - ' + JSON.stringify(err, null, 2));
+			}
+		});
 	}
 	subscribe(subscription: Subscription) {
 		const { collection } = subscription;
@@ -96,16 +120,6 @@ export class SubscribeHandler {
 		const subscriptions = this.subscriptions[collection] ?? new Set();
 		for (const subscription of subscriptions) {
 			const { client } = subscription;
-			if (data['action'] === 'focus' && !subscription.status) {
-				continue; // skip focus updates if not applicable
-			}
-			if (
-				data['action'] === 'status' &&
-				'item' in subscription &&
-				!(subscription.collection === 'directus_users' && subscription.status)
-			) {
-				continue; // skip status updates if not applicable
-			}
 			try {
 				const accountability = await refreshAccountability(client.accountability);
 				client.accountability = accountability;
@@ -116,7 +130,6 @@ export class SubscribeHandler {
 						: await this.getMultiPayload(subscription, accountability, schema, data['action']);
 				client.send(fmtMessage('subscription', result, subscription.uid));
 			} catch (err) {
-				// console.error(err);
 				handleWebsocketException(client, err, 'subscribe');
 				// logger.debug(`[WS REST] ERROR ${JSON.stringify(err)}`);
 			}

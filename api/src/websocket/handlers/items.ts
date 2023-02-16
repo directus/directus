@@ -11,7 +11,8 @@ import { WebSocketItemsMessage } from '../messages';
 
 export class ItemsHandler {
 	constructor() {
-		emitter.onAction('websocket.message', ({ client, message }) => {
+		emitter.onSocket('websocket.message', ({ client, message }) => {
+			if (trimUpper(message.type) !== 'ITEMS') return;
 			try {
 				this.onMessage(client, WebSocketItemsMessage.parse(message));
 			} catch (err) {
@@ -20,7 +21,6 @@ export class ItemsHandler {
 		});
 	}
 	async onMessage(client: WebSocketClient, message: WebSocketItemsMessage) {
-		if (trimUpper(message.type) !== 'ITEMS') return;
 		const uid = message.uid;
 		const accountability = client.accountability;
 		const schema = await getSchema();
