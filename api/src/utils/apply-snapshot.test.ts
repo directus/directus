@@ -23,6 +23,7 @@ describe('applySnapshot', () => {
 	const mutationOptions = {
 		autoPurgeSystemCache: false,
 		bypassEmitAction: expect.any(Function),
+		bypassLimits: true,
 	};
 
 	beforeEach(() => {
