@@ -140,7 +140,7 @@ const allowedEnvironmentVars = [
 	'AUTH_.+_IDP.+',
 	'AUTH_.+_SP.+',
 	// extensions
-	'PACKAGE_EXTENSIONS_PATH',
+	'PACKAGE_FILE_LOCATION',
 	'EXTENSIONS_PATH',
 	'EXTENSIONS_AUTO_RELOAD',
 	// messenger
@@ -238,7 +238,7 @@ const defaults: Record<string, any> = {
 	AUTH_PROVIDERS: '',
 	AUTH_DISABLE_DEFAULT: false,
 
-	PACKAGE_EXTENSIONS_PATH: '.',
+	PACKAGE_FILE_LOCATION: '.',
 	EXTENSIONS_PATH: './extensions',
 	EXTENSIONS_AUTO_RELOAD: false,
 
