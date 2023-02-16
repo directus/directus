@@ -2,9 +2,9 @@
 
 exports[`Mount component 1`] = `
 "Th
-<mark class=\\"highlight\\" data-v-0a28d51c=\\"\\">is</mark>
+<mark data-v-0a28d51c=\\"\\" class=\\"highlight\\">is</mark>
 
-<mark class=\\"highlight\\" data-v-0a28d51c=\\"\\">is</mark>
+<mark data-v-0a28d51c=\\"\\" class=\\"highlight\\">is</mark>
  a nice
-<mark class=\\"highlight\\" data-v-0a28d51c=\\"\\">text</mark>"
+<mark data-v-0a28d51c=\\"\\" class=\\"highlight\\">text</mark>"
 `;
