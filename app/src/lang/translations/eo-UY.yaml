@@ -35,6 +35,8 @@ conditions: Kondiĉoj
 location: Loko
 condition_rules: Kondiĉaj reguloj
 input: Enigo
+maps: Mapoj
+switch_user: Ŝanĝi la uzanton
 enter_a_name: Entajpu nomon...
 duplicate_field: Duobligi la kampon
 group: Grupo
@@ -44,16 +46,19 @@ or: Aŭ
 modifier: Ŝanĝilo
 custom: Propra
 hook: Hoko
+enter_password_to_enable_tfa: Entajpu vian pasvorton por ŝalti dufaktoran kontroladon
 add_field: Aldoni kampon
 role_name: Nomo de la rolo
 branch: Branĉo
 leaf: Folio
+indeterminate: Nedeterminita
 edit_collection: Redakti la kolekton
 exclusive: Ekskluziva
 children: Idoj
 show_active_items: Montri aktivajn erojn
 show_archived_items: Montri arĥivitajn erojn
 show_all_items: Montri ĉiujn erojn
+edited: Valoro redaktita
 required: Deviga
 create_panel: Krei panelon
 create_role: Krei rolon
@@ -75,6 +80,7 @@ rename_folder: Alinomi la dosierujon
 delete_folder: Forigi la dosierujon
 prefix: Prefikso
 suffix: Sufikso
+delete_bookmark: Forigi la legosignon
 logoutReason:
   SIGN_OUT: Elsalutinta
   SESSION_EXPIRED: Seanco eksvalidiĝinta
@@ -82,6 +88,8 @@ public_label: Publika
 not_allowed: Ne permesita
 directus_version: Directus-versio
 node_version: Node-versio
+os_version: Operaciuma versio
+os_totalmem: Operaciuma memoro
 archive: Arĥivi
 archive_confirm: Ĉu vi certas, ke vi volas arĥivi la eron?
 archive_confirm_count: >-
@@ -104,6 +112,8 @@ validationError:
   nempty: Valoro ne povas esti malplena
   null: Valoro devas esti NULL
   nnull: Valoro ne povas esti NULL
+  required: Valoro estas deviga
+  unique: Valoro devas esti unika
 use_custom: Uzi propran
 nullable: Povas esti NULL
 allow_null_value: Permesi la valoron NULL
@@ -115,8 +125,11 @@ field_m2a: Pluraj-al-ajnaj-rilato
 field_o2m: Unu-al-pluraj-rilato
 field_m2m: Pluraj-al-pluraj-rilato
 field_translations: Tradukoj
+top: Supra
+bottom: Malsupra
 hide_field: Kaŝi la kampon
 delete_field: Forigi la kampon
+fields_and_layout: Kampoj kaj aranĝo
 field_create_success: 'Kampo kreita: "{field}"'
 language: Lingvo
 language_placeholder: Elekti lingvon...
@@ -143,9 +156,13 @@ text: Teksto
 uuid: UUID
 geometry: Geometrio (ĉiuj)
 geometry.Point: Punkto
+create_translations: Krei tradukojn
+auto_generate: Aŭtomate generi
+click_here: Alklaku ĉi tie
 click_to_manage_translated_fields: >-
   Ankoraŭ ne estas tradukitaj kampoj. Alklaku ĉi tie por krei ilin. | Estas tradukita kampo. Alklaku ĉi tie por administri ĝin. | Estas {count} tradukitaj kampoj. Alklaku ĉi tie por administri ilin.
 no_collections_found: Neniu kolekto trovita.
+search_field: Serĉkampo...
 new_field: 'Nova kampo'
 new_collection: 'Nova kolekto'
 add_m2o_to_collection: 'Aldoni pluraj-al-unu-rilaton al "{collection}'
@@ -153,6 +170,7 @@ add_o2m_to_collection: 'Aldoni unu-al-pluraj-rilaton al "{collection}"'
 add_m2m_to_collection: 'Aldoni pluraj-al-pluraj-rilaton al "{collection}"'
 determined_by_relationship: Determinita de la rilato
 add_link: Aldoni ligilon
+custom_link: Propra ligilo
 default_value: Defaŭlta valoro
 single_file: Unuopa dosiero
 multiple_files: Pluraj dosieroj
@@ -162,6 +180,7 @@ m2m_relationship: Pluraj-al-pluraj-rilato
 m2a_relationship: Pluraj-al-ajnaj-rilato
 invalid_item: Nevalida ero
 next: Sekva
+field_name: Nomo de la kampo
 translations: Tradukoj
 no_translations: Neniu traduko
 enter_a_value: Entajpu valoron...
@@ -172,6 +191,7 @@ foreign_key: Fremda ŝlosilo
 raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
 copy_raw_value_success: Kopiita
 paste_raw_value_success: Algluita
+undo_changes: Malfari la ŝanĝojn
 notifications: Sciigoj
 page_not_found: Paĝo ne trovita
 title: Titolo
@@ -179,11 +199,15 @@ revision_delta_created: Kreita
 revision_delta_created_externally: Ekstere kreita
 revision_delta_deleted: Forigita
 revision_delta_reverted: Malfarita
+revision_delta_other: Versio
 revision_delta_by: '{date} de {user}'
 private_user: Privata uzanto
 item_create_success: Ero kreita | Eroj kreitaj
+this_collection: Ĉi tiu kolekto
 related_collection: Rilata kolekto
 related_collections: Rilataj kolektoj
+translations_collection: Kolekto de tradukoj
+languages_collection: Kolekto de lingvoj
 import_data_input_placeholder: CSV aŭ JSON...
 label_import: Importi
 label_export: Eksporti
@@ -299,9 +323,13 @@ modified_on: Ŝanĝita je
 sort: Ordigi
 status: Stato
 remove: Forigi
+bookmark_doesnt_exist_cta: Reveni al la kolekto
 select_an_item: Elekti eron...
 edit: Redakti
 enabled: Ŝaltita
+disable_tfa: Malŝalti dufaktoran kontroladon
+admin_disable_tfa_text: Ĉu vi certas, ke vi volas malŝalti dufaktoran kontroladon por la uzanto?
+tfa_setup: Agordi dufaktoran kontroladon
 create_account: Krei konton
 account_created_successfully: Konto sukcese kreita
 errors:
@@ -319,6 +347,9 @@ errors:
   INVALID_FOREIGN_KEY: Nevalida fremda ŝlosilo
   UNKNOWN: Neatendita eraro
 security: Sekureco
+create_bookmark: Krei legosignon
+edit_bookmark: Redakti la legosignon
+bookmarks: Legosignoj
 unexpected_error: Neatendita eraro
 back: Reveni
 edit_image: Redakti la bildon
@@ -326,12 +357,20 @@ rotate: Turni
 all_users: Ĉiuj uzantoj
 delete_collection: Forigi la kolekton
 delete_collection_success: Forigita kolekto
+make_collection_visible: Igi la kolekton videbla
+make_collection_hidden: Igi la kolekton kaŝita
+make_folder_visible: Igi la dosierujon videbla
+make_folder_hidden: Igi la dosierujon kaŝita
+goto_collection_content: Vidi la enhavon
 start_end_of_count_items: '{start}-{end} de {count} eroj'
 start_end_of_count_filtered_items: '{start}-{end} de {count} filtritaj eroj'
 one_item: '1 ero'
 one_filtered_item: '1 filtrita ero'
 visible_collections: Videblaj kolektoj
 hidden_collections: Kaŝitaj kolektoj
+show_hidden_collections: Montri kaŝitajn kolektojn
+hide_hidden_collections: Kaŝi kaŝitajn kolektojn
+count_other_revisions: '{count} aliaj versioj'
 font: Tiparo
 sans_serif: Senserifa
 serif: Serifa
@@ -358,6 +397,7 @@ item: Ero
 items: Eroj
 rows: Vicoj
 columns: Kolumnoj
+value_unique: Valoro devas esti unika
 create_item: Krei eron
 all_files: Ĉiuj dosieroj
 my_files: Miaj dosieroj
@@ -437,6 +477,7 @@ settings_webhooks: Rethokoj
 settings_flows: Fluoj
 actions: Agoj
 select: Elekti...
+layout: Aranĝo
 data: Datumoj
 discard_changes: Forĵeti la ŝanĝojn
 discard_all_changes: Forĵeti ĉiujn ŝanĝojn
@@ -461,6 +502,7 @@ fields:
     comment: Komento
     user_agent: Aplikaĵo de la uzanto
     ip: IP-adreso
+    revisions: Versioj
   directus_collections:
     collection: Kolekto
     icon: Emblemo
@@ -495,6 +537,7 @@ fields:
     language: Lingvo
     theme_light: Hela reĝimo
     theme_dark: Malhela reĝimo
+    tfa_secret: Dufaktora kontrolado
     status: Stato
     status_draft: Malneto
     status_invited: Invitita
@@ -510,6 +553,8 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
+    basemaps: Bazmapoj
+    basemaps_style: Mapbox-stilo
     mapbox_placeholder: pk.eyJ1Ijo.....
     attribution_placeholder: '© OpenStreetMap-kontribuantoj'
     project_name: Nomo de la projekto
@@ -536,6 +581,7 @@ fields:
   directus_roles:
     name: Nomo de la rolo
     description: Priskribo
+    enforce_tfa: Postuli dufaktoran kontroladon
   directus_webhooks:
     name: Nomo
     method: Metodo
@@ -551,6 +597,9 @@ field_options:
     project_logo_note: Blanka 40x40 SVG/PNG
     security_divider_title: Sekureco
     mapbox_placeholder: pk.eyJ1Ijo.....
+    basemaps: Bazmapoj
+    basemaps_name_placeholder: Entajpu la nomon de la bazmapo...
+    basemaps_style: Mapbox-stilo
     files_divider_title: Dosieroj kaj bildetoj
   directus_activity:
     login: Ensaluti
@@ -647,6 +696,8 @@ options: Opcioj
 password: Pasvorto
 permissions: Permesoj
 relationship: Rilato
+revisions: Versioj
+no_revisions: Ankoraŭ neniu versio
 no_logs: Ankoraŭ neniu protokolo
 revert: Malfari
 save: Konservi
@@ -715,6 +766,9 @@ interfaces:
   files:
     files: Dosieroj
     description: Elekti aŭ alŝuti plurajn dosierojn
+  input-hash:
+    masked: Kaŝita
+    masked_label: Kaŝi la verajn valorojn
   select-icon:
     icon: Emblemo
   file-image:
@@ -731,6 +785,7 @@ interfaces:
   input-rich-text-md:
     edit: Redakti
   map:
+    map: Mapo
     zoom: Zomi
     default_view: Defaŭlta vido
     invalid_options: Nevalidaj opcioj
@@ -751,6 +806,7 @@ interfaces:
     tags: Etikedoj
     description: Elekti aŭ aldoni etikedojn
   input:
+    mask: Kaŝita
     minimum_value: Minimuma valoro
     maximum_value: Maksimuma valoro
   input-translated-string:
@@ -844,10 +900,15 @@ layouts:
     optional: Nedeviga
     first_day: Unua tago de la semajno
   map:
+    map: Mapo
+    basemap: Bazmapo
     layers: Tavoloj
     invalid_geometry: Nevalida geometrio
+    find_location: Trovi lokon...
   kanban:
     name: Kanban
+    group_field: Grupigi laŭ
+    group_title: Titolo de la grupo
     title: Titolo de la karto
     text: Teksto de la karto
     date: Dato de la karto
@@ -904,7 +965,10 @@ operation_variables_note: Vi povas atingi datumojn de la fluo per variabloj kiel
 operations:
   condition:
     name: Kondiĉo
+  item-create:
+    name: Krei datumojn
   item-delete:
+    name: Forigi datumojn
     key: Identigiloj
   item-read:
     name: Legi datumojn
@@ -916,8 +980,10 @@ operations:
     name: Protokoli al la konzolo
     message: Mesaĝo
   mail:
+    name: Sendi retpoŝtmesaĝon
     to: Al
   notification:
+    name: Sendi sciigon
     recipient: Uzanto
     message: Mesaĝo
   request:
