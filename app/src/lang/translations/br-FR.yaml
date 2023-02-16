@@ -1200,6 +1200,7 @@ layouts:
     end_date_field: Maezienn Devezh fin
   kanban:
     crop: Krennañ
+both: Holl
 panels:
   label:
     name: Tikedenn
