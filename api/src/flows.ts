@@ -418,7 +418,7 @@ class FlowManager {
 		} catch (error: unknown) {
 			// Is the error a JSON string? If so, parse it and use that as the error
 			const jsonError = isJSON(error)
-				? parseJSON(error)
+				? parseJSON(String(error))
 				: JSON.parse(JSON.stringify(error, Object.getOwnPropertyNames(error)));
 
 			return { successor: operation.reject, status: 'reject', data: jsonError ?? null, options };

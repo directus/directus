@@ -34,7 +34,7 @@ export default defineOperationApi<Options>({
 			});
 
 			return { status: result.status, statusText: result.statusText, headers: result.headers, data: result.data };
-		} catch (error) {
+		} catch (error: any) {
 			throw JSON.stringify({
 				status: error.response.status,
 				statusText: error.response.statusText,
