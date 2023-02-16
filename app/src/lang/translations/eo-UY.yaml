@@ -281,8 +281,11 @@ created_on: Kreita je
 generated_uuid: Generita UUID
 save_and_create_new: Konservi kaj krei novan
 add_existing: Aldoni ekzistantan
+creating_items: Krei erojn
+selecting_items: Elekti erojn
 allow_duplicates: Permesi duoblaĵojn
 comments: Komentoj
+no_comments: Ankoraŭ neniu komento
 select_item: Elekti kampon
 no_items: Neniu ero
 search_items: Serĉi erojn...
@@ -338,6 +341,7 @@ errors:
   FORBIDDEN: Malpermesita
   INVALID_CREDENTIALS: Malĝusta uzantnomo aŭ pasvorto
   INVALID_TOKEN: Nevalida ĵetono
+  INVALID_IP: IP-adreso ne permesita
   ITEM_NOT_FOUND: Ero ne trovita
   ROUTE_NOT_FOUND: Ne trovita
   CONTAINS_NULL_VALUES: La kampo enhavas NULL-valorojn
@@ -380,6 +384,14 @@ circle: Cirklo
 empty_item: Malplena ero
 log_in_with: 'Ensaluti per {provider}'
 operators:
+  eq: Egalas al
+  neq: Ne egalas al
+  lt: Malpli ol
+  gt: Pli ol
+  lte: Malpli ol aŭ egala al
+  gte: Pli ol aŭ egala al
+  in: Estas unu el
+  nin: Ne estas unu el
   null: Estas NULL
   nnull: Ne estas NULL
   contains: Enhavas
@@ -395,6 +407,11 @@ operators:
 loading: Ŝargado...
 item: Ero
 items: Eroj
+upload_file: Alŝuti dosieron
+upload_file_indeterminate: Alŝutado de dosiero...
+upload_file_success: Dosiero alŝutita
+upload_files_indeterminate: 'Alŝutado de dosieroj {done}/{total}'
+upload_files_success: '{count} dosieroj alŝutitaj'
 rows: Vicoj
 columns: Kolumnoj
 value_unique: Valoro devas esti unika
@@ -404,8 +421,10 @@ my_files: Miaj dosieroj
 create_folder: Krei dosierujon
 edit_folder: Redakti la dosierujon
 add_file: Aldoni dosieron
+no_results: Neniu rezulto
 no_visible_fields: Malplena formularo
 role: Rolo
+edit_role: Redakti la rolon
 rule: Rolo
 user: Uzanto
 create: Krei
@@ -441,14 +460,18 @@ no_dashboards: Neniu stirpanelo
 no_dashboards_copy: Vi ankoraŭ ne havas stirpanelon.
 create_dashboard: Krei stirpanelon
 dashboard_name: Nomo de la stirpanelo
+image_url: URL de la bildo
+alt_text: Alternativa teksto
 quality: Kvalito
 source: Fonto
 url_placeholder: Entajpu URL...
 interface_group_selection: Elekto
 interface_group_relational: Rilata
 interface_group_groups: Grupoj
+interface_group_other: Alia
 new_tab: Nova langeto
 current_tab: Nuna langeto
+save_image: Konservi la bildon
 wysiwyg_options:
   forecolor: Malfona koloro
   backcolor: Fona koloro
