@@ -30,6 +30,11 @@ export type QueryOptions = {
 	emitEvents?: boolean;
 };
 
+export type MutationTracker = {
+	itemCount: number;
+	trackItemCount: (mutationsCount: number) => void;
+};
+
 export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractService {
 	collection: string;
 	knex: Knex;
@@ -47,6 +52,19 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		this.cache = getCache().cache;
 
 		return this;
+	}
+
+	createMutationTracker(initialCount = 0): MutationTracker {
+		let itemCount = initialCount;
+		return {
+			itemCount,
+			trackItemCount(count: number) {
+				itemCount += count;
+				if (itemCount > env.MAX_BATCH_MUTATION) {
+					throw new InvalidPayloadException('Max batch mutation limit exceeded');
+				}
+			},
+		};
 	}
 
 	async getKeysByQuery(query: Query): Promise<PrimaryKey[]> {
@@ -70,6 +88,11 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	 * Create a single new item.
 	 */
 	async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
+		if (!opts?.mutationTracker) (opts || (opts = {})).mutationTracker = this.createMutationTracker();
+		if (!opts?.bypassLimits) {
+			opts.mutationTracker!.trackItemCount(1);
+		}
+
 		const primaryKeyField = this.schema.collections[this.collection].primary;
 		const fields = Object.keys(this.schema.collections[this.collection].fields);
 		const aliases = Object.values(this.schema.collections[this.collection].fields)
@@ -214,7 +237,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 					const childrenRevisions = [...revisionsM2O, ...revisionsA2O, ...revisionsO2M];
 
 					if (childrenRevisions.length > 0) {
-						await revisionsService.updateMany(childrenRevisions, { parent: revision });
+						await revisionsService.updateMany(childrenRevisions, { parent: revision }, { bypassLimits: true });
 					}
 
 					if (opts?.onRevisionCreate) {
@@ -270,9 +293,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	 * Create multiple new items at once. Inserts all provided records sequentially wrapped in a transaction.
 	 */
 	async createMany(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
-		if (!opts?.bypassLimits && data.length > env.MAX_BATCH_MUTATION) {
-			throw new InvalidPayloadException('Max batch mutation limit exceeded');
-		}
+		if (!opts?.mutationTracker) (opts || (opts = {})).mutationTracker = this.createMutationTracker();
 
 		const { primaryKeys, nestedActionEvents } = await this.knex.transaction(async (trx) => {
 			const service = new ItemsService(this.collection, {
@@ -289,6 +310,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 					...(opts || {}),
 					autoPurgeCache: false,
 					bypassEmitAction: (params) => nestedActionEvents.push(params),
+					mutationTracker: opts?.mutationTracker,
 				});
 				primaryKeys.push(primaryKey);
 			}
@@ -470,9 +492,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			throw new InvalidPayloadException('Input should be an array of items.');
 		}
 
-		if (!opts?.bypassLimits && data.length > env.MAX_BATCH_MUTATION) {
-			throw new InvalidPayloadException('Max batch mutation limit exceeded');
-		}
+		if (!opts?.mutationTracker) (opts || (opts = {})).mutationTracker = this.createMutationTracker();
 
 		const primaryKeyField = this.schema.collections[this.collection].primary;
 
@@ -505,8 +525,9 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	 * Update many items by primary key, setting all items to the same change
 	 */
 	async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
-		if (!opts?.bypassLimits && keys.length > env.MAX_BATCH_MUTATION) {
-			throw new InvalidPayloadException('Max batch mutation limit exceeded');
+		if (!opts?.mutationTracker) (opts || (opts = {})).mutationTracker = this.createMutationTracker();
+		if (!opts?.bypassLimits) {
+			opts.mutationTracker!.trackItemCount(keys.length);
 		}
 
 		const primaryKeyField = this.schema.collections[this.collection].primary;
@@ -618,7 +639,8 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 						user_agent: this.accountability!.userAgent,
 						origin: this.accountability!.origin,
 						item: key,
-					}))
+					})),
+					{ bypassLimits: true }
 				);
 
 				if (this.schema.collections[this.collection].accountability === 'all') {
@@ -647,7 +669,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 						)
 					).filter((revision) => revision.delta);
 
-					const revisionIDs = await revisionsService.createMany(revisions);
+					const revisionIDs = await revisionsService.createMany(revisions, { bypassLimits: true });
 
 					for (let i = 0; i < revisionIDs.length; i++) {
 						const revisionID = revisionIDs[i];
@@ -791,8 +813,9 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	 * Delete multiple items by primary key
 	 */
 	async deleteMany(keys: PrimaryKey[], opts?: MutationOptions): Promise<PrimaryKey[]> {
-		if (!opts?.bypassLimits && keys.length > env.MAX_BATCH_MUTATION) {
-			throw new InvalidPayloadException('Max batch mutation limit exceeded');
+		if (!opts?.mutationTracker) (opts || (opts = {})).mutationTracker = this.createMutationTracker();
+		if (!opts?.bypassLimits) {
+			opts.mutationTracker!.trackItemCount(keys.length);
 		}
 
 		const primaryKeyField = this.schema.collections[this.collection].primary;
@@ -841,7 +864,8 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 						user_agent: this.accountability!.userAgent,
 						origin: this.accountability!.origin,
 						item: key,
-					}))
+					})),
+					{ bypassLimits: true }
 				);
 			}
 		});

@@ -183,9 +183,7 @@ export class UsersService extends ItemsService {
 	}
 
 	async updateBatch(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
-		if (!opts?.bypassLimits && data.length > env.MAX_BATCH_MUTATION) {
-			throw new InvalidPayloadException('Max batch mutation limit exceeded');
-		}
+		if (!opts?.mutationTracker) (opts || (opts = {})).mutationTracker = this.createMutationTracker();
 
 		const primaryKeyField = this.schema.collections[this.collection].primary;
 

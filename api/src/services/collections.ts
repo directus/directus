@@ -137,6 +137,7 @@ export class CollectionsService {
 					await fieldItemsService.createMany(fieldPayloads, {
 						bypassEmitAction: (params) =>
 							opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
+						bypassLimits: true,
 					});
 				}
 

@@ -4,6 +4,7 @@
  */
 
 import { EventContext } from '@directus/shared/types';
+import { MutationTracker } from '../services/items';
 
 export type Item = Record<string, any>;
 
@@ -50,6 +51,11 @@ export type MutationOptions = {
 	 * To bypass limits so that functions would work as intended
 	 */
 	bypassLimits?: boolean;
+
+	/**
+	 * To keep track of mutation limits
+	 */
+	mutationTracker?: MutationTracker;
 };
 
 export type ActionEventParams = {
