@@ -16,7 +16,7 @@ import {
 } from '../exceptions';
 import { createRateLimiter } from '../rate-limiter';
 import { AbstractServiceOptions, DirectusTokenPayload, LoginResult, Session, User } from '../types';
-import getMilliseconds from '../utils/get-milliseconds';
+import { getMilliseconds } from '../utils/get-milliseconds';
 import { stall } from '../utils/stall';
 import { ActivityService } from './activity';
 import { SettingsService } from './settings';

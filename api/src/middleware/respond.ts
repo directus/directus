@@ -8,7 +8,7 @@ import asyncHandler from '../utils/async-handler';
 import { getCacheControlHeader } from '../utils/get-cache-headers';
 import { getCacheKey } from '../utils/get-cache-key';
 import { getDateFormatted } from '../utils/get-date-formatted';
-import getMilliseconds from '../utils/get-milliseconds';
+import { getMilliseconds } from '../utils/get-milliseconds';
 import { stringByteSize } from '../utils/get-string-byte-size';
 
 export const respond: RequestHandler = asyncHandler(async (req, res) => {

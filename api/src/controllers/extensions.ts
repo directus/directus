@@ -8,7 +8,7 @@ import { getExtensionManager } from '../extensions';
 import { respond } from '../middleware/respond';
 import asyncHandler from '../utils/async-handler';
 import { getCacheControlHeader } from '../utils/get-cache-headers';
-import getMilliseconds from '../utils/get-milliseconds';
+import { getMilliseconds } from '../utils/get-milliseconds';
 
 const router = Router();
 

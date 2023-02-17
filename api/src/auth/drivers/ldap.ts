@@ -27,7 +27,7 @@ import { AuthenticationService, UsersService } from '../../services';
 import { AuthDriverOptions, User } from '../../types';
 import asyncHandler from '../../utils/async-handler';
 import { getIPFromReq } from '../../utils/get-ip-from-req';
-import getMilliseconds from '../../utils/get-milliseconds';
+import { getMilliseconds } from '../../utils/get-milliseconds';
 import { AuthDriver } from '../auth';
 
 interface UserInfo {

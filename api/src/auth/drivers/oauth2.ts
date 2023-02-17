@@ -21,7 +21,7 @@ import { AuthData, AuthDriverOptions, User } from '../../types';
 import asyncHandler from '../../utils/async-handler';
 import { getConfigFromEnv } from '../../utils/get-config-from-env';
 import { getIPFromReq } from '../../utils/get-ip-from-req';
-import getMilliseconds from '../../utils/get-milliseconds';
+import { getMilliseconds } from '../../utils/get-milliseconds';
 import { Url } from '../../utils/url';
 import { LocalAuthDriver } from './local';
 

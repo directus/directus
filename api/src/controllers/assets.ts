@@ -15,7 +15,7 @@ import { TransformationMethods, TransformationParams, TransformationPreset } fro
 import asyncHandler from '../utils/async-handler';
 import { getCacheControlHeader } from '../utils/get-cache-headers';
 import { getConfigFromEnv } from '../utils/get-config-from-env';
-import getMilliseconds from '../utils/get-milliseconds';
+import { getMilliseconds } from '../utils/get-milliseconds';
 
 const router = Router();
 

@@ -11,7 +11,7 @@ import {
 	PrimaryKey,
 	ShareData,
 } from '../types';
-import getMilliseconds from '../utils/get-milliseconds';
+import { getMilliseconds } from '../utils/get-milliseconds';
 import { md } from '../utils/md';
 import { Url } from '../utils/url';
 import { userName } from '../utils/user-name';

@@ -5,7 +5,7 @@ import { toArray } from '@directus/shared/utils';
 import { version } from '../../package.json';
 import env from '../env';
 import logger from '../logger';
-import getMilliseconds from './get-milliseconds';
+import { getMilliseconds } from './get-milliseconds';
 
 export async function track(event: string): Promise<void> {
 	const axios = (await import('axios')).default;

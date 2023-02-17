@@ -3,7 +3,7 @@ import env from './env';
 import logger from './logger';
 import { compress, decompress } from './utils/compress';
 import { getConfigFromEnv } from './utils/get-config-from-env';
-import getMilliseconds from './utils/get-milliseconds';
+import { getMilliseconds } from './utils/get-milliseconds';
 import { validateEnv } from './utils/validate-env';
 
 let cache: Keyv | null = null;

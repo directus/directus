@@ -86,7 +86,7 @@ import { GraphQLStringOrFloat } from './types/string-or-float';
 import { GraphQLVoid } from './types/void';
 
 import { FUNCTIONS } from '@directus/shared/constants';
-import getMilliseconds from '../../utils/get-milliseconds';
+import { getMilliseconds } from '../../utils/get-milliseconds';
 import { GraphQLBigInt } from './types/bigint';
 import { GraphQLHash } from './types/hash';
 import { addPathToValidationError } from './utils/add-path-to-validation-error';
