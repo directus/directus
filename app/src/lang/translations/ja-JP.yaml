@@ -270,6 +270,7 @@ documentation: ドキュメンテーション
 collection_created: コレクションが作成されました
 modified_on: 修正日時
 sort_field: フィールドの並べ替え
+add_sort_field: Sort フィールドを追加
 sort: 並べ替え
 status: ステータス
 remove: 削除
@@ -495,6 +496,7 @@ save_current_user_role: 現在のユーザーロールを保存
 save_current_datetime: 現在の日付/時刻を保存
 inline: インライン
 comment: コメント
+referential_action_set_null: '{field} フィールドを Null にする'
 delete_field_are_you_sure: >-
   このフィールド：\"{field}\"を削除してよろしいですか？この操作を取り消すことはできません。
 description: 説明
