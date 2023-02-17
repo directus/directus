@@ -1,3 +1,4 @@
+import { CookieOptions } from 'express';
 import env from './env';
 import { TransformationParams } from './types';
 import getMilliseconds from './utils/get-milliseconds';
@@ -52,7 +53,7 @@ export const GENERATE_SPECIAL = ['uuid', 'date-created', 'role-created', 'user-c
 
 export const UUID_REGEX = '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}';
 
-export const COOKIE_OPTIONS = {
+export const COOKIE_OPTIONS: CookieOptions = {
 	httpOnly: true,
 	domain: env.REFRESH_TOKEN_COOKIE_DOMAIN,
 	maxAge: getMilliseconds(env.REFRESH_TOKEN_TTL),

@@ -13,12 +13,12 @@ let lockCache: Keyv | null = null;
 export function getCache(): { cache: Keyv | null; systemCache: Keyv; lockCache: Keyv } {
 	if (env.CACHE_ENABLED === true && cache === null) {
 		validateEnv(['CACHE_NAMESPACE', 'CACHE_TTL', 'CACHE_STORE']);
-		cache = getKeyvInstance(env.CACHE_TTL ? getMilliseconds(env.CACHE_TTL) : undefined);
+		cache = getKeyvInstance(getMilliseconds(env.CACHE_TTL));
 		cache.on('error', (err) => logger.warn(err, `[cache] ${err}`));
 	}
 
 	if (systemCache === null) {
-		systemCache = getKeyvInstance(env.CACHE_SYSTEM_TTL ? getMilliseconds(env.CACHE_SYSTEM_TTL) : undefined, '_system');
+		systemCache = getKeyvInstance(getMilliseconds(env.CACHE_SYSTEM_TTL), '_system');
 		systemCache.on('error', (err) => logger.warn(err, `[cache] ${err}`));
 	}
 

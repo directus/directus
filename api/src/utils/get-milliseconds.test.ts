@@ -9,20 +9,26 @@ test.each([
 	// accept negative values
 	['-1 minutes', -60000],
 	[-1, -1],
-	// fallback to 0
 	[0, 0],
-	['', 0],
-	['invalid string', 0],
-	[false, 0],
-	[[], 0],
-	[{}, 0],
-	[Symbol(123), 0],
+	// fallback to undefined
+	[null, undefined],
+	[undefined, undefined],
+	['', undefined],
+	['invalid string', undefined],
+	[false, undefined],
+	[[], undefined],
+	[{}, undefined],
+	[Symbol(123), undefined],
 	[
 		() => {
 			return 456;
 		},
-		0,
+		undefined,
 	],
-])('input "%s" should result into %i', (input, expected) => {
+])('should result into %s for input "%s"', (input, expected) => {
 	expect(getMilliseconds(input)).toBe(expected);
+});
+
+test('should return custom fallback on invalid value', () => {
+	expect(getMilliseconds(undefined, 0)).toBe(0);
 });

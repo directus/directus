@@ -209,7 +209,7 @@ export class AuthenticationService {
 		});
 
 		const refreshToken = nanoid(64);
-		const refreshTokenExpiration = new Date(Date.now() + getMilliseconds(env.REFRESH_TOKEN_TTL));
+		const refreshTokenExpiration = new Date(Date.now() + getMilliseconds(env.REFRESH_TOKEN_TTL, 0));
 
 		await this.knex('directus_sessions').insert({
 			token: refreshToken,
@@ -364,7 +364,7 @@ export class AuthenticationService {
 		});
 
 		const newRefreshToken = nanoid(64);
-		const refreshTokenExpiration = new Date(Date.now() + getMilliseconds(env.REFRESH_TOKEN_TTL));
+		const refreshTokenExpiration = new Date(Date.now() + getMilliseconds(env.REFRESH_TOKEN_TTL, 0));
 
 		await this.knex('directus_sessions')
 			.update({

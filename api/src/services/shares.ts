@@ -1,5 +1,4 @@
 import argon2 from 'argon2';
-import { getMilliseconds } from 'date-fns';
 import jwt from 'jsonwebtoken';
 import env from '../env';
 import { ForbiddenException, InvalidCredentialsException } from '../exceptions';
@@ -12,6 +11,7 @@ import {
 	PrimaryKey,
 	ShareData,
 } from '../types';
+import getMilliseconds from '../utils/get-milliseconds';
 import { md } from '../utils/md';
 import { Url } from '../utils/url';
 import { userName } from '../utils/user-name';
@@ -95,7 +95,7 @@ export class SharesService extends ItemsService {
 		});
 
 		const refreshToken = nanoid(64);
-		const refreshTokenExpiration = new Date(Date.now() + getMilliseconds(env.REFRESH_TOKEN_TTL));
+		const refreshTokenExpiration = new Date(Date.now() + getMilliseconds(env.REFRESH_TOKEN_TTL, 0));
 
 		await this.knex('directus_sessions').insert({
 			token: refreshToken,
