@@ -1,10 +1,10 @@
 import Keyv, { Options } from 'keyv';
-import ms from 'ms';
 import env from './env';
 import logger from './logger';
-import { getConfigFromEnv } from './utils/get-config-from-env';
-import { validateEnv } from './utils/validate-env';
 import { compress, decompress } from './utils/compress';
+import { getConfigFromEnv } from './utils/get-config-from-env';
+import { getMilliseconds } from './utils/get-milliseconds';
+import { validateEnv } from './utils/validate-env';
 
 let cache: Keyv | null = null;
 let systemCache: Keyv | null = null;
@@ -13,12 +13,12 @@ let lockCache: Keyv | null = null;
 export function getCache(): { cache: Keyv | null; systemCache: Keyv; lockCache: Keyv } {
 	if (env.CACHE_ENABLED === true && cache === null) {
 		validateEnv(['CACHE_NAMESPACE', 'CACHE_TTL', 'CACHE_STORE']);
-		cache = getKeyvInstance(env.CACHE_TTL ? ms(env.CACHE_TTL as string) : undefined);
+		cache = getKeyvInstance(getMilliseconds(env.CACHE_TTL));
 		cache.on('error', (err) => logger.warn(err, `[cache] ${err}`));
 	}
 
 	if (systemCache === null) {
-		systemCache = getKeyvInstance(env.CACHE_SYSTEM_TTL ? ms(env.CACHE_SYSTEM_TTL as string) : undefined, '_system');
+		systemCache = getKeyvInstance(getMilliseconds(env.CACHE_SYSTEM_TTL), '_system');
 		systemCache.on('error', (err) => logger.warn(err, `[cache] ${err}`));
 	}
 
