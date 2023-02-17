@@ -1,13 +1,13 @@
 import { randWord } from '@ngneat/falso';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
-import { getEnv } from '../env.js';
-import { getStorageDriver } from './get-storage-driver.js';
-import { registerDrivers } from './register-drivers.js';
+import { getEnv } from '../env';
+import { getStorageDriver } from './get-storage-driver';
+import { registerDrivers } from './register-drivers';
 
 // @ts-expect-error https://github.com/microsoft/TypeScript/issues/49721
 import type { Driver, StorageManager } from '@directus/storage';
 
-vi.mock('./get-storage-driver.js');
+vi.mock('./get-storage-driver');
 vi.mock('../env');
 
 let mockStorage: StorageManager;
