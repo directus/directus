@@ -6,6 +6,7 @@ import { CacheOptions, CacheService } from './cache';
 import { parse, stringify } from 'json-buffer';
 import { compress, decompress } from '../../utils/compress';
 import { map } from 'async';
+import { merge } from 'lodash';
 
 export class RedisCache extends CacheService {
 	client: RedisClientType;
@@ -13,11 +14,23 @@ export class RedisCache extends CacheService {
 	constructor(options: CacheOptions) {
 		super(options);
 
-		this.client = createClient({
-			url: env.CACHE_REDIS || getConfigFromEnv('CACHE_REDIS_'),
-		});
+		this.client = createClient(this.getConfig());
 		this.client.on('error', (err) => logger.warn(err, `[cache] ${err}`));
 		this.client.connect();
+	}
+
+	private getConfig() {
+		if ('CACHE_REDIS' in env) return { url: env.CACHE_REDIS };
+		const config = merge({}, getConfigFromEnv('REDIS_'), getConfigFromEnv('CACHE_REDIS_'));
+		return {
+			socket: {
+				host: config.host,
+				port: config.port,
+			},
+			username: config?.username,
+			password: config?.password,
+			database: config?.db,
+		};
 	}
 
 	async get(key: string): Promise<any | null> {
