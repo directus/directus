@@ -81,7 +81,7 @@ export default defineComponent({
 	components: { RelatedCollectionSelect, RelatedFieldSelect },
 	props: {
 		localType: {
-			type: String as PropType<typeof LOCAL_TYPES[number]>,
+			type: String as PropType<(typeof LOCAL_TYPES)[number]>,
 			required: true,
 		},
 	},
