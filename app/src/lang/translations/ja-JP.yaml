@@ -389,6 +389,7 @@ layout_setup: レイアウト設定
 unsaved_changes_copy: このページを離れてもよろしいですか？
 discard_changes: 変更の破棄
 keep_editing: 編集を続ける
+page_help_settings_project: "**プロジェクトの設定** — プロジェクト全体の設定です。"
 add_new: 新規追加
 create_new: 新規作成
 all: すべて
