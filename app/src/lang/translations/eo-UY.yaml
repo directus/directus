@@ -88,6 +88,7 @@ public_label: Publika
 not_allowed: Ne permesita
 directus_version: Directus-versio
 node_version: Node-versio
+os_type: Operaciuma tipo
 os_version: Operaciuma versio
 os_totalmem: Operaciuma memoro
 archive: Arĥivi
@@ -168,6 +169,7 @@ new_collection: 'Nova kolekto'
 add_m2o_to_collection: 'Aldoni pluraj-al-unu-rilaton al "{collection}'
 add_o2m_to_collection: 'Aldoni unu-al-pluraj-rilaton al "{collection}"'
 add_m2m_to_collection: 'Aldoni pluraj-al-pluraj-rilaton al "{collection}"'
+choose_a_type: Elekti tipon...
 determined_by_relationship: Determinita de la rilato
 add_link: Aldoni ligilon
 custom_link: Propra ligilo
@@ -540,6 +542,7 @@ fields:
     tags: Etikedoj
     location: Loko
     metadata: Metadatumoj
+    type: Aŭdvida tipo
     modified_by: Ŝanĝita de
     modified_on: Ŝanĝita je
     created_on: Kreita je
@@ -900,6 +903,9 @@ displays:
     default_background: Defaŭlta fono
     choices_value_placeholder: Entajpu valoron...
     choices_text_placeholder: Entajpu tekston...
+  mime-type:
+    mime-type: Aŭdvida tipo
+    description: Montri la aŭdvidan tipon de dosiero
   user:
     user: Uzanto
     avatar: Profilbildo
