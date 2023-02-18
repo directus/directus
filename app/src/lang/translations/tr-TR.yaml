@@ -53,6 +53,7 @@ init: Başlangıç
 dataset_too_large_currently_showing_n_items: Veri kümesi çok büyük. Şu anda ilk {n} öğe gösteriliyor.
 modifier: Düzenleyici
 custom: Özel
+hook: Kanca
 fill_width: Genişliği Doldur
 field_name_translations: Alan Adı Çevirileri
 enter_password_to_enable_tfa: İki Faktörlü Kimlik Doğrulamayı etkinleştirmek için parolanızı girin
@@ -244,6 +245,7 @@ float: Ondalıklı Sayı
 integer: Tamsayı
 json: JSON
 xml: XML
+yaml: YAML
 string: Yazı
 text: Metin
 time: Zaman
