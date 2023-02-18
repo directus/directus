@@ -335,7 +335,7 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 
 		/**
 		 * Check what the currently used data query is, so we can compare it to the new query later to
-		 * decide whether or not to reload the data
+		 * decide whether to reload the data
 		 */
 		let oldQuery;
 		if ('options' in panelEdits) {
@@ -420,7 +420,7 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 		try {
 			const requests: Promise<AxiosResponse<any, any>>[] = [];
 
-			if (edits.create) {
+			if (edits.create?.length > 0) {
 				// Created edits might come with a temporary ID for editing. Make sure to submit to API without temp ID
 				requests.push(
 					api.post(
@@ -430,12 +430,12 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 				);
 			}
 
-			if (edits.update) {
+			if (edits.update?.length > 0) {
 				requests.push(api.patch(`/panels`, edits.update));
 			}
 
-			if (edits.delete) {
-				requests.push(api.delete(`/panels`, { data: edits.delete }));
+			if (edits.delete?.length > 0) {
+				requests.push(api.patch(`/panels`, { data: { _deleted: true }, keys: edits.delete }));
 			}
 
 			await Promise.all(requests);

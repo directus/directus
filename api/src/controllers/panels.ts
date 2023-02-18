@@ -1,5 +1,5 @@
 import express from 'express';
-import { ForbiddenException } from '../exceptions';
+import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { respond } from '../middleware/respond';
 import useCollection from '../middleware/use-collection';
 import { validateBatch } from '../middleware/validate-batch';
@@ -99,6 +99,8 @@ router.patch(
 
 		if (Array.isArray(req.body)) {
 			keys = await service.updateBatch(req.body);
+		} else if (req.body.keys && req.body.data._deleted === true) {
+			await service.deleteMany(req.body.keys);
 		} else if (req.body.keys) {
 			keys = await service.updateMany(req.body.keys, req.body.data);
 		} else {
@@ -159,8 +161,10 @@ router.delete(
 			await service.deleteMany(req.body);
 		} else if (req.body.keys) {
 			await service.deleteMany(req.body.keys);
-		} else {
+		} else if (req.body.query) {
 			await service.deleteByQuery(req.body.query);
+		} else {
+			throw new InvalidPayloadException('body must contain an array, keys, or query');
 		}
 
 		return next();
