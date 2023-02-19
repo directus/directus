@@ -88,8 +88,10 @@ public_label: Publika
 not_allowed: Ne permesita
 directus_version: Directus-versio
 node_version: Node-versio
+node_uptime: Node-funkcidaŭro
 os_type: Operaciuma tipo
 os_version: Operaciuma versio
+os_uptime: Operaciuma funkcidaŭro
 os_totalmem: Operaciuma memoro
 archive: Arĥivi
 archive_confirm: Ĉu vi certas, ke vi volas arĥivi la eron?
@@ -157,7 +159,11 @@ text: Teksto
 uuid: UUID
 geometry: Geometrio (ĉiuj)
 geometry.Point: Punkto
+not_available_for_type: Ne disponebla por la tipo
 create_translations: Krei tradukojn
+auto_refresh: Aŭtomate aktualigi
+refresh_interval: Intervalo por aktualigi
+no_refresh: Ne aktualigi
 auto_generate: Aŭtomate generi
 click_here: Alklaku ĉi tie
 click_to_manage_translated_fields: >-
@@ -203,6 +209,7 @@ revision_delta_deleted: Forigita
 revision_delta_reverted: Malfarita
 revision_delta_other: Versio
 revision_delta_by: '{date} de {user}'
+download_page_as_csv: 'Elŝuti la paĝon kiel CSV'
 private_user: Privata uzanto
 item_create_success: Ero kreita | Eroj kreitaj
 this_collection: Ĉi tiu kolekto
@@ -275,6 +282,7 @@ background_color: Fona koloro
 no_file_selected: Neniu dosiero elektita
 download_file: Elŝuti la dosieron
 open_file_in_tab: Malfermi la dosieron en nova langeto
+not_available_for_local_downloads: Ne disponebla por lokaj elŝutoj
 name: Nomo
 type: Tipo
 creating_new_collection: Krei novan kolekton
@@ -352,6 +360,7 @@ errors:
   VALUE_TOO_LONG: Valoro estas tro longa
   INVALID_FOREIGN_KEY: Nevalida fremda ŝlosilo
   UNKNOWN: Neatendita eraro
+  SERVICE_UNAVAILABLE: Servo ne disponebla
 security: Sekureco
 create_bookmark: Krei legosignon
 edit_bookmark: Redakti la legosignon
