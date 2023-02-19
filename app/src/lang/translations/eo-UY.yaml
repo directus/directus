@@ -39,6 +39,8 @@ maps: Mapoj
 switch_user: Ŝanĝi la uzanton
 enter_a_name: Entajpu nomon...
 duplicate_field: Duobligi la kampon
+half_width: Duona larĝo
+full_width: Plena larĝo
 group: Grupo
 export_items: Eksporti erojn
 and: Kaj
@@ -198,6 +200,7 @@ field_name: Nomo de la kampo
 translations: Tradukoj
 no_translations: Neniu traduko
 enter_a_value: Entajpu valoron...
+length: Longo
 readonly: Nur legi
 unique: Unika
 primary_key: Ĉefa ŝlosilo
@@ -403,6 +406,7 @@ visible_collections: Videblaj kolektoj
 hidden_collections: Kaŝitaj kolektoj
 show_hidden_collections: Montri kaŝitajn kolektojn
 hide_hidden_collections: Kaŝi kaŝitajn kolektojn
+placeholder: Lokokupilo
 count_other_revisions: '{count} aliaj versioj'
 font: Tiparo
 sans_serif: Senserifa
@@ -412,6 +416,7 @@ color: Koloro
 circle: Cirklo
 empty_item: Malplena ero
 log_in_with: 'Ensaluti per {provider}'
+advanced_settings: Altnivelaj agordoj
 operators:
   eq: Egalas al
   neq: Ne egalas al
@@ -496,6 +501,8 @@ dashboard_name: Nomo de la stirpanelo
 image_url: URL de la bildo
 alt_text: Alternativa teksto
 quality: Kvalito
+width: Larĝo
+height: Alto
 source: Fonto
 url_placeholder: Entajpu URL...
 interface_group_selection: Elekto
@@ -586,6 +593,8 @@ fields:
     embed: Enkorpigi
     uploaded_by: Alŝutita de
     folder: Dosierujo
+    width: Larĝo
+    height: Alto
     charset: Signaro
     duration: Daŭro
   directus_users:
