@@ -844,6 +844,7 @@ create_dashboard: إنشاء لوحة تحكم
 dashboard_name: اسم لوحة التحكم
 no_data: لا توجد بيانات
 accountability: المساءلة
+full_screen: ملء الشاشة
 image_url: رابط الصورة
 alt_text: النص البديل
 media: وسائط الإعلام
@@ -883,6 +884,7 @@ wysiwyg_options:
   selectall: تحديد الكل
   table: الجدول
   visualaid: عرض العناصر غير المرئية
+  fullscreen: ملء الشاشة
   directionality: الاتجاهية
 dropdown: قائمة منسدلة
 choices: الخيارات
@@ -894,6 +896,7 @@ adding_user: إضافة مستخدم
 unknown_user: مستخدم غير معروف
 creating_in: 'إنشاء عنصر في {collection}'
 editing_in: 'تعديل عنصر في {collection}'
+viewing_in: 'عرض العنصر في {collection}'
 creating_unit: 'إنشاء {unit}'
 editing_unit: 'تعديل {unit}'
 editing_in_batch: 'تعديل دفعة من  {count} عناصر'
@@ -904,6 +907,7 @@ settings_project: إعدادات المشروع
 settings_webhooks: روابط الويب (Webhooks)
 settings_flows: التدفقات
 settings_presets: الإعدادات المسبقة والعلامات
+settings_translation_strings: نصوص التّرجَمَة
 one_or_more_options_are_missing: واحد أو أكثر من الخيارات مفقودة
 scope: مجال
 actions: الإجراءات
@@ -1073,6 +1077,7 @@ fields:
     status_suspended: معلّق
     status_archived: مؤرشف
     role: الدور
+    token: الرمز المميز
     last_page: آخر صفحة
     last_access: آخر وصول
   directus_settings:
@@ -1080,11 +1085,22 @@ fields:
     project_url: رابط المشروع
     project_color: لون المشروع
     project_logo: شعار المشروع
+    public_note: ملاحظة عامة
+    auth_password_policy: سياسات كلمة المرور
+    auth_login_attempts: محاولات تسجيل الدخول
+    files_and_thumbnails: الملفات والتخزين
+    storage_default_folder: المجلد الافتراضي
+    storage_asset_presets: الإعدادات المسبقة للتحويل
+    storage_asset_transform: التحولات المسموح بها
+    custom_css: CSS مخصصة
     module_bar: شريط الوحدة
+    image_editor: محرر الصور
   directus_shares:
     name: الاسم
     role: الدور
     password: كلمة المرور
+    date_start: تاريخ البدء
+    date_end: تاريخ الانتهاء
   directus_fields:
     collection: اسم المجموعة
     icon: أيقونة المجموعة
@@ -1097,6 +1113,8 @@ fields:
     name: إسم الدور
     icon: أيقونة الدور
     description: التفاصيل
+    app_access: صلاحيات تطبيق
+    admin_access: صلاحيات مسؤول
     users: المستخدمون في الدور
   directus_webhooks:
     name: الاسم
@@ -1452,6 +1470,8 @@ interfaces:
     options_override: تجاوز الخيارات
   input-autocomplete-api:
     rate: معدل
+  system-token:
+    system-token: الرمز المميز
 displays:
   translations:
     translations: الترجمة
