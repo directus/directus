@@ -60,6 +60,7 @@ show_archived_items: Montri arĥivitajn erojn
 show_all_items: Montri ĉiujn erojn
 edited: Valoro redaktita
 required: Deviga
+create_preset: Krei antaŭagordon
 create_panel: Krei panelon
 create_role: Krei rolon
 create_user: Krei uzanton
@@ -71,6 +72,7 @@ invite_users: Inviti uzantojn
 invite: Inviti
 email_already_invited: La retpoŝtadreso "{email}" jam estas invitita
 subject: Temo
+inbox: Enirkesto
 connection_excellent: Bonega konekto
 connection_good: Bona konekto
 connection_fair: Mezbona konekto
@@ -81,6 +83,8 @@ delete_folder: Forigi la dosierujon
 prefix: Prefikso
 suffix: Sufikso
 delete_bookmark: Forigi la legosignon
+delete_bookmark_copy: >-
+  Ĉu vi certas, ke vi volas forigi la legosignon "{bookmark}"? La ago ne estas malfarebla.
 logoutReason:
   SIGN_OUT: Elsalutinta
   SESSION_EXPIRED: Seanco eksvalidiĝinta
@@ -100,6 +104,7 @@ archive_confirm_count: >-
 recommended_defaults: Rekomendataj defaŭltoj
 unarchive: Malarĥivi
 unarchive_confirm: Ĉu vi certas, ke vi volas malarĥivi la eron?
+validation_errors_notice: 'La sekvaj kampoj havas nevalidajn valorojn:'
 validationError:
   eq: Valoro devas esti {valid}
   neq: Valoro ne povas esti {invalid}
@@ -156,6 +161,7 @@ json: JSON
 xml: XML
 yaml: YAML
 text: Teksto
+timestamp: Tempindiko
 uuid: UUID
 geometry: Geometrio (ĉiuj)
 geometry.Point: Punkto
@@ -208,6 +214,7 @@ enter_raw_value: Entajpu krudan valoron...
 undo_changes: Malfari la ŝanĝojn
 notifications: Sciigoj
 page_not_found: Paĝo ne trovita
+display: Montri
 title: Titolo
 revision_delta_created: Kreita
 revision_delta_created_externally: Ekstere kreita
@@ -218,12 +225,14 @@ revision_delta_by: '{date} de {user}'
 download_page_as_csv: 'Elŝuti la paĝon kiel CSV'
 private_user: Privata uzanto
 item_create_success: Ero kreita | Eroj kreitaj
+item_delete_success: Ero forigita | Eroj forigitaj
 this_collection: Ĉi tiu kolekto
 related_collection: Rilata kolekto
 related_collections: Rilataj kolektoj
 translations_collection: Kolekto de tradukoj
 languages_collection: Kolekto de lingvoj
 import_data_input_placeholder: CSV aŭ JSON...
+import_data_button: Komenci importi
 label_import: Importi
 label_export: Eksporti
 import_export: Importi / eksporti
@@ -288,6 +297,7 @@ background_color: Fona koloro
 no_file_selected: Neniu dosiero elektita
 download_file: Elŝuti la dosieron
 open_file_in_tab: Malfermi la dosieron en nova langeto
+start_export: Komenci eksporti
 not_available_for_local_downloads: Ne disponebla por lokaj elŝutoj
 name: Nomo
 type: Tipo
@@ -308,6 +318,7 @@ search_items: Serĉi erojn...
 disabled: Malŝaltita
 information: Informoj
 report_bug: Raporti cimon
+request_feature: Peti funkcion
 interface_not_found: 'Interfaco "{interface}" ne trovita.'
 item_count: 'Neniu ero | 1 ero | {count} eroj'
 file_count: 'Neniu dosiero | 1 dosiero | {count} dosieroj'
@@ -371,6 +382,7 @@ security: Sekureco
 create_bookmark: Krei legosignon
 edit_bookmark: Redakti la legosignon
 bookmarks: Legosignoj
+presets: Antaŭagordoj
 unexpected_error: Neatendita eraro
 back: Reveni
 edit_image: Redakti la bildon
@@ -444,6 +456,9 @@ role: Rolo
 edit_role: Redakti la rolon
 rule: Rolo
 user: Uzanto
+no_presets: Neniu antaŭagordo
+no_presets_cta: Aldoni antaŭagordon
+presets_only: Nur antaŭagordoj
 create: Krei
 read: Legi
 delete: Forigi
@@ -465,6 +480,7 @@ no_flows: Neniu fluo
 create_flow: Krei fluon
 creating_new_flow: Krei novan fluon
 flow_name: Nomo
+start_flow: Komenci la fluon
 code: Kodo
 dashboard: Stirpanelo
 panel: Panelo
@@ -512,12 +528,16 @@ choices: Elektoj
 deselect: Malelekti
 deselect_all: Malelekti ĉiujn
 unknown_user: Nekonata uzanto
+settings_data_model: Datummodelo
+settings_permissions: Roloj kaj permesoj
 settings_project: Agordoj de la projekto
 settings_webhooks: Rethokoj
 settings_flows: Fluoj
+settings_presets: Antaŭagordoj kaj legosignoj
 actions: Agoj
 select: Elekti...
 layout: Aranĝo
+editing_preset: Redakti la antaŭagordon
 data: Datumoj
 discard_changes: Forĵeti la ŝanĝojn
 discard_all_changes: Forĵeti ĉiujn ŝanĝojn
@@ -538,6 +558,7 @@ fields:
   directus_activity:
     action: Ago
     collection: Kolekto
+    timestamp: Ago je
     user: Ago de
     comment: Komento
     user_agent: Aplikaĵo de la uzanto
@@ -568,6 +589,8 @@ fields:
     charset: Signaro
     duration: Daŭro
   directus_users:
+    first_name: Pesona nomo
+    last_name: Familia nomo
     email: Retpoŝtadreso
     password: Pasvorto
     avatar: Profilbildo
@@ -576,9 +599,11 @@ fields:
     description: Priskribo
     tags: Etikedoj
     language: Lingvo
+    theme_auto: Aŭtomata (bazita je la sistemo)
     theme_light: Hela reĝimo
     theme_dark: Malhela reĝimo
     tfa_secret: Dufaktora kontrolado
+    admin_options: Opcioj por administrantoj
     status: Stato
     status_draft: Malneto
     status_invited: Invitita
@@ -598,6 +623,7 @@ fields:
     basemaps_style: Mapbox-stilo
     mapbox_placeholder: pk.eyJ1Ijo.....
     attribution_placeholder: '© OpenStreetMap-kontribuantoj'
+    transforms_note: La Sharp-metodonomo kaj ĝiaj argumentoj. Vidu https://sharp.pixelplumbing.com/api-constructor por pliaj informoj.
     project_name: Nomo de la projekto
     project_url: URL de la projekto
     project_color: Koloro de la projekto
@@ -637,6 +663,7 @@ field_options:
     project_name_placeholder: Mia projekto...
     project_logo_note: Blanka 40x40 SVG/PNG
     security_divider_title: Sekureco
+    transforms_note: La Sharp-metodonomo kaj ĝiaj argumentoj. Vidu https://sharp.pixelplumbing.com/api-constructor por pliaj informoj.
     mapbox_placeholder: pk.eyJ1Ijo.....
     basemaps: Bazmapoj
     basemaps_name_placeholder: Entajpu la nomon de la bazmapo...
@@ -670,8 +697,10 @@ field_options:
     collections_name: Kolektoj
     collections_addLabel: Aldoni kolekton...
   directus_users:
+    dropdown_auto: Aŭtomata (bazita je la sistemo)
     dropdown_light: Hela reĝimo
     dropdown_dark: Malhela reĝimo
+    admin_divider: Opcioj por administrantoj
     status_dropdown_draft: Malneto
     status_dropdown_invited: Invitita
     status_dropdown_active: Aktiva
@@ -749,12 +778,14 @@ settings: Agordoj
 sign_in: Ensaluti
 sign_out: Elsaluti
 sign_out_confirm: Ĉu vi certas, ke vi volas elsaluti?
+export_started: Eksporto komencita
 template: Ŝablono
 translation: Traduko
 translation_placeholder: Entajpu tradukon...
 value: Valoro
 view_project: Vidi la projekton
 report_error: Raporti eraron
+start: Komenci
 table: Tabelo
 list: Listo
 remove_item: Forigi la eron
@@ -768,10 +799,12 @@ interfaces:
     all: Ĉiuj
     any: Ajna
     and: kaj
+    add_key_placeholder: Aldoni ŝlosilon kaj premi Enter...
   fields:
     name: Kampoj
   group-accordion:
     name: Akordiono
+    start: Komenci
     accordion_mode: Akordiona reĝimo
   presentation-links:
     links: Ligiloj
@@ -834,6 +867,10 @@ interfaces:
     lnglat: Longitudo, latitudo
     wkt: WKT
     wkb: WKB
+  presentation-notice:
+    notice: Atentigo
+    description: Montri mallongan atentigon
+    text: Entajpu la enhavon de la atentigo...
   list-o2m:
     one-to-many: Unu-al-pluraj-rilato
   system-folder:
@@ -846,7 +883,10 @@ interfaces:
   tags:
     tags: Etikedoj
     description: Elekti aŭ aldoni etikedojn
+    add_tags: Aldoni etikedon kaj premi Enter...
   input:
+    trim: Forigi spacetojn
+    trim_label: Forigi komencajn kaj finajn spacetojn
     mask: Kaŝita
     minimum_value: Minimuma valoro
     maximum_value: Maksimuma valoro
@@ -890,6 +930,7 @@ displays:
     description: Montri kolekton
   color:
     color: Koloro
+    default_color: Defaŭlta koloro
   datetime:
     suffix: Sufikso
   file:
@@ -1030,9 +1071,11 @@ operations:
   mail:
     name: Sendi retpoŝtmesaĝon
     to: Al
+    to_placeholder: Aldoni retpoŝtadresojn kaj premi Enter...
   notification:
     name: Sendi sciigon
     recipient: Uzanto
+    recipient_placeholder: Aldoni UUID de la uzanto kaj premi Enter...
     message: Mesaĝo
   request:
     url: URL
