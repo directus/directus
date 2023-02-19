@@ -197,8 +197,14 @@ unique: Unika
 primary_key: Ĉefa ŝlosilo
 foreign_key: Fremda ŝlosilo
 raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
+raw_value: Kruda valoro
+copy_raw_value: Kopii la krudan valoron
 copy_raw_value_success: Kopiita
+paste_raw_value: Alglui la krudan valoron
 paste_raw_value_success: Algluita
+view_raw_value: Vidi la krudan valoron
+edit_raw_value: Redakti la krudan valoron
+enter_raw_value: Entajpu krudan valoron...
 undo_changes: Malfari la ŝanĝojn
 notifications: Sciigoj
 page_not_found: Paĝo ne trovita
@@ -861,6 +867,8 @@ interfaces:
       auto: Aŭtomata
   input-autocomplete-api:
     trigger: Ekagilo
+  group-raw:
+    name: Kruda grupo
   system-token:
     system-token: Ĵetono
     remove_token: Forigi la ĵetonon
@@ -915,6 +923,8 @@ displays:
   mime-type:
     mime-type: Aŭdvida tipo
     description: Montri la aŭdvidan tipon de dosiero
+  raw:
+    raw: Kruda valoro
   user:
     user: Uzanto
     avatar: Profilbildo
