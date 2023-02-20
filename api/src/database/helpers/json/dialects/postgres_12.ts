@@ -4,6 +4,9 @@ import { JsonFieldNode } from '../../../../types/index';
 import { getOperation } from '../../../../utils/apply-query';
 import { Item } from '@directus/shared/types';
 
+/**
+ * JSON support for PostgreSQL 12+
+ */
 export class JsonHelperPostgres_12 extends JsonHelperDefault {
 	preProcess(dbQuery: Knex.QueryBuilder, table: string): void {
 		dbQuery

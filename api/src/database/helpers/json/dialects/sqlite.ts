@@ -7,43 +7,8 @@ import { Item } from '@directus/shared/types';
 import { generateAlias } from '../../../../utils/generate-alias';
 
 /**
- * To support first-level array queries consistently we will need to get to a query like:
-
-WITH xyz AS (
-    SELECT jason.id, json_group_array(json_extract(value, "$.test")) as X
-    FROM jason, json_each(jason.data, "$")
-    GROUP BY jason.id
-)
-select jason.id, xyz.X
-from jason
-join xyz ON xyz.id = jason.id;
+ * JSON support for SQLite 3.38+
  */
-/**
- * To support nested array queries consistently the above needs to be extended to:
-
-WITH xyz AS (
-    SELECT jason.id, json_group_array(json_extract(K.value, "$.b")) as X
-    FROM jason, json_each(jason.data, "$") J, json_each(J.value, "$.a") K
-    GROUP BY jason.id
-)
-select jason.id, xyz.X
-from jason
-join xyz ON xyz.id = jason.id;
- */
-/**
- * To support deep queries consistently the above needs to be extended to:
-
-WITH xyz AS (
-    SELECT jason.id, json_group_array(json_extract(K.value, "$.b")) as X
-    FROM jason, json_each(jason.data, "$") J, json_each(J.value, "$.a") K
-	WHERE X >= 10
-    GROUP BY jason.id
-)
-select jason.id, xyz.X
-from jason
-join xyz ON xyz.id = jason.id;
- */
-
 export class JsonHelperSQLite extends JsonHelperDefault {
 	preProcess(dbQuery: Knex.QueryBuilder, table: string): void {
 		const selectQueries = this.nodes.filter(

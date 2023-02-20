@@ -37,7 +37,6 @@ export type AnyJsonHelper =
 	| jsonHelpers.mysql5
 	| jsonHelpers.oracle12
 	| jsonHelpers.cockroachdb
-	// | jsonHelpers.postgres10
 	| jsonHelpers.postgres12;
 
 export function getJsonHelper(database: Knex, schema: SchemaOverview, nodes: JsonFieldNode[] = []): AnyJsonHelper {
@@ -56,22 +55,16 @@ export function getJsonHelperByVersion(client: DatabaseClients): DatabaseVersion
 			if (major === 3 && minor >= 38) {
 				return 'sqlite'; // version 3.38.0+
 			}
-			return 'fallback'; // might be able to check for json extension
+			return 'fallback';
 		case 'postgres':
 			if (major >= 12) {
 				return 'postgres12'; // version 12+
 			}
-			// if (major >= 10) {
-			// 	// might be able to support v9 here too
-			// 	return 'postgres10'; // version 10+
-			// }
 			return 'fallback';
 		case 'cockroachdb':
-			// if (major >= 2) {
-			// 	// apparently cockroach DB supports JSON since v2 but not very well
-			// 	return 'cockroachdb';
-			// }
-			return 'fallback'; // should really update if still running < v2
+			// we cannot rely on the postgres implementation so
+			// falling back to postprocessing for cockroachdb
+			return 'fallback';
 		case 'mysql':
 			if (/MariaDB/i.test(full)) {
 				if (major == 10 && minor >= 2) {
