@@ -70,8 +70,12 @@ export class RolesService extends ItemsService {
 	}
 
 	async updateOne(key: PrimaryKey, data: Record<string, any>, opts?: MutationOptions): Promise<PrimaryKey> {
-		if ('users' in data) {
-			await this.checkForOtherAdminUsers(key, data.users);
+		try {
+			if ('users' in data) {
+				await this.checkForOtherAdminUsers(key, data.users);
+			}
+		} catch (err: any) {
+			(opts || (opts = {})).preMutationException = err;
 		}
 
 		return super.updateOne(key, data, opts);
@@ -83,16 +87,24 @@ export class RolesService extends ItemsService {
 		const keys = data.map((item) => item[primaryKeyField]);
 		const setsToNoAdmin = data.some((item) => item.admin_access === false);
 
-		if (setsToNoAdmin) {
-			await this.checkForOtherAdminRoles(keys);
+		try {
+			if (setsToNoAdmin) {
+				await this.checkForOtherAdminRoles(keys);
+			}
+		} catch (err: any) {
+			(opts || (opts = {})).preMutationException = err;
 		}
 
 		return super.updateBatch(data, opts);
 	}
 
 	async updateMany(keys: PrimaryKey[], data: Record<string, any>, opts?: MutationOptions): Promise<PrimaryKey[]> {
-		if ('admin_access' in data && data.admin_access === false) {
-			await this.checkForOtherAdminRoles(keys);
+		try {
+			if ('admin_access' in data && data.admin_access === false) {
+				await this.checkForOtherAdminRoles(keys);
+			}
+		} catch (err: any) {
+			(opts || (opts = {})).preMutationException = err;
 		}
 
 		return super.updateMany(keys, data, opts);
@@ -104,7 +116,13 @@ export class RolesService extends ItemsService {
 	}
 
 	async deleteMany(keys: PrimaryKey[]): Promise<PrimaryKey[]> {
-		await this.checkForOtherAdminRoles(keys);
+		const opts: MutationOptions = {};
+
+		try {
+			await this.checkForOtherAdminRoles(keys);
+		} catch (err: any) {
+			opts.preMutationException = err;
+		}
 
 		await this.knex.transaction(async (trx) => {
 			const itemsService = new ItemsService('directus_roles', {
@@ -133,13 +151,19 @@ export class RolesService extends ItemsService {
 
 			// Delete permissions/presets for this role, suspend all remaining users in role
 
-			await permissionsService.deleteByQuery({
-				filter: { role: { _in: keys } },
-			});
+			await permissionsService.deleteByQuery(
+				{
+					filter: { role: { _in: keys } },
+				},
+				opts
+			);
 
-			await presetsService.deleteByQuery({
-				filter: { role: { _in: keys } },
-			});
+			await presetsService.deleteByQuery(
+				{
+					filter: { role: { _in: keys } },
+				},
+				opts
+			);
 
 			await usersService.updateByQuery(
 				{
@@ -148,10 +172,11 @@ export class RolesService extends ItemsService {
 				{
 					status: 'suspended',
 					role: null,
-				}
+				},
+				opts
 			);
 
-			await itemsService.deleteMany(keys);
+			await itemsService.deleteMany(keys, opts);
 		});
 
 		return keys;

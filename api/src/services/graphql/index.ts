@@ -1,5 +1,5 @@
 import { BaseException } from '@directus/shared/exceptions';
-import { Accountability, Action, Aggregate, Filter, Query, SchemaOverview, PrimaryKey } from '@directus/shared/types';
+import { Accountability, Action, Aggregate, Filter, PrimaryKey, Query, SchemaOverview } from '@directus/shared/types';
 import { parseFilterFunctionPath } from '@directus/shared/utils';
 import argon2 from 'argon2';
 import {
@@ -36,15 +36,13 @@ import {
 	InputTypeComposer,
 	InputTypeComposerFieldConfigMapDefinition,
 	ObjectTypeComposer,
+	ObjectTypeComposerFieldConfigDefinition,
 	ObjectTypeComposerFieldConfigMapDefinition,
 	SchemaComposer,
 	toInputObjectType,
-	ObjectTypeComposerFieldConfigDefinition,
 } from 'graphql-compose';
-import processError from './utils/process-error';
 import { Knex } from 'knex';
 import { flatten, get, mapKeys, merge, omit, pick, set, transform, uniq } from 'lodash';
-import ms from 'ms';
 import { clearSystemCache, getCache } from '../../cache';
 import { DEFAULT_AUTH_PROVIDER, GENERATE_SPECIAL } from '../../constants';
 import getDatabase from '../../database';
@@ -80,16 +78,18 @@ import { TFAService } from '../tfa';
 import { UsersService } from '../users';
 import { UtilsService } from '../utils';
 import { WebhooksService } from '../webhooks';
+import processError from './utils/process-error';
 
 import { GraphQLDate } from './types/date';
 import { GraphQLGeoJSON } from './types/geojson';
 import { GraphQLStringOrFloat } from './types/string-or-float';
 import { GraphQLVoid } from './types/void';
 
-import { addPathToValidationError } from './utils/add-path-to-validation-error';
-import { GraphQLHash } from './types/hash';
-import { GraphQLBigInt } from './types/bigint';
 import { FUNCTIONS } from '@directus/shared/constants';
+import { getMilliseconds } from '../../utils/get-milliseconds';
+import { GraphQLBigInt } from './types/bigint';
+import { GraphQLHash } from './types/hash';
+import { addPathToValidationError } from './utils/add-path-to-validation-error';
 
 const validationRules = Array.from(specifiedRules);
 
@@ -2000,7 +2000,7 @@ export class GraphQLService {
 						res?.cookie(env.REFRESH_TOKEN_COOKIE_NAME, result.refreshToken, {
 							httpOnly: true,
 							domain: env.REFRESH_TOKEN_COOKIE_DOMAIN,
-							maxAge: ms(env.REFRESH_TOKEN_TTL as string),
+							maxAge: getMilliseconds(env.REFRESH_TOKEN_TTL),
 							secure: env.REFRESH_TOKEN_COOKIE_SECURE ?? false,
 							sameSite: (env.REFRESH_TOKEN_COOKIE_SAME_SITE as 'lax' | 'strict' | 'none') || 'strict',
 						});
@@ -2038,7 +2038,7 @@ export class GraphQLService {
 						res?.cookie(env.REFRESH_TOKEN_COOKIE_NAME, result.refreshToken, {
 							httpOnly: true,
 							domain: env.REFRESH_TOKEN_COOKIE_DOMAIN,
-							maxAge: ms(env.REFRESH_TOKEN_TTL as string),
+							maxAge: getMilliseconds(env.REFRESH_TOKEN_TTL),
 							secure: env.REFRESH_TOKEN_COOKIE_SECURE ?? false,
 							sameSite: (env.REFRESH_TOKEN_COOKIE_SAME_SITE as 'lax' | 'strict' | 'none') || 'strict',
 						});
