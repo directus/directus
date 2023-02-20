@@ -56,7 +56,7 @@ export const TransformationMethods /*: readonly (keyof Sharp)[]*/ = [
 ] as const;
 
 // Helper types
-type AllowedSharpMethods = Pick<Sharp, typeof TransformationMethods[number]>;
+type AllowedSharpMethods = Pick<Sharp, (typeof TransformationMethods)[number]>;
 
 export type TransformationMap = {
 	[M in keyof AllowedSharpMethods]: readonly [M, ...Parameters<AllowedSharpMethods[M]>];

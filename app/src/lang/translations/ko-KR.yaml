@@ -585,9 +585,6 @@ layouts:
     no_compatible_fields: 해당필드 없음
   kanban:
     crop: 맞춰자르기(crop)
-panels:
-  linechart:
-    datasets: 데이터 세트
 triggers:
   common:
     response_body_all: 전체 데이터

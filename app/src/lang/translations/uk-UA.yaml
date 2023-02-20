@@ -481,7 +481,7 @@ manual_string: Введений вручну рядок
 save_and_create_new: Зберігти і створити новий
 save_and_stay: Зберегти і Залишитись
 save_as_copy: Зберегти копію
-add_existing: Добати вже існуючий
+add_existing: Додати наявний
 creating_items: Створення об'єктів
 enable_create_button: Увімкнути кнопку "створення"
 selecting_items: Обрані об'єкти
@@ -701,6 +701,7 @@ operators:
   nnull: Значення не нульове
   contains: Містить
   ncontains: Не містить
+  icontains: Містить (без врахування реєстру)
   starts_with: Починаться з
   nstarts_with: Не починається з
   ends_with: Закінчується на
@@ -796,14 +797,21 @@ view_trigger: Деталі Тригера
 create_trigger: Створити тригер
 trigger_setup: Налаштування Тригера
 change_trigger: Змінити Тригер
+flow_delete_confirm: Ви впевнені, що хочете видалити потік "{flow}"? Цю дію не можливо скасувати.
 set_flow_active: Включити Автоматизацію
 set_flow_inactive: Виключити Автоматизацію
 edit_flow: Редагувати Автоматизацію
 delete_flow: Видалити Автоматизацію
+no_other_flows_copy: У вас немає інших потоків.
+no_flows: Немає потоків
+no_flows_copy: У вас немає жодного потоку.
 create_flow: Створити Автоматизацію
 creating_new_flow: Створюємо Нову Автоматизацію
 updating_flow: Оновлюємо Автоматизацію
+flow_setup: Налаштування потоку
 flow_name: Назва
+flow_tracking: Відстеження активності та журналів
+flow_tracking_all: Відстежувати активність та журнали
 flow_tracking_activity: Лише відстежувати діяльність
 flow_tracking_null: Нічого не відслідковувати
 start_flow: Запустити Автоматизацію
@@ -814,6 +822,7 @@ code: Код
 operation_options: Параметри Дії
 operation_name: Назва дії...
 operation_key: Ідентифікатор для довідки...
+operation_key_unique_error: Ключі операції повинні бути унікальними у потоці
 operation_handle_resolve: 'Рішення: натисніть, щоб додати, або перетягніть, щоб змінити маршрут'
 operation_handle_reject: 'Відмова: натисніть, щоб додати, або перетягніть, щоб змінити маршрут'
 insights: Статистика
@@ -837,7 +846,9 @@ no_dashboards_copy: В вас ще немає панелі керування.
 create_dashboard: Створити панель керування
 dashboard_name: Назва панелі керування
 no_data: Немає даних
+no_data_in_flow: В цьому потоці не було створено чи запитано даних
 accountability: Підзвітність
+payload: Вміст
 details: Деталі
 full_screen: Повний екран
 full_text_search: Пошук за повним текстом
@@ -852,6 +863,7 @@ media: Медіа
 quality: Якість
 width: Ширина
 height: Висота
+transformation_preset_key: Ключ попередньо налаштованих перетворень
 source: Джерело
 url_placeholder: Введіть URL...
 display_text: Відобразити текст
@@ -986,6 +998,8 @@ page_help_settings_presets_item: >-
   **Деталі попереднього налаштування** — форма для керування закладками та стандартними налаштуваннями колекцій.
 page_help_settings_webhooks_collection: '**Переглянути веб-хуки** — перелік усіх веб-хуків у проекті.'
 page_help_settings_webhooks_item: '**Деталі веб-хуку** — форма для створення веб-хуків проекту та керування ними.'
+page_help_settings_flows_collection: '**Перегляд потоків** - Перелік всіх потоків в проєкті.'
+page_help_settings_flows_item: '**Деталі потоку** - Робочий простір для управління однією або кількома операціями.'
 page_help_settings_translation_strings_collection: '**Переглянути переклади рядків** — Відображається повний список рядків у проекті.'
 page_help_users_collection: '**Каталог користувачів** — перелік усіх користувачів системи в цьому проекті.'
 page_help_users_item: >-
@@ -1445,6 +1459,7 @@ interfaces:
     no_rules: Немає налаштованих правил
     change_value: Натисніть, щоб змінити значення
     placeholder: Перетягніть файли сюди
+    add_key_placeholder: Додайте ключ і натисніть Enter...
   fields:
     name: Поля
   group-accordion:
@@ -1533,6 +1548,7 @@ interfaces:
     allow_none_label: Можна не вказувати значення
     choices_name_placeholder: Вкажіть назву...
     choices_value_placeholder: Введіть значення...
+    preview_threshold: Обмеження попереднього перегляду
   select-multiple-dropdown:
     select-multiple-dropdown: Випадаючий список (кілька)
     description: Вибір декількох елементів із списку
@@ -1684,6 +1700,7 @@ interfaces:
     user_language: Використовувати поточну мову користувача
     default_language: Мова за замовчуванням
     language_field: Поле визначення мови
+    language_direction_field: Поле визначення мови
   list-o2m-tree-view:
     description: У вигляді дерева рекурсивно вкладених елементів
     recursive_only: Дерево можна вибрати для рекурсивних відносин.
@@ -1734,6 +1751,7 @@ interfaces:
     remove_token: Видалити токен
   system-raw-editor:
     system-raw-editor: Редактор Raw
+    description: Дозволити введення необроблених або шаблонізованих даних
 displays:
   translations:
     translations: Переклади
@@ -1773,6 +1791,7 @@ displays:
     relative_label: 'Показати відносний час, наприклад: 5 хвилин тому'
     suffix: Суфікс
     suffix_label: Показати відносний індикатор
+    suffix_note: Використовує слова на кшталт 'in' та 'ago'
     strict: Строгий
     strict_label: Використовувати суворі одиниці виміру
     strict_note: Видаляє такі слова як "майже", "більше", "менше ніж"
@@ -1780,6 +1799,7 @@ displays:
     round_note: Виберіть функцію округлення для використання
     down: Донизу
     nearest: Найближча
+    up: Вгору
   file:
     file: Файл
     description: Показати файли
@@ -1891,15 +1911,36 @@ layouts:
     default_template: Використання колекції за замовчуванням...
     no_compatible_fields: Немає сумісних полів
   kanban:
+    name: Kanban
+    group_field: Групувати за
+    group_field_placeholder: Поле для групування...
+    group_title: Назва групи
+    group_title_placeholder: Поле для заголовків групи...
     title: Заголовок Картки
+    title_placeholder: Необов'язкове поле заголовку...
     text: Текст Картки
+    text_placeholder: Необов'язкове текстове поле...
     date: Дата Картки
+    date_placeholder: Необов'язкове поле дати...
     tags: Теги Картки
+    tags_placeholder: Необов'язковий тег...
     user: Користувач Картки
+    user_placeholder: Необов'язкове поле користувача...
     image: Картинка Картки
+    image_placeholder: Необов'язкове зображення...
+    image_fit: Розміщення зображення картки
     crop: Обрізати
     advanced: Додатково
+    edit_group: Редагувати групу
+    delete_group: Видалити групу
+    add_group: Додати групу
+    add_group_placeholder: Введіть нову назву групи...
+    show_ungrouped: Показати не згруповані
+    show: Показати
     no_group: Без Групи
+    not_all_loaded: Можна завантажити лише перші 1000 елементів.
+horizontal: Горизонтальний
+both: Обидва
 panels:
   metric:
     name: Метрична
@@ -1920,38 +1961,14 @@ panels:
     description: Фільтрувати та перелічити поля з колекції
   barchart:
     name: Гістограма
-    select_collection: Виберіть колекцію.
-    select_x_axis: Виберіть вісь X.
-    function: Функція
+    description: Гістограми або стовпчасті графіки для порівняння групованих значень
     horizontal: Горизонтальний
-    x_axis: Вісь X
-    y_axis_conditional_one: Значення для умови
-    y_axis_conditional_two: має бути числом.
+    select_collection: Виберіть колекцію.
   linechart:
     name: Лінійна діаграма
-    select_field: Ви повинні вибрати поле.
-    select_collection: Ви повинні вибрати колекцію.
-    select_x_axis: Потрібно вибрати вісь X.
-    function: Функція
-    x_axis: Вісь X
-    x_axis_decimals: Вісь координат X
     disabled_no_grouping: Вимкнено, якщо групування не вибрано.
-    y_axis: Вісь Y
-    datasets: Набори даних
-    show_legend: Показати легенду
     show_marker: Показати маркер підказки
-    include_y_axis: Ви повинні включити вісь Y для кожного набору даних, якщо не вказано жодної групи.
-    group_and_function: Ви повинні включити або опустити як групу, так і функцію.
-  meter:
-    select_max_value: Ви повинні вибрати максимальне значення.
-    max_greater_than_zero: Максимальне значення повинно бути більше 0.
-    select_field: Ви повинні вибрати поле.
-    select_collection: Ви повинні вибрати колекцію.
-    function: Функція
-  piechart:
-    function: Функція
-    show_legend: Показати легенду
-    monochrome_color: Монохромний колір
+    curve_type: Тип кривої
   relational-variable:
     name: Глобальна реляційна змінна
     description: Встановити глобальне реляційне значення для використання у фільтрі інших панелей
@@ -1967,24 +1984,33 @@ triggers:
 operations:
   condition:
     name: Умова
+    description: Керувати потоком на основі умови
   exec:
     name: Виконати Скрипт
     description: Виконати довільний код щоб змінити дані
   item-create:
     name: Створити дані
     description: Створити елементи в базі даних
+    payload: Вміст
+    emit_events: Створювати події
   item-delete:
     name: Видалити дані
     description: Видалити елементи в базі даних
+    emit_events: Створювати події
     key: Ідентифікатори
     query: Запит
   item-read:
+    name: Читання даних
+    description: Читати елементи з бази даних
     key: Ідентифікатори
     query: Запит
+    emit_events: Створювати події
   item-update:
     name: Оновлення даних
     description: Оновити елементи в базі даних
+    emit_events: Створювати події
     key: Ідентифікатори
+    payload: Вміст
     query: Запит
   log:
     name: Увійти в консоль
@@ -1996,6 +2022,7 @@ operations:
     description: Відправити лист одному або декільком людям
     to: До
     to_placeholder: Додайте адреси електронної пошти та натисніть enter...
+    body: Тіло
   notification:
     name: Надіслати сповіщення
     description: Надіслати сповіщення в застосунку одному або декільком користувачам
@@ -2003,17 +2030,32 @@ operations:
     recipient_placeholder: Додати UUID користувача та натиснути Enter...
     message: Повідомлення
   request:
+    name: Веб хук / URL запиту
     description: "Зробити запит на посилання"
     url: URL
     url_placeholder: https://example.com/example
     method: Метод
     data: Дані
+    headers: Заголовки
     header: Заголовок
     header_placeholder: Авторизація...
+    value_placeholder: Bearer eyJhbGciOi...
   sleep:
+    name: Спати
     description: Зачекайте декілька мілісекунд
     milliseconds: Мілісекунди
+  transform:
+    name: Перетворити вміст
+    description: Змінити вміст JSON потоку
   trigger:
+    name: Ініціювати потік
+    description: Передати ці дані в інший потік
     flows: Автоматизація
     flow: Автоматизація
     data: Дані
+    iteration_mode: Режим ітерації
+    iteration_mode_note: Режим для ітерації по масивах.
+    serial: Послідовно
+    parallel: Паралельно
+    batch: Пакетно
+    batch_size: Розмір пакету

@@ -304,6 +304,9 @@ async function getDBQuery(
 	}
 
 	if (sortRecords) {
+		// Clears the order if any, eg: from MSSQL offset
+		dbQuery.clear('order');
+
 		if (needsInnerQuery) {
 			let orderByString = '';
 			const orderByFields: Knex.Raw[] = [];
@@ -343,9 +346,6 @@ async function getDBQuery(
 				);
 			}
 		} else {
-			// Clears the order if any, eg: from MSSQL offset
-			dbQuery.clear('order');
-
 			sortRecords.map((sortRecord) => {
 				if (sortRecord.column.includes('.')) {
 					const [alias, field] = sortRecord.column.split('.');
