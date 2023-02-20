@@ -10,15 +10,15 @@ type Translations = {
 
 export type Width = 'half' | 'half-left' | 'half-right' | 'full' | 'fill';
 
-export type Type = typeof TYPES[number];
+export type Type = (typeof TYPES)[number];
 
-export type FieldFunction = typeof FUNCTIONS[number];
+export type FieldFunction = (typeof FUNCTIONS)[number];
 
-export type LocalType = typeof LOCAL_TYPES[number];
+export type LocalType = (typeof LOCAL_TYPES)[number];
 
-export type GeometryType = typeof GEOMETRY_TYPES[number] | 'GeometryCollection' | undefined;
+export type GeometryType = (typeof GEOMETRY_TYPES)[number] | 'GeometryCollection' | undefined;
 
-export type GeometryFormat = typeof GEOMETRY_FORMATS[number];
+export type GeometryFormat = (typeof GEOMETRY_FORMATS)[number];
 
 export type FieldMeta = {
 	id: number;

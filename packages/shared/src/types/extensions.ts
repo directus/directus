@@ -24,12 +24,12 @@ import { SchemaOverview } from './schema';
 import { OperationAppConfig } from './operations';
 import { z } from 'zod';
 
-export type AppExtensionType = typeof APP_EXTENSION_TYPES[number];
-export type ApiExtensionType = typeof API_EXTENSION_TYPES[number];
-export type HybridExtensionType = typeof HYBRID_EXTENSION_TYPES[number];
-export type BundleExtensionType = typeof BUNDLE_EXTENSION_TYPES[number];
-export type ExtensionType = typeof EXTENSION_TYPES[number];
-export type NestedExtensionType = typeof NESTED_EXTENSION_TYPES[number];
+export type AppExtensionType = (typeof APP_EXTENSION_TYPES)[number];
+export type ApiExtensionType = (typeof API_EXTENSION_TYPES)[number];
+export type HybridExtensionType = (typeof HYBRID_EXTENSION_TYPES)[number];
+export type BundleExtensionType = (typeof BUNDLE_EXTENSION_TYPES)[number];
+export type ExtensionType = (typeof EXTENSION_TYPES)[number];
+export type NestedExtensionType = (typeof NESTED_EXTENSION_TYPES)[number];
 
 const SplitEntrypoint = z.object({
 	app: z.string(),
@@ -164,7 +164,7 @@ export type ExtensionOptionsContext = {
 
 	items: Record<string, Record<string, any>[]>;
 
-	localType: typeof LOCAL_TYPES[number];
+	localType: (typeof LOCAL_TYPES)[number];
 	autoGenerateJunctionRelation: boolean;
 	saving: boolean;
 };

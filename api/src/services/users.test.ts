@@ -3,7 +3,7 @@ import knex, { Knex } from 'knex';
 import { getTracker, MockClient, Tracker } from 'knex-mock-client';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, MockedFunction, SpyInstance, vi } from 'vitest';
 import { ItemsService, UsersService } from '.';
-import { InvalidPayloadException } from '../exceptions';
+import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { RecordNotUniqueException } from '../exceptions/database/record-not-unique';
 
 vi.mock('../../src/database/index', () => ({
@@ -231,14 +231,20 @@ describe('Integration Tests', () => {
 
 					const promise = service.updateOne(1, { [field]: 'test' });
 
-					expect.assertions(2); // to ensure both assertions in the catch block are reached
+					expect.assertions(5); // to ensure both assertions in the catch block are reached
 
 					try {
 						await promise;
 					} catch (err: any) {
-						expect(err.message).toBe(`You can't change the "${field}" value manually.`);
-						expect(err).toBeInstanceOf(InvalidPayloadException);
+						expect(err.message).toBe(`You don't have permission to access this.`);
+						expect(err).toBeInstanceOf(ForbiddenException);
 					}
+
+					expect(superUpdateManySpy).toHaveBeenCalled();
+					expect(superUpdateManySpy.mock.lastCall![2].preMutationException.message).toBe(
+						`You can't change the "${field}" value manually.`
+					);
+					expect(superUpdateManySpy.mock.lastCall![2].preMutationException).toBeInstanceOf(InvalidPayloadException);
 				}
 			);
 
@@ -340,14 +346,20 @@ describe('Integration Tests', () => {
 
 					const promise = service.updateMany([1], { [field]: 'test' });
 
-					expect.assertions(2); // to ensure both assertions in the catch block are reached
+					expect.assertions(5); // to ensure both assertions in the catch block are reached
 
 					try {
 						await promise;
 					} catch (err: any) {
-						expect(err.message).toBe(`You can't change the "${field}" value manually.`);
-						expect(err).toBeInstanceOf(InvalidPayloadException);
+						expect(err.message).toBe(`You don't have permission to access this.`);
+						expect(err).toBeInstanceOf(ForbiddenException);
 					}
+
+					expect(superUpdateManySpy).toHaveBeenCalled();
+					expect(superUpdateManySpy.mock.lastCall![2].preMutationException.message).toBe(
+						`You can't change the "${field}" value manually.`
+					);
+					expect(superUpdateManySpy.mock.lastCall![2].preMutationException).toBeInstanceOf(InvalidPayloadException);
 				}
 			);
 
@@ -469,14 +481,20 @@ describe('Integration Tests', () => {
 
 					const promise = service.updateByQuery({}, { [field]: 'test' });
 
-					expect.assertions(2); // to ensure both assertions in the catch block are reached
+					expect.assertions(5); // to ensure both assertions in the catch block are reached
 
 					try {
 						await promise;
 					} catch (err: any) {
-						expect(err.message).toBe(`You can't change the "${field}" value manually.`);
-						expect(err).toBeInstanceOf(InvalidPayloadException);
+						expect(err.message).toBe(`You don't have permission to access this.`);
+						expect(err).toBeInstanceOf(ForbiddenException);
 					}
+
+					expect(superUpdateManySpy).toHaveBeenCalled();
+					expect(superUpdateManySpy.mock.lastCall![2].preMutationException.message).toBe(
+						`You can't change the "${field}" value manually.`
+					);
+					expect(superUpdateManySpy.mock.lastCall![2].preMutationException).toBeInstanceOf(InvalidPayloadException);
 				}
 			);
 
@@ -515,24 +533,72 @@ describe('Integration Tests', () => {
 
 		describe('deleteOne', () => {
 			it('should checkRemainingAdminExistence once', async () => {
-				await service.deleteOne(1);
+				const service = new UsersService({
+					knex: db,
+					schema: testSchema,
+					accountability: { role: 'test', admin: false },
+				});
+
+				const promise = service.deleteOne(1);
+
+				expect.assertions(3); // to ensure both assertions in the catch block are reached
+
+				try {
+					await promise;
+				} catch (err: any) {
+					expect(err.message).toBe(`You don't have permission to access this.`);
+					expect(err).toBeInstanceOf(ForbiddenException);
+				}
+
 				expect(checkRemainingAdminExistenceSpy).toBeCalledTimes(1);
 			});
 		});
 
 		describe('deleteMany', () => {
 			it('should checkRemainingAdminExistence once', async () => {
-				await service.deleteMany([1]);
+				const service = new UsersService({
+					knex: db,
+					schema: testSchema,
+					accountability: { role: 'test', admin: false },
+				});
+
+				const promise = service.deleteMany([1]);
+
+				expect.assertions(3); // to ensure both assertions in the catch block are reached
+
+				try {
+					await promise;
+				} catch (err: any) {
+					expect(err.message).toBe(`You don't have permission to access this.`);
+					expect(err).toBeInstanceOf(ForbiddenException);
+				}
+
 				expect(checkRemainingAdminExistenceSpy).toBeCalledTimes(1);
 			});
 		});
 
 		describe('deleteByQuery', () => {
 			it('should checkRemainingAdminExistence once', async () => {
-				// mock return value for the following empty query
-				vi.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValue([{ id: 1 }]);
+				const service = new UsersService({
+					knex: db,
+					schema: testSchema,
+					accountability: { role: 'test', admin: false },
+				});
 
-				await service.deleteByQuery({});
+				// mock return value for the following empty query
+				vi.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValueOnce([{ id: 1 }]);
+
+				const promise = service.deleteByQuery({ filter: { id: { _eq: 1 } } });
+
+				expect.assertions(3); // to ensure both assertions in the catch block are reached
+
+				try {
+					await promise;
+				} catch (err: any) {
+					expect(err.message).toBe(`You don't have permission to access this.`);
+					expect(err).toBeInstanceOf(ForbiddenException);
+				}
+
 				expect(checkRemainingAdminExistenceSpy).toBeCalledTimes(1);
 			});
 		});

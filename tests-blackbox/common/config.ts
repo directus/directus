@@ -2,7 +2,7 @@ import { Knex } from 'knex';
 import { promisify } from 'util';
 import { allVendors } from './get-dbs-to-test';
 
-type Vendor = typeof allVendors[number];
+type Vendor = (typeof allVendors)[number];
 
 export type Config = {
 	knexConfig: Record<Vendor, Knex.Config & { waitTestSQL: string }>;
@@ -281,7 +281,7 @@ for (const vendor of allVendors) {
 	config.envs[vendor]!.TZ = isWindows ? '0' : 'UTC';
 }
 
-export function getUrl(vendor: typeof allVendors[number]) {
+export function getUrl(vendor: (typeof allVendors)[number]) {
 	let port = config.envs[vendor]!.PORT;
 
 	if (process.env.TEST_LOCAL) {
