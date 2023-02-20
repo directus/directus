@@ -114,6 +114,10 @@ function onClick(event: MouseEvent) {
 }
 
 function onKeyDown(event: KeyboardEvent) {
+	if (event.key === 'Enter') {
+		event.preventDefault();
+	}
+
 	if (event.key === '{' || event.key === '}') {
 		event.preventDefault();
 		menuActive.value = true;
@@ -287,7 +291,7 @@ function setContent() {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .content {
 	display: block;
 	flex-grow: 1;
@@ -297,15 +301,16 @@ function setContent() {
 	font-size: 14px;
 	font-family: var(--family-monospace);
 	white-space: nowrap;
+
+	:deep(span) {
+		min-width: 1px;
+		min-height: 1em;
+		white-space: pre;
+	}
 }
 
 :deep(br) {
 	display: none;
-}
-
-:deep(span) {
-	min-width: 1px;
-	min-height: 1em;
 }
 
 :deep(button) {

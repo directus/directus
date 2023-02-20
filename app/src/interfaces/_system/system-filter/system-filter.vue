@@ -20,6 +20,7 @@
 				:depth="1"
 				:include-validation="includeValidation"
 				:include-relations="includeRelations"
+				:relational-field-selectable="relationalFieldSelectable"
 				@remove-node="removeNode($event)"
 				@change="emitValue"
 			/>
@@ -44,6 +45,7 @@
 					:collection="collection"
 					include-functions
 					:include-relations="includeRelations"
+					:relational-field-selectable="relationalFieldSelectable"
 					@select-field="addNode($event)"
 				>
 					<template #prepend>
@@ -83,7 +85,12 @@
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 import { Filter, Type, FieldFunction } from '@directus/shared/types';
-import { getFilterOperatorsForType, getOutputTypeForFunction, parseFilterFunctionPath } from '@directus/shared/utils';
+import {
+	getFilterOperatorsForType,
+	getOutputTypeForFunction,
+	parseFilterFunctionPath,
+	parseJSON,
+} from '@directus/shared/utils';
 import { cloneDeep, get, isEmpty, set } from 'lodash';
 import { computed, inject, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -91,7 +98,7 @@ import Nodes from './nodes.vue';
 import { getNodeName } from './utils';
 
 interface Props {
-	value?: Record<string, any>;
+	value?: Record<string, any> | string;
 	disabled?: boolean;
 	collectionName?: string;
 	collectionField?: string;
@@ -100,6 +107,7 @@ interface Props {
 	inline?: boolean;
 	includeValidation?: boolean;
 	includeRelations?: boolean;
+	relationalFieldSelectable?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -112,6 +120,7 @@ const props = withDefaults(defineProps<Props>(), {
 	inline: false,
 	includeValidation: false,
 	includeRelations: true,
+	relationalFieldSelectable: true,
 });
 
 const emit = defineEmits(['input']);
@@ -132,14 +141,16 @@ const relationsStore = useRelationsStore();
 
 const innerValue = computed<Filter[]>({
 	get() {
-		if (!props.value || isEmpty(props.value)) return [];
+		const filterValue = typeof props.value === 'string' ? parseJSON(props.value) : props.value;
 
-		const name = getNodeName(props.value);
+		if (!filterValue || isEmpty(filterValue)) return [];
+
+		const name = getNodeName(filterValue);
 
 		if (name === '_and') {
-			return cloneDeep(props.value['_and']);
+			return cloneDeep(filterValue['_and']);
 		} else {
-			return cloneDeep([props.value]);
+			return cloneDeep([filterValue]);
 		}
 	},
 	set(newVal) {

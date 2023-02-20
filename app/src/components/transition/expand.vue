@@ -24,6 +24,7 @@ const emit = defineEmits([
 	'enter',
 	'afterEnter',
 	'enterCancelled',
+	'beforeLeave',
 	'leave',
 	'afterLeave',
 	'leaveCancelled',

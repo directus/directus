@@ -10,6 +10,7 @@ import path from 'path';
 import { merge } from 'lodash';
 import { promisify } from 'util';
 import { getHelpers } from './helpers';
+import { DatabaseClient } from '../types';
 
 let database: Knex | null = null;
 let inspector: ReturnType<typeof SchemaInspector> | null = null;
@@ -201,9 +202,7 @@ export async function validateDatabaseConnection(database?: Knex): Promise<void>
 	}
 }
 
-export function getDatabaseClient(
-	database?: Knex
-): 'mysql' | 'postgres' | 'cockroachdb' | 'sqlite' | 'oracle' | 'mssql' | 'redshift' {
+export function getDatabaseClient(database?: Knex): DatabaseClient {
 	database = database ?? getDatabase();
 
 	switch (database.client.constructor.name) {

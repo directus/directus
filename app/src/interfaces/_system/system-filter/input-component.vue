@@ -158,7 +158,8 @@ export default defineComponent({
 
 			if (
 				typeof val === 'string' &&
-				['$NOW', '$CURRENT_USER', '$CURRENT_ROLE'].some((prefix) => val.startsWith(prefix))
+				(['$NOW', '$CURRENT_USER', '$CURRENT_ROLE'].some((prefix) => val.startsWith(prefix)) ||
+					/^{{\s*?\S+?\s*?}}$/.test(val))
 			) {
 				return emit('input', val);
 			}
