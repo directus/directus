@@ -3,6 +3,9 @@ import { Knex } from 'knex';
 import { JsonFieldNode } from '../../../../types';
 import { JsonHelperDefault } from './default';
 
+/**
+ * JSON support for SQL Server 2016+
+ */
 export class JsonHelperMSSQL_13 extends JsonHelperDefault {
 	fallbackNodes: JsonFieldNode[] = [];
 	preProcess(dbQuery: Knex.QueryBuilder, table: string): void {

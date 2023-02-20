@@ -30,13 +30,11 @@ export type Helpers = ReturnType<typeof getHelpers>;
 export type AnyJsonHelper =
 	| jsonHelpers.fallback
 	| jsonHelpers.sqlite
-	// | jsonHelpers.mssql16
 	| jsonHelpers.mssql13
 	| jsonHelpers.mariadb
 	| jsonHelpers.mysql8
 	| jsonHelpers.mysql5
 	| jsonHelpers.oracle12
-	| jsonHelpers.cockroachdb
 	| jsonHelpers.postgres12;
 
 export function getJsonHelper(database: Knex, schema: SchemaOverview, nodes: JsonFieldNode[] = []): AnyJsonHelper {
@@ -61,10 +59,6 @@ export function getJsonHelperByVersion(client: DatabaseClients): DatabaseVersion
 				return 'postgres12'; // version 12+
 			}
 			return 'fallback';
-		case 'cockroachdb':
-			// we cannot rely on the postgres implementation so
-			// falling back to postprocessing for cockroachdb
-			return 'fallback';
 		case 'mysql':
 			if (/MariaDB/i.test(full)) {
 				if (major == 10 && minor >= 2) {
@@ -86,12 +80,12 @@ export function getJsonHelperByVersion(client: DatabaseClients): DatabaseVersion
 			}
 			return 'fallback';
 		case 'mssql':
-			// if (major >= 16) {
-			// 	return 'mssql16'; // version 2022 preview
-			// }
 			if (major >= 13) {
 				return 'mssql13'; // version 2016+
 			}
+			return 'fallback';
+		case 'cockroachdb':
+			// falling back to postprocessing for cockroachdb
 			return 'fallback';
 		default:
 			// shouldnt get here but always use fallback just in case
