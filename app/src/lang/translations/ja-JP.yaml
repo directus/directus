@@ -83,6 +83,9 @@ create_webhook: Webhookの作成
 create_translation_string: 翻訳文字列を作成
 no_translation_string: 翻訳文字列なし
 no_translation_string_copy: 翻訳文字列がまだありません。
+translation_string_key_placeholder: 翻訳文字列のキー
+translation_string_translations_placeholder: 翻訳を追加
+edit_translation_string: 翻訳文字列の編集
 invite_users: ユーザーを招待
 invite: 招待する
 email_already_invited: このメールアドレス ({email}) は招待済みです
