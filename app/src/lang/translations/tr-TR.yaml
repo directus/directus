@@ -1949,6 +1949,8 @@ show_x_only: Yalnızca X eksenini göster
 show_y_only: Yalnızca Y eksenini göster
 show_data_label: Veri etiketini göster
 both: İkisi de
+half_circle: Yarım Daire
+stroke_width: Fırça Genişliği
 panels:
   metric:
     name: Metrik
