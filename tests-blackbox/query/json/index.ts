@@ -1,6 +1,6 @@
 import { PrepareRequest, RequestOptions } from '@utils/prepare-request';
 import * as testsSchema from '@schema/index';
-import { isInteger, merge, set } from 'lodash';
+import { merge, set } from 'lodash';
 import { processValidation, TestsCollectionSchema, TestsFieldSchema } from '@query/filter';
 import { SeedFunctions } from '@common/seed-functions';
 import vendors from '@common/get-dbs-to-test';
@@ -143,7 +143,7 @@ export const processJsonFields = (
 			: `Fields & Aliases: ${filterKey} (${schema.type})`,
 		() => {
 			const childKeys = Object.keys(jsonSchema);
-			const isArrayFieldKey = childKeys.every((key) => isInteger(parseInt(key)));
+			const isArrayFieldKey = childKeys.every((key) => Number.isInteger(parseInt(key)));
 
 			if (isArrayFieldKey && !processedJSONArrays) {
 				processJsonArrays(requestOptions, collection, schema, jsonSchema, parentField, parentJSONField);
