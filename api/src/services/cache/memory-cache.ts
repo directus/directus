@@ -2,7 +2,7 @@ import { cloneDeep } from 'lodash';
 import { CacheService } from './cache';
 import LRU from 'lru-cache';
 
-export class MemCache extends CacheService {
+export class MemoryCache extends CacheService {
 	store = new LRU<string, any>({
 		max: 2000,
 	});
