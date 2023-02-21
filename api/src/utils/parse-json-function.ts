@@ -1,11 +1,11 @@
 import { InvalidQueryException } from '../exceptions';
 import { stripFunction } from './strip-function';
 
-// export const JSON_QUERY_REGEX = /^(\w+)(\.(\w+|\*)|\[-?(\d+|\*)\])+$/i; // with negative indexes
-// export const JSON_QUERY_REGEX = /^json\((\w+)(\.(\w+|\*)|\[(\d+|\*)\])+\)$/i;
+// used to limit all the shenanigans JSONPath accepts to a consistently supported subset
 export const JSON_QUERY_REGEX = /^json\([\w:]+(\.[\w:]+)*\$(\.(\w+|\*)|\[(\d+|\*)\])+\)/i;
 
 /**
+ * Parse a "JSON(field$.path)"" string into sub elements
  */
 export function parseJsonFunction(data: string) {
 	if (!JSON_QUERY_REGEX.test(data)) {
