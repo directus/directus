@@ -173,7 +173,7 @@ function validateAlias(alias: any) {
 			}
 
 			if (JSON_QUERY_REGEX.test(value) === false) {
-				throw new InvalidQueryException(`"json" path does not match the allowed pattern. `);
+				throw new InvalidQueryException(`"json" path does not match the allowed pattern.`);
 			}
 		} else if (key.includes('.') || value.includes('.')) {
 			throw new InvalidQueryException(`"alias" key/value can't contain a period character \`.\``);

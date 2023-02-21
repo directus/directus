@@ -488,7 +488,7 @@ export default async function getASTFromQuery(
 	}
 
 	function replaceJsonFilters(filter: Record<string, any>): JsonFieldNode[] {
-		// make this recursive later, the top levelk will work for now
+		// make this recursive later, the top level will work for now
 		const result: JsonFieldNode[] = [];
 		const filterKeys = Object.keys(filter);
 		for (const key of filterKeys) {
