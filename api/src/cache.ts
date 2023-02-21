@@ -3,7 +3,7 @@ import env from './env';
 import { validateEnv } from './utils/validate-env';
 import type { CacheOptions, CacheService } from './services/cache/cache';
 import { RedisCache } from './services/cache/redis-cache';
-import { MemCache } from './services/cache/mem-cache';
+import { MemoryCache } from './services/cache/memory-cache';
 import { clearSystemCache } from './utils/clearSystemCache';
 
 let cache: CacheService | null = null;
@@ -49,6 +49,6 @@ function getCacheInstance(ttl: number | undefined, namespaceSuffix: string, chec
 			return new RedisCache(config);
 		case 'memory':
 		default:
-			return new MemCache(config);
+			return new MemoryCache(config);
 	}
 }
