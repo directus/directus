@@ -9,7 +9,7 @@ import {
 	OperationHandler,
 	SchemaOverview,
 } from '@directus/shared/types';
-import { applyOptionsData, toArray, parseJSON } from '@directus/shared/utils';
+import { applyOptionsData, toArray, parseJSON, isValidJSON } from '@directus/shared/utils';
 import fastRedact from 'fast-redact';
 import { Knex } from 'knex';
 import { omit, pick } from 'lodash';
@@ -417,20 +417,11 @@ class FlowManager {
 			return { successor: operation.resolve, status: 'resolve', data: result ?? null, options };
 		} catch (error: unknown) {
 			// Is the error a JSON string? If so, parse it and use that as the error
-			const jsonError = isJSON(error)
+			const jsonError = isValidJSON(String(error))
 				? parseJSON(String(error))
 				: JSON.parse(JSON.stringify(error, Object.getOwnPropertyNames(error)));
 
 			return { successor: operation.reject, status: 'reject', data: jsonError ?? null, options };
 		}
-	}
-}
-
-function isJSON(value: any): boolean {
-	try {
-		parseJSON(value);
-		return true;
-	} catch {
-		return false;
 	}
 }
