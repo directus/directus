@@ -22,26 +22,25 @@ export function createRateLimiter(configOverrides?: IRateLimiterOptionsOverrides
 }
 
 function getMemoryConfig(overrides?: IRateLimiterOptionsOverrides): IRateLimiterOptions {
-	const config: any = getConfigFromEnv('RATE_LIMITER_', `RATE_LIMITER_MEMORY_`);
+	const config: any = getConfigFromEnv('RATE_LIMITER_');
 
 	delete config.enabled;
 	delete config.store;
-	merge(config, overrides || {});
+	merge(config, overrides ?? {});
 
 	return config;
 }
 function getRedisConfig(overrides?: IRateLimiterOptionsOverrides): IRateLimiterStoreOptions {
-	const config: any = merge({}, getConfigFromEnv('REDIS_'), getConfigFromEnv('RATE_LIMITER_', `RATE_LIMITER_REDIS_`));
+	const config: any = merge({}, getConfigFromEnv('REDIS_'), getConfigFromEnv('RATE_LIMITER_', 'RATE_LIMITER_REDIS_'));
 
 	const Redis = require('ioredis');
+	config.storeClient = new Redis(env.RATE_LIMITER_REDIS ?? getConfigFromEnv('RATE_LIMITER_REDIS_'));
 	delete config.redis;
-
-	config.storeClient = new Redis(env.RATE_LIMITER_REDIS || config);
 
 	delete config.enabled;
 	delete config.store;
 
-	merge(config, overrides || {});
+	merge(config, overrides ?? {});
 
 	return config;
 }
