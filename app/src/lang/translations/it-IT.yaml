@@ -245,6 +245,7 @@ float: Float
 integer: Integer
 json: JSON
 xml: XML
+yaml: YAML
 string: String
 text: Text
 time: Ora
@@ -1940,6 +1941,29 @@ layouts:
     show: Mostra
     no_group: Nessun gruppo
     not_all_loaded: È stato possibile caricare solo i primi 1000 elementi.
+horizontal: Orizzontale
+vertical: Verticale
+x_axis: Asse X
+y_axis: Asse Y
+y_axis_function: Funzione asse Y
+show_x_only: Mostra solo l'asse X
+show_y_only: Mostra solo l'asse Y
+show_data_label: Mostra le etichette dei dati
+both: Tutti e due
+show_axis_labels: Mostra le etichette degli assi
+function: Funzione
+half_circle: Metà cerchio
+full_circle: Cerchio intero
+stroke_width: Spessore linea
+rounded_stroke: Linea arrotondata
+thin: Sottile
+medium: Media
+broad: Spessa
+show_labels: Mostra etichette
+show_legend: Mostra legenda
+right: Destra
+left: Sinistra
+donut: Ciambella
 panels:
   metric:
     name: Metrica
@@ -1961,69 +1985,24 @@ panels:
   barchart:
     name: Grafico a barre
     description: Grafici a barre o colonne per confrontare gruppi di valori
-    select_field: Devi selezionare un campo.
-    select_collection: Devi selezionare una raccolta.
-    select_x_axis: Devi selezionare l'asse X.
-    function: Funzione
     horizontal: Orizzontale
-    x_axis_grouping: Raggruppamento asse X
-    x_axis: Asse X
-    y_axis_function: Funzione dell'asse Y
-    y_axis: Asse Y
-    show_x_axis: Mostra asse X
-    show_y_axis: Mostra asse Y
-    show_data_label: Mostra l'etichetta dei dati
-    group_by: Raggruppato per
-    group_and_function: Devi includere o escludere sia un gruppo che una funzione.
-    y_axis_NaN: L'asse Y deve essere un numero.
-    y_axis_conditional_one: Il valore per la condizione
-    y_axis_conditional_two: deve essere un numero.
+    select_collection: Devi selezionare una raccolta.
   linechart:
     name: Grafico a linee
     description: Grafico a linee per confrontare le variazioni di un campo
-    select_field: Devi selezionare un campo.
-    select_collection: Devi selezionare una raccolta.
-    select_x_axis: Devi selezionare l'asse X.
-    function: Funzione
-    x_axis: Asse X
-    x_axis_decimals: Decimali dell'asse X
+    disabled_grouping: Disabilitato quando il raggruppamento è attivo.
     disabled_no_grouping: Disabilitato quando non è selezionato un raggruppamento.
-    y_axis: Asse Y
-    datasets: Set di dati
-    show_legend: Mostra legenda
     show_marker: Mostra indicatore del suggerimento
-    include_dataset: Devi includere almeno un set di dati.
-    include_y_axis: Devi includere un asse Y per ogni set di dati quando non è specificato un gruppo.
-    group_and_function: Devi includere o escludere sia un gruppo che una funzione.
+    curve_type: Tipo di curva
     smooth: Arrotondato
     straight: Dritto
     step_line: A gradini
   meter:
     name: Metro
     description: Metro per il rilevamento dei valori
-    half_circle: Metà cerchio
-    full_circle: Cerchio intero
-    stroke_width: Spessore della linea
-    rounded_stroke: Linea Arrotondata
-    select_max_value: Devi selezionare un valore massimo.
-    max_greater_than_zero: Il massimo deve essere maggiore di zero.
-    select_field: Devi selezionare un campo.
-    select_collection: Devi selezionare una raccolta.
-    function: Funzione
-    thin: Sottile
-    medium: Medio
-    broad: Largo
   piechart:
     name: Grafico a torta o ciambella
     description: Grafico circolare che mostra le proporzioni dei gruppi in una colonna
-    function: Funzione
-    donut: Ciambella
-    show_labels: Mostra le etichette
-    show_legend: Mostra legenda
-    right: Destra
-    bottom: In basso
-    monochrome: Monocromatico
-    monochrome_color: Colore monocromatico
   variable:
     name: Variabile globale
     description: Imposta un valore globale da usare nei filtri di altri pannelli
@@ -2142,3 +2121,9 @@ operations:
     flows: Flussi
     flow: Flusso
     data: Dati
+    iteration_mode: Modalità iterazione
+    iteration_mode_note: Modalità per l'iterazione su array.
+    serial: Seriale
+    parallel: Parallela
+    batch: A gruppi
+    batch_size: Dimensione dei gruppi

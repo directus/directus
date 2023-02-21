@@ -80,7 +80,7 @@ export const useFieldDetailStore = defineStore({
 		items: {} as Record<string, Record<string, any>[]>,
 
 		// Various flags that alter the operations of watchers and getters
-		localType: 'standard' as typeof LOCAL_TYPES[number],
+		localType: 'standard' as (typeof LOCAL_TYPES)[number],
 		autoGenerateJunctionRelation: true,
 		saving: false,
 	}),
@@ -161,7 +161,7 @@ export const useFieldDetailStore = defineStore({
 				alterations.global.setSpecialForLocalType(updates);
 			}
 
-			const localType = getCurrent('localType') as typeof LOCAL_TYPES[number] | undefined;
+			const localType = getCurrent('localType') as (typeof LOCAL_TYPES)[number] | undefined;
 			if (localType) {
 				alterations[localType].applyChanges(updates, this, helperFn);
 			}

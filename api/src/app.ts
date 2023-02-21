@@ -26,6 +26,7 @@ import presetsRouter from './controllers/presets';
 import relationsRouter from './controllers/relations';
 import revisionsRouter from './controllers/revisions';
 import rolesRouter from './controllers/roles';
+import schemaRouter from './controllers/schema';
 import serverRouter from './controllers/server';
 import settingsRouter from './controllers/settings';
 import usersRouter from './controllers/users';
@@ -49,7 +50,6 @@ import extractToken from './middleware/extract-token';
 import rateLimiter from './middleware/rate-limiter';
 import sanitizeQuery from './middleware/sanitize-query';
 import schema from './middleware/schema';
-import { ROBOTSTXT } from './constants';
 
 import { track } from './utils/track';
 import { validateEnv } from './utils/validate-env';
@@ -176,7 +176,7 @@ export default async function createApp(): Promise<express.Application> {
 	app.get('/robots.txt', (_, res) => {
 		res.set('Content-Type', 'text/plain');
 		res.status(200);
-		res.send(ROBOTSTXT);
+		res.send(env.ROBOTS_TXT);
 	});
 
 	if (env.SERVE_APP) {
@@ -253,6 +253,7 @@ export default async function createApp(): Promise<express.Application> {
 	app.use('/relations', relationsRouter);
 	app.use('/revisions', revisionsRouter);
 	app.use('/roles', rolesRouter);
+	app.use('/schema', schemaRouter);
 	app.use('/server', serverRouter);
 	app.use('/settings', settingsRouter);
 	app.use('/shares', sharesRouter);

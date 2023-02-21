@@ -1870,6 +1870,7 @@ layouts:
     image_placeholder: Изображение (необязательно)...
     crop: Обрезать
     advanced: Доп. настройки
+both: Оба
 panels:
   metric:
     name: Метрика
@@ -1886,20 +1887,8 @@ panels:
   list:
     name: Список
     description: Фильтр и список полей из коллекции
-  barchart:
-    function: Функция
-    group_by: Группировка по
   linechart:
-    function: Функция
     disabled_no_grouping: Отключено, если не выбрана ни одна группировка.
-  meter:
-    function: Функция
-  piechart:
-    function: Функция
-    right: Справа
-    bottom: Снизу
-    monochrome: Монохром
-    monochrome_color: Монохромный цвет
   variable:
     name: Глобальная переменная
   relational-variable:

@@ -42,11 +42,11 @@
 		"dev": "pnpm build -w --preserveWatchOutput --incremental"
 	},
 	"dependencies": {
-		"knex": "2.3.0",
-		"knex-schema-inspector": "3.0.0"
+		"knex": "2.4.2",
+		"knex-schema-inspector": "3.0.1"
 	},
 	"devDependencies": {
-		"typescript": "4.9.4"
+		"typescript": "4.9.5"
 	},
 	"publishConfig": {
 		"access": "public"
