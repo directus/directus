@@ -1,15 +1,16 @@
+import { parse as parseBytesConfiguration } from 'bytes';
 import { RequestHandler } from 'express';
 import ms from 'ms';
 import { getCache } from '../cache';
 import env from '../env';
-import asyncHandler from '../utils/async-handler';
-import { getCacheKey } from '../utils/get-cache-key';
-import { getCacheControlHeader } from '../utils/get-cache-headers';
 import logger from '../logger';
 import { ExportService } from '../services';
+import asyncHandler from '../utils/async-handler';
+import { getCacheControlHeader } from '../utils/get-cache-headers';
+import { getCacheKey } from '../utils/get-cache-key';
 import { getDateFormatted } from '../utils/get-date-formatted';
+import { getMilliseconds } from '../utils/get-milliseconds';
 import { stringByteSize } from '../utils/get-string-byte-size';
-import { parse as parseBytesConfiguration } from 'bytes';
 
 export const respond: RequestHandler = asyncHandler(async (req, res) => {
 	const { cache } = getCache();
@@ -39,7 +40,7 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 			logger.warn(err, `[cache] Couldn't set key ${key}. ${err}`);
 		}
 
-		res.setHeader('Cache-Control', getCacheControlHeader(req, ms(env.CACHE_TTL as string), true, true));
+		res.setHeader('Cache-Control', getCacheControlHeader(req, getMilliseconds(env.CACHE_TTL), true, true));
 		res.setHeader('Vary', 'Origin, Cache-Control');
 	} else {
 		// Don't cache anything by default
