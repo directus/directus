@@ -3,16 +3,6 @@ import { Knex } from 'knex';
 import { Item, SchemaOverview } from '@directus/shared/types';
 import { JsonFieldNode } from '../../../types';
 
-export type DatabaseVersionedClients =
-	| 'postgres12'
-	| 'oracle12'
-	| 'mysql5'
-	| 'mysql8'
-	| 'mariadb'
-	| 'mssql13'
-	| 'sqlite'
-	| 'fallback';
-
 export abstract class JsonHelper extends DatabaseHelper {
 	constructor(protected knex: Knex, protected schema: SchemaOverview, public nodes: JsonFieldNode[] = []) {
 		super(knex);

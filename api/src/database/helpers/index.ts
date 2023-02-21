@@ -8,8 +8,7 @@ import * as fnHelpers from './fn';
 import * as geometryHelpers from './geometry';
 import * as schemaHelpers from './schema';
 import * as jsonHelpers from './json';
-import { DatabaseVersionedClients } from './json/types';
-import { DatabaseClient } from '../../types/database';
+import { DatabaseClient, DatabaseVersionedClient } from '../../types/database';
 
 export function getHelpers(database: Knex) {
 	const client = getDatabaseClient(database);
@@ -43,7 +42,7 @@ export function getJsonHelper(database: Knex, schema: SchemaOverview, nodes: Jso
 	return new jsonHelpers[helper](database, schema, nodes);
 }
 
-export function getJsonHelperByVersion(client: DatabaseClient): DatabaseVersionedClients {
+export function getJsonHelperByVersion(client: DatabaseClient): DatabaseVersionedClient {
 	if (!getDatabaseVersion) return 'fallback'; // happens during unit tests
 	const { parsed, full } = getDatabaseVersion();
 	if (!parsed || parsed.length === 0) return 'fallback';
