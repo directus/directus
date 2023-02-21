@@ -1,4 +1,4 @@
-import { HeaderRaw, Item } from '@/components/v-table/types';
+import { HeaderRaw, Item, Sort } from '@/components/v-table/types';
 import { useFieldsStore } from '@/stores/fields';
 import { useAliasFields } from '@/composables/use-alias-fields';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
@@ -10,7 +10,7 @@ import { formatCollectionItemsCount } from '@/utils/format-collection-items-coun
 import { useCollection, useItems, useSync } from '@directus/shared/composables';
 import { Field } from '@directus/shared/types';
 import { defineLayout } from '@directus/shared/utils';
-import { clone, debounce } from 'lodash';
+import { debounce } from 'lodash';
 import { computed, ref, toRefs, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import TabularActions from './actions.vue';
@@ -148,7 +148,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		function selectAll() {
 			if (!primaryKeyField.value) return;
 			const pk = primaryKeyField.value;
-			selection.value = clone(items.value).map((item) => item[pk.field]);
+			selection.value = items.value.map((item) => item[pk.field]);
 		}
 
 		function useItemOptions() {
@@ -348,12 +348,13 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				}
 			}
 
-			function onSortChange(newSort: { by: string; desc: boolean }) {
-				let sortString = newSort.by;
-				if (!newSort.by) {
+			function onSortChange(newSort: Sort | null) {
+				if (!newSort?.by) {
 					sort.value = [];
 					return;
 				}
+
+				let sortString = newSort.by;
 				if (newSort.desc === true) {
 					sortString = '-' + sortString;
 				}

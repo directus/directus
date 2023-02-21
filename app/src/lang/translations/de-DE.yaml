@@ -1913,6 +1913,8 @@ layouts:
     show: Anzeigen
     no_group: Keine Gruppe
     not_all_loaded: Konnte nur die ersten 1000 Elemente laden.
+horizontal: Horizontal
+both: Beide
 panels:
   metric:
     name: Metrik
@@ -1934,57 +1936,17 @@ panels:
   barchart:
     name: Balkendiagramm
     description: Balken- oder Spaltendiagramme zum Vergleich von Wertegruppen
-    select_field: Sie müssen ein Feld auswählen.
-    select_collection: Sie müssen eine Sammlung auswählen.
-    select_x_axis: Sie müssen eine X-Achse auswählen.
-    function: Funktion
     horizontal: Horizontal
-    x_axis_grouping: Gruppierung X-Achse
-    x_axis: X-Achse
-    y_axis_function: Funktion Y-Achse
-    y_axis: Y-Achse
-    show_x_axis: X-Achse anzeigen
-    show_y_axis: Y-Achse anzeigen
-    show_data_label: Datenbezeichnung anzeigen
-    group_by: Gruppieren nach
-    group_and_function: Sie müssen sowohl eine Gruppe als auch eine Funktion hinzufügen oder weglassen.
-    y_axis_NaN: Die y-Achse muss eine Zahl sein.
-    y_axis_conditional_one: Der Wert für die Bedingung
-    y_axis_conditional_two: muss eine Zahl sein.
+    select_collection: Sie müssen eine Sammlung auswählen.
   linechart:
     name: Liniendiagramm
-    select_field: Sie müssen ein Feld auswählen.
-    select_collection: Sie müssen eine Sammlung auswählen.
-    select_x_axis: Sie müssen eine X-Achse auswählen.
-    function: Funktion
-    x_axis: X-Achse
-    y_axis: Y-Achse
-    datasets: Datensätze
-    show_legend: Legende anzeigen
-    group_and_function: Sie müssen sowohl eine Gruppe als auch eine Funktion hinzufügen oder weglassen.
+    curve_type: Kurventyp
     smooth: Weich
     straight: Gerade
   meter:
     name: Meter
-    stroke_width: Strichbreite
-    select_max_value: Es muss einen Maximalwert ausgewählt werden.
-    max_greater_than_zero: Der Wert muss größer als 0 sein.
-    select_field: Sie müssen ein Feld auswählen.
-    select_collection: Sie müssen eine Sammlung auswählen.
-    function: Funktion
-    thin: Dünn
-    medium: Mittel
-    broad: Breit
   piechart:
     name: Kuchen oder Donut Diagramm
-    function: Funktion
-    donut: Donut
-    show_labels: Beschriftungen anzeigen
-    show_legend: Legende anzeigen
-    right: Rechts
-    bottom: Unten
-    monochrome: Monochrom
-    monochrome_color: Monochrome Farbe
   variable:
     name: Globale Variable
     description: Globalen Wert für die Verwendung in Filtern anderer Panels festlegen

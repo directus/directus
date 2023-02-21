@@ -245,6 +245,7 @@ float: Nombre décimal
 integer: Entier
 json: JSON
 xml: XML
+yaml: YAML
 string: Chaîne de caractères
 text: Texte
 time: Heure
@@ -275,6 +276,7 @@ fields_group: Groupe de champs
 no_collections_found: Aucune collection trouvée.
 new_data_alert: 'Les éléments suivants seront créés dans votre Modèle de données :'
 search_collection: Rechercher une collection...
+search_field: Champ de recherche...
 new_field: 'Nouveau Champ'
 new_collection: 'Nouvelle Collection'
 add_m2o_to_collection: 'Ajouter une relation Many-to-One à "{collection}"'
@@ -572,6 +574,8 @@ select_an_item: Sélectionnez un élément...
 edit: Modifier
 enabled: Activé
 disable_tfa: Désactiver l'A2F
+admin_disable_tfa_text: Voulez-vous vraiment désactiver 2FA pour cet utilisateur ?
+tfa_setup: Configurer 2FA
 tfa_scan_code: Scannez le code dans votre application d'authentification pour terminer la configuration de l'A2F
 enter_otp_to_disable_tfa: Entrez l'OTP pour désactiver l'A2F
 create_account: Créer un Compte
@@ -634,7 +638,7 @@ password_reset_sent: Si vous avez un compte, nous vous avons envoyé un lien sé
 password_reset_successful: Mot de passe réinitialisé avec succès
 back: Retour
 filter: Filtre
-edit_image: Éditer l'image
+edit_image: Modifier l'image
 editing_image: Modification de l'image
 square: Carré
 free: Libre
@@ -757,7 +761,7 @@ no_visible_fields_copy: Ce formulaire n'a pas de champs visibles.
 clear_filters: Réinitialiser les filtres
 saves_automatically: Sauvegardé automatiquement
 role: Rôle
-edit_role: Editer le rôle
+edit_role: Modifier le rôle
 rule: Règle
 user: Utilisateur
 no_presets: Aucun préréglage
@@ -814,7 +818,7 @@ flow_tracking_null: Ne rien enregistrer
 start_flow: Démarrer le Flux
 stop_flow: Arrêt du Flux
 create_operation: Créer une Opération
-edit_operation: Modifier l'Opération
+edit_operation: Modifier l'opération
 code: Code
 operation_options: Les Options d'Opération
 operation_name: Nom de l'Opération...
@@ -1428,6 +1432,7 @@ translation: Traduction
 translation_placeholder: Entrez une nouvelle traduction...
 value: Valeur
 view_project: Voir le projet
+weeks: { }
 report_error: Signaler l'erreur
 start: Début
 table: Tableau
@@ -1908,10 +1913,57 @@ layouts:
     default_template: Utilisation de la collection par défaut ...
     no_compatible_fields: Aucun champ compatible
   kanban:
+    name: Kanban
+    group_field: Regrouper par
+    group_field_placeholder: Champ à regrouper par...
+    group_title: Nom du groupe
+    group_title_placeholder: Champ pour les titres du groupe...
+    title: Titre de tuile
+    title_placeholder: Champ titre optionnel...
+    text: Texte de tuile
+    text_placeholder: Champ de texte optionnel...
+    date: Date de tuile
+    date_placeholder: Champ de date optionnel...
+    tags: Étiquettes de tuile
+    tags_placeholder: Champ de balises optionnelles...
+    user: Utilisateurs de tuile
+    user_placeholder: Champ utilisateur optionnel...
+    image: Image de tuile
+    image_placeholder: Champ d'image optionnel...
+    image_fit: Ajustement de l'image de la carte
     crop: Rogner
     advanced: Avancé
+    edit_group: Modifier le groupe
+    delete_group: Supprimer le Groupe
+    add_group: Ajouter un Groupe
+    add_group_placeholder: Entrez le nom du nouveau groupe...
     show_ungrouped: Afficher non-groupé
+    show: Afficher
+    no_group: Aucun Groupe
     not_all_loaded: Impossible de charger les 1000 premiers éléments.
+horizontal: Horizontal
+vertical: Vertical
+x_axis: Axe X
+y_axis: Axe Y
+y_axis_function: Fonction Axe Y
+show_x_only: Afficher seulement l'axe X
+show_y_only: Afficher seulement l'axe Y
+show_data_label: Afficher l'étiquette des données
+both: Tous
+show_axis_labels: Afficher les libellés des axes
+function: Fonction
+half_circle: Demi-cercle
+full_circle: Cercle entier
+stroke_width: Largeur du trait
+rounded_stroke: Trait arrondi
+thin: Fin
+medium: Moyen
+broad: Large
+show_labels: Afficher les libellés
+show_legend: Afficher la légende
+right: Droite
+left: Gauche
+donut: Donut
 panels:
   metric:
     name: Indicateurs
@@ -1933,63 +1985,24 @@ panels:
   barchart:
     name: Graphique en barres
     description: Graphique en barre ou en colonne pour la comparaison de groupes de valeurs
-    select_field: Vous devez choisir un champ.
-    select_collection: Vous devez sélectionner une collection.
-    select_x_axis: Vous devez sélectionner un axe X.
-    function: Fonction
     horizontal: Horizontal
-    x_axis_grouping: Agrégation du groupe d'axe X
-    x_axis: Axe X
-    y_axis_function: Fonction Axe-Y
-    y_axis: Axe Y
-    show_x_axis: Afficher l'axe X
-    show_y_axis: Afficher l'axe Y
-    show_data_label: Afficher l'étiquette des données
-    group_by: 'Groupés par:'
-    group_and_function: Vous devez inclure ou omettre un groupe et une fonction.
-    y_axis_NaN: L'ordonnée doit être un nombre.
-    y_axis_conditional_one: La valeur de la condition
-    y_axis_conditional_two: doit être un nombre.
+    select_collection: Vous devez sélectionner une collection.
   linechart:
     name: Graphique linéaire
-    select_field: Vous devez choisir un champ.
-    select_collection: Vous devez sélectionner une collection.
-    select_x_axis: Vous devez sélectionner un axe X.
-    function: Fonction
-    x_axis: Axe X
-    x_axis_decimals: Décimales de l'axe X
+    description: Graphique linéaire pour comparer le changement d'un champ
+    disabled_grouping: Désactivé lorsque le groupement est sélectionné.
     disabled_no_grouping: Désactivé si aucun groupement n'est sélectionné.
-    y_axis: Axe Y
-    datasets: Jeux de données
-    show_legend: Afficher la légende
     show_marker: Afficher l'info-bulle
-    include_y_axis: Vous devez inclure un axe Y pour chaque jeu de données quand aucun groupe n'est spécifié.
-    group_and_function: Vous devez inclure ou omettre un groupe et une fonction.
+    curve_type: Format de courbe
     smooth: Lisse
     straight: Droit
     step_line: Pas
   meter:
     name: Compteur
     description: Compteur pour les valeurs de suivi
-    stroke_width: Largeur du trait
-    select_max_value: Vous devez sélectionner une valeur maximale.
-    max_greater_than_zero: La valeur doit être supérieure à 0.
-    select_field: Vous devez choisir un champ.
-    select_collection: Vous devez sélectionner une collection.
-    function: Fonction
-    thin: Fin
-    medium: Moyen
-    broad: Large
   piechart:
     name: Graphique anneau ou circulaire
-    function: Fonction
-    donut: Anneau
-    show_labels: Afficher les libellés
-    show_legend: Afficher la légende
-    right: Droite
-    bottom: Bas
-    monochrome: Monochrome
-    monochrome_color: Couleur Monochrome
+    description: Graphique circulaire montrant les ratios de groupes sur une colonne
   variable:
     name: Variable globale
     description: Définir une valeur globale pour l'utilisation dans d'autres panneaux de filtres
@@ -2007,7 +2020,7 @@ triggers:
     response_body_last: Données de la Dernière Opération
   event:
     name: Crochet d'Événement
-    description: Déclencheurs sur la plate-forme ou sur les données d'événements
+    description: Déclencheurs en provenance de la plate-forme ou des données d'événements
     action: 'Action (Non Bloquante)'
     filter: 'Filtre (Bloquant)'
   webhook:
@@ -2025,10 +2038,11 @@ triggers:
     cron: Intervalle
   manual:
     name: Manuel
-    description: Déclenchements lors d'une exécution manuelle dans la ou les collections sélectionnées
+    description: Déclenchement manuel grâce à un bouton dans les collections sélectionnées
     collection_and_item: Pages des collections et des éléments
     collection_only: Page de la Collection Uniquement
     item_only: Page de l'élément uniquement
+    collection_page: Page de la collection
     require_selection: Sélection obligatoire
 a_flow_uuid: Choisir un flux à lancer...
 any_string_or_json: Toute chaîne de caractères ou JSON...
@@ -2072,13 +2086,13 @@ operations:
     message: Message
     message_placeholder: Entrez un message à afficher dans la console...
   mail:
-    name: Envoyer l'e-mail
+    name: Envoyer un e-mail
     description: Envoyer un email à une ou plusieurs personnes
     to: À
     to_placeholder: Ajoutez des adresses e-mail et appuyez sur entrée...
     body: Corps du mail
   notification:
-    name: Envoyer la Notification
+    name: Envoyer une notification
     description: Envoyer une notification dans l'application à un ou plusieurs utilisateurs
     recipient: Utilisateur
     recipient_placeholder: Ajouter un UUID utilisateur et appuyez sur entrée...
@@ -2107,3 +2121,9 @@ operations:
     flows: Flux
     flow: Flux
     data: Données
+    iteration_mode: Mode d'itération
+    iteration_mode_note: Méthode pour itérer sur des tableaux.
+    serial: En série
+    parallel: En parallèle
+    batch: Par lots
+    batch_size: Taille de chaque lot
