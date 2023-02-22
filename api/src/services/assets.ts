@@ -18,12 +18,16 @@ import { getStorage } from '../storage';
 import { AbstractServiceOptions, File, Transformation, TransformationParams, TransformationPreset } from '../types';
 import * as TransformationUtils from '../utils/transformations';
 import { AuthorizationService } from './authorization';
+import { getMilliseconds } from '../utils/get-milliseconds';
 
 sharp.concurrency(1);
 
 // Note: don't put this in the service. The service can be initialized in multiple places, but they
 // should all share the same semaphore instance.
-const semaphore = withTimeout(new Semaphore(env.ASSETS_TRANSFORM_MAX_CONCURRENT), env.ASSET_TRANSFORM_TIMEOUT);
+const semaphore = withTimeout(
+	new Semaphore(env.ASSETS_TRANSFORM_MAX_CONCURRENT),
+	getMilliseconds(env.ASSET_TRANSFORM_TIMEOUT)
+);
 
 export class AssetsService {
 	knex: Knex;
