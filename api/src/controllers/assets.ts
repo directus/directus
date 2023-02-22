@@ -123,7 +123,7 @@ router.get(
 						defaultSrc: ['none'],
 					},
 				},
-				getConfigFromEnv('ASSETS_CONTENT_SECURITY_POLICY')
+				getConfigFromEnv('ASSETS_CONTENT_SECURITY_POLICY_')
 			)
 		)(req, res, next);
 	}),
