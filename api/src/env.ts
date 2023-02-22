@@ -244,7 +244,7 @@ const defaults: Record<string, any> = {
 	EXTENSIONS_PATH: './extensions',
 	EXTENSIONS_AUTO_RELOAD: false,
 
-	EMAIL_FROM: 'no-reply@directus.io',
+	EMAIL_FROM: 'no-reply@example.com',
 	EMAIL_VERIFY_SETUP: true,
 	EMAIL_TRANSPORT: 'sendmail',
 	EMAIL_SENDMAIL_NEW_LINE: 'unix',
