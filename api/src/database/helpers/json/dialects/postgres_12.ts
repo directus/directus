@@ -42,8 +42,12 @@ export class JsonHelperPostgres_12 extends JsonHelperDefault {
 		// no post-processing needed for postgres
 	}
 	filterQuery(collection: string, node: JsonFieldNode): Knex.Raw | null {
-		const qp = this.knex.raw('?', [node.jsonPath]).toQuery();
-		return this.knex.raw(`jsonb_path_query_first(??.??, ${qp})::text`, [collection, node.name]);
+		const queryPath = node.jsonPath
+			.replace(/^\$\./, '')
+			.split(new RegExp('[\\.\\[\\]]'))
+			.map((part) => this.knex.raw('?', [part]).toQuery())
+			.join('->>');
+		return this.knex.raw(`??.??->>${queryPath}`, [collection, node.name]);
 	}
 }
 
