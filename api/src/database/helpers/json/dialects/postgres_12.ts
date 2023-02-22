@@ -46,7 +46,7 @@ export class JsonHelperPostgres_12 extends JsonHelperDefault {
 		// no post-processing needed for postgres
 	}
 	filterQuery(collection: string, node: JsonFieldNode): Knex.Raw | null {
-		// make use of the postgres json text operator for regular filtering
+		// uses the native postgres json text operator for regular filtering
 		// https://www.postgresql.org/docs/12/functions-json.html#FUNCTIONS-JSON-OP-TABLE
 		const queryPath = node.jsonPath
 			.replace(/^\$\./, '')
