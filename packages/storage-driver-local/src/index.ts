@@ -74,11 +74,25 @@ export class DriverLocal implements Driver {
 		await copyFile(fullSrc, fullDest);
 	}
 
-	async write(filepath: string, content: Readable) {
-		const fullPath = this.fullPath(filepath);
-		await this.ensureDir(dirname(fullPath));
-		const writeStream = createWriteStream(fullPath);
-		await pipeline(content, writeStream);
+	write(filepath: string, content: Readable) {
+		return new Promise<void>((resolve, reject) => {
+			const fullPath = this.fullPath(filepath);
+
+			return this.ensureDir(dirname(fullPath))
+				.then(() => {
+					const writeStream = createWriteStream(fullPath);
+
+					writeStream.on('error', (err) => {
+						writeStream.close(() => {
+							unlink(fullPath).finally(() => reject(err));
+						});
+					});
+
+					return pipeline(content, writeStream);
+				})
+				.then(() => resolve())
+				.catch(reject);
+		});
 	}
 
 	async delete(filepath: string) {
