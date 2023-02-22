@@ -2,7 +2,7 @@
 import type { Range, Stat } from '@directus/storage';
 
 import { Accountability } from '@directus/shared/types';
-import { Semaphore } from 'async-mutex';
+import { Semaphore, withTimeout } from 'async-mutex';
 import type { Readable } from 'node:stream';
 import { Knex } from 'knex';
 import { contentType } from 'mime-types';
@@ -23,7 +23,7 @@ sharp.concurrency(1);
 
 // Note: don't put this in the service. The service can be initialized in multiple places, but they
 // should all share the same semaphore instance.
-const semaphore = new Semaphore(env.ASSETS_TRANSFORM_MAX_CONCURRENT);
+const semaphore = withTimeout(new Semaphore(env.ASSETS_TRANSFORM_MAX_CONCURRENT), env.ASSET_TRANSFORM_TIMEOUT);
 
 export class AssetsService {
 	knex: Knex;
