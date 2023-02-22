@@ -970,7 +970,7 @@ describe('#uploadChunk', () => {
 	let mockFormData: {
 		set: Mock;
 	};
-	let input: Parameters<typeof driver['uploadChunk']>[0];
+	let input: Parameters<(typeof driver)['uploadChunk']>[0];
 
 	beforeEach(() => {
 		mockResponseBody = {};

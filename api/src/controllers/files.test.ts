@@ -7,6 +7,14 @@ import { Request, Response } from 'express';
 
 vi.mock('../../src/database');
 
+vi.mock('../services', () => {
+	const FilesService = vi.fn();
+	FilesService.prototype.uploadOne = vi.fn();
+	const MetaService = vi.fn();
+	MetaService.prototype.getMetaForQuery = vi.fn().mockResolvedValue({});
+	return { FilesService };
+});
+
 describe('multipartHandler', () => {
 	it(`Errors out if request doesn't contain any files to upload`, () => {
 		const fakeForm = new FormData();

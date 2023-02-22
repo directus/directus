@@ -89,9 +89,19 @@ export function useFieldTree(
 				type: field.type,
 			};
 
+			const children = getTree(field.collection, node);
+
+			if (children) {
+				for (const child of children) {
+					if (child.relatedCollection) {
+						child.children = getTree(child.relatedCollection, child);
+					}
+				}
+			}
+
 			return {
 				...node,
-				children: getTree(field.collection, node),
+				children,
 			};
 		}
 
@@ -154,14 +164,25 @@ export function useFieldTree(
 	}
 
 	function getNodeAtPath([field, ...path]: string[], root?: FieldNode[]): FieldNode | undefined {
-		for (const node of root || []) {
-			if (node.field === field) {
-				if (path.length) {
-					return getNodeAtPath(path, node.children);
-				} else {
-					return node;
-				}
-			}
+		let node = root?.find((node) => node.field === field);
+
+		if (!node) {
+			node = root
+				?.reduce<FieldNode[]>((acc, node) => {
+					if (node.group === true && node.children && node.children.length > 0) {
+						acc.push(...node.children);
+					}
+					return acc;
+				}, [])
+				.find((node) => node.field === field);
+		}
+
+		if (!node) return undefined;
+
+		if (path.length) {
+			return getNodeAtPath(path, node.children);
+		} else {
+			return node;
 		}
 	}
 
