@@ -14,4 +14,9 @@ export const useAppStore = defineStore({
 		accessTokenExpiry: 0,
 		basemap: 'OpenStreetMap',
 	}),
+	getters: {
+		isTokenExpired(): boolean {
+			return this.accessTokenExpiry && Date.now() < this.accessTokenExpiry - 10000 ? false : true;
+		},
+	},
 });

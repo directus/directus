@@ -13,7 +13,8 @@
 import { useI18n } from 'vue-i18n';
 import { computed, defineComponent, ref, watch } from 'vue';
 import { idleTracker } from '@/idle';
-
+import { useAppStore } from '@/stores/app';
+import emitter from '@/events';
 export default defineComponent({
 	props: {
 		modelValue: {
@@ -24,6 +25,8 @@ export default defineComponent({
 	emits: ['update:modelValue', 'refresh'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
+
+		const appStore = useAppStore();
 
 		const interval = computed<number | null>({
 			get() {
@@ -43,6 +46,7 @@ export default defineComponent({
 		};
 
 		idleTracker.on('hide', () => {
+			emitter.off('token-refreshed');
 			if (activeInterval.value) clearInterval(activeInterval.value);
 		});
 
@@ -55,6 +59,15 @@ export default defineComponent({
 		});
 
 		idleTracker.on('show', () => {
+			if (appStore.isTokenExpired) {
+				// If access token is expired , then refresh token and then refresh collection
+				emitter.on('token-refreshed', () => {
+					emit('refresh');
+				});
+			} else {
+				// Check for access token expiry and if token is still fresh, then emit refresh
+				emit('refresh');
+			}
 			if (interval.value) setRefreshInterval(interval.value);
 		});
 

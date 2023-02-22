@@ -6,6 +6,7 @@ import { RouteLocationRaw } from 'vue-router';
 import { idleTracker } from './idle';
 import { DEFAULT_AUTH_PROVIDER } from '@/constants';
 
+import emitter from '@/events';
 type LoginCredentials = {
 	identifier?: string;
 	email?: string;
@@ -79,9 +80,10 @@ idleTracker.on('active', () => {
 	}
 });
 
-idleTracker.on('show', () => {
+idleTracker.on('show', async () => {
 	if (idle === true) {
-		refresh();
+		await refresh();
+		emitter.emit('token-refreshed');
 		idle = false;
 	}
 });
