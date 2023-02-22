@@ -128,6 +128,7 @@ use_custom: Uzi propran
 nullable: Povas esti NULL
 allow_null_value: Permesi la valoron NULL
 allow_multiple: Permesi plurajn
+field_presentation: Prezento kaj kromnomoj
 field_file: Unuopa dosiero
 field_files: Pluraj dosieroj
 field_m2o: Pluraj-al-unu-rilato
@@ -135,6 +136,7 @@ field_m2a: Pluraj-al-ajnaj-rilato
 field_o2m: Unu-al-pluraj-rilato
 field_m2m: Pluraj-al-pluraj-rilato
 field_translations: Tradukoj
+presentation_and_aliases: Prezento kaj kromnomoj
 top: Supra
 bottom: Malsupra
 hide_field: Kaŝi la kampon
@@ -156,6 +158,7 @@ creating_new_field: 'Nova kampo ({collection})'
 field_in_collection: '{field} ({collection})'
 hidden_field: Kaŝita kampo
 key: Ŝlosilo
+alias: Kromnomo
 boolean: Bulea valoro
 date: Dato
 precision: Precizeco
@@ -1043,8 +1046,15 @@ panels:
   list:
     name: Listo
   barchart:
+    name: Bastona diagramo
     horizontal: Horizontala
+    select_collection: Vi devas elekti kolekton.
+  linechart:
+    name: Linia diagramo
+  variable:
+    variable_key: Variabla ŝlosilo
   relational-variable:
+    variable_key: Variabla ŝlosilo
     multiple-label: Elekti plurajn erojn
 triggers:
   common:
