@@ -13,12 +13,14 @@ export class JsonHelperPostgres_12 extends JsonHelperDefault {
 			.select(
 				this.nodes.map((node) => {
 					const { dbType } = this.schema.collections[table].fields[node.name];
+					// try to determine whether we're expecting a single scalar response or an array of data
 					let jsonPath = Object.keys(node.query).length === 0 ? node.jsonPath : this.buildFilterPath(node),
 						jsonFn = 'jsonb_path_query';
 					if (this.hasWildcard(jsonPath)) {
 						jsonFn = 'jsonb_path_query_array';
 						jsonPath = jsonPath.endsWith('[*]') ? jsonPath.substring(0, jsonPath.length - 3) : jsonPath;
 					}
+					// fall back to `to_jsonb(...)` for backward compatibility with non-jsonb fields
 					return this.knex.raw(
 						dbType === 'jsonb' ? `${jsonFn}(??.??, ?) as ??` : `${jsonFn}(to_jsonb(??.??), ?) as ??`,
 						[table, node.name, jsonPath, node.fieldKey]
@@ -29,6 +31,8 @@ export class JsonHelperPostgres_12 extends JsonHelperDefault {
 	}
 	buildFilterPath(node: JsonFieldNode) {
 		if (!node.query?.filter) return node.jsonPath;
+		// Build a JSONPath filter query for deep queries
+		// https://www.postgresql.org/docs/12/functions-json.html#FUNCTIONS-SQLJSON-PATH
 
 		const conditions = [];
 		for (const [jsonPath, value] of Object.entries(node.query?.filter)) {
@@ -42,6 +46,8 @@ export class JsonHelperPostgres_12 extends JsonHelperDefault {
 		// no post-processing needed for postgres
 	}
 	filterQuery(collection: string, node: JsonFieldNode): Knex.Raw | null {
+		// make use of the postgres json text operator for regular filtering
+		// https://www.postgresql.org/docs/12/functions-json.html#FUNCTIONS-JSON-OP-TABLE
 		const queryPath = node.jsonPath
 			.replace(/^\$\./, '')
 			.split(new RegExp('[\\.\\[\\]]'))
