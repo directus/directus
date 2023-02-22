@@ -4,7 +4,6 @@ import type { Range } from '@directus/storage';
 import { parseJSON } from '@directus/shared/utils';
 import { Router } from 'express';
 import { merge, pick } from 'lodash';
-import ms from 'ms';
 import { ASSET_TRANSFORM_QUERY_KEYS, SYSTEM_ASSET_ALLOW_LIST } from '../constants';
 import getDatabase from '../database';
 import env from '../env';
@@ -16,6 +15,7 @@ import { TransformationMethods, TransformationParams, TransformationPreset } fro
 import asyncHandler from '../utils/async-handler';
 import { getCacheControlHeader } from '../utils/get-cache-headers';
 import { getConfigFromEnv } from '../utils/get-config-from-env';
+import { getMilliseconds } from '../utils/get-milliseconds';
 
 const router = Router();
 
@@ -163,7 +163,7 @@ router.get(
 		res.attachment(req.params.filename ?? file.filename_download);
 		res.setHeader('Content-Type', file.type);
 		res.setHeader('Accept-Ranges', 'bytes');
-		res.setHeader('Cache-Control', getCacheControlHeader(req, ms(env.ASSETS_CACHE_TTL as string), false, true));
+		res.setHeader('Cache-Control', getCacheControlHeader(req, getMilliseconds(env.ASSETS_CACHE_TTL), false, true));
 
 		const unixTime = Date.parse(file.modified_on);
 		if (!Number.isNaN(unixTime)) {
