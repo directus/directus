@@ -16,17 +16,34 @@
 			</div>
 		</div>
 
-		<v-dialog :model-value="!!confirmRunFlow" @esc="confirmRunFlow = null">
+		<v-dialog :model-value="!!confirmRunFlow" @esc="resetConfirm">
 			<v-card>
-				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
-				<v-card-text>{{ t('run_flow_on_current_edited_confirm') }}</v-card-text>
+				<template v-if="confirmDetails">
+					<v-card-title>{{ confirmDetails.description ?? t('run_flow_confirm') }}</v-card-title>
+
+					<v-card-text class="confirm-form">
+						<v-form
+							v-if="confirmDetails.fields && confirmDetails.fields.length > 0"
+							:fields="confirmDetails.fields"
+							:model-value="confirmValues"
+							autofocus
+							primary-key="+"
+							@update:model-value="confirmValues = $event"
+						/>
+					</v-card-text>
+				</template>
+
+				<template v-else>
+					<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
+					<v-card-text>{{ t('run_flow_on_current_edited_confirm') }}</v-card-text>
+				</template>
 
 				<v-card-actions>
-					<v-button secondary @click="confirmRunFlow = null">
+					<v-button secondary @click="resetConfirm">
 						{{ t('cancel') }}
 					</v-button>
 					<v-button @click="runManualFlow(confirmRunFlow!)">
-						{{ t('run_flow_on_current') }}
+						{{ confirmButtonCTA }}
 					</v-button>
 				</v-card-actions>
 			</v-card>
@@ -41,8 +58,9 @@ import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { useCollection } from '@directus/shared/composables';
 import { FlowRaw } from '@directus/shared/types';
-import { computed, ref, toRefs } from 'vue';
+import { computed, ref, toRefs, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { translate } from '@/utils/translate-object-values';
 
 interface Props {
 	collection: string;
@@ -75,33 +93,68 @@ const manualFlows = computed(() =>
 			(flow) =>
 				!flow.options?.location || flow.options?.location === 'both' || flow.options?.location === props.location
 		)
+		.map((flow) => ({
+			...flow,
+			options: translate(flow.options),
+		}))
 );
 
 const runningFlows = ref<string[]>([]);
 
 const confirmRunFlow = ref<string | null>(null);
+const confirmValues = ref<Record<string, any> | null>();
 
-function getFlowTooltip(manualFlow: FlowRaw) {
+const confirmButtonCTA = computed(() => {
+	if (unref(props.location) === 'item') return t('run_flow_on_current');
+	if (unref(props.selection).length === 0) return t('run_flow');
+	return t('run_flow_on_selected', unref(props.selection).length);
+});
+
+const confirmDetails = computed(() => {
+	if (!unref(confirmRunFlow)) return null;
+
+	const flow = unref(manualFlows).find((flow) => flow.id === unref(confirmRunFlow));
+
+	if (!flow) return null;
+
+	if (!flow.options?.requireConfirmation) return null;
+
+	return {
+		description: flow.options.confirmationDescription,
+		fields: flow.options.fields,
+	};
+});
+
+const resetConfirm = () => {
+	confirmRunFlow.value = null;
+	confirmValues.value = null;
+};
+
+const getFlowTooltip = (manualFlow: FlowRaw) => {
 	if (location.value === 'item') return t('run_flow_on_current');
 	if (manualFlow.options?.requireSelection === false && selection.value.length === 0)
 		return t('run_flow_on_current_collection');
 	return t('run_flow_on_selected', selection.value.length);
-}
+};
 
-function isFlowDisabled(manualFlow: FlowRaw) {
+const isFlowDisabled = (manualFlow: FlowRaw) => {
 	if (location.value === 'item' || manualFlow.options?.requireSelection === false) return false;
 	return !primaryKey.value && selection.value.length === 0;
-}
+};
 
-async function onFlowClick(flowId: string) {
-	if (hasEdits.value) {
+const onFlowClick = async (flowId: string) => {
+	const flow = unref(manualFlows).find((flow) => flow.id === flowId);
+
+	if (!flow) return;
+
+	if (hasEdits.value || flow.options.requireConfirmation) {
 		confirmRunFlow.value = flowId;
 	} else {
 		runManualFlow(flowId);
 	}
-}
+};
 
-async function runManualFlow(flowId: string) {
+const runManualFlow = async (flowId: string) => {
 	confirmRunFlow.value = null;
 
 	const selectedFlow = manualFlows.value.find((flow) => flow.id === flowId);
@@ -132,7 +185,7 @@ async function runManualFlow(flowId: string) {
 	} finally {
 		runningFlows.value = runningFlows.value.filter((runningFlow) => runningFlow !== flowId);
 	}
-}
+};
 </script>
 
 <style lang="scss" scoped>
@@ -156,5 +209,16 @@ async function runManualFlow(flowId: string) {
 
 .v-icon {
 	margin-right: 8px;
+}
+
+.confirm-form {
+	--form-horizontal-gap: 24px;
+	--form-vertical-gap: 24px;
+
+	margin-top: var(--v-card-padding);
+
+	:deep(.type-label) {
+		font-size: 1rem;
+	}
 }
 </style>
