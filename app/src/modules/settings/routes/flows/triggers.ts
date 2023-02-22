@@ -1,3 +1,5 @@
+import { FIELD_TYPES_SELECT } from '@/constants';
+import { translate } from '@/utils/translate-object-values';
 import { DeepPartial, Field, FlowRaw, TriggerType, Width } from '@directus/shared/types';
 import { toArray } from '@directus/shared/utils';
 import { useI18n } from 'vue-i18n';
@@ -343,6 +345,18 @@ export function getTriggers() {
 					},
 				},
 				{
+					field: 'async',
+					name: t('triggers.webhook.async'),
+					type: 'boolean',
+					meta: {
+						width: 'half' as Width,
+						interface: 'toggle',
+					},
+					schema: {
+						default_value: false,
+					},
+				},
+				{
 					field: 'location',
 					name: t('location'),
 					meta: {
@@ -370,18 +384,6 @@ export function getTriggers() {
 					},
 				},
 				{
-					field: 'async',
-					name: t('triggers.webhook.async'),
-					type: 'boolean',
-					meta: {
-						width: 'half' as Width,
-						interface: 'toggle',
-					},
-					schema: {
-						default_value: false,
-					},
-				},
-				{
 					field: 'requireSelection',
 					name: t('triggers.manual.collection_page'),
 					type: 'boolean',
@@ -405,6 +407,179 @@ export function getTriggers() {
 					},
 					schema: {
 						default_value: true,
+					},
+				},
+				{
+					field: 'modal',
+					type: 'alias',
+					meta: {
+						interface: 'presentation-divider',
+						width: 'full',
+						options: {
+							title: t('confirmation_dialog'),
+							icon: 'quiz',
+						},
+					},
+				},
+				{
+					field: 'requireConfirmation',
+					name: t('require_confirmation'),
+					type: 'boolean',
+					meta: {
+						interface: 'boolean',
+						width: 'full' as Width,
+						options: {
+							label: t('require_confirmation'),
+						},
+					},
+					schema: {
+						default_value: false,
+					},
+				},
+				{
+					field: 'confirmationDescription',
+					name: t('confirmation_description'),
+					type: 'string',
+					meta: {
+						interface: 'system-input-translated-string',
+						options: {
+							placeholder: '$t:run_flow_confirm',
+						},
+						conditions: [
+							{
+								rule: {
+									requireConfirmation: {
+										_eq: false,
+									},
+								},
+								hidden: true,
+							},
+						],
+					},
+				},
+				{
+					field: 'fields',
+					name: t('confirmation_input_fields'),
+					type: 'json',
+					meta: {
+						interface: 'list',
+						width: 'full',
+						options: {
+							template: '{{field}} – {{interface}}',
+							fields: [
+								{
+									name: t('field_key'),
+									field: 'field',
+									type: 'string',
+									meta: {
+										interface: 'input',
+										width: 'half',
+										sort: 1,
+										options: {
+											dbSafe: true,
+											font: 'monospace',
+											placeholder: t('field_key_placeholder'),
+										},
+									},
+									schema: null,
+								},
+								{
+									name: t('field_name'),
+									field: 'label',
+									type: 'string',
+									meta: {
+										interface: 'system-input-translated-string',
+										width: 'half',
+										sort: 2,
+										options: {
+											placeholder: t('field_name_placeholder'),
+										},
+									},
+									schema: null,
+								},
+								{
+									name: t('type'),
+									field: 'type',
+									type: 'string',
+									meta: {
+										interface: 'select-dropdown',
+										width: 'half',
+										sort: 3,
+										options: {
+											choices: translate(FIELD_TYPES_SELECT),
+										},
+									},
+									schema: null,
+								},
+								{
+									name: t('interface_label'),
+									field: 'interface',
+									type: 'string',
+									meta: {
+										interface: 'system-interface',
+										width: 'half',
+										sort: 4,
+										options: {
+											typeField: 'type',
+										},
+									},
+									schema: null,
+								},
+								{
+									name: t('required'),
+									field: 'required',
+									type: 'boolean',
+									meta: {
+										interface: 'boolean',
+										width: 'half',
+										sort: 5,
+										options: {
+											label: t('required'),
+										},
+									},
+									schema: {
+										default_value: true,
+									},
+								},
+								{
+									name: t('note'),
+									field: 'note',
+									type: 'string',
+									meta: {
+										interface: 'system-input-translated-string',
+										width: 'half',
+										sort: 6,
+										options: {
+											placeholder: t('interfaces.list.field_note_placeholder'),
+										},
+									},
+									schema: null,
+								},
+								{
+									name: t('options'),
+									field: 'options',
+									type: 'string',
+									meta: {
+										interface: 'system-interface-options',
+										width: 'full',
+										sort: 7,
+										options: {
+											interfaceField: 'interface',
+										},
+									},
+								},
+							],
+						},
+						conditions: [
+							{
+								rule: {
+									requireConfirmation: {
+										_eq: false,
+									},
+								},
+								hidden: true,
+							},
+						],
 					},
 				},
 			],
