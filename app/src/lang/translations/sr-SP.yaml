@@ -21,7 +21,9 @@
 #'Proxy', 'Intl'
 identifier: Identifikator
 avatar: Аватар
+application: Апликација
 default_provider: Подразумевано
+method: Метод
 published: Објављено
 draft: Нацрт
 archived: Архивирано
