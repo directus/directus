@@ -117,19 +117,17 @@ const repeaterFields = computed(() => {
 			schema: null,
 		},
 		{
-			name: t('required'),
-			field: 'meta.required',
-			type: 'boolean',
+			name: t('note'),
+			field: 'meta.note',
+			type: 'string',
 			meta: {
-				interface: 'boolean',
-				width: 'half',
+				interface: 'system-input-translated-string',
+				width: 'full',
 				options: {
-					label: t('required'),
+					placeholder: t('interfaces.list.field_note_placeholder'),
 				},
 			},
-			schema: {
-				default_value: true,
-			},
+			schema: null,
 		},
 		{
 			name: t('field_width'),
@@ -149,19 +147,6 @@ const repeaterFields = computed(() => {
 							text: t('full_width'),
 						},
 					],
-				},
-			},
-			schema: null,
-		},
-		{
-			name: t('note'),
-			field: 'meta.note',
-			type: 'string',
-			meta: {
-				interface: 'system-input-translated-string',
-				width: 'full',
-				options: {
-					placeholder: t('interfaces.list.field_note_placeholder'),
 				},
 			},
 			schema: null,
