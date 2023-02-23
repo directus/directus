@@ -95,7 +95,9 @@ export function useFieldTree(
 			if (children) {
 				for (const child of children) {
 					if (child.relatedCollection) {
-						child.children = [{ name: 'Loading...', field: '', collection: '', key: '', path: '', type: 'alias', _loading: true }];
+						child.children = [
+							{ name: 'Loading...', field: '', collection: '', key: '', path: '', type: 'alias', _loading: true },
+						];
 					}
 				}
 			}
@@ -193,7 +195,7 @@ export function useFieldTree(
 
 			const node = getNodeAtPath(path.split('.'), treeList.value);
 
-			if(node && node.children?.length === 1 && node.children[0]._loading) {
+			if (node && node.children?.length === 1 && node.children[0]._loading) {
 				node.children = getTree(node.relatedCollection, node);
 			}
 
