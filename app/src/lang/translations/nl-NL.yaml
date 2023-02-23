@@ -49,6 +49,7 @@ group: Groep
 export_items: Exporteer items
 and: En
 or: Of
+init: Initialiseren
 dataset_too_large_currently_showing_n_items: Gegevensset is te groot. Alleen de eerste {n} items worden nu weergegeven.
 modifier: Aanpasser
 custom: Aangepast
@@ -244,6 +245,7 @@ float: Float
 integer: Integer
 json: JSON
 xml: XML
+yaml: YAML
 string: String
 text: Tekst
 time: Tijd
@@ -326,7 +328,7 @@ paste_raw_value_fail: Plakken mislukt
 view_raw_value: Bekijk Onbewerkte Waarde
 edit_raw_value: Bewerk Ruwe Waarde
 enter_raw_value: Ruwe waarde invoeren...
-clear_value: Wis Waarde
+clear_value: Waarde wissen
 clear_changes: Verwijder Veranderingen
 clear_items: Verwijder Items
 reset_to_default: Herstel naar Standaard
@@ -445,7 +447,7 @@ open: Openen
 open_in_new_window: Openen in nieuw venster
 open_folder: Open map "{folder}"
 foreground_color: Voorgrondkleur
-background_color: Achtergrond kleur
+background_color: Achtergrondkleur
 upload_from_device: Bestand uploaden van apparaat
 choose_from_library: Kies bestand uit de bibliotheek
 import_from_url: Importeer bestand van URL
@@ -571,7 +573,9 @@ select_an_item: Selecteer een item...
 edit: Wijzig
 enabled: Ingeschakeld
 disable_tfa: 2FA uitzetten
-tfa_scan_code: Scan de code in uw authenticatie-app om de instelling van 2FA te voltooien
+admin_disable_tfa_text: Weet je zeker dat je 2FA voor deze gebruiker wilt uitschakelen?
+tfa_setup: 2FA instellen
+tfa_scan_code: Scan de code in je authenticatie-app om het instellen van 2FA te voltooien
 enter_otp_to_disable_tfa: Voer de OTP in om 2FA uit te schakelen
 create_account: Account aanmaken
 account_created_successfully: Account succesvol aangemaakt
@@ -706,8 +710,8 @@ operators:
   nbetween: Ligt niet tussen
   empty: Is leeg
   nempty: Is niet leeg
-  all: Bevat deze keys
-  has: Bevat enkele van deze keys
+  all: Bevat deze sleutels
+  has: Bevat enkele van deze sleutels
   intersects: Overlapt
   nintersects: Overlapt niet
   intersects_bbox: Overlapt begrenzingsvak
@@ -868,7 +872,7 @@ interface_group_other: Overige
 tooltip: Tooltip
 tooltip_placeholder: Voer een tooltip in...
 unlimited: Onbeperkt
-open_link_in: Open link in
+open_link_in: Link openen in
 new_tab: Nieuw tabblad
 current_tab: Huidig tabblad
 save_image: Afbeelding opslaan
@@ -880,7 +884,7 @@ wysiwyg_options:
   alignnone: Align None
   alignright: Align Right
   forecolor: Voorgrondkleur
-  backcolor: Achtergrond kleur
+  backcolor: Achtergrondkleur
   bold: Vetgedrukt
   italic: Cursief
   underline: Onderstreept
@@ -935,9 +939,9 @@ creating_unit: '{unit} aan het aanmaken'
 editing_unit: '{unit} aan het bewerken'
 editing_in_batch: '{count} items aan het wijzigen'
 no_options_available: Geen opties beschikbaar
-settings_data_model: Data model
+settings_data_model: Datamodel
 settings_permissions: Rollen & Permissies
-settings_project: Project Instellingen
+settings_project: Projectinstellingen
 settings_webhooks: Webhooks
 settings_flows: Flows
 settings_presets: Voorkeuren & Bladwijzers
@@ -1050,6 +1054,7 @@ fields:
     unarchive_value: Dearchiveer waarde
     sort_field: Sorteerveld
     accountability: Activiteit & Revisie Tracking
+    archive_field: Veld archiveren
   directus_files:
     $thumbnail: Thumbnail
     title: Titel
@@ -1084,11 +1089,13 @@ fields:
     title: Titel
     description: Beschrijving
     tags: Tags
+    user_preferences: Gebruikersvoorkeuren
     language: Taal
     theme: Thema
+    theme_auto: Automatisch (gebaseerd op systeem)
     theme_light: Lichte modus
     theme_dark: Donkere Modus
-    tfa_secret: 2FA (Twee-Factor Authenticatie)
+    tfa_secret: Twee-factor-authenticatie (2FA)
     admin_options: Admin opties
     status: Status
     status_draft: Concept
@@ -1108,12 +1115,13 @@ fields:
     tiff: Tiff
     basemaps_style: Mapbox stijl
     mapbox_key: Toegangstoken Mapbox
+    mapbox_placeholder: pk.eyJ1Ijo.....
     attribution_placeholder: '© OpenStreetMap bijdragers'
-    project_name: Project Naam
+    project_name: Projectnaam
     project_url: Project URL
-    project_color: Project kleur
-    project_logo: Project logo
-    default_language: Standaard Taal
+    project_color: Projectkleur
+    project_logo: Projectlogo
+    default_language: Standaardtaal
     branding: Merk & Stijl
     public_foreground: Openbare voorgrond
     public_background: Openbare achtergrond
@@ -1148,37 +1156,67 @@ fields:
     module_list: Module Navigatie
   directus_webhooks:
     name: Naam
+    method: Methode
     status: Status
+    data: Data
+    header: Header
     value: Waarde
+    headers: Verzoekheaders
+    triggers: Triggers
+    actions: Acties
     collections: Collecties
 field_options:
   directus_settings:
+    project_name_placeholder: Mijn project...
+    project_color_note: Inlog- en logoachtergrond
+    project_logo_note: Wit 40x40 SVG/PNG
     security_divider_title: Beveiliging
+    auth_password_policy:
+      none_text: Geen – niet aanbevolen
+      weak_text: Zwak – minimaal 8 tekens
+      strong_text: Sterk – groot / klein / nummers / speciale tekens
     mapbox_key: Toegangstoken Mapbox
+    mapbox_placeholder: pk.eyJ1Ijo.....
+    basemaps_raster: Raster
+    basemaps_tile: Raster TileJSON
     basemaps_style: Mapbox stijl
+    files_divider_title: Bestanden en miniaturen
   directus_activity:
     login: Inloggen
     create: Maak
     update: Updaten
+    delete: Verwijderen
   directus_collections:
     track_activity_revisions: Track Activiteiten & Revisies
     only_track_activity: Track alleen activiteiten
     do_not_track_anything: Niets tracken
     collection_setup: Collectie setup
+    note_placeholder: Een beschrijving van deze collectie...
+    hidden_label: In de app verbergen
     singleton: Behandel als één object
     language: Taal
     translation: Vertaling
     collection_name: Collectie naam
+    singular_unit: Enkelvoudige eenheid
+    plural_unit: Meervoudige eenheid
     archive_divider: Archiveren
+    archive_field_placeholder: Kies een veld...
     sort_divider: Sorteren
+    sort_field: Kies een veld...
+    accountability_divider: Verantwoording
+  directus_files:
+    title: Een unieke titel...
   directus_roles:
     ip_access: Toegestane IP-adressen toevoegen, leeg laten om alles toe te staan...
     fields:
       icon_name: Icoon
       name_name: Naam
+      link_name: Link
       link_placeholder: Relatieve of absolute URL...
     collections_name: Collecties
+    collections_addLabel: Collectie toevoegen...
   directus_users:
+    preferences_divider: Gebruikersvoorkeuren
     dropdown_auto: Automatisch (Gebaseerd op systeem)
     dropdown_light: Lichte modus
     dropdown_dark: Donkere Modus
@@ -1191,6 +1229,7 @@ field_options:
   directus_webhooks:
     status_options_active: Actief
     status_options_inactive: Inactief
+    triggers_divider: Triggers
     actions_create: Maak
     actions_update: Updaten
     actions_delete: Verwijderen
@@ -1214,6 +1253,7 @@ inline: Doorlopend
 comment: Reactie
 unlimited_usage: Onbeperkt gebruik
 expired: Verlopen
+share: Delen
 shared_leave_blank_for_unlimited: Laat leeg voor geen limiet
 shared_times_remaining: Deze link kan slechts {n} keer worden gebruikt
 shared_last_remaining: Deze link kan slechts één keer worden gebruikt
@@ -1222,13 +1262,17 @@ share_access_not_found: Deze gedeelde pagina bestaat niet of heeft het maximum a
 share_access_not_found_desc: Neem contact op met een geautoriseerde gebruiker van dit project om toegang te vragen.
 share_copy_link: Link kopiëren
 share_copy_link_success: Link gekopieerd
+share_send_link: Link versturen
 relational_triggers: Relationele triggers
 referential_action_field_label_m2o: Wanneer {collection} wordt verwijderd...
 referential_action_field_label_o2m: Wanneer {collection} wordt gedeselecteerd...
 referential_action_no_action: Voorkom de verwijdering
 referential_action_cascade: Verwijder het {collection} item (cascade)
+continue_label: Doorgaan
 editing_role: '{role} Rol'
 creating_webhook: Webhook Aanmaken
+default_label: Standaard
+delete_label: Verwijderen
 delete_are_you_sure: >-
   Deze actie is permanent en kan niet ongedaan worden gemaakt. Weet u zeker dat u wilt doorgaan?
 delete_field_are_you_sure: >-
@@ -1236,6 +1280,7 @@ delete_field_are_you_sure: >-
 description: Beschrijving
 done: Klaar
 duplicate: Dupliceer
+limit: Limiet
 email: Email
 embed: Insluiten
 fallback_icon: Standaard Icoon
@@ -1244,6 +1289,7 @@ file: Bestand
 file_library: Bestandsbibliotheek
 forgot_password: Wachtwoord vergeten
 hidden: Verborgen
+hidden_in_group: Verborgen in {group}
 icon: Icoon
 info: Info
 normal: Normaal
@@ -1256,6 +1302,10 @@ colors:
   green: Groen
   yellow: Geel
   orange: Oranje
+  red: Rood
+  black: Zwart
+  gray: Grijs
+  white: Wit
 junction_collection: Verbindingscollectie
 latency: Vertraging
 login: Log in
@@ -1291,16 +1341,37 @@ value: Waarde
 view_project: Bekijk project
 report_error: Rapporteer fout
 table: Tabel
+list: Lijst
 interfaces:
   filter:
     name: Filter
     add_filter: Filter toevoegen
+    add_group: En/of-groep
+    add_value: Waarde toevoegen
+    logic_type_and: EN
+    logic_type_or: OF
     all: Alle
     any: Eender
+    and: en
+  fields:
+    name: Velden
+  group-accordion:
+    name: Accordeon
+    start: Starten
+    all_closed: Alles gesloten
+    first_opened: Eerst geopend
+    all_opened: Alle geopende
+    accordion_mode: Accordeonmodus
   presentation-links:
+    presentation-links: Knoplinks
+    links: Links
+    style: Stijl
     primary: Primair
+    link: Links
+    button: Knoppen
   input-code:
     code: Code
+    line_number: Regelnummer
   system-collection:
     collection: Collectie
     description: Selecteer tussen bestaande collecties
@@ -1312,6 +1383,8 @@ interfaces:
   select-color:
     color: Kleur
     placeholder: Kies een kleur...
+    preset_colors_add_label: Nieuwe kleur toevoegen...
+    name_placeholder: Voer kleurnaam in...
   datetime:
     datetime: Datum/tijd
     description: Voer datums en tijden in
@@ -1320,13 +1393,16 @@ interfaces:
     use_24: 24-uurs formaat gebruiken
   system-fields:
     select_a_collection: Selecteer een collectie
+    no_fields: Geen velden
   system-display-template:
     display-template: Weergavesjabloon
+    collection_field: Collectieveld
     collection_field_not_setup: De collectie-veld optie is onjuist geconfigureerd
     select_a_collection: Selecteer een collectie
   presentation-divider:
     divider: Scheidingslijn
   select-dropdown:
+    choices_placeholder: Een nieuwe keuze toevoegen
     choices_name_placeholder: Voer een naam in...
     choices_value_placeholder: Voer een waarde in...
   select-multiple-dropdown:
@@ -1368,7 +1444,12 @@ interfaces:
     customSyntax: Aangepaste blokken
     box: Blok / Inline
   map:
+    map: Kaart
     zoom: Zoom
+    geojson: GeoJSON
+    lnglat: Lengtegraad, breedtegraad
+    wkt: WKT
+    wkb: WKB
   presentation-notice:
     notice: Melding
     description: Een korte melding weergeven
@@ -1380,6 +1461,7 @@ interfaces:
     repeater: Herhaler
     edit_fields: Velden bewerken
     sort: Sorteren
+    sort_placeholder: Handmatig
   slider:
     slider: Schuifregelaar
     description: Selecteer een nummer met een slider
@@ -1398,12 +1480,15 @@ interfaces:
     alphabetize: Alfabetische volgorde
     alphabetize_label: Alfabetische volgorde forceren
   input:
+    input: Invoer
     mask: Gemaskeerd
     mask_label: Verberg de werkelijke waarde
     clear_label: Opslaan als lege tekst
     minimum_value: Minimale waarde
     maximum_value: Maximale waarde
+    slug: Slug maken
   input-translated-string:
+    input-translated-string: Vertaalde tekenreeksen
     search_placeholder: Zoeken...
   boolean:
     toggle: Schakel
@@ -1414,6 +1499,8 @@ interfaces:
   translations:
     display_template: Weergavesjabloon
     no_collection: Geen collectie
+    enable: Inschakelen
+    default_language: Standaardtaal
   user:
     user: Gebruiker
     description: Selecteer een bestaande Directus gebruiker
@@ -1427,11 +1514,14 @@ interfaces:
     toolbar: Werkbalk
     custom_formats: Aangepaste vorm
     options_override: Overschrijf opties
+    imageToken: Statische toegangstoken
   system-token:
     system-token: Token
 displays:
   translations:
     translations: Vertalingen
+    enable: Inschakelen
+    default_language: Standaardtaal
   boolean:
     boolean: Boolean
     description: Toon aan/uit status
@@ -1481,7 +1571,10 @@ displays:
     prefix: Voorvoegsel
     suffix: Achtervoegsel
     color: Kleur
+    background: Achtergrond
     icon: Icoon
+    border: Rand
+    border_label: Rand tonen
     text: Tekst
   formatted-json-value:
     formatted-json-value: Geformatteerde JSON waarde
@@ -1544,20 +1637,81 @@ layouts:
     cozy: Knus
   calendar:
     calendar: Kalender
+    optional: Optioneel
+    first_day: Eerste dag van de week
+  map:
+    map: Kaart
+    layers: Lagen
   kanban:
+    name: Kanban
+    group_field: Groeperen op
+    group_title: Groepstitel
+    title: Kaarttitel
+    text: Kaarttekst
+    date: Kaartdatum
     crop: Bijsnijden
     advanced: Geavanceerd
+    edit_group: Groep bewerken
+    delete_group: Groep verwijderen
+    add_group: Groep toevoegen
+    no_group: Geen groep
+horizontal: Horizontaal
+vertical: Verticaal
+x_axis: X-as
+y_axis: Y-as
+y_axis_function: Y-asfunctie
+show_x_only: Alleen X-as tonen
+show_y_only: Alleen Y-as tonen
+both: Beiden
+function: Functie
+half_circle: Halve cirkel
+full_circle: Volle cirkel
+thin: Dun
+medium: Middel
+broad: Breed
+show_labels: Labels tonen
+show_legend: Legenda tonen
+right: Rechts
+left: Links
 panels:
+  metric:
+    field: Veld
   label:
     name: Label
+  list:
+    name: Lijst
+  barchart:
+    horizontal: Horizontaal
+  linechart:
+    straight: Recht
+triggers:
+  webhook:
+    name: Webhook
+    method: Methode
+    async: Asynchroon
+  manual:
+    name: Handmatig
 operations:
+  condition:
+    name: Conditie
+  item-delete:
+    name: Data verwijderen
   log:
     message: Bericht
+  mail:
+    to: Aan
   notification:
     recipient: Gebruiker
     message: Bericht
   request:
     url: URL
+    url_placeholder: https://example.com/voorbeeld
+    method: Methode
+    data: Data
+    headers: Headers
+    header: Header
+    value_placeholder: Bearer eyJhbGciOi...
   trigger:
     flows: Flows
     flow: Flow
+    data: Data

@@ -2,11 +2,42 @@ import knex, { Knex } from 'knex';
 import { getTracker, MockClient, Tracker } from 'knex-mock-client';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, MockedFunction, SpyInstance, vi } from 'vitest';
 import { ItemsService, PermissionsService, PresetsService, RolesService, UsersService } from '.';
-import { UnprocessableEntityException } from '../exceptions';
+import { ForbiddenException, UnprocessableEntityException } from '../exceptions';
+import { SchemaOverview } from '@directus/shared/types';
 
 vi.mock('../../src/database/index', () => {
 	return { __esModule: true, default: vi.fn(), getDatabaseClient: vi.fn().mockReturnValue('postgres') };
 });
+
+const testSchema = {
+	collections: {
+		directus_roles: {
+			collection: 'directus_roles',
+			primary: 'id',
+			singleton: false,
+			sortField: null,
+			note: null,
+			accountability: null,
+			fields: {
+				id: {
+					field: 'id',
+					defaultValue: null,
+					nullable: false,
+					generated: true,
+					type: 'uuid',
+					dbType: 'uuid',
+					precision: null,
+					scale: null,
+					special: [],
+					note: null,
+					validation: null,
+					alias: false,
+				},
+			},
+		},
+	},
+	relations: [],
+} as SchemaOverview;
 
 describe('Integration Tests', () => {
 	let db: MockedFunction<Knex>;
@@ -39,12 +70,9 @@ describe('Integration Tests', () => {
 			beforeEach(() => {
 				service = new RolesService({
 					knex: db,
-					schema: {
-						collections: {},
-						relations: [],
-					},
+					schema: testSchema,
 				});
-				superUpdateOne = vi.spyOn(ItemsService.prototype, 'updateOne').mockResolvedValueOnce(adminRoleId);
+				superUpdateOne = vi.spyOn(ItemsService.prototype, 'updateOne');
 			});
 
 			afterEach(() => {
@@ -96,6 +124,12 @@ describe('Integration Tests', () => {
 						});
 
 						it('having a removed a last user that is the last admin of system', async () => {
+							const service = new RolesService({
+								knex: db,
+								schema: testSchema,
+								accountability: { role: 'test', admin: false },
+							});
+
 							const data: Record<string, any> = {
 								users: [],
 							};
@@ -103,14 +137,24 @@ describe('Integration Tests', () => {
 							tracker.on.select('select "id" from "directus_users" where "role" = ?').responseOnce([{ id: userId1 }]);
 							tracker.on.select('select count(*) as "count" from "directus_users"').responseOnce({ count: 0 });
 
-							expect.assertions(3);
+							const promise = service.updateOne(adminRoleId, data);
+
+							expect.assertions(5); // to ensure both assertions in the catch block are reached
+
 							try {
-								await service.updateOne(adminRoleId, data);
+								await promise;
 							} catch (err: any) {
-								expect(err.message).toBe(`You can't remove the last admin user from the admin role.`);
-								expect(err).toBeInstanceOf(UnprocessableEntityException);
+								expect(err.message).toBe(`You don't have permission to access this.`);
+								expect(err).toBeInstanceOf(ForbiddenException);
 							}
-							expect(superUpdateOne).not.toHaveBeenCalled();
+
+							expect(superUpdateOne).toHaveBeenCalled();
+							expect(superUpdateOne.mock.lastCall![2].preMutationException.message).toBe(
+								`You can't remove the last admin user from the admin role.`
+							);
+							expect(superUpdateOne.mock.lastCall![2].preMutationException).toBeInstanceOf(
+								UnprocessableEntityException
+							);
 						});
 					});
 
@@ -155,6 +199,12 @@ describe('Integration Tests', () => {
 						});
 
 						it('having a removed a last user that is the last admin of system', async () => {
+							const service = new RolesService({
+								knex: db,
+								schema: testSchema,
+								accountability: { role: 'test', admin: false },
+							});
+
 							const data: Record<string, any> = {
 								users: [],
 							};
@@ -162,14 +212,24 @@ describe('Integration Tests', () => {
 							tracker.on.select('select "id" from "directus_users" where "role" = ?').responseOnce([{ id: userId1 }]);
 							tracker.on.select('select count(*) as "count" from "directus_users"').responseOnce({ count: 0 });
 
-							expect.assertions(3);
+							const promise = service.updateOne(adminRoleId, data);
+
+							expect.assertions(5); // to ensure both assertions in the catch block are reached
+
 							try {
-								await service.updateOne(adminRoleId, data);
+								await promise;
 							} catch (err: any) {
-								expect(err.message).toBe(`You can't remove the last admin user from the admin role.`);
-								expect(err).toBeInstanceOf(UnprocessableEntityException);
+								expect(err.message).toBe(`You don't have permission to access this.`);
+								expect(err).toBeInstanceOf(ForbiddenException);
 							}
-							expect(superUpdateOne).not.toHaveBeenCalled();
+
+							expect(superUpdateOne).toHaveBeenCalled();
+							expect(superUpdateOne.mock.lastCall![2].preMutationException.message).toBe(
+								`You can't remove the last admin user from the admin role.`
+							);
+							expect(superUpdateOne.mock.lastCall![2].preMutationException).toBeInstanceOf(
+								UnprocessableEntityException
+							);
 						});
 					});
 
@@ -244,6 +304,12 @@ describe('Integration Tests', () => {
 						});
 
 						it('having a removed a last user that is the last admin of system', async () => {
+							const service = new RolesService({
+								knex: db,
+								schema: testSchema,
+								accountability: { role: 'test', admin: false },
+							});
+
 							const data: Record<string, any> = {
 								users: {
 									create: [],
@@ -255,14 +321,24 @@ describe('Integration Tests', () => {
 							tracker.on.select('select "id" from "directus_users" where "role" = ?').responseOnce([{ id: userId1 }]);
 							tracker.on.select('select count(*) as "count" from "directus_users"').responseOnce({ count: 0 });
 
-							expect.assertions(3);
+							const promise = service.updateOne(adminRoleId, data);
+
+							expect.assertions(5); // to ensure both assertions in the catch block are reached
+
 							try {
-								await service.updateOne(adminRoleId, data);
+								await promise;
 							} catch (err: any) {
-								expect(err.message).toBe(`You can't remove the last admin user from the admin role.`);
-								expect(err).toBeInstanceOf(UnprocessableEntityException);
+								expect(err.message).toBe(`You don't have permission to access this.`);
+								expect(err).toBeInstanceOf(ForbiddenException);
 							}
-							expect(superUpdateOne).not.toHaveBeenCalled();
+
+							expect(superUpdateOne).toHaveBeenCalled();
+							expect(superUpdateOne.mock.lastCall![2].preMutationException.message).toBe(
+								`You can't remove the last admin user from the admin role.`
+							);
+							expect(superUpdateOne.mock.lastCall![2].preMutationException).toBeInstanceOf(
+								UnprocessableEntityException
+							);
 						});
 					});
 				});
@@ -285,6 +361,12 @@ describe('Integration Tests', () => {
 						});
 
 						it('having an added user that is the last admin', async () => {
+							const service = new RolesService({
+								knex: db,
+								schema: testSchema,
+								accountability: { role: 'test', admin: false },
+							});
+
 							const data: Record<string, any> = {
 								users: [userId1, userId2],
 							};
@@ -292,14 +374,24 @@ describe('Integration Tests', () => {
 							tracker.on.select('select "id" from "directus_users" where "role" = ?').responseOnce([{ id: userId1 }]);
 							tracker.on.select('select count(*) as "count" from "directus_users"').responseOnce({ count: 0 });
 
-							expect.assertions(3);
+							const promise = service.updateOne(adminRoleId, data);
+
+							expect.assertions(5); // to ensure both assertions in the catch block are reached
+
 							try {
-								await service.updateOne(adminRoleId, data);
+								await promise;
 							} catch (err: any) {
-								expect(err.message).toBe(`You can't remove the last admin user from the admin role.`);
-								expect(err).toBeInstanceOf(UnprocessableEntityException);
+								expect(err.message).toBe(`You don't have permission to access this.`);
+								expect(err).toBeInstanceOf(ForbiddenException);
 							}
-							expect(superUpdateOne).not.toHaveBeenCalled();
+
+							expect(superUpdateOne).toHaveBeenCalled();
+							expect(superUpdateOne.mock.lastCall![2].preMutationException.message).toBe(
+								`You can't remove the last admin user from the admin role.`
+							);
+							expect(superUpdateOne.mock.lastCall![2].preMutationException).toBeInstanceOf(
+								UnprocessableEntityException
+							);
 						});
 
 						it('having a removed user', async () => {
@@ -331,6 +423,12 @@ describe('Integration Tests', () => {
 						});
 
 						it('having a removed a last user that is the last admin of system', async () => {
+							const service = new RolesService({
+								knex: db,
+								schema: testSchema,
+								accountability: { role: 'test', admin: false },
+							});
+
 							const data: Record<string, any> = {
 								users: [],
 							};
@@ -338,14 +436,24 @@ describe('Integration Tests', () => {
 							tracker.on.select('select "id" from "directus_users" where "role" = ?').responseOnce([{ id: userId1 }]);
 							tracker.on.select('select count(*) as "count" from "directus_users"').responseOnce({ count: 0 });
 
-							expect.assertions(3);
+							const promise = service.updateOne(adminRoleId, data);
+
+							expect.assertions(5); // to ensure both assertions in the catch block are reached
+
 							try {
-								await service.updateOne(adminRoleId, data);
+								await promise;
 							} catch (err: any) {
-								expect(err.message).toBe(`You can't remove the last admin user from the admin role.`);
-								expect(err).toBeInstanceOf(UnprocessableEntityException);
+								expect(err.message).toBe(`You don't have permission to access this.`);
+								expect(err).toBeInstanceOf(ForbiddenException);
 							}
-							expect(superUpdateOne).not.toHaveBeenCalled();
+
+							expect(superUpdateOne).toHaveBeenCalled();
+							expect(superUpdateOne.mock.lastCall![2].preMutationException.message).toBe(
+								`You can't remove the last admin user from the admin role.`
+							);
+							expect(superUpdateOne.mock.lastCall![2].preMutationException).toBeInstanceOf(
+								UnprocessableEntityException
+							);
 						});
 					});
 
@@ -364,6 +472,12 @@ describe('Integration Tests', () => {
 						});
 
 						it('having an added user that is the last admin', async () => {
+							const service = new RolesService({
+								knex: db,
+								schema: testSchema,
+								accountability: { role: 'test', admin: false },
+							});
+
 							const data: Record<string, any> = {
 								users: [{ id: userId1 }, { id: userId2 }],
 							};
@@ -371,14 +485,24 @@ describe('Integration Tests', () => {
 							tracker.on.select('select "id" from "directus_users" where "role" = ?').responseOnce([{ id: userId1 }]);
 							tracker.on.select('select count(*) as "count" from "directus_users"').responseOnce({ count: 0 });
 
-							expect.assertions(3);
+							const promise = service.updateOne(adminRoleId, data);
+
+							expect.assertions(5); // to ensure both assertions in the catch block are reached
+
 							try {
-								await service.updateOne(adminRoleId, data);
+								await promise;
 							} catch (err: any) {
-								expect(err.message).toBe(`You can't remove the last admin user from the admin role.`);
-								expect(err).toBeInstanceOf(UnprocessableEntityException);
+								expect(err.message).toBe(`You don't have permission to access this.`);
+								expect(err).toBeInstanceOf(ForbiddenException);
 							}
-							expect(superUpdateOne).not.toHaveBeenCalled();
+
+							expect(superUpdateOne).toHaveBeenCalled();
+							expect(superUpdateOne.mock.lastCall![2].preMutationException.message).toBe(
+								`You can't remove the last admin user from the admin role.`
+							);
+							expect(superUpdateOne.mock.lastCall![2].preMutationException).toBeInstanceOf(
+								UnprocessableEntityException
+							);
 						});
 
 						it('having a removed user', async () => {
@@ -410,6 +534,12 @@ describe('Integration Tests', () => {
 						});
 
 						it('having a removed a last user that is the last admin of system', async () => {
+							const service = new RolesService({
+								knex: db,
+								schema: testSchema,
+								accountability: { role: 'test', admin: false },
+							});
+
 							const data: Record<string, any> = {
 								users: [],
 							};
@@ -417,14 +547,24 @@ describe('Integration Tests', () => {
 							tracker.on.select('select "id" from "directus_users" where "role" = ?').responseOnce([{ id: userId1 }]);
 							tracker.on.select('select count(*) as "count" from "directus_users"').responseOnce({ count: 0 });
 
-							expect.assertions(3);
+							const promise = service.updateOne(adminRoleId, data);
+
+							expect.assertions(5); // to ensure both assertions in the catch block are reached
+
 							try {
-								await service.updateOne(adminRoleId, data);
+								await promise;
 							} catch (err: any) {
-								expect(err.message).toBe(`You can't remove the last admin user from the admin role.`);
-								expect(err).toBeInstanceOf(UnprocessableEntityException);
+								expect(err.message).toBe(`You don't have permission to access this.`);
+								expect(err).toBeInstanceOf(ForbiddenException);
 							}
-							expect(superUpdateOne).not.toHaveBeenCalled();
+
+							expect(superUpdateOne).toHaveBeenCalled();
+							expect(superUpdateOne.mock.lastCall![2].preMutationException.message).toBe(
+								`You can't remove the last admin user from the admin role.`
+							);
+							expect(superUpdateOne.mock.lastCall![2].preMutationException).toBeInstanceOf(
+								UnprocessableEntityException
+							);
 						});
 					});
 
@@ -464,6 +604,12 @@ describe('Integration Tests', () => {
 						});
 
 						it('having an added user that is the last admin', async () => {
+							const service = new RolesService({
+								knex: db,
+								schema: testSchema,
+								accountability: { role: 'test', admin: false },
+							});
+
 							const data: Record<string, any> = {
 								users: {
 									create: [],
@@ -475,14 +621,24 @@ describe('Integration Tests', () => {
 							tracker.on.select('select "id" from "directus_users" where "role" = ?').responseOnce([{ id: userId1 }]);
 							tracker.on.select('select count(*) as "count" from "directus_users"').responseOnce({ count: 0 });
 
-							expect.assertions(3);
+							const promise = service.updateOne(adminRoleId, data);
+
+							expect.assertions(5); // to ensure both assertions in the catch block are reached
+
 							try {
-								await service.updateOne(adminRoleId, data);
+								await promise;
 							} catch (err: any) {
-								expect(err.message).toBe(`You can't remove the last admin user from the admin role.`);
-								expect(err).toBeInstanceOf(UnprocessableEntityException);
+								expect(err.message).toBe(`You don't have permission to access this.`);
+								expect(err).toBeInstanceOf(ForbiddenException);
 							}
-							expect(superUpdateOne).not.toHaveBeenCalled();
+
+							expect(superUpdateOne).toHaveBeenCalled();
+							expect(superUpdateOne.mock.lastCall![2].preMutationException.message).toBe(
+								`You can't remove the last admin user from the admin role.`
+							);
+							expect(superUpdateOne.mock.lastCall![2].preMutationException).toBeInstanceOf(
+								UnprocessableEntityException
+							);
 						});
 
 						it('having a removed user', async () => {
@@ -522,6 +678,12 @@ describe('Integration Tests', () => {
 						});
 
 						it('having a removed a last user that is the last admin of system', async () => {
+							const service = new RolesService({
+								knex: db,
+								schema: testSchema,
+								accountability: { role: 'test', admin: false },
+							});
+
 							const data: Record<string, any> = {
 								users: {
 									create: [],
@@ -533,14 +695,24 @@ describe('Integration Tests', () => {
 							tracker.on.select('select "id" from "directus_users" where "role" = ?').responseOnce([{ id: userId1 }]);
 							tracker.on.select('select count(*) as "count" from "directus_users"').responseOnce({ count: 0 });
 
-							expect.assertions(3);
+							const promise = service.updateOne(adminRoleId, data);
+
+							expect.assertions(5); // to ensure both assertions in the catch block are reached
+
 							try {
-								await service.updateOne(adminRoleId, data);
+								await promise;
 							} catch (err: any) {
-								expect(err.message).toBe(`You can't remove the last admin user from the admin role.`);
-								expect(err).toBeInstanceOf(UnprocessableEntityException);
+								expect(err.message).toBe(`You don't have permission to access this.`);
+								expect(err).toBeInstanceOf(ForbiddenException);
 							}
-							expect(superUpdateOne).not.toHaveBeenCalled();
+
+							expect(superUpdateOne).toHaveBeenCalled();
+							expect(superUpdateOne.mock.lastCall![2].preMutationException.message).toBe(
+								`You can't remove the last admin user from the admin role.`
+							);
+							expect(superUpdateOne.mock.lastCall![2].preMutationException).toBeInstanceOf(
+								UnprocessableEntityException
+							);
 						});
 					});
 				});
