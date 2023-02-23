@@ -1,34 +1,34 @@
 import { Router } from 'express';
+import Joi from 'joi';
 import ldap, {
 	Client,
-	Error,
 	EqualityFilter,
+	Error,
+	InappropriateAuthenticationError,
+	InsufficientAccessRightsError,
+	InvalidCredentialsError,
+	LDAPResult,
 	SearchCallbackResponse,
 	SearchEntry,
-	LDAPResult,
-	InappropriateAuthenticationError,
-	InvalidCredentialsError,
-	InsufficientAccessRightsError,
 } from 'ldapjs';
-import ms from 'ms';
-import { getIPFromReq } from '../../utils/get-ip-from-req';
-import Joi from 'joi';
-import { AuthDriver } from '../auth';
-import { AuthDriverOptions, User } from '../../types';
+import env from '../../env';
 import {
+	InvalidConfigException,
 	InvalidCredentialsException,
 	InvalidPayloadException,
 	InvalidProviderException,
 	ServiceUnavailableException,
-	InvalidConfigException,
 	UnexpectedResponseException,
 } from '../../exceptions';
 import { RecordNotUniqueException } from '../../exceptions/database/record-not-unique';
-import { AuthenticationService, UsersService } from '../../services';
-import asyncHandler from '../../utils/async-handler';
-import env from '../../env';
-import { respond } from '../../middleware/respond';
 import logger from '../../logger';
+import { respond } from '../../middleware/respond';
+import { AuthenticationService, UsersService } from '../../services';
+import { AuthDriverOptions, User } from '../../types';
+import asyncHandler from '../../utils/async-handler';
+import { getIPFromReq } from '../../utils/get-ip-from-req';
+import { getMilliseconds } from '../../utils/get-milliseconds';
+import { AuthDriver } from '../auth';
 
 interface UserInfo {
 	dn: string;
@@ -408,7 +408,7 @@ export function createLDAPAuthRouter(provider: string): Router {
 				res.cookie(env.REFRESH_TOKEN_COOKIE_NAME, refreshToken, {
 					httpOnly: true,
 					domain: env.REFRESH_TOKEN_COOKIE_DOMAIN,
-					maxAge: ms(env.REFRESH_TOKEN_TTL as string),
+					maxAge: getMilliseconds(env.REFRESH_TOKEN_TTL),
 					secure: env.REFRESH_TOKEN_COOKIE_SECURE ?? false,
 					sameSite: (env.REFRESH_TOKEN_COOKIE_SAME_SITE as 'lax' | 'strict' | 'none') || 'strict',
 				});
