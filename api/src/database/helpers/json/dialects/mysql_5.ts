@@ -9,6 +9,7 @@ import { JsonHelperDefault } from './default';
  */
 export class JsonHelperMySQL_5 extends JsonHelperDefault {
 	preProcess(dbQuery: Knex.QueryBuilder, table: string): void {
+		// uses the native `JSON_EXTRACT(...)` to extract field values
 		dbQuery
 			.select(
 				this.nodes.map((node) => {
@@ -20,6 +21,7 @@ export class JsonHelperMySQL_5 extends JsonHelperDefault {
 	}
 	postProcess(items: Item[]): void {
 		this.postProcessParseJSON(items);
+		// using fallback for nodes with filters for better consistency with other vendors
 		this.postProcessFallback(
 			items,
 			this.nodes.filter((node) => {
@@ -28,17 +30,20 @@ export class JsonHelperMySQL_5 extends JsonHelperDefault {
 		);
 	}
 	filterQuery(collection: string, node: JsonFieldNode): Knex.Raw {
+		// uses the native `JSON_EXTRACT(...)` to extract filter values
+		// https://dev.mysql.com/doc/refman/5.7/en/json-search-functions.html#function_json-extract
 		return this.knex.raw(`JSON_EXTRACT(??.??, ?)`, [collection, node.name, node.jsonPath]);
 	}
-	protected override buildFilterPath(node: JsonFieldNode) {
-		if (!node.query?.filter) return node.jsonPath;
+	// i dont think this is still required
+	// protected override buildFilterPath(node: JsonFieldNode) {
+	// 	if (!node.query?.filter) return node.jsonPath;
 
-		const conditions = [];
-		for (const [jsonPath, value] of Object.entries(node.query?.filter)) {
-			const { operator: filterOperator, value: filterValue } = getOperation(jsonPath, value);
-			conditions.push(this.transformFilterJsonPath(jsonPath, filterOperator, filterValue));
-		}
+	// 	const conditions = [];
+	// 	for (const [jsonPath, value] of Object.entries(node.query?.filter)) {
+	// 		const { operator: filterOperator, value: filterValue } = getOperation(jsonPath, value);
+	// 		conditions.push(this.transformFilterJsonPath(jsonPath, filterOperator, filterValue));
+	// 	}
 
-		return `$[?(${conditions.join(' && ')})]`;
-	}
+	// 	return `$[?(${conditions.join(' && ')})]`;
+	// }
 }
