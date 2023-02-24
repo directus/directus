@@ -188,6 +188,7 @@ add_o2m_to_collection: 'Aldoni unu-al-pluraj-rilaton al "{collection}"'
 add_m2m_to_collection: 'Aldoni pluraj-al-pluraj-rilaton al "{collection}"'
 choose_a_type: Elekti tipon...
 determined_by_relationship: Determinita de la rilato
+add_note: Aldoni helpan noton por uzantoj...
 add_link: Aldoni ligilon
 custom_link: Propra ligilo
 default_value: Defaŭlta valoro
@@ -202,6 +203,7 @@ next: Sekva
 field_name: Nomo de la kampo
 translations: Tradukoj
 no_translations: Neniu traduko
+note: Noto
 enter_a_value: Entajpu valoron...
 length: Longo
 readonly: Nur legi
@@ -451,6 +453,7 @@ upload_files_indeterminate: 'Alŝutado de dosieroj {done}/{total}'
 upload_files_success: '{count} dosieroj alŝutitaj'
 rows: Vicoj
 columns: Kolumnoj
+optional_system_fields: Nedevigaj sistemaj valoroj
 value_unique: Valoro devas esti unika
 create_item: Krei eron
 all_files: Ĉiuj dosieroj
@@ -564,6 +567,7 @@ cancel: Nuligi
 collection: Kolekto
 collections: Kolektoj
 content: Enhavo
+system_fields_locked: Sistemaj valoroj estas ŝlositaj kaj ne povas esti redaktitaj
 fields:
   directus_activity:
     action: Ago
@@ -577,6 +581,7 @@ fields:
   directus_collections:
     collection: Kolekto
     icon: Emblemo
+    note: Noto
     color: Koloro
     hidden: Kaŝita
     archive_value: Arĥivi la valoron
@@ -643,6 +648,7 @@ fields:
     default_language: Defaŭlta lingvo
     public_foreground: Publika malfono
     public_background: Publika fono
+    public_note: Publika noto
     files_and_thumbnails: Dosieroj kaj konservado
     storage_default_folder: Defaŭlta dosierujo
     storage_asset_transform: Permesitaj transformoj
@@ -655,6 +661,7 @@ fields:
     role: Rolo
     password: Pasvorto
   directus_fields:
+    note: Noto
     hidden: Kaŝita
     display_template: Ŝablono
   directus_roles:
