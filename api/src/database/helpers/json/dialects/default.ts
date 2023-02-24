@@ -19,16 +19,8 @@ export class JsonHelperDefault extends JsonHelper {
 		// default behavior is post-processing json
 		this.preProcessFallback(dbQuery, table);
 	}
-	preProcessKnex(dbQuery: Knex.QueryBuilder, table: string): void {
-		dbQuery
-			.select(
-				this.nodes.map((node) => {
-					return this.knex.raw(this.knex.jsonExtract(`${table}.${node.name}`, node.jsonPath, node.fieldKey, false));
-				})
-			)
-			.from(table);
-	}
 	preProcessFallback(dbQuery: Knex.QueryBuilder, table: string): void {
+		// fetch the required column for post-processing
 		dbQuery
 			.select(
 				this.nodes.map((node) => {
@@ -42,6 +34,7 @@ export class JsonHelperDefault extends JsonHelper {
 		this.postProcessFallback(items);
 	}
 	postProcessParseJSON(items: Item[]): void {
+		// make sure the results are not returned as stringified JSON
 		const keys = this.nodes.map(({ fieldKey }) => fieldKey);
 		for (const item of items) {
 			for (const jsonAlias of keys) {
@@ -63,6 +56,8 @@ export class JsonHelperDefault extends JsonHelper {
 		}
 	}
 	protected postProcessJsonPath(item: Item, node: JsonFieldNode) {
+		// Postprocessing the JSON in javascript using the jsonpath-plus
+		// https://jsonpath-plus.github.io/JSONPath/docs/ts/
 		const fallbackResponse = node.query?.filter ? [] : null;
 		try {
 			const data = typeof item[node.fieldKey] === 'string' ? parseJSON(item[node.fieldKey]) : item[node.fieldKey];
@@ -79,7 +74,7 @@ export class JsonHelperDefault extends JsonHelper {
 	}
 	protected buildFilterPath(node: JsonFieldNode) {
 		if (!node.query?.filter) return node.jsonPath;
-
+		// add conditionals to the json path query
 		const conditions = [];
 		for (const [jsonPath, value] of Object.entries(node.query?.filter)) {
 			const { operator: filterOperator, value: filterValue } = getOperation(jsonPath, value);
@@ -92,9 +87,11 @@ export class JsonHelperDefault extends JsonHelper {
 		return `${path}[?(${conditions.join(' && ')})]`;
 	}
 	filterQuery(_collection: string, _node: JsonFieldNode): Knex.Raw | null {
+		// this feature cannot be implemented in the fallback
 		throw new InvalidQueryException(`Using JSON Query in regular filters is not supported by this database.`);
 	}
 	protected transformFilterJsonPath(jsonPath: string, filterOperator: string, filterValue: any): string {
+		// translate from Directus filter to JSON Path condition
 		const path = '@' + (jsonPath[0] === '$' ? jsonPath.substring(1) : jsonPath),
 			value = JSON.stringify(filterValue);
 		let operator = '';
