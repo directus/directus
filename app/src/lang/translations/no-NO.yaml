@@ -796,6 +796,7 @@ layouts:
     comfortable: Komfortabel
     compact: Kompakt
     cozy: Cozy
+both: Begge
 operations:
   log:
     message: Melding

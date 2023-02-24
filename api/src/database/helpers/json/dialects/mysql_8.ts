@@ -4,7 +4,7 @@ import { JsonFieldNode } from '../../../../types';
 import { JsonHelperDefault } from './default';
 
 /**
- * We may want a fallback to support wildcard queries (will be super slow unfortunately)
+ * JSON support for MySQL 8.0+
  */
 export class JsonHelperMySQL_8 extends JsonHelperDefault {
 	preProcess(dbQuery: Knex.QueryBuilder, table: string): void {

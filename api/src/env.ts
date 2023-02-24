@@ -24,6 +24,7 @@ const allowedEnvironmentVars = [
 	'SERVE_APP',
 	'GRAPHQL_INTROSPECTION',
 	'LOGGER_.+',
+	'ROBOTS_TXT',
 	// server
 	'SERVER_.+',
 	// database
@@ -139,8 +140,10 @@ const allowedEnvironmentVars = [
 	'AUTH_.+_IDP.+',
 	'AUTH_.+_SP.+',
 	// extensions
+	'PACKAGE_FILE_LOCATION',
 	'EXTENSIONS_PATH',
 	'EXTENSIONS_AUTO_RELOAD',
+	'EXTENSIONS_CACHE_TTL',
 	// messenger
 	'MESSENGER_STORE',
 	'MESSENGER_NAMESPACE',
@@ -192,6 +195,7 @@ const defaults: Record<string, any> = {
 	PUBLIC_URL: '/',
 	MAX_PAYLOAD_SIZE: '1mb',
 	MAX_RELATIONAL_DEPTH: 10,
+	ROBOTS_TXT: 'User-agent: *\nDisallow: /',
 
 	DB_EXCLUDE_TABLES: 'spatial_ref_sys,sysdiagrams',
 
@@ -235,6 +239,7 @@ const defaults: Record<string, any> = {
 	AUTH_PROVIDERS: '',
 	AUTH_DISABLE_DEFAULT: false,
 
+	PACKAGE_FILE_LOCATION: '.',
 	EXTENSIONS_PATH: './extensions',
 	EXTENSIONS_AUTO_RELOAD: false,
 
@@ -255,7 +260,7 @@ const defaults: Record<string, any> = {
 	IP_TRUST_PROXY: true,
 	IP_CUSTOM_HEADER: false,
 
-	IMPORT_IP_DENY_LIST: '0.0.0.0',
+	IMPORT_IP_DENY_LIST: ['0.0.0.0', '169.254.169.254'],
 
 	SERVE_APP: true,
 

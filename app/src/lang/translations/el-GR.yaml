@@ -393,6 +393,7 @@ layouts:
     comfortable: Άνετος
     compact: Συμπαγής
     cozy: Κανονικό
+both: Και τα δύο
 operations:
   log:
     message: Μήνυμα

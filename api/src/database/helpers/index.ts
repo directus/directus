@@ -8,8 +8,7 @@ import * as fnHelpers from './fn';
 import * as geometryHelpers from './geometry';
 import * as schemaHelpers from './schema';
 import * as jsonHelpers from './json';
-import { DatabaseVersionedClients } from './json/types';
-import { DatabaseClients } from './types';
+import { DatabaseClient, DatabaseVersionedClient } from '../../types/database';
 
 export function getHelpers(database: Knex) {
 	const client = getDatabaseClient(database);
@@ -30,14 +29,11 @@ export type Helpers = ReturnType<typeof getHelpers>;
 export type AnyJsonHelper =
 	| jsonHelpers.fallback
 	| jsonHelpers.sqlite
-	// | jsonHelpers.mssql16
 	| jsonHelpers.mssql13
 	| jsonHelpers.mariadb
 	| jsonHelpers.mysql8
 	| jsonHelpers.mysql5
 	| jsonHelpers.oracle12
-	| jsonHelpers.cockroachdb
-	// | jsonHelpers.postgres10
 	| jsonHelpers.postgres12;
 
 export function getJsonHelper(database: Knex, schema: SchemaOverview, nodes: JsonFieldNode[] = []): AnyJsonHelper {
@@ -46,7 +42,7 @@ export function getJsonHelper(database: Knex, schema: SchemaOverview, nodes: Jso
 	return new jsonHelpers[helper](database, schema, nodes);
 }
 
-export function getJsonHelperByVersion(client: DatabaseClients): DatabaseVersionedClients {
+export function getJsonHelperByVersion(client: DatabaseClient): DatabaseVersionedClient {
 	if (!getDatabaseVersion) return 'fallback'; // happens during unit tests
 	const { parsed, full } = getDatabaseVersion();
 	if (!parsed || parsed.length === 0) return 'fallback';
@@ -56,22 +52,12 @@ export function getJsonHelperByVersion(client: DatabaseClients): DatabaseVersion
 			if (major === 3 && minor >= 38) {
 				return 'sqlite'; // version 3.38.0+
 			}
-			return 'fallback'; // might be able to check for json extension
+			return 'fallback';
 		case 'postgres':
 			if (major >= 12) {
 				return 'postgres12'; // version 12+
 			}
-			// if (major >= 10) {
-			// 	// might be able to support v9 here too
-			// 	return 'postgres10'; // version 10+
-			// }
 			return 'fallback';
-		case 'cockroachdb':
-			// if (major >= 2) {
-			// 	// apparently cockroach DB supports JSON since v2 but not very well
-			// 	return 'cockroachdb';
-			// }
-			return 'fallback'; // should really update if still running < v2
 		case 'mysql':
 			if (/MariaDB/i.test(full)) {
 				if (major == 10 && minor >= 2) {
@@ -93,12 +79,12 @@ export function getJsonHelperByVersion(client: DatabaseClients): DatabaseVersion
 			}
 			return 'fallback';
 		case 'mssql':
-			// if (major >= 16) {
-			// 	return 'mssql16'; // version 2022 preview
-			// }
 			if (major >= 13) {
 				return 'mssql13'; // version 2016+
 			}
+			return 'fallback';
+		case 'cockroachdb':
+			// falling back to postprocessing for cockroachdb
 			return 'fallback';
 		default:
 			// shouldnt get here but always use fallback just in case

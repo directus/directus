@@ -1,8 +1,12 @@
 import { InvalidQueryException } from '../exceptions';
 import { stripFunction } from './strip-function';
 
+// used to limit all the shenanigans JSONPath accepts to a consistently supported subset
 export const JSON_QUERY_REGEX = /^json\([\w\d:_-]+(\.[\w\d:_-]+)*\$(\.([\w\d_-]+|\*)|\[(\d+|\*)\])+\)/i;
 
+/**
+ * Parse a "JSON(field$.path)"" string into sub elements
+ */
 export function parseJsonFunction(data: string) {
 	if (!JSON_QUERY_REGEX.test(data)) {
 		throw new InvalidQueryException(`The json query used is not valid. "${data}"`);

@@ -4,18 +4,23 @@ import { JsonFieldNode } from '../../../../types/index';
 import { getOperation } from '../../../../utils/apply-query';
 import { Item } from '@directus/shared/types';
 
+/**
+ * JSON support for PostgreSQL 12+
+ */
 export class JsonHelperPostgres_12 extends JsonHelperDefault {
 	preProcess(dbQuery: Knex.QueryBuilder, table: string): void {
 		dbQuery
 			.select(
 				this.nodes.map((node) => {
 					const { dbType } = this.schema.collections[table].fields[node.name];
+					// try to determine whether we're expecting a single scalar response or an array of data
 					let jsonPath = Object.keys(node.query).length === 0 ? node.jsonPath : this.buildFilterPath(node),
 						jsonFn = 'jsonb_path_query';
 					if (this.hasWildcard(jsonPath)) {
 						jsonFn = 'jsonb_path_query_array';
 						jsonPath = jsonPath.endsWith('[*]') ? jsonPath.substring(0, jsonPath.length - 3) : jsonPath;
 					}
+					// fall back to `to_jsonb(...)` for backward compatibility with non-jsonb fields
 					return this.knex.raw(
 						dbType === 'jsonb' ? `${jsonFn}(??.??, ?) as ??` : `${jsonFn}(to_jsonb(??.??), ?) as ??`,
 						[table, node.name, jsonPath, node.fieldKey]
@@ -26,6 +31,8 @@ export class JsonHelperPostgres_12 extends JsonHelperDefault {
 	}
 	buildFilterPath(node: JsonFieldNode) {
 		if (!node.query?.filter) return node.jsonPath;
+		// Build a JSONPath filter query for deep queries
+		// https://www.postgresql.org/docs/12/functions-json.html#FUNCTIONS-SQLJSON-PATH
 
 		const conditions = [];
 		for (const [jsonPath, value] of Object.entries(node.query?.filter)) {
@@ -39,8 +46,14 @@ export class JsonHelperPostgres_12 extends JsonHelperDefault {
 		// no post-processing needed for postgres
 	}
 	filterQuery(collection: string, node: JsonFieldNode): Knex.Raw | null {
-		const qp = this.knex.raw('?', [node.jsonPath]).toQuery();
-		return this.knex.raw(`jsonb_path_query_first(??.??, ${qp})::text`, [collection, node.name]);
+		// uses the native postgres json text operator for regular filtering
+		// https://www.postgresql.org/docs/12/functions-json.html#FUNCTIONS-JSON-OP-TABLE
+		const queryPath = node.jsonPath
+			.replace(/^\$\./, '')
+			.split(new RegExp('[\\.\\[\\]]'))
+			.map((part) => this.knex.raw('?', [part]).toQuery())
+			.join('->>');
+		return this.knex.raw(`??.??->>${queryPath}`, [collection, node.name]);
 	}
 }
 

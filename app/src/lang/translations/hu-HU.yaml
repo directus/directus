@@ -245,6 +245,7 @@ float: Törtszám
 integer: Egész szám
 json: JSON
 xml: XML
+yaml: YAML
 string: Karaktersor
 text: Szöveg
 time: Idő
@@ -1431,7 +1432,6 @@ translation: Fordítás
 translation_placeholder: Fordítás megadása...
 value: Érték
 view_project: Projekt megtekintése
-weeks: { }
 report_error: Hiba jelentése
 start: Start
 table: Táblázat
@@ -1940,6 +1940,8 @@ layouts:
     show: Mutasd
     no_group: Keresés és szűrés engedélyezése
     not_all_loaded: Csak az első 100 elemet sikerült betölteni.
+horizontal: Horizontális
+both: Mindkettő
 panels:
   metric:
     name: Metrikus
@@ -1961,69 +1963,23 @@ panels:
   barchart:
     name: Oszlopdiagram
     description: Sáv- vagy oszlopdiagramok értékcsoportok összehasonlításához
-    select_field: Ki kell választanod egy mezőt!
-    select_collection: Ki kell választanod egy gyűjteményt!
-    select_x_axis: Ki kell választanod egy X-tengelyt.
-    function: Függvény
     horizontal: Horizontális
-    x_axis_grouping: X-tengely csoportos aggregálás
-    x_axis: X-tengely
-    y_axis_function: Y tengelyes függvény
-    y_axis: Y tengely
-    show_x_axis: X tengely megjelenítése
-    show_y_axis: Y tengely megjelenítése
-    show_data_label: Mutasd az adat fejlécét
-    group_by: Csoportosítási szempont
-    group_and_function: Mind a csoportot, mind a függvényt fel kell vennie vagy ki kell hagynia.
-    y_axis_NaN: Az Y tengelynek számnak kell lennie.
-    y_axis_conditional_one: A feltétel értéke
-    y_axis_conditional_two: számnak kell lennie.
+    select_collection: Ki kell választanod egy gyűjteményt!
   linechart:
     name: Vonaldiagram
     description: Vonaldiagram egy mező változásának összehasonlításához
-    select_field: Ki kell választanod egy mezőt!
-    select_collection: Ki kell választanod egy gyűjteményt!
-    select_x_axis: Ki kell választanod egy X-tengelyt.
-    function: Függvény
-    x_axis: X-tengely
-    x_axis_decimals: X-tengely tizedesjegyei
     disabled_no_grouping: Letiltva, ha nincs kiválasztva csoportosítás.
-    y_axis: Y tengely
-    datasets: Adatkészletek
-    show_legend: Mutasd a magyarázatot
     show_marker: Eszköztipp-jelölő megjelenítése
-    include_dataset: Legalább egy adatkészletet kell tartalmaznia.
-    include_y_axis: Minden adatkészlethez meg kell adnia Y-tengelyt, ha nincs csoport megadva.
-    group_and_function: Mind a csoportot, mind a függvényt fel kell vennie vagy ki kell hagynia.
+    curve_type: Görbe típusa
     smooth: Gördülékeny
     straight: Egyenes
     step_line: Lécsőzetes
   meter:
     name: Mértékegység
     description: Értékek nyomonkövetése
-    half_circle: Félkör
-    full_circle: Teljes kör
-    stroke_width: Tollvastagság
-    rounded_stroke: Görbe vonal
-    select_max_value: Ki kell választania egy maximális értéket.
-    max_greater_than_zero: A maximumnak 0-nál nagyobbnak kell lennie.
-    select_field: Ki kell választani egy mezőt.
-    select_collection: Ki kell választani egy gyűjteményt.
-    function: Függvény
-    thin: Vékony
-    medium: Közepes
-    broad: Széles
   piechart:
     name: Torta vagy fánk diagram
     description: Kör diagram, amely a csoportok arányát mutatja egy oszlopon
-    function: Függvény
-    donut: Fánk
-    show_labels: Címkék megjelenítése
-    show_legend: Mutasd a magyarázatot
-    right: Jobb
-    bottom: Alsó
-    monochrome: Monokróm
-    monochrome_color: Monokróm szín
   variable:
     name: Globális változó
     description: Állítson be egy globális értéket más panelek szűrőiben való használatra

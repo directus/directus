@@ -5,7 +5,7 @@ import { getOperation } from '../../../../utils/apply-query';
 import { JsonHelperDefault } from './default';
 
 /**
- * We may want a fallback to support wildcard queries (will be super slow unfortunately)
+ * JSON support for MySQL 5.7+
  */
 export class JsonHelperMySQL_5 extends JsonHelperDefault {
 	preProcess(dbQuery: Knex.QueryBuilder, table: string): void {

@@ -9,7 +9,6 @@ import { InvalidQueryException } from '../../../../exceptions';
 
 const jsonPathPlusOptions = {
 	wrap: false,
-	// preventEval: true,
 };
 
 /**

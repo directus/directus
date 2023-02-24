@@ -10,7 +10,7 @@ import path from 'path';
 import { merge } from 'lodash';
 import { promisify } from 'util';
 import { getHelpers, getJsonHelperByVersion } from './helpers';
-import { DatabaseClients } from './helpers/types';
+import { DatabaseClient } from '../types/database';
 
 let database: Knex | null = null;
 let databaseVersion: { parsed: number[]; full: string } = { parsed: [], full: '' };
@@ -181,7 +181,7 @@ export async function validateDatabaseConnection(database?: Knex): Promise<void>
 	}
 }
 
-export function getDatabaseClient(database?: Knex): DatabaseClients {
+export function getDatabaseClient(database?: Knex): DatabaseClient {
 	database = database ?? getDatabase();
 
 	switch (database.client.constructor.name) {
@@ -319,8 +319,6 @@ export async function validateDatabaseVersion(): Promise<void> {
 	if (helper === 'fallback') {
 		logger.warn(`JSON queries are not supported natively by ${client} (version: ${databaseVersion.parsed.join('.')})`);
 		logger.warn(`Falling back to json post-processing instead, using JSON in "filter" will not be supported!`);
-	} /* else if (helper === 'cockroachdb') {
-		logger.warn(`Using JSON in "filter" is not supported by ${client} (version: ${databaseVersion.parsed.join('.')})`);
-	} */
+	}
 	logger.debug(`Database: ${client} (version: ${databaseVersion.parsed.join('.')})`);
 }

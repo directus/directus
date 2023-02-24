@@ -7,49 +7,16 @@ import { Item } from '@directus/shared/types';
 import { generateAlias } from '../../../../utils/generate-alias';
 
 /**
- * To support first-level array queries consistently we will need to get to a query like:
-
-WITH xyz AS (
-    SELECT jason.id, json_group_array(json_extract(value, "$.test")) as X
-    FROM jason, json_each(jason.data, "$")
-    GROUP BY jason.id
-)
-select jason.id, xyz.X
-from jason
-join xyz ON xyz.id = jason.id;
+ * JSON support for SQLite 3.38+
  */
-/**
- * To support nested array queries consistently the above needs to be extended to:
-
-WITH xyz AS (
-    SELECT jason.id, json_group_array(json_extract(K.value, "$.b")) as X
-    FROM jason, json_each(jason.data, "$") J, json_each(J.value, "$.a") K
-    GROUP BY jason.id
-)
-select jason.id, xyz.X
-from jason
-join xyz ON xyz.id = jason.id;
- */
-/**
- * To support deep queries consistently the above needs to be extended to:
-
-WITH xyz AS (
-    SELECT jason.id, json_group_array(json_extract(K.value, "$.b")) as X
-    FROM jason, json_each(jason.data, "$") J, json_each(J.value, "$.a") K
-	WHERE X >= 10
-    GROUP BY jason.id
-)
-select jason.id, xyz.X
-from jason
-join xyz ON xyz.id = jason.id;
- */
-
 export class JsonHelperSQLite extends JsonHelperDefault {
 	preProcess(dbQuery: Knex.QueryBuilder, table: string): void {
+		// without wildcards the data can be directly extracted
 		const selectQueries = this.nodes.filter(
 			({ jsonPath, query }) =>
 				jsonPath.indexOf('[*]') === -1 && jsonPath.indexOf('.*') === -1 && Object.keys(query).length === 0
 		);
+		// with wildcards a join/subquery structure is required
 		const joinQueries = this.nodes.filter(
 			({ jsonPath, query }) =>
 				jsonPath.indexOf('[*]') > 0 || jsonPath.indexOf('.*') > 0 || Object.keys(query).length > 0
@@ -61,6 +28,8 @@ export class JsonHelperSQLite extends JsonHelperDefault {
 			}
 		}
 		if (selectQueries.length > 0) {
+			// these are simple enough to make use of the knex jsonExtract abstraction
+			// https://knexjs.org/guide/query-builder.html#jsonextract
 			dbQuery.select(
 				selectQueries.map((node) => {
 					return this.knex.raw(this.knex.jsonExtract(`${table}.${node.name}`, node.jsonPath, node.fieldKey, false));
@@ -70,10 +39,14 @@ export class JsonHelperSQLite extends JsonHelperDefault {
 		dbQuery.from(table);
 	}
 	postProcess(items: Item[]): void {
+		// make sure any json is returned as the correct type instead of a string
 		this.postProcessParseJSON(items);
 	}
 	private buildWithJson(dbQuery: Knex.QueryBuilder, node: JsonFieldNode, table: string): Knex.QueryBuilder {
+		// building this subquery makes use of the `json_each(...)` function to create a temporary table structure
+		// against which can be queried https://www.sqlite.org/json1.html#jeach
 		const { jsonPath, name } = node;
+		// split up the provided query into each stage
 		const arrayParts = jsonPath
 			.split('[*]')
 			.flatMap((p) => p.split('.*'))
@@ -88,6 +61,7 @@ export class JsonHelperSQLite extends JsonHelperDefault {
 			this.knex.raw('??', [table]),
 			this.knex.raw('json_each(??.??, ?) as ??', [table, name, arrayParts[0], aliases[0]]),
 		];
+		// build up a nested `json_each()` table depending on the depth required
 		const subQuery = this.knex.select(`${table}.${primaryKey}`);
 		for (let i = 1; i < arrayParts.length - 1; i++) {
 			fromList.push(this.knex.raw('json_each(??.value, ?) as ??', [aliases[i - 1], arrayParts[i], aliases[i]]));
@@ -97,6 +71,7 @@ export class JsonHelperSQLite extends JsonHelperDefault {
 			for (const [jsonPath, value] of Object.entries(node.query?.filter)) {
 				let alias = aliases[0];
 				if (arrayParts.length > 1) {
+					// extract temporary values to filter against
 					fromList.push(
 						this.knex.raw('json_each(??.value, ?) as ??', [
 							aliases[aliases.length - 2],
@@ -117,12 +92,15 @@ export class JsonHelperSQLite extends JsonHelperDefault {
 		}
 		subQuery.fromRaw(this.knex.raw(fromList.map((f) => f.toQuery()).join(',')));
 		for (const { alias, operator, value } of conditions) {
+			// apply SQL filters to the temporary tables
 			applyJsonFilterQuery(subQuery, alias, operator, value, 'and');
 		}
+		// group the temporary tables to get a single value
 		subQuery.groupBy(`${table}.${primaryKey}`);
 		const selectJsonField = node.query?.filter
 			? this.knex.raw("COALESCE(??.??, '[]') as ??", [withAlias, aliases[aliases.length - 1], node.fieldKey])
 			: this.knex.raw('??.?? as ??', [withAlias, aliases[aliases.length - 1], node.fieldKey]);
+
 		dbQuery
 			.with(withAlias, subQuery)
 			.select(selectJsonField)
@@ -144,6 +122,8 @@ export class JsonHelperSQLite extends JsonHelperDefault {
 		]);
 	}
 	filterQuery(collection: string, node: JsonFieldNode): Knex.Raw {
+		// uses the native `json_extract(...)` function for regular filtering
+		// https://www.sqlite.org/json1.html#jex
 		return this.knex.raw(`json_extract(??.??, ?)`, [collection, node.name, node.jsonPath]);
 	}
 }

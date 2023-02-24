@@ -7,47 +7,7 @@ import { Item } from '@directus/shared/types';
 import { generateCapitalAlias } from '../../../../utils/generate-alias';
 
 /**
- * To support first-level array queries consistently we will need to get to a query like:
-
-with XYZ as (
-	select "jason"."id", json_arrayagg(COALESCE("j"."SCAL", "j"."OBJ") FORMAT JSON) as "res"
-	from "jason", json_table("jason"."data", '$[*]' COLUMNS (obj FORMAT JSON PATH '$.a', scal PATH '$.a')) as "j"
-	group by "jason"."id"
-)
-select "jason".*, "XYZ"."res"
-from "jason", "XYZ"
-where "XYZ"."id" = "jason"."id"
- */
-/**
- * To support nested array queries consistently the above needs to be extended to:
-
-with "XYZ" as (
-	select "o"."id" as "id", json_arrayagg("j"."SCAL") as "res"
-	from "jason" "o", json_table("o"."data", '$[*]' COLUMNS (NESTED PATH '$.a[*]' COLUMNS ( obj FORMAT JSON PATH '$.b', scal varchar(4000) PATH '$.b' ))) as "j"
-	group by "o"."id"
-)
-select "jason".*, "XYZ"."res"
-from "jason", "XYZ"
-where "XYZ"."id" = "jason"."id"
- */
-/**
- * To support deep queries consistently the above needs to be extended to:
-
-with "XYZ" as (
-	select "o"."id" as "id", json_arrayagg("j"."SCAL") as "res"
-	from "jason" "o", json_table("o"."data", '$[*]' COLUMNS (
-		NESTED PATH '$.a[*]' COLUMNS (
-			obj FORMAT JSON PATH '$',
-			scal varchar(4000) PATH '$',
-			name type PATH '$.b'
-		)
-	)) as "j"
-	where name = 'val'
-	group by "o"."id"
-)
-select "jason".*, "XYZ"."res"
-from "jason", "XYZ"
-where "XYZ"."id" = "jason"."id"
+ * JSON support for OracleDB 12+
  */
 export class JsonHelperOracle_12 extends JsonHelperDefault {
 	preProcess(dbQuery: Knex.QueryBuilder, table: string): void {
