@@ -57,10 +57,16 @@ export type FunctionFieldNode = {
 
 export type JsonFieldNode = {
 	type: 'jsonField';
-	name: string; // field string
-	fieldKey: string; // alias
+	// name of the database field
+	name: string;
+	// alias to use for the result
+	fieldKey: string;
+	// json-path to query
 	jsonPath: string;
+	// additional filters
 	query: Query;
+	// temporary nodes do not need to be in the final API response
+	// these are sometimes required for filtering
 	temporary: boolean;
 };
 
