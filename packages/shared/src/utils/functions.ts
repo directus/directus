@@ -54,6 +54,7 @@ function count(value: any): number | null {
 	return Array.isArray(value) ? value.length : null;
 }
 
-function json(value: any): string {
-	return value as string;
+function json(value: any): unknown {
+	// this is a stub that should not actually get called
+	return value;
 }
