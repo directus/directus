@@ -217,24 +217,27 @@ export default async function getASTFromQuery(
 								jsonAlias[newFunc] = fieldKey;
 							}
 						} else {
-							const deepKey = query.alias?.[fieldKey] ? fieldKey : jsonAlias[name];
-							const deepFilter = getDeepQuery(deep?.[deepKey] || {});
-							children.push({
-								type: 'jsonField',
-								fieldKey: jsonAlias[name] ?? alias,
-								name: fieldName,
-								jsonPath,
-								query: deepFilter,
-								temporary: false,
-							});
-							if (deep?.[deepKey]) {
-								delete deep[deepKey];
-							}
-							if (query.alias?.[fieldKey]) {
-								delete query.alias[fieldKey];
-							}
-							if (jsonAlias[name]) {
-								delete jsonAlias[name];
+							const foundField = schema.collections[parentCollection].fields[fieldName];
+							if (foundField && foundField.type === 'json') {
+								const deepKey = query.alias?.[fieldKey] ? fieldKey : jsonAlias[name];
+								const deepFilter = getDeepQuery(deep?.[deepKey] || {});
+								children.push({
+									type: 'jsonField',
+									fieldKey: jsonAlias[name] ?? alias,
+									name: fieldName,
+									jsonPath,
+									query: deepFilter,
+									temporary: false,
+								});
+								if (deep?.[deepKey]) {
+									delete deep[deepKey];
+								}
+								if (query.alias?.[fieldKey]) {
+									delete query.alias[fieldKey];
+								}
+								if (jsonAlias[name]) {
+									delete jsonAlias[name];
+								}
 							}
 						}
 						continue;
