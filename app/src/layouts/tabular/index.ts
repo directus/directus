@@ -237,7 +237,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 								let displayOptions;
 
 								if (arrayField?.meta?.display) {
-									display = arrayField.meta?.display;
+									display = arrayField.meta.display;
 									displayOptions = arrayField.meta.display_options;
 								} else {
 									display = 'related-values';
