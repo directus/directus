@@ -311,14 +311,20 @@ export function getDatabaseVersion() {
 }
 
 export async function validateDatabaseVersion(): Promise<void> {
-	const database = getDatabase();
-	const client = getDatabaseClient(database);
-	const helpers = getHelpers(database);
-	databaseVersion = await helpers.schema.getVersion();
-	const helper = getJsonHelperByVersion(client);
-	if (helper === 'fallback') {
-		logger.warn(`JSON queries are not supported natively by ${client} (version: ${databaseVersion.parsed.join('.')})`);
-		logger.warn(`Falling back to json post-processing instead, using JSON in "filter" will not be supported!`);
+	try {
+		const database = getDatabase();
+		const client = getDatabaseClient(database);
+		const helpers = getHelpers(database);
+		databaseVersion = await helpers.schema.getVersion();
+		const helper = getJsonHelperByVersion(client);
+		if (helper === 'fallback') {
+			logger.warn(
+				`JSON queries are not supported natively by ${client} (version: ${databaseVersion.parsed.join('.')})`
+			);
+			logger.warn(`Falling back to json post-processing instead, using JSON in "filter" will not be supported!`);
+		}
+		logger.debug(`Database: ${client} (version: ${databaseVersion.parsed.join('.')})`);
+	} catch {
+		logger.error(`Unable to determine the current database version!`);
 	}
-	logger.debug(`Database: ${client} (version: ${databaseVersion.parsed.join('.')})`);
 }
