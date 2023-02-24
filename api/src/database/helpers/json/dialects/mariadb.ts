@@ -33,16 +33,4 @@ export class JsonHelperMariaDB extends JsonHelperDefault {
 		// uses the native `JSON_EXTRACT(...)` to extract filter values
 		return this.knex.raw(`JSON_EXTRACT(??.??, ?)`, [collection, node.name, node.jsonPath]);
 	}
-	// i dont think this is still required
-	// protected override buildFilterPath(node: JsonFieldNode) {
-	// 	if (!node.query?.filter) return node.jsonPath;
-
-	// 	const conditions = [];
-	// 	for (const [jsonPath, value] of Object.entries(node.query?.filter)) {
-	// 		const { operator: filterOperator, value: filterValue } = getOperation(jsonPath, value);
-	// 		conditions.push(this.transformFilterJsonPath(jsonPath, filterOperator, filterValue));
-	// 	}
-
-	// 	return `$[?(${conditions.join(' && ')})]`;
-	// }
 }
