@@ -57,6 +57,8 @@ const allowedEnvironmentVars = [
 	'CORS_EXPOSED_HEADERS',
 	'CORS_CREDENTIALS',
 	'CORS_MAX_AGE',
+	// global redis settings
+	'REDIS_.*',
 	// rate limiting
 	'RATE_LIMITER_.+',
 	// cache

@@ -14,31 +14,33 @@ type IRateLimiterOptionsOverrides = Partial<IRateLimiterOptions> | Partial<IRate
 export function createRateLimiter(configOverrides?: IRateLimiterOptionsOverrides): RateLimiterAbstract {
 	switch (env.RATE_LIMITER_STORE) {
 		case 'redis':
-			return new RateLimiterRedis(getConfig('redis', configOverrides));
+			return new RateLimiterRedis(getRedisConfig(configOverrides));
 		case 'memory':
 		default:
-			return new RateLimiterMemory(getConfig('memory', configOverrides));
+			return new RateLimiterMemory(getMemoryConfig(configOverrides));
 	}
 }
 
-function getConfig(store: 'memory', overrides?: IRateLimiterOptionsOverrides): IRateLimiterOptions;
-function getConfig(store: 'redis', overrides?: IRateLimiterOptionsOverrides): IRateLimiterStoreOptions;
-function getConfig(
-	store: 'memory' | 'redis' = 'memory',
-	overrides?: IRateLimiterOptionsOverrides
-): IRateLimiterOptions | IRateLimiterStoreOptions {
-	const config: any = getConfigFromEnv('RATE_LIMITER_', `RATE_LIMITER_${store}_`);
+function getMemoryConfig(overrides?: IRateLimiterOptionsOverrides): IRateLimiterOptions {
+	const config: any = getConfigFromEnv('RATE_LIMITER_');
 
-	if (store === 'redis') {
-		const Redis = require('ioredis');
-		delete config.redis;
-		config.storeClient = new Redis(env.RATE_LIMITER_REDIS || getConfigFromEnv('RATE_LIMITER_REDIS_'));
-	}
+	delete config.enabled;
+	delete config.store;
+	merge(config, overrides ?? {});
+
+	return config;
+}
+function getRedisConfig(overrides?: IRateLimiterOptionsOverrides): IRateLimiterStoreOptions {
+	const config: any = merge({}, getConfigFromEnv('REDIS_'), getConfigFromEnv('RATE_LIMITER_', 'RATE_LIMITER_REDIS_'));
+
+	const Redis = require('ioredis');
+	config.storeClient = new Redis(env.RATE_LIMITER_REDIS ?? getConfigFromEnv('RATE_LIMITER_REDIS_'));
+	delete config.redis;
 
 	delete config.enabled;
 	delete config.store;
 
-	merge(config, overrides || {});
+	merge(config, overrides ?? {});
 
 	return config;
 }
