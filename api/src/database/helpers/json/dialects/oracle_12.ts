@@ -11,15 +11,11 @@ import { generateCapitalAlias } from '../../../../utils/generate-alias';
  */
 export class JsonHelperOracle_12 extends JsonHelperDefault {
 	preProcess(dbQuery: Knex.QueryBuilder, table: string): void {
-		const selectQueries = this.nodes.filter(
-			({ jsonPath, query }) =>
-				jsonPath.indexOf('[*]') === -1 && jsonPath.indexOf('.*') === -1 && Object.keys(query).length === 0
-		);
+		// with wildcards or filter a temporary table with join is required
 		const joinQueries = this.nodes.filter(
 			({ jsonPath, query }) =>
 				jsonPath.indexOf('[*]') > 0 || jsonPath.indexOf('.*') > 0 || Object.keys(query).length > 0
 		);
-
 		if (joinQueries.length > 0) {
 			const primaryKey = this.schema.collections[table].primary;
 			for (const node of joinQueries) {
@@ -28,9 +24,17 @@ export class JsonHelperOracle_12 extends JsonHelperDefault {
 				dbQuery.leftJoin(alias, `${table}.${primaryKey}`, `${alias}.${primaryKey}`);
 			}
 		}
+
+		// without wildcards or filter the query can be handled by native JSON functions
+		const selectQueries = this.nodes.filter(
+			({ jsonPath, query }) =>
+				jsonPath.indexOf('[*]') === -1 && jsonPath.indexOf('.*') === -1 && Object.keys(query).length === 0
+		);
 		if (selectQueries.length > 0) {
 			dbQuery.select(
 				this.nodes.map((node) => {
+					// Oracle has different functions for getting either an `object | array` or `string | number | boolean`
+					// because we dont know what result is expected we're using `COALESCE` to run both here
 					const query = this.knex.raw('?', [node.jsonPath]).toQuery();
 					return this.knex.raw(`COALESCE(json_query(??.??, ${query}),json_value(??.??, ${query})) as ??`, [
 						table,
@@ -44,6 +48,7 @@ export class JsonHelperOracle_12 extends JsonHelperDefault {
 		}
 	}
 	postProcess(items: Item[]): void {
+		// Oracle returns stringified results that require parsing
 		this.postProcessParseJSON(items);
 	}
 	private buildWithJson(
@@ -52,10 +57,11 @@ export class JsonHelperOracle_12 extends JsonHelperDefault {
 		table: string,
 		alias: string
 	): Knex.QueryBuilder {
+		// builds a temporary table attached to the query using a `with` statement
 		const { jsonPath } = node;
 		const queryParts = this.splitQuery(jsonPath);
 		const primaryKey = this.schema.collections[table].primary;
-
+		// get the temporary table definition
 		const {
 			table: joinTable,
 			field: jsonField,
@@ -64,7 +70,6 @@ export class JsonHelperOracle_12 extends JsonHelperDefault {
 		} = this.buildJsonTable(table, node, queryParts);
 
 		const selectList = [this.knex.raw('??.?? as ??', [table, primaryKey, primaryKey]), jsonField];
-
 		const fromList = [this.knex.raw('??', [table]), joinTable];
 
 		const subQuery = this.knex.select(selectList).fromRaw(this.knex.raw(fromList.map((f) => f.toQuery()).join(',')));
@@ -73,11 +78,12 @@ export class JsonHelperOracle_12 extends JsonHelperDefault {
 			applyJsonFilterQuery(subQuery, alias, operator, value);
 		}
 
+		// make sure an empty array is returned for filters that have no items returned
 		const selectJsonField = node.query?.filter
 			? this.knex.raw("COALESCE(??.??, '[]') as ??", [alias, jsonAlias, node.fieldKey])
 			: this.knex.raw('??.?? as ??', [alias, jsonAlias, node.fieldKey]);
-		dbQuery.with(alias, subQuery.groupBy(this.knex.raw('??.??', [table, primaryKey]))).select(selectJsonField);
 
+		dbQuery.with(alias, subQuery.groupBy(this.knex.raw('??.??', [table, primaryKey]))).select(selectJsonField);
 		return dbQuery;
 	}
 	private buildJsonTable(
@@ -90,16 +96,20 @@ export class JsonHelperOracle_12 extends JsonHelperDefault {
 		alias: string;
 		conditions: { alias: string; operator: string; value: string | number }[];
 	} {
+		// build a temporary table using the complex `json_table(...)` function
+		// https://docs.oracle.com/database/121/SQLRF/functions092.htm#SQLRF56973
 		const rootPath = this.knex.raw('?', [parts[0]]).toQuery(),
 			tableAlias = generateCapitalAlias(),
 			fieldAlias = generateCapitalAlias();
 		const conditions = [];
 		let filterColumns = '';
 		if (node.query?.filter) {
+			// extract any required columns for filtering and their conditions
 			for (const [jsonPath, value] of Object.entries(node.query?.filter)) {
 				const { operator: filterOperator, value: filterValue } = getOperation(jsonPath, value);
 				const conditionPath = this.knex.raw('?', [jsonPath]).toQuery();
 				const conditionAlias = generateCapitalAlias();
+
 				filterColumns += this.knex
 					.raw(`, ?? ${getFilterType(filterOperator)} PATH ${conditionPath}`, [conditionAlias])
 					.toQuery();
@@ -107,19 +117,24 @@ export class JsonHelperOracle_12 extends JsonHelperDefault {
 			}
 		}
 		if (parts.length > 2) {
+			// build a nested table definition
 			let nestedColumns = '';
 			for (let i = 1; i < parts.length - 1; i++) {
 				const fieldPath = this.knex.raw('?', [parts[i]]).toQuery();
 				nestedColumns += `NESTED PATH ${fieldPath} COLUMNS (`;
 			}
+
 			const fieldPair = [generateCapitalAlias(), generateCapitalAlias()];
 			const fieldPath = this.knex.raw('?', [parts[parts.length - 1]]).toQuery();
 			nestedColumns += this.knex
 				.raw(`?? PATH ${fieldPath}, ?? FORMAT JSON PATH ${fieldPath}${filterColumns}`, fieldPair)
 				.toQuery();
+
 			for (let i = 1; i < parts.length; i++) {
+				// close each level of the table definition
 				nestedColumns += ')';
 			}
+
 			const subQuery = this.knex.raw(`json_table(??.??, ${rootPath} COLUMNS (${nestedColumns}) as ??`, [
 				table,
 				node.name,
@@ -135,7 +150,7 @@ export class JsonHelperOracle_12 extends JsonHelperDefault {
 				conditions,
 			};
 		}
-		// simplified
+		// simplified approach when only one level of nesting is required
 		const fieldPair = [generateCapitalAlias(), generateCapitalAlias()];
 		const fieldPath = this.knex.raw('?', [parts[1]]).toQuery();
 		const subQuery = this.knex.raw(
@@ -153,29 +168,36 @@ export class JsonHelperOracle_12 extends JsonHelperDefault {
 		};
 	}
 	private splitQuery(jsonPath: string): string[] {
+		// split all wildcards and return a flat list of nestable paths
 		const parts = jsonPath.split('[*]');
-		// add wildcards back in
 		for (let i = 0; i < parts.length - 1; i++) {
+			// add the removed `[*]` back for all except the latest item
 			parts[i] += '[*]';
 		}
-		// do the same for property wildcards but nested
 		return parts
-			.flatMap((p) => {
-				const _parts = p.split('.*');
+			.flatMap((part) => {
+				const _parts = part.split('.*');
 				for (let i = 0; i < _parts.length - 1; i++) {
+					// add the removed `.*` back for all except the latest item
 					_parts[i] += '.*';
 				}
 				return _parts;
 			})
-			.map((q) => (q.startsWith('$') ? q : '$' + q));
+			.map((part) => {
+				// make sure the individual parts are a valid jsonPath by adding the `$` in front
+				return part.startsWith('$') ? part : '$' + part;
+			});
 	}
 	filterQuery(collection: string, node: JsonFieldNode): Knex.Raw {
+		// uses the native `JSON_VALUE(...)` to extract filter values
+		// https://docs.oracle.com/database/121/SQLRF/functions093.htm#SQLRF56668
 		const qp = this.knex.raw('?', [node.jsonPath]).toQuery();
 		return this.knex.raw(`JSON_VALUE(??.??, ${qp})`, [collection, node.name]);
 	}
 }
 
 function getFilterType(operator: string): 'VARCHAR2' | 'NUMBER' | '' {
+	// oracle requires basic typing of results
 	switch (operator) {
 		case '_eq':
 		case '_neq':
