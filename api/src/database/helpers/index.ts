@@ -36,10 +36,13 @@ export type AnyJsonHelper =
 	| jsonHelpers.oracle12
 	| jsonHelpers.postgres12;
 
+let cachedHelper: DatabaseVersionedClient | null = null;
 export function getJsonHelper(database: Knex, schema: SchemaOverview, nodes: JsonFieldNode[] = []): AnyJsonHelper {
-	const client = getDatabaseClient(database);
-	const helper = getJsonHelperByVersion(client);
-	return new jsonHelpers[helper](database, schema, nodes);
+	if (!cachedHelper) {
+		const client = getDatabaseClient(database);
+		cachedHelper = getJsonHelperByVersion(client);
+	}
+	return new jsonHelpers[cachedHelper](database, schema, nodes);
 }
 
 export function getJsonHelperByVersion(client: DatabaseClient): DatabaseVersionedClient {
