@@ -121,10 +121,16 @@ export default class Postgres extends KnexPostgres implements SchemaInspector {
 		}
 
 		for (const { table_name, column_name } of primaryKeys) {
-			overview[table_name].primary = column_name;
+			if (table_name in overview) {
+				overview[table_name].primary = column_name;
+			} else {
+				// TODO: maybe display an error message to the user, so postgres permissions the directus user/role get's fixed
+			}
 		}
 		for (const { table_name, column_name, data_type } of geometryColumns) {
-			overview[table_name].columns[column_name].data_type = data_type;
+			if (table_name in overview) {
+				overview[table_name].columns[column_name].data_type = data_type;
+			}
 		}
 
 		return overview;
