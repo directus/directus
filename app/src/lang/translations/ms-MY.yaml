@@ -23,11 +23,13 @@ identifier: Identifier
 avatar: Avatar
 application: Aplikasi
 default_provider: Permintaan
+method: Kaedah
 published: Diterbitkan
 draft: Draf
 archived: Diarkibkan
 modules: Modul
 module_bar: Modul.bar
+logs: Log
 tile_size: Saiz jubin
 edit_field: Sunting halaman
 conditions: Syarat
