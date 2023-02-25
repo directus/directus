@@ -210,6 +210,7 @@ readonly: Nur legi
 unique: Unika
 primary_key: Ĉefa ŝlosilo
 foreign_key: Fremda ŝlosilo
+dismiss: Ignori
 raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
 raw_value: Kruda valoro
 copy_raw_value: Kopii la krudan valoron
@@ -289,6 +290,7 @@ months:
 url: URL
 import_label: Importi
 dimensions: Dimensioj
+size: Grando
 created: Kreita
 modified: Ŝanĝita
 checksum: Kontrolsumo
@@ -302,6 +304,9 @@ open_in_new_window: Malfermi en nova fenestro
 open_folder: Malfermi la dosierujon "{folder}"
 foreground_color: Malfona koloro
 background_color: Fona koloro
+upload_from_device: Alŝuti dosieron de la aparato
+choose_from_library: Alŝuti dosieron de biblioteko
+import_from_url: Importi dosieron per URL
 no_file_selected: Neniu dosiero elektita
 download_file: Elŝuti la dosieron
 open_file_in_tab: Malfermi la dosieron en nova langeto
@@ -358,6 +363,7 @@ charset: Signaro
 second: sekundo
 collection_created: Kolekto kreita
 modified_on: Ŝanĝita je
+card_size: Grando de la karto
 sort: Ordigi
 status: Stato
 remove: Forigi
