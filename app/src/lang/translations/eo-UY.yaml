@@ -87,6 +87,7 @@ suffix: Sufikso
 delete_bookmark: Forigi la legosignon
 delete_bookmark_copy: >-
   Ĉu vi certas, ke vi volas forigi la legosignon "{bookmark}"? La ago ne estas malfarebla.
+delete_personal_bookmark: Forigi la personan legosignon
 logoutReason:
   SIGN_OUT: Elsalutinta
   SESSION_EXPIRED: Seanco eksvalidiĝinta
@@ -136,6 +137,7 @@ field_m2a: Pluraj-al-ajnaj-rilato
 field_o2m: Unu-al-pluraj-rilato
 field_m2m: Pluraj-al-pluraj-rilato
 field_translations: Tradukoj
+field_group: Kampogrupo
 presentation_and_aliases: Prezento kaj kromnomoj
 top: Supra
 bottom: Malsupra
@@ -179,6 +181,7 @@ auto_generate: Aŭtomate generi
 click_here: Alklaku ĉi tie
 click_to_manage_translated_fields: >-
   Ankoraŭ ne estas tradukitaj kampoj. Alklaku ĉi tie por krei ilin. | Estas tradukita kampo. Alklaku ĉi tie por administri ĝin. | Estas {count} tradukitaj kampoj. Alklaku ĉi tie por administri ilin.
+fields_group: Kampogrupo
 no_collections_found: Neniu kolekto trovita.
 search_field: Serĉkampo...
 new_field: 'Nova kampo'
@@ -546,6 +549,8 @@ wysiwyg_options:
 choices: Elektoj
 deselect: Malelekti
 deselect_all: Malelekti ĉiujn
+other: Alia...
+adding_user: Aldoni uzanton
 unknown_user: Nekonata uzanto
 settings_data_model: Datummodelo
 settings_permissions: Roloj kaj permesoj
@@ -558,6 +563,7 @@ select: Elekti...
 layout: Aranĝo
 editing_preset: Redakti la antaŭagordon
 data: Datumoj
+unsaved_changes: Nekonservitaj ŝanĝoj
 discard_changes: Forĵeti la ŝanĝojn
 discard_all_changes: Forĵeti ĉiujn ŝanĝojn
 discard_changes_copy: Ĉu vi certas, ke vi volas forĵeti ĉiujn viajn ŝanĝojn?
@@ -582,6 +588,7 @@ fields:
     user: Ago de
     comment: Komento
     user_agent: Aplikaĵo de la uzanto
+    origin: Origino
     ip: IP-adreso
     revisions: Versioj
   directus_collections:
@@ -594,6 +601,7 @@ fields:
     unarchive_value: Malarĥivi la valoron
     archive_field: Arĥivi la kampon
   directus_files:
+    $thumbnail: Bildeto
     title: Titolo
     description: Priskribo
     tags: Etikedoj
@@ -673,6 +681,7 @@ fields:
   directus_roles:
     name: Nomo de la rolo
     description: Priskribo
+    ip_access: IP-adreso
     enforce_tfa: Postuli dufaktoran kontroladon
   directus_webhooks:
     name: Nomo
@@ -688,6 +697,10 @@ field_options:
     project_name_placeholder: Mia projekto...
     project_logo_note: Blanka 40x40 SVG/PNG
     security_divider_title: Sekureco
+    auth_password_policy:
+      none_text: Neniu – ne rekomendata
+      weak_text: Malforta – minimume 8 signoj
+      strong_text: Forta – majuskloj / minuskloj / ciferoj / specialaj signoj
     transforms_note: La Sharp-metodonomo kaj ĝiaj argumentoj. Vidu https://sharp.pixelplumbing.com/api-constructor por pliaj informoj.
     mapbox_placeholder: pk.eyJ1Ijo.....
     basemaps: Bazmapoj
@@ -719,6 +732,7 @@ field_options:
       name_name: Nomo
       name_placeholder: Entajpu titolon...
       link_name: Ligilo
+      link_placeholder: Relativa aŭ absoluta URL...
     collections_name: Kolektoj
     collections_addLabel: Aldoni kolekton...
   directus_users:
@@ -841,6 +855,7 @@ interfaces:
     show_all: Montri ĉiujn
   input-code:
     code: Kodo
+    line_number: Lininumero
   system-collection:
     collection: Kolekto
   system-collections:
@@ -902,12 +917,17 @@ interfaces:
     folder: Dosierujo
     description: Elekti dosierujon
   list:
+    repeater: Ripetilo
+    edit_fields: Redakti kampojn
     add_label: 'Etikedo por "Krei novan"'
     sort: Ordigi
     sort_placeholder: Mana
   tags:
     tags: Etikedoj
     description: Elekti aŭ aldoni etikedojn
+    capitalization: Uskleco
+    uppercase: Majuskligi
+    lowercase: Minuskligi
     add_tags: Aldoni etikedon kaj premi Enter...
   input:
     trim: Forigi spacetojn
@@ -930,6 +950,7 @@ interfaces:
     user: Uzanto
     modes:
       auto: Aŭtomata
+      dropdown: Falmenuo
   input-autocomplete-api:
     trigger: Ekagilo
   group-raw:
@@ -957,7 +978,15 @@ displays:
     color: Koloro
     default_color: Defaŭlta koloro
   datetime:
+    long: Longa
+    short: Mallonga
+    relative: Relativa
     suffix: Sufikso
+    strict: Strikta
+    strict_label: Uzi striktajn unuojn
+    down: Malsupren
+    nearest: Proksimen
+    up: Supren
   file:
     file: Dosiero
     description: Montri dosierojn
@@ -976,6 +1005,7 @@ displays:
     text: Teksto
   icon:
     icon: Emblemo
+    filled: Plenigita
   image:
     image: Bildo
     circle: Cirklo
@@ -989,6 +1019,8 @@ displays:
   mime-type:
     mime-type: Aŭdvida tipo
     description: Montri la aŭdvidan tipon de dosiero
+  rating:
+    simple: Simpla
   raw:
     raw: Kruda valoro
   user:
@@ -1048,6 +1080,9 @@ show_axis_labels: Montri la aksajn etikedojn
 function: Funkcio
 half_circle: Duona cirklo
 full_circle: Plena cirklo
+thin: Mallarĝa
+medium: Meza
+broad: Larĝa
 show_labels: Montri etikedojn
 right: Dekstra
 left: Maldekstra
@@ -1064,6 +1099,8 @@ panels:
     select_collection: Vi devas elekti kolekton.
   linechart:
     name: Linia diagramo
+    smooth: Glata
+    straight: Rekta
   variable:
     variable_key: Variabla ŝlosilo
   relational-variable:
