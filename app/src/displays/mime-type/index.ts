@@ -1,6 +1,7 @@
 import { defineDisplay } from '@directus/shared/utils';
 import { readableMimeType } from '@/utils/readable-mime-type';
 import mime from 'mime/lite';
+import { h } from 'vue';
 
 export default defineDisplay({
 	id: 'mime-type',
@@ -26,10 +27,10 @@ export default defineDisplay({
 	types: ['string'],
 	component: ({ value, showAsExtension }: { value: string; showAsExtension: boolean }) => {
 		if (showAsExtension) {
-			return mime.getExtension(value);
+			return h('span', mime.getExtension(value));
 		}
 
-		return readableMimeType(value);
+		return h('span', readableMimeType(value));
 	},
 	handler: (value, options) => {
 		if (options.showAsExtension) {

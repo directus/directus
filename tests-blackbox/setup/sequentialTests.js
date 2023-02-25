@@ -3,6 +3,7 @@ exports.list = {
 	before: [
 		{ testFilePath: '/common/seed-database.test.ts' },
 		{ testFilePath: '/common/common.test.ts' },
+		{ testFilePath: '/routes/schema/schema.test.ts' },
 		{ testFilePath: '/routes/collections/crud.test.ts' },
 		{ testFilePath: '/routes/fields/change-fields.test.ts' },
 	],

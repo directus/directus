@@ -29,6 +29,7 @@ export type DriverS3Config = {
 	serverSideEncryption?: string;
 	endpoint?: string;
 	region?: string;
+	forcePathStyle?: boolean;
 };
 
 export class DriverS3 implements Driver {
@@ -61,12 +62,14 @@ export class DriverS3 implements Driver {
 				protocol,
 				path: '/',
 			};
-
-			s3ClientConfig.forcePathStyle = true;
 		}
 
 		if (config.region) {
 			s3ClientConfig.region = config.region;
+		}
+
+		if (config.forcePathStyle !== undefined) {
+			s3ClientConfig.forcePathStyle = config.forcePathStyle;
 		}
 
 		this.client = new S3Client(s3ClientConfig);

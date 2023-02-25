@@ -1,24 +1,37 @@
 import logger from '../../../logger';
 import { GraphQLError, GraphQLFormattedError } from 'graphql';
 import { Accountability } from '@directus/shared/types';
+import { BaseException } from '@directus/shared/exceptions';
 
 const processError = (accountability: Accountability | null, error: Readonly<GraphQLError>): GraphQLFormattedError => {
 	logger.error(error);
 
-	if (accountability?.admin === true) {
+	const { originalError } = error;
+
+	if (originalError instanceof BaseException) {
 		return {
-			...error,
+			message: originalError.message,
 			extensions: {
-				code: 'INTERNAL_SERVER_ERROR',
+				code: originalError.code,
+				...originalError.extensions,
 			},
 		};
 	} else {
-		return {
-			message: 'An unexpected error occurred.',
-			extensions: {
-				code: 'INTERNAL_SERVER_ERROR',
-			},
-		};
+		if (accountability?.admin === true) {
+			return {
+				...error,
+				extensions: {
+					code: 'INTERNAL_SERVER_ERROR',
+				},
+			};
+		} else {
+			return {
+				message: 'An unexpected error occurred.',
+				extensions: {
+					code: 'INTERNAL_SERVER_ERROR',
+				},
+			};
+		}
 	}
 };
 

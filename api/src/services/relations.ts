@@ -171,6 +171,8 @@ export class RelationsService {
 		}
 
 		const runPostColumnChange = await this.helpers.schema.preColumnChange();
+		this.helpers.schema.preRelationChange(relation);
+
 		const nestedActionEvents: ActionEventParams[] = [];
 
 		try {
@@ -264,6 +266,8 @@ export class RelationsService {
 		}
 
 		const runPostColumnChange = await this.helpers.schema.preColumnChange();
+		this.helpers.schema.preRelationChange(relation);
+
 		const nestedActionEvents: ActionEventParams[] = [];
 
 		try {
