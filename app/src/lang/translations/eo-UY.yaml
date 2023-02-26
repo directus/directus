@@ -209,6 +209,7 @@ no_translations: Neniu traduko
 note: Noto
 enter_a_value: Entajpu valoron...
 length: Longo
+precision_scale: Precizeco kaj skalo
 readonly: Nur legi
 unique: Unika
 primary_key: Ĉefa ŝlosilo
@@ -316,6 +317,7 @@ open_file_in_tab: Malfermi la dosieron en nova langeto
 start_export: Komenci eksporti
 not_available_for_local_downloads: Ne disponebla por lokaj elŝutoj
 name: Nomo
+primary_key_field: Kampo de la ĉefa ŝlosilo
 type: Tipo
 creating_new_collection: Krei novan kolekton
 created_by: Kreita de
@@ -336,6 +338,7 @@ information: Informoj
 report_bug: Raporti cimon
 request_feature: Peti funkcion
 interface_not_found: 'Interfaco "{interface}" ne trovita.'
+list-m2a: Konstruilo (pluraj-al-ajnaj-rilato)
 item_count: 'Neniu ero | 1 ero | {count} eroj'
 file_count: 'Neniu dosiero | 1 dosiero | {count} dosieroj'
 user_count: 'Neniu uzanto | 1 uzanto | {count} uzantoj'
@@ -357,10 +360,14 @@ users: Uzantoj
 action: Ago
 ip_address: IP-adreso
 user_agent: Aplikaĵo de la uzanto
+origin: Origino
 webhooks: Rethokoj
 min_value: Minimuma valoro
 max_value: Maksimuma valoro
 automatic: Aŭtomata
+upper_limit: Supra limo...
+lower_limit: Malsupra limo...
+sidebar: Flankpanelo
 duration: Daŭro
 charset: Signaro
 second: sekundo
@@ -395,6 +402,10 @@ errors:
   INVALID_FOREIGN_KEY: Nevalida fremda ŝlosilo
   UNKNOWN: Neatendita eraro
   SERVICE_UNAVAILABLE: Servo ne disponebla
+  UNEXPECTED_RESPONSE: Neatendita respondo
+  TOKEN_EXPIRED: Ĵetono eksvalidiĝinta
+  RANGE_NOT_SATISFIABLE: Nevalida intervalo
+  METHOD_NOT_ALLOWED: Metodo ne permesita
 security: Sekureco
 create_bookmark: Krei legosignon
 edit_bookmark: Redakti la legosignon
@@ -420,6 +431,7 @@ visible_collections: Videblaj kolektoj
 hidden_collections: Kaŝitaj kolektoj
 show_hidden_collections: Montri kaŝitajn kolektojn
 hide_hidden_collections: Kaŝi kaŝitajn kolektojn
+system_collections: Sistemaj kolektoj
 placeholder: Lokokupilo
 count_other_revisions: '{count} aliaj versioj'
 font: Tiparo
@@ -524,6 +536,7 @@ interface_group_selection: Elekto
 interface_group_relational: Rilata
 interface_group_groups: Grupoj
 interface_group_other: Alia
+unlimited: Senlima
 new_tab: Nova langeto
 current_tab: Nuna langeto
 save_image: Konservi la bildon
@@ -546,6 +559,7 @@ wysiwyg_options:
   remove: Forigi
   selectall: Elekti ĉiujn
   table: Tabelo
+dropdown: Falmenuo
 choices: Elektoj
 deselect: Malelekti
 deselect_all: Malelekti ĉiujn
@@ -582,6 +596,7 @@ content: Enhavo
 system_fields_locked: Sistemaj valoroj estas ŝlositaj kaj ne povas esti redaktitaj
 fields:
   directus_activity:
+    item: Ĉefa ŝlosilo de la ero
     action: Ago
     collection: Kolekto
     timestamp: Ago je
@@ -758,7 +773,9 @@ do_nothing: Fari nenion
 generate_and_save_uuid: Generi kaj konservi UUID
 comment: Komento
 shares: Konigoj
+unlimited_usage: Senlima uzado
 new_share: Nova konigo
+expired: Eksvalidiĝinta
 share: Konigi
 share_item: Konigi la eron
 share_copy_link: Kopii la ligilon
@@ -777,6 +794,7 @@ delete_field_are_you_sure: >-
 description: Priskribo
 done: Preta
 duplicate: Duobligi
+limit: Limo
 email: Retpoŝtadreso
 embed: Enkorpigi
 field: Kampo | Kampoj
@@ -928,13 +946,17 @@ interfaces:
     capitalization: Uskleco
     uppercase: Majuskligi
     lowercase: Minuskligi
+    alphabetize_label: Devigi alfabetan ordon
     add_tags: Aldoni etikedon kaj premi Enter...
   input:
     trim: Forigi spacetojn
     trim_label: Forigi komencajn kaj finajn spacetojn
     mask: Kaŝita
+    mask_label: Kaŝi la veran valoron
     minimum_value: Minimuma valoro
     maximum_value: Maksimuma valoro
+    slug: URL-sekurigi
+    slug_label: Igi la entajpitan valoron URL-sekura
   input-translated-string:
     search_placeholder: Serĉi...
   boolean:
@@ -957,7 +979,11 @@ interfaces:
     name: Kruda grupo
   system-token:
     system-token: Ĵetono
+    generate: Generi ĵetonon
+    regenerate: Regeneri ĵetonon
     remove_token: Forigi la ĵetonon
+  system-raw-editor:
+    system-raw-editor: Kruda redaktilo
 displays:
   translations:
     translations: Tradukoj
@@ -984,6 +1010,7 @@ displays:
     suffix: Sufikso
     strict: Strikta
     strict_label: Uzi striktajn unuojn
+    round: Rondigi
     down: Malsupren
     nearest: Proksimen
     up: Supren
