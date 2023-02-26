@@ -16,7 +16,6 @@ export class RedisCache extends CacheService {
 
 		this.client = new Redis(this.getConfig());
 		this.client.on('error', (err) => logger.warn(err, `[cache] ${err}`));
-		this.client.connect();
 	}
 
 	private getConfig() {
