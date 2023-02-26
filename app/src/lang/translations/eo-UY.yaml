@@ -45,6 +45,7 @@ group: Grupo
 export_items: Eksporti erojn
 and: Kaj
 or: Aŭ
+dataset_too_large_currently_showing_n_items: La datumaro estas tro granda. Nur la unuaj {n} eroj estas nun montrataj.
 modifier: Ŝanĝilo
 custom: Propra
 hook: Hoko
@@ -57,6 +58,7 @@ indeterminate: Nedeterminita
 edit_collection: Redakti la kolekton
 exclusive: Ekskluziva
 children: Idoj
+db_only_click_to_configure: 'Nur datumbazo: alklaku por agordi'
 show_active_items: Montri aktivajn erojn
 show_archived_items: Montri arĥivitajn erojn
 show_all_items: Montri ĉiujn erojn
@@ -138,6 +140,7 @@ field_o2m: Unu-al-pluraj-rilato
 field_m2m: Pluraj-al-pluraj-rilato
 field_translations: Tradukoj
 field_group: Kampogrupo
+field_validation: Validigo de la kampo
 presentation_and_aliases: Prezento kaj kromnomoj
 top: Supra
 bottom: Malsupra
@@ -159,6 +162,7 @@ create_field: Krei kampon
 creating_new_field: 'Nova kampo ({collection})'
 field_in_collection: '{field} ({collection})'
 hidden_field: Kaŝita kampo
+disabled_editing_value: Malŝalti redaktadon de la valoro
 key: Ŝlosilo
 alias: Kromnomo
 boolean: Bulea valoro
@@ -168,6 +172,7 @@ json: JSON
 xml: XML
 yaml: YAML
 text: Teksto
+time: Tempo
 timestamp: Tempindiko
 uuid: UUID
 geometry: Geometrio (ĉiuj)
@@ -246,10 +251,13 @@ translations_collection: Kolekto de tradukoj
 languages_collection: Kolekto de lingvoj
 import_data_input_placeholder: CSV aŭ JSON...
 import_data_button: Komenci importi
+import_data_success: Datumoj sukcese importitaj de {filename}
 label_import: Importi
 label_export: Eksporti
 import_export: Importi / eksporti
 last_page: Lasta paĝo
+move_to_folder: Movi al dosierujo
+move: Move
 system: Sistemo
 interface_label: Interfaco
 today: Hodiaŭ
@@ -337,11 +345,15 @@ disabled: Malŝaltita
 information: Informoj
 report_bug: Raporti cimon
 request_feature: Peti funkcion
+request_body: Enhavo de la peto
 interface_not_found: 'Interfaco "{interface}" ne trovita.'
 list-m2a: Konstruilo (pluraj-al-ajnaj-rilato)
 item_count: 'Neniu ero | 1 ero | {count} eroj'
+no_items_copy: Ankoraŭ ne estas ero en la kolekto.
 file_count: 'Neniu dosiero | 1 dosiero | {count} dosieroj'
+no_files_copy: Ne estas dosiero ĉi tie.
 user_count: 'Neniu uzanto | 1 uzanto | {count} uzantoj'
+no_users_copy: Ankoraŭ ne estas uzanto en la rolo.
 webhooks_count: 'Neniu rethoko | 1 rethoko | {count} rethokoj'
 no_notifications: Neniu sciigo
 all_items: Ĉiuj eroj
@@ -352,6 +364,7 @@ create_collection: Krei kolekton
 select_a_collection: Elekti kolekton
 select_a_field: Elekti kampon
 active: Aktiva
+move_to: Movi al...
 copy: Kopii
 copy_to: Kopii al...
 no_other_dashboards_copy: Vi ankoraŭ ne havas alian stirpanelon.
@@ -365,12 +378,14 @@ webhooks: Rethokoj
 min_value: Minimuma valoro
 max_value: Maksimuma valoro
 automatic: Aŭtomata
+add_filter: Aldoni filtrilon
 upper_limit: Supra limo...
 lower_limit: Malsupra limo...
 sidebar: Flankpanelo
 duration: Daŭro
 charset: Signaro
 second: sekundo
+file_moved: Dosiero movita
 collection_created: Kolekto kreita
 modified_on: Ŝanĝita je
 card_size: Grando de la karto
@@ -384,6 +399,7 @@ enabled: Ŝaltita
 disable_tfa: Malŝalti dufaktoran kontroladon
 admin_disable_tfa_text: Ĉu vi certas, ke vi volas malŝalti dufaktoran kontroladon por la uzanto?
 tfa_setup: Agordi dufaktoran kontroladon
+enter_otp_to_disable_tfa: Entajpu la unufojan pasvorton por malŝalti dufaktoran kontroladon
 create_account: Krei konton
 account_created_successfully: Konto sukcese kreita
 errors:
@@ -391,6 +407,8 @@ errors:
   FIELD_NOT_FOUND: Kampo ne trovita
   FORBIDDEN: Malpermesita
   INVALID_CREDENTIALS: Malĝusta uzantnomo aŭ pasvorto
+  INVALID_OTP: Malĝusta unufoja pasvorto
+  INVALID_PAYLOAD: Nevalidaj enhavaj datumoj
   INVALID_TOKEN: Nevalida ĵetono
   INVALID_IP: IP-adreso ne permesita
   ITEM_NOT_FOUND: Ero ne trovita
@@ -413,7 +431,10 @@ bookmarks: Legosignoj
 presets: Antaŭagordoj
 unexpected_error: Neatendita eraro
 back: Reveni
+filter: Filtrilo
 edit_image: Redakti la bildon
+editing_image: Redakti la bildon
+free: Libera
 rotate: Turni
 all_users: Ĉiuj uzantoj
 delete_collection: Forigi la kolekton
@@ -431,8 +452,11 @@ visible_collections: Videblaj kolektoj
 hidden_collections: Kaŝitaj kolektoj
 show_hidden_collections: Montri kaŝitajn kolektojn
 hide_hidden_collections: Kaŝi kaŝitajn kolektojn
+unmanaged_collections: Neagorditaj kolektoj
 system_collections: Sistemaj kolektoj
 placeholder: Lokokupilo
+icon_left: Emblemo maldekstra
+icon_right: Emblemo dekstra
 count_other_revisions: '{count} aliaj versioj'
 font: Tiparo
 sans_serif: Senserifa
@@ -443,6 +467,8 @@ circle: Cirklo
 empty_item: Malplena ero
 log_in_with: 'Ensaluti per {provider}'
 advanced_settings: Altnivelaj agordoj
+advanced_filter: Altnivela filtrilo
+delete_advanced_filter: Forigi la filtrilon
 operators:
   eq: Egalas al
   neq: Ne egalas al
@@ -525,6 +551,7 @@ no_dashboards: Neniu stirpanelo
 no_dashboards_copy: Vi ankoraŭ ne havas stirpanelon.
 create_dashboard: Krei stirpanelon
 dashboard_name: Nomo de la stirpanelo
+payload: Enhavaj datumoj
 image_url: URL de la bildo
 alt_text: Alternativa teksto
 quality: Kvalito
@@ -559,8 +586,10 @@ wysiwyg_options:
   remove: Forigi
   selectall: Elekti ĉiujn
   table: Tabelo
+  directionality: Direkto
 dropdown: Falmenuo
 choices: Elektoj
+choices_option_configured_incorrectly: Elektoj malĝuste agorditaj
 deselect: Malelekti
 deselect_all: Malelekti ĉiujn
 other: Alia...
@@ -587,6 +616,8 @@ page_help_collections_overview: '**Superrigaro de kolektoj** — Listo de ĉiuj 
 page_help_insights_dashboard: '**Stirpanelo** — Laborspaco por administri unu aŭ pliajn panelojn'
 add_new: Aldoni novan
 create_new: Krei novan
+all: Ĉiuj
+none: Neniu
 batch_delete_confirm: >-
   Neniu ero estas elektita | Ĉu vi certas, ke vi volas forigi la eron? La ago ne estas malfarebla. | Ĉu vi certas, ke vi volas forigi {count} erojn? La ago ne estas malfarebla.
 cancel: Nuligi
@@ -594,6 +625,8 @@ collection: Kolekto
 collections: Kolektoj
 content: Enhavo
 system_fields_locked: Sistemaj valoroj estas ŝlositaj kaj ne povas esti redaktitaj
+directus_collection:
+  directus_flows: Aŭtomatigaj fluoj
 fields:
   directus_activity:
     item: Ĉefa ŝlosilo de la ero
@@ -645,6 +678,7 @@ fields:
     description: Priskribo
     tags: Etikedoj
     language: Lingvo
+    theme: Aspekto
     theme_auto: Aŭtomata (bazita je la sistemo)
     theme_light: Hela reĝimo
     theme_dark: Malhela reĝimo
@@ -690,11 +724,13 @@ fields:
     role: Rolo
     password: Pasvorto
   directus_fields:
+    icon: Emblemo de la kolekto
     note: Noto
     hidden: Kaŝita
     display_template: Ŝablono
   directus_roles:
     name: Nomo de la rolo
+    icon: Emblemo de la rolo
     description: Priskribo
     ip_access: IP-adreso
     enforce_tfa: Postuli dufaktoran kontroladon
@@ -704,6 +740,7 @@ fields:
     status: Stato
     data: Datumoj
     value: Valoro
+    data_label: Sendi eventodatumojn
     triggers: Ekagiloj
     actions: Agoj
     collections: Kolektoj
@@ -762,12 +799,14 @@ field_options:
   directus_webhooks:
     status_options_active: Aktiva
     status_options_inactive: Neaktiva
+    data_label: Sendi eventodatumojn
     triggers_divider: Ekagiloj
     actions_create: Krei
     actions_delete: Forigi
     actions_login: Ensaluti
     headers:
       value: Valoro
+no_fields_in_collection: 'Ankoraŭ ne estas kampo en "{collection}"'
 no_value: Neniu valoro
 do_nothing: Fari nenion
 generate_and_save_uuid: Generi kaj konservi UUID
@@ -820,6 +859,7 @@ colors:
   white: Blanka
 login: Ensaluti
 options: Opcioj
+otp: Unufoja pasvorto
 password: Pasvorto
 permissions: Permesoj
 relationship: Rilato
@@ -845,10 +885,13 @@ report_error: Raporti eraron
 start: Komenci
 table: Tabelo
 list: Listo
+search_filter: Serĉi kaj filtri
 remove_item: Forigi la eron
 delete_item: Forigi la eron
 interfaces:
   filter:
+    name: Filtrilo
+    add_filter: Aldoni filtrilon
     add_group: Kaj/aŭ-grupo
     add_value: Aldoni valoron
     logic_type_and: KAJ
@@ -903,6 +946,7 @@ interfaces:
     masked_label: Kaŝi la verajn valorojn
   select-icon:
     icon: Emblemo
+    search_for_icon: Serĉi emblemon...
   file-image:
     image: Bildo
     description: Elekti aŭ alŝuti bildon
@@ -973,6 +1017,8 @@ interfaces:
     modes:
       auto: Aŭtomata
       dropdown: Falmenuo
+  input-rich-text-html:
+    toolbar: Ilobreto
   input-autocomplete-api:
     trigger: Ekagilo
   group-raw:
@@ -1032,6 +1078,7 @@ displays:
     text: Teksto
   icon:
     icon: Emblemo
+    description: Montri emblemon
     filled: Plenigita
   image:
     image: Bildo
@@ -1135,7 +1182,12 @@ panels:
     multiple-label: Elekti plurajn erojn
 triggers:
   common:
+    response_body: Enhavo de la respondo
     response_body_all: Ĉiuj datumoj
+  event:
+    name: Eventohoko
+    action: 'Ago (neblokanta)'
+    filter: 'Filtrilo (blokanta)'
   webhook:
     name: Rethoko
     method: Metodo
@@ -1143,6 +1195,7 @@ triggers:
   operation:
     name: Alia fluo
   schedule:
+    name: Plani (CRON)
     cron: Intervalo
   manual:
     name: Mana
@@ -1152,6 +1205,7 @@ operations:
     name: Kondiĉo
   item-create:
     name: Krei datumojn
+    payload: Enhavaj datumoj
   item-delete:
     name: Forigi datumojn
     key: Identigiloj
@@ -1161,6 +1215,7 @@ operations:
     key: Identigiloj
   item-update:
     key: Identigiloj
+    payload: Enhavaj datumoj
   log:
     name: Protokoli al la konzolo
     message: Mesaĝo
@@ -1168,6 +1223,7 @@ operations:
     name: Sendi retpoŝtmesaĝon
     to: Al
     to_placeholder: Aldoni retpoŝtadresojn kaj premi Enter...
+    body: Enhavo
   notification:
     name: Sendi sciigon
     recipient: Uzanto
@@ -1182,6 +1238,8 @@ operations:
   sleep:
     name: Atendi
     milliseconds: Milisekundoj
+  transform:
+    name: Transformi la enhavajn datumojn
   trigger:
     flows: Fluoj
     flow: Fluo
