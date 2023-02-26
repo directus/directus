@@ -3,6 +3,7 @@ import IORedis from 'ioredis';
 import type { Redis } from 'ioredis';
 import env from './env';
 import { getConfigFromEnv } from './utils/get-config-from-env';
+import { merge } from 'lodash';
 
 export type MessengerSubscriptionCallback = (payload: Record<string, any>) => void;
 
@@ -38,11 +39,15 @@ export class MessengerRedis implements Messenger {
 	sub: Redis;
 
 	constructor() {
-		const config = getConfigFromEnv('MESSENGER_REDIS');
-
-		this.pub = new IORedis(env.MESSENGER_REDIS ?? config);
-		this.sub = new IORedis(env.MESSENGER_REDIS ?? config);
+		const config = this.getConfig();
+		this.pub = new IORedis(config);
+		this.sub = new IORedis(config);
 		this.namespace = env.MESSENGER_NAMESPACE ?? 'directus';
+	}
+
+	private getConfig() {
+		if ('MESSENGER_REDIS' in env) return env.MESSENGER_REDIS;
+		return merge({}, getConfigFromEnv('REDIS_'), getConfigFromEnv('MESSENGER_REDIS'));
 	}
 
 	publish(channel: string, payload: Record<string, any>) {
