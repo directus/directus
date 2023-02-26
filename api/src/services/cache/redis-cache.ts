@@ -20,7 +20,7 @@ export class RedisCache extends CacheService {
 	}
 
 	private getConfig() {
-		if ('CACHE_REDIS' in env) return { url: env.CACHE_REDIS };
+		if ('CACHE_REDIS' in env) return env.CACHE_REDIS;
 		return merge({}, getConfigFromEnv('REDIS_'), getConfigFromEnv('CACHE_REDIS_'));
 	}
 
