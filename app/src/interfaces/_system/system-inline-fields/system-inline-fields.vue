@@ -152,6 +152,18 @@ const repeaterFields = computed(() => {
 			schema: null,
 		},
 		{
+			name: t('required'),
+			field: 'meta.required',
+			type: 'boolean',
+			meta: {
+				interface: 'boolean',
+				options: {
+					label: t('requires_value'),
+				},
+				width: 'half',
+			},
+		},
+		{
 			name: t('options'),
 			field: 'meta.options',
 			type: 'string',

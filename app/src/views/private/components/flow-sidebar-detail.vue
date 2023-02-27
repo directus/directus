@@ -42,7 +42,7 @@
 					<v-button secondary @click="resetConfirm">
 						{{ t('cancel') }}
 					</v-button>
-					<v-button @click="runManualFlow(confirmRunFlow!)">
+					<v-button :disabled="isConfirmButtonDisabled" @click="runManualFlow(confirmRunFlow!)">
 						{{ confirmButtonCTA }}
 					</v-button>
 				</v-card-actions>
@@ -103,6 +103,17 @@ const runningFlows = ref<string[]>([]);
 
 const confirmRunFlow = ref<string | null>(null);
 const confirmValues = ref<Record<string, any> | null>();
+
+const isConfirmButtonDisabled = computed(() => {
+	if (!confirmRunFlow.value) return true;
+
+	for (const field of confirmDetails.value?.fields || []) {
+		if (field.meta?.required && (!confirmValues.value || confirmValues.value[field.field] === undefined)) {
+			return true;
+		}
+	}
+	return false;
+});
 
 const confirmButtonCTA = computed(() => {
 	if (unref(props.location) === 'item') return t('run_flow_on_current');
