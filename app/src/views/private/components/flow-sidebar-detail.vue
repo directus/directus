@@ -180,6 +180,8 @@ const runManualFlow = async (flowId: string) => {
 		notify({
 			title: t('run_flow_success', { flow: selectedFlow.name }),
 		});
+
+		resetConfirm();
 	} catch (err: any) {
 		unexpectedError(err);
 	} finally {
