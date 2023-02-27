@@ -69,6 +69,7 @@ const repeaterFields = computed(() => {
 			meta: {
 				interface: 'input',
 				width: 'half',
+				required: true,
 				options: {
 					dbSafe: true,
 					font: 'monospace',
