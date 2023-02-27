@@ -28,6 +28,7 @@ published: Publicado
 draft: Rascunho
 archived: Arquivado
 modules: Módulos
+module_bar: Barra de Módulo
 logs: Registo de Eventos
 reset_width: Redefinir Largura
 tile_size: Tamanho do ícone
@@ -50,6 +51,8 @@ and: E
 or: Ou
 init: Init
 dataset_too_large_currently_showing_n_items: O conjunto de dados é muito grande. A mostrar os primeiros {n} itens.
+custom: Personalizado
+hook: Gancho (hook)
 fill_width: Ocupar a largura
 field_name_translations: Nome do campo para as traduções
 enter_password_to_enable_tfa: Coloque a password para ativar a autenticação de 2 fatores
@@ -787,6 +790,7 @@ fields:
     public_background: Fundo Público
     public_note: Nota Pública
     custom_css: CSS Personalizado
+    module_bar: Barra de Módulo
   directus_shares:
     name: Nome
     role: Perfil
