@@ -44,10 +44,11 @@ cp -r ./directus-custom-extensions-release/collection-ext ${DIRECTUS_INTERFACES}
 cp -r ./directus-custom-extensions-release/filter-ext ${DIRECTUS_INTERFACES}
 cp -r ./directus-custom-extensions-release/loading-api-field ${DIRECTUS_INTERFACES}
 cp -r ./directus-custom-extensions-release/image-carousel ${DIRECTUS_INTERFACES}
+cp -r ./directus-custom-extensions-release/scheduler-field ${DIRECTUS_INTERFACES}
 cp -r ./directus-custom-extensions-release/contact-display ${DIRECTUS_DISPLAYS}
 cp -r ./directus-custom-extensions-release/toggle-field ${DIRECTUS_DISPLAYS}
 cp -r ./directus-custom-extensions-release/filtered-count ${DIRECTUS_DISPLAYS}
 cp -r ./directus-custom-extensions-release/m2o-link-display ${DIRECTUS_DISPLAYS}
 cp -r ./directus-custom-extensions-release/favorite-display ${DIRECTUS_DISPLAYS}
 cp -r ./directus-custom-extensions-release/atomic-counters/* ${DIRECTUS_ENDPOINTS}/atomic-counters
-
+cp -r ./directus-custom-extensions-release/b64-upload ${DIRECTUS_HOOKS}/
