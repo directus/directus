@@ -185,7 +185,7 @@ const runManualFlow = async (flowId: string) => {
 			selectedFlow.options?.requireSelection === false &&
 			selection.value.length === 0
 		) {
-			await api.post(`/flows/trigger/${flowId}`, { ...unref(confirmValues), collection: collection.value });
+			await api.post(`/flows/trigger/${flowId}`, { ...(unref(confirmValues) ?? {}), collection: collection.value });
 		} else {
 			const keys = primaryKey.value ? [primaryKey.value] : selection.value;
 			await api.post(`/flows/trigger/${flowId}`, { ...unref(confirmValues), collection: collection.value, keys });
