@@ -1897,6 +1897,8 @@ layouts:
     crop: Kırp
     advanced: Gelişmiş
     not_all_loaded: Yalnızca ilk 1000 öğe yüklenebilir.
+horizontal: Yatay
+both: İkisi de
 panels:
   metric:
     name: Metrik
@@ -1918,54 +1920,17 @@ panels:
   barchart:
     name: Grafik Çubuğu
     description: Değer gruplarını karşılaştırmak için çubuk veya sütun grafikler
-    select_field: Bir alan seçmelisiniz.
-    select_collection: Bir koleksiyon seçmelisiniz.
-    select_x_axis: Bir X Ekseni seçmelisiniz.
-    function: İşlev
     horizontal: Yatay
-    x_axis: X-Ekseni
-    y_axis_function: Y Ekseni Fonksiyonu
-    y_axis: Y-Ekseni
-    show_x_axis: X Eksenini Göster
-    show_y_axis: Y Eksenini Göster
-    show_data_label: Veri Etiketini Göster
-    group_by: Gruplandırılmış
-    group_and_function: Hem bir grubu hem de bir işlevi dahil etmeli veya atlamalısınız.
-    y_axis_NaN: Y ekseni bir sayı olmalıdır.
-    y_axis_conditional_two: bir sayı olmalıdır.
+    select_collection: Bir koleksiyon seçmelisiniz.
   linechart:
     name: Çizgi Grafik
-    select_field: Bir alan seçmelisiniz.
-    select_collection: Bir koleksiyon seçmelisiniz.
-    select_x_axis: Bir X Ekseni seçmelisiniz.
-    function: İşlev
-    x_axis: X-Ekseni
     disabled_no_grouping: Gruplandırma seçilmediğinde devre dışı bırakılır.
-    y_axis: Y-Ekseni
-    datasets: Veri Setleri
-    show_legend: Göstergeyi Göster
     show_marker: Araç İpucu İşaretçisini Göster
-    include_y_axis: Hiçbir grup belirtilmediğinde her veri kümesi için bir Y Ekseni eklemelisiniz.
-    group_and_function: Hem bir grubu hem de bir işlevi dahil etmeli veya atlamalısınız.
+    curve_type: Eğim Türü
     straight: Düz
   meter:
     name: Metre
     description: İzleme değerleri için sayaç
-    select_max_value: Bir maksimum değer seçmelisiniz.
-    max_greater_than_zero: Maksimum değer 0'dan büyük olmalıdır.
-    select_field: Bir alan seçmelisiniz.
-    select_collection: Bir koleksiyon seçmelisiniz.
-    function: İşlev
-    thin: İnce
-    medium: Orta
-    broad: Kalın
-  piechart:
-    function: İşlev
-    show_legend: Göstergeyi Göster
-    right: Sağ
-    bottom: Alt
-    monochrome: Tek Renkli
-    monochrome_color: Tek Renk
   variable:
     name: Global Değişken
     description: Diğer Panellerin filtrelerinde kullanım için global bir değer belirleyin
