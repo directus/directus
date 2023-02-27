@@ -317,7 +317,7 @@ class ExtensionManager {
 	}
 
 	private async getExtensions(): Promise<Extension[]> {
-		const packageExtensions = await getPackageExtensions('.');
+		const packageExtensions = await getPackageExtensions(env.PACKAGE_FILE_LOCATION);
 		const localPackageExtensions = await resolvePackageExtensions(env.EXTENSIONS_PATH);
 		const localExtensions = await getLocalExtensions(env.EXTENSIONS_PATH);
 

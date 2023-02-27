@@ -140,6 +140,7 @@ const allowedEnvironmentVars = [
 	'AUTH_.+_IDP.+',
 	'AUTH_.+_SP.+',
 	// extensions
+	'PACKAGE_FILE_LOCATION',
 	'EXTENSIONS_PATH',
 	'EXTENSIONS_AUTO_RELOAD',
 	'EXTENSIONS_CACHE_TTL',
@@ -238,6 +239,7 @@ const defaults: Record<string, any> = {
 	AUTH_PROVIDERS: '',
 	AUTH_DISABLE_DEFAULT: false,
 
+	PACKAGE_FILE_LOCATION: '.',
 	EXTENSIONS_PATH: './extensions',
 	EXTENSIONS_AUTO_RELOAD: false,
 
