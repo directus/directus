@@ -103,7 +103,7 @@ export class FilesService extends ItemsService {
 
 		await sudoService.updateOne(primaryKey, payload, { emitEvents: false });
 
-		if (this.cache && env.CACHE_AUTO_PURGE) {
+		if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
 			await this.cache.clear();
 		}
 
@@ -187,10 +187,20 @@ export class FilesService extends ItemsService {
 						}
 					}
 					if (sharpMetadata.iptc) {
-						fullMetadata.iptc = parseIptc(sharpMetadata.iptc);
+						try {
+							fullMetadata.iptc = parseIptc(sharpMetadata.iptc);
+						} catch (err) {
+							logger.warn(`Couldn't extract IPTC Photo Metadata from file`);
+							logger.warn(err);
+						}
 					}
 					if (sharpMetadata.xmp) {
-						fullMetadata.xmp = parseXmp(sharpMetadata.xmp);
+						try {
+							fullMetadata.xmp = parseXmp(sharpMetadata.xmp);
+						} catch (err) {
+							logger.warn(`Couldn't extract XMP data from file`);
+							logger.warn(err);
+						}
 					}
 
 					if (fullMetadata?.iptc?.Caption && typeof fullMetadata.iptc.Caption === 'string') {
