@@ -1547,6 +1547,7 @@ layouts:
     end_date_field: حقل تاريخ الإنتهاء
   kanban:
     advanced: متقدم
+both: كل منهما
 panels:
   label:
     name: تسمية
