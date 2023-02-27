@@ -85,6 +85,8 @@ no_translation_string_copy: Ainda não existem traduções.
 translation_string_key_placeholder: Chave da tradução...
 translation_string_translations_placeholder: Adicionar nova tradução
 edit_translation_string: Editar String de Tradução
+delete_translation_string_copy: >-
+  Tem a certeza que pretende eliminar o texto de tradução "{key}"? Esta ação não pode ser revertida.
 invite_users: Convidar utlizadores
 invite: Convidar
 email_already_invited: Este e-mail já foi convidado
