@@ -573,6 +573,8 @@ select_an_item: Seleccione un ítem...
 edit: Editar
 enabled: Habilitado
 disable_tfa: Deshabilitar 2FA
+admin_disable_tfa_text: '¿Está seguro que desea desactivar 2FA para este usuario?'
+tfa_setup: Configurar 2FA
 tfa_scan_code: Escanee el código en el autenticador de su aplicación para finalizar la configuración del 2FA
 enter_otp_to_disable_tfa: Ingrese OTP para deshabilitar 2FA
 create_account: Crear cuenta
@@ -787,6 +789,7 @@ select_a_flow: Selecciona un flujo
 run_flow_on_current_collection: Ejecutar flujo en la Colección Actual
 run_flow_on_current: Ejecutar flujo en el elemento actual
 run_flow_on_current_edited_confirm: Este elemento podría haber sido actualizado por este flujo, ¿estás seguro que quieres ejecutarlo?
+run_flow_on_selected: Seleccionar uno o más artículos primero | Ejecutar flujo en 1 elemento seleccionado | Ejecutar flujo en {n} artículos seleccionados
 run_flow_success: Flujo "{flow}" se ha ejecutado correctamente
 trigger: Disparador
 trigger_options: Opciones de activación
@@ -830,6 +833,7 @@ panel_header: Encabezado del Panel
 panel_name_placeholder: Nombre este panel...
 panel_note_placeholder: Detalles opcionales sobre este panel...
 panel_delete_confirm: '¿Está seguro de que desea eliminar este panel? Esta acción no se puede deshacer.'
+list_panel_allow_edit: Permitir edición en línea
 dashboard_delete_confirm: '¿Está seguro de que desea eliminar este panel? Esta acción no se puede deshacer.'
 edit_dashboard: Editar panel de control
 delete_dashboard: Eliminar el panel
@@ -1907,9 +1911,13 @@ layouts:
     default_template: Usando la colección por defecto...
     no_compatible_fields: No hay campos compatibles
   kanban:
+    name: Kanban
+    group_field: Agrupar por
     crop: Recortar
     advanced: Avanzado
     not_all_loaded: Sólo se pudieron cargar los primeros 1000 elementos.
+horizontal: Horizontal
+both: Ambos
 panels:
   metric:
     name: Métrico
@@ -1931,62 +1939,21 @@ panels:
   barchart:
     name: Gráfico de Barras
     description: Gráficos de barra o columna para comparar grupos de valores
-    select_field: Debe seleccionar un campo.
-    select_collection: Debe seleccionar una colección.
-    select_x_axis: Debe seleccionar un eje X.
-    function: Función
     horizontal: Horizontal
-    x_axis_grouping: Agregación de Grupo del Eje X
-    x_axis: Eje X
-    y_axis_function: Función del Eje Y
-    y_axis: Eje Y
-    show_x_axis: Mostrar Eje X
-    show_y_axis: Mostrar Eje Y
-    show_data_label: Mostrar Etiqueta de Datos
-    group_by: Agrupado Por
-    group_and_function: Un grupo y una función deben ser ambos incluídos u omitidos.
-    y_axis_NaN: El eje Y debe ser un número.
-    y_axis_conditional_one: Valor para la condición
-    y_axis_conditional_two: debe ser un número.
+    select_collection: Debe seleccionar una colección.
   linechart:
     name: Gráficos de línea
-    select_field: Debe seleccionar un campo.
-    select_collection: Debe seleccionar una colección.
-    select_x_axis: Debe seleccionar un eje X.
-    function: Función
-    x_axis: Eje X
-    x_axis_decimals: Decimales del eje X
     disabled_no_grouping: Deshabilitado cuando no se selecciona ninguna agrupación.
-    y_axis: Eje Y
-    datasets: Conjunto de datos
-    show_legend: Mostrar leyenda
     show_marker: Mostrar marcador de información sobre herramientas
-    include_y_axis: Debe incluir un eje Y para cada conjunto de datos cuando no se especifique ningún grupo.
-    group_and_function: Un grupo y una función deben ser ambos incluídos u omitidos.
+    curve_type: Tipo de curva
     smooth: Suave
     straight: Recto
     step_line: Línea de paso
   meter:
     name: Medidor
     description: Medidor para los valores de seguimiento
-    stroke_width: Ancho del trazo
-    select_max_value: Debe seleccionar un valor máximo.
-    max_greater_than_zero: El máximo debe ser mayor que 0.
-    select_field: Debe seleccionar un campo.
-    select_collection: Debe seleccionar una colección.
-    function: Función
-    thin: Ligero
-    medium: Medio
-    broad: Amplio
   piechart:
     name: Gráfico de Pie o Donut
-    function: Función
-    donut: Donut
-    show_legend: Mostrar leyenda
-    right: Derecha
-    bottom: Fondo
-    monochrome: Monocromo
-    monochrome_color: Color monocromático
   variable:
     name: Variable global
     description: Establecer un valor global para el uso en los filtros de otros Paneles
