@@ -108,7 +108,12 @@ const isConfirmButtonDisabled = computed(() => {
 	if (!confirmRunFlow.value) return true;
 
 	for (const field of confirmDetails.value?.fields || []) {
-		if (field.meta?.required && (!confirmValues.value || confirmValues.value[field.field] === undefined)) {
+		if (
+			field.meta?.required &&
+			(!confirmValues.value ||
+				confirmValues.value[field.field] === null ||
+				confirmValues.value[field.field] === undefined)
+		) {
 			return true;
 		}
 	}
