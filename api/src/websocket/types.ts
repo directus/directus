@@ -15,7 +15,6 @@ export type Subscription = {
 	uid?: string;
 	query?: Query;
 	item?: string | number;
-	// events?: string | string[];
 	status?: boolean;
 	collection: string;
 	client: WebSocketClient;
