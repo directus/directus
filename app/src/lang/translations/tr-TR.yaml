@@ -53,6 +53,7 @@ init: Başlangıç
 dataset_too_large_currently_showing_n_items: Veri kümesi çok büyük. Şu anda ilk {n} öğe gösteriliyor.
 modifier: Düzenleyici
 custom: Özel
+hook: Kanca
 fill_width: Genişliği Doldur
 field_name_translations: Alan Adı Çevirileri
 enter_password_to_enable_tfa: İki Faktörlü Kimlik Doğrulamayı etkinleştirmek için parolanızı girin
@@ -244,6 +245,7 @@ float: Ondalıklı Sayı
 integer: Tamsayı
 json: JSON
 xml: XML
+yaml: YAML
 string: Yazı
 text: Metin
 time: Zaman
@@ -572,6 +574,7 @@ select_an_item: Bir Öğe Seçin...
 edit: Düzenle
 enabled: Etkin
 disable_tfa: 2FA'yı Devre Dışı Bırak
+admin_disable_tfa_text: Yönetici tarafından 2FA devre dışı bırak?
 tfa_setup: 2 Adımlı doğrulamayı kur
 tfa_scan_code: 2 Adımlı doğrulama için doğrulayıcı uygulamanızdan kodu taratın
 enter_otp_to_disable_tfa: 2FA'yı devre dışı bırakmak için OTP girin
@@ -787,6 +790,7 @@ select_a_flow: Bir Akış Seç
 run_flow_on_current_collection: Akış şemasını geçerli modelde çalıştır
 run_flow_on_current: Geçerli Öğede akışı çalıştır
 run_flow_on_current_edited_confirm: Bu öğe bu akış tarafından güncellenebilir, yürütmek istediğinizden emin misiniz?
+run_flow_on_selected: Önce Bir Nesneden Seçin | Seçili Nesnede Otomasyon Gerçekleştirin | Seçili {n} Nesnede Otomasyon Gerçekleştirin
 run_flow_success: Akış "{flow}" çalıştırma başarılı
 trigger: Tetikleme
 trigger_options: Tetikleyici Seçenekleri
@@ -799,6 +803,7 @@ set_flow_active: Akışı Etkin Olarak Ayarla
 set_flow_inactive: Akışı Etkin Değil Olarak Ayarla
 edit_flow: Akışı Düzenle
 delete_flow: Akışı Sil
+no_other_flows_copy: Henüz bir akışınız yok.
 no_flows: Akış yok
 no_flows_copy: Henüz Akışınız yok.
 create_flow: Akış Oluştur
@@ -829,6 +834,7 @@ panel_header: Panel Başlığı
 panel_name_placeholder: Panele bir ad verin...
 panel_note_placeholder: Bu panel hakkında opsiyonel detaylar...
 panel_delete_confirm: Bu paneli silmek istediğinize emin misiniz? Bu işlem geri alınamaz.
+list_panel_allow_edit: İç içe düzenlemeye izin ver
 dashboard_delete_confirm: Bu panoyu silmek istediğinize emin misiniz? Bu işlem geri alınamaz.
 edit_dashboard: Panoyu Düzenle
 delete_dashboard: Panoyu Sil
@@ -995,6 +1001,7 @@ page_help_settings_webhooks_collection: '**Webhooklara Göz At** — Projedeki t
 page_help_settings_webhooks_item: '**Webhook Detayı** — Projede webhook oluşturmak ve yönetmek için bir form/sayfa.'
 page_help_settings_flows_collection: '**Akışlara Gözat** — Proje içindeki tüm Akışları listeler.'
 page_help_settings_flows_item: '**Akış Ayrıntısı** — Bir veya daha fazla işlemi yönetmek için çalışma alanı.'
+page_help_settings_translation_strings_collection: '**Dize Çevirilerini Görüntüle** — Projedeki tüm çeviri dizelerini gösterir.'
 page_help_users_collection: '**Kullanıcı Dizini** — Projedeki tüm sistem kullanıcılarını listeler.'
 page_help_users_item: >-
   **Kullanıcı Detayı** — Hesap bilgilerini düzenle ya da diğer kullanıcıların detaylarını gör.
@@ -1153,12 +1160,14 @@ fields:
     storage_default_folder: Varsayılan Klasör
     storage_asset_presets: Transformasyon Ön Ayarları
     storage_asset_transform: İzin Verilen Transformasyonlar
+    overrides: Geçersiz Kılınmış Uygulama Yolları
     custom_css: Özel CSS
     module_bar: Kenar Çubuğu
     transformations_all: Tüm transformasyonlara izin ver
     transformations_none: Transformasyonları devre dışı bırak
     transformations_presets: Transformasyonları aşağıdaki ön ayarlar ile sınırla
     image_editor: Resim Düzenleyici
+    custom_aspect_ratios: Özel ilişkiler
   directus_shares:
     name: Ad
     role: Rol
@@ -1226,6 +1235,7 @@ field_options:
     basemaps_tile: Raster TileJSON
     basemaps_style: Mapbox Stili
     files_divider_title: Dosya ve Küçük Resimler
+    overrides_divider_title: Uygulamada yönlendirme
   directus_activity:
     login: Oturum Açma
     create: Oluşturma
@@ -1417,6 +1427,7 @@ export_started_copy: Dışa aktarma başladı. İndirilmeye hazır olduğunda bi
 sort_asc: Artan Şekilde Sırala
 sort_desc: Azalan Şekilde Sırala
 template: Şablon
+require_value_to_be_set: Oluşturmada değer gerektir
 translation: Çeviri
 translation_placeholder: Bir çeviri girin...
 value: Değer
@@ -1538,6 +1549,7 @@ interfaces:
     allow_none_label: Seçim Yapılmamasına İzin Ver
     choices_name_placeholder: Bir isim girin...
     choices_value_placeholder: Bir değer girin...
+    preview_threshold: Önizleme Eşiği
   select-multiple-dropdown:
     select-multiple-dropdown: Açılır Liste (Çoklu)
     description: Açılır Listeden birden fazla değer seç
@@ -1571,6 +1583,7 @@ interfaces:
   list-m2m:
     many-to-many: Çoktan Çoka
     description: Birden fazla ilişkili kesişim öğesi seçin
+    columns_configure_notice: Bu alanı oluşturduktan sonra sütunları yapılandırabilirsiniz.
     display_template_configure_notice: Görüntüleme şablonunu bu alanı oluşturduktan sonra yapılandırabilirsin.
   select-dropdown-m2o:
     many-to-one: Çoktan Bire
@@ -1632,6 +1645,7 @@ interfaces:
     sort_placeholder: Elle
     field_name_placeholder: Alan adı girin...
     field_note_placeholder: Alan notu girin...
+    incompatible_data: Mevcut veriler tekrarlayıcı ile uyumlu değildir ve tekrarlayıcıya veri eklenirken üzerine yazılacaktır
   slider:
     slider: Kaydırgaç
     description: Kaydırgaçı kullanarak bir sayı seçin
@@ -1730,12 +1744,15 @@ interfaces:
   system-token:
     system-token: Erişim Anahtarı (Token)
     description: Kalıcı erişim anahtarlarını (token) yönet
+    placeholder: Yeni bir statik erişim belirteci oluşturmak için "Belirteç Oluştur"a tıklayın
     value_securely_saved: Değer Güvenli Bir Şekilde Kaydedildi
     generate: Erişim Anahtarı Üret
     regenerate: Yeniden Erişim Anahtarı Üret
+    generate_success_copy: Yukarıdaki belirteci yedeklediğinizden ve kopyaladığınızdan emin olun. Güvenlik nedeniyle, bu sayfayı kaydedip çıktıktan sonra jetonu tekrar göremeyeceksiniz.
     remove_token: Belirteci kaldır
   system-raw-editor:
     system-raw-editor: Ham Düzenleyici
+    description: Ham veya bıyık şablon değerlerinin girilmesine izin ver
 displays:
   translations:
     translations: Çeviriler
@@ -1779,6 +1796,7 @@ displays:
     strict: Katı
     strict_label: Katı birimler kullanın
     strict_note: '''Neredeyse'', ''bitti'', ''daha az'' gibi kelimeleri kaldırır'
+    round: Yuvarlak
     round_note: Kullanılacak bir yuvarlama işlevi seçin
     down: Aşağı
     nearest: En yakın
@@ -1894,11 +1912,45 @@ layouts:
     default_template: Koleksiyon Varsayılanı Kullanılıyor...
     no_compatible_fields: Hiç uyumlu alan yok
   kanban:
+    name: Tabela
+    group_field: Gruplama
+    group_field_placeholder: Alan gruplanıyor...
+    group_title: Grubun adı
+    group_title_placeholder: Alanlar gruplanıyor...
+    title: Kart başlığı
+    title_placeholder: İsteğe bağlı başlık alanı...
+    text: Harita metni
+    text_placeholder: İsteğe bağlı metin alanı...
+    date: Kaartdatum
+    date_placeholder: İsteğe bağlı tarih alanı...
+    tags: Kart Etiketleri
+    tags_placeholder: İsteğe bağlı etiket alanı...
+    user: Döşeme kullanıcıları
+    user_placeholder: İsteğe bağlı kullanıcı alanı...
+    image: Kiremit resmi
+    image_placeholder: İsteğe bağlı resim alanı...
+    image_fit: Kart resmi
     crop: Kırp
     advanced: Gelişmiş
+    edit_group: Grubu düzenle
+    delete_group: Grubu sil
+    add_group: Grup Ekle
+    add_group_placeholder: Yeni grubun adını girin...
+    show_ungrouped: Gruplanmamış göster
+    show: Göstermek
+    no_group: Grup yok
     not_all_loaded: Yalnızca ilk 1000 öğe yüklenebilir.
 horizontal: Yatay
+vertical: Dikey
+x_axis: X Ekseni
+y_axis: Y Ekseni
+y_axis_function: Y ekseni işlevi
+show_x_only: Yalnızca X eksenini göster
+show_y_only: Yalnızca Y eksenini göster
+show_data_label: Veri etiketini göster
 both: İkisi de
+half_circle: Yarım Daire
+stroke_width: Fırça Genişliği
 panels:
   metric:
     name: Metrik
