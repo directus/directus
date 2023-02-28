@@ -71,8 +71,8 @@ export const useRelationsStore = defineStore({
 			if (relations.length > 0) {
 				const isM2M = relations[0].meta?.junction_field !== null;
 
-				// If the relation matching the field has a junction field, it's a m2m. In that case,
-				// we also want to return the secondary relationship (from the jt to the related)
+				// If the relation matching the field has a junction field, it's a m2m (OR M2A). In that case,
+				// we also want to return the secondary relationship (from the jt to the related(s))
 				// so any ui elements (interfaces) can utilize the full relationship
 				if (isM2M) {
 					const secondaryRelation = this.relations.find((relation) => {

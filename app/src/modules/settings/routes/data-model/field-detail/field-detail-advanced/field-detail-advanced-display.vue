@@ -30,6 +30,7 @@ import { useFieldDetailStore, syncFieldDetailStoreProperty } from '../store';
 import { storeToRefs } from 'pinia';
 import ExtensionOptions from '../shared/extension-options.vue';
 import { useExtension } from '@/composables/use-extension';
+import { FancySelectItem } from '@/components/v-fancy-select.vue';
 
 export default defineComponent({
 	components: { ExtensionOptions },

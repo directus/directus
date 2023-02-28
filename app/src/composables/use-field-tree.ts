@@ -27,7 +27,8 @@ export type FieldTreeContext = {
 export function useFieldTree(
 	collection: Ref<string | null>,
 	inject?: Ref<{ fields: Field[]; relations: Relation[] } | null>,
-	filter: (field: Field, parent?: FieldNode) => boolean = () => true
+	filter: (field: Field, parent?: FieldNode) => boolean = () => true,
+	m2aCollectionScope: string | null = null
 ): FieldTreeContext {
 	const fieldsStore = useFieldsStore();
 	const relationsStore = useRelationsStore();
@@ -51,7 +52,7 @@ export function useFieldTree(
 	}
 
 	function getTree(collection?: string | null, parent?: FieldNode) {
-		const injectedFields = inject?.value?.fields.filter((field) => field.collection === collection);
+		const injectedFields = inject?.value?.fields?.filter((field) => field.collection === collection);
 
 		const allFields = fieldsStore
 			.getFieldsForCollectionSorted(collection!)
@@ -120,6 +121,19 @@ export function useFieldTree(
 			};
 		}
 
+		if (m2aCollectionScope) {
+			const scopedCollection = relatedCollections.find((collection) => collection === m2aCollectionScope);
+
+			return {
+				name: `${field.name} (${scopedCollection})`,
+				field: `${field.field}:${scopedCollection}`,
+				collection: field.collection,
+				relatedCollection: scopedCollection,
+				key: keyContext + `${field.field}:${scopedCollection}`,
+				path: pathContext + `${field.field}:${scopedCollection}`,
+				type: field.type,
+			};
+		}
 		return relatedCollections.map((collection) => {
 			return {
 				name: `${field.name} (${collection})`,

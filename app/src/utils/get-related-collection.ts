@@ -3,9 +3,10 @@ import { Relation } from '@directus/shared/types';
 import { getLocalTypeForField } from './get-local-type';
 
 export interface RelatedCollectionData {
-	relatedCollection: string;
+	relatedCollection: string | string[];
 	junctionCollection?: string;
-	path?: string[];
+	path?: string;
+	collectionField?: string;
 }
 
 /**
@@ -23,21 +24,38 @@ export function getRelatedCollection(collection: string, field: string): Related
 
 	if (relations.length === 0) return null;
 
-	const localType = getLocalTypeForField(collection, field);
+	// const localType = getLocalTypeForField(collection, field);
 
-	const o2mTypes = ['o2m', 'm2m', 'm2a', 'translations', 'files'];
-
-	if (localType && o2mTypes.includes(localType)) {
-		if (localType == 'm2m' && relations.length > 1) {
-			return {
-				relatedCollection: relations[1].related_collection!,
-				junctionCollection: relations[0].collection,
-				path: [relations[1].field],
-			};
+	/* If only one relation is returned, it must be an o2m or m2o
+	 * so no junction table and we just
+	 * return whichever collection isn't the current one
+	 */
+	if (relations.length === 1) {
+		return {
+			relatedCollection:
+				relations[0].collection === collection ? relations[0].related_collection! : relations[0].collection,
+		};
+		/* Else it must be a junction collection, either m2m or m2a
+		 * (translations is also an m2m)
+		 */
+	} else if (relations.length === 2) {
+		const secondaryRelation = relations.find((relation) => relation.meta?.one_collection !== collection);
+		if (
+			!secondaryRelation ||
+			relations[0].collection !== relations[1].collection ||
+			(secondaryRelation.meta?.one_collection == null && secondaryRelation.meta?.one_allowed_collections == null)
+		) {
+			return null;
 		}
-
-		return { relatedCollection: relations[0].collection };
+		const result: RelatedCollectionData = {
+			relatedCollection: secondaryRelation.meta?.one_collection ?? secondaryRelation.meta.one_allowed_collections!,
+			junctionCollection: relations[0].collection,
+			path: secondaryRelation.field,
+		};
+		if (secondaryRelation.meta.one_collection_field) {
+			result.collectionField = secondaryRelation.meta.one_collection_field;
+		}
+		return result;
 	}
-
-	return { relatedCollection: relations[0].related_collection! };
+	return null;
 }

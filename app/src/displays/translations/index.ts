@@ -17,36 +17,29 @@ export default defineDisplay({
 	handler: (values, options, { collection, field }) => {
 		if (!field || !collection || !Array.isArray(values)) return values;
 
-		const relatedCollection = getRelatedCollection(collection, field.field);
+		const relatedCollectionInfo = getRelatedCollection(collection, field.field);
 
 		const fieldsStore = useFieldsStore();
 		const relationsStore = useRelationsStore();
 
-		const relations = relationsStore.getRelationsForField(collection, field.field);
+		if (!relatedCollectionInfo) return values;
 
-		const junction = relations.find(
-			(relation) => relation.related_collection === collection && relation.meta?.one_field === field.field
-		);
+		const primaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(relatedCollectionInfo.junctionCollection!);
 
-		if (!junction) return values;
+		if (
+			!primaryKeyField ||
+			!relatedCollectionInfo?.relatedCollection ||
+			Array.isArray(relatedCollectionInfo.relatedCollection)
+		)
+			return values;
 
-		const relation = relations.find(
-			(relation) => relation.collection === junction.collection && relation.field === junction.meta?.junction_field
-		);
-
-		if (!relatedCollection) return values;
-
-		const primaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(relatedCollection.relatedCollection);
-
-		if (!primaryKeyField || !relation?.related_collection) return values;
-
-		const relatedPrimaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(relation.related_collection);
+		const relatedPrimaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(relatedCollectionInfo.relatedCollection);
 
 		if (!relatedPrimaryKeyField) return values;
 
 		const value =
 			values.find((translatedItem: Record<string, any>) => {
-				const lang = translatedItem[relation!.field][relatedPrimaryKeyField.field];
+				const lang = translatedItem[relatedCollectionInfo.path!][relatedPrimaryKeyField.field];
 
 				// Default to first item if lang can't be found
 				if (!lang) return true;
@@ -63,7 +56,7 @@ export default defineDisplay({
 		const fields = fieldKeys.map((fieldKey) => {
 			return {
 				key: fieldKey,
-				field: fieldsStore.getField(relatedCollection.relatedCollection, fieldKey),
+				field: fieldsStore.getField(relatedCollectionInfo.relatedCollection as string, fieldKey),
 			};
 		});
 

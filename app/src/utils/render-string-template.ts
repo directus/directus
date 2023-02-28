@@ -7,6 +7,7 @@ import { computed, ComputedRef, Ref, ref, unref } from 'vue';
 import { set } from 'lodash';
 import { useExtension } from '@/composables/use-extension';
 
+//TODO: test for m2a fields
 type StringTemplate = {
 	fieldsInTemplate: ComputedRef<string[]>;
 	displayValue: ComputedRef<string | false>;

@@ -80,7 +80,7 @@ export const useFieldDetailStore = defineStore({
 		items: {} as Record<string, Record<string, any>[]>,
 
 		// Various flags that alter the operations of watchers and getters
-		localType: 'standard' as (typeof LOCAL_TYPES)[number],
+		localType: 'standard' as typeof LOCAL_TYPES[number],
 		autoGenerateJunctionRelation: true,
 		saving: false,
 	}),
@@ -108,7 +108,7 @@ export const useFieldDetailStore = defineStore({
 				) as DeepPartial<Relation> | undefined;
 
 				if (['files', 'm2m', 'translations', 'm2a'].includes(this.localType)) {
-					// These types rely on directus_relations fields being said, so meta should exist for these particular relations
+					// These types rely on directus_relations fields being set, so meta should exist for these particular relations
 					this.relations.m2o = relations.find((relation) => relation.meta?.id !== this.relations.o2m?.meta?.id) as
 						| DeepPartial<Relation>
 						| undefined;
@@ -161,7 +161,7 @@ export const useFieldDetailStore = defineStore({
 				alterations.global.setSpecialForLocalType(updates);
 			}
 
-			const localType = getCurrent('localType') as (typeof LOCAL_TYPES)[number] | undefined;
+			const localType = getCurrent('localType') as typeof LOCAL_TYPES[number] | undefined;
 			if (localType) {
 				alterations[localType].applyChanges(updates, this, helperFn);
 			}

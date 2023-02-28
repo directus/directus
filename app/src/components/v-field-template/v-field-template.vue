@@ -33,7 +33,7 @@ import { toRefs, ref, watch, onMounted, onUnmounted, computed } from 'vue';
 import FieldListItem from './field-list-item.vue';
 import { FieldTree } from './types';
 import { Field, Relation } from '@directus/shared/types';
-import { useFieldTree } from '@/composables/use-field-tree';
+import { FieldNode, useFieldTree } from '@/composables/use-field-tree';
 import { flattenFieldGroups } from '@/utils/flatten-field-groups';
 
 interface Props {
@@ -41,6 +41,8 @@ interface Props {
 	modelValue?: string | null;
 	nullable?: boolean;
 	collection?: string | null;
+	m2aCollectionField: string | null;
+	m2aCollectionScope: string | null;
 	depth?: number;
 	placeholder?: string | null;
 	inject?: {
@@ -54,6 +56,8 @@ const props = withDefaults(defineProps<Props>(), {
 	modelValue: null,
 	nullable: true,
 	collection: null,
+	m2aCollectionField: null,
+	m2aCollectionScope: null,
 	depth: undefined,
 	placeholder: null,
 	inject: null,
@@ -65,8 +69,10 @@ const contentEl = ref<HTMLElement | null>(null);
 
 const menuActive = ref(false);
 
-const { collection, inject } = toRefs(props);
-const { treeList, loadFieldRelations } = useFieldTree(collection, inject);
+const { collection, inject, m2aCollectionField, m2aCollectionScope } = toRefs(props);
+const blankFilter = () => true;
+
+const { treeList, loadFieldRelations } = useFieldTree(collection, inject, blankFilter, m2aCollectionScope.value);
 
 watch(() => props.modelValue, setContent, { immediate: true });
 

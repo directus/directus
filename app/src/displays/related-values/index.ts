@@ -4,12 +4,13 @@ import { getFieldsFromTemplate } from '@directus/shared/utils';
 import { getRelatedCollection } from '@/utils/get-related-collection';
 import DisplayRelatedValues from './related-values.vue';
 import { useFieldsStore } from '@/stores/fields';
-import { get, set } from 'lodash';
+import { flatten, get, set } from 'lodash';
 import { renderPlainStringTemplate } from '@/utils/render-string-template';
 import { useExtension } from '@/composables/use-extension';
+import { Field, Width } from '@directus/shared/types';
 
 type Options = {
-	template: string;
+	template: string | Record<string, string>;
 };
 
 export default defineDisplay({
@@ -20,6 +21,9 @@ export default defineDisplay({
 	component: DisplayRelatedValues,
 	options: ({ editing, relations }) => {
 		const relatedCollection = relations.o2m?.collection ?? relations.m2o?.related_collection;
+		const isM2A: boolean =
+			relations.m2o?.meta?.one_collection_field != null && relations.m2o?.meta?.one_allowed_collections != null;
+		// will be junction collection for m2m/m2a
 
 		const displayTemplateMeta =
 			editing === '+'
@@ -28,14 +32,24 @@ export default defineDisplay({
 						options: {
 							text: '$t:displays.related-values.display_template_configure_notice',
 						},
-						width: 'full',
+						width: 'full' as Width,
+				  }
+				: isM2A
+				? {
+						interface: 'system-display-template-m2a',
+						options: {
+							collectionName: relatedCollection,
+							collectionField: relations.m2o?.meta?.one_collection_field,
+							allowedCollections: relations.m2o?.meta?.one_allowed_collections,
+						},
+						width: 'full' as Width,
 				  }
 				: {
 						interface: 'system-display-template',
 						options: {
 							collectionName: relatedCollection,
 						},
-						width: 'full',
+						width: 'full' as Width,
 				  };
 
 		return [
@@ -46,22 +60,29 @@ export default defineDisplay({
 			},
 		];
 	},
-	handler: (value, options, { collection, field }) => {
-		if (!field || !collection) return value;
+	handler: (value, options: Partial<Options>, { collection, field }) => {
+		if (!field || !collection || !options.template) return value;
 
-		const relatedCollections = getRelatedCollection(collection, field.field);
+		const relatedCollectionInfo = getRelatedCollection(collection, field.field);
 
-		if (!relatedCollections) return value;
+		if (!relatedCollectionInfo) return value;
 
 		const fieldsStore = useFieldsStore();
 
-		const fieldKeys = getFieldsFromTemplate(options.template);
+		const fieldKeys =
+			typeof options.template === 'string'
+				? getFieldsFromTemplate(options.template)
+				: flatten(
+						Object.entries(options.template as Record<string, string>).map(([col, templ]) =>
+							getFieldsFromTemplate(templ)
+						)
+				  );
 
 		const fields = fieldKeys.map((fieldKey) => {
 			return {
 				key: fieldKey,
 				field: fieldsStore.getField(
-					relatedCollections.junctionCollection ?? relatedCollections.relatedCollection,
+					relatedCollectionInfo.junctionCollection ?? (relatedCollectionInfo.relatedCollection as string),
 					fieldKey
 				),
 			};
@@ -91,8 +112,11 @@ export default defineDisplay({
 
 			set(stringValues, key, stringValue);
 		}
-
-		return renderPlainStringTemplate(options.template, stringValues);
+		if (typeof options.template === 'string') {
+			return renderPlainStringTemplate(options.template, stringValues);
+		} else {
+			return renderPlainStringTemplate(options.template[collection], stringValues);
+		}
 	},
 	types: ['alias', 'string', 'uuid', 'integer', 'bigInteger', 'json'],
 	localTypes: ['m2m', 'm2o', 'o2m', 'translations', 'm2a', 'file', 'files'],
@@ -103,20 +127,42 @@ export default defineDisplay({
 
 		const fieldsStore = useFieldsStore();
 
-		const { junctionCollection, relatedCollection, path } = relatedCollectionData;
+		const { junctionCollection, relatedCollection, collectionField, path } = relatedCollectionData;
 
-		const primaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(relatedCollection);
+		const primaryKeyFields = Array.isArray(relatedCollection)
+			? (relatedCollection
+					.map((collection) => fieldsStore.getPrimaryKeyFieldForCollection(collection))
+					.filter((f) => f != null) as Field[])
+			: ([fieldsStore.getPrimaryKeyFieldForCollection(relatedCollection)] as Field[]);
 
-		const fields = options?.template
-			? adjustFieldsForDisplays(getFieldsFromTemplate(options.template), junctionCollection ?? relatedCollection)
-			: [];
+		const fields =
+			options?.template == null
+				? []
+				: typeof options?.template === 'string'
+				? adjustFieldsForDisplays(
+						getFieldsFromTemplate(options.template),
+						junctionCollection ?? (relatedCollection as string)
+				  )
+				: flatten(
+						Object.entries(options?.template as Record<string, string>).map(([col, templ]) =>
+							adjustFieldsForDisplays(getFieldsFromTemplate(templ), junctionCollection ?? (relatedCollection as string))
+						)
+				  );
 
-		if (primaryKeyField) {
-			const primaryKeyFieldValue = path ? [...path, primaryKeyField.field].join('.') : primaryKeyField.field;
+		if (primaryKeyFields && primaryKeyFields.length > 0) {
+			const primaryKeyFieldValues = path
+				? primaryKeyFields.map((pkField) => [path, pkField?.field].join('.'))
+				: primaryKeyFields.map((pkField) => pkField?.field);
 
-			if (!fields.includes(primaryKeyFieldValue)) {
-				fields.push(primaryKeyFieldValue);
+			for (const pkFieldValue of primaryKeyFieldValues) {
+				if (pkFieldValue && !fields.includes(pkFieldValue)) {
+					fields.push(pkFieldValue);
+				}
 			}
+		}
+
+		if (collectionField) {
+			fields.push(collectionField);
 		}
 
 		return fields;

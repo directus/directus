@@ -23,28 +23,32 @@
 <script setup lang="ts">
 import { useExtension } from '@/composables/use-extension';
 import { useFieldsStore } from '@/stores/fields';
+import { useRelationsStore } from '@/stores/relations';
 import { getDefaultDisplayForType } from '@/utils/get-default-display-for-type';
 import { translate } from '@/utils/translate-literal';
 import { Field } from '@directus/shared/types';
 import { get } from 'lodash';
 import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const { te } = useI18n();
 
 interface Props {
 	template: string;
-	collection?: string;
+	collection: string;
 	fields?: Field[];
 	item?: Record<string, any>;
 	direction?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-	collection: undefined,
 	fields: () => [],
 	item: () => ({}),
 	direction: undefined,
 });
 
 const fieldsStore = useFieldsStore();
+const relationsStore = useRelationsStore();
 
 const templateEl = ref<HTMLElement>();
 
@@ -105,6 +109,18 @@ function handleArray(fieldKeyBefore: string, fieldKeyAfter: string) {
 }
 
 function handleObject(fieldKey: string) {
+	// Special m2a keys
+	const m2aKeyRegex = /(\$t:collection_names_(?:singular|plural)\.)(.+)/g;
+
+	if (fieldKey.search(m2aKeyRegex) !== -1) {
+		const parts = [...fieldKey.matchAll(m2aKeyRegex)][0];
+		if (parts[2] && props.item[parts[2]]) {
+			return te(`${parts[1]}${props.item[parts[2]]}`.replace('$t:', ''))
+				? `${parts[1]}${props.item[parts[2]]}`
+				: props.item[parts[2]];
+		}
+	}
+
 	const field =
 		fieldsStore.getField(props.collection, fieldKey) || props.fields?.find((field) => field.field === fieldKey);
 
@@ -123,7 +139,21 @@ function handleObject(fieldKey: string) {
 			.join('.');
 	}
 
-	const value = get(props.item, fieldKey);
+	let value = get(props.item, fieldKey);
+
+	//TODO: fix this for nested m2a fields...
+	if (!value) {
+		const [field, ...path] = fieldKey.split('.');
+		if (field.includes(':')) {
+			const [key, collection] = field.split(':');
+			const relations = relationsStore.getRelationsForField(props.collection, key);
+			const m2aRelation = relations.find((relation) => relation.meta?.one_allowed_collections != null);
+			const collectionField = m2aRelation?.meta?.one_collection_field;
+			if (collectionField && props.item[collectionField] === collection) {
+				value = get(props.item, [key, ...path].join('.'));
+			}
+		}
+	}
 
 	if (value === undefined) return null;
 
