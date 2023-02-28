@@ -186,6 +186,8 @@ revision_post_create: Tässä on miltä tämä kohde näytti kun se luotiin.
 revision_post_update: Tässä on miltä tämä kohde näytti päivityksen jälkeen.
 changes_made: Alla esitetään tässä tarkistuksessa tehdyt erityiset muutokset.
 no_relational_data: Muista, että relaatiotiedot eivät sisälly tähän.
+top: Ylös
+bottom: Alas
 hide_field: Piilota kenttä
 hide_field_on_detail: Piilota kenttä yksityiskohdissa
 show_field_on_detail: Näytä kenttä yksityiskohdissa
@@ -241,6 +243,7 @@ float: Liukuluku
 integer: Kokonaisluku
 json: JSON
 xml: XML
+yaml: YAML
 string: Merkkijono
 text: Teksti
 time: Aika
@@ -454,6 +457,7 @@ no_file_selected: Ei valittua tiedostoa
 download_file: Lataa tiedosto
 open_file_in_tab: Avaa tiedosto uudessa välilehdessä
 start_export: Aloita vienti
+not_available_for_local_downloads: Ei saatavilla paikallisille latauksille
 exporting_all_items_in_collection: Viedään kaikki {total} kohdetta kokoelmasta {collection}.
 exporting_limited_items_in_collection: Viedään {limit} kohdetta kokoelman {collection} {total} kohteesta.
 exporting_no_items_to_export: Ei vietäviä kohteita. Muokkaa viennin asetuksia alla.
@@ -607,6 +611,9 @@ errors:
   SERVICE_UNAVAILABLE: Palvelu ei ole saatavilla
   UNSUPPORTED_MEDIA_TYPE: Median tyyppiä ei tueta
   UNEXPECTED_RESPONSE: Odottamaton vastaus
+  TOKEN_EXPIRED: Token vanhentunut
+  RANGE_NOT_SATISFIABLE: Virheellinen väli
+  REQUESTS_EXCEEDED: Pyyntöjen raja saavutettu
 security: Turvallisuus
 value_hashed: Arvo tiivistetty turvallisesti
 bookmark_name: Kirjanmerkin nimi...
@@ -690,6 +697,7 @@ operators:
   nnull: Ei ole null
   contains: Sisältää
   ncontains: Ei sisällä
+  icontains: Sisältää (ei tarkka)
   starts_with: Alkaa käyttäen
   nstarts_with: Ei ala käyttäen
   ends_with: Päättyy käyttäen
@@ -769,6 +777,7 @@ toggle: Vaihda
 icon_on: Päällä-kuvake
 icon_off: Pois-kuvake
 label: Tunniste
+flows: Toiminnot
 flow: Vuo
 select_a_flow: Valitse Vuo
 run_flow_on_current_collection: Aja Vuo nykyiselle kokoelmalle
@@ -782,6 +791,11 @@ view_trigger: Näytä liipaisin
 create_trigger: Luo liipaisin
 trigger_setup: Liipaisimen asetukset
 change_trigger: Muokkaa liipaisinta
+set_flow_active: Aseta toiminto aktiiviseksi
+set_flow_inactive: Aseta toiminto ei aktiiviseksi
+edit_flow: Muokkaa toimintoa
+delete_flow: Poista toiminto
+no_flows: Ei toimintoja
 create_flow: Luo Vuo
 creating_new_flow: Luodaan uutta Vuota
 updating_flow: Vuota päivitetään
@@ -789,6 +803,10 @@ flow_setup: Vuon asetukset
 flow_name: Nimi
 flow_tracking_activity: Seuraa vain tapahtumia
 flow_tracking_null: Älä seuraa mitään
+start_flow: Käynnistä toiminto
+stop_flow: Pysäytä toiminto
+create_operation: Luo toiminto
+edit_operation: Muokkaa toimintoa
 code: Koodi
 insights: Yleiskatsaus
 dashboard: Kojelauta
@@ -811,8 +829,14 @@ create_dashboard: Luo kojelauta
 dashboard_name: Kojelaudan nimi
 no_data: Ei tietoja
 accountability: Vastuuvelvollisuus
+payload: Tietosisältö
+details: Tarkemmat tiedot
 full_screen: Koko näyttö
+full_text_search: Kokotekstihaku
 edit_panels: Muokkaa paneeleja
+center_align: Keskitä
+left_align: Tasaa vasemmalle
+right_align: Tasaa oikealle
 fit_to_screen: Sovita ruudulle
 image_url: Kuvan URL
 alt_text: Vaihtoehtoinen teksti
@@ -836,6 +860,8 @@ unlimited: Rajoittamaton
 open_link_in: Avaa linkki
 new_tab: Uusi välilehti
 current_tab: Nykyinen välilehti
+save_image: Tallenna kuva
+save_media: Tallenna media
 wysiwyg_options:
   aligncenter: Tasaa keskelle
   alignjustify: Tasaa tasapalstaksi
@@ -901,6 +927,7 @@ settings_data_model: Tietorakenne
 settings_permissions: Roolit ja oikeudet
 settings_project: Projektin asetukset
 settings_webhooks: Webhookit
+settings_flows: Toiminnot
 settings_presets: Esiasetukset ja kirjanmerkit
 one_or_more_options_are_missing: Yksi tai useampi vaihtoehto puuttuu
 scope: Laajuus
@@ -1733,6 +1760,10 @@ triggers:
   webhook:
     method: Metodi
 operations:
+  item-create:
+    payload: Tietosisältö
+  item-update:
+    payload: Tietosisältö
   log:
     message: Viesti
   notification:
@@ -1744,5 +1775,6 @@ operations:
     data: Tiedot
     header: Ylätunniste
   trigger:
+    flows: Toiminnot
     flow: Vuo
     data: Tiedot
