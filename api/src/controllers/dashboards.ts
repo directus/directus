@@ -162,7 +162,8 @@ router.delete(
 		} else if (req.body.keys) {
 			await service.deleteMany(req.body.keys);
 		} else {
-			await service.deleteByQuery(req.body.query);
+			const sanitizedQuery = sanitizeQuery(req.body.query, req.accountability);
+			await service.deleteByQuery(sanitizedQuery);
 		}
 
 		return next();
