@@ -23,7 +23,7 @@ identifier: Identificador
 avatar: Imagem de Perfil
 application: Aplicação
 default_provider: Padrão
-method: Método 
+method: Método
 published: Publicado
 draft: Rascunho
 archived: Arquivado
@@ -1195,7 +1195,7 @@ fields:
     module_list: Navegação do Módulo
   directus_webhooks:
     name: Nome
-    method: Método 
+    method: Método
     status: Status
     data: Dados
     header: Cabeçalho
@@ -1914,7 +1914,7 @@ panels:
     select_collection: Você deve selecionar uma coleção.
 triggers:
   webhook:
-    method: Método 
+    method: Método
 operations:
   item-create:
     payload: Payload
@@ -1927,7 +1927,7 @@ operations:
     message: Mensagem
   request:
     url: URL
-    method: Método 
+    method: Método
     data: Dados
     header: Cabeçalho
   trigger:
