@@ -29,6 +29,8 @@ import asyncHandler from '../../utils/async-handler';
 import { getIPFromReq } from '../../utils/get-ip-from-req';
 import { getMilliseconds } from '../../utils/get-milliseconds';
 import { AuthDriver } from '../auth';
+import emitter from '../../emitter';
+import getDatabase from '../../database';
 
 interface UserInfo {
 	dn: string;
@@ -265,10 +267,23 @@ export class LDAPAuthDriver extends AuthDriver {
 		const userId = await this.fetchUserId(userInfo.dn);
 
 		if (userId) {
+			// Run hook so the end user has the chance to augment the
+			// user that is about to be updated
+			let updatedUserPayload = await emitter.emitFilter(
+				`auth.update`,
+				{},
+				{ identifier: userInfo.dn, provider: this.config.provider, providerPayload: { userInfo, userRole } },
+				{ database: getDatabase(), schema: this.schema, accountability: null }
+			);
+
 			// Only sync roles if the AD groups are configured
 			if (groupDn) {
-				await this.usersService.updateOne(userId, { role: userRole?.id ?? defaultRoleId ?? null });
+				updatedUserPayload = { role: userRole?.id ?? defaultRoleId ?? null, ...updatedUserPayload };
 			}
+
+			// Update user to update properties that might have changed
+			await this.usersService.updateOne(userId, updatedUserPayload);
+
 			return userId;
 		}
 
@@ -276,15 +291,26 @@ export class LDAPAuthDriver extends AuthDriver {
 			throw new InvalidCredentialsException();
 		}
 
+		const userPayload = {
+			provider: this.config.provider,
+			first_name: userInfo.firstName,
+			last_name: userInfo.lastName,
+			email: userInfo.email,
+			external_identifier: userInfo.dn,
+			role: userRole?.id ?? defaultRoleId,
+		};
+
+		// Run hook so the end user has the chance to augment the
+		// user that is about to be created
+		const updatedUserPayload = await emitter.emitFilter(
+			`auth.create`,
+			userPayload,
+			{ identifier: userInfo.dn, provider: this.config.provider, providerPayload: { userInfo, userRole } },
+			{ database: getDatabase(), schema: this.schema, accountability: null }
+		);
+
 		try {
-			await this.usersService.createOne({
-				provider: this.config.provider,
-				first_name: userInfo.firstName,
-				last_name: userInfo.lastName,
-				email: userInfo.email,
-				external_identifier: userInfo.dn,
-				role: userRole?.id ?? defaultRoleId,
-			});
+			await this.usersService.createOne(updatedUserPayload);
 		} catch (e) {
 			if (e instanceof RecordNotUniqueException) {
 				logger.warn(e, '[LDAP] Failed to register user. User not unique');

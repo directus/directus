@@ -3,8 +3,10 @@ import { BaseException } from '@directus/shared/exceptions';
 import express, { Router } from 'express';
 import * as samlify from 'samlify';
 import { getAuthProvider } from '../../auth';
+import getDatabase from '../../database';
 import { COOKIE_OPTIONS } from '../../constants';
 import env from '../../env';
+import emitter from '../../emitter';
 import { InvalidCredentialsException, InvalidProviderException } from '../../exceptions';
 import { RecordNotUniqueException } from '../../exceptions/database/record-not-unique';
 import logger from '../../logger';
@@ -62,15 +64,26 @@ export class SAMLAuthDriver extends LocalAuthDriver {
 		const firstName = payload[givenNameKey ?? 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname'];
 		const lastName = payload[familyNameKey ?? 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname'];
 
+		const userPayload = {
+			provider,
+			first_name: firstName,
+			last_name: lastName,
+			email: email,
+			external_identifier: identifier.toLowerCase(),
+			role: this.config.defaultRoleId,
+		};
+
+		// Run hook so the end user has the chance to augment the
+		// user that is about to be created
+		const updatedUserPayload = await emitter.emitFilter(
+			`auth.create`,
+			userPayload,
+			{ identifier: identifier.toLowerCase(), provider: this.config.provider, providerPayload: { ...payload } },
+			{ database: getDatabase(), schema: this.schema, accountability: null }
+		);
+
 		try {
-			return await this.usersService.createOne({
-				provider,
-				first_name: firstName,
-				last_name: lastName,
-				email: email,
-				external_identifier: identifier.toLowerCase(),
-				role: this.config.defaultRoleId,
-			});
+			return await this.usersService.createOne(updatedUserPayload);
 		} catch (error) {
 			if (error instanceof RecordNotUniqueException) {
 				logger.warn(error, '[SAML] Failed to register user. User not unique');

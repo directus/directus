@@ -154,9 +154,13 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 			// Run hook so the end user has the chance to augment the
 			// user that is about to be updated
 			const updatedUserPayload = await emitter.emitFilter(
-				`auth.oauth2.update`,
+				`auth.update`,
 				{},
-				{ identifier, provider: this.config.provider, accessToken: tokenSet.access_token, userInfo, userPayload },
+				{
+					identifier,
+					provider: this.config.provider,
+					providerPayload: { accessToken: tokenSet.access_token, userInfo },
+				},
 				{ database: getDatabase(), schema: this.schema, accountability: null }
 			);
 
@@ -175,9 +179,13 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 		// Run hook so the end user has the chance to augment the
 		// user that is about to be created
 		const updatedUserPayload = await emitter.emitFilter(
-			`auth.oauth2.create`,
+			`auth.create`,
 			userPayload,
-			{ identifier, provider: this.config.provider, accessToken: tokenSet.access_token, userInfo },
+			{
+				identifier,
+				provider: this.config.provider,
+				providerPayload: { accessToken: tokenSet.access_token, userInfo },
+			},
 			{ database: getDatabase(), schema: this.schema, accountability: null }
 		);
 
