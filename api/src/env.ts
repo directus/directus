@@ -76,6 +76,7 @@ const allowedEnvironmentVars = [
 	'CACHE_REDIS_PASSWORD',
 	'CACHE_MEMCACHE',
 	'CACHE_VALUE_MAX_SIZE',
+	'CACHE_SKIP_ALLOWED',
 	'CACHE_HEALTHCHECK_THRESHOLD',
 	// storage
 	'STORAGE_LOCATIONS',
@@ -236,6 +237,7 @@ const defaults: Record<string, any> = {
 	CACHE_SCHEMA: true,
 	CACHE_PERMISSIONS: true,
 	CACHE_VALUE_MAX_SIZE: false,
+	CACHE_SKIP_ALLOWED: false,
 
 	AUTH_PROVIDERS: '',
 	AUTH_DISABLE_DEFAULT: false,
