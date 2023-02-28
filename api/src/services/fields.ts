@@ -670,8 +670,8 @@ export class FieldsService {
 			column = table.timestamp(field.field, { useTz: true });
 		} else if (field.type.startsWith('geometry')) {
 			column = this.helpers.st.createColumn(table, field);
-		} else if (KNEX_TYPES.includes(field.type as typeof KNEX_TYPES[number])) {
-			column = table[field.type as typeof KNEX_TYPES[number]](field.field);
+		} else if (KNEX_TYPES.includes(field.type as (typeof KNEX_TYPES)[number])) {
+			column = table[field.type as (typeof KNEX_TYPES)[number]](field.field);
 		} else {
 			throw new InvalidPayloadException(`Illegal type passed: "${field.type}"`);
 		}

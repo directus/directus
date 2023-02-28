@@ -245,6 +245,7 @@ float: Flydende
 integer: Heltal
 json: JSON
 xml: XML
+yaml: YAML
 string: Streng
 text: Tekst
 time: Tid
@@ -1574,6 +1575,7 @@ interfaces:
     description: Vælg et enkelt relateret element
     display_template: Vis Skabelon
   input-rich-text-md:
+    markdown: Markdown
     description: Indtast og vis markdown
     edit: Rediger
     preview: Eksempelvisning
