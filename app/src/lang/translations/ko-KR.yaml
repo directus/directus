@@ -178,9 +178,21 @@ item_permissions: 항목 관리 권한
 field_permissions: 필드 관리 권한
 field_validation: 필드 검증
 field_presets: 필드 사전 설정
+permissions_for_role: '{role} 역할이 있는 항목은 {action}할 수 있습니다.'
+fields_for_role: '{role} 역할을 입력하면 {action}할 수 있습니다.'
+validation_for_role: '필드 {action} 규칙은 {role} 역할이 준수해야 합니다.'
+presets_for_role: '{role} 역할에 대한 필드 값 기본값입니다.'
+presentation_and_aliases: 프레젠테이션
+revision_post_create: 이 항목이 생성되었을 때의 모습은 다음과 같습니다.
+revision_post_update: 업데이트 후 이 항목의 모습은 다음과 같습니다.
+changes_made: 다음은 이번 개정판에서 변경된 구체적인 사항입니다.
+no_relational_data: 관계형 데이터는 여기에 포함되지 않습니다.
+junction_field_location: 정션 필드 위치
 top: 상단
 bottom: 하단
 hide_field: 필드 감추기
+hide_field_on_detail: 세부 정보에서 필드 숨기기
+show_field_on_detail: 세부 정보에 필드 표시
 delete_field: 필드 삭제
 fields_and_layout: 필드 및 레이아웃
 field_create_success: '"{field}" 필드 생성됨'
@@ -188,15 +200,23 @@ field_update_success: '"{field}" 필드 수정됨'
 duplicate_where_to: 이 필드를 어느 위치에 복제할까요?
 language: 언어
 language_placeholder: 언어를 선택하세요...
+aggregate_function: 집계 함수
+aggregate_precision: 집계 정밀도
+group_aggregation: 그룹 집계
+group_precision: 그룹 정밀도
 global: 글로벌
 admins_have_all_permissions: 관리자에게는 모든 권한이 부여됩니다.
 camera: 카메라
+show_zero: 0을 표시
 create_in_advanced_field_creation_mode: 고급 모드에서 필드 만들기
 continue_in_advanced_field_creation_mode: 고급 필드 생성 모드 계속
 validation: 검증
 sum: 합계
+sum_distinct: 고유한 합계
 avg: 평균
+avg_distinct: A평균 구별
 count: 카운팅(횟수)
+count_distinct: 카운트 고유
 min: 최소(Min)
 max: 최대(Max)
 exposure: 노출
@@ -206,6 +226,7 @@ focal_length: 초점 거리
 schema_setup_key: 이 필드의 DB 컬럼명과 API 키
 create_field: 필드 추가
 creating_new_field: '새 필드 ({collection})'
+field_in_collection: '{field} ({collection})'
 reset_page_preferences: 앱 환경설정 초기화
 hidden_field: 숨김 필드
 hidden_on_detail: 실행 시 숨김
@@ -233,6 +254,10 @@ hash: 해시
 geometry: 기하학 (전체)
 geometry.Point: 포인트
 geometry.LineString: 줄 문자열
+geometry.Polygon: 다각형
+geometry.MultiPoint: 멀티포인트
+geometry.MultiLineString: 여러 줄 문자열
+geometry.MultiPolygon: 다중 다각형
 not_available_for_type: 형식이 유효하지 않습니다.
 create_translations: 번역 문구 추가
 auto_refresh: 자동 갱신
@@ -251,19 +276,32 @@ no_collections_found: 컬렉션 없음
 search_collection: 컬렉션 검색
 new_field: '새 필드'
 new_collection: '새 컬렉션'
+add_m2o_to_collection: '"{컬렉션}"에 M2O 추가'
+add_o2m_to_collection: '"{collection}"에 O2M 추가'
+add_m2m_to_collection: '"{컬렉션}"에 M2M 추가'
 choose_a_type: 유형을 선택...
+determined_by_relationship: 관계에 의해 결정
+add_note: 사용자를 위한 유용한 메모 추가...
+add_link: 링크 추가
+custom_link: 맞춤 링크
 default_value: 기본값
 standard_field: 표준
 single_file: 단일 파일
 multiple_files: 여러 파일들
+m2o_relationship: 다대일 관계
+o2m_relationship: 일대다 관계
+m2m_relationship: 다대다 관계
+m2a_relationship: 다대다 관계
 invalid_item: 비정상적인 아이템
 next: 다음
 field_name: 필드 이름
 translations: 번역
+no_translations: 번역 없음
 left_to_right: 왼쪽에서 오른쪽으로
 right_to_left: 오른쪽에서 왼쪽으로
 note: 메모
 enter_a_value: 값 입력
+enter_a_placeholder: 자리 표시자 입력...
 length: 길이
 soft_length: 보통
 precision_scale: 정밀도 및 확장성
@@ -300,16 +338,45 @@ confirm_revert: 되돌리기 확인
 confirm_revert_body: 이렇게 하면 항목이 선택한 상태로 되돌아갑니다.
 settings_update_success: 설정이 수정됨.
 title: 제목
+revision_delta_created: 만들어진
+revision_delta_created_externally: 외부에서 생성됨
+revision_delta_updated: '업데이트 된 1개의 필드 | 업데이트 된 {count}개의 필드'
+revision_delta_deleted: 삭제됨
+revision_delta_reverted: 되돌림
+revision_delta_update_message: 이 필드는 업데이트되었지만 보안상의 이유로 해당 값이 숨겨져 있습니다.
+revision_delta_other: 리비전
+revision_delta_by: '{user}의 {date}'
+presentation_text_values_cannot_be_reimported: "프레젠테이션 텍스트를 사용합니다. 값을 다시 가져올 수 없습니다."
+download_page_as_csv: '페이지를 CSV로 다운로드'
 private_user: 비공개 사용자
+creation_preview: 생성 미리보기
+revision_preview: 개정판 미리보기
+updates_made: 업데이트 완료
+leave_comment: 코멘트를 남겨주세요...
 post_comment_success: 댓글 작성됨
+post_comment_updated: 댓글 업데이트됨
+item_create_success: 아이템 생성 됨 | 아이템 생성 됨
+item_update_success: 아이템 업데이트 됨 | 아이템 업데이트 됨
+item_delete_success: 아이템 삭제 됨 | 아이템 삭제 됨
+this_collection: 이 컬렉션
+related_collection: 관계 컬렉션
+related_collections: 관계 컬렉션
+translations_collection: 번역 컬렉션
+languages_collection: 언어 컬렉션
+import_data_input_placeholder: CSV 또는 JSON...
 import_data_button: 가져오기 시작
 import_data_indeterminate: 데이터를 가져오는 중...
+import_data_success: '{filename}에서 데이터를 성공적으로 가져왔습니다.'
+import_data_error: 이 파일의 데이터 구조가 컬렉션과 일치하지 않습니다.
 label_import: 가져오기
 label_export: 내보내기
 import_export: 가져오기 / 내보내기
 format: 형식
 last_page: 마지막 페이지
 last_access: 최근 접속
+fill_template: 템플릿 값으로 채우기
+a_unique_table_name: 고유한 테이블 이름...
+a_unique_column_name: 고유한 열 이름...
 enable_custom_values: 맞춤 값 활성화
 submit: 확인
 move_to_folder: 폴더로 이동
@@ -369,22 +436,69 @@ created: 작성됨
 modified: 수정됨 
 checksum: 체크섬
 owner: 소유자
+edited_by: 편집자
+folder: 폴더
+zoom: 줌
+download: 다운로드
+open: 열려 있는
+open_in_new_window: 새 창에서 열기
+open_folder: '"{folder}" 폴더 열기'
+foreground_color: 전경색
+background_color: 배경색
+upload_from_device: 장치에서 파일 업로드
+choose_from_library: 라이브러리에서 파일 선택
 import_from_url: URL로부터 파일 가져오기
+replace_from_device: 장치에서 파일 바꾸기
+replace_from_library: 라이브러리에서 파일 바꾸기
+replace_from_url: URL에서 파일 바꾸기
+no_file_selected: 파일이 선택되지 않았습니다
+download_file: 파일 다운로드
+open_file_in_tab: 새 탭에서 파일 열기
 start_export: 내보내기 시작
+not_available_for_local_downloads: 로컬 다운로드에 사용할 수 없음
 exporting_all_items_in_collection: '{collection}의 전체 데이터({total}개 항목) 내보내기 '
 exporting_limited_items_in_collection: '{collection}의 전체 {total}개 중 {limit}개 항목 내보내기'
 exporting_no_items_to_export: 내보낼 데이터가 없습니다. 아래 설정을 확인 해보세요.
+exporting_download_hint: 완료되면 이 {format} 파일이 기기에 자동으로 다운로드됩니다.
+exporting_batch_hint: 이 내보내기는 일괄 처리되며 완료되면 {format} 파일이 파일 라이브러리에 저장됩니다.
+exporting_batch_hint_forced: 항목 수가 많기 때문에 이 내보내기는 일괄 처리해야 하며 완료되면 {format} 파일이 파일 라이브러리에 저장됩니다.
+collection_key: 컬렉션 키
+name: 이름
 primary_key_field: 기본키 필드
 type: 타입
 creating_new_collection: 새 컬렉션 만들기
 created_by: '작성자:'
 created_on: 작성일
+creating_collection_info: 컬렉션의 이름을 지정하고 고유한 "키" 필드를 설정합니다...
+creating_collection_system: 이러한 선택적 필드를 활성화하고 이름을 바꿉니다.
+auto_increment_integer: 자동 증가 정수
+auto_increment_big_integer: 자동 증가 큰 정수
+generated_uuid: 생성되는 UUID
+manual_string: 수동으로 입력한 문자열
+save_and_create_new: 저장하고 새로 만들기
+save_and_stay: 저장 및 유지
+save_as_copy: 사본으로 저장
 add_existing: 데이터 선택
 creating_items: 데이터 추가
+enable_create_button: 만들기 버튼 활성화
 selecting_items: 항목 선택
+enable_select_button: 선택 버튼 활성화
+allow_duplicates: 중복 허용
 comments: 코멘트
+no_comments: 아직 코멘트가 없습니다
+click_to_expand: 확장하려면 클릭
+select_item: 물품을 고르시 오
 no_items: 항목 없음
 search_items: 검색
+disabled: 장애가 있는
+information: 정보
+report_bug: 버그를 제보하기
+request_feature: 요청 기능
+request_body: 요청 본문
+interface_not_found: '인터페이스 "{interface}"를 찾을 수 없습니다.'
+operation_not_found: '"{operation}"" 작업을 찾을 수 없습니다.'
+reset_interface: 재설정 인터페이스
+display_not_found: '"{display}"를 찾을 수 없습니다.'
 item_count: '데이터 없음 | 1개 항목 | {count}개 항목'
 no_items_copy: 이 목록에는 등록된 내용이 없습니다.
 file_count: '파일 없음 | 파일 1개 | 파일 {count}개'
@@ -410,10 +524,17 @@ documentation: 문서
 sidebar: 사이드바
 duration: 기간
 charset: 문자 집합
+second: 초
+file_moved: 파일 이동됨
 collection_created: 목록이 생성됨
+modified_on: 변경 일자
 card_size: 카드형식 크기
 sort_field: 정렬 기준
+add_sort_field: 정렬 필드 추가
+sort: 정렬
 status: 상태
+remove: 제거
+toggle_manual_sorting: 수동 정렬 전환
 select_an_item: 목록에서 선택...
 edit: 수정
 create_account: 계정 추가
@@ -461,6 +582,7 @@ update: 수정
 delete: 삭제
 create_trigger: 트리거 생성
 create_flow: 플로우 작성
+flow_name: 이름
 flow_tracking: 활동 및 기록 추적
 insights: 현황판
 dashboard: 대쉬보드
@@ -478,6 +600,8 @@ fit_to_screen: 화면크기에 맞추기
 width: 가로(폭)
 height: 세로(높이)
 wysiwyg_options:
+  forecolor: 전경색
+  backcolor: 배경색
   selectall: 모두 선택
   fullscreen: 전체화면
 adding_user: 사용자 추가
@@ -493,6 +617,7 @@ scope: 범위
 layout: 표시 방법
 data: 데이터
 activity_feed: 활동 내역
+create_new: 새로 만들기
 batch_delete_confirm: >-
   선택한 항목이 없습니다. | 선택한 항목을 삭제하시겠습니까? 한번 삭제하면 복구할 수 없습니다. | 선택한 {count}개 항목을 을 삭제하시겠습니까? 한번 삭제하면 복구할 수 없습니다.
 content: 데이터 및 컨텐츠 관리
@@ -583,6 +708,7 @@ fields:
     image_editor: 이미지 에디터
     custom_aspect_ratios: 가로세로 비율 조정
   directus_shares:
+    name: 이름
     role: 역할
     password: 비밀번호
   directus_fields:
@@ -594,6 +720,7 @@ fields:
     users: 이 역할의 사용자 목록
     module_list: '모듈 탐색:'
   directus_webhooks:
+    name: 이름
     status: 상태
     data: 데이터
 field_options:
@@ -609,6 +736,9 @@ field_options:
     language: 언어
     archive_divider: 보관
     sort_divider: 정렬
+  directus_roles:
+    fields:
+      name_name: 이름
   directus_users:
     preferences_divider: 사용자 개인 설정
     dropdown_auto: 자동(시스템 설정)
@@ -671,8 +801,13 @@ interfaces:
     edit: 수정
   map:
     map: 지도
+    zoom: 줌
   presentation-notice:
     text: 내용을 입력하세요...
+  system-folder:
+    folder: 폴더
+  list:
+    sort: 정렬
   tags:
     tags: 태그
   input-translated-string:
@@ -708,6 +843,7 @@ displays:
   user:
     user: 사용자
     avatar: 아바타/사진
+    name: 이름
 layouts:
   cards:
     cards: 카드형식
@@ -735,6 +871,9 @@ layouts:
     no_compatible_fields: 해당필드 없음
   kanban:
     crop: 맞춰자르기(crop)
+x_axis: X축
+y_axis: Y축
+y_axis_function: Y축 기능
 triggers:
   common:
     response_body_all: 전체 데이터
