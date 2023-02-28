@@ -65,10 +65,13 @@ indeterminate: 불확정 상태
 edit_collection: 목록 수정
 exclusive: 독점
 children: 하위
+db_only_click_to_configure: '데이터베이스 전용: 설정을 위해 클릭'
 show_active_items: 사용중인 항목만 표시
 show_archived_items: 보관된 (미사용) 항목만 표시
 show_all_items: 전체 항목을 표시
+edited: 값 수정 됨
 required: 필수 사항
+required_for_app_access: 앱 접근을 위해 필요함
 requires_value: 필수 항목
 create_preset: 사전설정 생성
 create_panel: 판넬 추가
@@ -112,16 +115,38 @@ logoutReason:
   SIGN_OUT: 로그아웃됨
   SESSION_EXPIRED: 세션 만료
 public_label: 공개
+public_description: 인증 없이 사용할 수 있는 API 데이터를 제어합니다.
+admin_description: 제한 없는 앱/API 액세스 권한이 있는 초기 관리자 역할입니다.
 not_allowed: 허용되지 않음
+directus_version: 디렉투스 버전
+node_version: 노드 버전
+node_uptime: 노드 가동 시간
+os_type: OS 유형
+os_version: OS 버전
+os_uptime: OS 가동 시간
+os_totalmem: OS 메모리
 archive: 보관
 archive_confirm: 이 항목을 사용하지 않고 보관하시겠습니까?
+archive_confirm_count: >-
+  선택한 항목 없음 | 이 항목을 보관하시겠습니까? | 이 {Count}개의 항목을 보관하시겠습니까?
 reset_system_permissions_to: '시스템 권한 초기화 :'
 reset_system_permissions_copy: 시스템 데이터 목록에 대한 권한 설정값이 모두 초기화됩니다. 그래도 진행하시겠습니까?
+the_following_are_minimum_permissions: 다음은 '앱 액세스'가 활성화된 경우 필요한 최소 권한입니다. 이 이상으로 권한을 확장할 수 있지만 그 이하로는 확장할 수 없습니다.
+app_access_minimum: 최소 앱 액세스
+recommended_defaults: 권장 기본값
 unarchive: 보관 해제(사용)
 unarchive_confirm: 이 항목을 보관 해제하여 다시 사용하시겠습니까?
 nested_files_folders_will_be_moved: 포함된 파일과 폴더는 모두 상위 폴더로 옮겨집니다.
 validation_errors_notice: '입력값이 유효하지 않은 필드:'
 validationError:
+  eq: 값은 {valid}여야 합니다.
+  neq: 값은 {invalid}일 수 없습니다.
+  in: 값은 {valid} 중 하나이어야 합니다.
+  nin: 값은 {invalid} 중 하나일 수 없습니다.
+  contains: 값에 {substring}이(가) 포함되어야 합니다.
+  ncontains: 값에 {substring}이 포함될 수 없습니다.
+  gt: 값은 {valid}보다 커야 합니다.
+  gte: 값은 {valid}보다 크거나 같아야 합니다.
   unique: 생산Key는 유일해야만 합니다.
 all_access: 모든 액세스
 no_access: 접근 불가
