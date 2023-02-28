@@ -8,7 +8,7 @@ vi.mock('../env');
 test('should always skip cache for requests coming from data studio', () => {
 	const publicURL = 'http://admin.example.com';
 
-	vi.mocked(getEnv).mockReturnValue({ PUBLIC_URL: publicURL, CACHE_SKIP_ALLOWED: true });
+	vi.mocked(getEnv).mockReturnValue({ PUBLIC_URL: publicURL, CACHE_SKIP_ALLOWED: false });
 
 	const req = {
 		get: vi.fn((str) => {
@@ -25,7 +25,7 @@ test('should always skip cache for requests coming from data studio', () => {
 });
 
 test('should not skip cache for requests coming outside of data studio', () => {
-	vi.mocked(getEnv).mockReturnValue({ PUBLIC_URL: 'http://admin.example.com', CACHE_SKIP_ALLOWED: true });
+	vi.mocked(getEnv).mockReturnValue({ PUBLIC_URL: 'http://admin.example.com', CACHE_SKIP_ALLOWED: false });
 
 	const req = {
 		get: vi.fn((str) => {

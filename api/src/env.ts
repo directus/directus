@@ -293,6 +293,9 @@ const typeMap: Record<string, string> = {
 	DB_PORT: 'number',
 
 	DB_EXCLUDE_TABLES: 'array',
+
+	CACHE_SKIP_ALLOWED: 'boolean',
+
 	IMPORT_IP_DENY_LIST: 'array',
 
 	FILE_METADATA_ALLOW_LIST: 'array',

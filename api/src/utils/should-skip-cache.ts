@@ -11,14 +11,11 @@ import { Url } from './url';
 export function shouldSkipCache(req: Request): boolean {
 	const env = getEnv();
 
-	// prevent skipping of cache when it is not allowed
-	if (env.CACHE_SKIP_ALLOWED === false) return false;
-
 	// always skip cache for requests coming from the data studio based on Referer header
 	const adminUrl = new Url(env.PUBLIC_URL).addPath('admin').toString();
 	if (req.get('Referer')?.startsWith(adminUrl)) return true;
 
-	if (req.get('cache-control')?.includes('no-store')) return true;
+	if (env.CACHE_SKIP_ALLOWED && req.get('cache-control')?.includes('no-store')) return true;
 
 	return false;
 }
