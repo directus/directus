@@ -18,5 +18,7 @@ export function shouldSkipCache(req: Request): boolean {
 	const adminUrl = new Url(env.PUBLIC_URL).addPath('admin').toString();
 	if (req.get('Referer')?.startsWith(adminUrl)) return true;
 
-	return req.get('cache-control')?.includes('no-store') ?? false;
+	if (req.get('cache-control')?.includes('no-store')) return true;
+
+	return false;
 }
