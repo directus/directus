@@ -147,22 +147,39 @@ validationError:
   ncontains: 값에 {substring}이 포함될 수 없습니다.
   gt: 값은 {valid}보다 커야 합니다.
   gte: 값은 {valid}보다 크거나 같아야 합니다.
+  lt: 값은 {valid}보다 커야 합니다.
+  lte: 값은 {valid}보다 작거나 같아야 합니다.
+  empty: 값은 비어 있어야 합니다.
+  nempty: 값은 비어 있을 수 없습니다.
+  null: 값은 null이어야 합니다.
+  nnull: 값은 비어 있을 수 없습니다.
+  required: 값이 필요합니다.
   unique: 생산Key는 유일해야만 합니다.
+  regex: 값의 형식이 올바르지 않습니다.
 all_access: 모든 액세스
 no_access: 접근 불가
 use_custom: 직접 설정
 nullable: NULL허용
 allow_null_value: NULL값 허용
 allow_multiple: 여러 값 허용
+allow_multiple_to_be_open: 여러 개 열기 허용
+enter_value_to_replace_nulls: 현재 이 필드에 있는 NULL을 대체할 새 값을 입력하세요.
 field_standard: 표준
+field_presentation: 프레젠테이션 및 별칭
 field_file: 단일 파일
 field_files: 여러 파일들
+field_m2o: M2O 관계형
+field_m2a: M2A 관계형
+field_o2m: O2M 관계형
+field_m2m: M2M 관계형
 field_translations: 번역
 field_group: 그룹
 item_permissions: 항목 관리 권한
 field_permissions: 필드 관리 권한
 field_validation: 필드 검증
 field_presets: 필드 사전 설정
+top: 상단
+bottom: 하단
 hide_field: 필드 감추기
 delete_field: 필드 삭제
 fields_and_layout: 필드 및 레이아웃
@@ -194,6 +211,28 @@ hidden_field: 숨김 필드
 hidden_on_detail: 실행 시 숨김
 key: 키
 alias: 별칭
+bigInteger: 큰 정수형
+boolean: 부울형
+date: 날짜형
+date_range: 날짜 범위
+datetime: 날짜/시간
+dateTime: 날짜/시간
+precision: 소수자리수
+decimal: 소수
+float: 부동
+integer: 정수형
+json: JSON
+xml: XML
+yaml: YAML
+string: 문자열
+text: 텍스트
+time: 시간
+timestamp: 타임스탬프
+uuid: UUID
+hash: 해시
+geometry: 기하학 (전체)
+geometry.Point: 포인트
+geometry.LineString: 줄 문자열
 not_available_for_type: 형식이 유효하지 않습니다.
 create_translations: 번역 문구 추가
 auto_refresh: 자동 갱신
@@ -221,17 +260,44 @@ invalid_item: 비정상적인 아이템
 next: 다음
 field_name: 필드 이름
 translations: 번역
+left_to_right: 왼쪽에서 오른쪽으로
+right_to_left: 오른쪽에서 왼쪽으로
 note: 메모
 enter_a_value: 값 입력
 length: 길이
+soft_length: 보통
+precision_scale: 정밀도 및 확장성
+readonly: 읽기 전용
 unique: 고유
 updated_on: 수정일
 updated_by: 수정자
 primary_key: 기본키
 foreign_key: 외래키
 finish_setup: 셋업 종료
+dismiss: 무효
+toggle_raw_editor: RAW 편집기 토글
+raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
+raw_value: RAW 값
+copy_raw_value: RAW 값 복사
+copy_raw_value_success: 복사됨
+copy_raw_value_fail: 복사 실패
+paste_raw_value: RAW 값 복사
+paste_raw_value_success: 붙여넣기됨
+paste_raw_value_fail: 붙여넣기 실패
+view_raw_value: RAW 값 보기
+edit_raw_value: RAW 값 수정
+enter_raw_value: RAW 값 입력...
+clear_value: 값 삭제
+clear_changes: 변경 사항 지우기
 clear_items: 선택 해제
+reset_to_default: 기본값으로 재설정
+undo_changes: 변경 취소
+notifications: 알림
 show_all_activity: 전체 활동기록 보기
+page_not_found: 페이지를 찾을 수 없음
+page_not_found_body: 요청하신 페이지는 존재하지 않습니다.
+confirm_revert: 되돌리기 확인
+confirm_revert_body: 이렇게 하면 항목이 선택한 상태로 되돌아갑니다.
 settings_update_success: 설정이 수정됨.
 title: 제목
 private_user: 비공개 사용자
@@ -244,18 +310,37 @@ import_export: 가져오기 / 내보내기
 format: 형식
 last_page: 마지막 페이지
 last_access: 최근 접속
+enable_custom_values: 맞춤 값 활성화
 submit: 확인
 move_to_folder: 폴더로 이동
 move: 이동
 system: 시스템
+add_field_related: 관계형 컬렉션에 필드 추가
 interface_label: 인터페이스
 today: 오늘
 yesterday: 어제
 delete_comment: 댓글 삭제
+delete_share: 공유 삭제
 functions:
   year: 년
   month: 월
+  week: 주
+  day: 일
+  weekday: 평일
+  hour: 시
+  minute: 분
+  second: 초
   count: 카운팅(횟수)
+date-fns_date: PPP
+date-fns_time: 'h:mm:ss a'
+date-fns_time_no_seconds: 'h:mm a'
+date-fns_time_24hour: 'HH:mm:ss'
+date-fns_time_no_seconds_24hour: 'HH:mm'
+date-fns_date_short: 'MMM d, u'
+date-fns_time_short: 'h:mma'
+date-fns_date_short_no_year: MMM d
+minutes: 분
+hours: 시간
 month: 월
 year: 년
 select_all: 모두 선택
@@ -273,8 +358,17 @@ months:
   november: 11월
   december: 12월
 drag_mode: 끌기 모드
+cancel_crop: 자르기 취소
+original: 원본
+url: URL
 import_label: 가져오기
+file_details: 파일 세부 정보
+dimensions: 규격
+size: 용량
 created: 작성됨
+modified: 수정됨 
+checksum: 체크섬
+owner: 소유자
 import_from_url: URL로부터 파일 가져오기
 start_export: 내보내기 시작
 exporting_all_items_in_collection: '{collection}의 전체 데이터({total}개 항목) 내보내기 '
@@ -303,8 +397,19 @@ copy_to: 복사 ...
 users: 사용자
 action: 활동
 ip_address: IP 주소
+value_decimals: 값 소수점
+min_value: 최소값
+max_value: 최대 값
+automatic: 자동
+field_width: 필드 너비
 add_filter: 필터 추가
+upper_limit: 상한선...
+lower_limit: 하한선...
 user_directory: 사용자 목록
+documentation: 문서
+sidebar: 사이드바
+duration: 기간
+charset: 문자 집합
 collection_created: 목록이 생성됨
 card_size: 카드형식 크기
 sort_field: 정렬 기준
@@ -321,6 +426,7 @@ errors:
   INVALID_OTP: 일회용 비밀번호가 맞지 않습니다.
   INVALID_PAYLOAD: 내용이나 형식이 맞지 않습니다.
   INVALID_USER: 사용자 인증에 실패하였습니다.
+  NOT_NULL_VIOLATION: 값은 비어 있을 수 없습니다.
 create_bookmark: 북마크 만들기
 filter: 필터
 edit_image: 이미지 편집
@@ -425,6 +531,7 @@ fields:
     uploaded_on: 작성일(업로드)
     height: 세로(높이)
     charset: 문자셋
+    duration: 기간
   directus_users:
     first_name: 이름/별명
     last_name: 성
@@ -516,6 +623,8 @@ field_options:
 save_current_user_id: 현재 사용자 ID 저장
 save_current_user_role: 현재 사용자 역할(role) 저장
 comment: 코멘트
+continue_as: >-
+  {name}이(가) 현재 인증되었습니다. 이 계정을 인식하는 경우 계속을 누르세요.
 delete_label: 삭제
 description: 설명
 duplicate: 복제
@@ -550,6 +659,8 @@ interfaces:
     choices_value_placeholder: 값 입력
   file:
     file: 파일
+  input-hash:
+    hash: 해시
   select-icon:
     search_for_icon: 아이콘 찾기...
   system-interface:
@@ -580,6 +691,8 @@ displays:
   translations:
     translations: 번역
     user_language: 현재 사용자와 같은 언어 사용
+  boolean:
+    boolean: 부울형
   datetime:
     format: 형식
     suffix: 접미사
@@ -589,6 +702,7 @@ displays:
     format: 형식
     prefix: 접두사
     suffix: 접미사
+    text: 텍스트
   labels:
     choices_value_placeholder: 값 입력
   user:
@@ -639,6 +753,7 @@ operations:
     recipient: 사용자
     message: 메시지
   request:
+    url: URL
     data: 데이터
   trigger:
     data: 데이터
