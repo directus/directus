@@ -179,7 +179,12 @@ export class FilesService extends ItemsService {
 						}
 					}
 					if (sharpMetadata.icc) {
-						fullMetadata.icc = parseIcc(sharpMetadata.icc);
+						try {
+							fullMetadata.icc = parseIcc(sharpMetadata.icc);
+						} catch (err) {
+							logger.warn(`Couldn't extract ICC profile data from file`);
+							logger.warn(err);
+						}
 					}
 					if (sharpMetadata.iptc) {
 						fullMetadata.iptc = parseIptc(sharpMetadata.iptc);

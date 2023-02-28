@@ -56,12 +56,11 @@ const scenarios = [
 
 	// Test the ttl value
 	{
-		name: 'when ttl is null',
+		name: 'when ttl is undefined',
 		input: {
 			env: {},
 			headers: {},
 			accountability: null,
-			ttl: null,
 			globalCacheSettings: false,
 			personalized: false,
 		},

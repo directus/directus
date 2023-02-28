@@ -11,7 +11,7 @@ import { Request } from 'express';
  */
 export function getCacheControlHeader(
 	req: Request,
-	ttl: number | null,
+	ttl: number | undefined,
 	globalCacheSettings: boolean,
 	personalized: boolean
 ): string {
@@ -22,7 +22,7 @@ export function getCacheControlHeader(
 	if (noCacheRequested) return 'no-store';
 
 	// When the resource / current request shouldn't be cached
-	if (ttl === null || ttl < 0) return 'no-cache';
+	if (ttl === undefined || ttl < 0) return 'no-cache';
 
 	// When the API cache can invalidate at any moment
 	if (globalCacheSettings && env.CACHE_AUTO_PURGE === true) return 'no-cache';

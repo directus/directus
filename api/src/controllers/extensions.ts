@@ -1,14 +1,14 @@
+import { EXTENSION_TYPES } from '@directus/shared/constants';
+import { Plural } from '@directus/shared/types';
+import { depluralize, isIn } from '@directus/shared/utils';
 import { Router } from 'express';
-import asyncHandler from '../utils/async-handler';
+import env from '../env';
 import { RouteNotFoundException } from '../exceptions';
 import { getExtensionManager } from '../extensions';
-import ms from 'ms';
-import env from '../env';
-import { getCacheControlHeader } from '../utils/get-cache-headers';
 import { respond } from '../middleware/respond';
-import { depluralize, isIn } from '@directus/shared/utils';
-import { Plural } from '@directus/shared/types';
-import { EXTENSION_TYPES } from '@directus/shared/constants';
+import asyncHandler from '../utils/async-handler';
+import { getCacheControlHeader } from '../utils/get-cache-headers';
+import { getMilliseconds } from '../utils/get-milliseconds';
 
 const router = Router();
 
@@ -45,7 +45,7 @@ router.get(
 		}
 
 		res.setHeader('Content-Type', 'application/javascript; charset=UTF-8');
-		res.setHeader('Cache-Control', getCacheControlHeader(req, ms(env.EXTENSIONS_CACHE_TTL as string), false, false));
+		res.setHeader('Cache-Control', getCacheControlHeader(req, getMilliseconds(env.EXTENSIONS_CACHE_TTL), false, false));
 		res.setHeader('Vary', 'Origin, Cache-Control');
 		res.end(extensionSource);
 	})

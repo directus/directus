@@ -3,6 +3,7 @@
  * expecting an item vs any other generic object.
  */
 
+import { BaseException } from '@directus/shared/exceptions';
 import { EventContext } from '@directus/shared/types';
 import { MutationTracker } from '../services/items';
 
@@ -56,6 +57,11 @@ export type MutationOptions = {
 	 * To keep track of mutation limits
 	 */
 	mutationTracker?: MutationTracker;
+
+	/*
+	 * The validation error to throw right before the mutation takes place
+	 */
+	preMutationException?: BaseException;
 };
 
 export type ActionEventParams = {
