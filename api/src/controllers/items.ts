@@ -6,6 +6,7 @@ import { validateBatch } from '../middleware/validate-batch';
 import { ItemsService, MetaService } from '../services';
 import { PrimaryKey } from '../types';
 import asyncHandler from '../utils/async-handler';
+import { sanitizeQuery } from '../utils/sanitize-query';
 
 const router = express.Router();
 
@@ -140,7 +141,8 @@ router.patch(
 		} else if (req.body.keys) {
 			keys = await service.updateMany(req.body.keys, req.body.data);
 		} else {
-			keys = await service.updateByQuery(req.body.query, req.body.data);
+			const sanitizedQuery = sanitizeQuery(req.body.query, req.accountability);
+			keys = await service.updateByQuery(sanitizedQuery, req.body.data);
 		}
 
 		try {
