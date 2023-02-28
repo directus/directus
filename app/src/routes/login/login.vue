@@ -11,7 +11,7 @@
 
 		<ldap-form v-else-if="driver === 'ldap'" :provider="provider" />
 
-		<login-form v-else-if="driver === DEFAULT_AUTH_DRIVER" :provider="provider" />
+		<login-form v-else-if="driver === DEFAULT_AUTH_DRIVER || driver === 'local'" :provider="provider" />
 
 		<sso-links v-if="!authenticated" :providers="auth.providers" />
 
