@@ -60,9 +60,9 @@ export async function applyDiff(
 						.map((fieldDiff) => (fieldDiff.diff[0] as DiffNew<Field>).rhs)
 						.map((fieldDiff) => {
 							// Casts field type to UUID when applying non-PostgreSQL schema onto PostgreSQL database.
-							// This is needed because they snapshots UUID fields as char with length 36.
+							// This is needed because they snapshots UUID fields as char/varchar with length 36.
 							if (
-								String(fieldDiff.schema?.data_type).toLowerCase() === 'char' &&
+								['char', 'varchar'].includes(String(fieldDiff.schema?.data_type).toLowerCase()) &&
 								fieldDiff.schema?.max_length === 36 &&
 								(fieldDiff.schema?.is_primary_key ||
 									(fieldDiff.schema?.foreign_key_table && fieldDiff.schema?.foreign_key_column))

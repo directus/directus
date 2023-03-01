@@ -159,6 +159,8 @@ language: Γλώσσα
 language_placeholder: Επιλέξτε μια γλώσσα...
 global: Καθολικός
 camera: Κάμερα
+min: Ελάχιστο
+max: Μέγιστο
 create_field: Δημιουργία πεδίου
 hidden_on_detail: Κρυφό στις λεπτομέρειες
 text: Κείμενο
