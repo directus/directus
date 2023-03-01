@@ -1,6 +1,29 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+identifier: Identifikator
 avatar: Аватар
+application: Апликација
 default_provider: Подразумевано
+method: Метод
 published: Објављено
 draft: Нацрт
 archived: Архивирано
@@ -32,13 +55,112 @@ archive: Архивирај
 unarchive: Деархивирај
 unarchive_confirm: Да ли сте сигурни да желите да деархивирате овај итем?
 language: Језик
+create_in_advanced_field_creation_mode: Kreirajte polje u naprednom režimu
+sum: Zbir
+sum_distinct: Različita suma
+avg: Prosečan
+avg_distinct: Prosečno izražen
+count: Zbir
+count_distinct: Različit iznos
+min: Minimalno
+max: Maksimalno
+exposure: Vidljivost
+shutter: Strelac
+iso: ISO
+focal_length: Жижна даљина
+schema_setup_key: Naziv stupca baze podataka ovog polja i API ključ
 create_field: Креирајте поље
+creating_new_field: 'Novo polje „kolekcija“'
+reset_page_preferences: Ресетуј подешавања апликације
+hidden_field: Сакривена поља
+hidden_on_detail: Sakriven u detaljima
+disabled_editing_value: Onemogući uređivanje vrednosti
+key: Ključ
+alias: Nadimak
+bigInteger: Veliki ceo broj
+boolean: Logički izraz
+date: Datum
+date_range: Vremenski rok
+datetime: Datum i vreme
+dateTime: Datum i vreme
+precision: Preciznost
+decimal: Decimalni
+float: Plutajući
+integer: Ceo broj
+json: JSON
+xml: XML
+yaml: YAML
+string: Pojmovi
 text: Текст
+time: Vreme
+timestamp: Vremenska oznaka
+uuid: UUID
+hash: Isečak
+geometry: Geometrija (sve)
+geometry.Point: Tačka
+geometry.LineString: Linijski niz
+geometry.Polygon: Mnogougao
+geometry.MultiPoint: Višestruko
+geometry.MultiLineString: Višelinijski niz
+geometry.MultiPolygon: Mnogougao
+not_available_for_type: Није доступно за овај тип
 auto_generate: Аутоматски генериши
 add_note: Додај помоћну напомену за кориснике...
 default_value: Подразумевана вредност
+updated_by: Ажурирање
+primary_key: Primarno rešenje
+foreign_key: Strano rešenje
+finish_setup: Завршите подешавање
+dismiss: Odbaci
+toggle_raw_editor: Uključite primarni editor
+raw_editor_placeholder: "Primer korisnog opterećenja{'}{'}"
+raw_value: Osnovna vrednost
+copy_raw_value: Kopiraj osnovnu vrednost
+copy_raw_value_success: Kopirano
+copy_raw_value_fail: Neuspelo kopiranje
+paste_raw_value: Nalepite osnovnu vrednost
+paste_raw_value_success: Nalepljeno
+paste_raw_value_fail: Nalepljivanje nije uspelo
+view_raw_value: Vidi osnovnu vrednost
+edit_raw_value: Izmenite osnovnu vrednost
+enter_raw_value: Unesite osnovnu vrednost...
+clear_value: Obrišite vrednost
+clear_changes: Obrišite izmene
+clear_items: Obrišite stavke
+reset_to_default: Vrati podrazumevano
+undo_changes: Opozovite izmene
+notifications: Obaveštenje
+show_all_activity: Prikažite sve aktivnosti
+page_not_found: Stranica nije pronađena
+page_not_found_body: Izgleda da stranica koju tražite ne postoji.
+confirm_revert: Potvrdite poništavanje
+confirm_revert_body: Ovo će vratiti stavku u izabrano stanje.
+display: Pokazatelj
+settings_update_success: Podešavanja su ažurirana
 title: Наслов
+revision_delta_created: Napravljeno
+revision_delta_created_externally: Spoljna kreacija
+revision_delta_updated: 'Ažurirano 1 polje'
+revision_delta_deleted: Obrisano
+revision_delta_reverted: Vraćeno
+revision_delta_update_message: Ovo polje je ažurirano, ali je njegova vrednost skrivena iz bezbednosnih razloga.
+revision_delta_other: Izmena
+revision_delta_by: 'datum, korisnik'
+presentation_text_values_cannot_be_reimported: "Koristi tekst prezentacije, vrednosti se ne mogu ponovo uvesti."
+download_page_as_csv: 'Preuzmi stranicu kao CSV'
+private_user: Privatni korisnik
+creation_preview: Pregled izrade
+revision_preview: Pregled izmena
+updates_made: Napravljena ažuriranja
 leave_comment: Оставите коментар...
+post_comment_success: Postavljeni komentar
+post_comment_updated: Ažurirani komentar
+item_create_success: Kreirana stavka
+item_update_success: Postavka kreirana
+item_delete_success: Stavka je izbrisana
+this_collection: Ova zbirka
+functions:
+  count: Zbir
 months:
   january: Јануар
   february: Фебруар
@@ -52,6 +174,7 @@ months:
   october: Октобар
   november: Новембар
   december: Децембар
+created: Napravljeno
 owner: Власник
 name: Име
 created_by: Креирао
@@ -168,9 +291,13 @@ interfaces:
     collection: Колекција
   files:
     files: Фајлови
+  input-hash:
+    hash: Isečak
   tags:
     tags: Ознаке
 displays:
+  boolean:
+    boolean: Logički izraz
   collection:
     collection: Колекција
   formatted-value:

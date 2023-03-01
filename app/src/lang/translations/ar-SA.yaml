@@ -844,6 +844,7 @@ create_dashboard: إنشاء لوحة تحكم
 dashboard_name: اسم لوحة التحكم
 no_data: لا توجد بيانات
 accountability: المساءلة
+full_screen: ملء الشاشة
 image_url: رابط الصورة
 alt_text: النص البديل
 media: وسائط الإعلام
@@ -883,6 +884,7 @@ wysiwyg_options:
   selectall: تحديد الكل
   table: الجدول
   visualaid: عرض العناصر غير المرئية
+  fullscreen: ملء الشاشة
   directionality: الاتجاهية
 dropdown: قائمة منسدلة
 choices: الخيارات
@@ -894,6 +896,7 @@ adding_user: إضافة مستخدم
 unknown_user: مستخدم غير معروف
 creating_in: 'إنشاء عنصر في {collection}'
 editing_in: 'تعديل عنصر في {collection}'
+viewing_in: 'عرض العنصر في {collection}'
 creating_unit: 'إنشاء {unit}'
 editing_unit: 'تعديل {unit}'
 editing_in_batch: 'تعديل دفعة من  {count} عناصر'
@@ -904,6 +907,7 @@ settings_project: إعدادات المشروع
 settings_webhooks: روابط الويب (Webhooks)
 settings_flows: التدفقات
 settings_presets: الإعدادات المسبقة والعلامات
+settings_translation_strings: نصوص التّرجَمَة
 one_or_more_options_are_missing: واحد أو أكثر من الخيارات مفقودة
 scope: مجال
 actions: الإجراءات
@@ -1073,18 +1077,41 @@ fields:
     status_suspended: معلّق
     status_archived: مؤرشف
     role: الدور
+    token: الرمز المميز
     last_page: آخر صفحة
     last_access: آخر وصول
   directus_settings:
+    png: PNG
+    webP: WebP
+    tiff: Tiff
+    mapbox_placeholder: pk.eyJ1Ijo.....
+    attribution: السمات
+    attribution_placeholder: المساهمون © OpenStreetMap
     project_name: اسم المشروع
+    project_descriptor: وصف المشروع
     project_url: رابط المشروع
     project_color: لون المشروع
     project_logo: شعار المشروع
+    default_language: اللغة الافتراضية
+    branding: نمط العلامة التجارية
+    public_foreground: الصورة الأمامية العامة
+    public_background: الخلفية العامة
+    public_note: ملاحظة عامة
+    auth_password_policy: سياسات كلمة المرور
+    auth_login_attempts: محاولات تسجيل الدخول
+    files_and_thumbnails: الملفات والتخزين
+    storage_default_folder: المجلد الافتراضي
+    storage_asset_presets: الإعدادات المسبقة للتحويل
+    storage_asset_transform: التحولات المسموح بها
+    custom_css: CSS مخصصة
     module_bar: شريط الوحدة
+    image_editor: محرر الصور
   directus_shares:
     name: الاسم
     role: الدور
     password: كلمة المرور
+    date_start: تاريخ البدء
+    date_end: تاريخ الانتهاء
   directus_fields:
     collection: اسم المجموعة
     icon: أيقونة المجموعة
@@ -1097,10 +1124,15 @@ fields:
     name: إسم الدور
     icon: أيقونة الدور
     description: التفاصيل
+    app_access: صلاحيات تطبيق
+    admin_access: صلاحيات مسؤول
+    enforce_tfa: يتطلب التحقق بخطوتين 2FA
     users: المستخدمون في الدور
   directus_webhooks:
     name: الاسم
     status: حالة
+    data: البيانات
+    header: الترويسة
     value: قيمة
     headers: ترويسات الطلب
     data_label: إرسال بيانات الحدث
@@ -1128,6 +1160,7 @@ field_options:
         outside_text: تلائم بالخارج
     additional_transforms: تحولات إضافية
     mapbox_key: رمز وصول الخريطة
+    mapbox_placeholder: pk.eyJ1Ijo.....
     files_divider_title: الملفات و الصور المصغرة
     overrides_divider_title: تجاوزات التطبيق
   directus_activity:
@@ -1192,18 +1225,29 @@ field_options:
     actions_update: تحديث
     actions_delete: حذف
     headers:
+      header: الترويسة
       value: قيمة
 no_fields_in_collection: 'لا توجد حقول في "{collection}" حتى الآن'
 do_nothing: لا تفعل شيئا
 save_current_user_role: احفظ دور المستخدم الحالي
 save_current_datetime: أحفظ التاريخ/الوقت الحالي
 comment: تعليق
+expired: منتهية الصلاحية
+upcoming: القادم
+share: مشاركة
+shared_with_you: تم مشاركة عنصر معك
+shared_enter_passcode: أدخل رمز المرور الخاص بك للمتابعة...
+share_copy_link: نسخ الرابط
+share_copy_link_success: تم نسخ الرابط
+share_copy_link_error: تعذر نسخ الرابط
+share_send_link: إرسال الرابط
 referential_action_field_label_m2o: عند حذف {collection}...
 referential_action_field_label_o2m: عند إلغاء تحديد {collection}...
 referential_action_no_action: منع الحذف
 referential_action_cascade: حذف العنصر {collection} (تسلسلي)
 referential_action_set_default: تعيين {field} إلى قيمته الافتراضية
 choose_action: اختر الإجراء
+continue_label: متابعة
 editing_role: 'دور {role}'
 creating_webhook: إنشاء Webhook
 default_label: الافتراضي
@@ -1330,6 +1374,9 @@ interfaces:
     description: اختر بين خيارات متعددة عبر مربعات الاختيار
     show_more: 'أظهر {count} أكثر'
     items_shown: العناصر المعروضة
+  select-multiple-checkbox-tree:
+    show_all: عرض الكل
+    show_selected: إظهار المحدد
   input-code:
     code: نص برمجي
     description: كتابة أو مشاركة الكود البرمجي
@@ -1393,7 +1440,10 @@ interfaces:
     description: حدد أو ارفع صورة
   system-interface:
     interface: الواجهة
+  list-m2m:
+    many-to-many: كثير لكثير
   select-dropdown-m2o:
+    many-to-one: كثير إلى واحد
     description: حدد عنصر واحد ذو صلة
     display_template: عرض القالب
   input-rich-text-md:
@@ -1429,6 +1479,9 @@ interfaces:
     slug_label: اجعل رابط القيمة المدخلة آمن
   input-multiline:
     description: أدخل النص المتعدد الأسطر
+  input-translated-string:
+    input-translated-string: نصوص التّرجَمَة
+    search_placeholder: بحث...
   boolean:
     toggle: تبديل
     description: التبديل بين تشغيل وإيقاف التشغيل
@@ -1438,6 +1491,7 @@ interfaces:
   translations:
     display_template: عرض القالب
     no_collection: لا توجد مجموعة
+    enable: تفعيل
   user:
     user: مستخدم
     description: حدد مستخدم directus موجود
@@ -1452,6 +1506,8 @@ interfaces:
     options_override: تجاوز الخيارات
   input-autocomplete-api:
     rate: معدل
+  system-token:
+    system-token: الرمز المميز
 displays:
   translations:
     translations: الترجمة
@@ -1596,3 +1652,4 @@ operations:
   trigger:
     flows: التدفقات
     flow: التدفق
+    data: البيانات

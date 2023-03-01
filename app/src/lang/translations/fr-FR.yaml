@@ -300,7 +300,7 @@ next: Suivant
 field_name: Nom du champ
 translations: Traductions
 no_translations: Aucune traduction
-left_to_right: Hello
+left_to_right: De gauche à droite
 right_to_left: De droite à gauche
 note: Description
 enter_a_value: Saisissez une valeur...
@@ -1738,7 +1738,7 @@ interfaces:
     name: Regroupement
     description: Rendre les champs comme une section pliable
     show_header: En-tête de groupe
-    header_icon: Icônes de l'en-tête 
+    header_icon: Icônes de l'en-tête
     header_color: Couleur d'en-tête
     start_open: Ouvert par défaut
     start_closed: Fermé par défaut
