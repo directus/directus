@@ -49,7 +49,7 @@
 			</template>
 
 			<template #actions>
-				<v-button v-tooltip.bottom="t('save')" icon rounded @click="saveItem(active!)">
+				<v-button v-tooltip.bottom="t('save')" icon rounded :disabled="isSaveDisabled" @click="saveItem(active!)">
 					<v-icon name="check" />
 				</v-button>
 			</template>
@@ -163,6 +163,19 @@ export default defineComponent({
 
 		const activeItem = computed(() => (active.value !== null ? edits.value : null));
 
+		const isSaveDisabled = computed(() => {
+			for (const field of props.fields) {
+				if (
+					field.meta?.required &&
+					field.field &&
+					(edits.value[field.field] === null || edits.value[field.field] === undefined)
+				) {
+					return true;
+				}
+			}
+			return false;
+		});
+
 		const { displayValue } = renderStringTemplate(templateWithDefaults, activeItem);
 
 		const defaults = computed(() => {
@@ -197,7 +210,7 @@ export default defineComponent({
 		});
 
 		const isNewItem = ref(false);
-		const edits = ref({});
+		const edits = ref({} as Record<string, any>);
 		const confirmDiscard = ref(false);
 
 		return {
@@ -212,6 +225,7 @@ export default defineComponent({
 			drawerOpen,
 			displayValue,
 			activeItem,
+			isSaveDisabled,
 			closeDrawer,
 			onSort,
 			templateWithDefaults,
