@@ -499,18 +499,45 @@ interface_not_found: '인터페이스 "{interface}"를 찾을 수 없습니다.'
 operation_not_found: '"{operation}"" 작업을 찾을 수 없습니다.'
 reset_interface: 재설정 인터페이스
 display_not_found: '"{display}"를 찾을 수 없습니다.'
+reset_display: 디스플레이 재설정
+list-m2a: 빌더 (M2A)
 item_count: '데이터 없음 | 1개 항목 | {count}개 항목'
 no_items_copy: 이 목록에는 등록된 내용이 없습니다.
 file_count: '파일 없음 | 파일 1개 | 파일 {count}개'
 no_files_copy: 표시할 파일이 없습니다.
+user_count: '사용자 없음 | 한명의 사용자 | {count}명의 사용자'
 no_users_copy: 이 역할(role)의 사용자가 아직 없습니다.
+webhooks_count: '웹훅 없음 | 한개의 웹훅 | {count}개의 웹훅'
+no_webhooks_copy: 아직 웹후크가 구성되지 않았습니다. 아래에서 하나 만들어 시작해 보세요.
+no_notifications: 알림 없음
+no_notifications_copy: 당신은 모두 잡혔습니다!
 activity_log: 활동 기록
 all_items: 전체 내용
+any: 무엇이든
+no_collections: 컬렉션 없음
 create_collection: 목록 생성
+no_collections_copy_admin: 아직 컬렉션이 없습니다. 시작하려면 아래 버튼을 클릭하세요.
+no_collections_copy: 아직 컬렉션이 없습니다. 시스템 관리자에게 문의하십시오.
+relationship_not_setup: 관계형이 올바르게 구성되지 않았습니다.
+display_template_not_setup: 표시 템플릿 옵션이 잘못 구성됨
+collection_field_not_setup: 컬렉션 필드 옵션이 잘못 구성되었습니다.
+select_a_collection: 컬렉션 선택
+select_a_field: 필드 선택
+active: 활성화
+move_to: 다음으로 이동...
+copy: 복사
 copy_to: 복사 ...
+no_other_dashboards_copy: 아직 다른 대시보드가 ​​없습니다.
+inactive: 비활성화
 users: 사용자
+activity: 활동
+activity_item: 활동 항목
 action: 활동
 ip_address: IP 주소
+user_agent: 사용자 에이전트
+origin: 출처
+webhooks: 웹후크
+decimals: 소수
 value_decimals: 값 소수점
 min_value: 최소값
 max_value: 최대 값
@@ -535,10 +562,21 @@ sort: 정렬
 status: 상태
 remove: 제거
 toggle_manual_sorting: 수동 정렬 전환
+bookmark_doesnt_exist: 북마크가 존재하지 않습니다
+bookmark_doesnt_exist_copy: 열려고 하는 북마크를 찾을 수 없습니다.
+bookmark_doesnt_exist_cta: 컬렉션으로 돌아가기
 select_an_item: 목록에서 선택...
 edit: 수정
+enabled: 사용
+disable_tfa: 2FA 비활성화
+admin_disable_tfa_text: 이 사용자에 대해 2FA를 비활성화하시겠습니까?
+tfa_setup: 2FA 설정
+tfa_scan_code: 인증 앱에서 코드를 스캔하여 2FA 설정을 완료하세요.
+enter_otp_to_disable_tfa: 2FA를 비활성화하려면 OTP를 입력하세요.
 create_account: 계정 추가
 account_created_successfully: 계정이 추가되었습니다.
+auto_fill: 자동 채우기
+corresponding_field: 해당하는 필드
 errors:
   COLLECTION_NOT_FOUND: "목록이 존재하지 않습니다."
   FIELD_NOT_FOUND: 필드가 존재하지 않습니다.
@@ -546,9 +584,51 @@ errors:
   INVALID_CREDENTIALS: 이메일이나 비밀번호가 올바르지 않습니다.
   INVALID_OTP: 일회용 비밀번호가 맞지 않습니다.
   INVALID_PAYLOAD: 내용이나 형식이 맞지 않습니다.
+  INVALID_PROVIDER: 사용자가 다른 인증 공급자에 속해 있습니다.
+  INVALID_QUERY: 잘못된 쿼리
+  INVALID_CONFIG: 잘못된 구성
+  INVALID_TOKEN: 잘못된 토큰
+  INVALID_IP: 허용되지 않는 IP 주소
   INVALID_USER: 사용자 인증에 실패하였습니다.
+  ITEM_LIMIT_REACHED: 항목 한도 도달
+  ITEM_NOT_FOUND: 항목을 찾을 수 없음
+  ROUTE_NOT_FOUND: 찾을 수 없음
+  RECORD_NOT_UNIQUE: 중복 값 감지됨
+  USER_SUSPENDED: 사용자 일시중지됨
+  CONTAINS_NULL_VALUES: 필드에 null 값이 포함되어 있습니다.
+  UNPROCESSABLE_ENTITY: 처리할 수 없는 엔터티
+  INTERNAL_SERVER_ERROR: 예기치 않은 오류
   NOT_NULL_VIOLATION: 값은 비어 있을 수 없습니다.
+  ILLEGAL_ASSET_TRANSFORMATION: 이미지 소스가 너무 커서 미리보기 불가
+  VALUE_TOO_LONG: 값이 너무 깁니다.
+  VALUE_OUT_OF_RANGE: 값이 범위를 벗어났습니다.
+  INVALID_FOREIGN_KEY: 잘못된 외래 키
+  UNKNOWN: 예기치 않은 오류
+  GRAPHQL_VALIDATION_EXCEPTION: GraphQL 유효성 검사 예외
+  SERVICE_UNAVAILABLE: 서비스 불가
+  UNSUPPORTED_MEDIA_TYPE: 지원되지 않는 미디어 유형
+  UNEXPECTED_RESPONSE: 예상치 못한 응답
+  TOKEN_EXPIRED: 토큰 만료
+  RANGE_NOT_SATISFIABLE: 잘못된 범위
+  METHOD_NOT_ALLOWED: 허가되지 않은 메소드
+  REQUESTS_EXCEEDED: 요청 한도 도달
+security: 보안
+value_hashed: 안전하게 해시된 값
+bookmark_name: 북마크 이름...
 create_bookmark: 북마크 만들기
+edit_bookmark: 북마크 편집
+edit_personal_bookmark: 개인 북마크 편집
+edit_role_bookmark: 역할 북마크 편집
+edit_global_bookmark: 글로벌 북마크 편집
+cannot_edit_role_bookmarks: 역할 북마크를 편집할 수 없음
+cannot_edit_global_bookmarks: 글로벌 북마크를 편집할 수 없음
+bookmarks: 북마크
+presets: 프리셋
+unexpected_error: 예기치 않은 오류
+unexpected_error_copy: 예상치 못한 오류가 발생했습니다. 나중에 다시 시도 해주십시오.
+copy_details: 세부정보 복사
+no_app_access: 앱 액세스 없음
+back: 뒤로
 filter: 필터
 edit_image: 이미지 편집
 all_users: 전체 사용자
@@ -612,6 +692,7 @@ viewing_in: '{collection} 조회'
 settings_data_model: 데이터 모델
 settings_permissions: 역할 및 권한
 settings_project: 프로젝트 설정
+settings_webhooks: 웹후크
 settings_presets: 사전설정 및 북마크
 scope: 범위
 layout: 표시 방법
@@ -629,6 +710,7 @@ fields:
     timestamp: 활동일시
     user: 사용자
     comment: 코멘트
+    origin: 출처
     ip: IP 주소
     revisions: 수정내역
   directus_collections:
@@ -676,6 +758,7 @@ fields:
     tfa_secret: 이중 인증
     admin_options: 관리 옵션
     status: 상태
+    status_active: 활성화
     role: 역할
     token: 접속 인증 토큰
     provider: 외부 인증 제공사
@@ -726,6 +809,7 @@ fields:
 field_options:
   directus_settings:
     project_color_note: 로그인/로고 화면 배경
+    security_divider_title: 보안
     overrides_divider_title: App 오버라이드
   directus_activity:
     login: 로그인
@@ -745,7 +829,10 @@ field_options:
     dropdown_light: 밝은 배경 테마
     dropdown_dark: 어두운 배경 테마
     admin_divider: 관리 옵션
+    status_dropdown_active: 활성화
   directus_webhooks:
+    status_options_active: 활성화
+    status_options_inactive: 비활성화
     actions_create: 작성/추가
     actions_update: 업데이트
     actions_delete: 삭제
@@ -781,10 +868,15 @@ interfaces:
   filter:
     name: 필터
     add_filter: 필터 추가
+    any: 무엇이든
   presentation-links:
     primary: 기본
+  system-fields:
+    select_a_collection: 컬렉션 선택
   system-display-template:
     display-template: 표시 형식
+    collection_field_not_setup: 컬렉션 필드 옵션이 잘못 구성되었습니다.
+    select_a_collection: 컬렉션 선택
   select-dropdown:
     choices_value_placeholder: 값 입력
   file:
@@ -812,6 +904,8 @@ interfaces:
     tags: 태그
   input-translated-string:
     search_placeholder: 검색...
+  boolean:
+    label_default: 사용
   translations:
     display_template: 표시 형식
     user_language: 현재 사용자와 같은 언어 사용
