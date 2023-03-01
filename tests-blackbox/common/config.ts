@@ -59,6 +59,7 @@ const directusConfig = {
 	MAX_RELATIONAL_DEPTH: '5',
 	MAX_PAYLOAD_SIZE: '10mb',
 	EXTENSIONS_PATH: './tests-blackbox/extensions',
+	MAX_BATCH_MUTATION: '100',
 	...directusAuthConfig,
 };
 
