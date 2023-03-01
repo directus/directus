@@ -3,6 +3,7 @@ import { getWebsocketController, WebsocketController } from '../controllers';
 import emitter from '../../emitter';
 import { WebSocketClient } from '../types';
 import { HeartbeatHandler } from './heartbeat';
+import { EventContext } from '@directus/shared/types';
 
 // mocking
 vi.mock('../controllers', () => ({
@@ -51,10 +52,10 @@ describe('Websocket heartbeat handler', () => {
 		const fakeClient = mockClient();
 		(fakeClient.send as Mock).mockImplementation(() => {
 			//respond with a message
-			emitter.emitAction('websocket.message', { client: fakeClient, message: { type: 'PONG' } });
+			emitter.emitAction('websocket.message', { client: fakeClient, message: { type: 'PONG' } }, {} as EventContext);
 		});
 		controller.clients.add(fakeClient);
-		emitter.emitAction('websocket.connect', {});
+		emitter.emitAction('websocket.connect', {}, {} as EventContext);
 		// wait for ping
 		await delay(1010); // 1sec interval + 10ms
 		expect(fakeClient.send).toBeCalled();
@@ -70,7 +71,7 @@ describe('Websocket heartbeat handler', () => {
 		// connect fake client
 		const fakeClient = mockClient();
 		controller.clients.add(fakeClient);
-		emitter.emitAction('websocket.connect', {});
+		emitter.emitAction('websocket.connect', {}, {} as EventContext);
 		await delay(2010); // 2x 1sec interval + 10ms
 		expect(fakeClient.send).toBeCalled();
 		// the connection should have been closed
@@ -82,8 +83,8 @@ describe('Websocket heartbeat handler', () => {
 		// connect fake client
 		const fakeClient = mockClient();
 		controller.clients.add(fakeClient);
-		emitter.emitAction('websocket.connect', {});
-		emitter.emitAction('websocket.message', { client: fakeClient, message: { type: 'PING' } });
+		emitter.emitAction('websocket.connect', {}, {} as EventContext);
+		emitter.emitAction('websocket.message', { client: fakeClient, message: { type: 'PING' } }, {} as EventContext);
 		expect(fakeClient.send).toBeCalled();
 	});
 });
