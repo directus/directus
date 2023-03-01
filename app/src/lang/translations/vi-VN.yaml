@@ -1108,6 +1108,7 @@ layouts:
     map: Bản đồ
   kanban:
     advanced: Nâng cao
+both: Cả hai
 panels:
   label:
     name: Nhãn
