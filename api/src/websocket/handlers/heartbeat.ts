@@ -12,8 +12,8 @@ export class HeartbeatHandler {
 	private pulse: NodeJS.Timer | undefined;
 	private controller: WebsocketController;
 
-	constructor() {
-		this.controller = getWebsocketController();
+	constructor(controller?: WebsocketController) {
+		this.controller = controller ?? getWebsocketController();
 		emitter.onAction('websocket.message', ({ client, message }) => {
 			try {
 				this.onMessage(client, WebSocketMessage.parse(message));
