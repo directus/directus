@@ -37,6 +37,7 @@ conditions: 상태
 location: 위치
 condition_rules: 조건식
 input: 입력
+maps: 지도
 switch_user: 사용자 전환
 item_creation: 추가
 item_revision: 수정
@@ -44,15 +45,25 @@ enter_a_name: 이름 입력...
 duplicate_field: 중복 필드
 half_width: 1/2 폭
 full_width: 전체 폭
+group: 그룹
 export_items: 내보내기
+and: 그리고
+or: 또는
+init: 초기화
 dataset_too_large_currently_showing_n_items: 표시할 항목이 너무 많습니다. 앞에서부터  {n}개만 표시합니다.
+modifier: 추가 항목
+custom: 사용자 정의
+hook: 후크
+fill_width: 전체 폭
 field_name_translations: 필드명 번역
 enter_password_to_enable_tfa: 암호를 입력하여 이중 인증을 활성화하십시오
 add_field: 필드 추가
 role_name: 역할명
 branch: 브랜치
+leaf: 잎
 indeterminate: 불확정 상태
 edit_collection: 목록 수정
+exclusive: 독점
 children: 하위
 show_active_items: 사용중인 항목만 표시
 show_archived_items: 보관된 (미사용) 항목만 표시
@@ -164,7 +175,7 @@ auto_refresh: 자동 갱신
 refresh_interval: 갱신 간격
 no_refresh: 갱신하지 않음
 refresh_interval_seconds: 즉시 | 1초 | {seconds}초
-refresh_interval_minutes: 1분  |  {minutes}분 
+refresh_interval_minutes: 1분  |  {minutes}분
 auto_generate: 자동 생성
 this_will_auto_setup_fields_relations: 필수 필드 및 관련된 부분은 자동으로 생성 및 설정됩니다.
 click_here: 여기를 클릭하세요
