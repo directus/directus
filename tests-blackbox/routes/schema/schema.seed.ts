@@ -56,8 +56,8 @@ export const deleteAllCollections = async (vendor: string, pkType: PrimaryKeyTyp
 	const localJunctionM2MM2M2 = `${junctionM2M2}_${pkType}${suffix}`;
 	const localCollectionM2A = `${collectionM2A}_${pkType}${suffix}`;
 	const localCollectionM2A2 = `${collectionM2A2}_${pkType}${suffix}`;
-	const localJunctionM2A = `${junctionM2A}_${pkType}${suffix}`;
-	const localJunctionM2A2 = `${junctionM2A2}_${pkType}${suffix}`;
+	const localJunctionAllM2A = `${junctionM2A}_${pkType}${suffix}`;
+	const localJunctionM2AM2A2 = `${junctionM2A2}_${pkType}${suffix}`;
 	const localCollectionM2O = `${collectionM2O}_${pkType}${suffix}`;
 	const localCollectionM2O2 = `${collectionM2O2}_${pkType}${suffix}`;
 	const localCollectionO2M = `${collectionO2M}_${pkType}${suffix}`;
@@ -76,8 +76,8 @@ export const deleteAllCollections = async (vendor: string, pkType: PrimaryKeyTyp
 	await DeleteCollection(vendor, { collection: localJunctionAllM2M });
 	await DeleteCollection(vendor, { collection: localCollectionM2M2 });
 	await DeleteCollection(vendor, { collection: localCollectionM2M });
-	await DeleteCollection(vendor, { collection: localJunctionM2A2 });
-	await DeleteCollection(vendor, { collection: localJunctionM2A });
+	await DeleteCollection(vendor, { collection: localJunctionM2AM2A2 });
+	await DeleteCollection(vendor, { collection: localJunctionAllM2A });
 	await DeleteCollection(vendor, { collection: localCollectionM2A2 });
 	await DeleteCollection(vendor, { collection: localCollectionM2A });
 	await DeleteCollection(vendor, { collection: localCollectionAll });
