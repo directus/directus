@@ -51,7 +51,7 @@ describe('Websocket heartbeat handler', () => {
 		const fakeClient = mockClient();
 		(fakeClient.send as Mock).mockImplementation(() => {
 			//respond with a message
-			emitter.emitAction('websocket.message', { client: fakeClient });
+			emitter.emitAction('websocket.message', { client: fakeClient, message: { type: 'PONG' } });
 		});
 		controller.clients.add(fakeClient);
 		emitter.emitAction('websocket.connect', {});
@@ -75,5 +75,15 @@ describe('Websocket heartbeat handler', () => {
 		expect(fakeClient.send).toBeCalled();
 		// the connection should have been closed
 		expect(fakeClient.close).toBeCalled();
+	});
+	test('the server should pong if the client pings', async () => {
+		// initialize handler
+		new HeartbeatHandler(controller);
+		// connect fake client
+		const fakeClient = mockClient();
+		controller.clients.add(fakeClient);
+		emitter.emitAction('websocket.connect', {});
+		emitter.emitAction('websocket.message', { client: fakeClient, message: { type: 'PING' } });
+		expect(fakeClient.send).toBeCalled();
 	});
 });
