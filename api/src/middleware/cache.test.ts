@@ -1,13 +1,16 @@
 import { Request, Response } from 'express';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 
-import * as env from '../env';
-import { getCacheKey } from '../utils/get-cache-key';
-import { getCache, getCacheValue } from '../cache';
+const mockGetEnv = vi.fn();
 
 vi.mock('../env', () => ({
 	default: {},
+	getEnv: mockGetEnv,
 }));
+
+import * as env from '../env';
+import { getCacheKey } from '../utils/get-cache-key';
+import { getCache, getCacheValue } from '../cache';
 
 vi.mock('../cache', () => ({
 	getCache: vi.fn().mockReturnValue({ cache: vi.fn() }),
@@ -42,7 +45,7 @@ const nextFunction = vi.fn();
 const cacheStatusHeader = 'X-Directus-Cache';
 
 beforeEach(() => {
-	mockRequest = { headers: {} };
+	mockRequest = {};
 	mockResponse = {
 		json: vi.fn(),
 		setHeader: vi.fn(),
@@ -55,7 +58,10 @@ afterEach(() => {
 });
 
 test('should skip if not GET method and not graphQL', async () => {
-	(env.default as Record<string, any>) = {};
+	const testEnv = {};
+	(env.default as Record<string, any>) = testEnv;
+	mockGetEnv.mockReturnValue(testEnv);
+
 	mockRequest.method = 'POST';
 	mockRequest.originalUrl = '/items/test';
 
@@ -67,7 +73,10 @@ test('should skip if not GET method and not graphQL', async () => {
 });
 
 test('should skip if CACHE_ENABLED environment variable is not true', async () => {
-	(env.default as Record<string, any>) = { CACHE_ENABLED: false };
+	const testEnv = { CACHE_ENABLED: false };
+	(env.default as Record<string, any>) = testEnv;
+	mockGetEnv.mockReturnValue(testEnv);
+
 	mockRequest.method = 'GET';
 
 	const checkCache = (await import(modulePath)).default;
@@ -78,7 +87,10 @@ test('should skip if CACHE_ENABLED environment variable is not true', async () =
 });
 
 test('should skip if CACHE_ENABLED environment variable is true but cache is missing', async () => {
-	(env.default as Record<string, any>) = { CACHE_ENABLED: true };
+	const testEnv = { CACHE_ENABLED: true };
+	(env.default as Record<string, any>) = testEnv;
+	mockGetEnv.mockReturnValue(testEnv);
+
 	mockRequest.method = 'GET';
 	vi.mocked(getCache).mockReturnValueOnce({ cache: undefined } as any);
 
@@ -90,9 +102,19 @@ test('should skip if CACHE_ENABLED environment variable is true but cache is mis
 });
 
 test('should skip if request contains cache-control header set as "no-store" and set cache status header to MISS', async () => {
-	(env.default as Record<string, any>) = { CACHE_ENABLED: true, CACHE_STATUS_HEADER: cacheStatusHeader };
+	const testEnv = { CACHE_ENABLED: true, CACHE_SKIP_ALLOWED: true, CACHE_STATUS_HEADER: cacheStatusHeader };
+	(env.default as Record<string, any>) = testEnv;
+	mockGetEnv.mockReturnValue(testEnv);
+
 	mockRequest.method = 'GET';
-	mockRequest.headers = { 'cache-control': 'no-store' };
+	mockRequest.get = vi.fn((str) => {
+		switch (str) {
+			case 'cache-control':
+				return 'no-store';
+			default:
+				return undefined;
+		}
+	});
 
 	const checkCache = (await import(modulePath)).default;
 	await checkCache(mockRequest as Request, mockResponse as Response, nextFunction);
@@ -103,8 +125,19 @@ test('should skip if request contains cache-control header set as "no-store" and
 });
 
 test('should skip if cache key is not found', async () => {
-	(env.default as Record<string, any>) = { CACHE_ENABLED: true, CACHE_STATUS_HEADER: cacheStatusHeader };
+	const testEnv = { CACHE_ENABLED: true, CACHE_SKIP_ALLOWED: true, CACHE_STATUS_HEADER: cacheStatusHeader };
+	(env.default as Record<string, any>) = testEnv;
+	mockGetEnv.mockReturnValue(testEnv);
+
 	mockRequest.method = 'GET';
+	mockRequest.get = vi.fn((str) => {
+		switch (str) {
+			case 'cache-control':
+				return 'no-store';
+			default:
+				return undefined;
+		}
+	});
 	vi.mocked(getCacheValue).mockImplementation(() => Promise.reject({ message: 'fake error' }));
 
 	const checkCache = (await import(modulePath)).default;
@@ -115,8 +148,12 @@ test('should skip if cache key is not found', async () => {
 });
 
 test('should set cache-control response header based on expiry date of found cache', async () => {
-	(env.default as Record<string, any>) = { CACHE_ENABLED: true, CACHE_STATUS_HEADER: cacheStatusHeader };
+	const testEnv = { CACHE_ENABLED: true, CACHE_SKIP_ALLOWED: true, CACHE_STATUS_HEADER: cacheStatusHeader };
+	(env.default as Record<string, any>) = testEnv;
+	mockGetEnv.mockReturnValue(testEnv);
+
 	mockRequest.method = 'GET';
+	mockRequest.get = vi.fn(() => undefined);
 	const mockedExpiryDateInTheFuture = Date.now() + 100000;
 	vi.mocked(getCacheValue).mockImplementation(() => Promise.resolve({ exp: mockedExpiryDateInTheFuture }));
 
