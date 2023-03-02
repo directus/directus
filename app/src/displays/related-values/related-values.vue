@@ -1,7 +1,12 @@
 <template>
 	<value-null v-if="!relatedCollection" />
 	<v-menu
-		v-else-if="localType && ['o2m', 'm2m', 'm2a', 'translations', 'files'].includes(localType.toLowerCase())"
+		v-else-if="
+			localType &&
+			['o2m', 'm2m', 'm2a', 'translations', 'files'].includes(localType.toLowerCase()) &&
+			Array.isArray(value) &&
+			value.length > 1
+		"
 		show-arrow
 		:disabled="value.length === 0"
 	>
@@ -37,7 +42,12 @@
 			</v-list-item>
 		</v-list>
 	</v-menu>
-	<render-template v-else :template="getTemplate(value)" :item="value" :collection="relatedCollection" />
+	<render-template
+		v-else
+		:template="getTemplate(Array.isArray(value) ? value[0] : value)"
+		:item="Array.isArray(value) ? value[0] : value"
+		:collection="junctionCollection ?? relatedCollection"
+	/>
 </template>
 
 <script lang="ts">
@@ -167,20 +177,11 @@ export default defineComponent({
 		function getTemplate(item: any): string {
 			if (Array.isArray(relatedCollection.value) && collectionField.value && typeof props.template === 'object') {
 				return (
-					props.template[item[collectionField.value]] ?? getDefaultTemplateForCollection(item[collectionField.value])
+					props.template[item[collectionField.value]] ??
+					`{{${primaryKeyFieldPaths.value[item[collectionField.value]]}}}`
 				);
 			}
-			return (props.template as string) ?? getDefaultTemplateForCollection(relatedCollection.value as string);
-		}
-
-		function getDefaultTemplateForCollection(collection: string): string {
-			const col = collectionsStore.getCollection(collection);
-			if (col?.meta?.display_template) {
-				return col.meta.display_template;
-			} else {
-				const pkFieldPath = primaryKeyFieldPaths.value[collection];
-				return `{{${pkFieldPath}}}`;
-			}
+			return (props.template as string) ?? `{{${primaryKeyFieldPaths.value[relatedCollection.value as string]}}}`;
 		}
 	},
 });

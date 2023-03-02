@@ -31,10 +31,22 @@ export function getRelatedCollection(collection: string, field: string): Related
 	 * return whichever collection isn't the current one
 	 */
 	if (relations.length === 1) {
-		return {
-			relatedCollection:
-				relations[0].collection === collection ? relations[0].related_collection! : relations[0].collection,
-		};
+		if (relations[0].collection === collection) {
+			if (relations[0].related_collection) {
+				return {
+					relatedCollection: relations[0].related_collection,
+				};
+			} else if (field.includes(':')) {
+				const [_, collectionScope] = field.split(':');
+				if (relations[0].meta?.one_allowed_collections?.includes(collectionScope)) {
+					return { relatedCollection: collectionScope };
+				}
+			}
+			return null;
+		} else {
+			return { relatedCollection: relations[0].collection };
+		}
+
 		/* Else it must be a junction collection, either m2m or m2a
 		 * (translations is also an m2m)
 		 */

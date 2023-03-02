@@ -321,7 +321,7 @@ export const useFieldsStore = defineStore({
 		 * Retrieve field info for a field or a related field
 		 */
 		getField(collection: string, fieldKey: string): Field | null {
-			if (fieldKey.includes('.')) {
+			if (fieldKey.includes('.') || fieldKey.includes(':')) {
 				return this.getRelationalField(collection, fieldKey) || null;
 			} else {
 				return this.fields.find((field) => field.collection === collection && field.field === fieldKey) || null;
@@ -342,8 +342,8 @@ export const useFieldsStore = defineStore({
 			const relationsStore = useRelationsStore();
 			const [field, ...path] = fields.split('.');
 			if (field.includes(':')) {
-				const [_, collection] = field.split(':');
-				return this.getField(collection, path.join('.'));
+				const [key, scopedCollection] = field.split(':');
+				return path.length > 0 ? this.getField(scopedCollection, path.join('.')) : this.getField(collection, key);
 			}
 
 			const relations = relationsStore.getRelationsForField(collection, field);

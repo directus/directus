@@ -24,6 +24,7 @@
 import { useExtension } from '@/composables/use-extension';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
+import { useCollectionsStore } from '@/stores/collections';
 import { getDefaultDisplayForType } from '@/utils/get-default-display-for-type';
 import { translate } from '@/utils/translate-literal';
 import { Field } from '@directus/shared/types';
@@ -49,6 +50,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const fieldsStore = useFieldsStore();
 const relationsStore = useRelationsStore();
+const collectionsStore = useCollectionsStore();
 
 const templateEl = ref<HTMLElement>();
 
@@ -108,21 +110,129 @@ function handleArray(fieldKeyBefore: string, fieldKeyAfter: string) {
 	};
 }
 
-function handleObject(fieldKey: string) {
-	// Special m2a keys
-	const m2aKeyRegex = /(\$t:collection_names_(?:singular|plural)\.)(.+)/g;
+function handleM2AFields(fieldKey: string): { realPath: string; objectPath: string } {
+	const parts = fieldKey.split('.');
+	const pathSoFar = {
+		realPath: '',
+		objectPath: '',
+	};
 
-	if (fieldKey.search(m2aKeyRegex) !== -1) {
-		const parts = [...fieldKey.matchAll(m2aKeyRegex)][0];
-		if (parts[2] && props.item[parts[2]]) {
-			return te(`${parts[1]}${props.item[parts[2]]}`.replace('$t:', ''))
-				? `${parts[1]}${props.item[parts[2]]}`
-				: props.item[parts[2]];
+	for (const part of parts) {
+		const curRealPath = pathSoFar.realPath === '' ? part : `${pathSoFar.realPath}.${part}`;
+		if (part.includes(':')) {
+			const [key, collection] = part.split(':');
+			const field =
+				fieldsStore.getField(props.collection, curRealPath) ||
+				props.fields?.find((field) => field.field === curRealPath);
+			if (field) {
+				const relations = relationsStore.getRelationsForField(field.collection, field.field);
+				const m2aRelation = relations.find((relation) => relation.meta?.one_allowed_collections != null);
+				const collectionField = m2aRelation?.meta?.one_collection_field;
+
+				if (collectionField) {
+					let newKey = `.${key}`;
+					let curItemCollection = undefined;
+					if (pathSoFar.objectPath === '') {
+						curItemCollection = get(props.item, collectionField);
+					} else {
+						const m2aFieldValue = get(props.item, pathSoFar.objectPath);
+
+						if (Array.isArray(m2aFieldValue)) {
+							curItemCollection = get(m2aFieldValue, [0, collectionField]);
+							newKey = `[0].${key}`;
+						} else {
+							curItemCollection = get(m2aFieldValue, collectionField);
+						}
+					}
+					if (curItemCollection === collection) {
+						// The item is in the correct scope for the collection
+						// we can safely remove the collection scope from the field
+						pathSoFar.objectPath = pathSoFar.objectPath === '' ? key : `${pathSoFar.objectPath}${newKey}`;
+					} else {
+						break;
+					}
+				} else {
+					// Otherwise we should stop there, since the item
+					// is not in the correct collection scope for this template field
+					// Instead we return the previous field path, which will give us the junction id
+					break;
+				}
+			}
+		} else {
+			pathSoFar.objectPath = pathSoFar.objectPath === '' ? part : [pathSoFar.objectPath, part].join('.');
 		}
+		pathSoFar.realPath = curRealPath;
+	}
+
+	return pathSoFar;
+}
+
+function handleObject(fieldKey: string) {
+	const m2aSpecialFieldsRegex = /\$(collection_name_singular|collection_name_plural|item_default_display_template)/g;
+
+	/*
+	 * If any m2a special fields are found, we need to replace those with the
+	 * appropriate value, otherwise finding the field will fail. They should
+	 * always be at the end, so we don't need to worry about nesting deeper.
+	 */
+
+	let { objectPath: fieldKeyObjectPath, realPath: fieldKeyReal } = handleM2AFields(fieldKey);
+
+	const specialField = fieldKeyObjectPath.match(m2aSpecialFieldsRegex)?.[0];
+	if (specialField) {
+		const fieldKeyBase = fieldKeyObjectPath.replace(RegExp(`\\.?\\${specialField}`), '');
+		let m2aJunctionCollection = props.collection;
+		if (fieldKeyBase !== '') {
+			const field =
+				fieldsStore.getField(props.collection, fieldKeyBase) ||
+				props.fields?.find((field) => field.field === fieldKeyReal);
+			if (field?.collection) {
+				m2aJunctionCollection = field.collection;
+			}
+		}
+		const relations = relationsStore.getRelationsForCollection(m2aJunctionCollection);
+		const m2aRelation = relations.find(
+			(relation) => relation.meta?.one_allowed_collections != null && relation.meta?.one_collection_field != null
+		);
+		if (m2aRelation) {
+			const itemCollectionPath =
+				fieldKeyBase !== ''
+					? [fieldKeyBase, m2aRelation.meta!.one_collection_field!].join('.')
+					: m2aRelation.meta!.one_collection_field!;
+			const itemCollection = get(props.item, itemCollectionPath);
+			const itemCollectionInfo = collectionsStore.getCollection(itemCollection);
+			if (itemCollectionInfo) {
+				if (specialField === '$collection_name_singular') {
+					return te(`collection_names_singular.${itemCollectionInfo.collection}`)
+						? `$t:collection_names_singular.${itemCollectionInfo.collection}`
+						: itemCollectionInfo.name;
+				}
+				if (specialField === '$collection_name_plural') {
+					return te(`collection_names_plural.${itemCollectionInfo.collection}`)
+						? `$t:collection_names_plural.${itemCollectionInfo.collection}`
+						: itemCollectionInfo.name;
+				}
+				if (specialField === '$item_default_display_template') {
+					return {
+						component: 'related-values',
+						options: { template: itemCollectionInfo.meta?.display_template },
+						value: fieldKeyBase !== '' ? props.item[fieldKeyBase][m2aRelation.field] : props.item[m2aRelation.field],
+						interface: null,
+						interfaceOptions: null,
+						type: 'unknown',
+						collection: m2aJunctionCollection,
+						field: `${m2aRelation.field}:${itemCollectionInfo.collection}`,
+					};
+				}
+			}
+		}
+		// None of the above has worked, so it's best we just discard this field and fall back
+		fieldKeyObjectPath = fieldKeyBase;
+		fieldKeyReal = fieldKeyReal.replace(RegExp(`\\.?\\${specialField}`), '');
 	}
 
 	const field =
-		fieldsStore.getField(props.collection, fieldKey) || props.fields?.find((field) => field.field === fieldKey);
+		fieldsStore.getField(props.collection, fieldKeyReal) || props.fields?.find((field) => field.field === fieldKeyReal);
 
 	/**
 	 * This is for cases where you are rendering a display template directly on
@@ -133,27 +243,13 @@ function handleObject(fieldKey: string) {
 	 * will extract the value correctly.
 	 */
 	if (field && field.collection === 'directus_files' && field.field === '$thumbnail') {
-		fieldKey = fieldKey
+		fieldKeyReal = fieldKeyReal
 			.split('.')
 			.filter((part) => part !== '$thumbnail')
 			.join('.');
 	}
 
-	let value = get(props.item, fieldKey);
-
-	//TODO: fix this for nested m2a fields...
-	if (!value) {
-		const [field, ...path] = fieldKey.split('.');
-		if (field.includes(':')) {
-			const [key, collection] = field.split(':');
-			const relations = relationsStore.getRelationsForField(props.collection, key);
-			const m2aRelation = relations.find((relation) => relation.meta?.one_allowed_collections != null);
-			const collectionField = m2aRelation?.meta?.one_collection_field;
-			if (collectionField && props.item[collectionField] === collection) {
-				value = get(props.item, [key, ...path].join('.'));
-			}
-		}
-	}
+	let value = get(props.item, fieldKeyObjectPath);
 
 	if (value === undefined) return null;
 
@@ -166,14 +262,14 @@ function handleObject(fieldKey: string) {
 
 	const displayInfo = useExtension(
 		'display',
-		computed(() => field.meta?.display ?? null)
+		computed(() => display)
 	);
 
 	// If used display doesn't exist in the current project, return raw value
 	if (!displayInfo.value) return value;
 
 	return {
-		component: field.meta?.display,
+		component: display,
 		options: field.meta?.display_options,
 		value: value,
 		interface: field.meta?.interface,

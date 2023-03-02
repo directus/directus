@@ -85,13 +85,15 @@ export default defineComponent({
 			internalValue.value = { ...internalValue.value, [collection]: event };
 		};
 
+		// TODO: move to gettree for nested m2as
+
 		const injectedFields = computed(() => {
 			const singularField: Field = {
 				name: `${t('field_options.directus_collections.collection_name')} (${t(
 					'field_options.directus_collections.singular_unit'
 				)})`,
 				collection: collectionName.value,
-				field: `$t:collection_names_singular.${collectionField.value}`,
+				field: `$collection_name_singular`,
 				type: 'string',
 				schema: null,
 				meta: null,
@@ -101,12 +103,20 @@ export default defineComponent({
 					'field_options.directus_collections.plural_unit'
 				)})`,
 				collection: collectionName.value,
-				field: `$t:collection_names_plural.${collectionField.value}`,
+				field: `$collection_name_plural`,
 				type: 'string',
 				schema: null,
 				meta: null,
 			};
-			return [singularField, pluralField];
+			const itemDefaultField: Field = {
+				name: `${t('item')} (${t('default_label')} ${t('fields.directus_collections.display_template')})`,
+				collection: collectionName.value,
+				field: `$item_default_display_template`,
+				type: 'string',
+				schema: null,
+				meta: null,
+			};
+			return [singularField, pluralField, itemDefaultField];
 		});
 
 		return { t, allowedCollectionsInfo, handleUpdate, internalValue, injectedFields };

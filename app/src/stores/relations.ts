@@ -63,13 +63,13 @@ export const useRelationsStore = defineStore({
 
 			const relations: Relation[] = this.getRelationsForCollection(collection).filter((relation: Relation) => {
 				return (
-					(relation.collection === collection && relation.field === field) ||
-					(relation.related_collection === collection && relation.meta?.one_field === field)
+					(relation.collection === collection && relation.field === fieldInfo.field) ||
+					(relation.related_collection === collection && relation.meta?.one_field === fieldInfo.field)
 				);
 			});
 
 			if (relations.length > 0) {
-				const isM2M = relations[0].meta?.junction_field !== null;
+				const isM2M = relations[0].meta?.junction_field !== null && relations[0].meta?.one_allowed_collections === null;
 
 				// If the relation matching the field has a junction field, it's a m2m (OR M2A). In that case,
 				// we also want to return the secondary relationship (from the jt to the related(s))
