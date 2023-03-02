@@ -25,7 +25,7 @@ if (env.RATE_LIMITER_GLOBAL_ENABLED === true) {
 		} catch (rateLimiterRes: any) {
 			if (rateLimiterRes instanceof Error) throw rateLimiterRes;
 
-			res.set('Retry-After', String(rateLimiterRes.msBeforeNext / 1000));
+			res.set('Retry-After', String(Math.round(rateLimiterRes.msBeforeNext / 1000)));
 			throw new HitRateLimitException(`Too many requests, retry after ${ms(rateLimiterRes.msBeforeNext)}.`, {
 				limit: +env.RATE_LIMITER_GLOBAL_POINTS,
 				reset: new Date(Date.now() + rateLimiterRes.msBeforeNext),
