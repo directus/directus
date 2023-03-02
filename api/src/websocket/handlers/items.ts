@@ -1,10 +1,9 @@
 import logger from '../../logger';
 import { getSchema } from '../../utils/get-schema';
-import { ItemsService } from '../../services/items';
+import { ItemsService, MetaService } from '../../services';
 import type { WebSocketClient } from '../types';
 import { fmtMessage, trimUpper } from '../utils/message';
 import emitter from '../../emitter';
-import { MetaService } from '../../services';
 import { sanitizeQuery } from '../../utils/sanitize-query';
 import { handleWebsocketException, WebSocketException } from '../exceptions';
 import { WebSocketItemsMessage } from '../messages';
@@ -14,7 +13,10 @@ export class ItemsHandler {
 		emitter.onAction('websocket.message', ({ client, message }) => {
 			if (trimUpper(message.type) !== 'ITEMS') return;
 			try {
-				this.onMessage(client, WebSocketItemsMessage.parse(message));
+				const parsedMessage = WebSocketItemsMessage.parse(message);
+				this.onMessage(client, parsedMessage).catch((err) => {
+					handleWebsocketException(client, err, 'items');
+				});
 			} catch (err) {
 				handleWebsocketException(client, err, 'items');
 			}
