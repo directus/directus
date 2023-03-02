@@ -1,11 +1,14 @@
 import { Request, Response } from 'express';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 
-import * as env from '../env';
+const mockGetEnv = vi.fn();
 
 vi.mock('../env', () => ({
 	default: {},
+	getEnv: mockGetEnv,
 }));
+
+import * as env from '../env';
 
 import { createRateLimiter } from '../rate-limiter';
 
@@ -33,7 +36,9 @@ afterEach(() => {
 });
 
 test('should not be enabled when RATE_LIMITER_ENABLED is false', async () => {
-	(env.default as Record<string, any>) = { RATE_LIMITER_ENABLED: false };
+	const testEnv = { RATE_LIMITER_ENABLED: false };
+	(env.default as Record<string, any>) = testEnv;
+	mockGetEnv.mockReturnValue(testEnv);
 
 	const checkRateLimit = (await import(modulePath)).default;
 	await checkRateLimit(mockRequest as Request, mockResponse as Response, nextFunction);
@@ -42,12 +47,14 @@ test('should not be enabled when RATE_LIMITER_ENABLED is false', async () => {
 });
 
 test('should be enabled when RATE_LIMITER_ENABLED is true', async () => {
-	(env.default as Record<string, any>) = {
+	const testEnv = {
 		RATE_LIMITER_ENABLED: true,
 		RATE_LIMITER_STORE: 'memory',
 		RATE_LIMITER_DURATION: 1,
 		RATE_LIMITER_POINTS: 25,
 	};
+	(env.default as Record<string, any>) = testEnv;
+	mockGetEnv.mockReturnValue(testEnv);
 
 	const checkRateLimit = (await import(modulePath)).default;
 	checkRateLimit(mockRequest as Request, mockResponse as Response, nextFunction);
@@ -56,12 +63,15 @@ test('should be enabled when RATE_LIMITER_ENABLED is true', async () => {
 });
 
 test('should consume rate limit based on IP', async () => {
-	(env.default as Record<string, any>) = {
+	const testEnv = {
 		RATE_LIMITER_ENABLED: true,
 		RATE_LIMITER_STORE: 'memory',
 		RATE_LIMITER_DURATION: 1,
 		RATE_LIMITER_POINTS: 25,
 	};
+	(env.default as Record<string, any>) = testEnv;
+	mockGetEnv.mockReturnValue(testEnv);
+
 	const requestIP = '10.10.10.1';
 	mockRequest = { ip: requestIP };
 	const consumeSpy = vi.spyOn(createRateLimiter(), 'consume');
@@ -74,12 +84,16 @@ test('should consume rate limit based on IP', async () => {
 
 test('should set Retry-After response header and pass HitRateLimitException error to next()', async () => {
 	const points = 25;
-	(env.default as Record<string, any>) = {
+
+	const testEnv = {
 		RATE_LIMITER_ENABLED: true,
 		RATE_LIMITER_STORE: 'memory',
 		RATE_LIMITER_DURATION: 1,
 		RATE_LIMITER_POINTS: points,
 	};
+	(env.default as Record<string, any>) = testEnv;
+	mockGetEnv.mockReturnValue(testEnv);
+
 	const requestIP = '10.10.10.1';
 	mockRequest = { ip: requestIP };
 	const msBeforeNext = 10000;
