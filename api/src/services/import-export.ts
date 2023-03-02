@@ -4,6 +4,7 @@ import { queue } from 'async';
 import csv from 'csv-parser';
 import destroyStream from 'destroy';
 import { appendFile, createReadStream } from 'fs-extra';
+import { dump as toYAML } from 'js-yaml';
 import { parse as toXML } from 'js2xmlparser';
 import { Parser as CSVParser, transforms as CSVTransforms } from 'json2csv';
 import { Knex } from 'knex';
@@ -20,12 +21,15 @@ import {
 	UnsupportedMediaTypeException,
 } from '../exceptions';
 import logger from '../logger';
-import { AbstractServiceOptions, File } from '../types';
+import { AbstractServiceOptions, ActionEventParams, File } from '../types';
 import { getDateFormatted } from '../utils/get-date-formatted';
 import { FilesService } from './files';
 import { ItemsService } from './items';
 import { NotificationsService } from './notifications';
+import emitter from '../emitter';
 import type { Readable } from 'node:stream';
+
+type ExportFormat = 'csv' | 'json' | 'xml' | 'yaml';
 
 export class ImportService {
 	knex: Knex;
@@ -66,6 +70,7 @@ export class ImportService {
 
 	importJSON(collection: string, stream: Readable): Promise<void> {
 		const extractJSON = StreamArray.withParser();
+		const nestedActionEvents: ActionEventParams[] = [];
 
 		return this.knex.transaction((trx) => {
 			const service = new ItemsService(collection, {
@@ -75,7 +80,7 @@ export class ImportService {
 			});
 
 			const saveQueue = queue(async (value: Record<string, unknown>) => {
-				return await service.upsertOne(value);
+				return await service.upsertOne(value, { bypassEmitAction: (params) => nestedActionEvents.push(params) });
 			});
 
 			return new Promise<void>((resolve, reject) => {
@@ -98,6 +103,10 @@ export class ImportService {
 
 				extractJSON.on('end', () => {
 					saveQueue.drain(() => {
+						for (const nestedActionEvent of nestedActionEvents) {
+							emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
+						}
+
 						return resolve();
 					});
 				});
@@ -106,6 +115,8 @@ export class ImportService {
 	}
 
 	importCSV(collection: string, stream: Readable): Promise<void> {
+		const nestedActionEvents: ActionEventParams[] = [];
+
 		return this.knex.transaction((trx) => {
 			const service = new ItemsService(collection, {
 				knex: trx,
@@ -114,7 +125,7 @@ export class ImportService {
 			});
 
 			const saveQueue = queue(async (value: Record<string, unknown>) => {
-				return await service.upsertOne(value);
+				return await service.upsertOne(value, { bypassEmitAction: (action) => nestedActionEvents.push(action) });
 			});
 
 			return new Promise<void>((resolve, reject) => {
@@ -147,6 +158,10 @@ export class ImportService {
 					})
 					.on('end', () => {
 						saveQueue.drain(() => {
+							for (const nestedActionEvent of nestedActionEvents) {
+								emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
+							}
+
 							return resolve();
 						});
 					});
@@ -178,16 +193,17 @@ export class ExportService {
 	async exportToFile(
 		collection: string,
 		query: Partial<Query>,
-		format: 'xml' | 'csv' | 'json',
+		format: ExportFormat,
 		options?: {
 			file?: Partial<File>;
 		}
 	) {
 		try {
 			const mimeTypes = {
-				xml: 'text/xml',
 				csv: 'text/csv',
 				json: 'application/json',
+				xml: 'text/xml',
+				yaml: 'text/yaml',
 			};
 
 			const database = getDatabase();
@@ -304,7 +320,7 @@ export class ExportService {
 	 */
 	transform(
 		input: Record<string, any>[],
-		format: 'xml' | 'csv' | 'json',
+		format: ExportFormat,
 		options?: {
 			includeHeader?: boolean;
 			includeFooter?: boolean;
@@ -352,6 +368,10 @@ export class ExportService {
 			}
 
 			return string;
+		}
+
+		if (format === 'yaml') {
+			return toYAML(input);
 		}
 
 		throw new ServiceUnavailableException(`Illegal export type used: "${format}"`, { service: 'export' });

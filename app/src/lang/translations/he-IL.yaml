@@ -252,6 +252,7 @@ layouts:
     subtitle: כותרת משנית
   calendar:
     calendar: לוח שנה
+both: שניהם
 operations:
   log:
     message: הודעה

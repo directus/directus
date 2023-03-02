@@ -327,7 +327,7 @@ function generateFields(updates: StateUpdates, state: State, { getCurrent }: Hel
 			type: 'integer',
 			schema: {},
 			meta: {
-				hidden: false,
+				hidden: true,
 			},
 		});
 	} else {
