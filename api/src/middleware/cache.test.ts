@@ -107,14 +107,7 @@ test('should skip if request contains cache-control header set as "no-store" and
 	mockGetEnv.mockReturnValue(testEnv);
 
 	mockRequest.method = 'GET';
-	mockRequest.get = vi.fn((str) => {
-		switch (str) {
-			case 'cache-control':
-				return 'no-store';
-			default:
-				return undefined;
-		}
-	});
+	mockRequest.get = vi.fn().mockReturnValue('no-store');
 
 	const checkCache = (await import(modulePath)).default;
 	await checkCache(mockRequest as Request, mockResponse as Response, nextFunction);
@@ -130,14 +123,8 @@ test('should skip if cache key is not found', async () => {
 	mockGetEnv.mockReturnValue(testEnv);
 
 	mockRequest.method = 'GET';
-	mockRequest.get = vi.fn((str) => {
-		switch (str) {
-			case 'cache-control':
-				return 'no-store';
-			default:
-				return undefined;
-		}
-	});
+	mockRequest.get = vi.fn().mockReturnValue('no-store');
+
 	vi.mocked(getCacheValue).mockImplementation(() => Promise.reject({ message: 'fake error' }));
 
 	const checkCache = (await import(modulePath)).default;
@@ -153,7 +140,8 @@ test('should set cache-control response header based on expiry date of found cac
 	mockGetEnv.mockReturnValue(testEnv);
 
 	mockRequest.method = 'GET';
-	mockRequest.get = vi.fn(() => undefined);
+	mockRequest.get = vi.fn().mockReturnValue(undefined);
+
 	const mockedExpiryDateInTheFuture = Date.now() + 100000;
 	vi.mocked(getCacheValue).mockImplementation(() => Promise.resolve({ exp: mockedExpiryDateInTheFuture }));
 
