@@ -1,7 +1,7 @@
 stages:
   - crawless-directus-tests
-  - crawless-directus
   - crawless-directus-api2
+  - crawless-directus
 
 variables:
   DOCKER_DRIVER: overlay2
