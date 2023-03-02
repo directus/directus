@@ -573,6 +573,8 @@ select_an_item: Pilih sebuah item...
 edit: Edit
 enabled: Diaktifkan
 disable_tfa: Nonaktifkan 2FA
+admin_disable_tfa_text: Apa Anda yakin ingin menonaktifkan 2FA pada user ini?
+tfa_setup: Mempersiapkan 2FA
 tfa_scan_code: Scan kode pada aplikasi peng-autentifikasi untuk menyelesaikan pengaturan 2FA
 enter_otp_to_disable_tfa: Masukkan kode OTP untuk menonaktifkan 2FA
 create_account: Buat Akun
@@ -820,6 +822,9 @@ code: Kode
 operation_options: Opsi Operasi
 operation_name: Nama dari operasi...
 operation_key: Pengenal untuk referensi...
+operation_key_unique_error: Tombol operasi harus unik
+operation_handle_resolve: 'Solusi: klik untuk menambahkan atau geser untuk mengatur ulang'
+operation_handle_reject: 'Membatalkan: klik untuk menambahkan atau geser untuk mengatur ulang'
 insights: Wawasan
 dashboard: Dasbor
 panel: Panel
@@ -828,6 +833,7 @@ panel_header: Judul Panel
 panel_name_placeholder: Beri nama panel ini...
 panel_note_placeholder: Opsi detail tentang panel ini...
 panel_delete_confirm: Apakah Anda yakin ingin menghapus panel ini? Tindakan ini tidak dapat dibatalkan.
+list_panel_allow_edit: Izinkan mengedit
 dashboard_delete_confirm: Apakah Anda yakin ingin menghapus dasbor ini? Tindakan ini tidak dapat dibatalkan.
 edit_dashboard: Sunting papan instrumen
 delete_dashboard: Menghapus Dasbor
@@ -840,6 +846,7 @@ no_dashboards_copy: Anda belum memiliki dasbor.
 create_dashboard: Buat Dasbor
 dashboard_name: Nama Dasbor
 no_data: Tidak ada Data
+no_data_in_flow: Tidak ada data yang dihasilkan atau diakses dalam Flow ini
 accountability: Akuntabilitas
 payload: Muatan
 details: Rincian
@@ -856,6 +863,7 @@ media: Media
 quality: Kualitas
 width: Lebar
 height: Tinggi
+transformation_preset_key: Tombol pengaturan ulang transformasi
 source: Sumber
 url_placeholder: Masukkan tautan...
 display_text: Teks Tampilan
@@ -942,8 +950,10 @@ settings_project: Pengaturan Proyek
 settings_webhooks: Webhooks
 settings_flows: Kumpulan Alur
 settings_presets: Preset & Markah
+settings_translation_strings: Terjemahan
 one_or_more_options_are_missing: Satu atau lebih opsi hilang
 scope: Lingkup
+actions: Aksi
 select: Pilih...
 layout: Tata letak
 tree_view: Tampilan Pohon
@@ -953,6 +963,7 @@ preset_search_placeholder: Kueri penelusuran...
 editing_preset: Mengedit Preset
 layout_preview: Pratinjau Tata Letak
 layout_setup: Pengaturan Tata Letak
+data: Data
 unsaved_changes: Perubahan Tidak Disimpan
 unsaved_changes_copy: Anda yakin ingin meninggalkan halaman ini?
 discard_changes: Batalkan Perubahan
@@ -1434,6 +1445,7 @@ layouts:
     cozy: Normal
   kanban:
     advanced: Tingkat lanjut
+both: Keduanya
 panels:
   label:
     name: Label
