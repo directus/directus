@@ -34,7 +34,7 @@ vi.mock('../logger', () => ({
 	},
 }));
 
-const modulePath = './cache';
+const modulePath = './cache.js';
 
 let mockRequest: Partial<Request>;
 let mockResponse: Partial<Response>;

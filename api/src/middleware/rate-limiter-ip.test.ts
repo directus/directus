@@ -15,7 +15,7 @@ vi.mock('../rate-limiter', () => ({
 	}),
 }));
 
-const modulePath = './rate-limiter';
+const modulePath = './rate-limiter-ip.js';
 
 let mockRequest: Partial<Request>;
 let mockResponse: Partial<Response>;
