@@ -548,7 +548,7 @@ export async function CreateFieldM2A(vendor: string, options: OptionsCreateField
 		otherMeta: {},
 		otherSchema: {},
 		relationSchema: null,
-		otherRelationSchema: {
+		itemRelationSchema: {
 			on_delete: 'SET NULL',
 		},
 	};

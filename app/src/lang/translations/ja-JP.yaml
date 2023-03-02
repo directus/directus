@@ -30,10 +30,12 @@ archived: アーカイブ済み
 modules: モジュール
 module_bar: モジュールバー
 logs: ログ
+reset_width: 横幅をリセット
 tile_size: タイルサイズ
 edit_field: フィールドの編集
 conditions: 条件
 location: 場所
+condition_rules: 条件ルール
 input: 入力
 maps: 地図
 switch_user: ユーザーを切り替える
@@ -47,7 +49,11 @@ group: グループ
 export_items: アイテムをエクスポート
 and: そして
 or: または
+init: 初期化
+dataset_too_large_currently_showing_n_items: データ量が多すぎるため、最初の {n} 件のみ表示しています。
+modifier: 修飾子
 custom: カスタム
+hook: フック
 fill_width: 幅埋め
 field_name_translations: 項目名の翻訳を追加する
 enter_password_to_enable_tfa: 二段階認証を使用するためパスワードを入力してください
@@ -57,17 +63,29 @@ branch: 分岐
 leaf: リーフ
 indeterminate: 不確定
 edit_collection: コレクションを編集
+exclusive: 排他的
+children: 子要素
 db_only_click_to_configure: 'データベースのみ: クリックして設定する'
 show_active_items: アクティブアイテムを表示
 show_archived_items: アーカイブ済みアイテムを表示
 show_all_items: 全て表示
+edited: 編集された値
 required: 必須
+required_for_app_access: App アクセスに必要なもの
 requires_value: この項目は必須です
 create_preset: プリセットの作成
+create_panel: パネルを作成
 create_role: 権限作成
 create_user: ユーザーの作成
 message: メッセージ
+delete_panel: パネルを削除
 create_webhook: Webhookの作成
+create_translation_string: 翻訳文字列を作成
+no_translation_string: 翻訳文字列なし
+no_translation_string_copy: 翻訳文字列がまだありません。
+translation_string_key_placeholder: 翻訳文字列のキー
+translation_string_translations_placeholder: 翻訳を追加
+edit_translation_string: 翻訳文字列の編集
 invite_users: ユーザーを招待
 invite: 招待する
 email_already_invited: このメールアドレス ({email}) は招待済みです
@@ -86,10 +104,14 @@ logoutReason:
 public_description: 認証せずに利用できる API データを制御します。
 not_allowed: 許可されていない
 directus_version: Directus Version
+os_type: OS 種類
 os_version: OSバージョン
+os_uptime: OS 稼働時間
+os_totalmem: OS メモリ
 archive: アーカイブ
 archive_confirm: この項目をアーカイブしてよろしいですか？
 recommended_defaults: 推奨されるデフォルト値
+unarchive: アーカイブから戻す
 validationError:
   eq: 値は {valid} でなければなりません
   neq: 値は {invalid} にすることはできません
@@ -270,6 +292,7 @@ documentation: ドキュメンテーション
 collection_created: コレクションが作成されました
 modified_on: 修正日時
 sort_field: フィールドの並べ替え
+add_sort_field: Sort フィールドを追加
 sort: 並べ替え
 status: ステータス
 remove: 削除
@@ -389,6 +412,7 @@ layout_setup: レイアウト設定
 unsaved_changes_copy: このページを離れてもよろしいですか？
 discard_changes: 変更の破棄
 keep_editing: 編集を続ける
+page_help_settings_project: "**プロジェクトの設定** — プロジェクト全体の設定です。"
 add_new: 新規追加
 create_new: 新規作成
 all: すべて
@@ -494,6 +518,7 @@ save_current_user_role: 現在のユーザーロールを保存
 save_current_datetime: 現在の日付/時刻を保存
 inline: インライン
 comment: コメント
+referential_action_set_null: '{field} フィールドを Null にする'
 delete_field_are_you_sure: >-
   このフィールド：\"{field}\"を削除してよろしいですか？この操作を取り消すことはできません。
 description: 説明
