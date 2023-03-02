@@ -2,6 +2,104 @@
 
 _Changes marked with a :warning: contain potential breaking changes depending on your use of the package._
 
+## v9.23.0 (February 28, 2023)
+
+### :sparkles: New Features
+
+- **API**
+  - [#14713](https://github.com/directus/directus/pull/14713) Expose schema endpoints (by @azrikahar)
+
+### :rocket: Improvements
+
+- **API**
+  - [#17633](https://github.com/directus/directus/pull/17633) Catch IPTC and XMP extraction errors (by @licitdev)
+  - [#17615](https://github.com/directus/directus/pull/17615) Additionally check for varchar when casting UUID in apply
+    diff (by @azrikahar)
+  - [#17562](https://github.com/directus/directus/pull/17562) Consolidate redis environment (by @br41nslug)
+  - [#17481](https://github.com/directus/directus/pull/17481) Allow offset and page args for GraphQL aggregated queries
+    (by @licitdev)
+  - [#17448](https://github.com/directus/directus/pull/17448) Allow for custom robots.txt (by @Nitwel)
+  - [#16773](https://github.com/directus/directus/pull/16773) Flows improvements (by @Nitwel)
+- **App**
+  - [#17416](https://github.com/directus/directus/pull/17416) Make sort fields hidden by default (by @Nitwel)
+  - [#17199](https://github.com/directus/directus/pull/17199) Update locale name for zh-TW (by @azrikahar)
+  - [#16773](https://github.com/directus/directus/pull/16773) Flows improvements (by @Nitwel)
+  - [#15269](https://github.com/directus/directus/pull/15269) Improve preview of relational columns in tabular layout
+    (by @Nitwel)
+
+### :bug: Bug Fixes
+
+- **API**
+  - [#17622](https://github.com/directus/directus/pull/17622) Catch ICC parse errors to avoid server crash (by @TeyKey1)
+  - [#17499](https://github.com/directus/directus/pull/17499) Throw validation error after authorization (by @licitdev)
+  - [#17441](https://github.com/directus/directus/pull/17441) Fix using strings for flow trigger collections (by
+    @Nitwel)
+  - [#17350](https://github.com/directus/directus/pull/17350) Update axios (by @rijkvanzanten)
+  - [#17343](https://github.com/directus/directus/pull/17343) Fix sort added by offset not removed for MSSQL (by
+    @licitdev)
+  - [#17268](https://github.com/directus/directus/pull/17268) GraphQL return original error (#17168) (by @LeBenLeBen)
+  - [#17240](https://github.com/directus/directus/pull/17240) Update knex version (by @azrikahar)
+  - [#17181](https://github.com/directus/directus/pull/17181) Fix operations output being undefined (by @Nitwel)
+  - [#17120](https://github.com/directus/directus/pull/17120) Fix url encoding query parameters and added tests (by
+    @tofran)
+  - [#17113](https://github.com/directus/directus/pull/17113) Fix GraphQL server health output (by @br41nslug)
+  - [#17066](https://github.com/directus/directus/pull/17066) Fix CreateMany action hooks (by @licitdev)
+  - [#16773](https://github.com/directus/directus/pull/16773) Flows improvements (by @Nitwel)
+- **App**
+  - [#17609](https://github.com/directus/directus/pull/17609) Fix infinite recursion (by @Nitwel)
+  - [#17588](https://github.com/directus/directus/pull/17588) Fix Local Auth Provider Form being Hidden (by
+    @ConnorSimply)
+  - [#17446](https://github.com/directus/directus/pull/17446) Fix problems with manual sort (by @Nitwel)
+  - [#17443](https://github.com/directus/directus/pull/17443) Always show error in tabular layout (by @Nitwel)
+  - [#17441](https://github.com/directus/directus/pull/17441) Fix using strings for flow trigger collections (by
+    @Nitwel)
+  - [#17439](https://github.com/directus/directus/pull/17439) Display proper pages for selected items (by @Nitwel)
+  - [#17432](https://github.com/directus/directus/pull/17432) Fix span with space in it (by @Nitwel)
+  - [#17415](https://github.com/directus/directus/pull/17415) Fix loading of relational fields in group (by @Nitwel)
+  - [#17412](https://github.com/directus/directus/pull/17412) Allow for rendering lists in template string (by @Nitwel)
+  - [#17411](https://github.com/directus/directus/pull/17411) Fix checkbox flickering (by @Nitwel)
+  - [#17394](https://github.com/directus/directus/pull/17394) Support selecting multiple files in v-upload (by @Nitwel)
+  - [#17392](https://github.com/directus/directus/pull/17392) Fix applying corresponding changes (by @Nitwel)
+  - [#17325](https://github.com/directus/directus/pull/17325) Fix issue with expand transition not working on initial
+    collapse (by @addisonElliott)
+  - [#17323](https://github.com/directus/directus/pull/17323) Fix bug with v-checkbox-tree where leaf nodes are treated
+    like branch nodes with no children (by @addisonElliott)
+  - [#17254](https://github.com/directus/directus/pull/17254) Fix field configuration view not updating when navigating
+    between different fields in New Field drawer (by @jay-p-b-7span)
+  - [#17236](https://github.com/directus/directus/pull/17236) Use img tag for images on module bar (by @licitdev)
+  - [#17216](https://github.com/directus/directus/pull/17216) Image is displayed to small in the Editing Image panel (by
+    @jay-p-b-7span)
+  - [#17210](https://github.com/directus/directus/pull/17210) Fix fetching from related collection in drawer item (by
+    @licitdev)
+  - [#17202](https://github.com/directus/directus/pull/17202) Re-added frontend sorting for flows (by @br41nslug)
+  - [#17184](https://github.com/directus/directus/pull/17184) Use countDistinct for item and total counts (by @licitdev)
+  - [#17182](https://github.com/directus/directus/pull/17182) Revert "Disable field selection for alias fields in the
+    system-filter component when functions are used" (by @Nitwel)
+  - [#17139](https://github.com/directus/directus/pull/17139) Catch logout error (by @licitdev)
+  - [#16832](https://github.com/directus/directus/pull/16832) Hide related fields without read permissions (by
+    @br41nslug)
+  - [#16773](https://github.com/directus/directus/pull/16773) Flows improvements (by @Nitwel)
+  - [#16139](https://github.com/directus/directus/pull/16139) Fix insights filtering (by @licitdev)
+  - [#15549](https://github.com/directus/directus/pull/15549) Fix display fields on selected items (by @Nitwel)
+  - [#15269](https://github.com/directus/directus/pull/15269) Improve preview of relational columns in tabular layout
+    (by @Nitwel)
+- **Extensions**
+  - [#17565](https://github.com/directus/directus/pull/17565) Add directory check when getting extensions real paths (by
+    @licitdev)
+  - [#17179](https://github.com/directus/directus/pull/17179) Passthrough all package.json data (by @Nitwel)
+- **Misc.**
+  - [#17381](https://github.com/directus/directus/pull/17381) Fix incorrect skipping of m2m tests (by @licitdev)
+
+### :sponge: Optimizations
+
+- **Misc.**
+  - [#17361](https://github.com/directus/directus/pull/17361) Port remaining tests into E2E blackbox (by @licitdev)
+
+### :package: Dependency Updates
+
+- [#17353](https://github.com/directus/directus/pull/17353) Patch Tuesday 🐸 (by @paescuj)
+- [#17240](https://github.com/directus/directus/pull/17240) Update knex version (by @azrikahar)
+
 ## v9.22.4 (January 11, 2023)
 
 ### :bug: Bug Fixes
