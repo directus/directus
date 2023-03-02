@@ -1,11 +1,14 @@
 import { Request, Response } from 'express';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 
-import * as env from '../env';
+const mockGetEnv = vi.fn();
 
 vi.mock('../env', () => ({
 	default: {},
+	getEnv: mockGetEnv,
 }));
+
+import * as env from '../env';
 
 vi.mock('../cache', () => ({
 	getCache: vi.fn().mockReturnValue({ cache: vi.fn() }),
@@ -62,7 +65,9 @@ afterEach(() => {
 
 describe('cache header', () => {
 	test('should set headers to no cache by default', async () => {
-		(env.default as Record<string, any>) = { CACHE_ENABLED: false, CACHE_VALUE_MAX_SIZE: false };
+		const testEnv = { CACHE_ENABLED: false, CACHE_VALUE_MAX_SIZE: false };
+		(env.default as Record<string, any>) = testEnv;
+		mockGetEnv.mockReturnValue(testEnv);
 
 		const { respond } = await import(modulePath);
 		await respond(mockRequest as Request, mockResponse as Response, nextFunction);
@@ -72,7 +77,10 @@ describe('cache header', () => {
 	});
 
 	test('should cache', async () => {
-		(env.default as Record<string, any>) = { CACHE_ENABLED: true, CACHE_VALUE_MAX_SIZE: false, CACHE_TTL: '5m' };
+		const testEnv = { CACHE_ENABLED: true, CACHE_VALUE_MAX_SIZE: false, CACHE_TTL: '5m' };
+		(env.default as Record<string, any>) = testEnv;
+		mockGetEnv.mockReturnValue(testEnv);
+
 		mockResponse.locals = { cache: true, payload: {} };
 
 		const { respond } = await import(modulePath);
@@ -89,7 +97,10 @@ describe('export', () => {
 		{ type: 'xml', contentType: 'text/xml' },
 		{ type: 'csv', contentType: 'text/csv' },
 	])('should attach $type file and set Content-Type header to $contentType', async ({ type, contentType }) => {
-		(env.default as Record<string, any>) = { CACHE_ENABLED: false, CACHE_VALUE_MAX_SIZE: false };
+		const testEnv = { CACHE_ENABLED: false, CACHE_VALUE_MAX_SIZE: false };
+		(env.default as Record<string, any>) = testEnv;
+		mockGetEnv.mockReturnValue(testEnv);
+
 		mockRequest = { ...mockRequest, sanitizedQuery: { export: type as any } };
 
 		const { respond } = await import(modulePath);
@@ -104,7 +115,10 @@ describe('export', () => {
 
 describe('res', () => {
 	test('should use res.end when payload is buffer', async () => {
-		(env.default as Record<string, any>) = { CACHE_ENABLED: false, CACHE_VALUE_MAX_SIZE: false };
+		const testEnv = { CACHE_ENABLED: false, CACHE_VALUE_MAX_SIZE: false };
+		(env.default as Record<string, any>) = testEnv;
+		mockGetEnv.mockReturnValue(testEnv);
+
 		const payload = Buffer.from('test');
 		mockResponse.locals = { payload };
 
@@ -115,7 +129,10 @@ describe('res', () => {
 	});
 
 	test('should use res.json when payload is present and not a buffer', async () => {
-		(env.default as Record<string, any>) = { CACHE_ENABLED: false, CACHE_VALUE_MAX_SIZE: false };
+		const testEnv = { CACHE_ENABLED: false, CACHE_VALUE_MAX_SIZE: false };
+		(env.default as Record<string, any>) = testEnv;
+		mockGetEnv.mockReturnValue(testEnv);
+
 		const payload = { key: 'test' };
 		mockResponse.locals = { payload };
 
@@ -126,7 +143,10 @@ describe('res', () => {
 	});
 
 	test('should send empty reply with status 204 No Content when no payload is present', async () => {
-		(env.default as Record<string, any>) = { CACHE_ENABLED: false, CACHE_VALUE_MAX_SIZE: false };
+		const testEnv = { CACHE_ENABLED: false, CACHE_VALUE_MAX_SIZE: false };
+		(env.default as Record<string, any>) = testEnv;
+		mockGetEnv.mockReturnValue(testEnv);
+
 		mockResponse.locals = {};
 
 		const { respond } = await import(modulePath);
