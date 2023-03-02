@@ -29,7 +29,7 @@ vi.mock('../database', () => ({
 	default: vi.fn(),
 }));
 
-import errorHandler from './error-handler';
+const modulePath = './error-handler.js';
 
 let mockRequest: Partial<Request>;
 let mockResponse: Partial<Response>;
@@ -52,6 +52,7 @@ test('should set response status to 500 if any error is not an instance of BaseE
 	const status = 400;
 	const genericError = { status };
 
+	const errorHandler = (await import(modulePath)).default;
 	await errorHandler([genericError], mockRequest as Request, mockResponse as Response, nextFunction);
 
 	expect(resStatus).toHaveBeenLastCalledWith(500);
@@ -63,6 +64,7 @@ test('should set response status to 400 if all errors are an instance of BaseExc
 	const code = 'TEST01';
 	const error = new BaseException(message, status, code);
 
+	const errorHandler = (await import(modulePath)).default;
 	await errorHandler([error], mockRequest as Request, mockResponse as Response, nextFunction);
 
 	expect(resStatus).toHaveBeenLastCalledWith(status);
@@ -77,7 +79,7 @@ test('should add error stack to extensions in development', async () => {
 	error.stack = stack;
 
 	(env.default as Record<string, any>) = { NODE_ENV: 'development' };
-	const errorHandler = (await import('./error-handler')).default;
+	const errorHandler = (await import(modulePath)).default;
 
 	await errorHandler([error], mockRequest as Request, mockResponse as Response, nextFunction);
 
@@ -103,7 +105,7 @@ test('should not add error stack to extensions in production', async () => {
 	error.stack = stack;
 
 	(env.default as Record<string, any>) = { NODE_ENV: 'production' };
-	const errorHandler = (await import('./error-handler')).default;
+	const errorHandler = (await import(modulePath)).default;
 
 	await errorHandler([error], mockRequest as Request, mockResponse as Response, nextFunction);
 
@@ -125,6 +127,7 @@ test('should set Allow header for MethodNotAllowedException error', async () => 
 	const extensions = { allow: [method] };
 	const error = new MethodNotAllowedException(message, extensions);
 
+	const errorHandler = (await import(modulePath)).default;
 	await errorHandler([error], mockRequest as Request, mockResponse as Response, nextFunction);
 
 	expect(resHeader).toHaveBeenLastCalledWith('Allow', method);
@@ -137,6 +140,7 @@ test('should respond with detailed generic error when authenticated as admin', a
 	const genericError = { message, status, extensions };
 	mockRequest = { accountability: adminAccountability };
 
+	const errorHandler = (await import(modulePath)).default;
 	await errorHandler([genericError], mockRequest as Request, mockResponse as Response, nextFunction);
 
 	expect(resStatus).toHaveBeenLastCalledWith(500);
@@ -157,6 +161,7 @@ test('should respond with simple generic error when not authenticated as admin',
 	const message = 'Test Error';
 	const genericError = { message, status };
 
+	const errorHandler = (await import(modulePath)).default;
 	await errorHandler([genericError], mockRequest as Request, mockResponse as Response, nextFunction);
 
 	expect(resStatus).toHaveBeenLastCalledWith(500);
