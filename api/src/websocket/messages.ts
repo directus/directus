@@ -54,43 +54,48 @@ const PartialItemsMessage = WebSocketMessage.extend({
 	type: z.literal('ITEMS'),
 	collection: z.string(),
 });
-export const WebSocketItemsMessage = z.union([
+
+export const WebSocketItemsCreateMessage = PartialItemsMessage.extend({
+	action: z.literal('create'),
+	data: z.union([z.array(ZodItem), ZodItem]),
+	query: z.custom<Query>().optional(),
+});
+export const WebSocketItemsReadMessage = PartialItemsMessage.extend({
+	action: z.literal('read'),
+	query: z.custom<Query>(),
+});
+export const WebSocketItemsUpdateMessage = z.union([
 	PartialItemsMessage.extend({
-		action: z.literal('create'),
-		data: z.union([z.array(ZodItem), ZodItem]),
+		action: z.literal('update'),
+		data: ZodItem,
+		ids: z.array(z.union([z.string(), z.number()])),
 		query: z.custom<Query>().optional(),
 	}),
 	PartialItemsMessage.extend({
-		action: z.literal('read'),
+		action: z.literal('update'),
+		data: ZodItem,
+		id: z.union([z.string(), z.number()]),
+		query: z.custom<Query>().optional(),
+	}),
+]);
+export const WebSocketItemsDeleteMessage = z.union([
+	PartialItemsMessage.extend({
+		action: z.literal('delete'),
+		ids: z.array(z.union([z.string(), z.number()])),
+	}),
+	PartialItemsMessage.extend({
+		action: z.literal('delete'),
+		id: z.union([z.string(), z.number()]),
+	}),
+	PartialItemsMessage.extend({
+		action: z.literal('delete'),
 		query: z.custom<Query>(),
 	}),
-	z.union([
-		PartialItemsMessage.extend({
-			action: z.literal('update'),
-			data: z.array(ZodItem),
-			ids: z.array(z.union([z.string(), z.number()])),
-			query: z.custom<Query>().optional(),
-		}),
-		PartialItemsMessage.extend({
-			action: z.literal('update'),
-			data: ZodItem,
-			id: z.union([z.string(), z.number()]),
-			query: z.custom<Query>().optional(),
-		}),
-	]),
-	z.union([
-		PartialItemsMessage.extend({
-			action: z.literal('delete'),
-			ids: z.array(z.union([z.string(), z.number()])),
-		}),
-		PartialItemsMessage.extend({
-			action: z.literal('delete'),
-			id: z.union([z.string(), z.number()]),
-		}),
-		PartialItemsMessage.extend({
-			action: z.literal('delete'),
-			query: z.custom<Query>(),
-		}),
-	]),
+]);
+export const WebSocketItemsMessage = z.union([
+	WebSocketItemsCreateMessage,
+	WebSocketItemsReadMessage,
+	WebSocketItemsUpdateMessage,
+	WebSocketItemsDeleteMessage,
 ]);
 export type WebSocketItemsMessage = z.infer<typeof WebSocketItemsMessage>;

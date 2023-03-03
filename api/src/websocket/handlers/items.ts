@@ -54,7 +54,7 @@ export class ItemsHandler {
 		}
 		if (message.action === 'update') {
 			const query = sanitizeQuery(message?.query ?? {}, accountability);
-			if (Array.isArray(message.data) && 'ids' in message) {
+			if ('ids' in message) {
 				const keys = await service.updateMany(message.ids, message.data);
 				meta = await metaService.getMetaForQuery(message.collection, query);
 				result = await service.readMany(keys, query);
@@ -77,7 +77,7 @@ export class ItemsHandler {
 				throw new WebSocketException(
 					'items',
 					'INVALID_PAYLOAD',
-					"Either 'ids' or 'id' is required for a DELETE request",
+					"Either 'ids', 'id' or 'query' is required for a DELETE request",
 					uid
 				);
 			}
