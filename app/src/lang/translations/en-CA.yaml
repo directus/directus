@@ -1667,6 +1667,7 @@ layouts:
     no_compatible_fields: No compatible fields
   kanban:
     crop: Crop
+both: Both
 panels:
   metric:
     name: Metric
@@ -1685,6 +1686,8 @@ panels:
   list:
     name: List
     description: Filter and list fields from a collection
+  linechart:
+    curve_type: Curve Type
 triggers:
   webhook:
     method: Method

@@ -36,7 +36,7 @@
 
 			<router-link :to="userProfileLink">
 				<v-avatar v-tooltip.right="userFullName" tile large :class="{ 'no-avatar': !avatarURL }">
-					<v-image
+					<img
 						v-if="avatarURL && !avatarError"
 						:src="avatarURL"
 						:alt="userFullName"
@@ -51,11 +51,12 @@
 </template>
 
 <script lang="ts">
+import { addTokenToURL } from '@/api';
 import { useAppStore } from '@/stores/app';
 import { useNotificationsStore } from '@/stores/notifications';
 import { useUserStore } from '@/stores/user';
 import { storeToRefs } from 'pinia';
-import { computed, defineComponent, ref } from 'vue';
+import { Ref, computed, defineComponent, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
@@ -74,10 +75,10 @@ export default defineComponent({
 
 		const avatarURL = computed<string | null>(() => {
 			if (!userStore.currentUser || !('avatar' in userStore.currentUser) || !userStore.currentUser?.avatar) return null;
-			return `/assets/${userStore.currentUser.avatar.id}?key=system-medium-cover`;
+			return addTokenToURL(`/assets/${userStore.currentUser.avatar.id}?key=system-medium-cover`);
 		});
 
-		const avatarError = ref(null);
+		const avatarError: Ref<null | Event> = ref(null);
 
 		const userProfileLink = computed<string>(() => {
 			const id = userStore.currentUser?.id;
@@ -88,7 +89,7 @@ export default defineComponent({
 			return `/logout`;
 		});
 
-		const userFullName = userStore.fullName;
+		const userFullName = userStore.fullName ?? undefined;
 
 		return {
 			t,

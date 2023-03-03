@@ -12,7 +12,7 @@
 			<transition name="fade">
 				<v-progress-linear v-if="showLoader" indeterminate rounded @animationiteration="stopSpinnerIfQueueIsEmpty" />
 			</transition>
-			<v-image class="custom-logo" :src="customLogoPath" alt="Project Logo" />
+			<img class="custom-logo" :src="customLogoPath" alt="Project Logo" />
 		</template>
 		<div v-else class="logo" :class="{ running: showLoader }" @animationiteration="stopSpinnerIfQueueIsEmpty" />
 	</component>
