@@ -10,6 +10,9 @@ let mockAxiosInstance: AxiosInstance;
 beforeEach(() => {
 	mockAxiosInstance = {
 		interceptors: {
+			request: {
+				use: vi.fn(),
+			},
 			response: {
 				use: vi.fn(),
 			},

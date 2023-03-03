@@ -317,7 +317,6 @@ foreign_key: Fremmednøgle
 finish_setup: Afslut opsætning
 dismiss: Afvis
 raw_value: Rå værdi
-raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
 copy_raw_value: Kopier rå værdi
 copy_raw_value_success: Kopieret
 copy_raw_value_fail: Kopiering mislykkedes
@@ -783,8 +782,6 @@ toggle: Skift
 icon_on: Ikon til
 icon_off: Ikon fra
 label: Etiket
-flows: Flows
-flow: Flow
 select_a_flow: Vælg et Flow
 run_flow_on_current_collection: Kør flow på aktuel samling
 run_flow_on_current: Kør flow på nuværende element
@@ -814,8 +811,6 @@ flow_tracking: Aktivitets- og logsporing
 flow_tracking_all: Spor aktivitet og logs
 flow_tracking_activity: Spor kun aktivitet
 flow_tracking_null: Spor ikke
-start_flow: Start Flow
-stop_flow: Stop Flow
 create_operation: Opret handling
 edit_operation: Rediger handling
 code: Kode
@@ -948,14 +943,12 @@ settings_data_model: Data model
 settings_permissions: Roller og tilladelser
 settings_project: Projektindstillinger
 settings_webhooks: Webhooks
-settings_flows: Flows
 settings_presets: Forudindstillinger og bogmærker
 settings_translation_strings: Oversættelsesstrenge
 one_or_more_options_are_missing: En eller flere muligheder mangler
 scope: Anvendelsesområde
 actions: Handlinger
 select: Vælg...
-layout: Layout
 tree_view: Træ visning
 changes_are_permanent: Ændringer er permanente
 preset_name_placeholder: Serverer som standard når tom...
@@ -1134,11 +1127,8 @@ fields:
     tiff: Tiff
     mapping: Kortlægning
     basemaps: Grundkort
-    basemaps_raster: Raster
-    basemaps_tile: Raster TileJSON
     basemaps_style: Mapbox stil
     mapbox_key: Mapbox adgangsnøgle
-    mapbox_placeholder: pk.eyJ1Ijo.....
     attribution: Tildeling
     attribution_placeholder: '© OpenStreetMap bidragsydere'
     transforms_note: Navn på sharp metode og dens argumenter. Se https://sharp.pixelplumbing.com/api-constructor for mere information.
@@ -1227,11 +1217,8 @@ field_options:
     additional_transforms: Yderligere transformationer
     transforms_note: Navn på sharp metode og dens argumenter. Se https://sharp.pixelplumbing.com/api-constructor for mere information.
     mapbox_key: Mapbox adgangs token
-    mapbox_placeholder: pk.eyJ1Ijo.....
     basemaps: Grundkort
     basemaps_name_placeholder: Indtast det basemap navn...
-    basemaps_raster: Raster
-    basemaps_tile: Raster TileJSON
     basemaps_style: Mapbox stil
     files_divider_title: Filer og miniaturer
     overrides_divider_title: App tilsidesættelser
@@ -1431,7 +1418,6 @@ translation: Oversættelse
 translation_placeholder: Indtast en oversættelse...
 value: Værdi
 view_project: Vis projekt
-weeks: { }
 report_error: Fejl i rapport
 start: Start
 table: Tabel
@@ -1440,7 +1426,6 @@ search_filter: Søg og filtrer
 enable_search_filter: Aktiver søgning og filtrering
 item_link: Element link
 show_link_to_item: Vis et link til element
-navigate_to_item: Navigate to Item
 undo_removed_item: Fortryd fjernet element
 remove_item: Fjern element
 delete_item: Slet element
@@ -1614,9 +1599,7 @@ interfaces:
     unexpected_geometry: Forventede {expected}, fik {got}.
     fit_bounds: Tilpas visning til data
     native: Indbygget
-    geojson: GeoJSON
     lnglat: Længdegrad, breddegrad
-    wkt: WKT
     wkb: WKB
     click_to_select: Klik for at vælge {geometry}
   presentation-notice:
@@ -1676,7 +1659,6 @@ interfaces:
     minimum_value: Minimum værdi
     maximum_value: Maksimal værdi
     step_interval: Trin interval
-    slug: Slugify
     slug_label: Gør den angivne værdi URL sikker
   input-multiline:
     textarea: Tekstareal
@@ -1812,8 +1794,7 @@ displays:
     description: Vis en formateret version af teksten
     format: Format
     format_label: Automatisk format
-    font: Font
-    font_sans_serif: Sans serif
+    font: Skrifttype
     font_serif: Serif
     font_monospace: Monospace
     bold: Fed
@@ -1854,7 +1835,6 @@ displays:
     choices_value_placeholder: Indtast en værdi...
     choices_text_placeholder: Indtast en tekst...
   mime-type:
-    mime-type: MIME Type
     description: Vis MIME-typen for en fil
     extension_only: Kun udvidelse
     extension_only_label: Vis kun filendelsen
@@ -1911,36 +1891,11 @@ layouts:
     find_location: Find placering...
     default_template: Brug samling standard...
     no_compatible_fields: Ingen kompatible felter
-kanban:
-     name: Kanban
-     group_field: Grupper efter
-     group_field_placeholder: Felt at gruppere efter...
-     group_title: Gruppetitel
-     group_title_placeholder: Felt for gruppetitler...
-     title: Korttitel
-     title_placeholder: Valgfrit titelfelt...
-     text: Korttekst
-     text_placeholder: Valgfrit tekstfelt...
-     date: Kortdato
-     date_placeholder: Valgfrit datofelt...
-     tags: Kortmærker
-     tags_placeholder: Valgfrit tags-felt...
-     user: Kortbruger
-     user_placeholder: Valgfrit brugerfelt...
-     image: Kortbillede
-     image_placeholder: Valgfrit billedfelt...
-     image_fit: Tilpasning til kortbillede
-     crop: Afgrøde
-     advanced: Avanceret
-     edit_group: Rediger gruppe
-     delete_group: Slet gruppe
-     add_group: Tilføj gruppe
-     add_group_placeholder: Indtast en ny gruppetitel...
-     show_ungrouped: Vis ugrupperet
-     vis: Vis
-     no_group: Ingen gruppe
-     not_all_loaded: Kunne kun indlæse de første 1000 elementer.
-vandret: Vandret
+  kanban:
+    crop: Beskær
+    advanced: Avanceret
+    not_all_loaded: Kunne kun indlæse de første 1000 elementer.
+horizontal: Horisontal
 vertical: Lodret
 x_axis: X-akse
 y_axis: Y-akse
@@ -1952,17 +1907,14 @@ both: Begge
 show_axis_labels: Vis akseetiketter
 function: Funktion
 half_circle: Halv cirkel
-full_cirkel: Fuld cirkel
 stroke_width: Slagbredde
 rounded_stroke: Afrundet slaglængde
 thin: tynd
-medium: Medium
 broad: Bred
 show_labels: Vis etiketter
 show_legend: Vis legende
 right: Højre
 left: venstre
-donut: Donut
 panels:
   metric:
     name: Metrisk
@@ -2015,8 +1967,6 @@ panels:
 triggers:
   common:
     response_body: Svar organ
-    response_body_all: All Data
-    response_body_last: Data of Last Operation
   event:
     name: Begivenhedskrog
     description: Udløsere på platform eller datahændelser
@@ -2034,7 +1984,6 @@ triggers:
   schedule:
     name: Tidsplan (CRON)
     description: Udløses på regelmæssige tidspunkter
-    cron: Interval
   manual:
     name: Manuel
     description: Udløsere ved manuel kørsel inden for udvalgte samling(er)
@@ -2065,12 +2014,10 @@ operations:
     description: Slet elementer i databasen
     emit_events: Udsende begivenheder
     key: ID
-    query: Query
   item-read:
-    name:  Læs Data
+    name: Læs Data
     description: Læs elementer fra databasen
     key: ID
-    query: Query
     emit_events: Udsende begivenheder
   item-update:
     name: Opdater data
@@ -2078,7 +2025,6 @@ operations:
     emit_events: Udsende begivenheder
     key: ID
     payload: Nyttelast
-    query: Query
   log:
     name: Log på konsol
     description: Output noget til konsollen
@@ -2089,7 +2035,6 @@ operations:
     description: Send en mail til en eller flere personer
     to: Til
     to_placeholder: Tilføj e-mail-adresser og tryk på enter...
-    body: Body
   notification:
     name: Send meddelelse
     description: Send en meddelelse i appen til en eller flere brugere
@@ -2097,32 +2042,21 @@ operations:
     recipient_placeholder: Tilføj bruger-UUID og tryk enter...
     message: besked
   request:
-    name: Webhook / Request URL
     description: "Lav en anmodning til en URL"
     url: URL
     url_placeholder: https://eksempel.dk/eksempel
     method: Metode
     data: Data
-    headers: Headers
-    header: Header
+    header: Overskrift
     header_placeholder: Godkendelse...
-    value_placeholder: Bearer eyJhbGciOi...
   sleep:
-    name: Sleep
-    description: Wait a given number of milliseconds
     milliseconds: Millisekunder
   transform:
     name: Transformer nyttelast
     description: Ændre Flows JSON-nyttelast
   trigger:
-    name: Trigger Flow
     description: Send disse data til et andet flow
-    flows: Flows
-    flow: Flow
     data: Data
     iteration_mode: Iterationstilstand
     iteration_mode_note: Mode til iteration over arrays.
     serial: Seriel
-    parallel: Parallel
-    batch: Batch
-    batch_size: Batch Size

@@ -991,6 +991,8 @@ page_help_collections_item: >-
   and embedded comments.
 page_help_activity_collection: >-
   **Browse Activity** — A comprehensive listing of all your user's system and content activity.
+page_help_docs_global: >-
+  **Documentation Overview** — Docs tailored specifically to this project's version and schema.
 page_help_files_collection: >-
   **File Library** — Lists all file assets uploaded to this project. Customize layout, filters, and sorting to tailor
   your view, and even save bookmarks of these different configurations for quick access.
