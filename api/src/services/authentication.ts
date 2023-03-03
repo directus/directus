@@ -22,7 +22,7 @@ import { ActivityService } from './activity';
 import { SettingsService } from './settings';
 import { TFAService } from './tfa';
 
-const loginAttemptsLimiter = createRateLimiter({ duration: 0 });
+const loginAttemptsLimiter = createRateLimiter('RATE_LIMITER', { duration: 0 });
 
 export class AuthenticationService {
 	knex: Knex;
