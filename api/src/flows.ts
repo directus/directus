@@ -416,12 +416,12 @@ class FlowManager {
 
 			return { successor: operation.resolve, status: 'resolve', data: result ?? null, options };
 		} catch (error: unknown) {
-			// Is the error a JSON string? If so, parse it and use that as the error
-			const jsonError = isValidJSON(String(error))
-				? parseJSON(String(error))
-				: JSON.parse(JSON.stringify(error, Object.getOwnPropertyNames(error)));
-
-			return { successor: operation.reject, status: 'reject', data: jsonError ?? null, options };
+			return {
+				successor: operation.reject,
+				status: 'reject',
+				data: error instanceof Error ? error.message : null,
+				options,
+			};
 		}
 	}
 }
