@@ -4,6 +4,7 @@ import emitter from '../../emitter';
 import { ItemsHandler } from './items';
 import { getSchema } from '../../utils/get-schema';
 import { ItemsService, MetaService } from '../../services';
+import { EventContext } from '@directus/shared/types';
 
 // mocking
 vi.mock('../controllers', () => ({
@@ -47,10 +48,14 @@ describe('Websocket heartbeat handler', () => {
 	test('ignore other message types', async () => {
 		const spy = vi.spyOn(handler, 'onMessage');
 		// receive message
-		emitter.emitAction('websocket.message', {
-			client: mockClient(),
-			message: { type: 'PONG' },
-		});
+		emitter.emitAction(
+			'websocket.message',
+			{
+				client: mockClient(),
+				message: { type: 'PONG' },
+			},
+			{} as EventContext
+		);
 		// expect nothing
 		expect(spy).not.toBeCalled();
 	});
@@ -58,10 +63,14 @@ describe('Websocket heartbeat handler', () => {
 		(getSchema as Mock).mockImplementation(() => ({ collections: {} }));
 		// receive message
 		const fakeClient = mockClient();
-		emitter.emitAction('websocket.message', {
-			client: fakeClient,
-			message: { type: 'ITEMS', collection: 'test', action: 'create', data: {} },
-		});
+		emitter.emitAction(
+			'websocket.message',
+			{
+				client: fakeClient,
+				message: { type: 'ITEMS', collection: 'test', action: 'create', data: {} },
+			},
+			{} as EventContext
+		);
 		await delay(10); // 10ms to make sure the event is handled
 		// expect error
 		expect(fakeClient.send).toBeCalledWith(
@@ -76,10 +85,14 @@ describe('Websocket heartbeat handler', () => {
 		(ItemsService as Mock).mockImplementation(() => ({ createOne, readOne }));
 		// receive message
 		const fakeClient = mockClient();
-		emitter.emitAction('websocket.message', {
-			client: fakeClient,
-			message: { type: 'ITEMS', collection: 'test', action: 'create', data: {} },
-		});
+		emitter.emitAction(
+			'websocket.message',
+			{
+				client: fakeClient,
+				message: { type: 'ITEMS', collection: 'test', action: 'create', data: {} },
+			},
+			{} as EventContext
+		);
 		await delay(10); // 10ms to make sure the event is handled
 		// expect service functions
 		expect(createOne).toBeCalled();
@@ -94,10 +107,14 @@ describe('Websocket heartbeat handler', () => {
 		(ItemsService as Mock).mockImplementation(() => ({ createMany, readMany }));
 		// receive message
 		const fakeClient = mockClient();
-		emitter.emitAction('websocket.message', {
-			client: fakeClient,
-			message: { type: 'ITEMS', collection: 'test', action: 'create', data: [{}, {}] },
-		});
+		emitter.emitAction(
+			'websocket.message',
+			{
+				client: fakeClient,
+				message: { type: 'ITEMS', collection: 'test', action: 'create', data: [{}, {}] },
+			},
+			{} as EventContext
+		);
 		await delay(10); // 10ms to make sure the event is handled
 		// expect service functions
 		expect(createMany).toBeCalled();
@@ -113,10 +130,14 @@ describe('Websocket heartbeat handler', () => {
 		(MetaService as Mock).mockImplementation(() => ({ getMetaForQuery }));
 		// receive message
 		const fakeClient = mockClient();
-		emitter.emitAction('websocket.message', {
-			client: fakeClient,
-			message: { type: 'ITEMS', collection: 'test', action: 'read', query: {} },
-		});
+		emitter.emitAction(
+			'websocket.message',
+			{
+				client: fakeClient,
+				message: { type: 'ITEMS', collection: 'test', action: 'read', query: {} },
+			},
+			{} as EventContext
+		);
 		await delay(10); // 10ms to make sure the event is handled
 		// expect service functions
 		expect(readByQuery).toBeCalled();
@@ -131,10 +152,14 @@ describe('Websocket heartbeat handler', () => {
 		(ItemsService as Mock).mockImplementation(() => ({ updateOne, readOne }));
 		// receive message
 		const fakeClient = mockClient();
-		emitter.emitAction('websocket.message', {
-			client: fakeClient,
-			message: { type: 'ITEMS', collection: 'test', action: 'update', data: {}, id: '123' },
-		});
+		emitter.emitAction(
+			'websocket.message',
+			{
+				client: fakeClient,
+				message: { type: 'ITEMS', collection: 'test', action: 'update', data: {}, id: '123' },
+			},
+			{} as EventContext
+		);
 		await delay(10); // 10ms to make sure the event is handled
 		// expect service functions
 		expect(updateOne).toBeCalled();
@@ -151,10 +176,14 @@ describe('Websocket heartbeat handler', () => {
 		(MetaService as Mock).mockImplementation(() => ({ getMetaForQuery }));
 		// receive message
 		const fakeClient = mockClient();
-		emitter.emitAction('websocket.message', {
-			client: fakeClient,
-			message: { type: 'ITEMS', collection: 'test', action: 'update', data: {}, ids: ['123', '456'] },
-		});
+		emitter.emitAction(
+			'websocket.message',
+			{
+				client: fakeClient,
+				message: { type: 'ITEMS', collection: 'test', action: 'update', data: {}, ids: ['123', '456'] },
+			},
+			{} as EventContext
+		);
 		await delay(10); // 10ms to make sure the event is handled
 		// expect service functions
 		expect(updateMany).toBeCalled();
@@ -169,10 +198,14 @@ describe('Websocket heartbeat handler', () => {
 		(ItemsService as Mock).mockImplementation(() => ({ deleteOne }));
 		// receive message
 		const fakeClient = mockClient();
-		emitter.emitAction('websocket.message', {
-			client: fakeClient,
-			message: { type: 'ITEMS', collection: 'test', action: 'delete', id: '123' },
-		});
+		emitter.emitAction(
+			'websocket.message',
+			{
+				client: fakeClient,
+				message: { type: 'ITEMS', collection: 'test', action: 'delete', id: '123' },
+			},
+			{} as EventContext
+		);
 		await delay(10); // 10ms to make sure the event is handled
 		// expect service functions
 		expect(deleteOne).toBeCalled();
@@ -185,10 +218,14 @@ describe('Websocket heartbeat handler', () => {
 		(ItemsService as Mock).mockImplementation(() => ({ deleteMany }));
 		// receive message
 		const fakeClient = mockClient();
-		emitter.emitAction('websocket.message', {
-			client: fakeClient,
-			message: { type: 'ITEMS', collection: 'test', action: 'delete', ids: ['123', 456] },
-		});
+		emitter.emitAction(
+			'websocket.message',
+			{
+				client: fakeClient,
+				message: { type: 'ITEMS', collection: 'test', action: 'delete', ids: ['123', 456] },
+			},
+			{} as EventContext
+		);
 		await delay(10); // 10ms to make sure the event is handled
 		// expect service functions
 		expect(deleteMany).toBeCalled();
@@ -201,10 +238,14 @@ describe('Websocket heartbeat handler', () => {
 		(ItemsService as Mock).mockImplementation(() => ({ deleteByQuery }));
 		// receive message
 		const fakeClient = mockClient();
-		emitter.emitAction('websocket.message', {
-			client: fakeClient,
-			message: { type: 'ITEMS', collection: 'test', action: 'delete', query: {} },
-		});
+		emitter.emitAction(
+			'websocket.message',
+			{
+				client: fakeClient,
+				message: { type: 'ITEMS', collection: 'test', action: 'delete', query: {} },
+			},
+			{} as EventContext
+		);
 		await delay(10); // 10ms to make sure the event is handled
 		// expect service functions
 		expect(deleteByQuery).toBeCalled();
