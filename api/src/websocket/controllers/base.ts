@@ -49,7 +49,7 @@ export default abstract class SocketController {
 		this.name = name;
 		this.endpoint = endpoint;
 		this.authentication = authentication;
-		this.rateLimiter = createRateLimiter({
+		this.rateLimiter = createRateLimiter('RATE_LIMITER', {
 			keyPrefix: 'websocket',
 		});
 		this.maxConnections = Number.POSITIVE_INFINITY;
