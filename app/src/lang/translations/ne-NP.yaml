@@ -832,6 +832,8 @@ details: विवरणहरू
 full_screen: फुलस्क्रिन
 full_text_search: पूर्ण-पाठ खोज
 edit_panels: प्यानलहरू सम्पादन गर्नुहोस्
+left_align: बायाँ पङ्क्तिबद्ध
+right_align: दायाँ पंक्तिबद्ध
 fit_to_screen: स्क्रिनमा फिट गर्नुहोस्
 image_url: तस्बिर Url
 alt_text: वैकल्पिक पाठ
@@ -860,6 +862,10 @@ save_image: तस्वीर बचत गर्नुहोस्
 save_media: मिडिया बचत गर्नुहोस्
 wysiwyg_options:
   aligncenter: बीचमा पङ्क्तिबद्ध गर्नुहोस्
+  alignjustify: जस्टिफाई गर्नुहोस्
+  alignleft: बायाँ पङ्क्तिबद्ध गर्नुहोस्
+  alignnone: पङ्क्तिबद्ध बिना
+  alignright: दायाँ पङ्क्तिबद्ध गर्नुहोस्
   forecolor: अग्रभूमि रङ
   backcolor: पृष्ठभूमिको रङ्ग
   bold: बोल्ड
@@ -868,6 +874,7 @@ wysiwyg_options:
   strikethrough: काट्नुहोस्
   superscript: सुपरस्क्रिप्ट
   codeblock: काेड
+  blockquote: ब्लककोट
   bullist: बुलेट सूची
   numlist: संख्यात्मक सूची
   link: लिङ्क थप्नुहोस्/सम्पादन गर्नुहोस्
@@ -897,6 +904,7 @@ wysiwyg_options:
   visualaid: अदृश्य तत्वहरू हेर्नुहोस्
   source_code: स्रोत कोड सम्पादन गर्नुहोस्
   fullscreen: पूर्ण स्क्रिन
+  directionality: दिशात्मकता
 dropdown: ड्रपडाउन
 choices: विकल्पहरू
 choices_option_configured_incorrectly: विकल्पहरू गलत रूपमा कन्फिगर गरिएको छ
@@ -953,6 +961,8 @@ page_help_files_collection: >-
 page_help_files_item: >-
   **फाइल विवरण** — फाइल मेटाडेटा व्यवस्थापन गर्न, मूल सम्पत्ति सम्पादन गर्न र पहुँच सेटिङहरू अद्यावधिक गर्ने फारम।
 page_help_settings_project: "**प्रोजेक्ट सेटिङ्हरू** — तपाईंको प्रोजेक्टको ग्लोबल कन्फिगरेसन विकल्पहरू।"
+page_help_settings_datamodel_collections: >-
+  **डेटा मोडेल: सङ्कलन** — उपलब्ध सबै सङ्कलनहरूको सूची बनाउँछ। यसमा दृश्यात्मक, लुकेका, र प्रणाली सङ्कलनहरू, साथै अव्यवस्थित डाटाबेस तालिकाहरू थप्न सकिन्छ।
 page_help_settings_translation_strings_collection: "**अनुवाद स्ट्रिङहरू ब्राउज गर्नुहोस्** — परियोजना भित्र सबै अनुवाद स्ट्रिङहरू सूचीबद्ध गर्नुहोस्।\n"
 page_help_users_collection: '**प्रयोगकर्ता निर्देशिका** — यो परियोजना भित्रका सबै प्रणाली प्रयोगकर्ताहरूलाई सूचीबद्ध गर्दछ।'
 page_help_users_item: >-
@@ -1081,12 +1091,19 @@ fields:
     webP: WebP
     tiff: Tiff
     mapbox_key: "म्यापबक्स Access टोकन\n"
+    attribution: विशेषता
     attribution_placeholder: "© OpenStreetMap योगदानकर्ताहरू\n"
     transforms_note: "Sharp Method नाम र यसको Argumentहरु। थप जानकारीको लागि https://sharp.pixelplumbing.com/api-constructor हेर्नुहोस्।\n"
     project_name: परियोजनाको नाम
+    project_url: परियोजनाको URL
+    project_color: परियोजनाको रङ
     project_logo: "परियोजनाको लोगो\n"
+    public_note: सार्वजनिक नोट
     auth_login_attempts: प्रमाणीकरण लगइन प्रयासहरू
+    storage_default_folder: पूर्वनिर्धारित फोल्डर
+    overrides: एप ओभरराइड
     module_bar: मोड्युल बार
+    transformations_presets: तलका प्रिसेटहरूमा रूपान्तरणहरू सीमित गर्नुहोस्
   directus_shares:
     name: नाम
     role: भूमिका
@@ -1124,6 +1141,7 @@ fields:
     collections: सङ्ग्रहहरू
 field_options:
   directus_settings:
+    project_name_placeholder: मेरो परियोजना...
     project_logo_note: "सेतो 40x40 SVG/PNG\n"
     public_note_placeholder: "एउटा छोटो, सार्वजनिक सन्देश जुन मार्कडाउन ढाँचामा छ...\n"
     security_divider_title: सुरक्षा
@@ -1131,9 +1149,12 @@ field_options:
       strong_text: "\nबलियो - ठूला अक्षरहरू / सानो अक्षरहरू / संख्याहरू / विशेष क्यारेक्टरहरू"
     storage_asset_presets:
       upscaling: अपस्केलिंग
+      fit:
+        contain_text: समावेश गर्नुहोस् (पक्ष अनुपात सुरक्षित गर्नुहोस्)
     transforms_note: "Sharp Method नाम र यसको Argumentहरु। थप जानकारीको लागि https://sharp.pixelplumbing.com/api-constructor हेर्नुहोस्।\n"
     mapbox_key: "म्यापबक्स Access टोकन\n"
     files_divider_title: फाइलहरू र थम्बनेलहरू
+    overrides_divider_title: एप ओभरराइड
   directus_activity:
     login: लग - इन
     create: सिर्जना गर्नुहोस्
@@ -1151,6 +1172,9 @@ field_options:
     archive_divider: संग्रह
     sort_divider: क्रमबद्ध
     accountability_divider: जवाफदेहिता
+    duplication_divider: नक्कल
+  directus_files:
+    storage_divider: फाइल नामकरण
   directus_roles:
     name: "यो भूमिकाको लागि अद्वितीय नाम ...\n"
     ip_access: "अनुमति दिइएको IP ठेगानाहरू थप्नुहोस्, सबैलाई अनुमति दिन खाली छोड्नुहोस्...\n"
@@ -1197,11 +1221,13 @@ share_item: वस्तु साझा गर्नुहोस्
 shared_with_you: तपाईंसँग एउटा वस्तु साझेदारी गरिएको छ
 shared_enter_passcode: जारी राख्न आफ्नो पासकोड प्रविष्ट गर्नुहोस्...
 shared_times_remaining: "यो लिङ्क मात्र {n} पटक प्रयोग गर्न सकिन्छ\n"
+shared_last_remaining: यो लिङ्क एक पटक मात्र प्रयोग गर्न सकिन्छ
 shared_uses_left: थप सुरक्षाको लागि, यो साझा पृष्ठ सीमित संख्यामा हेर्नको कन्फिगर गरिएको छ। अहिले हाल {n} दृश्यहरू बाँकी छन्,अब त्यसपछि पृष्ठ पहुँचयोग्य हुनेछैन।
 share_access_not_found: "यो साझा पृष्ठ या त अवस्थित छैन वा पहिले नै अनुमति दिइएको अधिकतम संख्या नाघेको छ।\n"
 share_copy_link: लिङ्क प्रतिलिपि गर्नुहोस्
 share_copy_link_success: लिङ्क प्रतिलिपि गरियो
 share_send_link: लिङ्क पठाउनुहोस्
+referential_action_set_default: '{field} लाई यसको पूर्वनिर्धारित मानमा सेट गर्नुहोस्'
 choose_action: "कार्य छनौट गर्नुहोस्\n"
 continue_label: जारी राख्नुहोस्
 continue_as: >-
@@ -1245,6 +1271,7 @@ latency: विलम्बता
 login: लग इन
 my_activity: मेरो गतिविधि
 not_authenticated: प्रमाणीकरण गरिएको छैन
+authenticated: प्रमाणीकरण गरिएको
 options: विकल्पहरू
 otp: वन-टाइम पासवर्ड
 password: पासवर्ड
@@ -1263,8 +1290,11 @@ sign_out: साईन आउट
 sign_out_confirm: "के तपाई साईन आउट गर्न निश्चित हुनुहुन्छ?\n"
 something_went_wrong: केही त्रुटी भयो ।
 sort_direction: "क्रमबद्ध गर्ने दिशा\n"
+export_started: निर्यात सुरु भयो
 export_started_copy: "तपाईंको निर्यात सुरु भएको छ। यो डाउनलोड गर्न तयार हुँदा तपाईंलाई सूचित गरिनेछ।\n"
+sort_asc: क्रमबद्ध गर्नुहोस्
 template: टेम्प्लेट
+require_value_to_be_set: सिर्जना गर्दा मान सेट गर्न आवश्यक छ
 translation: अनुवाद
 value: मान
 view_project: परियोजना हेर्नुहोस्
@@ -1272,10 +1302,13 @@ start: सुरु
 table: टेबल
 list: सूची
 enable_search_filter: "खोजी र फिल्टरिङ सक्षम गर्नुहोस्\n"
+remove_item: वस्तु हटाउनुहोस्
+delete_item: वस्तु मेट्नुहोस्
 interfaces:
   filter:
     name: फिल्‍टर
     add_filter: फिल्टर थप्नुहोस्
+    add_group: र / वा समूह
     logic_type_and: र
     logic_type_or: वा
     all: सबै
@@ -1299,17 +1332,23 @@ interfaces:
     checkboxes: चेकबक्सहरू
     description: चेकबक्सहरू मार्फत धेरै विकल्पहरूबाट छान्नुहोस्
     allow_other: अन्यलाई अनुमति दिनुहोस्
+    items_shown: देखाइएका वस्तुहरू
   select-multiple-checkbox-tree:
     description: "नेस्टेड चेकबक्सहरू मार्फत धेरै विकल्पहरूबाट छनौट गर्नुहोस्\n"
+    value_combining_note: नेस्टेड चयनहरू गर्दा कुन मान बचत गरिन्छ भन्ने नियन्त्रण गर्छ।
     show_all: सबै देखाउनु
+    show_selected: चयन गरिएको देखाउनुहोस्
   input-code:
     code: काेड
     description: "कोड स्निपेटहरू लेख्नुहोस् वा साझेदारी गर्नुहोस्\n"
+    line_number: लाइन नम्बर
     placeholder: यहाँ कोड प्रविष्ट गर्नुहोस्...
   system-collection:
     collection: संग्रह
+    description: अवस्थित संग्रहहरू मध्ये चयन गर्नुहोस्
   system-collections:
     collections: सङ्ग्रहहरू
+    description: अवस्थित संग्रहहरू मध्ये चयन गर्नुहोस्
   select-color:
     color: रंग
     description: "रङको मान प्रविष्ट गर्नुहोस् वा चयन गर्नुहोस्\n"
@@ -1328,15 +1367,20 @@ interfaces:
     select_a_collection: एउटा सङ्ग्रह चयन गर्नुहोस्
   presentation-divider:
     divider: विभाजक
+    description: fieldsहरूलाई खण्डहरूमा लेबल गर्नुहोस् र विभाजन गर्नुहोस्
     title_placeholder: "शीर्षक प्रविष्ट गर्नुहोस्, वा रेखा मात्र देखाउन खाली छोड्नुहोस्...\n"
   select-dropdown:
     allow_other: अन्यलाई अनुमति दिनुहोस्
     allow_other_label: अन्य मानहरूलाई अनुमति दिनुहोस्
+    allow_none: कसैलाई अनुमति नदिनुहोस्
     choices_value_placeholder: मान प्रविष्ट गर्नुहोस्...
+  select-multiple-dropdown:
+    description: ड्रपडाउनबाट धेरै मानहरू चयन गर्नुहोस्
   file:
     file: फाइल
   files:
     files: फाइलहरू
+    description: धेरै फाइलहरू चयन गर्नुहोस् वा अपलोड गर्नुहोस्
   input-hash:
     hash: ह्यास
   select-icon:
@@ -1348,16 +1392,23 @@ interfaces:
     crop_label: आवश्यकता अनुसार तस्वीर काट्नुहोस्
   system-interface:
     interface: इन्टरफेस
+  list-m2m:
+    many-to-many: धेरै देखि धेरै
   select-dropdown-m2o:
     many-to-one: धेरै देखि एक
     display_template: टेम्प्लेट प्रदर्शन गर्नुहोस्
   input-rich-text-md:
     edit: सम्पादन गर्नुहोस्
     preview: पूर्वावलोकन
+    editorFont: सम्पादक फन्ट
+    previewFont: फन्ट पूर्वावलोकन
+    customSyntax: अनुकूलित ब्लकहरू
   map:
     map: नक्सा
     zoom: जुम
     geometry_type: ज्यामिति प्रकार
+    default_view: पूर्वनिर्धारित दृश्य
+    unexpected_geometry: अपेक्षित {expected}, {got} प्राप्त भयो}।
     geojson: GeoJSON
     wkt: WKT
     wkb: WKB
@@ -1365,11 +1416,15 @@ interfaces:
   presentation-notice:
     notice: सूचना
   list-o2m:
+    one-to-many: एक देखि धेरै
     no_collection: "Collection फेला पार्न सकिएन\n"
   system-folder:
     folder: फोल्‍डर
     field_hint: "अपलोड गरिएका फाइलहरूको लागि फोल्डर। अवस्थित फाइलहरूलाई असर गर्दैन।\n"
+  select-radio:
+    radio-buttons: रेडियो बटनहरू
   list:
+    edit_fields: फिल्ड सम्पादन
     sort: क्रमबद्ध
     sort_placeholder: म्यानुअल
     incompatible_data: "हालको डाटा रिपीटर इन्टरफेससँग उपयुक्त छैन र रिपीटरमा वस्तुहरू थप्दा ओभरराइड गरिनेछ।\n"
@@ -1378,13 +1433,16 @@ interfaces:
   tags:
     tags: ट्याग
     description: ट्यागहरू चयन गर्नुहोस् वा थप्नुहोस्
+    whitespace: ह्‌वाइटस्‍पेस
     capitalization: क्‍यापिटलाइजेसन
+    alphabetize: वर्णमाला क्रम
     add_tags: "एउटा ट्याग थप्नुहोस् र इन्टर थिच्नुहोस्...\n"
   input:
     input: इनपुट
     trim: छाँट्नुहोस्
     minimum_value: न्यूनतम मान
     maximum_value: अघिकतम मान
+    step_interval: चरण अन्तराल
     slug: Slugify
     slug_label: "प्रविष्ट गरिएको मान URL सुरक्षित बनाउनुहोस्\n"
   input-multiline:
@@ -1403,6 +1461,7 @@ interfaces:
   user:
     user: प्रयोगकर्ता
     description: पहिले नै अवस्थित directus प्रयोगकर्ता चयन गर्नुहोस्
+    select_mode: मोड चयन गर्नुहोस्
     modes:
       auto: स्वतः
       dropdown: ड्रपडाउन
@@ -1413,12 +1472,16 @@ interfaces:
   input-autocomplete-api:
     trigger: ट्रिगर
     rate: दर
+  group-detail:
+    header_icon: हेडर आइकन
+    header_color: हेडरको रङ
   system-token:
     system-token: टोकन
     placeholder: "नयाँ static पहुँच टोकन सिर्जना गर्न \"टोकन उत्पन्न गर्नुहोस्\" मा क्लिक गर्नुहोस्\n"
     value_securely_saved: मान सुरक्षित रूपमा बचत गरियो
     generate: टोकन उत्पन्न गर्नुहोस्
     generate_success_copy: माथिको टोकन ब्याकअप र प्रतिलिपि गर्नुहोस्। सुरक्षा कारणहरूका लागि, तपाईंले यो पृष्ठ बचत गरियो र हेरिसकेपछि फेरि टोकन हेर्न सक्षम हुनुहुने छैन।
+    remove_token: टोकन हटाउनुहोस्
   system-raw-editor:
     description: "raw वा mustache टेम्प्लेटिंग मानहरू प्रविष्ट गर्न अनुमति दिनुहोस्\n"
 displays:
@@ -1434,6 +1497,7 @@ displays:
     collection: संग्रह
   color:
     color: रंग
+    default_color: पूर्वनिर्धारित रङ
   datetime:
     datetime: मिति र समय
     format: ढाँचा
@@ -1442,6 +1506,7 @@ displays:
     short: छोटो
     relative_label: "सापेक्ष समय देखाउनुहोस्, उदाहरण: पाँच मिनेट पहिले\n"
     suffix: प्रत्यय
+    suffix_note: '''in'' र ''ago'' जस्ता शब्दहरू प्रयोग गर्दछ'
     strict_note: '''almost'', ''over'', ''less than'' जस्ता शब्दहरू हटाउँछ'
     round: गोलो
     down: तल
@@ -1461,9 +1526,11 @@ displays:
     font_serif: सेरिफ
     font_monospace: मोनोस्पेस
     bold: बोल्ड
+    bold_label: बोल्ड शैली प्रयोग गर्नुहोस्
     italic: इटालिक
     prefix: उपसर्ग
     suffix: प्रत्यय
+    suffix_label: पछि थपिएको पाठ
     color: रंग
     background: पृष्ठभूमि
     icon: आइकन
@@ -1490,6 +1557,8 @@ displays:
     rating: मूल्याङ्कन
     description: "अधिकतम-मानसँग सम्बन्धित संख्याहरूको रूपमा तारा सिर्जना गर्नुहोस्\n"
     simple: सरल
+  related-values:
+    related-values: सम्बन्धित मानहरू
   user:
     user: प्रयोगकर्ता
     avatar: अवतार
@@ -1498,6 +1567,7 @@ displays:
 layouts:
   cards:
     cards: कार्डहरू
+    image_source: छवि स्रोत
     crop: क्रप गर्नुहोस्
     title: सेटिङहरू अद्यावधिक गरियो
   tabular:
@@ -1513,8 +1583,14 @@ layouts:
     name: कानबन
     group_title: समूह शीर्षक
     title: कार्ड शीर्षक
+    date: कार्ड मिति
+    tags: कार्ड ट्यागहरू
+    user: कार्ड प्रयोगकर्ता
     crop: क्रप गर्नुहोस्
     advanced: उन्नत
+    edit_group: समूह सम्पादन गर्नुहोस्
+    delete_group: समूह मेटाउनुहोस्
+    add_group: समूह थप्नुहोस्
     show: देखाउने
     not_all_loaded: "तपाईंले पहिलो 1000 वस्तुहरू मात्र लोड गर्न सक्नुहुन्छ।\n"
 horizontal: तेर्सो
@@ -1523,9 +1599,11 @@ y_axis: y-अक्ष
 both: दुबै
 half_circle: आधा गोलाकार
 full_circle: पूर्ण गोलाकार
+stroke_width: स्ट्रोक चौडाई
 thin: पातलो
 medium: मध्यम
 show_labels: लेबलहरू देखाउनुहोस्
+show_legend: लेजेन्ड देखाउनुहोस्
 right: दायाँ
 left: बायाँ
 donut: डोनट
@@ -1533,6 +1611,8 @@ panels:
   metric:
     name: मेट्रिक
     description: "क्वेरीमा आधारित एक मात्र मान देखाउनुहोस्\n"
+  time_series:
+    curve_type: वक्र प्रकार
   label:
     name: लेबल
   list:
@@ -1540,16 +1620,28 @@ panels:
   barchart:
     name: बार चार्ट
     description: "मानहरूको समूह तुलना गर्नका लागि पट्टी वा स्तम्भ चार्टहरू\n"
+    horizontal: तेर्सो
+  linechart:
+    name: रेखा चार्ट
+    disabled_grouping: समूह चयन गर्दा असक्षम हुन्छ।
+    curve_type: वक्र प्रकार
   meter:
     name: मिटर
   piechart:
     name: पाई वा डोनट चार्ट
     description: "स्तम्भमा समूहहरूको अनुपात देखाउने गोलाकार चार्ट\n"
 triggers:
+  common:
+    response_body: प्रतिक्रिया को शरीर
+  event:
+    description: प्लेटफर्म वा डेटा घटनाहरूमा ट्रिगरहरू
   webhook:
     name: वेबहुकहरू
     description: "यसले आगमन HTTP अनुरोधमा ट्रिगर गर्दछ\n"
     method: विधि
+    async: एसिन्क्रोनस
+  operation:
+    name: अर्को प्रवाह
   schedule:
     description: पूर्वनिर्धारित समयमा नियमित समयमा ट्रिगर हुन्छ
   manual:
@@ -1557,6 +1649,11 @@ triggers:
 a_flow_uuid: "ट्रिगर गर्न फ्लो चयन गर्नुहोस्...\n"
 item_payload_placeholder: "यो JSON वस्तुको फिल्ड मानहरू अद्यावधिक गर्न प्रयोग गरिन्छ...\n"
 operations:
+  condition:
+    name: र्शत
+    description: If/Else तर्कमा आधारित प्रवाहलाई रुट गर्नुहोस्
+  exec:
+    name: स्क्रिप्ट चलाउनुहोस्
   item-create:
     name: डाटा सिर्जना गर्नुहोस्
     description: "डाटाबेसमा itemहरू सिर्जना गर्नुहोस्\n"
@@ -1579,6 +1676,7 @@ operations:
   mail:
     name: ई-मेल पठाउनुहोस्
     description: एक वा धेरै व्यक्तिहरूलाई इमेल पठाउनुहोस्
+    to: सम्म
     to_placeholder: इ-मेल ठेगानाहरू थप्नुहोस् र इन्टर थिच्नुहोस्...
     body: शरीर
   notification:
@@ -1613,3 +1711,4 @@ operations:
     data: डाटा
     parallel: समानान्तर
     batch: ब्याच
+    batch_size: ब्याच साइज
