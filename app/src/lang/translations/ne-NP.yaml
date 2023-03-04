@@ -309,6 +309,7 @@ primary_key: प्राथमिक कुञ्जी
 foreign_key: विदेशी कुञ्जी
 finish_setup: सेटअप समाप्त गर्नुहोस्
 dismiss: रद्द गर्नुहोस्
+raw_value: कच्चा मान
 copy_raw_value_success: प्रतिलिपि गरियो
 copy_raw_value_fail: प्रतिलिपि गर्न सकिएन
 paste_raw_value_success: टाँसियो
@@ -409,6 +410,7 @@ months:
   october: अक्टोबर
   november: नोभेम्बर
   december: डिसेम्बर
+drag_mode: तान्ने मोड
 cancel_crop: क्रप रद्द गर्नुहोस्
 original: मूल
 url: URL
@@ -552,6 +554,7 @@ edit: सम्पादन गर्नुहोस्
 enabled: सक्षम गरियो
 disable_tfa: 2FA असक्षम गर्नुहोस्
 admin_disable_tfa_text: "के तपाइँ यो प्रयोगकर्ताको लागि 2FA असक्षम गर्न निश्चित हुनुहुन्छ?\n"
+tfa_setup: 2FA सेटअप गर्नुहोस्
 tfa_scan_code: 2FA सेटअप पूरा गर्न आफ्नो प्रमाणक एपमा कोड स्क्यान गर्नुहोस्
 enter_otp_to_disable_tfa: 2FA असक्षम गर्न OTP प्रविष्ट गर्नुहोस्
 create_account: खाता सिर्जना गर्नुहोस्
@@ -1126,6 +1129,8 @@ field_options:
     security_divider_title: सुरक्षा
     auth_password_policy:
       strong_text: "\nबलियो - ठूला अक्षरहरू / सानो अक्षरहरू / संख्याहरू / विशेष क्यारेक्टरहरू"
+    storage_asset_presets:
+      upscaling: अपस्केलिंग
     transforms_note: "Sharp Method नाम र यसको Argumentहरु। थप जानकारीको लागि https://sharp.pixelplumbing.com/api-constructor हेर्नुहोस्।\n"
     mapbox_key: "म्यापबक्स Access टोकन\n"
     files_divider_title: फाइलहरू र थम्बनेलहरू
@@ -1133,6 +1138,7 @@ field_options:
     login: लग - इन
     create: सिर्जना गर्नुहोस्
     update: अद्यावधिक
+    delete: मेट्नुहोस्
   directus_collections:
     only_track_activity: मात्र गतिविधि ट्र्याक गर्नुहोस्
     do_not_track_anything: केहि पनि ट्र्याक नगर्नुहोस्
@@ -1172,6 +1178,7 @@ field_options:
     triggers_divider: ट्रिगरहरू
     actions_create: सिर्जना गर्नुहोस्
     actions_update: अद्यावधिक
+    actions_delete: मेट्नुहोस्
     actions_login: लग - इन
     headers:
       header: हेडर
@@ -1182,6 +1189,7 @@ always_open: सधैं खुला राख्नुहोस
 comment: टिप्पणी
 shares: शेयरहरू
 no_shares: "देखाउनको लागि कुनै साझेदारी छैन\n"
+new_share: नयाँ साझेदारी
 expired: म्याद सकिएको
 upcoming: आगामी
 share: "शेयर गर्नु\nअरुलाई पठाउनु"
@@ -1191,7 +1199,9 @@ shared_enter_passcode: जारी राख्न आफ्नो पासक
 shared_times_remaining: "यो लिङ्क मात्र {n} पटक प्रयोग गर्न सकिन्छ\n"
 shared_uses_left: थप सुरक्षाको लागि, यो साझा पृष्ठ सीमित संख्यामा हेर्नको कन्फिगर गरिएको छ। अहिले हाल {n} दृश्यहरू बाँकी छन्,अब त्यसपछि पृष्ठ पहुँचयोग्य हुनेछैन।
 share_access_not_found: "यो साझा पृष्ठ या त अवस्थित छैन वा पहिले नै अनुमति दिइएको अधिकतम संख्या नाघेको छ।\n"
+share_copy_link: लिङ्क प्रतिलिपि गर्नुहोस्
 share_copy_link_success: लिङ्क प्रतिलिपि गरियो
+share_send_link: लिङ्क पठाउनुहोस्
 choose_action: "कार्य छनौट गर्नुहोस्\n"
 continue_label: जारी राख्नुहोस्
 continue_as: >-
@@ -1199,6 +1209,7 @@ continue_as: >-
 
 editing_role: '{role} भूमिका'
 default_label: पूर्वनिर्धारित
+delete_label: मेट्नुहोस्
 delete_are_you_sure: >-
   यो कार्य स्थायी छ र पूर्ववत गर्न सकिँदैन। के तपाइँ निश्चित रूपमा अगाडि बढ्न चाहनुहुन्छ?
 
@@ -1206,6 +1217,7 @@ delete_field_are_you_sure: >-
   के तपाइँ "{field}" लाई मेटाउन निश्चित हुनुहुन्छ? यस कार्यलाई अन्डू गर्न सकिँदैन।
 description: विवरणः
 done: भयो
+duplicate: प्रतिलिपि
 limit: सीमा
 email: इमेल
 embed: इम्बेड
@@ -1230,15 +1242,21 @@ colors:
   gray: कैलो
   white: सेतो
 latency: विलम्बता
+login: लग इन
 my_activity: मेरो गतिविधि
 not_authenticated: प्रमाणीकरण गरिएको छैन
 options: विकल्पहरू
 otp: वन-टाइम पासवर्ड
 password: पासवर्ड
 permissions: अनुमतिहरू
+reset: रिसेट
 reset_password: पासवर्ड रिसेट गर्नुहोस्
+revisions: संशोधनहरू
 no_logs: अहिलेसम्म कुनै लगहरू छैन
+revert: उल्‍टाउनुहोस्
 save: बचत गर्नुहोस्
+schema: स्‍कीमा
+search: खोज्नुहोस्
 settings: सेटिंग्सहरु
 sign_in: साइन इन
 sign_out: साईन आउट
@@ -1271,6 +1289,8 @@ interfaces:
     all_closed: "सबै बन्द छ\n"
     all_opened: सबै खुल्यो
   presentation-links:
+    links: लिङ्कहरू
+    style: शैली
     primary: प्राथमिक
     link: लिङ्कहरू
     button: बटनहरू
@@ -1326,6 +1346,8 @@ interfaces:
   file-image:
     image: तस्बिर
     crop_label: आवश्यकता अनुसार तस्वीर काट्नुहोस्
+  system-interface:
+    interface: इन्टरफेस
   select-dropdown-m2o:
     many-to-one: धेरै देखि एक
     display_template: टेम्प्लेट प्रदर्शन गर्नुहोस्
@@ -1340,6 +1362,8 @@ interfaces:
     wkt: WKT
     wkb: WKB
     click_to_select: "{geometry} चयन गर्न क्लिक गर्नुहोस् \n"
+  presentation-notice:
+    notice: सूचना
   list-o2m:
     no_collection: "Collection फेला पार्न सकिएन\n"
   system-folder:
@@ -1347,7 +1371,10 @@ interfaces:
     field_hint: "अपलोड गरिएका फाइलहरूको लागि फोल्डर। अवस्थित फाइलहरूलाई असर गर्दैन।\n"
   list:
     sort: क्रमबद्ध
+    sort_placeholder: म्यानुअल
     incompatible_data: "हालको डाटा रिपीटर इन्टरफेससँग उपयुक्त छैन र रिपीटरमा वस्तुहरू थप्दा ओभरराइड गरिनेछ।\n"
+  slider:
+    slider: स्लाइडर
   tags:
     tags: ट्याग
     description: ट्यागहरू चयन गर्नुहोस् वा थप्नुहोस्
@@ -1372,6 +1399,7 @@ interfaces:
   translations:
     display_template: टेम्प्लेट प्रदर्शन गर्नुहोस्
     no_collection: कुनै सङ्ग्रह छैन
+    enable: सक्षम गर्नुहोस्
   user:
     user: प्रयोगकर्ता
     description: पहिले नै अवस्थित directus प्रयोगकर्ता चयन गर्नुहोस्
@@ -1397,6 +1425,7 @@ displays:
   translations:
     translations: अनुवादहरू
     description: अनुवाद पूर्वावलोकन
+    enable: सक्षम गर्नुहोस्
   boolean:
     boolean: Boolean
     icon_on: आइकन सक्रिय छ
@@ -1410,9 +1439,11 @@ displays:
     format: ढाँचा
     format_note: >-
       आफू अनुकूल ढाँचाले __[मिति फिल्ड चिन्ह तालिका](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__ स्वीकार गर्दछ
+    short: छोटो
     relative_label: "सापेक्ष समय देखाउनुहोस्, उदाहरण: पाँच मिनेट पहिले\n"
     suffix: प्रत्यय
     strict_note: '''almost'', ''over'', ''less than'' जस्ता शब्दहरू हटाउँछ'
+    round: गोलो
     down: तल
     nearest: निकटतम
     up: माथि
@@ -1436,14 +1467,17 @@ displays:
     color: रंग
     background: पृष्ठभूमि
     icon: आइकन
+    border: किनारा
     border_label: सीमा देखाउनुहोस्
     text: पाठ
   icon:
     icon: आइकन
+    filled: भरिएको
   image:
     image: तस्बिर
     circle: वृत्त
   labels:
+    labels: लेबलहरू
     default_foreground: पूर्वनिर्धारित अग्रभूमि
     default_background: पूर्वनिर्धारित पृष्ठभूमि
     show_as_dot: बिन्दुको रूपमा देखाउनुहोस्
@@ -1453,7 +1487,9 @@ displays:
     description: "फाइलको MIME-प्रकार देखाउनुहोस्\n"
     extension_only_label: "केवल फाइल extension देखाउनुहोस्\n"
   rating:
+    rating: मूल्याङ्कन
     description: "अधिकतम-मानसँग सम्बन्धित संख्याहरूको रूपमा तारा सिर्जना गर्नुहोस्\n"
+    simple: सरल
   user:
     user: प्रयोगकर्ता
     avatar: अवतार
@@ -1461,6 +1497,7 @@ displays:
     both: दुबै
 layouts:
   cards:
+    cards: कार्डहरू
     crop: क्रप गर्नुहोस्
     title: सेटिङहरू अद्यावधिक गरियो
   tabular:
@@ -1470,8 +1507,10 @@ layouts:
     cozy: सहज
   map:
     map: नक्सा
+    layers: तहहरू
     cluster_maxzoom: "क्लस्टरिङको लागि अधिकतम जुम\n"
   kanban:
+    name: कानबन
     group_title: समूह शीर्षक
     title: कार्ड शीर्षक
     crop: क्रप गर्नुहोस्
@@ -1487,7 +1526,9 @@ full_circle: पूर्ण गोलाकार
 thin: पातलो
 medium: मध्यम
 show_labels: लेबलहरू देखाउनुहोस्
+right: दायाँ
 left: बायाँ
+donut: डोनट
 panels:
   metric:
     name: मेट्रिक
@@ -1499,6 +1540,8 @@ panels:
   barchart:
     name: बार चार्ट
     description: "मानहरूको समूह तुलना गर्नका लागि पट्टी वा स्तम्भ चार्टहरू\n"
+  meter:
+    name: मिटर
   piechart:
     name: पाई वा डोनट चार्ट
     description: "स्तम्भमा समूहहरूको अनुपात देखाउने गोलाकार चार्ट\n"
@@ -1568,3 +1611,5 @@ operations:
     flows: फ्लोहरु
     flow: फ्लो
     data: डाटा
+    parallel: समानान्तर
+    batch: ब्याच
