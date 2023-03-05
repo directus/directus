@@ -1432,6 +1432,7 @@ translation: 翻译
 translation_placeholder: 输入翻译...
 value: 值
 view_project: 查看项目
+weeks: { }
 report_error: 报告错误
 start: 开始
 table: 表
@@ -2125,3 +2126,4 @@ operations:
     serial: 串行
     parallel: 并行
     batch: 批处理
+    batch_size: 批量大小
