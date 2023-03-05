@@ -953,7 +953,7 @@ settings_flows: 流程
 settings_presets: 预设&书签
 settings_translation_strings: 翻译字符串
 one_or_more_options_are_missing: 缺少一个或多个选项
-scope: Scope
+scope: 范围
 actions: 操作
 select: 选择...
 layout: 布局
