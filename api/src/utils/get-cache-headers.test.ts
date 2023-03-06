@@ -1,6 +1,6 @@
 import type { Request } from 'express';
 import { describe, expect, vi, test } from 'vitest';
-import { getCacheControlHeader } from '../../src/utils/get-cache-headers';
+import { getCacheControlHeader } from './get-cache-headers';
 
 let factoryEnv: { [k: string]: any } = {};
 
@@ -13,26 +13,15 @@ vi.mock('../../src/env', () => ({
 			},
 		}
 	),
+	getEnv: vi.fn().mockImplementation(() => factoryEnv),
 }));
 
 const scenarios = [
 	// Test the cache-control header
 	{
-		name: 'when cache-control header includes no-store',
-		input: {
-			env: {},
-			headers: { 'cache-control': 'no-store' },
-			accountability: null,
-			ttl: 5678910,
-			globalCacheSettings: false,
-			personalized: false,
-		},
-		output: 'no-store',
-	},
-	{
 		name: 'when cache-Control header includes no-store',
 		input: {
-			env: {},
+			env: { CACHE_SKIP_ALLOWED: true },
 			headers: { 'Cache-Control': 'no-store' },
 			accountability: null,
 			ttl: 5678910,
@@ -44,7 +33,7 @@ const scenarios = [
 	{
 		name: 'when cache-Control header does not include no-store',
 		input: {
-			env: {},
+			env: { CACHE_SKIP_ALLOWED: true },
 			headers: { other: 'value' },
 			accountability: null,
 			ttl: 5678910,
@@ -210,6 +199,10 @@ describe('get cache headers', () => {
 			const mockRequest = {
 				headers: scenario.input.headers as any,
 				accountability: scenario.input.accountability,
+				get: vi.fn().mockImplementation((header) => {
+					const matchingKey = Object.keys(scenario.input.headers as any).find((key) => key.toLowerCase() === header);
+					return matchingKey ? (scenario.input.headers as any)?.[matchingKey] : undefined;
+				}),
 			} as Partial<Request>;
 			factoryEnv = scenario.input.env;
 			const { ttl, globalCacheSettings, personalized } = scenario.input;
