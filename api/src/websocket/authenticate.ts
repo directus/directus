@@ -20,7 +20,9 @@ export async function authenticateWithToken(token: string, expires?: number) {
 	return { accountability, expiresAt } as AuthenticationState;
 }
 
-export async function authenticateConnection(message: BasicAuthMessage): Promise<AuthenticationState> {
+export async function authenticateConnection(
+	message: BasicAuthMessage & Record<string, any>
+): Promise<AuthenticationState> {
 	let access_token: string | undefined, expires_at: number | undefined;
 	try {
 		if ('email' in message && 'password' in message) {
@@ -41,9 +43,9 @@ export async function authenticateConnection(message: BasicAuthMessage): Promise
 		return await authenticateWithToken(access_token, expires_at);
 	} catch (error) {
 		if (error instanceof InvalidCredentialsException && error.message === 'Token expired.') {
-			throw new WebSocketException('auth', 'TOKEN_EXPIRED', 'Token expired.', message.uid);
+			throw new WebSocketException('auth', 'TOKEN_EXPIRED', 'Token expired.', message?.uid);
 		}
-		throw new WebSocketException('auth', 'AUTH_FAILED', 'Authentication failed.', message.uid);
+		throw new WebSocketException('auth', 'AUTH_FAILED', 'Authentication failed.', message?.uid);
 	}
 }
 
