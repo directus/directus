@@ -1,7 +1,7 @@
 <template>
 	<div ref="el" class="v-form" :class="gridClass">
 		<validation-errors
-			v-if="!showValidationErrors && validationErrors.length > 0"
+			v-if="showValidationErrors && validationErrors.length > 0"
 			:validation-errors="validationErrors"
 			:fields="fields ? fields : []"
 			@scroll-to-field="scrollToField"
