@@ -11,7 +11,7 @@ import type { AuthenticationState, ConnectionParams, UpgradeContext, WebSocketCl
 import { handleWebsocketException, WebSocketException } from '../exceptions';
 import { authenticateConnection, refreshAccountability } from '../authenticate';
 import { waitForAnyMessage } from '../utils/wait-for-message';
-import { WebSocketAuthMessage, WebSocketMessage } from '../messages';
+import { BasicAuthMessage, WebSocketMessage } from '../messages';
 
 export class GraphQLSubscriptionController extends SocketController {
 	gql: Server<ConnectionParams>;
@@ -74,7 +74,7 @@ export class GraphQLSubscriptionController extends SocketController {
 				const msg: WebSocketMessage = await waitForAnyMessage(ws, this.authentication.timeout);
 				if (msg.type !== 'connection_init') throw new Error();
 
-				const state = await authenticateConnection(WebSocketAuthMessage.parse(msg['payload']));
+				const state = await authenticateConnection(BasicAuthMessage.parse(msg['payload']));
 				this.server.emit('connection', ws, state);
 				ws.send(JSON.stringify({ type: 'connection_ack' }));
 				this.server.emit('message-parsed', msg);

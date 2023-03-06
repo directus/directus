@@ -9,7 +9,7 @@ import getDatabase from '../database';
 import { getExpiresAtForToken } from './utils/get-expires-at-for-token';
 import { WebSocketException } from './exceptions';
 import { InvalidCredentialsException } from '../exceptions';
-import type { WebSocketAuthMessage, WebSocketResponse } from './messages';
+import type { BasicAuthMessage, WebSocketResponse } from './messages';
 
 export async function authenticateWithToken(token: string, expires?: number) {
 	const accountability = await getAccountabilityForToken(token);
@@ -20,7 +20,7 @@ export async function authenticateWithToken(token: string, expires?: number) {
 	return { accountability, expiresAt } as AuthenticationState;
 }
 
-export async function authenticateConnection(message: WebSocketAuthMessage): Promise<AuthenticationState> {
+export async function authenticateConnection(message: BasicAuthMessage): Promise<AuthenticationState> {
 	let access_token: string | undefined, expires_at: number | undefined;
 	try {
 		if ('email' in message && 'password' in message) {
