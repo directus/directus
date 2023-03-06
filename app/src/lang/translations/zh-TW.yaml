@@ -1891,6 +1891,8 @@ layouts:
     crop: 裁剪
     advanced: 進階
     not_all_loaded: 只能讀取前1000個項目。
+horizontal: 水平
+both: 都要
 panels:
   metric:
     name: 格式
@@ -1912,62 +1914,21 @@ panels:
   barchart:
     name: 柱狀圖
     description: 以柱狀圖顯示群組後的值
-    select_field: 你必須選擇一個欄位。
-    select_collection: 您必須選擇一個資料集。
-    select_x_axis: 您必須選擇一個 X 軸。
-    function: 函數
     horizontal: 水平
-    x_axis_grouping: X軸群組集合
-    x_axis: X 軸
-    y_axis_function: Y軸函數
-    y_axis: Y 軸
-    show_x_axis: 顯示 X 軸
-    show_y_axis: 顯示 Y 軸
-    show_data_label: 顯示資料標籤
-    group_by: 群組方式
-    group_and_function: 您必須選擇一個群組或一個函數。
-    y_axis_NaN: Y 軸必須是數字。
-    y_axis_conditional_one: 條件值
-    y_axis_conditional_two: 只允許數字
+    select_collection: 您必須選擇一個資料集。
   linechart:
     name: 折線圖
-    select_field: 你必須選擇一個欄位。
-    select_collection: 您必須選擇一個資料集。
-    select_x_axis: 您必須選擇一個 X 軸。
-    function: 函數
-    x_axis: X 軸
-    x_axis_decimals: X 軸位數
     disabled_no_grouping: 當未選擇群組時停用
-    y_axis: Y 軸
-    datasets: 資料集
-    show_legend: 顯示圖例
     show_marker: 顯示提示文字
-    include_y_axis: 當沒有選擇群組時，必須包含一個 Y 軸
-    group_and_function: 您必須選擇一個群組或一個函數。
+    curve_type: 曲線類型
     smooth: 平滑
     straight: 直線
     step_line: 線段
   meter:
     name: 格線
     description: 根據數值產生格線
-    stroke_width: 線條粗細
-    select_max_value: 您必須選擇最大值
-    max_greater_than_zero: 最大值必須大於0
-    select_field: 你必須選擇一個欄位。
-    select_collection: 您必須選擇一個資料集。
-    function: 函數
-    thin: 細線
-    medium: 中等
-    broad: 寬線
   piechart:
     name: 圓餅圖
-    function: 函數
-    donut: 圓餅圖
-    show_legend: 顯示圖例
-    right: 右
-    bottom: 下方
-    monochrome: 黑白
-    monochrome_color: 黑白
   variable:
     name: 全域變數
     description: 在其他面板的篩選器中設定一個全域值

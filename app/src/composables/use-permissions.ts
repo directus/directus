@@ -59,6 +59,12 @@ export function usePermissions(collection: Ref<string>, item: Ref<any>, isNew: R
 
 		const permissions = permissionsStore.getPermissionsForUser(collection.value, isNew.value ? 'create' : 'update');
 
+		// remove fields without read permissions so they don't show up in the DOM
+		const readableFields = permissionsStore.getPermissionsForUser(collection.value, 'read')?.fields;
+		if (readableFields && readableFields.includes('*') === false) {
+			fields = fields.filter((field) => readableFields.includes(field.field));
+		}
+
 		if (!permissions) return fields;
 
 		if (permissions.fields?.includes('*') === false) {

@@ -3,7 +3,6 @@ import { parseJSON } from '@directus/shared/utils';
 import express, { Router } from 'express';
 import flatten from 'flat';
 import jwt from 'jsonwebtoken';
-import ms from 'ms';
 import { Client, errors, generators, Issuer } from 'openid-client';
 import { getAuthProvider } from '../../auth';
 import env from '../../env';
@@ -22,6 +21,7 @@ import { AuthData, AuthDriverOptions, User } from '../../types';
 import asyncHandler from '../../utils/async-handler';
 import { getConfigFromEnv } from '../../utils/get-config-from-env';
 import { getIPFromReq } from '../../utils/get-ip-from-req';
+import { getMilliseconds } from '../../utils/get-milliseconds';
 import { Url } from '../../utils/url';
 import { LocalAuthDriver } from './local';
 
@@ -327,7 +327,7 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 				res.cookie(env.REFRESH_TOKEN_COOKIE_NAME, refreshToken, {
 					httpOnly: true,
 					domain: env.REFRESH_TOKEN_COOKIE_DOMAIN,
-					maxAge: ms(env.REFRESH_TOKEN_TTL as string),
+					maxAge: getMilliseconds(env.REFRESH_TOKEN_TTL),
 					secure: env.REFRESH_TOKEN_COOKIE_SECURE ?? false,
 					sameSite: (env.REFRESH_TOKEN_COOKIE_SAME_SITE as 'lax' | 'strict' | 'none') || 'strict',
 				});

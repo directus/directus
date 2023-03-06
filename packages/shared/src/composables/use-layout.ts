@@ -5,7 +5,7 @@ import { useExtensions } from './use-system';
 const NAME_SUFFIX = 'wrapper';
 const WRITABLE_PROPS = ['selection', 'layoutOptions', 'layoutQuery'] as const;
 
-type WritableProp = typeof WRITABLE_PROPS[number];
+type WritableProp = (typeof WRITABLE_PROPS)[number];
 
 function isWritableProp(prop: string): prop is WritableProp {
 	return (WRITABLE_PROPS as readonly string[]).includes(prop);

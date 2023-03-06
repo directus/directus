@@ -38,7 +38,8 @@
 			:disabled="disabled"
 			:badge="badge"
 			:direction="direction"
-			nested
+			:show-no-visible-fields="false"
+			:show-validation-errors="false"
 			@update:model-value="$emit('apply', $event)"
 		/>
 	</v-detail>

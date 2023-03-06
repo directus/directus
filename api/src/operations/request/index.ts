@@ -1,5 +1,6 @@
 import { defineOperationApi, parseJSON } from '@directus/shared/utils';
 import encodeUrl from 'encodeurl';
+import { getAxios } from '../../request/index';
 
 type Options = {
 	url: string;
@@ -12,8 +13,6 @@ export default defineOperationApi<Options>({
 	id: 'request',
 
 	handler: async ({ url, method, body, headers }) => {
-		const axios = (await import('axios')).default;
-
 		const customHeaders =
 			headers?.reduce((acc, { header, value }) => {
 				acc[header] = value;
@@ -24,6 +23,7 @@ export default defineOperationApi<Options>({
 			customHeaders['Content-Type'] = 'application/json';
 		}
 
+		const axios = await getAxios();
 		const result = await axios({
 			url: encodeUrl(url),
 			method,

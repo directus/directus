@@ -1,6 +1,6 @@
 {
 	"name": "create-directus-extension",
-	"version": "9.22.4",
+	"version": "9.23.1",
 	"description": "A small util that will scaffold a Directus extension",
 	"keywords": [
 		"directus",
@@ -34,6 +34,6 @@
 	"dependencies": {
 		"@directus/extensions-sdk": "workspace:*",
 		"@directus/shared": "workspace:*",
-		"inquirer": "8.1.2"
+		"inquirer": "8.2.5"
 	}
 }
