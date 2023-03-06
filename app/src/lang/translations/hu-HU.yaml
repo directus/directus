@@ -1432,6 +1432,7 @@ translation: Fordítás
 translation_placeholder: Fordítás megadása...
 value: Érték
 view_project: Projekt megtekintése
+weeks: { }
 report_error: Hiba jelentése
 start: Start
 table: Táblázat
@@ -1941,7 +1942,28 @@ layouts:
     no_group: Keresés és szűrés engedélyezése
     not_all_loaded: Csak az első 100 elemet sikerült betölteni.
 horizontal: Horizontális
+vertical: Függőleges
+x_axis: X-tengely
+y_axis: Y tengely
+y_axis_function: Y tengelyes függvény
+show_x_only: Csak az X tengely látszódjon
+show_y_only: Csak az Y tengely látszódjon
+show_data_label: Adat címke mutatása
 both: Mindkettő
+show_axis_labels: Tengely címke mutatása
+function: Függvény
+half_circle: Félkör
+full_circle: Teljes kör
+stroke_width: Tollvastagság
+rounded_stroke: Görbe vonal
+thin: Vékony
+medium: Közepes
+broad: Széles
+show_labels: Címkék megjelenítése
+show_legend: Mutasd a magyarázatot
+right: Jobb
+left: Balra
+donut: Fánk
 panels:
   metric:
     name: Metrikus
@@ -1968,6 +1990,7 @@ panels:
   linechart:
     name: Vonaldiagram
     description: Vonaldiagram egy mező változásának összehasonlításához
+    disabled_grouping: Kikapcsolva, amikor csoportosítás van kiválasztva.
     disabled_no_grouping: Letiltva, ha nincs kiválasztva csoportosítás.
     show_marker: Eszköztipp-jelölő megjelenítése
     curve_type: Görbe típusa
@@ -2098,3 +2121,9 @@ operations:
     flows: Folyamatok
     flow: Folyamat
     data: Adat
+    iteration_mode: Iteráló mód
+    iteration_mode_note: Tömbökön iteráló mód.
+    serial: Soros
+    parallel: Párhuzamos
+    batch: Tömeges
+    batch_size: Darabszám

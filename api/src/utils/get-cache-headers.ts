@@ -1,5 +1,6 @@
 import env from '../env';
 import { Request } from 'express';
+import { shouldSkipCache } from './should-skip-cache';
 
 /**
  * Returns the Cache-Control header for the current request
@@ -15,11 +16,8 @@ export function getCacheControlHeader(
 	globalCacheSettings: boolean,
 	personalized: boolean
 ): string {
-	const noCacheRequested =
-		req.headers['cache-control']?.includes('no-store') || req.headers['Cache-Control']?.includes('no-store');
-
 	// When the user explicitly asked to skip the cache
-	if (noCacheRequested) return 'no-store';
+	if (shouldSkipCache(req)) return 'no-store';
 
 	// When the resource / current request shouldn't be cached
 	if (ttl === undefined || ttl < 0) return 'no-cache';

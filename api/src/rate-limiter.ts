@@ -12,35 +12,47 @@ import { getConfigFromEnv } from './utils/get-config-from-env';
 
 type IRateLimiterOptionsOverrides = Partial<IRateLimiterOptions> | Partial<IRateLimiterStoreOptions>;
 
-export function createRateLimiter(configOverrides?: IRateLimiterOptionsOverrides): RateLimiterAbstract {
+export function createRateLimiter(
+	configPrefix = 'RATE_LIMITER',
+	configOverrides?: IRateLimiterOptionsOverrides
+): RateLimiterAbstract {
 	switch (env.RATE_LIMITER_STORE) {
 		case 'redis':
-			return new RateLimiterRedis(getConfig('redis', configOverrides));
+			return new RateLimiterRedis(getConfig('redis', configPrefix, configOverrides));
 		case 'memcache':
-			return new RateLimiterMemcache(getConfig('memcache', configOverrides));
+			return new RateLimiterMemcache(getConfig('memcache', configPrefix, configOverrides));
 		case 'memory':
 		default:
-			return new RateLimiterMemory(getConfig('memory', configOverrides));
+			return new RateLimiterMemory(getConfig('memory', configPrefix, configOverrides));
 	}
 }
 
-function getConfig(store: 'memory', overrides?: IRateLimiterOptionsOverrides): IRateLimiterOptions;
-function getConfig(store: 'redis' | 'memcache', overrides?: IRateLimiterOptionsOverrides): IRateLimiterStoreOptions;
+function getConfig(
+	store: 'memory',
+	configPrefix: string,
+	overrides?: IRateLimiterOptionsOverrides
+): IRateLimiterOptions;
+function getConfig(
+	store: 'redis' | 'memcache',
+	configPrefix: string,
+	overrides?: IRateLimiterOptionsOverrides
+): IRateLimiterStoreOptions;
 function getConfig(
 	store: 'memory' | 'redis' | 'memcache' = 'memory',
+	configPrefix = 'RATE_LIMITER',
 	overrides?: IRateLimiterOptionsOverrides
 ): IRateLimiterOptions | IRateLimiterStoreOptions {
-	const config: any = getConfigFromEnv('RATE_LIMITER_', `RATE_LIMITER_${store}_`);
+	const config: any = getConfigFromEnv(`${configPrefix}_`, `${configPrefix}_${store}_`);
 
 	if (store === 'redis') {
 		const Redis = require('ioredis');
 		delete config.redis;
-		config.storeClient = new Redis(env.RATE_LIMITER_REDIS || getConfigFromEnv('RATE_LIMITER_REDIS_'));
+		config.storeClient = new Redis(env[`${configPrefix}_REDIS`] || getConfigFromEnv(`${configPrefix}_REDIS_`));
 	}
 
 	if (store === 'memcache') {
 		const Memcached = require('memcached');
-		config.storeClient = new Memcached(env.RATE_LIMITER_MEMCACHE, getConfigFromEnv('RATE_LIMITER_MEMCACHE_'));
+		config.storeClient = new Memcached(env[`${configPrefix}_MEMCACHE`], getConfigFromEnv(`${configPrefix}_MEMCACHE_`));
 	}
 
 	delete config.enabled;

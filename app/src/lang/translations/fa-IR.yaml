@@ -245,6 +245,7 @@ float: اعشاری شناور
 integer: عدد صحیح
 json: JSON
 xml: XML
+yaml: YAML
 string: رشته
 text: متن
 time: زمان

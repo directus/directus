@@ -245,6 +245,7 @@ float: Обтікання
 integer: Ціле число
 json: JSON
 xml: XML
+yaml: YAML
 string: Рядок
 text: Текст
 time: Час
@@ -1940,6 +1941,10 @@ layouts:
     no_group: Без Групи
     not_all_loaded: Можна завантажити лише перші 1000 елементів.
 horizontal: Горизонтальний
+x_axis: Вісь X
+y_axis: Вісь Y
+show_x_only: Показувати лише вісь X
+show_y_only: Показувати лише вісь Y
 both: Обидва
 panels:
   metric:
