@@ -844,6 +844,7 @@ dashboard_name: Dashboard naam
 no_data: Geen gegevens
 no_data_in_flow: Er zijn geen gegevens binnen deze Flow geproduceerd of benaderd
 accountability: Verantwoording
+payload: Payload
 details: Details
 full_screen: Volledig scherm
 full_text_search: Full text-zoeken
@@ -1694,8 +1695,12 @@ triggers:
 operations:
   condition:
     name: Conditie
+  item-create:
+    payload: Payload
   item-delete:
     name: Data verwijderen
+  item-update:
+    payload: Payload
   log:
     message: Bericht
   mail:
@@ -1711,6 +1716,8 @@ operations:
     headers: Headers
     header: Header
     value_placeholder: Bearer eyJhbGciOi...
+  transform:
+    name: Payload transformeren
   trigger:
     flows: Flows
     flow: Flow

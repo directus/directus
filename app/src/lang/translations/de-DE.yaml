@@ -245,6 +245,7 @@ float: Float
 integer: Integer
 json: JSON
 xml: XML
+yaml: YAML
 string: Zeichenkette
 text: Text
 time: Zeit
@@ -1751,6 +1752,7 @@ interfaces:
     remove_token: Token löschen
   system-raw-editor:
     system-raw-editor: Quelltext-Editor
+    description: Eingabe von Roh- oder Mustache Template werten erlauben
 displays:
   translations:
     translations: Übersetzungen
@@ -1789,11 +1791,16 @@ displays:
     relative: Relativ
     relative_label: 'Zeige relative Zeit, z. B.: vor 5 Minuten'
     suffix: Suffix
+    suffix_label: Relativen Indikator anzeigen
     suffix_note: Verwendet Wörter wie 'in' und 'vor'
     strict: Strikt
+    strict_label: Strikte Einheiten verwenden
     strict_note: Entfernt Wörter wie 'fast', 'über', 'weniger als'
     round: Runden
     round_note: Wählen Sie eine Rundungsfunktion
+    down: Runter
+    nearest: Nächste
+    up: Hoch
   file:
     file: Datei
     description: Dateien anzeigen
@@ -1907,14 +1914,55 @@ layouts:
   kanban:
     name: Kanban
     group_field: Gruppieren nach
+    group_field_placeholder: Feld zum Gruppieren...
     group_title: Gruppentitel
+    group_title_placeholder: Feld für Grupentitel...
+    title: Kartentitel
+    title_placeholder: Optionales Titelfeld...
+    text: Kartentext
+    text_placeholder: Optionales Textfeld...
+    date: Kartendatum
+    date_placeholder: Optionales Datumsfeld...
+    tags: Karten-Tags
+    tags_placeholder: Optionales Tag-Feld...
+    user: Kartenbenutzer
+    user_placeholder: Optionales Benutzerfeld...
+    image: Kartenbild
+    image_placeholder: Optionales Bildfeld...
+    image_fit: Kartenbild passen
     crop: Zuschneiden
     advanced: Erweitert
+    edit_group: Gruppe bearbeiten
+    delete_group: Gruppe löschen
+    add_group: Gruppe hinzufügen
+    add_group_placeholder: Neuen Gruppentitel eingeben...
+    show_ungrouped: Nicht gruppierte Elemente zeigen
     show: Anzeigen
     no_group: Keine Gruppe
     not_all_loaded: Konnte nur die ersten 1000 Elemente laden.
 horizontal: Horizontal
+vertical: Vertikal
+x_axis: X-Achse
+y_axis: Y-Achse
+y_axis_function: Y-Achsenfunktion
+show_x_only: Nur X-Achse anzeigen
+show_y_only: Nur Y-Achse anzeigen
+show_data_label: Datenbezeichnung anzeigen
 both: Beide
+show_axis_labels: Achs-Labels anzeigen
+function: Funktion
+half_circle: Halbkreis
+full_circle: Vollkreis
+stroke_width: Strichbreite
+rounded_stroke: Abgerundete Strich
+thin: Dünn
+medium: Mittel
+broad: Breit
+show_labels: Beschriftungen anzeigen
+show_legend: Legende anzeigen
+right: Rechts
+left: Links
+donut: Donut
 panels:
   metric:
     name: Metrik
@@ -1940,13 +1988,19 @@ panels:
     select_collection: Sie müssen eine Sammlung auswählen.
   linechart:
     name: Liniendiagramm
+    description: Liniendiagramm zum Vergleich der Änderung eines Feldes
+    disabled_grouping: Deaktiviert, wenn Gruppierung ausgewählt ist.
+    disabled_no_grouping: Deaktiviert, wenn keine Gruppierung ausgewählt ist.
     curve_type: Kurventyp
     smooth: Weich
     straight: Gerade
+    step_line: Schrittlinie
   meter:
     name: Meter
+    description: Zähler für Tracking-Werte
   piechart:
     name: Kuchen oder Donut Diagramm
+    description: Kreisdiagramm mit den Verhältnissen von Gruppen auf einer Spalte
   variable:
     name: Globale Variable
     description: Globalen Wert für die Verwendung in Filtern anderer Panels festlegen
@@ -2065,3 +2119,9 @@ operations:
     flows: Flows
     flow: Flow
     data: Daten
+    iteration_mode: Iterationsmodus
+    iteration_mode_note: Modus zum iterieren über Arrays.
+    serial: Seriell
+    parallel: Parallel
+    batch: Stapel
+    batch_size: Stapelgröße
