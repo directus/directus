@@ -7,7 +7,7 @@
 			@scroll-to-field="scrollToField"
 		/>
 		<v-info
-			v-if="noVisibleFields && !showNoVisibleFields && !loading"
+			v-if="noVisibleFields && showNoVisibleFields && !loading"
 			:title="t('no_visible_fields')"
 			:icon="inline ? false : 'search'"
 			center
