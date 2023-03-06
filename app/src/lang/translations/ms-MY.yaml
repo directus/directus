@@ -23,15 +23,20 @@ identifier: Identifier
 avatar: Avatar
 application: Aplikasi
 default_provider: Permintaan
+method: Kaedah
 published: Diterbitkan
 draft: Draf
 archived: Diarkibkan
 modules: Modul
 module_bar: Modul.bar
+logs: Log
+reset_width: Lebar set semula
 tile_size: Saiz jubin
 edit_field: Sunting halaman
 conditions: Syarat
 location: Lokasi
+condition_rules: Hukum syarat
+input: Input
 maps: Peta
 switch_user: Tukar pengguna
 item_creation: Pembuatan barang
@@ -44,6 +49,11 @@ group: Kumpulan
 export_items: Ekspot item
 and: Dan
 or: Atau
+init: Init
+dataset_too_large_currently_showing_n_items: Set data terlalu besar. Paparan semasa menunjukkan item {n} yang pertama.
+modifier: Pengubah suai
+custom: Suai langgan
+hook: Cangkuk
 fill_width: Isi lebar
 field_name_translations: Terjemahan nama bidang
 enter_password_to_enable_tfa: Masukkan kata laluan anda untuk mengaktifkan pengesahan dua faktor
@@ -55,15 +65,20 @@ indeterminate: Tidak tentu arah
 edit_collection: Edit koleksi
 exclusive: Eksklusif
 children: Kanak-kanak
+db_only_click_to_configure: 'Pangkalan data sahaja: klik untuk konfigurasi'
 show_active_items: Tunjukkan item yang aktif
 show_archived_items: Tunjukkan item yang diarkibkan
 show_all_items: Tunjukkan semua item
 edited: Nilai diedit
 required: Diperlukan
+required_for_app_access: Diperlukan untuk akses app
+requires_value: Nilai diperlukan
 create_preset: Bina Pratetapan
 create_panel: Cipta Panel
 create_role: Buat Peranan
 create_user: Cipta Pengguna
+message: Mesej
+delete_panel: Panel hapus
 invite: Jemputan
 emails: Emel
 connection_excellent: Rangkaian bagus
@@ -281,3 +296,8 @@ layouts:
   tabular:
     compact: Padat
 both: Kedua-duanya
+operations:
+  log:
+    message: Mesej
+  notification:
+    message: Mesej

@@ -60,6 +60,7 @@ const allowedEnvironmentVars = [
 	'CORS_CREDENTIALS',
 	'CORS_MAX_AGE',
 	// rate limiting
+	'RATE_LIMITER_GLOBAL_.+',
 	'RATE_LIMITER_.+',
 	// cache
 	'CACHE_ENABLED',
@@ -78,6 +79,7 @@ const allowedEnvironmentVars = [
 	'CACHE_REDIS_PASSWORD',
 	'CACHE_MEMCACHE',
 	'CACHE_VALUE_MAX_SIZE',
+	'CACHE_SKIP_ALLOWED',
 	'CACHE_HEALTHCHECK_THRESHOLD',
 	// storage
 	'STORAGE_LOCATIONS',
@@ -208,9 +210,14 @@ const defaults: Record<string, any> = {
 	STORAGE_LOCAL_ROOT: './uploads',
 
 	RATE_LIMITER_ENABLED: false,
-	RATE_LIMITER_POINTS: 25,
+	RATE_LIMITER_POINTS: 50,
 	RATE_LIMITER_DURATION: 1,
 	RATE_LIMITER_STORE: 'memory',
+
+	RATE_LIMITER_GLOBAL_ENABLED: false,
+	RATE_LIMITER_GLOBAL_POINTS: 1000,
+	RATE_LIMITER_GLOBAL_DURATION: 1,
+	RATE_LIMITER_GLOBAL_STORE: 'memory',
 
 	ACCESS_TOKEN_TTL: '15m',
 	REFRESH_TOKEN_TTL: '7d',
@@ -239,6 +246,7 @@ const defaults: Record<string, any> = {
 	CACHE_SCHEMA: true,
 	CACHE_PERMISSIONS: true,
 	CACHE_VALUE_MAX_SIZE: false,
+	CACHE_SKIP_ALLOWED: false,
 
 	AUTH_PROVIDERS: '',
 	AUTH_DISABLE_DEFAULT: false,
@@ -294,6 +302,9 @@ const typeMap: Record<string, string> = {
 	DB_PORT: 'number',
 
 	DB_EXCLUDE_TABLES: 'array',
+
+	CACHE_SKIP_ALLOWED: 'boolean',
+
 	IMPORT_IP_DENY_LIST: 'array',
 
 	FILE_METADATA_ALLOW_LIST: 'array',

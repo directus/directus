@@ -8,7 +8,7 @@ import { getCache } from '../cache';
 import getDatabase, { hasDatabaseConnection } from '../database';
 import env from '../env';
 import logger from '../logger';
-import { rateLimiter } from '../middleware/rate-limiter';
+import { rateLimiter } from '../middleware/rate-limiter-ip';
 import { getStorage } from '../storage';
 import { AbstractServiceOptions } from '../types';
 import { Accountability, SchemaOverview } from '@directus/shared/types';
@@ -17,6 +17,7 @@ import getMailer from '../mailer';
 import { SettingsService } from './settings';
 import { getOSInfo } from '../utils/get-os-info';
 import { Readable } from 'node:stream';
+import { rateLimiterGlobal } from '../middleware/rate-limiter-global';
 
 export class ServerService {
 	knex: Knex;
@@ -58,6 +59,14 @@ export class ServerService {
 				};
 			} else {
 				info.rateLimit = false;
+			}
+			if (env.RATE_LIMITER_GLOBAL_ENABLED) {
+				info.rateLimitGlobal = {
+					points: env.RATE_LIMITER_GLOBAL_POINTS,
+					duration: env.RATE_LIMITER_GLOBAL_DURATION,
+				};
+			} else {
+				info.rateLimitGlobal = false;
 			}
 
 			info.flows = {
@@ -117,7 +126,14 @@ export class ServerService {
 			releaseId: version,
 			serviceId: env.KEY,
 			checks: merge(
-				...(await Promise.all([testDatabase(), testCache(), testRateLimiter(), testStorage(), testEmail()]))
+				...(await Promise.all([
+					testDatabase(),
+					testCache(),
+					testRateLimiter(),
+					testRateLimiterGlobal(),
+					testStorage(),
+					testEmail(),
+				]))
 			),
 		};
 
@@ -280,6 +296,49 @@ export class ServerService {
 					checks['rateLimiter:responseTime'][0].status !== 'error'
 				) {
 					checks['rateLimiter:responseTime'][0].status = 'warn';
+				}
+			}
+
+			return checks;
+		}
+
+		async function testRateLimiterGlobal(): Promise<Record<string, HealthCheck[]>> {
+			if (env.RATE_LIMITER_GLOBAL_ENABLED !== true) {
+				return {};
+			}
+
+			const checks: Record<string, HealthCheck[]> = {
+				'rateLimiterGlobal:responseTime': [
+					{
+						status: 'ok',
+						componentType: 'ratelimiter',
+						observedValue: 0,
+						observedUnit: 'ms',
+						threshold: env.RATE_LIMITER_GLOBAL_HEALTHCHECK_THRESHOLD
+							? +env.RATE_LIMITER_GLOBAL_HEALTHCHECK_THRESHOLD
+							: 150,
+					},
+				],
+			};
+
+			const startTime = performance.now();
+
+			try {
+				await rateLimiterGlobal.consume(`health-${checkID}`, 1);
+				await rateLimiterGlobal.delete(`health-${checkID}`);
+			} catch (err: any) {
+				checks['rateLimiterGlobal:responseTime'][0].status = 'error';
+				checks['rateLimiterGlobal:responseTime'][0].output = err;
+			} finally {
+				const endTime = performance.now();
+				checks['rateLimiterGlobal:responseTime'][0].observedValue = +(endTime - startTime).toFixed(3);
+
+				if (
+					checks['rateLimiterGlobal:responseTime'][0].observedValue >
+						checks['rateLimiterGlobal:responseTime'][0].threshold! &&
+					checks['rateLimiterGlobal:responseTime'][0].status !== 'error'
+				) {
+					checks['rateLimiterGlobal:responseTime'][0].status = 'warn';
 				}
 			}
 
