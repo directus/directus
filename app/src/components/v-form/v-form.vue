@@ -205,7 +205,7 @@ const noVisibleFields = computed(() => {
 watch(
 	() => props.validationErrors,
 	(newVal, oldVal) => {
-		if (props.showValidationErrors) return;
+		if (!props.showValidationErrors) return;
 		if (isEqual(newVal, oldVal)) return;
 		if (newVal?.length > 0) el?.value?.scrollIntoView({ behavior: 'smooth' });
 	}
