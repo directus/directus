@@ -634,7 +634,8 @@ describe('#stat', () => {
 		await driver.stat(sample.path.input);
 
 		expect(driver['getFullSignature']).toHaveBeenCalledWith({
-			public_id: sample.path.inputFull,
+			type: 'upload',
+			public_id: sample.publicId.input,
 			api_key: sample.config.apiKey,
 			timestamp: sample.timestamp,
 		});
@@ -644,7 +645,8 @@ describe('#stat', () => {
 		await driver.stat(sample.path.input);
 
 		expect(driver['toFormUrlEncoded']).toHaveBeenCalledWith({
-			public_id: sample.path.inputFull,
+			type: 'upload',
+			public_id: sample.publicId.input,
 			api_key: sample.config.apiKey,
 			timestamp: sample.timestamp,
 			signature: sample.fullSignature,
