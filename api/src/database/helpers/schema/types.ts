@@ -25,7 +25,7 @@ export abstract class SchemaHelper extends DatabaseHelper {
 	async changeToType(
 		table: string,
 		column: string,
-		type: typeof KNEX_TYPES[number],
+		type: (typeof KNEX_TYPES)[number],
 		options: Options = {}
 	): Promise<void> {
 		await this.knex.schema.alterTable(table, (builder) => {
@@ -50,7 +50,7 @@ export abstract class SchemaHelper extends DatabaseHelper {
 	protected async changeToTypeByCopy(
 		table: string,
 		column: string,
-		type: typeof KNEX_TYPES[number],
+		type: (typeof KNEX_TYPES)[number],
 		options: Options
 	): Promise<void> {
 		const tempName = `${column}__temp`;

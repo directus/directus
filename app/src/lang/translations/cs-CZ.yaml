@@ -1863,6 +1863,8 @@ layouts:
     crop: Oříznout
     advanced: Rozšířené
     not_all_loaded: Podařilo se načíst pouze prvních 1000 položek.
+horizontal: Horizontální
+both: Vše
 panels:
   metric:
     name: Metrika
@@ -1884,62 +1886,21 @@ panels:
   barchart:
     name: Pruhový graf
     description: Pruhový nebo sloupcový graf pro porovnání skupin hodnot
-    select_field: Musíte vybrat pole.
-    select_collection: Musíte vybrat kolekci.
-    select_x_axis: Musíte vybrat osu X.
-    function: Funkce
     horizontal: Horizontální
-    x_axis_grouping: Agregace skupiny os X
-    x_axis: Osa X
-    y_axis_function: Funkce osy Y
-    y_axis: Osa Y
-    show_x_axis: Zobrazit osu X
-    show_y_axis: Zobrazit osu Y
-    show_data_label: Zobrazit popisek dat
-    group_by: Seskupeno podle
-    group_and_function: Musíte zahrnout nebo vynechat jak skupinu, tak funkci.
-    y_axis_NaN: Osa Y musí být číslo.
-    y_axis_conditional_one: Hodnota podmínky
-    y_axis_conditional_two: musí být číslo.
+    select_collection: Musíte vybrat kolekci.
   linechart:
     name: Čárový graf
-    select_field: Musíte vybrat pole.
-    select_collection: Musíte vybrat kolekci.
-    select_x_axis: Musíte vybrat osu X.
-    function: Funkce
-    x_axis: Osa X
-    x_axis_decimals: Desetiny osy X
     disabled_no_grouping: Zakázáno, pokud není vybrána žádná skupina.
-    y_axis: Osa Y
-    datasets: Datové sady
-    show_legend: Zobrazit legendu
     show_marker: Zobrazit značku popisku
-    include_y_axis: Musíte zahrnout osu Y pro každou datovou sadu, pokud není zadána žádná skupina.
-    group_and_function: Musíte zahrnout nebo vynechat jak skupinu, tak funkci.
+    curve_type: Typ křivky
     smooth: Hladká
     straight: Rovná
     step_line: Kroková čára
   meter:
     name: Měřič
     description: Měřič pro sledování hodnot
-    stroke_width: Tloušťka tahu
-    select_max_value: Musíte vybrat maximální hodnotu.
-    max_greater_than_zero: Maximální hodnota musí být větší než 0.
-    select_field: Musíte vybrat pole.
-    select_collection: Musíte vybrat kolekci.
-    function: Funkce
-    thin: Tenký
-    medium: Střední
-    broad: Široký
   piechart:
     name: Koláčový nebo prstencový graf
-    function: Funkce
-    donut: Prstenec
-    show_legend: Zobrazit legendu
-    right: Vpravo
-    bottom: Dole
-    monochrome: Monochromatický
-    monochrome_color: Monochromatická barva
   variable:
     name: Globální proměnná
 triggers:

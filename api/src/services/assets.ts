@@ -3,9 +3,9 @@ import type { Range, Stat } from '@directus/storage';
 
 import { Accountability } from '@directus/shared/types';
 import { Semaphore } from 'async-mutex';
-import type { Readable } from 'node:stream';
 import { Knex } from 'knex';
 import { contentType } from 'mime-types';
+import type { Readable } from 'node:stream';
 import hash from 'object-hash';
 import path from 'path';
 import sharp from 'sharp';
@@ -16,7 +16,9 @@ import { ForbiddenException, IllegalAssetTransformation, RangeNotSatisfiableExce
 import logger from '../logger';
 import { getStorage } from '../storage';
 import { AbstractServiceOptions, File, Transformation, TransformationParams, TransformationPreset } from '../types';
+import { getMilliseconds } from '../utils/get-milliseconds';
 import * as TransformationUtils from '../utils/transformations';
+import { withTimeout } from '../utils/with-timeout';
 import { AuthorizationService } from './authorization';
 
 sharp.concurrency(1);
@@ -151,31 +153,46 @@ export class AssetsService {
 				);
 			}
 
-			return await semaphore.runExclusive(async () => {
-				const readStream = await storage.location(file.storage).read(file.filename_disk, range);
-				const transformer = sharp({
-					limitInputPixels: Math.pow(env.ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION, 2),
-					sequentialRead: true,
-					failOn: env.ASSETS_INVALID_IMAGE_SENSITIVITY_LEVEL,
-				});
+			return await semaphore.runExclusive(
+				withTimeout(
+					async () => {
+						const readStream = await storage.location(file.storage).read(file.filename_disk, range);
 
-				if (transforms.find((transform) => transform[0] === 'rotate') === undefined) transformer.rotate();
+						const transformer = sharp({
+							limitInputPixels: Math.pow(env.ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION, 2),
+							sequentialRead: true,
+							failOn: env.ASSETS_INVALID_IMAGE_SENSITIVITY_LEVEL,
+						});
 
-				transforms.forEach(([method, ...args]) => (transformer[method] as any).apply(transformer, args));
+						// This "duplicate" timeout is required as the overall timeout applies to the
+						// whole promise block, rather than just Sharp. This ensures that sharp itself
+						// doesn't hang indefinitely, even when the outer function scope is already
+						// skipped.
+						transformer.timeout({
+							seconds: Math.min(3600, Math.round(getMilliseconds<number>(env.ASSETS_TRANSFORM_TIMEOUT) * 1000)),
+						});
 
-				readStream.on('error', (e: Error) => {
-					logger.error(e, `Couldn't transform file ${file.id}`);
-					readStream.unpipe(transformer);
-				});
+						if (transforms.find((transform) => transform[0] === 'rotate') === undefined) transformer.rotate();
 
-				await storage.location(file.storage).write(assetFilename, readStream.pipe(transformer), type);
+						transforms.forEach(([method, ...args]) => (transformer[method] as any).apply(transformer, args));
 
-				return {
-					stream: await storage.location(file.storage).read(assetFilename, range),
-					stat: await storage.location(file.storage).stat(assetFilename),
-					file,
-				};
-			});
+						readStream.on('error', (e: Error) => {
+							logger.error(e, `Couldn't transform file ${file.id}`);
+							readStream.unpipe(transformer);
+						});
+
+						await storage.location(file.storage).write(assetFilename, readStream.pipe(transformer), type);
+
+						return {
+							stream: await storage.location(file.storage).read(assetFilename, range),
+							stat: await storage.location(file.storage).stat(assetFilename),
+							file,
+						};
+					},
+					getMilliseconds(env.ASSETS_TRANSFORM_TIMEOUT),
+					new IllegalAssetTransformation(`Image took too long to transform`)
+				)
+			);
 		} else {
 			const readStream = await storage.location(file.storage).read(file.filename_disk, range);
 			const stat = await storage.location(file.storage).stat(file.filename_disk);

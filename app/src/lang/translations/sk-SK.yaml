@@ -41,7 +41,7 @@ maps: Mapy
 switch_user: Prepnúť používaeľa
 item_creation: Vytvorenie položky
 item_revision: Revízia položky
-enter_a_name: Zadajte meno...
+enter_a_name: Zadajte názov...
 duplicate_field: Duplicitné pole
 half_width: Polovičná šírka
 full_width: Plná šírka
@@ -58,7 +58,7 @@ fill_width: Vyplniť šírku
 field_name_translations: Preklady názvov polí
 enter_password_to_enable_tfa: Na zapnutie dvoj-faktorovej autentifikácie zadajte svoje heslo
 add_field: Pridať pole
-role_name: Názov roly
+role_name: Názov role
 branch: Vetva
 leaf: List
 indeterminate: Neurčité
@@ -116,7 +116,7 @@ logoutReason:
   SESSION_EXPIRED: Relácia vypršala
 public_label: Verejné
 public_description: Určuje, ktoré údaje z API sú dostupné bez overovania.
-admin_description: Počiatočné administratívne role s neobmedzeným prístupom k Appke/API.
+admin_description: Počiatočná administratívna rola s neobmedzeným prístupom k Appke/API.
 not_allowed: Nepovolené
 directus_version: Verzia Directus
 node_version: Verzia Node
@@ -173,7 +173,7 @@ field_m2a: Vzťah M2A
 field_o2m: Vzťah O2M
 field_m2m: Vzťah M2M
 field_translations: Preklady
-field_group: Skupina poľa
+field_group: Skupina polí
 item_permissions: Práva na položku
 field_permissions: Práva na pole
 field_validation: Validácia poľa
@@ -245,7 +245,7 @@ float: Float - plávajúca čiarka
 integer: Celé čislo
 json: JSON
 xml: XML
-string: Reťazec
+string: Text
 text: Text
 time: Čas
 timestamp: Časová pečiatka
@@ -283,7 +283,7 @@ add_o2m_to_collection: 'Pridať 02M do "{collection}"'
 add_m2m_to_collection: 'Pridať M2M do "{collection}"'
 choose_a_type: Vyberte typ...
 determined_by_relationship: Určené vzťahom
-add_note: Pridať užitočnú poznámku pre užívateľov...
+add_note: Pridajte pomocnú poznámku pre používateľov...
 add_link: Pridať odkaz
 custom_link: Vlastný odkaz
 default_value: Predvolená hodnota
@@ -402,7 +402,7 @@ functions:
   second: Sekunda
   count: Počet
 date-fns_date: PPP
-date-fns_time: 'h:mm:ss a'
+date-fns_time: 'H:mm:ss'
 date-fns_time_no_seconds: 'h:mm a'
 date-fns_time_24hour: 'HH:mm:ss'
 date-fns_time_no_seconds_24hour: 'HH:mm'
@@ -469,7 +469,7 @@ collection_key: Kľúč zbierky
 name: Názov
 primary_key_field: Pole primárneho kľúča
 type: Typ
-creating_new_collection: Vytváranie novej zbierky
+creating_new_collection: Tvorba nová zbierka
 created_by: Vytvoril
 created_on: Vytvorené
 creating_collection_info: Nazvite zbierku a nastavte jej pole unikátneho "kľúča"...
@@ -482,7 +482,7 @@ save_and_create_new: Uložiť a vytvoriť nové
 save_and_stay: Uložiť a zostať
 save_as_copy: Uložiť ako kópiu
 add_existing: Pridať existujúce
-creating_items: Vytváranie položiek
+creating_items: Tvorba položiek
 enable_create_button: Zapnúť tlačidlo Vytvoriť
 selecting_items: Označovanie položiek
 enable_select_button: Zapnúť tlačidlo Vybrať
@@ -507,7 +507,7 @@ item_count: 'Žiadne položky | Jedna položka | {count} položiek'
 no_items_copy: V zbierke zatiaľ nie sú žiadne položky.
 file_count: 'Žiadne súbory | Jeden súbor | {count} súborov'
 no_files_copy: Nie sú tu žiadne súbory.
-user_count: 'Žiadny používatelia | Jeden používateľ | {count} používateľov'
+user_count: 'Žiadni používatelia | Jeden používateľ | {count} používateľov'
 no_users_copy: Pod touto rolou zatiaľ nie sú žiadni používatelia.
 webhooks_count: 'Žiadne webhooky | Jeden webhook | {count} webhookov'
 no_webhooks_copy: Zatiaľ neboli nastavené žiadne webhooky. Začnite vytvorením niektorého nižšie.
@@ -519,7 +519,7 @@ any: Akékoľvek
 csv: CSV
 no_collections: Žiadna zbierka
 create_collection: Vytvoriť zbierku
-no_collections_copy_admin: Nemáte zatiaľ žiadne zbierky. Začnite kliknutím na tlačidlo nižšie.
+no_collections_copy_admin: Zatiaľ nemáte žiadne zbierky. Začnite kliknutím na tlačidlo nižšie.
 no_collections_copy: Zatiaľ nemáte žiadne zbierky. Prosím kontaktujte svojho správu.
 relationship_not_setup: Tento vzťah nebol správne nastavený
 display_template_not_setup: Šablóna zobrazenia je zle nakonfigurovaná
@@ -539,7 +539,7 @@ action: Akcia
 ip_address: IP adresa
 user_agent: Užívateľský agent
 origin: Pôvod
-webhooks: Webháky
+webhooks: Webhooky
 decimals: Desatinné miesta
 value_decimals: Desatinná hodnota
 min_value: Minimálna hodnota
@@ -549,7 +549,7 @@ field_width: Šírka poľa
 add_filter: Pridať filter
 upper_limit: Horný limit...
 lower_limit: Dolný limit...
-user_directory: Priečinok používateľa
+user_directory: Zoznam používateľov
 documentation: Dokumentácia
 sidebar: Bočný panel
 duration: Trvanie
@@ -805,7 +805,7 @@ no_other_flows_copy: Zatiaľ nemáte žiadne ďalšie toky.
 no_flows: Žiadne toky
 no_flows_copy: Zatiaľ nemáte žiadne toky.
 create_flow: Vytvoriť tok
-creating_new_flow: Vytváranie nového toku
+creating_new_flow: Tvorba nového toku
 updating_flow: Úprava toku
 flow_setup: Nastavenia toku
 flow_name: Názov
@@ -852,7 +852,7 @@ details: Podrobnosti
 full_screen: Celá obrazovka
 full_text_search: Full-text hľadanie
 edit_panels: Upraviť panely
-center_align: Zarovnať na stred
+center_align: Zarovnať nastred
 left_align: Zarovnať vľavo
 right_align: Zarovnať vpravo
 fit_to_screen: Prispôsobiť obrazovke
@@ -871,7 +871,7 @@ interface_group_selection: Výber
 interface_group_relational: Relačné
 interface_group_presentation: Prezentácia
 interface_group_groups: Skupiny
-interface_group_other: Ostatné
+interface_group_other: Iné
 tooltip: Nápoveda
 tooltip_placeholder: Zadajte nápovedu...
 unlimited: Neobmedzené
@@ -935,22 +935,22 @@ deselect_all: Odznačiť všetko
 other: Ostatné...
 adding_user: Pridávanie používateľa
 unknown_user: Neznámy používateľ
-creating_in: 'Vytváranie položky v {collection}'
+creating_in: 'Tvorba položky v {collection}'
 editing_in: 'Úprava položky v {collection}'
 viewing_in: 'Pozeranie položky v {collection}'
-creating_unit: 'Vytváranie {unit}'
+creating_unit: 'Vytvára sa {unit}'
 editing_unit: 'Úprava {unit}'
 editing_in_batch: 'Hromadná úprava {count} položiek'
 no_options_available: Žiadne dostupné možnosti
 settings_data_model: Dátový model
-settings_permissions: Roly a oprávnenia
+settings_permissions: Role a oprávnenia
 settings_project: Nastavenia projektu
-settings_webhooks: Webháky
+settings_webhooks: Webhooky
 settings_flows: Toky
 settings_presets: Presety a Záložky
 settings_translation_strings: Prekladové texty
 one_or_more_options_are_missing: Chýba jedna alebo viac možností
-scope: Prístup
+scope: Rámec
 actions: Akcie
 select: Vybrať...
 layout: Rozloženie
@@ -1006,7 +1006,7 @@ page_help_insights_overview: '**Prehľady** — Zoznam tabúľ, ku ktorým máte
 page_help_insights_dashboard: '**Tabuľa** — Pracovný priestor na spravovanie jedného alebo viac panelov'
 activity_feed: Záznam aktivít
 add_new: Pridať nový
-create_new: Vytvoriť nový
+create_new: Vytvoriť nové
 all: Všetko
 none: Žiadne
 no_layout_collection_selected_yet: Žiadne vybraté rozloženie/zbierka
@@ -1049,7 +1049,7 @@ fields:
     collection: Zbierka
     timestamp: Čas akcie
     user: Akciu vykonal/a
-    comment: Komentár
+    comment: Komentovanie
     user_agent: Užívateľský agent
     origin: Pôvod
     ip: IP adresa
@@ -1181,8 +1181,8 @@ fields:
     translation: Preklady názvov polí
     display_template: Šablóna
   directus_roles:
-    name: Názov roly
-    icon: Ikony role
+    name: Názov role
+    icon: Ikona role
     description: Popis
     app_access: Prístup k aplikácii
     admin_access: Administrátorský prístup
@@ -1207,12 +1207,12 @@ field_options:
     project_name_placeholder: Môj projekt...
     project_color_note: Prihlásenie a logo na pozadí
     project_logo_note: Biele 40x40 SVG/PNG
-    public_note_placeholder: Krátka, verejná správa, ktorá podporuje markdown formátovanie...
+    public_note_placeholder: Krátka, verejná správa s podporou markdown formátu...
     security_divider_title: Zabezpečenie
     auth_password_policy:
-      none_text: Žiadne – Neodporúčame
-      weak_text: Slabé – Najmenej 8 znakov
-      strong_text: Silné – Veľké / Malé písmená / Čísla / Špeciálne znaky
+      none_text: Žiadna – Neodporúčame
+      weak_text: Slabá – Najmenej 8 znakov
+      strong_text: Silná – Veľké / Malé písmená / Čísla / Špeciálne znaky
     storage_asset_presets:
       fit_label: Prispôsobiť
       upscaling: Zväčšenie
@@ -1232,10 +1232,10 @@ field_options:
     basemaps_style: Štýl Mapboxu
     files_divider_title: Súbory a náhľady
   directus_activity:
-    login: Prihlásiť
-    create: Vytvoriť
-    update: Aktualizovať
-    delete: Odstrániť
+    login: Prihlásenie
+    create: Vytvorenie
+    update: Úprava
+    delete: Odstránenie
   directus_collections:
     track_activity_revisions: Sledovať aktivitu a revízie
     only_track_activity: Sledovať len aktivitu
@@ -1315,7 +1315,7 @@ start_open: Začať otvorené
 start_collapsed: Začať zložené
 block: Blokovať
 inline: V riadku
-comment: Komentár
+comment: Komentovanie
 shares: Zdieľania
 unlimited_usage: Neobmedzené používanie
 uses_left: Nezostali žiadne použitia | Zostáva 1 použitie | Zostáva {n} použití
@@ -1351,7 +1351,7 @@ continue_label: Pokračovať
 continue_as: >-
   {name} je aktuálne overený. Ak spoznávate túto aktivitu, stlačte pokračovať.
 editing_role: 'Rola {role}'
-creating_webhook: Vytváranie webhooku
+creating_webhook: Tvorba webhooku
 default_label: Predvolené
 delete_label: Odstrániť
 delete_are_you_sure: >-
@@ -1422,7 +1422,7 @@ export_started_copy: Váš export začal. Keď bude pripravený na stiahnutie do
 sort_asc: Zoradiť vzostupne
 sort_desc: Zoradiť zostupne
 template: Šablóna
-require_value_to_be_set: Vyžaduje nastavenú hodnotu pri vytvorení
+require_value_to_be_set: Vyžadovať hodnotu pri vytvorení
 translation: Preklad
 translation_placeholder: Zadajte preklad...
 value: Hodnota
@@ -1626,7 +1626,7 @@ interfaces:
     folder: Priečinok
     description: Vyberte priečinok
     field_hint: Priečinok na nahrávanie súborov. Neovplyvní to existujúce súbory.
-    root_name: Koreňový adresár knižnice súborov
+    root_name: Koreňový priečinok knižnice súborov
     system_default: Predvolené systémom
   select-radio:
     radio-buttons: Prepínače
@@ -1635,7 +1635,7 @@ interfaces:
     repeater: Opakovač
     description: Vytvorí viac položiek rovnakej štruktúry
     edit_fields: Upraviť polia
-    add_label: 'Nadpis "Vytvoriť nový"'
+    add_label: 'Nadpis "Vytvoriť nové"'
     sort: Zoradiť
     sort_placeholder: Ručne
     field_name_placeholder: Zadajte názov poľa...
@@ -1775,7 +1775,7 @@ displays:
     default_color: Predvolená farba
   datetime:
     datetime: Dátum a čas
-    description: Zobraziť hodnoty súvisiace s časom
+    description: Zobrazuje časové hodnoty
     format: Formát
     format_note: >-
       Vlastný formát dovoľuje __[Symbol dátumového poľa](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
@@ -1933,6 +1933,8 @@ layouts:
     show: Zobraziť
     no_group: Žiadna skupina
     not_all_loaded: Načítalo sa len prvých 1000 položiek.
+horizontal: Horizontálne
+both: Oboje
 panels:
   metric:
     name: Metrické
@@ -1954,69 +1956,23 @@ panels:
   barchart:
     name: Stĺpcový graf
     description: Stĺpcový graf na porovnávanie skupín hodnôt
-    select_field: Musíte vybrať pole.
-    select_collection: Musíte vybrať zbierku.
-    select_x_axis: Musíte vybrať os X.
-    function: Funkcia
     horizontal: Horizontálne
-    x_axis_grouping: Skupinová agregácia na osi X
-    x_axis: Os X
-    y_axis_function: Funkcia osi Y
-    y_axis: Os Y
-    show_x_axis: Zobraziť os X
-    show_y_axis: Zobraziť os Y
-    show_data_label: Zobraziť popisok dát
-    group_by: Zoskupené podľa
-    group_and_function: Musíte zahrnúť alebo vynechať obe aj skupinu aj funkciu.
-    y_axis_NaN: Os Y musí byť číslo.
-    y_axis_conditional_one: Hodnota podmienky
-    y_axis_conditional_two: musí byť číslo.
+    select_collection: Musíte vybrať zbierku.
   linechart:
     name: Čiarový graf
     description: Čiarový graf na sledovanie zmeny poľa
-    select_field: Musíte vybrať pole.
-    select_collection: Musíte vybrať zbierku.
-    select_x_axis: Musíte vybrať os X.
-    function: Funkcia
-    x_axis: Os X
-    x_axis_decimals: Desatiny osi X
     disabled_no_grouping: Vypnuté, keď nie je žiadna skupina zvolená.
-    y_axis: Os Y
-    datasets: Dátové sady
-    show_legend: Zobraziť legendu
     show_marker: Zobraziť značku popisku
-    include_dataset: Musíte zahrnúť aspoň jednu dátovú sadu.
-    include_y_axis: Musíte zahrnúť os Y pre každú dátovú sadu keď nie je špecifikovaná žiadna skupina.
-    group_and_function: Musíte zahrnúť alebo vynechať obe aj skupinu aj funkciu.
+    curve_type: Typ krivky
     smooth: Hladké
     straight: Rovné
     step_line: Kroková čiara
   meter:
     name: Merač
     description: Merač na sledovanie hodnôť
-    half_circle: Polkruh
-    full_circle: Celý kruh
-    stroke_width: Hrúbka ťahu
-    rounded_stroke: Zaoblený ťah
-    select_max_value: Musíte vybrať maximálnu hodnotu.
-    max_greater_than_zero: Maximálna hodnota musí byť väčšia ako 0.
-    select_field: Musíte vybrať pole.
-    select_collection: Musíte vybrať zbierku.
-    function: Funkcia
-    thin: Tenké
-    medium: Stredné
-    broad: Široké
   piechart:
     name: Koláčový nebo prstencový graf
     description: Kruhový graf ukazuje pomery medzi skupinami stĺpca
-    function: Funkcia
-    donut: Donut
-    show_labels: Zobraziť názvy
-    show_legend: Zobraziť legendu
-    right: Vpravo
-    bottom: Dole
-    monochrome: Čiernobiele
-    monochrome_color: Monochromatická farba
   variable:
     name: Globálna premenná
     description: Nastaví globálnu hodnotu, ktorá sa dá použiť vo filtroch iných panelov
@@ -2033,7 +1989,7 @@ triggers:
     response_body_all: Všetky dáta
     response_body_last: Dáta z poslednej operácie
   event:
-    name: Hook udalosť
+    name: Reakcia na udalosť
     description: Spustí sa pri udalosti platformy alebo dát
     action: 'Akcia (neblokujúca)'
     filter: 'Filter (blokujúci)'
@@ -2061,7 +2017,7 @@ triggers:
 a_flow_uuid: Vyberte tok na spustenie...
 any_string_or_json: Akýkoľvek text alebo JSON...
 item_payload_placeholder: Toto je JSON použitý na aktualizáciu hodnôt polí v položke...
-operation_variables_note: K dátam toku sa viete dostať použitím premenný ako **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** a **{'{'}{'{'}$accountability{'}'}{'}'}**, alebo odkazovať predošlé operácie použitím **{'{'}{'{'}operation_key{'}'}{'}'}**.'
+operation_variables_note: K dátam toku sa viete dostať použitím premenných **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** a **{'{'}{'{'}$accountability{'}'}{'}'}**, alebo odkazovať na predošlé operácie použitím **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
   condition:
     name: Podmienka
