@@ -1764,6 +1764,7 @@ layouts:
     no_compatible_fields: Nu există câmpuri compatibile
   kanban:
     crop: Decupare
+both: Ambele
 panels:
   metric:
     name: Metric
@@ -1782,6 +1783,8 @@ panels:
   list:
     name: Listă
     description: Filtrează și afișează câmpuri dintr-o colecție
+  linechart:
+    curve_type: Tipul curbei
 triggers:
   webhook:
     method: Metodă

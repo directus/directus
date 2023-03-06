@@ -1,13 +1,13 @@
 import { Router } from 'express';
-import asyncHandler from '../utils/async-handler';
+import env from '../env';
 import { ForbiddenException, RouteNotFoundException } from '../exceptions';
 import { getExtensionManager } from '../extensions/extensions';
-import ms from 'ms';
-import env from '../env';
-import { getCacheControlHeader } from '../utils/get-cache-headers';
 import { respond } from '../middleware/respond';
+import asyncHandler from '../utils/async-handler';
+import { getCacheControlHeader } from '../utils/get-cache-headers';
 import { PrimaryKey } from '@directus/shared/types';
 import { ExtensionsService } from '../extensions/service';
+import { getMilliseconds } from '../utils/get-milliseconds';
 
 const router = Router();
 
@@ -96,10 +96,7 @@ router.get(
 		}
 
 		res.setHeader('Content-Type', 'application/javascript; charset=UTF-8');
-		res.setHeader(
-			'Cache-Control',
-			env.EXTENSIONS_CACHE_TTL ? getCacheControlHeader(req, ms(env.EXTENSIONS_CACHE_TTL as string)) : 'no-store'
-		);
+		res.setHeader('Cache-Control', getCacheControlHeader(req, getMilliseconds(env.EXTENSIONS_CACHE_TTL), false, false));
 		res.setHeader('Vary', 'Origin, Cache-Control');
 		res.end(extensionSource);
 	})
