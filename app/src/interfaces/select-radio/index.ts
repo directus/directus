@@ -29,6 +29,7 @@ export default defineInterface({
 							name: '$t:text',
 							meta: {
 								width: 'half',
+								required: true,
 								interface: 'system-input-translated-string',
 							},
 						},
