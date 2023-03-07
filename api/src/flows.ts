@@ -422,9 +422,9 @@ class FlowManager {
 			} else {
 				// Is the error a JSON string? If so, parse it and use that as the error
 				errorMessage = isValidJSON(String(error))
+					? parseJSON(String(error))
 					: // Explicit specification of the error properties since those aren't enumerable
 					  JSON.parse(JSON.stringify(error, Object.getOwnPropertyNames(error)));
-					: JSON.parse(JSON.stringify(error, Object.getOwnPropertyNames(error)));
 			}
 
 			return {
