@@ -2825,13 +2825,14 @@ export class GraphQLService {
 						email: new GraphQLNonNull(GraphQLString),
 						role: new GraphQLNonNull(GraphQLString),
 						invite_url: GraphQLString,
+						subject: GraphQLString,
 					},
 					resolve: async (_, args) => {
 						const service = new UsersService({
 							accountability: this.accountability,
 							schema: this.schema,
 						});
-						await service.inviteUser(args.email, args.role, args.invite_url || null);
+						await service.inviteUser(args.email, args.role, args.invite_url || null, args.subject || null);
 						return true;
 					},
 				},
