@@ -45,6 +45,7 @@ export default defineInterface({
 									font: 'monospace',
 									placeholder: '$t:interfaces.select-dropdown.choices_value_placeholder',
 								},
+								required: true,
 								width: 'half',
 							},
 						},
