@@ -218,7 +218,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 					return activeFields.value.map((field) => {
 						let description: string | null = null;
 
-						const fieldParts = field.key.split('.');
+						const fieldParts = field.key.split('.').filter((part) => part !== '$thumbnail');
 
 						if (fieldParts.length > 1) {
 							const fieldNames = fieldParts.map((fieldKey, index) => {
@@ -269,7 +269,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 						return {
 							text: field.name,
-							value: field.key,
+							value: fieldParts[0],
 							description,
 							width: localWidths.value[field.key] || layoutOptions.value?.widths?.[field.key] || null,
 							align: layoutOptions.value?.align?.[field.key] || 'left',
