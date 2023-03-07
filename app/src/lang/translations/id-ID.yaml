@@ -245,6 +245,7 @@ float: Float
 integer: Integer
 json: JSON
 xml: XML
+yaml: YAML
 string: String
 text: Teks
 time: Time
@@ -975,6 +976,10 @@ keep_editing: Tetap Mengedit
 page_help_collections_overview: '**Ikhtisar Koleksi** - — Daftar semua koleksi yang perlu anda akses.'
 page_help_collections_collection: >-
   **Jelajahi Item** — Daftar semua {collection} item yang perlu Anda akses. Sesuaikan tata letak, filter, dan pengurutan untuk menyesuaikan tampilan Anda, dan bahkan simpan markah dari konfigurasi yang berbeda ini untuk akses cepat.
+page_help_collections_item: >-
+  **Detail Item** — Sebuah formulir untuk melihat dan mengelola item. Sidebar ini juga berisi riwayat, revisi, dan komentar yang disematkan.
+page_help_activity_collection: >-
+  ***Jelajahi Aktivitas** - Daftar lengkap dari seluruh aktivitas content dan pengguna system.
 activity_feed: Feed Aktifitas
 add_new: Tambah Baru
 create_new: Buat baru
