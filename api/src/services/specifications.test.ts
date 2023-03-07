@@ -152,90 +152,203 @@ describe('Integration Tests', () => {
 						vi.spyOn(RelationsService.prototype, 'readAll').mockResolvedValue([]);
 
 						const spec = await service.oas.generate();
-						expect(spec.components?.schemas).toEqual({
-							ItemsTestTable: {
-								type: 'object',
-								properties: {
-									id: {
-										nullable: false,
-										type: 'integer',
-									},
-									blob: {
-										nullable: true,
-									},
-								},
-								'x-collection': 'test_table',
-							},
-							Query: {
-								type: 'object',
-								properties: {
-									fields: {
-										type: 'array',
-										items: {
-											type: 'string',
-										},
-										description: 'Control what fields are being returned in the object.',
-										example: ['*', '*.*'],
-									},
-									filter: {
-										type: 'object',
-										example: {
-											'<field>': {
-												'<operator>': '<value>',
-											},
-										},
-									},
-									search: {
-										description: 'Filter by items that contain the given search query in one of their fields.',
-										type: 'string',
-									},
-									sort: {
-										type: 'array',
-										items: {
-											type: 'string',
-										},
-										description: 'How to sort the returned items.',
-										example: ['-date_created'],
-									},
-									limit: {
-										type: 'number',
-										description: 'Set the maximum number of items that will be returned',
-									},
-									offset: {
-										type: 'number',
-										description: 'How many items to skip when fetching data.',
-									},
-									page: {
-										type: 'number',
-										description: 'Cursor for use in pagination. Often used in combination with limit.',
-									},
-									deep: {
-										type: 'object',
-										description:
-											'Deep allows you to set any of the other query parameters on a nested relational dataset.',
-										example: {
-											related_articles: {
-												_limit: 3,
-											},
-										},
-									},
-								},
-							},
-							'x-metadata': {
-								type: 'object',
-								properties: {
-									total_count: {
-										description: "Returns the total item count of the collection you're querying.",
-										type: 'integer',
-									},
-									filter_count: {
-										description:
-											"Returns the item count of the collection you're querying, taking the current filter/search parameters into account.",
-										type: 'integer',
-									},
-								},
-							},
-						});
+						expect(spec.components?.schemas).toMatchInlineSnapshot(`
+							{
+							  "Diff": {
+							    "properties": {
+							      "diff": {
+							        "properties": {
+							          "collections": {
+							            "items": {
+							              "properties": {
+							                "collection": {
+							                  "type": "string",
+							                },
+							                "diff": {
+							                  "items": {
+							                    "type": "object",
+							                  },
+							                  "type": "array",
+							                },
+							              },
+							              "type": "object",
+							            },
+							            "type": "array",
+							          },
+							          "fields": {
+							            "items": {
+							              "properties": {
+							                "collection": {
+							                  "type": "string",
+							                },
+							                "diff": {
+							                  "items": {
+							                    "type": "object",
+							                  },
+							                  "type": "array",
+							                },
+							                "field": {
+							                  "type": "string",
+							                },
+							              },
+							              "type": "object",
+							            },
+							            "type": "array",
+							          },
+							          "relations": {
+							            "items": {
+							              "properties": {
+							                "collection": {
+							                  "type": "string",
+							                },
+							                "diff": {
+							                  "items": {
+							                    "type": "object",
+							                  },
+							                  "type": "array",
+							                },
+							                "field": {
+							                  "type": "string",
+							                },
+							                "related_collection": {
+							                  "type": "string",
+							                },
+							              },
+							              "type": "object",
+							            },
+							            "type": "array",
+							          },
+							        },
+							        "type": "object",
+							      },
+							      "hash": {
+							        "type": "string",
+							      },
+							    },
+							    "type": "object",
+							  },
+							  "ItemsTestTable": {
+							    "properties": {
+							      "blob": {
+							        "description": undefined,
+							        "nullable": true,
+							      },
+							      "id": {
+							        "description": undefined,
+							        "nullable": false,
+							        "type": "integer",
+							      },
+							    },
+							    "type": "object",
+							    "x-collection": "test_table",
+							  },
+							  "Query": {
+							    "properties": {
+							      "deep": {
+							        "description": "Deep allows you to set any of the other query parameters on a nested relational dataset.",
+							        "example": {
+							          "related_articles": {
+							            "_limit": 3,
+							          },
+							        },
+							        "type": "object",
+							      },
+							      "fields": {
+							        "description": "Control what fields are being returned in the object.",
+							        "example": [
+							          "*",
+							          "*.*",
+							        ],
+							        "items": {
+							          "type": "string",
+							        },
+							        "type": "array",
+							      },
+							      "filter": {
+							        "example": {
+							          "<field>": {
+							            "<operator>": "<value>",
+							          },
+							        },
+							        "type": "object",
+							      },
+							      "limit": {
+							        "description": "Set the maximum number of items that will be returned",
+							        "type": "number",
+							      },
+							      "offset": {
+							        "description": "How many items to skip when fetching data.",
+							        "type": "number",
+							      },
+							      "page": {
+							        "description": "Cursor for use in pagination. Often used in combination with limit.",
+							        "type": "number",
+							      },
+							      "search": {
+							        "description": "Filter by items that contain the given search query in one of their fields.",
+							        "type": "string",
+							      },
+							      "sort": {
+							        "description": "How to sort the returned items.",
+							        "example": [
+							          "-date_created",
+							        ],
+							        "items": {
+							          "type": "string",
+							        },
+							        "type": "array",
+							      },
+							    },
+							    "type": "object",
+							  },
+							  "Schema": {
+							    "properties": {
+							      "collections": {
+							        "items": {
+							          "$ref": "#/components/schemas/Collections",
+							        },
+							        "type": "array",
+							      },
+							      "directus": {
+							        "type": "string",
+							      },
+							      "fields": {
+							        "items": {
+							          "$ref": "#/components/schemas/Fields",
+							        },
+							        "type": "array",
+							      },
+							      "relations": {
+							        "items": {
+							          "$ref": "#/components/schemas/Relations",
+							        },
+							        "type": "array",
+							      },
+							      "vendor": {
+							        "type": "string",
+							      },
+							      "version": {
+							        "example": 1,
+							        "type": "integer",
+							      },
+							    },
+							    "type": "object",
+							  },
+							  "x-metadata": {
+							    "properties": {
+							      "filter_count": {
+							        "description": "Returns the item count of the collection you're querying, taking the current filter/search parameters into account.",
+							        "type": "integer",
+							      },
+							      "total_count": {
+							        "description": "Returns the total item count of the collection you're querying.",
+							        "type": "integer",
+							      },
+							    },
+							    "type": "object",
+							  },
+							}
+						`);
 					});
 				});
 
