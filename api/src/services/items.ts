@@ -210,8 +210,8 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 						activity: activity,
 						collection: this.collection,
 						item: primaryKey,
-						data: await payloadService.prepareDelta(payload),
-						delta: await payloadService.prepareDelta(payload),
+						data: await payloadService.prepareDelta(payloadAfterHooks),
+						delta: await payloadService.prepareDelta(payloadAfterHooks),
 					});
 
 					// Make sure to set the parent field of the child-revision rows
