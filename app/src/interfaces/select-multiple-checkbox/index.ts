@@ -41,6 +41,7 @@ export default defineInterface({
 							meta: {
 								width: 'half',
 								interface: 'input',
+								required: true,
 								options: {
 									font: 'monospace',
 									placeholder: '$t:interfaces.select-dropdown.choices_name_placeholder',

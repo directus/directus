@@ -39,6 +39,7 @@ export default defineInterface({
 							meta: {
 								width: 'half',
 								interface: 'input',
+								required: true,
 								options: {
 									font: 'monospace',
 								},
