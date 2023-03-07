@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { isValidJSON } from './is-valid-json';
 
 describe('isValidJSON', () => {
-	it('returns true is JSON is valid', () => {
+	it('returns true if JSON is valid', () => {
 		const result = isValidJSON(`{"name": "Directus"}`);
 		expect(result).toEqual(true);
 	});
