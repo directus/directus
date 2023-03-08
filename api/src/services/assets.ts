@@ -164,7 +164,7 @@ export class AssetsService {
 			});
 
 			transformer.timeout({
-				seconds: clamp(Math.round(getMilliseconds<number>(env.ASSETS_TRANSFORM_TIMEOUT) * 1000), 1, 3600),
+				seconds: clamp(Math.round(getMilliseconds(env.ASSETS_TRANSFORM_TIMEOUT, 0) / 1000), 1, 3600),
 			});
 
 			if (transforms.find((transform) => transform[0] === 'rotate') === undefined) transformer.rotate();
