@@ -104,7 +104,7 @@ describe('/files', () => {
 				it.each(vendors)('%s', async (vendor) => {
 					// Setup
 					const limit = Number(config.envs[vendor].ASSETS_TRANSFORM_MAX_CONCURRENT);
-					const count = 10;
+					const count = limit + 10;
 					const uploadedFileID = (
 						await request(getUrl(vendor))
 							.post('/files')
