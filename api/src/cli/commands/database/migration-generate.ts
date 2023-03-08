@@ -46,7 +46,7 @@ async function generateMigrationFileName(migrationName: string, fileExtension: s
 
 function standardizeMigrationName(migrationName: string) {
 	let formattedMigrationName = path.parse(migrationName).name;
-	formattedMigrationName = formattedMigrationName.replace('_', '-');
+	formattedMigrationName = formattedMigrationName.replace('_', '-').toLocaleLowerCase();
 	return formattedMigrationName;
 }
 
