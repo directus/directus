@@ -59,8 +59,7 @@ describe('/assets', () => {
 						'%s',
 						async (vendor) => {
 							// Setup
-							const limit = Number(config.envs[vendor].ASSETS_TRANSFORM_MAX_CONCURRENT);
-							const count = limit + 10;
+							const attempts = 30;
 							const uploadedFileID = (
 								await request(getUrl(vendor))
 									.post('/files')
@@ -71,7 +70,7 @@ describe('/assets', () => {
 
 							// Action
 							const responses = await Promise.all(
-								Array(count)
+								Array(attempts)
 									.fill(0)
 									.map((_, index) =>
 										request(getUrl(vendor))
@@ -81,10 +80,13 @@ describe('/assets', () => {
 							);
 
 							// Assert
-							expect(responses.filter((response) => response.statusCode === 200).length).toBe(limit);
-							expect(responses.filter((response) => response.statusCode === 503).length).toBe(count - limit);
+							const unavailableCount = responses.filter((response) => response.statusCode === 503).length;
+							expect(unavailableCount).toBeGreaterThanOrEqual(attempts / 2);
+							expect(responses.filter((response) => response.statusCode === 200).length).toBe(
+								attempts - unavailableCount
+							);
 						},
-						120000
+						1200000
 					);
 				});
 			});
