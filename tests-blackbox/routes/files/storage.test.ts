@@ -1,4 +1,4 @@
-import config, { getUrl } from '@common/config';
+import { getUrl } from '@common/config';
 import request from 'supertest';
 import vendors from '@common/get-dbs-to-test';
 import { createReadStream } from 'fs';
