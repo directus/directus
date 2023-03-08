@@ -42,6 +42,13 @@ export async function createCli(): Promise<Command> {
 		.command('install')
 		.description('Install the database')
 		.option('-i, --ignore-already-installed, ignore if the database is already installed')
+		.option(
+			'-b, --bootstrap-with-system-migrations, if the database needs to be installed, seed the admin user, project name, and apply system migrations'
+		)
+		.option(
+			'--skipAdminInit',
+			'Skips the creation of the default Admin Role and User when the --bootstrap-with-system-migrations flag is used'
+		)
 		.action(dbInstall);
 	dbCommand
 		.command('migrate:latest')
