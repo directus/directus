@@ -37,11 +37,11 @@ async function getNextCharVersion(yyyymmdd: string): Promise<string> {
 	return nextCharVersion;
 }
 
-async function generateMigrationFileName(migrationName: string): Promise<string> {
+async function generateMigrationFileName(migrationName: string, fileExtension: string): Promise<string> {
 	const migrationPrefix = formatYYYYMMDD(new Date(Date.now()));
 	const nextCharVersion = await getNextCharVersion(migrationPrefix);
 
-	return `${migrationPrefix}${nextCharVersion}-${migrationName}.js`;
+	return `${migrationPrefix}${nextCharVersion}-${migrationName}.${fileExtension}`;
 }
 
 function standardizeMigrationName(migrationName: string) {
@@ -50,10 +50,13 @@ function standardizeMigrationName(migrationName: string) {
 	return formattedMigrationName;
 }
 
-export default async function start(migrationName: string) {
-	const migrationFileName = await generateMigrationFileName(standardizeMigrationName(migrationName));
+export default async function start(migrationName: string, { js = false }: { js?: boolean }) {
+	const fileExtension = js ? 'js' : 'ts';
+
+	const migrationFileName = await generateMigrationFileName(standardizeMigrationName(migrationName), fileExtension);
+
 	copyFileSync(
-		path.resolve(path.dirname(path.dirname(__dirname)), 'templates/migration.js'),
+		path.resolve(path.dirname(path.dirname(__dirname)), `templates/migration.${fileExtension}`),
 		`${migrationPath}/${migrationFileName}`
 	);
 	logger.info(`Migration file generated: ${migrationFileName}`);

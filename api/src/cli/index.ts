@@ -57,6 +57,7 @@ export async function createCli(): Promise<Command> {
 		.command('migration:generate')
 		.description('Generate a migration file')
 		.argument('<name>', 'Name of the migration file')
+		.option('-j, --js, Use a .js file instead of .ts')
 		.action(dbMigrationGenerate);
 
 	const usersCommand = program.command('users');
