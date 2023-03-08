@@ -21,7 +21,6 @@ import { ItemsService } from './items';
 
 // @ts-ignore
 import formatTitle from '@directus/format-title';
-import { getSchema } from '../utils/get-schema';
 
 export class FilesService extends ItemsService {
 	constructor(options: AbstractServiceOptions) {
@@ -41,22 +40,19 @@ export class FilesService extends ItemsService {
 
 		let payload = clone(data);
 
-		if (primaryKey !== undefined) {
-			// Include existing data in the payload, so we don't overwrite user set values
-			const schema = await getSchema();
-			const fieldsToExclude = ['id', 'filename_disk', 'type', 'uploaded_by', 'uploaded_on', 'modified_by', 'modified_on', 'charset', 'filesize', 'width', 'height', 'duration', 'embed', 'metadata']
-			const fieldsToKeep = Object.keys(schema.collections[this.collection].fields).filter((field) => fieldsToExclude.includes(field) === false)
-
-			const existingData = (await this.knex.select(fieldsToKeep).from('directus_files').where({ id: primaryKey }).first()) ?? {};
-
-			payload = {...existingData, ...payload}
-		}
-
 		if ('folder' in payload === false) {
 			const settings = await this.knex.select('storage_default_folder').from('directus_settings').first();
 
 			if (settings?.storage_default_folder) {
-				payload.folder = settings.storage_default_folder;
+				if(primaryKey !== undefined) {
+					const existingFolder = (await this.knex.select('folder').from('directus_files').where({ id: primaryKey }).first()) ?? {}
+
+					if('folder' in existingFolder === false) {
+						payload.folder = settings.storage_default_folder;
+					}
+				} else {
+					payload.folder = settings.storage_default_folder;
+				}
 			}
 		}
 
