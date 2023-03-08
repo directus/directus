@@ -6,10 +6,6 @@ import fse from 'fs-extra';
 
 const migrationPath = path.resolve(env.EXTENSIONS_PATH, 'migrations');
 
-if (!existsSync(migrationPath)) {
-	mkdirSync(migrationPath);
-}
-
 function padNumberWithOneZero(number: number): string {
 	return number.toString().padStart(2, '0');
 }
@@ -51,6 +47,11 @@ function standardizeMigrationName(migrationName: string) {
 }
 
 export default async function start(migrationName: string, { js = false }: { js?: boolean }) {
+	if (!existsSync(migrationPath)) {
+		mkdirSync(migrationPath, {
+			recursive: true,
+		});
+	}
 	const fileExtension = js ? 'js' : 'ts';
 
 	const migrationFileName = await generateMigrationFileName(standardizeMigrationName(migrationName), fileExtension);
