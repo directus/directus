@@ -47,7 +47,7 @@ export default async function bootstrap({ skipAdminInit }: { skipAdminInit?: boo
 	process.exit(0);
 }
 
-async function waitForDatabase(database: Knex) {
+export async function waitForDatabase(database: Knex) {
 	const tries = 5;
 	const secondsBetweenTries = 5;
 

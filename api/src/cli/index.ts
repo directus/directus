@@ -38,7 +38,11 @@ export async function createCli(): Promise<Command> {
 	securityCommand.command('secret:generate').description('Generate the app secret').action(secretGenerate);
 
 	const dbCommand = program.command('database');
-	dbCommand.command('install').description('Install the database').action(dbInstall);
+	dbCommand
+		.command('install')
+		.description('Install the database')
+		.option('-i, --ignore-already-installed, ignore if the database is already installed')
+		.action(dbInstall);
 	dbCommand
 		.command('migrate:latest')
 		.description('Upgrade the database')
