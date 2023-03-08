@@ -1,4 +1,4 @@
-import installSeeds from '../../../database/seeds/run';
+import installDatabase from '../../../database/seeds/run';
 import getDatabase, { isInstalled } from '../../../database';
 import logger from '../../../logger';
 import { waitForDatabase } from '../../commands/bootstrap';
@@ -30,7 +30,7 @@ export default async function start({
 			bootstrap({ skipAdminInit });
 		} else {
 			logger.info('Skipping system migrations...');
-			await installSeeds(database);
+			await installDatabase(database);
 		}
 
 		database.destroy();
