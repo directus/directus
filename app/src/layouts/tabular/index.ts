@@ -218,7 +218,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 					return activeFields.value.map((field) => {
 						let description: string | null = null;
 
-						const fieldParts = field.key.split('.').filter((part) => part !== '$thumbnail');
+						const fieldParts = field.key.split('.').filter((part) => part.startsWith('$') === false);
 
 						if (fieldParts.length > 1) {
 							const fieldNames = fieldParts.map((fieldKey, index) => {
