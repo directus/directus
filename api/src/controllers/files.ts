@@ -70,12 +70,12 @@ export const multipartHandler: RequestHandler = (req, res, next) => {
 
 		fileCount++;
 
-		if(!existingPrimaryKey) {
+		if (!existingPrimaryKey) {
 			if (!payload.title && existingPrimaryKey) {
 				payload.title = formatTitle(path.parse(filename).name);
 			}
 
-			payload.filename_download = filename
+			payload.filename_download = filename;
 		}
 
 		const payloadWithRequiredFields = {
