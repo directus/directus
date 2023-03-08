@@ -1,5 +1,5 @@
 import request from 'supertest';
-import { getUrl } from '@common/config';
+import config, { getUrl } from '@common/config';
 import vendors from '@common/get-dbs-to-test';
 import { v4 as uuid } from 'uuid';
 import { CreateItem } from '@common/functions';
@@ -1155,7 +1155,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				describe('passes when below limit', () => {
 					it.each(vendors)('%s', async (vendor) => {
 						// Setup
-						const count = 100;
+						const count = Number(config.envs[vendor].MAX_BATCH_MUTATION);
 						const artists = [];
 						const artists2 = [];
 
@@ -1195,7 +1195,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				describe('errors when above limit', () => {
 					it.each(vendors)('%s', async (vendor) => {
 						// Setup
-						const count = 101;
+						const count = Number(config.envs[vendor].MAX_BATCH_MUTATION) + 1;
 						const artists = [];
 						const artists2 = [];
 
@@ -1239,7 +1239,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				describe('passes when below limit', () => {
 					it.each(vendors)('%s', async (vendor) => {
 						// Setup
-						const count = 100;
+						const count = Number(config.envs[vendor].MAX_BATCH_MUTATION);
 						const artists = [];
 						const artists2 = [];
 
@@ -1283,7 +1283,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				describe('errors when above limit', () => {
 					it.each(vendors)('%s', async (vendor) => {
 						// Setup
-						const count = 101;
+						const count = Number(config.envs[vendor].MAX_BATCH_MUTATION) + 1;
 						const artists = [];
 						const artists2 = [];
 
@@ -1331,7 +1331,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				describe('passes when below limit', () => {
 					it.each(vendors)('%s', async (vendor) => {
 						// Setup
-						const count = 100;
+						const count = Number(config.envs[vendor].MAX_BATCH_MUTATION);
 						const artistIDs = [];
 						const artistIDs2 = [];
 
@@ -1376,7 +1376,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				describe('errors when above limit', () => {
 					it.each(vendors)('%s', async (vendor) => {
 						// Setup
-						const count = 101;
+						const count = Number(config.envs[vendor].MAX_BATCH_MUTATION) + 1;
 						const artistIDs = [];
 						const artistIDs2 = [];
 
@@ -1425,7 +1425,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				describe('passes when below limit', () => {
 					it.each(vendors)('%s', async (vendor) => {
 						// Setup
-						const count = 100;
+						const count = Number(config.envs[vendor].MAX_BATCH_MUTATION);
 						const company = uuid();
 
 						for (let i = 0; i < count; i++) {
@@ -1455,7 +1455,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				describe('errors when above limit', () => {
 					it.each(vendors)('%s', async (vendor) => {
 						// Setup
-						const count = 200;
+						const count = Number(config.envs[vendor].MAX_BATCH_MUTATION) + 1;
 						const company = uuid();
 
 						for (let i = 0; i < count; i++) {
@@ -1488,7 +1488,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				describe('passes when below limit', () => {
 					it.each(vendors)('%s', async (vendor) => {
 						// Setup
-						const count = 100;
+						const count = Number(config.envs[vendor].MAX_BATCH_MUTATION);
 						const artistIDs = [];
 						const artistIDs2 = [];
 						const artistIDs3 = [];
@@ -1560,7 +1560,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				describe('errors when above limit', () => {
 					it.each(vendors)('%s', async (vendor) => {
 						// Setup
-						const count = 101;
+						const count = Number(config.envs[vendor].MAX_BATCH_MUTATION) + 1;
 						const artistIDs = [];
 						const artistIDs2 = [];
 						const artistIDs3 = [];
@@ -1640,7 +1640,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				describe('passes when below limit', () => {
 					it.each(vendors)('%s', async (vendor) => {
 						// Setup
-						const count = 100;
+						const count = Number(config.envs[vendor].MAX_BATCH_MUTATION);
 						const company = uuid();
 
 						for (let i = 0; i < count; i++) {
@@ -1668,7 +1668,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				describe('errors when above limit', () => {
 					it.each(vendors)('%s', async (vendor) => {
 						// Setup
-						const count = 200;
+						const count = Number(config.envs[vendor].MAX_BATCH_MUTATION) + 1;
 						const company = uuid();
 
 						for (let i = 0; i < count; i++) {
