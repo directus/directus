@@ -38,16 +38,17 @@ export class FilesService extends ItemsService {
 	): Promise<PrimaryKey> {
 		const storage = await getStorage();
 
-		let payload = clone(data);
+		const payload = clone(data);
 
 		if ('folder' in payload === false) {
 			const settings = await this.knex.select('storage_default_folder').from('directus_settings').first();
 
 			if (settings?.storage_default_folder) {
-				if(primaryKey !== undefined) {
-					const existingFolder = (await this.knex.select('folder').from('directus_files').where({ id: primaryKey }).first()) ?? {}
+				if (primaryKey !== undefined) {
+					const existingFolder =
+						(await this.knex.select('folder').from('directus_files').where({ id: primaryKey }).first()) ?? {};
 
-					if('folder' in existingFolder === false) {
+					if ('folder' in existingFolder === false) {
 						payload.folder = settings.storage_default_folder;
 					}
 				} else {
