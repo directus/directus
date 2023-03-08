@@ -332,7 +332,7 @@ const query = computed<RelationQueryMultiple>(() => {
 		q.search = search.value;
 	}
 	if (sort.value) {
-		q.sort = [`${sort.value.desc ? '-' : ''}${relationInfo.value.junctionField.field}.${sort.value.by}`];
+		q.sort = [`${sort.value.desc ? '-' : ''}${sort.value.by}`];
 	}
 
 	return q;
