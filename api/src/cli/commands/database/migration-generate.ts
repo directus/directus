@@ -53,7 +53,7 @@ function standardizeMigrationName(migrationName: string) {
 export default async function start(migrationName: string) {
 	const migrationFileName = await generateMigrationFileName(standardizeMigrationName(migrationName));
 	copyFileSync(
-		path.resolve(path.dirname(__dirname), 'templates/migration.js'),
+		path.resolve(path.dirname(path.dirname(__dirname)), 'templates/migration.js'),
 		`${migrationPath}/${migrationFileName}`
 	);
 	logger.info(`Migration file generated: ${migrationFileName}`);
