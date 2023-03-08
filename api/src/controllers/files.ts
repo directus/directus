@@ -71,7 +71,7 @@ export const multipartHandler: RequestHandler = (req, res, next) => {
 		fileCount++;
 
 		if (!existingPrimaryKey) {
-			if (!payload.title && existingPrimaryKey) {
+			if (!payload.title) {
 				payload.title = formatTitle(path.parse(filename).name);
 			}
 
