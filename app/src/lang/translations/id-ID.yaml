@@ -980,6 +980,15 @@ page_help_collections_item: >-
   **Detail Item** — Sebuah formulir untuk melihat dan mengelola item. Sidebar ini juga berisi riwayat, revisi, dan komentar yang disematkan.
 page_help_activity_collection: >-
   ***Jelajahi Aktivitas** - Daftar lengkap dari seluruh aktivitas content dan pengguna system.
+page_help_docs_global: >-
+  **Gambaran Dokumentasi ** — Dokumen yang disesuaikan khusus untuk versi dan skema proyek ini.
+page_help_files_collection: >-
+  **Berkas Pustaka** — Daftar semua aset berkas yang diunggah ke proyek ini. Sesuaikan tata letak, filter, dan penyortiran untuk menyesuaikan tampilan Anda, dan bahkan simpan bookmark dari konfigurasi yang berbeda ini untuk akses cepat.
+page_help_files_item: >-
+  **Detail Berkas** — Sebuah formulir untuk mengelola metadata berkas, mengedit aset asli, dan memperbarui pengaturan akses.
+page_help_settings_project: "**Konfigurasi Proyek** — Opsi konfigurasi global proyek Anda."
+page_help_settings_datamodel_collections: >-
+  **Model Data: Collection** — Menampilkan semua Collection yang tersedia. Ini mencakup Collection yang terlihat, tersembunyi, dan sistem, serta tabel basis data yang tidak dikelola yang dapat ditambahkan.
 activity_feed: Feed Aktifitas
 add_new: Tambah Baru
 create_new: Buat baru
