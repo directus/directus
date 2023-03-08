@@ -10,7 +10,13 @@ import getDatabase, { isInstalled, validateDatabaseConnection, hasDatabaseConnec
 import { SchemaOverview } from '@directus/shared/types';
 import { defaultAdminRole, defaultAdminUser } from '../../utils/defaults';
 
-export default async function bootstrap({ skipAdminInit }: { skipAdminInit?: boolean }): Promise<void> {
+export default async function bootstrap({
+	skipAdminInit,
+	systemOnlyMigrations = false,
+}: {
+	skipAdminInit?: boolean;
+	systemOnlyMigrations?: boolean;
+}): Promise<void> {
 	logger.info('Initializing bootstrap...');
 
 	const database = getDatabase();
@@ -23,7 +29,7 @@ export default async function bootstrap({ skipAdminInit }: { skipAdminInit?: boo
 		await installDatabase(database);
 
 		logger.info('Running migrations...');
-		await runMigrations(database, 'latest');
+		await runMigrations(database, 'latest', systemOnlyMigrations);
 
 		const schema = await getSchema();
 
@@ -40,7 +46,7 @@ export default async function bootstrap({ skipAdminInit }: { skipAdminInit?: boo
 	} else {
 		logger.info('Database already initialized, skipping install');
 		logger.info('Running migrations...');
-		await runMigrations(database, 'latest');
+		await runMigrations(database, 'latest', systemOnlyMigrations);
 	}
 
 	logger.info('Done');

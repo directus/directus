@@ -27,7 +27,7 @@ export default async function start({
 		}
 
 		if (bootstrapWithSystemMigrations) {
-			bootstrap({ skipAdminInit });
+			bootstrap({ skipAdminInit, systemOnlyMigrations: bootstrapWithSystemMigrations });
 		} else {
 			logger.info('Skipping system migrations...');
 			await installDatabase(database);
