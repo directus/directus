@@ -29,7 +29,7 @@ export default async function bootstrap({
 		await installDatabase(database);
 
 		logger.info('Running migrations...');
-		await runMigrations(database, 'latest', systemOnlyMigrations);
+		await runMigrations(database, 'latest', true, systemOnlyMigrations);
 
 		const schema = await getSchema();
 
@@ -46,7 +46,7 @@ export default async function bootstrap({
 	} else {
 		logger.info('Database already initialized, skipping install');
 		logger.info('Running migrations...');
-		await runMigrations(database, 'latest', systemOnlyMigrations);
+		await runMigrations(database, 'latest', true, systemOnlyMigrations);
 	}
 
 	logger.info('Done');

@@ -8,7 +8,7 @@ export default async function migrate(direction: 'latest' | 'up' | 'down', syste
 	try {
 		logger.info('Running migrations...');
 
-		await run(database, direction, systemOnly);
+		await run(database, direction, true, systemOnly);
 
 		if (direction === 'down') {
 			logger.info('Downgrade successful');

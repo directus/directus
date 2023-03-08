@@ -13,8 +13,8 @@ import formatTitle from '@directus/format-title';
 export default async function run(
 	database: Knex,
 	direction: 'up' | 'down' | 'latest',
-	systemOnly = false,
-	log = true
+	log = true,
+	systemOnly = false
 ): Promise<void> {
 	let migrationFiles = await fse.readdir(__dirname);
 	migrationFiles = migrationFiles.filter((file: string) => /^[0-9]+[A-Z]-[^.]+\.(?:js|ts)$/.test(file));
