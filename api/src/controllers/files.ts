@@ -70,17 +70,16 @@ export const multipartHandler: RequestHandler = (req, res, next) => {
 
 		fileCount++;
 
-		if (!payload.title) {
-			payload.title = formatTitle(path.parse(filename).name);
+		if(!existingPrimaryKey) {
+			if (!payload.title && existingPrimaryKey) {
+				payload.title = formatTitle(path.parse(filename).name);
+			}
+
+			payload.filename_download = filename
 		}
 
-		const payloadWithRequiredFields: Partial<File> & {
-			filename_download: string;
-			type: string;
-			storage: string;
-		} = {
+		const payloadWithRequiredFields = {
 			...payload,
-			filename_download: filename,
 			type: mimeType,
 			storage: payload.storage || disk,
 		};

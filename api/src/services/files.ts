@@ -32,7 +32,7 @@ export class FilesService extends ItemsService {
 	 */
 	async uploadOne(
 		stream: Readable,
-		data: Partial<File> & { filename_download: string; storage: string },
+		data: Partial<File> & { storage: string },
 		primaryKey?: PrimaryKey,
 		opts?: MutationOptions
 	): Promise<PrimaryKey> {
@@ -72,7 +72,7 @@ export class FilesService extends ItemsService {
 		}
 
 		const fileExtension =
-			path.extname(payload.filename_download) || (payload.type && '.' + extension(payload.type)) || '';
+			path.extname(payload.filename_download!) || (payload.type && '.' + extension(payload.type)) || '';
 
 		payload.filename_disk = primaryKey + (fileExtension || '');
 
