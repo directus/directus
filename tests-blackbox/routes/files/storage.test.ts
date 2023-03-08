@@ -1,4 +1,4 @@
-import { getUrl } from '@common/config';
+import config, { getUrl } from '@common/config';
 import request from 'supertest';
 import vendors from '@common/get-dbs-to-test';
 import { createReadStream } from 'fs';
@@ -62,6 +62,72 @@ describe('/files', () => {
 				// Assert
 				expect(response.statusCode).toEqual(204);
 				expect(response.body.data).toBe(undefined);
+			});
+		});
+	});
+
+	describe('ASSETS_TRANSFORM_MAX_CONCURRENT Tests', () => {
+		describe('passes when below limit', () => {
+			describe.each(storages)('Storage: %s', (storage) => {
+				it.each(vendors)('%s', async (vendor) => {
+					// Setup
+					const count = Number(config.envs[vendor].ASSETS_TRANSFORM_MAX_CONCURRENT);
+					const uploadedFileID = (
+						await request(getUrl(vendor))
+							.post('/files')
+							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+							.attach('file', createReadStream(imageFilePath))
+							.field('storage', storage)
+					).body.data.id;
+
+					// Action
+					const responses = await Promise.all(
+						Array(count)
+							.fill(0)
+							.map((_, index) =>
+								request(getUrl(vendor))
+									.get(`/assets/${uploadedFileID}?width=${10000 + index}&height=${10000 + index}`)
+									.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+							)
+					);
+
+					// Assert
+					for (const response of responses) {
+						expect(response.statusCode).toBe(200);
+					}
+				});
+			});
+		});
+
+		describe('errors when above limit', () => {
+			describe.each(storages)('Storage: %s', (storage) => {
+				it.each(vendors)('%s', async (vendor) => {
+					// Setup
+					const limit = Number(config.envs[vendor].ASSETS_TRANSFORM_MAX_CONCURRENT);
+					const count = 10;
+					const uploadedFileID = (
+						await request(getUrl(vendor))
+							.post('/files')
+							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+							.attach('file', createReadStream(imageFilePath))
+							.field('storage', storage)
+					).body.data.id;
+
+					// Action
+					const responses = await Promise.all(
+						Array(count)
+							.fill(0)
+							.map((_, index) =>
+								request(getUrl(vendor))
+									.get(`/assets/${uploadedFileID}?width=${10000 + index}&height=${10000 + index}`)
+									.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+							)
+					);
+
+					// Assert
+					expect(responses.filter((response) => response.statusCode === 200).length).toBe(limit);
+					expect(responses.filter((response) => response.statusCode === 503).length).toBe(count - limit);
+				});
 			});
 		});
 	});
