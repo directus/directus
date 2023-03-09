@@ -22,6 +22,7 @@ export const createPubSub = <TTopicPayload extends { [key: string]: unknown }>(e
 
 export const messages = createPubSub(new EventEmitter());
 
+// for now only the items will be watched in the MVP system events tbd
 [
 	'items' /*, 'activity', 'collections', 'fields', 'folders', 'permissions',
 	'presets', 'relations', 'revisions', 'roles', 'settings', 'users', 'webhooks'*/,

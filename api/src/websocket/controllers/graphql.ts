@@ -31,6 +31,7 @@ export class GraphQLSubscriptionController extends SocketController {
 			schema: async (ctx) => {
 				const accountability = await getAccountabilityForToken(ctx.connectionParams?.access_token);
 
+				// for now only the items will be watched in the MVP system events tbd
 				const service = new GraphQLService({
 					schema: await getSchema(),
 					scope: 'items',

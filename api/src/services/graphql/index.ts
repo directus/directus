@@ -1054,9 +1054,15 @@ export class GraphQLService {
 					});
 				}
 
-				if (!collection.collection.startsWith('directus_')) {
+				if (
+					(self.scope === 'system' && collection.collection.startsWith('directus_')) ||
+					(self.scope === 'items' && !collection.collection.startsWith('directus_'))
+				) {
 					for (const event of ['created', 'updated', 'deleted']) {
-						const eventName = `${collection.collection}_${event}`.toUpperCase();
+						const eventName =
+							self.scope === 'system'
+								? `${collection.collection.replace('directus_', '')}_${event}`.toUpperCase()
+								: `${collection.collection}_${event}`.toUpperCase();
 						const subscriptionName = camelCase(eventName);
 						schemaComposer.Subscription.addFields({
 							[subscriptionName]: {
