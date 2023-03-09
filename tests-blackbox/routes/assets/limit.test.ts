@@ -81,10 +81,6 @@ describe('/assets', () => {
 
 							// Assert
 							const unavailableCount = responses.filter((response) => response.statusCode === 503).length;
-
-							// eslint-disable-next-line no-console
-							console.log(`Unavailable assets response count: ${unavailableCount}`);
-
 							expect(unavailableCount).toBeGreaterThanOrEqual(attempts / 2);
 							expect(responses.filter((response) => response.statusCode === 200).length).toBe(
 								attempts - unavailableCount
