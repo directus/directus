@@ -5,13 +5,11 @@ import emitter from '../../emitter';
 import { getSchema } from '../../utils/get-schema';
 import type { GraphQLService } from './index';
 
-export const createPubSub = <TTopicPayload extends { [key: string]: unknown }>(emitter: EventEmitter) => {
+export const createPubSub = <P extends { [key: string]: unknown }>(emitter: EventEmitter) => {
 	return {
-		publish: <TTopic extends Extract<keyof TTopicPayload, string>>(topic: TTopic, payload: TTopicPayload[TTopic]) =>
+		publish: <T extends Extract<keyof P, string>>(topic: T, payload: P[T]) =>
 			void emitter.emit(topic as string, payload),
-		subscribe: async function* <TTopic extends Extract<keyof TTopicPayload, string>>(
-			topic: TTopic
-		): AsyncIterableIterator<TTopicPayload[TTopic]> {
+		subscribe: async function* <T extends Extract<keyof P, string>>(topic: T): AsyncIterableIterator<P[T]> {
 			const asyncIterator = on(emitter, topic);
 			for await (const [value] of asyncIterator) {
 				yield value;
@@ -53,13 +51,13 @@ export function createSubscriptionGenerator(
 		for await (const payload of messages.subscribe(event)) {
 			if (action === 'created') {
 				const { collection, key } = payload as any;
-				const s = new ItemsService(collection, { schema: await getSchema() });
-				yield { [name]: await s.readOne(key, { fields } as Query) };
+				const service = new ItemsService(collection, { schema: await getSchema() });
+				yield { [name]: await service.readOne(key, { fields } as Query) };
 			}
 			if (action === 'updated') {
 				const { collection, keys } = payload as any;
-				const s = new ItemsService(collection, { schema: await getSchema() });
-				yield { [name]: await s.readMany(keys, { fields } as Query) };
+				const service = new ItemsService(collection, { schema: await getSchema() });
+				yield { [name]: await service.readMany(keys, { fields } as Query) };
 			}
 			if (action === 'deleted') {
 				const { keys } = payload as any;

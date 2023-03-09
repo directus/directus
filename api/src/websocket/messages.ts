@@ -7,7 +7,7 @@ export const WebSocketMessage = z
 		uid: z.string().optional(),
 	})
 	.passthrough();
-export type WebSocketMessage = z.infer<typeof WebSocketMessage> & Record<string, any>; // { type: string; uid?: string } & Record<string, any>;
+export type WebSocketMessage = z.infer<typeof WebSocketMessage> & Record<string, any>;
 
 export const WebSocketResponse = z.union([
 	WebSocketMessage.extend({
@@ -100,3 +100,29 @@ export const WebSocketItemsMessage = z.union([
 	WebSocketItemsDeleteMessage,
 ]);
 export type WebSocketItemsMessage = z.infer<typeof WebSocketItemsMessage>;
+
+export const WebSocketBaseEvent = z
+	.object({
+		action: z.enum(['create', 'update', 'delete']),
+		collection: z.string(),
+		payload: z.record(z.any()).optional(),
+	})
+	.passthrough();
+export const WebSocketCreateEvent = WebSocketBaseEvent.extend({
+	action: z.literal('create'),
+	key: z.union([z.string(), z.number()]),
+});
+export type WebSocketCreateEvent = z.infer<typeof WebSocketCreateEvent>;
+
+export const WebSocketUpdateEvent = WebSocketBaseEvent.extend({
+	action: z.literal('update'),
+	keys: z.array(z.union([z.string(), z.number()])),
+});
+export type WebSocketUpdateEvent = z.infer<typeof WebSocketUpdateEvent>;
+
+export const WebSocketDeleteEvent = WebSocketBaseEvent.extend({
+	action: z.literal('delete'),
+	keys: z.array(z.union([z.string(), z.number()])),
+});
+export type WebSocketDeleteEvent = z.infer<typeof WebSocketDeleteEvent>;
+export type WebSocketEvent = WebSocketCreateEvent | WebSocketUpdateEvent | WebSocketDeleteEvent;

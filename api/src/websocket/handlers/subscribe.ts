@@ -11,32 +11,7 @@ import { handleWebsocketException, WebSocketException } from '../exceptions';
 import type { Accountability, SchemaOverview } from '@directus/shared/types';
 import { WebSocketSubscribeMessage } from '../messages';
 import { getMessenger, Messenger } from '../../messenger';
-import { z } from 'zod';
-
-//  move this to types!
-const WebSocketBaseEvent = z
-	.object({
-		action: z.enum(['create', 'update', 'delete']),
-		collection: z.string(),
-		payload: z.record(z.any()).optional(),
-	})
-	.passthrough();
-const WebSocketCreateEvent = WebSocketBaseEvent.extend({
-	action: z.literal('create'),
-	key: z.union([z.string(), z.number()]),
-});
-type WebSocketCreateEvent = z.infer<typeof WebSocketCreateEvent>;
-const WebSocketUpdateEvent = WebSocketBaseEvent.extend({
-	action: z.literal('update'),
-	keys: z.array(z.union([z.string(), z.number()])),
-});
-type WebSocketUpdateEvent = z.infer<typeof WebSocketUpdateEvent>;
-const WebSocketDeleteEvent = WebSocketBaseEvent.extend({
-	action: z.literal('delete'),
-	keys: z.array(z.union([z.string(), z.number()])),
-});
-type WebSocketDeleteEvent = z.infer<typeof WebSocketDeleteEvent>;
-type WebSocketEvent = WebSocketCreateEvent | WebSocketUpdateEvent | WebSocketDeleteEvent;
+import { WebSocketEvent } from '../messages';
 
 /**
  * Handler responsible for subscriptions
@@ -217,10 +192,8 @@ export class SubscribeHandler {
 				}
 				// if no errors were thrown register the subscription
 				this.subscribe(subscription);
-				if (!('item' in subscription)) {
-					// prevent double events for init
-					client.send(fmtMessage('subscription', data, subscription.uid));
-				}
+				// send an initial response
+				client.send(fmtMessage('subscription', data, subscription.uid));
 			} catch (err) {
 				handleWebsocketException(client, err, 'subscribe');
 				// logger.debug(`[WS REST] ERROR ${JSON.stringify(err)}`);
