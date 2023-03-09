@@ -174,6 +174,10 @@
 			</v-card>
 		</v-dialog>
 
+		<template #splitView>
+			<LivePreview />
+		</template>
+
 		<template #sidebar>
 			<sidebar-detail icon="info_outline" :title="t('information')" close>
 				<div v-md="t('page_help_collections_item')" class="page-description" />
@@ -235,6 +239,7 @@ import { useCollection } from '@directus/shared/composables';
 import { useRouter } from 'vue-router';
 import ContentNavigation from '../components/navigation.vue';
 import ContentNotFound from './not-found.vue';
+import LivePreview from '../components/live-preview.vue';
 
 interface Props {
 	collection: string;
