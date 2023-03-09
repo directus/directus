@@ -49,28 +49,38 @@ export class ItemsHandler {
 		}
 		if (message.action === 'read') {
 			const query = sanitizeQuery(message.query, accountability);
-			result = await service.readByQuery(query);
+			if (message.id) {
+				result = await service.readOne(message.id, query);
+			} else if (message.ids) {
+				result = await service.readMany(message.ids, query);
+			} else {
+				result = await service.readByQuery(query);
+			}
 			meta = await metaService.getMetaForQuery(message.collection, query);
 		}
 		if (message.action === 'update') {
 			const query = sanitizeQuery(message?.query ?? {}, accountability);
-			if ('ids' in message) {
+			if (message.id) {
+				const key = await service.updateOne(message.id, message.data);
+				result = await service.readOne(key);
+			} else if (message.ids) {
 				const keys = await service.updateMany(message.ids, message.data);
 				meta = await metaService.getMetaForQuery(message.collection, query);
 				result = await service.readMany(keys, query);
-			} else if ('id' in message) {
-				const key = await service.updateOne(message.id, message.data);
-				result = await service.readOne(key);
+			} else {
+				const keys = await service.updateByQuery(query, message.data);
+				meta = await metaService.getMetaForQuery(message.collection, query);
+				result = await service.readMany(keys, query);
 			}
 		}
 		if (message.action === 'delete') {
-			if ('ids' in message) {
-				await service.deleteMany(message.ids);
-				result = message.ids;
-			} else if ('id' in message) {
+			if (message.id) {
 				await service.deleteOne(message.id);
 				result = message.id;
-			} else if ('query' in message) {
+			} else if (message.ids) {
+				await service.deleteMany(message.ids);
+				result = message.ids;
+			} else if (message.query) {
 				const query = sanitizeQuery(message.query, accountability);
 				result = await service.deleteByQuery(query);
 			} else {

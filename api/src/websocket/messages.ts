@@ -63,36 +63,23 @@ export const WebSocketItemsCreateMessage = PartialItemsMessage.extend({
 });
 export const WebSocketItemsReadMessage = PartialItemsMessage.extend({
 	action: z.union([z.literal('READ'), z.literal('read')]),
-	query: z.custom<Query>(),
+	query: z.custom<Query>().default({} as Query),
+	ids: z.array(z.union([z.string(), z.number()])).optional(),
+	id: z.union([z.string(), z.number()]).optional(),
 });
-export const WebSocketItemsUpdateMessage = z.union([
-	PartialItemsMessage.extend({
-		action: z.union([z.literal('UPDATE'), z.literal('update')]),
-		data: ZodItem,
-		ids: z.array(z.union([z.string(), z.number()])),
-		query: z.custom<Query>().optional(),
-	}),
-	PartialItemsMessage.extend({
-		action: z.union([z.literal('UPDATE'), z.literal('update')]),
-		data: ZodItem,
-		id: z.union([z.string(), z.number()]),
-		query: z.custom<Query>().optional(),
-	}),
-]);
-export const WebSocketItemsDeleteMessage = z.union([
-	PartialItemsMessage.extend({
-		action: z.union([z.literal('DELETE'), z.literal('delete')]),
-		ids: z.array(z.union([z.string(), z.number()])),
-	}),
-	PartialItemsMessage.extend({
-		action: z.union([z.literal('DELETE'), z.literal('delete')]),
-		id: z.union([z.string(), z.number()]),
-	}),
-	PartialItemsMessage.extend({
-		action: z.union([z.literal('DELETE'), z.literal('delete')]),
-		query: z.custom<Query>(),
-	}),
-]);
+export const WebSocketItemsUpdateMessage = PartialItemsMessage.extend({
+	action: z.union([z.literal('UPDATE'), z.literal('update')]),
+	data: ZodItem,
+	ids: z.array(z.union([z.string(), z.number()])).optional(),
+	id: z.union([z.string(), z.number()]).optional(),
+	query: z.custom<Query>().optional(),
+});
+export const WebSocketItemsDeleteMessage = PartialItemsMessage.extend({
+	action: z.union([z.literal('DELETE'), z.literal('delete')]),
+	ids: z.array(z.union([z.string(), z.number()])).optional(),
+	id: z.union([z.string(), z.number()]).optional(),
+	query: z.custom<Query>().optional(),
+});
 export const WebSocketItemsMessage = z.union([
 	WebSocketItemsCreateMessage,
 	WebSocketItemsReadMessage,
