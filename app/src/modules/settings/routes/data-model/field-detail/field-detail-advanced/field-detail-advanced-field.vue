@@ -39,6 +39,7 @@
 						meta: {
 							interface: 'system-language',
 							width: 'half',
+							required: true,
 							display: 'formatted-value',
 							display_options: {
 								font: 'monospace',
@@ -56,6 +57,7 @@
 						meta: {
 							interface: 'input',
 							width: 'half',
+							required: true,
 							options: {
 								placeholder: t('translation_placeholder'),
 							},
