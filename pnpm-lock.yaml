@@ -156,7 +156,7 @@ importers:
       globby: 11.1.0
       graphql: 16.6.0
       graphql-compose: 9.0.10
-      graphql-ws: 5.11.3
+      graphql-ws: 5.12.0
       helmet: 6.0.1
       icc: 2.0.0
       inquirer: 8.2.5
@@ -217,8 +217,8 @@ importers:
       vitest: 0.28.5
       vm2: 3.9.14
       wellknown: 0.5.0
-      ws: 8.12.0
-      zod: ^3.20.2
+      ws: 8.12.1
+      zod: ^3.21.4
     dependencies:
       '@authenio/samlify-node-xmllint': 2.0.0_samlify@2.8.9
       '@aws-sdk/client-ses': 3.271.0
@@ -265,7 +265,7 @@ importers:
       globby: 11.1.0
       graphql: 16.6.0
       graphql-compose: 9.0.10_graphql@16.6.0
-      graphql-ws: 5.11.3_graphql@16.6.0
+      graphql-ws: 5.12.0_graphql@16.6.0
       helmet: 6.0.1
       icc: 2.0.0
       inquirer: 8.2.5
@@ -313,7 +313,7 @@ importers:
       uuid-validate: 0.0.3
       vm2: 3.9.14
       wellknown: 0.5.0
-      ws: 8.12.0
+      ws: 8.12.1
     optionalDependencies:
       '@keyv/redis': 2.5.5
       keyv-memcache: 1.3.3
@@ -370,7 +370,7 @@ importers:
       ts-node-dev: 2.0.0_4bewfcp2iebiwuold25d6rgcsy
       typescript: 4.9.5
       vitest: 0.28.5
-      zod: 3.20.6
+      zod: 3.21.4
 
   app:
     specifiers:
@@ -6325,7 +6325,7 @@ packages:
       util-deprecate: 1.0.2
       watchpack: 2.4.0
       webpack: 4.46.0
-      ws: 8.12.0
+      ws: 8.12.1
       x-default-browser: 0.4.0
     transitivePeerDependencies:
       - '@storybook/mdx2-csf'
@@ -9340,7 +9340,7 @@ packages:
       minipass-pipeline: 1.2.4
       mkdirp: 1.0.4
       p-map: 4.0.0
-      promise-inflight: 1.0.1
+      promise-inflight: 1.0.1_bluebird@3.7.2
       rimraf: 3.0.2
       ssri: 8.0.1
       tar: 6.1.13
@@ -12610,8 +12610,8 @@ packages:
       graphql: 16.6.0
     dev: false
 
-  /graphql-ws/5.11.3_graphql@16.6.0:
-    resolution: {integrity: sha512-fU8zwSgAX2noXAsuFiCZ8BtXeXZOzXyK5u1LloCdacsVth4skdBMPO74EG51lBoWSIZ8beUocdpV8+cQHBODnQ==}
+  /graphql-ws/5.12.0_graphql@16.6.0:
+    resolution: {integrity: sha512-PA3ImUp8utrpEjoxBMhvxsjkStvFEdU0E1gEBREt8HZIWkxOUymwJBhFnBL7t/iHhUq1GVPeZevPinkZFENxTw==}
     engines: {node: '>=10'}
     peerDependencies:
       graphql: '>=0.11 <=16'
@@ -17426,14 +17426,6 @@ packages:
     engines: {node: '>=0.4.0'}
     dev: true
 
-  /promise-inflight/1.0.1:
-    resolution: {integrity: sha512-6zWPyEOFaQBJYcGMHBKTKJ3u6TBsnMFOIZSa6ce1e/ZrrsOlnHRHbabMjLiBYKp+n44X9eUI6VUPaukCXHuG4g==}
-    peerDependencies:
-      bluebird: '*'
-    peerDependenciesMeta:
-      bluebird:
-        optional: true
-
   /promise-inflight/1.0.1_bluebird@3.7.2:
     resolution: {integrity: sha512-6zWPyEOFaQBJYcGMHBKTKJ3u6TBsnMFOIZSa6ce1e/ZrrsOlnHRHbabMjLiBYKp+n44X9eUI6VUPaukCXHuG4g==}
     peerDependencies:
@@ -17443,7 +17435,6 @@ packages:
         optional: true
     dependencies:
       bluebird: 3.7.2
-    dev: true
 
   /promise-retry/2.0.1:
     resolution: {integrity: sha512-y+WKFlBR8BGXnsNlIHFGPZmyDf3DFMoLhaflAnyZgV6rG6xu+JwesTo2Q9R6XwYmtmwAFCkAk3e35jEdoeh/3g==}
@@ -21564,8 +21555,8 @@ packages:
       signal-exit: 3.0.7
     dev: true
 
-  /ws/8.12.0:
-    resolution: {integrity: sha512-kU62emKIdKVeEIOIKVegvqpXMSTAMLJozpHZaJNDYqBjzlSYXQGviYwN1osDLJ9av68qHd4a2oSjd7yD4pacig==}
+  /ws/8.12.1:
+    resolution: {integrity: sha512-1qo+M9Ba+xNhPB+YTWUlK6M17brTut5EXbcBaMRN5pH5dFrXz7lzz1ChFSUq3bOUl8yEvSenhHmYUNJxFzdJew==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
       bufferutil: ^4.0.1
@@ -21750,6 +21741,11 @@ packages:
 
   /zod/3.20.6:
     resolution: {integrity: sha512-oyu0m54SGCtzh6EClBVqDDlAYRz4jrVtKwQ7ZnsEmMI9HnzuZFj8QFwAY1M5uniIYACdGvv0PBWPF2kO0aNofA==}
+    dev: false
+
+  /zod/3.21.4:
+    resolution: {integrity: sha512-m46AKbrzKVzOzs/DZgVnG5H55N1sv1M8qZU3A8RIKbs3mrACDNeIOeilDymVb2HdmP8uwshOCF4uJ8uM9rCqJw==}
+    dev: true
 
   /zwitch/1.0.5:
     resolution: {integrity: sha512-V50KMwwzqJV0NpZIZFwfOD5/lyny3WlSzRiXgA0G7VUnRlqttta1L6UQIHzd6EuBY/cHGfwTIck7w1yH6Q5zUw==}
