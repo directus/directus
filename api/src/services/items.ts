@@ -206,12 +206,14 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 						schema: this.schema,
 					});
 
+					const revisionDelta = await payloadService.prepareDelta(payloadAfterHooks);
+
 					const revision = await revisionsService.createOne({
 						activity: activity,
 						collection: this.collection,
 						item: primaryKey,
-						data: await payloadService.prepareDelta(payloadAfterHooks),
-						delta: await payloadService.prepareDelta(payloadAfterHooks),
+						data: revisionDelta,
+						delta: revisionDelta,
 					});
 
 					// Make sure to set the parent field of the child-revision rows
