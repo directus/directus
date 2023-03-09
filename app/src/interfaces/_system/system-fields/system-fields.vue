@@ -110,16 +110,9 @@ const fields = computed<(Field & { key: string })[]>({
 const { t } = useI18n();
 
 function selectAll() {
-	const newArray = props.value ?? [];
-
-	const fullArray = fieldsStore.getFieldsForCollection(props.collectionName).map((field) => field.field);
-
-	fullArray.map((field) => {
-		if (props.value?.includes(field) === false) {
-			newArray.push(field);
-		}
-	});
-	emit('input', newArray);
+	const fields = fieldsStore.getFieldsForCollection(props.collectionName).map((field) => field.field);
+	const allFields = new Set([...(props.value ?? []), ...fields]);
+	emit('input', Array.from(allFields));
 }
 
 function addField(fieldKey: string) {
