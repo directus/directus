@@ -1032,7 +1032,7 @@ directus_collection:
   directus_notifications: Notificaties verzonden naar gebruikers
   directus_operations: Operaties die worden uitgevoerd in Flows
   directus_panels: Individuele panelen binnen de Inzichten dashboards
-  directus_presets: Standaard instellingen voor collecties en bookmarks
+  directus_presets: Standaardinstellingen voor collecties en bladwijzers
   directus_roles: Machtigingsgroepen voor systeemgebruikers
   directus_sessions: Gebruikerssessie-informatie
   directus_settings: Project configuratie opties
