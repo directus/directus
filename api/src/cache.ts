@@ -20,8 +20,8 @@ const messenger = getMessenger();
 if (!messengerSubscribed) {
 	messengerSubscribed = true;
 
-	messenger.subscribe('schemaChanged', async () => {
-		if (env.CACHE_STORE === 'memory' && cache && env.CACHE_AUTO_PURGE) {
+	messenger.subscribe('schemaChanged', async (opts) => {
+		if (env.CACHE_STORE === 'memory' && cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
 			await cache.clear();
 		}
 
@@ -56,21 +56,21 @@ export function getCache(): { cache: Keyv | null; systemCache: Keyv; schemaCache
 
 export async function flushCaches(forced?: boolean): Promise<void> {
 	const { cache } = getCache();
-	await clearSystemCache(forced);
+	await clearSystemCache({ forced });
 	await cache?.clear();
 }
 
-export async function clearSystemCache(forced?: boolean): Promise<void> {
+export async function clearSystemCache(opts?: { forced?: boolean; autoPurgeCache?: false }): Promise<void> {
 	const { systemCache, schemaCache, lockCache } = getCache();
 
 	// Flush system cache when forced or when system cache lock not set
-	if (forced || !(await lockCache.get('system-cache-lock'))) {
+	if (opts?.forced || !(await lockCache.get('system-cache-lock'))) {
 		await lockCache.set('system-cache-lock', true, 10000);
 		await schemaCache.clear();
 		await systemCache.clear();
 		await lockCache.delete('system-cache-lock');
 
-		messenger.publish('schemaChanged', {});
+		messenger.publish('schemaChanged', { autoPurgeCache: opts?.autoPurgeCache });
 	}
 }
 
