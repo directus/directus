@@ -225,7 +225,8 @@ export default abstract class SocketController {
 			ws.terminate();
 		});
 	}
-	log(message: string) {
-		logger.debug(`[${this.name}] ${message}`);
+	log(_message: string) {
+		// disable this verbosity for now
+		// logger.debug(`[${this.name}] ${message}`);
 	}
 }

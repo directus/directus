@@ -2,7 +2,7 @@ import { getSchema } from '../../utils/get-schema';
 import { ItemsService } from '../../services/items';
 import type { Subscription, WebSocketClient } from '../types';
 import emitter from '../../emitter';
-import logger from '../../logger';
+// import logger from '../../logger';
 import { fmtMessage, trimUpper } from '../utils/message';
 import { refreshAccountability } from '../authenticate';
 import { MetaService } from '../../services';
@@ -77,7 +77,7 @@ export class SubscribeHandler {
 				message.collection = args.collection as string;
 				message.payload = (args.payload ?? {}) as Record<string, any>;
 				// push the event through the Redis pub/sub
-				logger.debug(`[ WS ] event ${event} - ${JSON.stringify(message)}`);
+				// logger.debug(`[ WS ] event ${event} - ${JSON.stringify(message)}`);
 				this.messenger.publish('websocket.event', message as Record<string, any>);
 			});
 		};
@@ -157,12 +157,11 @@ export class SubscribeHandler {
 	 */
 	async onMessage(client: WebSocketClient, message: WebSocketSubscribeMessage) {
 		if (message.type === 'SUBSCRIBE') {
-			logger.debug(`[WS REST] SubscribeHandler ${JSON.stringify(message)}`);
+			// logger.debug(`[WS REST] SubscribeHandler ${JSON.stringify(message)}`);
 			try {
 				const collection = message.collection!;
 				const accountability = client.accountability;
 				const schema = await getSchema();
-				// console.log(accountability, JSON.stringify(schema, null, 2));
 				if (!accountability?.admin && !schema.collections[collection]) {
 					throw new WebSocketException(
 						'subscribe',

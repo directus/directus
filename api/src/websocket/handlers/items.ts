@@ -1,4 +1,4 @@
-import logger from '../../logger';
+// import logger from '../../logger';
 import { getSchema } from '../../utils/get-schema';
 import { ItemsService, MetaService } from '../../services';
 import type { WebSocketClient } from '../types';
@@ -92,7 +92,7 @@ export class ItemsHandler {
 				);
 			}
 		}
-		logger.debug(`[WS REST] ItemsHandler ${JSON.stringify(message)}`);
+		// logger.debug(`[WS REST] ItemsHandler ${JSON.stringify(message)}`);
 		client.send(fmtMessage('items', { data: result, ...(meta ? { meta } : {}) }, uid));
 	}
 }
