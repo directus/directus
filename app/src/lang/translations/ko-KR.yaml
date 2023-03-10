@@ -276,9 +276,9 @@ no_collections_found: 컬렉션 없음
 search_collection: 컬렉션 검색
 new_field: '새 필드'
 new_collection: '새 컬렉션'
-add_m2o_to_collection: '"{컬렉션}"에 M2O 추가'
+add_m2o_to_collection: '"{collection}" 에 M2O 추가'
 add_o2m_to_collection: '"{collection}"에 O2M 추가'
-add_m2m_to_collection: '"{컬렉션}"에 M2M 추가'
+add_m2m_to_collection: '"{collection}" 에 M2M 추가'
 choose_a_type: 유형을 선택...
 determined_by_relationship: 관계에 의해 결정
 add_note: 사용자를 위한 유용한 메모 추가...
