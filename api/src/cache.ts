@@ -20,8 +20,12 @@ const messenger = getMessenger();
 if (!messengerSubscribed) {
 	messengerSubscribed = true;
 
-	messenger.subscribe('schemaChanged', () => {
-		schemaCache?.clear();
+	messenger.subscribe('schemaChanged', async () => {
+		if (env.CACHE_STORE === 'memory' && cache && env.CACHE_AUTO_PURGE) {
+			await cache.clear();
+		}
+
+		await schemaCache?.clear();
 	});
 }
 
