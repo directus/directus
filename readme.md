@@ -21,16 +21,14 @@ Directus is a real-time API and App dashboard for managing SQL database content.
 
 ## 🚀 Directus Cloud
 
-[Directus Cloud](https://directus.io/pricing) allows you to create free Community Cloud projects in 90 seconds.
+[Directus Cloud](https://directus.io/pricing) allows you to create projects, hosted by the Directus team, in 90 seconds.
 
-- **Free Community Cloud tier available (no credit card required)**
 - **No product limitations or service usage quotas (unlimited users, API requests, etc)**
 - A modern self-service dashboard to create and monitor all your projects in one place
 - End-to-end solution: Directus, database, serverless auto-scaling, storage, and a global CDN
-- Hourly usage-based pricing for our Standard Cloud allows you to pay-as-you-go
 - Select your desired region and provision a new project in ~90 seconds
 
-**[Create your Free Project](https://directus.cloud)**
+**[Create a Directus Cloud Project](https://directus.cloud)**
 
 <br />
 
