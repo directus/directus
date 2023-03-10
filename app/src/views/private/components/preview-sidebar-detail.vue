@@ -2,8 +2,8 @@
 	<sidebar-detail :icon="enabled ? 'sync' : 'sync_disabled'" :title="t('live_preview')" :badge="enabled">
 		<div class="fields">
 			<div class="field full">
-				<p class="type-label">{{ t('refresh_interval') }}</p>
-				<v-checkbox v-model="enabledWritable" />
+				<p class="type-label">Show Preview</p>
+				<v-checkbox v-model="enabledWritable" block :label="enabledWritable? 'Enabled' : 'Disabled'" />
 			</div>
 		</div>
 	</sidebar-detail>

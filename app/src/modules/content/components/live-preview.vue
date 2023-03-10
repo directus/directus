@@ -1,6 +1,6 @@
 <template>
 	<div class="live-preview">
-		<iframe id="frame" src="http://foto-pia.de" frameborder="0"></iframe>
+		<iframe id="frame" src="http://nitwel.de" frameborder="0"></iframe>
 	</div>
 </template>
 
