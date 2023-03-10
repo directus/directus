@@ -1,73 +1,97 @@
-import { clamp } from "lodash";
-import { onMounted, onUnmounted, ref, Ref } from "vue"
+import { clamp } from 'lodash';
+import { onMounted, ref, Ref, watch } from 'vue';
 
-export function useResize(target: Ref<HTMLElement | undefined>, minWidth: Ref<number>, maxWidth: Ref<number>, defaultWidth: Ref<number>) {
+export type SnapZone = {
+    snapPos: number;
+    width: number;
+    onSnap?: () => void;
+    onPointerUp?: () => void;
+}
+
+export function useResize(
+	target: Ref<HTMLElement | undefined>,
+	minWidth: Ref<number>,
+	maxWidth: Ref<number>,
+	defaultWidth: Ref<number>,
+	enabled: Ref<boolean> = ref(true),
+    options?: Ref<{snapZones?: SnapZone[]}>
+) {
 	let dragging = false;
 	let dragStartX = 0;
 	let dragStartWidth = 0;
 	let animationFrameID: number | null = null;
 
-    let grabBar: HTMLDivElement | null = null
-    let wrapper: HTMLDivElement | null = null
+	let grabBar: HTMLDivElement | null = null;
+	let wrapper: HTMLDivElement | null = null;
 
-    const width = ref(defaultWidth.value)
+	const width = ref(defaultWidth.value);
 
-    onMounted(() => {
-        wrapper = document.createElement('div')
-        wrapper.classList.add('resize-wrapper')
+	onMounted(() => {
+		watch(
+			enabled,
+			(value) => {
+				console.log('enabled changed', value);
+				if (value) enable();
+				else disable();
+			},
+			{ immediate: true }
+		);
+	});
 
-        if(target.value) {
-            target.value.parentElement!.insertBefore(wrapper, target.value)
-            wrapper.appendChild(target.value)
-        }
+	return { width };
 
-        grabBar = document.createElement('div')
-        grabBar.classList.add('grab-bar')
+	function enable() {
+		if (!target.value) return;
 
-        grabBar.onpointerenter = () => {
-            if(grabBar) grabBar.classList.add('active')
-        }
+		wrapper = document.createElement('div');
+		wrapper.classList.add('resize-wrapper');
 
-        grabBar.onpointerleave = () => {
-            if(grabBar) grabBar.classList.remove('active')
-        }
+		target.value.parentElement!.insertBefore(wrapper, target.value);
+		target.value!.style.width = `${defaultWidth.value}px`;
+		wrapper.appendChild(target.value);
 
-        grabBar.onpointerdown = onPointerDown
-        grabBar.ondblclick = resetWidth
+		grabBar = document.createElement('div');
+		grabBar.classList.add('grab-bar');
 
-        window.addEventListener('pointermove', onPointerMove)
-        window.addEventListener('pointerup', onPointerUp)
+		grabBar.onpointerenter = () => {
+			if (grabBar) grabBar.classList.add('active');
+		};
 
-        wrapper.appendChild(grabBar)
-    })
+		grabBar.onpointerleave = () => {
+			if (grabBar) grabBar.classList.remove('active');
+		};
 
-    onUnmounted(() => {
-        if(wrapper) {
-            if(target.value) {
-                wrapper.parentElement!.insertBefore(target.value, wrapper)
-                wrapper.removeChild(target.value)
-            }
+		grabBar.onpointerdown = onPointerDown;
+		grabBar.ondblclick = resetWidth;
 
-            wrapper.parentElement!.removeChild(wrapper)
-        }
+		window.addEventListener('pointermove', onPointerMove);
+		window.addEventListener('pointerup', onPointerUp);
 
-        if(grabBar) {
-            grabBar.onpointerdown = null
-            grabBar.ondblclick = null
-            grabBar.onpointerenter = null
-            grabBar.onpointerleave = null
+		wrapper.appendChild(grabBar);
+	}
 
-            if(target.value) target.value.removeChild(grabBar)
-        }
+	function disable() {
+		if (wrapper && grabBar) {
+			if (target.value) {
+				wrapper.parentElement!.insertBefore(target.value, wrapper);
+			}
 
-        window.removeEventListener('pointermove', onPointerMove)
-        window.removeEventListener('pointerup', onPointerUp)
-    })
+			grabBar.onpointerdown = null;
+			grabBar.ondblclick = null;
+			grabBar.onpointerenter = null;
+			grabBar.onpointerleave = null;
 
-    return { width }
+			wrapper.parentElement!.removeChild(wrapper);
+		}
 
-    function resetWidth() {
-        width.value = defaultWidth.value
+		onPointerUp();
+
+		window.removeEventListener('pointermove', onPointerMove);
+		window.removeEventListener('pointerup', onPointerUp);
+	}
+
+	function resetWidth() {
+		width.value = defaultWidth.value;
 		target.value!.style.width = `${defaultWidth.value}px`;
 	}
 
@@ -81,15 +105,43 @@ export function useResize(target: Ref<HTMLElement | undefined>, minWidth: Ref<nu
 		if (!dragging) return;
 
 		animationFrameID = window.requestAnimationFrame(() => {
-            const newWidth = clamp(dragStartWidth + (event.pageX - dragStartX), minWidth.value, maxWidth.value);
+			const newWidth = clamp(dragStartWidth + (event.pageX - dragStartX), minWidth.value, maxWidth.value);
+
+            const snapZones = options?.value.snapZones
+
+            if (Array.isArray(snapZones)) {
+                for (const zone of snapZones) {
+                    if (Math.abs(newWidth - zone.snapPos) < zone.width) {
+                        
+                        target.value!.style.width = `${zone.snapPos}px`;
+			            width.value = zone.snapPos;
+
+                        if (zone.onSnap) zone.onSnap();
+                        return;
+                    }
+                }
+            }
+
 			target.value!.style.width = `${newWidth}px`;
-            width.value = newWidth
+			width.value = newWidth;
 		});
 	}
 
 	function onPointerUp() {
 		if (dragging === true) {
 			dragging = false;
+
+            const snapZones = options?.value.snapZones
+
+            if (Array.isArray(snapZones)) {
+                for (const zone of snapZones) {
+                    if (Math.abs(width.value - zone.snapPos) < zone.width) {
+                        if (zone.onPointerUp) zone.onPointerUp();
+                        break;
+                    }
+                }
+            }
+
 			if (animationFrameID) {
 				window.cancelAnimationFrame(animationFrameID);
 			}

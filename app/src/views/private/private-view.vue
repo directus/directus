@@ -7,7 +7,7 @@
 		</template>
 	</v-info>
 
-	<div v-else class="private-view" :class="{ theme, 'full-screen': fullScreen, splitView: $slots.splitView }">
+	<div v-else class="private-view" :class="{ theme, 'full-screen': fullScreen, splitView }">
 		<aside id="navigation" role="navigation" aria-label="Module Navigation" :class="{ 'is-open': navOpen }">
 			<module-bar />
 			<div ref="moduleNavEl" class="module-nav alt-colors">
@@ -19,8 +19,13 @@
 			</div>
 		</aside>
 		<div id="main-content" ref="contentEl" class="content">
-			<header-bar :small="smallHeader" show-sidebar-toggle :title="title" @toggle:sidebar="sidebarOpen = !sidebarOpen"
-				@primary="navOpen = !navOpen">
+			<header-bar
+				:small="smallHeader"
+				show-sidebar-toggle
+				:title="title"
+				@toggle:sidebar="sidebarOpen = !sidebarOpen"
+				@primary="navOpen = !navOpen"
+			>
 				<template v-for="(_, scopedSlotName) in $slots" #[scopedSlotName]="slotData">
 					<slot :name="scopedSlotName" v-bind="slotData" />
 				</template>
@@ -30,11 +35,18 @@
 				<slot />
 			</main>
 		</div>
-		<div id="split-content">
+		<div v-if="splitView" id="split-content">
 			<slot name="splitView" />
 		</div>
-		<aside id="sidebar" ref="sidebarEl" role="contentinfo" class="alt-colors" aria-label="Module Sidebar"
-			:class="{ 'is-open': sidebarOpen }" @click="openSidebar">
+		<aside
+			id="sidebar"
+			ref="sidebarEl"
+			role="contentinfo"
+			class="alt-colors"
+			aria-label="Module Sidebar"
+			:class="{ 'is-open': sidebarOpen }"
+			@click="openSidebar"
+		>
 			<div class="flex-container">
 				<sidebar-detail-group :sidebar-open="sidebarOpen">
 					<slot name="sidebar" />
@@ -56,7 +68,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useElementSize } from '@directus/shared/composables';
+import { useElementSize, useSync } from '@directus/shared/composables';
 import { useResize } from '@/composables/use-resize';
 import { useLocalStorage } from '@/composables/use-local-storage';
 import { useTitle } from '@/composables/use-title';
@@ -64,7 +76,7 @@ import { useWindowSize } from '@/composables/use-window-size';
 import { useAppStore } from '@/stores/app';
 import { useUserStore } from '@/stores/user';
 import { storeToRefs } from 'pinia';
-import { computed, onMounted, provide, ref, toRefs, useSlots } from 'vue';
+import { computed, onMounted, provide, ref, toRefs, useSlots, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import HeaderBar from './components/header-bar.vue';
@@ -79,13 +91,19 @@ import SidebarDetailGroup from './components/sidebar-detail-group.vue';
 interface Props {
 	title?: string | null;
 	smallHeader?: boolean;
+	splitView?: boolean;
 }
 
-const props = withDefaults(defineProps<Props>(), { title: null, smallHeader: false });
+const props = withDefaults(defineProps<Props>(), { title: null, smallHeader: false, splitView: false });
+
+const emit = defineEmits(['update:splitView']);
 
 const { t } = useI18n();
 
 const router = useRouter();
+const { title } = toRefs(props);
+
+const splitViewWritable = useSync(props, 'splitView', emit);
 
 const contentEl = ref<HTMLElement>();
 const sidebarEl = ref<Element>();
@@ -105,28 +123,42 @@ const maxWithNav = computed(() => {
 		// first 60 = module bar width, second 60 = room for overlay
 		return windowWidth.value - (60 + 60);
 	}
+});
+
+const { width: navWidth } = useResize(moduleNavEl, ref(220), maxWithNav, ref(220), ref(true), ref({
+	snapZones: [{width: 20, snapPos: 220 }],
+}));
+
+const maxWithMain = computed(() => {
+	if (windowWidth.value > 1260) {
+		// dynamic module nav width, 60 = module bar width, and dynamic side bar width
+		console.log(windowWidth.value, navWidth.value, sidebarWidth.value)
+		return windowWidth.value - (navWidth.value + 60 + sidebarWidth.value);
+	} else if (windowWidth.value > 960) {
+		// dynamic module nav width, 60 = module bar width, 60 = side bar width
+		return windowWidth.value - (navWidth.value + 60 + 60);
+	} else {
+		// first 60 = module bar width, second 60 = room for overlay
+		return windowWidth.value - (60 + 60);
+	}
+});
+
+const resizeOptions = computed(() => {
+	return {
+		snapZones: [{
+			width: 100,
+			snapPos: maxWithMain.value,
+			onPointerUp: () => {
+				splitViewWritable.value = false;
+			},
+		}, {
+			width: 20,
+			snapPos: maxWithMain.value / 2,
+		}]
+	}
 })
 
-const {width: navWidth} = useResize(moduleNavEl, ref(220), maxWithNav, ref(220))
-
-const slots = useSlots()
-
-if( slots.splitView ) {
-	const maxWithMain = computed(() => {
-		if (windowWidth.value > 1260) {
-			// 220 = module nav width, 60 = module bar width, and dynamic side bar width
-			return windowWidth.value - (navWidth.value + 60 + sidebarWidth.value);
-		} else if (windowWidth.value > 960) {
-			// 220 = module nav width, 60 = module bar width, 60 = side bar width
-			return windowWidth.value - (navWidth.value + 60 + 60);
-		} else {
-			// first 60 = module bar width, second 60 = room for overlay
-			return windowWidth.value - (60 + 60);
-		}
-	})
-
-	useResize(contentEl, ref(590), maxWithMain, ref(590))
-}
+useResize(contentEl, ref(590), maxWithMain, ref(590), splitViewWritable, resizeOptions);
 
 const { data } = useLocalStorage('module-nav-width');
 
@@ -136,7 +168,6 @@ onMounted(() => {
 	moduleNavEl.value!.style.width = `${data.value}px`;
 });
 
-const { title } = toRefs(props);
 const navOpen = ref(false);
 const userStore = useUserStore();
 const appStore = useAppStore();

@@ -3,7 +3,7 @@
 		v-if="error || !collectionInfo || (collectionInfo?.meta?.singleton === true && primaryKey !== null)"
 	/>
 
-	<private-view v-else :title="title">
+	<private-view v-else v-model:splitView="previewSidebar" :title="title">
 		<template v-if="collectionInfo.meta && collectionInfo.meta.singleton === true" #title>
 			<h1 class="type-title">
 				{{ collectionInfo.name }}
@@ -182,39 +182,30 @@
 			<sidebar-detail icon="info_outline" :title="t('information')" close>
 				<div v-md="t('page_help_collections_item')" class="page-description" />
 			</sidebar-detail>
-			<revisions-drawer-detail
-				v-if="
-					isNew === false &&
-					loading === false &&
-					internalPrimaryKey &&
-					revisionsAllowed &&
-					accountabilityScope === 'all'
-				"
-				ref="revisionsDrawerDetailRef"
-				:collection="collection"
-				:primary-key="internalPrimaryKey"
-				:scope="accountabilityScope"
-				@revert="revert"
-			/>
-			<comments-sidebar-detail
-				v-if="isNew === false && loading === false && internalPrimaryKey"
-				:collection="collection"
-				:primary-key="internalPrimaryKey"
-			/>
-			<shares-sidebar-detail
-				v-if="isNew === false && loading === false && internalPrimaryKey"
-				:collection="collection"
-				:primary-key="internalPrimaryKey"
-				:allowed="shareAllowed"
-			/>
-			<flow-sidebar-detail
-				v-if="isNew === false && loading === false && internalPrimaryKey"
-				location="item"
-				:collection="collection"
-				:primary-key="internalPrimaryKey"
-				:has-edits="hasEdits"
-				@refresh="refresh"
-			/>
+			<template v-if="isNew === false && loading === false && internalPrimaryKey">
+				<revisions-drawer-detail
+					v-if="revisionsAllowed && accountabilityScope === 'all'"
+					ref="revisionsDrawerDetailRef"
+					:collection="collection"
+					:primary-key="internalPrimaryKey"
+					:scope="accountabilityScope"
+					@revert="revert"
+				/>
+				<comments-sidebar-detail :collection="collection" :primary-key="internalPrimaryKey" />
+				<shares-sidebar-detail :collection="collection" :primary-key="internalPrimaryKey" :allowed="shareAllowed" />
+				<flow-sidebar-detail
+					location="item"
+					:collection="collection"
+					:primary-key="internalPrimaryKey"
+					:has-edits="hasEdits"
+					@refresh="refresh"
+				/>
+				<preview-sidebar-detail
+					v-model:enabled="previewSidebar"
+					:collection="collection"
+					:primary-key="internalPrimaryKey"
+				/>
+			</template>
 		</template>
 	</private-view>
 </template>
@@ -232,6 +223,7 @@ import { useTitle } from '@/composables/use-title';
 import { renderStringTemplate } from '@/utils/render-string-template';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
 import FlowSidebarDetail from '@/views/private/components/flow-sidebar-detail.vue';
+import PreviewSidebarDetail from '@/views/private/components/preview-sidebar-detail.vue';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail.vue';
 import SaveOptions from '@/views/private/components/save-options.vue';
 import SharesSidebarDetail from '@/views/private/components/shares-sidebar-detail.vue';
@@ -240,6 +232,7 @@ import { useRouter } from 'vue-router';
 import ContentNavigation from '../components/navigation.vue';
 import ContentNotFound from './not-found.vue';
 import LivePreview from '../components/live-preview.vue';
+import { useLocalStorage } from '@/composables/use-local-storage';
 
 interface Props {
 	collection: string;
@@ -369,6 +362,8 @@ const disabledOptions = computed(() => {
 	if (isNew.value) return ['save-as-copy'];
 	return [];
 });
+
+const { data: previewSidebar } = useLocalStorage('content.previewSidebar', false);
 
 function navigateBack() {
 	const backState = router.options.history.state.back;
