@@ -156,7 +156,7 @@ export class SubscribeHandler {
 	 * Handle incoming (un)subscribe requests
 	 */
 	async onMessage(client: WebSocketClient, message: WebSocketSubscribeMessage) {
-		if (message.type === 'SUBSCRIBE') {
+		if (message.type.toUpperCase() === 'SUBSCRIBE') {
 			// logger.debug(`[WS REST] SubscribeHandler ${JSON.stringify(message)}`);
 			try {
 				const collection = message.collection!;
@@ -198,7 +198,7 @@ export class SubscribeHandler {
 				// logger.debug(`[WS REST] ERROR ${JSON.stringify(err)}`);
 			}
 		}
-		if (message.type === 'UNSUBSCRIBE') {
+		if (message.type.toUpperCase() === 'UNSUBSCRIBE') {
 			this.unsubscribe(client, message.uid);
 		}
 	}
