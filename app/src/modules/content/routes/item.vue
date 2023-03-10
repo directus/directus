@@ -175,7 +175,7 @@
 		</v-dialog>
 
 		<template #splitView>
-			<LivePreview />
+			<LivePreview :previewSize="previewSize" />
 		</template>
 
 		<template #sidebar>
@@ -202,8 +202,7 @@
 				/>
 				<preview-sidebar-detail
 					v-model:enabled="previewSidebar"
-					:collection="collection"
-					:primary-key="internalPrimaryKey"
+					v-model:size="previewSize"
 				/>
 			</template>
 		</template>
@@ -253,6 +252,7 @@ const form = ref<HTMLElement>();
 
 const { collection, primaryKey } = toRefs(props);
 const { breadcrumb } = useBreadcrumb();
+const previewSize = ref('full')
 
 const revisionsDrawerDetailRef = ref<InstanceType<typeof RevisionsDrawerDetail> | null>(null);
 

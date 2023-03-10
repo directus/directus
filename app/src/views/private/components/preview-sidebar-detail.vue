@@ -5,6 +5,10 @@
 				<p class="type-label">Show Preview</p>
 				<v-checkbox v-model="enabledWritable" block :label="enabledWritable? 'Enabled' : 'Disabled'" />
 			</div>
+			<div class="field full">
+				<p class="type-label">Preview Size</p>
+				<v-select v-model="sizeWritable" :items="sizeChoices" />
+			</div>
 		</div>
 	</sidebar-detail>
 </template>
@@ -15,15 +19,37 @@ import { useI18n } from 'vue-i18n';
 
 interface Props {
 	enabled?: boolean;
+	size?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
 	enabled: false,
+	size: 'full',
 });
 
-const emit = defineEmits(['update:enabled']);
+const emit = defineEmits(['update:enabled', 'update:size']);
 
 const enabledWritable = useSync(props, 'enabled', emit);
+const sizeWritable = useSync(props, 'size', emit);
+
+const sizeChoices = [
+	{
+		text: 'Full',
+		value: 'full',
+	},
+	{
+		text: 'Small',
+		value: 'small',
+	},
+	{
+		text: 'Medium',
+		value: 'medium',
+	},
+	{
+		text: 'Large',
+		value: 'large',
+	}
+]
 
 const { t } = useI18n();
 </script>
