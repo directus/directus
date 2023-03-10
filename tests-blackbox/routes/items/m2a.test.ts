@@ -468,7 +468,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 							const retrievedShape = await ReadItem(vendor, {
 								collection: localCollectionShapes,
-								fields: '*.*.*',
+								fields: ['*.*.*'],
 								filter: { id: { _eq: insertedShape.id } },
 							});
 

@@ -2,7 +2,7 @@ import request from 'supertest';
 import { getUrl } from './config';
 import * as common from './index';
 import vendors from './get-dbs-to-test';
-import { Filter } from '@directus/shared/types';
+import { Query } from '@directus/shared/types';
 
 export function DisableTestCachingSetup() {
 	beforeEach(async () => {
@@ -662,9 +662,7 @@ export async function CreateItem(vendor: string, options: OptionsCreateItem) {
 
 export type OptionsReadItem = {
 	collection: string;
-	filter?: Filter;
-	fields?: string;
-};
+} & Query;
 
 export async function ReadItem(vendor: string, options: OptionsReadItem) {
 	// Parse options

@@ -2054,13 +2054,13 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 						const countries = await ReadItem(vendor, {
 							collection: localCollectionCountries,
-							fields: '*,states.id,states.name',
+							fields: ['*', 'states.id', 'states.name'],
 							filter: { id: { _in: countriesID } },
 						});
 
 						const countries2 = await ReadItem(vendor, {
 							collection: localCollectionCountries,
-							fields: '*,states.id,states.name',
+							fields: ['*', 'states.id', 'states.name'],
 							filter: { id: { _in: countriesID2 } },
 						});
 
@@ -2140,13 +2140,13 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 						const countries = await ReadItem(vendor, {
 							collection: localCollectionCountries,
-							fields: '*,states.id,states.name',
+							fields: ['*', 'states.id', 'states.name'],
 							filter: { id: { _in: countriesID } },
 						});
 
 						const countries2 = await ReadItem(vendor, {
 							collection: localCollectionCountries,
-							fields: '*,states.id,states.name',
+							fields: ['*', 'states.id', 'states.name'],
 							filter: { id: { _in: countriesID2 } },
 						});
 

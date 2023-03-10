@@ -245,7 +245,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 						const retrievedIngredient = await ReadItem(vendor, {
 							collection: localCollectionIngredients,
-							fields: '*.*.*',
+							fields: ['*.*.*'],
 							filter: { id: { _eq: insertedIngredient.id } },
 						});
 
@@ -463,7 +463,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 							const retrievedIngredient = await ReadItem(vendor, {
 								collection: localCollectionIngredients,
-								fields: '*.*.*',
+								fields: ['*.*.*'],
 								filter: { id: { _eq: insertedIngredient.id } },
 							});
 
