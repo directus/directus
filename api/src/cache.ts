@@ -5,29 +5,49 @@ import { compress, decompress } from './utils/compress';
 import { getConfigFromEnv } from './utils/get-config-from-env';
 import { getMilliseconds } from './utils/get-milliseconds';
 import { validateEnv } from './utils/validate-env';
+import { getMessenger } from './messenger';
 
 let cache: Keyv | null = null;
 let systemCache: Keyv | null = null;
+let schemaCache: Keyv | null = null;
 let lockCache: Keyv | null = null;
+let messengerSubscribed = false;
 
-export function getCache(): { cache: Keyv | null; systemCache: Keyv; lockCache: Keyv } {
+type Store = 'memory' | 'redis' | 'memcache';
+
+const messenger = getMessenger();
+
+if (!messengerSubscribed) {
+	messengerSubscribed = true;
+
+	messenger.subscribe('schemaChanged', () => {
+		schemaCache?.clear();
+	});
+}
+
+export function getCache(): { cache: Keyv | null; systemCache: Keyv; schemaCache: Keyv; lockCache: Keyv } {
 	if (env.CACHE_ENABLED === true && cache === null) {
 		validateEnv(['CACHE_NAMESPACE', 'CACHE_TTL', 'CACHE_STORE']);
-		cache = getKeyvInstance(getMilliseconds(env.CACHE_TTL));
+		cache = getKeyvInstance(env.CACHE_STORE, getMilliseconds(env.CACHE_TTL));
 		cache.on('error', (err) => logger.warn(err, `[cache] ${err}`));
 	}
 
 	if (systemCache === null) {
-		systemCache = getKeyvInstance(getMilliseconds(env.CACHE_SYSTEM_TTL), '_system');
+		systemCache = getKeyvInstance(env.CACHE_STORE, getMilliseconds(env.CACHE_SYSTEM_TTL), '_system');
 		systemCache.on('error', (err) => logger.warn(err, `[cache] ${err}`));
 	}
 
+	if (schemaCache === null) {
+		schemaCache = getKeyvInstance('memory', getMilliseconds(env.CACHE_SYSTEM_TTL), '_schema');
+		schemaCache.on('error', (err) => logger.warn(err, `[cache] ${err}`));
+	}
+
 	if (lockCache === null) {
-		lockCache = getKeyvInstance(undefined, '_lock');
+		lockCache = getKeyvInstance(env.CACHE_STORE, undefined, '_lock');
 		lockCache.on('error', (err) => logger.warn(err, `[cache] ${err}`));
 	}
 
-	return { cache, systemCache, lockCache };
+	return { cache, systemCache, schemaCache, lockCache };
 }
 
 export async function flushCaches(forced?: boolean): Promise<void> {
@@ -37,13 +57,16 @@ export async function flushCaches(forced?: boolean): Promise<void> {
 }
 
 export async function clearSystemCache(forced?: boolean): Promise<void> {
-	const { systemCache, lockCache } = getCache();
+	const { systemCache, schemaCache, lockCache } = getCache();
 
 	// Flush system cache when forced or when system cache lock not set
 	if (forced || !(await lockCache.get('system-cache-lock'))) {
 		await lockCache.set('system-cache-lock', true, 10000);
+		await schemaCache.clear();
 		await systemCache.clear();
 		await lockCache.delete('system-cache-lock');
+
+		messenger.publish('schemaChanged', {});
 	}
 }
 
@@ -59,6 +82,20 @@ export async function getSystemCache(key: string): Promise<Record<string, any>> 
 	const { systemCache } = getCache();
 
 	return await getCacheValue(systemCache, key);
+}
+
+export async function setSchemaCache(value: any): Promise<void> {
+	const { schemaCache, lockCache } = getCache();
+
+	if (!(await lockCache.get('system-cache-lock'))) {
+		await setCacheValue(schemaCache, 'schema', value);
+	}
+}
+
+export async function getSchemaCache(): Promise<Record<string, any>> {
+	const { schemaCache } = getCache();
+
+	return await getCacheValue(schemaCache, 'schema');
 }
 
 export async function setCacheValue(
@@ -78,8 +115,8 @@ export async function getCacheValue(cache: Keyv, key: string): Promise<any> {
 	return decompressed;
 }
 
-function getKeyvInstance(ttl: number | undefined, namespaceSuffix?: string): Keyv {
-	switch (env.CACHE_STORE) {
+function getKeyvInstance(store: Store, ttl: number | undefined, namespaceSuffix?: string): Keyv {
+	switch (store) {
 		case 'redis':
 			return new Keyv(getConfig('redis', ttl, namespaceSuffix));
 		case 'memcache':
@@ -90,11 +127,7 @@ function getKeyvInstance(ttl: number | undefined, namespaceSuffix?: string): Key
 	}
 }
 
-function getConfig(
-	store: 'memory' | 'redis' | 'memcache' = 'memory',
-	ttl: number | undefined,
-	namespaceSuffix = ''
-): Options<any> {
+function getConfig(store: Store = 'memory', ttl: number | undefined, namespaceSuffix = ''): Options<any> {
 	const config: Options<any> = {
 		namespace: `${env.CACHE_NAMESPACE}${namespaceSuffix}`,
 		ttl,
