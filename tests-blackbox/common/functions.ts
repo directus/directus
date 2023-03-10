@@ -3,6 +3,7 @@ import { getUrl } from './config';
 import * as common from './index';
 import vendors from './get-dbs-to-test';
 import { Query } from '@directus/shared/types';
+import { omit } from 'lodash';
 
 export function DisableTestCachingSetup() {
 	beforeEach(async () => {
@@ -677,10 +678,7 @@ export async function ReadItem(vendor: string, options: OptionsReadItem) {
 	const response = await request(getUrl(vendor))
 		.get(`/items/${options.collection}`)
 		.set('Authorization', `Bearer ${common.USER.TESTS_FLOW.TOKEN}`)
-		.query({
-			filter: options.filter,
-			fields: options.fields,
-		});
+		.query(omit(options, 'collection'));
 
 	return response.body.data;
 }
