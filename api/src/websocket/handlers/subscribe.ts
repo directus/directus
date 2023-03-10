@@ -144,8 +144,8 @@ export class SubscribeHandler {
 				const schema = await getSchema();
 				const result =
 					'item' in subscription
-						? await this.getSinglePayload(subscription, client.accountability, schema, event.action)
-						: await this.getMultiPayload(subscription, client.accountability, schema, event.action);
+						? await this.getSinglePayload(subscription, client.accountability, schema, event)
+						: await this.getMultiPayload(subscription, client.accountability, schema, event);
 				client.send(fmtMessage('subscription', result, subscription.uid));
 			} catch (err) {
 				handleWebsocketException(client, err, 'subscribe');
@@ -206,14 +206,16 @@ export class SubscribeHandler {
 		subscription: Subscription,
 		accountability: Accountability | null,
 		schema: SchemaOverview,
-		event = 'init'
+		event?: WebSocketEvent
 	): Promise<Record<string, any>> {
 		const service = new ItemsService(subscription.collection, { schema, accountability });
 		const metaService = new MetaService({ schema, accountability });
 		const query = subscription.query ?? {};
 		const id = subscription.item!;
 
-		const result: Record<string, any> = { event };
+		const result: Record<string, any> = {
+			event: event?.action ?? 'init',
+		};
 		result['payload'] = await service.readOne(id, query);
 		if ('meta' in query) {
 			result['meta'] = await metaService.getMetaForQuery(subscription.collection, query);
@@ -224,13 +226,21 @@ export class SubscribeHandler {
 		subscription: Subscription,
 		accountability: Accountability | null,
 		schema: SchemaOverview,
-		event = 'init'
+		event?: WebSocketEvent
 	): Promise<Record<string, any>> {
 		const service = new ItemsService(subscription.collection, { schema, accountability });
 		const metaService = new MetaService({ schema, accountability });
 		const query = subscription.query ?? {};
-		const result: Record<string, any> = { event };
-		result['payload'] = await service.readByQuery(query);
+		const result: Record<string, any> = {
+			event: event?.action ?? 'init',
+		};
+		if (!event?.action) {
+			result['payload'] = await service.readByQuery(query);
+		} else if (event.action === 'create') {
+			result['payload'] = await service.readOne(event.key, query);
+		} else {
+			result['payload'] = await service.readMany(event.keys, query);
+		}
 		if ('meta' in query) {
 			result['meta'] = await metaService.getMetaForQuery(subscription.collection, query);
 		}
