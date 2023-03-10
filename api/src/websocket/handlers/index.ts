@@ -4,7 +4,7 @@ import { HeartbeatHandler } from './heartbeat';
 import { SubscribeHandler } from './subscribe';
 
 export function startWebsocketHandlers() {
-	if (env['WEBSOCKETS_HEARTBEAT_ENABLED']) {
+	if (env.WEBSOCKETS_HEARTBEAT_ENABLED) {
 		new HeartbeatHandler();
 	}
 	new ItemsHandler();

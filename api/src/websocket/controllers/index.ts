@@ -8,13 +8,13 @@ let websocketController: WebsocketController | undefined;
 let subscriptionController: GraphQLSubscriptionController | undefined;
 
 export function createWebsocketController(server: httpServer) {
-	if (env['WEBSOCKETS_REST_ENABLED']) {
+	if (env.WEBSOCKETS_REST_ENABLED) {
 		websocketController = new WebsocketController(server);
 	}
 }
 
 export function getWebsocketController() {
-	if (!env['WEBSOCKETS_ENABLED'] || !env['WEBSOCKETS_REST_ENABLED']) {
+	if (!env.WEBSOCKETS_ENABLED || !env.WEBSOCKETS_REST_ENABLED) {
 		throw new ServiceUnavailableException('Websocket server is disabled', {
 			service: 'get-websocket-controller',
 		});
@@ -28,7 +28,7 @@ export function getWebsocketController() {
 }
 
 export function createSubscriptionController(server: httpServer) {
-	if (env['WEBSOCKETS_GRAPHQL_ENABLED']) {
+	if (env.WEBSOCKETS_GRAPHQL_ENABLED) {
 		subscriptionController = new GraphQLSubscriptionController(server);
 	}
 }

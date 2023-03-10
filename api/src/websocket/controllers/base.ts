@@ -10,7 +10,7 @@ import logger from '../../logger';
 import { getAccountabilityForToken } from '../../utils/get-accountability-for-token';
 import { getExpiresAtForToken } from '../utils/get-expires-at-for-token';
 import { authenticateConnection, authenticationSuccess } from '../authenticate';
-import type { AuthenticationState, UpgradeContext, WebSocketClient } from '../types';
+import type { AuthenticationState, AuthMode, UpgradeContext, WebSocketClient } from '../types';
 import { waitForAnyMessage, waitForMessageType } from '../utils/wait-for-message';
 import { TokenExpiredException } from '../../exceptions';
 import { handleWebsocketException, WebSocketException } from '../exceptions';
@@ -24,7 +24,7 @@ export default abstract class SocketController {
 	server: WebSocket.Server;
 	clients: Set<WebSocketClient>;
 	authentication: {
-		mode: 'public' | 'handshake' | 'strict';
+		mode: AuthMode;
 		timeout: number;
 		verbose: boolean;
 	};
@@ -38,7 +38,7 @@ export default abstract class SocketController {
 		name: string,
 		endpoint: string,
 		authentication: {
-			mode: 'public' | 'handshake' | 'strict';
+			mode: AuthMode;
 			verbose: boolean;
 			timeout: number;
 		}

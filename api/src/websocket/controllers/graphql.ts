@@ -7,7 +7,7 @@ import { getSchema } from '../../utils/get-schema';
 import { GraphQLService } from '../../services';
 import env from '../../env';
 import SocketController from './base';
-import type { AuthenticationState, ConnectionParams, UpgradeContext, WebSocketClient } from '../types';
+import type { AuthenticationState, AuthMode, ConnectionParams, UpgradeContext, WebSocketClient } from '../types';
 import { handleWebsocketException, WebSocketException } from '../exceptions';
 import { authenticateConnection, refreshAccountability } from '../authenticate';
 import { waitForAnyMessage } from '../utils/wait-for-message';
@@ -16,13 +16,13 @@ import { BasicAuthMessage, WebSocketMessage } from '../messages';
 export class GraphQLSubscriptionController extends SocketController {
 	gql: Server<ConnectionParams>;
 	constructor(httpServer: httpServer) {
-		super(httpServer, 'WS GraphQL', env['WEBSOCKETS_GRAPHQL_PATH'], {
-			mode: env['WEBSOCKETS_GRAPHQL_AUTH'].toLowerCase(),
-			timeout: env['WEBSOCKETS_GRAPHQL_AUTH_TIMEOUT'] * 1000,
+		super(httpServer, 'WS GraphQL', String(env.WEBSOCKETS_GRAPHQL_PATH), {
+			mode: String(env.WEBSOCKETS_GRAPHQL_AUTH).toLowerCase() as AuthMode,
+			timeout: Number(env.WEBSOCKETS_GRAPHQL_AUTH_TIMEOUT) * 1000,
 			verbose: false,
 		});
 		if ('WEBSOCKETS_GRAPHQL_CONN_LIMIT' in env) {
-			this.maxConnections = Number(env['WEBSOCKETS_GRAPHQL_CONN_LIMIT']);
+			this.maxConnections = Number(env.WEBSOCKETS_GRAPHQL_CONN_LIMIT);
 		}
 		this.server.on('connection', (ws: WebSocket, auth: AuthenticationState) => {
 			this.bindEvents(this.createClient(ws, auth));
@@ -41,7 +41,7 @@ export class GraphQLSubscriptionController extends SocketController {
 				return service.getSchema();
 			},
 		});
-		logger.info(`GraphQL Subscriptions at ws://${env['HOST']}:${env['PORT']}${this.endpoint}`);
+		logger.info(`GraphQL Subscriptions at ws://${env.HOST}:${env.PORT}${this.endpoint}`);
 	}
 	private bindEvents(client: WebSocketClient) {
 		const closedHandler = this.gql.opened(

@@ -186,6 +186,8 @@ const allowedEnvironmentVars = [
 	// flows
 	'FLOWS_EXEC_ALLOWED_MODULES',
 	'FLOWS_ENV_ALLOW_LIST',
+	// websockets
+	'WEBSOCKETS_.+',
 ].map((name) => new RegExp(`^${name}$`));
 
 const acceptedEnvTypes = ['string', 'number', 'regex', 'array', 'json'];
@@ -319,18 +321,6 @@ const typeMap: Record<string, string> = {
 	FILE_METADATA_ALLOW_LIST: 'array',
 
 	GRAPHQL_INTROSPECTION: 'boolean',
-
-	WEBSOCKETS_ENABLED: 'boolean',
-	WEBSOCKETS_REST_ENABLED: 'boolean',
-	WEBSOCKETS_REST_AUTH: 'string',
-	WEBSOCKETS_REST_AUTH_TIMEOUT: 'number',
-	WEBSOCKETS_REST_PATH: 'string',
-	WEBSOCKETS_GRAPHQL_ENABLED: 'boolean',
-	WEBSOCKETS_GRAPHQL_AUTH: 'string',
-	WEBSOCKETS_GRAPHQL_AUTH_TIMEOUT: 'number',
-	WEBSOCKETS_GRAPHQL_PATH: 'string',
-	WEBSOCKETS_HEARTBEAT_ENABLED: 'boolean',
-	WEBSOCKETS_HEARTBEAT_FREQUENCY: 'number',
 };
 
 let env: Record<string, any> = {

@@ -1,6 +1,6 @@
 import type WebSocket from 'ws';
 import type { Server as httpServer } from 'http';
-import type { AuthenticationState, WebSocketClient } from '../types';
+import type { AuthenticationState, AuthMode, WebSocketClient } from '../types';
 import env from '../../env';
 import SocketController from './base';
 import emitter from '../../emitter';
@@ -12,18 +12,18 @@ import { WebSocketMessage } from '../messages';
 
 export class WebsocketController extends SocketController {
 	constructor(httpServer: httpServer) {
-		super(httpServer, 'WS REST', env['WEBSOCKETS_REST_PATH'], {
-			mode: env['WEBSOCKETS_REST_AUTH'],
-			timeout: env['WEBSOCKETS_REST_AUTH_TIMEOUT'] * 10000,
+		super(httpServer, 'WS REST', String(env.WEBSOCKETS_REST_PATH), {
+			mode: String(env.WEBSOCKETS_REST_AUTH).toLowerCase() as AuthMode,
+			timeout: Number(env.WEBSOCKETS_REST_AUTH_TIMEOUT) * 10000,
 			verbose: true,
 		});
 		if ('WEBSOCKETS_REST_CONN_LIMIT' in env) {
-			this.maxConnections = Number(env['WEBSOCKETS_REST_CONN_LIMIT']);
+			this.maxConnections = Number(env.WEBSOCKETS_REST_CONN_LIMIT);
 		}
 		this.server.on('connection', (ws: WebSocket, auth: AuthenticationState) => {
 			this.bindEvents(this.createClient(ws, auth));
 		});
-		logger.info(`Websocket available at ws://${env['HOST']}:${env['PORT']}${this.endpoint}`);
+		logger.info(`Websocket available at ws://${env.HOST}:${env.PORT}${this.endpoint}`);
 	}
 	private bindEvents(client: WebSocketClient) {
 		client.on('parsed-message', async (message: WebSocketMessage) => {
