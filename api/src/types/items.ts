@@ -3,6 +3,7 @@
  * expecting an item vs any other generic object.
  */
 
+import { BaseException } from '@directus/shared/exceptions';
 import { EventContext } from '@directus/shared/types';
 
 export type Item = Record<string, any>;
@@ -45,6 +46,11 @@ export type MutationOptions = {
 	 * Can be used to queue up the nested events from item service's create, update and delete
 	 */
 	bypassEmitAction?: (params: ActionEventParams) => void;
+
+	/**
+	 * The validation error to throw right before the mutation takes place
+	 */
+	preMutationException?: BaseException;
 };
 
 export type ActionEventParams = {

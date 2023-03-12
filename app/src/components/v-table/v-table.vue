@@ -237,7 +237,7 @@ const internalItems = computed({
 });
 
 const allItemsSelected = computed<boolean>(() => {
-	return props.loading === false && props.modelValue.length === props.items.length;
+	return props.loading === false && props.items.length > 0 && props.modelValue.length === props.items.length;
 });
 
 const someItemsSelected = computed<boolean>(() => {

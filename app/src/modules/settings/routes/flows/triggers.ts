@@ -94,6 +94,7 @@ export function getTriggers() {
 					{
 						field: 'collections',
 						name: t('collections'),
+						type: 'csv',
 						meta: {
 							interface: 'system-collections',
 							width: 'full' as Width,

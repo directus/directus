@@ -126,6 +126,10 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				? ((await authorizationService.validatePayload('create', this.collection, payloadAfterHooks)) as PayloadChunk)
 				: { keys: [], payload: payloadAfterHooks };
 
+			if (opts?.preMutationException) {
+				throw opts.preMutationException;
+			}
+
 			const {
 				payload: payloadWithM2O,
 				revisions: revisionsM2O,
@@ -207,12 +211,14 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 						schema: this.schema,
 					});
 
+					const revisionDelta = await payloadService.prepareDelta(payloadAfterHooks);
+
 					const revision = await revisionsService.createOne({
 						activity: activity,
 						collection: this.collection,
 						item: primaryKey,
-						data: await payloadService.prepareDelta(payload),
-						delta: await payloadService.prepareDelta(payload),
+						data: revisionDelta,
+						delta: revisionDelta,
 					});
 
 					// Make sure to set the parent field of the child-revision rows
@@ -542,6 +548,10 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 		payloadWithPresets = Array.isArray(payloadWithPresets) ? payloadWithPresets : [payloadWithPresets];
 
+		if (opts?.preMutationException) {
+			throw opts.preMutationException;
+		}
+
 		await this.knex.transaction(async (trx) => {
 			const payloadService = new PayloadService(this.collection, {
 				accountability: this.accountability,
@@ -785,6 +795,10 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		if (this.accountability && this.accountability.admin !== true) {
 			const authorizationService = await this.getAuthorizationService();
 			await authorizationService.checkAccess('delete', this.collection, keys);
+		}
+
+		if (opts?.preMutationException) {
+			throw opts.preMutationException;
 		}
 
 		if (opts?.emitEvents !== false) {
