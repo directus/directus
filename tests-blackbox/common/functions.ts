@@ -1,5 +1,5 @@
 import request from 'supertest';
-import { getUrl } from './config';
+import { Env, getUrl } from './config';
 import * as common from './index';
 import vendors from './get-dbs-to-test';
 import { Filter } from '@directus/shared/types';
@@ -120,6 +120,7 @@ export type OptionsCreateCollection = {
 	meta?: any;
 	schema?: any;
 	fields?: any;
+	env?: Env;
 	// Automatically removed params
 	primaryKeyType?: common.PrimaryKeyType;
 };
@@ -173,7 +174,7 @@ export async function CreateCollection(vendor: string, options: Partial<OptionsC
 	}
 
 	// Action
-	const collectionResponse = await request(getUrl(vendor))
+	const collectionResponse = await request(getUrl(vendor, options.env))
 		.get(`/collections/${options.collection}`)
 		.set('Authorization', `Bearer ${common.USER.TESTS_FLOW.TOKEN}`);
 
@@ -181,7 +182,7 @@ export async function CreateCollection(vendor: string, options: Partial<OptionsC
 		return collectionResponse.body.data;
 	}
 
-	const response = await request(getUrl(vendor))
+	const response = await request(getUrl(vendor, options.env))
 		.post(`/collections`)
 		.set('Authorization', `Bearer ${common.USER.TESTS_FLOW.TOKEN}`)
 		.send(options);
