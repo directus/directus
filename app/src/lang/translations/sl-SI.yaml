@@ -1381,6 +1381,7 @@ layouts:
     invalid_geometry: Neveljavna geometrija
   kanban:
     crop: Obrezovanje
+both: Oboje
 panels:
   label:
     name: Oznaka
