@@ -19,7 +19,7 @@ export default defineOperationApi<Options>({
 				return acc;
 			}, {} as Record<string, string>) ?? {};
 
-		if (!customHeaders['Content-Type'] && isValidJSON(String(body))) {
+		if (!customHeaders['Content-Type'] && (typeof body === 'object' || isValidJSON(body))) {
 			customHeaders['Content-Type'] = 'application/json';
 		}
 
