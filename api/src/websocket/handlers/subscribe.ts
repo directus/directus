@@ -159,7 +159,7 @@ export class SubscribeHandler {
 		if (message.type.toUpperCase() === 'SUBSCRIBE') {
 			// logger.debug(`[WS REST] SubscribeHandler ${JSON.stringify(message)}`);
 			try {
-				const collection = message.collection!;
+				const collection = String(message.collection!);
 				const accountability = client.accountability;
 				const schema = await getSchema();
 				if (!accountability?.admin && !schema.collections[collection]) {
@@ -178,8 +178,8 @@ export class SubscribeHandler {
 				if ('query' in message) {
 					subscription.query = sanitizeQuery(message.query!, accountability);
 				}
-				if ('item' in message) subscription.item = message.item;
-				if ('uid' in message) subscription.uid = message.uid;
+				if ('item' in message) subscription.item = String(message.item);
+				if ('uid' in message) subscription.uid = String(message.uid);
 				// remove the subscription if it already exists
 				this.unsubscribe(client, subscription.uid);
 
