@@ -1,3 +1,4 @@
+import { toArray } from '@directus/shared/utils';
 import { getCache } from '../cache';
 
 export async function clearSystemCache(forced?: boolean): Promise<void> {
@@ -33,7 +34,7 @@ export async function clearFields(collection: string | string[]): Promise<void> 
 	const { systemCache } = getCache();
 	await systemCache.lock();
 
-	const keys = (Array.isArray(collection) ? collection : [collection]).map((collection) => `fields:${collection}`);
+	const keys = toArray(collection).map((collection) => `fields:${collection}`);
 
 	await systemCache.delete(keys);
 
@@ -68,9 +69,7 @@ export async function clearRelationsForCollection(collections: string | string[]
 	const { systemCache } = getCache();
 	await systemCache.lock();
 
-	const keys = (Array.isArray(collections) ? collections : [collections]).map(
-		(collection) => `relations:${collection}`
-	);
+	const keys = toArray(collections).map((collection) => `relations:${collection}`);
 
 	await systemCache.delete(keys);
 

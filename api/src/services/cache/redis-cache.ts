@@ -7,6 +7,7 @@ import { parse, stringify } from 'json-buffer';
 import { compress, decompress } from '../../utils/compress';
 import { map } from 'async';
 import { merge } from 'lodash';
+import { toArray } from '@directus/shared/utils';
 
 export class RedisCache extends CacheService {
 	client: Redis;
@@ -110,7 +111,7 @@ export class RedisCache extends CacheService {
 	}
 
 	async deleteHashField(key: string, field: string | string[]): Promise<void> {
-		const fields = Array.isArray(field) ? field : [field];
+		const fields = toArray(field);
 		await this.client.hdel(this.addPrefix(key), '$full', ...fields);
 	}
 }
