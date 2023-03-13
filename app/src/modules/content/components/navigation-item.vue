@@ -1,7 +1,7 @@
 <template>
 	<v-list-group
 		v-if="isGroup && matchesSearch"
-		v-context-menu="'contextMenu'"
+		v-context-menu="hasContextMenu ? 'contextMenu' : null"
 		:to="to"
 		scope="content-navigation"
 		:value="collection.collection"
@@ -128,7 +128,7 @@ export default defineComponent({
 			}
 		});
 
-		const hasContextMenu = computed(() => isAdmin);
+		const hasContextMenu = computed(() => isAdmin && props.collection.type === 'table');
 
 		return {
 			childCollections,
