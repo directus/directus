@@ -459,6 +459,12 @@ export default defineComponent({
 	& + & {
 		margin-top: 8px;
 	}
+
+	&.nested {
+		.field :deep(.input) {
+			border: var(--border-width) solid var(--primary-25) !important;
+		}
+	}
 }
 
 .field {
