@@ -415,22 +415,21 @@ class FlowManager {
 			}
 
 			return { successor: operation.resolve, status: 'resolve', data: result ?? null, options };
-		} catch (error: unknown) {
-			let errorMessage: Record<string, any>;
-			if (error instanceof Error) {
-				errorMessage = { message: error.message };
-			} else {
-				// Is the error a JSON string? If so, parse it and use that as the error
-				errorMessage = isValidJSON(String(error))
-					? parseJSON(String(error))
-					: // Explicit specification of the error properties since those aren't enumerable
-					  JSON.parse(JSON.stringify(error, Object.getOwnPropertyNames(error)));
-			}
+		} catch (error) {
+			const data =
+				error instanceof Error
+					? // If the error is instance of Error, use the message of it as the error data
+					  { message: error.message }
+					: isValidJSON(String(error))
+					? // If the error is a JSON string, parse it and use that as the error data
+					  parseJSON(String(error))
+					: // If error is plain string, use this as the error data and otherwise fallback to null
+					  error ?? null;
 
 			return {
 				successor: operation.reject,
 				status: 'reject',
-				data: errorMessage ?? null,
+				data,
 				options,
 			};
 		}
