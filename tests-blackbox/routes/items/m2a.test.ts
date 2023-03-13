@@ -425,6 +425,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							.get(`/items/${localCollectionShapes}`)
 							.query({
 								filter: JSON.stringify({
+									name: { _eq: insertedShape.name },
 									children: {
 										[`item:${localCollectionCircles}`]: {
 											name: { _eq: circle.name },
@@ -438,6 +439,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							.get(`/items/${localCollectionShapes}`)
 							.query({
 								filter: JSON.stringify({
+									name: { _eq: insertedShape.name },
 									children: {
 										[`item:${localCollectionSquares}`]: {
 											width: { _eq: square.width },
@@ -452,6 +454,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								[localCollectionShapes]: {
 									__args: {
 										filter: {
+											name: { _eq: insertedShape.name },
 											children: {
 												[`item__${localCollectionCircles}`]: {
 													name: { _eq: circle.name },
@@ -469,6 +472,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								[localCollectionShapes]: {
 									__args: {
 										filter: {
+											name: { _eq: insertedShape.name },
 											children: {
 												[`item__${localCollectionSquares}`]: {
 													width: { _eq: square.width },
