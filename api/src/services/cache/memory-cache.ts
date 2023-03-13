@@ -1,6 +1,7 @@
 import { cloneDeep } from 'lodash';
 import { CacheService } from './cache';
 import LRU from 'lru-cache';
+import { toArray } from '@directus/shared/utils';
 
 export class MemoryCache extends CacheService {
 	store = new LRU<string, any>({
@@ -33,7 +34,7 @@ export class MemoryCache extends CacheService {
 	}
 
 	async delete(key: string | string[]): Promise<void> {
-		const keys = Array.isArray(key) ? key : [key];
+		const keys = toArray(key);
 
 		for (const key of keys) {
 			const _key = this.addPrefix(key);
@@ -81,7 +82,7 @@ export class MemoryCache extends CacheService {
 
 		if (typeof localValue !== 'object') throw new Error('Cannot set hash field on non-object value');
 
-		const fields = Array.isArray(field) ? field : [field];
+		const fields = toArray(field);
 
 		for (const field of fields) {
 			delete localValue[field];
