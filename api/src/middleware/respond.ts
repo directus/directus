@@ -1,6 +1,5 @@
 import { parse as parseBytesConfiguration } from 'bytes';
 import { RequestHandler } from 'express';
-import ms from 'ms';
 import { getCache } from '../cache';
 import env from '../env';
 import logger from '../logger';
@@ -34,8 +33,8 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 		const key = getCacheKey(req);
 
 		try {
-			await cache.set(key, res.locals['payload'], ms(env['CACHE_TTL'] as string));
-			await cache.set(`${key}__expires_at`, { exp: Date.now() + ms(env['CACHE_TTL']) });
+			await cache.set(key, res.locals['payload'], getMilliseconds(env['CACHE_TTL']));
+			await cache.set(`${key}__expires_at`, { exp: Date.now() + getMilliseconds(env['CACHE_TTL'], 0) });
 		} catch (err: any) {
 			logger.warn(err, `[cache] Couldn't set key ${key}. ${err}`);
 		}
