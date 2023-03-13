@@ -175,7 +175,7 @@
 		</v-dialog>
 
 		<template #splitView>
-			<LivePreview v-if="previewURL" :previewSize="previewSize" :url="previewURL" />
+			<LivePreview v-if="previewURL && !saving" :previewSize="previewSize" :url="previewURL" />
 		</template>
 
 		<template #sidebar>
@@ -233,7 +233,6 @@ import ContentNavigation from '../components/navigation.vue';
 import ContentNotFound from './not-found.vue';
 import LivePreview from '../components/live-preview.vue';
 import { useLocalStorage } from '@/composables/use-local-storage';
-import { useCollectionsStore } from '@/stores/collections';
 
 interface Props {
 	collection: string;
@@ -413,6 +412,16 @@ watch([livePreviewMode, previewURL], ([mode, url]) => {
 		}, 1000);
 	}
 }, { immediate: true })
+
+watch(saving, (newVal, oldVal) => {
+	if(newVal === true || oldVal === false || livePreviewMode.value !== 'popup' || !popupWindow) return
+
+	try {
+		popupWindow.location.reload();
+	} catch(error) {
+		
+	}
+})
 
 onBeforeUnmount(() => {
 	if (popupWindow) popupWindow.close();
