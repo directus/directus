@@ -416,15 +416,18 @@ class FlowManager {
 
 			return { successor: operation.resolve, status: 'resolve', data: result ?? null, options };
 		} catch (error) {
-			const data =
-				error instanceof Error
-					? // If the error is instance of Error, use the message of it as the error data
-					  { message: error.message }
-					: isValidJSON(String(error))
-					? // If the error is a JSON string, parse it and use that as the error data
-					  parseJSON(String(error))
-					: // If error is plain string, use this as the error data and otherwise fallback to null
-					  error ?? null;
+			let data;
+
+			if (error instanceof Error) {
+				// If the error is instance of Error, use the message of it as the error data
+				data = { message: error.message };
+			} else if (typeof error === 'string') {
+				// If the error is a JSON string, parse it and use that as the error data
+				data = isValidJSON(error) ? parseJSON(error) : error;
+			} else {
+				// If error is plain object, use this as the error data and otherwise fallback to null
+				data = error ?? null;
+			}
 
 			return {
 				successor: operation.reject,
