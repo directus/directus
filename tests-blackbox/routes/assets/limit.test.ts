@@ -59,7 +59,7 @@ describe('/assets', () => {
 						'%s',
 						async (vendor) => {
 							// Setup
-							const attempts = 30;
+							const attempts = 100;
 							const uploadedFileID = (
 								await request(getUrl(vendor))
 									.post('/files')

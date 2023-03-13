@@ -101,7 +101,11 @@ export const onBeforeEach: NavigationGuard = async (to) => {
 	}
 
 	if (serverStore.info.project === null) {
-		await serverStore.hydrate();
+		try {
+			await serverStore.hydrate();
+		} catch (error: any) {
+			appStore.error = error;
+		}
 	}
 
 	if (to.meta?.public !== true) {
