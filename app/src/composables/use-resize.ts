@@ -13,6 +13,7 @@ export function useResize(
 	minWidth: Ref<number>,
 	maxWidth: Ref<number>,
 	defaultWidth: Ref<number>,
+	width: Ref<number> = ref(defaultWidth.value),
 	enabled: Ref<boolean> = ref(true),
     options?: Ref<{snapZones?: SnapZone[]}>
 ) {
@@ -24,13 +25,10 @@ export function useResize(
 	let grabBar: HTMLDivElement | null = null;
 	let wrapper: HTMLDivElement | null = null;
 
-	const width = ref(defaultWidth.value);
-
 	onMounted(() => {
 		watch(
 			enabled,
 			(value) => {
-				console.log('enabled changed', value);
 				if (value) enable();
 				else disable();
 			},
@@ -47,7 +45,7 @@ export function useResize(
 		wrapper.classList.add('resize-wrapper');
 
 		target.value.parentElement!.insertBefore(wrapper, target.value);
-		target.value!.style.width = `${defaultWidth.value}px`;
+		target.value.style.width = `${width.value}px`;
 		wrapper.appendChild(target.value);
 
 		grabBar = document.createElement('div');

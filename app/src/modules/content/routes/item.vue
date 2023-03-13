@@ -3,7 +3,7 @@
 		v-if="error || !collectionInfo || (collectionInfo?.meta?.singleton === true && primaryKey !== null)"
 	/>
 
-	<private-view v-else v-model:splitView="previewSidebar" :title="title">
+	<private-view v-else v-model:splitView="splitView" :title="title">
 		<template v-if="collectionInfo.meta && collectionInfo.meta.singleton === true" #title>
 			<h1 class="type-title">
 				{{ collectionInfo.name }}
@@ -175,7 +175,7 @@
 		</v-dialog>
 
 		<template #splitView>
-			<LivePreview :previewSize="previewSize" />
+			<LivePreview v-if="previewURL" :previewSize="previewSize" :url="previewURL" />
 		</template>
 
 		<template #sidebar>
@@ -201,8 +201,9 @@
 					@refresh="refresh"
 				/>
 				<preview-sidebar-detail
-					v-model:enabled="previewSidebar"
+					v-model:mode="livePreviewMode"
 					v-model:size="previewSize"
+					@reset-url="resetPreviewURL"
 				/>
 			</template>
 		</template>
@@ -210,7 +211,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, unref, toRefs } from 'vue';
+import { computed, ref, unref, toRefs, watch, onBeforeUnmount, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { useEditsGuard } from '@/composables/use-edits-guard';
@@ -232,6 +233,7 @@ import ContentNavigation from '../components/navigation.vue';
 import ContentNotFound from './not-found.vue';
 import LivePreview from '../components/live-preview.vue';
 import { useLocalStorage } from '@/composables/use-local-storage';
+import { useCollectionsStore } from '@/stores/collections';
 
 interface Props {
 	collection: string;
@@ -277,7 +279,7 @@ const {
 	validationErrors,
 } = useItem(collection, primaryKey);
 
-const { templateData, loading: templateDataLoading } = useTemplateData(collectionInfo, primaryKey);
+const { templateData } = useTemplateData(collectionInfo, primaryKey);
 
 const isSavable = computed(() => {
 	if (saveAllowed.value === false) return false;
@@ -363,7 +365,58 @@ const disabledOptions = computed(() => {
 	return [];
 });
 
-const { data: previewSidebar } = useLocalStorage('content.previewSidebar', false);
+const previewTemplate = computed(() => collectionInfo.value?.meta?.preview_url ?? '')
+
+const { templateData: previewData } = useTemplateData(collectionInfo, primaryKey, previewTemplate);
+
+const previewURL = computed(() => {
+	const { displayValue } = renderStringTemplate(previewTemplate.value, previewData);
+
+	return displayValue.value || null;
+})
+
+const { data: livePreviewMode } = useLocalStorage<'split' | 'popup'>('live-preview-mode', null);
+
+const splitView = computed({
+	get() {
+		return livePreviewMode.value === 'split';
+	},
+	set(value) {
+		livePreviewMode.value = value ? 'split' : null;
+	},
+})
+
+let popupWindow: Window | null = null
+
+watch([livePreviewMode, previewURL], ([mode, url]) => {
+	if (mode !== 'popup' || !url) {
+		if (popupWindow) popupWindow.close();
+		return
+	}
+
+	previewSize.value = 'full';
+
+	popupWindow = window.open(
+		url,
+		'live-preview',
+		'width=800,height=600,menubar=no,toolbar=no,location=no,status=no,scrollbars=yes,resizable=yes'
+	);
+
+	if (popupWindow) {
+		const timer = setInterval(() => {
+			if (!popupWindow?.closed) return
+
+			clearInterval(timer);
+			popupWindow = null;
+
+			if(livePreviewMode.value === 'popup') livePreviewMode.value = null;
+		}, 1000);
+	}
+}, { immediate: true })
+
+onBeforeUnmount(() => {
+	if (popupWindow) popupWindow.close();
+})
 
 function navigateBack() {
 	const backState = router.options.history.state.back;

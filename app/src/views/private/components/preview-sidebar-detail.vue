@@ -1,12 +1,12 @@
 <template>
-	<sidebar-detail :icon="enabled ? 'sync' : 'sync_disabled'" :title="t('live_preview')" :badge="enabled">
+	<sidebar-detail icon="preview" :title="t('live_preview.title')" :badge="Boolean(mode)">
 		<div class="fields">
 			<div class="field full">
-				<p class="type-label">Show Preview</p>
-				<v-checkbox v-model="enabledWritable" block :label="enabledWritable? 'Enabled' : 'Disabled'" />
+				<p class="type-label">{{ t('live_preview.mode.title') }}</p>
+				<v-select v-model="modeWritable" :items="modeChoices"/>
 			</div>
 			<div class="field full">
-				<p class="type-label">Preview Size</p>
+				<p class="type-label">{{ t('live_preview.size.title') }}</p>
 				<v-select v-model="sizeWritable" :items="sizeChoices" />
 			</div>
 		</div>
@@ -18,40 +18,51 @@ import { useSync } from '@directus/shared/composables';
 import { useI18n } from 'vue-i18n';
 
 interface Props {
-	enabled?: boolean;
+	mode?: string | null;
 	size?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
-	enabled: false,
+	mode: null,
 	size: 'full',
 });
 
-const emit = defineEmits(['update:enabled', 'update:size']);
+const emit = defineEmits(['update:mode', 'update:size', 'reset-url']);
 
-const enabledWritable = useSync(props, 'enabled', emit);
+const modeWritable = useSync(props, 'mode', emit);
 const sizeWritable = useSync(props, 'size', emit);
+
+const { t } = useI18n();
+
+const modeChoices = [
+	{
+		text: t('live_preview.mode.none'),
+		value: null,
+	},
+	{
+		text: t('live_preview.mode.split'), 
+		value: 'split',
+	},
+	{
+		text: t('live_preview.mode.popup'),
+		value: 'popup',
+	},
+]
 
 const sizeChoices = [
 	{
-		text: 'Full',
+		text: t('live_preview.size.responsive'),
 		value: 'full',
 	},
 	{
-		text: 'Small',
-		value: 'small',
+		text: t('live_preview.size.phone'),
+		value: 'phone',
 	},
 	{
-		text: 'Medium',
-		value: 'medium',
+		text: t('live_preview.size.tablet'),
+		value: 'tablet',
 	},
-	{
-		text: 'Large',
-		value: 'large',
-	}
 ]
-
-const { t } = useI18n();
 </script>
 
 <style lang="scss" scoped>

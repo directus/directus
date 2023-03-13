@@ -76,7 +76,7 @@ import { useWindowSize } from '@/composables/use-window-size';
 import { useAppStore } from '@/stores/app';
 import { useUserStore } from '@/stores/user';
 import { storeToRefs } from 'pinia';
-import { computed, onMounted, provide, ref, toRefs, useSlots, watch } from 'vue';
+import { computed, provide, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import HeaderBar from './components/header-bar.vue';
@@ -112,27 +112,55 @@ const { width: sidebarWidth } = useElementSize(sidebarEl);
 
 const moduleNavEl = ref<HTMLElement>();
 
+const { data } = useLocalStorage<{
+	nav?: number;
+	main?: number;
+}>('module-width', {});
+
+const navWidth = computed({
+	get() {
+		const val = data.value?.nav
+		return val && !Number.isNaN(val)? Number(val) : 220;
+	},
+	set(value) {
+		data.value = {
+			...data.value ?? {},
+			nav: value
+		}
+	},
+})
+
+const mainWidth = computed({
+	get() {
+		const val = data.value?.main
+		return val && !Number.isNaN(val)? Number(val) : 590;
+	},
+	set(value) {
+		data.value = {
+			...data.value ?? {},
+			main: value
+		}
+	},
+})
+
 const maxWithNav = computed(() => {
+	const useMainWidth = props.splitView ? mainWidth.value : 590;
+
 	if (windowWidth.value > 1260) {
 		// 590 = minimum content width, 60 = module bar width, and dynamic side bar width
-		return windowWidth.value - (590 + 60 + sidebarWidth.value);
+		return windowWidth.value - (useMainWidth + 60 + sidebarWidth.value);
 	} else if (windowWidth.value > 960) {
 		// 590 = minimum content width, 60 = module bar width, 60 = side bar width
-		return windowWidth.value - (590 + 60 + 60);
+		return windowWidth.value - (useMainWidth + 60 + 60);
 	} else {
 		// first 60 = module bar width, second 60 = room for overlay
 		return windowWidth.value - (60 + 60);
 	}
 });
 
-const { width: navWidth } = useResize(moduleNavEl, ref(220), maxWithNav, ref(220), ref(true), ref({
-	snapZones: [{width: 20, snapPos: 220 }],
-}));
-
 const maxWithMain = computed(() => {
 	if (windowWidth.value > 1260) {
 		// dynamic module nav width, 60 = module bar width, and dynamic side bar width
-		console.log(windowWidth.value, navWidth.value, sidebarWidth.value)
 		return windowWidth.value - (navWidth.value + 60 + sidebarWidth.value);
 	} else if (windowWidth.value > 960) {
 		// dynamic module nav width, 60 = module bar width, 60 = side bar width
@@ -143,7 +171,25 @@ const maxWithMain = computed(() => {
 	}
 });
 
-const resizeOptions = computed(() => {
+const navResizeOptions = computed(() => {
+	return {
+		snapZones: [
+			{width: 20, snapPos: 220 },
+			{
+				width: 100,
+				snapPos: maxWithNav.value,
+				onPointerUp: () => {
+					if(splitViewWritable.value === true)
+						splitViewWritable.value = false;
+				},
+			}
+		],
+	}
+})
+
+useResize(moduleNavEl, ref(220), maxWithNav, ref(220), navWidth, ref(true), navResizeOptions);
+
+const mainResizeOptions = computed(() => {
 	return {
 		snapZones: [{
 			width: 100,
@@ -158,15 +204,7 @@ const resizeOptions = computed(() => {
 	}
 })
 
-useResize(contentEl, ref(590), maxWithMain, ref(590), splitViewWritable, resizeOptions);
-
-const { data } = useLocalStorage('module-nav-width');
-
-onMounted(() => {
-	if (!data.value) return;
-	if (Number.isNaN(data.value)) return;
-	moduleNavEl.value!.style.width = `${data.value}px`;
-});
+useResize(contentEl, ref(590), maxWithMain, ref(590), mainWidth, splitViewWritable, mainResizeOptions);
 
 const navOpen = ref(false);
 const userStore = useUserStore();
@@ -367,6 +405,7 @@ function openSidebar(event: PointerEvent) {
 
 		#split-content {
 			flex-grow: 1;
+			overflow: auto;
 		}
 	}
 

@@ -16,6 +16,7 @@ export type CollectionMeta = {
 	color: string | null;
 	translations: Translations[] | null;
 	display_template: string | null;
+	preview_url: string | null;
 	sort_field: string | null;
 	archive_field: string | null;
 	archive_value: string | null;

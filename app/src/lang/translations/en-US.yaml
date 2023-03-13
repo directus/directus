@@ -1282,6 +1282,7 @@ field_options:
     sort_field: Choose a field...
     accountability_divider: Accountability
     duplication_divider: Duplication
+    preview_divider: Preview
   directus_files:
     title: A unique title...
     description: An optional description...
@@ -1339,6 +1340,18 @@ start_collapsed: Start Collapsed
 block: Block
 inline: Inline
 comment: Comment
+live_preview:
+  title: Live Preview
+  mode:
+    title: Mode
+    none: No
+    split: Split View
+    popup: New Window
+  size:
+    title: Display Size
+    phone: Phone
+    tablet: Tablet
+    responsive: Responsive
 shares: Shares
 unlimited_usage: Unlimited usage
 uses_left: No uses left | 1 use left | {n} uses left
