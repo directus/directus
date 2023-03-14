@@ -109,7 +109,7 @@
 						<v-list-item
 							block
 							clickable
-							:disabled="updateAllowed === false"
+							:disabled="disabled"
 							:dense="totalItemCount > 4"
 							:class="{ deleted: element.$type === 'deleted' }"
 							@click="editItem(element)"
