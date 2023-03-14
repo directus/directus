@@ -1,5 +1,5 @@
 <template>
-	<settings-not-found v-if="!flow" />
+	<settings-not-found v-if="!flow && !loading" />
 	<private-view v-else :title="flow?.name ?? t('loading')">
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded icon exact to="/settings/flows">
@@ -12,23 +12,14 @@
 		</template>
 
 		<template #title:append>
-			<display-color
-				v-tooltip="flow.status === 'active' ? t('active') : t('inactive')"
-				class="status-dot"
-				:value="flow.status === 'active' ? 'var(--primary)' : 'var(--foreground-subdued)'"
-			/>
+			<display-color v-tooltip="flow?.status === 'active' ? t('active') : t('inactive')" class="status-dot"
+				:value="flow?.status === 'active' ? 'var(--primary)' : 'var(--foreground-subdued)'" />
 		</template>
 
 		<template #actions>
 			<template v-if="editMode">
-				<v-button
-					v-tooltip.bottom="t('clear_changes')"
-					class="clear-changes"
-					rounded
-					icon
-					outlined
-					@click="attemptCancelChanges"
-				>
+				<v-button v-tooltip.bottom="t('clear_changes')" class="clear-changes" rounded icon outlined
+					@click="attemptCancelChanges">
 					<v-icon name="clear" />
 				</v-button>
 
@@ -38,14 +29,8 @@
 			</template>
 
 			<template v-else>
-				<v-button
-					v-tooltip.bottom="t('delete_flow')"
-					class="delete-flow"
-					rounded
-					icon
-					secondary
-					@click="confirmDelete = true"
-				>
+				<v-button v-tooltip.bottom="t('delete_flow')" class="delete-flow" rounded icon secondary
+					@click="confirmDelete = true">
 					<v-icon name="delete" />
 				</v-button>
 
@@ -60,57 +45,35 @@
 				<div v-md="t('page_help_settings_flows_item')" class="page-description" />
 			</sidebar-detail>
 
-			<logs-sidebar-detail :flow="flow" />
+			<logs-sidebar-detail v-if="flow" :flow="flow" />
 		</template>
 
 		<template #navigation>
 			<settings-navigation />
 		</template>
 
-		<div class="container">
-			<arrows
-				:panels="panels"
-				:arrow-info="arrowInfo"
-				:parent-panels="parentPanels"
-				:edit-mode="editMode"
-				:hovered-panel="hoveredPanelID"
-				:subdued="flow.status === 'inactive'"
-			/>
+		<div class="container center" v-if="loading || !flow">
+			<v-progress-circular indeterminate />
+		</div>
+		<div class="container" v-else>
+			<arrows :panels="panels" :arrow-info="arrowInfo" :parent-panels="parentPanels" :edit-mode="editMode"
+				:hovered-panel="hoveredPanelID" :subdued="flow.status === 'inactive'" />
 			<v-workspace :tiles="panels" :edit-mode="editMode">
 				<template #tile="{ tile }">
-					<operation
-						v-if="flow"
-						:edit-mode="editMode"
-						:panel="tile"
-						:type="tile.id === '$trigger' ? 'trigger' : 'operation'"
-						:parent="parentPanels[tile.id]"
-						:flow="flow"
-						:panels-to-be-deleted="panelsToBeDeleted"
-						:is-hovered="hoveredPanelID === tile.id"
-						:subdued="flow.status === 'inactive'"
-						@create="createPanel"
-						@edit="editPanel"
-						@move="movePanelID = $event"
-						@update="stageOperationEdits"
-						@delete="deletePanel"
-						@duplicate="duplicatePanel"
-						@arrow-move="arrowMove"
-						@arrow-stop="arrowStop"
-						@show-hint="hoveredPanelID = $event"
-						@hide-hint="hoveredPanelID = null"
-						@flow-status="stagedFlow.status = $event"
-					/>
+					<operation v-if="flow" :edit-mode="editMode" :panel="tile"
+						:type="tile.id === '$trigger' ? 'trigger' : 'operation'" :parent="parentPanels[tile.id]"
+						:flow="flow" :panels-to-be-deleted="panelsToBeDeleted" :is-hovered="hoveredPanelID === tile.id"
+						:subdued="flow.status === 'inactive'" @create="createPanel" @edit="editPanel"
+						@move="movePanelID = $event" @update="stageOperationEdits" @delete="deletePanel"
+						@duplicate="duplicatePanel" @arrow-move="arrowMove" @arrow-stop="arrowStop"
+						@show-hint="hoveredPanelID = $event" @hide-hint="hoveredPanelID = null"
+						@flow-status="stagedFlow.status = $event" />
 				</template>
 			</v-workspace>
 		</div>
 
-		<flow-drawer
-			:active="triggerDetailOpen"
-			:primary-key="flow.id"
-			:start-tab="'trigger_setup'"
-			@cancel="triggerDetailOpen = false"
-			@done="triggerDetailOpen = false"
-		/>
+		<flow-drawer v-if="flow" :active="triggerDetailOpen" :primary-key="flow.id" :start-tab="'trigger_setup'"
+			@cancel="triggerDetailOpen = false" @done="triggerDetailOpen = false" />
 
 		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
 			<v-card>
@@ -136,7 +99,7 @@
 
 		<v-dialog :model-value="confirmDelete" @esc="confirmDelete = false">
 			<v-card>
-				<v-card-title>{{ t('flow_delete_confirm', { flow: flow.name }) }}</v-card-title>
+				<v-card-title>{{ t('flow_delete_confirm', { flow: flow?.name }) }}</v-card-title>
 
 				<v-card-actions>
 					<v-button secondary @click="confirmDelete = false">{{ t('cancel') }}</v-button>
@@ -167,13 +130,8 @@
 			</v-card>
 		</v-dialog>
 
-		<router-view
-			:operation="currentOperation"
-			:existing-operation-keys="exitingOperationKeys"
-			:flow="flow"
-			@save="stageOperation"
-			@cancel="cancelOperation"
-		/>
+		<router-view :operation="currentOperation" :existing-operation-keys="exitingOperationKeys" :flow="flow"
+			@save="stageOperation" @cancel="cancelOperation" />
 	</private-view>
 </template>
 
@@ -181,7 +139,7 @@
 import { FlowRaw, OperationRaw } from '@directus/shared/types';
 import { useI18n } from 'vue-i18n';
 
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useFlowsStore } from '@/stores/flows';
 import { unexpectedError } from '@/utils/unexpected-error';
 import api from '@/api';
@@ -225,15 +183,41 @@ useShortcut('meta+s', () => {
 const flowsStore = useFlowsStore();
 const stagedFlow = ref<Partial<FlowRaw>>({});
 
+const fetchedFlow = ref<FlowRaw>()
 const flow = computed<FlowRaw | undefined>({
 	get() {
-		const existing = flowsStore.flows.find((flow) => flow.id === props.primaryKey);
-		return merge({}, existing, stagedFlow.value);
+		if (!fetchedFlow.value) return undefined
+		return merge({}, fetchedFlow.value, stagedFlow.value);
 	},
 	set(newFlow) {
 		stagedFlow.value = newFlow ?? {};
 	},
 });
+
+const loading = ref(false);
+
+watch(() => props.primaryKey, () => {
+		loadCurrentFlow();
+}, { immediate: true })
+
+async function loadCurrentFlow() {
+	if (!props.primaryKey) return;
+
+	loading.value = true;
+
+	try {
+		const response = await api.get(`/flows/${props.primaryKey}`, {
+			params: {
+				fields: ['*', 'operations.*'],
+			},
+		});
+		fetchedFlow.value = response.data.data;
+	} catch (err: any) {
+		unexpectedError(err);
+	} finally {
+		loading.value = false;
+	}
+}
 
 const exitingOperationKeys = computed(() => [
 	...(flow.value?.operations || []).map((operation) => operation.key),
@@ -704,6 +688,12 @@ function discardAndLeave() {
 	--column-size: 200px;
 	--row-size: 100px;
 	--gap-size: 40px;
+
+	&.center {
+		height: calc(100% - 48px - var(--header-bar-height));
+		display: grid;
+		place-items: center;
+	}
 }
 
 .clear-changes {
