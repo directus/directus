@@ -1057,24 +1057,17 @@ export class GraphQLService {
 					(self.scope === 'system' && collection.collection.startsWith('directus_')) ||
 					(self.scope === 'items' && !collection.collection.startsWith('directus_'))
 				) {
-					for (const event of ['created', 'updated', 'deleted']) {
-						const eventName =
-							self.scope === 'system'
-								? `${collection.collection.replace('directus_', '')}_${event}`.toUpperCase()
-								: `${collection.collection}_${event}`.toUpperCase();
-						const subscriptionName = camelCase(eventName);
-						schemaComposer.Subscription.addFields({
-							[subscriptionName]: {
-								type: ReadCollectionTypes[collection.collection],
-								subscribe: createSubscriptionGenerator(
-									self,
-									event as 'created' | 'updated' | 'deleted',
-									eventName,
-									subscriptionName
-								),
-							},
-						} as any);
-					}
+					const eventName =
+						self.scope === 'system'
+							? `${collection.collection.substring(9)}_mutated`.toUpperCase()
+							: `${collection.collection}_mutated`.toUpperCase();
+					const subscriptionName = camelCase(eventName);
+					schemaComposer.Subscription.addFields({
+						[subscriptionName]: {
+							type: ReadCollectionTypes[collection.collection],
+							subscribe: createSubscriptionGenerator(self, eventName, subscriptionName),
+						},
+					} as any);
 				}
 			}
 

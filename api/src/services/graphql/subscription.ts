@@ -26,42 +26,55 @@ export const messages = createPubSub(new EventEmitter());
 	'presets', 'relations', 'revisions', 'roles', 'settings', 'users', 'webhooks'*/,
 ].forEach((collectionName) => {
 	emitter.onAction(collectionName + '.create', async ({ collection, key, payload }) => {
-		const eventName = `${collection}_created`.toUpperCase();
-		messages.publish(eventName, { collection, key, payload });
+		const eventName = `${collection}_mutated`.toUpperCase();
+		messages.publish(eventName, { action: 'created', collection, key, payload });
 	});
 	emitter.onAction(collectionName + '.update', async ({ collection, keys, payload }) => {
-		const eventName = `${collection}_updated`.toUpperCase();
-		messages.publish(eventName, { collection, keys, payload });
+		const eventName = `${collection}_mutated`.toUpperCase();
+		messages.publish(eventName, { action: 'updated', collection, keys, payload });
 	});
-	emitter.onAction(collectionName + '.delete', ({ collection, keys }) => {
-		const eventName = `${collection}_deleted`.toUpperCase();
-		messages.publish(eventName, { keys });
+	emitter.onAction(collectionName + '.delete', (ctx) => {
+		const { collection, keys } = ctx;
+		const eventName = `${collection}_mutated`.toUpperCase();
+		messages.publish(eventName, { action: 'deleted', collection, keys });
 	});
 });
 
-export function createSubscriptionGenerator(
-	self: GraphQLService,
-	action: 'created' | 'updated' | 'deleted',
-	event: string,
-	name: string
-) {
+export function createSubscriptionGenerator(self: GraphQLService, event: string, name: string) {
 	return async function* (_x: unknown, _y: unknown, _z: unknown, request: any) {
 		const selections = request.fieldNodes[0]?.selectionSet?.selections || [];
 		const { fields } = self.getQuery({}, selections, {});
 		for await (const payload of messages.subscribe(event)) {
-			if (action === 'created') {
-				const { collection, key } = payload as any;
-				const service = new ItemsService(collection, { schema: await getSchema() });
-				yield { [name]: await service.readOne(key, { fields } as Query) };
+			const eventData = payload as Record<string, any>;
+			const schema = await getSchema();
+			if (eventData.action === 'created') {
+				const { collection, key } = eventData;
+				const service = new ItemsService(collection, { schema });
+				const data = await service.readOne(key, { fields } as Query);
+				yield { [name]: { ...data, event: 'created' } };
 			}
-			if (action === 'updated') {
-				const { collection, keys } = payload as any;
-				const service = new ItemsService(collection, { schema: await getSchema() });
-				yield { [name]: await service.readMany(keys, { fields } as Query) };
+			if (eventData.action === 'updated') {
+				const { collection, keys } = eventData;
+				const service = new ItemsService(collection, { schema });
+				for (const key of keys) {
+					const data = await service.readOne(key, { fields } as Query);
+					yield { [name]: { ...data, event: 'updated' } };
+				}
 			}
-			if (action === 'deleted') {
-				const { keys } = payload as any;
-				yield { [name]: keys };
+			if (eventData.action === 'deleted') {
+				const { keys } = eventData;
+
+				for (const key of keys) {
+					const result: Record<string, any> = {};
+					if (fields) {
+						for (const field of fields) {
+							result[field] = null;
+						}
+					}
+					const pk = schema.collections[eventData.collection]?.primary;
+					result[pk] = key;
+					yield { [name]: result };
+				}
 			}
 		}
 	};
