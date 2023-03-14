@@ -459,16 +459,22 @@ export default defineComponent({
 	& + & {
 		margin-top: 8px;
 	}
+
+	&.nested {
+		.field :deep(.input) {
+			border: var(--border-width) solid var(--primary-25);
+		}
+	}
 }
 
 .field {
-	:deep(.input) {
-		border: var(--border-width) solid var(--border-subdued) !important;
+	&.v-input :deep(.input) {
+		border: var(--border-width) solid var(--border-subdued);
 	}
 
-	:deep(.input:hover) {
-		background-color: var(--card-face-color) !important;
-		border: var(--border-width) solid var(--border-normal-alt) !important;
+	&.v-input :deep(.input:hover) {
+		background-color: var(--card-face-color);
+		border: var(--border-width) solid var(--border-normal-alt);
 	}
 
 	.label {
