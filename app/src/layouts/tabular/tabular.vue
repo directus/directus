@@ -23,13 +23,9 @@
 			@update:sort="onSortChange"
 			@manual-sort="changeManualSort"
 		>
-			<template v-for="header in tableHeaders" :key="header.value" #[`item.${header.value}`]="{ item }">
+			<template v-for="header in tableHeaders" :key="header.key" #[`item.${header.value}`]="{ item }">
 				<render-display
-					:value="
-						!aliasFields || item[header.value] !== undefined || aliasFields[header.value] === undefined
-							? get(item, header.value)
-							: getAliasedValue(item, header.value)
-					"
+					:value="getDisplayValue(item, header)"
 					:display="header.field.display"
 					:options="header.field.displayOptions"
 					:interface="header.field.interface"
@@ -182,12 +178,11 @@ import { useShortcut } from '@/composables/use-shortcut';
 import { Collection } from '@/types/collections';
 import { useSync } from '@directus/shared/composables';
 import { Field, Filter, Item, ShowSelect } from '@directus/shared/types';
-import { ComponentPublicInstance, inject, ref, Ref, watch, computed } from 'vue';
+import { ComponentPublicInstance, inject, ref, Ref, watch, computed, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { get } from '@directus/shared/utils';
-import { useAliasFields, AliasField } from '@/composables/use-alias-fields';
-import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
-import { isEmpty, merge } from 'lodash';
+import { useAliasFields } from '@/composables/use-alias-fields';
+import { assign, merge } from 'lodash';
 import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
 
@@ -238,6 +233,7 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits(['update:selection', 'update:tableHeaders', 'update:limit', 'update:fields']);
 
 const { t } = useI18n();
+const { collection } = toRefs(props)
 
 const selectionWritable = useSync(props, 'selection', emit);
 const tableHeadersWritable = useSync(props, 'tableHeaders', emit);
@@ -281,30 +277,28 @@ const showManualSort = computed(() => {
 
 const fieldsWritable = useSync(props, 'fields', emit);
 
-const fieldsWithRelational = computed(() => adjustFieldsForDisplays(fieldsWritable.value, props.collection));
+const { aliasedFields, aliasedKeys } = useAliasFields(fieldsWritable, collection);
 
-const { aliasFields } = useAliasFields(fieldsWithRelational);
+function getDisplayValue(item: Item, header: HeaderRaw) {
+	console.log(header, props.tableHeaders)
 
-function getAliasedValue(item: Record<string, any>, field: string) {
-	if (aliasFields.value![field]) return get(item, aliasFields.value![field].fullAlias);
+	const aliasInfo = Object.values(aliasedFields.value).find(field => field.key === header.key);
 
-	const matchingAliasFields = Object.values(aliasFields.value!).filter(
-		(aliasField: AliasField) => aliasField.fieldName === field
-	);
-	const matchingValues = matchingAliasFields.map(({ fieldAlias }) => item[fieldAlias]);
-	// if we have multiple results for each field pivot the data into a list of records
-	if (matchingValues.every((val) => Array.isArray(val))) {
-		return matchingValues.reduce((result, data) => {
-			for (let i = 0; i < data.length; i++) {
-				result[i] = merge(result[i], data[i]);
-			}
-			return result;
-		}, []);
-	}
+	if(!aliasInfo) return get(item, header.key);
 
-	// merge into a single record
-	const result = matchingValues.reduce((result, data) => merge(result, data), {});
-	return !isEmpty(result) ? result : null;
+	const unAliasedItem = Object.keys(item).reduce<Item>((result, key) => {
+		if(aliasedKeys.value.includes(key)) {
+			if(key !== aliasInfo.fieldAlias) return result
+			const name = aliasedFields.value[key].fieldName
+			result[name] = item[key];
+
+		} else {
+			result[key] = item[key];
+		}
+		return result;
+	}, {});
+
+	return get(unAliasedItem, header.key);
 }
 
 function addField(fieldKey: string) {

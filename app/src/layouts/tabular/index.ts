@@ -43,15 +43,14 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		const { info, primaryKeyField, fields: fieldsInCollection, sortField } = useCollection(collection);
 
-		const { sort, limit, page, fields, fieldsWithRelational } = useItemOptions();
+		const { sort, limit, page, fields } = useItemOptions();
 
-		const { aliasFields, aliasQuery } = useAliasFields(fieldsWithRelational);
+		const { aliasedFields, aliasQuery } = useAliasFields(fields, collection);
 
 		const fieldsWithRelationalAliased = computed(() => {
-			if (!aliasFields.value) return fieldsWithRelational.value;
-			return fieldsWithRelational.value.map((field) =>
-				aliasFields.value?.[field] ? aliasFields.value[field].fullAlias : field
-			);
+			return Object.values(aliasedFields.value).reduce<string[]>((acc, value) => {
+				return [...acc, ...value.fields];
+			}, [])
 		});
 
 		const {
@@ -123,6 +122,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			filter,
 			search,
 			download,
+			fieldsWithRelationalAliased
 		};
 
 		async function resetPresetAndRefresh() {
@@ -213,7 +213,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				},
 			});
 
-			const tableHeaders = computed<HeaderRaw[]>({
+			const tableHeaders = computed<(HeaderRaw & {key: string})[]>({
 				get() {
 					return activeFields.value.map((field) => {
 						let description: string | null = null;
@@ -250,6 +250,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 									return {
 										text: field.name,
 										value: arrayField.field,
+										key: field.key,
 										description,
 										width: localWidths.value[field.key] || layoutOptions.value?.widths?.[field.key] || null,
 										align: layoutOptions.value?.align?.[field.key] || 'left',
@@ -263,13 +264,14 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 											collection: arrayField.collection,
 										},
 										sortable: ['json', 'alias', 'presentation', 'translations'].includes(arrayField.type) === false,
-									} as HeaderRaw;
+									};
 							}
 						}
 
 						return {
 							text: field.name,
 							value: field.key,
+							key: field.key,
 							description,
 							width: localWidths.value[field.key] || layoutOptions.value?.widths?.[field.key] || null,
 							align: layoutOptions.value?.align?.[field.key] || 'left',
@@ -283,7 +285,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 								collection: field.collection,
 							},
 							sortable: ['json', 'alias', 'presentation', 'translations'].includes(field.type) === false,
-						} as HeaderRaw;
+						};
 					});
 				},
 				set(val) {
