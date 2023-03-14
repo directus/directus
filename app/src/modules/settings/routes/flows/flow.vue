@@ -12,14 +12,23 @@
 		</template>
 
 		<template #title:append>
-			<display-color v-tooltip="flow?.status === 'active' ? t('active') : t('inactive')" class="status-dot"
-				:value="flow?.status === 'active' ? 'var(--primary)' : 'var(--foreground-subdued)'" />
+			<display-color
+				v-tooltip="flow?.status === 'active' ? t('active') : t('inactive')"
+				class="status-dot"
+				:value="flow?.status === 'active' ? 'var(--primary)' : 'var(--foreground-subdued)'"
+			/>
 		</template>
 
 		<template #actions>
 			<template v-if="editMode">
-				<v-button v-tooltip.bottom="t('clear_changes')" class="clear-changes" rounded icon outlined
-					@click="attemptCancelChanges">
+				<v-button
+					v-tooltip.bottom="t('clear_changes')"
+					class="clear-changes"
+					rounded
+					icon
+					outlined
+					@click="attemptCancelChanges"
+				>
 					<v-icon name="clear" />
 				</v-button>
 
@@ -29,8 +38,14 @@
 			</template>
 
 			<template v-else>
-				<v-button v-tooltip.bottom="t('delete_flow')" class="delete-flow" rounded icon secondary
-					@click="confirmDelete = true">
+				<v-button
+					v-tooltip.bottom="t('delete_flow')"
+					class="delete-flow"
+					rounded
+					icon
+					secondary
+					@click="confirmDelete = true"
+				>
 					<v-icon name="delete" />
 				</v-button>
 
@@ -52,28 +67,54 @@
 			<settings-navigation />
 		</template>
 
-		<div class="container center" v-if="loading || !flow">
+		<div v-if="loading || !flow" class="container center">
 			<v-progress-circular indeterminate />
 		</div>
-		<div class="container" v-else>
-			<arrows :panels="panels" :arrow-info="arrowInfo" :parent-panels="parentPanels" :edit-mode="editMode"
-				:hovered-panel="hoveredPanelID" :subdued="flow.status === 'inactive'" />
+		<div v-else class="container">
+			<arrows
+				:panels="panels"
+				:arrow-info="arrowInfo"
+				:parent-panels="parentPanels"
+				:edit-mode="editMode"
+				:hovered-panel="hoveredPanelID"
+				:subdued="flow.status === 'inactive'"
+			/>
 			<v-workspace :tiles="panels" :edit-mode="editMode">
 				<template #tile="{ tile }">
-					<operation v-if="flow" :edit-mode="editMode" :panel="tile"
-						:type="tile.id === '$trigger' ? 'trigger' : 'operation'" :parent="parentPanels[tile.id]"
-						:flow="flow" :panels-to-be-deleted="panelsToBeDeleted" :is-hovered="hoveredPanelID === tile.id"
-						:subdued="flow.status === 'inactive'" @create="createPanel" @edit="editPanel"
-						@move="movePanelID = $event" @update="stageOperationEdits" @delete="deletePanel"
-						@duplicate="duplicatePanel" @arrow-move="arrowMove" @arrow-stop="arrowStop"
-						@show-hint="hoveredPanelID = $event" @hide-hint="hoveredPanelID = null"
-						@flow-status="stagedFlow.status = $event" />
+					<operation
+						v-if="flow"
+						:edit-mode="editMode"
+						:panel="tile"
+						:type="tile.id === '$trigger' ? 'trigger' : 'operation'"
+						:parent="parentPanels[tile.id]"
+						:flow="flow"
+						:panels-to-be-deleted="panelsToBeDeleted"
+						:is-hovered="hoveredPanelID === tile.id"
+						:subdued="flow.status === 'inactive'"
+						@create="createPanel"
+						@edit="editPanel"
+						@move="movePanelID = $event"
+						@update="stageOperationEdits"
+						@delete="deletePanel"
+						@duplicate="duplicatePanel"
+						@arrow-move="arrowMove"
+						@arrow-stop="arrowStop"
+						@show-hint="hoveredPanelID = $event"
+						@hide-hint="hoveredPanelID = null"
+						@flow-status="stagedFlow.status = $event"
+					/>
 				</template>
 			</v-workspace>
 		</div>
 
-		<flow-drawer v-if="flow" :active="triggerDetailOpen" :primary-key="flow.id" :start-tab="'trigger_setup'"
-			@cancel="triggerDetailOpen = false" @done="triggerDetailOpen = false" />
+		<flow-drawer
+			v-if="flow"
+			:active="triggerDetailOpen"
+			:primary-key="flow.id"
+			:start-tab="'trigger_setup'"
+			@cancel="triggerDetailOpen = false"
+			@done="triggerDetailOpen = false"
+		/>
 
 		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
 			<v-card>
@@ -130,8 +171,13 @@
 			</v-card>
 		</v-dialog>
 
-		<router-view :operation="currentOperation" :existing-operation-keys="exitingOperationKeys" :flow="flow"
-			@save="stageOperation" @cancel="cancelOperation" />
+		<router-view
+			:operation="currentOperation"
+			:existing-operation-keys="exitingOperationKeys"
+			:flow="flow"
+			@save="stageOperation"
+			@cancel="cancelOperation"
+		/>
 	</private-view>
 </template>
 
@@ -183,10 +229,10 @@ useShortcut('meta+s', () => {
 const flowsStore = useFlowsStore();
 const stagedFlow = ref<Partial<FlowRaw>>({});
 
-const fetchedFlow = ref<FlowRaw>()
+const fetchedFlow = ref<FlowRaw>();
 const flow = computed<FlowRaw | undefined>({
 	get() {
-		if (!fetchedFlow.value) return undefined
+		if (!fetchedFlow.value) return undefined;
 		return merge({}, fetchedFlow.value, stagedFlow.value);
 	},
 	set(newFlow) {
@@ -196,9 +242,13 @@ const flow = computed<FlowRaw | undefined>({
 
 const loading = ref(false);
 
-watch(() => props.primaryKey, () => {
+watch(
+	() => props.primaryKey,
+	() => {
 		loadCurrentFlow();
-}, { immediate: true })
+	},
+	{ immediate: true }
+);
 
 async function loadCurrentFlow() {
 	if (!props.primaryKey) return;
