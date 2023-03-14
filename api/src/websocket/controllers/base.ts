@@ -17,6 +17,7 @@ import { handleWebsocketException, WebSocketException } from '../exceptions';
 import emitter from '../../emitter';
 import { createRateLimiter } from '../../rate-limiter';
 import { WebSocketAuthMessage, WebSocketMessage } from '../messages';
+import { parseJSON } from '@directus/shared/utils';
 
 export default abstract class SocketController {
 	name: string;
@@ -171,7 +172,7 @@ export default abstract class SocketController {
 	protected parseMessage(data: string) {
 		let message: WebSocketMessage;
 		try {
-			message = WebSocketMessage.parse(JSON.parse(data));
+			message = WebSocketMessage.parse(parseJSON(data));
 		} catch (err: any) {
 			throw new WebSocketException('server', 'INVALID_PAYLOAD', 'Unable to parse the incoming message!');
 		}
