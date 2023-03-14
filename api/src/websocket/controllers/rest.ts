@@ -7,8 +7,8 @@ import emitter from '../../emitter';
 import { refreshAccountability } from '../authenticate';
 import { handleWebsocketException, WebSocketException } from '../exceptions';
 import logger from '../../logger';
-import { trimUpper } from '../utils/message';
 import { WebSocketMessage } from '../messages';
+import { parseJSON } from '@directus/shared/utils';
 
 export class WebsocketController extends SocketController {
 	constructor(httpServer: httpServer) {
@@ -47,8 +47,7 @@ export class WebsocketController extends SocketController {
 	protected override parseMessage(data: string): WebSocketMessage {
 		let message: WebSocketMessage;
 		try {
-			message = JSON.parse(data);
-			message.type = trimUpper(message.type);
+			message = parseJSON(data);
 		} catch (err: any) {
 			throw new WebSocketException('server', 'INVALID_PAYLOAD', 'Unable to parse the incoming message!');
 		}

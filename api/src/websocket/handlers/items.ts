@@ -2,7 +2,7 @@
 import { getSchema } from '../../utils/get-schema';
 import { ItemsService, MetaService } from '../../services';
 import type { WebSocketClient } from '../types';
-import { fmtMessage, trimUpper } from '../utils/message';
+import { fmtMessage } from '../utils/message';
 import emitter from '../../emitter';
 import { sanitizeQuery } from '../../utils/sanitize-query';
 import { handleWebsocketException, WebSocketException } from '../exceptions';
@@ -11,7 +11,7 @@ import { WebSocketItemsMessage } from '../messages';
 export class ItemsHandler {
 	constructor() {
 		emitter.onAction('websocket.message', ({ client, message }) => {
-			if (trimUpper(message.type) !== 'ITEMS') return;
+			if ((message?.type ?? '').toUpperCase() !== 'ITEMS') return;
 			try {
 				const parsedMessage = WebSocketItemsMessage.parse(message);
 				this.onMessage(client, parsedMessage).catch((err) => {

@@ -3,7 +3,7 @@ import { ItemsService } from '../../services/items';
 import type { Subscription, WebSocketClient } from '../types';
 import emitter from '../../emitter';
 // import logger from '../../logger';
-import { fmtMessage, trimUpper } from '../utils/message';
+import { fmtMessage } from '../utils/message';
 import { refreshAccountability } from '../authenticate';
 import { MetaService } from '../../services';
 import { sanitizeQuery } from '../../utils/sanitize-query';
@@ -52,7 +52,7 @@ export class SubscribeHandler {
 	bindWebsocket() {
 		// listen to incoming messages on the connected websockets
 		emitter.onAction('websocket.message', ({ client, message }) => {
-			if (!['SUBSCRIBE', 'UNSUBSCRIBE'].includes(trimUpper(message?.type))) return;
+			if (!['SUBSCRIBE', 'UNSUBSCRIBE'].includes((message?.type ?? '').toUpperCase())) return;
 			try {
 				this.onMessage(client, WebSocketSubscribeMessage.parse(message));
 			} catch (error) {
@@ -156,7 +156,7 @@ export class SubscribeHandler {
 	 * Handle incoming (un)subscribe requests
 	 */
 	async onMessage(client: WebSocketClient, message: WebSocketSubscribeMessage) {
-		if (message.type.toUpperCase() === 'SUBSCRIBE') {
+		if ((message?.type ?? '').toUpperCase() === 'SUBSCRIBE') {
 			// logger.debug(`[WS REST] SubscribeHandler ${JSON.stringify(message)}`);
 			try {
 				const collection = String(message.collection!);
@@ -198,7 +198,7 @@ export class SubscribeHandler {
 				// logger.debug(`[WS REST] ERROR ${JSON.stringify(err)}`);
 			}
 		}
-		if (message.type.toUpperCase() === 'UNSUBSCRIBE') {
+		if ((message?.type ?? '').toUpperCase() === 'UNSUBSCRIBE') {
 			this.unsubscribe(client, message.uid);
 		}
 	}

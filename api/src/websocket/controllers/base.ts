@@ -16,7 +16,6 @@ import { TokenExpiredException } from '../../exceptions';
 import { handleWebsocketException, WebSocketException } from '../exceptions';
 import emitter from '../../emitter';
 import { createRateLimiter } from '../../rate-limiter';
-import { trimUpper } from '../utils/message';
 import { WebSocketAuthMessage, WebSocketMessage } from '../messages';
 
 export default abstract class SocketController {
@@ -144,7 +143,7 @@ export default abstract class SocketController {
 				return;
 			}
 			this.log(JSON.stringify(message));
-			if (trimUpper(message.type) === 'AUTH') {
+			if (message.type.toUpperCase() === 'AUTH') {
 				try {
 					await this.handleAuthRequest(client, WebSocketAuthMessage.parse(message));
 				} catch {

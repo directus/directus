@@ -1,6 +1,5 @@
 import type { WebSocket, RawData } from 'ws';
 import { WebSocketMessage } from '../messages';
-import { trimUpper } from './message';
 
 export const waitForAnyMessage = (client: WebSocket, timeout: number): Promise<WebSocketMessage> => {
 	return new Promise((resolve, reject) => {
@@ -38,7 +37,7 @@ export const waitForMessageType = (client: WebSocket, type: string, timeout: num
 				return;
 			}
 			try {
-				if (trimUpper(msg.type) === trimUpper(type)) {
+				if (msg.type.toUpperCase() === type.toUpperCase()) {
 					clearTimeout(timer);
 					client.off('message', awaitMessage);
 					resolve(msg);

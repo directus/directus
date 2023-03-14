@@ -1,21 +1,7 @@
 import { expect, describe, test, vi } from 'vitest';
-import { trimUpper, fmtMessage, safeSend } from './message';
+import { fmtMessage, safeSend } from './message';
 import type { WebSocketClient } from '../types';
 
-describe('trimUpper util', () => {
-	test('Returns uppercase trimmed "TYPE"', () => {
-		expect(trimUpper('TYPE')).toBe('TYPE');
-	});
-	test('Returns uppercase trimmed "123@ !some"', () => {
-		expect(trimUpper('123@ !some')).toBe('123@ !SOME');
-	});
-	test('Returns uppercase trimmed "FalSe"', () => {
-		expect(trimUpper('FalSe')).toBe('FALSE');
-	});
-	test('Returns uppercase trimmed "  long with spaces"', () => {
-		expect(trimUpper('  long with spaces')).toBe('LONG WITH SPACES');
-	});
-});
 describe('fmtMessage util', () => {
 	test('Returns formatted message', () => {
 		const result = fmtMessage('test', { test: 'abc' });
