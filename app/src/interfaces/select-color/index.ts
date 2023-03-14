@@ -42,6 +42,7 @@ export default defineInterface({
 							meta: {
 								interface: 'system-input-translated-string',
 								width: 'half',
+								required: true,
 								options: {
 									placeholder: '$t:interfaces.select-color.name_placeholder',
 								},
