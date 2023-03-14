@@ -125,7 +125,7 @@ importers:
       '@types/uuid': 9.0.0
       '@types/uuid-validate': 0.0.1
       '@types/wellknown': 0.5.4
-      '@types/ws': ^8.5.4
+      '@types/ws': 8.5.4
       '@vitest/coverage-c8': 0.28.5
       argon2: 0.30.3
       async: 3.2.4
@@ -218,7 +218,7 @@ importers:
       vm2: 3.9.14
       wellknown: 0.5.0
       ws: 8.12.1
-      zod: ^3.21.4
+      zod: 3.21.4
     dependencies:
       '@authenio/samlify-node-xmllint': 2.0.0_samlify@2.8.9
       '@aws-sdk/client-ses': 3.271.0
