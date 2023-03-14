@@ -669,7 +669,6 @@ importers:
       pino: 8.10.0
       tmp: 0.2.1
       typescript: 4.9.5
-      vite: 4.1.1
       vitest: 0.28.5
       vue: 3.2.47
       vue-i18n: 9.2.2
@@ -702,7 +701,6 @@ importers:
       concurrently: 7.6.0
       tmp: 0.2.1
       typescript: 4.9.5
-      vite: 4.1.1
       vitest: 0.28.5
 
   packages/specs:
@@ -725,13 +723,11 @@ importers:
       '@directus/tsconfig': 0.0.6
       '@vitest/coverage-c8': 0.28.5
       typescript: 4.9.5
-      vite: 4.1.1
       vitest: 0.28.5
     devDependencies:
       '@directus/tsconfig': 0.0.6
       '@vitest/coverage-c8': 0.28.5
       typescript: 4.9.5
-      vite: 4.1.1
       vitest: 0.28.5
 
   packages/storage-driver-azure:
@@ -851,7 +847,6 @@ importers:
       '@ngneat/falso': 6.4.0
       '@vitest/coverage-c8': 0.28.5
       typescript: 4.9.5
-      vite: 4.1.1
       vitest: 0.28.5
     dependencies:
       '@directus/shared': link:../shared
@@ -861,7 +856,6 @@ importers:
       '@ngneat/falso': 6.4.0
       '@vitest/coverage-c8': 0.28.5
       typescript: 4.9.5
-      vite: 4.1.1
       vitest: 0.28.5
 
 packages:
@@ -20823,39 +20817,6 @@ packages:
       - sugarss
       - supports-color
       - terser
-    dev: true
-
-  /vite/4.1.1:
-    resolution: {integrity: sha512-LM9WWea8vsxhr782r9ntg+bhSFS06FJgCvvB0+8hf8UWtvaiDagKYWXndjfX6kGl74keHJUcpzrQliDXZlF5yg==}
-    engines: {node: ^14.18.0 || >=16.0.0}
-    hasBin: true
-    peerDependencies:
-      '@types/node': '>= 14'
-      less: '*'
-      sass: '*'
-      stylus: '*'
-      sugarss: '*'
-      terser: ^5.4.0
-    peerDependenciesMeta:
-      '@types/node':
-        optional: true
-      less:
-        optional: true
-      sass:
-        optional: true
-      stylus:
-        optional: true
-      sugarss:
-        optional: true
-      terser:
-        optional: true
-    dependencies:
-      esbuild: 0.16.17
-      postcss: 8.4.21
-      resolve: 1.22.1
-      rollup: 3.15.0
-    optionalDependencies:
-      fsevents: 2.3.2
     dev: true
 
   /vite/4.1.1_@types+node@18.13.0:
