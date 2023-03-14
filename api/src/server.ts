@@ -7,7 +7,7 @@ import qs from 'qs';
 import url from 'url';
 import createApp from './app';
 import getDatabase from './database';
-import env from './env';
+import env, { toBoolean } from './env';
 import logger from './logger';
 import emitter from './emitter';
 import checkForUpdate from 'update-check';
@@ -88,7 +88,7 @@ export async function createServer(): Promise<http.Server> {
 		res.once('close', complete.bind(null, false));
 	});
 
-	if (env['WEBSOCKETS_ENABLED']) {
+	if (toBoolean(env.WEBSOCKETS_ENABLED)) {
 		createSubscriptionController(server);
 		createWebsocketController(server);
 		startWebsocketHandlers();
