@@ -1062,9 +1062,15 @@ export class GraphQLService {
 							? `${collection.collection.substring(9)}_mutated`.toUpperCase()
 							: `${collection.collection}_mutated`.toUpperCase();
 					const subscriptionName = camelCase(eventName);
+					const subscriptionType = ReadCollectionTypes[collection.collection].clone(
+						collection.collection + '_mutation'
+					);
+					subscriptionType.addFields({
+						event: GraphQLString,
+					});
 					schemaComposer.Subscription.addFields({
 						[subscriptionName]: {
-							type: ReadCollectionTypes[collection.collection],
+							type: subscriptionType,
 							subscribe: createSubscriptionGenerator(self, eventName, subscriptionName),
 						},
 					} as any);
