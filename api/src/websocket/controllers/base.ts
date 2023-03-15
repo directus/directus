@@ -18,6 +18,7 @@ import emitter from '../../emitter';
 import { createRateLimiter } from '../../rate-limiter';
 import { WebSocketAuthMessage, WebSocketMessage } from '../messages';
 import { parseJSON } from '@directus/shared/utils';
+import { getMessageType } from '../utils/message';
 
 export default abstract class SocketController {
 	name: string;
@@ -103,7 +104,7 @@ export default abstract class SocketController {
 		this.server.handleUpgrade(request, socket, head, async (ws) => {
 			try {
 				const payload = await waitForAnyMessage(ws, this.authentication.timeout);
-				if (payload.type?.toUpperCase() !== 'AUTH') throw new Error();
+				if (getMessageType(payload) !== 'AUTH') throw new Error();
 
 				const state = await authenticateConnection(WebSocketAuthMessage.parse(payload));
 				ws.send(authenticationSuccess(payload['uid']));
@@ -144,7 +145,7 @@ export default abstract class SocketController {
 				return;
 			}
 			// this.log(JSON.stringify(message));
-			if (message?.type.toUpperCase() === 'AUTH') {
+			if (getMessageType(message) === 'AUTH') {
 				try {
 					await this.handleAuthRequest(client, WebSocketAuthMessage.parse(message));
 				} catch {
@@ -169,7 +170,7 @@ export default abstract class SocketController {
 		this.clients.add(client);
 		return client;
 	}
-	protected parseMessage(data: string) {
+	protected parseMessage(data: string): WebSocketMessage {
 		let message: WebSocketMessage;
 		try {
 			message = WebSocketMessage.parse(parseJSON(data));

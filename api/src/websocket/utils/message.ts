@@ -23,3 +23,9 @@ export const safeSend = async (client: WebSocketClient, data: string, delay = 10
 	client.send(data);
 	return true;
 };
+
+// an often used message type extractor function
+export const getMessageType = (message: any): string => {
+	if (typeof message !== 'object') return '';
+	return String(message.type).toUpperCase();
+};
