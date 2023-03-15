@@ -774,6 +774,8 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	 * Upsert many items
 	 */
 	async upsertMany(payloads: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
+		if (!opts?.mutationTracker) (opts || (opts = {})).mutationTracker = this.createMutationTracker();
+
 		const primaryKeys = await this.knex.transaction(async (trx) => {
 			const service = new ItemsService(this.collection, {
 				accountability: this.accountability,
