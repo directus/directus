@@ -19,6 +19,7 @@ import { createRateLimiter } from '../../rate-limiter';
 import { WebSocketAuthMessage, WebSocketMessage } from '../messages';
 import { parseJSON } from '@directus/shared/utils';
 import { getMessageType } from '../utils/message';
+import env, { toBoolean } from '../../env';
 
 export default abstract class SocketController {
 	name: string;
@@ -32,7 +33,7 @@ export default abstract class SocketController {
 	endpoint: string;
 	maxConnections: number;
 	private authTimer: NodeJS.Timer | null;
-	private rateLimiter: RateLimiterAbstract;
+	private rateLimiter: RateLimiterAbstract | null;
 
 	constructor(
 		httpServer: httpServer,
@@ -50,9 +51,12 @@ export default abstract class SocketController {
 		this.name = name;
 		this.endpoint = endpoint;
 		this.authentication = authentication;
-		this.rateLimiter = createRateLimiter('RATE_LIMITER', {
-			keyPrefix: 'websocket',
-		});
+		this.rateLimiter =
+			toBoolean(env.RATE_LIMITER_ENABLED) === true
+				? createRateLimiter('RATE_LIMITER', {
+						keyPrefix: 'websocket',
+				  })
+				: null;
 		this.maxConnections = Number.POSITIVE_INFINITY;
 		httpServer.on('upgrade', this.handleUpgrade.bind(this));
 	}
@@ -124,18 +128,20 @@ export default abstract class SocketController {
 
 		ws.on('message', async (data: WebSocket.RawData) => {
 			this.log(`${client.accountability?.user || 'public user'} message`);
-			try {
-				await this.rateLimiter.consume(client.uid);
-			} catch (limit) {
-				const timeout = (limit as any)?.msBeforeNext ?? this.rateLimiter.msDuration;
-				const error = new WebSocketException(
-					'server',
-					'REQUESTS_EXCEEDED',
-					`Rate limit reached! Try again in ${timeout}ms`
-				);
-				handleWebsocketException(client, error, 'server');
-				this.log(`${client.accountability?.user || 'public user'} rate limited`);
-				return;
+			if (this.rateLimiter !== null) {
+				try {
+					await this.rateLimiter.consume(client.uid);
+				} catch (limit) {
+					const timeout = (limit as any)?.msBeforeNext ?? this.rateLimiter.msDuration;
+					const error = new WebSocketException(
+						'server',
+						'REQUESTS_EXCEEDED',
+						`Rate limit reached! Try again in ${timeout}ms`
+					);
+					handleWebsocketException(client, error, 'server');
+					this.log(`${client.accountability?.user || 'public user'} rate limited`);
+					return;
+				}
 			}
 			let message: WebSocketMessage;
 			try {
