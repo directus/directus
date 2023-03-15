@@ -2,7 +2,6 @@ import { getSchema } from '../../utils/get-schema';
 import { ItemsService } from '../../services/items';
 import type { Subscription, WebSocketClient } from '../types';
 import emitter from '../../emitter';
-// import logger from '../../logger';
 import { fmtMessage, getMessageType } from '../utils/message';
 import { refreshAccountability } from '../authenticate';
 import { MetaService } from '../../services';
@@ -76,7 +75,6 @@ export class SubscribeHandler {
 				message.collection = args.collection as string;
 				message.payload = (args.payload ?? {}) as Record<string, any>;
 				// push the event through the Redis pub/sub
-				// logger.debug(`[ WS ] event ${event} - ${JSON.stringify(message)}`);
 				this.messenger.publish('websocket.event', message as Record<string, any>);
 			});
 		};
@@ -91,7 +89,6 @@ export class SubscribeHandler {
 				this.dispatch(message as WebSocketEvent);
 			} catch (err) {
 				// dont error on an invalid event from the messenger
-				// logger.error('messenger error - ' + JSON.stringify(err, null, 2));
 			}
 		});
 	}
@@ -115,8 +112,6 @@ export class SubscribeHandler {
 			const subscription = this.getSubscription(uid);
 			if (subscription && subscription.client === client) {
 				this.subscriptions[subscription.collection]?.delete(subscription);
-			} else {
-				// logger.warn(`Couldn't find subscription with UID="${uid}" for current user`);
 			}
 		} else {
 			for (const key of Object.keys(this.subscriptions)) {
@@ -156,7 +151,6 @@ export class SubscribeHandler {
 	 */
 	async onMessage(client: WebSocketClient, message: WebSocketSubscribeMessage) {
 		if (getMessageType(message) === 'subscribe') {
-			// logger.debug(`[WS REST] SubscribeHandler ${JSON.stringify(message)}`);
 			try {
 				const collection = String(message.collection!);
 				const accountability = client.accountability;
@@ -194,7 +188,6 @@ export class SubscribeHandler {
 				client.send(fmtMessage('subscription', data, subscription.uid));
 			} catch (err) {
 				handleWebsocketException(client, err, 'subscribe');
-				// logger.debug(`[WS REST] ERROR ${JSON.stringify(err)}`);
 			}
 		}
 		if (getMessageType(message) === 'unsubscribe') {

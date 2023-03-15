@@ -64,7 +64,7 @@ export default abstract class SocketController {
 		const { pathname, query } = parse(request.url!, true);
 		if (pathname !== this.endpoint) return;
 		if (this.clients.size >= this.maxConnections) {
-			logger.warn('Websocket upgrade denied - max connections reached');
+			logger.debug('Websocket upgrade denied - max connections reached');
 			socket.write('HTTP/1.1 403 Forbidden\r\n\r\n');
 			socket.destroy();
 			return;
@@ -94,7 +94,7 @@ export default abstract class SocketController {
 			expiresAt = null;
 		}
 		if (!accountability || !accountability.user) {
-			logger.warn('Websocket upgrade denied - ' + JSON.stringify(accountability || 'invalid'));
+			logger.debug('Websocket upgrade denied - ' + JSON.stringify(accountability || 'invalid'));
 			socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n');
 			socket.destroy();
 			return;
@@ -114,6 +114,7 @@ export default abstract class SocketController {
 				ws.send(authenticationSuccess(payload['uid']));
 				this.server.emit('connection', ws, state);
 			} catch {
+				logger.debug('Websocket authentication handshake failed');
 				const error = new WebSocketException('auth', 'AUTH_FAILED', 'Authentication handshake failed.');
 				handleWebsocketException(ws, error, 'auth');
 				ws.close();
@@ -127,7 +128,6 @@ export default abstract class SocketController {
 		client.uid = uuid();
 
 		ws.on('message', async (data: WebSocket.RawData) => {
-			this.log(`${client.accountability?.user || 'public user'} message`);
 			if (this.rateLimiter !== null) {
 				try {
 					await this.rateLimiter.consume(client.uid);
@@ -136,10 +136,10 @@ export default abstract class SocketController {
 					const error = new WebSocketException(
 						'server',
 						'REQUESTS_EXCEEDED',
-						`Rate limit reached! Try again in ${timeout}ms`
+						`Rate limit reached. Try again in ${timeout}ms`
 					);
 					handleWebsocketException(client, error, 'server');
-					this.log(`${client.accountability?.user || 'public user'} rate limited`);
+					logger.debug(`Websocket#${client.uid} is rate limited`);
 					return;
 				}
 			}
@@ -150,28 +150,30 @@ export default abstract class SocketController {
 				handleWebsocketException(client, err, 'server');
 				return;
 			}
-			// this.log(JSON.stringify(message));
+			logger.trace(`Websocket#${client.uid} - ${JSON.stringify(message)}`);
 			if (getMessageType(message) === 'auth') {
 				try {
 					await this.handleAuthRequest(client, WebSocketAuthMessage.parse(message));
 				} catch {
-					// ignore errors?
+					// ignore errors
 				}
 				return;
 			}
 			ws.emit('parsed-message', message);
 		});
 		ws.on('error', () => {
-			this.log(`${client.accountability?.user || 'public user'} error`);
+			logger.debug(`Websocket#${client.uid} connection errored`);
 			if (this.authTimer) clearTimeout(this.authTimer);
 			this.clients.delete(client);
 		});
 		ws.on('close', () => {
-			this.log(`${client.accountability?.user || 'public user'} closed`);
+			logger.debug(`Websocket#${client.uid} connection closed`);
 			if (this.authTimer) clearTimeout(this.authTimer);
 			this.clients.delete(client);
 		});
-		this.log(`${client.accountability?.user || 'public user'} connected`);
+		logger.debug(
+			`Websocket#${client.uid} connected ${accountability ? JSON.stringify(accountability) : 'without authentication'}`
+		);
 		this.setTokenExpireTimer(client);
 		this.clients.add(client);
 		return client;
@@ -181,7 +183,7 @@ export default abstract class SocketController {
 		try {
 			message = WebSocketMessage.parse(parseJSON(data));
 		} catch (err: any) {
-			throw new WebSocketException('server', 'INVALID_PAYLOAD', 'Unable to parse the incoming message!');
+			throw new WebSocketException('server', 'INVALID_PAYLOAD', 'Unable to parse the incoming message.');
 		}
 		return message;
 	}
@@ -195,9 +197,9 @@ export default abstract class SocketController {
 			if (this.authentication.verbose) {
 				client.send(authenticationSuccess(message.uid));
 			}
-			this.log(`${client.accountability?.user || 'public user'} authenticated`);
+			logger.debug(`Websocket#${client.uid} authenticated ${JSON.stringify(client.accountability)}`);
 		} catch (error) {
-			this.log(`${client.accountability?.user || 'public user'} failed authentication`);
+			logger.debug(`Websocket#${client.uid} failed authentication`);
 			emitter.emitAction('websocket.auth.failure', { client });
 
 			client.accountability = null;
@@ -230,9 +232,5 @@ export default abstract class SocketController {
 		this.server.clients.forEach((ws) => {
 			ws.terminate();
 		});
-	}
-	log(_message: string) {
-		// disable this verbosity for now
-		// logger.debug(`[${this.name}] ${message}`);
 	}
 }
