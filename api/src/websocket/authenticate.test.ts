@@ -67,14 +67,16 @@ describe('authenticateWithToken', () => {
 
 describe('authenticateConnection', () => {
 	test('Success with email/password', async () => {
+		const TIMESTAMP = 123456789;
 		const result = await authenticateConnection({
-			type: 'AUTH',
+			type: 'auth',
 			email: 'email',
 			password: 'password',
 		} as WebSocketAuthMessage);
+		(getExpiresAtForToken as Mock).mockReturnValue(TIMESTAMP);
 		expect(result).toStrictEqual({
 			accountability: { role: null },
-			expiresAt: 123456,
+			expiresAt: TIMESTAMP,
 		});
 	});
 	test('Success with refresh_token', async () => {
@@ -82,7 +84,7 @@ describe('authenticateConnection', () => {
 		(getExpiresAtForToken as Mock).mockReturnValue(TIMESTAMP);
 
 		const result = await authenticateConnection({
-			type: 'AUTH',
+			type: 'auth',
 			refresh_token: 'refresh_token',
 		} as WebSocketAuthMessage);
 
@@ -96,7 +98,7 @@ describe('authenticateConnection', () => {
 		(getExpiresAtForToken as Mock).mockReturnValue(TIMESTAMP);
 
 		const result = await authenticateConnection({
-			type: 'AUTH',
+			type: 'auth',
 			access_token: 'access_token',
 		} as WebSocketAuthMessage);
 
@@ -111,7 +113,7 @@ describe('authenticateConnection', () => {
 		});
 		expect(() =>
 			authenticateConnection({
-				type: 'AUTH',
+				type: 'auth',
 				access_token: 'expired',
 			} as WebSocketAuthMessage)
 		).rejects.toThrow('Token expired.');
@@ -122,7 +124,7 @@ describe('authenticateConnection', () => {
 		} as Accountability);
 		expect(() =>
 			authenticateConnection({
-				type: 'AUTH',
+				type: 'auth',
 				access_token: '',
 			} as WebSocketAuthMessage)
 		).rejects.toThrow('Authentication failed.');
