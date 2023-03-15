@@ -31,8 +31,8 @@ export type QueryOptions = {
 };
 
 export type MutationTracker = {
-	itemCount: number;
-	trackItemCount: (mutationsCount: number) => void;
+	trackMutations: (count: number) => void;
+	getCount: () => number;
 };
 
 export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractService {
@@ -55,14 +55,16 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	}
 
 	createMutationTracker(initialCount = 0): MutationTracker {
-		let itemCount = initialCount;
+		let mutationCount = initialCount;
 		return {
-			itemCount,
-			trackItemCount(count: number) {
-				itemCount += count;
-				if (itemCount > env.MAX_BATCH_MUTATION) {
+			trackMutations(count: number) {
+				mutationCount += count;
+				if (mutationCount > env.MAX_BATCH_MUTATION) {
 					throw new InvalidPayloadException('Max batch mutation limit exceeded');
 				}
+			},
+			getCount() {
+				return mutationCount;
 			},
 		};
 	}
@@ -90,7 +92,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
 		if (!opts?.mutationTracker) (opts || (opts = {})).mutationTracker = this.createMutationTracker();
 		if (!opts?.bypassLimits) {
-			opts.mutationTracker!.trackItemCount(1);
+			opts.mutationTracker!.trackMutations(1);
 		}
 
 		const primaryKeyField = this.schema.collections[this.collection].primary;
@@ -533,7 +535,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
 		if (!opts?.mutationTracker) (opts || (opts = {})).mutationTracker = this.createMutationTracker();
 		if (!opts?.bypassLimits) {
-			opts.mutationTracker!.trackItemCount(keys.length);
+			opts.mutationTracker!.trackMutations(keys.length);
 		}
 
 		const primaryKeyField = this.schema.collections[this.collection].primary;
@@ -825,7 +827,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	async deleteMany(keys: PrimaryKey[], opts?: MutationOptions): Promise<PrimaryKey[]> {
 		if (!opts?.mutationTracker) (opts || (opts = {})).mutationTracker = this.createMutationTracker();
 		if (!opts?.bypassLimits) {
-			opts.mutationTracker!.trackItemCount(keys.length);
+			opts.mutationTracker!.trackMutations(keys.length);
 		}
 
 		const primaryKeyField = this.schema.collections[this.collection].primary;
