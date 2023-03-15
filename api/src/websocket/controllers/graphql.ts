@@ -58,7 +58,7 @@ export class GraphQLSubscriptionController extends SocketController {
 							client.accountability = await refreshAccountability(client.accountability);
 							await cb(JSON.stringify(message));
 						} catch (error) {
-							handleWebsocketException(client, error);
+							handleWebsocketException(client, error, 'graphql');
 						}
 					});
 				},

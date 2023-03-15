@@ -32,7 +32,7 @@ export class WebsocketController extends SocketController {
 				client.accountability = await refreshAccountability(client.accountability);
 				emitter.emitAction('websocket.message', { message, client });
 			} catch (error) {
-				handleWebsocketException(client, error);
+				handleWebsocketException(client, error, 'server');
 				return;
 			}
 		});

@@ -133,7 +133,7 @@ export default abstract class SocketController {
 					'REQUESTS_EXCEEDED',
 					`Rate limit reached! Try again in ${timeout}ms`
 				);
-				handleWebsocketException(client, error);
+				handleWebsocketException(client, error, 'server');
 				this.log(`${client.accountability?.user || 'public user'} rate limited`);
 				return;
 			}
@@ -141,7 +141,7 @@ export default abstract class SocketController {
 			try {
 				message = this.parseMessage(data.toString());
 			} catch (err: any) {
-				handleWebsocketException(client, err);
+				handleWebsocketException(client, err, 'server');
 				return;
 			}
 			// this.log(JSON.stringify(message));
@@ -214,7 +214,7 @@ export default abstract class SocketController {
 			handleWebsocketException(client, new TokenExpiredException(), 'auth');
 			waitForMessageType(client, 'AUTH', this.authentication.timeout).catch((msg: WebSocketMessage) => {
 				const error = new WebSocketException('auth', 'AUTH_TIMEOUT', 'Authentication timed out.', msg?.uid);
-				handleWebsocketException(client, error);
+				handleWebsocketException(client, error, 'auth');
 				if (this.authentication.mode !== 'public') {
 					client.close();
 				}

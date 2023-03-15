@@ -1,5 +1,7 @@
 import { BaseException } from '@directus/shared/exceptions';
 import type { WebSocket } from 'ws';
+import { fromZodError } from 'zod-validation-error';
+import { ZodError } from 'zod';
 import logger from '../logger';
 import type { WebSocketResponse } from './messages';
 import type { WebSocketClient } from './types';
@@ -34,6 +36,10 @@ export class WebSocketException extends Error {
 	static fromException(error: BaseException, type = 'unknown') {
 		return new WebSocketException(type, error.code, error.message);
 	}
+	static fromZodError(error: ZodError, type = 'unknown') {
+		const zError = fromZodError(error);
+		return new WebSocketException(type, 'INVALID_PAYLOAD', zError.message);
+	}
 }
 
 export function handleWebsocketException(client: WebSocketClient | WebSocket, error: unknown, type?: string): void {
@@ -43,6 +49,10 @@ export function handleWebsocketException(client: WebSocketClient | WebSocket, er
 	}
 	if (error instanceof WebSocketException) {
 		client.send(error.toMessage());
+		return;
+	}
+	if (error instanceof ZodError) {
+		client.send(WebSocketException.fromZodError(error, type).toMessage());
 		return;
 	}
 	// unhandled exceptions

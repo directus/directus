@@ -15,6 +15,7 @@ export class ItemsHandler {
 			try {
 				const parsedMessage = WebSocketItemsMessage.parse(message);
 				this.onMessage(client, parsedMessage).catch((err) => {
+					// this catch is required because the async onMessage function is not awaited
 					handleWebsocketException(client, err, 'items');
 				});
 			} catch (err) {
