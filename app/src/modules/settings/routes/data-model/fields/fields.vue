@@ -186,6 +186,7 @@ export default defineComponent({
 		async function deleteAndQuit() {
 			await remove();
 			await Promise.all([collectionsStore.hydrate(), fieldsStore.hydrate()]);
+			edits.value = {};
 			router.replace(`/settings/data-model`);
 		}
 

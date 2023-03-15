@@ -253,7 +253,7 @@ uuid: UUID
 hash: Hash
 geometry: Geometria (totes)
 geometry.Point: Punt
-geometry.LineString: Cadena Línia 
+geometry.LineString: Cadena Línia
 geometry.Polygon: Polígon
 geometry.MultiPoint: Multipunt
 geometry.MultiLineString: Cadena Línia múltiple
@@ -845,7 +845,7 @@ wysiwyg_options:
   superscript: Superíndex
   codeblock: Codi
   blockquote: Bloc de cita
-  bullist: Llista amb vinyetes 
+  bullist: Llista amb vinyetes
   numlist: Llista ordenada
   hr: Regle horitzontal
   link: Afegeix / Edita l'enllaç
@@ -1087,7 +1087,7 @@ fields:
     mapbox_placeholder: pk.eyJ1Ijo.....
     attribution: Atribució
     attribution_placeholder: Contribuïdors OpenStreetMap ©
-    transforms_note: El nom de mètode Sharp i els seus arguments. Per a més informació https://sharp.pixelplumbing.com/api-constructor 
+    transforms_note: El nom de mètode Sharp i els seus arguments. Per a més informació https://sharp.pixelplumbing.com/api-constructor
     additional_transforms: Transformacions addicionals
     project_name: Nom del projecte
     project_descriptor: Descriptor del projecte
@@ -1171,7 +1171,7 @@ field_options:
         fit_text: Encaixa dins
         outside_text: Encaixa per fora
     additional_transforms: Transformacions addicionals
-    transforms_note: El nom de mètode Sharp i els seus arguments. Per a més informació https://sharp.pixelplumbing.com/api-constructor 
+    transforms_note: El nom de mètode Sharp i els seus arguments. Per a més informació https://sharp.pixelplumbing.com/api-constructor
     mapbox_key: Token d'accés Mapbox
     mapbox_placeholder: pk.eyJ1Ijo.....
     basemaps: Mapes base

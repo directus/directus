@@ -350,6 +350,7 @@ async function saveAsCopyAndNavigate() {
 async function deleteAndQuit() {
 	try {
 		await remove();
+		edits.value = {};
 		router.replace(to.value);
 	} catch {
 		// `remove` will show the unexpected error dialog

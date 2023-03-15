@@ -5,6 +5,7 @@ import {
 	DeleteCollection,
 	PRIMARY_KEY_TYPES,
 	CreateFieldM2M,
+	CreateFieldM2A,
 	CreateFieldM2O,
 	CreateFieldO2M,
 	DeleteField,
@@ -21,6 +22,10 @@ export const collectionM2M = 'test_schema_m2m';
 export const collectionM2M2 = 'test_schema_m2m2';
 export const junctionM2M = 'test_schema_jm2m';
 export const junctionM2M2 = 'test_schema_jm2m2';
+export const collectionM2A = 'test_schema_m2a';
+export const collectionM2A2 = 'test_schema_m2a2';
+export const junctionM2A = 'test_schema_jm2a';
+export const junctionM2A2 = 'test_schema_jm2a2';
 export const collectionSelf = 'test_schema_self';
 export const junctionSelfM2M = 'test_schema_jm2m_self';
 export const tempTestCollection = 'temp_test_collection';
@@ -49,6 +54,10 @@ export const deleteAllCollections = async (vendor: string, pkType: PrimaryKeyTyp
 	const localCollectionM2M2 = `${collectionM2M2}_${pkType}${suffix}`;
 	const localJunctionAllM2M = `${junctionM2M}_${pkType}${suffix}`;
 	const localJunctionM2MM2M2 = `${junctionM2M2}_${pkType}${suffix}`;
+	const localCollectionM2A = `${collectionM2A}_${pkType}${suffix}`;
+	const localCollectionM2A2 = `${collectionM2A2}_${pkType}${suffix}`;
+	const localJunctionAllM2A = `${junctionM2A}_${pkType}${suffix}`;
+	const localJunctionM2AM2A2 = `${junctionM2A2}_${pkType}${suffix}`;
 	const localCollectionM2O = `${collectionM2O}_${pkType}${suffix}`;
 	const localCollectionM2O2 = `${collectionM2O2}_${pkType}${suffix}`;
 	const localCollectionO2M = `${collectionO2M}_${pkType}${suffix}`;
@@ -67,6 +76,10 @@ export const deleteAllCollections = async (vendor: string, pkType: PrimaryKeyTyp
 	await DeleteCollection(vendor, { collection: localJunctionAllM2M });
 	await DeleteCollection(vendor, { collection: localCollectionM2M2 });
 	await DeleteCollection(vendor, { collection: localCollectionM2M });
+	await DeleteCollection(vendor, { collection: localJunctionM2AM2A2 });
+	await DeleteCollection(vendor, { collection: localJunctionAllM2A });
+	await DeleteCollection(vendor, { collection: localCollectionM2A2 });
+	await DeleteCollection(vendor, { collection: localCollectionM2A });
 	await DeleteCollection(vendor, { collection: localCollectionAll });
 	await DeleteCollection(vendor, { collection: localCollectionM2O });
 	await DeleteCollection(vendor, { collection: localCollectionM2O2 });
@@ -86,6 +99,10 @@ export const seedDBStructure = () => {
 						const localCollectionM2M2 = `${collectionM2M2}_${pkType}${suffix}`;
 						const localJunctionAllM2M = `${junctionM2M}_${pkType}${suffix}`;
 						const localJunctionM2MM2M2 = `${junctionM2M2}_${pkType}${suffix}`;
+						const localCollectionM2A = `${collectionM2A}_${pkType}${suffix}`;
+						const localCollectionM2A2 = `${collectionM2A2}_${pkType}${suffix}`;
+						const localJunctionAllM2A = `${junctionM2A}_${pkType}${suffix}`;
+						const localJunctionM2AM2A2 = `${junctionM2A2}_${pkType}${suffix}`;
 						const localCollectionM2O = `${collectionM2O}_${pkType}${suffix}`;
 						const localCollectionM2O2 = `${collectionM2O2}_${pkType}${suffix}`;
 						const localCollectionO2M = `${collectionO2M}_${pkType}${suffix}`;
@@ -139,6 +156,35 @@ export const seedDBStructure = () => {
 							otherCollection: localCollectionM2M2,
 							otherField: 'm2m2_m2m',
 							junctionCollection: localJunctionM2MM2M2,
+							primaryKeyType: pkType,
+						});
+
+						// Create M2A collection
+						await CreateCollection(vendor, {
+							collection: localCollectionM2A,
+							primaryKeyType: pkType,
+						});
+
+						// Create nested M2A collection
+						await CreateCollection(vendor, {
+							collection: localCollectionM2A2,
+							primaryKeyType: pkType,
+						});
+
+						// Create M2A relationships
+						await CreateFieldM2A(vendor, {
+							collection: localCollectionAll,
+							field: 'all_m2a',
+							junctionCollection: localJunctionAllM2A,
+							relatedCollections: [localCollectionM2A],
+							primaryKeyType: pkType,
+						});
+
+						await CreateFieldM2A(vendor, {
+							collection: localCollectionM2A,
+							field: 'm2a_m2a2',
+							junctionCollection: localJunctionM2AM2A2,
+							relatedCollections: [localCollectionM2A2],
 							primaryKeyType: pkType,
 						});
 

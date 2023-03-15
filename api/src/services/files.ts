@@ -103,7 +103,7 @@ export class FilesService extends ItemsService {
 
 		await sudoService.updateOne(primaryKey, payload, { emitEvents: false });
 
-		if (this.cache && env.CACHE_AUTO_PURGE) {
+		if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
 			await this.cache.clear();
 		}
 
@@ -161,26 +161,46 @@ export class FilesService extends ItemsService {
 						xmp?: Record<string, unknown>;
 					} = {};
 					if (sharpMetadata.exif) {
-						const { image, thumbnail, interoperability, ...rest } = exif(sharpMetadata.exif);
-						if (image) {
-							fullMetadata.ifd0 = image;
+						try {
+							const { image, thumbnail, interoperability, ...rest } = exif(sharpMetadata.exif);
+							if (image) {
+								fullMetadata.ifd0 = image;
+							}
+							if (thumbnail) {
+								fullMetadata.ifd1 = thumbnail;
+							}
+							if (interoperability) {
+								fullMetadata.interop = interoperability;
+							}
+							Object.assign(fullMetadata, rest);
+						} catch (err) {
+							logger.warn(`Couldn't extract EXIF metadata from file`);
+							logger.warn(err);
 						}
-						if (thumbnail) {
-							fullMetadata.ifd1 = thumbnail;
-						}
-						if (interoperability) {
-							fullMetadata.interop = interoperability;
-						}
-						Object.assign(fullMetadata, rest);
 					}
 					if (sharpMetadata.icc) {
-						fullMetadata.icc = parseIcc(sharpMetadata.icc);
+						try {
+							fullMetadata.icc = parseIcc(sharpMetadata.icc);
+						} catch (err) {
+							logger.warn(`Couldn't extract ICC profile data from file`);
+							logger.warn(err);
+						}
 					}
 					if (sharpMetadata.iptc) {
-						fullMetadata.iptc = parseIptc(sharpMetadata.iptc);
+						try {
+							fullMetadata.iptc = parseIptc(sharpMetadata.iptc);
+						} catch (err) {
+							logger.warn(`Couldn't extract IPTC Photo Metadata from file`);
+							logger.warn(err);
+						}
 					}
 					if (sharpMetadata.xmp) {
-						fullMetadata.xmp = parseXmp(sharpMetadata.xmp);
+						try {
+							fullMetadata.xmp = parseXmp(sharpMetadata.xmp);
+						} catch (err) {
+							logger.warn(`Couldn't extract XMP data from file`);
+							logger.warn(err);
+						}
 					}
 
 					if (fullMetadata?.iptc?.Caption && typeof fullMetadata.iptc.Caption === 'string') {
