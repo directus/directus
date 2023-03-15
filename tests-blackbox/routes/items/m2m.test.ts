@@ -2205,7 +2205,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 			});
 		});
 
-		describe.only('MAX_BATCH_MUTATION Tests', () => {
+		describe('MAX_BATCH_MUTATION Tests', () => {
 			describe('createOne', () => {
 				describe('passes when below limit', () => {
 					it.each(vendors)('%s', async (vendor) => {
