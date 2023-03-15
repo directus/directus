@@ -213,7 +213,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				},
 			});
 
-			const tableHeaders = computed<(HeaderRaw & {key: string})[]>({
+			const tableHeaders = computed<HeaderRaw[]>({
 				get() {
 					return activeFields.value.map((field) => {
 						let description: string | null = null;
@@ -249,8 +249,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 								if (arrayField)
 									return {
 										text: field.name,
-										value: arrayField.field,
-										key: field.key,
+										value: field.key,
 										description,
 										width: localWidths.value[field.key] || layoutOptions.value?.widths?.[field.key] || null,
 										align: layoutOptions.value?.align?.[field.key] || 'left',
@@ -264,14 +263,13 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 											collection: arrayField.collection,
 										},
 										sortable: ['json', 'alias', 'presentation', 'translations'].includes(arrayField.type) === false,
-									};
+									} as HeaderRaw;
 							}
 						}
 
 						return {
 							text: field.name,
 							value: field.key,
-							key: field.key,
 							description,
 							width: localWidths.value[field.key] || layoutOptions.value?.widths?.[field.key] || null,
 							align: layoutOptions.value?.align?.[field.key] || 'left',
@@ -285,7 +283,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 								collection: field.collection,
 							},
 							sortable: ['json', 'alias', 'presentation', 'translations'].includes(field.type) === false,
-						};
+						} as HeaderRaw;
 					});
 				},
 				set(val) {

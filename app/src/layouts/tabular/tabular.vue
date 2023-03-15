@@ -23,16 +23,16 @@
 			@update:sort="onSortChange"
 			@manual-sort="changeManualSort"
 		>
-			<template v-for="header in tableHeaders" :key="header.key" #[`item.${header.value}`]="{ item }">
+			<template v-for="header in tableHeaders" :key="header.value" #[`item.${header.value}`]="{ item }">
 				<render-display
-					:value="getDisplayValue(item, header)"
+					:value="getDisplayValue(item, header.value)"
 					:display="header.field.display"
 					:options="header.field.displayOptions"
 					:interface="header.field.interface"
 					:interface-options="header.field.interfaceOptions"
 					:type="header.field.type"
 					:collection="header.field.collection"
-					:field="header.value"
+					:field="header.field.field"
 				/>
 			</template>
 
@@ -173,7 +173,6 @@ export default {
 </script>
 
 <script lang="ts" setup>
-import { HeaderRaw } from '@/components/v-table/types';
 import { useShortcut } from '@/composables/use-shortcut';
 import { Collection } from '@/types/collections';
 import { useSync } from '@directus/shared/composables';
@@ -185,6 +184,7 @@ import { useAliasFields } from '@/composables/use-alias-fields';
 import { assign, merge } from 'lodash';
 import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
+import { HeaderRaw } from '@/components/v-table/types';
 
 interface Props {
 	collection: string;
@@ -279,12 +279,11 @@ const fieldsWritable = useSync(props, 'fields', emit);
 
 const { aliasedFields, aliasedKeys } = useAliasFields(fieldsWritable, collection);
 
-function getDisplayValue(item: Item, header: HeaderRaw) {
-	console.log(header, props.tableHeaders)
+function getDisplayValue(item: Item, key: string) {
 
-	const aliasInfo = Object.values(aliasedFields.value).find(field => field.key === header.key);
+	const aliasInfo = Object.values(aliasedFields.value).find(field => field.key === key);
 
-	if(!aliasInfo) return get(item, header.key);
+	if(!aliasInfo) return get(item, key);
 
 	const unAliasedItem = Object.keys(item).reduce<Item>((result, key) => {
 		if(aliasedKeys.value.includes(key)) {
@@ -298,7 +297,7 @@ function getDisplayValue(item: Item, header: HeaderRaw) {
 		return result;
 	}, {});
 
-	return get(unAliasedItem, header.key);
+	return get(unAliasedItem, key);
 }
 
 function addField(fieldKey: string) {
