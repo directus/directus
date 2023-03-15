@@ -1,27 +1,29 @@
 import { Item, Query } from '@directus/shared/types';
 import { z } from 'zod';
 
+const zodPrimaryKey = z.union([z.string(), z.number()]);
+
 export const WebSocketMessage = z
 	.object({
 		type: z.string(),
 		uid: z.string().optional(),
 	})
 	.passthrough();
-export type WebSocketMessage = z.infer<typeof WebSocketMessage> & Record<string, any>;
+export type WebSocketMessage = z.infer<typeof WebSocketMessage>;
 
-export const WebSocketResponse = z.union([
+export const WebSocketResponse = z.discriminatedUnion('status', [
 	WebSocketMessage.extend({
-		status: z.union([z.literal('OK'), z.literal('ok')]),
-	}).passthrough(),
+		status: z.literal('ok'),
+	}),
 	WebSocketMessage.extend({
-		status: z.union([z.literal('ERROR'), z.literal('error')]),
+		status: z.literal('error'),
 		error: z
 			.object({
 				code: z.string(),
 				message: z.string(),
 			})
 			.passthrough(),
-	}).passthrough(),
+	}),
 ]);
 export type WebSocketResponse = z.infer<typeof WebSocketResponse>;
 
@@ -33,83 +35,76 @@ export const BasicAuthMessage = z.union([
 export type BasicAuthMessage = z.infer<typeof BasicAuthMessage>;
 
 export const WebSocketAuthMessage = WebSocketMessage.extend({
-	type: z.union([z.literal('AUTH'), z.literal('auth')]),
+	type: z.literal('auth'),
 }).and(BasicAuthMessage);
 export type WebSocketAuthMessage = z.infer<typeof WebSocketAuthMessage>;
 
-export const WebSocketSubscribeMessage = z.union([
+export const WebSocketSubscribeMessage = z.discriminatedUnion('type', [
 	WebSocketMessage.extend({
-		type: z.union([z.literal('SUBSCRIBE'), z.literal('subscribe')]),
+		type: z.literal('subscribe'),
 		collection: z.string(),
-		item: z.union([z.string(), z.number()]).optional(),
+		item: zodPrimaryKey.optional(),
 		query: z.custom<Query>().optional(),
 	}),
 	WebSocketMessage.extend({
-		type: z.union([z.literal('UNSUBSCRIBE'), z.literal('unsubscribe')]),
+		type: z.literal('unsubscribe'),
 	}),
 ]);
 export type WebSocketSubscribeMessage = z.infer<typeof WebSocketSubscribeMessage>;
 
 const ZodItem = z.custom<Partial<Item>>();
-const PartialItemsMessage = WebSocketMessage.extend({
-	type: z.union([z.literal('ITEMS'), z.literal('items')]),
+const PartialItemsMessage = z.object({
+	uid: z.string().optional(),
+	type: z.literal('items'),
 	collection: z.string(),
 });
 
-export const WebSocketItemsCreateMessage = PartialItemsMessage.extend({
-	action: z.union([z.literal('CREATE'), z.literal('create')]),
-	data: z.union([z.array(ZodItem), ZodItem]),
-	query: z.custom<Query>().optional(),
-});
-export const WebSocketItemsReadMessage = PartialItemsMessage.extend({
-	action: z.union([z.literal('READ'), z.literal('read')]),
-	query: z.custom<Query>().default({} as Query),
-	ids: z.array(z.union([z.string(), z.number()])).optional(),
-	id: z.union([z.string(), z.number()]).optional(),
-});
-export const WebSocketItemsUpdateMessage = PartialItemsMessage.extend({
-	action: z.union([z.literal('UPDATE'), z.literal('update')]),
-	data: ZodItem,
-	ids: z.array(z.union([z.string(), z.number()])).optional(),
-	id: z.union([z.string(), z.number()]).optional(),
-	query: z.custom<Query>().optional(),
-});
-export const WebSocketItemsDeleteMessage = PartialItemsMessage.extend({
-	action: z.union([z.literal('DELETE'), z.literal('delete')]),
-	ids: z.array(z.union([z.string(), z.number()])).optional(),
-	id: z.union([z.string(), z.number()]).optional(),
-	query: z.custom<Query>().optional(),
-});
 export const WebSocketItemsMessage = z.union([
-	WebSocketItemsCreateMessage,
-	WebSocketItemsReadMessage,
-	WebSocketItemsUpdateMessage,
-	WebSocketItemsDeleteMessage,
+	PartialItemsMessage.extend({
+		action: z.literal('create'),
+		data: z.union([z.array(ZodItem), ZodItem]),
+		query: z.custom<Query>().optional(),
+	}),
+	PartialItemsMessage.extend({
+		action: z.literal('read'),
+		ids: z.array(zodPrimaryKey).optional(),
+		id: zodPrimaryKey.optional(),
+		query: z.custom<Query>().optional(),
+	}),
+	PartialItemsMessage.extend({
+		action: z.literal('update'),
+		data: ZodItem,
+		ids: z.array(zodPrimaryKey).optional(),
+		id: zodPrimaryKey.optional(),
+		query: z.custom<Query>().optional(),
+	}),
+	PartialItemsMessage.extend({
+		action: z.literal('delete'),
+		ids: z.array(zodPrimaryKey).optional(),
+		id: zodPrimaryKey.optional(),
+		query: z.custom<Query>().optional(),
+	}),
 ]);
 export type WebSocketItemsMessage = z.infer<typeof WebSocketItemsMessage>;
 
-export const WebSocketBaseEvent = z
-	.object({
-		action: z.enum(['create', 'update', 'delete']),
+export const WebSocketEvent = z.discriminatedUnion('action', [
+	z.object({
+		action: z.literal('create'),
 		collection: z.string(),
 		payload: z.record(z.any()).optional(),
-	})
-	.passthrough();
-export const WebSocketCreateEvent = WebSocketBaseEvent.extend({
-	action: z.literal('create'),
-	key: z.union([z.string(), z.number()]),
-});
-export type WebSocketCreateEvent = z.infer<typeof WebSocketCreateEvent>;
-
-export const WebSocketUpdateEvent = WebSocketBaseEvent.extend({
-	action: z.literal('update'),
-	keys: z.array(z.union([z.string(), z.number()])),
-});
-export type WebSocketUpdateEvent = z.infer<typeof WebSocketUpdateEvent>;
-
-export const WebSocketDeleteEvent = WebSocketBaseEvent.extend({
-	action: z.literal('delete'),
-	keys: z.array(z.union([z.string(), z.number()])),
-});
-export type WebSocketDeleteEvent = z.infer<typeof WebSocketDeleteEvent>;
-export type WebSocketEvent = WebSocketCreateEvent | WebSocketUpdateEvent | WebSocketDeleteEvent;
+		key: zodPrimaryKey,
+	}),
+	z.object({
+		action: z.literal('update'),
+		collection: z.string(),
+		payload: z.record(z.any()).optional(),
+		keys: z.array(zodPrimaryKey),
+	}),
+	z.object({
+		action: z.literal('delete'),
+		collection: z.string(),
+		payload: z.record(z.any()).optional(),
+		keys: z.array(zodPrimaryKey),
+	}),
+]);
+export type WebSocketEvent = z.infer<typeof WebSocketEvent>;
