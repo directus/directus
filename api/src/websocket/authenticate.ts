@@ -27,9 +27,8 @@ export async function authenticateConnection(
 	try {
 		if ('email' in message && 'password' in message) {
 			const authenticationService = new AuthenticationService({ schema: await getSchema() });
-			const { accessToken, expires } = await authenticationService.login(DEFAULT_AUTH_PROVIDER, message);
+			const { accessToken } = await authenticationService.login(DEFAULT_AUTH_PROVIDER, message);
 			access_token = accessToken;
-			expires_at = expires;
 		}
 		if ('refresh_token' in message) {
 			const authenticationService = new AuthenticationService({ schema: await getSchema() });
