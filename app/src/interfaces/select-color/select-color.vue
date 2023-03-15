@@ -408,10 +408,6 @@ function useColor() {
 }
 
 .color-input {
-	:deep(.input) {
-		padding-left: 6px;
-	}
-
 	.v-input.html-color-select {
 		width: 0;
 		height: 0;
