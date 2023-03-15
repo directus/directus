@@ -196,7 +196,6 @@ export default abstract class SocketController {
 				client.send(authenticationSuccess(message.uid));
 			}
 			this.log(`${client.accountability?.user || 'public user'} authenticated`);
-			return;
 		} catch (error) {
 			this.log(`${client.accountability?.user || 'public user'} failed authentication`);
 			emitter.emitAction('websocket.auth.failure', { client });
