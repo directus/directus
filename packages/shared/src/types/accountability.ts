@@ -1,4 +1,5 @@
 import { Permission } from './permissions';
+import { User } from './users';
 
 export type ShareScope = {
 	collection: string;
@@ -8,6 +9,7 @@ export type ShareScope = {
 export type Accountability = {
 	role: string | null;
 	user?: string | null;
+	userDetail?: User;
 	admin?: boolean;
 	app?: boolean;
 	permissions?: Permission[];

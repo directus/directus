@@ -11,6 +11,7 @@ export function parseFilter(filter: Filter | null): Filter {
 	const accountability: Accountability = {
 		role: userStore.currentUser.role.id,
 		user: userStore.currentUser.id,
+		userDetail: userStore.currentUser,
 	};
 
 	return parseFilterShared(filter, accountability) ?? {};

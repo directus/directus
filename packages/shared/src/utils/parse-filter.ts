@@ -1,4 +1,4 @@
-import { isObjectLike } from 'lodash';
+import { isObjectLike, get as getObj } from 'lodash';
 import { REGEX_BETWEEN_PARENS } from '../constants';
 import { Accountability, Filter, Role, User } from '../types';
 import { adjustDate } from './adjust-date';
@@ -124,6 +124,12 @@ function parseDynamicVariable(value: any, accountability: Accountability | null,
 		}
 
 		return new Date();
+	}
+
+	if (value.startsWith('$CURRENT_USER.')) {
+		if (accountability?.userDetail) {
+			return getObj(accountability.userDetail, value.replace('$CURRENT_USER.', ''));
+		}
 	}
 
 	if (value.startsWith('$CURRENT_USER')) {
