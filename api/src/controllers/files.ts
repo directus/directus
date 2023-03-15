@@ -9,7 +9,7 @@ import { respond } from '../middleware/respond';
 import useCollection from '../middleware/use-collection';
 import { validateBatch } from '../middleware/validate-batch';
 import { FilesService, MetaService } from '../services';
-import { File, PrimaryKey } from '../types';
+import { PrimaryKey } from '../types';
 import asyncHandler from '../utils/async-handler';
 
 // @ts-ignore
