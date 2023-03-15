@@ -52,7 +52,7 @@ describe('Websocket heartbeat handler', () => {
 		const fakeClient = mockClient();
 		(fakeClient.send as Mock).mockImplementation(() => {
 			//respond with a message
-			emitter.emitAction('websocket.message', { client: fakeClient, message: { type: 'PONG' } }, {} as EventContext);
+			emitter.emitAction('websocket.message', { client: fakeClient, message: { type: 'pong' } }, {} as EventContext);
 		});
 		controller.clients.add(fakeClient);
 		emitter.emitAction('websocket.connect', {}, {} as EventContext);
@@ -84,7 +84,7 @@ describe('Websocket heartbeat handler', () => {
 		const fakeClient = mockClient();
 		controller.clients.add(fakeClient);
 		emitter.emitAction('websocket.connect', {}, {} as EventContext);
-		emitter.emitAction('websocket.message', { client: fakeClient, message: { type: 'PING' } }, {} as EventContext);
+		emitter.emitAction('websocket.message', { client: fakeClient, message: { type: 'ping' } }, {} as EventContext);
 		expect(fakeClient.send).toBeCalled();
 	});
 });

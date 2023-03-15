@@ -1,5 +1,5 @@
 import emitter from '../../emitter';
-import { fmtMessage } from '../utils/message';
+import { fmtMessage, getMessageType } from '../utils/message';
 import type { WebSocketClient } from '../types';
 import { WebsocketController, getWebsocketController } from '../controllers';
 import type { ActionHandler } from '@directus/shared/types';
@@ -38,7 +38,7 @@ export class HeartbeatHandler {
 		}
 	}
 	onMessage(client: WebSocketClient, message: WebSocketMessage) {
-		if (message?.type.toUpperCase() !== 'PING') return;
+		if (getMessageType(message) !== 'ping') return;
 		// send pong message back as acknowledgement
 		const data = 'uid' in message ? { uid: message.uid } : {};
 		client.send(fmtMessage('pong', data));

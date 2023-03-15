@@ -11,7 +11,7 @@ import { WebSocketItemsMessage } from '../messages';
 export class ItemsHandler {
 	constructor() {
 		emitter.onAction('websocket.message', ({ client, message }) => {
-			if (getMessageType(message) !== 'ITEMS') return;
+			if (getMessageType(message) !== 'items') return;
 			try {
 				const parsedMessage = WebSocketItemsMessage.parse(message);
 				this.onMessage(client, parsedMessage).catch((err) => {
@@ -49,7 +49,7 @@ export class ItemsHandler {
 			}
 		}
 		if (message.action === 'read') {
-			const query = sanitizeQuery(message.query, accountability);
+			const query = sanitizeQuery(message.query ?? {}, accountability);
 			if (message.id) {
 				result = await service.readOne(message.id, query);
 			} else if (message.ids) {
@@ -60,7 +60,7 @@ export class ItemsHandler {
 			meta = await metaService.getMetaForQuery(message.collection, query);
 		}
 		if (message.action === 'update') {
-			const query = sanitizeQuery(message?.query ?? {}, accountability);
+			const query = sanitizeQuery(message.query ?? {}, accountability);
 			if (message.id) {
 				const key = await service.updateOne(message.id, message.data);
 				result = await service.readOne(key);

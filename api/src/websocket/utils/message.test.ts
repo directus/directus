@@ -61,7 +61,7 @@ describe('getMessageType util', () => {
 		expect(getMessageType([])).toBe('');
 	});
 	test('Get the type property', () => {
-		expect(getMessageType({ type: 'test' })).toBe('TEST');
+		expect(getMessageType({ type: 'test' })).toBe('test');
 		expect(getMessageType({ type: 123 })).toBe('123');
 	});
 });

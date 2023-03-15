@@ -29,7 +29,6 @@ export class SubscribeHandler {
 		this.messenger = getMessenger();
 		this.bindWebsocket();
 		this.bindModules([
-			// move this to constants (or maybe make it configurable)
 			'items',
 			'activity',
 			'collections',
@@ -52,7 +51,7 @@ export class SubscribeHandler {
 	bindWebsocket() {
 		// listen to incoming messages on the connected websockets
 		emitter.onAction('websocket.message', ({ client, message }) => {
-			if (!['SUBSCRIBE', 'UNSUBSCRIBE'].includes(message.type?.toUpperCase())) return;
+			if (!['subscribe', 'unsubscribe'].includes(getMessageType(message))) return;
 			try {
 				this.onMessage(client, WebSocketSubscribeMessage.parse(message));
 			} catch (error) {
@@ -156,7 +155,7 @@ export class SubscribeHandler {
 	 * Handle incoming (un)subscribe requests
 	 */
 	async onMessage(client: WebSocketClient, message: WebSocketSubscribeMessage) {
-		if (getMessageType(message) === 'SUBSCRIBE') {
+		if (getMessageType(message) === 'subscribe') {
 			// logger.debug(`[WS REST] SubscribeHandler ${JSON.stringify(message)}`);
 			try {
 				const collection = String(message.collection!);
@@ -198,7 +197,7 @@ export class SubscribeHandler {
 				// logger.debug(`[WS REST] ERROR ${JSON.stringify(err)}`);
 			}
 		}
-		if (getMessageType(message) === 'UNSUBSCRIBE') {
+		if (getMessageType(message) === 'unsubscribe') {
 			this.unsubscribe(client, message.uid);
 		}
 	}

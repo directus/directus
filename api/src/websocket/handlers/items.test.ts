@@ -52,7 +52,7 @@ describe('Websocket heartbeat handler', () => {
 			'websocket.message',
 			{
 				client: mockClient(),
-				message: { type: 'PONG' },
+				message: { type: 'pong' },
 			},
 			{} as EventContext
 		);
@@ -67,7 +67,7 @@ describe('Websocket heartbeat handler', () => {
 			'websocket.message',
 			{
 				client: fakeClient,
-				message: { type: 'ITEMS', collection: 'test', action: 'create', data: {} },
+				message: { type: 'items', collection: 'test', action: 'create', data: {} },
 			},
 			{} as EventContext
 		);
@@ -89,7 +89,7 @@ describe('Websocket heartbeat handler', () => {
 			'websocket.message',
 			{
 				client: fakeClient,
-				message: { type: 'ITEMS', collection: 'test', action: 'create', data: {} },
+				message: { type: 'items', collection: 'test', action: 'create', data: {} },
 			},
 			{} as EventContext
 		);
@@ -111,7 +111,7 @@ describe('Websocket heartbeat handler', () => {
 			'websocket.message',
 			{
 				client: fakeClient,
-				message: { type: 'ITEMS', collection: 'test', action: 'create', data: [{}, {}] },
+				message: { type: 'items', collection: 'test', action: 'create', data: [{}, {}] },
 			},
 			{} as EventContext
 		);
@@ -134,7 +134,7 @@ describe('Websocket heartbeat handler', () => {
 			'websocket.message',
 			{
 				client: fakeClient,
-				message: { type: 'ITEMS', collection: 'test', action: 'read', query: {} },
+				message: { type: 'items', collection: 'test', action: 'read', query: {} },
 			},
 			{} as EventContext
 		);
@@ -156,7 +156,7 @@ describe('Websocket heartbeat handler', () => {
 			'websocket.message',
 			{
 				client: fakeClient,
-				message: { type: 'ITEMS', collection: 'test', action: 'update', data: {}, id: '123' },
+				message: { type: 'items', collection: 'test', action: 'update', data: {}, id: '123' },
 			},
 			{} as EventContext
 		);
@@ -180,7 +180,7 @@ describe('Websocket heartbeat handler', () => {
 			'websocket.message',
 			{
 				client: fakeClient,
-				message: { type: 'ITEMS', collection: 'test', action: 'update', data: {}, ids: ['123', '456'] },
+				message: { type: 'items', collection: 'test', action: 'update', data: {}, ids: ['123', '456'] },
 			},
 			{} as EventContext
 		);
@@ -202,7 +202,7 @@ describe('Websocket heartbeat handler', () => {
 			'websocket.message',
 			{
 				client: fakeClient,
-				message: { type: 'ITEMS', collection: 'test', action: 'delete', id: '123' },
+				message: { type: 'items', collection: 'test', action: 'delete', id: '123' },
 			},
 			{} as EventContext
 		);
@@ -222,7 +222,7 @@ describe('Websocket heartbeat handler', () => {
 			'websocket.message',
 			{
 				client: fakeClient,
-				message: { type: 'ITEMS', collection: 'test', action: 'delete', ids: ['123', 456] },
+				message: { type: 'items', collection: 'test', action: 'delete', ids: ['123', 456] },
 			},
 			{} as EventContext
 		);
@@ -242,7 +242,7 @@ describe('Websocket heartbeat handler', () => {
 			'websocket.message',
 			{
 				client: fakeClient,
-				message: { type: 'ITEMS', collection: 'test', action: 'delete', query: {} },
+				message: { type: 'items', collection: 'test', action: 'delete', query: {} },
 			},
 			{} as EventContext
 		);

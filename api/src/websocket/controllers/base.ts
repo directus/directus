@@ -108,7 +108,7 @@ export default abstract class SocketController {
 		this.server.handleUpgrade(request, socket, head, async (ws) => {
 			try {
 				const payload = await waitForAnyMessage(ws, this.authentication.timeout);
-				if (getMessageType(payload) !== 'AUTH') throw new Error();
+				if (getMessageType(payload) !== 'auth') throw new Error();
 
 				const state = await authenticateConnection(WebSocketAuthMessage.parse(payload));
 				ws.send(authenticationSuccess(payload['uid']));
@@ -151,7 +151,7 @@ export default abstract class SocketController {
 				return;
 			}
 			// this.log(JSON.stringify(message));
-			if (getMessageType(message) === 'AUTH') {
+			if (getMessageType(message) === 'auth') {
 				try {
 					await this.handleAuthRequest(client, WebSocketAuthMessage.parse(message));
 				} catch {
