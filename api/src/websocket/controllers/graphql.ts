@@ -41,7 +41,7 @@ export class GraphQLSubscriptionController extends SocketController {
 				return service.getSchema();
 			},
 		});
-		logger.info(`GraphQL Subscriptions at ws://${env.HOST}:${env.PORT}${this.endpoint}`);
+		logger.info(`GraphQL Subscriptions started at ws://${env.HOST}:${env.PORT}${this.endpoint}`);
 	}
 	private bindEvents(client: WebSocketClient) {
 		const closedHandler = this.gql.opened(

@@ -23,7 +23,7 @@ export class WebsocketController extends SocketController {
 		this.server.on('connection', (ws: WebSocket, auth: AuthenticationState) => {
 			this.bindEvents(this.createClient(ws, auth));
 		});
-		logger.info(`Websocket available at ws://${env.HOST}:${env.PORT}${this.endpoint}`);
+		logger.info(`Websocket Server started at ws://${env.HOST}:${env.PORT}${this.endpoint}`);
 	}
 	private bindEvents(client: WebSocketClient) {
 		client.on('parsed-message', async (message: WebSocketMessage) => {
