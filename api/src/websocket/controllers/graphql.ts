@@ -72,10 +72,10 @@ export class GraphQLSubscriptionController extends SocketController {
 	protected override async handleHandshakeUpgrade({ request, socket, head }: UpgradeContext) {
 		this.server.handleUpgrade(request, socket, head, async (ws) => {
 			try {
-				const msg: WebSocketMessage = await waitForAnyMessage(ws, this.authentication.timeout);
-				if (msg.type !== 'connection_init') throw new Error();
+				const msg = await waitForAnyMessage(ws, this.authentication.timeout);
+				if (msg?.type !== 'connection_init') throw new Error();
 
-				const state = await authenticateConnection(BasicAuthMessage.parse(msg['payload']));
+				const state = await authenticateConnection(BasicAuthMessage.parse(msg.payload));
 				this.server.emit('connection', ws, state);
 				ws.send(JSON.stringify({ type: 'connection_ack' }));
 				this.server.emit('message-parsed', msg);

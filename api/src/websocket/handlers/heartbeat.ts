@@ -38,7 +38,7 @@ export class HeartbeatHandler {
 		}
 	}
 	onMessage(client: WebSocketClient, message: WebSocketMessage) {
-		if (message.type.toUpperCase() !== 'PING') return;
+		if (message?.type.toUpperCase() !== 'PING') return;
 		// send pong message back as acknowledgement
 		const data = 'uid' in message ? { uid: message.uid } : {};
 		client.send(fmtMessage('pong', data));
