@@ -240,6 +240,7 @@ export default defineComponent({
 
 		async function deleteAndQuit() {
 			await remove();
+			edits.value = {};
 			router.replace(`/settings/roles`);
 		}
 
