@@ -148,6 +148,17 @@
 				</v-button>
 
 				<v-button
+					v-if="toolbar?.includes('file')"
+					v-tooltip="t('wysiwyg_options.file')"
+					:disabled="disabled"
+					small
+					icon
+					@click="fileDialogOpen = true"
+				>
+					<v-icon name="insert_drive_file" />
+				</v-button>
+
+				<v-button
 					v-for="custom in customSyntax"
 					:key="custom.name"
 					v-tooltip="custom.name"
@@ -202,6 +213,18 @@
 				</v-card-text>
 				<v-card-actions>
 					<v-button secondary @click="imageDialogOpen = false">{{ t('cancel') }}</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
+
+		<v-dialog :model-value="fileDialogOpen" @esc="fileDialogOpen = false" @update:model-value="fileDialogOpen = false">
+			<v-card>
+				<v-card-title>{{ t('upload_from_device') }}</v-card-title>
+				<v-card-text>
+					<v-upload from-url from-library :folder="folder" @input="onFileUpload" />
+				</v-card-text>
+				<v-card-actions>
+					<v-button secondary @click="fileDialogOpen = false">{{ t('cancel') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
@@ -293,6 +316,7 @@ export default defineComponent({
 		const view = ref(['editor']);
 
 		const imageDialogOpen = ref(false);
+		const fileDialogOpen = ref(false);
 
 		let count = ref(0);
 
@@ -408,7 +432,9 @@ export default defineComponent({
 			markdownString,
 			table,
 			onImageUpload,
+			onFileUpload,
 			imageDialogOpen,
+			fileDialogOpen,
 			useShortcut,
 			translateShortcut,
 			markdownInterface,
@@ -428,6 +454,22 @@ export default defineComponent({
 			codemirror.replaceSelection(`![${codemirror.getSelection()}](${url})`);
 
 			imageDialogOpen.value = false;
+		}
+
+		function onFileUpload(file: any) {
+			if (!codemirror) return;
+
+			let url = getPublicURL() + `assets/` + file.id;
+
+			if (props.imageToken) {
+				url += '?access_token=' + props.imageToken;
+			}
+
+			const title = codemirror.getSelection() || file.title;
+
+			codemirror.replaceSelection(`[${title}](${url})`);
+
+			fileDialogOpen.value = false;
 		}
 
 		function edit(type: Alteration, options?: Record<string, any>) {

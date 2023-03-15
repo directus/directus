@@ -30,6 +30,7 @@ export default defineInterface({
 						'link',
 						'table',
 						'image',
+						'file',
 						'empty',
 					],
 				},
@@ -77,6 +78,10 @@ export default defineInterface({
 							{
 								value: 'image',
 								text: '$t:wysiwyg_options.image',
+							},
+							{
+								value: 'file',
+								text: '$t:wysiwyg_options.file',
 							},
 							{
 								value: 'link',
