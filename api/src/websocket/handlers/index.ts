@@ -1,10 +1,10 @@
-import env from '../../env';
+import env, { toBoolean } from '../../env';
 import { ItemsHandler } from './items';
 import { HeartbeatHandler } from './heartbeat';
 import { SubscribeHandler } from './subscribe';
 
 export function startWebsocketHandlers() {
-	if (env.WEBSOCKETS_HEARTBEAT_ENABLED) {
+	if (toBoolean(env.WEBSOCKETS_HEARTBEAT_ENABLED)) {
 		new HeartbeatHandler();
 	}
 	new ItemsHandler();
