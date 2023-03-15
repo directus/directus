@@ -238,6 +238,8 @@ export class SubscribeHandler {
 			result['payload'] = await service.readByQuery(query);
 		} else if (event.action === 'create') {
 			result['payload'] = await service.readOne(event.key, query);
+		} else if (event.action === 'delete') {
+			result['payload'] = event.keys;
 		} else {
 			result['payload'] = await service.readMany(event.keys, query);
 		}
