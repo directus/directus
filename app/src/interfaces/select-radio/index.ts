@@ -29,6 +29,7 @@ export default defineInterface({
 							name: '$t:text',
 							meta: {
 								width: 'half',
+								required: true,
 								interface: 'system-input-translated-string',
 							},
 						},
@@ -39,6 +40,7 @@ export default defineInterface({
 							meta: {
 								width: 'half',
 								interface: 'input',
+								required: true,
 								options: {
 									font: 'monospace',
 								},
