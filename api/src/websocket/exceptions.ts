@@ -31,7 +31,7 @@ export class WebSocketException extends Error {
 	toMessage(): string {
 		return JSON.stringify(this.toJSON());
 	}
-	static fromException(error: BaseException, type = 'unkown') {
+	static fromException(error: BaseException, type = 'unknown') {
 		return new WebSocketException(type, error.code, error.message);
 	}
 }
