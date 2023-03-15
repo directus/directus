@@ -69,7 +69,7 @@ export function getColumnPath({ path, collection, aliasMap, relations, schema }:
 				addNestedPkField = schema.collections[parent].primary;
 			}
 			// Nested level alias field
-			else if (remainingParts.length === 1 && schema.collections[parent].fields[remainingParts[0]].type === 'alias') {
+			else if (remainingParts.length === 1 && schema.collections[parent].fields[remainingParts[0]]?.type === 'alias') {
 				remainingParts.push(schema.collections[relation!.related_collection!].primary);
 				addNestedPkField = schema.collections[relation!.related_collection!].primary;
 			}
