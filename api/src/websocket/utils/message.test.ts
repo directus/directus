@@ -1,5 +1,5 @@
 import { expect, describe, test, vi } from 'vitest';
-import { fmtMessage, safeSend } from './message';
+import { fmtMessage, getMessageType, safeSend } from './message';
 import type { WebSocketClient } from '../types';
 
 describe('fmtMessage util', () => {
@@ -49,5 +49,19 @@ describe('safeSend util', () => {
 		const result = await safeSend(fakeClient as unknown as WebSocketClient, 'a message');
 		expect(result).toBe(true);
 		expect(fakeClient.send).toBeCalledWith('a message');
+	});
+});
+
+describe('getMessageType util', () => {
+	test('Fails graceously', () => {
+		expect(getMessageType(null)).toBe('');
+		expect(getMessageType(undefined)).toBe('');
+		expect(getMessageType(false)).toBe('');
+		expect(getMessageType(123456)).toBe('');
+		expect(getMessageType([])).toBe('');
+	});
+	test('Get the type property', () => {
+		expect(getMessageType({ type: 'test' })).toBe('TEST');
+		expect(getMessageType({ type: 123 })).toBe('123');
 	});
 });
