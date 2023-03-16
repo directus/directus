@@ -448,7 +448,7 @@ export function useRelationMultiple(
 
 		return { fetchedSelectItems, selected, isItemSelected, selectedOnPage };
 
-		function getRelatedIDs(item: DisplayItem) {
+		function getRelatedIDs(item: DisplayItem): string | number | undefined {
 			switch (relation.value?.type) {
 				case 'o2m':
 					return item[relation.value.relatedPrimaryKeyField.field];
