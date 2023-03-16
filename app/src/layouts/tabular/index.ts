@@ -234,7 +234,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 							// Special case for translations to render the nested data in the translations display instead of the default display
 							if (types.at(-1) === 'o2m' && arrayField?.meta?.special?.includes('translations')) {
-								console.log(collection.value,fieldParts, fieldParts.slice(0, -1).join('.'), arrayField)
 
 								if (arrayField)
 									return {
