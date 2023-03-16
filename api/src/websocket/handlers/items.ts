@@ -87,7 +87,7 @@ export class ItemsHandler {
 				throw new WebSocketException(
 					'items',
 					'INVALID_PAYLOAD',
-					"Either 'ids', 'id' or 'query' is required for a DELETE request",
+					"Either 'ids', 'id' or 'query' is required for a DELETE request.",
 					uid
 				);
 			}
