@@ -46,7 +46,7 @@
 			@cancel="editing = null"
 		>
 			<template #actions>
-				<v-button v-tooltip.bottom="t('save')" icon rounded @click="save">
+				<v-button v-tooltip.bottom="t('save')" icon rounded :disabled="isSaveDisabled" @click="save">
 					<v-icon name="check" />
 				</v-button>
 			</template>
@@ -162,6 +162,16 @@ export default defineComponent({
 			},
 		});
 
+		const isSaveDisabled = computed(() => {
+			for (const field of linkFields) {
+				if (field.meta?.required && field.field) {
+					const fieldValue = (values.value as Record<string, any>)[field.field];
+					if (fieldValue === null || fieldValue === undefined || fieldValue === '') return true;
+				}
+			}
+			return false;
+		});
+
 		return {
 			t,
 			editing,
@@ -170,6 +180,7 @@ export default defineComponent({
 			updateItem,
 			edit,
 			linkFields,
+			isSaveDisabled,
 			save,
 			values,
 			remove,
