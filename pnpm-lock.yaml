@@ -705,11 +705,11 @@ importers:
     specifiers:
       npm-watch: 0.11.0
       openapi-types: 12.1.0
-      openapi3-ts: 3.1.2
+      openapi3-ts: 3.2.0
       swagger-cli: 4.0.4
       swagger-ui-watcher: 2.1.13
     dependencies:
-      openapi3-ts: 3.1.2
+      openapi3-ts: 3.2.0
     devDependencies:
       npm-watch: 0.11.0
       openapi-types: 12.1.0
@@ -719,14 +719,14 @@ importers:
   packages/storage:
     specifiers:
       '@directus/tsconfig': 0.0.6
-      '@vitest/coverage-c8': 0.28.5
+      '@vitest/coverage-c8': 0.29.3
       typescript: 4.9.5
-      vitest: 0.28.5
+      vitest: 0.29.3
     devDependencies:
       '@directus/tsconfig': 0.0.6
-      '@vitest/coverage-c8': 0.28.5
+      '@vitest/coverage-c8': 0.29.3_vitest@0.29.3
       typescript: 4.9.5
-      vitest: 0.28.5
+      vitest: 0.29.3
 
   packages/storage-driver-azure:
     specifiers:
@@ -17014,12 +17014,6 @@ packages:
     resolution: {integrity: sha512-XpeCy01X6L5EpP+6Hc3jWN7rMZJ+/k1lwki/kTmWzbVhdPie3jd5O2ZtedEx8Yp58icJ0osVldLMrTB/zslQXA==}
     dev: true
 
-  /openapi3-ts/3.1.2:
-    resolution: {integrity: sha512-S8fijNOqe/ut0kEDAwHZnI7sVYqb8Q3XnISmSyXmK76jgrcf4ableI75KTY1qdksd9EI/t39Vi5M4VYKrkNKfQ==}
-    dependencies:
-      yaml: 2.1.3
-    dev: false
-
   /openapi3-ts/3.2.0:
     resolution: {integrity: sha512-/ykNWRV5Qs0Nwq7Pc0nJ78fgILvOT/60OxEmB3v7yQ8a8Bwcm43D4diaYazG/KBn6czA+52XYy931WFLMCUeSg==}
     dependencies:
@@ -22618,11 +22612,6 @@ packages:
   /yaml/1.10.2:
     resolution: {integrity: sha512-r3vXyErRCYJ7wg28yvBY5VSoAF8ZvlcW9/BwUzEtUsjvX/DKs24dIkuwjtuprwJJHsbyUbLApepYTR1BN4uHrg==}
     engines: {node: '>= 6'}
-
-  /yaml/2.1.3:
-    resolution: {integrity: sha512-AacA8nRULjKMX2DvWvOAdBZMOfQlypSFkjcOcu9FalllIDJ1kvlREzcdIZmidQUqqeMv7jorHjq2HlLv/+c2lg==}
-    engines: {node: '>= 14'}
-    dev: false
 
   /yaml/2.2.1:
     resolution: {integrity: sha512-e0WHiYql7+9wr4cWMx3TVQrNwejKaEe7/rHNmQmqRjazfOP5W8PB6Jpebb5o6fIapbz9o9+2ipcaTM2ZwDI6lw==}
