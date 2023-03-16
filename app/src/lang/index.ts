@@ -1,5 +1,5 @@
 import { RequestError } from '@/api';
-import { createI18n } from 'vue-i18n';
+import { createI18n, I18nOptions } from 'vue-i18n';
 import availableLanguages from './available-languages.yaml';
 import datetimeFormats from './date-formats.yaml';
 import numberFormats from './number-formats.yaml';
@@ -11,7 +11,7 @@ export const i18n = createI18n({
 	fallbackLocale: 'en-US',
 	messages: {
 		'en-US': enUSBase,
-	},
+	} as I18nOptions['messages'],
 	silentTranslationWarn: true,
 	datetimeFormats,
 	numberFormats,
