@@ -11,7 +11,7 @@
 		"lint": "eslint .",
 		"test:blackbox": "jest tests -c tests-blackbox/jest.config.js",
 		"test:blackbox:watch": "jest tests -c tests-blackbox/jest.config.js --watch",
-		"posttest:blackbox:watch": "ts-node --project ./tests-blackbox/tsconfig.json --transpile-only ./tests-blackbox/setup/teardown.ts",
+		"posttest:blackbox:watch": "ts-node --project ./tests-blackbox/tsconfig.json --transpile-only ./tests-blackbox/setup/teardown.ts"
 	},
 	"simple-git-hooks": {
 		"pre-commit": "npx lint-staged"
