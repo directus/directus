@@ -181,7 +181,6 @@ import { ComponentPublicInstance, inject, ref, Ref, watch, computed, toRefs } fr
 import { useI18n } from 'vue-i18n';
 import { get } from '@directus/shared/utils';
 import { useAliasFields } from '@/composables/use-alias-fields';
-import { assign, merge } from 'lodash';
 import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
 import { HeaderRaw } from '@/components/v-table/types';
