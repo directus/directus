@@ -233,7 +233,7 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits(['update:selection', 'update:tableHeaders', 'update:limit', 'update:fields']);
 
 const { t } = useI18n();
-const { collection } = toRefs(props)
+const { collection } = toRefs(props);
 
 const selectionWritable = useSync(props, 'selection', emit);
 const tableHeadersWritable = useSync(props, 'tableHeaders', emit);
@@ -280,17 +280,15 @@ const fieldsWritable = useSync(props, 'fields', emit);
 const { aliasedFields, aliasedKeys } = useAliasFields(fieldsWritable, collection);
 
 function getDisplayValue(item: Item, key: string) {
+	const aliasInfo = Object.values(aliasedFields.value).find((field) => field.key === key);
 
-	const aliasInfo = Object.values(aliasedFields.value).find(field => field.key === key);
-
-	if(!aliasInfo) return get(item, key);
+	if (!aliasInfo) return get(item, key);
 
 	const unAliasedItem = Object.keys(item).reduce<Item>((result, key) => {
-		if(aliasedKeys.value.includes(key)) {
-			if(key !== aliasInfo.fieldAlias) return result
-			const name = aliasedFields.value[key].fieldName
+		if (aliasedKeys.value.includes(key)) {
+			if (key !== aliasInfo.fieldAlias) return result;
+			const name = aliasedFields.value[key].fieldName;
 			result[name] = item[key];
-
 		} else {
 			result[key] = item[key];
 		}

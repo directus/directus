@@ -50,7 +50,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		const fieldsWithRelationalAliased = computed(() => {
 			return Object.values(aliasedFields.value).reduce<string[]>((acc, value) => {
 				return [...acc, ...value.fields];
-			}, [])
+			}, []);
 		});
 
 		const {
@@ -122,7 +122,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			filter,
 			search,
 			download,
-			fieldsWithRelationalAliased
+			fieldsWithRelationalAliased,
 		};
 
 		async function resetPresetAndRefresh() {

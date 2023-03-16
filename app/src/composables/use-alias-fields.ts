@@ -18,34 +18,34 @@ type UsableAliasFields = {
 
 export function useAliasFields(fields: Ref<string[]>, collection: Ref<string | null>): UsableAliasFields {
 	const aliasedFields = computed(() => {
-		const aliasedFields: Record<string, AliasFields> = {}
+		const aliasedFields: Record<string, AliasFields> = {};
 
-		if(!fields.value || fields.value.length === 0 || !collection.value) return aliasedFields;
+		if (!fields.value || fields.value.length === 0 || !collection.value) return aliasedFields;
 
-		for(const field of fields.value) {
+		for (const field of fields.value) {
 			const alias = getSimpleHash(field);
-			const fullFields = adjustFieldsForDisplays([field], collection.value).map(field => {
-				if(field.includes('.')) {
-					return `${alias}.${field.split('.').slice(1).join('.')}`
+			const fullFields = adjustFieldsForDisplays([field], collection.value).map((field) => {
+				if (field.includes('.')) {
+					return `${alias}.${field.split('.').slice(1).join('.')}`;
 				} else {
-					return field
+					return field;
 				}
-			})
+			});
 
 			aliasedFields[alias] = {
 				key: field,
 				fieldName: field.split('.')[0],
 				fieldAlias: alias,
-				fields: fullFields
-			}
+				fields: fullFields,
+			};
 		}
 
-		return aliasedFields
+		return aliasedFields;
 	});
 
 	const aliasedKeys = computed(() => {
-		return Object.values(aliasedFields.value).map(field => field.fieldAlias)
-	})
+		return Object.values(aliasedFields.value).map((field) => field.fieldAlias);
+	});
 
 	const aliasQuery = computed(() => {
 		if (!aliasedFields.value) return null;
@@ -58,6 +58,5 @@ export function useAliasFields(fields: Ref<string[]>, collection: Ref<string | n
 		);
 	});
 
-	return { aliasedFields, aliasQuery, aliasedKeys }
-	
+	return { aliasedFields, aliasQuery, aliasedKeys };
 }
