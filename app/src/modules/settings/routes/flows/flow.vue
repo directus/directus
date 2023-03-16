@@ -492,6 +492,8 @@ async function saveChanges() {
 			await api.patch(`/flows/${props.primaryKey}`, changes);
 		}
 
+		await flowsStore.hydrate();
+
 		stagedPanels.value = [];
 		panelsToBeDeleted.value = [];
 		stagedFlow.value = {};
