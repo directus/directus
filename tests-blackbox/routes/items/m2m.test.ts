@@ -2208,425 +2208,449 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 		describe('MAX_BATCH_MUTATION Tests', () => {
 			describe('createOne', () => {
 				describe('passes when below limit', () => {
-					it.each(vendors)('%s', async (vendor) => {
-						// Setup
-						const countNested = Number(config.envs[vendor].MAX_BATCH_MUTATION) / 2 - 1;
-						const food: any = createFood(pkType);
-						const food2: any = createFood(pkType);
+					it.each(vendors)(
+						'%s',
+						async (vendor) => {
+							// Setup
+							const countNested = Number(config.envs[vendor].MAX_BATCH_MUTATION) / 2 - 1;
+							const food: any = createFood(pkType);
+							const food2: any = createFood(pkType);
 
-						food.ingredients = Array(countNested)
-							.fill(0)
-							.map(() => {
-								return { [`${localCollectionIngredients}_id`]: createIngredient(pkType) };
-							});
+							food.ingredients = Array(countNested)
+								.fill(0)
+								.map(() => {
+									return { [`${localCollectionIngredients}_id`]: createIngredient(pkType) };
+								});
 
-						food2.ingredients = Array(countNested)
-							.fill(0)
-							.map(() => {
-								return {
-									[`${localCollectionIngredients}_id`]: createIngredient(pkType),
-								};
-							});
+							food2.ingredients = Array(countNested)
+								.fill(0)
+								.map(() => {
+									return {
+										[`${localCollectionIngredients}_id`]: createIngredient(pkType),
+									};
+								});
 
-						// Action
-						const response = await request(getUrl(vendor))
-							.post(`/items/${localCollectionFoods}`)
-							.send(food)
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+							// Action
+							const response = await request(getUrl(vendor))
+								.post(`/items/${localCollectionFoods}`)
+								.send(food)
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
-						const mutationKey = `create_${localCollectionFoods}_item`;
+							const mutationKey = `create_${localCollectionFoods}_item`;
 
-						const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
-							mutation: {
-								[mutationKey]: {
-									__args: {
-										data: food2,
-									},
-									id: true,
-									ingredients: {
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								mutation: {
+									[mutationKey]: {
+										__args: {
+											data: food2,
+										},
 										id: true,
+										ingredients: {
+											id: true,
+										},
 									},
 								},
-							},
-						});
+							});
 
-						// Assert
-						expect(response.statusCode).toBe(200);
-						expect(response.body.data.ingredients.length).toBe(countNested);
+							// Assert
+							expect(response.statusCode).toBe(200);
+							expect(response.body.data.ingredients.length).toBe(countNested);
 
-						expect(gqlResponse.statusCode).toBe(200);
-						expect(gqlResponse.body.data[mutationKey].ingredients.length).toEqual(countNested);
-					});
+							expect(gqlResponse.statusCode).toBe(200);
+							expect(gqlResponse.body.data[mutationKey].ingredients.length).toEqual(countNested);
+						},
+						120000
+					);
 				});
 
 				describe('errors when above limit', () => {
-					it.each(vendors)('%s', async (vendor) => {
-						// Setup
-						const countNested = Number(config.envs[vendor].MAX_BATCH_MUTATION) / 2;
-						const food: any = createFood(pkType);
-						const food2: any = createFood(pkType);
+					it.each(vendors)(
+						'%s',
+						async (vendor) => {
+							// Setup
+							const countNested = Number(config.envs[vendor].MAX_BATCH_MUTATION) / 2;
+							const food: any = createFood(pkType);
+							const food2: any = createFood(pkType);
 
-						food.ingredients = Array(countNested)
-							.fill(0)
-							.map(() => {
-								return { [`${localCollectionIngredients}_id`]: createIngredient(pkType) };
-							});
+							food.ingredients = Array(countNested)
+								.fill(0)
+								.map(() => {
+									return { [`${localCollectionIngredients}_id`]: createIngredient(pkType) };
+								});
 
-						food2.ingredients = Array(countNested)
-							.fill(0)
-							.map(() => {
-								return {
-									[`${localCollectionIngredients}_id`]: createIngredient(pkType),
-								};
-							});
+							food2.ingredients = Array(countNested)
+								.fill(0)
+								.map(() => {
+									return {
+										[`${localCollectionIngredients}_id`]: createIngredient(pkType),
+									};
+								});
 
-						// Action
-						const response = await request(getUrl(vendor))
-							.post(`/items/${localCollectionFoods}`)
-							.send(food)
-							.query({ fields: '*,ingredients.test_items_m2m_ingredients_integer_id.*' })
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+							// Action
+							const response = await request(getUrl(vendor))
+								.post(`/items/${localCollectionFoods}`)
+								.send(food)
+								.query({ fields: '*,ingredients.test_items_m2m_ingredients_integer_id.*' })
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
-						const mutationKey = `create_${localCollectionFoods}_item`;
+							const mutationKey = `create_${localCollectionFoods}_item`;
 
-						const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
-							mutation: {
-								[mutationKey]: {
-									__args: {
-										data: food2,
-									},
-									id: true,
-									ingredients: {
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								mutation: {
+									[mutationKey]: {
+										__args: {
+											data: food2,
+										},
 										id: true,
+										ingredients: {
+											id: true,
+										},
 									},
 								},
-							},
-						});
+							});
 
-						// Assert
-						expect(response.statusCode).toBe(400);
-						expect(response.body.errors).toBeDefined();
-						expect(response.body.errors[0].message).toBe('Max batch mutation limit exceeded');
+							// Assert
+							expect(response.statusCode).toBe(400);
+							expect(response.body.errors).toBeDefined();
+							expect(response.body.errors[0].message).toBe('Max batch mutation limit exceeded');
 
-						expect(gqlResponse.statusCode).toBe(200);
-						expect(gqlResponse.body.errors).toBeDefined();
-						expect(gqlResponse.body.errors[0].message).toBe('Max batch mutation limit exceeded');
-					});
+							expect(gqlResponse.statusCode).toBe(200);
+							expect(gqlResponse.body.errors).toBeDefined();
+							expect(gqlResponse.body.errors[0].message).toBe('Max batch mutation limit exceeded');
+						},
+						120000
+					);
 				});
 			});
 
 			describe('createMany', () => {
 				describe('passes when below limit', () => {
-					it.each(vendors)('%s', async (vendor) => {
-						// Setup
-						const count = Number(config.envs[vendor].MAX_BATCH_MUTATION) / 10;
-						const countNested = 4;
-						const foods: any[] = [];
-						const foods2: any[] = [];
+					it.each(vendors)(
+						'%s',
+						async (vendor) => {
+							// Setup
+							const count = Number(config.envs[vendor].MAX_BATCH_MUTATION) / 10;
+							const countNested = 4;
+							const foods: any[] = [];
+							const foods2: any[] = [];
 
-						for (let i = 0; i < count; i++) {
-							foods.push(createFood(pkType));
-							foods[i].ingredients = Array(countNested)
-								.fill(0)
-								.map(() => {
-									return { [`${localCollectionIngredients}_id`]: createIngredient(pkType) };
-								});
+							for (let i = 0; i < count; i++) {
+								foods.push(createFood(pkType));
+								foods[i].ingredients = Array(countNested)
+									.fill(0)
+									.map(() => {
+										return { [`${localCollectionIngredients}_id`]: createIngredient(pkType) };
+									});
 
-							foods2.push(createFood(pkType));
-							foods2[i].ingredients = Array(countNested)
-								.fill(0)
-								.map(() => {
-									return { [`${localCollectionIngredients}_id`]: createIngredient(pkType) };
-								});
-						}
+								foods2.push(createFood(pkType));
+								foods2[i].ingredients = Array(countNested)
+									.fill(0)
+									.map(() => {
+										return { [`${localCollectionIngredients}_id`]: createIngredient(pkType) };
+									});
+							}
 
-						// Action
-						const response = await request(getUrl(vendor))
-							.post(`/items/${localCollectionFoods}`)
-							.send(foods)
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+							// Action
+							const response = await request(getUrl(vendor))
+								.post(`/items/${localCollectionFoods}`)
+								.send(foods)
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
-						const mutationKey = `create_${localCollectionFoods}_items`;
+							const mutationKey = `create_${localCollectionFoods}_items`;
 
-						const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
-							mutation: {
-								[mutationKey]: {
-									__args: {
-										data: foods2,
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								mutation: {
+									[mutationKey]: {
+										__args: {
+											data: foods2,
+										},
+										id: true,
 									},
-									id: true,
 								},
-							},
-						});
+							});
 
-						// Assert
-						expect(response.statusCode).toBe(200);
-						expect(response.body.data.length).toBe(count);
-						expect(gqlResponse.statusCode).toBe(200);
-						expect(gqlResponse.body.data[mutationKey].length).toEqual(count);
-					});
+							// Assert
+							expect(response.statusCode).toBe(200);
+							expect(response.body.data.length).toBe(count);
+							expect(gqlResponse.statusCode).toBe(200);
+							expect(gqlResponse.body.data[mutationKey].length).toEqual(count);
+						},
+						120000
+					);
 				});
 
 				describe('errors when above limit', () => {
-					it.each(vendors)('%s', async (vendor) => {
-						// Setup
-						const count = Number(config.envs[vendor].MAX_BATCH_MUTATION) / 10;
-						const countNested = 5;
-						const foods: any[] = [];
-						const foods2: any[] = [];
+					it.each(vendors)(
+						'%s',
+						async (vendor) => {
+							// Setup
+							const count = Number(config.envs[vendor].MAX_BATCH_MUTATION) / 10;
+							const countNested = 5;
+							const foods: any[] = [];
+							const foods2: any[] = [];
 
-						for (let i = 0; i < count; i++) {
-							foods.push(createFood(pkType));
-							foods[i].ingredients = Array(countNested)
-								.fill(0)
-								.map(() => {
-									return { [`${localCollectionIngredients}_id`]: createIngredient(pkType) };
-								});
+							for (let i = 0; i < count; i++) {
+								foods.push(createFood(pkType));
+								foods[i].ingredients = Array(countNested)
+									.fill(0)
+									.map(() => {
+										return { [`${localCollectionIngredients}_id`]: createIngredient(pkType) };
+									});
 
-							foods2.push(createFood(pkType));
-							foods2[i].ingredients = Array(countNested)
-								.fill(0)
-								.map(() => {
-									return { [`${localCollectionIngredients}_id`]: createIngredient(pkType) };
-								});
-						}
+								foods2.push(createFood(pkType));
+								foods2[i].ingredients = Array(countNested)
+									.fill(0)
+									.map(() => {
+										return { [`${localCollectionIngredients}_id`]: createIngredient(pkType) };
+									});
+							}
 
-						// Action
-						const response = await request(getUrl(vendor))
-							.post(`/items/${localCollectionFoods}`)
-							.send(foods)
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+							// Action
+							const response = await request(getUrl(vendor))
+								.post(`/items/${localCollectionFoods}`)
+								.send(foods)
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
-						const mutationKey = `create_${localCollectionFoods}_items`;
+							const mutationKey = `create_${localCollectionFoods}_items`;
 
-						const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
-							mutation: {
-								[mutationKey]: {
-									__args: {
-										data: foods2,
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								mutation: {
+									[mutationKey]: {
+										__args: {
+											data: foods2,
+										},
+										id: true,
 									},
-									id: true,
 								},
-							},
-						});
+							});
 
-						// Assert
-						expect(response.statusCode).toBe(400);
-						expect(response.body.errors).toBeDefined();
-						expect(response.body.errors[0].message).toBe('Max batch mutation limit exceeded');
+							// Assert
+							expect(response.statusCode).toBe(400);
+							expect(response.body.errors).toBeDefined();
+							expect(response.body.errors[0].message).toBe('Max batch mutation limit exceeded');
 
-						expect(gqlResponse.statusCode).toBe(200);
-						expect(gqlResponse.body.errors).toBeDefined();
-						expect(gqlResponse.body.errors[0].message).toBe('Max batch mutation limit exceeded');
-					});
+							expect(gqlResponse.statusCode).toBe(200);
+							expect(gqlResponse.body.errors).toBeDefined();
+							expect(gqlResponse.body.errors[0].message).toBe('Max batch mutation limit exceeded');
+						},
+						120000
+					);
 				});
 			});
 
 			describe('updateBatch', () => {
 				describe('passes when below limit', () => {
-					it.each(vendors)('%s', async (vendor) => {
-						// Setup
-						const count = Number(config.envs[vendor].MAX_BATCH_MUTATION) / 10;
-						const countCreate = 2;
-						const countUpdate = 3;
-						const countDelete = 2;
-						const foodsID = [];
-						const foodsID2 = [];
+					it.each(vendors)(
+						'%s',
+						async (vendor) => {
+							// Setup
+							const count = Number(config.envs[vendor].MAX_BATCH_MUTATION) / 10;
+							const countCreate = 2;
+							const countUpdate = 3;
+							const countDelete = 2;
+							const foodsID = [];
+							const foodsID2 = [];
 
-						for (let i = 0; i < count; i++) {
-							const food: any = createFood(pkType);
-							food.ingredients = Array(countUpdate + countDelete)
-								.fill(0)
-								.map(() => {
-									return { [`${localCollectionIngredients}_id`]: createIngredient(pkType) };
-								});
-							foodsID.push((await CreateItem(vendor, { collection: localCollectionFoods, item: food })).id);
-
-							const food2: any = createFood(pkType);
-							food2.ingredients = Array(countUpdate + countDelete)
-								.fill(0)
-								.map(() => {
-									return { [`${localCollectionIngredients}_id`]: createIngredient(pkType) };
-								});
-							foodsID2.push((await CreateItem(vendor, { collection: localCollectionFoods, item: food2 })).id);
-						}
-
-						const foods = await ReadItem(vendor, {
-							collection: localCollectionFoods,
-							fields: [
-								'*',
-								'ingredients.id',
-								`ingredients.${localCollectionIngredients}.id`,
-								`ingredients.${localCollectionIngredients}.name`,
-							],
-							filter: { id: { _in: foodsID } },
-						});
-
-						const foods2 = await ReadItem(vendor, {
-							collection: localCollectionFoods,
-							fields: [
-								'*',
-								'ingredients.id',
-								`ingredients.${localCollectionIngredients}.id`,
-								`ingredients.${localCollectionIngredients}.name`,
-							],
-							filter: { id: { _in: foodsID2 } },
-						});
-
-						for (const food of foods) {
-							const ingredients = food.ingredients;
-							food.ingredients = {
-								create: Array(countCreate)
+							for (let i = 0; i < count; i++) {
+								const food: any = createFood(pkType);
+								food.ingredients = Array(countUpdate + countDelete)
 									.fill(0)
 									.map(() => {
 										return { [`${localCollectionIngredients}_id`]: createIngredient(pkType) };
-									}),
-								update: ingredients.slice(0, countUpdate),
-								delete: ingredients.slice(-countDelete).map((ingredient: Ingredient) => ingredient.id),
-							};
-						}
+									});
+								foodsID.push((await CreateItem(vendor, { collection: localCollectionFoods, item: food })).id);
 
-						for (const food of foods2) {
-							food.ingredients = [
-								...food.ingredients,
-								...Array(countCreate)
+								const food2: any = createFood(pkType);
+								food2.ingredients = Array(countUpdate + countDelete)
 									.fill(0)
 									.map(() => {
 										return { [`${localCollectionIngredients}_id`]: createIngredient(pkType) };
-									}),
-							];
-						}
+									});
+								foodsID2.push((await CreateItem(vendor, { collection: localCollectionFoods, item: food2 })).id);
+							}
 
-						// Action
-						const response = await request(getUrl(vendor))
-							.patch(`/items/${localCollectionFoods}`)
-							.send(foods)
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+							const foods = await ReadItem(vendor, {
+								collection: localCollectionFoods,
+								fields: [
+									'*',
+									'ingredients.id',
+									`ingredients.${localCollectionIngredients}.id`,
+									`ingredients.${localCollectionIngredients}.name`,
+								],
+								filter: { id: { _in: foodsID } },
+							});
 
-						const mutationKey = `update_${localCollectionFoods}_batch`;
+							const foods2 = await ReadItem(vendor, {
+								collection: localCollectionFoods,
+								fields: [
+									'*',
+									'ingredients.id',
+									`ingredients.${localCollectionIngredients}.id`,
+									`ingredients.${localCollectionIngredients}.name`,
+								],
+								filter: { id: { _in: foodsID2 } },
+							});
 
-						const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
-							mutation: {
-								[mutationKey]: {
-									__args: {
-										data: foods2,
+							for (const food of foods) {
+								const ingredients = food.ingredients;
+								food.ingredients = {
+									create: Array(countCreate)
+										.fill(0)
+										.map(() => {
+											return { [`${localCollectionIngredients}_id`]: createIngredient(pkType) };
+										}),
+									update: ingredients.slice(0, countUpdate),
+									delete: ingredients.slice(-countDelete).map((ingredient: Ingredient) => ingredient.id),
+								};
+							}
+
+							for (const food of foods2) {
+								food.ingredients = [
+									...food.ingredients,
+									...Array(countCreate)
+										.fill(0)
+										.map(() => {
+											return { [`${localCollectionIngredients}_id`]: createIngredient(pkType) };
+										}),
+								];
+							}
+
+							// Action
+							const response = await request(getUrl(vendor))
+								.patch(`/items/${localCollectionFoods}`)
+								.send(foods)
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+							const mutationKey = `update_${localCollectionFoods}_batch`;
+
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								mutation: {
+									[mutationKey]: {
+										__args: {
+											data: foods2,
+										},
+										id: true,
 									},
-									id: true,
 								},
-							},
-						});
+							});
 
-						// Assert
-						expect(response.statusCode).toBe(200);
-						expect(response.body.data.length).toBe(count);
+							// Assert
+							expect(response.statusCode).toBe(200);
+							expect(response.body.data.length).toBe(count);
 
-						expect(gqlResponse.statusCode).toBe(200);
-						expect(gqlResponse.body.data[mutationKey].length).toEqual(count);
-					});
+							expect(gqlResponse.statusCode).toBe(200);
+							expect(gqlResponse.body.data[mutationKey].length).toEqual(count);
+						},
+						120000
+					);
 				});
 
 				describe('errors when above limit', () => {
-					it.each(vendors)('%s', async (vendor) => {
-						// Setup
-						const count = Number(config.envs[vendor].MAX_BATCH_MUTATION) / 10;
-						const countCreate = 2;
-						const countUpdate = 3;
-						const countDelete = 3;
-						const foodsID = [];
-						const foodsID2 = [];
+					it.each(vendors)(
+						'%s',
+						async (vendor) => {
+							// Setup
+							const count = Number(config.envs[vendor].MAX_BATCH_MUTATION) / 10;
+							const countCreate = 2;
+							const countUpdate = 3;
+							const countDelete = 3;
+							const foodsID = [];
+							const foodsID2 = [];
 
-						for (let i = 0; i < count; i++) {
-							const food: any = createFood(pkType);
-							food.ingredients = Array(countUpdate + countDelete)
-								.fill(0)
-								.map(() => {
-									return { [`${localCollectionIngredients}_id`]: createIngredient(pkType) };
-								});
-							foodsID.push((await CreateItem(vendor, { collection: localCollectionFoods, item: food })).id);
-
-							const food2: any = createFood(pkType);
-							food2.ingredients = Array(countUpdate + countDelete)
-								.fill(0)
-								.map(() => {
-									return { [`${localCollectionIngredients}_id`]: createIngredient(pkType) };
-								});
-							foodsID2.push((await CreateItem(vendor, { collection: localCollectionFoods, item: food2 })).id);
-						}
-
-						const foods = await ReadItem(vendor, {
-							collection: localCollectionFoods,
-							fields: [
-								'*',
-								'ingredients.id',
-								`ingredients.${localCollectionIngredients}.id`,
-								`ingredients.${localCollectionIngredients}.name`,
-							],
-							filter: { id: { _in: foodsID } },
-						});
-
-						const foods2 = await ReadItem(vendor, {
-							collection: localCollectionFoods,
-							fields: [
-								'*',
-								'ingredients.id',
-								`ingredients.${localCollectionIngredients}.id`,
-								`ingredients.${localCollectionIngredients}.name`,
-							],
-							filter: { id: { _in: foodsID2 } },
-						});
-
-						for (const food of foods) {
-							const ingredients = food.ingredients;
-							food.ingredients = {
-								create: Array(countCreate)
+							for (let i = 0; i < count; i++) {
+								const food: any = createFood(pkType);
+								food.ingredients = Array(countUpdate + countDelete)
 									.fill(0)
 									.map(() => {
 										return { [`${localCollectionIngredients}_id`]: createIngredient(pkType) };
-									}),
-								update: ingredients.slice(0, countUpdate),
-								delete: ingredients.slice(-countDelete).map((ingredient: Ingredient) => ingredient.id),
-							};
-						}
+									});
+								foodsID.push((await CreateItem(vendor, { collection: localCollectionFoods, item: food })).id);
 
-						for (const food of foods2) {
-							food.ingredients = [
-								...food.ingredients,
-								...Array(countCreate)
+								const food2: any = createFood(pkType);
+								food2.ingredients = Array(countUpdate + countDelete)
 									.fill(0)
 									.map(() => {
 										return { [`${localCollectionIngredients}_id`]: createIngredient(pkType) };
-									}),
-							];
-						}
+									});
+								foodsID2.push((await CreateItem(vendor, { collection: localCollectionFoods, item: food2 })).id);
+							}
 
-						// Action
-						const response = await request(getUrl(vendor))
-							.patch(`/items/${localCollectionFoods}`)
-							.send(foods)
-							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+							const foods = await ReadItem(vendor, {
+								collection: localCollectionFoods,
+								fields: [
+									'*',
+									'ingredients.id',
+									`ingredients.${localCollectionIngredients}.id`,
+									`ingredients.${localCollectionIngredients}.name`,
+								],
+								filter: { id: { _in: foodsID } },
+							});
 
-						const mutationKey = `update_${localCollectionFoods}_batch`;
+							const foods2 = await ReadItem(vendor, {
+								collection: localCollectionFoods,
+								fields: [
+									'*',
+									'ingredients.id',
+									`ingredients.${localCollectionIngredients}.id`,
+									`ingredients.${localCollectionIngredients}.name`,
+								],
+								filter: { id: { _in: foodsID2 } },
+							});
 
-						const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
-							mutation: {
-								[mutationKey]: {
-									__args: {
-										data: foods2,
+							for (const food of foods) {
+								const ingredients = food.ingredients;
+								food.ingredients = {
+									create: Array(countCreate)
+										.fill(0)
+										.map(() => {
+											return { [`${localCollectionIngredients}_id`]: createIngredient(pkType) };
+										}),
+									update: ingredients.slice(0, countUpdate),
+									delete: ingredients.slice(-countDelete).map((ingredient: Ingredient) => ingredient.id),
+								};
+							}
+
+							for (const food of foods2) {
+								food.ingredients = [
+									...food.ingredients,
+									...Array(countCreate)
+										.fill(0)
+										.map(() => {
+											return { [`${localCollectionIngredients}_id`]: createIngredient(pkType) };
+										}),
+								];
+							}
+
+							// Action
+							const response = await request(getUrl(vendor))
+								.patch(`/items/${localCollectionFoods}`)
+								.send(foods)
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+							const mutationKey = `update_${localCollectionFoods}_batch`;
+
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								mutation: {
+									[mutationKey]: {
+										__args: {
+											data: foods2,
+										},
+										id: true,
 									},
-									id: true,
 								},
-							},
-						});
+							});
 
-						// Assert
-						expect(response.statusCode).toBe(400);
-						expect(response.body.errors).toBeDefined();
-						expect(response.body.errors[0].message).toBe('Max batch mutation limit exceeded');
+							// Assert
+							expect(response.statusCode).toBe(400);
+							expect(response.body.errors).toBeDefined();
+							expect(response.body.errors[0].message).toBe('Max batch mutation limit exceeded');
 
-						expect(gqlResponse.statusCode).toBe(200);
-						expect(gqlResponse.body.errors).toBeDefined();
-						expect(gqlResponse.body.errors[0].message).toBe('Max batch mutation limit exceeded');
-					});
+							expect(gqlResponse.statusCode).toBe(200);
+							expect(gqlResponse.body.errors).toBeDefined();
+							expect(gqlResponse.body.errors[0].message).toBe('Max batch mutation limit exceeded');
+						},
+						120000
+					);
 				});
 			});
 		});

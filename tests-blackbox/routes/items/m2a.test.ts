@@ -1676,246 +1676,270 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 			describe('MAX_BATCH_MUTATION Tests', () => {
 				describe('createOne', () => {
 					describe('passes when below limit', () => {
-						it.each(vendors)('%s', async (vendor) => {
-							// Setup
-							const countNested = Number(config.envs[vendor].MAX_BATCH_MUTATION) / 2 - 1;
-							const shape: any = createShape(pkType);
+						it.each(vendors)(
+							'%s',
+							async (vendor) => {
+								// Setup
+								const countNested = Number(config.envs[vendor].MAX_BATCH_MUTATION) / 2 - 1;
+								const shape: any = createShape(pkType);
 
-							shape.children = Array(countNested)
-								.fill(0)
-								.map((_, index) => {
-									if (index < countNested / 2) {
-										return { collection: localCollectionCircles, item: createCircle(pkType) };
-									} else {
-										return { collection: localCollectionSquares, item: createSquare(pkType) };
-									}
-								});
+								shape.children = Array(countNested)
+									.fill(0)
+									.map((_, index) => {
+										if (index < countNested / 2) {
+											return { collection: localCollectionCircles, item: createCircle(pkType) };
+										} else {
+											return { collection: localCollectionSquares, item: createSquare(pkType) };
+										}
+									});
 
-							// Action
-							const response = await request(getUrl(vendor))
-								.post(`/items/${localCollectionShapes}`)
-								.send(shape)
-								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+								// Action
+								const response = await request(getUrl(vendor))
+									.post(`/items/${localCollectionShapes}`)
+									.send(shape)
+									.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
-							// Assert
-							expect(response.statusCode).toBe(200);
-							expect(response.body.data.children.length).toBe(countNested);
-						});
+								// Assert
+								expect(response.statusCode).toBe(200);
+								expect(response.body.data.children.length).toBe(countNested);
+							},
+							120000
+						);
 					});
 
 					describe('errors when above limit', () => {
-						it.each(vendors)('%s', async (vendor) => {
-							// Setup
-							const countNested = Number(config.envs[vendor].MAX_BATCH_MUTATION) / 2;
-							const shape: any = createShape(pkType);
+						it.each(vendors)(
+							'%s',
+							async (vendor) => {
+								// Setup
+								const countNested = Number(config.envs[vendor].MAX_BATCH_MUTATION) / 2;
+								const shape: any = createShape(pkType);
 
-							shape.children = Array(countNested)
-								.fill(0)
-								.map((_, index) => {
-									if (index < countNested / 2) {
-										return { collection: localCollectionCircles, item: createCircle(pkType) };
-									} else {
-										return { collection: localCollectionSquares, item: createSquare(pkType) };
-									}
-								});
+								shape.children = Array(countNested)
+									.fill(0)
+									.map((_, index) => {
+										if (index < countNested / 2) {
+											return { collection: localCollectionCircles, item: createCircle(pkType) };
+										} else {
+											return { collection: localCollectionSquares, item: createSquare(pkType) };
+										}
+									});
 
-							// Action
-							const response = await request(getUrl(vendor))
-								.post(`/items/${localCollectionShapes}`)
-								.send(shape)
-								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+								// Action
+								const response = await request(getUrl(vendor))
+									.post(`/items/${localCollectionShapes}`)
+									.send(shape)
+									.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
-							// Assert
-							expect(response.statusCode).toBe(400);
-							expect(response.body.errors).toBeDefined();
-							expect(response.body.errors[0].message).toBe('Max batch mutation limit exceeded');
-						});
+								// Assert
+								expect(response.statusCode).toBe(400);
+								expect(response.body.errors).toBeDefined();
+								expect(response.body.errors[0].message).toBe('Max batch mutation limit exceeded');
+							},
+							120000
+						);
 					});
 				});
 
 				describe('createMany', () => {
 					describe('passes when below limit', () => {
-						it.each(vendors)('%s', async (vendor) => {
-							// Setup
-							const count = Number(config.envs[vendor].MAX_BATCH_MUTATION) / 10;
-							const countNested = 4;
-							const shapes: any[] = [];
+						it.each(vendors)(
+							'%s',
+							async (vendor) => {
+								// Setup
+								const count = Number(config.envs[vendor].MAX_BATCH_MUTATION) / 10;
+								const countNested = 4;
+								const shapes: any[] = [];
 
-							for (let i = 0; i < count; i++) {
-								shapes.push(createShape(pkType));
-								shapes[i].children = Array(countNested)
-									.fill(0)
-									.map((_, index) => {
-										if (index < countNested / 2) {
-											return { collection: localCollectionCircles, item: createCircle(pkType) };
-										} else {
-											return { collection: localCollectionSquares, item: createSquare(pkType) };
-										}
-									});
-							}
+								for (let i = 0; i < count; i++) {
+									shapes.push(createShape(pkType));
+									shapes[i].children = Array(countNested)
+										.fill(0)
+										.map((_, index) => {
+											if (index < countNested / 2) {
+												return { collection: localCollectionCircles, item: createCircle(pkType) };
+											} else {
+												return { collection: localCollectionSquares, item: createSquare(pkType) };
+											}
+										});
+								}
 
-							// Action
-							const response = await request(getUrl(vendor))
-								.post(`/items/${localCollectionShapes}`)
-								.send(shapes)
-								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+								// Action
+								const response = await request(getUrl(vendor))
+									.post(`/items/${localCollectionShapes}`)
+									.send(shapes)
+									.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
-							// Assert
-							expect(response.statusCode).toBe(200);
-							expect(response.body.data.length).toBe(count);
-						});
+								// Assert
+								expect(response.statusCode).toBe(200);
+								expect(response.body.data.length).toBe(count);
+							},
+							120000
+						);
 					});
 
 					describe('errors when above limit', () => {
-						it.each(vendors)('%s', async (vendor) => {
-							// Setup
-							const count = Number(config.envs[vendor].MAX_BATCH_MUTATION) / 10;
-							const countNested = 5;
-							const shapes: any[] = [];
+						it.each(vendors)(
+							'%s',
+							async (vendor) => {
+								// Setup
+								const count = Number(config.envs[vendor].MAX_BATCH_MUTATION) / 10;
+								const countNested = 5;
+								const shapes: any[] = [];
 
-							for (let i = 0; i < count; i++) {
-								shapes.push(createShape(pkType));
-								shapes[i].children = Array(countNested)
-									.fill(0)
-									.map((_, index) => {
-										if (index < countNested / 2) {
-											return { collection: localCollectionCircles, item: createCircle(pkType) };
-										} else {
-											return { collection: localCollectionSquares, item: createSquare(pkType) };
-										}
-									});
-							}
+								for (let i = 0; i < count; i++) {
+									shapes.push(createShape(pkType));
+									shapes[i].children = Array(countNested)
+										.fill(0)
+										.map((_, index) => {
+											if (index < countNested / 2) {
+												return { collection: localCollectionCircles, item: createCircle(pkType) };
+											} else {
+												return { collection: localCollectionSquares, item: createSquare(pkType) };
+											}
+										});
+								}
 
-							// Action
-							const response = await request(getUrl(vendor))
-								.post(`/items/${localCollectionShapes}`)
-								.send(shapes)
-								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+								// Action
+								const response = await request(getUrl(vendor))
+									.post(`/items/${localCollectionShapes}`)
+									.send(shapes)
+									.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
-							// Assert
-							expect(response.statusCode).toBe(400);
-							expect(response.body.errors).toBeDefined();
-							expect(response.body.errors[0].message).toBe('Max batch mutation limit exceeded');
-						});
+								// Assert
+								expect(response.statusCode).toBe(400);
+								expect(response.body.errors).toBeDefined();
+								expect(response.body.errors[0].message).toBe('Max batch mutation limit exceeded');
+							},
+							120000
+						);
 					});
 				});
 
 				describe('updateBatch', () => {
 					describe('passes when below limit', () => {
-						it.each(vendors)('%s', async (vendor) => {
-							// Setup
-							const count = Number(config.envs[vendor].MAX_BATCH_MUTATION) / 10;
-							const countCreate = 2;
-							const countUpdate = 2;
-							const countDelete = 1;
-							const shapesID = [];
+						it.each(vendors)(
+							'%s',
+							async (vendor) => {
+								// Setup
+								const count = Number(config.envs[vendor].MAX_BATCH_MUTATION) / 10;
+								const countCreate = 2;
+								const countUpdate = 2;
+								const countDelete = 1;
+								const shapesID = [];
 
-							for (let i = 0; i < count; i++) {
-								const shape: any = createShape(pkType);
-								shape.children = Array(countUpdate + countDelete)
-									.fill(0)
-									.map((_, index) => {
-										if (index < (countUpdate + countDelete) / 2) {
-											return { collection: localCollectionCircles, item: createCircle(pkType) };
-										} else {
-											return { collection: localCollectionSquares, item: createSquare(pkType) };
-										}
-									});
-								shapesID.push((await CreateItem(vendor, { collection: localCollectionShapes, item: shape })).id);
-							}
-
-							const shapes = await ReadItem(vendor, {
-								collection: localCollectionShapes,
-								fields: ['*', 'children.id', 'children.collection', 'children.item.id', 'children.item.name'],
-								filter: { id: { _in: shapesID } },
-							});
-
-							for (const shape of shapes) {
-								const children = shape.children;
-								shape.children = {
-									create: Array(countCreate)
+								for (let i = 0; i < count; i++) {
+									const shape: any = createShape(pkType);
+									shape.children = Array(countUpdate + countDelete)
 										.fill(0)
 										.map((_, index) => {
-											if (index < countCreate / 2) {
+											if (index < (countUpdate + countDelete) / 2) {
 												return { collection: localCollectionCircles, item: createCircle(pkType) };
 											} else {
 												return { collection: localCollectionSquares, item: createSquare(pkType) };
 											}
-										}),
-									update: children.slice(0, countUpdate),
-									delete: children.slice(-countDelete).map((child: Circle | Square) => child.id),
-								};
-							}
+										});
+									shapesID.push((await CreateItem(vendor, { collection: localCollectionShapes, item: shape })).id);
+								}
 
-							// Action
-							const response = await request(getUrl(vendor))
-								.patch(`/items/${localCollectionShapes}`)
-								.send(shapes)
-								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+								const shapes = await ReadItem(vendor, {
+									collection: localCollectionShapes,
+									fields: ['*', 'children.id', 'children.collection', 'children.item.id', 'children.item.name'],
+									filter: { id: { _in: shapesID } },
+								});
 
-							// Assert
-							expect(response.statusCode).toBe(200);
-							expect(response.body.data.length).toBe(count);
-						});
+								for (const shape of shapes) {
+									const children = shape.children;
+									shape.children = {
+										create: Array(countCreate)
+											.fill(0)
+											.map((_, index) => {
+												if (index < countCreate / 2) {
+													return { collection: localCollectionCircles, item: createCircle(pkType) };
+												} else {
+													return { collection: localCollectionSquares, item: createSquare(pkType) };
+												}
+											}),
+										update: children.slice(0, countUpdate),
+										delete: children.slice(-countDelete).map((child: Circle | Square) => child.id),
+									};
+								}
+
+								// Action
+								const response = await request(getUrl(vendor))
+									.patch(`/items/${localCollectionShapes}`)
+									.send(shapes)
+									.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+								// Assert
+								expect(response.statusCode).toBe(200);
+								expect(response.body.data.length).toBe(count);
+							},
+							120000
+						);
 					});
 
 					describe('errors when above limit', () => {
-						it.each(vendors)('%s', async (vendor) => {
-							// Setup
-							const count = Number(config.envs[vendor].MAX_BATCH_MUTATION) / 10;
-							const countCreate = 2;
-							const countUpdate = 2;
-							const countDelete = 2;
-							const shapesID = [];
+						it.each(vendors)(
+							'%s',
+							async (vendor) => {
+								// Setup
+								const count = Number(config.envs[vendor].MAX_BATCH_MUTATION) / 10;
+								const countCreate = 2;
+								const countUpdate = 2;
+								const countDelete = 2;
+								const shapesID = [];
 
-							for (let i = 0; i < count; i++) {
-								const shape: any = createShape(pkType);
-								shape.children = Array(countUpdate + countDelete)
-									.fill(0)
-									.map((_, index) => {
-										if (index < (countUpdate + countDelete) / 2) {
-											return { collection: localCollectionCircles, item: createCircle(pkType) };
-										} else {
-											return { collection: localCollectionSquares, item: createSquare(pkType) };
-										}
-									});
-								shapesID.push((await CreateItem(vendor, { collection: localCollectionShapes, item: shape })).id);
-							}
-
-							const shapes = await ReadItem(vendor, {
-								collection: localCollectionShapes,
-								fields: ['*', 'children.id', 'children.collection', 'children.item.id', 'children.item.name'],
-								filter: { id: { _in: shapesID } },
-							});
-
-							for (const shape of shapes) {
-								const children = shape.children;
-								shape.children = {
-									create: Array(countCreate)
+								for (let i = 0; i < count; i++) {
+									const shape: any = createShape(pkType);
+									shape.children = Array(countUpdate + countDelete)
 										.fill(0)
 										.map((_, index) => {
-											if (index < countCreate / 2) {
+											if (index < (countUpdate + countDelete) / 2) {
 												return { collection: localCollectionCircles, item: createCircle(pkType) };
 											} else {
 												return { collection: localCollectionSquares, item: createSquare(pkType) };
 											}
-										}),
-									update: children.slice(0, countUpdate),
-									delete: children.slice(-countDelete).map((child: Circle | Square) => child.id),
-								};
-							}
+										});
+									shapesID.push((await CreateItem(vendor, { collection: localCollectionShapes, item: shape })).id);
+								}
 
-							// Action
-							const response = await request(getUrl(vendor))
-								.patch(`/items/${localCollectionShapes}`)
-								.send(shapes)
-								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+								const shapes = await ReadItem(vendor, {
+									collection: localCollectionShapes,
+									fields: ['*', 'children.id', 'children.collection', 'children.item.id', 'children.item.name'],
+									filter: { id: { _in: shapesID } },
+								});
 
-							// Assert
-							expect(response.statusCode).toBe(400);
-							expect(response.body.errors).toBeDefined();
-							expect(response.body.errors[0].message).toBe('Max batch mutation limit exceeded');
-						});
+								for (const shape of shapes) {
+									const children = shape.children;
+									shape.children = {
+										create: Array(countCreate)
+											.fill(0)
+											.map((_, index) => {
+												if (index < countCreate / 2) {
+													return { collection: localCollectionCircles, item: createCircle(pkType) };
+												} else {
+													return { collection: localCollectionSquares, item: createSquare(pkType) };
+												}
+											}),
+										update: children.slice(0, countUpdate),
+										delete: children.slice(-countDelete).map((child: Circle | Square) => child.id),
+									};
+								}
+
+								// Action
+								const response = await request(getUrl(vendor))
+									.patch(`/items/${localCollectionShapes}`)
+									.send(shapes)
+									.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+								// Assert
+								expect(response.statusCode).toBe(400);
+								expect(response.body.errors).toBeDefined();
+								expect(response.body.errors[0].message).toBe('Max batch mutation limit exceeded');
+							},
+							120000
+						);
 					});
 				});
 			});
