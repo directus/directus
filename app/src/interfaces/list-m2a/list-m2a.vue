@@ -217,7 +217,6 @@ watch([limit], () => {
 	page.value = 1;
 });
 
-
 const query = computed<RelationQueryMultiple>(() => ({
 	fields: fields.value,
 	limit: limit.value,

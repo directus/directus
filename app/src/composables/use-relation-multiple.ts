@@ -184,11 +184,9 @@ export function useRelationMultiple(
 
 		return items.sort((a, b) => {
 			const field = sortField.replace('-', '');
-			
-			if(sortField.startsWith('-')) 
-				return get(b, field) - get(a, field);
-			else
-				return get(a, field) - get(b, field);
+
+			if (sortField.startsWith('-')) return get(b, field) - get(a, field);
+			else return get(a, field) - get(b, field);
 		});
 	});
 
