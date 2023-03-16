@@ -136,7 +136,7 @@ export default abstract class SocketController {
 					const error = new WebSocketException(
 						'server',
 						'REQUESTS_EXCEEDED',
-						`Rate limit reached. Try again in ${timeout}ms`
+						`Too many messages, retry after ${timeout}ms.`
 					);
 					handleWebsocketException(client, error, 'server');
 					logger.debug(`Websocket#${client.uid} is rate limited`);
@@ -163,12 +163,18 @@ export default abstract class SocketController {
 		});
 		ws.on('error', () => {
 			logger.debug(`Websocket#${client.uid} connection errored`);
-			if (this.authTimer) clearTimeout(this.authTimer);
+			if (this.authTimer) {
+				clearTimeout(this.authTimer);
+				this.authTimer = null;
+			}
 			this.clients.delete(client);
 		});
 		ws.on('close', () => {
 			logger.debug(`Websocket#${client.uid} connection closed`);
-			if (this.authTimer) clearTimeout(this.authTimer);
+			if (this.authTimer) {
+				clearTimeout(this.authTimer);
+				this.authTimer = null;
+			}
 			this.clients.delete(client);
 		});
 		logger.debug(
@@ -212,7 +218,10 @@ export default abstract class SocketController {
 		}
 	}
 	setTokenExpireTimer(client: WebSocketClient) {
-		if (this.authTimer) clearTimeout(this.authTimer);
+		if (this.authTimer) {
+			clearTimeout(this.authTimer);
+			this.authTimer = null;
+		}
 		if (!client.expiresAt) return;
 		const expiresIn = client.expiresAt * 1000 - Date.now();
 		this.authTimer = setTimeout(() => {
