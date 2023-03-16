@@ -9,7 +9,7 @@ import {
 	OperationHandler,
 	SchemaOverview,
 } from '@directus/shared/types';
-import { applyOptionsData, toArray } from '@directus/shared/utils';
+import { applyOptionsData, toArray, parseJSON, isValidJSON } from '@directus/shared/utils';
 import fastRedact from 'fast-redact';
 import { Knex } from 'knex';
 import { omit, pick } from 'lodash';
@@ -405,6 +405,9 @@ class FlowManager {
 				...context,
 			});
 
+			// Validate that the operations result is serializable and thus catching the error inside the flow execution
+			JSON.stringify(result ?? null);
+
 			// JSON structures don't allow for undefined values, so we need to replace them with null
 			// Otherwise the applyOptionsData function will not work correctly on the next operation
 			if (typeof result === 'object' && result !== null) {
@@ -412,8 +415,26 @@ class FlowManager {
 			}
 
 			return { successor: operation.resolve, status: 'resolve', data: result ?? null, options };
-		} catch (error: unknown) {
-			return { successor: operation.reject, status: 'reject', data: error ?? null, options };
+		} catch (error) {
+			let data;
+
+			if (error instanceof Error) {
+				// If the error is instance of Error, use the message of it as the error data
+				data = { message: error.message };
+			} else if (typeof error === 'string') {
+				// If the error is a JSON string, parse it and use that as the error data
+				data = isValidJSON(error) ? parseJSON(error) : error;
+			} else {
+				// If error is plain object, use this as the error data and otherwise fallback to null
+				data = error ?? null;
+			}
+
+			return {
+				successor: operation.reject,
+				status: 'reject',
+				data,
+				options,
+			};
 		}
 	}
 }

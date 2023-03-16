@@ -14,6 +14,7 @@ import asyncHandler from '../utils/async-handler';
 
 // @ts-ignore
 import formatTitle from '@directus/format-title';
+import { sanitizeQuery } from '../utils/sanitize-query';
 
 const router = express.Router();
 
@@ -261,7 +262,8 @@ router.patch(
 		} else if (req.body.keys) {
 			keys = await service.updateMany(req.body.keys, req.body.data);
 		} else {
-			keys = await service.updateByQuery(req.body.query, req.body.data);
+			const sanitizedQuery = sanitizeQuery(req.body.query, req.accountability);
+			keys = await service.updateByQuery(sanitizedQuery, req.body.data);
 		}
 
 		try {
@@ -321,7 +323,8 @@ router.delete(
 		} else if (req.body.keys) {
 			await service.deleteMany(req.body.keys);
 		} else {
-			await service.deleteByQuery(req.body.query);
+			const sanitizedQuery = sanitizeQuery(req.body.query, req.accountability);
+			await service.deleteByQuery(sanitizedQuery);
 		}
 
 		return next();
