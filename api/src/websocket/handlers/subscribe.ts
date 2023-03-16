@@ -62,7 +62,7 @@ export class SubscribeHandler {
 		emitter.onAction('websocket.close', ({ client }) => this.unsubscribe(client));
 	}
 	/**
-	 * Hook into the Directus system evens by registering action hooks for each module
+	 * Hook into the Directus system events by registering action hooks for each module
 	 * on all mutation events `<module>.create`/`<module>.update`/`<module>.delete`
 	 * @param modules List of modules to register action hooks for
 	 */
@@ -88,7 +88,7 @@ export class SubscribeHandler {
 			try {
 				this.dispatch(message as WebSocketEvent);
 			} catch (err) {
-				// dont error on an invalid event from the messenger
+				// don't error on an invalid event from the messenger
 			}
 		});
 	}

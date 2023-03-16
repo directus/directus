@@ -47,7 +47,7 @@ export class HeartbeatHandler {
 		const pendingClients = new Set<WebSocketClient>(this.controller.clients);
 		const activeClients = new Set<WebSocketClient>();
 		const timeout = setTimeout(() => {
-			// close connections that havent responded
+			// close connections that haven't responded
 			for (const client of pendingClients) {
 				client.close();
 			}
