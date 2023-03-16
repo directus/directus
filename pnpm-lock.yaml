@@ -755,22 +755,22 @@ importers:
       '@directus/tsconfig': 0.0.6
       '@directus/utils': workspace:*
       '@ngneat/falso': 6.4.0
-      '@vitest/coverage-c8': 0.28.5
+      '@vitest/coverage-c8': 0.29.3
       p-queue: 7.3.4
       typescript: 4.9.5
-      undici: 5.19.1
-      vitest: 0.28.5
+      undici: 5.21.0
+      vitest: 0.29.3
     dependencies:
       '@directus/storage': link:../storage
       '@directus/utils': link:../utils
       p-queue: 7.3.4
-      undici: 5.19.1
+      undici: 5.21.0
     devDependencies:
       '@directus/tsconfig': 0.0.6
       '@ngneat/falso': 6.4.0
-      '@vitest/coverage-c8': 0.28.5
+      '@vitest/coverage-c8': 0.29.3_vitest@0.29.3
       typescript: 4.9.5
-      vitest: 0.28.5
+      vitest: 0.29.3
 
   packages/storage-driver-gcs:
     specifiers:
@@ -21244,8 +21244,8 @@ packages:
     resolution: {integrity: sha512-+A5Sja4HP1M08MaXya7p5LvjuM7K6q/2EaC0+iovj/wOcMsTzMvDFbasi/oSapiwOlt252IqsKqPjCl7huKS0A==}
     dev: true
 
-  /undici/5.19.1:
-    resolution: {integrity: sha512-YiZ61LPIgY73E7syxCDxxa3LV2yl3sN8spnIuTct60boiiRaE1J8mNWHO8Im2Zi/sFrPusjLlmRPrsyraSqX6A==}
+  /undici/5.21.0:
+    resolution: {integrity: sha512-HOjK8l6a57b2ZGXOcUsI5NLfoTrfmbOl90ixJDl0AEFG4wgHNDQxtZy15/ZQp7HhjkpaGlp/eneMgtsu1dIlUA==}
     engines: {node: '>=12.18'}
     dependencies:
       busboy: 1.6.0
@@ -21620,7 +21620,7 @@ packages:
       picocolors: 1.0.0
       source-map: 0.6.1
       source-map-support: 0.5.21
-      vite: 4.1.1_@types+node@18.13.0
+      vite: 4.1.4_@types+node@18.13.0
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -21675,6 +21675,40 @@ packages:
 
   /vite/4.1.1_@types+node@18.13.0:
     resolution: {integrity: sha512-LM9WWea8vsxhr782r9ntg+bhSFS06FJgCvvB0+8hf8UWtvaiDagKYWXndjfX6kGl74keHJUcpzrQliDXZlF5yg==}
+    engines: {node: ^14.18.0 || >=16.0.0}
+    hasBin: true
+    peerDependencies:
+      '@types/node': '>= 14'
+      less: '*'
+      sass: '*'
+      stylus: '*'
+      sugarss: '*'
+      terser: ^5.4.0
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
+      less:
+        optional: true
+      sass:
+        optional: true
+      stylus:
+        optional: true
+      sugarss:
+        optional: true
+      terser:
+        optional: true
+    dependencies:
+      '@types/node': 18.13.0
+      esbuild: 0.16.17
+      postcss: 8.4.21
+      resolve: 1.22.1
+      rollup: 3.19.1
+    optionalDependencies:
+      fsevents: 2.3.2
+    dev: true
+
+  /vite/4.1.4_@types+node@18.13.0:
+    resolution: {integrity: sha512-3knk/HsbSTKEin43zHu7jTwYWv81f8kgAL99G5NWBcA1LKvtvcVAC4JjBH1arBunO9kQka+1oGbrMKOjk4ZrBg==}
     engines: {node: ^14.18.0 || >=16.0.0}
     hasBin: true
     peerDependencies:
