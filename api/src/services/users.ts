@@ -186,8 +186,8 @@ export class UsersService extends ItemsService {
 		return key;
 	}
 
-	async updateBatch(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
-		if (!opts?.mutationTracker) (opts || (opts = {})).mutationTracker = this.createMutationTracker();
+	async updateBatch(data: Partial<Item>[], opts: MutationOptions = {}): Promise<PrimaryKey[]> {
+		if (!opts.mutationTracker) opts.mutationTracker = this.createMutationTracker();
 
 		const primaryKeyField = this.schema.collections[this.collection].primary;
 
