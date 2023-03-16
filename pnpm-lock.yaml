@@ -777,21 +777,21 @@ importers:
       '@directus/storage': workspace:*
       '@directus/tsconfig': 0.0.6
       '@directus/utils': workspace:*
-      '@google-cloud/storage': 6.9.2
+      '@google-cloud/storage': 6.9.4
       '@ngneat/falso': 6.4.0
-      '@vitest/coverage-c8': 0.28.5
+      '@vitest/coverage-c8': 0.29.3
       typescript: 4.9.5
-      vitest: 0.28.5
+      vitest: 0.29.3
     dependencies:
       '@directus/storage': link:../storage
       '@directus/utils': link:../utils
-      '@google-cloud/storage': 6.9.2
+      '@google-cloud/storage': 6.9.4
     devDependencies:
       '@directus/tsconfig': 0.0.6
       '@ngneat/falso': 6.4.0
-      '@vitest/coverage-c8': 0.28.5
+      '@vitest/coverage-c8': 0.29.3_vitest@0.29.3
       typescript: 4.9.5
-      vitest: 0.28.5
+      vitest: 0.29.3
 
   packages/storage-driver-local:
     specifiers:
@@ -4871,8 +4871,8 @@ packages:
     engines: {node: '>=12'}
     dev: false
 
-  /@google-cloud/storage/6.9.2:
-    resolution: {integrity: sha512-TIQ6G+QzHb/hR/7AIH4OU+z8fXqCLM7JiqO+nGxw61os4YxCWPD2ajW+pzz7VY5k2VtqzhoMFA6rjIfw39wJmQ==}
+  /@google-cloud/storage/6.9.4:
+    resolution: {integrity: sha512-5Li+0xRJ8wgc+vlf7Tgew8COKEJgRzRmC5ozdSYaBj7BK+X39aPPBP6ROsDTiCZ0MpAg7dxIc+HhKiCvQDplXQ==}
     engines: {node: '>=12'}
     dependencies:
       '@google-cloud/paginator': 3.0.7
