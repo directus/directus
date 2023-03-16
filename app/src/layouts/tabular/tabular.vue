@@ -25,7 +25,7 @@
 		>
 			<template v-for="header in tableHeaders" :key="header.value" #[`item.${header.value}`]="{ item }">
 				<render-display
-					:value="getDisplayValue(item, header.value)"
+					:value="getDisplayValue(item, header.key)"
 					:display="header.field.display"
 					:options="header.field.displayOptions"
 					:interface="header.field.interface"

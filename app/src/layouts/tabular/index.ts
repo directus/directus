@@ -230,32 +230,25 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 							description = fieldNames.join(' -> ');
 
 							const types = relationsStore.getRelationTypes(collection.value!, field.key);
+							const arrayField = fieldsStore.getField(collection.value!, fieldParts.slice(0, -1).join('.'));
 
-							if (types.at(-1) === 'o2m') {
-								const arrayField = fieldsStore.getField(collection.value!, fieldParts.slice(0, -1).join('.'));
-								let display;
-								let displayOptions;
-
-								if (arrayField?.meta?.display) {
-									display = arrayField.meta.display;
-									displayOptions = arrayField.meta.display_options;
-								} else {
-									display = 'related-values';
-									displayOptions = {
-										template: `{{${fieldParts.at(-1)}}}`,
-									};
-								}
+							// Special case for translations to render the nested data in the translations display instead of the default display
+							if (types.at(-1) === 'o2m' && arrayField?.meta?.special?.includes('translations')) {
+								console.log(collection.value,fieldParts, fieldParts.slice(0, -1).join('.'), arrayField)
 
 								if (arrayField)
 									return {
 										text: field.name,
 										value: field.key,
+										key: fieldParts.slice(0, -1).join('.'),
 										description,
 										width: localWidths.value[field.key] || layoutOptions.value?.widths?.[field.key] || null,
 										align: layoutOptions.value?.align?.[field.key] || 'left',
 										field: {
-											display,
-											displayOptions,
+											display: 'translations',
+											displayOptions: {
+												template: `{{${fieldParts.at(-1)}}}`,
+											},
 											interface: arrayField.meta?.interface,
 											interfaceOptions: arrayField.meta?.options,
 											type: arrayField.type,
@@ -270,6 +263,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 						return {
 							text: field.name,
 							value: field.key,
+							key: field.key,
 							description,
 							width: localWidths.value[field.key] || layoutOptions.value?.widths?.[field.key] || null,
 							align: layoutOptions.value?.align?.[field.key] || 'left',
