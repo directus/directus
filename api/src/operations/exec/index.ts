@@ -9,6 +9,7 @@ export default defineOperationApi<Options>({
 	id: 'exec',
 	handler: async ({ code }, { data, env }) => {
 		const allowedModules = env.FLOWS_EXEC_ALLOWED_MODULES ? toArray(env.FLOWS_EXEC_ALLOWED_MODULES) : [];
+		const allowedBuiltins = env.FLOWS_EXEC_ALLOWED_BUILTINS ? toArray(env.FLOWS_EXEC_ALLOWED_BUILTINS) : [];
 		const allowedEnv = data.$env ?? {};
 
 		const opts: NodeVMOptions = {
@@ -24,6 +25,11 @@ export default defineOperationApi<Options>({
 					transitive: false,
 				},
 			};
+		}
+		
+		if (allowedBuiltins.length > 0) {
+			opts.require ?? {};
+			opts.require.builtin = allowedBuiltins;
 		}
 
 		const vm = new NodeVM(opts);
