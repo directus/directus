@@ -41,8 +41,8 @@ export default abstract class SocketController {
 		endpoint: string,
 		authentication: {
 			mode: AuthMode;
-			verbose: boolean;
 			timeout: number;
+			verbose: boolean;
 		}
 	) {
 		this.server = new WebSocketServer({ noServer: true });
