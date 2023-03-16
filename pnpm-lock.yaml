@@ -730,24 +730,24 @@ importers:
 
   packages/storage-driver-azure:
     specifiers:
-      '@azure/storage-blob': 12.12.0
+      '@azure/storage-blob': 12.13.0
       '@directus/storage': workspace:*
       '@directus/tsconfig': 0.0.6
       '@directus/utils': workspace:*
       '@ngneat/falso': 6.4.0
-      '@vitest/coverage-c8': 0.28.5
+      '@vitest/coverage-c8': 0.29.3
       typescript: 4.9.5
-      vitest: 0.28.5
+      vitest: 0.29.3
     dependencies:
-      '@azure/storage-blob': 12.12.0
+      '@azure/storage-blob': 12.13.0
       '@directus/storage': link:../storage
       '@directus/utils': link:../utils
     devDependencies:
       '@directus/tsconfig': 0.0.6
       '@ngneat/falso': 6.4.0
-      '@vitest/coverage-c8': 0.28.5
+      '@vitest/coverage-c8': 0.29.3_vitest@0.29.3
       typescript: 4.9.5
-      vitest: 0.28.5
+      vitest: 0.29.3
 
   packages/storage-driver-cloudinary:
     specifiers:
@@ -2618,8 +2618,8 @@ packages:
     transitivePeerDependencies:
       - supports-color
 
-  /@azure/core-http/2.3.1:
-    resolution: {integrity: sha512-cur03BUwV0Tbv81bQBOLafFB02B6G++K6F2O3IMl8pSE2QlXm3cu11bfyBNlDUKi5U+xnB3GC63ae3athhkx6Q==}
+  /@azure/core-http/3.0.0:
+    resolution: {integrity: sha512-BxI2SlGFPPz6J1XyZNIVUf0QZLBKFX+ViFjKOkzqD18J1zOINIQ8JSBKKr+i+v8+MB6LacL6Nn/sP/TE13+s2Q==}
     engines: {node: '>=14.0.0'}
     dependencies:
       '@azure/abort-controller': 1.1.0
@@ -2632,7 +2632,6 @@ packages:
       form-data: 4.0.0
       node-fetch: 2.6.7
       process: 0.11.10
-      tough-cookie: 4.1.2
       tslib: 2.5.0
       tunnel: 0.0.6
       uuid: 8.3.2
@@ -2762,18 +2761,18 @@ packages:
       jsonwebtoken: 8.5.1
       uuid: 8.3.2
 
-  /@azure/storage-blob/12.12.0:
-    resolution: {integrity: sha512-o/Mf6lkyYG/eBW4/hXB9864RxVNmAkcKHjsGR6Inlp5hupa3exjSyH2KjO3tLO//YGA+tS+17hM2bxRl9Sn16g==}
-    engines: {node: '>=12.0.0'}
+  /@azure/storage-blob/12.13.0:
+    resolution: {integrity: sha512-t3Q2lvBMJucgTjQcP5+hvEJMAsJSk0qmAnjDLie2td017IiduZbbC9BOcFfmwzR6y6cJdZOuewLCNFmEx9IrXA==}
+    engines: {node: '>=14.0.0'}
     dependencies:
       '@azure/abort-controller': 1.1.0
-      '@azure/core-http': 2.3.1
+      '@azure/core-http': 3.0.0
       '@azure/core-lro': 2.4.0
       '@azure/core-paging': 1.4.0
       '@azure/core-tracing': 1.0.0-preview.13
       '@azure/logger': 1.0.3
       events: 3.3.0
-      tslib: 2.4.1
+      tslib: 2.5.0
     transitivePeerDependencies:
       - encoding
     dev: false
@@ -18362,6 +18361,7 @@ packages:
   /psl/1.9.0:
     resolution: {integrity: sha512-E/ZsdU4HLs/68gYzgGTkMicWTLPdAftJLfJFlLUAAKZGkStNU72sZjT66SnMDVOfOWY/YAoiD7Jxa9iHvngcag==}
     dev: false
+    optional: true
 
   /pstree.remy/1.1.8:
     resolution: {integrity: sha512-77DZwxQmxKnu3aR542U+X8FypNzbfJ+C5XQDk3uWjWxn6151aIMGthWYRXTqT1E5oJvg+ljaa2OJi+VfvCOQ8w==}
@@ -18561,10 +18561,6 @@ packages:
     engines: {node: '>=0.4.x'}
     deprecated: The querystring API is considered Legacy. new code should use the URLSearchParams API instead.
     dev: true
-
-  /querystringify/2.2.0:
-    resolution: {integrity: sha512-FIqgj2EUvTa7R50u0rGsyTftzjYmv/a3hO345bZNrqabNqjtgiDMgmo4mkUjd+nzU5oF3dClKqFIPUKybUyqoQ==}
-    dev: false
 
   /queue-microtask/1.2.3:
     resolution: {integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==}
@@ -19114,10 +19110,6 @@ packages:
   /require-main-filename/2.0.0:
     resolution: {integrity: sha512-NKN5kMDylKuldxYLSUfrbo5Tuzh4hd+2E8NPPX02mZtn1VuREQToYe/ZdlJy+J3uCpfaiGF05e7B8W0iXbQHmg==}
     dev: true
-
-  /requires-port/1.0.0:
-    resolution: {integrity: sha512-KigOCHcocU3XODJxsu8i/j8T9tzT4adHiecwORRQ0ZZFcp7ahwXuRU1m+yuO90C5ZUyGeGfocHDI14M3L3yDAQ==}
-    dev: false
 
   /resolve-alpn/1.2.1:
     resolution: {integrity: sha512-0a1F4l73/ZFZOakJnQ3FvkJ2+gSTQWz/r2KE5OdDY0TxPm5h4GkqkWWfM47T7HsbnOtcJVEF4epCVy6u7Q3K+g==}
@@ -20937,16 +20929,6 @@ packages:
     dev: false
     optional: true
 
-  /tough-cookie/4.1.2:
-    resolution: {integrity: sha512-G9fqXWoYFZgTc2z8Q5zaHy/vJMjm+WV0AkAeHxVCQiEB1b+dGvWzFW6QV07cY5jQ5gRkeid2qIkzkxUnmoQZUQ==}
-    engines: {node: '>=6'}
-    dependencies:
-      psl: 1.9.0
-      punycode: 2.3.0
-      universalify: 0.2.0
-      url-parse: 1.5.10
-    dev: false
-
   /tr46/0.0.3:
     resolution: {integrity: sha512-N3WMsuqV66lT30CrXNbEjx4GEwlow3v6rr4mCcv6prnfwhS01rkgyFdjPNBYd9br7LpXV1+Emh01fHnq2Gdgrw==}
 
@@ -21389,11 +21371,6 @@ packages:
     engines: {node: '>= 4.0.0'}
     dev: true
 
-  /universalify/0.2.0:
-    resolution: {integrity: sha512-CJ1QgKmNg3CwvAv/kOFmtnEN05f0D/cn9QntgNOQlQF9dgvVTHj3t+8JPdjqawCHk7V/KA+fbUqzZ9XWhcqPUg==}
-    engines: {node: '>= 4.0.0'}
-    dev: false
-
   /universalify/2.0.0:
     resolution: {integrity: sha512-hAZsKq7Yy11Zu1DE0OzWjw7nnLZmJZYTDZZyEFHZdUhV8FkH5MCfoU1XMaxXovpyW5nq5scPqq0ZDP9Zyl04oQ==}
     engines: {node: '>= 10.0.0'}
@@ -21488,13 +21465,6 @@ packages:
       schema-utils: 3.1.1
       webpack: 4.46.0
     dev: true
-
-  /url-parse/1.5.10:
-    resolution: {integrity: sha512-WypcfiRhfeUP9vvF0j6rw0J3hrWrw6iZv3+22h6iRMJ/8z1Tj6XfLP4DsUix5MhMPnXpiHDoKyoZ/bdCkwBCiQ==}
-    dependencies:
-      querystringify: 2.2.0
-      requires-port: 1.0.0
-    dev: false
 
   /url/0.11.0:
     resolution: {integrity: sha512-kbailJa29QrtXnxgq+DdCEGlbTeYM2eJUxsz6vjZavrCYPMIFHMKQmSKYAIuUK2i7hgPm28a8piX5NTUtM/LKQ==}
