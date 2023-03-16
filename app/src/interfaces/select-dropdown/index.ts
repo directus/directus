@@ -29,6 +29,7 @@ export default defineInterface({
 							name: '$t:text',
 							meta: {
 								interface: 'system-input-translated-string',
+								required: true,
 								width: 'half',
 								options: {
 									placeholder: '$t:interfaces.select-dropdown.choices_name_placeholder',
@@ -45,6 +46,7 @@ export default defineInterface({
 									font: 'monospace',
 									placeholder: '$t:interfaces.select-dropdown.choices_value_placeholder',
 								},
+								required: true,
 								width: 'half',
 							},
 						},

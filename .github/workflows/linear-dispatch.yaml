@@ -2,12 +2,12 @@ on:
   repository_dispatch:
     types:
       - linear-command
-      
+
 jobs:
   create_issue:
     runs-on: ubuntu-latest
     steps:
-      - uses: rijkvanzanten/gh-action-linear@v0.3.0
+      - uses: rijkvanzanten/gh-action-linear@v0.3.1
         with:
           github-repo: ${{ github.event.client_payload.github.payload.repository.full_name }}
           github-issue: ${{ github.event.client_payload.github.payload.issue.number }}
