@@ -138,6 +138,188 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					expect(gqlResponse.body.data[localCollectionShapes][0].children).toHaveLength(1);
 				});
 			});
+
+			describe(`retrieves circles' radius only`, () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// Setup
+					const shape = createShape(pkType);
+					const insertedShape = await CreateItem(vendor, {
+						collection: localCollectionShapes,
+						item: {
+							...shape,
+							children: {
+								create: [
+									{ collection: localCollectionCircles, item: createCircle(pkType) },
+									{ collection: localCollectionCircles, item: createCircle(pkType) },
+									{ collection: localCollectionSquares, item: createSquare(pkType) },
+									{ collection: localCollectionSquares, item: createSquare(pkType) },
+								],
+								update: [],
+								delete: [],
+							},
+						},
+					});
+
+					// Action
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionShapes}/${insertedShape.id}`)
+						.query({
+							fields: `children.item:${localCollectionCircles}.radius`,
+						})
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+						query: {
+							[localCollectionShapes]: {
+								__args: {
+									filter: {
+										id: {
+											_eq: insertedShape.id,
+										},
+									},
+								},
+								children: {
+									item: {
+										__on: [
+											{
+												__typeName: localCollectionCircles,
+												radius: true,
+											},
+										],
+										__typename: true,
+									},
+								},
+							},
+						},
+					});
+
+					// Assert
+					expect(response.statusCode).toEqual(200);
+					expect(response.body.data.children).toHaveLength(4);
+					for (const child of response.body.data.children) {
+						if (typeof child.item === 'object') {
+							expect(child.item).toEqual(
+								expect.objectContaining({
+									radius: expect.any(Number),
+								})
+							);
+						}
+					}
+
+					expect(gqlResponse.statusCode).toEqual(200);
+					expect(gqlResponse.body.data[localCollectionShapes][0].children).toHaveLength(4);
+					for (const child of gqlResponse.body.data[localCollectionShapes][0].children) {
+						if (child.item.__typename === localCollectionCircles) {
+							expect(child.item).toEqual(
+								expect.objectContaining({
+									radius: expect.any(Number),
+									__typename: localCollectionCircles,
+								})
+							);
+						} else {
+							expect(child.item).toEqual(
+								expect.objectContaining({
+									__typename: localCollectionSquares,
+								})
+							);
+						}
+					}
+				});
+			});
+
+			describe(`retrieves all fields in circles only`, () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// Setup
+					const shape = createShape(pkType);
+					const insertedShape = await CreateItem(vendor, {
+						collection: localCollectionShapes,
+						item: {
+							...shape,
+							children: {
+								create: [
+									{ collection: localCollectionCircles, item: createCircle(pkType) },
+									{ collection: localCollectionCircles, item: createCircle(pkType) },
+									{ collection: localCollectionSquares, item: createSquare(pkType) },
+									{ collection: localCollectionSquares, item: createSquare(pkType) },
+								],
+								update: [],
+								delete: [],
+							},
+						},
+					});
+
+					// Action
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionShapes}/${insertedShape.id}`)
+						.query({
+							fields: `children.item:${localCollectionCircles}.*`,
+						})
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+						query: {
+							[localCollectionShapes]: {
+								__args: {
+									filter: {
+										id: {
+											_eq: insertedShape.id,
+										},
+									},
+								},
+								children: {
+									item: {
+										__on: [
+											{
+												__typeName: localCollectionCircles,
+												id: true,
+												name: true,
+												radius: true,
+											},
+										],
+										__typename: true,
+									},
+								},
+							},
+						},
+					});
+
+					// Assert
+					expect(response.statusCode).toEqual(200);
+					expect(response.body.data.children).toHaveLength(4);
+					for (const child of response.body.data.children) {
+						if (typeof child.item === 'object') {
+							expect(child.item).toEqual(
+								expect.objectContaining({
+									id: expect.anything(),
+									name: expect.any(String),
+									radius: expect.any(Number),
+								})
+							);
+						}
+					}
+
+					expect(gqlResponse.statusCode).toEqual(200);
+					expect(gqlResponse.body.data[localCollectionShapes][0].children).toHaveLength(4);
+					for (const child of gqlResponse.body.data[localCollectionShapes][0].children) {
+						if (child.item.__typename === localCollectionCircles) {
+							expect(child.item).toEqual(
+								expect.objectContaining({
+									id: expect.anything(),
+									name: expect.any(String),
+									radius: expect.any(Number),
+									__typename: localCollectionCircles,
+								})
+							);
+						} else {
+							expect(child.item).toEqual(
+								expect.objectContaining({
+									__typename: localCollectionSquares,
+								})
+							);
+						}
+					}
+				});
+			});
 		});
 
 		describe('GET /:collection', () => {
@@ -243,6 +425,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							.get(`/items/${localCollectionShapes}`)
 							.query({
 								filter: JSON.stringify({
+									name: { _eq: insertedShape.name },
 									children: {
 										[`item:${localCollectionCircles}`]: {
 											name: { _eq: circle.name },
@@ -256,6 +439,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							.get(`/items/${localCollectionShapes}`)
 							.query({
 								filter: JSON.stringify({
+									name: { _eq: insertedShape.name },
 									children: {
 										[`item:${localCollectionSquares}`]: {
 											width: { _eq: square.width },
@@ -270,6 +454,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								[localCollectionShapes]: {
 									__args: {
 										filter: {
+											name: { _eq: insertedShape.name },
 											children: {
 												[`item__${localCollectionCircles}`]: {
 													name: { _eq: circle.name },
@@ -287,6 +472,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								[localCollectionShapes]: {
 									__args: {
 										filter: {
+											name: { _eq: insertedShape.name },
 											children: {
 												[`item__${localCollectionSquares}`]: {
 													width: { _eq: square.width },

@@ -67,7 +67,7 @@
 		"build": "tsc --build && copyfiles \"src/**/*.{yaml,liquid}\" -u 1 dist",
 		"cli": "NODE_ENV=development SERVE_APP=false ts-node --script-mode --transpile-only src/cli/run.ts",
 		"dev": "NODE_ENV=development SERVE_APP=false ts-node-dev --files --transpile-only --respawn --watch \".env\" --inspect=0 --exit-child -- src/start.ts",
-		"start": "npx directus start",
+		"start": "node cli.js start",
 		"test": "vitest run",
 		"test:coverage": "vitest run --coverage",
 		"test:watch": "vitest"
