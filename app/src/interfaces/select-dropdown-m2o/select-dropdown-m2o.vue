@@ -186,7 +186,8 @@ const edits = computed(() => {
 
 function onPreviewClick() {
 	if (props.disabled) return;
-	// prevent double dialog in case the edit dialog is already open
+
+	// Prevent double dialog in case the edit dialog is already open
 	if (editModalActive.value === true) return;
 
 	if (props.enableSelect) {
