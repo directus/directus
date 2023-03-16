@@ -11,7 +11,12 @@ import sharp from 'sharp';
 import url from 'url';
 import emitter from '../emitter';
 import env from '../env';
-import { ForbiddenException, InvalidPayloadException, ServiceUnavailableException } from '../exceptions';
+import {
+	ForbiddenException,
+	InvalidPayloadException,
+	ServiceUnavailableException,
+	MaxFileSizeExceededException,
+} from '../exceptions';
 import logger from '../logger';
 import { getAxios } from '../request/index';
 import { getStorage } from '../storage';
@@ -40,6 +45,8 @@ export class FilesService extends ItemsService {
 
 		const payload = clone(data);
 
+		const disk = storage.location(payload.storage);
+
 		if ('folder' in payload === false) {
 			const settings = await this.knex.select('storage_default_folder').from('directus_settings').first();
 
@@ -48,17 +55,11 @@ export class FilesService extends ItemsService {
 			}
 		}
 
-		if (primaryKey !== undefined) {
-			await this.updateOne(primaryKey, payload, { emitEvents: false });
+		// Is this a new file upload, or a replacement?
+		const isReplacement = primaryKey !== undefined;
 
-			// If the file you're uploading already exists, we'll consider this upload a replace. In that case, we'll
-			// delete the previously saved file and thumbnails to ensure they're generated fresh
-			const disk = storage.location(payload.storage);
-
-			for await (const filepath of disk.list(String(primaryKey))) {
-				await disk.delete(filepath);
-			}
-		} else {
+		// If this is a new file upload, we need to generate a new primary key and DB record
+		if (primaryKey == undefined) {
 			primaryKey = await this.createOne(payload, { emitEvents: false });
 		}
 
@@ -71,19 +72,62 @@ export class FilesService extends ItemsService {
 			payload.type = 'application/octet-stream';
 		}
 
+		const tempFilenameDisk = 'temp_' + payload.filename_disk;
+
 		try {
-			await storage.location(data.storage).write(payload.filename_disk, stream, payload.type);
+			await disk.write(tempFilenameDisk, stream, payload.type);
+
+			// Check if the file was truncated (if the stream ended early)
+			if (stream.truncated === true) {
+				throw new MaxFileSizeExceededException(
+					`${payload.filename_download} exceeds the maximum allowed file size of ${env.ASSETS_LIMIT_FILE_SIZE} bytes.`
+				);
+			}
 		} catch (err: any) {
 			logger.warn(`Couldn't save file ${payload.filename_disk}`);
 			logger.warn(err);
+
+			// If this is a new file upload, we need to delete the DB record
+			if (isReplacement === false) {
+				await this.deleteOne(primaryKey, { emitEvents: false });
+			}
+
+			// Clean up the temp file
+			try {
+				await disk.delete(tempFilenameDisk);
+			} catch (err: any) {
+				logger.warn(`Couldn't delete temp file ${tempFilenameDisk}`);
+				logger.warn(err);
+			}
+
+			// If the error is a MaxFileSizeExceededException, we can just re-throw it
+			if (err instanceof MaxFileSizeExceededException) throw err;
+
 			throw new ServiceUnavailableException(`Couldn't save file ${payload.filename_disk}`, { service: 'files' });
 		}
 
-		const { size } = await storage.location(data.storage).stat(payload.filename_disk);
+		// If the file is a replacement, we need to update the DB record with the new payload, delete the old files, and upgrade the temp file
+		if (isReplacement) {
+			await this.updateOne(primaryKey, payload, { emitEvents: false });
+
+			// If the file you're uploading already exists, we'll consider this upload a replace. In that case, we'll
+			// delete the previously saved file and thumbnails to ensure they're generated fresh
+			for await (const filepath of disk.list(String(primaryKey))) {
+				await disk.delete(filepath);
+			}
+		}
+
+		// Upgrade the temp file to the final filename
+		await disk.copy(tempFilenameDisk, payload.filename_disk);
+
+		// Delete the temp file
+		await disk.delete(tempFilenameDisk);
+
+		const { size } = await disk.stat(payload.filename_disk);
 		payload.filesize = size;
 
 		if (['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/tiff'].includes(payload.type)) {
-			const stream = await storage.location(data.storage).read(payload.filename_disk);
+			const stream = await storage.location(payload.storage).read(payload.filename_disk);
 			const { height, width, description, title, tags, metadata } = await this.getMetadata(stream);
 
 			payload.height ??= height;

@@ -19,3 +19,5 @@ export * from './unprocessable-entity';
 export * from './unsupported-media-type';
 export * from './user-suspended';
 export * from './unexpected-response';
+export * from './max-file-size';
+export * from './max-file-count';

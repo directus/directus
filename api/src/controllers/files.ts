@@ -4,7 +4,7 @@ import express, { RequestHandler } from 'express';
 import Joi from 'joi';
 import path from 'path';
 import env from '../env';
-import { ForbiddenException, InvalidPayloadException } from '../exceptions';
+import { ForbiddenException, InvalidPayloadException, MaxFileCountExceededException } from '../exceptions';
 import { respond } from '../middleware/respond';
 import useCollection from '../middleware/use-collection';
 import { validateBatch } from '../middleware/validate-batch';
@@ -37,9 +37,9 @@ export const multipartHandler: RequestHandler = (req, res, next) => {
 	const limits = {
 		fieldNameSize: 100,
 		fieldSize: 1048576,
-		fields: Infinity, // will pull from number of fields in file collection
+		fields: Infinity,
 		fileSize: env.ASSETS_LIMIT_FILE_SIZE,
-		files: env.ASSETS_LIMIT_FILES,
+		files: env.ASSETS_LIMIT_FILE_COUNT,
 		parts: Infinity,
 		headerPairs: 2000,
 	};
@@ -59,6 +59,8 @@ export const multipartHandler: RequestHandler = (req, res, next) => {
 	let disk: string = toArray(env.STORAGE_LOCATIONS)[0];
 	let payload: any = {};
 	let fileCount = 0;
+	let totalProcessedFiles = 0;
+	const errors: Error[] = [];
 
 	busboy.on('field', (fieldname, val) => {
 		let fieldValue: string | null | boolean = val;
@@ -102,13 +104,27 @@ export const multipartHandler: RequestHandler = (req, res, next) => {
 		try {
 			const primaryKey = await service.uploadOne(fileStream, payloadWithRequiredFields, existingPrimaryKey);
 			savedFiles.push(primaryKey);
-			tryDone();
 		} catch (error: any) {
-			busboy.emit('error', error);
+			errors.push(error);
+		} finally {
+			totalProcessedFiles++;
+			tryDone();
 		}
 	});
 
-	busboy.on('error', (error: Error) => {
+	
+
+	// On Busboy file count limit error
+	busboy.on('filesLimit', () => {
+		errors.push(
+			new MaxFileCountExceededException(
+				`The maximum number of files allowed to be uploaded at once is ${env.ASSETS_LIMIT_FILE_COUNT}`
+			)
+		);
+		tryDone();
+	});
+
+	busboy.on('error', (error: any) => {
 		next(error);
 	});
 
@@ -116,14 +132,19 @@ export const multipartHandler: RequestHandler = (req, res, next) => {
 		tryDone();
 	});
 
+	busboy.on('finish', () => {
+		tryDone();
+	});
+
 	req.pipe(busboy);
 
 	function tryDone() {
-		if (savedFiles.length === fileCount) {
+		if (totalProcessedFiles === fileCount || totalProcessedFiles === limits.files) {
 			if (fileCount === 0) {
 				return next(new InvalidPayloadException(`No files were included in the body`));
 			}
 
+			res.locals.errors = errors;
 			res.locals.savedFiles = savedFiles;
 			return next();
 		}
@@ -150,16 +171,28 @@ router.post(
 			if (Array.isArray(keys) && keys.length > 1) {
 				const records = await service.readMany(keys, req.sanitizedQuery);
 
-				res.locals.payload = {
+				const payload = {
 					data: records,
 				};
+
+				if (res.locals.errors.length > 0) {
+					payload.errors = res.locals.errors;
+				}
+
+				res.locals.payload = payload;
 			} else {
 				const key = Array.isArray(keys) ? keys[0] : keys;
 				const record = await service.readOne(key, req.sanitizedQuery);
 
-				res.locals.payload = {
+				const payload = {
 					data: record,
 				};
+
+				if (res.locals.errors.length > 0) {
+					payload.errors = res.locals.errors;
+				}
+
+				res.locals.payload = payload;
 			}
 		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
