@@ -60,7 +60,7 @@ const directusConfig = {
 	MAX_PAYLOAD_SIZE: '10mb',
 	EXTENSIONS_PATH: './tests-blackbox/extensions',
 	ASSETS_TRANSFORM_MAX_CONCURRENT: '2',
-	MAX_BATCH_MUTATION: '100', // Must be in multiples of 10 for tests
+	MAX_BATCH_MUTATION: '50', // Must be in multiples of 10 for tests
 	...directusAuthConfig,
 };
 
