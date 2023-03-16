@@ -38,14 +38,10 @@ export const waitForMessageType = (client: WebSocket, type: string, timeout: num
 			} catch {
 				return;
 			}
-			try {
-				if (getMessageType(msg) === type) {
-					clearTimeout(timer);
-					client.off('message', awaitMessage);
-					resolve(msg);
-				}
-			} catch (err) {
-				reject(msg);
+			if (getMessageType(msg) === type) {
+				clearTimeout(timer);
+				client.off('message', awaitMessage);
+				resolve(msg);
 			}
 		}
 	});
