@@ -1,9 +1,9 @@
-import { Range } from '@directus/drive';
+// @ts-expect-error https://github.com/microsoft/TypeScript/issues/49721
+import type { Range } from '@directus/storage';
+
 import { parseJSON } from '@directus/shared/utils';
 import { Router } from 'express';
-import helmet from 'helmet';
 import { merge, pick } from 'lodash';
-import ms from 'ms';
 import { ASSET_TRANSFORM_QUERY_KEYS, SYSTEM_ASSET_ALLOW_LIST } from '../constants';
 import getDatabase from '../database';
 import env from '../env';
@@ -13,7 +13,9 @@ import useCollection from '../middleware/use-collection';
 import { AssetsService, PayloadService } from '../services';
 import { TransformationMethods, TransformationParams, TransformationPreset } from '../types/assets';
 import asyncHandler from '../utils/async-handler';
+import { getCacheControlHeader } from '../utils/get-cache-headers';
 import { getConfigFromEnv } from '../utils/get-config-from-env';
+import { getMilliseconds } from '../utils/get-milliseconds';
 
 const router = Router();
 
@@ -110,17 +112,21 @@ router.get(
 		}
 	}),
 
-	helmet.contentSecurityPolicy(
-		merge(
-			{
-				useDefaults: false,
-				directives: {
-					defaultSrc: ['none'],
+	asyncHandler(async (req, res, next) => {
+		const helmet = await import('helmet');
+
+		return helmet.contentSecurityPolicy(
+			merge(
+				{
+					useDefaults: false,
+					directives: {
+						defaultSrc: ['none'],
+					},
 				},
-			},
-			getConfigFromEnv('ASSETS_CONTENT_SECURITY_POLICY')
-		)
-	),
+				getConfigFromEnv('ASSETS_CONTENT_SECURITY_POLICY')
+			)
+		)(req, res, next);
+	}),
 
 	// Return file
 	asyncHandler(async (req, res) => {
@@ -154,12 +160,10 @@ router.get(
 
 		const { stream, file, stat } = await service.getAsset(id, transformation, range);
 
-		const access = req.accountability?.role ? 'private' : 'public';
-
 		res.attachment(req.params.filename ?? file.filename_download);
 		res.setHeader('Content-Type', file.type);
 		res.setHeader('Accept-Ranges', 'bytes');
-		res.setHeader('Cache-Control', `${access}, max-age=${ms(env.ASSETS_CACHE_TTL as string) / 1000}`);
+		res.setHeader('Cache-Control', getCacheControlHeader(req, getMilliseconds(env.ASSETS_CACHE_TTL), false, true));
 
 		const unixTime = Date.parse(file.modified_on);
 		if (!Number.isNaN(unixTime)) {

@@ -1,12 +1,12 @@
 import { BaseException } from '@directus/shared/exceptions';
-import { Accountability, Action, Aggregate, Filter, Query, SchemaOverview } from '@directus/shared/types';
+import { Accountability, Action, Aggregate, Filter, PrimaryKey, Query, SchemaOverview } from '@directus/shared/types';
+import { parseFilterFunctionPath } from '@directus/shared/utils';
 import argon2 from 'argon2';
 import {
 	ArgumentNode,
 	execute,
 	ExecutionResult,
 	FieldNode,
-	formatError,
 	FormattedExecutionResult,
 	FragmentDefinitionNode,
 	GraphQLBoolean,
@@ -36,17 +36,15 @@ import {
 	InputTypeComposer,
 	InputTypeComposerFieldConfigMapDefinition,
 	ObjectTypeComposer,
+	ObjectTypeComposerFieldConfigDefinition,
 	ObjectTypeComposerFieldConfigMapDefinition,
 	SchemaComposer,
 	toInputObjectType,
-	ObjectTypeComposerFieldConfigDefinition,
 } from 'graphql-compose';
 import { Knex } from 'knex';
 import { flatten, get, mapKeys, merge, omit, pick, set, transform, uniq } from 'lodash';
-import ms from 'ms';
 import { clearSystemCache, getCache } from '../../cache';
 import { DEFAULT_AUTH_PROVIDER, GENERATE_SPECIAL } from '../../constants';
-import { REGEX_BETWEEN_PARENS } from '@directus/shared/constants';
 import getDatabase from '../../database';
 import env from '../../env';
 import { ForbiddenException, GraphQLValidationException, InvalidPayloadException } from '../../exceptions';
@@ -80,17 +78,18 @@ import { TFAService } from '../tfa';
 import { UsersService } from '../users';
 import { UtilsService } from '../utils';
 import { WebhooksService } from '../webhooks';
+import processError from './utils/process-error';
 
 import { GraphQLDate } from './types/date';
 import { GraphQLGeoJSON } from './types/geojson';
 import { GraphQLStringOrFloat } from './types/string-or-float';
 import { GraphQLVoid } from './types/void';
 
-import { PrimaryKey } from '@directus/shared/types';
-
-import { addPathToValidationError } from './utils/add-path-to-validation-error';
-import { GraphQLHash } from './types/hash';
+import { FUNCTIONS } from '@directus/shared/constants';
+import { getMilliseconds } from '../../utils/get-milliseconds';
 import { GraphQLBigInt } from './types/bigint';
+import { GraphQLHash } from './types/hash';
+import { addPathToValidationError } from './utils/add-path-to-validation-error';
 
 const validationRules = Array.from(specifiedRules);
 
@@ -159,7 +158,7 @@ export class GraphQLService {
 
 		const formattedResult: FormattedExecutionResult = {
 			...result,
-			errors: result.errors?.map(formatError),
+			errors: result.errors?.map((error) => processError(this.accountability, error)),
 		};
 
 		return formattedResult;
@@ -1017,6 +1016,12 @@ export class GraphQLService {
 						limit: {
 							type: GraphQLInt,
 						},
+						offset: {
+							type: GraphQLInt,
+						},
+						page: {
+							type: GraphQLInt,
+						},
 						search: {
 							type: GraphQLString,
 						},
@@ -1343,14 +1348,7 @@ export class GraphQLService {
 		// Transform count(a.b.c) into a.b.count(c)
 		if (query.fields?.length) {
 			for (let fieldIndex = 0; fieldIndex < query.fields.length; fieldIndex++) {
-				if (query.fields[fieldIndex].includes('(') && query.fields[fieldIndex].includes(')')) {
-					const functionName = query.fields[fieldIndex].split('(')[0];
-					const columnNames = query.fields[fieldIndex].match(REGEX_BETWEEN_PARENS)![1].split('.');
-					if (columnNames.length > 1) {
-						const column = columnNames.pop();
-						query.fields[fieldIndex] = columnNames.join('.') + '.' + functionName + '(' + column + ')';
-					}
-				}
+				query.fields[fieldIndex] = parseFilterFunctionPath(query.fields[fieldIndex]);
 			}
 		}
 
@@ -1605,6 +1603,7 @@ export class GraphQLService {
 
 						for (const subSelection of selection.selectionSet.selections) {
 							if (subSelection.kind !== 'Field') continue;
+							if (subSelection.name!.value.startsWith('__')) continue;
 							children.push(`${subSelection.name!.value}(${rootField})`);
 						}
 					} else {
@@ -1638,31 +1637,10 @@ export class GraphQLService {
 			return uniq(fields);
 		};
 
-		const replaceFuncs = (filter?: Filter | null): null | undefined | Filter => {
-			if (!filter) return filter;
-
-			return replaceFuncDeep(filter);
-
-			function replaceFuncDeep(filter: Record<string, any>) {
-				return transform(filter, (result: Record<string, any>, value, key) => {
-					let currentKey = key;
-
-					if (typeof key === 'string' && key.endsWith('_func')) {
-						const functionName = Object.keys(value)[0]!;
-						currentKey = `${functionName}(${currentKey.slice(0, -5)})`;
-
-						result[currentKey] = Object.values(value)[0]!;
-					} else {
-						result[currentKey] =
-							value?.constructor === Object || value?.constructor === Array ? replaceFuncDeep(value) : value;
-					}
-				});
-			}
-		};
-
 		query.alias = parseAliases(selections);
 		query.fields = parseFields(selections);
-		query.filter = replaceFuncs(query.filter);
+		query.filter = this.replaceFuncs(query.filter);
+		query.deep = this.replaceFuncs(query.deep as any) as any;
 
 		validateQuery(query);
 
@@ -1697,10 +1675,38 @@ export class GraphQLService {
 					}) ?? [];
 		}
 
+		query.filter = this.replaceFuncs(query.filter);
+
 		validateQuery(query);
 
 		return query;
 	}
+
+	/**
+	 * Replace functions from GraphQL format to Directus-Filter format
+	 */
+	replaceFuncs(filter?: Filter | null): null | undefined | Filter {
+		if (!filter) return filter;
+
+		return replaceFuncDeep(filter);
+
+		function replaceFuncDeep(filter: Record<string, any>) {
+			return transform(filter, (result: Record<string, any>, value, key) => {
+				const isFunctionKey =
+					typeof key === 'string' && key.endsWith('_func') && FUNCTIONS.includes(Object.keys(value)[0]! as any);
+
+				if (isFunctionKey) {
+					const functionName = Object.keys(value)[0]!;
+					const fieldName = key.slice(0, -5);
+
+					result[`${functionName}(${fieldName})`] = Object.values(value)[0]!;
+				} else {
+					result[key] = value?.constructor === Object || value?.constructor === Array ? replaceFuncDeep(value) : value;
+				}
+			});
+		}
+	}
+
 	/**
 	 * Convert Directus-Exception into a GraphQL format, so it can be returned by GraphQL properly.
 	 */
@@ -1958,7 +1964,7 @@ export class GraphQLService {
 						accountability: this.accountability,
 						schema: this.schema,
 					});
-					return await service.serverInfo();
+					return await service.health();
 				},
 			},
 		});
@@ -2003,7 +2009,7 @@ export class GraphQLService {
 						res?.cookie(env.REFRESH_TOKEN_COOKIE_NAME, result.refreshToken, {
 							httpOnly: true,
 							domain: env.REFRESH_TOKEN_COOKIE_DOMAIN,
-							maxAge: ms(env.REFRESH_TOKEN_TTL as string),
+							maxAge: getMilliseconds(env.REFRESH_TOKEN_TTL),
 							secure: env.REFRESH_TOKEN_COOKIE_SECURE ?? false,
 							sameSite: (env.REFRESH_TOKEN_COOKIE_SAME_SITE as 'lax' | 'strict' | 'none') || 'strict',
 						});
@@ -2041,7 +2047,7 @@ export class GraphQLService {
 						res?.cookie(env.REFRESH_TOKEN_COOKIE_NAME, result.refreshToken, {
 							httpOnly: true,
 							domain: env.REFRESH_TOKEN_COOKIE_DOMAIN,
-							maxAge: ms(env.REFRESH_TOKEN_TTL as string),
+							maxAge: getMilliseconds(env.REFRESH_TOKEN_TTL),
 							secure: env.REFRESH_TOKEN_COOKIE_SECURE ?? false,
 							sameSite: (env.REFRESH_TOKEN_COOKIE_SAME_SITE as 'lax' | 'strict' | 'none') || 'strict',
 						});

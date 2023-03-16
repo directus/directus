@@ -2,8 +2,6 @@ import { Accountability, Action, SchemaOverview } from '@directus/shared/types';
 import jwt from 'jsonwebtoken';
 import { Knex } from 'knex';
 import { clone, cloneDeep } from 'lodash';
-import ms from 'ms';
-import { nanoid } from 'nanoid';
 import { performance } from 'perf_hooks';
 import { getAuthProvider } from '../auth';
 import { DEFAULT_AUTH_PROVIDER } from '../constants';
@@ -18,12 +16,13 @@ import {
 } from '../exceptions';
 import { createRateLimiter } from '../rate-limiter';
 import { AbstractServiceOptions, DirectusTokenPayload, LoginResult, Session, User } from '../types';
+import { getMilliseconds } from '../utils/get-milliseconds';
 import { stall } from '../utils/stall';
 import { ActivityService } from './activity';
 import { SettingsService } from './settings';
 import { TFAService } from './tfa';
 
-const loginAttemptsLimiter = createRateLimiter({ duration: 0 });
+const loginAttemptsLimiter = createRateLimiter('RATE_LIMITER', { duration: 0 });
 
 export class AuthenticationService {
 	knex: Knex;
@@ -49,6 +48,8 @@ export class AuthenticationService {
 		payload: Record<string, any>,
 		otp?: string
 	): Promise<LoginResult> {
+		const { nanoid } = await import('nanoid');
+
 		const STALL_TIME = env.LOGIN_STALL_TIME;
 		const timeStart = performance.now();
 
@@ -208,7 +209,7 @@ export class AuthenticationService {
 		});
 
 		const refreshToken = nanoid(64);
-		const refreshTokenExpiration = new Date(Date.now() + ms(env.REFRESH_TOKEN_TTL as string));
+		const refreshTokenExpiration = new Date(Date.now() + getMilliseconds(env.REFRESH_TOKEN_TTL, 0));
 
 		await this.knex('directus_sessions').insert({
 			token: refreshToken,
@@ -246,12 +247,14 @@ export class AuthenticationService {
 		return {
 			accessToken,
 			refreshToken,
-			expires: ms(env.ACCESS_TOKEN_TTL as string),
+			expires: getMilliseconds(env.ACCESS_TOKEN_TTL),
 			id: user.id,
 		};
 	}
 
 	async refresh(refreshToken: string): Promise<Record<string, any>> {
+		const { nanoid } = await import('nanoid');
+
 		if (!refreshToken) {
 			throw new InvalidCredentialsException();
 		}
@@ -361,7 +364,7 @@ export class AuthenticationService {
 		});
 
 		const newRefreshToken = nanoid(64);
-		const refreshTokenExpiration = new Date(Date.now() + ms(env.REFRESH_TOKEN_TTL as string));
+		const refreshTokenExpiration = new Date(Date.now() + getMilliseconds(env.REFRESH_TOKEN_TTL, 0));
 
 		await this.knex('directus_sessions')
 			.update({
@@ -377,7 +380,7 @@ export class AuthenticationService {
 		return {
 			accessToken,
 			refreshToken: newRefreshToken,
-			expires: ms(env.ACCESS_TOKEN_TTL as string),
+			expires: getMilliseconds(env.ACCESS_TOKEN_TTL),
 			id: record.user_id,
 		};
 	}

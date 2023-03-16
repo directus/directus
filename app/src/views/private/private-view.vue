@@ -146,10 +146,7 @@ const theme = computed(() => {
 
 provide('main-element', contentEl);
 
-router.afterEach(async (to, from) => {
-	// Hash changes in docs, #12752
-	if (to.path === from.path) return;
-
+router.afterEach(() => {
 	contentEl.value?.scrollTo({ top: 0 });
 	fullScreen.value = false;
 });
@@ -311,6 +308,7 @@ function openSidebar(event: PointerEvent) {
 			right: -2px;
 			bottom: 0;
 			width: 4px;
+			z-index: 3;
 			background-color: var(--primary);
 			cursor: ew-resize;
 			opacity: 0;

@@ -3,7 +3,6 @@ import { parseJSON } from '@directus/shared/utils';
 import express, { Router } from 'express';
 import flatten from 'flat';
 import jwt from 'jsonwebtoken';
-import ms from 'ms';
 import { Client, errors, generators, Issuer } from 'openid-client';
 import { getAuthProvider } from '../../auth';
 import env from '../../env';
@@ -22,6 +21,7 @@ import { AuthData, AuthDriverOptions, User } from '../../types';
 import asyncHandler from '../../utils/async-handler';
 import { getConfigFromEnv } from '../../utils/get-config-from-env';
 import { getIPFromReq } from '../../utils/get-ip-from-req';
+import { getMilliseconds } from '../../utils/get-milliseconds';
 import { Url } from '../../utils/url';
 import { LocalAuthDriver } from './local';
 
@@ -99,6 +99,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 				code_challenge_method: 'S256',
 				// Some providers require state even with PKCE
 				state: codeChallenge,
+				nonce: codeChallenge,
 			});
 		} catch (e) {
 			throw handleError(e);
@@ -126,10 +127,11 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 
 		try {
 			const client = await this.client;
+			const codeChallenge = generators.codeChallenge(payload.codeVerifier);
 			tokenSet = await client.callback(
 				this.redirectUrl,
 				{ code: payload.code, state: payload.state },
-				{ code_verifier: payload.codeVerifier, state: generators.codeChallenge(payload.codeVerifier) }
+				{ code_verifier: payload.codeVerifier, state: codeChallenge, nonce: codeChallenge }
 			);
 			userInfo = tokenSet.claims();
 
@@ -354,7 +356,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 				res.cookie(env.REFRESH_TOKEN_COOKIE_NAME, refreshToken, {
 					httpOnly: true,
 					domain: env.REFRESH_TOKEN_COOKIE_DOMAIN,
-					maxAge: ms(env.REFRESH_TOKEN_TTL as string),
+					maxAge: getMilliseconds(env.REFRESH_TOKEN_TTL),
 					secure: env.REFRESH_TOKEN_COOKIE_SECURE ?? false,
 					sameSite: (env.REFRESH_TOKEN_COOKIE_SAME_SITE as 'lax' | 'strict' | 'none') || 'strict',
 				});

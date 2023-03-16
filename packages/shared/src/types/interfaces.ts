@@ -20,7 +20,7 @@ export interface InterfaceConfig {
 		| null;
 	types: readonly Type[];
 	localTypes?: readonly LocalType[];
-	group?: 'standard' | 'selection' | 'relational' | 'presentation' | 'presentation' | 'group' | 'other';
+	group?: 'standard' | 'selection' | 'relational' | 'presentation' | 'group' | 'other';
 	order?: number;
 	relational?: boolean;
 	hideLabel?: boolean;

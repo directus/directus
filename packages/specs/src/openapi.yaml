@@ -73,6 +73,8 @@ tags:
   - name: Roles
     description: Roles are groups of users that share permissions.
     x-collection: directus_roles
+  - name: Schema
+    description: Retrieve and update the schema of an instance.
   - name: Server
     description:
       Access to where Directus runs. Allows you to make sure your server has everything needed to run the platform, and
@@ -205,6 +207,14 @@ paths:
   /roles/{id}:
     $ref: './paths/roles/role.yaml'
 
+  # Schema
+  /schema/snapshot:
+    $ref: './paths/schema/snapshot.yaml'
+  /schema/apply:
+    $ref: './paths/schema/apply.yaml'
+  /schema/diff:
+    $ref: './paths/schema/diff.yaml'
+
   # Server
   /server/info:
     $ref: './paths/server/info.yaml'
@@ -263,6 +273,8 @@ components:
       $ref: './components/preset.yaml'
     Collections:
       $ref: './components/collection.yaml'
+    Diff:
+      $ref: './components/diff.yaml'
     Fields:
       $ref: './components/field.yaml'
     Files:
@@ -283,12 +295,27 @@ components:
       $ref: './components/revision.yaml'
     Roles:
       $ref: './components/role.yaml'
+    Schema:
+      $ref: './components/schema.yaml'
     Settings:
       $ref: './components/setting.yaml'
     Users:
       $ref: './components/user.yaml'
+    Query:
+      $ref: './definitions/query.yaml'
     Webhooks:
       $ref: './components/webhook.yaml'
+    x-metadata:
+      type: object
+      properties:
+        total_count:
+          description: Returns the total item count of the collection you're querying.
+          type: integer
+        filter_count:
+          description:
+            Returns the item count of the collection you're querying, taking the current filter/search parameters into
+            account.
+          type: integer
   parameters:
     # All path parameters
     Id:
@@ -317,9 +344,8 @@ components:
       $ref: './parameters/fields.yaml'
     Mode:
       $ref: './parameters/mode.yaml'
-  definitions:
-    Query:
-      $ref: './definitions/query.yaml'
+    Export:
+      $ref: './parameters/export.yaml'
   responses:
     NotFoundError:
       $ref: './responses/notFoundError.yaml'
@@ -334,17 +360,6 @@ components:
       type: apiKey
       in: header
       name: 'Authorization'
-  x-metadata:
-    type: object
-    properties:
-      total_count:
-        description: Returns the total item count of the collection you're querying.
-        type: integer
-      filter_count:
-        description:
-          Returns the item count of the collection you're querying, taking the current filter/search parameters into
-          account.
-        type: integer
 security:
   - Auth: []
   - KeyAuth: []

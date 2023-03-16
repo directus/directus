@@ -238,6 +238,7 @@ date: Date
 date_range: तिथि सीमा
 datetime: DateTime
 dateTime: DateTime
+precision: निखारा
 decimal: Decimal
 float: Float
 integer: Integer
@@ -249,6 +250,12 @@ time: Time
 timestamp: Timestamp
 uuid: UUID
 hash: Hash
+geometry.Point: बिंदु
+click_here: यहाँ क्लिक करें
+new_field: 'नया क्षेत्र'
+new_collection: 'नया संग्रह'
+next: अगला
+left_to_right: बाएं से दायां
 note: ध्यान दें
 enter_a_value: एक मान दर्ज करें...
 enter_a_placeholder: प्लेसहोल्डर दर्ज करें...

@@ -15,6 +15,7 @@ export type FieldNode = {
 	type: Type;
 	children?: FieldNode[];
 	group?: boolean;
+	_loading?: boolean;
 };
 
 export type FieldTreeContext = {
@@ -89,9 +90,21 @@ export function useFieldTree(
 				type: field.type,
 			};
 
+			const children = getTree(field.collection, node);
+
+			if (children) {
+				for (const child of children) {
+					if (child.relatedCollection) {
+						child.children = [
+							{ name: 'Loading...', field: '', collection: '', key: '', path: '', type: 'alias', _loading: true },
+						];
+					}
+				}
+			}
+
 			return {
 				...node,
-				children: getTree(field.collection, node),
+				children,
 			};
 		}
 
@@ -154,14 +167,25 @@ export function useFieldTree(
 	}
 
 	function getNodeAtPath([field, ...path]: string[], root?: FieldNode[]): FieldNode | undefined {
-		for (const node of root || []) {
-			if (node.field === field) {
-				if (path.length) {
-					return getNodeAtPath(path, node.children);
-				} else {
-					return node;
-				}
-			}
+		let node = root?.find((node) => node.field === field);
+
+		if (!node) {
+			node = root
+				?.reduce<FieldNode[]>((acc, node) => {
+					if (node.group === true && node.children && node.children.length > 0) {
+						acc.push(...node.children);
+					}
+					return acc;
+				}, [])
+				.find((node) => node.field === field);
+		}
+
+		if (!node) return undefined;
+
+		if (path.length) {
+			return getNodeAtPath(path, node.children);
+		} else {
+			return node;
 		}
 	}
 
@@ -170,6 +194,10 @@ export function useFieldTree(
 			visitedPaths.value.add(path);
 
 			const node = getNodeAtPath(path.split('.'), treeList.value);
+
+			if (node && node.children?.length === 1 && node.children[0]._loading) {
+				node.children = getTree(node.relatedCollection, node);
+			}
 
 			for (const child of node?.children || []) {
 				if (child?.relatedCollection) {

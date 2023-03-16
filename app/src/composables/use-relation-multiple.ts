@@ -77,7 +77,7 @@ export function useRelationMultiple(
 
 	watch([previewQuery, itemId, relation], updateFetchedItems, { immediate: true });
 
-	const { fetchedSelectItems, selected, isItemSelected } = useSelected();
+	const { fetchedSelectItems, selected, isItemSelected, selectedOnPage } = useSelected();
 
 	const totalItemCount = computed(() => {
 		if (relation.value?.type === 'o2m') {
@@ -146,7 +146,7 @@ export function useRelationMultiple(
 			return updatedItem;
 		});
 
-		const selectedOnPage = selected.value.map((edit) => {
+		const fullSelectedOnPage = selectedOnPage.value.map((edit) => {
 			const fetchedItem = fetchedSelectItems.value.find((item) => {
 				switch (relation.value?.type) {
 					case 'o2m':
@@ -176,7 +176,7 @@ export function useRelationMultiple(
 
 		const newItems = getPage(existingItemCount.value + selected.value.length, createdItems.value);
 
-		items.push(...selectedOnPage, ...newItems);
+		items.push(...fullSelectedOnPage, ...newItems);
 
 		const sortField = relation.value.sortField;
 
@@ -188,24 +188,6 @@ export function useRelationMultiple(
 	});
 
 	const { create, remove, select, update } = useActions(_value);
-
-	return {
-		create,
-		update,
-		remove,
-		select,
-		displayItems,
-		totalItemCount,
-		loading,
-		selected,
-		fetchedSelectItems,
-		fetchedItems,
-		useActions,
-		cleanItem,
-		isItemSelected,
-		localDelete,
-		getItemEdits,
-	};
 
 	function useActions(target: Ref<Item>) {
 		return { create, update, remove, select };
@@ -311,21 +293,17 @@ export function useRelationMultiple(
 		if (!relation.value) return;
 
 		if (!itemId.value || itemId.value === '+') {
-			existingItemCount.value = 0;
 			fetchedItems.value = [];
 			return;
 		}
 
 		let targetCollection: string;
-		let targetPKField: string;
-		let reverseJunctionField: string;
+		const reverseJunctionField = relation.value.reverseJunctionField.field;
 		const fields = new Set(previewQuery.value.fields);
 
 		switch (relation.value.type) {
 			case 'm2a':
 				targetCollection = relation.value.junctionCollection.collection;
-				targetPKField = relation.value.junctionPrimaryKeyField.field;
-				reverseJunctionField = relation.value.reverseJunctionField.field;
 				fields.add(relation.value.junctionPrimaryKeyField.field);
 				fields.add(relation.value.collectionField.field);
 				for (const collection of relation.value.allowedCollections) {
@@ -335,15 +313,11 @@ export function useRelationMultiple(
 				break;
 			case 'm2m':
 				targetCollection = relation.value.junctionCollection.collection;
-				targetPKField = relation.value.junctionPrimaryKeyField.field;
-				reverseJunctionField = relation.value.reverseJunctionField.field;
 				fields.add(relation.value.junctionPrimaryKeyField.field);
 				fields.add(`${relation.value.junctionField.field}.${relation.value.relatedPrimaryKeyField.field}`);
 				break;
 			case 'o2m':
 				targetCollection = relation.value.relatedCollection.collection;
-				targetPKField = relation.value.relatedPrimaryKeyField.field;
-				reverseJunctionField = relation.value.reverseJunctionField.field;
 				fields.add(relation.value.relatedPrimaryKeyField.field);
 				break;
 		}
@@ -352,8 +326,6 @@ export function useRelationMultiple(
 
 		try {
 			loading.value = true;
-
-			await updateItemCount(targetCollection, targetPKField, reverseJunctionField);
 
 			if (itemId.value !== '+') {
 				const filter: Filter = { _and: [{ [reverseJunctionField]: itemId.value } as Filter] };
@@ -368,6 +340,7 @@ export function useRelationMultiple(
 						filter,
 						page: previewQuery.value.page,
 						limit: previewQuery.value.limit,
+						sort: previewQuery.value.sort,
 					},
 				});
 
@@ -380,7 +353,52 @@ export function useRelationMultiple(
 		}
 	}
 
-	async function updateItemCount(targetCollection: string, targetPKField: string, reverseJunctionField: string) {
+	watch(
+		[previewQuery, itemId, relation],
+		(newData, oldData) => {
+			const [newPreviewQuery, newItemId, newRelation] = newData;
+			const [oldPreviewQuery, oldItemId, oldRelation] = oldData;
+
+			if (
+				isEqual(newRelation, oldRelation) &&
+				newPreviewQuery.filter === oldPreviewQuery?.filter &&
+				newPreviewQuery.search === oldPreviewQuery?.search &&
+				newItemId === oldItemId
+			)
+				return;
+
+			updateItemCount();
+		},
+		{ immediate: true }
+	);
+
+	async function updateItemCount() {
+		if (!relation.value) return;
+
+		if (!itemId.value || itemId.value === '+') {
+			existingItemCount.value = 0;
+			return;
+		}
+
+		let targetCollection: string;
+		let targetPKField: string;
+		const reverseJunctionField = relation.value.reverseJunctionField.field;
+
+		switch (relation.value.type) {
+			case 'm2a':
+				targetCollection = relation.value.junctionCollection.collection;
+				targetPKField = relation.value.junctionPrimaryKeyField.field;
+				break;
+			case 'm2m':
+				targetCollection = relation.value.junctionCollection.collection;
+				targetPKField = relation.value.junctionPrimaryKeyField.field;
+				break;
+			case 'o2m':
+				targetCollection = relation.value.relatedCollection.collection;
+				targetPKField = relation.value.relatedPrimaryKeyField.field;
+				break;
+		}
+
 		const filter: Filter = { _and: [{ [reverseJunctionField]: itemId.value } as Filter] };
 		if (previewQuery.value.filter) {
 			filter._and.push(previewQuery.value.filter);
@@ -427,7 +445,7 @@ export function useRelationMultiple(
 			{ immediate: true }
 		);
 
-		return { fetchedSelectItems, selected, isItemSelected };
+		return { fetchedSelectItems, selected, isItemSelected, selectedOnPage };
 
 		function isItemSelected(item: DisplayItem) {
 			return relation.value !== undefined && item[relation.value.reverseJunctionField.field] !== undefined;
@@ -450,11 +468,17 @@ export function useRelationMultiple(
 				return;
 			}
 
+			const fields = new Set(previewQuery.value.fields);
+			fields.add(relation.relatedPrimaryKeyField.field);
+
+			if (relation.sortField) fields.add(relation.sortField);
+
 			const targetCollection = relation.relatedCollection.collection;
 			const targetPKField = relation.relatedPrimaryKeyField.field;
 
 			const response = await api.get(getEndpoint(targetCollection), {
 				params: {
+					fields: Array.from(fields),
 					filter: {
 						[targetPKField]: {
 							_in: selectedOnPage.value.map((item) => item[targetPKField]),
@@ -473,10 +497,21 @@ export function useRelationMultiple(
 				return;
 			}
 
+			const fields = new Set(
+				previewQuery.value.fields.reduce<string[]>((acc, field) => {
+					const prefix = relation.junctionField.field + '.';
+
+					if (field.startsWith(prefix)) acc.push(field.replace(prefix, ''));
+					return acc;
+				}, [])
+			);
+			fields.add(relation.relatedPrimaryKeyField.field);
+
 			const relatedPKField = relation.relatedPrimaryKeyField.field;
 
 			const response = await api.get(getEndpoint(relation.relatedCollection.collection), {
 				params: {
+					fields: Array.from(fields),
 					filter: {
 						[relatedPKField]: {
 							_in: selectedOnPage.value.map((item) => item[relation.junctionField.field][relatedPKField]),
@@ -511,8 +546,20 @@ export function useRelationMultiple(
 				Object.entries(selectGrouped).map(([collection, items]) => {
 					const pkField = relation.relationPrimaryKeyFields[collection].field;
 
+					const fields = new Set(
+						previewQuery.value.fields.reduce<string[]>((acc, field) => {
+							const prefix = `${relation.junctionField.field}:${collection}.`;
+
+							if (field.startsWith(prefix)) acc.push(field.replace(prefix, ''));
+							return acc;
+						}, [])
+					);
+
+					fields.add(pkField);
+
 					return api.get(getEndpoint(collection), {
 						params: {
+							fields: Array.from(fields),
 							filter: {
 								[pkField]: {
 									_in: items.map((item) => item[relation.junctionField.field][pkField]),
@@ -629,4 +676,22 @@ export function useRelationMultiple(
 
 		return { cleanItem, getPage, localDelete, getItemEdits, isEmpty };
 	}
+
+	return {
+		create,
+		update,
+		remove,
+		select,
+		displayItems,
+		totalItemCount,
+		loading,
+		selected,
+		fetchedSelectItems,
+		fetchedItems,
+		useActions,
+		cleanItem,
+		isItemSelected,
+		localDelete,
+		getItemEdits,
+	};
 }

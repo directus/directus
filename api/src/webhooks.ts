@@ -1,12 +1,12 @@
-import axios from 'axios';
+import { ActionHandler } from '@directus/shared/types';
 import getDatabase from './database';
 import emitter from './emitter';
 import logger from './logger';
-import { Webhook, WebhookHeader } from './types';
-import { WebhooksService } from './services';
-import { getSchema } from './utils/get-schema';
-import { ActionHandler } from '@directus/shared/types';
 import { getMessenger } from './messenger';
+import { getAxios } from './request/index';
+import { WebhooksService } from './services';
+import { Webhook, WebhookHeader } from './types';
+import { getSchema } from './utils/get-schema';
 import { JobQueue } from './utils/job-queue';
 
 let registered: { event: string; handler: ActionHandler }[] = [];
@@ -57,6 +57,7 @@ export function unregister(): void {
 function createHandler(webhook: Webhook, event: string): ActionHandler {
 	return async (meta, context) => {
 		if (webhook.collections.includes(meta.collection) === false) return;
+		const axios = await getAxios();
 
 		const webhookPayload = {
 			event,

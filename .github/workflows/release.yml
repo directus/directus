@@ -63,13 +63,12 @@ jobs:
         uses: ./.github/actions/prepare
         with:
           build: false
+          registry: https://registry.npmjs.org
 
       - name: Publish packages to NPM
         env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: |
-          pnpm config set "//registry.npmjs.org/:_authToken" "${NPM_TOKEN}"
-          pnpm -r publish --access=public --no-git-checks
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: pnpm -r publish --access=public --no-git-checks
 
   build-images:
     name: Build Images

@@ -1,25 +1,24 @@
-import {
-	AbstractServiceOptions,
-	ShareData,
-	LoginResult,
-	Item,
-	PrimaryKey,
-	MutationOptions,
-	DirectusTokenPayload,
-} from '../types';
-import { ItemsService } from './items';
 import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
-import ms from 'ms';
-import { InvalidCredentialsException, ForbiddenException } from '../exceptions';
 import env from '../env';
-import { nanoid } from 'nanoid';
-import { AuthorizationService } from './authorization';
-import { UsersService } from './users';
-import { MailService } from './mail';
-import { userName } from '../utils/user-name';
+import { ForbiddenException, InvalidCredentialsException } from '../exceptions';
+import {
+	AbstractServiceOptions,
+	DirectusTokenPayload,
+	Item,
+	LoginResult,
+	MutationOptions,
+	PrimaryKey,
+	ShareData,
+} from '../types';
+import { getMilliseconds } from '../utils/get-milliseconds';
 import { md } from '../utils/md';
 import { Url } from '../utils/url';
+import { userName } from '../utils/user-name';
+import { AuthorizationService } from './authorization';
+import { ItemsService } from './items';
+import { MailService } from './mail';
+import { UsersService } from './users';
 
 export class SharesService extends ItemsService {
 	authorizationService: AuthorizationService;
@@ -40,6 +39,8 @@ export class SharesService extends ItemsService {
 	}
 
 	async login(payload: Record<string, any>): Promise<LoginResult> {
+		const { nanoid } = await import('nanoid');
+
 		const record = await this.knex
 			.select<ShareData>({
 				share_id: 'id',
@@ -94,7 +95,7 @@ export class SharesService extends ItemsService {
 		});
 
 		const refreshToken = nanoid(64);
-		const refreshTokenExpiration = new Date(Date.now() + ms(env.REFRESH_TOKEN_TTL as string));
+		const refreshTokenExpiration = new Date(Date.now() + getMilliseconds(env.REFRESH_TOKEN_TTL, 0));
 
 		await this.knex('directus_sessions').insert({
 			token: refreshToken,
@@ -110,7 +111,7 @@ export class SharesService extends ItemsService {
 		return {
 			accessToken,
 			refreshToken,
-			expires: ms(env.ACCESS_TOKEN_TTL as string),
+			expires: getMilliseconds(env.ACCESS_TOKEN_TTL),
 		};
 	}
 

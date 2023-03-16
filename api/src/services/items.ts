@@ -4,6 +4,7 @@ import { Knex } from 'knex';
 import { assign, clone, cloneDeep, omit, pick, without } from 'lodash';
 import { getCache } from '../cache';
 import getDatabase from '../database';
+import { getHelpers } from '../database/helpers';
 import runAST from '../database/run-ast';
 import emitter from '../emitter';
 import env from '../env';
@@ -120,6 +121,10 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				? await authorizationService.validatePayload('create', this.collection, payloadAfterHooks)
 				: payloadAfterHooks;
 
+			if (opts?.preMutationException) {
+				throw opts.preMutationException;
+			}
+
 			const {
 				payload: payloadWithM2O,
 				revisions: revisionsM2O,
@@ -145,7 +150,12 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 					.then((result) => result[0]);
 
 				const returnedKey = typeof result === 'object' ? result[primaryKeyField] : result;
-				primaryKey = primaryKey ?? returnedKey;
+
+				if (this.schema.collections[this.collection].fields[primaryKeyField].type === 'uuid') {
+					primaryKey = getHelpers(trx).schema.formatUUID(primaryKey ?? returnedKey);
+				} else {
+					primaryKey = primaryKey ?? returnedKey;
+				}
 			} catch (err: any) {
 				throw await translateDatabaseError(err);
 			}
@@ -196,12 +206,14 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 						schema: this.schema,
 					});
 
+					const revisionDelta = await payloadService.prepareDelta(payloadAfterHooks);
+
 					const revision = await revisionsService.createOne({
 						activity: activity,
 						collection: this.collection,
 						item: primaryKey,
-						data: await payloadService.prepareDelta(payload),
-						delta: await payloadService.prepareDelta(payload),
+						data: revisionDelta,
+						delta: revisionDelta,
 					});
 
 					// Make sure to set the parent field of the child-revision rows
@@ -238,14 +250,18 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				},
 			};
 
-			if (!opts?.bypassEmitAction) {
-				emitter.emitAction(actionEvent.event, actionEvent.meta, actionEvent.context);
-			} else {
+			if (opts?.bypassEmitAction) {
 				opts.bypassEmitAction(actionEvent);
+			} else {
+				emitter.emitAction(actionEvent.event, actionEvent.meta, actionEvent.context);
 			}
 
 			for (const nestedActionEvent of nestedActionEvents) {
-				emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
+				if (opts?.bypassEmitAction) {
+					opts.bypassEmitAction(nestedActionEvent);
+				} else {
+					emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
+				}
 			}
 		}
 
@@ -260,7 +276,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	 * Create multiple new items at once. Inserts all provided records sequentially wrapped in a transaction.
 	 */
 	async createMany(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
-		const primaryKeys = await this.knex.transaction(async (trx) => {
+		const { primaryKeys, nestedActionEvents } = await this.knex.transaction(async (trx) => {
 			const service = new ItemsService(this.collection, {
 				accountability: this.accountability,
 				schema: this.schema,
@@ -268,14 +284,29 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			});
 
 			const primaryKeys: PrimaryKey[] = [];
+			const nestedActionEvents: ActionEventParams[] = [];
 
 			for (const payload of data) {
-				const primaryKey = await service.createOne(payload, { ...(opts || {}), autoPurgeCache: false });
+				const primaryKey = await service.createOne(payload, {
+					...(opts || {}),
+					autoPurgeCache: false,
+					bypassEmitAction: (params) => nestedActionEvents.push(params),
+				});
 				primaryKeys.push(primaryKey);
 			}
 
-			return primaryKeys;
+			return { primaryKeys, nestedActionEvents };
 		});
+
+		if (opts?.emitEvents !== false) {
+			for (const nestedActionEvent of nestedActionEvents) {
+				if (opts?.bypassEmitAction) {
+					opts.bypassEmitAction(nestedActionEvent);
+				} else {
+					emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
+				}
+			}
+		}
 
 		if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
 			await this.cache.clear();
@@ -437,22 +468,33 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	 * Update multiple items in a single transaction
 	 */
 	async updateBatch(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
+		if (!Array.isArray(data)) {
+			throw new InvalidPayloadException('Input should be an array of items.');
+		}
+
 		const primaryKeyField = this.schema.collections[this.collection].primary;
 
 		const keys: PrimaryKey[] = [];
 
-		await this.knex.transaction(async (trx) => {
-			const service = new ItemsService(this.collection, {
-				accountability: this.accountability,
-				knex: trx,
-				schema: this.schema,
-			});
+		try {
+			await this.knex.transaction(async (trx) => {
+				const service = new ItemsService(this.collection, {
+					accountability: this.accountability,
+					knex: trx,
+					schema: this.schema,
+				});
 
-			for (const item of data) {
-				if (!item[primaryKeyField]) throw new InvalidPayloadException(`Item in update misses primary key.`);
-				keys.push(await service.updateOne(item[primaryKeyField]!, omit(item, primaryKeyField), opts));
+				for (const item of data) {
+					if (!item[primaryKeyField]) throw new InvalidPayloadException(`Item in update misses primary key.`);
+					const combinedOpts = Object.assign({ autoPurgeCache: false }, opts);
+					keys.push(await service.updateOne(item[primaryKeyField]!, omit(item, primaryKeyField), combinedOpts));
+				}
+			});
+		} finally {
+			if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
+				await this.cache.clear();
 			}
-		});
+		}
 
 		return keys;
 	}
@@ -509,6 +551,10 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		const payloadWithPresets = this.accountability
 			? await authorizationService.validatePayload('update', this.collection, payloadAfterHooks)
 			: payloadAfterHooks;
+
+		if (opts?.preMutationException) {
+			throw opts.preMutationException;
+		}
 
 		await this.knex.transaction(async (trx) => {
 			const payloadService = new PayloadService(this.collection, {
@@ -644,14 +690,18 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				},
 			};
 
-			if (!opts?.bypassEmitAction) {
-				emitter.emitAction(actionEvent.event, actionEvent.meta, actionEvent.context);
-			} else {
+			if (opts?.bypassEmitAction) {
 				opts.bypassEmitAction(actionEvent);
+			} else {
+				emitter.emitAction(actionEvent.event, actionEvent.meta, actionEvent.context);
 			}
 
 			for (const nestedActionEvent of nestedActionEvents) {
-				emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
+				if (opts?.bypassEmitAction) {
+					opts.bypassEmitAction(nestedActionEvent);
+				} else {
+					emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
+				}
 			}
 		}
 
@@ -752,6 +802,10 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			await authorizationService.checkAccess('delete', this.collection, keys);
 		}
 
+		if (opts?.preMutationException) {
+			throw opts.preMutationException;
+		}
+
 		if (opts?.emitEvents !== false) {
 			await emitter.emitFilter(
 				this.eventScope === 'items' ? ['items.delete', `${this.collection}.items.delete`] : `${this.eventScope}.delete`,
@@ -812,10 +866,10 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				},
 			};
 
-			if (!opts?.bypassEmitAction) {
-				emitter.emitAction(actionEvent.event, actionEvent.meta, actionEvent.context);
-			} else {
+			if (opts?.bypassEmitAction) {
 				opts.bypassEmitAction(actionEvent);
+			} else {
+				emitter.emitAction(actionEvent.event, actionEvent.meta, actionEvent.context);
 			}
 		}
 

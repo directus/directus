@@ -4,7 +4,6 @@ import fse from 'fs-extra';
 import path from 'path';
 import qs from 'qs';
 import { ServerResponse } from 'http';
-import helmet from 'helmet';
 
 import activityRouter from './controllers/activity';
 import assetsRouter from './controllers/assets';
@@ -27,6 +26,7 @@ import presetsRouter from './controllers/presets';
 import relationsRouter from './controllers/relations';
 import revisionsRouter from './controllers/revisions';
 import rolesRouter from './controllers/roles';
+import schemaRouter from './controllers/schema';
 import serverRouter from './controllers/server';
 import settingsRouter from './controllers/settings';
 import usersRouter from './controllers/users';
@@ -47,10 +47,10 @@ import { checkIP } from './middleware/check-ip';
 import cors from './middleware/cors';
 import errorHandler from './middleware/error-handler';
 import extractToken from './middleware/extract-token';
-import rateLimiter from './middleware/rate-limiter';
+import rateLimiter from './middleware/rate-limiter-ip';
+import rateLimiterGlobal from './middleware/rate-limiter-global';
 import sanitizeQuery from './middleware/sanitize-query';
 import schema from './middleware/schema';
-import { ROBOTSTXT } from './constants';
 
 import { track } from './utils/track';
 import { validateEnv } from './utils/validate-env';
@@ -63,6 +63,8 @@ import { getConfigFromEnv } from './utils/get-config-from-env';
 import { merge } from 'lodash';
 
 export default async function createApp(): Promise<express.Application> {
+	const helmet = await import('helmet');
+
 	validateEnv(['KEY', 'SECRET']);
 
 	if (!new Url(env.PUBLIC_URL).isAbsolute()) {
@@ -175,21 +177,26 @@ export default async function createApp(): Promise<express.Application> {
 	app.get('/robots.txt', (_, res) => {
 		res.set('Content-Type', 'text/plain');
 		res.status(200);
-		res.send(ROBOTSTXT);
+		res.send(env.ROBOTS_TXT);
 	});
 
 	if (env.SERVE_APP) {
 		const adminPath = require.resolve('@directus/app');
 		const adminUrl = new Url(env.PUBLIC_URL).addPath('admin');
 
+		const embeds = extensionManager.getEmbeds();
+
 		// Set the App's base path according to the APIs public URL
 		const html = await fse.readFile(adminPath, 'utf8');
-		const htmlWithBase = html.replace(/<base \/>/, `<base href="${adminUrl.toString({ rootRelative: true })}/" />`);
+		const htmlWithVars = html
+			.replace(/<base \/>/, `<base href="${adminUrl.toString({ rootRelative: true })}/" />`)
+			.replace(/<embed-head \/>/, embeds.head)
+			.replace(/<embed-body \/>/, embeds.body);
 
 		const sendHtml = (_req: Request, res: Response) => {
 			res.setHeader('Cache-Control', 'no-cache');
 			res.setHeader('Vary', 'Origin, Cache-Control');
-			res.send(htmlWithBase);
+			res.send(htmlWithVars);
 		};
 
 		const setStaticHeaders = (res: ServerResponse) => {
@@ -203,6 +210,9 @@ export default async function createApp(): Promise<express.Application> {
 	}
 
 	// use the rate limiter - all routes for now
+	if (env.RATE_LIMITER_GLOBAL_ENABLED === true) {
+		app.use(rateLimiterGlobal);
+	}
 	if (env.RATE_LIMITER_ENABLED === true) {
 		app.use(rateLimiter);
 	}
@@ -247,6 +257,7 @@ export default async function createApp(): Promise<express.Application> {
 	app.use('/relations', relationsRouter);
 	app.use('/revisions', revisionsRouter);
 	app.use('/roles', rolesRouter);
+	app.use('/schema', schemaRouter);
 	app.use('/server', serverRouter);
 	app.use('/settings', settingsRouter);
 	app.use('/shares', sharesRouter);

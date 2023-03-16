@@ -176,7 +176,7 @@ field_translations: وەرگێڕانەکان
 field_group: دەستەی خانە
 item_permissions: دەسەڵاتەکانی مادە
 field_permissions: دەسەڵاتەکانی خانە
-field_validation: سەلاماندنی خانە
+field_validation: سەلماندنی خانە
 field_presets: پێشسێتەکانی خانە
 permissions_for_role: 'مادەکانی پلەی {role} دەتوانن {action}.'
 fields_for_role: 'خانەکانی پلەی {role} دەتوانن {action}.'
@@ -187,6 +187,9 @@ revision_post_create: ئەمە شێوەی دەرکەوتنی مادەیەکە ک
 revision_post_update: ئەمە شێوەی دەرکەوتنی مادەیەکە دوای ئەوەی نوێدەکرێتەوە.
 changes_made: لە خوارەوە کۆمەڵێک گۆڕانکاری دیارن کە لەم گەڕاندنەوەیەدا دەکرێن.
 no_relational_data: لەبیرتبێت کە داتا بەیەکەوە بەستراوەکان بەشێک نین لێرە.
+junction_field_location: شوێنی یەکگرتنی خانەکان
+top: سەروو
+bottom: خواروو
 hide_field: شاردنەوەی خانە
 hide_field_on_detail: شاردنەوەی خانە لە وردەکاریدا
 show_field_on_detail: نیشاندانی خانە لە وردەکاریدا
@@ -207,7 +210,7 @@ camera: کامێرا
 show_zero: نیشاندانی سفر
 create_in_advanced_field_creation_mode: دروستکردنی خانە لە دۆخی پێشکەوتوو
 continue_in_advanced_field_creation_mode: بەردەوام بوون لە دۆخی دروستکردنی پێشکەوتوی خانە
-validation: سەلاماندن
+validation: سەلماندن
 sum: کۆ
 sum_distinct: کۆی بەها جیاوازەکان
 avg: تێکڕا
@@ -272,6 +275,7 @@ fields_group: دەستەی خانەکان
 no_collections_found: هیچ کۆمەڵەیەک نەدۆزرایەوە.
 new_data_alert: 'ئەمانەی خوارەوە لەناو مۆدێلی داتاکانتدا دروست دەکرێن:'
 search_collection: گەڕانی کۆمەڵەکان...
+search_field: خانەی گەڕان...
 new_field: 'خانەی نوێ'
 new_collection: 'کۆمەڵەی نوێ'
 add_m2o_to_collection: 'پەیوەندی زۆر بۆ یەک M2O زیاد بکە بۆ "{collection}"'
@@ -295,6 +299,8 @@ next: دواتر
 field_name: ناوی خانە
 translations: وەرگێڕانەکان
 no_translations: هیچ وەرگێڕانێک نییە
+left_to_right: چەپ بۆ ڕاست
+right_to_left: ڕاست بۆ چەپ
 note: تێبینی
 enter_a_value: بەهایەک دابنێ...
 enter_a_placeholder: شوێنگرێک دابنێ...
@@ -323,6 +329,7 @@ edit_raw_value: دەستکاریکردنی بەهای خام
 enter_raw_value: بەهای خام دابنێ...
 clear_value: لابردنی بەها
 clear_changes: لابردنی گۆڕانکارییەکان
+clear_items: سڕینەوەی مادەکان
 reset_to_default: بنەڕەتی کردنەوە
 undo_changes: پاشەکشەکردنی گۆڕانکارییەکان
 notifications: ئاگادارکردنەوەکان
@@ -479,6 +486,7 @@ creating_items: دروستکردنی مادەکان
 enable_create_button: کاراکردنی دوگمەی دروستکردن
 selecting_items: دیاریکردنی مادەکان
 enable_select_button: کاراکردنی دوگمەی دیاریکردن
+allow_duplicates: ڕێگەدان بە دووبارەبوونەوە
 comments: لێدوانەکان
 no_comments: هێشتا هیچ لێدوانێک نییە
 click_to_expand: کرتە بکە بۆ فراوانکردن
@@ -531,6 +539,7 @@ activity_item: چالاکی مادە
 action: کردەوە
 ip_address: ناونیشانی IP
 user_agent: نوێنەری بەکارهێنەر
+origin: ڕەسەن
 webhooks: وێبهووکەکان
 decimals: دەییەکان
 value_decimals: بەها دەییەکان
@@ -564,6 +573,8 @@ select_an_item: مادەیەک دیاری بکە...
 edit: دەستکاری
 enabled: چالاککراوە
 disable_tfa: لەکارخستنی 2FA
+admin_disable_tfa_text: ئایا دڵنیای کە دەتەوێت 2FA بۆ ئەم بەکارهێنەرە لەکار بخەیت؟
+tfa_setup: دامەزراندنی 2FA
 tfa_scan_code: کۆدەکە سکان بکە لە ڕێگەی بەرنامەیەکی پشتڕاستکەرەوە (authenticator app) بۆ کۆتایی پێهێنان بە ڕێکخستنی 2FA
 enter_otp_to_disable_tfa: OTP ـیەکە دابنێ بۆ ڕاگرتنی 2FA
 create_account: دروستکردنی هەژمار
@@ -579,6 +590,9 @@ errors:
   INVALID_PAYLOAD: سودباری نادروست
   INVALID_PROVIDER: بەکارهێنەر سەر بەدابینکەرێکی جیاوازی پشتڕاستکەرەوەیە
   INVALID_QUERY: پرسی نادروست
+  INVALID_CONFIG: ڕێکخستنی نادروست
+  INVALID_TOKEN: تۆکنی نادروست
+  INVALID_IP: IP Address ڕێگەپێدراو نییە
   INVALID_USER: هەڵەڕویدا لە پشتڕاستکردنەوەی بەکارهێنەر
   ITEM_LIMIT_REACHED: ماددە گەیشتە سنور
   ITEM_NOT_FOUND: ماددە نەدۆزرایەوە
@@ -595,6 +609,13 @@ errors:
   INVALID_FOREIGN_KEY: کلیلی دەرەکی نادروست
   UNKNOWN: هەڵەی پێشبینی نەکراو
   GRAPHQL_VALIDATION_EXCEPTION: جیاکاری سەلماندنی GraphQL
+  SERVICE_UNAVAILABLE: خزمەتگوزاری بەردەست نییە
+  UNSUPPORTED_MEDIA_TYPE: جۆری میدیای پشتگیری نەکراو
+  UNEXPECTED_RESPONSE: وەڵامێکی چاوەڕواننەکراو
+  TOKEN_EXPIRED: تۆکن بەسەرچوو
+  RANGE_NOT_SATISFIABLE: مەودای نادروست
+  METHOD_NOT_ALLOWED: شێوازەكە ڕێگا پێنەدراوە
+  REQUESTS_EXCEEDED: داواکاریەکان گەیشتە سنور
 security: پارێزراوی
 value_hashed: بەها بە پارێزراوی هاشكراوە
 bookmark_name: ناوی نیشانکردن...
@@ -734,6 +755,8 @@ add_file: پەڕگە زیادبکە
 replace_file: پەڕگە بگۆڕە
 no_results: هیچ ئەنجامێک نەبوو
 no_results_copy: پاڵاوتنەکانی گەڕان بسڕەوە یان ڕێکیان بخە بۆ بینینی ئەنجامەکان.
+no_visible_fields: فۆرمی بەتاڵ
+no_visible_fields_copy: ئەم فۆڕمە هیچ خانەیەکی دیار نییە.
 clear_filters: لابردنی پاڵاوتنەکان
 saves_automatically: پاشەکەوتکردنی خۆکارانە
 role: پلە
@@ -763,7 +786,10 @@ label: پێناس
 flows: لێشاوەکان
 flow: لێشاو
 select_a_flow: لێشاوێک دیاری بکە
+run_flow_on_current_collection: جێبەجێکردنی لێشاو لەم کۆمەڵەیەدا
 run_flow_on_current: جێبەجێکردنی لێشاو لەم مادەیەدا
+run_flow_on_current_edited_confirm: لەوانەیە ئەم مادەیە بەهۆی ئەم لێشاوەوە نوێ بکرێتەوە، ئایا دڵنیای کە دەتەوێت جێبەجێی بکەیت؟
+run_flow_on_selected: سەرەتا یەک یان چەند مادەیەک دیاری بکە | جێبەجێکردنی لێشاو لەسەر یەک مادەی دیاریکراو | جێبەجێکردنی لێشاو لەسەر {n} مادەی دیاریکراو
 run_flow_success: لێشاوی {flow} بەسەرکەوتوویی بەڕێوەچوو
 trigger: وروژاندن
 trigger_options: بژاردەکانی وروژان
@@ -807,6 +833,7 @@ panel_header: سەرپەڕەی پانێڵ
 panel_name_placeholder: ناوی ئەم پانێڵە...
 panel_note_placeholder: بژاردە وردەکاریەکان بۆ ئەم پانێڵە...
 panel_delete_confirm: ئایا دڵنیای لە سڕینەوەی ئەم پانێڵە؟ ئەم کردارە گەڕانەوەی نییە.
+list_panel_allow_edit: ڕێگە بە دەستکاریکردنی ناو هێڵ بدە
 dashboard_delete_confirm: ئایا دڵنیای لە سڕینەوەی ئەم داشبۆردە؟ ئەم کردارە گەڕانەوەی نییە.
 edit_dashboard: دەستکاری داشبۆرد
 delete_dashboard: سڕینەوەی داشبۆرد
@@ -1026,6 +1053,7 @@ fields:
     user: کردەوە لەلایەن
     comment: لێدوان
     user_agent: نوێنەری بەکارهێنەر
+    origin: ڕەسەن
     ip: ناونیشانی IP
     revisions: پێداچونەوەکان
   directus_collections:
@@ -1407,6 +1435,14 @@ report_error: ڕاپۆرتی هەڵە
 start: دەستپێکردن
 table: خشتە
 list: لیست
+search_filter: گەڕان و پاڵاوتن
+enable_search_filter: گەڕان و پاڵاوتن چالاک بکە
+item_link: بەستەری مادە
+show_link_to_item: نیشاندانی بەستەر بۆ مادەکە
+navigate_to_item: ڕۆیشتن بۆ مادە
+undo_removed_item: پاشگەزبونەوەی مادەی لابراو
+remove_item: لابردنی مادە
+delete_item: سڕینەوەی مادە
 interfaces:
   filter:
     name: پاڵاوتن
@@ -1488,6 +1524,7 @@ interfaces:
     placeholder: کات و ڕێکەوت هەڵبژێرە...
   system-fields:
     select_a_collection: کۆمەڵەیەک هەڵبژێرە
+    no_fields: هیچ خانەیەک نییە
   system-display-template:
     display-template: پیشاندانی قاڵب
     description: تێکەڵکردنی دەقی جێگیر و بەهاکانی خانەی گۆڕاو
@@ -1545,6 +1582,7 @@ interfaces:
   list-m2m:
     many-to-many: زۆر بۆ زۆر
     description: چەند ماددەی پەیوەندیداری یەکگرتوو دیاری بکە
+    columns_configure_notice: دەتوانیت دوای دروستکردنی ئەم خانەیە ستوونەکان ڕێکبخەیت.
     display_template_configure_notice: دەتوانیت قاڵبی پیشاندان ڕێکبخەیت دوای دروستکردنی ئەم خانەیە.
   select-dropdown-m2o:
     many-to-one: زۆر بۆ یەک
@@ -1662,6 +1700,7 @@ interfaces:
     user_language: بەکارهێنانی زمانی بەکارهێنەری ئێستا
     default_language: زمانی بنەڕەتی
     language_field: خانەی نیشاندەری زمان
+    language_direction_field: خانەی ئاڕاستەی زمان
   list-o2m-tree-view:
     description: دیمەنی داری بۆ ماددە دووبارەکراوە بەیەکداچوەکانی یەک بۆ-زۆر
     recursive_only: ڕووکاری دیمەنی داری تەنها کار بۆ پەیوەندییە دووبارەکان دەکات.
@@ -1872,9 +1911,14 @@ layouts:
     default_template: بەکارهێنانی بنەڕەتی کۆمەڵە...
     no_compatible_fields: هیچ خانەیەکی گونجاو نییە
   kanban:
+    name: کانبان
+    group_field: دەستەکردن بەپێی
+    group_field_placeholder: خانە بۆ دەستەکردن پێی...
+    group_title: ناونیشانی دەستە
     crop: بڕین
     advanced: پێشکەوتوو
     not_all_loaded: تەنها دەتوانرێت یەکەم 1000 ماددە باربکرێت.
+both: هەموویان
 panels:
   metric:
     name: مەتری
@@ -1892,8 +1936,8 @@ panels:
     description: هەندێ نوسین نیشان بدە
   list:
     name: لیست
-  barchart:
-    show_data_label: داتای پێناس نیشانبدە
+  linechart:
+    curve_type: جۆری کەوانە
 triggers:
   webhook:
     method: ڕێگە

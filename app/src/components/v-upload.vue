@@ -235,12 +235,26 @@ function useSelection() {
 	return { setSelection };
 
 	async function setSelection(selection: string[]) {
-		if (selection[0]) {
-			const id = selection[0];
-			const fileResponse = await api.get(`/files/${id}`);
-			emit('input', fileResponse.data.data);
+		if (props.multiple) {
+			const filesResponse = await api.get(`/files`, {
+				params: {
+					filter: {
+						id: {
+							_in: selection,
+						},
+					},
+				},
+			});
+
+			emit('input', filesResponse.data.data);
 		} else {
-			emit('input', null);
+			if (selection[0]) {
+				const id = selection[0];
+				const fileResponse = await api.get(`/files/${id}`);
+				emit('input', fileResponse.data.data);
+			} else {
+				emit('input', null);
+			}
 		}
 	}
 }
