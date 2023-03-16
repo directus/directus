@@ -1703,10 +1703,25 @@ export class GraphQLService {
 	 */
 	formatError(error: BaseException | BaseException[]): GraphQLError {
 		if (Array.isArray(error)) {
-			error[0].extensions.code = error[0].code;
+			if (error[0].extensions) {
+				error[0].extensions.code = error[0].code;
+			} else {
+				error[0].extensions = {
+					code: error.code,
+				};
+			}
+
 			return new GraphQLError(error[0].message, undefined, undefined, undefined, undefined, error[0]);
 		}
-		error.extensions.code = error.code;
+
+		if (error.extensions) {
+			error.extensions.code = error.code;
+		} else {
+			error.extensions = {
+				code: error.code,
+			};
+		}
+
 		return new GraphQLError(error.message, undefined, undefined, undefined, undefined, error);
 	}
 
