@@ -88,7 +88,7 @@ export class SubscribeHandler {
 			try {
 				this.dispatch(message as WebSocketEvent);
 			} catch (err) {
-				// dont error on an invalid event from the messenger
+				// don't error on an invalid event from the messenger
 			}
 		});
 	}
