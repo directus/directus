@@ -1432,7 +1432,6 @@ translation: Fordítás
 translation_placeholder: Fordítás megadása...
 value: Érték
 view_project: Projekt megtekintése
-weeks: { }
 report_error: Hiba jelentése
 start: Start
 table: Táblázat
@@ -1631,7 +1630,6 @@ interfaces:
   system-folder:
     folder: Könyvtár
     description: Válasszon egy mappát
-    field_hint: Mappa a feltöltött fájlok számára. Nem érinti a meglévő fájlokat.
     root_name: Fájlok gyökérkönyvtára
     system_default: Rendszer alapértelmezései
   select-radio:
