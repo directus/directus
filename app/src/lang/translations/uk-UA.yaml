@@ -1630,7 +1630,6 @@ interfaces:
   system-folder:
     folder: Папка
     description: Обрати теку
-    field_hint: Тека для завантажених файлів. Не може вплинути на існуючі файли.
     root_name: Корінь файлової бібліотеки
     system_default: Стандартні налаштування
   select-radio:
