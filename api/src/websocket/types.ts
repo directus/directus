@@ -28,10 +28,11 @@ export type UpgradeContext = {
 };
 
 export type ConnectionParams = {
-	email?: string;
-	password?: string;
 	access_token?: string;
-	refresh_token?: string;
+};
+
+export type GraphQLSocket = {
+	client: WebSocketClient;
 };
 
 export type AuthMode = 'public' | 'handshake' | 'strict';
