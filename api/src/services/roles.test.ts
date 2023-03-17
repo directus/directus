@@ -1,5 +1,5 @@
 import knex, { Knex } from 'knex';
-import { getTracker, MockClient, Tracker } from 'knex-mock-client';
+import { createTracker, MockClient, Tracker } from 'knex-mock-client';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, MockedFunction, SpyInstance, vi } from 'vitest';
 import { ItemsService, PermissionsService, PresetsService, RolesService, UsersService } from '.';
 import { ForbiddenException, UnprocessableEntityException } from '../exceptions';
@@ -45,7 +45,7 @@ describe('Integration Tests', () => {
 
 	beforeAll(async () => {
 		db = vi.mocked(knex({ client: MockClient }));
-		tracker = getTracker();
+		tracker = createTracker(db);
 	});
 
 	beforeEach(() => {
