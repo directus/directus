@@ -1503,7 +1503,6 @@ interfaces:
   system-folder:
     folder: Dosar
     description: Selectați un dosar
-    field_hint: Dosar pentru fișierele încărcate. Nu afectează fișierele existente.
     root_name: Rădăcina bibliotecii de fișiere
     system_default: Setări implicite ale sistemului
   select-radio:
