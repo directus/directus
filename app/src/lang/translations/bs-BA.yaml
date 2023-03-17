@@ -1552,7 +1552,6 @@ interfaces:
     no_collection: Kolekcija nije pronađena
   system-folder:
     description: Odaberite mapu
-    field_hint: Folder za učitane fajlove. Ne utječe na postojeće fajlove.
     root_name: Korijen biblioteke fajlova
     system_default: Sistemski zadano
   select-radio:
