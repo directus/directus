@@ -1,5 +1,5 @@
 import knex, { Knex } from 'knex';
-import { getTracker, MockClient, Tracker } from 'knex-mock-client';
+import { createTracker, MockClient, Tracker } from 'knex-mock-client';
 import { snapshotApplyTestSchema } from '../__utils__/schemas';
 
 import { CollectionsService, FieldsService } from '../services';
@@ -27,7 +27,7 @@ describe('applySnapshot', () => {
 
 	beforeEach(() => {
 		db = vi.mocked(knex({ client: Client_PG }));
-		tracker = getTracker();
+		tracker = createTracker(db);
 	});
 
 	afterEach(() => {
