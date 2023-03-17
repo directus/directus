@@ -11,35 +11,30 @@ import { WebSocketException } from './exceptions';
 import { InvalidCredentialsException } from '../exceptions';
 import type { BasicAuthMessage, WebSocketResponse } from './messages';
 
-export async function authenticateWithToken(token: string, expires?: number) {
-	const accountability = await getAccountabilityForToken(token);
-	let expiresAt: number | null = expires ?? null;
-	if (!expires) {
-		expiresAt = getExpiresAtForToken(token);
-	}
-	return { accountability, expiresAt } as AuthenticationState;
-}
-
 export async function authenticateConnection(
 	message: BasicAuthMessage & Record<string, any>
 ): Promise<AuthenticationState> {
-	let access_token: string | undefined, expires_at: number | undefined;
+	let access_token: string | undefined, refresh_token: string | undefined;
 	try {
 		if ('email' in message && 'password' in message) {
 			const authenticationService = new AuthenticationService({ schema: await getSchema() });
-			const { accessToken } = await authenticationService.login(DEFAULT_AUTH_PROVIDER, message);
+			const { accessToken, refreshToken } = await authenticationService.login(DEFAULT_AUTH_PROVIDER, message);
 			access_token = accessToken;
+			refresh_token = refreshToken;
 		}
 		if ('refresh_token' in message) {
 			const authenticationService = new AuthenticationService({ schema: await getSchema() });
-			const { accessToken } = await authenticationService.refresh(message.refresh_token);
+			const { accessToken, refreshToken } = await authenticationService.refresh(message.refresh_token);
 			access_token = accessToken;
+			refresh_token = refreshToken;
 		}
 		if ('access_token' in message) {
 			access_token = message.access_token;
 		}
 		if (!access_token) throw new Error();
-		return await authenticateWithToken(access_token, expires_at);
+		const accountability = await getAccountabilityForToken(access_token);
+		const expires_at = getExpiresAtForToken(access_token);
+		return { accountability, expires_at, refresh_token } as AuthenticationState;
 	} catch (error) {
 		if (error instanceof InvalidCredentialsException && error.message === 'Token expired.') {
 			throw new WebSocketException('auth', 'TOKEN_EXPIRED', 'Token expired.', message?.uid);
@@ -60,13 +55,16 @@ export async function refreshAccountability(
 	return result;
 }
 
-export function authenticationSuccess(uid?: string): string {
+export function authenticationSuccess(uid?: string, refresh_token?: string): string {
 	const message: WebSocketResponse = {
 		type: 'auth',
 		status: 'ok',
 	};
 	if (uid !== undefined) {
 		message.uid = uid;
+	}
+	if (refresh_token !== undefined) {
+		message.refresh_token = refresh_token;
 	}
 	return JSON.stringify(message);
 }

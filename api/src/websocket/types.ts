@@ -5,10 +5,11 @@ import type internal from 'stream';
 
 export type AuthenticationState = {
 	accountability: Accountability | null;
-	expiresAt: number | null;
+	expires_at: number | null;
+	refresh_token?: string;
 };
 
-export type WebSocketClient = WebSocket & AuthenticationState & { uid: string };
+export type WebSocketClient = WebSocket & AuthenticationState & { uid: string; auth_timer: NodeJS.Timer | null };
 export type UpgradeRequest = IncomingMessage & AuthenticationState;
 
 export type Subscription = {

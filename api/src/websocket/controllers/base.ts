@@ -32,7 +32,6 @@ export default abstract class SocketController {
 	};
 	endpoint: string;
 	maxConnections: number;
-	private authTimer: NodeJS.Timer | null;
 	private rateLimiter: RateLimiterAbstract | null;
 
 	constructor(
@@ -47,7 +46,6 @@ export default abstract class SocketController {
 	) {
 		this.server = new WebSocketServer({ noServer: true });
 		this.clients = new Set();
-		this.authTimer = null;
 		this.name = name;
 		this.endpoint = endpoint;
 		this.authentication = authentication;
@@ -79,19 +77,19 @@ export default abstract class SocketController {
 			return;
 		}
 		this.server.handleUpgrade(request, socket, head, async (ws) => {
-			const state = { accountability: null, expiresAt: null } as AuthenticationState;
+			const state = { accountability: null, expires_at: null } as AuthenticationState;
 			this.server.emit('connection', ws, state);
 		});
 	}
 	protected async handleStrictUpgrade({ request, socket, head }: UpgradeContext, query: ParsedUrlQuery) {
-		let accountability: Accountability | null, expiresAt: number | null;
+		let accountability: Accountability | null, expires_at: number | null;
 		try {
 			const token = query['access_token'] as string;
 			accountability = await getAccountabilityForToken(token);
-			expiresAt = getExpiresAtForToken(token);
+			expires_at = getExpiresAtForToken(token);
 		} catch {
 			accountability = null;
-			expiresAt = null;
+			expires_at = null;
 		}
 		if (!accountability || !accountability.user) {
 			logger.debug('Websocket upgrade denied - ' + JSON.stringify(accountability || 'invalid'));
@@ -100,7 +98,7 @@ export default abstract class SocketController {
 			return;
 		}
 		this.server.handleUpgrade(request, socket, head, async (ws) => {
-			const state = { accountability, expiresAt } as AuthenticationState;
+			const state = { accountability, expires_at } as AuthenticationState;
 			this.server.emit('connection', ws, state);
 		});
 	}
@@ -111,7 +109,7 @@ export default abstract class SocketController {
 				if (getMessageType(payload) !== 'auth') throw new Error();
 
 				const state = await authenticateConnection(WebSocketAuthMessage.parse(payload));
-				ws.send(authenticationSuccess(payload['uid']));
+				ws.send(authenticationSuccess(payload['uid'], state.refresh_token));
 				this.server.emit('connection', ws, state);
 			} catch {
 				logger.debug('Websocket authentication handshake failed');
@@ -121,11 +119,12 @@ export default abstract class SocketController {
 			}
 		});
 	}
-	createClient(ws: WebSocket, { accountability, expiresAt }: AuthenticationState) {
+	createClient(ws: WebSocket, { accountability, expires_at }: AuthenticationState) {
 		const client = ws as WebSocketClient;
 		client.accountability = accountability;
-		client.expiresAt = expiresAt;
+		client.expires_at = expires_at;
 		client.uid = uuid();
+		client.auth_timer = null;
 
 		ws.on('message', async (data: WebSocket.RawData) => {
 			if (this.rateLimiter !== null) {
@@ -163,17 +162,17 @@ export default abstract class SocketController {
 		});
 		ws.on('error', () => {
 			logger.debug(`Websocket#${client.uid} connection errored`);
-			if (this.authTimer) {
-				clearTimeout(this.authTimer);
-				this.authTimer = null;
+			if (client.auth_timer) {
+				clearTimeout(client.auth_timer);
+				client.auth_timer = null;
 			}
 			this.clients.delete(client);
 		});
 		ws.on('close', () => {
 			logger.debug(`Websocket#${client.uid} connection closed`);
-			if (this.authTimer) {
-				clearTimeout(this.authTimer);
-				this.authTimer = null;
+			if (client.auth_timer) {
+				clearTimeout(client.auth_timer);
+				client.auth_timer = null;
 			}
 			this.clients.delete(client);
 		});
@@ -195,21 +194,19 @@ export default abstract class SocketController {
 	}
 	protected async handleAuthRequest(client: WebSocketClient, message: WebSocketAuthMessage) {
 		try {
-			const { accountability, expiresAt } = await authenticateConnection(message);
+			const { accountability, expires_at, refresh_token } = await authenticateConnection(message);
 			client.accountability = accountability;
-			client.expiresAt = expiresAt;
+			client.expires_at = expires_at;
 			this.setTokenExpireTimer(client);
 			emitter.emitAction('websocket.auth.success', { client });
-			if (this.authentication.verbose) {
-				client.send(authenticationSuccess(message.uid));
-			}
+			client.send(authenticationSuccess(message.uid, refresh_token));
 			logger.debug(`Websocket#${client.uid} authenticated ${JSON.stringify(client.accountability)}`);
 		} catch (error) {
 			logger.debug(`Websocket#${client.uid} failed authentication`);
 			emitter.emitAction('websocket.auth.failure', { client });
 
 			client.accountability = null;
-			client.expiresAt = null;
+			client.expires_at = null;
 			const _error =
 				error instanceof WebSocketException
 					? error
@@ -218,17 +215,17 @@ export default abstract class SocketController {
 		}
 	}
 	setTokenExpireTimer(client: WebSocketClient) {
-		if (this.authTimer) {
-			clearTimeout(this.authTimer);
-			this.authTimer = null;
+		if (client.auth_timer !== null) {
+			clearTimeout(client.auth_timer);
+			client.auth_timer = null;
 		}
-		if (!client.expiresAt) return;
-		const expiresIn = client.expiresAt * 1000 - Date.now();
-		this.authTimer = setTimeout(() => {
+		if (!client.expires_at) return;
+		const expiresIn = Math.max(client.expires_at * 1000 - Date.now(), 10);
+		client.auth_timer = setTimeout(() => {
 			client.accountability = null;
-			client.expiresAt = null;
+			client.expires_at = null;
 			handleWebsocketException(client, new TokenExpiredException(), 'auth');
-			waitForMessageType(client, 'AUTH', this.authentication.timeout).catch((msg: WebSocketMessage) => {
+			waitForMessageType(client, 'auth', this.authentication.timeout).catch((msg: WebSocketMessage) => {
 				const error = new WebSocketException('auth', 'AUTH_TIMEOUT', 'Authentication timed out.', msg?.uid);
 				handleWebsocketException(client, error, 'auth');
 				if (this.authentication.mode !== 'public') {
