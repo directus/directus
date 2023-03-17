@@ -1630,7 +1630,6 @@ interfaces:
   system-folder:
     folder: Klasör
     description: Bir klasör seçin
-    field_hint: Yüklenen dosyalar için bir klasör. Varolan dosyaları etkilemez.
     root_name: Dosya Kütüphanesi Kökü
     system_default: Sistem Varsayılanları
   select-radio:
