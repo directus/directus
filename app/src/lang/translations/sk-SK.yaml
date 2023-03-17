@@ -1625,7 +1625,6 @@ interfaces:
   system-folder:
     folder: Priečinok
     description: Vyberte priečinok
-    field_hint: Priečinok na nahrávanie súborov. Neovplyvní to existujúce súbory.
     root_name: Koreňový priečinok knižnice súborov
     system_default: Predvolené systémom
   select-radio:
