@@ -7,7 +7,7 @@ export default {
 	argTypes: {
 		type: {
 			control: 'select',
-			options: ['normal', 'info', 'success', 'warning', 'danger']
+			options: ['normal', 'info', 'success', 'warning', 'danger'],
 		},
 	},
 };
