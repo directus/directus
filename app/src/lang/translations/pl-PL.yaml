@@ -1625,7 +1625,6 @@ interfaces:
   system-folder:
     folder: Folder
     description: Wybierz folder
-    field_hint: Folder dla przesłanych plików. Nie ma wpływu na istniejące pliki.
     root_name: Root biblioteki plików
     system_default: Ustawienia systemowe
   select-radio:
