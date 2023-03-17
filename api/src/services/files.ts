@@ -38,14 +38,16 @@ export class FilesService extends ItemsService {
 	): Promise<PrimaryKey> {
 		const storage = await getStorage();
 
-		const existingFile =
-			primaryKey !== undefined
-				? (await this.knex
-						.select('folder', 'filename_download')
-						.from('directus_files')
-						.where({ id: primaryKey })
-						.first()) ?? {}
-				: {};
+		let existingFile = {};
+
+		if (primaryKey !== undefined) {
+			existingFile =
+				(await this.knex
+					.select('folder', 'filename_download')
+					.from('directus_files')
+					.where({ id: primaryKey })
+					.first()) ?? {};
+		}
 
 		const payload = { ...existingFile, ...clone(data) };
 
