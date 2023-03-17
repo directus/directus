@@ -222,6 +222,7 @@
 					<interface-system-fields
 						:value="exportSettings.fields"
 						:collection-name="collection"
+						allow-select-all
 						@input="exportSettings.fields = $event"
 					/>
 				</div>

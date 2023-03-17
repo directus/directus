@@ -11,13 +11,27 @@
 			</v-list-item-content>
 		</v-list-item>
 
+		<template v-if="allowSelectAll">
+			<v-divider />
+			<v-list-item v-if="disabledFields?.length !== allFields?.length" clickable @click="selectAll">
+				{{ t('select_all') }}
+			</v-list-item>
+			<v-list-item v-else clickable @click="deselectAll">
+				{{ t('deselect_all') }}
+			</v-list-item>
+			<v-divider />
+		</template>
+
 		<v-field-list-item
 			v-for="fieldNode in treeList"
 			:key="fieldNode.field"
 			:field="fieldNode"
 			:search="search"
+			:disabled-fields="disabledFields"
 			:include-functions="includeFunctions"
 			:relational-field-selectable="relationalFieldSelectable"
+			:allow-select-all="allowSelectAll"
+			@select-all="$emit('select-all', $event)"
 			@add="$emit('select-field', $event)"
 		/>
 	</v-list>
@@ -26,7 +40,7 @@
 <script lang="ts" setup>
 import { FieldNode, useFieldTree } from '@/composables/use-field-tree';
 import { Field } from '@directus/shared/types';
-import { computed, ref, toRefs, watch } from 'vue';
+import { computed, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import VFieldListItem from './v-field-list-item.vue';
 import { debounce, isNil } from 'lodash';
@@ -38,6 +52,7 @@ interface Props {
 	disabledFields?: string[];
 	includeFunctions?: boolean;
 	includeRelations?: boolean;
+	allowSelectAll?: boolean;
 	relationalFieldSelectable?: boolean;
 }
 
@@ -46,10 +61,11 @@ const props = withDefaults(defineProps<Props>(), {
 	disabledFields: () => [],
 	includeFunctions: false,
 	includeRelations: true,
+	allowSelectAll: false,
 	relationalFieldSelectable: true,
 });
 
-defineEmits(['select-field']);
+const emit = defineEmits(['select-field', 'select-all']);
 
 const fieldsStore = useFieldsStore();
 
@@ -75,8 +91,8 @@ const treeList = computed(() => {
 	return list;
 
 	function setDisabled(
-		field: (typeof treeListOriginal.value)[number]
-	): (typeof treeListOriginal.value)[number] & { disabled: boolean } {
+		field: typeof treeListOriginal.value[number]
+	): typeof treeListOriginal.value[number] & { disabled: boolean } {
 		let disabled = field.group || false;
 
 		if (props.disabledFields?.includes(field.key)) disabled = true;
@@ -85,6 +101,20 @@ const treeList = computed(() => {
 			...field,
 			disabled,
 			children: field.children?.map(setDisabled),
+		};
+	}
+});
+
+const allFields = computed(() => {
+	return treeList.value.flatMap(map());
+
+	function map(parent?: string) {
+		return function (field: FieldNode): string[] {
+			if (field.children) {
+				return field?.children?.flatMap(map(field.field)) || [];
+			} else {
+				return [parent ? `${parent}.${field.field}` : field.field];
+			}
 		};
 	}
 });
@@ -108,6 +138,14 @@ function filter(field: Field, parent?: FieldNode): boolean {
 			field.name.toLowerCase().includes(search.value.toLowerCase())
 		);
 	}
+}
+
+function selectAll() {
+	emit('select-all', unref(allFields));
+}
+
+function deselectAll() {
+	emit('select-all', []);
 }
 </script>
 

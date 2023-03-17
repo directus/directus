@@ -27,17 +27,14 @@
 					<v-icon name="expand_more" />
 				</button>
 			</template>
-			<v-list>
-				<v-list-item clickable @click="selectAll">
-					<v-list-item-icon>
-						<v-icon name="check_box" />
-					</v-list-item-icon>
-					<v-list-item-content>
-						{{ t('select_all') }}
-					</v-list-item-content>
-				</v-list-item>
-			</v-list>
-			<v-field-list :disabled-fields="value" :collection="collectionName" @select-field="addField" />
+
+			<v-field-list
+				:disabled-fields="value"
+				:collection="collectionName"
+				:allow-select-all="allowSelectAll"
+				@select-field="addField"
+				@select-all="addAllFields"
+			/>
 		</v-menu>
 	</template>
 </template>
@@ -53,6 +50,7 @@ import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
 interface Props {
 	collectionName: string;
 	value?: string[] | null;
+	allowSelectAll?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), { value: () => null });
@@ -109,14 +107,12 @@ const fields = computed<(Field & { key: string })[]>({
 
 const { t } = useI18n();
 
-function selectAll() {
-	const fields = fieldsStore.getFieldsForCollection(props.collectionName).map((field) => field.field);
-	const allFields = new Set([...(props.value ?? []), ...fields]);
-	emit('input', Array.from(allFields));
-}
-
 function addField(fieldKey: string) {
 	emit('input', [...(props.value ?? []), fieldKey]);
+}
+
+function addAllFields(fields: string[]) {
+	emit('input', fields?.length ? fields : null);
 }
 
 function removeField(fieldKey: string) {
@@ -136,10 +132,12 @@ function removeField(fieldKey: string) {
 	font-weight: 600;
 	margin-left: 10px;
 	margin-top: 6px;
+
 	.v-icon {
 		position: absolute;
 	}
 }
+
 .v-notice.no-fields {
 	background-color: var(--background-page);
 	border: var(--border-width) solid var(--v-list-item-border-color);
