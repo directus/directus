@@ -1614,7 +1614,6 @@ interfaces:
   system-folder:
     folder: Mappe
     description: Vælg en mappe
-    field_hint: Mappe for uploadede filer. Påvirker ikke eksisterende filer.
     root_name: Fil Biblioteks Rod
     system_default: Systemstandarder
   select-radio:
