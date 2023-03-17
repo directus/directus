@@ -1630,7 +1630,6 @@ interfaces:
   system-folder:
     folder: Ordner
     description: Ordner auswählen
-    field_hint: Ordner für hochgeladene Dateien. Bestehende Dateien werden nicht beeinflusst.
     root_name: Stammordner für Dateien
     system_default: System-Standardeinstellungen
   select-radio:
