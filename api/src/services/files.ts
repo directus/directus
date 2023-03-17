@@ -22,7 +22,7 @@ import { ItemsService } from './items';
 // @ts-ignore
 import formatTitle from '@directus/format-title';
 
-export class FilesService extends ItemsService {
+export class FilesService extends ItemsService<File> {
 	constructor(options: AbstractServiceOptions) {
 		super('directus_files', options);
 	}
@@ -53,11 +53,7 @@ export class FilesService extends ItemsService {
 
 			// If the file you're uploading already exists, we'll consider this upload a replace. In that case, we'll
 			// delete the previously saved file and thumbnails to ensure they're generated fresh
-			const disk = storage.location(payload.storage);
-
-			for await (const filepath of disk.list(String(primaryKey))) {
-				await disk.delete(filepath);
-			}
+			await this.deleteFilesFromStorage([{...payload, id: String(primaryKey)} as File])
 		} else {
 			primaryKey = await this.createOne(payload, { emitEvents: false });
 		}
@@ -300,7 +296,6 @@ export class FilesService extends ItemsService {
 	 * Delete multiple files
 	 */
 	async deleteMany(keys: PrimaryKey[], opts?: MutationOptions): Promise<PrimaryKey[]> {
-		const storage = await getStorage();
 		const files = await super.readMany(keys, { fields: ['id', 'storage'], limit: -1 });
 
 		if (!files) {
@@ -309,6 +304,18 @@ export class FilesService extends ItemsService {
 
 		await super.deleteMany(keys);
 
+		await this.deleteFilesFromStorage(files);
+
+		if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
+			await this.cache.clear();
+		}
+
+		return keys;
+	}
+
+	private async deleteFilesFromStorage(files: File[]) {
+		const storage = await getStorage();
+
 		for (const file of files) {
 			const disk = storage.location(file.storage);
 
@@ -316,12 +323,6 @@ export class FilesService extends ItemsService {
 			for await (const filepath of disk.list(file.id)) {
 				await disk.delete(filepath);
 			}
-		}
-
-		if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
-			await this.cache.clear();
-		}
-
-		return keys;
+		}	
 	}
 }
