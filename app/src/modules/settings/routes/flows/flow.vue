@@ -493,6 +493,7 @@ async function saveChanges() {
 		}
 
 		await flowsStore.hydrate();
+		await loadCurrentFlow();
 
 		stagedPanels.value = [];
 		panelsToBeDeleted.value = [];
