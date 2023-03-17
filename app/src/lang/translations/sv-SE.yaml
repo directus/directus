@@ -1495,7 +1495,6 @@ interfaces:
   system-folder:
     folder: Mapp
     description: Välj en mapp
-    field_hint: Mapp för uppladdade filer. Påverkar inte befintliga filer.
     root_name: Filbibliotek
     system_default: Systemstandard
   select-radio:
