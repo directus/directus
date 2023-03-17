@@ -1469,7 +1469,6 @@ interfaces:
   system-folder:
     folder: फोल्‍डर
     description: फोल्डर चयन गर्नुहोस्
-    field_hint: "अपलोड गरिएका फाइलहरूको लागि फोल्डर। अवस्थित फाइलहरूलाई असर गर्दैन।\n"
     system_default: पूर्वनिर्धारित प्रणाली
   select-radio:
     radio-buttons: रेडियो बटनहरू
