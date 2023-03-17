@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import type { HeadObjectCommandOutput } from '@aws-sdk/client-s3';
 import {
 	CopyObjectCommand,

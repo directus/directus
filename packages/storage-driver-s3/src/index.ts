@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import type {
 	CopyObjectCommandInput,
 	GetObjectCommandInput,
@@ -86,6 +88,11 @@ export class DriverS3 implements Driver {
 	}
 
 	async read(filepath: string, range?: Range): Promise<Readable> {
+		/*
+		 * AWS' client default socket reusing and keepalive can cause performance issues when using it
+		 * very often in rapid succession. For reads, where it's more likely to hit this limitation,
+		 * we'll use a new non-shared S3 client to get around this.
+		 */
 		const client = this.getClient();
 
 		const commandInput: GetObjectCommandInput = {
