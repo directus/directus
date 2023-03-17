@@ -26,7 +26,7 @@
 			<template v-for="header in tableHeaders" :key="header.value" #[`item.${header.value}`]="{ item }">
 				<render-display
 					:value="
-						!aliasFields || item[header.value] !== undefined || aliasFields[header.value] === undefined
+						!aliasFields || item[header.value] !== undefined
 							? get(item, header.value)
 							: getAliasedValue(item, header.value)
 					"
