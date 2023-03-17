@@ -1432,7 +1432,6 @@ translation: 翻译
 translation_placeholder: 输入翻译...
 value: 值
 view_project: 查看项目
-weeks: { }
 report_error: 报告错误
 start: 开始
 table: 表
@@ -1631,7 +1630,6 @@ interfaces:
   system-folder:
     folder: 文件夹
     description: 选择文件夹
-    field_hint: 用于上传文件的文件夹。不影响现有文件。
     root_name: 文件管理
     system_default: 系统默认
   select-radio:
