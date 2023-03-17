@@ -19,7 +19,7 @@
 #'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
-identifier: Identifier 
+identifier: Identifier
 avatar: Avatar
 application: Application
 default_provider: Default
@@ -1432,7 +1432,6 @@ translation: Translation
 translation_placeholder: Enter a translation...
 value: Value
 view_project: View Project
-weeks: { }
 report_error: Report Error
 start: Start
 table: Table
@@ -1631,7 +1630,6 @@ interfaces:
   system-folder:
     folder: Folder
     description: Select a folder
-    field_hint: Folder for uploaded files. Does not affect existing files.
     root_name: File Library Root
     system_default: System Defaults
   select-radio:
