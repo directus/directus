@@ -369,8 +369,9 @@ function useColor() {
 
 	position: relative;
 	box-sizing: border-box;
-	width: calc(var(--input-height) - 12px);
-	max-height: calc(var(--input-height) - 12px);
+	margin-left: -8px;
+	width: calc(var(--input-height) - 20px);
+	max-height: calc(var(--input-height) - 20px);
 	overflow: hidden;
 	border-radius: calc(var(--border-radius) + 2px);
 	cursor: pointer;
@@ -406,14 +407,12 @@ function useColor() {
 	padding-right: 0px;
 }
 
-.v-input.html-color-select {
-	width: 0;
-	height: 0;
-	visibility: hidden;
-}
-
-.color-input :deep(.input) {
-	padding-left: 6px;
+.color-input {
+	.v-input.html-color-select {
+		width: 0;
+		height: 0;
+		visibility: hidden;
+	}
 }
 
 .color-data-inputs {
