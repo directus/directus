@@ -1620,7 +1620,6 @@ interfaces:
   system-folder:
     folder: Mapa
     description: Odaberite mapu
-    field_hint: Mapa za učitane datoteke. Ne utječe na postojeće datoteke.
     root_name: Korijen biblioteke datoteka
     system_default: Sistemski zadano
   select-radio:
