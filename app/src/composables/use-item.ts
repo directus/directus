@@ -120,13 +120,19 @@ export function useItem(
 		saving.value = true;
 		validationErrors.value = [];
 
-		const payload = mergeWith({}, defaultValues.value, item.value, edits.value, function (from: any, to: any) {
-			if (typeof to !== undefined) {
-				return to;
+		const payloadToValidate = mergeWith(
+			{},
+			defaultValues.value,
+			item.value,
+			edits.value,
+			function (from: any, to: any) {
+				if (typeof to !== undefined) {
+					return to;
+				}
 			}
-		});
+		);
 
-		const errors = validateItem(payload, fieldsWithPermissions.value, isNew.value);
+		const errors = validateItem(payloadToValidate, fieldsWithPermissions.value, isNew.value);
 
 		if (errors.length > 0) {
 			validationErrors.value = errors;
