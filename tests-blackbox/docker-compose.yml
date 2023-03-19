@@ -122,4 +122,6 @@ services:
       - minio
     entrypoint: >
       /bin/sh -c " /usr/bin/mc alias set directusminio http://minio:9000 directus miniosecret; /usr/bin/mc mb
-      directusminio/directus-blackbox-test; exit 0; "
+      directusminio/directus-blackbox-test; while true; do
+          sleep 3600;
+      done "
