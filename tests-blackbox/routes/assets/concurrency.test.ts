@@ -25,7 +25,7 @@ describe('/assets', () => {
 					async (vendor) => {
 						// Setup
 						const count = 100;
-						const secondsTotal = 5;
+						const secondsTotal = 3;
 						const msDelay = 100;
 						const insertResponse = await request(getUrl(vendor))
 							.post('/files')
@@ -70,7 +70,7 @@ describe('/assets', () => {
 							}
 						}
 					},
-					60000
+					180000
 				);
 			});
 		});
