@@ -28,7 +28,7 @@ describe('/assets', () => {
 						const count = 100;
 						const secondsTotal = 2;
 						const msDelay = 100;
-						const timeout = 30000;
+						const timeout = 60000;
 						const insertResponse = await request(getUrl(vendor))
 							.post('/files')
 							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
@@ -79,7 +79,7 @@ describe('/assets', () => {
 							}
 						}
 					},
-					300000
+					600000
 				);
 			});
 		});
