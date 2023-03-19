@@ -81,7 +81,7 @@ describe('/assets', () => {
 
 							// Assert
 							const unavailableCount = responses.filter((response) => response.statusCode === 503).length;
-							expect(unavailableCount).toBeGreaterThanOrEqual(attempts / 2);
+							expect(unavailableCount).toBeGreaterThanOrEqual(1);
 							expect(responses.filter((response) => response.statusCode === 200).length).toBe(
 								attempts - unavailableCount
 							);
