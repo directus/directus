@@ -130,12 +130,12 @@ export class SubscribeHandler {
 	 * Dispatch event to subscriptions
 	 */
 	async dispatch(event: WebSocketEvent) {
+		const schema = await getSchema();
 		const subscriptions = this.subscriptions[event.collection] ?? new Set();
 		for (const subscription of subscriptions) {
 			const { client } = subscription;
 			try {
 				client.accountability = await refreshAccountability(client.accountability);
-				const schema = await getSchema();
 				const result =
 					'item' in subscription
 						? await this.getSinglePayload(subscription, client.accountability, schema, event)
