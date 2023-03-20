@@ -11,6 +11,7 @@ import type { Accountability, SchemaOverview } from '@directus/shared/types';
 import { WebSocketSubscribeMessage } from '../messages';
 import { getMessenger, Messenger } from '../../messenger';
 import { WebSocketEvent } from '../messages';
+import { ForbiddenException } from '../../index';
 
 /**
  * Handler responsible for subscriptions
@@ -29,7 +30,7 @@ export class SubscribeHandler {
 		this.bindWebsocket();
 		this.bindModules([
 			'items',
-			'activity',
+			/*'activity',
 			'collections',
 			'fields',
 			'files',
@@ -41,7 +42,7 @@ export class SubscribeHandler {
 			'roles',
 			'settings',
 			'users',
-			'webhooks',
+			'webhooks',*/
 		]);
 	}
 	/**
@@ -162,6 +163,9 @@ export class SubscribeHandler {
 						'The provided collection does not exists or is not accessible.',
 						message.uid
 					);
+				}
+				if (collection.startsWith('directus_')) {
+					throw new ForbiddenException();
 				}
 
 				const subscription: Subscription = {
