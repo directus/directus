@@ -1432,7 +1432,6 @@ translation: 번역
 translation_placeholder: 번역을 입력하세요...
 value: 값
 view_project: 프로젝트 보기
-weeks: { }
 report_error: 오류 신고
 start: 시작
 table: 테이블
@@ -2095,7 +2094,6 @@ operations:
     name: 알림 보내기
     description: 한 명 이상의 사용자에게 인앱 알림 보내기
     recipient: 사용자
-    recipient_placeholder: 사용자 UUID를 추가하고 Enter 키를 누릅니다...
     message: 메시지
   request:
     name: 웹훅 / 요청 URL
