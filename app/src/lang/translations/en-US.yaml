@@ -2121,7 +2121,8 @@ operations:
     name: Send Notification
     description: Send an in-app notification to one or more users
     recipient: User
-    recipient_placeholder: Add user UUID and press enter...
+    recipient_placeholder: Enter a UUID...
+    recipient_note: Add user UUID and press enter...
     message: Message
   request:
     name: Webhook / Request URL
