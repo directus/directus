@@ -2031,7 +2031,6 @@ operations:
     name: Надіслати сповіщення
     description: Надіслати сповіщення в застосунку одному або декільком користувачам
     recipient: Користувач
-    recipient_placeholder: Додати UUID користувача та натиснути Enter...
     message: Повідомлення
   request:
     name: Веб хук / URL запиту
