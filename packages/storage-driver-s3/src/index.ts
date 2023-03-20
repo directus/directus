@@ -1,5 +1,3 @@
-// @ts-nocheck
-
 import type {
 	CopyObjectCommandInput,
 	GetObjectCommandInput,
@@ -37,14 +35,12 @@ export type DriverS3Config = {
 export class DriverS3 implements Driver {
 	private config: DriverS3Config;
 	private client: S3Client;
+	private root: string;
 
 	constructor(config: DriverS3Config) {
 		this.config = config;
 		this.client = this.getClient();
-	}
-
-	get root() {
-		return this.config.root ? normalizePath(this.config.root, { removeLeading: true }) : '';
+		this.root = this.config.root ? normalizePath(this.config.root, { removeLeading: true }) : '';
 	}
 
 	private getClient() {
