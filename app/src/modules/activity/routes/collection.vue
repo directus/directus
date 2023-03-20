@@ -30,7 +30,7 @@
 				<activity-navigation v-model:filter="roleFilter" />
 			</template>
 
-			<component :is="`layout-${layout}`" v-bind="layoutState" class="layout">
+			<component :is="`layout-${layout}`" v-bind="layoutState">
 				<template #no-results>
 					<v-info :title="t('no_results')" icon="search" center>
 						{{ t('no_results_copy') }}

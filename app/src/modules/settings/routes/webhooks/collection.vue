@@ -56,7 +56,7 @@
 				</v-button>
 			</template>
 
-			<component :is="`layout-${layout}`" class="layout" v-bind="layoutState">
+			<component :is="`layout-${layout}`" v-bind="layoutState">
 				<template #no-results>
 					<v-info :title="t('no_results')" icon="search" center>
 						{{ t('no_results_copy') }}
