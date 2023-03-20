@@ -1,5 +1,5 @@
 import knex, { Knex } from 'knex';
-import { MockClient, Tracker, getTracker } from 'knex-mock-client';
+import { MockClient, Tracker, createTracker } from 'knex-mock-client';
 import { PayloadService } from '../../src/services';
 import { getHelpers, Helpers } from '../../src/database/helpers';
 import { describe, beforeAll, afterEach, it, expect, vi, beforeEach, MockedFunction } from 'vitest';
@@ -14,7 +14,7 @@ describe('Integration Tests', () => {
 
 	beforeAll(async () => {
 		db = vi.mocked(knex({ client: MockClient }));
-		tracker = getTracker();
+		tracker = createTracker(db);
 	});
 
 	afterEach(() => {

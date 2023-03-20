@@ -1,6 +1,6 @@
 import { NestedDeepQuery } from '@directus/shared/types';
 import knex, { Knex } from 'knex';
-import { getTracker, MockClient, Tracker } from 'knex-mock-client';
+import { createTracker, MockClient, Tracker } from 'knex-mock-client';
 import { cloneDeep } from 'lodash';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi, MockedFunction } from 'vitest';
 import { ItemsService } from '../../src/services';
@@ -48,7 +48,7 @@ describe('Integration Tests', () => {
 
 	beforeAll(() => {
 		db = vi.mocked(knex({ client: MockClient }));
-		tracker = getTracker();
+		tracker = createTracker(db);
 	});
 
 	beforeEach(() => {

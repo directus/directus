@@ -34,13 +34,13 @@
 		"@directus/storage": "workspace:*",
 		"@directus/utils": "workspace:*",
 		"p-queue": "7.3.4",
-		"undici": "5.19.1"
+		"undici": "5.21.0"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "0.0.6",
 		"@ngneat/falso": "6.4.0",
-		"@vitest/coverage-c8": "0.28.5",
+		"@vitest/coverage-c8": "0.29.3",
 		"typescript": "4.9.5",
-		"vitest": "0.28.5"
+		"vitest": "0.29.3"
 	}
 }
