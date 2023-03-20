@@ -9,6 +9,7 @@ export function constructFlowTree(flow: FlowRaw): Flow {
 	const flowTree: Flow = {
 		...omit(flow, 'operations'),
 		operation: operationTree,
+		options: flow.options ?? {},
 	};
 
 	return flowTree;
