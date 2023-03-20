@@ -1,6 +1,6 @@
 import { parse } from 'json2csv';
 import knex, { Knex } from 'knex';
-import { getTracker, MockClient, Tracker } from 'knex-mock-client';
+import { createTracker, MockClient, Tracker } from 'knex-mock-client';
 import { EOL } from 'node:os';
 import { Readable } from 'stream';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, MockedFunction, vi } from 'vitest';
@@ -19,7 +19,7 @@ describe('Integration Tests', () => {
 
 	beforeAll(async () => {
 		db = vi.mocked(knex({ client: MockClient }));
-		tracker = getTracker();
+		tracker = createTracker(db);
 	});
 
 	afterEach(() => {

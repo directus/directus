@@ -440,12 +440,28 @@ export function useRelationMultiple(
 		watch(
 			selectedOnPage,
 			(newVal, oldVal) => {
-				if (!isEqual(newVal, oldVal)) loadSelectedDisplay();
+				if (newVal.length !== oldVal?.length || !isEqual(newVal.map(getRelatedIDs), (oldVal ?? []).map(getRelatedIDs)))
+					loadSelectedDisplay();
 			},
 			{ immediate: true }
 		);
 
 		return { fetchedSelectItems, selected, isItemSelected, selectedOnPage };
+
+		function getRelatedIDs(item: DisplayItem): string | number | undefined {
+			switch (relation.value?.type) {
+				case 'o2m':
+					return item[relation.value.relatedPrimaryKeyField.field];
+				case 'm2m':
+					return item[relation.value.junctionField.field][relation.value.relatedPrimaryKeyField.field];
+				case 'm2a': {
+					const collection = item[relation.value.collectionField.field];
+					return item[relation.value.junctionPrimaryKeyField.field][
+						relation.value.relationPrimaryKeyFields[collection].field
+					];
+				}
+			}
+		}
 
 		function isItemSelected(item: DisplayItem) {
 			return relation.value !== undefined && item[relation.value.reverseJunctionField.field] !== undefined;
@@ -481,7 +497,7 @@ export function useRelationMultiple(
 					fields: Array.from(fields),
 					filter: {
 						[targetPKField]: {
-							_in: selectedOnPage.value.map((item) => item[targetPKField]),
+							_in: selectedOnPage.value.map(getRelatedIDs),
 						},
 					},
 					limit: -1,
@@ -514,7 +530,7 @@ export function useRelationMultiple(
 					fields: Array.from(fields),
 					filter: {
 						[relatedPKField]: {
-							_in: selectedOnPage.value.map((item) => item[relation.junctionField.field][relatedPKField]),
+							_in: selectedOnPage.value.map(getRelatedIDs),
 						},
 					},
 					limit: -1,
