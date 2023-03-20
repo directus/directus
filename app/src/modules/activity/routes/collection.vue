@@ -11,7 +11,11 @@
 		show-select="none"
 		collection="directus_activity"
 	>
-		<private-view :title="t('activity_feed')" :small-header="currentLayout?.smallHeader" :header-shadow="currentLayout?.headerShadow">
+		<private-view
+			:title="t('activity_feed')"
+			:small-header="currentLayout?.smallHeader"
+			:header-shadow="currentLayout?.headerShadow"
+		>
 			<template #title-outer:prepend>
 				<v-button class="header-icon" rounded disabled icon secondary>
 					<v-icon name="access_time" />
@@ -90,7 +94,6 @@ export default defineComponent({
 
 		const currentLayout = useExtension('layout', layout);
 
-
 		const roleFilter = ref<Filter | null>(null);
 
 		return {
@@ -104,7 +107,7 @@ export default defineComponent({
 			filter,
 			roleFilter,
 			mergeFilters,
-			currentLayout
+			currentLayout,
 		};
 
 		function useBreadcrumb() {

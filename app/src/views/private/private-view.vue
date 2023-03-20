@@ -242,7 +242,7 @@ function openSidebar(event: PointerEvent) {
 .private-view {
 	--content-padding: 12px;
 	--content-padding-bottom: 60px;
-    --layout-offset-top: calc(var(--header-bar-height) - 1px);
+	--layout-offset-top: calc(var(--header-bar-height) - 1px);
 
 	display: flex;
 	width: 100%;

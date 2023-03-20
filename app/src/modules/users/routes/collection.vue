@@ -13,7 +13,11 @@
 		collection="directus_users"
 		:reset-preset="resetPreset"
 	>
-		<private-view :title="title" :small-header="currentLayout?.smallHeader" :header-shadow="currentLayout?.headerShadow">
+		<private-view
+			:title="title"
+			:small-header="currentLayout?.smallHeader"
+			:header-shadow="currentLayout?.headerShadow"
+		>
 			<template v-if="breadcrumb" #headline>
 				<v-breadcrumb :items="breadcrumb" />
 			</template>

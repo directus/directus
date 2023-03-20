@@ -13,7 +13,12 @@
 		collection="directus_files"
 		:reset-preset="resetPreset"
 	>
-		<private-view :title="title" :class="{ dragging }" :small-header="currentLayout?.smallHeader" :header-shadow="currentLayout?.headerShadow">
+		<private-view
+			:title="title"
+			:class="{ dragging }"
+			:small-header="currentLayout?.smallHeader"
+			:header-shadow="currentLayout?.headerShadow"
+		>
 			<template v-if="breadcrumb" #headline>
 				<v-breadcrumb :items="breadcrumb" />
 			</template>
@@ -360,7 +365,7 @@ export default defineComponent({
 			batchEditActive,
 			filter,
 			mergeFilters,
-			currentLayout
+			currentLayout,
 		};
 
 		function useBatch() {

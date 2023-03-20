@@ -9,7 +9,11 @@
 		:collection="values.collection"
 		readonly
 	>
-		<private-view :title="t('editing_preset')" :small-header="currentLayout?.smallHeader" :header-shadow="currentLayout?.headerShadow">
+		<private-view
+			:title="t('editing_preset')"
+			:small-header="currentLayout?.smallHeader"
+			:header-shadow="currentLayout?.headerShadow"
+		>
 			<template #headline>
 				<v-breadcrumb :items="[{ name: t('settings_presets'), to: '/settings/presets' }]" />
 			</template>
@@ -196,7 +200,7 @@ const layoutFilter = computed<any>({
 
 const layout = computed(() => values.value.layout);
 
-const currentLayout = useExtension('layout', layout)
+const currentLayout = useExtension('layout', layout);
 
 const { layoutWrapper } = useLayout(layout);
 

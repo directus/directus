@@ -25,7 +25,13 @@
 				</nav>
 
 				<main ref="mainEl" class="main">
-					<header-bar :title="title" primary-action-icon="close" :small="smallHeader" :shadow="headerShadow" @primary="$emit('cancel')">
+					<header-bar
+						:title="title"
+						primary-action-icon="close"
+						:small="smallHeader"
+						:shadow="headerShadow"
+						@primary="$emit('cancel')"
+					>
 						<template #title><slot name="title" /></template>
 						<template #headline>
 							<slot name="subtitle">

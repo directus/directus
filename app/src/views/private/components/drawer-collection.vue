@@ -11,7 +11,13 @@
 		select-mode
 		:show-select="multiple ? 'multiple' : 'one'"
 	>
-		<v-drawer v-model="internalActive" :title="t('select_item')" @cancel="cancel" :small-header="currentLayout?.smallHeader" :headerShadow="currentLayout?.headerShadow">
+		<v-drawer
+			v-model="internalActive"
+			:title="t('select_item')"
+			:small-header="currentLayout?.smallHeader"
+			:header-shadow="currentLayout?.headerShadow"
+			@cancel="cancel"
+		>
 			<template #subtitle>
 				<v-breadcrumb :items="[{ name: collectionInfo.name, disabled: true }]" />
 			</template>
@@ -93,15 +99,13 @@ export default defineComponent({
 		const { info: collectionInfo } = useCollection(collection);
 		const { layout, layoutOptions, layoutQuery, search, filter: presetFilter } = usePreset(collection, ref(null), true);
 
-		
 		// This is a local copy of the layout. This means that we can sync it the layout without
 		// having use-preset auto-save the values
 		const localLayout = ref(layout.value || 'tabular');
 		const localOptions = ref(layoutOptions.value);
 		const localQuery = ref(layoutQuery.value);
-		
-		const currentLayout = useExtension('layout', localLayout);
 
+		const currentLayout = useExtension('layout', localLayout);
 
 		const layoutSelection = computed<any>({
 			get() {
@@ -142,7 +146,7 @@ export default defineComponent({
 			collectionInfo,
 			search,
 			presetFilter,
-			currentLayout
+			currentLayout,
 		};
 
 		function useActiveState() {

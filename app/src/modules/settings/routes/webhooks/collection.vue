@@ -10,7 +10,11 @@
 		:search="search"
 		collection="directus_webhooks"
 	>
-		<private-view :title="t('webhooks')" :small-header="currentLayout?.smallHeader" :header-shadow="currentLayout?.headerShadow">
+		<private-view
+			:title="t('webhooks')"
+			:small-header="currentLayout?.smallHeader"
+			:header-shadow="currentLayout?.headerShadow"
+		>
 			<template #headline><v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" /></template>
 
 			<template #title-outer:prepend>
@@ -123,7 +127,6 @@ export default defineComponent({
 
 		const currentLayout = useExtension('layout', layout);
 
-
 		return {
 			t,
 			addNewLink,
@@ -140,7 +143,7 @@ export default defineComponent({
 			layout,
 			search,
 			clearFilters,
-			currentLayout
+			currentLayout,
 		};
 
 		async function refresh() {
