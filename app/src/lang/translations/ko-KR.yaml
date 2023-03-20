@@ -118,7 +118,7 @@ public_label: 공개
 public_description: 인증 없이 사용할 수 있는 API 데이터를 제어합니다.
 admin_description: 제한 없는 앱/API 액세스 권한이 있는 초기 관리자 역할입니다.
 not_allowed: 허용되지 않음
-directus_version: 디렉투스 버전
+directus_version: Directus 버전
 node_version: 노드 버전
 node_uptime: 노드 가동 시간
 os_type: OS 유형
@@ -185,7 +185,7 @@ presets_for_role: '{role} 역할에 대한 필드 값 기본값입니다.'
 presentation_and_aliases: 프레젠테이션
 revision_post_create: 이 항목이 생성되었을 때의 모습은 다음과 같습니다.
 revision_post_update: 업데이트 후 이 항목의 모습은 다음과 같습니다.
-changes_made: 다음은 이번 개정판에서 변경된 구체적인 사항입니다.
+changes_made: 다음은 이번 업데이트에서 변경된 구체적인 사항입니다.
 no_relational_data: 관계형 데이터는 여기에 포함되지 않습니다.
 junction_field_location: 정션 필드 위치
 top: 상단
@@ -212,11 +212,11 @@ create_in_advanced_field_creation_mode: 고급 모드에서 필드 만들기
 continue_in_advanced_field_creation_mode: 고급 필드 생성 모드 계속
 validation: 검증
 sum: 합계
-sum_distinct: 고유한 합계
+sum_distinct: 고유 합계
 avg: 평균
-avg_distinct: A평균 구별
+avg_distinct: 고유 평균
 count: 카운팅(횟수)
-count_distinct: 카운트 고유
+count_distinct: 고유 개수
 min: 최소(Min)
 max: 최대(Max)
 exposure: 노출
@@ -226,10 +226,11 @@ focal_length: 초점 거리
 schema_setup_key: 이 필드의 DB 컬럼명과 API 키
 create_field: 필드 추가
 creating_new_field: '새 필드 ({collection})'
-field_in_collection: '{field} ({collection})'
+field_in_collection: '{필드} ({컬렉션})'
 reset_page_preferences: 앱 환경설정 초기화
 hidden_field: 숨김 필드
 hidden_on_detail: 실행 시 숨김
+disabled_editing_value: 편집 값 비활성화
 key: 키
 alias: 별칭
 bigInteger: 큰 정수형
@@ -273,7 +274,9 @@ click_to_manage_translated_fields: >-
   필드명이 아직 번역되지 않았습니다. 번역 문구를 추가하려면 여기를 클릭하세요. | 필드명 번역 문구가 하나 있습니다. 번역 문구를 관리하려면 여기를 클릭하세요. | 필드명 번역 문구가 {count}개 있습니다. 번역 문구를 관리하려면 여기를 클릭하세요.
 fields_group: 필드 그룹
 no_collections_found: 컬렉션 없음
+new_data_alert: '데이터 모델 내에 다음이 생성됩니다.'
 search_collection: 컬렉션 검색
+search_field: 검색 필드...
 new_field: '새 필드'
 new_collection: '새 컬렉션'
 add_m2o_to_collection: '"{collection}" 에 M2O 추가'
@@ -335,7 +338,8 @@ show_all_activity: 전체 활동기록 보기
 page_not_found: 페이지를 찾을 수 없음
 page_not_found_body: 요청하신 페이지는 존재하지 않습니다.
 confirm_revert: 되돌리기 확인
-confirm_revert_body: 이렇게 하면 항목이 선택한 상태로 되돌아갑니다.
+confirm_revert_body: 항목이 선택한 상태로 되돌아갑니다.
+display: 표시하다
 settings_update_success: 설정이 수정됨.
 title: 제목
 revision_delta_created: 만들어진
@@ -490,7 +494,7 @@ click_to_expand: 확장하려면 클릭
 select_item: 물품을 고르시 오
 no_items: 항목 없음
 search_items: 검색
-disabled: 장애가 있는
+disabled: 비활성화 됨
 information: 정보
 report_bug: 버그를 제보하기
 request_feature: 요청 기능
@@ -513,7 +517,8 @@ no_notifications: 알림 없음
 no_notifications_copy: 당신은 모두 잡혔습니다!
 activity_log: 활동 기록
 all_items: 전체 내용
-any: 무엇이든
+any: 모두
+csv: CSV
 no_collections: 컬렉션 없음
 create_collection: 목록 생성
 no_collections_copy_admin: 아직 컬렉션이 없습니다. 시작하려면 아래 버튼을 클릭하세요.
@@ -544,7 +549,7 @@ max_value: 최대 값
 automatic: 자동
 field_width: 필드 너비
 add_filter: 필터 추가
-upper_limit: 상한선...
+upper_limit: 제한...
 lower_limit: 하한선...
 user_directory: 사용자 목록
 documentation: 문서
@@ -567,7 +572,7 @@ bookmark_doesnt_exist_copy: 열려고 하는 북마크를 찾을 수 없습니�
 bookmark_doesnt_exist_cta: 컬렉션으로 돌아가기
 select_an_item: 목록에서 선택...
 edit: 수정
-enabled: 사용
+enabled: 활성화 됨
 disable_tfa: 2FA 비활성화
 admin_disable_tfa_text: 이 사용자에 대해 2FA를 비활성화하시겠습니까?
 tfa_setup: 2FA 설정
@@ -628,80 +633,418 @@ unexpected_error: 예기치 않은 오류
 unexpected_error_copy: 예상치 못한 오류가 발생했습니다. 나중에 다시 시도 해주십시오.
 copy_details: 세부정보 복사
 no_app_access: 앱 액세스 없음
+no_app_access_copy: 이 사용자는 관리 앱을 사용할 수 없습니다.
+password_reset_sent: 계정이 있는 경우 비밀번호를 재설정할 수 있는 보안 링크를 보내드립니다.
+password_reset_successful: 비밀번호가 성공적으로 재설정되었습니다.
 back: 뒤로
 filter: 필터
 edit_image: 이미지 편집
+editing_image: 이미지 편집
+square: 정사각형
+free: 자유로운
+flip_horizontal: 수평 뒤집기
+flip_vertical: 상하 반전
+aspect_ratio: 종횡비
+rotate: 회전
 all_users: 전체 사용자
+delete_collection: 컬렉션 삭제
+update_collection_success: 업데이트된 컬렉션
+delete_collection_success: 삭제된 컬렉션
+make_collection_visible: 컬렉션을 보이게 만들기
+make_collection_hidden: 컬렉션 숨김
+make_folder_visible: 폴더 표시
+make_folder_hidden: 폴더 숨기기
 goto_collection_content: 내용 보기
 start_end_of_count_items: '{start}-{end} / 총 {count}개'
 start_end_of_count_filtered_items: '{start}-{end} / 총 {count}개 '
 one_item: '1개 항목'
 one_filtered_item: '1개 항목'
+delete_collection_are_you_sure: >-
+  정말 "{collection}" 컬렉션을 삭제하시겠습니까? 이렇게 하면 컬렉션과 그 안에 있는 모든 항목이 삭제됩니다. 이 작업은 영구적입니다.
+delete_folder_are_you_sure: 정말로 "{folder}" 폴더를 삭제하시겠습니까? 중첩된 폴더 및 컬렉션은 최상위 레벨로 이동됩니다.
+collections_shown: 표시된 컬렉션
+visible_collections: 보이는 컬렉션
+hidden_collections: 숨겨진 컬렉션
+show_hidden_collections: 숨겨진 컬렉션 표시
+hide_hidden_collections: 숨겨진 컬렉션 숨기기
+show_header: 머리글 표시
+unmanaged_collections: 구성되지 않은 컬렉션
+system_collections: 시스템 컬렉션
+placeholder: 자리 표시자
+icon_left: 아이콘 왼쪽
+icon_right: 아이콘 오른쪽
+count_other_revisions: '{count} 기타 개정'
+font: 폰트
+sans_serif: 산세 리프
+serif: 가는 장식 선
+monospace: MPV
+divider: 구분선
+color: 색상
+circle: 원
+empty_item: 빈 항목
+log_in_with: '{provider}로 로그인'
+conditional_styles: 조건부 스타일
+advanced_settings: 고급 설정
+advanced_filter: 고급 필터
+delete_advanced_filter: 필터 삭제
+change_advanced_filter_operator: 연산자 변경
+advanced: 고급의
+operators:
+  eq: 같음
+  neq: 같지 않음
+  lt: 미만
+  gt: 보다 큰
+  lte: 보다 작거나 같음
+  gte: 보다 크거나 같음
+  in: 중 하나이다
+  nin: 다음 중 하나가 아님
+  null: "null"
+  nnull: null이 아님
+  contains: 포함
+  ncontains: 포함하지 않음
+  icontains: 포함(무감각)
+  starts_with: 시작
+  nstarts_with: 로 시작하지 않음
+  ends_with: 로 끝나다
+  nends_with: 로 끝나지 않는다
+  between: 사이에
+  nbetween: 사이가 아님
+  empty: 비었다
+  nempty: 비어 있지 않음
+  all: 다음 키를 포함합니다.
+  has: 다음 키 중 일부를 포함합니다.
+  intersects: 교차
+  nintersects: 교차하지 않음
+  intersects_bbox: 교차 경계 상자
+  nintersects_bbox: 경계 상자와 교차하지 않음
+  regex: RegExp와 일치
+custom_validation_message: 사용자 지정 유효성 검사 메시지
+loading: 로드 중...
+drop_to_upload: 드롭하여 업로드
 item: 항목
 items: 항목
+upload_file: 파일 업로드
+upload_file_indeterminate: 파일 업로드 중...
+upload_file_success: 업로드된 파일
+upload_files_indeterminate: '파일 업로드 {done}/{total}'
+upload_files_success: '업로드된 파일 {count}개'
+upload_pending: 업로드 대기 중
 drag_file_here: 여기에 파일 끌어서 놓기
+click_to_browse: 찾아보려면 클릭
+interface_options: 인터페이스 옵션
 layout_options: 표시방법 선택
+rows: 행
+columns: 열
+collection_setup: 컬렉션 설정
+optional_system_fields: 선택적 시스템 필드
 value_unique: 생산Key는 유일해야만 합니다.
 all_activity: 전체 활동
 create_item: 추가
 display_template: 표시 형식
+language_display_template: 언어 표시 템플릿
+translations_display_template: 번역 표시 템플릿
+n_items_selected: '선택한 항목 없음 | 1 항목 선택됨 | {n} 항목이 선택됨'
+per_page: 페이지 당
 all_files: 전체 파일
 my_files: 내 파일
 recent_files: 최근 파일
 create_folder: 폴더 만들기
 edit_folder: 폴더 수정
+folder_name: 폴더 이름...
+folder_key: 폴더 키...
 add_file: 파일 추가
 replace_file: 파일 바꾸기
+no_results: 결과 없음
 no_results_copy: 필터를 설정하시면 검색 결과가 표시됩니다.
+no_visible_fields: 빈 양식
+no_visible_fields_copy: 이 양식에는 보이는 필드가 없습니다.
+clear_filters: 필터 지우기
+saves_automatically: 자동으로 저장
 role: 역할
 edit_role: 역할 수정
+rule: 규칙
 user: 사용자
+no_presets: 사전 설정 없음
+no_presets_copy: 사전 설정이나 북마크가 아직 저장되지 않았습니다.
+no_presets_cta: 프리셋 추가
+presets_only: 프리셋만
 create: 작성/추가
 on_create: 추가시
+on_update: 업데이트 시
+read: 읽다
 update: 수정
 delete: 삭제
+select_fields: 필드 선택
+format_text: 서식 텍스트
+format_value: 형식 값
+abbreviate_value: 약어 값
+operator: 운영자
+bold: 굵게
+toggle: 비녀장
+icon_on: 아이콘 켜기
+icon_off: 아이콘 끄기
+label: 상표
+flows: 플로우
+flow: 플로우
+select_a_flow: 플로우 선택
+run_flow_on_current_collection: 현재 컬렉션에서 플로우 실행
+run_flow_on_current: 현재 항목에서 플로우 실행
+run_flow_on_current_edited_confirm: 이 항목은 이 플로우에 의해 업데이트될 수 있습니다. 실행하시겠습니까?
+run_flow_on_selected: 먼저 하나 이상의 항목 선택 | 선택한 항목 1개에서 플로우 실행 | {n} 선택한 항목에서 플로우 실행
+run_flow_success: '"{flow}" 플로우이 성공적으로 실행되었습니다.'
+trigger: 방아쇠
+trigger_options: 트리거 옵션
+view_trigger: 트리거 보기
 create_trigger: 트리거 생성
+trigger_setup: 트리거 설정
+change_trigger: 트리거 변경
+flow_delete_confirm: 플로우 "{flow}"을(를) 삭제하시겠습니까? 이 작업은 취소할 수 없습니다.
+set_flow_active: 플로우을 활성으로 설정
+set_flow_inactive: 플로우을 비활성으로 설정
+edit_flow: 플로우 편집
+delete_flow: 플로우 삭제
+no_other_flows_copy: 아직 다른 플로우이 없습니다.
+no_flows: 플로우 없음
+no_flows_copy: 아직 플로우이 없습니다.
 create_flow: 플로우 작성
+creating_new_flow: 새 플로우 만들기
+updating_flow: 플로우 업데이트 중...
+flow_setup: 플로우 설정
 flow_name: 이름
 flow_tracking: 활동 및 기록 추적
+flow_tracking_all: 활동 및 로그 추적
+flow_tracking_activity: 활동만 추적
+flow_tracking_null: 아무것도 추적하지 마십시오
+start_flow: 플로우 시작
+stop_flow: 플로우 중지
+create_operation: 작업 만들기
+edit_operation: 편집 작업
+code: 코드
+operation_options: 작동 옵션
+operation_name: 작전명...
+operation_key: 참조용 식별자...
+operation_key_unique_error: 고유 키는 플로우에서 고유해야 합니다.
+operation_handle_resolve: '해결: 클릭하여 추가하거나 드래그하여 경로 변경'
+operation_handle_reject: '거부: 클릭하여 추가하거나 드래그하여 경로 변경'
 insights: 현황판
 dashboard: 대쉬보드
+panel: 패널
+panel_options: 패널 옵션
+panel_header: 패널 헤더
+panel_name_placeholder: 패널 이름 지정...
+panel_note_placeholder: 이 패널에 대한 선택적 세부 정보...
+panel_delete_confirm: 이 패널을 삭제하시겠습니까? 이 작업은 취소할 수 없습니다.
+list_panel_allow_edit: 인라인 편집 허용
+dashboard_delete_confirm: 이 대시보드를 삭제하시겠습니까? 이 작업은 취소할 수 없습니다.
 edit_dashboard: 대시보드 편집
 delete_dashboard: 대시보드 삭제
+visible: 보이는
+prefix_placeholder: 값 앞의 텍스트...
+suffix_placeholder: 값 뒤의 텍스트...
+decimals_placeholder: 소수 자릿수...
 no_dashboards: 대시보드 없음
 no_dashboards_copy: 생성된 대시보드가 없습니다.
 create_dashboard: 대시보드 생성
 dashboard_name: 대시보드 이름
 no_data: 데이터 없음
+no_data_in_flow: 이 플로우 내에서 데이터가 생성되거나 액세스되지 않았습니다.
+accountability: 책임
+payload: 유효 탑재량
+details: 세부
 full_screen: 전체화면
 full_text_search: 전체 검색
 edit_panels: 판넬 수정
+center_align: 가운데 정렬
+left_align: 왼쪽 정렬
+right_align: 오른쪽 정렬
 fit_to_screen: 화면크기에 맞추기
+image_url: 이미지 URL
+alt_text: 대체 텍스트
+media: 미디어
+quality: 품질
 width: 가로(폭)
 height: 세로(높이)
+transformation_preset_key: 변환 프리셋 키
+source: 원천
+url_placeholder: URL을 입력하세요...
+display_text: 디스플레이 텍스트
+display_text_placeholder: 표시 텍스트를 입력하세요...
+interface_group_text_and_numbers: 텍스트 및 숫자
+interface_group_selection: 선택
+interface_group_relational: 관계형
+interface_group_presentation: 프레젠테이션
+interface_group_groups: 여러 떼
+interface_group_other: 다른
+tooltip: 툴팁
+tooltip_placeholder: 툴팁을 입력하세요...
+unlimited: 제한 없는
+open_link_in: 링크 열기
+new_tab: 새 탭
+current_tab: 현재 탭
+save_image: 이미지를 저장
+save_media: 미디어 저장
 wysiwyg_options:
+  aligncenter: 센터 정렬
+  alignjustify: 정렬 양쪽 맞춤
+  alignleft: 왼쪽 정렬
+  alignnone: 정렬 없음
+  alignright: 오른쪽 정렬
   forecolor: 전경색
   backcolor: 배경색
+  bold: 굵게
+  italic: 이탤릭체
+  underline: 밑줄
+  strikethrough: 취소선
+  subscript: 아래첨자
+  superscript: 어깨 기호
+  codeblock: 암호
+  blockquote: 인용구
+  bullist: 글머리기호 목록
+  numlist: 번호 매기기 목록
+  hr: 가로줄
+  link: 링크 추가/편집
+  unlink: 링크 제거
+  media: 미디어 추가/편집
+  image: 이미지 추가/편집
+  copy: 복사
+  cut: 자르다
+  paste: 반죽
+  heading: 표제
+  h1: 제목 1
+  h2: 제목 2
+  h3: 제목 3
+  h4: 제목 4
+  h5: 제목 5
+  h6: 제목 6
+  fontselect: 글꼴 선택
+  fontsizeselect: 글꼴 크기 선택
+  indent: 톱니 모양
+  outdent: 내어쓰기
+  undo: 실행 취소
+  redo: 다시 하다
+  remove: 제거하다
+  removeformat: 형식 제거
   selectall: 모두 선택
+  table: 테이블
+  visualaid: 보이지 않는 요소 보기
+  source_code: 소스 코드 편집
   fullscreen: 전체화면
+  directionality: 방향성
+dropdown: 쓰러지 다
+choices: 선택
+choices_option_configured_incorrectly: 잘못 구성된 선택 사항
+deselect: 선택 취소
+deselect_all: 모두 선택 취소
+other: 다른...
 adding_user: 사용자 추가
 unknown_user: 알 수 없는 사용자
 creating_in: '{collection} 데이터 추가'
 editing_in: '{collection} 편집'
 viewing_in: '{collection} 조회'
+creating_unit: '{unit} 생성 중'
+editing_unit: '편집 {unit}'
+editing_in_batch: '일괄 편집 {count} 항목'
+no_options_available: 사용 가능한 옵션 없음
 settings_data_model: 데이터 모델
 settings_permissions: 역할 및 권한
 settings_project: 프로젝트 설정
 settings_webhooks: 웹후크
+settings_flows: 플로우
 settings_presets: 사전설정 및 북마크
+settings_translation_strings: 번역 문자열
+one_or_more_options_are_missing: 하나 이상의 옵션이 없습니다.
 scope: 범위
+actions: 액션
+select: 선택하다...
 layout: 표시 방법
+tree_view: 트리 보기
+changes_are_permanent: 변경 사항은 영구적입니다.
+preset_name_placeholder: 비어 있을 때 기본값으로 사용...
+preset_search_placeholder: 검색어...
+editing_preset: 사전 설정 편집
+layout_preview: 레이아웃 미리보기
+layout_setup: 레이아웃 설정
 data: 데이터
+unsaved_changes: 저장되지 않은 변경 사항
+unsaved_changes_copy: 이 페이지에서 나가시겠습니까?
+discard_changes: 변경 사항을 취소
+discard_all_changes: 모든 변경 사항 취소
+discard_changes_copy: 모든 변경 사항을 취소하시겠습니까?
+show_x_axis: X축 표시
+show_y_axis: Y축 표시
+keep_editing: 계속 수정
+page_help_collections_overview: '**컬렉션 개요** — 액세스 권한이 있는 모든 컬렉션 목록입니다.'
+page_help_collections_collection: >-
+  **항목 찾아보기** — 액세스할 수 있는 모든 {collection} 항목을 나열합니다. 레이아웃, 필터 및 정렬을 사용자 지정하여 보기를 맞춤화하고 이러한 다양한 구성의 책갈피를 저장하여 빠르게 액세스할 수도 있습니다.
+page_help_collections_item: >-
+  **항목 세부 정보** — 이 항목을 보고 관리하기 위한 양식입니다. 이 사이드바에는 전체 수정 내역과 포함된 댓글도 포함되어 있습니다.
+page_help_activity_collection: >-
+  **찾아보기 활동** — 모든 사용자의 시스템 및 콘텐츠 활동에 대한 포괄적인 목록입니다.
+page_help_docs_global: >-
+  **문서 개요** — 이 프로젝트의 버전 및 스키마에 맞게 특별히 조정된 문서입니다.
+page_help_files_collection: >-
+  **파일 라이브러리** — 이 프로젝트에 업로드된 모든 파일 자산을 나열합니다. 레이아웃, 필터 및 정렬을 사용자 지정하여 보기를 맞춤화하고 이러한 다양한 구성의 책갈피를 저장하여 빠르게 액세스할 수도 있습니다.
+page_help_files_item: >-
+  **파일 세부 정보** — 파일 메타데이터 관리, 원본 자산 편집 및 액세스 설정 업데이트를 위한 양식입니다.
+page_help_settings_project: "**프로젝트 설정** — 프로젝트의 전역 구성 옵션입니다."
+page_help_settings_datamodel_collections: >-
+  **데이터 모델: 컬렉션** - 사용 가능한 모든 컬렉션을 나열합니다. 여기에는 추가할 수 있는 관리되지 않는 데이터베이스 테이블뿐만 아니라 가시적, 숨김 및 시스템 컬렉션이 포함됩니다.
+page_help_settings_datamodel_fields: >-
+  **데이터 모델: 컬렉션** — 이 컬렉션과 해당 필드를 관리하기 위한 양식입니다.
+page_help_settings_roles_collection: '**역할 찾아보기** — 관리자, 공개 및 사용자 지정 사용자 역할을 나열합니다.'
+page_help_settings_roles_item: "**역할 세부 정보** — 역할의 권한 및 기타 설정을 관리합니다."
+page_help_settings_presets_collection: >-
+  **사전 설정 찾아보기** — 사용자, 역할, 전역 책갈피 및 기본 보기를 포함하여 프로젝트의 모든 사전 설정을 나열합니다.
+page_help_settings_presets_item: >-
+  **사전 설정 세부 정보** — 책갈피 및 기본 컬렉션 사전 설정을 관리하기 위한 양식입니다.
+page_help_settings_webhooks_collection: '**웹후크 찾아보기** — 프로젝트 내의 모든 웹후크를 나열합니다.'
+page_help_settings_webhooks_item: '**Webhook 세부 정보** — 프로젝트 Webhook 생성 및 관리를 위한 양식입니다.'
+page_help_settings_flows_collection: '**플로우 찾아보기** — 프로젝트 내의 모든 플로우을 나열합니다.'
+page_help_settings_flows_item: '**Flow Detail** — 하나 이상의 작업을 관리하기 위한 작업 공간입니다.'
+page_help_settings_translation_strings_collection: '**번역 문자열 찾아보기** — 프로젝트 내의 모든 번역 문자열을 나열합니다.'
+page_help_users_collection: '**사용자 디렉터리** — 이 프로젝트 내의 모든 시스템 사용자를 나열합니다.'
+page_help_users_item: >-
+  **사용자 세부 정보** — 계정 정보를 관리하거나 다른 사용자의 세부 정보를 봅니다.
+page_help_insights_overview: '**Insights** — 액세스 권한이 있는 대시보드 목록입니다.'
+page_help_insights_dashboard: '**대시보드** — 하나 이상의 패널을 관리하기 위한 작업 공간'
 activity_feed: 활동 내역
+add_new: 새로운 걸 더하다
 create_new: 새로 만들기
+all: 모두
+none: 없음
+no_layout_collection_selected_yet: 아직 선택한 레이아웃/컬렉션이 없습니다.
 batch_delete_confirm: >-
   선택한 항목이 없습니다. | 선택한 항목을 삭제하시겠습니까? 한번 삭제하면 복구할 수 없습니다. | 선택한 {count}개 항목을 을 삭제하시겠습니까? 한번 삭제하면 복구할 수 없습니다.
+cancel: 취소
+no_upscale: 이미지를 확대하지 마세요.
+collection: 컬렉션
+collections: 컬렉션
 content: 데이터 및 컨텐츠 관리
+singleton: 하나씩 일어나는 것
+singleton_label: 단일 객체로 취급
+system_fields_locked: 시스템 필드가 잠겨 있어 편집할 수 없습니다.
+directus_collection:
+  directus_activity: 모든 이벤트에 대한 책임 로그
+  directus_collections: 추가 컬렉션 구성 및 메타데이터
+  directus_dashboards: Insights 모듈 내의 대시보드
+  directus_fields: 추가 필드 구성 및 메타데이터
+  directus_files: 관리되는 모든 파일 자산의 메타데이터
+  directus_flows: 자동화 플로우
+  directus_folders: 파일을 위한 가상 디렉터리 제공
+  directus_migrations: 사용 중인 데이터베이스 버전
+  directus_notifications: 사용자에게 전송된 알림
+  directus_operations: 플로우에서 실행되는 작업
+  directus_panels: Insights 대시보드 내의 개별 패널
+  directus_permissions: 역할별 접근 권한
+  directus_presets: 컬렉션 기본값 및 책갈피에 대한 사전 설정
+  directus_relations: 관계 구성 및 메타데이터
+  directus_revisions: 모든 활동에 대한 데이터 스냅샷
+  directus_roles: 시스템 사용자를 위한 권한 그룹
+  directus_sessions: 사용자 세션 정보
+  directus_settings: 프로젝트 구성 옵션
+  directus_shares: 외부 공유 항목 추적
+  directus_users: 플랫폼의 시스템 사용자
+  directus_webhooks: 이벤트 기반 HTTP 요청 구성
 fields:
   directus_activity:
     item: 기본키
@@ -710,19 +1053,33 @@ fields:
     timestamp: 활동일시
     user: 사용자
     comment: 코멘트
+    user_agent: 사용자 에이전트
     origin: 출처
     ip: IP 주소
     revisions: 수정내역
   directus_collections:
+    collection: 수집
+    icon: 아이콘
     note: 메모
+    color: 색상
     display_template: 표시 형식
+    hidden: 숨겨진
+    singleton: 하나씩 일어나는 것
+    translations: 컬렉션 명명 번역
+    archive_app_filter: 아카이브 앱 필터
+    archive_value: 아카이브 가치
+    unarchive_value: 아카이브 취소 값
     sort_field: 정렬 기준
+    accountability: 활동 및 개정 추적
+    archive_field: 아카이브 필드
+    item_duplication_fields: 항목 중복 필드
   directus_files:
     $thumbnail: 미리보기
     title: 제목
     description: 설명
     tags: 태그
     location: 위치
+    storage: 저장
     filename_disk: 파일명(저장명)
     filename_download: 파일명(다운로드)
     metadata: 메타데이터(Metadata)
@@ -732,6 +1089,7 @@ fields:
     modified_on: 수정일
     created_on: 작성일
     created_by: 작성자
+    embed: 포함시키다
     uploaded_by: 작성자(업로드)
     folder: 폴더
     width: 가로(폭)
@@ -758,7 +1116,11 @@ fields:
     tfa_secret: 이중 인증
     admin_options: 관리 옵션
     status: 상태
+    status_draft: 초안
+    status_invited: 초대
     status_active: 활성화
+    status_suspended: 정지됨
+    status_archived: 보관됨
     role: 역할
     token: 접속 인증 토큰
     provider: 외부 인증 제공사
@@ -767,6 +1129,21 @@ fields:
     last_access: 최근 접속
     email_notifications: 이메일 알림
   directus_settings:
+    jpg: JPEG
+    png: PNG
+    webP: WebP
+    tiff: Tiff
+    mapping: 매핑
+    basemaps: 베이스맵
+    basemaps_raster: 래스터
+    basemaps_tile: 래스터 타일JSON
+    basemaps_style: 맵박스 스타일
+    mapbox_key: 맵박스 액세스 토큰
+    mapbox_placeholder: pk.eyJ1Ijo.....
+    attribution: 속성
+    attribution_placeholder: '© OpenStreetMap 기여자'
+    transforms_note: Sharp 메서드 이름과 해당 인수입니다. 자세한 내용은 https://sharp.pixelplumbing.com/api-constructor를 참조하세요.
+    additional_transforms: 추가 변환
     project_name: 프로젝트명
     project_descriptor: 프로젝트 설명
     project_url: 프로젝트 URL
@@ -788,28 +1165,76 @@ fields:
     module_bar: 모듈 바
     transformations_all: 모든 변환 허용
     transformations_none: 변환 없음(원본사용)
+    transformations_presets: 아래 사전 설정으로 변환 제한
     image_editor: 이미지 에디터
     custom_aspect_ratios: 가로세로 비율 조정
   directus_shares:
     name: 이름
     role: 역할
     password: 비밀번호
+    date_start: 시작 날짜
+    date_end: 종료 날짜
+    max_uses: 최대 사용
+    times_used: 사용 시간
   directus_fields:
+    collection: 컬렉션 이름
+    icon: 컬렉션 아이콘
     note: 메모
+    hidden: 숨겨진
+    singleton: 하나씩 일어나는 것
     translation: 항목 명 번역
+    display_template: 주형
   directus_roles:
     name: 역할명
+    icon: 역할 아이콘
     description: 설명
+    app_access: 앱 액세스
+    admin_access: 관리자 액세스
+    ip_access: IP 액세스
+    enforce_tfa: 2FA 필요
     users: 이 역할의 사용자 목록
     module_list: '모듈 탐색:'
   directus_webhooks:
     name: 이름
+    method: 방법
     status: 상태
     data: 데이터
+    header: 머리글
+    value: 값
+    headers: 요청 헤더
+    data_label: 이벤트 데이터 보내기
+    triggers: 트리거
+    actions: 액션
+    collections: 컬렉션
 field_options:
   directus_settings:
+    project_name_placeholder: 내 프로젝트...
     project_color_note: 로그인/로고 화면 배경
+    project_logo_note: 흰색 40x40 SVG/PNG
+    public_note_placeholder: 마크다운 서식을 지원하는 짧은 공개 메시지...
     security_divider_title: 보안
+    auth_password_policy:
+      none_text: 없음 – 권장하지 않음
+      weak_text: 약함 – 최소 8자
+      strong_text: 강함 – 대문자 / 소문자 / 숫자 / 특수
+    storage_asset_presets:
+      fit_label: 맞다
+      upscaling: 업스케일링
+      fit:
+        contain_text: 포함(가로 세로 비율 유지)
+        cover_text: 표지(힘실치수)
+        fit_text: 내부에 맞춤
+        outside_text: 외부에 적합
+    additional_transforms: 추가 변환
+    transforms_note: Sharp 메서드 이름과 해당 인수입니다. 자세한 내용은 https://sharp.pixelplumbing.com/api-constructor를 참조하세요.
+    mapbox_key: 맵박스 액세스 토큰
+    mapbox_placeholder: pk.eyJ1Ijo.....
+    basemaps: 베이스맵
+    basemaps_name_placeholder: 베이스맵 이름을 입력하세요...
+    basemaps_raster: 래스터
+    basemaps_tile: 래스터 타일JSON
+    basemaps_style: 맵박스 스타일
+    files_divider_title: 파일 및 썸네일
     overrides_divider_title: App 오버라이드
   directus_activity:
     login: 로그인
@@ -817,127 +1242,641 @@ field_options:
     update: 업데이트
     delete: 삭제
   directus_collections:
+    track_activity_revisions: 활동 및 개정 추적
+    only_track_activity: 활동만 추적
+    do_not_track_anything: 아무것도 추적하지 마십시오
+    collection_setup: 컬렉션 설정
+    note_placeholder: 이 컬렉션에 대한 설명...
+    hidden_label: 앱 내에서 숨기기
+    singleton: 단일 객체로 취급
     language: 언어
+    translation: 번역
+    translation_placeholder: 번역을 입력하세요...
+    collection_name: 컬렉션 이름
+    singular_unit: 단일 단위
+    plural_unit: 복수 단위
     archive_divider: 보관
+    archive_field_placeholder: 필드 선택...
+    archive_app_filter: 앱 보관 필터 활성화
+    archive_value: 보관할 때 설정한 값...
+    unarchive_value: 보관 취소 시 설정된 값...
     sort_divider: 정렬
+    sort_field: 필드 선택...
+    accountability_divider: 책임
+    duplication_divider: 복사
+  directus_files:
+    title: 고유한 제목...
+    description: 선택적 설명...
+    location: 선택적 위치...
+    storage_divider: 파일 이름 지정
+    filename_disk: 디스크 저장소의 이름...
+    filename_download: 다운로드 시 이름...
   directus_roles:
+    name: 이 역할의 고유한 이름...
+    description: 이 역할에 대한 설명...
+    ip_access: 허용된 IP 주소를 추가하고 모두 허용하려면 비워 두세요...
     fields:
+      icon_name: 아이콘
       name_name: 이름
+      name_placeholder: 제목을 입력하세요...
+      link_name: 링크
+      link_placeholder: 상대 또는 절대 URL...
+    collections_name: 컬렉션
+    collections_addLabel: 컬렉션 추가...
   directus_users:
     preferences_divider: 사용자 개인 설정
     dropdown_auto: 자동(시스템 설정)
     dropdown_light: 밝은 배경 테마
     dropdown_dark: 어두운 배경 테마
     admin_divider: 관리 옵션
+    status_dropdown_draft: 초안
+    status_dropdown_invited: 초대
     status_dropdown_active: 활성화
+    status_dropdown_suspended: 정지된
+    status_dropdown_archived: 보관됨
+    token: 보안 액세스 토큰을 입력하세요...
   directus_webhooks:
     status_options_active: 활성화
     status_options_inactive: 비활성화
+    data_label: 이벤트 데이터 보내기
+    triggers_divider: 트리거
     actions_create: 작성/추가
     actions_update: 업데이트
     actions_delete: 삭제
     actions_login: 로그인
+    headers:
+      header: 머리글
+      value: 값
+      add: 헤더 추가
+no_fields_in_collection: '아직 "{collection}"에 필드가 없습니다.'
+no_value: 가치 없음
+do_nothing: 아무것도하지 마세요
+generate_and_save_uuid: UUID 생성 및 저장
 save_current_user_id: 현재 사용자 ID 저장
 save_current_user_role: 현재 사용자 역할(role) 저장
+save_current_datetime: 현재 날짜/시간 저장
+always_open: 항상 열려 있습니다
+start_open: 열기 시작
+start_collapsed: 축소 시작
+block: 차단하다
+inline: 인라인
 comment: 코멘트
+shares: 주식
+unlimited_usage: 무제한 사용
+uses_left: 남은 용도 없음 | 1회 남음 | {n}은(는) 왼쪽 사용
+no_shares: 표시할 공유가 없습니다.
+new_share: 새 공유
+expired: 만료됨
+upcoming: 다가오는
+share: 공유하다
+share_item: 항목 공유
+shared_with_you: 항목이 나와 공유되었습니다.
+shared_enter_passcode: 계속하려면 비밀번호를 입력하세요...
+shared_leave_blank_for_unlimited: 무제한으로 하려면 비워두세요
+shared_times_remaining: 이 링크는 {n}번만 사용할 수 있습니다.
+shared_last_remaining: 이 링크는 한 번만 사용할 수 있습니다.
+shared_uses_left: 보안 강화를 위해 이 공유 페이지는 제한된 수의 보기로 구성되었습니다. 현재 {n}개의 보기가 남아 있으며 그 이후에는 페이지에 더 이상 액세스할 수 없습니다.
+share_access_page: 공유 페이지에 액세스
+share_access_not_found: 이 공유 페이지는 존재하지 않거나 이미 허용된 최대 사용 수를 초과했습니다.
+share_access_not_found_desc: 액세스를 요청하려면 이 프로젝트의 승인된 사용자에게 문의하세요.
+share_access_not_found_title: 알 수 없는 공유 페이지
+share_copy_link: 링크 복사
+share_copy_link_success: 링크 복사됨
+share_copy_link_error: 링크를 복사할 수 없습니다.
+share_send_link: 링크 보내기
+relational_triggers: 관계형 트리거
+referential_action_field_label_m2o: '{컬렉션} 삭제 시...'
+referential_action_field_label_o2m: '{컬렉션} 선택 해제 시...'
+referential_action_no_action: 삭제 방지
+referential_action_cascade: '{컬렉션} 항목 삭제(캐스케이드)'
+referential_action_set_null: '{field} 필드 무효화'
+referential_action_set_default: '{field}를 기본값으로 설정'
+choose_action: 액션 선택
+continue_label: 계속
 continue_as: >-
-  {name}이(가) 현재 인증되었습니다. 이 계정을 인식하는 경우 계속을 누르세요.
+  {name}이(가)이(가) 현재 인증되었습니다. 이 계정으로 계속하려면 계속을 누르세요.
+editing_role: '{역할} 역할'
+creating_webhook: 웹훅 만들기
+default_label: 기본
 delete_label: 삭제
+delete_are_you_sure: >-
+  이 작업은 영구적이며 취소할 수 없습니다. 계속하시겠습니까?
+delete_field_are_you_sure: >-
+  정말 "{field}" 필드를 삭제하시겠습니까? 이 작업은 취소할 수 없습니다.
 description: 설명
+done: 완료
 duplicate: 복제
+limit: 한계
 email: 이메일
+embed: 포함시키다
+fallback_icon: 대체 아이콘
+field: 필드 | 필드
 file: 파일
 file_library: 파일 관리
 forgot_password: 비밀번호를 잊으셨나요?
+hidden: 숨겨진
+hidden_in_group: '{group}에 숨김'
+icon: 아이콘
+info: 정보
+normal: 정상
+success: 성공
+warning: 경고
+danger: 위험
+colors:
+  purple: 보라
+  blue: 파란색
+  green: 녹색
+  yellow: 노란색
+  orange: 주황색
+  red: 빨간색
+  black: 검은색
+  gray: 회색
+  white: 하얀색
+junction_collection: 정션 컬렉션
+latency: 지연 시간
 login: 로그인
 my_activity: 내 활동
+not_authenticated: 인증되지 않음
+authenticated: 인증됨
+options: 옵션
+otp: 일회성 암호
 password: 비밀번호
 permissions: 사용 권한
+relationship: 관계
+reset: 초기화
+reset_password: 암호를 재설정
 revisions: 수정내역
 no_revisions: 수정 내역 없음
+no_logs: 아직 로그가 없습니다
+revert: 돌아가는 것
+save: 구하다
+schema: 개요
 search: 검색
+select_existing: 기존 선택
+select_field_type: 필드 유형 선택
+select_interface: 인터페이스 선택
 settings: 설정
 sign_in: 로그인
 sign_out: 로그아웃
 sign_out_confirm: 로그아웃 하시겠습니까?
+something_went_wrong: 문제가 발생했습니다.
 sort_direction: 정렬 순서
+export_location: 내보내기 위치
 export_started: 내보내기를 시작했습니다.
 export_started_copy: 내보내기 시작합니다. 다운로드 준비가 되면 알려드립니다.
+sort_asc: 오름차순 정렬
+sort_desc: 내림차순 정렬
+template: 주형
+require_value_to_be_set: 생성 시 값을 설정해야 함
+translation: 번역
+translation_placeholder: 번역을 입력하세요...
+value: 값
+view_project: 프로젝트 보기
+weeks: { }
+report_error: 오류 신고
+start: 시작
+table: 테이블
+list: 목록
 search_filter: 검색 및 필터링
+enable_search_filter: 검색 및 필터링 활성화
+item_link: 항목 링크
+show_link_to_item: 항목에 대한 링크 표시
+navigate_to_item: 항목으로 이동
+undo_removed_item: 제거된 항목 취소
+remove_item: 항목 제거
+delete_item: 항목 삭제
 interfaces:
   filter:
     name: 필터
+    description: 필터 개체를 구성합니다.
     add_filter: 필터 추가
+    add_group: 및/또는 그룹
+    add_value: 값을 추가
+    logic_type_and: 그리고
+    logic_type_or: 또는
+    all: 모두
     any: 무엇이든
+    and: 그리고
+    of_the_following: 다음 중
+    no_rules: 구성된 규칙 없음
+    change_value: 값을 변경하려면 클릭하세요.
+    placeholder: 규칙을 여기로 드래그
+    add_key_placeholder: 키를 추가하고 Enter 키를 누릅니다...
+  fields:
+    name: 필드
+  group-accordion:
+    name: 아코디언
+    description: 필드 또는 그룹을 아코디언 섹션으로 표시
+    start: 시작
+    all_closed: 모두 닫힘
+    first_opened: 처음 열림
+    all_opened: 모두 열림
+    accordion_mode: 아코디언 모드
+    max_one_section_open: 최대 1개 섹션 열기
   presentation-links:
+    presentation-links: 버튼 링크
+    links: 연결
+    description: 동적 URL 실행을 위한 구성 가능한 링크 버튼
+    style: 스타일
     primary: 기본
+    link: 연결
+    button: 버튼
+    error: 작업을 수행할 수 없습니다.
+  select-multiple-checkbox:
+    checkboxes: 확인란
+    description: 확인란을 통해 여러 옵션 중에서 선택
+    allow_other: 기타 허용
+    show_more: '{count}개 더 보기'
+    items_shown: 표시된 항목
+  select-multiple-checkbox-tree:
+    name: 확인란(트리)
+    description: 중첩된 확인란을 통해 여러 옵션 중에서 선택
+    value_combining: 가치 결합
+    value_combining_note: 중첩된 선택이 수행될 때 저장되는 값을 제어합니다.
+    show_all: 모두 보이기
+    show_selected: 선택한 항목 표시
+  input-code:
+    code: 암호
+    description: 코드 스니펫 작성 또는 공유
+    line_number: 라인 번호
+    line_wrapping: 줄 바꿈
+    placeholder: 여기에 코드를 입력하세요...
+  system-collection:
+    collection: 수집
+    description: 기존 컬렉션 중에서 선택
+    include_system_collections: 시스템 컬렉션 포함
+  system-collections:
+    collections: 컬렉션
+    description: 기존 컬렉션 중에서 선택
+    include_system_collections: 시스템 컬렉션 포함
+  select-color:
+    color: 색상
+    description: 색상 값 입력 또는 선택
+    placeholder: 색상을 선택하세요...
+    preset_colors: 사전 설정 색상
+    opacity: 불투명
+    preset_colors_add_label: 새로운 색상 추가...
+    name_placeholder: 색상 이름 입력...
+  datetime:
+    datetime: 날짜 시간
+    description: 날짜 및 시간 입력
+    include_seconds: 초 포함
+    set_to_now: 지금으로 설정
+    use_24: 24시간 형식 사용
+    placeholder: 날짜 시간 선택...
   system-fields:
     select_a_collection: 컬렉션 선택
+    no_fields: 필드 없음
   system-display-template:
     display-template: 표시 형식
+    description: 정적 텍스트와 동적 필드 값 혼합
+    collection_field: 수집 분야
     collection_field_not_setup: 컬렉션 필드 옵션이 잘못 구성되었습니다.
     select_a_collection: 컬렉션 선택
+  presentation-divider:
+    divider: 분할기
+    description: 필드에 레이블 지정 및 섹션으로 나누기
+    title_placeholder: 제목을 입력하거나 한 줄만 표시하려면 비워두세요...
+    inline_title: 인라인 제목
+    inline_title_label: 줄 안에 제목 표시
+    margin_top: 상단 간격
+    margin_top_label: 최고 간격 늘리기
   select-dropdown:
+    description: 드롭다운에서 값을 선택하세요.
+    choices_placeholder: 새로운 선택 추가
+    allow_other: 기타 허용
+    allow_other_label: 다른 값 허용
+    allow_none: 없음 허용
+    allow_none_label: 선택 불가
+    choices_name_placeholder: 이름을 입력하세요...
     choices_value_placeholder: 값 입력
+    preview_threshold: 미리보기 임계값
+  select-multiple-dropdown:
+    select-multiple-dropdown: 드롭다운(다중)
+    description: 드롭다운에서 여러 값 선택
   file:
     file: 파일
+    description: 파일 선택 또는 업로드
+  files:
+    files: 파일
+    description: 여러 파일 선택 또는 업로드
   input-hash:
     hash: 해시
+    description: 해싱할 값을 입력하세요.
+    masked: 마스크
+    masked_label: 진정한 가치를 숨기세요
   select-icon:
+    icon: 아이콘
+    description: 드롭다운에서 아이콘 선택
     search_for_icon: 아이콘 찾기...
+  file-image:
+    image: 영상
+    description: 이미지 선택 또는 업로드
+    crop: 자르기
+    crop_label: 필요에 따라 이미지 자르기
   system-interface:
     interface: 인터페이스
+    description: 기존 인터페이스 선택
+    placeholder: 인터페이스 선택...
+  system-interface-options:
+    interface-options: 인터페이스 옵션
+    description: 인터페이스 옵션을 선택하기 위한 모달
+  list-m2m:
+    many-to-many: 다대다
+    description: 여러 개의 관련 접합 항목 선택
+    columns_configure_notice: 이 필드를 생성한 후 열을 구성할 수 있습니다.
+    display_template_configure_notice: 이 필드를 생성한 후 표시 템플릿을 구성할 수 있습니다.
   select-dropdown-m2o:
+    many-to-one: 다대일
+    description: 단일 관련 항목 선택
     display_template: 표시 형식
   input-rich-text-md:
+    markdown: 마크다운
+    description: 마크다운 입력 및 미리보기
     edit: 수정
+    preview: 시사
+    editorFont: 편집기 글꼴
+    previewFont: 글꼴 미리보기
+    customSyntax: 맞춤형 블록
+    customSyntax_label: 사용자 정의 구문 유형 추가
+    customSyntax_add: 사용자 지정 구문 추가
+    box: 블록/인라인
+    imageToken: 정적 액세스 토큰
+    imageToken_label: 정적 액세스 토큰이 자산의 URL에 추가됩니다.
   map:
     map: 지도
+    description: 지도에서 위치 선택
     zoom: 줌
+    geometry_type: 형상 유형
+    geometry_format: 기하학 형식
+    default_view: 기본 보기
+    invalid_options: 잘못된 옵션
+    invalid_format: 잘못된 형식({format})
+    unexpected_geometry: 예상 {expected}, 도착 {got}.
+    fit_bounds: 보기를 데이터에 맞추기
+    native: 토종의
+    geojson: GeoJSON
+    lnglat: 경도 위도
+    wkt: WKT
+    wkb: WKB
+    click_to_select: '{형상}을(를) 선택하려면 클릭하세요.'
   presentation-notice:
+    notice: 공지
+    description: 간단한 알림 표시
     text: 내용을 입력하세요...
+  list-o2m:
+    one-to-many: 일대다
+    description: 여러 관련 항목 선택
+    no_collection: 컬렉션을 찾을 수 없습니다.
   system-folder:
     folder: 폴더
+    description: 폴더 선택
+    field_hint: 폴더를 지정하지 않고 업로드된 파일의 기본 폴더입니다. 기존 파일에는 영향을 주지 않습니다.
+    root_name: 파일 라이브러리 루트
+    system_default: 시스템 기본값
+  select-radio:
+    radio-buttons: 라디오 버튼
+    description: 여러 선택 항목 중 하나를 선택하십시오.
   list:
+    repeater: 리피터
+    description: 동일한 구조의 여러 항목 만들기
+    edit_fields: 필드 편집
+    add_label: '"새로 만들기" 라벨'
     sort: 정렬
+    sort_placeholder: 수동
+    field_name_placeholder: 필드 이름 입력...
+    field_note_placeholder: 필드 메모 입력...
+    incompatible_data: 현재 데이터는 리피터 레이아웃과 호환되지 않으며 리피터 레이아웃에 항목을 추가할 때 재정의됩니다.
+  slider:
+    slider: 슬라이더
+    description: 슬라이더를 사용하여 숫자 선택
+    always_show_value: 항상 가치를 보여라
   tags:
     tags: 태그
+    description: 태그 선택 또는 추가
+    whitespace: 공백
+    hyphen: 하이픈으로 교체
+    underscore: 밑줄로 바꾸기
+    remove: 공백 제거
+    capitalization: 자본화
+    uppercase: 대문자 변환
+    lowercase: 소문자로 변환
+    auto_formatter: 제목 자동 포맷터 사용
+    alphabetize: 알파벳순
+    alphabetize_label: 강제 알파벳 순서
+    add_tags: 태그를 추가하고 Enter 키를 누릅니다...
+  input:
+    input: 입력
+    description: 수동으로 값 입력
+    trim: 손질
+    trim_label: 시작과 끝 다듬기
+    mask: 마스크
+    mask_label: 진짜 가치를 숨기다
+    clear: 청산된 가치
+    clear_label: 빈 문자열로 저장
+    minimum_value: 최소값
+    maximum_value: 최대값
+    step_interval: 단계 간격
+    slug: 슬러그파이
+    slug_label: 입력된 값 URL을 안전하게 만들기
+  input-multiline:
+    textarea: 텍스트 영역
+    description: 여러 줄의 일반 텍스트 입력
   input-translated-string:
+    input-translated-string: 번역된 문자열
+    description: 번역 문자열 선택 또는 추가
     search_placeholder: 검색...
+    new_translation_string: 새 번역 문자열
   boolean:
+    toggle: 비녀장
+    description: 켜기와 끄기 간 전환
+    color_on: 컬러 온
+    color_off: 색상 끄기
+    label_placeholder: 라벨을 입력하세요...
     label_default: 사용
   translations:
     display_template: 표시 형식
+    no_collection: 컬렉션 없음
+    toggle_split_view: 분할 보기 전환
+    enable: 활성화
     user_language: 현재 사용자와 같은 언어 사용
+    default_language: 기본 설정 언어
+    language_field: 언어 표시 필드
+    language_direction_field: 언어 방향 필드
+  list-o2m-tree-view:
+    description: 중첩 재귀 일대다 항목의 트리 보기
+    recursive_only: 트리 보기 인터페이스는 재귀 관계에서만 작동합니다.
   user:
     user: 사용자
     description: 등록된 사용자 중에서 선택
+    select_mode: 모드 선택
+    modes:
+      auto: 자동
+      dropdown: 쓰러지 다
+      modal: 모달
   input-rich-text-html:
+    wysiwyg: 위지위그
     description: HTML 형식으로 작성할 수 있는 리치텍스트 에디터
+    toolbar: 툴바
+    custom_formats: 맞춤 형식
+    options_override: 옵션 재정의
+    folder_note: 업로드된 파일의 폴더입니다. 기존 파일에는 영향을 주지 않습니다.
+    imageToken: 정적 액세스 토큰
+    imageToken_label: 정적 액세스 토큰이 자산의 URL에 추가됩니다.
+  input-autocomplete-api:
+    input-autocomplete-api: 자동 완성 입력(API)
+    description: 외부 API 값에 대한 미리 검색.
+    results_path: 결과 경로
+    value_path: 가치 경로
+    text_path: 텍스트 경로
+    trigger: 방아쇠
+    rate: 비율
+  group-raw:
+    name: RAW 그룹
+    description: 필드를 있는 그대로 렌더링
+  group-detail:
+    name: 상세 그룹
+    description: 필드를 접을 수 있는 섹션으로 렌더링
+    show_header: 그룹 헤더 표시
+    header_icon: 헤더 아이콘
+    header_color: 헤더 색상
+    start_open: 열기 시작
+    start_closed: 종료 시작
   system-token:
     system-token: 접속 인증 토큰
+    description: 정적 액세스 토큰 관리
+    placeholder: 새 정적 액세스 토큰을 생성하려면 "토큰 생성"을 클릭하십시오.
+    value_securely_saved: 가치를 안전하게 저장
+    generate: 토큰 생성
+    regenerate: 토큰 재생성
+    generate_success_copy: 위의 토큰을 백업하고 복사하십시오. 보안상의 이유로 이 페이지를 저장하고 탐색한 후에는 토큰을 다시 볼 수 없습니다.
+    remove_token: 토큰 제거
+  system-raw-editor:
+    system-raw-editor: RAW 편집기
+    description: RAW 또는 콧수염 템플릿 값 입력 허용
 displays:
   translations:
     translations: 번역
+    description: 번역 미리보기
+    enable: 활성화
     user_language: 현재 사용자와 같은 언어 사용
+    default_language: 기본 설정 언어
+    language_field: 언어 표시 필드
   boolean:
     boolean: 부울형
+    description: 디스플레이 켜짐 및 꺼짐 상태
+    label_on: 라벨 켜기
+    label_on_placeholder: 라벨을 입력하세요...
+    label_off: 라벨 오프
+    label_off_placeholder: 오프 라벨을 입력하세요...
+    icon_on: 아이콘 켜기
+    icon_off: 아이콘 끄기
+    color_on: 컬러 온
+    color_off: 색상 끄기
+  collection:
+    collection: 컬렉션
+    description: 컬렉션 표시
+    icon_label: 컬렉션 아이콘 표시
+  color:
+    color: 색상
+    description: 컬러 도트 표시
+    default_color: 기본 색상
   datetime:
+    datetime: 날짜 시간
+    description: 시간과 관련된 값 표시
     format: 형식
+    format_note: >-
+      사용자 지정 형식은 __[날짜 필드 기호 테이블](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__을 허용합니다.
+    long: 긴
+    short: 짧은
+    relative: 상대적인
+    relative_label: '상대 시간 표시, 예: 5분 전'
     suffix: 접미사
+    suffix_label: 상대 지표 표시
+    suffix_note: '''in'' 및 ''ago''와 같은 단어 사용'
+    strict: 엄격한
+    strict_label: 엄격한 단위 사용
+    strict_note: '''almost'', ''over'', ''less than''과 같은 단어를 제거합니다.'
+    round: 둥근
+    round_note: 사용할 반올림 함수 선택
+    down: 아래에
+    nearest: 가장 가까운
+    up: 위로
   file:
     file: 파일
+    description: 파일 표시
+  filesize:
+    filesize: 파일 크기
+    description: 파일 크기 표시
   formatted-value:
+    formatted-value: 형식화된 값
+    description: 형식이 지정된 텍스트 버전 표시
     format: 형식
+    format_label: 자동 포맷
+    font: 폰트
+    font_sans_serif: 산세리프 글꼴
+    font_serif: 세리프 글꼴
+    font_monospace: 모노스페이스 글꼴
+    bold: 굵게
+    bold_label: 굵은 스타일 사용
+    italic: 기울임꼴
+    italic_label: 기울임꼴 스타일 사용
     prefix: 접두사
+    prefix_label: 텍스트 앞에 추가
     suffix: 접미사
+    suffix_label: 추가된 텍스트
+    color: 색상
+    background: 배경
+    icon: 아이콘
+    border: 테두리
+    border_label: 테두리 표시
     text: 텍스트
+    text_placeholder: 선택적 값 재정의...
+  formatted-json-value:
+    formatted-json-value: 형식화된 JSON 값
+    description: 객체의 형식화된 버전 표시
+  icon:
+    icon: 아이콘
+    description: 아이콘 표시
+    filled: 채우는
+    filled_label: 채워진 변형 사용
+  image:
+    image: 이미지
+    description: 작은 이미지 미리보기 표시
+    circle: 원
+    circle_label: 원으로 표시
   labels:
+    labels: 레이블
+    description: 단일 또는 레이블 목록 표시
+    default_foreground: 기본 전경
+    default_background: 기본 배경
+    format_label: 각 라벨의 서식 지정
+    show_as_dot: 점으로 표시
     choices_value_placeholder: 값 입력
+    choices_text_placeholder: 텍스트를 입력하세요...
+  mime-type:
+    mime-type: MIME 유형
+    description: 파일의 MIME 유형 표시
+    extension_only: 내선 전용
+    extension_only_label: 파일 확장자만 표시
+  rating:
+    rating: 평가
+    description: 최대값을 기준으로 숫자를 별 모양으로 시각화
+    simple: 단순한
+    simple_label: 간단한 형식으로 별 표시
+  raw:
+    raw: RAW 값
+  related-values:
+    related-values: 관련 값
+    description: 상대 값 표시
+    display_template_configure_notice: 이 필드를 생성한 후 표시 템플릿을 구성할 수 있습니다.
   user:
     user: 사용자
+    description: 직접 사용자 표시
     avatar: 아바타/사진
     name: 이름
+    both: 둘 다
+    circle_label: 서클에 사용자 표시
 layouts:
   cards:
     cards: 카드형식
@@ -957,36 +1896,234 @@ layouts:
     calendar: 달력
     start_date_field: 시작일 기준
     end_date_field: 종료일 기준
+    optional: 선택 과목
+    first_day: 주의 첫째 날
   map:
     map: 지도
     basemap: 배경 지도
+    layers: 레이어
+    cluster_options: 클러스터링 옵션
     cluster: 인근 데이터 묶기
+    cluster_radius: 클러스터 반경
+    cluster_minpoints: 클러스터 최소 크기
+    cluster_maxzoom: 클러스터링을 위한 최대 줌
+    field: 공간정보분야
+    invalid_geometry: 유효하지 않은 지오메트리
+    find_location: 위치 찾기...
     default_template: 기본 설정에 따름
     no_compatible_fields: 해당필드 없음
   kanban:
+    name: 간판
+    group_field: 그룹화 기준
+    group_field_placeholder: 그룹화할 필드...
+    group_title: 그룹 제목
+    group_title_placeholder: 그룹 제목 입력란...
+    title: 카드 제목
+    title_placeholder: 선택적 제목 필드...
+    text: 카드 텍스트
+    text_placeholder: 선택적 텍스트 필드...
+    date: 카드 날짜
+    date_placeholder: 선택적 날짜 필드...
+    tags: 카드 태그
+    tags_placeholder: 선택적 태그 필드...
+    user: 카드 사용자
+    user_placeholder: 선택적 사용자 필드...
+    image: 카드 이미지
+    image_placeholder: 선택적 이미지 필드...
+    image_fit: 카드 이미지 맞춤
     crop: 맞춰자르기(crop)
+    advanced: 고급의
+    edit_group: 그룹 편집
+    delete_group: 그룹 삭제
+    add_group: 그룹 추가
+    add_group_placeholder: 새 그룹 제목을 입력하세요...
+    show_ungrouped: 그룹 해제 표시
+    show: 보여주다
+    no_group: 그룹 없음
+    not_all_loaded: 처음 1000개 항목만 로드할 수 있습니다.
+horizontal: 수평의
+vertical: 수직의
 x_axis: X축
 y_axis: Y축
 y_axis_function: Y축 기능
+show_x_only: X축만 표시
+show_y_only: Y축만 표시
+show_data_label: 데이터 레이블 표시
+both: 둘 다
+show_axis_labels: 축 레이블 표시
+function: 기능
+half_circle: 반원
+full_circle: 풀 서클
+stroke_width: 스트로크 폭
+rounded_stroke: 둥근 선
+thin: 얇은
+medium: 중간
+broad: 넓은
+show_labels: 레이블 표시
+show_legend: 범례 표시
+right: 오른쪽
+left: 왼쪽
+donut: 도넛
+panels:
+  metric:
+    name: 미터법
+    description: 쿼리를 기반으로 단일 값 표시
+    field: 필드
+  time_series:
+    name: 시계열
+    description: 시간 경과에 따른 값을 기반으로 꺾은선형 차트 렌더링
+    date_field: 날짜 필드
+    value_field: 값 필드
+    fill_type: 채우기 유형
+    curve_type: 곡선 유형
+  label:
+    name: 상표
+    description: 일부 텍스트 표시
+  list:
+    name: 목록
+    description: 컬렉션의 필드 필터링 및 나열
+  barchart:
+    name: 막대 차트
+    description: 값 그룹을 비교하기 위한 막대형 또는 세로 막대형 차트
+    horizontal: 수평의
+    select_collection: 컬렉션을 선택해야 합니다.
+  linechart:
+    name: 라인 차트
+    description: 필드의 변화를 비교하기 위한 라인 차트
+    disabled_grouping: 그룹화가 선택되면 비활성화됩니다.
+    disabled_no_grouping: 그룹화를 선택하지 않으면 비활성화됩니다.
+    show_marker: 툴팁 마커 표시
+    curve_type: 곡선 유형
+    smooth: 매끄러운
+    straight: 똑바로
+    step_line: 스텝 라인
+  meter:
+    name: 미터
+    description: 값 추적을 위한 미터
+  piechart:
+    name: 원형 또는 도넛형 차트
+    description: 열의 그룹 비율을 보여주는 원형 차트
+  variable:
+    name: 글로벌 변수
+    description: 다른 패널의 필터에서 사용할 전역 값 설정
+    variable_key: 변수 키
+  relational-variable:
+    name: 전역 관계형 변수
+    description: 다른 패널의 필터에서 사용할 전역 관계형 값 설정
+    variable_key: 변수 키
+    multiple: 다수의
+    multiple-label: 여러 항목 선택
 triggers:
   common:
+    response_body: 응답 본문
     response_body_all: 전체 데이터
+    response_body_last: 마지막 작업 데이터
+  event:
+    name: 이벤트 훅
+    description: 플랫폼 또는 데이터 이벤트에 대한 트리거
+    action: '작업(비차단)'
+    filter: '필터(차단)'
+  webhook:
+    name: 웹훅
+    description: 들어오는 HTTP 요청에서 트리거
+    method: 방법
+    async: 비동기식
+  operation:
+    name: 또 다른 플로우
+    description: 연결을 위해 다른 플로우에 의해 트리거됨
+    preview: 다른 플로우의 작업에 의해 트리거됨
+  schedule:
+    name: 일정(CRON)
+    description: 일정한 시점에 트리거
+    cron: 간격
+  manual:
+    name: 수동
+    description: 선택한 컬렉션 내에서 수동 실행 시 트리거
+    collection_and_item: 컬렉션 및 항목 페이지
+    collection_only: 컬렉션 페이지만
+    item_only: 항목 페이지만
+    collection_page: 컬렉션 페이지
+    require_selection: 선택 필요
+a_flow_uuid: 트리거할 플로우 선택...
+any_string_or_json: 모든 문자열 또는 JSON...
+item_payload_placeholder: 항목의 필드 값을 업데이트하는 데 사용되는 JSON입니다...
+operation_variables_note: '**{''{''}{''{''}$last{''}''}{''}''}**, **{''{''}{''{''}$trigger와 같은 변수를 사용하여 플로우 데이터에 액세스할 수 있습니다. {''}''}{''}''}** 및 **{''{''}{''{''}$accountability{''}''}{''}''}** 또는 **{''{를 사용하여 이전 작업 참조 ''}{''{''}operation_key{''}''}{''}''}**.'''
 operations:
+  condition:
+    name: 상태
+    description: If / Else 논리를 기반으로 플로우 라우팅
+  exec:
+    name: 스크립트 실행
+    description: 임의의 코드를 실행하여 페이로드 수정
+    modules: '다음 **노드 모듈**을 사용할 수 있습니다.'
   item-create:
     name: 데이터 생성
+    description: 데이터베이스에 항목 만들기
+    payload: 유효 탑재량
+    emit_events: 이벤트 방출
   item-delete:
     name: 데이터 삭제
+    description: 데이터베이스에서 항목 삭제
+    emit_events: 이벤트 방출
+    key: ID
+    query: 질문
   item-read:
     name: 데이터 읽기
+    description: 데이터베이스에서 항목 읽기
+    key: ID
+    query: 질문
+    emit_events: 이벤트 방출
   item-update:
     name: 데이터 업데이트
+    description: 데이터베이스의 항목 업데이트
+    emit_events: 이벤트 방출
+    key: ID
+    payload: 유효 탑재량
+    query: 질문
   log:
+    name: 콘솔에 로그인
+    description: 콘솔에 출력
     message: 메시지
+    message_placeholder: 콘솔에 표시할 메시지를 입력하세요...
+  mail:
+    name: 이메일을 보내
+    description: 한 명 이상의 사람에게 이메일 보내기
+    to: 에게
+    to_placeholder: 이메일 주소를 추가하고 엔터를 누르세요...
+    body: 몸
   notification:
+    name: 알림 보내기
+    description: 한 명 이상의 사용자에게 인앱 알림 보내기
     recipient: 사용자
+    recipient_placeholder: 사용자 UUID를 추가하고 Enter 키를 누릅니다...
     message: 메시지
   request:
+    name: 웹훅 / 요청 URL
+    description: "URL에 요청하기"
     url: URL
+    url_placeholder: https://example.com/example
+    method: 방법
     data: 데이터
+    headers: 헤더
+    header: 머리글
+    header_placeholder: 권한 부여...
+    value_placeholder: 무기명 eyJhbGciOi...
+  sleep:
+    name: 잠
+    description: 주어진 시간(밀리초) 동안 대기
+    milliseconds: 밀리초
+  transform:
+    name: 페이로드 변환
+    description: 플로우의 JSON 페이로드 변경
   trigger:
+    name: 트리거 플로우
+    description: 이 데이터를 다른 플로우에 전달
+    flows: 플로우
+    flow: 플로우
     data: 데이터
+    iteration_mode: 반복 모드
+    iteration_mode_note: 배열을 반복하는 모드입니다.
+    serial: 연속물
+    parallel: 평행한
+    batch: 일괄
+    batch_size: 배치 크기
