@@ -2093,7 +2093,6 @@ operations:
     name: 发送通知
     description: 向一个或多个用户发送应用内通知
     recipient: 用户
-    recipient_placeholder: 添加用户 UUID 并按回车...
     message: 消息
   request:
     name: 互联网钩子 / 请求 URL
