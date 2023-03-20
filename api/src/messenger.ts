@@ -9,26 +9,31 @@ export type MessengerSubscriptionCallback = (payload: Record<string, any>) => vo
 export interface Messenger {
 	publish: (channel: string, payload: Record<string, any>) => void;
 	subscribe: (channel: string, callback: MessengerSubscriptionCallback) => void;
-	unsubscribe: (channel: string) => void;
+	unsubscribe: (channel: string, callback?: MessengerSubscriptionCallback) => void;
 }
 
 export class MessengerMemory implements Messenger {
-	handlers: Record<string, MessengerSubscriptionCallback>;
+	handlers: Record<string, Set<MessengerSubscriptionCallback>>;
 
 	constructor() {
 		this.handlers = {};
 	}
 
 	publish(channel: string, payload: Record<string, any>) {
-		this.handlers[channel]?.(payload);
+		this.handlers[channel]?.forEach((callback) => callback(payload));
 	}
 
 	subscribe(channel: string, callback: MessengerSubscriptionCallback) {
-		this.handlers[channel] = callback;
+		if (!this.handlers[channel]) this.handlers[channel] = new Set([]);
+		this.handlers[channel].add(callback);
 	}
 
-	unsubscribe(channel: string) {
-		delete this.handlers[channel];
+	unsubscribe(channel: string, callback?: MessengerSubscriptionCallback) {
+		if (!callback) {
+			delete this.handlers[channel];
+		} else {
+			this.handlers[channel].delete(callback);
+		}
 	}
 }
 
