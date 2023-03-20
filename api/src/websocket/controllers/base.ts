@@ -210,6 +210,10 @@ export default abstract class SocketController {
 					? error
 					: new WebSocketException('auth', 'AUTH_FAILED', 'Authentication failed.', message.uid);
 			handleWebsocketException(client, _error, 'auth');
+
+			if (this.authentication.mode !== 'public') {
+				client.close();
+			}
 		}
 	}
 	setTokenExpireTimer(client: WebSocketClient) {
