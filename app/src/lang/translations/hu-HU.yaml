@@ -2093,7 +2093,6 @@ operations:
     name: Értesítés küldése
     description: Alkalmazáson belüli értesítés küldése egy vagy több felhasználónak
     recipient: Felhasználó
-    recipient_placeholder: Adjon hozzá felhasználói UUID-t, és nyomja meg az Enter-t...
     message: Üzenet
   request:
     name: Webhook / URL-kérés
