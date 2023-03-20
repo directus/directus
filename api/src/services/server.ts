@@ -96,23 +96,23 @@ export class ServerService {
 
 		if (this.accountability?.user) {
 			if (env.WEBSOCKETS_ENABLED) {
-				info.realtime = {};
+				info.websocket = {};
 
-				info.realtime.rest = env.WEBSOCKETS_REST_ENABLED
+				info.websocket.rest = env.WEBSOCKETS_REST_ENABLED
 					? {
 							authentication: env.WEBSOCKETS_REST_AUTH,
 							path: env.WEBSOCKETS_REST_PATH,
 					  }
 					: false;
 
-				info.realtime.graphql = env.WEBSOCKETS_GRAPHQL_ENABLED
+				info.websocket.graphql = env.WEBSOCKETS_GRAPHQL_ENABLED
 					? {
 							authentication: env.WEBSOCKETS_GRAPHQL_AUTH,
 							path: env.WEBSOCKETS_GRAPHQL_PATH,
 					  }
 					: false;
 
-				info.realtime.heartbeat = env.WEBSOCKETS_HEARTBEAT_ENABLED ? env.WEBSOCKETS_HEARTBEAT_FREQUENCY : false;
+				info.websocket.heartbeat = env.WEBSOCKETS_HEARTBEAT_ENABLED ? env.WEBSOCKETS_HEARTBEAT_FREQUENCY : false;
 			} else {
 				info.websocket = false;
 			}
