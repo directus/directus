@@ -2045,7 +2045,6 @@ operations:
     name: Send meddelelse
     description: Send en meddelelse i appen til en eller flere brugere
     recipient: Bruger
-    recipient_placeholder: Tilføj bruger-UUID og tryk enter...
     message: besked
   request:
     description: "Lav en anmodning til en URL"
