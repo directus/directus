@@ -2018,7 +2018,6 @@ operations:
     name: 發送通知
     description: 發送管理介面通知給其他使用者
     recipient: 用戶
-    recipient_placeholder: 輸入使用者編號(UUID)並按下Enter鍵....
     message: 訊息
   request:
     name: Webhook / 要求網址
