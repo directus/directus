@@ -28,7 +28,6 @@ export default abstract class SocketController {
 	authentication: {
 		mode: AuthMode;
 		timeout: number;
-		verbose: boolean;
 	};
 	endpoint: string;
 	maxConnections: number;
@@ -41,7 +40,6 @@ export default abstract class SocketController {
 		authentication: {
 			mode: AuthMode;
 			timeout: number;
-			verbose: boolean;
 		}
 	) {
 		this.server = new WebSocketServer({ noServer: true });

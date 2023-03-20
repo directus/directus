@@ -15,7 +15,6 @@ export class WebsocketController extends SocketController {
 		super(httpServer, 'WS REST', String(env.WEBSOCKETS_REST_PATH), {
 			mode: String(env.WEBSOCKETS_REST_AUTH).toLowerCase() as AuthMode,
 			timeout: Number(env.WEBSOCKETS_REST_AUTH_TIMEOUT) * 1000,
-			verbose: true,
 		});
 		if ('WEBSOCKETS_REST_CONN_LIMIT' in env) {
 			this.maxConnections = Number(env.WEBSOCKETS_REST_CONN_LIMIT);

@@ -25,7 +25,6 @@ export class GraphQLSubscriptionController extends SocketController {
 		super(httpServer, 'WS GraphQL', String(env.WEBSOCKETS_GRAPHQL_PATH), {
 			mode: String(env.WEBSOCKETS_GRAPHQL_AUTH).toLowerCase() as AuthMode,
 			timeout: Number(env.WEBSOCKETS_GRAPHQL_AUTH_TIMEOUT) * 1000,
-			verbose: false,
 		});
 		if ('WEBSOCKETS_GRAPHQL_CONN_LIMIT' in env) {
 			this.maxConnections = Number(env.WEBSOCKETS_GRAPHQL_CONN_LIMIT);
