@@ -1788,7 +1788,6 @@ operations:
     name: सूचना पठाउनुहोस्
     description: एक वा धेरै प्रयोगकर्ताहरूलाई इन-एप सूचना पठाउनुहोस्
     recipient: प्रयोगकर्ता
-    recipient_placeholder: प्रयोगकर्ता UUID थप्नुहोस् र इन्टर थिच्नुहोस्...
     message: सन्देश
   request:
     name: वेबहुक / अनुरोध URL
