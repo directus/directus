@@ -176,12 +176,10 @@ export class SubscribeHandler {
 				// remove the subscription if it already exists
 				this.unsubscribe(client, subscription.uid);
 
-				let data: Record<string, any>;
-				if ('item' in subscription) {
-					data = await this.getSinglePayload(subscription, accountability, schema);
-				} else {
-					data = await this.getMultiPayload(subscription, accountability, schema);
-				}
+				const data =
+					'item' in subscription
+						? await this.getSinglePayload(subscription, accountability, schema)
+						: await this.getMultiPayload(subscription, accountability, schema);
 				// if no errors were thrown register the subscription
 				this.subscribe(subscription);
 				// send an initial response
