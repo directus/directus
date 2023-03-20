@@ -41,9 +41,9 @@ RUN echo "update-notifier=false" >> ~/.npmrc
 
 RUN : \
   mkdir -p \
-    data/database \
-    data/extensions \
-    data/uploads
+    /directus/data/database \
+    /directus/data/extensions \
+    /directus/data/uploads
 
 VOLUME \
   /directus/data/database \
