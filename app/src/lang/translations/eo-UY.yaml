@@ -1232,7 +1232,6 @@ operations:
   notification:
     name: Sendi sciigon
     recipient: Uzanto
-    recipient_placeholder: Aldoni UUID de la uzanto kaj premi Enter...
     message: Mesaĝo
   request:
     url: URL
