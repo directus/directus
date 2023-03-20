@@ -48,8 +48,11 @@
 			:key="childField.key"
 			:field="childField"
 			:search="search"
+			:disabled-fields="disabledFields"
 			:include-functions="includeFunctions"
 			:relational-field-selectable="relationalFieldSelectable"
+			:allow-select-all="allowSelectAll"
+			@select-all="$emit('select-all', $event)"
 			@add="$emit('add', $event)"
 		/>
 	</v-list-group>
