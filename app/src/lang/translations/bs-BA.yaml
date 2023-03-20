@@ -1950,7 +1950,6 @@ operations:
     name: Pošalji obavijest
     description: Pošaljite obavijest unutar aplikacije jednom ili više korisnika
     recipient: Korisnik
-    recipient_placeholder: Dodajte korisnički UUID i pritisnite enter...
     message: Poruka
   request:
     name: Web dojavnik / URL zahtjeva
