@@ -1053,28 +1053,18 @@ export class GraphQLService {
 					});
 				}
 
-				if (
-					(self.scope === 'system' && collection.collection.startsWith('directus_')) ||
-					(self.scope === 'items' && !collection.collection.startsWith('directus_'))
-				) {
-					const eventName =
-						self.scope === 'system'
-							? `${collection.collection.substring(9)}_mutated`.toUpperCase()
-							: `${collection.collection}_mutated`.toUpperCase();
-					const subscriptionName = camelCase(eventName);
-					const subscriptionType = ReadCollectionTypes[collection.collection].clone(
-						collection.collection + '_mutation'
-					);
-					subscriptionType.addFields({
-						event: GraphQLString,
-					});
-					schemaComposer.Subscription.addFields({
-						[subscriptionName]: {
-							type: subscriptionType,
-							subscribe: createSubscriptionGenerator(self, eventName, subscriptionName),
-						},
-					} as any);
-				}
+				const eventName = `${collection.collection}_mutated`.toUpperCase();
+				const subscriptionName = camelCase(eventName);
+				const subscriptionType = ReadCollectionTypes[collection.collection].clone(collection.collection + '_mutation');
+				subscriptionType.addFields({
+					event: GraphQLString,
+				});
+				schemaComposer.Subscription.addFields({
+					[subscriptionName]: {
+						type: subscriptionType,
+						subscribe: createSubscriptionGenerator(self, eventName, subscriptionName),
+					},
+				} as any);
 			}
 
 			for (const relation of schema.read.relations) {

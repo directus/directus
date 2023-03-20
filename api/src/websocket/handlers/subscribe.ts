@@ -28,22 +28,14 @@ export class SubscribeHandler {
 		this.subscriptions = {};
 		this.messenger = getMessenger();
 		this.bindWebsocket();
-		this.bindModules([
-			'items',
-			/*'activity',
-			'collections',
-			'fields',
-			'files',
-			'folders',
-			'permissions',
-			'presets',
-			'relations',
-			'revisions',
-			'roles',
-			'settings',
-			'users',
-			'webhooks',*/
-		]);
+		// listen to the Redis pub/sub and dispatch
+		this.messenger.subscribe('websocket.event', (message: Record<string, any>) => {
+			try {
+				this.dispatch(message as WebSocketEvent);
+			} catch {
+				// don't error on an invalid event from the messenger
+			}
+		});
 	}
 	/**
 	 * Hook into websocket client lifecycle events
@@ -61,37 +53,6 @@ export class SubscribeHandler {
 		// unsubscribe when a connection drops
 		emitter.onAction('websocket.error', ({ client }) => this.unsubscribe(client));
 		emitter.onAction('websocket.close', ({ client }) => this.unsubscribe(client));
-	}
-	/**
-	 * Hook into the Directus system events by registering action hooks for each module
-	 * on all mutation events `<module>.create`/`<module>.update`/`<module>.delete`
-	 * @param modules List of modules to register action hooks for
-	 */
-	bindModules(modules: string[]) {
-		const bindAction = (event: string, mutator?: (args: any) => Record<string, any>) => {
-			emitter.onAction(event, async (args: any) => {
-				// build the event object when the action hook fires
-				const message: Partial<WebSocketEvent> = mutator ? mutator(args) : {};
-				message.action = event.split('.').pop() as 'create' | 'update' | 'delete';
-				message.collection = args.collection as string;
-				message.payload = (args.payload ?? {}) as Record<string, any>;
-				// push the event through the Redis pub/sub
-				this.messenger.publish('websocket.event', message as Record<string, any>);
-			});
-		};
-		for (const module of modules) {
-			bindAction(module + '.create', ({ key }: any) => ({ key }));
-			bindAction(module + '.update', ({ keys }: any) => ({ keys }));
-			bindAction(module + '.delete', ({ keys }: any) => ({ keys }));
-		}
-		// listen to the Redis pub/sub and dispatch
-		this.messenger.subscribe('websocket.event', (message: Record<string, any>) => {
-			try {
-				this.dispatch(message as WebSocketEvent);
-			} catch (err) {
-				// don't error on an invalid event from the messenger
-			}
-		});
 	}
 	/**
 	 * Register a subscription
@@ -163,9 +124,6 @@ export class SubscribeHandler {
 						'The provided collection does not exists or is not accessible.',
 						message.uid
 					);
-				}
-				if (collection.startsWith('directus_')) {
-					throw new ForbiddenException();
 				}
 
 				const subscription: Subscription = {

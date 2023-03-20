@@ -20,6 +20,7 @@ import { WebSocketAuthMessage, WebSocketMessage } from '../messages';
 import { parseJSON } from '@directus/shared/utils';
 import { getMessageType } from '../utils/message';
 import env, { toBoolean } from '../../env';
+import { registerWebsocketEvents } from './hooks';
 
 export default abstract class SocketController {
 	name: string;
@@ -55,6 +56,7 @@ export default abstract class SocketController {
 				: null;
 		this.maxConnections = Number.POSITIVE_INFINITY;
 		httpServer.on('upgrade', this.handleUpgrade.bind(this));
+		registerWebsocketEvents();
 	}
 	protected async handleUpgrade(request: IncomingMessage, socket: internal.Duplex, head: Buffer) {
 		const { pathname, query } = parse(request.url!, true);
