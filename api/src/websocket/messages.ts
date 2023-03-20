@@ -28,7 +28,7 @@ export const WebSocketResponse = z.discriminatedUnion('status', [
 export type WebSocketResponse = z.infer<typeof WebSocketResponse>;
 
 export const BasicAuthMessage = z.union([
-	z.object({ email: z.string(), password: z.string() }),
+	z.object({ email: z.string().email(), password: z.string() }),
 	z.object({ access_token: z.string() }),
 	z.object({ refresh_token: z.string() }),
 ]);
