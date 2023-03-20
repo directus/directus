@@ -87,7 +87,7 @@
 				<settings-navigation />
 			</template>
 
-			<component :is="`layout-${layout || 'tabular'}`" class="layout" v-bind="layoutState">
+			<component :is="`layout-${layout || 'tabular'}`" v-bind="layoutState">
 				<template #no-results>
 					<v-info :title="t('no_presets')" icon="bookmark" center>
 						{{ t('no_presets_copy') }}
@@ -316,9 +316,5 @@ export default defineComponent({
 .action-delete {
 	--v-button-background-color-hover: var(--danger) !important;
 	--v-button-color-hover: var(--white) !important;
-}
-
-.layout {
-	--layout-offset-top: 64px;
 }
 </style>

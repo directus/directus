@@ -13,7 +13,7 @@
 		collection="directus_files"
 		:reset-preset="resetPreset"
 	>
-		<private-view :title="title" :class="{ dragging }">
+		<private-view :title="title" :class="{ dragging }" :small-header="currentLayout?.smallHeader" :header-shadow="currentLayout?.headerShadow">
 			<template v-if="breadcrumb" #headline>
 				<v-breadcrumb :items="breadcrumb" />
 			</template>
@@ -114,7 +114,7 @@
 				<files-navigation :current-folder="folder" />
 			</template>
 
-			<component :is="`layout-${layout}`" class="layout" v-bind="layoutState">
+			<component :is="`layout-${layout}`" v-bind="layoutState">
 				<template #no-results>
 					<v-info v-if="!filter && !search" :title="t('file_count', 0)" icon="folder" center>
 						{{ t('no_files_copy') }}
@@ -208,6 +208,7 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import DrawerBatch from '@/views/private/components/drawer-batch.vue';
 import { Filter } from '@directus/shared/types';
 import { mergeFilters } from '@directus/shared/utils';
+import { useExtension } from '@/composables/use-extension';
 
 type Item = {
 	[field: string]: any;
@@ -248,6 +249,8 @@ export default defineComponent({
 		const userStore = useUserStore();
 
 		const { layout, layoutOptions, layoutQuery, filter, search, resetPreset } = usePreset(ref('directus_files'));
+
+		const currentLayout = useExtension('layout', layout);
 
 		const { confirmDelete, deleting, batchDelete, error: deleteError, batchEditActive } = useBatch();
 
@@ -357,6 +360,7 @@ export default defineComponent({
 			batchEditActive,
 			filter,
 			mergeFilters,
+			currentLayout
 		};
 
 		function useBatch() {
@@ -668,11 +672,6 @@ export default defineComponent({
 .header-icon {
 	--v-button-color-disabled: var(--foreground-normal);
 }
-
-.layout {
-	--layout-offset-top: 64px;
-}
-
 .drop-border {
 	position: fixed;
 	z-index: 500;

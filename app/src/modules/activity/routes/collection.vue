@@ -11,7 +11,7 @@
 		show-select="none"
 		collection="directus_activity"
 	>
-		<private-view :title="t('activity_feed')">
+		<private-view :title="t('activity_feed')" :small-header="currentLayout?.smallHeader" :header-shadow="currentLayout?.headerShadow">
 			<template #title-outer:prepend>
 				<v-button class="header-icon" rounded disabled icon secondary>
 					<v-icon name="access_time" />
@@ -69,6 +69,7 @@ import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detai
 import SearchInput from '@/views/private/components/search-input.vue';
 import { Filter } from '@directus/shared/types';
 import { mergeFilters } from '@directus/shared/utils';
+import { useExtension } from '@/composables/use-extension';
 
 export default defineComponent({
 	name: 'ActivityCollection',
@@ -87,6 +88,9 @@ export default defineComponent({
 
 		const { layoutWrapper } = useLayout(layout);
 
+		const currentLayout = useExtension('layout', layout);
+
+
 		const roleFilter = ref<Filter | null>(null);
 
 		return {
@@ -100,6 +104,7 @@ export default defineComponent({
 			filter,
 			roleFilter,
 			mergeFilters,
+			currentLayout
 		};
 
 		function useBreadcrumb() {

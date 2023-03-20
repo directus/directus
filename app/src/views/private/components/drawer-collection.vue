@@ -11,7 +11,7 @@
 		select-mode
 		:show-select="multiple ? 'multiple' : 'one'"
 	>
-		<v-drawer v-model="internalActive" :title="t('select_item')" @cancel="cancel">
+		<v-drawer v-model="internalActive" :title="t('select_item')" @cancel="cancel" :small-header="currentLayout?.smallHeader" :headerShadow="currentLayout?.headerShadow">
 			<template #subtitle>
 				<v-breadcrumb :items="[{ name: collectionInfo.name, disabled: true }]" />
 			</template>
@@ -32,15 +32,17 @@
 				</v-button>
 			</template>
 
-			<component :is="`layout-${localLayout}`" class="layout" v-bind="layoutState">
-				<template #no-results>
-					<v-info :title="t('item_count', 0)" :icon="collectionInfo.icon" center />
-				</template>
+			<div class="layout">
+				<component :is="`layout-${localLayout}`" v-bind="layoutState">
+					<template #no-results>
+						<v-info :title="t('item_count', 0)" :icon="collectionInfo.icon" center />
+					</template>
 
-				<template #no-items>
-					<v-info :title="t('item_count', 0)" :icon="collectionInfo.icon" center />
-				</template>
-			</component>
+					<template #no-items>
+						<v-info :title="t('item_count', 0)" :icon="collectionInfo.icon" center />
+					</template>
+				</component>
+			</div>
 		</v-drawer>
 	</component>
 </template>
@@ -52,6 +54,7 @@ import { Filter } from '@directus/shared/types';
 import { usePreset } from '@/composables/use-preset';
 import { useCollection, useLayout } from '@directus/shared/composables';
 import SearchInput from '@/views/private/components/search-input.vue';
+import { useExtension } from '@/composables/use-extension';
 
 export default defineComponent({
 	components: { SearchInput },
@@ -90,11 +93,15 @@ export default defineComponent({
 		const { info: collectionInfo } = useCollection(collection);
 		const { layout, layoutOptions, layoutQuery, search, filter: presetFilter } = usePreset(collection, ref(null), true);
 
+		
 		// This is a local copy of the layout. This means that we can sync it the layout without
 		// having use-preset auto-save the values
 		const localLayout = ref(layout.value || 'tabular');
 		const localOptions = ref(layoutOptions.value);
 		const localQuery = ref(layoutQuery.value);
+		
+		const currentLayout = useExtension('layout', localLayout);
+
 
 		const layoutSelection = computed<any>({
 			get() {
@@ -135,6 +142,7 @@ export default defineComponent({
 			collectionInfo,
 			search,
 			presetFilter,
+			currentLayout
 		};
 
 		function useActiveState() {
@@ -210,6 +218,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .layout {
-	--layout-offset-top: 0px;
+	display: contents;
+	--layout-offset-top: calc(var(--header-bar-height) - 1px);
 }
 </style>
