@@ -2093,7 +2093,6 @@ operations:
     name: Invia una notifica
     description: Invia una notifica in app a uno o più utenti
     recipient: Utente
-    recipient_placeholder: Inserisci l'UUID dell'utente e premi invio...
     message: Messaggio
   request:
     name: URL webhook / chiamata
