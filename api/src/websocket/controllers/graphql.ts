@@ -18,6 +18,7 @@ import { handleWebsocketException } from '../exceptions';
 import { authenticateConnection, refreshAccountability } from '../authenticate';
 import { BasicAuthMessage, WebSocketMessage } from '../messages';
 import { getMessageType } from '../utils/message';
+import { bindPubSub } from '../../services/graphql/subscription';
 
 export class GraphQLSubscriptionController extends SocketController {
 	gql: Server<GraphQLSocket>;
@@ -46,6 +47,7 @@ export class GraphQLSubscriptionController extends SocketController {
 				return service.getSchema();
 			},
 		});
+		bindPubSub();
 		logger.info(`GraphQL Subscriptions started at ws://${env.HOST}:${env.PORT}${this.endpoint}`);
 	}
 	private bindEvents(client: WebSocketClient) {

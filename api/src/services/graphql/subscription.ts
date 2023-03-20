@@ -6,11 +6,14 @@ import type { GraphQLService } from './index';
 import { getMessenger } from '../../messenger';
 
 const messages = createPubSub(new EventEmitter());
-const messenger = getMessenger();
-messenger.subscribe('websocket.event', (message: Record<string, any>) => {
-	const eventName = `${message.collection}_mutated`.toUpperCase();
-	messages.publish(eventName, message);
-});
+
+export function bindPubSub() {
+	const messenger = getMessenger();
+	messenger.subscribe('websocket.event', (message: Record<string, any>) => {
+		const eventName = `${message.collection}_mutated`.toUpperCase();
+		messages.publish(eventName, message);
+	});
+}
 
 export function createSubscriptionGenerator(self: GraphQLService, event: string, name: string) {
 	return async function* (_x: unknown, _y: unknown, _z: unknown, request: any) {
