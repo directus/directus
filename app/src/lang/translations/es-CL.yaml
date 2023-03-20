@@ -2042,7 +2042,6 @@ operations:
     name: Enviar notificación
     description: Enviar una notificación dentro de la aplicación a uno o más usuarios
     recipient: Usuario
-    recipient_placeholder: Añadir la UUID del usuario y presionar Enter...
     message: Mensaje
   request:
     name: Webhook / Solicitud de URL
