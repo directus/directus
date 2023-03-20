@@ -34,7 +34,7 @@
 		</div>
 		<template v-if="allowSelectAll">
 			<v-divider />
-			<v-list-item v-if="disabledFields?.length !== treeList?.length" clickable @click="selectAll">
+			<v-list-item v-if="disabledChild?.length !== treeList?.length" clickable @click="selectAll">
 				{{ t('select_all') }}
 			</v-list-item>
 			<v-list-item v-else clickable @click="deselectAll">
@@ -52,6 +52,7 @@
 			:include-functions="includeFunctions"
 			:relational-field-selectable="relationalFieldSelectable"
 			:allow-select-all="allowSelectAll"
+			:parent="field.field"
 			@select-all="$emit('select-all', $event)"
 			@add="$emit('add', $event)"
 		/>
@@ -85,6 +86,7 @@ type FieldInfo = FieldNode & {
 interface Props {
 	field: FieldInfo;
 	search?: string;
+	parent?: string; // use to store the field name of the parent, such as translations > language, only passed when we pass a paren
 	includeFunctions?: boolean;
 	allowSelectAll?: boolean;
 	disabledFields?: string[];
@@ -93,6 +95,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
 	search: undefined,
+	parent: '',
 	includeFunctions: false,
 	allowSelectAll: false,
 	relationalFieldSelectable: true,
@@ -110,6 +113,12 @@ const supportedFunctions = computed(() => {
 
 const treeListOriginal = props.field?.children || [];
 const disabledFields = props.disabledFields || [];
+
+// return a list of all the children that are disabled
+const disabledChild = computed(() => {
+	if (!props.field.children) return [];
+	return props.field.children.filter((field: FieldInfo) => field?.disabled) || [];
+});
 
 const treeList = computed(() => {
 	const list = props.field?.children?.map(setDisabled) || [];
@@ -130,31 +139,27 @@ const treeList = computed(() => {
 	}
 });
 
-/*
-const allChildFields = computed(() => {
-	return treeList.value.flatMap(map(props.field.field));
-
-	function map(parent?: string) {
-		return function (field: FieldNode): string[] {
-			if (field.children) {
-				return field?.children?.flatMap(map(field.field)) || [];
-			} else {
-				return [parent ? `${parent}.${field.field}` : field.field];
-			}
-		};
-	}
-});
-*/
-
 function selectAll() {
 	if (!props.field.children) return;
-	const fields = props.field.children.filter((field) => !field.disabled).map((field) => `${props.field.field}.${field.field}`);
+	// we use a mixture here to build the new list, first we look through the children fields, and if not already "disabled" aka "selected", we add it to the list
+	const fields = props.field.children.filter((field: FieldInfo) => !field.disabled).map((field) => props.parent ? `${props.parent}.${props.field.field}.${field.field}`: `${props.field.field}.${field.field}`);
+
+	// next we set the selected Fields to disabledFields aka selected fields plus the new fields list
 	const selectedFields = new Set([...(disabledFields ?? []), ...fields]);
+
+	// emit the new list...
 	emit('select-all', Array.from(selectedFields));
 }
 
 function deselectAll() {
-	const selectedFields = new Set([...(disabledFields ?? [])]);
+	if (!props.field.children) return;
+	// we use a mixture here to build the new list, first we look through the children fields, and if not already "disabled" aka "selected", we add it to the list
+	const fields = props.field.children.filter((field: FieldInfo) => field.disabled).map((field) => props.parent ? `${props.parent}.${props.field.field}.${field.field}`: `${props.field.field}.${field.field}`);
+
+	// next we set the selected Fields to disabledFields aka selected fields plus the new fields list
+	const selectedFields = disabledFields.filter((field) => !fields.includes(field));
+
+	// emit the new list...
 	emit('select-all', Array.from(selectedFields));
 }
 </script>
