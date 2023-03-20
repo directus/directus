@@ -34,6 +34,7 @@ export class ItemsHandler {
 				uid
 			);
 		}
+		const isSingleton = schema.collections[message.collection].singleton;
 		const service = new ItemsService(message.collection, { schema, accountability });
 		const metaService = new MetaService({ schema, accountability });
 		let result, meta;
@@ -53,6 +54,8 @@ export class ItemsHandler {
 				result = await service.readOne(message.id, query);
 			} else if (message.ids) {
 				result = await service.readMany(message.ids, query);
+			} else if (isSingleton) {
+				result = await service.readSingleton(query);
 			} else {
 				result = await service.readByQuery(query);
 			}
@@ -67,6 +70,9 @@ export class ItemsHandler {
 				const keys = await service.updateMany(message.ids, message.data);
 				meta = await metaService.getMetaForQuery(message.collection, query);
 				result = await service.readMany(keys, query);
+			} else if (isSingleton) {
+				await service.upsertSingleton(message.data);
+				result = await service.readSingleton(query);
 			} else {
 				const keys = await service.updateByQuery(query, message.data);
 				meta = await metaService.getMetaForQuery(message.collection, query);
