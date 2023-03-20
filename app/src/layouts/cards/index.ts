@@ -17,6 +17,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 	name: '$t:layouts.cards.cards',
 	icon: 'grid_4',
 	component: CardsLayout,
+	headerShadow: false,
 	slots: {
 		options: CardsOptions,
 		sidebar: () => undefined,

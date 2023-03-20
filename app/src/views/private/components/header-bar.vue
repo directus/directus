@@ -1,5 +1,5 @@
 <template>
-	<header ref="headerEl" class="header-bar" :class="{ collapsed, small }">
+	<header ref="headerEl" class="header-bar" :class="{ collapsed, small, shadow }">
 		<v-button secondary class="nav-toggle" icon rounded @click="$emit('primary')">
 			<v-icon :name="primaryActionIcon" />
 		</v-button>
@@ -58,6 +58,10 @@ export default defineComponent({
 		small: {
 			type: Boolean,
 			default: false,
+		},
+		shadow: {
+			type: Boolean,
+			default: true,
 		},
 	},
 	emits: ['primary', 'toggle:sidebar'],
@@ -191,7 +195,7 @@ export default defineComponent({
 		pointer-events: none;
 	}
 
-	&.collapsed {
+	&.collapsed.shadow {
 		box-shadow: 0 4px 7px -4px rgb(0 0 0 / 0.2);
 
 		.title-container {

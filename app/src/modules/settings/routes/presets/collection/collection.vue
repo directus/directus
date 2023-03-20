@@ -13,7 +13,7 @@
 		:collection="collection"
 		:clear-filters="clearFilters"
 	>
-		<private-view :title="t('settings_presets')" :small-header="currentLayout?.smallHeader">
+		<private-view :title="t('settings_presets')" :small-header="currentLayout?.smallHeader" :header-shadow="currentLayout?.headerShadow">
 			<template #headline>
 				<v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" />
 			</template>
