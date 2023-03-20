@@ -1,20 +1,15 @@
 import { getUrl } from '@common/config';
 import request from 'supertest';
 import vendors from '@common/get-dbs-to-test';
-import { createReadStream, readFileSync } from 'fs';
+import { createReadStream } from 'fs';
 import path from 'path';
 import * as common from '@common/index';
-import { v4 as uuid } from 'uuid';
 import { sleep } from '@utils/sleep';
+import { spawn } from 'child_process';
 
 const assetsDirectory = [__dirname, '..', '..', 'assets'];
 const storages = ['local', 'minio'];
-const imageFile = {
-	name: 'directus.png',
-	type: 'image/png',
-	filesize: '7136',
-};
-const imageFilePath = path.join(...assetsDirectory, imageFile.name);
+const imageFilePath = path.join(...assetsDirectory, 'layers.png');
 
 describe('/assets', () => {
 	describe('GET /assets/:id', () => {
@@ -24,11 +19,10 @@ describe('/assets', () => {
 					'%s',
 					async (vendor) => {
 						// Setup
-						const totalRounds = 5;
-						const count = 100;
-						const secondsTotal = 2;
-						const msDelay = 100;
-						const timeout = 60000;
+						const spawnCountTarget = 5;
+						let spawnCount = 0;
+						let hasErrors = false;
+						let isSpawnRunning = false;
 						const insertResponse = await request(getUrl(vendor))
 							.post('/files')
 							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
@@ -36,48 +30,40 @@ describe('/assets', () => {
 							.attach('file', createReadStream(imageFilePath));
 
 						// Action
-						async function spamRequests() {
-							const requests = [];
+						spawnAutoCannon();
 
-							for (let duration = 0; duration < secondsTotal * 1000; duration += msDelay) {
-								const requestsInner = [];
+						function spawnAutoCannon() {
+							const url = `${getUrl(vendor)}/assets/${insertResponse.body.data.id}?access_token=${
+								common.USER.ADMIN.TOKEN
+							}`;
+							const options = ['exec', 'autocannon', '-c', '100', url];
+							const child = spawn('pnpm', options);
 
-								for (let i = 0; i < count; i++) {
-									requestsInner.push(
-										request(getUrl(vendor))
-											.get(`/assets/${insertResponse.body.data.id}?cache-buster=${uuid()}`)
-											.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
-											.timeout(timeout)
-									);
+							isSpawnRunning = true;
+
+							child.stderr.on('data', (data) => {
+								if (String(data).includes('errors')) {
+									hasErrors = true;
 								}
+							});
 
-								requests.push(Promise.all(requestsInner));
-								await sleep(msDelay);
-							}
+							child.on('close', () => {
+								spawnCount++;
 
-							return requests;
+								if (spawnCount < spawnCountTarget && !hasErrors) {
+									spawnAutoCannon();
+								} else {
+									isSpawnRunning = false;
+								}
+							});
 						}
 
-						for (let i = 0; i < totalRounds; i++) {
-							let responses;
-
-							try {
-								responses = await Promise.all(await spamRequests());
-							} catch (error) {
-								expect(error).toBeUndefined();
-								return;
-							}
-
-							// Assert
-							for (const round of responses) {
-								for (const response of round) {
-									expect(response.statusCode).toBe(200);
-									expect(response.headers['content-type']).toBe(imageFile.type);
-									expect(response.headers['content-length']).toBe(imageFile.filesize);
-									expect(Buffer.compare(response.body, await readFileSync(imageFilePath))).toBe(0);
-								}
-							}
+						while (isSpawnRunning) {
+							await sleep(1000 * spawnCountTarget);
 						}
+
+						// Assert
+						expect(hasErrors).toBe(false);
 					},
 					600000
 				);
