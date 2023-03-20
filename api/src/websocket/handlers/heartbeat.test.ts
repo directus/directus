@@ -30,18 +30,15 @@ function mockClient() {
 		close: vi.fn(),
 	} as unknown as WebSocketClient;
 }
-function delay(ms: number) {
-	return new Promise<void>((resolve) => {
-		setTimeout(() => resolve(), ms);
-	});
-}
 
 describe('Websocket heartbeat handler', () => {
 	let controller: WebsocketController;
 	beforeEach(() => {
+		vi.useFakeTimers();
 		controller = getWebsocketController();
 	});
 	afterEach(() => {
+		vi.useRealTimers();
 		vi.clearAllMocks();
 	});
 
@@ -57,10 +54,10 @@ describe('Websocket heartbeat handler', () => {
 		controller.clients.add(fakeClient);
 		emitter.emitAction('websocket.connect', {}, {} as EventContext);
 		// wait for ping
-		await delay(1010); // 1sec interval + 10ms
+		vi.advanceTimersByTime(1000); // 1sec heartbeat interval
 		expect(fakeClient.send).toBeCalled();
 		// wait for another timeout
-		await delay(1010); // 1sec interval + 10ms
+		vi.advanceTimersByTime(1000); // 1sec heartbeat interval
 		expect(fakeClient.send).toBeCalled();
 		// the connection should not have been closed
 		expect(fakeClient.close).not.toBeCalled();
@@ -72,7 +69,7 @@ describe('Websocket heartbeat handler', () => {
 		const fakeClient = mockClient();
 		controller.clients.add(fakeClient);
 		emitter.emitAction('websocket.connect', {}, {} as EventContext);
-		await delay(2010); // 2x 1sec interval + 10ms
+		vi.advanceTimersByTime(2 * 1000); // 2x 1sec heartbeat interval
 		expect(fakeClient.send).toBeCalled();
 		// the connection should have been closed
 		expect(fakeClient.close).toBeCalled();

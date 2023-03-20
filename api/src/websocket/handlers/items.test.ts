@@ -28,19 +28,16 @@ function mockClient() {
 		accountability: null,
 	} as unknown as WebSocketClient;
 }
-function delay(ms: number) {
-	return new Promise<void>((resolve) => {
-		setTimeout(() => resolve(), ms);
-	});
-}
 
 describe('Websocket heartbeat handler', () => {
 	let handler: ItemsHandler;
 	beforeEach(() => {
+		vi.useFakeTimers();
 		// initialize handler
 		handler = new ItemsHandler();
 	});
 	afterEach(() => {
+		vi.useRealTimers();
 		emitter.offAll();
 		vi.clearAllMocks();
 	});
@@ -71,7 +68,7 @@ describe('Websocket heartbeat handler', () => {
 			},
 			{} as EventContext
 		);
-		await delay(10); // 10ms to make sure the event is handled
+		await vi.runAllTimersAsync(); // flush promises to make sure the event is handled
 		// expect error
 		expect(fakeClient.send).toBeCalledWith(
 			'{"type":"items","status":"error","error":{"code":"INVALID_COLLECTION","message":"The provided collection does not exists or is not accessible."}}'
@@ -93,7 +90,7 @@ describe('Websocket heartbeat handler', () => {
 			},
 			{} as EventContext
 		);
-		await delay(10); // 10ms to make sure the event is handled
+		await vi.runAllTimersAsync(); // flush promises to make sure the event is handled
 		// expect service functions
 		expect(createOne).toBeCalled();
 		expect(readOne).toBeCalled();
@@ -115,7 +112,7 @@ describe('Websocket heartbeat handler', () => {
 			},
 			{} as EventContext
 		);
-		await delay(10); // 10ms to make sure the event is handled
+		await vi.runAllTimersAsync(); // flush promises to make sure the event is handled
 		// expect service functions
 		expect(createMany).toBeCalled();
 		expect(readMany).toBeCalled();
@@ -138,7 +135,7 @@ describe('Websocket heartbeat handler', () => {
 			},
 			{} as EventContext
 		);
-		await delay(10); // 10ms to make sure the event is handled
+		await vi.runAllTimersAsync(); // flush promises to make sure the event is handled
 		// expect service functions
 		expect(readByQuery).toBeCalled();
 		expect(getMetaForQuery).toBeCalled();
@@ -160,7 +157,7 @@ describe('Websocket heartbeat handler', () => {
 			},
 			{} as EventContext
 		);
-		await delay(10); // 10ms to make sure the event is handled
+		await vi.runAllTimersAsync(); // flush promises to make sure the event is handled
 		// expect service functions
 		expect(updateOne).toBeCalled();
 		expect(readOne).toBeCalled();
@@ -184,7 +181,7 @@ describe('Websocket heartbeat handler', () => {
 			},
 			{} as EventContext
 		);
-		await delay(10); // 10ms to make sure the event is handled
+		await vi.runAllTimersAsync(); // flush promises to make sure the event is handled
 		// expect service functions
 		expect(updateMany).toBeCalled();
 		expect(getMetaForQuery).toBeCalled();
@@ -206,7 +203,7 @@ describe('Websocket heartbeat handler', () => {
 			},
 			{} as EventContext
 		);
-		await delay(10); // 10ms to make sure the event is handled
+		await vi.runAllTimersAsync(); // flush promises to make sure the event is handled
 		// expect service functions
 		expect(deleteOne).toBeCalled();
 		expect(fakeClient.send).toBeCalled();
@@ -226,7 +223,7 @@ describe('Websocket heartbeat handler', () => {
 			},
 			{} as EventContext
 		);
-		await delay(10); // 10ms to make sure the event is handled
+		await vi.runAllTimersAsync(); // flush promises to make sure the event is handled
 		// expect service functions
 		expect(deleteMany).toBeCalled();
 		expect(fakeClient.send).toBeCalled();
@@ -246,7 +243,7 @@ describe('Websocket heartbeat handler', () => {
 			},
 			{} as EventContext
 		);
-		await delay(10); // 10ms to make sure the event is handled
+		await vi.runAllTimersAsync(); // flush promises to make sure the event is handled
 		// expect service functions
 		expect(deleteByQuery).toBeCalled();
 		expect(fakeClient.send).toBeCalled();
