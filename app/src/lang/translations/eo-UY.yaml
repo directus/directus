@@ -1232,6 +1232,8 @@ operations:
   notification:
     name: Sendi sciigon
     recipient: Uzanto
+    recipient_placeholder: Entajpu UUID...
+    recipient_note: Aldoni UUID de la uzanto kaj premi Enter...
     message: Mesaĝo
   request:
     url: URL
