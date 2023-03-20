@@ -2070,7 +2070,6 @@ operations:
     name: Изпращане на известие
     description: Изпращане на известие в приложението до потребители
     recipient: Потребител
-    recipient_placeholder: Добавете UUID и натиснете enter...
     message: Съобщение
   request:
     name: Уеб-кука / URL заявка
