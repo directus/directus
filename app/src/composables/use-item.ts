@@ -126,7 +126,7 @@ export function useItem(
 			item.value,
 			edits.value,
 			function (from: any, to: any) {
-				if (typeof to !== undefined) {
+				if (typeof to !== 'undefined') {
 					return to;
 				}
 			}
