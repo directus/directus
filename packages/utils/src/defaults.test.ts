@@ -1,4 +1,4 @@
-import { test, vi, expect, beforeEach, afterEach } from 'vitest';
+import { expect, test } from 'vitest';
 import { defaults } from './defaults.js';
 
 test('Returns defaults with input properties assigned', () => {
