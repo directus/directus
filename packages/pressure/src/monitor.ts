@@ -35,7 +35,7 @@ export class PressureMonitor {
 		this.histogram.enable();
 
 		this.elu = performance.eventLoopUtilization();
-		this.timeout = setTimeout(this.updateUsage, options.sampleInterval);
+		this.timeout = setTimeout(() => this.updateUsage(), options.sampleInterval);
 		this.timeout.unref();
 	}
 
