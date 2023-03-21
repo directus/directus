@@ -30,11 +30,11 @@ export default defineOperationApi<Options>({
 
 		if (allowedModules.length > 0) {
 			opts.require = {
+				builtin: allowedModulesBuiltIn,
 				external: {
 					modules: allowedModulesExternal,
 					transitive: false,
 				},
-				builtin: allowedModulesBuiltIn,
 			};
 		}
 
