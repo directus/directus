@@ -64,6 +64,7 @@ import { merge } from 'lodash';
 
 export default async function createApp(): Promise<express.Application> {
 	const helmet = await import('helmet');
+	const { handlePressure } = await import('@directus/pressure');
 
 	validateEnv(['KEY', 'SECRET']);
 
@@ -100,6 +101,15 @@ export default async function createApp(): Promise<express.Application> {
 	app.disable('x-powered-by');
 	app.set('trust proxy', env.IP_TRUST_PROXY);
 	app.set('query parser', (str: string) => qs.parse(str, { depth: 10 }));
+
+	// app.use(
+	// 	handlePressure({
+	// 		maxEventLoopUtilization: 0.98,
+	// 		maxEventLoopDelay: 1000,
+	// 		maxMemoryRss: 100000000,
+	// 		maxMemoryHeapUsed: 100000000,
+	// 	})
+	// );
 
 	app.use(
 		helmet.contentSecurityPolicy(
