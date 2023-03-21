@@ -4,7 +4,6 @@ import fse from 'fs-extra';
 import path from 'path';
 import qs from 'qs';
 import { ServerResponse } from 'http';
-
 import activityRouter from './controllers/activity';
 import assetsRouter from './controllers/assets';
 import authRouter from './controllers/auth';
@@ -51,7 +50,6 @@ import rateLimiter from './middleware/rate-limiter-ip';
 import rateLimiterGlobal from './middleware/rate-limiter-global';
 import sanitizeQuery from './middleware/sanitize-query';
 import schema from './middleware/schema';
-
 import { track } from './utils/track';
 import { validateEnv } from './utils/validate-env';
 import { validateStorage } from './utils/validate-storage';
@@ -61,6 +59,7 @@ import { registerAuthProviders } from './auth';
 import { Url } from './utils/url';
 import { getConfigFromEnv } from './utils/get-config-from-env';
 import { merge } from 'lodash';
+import { ServiceUnavailableException } from './exceptions/';
 
 export default async function createApp(): Promise<express.Application> {
 	const helmet = await import('helmet');
@@ -102,14 +101,19 @@ export default async function createApp(): Promise<express.Application> {
 	app.set('trust proxy', env.IP_TRUST_PROXY);
 	app.set('query parser', (str: string) => qs.parse(str, { depth: 10 }));
 
-	// app.use(
-	// 	handlePressure({
-	// 		maxEventLoopUtilization: 0.98,
-	// 		maxEventLoopDelay: 1000,
-	// 		maxMemoryRss: 100000000,
-	// 		maxMemoryHeapUsed: 100000000,
-	// 	})
-	// );
+	if (env.PRESSURE_LIMITER_ENABLED) {
+		app.use(
+			handlePressure({
+				sampleInterval: env.PRESSURE_LIMITER_SAMPLE_INTERVAL,
+				maxEventLoopUtilization: env.PRESSURE_LIMITER_MAX_EVENT_LOOP_UTILIZATION,
+				maxEventLoopDelay: env.PRESSURE_LIMITER_MAX_EVENT_LOOP_DELAY,
+				maxMemoryRss: env.PRESSURE_LIMITER_MAX_MEMORY_RSS,
+				maxMemoryHeapUsed: env.PRESSURE_LIMITER_MAX_MEMORY_HEAP_USED,
+				error: new ServiceUnavailableException('Under pressure', { service: 'api' }),
+				retryAfter: env.PRESSURE_LIMITER_RETRY_AFTER,
+			})
+		);
+	}
 
 	app.use(
 		helmet.contentSecurityPolicy(
