@@ -183,10 +183,11 @@ export function useRelationMultiple(
 		if ((previewQuery.value.limit > 0 && totalItemCount.value > previewQuery.value.limit) || !sortField) return items;
 
 		return items.sort((a, b) => {
-			const field = sortField.substring(1);
-
-			if (sortField.startsWith('-')) return get(b, field) - get(a, field);
-			else return get(a, field) - get(b, field);
+			if (sortField.startsWith('-')) {
+				const field = sortField.substring(1);
+				return get(b, field) - get(a, field);
+			}
+			return get(a, sortField) - get(b, sortField);
 		});
 	});
 
