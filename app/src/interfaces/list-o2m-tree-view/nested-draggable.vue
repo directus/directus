@@ -103,7 +103,7 @@ import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
 import { useI18n } from 'vue-i18n';
 import { moveInArray } from '@directus/shared/utils';
-import { cloneDeep, isEmpty } from 'lodash';
+import { cloneDeep } from 'lodash';
 
 type ChangeEvent =
 	| {

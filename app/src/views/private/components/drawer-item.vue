@@ -80,7 +80,7 @@
 <script setup lang="ts">
 import api from '@/api';
 import FilePreview from '@/views/private/components/file-preview.vue';
-import { assign, isEmpty, merge, set } from 'lodash';
+import { isEmpty, merge, set } from 'lodash';
 import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
