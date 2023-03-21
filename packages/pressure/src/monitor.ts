@@ -1,6 +1,7 @@
-import { monitorEventLoopDelay, performance } from 'node:perf_hooks';
 import { defaults } from '@directus/utils';
-import type { EventLoopUtilization, IntervalHistogram } from 'node:perf_hooks';
+import type { IntervalHistogram } from 'node:perf_hooks';
+import { monitorEventLoopDelay, performance } from 'node:perf_hooks';
+import { memoryUsage } from 'node:process';
 import { setTimeout } from 'node:timers';
 
 export type PressureMonitorOptions = {
@@ -19,12 +20,11 @@ export class PressureMonitor {
 	private eventLoopUtilization = 0;
 	private options: Required<PressureMonitorOptions>;
 	private histogram: IntervalHistogram;
-	private elu: EventLoopUtilization;
 	private timeout: NodeJS.Timeout;
 
 	constructor(options: PressureMonitorOptions = {}) {
 		this.options = defaults(options, {
-			sampleInterval: 1000,
+			sampleInterval: 250,
 			resolution: 10,
 			maxMemoryHeapUsed: false,
 			maxMemoryRss: false,
@@ -35,8 +35,8 @@ export class PressureMonitor {
 		this.histogram = monitorEventLoopDelay({ resolution: this.options.resolution });
 		this.histogram.enable();
 
-		this.elu = performance.eventLoopUtilization();
-		this.timeout = setTimeout(this.updateUsage.bind(this), this.options.sampleInterval);
+		this.updateUsage = this.updateUsage.bind(this);
+		this.timeout = setTimeout(this.updateUsage, this.options.sampleInterval);
 		this.timeout.unref();
 	}
 
@@ -67,24 +67,15 @@ export class PressureMonitor {
 	}
 
 	private updateMemoryUsage() {
-		const { heapUsed, rss } = process.memoryUsage();
+		const { heapUsed, rss } = memoryUsage();
 		this.memoryHeapUsed = heapUsed;
 		this.memoryRss = rss;
 	}
 
 	private updateEventLoopUsage() {
-		this.eventLoopUtilization = performance.eventLoopUtilization(this.elu).utilization;
-		this.eventLoopDelay = Math.max(this.histogram.mean / 1_000_000 - this.options.resolution, 0);
-
-		if (Number.isNaN(this.eventLoopDelay)) {
-			this.eventLoopDelay = Infinity;
-		}
-
+		this.eventLoopUtilization = performance.eventLoopUtilization().utilization;
+		// histogram is in nanoseconds. 1 nanosecond = 1e6 milliseconds
+		this.eventLoopDelay = Math.round(this.histogram.mean / 1e6);
 		this.histogram.reset();
-	}
-
-	destroy() {
-		this.histogram.disable();
-		clearTimeout(this.timeout);
 	}
 }
