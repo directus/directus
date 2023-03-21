@@ -274,8 +274,6 @@ function addNew(item: Record<string, any>) {
 }
 
 function stageEdits(item: Record<string, any>) {
-	if (isEmpty(item)) return;
-
 	update(item);
 }
 </script>

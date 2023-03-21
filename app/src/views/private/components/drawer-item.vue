@@ -411,11 +411,7 @@ function useActions() {
 			internalEdits.value[primaryKeyField.value.field] = props.primaryKey;
 		}
 
-		const noNullDefaultValues = Object.fromEntries(
-			Object.entries(defaultValues.value).filter(([_, value]) => value !== null)
-		);
-
-		emit('input', assign({}, noNullDefaultValues, internalEdits.value));
+		emit('input', internalEdits.value);
 
 		internalActive.value = false;
 		internalEdits.value = {};

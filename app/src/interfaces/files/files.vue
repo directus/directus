@@ -308,8 +308,6 @@ function editItem(item: DisplayItem) {
 }
 
 function stageEdits(item: Record<string, any>) {
-	if (isEmpty(item)) return;
-
 	update(item);
 }
 
