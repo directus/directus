@@ -40,6 +40,6 @@
 		"vitest": "0.29.3"
 	},
 	"dependencies": {
-		"lodash-es": "4.17.21"
+		"@directus/utils": "workspace:*"
 	}
 }

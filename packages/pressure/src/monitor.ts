@@ -1,5 +1,5 @@
 import { monitorEventLoopDelay, performance } from 'node:perf_hooks';
-import { defaults } from 'lodash-es';
+import { defaults } from '@directus/utils';
 import type { EventLoopUtilization, IntervalHistogram } from 'node:perf_hooks';
 
 export type PressureMonitorOptions = {
@@ -21,7 +21,7 @@ export class PressureMonitor {
 	private elu: EventLoopUtilization;
 	private timeout: NodeJS.Timeout;
 
-	constructor(options: PressureMonitorOptions) {
+	constructor(options: PressureMonitorOptions = {}) {
 		this.options = defaults(options, {
 			sampleInterval: 1000,
 			resolution: 10,
@@ -29,13 +29,13 @@ export class PressureMonitor {
 			maxMemoryRss: false,
 			maxEventLoopDelay: false,
 			maxEventLoopUtilization: false,
-		} as Required<PressureMonitorOptions>);
+		});
 
 		this.histogram = monitorEventLoopDelay({ resolution: this.options.resolution });
 		this.histogram.enable();
 
 		this.elu = performance.eventLoopUtilization();
-		this.timeout = setTimeout(() => this.updateUsage(), options.sampleInterval);
+		this.timeout = setTimeout(() => this.updateUsage(), this.options.sampleInterval);
 		this.timeout.unref();
 	}
 
@@ -80,5 +80,10 @@ export class PressureMonitor {
 		}
 
 		this.histogram.reset();
+	}
+
+	destroy() {
+		this.histogram.disable();
+		clearTimeout(this.timeout);
 	}
 }
