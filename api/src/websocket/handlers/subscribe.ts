@@ -91,8 +91,9 @@ export class SubscribeHandler {
 	 * Dispatch event to subscriptions
 	 */
 	async dispatch(event: WebSocketEvent) {
+		const subscriptions = this.subscriptions[event.collection];
+		if (!subscriptions || subscriptions.size === 0) return;
 		const schema = await getSchema();
-		const subscriptions = this.subscriptions[event.collection] ?? new Set();
 		for (const subscription of subscriptions) {
 			const { client } = subscription;
 			try {
