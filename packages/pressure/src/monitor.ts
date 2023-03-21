@@ -1,6 +1,7 @@
 import { monitorEventLoopDelay, performance } from 'node:perf_hooks';
 import { defaults } from '@directus/utils';
 import type { EventLoopUtilization, IntervalHistogram } from 'node:perf_hooks';
+import { setTimeout } from 'node:timers';
 
 export type PressureMonitorOptions = {
 	maxEventLoopDelay?: number | false;
@@ -35,7 +36,7 @@ export class PressureMonitor {
 		this.histogram.enable();
 
 		this.elu = performance.eventLoopUtilization();
-		this.timeout = setTimeout(() => this.updateUsage(), this.options.sampleInterval);
+		this.timeout = setTimeout(this.updateUsage.bind(this), this.options.sampleInterval);
 		this.timeout.unref();
 	}
 
