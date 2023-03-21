@@ -22,6 +22,8 @@ import { getMessageType } from '../utils/message';
 import env, { toBoolean } from '../../env';
 import { registerWebsocketEvents } from './hooks';
 
+const TOKEN_CHECK_INTERVAL = 15 * 60 * 1000; // 15 minutes
+
 export default abstract class SocketController {
 	name: string;
 	server: WebSocket.Server;
@@ -33,6 +35,7 @@ export default abstract class SocketController {
 	endpoint: string;
 	maxConnections: number;
 	private rateLimiter: RateLimiterAbstract | null;
+	private authInterval: NodeJS.Timer | null;
 
 	constructor(
 		httpServer: httpServer,
@@ -54,8 +57,10 @@ export default abstract class SocketController {
 						keyPrefix: 'websocket',
 				  })
 				: null;
+		this.authInterval = null;
 		this.maxConnections = Number.POSITIVE_INFINITY;
 		httpServer.on('upgrade', this.handleUpgrade.bind(this));
+		this.checkClientTokens();
 		registerWebsocketEvents();
 	}
 	protected async handleUpgrade(request: IncomingMessage, socket: internal.Duplex, head: Buffer) {
@@ -149,7 +154,6 @@ export default abstract class SocketController {
 				handleWebsocketException(client, err, 'server');
 				return;
 			}
-			logger.trace(`Websocket#${client.uid} - ${JSON.stringify(message)}`);
 			if (getMessageType(message) === 'auth') {
 				try {
 					await this.handleAuthRequest(client, WebSocketAuthMessage.parse(message));
@@ -158,6 +162,8 @@ export default abstract class SocketController {
 				}
 				return;
 			}
+			// this log cannot be higher in the function or it will leak credentials
+			logger.trace(`Websocket#${client.uid} - ${JSON.stringify(message)}`);
 			ws.emit('parsed-message', message);
 		});
 		ws.on('error', () => {
@@ -176,9 +182,10 @@ export default abstract class SocketController {
 			}
 			this.clients.delete(client);
 		});
-		logger.debug(
-			`Websocket#${client.uid} connected ${accountability ? JSON.stringify(accountability) : 'without authentication'}`
-		);
+		logger.debug(`Websocket#${client.uid} connected`);
+		if (accountability) {
+			logger.trace(`Websocket#${client.uid} authenticated as ${JSON.stringify(accountability)}`);
+		}
 		this.setTokenExpireTimer(client);
 		this.clients.add(client);
 		return client;
@@ -200,9 +207,9 @@ export default abstract class SocketController {
 			this.setTokenExpireTimer(client);
 			emitter.emitAction('websocket.auth.success', { client });
 			client.send(authenticationSuccess(message.uid, refresh_token));
-			logger.debug(`Websocket#${client.uid} authenticated ${JSON.stringify(client.accountability)}`);
+			logger.trace(`Websocket#${client.uid} authenticated as ${JSON.stringify(client.accountability)}`);
 		} catch (error) {
-			logger.debug(`Websocket#${client.uid} failed authentication`);
+			logger.trace(`Websocket#${client.uid} failed authentication`);
 			emitter.emitAction('websocket.auth.failure', { client });
 
 			client.accountability = null;
@@ -220,11 +227,15 @@ export default abstract class SocketController {
 	}
 	setTokenExpireTimer(client: WebSocketClient) {
 		if (client.auth_timer !== null) {
+			// clear up old timeouts if needed
 			clearTimeout(client.auth_timer);
 			client.auth_timer = null;
 		}
 		if (!client.expires_at) return;
-		const expiresIn = Math.max(client.expires_at * 1000 - Date.now(), 10);
+
+		const expiresIn = client.expires_at * 1000 - Date.now();
+		if (expiresIn > TOKEN_CHECK_INTERVAL) return;
+
 		client.auth_timer = setTimeout(() => {
 			client.accountability = null;
 			client.expires_at = null;
@@ -238,7 +249,21 @@ export default abstract class SocketController {
 			});
 		}, expiresIn);
 	}
+	checkClientTokens() {
+		this.authInterval = setInterval(() => {
+			if (this.clients.size === 0) return;
+			// check the clients and set shorter timeouts if needed
+			for (const client of this.clients) {
+				if (client.expires_at === null || client.auth_timer !== null) continue;
+				this.setTokenExpireTimer(client);
+			}
+		}, TOKEN_CHECK_INTERVAL);
+	}
 	terminate() {
+		if (this.authInterval) clearInterval(this.authInterval);
+		this.clients.forEach((client) => {
+			if (client.auth_timer) clearTimeout(client.auth_timer);
+		});
 		this.server.clients.forEach((ws) => {
 			ws.terminate();
 		});
