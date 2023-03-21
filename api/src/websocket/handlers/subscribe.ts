@@ -11,7 +11,6 @@ import type { Accountability, SchemaOverview } from '@directus/shared/types';
 import { WebSocketSubscribeMessage } from '../messages';
 import { getMessenger, Messenger } from '../../messenger';
 import { WebSocketEvent } from '../messages';
-import { ForbiddenException } from '../../index';
 
 /**
  * Handler responsible for subscriptions
@@ -103,7 +102,7 @@ export class SubscribeHandler {
 						? await this.getSinglePayload(subscription, client.accountability, schema, event)
 						: await this.getMultiPayload(subscription, client.accountability, schema, event);
 
-				if(Array.isArray(result?.payload) && result?.payload?.length === 0) return;
+				if (Array.isArray(result?.payload) && result?.payload?.length === 0) return;
 
 				client.send(fmtMessage('subscription', result, subscription.uid));
 			} catch (err) {
