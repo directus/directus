@@ -403,7 +403,7 @@ function useActions() {
 			validationErrors.value = [];
 		}
 
-		if (props.junctionField && Object.values(defaultValues.value).find((value) => value !== null)) {
+		if (props.junctionField && Object.values(defaultValues.value).some((value) => value !== null)) {
 			internalEdits.value[props.junctionField] = internalEdits.value[props.junctionField] ?? {};
 		}
 
