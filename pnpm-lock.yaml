@@ -643,21 +643,31 @@ importers:
 
   packages/pressure:
     specifiers:
+      '@directus/random': workspace:*
       '@directus/tsconfig': 0.0.6
       '@directus/utils': workspace:*
-      '@ngneat/falso': 6.4.0
       '@types/express': 4.17.17
-      '@types/lodash-es': 4.17.7
       '@vitest/coverage-c8': 0.29.3
       typescript: 4.9.5
       vitest: 0.29.3
     dependencies:
       '@directus/utils': link:../utils
     devDependencies:
+      '@directus/random': link:../random
       '@directus/tsconfig': 0.0.6
-      '@ngneat/falso': 6.4.0
       '@types/express': 4.17.17
-      '@types/lodash-es': 4.17.7
+      '@vitest/coverage-c8': 0.29.3_vitest@0.29.3
+      typescript: 4.9.5
+      vitest: 0.29.3
+
+  packages/random:
+    specifiers:
+      '@directus/tsconfig': 0.0.6
+      '@vitest/coverage-c8': 0.29.3
+      typescript: 4.9.5
+      vitest: 0.29.3
+    devDependencies:
+      '@directus/tsconfig': 0.0.6
       '@vitest/coverage-c8': 0.29.3_vitest@0.29.3
       typescript: 4.9.5
       vitest: 0.29.3
@@ -6390,12 +6400,6 @@ packages:
     resolution: {integrity: sha512-Lv/nD6QDCmcT+V1vaTRnEKE8UgOilVv5pHcQuzkU1LcRe4mbHHuUo/KHi0LKrpdHhQY8FJzryF38fcVdeUIrzg==}
     dependencies:
       '@types/node': 18.15.3
-    dev: true
-
-  /@types/lodash-es/4.17.7:
-    resolution: {integrity: sha512-z0ptr6UI10VlU6l5MYhGwS4mC8DZyYer2mCoyysZtSF7p26zOX8UpbrV0YpNYLGS8K4PUFIyEr62IMFFjveSiQ==}
-    dependencies:
-      '@types/lodash': 4.14.191
     dev: true
 
   /@types/lodash/4.14.191:
