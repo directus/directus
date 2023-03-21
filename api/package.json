@@ -78,6 +78,7 @@
 		"@directus/app": "workspace:*",
 		"@directus/extensions-sdk": "workspace:*",
 		"@directus/format-title": "9.15.0",
+		"@directus/pressure": "workspace:*",
 		"@directus/schema": "workspace:*",
 		"@directus/shared": "workspace:*",
 		"@directus/specs": "workspace:*",

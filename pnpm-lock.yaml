@@ -77,6 +77,7 @@ importers:
       '@directus/app': workspace:*
       '@directus/extensions-sdk': workspace:*
       '@directus/format-title': 9.15.0
+      '@directus/pressure': workspace:*
       '@directus/schema': workspace:*
       '@directus/shared': workspace:*
       '@directus/specs': workspace:*
@@ -223,6 +224,7 @@ importers:
       '@directus/app': link:../app
       '@directus/extensions-sdk': link:../packages/extensions-sdk
       '@directus/format-title': 9.15.0
+      '@directus/pressure': link:../packages/pressure
       '@directus/schema': link:../packages/schema
       '@directus/shared': link:../packages/shared
       '@directus/specs': link:../packages/specs
