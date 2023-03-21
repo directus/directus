@@ -32,13 +32,24 @@ export class FilesService extends ItemsService {
 	 */
 	async uploadOne(
 		stream: Readable,
-		data: Partial<File> & { filename_download: string; storage: string },
+		data: Partial<File> & { storage: string },
 		primaryKey?: PrimaryKey,
 		opts?: MutationOptions
 	): Promise<PrimaryKey> {
 		const storage = await getStorage();
 
-		const payload = clone(data);
+		let existingFile = {};
+
+		if (primaryKey !== undefined) {
+			existingFile =
+				(await this.knex
+					.select('folder', 'filename_download')
+					.from('directus_files')
+					.where({ id: primaryKey })
+					.first()) ?? {};
+		}
+
+		const payload = { ...existingFile, ...clone(data) };
 
 		if ('folder' in payload === false) {
 			const settings = await this.knex.select('storage_default_folder').from('directus_settings').first();
@@ -63,7 +74,7 @@ export class FilesService extends ItemsService {
 		}
 
 		const fileExtension =
-			path.extname(payload.filename_download) || (payload.type && '.' + extension(payload.type)) || '';
+			path.extname(payload.filename_download!) || (payload.type && '.' + extension(payload.type)) || '';
 
 		payload.filename_disk = primaryKey + (fileExtension || '');
 
