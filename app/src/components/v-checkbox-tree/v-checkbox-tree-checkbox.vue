@@ -122,7 +122,7 @@ const treeValue = computed({
 		const added = difference(newValue, props.modelValue);
 		const removed = difference(props.modelValue, newValue);
 
-		if (props.children.length > 0) {
+		if (Array.isArray(props.children) && props.children.length > 0) {
 			switch (props.valueCombining) {
 				case 'all':
 					return emitAll(newValue, { added, removed });
