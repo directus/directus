@@ -102,6 +102,9 @@ export class SubscribeHandler {
 					'item' in subscription
 						? await this.getSinglePayload(subscription, client.accountability, schema, event)
 						: await this.getMultiPayload(subscription, client.accountability, schema, event);
+
+				if(Array.isArray(result?.payload) && result?.payload?.length === 0) return;
+
 				client.send(fmtMessage('subscription', result, subscription.uid));
 			} catch (err) {
 				handleWebsocketException(client, err, 'subscribe');
@@ -189,7 +192,7 @@ export class SubscribeHandler {
 		if (!event?.action) {
 			result['payload'] = await service.readByQuery(query);
 		} else if (event.action === 'create') {
-			result['payload'] = await service.readOne(event.key, query);
+			result['payload'] = await service.readMany([event.key], query);
 		} else if (event.action === 'delete') {
 			result['payload'] = event.keys;
 		} else {
