@@ -202,16 +202,16 @@ export class SubscribeHandler {
 
 		switch (subscription.collection) {
 			case 'directus_collections':
-				result['payload'] = this.getCollectionPayload(accountability, schema, event);
+				result['payload'] = await this.getCollectionPayload(accountability, schema, event);
 				break;
 			case 'directus_fields':
-				result['payload'] = this.getFieldsPayload(accountability, schema, event);
+				result['payload'] = await this.getFieldsPayload(accountability, schema, event);
 				break;
 			case 'directus_relations':
 				result['payload'] = event?.payload;
 				break;
 			default:
-				result['payload'] = this.getItemsPayload(subscription, accountability, schema, event);
+				result['payload'] = await this.getItemsPayload(subscription, accountability, schema, event);
 				break;
 		}
 
