@@ -48,7 +48,7 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 	}
 
 	if (req.sanitizedQuery.export) {
-		const exportService = new ExportService({ accountability: req.accountability, schema: req.schema });
+		const exportService = new ExportService({ accountability: req.accountability ?? null, schema: req.schema });
 
 		let filename = '';
 

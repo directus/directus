@@ -28,7 +28,7 @@ function extractOptions<T extends Record<string, any>>(
 					? {
 							...config,
 							[key]: numberKeys.includes(key as any)
-								? +value
+								? +value!
 								: booleanKeys.includes(key as any)
 								? Boolean(value)
 								: value,

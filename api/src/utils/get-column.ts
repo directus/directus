@@ -7,8 +7,8 @@ import { InvalidQueryException } from '../exceptions';
 import { applyFunctionToColumnName } from './apply-function-to-column-name';
 
 type GetColumnOptions = {
-	query?: Query;
-	originalCollectionName?: string;
+	query?: Query | undefined;
+	originalCollectionName?: string | undefined;
 };
 
 /**
