@@ -49,9 +49,9 @@ RUN echo "update-notifier=false" >> ~/.npmrc \
 	&& mkdir -p /directus/data/database /directus/data/extensions /directus/data/uploads
 
 VOLUME \
-  /directus/data/database \
-  /directus/data/extensions \
-  /directus/data/uploads
+	/directus/data/database \
+	/directus/data/extensions \
+	/directus/data/uploads
 
 COPY --from=pruned /workspace/pruned/dist dist
 COPY --from=pruned /workspace/pruned/package.json package.json
