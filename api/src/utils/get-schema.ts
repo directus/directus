@@ -32,7 +32,7 @@ export async function getSchema(options?: {
 		let cachedSchema;
 
 		try {
-			cachedSchema = (await getSchemaCache()) as SchemaOverview;
+			cachedSchema = await getSchemaCache();
 		} catch (err: any) {
 			logger.warn(err, `[schema-cache] Couldn't retrieve cache. ${err}`);
 		}
