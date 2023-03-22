@@ -18,6 +18,7 @@ import type {
 	HookConfig,
 	HybridExtension,
 	InitHandler,
+	NestedExtensionType,
 	OperationApiConfig,
 	ScheduleHandler,
 } from '@directus/shared/types';
@@ -182,24 +183,30 @@ class ExtensionManager {
 		}
 
 		function mapInfo(extension: Extension): ExtensionInfo {
-			const extensionInfo = {
+			const extensionInfo: ExtensionInfo = {
 				name: extension.name,
 				type: extension.type,
 				local: extension.local,
-				host: extension.host,
-				version: extension.version,
+				entries: [],
 			};
 
+			if (extension.host) extensionInfo.host = extension.host;
+			if (extension.version) extensionInfo.version = extension.version;
+
 			if (extension.type === 'bundle') {
-				return {
-					...extensionInfo,
+				const bundleExtensionInfo: Omit<BundleExtension, 'entrypoint' | 'path'> = {
+					name: extensionInfo.name,
+					type: 'bundle',
+					local: extensionInfo.local,
 					entries: extension.entries.map((entry) => ({
 						name: entry.name,
 						type: entry.type,
-					})),
+					})) as { name: ExtensionInfo['name']; type: NestedExtensionType }[],
 				};
+
+				return bundleExtensionInfo;
 			} else {
-				return extensionInfo as ExtensionInfo;
+				return extensionInfo;
 			}
 		}
 	}
