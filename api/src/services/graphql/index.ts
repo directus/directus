@@ -71,7 +71,6 @@ import { SpecificationService } from '../specifications';
 import { TFAService } from '../tfa';
 import { UsersService } from '../users';
 import { UtilsService } from '../utils';
-import { WebhooksService } from '../webhooks';
 import { GraphQLBigInt } from './types/bigint';
 import { GraphQLHash } from './types/hash';
 import { GraphQLDate } from './types/date';

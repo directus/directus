@@ -3,7 +3,7 @@ import type { Subscription, WebSocketClient } from '../types';
 import emitter from '../../emitter';
 import { fmtMessage, getMessageType } from '../utils/message';
 import { refreshAccountability } from '../authenticate';
-import { CollectionsService, FieldsService, MetaService, RelationsService } from '../../services';
+import { CollectionsService, FieldsService, MetaService } from '../../services';
 import { sanitizeQuery } from '../../utils/sanitize-query';
 import { handleWebsocketException, WebSocketException } from '../exceptions';
 import type { Accountability, SchemaOverview } from '@directus/shared/types';
