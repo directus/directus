@@ -66,12 +66,12 @@ export async function clearSystemCache(opts?: { forced?: boolean; autoPurgeCache
 	// Flush system cache when forced or when system cache lock not set
 	if (opts?.forced || !(await lockCache.get('system-cache-lock'))) {
 		await lockCache.set('system-cache-lock', true, 10000);
-		await schemaCache.clear();
 		await systemCache.clear();
 		await lockCache.delete('system-cache-lock');
-
-		messenger.publish('schemaChanged', { autoPurgeCache: opts?.autoPurgeCache });
 	}
+
+	await schemaCache.clear();
+	messenger.publish('schemaChanged', { autoPurgeCache: opts?.autoPurgeCache });
 }
 
 export async function setSystemCache(key: string, value: any, ttl?: number): Promise<void> {
@@ -89,11 +89,9 @@ export async function getSystemCache(key: string): Promise<Record<string, any>> 
 }
 
 export async function setSchemaCache(value: any): Promise<void> {
-	const { schemaCache, lockCache } = getCache();
+	const { schemaCache } = getCache();
 
-	if (!(await lockCache.get('system-cache-lock'))) {
-		await setCacheValue(schemaCache, 'schema', value);
-	}
+	await setCacheValue(schemaCache, 'schema', value);
 }
 
 export async function getSchemaCache(): Promise<Record<string, any>> {
