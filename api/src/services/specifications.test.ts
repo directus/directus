@@ -230,11 +230,9 @@ describe('Integration Tests', () => {
 							  "ItemsTestTable": {
 							    "properties": {
 							      "blob": {
-							        "description": undefined,
 							        "nullable": true,
 							      },
 							      "id": {
-							        "description": undefined,
 							        "nullable": false,
 							        "type": "integer",
 							      },
