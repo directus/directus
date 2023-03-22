@@ -1,12 +1,12 @@
 import { Item, Query } from '@directus/shared/types';
 import { z } from 'zod';
 
-const zodPrimaryKey = z.union([z.string(), z.number()]);
+const zodStringOrNumber = z.union([z.string(), z.number()]);
 
 export const WebSocketMessage = z
 	.object({
 		type: z.string(),
-		uid: z.string().optional(),
+		uid: zodStringOrNumber.optional(),
 	})
 	.passthrough();
 export type WebSocketMessage = z.infer<typeof WebSocketMessage>;
@@ -43,7 +43,7 @@ export const WebSocketSubscribeMessage = z.discriminatedUnion('type', [
 	WebSocketMessage.extend({
 		type: z.literal('subscribe'),
 		collection: z.string(),
-		item: zodPrimaryKey.optional(),
+		item: zodStringOrNumber.optional(),
 		query: z.custom<Query>().optional(),
 	}),
 	WebSocketMessage.extend({
@@ -54,7 +54,7 @@ export type WebSocketSubscribeMessage = z.infer<typeof WebSocketSubscribeMessage
 
 const ZodItem = z.custom<Partial<Item>>();
 const PartialItemsMessage = z.object({
-	uid: z.string().optional(),
+	uid: zodStringOrNumber.optional(),
 	type: z.literal('items'),
 	collection: z.string(),
 });
@@ -67,21 +67,21 @@ export const WebSocketItemsMessage = z.union([
 	}),
 	PartialItemsMessage.extend({
 		action: z.literal('read'),
-		ids: z.array(zodPrimaryKey).optional(),
-		id: zodPrimaryKey.optional(),
+		ids: z.array(zodStringOrNumber).optional(),
+		id: zodStringOrNumber.optional(),
 		query: z.custom<Query>().optional(),
 	}),
 	PartialItemsMessage.extend({
 		action: z.literal('update'),
 		data: ZodItem,
-		ids: z.array(zodPrimaryKey).optional(),
-		id: zodPrimaryKey.optional(),
+		ids: z.array(zodStringOrNumber).optional(),
+		id: zodStringOrNumber.optional(),
 		query: z.custom<Query>().optional(),
 	}),
 	PartialItemsMessage.extend({
 		action: z.literal('delete'),
-		ids: z.array(zodPrimaryKey).optional(),
-		id: zodPrimaryKey.optional(),
+		ids: z.array(zodStringOrNumber).optional(),
+		id: zodStringOrNumber.optional(),
 		query: z.custom<Query>().optional(),
 	}),
 ]);
@@ -92,19 +92,19 @@ export const WebSocketEvent = z.discriminatedUnion('action', [
 		action: z.literal('create'),
 		collection: z.string(),
 		payload: z.record(z.any()).optional(),
-		key: zodPrimaryKey,
+		key: zodStringOrNumber,
 	}),
 	z.object({
 		action: z.literal('update'),
 		collection: z.string(),
 		payload: z.record(z.any()).optional(),
-		keys: z.array(zodPrimaryKey),
+		keys: z.array(zodStringOrNumber),
 	}),
 	z.object({
 		action: z.literal('delete'),
 		collection: z.string(),
 		payload: z.record(z.any()).optional(),
-		keys: z.array(zodPrimaryKey),
+		keys: z.array(zodStringOrNumber),
 	}),
 ]);
 export type WebSocketEvent = z.infer<typeof WebSocketEvent>;
