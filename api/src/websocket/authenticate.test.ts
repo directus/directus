@@ -1,10 +1,10 @@
-import { Accountability } from '@directus/shared/types';
+import type { Accountability } from '@directus/shared/types';
 import { expect, describe, test, vi, Mock } from 'vitest';
 import { InvalidCredentialsException } from '../index';
 import { getAccountabilityForRole } from '../utils/get-accountability-for-role';
 import { getAccountabilityForToken } from '../utils/get-accountability-for-token';
 import { authenticateConnection, authenticationSuccess, refreshAccountability } from './authenticate';
-import { WebSocketAuthMessage } from './messages';
+import type { WebSocketAuthMessage } from './messages';
 import { getExpiresAtForToken } from './utils/get-expires-at-for-token';
 
 vi.mock('../utils/get-accountability-for-token', () => ({

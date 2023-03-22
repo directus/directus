@@ -1,6 +1,6 @@
 import emitter from '../../emitter';
 import { getMessenger } from '../../messenger';
-import { WebSocketEvent } from '../messages';
+import type { WebSocketEvent } from '../messages';
 
 let actionsRegistered = false;
 

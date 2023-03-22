@@ -17,7 +17,7 @@ import {
 	DashboardsService,
 	PanelsService,
 } from '../services';
-import { AbstractServiceOptions } from '../types/services';
+import type { AbstractServiceOptions } from '../types/services';
 
 /**
  * Select the correct service for the given collection. This allows the individual services to run

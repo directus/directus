@@ -2,7 +2,7 @@ import { getWebsocketController, WebsocketController } from '../websocket/contro
 import type { WebSocketClient } from '../websocket/types';
 import emitter from '../emitter';
 import type { ActionHandler } from '@directus/shared/types';
-import { WebSocketMessage } from '../websocket/messages';
+import type { WebSocketMessage } from '../websocket/messages';
 
 export class WebsocketService {
 	private controller: WebsocketController;

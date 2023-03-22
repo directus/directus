@@ -9,6 +9,7 @@ import url from 'url';
 import pkg from '../package.json';
 import createApp from './app';
 import getDatabase from './database';
+import emitter from './emitter';
 import env, { toBoolean } from './env';
 
 import logger from './logger';

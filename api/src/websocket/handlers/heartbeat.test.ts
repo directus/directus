@@ -1,9 +1,9 @@
 import { expect, describe, test, vi, Mock, beforeEach, afterEach } from 'vitest';
 import { getWebsocketController, WebsocketController } from '../controllers';
 import emitter from '../../emitter';
-import { WebSocketClient } from '../types';
+import type { WebSocketClient } from '../types';
 import { HeartbeatHandler } from './heartbeat';
-import { EventContext } from '@directus/shared/types';
+import type { EventContext } from '@directus/shared/types';
 
 // mocking
 vi.mock('../controllers', () => ({

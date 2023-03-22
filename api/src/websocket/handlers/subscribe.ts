@@ -9,7 +9,7 @@ import { handleWebsocketException, WebSocketException } from '../exceptions';
 import type { Accountability, SchemaOverview } from '@directus/shared/types';
 import { WebSocketSubscribeMessage } from '../messages';
 import { getMessenger, Messenger } from '../../messenger';
-import { WebSocketEvent } from '../messages';
+import type { WebSocketEvent } from '../messages';
 import { getService } from '../../utils/get-service';
 import { InvalidPayloadException } from '../../index';
 

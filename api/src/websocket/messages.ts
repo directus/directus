@@ -1,4 +1,4 @@
-import { Item, Query } from '@directus/shared/types';
+import type { Item, Query } from '@directus/shared/types';
 import { z } from 'zod';
 
 const zodStringOrNumber = z.union([z.string(), z.number()]);
