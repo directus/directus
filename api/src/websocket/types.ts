@@ -9,11 +9,12 @@ export type AuthenticationState = {
 	refresh_token?: string;
 };
 
-export type WebSocketClient = WebSocket & AuthenticationState & { uid: string; auth_timer: NodeJS.Timer | null };
+export type WebSocketClient = WebSocket &
+	AuthenticationState & { uid: string | number; auth_timer: NodeJS.Timer | null };
 export type UpgradeRequest = IncomingMessage & AuthenticationState;
 
 export type Subscription = {
-	uid?: string;
+	uid?: string | number;
 	query?: Query;
 	item?: string | number;
 	status?: boolean;

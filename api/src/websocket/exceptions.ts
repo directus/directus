@@ -9,8 +9,8 @@ import type { WebSocketClient } from './types';
 export class WebSocketException extends Error {
 	type: string;
 	code: string;
-	uid: string | undefined;
-	constructor(type: string, code: string, message: string, uid?: string) {
+	uid: string | number | undefined;
+	constructor(type: string, code: string, message: string, uid?: string | number) {
 		super(message);
 		this.type = type;
 		this.code = code;

@@ -72,7 +72,7 @@ export class SubscribeHandler {
 	 * Remove a subscription
 	 * @param subscription
 	 */
-	unsubscribe(client: WebSocketClient, uid?: string) {
+	unsubscribe(client: WebSocketClient, uid?: string | number) {
 		if (uid !== undefined) {
 			const subscription = this.getSubscription(uid);
 			if (subscription && subscription.client === client) {
@@ -235,7 +235,7 @@ export class SubscribeHandler {
 		} else if (event.action === 'delete') {
 			return event.keys;
 		} else {
-			return await service.readMany(event.keys.map((key) => String(key)));
+			return await service.readMany(event.keys.map((key: any) => String(key)));
 		}
 	}
 	private async getFieldsPayload(
@@ -270,7 +270,7 @@ export class SubscribeHandler {
 			return await service.readMany(event.keys, query);
 		}
 	}
-	private getSubscription(uid: string) {
+	private getSubscription(uid: string | number) {
 		for (const userSubscriptions of Object.values(this.subscriptions)) {
 			for (const subscription of userSubscriptions) {
 				if (subscription.uid === uid) {

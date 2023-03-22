@@ -55,7 +55,7 @@ export async function refreshAccountability(
 	return result;
 }
 
-export function authenticationSuccess(uid?: string, refresh_token?: string): string {
+export function authenticationSuccess(uid?: string | number, refresh_token?: string): string {
 	const message: WebSocketResponse = {
 		type: 'auth',
 		status: 'ok',
