@@ -1,23 +1,23 @@
-import { Knex } from 'knex';
+import type { Knex } from 'knex';
 import { merge } from 'lodash';
 import os from 'os';
 import { performance } from 'perf_hooks';
+import type { Accountability, SchemaOverview } from '@directus/shared/types';
+import { toArray } from '@directus/shared/utils';
+import { Readable } from 'node:stream';
 // @ts-ignore
 import { version } from '../../package.json';
 import { getCache } from '../cache';
 import getDatabase, { hasDatabaseConnection } from '../database';
 import env from '../env';
 import logger from '../logger';
+import getMailer from '../mailer';
+import { rateLimiterGlobal } from '../middleware/rate-limiter-global';
 import { rateLimiter } from '../middleware/rate-limiter-ip';
 import { getStorage } from '../storage';
-import { AbstractServiceOptions } from '../types';
-import { Accountability, SchemaOverview } from '@directus/shared/types';
-import { toArray } from '@directus/shared/utils';
-import getMailer from '../mailer';
-import { SettingsService } from './settings';
+import type { AbstractServiceOptions } from '../types';
 import { getOSInfo } from '../utils/get-os-info';
-import { Readable } from 'node:stream';
-import { rateLimiterGlobal } from '../middleware/rate-limiter-global';
+import { SettingsService } from './settings';
 
 export class ServerService {
 	knex: Knex;

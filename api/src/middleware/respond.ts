@@ -1,5 +1,5 @@
 import { parse as parseBytesConfiguration } from 'bytes';
-import { RequestHandler } from 'express';
+import type { RequestHandler } from 'express';
 import { getCache, setCacheValue } from '../cache';
 import env from '../env';
 import logger from '../logger';

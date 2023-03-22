@@ -5,7 +5,7 @@ import { NotNullViolationException } from '../not-null-violation';
 import { RecordNotUniqueException } from '../record-not-unique';
 import { ValueOutOfRangeException } from '../value-out-of-range';
 import { ValueTooLongException } from '../value-too-long';
-import { MSSQLError } from './types';
+import type { MSSQLError } from './types';
 
 enum MSSQLErrorCodes {
 	FOREIGN_KEY_VIOLATION = 547,

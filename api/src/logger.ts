@@ -1,11 +1,11 @@
-import { Request, RequestHandler } from 'express';
+import { toArray } from '@directus/shared/utils';
+import type { Request, RequestHandler } from 'express';
+import { merge } from 'lodash';
 import pino, { LoggerOptions } from 'pino';
 import pinoHTTP, { stdSerializers } from 'pino-http';
-import { getConfigFromEnv } from './utils/get-config-from-env';
 import { URL } from 'url';
 import env from './env';
-import { toArray } from '@directus/shared/utils';
-import { merge } from 'lodash';
+import { getConfigFromEnv } from './utils/get-config-from-env';
 
 const pinoOptions: LoggerOptions = {
 	level: env.LOG_LEVEL || 'info',

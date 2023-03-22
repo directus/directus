@@ -1,18 +1,18 @@
 import chalk from 'chalk';
 import execa from 'execa';
 import inquirer from 'inquirer';
-import { Knex } from 'knex';
+import Joi from 'joi';
+import type { Knex } from 'knex';
 import ora from 'ora';
 import { v4 as uuid } from 'uuid';
-import Joi from 'joi';
 import runMigrations from '../../../database/migrations/run';
 import runSeed from '../../../database/seeds/run';
+import { generateHash } from '../../../utils/generate-hash';
 import createDBConnection, { Credentials } from '../../utils/create-db-connection';
 import createEnv from '../../utils/create-env';
+import { defaultAdminRole, defaultAdminUser } from '../../utils/defaults';
 import { drivers, getDriverForClient } from '../../utils/drivers';
 import { databaseQuestions } from './questions';
-import { generateHash } from '../../../utils/generate-hash';
-import { defaultAdminRole, defaultAdminUser } from '../../utils/defaults';
 
 export default async function init(): Promise<void> {
 	const rootPath = process.cwd();

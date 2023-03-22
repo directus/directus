@@ -1,4 +1,4 @@
-import { KNEX_TYPES } from '@directus/shared/constants';
+import type { KNEX_TYPES } from '@directus/shared/constants';
 import { Options, SchemaHelper } from '../types';
 
 export class SchemaHelperCockroachDb extends SchemaHelper {

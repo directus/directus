@@ -1,12 +1,12 @@
-import { AbstractServiceOptions, PrimaryKey, MutationOptions } from '../types';
-import { ItemsService } from './items';
-import { Notification } from '@directus/shared/types';
+import type { Notification } from '@directus/shared/types';
+import env from '../env';
+import logger from '../logger';
+import type { AbstractServiceOptions, MutationOptions, PrimaryKey } from '../types';
 import { md } from '../utils/md';
 import { Url } from '../utils/url';
-import { UsersService } from './users';
+import { ItemsService } from './items';
 import { MailService } from './mail';
-import logger from '../logger';
-import env from '../env';
+import { UsersService } from './users';
 
 export class NotificationsService extends ItemsService {
 	usersService: UsersService;

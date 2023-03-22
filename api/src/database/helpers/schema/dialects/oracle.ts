@@ -1,5 +1,5 @@
-import { KNEX_TYPES } from '@directus/shared/constants';
-import { Field, Relation, Type } from '@directus/shared/types';
+import type { KNEX_TYPES } from '@directus/shared/constants';
+import type { Field, Relation, Type } from '@directus/shared/types';
 import { Options, SchemaHelper } from '../types';
 
 export class SchemaHelperOracle extends SchemaHelper {

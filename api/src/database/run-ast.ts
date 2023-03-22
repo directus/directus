@@ -1,17 +1,17 @@
-import { Item, Query, SchemaOverview } from '@directus/shared/types';
+import type { Item, Query, SchemaOverview } from '@directus/shared/types';
 import { toArray } from '@directus/shared/utils';
-import { Knex } from 'knex';
+import type { Knex } from 'knex';
 import { clone, cloneDeep, merge, pick, uniq } from 'lodash';
 import getDatabase from '.';
 import { getHelpers } from '../database/helpers';
 import env from '../env';
 import { PayloadService } from '../services/payload';
-import { AST, FieldNode, FunctionFieldNode, M2ONode, NestedCollectionNode } from '../types/ast';
+import type { AST, FieldNode, FunctionFieldNode, M2ONode, NestedCollectionNode } from '../types/ast';
 import { applyFunctionToColumnName } from '../utils/apply-function-to-column-name';
 import applyQuery, { applyLimit, applySort, ColumnSortRecord, generateAlias } from '../utils/apply-query';
 import { getCollectionFromAlias } from '../utils/get-collection-from-alias';
 import { getColumn } from '../utils/get-column';
-import { AliasMap } from '../utils/get-column-path';
+import type { AliasMap } from '../utils/get-column-path';
 import { stripFunction } from '../utils/strip-function';
 
 type RunASTOptions = {

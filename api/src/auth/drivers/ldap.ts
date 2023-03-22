@@ -24,7 +24,7 @@ import { RecordNotUniqueException } from '../../exceptions/database/record-not-u
 import logger from '../../logger';
 import { respond } from '../../middleware/respond';
 import { AuthenticationService, UsersService } from '../../services';
-import { AuthDriverOptions, User } from '../../types';
+import type { AuthDriverOptions, User } from '../../types';
 import asyncHandler from '../../utils/async-handler';
 import { getIPFromReq } from '../../utils/get-ip-from-req';
 import { getMilliseconds } from '../../utils/get-milliseconds';

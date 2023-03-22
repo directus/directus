@@ -1,4 +1,4 @@
-import { Knex } from 'knex';
+import type { Knex } from 'knex';
 import { getDatabaseVersion } from '../../../../database';
 import { SchemaHelper } from '../types';
 

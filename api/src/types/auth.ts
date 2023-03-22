@@ -1,5 +1,5 @@
-import { SchemaOverview } from '@directus/shared/types';
-import { Knex } from 'knex';
+import type { SchemaOverview } from '@directus/shared/types';
+import type { Knex } from 'knex';
 
 export interface AuthDriverOptions {
 	knex: Knex;

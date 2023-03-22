@@ -1,7 +1,7 @@
 import SchemaInspector from '@directus/schema';
-import { Filter, SchemaOverview } from '@directus/shared/types';
+import type { Filter, SchemaOverview } from '@directus/shared/types';
 import { parseJSON, toArray } from '@directus/shared/utils';
-import { Knex } from 'knex';
+import type { Knex } from 'knex';
 import { mapValues } from 'lodash';
 import { getSystemCache, setSystemCache } from '../cache';
 import { ALIAS_TYPES } from '../constants';

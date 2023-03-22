@@ -1,4 +1,4 @@
-import { Request } from 'express';
+import type { Request } from 'express';
 import { expect, test } from 'vitest';
 
 import { getGraphqlQueryAndVariables } from './get-graphql-query-and-variables';

@@ -9,9 +9,9 @@ import {
 	OperationHandler,
 	SchemaOverview,
 } from '@directus/shared/types';
-import { applyOptionsData, toArray, parseJSON, isValidJSON } from '@directus/shared/utils';
+import { applyOptionsData, isValidJSON, parseJSON, toArray } from '@directus/shared/utils';
 import fastRedact from 'fast-redact';
-import { Knex } from 'knex';
+import type { Knex } from 'knex';
 import { omit, pick } from 'lodash';
 import { get } from 'micromustache';
 import { schedule, validate } from 'node-cron';
@@ -25,7 +25,7 @@ import * as services from './services';
 import { FlowsService } from './services';
 import { ActivityService } from './services/activity';
 import { RevisionsService } from './services/revisions';
-import { EventHandler } from './types';
+import type { EventHandler } from './types';
 import { constructFlowTree } from './utils/construct-flow-tree';
 import { getSchema } from './utils/get-schema';
 import { JobQueue } from './utils/job-queue';

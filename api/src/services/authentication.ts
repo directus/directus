@@ -1,6 +1,6 @@
 import { Accountability, Action, SchemaOverview } from '@directus/shared/types';
 import jwt from 'jsonwebtoken';
-import { Knex } from 'knex';
+import type { Knex } from 'knex';
 import { clone, cloneDeep } from 'lodash';
 import { performance } from 'perf_hooks';
 import { getAuthProvider } from '../auth';
@@ -15,7 +15,7 @@ import {
 	UserSuspendedException,
 } from '../exceptions';
 import { createRateLimiter } from '../rate-limiter';
-import { AbstractServiceOptions, DirectusTokenPayload, LoginResult, Session, User } from '../types';
+import type { AbstractServiceOptions, DirectusTokenPayload, LoginResult, Session, User } from '../types';
 import { getMilliseconds } from '../utils/get-milliseconds';
 import { stall } from '../utils/stall';
 import { ActivityService } from './activity';

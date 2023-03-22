@@ -1,4 +1,4 @@
-import { ActionHandler, EventContext, FilterHandler, InitHandler } from '@directus/shared/types';
+import type { ActionHandler, EventContext, FilterHandler, InitHandler } from '@directus/shared/types';
 import { EventEmitter2 } from 'eventemitter2';
 import getDatabase from './database';
 import logger from './logger';
