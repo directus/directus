@@ -6,10 +6,13 @@ import { getConfigFromEnv } from './utils/get-config-from-env';
 import { getMilliseconds } from './utils/get-milliseconds';
 import { validateEnv } from './utils/validate-env';
 import { getMessenger } from './messenger';
+import { getSimpleHash } from '@directus/shared/utils';
+import { SchemaOverview } from '@directus/shared/types';
 
 let cache: Keyv | null = null;
 let systemCache: Keyv | null = null;
-let schemaCache: Keyv | null = null;
+let localSchemaCache: Keyv | null = null;
+let sharedSchemaCache: Keyv | null = null;
 let lockCache: Keyv | null = null;
 let messengerSubscribed = false;
 
@@ -24,12 +27,16 @@ if (!messengerSubscribed) {
 		if (env.CACHE_STORE === 'memory' && cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
 			await cache.clear();
 		}
-
-		await schemaCache?.clear();
 	});
 }
 
-export function getCache(): { cache: Keyv | null; systemCache: Keyv; schemaCache: Keyv; lockCache: Keyv } {
+export function getCache(): {
+	cache: Keyv | null;
+	systemCache: Keyv;
+	sharedSchemaCache: Keyv;
+	localSchemaCache: Keyv;
+	lockCache: Keyv;
+} {
 	if (env.CACHE_ENABLED === true && cache === null) {
 		validateEnv(['CACHE_NAMESPACE', 'CACHE_TTL', 'CACHE_STORE']);
 		cache = getKeyvInstance(env.CACHE_STORE, getMilliseconds(env.CACHE_TTL));
@@ -41,9 +48,14 @@ export function getCache(): { cache: Keyv | null; systemCache: Keyv; schemaCache
 		systemCache.on('error', (err) => logger.warn(err, `[cache] ${err}`));
 	}
 
-	if (schemaCache === null) {
-		schemaCache = getKeyvInstance('memory', getMilliseconds(env.CACHE_SYSTEM_TTL), '_schema');
-		schemaCache.on('error', (err) => logger.warn(err, `[cache] ${err}`));
+	if (sharedSchemaCache === null) {
+		sharedSchemaCache = getKeyvInstance(env.CACHE_STORE, getMilliseconds(env.CACHE_SYSTEM_TTL), '_schema_shared');
+		sharedSchemaCache.on('error', (err) => logger.warn(err, `[cache] ${err}`));
+	}
+
+	if (localSchemaCache === null) {
+		localSchemaCache = getKeyvInstance('memory', getMilliseconds(env.CACHE_SYSTEM_TTL), '_schema');
+		localSchemaCache.on('error', (err) => logger.warn(err, `[cache] ${err}`));
 	}
 
 	if (lockCache === null) {
@@ -51,7 +63,7 @@ export function getCache(): { cache: Keyv | null; systemCache: Keyv; schemaCache
 		lockCache.on('error', (err) => logger.warn(err, `[cache] ${err}`));
 	}
 
-	return { cache, systemCache, schemaCache, lockCache };
+	return { cache, systemCache, sharedSchemaCache, localSchemaCache, lockCache };
 }
 
 export async function flushCaches(forced?: boolean): Promise<void> {
@@ -61,7 +73,7 @@ export async function flushCaches(forced?: boolean): Promise<void> {
 }
 
 export async function clearSystemCache(opts?: { forced?: boolean; autoPurgeCache?: false }): Promise<void> {
-	const { systemCache, schemaCache, lockCache } = getCache();
+	const { systemCache, localSchemaCache, lockCache } = getCache();
 
 	// Flush system cache when forced or when system cache lock not set
 	if (opts?.forced || !(await lockCache.get('system-cache-lock'))) {
@@ -70,7 +82,7 @@ export async function clearSystemCache(opts?: { forced?: boolean; autoPurgeCache
 		await lockCache.delete('system-cache-lock');
 	}
 
-	await schemaCache.clear();
+	await localSchemaCache.clear();
 	messenger.publish('schemaChanged', { autoPurgeCache: opts?.autoPurgeCache });
 }
 
@@ -88,16 +100,26 @@ export async function getSystemCache(key: string): Promise<Record<string, any>> 
 	return await getCacheValue(systemCache, key);
 }
 
-export async function setSchemaCache(value: any): Promise<void> {
-	const { schemaCache } = getCache();
+export async function setSchemaCache(schema: SchemaOverview): Promise<void> {
+	const { localSchemaCache, sharedSchemaCache } = getCache();
+	const schemaHash = await getSimpleHash(JSON.stringify(schema));
 
-	await setCacheValue(schemaCache, 'schema', value);
+	await sharedSchemaCache.set('hash', schemaHash);
+
+	await localSchemaCache.set('schema', schema);
+	await localSchemaCache.set('hash', schemaHash);
 }
 
-export async function getSchemaCache(): Promise<Record<string, any>> {
-	const { schemaCache } = getCache();
+export async function getSchemaCache(): Promise<SchemaOverview | undefined> {
+	const { localSchemaCache, sharedSchemaCache } = getCache();
 
-	return await getCacheValue(schemaCache, 'schema');
+	const sharedSchemaHash = sharedSchemaCache.get('hash');
+	if (!sharedSchemaHash) return;
+
+	const localSchemaHash = await localSchemaCache.get('hash');
+	if (!localSchemaHash || localSchemaHash !== sharedSchemaHash) return;
+
+	return await localSchemaCache.get('schema');
 }
 
 export async function setCacheValue(
