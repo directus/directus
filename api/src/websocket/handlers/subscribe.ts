@@ -137,9 +137,11 @@ export class SubscribeHandler {
 					subscription.query = sanitizeQuery(message.query!, accountability);
 				}
 				if ('item' in message) subscription.item = String(message.item);
-				if ('uid' in message) subscription.uid = String(message.uid);
-				// remove the subscription if it already exists
-				this.unsubscribe(client, subscription.uid);
+				if ('uid' in message) {
+					subscription.uid = String(message.uid);
+					// remove the subscription if it already exists
+					this.unsubscribe(client, subscription.uid);
+				}
 
 				const data =
 					'item' in subscription
