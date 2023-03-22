@@ -1,4 +1,5 @@
 import { BaseException } from '@directus/shared/exceptions';
+import type { Accountability } from '@directus/shared/types';
 import { parseJSON } from '@directus/shared/utils';
 import express, { Router } from 'express';
 import flatten from 'flat';
@@ -280,13 +281,19 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 
 			const { verifier, redirect, prompt } = tokenData;
 
+			const accountability: Accountability = {
+				ip: getIPFromReq(req),
+				role: null,
+			};
+
+			const userAgent = req.get('user-agent');
+			if (userAgent) accountability.userAgent = userAgent;
+
+			const origin = req.get('origin');
+			if (origin) accountability.origin = origin;
+
 			const authenticationService = new AuthenticationService({
-				accountability: {
-					ip: getIPFromReq(req),
-					userAgent: req.get('user-agent'),
-					origin: req.get('origin'),
-					role: null,
-				},
+				accountability,
 				schema: req.schema,
 			});
 

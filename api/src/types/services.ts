@@ -4,13 +4,13 @@ import type { Item, PrimaryKey } from './items';
 
 export type AbstractServiceOptions = {
 	knex?: Knex;
-	accountability?: Accountability | null;
+	accountability?: Accountability | null | undefined;
 	schema: SchemaOverview;
 };
 
 export interface AbstractService {
 	knex: Knex;
-	accountability: Accountability | null;
+	accountability: Accountability | null | undefined;
 
 	createOne(data: Partial<Item>): Promise<PrimaryKey>;
 	createMany(data: Partial<Item>[]): Promise<PrimaryKey[]>;

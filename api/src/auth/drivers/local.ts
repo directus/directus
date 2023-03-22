@@ -1,3 +1,4 @@
+import type { Accountability } from '@directus/shared/types';
 import argon2 from 'argon2';
 import { Router } from 'express';
 import Joi from 'joi';
@@ -59,12 +60,16 @@ export function createLocalAuthRouter(provider: string): Router {
 			const STALL_TIME = env.LOGIN_STALL_TIME;
 			const timeStart = performance.now();
 
-			const accountability = {
+			const accountability: Accountability = {
 				ip: getIPFromReq(req),
-				userAgent: req.get('user-agent'),
-				origin: req.get('origin'),
 				role: null,
 			};
+
+			const userAgent = req.get('user-agent');
+			if (userAgent) accountability.userAgent = userAgent;
+
+			const origin = req.get('origin');
+			if (origin) accountability.origin = origin;
 
 			const authenticationService = new AuthenticationService({
 				accountability: accountability,
