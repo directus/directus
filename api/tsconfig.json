@@ -20,5 +20,6 @@
 		"strict": true,
 		"target": "es2022",
 	},
+	"include": ["src"],
 	"exclude": ["node_modules", "dist", "extensions"]
 }
