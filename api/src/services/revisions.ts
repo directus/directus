@@ -1,5 +1,5 @@
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
-import { AbstractServiceOptions, PrimaryKey } from '../types';
+import type { AbstractServiceOptions, PrimaryKey } from '../types';
 import { ItemsService } from './index';
 
 export class RevisionsService extends ItemsService {

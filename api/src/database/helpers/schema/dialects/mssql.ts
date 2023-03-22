@@ -1,4 +1,4 @@
-import { Knex } from 'knex';
+import type { Knex } from 'knex';
 import { SchemaHelper } from '../types';
 
 export class SchemaHelperMSSQL extends SchemaHelper {

@@ -1,5 +1,5 @@
-import { Accountability } from '@directus/shared/types';
-import { NextFunction, Request, Response } from 'express';
+import type { Accountability } from '@directus/shared/types';
+import type { NextFunction, Request, Response } from 'express';
 import { isEqual } from 'lodash';
 import getDatabase from '../database';
 import emitter from '../emitter';

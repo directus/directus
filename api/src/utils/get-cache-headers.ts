@@ -1,5 +1,5 @@
+import type { Request } from 'express';
 import env from '../env';
-import { Request } from 'express';
 import { shouldSkipCache } from './should-skip-cache';
 
 /**

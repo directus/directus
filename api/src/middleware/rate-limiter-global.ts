@@ -1,6 +1,6 @@
-import { RequestHandler } from 'express';
+import type { RequestHandler } from 'express';
 import ms from 'ms';
-import { RateLimiterMemcache, RateLimiterMemory, RateLimiterRedis } from 'rate-limiter-flexible';
+import type { RateLimiterMemcache, RateLimiterMemory, RateLimiterRedis } from 'rate-limiter-flexible';
 import env from '../env';
 import { HitRateLimitException } from '../exceptions/index';
 import logger from '../logger';

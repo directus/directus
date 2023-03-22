@@ -1,7 +1,7 @@
-import { stringify as geojsonToWKT, GeoJSONGeometry } from 'wellknown';
-import { Field, RawField } from '@directus/shared/types';
+import type { Field, RawField } from '@directus/shared/types';
+import type { Knex } from 'knex';
+import { GeoJSONGeometry, stringify as geojsonToWKT } from 'wellknown';
 import { DatabaseHelper } from '../types';
-import { Knex } from 'knex';
 
 export abstract class GeometryHelper extends DatabaseHelper {
 	supported(): boolean | Promise<boolean> {

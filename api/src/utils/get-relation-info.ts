@@ -1,4 +1,4 @@
-import { Relation, RelationMeta } from '@directus/shared/types';
+import type { Relation, RelationMeta } from '@directus/shared/types';
 import { getRelationType } from './get-relation-type';
 
 type RelationInfo = {

@@ -2,7 +2,7 @@ import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
 import env from '../env';
 import { ForbiddenException, InvalidCredentialsException } from '../exceptions';
-import {
+import type {
 	AbstractServiceOptions,
 	DirectusTokenPayload,
 	Item,

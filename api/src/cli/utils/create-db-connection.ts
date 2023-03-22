@@ -1,7 +1,7 @@
 import { knex, Knex } from 'knex';
 import path from 'path';
 import { promisify } from 'util';
-import { Driver } from '../../types';
+import type { Driver } from '../../types';
 
 export type Credentials = {
 	filename?: string;

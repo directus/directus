@@ -1,4 +1,4 @@
-import { Request } from 'express';
+import type { Request } from 'express';
 import { expect, test, vi } from 'vitest';
 import { getEnv } from '../env';
 import { shouldSkipCache } from './should-skip-cache';
