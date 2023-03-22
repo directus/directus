@@ -5,8 +5,8 @@ import { getFlowManager } from '../flows';
 import { respond } from '../middleware/respond';
 import useCollection from '../middleware/use-collection';
 import { validateBatch } from '../middleware/validate-batch';
-import { MetaService, FlowsService } from '../services';
-import { PrimaryKey } from '../types';
+import { FlowsService, MetaService } from '../services';
+import type { PrimaryKey } from '../types';
 import asyncHandler from '../utils/async-handler';
 import { sanitizeQuery } from '../utils/sanitize-query';
 

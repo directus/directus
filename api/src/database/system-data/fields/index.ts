@@ -1,7 +1,7 @@
+import type { FieldMeta } from '@directus/shared/types';
 import fse from 'fs-extra';
 import { merge } from 'lodash';
 import path from 'path';
-import { FieldMeta } from '@directus/shared/types';
 import { getAuthProviders } from '../../../utils/get-auth-providers';
 import { requireYAML } from '../../../utils/require-yaml';
 

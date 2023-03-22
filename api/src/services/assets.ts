@@ -1,8 +1,9 @@
 // @ts-expect-error https://github.com/microsoft/TypeScript/issues/49721
 import type { Range, Stat } from '@directus/storage';
 
-import { Accountability } from '@directus/shared/types';
-import { Knex } from 'knex';
+import type { Accountability } from '@directus/shared/types';
+import type { Knex } from 'knex';
+import { clamp } from 'lodash';
 import { contentType } from 'mime-types';
 import type { Readable } from 'node:stream';
 import hash from 'object-hash';
@@ -12,14 +13,19 @@ import validateUUID from 'uuid-validate';
 import getDatabase from '../database';
 import env from '../env';
 import { ForbiddenException, IllegalAssetTransformation, RangeNotSatisfiableException } from '../exceptions';
+import { ServiceUnavailableException } from '../exceptions/service-unavailable';
 import logger from '../logger';
 import { getStorage } from '../storage';
-import { AbstractServiceOptions, File, Transformation, TransformationParams, TransformationPreset } from '../types';
+import type {
+	AbstractServiceOptions,
+	File,
+	Transformation,
+	TransformationParams,
+	TransformationPreset,
+} from '../types';
 import { getMilliseconds } from '../utils/get-milliseconds';
 import * as TransformationUtils from '../utils/transformations';
 import { AuthorizationService } from './authorization';
-import { clamp } from 'lodash';
-import { ServiceUnavailableException } from '../exceptions/service-unavailable';
 
 export class AssetsService {
 	knex: Knex;

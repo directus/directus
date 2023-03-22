@@ -1,4 +1,4 @@
-import { Request } from 'express';
+import type { Request } from 'express';
 import { getEnv } from '../env';
 import { Url } from './url';
 

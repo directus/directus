@@ -1,4 +1,4 @@
-import { RequestHandler } from 'express';
+import type { RequestHandler } from 'express';
 import asyncHandler from '../utils/async-handler';
 import { getSchema } from '../utils/get-schema';
 

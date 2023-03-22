@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
-import { Collection } from '../types/collection';
-import {
+import type { Collection } from '../types/collection';
+import type {
 	Snapshot,
 	SnapshotDiff,
 	SnapshotDiffWithHash,

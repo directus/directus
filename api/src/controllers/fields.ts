@@ -1,3 +1,5 @@
+import { TYPES } from '@directus/shared/constants';
+import type { Field, Type } from '@directus/shared/types';
 import { Router } from 'express';
 import Joi from 'joi';
 import { ALIAS_TYPES } from '../constants';
@@ -6,8 +8,6 @@ import validateCollection from '../middleware/collection-exists';
 import { respond } from '../middleware/respond';
 import useCollection from '../middleware/use-collection';
 import { FieldsService } from '../services/fields';
-import { Field, Type } from '@directus/shared/types';
-import { TYPES } from '@directus/shared/constants';
 import asyncHandler from '../utils/async-handler';
 
 const router = Router();

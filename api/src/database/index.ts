@@ -1,16 +1,16 @@
 import SchemaInspector from '@directus/schema';
+import fse from 'fs-extra';
 import { knex, Knex } from 'knex';
+import { merge } from 'lodash';
+import path from 'path';
 import { performance } from 'perf_hooks';
+import { promisify } from 'util';
 import env from '../env';
 import logger from '../logger';
+import type { DatabaseClient } from '../types';
 import { getConfigFromEnv } from '../utils/get-config-from-env';
 import { validateEnv } from '../utils/validate-env';
-import fse from 'fs-extra';
-import path from 'path';
-import { merge } from 'lodash';
-import { promisify } from 'util';
 import { getHelpers } from './helpers';
-import { DatabaseClient } from '../types';
 
 let database: Knex | null = null;
 let inspector: ReturnType<typeof SchemaInspector> | null = null;

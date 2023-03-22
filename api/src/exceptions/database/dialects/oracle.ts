@@ -1,5 +1,5 @@
 import { ContainsNullValuesException } from '../contains-null-values';
-import { OracleError } from './types';
+import type { OracleError } from './types';
 
 enum OracleErrorCodes {
 	'CONTAINS_NULL_VALUES' = 2296,

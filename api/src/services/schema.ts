@@ -1,8 +1,8 @@
-import { Accountability } from '@directus/shared/types';
-import { Knex } from 'knex';
+import type { Accountability } from '@directus/shared/types';
+import type { Knex } from 'knex';
 import getDatabase from '../database';
 import { ForbiddenException } from '../exceptions';
-import { AbstractServiceOptions, Snapshot, SnapshotDiff, SnapshotDiffWithHash, SnapshotWithHash } from '../types';
+import type { AbstractServiceOptions, Snapshot, SnapshotDiff, SnapshotDiffWithHash, SnapshotWithHash } from '../types';
 import { applyDiff } from '../utils/apply-diff';
 import { getSnapshot } from '../utils/get-snapshot';
 import { getSnapshotDiff } from '../utils/get-snapshot-diff';

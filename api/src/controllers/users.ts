@@ -1,13 +1,13 @@
+import type { Role } from '@directus/shared/types';
 import express from 'express';
 import Joi from 'joi';
-import { InvalidCredentialsException, ForbiddenException, InvalidPayloadException } from '../exceptions';
+import { ForbiddenException, InvalidCredentialsException, InvalidPayloadException } from '../exceptions';
 import { respond } from '../middleware/respond';
 import useCollection from '../middleware/use-collection';
 import { validateBatch } from '../middleware/validate-batch';
-import { AuthenticationService, MetaService, UsersService, RolesService, TFAService } from '../services';
-import { PrimaryKey } from '../types';
+import { AuthenticationService, MetaService, RolesService, TFAService, UsersService } from '../services';
+import type { PrimaryKey } from '../types';
 import asyncHandler from '../utils/async-handler';
-import { Role } from '@directus/shared/types';
 import { sanitizeQuery } from '../utils/sanitize-query';
 
 const router = express.Router();

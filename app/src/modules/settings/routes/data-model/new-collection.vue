@@ -385,7 +385,7 @@ export default defineComponent({
 					},
 				});
 
-				archiveField.value = 'status';
+				archiveField.value = systemFields.status.name;
 				archiveValue.value = 'archived';
 				unarchiveValue.value = 'draft';
 			}
