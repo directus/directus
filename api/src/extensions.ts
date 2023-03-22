@@ -5,10 +5,11 @@ import {
 	NESTED_EXTENSION_TYPES,
 } from '@directus/shared/constants';
 import * as sharedExceptions from '@directus/shared/exceptions';
-import {
+import type {
 	ActionHandler,
 	ApiExtension,
 	BundleExtension,
+	EmbedHandler,
 	EndpointConfig,
 	Extension,
 	ExtensionInfo,
@@ -17,10 +18,10 @@ import {
 	HookConfig,
 	HybridExtension,
 	InitHandler,
-	EmbedHandler,
 	OperationApiConfig,
 	ScheduleHandler,
 } from '@directus/shared/types';
+import { isIn, isTypeIn, pluralize } from '@directus/shared/utils';
 import {
 	ensureExtensionDirs,
 	generateExtensionsEntrypoint,
@@ -30,29 +31,27 @@ import {
 	resolvePackage,
 	resolvePackageExtensions,
 } from '@directus/shared/utils/node';
+import alias from '@rollup/plugin-alias';
+import virtual from '@rollup/plugin-virtual';
+import chokidar, { FSWatcher } from 'chokidar';
 import express, { Router } from 'express';
 import fse from 'fs-extra';
+import globby from 'globby';
+import { clone, escapeRegExp } from 'lodash';
+import { schedule, validate } from 'node-cron';
 import path from 'path';
+import { rollup } from 'rollup';
 import getDatabase from './database';
 import emitter, { Emitter } from './emitter';
 import env from './env';
 import * as exceptions from './exceptions';
-import logger from './logger';
-import { dynamicImport } from './utils/dynamic-import';
-import { getSchema } from './utils/get-schema';
-
-import { isIn, isTypeIn, pluralize } from '@directus/shared/utils';
-import alias from '@rollup/plugin-alias';
-import virtual from '@rollup/plugin-virtual';
-import chokidar, { FSWatcher } from 'chokidar';
-import globby from 'globby';
-import { clone, escapeRegExp } from 'lodash';
-import { schedule, validate } from 'node-cron';
-import { rollup } from 'rollup';
 import { getFlowManager } from './flows';
+import logger from './logger';
 import * as services from './services';
-import { EventHandler } from './types';
+import type { EventHandler } from './types';
+import { dynamicImport } from './utils/dynamic-import';
 import getModuleDefault from './utils/get-module-default';
+import { getSchema } from './utils/get-schema';
 import { JobQueue } from './utils/job-queue';
 import { Url } from './utils/url';
 

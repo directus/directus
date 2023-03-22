@@ -1,4 +1,4 @@
-import { Request } from 'express';
+import type { Request } from 'express';
 import { pick } from 'lodash';
 
 export function getGraphqlQueryAndVariables(req: Request) {

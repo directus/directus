@@ -1,4 +1,4 @@
-import { Request } from 'express';
+import type { Request } from 'express';
 import hash from 'object-hash';
 import url from 'url';
 import { getGraphqlQueryAndVariables } from './get-graphql-query-and-variables';

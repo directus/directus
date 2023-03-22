@@ -1,8 +1,8 @@
-import { SchemaOverview } from '@directus/shared/types';
-import { Knex } from 'knex';
+import type { SchemaOverview } from '@directus/shared/types';
+import type { Knex } from 'knex';
 import { getCache } from '../cache';
 import getDatabase from '../database';
-import { Snapshot, SnapshotDiff } from '../types';
+import type { Snapshot, SnapshotDiff } from '../types';
 import { applyDiff } from './apply-diff';
 import { getSchema } from './get-schema';
 import { getSnapshot } from './get-snapshot';

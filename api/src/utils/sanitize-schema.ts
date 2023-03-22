@@ -1,6 +1,6 @@
-import { Field, Relation } from '@directus/shared/types';
+import type { Field, Relation } from '@directus/shared/types';
 import { pick } from 'lodash';
-import { Collection } from '../types';
+import type { Collection } from '../types';
 
 /**
  * Pick certain database vendor specific collection properties that should be compared when performing diff

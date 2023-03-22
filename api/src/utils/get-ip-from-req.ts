@@ -1,4 +1,4 @@
-import { Request } from 'express';
+import type { Request } from 'express';
 import { isIP } from 'net';
 import env from '../env';
 import logger from '../logger';

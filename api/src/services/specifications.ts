@@ -1,19 +1,25 @@
 import openapi from '@directus/specs';
-import { Knex } from 'knex';
+import type { Knex } from 'knex';
 import { cloneDeep, mergeWith } from 'lodash';
-import { OpenAPIObject, ParameterObject, PathItemObject, ReferenceObject, SchemaObject, TagObject } from 'openapi3-ts';
-// @ts-ignore
+import type {
+	OpenAPIObject,
+	ParameterObject,
+	PathItemObject,
+	ReferenceObject,
+	SchemaObject,
+	TagObject,
+} from 'openapi3-ts';
+import type { Accountability, Field, Permission, Relation, SchemaOverview, Type } from '@directus/shared/types';
 import { version } from '../../package.json';
+import { OAS_REQUIRED_SCHEMAS } from '../constants';
 import getDatabase from '../database';
 import env from '../env';
-import { AbstractServiceOptions, Collection } from '../types';
-import { Accountability, Field, Type, Permission, SchemaOverview, Relation } from '@directus/shared/types';
+import type { AbstractServiceOptions, Collection } from '../types';
 import { getRelationType } from '../utils/get-relation-type';
 import { CollectionsService } from './collections';
 import { FieldsService } from './fields';
 import { GraphQLService } from './graphql';
 import { RelationsService } from './relations';
-import { OAS_REQUIRED_SCHEMAS } from '../constants';
 
 // @ts-ignore
 import formatTitle from '@directus/format-title';

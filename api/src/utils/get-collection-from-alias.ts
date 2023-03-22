@@ -1,4 +1,4 @@
-import { AliasMap } from './get-column-path';
+import type { AliasMap } from './get-column-path';
 
 /**
  * Extract the collection of an alias within an aliasMap

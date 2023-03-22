@@ -1,7 +1,7 @@
-import { SchemaOverview } from '@directus/shared/types';
-import { ForbiddenException } from '../exceptions';
-import { PrimaryKey } from '../types';
+import type { SchemaOverview } from '@directus/shared/types';
 import validateUUID from 'uuid-validate';
+import { ForbiddenException } from '../exceptions';
+import type { PrimaryKey } from '../types';
 
 /**
  * Validate keys based on its type

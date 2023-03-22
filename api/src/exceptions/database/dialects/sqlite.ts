@@ -2,7 +2,7 @@ import { ContainsNullValuesException } from '../contains-null-values';
 import { InvalidForeignKeyException } from '../invalid-foreign-key';
 import { NotNullViolationException } from '../not-null-violation';
 import { RecordNotUniqueException } from '../record-not-unique';
-import { SQLiteError } from './types';
+import type { SQLiteError } from './types';
 
 // NOTE:
 // - Sqlite doesn't have varchar with length support, so no ValueTooLongException

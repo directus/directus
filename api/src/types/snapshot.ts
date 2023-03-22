@@ -1,7 +1,7 @@
-import { Collection } from './collection';
-import { Relation, RelationMeta, Field, FieldMeta } from '@directus/shared/types';
-import { Diff } from 'deep-diff';
-import { DatabaseClient } from './database';
+import type { Field, FieldMeta, Relation, RelationMeta } from '@directus/shared/types';
+import type { Diff } from 'deep-diff';
+import type { Collection } from './collection';
+import type { DatabaseClient } from './database';
 
 export type Snapshot = {
 	version: number;

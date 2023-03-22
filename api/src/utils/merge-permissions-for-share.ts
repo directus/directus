@@ -1,4 +1,4 @@
-import { Permission, Accountability, Filter, SchemaOverview } from '@directus/shared/types';
+import type { Permission, Accountability, Filter, SchemaOverview } from '@directus/shared/types';
 
 import { assign, set, uniq } from 'lodash';
 import { mergePermissions } from './merge-permissions';

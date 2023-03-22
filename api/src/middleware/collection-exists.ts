@@ -2,7 +2,7 @@
  * Check if requested collection exists, and save it to req.collection
  */
 
-import { RequestHandler } from 'express';
+import type { RequestHandler } from 'express';
 import { systemCollectionRows } from '../database/system-data/collections';
 import { ForbiddenException } from '../exceptions';
 import asyncHandler from '../utils/async-handler';
