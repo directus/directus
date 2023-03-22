@@ -1,16 +1,16 @@
-import { Accountability, Permission, SchemaOverview } from '@directus/shared/types';
+import type { Accountability, Permission, SchemaOverview } from '@directus/shared/types';
 import { deepMap, parseFilter, parseJSON, parsePreset } from '@directus/shared/utils';
 import { cloneDeep } from 'lodash';
 import hash from 'object-hash';
-import { getCache, getSystemCache, setSystemCache, getCacheValue, setCacheValue } from '../cache';
+import { getCache, getCacheValue, getSystemCache, setCacheValue, setSystemCache } from '../cache';
 import getDatabase from '../database';
 import { appAccessMinimalPermissions } from '../database/system-data/app-access-permissions';
 import env from '../env';
+import logger from '../logger';
 import { RolesService } from '../services/roles';
 import { UsersService } from '../services/users';
 import { mergePermissions } from '../utils/merge-permissions';
 import { mergePermissionsForShare } from './merge-permissions-for-share';
-import logger from '../logger';
 
 export async function getPermissions(accountability: Accountability, schema: SchemaOverview) {
 	const database = getDatabase();

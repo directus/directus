@@ -1,4 +1,5 @@
-import { BaseException } from '@directus/shared/exceptions';
+import { FUNCTIONS } from '@directus/shared/constants';
+import type { BaseException } from '@directus/shared/exceptions';
 import { Accountability, Action, Aggregate, Filter, PrimaryKey, Query, SchemaOverview } from '@directus/shared/types';
 import { parseFilterFunctionPath } from '@directus/shared/utils';
 import argon2 from 'argon2';
@@ -41,7 +42,7 @@ import {
 	SchemaComposer,
 	toInputObjectType,
 } from 'graphql-compose';
-import { Knex } from 'knex';
+import type { Knex } from 'knex';
 import { flatten, get, mapKeys, merge, omit, pick, set, transform, uniq } from 'lodash';
 import { clearSystemCache, getCache } from '../../cache';
 import { DEFAULT_AUTH_PROVIDER, GENERATE_SPECIAL } from '../../constants';
@@ -49,9 +50,10 @@ import getDatabase from '../../database';
 import env from '../../env';
 import { ForbiddenException, GraphQLValidationException, InvalidPayloadException } from '../../exceptions';
 import { getExtensionManager } from '../../extensions';
-import { AbstractServiceOptions, GraphQLParams, Item } from '../../types';
+import type { AbstractServiceOptions, GraphQLParams, Item } from '../../types';
 import { generateHash } from '../../utils/generate-hash';
 import { getGraphQLType } from '../../utils/get-graphql-type';
+import { getMilliseconds } from '../../utils/get-milliseconds';
 import { reduceSchema } from '../../utils/reduce-schema';
 import { sanitizeQuery } from '../../utils/sanitize-query';
 import { validateQuery } from '../../utils/validate-query';
@@ -78,18 +80,14 @@ import { TFAService } from '../tfa';
 import { UsersService } from '../users';
 import { UtilsService } from '../utils';
 import { WebhooksService } from '../webhooks';
-import processError from './utils/process-error';
-
+import { GraphQLBigInt } from './types/bigint';
 import { GraphQLDate } from './types/date';
 import { GraphQLGeoJSON } from './types/geojson';
+import { GraphQLHash } from './types/hash';
 import { GraphQLStringOrFloat } from './types/string-or-float';
 import { GraphQLVoid } from './types/void';
-
-import { FUNCTIONS } from '@directus/shared/constants';
-import { getMilliseconds } from '../../utils/get-milliseconds';
-import { GraphQLBigInt } from './types/bigint';
-import { GraphQLHash } from './types/hash';
 import { addPathToValidationError } from './utils/add-path-to-validation-error';
+import processError from './utils/process-error';
 
 const validationRules = Array.from(specifiedRules);
 

@@ -1,22 +1,21 @@
+import { FailedValidationException } from '@directus/shared/exceptions';
+import type { Accountability, Query, SchemaOverview } from '@directus/shared/types';
+import { getSimpleHash, toArray } from '@directus/shared/utils';
 import jwt from 'jsonwebtoken';
-import { Knex } from 'knex';
+import type { Knex } from 'knex';
 import { cloneDeep } from 'lodash';
+import { performance } from 'perf_hooks';
 import getDatabase from '../database';
 import env from '../env';
-import { FailedValidationException } from '@directus/shared/exceptions';
 import { ForbiddenException, InvalidPayloadException, UnprocessableEntityException } from '../exceptions';
 import { RecordNotUniqueException } from '../exceptions/database/record-not-unique';
-import { AbstractServiceOptions, Item, PrimaryKey, MutationOptions } from '../types';
-import { Query, SchemaOverview, Accountability } from '@directus/shared/types';
+import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '../types';
 import isUrlAllowed from '../utils/is-url-allowed';
-import { toArray } from '@directus/shared/utils';
+import { stall } from '../utils/stall';
 import { Url } from '../utils/url';
 import { ItemsService } from './items';
 import { MailService } from './mail';
 import { SettingsService } from './settings';
-import { stall } from '../utils/stall';
-import { performance } from 'perf_hooks';
-import { getSimpleHash } from '@directus/shared/utils';
 
 export class UsersService extends ItemsService {
 	knex: Knex;

@@ -3,8 +3,8 @@ import { Liquid } from 'liquidjs';
 import path from 'path';
 import { promisify } from 'util';
 import { v4 as uuid } from 'uuid';
-import { Credentials } from '../create-db-connection';
-import { drivers } from '../drivers';
+import type { Credentials } from '../create-db-connection';
+import type { drivers } from '../drivers';
 
 const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);

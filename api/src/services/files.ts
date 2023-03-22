@@ -15,7 +15,7 @@ import { ForbiddenException, InvalidPayloadException, ServiceUnavailableExceptio
 import logger from '../logger';
 import { getAxios } from '../request/index';
 import { getStorage } from '../storage';
-import { AbstractServiceOptions, File, Metadata, MutationOptions, PrimaryKey } from '../types';
+import type { AbstractServiceOptions, File, Metadata, MutationOptions, PrimaryKey } from '../types';
 import { parseIptc, parseXmp } from '../utils/parse-image-metadata';
 import { ItemsService } from './items';
 

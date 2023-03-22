@@ -4,7 +4,7 @@ import { NotNullViolationException } from '../not-null-violation';
 import { RecordNotUniqueException } from '../record-not-unique';
 import { ValueOutOfRangeException } from '../value-out-of-range';
 import { ValueTooLongException } from '../value-too-long';
-import { MySQLError } from './types';
+import type { MySQLError } from './types';
 
 enum MySQLErrorCodes {
 	UNIQUE_VIOLATION = 'ER_DUP_ENTRY',

@@ -1,6 +1,5 @@
+import type { Permission, PermissionsAction, SchemaOverview } from '@directus/shared/types';
 import { uniq } from 'lodash';
-
-import { Permission, PermissionsAction, SchemaOverview } from '@directus/shared/types';
 
 /**
  * Reduces the schema based on the included permissions. The resulting object is the schema structure, but with only

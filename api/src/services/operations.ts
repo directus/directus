@@ -1,6 +1,6 @@
-import { OperationRaw } from '@directus/shared/types';
+import type { OperationRaw } from '@directus/shared/types';
 import { getFlowManager } from '../flows';
-import { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '../types';
+import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '../types';
 import { ItemsService } from './items';
 
 export class OperationsService extends ItemsService<OperationRaw> {

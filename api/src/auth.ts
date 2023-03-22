@@ -1,15 +1,14 @@
+import { toArray } from '@directus/shared/utils';
+import type { AuthDriver } from './auth/auth';
+import { LDAPAuthDriver, LocalAuthDriver, OAuth2AuthDriver, OpenIDAuthDriver, SAMLAuthDriver } from './auth/drivers';
+import { DEFAULT_AUTH_PROVIDER } from './constants';
 import getDatabase from './database';
 import env from './env';
-import logger from './logger';
-import { AuthDriver } from './auth/auth';
-import { LocalAuthDriver, OAuth2AuthDriver, OpenIDAuthDriver, LDAPAuthDriver, SAMLAuthDriver } from './auth/drivers';
-
-import { DEFAULT_AUTH_PROVIDER } from './constants';
 import { InvalidConfigException } from './exceptions';
-import { AuthDriverOptions } from './types';
+import logger from './logger';
+import type { AuthDriverOptions } from './types';
 import { getConfigFromEnv } from './utils/get-config-from-env';
 import { getSchema } from './utils/get-schema';
-import { toArray } from '@directus/shared/utils';
 
 const providerNames = toArray(env.AUTH_PROVIDERS);
 

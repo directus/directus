@@ -10,7 +10,7 @@ import { RecordNotUniqueException } from '../../exceptions/database/record-not-u
 import logger from '../../logger';
 import { respond } from '../../middleware/respond';
 import { AuthenticationService, UsersService } from '../../services';
-import { AuthDriverOptions, User } from '../../types';
+import type { AuthDriverOptions, User } from '../../types';
 import asyncHandler from '../../utils/async-handler';
 import { getConfigFromEnv } from '../../utils/get-config-from-env';
 import { LocalAuthDriver } from './local';

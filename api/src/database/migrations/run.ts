@@ -1,10 +1,10 @@
 import fse from 'fs-extra';
-import { Knex } from 'knex';
+import type { Knex } from 'knex';
 import { orderBy } from 'lodash';
 import path from 'path';
 import env from '../../env';
 import logger from '../../logger';
-import { Migration } from '../../types';
+import type { Migration } from '../../types';
 import { dynamicImport } from '../../utils/dynamic-import';
 
 // @ts-ignore

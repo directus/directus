@@ -1,5 +1,5 @@
 import { describe, expect, test, vi } from 'vitest';
-import { Snapshot } from '../types/snapshot';
+import type { Snapshot } from '../types/snapshot';
 import { validateSnapshot } from './validate-snapshot';
 
 vi.mock('../../package.json', () => ({
