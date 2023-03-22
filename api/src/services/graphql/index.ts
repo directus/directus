@@ -60,24 +60,13 @@ import { AuthenticationService } from '../authentication';
 import { CollectionsService } from '../collections';
 import { FieldsService } from '../fields';
 import { FilesService } from '../files';
-import { FlowsService } from '../flows';
-import { FoldersService } from '../folders';
-import { ItemsService } from '../items';
-import { NotificationsService } from '../notifications';
-import { OperationsService } from '../operations';
-import { PermissionsService } from '../permissions';
-import { PresetsService } from '../presets';
 import { RelationsService } from '../relations';
 import { RevisionsService } from '../revisions';
-import { RolesService } from '../roles';
 import { ServerService } from '../server';
-import { SettingsService } from '../settings';
-import { SharesService } from '../shares';
 import { SpecificationService } from '../specifications';
 import { TFAService } from '../tfa';
 import { UsersService } from '../users';
 import { UtilsService } from '../utils';
-import { WebhooksService } from '../webhooks';
 import processError from './utils/process-error';
 
 import { GraphQLDate } from './types/date';
@@ -91,6 +80,7 @@ import { getMilliseconds } from '../../utils/get-milliseconds';
 import { GraphQLBigInt } from './types/bigint';
 import { GraphQLHash } from './types/hash';
 import { addPathToValidationError } from './utils/add-path-to-validation-error';
+import { getService } from '../../utils/get-service';
 
 const validationRules = Array.from(specifiedRules);
 
@@ -1403,7 +1393,11 @@ export class GraphQLService {
 			return await this.upsertSingleton(collection, args.data, query);
 		}
 
-		const service = this.getService(collection);
+		const service = getService(collection, {
+			knex: this.knex,
+			accountability: this.accountability,
+			schema: this.schema,
+		});
 		const hasQuery = (query.fields || []).length > 0;
 
 		try {
@@ -1454,7 +1448,11 @@ export class GraphQLService {
 	 * Execute the read action on the correct service. Checks for singleton as well.
 	 */
 	async read(collection: string, query: Query): Promise<Partial<Item>> {
-		const service = this.getService(collection);
+		const service = getService(collection, {
+			knex: this.knex,
+			accountability: this.accountability,
+			schema: this.schema,
+		});
 
 		const result = this.schema.collections[collection].singleton
 			? await service.readSingleton(query, { stripNonRequested: false })
@@ -1471,7 +1469,11 @@ export class GraphQLService {
 		body: Record<string, any> | Record<string, any>[],
 		query: Query
 	): Promise<Partial<Item> | boolean> {
-		const service = this.getService(collection);
+		const service = getService(collection, {
+			knex: this.knex,
+			accountability: this.accountability,
+			schema: this.schema,
+		});
 
 		try {
 			await service.upsertSingleton(body);
@@ -1722,51 +1724,6 @@ export class GraphQLService {
 		}
 		error.extensions.code = error.code;
 		return new GraphQLError(error.message, undefined, undefined, undefined, undefined, error);
-	}
-
-	/**
-	 * Select the correct service for the given collection. This allows the individual services to run
-	 * their custom checks (f.e. it allows UsersService to prevent updating TFA secret from outside)
-	 */
-	getService(collection: string): ItemsService {
-		const opts = {
-			knex: this.knex,
-			accountability: this.accountability,
-			schema: this.schema,
-		};
-
-		switch (collection) {
-			case 'directus_activity':
-				return new ActivityService(opts);
-			case 'directus_files':
-				return new FilesService(opts);
-			case 'directus_folders':
-				return new FoldersService(opts);
-			case 'directus_permissions':
-				return new PermissionsService(opts);
-			case 'directus_presets':
-				return new PresetsService(opts);
-			case 'directus_notifications':
-				return new NotificationsService(opts);
-			case 'directus_revisions':
-				return new RevisionsService(opts);
-			case 'directus_roles':
-				return new RolesService(opts);
-			case 'directus_settings':
-				return new SettingsService(opts);
-			case 'directus_users':
-				return new UsersService(opts);
-			case 'directus_webhooks':
-				return new WebhooksService(opts);
-			case 'directus_shares':
-				return new SharesService(opts);
-			case 'directus_flows':
-				return new FlowsService(opts);
-			case 'directus_operations':
-				return new OperationsService(opts);
-			default:
-				return new ItemsService(collection, opts);
-		}
 	}
 
 	/**

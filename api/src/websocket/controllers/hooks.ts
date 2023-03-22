@@ -95,12 +95,12 @@ function registerFilesHooks() {
 }
 
 function registerRelationsHooks() {
-	// exception for relation updates that don't report `directus_fields` as being the collection
+	// exception for relation updates that don't report `directus_relations` as being the collection
 	registerAction('relations.create', ({ key, payload = {} }) => ({
 		collection: 'directus_relations',
 		action: 'create',
 		key,
-		payload,
+		payload: { ...payload, key },
 	}));
 	registerAction('relations.update', ({ keys, payload = {} }) => ({
 		collection: 'directus_relations',
@@ -112,7 +112,7 @@ function registerRelationsHooks() {
 		collection: 'directus_relations',
 		action: 'delete',
 		keys: payload,
-		payload: { collection },
+		payload: { collection, fields: payload },
 	}));
 }
 

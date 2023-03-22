@@ -26,7 +26,7 @@ export class ItemsHandler {
 		const uid = message.uid;
 		const accountability = client.accountability;
 		const schema = await getSchema();
-		if (!schema.collections[message.collection]) {
+		if (!schema.collections[message.collection] || message.collection.startsWith('directus_')) {
 			throw new WebSocketException(
 				'items',
 				'INVALID_COLLECTION',

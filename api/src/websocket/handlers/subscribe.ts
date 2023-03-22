@@ -1,16 +1,17 @@
 import { getSchema } from '../../utils/get-schema';
-import { ItemsService } from '../../services/items';
 import type { Subscription, WebSocketClient } from '../types';
 import emitter from '../../emitter';
 import { fmtMessage, getMessageType } from '../utils/message';
 import { refreshAccountability } from '../authenticate';
-import { MetaService } from '../../services';
+import { CollectionsService, FieldsService, MetaService, RelationsService } from '../../services';
 import { sanitizeQuery } from '../../utils/sanitize-query';
 import { handleWebsocketException, WebSocketException } from '../exceptions';
 import type { Accountability, SchemaOverview } from '@directus/shared/types';
 import { WebSocketSubscribeMessage } from '../messages';
 import { getMessenger, Messenger } from '../../messenger';
 import { WebSocketEvent } from '../messages';
+import { getService } from '../../utils/get-service';
+import { InvalidPayloadException } from '../../index';
 
 /**
  * Handler responsible for subscriptions
@@ -59,6 +60,9 @@ export class SubscribeHandler {
 	 */
 	subscribe(subscription: Subscription) {
 		const { collection } = subscription;
+		if ('item' in subscription && ['directus_fields', 'directus_relations'].includes(collection)) {
+			throw new InvalidPayloadException(`Cannot subscribe to a specific item in the ${collection} collection.`);
+		}
 		if (!this.subscriptions[collection]) {
 			this.subscriptions[collection] = new Set();
 		}
@@ -165,15 +169,21 @@ export class SubscribeHandler {
 		schema: SchemaOverview,
 		event?: WebSocketEvent
 	): Promise<Record<string, any>> {
-		const service = new ItemsService(subscription.collection, { schema, accountability });
 		const metaService = new MetaService({ schema, accountability });
 		const query = subscription.query ?? {};
 		const id = subscription.item!;
-
 		const result: Record<string, any> = {
 			event: event?.action ?? 'init',
 		};
-		result['payload'] = await service.readOne(id, query);
+
+		if (subscription.collection === 'directus_collections') {
+			const service = new CollectionsService({ schema, accountability });
+			result['payload'] = await service.readOne(String(id));
+		} else {
+			const service = getService(subscription.collection, { schema, accountability });
+			result['payload'] = await service.readOne(id, query);
+		}
+
 		if ('meta' in query) {
 			result['meta'] = await metaService.getMetaForQuery(subscription.collection, query);
 		}
@@ -185,25 +195,80 @@ export class SubscribeHandler {
 		schema: SchemaOverview,
 		event?: WebSocketEvent
 	): Promise<Record<string, any>> {
-		const service = new ItemsService(subscription.collection, { schema, accountability });
 		const metaService = new MetaService({ schema, accountability });
-		const query = subscription.query ?? {};
 		const result: Record<string, any> = {
 			event: event?.action ?? 'init',
 		};
-		if (!event?.action) {
-			result['payload'] = await service.readByQuery(query);
-		} else if (event.action === 'create') {
-			result['payload'] = await service.readMany([event.key], query);
-		} else if (event.action === 'delete') {
-			result['payload'] = event.keys;
-		} else {
-			result['payload'] = await service.readMany(event.keys, query);
+
+		switch (subscription.collection) {
+			case 'directus_collections':
+				result['payload'] = this.getCollectionPayload(accountability, schema, event);
+				break;
+			case 'directus_fields':
+				result['payload'] = this.getFieldsPayload(accountability, schema, event);
+				break;
+			case 'directus_relations':
+				result['payload'] = event?.payload;
+				break;
+			default:
+				result['payload'] = this.getItemsPayload(subscription, accountability, schema, event);
+				break;
 		}
+
+		const query = subscription.query ?? {};
 		if ('meta' in query) {
 			result['meta'] = await metaService.getMetaForQuery(subscription.collection, query);
 		}
+
 		return result;
+	}
+	private async getCollectionPayload(
+		accountability: Accountability | null,
+		schema: SchemaOverview,
+		event?: WebSocketEvent
+	) {
+		const service = new CollectionsService({ schema, accountability });
+		if (!event?.action) {
+			return await service.readByQuery();
+		} else if (event.action === 'create') {
+			return await service.readMany([String(event.key)]);
+		} else if (event.action === 'delete') {
+			return event.keys;
+		} else {
+			return await service.readMany(event.keys.map((key) => String(key)));
+		}
+	}
+	private async getFieldsPayload(
+		accountability: Accountability | null,
+		schema: SchemaOverview,
+		event?: WebSocketEvent
+	) {
+		const service = new FieldsService({ schema, accountability });
+		if (!event?.action) {
+			return await service.readAll();
+		} else if (event.action === 'delete') {
+			return event.keys;
+		} else {
+			return await service.readOne(event.payload?.collection, event.payload?.field);
+		}
+	}
+	private async getItemsPayload(
+		subscription: Subscription,
+		accountability: Accountability | null,
+		schema: SchemaOverview,
+		event?: WebSocketEvent
+	) {
+		const query = subscription.query ?? {};
+		const service = getService(subscription.collection, { schema, accountability });
+		if (!event?.action) {
+			return await service.readByQuery(query);
+		} else if (event.action === 'create') {
+			return await service.readMany([event.key], query);
+		} else if (event.action === 'delete') {
+			return event.keys;
+		} else {
+			return await service.readMany(event.keys, query);
+		}
 	}
 	private getSubscription(uid: string) {
 		for (const userSubscriptions of Object.values(this.subscriptions)) {
