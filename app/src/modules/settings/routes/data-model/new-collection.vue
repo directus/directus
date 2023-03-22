@@ -82,6 +82,7 @@
 						<div class="type-label">{{ t(info.label) }}</div>
 						<v-input
 							v-model="info.name"
+							db-safe
 							class="monospace"
 							:class="{ active: info.enabled }"
 							:disabled="info.inputDisabled"
@@ -384,7 +385,7 @@ export default defineComponent({
 					},
 				});
 
-				archiveField.value = 'status';
+				archiveField.value = systemFields.status.name;
 				archiveValue.value = 'archived';
 				unarchiveValue.value = 'draft';
 			}
