@@ -69,7 +69,7 @@ export function sanitizeQuery(rawQuery: Record<string, any>, accountability?: Ac
 }
 
 function sanitizeFields(rawFields: any) {
-	if (!rawFields) return;
+	if (!rawFields) return null;
 
 	let fields: string[] = [];
 

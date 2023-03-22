@@ -113,10 +113,11 @@ class OASSpecsService implements SpecificationSubService {
 					description: 'Your current Directus instance.',
 				},
 			],
-			tags,
 			paths,
-			components,
 		};
+
+		if (tags) spec.tags = tags;
+		if (components) spec.components = components;
 
 		return spec;
 	}
@@ -145,11 +146,16 @@ class OASSpecsService implements SpecificationSubService {
 					}
 				}
 			} else {
-				tags.push({
+				const tag: TagObject = {
 					name: 'Items' + formatTitle(collection.collection).replace(/ /g, ''),
-					description: collection.meta?.note || undefined,
 					'x-collection': collection.collection,
-				});
+				};
+
+				if (collection.meta?.note) {
+					tag.description = collection.meta.note;
+				}
+
+				tags.push(tag);
 			}
 		}
 
@@ -404,10 +410,15 @@ class OASSpecsService implements SpecificationSubService {
 	}
 
 	private generateField(field: Field, relations: Relation[], tags: TagObject[], fields: Field[]): SchemaObject {
-		let propertyObject: SchemaObject = {
-			nullable: field.schema?.is_nullable,
-			description: field.meta?.note || undefined,
-		};
+		let propertyObject: SchemaObject = {};
+
+		if (field.schema && 'is_nullable' in field.schema) {
+			propertyObject.nullable = field.schema.is_nullable;
+		}
+
+		if (field.meta?.note) {
+			propertyObject.description = field.meta.note;
+		}
 
 		const relation = relations.find(
 			(relation) =>
@@ -482,14 +493,7 @@ class OASSpecsService implements SpecificationSubService {
 		return propertyObject;
 	}
 
-	private fieldTypes: Record<
-		Type,
-		{
-			type?: 'string' | 'number' | 'boolean' | 'object' | 'array' | 'integer' | 'null' | undefined;
-			format?: string;
-			items?: any;
-		}
-	> = {
+	private fieldTypes: Record<Type, Partial<SchemaObject>> = {
 		alias: {
 			type: 'string',
 		},
@@ -546,9 +550,7 @@ class OASSpecsService implements SpecificationSubService {
 			type: 'string',
 			format: 'timestamp',
 		},
-		unknown: {
-			type: undefined,
-		},
+		unknown: {},
 		uuid: {
 			type: 'string',
 			format: 'uuid',
