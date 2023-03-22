@@ -4,9 +4,9 @@ import { applyFilter } from '../../../utils/apply-query';
 import { DatabaseHelper } from '../types';
 
 export type FnHelperOptions = {
-	type?: string;
-	query?: Query;
-	originalCollectionName?: string;
+	type: string | undefined;
+	query: Query | undefined;
+	originalCollectionName: string | undefined;
 };
 
 export abstract class FnHelper extends DatabaseHelper {
