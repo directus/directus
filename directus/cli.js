@@ -1,2 +1,2 @@
 #!/usr/bin/env node
-require('@directus/api/dist/cli/run.js');
+require('@directus/api/cli/run.js');

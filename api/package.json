@@ -53,7 +53,8 @@
 	"exports": {
 		".": "./dist/index.js",
 		"./*": "./dist/*.js",
-		"./package.json": "./package.json"
+		"./package.json": "./package.json",
+		"./cli/run.js": "./dist/cli/run.js"
 	},
 	"main": "dist/index.js",
 	"files": [
