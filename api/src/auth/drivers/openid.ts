@@ -117,7 +117,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 		return user?.id;
 	}
 
-	async getUserID(payload: Record<string, any>): Promise<string> {
+	override async getUserID(payload: Record<string, any>): Promise<string> {
 		if (!payload.code || !payload.codeVerifier || !payload.state) {
 			logger.warn('[OpenID] No code, codeVerifier or state in payload');
 			throw new InvalidCredentialsException();
@@ -201,11 +201,11 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 		return (await this.fetchUserId(identifier)) as string;
 	}
 
-	async login(user: User): Promise<void> {
+	override async login(user: User): Promise<void> {
 		return this.refresh(user);
 	}
 
-	async refresh(user: User): Promise<void> {
+	override async refresh(user: User): Promise<void> {
 		let authData = user.auth_data as AuthData;
 
 		if (typeof authData === 'string') {

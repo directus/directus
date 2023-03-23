@@ -33,7 +33,7 @@ export class SharesService extends ItemsService {
 		});
 	}
 
-	async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
+	override async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
 		await this.authorizationService.checkAccess('share', data.collection, data.item);
 		return super.createOne(data, opts);
 	}

@@ -23,7 +23,7 @@ export class ActivityService extends ItemsService {
 		this.usersService = new UsersService({ schema: this.schema });
 	}
 
-	async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
+	override async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
 		if (data.action === Action.COMMENT && typeof data.comment === 'string') {
 			const usersRegExp = new RegExp(/@[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}/gi);
 

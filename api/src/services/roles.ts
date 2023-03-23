@@ -69,7 +69,7 @@ export class RolesService extends ItemsService {
 		return;
 	}
 
-	async updateOne(key: PrimaryKey, data: Record<string, any>, opts?: MutationOptions): Promise<PrimaryKey> {
+	override async updateOne(key: PrimaryKey, data: Record<string, any>, opts?: MutationOptions): Promise<PrimaryKey> {
 		try {
 			if ('users' in data) {
 				await this.checkForOtherAdminUsers(key, data.users);
@@ -81,7 +81,7 @@ export class RolesService extends ItemsService {
 		return super.updateOne(key, data, opts);
 	}
 
-	async updateBatch(data: Record<string, any>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
+	override async updateBatch(data: Record<string, any>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
 		const primaryKeyField = this.schema.collections[this.collection].primary;
 
 		const keys = data.map((item) => item[primaryKeyField]);
@@ -98,7 +98,11 @@ export class RolesService extends ItemsService {
 		return super.updateBatch(data, opts);
 	}
 
-	async updateMany(keys: PrimaryKey[], data: Record<string, any>, opts?: MutationOptions): Promise<PrimaryKey[]> {
+	override async updateMany(
+		keys: PrimaryKey[],
+		data: Record<string, any>,
+		opts?: MutationOptions
+	): Promise<PrimaryKey[]> {
 		try {
 			if ('admin_access' in data && data.admin_access === false) {
 				await this.checkForOtherAdminRoles(keys);
@@ -110,12 +114,12 @@ export class RolesService extends ItemsService {
 		return super.updateMany(keys, data, opts);
 	}
 
-	async deleteOne(key: PrimaryKey): Promise<PrimaryKey> {
+	override async deleteOne(key: PrimaryKey): Promise<PrimaryKey> {
 		await this.deleteMany([key]);
 		return key;
 	}
 
-	async deleteMany(keys: PrimaryKey[]): Promise<PrimaryKey[]> {
+	override async deleteMany(keys: PrimaryKey[]): Promise<PrimaryKey[]> {
 		const opts: MutationOptions = {};
 
 		try {
@@ -182,7 +186,7 @@ export class RolesService extends ItemsService {
 		return keys;
 	}
 
-	deleteByQuery(query: Query, opts?: MutationOptions): Promise<PrimaryKey[]> {
+	override deleteByQuery(query: Query, opts?: MutationOptions): Promise<PrimaryKey[]> {
 		return super.deleteByQuery(query, opts);
 	}
 }

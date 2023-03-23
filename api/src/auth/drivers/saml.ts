@@ -44,7 +44,7 @@ export class SAMLAuthDriver extends LocalAuthDriver {
 		return user?.id;
 	}
 
-	async getUserID(payload: Record<string, any>) {
+	override async getUserID(payload: Record<string, any>) {
 		const { provider, emailKey, identifierKey, givenNameKey, familyNameKey, allowPublicRegistration } = this.config;
 
 		const email = payload[emailKey ?? 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'];
@@ -82,7 +82,7 @@ export class SAMLAuthDriver extends LocalAuthDriver {
 	}
 
 	// There's no local checks to be done when the user is authenticated in the IDP
-	async login(_user: User): Promise<void> {
+	override async login(_user: User): Promise<void> {
 		return;
 	}
 }

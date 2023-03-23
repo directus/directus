@@ -1,8 +1,7 @@
 import { FailedValidationException } from '@directus/shared/exceptions';
-import type { Accountability, Query, SchemaOverview } from '@directus/shared/types';
+import type { Query } from '@directus/shared/types';
 import { getSimpleHash, toArray } from '@directus/shared/utils';
 import jwt from 'jsonwebtoken';
-import type { Knex } from 'knex';
 import { cloneDeep } from 'lodash';
 import { performance } from 'perf_hooks';
 import getDatabase from '../database';
@@ -18,10 +17,6 @@ import { MailService } from './mail';
 import { SettingsService } from './settings';
 
 export class UsersService extends ItemsService {
-	knex: Knex;
-	accountability: Accountability | null;
-	schema: SchemaOverview;
-
 	constructor(options: AbstractServiceOptions) {
 		super('directus_users', options);
 
@@ -142,7 +137,7 @@ export class UsersService extends ItemsService {
 	/**
 	 * Create a new user
 	 */
-	async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
+	override async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
 		const result = await this.createMany([data], opts);
 		return result[0];
 	}
@@ -150,7 +145,7 @@ export class UsersService extends ItemsService {
 	/**
 	 * Create multiple new users
 	 */
-	async createMany(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
+	override async createMany(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
 		const emails = data.map((payload) => payload.email).filter((email) => email);
 		const passwords = data.map((payload) => payload.password).filter((password) => password);
 
@@ -172,7 +167,7 @@ export class UsersService extends ItemsService {
 	/**
 	 * Update many users by query
 	 */
-	async updateByQuery(query: Query, data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
+	override async updateByQuery(query: Query, data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
 		const keys = await this.getKeysByQuery(query);
 		return keys.length ? await this.updateMany(keys, data, opts) : [];
 	}
@@ -180,12 +175,12 @@ export class UsersService extends ItemsService {
 	/**
 	 * Update a single user by primary key
 	 */
-	async updateOne(key: PrimaryKey, data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
+	override async updateOne(key: PrimaryKey, data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
 		await this.updateMany([key], data, opts);
 		return key;
 	}
 
-	async updateBatch(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
+	override async updateBatch(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
 		const primaryKeyField = this.schema.collections[this.collection].primary;
 
 		const keys: PrimaryKey[] = [];
@@ -209,7 +204,7 @@ export class UsersService extends ItemsService {
 	/**
 	 * Update many users by primary key
 	 */
-	async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
+	override async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
 		try {
 			if (data.role) {
 				// data.role will be an object with id with GraphQL mutations
@@ -270,7 +265,7 @@ export class UsersService extends ItemsService {
 	/**
 	 * Delete a single user by primary key
 	 */
-	async deleteOne(key: PrimaryKey, opts?: MutationOptions): Promise<PrimaryKey> {
+	override async deleteOne(key: PrimaryKey, opts?: MutationOptions): Promise<PrimaryKey> {
 		await this.deleteMany([key], opts);
 		return key;
 	}
@@ -278,7 +273,7 @@ export class UsersService extends ItemsService {
 	/**
 	 * Delete multiple users by primary key
 	 */
-	async deleteMany(keys: PrimaryKey[], opts?: MutationOptions): Promise<PrimaryKey[]> {
+	override async deleteMany(keys: PrimaryKey[], opts?: MutationOptions): Promise<PrimaryKey[]> {
 		try {
 			await this.checkRemainingAdminExistence(keys);
 		} catch (err: any) {
@@ -291,7 +286,7 @@ export class UsersService extends ItemsService {
 		return keys;
 	}
 
-	async deleteByQuery(query: Query, opts?: MutationOptions): Promise<PrimaryKey[]> {
+	override async deleteByQuery(query: Query, opts?: MutationOptions): Promise<PrimaryKey[]> {
 		const primaryKeyField = this.schema.collections[this.collection].primary;
 		const readQuery = cloneDeep(query);
 		readQuery.fields = [primaryKeyField];

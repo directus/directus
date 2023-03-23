@@ -334,11 +334,11 @@ export class LDAPAuthDriver extends AuthDriver {
 		});
 	}
 
-	async login(user: User, payload: Record<string, any>): Promise<void> {
+	override async login(user: User, payload: Record<string, any>): Promise<void> {
 		await this.verify(user, payload.password);
 	}
 
-	async refresh(user: User): Promise<void> {
+	override async refresh(user: User): Promise<void> {
 		await this.validateBindClient();
 
 		const userInfo = await this.fetchUserInfo(user.external_identifier!);

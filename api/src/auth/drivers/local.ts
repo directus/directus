@@ -39,7 +39,7 @@ export class LocalAuthDriver extends AuthDriver {
 		}
 	}
 
-	async login(user: User, payload: Record<string, any>): Promise<void> {
+	override async login(user: User, payload: Record<string, any>): Promise<void> {
 		await this.verify(user, payload.password);
 	}
 }

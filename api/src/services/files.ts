@@ -290,7 +290,7 @@ export class FilesService extends ItemsService {
 	 * Create a file (only applicable when it is not a multipart/data POST request)
 	 * Useful for associating metadata with existing file in storage
 	 */
-	async createOne(data: Partial<File>, opts?: MutationOptions): Promise<PrimaryKey> {
+	override async createOne(data: Partial<File>, opts?: MutationOptions): Promise<PrimaryKey> {
 		if (!data.type) {
 			throw new InvalidPayloadException(`"type" is required`);
 		}
@@ -302,7 +302,7 @@ export class FilesService extends ItemsService {
 	/**
 	 * Delete a file
 	 */
-	async deleteOne(key: PrimaryKey, opts?: MutationOptions): Promise<PrimaryKey> {
+	override async deleteOne(key: PrimaryKey, opts?: MutationOptions): Promise<PrimaryKey> {
 		await this.deleteMany([key], opts);
 		return key;
 	}
@@ -310,7 +310,7 @@ export class FilesService extends ItemsService {
 	/**
 	 * Delete multiple files
 	 */
-	async deleteMany(keys: PrimaryKey[], opts?: MutationOptions): Promise<PrimaryKey[]> {
+	override async deleteMany(keys: PrimaryKey[], opts?: MutationOptions): Promise<PrimaryKey[]> {
 		const storage = await getStorage();
 		const files = await super.readMany(keys, { fields: ['id', 'storage'], limit: -1 });
 
