@@ -20,11 +20,11 @@ type Store = 'memory' | 'redis' | 'memcache';
 
 const messenger = getMessenger();
 
-if (!messengerSubscribed) {
+if (env.CACHE_STORE === 'memory' && env.CACHE_AUTO_PURGE && !messengerSubscribed) {
 	messengerSubscribed = true;
 
 	messenger.subscribe('schemaChanged', async (opts) => {
-		if (env.CACHE_STORE === 'memory' && cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
+		if (cache && opts?.autoPurgeCache !== false) {
 			await cache.clear();
 		}
 	});
