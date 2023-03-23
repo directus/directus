@@ -53,6 +53,7 @@ init: Init
 dataset_too_large_currently_showing_n_items: Dataset är för stort. Visar för närvarande de första {n} objekten.
 modifier: Modifierare
 custom: Anpassad
+hook: Hook
 fill_width: Full bredd
 field_name_translations: Översättningar fältnamn
 enter_password_to_enable_tfa: Ange ditt lösenord för att aktivera tvåfaktorsautentisering
@@ -186,6 +187,7 @@ revision_post_create: Så här såg objektet ut när det skapades.
 revision_post_update: Så här såg objektet ut efter uppdateringen.
 changes_made: Nedan följer de specifika ändringarna i denna revision.
 no_relational_data: Tänk på att relationsdata inte ingår här.
+junction_field_location: Plats för kopplingsfält
 top: Överst
 bottom: Botten
 hide_field: Göm fält
@@ -1493,7 +1495,6 @@ interfaces:
   system-folder:
     folder: Mapp
     description: Välj en mapp
-    field_hint: Mapp för uppladdade filer. Påverkar inte befintliga filer.
     root_name: Filbibliotek
     system_default: Systemstandard
   select-radio:

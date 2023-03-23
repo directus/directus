@@ -1606,7 +1606,6 @@ interfaces:
   system-folder:
     folder: 資料夾
     description: 選擇一個資料夾
-    field_hint: 供上傳檔案用的資料夾。並不會影響已存在的其他檔案。
     root_name: 檔案庫的基礎位置
     system_default: 系統預設值
   select-radio:
@@ -2019,7 +2018,6 @@ operations:
     name: 發送通知
     description: 發送管理介面通知給其他使用者
     recipient: 用戶
-    recipient_placeholder: 輸入使用者編號(UUID)並按下Enter鍵....
     message: 訊息
   request:
     name: Webhook / 要求網址

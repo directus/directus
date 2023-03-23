@@ -953,7 +953,7 @@ settings_flows: 流程
 settings_presets: 预设&书签
 settings_translation_strings: 翻译字符串
 one_or_more_options_are_missing: 缺少一个或多个选项
-scope: Scope
+scope: 范围
 actions: 操作
 select: 选择...
 layout: 布局
@@ -1630,7 +1630,6 @@ interfaces:
   system-folder:
     folder: 文件夹
     description: 选择文件夹
-    field_hint: 用于上传文件的文件夹。不影响现有文件。
     root_name: 文件管理
     system_default: 系统默认
   select-radio:
@@ -1729,7 +1728,7 @@ interfaces:
     value_path: 值路径
     text_path: 文本路径
     trigger: 触发器
-    rate: Rate
+    rate: 评价
   group-raw:
     name: 原始组
     description: 渲染字段为
@@ -1787,7 +1786,7 @@ displays:
     format_note: >-
       自定义格式接受__[日期字段符号表](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
     long: Long
-    short: Short
+    short: 排序
     relative: 相对
     relative_label: '显示相对时间，例如 5 分钟前'
     suffix: 后缀
@@ -2094,7 +2093,6 @@ operations:
     name: 发送通知
     description: 向一个或多个用户发送应用内通知
     recipient: 用户
-    recipient_placeholder: 添加用户 UUID 并按回车...
     message: 消息
   request:
     name: 互联网钩子 / 请求 URL
@@ -2125,3 +2123,4 @@ operations:
     serial: 串行
     parallel: 并行
     batch: 批处理
+    batch_size: 批量大小
