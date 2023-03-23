@@ -887,6 +887,12 @@ importers:
         specifier: 4.9.5
         version: 4.9.5
 
+  directus:
+    specifiers:
+      '@directus/api': workspace:9.23.3
+    dependencies:
+      '@directus/api': link:../api
+
   packages/create-directus-extension:
     dependencies:
       '@directus/constants':

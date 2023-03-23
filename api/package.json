@@ -1,5 +1,5 @@
 {
-	"name": "directus",
+	"name": "@directus/api",
 	"version": "9.24.0",
 	"description": "Directus is a real-time API and App dashboard for managing SQL database content",
 	"type": "module",
@@ -56,9 +56,6 @@
 		"./package.json": "./package.json"
 	},
 	"main": "dist/index.js",
-	"bin": {
-		"directus": "cli.js"
-	},
 	"files": [
 		"dist",
 		"!**/*.test.js",

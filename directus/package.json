@@ -1,0 +1,64 @@
+{
+	"name": "directus",
+	"version": "10.0.0",
+	"description": "Directus is a real-time API and App dashboard for managing SQL database content",
+	"keywords": [
+		"directus",
+		"realtime",
+		"database",
+		"content",
+		"api",
+		"rest",
+		"graphql",
+		"app",
+		"dashboard",
+		"headless",
+		"cms",
+		"mysql",
+		"postgresql",
+		"cockroachdb",
+		"sqlite",
+		"framework",
+		"vue"
+	],
+	"homepage": "https://directus.io",
+	"bugs": {
+		"url": "https://github.com/directus/directus/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus/directus.git",
+		"directory": "api"
+	},
+	"funding": "https://github.com/directus/directus?sponsor=1",
+	"license": "GPL-3.0-only",
+	"author": {
+		"name": "Monospace Inc",
+		"email": "info@monospace.io",
+		"url": "https://monospace.io"
+	},
+	"maintainers": [
+		{
+			"name": "Rijk van Zanten",
+			"email": "rijkvanzanten@me.com",
+			"url": "https://github.com/rijkvanzanten"
+		},
+		{
+			"name": "Ben Haynes",
+			"email": "ben@rngr.org",
+			"url": "https://github.com/benhaynes"
+		}
+	],
+	"exports": {
+		".": "./dist/index.js",
+		"./*": "./dist/*.js",
+		"./package.json": "./package.json"
+	},
+	"main": "dist/index.js",
+	"bin": {
+		"directus": "cli.js"
+	},
+	"dependencies": {
+		"@directus/api": "workspace:9.23.3"
+	}
+}
