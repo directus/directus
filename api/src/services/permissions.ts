@@ -80,37 +80,37 @@ export class PermissionsService extends ItemsService {
 
 	async createOne(data: Partial<Item>, opts?: MutationOptions) {
 		const res = await super.createOne(data, opts);
-		await clearSystemCache();
+		await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
 		return res;
 	}
 
 	async createMany(data: Partial<Item>[], opts?: MutationOptions) {
 		const res = await super.createMany(data, opts);
-		await clearSystemCache();
+		await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
 		return res;
 	}
 
 	async updateBatch(data: Partial<Item>[], opts?: MutationOptions) {
 		const res = await super.updateBatch(data, opts);
-		await clearSystemCache();
+		await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
 		return res;
 	}
 
 	async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions) {
 		const res = await super.updateMany(keys, data, opts);
-		await clearSystemCache();
+		await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
 		return res;
 	}
 
 	async upsertMany(payloads: Partial<Item>[], opts?: MutationOptions) {
 		const res = await super.upsertMany(payloads, opts);
-		await clearSystemCache();
+		await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
 		return res;
 	}
 
 	async deleteMany(keys: PrimaryKey[], opts?: MutationOptions) {
 		const res = await super.deleteMany(keys, opts);
-		await clearSystemCache();
+		await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
 		return res;
 	}
 }

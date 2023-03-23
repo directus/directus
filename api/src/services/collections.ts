@@ -169,7 +169,7 @@ export class CollectionsService {
 			}
 
 			if (opts?.autoPurgeSystemCache !== false) {
-				await clearSystemCache();
+				await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
 			}
 
 			if (opts?.emitEvents !== false && nestedActionEvents.length > 0) {
@@ -218,7 +218,7 @@ export class CollectionsService {
 			}
 
 			if (opts?.autoPurgeSystemCache !== false) {
-				await clearSystemCache();
+				await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
 			}
 
 			if (opts?.emitEvents !== false && nestedActionEvents.length > 0) {
@@ -401,7 +401,7 @@ export class CollectionsService {
 			}
 
 			if (opts?.autoPurgeSystemCache !== false) {
-				await clearSystemCache();
+				await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
 			}
 
 			if (opts?.emitEvents !== false && nestedActionEvents.length > 0) {
@@ -457,7 +457,7 @@ export class CollectionsService {
 			}
 
 			if (opts?.autoPurgeSystemCache !== false) {
-				await clearSystemCache();
+				await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
 			}
 
 			if (opts?.emitEvents !== false && nestedActionEvents.length > 0) {
@@ -507,7 +507,7 @@ export class CollectionsService {
 			}
 
 			if (opts?.autoPurgeSystemCache !== false) {
-				await clearSystemCache();
+				await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
 			}
 
 			if (opts?.emitEvents !== false && nestedActionEvents.length > 0) {
@@ -636,7 +636,7 @@ export class CollectionsService {
 			}
 
 			if (opts?.autoPurgeSystemCache !== false) {
-				await clearSystemCache();
+				await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
 			}
 
 			if (opts?.emitEvents !== false && nestedActionEvents.length > 0) {
@@ -684,7 +684,7 @@ export class CollectionsService {
 			}
 
 			if (opts?.autoPurgeSystemCache !== false) {
-				await clearSystemCache();
+				await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
 			}
 
 			if (opts?.emitEvents !== false && nestedActionEvents.length > 0) {
