@@ -6,17 +6,10 @@ import { getSchema } from '../../utils/get-schema';
 import { GraphQLService } from '../../services';
 import env from '../../env';
 import SocketController from './base';
-import type {
-	AuthenticationState,
-	AuthMode,
-	ConnectionParams,
-	GraphQLSocket,
-	UpgradeContext,
-	WebSocketClient,
-} from '../types';
+import type { AuthenticationState, AuthMode, GraphQLSocket, UpgradeContext, WebSocketClient } from '../types';
 import { handleWebsocketException } from '../exceptions';
 import { authenticateConnection, refreshAccountability } from '../authenticate';
-import { BasicAuthMessage, WebSocketMessage } from '../messages';
+import { ConnectionParams, WebSocketMessage } from '../messages';
 import { getMessageType } from '../utils/message';
 import { bindPubSub } from '../../services/graphql/subscription';
 
@@ -63,11 +56,17 @@ export class GraphQLSubscriptionController extends SocketController {
 					client.on('parsed-message', async (message: WebSocketMessage) => {
 						try {
 							if (getMessageType(message) === 'connection_init') {
-								const { accountability, expires_at } = await authenticateConnection(
-									BasicAuthMessage.parse(message.payload)
-								);
-								client.accountability = accountability;
-								client.expires_at = expires_at;
+								const params = ConnectionParams.parse(message.payload);
+								if (typeof params.access_token === 'string') {
+									const { accountability, expires_at } = await authenticateConnection({
+										access_token: params.access_token,
+									});
+									client.accountability = accountability;
+									client.expires_at = expires_at;
+								} else if (this.authentication.mode !== 'public') {
+									client.close(CloseCode.Forbidden, 'Forbidden');
+									return;
+								}
 							} else if (this.authentication.mode === 'handshake' && !client.accountability?.user) {
 								// the first message should authenticate successfully in this mode
 								client.close(CloseCode.Forbidden, 'Forbidden');

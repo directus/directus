@@ -28,10 +28,6 @@ export type UpgradeContext = {
 	head: Buffer;
 };
 
-export type ConnectionParams = {
-	access_token?: string;
-};
-
 export type GraphQLSocket = {
 	client: WebSocketClient;
 };
