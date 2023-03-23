@@ -32,7 +32,6 @@ RUN pnpm --recursive run build \
 FROM node:18-alpine
 
 RUN mkdir /directus \
-	&& echo "update-notifier=false" >> ~/.npmrc \
 	&& mkdir -p /directus/data/database /directus/data/extensions /directus/data/uploads \
 	&& chown node:node /directus/data;
 
@@ -45,6 +44,7 @@ ENV DB_FILENAME="/directus/data/database/database.sqlite"
 ENV EXTENSIONS_PATH="/directus/data/extensions"
 ENV STORAGE_LOCAL_ROOT="/directus/data/uploads"
 ENV NODE_ENV="production"
+ENV NPM_CONFIG_UPDATE_NOTIFIER="false"
 
 VOLUME /directus/data/database
 VOLUME /directus/data/extensions
