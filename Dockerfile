@@ -32,9 +32,10 @@ RUN pnpm --recursive run build \
 FROM node:18-alpine
 
 RUN mkdir /directus \
-	&& chown node:node /directus;
+	&& echo "update-notifier=false" >> ~/.npmrc \
+	&& mkdir -p /directus/data/database /directus/data/extensions /directus/data/uploads \
+	&& chown node:node /directus/data;
 
-USER node
 WORKDIR /directus
 
 EXPOSE 8055
@@ -45,9 +46,6 @@ ENV EXTENSIONS_PATH="/directus/data/extensions"
 ENV STORAGE_LOCAL_ROOT="/directus/data/uploads"
 ENV NODE_ENV="production"
 
-RUN echo "update-notifier=false" >> ~/.npmrc \
-	&& mkdir -p /directus/data/database /directus/data/extensions /directus/data/uploads
-
 VOLUME /directus/data/database
 VOLUME /directus/data/extensions
 VOLUME /directus/data/uploads
@@ -55,6 +53,8 @@ VOLUME /directus/data/uploads
 COPY --from=pruned /workspace/pruned/dist dist
 COPY --from=pruned /workspace/pruned/package.json package.json
 COPY --from=pruned /workspace/pruned/node_modules node_modules
+
+USER node
 
 CMD node ./dist/cli/run.js bootstrap \
 	&& node ./dist/cli/run.js start
