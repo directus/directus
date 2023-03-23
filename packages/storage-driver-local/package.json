@@ -1,6 +1,6 @@
 {
 	"name": "@directus/storage-driver-local",
-	"version": "9.23.1",
+	"version": "9.23.2",
 	"type": "module",
 	"scripts": {
 		"build": "tsc --build",
