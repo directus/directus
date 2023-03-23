@@ -60,6 +60,8 @@ async function waitForDatabase(database: Knex) {
 
 	// This will throw and exit the process if the database is not available
 	await validateDatabaseConnection(database);
+
+	return database;
 }
 
 async function createDefaultAdmin(schema: SchemaOverview) {

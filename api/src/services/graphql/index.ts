@@ -1417,6 +1417,8 @@ export class GraphQLService {
 					await service.deleteOne(args.id);
 					return { id: args.id };
 				}
+
+				return undefined;
 			} else {
 				if (action === 'create') {
 					const keys = await service.createMany(args.data);
@@ -1439,6 +1441,8 @@ export class GraphQLService {
 					const keys = await service.deleteMany(args.ids);
 					return { ids: keys };
 				}
+
+				return undefined;
 			}
 		} catch (err: any) {
 			return this.formatError(err);

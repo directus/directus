@@ -220,6 +220,7 @@ class FlowManager {
 				const handler = (data: unknown, context: Record<string, unknown>) => {
 					if (flow.options.async) {
 						this.executeFlow(flow, data, context);
+						return undefined;
 					} else {
 						return this.executeFlow(flow, data, context);
 					}
@@ -253,6 +254,7 @@ class FlowManager {
 
 					if (flow.options.async) {
 						this.executeFlow(flow, data, context);
+						return undefined;
 					} else {
 						return this.executeFlow(flow, data, context);
 					}

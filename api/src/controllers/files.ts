@@ -95,6 +95,8 @@ export const multipartHandler: RequestHandler = (req, res, next) => {
 		} catch (error: any) {
 			busboy.emit('error', error);
 		}
+
+		return undefined;
 	});
 
 	busboy.on('error', (error: Error) => {

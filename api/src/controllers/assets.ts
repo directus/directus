@@ -227,6 +227,8 @@ router.get(
 				});
 			}
 		});
+
+		return undefined;
 	})
 );
 

@@ -83,4 +83,6 @@ function getProviderInstance(
 		case 'saml':
 			return new SAMLAuthDriver(options, config);
 	}
+
+	return undefined;
 }
