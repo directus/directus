@@ -48,10 +48,9 @@ ENV NODE_ENV="production"
 RUN echo "update-notifier=false" >> ~/.npmrc \
 	&& mkdir -p /directus/data/database /directus/data/extensions /directus/data/uploads
 
-VOLUME \
-	/directus/data/database \
-	/directus/data/extensions \
-	/directus/data/uploads
+VOLUME /directus/data/database
+VOLUME /directus/data/extensions
+VOLUME /directus/data/uploads
 
 COPY --from=pruned /workspace/pruned/dist dist
 COPY --from=pruned /workspace/pruned/package.json package.json
