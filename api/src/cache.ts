@@ -45,22 +45,22 @@ export function getCache(): {
 
 	if (systemCache === null) {
 		systemCache = getKeyvInstance(env.CACHE_STORE, getMilliseconds(env.CACHE_SYSTEM_TTL), '_system');
-		systemCache.on('error', (err) => logger.warn(err, `[cache] ${err}`));
+		systemCache.on('error', (err) => logger.warn(err, `[system-cache] ${err}`));
 	}
 
 	if (sharedSchemaCache === null) {
 		sharedSchemaCache = getKeyvInstance(env.CACHE_STORE, getMilliseconds(env.CACHE_SYSTEM_TTL), '_schema_shared');
-		sharedSchemaCache.on('error', (err) => logger.warn(err, `[cache] ${err}`));
+		sharedSchemaCache.on('error', (err) => logger.warn(err, `[shared-schema-cache] ${err}`));
 	}
 
 	if (localSchemaCache === null) {
 		localSchemaCache = getKeyvInstance('memory', getMilliseconds(env.CACHE_SYSTEM_TTL), '_schema');
-		localSchemaCache.on('error', (err) => logger.warn(err, `[cache] ${err}`));
+		localSchemaCache.on('error', (err) => logger.warn(err, `[schema-cache] ${err}`));
 	}
 
 	if (lockCache === null) {
 		lockCache = getKeyvInstance(env.CACHE_STORE, undefined, '_lock');
-		lockCache.on('error', (err) => logger.warn(err, `[cache] ${err}`));
+		lockCache.on('error', (err) => logger.warn(err, `[lock-cache] ${err}`));
 	}
 
 	return { cache, systemCache, sharedSchemaCache, localSchemaCache, lockCache };
