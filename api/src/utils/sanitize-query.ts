@@ -1,4 +1,4 @@
-import { Accountability, Aggregate, Filter, Query } from '@directus/shared/types';
+import type { Accountability, Aggregate, Filter, Query } from '@directus/shared/types';
 import { parseFilter, parseJSON } from '@directus/shared/utils';
 import { flatten, get, isPlainObject, merge, set } from 'lodash';
 import logger from '../logger';
@@ -69,7 +69,7 @@ export function sanitizeQuery(rawQuery: Record<string, any>, accountability?: Ac
 }
 
 function sanitizeFields(rawFields: any) {
-	if (!rawFields) return;
+	if (!rawFields) return null;
 
 	let fields: string[] = [];
 

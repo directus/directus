@@ -7,7 +7,7 @@
  * and store in req.token
  */
 
-import { RequestHandler } from 'express';
+import type { RequestHandler } from 'express';
 
 const extractToken: RequestHandler = (req, res, next) => {
 	let token: string | null = null;

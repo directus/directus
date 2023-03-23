@@ -3,7 +3,7 @@
  * This ensures that query params are formatted and ready to go for the services.
  */
 
-import { RequestHandler } from 'express';
+import type { RequestHandler } from 'express';
 import { sanitizeQuery } from '../utils/sanitize-query';
 import { validateQuery } from '../utils/validate-query';
 

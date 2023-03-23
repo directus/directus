@@ -4,10 +4,11 @@ import { allVendors } from './get-dbs-to-test';
 
 type Vendor = (typeof allVendors)[number];
 
+export type Env = Record<Vendor, Record<string, string>>;
 export type Config = {
 	knexConfig: Record<Vendor, Knex.Config & { waitTestSQL: string }>;
 	names: Record<Vendor, string>;
-	envs: Record<Vendor, Record<string, string>>;
+	envs: Env;
 };
 
 const migrationsDir = './tests-blackbox/setup/migrations';
@@ -43,6 +44,17 @@ const directusAuthConfig = {
 	AUTH_SAML_EMAIL_KEY: 'email',
 };
 
+const directusStorageConfig = {
+	STORAGE_LOCATIONS: 'local,minio',
+	STORAGE_MINIO_DRIVER: 's3',
+	STORAGE_MINIO_KEY: 'directus',
+	STORAGE_MINIO_SECRET: 'miniosecret',
+	STORAGE_MINIO_BUCKET: 'directus-blackbox-test',
+	STORAGE_MINIO_REGION: 'us-east-1',
+	STORAGE_MINIO_ENDPOINT: 'http://localhost:8881',
+	STORAGE_MINIO_FORCE_PATH_STYLE: 'true',
+};
+
 const directusConfig = {
 	...process.env,
 	ADMIN_EMAIL: 'admin@example.com',
@@ -61,6 +73,7 @@ const directusConfig = {
 	EXTENSIONS_PATH: './tests-blackbox/extensions',
 	ASSETS_TRANSFORM_MAX_CONCURRENT: '2',
 	...directusAuthConfig,
+	...directusStorageConfig,
 };
 
 const config: Config = {
@@ -282,8 +295,8 @@ for (const vendor of allVendors) {
 	config.envs[vendor]!.TZ = isWindows ? '0' : 'UTC';
 }
 
-export function getUrl(vendor: (typeof allVendors)[number]) {
-	let port = config.envs[vendor]!.PORT;
+export function getUrl(vendor: (typeof allVendors)[number], overrideEnv?: Env) {
+	let port = overrideEnv ? overrideEnv[vendor]!.PORT : config.envs[vendor]!.PORT;
 
 	if (process.env.TEST_LOCAL) {
 		port = '8055';

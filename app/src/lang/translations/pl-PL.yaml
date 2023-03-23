@@ -1625,7 +1625,6 @@ interfaces:
   system-folder:
     folder: Folder
     description: Wybierz folder
-    field_hint: Folder dla przesłanych plików. Nie ma wpływu na istniejące pliki.
     root_name: Root biblioteki plików
     system_default: Ustawienia systemowe
   select-radio:
@@ -2085,7 +2084,6 @@ operations:
     name: Wyślij powiadomienie
     description: Wyślij powiadomienie w aplikacji do jednego lub więcej użytkowników
     recipient: Użytkownik
-    recipient_placeholder: Dodaj UUID użytkownika i naciśnij enter...
     message: Wiadomość
   request:
     name: Webhook / URL żądania

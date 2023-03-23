@@ -1,9 +1,9 @@
 import SchemaInspector from '@directus/schema';
-import { Filter, SchemaOverview } from '@directus/shared/types';
+import type { Filter, SchemaOverview } from '@directus/shared/types';
 import { parseJSON, toArray } from '@directus/shared/utils';
-import { Knex } from 'knex';
+import type { Knex } from 'knex';
 import { mapValues } from 'lodash';
-import { getSystemCache, setSystemCache } from '../cache';
+import { getSchemaCache, setSchemaCache } from '../cache';
 import { ALIAS_TYPES } from '../constants';
 import getDatabase from '../database';
 import { systemCollectionRows } from '../database/system-data/collections';
@@ -32,7 +32,7 @@ export async function getSchema(options?: {
 		let cachedSchema;
 
 		try {
-			cachedSchema = (await getSystemCache('schema')) as SchemaOverview;
+			cachedSchema = await getSchemaCache();
 		} catch (err: any) {
 			logger.warn(err, `[schema-cache] Couldn't retrieve cache. ${err}`);
 		}
@@ -43,7 +43,7 @@ export async function getSchema(options?: {
 			result = await getDatabaseSchema(database, schemaInspector);
 
 			try {
-				await setSystemCache('schema', result);
+				await setSchemaCache(result);
 			} catch (err: any) {
 				logger.warn(err, `[schema-cache] Couldn't save cache. ${err}`);
 			}

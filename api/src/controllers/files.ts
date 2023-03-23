@@ -9,7 +9,7 @@ import { respond } from '../middleware/respond';
 import useCollection from '../middleware/use-collection';
 import { validateBatch } from '../middleware/validate-batch';
 import { FilesService, MetaService } from '../services';
-import { File, PrimaryKey } from '../types';
+import type { PrimaryKey } from '../types';
 import asyncHandler from '../utils/async-handler';
 
 // @ts-ignore
@@ -71,17 +71,16 @@ export const multipartHandler: RequestHandler = (req, res, next) => {
 
 		fileCount++;
 
-		if (!payload.title) {
-			payload.title = formatTitle(path.parse(filename).name);
+		if (!existingPrimaryKey) {
+			if (!payload.title) {
+				payload.title = formatTitle(path.parse(filename).name);
+			}
+
+			payload.filename_download = filename;
 		}
 
-		const payloadWithRequiredFields: Partial<File> & {
-			filename_download: string;
-			type: string;
-			storage: string;
-		} = {
+		const payloadWithRequiredFields = {
 			...payload,
-			filename_download: filename,
 			type: mimeType,
 			storage: payload.storage || disk,
 		};

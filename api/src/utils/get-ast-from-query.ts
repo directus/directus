@@ -2,12 +2,12 @@
  * Generate an AST based on a given collection and query
  */
 
-import { Knex } from 'knex';
-import { cloneDeep, mapKeys, omitBy, uniq, isEmpty } from 'lodash';
-import { AST, FieldNode, FunctionFieldNode, NestedCollectionNode } from '../types';
-import { Query, PermissionsAction, Accountability, SchemaOverview } from '@directus/shared/types';
-import { getRelationType } from '../utils/get-relation-type';
 import { REGEX_BETWEEN_PARENS } from '@directus/shared/constants';
+import type { Accountability, PermissionsAction, Query, SchemaOverview } from '@directus/shared/types';
+import type { Knex } from 'knex';
+import { cloneDeep, isEmpty, mapKeys, omitBy, uniq } from 'lodash';
+import type { AST, FieldNode, FunctionFieldNode, NestedCollectionNode } from '../types';
+import { getRelationType } from '../utils/get-relation-type';
 
 type GetASTOptions = {
 	accountability?: Accountability | null;

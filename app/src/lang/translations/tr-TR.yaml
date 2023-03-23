@@ -1630,7 +1630,6 @@ interfaces:
   system-folder:
     folder: Klasör
     description: Bir klasör seçin
-    field_hint: Yüklenen dosyalar için bir klasör. Varolan dosyaları etkilemez.
     root_name: Dosya Kütüphanesi Kökü
     system_default: Sistem Varsayılanları
   select-radio:
@@ -2065,7 +2064,6 @@ operations:
     name: Bildirim Gönder
     description: Bir veya daha fazla kullanıcıya uygulama içi bildirim gönderin
     recipient: Kullanıcı
-    recipient_placeholder: Kullanıcı UUID'sini ekleyin ve enter tuşuna basın...
     message: Mesaj
   request:
     description: "Bir URL'ye istekte bulunun"

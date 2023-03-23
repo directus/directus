@@ -27,6 +27,7 @@ export default defineOperationApp({
 					iconRight: 'people_alt',
 					placeholder: '$t:operations.notification.recipient_placeholder',
 				},
+				note: '$t:operations.notification.recipient_note',
 			},
 		},
 		{

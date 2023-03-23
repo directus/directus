@@ -1432,7 +1432,6 @@ translation: Translation
 translation_placeholder: Enter a translation...
 value: Value
 view_project: View Project
-weeks: { }
 report_error: Report Error
 start: Start
 table: Table
@@ -1631,7 +1630,6 @@ interfaces:
   system-folder:
     folder: Folder
     description: Select a folder
-    field_hint: Folder for uploaded files. Does not affect existing files.
     root_name: File Library Root
     system_default: System Defaults
   select-radio:
@@ -2095,7 +2093,6 @@ operations:
     name: Send Notification
     description: Send an in-app notification to one or more users
     recipient: User
-    recipient_placeholder: Add user UUID and press enter...
     message: Message
   request:
     name: Webhook / Request URL

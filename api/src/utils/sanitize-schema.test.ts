@@ -1,6 +1,6 @@
-import { Field, Relation } from '@directus/shared/types';
+import type { Field, Relation } from '@directus/shared/types';
 import { expect, test, describe } from 'vitest';
-import { Collection } from '../types';
+import type { Collection } from '../types';
 
 import { sanitizeCollection, sanitizeField, sanitizeRelation } from './sanitize-schema';
 

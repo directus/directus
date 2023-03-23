@@ -1635,7 +1635,6 @@ operations:
     name: إرسال إشعار
     description: إرسال إشعار داخل التطبيق إلى واحد أو أكثر من المستخدمين
     recipient: مستخدم
-    recipient_placeholder: أضف مفتاح المستخدم الفريد واضغط على إدخال...
     message: الرسالة
   request:
     description: "تقديم طلب إلى عنوان URL"

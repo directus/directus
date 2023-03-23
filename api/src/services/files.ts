@@ -15,7 +15,7 @@ import { ForbiddenException, InvalidPayloadException, ServiceUnavailableExceptio
 import logger from '../logger';
 import { getAxios } from '../request/index';
 import { getStorage } from '../storage';
-import { AbstractServiceOptions, File, Metadata, MutationOptions, PrimaryKey } from '../types';
+import type { AbstractServiceOptions, File, Metadata, MutationOptions, PrimaryKey } from '../types';
 import { parseIptc, parseXmp } from '../utils/parse-image-metadata';
 import { ItemsService } from './items';
 
@@ -32,13 +32,24 @@ export class FilesService extends ItemsService {
 	 */
 	async uploadOne(
 		stream: Readable,
-		data: Partial<File> & { filename_download: string; storage: string },
+		data: Partial<File> & { storage: string },
 		primaryKey?: PrimaryKey,
 		opts?: MutationOptions
 	): Promise<PrimaryKey> {
 		const storage = await getStorage();
 
-		const payload = clone(data);
+		let existingFile = {};
+
+		if (primaryKey !== undefined) {
+			existingFile =
+				(await this.knex
+					.select('folder', 'filename_download')
+					.from('directus_files')
+					.where({ id: primaryKey })
+					.first()) ?? {};
+		}
+
+		const payload = { ...existingFile, ...clone(data) };
 
 		if ('folder' in payload === false) {
 			const settings = await this.knex.select('storage_default_folder').from('directus_settings').first();
@@ -63,7 +74,7 @@ export class FilesService extends ItemsService {
 		}
 
 		const fileExtension =
-			path.extname(payload.filename_download) || (payload.type && '.' + extension(payload.type)) || '';
+			path.extname(payload.filename_download!) || (payload.type && '.' + extension(payload.type)) || '';
 
 		payload.filename_disk = primaryKey + (fileExtension || '');
 
@@ -86,12 +97,12 @@ export class FilesService extends ItemsService {
 			const stream = await storage.location(data.storage).read(payload.filename_disk);
 			const { height, width, description, title, tags, metadata } = await this.getMetadata(stream);
 
-			payload.height ??= height;
-			payload.width ??= width;
-			payload.description ??= description;
-			payload.title ??= title;
-			payload.tags ??= tags;
-			payload.metadata ??= metadata;
+			payload.height = height ?? null;
+			payload.width = width ?? null;
+			payload.description = description ?? null;
+			payload.title = title ?? null;
+			payload.tags = tags ?? null;
+			payload.metadata = metadata ?? null;
 		}
 
 		// We do this in a service without accountability. Even if you don't have update permissions to the file,

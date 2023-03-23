@@ -1,3 +1,4 @@
+import type { Accountability } from '@directus/shared/types';
 import { Router } from 'express';
 import Joi from 'joi';
 import ldap, {
@@ -24,7 +25,7 @@ import { RecordNotUniqueException } from '../../exceptions/database/record-not-u
 import logger from '../../logger';
 import { respond } from '../../middleware/respond';
 import { AuthenticationService, UsersService } from '../../services';
-import { AuthDriverOptions, User } from '../../types';
+import type { AuthDriverOptions, User } from '../../types';
 import asyncHandler from '../../utils/async-handler';
 import { getIPFromReq } from '../../utils/get-ip-from-req';
 import { getMilliseconds } from '../../utils/get-milliseconds';
@@ -145,14 +146,23 @@ export class LDAPAuthDriver extends AuthDriver {
 					}
 
 					res.on('searchEntry', ({ object }: SearchEntry) => {
-						const user = {
+						const user: UserInfo = {
 							dn: object.dn,
-							uid: getEntryValue(object.uid),
-							firstName: getEntryValue(object[firstNameAttribute]),
-							lastName: getEntryValue(object[lastNameAttribute]),
-							email: getEntryValue(object[mailAttribute]),
 							userAccountControl: Number(getEntryValue(object.userAccountControl) ?? 0),
 						};
+
+						const firstName = getEntryValue(object[firstNameAttribute]);
+						if (firstName) user.firstName = firstName;
+
+						const lastName = getEntryValue(object[lastNameAttribute]);
+						if (lastName) user.lastName = lastName;
+
+						const email = getEntryValue(object[mailAttribute]);
+						if (email) user.email = email;
+
+						const uid = getEntryValue(object.uid);
+						if (uid) user.uid = uid;
+
 						resolve(user);
 					});
 
@@ -370,12 +380,16 @@ export function createLDAPAuthRouter(provider: string): Router {
 	router.post(
 		'/',
 		asyncHandler(async (req, res, next) => {
-			const accountability = {
+			const accountability: Accountability = {
 				ip: getIPFromReq(req),
-				userAgent: req.get('user-agent'),
-				origin: req.get('origin'),
 				role: null,
 			};
+
+			const userAgent = req.get('user-agent');
+			if (userAgent) accountability.userAgent = userAgent;
+
+			const origin = req.get('origin');
+			if (origin) accountability.origin = origin;
 
 			const authenticationService = new AuthenticationService({
 				accountability: accountability,

@@ -1,10 +1,10 @@
 import SchemaInspector from '@directus/schema';
-import { REGEX_BETWEEN_PARENS } from '@directus/shared/constants';
-import { Accountability, Field, FieldMeta, RawField, SchemaOverview, Type } from '@directus/shared/types';
+import { KNEX_TYPES, REGEX_BETWEEN_PARENS } from '@directus/shared/constants';
+import type { Accountability, Field, FieldMeta, RawField, SchemaOverview, Type } from '@directus/shared/types';
 import { addFieldFlag, toArray } from '@directus/shared/utils';
-import Keyv from 'keyv';
-import { Knex } from 'knex';
-import { Column } from 'knex-schema-inspector/dist/types/column';
+import type Keyv from 'keyv';
+import type { Knex } from 'knex';
+import type { Column } from 'knex-schema-inspector/dist/types/column';
 import { isEqual, isNil } from 'lodash';
 import { clearSystemCache, getCache } from '../cache';
 import { ALIAS_TYPES } from '../constants';
@@ -17,12 +17,11 @@ import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { translateDatabaseError } from '../exceptions/database/translate';
 import { ItemsService } from '../services/items';
 import { PayloadService } from '../services/payload';
-import { AbstractServiceOptions, ActionEventParams, MutationOptions } from '../types';
+import type { AbstractServiceOptions, ActionEventParams, MutationOptions } from '../types';
 import getDefaultValue from '../utils/get-default-value';
 import getLocalType from '../utils/get-local-type';
-import { RelationsService } from './relations';
-import { KNEX_TYPES } from '@directus/shared/constants';
 import { getSchema } from '../utils/get-schema';
+import { RelationsService } from './relations';
 
 export class FieldsService {
 	knex: Knex;
@@ -343,7 +342,7 @@ export class FieldsService {
 			}
 
 			if (opts?.autoPurgeSystemCache !== false) {
-				await clearSystemCache();
+				await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
 			}
 
 			if (opts?.emitEvents !== false && nestedActionEvents.length > 0) {
@@ -462,7 +461,7 @@ export class FieldsService {
 			}
 
 			if (opts?.autoPurgeSystemCache !== false) {
-				await clearSystemCache();
+				await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
 			}
 
 			if (opts?.emitEvents !== false && nestedActionEvents.length > 0) {
@@ -628,7 +627,7 @@ export class FieldsService {
 			}
 
 			if (opts?.autoPurgeSystemCache !== false) {
-				await clearSystemCache();
+				await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
 			}
 
 			if (opts?.emitEvents !== false && nestedActionEvents.length > 0) {
@@ -650,7 +649,6 @@ export class FieldsService {
 
 		if (field.schema?.has_auto_increment) {
 			if (field.type === 'bigInteger') {
-				// Create an auto-incremented big integer (MySQL, PostgreSQL) or an auto-incremented integer (other DBs)
 				column = table.bigIncrements(field.field);
 			} else {
 				column = table.increments(field.field);

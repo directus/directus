@@ -1,5 +1,5 @@
 import { FailedValidationException } from '@directus/shared/exceptions';
-import {
+import type {
 	Accountability,
 	Aggregate,
 	Filter,
@@ -9,11 +9,12 @@ import {
 	SchemaOverview,
 } from '@directus/shared/types';
 import { validatePayload } from '@directus/shared/utils';
-import { Knex } from 'knex';
+import type { Knex } from 'knex';
 import { cloneDeep, flatten, isArray, isNil, merge, reduce, uniq, uniqWith } from 'lodash';
+import { GENERATE_SPECIAL } from '../constants';
 import getDatabase from '../database';
 import { ForbiddenException } from '../exceptions';
-import {
+import type {
 	AbstractServiceOptions,
 	AST,
 	FieldNode,
@@ -22,11 +23,10 @@ import {
 	NestedCollectionNode,
 	PrimaryKey,
 } from '../types';
+import { getRelationInfo } from '../utils/get-relation-info';
 import { stripFunction } from '../utils/strip-function';
 import { ItemsService } from './items';
 import { PayloadService } from './payload';
-import { getRelationInfo } from '../utils/get-relation-info';
-import { GENERATE_SPECIAL } from '../constants';
 
 export class AuthorizationService {
 	knex: Knex;
