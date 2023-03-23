@@ -9,7 +9,7 @@ vi.mock('../../src/database/index', () => {
 });
 
 vi.mock('../messenger', () => {
-	return { getMessenger: vi.fn().mockReturnValue({ publish: vi.fn() }) };
+	return { getMessenger: vi.fn().mockReturnValue({ publish: vi.fn(), subscribe: vi.fn() }) };
 });
 
 describe('Integration Tests', () => {

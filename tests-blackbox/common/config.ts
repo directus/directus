@@ -4,10 +4,11 @@ import { allVendors } from './get-dbs-to-test';
 
 type Vendor = (typeof allVendors)[number];
 
+export type Env = Record<Vendor, Record<string, string>>;
 export type Config = {
 	knexConfig: Record<Vendor, Knex.Config & { waitTestSQL: string }>;
 	names: Record<Vendor, string>;
-	envs: Record<Vendor, Record<string, string>>;
+	envs: Env;
 };
 
 const migrationsDir = './tests-blackbox/setup/migrations';
@@ -294,8 +295,8 @@ for (const vendor of allVendors) {
 	config.envs[vendor]!.TZ = isWindows ? '0' : 'UTC';
 }
 
-export function getUrl(vendor: (typeof allVendors)[number]) {
-	let port = config.envs[vendor]!.PORT;
+export function getUrl(vendor: (typeof allVendors)[number], overrideEnv?: Env) {
+	let port = overrideEnv ? overrideEnv[vendor]!.PORT : config.envs[vendor]!.PORT;
 
 	if (process.env.TEST_LOCAL) {
 		port = '8055';
