@@ -55,10 +55,10 @@ export const UUID_REGEX = '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a
 
 export const COOKIE_OPTIONS: CookieOptions = {
 	httpOnly: true,
-	domain: env.REFRESH_TOKEN_COOKIE_DOMAIN,
-	maxAge: getMilliseconds(env.REFRESH_TOKEN_TTL),
-	secure: env.REFRESH_TOKEN_COOKIE_SECURE ?? false,
-	sameSite: (env.REFRESH_TOKEN_COOKIE_SAME_SITE as 'lax' | 'strict' | 'none') || 'strict',
+	domain: env['REFRESH_TOKEN_COOKIE_DOMAIN'],
+	maxAge: getMilliseconds(env['REFRESH_TOKEN_TTL']),
+	secure: env['REFRESH_TOKEN_COOKIE_SECURE'] ?? false,
+	sameSite: (env['REFRESH_TOKEN_COOKIE_SAME_SITE'] as 'lax' | 'strict' | 'none') || 'strict',
 };
 
 export const OAS_REQUIRED_SCHEMAS = ['Diff', 'Schema', 'Query', 'x-metadata'];

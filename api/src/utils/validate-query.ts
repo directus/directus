@@ -173,7 +173,7 @@ function validateAlias(alias: any) {
 }
 
 function validateRelationalDepth(query: Query) {
-	const maxRelationalDepth = Number(env.MAX_RELATIONAL_DEPTH) > 2 ? Number(env.MAX_RELATIONAL_DEPTH) : 2;
+	const maxRelationalDepth = Number(env['MAX_RELATIONAL_DEPTH']) > 2 ? Number(env['MAX_RELATIONAL_DEPTH']) : 2;
 
 	// Process the fields in the same way as api/src/utils/get-ast-from-query.ts
 	let fields = ['*'];

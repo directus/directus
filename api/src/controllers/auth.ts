@@ -54,7 +54,7 @@ for (const authProvider of authProviders) {
 	router.use(`/login/${authProvider.name}`, authRouter);
 }
 
-if (!env.AUTH_DISABLE_DEFAULT) {
+if (!env['AUTH_DISABLE_DEFAULT']) {
 	router.use('/login', createLocalAuthRouter(DEFAULT_AUTH_PROVIDER));
 }
 
@@ -77,7 +77,7 @@ router.post(
 			schema: req.schema,
 		});
 
-		const currentRefreshToken = req.body.refresh_token || req.cookies[env.REFRESH_TOKEN_COOKIE_NAME];
+		const currentRefreshToken = req.body.refresh_token || req.cookies[env['REFRESH_TOKEN_COOKIE_NAME']];
 
 		if (!currentRefreshToken) {
 			throw new InvalidPayloadException(`"refresh_token" is required in either the JSON payload or Cookie`);
@@ -92,14 +92,14 @@ router.post(
 		} as Record<string, Record<string, any>>;
 
 		if (mode === 'json') {
-			payload.data.refresh_token = refreshToken;
+			payload['data']['refresh_token'] = refreshToken;
 		}
 
 		if (mode === 'cookie') {
-			res.cookie(env.REFRESH_TOKEN_COOKIE_NAME, refreshToken, COOKIE_OPTIONS);
+			res.cookie(env['REFRESH_TOKEN_COOKIE_NAME'], refreshToken, COOKIE_OPTIONS);
 		}
 
-		res.locals.payload = payload;
+		res.locals['payload'] = payload;
 		return next();
 	}),
 	respond
@@ -124,7 +124,7 @@ router.post(
 			schema: req.schema,
 		});
 
-		const currentRefreshToken = req.body.refresh_token || req.cookies[env.REFRESH_TOKEN_COOKIE_NAME];
+		const currentRefreshToken = req.body.refresh_token || req.cookies[env['REFRESH_TOKEN_COOKIE_NAME']];
 
 		if (!currentRefreshToken) {
 			throw new InvalidPayloadException(`"refresh_token" is required in either the JSON payload or Cookie`);
@@ -132,12 +132,12 @@ router.post(
 
 		await authenticationService.logout(currentRefreshToken);
 
-		if (req.cookies[env.REFRESH_TOKEN_COOKIE_NAME]) {
-			res.clearCookie(env.REFRESH_TOKEN_COOKIE_NAME, {
+		if (req.cookies[env['REFRESH_TOKEN_COOKIE_NAME']]) {
+			res.clearCookie(env['REFRESH_TOKEN_COOKIE_NAME'], {
 				httpOnly: true,
-				domain: env.REFRESH_TOKEN_COOKIE_DOMAIN,
-				secure: env.REFRESH_TOKEN_COOKIE_SECURE ?? false,
-				sameSite: (env.REFRESH_TOKEN_COOKIE_SAME_SITE as 'lax' | 'strict' | 'none') || 'strict',
+				domain: env['REFRESH_TOKEN_COOKIE_DOMAIN'],
+				secure: env['REFRESH_TOKEN_COOKIE_SECURE'] ?? false,
+				sameSite: (env['REFRESH_TOKEN_COOKIE_SAME_SITE'] as 'lax' | 'strict' | 'none') || 'strict',
 			});
 		}
 
@@ -213,9 +213,9 @@ router.post(
 router.get(
 	'/',
 	asyncHandler(async (req, res, next) => {
-		res.locals.payload = {
+		res.locals['payload'] = {
 			data: getAuthProviders(),
-			disableDefault: env.AUTH_DISABLE_DEFAULT,
+			disableDefault: env['AUTH_DISABLE_DEFAULT'],
 		};
 		return next();
 	}),

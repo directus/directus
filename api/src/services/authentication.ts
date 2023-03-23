@@ -50,7 +50,7 @@ export class AuthenticationService {
 	): Promise<LoginResult> {
 		const { nanoid } = await import('nanoid');
 
-		const STALL_TIME = env.LOGIN_STALL_TIME;
+		const STALL_TIME = env['LOGIN_STALL_TIME'];
 		const timeStart = performance.now();
 
 		const provider = getAuthProvider(providerName);
@@ -203,13 +203,13 @@ export class AuthenticationService {
 			}
 		);
 
-		const accessToken = jwt.sign(customClaims, env.SECRET as string, {
-			expiresIn: env.ACCESS_TOKEN_TTL,
+		const accessToken = jwt.sign(customClaims, env['SECRET'] as string, {
+			expiresIn: env['ACCESS_TOKEN_TTL'],
 			issuer: 'directus',
 		});
 
 		const refreshToken = nanoid(64);
-		const refreshTokenExpiration = new Date(Date.now() + getMilliseconds(env.REFRESH_TOKEN_TTL, 0));
+		const refreshTokenExpiration = new Date(Date.now() + getMilliseconds(env['REFRESH_TOKEN_TTL'], 0));
 
 		await this.knex('directus_sessions').insert({
 			token: refreshToken,
@@ -247,7 +247,7 @@ export class AuthenticationService {
 		return {
 			accessToken,
 			refreshToken,
-			expires: getMilliseconds(env.ACCESS_TOKEN_TTL),
+			expires: getMilliseconds(env['ACCESS_TOKEN_TTL']),
 			id: user.id,
 		};
 	}
@@ -358,13 +358,13 @@ export class AuthenticationService {
 			}
 		);
 
-		const accessToken = jwt.sign(customClaims, env.SECRET as string, {
-			expiresIn: env.ACCESS_TOKEN_TTL,
+		const accessToken = jwt.sign(customClaims, env['SECRET'] as string, {
+			expiresIn: env['ACCESS_TOKEN_TTL'],
 			issuer: 'directus',
 		});
 
 		const newRefreshToken = nanoid(64);
-		const refreshTokenExpiration = new Date(Date.now() + getMilliseconds(env.REFRESH_TOKEN_TTL, 0));
+		const refreshTokenExpiration = new Date(Date.now() + getMilliseconds(env['REFRESH_TOKEN_TTL'], 0));
 
 		await this.knex('directus_sessions')
 			.update({
@@ -380,7 +380,7 @@ export class AuthenticationService {
 		return {
 			accessToken,
 			refreshToken: newRefreshToken,
-			expires: getMilliseconds(env.ACCESS_TOKEN_TTL),
+			expires: getMilliseconds(env['ACCESS_TOKEN_TTL']),
 			id: record.user_id,
 		};
 	}

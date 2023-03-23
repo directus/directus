@@ -30,8 +30,8 @@ export class SAMLAuthDriver extends LocalAuthDriver {
 		this.config = config;
 		this.usersService = new UsersService({ knex: this.knex, schema: this.schema });
 
-		this.sp = samlify.ServiceProvider(getConfigFromEnv(`AUTH_${config.provider.toUpperCase()}_SP`));
-		this.idp = samlify.IdentityProvider(getConfigFromEnv(`AUTH_${config.provider.toUpperCase()}_IDP`));
+		this.sp = samlify.ServiceProvider(getConfigFromEnv(`AUTH_${config['provider'].toUpperCase()}_SP`));
+		this.idp = samlify.IdentityProvider(getConfigFromEnv(`AUTH_${config['provider'].toUpperCase()}_IDP`));
 	}
 
 	async fetchUserID(identifier: string) {
@@ -69,7 +69,7 @@ export class SAMLAuthDriver extends LocalAuthDriver {
 				last_name: lastName,
 				email: email,
 				external_identifier: identifier.toLowerCase(),
-				role: this.config.defaultRoleId,
+				role: this.config['defaultRoleId'],
 			});
 		} catch (error) {
 			if (error instanceof RecordNotUniqueException) {
@@ -105,8 +105,8 @@ export function createSAMLAuthRouter(providerName: string) {
 			const { context: url } = await sp.createLoginRequest(idp, 'redirect');
 			const parsedUrl = new URL(url);
 
-			if (req.query.redirect) {
-				parsedUrl.searchParams.append('RelayState', req.query.redirect as string);
+			if (req.query['redirect']) {
+				parsedUrl.searchParams.append('RelayState', req.query['redirect'] as string);
 			}
 
 			return res.redirect(parsedUrl.toString());
@@ -121,12 +121,12 @@ export function createSAMLAuthRouter(providerName: string) {
 
 			const authService = new AuthenticationService({ accountability: req.accountability, schema: req.schema });
 
-			if (req.cookies[env.REFRESH_TOKEN_COOKIE_NAME]) {
-				const currentRefreshToken = req.cookies[env.REFRESH_TOKEN_COOKIE_NAME];
+			if (req.cookies[env['REFRESH_TOKEN_COOKIE_NAME']]) {
+				const currentRefreshToken = req.cookies[env['REFRESH_TOKEN_COOKIE_NAME']];
 
 				if (currentRefreshToken) {
 					await authService.logout(currentRefreshToken);
-					res.clearCookie(env.REFRESH_TOKEN_COOKIE_NAME, COOKIE_OPTIONS);
+					res.clearCookie(env['REFRESH_TOKEN_COOKIE_NAME'], COOKIE_OPTIONS);
 				}
 			}
 
@@ -147,7 +147,7 @@ export function createSAMLAuthRouter(providerName: string) {
 				const authService = new AuthenticationService({ accountability: req.accountability, schema: req.schema });
 				const { accessToken, refreshToken, expires } = await authService.login(providerName, extract.attributes);
 
-				res.locals.payload = {
+				res.locals['payload'] = {
 					data: {
 						access_token: accessToken,
 						refresh_token: refreshToken,
@@ -156,7 +156,7 @@ export function createSAMLAuthRouter(providerName: string) {
 				};
 
 				if (relayState) {
-					res.cookie(env.REFRESH_TOKEN_COOKIE_NAME, refreshToken, COOKIE_OPTIONS);
+					res.cookie(env['REFRESH_TOKEN_COOKIE_NAME'], refreshToken, COOKIE_OPTIONS);
 					return res.redirect(relayState);
 				}
 

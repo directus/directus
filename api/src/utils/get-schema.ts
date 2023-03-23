@@ -28,7 +28,7 @@ export async function getSchema(options?: {
 
 	let result: SchemaOverview;
 
-	if (!options?.bypassCache && env.CACHE_SCHEMA !== false) {
+	if (!options?.bypassCache && env['CACHE_SCHEMA'] !== false) {
 		let cachedSchema;
 
 		try {
@@ -74,7 +74,7 @@ async function getDatabaseSchema(
 	];
 
 	for (const [collection, info] of Object.entries(schemaOverview)) {
-		if (toArray(env.DB_EXCLUDE_TABLES).includes(collection)) {
+		if (toArray(env['DB_EXCLUDE_TABLES']).includes(collection)) {
 			logger.trace(`Collection "${collection}" is configured to be excluded and will be ignored`);
 			continue;
 		}

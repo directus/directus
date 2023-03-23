@@ -90,12 +90,12 @@ describe('Integration Tests', () => {
 		it(`the returned UUID primary key for MS SQL should be uppercase`, async () => {
 			vi.mocked(getDatabaseClient).mockReturnValue('mssql');
 
-			const table = schemas.system.tables[0];
+			const table = schemas['system'].tables[0];
 
 			const itemsService = new ItemsService(table, {
 				knex: db,
 				accountability: { role: 'admin', admin: true },
-				schema: schemas.system.schema,
+				schema: schemas['system'].schema,
 			});
 
 			tracker.on.insert(table).responseOnce(item);

@@ -18,7 +18,7 @@ export async function init(): Promise<void> {
 	const messenger = getMessenger();
 
 	messenger.subscribe('webhooks', (event) => {
-		if (event.type === 'reload') {
+		if (event['type'] === 'reload') {
 			reloadQueue.enqueue(async () => {
 				await reload();
 			});
@@ -56,7 +56,7 @@ export function unregister(): void {
 
 function createHandler(webhook: Webhook, event: string): ActionHandler {
 	return async (meta, context) => {
-		if (webhook.collections.includes(meta.collection) === false) return;
+		if (webhook.collections.includes(meta['collection']) === false) return;
 		const axios = await getAxios();
 
 		const webhookPayload = {

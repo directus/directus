@@ -12,14 +12,14 @@ export class RevisionsService extends ItemsService {
 
 		if (!revision) throw new ForbiddenException();
 
-		if (!revision.data) throw new InvalidPayloadException(`Revision doesn't contain data to revert to`);
+		if (!revision['data']) throw new InvalidPayloadException(`Revision doesn't contain data to revert to`);
 
-		const service = new ItemsService(revision.collection, {
+		const service = new ItemsService(revision['collection'], {
 			accountability: this.accountability,
 			knex: this.knex,
 			schema: this.schema,
 		});
 
-		await service.updateOne(revision.item, revision.data);
+		await service.updateOne(revision['item'], revision['data']);
 	}
 }

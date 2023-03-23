@@ -66,7 +66,7 @@ export default async function createApp(): Promise<express.Application> {
 
 	validateEnv(['KEY', 'SECRET']);
 
-	if (!new Url(env.PUBLIC_URL).isAbsolute()) {
+	if (!new Url(env['PUBLIC_URL']).isAbsolute()) {
 		logger.warn('PUBLIC_URL should be a full URL');
 	}
 
@@ -97,7 +97,7 @@ export default async function createApp(): Promise<express.Application> {
 	const app = express();
 
 	app.disable('x-powered-by');
-	app.set('trust proxy', env.IP_TRUST_PROXY);
+	app.set('trust proxy', env['IP_TRUST_PROXY']);
 	app.set('query parser', (str: string) => qs.parse(str, { depth: 10 }));
 
 	app.use(
@@ -128,7 +128,7 @@ export default async function createApp(): Promise<express.Application> {
 		)
 	);
 
-	if (env.HSTS_ENABLED) {
+	if (env['HSTS_ENABLED']) {
 		app.use(helmet.hsts(getConfigFromEnv('HSTS_', ['HSTS_ENABLED'])));
 	}
 
@@ -143,14 +143,14 @@ export default async function createApp(): Promise<express.Application> {
 		next();
 	});
 
-	if (env.CORS_ENABLED === true) {
+	if (env['CORS_ENABLED'] === true) {
 		app.use(cors);
 	}
 
 	app.use((req, res, next) => {
 		(
 			express.json({
-				limit: env.MAX_PAYLOAD_SIZE,
+				limit: env['MAX_PAYLOAD_SIZE'],
 			}) as RequestHandler
 		)(req, res, (err: any) => {
 			if (err) {
@@ -166,8 +166,8 @@ export default async function createApp(): Promise<express.Application> {
 	app.use(extractToken);
 
 	app.get('/', (_req, res, next) => {
-		if (env.ROOT_REDIRECT) {
-			res.redirect(env.ROOT_REDIRECT);
+		if (env['ROOT_REDIRECT']) {
+			res.redirect(env['ROOT_REDIRECT']);
 		} else {
 			next();
 		}
@@ -176,12 +176,12 @@ export default async function createApp(): Promise<express.Application> {
 	app.get('/robots.txt', (_, res) => {
 		res.set('Content-Type', 'text/plain');
 		res.status(200);
-		res.send(env.ROBOTS_TXT);
+		res.send(env['ROBOTS_TXT']);
 	});
 
-	if (env.SERVE_APP) {
+	if (env['SERVE_APP']) {
 		const adminPath = require.resolve('@directus/app');
-		const adminUrl = new Url(env.PUBLIC_URL).addPath('admin');
+		const adminUrl = new Url(env['PUBLIC_URL']).addPath('admin');
 
 		const embeds = extensionManager.getEmbeds();
 
@@ -209,10 +209,10 @@ export default async function createApp(): Promise<express.Application> {
 	}
 
 	// use the rate limiter - all routes for now
-	if (env.RATE_LIMITER_GLOBAL_ENABLED === true) {
+	if (env['RATE_LIMITER_GLOBAL_ENABLED'] === true) {
 		app.use(rateLimiterGlobal);
 	}
-	if (env.RATE_LIMITER_ENABLED === true) {
+	if (env['RATE_LIMITER_ENABLED'] === true) {
 		app.use(rateLimiter);
 	}
 

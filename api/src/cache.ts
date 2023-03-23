@@ -20,11 +20,16 @@ type Store = 'memory' | 'redis' | 'memcache';
 
 const messenger = getMessenger();
 
-if (env.MESSENGER_STORE === 'redis' && env.CACHE_STORE === 'memory' && env.CACHE_AUTO_PURGE && !messengerSubscribed) {
+if (
+	env['MESSENGER_STORE'] === 'redis' &&
+	env['CACHE_STORE'] === 'memory' &&
+	env['CACHE_AUTO_PURGE'] &&
+	!messengerSubscribed
+) {
 	messengerSubscribed = true;
 
 	messenger.subscribe('schemaChanged', async (opts) => {
-		if (cache && opts?.autoPurgeCache !== false) {
+		if (cache && opts?.['autoPurgeCache'] !== false) {
 			await cache.clear();
 		}
 	});
@@ -37,29 +42,29 @@ export function getCache(): {
 	localSchemaCache: Keyv;
 	lockCache: Keyv;
 } {
-	if (env.CACHE_ENABLED === true && cache === null) {
+	if (env['CACHE_ENABLED'] === true && cache === null) {
 		validateEnv(['CACHE_NAMESPACE', 'CACHE_TTL', 'CACHE_STORE']);
-		cache = getKeyvInstance(env.CACHE_STORE, getMilliseconds(env.CACHE_TTL));
+		cache = getKeyvInstance(env['CACHE_STORE'], getMilliseconds(env['CACHE_TTL']));
 		cache.on('error', (err) => logger.warn(err, `[cache] ${err}`));
 	}
 
 	if (systemCache === null) {
-		systemCache = getKeyvInstance(env.CACHE_STORE, getMilliseconds(env.CACHE_SYSTEM_TTL), '_system');
+		systemCache = getKeyvInstance(env['CACHE_STORE'], getMilliseconds(env['CACHE_SYSTEM_TTL']), '_system');
 		systemCache.on('error', (err) => logger.warn(err, `[system-cache] ${err}`));
 	}
 
 	if (sharedSchemaCache === null) {
-		sharedSchemaCache = getKeyvInstance(env.CACHE_STORE, getMilliseconds(env.CACHE_SYSTEM_TTL), '_schema_shared');
+		sharedSchemaCache = getKeyvInstance(env['CACHE_STORE'], getMilliseconds(env['CACHE_SYSTEM_TTL']), '_schema_shared');
 		sharedSchemaCache.on('error', (err) => logger.warn(err, `[shared-schema-cache] ${err}`));
 	}
 
 	if (localSchemaCache === null) {
-		localSchemaCache = getKeyvInstance('memory', getMilliseconds(env.CACHE_SYSTEM_TTL), '_schema');
+		localSchemaCache = getKeyvInstance('memory', getMilliseconds(env['CACHE_SYSTEM_TTL']), '_schema');
 		localSchemaCache.on('error', (err) => logger.warn(err, `[schema-cache] ${err}`));
 	}
 
 	if (lockCache === null) {
-		lockCache = getKeyvInstance(env.CACHE_STORE, undefined, '_lock');
+		lockCache = getKeyvInstance(env['CACHE_STORE'], undefined, '_lock');
 		lockCache.on('error', (err) => logger.warn(err, `[lock-cache] ${err}`));
 	}
 
@@ -156,14 +161,14 @@ function getKeyvInstance(store: Store, ttl: number | undefined, namespaceSuffix?
 
 function getConfig(store: Store = 'memory', ttl: number | undefined, namespaceSuffix = ''): Options<any> {
 	const config: Options<any> = {
-		namespace: `${env.CACHE_NAMESPACE}${namespaceSuffix}`,
+		namespace: `${env['CACHE_NAMESPACE']}${namespaceSuffix}`,
 		ttl,
 	};
 
 	if (store === 'redis') {
 		const KeyvRedis = require('@keyv/redis');
 
-		config.store = new KeyvRedis(env.CACHE_REDIS || getConfigFromEnv('CACHE_REDIS_'));
+		config.store = new KeyvRedis(env['CACHE_REDIS'] || getConfigFromEnv('CACHE_REDIS_'));
 	}
 
 	if (store === 'memcache') {
@@ -171,7 +176,9 @@ function getConfig(store: Store = 'memory', ttl: number | undefined, namespaceSu
 
 		// keyv-memcache uses memjs which only accepts a comma separated string instead of an array,
 		// so we need to join array into a string when applicable. See #7986
-		const cacheMemcache = Array.isArray(env.CACHE_MEMCACHE) ? env.CACHE_MEMCACHE.join(',') : env.CACHE_MEMCACHE;
+		const cacheMemcache = Array.isArray(env['CACHE_MEMCACHE'])
+			? env['CACHE_MEMCACHE'].join(',')
+			: env['CACHE_MEMCACHE'];
 
 		config.store = new KeyvMemcache(cacheMemcache);
 	}

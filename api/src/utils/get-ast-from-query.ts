@@ -248,7 +248,7 @@ export default async function getASTFromQuery(
 				}
 
 				// update query alias for children parseFields
-				const deepAlias = getDeepQuery(deep?.[fieldKey] || {})?.alias;
+				const deepAlias = getDeepQuery(deep?.[fieldKey] || {})?.['alias'];
 				if (!isEmpty(deepAlias)) query.alias = deepAlias;
 
 				child = {

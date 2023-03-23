@@ -41,18 +41,18 @@ export class NotificationsService extends ItemsService {
 			const user = await this.usersService.readOne(data.recipient, {
 				fields: ['id', 'email', 'email_notifications', 'role.app_access'],
 			});
-			const manageUserAccountUrl = new Url(env.PUBLIC_URL).addPath('admin', 'users', user.id).toString();
+			const manageUserAccountUrl = new Url(env['PUBLIC_URL']).addPath('admin', 'users', user['id']).toString();
 
 			const html = data.message ? md(data.message) : '';
 
-			if (user.email && user.email_notifications === true) {
+			if (user['email'] && user['email_notifications'] === true) {
 				try {
 					await this.mailService.send({
 						template: {
 							name: 'base',
-							data: user.role?.app_access ? { url: manageUserAccountUrl, html } : { html },
+							data: user['role']?.app_access ? { url: manageUserAccountUrl, html } : { html },
 						},
-						to: user.email,
+						to: user['email'],
 						subject: data.subject,
 					});
 				} catch (error: any) {

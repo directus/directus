@@ -38,7 +38,7 @@ export default function getDatabase(): Knex {
 			break;
 
 		case 'oracledb':
-			if (!env.DB_CONNECT_STRING) {
+			if (!env['DB_CONNECT_STRING']) {
 				requiredEnvVars.push('DB_HOST', 'DB_PORT', 'DB_DATABASE', 'DB_USER', 'DB_PASSWORD');
 			} else {
 				requiredEnvVars.push('DB_USER', 'DB_PASSWORD', 'DB_CONNECT_STRING');
@@ -54,7 +54,7 @@ export default function getDatabase(): Knex {
 			}
 			break;
 		case 'mssql':
-			if (!env.DB_TYPE || env.DB_TYPE === 'default') {
+			if (!env['DB_TYPE'] || env['DB_TYPE'] === 'default') {
 				requiredEnvVars.push('DB_HOST', 'DB_PORT', 'DB_DATABASE', 'DB_USER', 'DB_PASSWORD');
 			}
 			break;
@@ -241,7 +241,7 @@ export async function validateMigrations(): Promise<boolean> {
 	try {
 		let migrationFiles = await fse.readdir(path.join(__dirname, 'migrations'));
 
-		const customMigrationsPath = path.resolve(env.EXTENSIONS_PATH, 'migrations');
+		const customMigrationsPath = path.resolve(env['EXTENSIONS_PATH'], 'migrations');
 
 		let customMigrationFiles =
 			((await fse.pathExists(customMigrationsPath)) && (await fse.readdir(customMigrationsPath))) || [];
@@ -297,11 +297,11 @@ async function validateDatabaseCharset(database?: Knex): Promise<void> {
 
 		const tables = await database('information_schema.tables')
 			.select({ name: 'TABLE_NAME', collation: 'TABLE_COLLATION' })
-			.where({ TABLE_SCHEMA: env.DB_DATABASE });
+			.where({ TABLE_SCHEMA: env['DB_DATABASE'] });
 
 		const columns = await database('information_schema.columns')
 			.select({ table_name: 'TABLE_NAME', name: 'COLUMN_NAME', collation: 'COLLATION_NAME' })
-			.where({ TABLE_SCHEMA: env.DB_DATABASE })
+			.where({ TABLE_SCHEMA: env['DB_DATABASE'] })
 			.whereNot({ COLLATION_NAME: collation });
 
 		let inconsistencies = '';

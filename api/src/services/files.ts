@@ -114,7 +114,7 @@ export class FilesService extends ItemsService {
 
 		await sudoService.updateOne(primaryKey, payload, { emitEvents: false });
 
-		if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
+		if (this.cache && env['CACHE_AUTO_PURGE'] && opts?.autoPurgeCache !== false) {
 			await this.cache.clear();
 		}
 
@@ -140,7 +140,7 @@ export class FilesService extends ItemsService {
 	/**
 	 * Extract metadata from a buffer's content
 	 */
-	async getMetadata(stream: Readable, allowList = env.FILE_METADATA_ALLOW_LIST): Promise<Metadata> {
+	async getMetadata(stream: Readable, allowList = env['FILE_METADATA_ALLOW_LIST']): Promise<Metadata> {
 		return new Promise((resolve, reject) => {
 			pipeline(
 				stream,
@@ -214,14 +214,14 @@ export class FilesService extends ItemsService {
 						}
 					}
 
-					if (fullMetadata?.iptc?.Caption && typeof fullMetadata.iptc.Caption === 'string') {
-						metadata.description = fullMetadata.iptc?.Caption;
+					if (fullMetadata?.iptc?.['Caption'] && typeof fullMetadata.iptc['Caption'] === 'string') {
+						metadata.description = fullMetadata.iptc?.['Caption'];
 					}
-					if (fullMetadata?.iptc?.Headline && typeof fullMetadata.iptc.Headline === 'string') {
-						metadata.title = fullMetadata.iptc.Headline;
+					if (fullMetadata?.iptc?.['Headline'] && typeof fullMetadata.iptc['Headline'] === 'string') {
+						metadata.title = fullMetadata.iptc['Headline'];
 					}
-					if (fullMetadata?.iptc?.Keywords) {
-						metadata.tags = fullMetadata.iptc.Keywords;
+					if (fullMetadata?.iptc?.['Keywords']) {
+						metadata.tags = fullMetadata.iptc['Keywords'];
 					}
 
 					if (allowList === '*' || allowList?.[0] === '*') {
@@ -277,7 +277,7 @@ export class FilesService extends ItemsService {
 
 		const payload = {
 			filename_download: filename,
-			storage: toArray(env.STORAGE_LOCATIONS)[0],
+			storage: toArray(env['STORAGE_LOCATIONS'])[0],
 			type: fileResponse.headers['content-type'],
 			title: formatTitle(filename),
 			...(body || {}),
@@ -321,15 +321,15 @@ export class FilesService extends ItemsService {
 		await super.deleteMany(keys);
 
 		for (const file of files) {
-			const disk = storage.location(file.storage);
+			const disk = storage.location(file['storage']);
 
 			// Delete file + thumbnails
-			for await (const filepath of disk.list(file.id)) {
+			for await (const filepath of disk.list(file['id'])) {
 				await disk.delete(filepath);
 			}
 		}
 
-		if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
+		if (this.cache && env['CACHE_AUTO_PURGE'] && opts?.autoPurgeCache !== false) {
 			await this.cache.clear();
 		}
 

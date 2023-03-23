@@ -337,7 +337,7 @@ export class FieldsService {
 				await this.helpers.schema.postColumnChange();
 			}
 
-			if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
+			if (this.cache && env['CACHE_AUTO_PURGE'] && opts?.autoPurgeCache !== false) {
 				await this.cache.clear();
 			}
 
@@ -456,7 +456,7 @@ export class FieldsService {
 				await this.helpers.schema.postColumnChange();
 			}
 
-			if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
+			if (this.cache && env['CACHE_AUTO_PURGE'] && opts?.autoPurgeCache !== false) {
 				await this.cache.clear();
 			}
 
@@ -571,11 +571,11 @@ export class FieldsService {
 				const collectionMetaUpdates: Record<string, null> = {};
 
 				if (collectionMeta?.archive_field === field) {
-					collectionMetaUpdates.archive_field = null;
+					collectionMetaUpdates['archive_field'] = null;
 				}
 
 				if (collectionMeta?.sort_field === field) {
-					collectionMetaUpdates.sort_field = null;
+					collectionMetaUpdates['sort_field'] = null;
 				}
 
 				if (Object.keys(collectionMetaUpdates).length > 0) {
@@ -622,7 +622,7 @@ export class FieldsService {
 				await this.helpers.schema.postColumnChange();
 			}
 
-			if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
+			if (this.cache && env['CACHE_AUTO_PURGE'] && opts?.autoPurgeCache !== false) {
 				await this.cache.clear();
 			}
 
