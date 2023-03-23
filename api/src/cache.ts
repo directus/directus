@@ -20,7 +20,7 @@ type Store = 'memory' | 'redis' | 'memcache';
 
 const messenger = getMessenger();
 
-if (env.CACHE_STORE === 'memory' && env.CACHE_AUTO_PURGE && !messengerSubscribed) {
+if (env.MESSENGER_STORE === 'redis' && env.CACHE_STORE === 'memory' && env.CACHE_AUTO_PURGE && !messengerSubscribed) {
 	messengerSubscribed = true;
 
 	messenger.subscribe('schemaChanged', async (opts) => {
