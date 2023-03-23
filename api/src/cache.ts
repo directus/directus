@@ -7,7 +7,7 @@ import { getMilliseconds } from './utils/get-milliseconds';
 import { validateEnv } from './utils/validate-env';
 import { getMessenger } from './messenger';
 import { getSimpleHash } from '@directus/shared/utils';
-import { SchemaOverview } from '@directus/shared/types';
+import type { SchemaOverview } from '@directus/shared/types';
 
 let cache: Keyv | null = null;
 let systemCache: Keyv | null = null;
@@ -72,7 +72,10 @@ export async function flushCaches(forced?: boolean): Promise<void> {
 	await cache?.clear();
 }
 
-export async function clearSystemCache(opts?: { forced?: boolean; autoPurgeCache?: false }): Promise<void> {
+export async function clearSystemCache(opts?: {
+	forced?: boolean | undefined;
+	autoPurgeCache?: false | undefined;
+}): Promise<void> {
 	const { systemCache, localSchemaCache, lockCache } = getCache();
 
 	// Flush system cache when forced or when system cache lock not set
