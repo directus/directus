@@ -1,11 +1,12 @@
 import { toArray } from '@directus/shared/utils';
-import type { Request, RequestHandler } from 'express';
 import { merge } from 'lodash';
-import pino, { LoggerOptions } from 'pino';
+import pino, { LoggerOptions, SerializedResponse } from 'pino';
+import type { Request, RequestHandler } from 'express';
 import pinoHTTP, { stdSerializers } from 'pino-http';
 import { URL } from 'url';
 import env from './env';
 import { getConfigFromEnv } from './utils/get-config-from-env';
+import { redactHeaderCookie } from './utils/redact-header-cookies';
 
 const pinoOptions: LoggerOptions = {
 	level: env.LOG_LEVEL || 'info',
@@ -86,7 +87,22 @@ export const expressLogger = pinoHTTP({
 		req(request: Request) {
 			const output = stdSerializers.req(request);
 			output.url = redactQuery(output.url);
+			if (output.headers?.cookie) {
+				output.headers.cookie = redactHeaderCookie(output.headers.cookie, [
+					'access_token',
+					`${env.REFRESH_TOKEN_COOKIE_NAME}`,
+				]);
+			}
 			return output;
+		},
+		res(response: SerializedResponse) {
+			if (response.headers?.['set-cookie']) {
+				response.headers['set-cookie'] = redactHeaderCookie(response.headers['set-cookie'], [
+					'access_token',
+					`${env.REFRESH_TOKEN_COOKIE_NAME}`,
+				]);
+			}
+			return response;
 		},
 	},
 }) as RequestHandler;
