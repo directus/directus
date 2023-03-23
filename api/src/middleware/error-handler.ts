@@ -33,7 +33,7 @@ const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
 	}
 
 	for (const err of errors) {
-		if (env.NODE_ENV === 'development') {
+		if (env['NODE_ENV'] === 'development') {
 			err.extensions = {
 				...(err.extensions || {}),
 				stack: err.stack,
@@ -54,7 +54,7 @@ const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
 			});
 
 			if (err instanceof MethodNotAllowedException) {
-				res.header('Allow', err.extensions.allow.join(', '));
+				res.header('Allow', err.extensions['allow'].join(', '));
 			}
 		} else {
 			logger.error(err);

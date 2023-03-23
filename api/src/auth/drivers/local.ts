@@ -16,14 +16,14 @@ import { AuthDriver } from '../auth';
 
 export class LocalAuthDriver extends AuthDriver {
 	async getUserID(payload: Record<string, any>): Promise<string> {
-		if (!payload.email) {
+		if (!payload['email']) {
 			throw new InvalidCredentialsException();
 		}
 
 		const user = await this.knex
 			.select('id')
 			.from('directus_users')
-			.whereRaw('LOWER(??) = ?', ['email', payload.email.toLowerCase()])
+			.whereRaw('LOWER(??) = ?', ['email', payload['email'].toLowerCase()])
 			.first();
 
 		if (!user) {
@@ -39,8 +39,8 @@ export class LocalAuthDriver extends AuthDriver {
 		}
 	}
 
-	async login(user: User, payload: Record<string, any>): Promise<void> {
-		await this.verify(user, payload.password);
+	override async login(user: User, payload: Record<string, any>): Promise<void> {
+		await this.verify(user, payload['password']);
 	}
 }
 
@@ -57,7 +57,7 @@ export function createLocalAuthRouter(provider: string): Router {
 	router.post(
 		'/',
 		asyncHandler(async (req, res, next) => {
-			const STALL_TIME = env.LOGIN_STALL_TIME;
+			const STALL_TIME = env['LOGIN_STALL_TIME'];
 			const timeStart = performance.now();
 
 			const accountability: Accountability = {
@@ -96,14 +96,14 @@ export function createLocalAuthRouter(provider: string): Router {
 			} as Record<string, Record<string, any>>;
 
 			if (mode === 'json') {
-				payload.data.refresh_token = refreshToken;
+				payload['data']['refresh_token'] = refreshToken;
 			}
 
 			if (mode === 'cookie') {
-				res.cookie(env.REFRESH_TOKEN_COOKIE_NAME, refreshToken, COOKIE_OPTIONS);
+				res.cookie(env['REFRESH_TOKEN_COOKIE_NAME'], refreshToken, COOKIE_OPTIONS);
 			}
 
-			res.locals.payload = payload;
+			res.locals['payload'] = payload;
 
 			return next();
 		}),

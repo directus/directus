@@ -32,9 +32,9 @@ export default async function bootstrap({ skipAdminInit }: { skipAdminInit?: boo
 			logger.info('Skipping creation of default Admin user and role...');
 		}
 
-		if (env.PROJECT_NAME && typeof env.PROJECT_NAME === 'string' && env.PROJECT_NAME.length > 0) {
+		if (env['PROJECT_NAME'] && typeof env['PROJECT_NAME'] === 'string' && env['PROJECT_NAME'].length > 0) {
 			const settingsService = new SettingsService({ schema });
-			await settingsService.upsertSingleton({ project_name: env.PROJECT_NAME });
+			await settingsService.upsertSingleton({ project_name: env['PROJECT_NAME'] });
 		}
 	} else {
 		logger.info('Database already initialized, skipping install');
@@ -60,6 +60,8 @@ async function waitForDatabase(database: Knex) {
 
 	// This will throw and exit the process if the database is not available
 	await validateDatabaseConnection(database);
+
+	return database;
 }
 
 async function createDefaultAdmin(schema: SchemaOverview) {
@@ -72,14 +74,14 @@ async function createDefaultAdmin(schema: SchemaOverview) {
 	logger.info('Adding first admin user...');
 	const usersService = new UsersService({ schema });
 
-	let adminEmail = env.ADMIN_EMAIL;
+	let adminEmail = env['ADMIN_EMAIL'];
 
 	if (!adminEmail) {
 		logger.info('No admin email provided. Defaulting to "admin@example.com"');
 		adminEmail = 'admin@example.com';
 	}
 
-	let adminPassword = env.ADMIN_PASSWORD;
+	let adminPassword = env['ADMIN_PASSWORD'];
 
 	if (!adminPassword) {
 		adminPassword = nanoid(12);

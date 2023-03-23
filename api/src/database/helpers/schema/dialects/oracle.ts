@@ -3,7 +3,7 @@ import type { Field, Relation, Type } from '@directus/shared/types';
 import { Options, SchemaHelper } from '../types';
 
 export class SchemaHelperOracle extends SchemaHelper {
-	async changeToType(
+	override async changeToType(
 		table: string,
 		column: string,
 		type: (typeof KNEX_TYPES)[number],
@@ -12,11 +12,11 @@ export class SchemaHelperOracle extends SchemaHelper {
 		await this.changeToTypeByCopy(table, column, type, options);
 	}
 
-	castA2oPrimaryKey(): string {
+	override castA2oPrimaryKey(): string {
 		return 'CAST(?? AS VARCHAR2(255))';
 	}
 
-	preRelationChange(relation: Partial<Relation>): void {
+	override preRelationChange(relation: Partial<Relation>): void {
 		if (relation.collection === relation.related_collection) {
 			// Constraints are not allowed on self referencing relationships
 			// Setting NO ACTION throws - ORA-00905: missing keyword
@@ -26,7 +26,7 @@ export class SchemaHelperOracle extends SchemaHelper {
 		}
 	}
 
-	processFieldType(field: Field): Type {
+	override processFieldType(field: Field): Type {
 		if (field.type === 'integer') {
 			if (field.schema?.numeric_precision === 20) {
 				return 'bigInteger';

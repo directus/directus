@@ -9,21 +9,21 @@ import { getConfigFromEnv } from './utils/get-config-from-env';
 import { redactHeaderCookie } from './utils/redact-header-cookies';
 
 const pinoOptions: LoggerOptions = {
-	level: env.LOG_LEVEL || 'info',
+	level: env['LOG_LEVEL'] || 'info',
 	redact: {
-		paths: ['req.headers.authorization', `req.cookies.${env.REFRESH_TOKEN_COOKIE_NAME}`],
+		paths: ['req.headers.authorization', `req.cookies.${env['REFRESH_TOKEN_COOKIE_NAME']}`],
 		censor: '--redact--',
 	},
 };
 const httpLoggerOptions: LoggerOptions = {
-	level: env.LOG_LEVEL || 'info',
+	level: env['LOG_LEVEL'] || 'info',
 	redact: {
-		paths: ['req.headers.authorization', `req.cookies.${env.REFRESH_TOKEN_COOKIE_NAME}`],
+		paths: ['req.headers.authorization', `req.cookies.${env['REFRESH_TOKEN_COOKIE_NAME']}`],
 		censor: '--redact--',
 	},
 };
 
-if (env.LOG_STYLE !== 'raw') {
+if (env['LOG_STYLE'] !== 'raw') {
 	pinoOptions.transport = {
 		target: 'pino-pretty',
 		options: {
@@ -48,10 +48,10 @@ if (env.LOG_STYLE !== 'raw') {
 const loggerEnvConfig = getConfigFromEnv('LOGGER_', 'LOGGER_HTTP');
 
 // Expose custom log levels into formatter function
-if (loggerEnvConfig.levels) {
+if (loggerEnvConfig['levels']) {
 	const customLogLevels: { [key: string]: string } = {};
 
-	for (const el of toArray(loggerEnvConfig.levels)) {
+	for (const el of toArray(loggerEnvConfig['levels'])) {
 		const key_val = el.split(':');
 		customLogLevels[key_val[0].trim()] = key_val[1].trim();
 	}
@@ -73,7 +73,7 @@ if (loggerEnvConfig.levels) {
 		},
 	};
 
-	delete loggerEnvConfig.levels;
+	delete loggerEnvConfig['levels'];
 }
 
 const logger = pino(merge(pinoOptions, loggerEnvConfig));
@@ -87,10 +87,10 @@ export const expressLogger = pinoHTTP({
 		req(request: Request) {
 			const output = stdSerializers.req(request);
 			output.url = redactQuery(output.url);
-			if (output.headers?.cookie) {
-				output.headers.cookie = redactHeaderCookie(output.headers.cookie, [
+			if (output.headers?.['cookie']) {
+				output.headers['cookie'] = redactHeaderCookie(output.headers['cookie'], [
 					'access_token',
-					`${env.REFRESH_TOKEN_COOKIE_NAME}`,
+					`${env['REFRESH_TOKEN_COOKIE_NAME']}`,
 				]);
 			}
 			return output;
@@ -99,7 +99,7 @@ export const expressLogger = pinoHTTP({
 			if (response.headers?.['set-cookie']) {
 				response.headers['set-cookie'] = redactHeaderCookie(response.headers['set-cookie'], [
 					'access_token',
-					`${env.REFRESH_TOKEN_COOKIE_NAME}`,
+					`${env['REFRESH_TOKEN_COOKIE_NAME']}`,
 				]);
 			}
 			return response;

@@ -50,7 +50,7 @@ function castToObject(value: any): any | any[] {
 		try {
 			return parseJSON(value);
 		} catch (err: any) {
-			if (env.NODE_ENV === 'development') {
+			if (env['NODE_ENV'] === 'development') {
 				logger.error(err);
 			}
 

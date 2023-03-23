@@ -18,16 +18,16 @@ for (const filepath of fieldData) {
 
 	const systemFields = requireYAML(path.resolve(__dirname, filepath));
 
-	(systemFields.fields as FieldMeta[]).forEach((field, index) => {
+	(systemFields['fields'] as FieldMeta[]).forEach((field, index) => {
 		const systemField = merge({ system: true }, defaults, field, {
-			collection: systemFields.table,
+			collection: systemFields['table'],
 			sort: index + 1,
 		});
 
 		// Dynamically populate auth providers field
 		if (systemField.collection === 'directus_users' && systemField.field === 'provider') {
 			getAuthProviders().forEach(({ name }) => {
-				systemField.options?.choices?.push({
+				systemField.options?.['choices']?.push({
 					text: formatTitle(name),
 					value: name,
 				});

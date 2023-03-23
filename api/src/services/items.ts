@@ -265,7 +265,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			}
 		}
 
-		if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
+		if (this.cache && env['CACHE_AUTO_PURGE'] && opts?.autoPurgeCache !== false) {
 			await this.cache.clear();
 		}
 
@@ -308,7 +308,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			}
 		}
 
-		if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
+		if (this.cache && env['CACHE_AUTO_PURGE'] && opts?.autoPurgeCache !== false) {
 			await this.cache.clear();
 		}
 
@@ -491,7 +491,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				}
 			});
 		} finally {
-			if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
+			if (this.cache && env['CACHE_AUTO_PURGE'] && opts?.autoPurgeCache !== false) {
 				await this.cache.clear();
 			}
 		}
@@ -668,7 +668,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			}
 		});
 
-		if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
+		if (this.cache && env['CACHE_AUTO_PURGE'] && opts?.autoPurgeCache !== false) {
 			await this.cache.clear();
 		}
 
@@ -755,7 +755,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			return primaryKeys;
 		});
 
-		if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
+		if (this.cache && env['CACHE_AUTO_PURGE'] && opts?.autoPurgeCache !== false) {
 			await this.cache.clear();
 		}
 
@@ -844,7 +844,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			}
 		});
 
-		if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
+		if (this.cache && env['CACHE_AUTO_PURGE'] && opts?.autoPurgeCache !== false) {
 			await this.cache.clear();
 		}
 

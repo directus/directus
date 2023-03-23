@@ -310,6 +310,8 @@ export function applySort(
 	rootQuery.clear('order');
 
 	rootQuery.orderBy(sortRecords);
+
+	return undefined;
 }
 
 export function applyLimit(knex: Knex, rootQuery: Knex.QueryBuilder, limit: any) {

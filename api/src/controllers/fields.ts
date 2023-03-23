@@ -23,7 +23,7 @@ router.get(
 		});
 		const fields = await service.readAll();
 
-		res.locals.payload = { data: fields || null };
+		res.locals['payload'] = { data: fields || null };
 		return next();
 	}),
 	respond
@@ -37,9 +37,9 @@ router.get(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
-		const fields = await service.readAll(req.params.collection);
+		const fields = await service.readAll(req.params['collection']);
 
-		res.locals.payload = { data: fields || null };
+		res.locals['payload'] = { data: fields || null };
 		return next();
 	}),
 	respond
@@ -54,9 +54,9 @@ router.get(
 			schema: req.schema,
 		});
 
-		const field = await service.readOne(req.params.collection, req.params.field);
+		const field = await service.readOne(req.params['collection'], req.params['field']);
 
-		res.locals.payload = { data: field || null };
+		res.locals['payload'] = { data: field || null };
 		return next();
 	}),
 	respond
@@ -96,11 +96,11 @@ router.post(
 
 		const field: Partial<Field> & { field: string; type: Type | null } = req.body;
 
-		await service.createField(req.params.collection, field);
+		await service.createField(req.params['collection'], field);
 
 		try {
-			const createdField = await service.readOne(req.params.collection, field.field);
-			res.locals.payload = { data: createdField || null };
+			const createdField = await service.readOne(req.params['collection'], field.field);
+			res.locals['payload'] = { data: createdField || null };
 		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
 				return next();
@@ -128,15 +128,15 @@ router.patch(
 		}
 
 		for (const field of req.body) {
-			await service.updateField(req.params.collection, field);
+			await service.updateField(req.params['collection'], field);
 		}
 
 		try {
 			const results: any = [];
 			for (const field of req.body) {
-				const updatedField = await service.readOne(req.params.collection, field.field);
+				const updatedField = await service.readOne(req.params['collection'], field.field);
 				results.push(updatedField);
-				res.locals.payload = { data: results || null };
+				res.locals['payload'] = { data: results || null };
 			}
 		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
@@ -186,13 +186,13 @@ router.patch(
 
 		const fieldData: Partial<Field> & { field: string; type: Type } = req.body;
 
-		if (!fieldData.field) fieldData.field = req.params.field;
+		if (!fieldData.field) fieldData.field = req.params['field'];
 
-		await service.updateField(req.params.collection, fieldData);
+		await service.updateField(req.params['collection'], fieldData);
 
 		try {
-			const updatedField = await service.readOne(req.params.collection, req.params.field);
-			res.locals.payload = { data: updatedField || null };
+			const updatedField = await service.readOne(req.params['collection'], req.params['field']);
+			res.locals['payload'] = { data: updatedField || null };
 		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
 				return next();
@@ -214,7 +214,7 @@ router.delete(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
-		await service.deleteField(req.params.collection, req.params.field);
+		await service.deleteField(req.params['collection'], req.params['field']);
 		return next();
 	}),
 	respond

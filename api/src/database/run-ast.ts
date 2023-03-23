@@ -84,7 +84,7 @@ export default async function runAST(
 		const payloadService = new PayloadService(collection, { knex, schema });
 		let items: null | Item | Item[] = await payloadService.processValues('read', rawItems);
 
-		if (!items || items.length === 0) return items;
+		if (!items || (Array.isArray(items) && items.length === 0)) return items;
 
 		// Apply the `_in` filters to the nested collection batches
 		const nestedNodes = applyParentFilters(schema, nestedCollectionNodes, items);
@@ -100,8 +100,8 @@ export default async function runAST(
 				while (hasMore) {
 					const node = merge({}, nestedNode, {
 						query: {
-							limit: env.RELATIONAL_BATCH_SIZE,
-							offset: batchCount * env.RELATIONAL_BATCH_SIZE,
+							limit: env['RELATIONAL_BATCH_SIZE'],
+							offset: batchCount * env['RELATIONAL_BATCH_SIZE'],
 							page: null,
 						},
 					});
@@ -112,7 +112,7 @@ export default async function runAST(
 						items = mergeWithParentItems(schema, nestedItems, items, nestedNode);
 					}
 
-					if (!nestedItems || nestedItems.length < env.RELATIONAL_BATCH_SIZE) {
+					if (!nestedItems || nestedItems.length < env['RELATIONAL_BATCH_SIZE']) {
 						hasMore = false;
 					}
 

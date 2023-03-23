@@ -62,9 +62,9 @@ router.get(
 			}
 
 			// Check against ASSETS_TRANSFORM_MAX_OPERATIONS
-			if (transforms.length > Number(env.ASSETS_TRANSFORM_MAX_OPERATIONS)) {
+			if (transforms.length > Number(env['ASSETS_TRANSFORM_MAX_OPERATIONS'])) {
 				throw new InvalidQueryException(
-					`"transforms" Parameter is only allowed ${env.ASSETS_TRANSFORM_MAX_OPERATIONS} transformations.`
+					`"transforms" Parameter is only allowed ${env['ASSETS_TRANSFORM_MAX_OPERATIONS']} transformations.`
 				);
 			}
 
@@ -77,37 +77,39 @@ router.get(
 				}
 			});
 
-			transformation.transforms = transforms;
+			transformation['transforms'] = transforms;
 		}
 
-		const systemKeys = SYSTEM_ASSET_ALLOW_LIST.map((transformation) => transformation.key!);
+		const systemKeys = SYSTEM_ASSET_ALLOW_LIST.map((transformation) => transformation['key']!);
 		const allKeys: string[] = [
 			...systemKeys,
-			...(assetSettings.storage_asset_presets || []).map((transformation: TransformationParams) => transformation.key),
+			...(assetSettings.storage_asset_presets || []).map(
+				(transformation: TransformationParams) => transformation['key']
+			),
 		];
 
 		// For use in the next request handler
-		res.locals.shortcuts = [...SYSTEM_ASSET_ALLOW_LIST, ...(assetSettings.storage_asset_presets || [])];
-		res.locals.transformation = transformation;
+		res.locals['shortcuts'] = [...SYSTEM_ASSET_ALLOW_LIST, ...(assetSettings.storage_asset_presets || [])];
+		res.locals['transformation'] = transformation;
 
 		if (
 			Object.keys(transformation).length === 0 ||
-			('transforms' in transformation && transformation.transforms!.length === 0)
+			('transforms' in transformation && transformation['transforms']!.length === 0)
 		) {
 			return next();
 		}
 
 		if (assetSettings.storage_asset_transform === 'all') {
-			if (transformation.key && allKeys.includes(transformation.key as string) === false) {
-				throw new InvalidQueryException(`Key "${transformation.key}" isn't configured.`);
+			if (transformation['key'] && allKeys.includes(transformation['key'] as string) === false) {
+				throw new InvalidQueryException(`Key "${transformation['key']}" isn't configured.`);
 			}
 
 			return next();
 		} else if (assetSettings.storage_asset_transform === 'presets') {
-			if (allKeys.includes(transformation.key as string)) return next();
+			if (allKeys.includes(transformation['key'] as string)) return next();
 			throw new InvalidQueryException(`Only configured presets can be used in asset generation.`);
 		} else {
-			if (transformation.key && systemKeys.includes(transformation.key as string)) return next();
+			if (transformation['key'] && systemKeys.includes(transformation['key'] as string)) return next();
 			throw new InvalidQueryException(`Dynamic asset generation has been disabled for this project.`);
 		}
 	}),
@@ -130,18 +132,18 @@ router.get(
 
 	// Return file
 	asyncHandler(async (req, res) => {
-		const id = req.params.pk?.substring(0, 36);
+		const id = req.params['pk']?.substring(0, 36);
 
 		const service = new AssetsService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
 
-		const transformation: TransformationParams | TransformationPreset = res.locals.transformation.key
-			? (res.locals.shortcuts as TransformationPreset[]).find(
-					(transformation) => transformation.key === res.locals.transformation.key
+		const transformation: TransformationParams | TransformationPreset = res.locals['transformation'].key
+			? (res.locals['shortcuts'] as TransformationPreset[]).find(
+					(transformation) => transformation['key'] === res.locals['transformation'].key
 			  )
-			: res.locals.transformation;
+			: res.locals['transformation'];
 
 		let range: Range | undefined = undefined;
 
@@ -165,10 +167,10 @@ router.get(
 
 		const { stream, file, stat } = await service.getAsset(id, transformation, range);
 
-		res.attachment(req.params.filename ?? file.filename_download);
+		res.attachment(req.params['filename'] ?? file.filename_download);
 		res.setHeader('Content-Type', file.type);
 		res.setHeader('Accept-Ranges', 'bytes');
-		res.setHeader('Cache-Control', getCacheControlHeader(req, getMilliseconds(env.ASSETS_CACHE_TTL), false, true));
+		res.setHeader('Cache-Control', getCacheControlHeader(req, getMilliseconds(env['ASSETS_CACHE_TTL']), false, true));
 
 		const unixTime = Date.parse(file.modified_on);
 		if (!Number.isNaN(unixTime)) {
@@ -227,6 +229,8 @@ router.get(
 				});
 			}
 		});
+
+		return undefined;
 	})
 );
 

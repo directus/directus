@@ -164,7 +164,7 @@ export class CollectionsService {
 
 			return payload.collection;
 		} finally {
-			if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
+			if (this.cache && env['CACHE_AUTO_PURGE'] && opts?.autoPurgeCache !== false) {
 				await this.cache.clear();
 			}
 
@@ -213,7 +213,7 @@ export class CollectionsService {
 
 			return collections;
 		} finally {
-			if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
+			if (this.cache && env['CACHE_AUTO_PURGE'] && opts?.autoPurgeCache !== false) {
 				await this.cache.clear();
 			}
 
@@ -306,8 +306,8 @@ export class CollectionsService {
 			}
 		}
 
-		if (env.DB_EXCLUDE_TABLES) {
-			return collections.filter((collection) => env.DB_EXCLUDE_TABLES.includes(collection.collection) === false);
+		if (env['DB_EXCLUDE_TABLES']) {
+			return collections.filter((collection) => env['DB_EXCLUDE_TABLES'].includes(collection.collection) === false);
 		}
 
 		return collections;
@@ -396,7 +396,7 @@ export class CollectionsService {
 
 			return collectionKey;
 		} finally {
-			if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
+			if (this.cache && env['CACHE_AUTO_PURGE'] && opts?.autoPurgeCache !== false) {
 				await this.cache.clear();
 			}
 
@@ -452,7 +452,7 @@ export class CollectionsService {
 				}
 			});
 		} finally {
-			if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
+			if (this.cache && env['CACHE_AUTO_PURGE'] && opts?.autoPurgeCache !== false) {
 				await this.cache.clear();
 			}
 
@@ -502,7 +502,7 @@ export class CollectionsService {
 
 			return collectionKeys;
 		} finally {
-			if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
+			if (this.cache && env['CACHE_AUTO_PURGE'] && opts?.autoPurgeCache !== false) {
 				await this.cache.clear();
 			}
 
@@ -631,7 +631,7 @@ export class CollectionsService {
 
 			return collectionKey;
 		} finally {
-			if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
+			if (this.cache && env['CACHE_AUTO_PURGE'] && opts?.autoPurgeCache !== false) {
 				await this.cache.clear();
 			}
 
@@ -679,7 +679,7 @@ export class CollectionsService {
 
 			return collectionKeys;
 		} finally {
-			if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
+			if (this.cache && env['CACHE_AUTO_PURGE'] && opts?.autoPurgeCache !== false) {
 				await this.cache.clear();
 			}
 

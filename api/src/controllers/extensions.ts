@@ -15,7 +15,7 @@ const router = Router();
 router.get(
 	'/:type',
 	asyncHandler(async (req, res, next) => {
-		const type = depluralize(req.params.type as Plural<string>);
+		const type = depluralize(req.params['type'] as Plural<string>);
 
 		if (!isIn(type, EXTENSION_TYPES)) {
 			throw new RouteNotFoundException(req.path);
@@ -25,7 +25,7 @@ router.get(
 
 		const extensions = extensionManager.getExtensionsList(type);
 
-		res.locals.payload = {
+		res.locals['payload'] = {
 			data: extensions,
 		};
 
@@ -45,7 +45,10 @@ router.get(
 		}
 
 		res.setHeader('Content-Type', 'application/javascript; charset=UTF-8');
-		res.setHeader('Cache-Control', getCacheControlHeader(req, getMilliseconds(env.EXTENSIONS_CACHE_TTL), false, false));
+		res.setHeader(
+			'Cache-Control',
+			getCacheControlHeader(req, getMilliseconds(env['EXTENSIONS_CACHE_TTL']), false, false)
+		);
 		res.setHeader('Vary', 'Origin, Cache-Control');
 		res.end(extensionSource);
 	})

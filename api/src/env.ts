@@ -343,7 +343,7 @@ export function refreshEnv(): void {
 }
 
 function processConfiguration() {
-	const configPath = path.resolve(process.env.CONFIG_PATH || defaults.CONFIG_PATH);
+	const configPath = path.resolve(process.env['CONFIG_PATH'] || defaults['CONFIG_PATH']);
 
 	if (fs.existsSync(configPath) === false) return {};
 

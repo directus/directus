@@ -38,7 +38,7 @@ export const multipartHandler: RequestHandler = (req, res, next) => {
 	const savedFiles: PrimaryKey[] = [];
 	const service = new FilesService({ accountability: req.accountability, schema: req.schema });
 
-	const existingPrimaryKey = req.params.pk || undefined;
+	const existingPrimaryKey = req.params['pk'] || undefined;
 
 	/**
 	 * The order of the fields in multipart/form-data is important. We require that all fields
@@ -46,7 +46,7 @@ export const multipartHandler: RequestHandler = (req, res, next) => {
 	 * the row in directus_files async during the upload of the actual file.
 	 */
 
-	let disk: string = toArray(env.STORAGE_LOCATIONS)[0];
+	let disk: string = toArray(env['STORAGE_LOCATIONS'])[0];
 	let payload: any = {};
 	let fileCount = 0;
 
@@ -95,6 +95,8 @@ export const multipartHandler: RequestHandler = (req, res, next) => {
 		} catch (error: any) {
 			busboy.emit('error', error);
 		}
+
+		return undefined;
 	});
 
 	busboy.on('error', (error: Error) => {
@@ -113,7 +115,7 @@ export const multipartHandler: RequestHandler = (req, res, next) => {
 				return next(new InvalidPayloadException(`No files were included in the body`));
 			}
 
-			res.locals.savedFiles = savedFiles;
+			res.locals['savedFiles'] = savedFiles;
 			return next();
 		}
 	}
@@ -130,7 +132,7 @@ router.post(
 		let keys: PrimaryKey | PrimaryKey[] = [];
 
 		if (req.is('multipart/form-data')) {
-			keys = res.locals.savedFiles;
+			keys = res.locals['savedFiles'];
 		} else {
 			keys = await service.createOne(req.body);
 		}
@@ -139,14 +141,14 @@ router.post(
 			if (Array.isArray(keys) && keys.length > 1) {
 				const records = await service.readMany(keys, req.sanitizedQuery);
 
-				res.locals.payload = {
+				res.locals['payload'] = {
 					data: records,
 				};
 			} else {
 				const key = Array.isArray(keys) ? keys[0] : keys;
 				const record = await service.readOne(key, req.sanitizedQuery);
 
-				res.locals.payload = {
+				res.locals['payload'] = {
 					data: record,
 				};
 			}
@@ -186,7 +188,7 @@ router.post(
 
 		try {
 			const record = await service.readOne(primaryKey, req.sanitizedQuery);
-			res.locals.payload = { data: record || null };
+			res.locals['payload'] = { data: record || null };
 		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
 				return next();
@@ -223,7 +225,7 @@ const readHandler = asyncHandler(async (req, res, next) => {
 
 	const meta = await metaService.getMetaForQuery('directus_files', req.sanitizedQuery);
 
-	res.locals.payload = { data: result, meta };
+	res.locals['payload'] = { data: result, meta };
 	return next();
 });
 
@@ -238,8 +240,8 @@ router.get(
 			schema: req.schema,
 		});
 
-		const record = await service.readOne(req.params.pk, req.sanitizedQuery);
-		res.locals.payload = { data: record || null };
+		const record = await service.readOne(req.params['pk'], req.sanitizedQuery);
+		res.locals['payload'] = { data: record || null };
 		return next();
 	}),
 	respond
@@ -267,7 +269,7 @@ router.patch(
 
 		try {
 			const result = await service.readMany(keys, req.sanitizedQuery);
-			res.locals.payload = { data: result || null };
+			res.locals['payload'] = { data: result || null };
 		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
 				return next();
@@ -290,11 +292,11 @@ router.patch(
 			schema: req.schema,
 		});
 
-		await service.updateOne(req.params.pk, req.body);
+		await service.updateOne(req.params['pk'], req.body);
 
 		try {
-			const record = await service.readOne(req.params.pk, req.sanitizedQuery);
-			res.locals.payload = { data: record || null };
+			const record = await service.readOne(req.params['pk'], req.sanitizedQuery);
+			res.locals['payload'] = { data: record || null };
 		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
 				return next();
@@ -339,7 +341,7 @@ router.delete(
 			schema: req.schema,
 		});
 
-		await service.deleteOne(req.params.pk);
+		await service.deleteOne(req.params['pk']);
 
 		return next();
 	}),
