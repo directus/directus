@@ -1,16 +1,23 @@
-import { Accountability, Query, SchemaOverview } from '@directus/shared/types';
+import type { Accountability, Query, SchemaOverview } from '@directus/shared/types';
 import { format, parseISO, isValid } from 'date-fns';
 import { parseJSON, toArray } from '@directus/shared/utils';
 import { unflatten } from 'flat';
 import Joi from 'joi';
-import { Knex } from 'knex';
+import type { Knex } from 'knex';
 import { clone, cloneDeep, isNil, isObject, isPlainObject, omit, pick } from 'lodash';
 import { v4 as uuid } from 'uuid';
 import { parse as wktToGeoJSON } from 'wellknown';
 import getDatabase from '../database';
 import { getHelpers, Helpers } from '../database/helpers';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
-import { AbstractServiceOptions, ActionEventParams, Alterations, Item, MutationOptions, PrimaryKey } from '../types';
+import type {
+	AbstractServiceOptions,
+	ActionEventParams,
+	Alterations,
+	Item,
+	MutationOptions,
+	PrimaryKey,
+} from '../types';
 import { generateHash } from '../utils/generate-hash';
 import { ItemsService } from './items';
 

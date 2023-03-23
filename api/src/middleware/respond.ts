@@ -1,5 +1,5 @@
 import { parse as parseBytesConfiguration } from 'bytes';
-import { RequestHandler } from 'express';
+import type { RequestHandler } from 'express';
 import { getCache, setCacheValue } from '../cache';
 import env from '../env';
 import logger from '../logger';
@@ -48,7 +48,7 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 	}
 
 	if (req.sanitizedQuery.export) {
-		const exportService = new ExportService({ accountability: req.accountability, schema: req.schema });
+		const exportService = new ExportService({ accountability: req.accountability ?? null, schema: req.schema });
 
 		let filename = '';
 

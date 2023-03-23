@@ -1,6 +1,6 @@
-import { Relation, SchemaOverview } from '@directus/shared/types';
-import { getRelationInfo } from './get-relation-info';
+import type { Relation, SchemaOverview } from '@directus/shared/types';
 import { InvalidQueryException } from '../exceptions';
+import { getRelationInfo } from './get-relation-info';
 
 export type AliasMap = { [key: string]: { alias: string; collection: string } };
 
@@ -15,7 +15,7 @@ export type ColPathProps = {
 export type ColPathResult = {
 	columnPath: string;
 	targetCollection: string;
-	addNestedPkField?: string;
+	addNestedPkField: string | undefined;
 };
 
 /**

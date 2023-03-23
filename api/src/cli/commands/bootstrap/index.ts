@@ -1,13 +1,12 @@
-import { Knex } from 'knex';
+import type { SchemaOverview } from '@directus/shared/types';
+import type { Knex } from 'knex';
+import getDatabase, { hasDatabaseConnection, isInstalled, validateDatabaseConnection } from '../../../database';
 import runMigrations from '../../../database/migrations/run';
 import installDatabase from '../../../database/seeds/run';
 import env from '../../../env';
 import logger from '../../../logger';
+import { RolesService, SettingsService, UsersService } from '../../../services';
 import { getSchema } from '../../../utils/get-schema';
-import { RolesService, UsersService, SettingsService } from '../../../services';
-
-import getDatabase, { isInstalled, validateDatabaseConnection, hasDatabaseConnection } from '../../../database';
-import { SchemaOverview } from '@directus/shared/types';
 import { defaultAdminRole, defaultAdminUser } from '../../utils/defaults';
 
 export default async function bootstrap({ skipAdminInit }: { skipAdminInit?: boolean }): Promise<void> {

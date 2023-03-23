@@ -1,5 +1,5 @@
 import { EXTENSION_TYPES } from '@directus/shared/constants';
-import { Plural } from '@directus/shared/types';
+import type { Plural } from '@directus/shared/types';
 import { depluralize, isIn } from '@directus/shared/utils';
 import { Router } from 'express';
 import env from '../env';

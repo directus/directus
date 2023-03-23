@@ -1,4 +1,5 @@
 import { BaseException } from '@directus/shared/exceptions';
+import type { Accountability } from '@directus/shared/types';
 import { parseJSON } from '@directus/shared/utils';
 import express, { Router } from 'express';
 import flatten from 'flat';
@@ -17,7 +18,7 @@ import { RecordNotUniqueException } from '../../exceptions/database/record-not-u
 import logger from '../../logger';
 import { respond } from '../../middleware/respond';
 import { AuthenticationService, UsersService } from '../../services';
-import { AuthData, AuthDriverOptions, User } from '../../types';
+import type { AuthData, AuthDriverOptions, User } from '../../types';
 import asyncHandler from '../../utils/async-handler';
 import { getConfigFromEnv } from '../../utils/get-config-from-env';
 import { getIPFromReq } from '../../utils/get-ip-from-req';
@@ -280,13 +281,19 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 
 			const { verifier, redirect, prompt } = tokenData;
 
+			const accountability: Accountability = {
+				ip: getIPFromReq(req),
+				role: null,
+			};
+
+			const userAgent = req.get('user-agent');
+			if (userAgent) accountability.userAgent = userAgent;
+
+			const origin = req.get('origin');
+			if (origin) accountability.origin = origin;
+
 			const authenticationService = new AuthenticationService({
-				accountability: {
-					ip: getIPFromReq(req),
-					userAgent: req.get('user-agent'),
-					origin: req.get('origin'),
-					role: null,
-				},
+				accountability,
 				schema: req.schema,
 			});
 

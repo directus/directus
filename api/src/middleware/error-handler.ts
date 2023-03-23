@@ -1,11 +1,11 @@
-import { ErrorRequestHandler } from 'express';
+import { BaseException } from '@directus/shared/exceptions';
+import { toArray } from '@directus/shared/utils';
+import type { ErrorRequestHandler } from 'express';
+import getDatabase from '../database';
 import emitter from '../emitter';
 import env from '../env';
 import { MethodNotAllowedException } from '../exceptions';
-import { BaseException } from '@directus/shared/exceptions';
 import logger from '../logger';
-import { toArray } from '@directus/shared/utils';
-import getDatabase from '../database';
 
 // Note: keep all 4 parameters here. That's how Express recognizes it's the error handler, even if
 // we don't use next

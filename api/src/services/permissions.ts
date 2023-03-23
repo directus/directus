@@ -1,10 +1,10 @@
+import type { PermissionsAction, Query } from '@directus/shared/types';
+import type Keyv from 'keyv';
+import { clearSystemCache, getCache } from '../cache';
 import { appAccessMinimalPermissions } from '../database/system-data/app-access-permissions';
 import { ItemsService, QueryOptions } from '../services/items';
-import { AbstractServiceOptions, Item, PrimaryKey, MutationOptions } from '../types';
-import { Query, PermissionsAction } from '@directus/shared/types';
+import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '../types';
 import { filterItems } from '../utils/filter-items';
-import Keyv from 'keyv';
-import { getCache, clearSystemCache } from '../cache';
 
 export class PermissionsService extends ItemsService {
 	systemCache: Keyv<any>;

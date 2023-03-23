@@ -1,21 +1,21 @@
+import type { Accountability } from '@directus/shared/types';
 import { Router } from 'express';
+import {
+	createLDAPAuthRouter,
+	createLocalAuthRouter,
+	createOAuth2AuthRouter,
+	createOpenIDAuthRouter,
+	createSAMLAuthRouter,
+} from '../auth/drivers';
+import { COOKIE_OPTIONS, DEFAULT_AUTH_PROVIDER } from '../constants';
 import env from '../env';
 import { InvalidPayloadException } from '../exceptions';
+import logger from '../logger';
 import { respond } from '../middleware/respond';
 import { AuthenticationService, UsersService } from '../services';
 import asyncHandler from '../utils/async-handler';
 import { getAuthProviders } from '../utils/get-auth-providers';
-import logger from '../logger';
-import {
-	createLocalAuthRouter,
-	createOAuth2AuthRouter,
-	createOpenIDAuthRouter,
-	createLDAPAuthRouter,
-	createSAMLAuthRouter,
-} from '../auth/drivers';
-import { DEFAULT_AUTH_PROVIDER } from '../constants';
 import { getIPFromReq } from '../utils/get-ip-from-req';
-import { COOKIE_OPTIONS } from '../constants';
 
 const router = Router();
 
@@ -61,12 +61,16 @@ if (!env.AUTH_DISABLE_DEFAULT) {
 router.post(
 	'/refresh',
 	asyncHandler(async (req, res, next) => {
-		const accountability = {
+		const accountability: Accountability = {
 			ip: getIPFromReq(req),
-			userAgent: req.get('user-agent'),
-			origin: req.get('origin'),
 			role: null,
 		};
+
+		const userAgent = req.get('user-agent');
+		if (userAgent) accountability.userAgent = userAgent;
+
+		const origin = req.get('origin');
+		if (origin) accountability.origin = origin;
 
 		const authenticationService = new AuthenticationService({
 			accountability: accountability,
@@ -104,12 +108,16 @@ router.post(
 router.post(
 	'/logout',
 	asyncHandler(async (req, res, next) => {
-		const accountability = {
+		const accountability: Accountability = {
 			ip: getIPFromReq(req),
-			userAgent: req.get('user-agent'),
-			origin: req.get('origin'),
 			role: null,
 		};
+
+		const userAgent = req.get('user-agent');
+		if (userAgent) accountability.userAgent = userAgent;
+
+		const origin = req.get('origin');
+		if (origin) accountability.origin = origin;
 
 		const authenticationService = new AuthenticationService({
 			accountability: accountability,
@@ -145,12 +153,16 @@ router.post(
 			throw new InvalidPayloadException(`"email" field is required.`);
 		}
 
-		const accountability = {
+		const accountability: Accountability = {
 			ip: getIPFromReq(req),
-			userAgent: req.get('user-agent'),
-			origin: req.get('origin'),
 			role: null,
 		};
+
+		const userAgent = req.get('user-agent');
+		if (userAgent) accountability.userAgent = userAgent;
+
+		const origin = req.get('origin');
+		if (origin) accountability.origin = origin;
 
 		const service = new UsersService({ accountability, schema: req.schema });
 
@@ -180,12 +192,16 @@ router.post(
 			throw new InvalidPayloadException(`"password" field is required.`);
 		}
 
-		const accountability = {
+		const accountability: Accountability = {
 			ip: getIPFromReq(req),
-			userAgent: req.get('user-agent'),
-			origin: req.get('origin'),
 			role: null,
 		};
+
+		const userAgent = req.get('user-agent');
+		if (userAgent) accountability.userAgent = userAgent;
+
+		const origin = req.get('origin');
+		if (origin) accountability.origin = origin;
 
 		const service = new UsersService({ accountability, schema: req.schema });
 		await service.resetPassword(req.body.token, req.body.password);

@@ -1,4 +1,4 @@
-import { Accountability, Query, SchemaOverview } from '@directus/shared/types';
+import type { Accountability, Query, SchemaOverview } from '@directus/shared/types';
 import { parseJSON, toArray } from '@directus/shared/utils';
 import { queue } from 'async';
 import csv from 'csv-parser';
@@ -7,12 +7,14 @@ import { appendFile, createReadStream } from 'fs-extra';
 import { dump as toYAML } from 'js-yaml';
 import { parse as toXML } from 'js2xmlparser';
 import { Parser as CSVParser, transforms as CSVTransforms } from 'json2csv';
-import { Knex } from 'knex';
+import type { Knex } from 'knex';
 import { set, transform } from 'lodash';
+import type { Readable } from 'node:stream';
 import StreamArray from 'stream-json/streamers/StreamArray';
 import stripBomStream from 'strip-bom-stream';
 import { file as createTmpFile } from 'tmp-promise';
 import getDatabase from '../database';
+import emitter from '../emitter';
 import env from '../env';
 import {
 	ForbiddenException,
@@ -21,13 +23,11 @@ import {
 	UnsupportedMediaTypeException,
 } from '../exceptions';
 import logger from '../logger';
-import { AbstractServiceOptions, ActionEventParams, File } from '../types';
+import type { AbstractServiceOptions, ActionEventParams, File } from '../types';
 import { getDateFormatted } from '../utils/get-date-formatted';
 import { FilesService } from './files';
 import { ItemsService } from './items';
 import { NotificationsService } from './notifications';
-import emitter from '../emitter';
-import type { Readable } from 'node:stream';
 
 type ExportFormat = 'csv' | 'json' | 'xml' | 'yaml';
 

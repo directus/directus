@@ -1,17 +1,18 @@
-import { Router } from 'express';
+import type { Accountability } from '@directus/shared/types';
 import argon2 from 'argon2';
+import { Router } from 'express';
 import Joi from 'joi';
-import { AuthDriver } from '../auth';
-import { User } from '../../types';
-import { InvalidCredentialsException, InvalidPayloadException } from '../../exceptions';
-import { AuthenticationService } from '../../services';
-import asyncHandler from '../../utils/async-handler';
-import env from '../../env';
-import { respond } from '../../middleware/respond';
-import { COOKIE_OPTIONS } from '../../constants';
-import { getIPFromReq } from '../../utils/get-ip-from-req';
 import { performance } from 'perf_hooks';
+import { COOKIE_OPTIONS } from '../../constants';
+import env from '../../env';
+import { InvalidCredentialsException, InvalidPayloadException } from '../../exceptions';
+import { respond } from '../../middleware/respond';
+import { AuthenticationService } from '../../services';
+import type { User } from '../../types';
+import asyncHandler from '../../utils/async-handler';
+import { getIPFromReq } from '../../utils/get-ip-from-req';
 import { stall } from '../../utils/stall';
+import { AuthDriver } from '../auth';
 
 export class LocalAuthDriver extends AuthDriver {
 	async getUserID(payload: Record<string, any>): Promise<string> {
@@ -59,12 +60,16 @@ export function createLocalAuthRouter(provider: string): Router {
 			const STALL_TIME = env.LOGIN_STALL_TIME;
 			const timeStart = performance.now();
 
-			const accountability = {
+			const accountability: Accountability = {
 				ip: getIPFromReq(req),
-				userAgent: req.get('user-agent'),
-				origin: req.get('origin'),
 				role: null,
 			};
+
+			const userAgent = req.get('user-agent');
+			if (userAgent) accountability.userAgent = userAgent;
+
+			const origin = req.get('origin');
+			if (origin) accountability.origin = origin;
 
 			const authenticationService = new AuthenticationService({
 				accountability: accountability,

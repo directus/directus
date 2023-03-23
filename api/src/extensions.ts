@@ -5,10 +5,11 @@ import {
 	NESTED_EXTENSION_TYPES,
 } from '@directus/shared/constants';
 import * as sharedExceptions from '@directus/shared/exceptions';
-import {
+import type {
 	ActionHandler,
 	ApiExtension,
 	BundleExtension,
+	EmbedHandler,
 	EndpointConfig,
 	Extension,
 	ExtensionInfo,
@@ -17,10 +18,11 @@ import {
 	HookConfig,
 	HybridExtension,
 	InitHandler,
-	EmbedHandler,
+	NestedExtensionType,
 	OperationApiConfig,
 	ScheduleHandler,
 } from '@directus/shared/types';
+import { isIn, isTypeIn, pluralize } from '@directus/shared/utils';
 import {
 	ensureExtensionDirs,
 	generateExtensionsEntrypoint,
@@ -30,29 +32,27 @@ import {
 	resolvePackage,
 	resolvePackageExtensions,
 } from '@directus/shared/utils/node';
+import alias from '@rollup/plugin-alias';
+import virtual from '@rollup/plugin-virtual';
+import chokidar, { FSWatcher } from 'chokidar';
 import express, { Router } from 'express';
 import fse from 'fs-extra';
+import globby from 'globby';
+import { clone, escapeRegExp } from 'lodash';
+import { schedule, validate } from 'node-cron';
 import path from 'path';
+import { rollup } from 'rollup';
 import getDatabase from './database';
 import emitter, { Emitter } from './emitter';
 import env from './env';
 import * as exceptions from './exceptions';
-import logger from './logger';
-import { dynamicImport } from './utils/dynamic-import';
-import { getSchema } from './utils/get-schema';
-
-import { isIn, isTypeIn, pluralize } from '@directus/shared/utils';
-import alias from '@rollup/plugin-alias';
-import virtual from '@rollup/plugin-virtual';
-import chokidar, { FSWatcher } from 'chokidar';
-import globby from 'globby';
-import { clone, escapeRegExp } from 'lodash';
-import { schedule, validate } from 'node-cron';
-import { rollup } from 'rollup';
 import { getFlowManager } from './flows';
+import logger from './logger';
 import * as services from './services';
-import { EventHandler } from './types';
+import type { EventHandler } from './types';
+import { dynamicImport } from './utils/dynamic-import';
 import getModuleDefault from './utils/get-module-default';
+import { getSchema } from './utils/get-schema';
 import { JobQueue } from './utils/job-queue';
 import { Url } from './utils/url';
 
@@ -183,24 +183,30 @@ class ExtensionManager {
 		}
 
 		function mapInfo(extension: Extension): ExtensionInfo {
-			const extensionInfo = {
+			const extensionInfo: ExtensionInfo = {
 				name: extension.name,
 				type: extension.type,
 				local: extension.local,
-				host: extension.host,
-				version: extension.version,
+				entries: [],
 			};
 
+			if (extension.host) extensionInfo.host = extension.host;
+			if (extension.version) extensionInfo.version = extension.version;
+
 			if (extension.type === 'bundle') {
-				return {
-					...extensionInfo,
+				const bundleExtensionInfo: Omit<BundleExtension, 'entrypoint' | 'path'> = {
+					name: extensionInfo.name,
+					type: 'bundle',
+					local: extensionInfo.local,
 					entries: extension.entries.map((entry) => ({
 						name: entry.name,
 						type: entry.type,
-					})),
+					})) as { name: ExtensionInfo['name']; type: NestedExtensionType }[],
 				};
+
+				return bundleExtensionInfo;
 			} else {
-				return extensionInfo as ExtensionInfo;
+				return extensionInfo;
 			}
 		}
 	}

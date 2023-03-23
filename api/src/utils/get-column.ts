@@ -1,14 +1,14 @@
 import { REGEX_BETWEEN_PARENS } from '@directus/shared/constants';
-import { FieldFunction, Query, SchemaOverview } from '@directus/shared/types';
+import type { FieldFunction, Query, SchemaOverview } from '@directus/shared/types';
 import { getFunctionsForType } from '@directus/shared/utils';
-import { Knex } from 'knex';
+import type { Knex } from 'knex';
 import { getFunctions } from '../database/helpers';
 import { InvalidQueryException } from '../exceptions';
 import { applyFunctionToColumnName } from './apply-function-to-column-name';
 
 type GetColumnOptions = {
-	query?: Query;
-	originalCollectionName?: string;
+	query?: Query | undefined;
+	originalCollectionName?: string | undefined;
 };
 
 /**
