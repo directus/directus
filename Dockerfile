@@ -33,7 +33,7 @@ FROM node:18-alpine
 
 RUN mkdir /directus \
 	&& mkdir -p /directus/data/database /directus/data/extensions /directus/data/uploads \
-	&& chown node:node /directus/data;
+	&& chown -R node:node /directus/data;
 
 WORKDIR /directus
 
