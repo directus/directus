@@ -559,7 +559,7 @@ export function applyFilter(
 
 			if (operator === '_nempty' || (operator === '_empty' && compareValue === false)) {
 				dbQuery[logical].andWhere((query) => {
-					query.whereNotNull(key).orWhere(key, '!=', '');
+					query.whereNotNull(key).andWhere(key, '!=', '');
 				});
 			}
 
