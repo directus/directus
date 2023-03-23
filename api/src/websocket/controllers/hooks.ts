@@ -51,7 +51,7 @@ function registerActionHooks(modules: string[]) {
 }
 
 function registerFieldsHooks() {
-	// exception for field updates that don't report `directus_fields` as being the collection
+	// exception for field hooks that don't report `directus_fields` as being the collection
 	registerAction('fields.create', ({ key, payload = {} }) => ({
 		collection: 'directus_fields',
 		action: 'create',
