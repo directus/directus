@@ -37,8 +37,10 @@ import {
 	InputTypeComposer,
 	InputTypeComposerFieldConfigMapDefinition,
 	ObjectTypeComposer,
+	ObjectTypeComposerFieldConfigAsObjectDefinition,
 	ObjectTypeComposerFieldConfigDefinition,
 	ObjectTypeComposerFieldConfigMapDefinition,
+	ResolverDefinition,
 	SchemaComposer,
 	toInputObjectType,
 } from 'graphql-compose';
@@ -154,10 +156,11 @@ export class GraphQLService {
 			throw new InvalidPayloadException('GraphQL execution error.', { graphqlErrors: [err.message] });
 		}
 
-		const formattedResult: FormattedExecutionResult = {
-			...result,
-			errors: result.errors?.map((error) => processError(this.accountability, error)),
-		};
+		const formattedResult: FormattedExecutionResult = {};
+
+		if (result.data) formattedResult.data = result.data;
+		if (result.errors) formattedResult.errors = result.errors.map((error) => processError(this.accountability, error));
+		if (result.extensions) formattedResult.extensions = result.extensions;
 
 		return formattedResult;
 	}
@@ -239,7 +242,7 @@ export class GraphQLService {
 					}
 
 					return acc;
-				}, {} as ObjectTypeComposerFieldConfigMapDefinition<any, any>)
+				}, {} as ObjectTypeComposerFieldConfigAsObjectDefinition<any, any>)
 			);
 		} else {
 			schemaComposer.Query.addFields({
@@ -265,7 +268,7 @@ export class GraphQLService {
 							`create_${collection.collection}_item`
 						);
 						return acc;
-					}, {} as ObjectTypeComposerFieldConfigMapDefinition<any, any>)
+					}, {} as ObjectTypeComposerFieldConfigAsObjectDefinition<any, any>)
 			);
 		}
 
@@ -297,7 +300,7 @@ export class GraphQLService {
 						}
 
 						return acc;
-					}, {} as ObjectTypeComposerFieldConfigMapDefinition<any, any>)
+					}, {} as ObjectTypeComposerFieldConfigAsObjectDefinition<any, any>)
 			);
 		}
 
@@ -319,7 +322,7 @@ export class GraphQLService {
 						);
 
 						return acc;
-					}, {} as ObjectTypeComposerFieldConfigMapDefinition<any, any>)
+					}, {} as ObjectTypeComposerFieldConfigAsObjectDefinition<any, any>)
 			);
 		}
 
@@ -471,7 +474,7 @@ export class GraphQLService {
 						}
 
 						return acc;
-					}, {} as ObjectTypeComposerFieldConfigMapDefinition<any, any>),
+					}, {} as ObjectTypeComposerFieldConfigAsObjectDefinition<any, any>),
 				});
 			}
 
@@ -891,7 +894,7 @@ export class GraphQLService {
 						}
 
 						return acc;
-					}, {} as ObjectTypeComposerFieldConfigMapDefinition<any, any>),
+					}, {} as ObjectTypeComposerFieldConfigAsObjectDefinition<any, any>),
 				});
 
 				const countType = schemaComposer.createObjectTC({
@@ -903,7 +906,7 @@ export class GraphQLService {
 						};
 
 						return acc;
-					}, {} as ObjectTypeComposerFieldConfigMapDefinition<any, any>),
+					}, {} as ObjectTypeComposerFieldConfigAsObjectDefinition<any, any>),
 				});
 
 				AggregateMethods[collection.collection] = {
@@ -969,28 +972,8 @@ export class GraphQLService {
 					fields: AggregateMethods[collection.collection],
 				});
 
-				ReadCollectionTypes[collection.collection].addResolver({
+				const resolver: ResolverDefinition<any, any> = {
 					name: collection.collection,
-					args: collection.singleton
-						? undefined
-						: {
-								filter: ReadableCollectionFilterTypes[collection.collection],
-								sort: {
-									type: new GraphQLList(GraphQLString),
-								},
-								limit: {
-									type: GraphQLInt,
-								},
-								offset: {
-									type: GraphQLInt,
-								},
-								page: {
-									type: GraphQLInt,
-								},
-								search: {
-									type: GraphQLString,
-								},
-						  },
 					type: collection.singleton
 						? ReadCollectionTypes[collection.collection]
 						: new GraphQLNonNull(
@@ -1001,7 +984,30 @@ export class GraphQLService {
 						context.data = result;
 						return result;
 					},
-				});
+				};
+
+				if (collection.singleton === false) {
+					resolver.args = {
+						filter: ReadableCollectionFilterTypes[collection.collection],
+						sort: {
+							type: new GraphQLList(GraphQLString),
+						},
+						limit: {
+							type: GraphQLInt,
+						},
+						offset: {
+							type: GraphQLInt,
+						},
+						page: {
+							type: GraphQLInt,
+						},
+						search: {
+							type: GraphQLString,
+						},
+					};
+				}
+
+				ReadCollectionTypes[collection.collection].addResolver(resolver);
 
 				ReadCollectionTypes[collection.collection].addResolver({
 					name: `${collection.collection}_aggregated`,
@@ -1130,19 +1136,24 @@ export class GraphQLService {
 				const creatableFields = CreateCollectionTypes[collection.collection]?.getFields() || {};
 
 				if (Object.keys(creatableFields).length > 0) {
-					CreateCollectionTypes[collection.collection].addResolver({
+					const resolverDefinition: ResolverDefinition<any, any> = {
 						name: `create_${collection.collection}_items`,
 						type: collectionIsReadable
 							? new GraphQLNonNull(
 									new GraphQLList(new GraphQLNonNull(ReadCollectionTypes[collection.collection].getType()))
 							  )
 							: GraphQLBoolean,
-						args: collectionIsReadable
-							? ReadCollectionTypes[collection.collection].getResolver(collection.collection).getArgs()
-							: undefined,
 						resolve: async ({ args, info }: { args: Record<string, any>; info: GraphQLResolveInfo }) =>
 							await self.resolveMutation(args, info),
-					});
+					};
+
+					if (collectionIsReadable) {
+						resolverDefinition.args = ReadCollectionTypes[collection.collection]
+							.getResolver(collection.collection)
+							.getArgs();
+					}
+
+					CreateCollectionTypes[collection.collection].addResolver(resolverDefinition);
 
 					CreateCollectionTypes[collection.collection].addResolver({
 						name: `create_${collection.collection}_item`,
@@ -1628,7 +1639,7 @@ export class GraphQLService {
 
 		query.alias = parseAliases(selections);
 		query.fields = parseFields(selections);
-		query.filter = this.replaceFuncs(query.filter);
+		if (query.filter) query.filter = this.replaceFuncs(query.filter);
 		query.deep = this.replaceFuncs(query.deep as any) as any;
 
 		validateQuery(query);
@@ -1664,7 +1675,9 @@ export class GraphQLService {
 					}) ?? [];
 		}
 
-		query.filter = this.replaceFuncs(query.filter);
+		if (query.filter) {
+			query.filter = this.replaceFuncs(query.filter);
+		}
 
 		validateQuery(query);
 
@@ -1674,9 +1687,7 @@ export class GraphQLService {
 	/**
 	 * Replace functions from GraphQL format to Directus-Filter format
 	 */
-	replaceFuncs(filter?: Filter | null): null | undefined | Filter {
-		if (!filter) return filter;
-
+	replaceFuncs(filter: Filter): Filter {
 		return replaceFuncDeep(filter);
 
 		function replaceFuncDeep(filter: Record<string, any>) {
@@ -1983,12 +1994,16 @@ export class GraphQLService {
 					otp: GraphQLString,
 				},
 				resolve: async (_, args, { req, res }) => {
-					const accountability = {
-						ip: req?.ip,
-						userAgent: req?.get('user-agent'),
-						origin: req?.get('origin'),
-						role: null,
-					};
+					const accountability: Accountability = { role: null };
+
+					if (req?.ip) accountability.ip = req.ip;
+
+					const userAgent = req?.get('user-agent');
+					if (userAgent) accountability.userAgent = userAgent;
+
+					const origin = req?.get('origin');
+					if (origin) accountability.origin = origin;
+
 					const authenticationService = new AuthenticationService({
 						accountability: accountability,
 						schema: this.schema,
@@ -2017,12 +2032,16 @@ export class GraphQLService {
 					mode: AuthMode,
 				},
 				resolve: async (_, args, { req, res }) => {
-					const accountability = {
-						ip: req?.ip,
-						userAgent: req?.get('user-agent'),
-						origin: req?.get('origin'),
-						role: null,
-					};
+					const accountability: Accountability = { role: null };
+
+					if (req?.ip) accountability.ip = req.ip;
+
+					const userAgent = req?.get('user-agent');
+					if (userAgent) accountability.userAgent = userAgent;
+
+					const origin = req?.get('origin');
+					if (origin) accountability.origin = origin;
+
 					const authenticationService = new AuthenticationService({
 						accountability: accountability,
 						schema: this.schema,
@@ -2054,12 +2073,16 @@ export class GraphQLService {
 					refresh_token: GraphQLString,
 				},
 				resolve: async (_, args, { req }) => {
-					const accountability = {
-						ip: req?.ip,
-						userAgent: req?.get('user-agent'),
-						origin: req?.get('origin'),
-						role: null,
-					};
+					const accountability: Accountability = { role: null };
+
+					if (req?.ip) accountability.ip = req.ip;
+
+					const userAgent = req?.get('user-agent');
+					if (userAgent) accountability.userAgent = userAgent;
+
+					const origin = req?.get('origin');
+					if (origin) accountability.origin = origin;
+
 					const authenticationService = new AuthenticationService({
 						accountability: accountability,
 						schema: this.schema,
@@ -2079,12 +2102,15 @@ export class GraphQLService {
 					reset_url: GraphQLString,
 				},
 				resolve: async (_, args, { req }) => {
-					const accountability = {
-						ip: req?.ip,
-						userAgent: req?.get('user-agent'),
-						origin: req?.get('origin'),
-						role: null,
-					};
+					const accountability: Accountability = { role: null };
+
+					if (req?.ip) accountability.ip = req.ip;
+
+					const userAgent = req?.get('user-agent');
+					if (userAgent) accountability.userAgent = userAgent;
+
+					const origin = req?.get('origin');
+					if (origin) accountability.origin = origin;
 					const service = new UsersService({ accountability, schema: this.schema });
 
 					try {
@@ -2105,12 +2131,16 @@ export class GraphQLService {
 					password: new GraphQLNonNull(GraphQLString),
 				},
 				resolve: async (_, args, { req }) => {
-					const accountability = {
-						ip: req?.ip,
-						userAgent: req?.get('user-agent'),
-						origin: req?.get('origin'),
-						role: null,
-					};
+					const accountability: Accountability = { role: null };
+
+					if (req?.ip) accountability.ip = req.ip;
+
+					const userAgent = req?.get('user-agent');
+					if (userAgent) accountability.userAgent = userAgent;
+
+					const origin = req?.get('origin');
+					if (origin) accountability.origin = origin;
+
 					const service = new UsersService({ accountability, schema: this.schema });
 					await service.resetPassword(args.token, args.password);
 					return true;
@@ -2274,7 +2304,7 @@ export class GraphQLService {
 						} as ObjectTypeComposerFieldConfigDefinition<any, any, any>;
 
 						return acc;
-					}, {} as ObjectTypeComposerFieldConfigMapDefinition<any, any>),
+					}, {} as ObjectTypeComposerFieldConfigAsObjectDefinition<any, any>),
 				}),
 				schema: schemaComposer.createObjectTC({
 					name: 'directus_collections_schema',
@@ -2331,7 +2361,7 @@ export class GraphQLService {
 						} as ObjectTypeComposerFieldConfigDefinition<any, any, any>;
 
 						return acc;
-					}, {} as ObjectTypeComposerFieldConfigMapDefinition<any, any>),
+					}, {} as ObjectTypeComposerFieldConfigAsObjectDefinition<any, any>),
 				}),
 				schema: schemaComposer.createObjectTC({
 					name: 'directus_fields_schema',
@@ -2422,7 +2452,7 @@ export class GraphQLService {
 						} as ObjectTypeComposerFieldConfigDefinition<any, any, any>;
 
 						return acc;
-					}, {} as ObjectTypeComposerFieldConfigMapDefinition<any, any>),
+					}, {} as ObjectTypeComposerFieldConfigAsObjectDefinition<any, any>),
 				}),
 			});
 

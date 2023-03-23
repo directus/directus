@@ -148,13 +148,18 @@ router.get(
 		if (req.headers.range) {
 			const rangeParts = /bytes=([0-9]*)-([0-9]*)/.exec(req.headers.range);
 
-			range = {
-				start: rangeParts?.[1] ? Number(rangeParts[1]) : undefined,
-				end: rangeParts?.[2] ? Number(rangeParts[2]) : undefined,
-			};
+			if (rangeParts && rangeParts.length > 1) {
+				range = {};
 
-			if (Number.isNaN(range.start) || Number.isNaN(range.end)) {
-				throw new RangeNotSatisfiableException(range);
+				if (rangeParts[1]) {
+					range.start = Number(rangeParts[1]);
+					if (Number.isNaN(range.start)) throw new RangeNotSatisfiableException(range);
+				}
+
+				if (rangeParts[2]) {
+					range.end = Number(rangeParts[2]);
+					if (Number.isNaN(range.end)) throw new RangeNotSatisfiableException(range);
+				}
 			}
 		}
 

@@ -18,12 +18,24 @@ const processError = (accountability: Accountability | null, error: Readonly<Gra
 		};
 	} else {
 		if (accountability?.admin === true) {
-			return {
-				...error,
+			const graphqlFormattedError: {
+				-readonly [key in keyof GraphQLFormattedError]: GraphQLFormattedError[key];
+			} = {
+				message: error.message,
 				extensions: {
 					code: 'INTERNAL_SERVER_ERROR',
 				},
 			};
+
+			if (error.locations) {
+				graphqlFormattedError.locations = error.locations;
+			}
+
+			if (error.path) {
+				graphqlFormattedError.path = error.path;
+			}
+
+			return graphqlFormattedError;
 		} else {
 			return {
 				message: 'An unexpected error occurred.',

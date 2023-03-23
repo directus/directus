@@ -15,7 +15,7 @@ export type ColPathProps = {
 export type ColPathResult = {
 	columnPath: string;
 	targetCollection: string;
-	addNestedPkField?: string;
+	addNestedPkField: string | undefined;
 };
 
 /**

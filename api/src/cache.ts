@@ -5,46 +5,88 @@ import { compress, decompress } from './utils/compress';
 import { getConfigFromEnv } from './utils/get-config-from-env';
 import { getMilliseconds } from './utils/get-milliseconds';
 import { validateEnv } from './utils/validate-env';
+import { getMessenger } from './messenger';
+import { getSimpleHash } from '@directus/shared/utils';
+import type { SchemaOverview } from '@directus/shared/types';
 
 let cache: Keyv | null = null;
 let systemCache: Keyv | null = null;
+let localSchemaCache: Keyv | null = null;
+let sharedSchemaCache: Keyv | null = null;
 let lockCache: Keyv | null = null;
+let messengerSubscribed = false;
 
-export function getCache(): { cache: Keyv | null; systemCache: Keyv; lockCache: Keyv } {
+type Store = 'memory' | 'redis' | 'memcache';
+
+const messenger = getMessenger();
+
+if (env.MESSENGER_STORE === 'redis' && env.CACHE_STORE === 'memory' && env.CACHE_AUTO_PURGE && !messengerSubscribed) {
+	messengerSubscribed = true;
+
+	messenger.subscribe('schemaChanged', async (opts) => {
+		if (cache && opts?.autoPurgeCache !== false) {
+			await cache.clear();
+		}
+	});
+}
+
+export function getCache(): {
+	cache: Keyv | null;
+	systemCache: Keyv;
+	sharedSchemaCache: Keyv;
+	localSchemaCache: Keyv;
+	lockCache: Keyv;
+} {
 	if (env.CACHE_ENABLED === true && cache === null) {
 		validateEnv(['CACHE_NAMESPACE', 'CACHE_TTL', 'CACHE_STORE']);
-		cache = getKeyvInstance(getMilliseconds(env.CACHE_TTL));
+		cache = getKeyvInstance(env.CACHE_STORE, getMilliseconds(env.CACHE_TTL));
 		cache.on('error', (err) => logger.warn(err, `[cache] ${err}`));
 	}
 
 	if (systemCache === null) {
-		systemCache = getKeyvInstance(getMilliseconds(env.CACHE_SYSTEM_TTL), '_system');
-		systemCache.on('error', (err) => logger.warn(err, `[cache] ${err}`));
+		systemCache = getKeyvInstance(env.CACHE_STORE, getMilliseconds(env.CACHE_SYSTEM_TTL), '_system');
+		systemCache.on('error', (err) => logger.warn(err, `[system-cache] ${err}`));
+	}
+
+	if (sharedSchemaCache === null) {
+		sharedSchemaCache = getKeyvInstance(env.CACHE_STORE, getMilliseconds(env.CACHE_SYSTEM_TTL), '_schema_shared');
+		sharedSchemaCache.on('error', (err) => logger.warn(err, `[shared-schema-cache] ${err}`));
+	}
+
+	if (localSchemaCache === null) {
+		localSchemaCache = getKeyvInstance('memory', getMilliseconds(env.CACHE_SYSTEM_TTL), '_schema');
+		localSchemaCache.on('error', (err) => logger.warn(err, `[schema-cache] ${err}`));
 	}
 
 	if (lockCache === null) {
-		lockCache = getKeyvInstance(undefined, '_lock');
-		lockCache.on('error', (err) => logger.warn(err, `[cache] ${err}`));
+		lockCache = getKeyvInstance(env.CACHE_STORE, undefined, '_lock');
+		lockCache.on('error', (err) => logger.warn(err, `[lock-cache] ${err}`));
 	}
 
-	return { cache, systemCache, lockCache };
+	return { cache, systemCache, sharedSchemaCache, localSchemaCache, lockCache };
 }
 
 export async function flushCaches(forced?: boolean): Promise<void> {
 	const { cache } = getCache();
-	await clearSystemCache(forced);
+	await clearSystemCache({ forced });
 	await cache?.clear();
 }
 
-export async function clearSystemCache(forced?: boolean): Promise<void> {
-	const { systemCache, lockCache } = getCache();
+export async function clearSystemCache(opts?: {
+	forced?: boolean | undefined;
+	autoPurgeCache?: false | undefined;
+}): Promise<void> {
+	const { systemCache, localSchemaCache, lockCache } = getCache();
 
 	// Flush system cache when forced or when system cache lock not set
-	if (forced || !(await lockCache.get('system-cache-lock'))) {
+	if (opts?.forced || !(await lockCache.get('system-cache-lock'))) {
 		await lockCache.set('system-cache-lock', true, 10000);
 		await systemCache.clear();
 		await lockCache.delete('system-cache-lock');
 	}
+
+	await localSchemaCache.clear();
+	messenger.publish('schemaChanged', { autoPurgeCache: opts?.autoPurgeCache });
 }
 
 export async function setSystemCache(key: string, value: any, ttl?: number): Promise<void> {
@@ -59,6 +101,28 @@ export async function getSystemCache(key: string): Promise<Record<string, any>> 
 	const { systemCache } = getCache();
 
 	return await getCacheValue(systemCache, key);
+}
+
+export async function setSchemaCache(schema: SchemaOverview): Promise<void> {
+	const { localSchemaCache, sharedSchemaCache } = getCache();
+	const schemaHash = await getSimpleHash(JSON.stringify(schema));
+
+	await sharedSchemaCache.set('hash', schemaHash);
+
+	await localSchemaCache.set('schema', schema);
+	await localSchemaCache.set('hash', schemaHash);
+}
+
+export async function getSchemaCache(): Promise<SchemaOverview | undefined> {
+	const { localSchemaCache, sharedSchemaCache } = getCache();
+
+	const sharedSchemaHash = await sharedSchemaCache.get('hash');
+	if (!sharedSchemaHash) return;
+
+	const localSchemaHash = await localSchemaCache.get('hash');
+	if (!localSchemaHash || localSchemaHash !== sharedSchemaHash) return;
+
+	return await localSchemaCache.get('schema');
 }
 
 export async function setCacheValue(
@@ -78,8 +142,8 @@ export async function getCacheValue(cache: Keyv, key: string): Promise<any> {
 	return decompressed;
 }
 
-function getKeyvInstance(ttl: number | undefined, namespaceSuffix?: string): Keyv {
-	switch (env.CACHE_STORE) {
+function getKeyvInstance(store: Store, ttl: number | undefined, namespaceSuffix?: string): Keyv {
+	switch (store) {
 		case 'redis':
 			return new Keyv(getConfig('redis', ttl, namespaceSuffix));
 		case 'memcache':
@@ -90,11 +154,7 @@ function getKeyvInstance(ttl: number | undefined, namespaceSuffix?: string): Key
 	}
 }
 
-function getConfig(
-	store: 'memory' | 'redis' | 'memcache' = 'memory',
-	ttl: number | undefined,
-	namespaceSuffix = ''
-): Options<any> {
+function getConfig(store: Store = 'memory', ttl: number | undefined, namespaceSuffix = ''): Options<any> {
 	const config: Options<any> = {
 		namespace: `${env.CACHE_NAMESPACE}${namespaceSuffix}`,
 		ttl,
