@@ -2,8 +2,11 @@ import cookieParser from 'cookie-parser';
 import express, { Request, RequestHandler, Response } from 'express';
 import fse from 'fs-extra';
 import type { ServerResponse } from 'http';
+import { merge } from 'lodash';
 import path from 'path';
 import qs from 'qs';
+import { registerAuthProviders } from './auth';
+import { flushCaches } from './cache';
 import activityRouter from './controllers/activity';
 import assetsRouter from './controllers/assets';
 import authRouter from './controllers/auth';
@@ -36,6 +39,7 @@ import { isInstalled, validateDatabaseConnection, validateDatabaseExtensions, va
 import emitter from './emitter';
 import env from './env';
 import { InvalidPayloadException } from './exceptions';
+import { ServiceUnavailableException } from './exceptions/';
 import { getExtensionManager } from './extensions';
 import { getFlowManager } from './flows';
 import logger, { expressLogger } from './logger';
@@ -50,28 +54,12 @@ import rateLimiterGlobal from './middleware/rate-limiter-global';
 import rateLimiter from './middleware/rate-limiter-ip';
 import sanitizeQuery from './middleware/sanitize-query';
 import schema from './middleware/schema';
-<<<<<<< HEAD
-=======
-
-import { merge } from 'lodash';
-import { registerAuthProviders } from './auth';
-import { flushCaches } from './cache';
 import { getConfigFromEnv } from './utils/get-config-from-env';
->>>>>>> main
 import { track } from './utils/track';
 import { Url } from './utils/url';
 import { validateEnv } from './utils/validate-env';
 import { validateStorage } from './utils/validate-storage';
 import { init as initWebhooks } from './webhooks';
-<<<<<<< HEAD
-import { flushCaches } from './cache';
-import { registerAuthProviders } from './auth';
-import { Url } from './utils/url';
-import { getConfigFromEnv } from './utils/get-config-from-env';
-import { merge } from 'lodash';
-import { ServiceUnavailableException } from './exceptions/';
-=======
->>>>>>> main
 
 export default async function createApp(): Promise<express.Application> {
 	const helmet = await import('helmet');
