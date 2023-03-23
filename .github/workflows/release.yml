@@ -25,7 +25,6 @@ jobs:
   publish-npm:
     name: Publish to NPM
     runs-on: ubuntu-latest
-    needs: build
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -41,7 +40,6 @@ jobs:
   build-images:
     name: Build Images
     runs-on: ubuntu-latest
-    needs: build
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
