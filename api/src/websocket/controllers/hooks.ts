@@ -95,7 +95,7 @@ function registerFilesHooks() {
 }
 
 function registerRelationsHooks() {
-	// exception for relation updates that don't report `directus_relations` as being the collection
+	// exception for relation hooks that don't report `directus_relations` as being the collection
 	registerAction('relations.create', ({ key, payload = {} }) => ({
 		collection: 'directus_relations',
 		action: 'create',
