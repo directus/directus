@@ -1,5 +1,6 @@
 import { parse } from 'json2csv';
-import knex, { Knex } from 'knex';
+import { knex } from 'knex';
+import type { Knex } from 'knex';
 import { createTracker, MockClient, Tracker } from 'knex-mock-client';
 import { EOL } from 'node:os';
 import { Readable } from 'stream';

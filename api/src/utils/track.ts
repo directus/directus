@@ -1,8 +1,7 @@
 import { machineId } from 'node-machine-id';
 import os from 'os';
-// @ts-ignore
 import { toArray } from '@directus/shared/utils';
-import { version } from '../../package.json';
+import { version } from './package.js';
 import env from '../env.js';
 import logger from '../logger.js';
 import { getMilliseconds } from './get-milliseconds.js';

@@ -1,4 +1,4 @@
-import { version as currentDirectusVersion } from '../../package.json';
+import { version as currentDirectusVersion } from './package.js';
 import { InvalidPayloadException } from '../exceptions/invalid-payload.js';
 import { getDatabaseClient } from '../database/index.js';
 import Joi from 'joi';

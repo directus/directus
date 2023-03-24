@@ -1,5 +1,6 @@
 import type { Diff } from 'deep-diff';
-import knex, { Knex } from 'knex';
+import { knex } from 'knex';
+import type { Knex } from 'knex';
 import { createTracker, MockClient, Tracker } from 'knex-mock-client';
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 import { SchemaService } from './schema.js';

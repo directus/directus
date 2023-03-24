@@ -1,7 +1,7 @@
 import type { SchemaOverview } from '@directus/shared/types';
 import type { Knex } from 'knex';
 import { fromPairs, isArray, isPlainObject, mapValues, omit, sortBy, toPairs } from 'lodash';
-import { version } from '../../package.json';
+import { version } from './package.js';
 import getDatabase, { getDatabaseClient } from '../database/index.js';
 import { CollectionsService, FieldsService, RelationsService } from '../services/index.js';
 import type { Collection, Snapshot, SnapshotField, SnapshotRelation } from '../types/index.js';

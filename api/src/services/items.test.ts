@@ -1,5 +1,6 @@
 import type { NestedDeepQuery } from '@directus/shared/types';
-import knex, { Knex } from 'knex';
+import { knex } from 'knex';
+import type { Knex } from 'knex';
 import { createTracker, MockClient, Tracker } from 'knex-mock-client';
 import { cloneDeep } from 'lodash';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, MockedFunction, vi } from 'vitest';

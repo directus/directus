@@ -6,7 +6,7 @@ import { once } from 'lodash';
 import qs from 'qs';
 import checkForUpdate from 'update-check';
 import url from 'url';
-import pkg from '../package.json';
+import * as pkg from './utils/package.js';
 import createApp from './app.js';
 import getDatabase from './database/index.js';
 import emitter from './emitter.js';

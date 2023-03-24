@@ -5,7 +5,7 @@ import { performance } from 'perf_hooks';
 import type { Accountability, SchemaOverview } from '@directus/shared/types';
 import { toArray } from '@directus/shared/utils';
 import { Readable } from 'node:stream';
-import { version } from '../../package.json';
+import { version } from '../utils/package.js';
 import { getCache } from '../cache.js';
 import getDatabase, { hasDatabaseConnection } from '../database/index.js';
 import env from '../env.js';

@@ -10,7 +10,7 @@ import type {
 	TagObject,
 } from 'openapi3-ts';
 import type { Accountability, Field, Permission, Relation, SchemaOverview, Type } from '@directus/shared/types';
-import { version } from '../../package.json';
+import { version } from '../utils/package.js';
 import { OAS_REQUIRED_SCHEMAS } from '../constants.js';
 import getDatabase from '../database/index.js';
 import env from '../env.js';
@@ -20,8 +20,6 @@ import { CollectionsService } from './collections.js';
 import { FieldsService } from './fields.js';
 import { GraphQLService } from './graphql/index.js';
 import { RelationsService } from './relations.js';
-
-// @ts-ignore
 import formatTitle from '@directus/format-title';
 
 export class SpecificationService {

@@ -1,4 +1,5 @@
-import knex, { Knex } from 'knex';
+import { knex } from 'knex';
+import type { Knex } from 'knex';
 import { createTracker, MockClient, Tracker } from 'knex-mock-client';
 import { afterEach, beforeEach, describe, expect, it, MockedFunction, vi } from 'vitest';
 import { CollectionsService, FieldsService } from '../services/index.js';

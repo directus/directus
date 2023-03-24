@@ -1,4 +1,5 @@
-import knex, { Knex } from 'knex';
+import { knex } from 'knex';
+import type { Knex } from 'knex';
 import { createTracker, MockClient, Tracker } from 'knex-mock-client';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, MockedFunction, SpyInstance, vi } from 'vitest';
 import { InvalidPayloadException } from '../exceptions/index.js';

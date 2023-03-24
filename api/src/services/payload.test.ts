@@ -1,4 +1,5 @@
-import knex, { Knex } from 'knex';
+import { knex } from 'knex';
+import type { Knex } from 'knex';
 import { MockClient, Tracker, createTracker } from 'knex-mock-client';
 import { PayloadService } from '../../src/services/index.js';
 import { getHelpers, Helpers } from '../../src/database/helpers/index.js';
