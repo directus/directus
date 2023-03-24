@@ -5,22 +5,21 @@ import type { Request, RequestHandler } from 'express';
 import pinoHTTP, { stdSerializers } from 'pino-http';
 import { URL } from 'url';
 import env from './env';
+import { REDACT_TEXT } from './constants';
 import { getConfigFromEnv } from './utils/get-config-from-env';
-
-export const redactText = '--redact--';
 
 const pinoOptions: LoggerOptions = {
 	level: env['LOG_LEVEL'] || 'info',
 	redact: {
 		paths: ['req.headers.authorization', 'req.headers.cookie'],
-		censor: redactText,
+		censor: REDACT_TEXT,
 	},
 };
 export const httpLoggerOptions: LoggerOptions = {
 	level: env['LOG_LEVEL'] || 'info',
 	redact: {
 		paths: ['req.headers.authorization', 'req.headers.cookie'],
-		censor: redactText,
+		censor: REDACT_TEXT,
 	},
 };
 
@@ -52,11 +51,11 @@ if (env['LOG_STYLE'] === 'raw') {
 			const path = pathParts.join('.');
 			if (path === 'res.headers') {
 				if ('set-cookie' in value) {
-					value['set-cookie'] = redactText;
+					value['set-cookie'] = REDACT_TEXT;
 				}
 				return value;
 			}
-			return redactText;
+			return REDACT_TEXT;
 		},
 	};
 }
@@ -114,7 +113,7 @@ function redactQuery(originalPath: string) {
 	const url = new URL(originalPath, 'http://example.com/');
 
 	if (url.searchParams.has('access_token')) {
-		url.searchParams.set('access_token', redactText);
+		url.searchParams.set('access_token', REDACT_TEXT);
 	}
 
 	return url.pathname + url.search;

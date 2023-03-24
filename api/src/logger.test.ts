@@ -19,7 +19,8 @@ vi.mock('./env', async () => {
 
 import { Writable } from 'node:stream';
 import pino from 'pino';
-import { httpLoggerOptions, redactText } from './logger';
+import { REDACT_TEXT } from './constants';
+import { httpLoggerOptions } from './logger';
 
 const logOutput = vi.fn();
 
@@ -50,7 +51,7 @@ describe('req.headers.authorization', () => {
 		expect(logOutput.mock.calls[0][0]).toMatchObject({
 			req: {
 				headers: {
-					authorization: redactText,
+					authorization: REDACT_TEXT,
 				},
 			},
 		});
@@ -70,7 +71,7 @@ describe('req.headers.cookie', () => {
 		expect(logOutput.mock.calls[0][0]).toMatchObject({
 			req: {
 				headers: {
-					cookie: redactText,
+					cookie: REDACT_TEXT,
 				},
 			},
 		});
@@ -88,7 +89,7 @@ describe('req.headers.cookie', () => {
 		expect(logOutput.mock.calls[0][0]).toMatchObject({
 			req: {
 				headers: {
-					cookie: redactText,
+					cookie: REDACT_TEXT,
 				},
 			},
 		});
@@ -109,7 +110,7 @@ describe('res.headers', () => {
 			res: {
 				headers: {
 					// it is turned into an array because of `toArray` usage for set-cookie
-					'set-cookie': redactText,
+					'set-cookie': REDACT_TEXT,
 				},
 			},
 		});
@@ -132,7 +133,7 @@ describe('res.headers', () => {
 		expect(logOutput.mock.calls[0][0]).toMatchObject({
 			res: {
 				headers: {
-					'set-cookie': redactText,
+					'set-cookie': REDACT_TEXT,
 				},
 			},
 		});
