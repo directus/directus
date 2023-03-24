@@ -21,7 +21,7 @@ RUN pnpm install --recursive --offline --frozen-lockfile
 
 FROM workspace AS pruned
 WORKDIR /workspace
-ENV NODE_OPTIONS=--max-old-space-size=6144
+ENV NODE_OPTIONS=--max-old-space-size=8192
 
 RUN pnpm --recursive --workspace-concurrency=1 run build
 RUN pnpm --filter directus deploy --prod pruned
