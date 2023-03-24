@@ -1825,7 +1825,7 @@ export class GraphQLService {
 			name: 'auth_tokens',
 			fields: {
 				access_token: GraphQLString,
-				expires: GraphQLInt,
+				expires: GraphQLBigInt,
 				refresh_token: GraphQLString,
 			},
 		});
