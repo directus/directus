@@ -53,7 +53,7 @@ describe('Logger Redact Tests', () => {
 	});
 
 	describe('POST /refresh', () => {
-		const logSyncDelay = 100;
+		const logSyncDelay = 250;
 
 		async function waitForLogs() {
 			await sleep(logSyncDelay);
