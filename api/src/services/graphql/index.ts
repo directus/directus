@@ -1841,13 +1841,22 @@ export class GraphQLService {
 		const ServerInfo = schemaComposer.createObjectTC({
 			name: 'server_info',
 			fields: {
-				project_name: { type: GraphQLString },
-				project_logo: { type: GraphQLString },
-				project_color: { type: GraphQLString },
-				project_foreground: { type: GraphQLString },
-				project_background: { type: GraphQLString },
-				project_note: { type: GraphQLString },
-				custom_css: { type: GraphQLString },
+				project: {
+					type: new GraphQLObjectType({
+						name: 'server_info_project',
+						fields: {
+							project_name: { type: GraphQLString },
+							project_descriptor: { type: GraphQLString },
+							project_logo: { type: GraphQLString },
+							project_color: { type: GraphQLString },
+							default_language: { type: GraphQLString },
+							public_foreground: { type: GraphQLString },
+							public_background: { type: GraphQLString },
+							public_note: { type: GraphQLString },
+							custom_css: { type: GraphQLString },
+						},
+					}),
+				},
 			},
 		});
 
