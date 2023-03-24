@@ -49,18 +49,17 @@ if (env['LOG_STYLE'] === 'raw') {
 		if (provider.length === 0) return [];
 		return [`oauth2.${provider}`, `openid.${provider}`];
 	});
+	const cookieNames = [`access_token`, `${env['REFRESH_TOKEN_COOKIE_NAME']}`, ...ssoCookies];
 	httpLoggerOptions.redact = {
 		paths: ['req.headers.authorization', 'req.headers.cookie', 'res.headers'],
 		censor: (value, pathParts) => {
 			const path = pathParts.join('.');
 			if (path === 'req.headers.cookie') {
-				return redactHeaderCookie(value, [`access_token`, `${env['REFRESH_TOKEN_COOKIE_NAME']}`, ...ssoCookies]);
+				return redactHeaderCookie(value, cookieNames);
 			}
 			if (path === 'res.headers') {
 				if ('set-cookie' in value) {
-					value['set-cookie'] = toArray(value['set-cookie']).map((cookie) =>
-						redactHeaderCookie(cookie, [`access_token`, `${env['REFRESH_TOKEN_COOKIE_NAME']}`, ...ssoCookies])
-					);
+					value['set-cookie'] = toArray(value['set-cookie']).map((cookie) => redactHeaderCookie(cookie, cookieNames));
 				}
 				return value;
 			}
