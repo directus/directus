@@ -1,24 +1,24 @@
 import { toArray } from '@directus/shared/utils';
 import { merge } from 'lodash';
-import pino, { LoggerOptions, SerializedResponse } from 'pino';
+import pino, { LoggerOptions } from 'pino';
 import type { Request, RequestHandler } from 'express';
 import pinoHTTP, { stdSerializers } from 'pino-http';
 import { URL } from 'url';
 import env from './env';
 import { getConfigFromEnv } from './utils/get-config-from-env';
-import { redactHeaderCookie } from './utils/redact-header-cookies';
+// import { redactHeaderCookie } from './utils/redact-header-cookies';
 
 const pinoOptions: LoggerOptions = {
 	level: env['LOG_LEVEL'] || 'info',
 	redact: {
-		paths: ['req.headers.authorization', `req.cookies.${env['REFRESH_TOKEN_COOKIE_NAME']}`],
+		paths: ['req.headers.authorization', 'req.headers.cookie'],
 		censor: '--redact--',
 	},
 };
 const httpLoggerOptions: LoggerOptions = {
 	level: env['LOG_LEVEL'] || 'info',
 	redact: {
-		paths: ['req.headers.authorization', `req.cookies.${env['REFRESH_TOKEN_COOKIE_NAME']}`],
+		paths: ['req.headers.authorization', 'req.headers.cookie'],
 		censor: '--redact--',
 	},
 };
