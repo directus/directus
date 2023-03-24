@@ -109,7 +109,7 @@ export const expressLogger = pinoHTTP({
 	...httpLoggerEnvConfig,
 	serializers: {
 		req(request: Request) {
-			const output = stdSerializers.req(JSON.parse(JSON.stringify(request)));
+			const output = stdSerializers.req(request);
 			output.url = redactQuery(output.url);
 			return output;
 		},
