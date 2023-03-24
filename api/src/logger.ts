@@ -47,7 +47,7 @@ if (env['LOG_STYLE'] !== 'raw') {
 if (env['LOG_STYLE'] === 'raw') {
 	const ssoCookies = toArray(env['AUTH_PROVIDERS'] ?? '').flatMap((provider: string) => {
 		if (provider.length === 0) return [];
-		return [`oauth2.${provider.toLowerCase()}`, `openid.${provider.toLowerCase()}`];
+		return [`oauth2.${provider}`, `openid.${provider}`];
 	});
 	httpLoggerOptions.redact = {
 		paths: ['req.headers.authorization', 'req.headers.cookie', 'res.headers'],
