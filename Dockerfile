@@ -53,7 +53,9 @@ COPY --from=pruned /workspace/pruned/package.json package.json
 COPY --from=pruned /workspace/pruned/node_modules node_modules
 
 RUN mkdir /directus/database /directus/extensions /directus/uploads \
-	&& chown -R node:node /directus
+	&& chown -R node:node /directus \
+	&& corepack enable \
+	&& corepack prepare pnpm@7.30.0 --activate
 
 VOLUME /directus/database
 VOLUME /directus/extensions
