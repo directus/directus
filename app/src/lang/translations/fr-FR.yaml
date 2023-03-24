@@ -1432,6 +1432,7 @@ translation: Traduction
 translation_placeholder: Entrez une nouvelle traduction...
 value: Valeur
 view_project: Voir le projet
+weeks: { }
 report_error: Signaler l'erreur
 start: Début
 table: Tableau
@@ -1630,6 +1631,7 @@ interfaces:
   system-folder:
     folder: Dossier
     description: Sélectionner un dossier
+    field_hint: Dossier par défaut pour les fichiers téléchargés sans dossier spécifié. N'affecte pas les fichiers existants.
     root_name: Bibliothèque de fichiers racine
     system_default: Paramètres par défaut du système
   select-radio:
@@ -2093,6 +2095,8 @@ operations:
     name: Envoyer une notification
     description: Envoyer une notification dans l'application à un ou plusieurs utilisateurs
     recipient: Utilisateur
+    recipient_placeholder: Saisir un UUID...
+    recipient_note: Ajouter un UUID utilisateur et appuyez sur entrée...
     message: Message
   request:
     name: Webhook / URL de requête
