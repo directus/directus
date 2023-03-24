@@ -34,7 +34,7 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 
 	function parseFilePath(filePath: string, custom = false) {
 		const version = filePath.split('-')[0];
-		const name = formatTitle(filePath.split('-').slice(1).join('_').split('.')[0]);
+		const name = formatTitle(filePath.split('-').slice(1).join('_').split('.')[0]!);
 		const completed = !!completedMigrations.find((migration) => migration.version === version);
 
 		return {

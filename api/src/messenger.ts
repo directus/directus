@@ -1,6 +1,5 @@
 import { parseJSON } from '@directus/shared/utils';
-import IORedis from 'ioredis';
-import type { Redis } from 'ioredis';
+import { Redis } from 'ioredis';
 import env from './env.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
 
@@ -40,8 +39,8 @@ export class MessengerRedis implements Messenger {
 	constructor() {
 		const config = getConfigFromEnv('MESSENGER_REDIS');
 
-		this.pub = new IORedis(env['MESSENGER_REDIS'] ?? config);
-		this.sub = new IORedis(env['MESSENGER_REDIS'] ?? config);
+		this.pub = new Redis(env['MESSENGER_REDIS'] ?? config);
+		this.sub = new Redis(env['MESSENGER_REDIS'] ?? config);
 		this.namespace = env['MESSENGER_NAMESPACE'] ?? 'directus';
 	}
 

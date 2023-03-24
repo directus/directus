@@ -346,7 +346,7 @@ class ExtensionManager {
 				input: 'entry',
 				external: Object.values(sharedDepsMapping),
 				makeAbsoluteExternalsRelative: false,
-				plugins: [virtual({ entry: entrypoint }), alias({ entries: internalImports })],
+				plugins: [virtual.default({ entry: entrypoint }), alias.default({ entries: internalImports })],
 			});
 			const { output } = await bundle.generate({ format: 'es', compact: true });
 

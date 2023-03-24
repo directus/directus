@@ -5,7 +5,7 @@ import logger from '../../logger.js';
 import { getDefaultIndexName } from '../../utils/get-default-index-name.js';
 
 export async function up(knex: Knex): Promise<void> {
-	const inspector = SchemaInspector(knex);
+	const inspector = SchemaInspector.default(knex);
 
 	const foreignKeys = await inspector.foreignKeys();
 	const relations = await knex

@@ -81,14 +81,14 @@ const updates = [
 ];
 
 export async function up(knex: Knex): Promise<void> {
-	const inspector = SchemaInspector(knex);
+	const inspector = SchemaInspector.default(knex);
 
 	const foreignKeys = await inspector.foreignKeys();
 
 	for (const update of updates) {
 		for (const constraint of update.constraints) {
 			const existingForeignKey = foreignKeys.find(
-				(fk) =>
+				(fk: any) =>
 					fk.table === update.table &&
 					fk.column === constraint.column &&
 					fk.foreign_key_table === constraint.references.split('.')[0] &&

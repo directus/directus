@@ -131,7 +131,8 @@ export async function startServer(): Promise<void> {
 
 	server
 		.listen(port, host, () => {
-			checkForUpdate(pkg)
+			checkForUpdate
+				.default(pkg)
 				.then((update) => {
 					if (update) {
 						logger.warn(`Update available: ${pkg.version} -> ${update.latest}`);

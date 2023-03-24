@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, SpyInstance, vi } from 'vitest';
-import { ItemsService, NotificationsService } from '.';
+import { ItemsService, NotificationsService } from './index.js';
 
 vi.mock('../env', async () => {
 	const actual = (await vi.importActual('../env')) as { default: Record<string, any> };
@@ -63,7 +63,7 @@ describe('Integration Tests', () => {
 
 			beforeEach(() => {
 				superCreateManySpy = vi.spyOn(ItemsService.prototype, 'createMany').mockResolvedValue([]);
-				thisSendEmailSpy = vi.spyOn(NotificationsService.prototype, 'sendEmail').mockResolvedValue();
+				thisSendEmailSpy = vi.spyOn(NotificationsService.prototype, 'sendEmail');
 			});
 
 			it('create many notifications and send email for notification', async () => {
