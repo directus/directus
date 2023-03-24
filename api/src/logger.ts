@@ -8,6 +8,8 @@ import env from './env';
 import { getConfigFromEnv } from './utils/get-config-from-env';
 import { redactHeaderCookie } from './utils/redact-header-cookies';
 
+export const redactText = '--redact--';
+
 const pinoOptions: LoggerOptions = {
 	level: env['LOG_LEVEL'] || 'info',
 	redact: {
@@ -15,7 +17,7 @@ const pinoOptions: LoggerOptions = {
 		censor: '--redact--',
 	},
 };
-const httpLoggerOptions: LoggerOptions = {
+export const httpLoggerOptions: LoggerOptions = {
 	level: env['LOG_LEVEL'] || 'info',
 	redact: {
 		paths: ['req.headers.authorization', 'req.headers.cookie'],
