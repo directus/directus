@@ -1,6 +1,6 @@
 import type { CookieOptions } from 'express';
 import env from './env.js';
-import type { TransformationParams } from './types.js';
+import type { TransformationParams } from './types/index.js';
 import { getMilliseconds } from './utils/get-milliseconds.js';
 
 export const SYSTEM_ASSET_ALLOW_LIST: TransformationParams[] = [

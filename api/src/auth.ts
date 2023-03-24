@@ -1,6 +1,12 @@
 import { toArray } from '@directus/shared/utils';
 import type { AuthDriver } from './auth/auth.js';
-import { LDAPAuthDriver, LocalAuthDriver, OAuth2AuthDriver, OpenIDAuthDriver, SAMLAuthDriver } from './auth/drivers.js';
+import {
+	LDAPAuthDriver,
+	LocalAuthDriver,
+	OAuth2AuthDriver,
+	OpenIDAuthDriver,
+	SAMLAuthDriver,
+} from './auth/drivers/index.js';
 import { DEFAULT_AUTH_PROVIDER } from './constants.js';
 import getDatabase from './database/index.js';
 import env from './env.js';
