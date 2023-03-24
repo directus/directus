@@ -85,24 +85,9 @@ export const expressLogger = pinoHTTP({
 	...httpLoggerEnvConfig,
 	serializers: {
 		req(request: Request) {
-			const output = stdSerializers.req(request);
+			const output = stdSerializers.req(JSON.parse(JSON.stringify(request)));
 			output.url = redactQuery(output.url);
-			if (output.headers?.['cookie']) {
-				output.headers['cookie'] = redactHeaderCookie(output.headers['cookie'], [
-					'access_token',
-					`${env['REFRESH_TOKEN_COOKIE_NAME']}`,
-				]);
-			}
 			return output;
-		},
-		res(response: SerializedResponse) {
-			if (response.headers?.['set-cookie']) {
-				response.headers['set-cookie'] = redactHeaderCookie(response.headers['set-cookie'], [
-					'access_token',
-					`${env['REFRESH_TOKEN_COOKIE_NAME']}`,
-				]);
-			}
-			return response;
 		},
 	},
 }) as RequestHandler;
