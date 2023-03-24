@@ -35,7 +35,7 @@ router.post(
 				const items = await service.readMany(savedKeys, req.sanitizedQuery);
 				res.locals['payload'] = { data: items };
 			} else {
-				const item = await service.readOne(savedKeys[0], req.sanitizedQuery);
+				const item = await service.readOne(savedKeys[0]!, req.sanitizedQuery);
 				res.locals['payload'] = { data: item };
 			}
 		} catch (error: any) {
@@ -89,7 +89,7 @@ router.get(
 			schema: req.schema,
 		});
 
-		const record = await service.readOne(req.params['pk'], req.sanitizedQuery);
+		const record = await service.readOne(req.params['pk']!, req.sanitizedQuery);
 
 		res.locals['payload'] = { data: record };
 		return next();
@@ -141,7 +141,7 @@ router.patch(
 			schema: req.schema,
 		});
 
-		const primaryKey = await service.updateOne(req.params['pk'], req.body);
+		const primaryKey = await service.updateOne(req.params['pk']!, req.body);
 
 		try {
 			const item = await service.readOne(primaryKey, req.sanitizedQuery);
@@ -190,7 +190,7 @@ router.delete(
 			schema: req.schema,
 		});
 
-		await service.deleteOne(req.params['pk']);
+		await service.deleteOne(req.params['pk']!);
 
 		return next();
 	}),

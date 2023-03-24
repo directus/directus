@@ -16,6 +16,7 @@
 		"noImplicitOverride": true,
 		"noImplicitReturns": true,
 		"noPropertyAccessFromIndexSignature": true,
+		"noUncheckedIndexedAccess": true,
 		"noUnusedLocals": true,
 		"outDir": "dist",
 		"resolveJsonModule": true,

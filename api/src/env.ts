@@ -400,8 +400,8 @@ function getEnvironmentValueWithPrefix(envArray: Array<string>): Array<string | 
 }
 
 function getEnvironmentValueByType(envVariableString: string) {
-	const variableType = getVariableType(envVariableString);
-	const envVariableValue = getEnvVariableValue(envVariableString, variableType);
+	const variableType = getVariableType(envVariableString)!;
+	const envVariableValue = getEnvVariableValue(envVariableString, variableType)!;
 
 	switch (variableType) {
 		case 'number':

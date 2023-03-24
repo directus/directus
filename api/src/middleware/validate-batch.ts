@@ -46,7 +46,7 @@ export const validateBatch = (scope: 'read' | 'update' | 'delete') =>
 		const { error } = batchSchema.validate(req.body);
 
 		if (error) {
-			throw new FailedValidationException(error.details[0]);
+			throw new FailedValidationException(error.details[0]!);
 		}
 
 		return next();

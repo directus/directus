@@ -54,9 +54,9 @@ async function uniqueViolation(error: MSSQLError) {
 
 	if (!quoteMatches || !parenMatches) return error;
 
-	const keyName = quoteMatches[1]?.slice(1, -1);
+	const keyName = quoteMatches[1]!.slice(1, -1);
 
-	let collection = quoteMatches[0]?.slice(1, -1);
+	let collection = quoteMatches[0]!.slice(1, -1);
 	let field: string | null = null;
 
 	if (keyName) {
@@ -112,7 +112,7 @@ function numericValueOutOfRange(error: MSSQLError) {
 	const field = null;
 
 	const parts = error.message.split(' ');
-	const invalid = parts[parts.length - 1].slice(0, -1);
+	const invalid = parts[parts.length - 1]!.slice(0, -1);
 
 	return new ValueOutOfRangeException(field, {
 		collection,
@@ -131,7 +131,7 @@ function valueLimitViolation(error: MSSQLError) {
 	if (!bracketMatches || !quoteMatches) return error;
 
 	const collection = bracketMatches[0].slice(1, -1);
-	const field = quoteMatches[1].slice(1, -1);
+	const field = quoteMatches[1]!.slice(1, -1);
 
 	return new ValueTooLongException(field, {
 		collection,
@@ -177,8 +177,8 @@ function foreignKeyViolation(error: MSSQLError) {
 
 	const underscoreParts = underscoreMatches[0].split('__');
 
-	const collection = underscoreParts[1];
-	const field = underscoreParts[2];
+	const collection = underscoreParts[1]!;
+	const field = underscoreParts[2]!;
 
 	return new InvalidForeignKeyException(field, {
 		collection,

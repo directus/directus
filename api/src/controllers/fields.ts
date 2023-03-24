@@ -54,7 +54,7 @@ router.get(
 			schema: req.schema,
 		});
 
-		const field = await service.readOne(req.params['collection'], req.params['field']);
+		const field = await service.readOne(req.params['collection']!, req.params['field']!);
 
 		res.locals['payload'] = { data: field || null };
 		return next();
@@ -96,10 +96,10 @@ router.post(
 
 		const field: Partial<Field> & { field: string; type: Type | null } = req.body;
 
-		await service.createField(req.params['collection'], field);
+		await service.createField(req.params['collection']!, field);
 
 		try {
-			const createdField = await service.readOne(req.params['collection'], field.field);
+			const createdField = await service.readOne(req.params['collection']!, field.field);
 			res.locals['payload'] = { data: createdField || null };
 		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
@@ -128,13 +128,13 @@ router.patch(
 		}
 
 		for (const field of req.body) {
-			await service.updateField(req.params['collection'], field);
+			await service.updateField(req.params['collection']!, field);
 		}
 
 		try {
 			const results: any = [];
 			for (const field of req.body) {
-				const updatedField = await service.readOne(req.params['collection'], field.field);
+				const updatedField = await service.readOne(req.params['collection']!, field.field);
 				results.push(updatedField);
 				res.locals['payload'] = { data: results || null };
 			}
@@ -186,12 +186,12 @@ router.patch(
 
 		const fieldData: Partial<Field> & { field: string; type: Type } = req.body;
 
-		if (!fieldData.field) fieldData.field = req.params['field'];
+		if (!fieldData.field) fieldData.field = req.params['field']!;
 
-		await service.updateField(req.params['collection'], fieldData);
+		await service.updateField(req.params['collection']!, fieldData);
 
 		try {
-			const updatedField = await service.readOne(req.params['collection'], req.params['field']);
+			const updatedField = await service.readOne(req.params['collection']!, req.params['field']!);
 			res.locals['payload'] = { data: updatedField || null };
 		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
@@ -214,7 +214,7 @@ router.delete(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
-		await service.deleteField(req.params['collection'], req.params['field']);
+		await service.deleteField(req.params['collection']!, req.params['field']!);
 		return next();
 	}),
 	respond
