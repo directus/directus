@@ -24,7 +24,13 @@ WORKDIR /workspace
 ENV NODE_OPTIONS=--max-old-space-size=8192
 
 RUN pnpm --recursive run build \
-	&& pnpm --filter directus deploy --prod pruned
+	&& pnpm --filter directus deploy --prod pruned \
+	&& cd pruned \
+	&& pnpm pack \
+	&& tar -zxvf *.tgz package/package.json \
+	&& rm package.json \
+	&& mv package/package.json package.json \
+	&& rm *.tgz
 
 ####################################################################################################
 ## Create Production Image
