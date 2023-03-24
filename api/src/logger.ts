@@ -45,10 +45,17 @@ if (env['LOG_STYLE'] !== 'raw') {
 	};
 }
 if (env['LOG_STYLE'] === 'raw') {
-	const ssoCookies = toArray(env['AUTH_PROVIDERS'] ?? '').flatMap((provider: string) => {
-		if (provider.length === 0) return [];
-		return [`oauth2.${provider}`, `openid.${provider}`];
-	});
+	const ssoCookies = toArray(env['AUTH_PROVIDERS'] ?? '').reduce<string[]>((cookies: string[], provider: string) => {
+		switch (env[`AUTH_${provider.toUpperCase()}_DRIVER`]) {
+			case 'oauth2':
+				cookies.push(`oauth2.${provider}`);
+				break;
+			case 'openid':
+				cookies.push(`openid.${provider}`);
+				break;
+		}
+		return cookies;
+	}, []);
 	const cookieNames = [`access_token`, `${env['REFRESH_TOKEN_COOKIE_NAME']}`, ...ssoCookies];
 	httpLoggerOptions.redact = {
 		paths: ['req.headers.authorization', 'req.headers.cookie', 'res.headers'],
