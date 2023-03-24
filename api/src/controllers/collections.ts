@@ -67,7 +67,7 @@ router.get(
 			schema: req.schema,
 		});
 
-		const collection = await collectionsService.readOne(req.params['collection']);
+		const collection = await collectionsService.readOne(req.params['collection']!);
 		res.locals['payload'] = { data: collection || null };
 
 		return next();
@@ -109,10 +109,10 @@ router.patch(
 			schema: req.schema,
 		});
 
-		await collectionsService.updateOne(req.params['collection'], req.body);
+		await collectionsService.updateOne(req.params['collection']!, req.body);
 
 		try {
-			const collection = await collectionsService.readOne(req.params['collection']);
+			const collection = await collectionsService.readOne(req.params['collection']!);
 			res.locals['payload'] = { data: collection || null };
 		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
@@ -135,7 +135,7 @@ router.delete(
 			schema: req.schema,
 		});
 
-		await collectionsService.deleteOne(req.params['collection']);
+		await collectionsService.deleteOne(req.params['collection']!);
 
 		return next();
 	}),

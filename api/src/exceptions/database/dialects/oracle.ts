@@ -22,7 +22,7 @@ function containsNullValues(error: OracleError): OracleError | ContainsNullValue
 	if (!matches) return error;
 
 	const collection = matches[0].slice(1, -1);
-	const field = matches[1].slice(1, -1);
+	const field = matches[1]!.slice(1, -1);
 
 	return new ContainsNullValuesException(field, { collection, field });
 }

@@ -50,8 +50,8 @@ function uniqueViolation(error: MySQLError) {
 	 */
 
 	/** MySQL 8+ style error message */
-	if (matches[1].includes('.')) {
-		const collection = matches[1]?.slice(1, -1).split('.')[0];
+	if (matches[1]!.includes('.')) {
+		const collection = matches[1]!.slice(1, -1).split('.')[0]!;
 
 		let field = null;
 
@@ -70,9 +70,9 @@ function uniqueViolation(error: MySQLError) {
 		});
 	} else {
 		/** MySQL 5.7 style error message */
-		const indexName = matches[1]?.slice(1, -1);
+		const indexName = matches[1]!.slice(1, -1);
 
-		const collection = indexName.split('_')[0];
+		const collection = indexName.split('_')[0]!;
 
 		let field = null;
 
@@ -153,9 +153,9 @@ function foreignKeyViolation(error: MySQLError) {
 
 	if (!tickMatches || !parenMatches) return error;
 
-	const collection = tickMatches[1]?.slice(1, -1);
-	const field = tickMatches[3]?.slice(1, -1);
-	const invalid = parenMatches[1]?.slice(1, -1);
+	const collection = tickMatches[1]!.slice(1, -1)!;
+	const field = tickMatches[3]!.slice(1, -1)!;
+	const invalid = parenMatches[1]!.slice(1, -1)!;
 
 	return new InvalidForeignKeyException(field, {
 		collection,
@@ -173,7 +173,7 @@ function containsNullValues(error: MySQLError) {
 
 	if (!tickMatches) return error;
 
-	const field = tickMatches[1]?.slice(1, -1);
+	const field = tickMatches[1]!.slice(1, -1)!;
 
 	return new ContainsNullValuesException(field);
 }

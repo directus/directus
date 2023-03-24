@@ -164,7 +164,7 @@ export class FieldsService {
 
 			return result.filter((field) => {
 				if (field.collection in allowedFieldsInCollection === false) return false;
-				const allowedFields = allowedFieldsInCollection[field.collection];
+				const allowedFields = allowedFieldsInCollection[field.collection]!;
 				if (allowedFields[0] === '*') return true;
 				return allowedFields.includes(field.field);
 			});
@@ -255,7 +255,7 @@ export class FieldsService {
 
 		try {
 			const exists =
-				field.field in this.schema.collections[collection].fields ||
+				field.field in this.schema.collections[collection]!.fields ||
 				isNil(
 					await this.knex.select('id').from('directus_fields').where({ collection, field: field.field }).first()
 				) === false;
@@ -386,8 +386,8 @@ export class FieldsService {
 			if (
 				hookAdjustedField.type &&
 				(hookAdjustedField.type === 'alias' ||
-					this.schema.collections[collection].fields[field.field]?.type === 'alias') &&
-				hookAdjustedField.type !== (this.schema.collections[collection].fields[field.field]?.type ?? 'alias')
+					this.schema.collections[collection]!.fields[field.field]?.type === 'alias') &&
+				hookAdjustedField.type !== (this.schema.collections[collection]!.fields[field.field]?.type ?? 'alias')
 			) {
 				throw new InvalidPayloadException('Alias type cannot be changed');
 			}
@@ -554,8 +554,8 @@ export class FieldsService {
 				// Delete field only after foreign key constraints are removed
 				if (
 					this.schema.collections[collection] &&
-					field in this.schema.collections[collection].fields &&
-					this.schema.collections[collection].fields[field].alias === false
+					field in this.schema.collections[collection]!.fields &&
+					this.schema.collections[collection]!.fields[field]!.alias === false
 				) {
 					await trx.schema.table(collection, (table) => {
 						table.dropColumn(field);

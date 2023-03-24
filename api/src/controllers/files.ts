@@ -145,7 +145,7 @@ router.post(
 					data: records,
 				};
 			} else {
-				const key = Array.isArray(keys) ? keys[0] : keys;
+				const key = Array.isArray(keys) ? keys[0]! : keys;
 				const record = await service.readOne(key, req.sanitizedQuery);
 
 				res.locals['payload'] = {
@@ -240,7 +240,7 @@ router.get(
 			schema: req.schema,
 		});
 
-		const record = await service.readOne(req.params['pk'], req.sanitizedQuery);
+		const record = await service.readOne(req.params['pk']!, req.sanitizedQuery);
 		res.locals['payload'] = { data: record || null };
 		return next();
 	}),
@@ -292,10 +292,10 @@ router.patch(
 			schema: req.schema,
 		});
 
-		await service.updateOne(req.params['pk'], req.body);
+		await service.updateOne(req.params['pk']!, req.body);
 
 		try {
-			const record = await service.readOne(req.params['pk'], req.sanitizedQuery);
+			const record = await service.readOne(req.params['pk']!, req.sanitizedQuery);
 			res.locals['payload'] = { data: record || null };
 		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
@@ -341,7 +341,7 @@ router.delete(
 			schema: req.schema,
 		});
 
-		await service.deleteOne(req.params['pk']);
+		await service.deleteOne(req.params['pk']!);
 
 		return next();
 	}),

@@ -46,7 +46,7 @@ export class FnHelperPostgres extends FnHelper {
 		const type = this.schema.collections?.[collectionName]?.fields?.[column]?.type ?? 'unknown';
 
 		if (type === 'json') {
-			const { dbType } = this.schema.collections[table].fields[column];
+			const { dbType } = this.schema.collections[table]!.fields[column]!;
 
 			return this.knex.raw(dbType === 'jsonb' ? 'jsonb_array_length(??.??)' : 'json_array_length(??.??)', [
 				table,

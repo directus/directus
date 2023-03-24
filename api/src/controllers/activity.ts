@@ -55,7 +55,7 @@ router.get(
 			schema: req.schema,
 		});
 
-		const record = await service.readOne(req.params['pk'], req.sanitizedQuery);
+		const record = await service.readOne(req.params['pk']!, req.sanitizedQuery);
 
 		res.locals['payload'] = {
 			data: record || null,
@@ -132,7 +132,7 @@ router.patch(
 			throw new InvalidPayloadException(error.message);
 		}
 
-		const primaryKey = await service.updateOne(req.params['pk'], req.body);
+		const primaryKey = await service.updateOne(req.params['pk']!, req.body);
 
 		try {
 			const record = await service.readOne(primaryKey, req.sanitizedQuery);
@@ -165,13 +165,13 @@ router.delete(
 			schema: req.schema,
 		});
 
-		const item = await adminService.readOne(req.params['pk'], { fields: ['action'] });
+		const item = await adminService.readOne(req.params['pk']!, { fields: ['action'] });
 
 		if (!item || item['action'] !== 'comment') {
 			throw new ForbiddenException();
 		}
 
-		await service.deleteOne(req.params['pk']);
+		await service.deleteOne(req.params['pk']!);
 
 		return next();
 	}),
