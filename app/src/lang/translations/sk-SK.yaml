@@ -1625,7 +1625,6 @@ interfaces:
   system-folder:
     folder: Priečinok
     description: Vyberte priečinok
-    field_hint: Priečinok na nahrávanie súborov. Neovplyvní to existujúce súbory.
     root_name: Koreňový priečinok knižnice súborov
     system_default: Predvolené systémom
   select-radio:
@@ -2065,7 +2064,6 @@ operations:
     name: Odoslať oznámenie
     description: Pošle internú notifikáciu jednému alebo viacerým používateľom
     recipient: Používateľ
-    recipient_placeholder: Pridajte UUID používateľa a stlačte enter...
     message: Správa
   request:
     name: Webhook / URL požiadavka

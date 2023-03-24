@@ -17,7 +17,7 @@ router.get(
 	asyncHandler(async (req, res, next) => {
 		const service = new SchemaService({ accountability: req.accountability });
 		const currentSnapshot = await service.snapshot();
-		res.locals.payload = { data: currentSnapshot };
+		res.locals['payload'] = { data: currentSnapshot };
 		return next();
 	}),
 	respond
@@ -36,7 +36,7 @@ router.post(
 const schemaMultipartHandler: RequestHandler = (req, res, next) => {
 	if (req.is('application/json')) {
 		if (Object.keys(req.body).length === 0) throw new InvalidPayloadException(`No data was included in the body`);
-		res.locals.uploadedSnapshot = req.body;
+		res.locals['uploadedSnapshot'] = req.body;
 		return next();
 	}
 
@@ -82,7 +82,7 @@ const schemaMultipartHandler: RequestHandler = (req, res, next) => {
 
 			if (!uploadedSnapshot) throw new InvalidPayloadException(`No file was included in the body`);
 
-			res.locals.uploadedSnapshot = uploadedSnapshot;
+			res.locals['uploadedSnapshot'] = uploadedSnapshot;
 
 			return next();
 		} catch (error: any) {
@@ -104,14 +104,14 @@ router.post(
 	asyncHandler(schemaMultipartHandler),
 	asyncHandler(async (req, res, next) => {
 		const service = new SchemaService({ accountability: req.accountability });
-		const snapshot: Snapshot = res.locals.uploadedSnapshot;
+		const snapshot: Snapshot = res.locals['uploadedSnapshot'];
 
 		const currentSnapshot = await service.snapshot();
 		const snapshotDiff = await service.diff(snapshot, { currentSnapshot, force: 'force' in req.query });
 		if (!snapshotDiff) return next();
 
 		const currentSnapshotHash = getVersionedHash(currentSnapshot);
-		res.locals.payload = { data: { hash: currentSnapshotHash, diff: snapshotDiff } };
+		res.locals['payload'] = { data: { hash: currentSnapshotHash, diff: snapshotDiff } };
 		return next();
 	}),
 	respond

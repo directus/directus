@@ -2,7 +2,7 @@ import type { KNEX_TYPES } from '@directus/shared/constants';
 import { Options, SchemaHelper } from '../types';
 
 export class SchemaHelperCockroachDb extends SchemaHelper {
-	async changeToType(
+	override async changeToType(
 		table: string,
 		column: string,
 		type: (typeof KNEX_TYPES)[number],
@@ -11,7 +11,7 @@ export class SchemaHelperCockroachDb extends SchemaHelper {
 		await this.changeToTypeByCopy(table, column, type, options);
 	}
 
-	constraintName(existingName: string): string {
+	override constraintName(existingName: string): string {
 		const suffix = '_replaced';
 		// CockroachDB does not allow for dropping/creating constraints with the same
 		// name in a single transaction. reference issue #14873

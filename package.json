@@ -13,13 +13,6 @@
 		"test:blackbox:watch": "jest tests -c tests-blackbox/jest.config.js --watch",
 		"posttest:blackbox:watch": "ts-node --project ./tests-blackbox/tsconfig.json --transpile-only ./tests-blackbox/setup/teardown.ts"
 	},
-	"simple-git-hooks": {
-		"pre-commit": "npx lint-staged"
-	},
-	"lint-staged": {
-		"*.{js,ts,vue}": "eslint --fix",
-		"*.{md,y?(a)ml,json}": "prettier --write"
-	},
 	"devDependencies": {
 		"@directus/shared": "workspace:*",
 		"@types/jest": "29.4.4",
@@ -43,12 +36,10 @@
 		"js-yaml": "4.1.0",
 		"json-to-graphql-query": "2.2.5",
 		"knex": "2.4.2",
-		"lint-staged": "13.2.0",
 		"listr2": "5.0.8",
 		"lodash": "4.17.21",
 		"prettier": "2.8.4",
 		"seedrandom": "3.0.5",
-		"simple-git-hooks": "2.8.1",
 		"supertest": "6.3.3",
 		"ts-jest": "29.0.5",
 		"typescript": "4.9.5",

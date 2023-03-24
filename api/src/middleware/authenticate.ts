@@ -52,7 +52,7 @@ export const handler = async (req: Request, res: Response, next: NextFunction) =
 
 	if (req.token) {
 		if (isDirectusJWT(req.token)) {
-			const payload = verifyAccessJWT(req.token, env.SECRET);
+			const payload = verifyAccessJWT(req.token, env['SECRET']);
 
 			req.accountability.role = payload.role;
 			req.accountability.admin = payload.admin_access === true || payload.admin_access == 1;

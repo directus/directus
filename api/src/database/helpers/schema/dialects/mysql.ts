@@ -3,7 +3,7 @@ import { getDatabaseVersion } from '../../../../database';
 import { SchemaHelper } from '../types';
 
 export class SchemaHelperMySQL extends SchemaHelper {
-	applyMultiRelationalSort(
+	override applyMultiRelationalSort(
 		knex: Knex,
 		dbQuery: Knex.QueryBuilder,
 		table: string,

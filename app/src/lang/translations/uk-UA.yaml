@@ -1630,7 +1630,6 @@ interfaces:
   system-folder:
     folder: Папка
     description: Обрати теку
-    field_hint: Тека для завантажених файлів. Не може вплинути на існуючі файли.
     root_name: Корінь файлової бібліотеки
     system_default: Стандартні налаштування
   select-radio:
@@ -2032,7 +2031,6 @@ operations:
     name: Надіслати сповіщення
     description: Надіслати сповіщення в застосунку одному або декільком користувачам
     recipient: Користувач
-    recipient_placeholder: Додати UUID користувача та натиснути Enter...
     message: Повідомлення
   request:
     name: Веб хук / URL запиту

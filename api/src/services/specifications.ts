@@ -109,7 +109,7 @@ class OASSpecsService implements SpecificationSubService {
 			},
 			servers: [
 				{
-					url: env.PUBLIC_URL,
+					url: env['PUBLIC_URL'],
 					description: 'Your current Directus instance.',
 				},
 			],
@@ -224,7 +224,7 @@ class OASSpecsService implements SpecificationSubService {
 								{
 									description: listBase[method].description.replace('item', collection + ' item'),
 									tags: [tag.name],
-									parameters: 'parameters' in listBase ? this.filterCollectionFromParams(listBase['parameters']) : [],
+									parameters: 'parameters' in listBase ? this.filterCollectionFromParams(listBase.parameters) : [],
 									operationId: `${this.getActionForMethod(method)}${tag.name}`,
 									requestBody: ['get', 'delete'].includes(method)
 										? undefined
@@ -270,6 +270,7 @@ class OASSpecsService implements SpecificationSubService {
 								},
 								(obj, src) => {
 									if (Array.isArray(obj)) return obj.concat(src);
+									return undefined;
 								}
 							);
 						}
@@ -281,8 +282,7 @@ class OASSpecsService implements SpecificationSubService {
 									description: detailBase[method].description.replace('item', collection + ' item'),
 									tags: [tag.name],
 									operationId: `${this.getActionForMethod(method)}Single${tag.name}`,
-									parameters:
-										'parameters' in detailBase ? this.filterCollectionFromParams(detailBase['parameters']) : [],
+									parameters: 'parameters' in detailBase ? this.filterCollectionFromParams(detailBase.parameters) : [],
 									requestBody: ['get', 'delete'].includes(method)
 										? undefined
 										: {
@@ -315,6 +315,7 @@ class OASSpecsService implements SpecificationSubService {
 								},
 								(obj, src) => {
 									if (Array.isArray(obj)) return obj.concat(src);
+									return undefined;
 								}
 							);
 						}

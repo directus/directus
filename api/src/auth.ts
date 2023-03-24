@@ -10,7 +10,7 @@ import type { AuthDriverOptions } from './types';
 import { getConfigFromEnv } from './utils/get-config-from-env';
 import { getSchema } from './utils/get-schema';
 
-const providerNames = toArray(env.AUTH_PROVIDERS);
+const providerNames = toArray(env['AUTH_PROVIDERS']);
 
 const providers: Map<string, AuthDriver> = new Map();
 
@@ -26,12 +26,12 @@ export async function registerAuthProviders(): Promise<void> {
 	const options = { knex: getDatabase(), schema: await getSchema() };
 
 	// Register default provider if not disabled
-	if (!env.AUTH_DISABLE_DEFAULT) {
+	if (!env['AUTH_DISABLE_DEFAULT']) {
 		const defaultProvider = getProviderInstance('local', options)!;
 		providers.set(DEFAULT_AUTH_PROVIDER, defaultProvider);
 	}
 
-	if (!env.AUTH_PROVIDERS) {
+	if (!env['AUTH_PROVIDERS']) {
 		return;
 	}
 
@@ -83,4 +83,6 @@ function getProviderInstance(
 		case 'saml':
 			return new SAMLAuthDriver(options, config);
 	}
+
+	return undefined;
 }

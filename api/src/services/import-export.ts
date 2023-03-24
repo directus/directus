@@ -224,26 +224,26 @@ export class ExportService {
 							count: ['*'],
 						},
 					})
-					.then((result) => Number(result?.[0]?.count ?? 0));
+					.then((result) => Number(result?.[0]?.['count'] ?? 0));
 
 				const count = query.limit ? Math.min(totalCount, query.limit) : totalCount;
 
 				const requestedLimit = query.limit ?? -1;
-				const batchesRequired = Math.ceil(count / env.EXPORT_BATCH_SIZE);
+				const batchesRequired = Math.ceil(count / env['EXPORT_BATCH_SIZE']);
 
 				let readCount = 0;
 
 				for (let batch = 0; batch < batchesRequired; batch++) {
-					let limit = env.EXPORT_BATCH_SIZE;
+					let limit = env['EXPORT_BATCH_SIZE'];
 
-					if (requestedLimit > 0 && env.EXPORT_BATCH_SIZE > requestedLimit - readCount) {
+					if (requestedLimit > 0 && env['EXPORT_BATCH_SIZE'] > requestedLimit - readCount) {
 						limit = requestedLimit - readCount;
 					}
 
 					const result = await service.readByQuery({
 						...query,
 						limit,
-						offset: batch * env.EXPORT_BATCH_SIZE,
+						offset: batch * env['EXPORT_BATCH_SIZE'],
 					});
 
 					readCount += result.length;
@@ -265,7 +265,7 @@ export class ExportService {
 				schema: this.schema,
 			});
 
-			const storage: string = toArray(env.STORAGE_LOCATIONS)[0];
+			const storage: string = toArray(env['STORAGE_LOCATIONS'])[0];
 
 			const title = `export-${collection}-${getDateFormatted()}`;
 			const filename = `${title}.${format}`;

@@ -310,6 +310,8 @@ export function applySort(
 	rootQuery.clear('order');
 
 	rootQuery.orderBy(sortRecords);
+
+	return undefined;
 }
 
 export function applyLimit(knex: Knex, rootQuery: Knex.QueryBuilder, limit: any) {
@@ -559,7 +561,7 @@ export function applyFilter(
 
 			if (operator === '_nempty' || (operator === '_empty' && compareValue === false)) {
 				dbQuery[logical].andWhere((query) => {
-					query.whereNotNull(key).orWhere(key, '!=', '');
+					query.whereNotNull(key).andWhere(key, '!=', '');
 				});
 			}
 

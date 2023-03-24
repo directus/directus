@@ -108,7 +108,7 @@ export async function createServer(): Promise<http.Server> {
 	return server;
 
 	async function beforeShutdown() {
-		if (env.NODE_ENV !== 'development') {
+		if (env['NODE_ENV'] !== 'development') {
 			logger.info('Shutting down...');
 		}
 	}
@@ -133,7 +133,7 @@ export async function createServer(): Promise<http.Server> {
 			}
 		);
 
-		if (env.NODE_ENV !== 'development') {
+		if (env['NODE_ENV'] !== 'development') {
 			logger.info('Directus shut down OK. Bye bye!');
 		}
 	}
@@ -142,8 +142,8 @@ export async function createServer(): Promise<http.Server> {
 export async function startServer(): Promise<void> {
 	const server = await createServer();
 
-	const host = env.HOST;
-	const port = env.PORT;
+	const host = env['HOST'];
+	const port = env['PORT'];
 
 	server
 		.listen(port, host, () => {

@@ -96,7 +96,7 @@ test('Sets accountability to payload contents if valid token is passed', async (
 			share,
 			share_scope: shareScope,
 		},
-		env.SECRET,
+		env['SECRET'],
 		{ issuer: 'directus' }
 	);
 
@@ -145,7 +145,7 @@ test('Sets accountability to payload contents if valid token is passed', async (
 			share,
 			share_scope: shareScope,
 		},
-		env.SECRET,
+		env['SECRET'],
 		{ issuer: 'directus' }
 	);
 

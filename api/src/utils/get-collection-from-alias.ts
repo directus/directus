@@ -10,4 +10,6 @@ export function getCollectionFromAlias(alias: string, aliasMap: AliasMap): strin
 			return aliasValue.collection;
 		}
 	}
+
+	return undefined;
 }

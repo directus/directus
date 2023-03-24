@@ -12,8 +12,8 @@ import type { RequestHandler } from 'express';
 const extractToken: RequestHandler = (req, res, next) => {
 	let token: string | null = null;
 
-	if (req.query && req.query.access_token) {
-		token = req.query.access_token as string;
+	if (req.query && req.query['access_token']) {
+		token = req.query['access_token'] as string;
 	}
 
 	if (req.headers && req.headers.authorization) {

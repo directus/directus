@@ -84,7 +84,7 @@ type Options = {
 
 const defaultOptions: Options = {
 	schedule: true,
-	watch: env.EXTENSIONS_AUTO_RELOAD && env.NODE_ENV !== 'development',
+	watch: env['EXTENSIONS_AUTO_RELOAD'] && env['NODE_ENV'] !== 'development',
 };
 
 class ExtensionManager {
@@ -237,7 +237,7 @@ class ExtensionManager {
 
 	private async load(): Promise<void> {
 		try {
-			await ensureExtensionDirs(env.EXTENSIONS_PATH, NESTED_EXTENSION_TYPES);
+			await ensureExtensionDirs(env['EXTENSIONS_PATH'], NESTED_EXTENSION_TYPES);
 
 			this.extensions = await this.getExtensions();
 		} catch (err: any) {
@@ -250,7 +250,7 @@ class ExtensionManager {
 		await this.registerOperations();
 		await this.registerBundles();
 
-		if (env.SERVE_APP) {
+		if (env['SERVE_APP']) {
 			this.appExtensions = await this.generateExtensionBundle();
 		}
 
@@ -262,7 +262,7 @@ class ExtensionManager {
 
 		this.apiEmitter.offAll();
 
-		if (env.SERVE_APP) {
+		if (env['SERVE_APP']) {
 			this.appExtensions = null;
 		}
 
@@ -274,7 +274,7 @@ class ExtensionManager {
 			logger.info('Watching extensions for changes...');
 
 			const localExtensionPaths = NESTED_EXTENSION_TYPES.flatMap((type) => {
-				const typeDir = path.posix.join(pathToRelativeUrl(env.EXTENSIONS_PATH), pluralize(type));
+				const typeDir = path.posix.join(pathToRelativeUrl(env['EXTENSIONS_PATH']), pluralize(type));
 
 				if (isIn(type, HYBRID_EXTENSION_TYPES)) {
 					return [path.posix.join(typeDir, '*', 'app.js'), path.posix.join(typeDir, '*', 'api.js')];
@@ -323,12 +323,12 @@ class ExtensionManager {
 	}
 
 	private async getExtensions(): Promise<Extension[]> {
-		const packageExtensions = await getPackageExtensions(env.PACKAGE_FILE_LOCATION);
-		const localPackageExtensions = await resolvePackageExtensions(env.EXTENSIONS_PATH);
-		const localExtensions = await getLocalExtensions(env.EXTENSIONS_PATH);
+		const packageExtensions = await getPackageExtensions(env['PACKAGE_FILE_LOCATION']);
+		const localPackageExtensions = await resolvePackageExtensions(env['EXTENSIONS_PATH']);
+		const localExtensions = await getLocalExtensions(env['EXTENSIONS_PATH']);
 
 		return [...packageExtensions, ...localPackageExtensions, ...localExtensions].filter(
-			(extension) => env.SERVE_APP || APP_EXTENSION_TYPES.includes(extension.type as any) === false
+			(extension) => env['SERVE_APP'] || APP_EXTENSION_TYPES.includes(extension.type as any) === false
 		);
 	}
 
@@ -370,7 +370,7 @@ class ExtensionManager {
 			const depName = appDir.find((file) => depRegex.test(file));
 
 			if (depName) {
-				const depUrl = new Url(env.PUBLIC_URL).addPath('admin', 'assets', depName);
+				const depUrl = new Url(env['PUBLIC_URL']).addPath('admin', 'assets', depName);
 
 				depsMapping[dep] = depUrl.toString({ rootRelative: true });
 			} else {

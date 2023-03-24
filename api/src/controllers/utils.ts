@@ -23,10 +23,10 @@ router.get(
 	asyncHandler(async (req, res) => {
 		const { nanoid } = await import('nanoid');
 
-		if (req.query && req.query.length && Number(req.query.length) > 500)
+		if (req.query && req.query['length'] && Number(req.query['length']) > 500)
 			throw new InvalidQueryException(`"length" can't be more than 500 characters`);
 
-		const string = nanoid(req.query?.length ? Number(req.query.length) : 32);
+		const string = nanoid(req.query?.['length'] ? Number(req.query['length']) : 32);
 
 		return res.json({ data: string });
 	})
@@ -91,7 +91,7 @@ router.post(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
-		await service.revert(req.params.revision);
+		await service.revert(req.params['revision']);
 		next();
 	}),
 	respond
@@ -124,7 +124,7 @@ router.post(
 
 		busboy.on('file', async (_fieldname, fileStream, { mimeType }) => {
 			try {
-				await service.import(req.params.collection, mimeType, fileStream);
+				await service.import(req.params['collection'], mimeType, fileStream);
 			} catch (err: any) {
 				return next(err);
 			}
@@ -158,7 +158,7 @@ router.post(
 		const sanitizedQuery = sanitizeQuery(req.body.query, req.accountability ?? null);
 
 		// We're not awaiting this, as it's supposed to run async in the background
-		service.exportToFile(req.params.collection, sanitizedQuery, req.body.format, {
+		service.exportToFile(req.params['collection'], sanitizedQuery, req.body.format, {
 			file: req.body.file,
 		});
 

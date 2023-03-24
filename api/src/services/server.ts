@@ -49,44 +49,44 @@ export class ServerService {
 			],
 		});
 
-		info.project = projectInfo;
+		info['project'] = projectInfo;
 
 		if (this.accountability?.user) {
-			if (env.RATE_LIMITER_ENABLED) {
-				info.rateLimit = {
-					points: env.RATE_LIMITER_POINTS,
-					duration: env.RATE_LIMITER_DURATION,
+			if (env['RATE_LIMITER_ENABLED']) {
+				info['rateLimit'] = {
+					points: env['RATE_LIMITER_POINTS'],
+					duration: env['RATE_LIMITER_DURATION'],
 				};
 			} else {
-				info.rateLimit = false;
+				info['rateLimit'] = false;
 			}
-			if (env.RATE_LIMITER_GLOBAL_ENABLED) {
-				info.rateLimitGlobal = {
-					points: env.RATE_LIMITER_GLOBAL_POINTS,
-					duration: env.RATE_LIMITER_GLOBAL_DURATION,
+			if (env['RATE_LIMITER_GLOBAL_ENABLED']) {
+				info['rateLimitGlobal'] = {
+					points: env['RATE_LIMITER_GLOBAL_POINTS'],
+					duration: env['RATE_LIMITER_GLOBAL_DURATION'],
 				};
 			} else {
-				info.rateLimitGlobal = false;
+				info['rateLimitGlobal'] = false;
 			}
 
-			info.flows = {
-				execAllowedModules: env.FLOWS_EXEC_ALLOWED_MODULES ? toArray(env.FLOWS_EXEC_ALLOWED_MODULES) : [],
+			info['flows'] = {
+				execAllowedModules: env['FLOWS_EXEC_ALLOWED_MODULES'] ? toArray(env['FLOWS_EXEC_ALLOWED_MODULES']) : [],
 			};
 		}
 
 		if (this.accountability?.admin === true) {
 			const { osType, osVersion } = getOSInfo();
 
-			info.directus = {
+			info['directus'] = {
 				version,
 			};
 
-			info.node = {
+			info['node'] = {
 				version: process.versions.node,
 				uptime: Math.round(process.uptime()),
 			};
 
-			info.os = {
+			info['os'] = {
 				type: osType,
 				version: osVersion,
 				uptime: Math.round(os.uptime()),
@@ -148,7 +148,7 @@ export class ServerService {
 		const data: HealthData = {
 			status: 'ok',
 			releaseId: version,
-			serviceId: env.KEY,
+			serviceId: env['KEY'],
 			checks: merge(
 				...(await Promise.all([
 					testDatabase(),
@@ -190,7 +190,7 @@ export class ServerService {
 
 		async function testDatabase(): Promise<Record<string, HealthCheck[]>> {
 			const database = getDatabase();
-			const client = env.DB_CLIENT;
+			const client = env['DB_CLIENT'];
 
 			const checks: Record<string, HealthCheck[]> = {};
 
@@ -202,7 +202,7 @@ export class ServerService {
 					componentType: 'datastore',
 					observedUnit: 'ms',
 					observedValue: 0,
-					threshold: env.DB_HEALTHCHECK_THRESHOLD ? +env.DB_HEALTHCHECK_THRESHOLD : 150,
+					threshold: env['DB_HEALTHCHECK_THRESHOLD'] ? +env['DB_HEALTHCHECK_THRESHOLD'] : 150,
 				},
 			];
 
@@ -245,7 +245,7 @@ export class ServerService {
 		}
 
 		async function testCache(): Promise<Record<string, HealthCheck[]>> {
-			if (env.CACHE_ENABLED !== true) {
+			if (env['CACHE_ENABLED'] !== true) {
 				return {};
 			}
 
@@ -258,7 +258,7 @@ export class ServerService {
 						componentType: 'cache',
 						observedValue: 0,
 						observedUnit: 'ms',
-						threshold: env.CACHE_HEALTHCHECK_THRESHOLD ? +env.CACHE_HEALTHCHECK_THRESHOLD : 150,
+						threshold: env['CACHE_HEALTHCHECK_THRESHOLD'] ? +env['CACHE_HEALTHCHECK_THRESHOLD'] : 150,
 					},
 				],
 			};
@@ -287,7 +287,7 @@ export class ServerService {
 		}
 
 		async function testRateLimiter(): Promise<Record<string, HealthCheck[]>> {
-			if (env.RATE_LIMITER_ENABLED !== true) {
+			if (env['RATE_LIMITER_ENABLED'] !== true) {
 				return {};
 			}
 
@@ -298,7 +298,7 @@ export class ServerService {
 						componentType: 'ratelimiter',
 						observedValue: 0,
 						observedUnit: 'ms',
-						threshold: env.RATE_LIMITER_HEALTHCHECK_THRESHOLD ? +env.RATE_LIMITER_HEALTHCHECK_THRESHOLD : 150,
+						threshold: env['RATE_LIMITER_HEALTHCHECK_THRESHOLD'] ? +env['RATE_LIMITER_HEALTHCHECK_THRESHOLD'] : 150,
 					},
 				],
 			};
@@ -327,7 +327,7 @@ export class ServerService {
 		}
 
 		async function testRateLimiterGlobal(): Promise<Record<string, HealthCheck[]>> {
-			if (env.RATE_LIMITER_GLOBAL_ENABLED !== true) {
+			if (env['RATE_LIMITER_GLOBAL_ENABLED'] !== true) {
 				return {};
 			}
 
@@ -338,8 +338,8 @@ export class ServerService {
 						componentType: 'ratelimiter',
 						observedValue: 0,
 						observedUnit: 'ms',
-						threshold: env.RATE_LIMITER_GLOBAL_HEALTHCHECK_THRESHOLD
-							? +env.RATE_LIMITER_GLOBAL_HEALTHCHECK_THRESHOLD
+						threshold: env['RATE_LIMITER_GLOBAL_HEALTHCHECK_THRESHOLD']
+							? +env['RATE_LIMITER_GLOBAL_HEALTHCHECK_THRESHOLD']
 							: 150,
 					},
 				],
@@ -374,7 +374,7 @@ export class ServerService {
 
 			const checks: Record<string, HealthCheck[]> = {};
 
-			for (const location of toArray(env.STORAGE_LOCATIONS)) {
+			for (const location of toArray(env['STORAGE_LOCATIONS'])) {
 				const disk = storage.location(location);
 				const envThresholdKey = `STORAGE_${location}_HEALTHCHECK_THRESHOLD`.toUpperCase();
 				checks[`storage:${location}:responseTime`] = [

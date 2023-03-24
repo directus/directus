@@ -33,7 +33,7 @@ export default async function createEnv(
 	};
 
 	for (const [key, value] of Object.entries(credentials)) {
-		config.database[`DB_${key.toUpperCase()}`] = value;
+		config['database'][`DB_${key.toUpperCase()}`] = value;
 	}
 
 	const configAsStrings: any = {};

@@ -1605,7 +1605,6 @@ interfaces:
   system-folder:
     folder: Папка
     description: Выбрать папку
-    field_hint: Папка для загруженных файлов. Не влияет на существующие файлы.
     root_name: Корень файловой библиотеки
     system_default: Системные настройки по умолчанию
   select-radio:

@@ -35,7 +35,7 @@ export default function createDBConnection(client: Driver, credentials: Credenti
 
 		if (client === 'pg' || client === 'cockroachdb') {
 			const { ssl } = credentials as Credentials;
-			connection['ssl'] = ssl;
+			connection.ssl = ssl;
 		}
 
 		if (client === 'mssql') {
