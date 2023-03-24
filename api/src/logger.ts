@@ -1,25 +1,25 @@
 import { toArray } from '@directus/shared/utils';
 import { merge } from 'lodash';
-import pino, { LoggerOptions, SerializedResponse } from 'pino';
+import pino, { LoggerOptions } from 'pino';
 import type { Request, RequestHandler } from 'express';
 import pinoHTTP, { stdSerializers } from 'pino-http';
 import { URL } from 'url';
 import env from './env';
+import { REDACT_TEXT } from './constants';
 import { getConfigFromEnv } from './utils/get-config-from-env';
-import { redactHeaderCookie } from './utils/redact-header-cookies';
 
 const pinoOptions: LoggerOptions = {
 	level: env['LOG_LEVEL'] || 'info',
 	redact: {
-		paths: ['req.headers.authorization', `req.cookies.${env['REFRESH_TOKEN_COOKIE_NAME']}`],
-		censor: '--redact--',
+		paths: ['req.headers.authorization', 'req.headers.cookie'],
+		censor: REDACT_TEXT,
 	},
 };
-const httpLoggerOptions: LoggerOptions = {
+export const httpLoggerOptions: LoggerOptions = {
 	level: env['LOG_LEVEL'] || 'info',
 	redact: {
-		paths: ['req.headers.authorization', `req.cookies.${env['REFRESH_TOKEN_COOKIE_NAME']}`],
-		censor: '--redact--',
+		paths: ['req.headers.authorization', 'req.headers.cookie'],
+		censor: REDACT_TEXT,
 	},
 };
 
@@ -41,6 +41,21 @@ if (env['LOG_STYLE'] !== 'raw') {
 				ignore: 'hostname,pid',
 				sync: true,
 			},
+		},
+	};
+}
+if (env['LOG_STYLE'] === 'raw') {
+	httpLoggerOptions.redact = {
+		paths: ['req.headers.authorization', 'req.headers.cookie', 'res.headers'],
+		censor: (value, pathParts) => {
+			const path = pathParts.join('.');
+			if (path === 'res.headers') {
+				if ('set-cookie' in value) {
+					value['set-cookie'] = REDACT_TEXT;
+				}
+				return value;
+			}
+			return REDACT_TEXT;
 		},
 	};
 }
@@ -87,22 +102,7 @@ export const expressLogger = pinoHTTP({
 		req(request: Request) {
 			const output = stdSerializers.req(request);
 			output.url = redactQuery(output.url);
-			if (output.headers?.['cookie']) {
-				output.headers['cookie'] = redactHeaderCookie(output.headers['cookie'], [
-					'access_token',
-					`${env['REFRESH_TOKEN_COOKIE_NAME']}`,
-				]);
-			}
 			return output;
-		},
-		res(response: SerializedResponse) {
-			if (response.headers?.['set-cookie']) {
-				response.headers['set-cookie'] = redactHeaderCookie(response.headers['set-cookie'], [
-					'access_token',
-					`${env['REFRESH_TOKEN_COOKIE_NAME']}`,
-				]);
-			}
-			return response;
 		},
 	},
 }) as RequestHandler;
@@ -113,7 +113,7 @@ function redactQuery(originalPath: string) {
 	const url = new URL(originalPath, 'http://example.com/');
 
 	if (url.searchParams.has('access_token')) {
-		url.searchParams.set('access_token', '--redacted--');
+		url.searchParams.set('access_token', REDACT_TEXT);
 	}
 
 	return url.pathname + url.search;

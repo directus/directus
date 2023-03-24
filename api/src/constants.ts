@@ -62,3 +62,5 @@ export const COOKIE_OPTIONS: CookieOptions = {
 };
 
 export const OAS_REQUIRED_SCHEMAS = ['Diff', 'Schema', 'Query', 'x-metadata'];
+
+export const REDACT_TEXT = '--redact--';
