@@ -1851,6 +1851,43 @@ export class GraphQLService {
 			},
 		});
 
+		if (this.accountability?.user) {
+			ServerInfo.addFields({
+				rateLimit: env['RATE_LIMITER_ENABLED']
+					? {
+							type: new GraphQLObjectType({
+								name: 'server_info_rate_limit',
+								fields: {
+									points: { type: GraphQLInt },
+									duration: { type: GraphQLInt },
+								},
+							}),
+					  }
+					: GraphQLBoolean,
+				rateLimitGlobal: env['RATE_LIMITER_GLOBAL_ENABLED']
+					? {
+							type: new GraphQLObjectType({
+								name: 'server_info_rate_limit_global',
+								fields: {
+									points: { type: GraphQLInt },
+									duration: { type: GraphQLInt },
+								},
+							}),
+					  }
+					: GraphQLBoolean,
+				flows: {
+					type: new GraphQLObjectType({
+						name: 'server_info_flows',
+						fields: {
+							execAllowedModules: {
+								type: new GraphQLList(GraphQLString),
+							},
+						},
+					}),
+				},
+			});
+		}
+
 		if (this.accountability?.admin === true) {
 			ServerInfo.addFields({
 				directus: {
