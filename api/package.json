@@ -78,7 +78,7 @@
 		"@aws-sdk/client-ses": "3.292.0",
 		"@directus/app": "workspace:*",
 		"@directus/extensions-sdk": "workspace:*",
-		"@directus/format-title": "9.15.0",
+		"@directus/format-title": "10.0.0",
 		"@directus/schema": "workspace:*",
 		"@directus/shared": "workspace:*",
 		"@directus/specs": "workspace:*",

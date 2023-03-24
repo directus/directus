@@ -72,7 +72,7 @@ importers:
       '@aws-sdk/client-ses': 3.292.0
       '@directus/app': workspace:*
       '@directus/extensions-sdk': workspace:*
-      '@directus/format-title': 9.15.0
+      '@directus/format-title': 10.0.0
       '@directus/schema': workspace:*
       '@directus/shared': workspace:*
       '@directus/specs': workspace:*
@@ -219,7 +219,7 @@ importers:
       '@aws-sdk/client-ses': 3.292.0
       '@directus/app': link:../app
       '@directus/extensions-sdk': link:../packages/extensions-sdk
-      '@directus/format-title': 9.15.0
+      '@directus/format-title': 10.0.0
       '@directus/schema': link:../packages/schema
       '@directus/shared': link:../packages/shared
       '@directus/specs': link:../packages/specs
@@ -3491,12 +3491,6 @@ packages:
   /@directus/format-title/10.0.0:
     resolution: {integrity: sha512-iMXP8yQb0UKAMGRHAY7IkNXEGdUqQDvlu1aAkPARYah4lMhEU8E5KgkXdOCPQaxt6Wy0gXb7DPMjeSlKyBKCxg==}
     engines: {node: '>=6.0.0'}
-    dev: true
-
-  /@directus/format-title/9.15.0:
-    resolution: {integrity: sha512-2korjLjPrVA3kZlMiGWIJwWdiqwK5t9d84cMriUW4HIWDIvexjHRpOMX0Ju/89RqdXwIYbR19xqyTlK2GKQbIw==}
-    engines: {node: '>=6.0.0'}
-    dev: false
 
   /@directus/tsconfig/0.0.6:
     resolution: {integrity: sha512-fCkuc5xodi79T5UGV9JYfjuTjQT4QObbyeqtX8ZVCdyGtaHlJpvCYIM0B1GLc8co4l6RIOiyvAXiPFLIut+a1A==}
