@@ -4,9 +4,9 @@ import { createTracker, MockClient, Tracker } from 'knex-mock-client';
 import { EOL } from 'node:os';
 import { Readable } from 'stream';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, MockedFunction, vi } from 'vitest';
-import { ExportService, ImportService } from '.';
-import { ServiceUnavailableException } from '..';
-import emitter from '../emitter';
+import { ExportService, ImportService } from './import-export.js';
+import { ServiceUnavailableException } from '../exceptions/service-unavailable.js';
+import emitter from '../emitter.js';
 
 vi.mock('../../src/database/index', () => ({
 	default: vi.fn(),

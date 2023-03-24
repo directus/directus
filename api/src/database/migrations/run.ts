@@ -2,10 +2,10 @@ import fse from 'fs-extra';
 import type { Knex } from 'knex';
 import { orderBy } from 'lodash';
 import path from 'path';
-import env from '../../env';
-import logger from '../../logger';
-import type { Migration } from '../../types';
-import { dynamicImport } from '../../utils/dynamic-import';
+import env from '../../env.js';
+import logger from '../../logger.js';
+import type { Migration } from '../../types/index.js';
+import { dynamicImport } from '../../utils/dynamic-import.js';
 
 // @ts-ignore
 import formatTitle from '@directus/format-title';

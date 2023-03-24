@@ -1,7 +1,7 @@
 import { BaseException } from '@directus/shared/exceptions';
 import type { Accountability } from '@directus/shared/types';
 import type { GraphQLError, GraphQLFormattedError } from 'graphql';
-import logger from '../../../logger';
+import logger from '../../../logger.js';
 
 const processError = (accountability: Accountability | null, error: Readonly<GraphQLError>): GraphQLFormattedError => {
 	logger.error(error);

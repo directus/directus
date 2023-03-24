@@ -1,8 +1,9 @@
 import knex, { Knex } from 'knex';
 import { createTracker, MockClient, Tracker } from 'knex-mock-client';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, MockedFunction, SpyInstance, vi } from 'vitest';
-import { FilesService, ItemsService } from '.';
-import { InvalidPayloadException } from '../exceptions';
+import { InvalidPayloadException } from '../exceptions/index.js';
+import { FilesService } from './files.js';
+import { ItemsService } from './items.js';
 
 describe('Integration Tests', () => {
 	let db: MockedFunction<Knex>;

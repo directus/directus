@@ -6,8 +6,8 @@ import { REGEX_BETWEEN_PARENS } from '@directus/shared/constants';
 import type { Accountability, PermissionsAction, Query, SchemaOverview } from '@directus/shared/types';
 import type { Knex } from 'knex';
 import { cloneDeep, isEmpty, mapKeys, omitBy, uniq } from 'lodash';
-import type { AST, FieldNode, FunctionFieldNode, NestedCollectionNode } from '../types';
-import { getRelationType } from '../utils/get-relation-type';
+import type { AST, FieldNode, FunctionFieldNode, NestedCollectionNode } from '../types/index.js';
+import { getRelationType } from '../utils/get-relation-type.js';
 
 type GetASTOptions = {
 	accountability?: Accountability | null;

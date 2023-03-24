@@ -4,7 +4,7 @@ import yaml from 'js-yaml';
 import type { Knex } from 'knex';
 import { isObject } from 'lodash';
 import path from 'path';
-import { getHelpers } from '../helpers';
+import { getHelpers } from '../helpers/index.js';
 
 type TableSeed = {
 	table: string;

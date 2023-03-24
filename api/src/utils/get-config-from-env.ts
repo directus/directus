@@ -1,6 +1,6 @@
 import camelcase from 'camelcase';
 import { set } from 'lodash';
-import { getEnv } from '../env';
+import { getEnv } from '../env.js';
 
 export function getConfigFromEnv(
 	prefix: string,

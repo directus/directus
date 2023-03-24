@@ -1,5 +1,4 @@
 import { toArray } from '@directus/shared/utils';
-// @ts-expect-error https://github.com/microsoft/TypeScript/issues/49721
 import type { StorageManager } from '@directus/storage';
 import { randNumber, randWord } from '@ngneat/falso';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';

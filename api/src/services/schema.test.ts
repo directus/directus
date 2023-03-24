@@ -2,12 +2,12 @@ import type { Diff } from 'deep-diff';
 import knex, { Knex } from 'knex';
 import { createTracker, MockClient, Tracker } from 'knex-mock-client';
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
-import { SchemaService } from '.';
-import { ForbiddenException } from '..';
-import type { Collection } from '../types/collection';
-import type { Snapshot, SnapshotDiffWithHash } from '../types/snapshot';
-import { applyDiff } from '../utils/apply-diff';
-import { getSnapshot } from '../utils/get-snapshot';
+import { SchemaService } from './schema.js';
+import { ForbiddenException } from '../exceptions/forbidden.js';
+import type { Collection } from '../types/collection.js';
+import type { Snapshot, SnapshotDiffWithHash } from '../types/snapshot.js';
+import { applyDiff } from '../utils/apply-diff.js';
+import { getSnapshot } from '../utils/get-snapshot.js';
 
 vi.mock('../../package.json', () => ({ version: '0.0.0' }));
 

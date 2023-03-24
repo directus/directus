@@ -1,6 +1,6 @@
 import { defineOperationApi } from '@directus/shared/utils';
-import { MailService } from '../../services';
-import { md } from '../../utils/md';
+import { MailService } from '../../services/index.js';
+import { md } from '../../utils/md.js';
 
 type Options = {
 	body: string;

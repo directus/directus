@@ -1,6 +1,6 @@
 import { merge } from 'lodash';
-import type { CollectionMeta } from '../../../types';
-import { requireYAML } from '../../../utils/require-yaml';
+import type { CollectionMeta } from '../../../types/index.js';
+import { requireYAML } from '../../../utils/require-yaml.js';
 
 const systemData = requireYAML(require.resolve('./collections.yaml'));
 

@@ -1,9 +1,9 @@
 import { format } from 'date-fns';
 import { Router } from 'express';
-import { RouteNotFoundException } from '../exceptions';
-import { respond } from '../middleware/respond';
-import { ServerService, SpecificationService } from '../services';
-import asyncHandler from '../utils/async-handler';
+import { RouteNotFoundException } from '../exceptions/index.js';
+import { respond } from '../middleware/respond.js';
+import { ServerService, SpecificationService } from '../services/index.js';
+import asyncHandler from '../utils/async-handler.js';
 
 const router = Router();
 

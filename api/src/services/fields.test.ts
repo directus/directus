@@ -2,8 +2,8 @@ import type { Field } from '@directus/shared/types';
 import knex, { Knex } from 'knex';
 import { createTracker, MockClient, Tracker } from 'knex-mock-client';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, MockedFunction, SpyInstance, vi } from 'vitest';
-import { FieldsService } from '.';
-import { InvalidPayloadException } from '../exceptions';
+import { FieldsService } from './fields.js';
+import { InvalidPayloadException } from '../exceptions/index.js';
 
 vi.mock('../../src/database/index', () => ({
 	default: vi.fn(),

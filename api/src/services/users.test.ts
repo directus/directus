@@ -2,9 +2,9 @@ import type { SchemaOverview } from '@directus/shared/types';
 import knex, { Knex } from 'knex';
 import { createTracker, MockClient, Tracker } from 'knex-mock-client';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, MockedFunction, SpyInstance, vi } from 'vitest';
-import { ItemsService, UsersService } from '.';
-import { ForbiddenException, InvalidPayloadException } from '../exceptions';
-import { RecordNotUniqueException } from '../exceptions/database/record-not-unique';
+import { ItemsService, UsersService } from './index.js';
+import { ForbiddenException, InvalidPayloadException } from '../exceptions/index.js';
+import { RecordNotUniqueException } from '../exceptions/database/record-not-unique.js';
 
 vi.mock('../../src/database/index', () => ({
 	default: vi.fn(),

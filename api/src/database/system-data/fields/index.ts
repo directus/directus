@@ -2,10 +2,8 @@ import type { FieldMeta } from '@directus/shared/types';
 import fse from 'fs-extra';
 import { merge } from 'lodash';
 import path from 'path';
-import { getAuthProviders } from '../../../utils/get-auth-providers';
-import { requireYAML } from '../../../utils/require-yaml';
-
-// @ts-ignore
+import { getAuthProviders } from '../../../utils/get-auth-providers.js';
+import { requireYAML } from '../../../utils/require-yaml.js';
 import formatTitle from '@directus/format-title';
 
 const defaults = requireYAML(require.resolve('./_defaults.yaml'));

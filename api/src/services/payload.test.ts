@@ -1,7 +1,7 @@
 import knex, { Knex } from 'knex';
 import { MockClient, Tracker, createTracker } from 'knex-mock-client';
-import { PayloadService } from '../../src/services';
-import { getHelpers, Helpers } from '../../src/database/helpers';
+import { PayloadService } from '../../src/services/index.js';
+import { getHelpers, Helpers } from '../../src/database/helpers/index.js';
 import { describe, beforeAll, afterEach, it, expect, vi, beforeEach, MockedFunction } from 'vitest';
 
 vi.mock('../../src/database/index', () => ({
