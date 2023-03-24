@@ -24,16 +24,17 @@ WORKDIR /workspace
 ENV NODE_OPTIONS=--max-old-space-size=8192
 
 RUN pnpm --recursive run build \
-	&& pnpm --filter directus deploy --prod pruned
+	&& pnpm --filter directus deploy --prod pruned \
+	&& cd pruned \
+	&& pnpm pack \
+	&& tar -zxvf *.tgz package/package.json \
+	&& mv package/package.json package.json \
+	&& rm -r *.tgz package
 
 ####################################################################################################
 ## Create Production Image
 
 FROM node:18-alpine
-
-RUN mkdir /directus \
-	&& mkdir -p /directus/database /directus/extensions /directus/uploads \
-	&& chown node:node /directus/database /directus/extensions /directus/uploads;
 
 WORKDIR /directus
 
@@ -46,13 +47,19 @@ ENV STORAGE_LOCAL_ROOT="/directus/uploads"
 ENV NODE_ENV="production"
 ENV NPM_CONFIG_UPDATE_NOTIFIER="false"
 
-VOLUME /directus/database
-VOLUME /directus/extensions
-VOLUME /directus/uploads
-
+COPY --from=pruned /workspace/pruned/cli.js cli.js
 COPY --from=pruned /workspace/pruned/dist dist
 COPY --from=pruned /workspace/pruned/package.json package.json
 COPY --from=pruned /workspace/pruned/node_modules node_modules
+
+RUN mkdir /directus/database /directus/extensions /directus/uploads \
+	&& chown -R node:node /directus \
+	&& corepack enable \
+	&& corepack prepare pnpm@7.30.0 --activate
+
+VOLUME /directus/database
+VOLUME /directus/extensions
+VOLUME /directus/uploads
 
 USER node
 
