@@ -5,7 +5,7 @@ import type { Request, RequestHandler } from 'express';
 import pinoHTTP, { stdSerializers } from 'pino-http';
 import { URL } from 'url';
 import env from './env';
-import { getConfigFromEnv } from './utils/get-config-from-env';
+import { getConfigFromEnv } from './utils/get-config-from-env';const output = pino_http_1.stdSerializers.req(request, {clone: true});
 import { redactHeaderCookie } from './utils/redact-header-cookies';
 
 const pinoOptions: LoggerOptions = {
@@ -85,7 +85,7 @@ export const expressLogger = pinoHTTP({
 	...httpLoggerEnvConfig,
 	serializers: {
 		req(request: Request) {
-			const output = stdSerializers.req(request, {clone: true});
+			const output = JSON.parse(JSON.stringify(stdSerializers.req(request)));
 			output.url = redactQuery(output.url);
 			if (output.headers?.['cookie']) {
 				output.headers['cookie'] = redactHeaderCookie(output.headers['cookie'], [
