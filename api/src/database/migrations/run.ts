@@ -25,7 +25,7 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 	const migrations = [
 		...migrationFiles.map((path) => parseFilePath(path)),
 		...customMigrationFiles.map((path) => parseFilePath(path, true)),
-	].sort((a, b) => (a.version > b.version ? 1 : -1));
+	].sort((a, b) => (a.version! > b.version! ? 1 : -1));
 
 	const migrationKeys = new Set(migrations.map((m) => m.version));
 	if (migrations.length > migrationKeys.size) {
@@ -58,7 +58,7 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 			nextVersion = migrations[0];
 		} else {
 			nextVersion = migrations.find((migration) => {
-				return migration.version > currentVersion.version && migration.completed === false;
+				return migration.version! > currentVersion.version && migration.completed === false;
 			});
 		}
 

@@ -15,7 +15,7 @@ export function extractError(error: SQLiteError): SQLiteError | Error {
 
 	if (error.message.includes('SQLITE_CONSTRAINT: UNIQUE')) {
 		const errorParts = error.message.split(' ');
-		const [table, column] = errorParts[errorParts.length - 1].split('.');
+		const [table, column] = errorParts[errorParts.length - 1]!.split('.');
 
 		if (!table || !column) return error;
 
@@ -39,7 +39,7 @@ export function extractError(error: SQLiteError): SQLiteError | Error {
 
 function notNullConstraint(error: SQLiteError) {
 	const errorParts = error.message.split(' ');
-	const [table, column] = errorParts[errorParts.length - 1].split('.');
+	const [table, column] = errorParts[errorParts.length - 1]!.split('.');
 
 	if (table && column) {
 		// Now this gets a little finicky... SQLite doesn't have any native ALTER, so Knex implements
