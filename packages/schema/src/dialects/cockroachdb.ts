@@ -1,9 +1,9 @@
-import KnexCockroachDB, { parseDefaultValue } from 'knex-schema-inspector/dist/dialects/cockroachdb';
-import { Column } from 'knex-schema-inspector/dist/types/column';
-import { SchemaOverview } from '../types/overview';
-import { SchemaInspector } from '../types/schema';
+import KnexCockroachDB, { parseDefaultValue } from 'knex-schema-inspector/dist/dialects/cockroachdb.js';
+import type { Column } from 'knex-schema-inspector/dist/types/column.js';
+import type { SchemaOverview } from '../types/overview.js';
+import type { SchemaInspector } from '../types/schema.js';
 
-export default class CockroachDB extends KnexCockroachDB implements SchemaInspector {
+export default class CockroachDB extends KnexCockroachDB.default implements SchemaInspector {
 	async overview(): Promise<SchemaOverview> {
 		type RawColumn = {
 			table_name: string;
@@ -115,14 +115,14 @@ export default class CockroachDB extends KnexCockroachDB implements SchemaInspec
 			if (['point', 'polygon'].includes(column.data_type)) {
 				column.data_type = 'unknown';
 			}
-			overview[column.table_name].columns[column.column_name] = column;
+			overview[column.table_name]!.columns[column.column_name] = column;
 		}
 
 		for (const { table_name, column_name } of primaryKeys) {
-			overview[table_name].primary = column_name;
+			overview[table_name]!.primary = column_name;
 		}
 		for (const { table_name, column_name, data_type } of geometryColumns) {
-			overview[table_name].columns[column_name].data_type = data_type;
+			overview[table_name]!.columns[column_name]!.data_type = data_type;
 		}
 
 		return overview;
@@ -130,10 +130,10 @@ export default class CockroachDB extends KnexCockroachDB implements SchemaInspec
 
 	// This is required as PostGIS data types are not accessible from the
 	// information_schema. We have to fetch them from geography_columns
-	columnInfo(): Promise<Column[]>;
-	columnInfo(table: string): Promise<Column[]>;
-	columnInfo(table: string, column: string): Promise<Column>;
-	async columnInfo(table?: string, column?: string): Promise<Column | Column[]> {
+	override columnInfo(): Promise<Column[]>;
+	override columnInfo(table: string): Promise<Column[]>;
+	override columnInfo(table: string, column: string): Promise<Column>;
+	override async columnInfo(table?: string, column?: string): Promise<Column | Column[]> {
 		// Call the parent columnInfo()
 		// @ts-ignore
 		const columns = await super.columnInfo(table, column);

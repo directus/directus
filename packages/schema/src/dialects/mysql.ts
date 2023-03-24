@@ -1,8 +1,9 @@
-import KnexMySQL, { parseDefaultValue } from 'knex-schema-inspector/dist/dialects/mysql';
-import { SchemaOverview } from '../types/overview';
-import { SchemaInspector } from '../types/schema';
+import KnexMySQL, { parseDefaultValue } from 'knex-schema-inspector/dist/dialects/mysql.js';
+import type { SchemaOverview } from '../types/overview.js';
+import type { SchemaInspector } from '../types/schema.js';
 
-export default class MySQL extends KnexMySQL implements SchemaInspector {
+// @ts-ignore
+export default class MySQL extends KnexMySQL.default implements SchemaInspector {
 	async overview(): Promise<SchemaOverview> {
 		const columns = await this.knex.raw(
 			`
@@ -34,6 +35,7 @@ export default class MySQL extends KnexMySQL implements SchemaInspector {
 				const primaryKeys = columns[0].filter((nested: { column_key: string; table_name: string }) => {
 					return nested.table_name === column.table_name && nested.column_key === 'PRI';
 				});
+
 				overview[column.table_name] = {
 					primary: primaryKeys.length !== 1 ? undefined : primaryKeys[0].column_name,
 					columns: {},
@@ -45,7 +47,7 @@ export default class MySQL extends KnexMySQL implements SchemaInspector {
 				dataType = 'boolean';
 			}
 
-			overview[column.table_name].columns[column.column_name] = {
+			overview[column.table_name]!.columns[column.column_name] = {
 				...column,
 				default_value: column.extra === 'auto_increment' ? 'AUTO_INCREMENT' : parseDefaultValue(column.default_value),
 				is_nullable: column.is_nullable === 'YES',
