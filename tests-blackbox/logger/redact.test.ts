@@ -147,7 +147,7 @@ describe('Logger Redact Tests', () => {
 								data: {
 									[mutationKey]: {
 										access_token: expect.any(String),
-										expires: expect.any(Number),
+										expires: expect.any(String),
 										refresh_token: expect.any(String),
 									},
 								},
@@ -249,7 +249,7 @@ describe('Logger Redact Tests', () => {
 								data: {
 									[mutationKey]: {
 										access_token: expect.any(String),
-										expires: expect.any(Number),
+										expires: expect.any(String),
 										refresh_token: expect.any(String),
 									},
 								},
