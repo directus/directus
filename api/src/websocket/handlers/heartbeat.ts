@@ -6,7 +6,7 @@ import type { ActionHandler } from '@directus/shared/types';
 import { WebSocketMessage } from '../messages';
 import env from '../../env';
 
-const HEARTBEAT_FREQUENCY = Number(env.WEBSOCKETS_HEARTBEAT_FREQUENCY) * 1000;
+const HEARTBEAT_FREQUENCY = Number(env['WEBSOCKETS_HEARTBEAT_FREQUENCY']) * 1000;
 
 export class HeartbeatHandler {
 	private pulse: NodeJS.Timer | undefined;

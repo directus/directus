@@ -16,12 +16,12 @@ import { bindPubSub } from '../../services/graphql/subscription';
 export class GraphQLSubscriptionController extends SocketController {
 	gql: Server<GraphQLSocket>;
 	constructor(httpServer: httpServer) {
-		super(httpServer, 'WS GraphQL', String(env.WEBSOCKETS_GRAPHQL_PATH), {
-			mode: String(env.WEBSOCKETS_GRAPHQL_AUTH).toLowerCase() as AuthMode,
-			timeout: Number(env.WEBSOCKETS_GRAPHQL_AUTH_TIMEOUT) * 1000,
+		super(httpServer, 'WS GraphQL', String(env['WEBSOCKETS_GRAPHQL_PATH']), {
+			mode: String(env['WEBSOCKETS_GRAPHQL_AUTH']).toLowerCase() as AuthMode,
+			timeout: Number(env['WEBSOCKETS_GRAPHQL_AUTH_TIMEOUT']) * 1000,
 		});
 		if ('WEBSOCKETS_GRAPHQL_CONN_LIMIT' in env) {
-			this.maxConnections = Number(env.WEBSOCKETS_GRAPHQL_CONN_LIMIT);
+			this.maxConnections = Number(env['WEBSOCKETS_GRAPHQL_CONN_LIMIT']);
 		}
 		this.server.on('connection', (ws: WebSocket, auth: AuthenticationState) => {
 			this.bindEvents(this.createClient(ws, auth));
@@ -41,7 +41,7 @@ export class GraphQLSubscriptionController extends SocketController {
 			},
 		});
 		bindPubSub();
-		logger.info(`GraphQL Subscriptions started at ws://${env.HOST}:${env.PORT}${this.endpoint}`);
+		logger.info(`GraphQL Subscriptions started at ws://${env['HOST']}:${env['PORT']}${this.endpoint}`);
 	}
 	private bindEvents(client: WebSocketClient) {
 		const closedHandler = this.gql.opened(
@@ -56,7 +56,7 @@ export class GraphQLSubscriptionController extends SocketController {
 					client.on('parsed-message', async (message: WebSocketMessage) => {
 						try {
 							if (getMessageType(message) === 'connection_init') {
-								const params = ConnectionParams.parse(message.payload);
+								const params = ConnectionParams.parse(message['payload']);
 								if (typeof params.access_token === 'string') {
 									const { accountability, expires_at } = await authenticateConnection({
 										access_token: params.access_token,
@@ -87,7 +87,7 @@ export class GraphQLSubscriptionController extends SocketController {
 		// notify server that the socket closed
 		client.once('close', (code, reason) => closedHandler(code, reason.toString()));
 	}
-	setTokenExpireTimer(client: WebSocketClient) {
+	override setTokenExpireTimer(client: WebSocketClient) {
 		if (client.auth_timer !== null) {
 			clearTimeout(client.auth_timer);
 			client.auth_timer = null;

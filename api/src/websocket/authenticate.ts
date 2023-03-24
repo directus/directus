@@ -37,9 +37,9 @@ export async function authenticateConnection(
 		return { accountability, expires_at, refresh_token } as AuthenticationState;
 	} catch (error) {
 		if (error instanceof InvalidCredentialsException && error.message === 'Token expired.') {
-			throw new WebSocketException('auth', 'TOKEN_EXPIRED', 'Token expired.', message?.uid);
+			throw new WebSocketException('auth', 'TOKEN_EXPIRED', 'Token expired.', message['uid']);
 		}
-		throw new WebSocketException('auth', 'AUTH_FAILED', 'Authentication failed.', message?.uid);
+		throw new WebSocketException('auth', 'AUTH_FAILED', 'Authentication failed.', message['uid']);
 	}
 }
 
@@ -64,7 +64,7 @@ export function authenticationSuccess(uid?: string | number, refresh_token?: str
 		message.uid = uid;
 	}
 	if (refresh_token !== undefined) {
-		message.refresh_token = refresh_token;
+		message['refresh_token'] = refresh_token;
 	}
 	return JSON.stringify(message);
 }

@@ -95,26 +95,28 @@ export class ServerService {
 		}
 
 		if (this.accountability?.user) {
-			if (env.WEBSOCKETS_ENABLED) {
-				info.websocket = {};
+			if (env['WEBSOCKETS_ENABLED']) {
+				info['websocket'] = {};
 
-				info.websocket.rest = env.WEBSOCKETS_REST_ENABLED
+				info['websocket'].rest = env['WEBSOCKETS_REST_ENABLED']
 					? {
-							authentication: env.WEBSOCKETS_REST_AUTH,
-							path: env.WEBSOCKETS_REST_PATH,
+							authentication: env['WEBSOCKETS_REST_AUTH'],
+							path: env['WEBSOCKETS_REST_PATH'],
 					  }
 					: false;
 
-				info.websocket.graphql = env.WEBSOCKETS_GRAPHQL_ENABLED
+				info['websocket'].graphql = env['WEBSOCKETS_GRAPHQL_ENABLED']
 					? {
-							authentication: env.WEBSOCKETS_GRAPHQL_AUTH,
-							path: env.WEBSOCKETS_GRAPHQL_PATH,
+							authentication: env['WEBSOCKETS_GRAPHQL_AUTH'],
+							path: env['WEBSOCKETS_GRAPHQL_PATH'],
 					  }
 					: false;
 
-				info.websocket.heartbeat = env.WEBSOCKETS_HEARTBEAT_ENABLED ? env.WEBSOCKETS_HEARTBEAT_FREQUENCY : false;
+				info['websocket'].heartbeat = env['WEBSOCKETS_HEARTBEAT_ENABLED']
+					? env['WEBSOCKETS_HEARTBEAT_FREQUENCY']
+					: false;
 			} else {
-				info.websocket = false;
+				info['websocket'] = false;
 			}
 		}
 

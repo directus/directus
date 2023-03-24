@@ -107,7 +107,7 @@ export class SubscribeHandler {
 						? await this.getSinglePayload(subscription, client.accountability, schema, event)
 						: await this.getMultiPayload(subscription, client.accountability, schema, event);
 
-				if (Array.isArray(result?.payload) && result?.payload?.length === 0) return;
+				if (Array.isArray(result?.['payload']) && result?.['payload']?.length === 0) return;
 
 				client.send(fmtMessage('subscription', result, subscription.uid));
 			} catch (err) {
@@ -249,7 +249,7 @@ export class SubscribeHandler {
 		} else if (event.action === 'delete') {
 			return event.keys;
 		} else {
-			return await service.readOne(event.payload?.collection, event.payload?.field);
+			return await service.readOne(event.payload?.['collection'], event.payload?.['field']);
 		}
 	}
 	private async getItemsPayload(

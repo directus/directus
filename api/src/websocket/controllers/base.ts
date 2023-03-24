@@ -52,7 +52,7 @@ export default abstract class SocketController {
 		this.endpoint = endpoint;
 		this.authentication = authentication;
 		this.rateLimiter =
-			toBoolean(env.RATE_LIMITER_ENABLED) === true
+			toBoolean(env['RATE_LIMITER_ENABLED']) === true
 				? createRateLimiter('RATE_LIMITER', {
 						keyPrefix: 'websocket',
 				  })

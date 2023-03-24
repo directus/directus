@@ -12,17 +12,17 @@ import { parseJSON } from '@directus/shared/utils';
 
 export class WebsocketController extends SocketController {
 	constructor(httpServer: httpServer) {
-		super(httpServer, 'WS REST', String(env.WEBSOCKETS_REST_PATH), {
-			mode: String(env.WEBSOCKETS_REST_AUTH).toLowerCase() as AuthMode,
-			timeout: Number(env.WEBSOCKETS_REST_AUTH_TIMEOUT) * 1000,
+		super(httpServer, 'WS REST', String(env['WEBSOCKETS_REST_PATH']), {
+			mode: String(env['WEBSOCKETS_REST_AUTH']).toLowerCase() as AuthMode,
+			timeout: Number(env['WEBSOCKETS_REST_AUTH_TIMEOUT']) * 1000,
 		});
 		if ('WEBSOCKETS_REST_CONN_LIMIT' in env) {
-			this.maxConnections = Number(env.WEBSOCKETS_REST_CONN_LIMIT);
+			this.maxConnections = Number(env['WEBSOCKETS_REST_CONN_LIMIT']);
 		}
 		this.server.on('connection', (ws: WebSocket, auth: AuthenticationState) => {
 			this.bindEvents(this.createClient(ws, auth));
 		});
-		logger.info(`Websocket Server started at ws://${env.HOST}:${env.PORT}${this.endpoint}`);
+		logger.info(`Websocket Server started at ws://${env['HOST']}:${env['PORT']}${this.endpoint}`);
 	}
 	private bindEvents(client: WebSocketClient) {
 		client.on('parsed-message', async (message: WebSocketMessage) => {
