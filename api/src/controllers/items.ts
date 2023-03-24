@@ -198,7 +198,7 @@ router.delete(
 	'/:collection',
 	collectionExists,
 	validateBatch('delete'),
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req, _res, next) => {
 		if (req.params['collection']!.startsWith('directus_')) throw new ForbiddenException();
 
 		const service = new ItemsService(req.collection, {
@@ -223,7 +223,7 @@ router.delete(
 router.delete(
 	'/:collection/:pk',
 	collectionExists,
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req, _res, next) => {
 		if (req.params['collection']!.startsWith('directus_')) throw new ForbiddenException();
 
 		const service = new ItemsService(req.collection, {

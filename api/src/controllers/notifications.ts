@@ -161,7 +161,7 @@ router.patch(
 router.delete(
 	'/',
 	validateBatch('delete'),
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req, _res, next) => {
 		const service = new NotificationsService({
 			accountability: req.accountability,
 			schema: req.schema,
@@ -183,7 +183,7 @@ router.delete(
 
 router.delete(
 	'/:pk',
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req, _res, next) => {
 		const service = new NotificationsService({
 			accountability: req.accountability,
 			schema: req.schema,

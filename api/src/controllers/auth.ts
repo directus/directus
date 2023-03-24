@@ -148,7 +148,7 @@ router.post(
 
 router.post(
 	'/password/request',
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req, _res, next) => {
 		if (typeof req.body.email !== 'string') {
 			throw new InvalidPayloadException(`"email" field is required.`);
 		}
@@ -183,7 +183,7 @@ router.post(
 
 router.post(
 	'/password/reset',
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req, _res, next) => {
 		if (typeof req.body.token !== 'string') {
 			throw new InvalidPayloadException(`"token" field is required.`);
 		}
@@ -212,7 +212,7 @@ router.post(
 
 router.get(
 	'/',
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (_req, res, next) => {
 		res.locals['payload'] = {
 			data: getAuthProviders(),
 			disableDefault: env['AUTH_DISABLE_DEFAULT'],

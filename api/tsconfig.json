@@ -18,6 +18,7 @@
 		"noPropertyAccessFromIndexSignature": true,
 		"noUncheckedIndexedAccess": true,
 		"noUnusedLocals": true,
+		"noUnusedParameters": true,
 		"outDir": "dist",
 		"resolveJsonModule": true,
 		"rootDir": "src",

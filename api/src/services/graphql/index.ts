@@ -511,7 +511,7 @@ export class GraphQLService {
 								types: relation.meta.one_allowed_collections.map((collection) =>
 									CollectionTypes[collection]!.getType()
 								),
-								resolveType(value, context, info) {
+								resolveType(_value, context, info) {
 									let path: (string | number)[] = [];
 									let currentPath = info.path;
 
@@ -1634,7 +1634,7 @@ export class GraphQLService {
 							merge(
 								{},
 								get(query.deep, currentAlias ?? current),
-								mapKeys(sanitizeQuery(args, this.accountability), (value, key) => `_${key}`)
+								mapKeys(sanitizeQuery(args, this.accountability), (_value, key) => `_${key}`)
 							)
 						);
 					}
