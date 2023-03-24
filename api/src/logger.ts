@@ -1,4 +1,4 @@
-import { toArray } from '@directus/shared/utils';
+import { parseJSON, toArray } from '@directus/shared/utils';
 import { merge } from 'lodash';
 import pino, { LoggerOptions, SerializedResponse } from 'pino';
 import type { Request, RequestHandler } from 'express';
@@ -85,7 +85,7 @@ export const expressLogger = pinoHTTP({
 	...httpLoggerEnvConfig,
 	serializers: {
 		req(request: Request) {
-			const output = JSON.parse(JSON.stringify(stdSerializers.req(request)));
+			const output = parseJSON(JSON.stringify(stdSerializers.req(request)));
 			output.url = redactQuery(output.url);
 			if (output.headers?.['cookie']) {
 				output.headers['cookie'] = redactHeaderCookie(output.headers['cookie'], [
