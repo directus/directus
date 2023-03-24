@@ -102,14 +102,13 @@ describe('res.headers', () => {
 		instance.info({
 			res: {
 				headers: {
-					'set-cookie': `${REFRESH_TOKEN_COOKIE_NAME}=test-refresh-token-value; Max-Age=604800; Path=/; HttpOnly; SameSite=Lax`,
+					'set-cookie': `${REFRESH_TOKEN_COOKIE_NAME}=test-refresh-token-value; Max-Age=604800; Path=/; Expires=Tue, 14 Feb 2023 12:00:00 GMT; HttpOnly; SameSite=Lax`,
 				},
 			},
 		});
 		expect(logOutput.mock.calls[0][0]).toMatchObject({
 			res: {
 				headers: {
-					// it is turned into an array because of `toArray` usage for set-cookie
 					'set-cookie': REDACT_TEXT,
 				},
 			},
