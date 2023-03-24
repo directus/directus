@@ -28,9 +28,8 @@ RUN pnpm --recursive run build \
 	&& cd pruned \
 	&& pnpm pack \
 	&& tar -zxvf *.tgz package/package.json \
-	&& rm package.json \
 	&& mv package/package.json package.json \
-	&& rm *.tgz
+	&& rm -r *.tgz package
 
 ####################################################################################################
 ## Create Production Image
