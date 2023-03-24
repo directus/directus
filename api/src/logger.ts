@@ -85,7 +85,7 @@ export const expressLogger = pinoHTTP({
 	...httpLoggerEnvConfig,
 	serializers: {
 		req(request: Request) {
-			const output = JSON.parse(JSON.stringify(stdSerializers.req(request));
+			const output = stdSerializers.req(request, {clone: true});
 			output.url = redactQuery(output.url);
 			if (output.headers?.['cookie']) {
 				output.headers['cookie'] = redactHeaderCookie(output.headers['cookie'], [
