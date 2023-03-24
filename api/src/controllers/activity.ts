@@ -155,7 +155,7 @@ router.patch(
 
 router.delete(
 	'/comment/:pk',
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req, _res, next) => {
 		const service = new ActivityService({
 			accountability: req.accountability,
 			schema: req.schema,

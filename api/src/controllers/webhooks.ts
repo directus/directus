@@ -149,7 +149,7 @@ router.patch(
 
 router.delete(
 	'/',
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req, _res, next) => {
 		const service = new WebhooksService({
 			accountability: req.accountability,
 			schema: req.schema,
@@ -171,7 +171,7 @@ router.delete(
 
 router.delete(
 	'/:pk',
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req, _res, next) => {
 		const service = new WebhooksService({
 			accountability: req.accountability,
 			schema: req.schema,

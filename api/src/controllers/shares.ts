@@ -52,7 +52,7 @@ const sharedInviteSchema = Joi.object({
 
 router.post(
 	'/invite',
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req, _res, next) => {
 		const service = new SharesService({
 			schema: req.schema,
 			accountability: req.accountability,

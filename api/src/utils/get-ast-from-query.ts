@@ -399,7 +399,7 @@ export default async function getASTFromQuery(
 
 function getDeepQuery(query: Record<string, any>) {
 	return mapKeys(
-		omitBy(query, (value, key) => key.startsWith('_') === false),
-		(value, key) => key.substring(1)
+		omitBy(query, (_value, key) => key.startsWith('_') === false),
+		(_value, key) => key.substring(1)
 	);
 }

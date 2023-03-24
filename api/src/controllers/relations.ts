@@ -151,7 +151,7 @@ router.patch(
 router.delete(
 	'/:collection/:field',
 	validateCollection,
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req, _res, next) => {
 		const service = new RelationsService({
 			accountability: req.accountability,
 			schema: req.schema,

@@ -129,7 +129,7 @@ router.patch(
 
 router.delete(
 	'/:collection',
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req, _res, next) => {
 		const collectionsService = new CollectionsService({
 			accountability: req.accountability,
 			schema: req.schema,
