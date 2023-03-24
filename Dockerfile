@@ -36,10 +36,6 @@ RUN pnpm --recursive run build \
 
 FROM node:18-alpine
 
-RUN mkdir /directus \
-	&& mkdir -p /directus/database /directus/extensions /directus/uploads \
-	&& chown -R node:node /directus
-
 WORKDIR /directus
 
 EXPOSE 8055
@@ -51,14 +47,17 @@ ENV STORAGE_LOCAL_ROOT="/directus/uploads"
 ENV NODE_ENV="production"
 ENV NPM_CONFIG_UPDATE_NOTIFIER="false"
 
+COPY --from=pruned /workspace/pruned/cli.js cli.js
+COPY --from=pruned /workspace/pruned/dist dist
+COPY --from=pruned /workspace/pruned/package.json package.json
+COPY --from=pruned /workspace/pruned/node_modules node_modules
+
+RUN mkdir /directus/database /directus/extensions /directus/uploads \
+	&& chown -R node:node /directus
+
 VOLUME /directus/database
 VOLUME /directus/extensions
 VOLUME /directus/uploads
-
-COPY --from=pruned --chown=node:node /workspace/pruned/cli.js cli.js
-COPY --from=pruned --chown=node:node /workspace/pruned/dist dist
-COPY --from=pruned --chown=node:node /workspace/pruned/package.json package.json
-COPY --from=pruned --chown=node:node /workspace/pruned/node_modules node_modules
 
 USER node
 
