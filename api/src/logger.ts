@@ -5,7 +5,7 @@ import type { Request, RequestHandler } from 'express';
 import pinoHTTP, { stdSerializers } from 'pino-http';
 import { URL } from 'url';
 import env from './env';
-import { getConfigFromEnv } from './utils/get-config-from-env';const output = pino_http_1.stdSerializers.req(request, {clone: true});
+import { getConfigFromEnv } from './utils/get-config-from-env';
 import { redactHeaderCookie } from './utils/redact-header-cookies';
 
 const pinoOptions: LoggerOptions = {
