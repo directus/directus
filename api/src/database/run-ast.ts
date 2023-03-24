@@ -1,17 +1,17 @@
-import { Item, Query, SchemaOverview } from '@directus/shared/types';
+import type { Item, Query, SchemaOverview } from '@directus/shared/types';
 import { toArray } from '@directus/shared/utils';
-import { Knex } from 'knex';
+import type { Knex } from 'knex';
 import { clone, cloneDeep, merge, pick, uniq } from 'lodash';
 import getDatabase from '.';
 import { getHelpers } from '../database/helpers';
 import env from '../env';
 import { PayloadService } from '../services/payload';
-import { AST, FieldNode, FunctionFieldNode, M2ONode, NestedCollectionNode } from '../types/ast';
+import type { AST, FieldNode, FunctionFieldNode, M2ONode, NestedCollectionNode } from '../types/ast';
 import { applyFunctionToColumnName } from '../utils/apply-function-to-column-name';
 import applyQuery, { applyLimit, applySort, ColumnSortRecord, generateAlias } from '../utils/apply-query';
 import { getCollectionFromAlias } from '../utils/get-collection-from-alias';
 import { getColumn } from '../utils/get-column';
-import { AliasMap } from '../utils/get-column-path';
+import type { AliasMap } from '../utils/get-column-path';
 import { stripFunction } from '../utils/strip-function';
 
 type RunASTOptions = {
@@ -84,7 +84,7 @@ export default async function runAST(
 		const payloadService = new PayloadService(collection, { knex, schema });
 		let items: null | Item | Item[] = await payloadService.processValues('read', rawItems);
 
-		if (!items || items.length === 0) return items;
+		if (!items || (Array.isArray(items) && items.length === 0)) return items;
 
 		// Apply the `_in` filters to the nested collection batches
 		const nestedNodes = applyParentFilters(schema, nestedCollectionNodes, items);
@@ -100,8 +100,8 @@ export default async function runAST(
 				while (hasMore) {
 					const node = merge({}, nestedNode, {
 						query: {
-							limit: env.RELATIONAL_BATCH_SIZE,
-							offset: batchCount * env.RELATIONAL_BATCH_SIZE,
+							limit: env['RELATIONAL_BATCH_SIZE'],
+							offset: batchCount * env['RELATIONAL_BATCH_SIZE'],
 							page: null,
 						},
 					});
@@ -112,7 +112,7 @@ export default async function runAST(
 						items = mergeWithParentItems(schema, nestedItems, items, nestedNode);
 					}
 
-					if (!nestedItems || nestedItems.length < env.RELATIONAL_BATCH_SIZE) {
+					if (!nestedItems || nestedItems.length < env['RELATIONAL_BATCH_SIZE']) {
 						hasMore = false;
 					}
 
@@ -272,7 +272,7 @@ async function getDBQuery(
 		}
 	}
 
-	const { hasMultiRelationalFilter } = await applyQuery(knex, table, dbQuery, queryCopy, schema, {
+	const { hasMultiRelationalFilter } = applyQuery(knex, table, dbQuery, queryCopy, schema, {
 		aliasMap,
 		isInnerQuery: true,
 		hasMultiRelationalSort,

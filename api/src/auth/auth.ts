@@ -1,6 +1,6 @@
-import { SchemaOverview } from '@directus/shared/types';
-import { Knex } from 'knex';
-import { AuthDriverOptions, User } from '../types';
+import type { SchemaOverview } from '@directus/shared/types';
+import type { Knex } from 'knex';
+import type { AuthDriverOptions, User } from '../types';
 
 export abstract class AuthDriver {
 	knex: Knex;

@@ -8,9 +8,6 @@ import PQueue, { Options, DefaultAddOptions } from 'p-queue';
 const api = axios.create({
 	baseURL: getRootPath(),
 	withCredentials: true,
-	headers: {
-		'Cache-Control': 'no-store',
-	},
 });
 
 let queue = new PQueue({ concurrency: 5, intervalCap: 5, interval: 500, carryoverConcurrencyCount: true });

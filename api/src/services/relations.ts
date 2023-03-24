@@ -1,20 +1,20 @@
-import { Knex } from 'knex';
-import { systemRelationRows } from '../database/system-data/relations';
-import { ForbiddenException, InvalidPayloadException } from '../exceptions';
-import { SchemaOverview, Relation, RelationMeta, Accountability, Query } from '@directus/shared/types';
+import SchemaInspector from '@directus/schema';
+import type { Accountability, Query, Relation, RelationMeta, SchemaOverview } from '@directus/shared/types';
 import { toArray } from '@directus/shared/utils';
+import type Keyv from 'keyv';
+import type { Knex } from 'knex';
+import type { ForeignKey } from 'knex-schema-inspector/dist/types/foreign-key';
+import { clearSystemCache, getCache } from '../cache';
+import getDatabase, { getSchemaInspector } from '../database';
+import { getHelpers, Helpers } from '../database/helpers';
+import { systemRelationRows } from '../database/system-data/relations';
+import emitter from '../emitter';
+import { ForbiddenException, InvalidPayloadException } from '../exceptions';
+import type { AbstractServiceOptions, ActionEventParams, MutationOptions } from '../types';
+import { getDefaultIndexName } from '../utils/get-default-index-name';
+import { getSchema } from '../utils/get-schema';
 import { ItemsService, QueryOptions } from './items';
 import { PermissionsService } from './permissions';
-import SchemaInspector from '@directus/schema';
-import { ForeignKey } from 'knex-schema-inspector/dist/types/foreign-key';
-import getDatabase, { getSchemaInspector } from '../database';
-import { getDefaultIndexName } from '../utils/get-default-index-name';
-import { getCache, clearSystemCache } from '../cache';
-import Keyv from 'keyv';
-import { AbstractServiceOptions, ActionEventParams, MutationOptions } from '../types';
-import { getHelpers, Helpers } from '../database/helpers';
-import emitter from '../emitter';
-import { getSchema } from '../utils/get-schema';
 
 export class RelationsService {
 	knex: Knex;
@@ -220,7 +220,7 @@ export class RelationsService {
 			}
 
 			if (opts?.autoPurgeSystemCache !== false) {
-				await clearSystemCache();
+				await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
 			}
 
 			if (opts?.emitEvents !== false && nestedActionEvents.length > 0) {
@@ -337,7 +337,7 @@ export class RelationsService {
 			}
 
 			if (opts?.autoPurgeSystemCache !== false) {
-				await clearSystemCache();
+				await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
 			}
 
 			if (opts?.emitEvents !== false && nestedActionEvents.length > 0) {
@@ -421,7 +421,7 @@ export class RelationsService {
 			}
 
 			if (opts?.autoPurgeSystemCache !== false) {
-				await clearSystemCache();
+				await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
 			}
 
 			if (opts?.emitEvents !== false && nestedActionEvents.length > 0) {

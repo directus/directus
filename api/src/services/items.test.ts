@@ -1,13 +1,13 @@
-import { NestedDeepQuery } from '@directus/shared/types';
+import type { NestedDeepQuery } from '@directus/shared/types';
 import knex, { Knex } from 'knex';
-import { getTracker, MockClient, Tracker } from 'knex-mock-client';
+import { createTracker, MockClient, Tracker } from 'knex-mock-client';
 import { cloneDeep } from 'lodash';
-import { afterEach, beforeAll, beforeEach, describe, expect, it, vi, MockedFunction } from 'vitest';
+import { afterEach, beforeAll, beforeEach, describe, expect, it, MockedFunction, vi } from 'vitest';
+import { getDatabaseClient } from '../../src/database/index';
 import { ItemsService } from '../../src/services';
 import { InvalidPayloadException } from '../exceptions';
 import { sqlFieldFormatter, sqlFieldList } from '../__utils__/items-utils';
 import { systemSchema, userSchema } from '../__utils__/schemas';
-import { getDatabaseClient } from '../../src/database/index';
 
 vi.mock('../env', async () => {
 	const actual = (await vi.importActual('../env')) as { default: Record<string, any> };
@@ -48,7 +48,7 @@ describe('Integration Tests', () => {
 
 	beforeAll(() => {
 		db = vi.mocked(knex({ client: MockClient }));
-		tracker = getTracker();
+		tracker = createTracker(db);
 	});
 
 	beforeEach(() => {
@@ -90,12 +90,12 @@ describe('Integration Tests', () => {
 		it(`the returned UUID primary key for MS SQL should be uppercase`, async () => {
 			vi.mocked(getDatabaseClient).mockReturnValue('mssql');
 
-			const table = schemas.system.tables[0];
+			const table = schemas['system'].tables[0];
 
 			const itemsService = new ItemsService(table, {
 				knex: db,
 				accountability: { role: 'admin', admin: true },
-				schema: schemas.system.schema,
+				schema: schemas['system'].schema,
 			});
 
 			tracker.on.insert(table).responseOnce(item);

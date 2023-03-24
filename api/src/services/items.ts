@@ -1,6 +1,6 @@
 import { Accountability, Action, PermissionsAction, Query, SchemaOverview } from '@directus/shared/types';
-import Keyv from 'keyv';
-import { Knex } from 'knex';
+import type Keyv from 'keyv';
+import type { Knex } from 'knex';
 import { assign, clone, cloneDeep, omit, pick, without } from 'lodash';
 import { getCache } from '../cache';
 import getDatabase from '../database';
@@ -10,7 +10,7 @@ import emitter from '../emitter';
 import env from '../env';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { translateDatabaseError } from '../exceptions/database/translate';
-import {
+import type {
 	AbstractService,
 	AbstractServiceOptions,
 	ActionEventParams,
@@ -206,12 +206,14 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 						schema: this.schema,
 					});
 
+					const revisionDelta = await payloadService.prepareDelta(payloadAfterHooks);
+
 					const revision = await revisionsService.createOne({
 						activity: activity,
 						collection: this.collection,
 						item: primaryKey,
-						data: await payloadService.prepareDelta(payload),
-						delta: await payloadService.prepareDelta(payload),
+						data: revisionDelta,
+						delta: revisionDelta,
 					});
 
 					// Make sure to set the parent field of the child-revision rows
@@ -263,7 +265,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			}
 		}
 
-		if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
+		if (this.cache && env['CACHE_AUTO_PURGE'] && opts?.autoPurgeCache !== false) {
 			await this.cache.clear();
 		}
 
@@ -306,7 +308,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			}
 		}
 
-		if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
+		if (this.cache && env['CACHE_AUTO_PURGE'] && opts?.autoPurgeCache !== false) {
 			await this.cache.clear();
 		}
 
@@ -489,7 +491,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				}
 			});
 		} finally {
-			if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
+			if (this.cache && env['CACHE_AUTO_PURGE'] && opts?.autoPurgeCache !== false) {
 				await this.cache.clear();
 			}
 		}
@@ -666,7 +668,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			}
 		});
 
-		if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
+		if (this.cache && env['CACHE_AUTO_PURGE'] && opts?.autoPurgeCache !== false) {
 			await this.cache.clear();
 		}
 
@@ -753,7 +755,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			return primaryKeys;
 		});
 
-		if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
+		if (this.cache && env['CACHE_AUTO_PURGE'] && opts?.autoPurgeCache !== false) {
 			await this.cache.clear();
 		}
 
@@ -842,7 +844,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			}
 		});
 
-		if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
+		if (this.cache && env['CACHE_AUTO_PURGE'] && opts?.autoPurgeCache !== false) {
 			await this.cache.clear();
 		}
 

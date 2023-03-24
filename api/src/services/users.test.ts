@@ -1,6 +1,6 @@
-import { SchemaOverview } from '@directus/shared/types';
+import type { SchemaOverview } from '@directus/shared/types';
 import knex, { Knex } from 'knex';
-import { getTracker, MockClient, Tracker } from 'knex-mock-client';
+import { createTracker, MockClient, Tracker } from 'knex-mock-client';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, MockedFunction, SpyInstance, vi } from 'vitest';
 import { ItemsService, UsersService } from '.';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
@@ -49,7 +49,7 @@ describe('Integration Tests', () => {
 
 	beforeAll(async () => {
 		db = vi.mocked(knex({ client: MockClient }));
-		tracker = getTracker();
+		tracker = createTracker(db);
 	});
 
 	beforeEach(() => {

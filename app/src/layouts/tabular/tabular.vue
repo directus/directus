@@ -274,8 +274,7 @@ const showManualSort = computed(() => {
 	if (!permission) return false;
 
 	if (Array.isArray(permission.fields) && permission.fields.length > 0)
-		return permission.fields.includes(props.sortField);
-
+		return permission.fields.includes(props.sortField) || permission.fields.includes('*');
 	return true;
 });
 

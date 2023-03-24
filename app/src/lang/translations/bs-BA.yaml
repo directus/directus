@@ -1552,7 +1552,6 @@ interfaces:
     no_collection: Kolekcija nije pronađena
   system-folder:
     description: Odaberite mapu
-    field_hint: Folder za učitane fajlove. Ne utječe na postojeće fajlove.
     root_name: Korijen biblioteke fajlova
     system_default: Sistemski zadano
   select-radio:
@@ -1951,7 +1950,6 @@ operations:
     name: Pošalji obavijest
     description: Pošaljite obavijest unutar aplikacije jednom ili više korisnika
     recipient: Korisnik
-    recipient_placeholder: Dodajte korisnički UUID i pritisnite enter...
     message: Poruka
   request:
     name: Web dojavnik / URL zahtjeva

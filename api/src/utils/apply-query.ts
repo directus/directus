@@ -1,4 +1,4 @@
-import {
+import type {
 	Aggregate,
 	ClientFilterOperator,
 	FieldFunction,
@@ -9,7 +9,8 @@ import {
 	SchemaOverview,
 	Type,
 } from '@directus/shared/types';
-import { Knex } from 'knex';
+import { getFilterOperatorsForType, getOutputTypeForFunction } from '@directus/shared/utils';
+import type { Knex } from 'knex';
 import { clone, isPlainObject } from 'lodash';
 import validate from 'uuid-validate';
 import { getHelpers } from '../database/helpers';
@@ -17,7 +18,6 @@ import { InvalidQueryException } from '../exceptions/invalid-query';
 import { getColumn } from './get-column';
 import { AliasMap, getColumnPath } from './get-column-path';
 import { getRelationInfo } from './get-relation-info';
-import { getFilterOperatorsForType, getOutputTypeForFunction } from '@directus/shared/utils';
 import { stripFunction } from './strip-function';
 
 // @ts-ignore
@@ -34,7 +34,7 @@ export default function applyQuery(
 	dbQuery: Knex.QueryBuilder,
 	query: Query,
 	schema: SchemaOverview,
-	options?: { aliasMap?: AliasMap; isInnerQuery?: boolean; hasMultiRelationalSort?: boolean }
+	options?: { aliasMap?: AliasMap; isInnerQuery?: boolean; hasMultiRelationalSort?: boolean | undefined }
 ) {
 	const aliasMap: AliasMap = options?.aliasMap ?? Object.create(null);
 	let hasMultiRelationalFilter = false;
@@ -310,6 +310,8 @@ export function applySort(
 	rootQuery.clear('order');
 
 	rootQuery.orderBy(sortRecords);
+
+	return undefined;
 }
 
 export function applyLimit(knex: Knex, rootQuery: Knex.QueryBuilder, limit: any) {
@@ -559,7 +561,7 @@ export function applyFilter(
 
 			if (operator === '_nempty' || (operator === '_empty' && compareValue === false)) {
 				dbQuery[logical].andWhere((query) => {
-					query.whereNotNull(key).orWhere(key, '!=', '');
+					query.whereNotNull(key).andWhere(key, '!=', '');
 				});
 			}
 

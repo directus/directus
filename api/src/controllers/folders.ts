@@ -4,8 +4,9 @@ import { respond } from '../middleware/respond';
 import useCollection from '../middleware/use-collection';
 import { validateBatch } from '../middleware/validate-batch';
 import { FoldersService, MetaService } from '../services';
-import { PrimaryKey } from '../types';
+import type { PrimaryKey } from '../types';
 import asyncHandler from '../utils/async-handler';
+import { sanitizeQuery } from '../utils/sanitize-query';
 
 const router = express.Router();
 
@@ -32,10 +33,10 @@ router.post(
 		try {
 			if (Array.isArray(req.body)) {
 				const records = await service.readMany(savedKeys, req.sanitizedQuery);
-				res.locals.payload = { data: records };
+				res.locals['payload'] = { data: records };
 			} else {
 				const record = await service.readOne(savedKeys[0], req.sanitizedQuery);
-				res.locals.payload = { data: record };
+				res.locals['payload'] = { data: record };
 			}
 		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
@@ -72,7 +73,7 @@ const readHandler = asyncHandler(async (req, res, next) => {
 
 	const meta = await metaService.getMetaForQuery('directus_folders', req.sanitizedQuery);
 
-	res.locals.payload = { data: result, meta };
+	res.locals['payload'] = { data: result, meta };
 	return next();
 });
 
@@ -86,9 +87,9 @@ router.get(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
-		const record = await service.readOne(req.params.pk, req.sanitizedQuery);
+		const record = await service.readOne(req.params['pk'], req.sanitizedQuery);
 
-		res.locals.payload = { data: record || null };
+		res.locals['payload'] = { data: record || null };
 		return next();
 	}),
 	respond
@@ -110,12 +111,13 @@ router.patch(
 		} else if (req.body.keys) {
 			keys = await service.updateMany(req.body.keys, req.body.data);
 		} else {
-			keys = await service.updateByQuery(req.body.query, req.body.data);
+			const sanitizedQuery = sanitizeQuery(req.body.query, req.accountability);
+			keys = await service.updateByQuery(sanitizedQuery, req.body.data);
 		}
 
 		try {
 			const result = await service.readMany(keys, req.sanitizedQuery);
-			res.locals.payload = { data: result || null };
+			res.locals['payload'] = { data: result || null };
 		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
 				return next();
@@ -137,11 +139,11 @@ router.patch(
 			schema: req.schema,
 		});
 
-		const primaryKey = await service.updateOne(req.params.pk, req.body);
+		const primaryKey = await service.updateOne(req.params['pk'], req.body);
 
 		try {
 			const record = await service.readOne(primaryKey, req.sanitizedQuery);
-			res.locals.payload = { data: record || null };
+			res.locals['payload'] = { data: record || null };
 		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
 				return next();
@@ -169,7 +171,8 @@ router.delete(
 		} else if (req.body.keys) {
 			await service.deleteMany(req.body.keys);
 		} else {
-			await service.deleteByQuery(req.body.query);
+			const sanitizedQuery = sanitizeQuery(req.body.query, req.accountability);
+			await service.deleteByQuery(sanitizedQuery);
 		}
 
 		return next();
@@ -185,7 +188,7 @@ router.delete(
 			schema: req.schema,
 		});
 
-		await service.deleteOne(req.params.pk);
+		await service.deleteOne(req.params['pk']);
 
 		return next();
 	}),

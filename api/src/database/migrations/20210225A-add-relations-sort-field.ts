@@ -1,5 +1,5 @@
 import { parseJSON } from '@directus/shared/utils';
-import { Knex } from 'knex';
+import type { Knex } from 'knex';
 
 export async function up(knex: Knex): Promise<void> {
 	await knex.schema.alterTable('directus_relations', (table) => {

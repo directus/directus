@@ -1,7 +1,7 @@
-import { validateKeys } from '../../src/utils/validate-keys';
-import { SchemaOverview } from '@directus/shared/types';
+import type { SchemaOverview } from '@directus/shared/types';
 import { v4 as uuid } from 'uuid';
 import { describe, expect, it } from 'vitest';
+import { validateKeys } from '../../src/utils/validate-keys';
 
 const schema: SchemaOverview = {
 	collections: {

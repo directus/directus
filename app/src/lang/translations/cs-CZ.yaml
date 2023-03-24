@@ -1585,7 +1585,6 @@ interfaces:
   system-folder:
     folder: Složka
     description: Vyberte složku
-    field_hint: Složka pro nahrané soubory. Nemá vliv na existující soubory.
     root_name: Kořenový adresář knihovny souborů
     system_default: Výchozí nastavení systému
   select-radio:

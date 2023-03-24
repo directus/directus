@@ -37,7 +37,7 @@
 					v-if="junctionField"
 					:disabled="disabled"
 					:loading="loading"
-					:nested="true"
+					:show-no-visible-fields="false"
 					:initial-values="initialValues?.[junctionField]"
 					:primary-key="relatedPrimaryKey"
 					:model-value="internalEdits?.[junctionField]"
@@ -52,7 +52,7 @@
 					v-model="internalEdits"
 					:disabled="disabled"
 					:loading="loading"
-					:nested="true"
+					:show-no-visible-fields="false"
 					:initial-values="initialValues"
 					:autofocus="swapFormOrder"
 					:show-divider="swapFormOrder"
@@ -433,6 +433,10 @@ function useActions() {
 .drawer-item-content {
 	padding: var(--content-padding);
 	padding-bottom: var(--content-padding-bottom);
+
+	.file-preview {
+		margin-bottom: var(--form-vertical-gap);
+	}
 	.drawer-item-order {
 		&.swap {
 			display: flex;
