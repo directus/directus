@@ -6,7 +6,7 @@ import pinoHTTP, { stdSerializers } from 'pino-http';
 import { URL } from 'url';
 import env from './env';
 import { getConfigFromEnv } from './utils/get-config-from-env';
-// import { redactHeaderCookie } from './utils/redact-header-cookies';
+import { redactHeaderCookie } from './utils/redact-header-cookies';
 
 const pinoOptions: LoggerOptions = {
 	level: env['LOG_LEVEL'] || 'info',
@@ -41,6 +41,30 @@ if (env['LOG_STYLE'] !== 'raw') {
 				ignore: 'hostname,pid',
 				sync: true,
 			},
+		},
+	};
+}
+if (env['LOG_STYLE'] === 'raw') {
+	const ssoCookies = toArray(env['AUTH_PROVIDERS'] ?? '').flatMap((provider: string) => {
+		if (provider.length === 0) return [];
+		return [`oauth2.${provider.toLowerCase()}`, `openid.${provider.toLowerCase()}`];
+	});
+	httpLoggerOptions.redact = {
+		paths: ['req.headers.authorization', 'req.headers.cookie', 'res.headers'],
+		censor: (value, pathParts) => {
+			const path = pathParts.join('.');
+			if (path === 'req.headers.cookie') {
+				return redactHeaderCookie(value, [`access_token`, `${env['REFRESH_TOKEN_COOKIE_NAME']}`, ...ssoCookies]);
+			}
+			if (path === 'res.headers') {
+				if ('set-cookie' in value) {
+					value['set-cookie'] = toArray(value['set-cookie']).map((cookie) =>
+						redactHeaderCookie(cookie, [`access_token`, `${env['REFRESH_TOKEN_COOKIE_NAME']}`, ...ssoCookies])
+					);
+				}
+				return value;
+			}
+			return '--redact--';
 		},
 	};
 }
