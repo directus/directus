@@ -32,23 +32,23 @@ RUN pnpm --recursive run build \
 FROM node:18-alpine
 
 RUN mkdir /directus \
-	&& mkdir -p /directus/data/database /directus/data/extensions /directus/data/uploads \
-	&& chown -R node:node /directus/data;
+	&& mkdir -p /directus/database /directus/extensions /directus/uploads \
+	&& chown node:node /directus/database /directus/extensions /directus/uploads;
 
 WORKDIR /directus
 
 EXPOSE 8055
 
 ENV DB_CLIENT="sqlite3"
-ENV DB_FILENAME="/directus/data/database/database.sqlite"
-ENV EXTENSIONS_PATH="/directus/data/extensions"
-ENV STORAGE_LOCAL_ROOT="/directus/data/uploads"
+ENV DB_FILENAME="/directus/database/database.sqlite"
+ENV EXTENSIONS_PATH="/directus/extensions"
+ENV STORAGE_LOCAL_ROOT="/directus/uploads"
 ENV NODE_ENV="production"
 ENV NPM_CONFIG_UPDATE_NOTIFIER="false"
 
-VOLUME /directus/data/database
-VOLUME /directus/data/extensions
-VOLUME /directus/data/uploads
+VOLUME /directus/database
+VOLUME /directus/extensions
+VOLUME /directus/uploads
 
 COPY --from=pruned /workspace/pruned/dist dist
 COPY --from=pruned /workspace/pruned/package.json package.json
