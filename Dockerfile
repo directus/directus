@@ -57,6 +57,7 @@ VOLUME /directus/uploads
 
 COPY --from=pruned /workspace/pruned/dist dist
 COPY --from=pruned /workspace/pruned/package.json package.json
+COPY --from=pruned /workspace/pruned/cli.js cli.js
 COPY --from=pruned /workspace/pruned/node_modules node_modules
 
 USER node
