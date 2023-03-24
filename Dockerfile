@@ -7,13 +7,9 @@ FROM node:18-alpine AS workspace
 WORKDIR /workspace
 
 COPY pnpm-lock.yaml .
-
-RUN corepack enable \
-	&& corepack prepare pnpm@7.30.0 --activate \
-	&& pnpm fetch
-
+RUN corepack enable && corepack prepare pnpm@7.30.0 --activate
+RUN pnpm fetch
 COPY . .
-
 RUN pnpm install --recursive --offline --frozen-lockfile
 
 ####################################################################################################
