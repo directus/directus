@@ -13,14 +13,14 @@ const pinoOptions: LoggerOptions = {
 	level: env['LOG_LEVEL'] || 'info',
 	redact: {
 		paths: ['req.headers.authorization', 'req.headers.cookie'],
-		censor: '--redact--',
+		censor: redactText,
 	},
 };
 export const httpLoggerOptions: LoggerOptions = {
 	level: env['LOG_LEVEL'] || 'info',
 	redact: {
 		paths: ['req.headers.authorization', 'req.headers.cookie'],
-		censor: '--redact--',
+		censor: redactText,
 	},
 };
 
@@ -52,11 +52,11 @@ if (env['LOG_STYLE'] === 'raw') {
 			const path = pathParts.join('.');
 			if (path === 'res.headers') {
 				if ('set-cookie' in value) {
-					value['set-cookie'] = '--redact--';
+					value['set-cookie'] = redactText;
 				}
 				return value;
 			}
-			return '--redact--';
+			return redactText;
 		},
 	};
 }
@@ -114,7 +114,7 @@ function redactQuery(originalPath: string) {
 	const url = new URL(originalPath, 'http://example.com/');
 
 	if (url.searchParams.has('access_token')) {
-		url.searchParams.set('access_token', '--redacted--');
+		url.searchParams.set('access_token', redactText);
 	}
 
 	return url.pathname + url.search;

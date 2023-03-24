@@ -70,7 +70,7 @@ describe('req.headers.cookie', () => {
 		expect(logOutput.mock.calls[0][0]).toMatchObject({
 			req: {
 				headers: {
-					cookie: `${REFRESH_TOKEN_COOKIE_NAME}=${redactText}`,
+					cookie: redactText,
 				},
 			},
 		});
@@ -88,7 +88,7 @@ describe('req.headers.cookie', () => {
 		expect(logOutput.mock.calls[0][0]).toMatchObject({
 			req: {
 				headers: {
-					cookie: `custom_test_cookie=custom_test_value; access_token=${redactText}; oauth2.ranger=${redactText}; openid.monospace=${redactText}; ${REFRESH_TOKEN_COOKIE_NAME}=${redactText}`,
+					cookie: redactText,
 				},
 			},
 		});
@@ -109,7 +109,7 @@ describe('res.headers', () => {
 			res: {
 				headers: {
 					// it is turned into an array because of `toArray` usage for set-cookie
-					'set-cookie': [`${REFRESH_TOKEN_COOKIE_NAME}=${redactText}; Max-Age=604800; Path=/; HttpOnly; SameSite=Lax`],
+					'set-cookie': redactText,
 				},
 			},
 		});
@@ -132,12 +132,7 @@ describe('res.headers', () => {
 		expect(logOutput.mock.calls[0][0]).toMatchObject({
 			res: {
 				headers: {
-					'set-cookie': [
-						`access_token=${redactText}; Max-Age=604800; Path=/; Expires=Tue, 14 Feb 2023 12:00:00 GMT; HttpOnly; SameSite=Lax`,
-						`oauth2.ranger=${redactText}; Max-Age=604800; Path=/; Expires=Tue, 14 Feb 2023 12:00:00 GMT; HttpOnly; SameSite=Lax`,
-						`openid.monospace=${redactText}; Max-Age=604800; Path=/; Expires=Tue, 14 Feb 2023 12:00:00 GMT; HttpOnly; SameSite=Lax`,
-						`${REFRESH_TOKEN_COOKIE_NAME}=${redactText}; Max-Age=604800; Path=/; Expires=Tue, 14 Feb 2023 12:00:00 GMT; HttpOnly; SameSite=Lax`,
-					],
+					'set-cookie': redactText,
 				},
 			},
 		});
