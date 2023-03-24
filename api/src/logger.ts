@@ -6,7 +6,6 @@ import pinoHTTP, { stdSerializers } from 'pino-http';
 import { URL } from 'url';
 import env from './env';
 import { getConfigFromEnv } from './utils/get-config-from-env';
-import { redactHeaderCookie } from './utils/redact-header-cookies';
 
 const pinoOptions: LoggerOptions = {
 	level: env['LOG_LEVEL'] || 'info',
@@ -45,28 +44,13 @@ if (env['LOG_STYLE'] !== 'raw') {
 	};
 }
 if (env['LOG_STYLE'] === 'raw') {
-	const ssoCookies = toArray(env['AUTH_PROVIDERS'] ?? '').reduce<string[]>((cookies: string[], provider: string) => {
-		switch (env[`AUTH_${provider.toUpperCase()}_DRIVER`]) {
-			case 'oauth2':
-				cookies.push(`oauth2.${provider}`);
-				break;
-			case 'openid':
-				cookies.push(`openid.${provider}`);
-				break;
-		}
-		return cookies;
-	}, []);
-	const cookieNames = [`access_token`, `${env['REFRESH_TOKEN_COOKIE_NAME']}`, ...ssoCookies];
 	httpLoggerOptions.redact = {
 		paths: ['req.headers.authorization', 'req.headers.cookie', 'res.headers'],
 		censor: (value, pathParts) => {
 			const path = pathParts.join('.');
-			if (path === 'req.headers.cookie') {
-				return redactHeaderCookie(value, cookieNames);
-			}
 			if (path === 'res.headers') {
 				if ('set-cookie' in value) {
-					value['set-cookie'] = toArray(value['set-cookie']).map((cookie) => redactHeaderCookie(cookie, cookieNames));
+					value['set-cookie'] = '--redact--';
 				}
 				return value;
 			}
