@@ -916,7 +916,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	 * Upsert/treat collection as singleton
 	 */
 	async upsertSingleton(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
-		const primaryKeyField = this.schema.collections[this.collection]!!.primary;
+		const primaryKeyField = this.schema.collections[this.collection]!.primary;
 
 		const record = await this.knex.select(primaryKeyField).from(this.collection).limit(1).first();
 
