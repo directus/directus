@@ -10,9 +10,8 @@ vi.mock('../../utils/get-accountability-for-role', () => ({
 	getAccountabilityForRole: vi.fn((role: string | null, _context) => Promise.resolve(role)),
 }));
 
-import { NotificationsService } from '../../services';
-
-import config from './index';
+import { NotificationsService } from '../../services/notifications.js';
+import config from './index.js';
 
 const testId = '00000000-0000-0000-0000-000000000000';
 

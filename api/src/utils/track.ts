@@ -3,9 +3,9 @@ import os from 'os';
 // @ts-ignore
 import { toArray } from '@directus/shared/utils';
 import { version } from '../../package.json';
-import env from '../env';
-import logger from '../logger';
-import { getMilliseconds } from './get-milliseconds';
+import env from '../env.js';
+import logger from '../logger.js';
+import { getMilliseconds } from './get-milliseconds.js';
 
 export async function track(event: string): Promise<void> {
 	const axios = (await import('axios')).default;

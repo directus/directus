@@ -9,15 +9,15 @@ import { pipeline } from 'node:stream/promises';
 import path from 'path';
 import sharp from 'sharp';
 import url from 'url';
-import emitter from '../emitter';
-import env from '../env';
-import { ForbiddenException, InvalidPayloadException, ServiceUnavailableException } from '../exceptions';
-import logger from '../logger';
-import { getAxios } from '../request/index';
-import { getStorage } from '../storage';
-import type { AbstractServiceOptions, File, Metadata, MutationOptions, PrimaryKey } from '../types';
-import { parseIptc, parseXmp } from '../utils/parse-image-metadata';
-import { ItemsService } from './items';
+import emitter from '../emitter.js';
+import env from '../env.js';
+import { ForbiddenException, InvalidPayloadException, ServiceUnavailableException } from '../exceptions/index.js';
+import logger from '../logger.js';
+import { getAxios } from '../request/index.js';
+import { getStorage } from '../storage/index.js';
+import type { AbstractServiceOptions, File, Metadata, MutationOptions, PrimaryKey } from '../types/index.js';
+import { parseIptc, parseXmp } from '../utils/parse-image-metadata.js';
+import { ItemsService } from './items.js';
 
 // @ts-ignore
 import formatTitle from '@directus/format-title';

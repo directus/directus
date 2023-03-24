@@ -1,6 +1,6 @@
 import type { Field, Relation } from '@directus/shared/types';
 import { pick } from 'lodash';
-import type { Collection } from '../types';
+import type { Collection } from '../types/index.js';
 
 /**
  * Pick certain database vendor specific collection properties that should be compared when performing diff

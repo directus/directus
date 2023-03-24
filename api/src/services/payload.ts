@@ -7,9 +7,9 @@ import type { Knex } from 'knex';
 import { clone, cloneDeep, isNil, isObject, isPlainObject, omit, pick } from 'lodash';
 import { v4 as uuid } from 'uuid';
 import { parse as wktToGeoJSON } from 'wellknown';
-import getDatabase from '../database';
-import { getHelpers, Helpers } from '../database/helpers';
-import { ForbiddenException, InvalidPayloadException } from '../exceptions';
+import getDatabase from '../database/index.js';
+import { getHelpers, Helpers } from '../database/helpers/index.js';
+import { ForbiddenException, InvalidPayloadException } from '../exceptions/index.js';
 import type {
 	AbstractServiceOptions,
 	ActionEventParams,
@@ -17,9 +17,9 @@ import type {
 	Item,
 	MutationOptions,
 	PrimaryKey,
-} from '../types';
-import { generateHash } from '../utils/generate-hash';
-import { ItemsService } from './items';
+} from '../types/index.js';
+import { generateHash } from '../utils/generate-hash.js';
+import { ItemsService } from './items.js';
 
 type Action = 'create' | 'read' | 'update';
 

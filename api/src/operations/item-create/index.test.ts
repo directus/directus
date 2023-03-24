@@ -10,8 +10,8 @@ vi.mock('../../utils/get-accountability-for-role', () => ({
 	getAccountabilityForRole: vi.fn((role: string | null, _context) => Promise.resolve(role)),
 }));
 
-import { ItemsService } from '../../services';
-import config from './index';
+import { ItemsService } from '../../services/items.js';
+import config from './index.js';
 
 const testCollection = 'test';
 const testId = '00000000-0000-0000-0000-000000000000';

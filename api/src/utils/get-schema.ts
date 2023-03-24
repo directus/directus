@@ -3,16 +3,16 @@ import type { Filter, SchemaOverview } from '@directus/shared/types';
 import { parseJSON, toArray } from '@directus/shared/utils';
 import type { Knex } from 'knex';
 import { mapValues } from 'lodash';
-import { getSchemaCache, setSchemaCache } from '../cache';
-import { ALIAS_TYPES } from '../constants';
-import getDatabase from '../database';
-import { systemCollectionRows } from '../database/system-data/collections';
-import { systemFieldRows } from '../database/system-data/fields';
-import env from '../env';
-import logger from '../logger';
-import { RelationsService } from '../services';
-import getDefaultValue from './get-default-value';
-import getLocalType from './get-local-type';
+import { getSchemaCache, setSchemaCache } from '../cache.js';
+import { ALIAS_TYPES } from '../constants.js';
+import getDatabase from '../database/index.js';
+import { systemCollectionRows } from '../database/system-data/collections/index.js';
+import { systemFieldRows } from '../database/system-data/fields/index.js';
+import env from '../env.js';
+import logger from '../logger.js';
+import { RelationsService } from '../services/index.js';
+import getDefaultValue from './get-default-value.js';
+import getLocalType from './get-local-type.js';
 
 export async function getSchema(options?: {
 	database?: Knex;

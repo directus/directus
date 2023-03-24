@@ -1,6 +1,6 @@
 import { describe, expect, test, vi } from 'vitest';
-import type { Snapshot } from '../types/snapshot';
-import { validateSnapshot } from './validate-snapshot';
+import type { Snapshot } from '../types/snapshot.js';
+import { validateSnapshot } from './validate-snapshot.js';
 
 vi.mock('../../package.json', () => ({
 	version: '9.22.4',

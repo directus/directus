@@ -11,9 +11,9 @@ import type {
 import { validatePayload } from '@directus/shared/utils';
 import type { Knex } from 'knex';
 import { cloneDeep, flatten, isArray, isNil, merge, reduce, uniq, uniqWith } from 'lodash';
-import { GENERATE_SPECIAL } from '../constants';
-import getDatabase from '../database';
-import { ForbiddenException } from '../exceptions';
+import { GENERATE_SPECIAL } from '../constants.js';
+import getDatabase from '../database/index.js';
+import { ForbiddenException } from '../exceptions/index.js';
 import type {
 	AbstractServiceOptions,
 	AST,
@@ -22,11 +22,11 @@ import type {
 	Item,
 	NestedCollectionNode,
 	PrimaryKey,
-} from '../types';
-import { getRelationInfo } from '../utils/get-relation-info';
-import { stripFunction } from '../utils/strip-function';
-import { ItemsService } from './items';
-import { PayloadService } from './payload';
+} from '../types/index.js';
+import { getRelationInfo } from '../utils/get-relation-info.js';
+import { stripFunction } from '../utils/strip-function.js';
+import { ItemsService } from './items.js';
+import { PayloadService } from './payload.js';
 
 export class AuthorizationService {
 	knex: Knex;

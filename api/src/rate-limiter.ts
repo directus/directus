@@ -7,8 +7,8 @@ import {
 	RateLimiterMemory,
 	RateLimiterRedis,
 } from 'rate-limiter-flexible';
-import env from './env';
-import { getConfigFromEnv } from './utils/get-config-from-env';
+import env from './env.js';
+import { getConfigFromEnv } from './utils/get-config-from-env.js';
 
 type IRateLimiterOptionsOverrides = Partial<IRateLimiterOptions> | Partial<IRateLimiterStoreOptions>;
 

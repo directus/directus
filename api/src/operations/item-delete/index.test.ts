@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, test, vi } from 'vitest';
 
-import { ItemsService } from '../../services';
-import config from './index';
+import { ItemsService } from '../../services/items.js';
+import config from './index.js';
 
 vi.mock('../../services', () => {
 	const ItemsService = vi.fn();

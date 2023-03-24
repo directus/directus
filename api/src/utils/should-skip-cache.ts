@@ -1,6 +1,6 @@
 import type { Request } from 'express';
-import { getEnv } from '../env';
-import { Url } from './url';
+import { getEnv } from '../env.js';
+import { Url } from './url.js';
 
 /**
  * Whether to skip caching for the current request

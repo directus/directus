@@ -3,18 +3,18 @@ import type { Accountability, Query, Relation, RelationMeta, SchemaOverview } fr
 import { toArray } from '@directus/shared/utils';
 import type Keyv from 'keyv';
 import type { Knex } from 'knex';
-import type { ForeignKey } from 'knex-schema-inspector/dist/types/foreign-key';
-import { clearSystemCache, getCache } from '../cache';
-import getDatabase, { getSchemaInspector } from '../database';
-import { getHelpers, Helpers } from '../database/helpers';
-import { systemRelationRows } from '../database/system-data/relations';
-import emitter from '../emitter';
-import { ForbiddenException, InvalidPayloadException } from '../exceptions';
-import type { AbstractServiceOptions, ActionEventParams, MutationOptions } from '../types';
-import { getDefaultIndexName } from '../utils/get-default-index-name';
-import { getSchema } from '../utils/get-schema';
-import { ItemsService, QueryOptions } from './items';
-import { PermissionsService } from './permissions';
+import type { ForeignKey } from 'knex-schema-inspector/dist/types/foreign-key.js';
+import { clearSystemCache, getCache } from '../cache.js';
+import getDatabase, { getSchemaInspector } from '../database/index.js';
+import { getHelpers, Helpers } from '../database/helpers/index.js';
+import { systemRelationRows } from '../database/system-data/relations/index.js';
+import emitter from '../emitter.js';
+import { ForbiddenException, InvalidPayloadException } from '../exceptions/index.js';
+import type { AbstractServiceOptions, ActionEventParams, MutationOptions } from '../types/index.js';
+import { getDefaultIndexName } from '../utils/get-default-index-name.js';
+import { getSchema } from '../utils/get-schema.js';
+import { ItemsService, QueryOptions } from './items.js';
+import { PermissionsService } from './permissions.js';
 
 export class RelationsService {
 	knex: Knex;

@@ -2,9 +2,9 @@ import { REGEX_BETWEEN_PARENS } from '@directus/shared/constants';
 import type { FieldFunction, Query, SchemaOverview } from '@directus/shared/types';
 import { getFunctionsForType } from '@directus/shared/utils';
 import type { Knex } from 'knex';
-import { getFunctions } from '../database/helpers';
-import { InvalidQueryException } from '../exceptions';
-import { applyFunctionToColumnName } from './apply-function-to-column-name';
+import { getFunctions } from '../database/helpers/index.js';
+import { InvalidQueryException } from '../exceptions/index.js';
+import { applyFunctionToColumnName } from './apply-function-to-column-name.js';
 
 type GetColumnOptions = {
 	query?: Query | undefined;

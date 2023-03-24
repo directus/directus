@@ -4,17 +4,17 @@ import { getSimpleHash, toArray } from '@directus/shared/utils';
 import jwt from 'jsonwebtoken';
 import { cloneDeep } from 'lodash';
 import { performance } from 'perf_hooks';
-import getDatabase from '../database';
-import env from '../env';
-import { ForbiddenException, InvalidPayloadException, UnprocessableEntityException } from '../exceptions';
-import { RecordNotUniqueException } from '../exceptions/database/record-not-unique';
-import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '../types';
-import isUrlAllowed from '../utils/is-url-allowed';
-import { stall } from '../utils/stall';
-import { Url } from '../utils/url';
-import { ItemsService } from './items';
-import { MailService } from './mail';
-import { SettingsService } from './settings';
+import getDatabase from '../database/index.js';
+import env from '../env.js';
+import { ForbiddenException, InvalidPayloadException, UnprocessableEntityException } from '../exceptions/index.js';
+import { RecordNotUniqueException } from '../exceptions/database/record-not-unique.js';
+import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '../types/index.js';
+import isUrlAllowed from '../utils/is-url-allowed.js';
+import { stall } from '../utils/stall.js';
+import { Url } from '../utils/url.js';
+import { ItemsService } from './items.js';
+import { MailService } from './mail/index.js';
+import { SettingsService } from './settings.js';
 
 export class UsersService extends ItemsService {
 	constructor(options: AbstractServiceOptions) {

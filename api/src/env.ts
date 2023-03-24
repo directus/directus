@@ -3,12 +3,12 @@
  * For all possible keys, see: https://docs.directus.io/self-hosted/config-options/
  */
 
+import { parseJSON, toArray } from '@directus/shared/utils';
 import dotenv from 'dotenv';
 import fs from 'fs';
 import { clone, toNumber, toString } from 'lodash';
 import path from 'path';
-import { requireYAML } from './utils/require-yaml';
-import { toArray, parseJSON } from '@directus/shared/utils';
+import { requireYAML } from './utils/require-yaml.js';
 
 // keeping this here for now to prevent a circular import to constants.ts
 const allowedEnvironmentVars = [

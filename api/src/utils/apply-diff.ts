@@ -2,11 +2,11 @@ import type { Field, Relation, SchemaOverview } from '@directus/shared/types';
 import { applyChange, Diff, DiffDeleted, DiffNew } from 'deep-diff';
 import type { Knex } from 'knex';
 import { cloneDeep, merge, set } from 'lodash';
-import { clearSystemCache } from '../cache';
-import getDatabase from '../database';
-import emitter from '../emitter';
-import logger from '../logger';
-import { CollectionsService, FieldsService, RelationsService } from '../services';
+import { clearSystemCache } from '../cache.js';
+import getDatabase from '../database/index.js';
+import emitter from '../emitter.js';
+import logger from '../logger.js';
+import { CollectionsService, FieldsService, RelationsService } from '../services/index.js';
 import {
 	ActionEventParams,
 	Collection,
@@ -15,8 +15,8 @@ import {
 	Snapshot,
 	SnapshotDiff,
 	SnapshotField,
-} from '../types';
-import { getSchema } from './get-schema';
+} from '../types/index.js';
+import { getSchema } from './get-schema.js';
 
 type CollectionDelta = {
 	collection: string;

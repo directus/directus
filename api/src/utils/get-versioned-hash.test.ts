@@ -1,6 +1,6 @@
 import { test, expect, describe, vi } from 'vitest';
 
-import { getVersionedHash } from './get-versioned-hash';
+import { getVersionedHash } from './get-versioned-hash.js';
 
 vi.mock('../../package.json', () => ({
 	version: '10.10.10',

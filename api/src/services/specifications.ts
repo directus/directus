@@ -11,15 +11,15 @@ import type {
 } from 'openapi3-ts';
 import type { Accountability, Field, Permission, Relation, SchemaOverview, Type } from '@directus/shared/types';
 import { version } from '../../package.json';
-import { OAS_REQUIRED_SCHEMAS } from '../constants';
-import getDatabase from '../database';
-import env from '../env';
-import type { AbstractServiceOptions, Collection } from '../types';
-import { getRelationType } from '../utils/get-relation-type';
-import { CollectionsService } from './collections';
-import { FieldsService } from './fields';
-import { GraphQLService } from './graphql';
-import { RelationsService } from './relations';
+import { OAS_REQUIRED_SCHEMAS } from '../constants.js';
+import getDatabase from '../database/index.js';
+import env from '../env.js';
+import type { AbstractServiceOptions, Collection } from '../types/index.js';
+import { getRelationType } from '../utils/get-relation-type.js';
+import { CollectionsService } from './collections.js';
+import { FieldsService } from './fields.js';
+import { GraphQLService } from './graphql/index.js';
+import { RelationsService } from './relations.js';
 
 // @ts-ignore
 import formatTitle from '@directus/format-title';

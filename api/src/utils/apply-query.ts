@@ -13,12 +13,12 @@ import { getFilterOperatorsForType, getOutputTypeForFunction } from '@directus/s
 import type { Knex } from 'knex';
 import { clone, isPlainObject } from 'lodash';
 import validate from 'uuid-validate';
-import { getHelpers } from '../database/helpers';
-import { InvalidQueryException } from '../exceptions/invalid-query';
-import { getColumn } from './get-column';
-import { AliasMap, getColumnPath } from './get-column-path';
-import { getRelationInfo } from './get-relation-info';
-import { stripFunction } from './strip-function';
+import { getHelpers } from '../database/helpers/index.js';
+import { InvalidQueryException } from '../exceptions/invalid-query.js';
+import { getColumn } from './get-column.js';
+import { AliasMap, getColumnPath } from './get-column-path.js';
+import { getRelationInfo } from './get-relation-info.js';
+import { stripFunction } from './strip-function.js';
 
 // @ts-ignore
 import { customAlphabet } from 'nanoid/non-secure';

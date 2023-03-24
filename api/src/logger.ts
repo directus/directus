@@ -4,9 +4,9 @@ import pino, { LoggerOptions } from 'pino';
 import type { Request, RequestHandler } from 'express';
 import pinoHTTP, { stdSerializers } from 'pino-http';
 import { URL } from 'url';
-import env from './env';
-import { REDACT_TEXT } from './constants';
-import { getConfigFromEnv } from './utils/get-config-from-env';
+import env from './env.js';
+import { REDACT_TEXT } from './constants.js';
+import { getConfigFromEnv } from './utils/get-config-from-env.js';
 
 const pinoOptions: LoggerOptions = {
 	level: env['LOG_LEVEL'] || 'info',

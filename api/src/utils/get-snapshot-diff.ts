@@ -1,7 +1,7 @@
 import { diff } from 'deep-diff';
 import { orderBy } from 'lodash';
-import { Snapshot, SnapshotDiff, DiffKind } from '../types';
-import { sanitizeCollection, sanitizeField, sanitizeRelation } from './sanitize-schema';
+import { Snapshot, SnapshotDiff, DiffKind } from '../types/index.js';
+import { sanitizeCollection, sanitizeField, sanitizeRelation } from './sanitize-schema.js';
 
 export function getSnapshotDiff(current: Snapshot, after: Snapshot): SnapshotDiff {
 	const diffedSnapshot: SnapshotDiff = {

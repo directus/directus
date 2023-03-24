@@ -6,7 +6,7 @@ import type {
 	TransformationPreset,
 	TransformationPresetFormat,
 	TransformationPresetResize,
-} from '../types';
+} from '../types/index.js';
 
 // Extract transforms from a preset
 export function resolvePreset(input: TransformationParams | TransformationPreset, file: File): Transformation[] {

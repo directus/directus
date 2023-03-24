@@ -1,8 +1,8 @@
 import type { Accountability, Aggregate, Filter, Query } from '@directus/shared/types';
 import { parseFilter, parseJSON } from '@directus/shared/utils';
 import { flatten, get, isPlainObject, merge, set } from 'lodash';
-import logger from '../logger';
-import { Meta } from '../types';
+import logger from '../logger.js';
+import { Meta } from '../types/index.js';
 
 export function sanitizeQuery(rawQuery: Record<string, any>, accountability?: Accountability | null): Query {
 	const query: Query = {};

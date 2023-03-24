@@ -2,7 +2,7 @@ import type { Extension, HookConfig } from '@directus/shared/types';
 import type { Command } from 'commander';
 import path from 'path';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
-import { createCli } from './index';
+import { createCli } from './index.js';
 
 vi.mock('../../src/env', async () => {
 	const actual = (await vi.importActual('../../src/env')) as { default: Record<string, any> };

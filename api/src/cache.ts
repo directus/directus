@@ -1,13 +1,13 @@
-import Keyv, { Options } from 'keyv';
-import env from './env';
-import logger from './logger';
-import { compress, decompress } from './utils/compress';
-import { getConfigFromEnv } from './utils/get-config-from-env';
-import { getMilliseconds } from './utils/get-milliseconds';
-import { validateEnv } from './utils/validate-env';
-import { getMessenger } from './messenger';
-import { getSimpleHash } from '@directus/shared/utils';
 import type { SchemaOverview } from '@directus/shared/types';
+import { getSimpleHash } from '@directus/shared/utils';
+import Keyv, { Options } from 'keyv';
+import env from './env.js';
+import logger from './logger.js';
+import { getMessenger } from './messenger.js';
+import { compress, decompress } from './utils/compress.js';
+import { getConfigFromEnv } from './utils/get-config-from-env.js';
+import { getMilliseconds } from './utils/get-milliseconds.js';
+import { validateEnv } from './utils/validate-env.js';
 
 let cache: Keyv | null = null;
 let systemCache: Keyv | null = null;

@@ -8,7 +8,7 @@ vi.mock('../../flows', () => ({
 	}),
 }));
 
-import config from './index';
+import config from './index.js';
 
 const testFlowId = '00000000-0000-0000-0000-000000000000';
 
