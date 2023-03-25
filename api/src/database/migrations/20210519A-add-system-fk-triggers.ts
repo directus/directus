@@ -1,5 +1,5 @@
 import type { Knex } from 'knex';
-import SchemaInspector from '@directus/schema';
+import { createInspector } from '@directus/schema';
 import logger from '../../logger.js';
 
 /**
@@ -81,7 +81,7 @@ const updates = [
 ];
 
 export async function up(knex: Knex): Promise<void> {
-	const inspector = SchemaInspector.default(knex);
+	const inspector = createInspector(knex);
 
 	const foreignKeys = await inspector.foreignKeys();
 

@@ -1,4 +1,4 @@
-import SchemaInspector from '@directus/schema';
+import { createInspector } from '@directus/schema';
 import type { Filter, SchemaOverview } from '@directus/shared/types';
 import { parseJSON, toArray } from '@directus/shared/utils';
 import type { Knex } from 'knex';
@@ -24,7 +24,7 @@ export async function getSchema(options?: {
 	bypassCache?: boolean;
 }): Promise<SchemaOverview> {
 	const database = options?.database || getDatabase();
-	const schemaInspector = SchemaInspector(database);
+	const schemaInspector = createInspector(database);
 
 	let result: SchemaOverview;
 
