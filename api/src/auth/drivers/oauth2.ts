@@ -286,7 +286,13 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 			}
 
 			const { verifier, redirect, prompt } = tokenData;
-
+			
+			const { searchParams } = redirect ? new URL(redirect) : { searchParams: new Map<string, string>() };
+			let replacedRedirect = null;
+			const nextPage = searchParams.get('continue');
+			if (nextPage) {
+				replacedRedirect = new Url(env['PUBLIC_URL']).addPath('admin', nextPage).toString();
+			}
 			const accountability: Accountability = {
 				ip: getIPFromReq(req),
 				role: null,
@@ -345,7 +351,7 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 					sameSite: (env['REFRESH_TOKEN_COOKIE_SAME_SITE'] as 'lax' | 'strict' | 'none') || 'strict',
 				});
 
-				return res.redirect(redirect);
+				return res.redirect(replacedRedirect || redirect);
 			}
 
 			res.locals['payload'] = {
