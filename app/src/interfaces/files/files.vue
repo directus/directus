@@ -139,7 +139,7 @@ import { get, clamp, isEmpty, isNil, set } from 'lodash';
 import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
 import { getFieldsFromTemplate } from '@directus/shared/utils';
-import { Filter } from '@directus/shared/types';
+import { Filter } from '@directus/types';
 
 const props = withDefaults(
 	defineProps<{

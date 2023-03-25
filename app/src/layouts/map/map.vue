@@ -98,7 +98,7 @@ import { defineComponent, PropType } from 'vue';
 
 import MapComponent from './components/map.vue';
 import { useSync } from '@directus/shared/composables';
-import { GeometryOptions, Item } from '@directus/shared/types';
+import { GeometryOptions, Item } from '@directus/types';
 
 export default defineComponent({
 	components: { MapComponent },

@@ -1,5 +1,5 @@
 import { Ref, computed, unref } from 'vue';
-import { AppExtensionConfigs, AppExtensionType, HybridExtensionType, Plural } from '@directus/shared/types';
+import { AppExtensionConfigs, AppExtensionType, HybridExtensionType, Plural } from '@directus/types';
 import { useExtensions } from '@/extensions';
 import { pluralize } from '@directus/shared/utils';
 

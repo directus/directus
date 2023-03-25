@@ -9,7 +9,7 @@
 </template>
 
 <script setup lang="ts">
-import { Filter } from '@directus/shared/types';
+import { Filter } from '@directus/types';
 import { abbreviateNumber } from '@directus/shared/utils';
 import { cssVar } from '@directus/shared/utils/browser';
 import { isNil } from 'lodash';

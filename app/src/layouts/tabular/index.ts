@@ -8,7 +8,7 @@ import { saveAsCSV } from '@/utils/save-as-csv';
 import { syncRefProperty } from '@/utils/sync-ref-property';
 import { formatCollectionItemsCount } from '@/utils/format-collection-items-count';
 import { useCollection, useItems, useSync } from '@directus/shared/composables';
-import { Field } from '@directus/shared/types';
+import { Field } from '@directus/types';
 import { defineLayout } from '@directus/shared/utils';
 import { debounce } from 'lodash';
 import { computed, ref, toRefs, watch } from 'vue';

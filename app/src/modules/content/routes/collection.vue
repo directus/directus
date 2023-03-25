@@ -296,7 +296,7 @@ import { useUserStore } from '@/stores/user';
 import DrawerBatch from '@/views/private/components/drawer-batch.vue';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { mergeFilters } from '@directus/shared/utils';
-import { Filter } from '@directus/shared/types';
+import { Filter } from '@directus/types';
 import { useExtension } from '@/composables/use-extension';
 
 type Item = {

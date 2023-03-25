@@ -1,4 +1,4 @@
-import { Field } from '@directus/shared/types';
+import { Field } from '@directus/types';
 import { parseFilter } from '@/utils/parse-filter';
 import { validatePayload } from '@directus/shared/utils';
 import { merge } from 'lodash';

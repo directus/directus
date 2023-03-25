@@ -32,6 +32,7 @@
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "0.0.6",
+		"@directus/types": "workspace:*",
 		"@ngneat/falso": "6.4.0",
 		"@vitest/coverage-c8": "0.29.3",
 		"joi": "17.8.4",

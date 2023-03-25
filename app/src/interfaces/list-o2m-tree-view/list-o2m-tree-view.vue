@@ -27,7 +27,7 @@ import { useI18n } from 'vue-i18n';
 import { ref, computed, inject, toRefs } from 'vue';
 import { getFieldsFromTemplate } from '@directus/shared/utils';
 import NestedDraggable from './nested-draggable.vue';
-import { Filter } from '@directus/shared/types';
+import { Filter } from '@directus/types';
 import { parseFilter } from '@/utils/parse-filter';
 import { render } from 'micromustache';
 import { deepMap } from '@directus/shared/utils';

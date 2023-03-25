@@ -206,7 +206,7 @@ import { useLayout } from '@directus/shared/composables';
 import { uploadFiles } from '@/utils/upload-files';
 import { unexpectedError } from '@/utils/unexpected-error';
 import DrawerBatch from '@/views/private/components/drawer-batch.vue';
-import { Filter } from '@directus/shared/types';
+import { Filter } from '@directus/types';
 import { mergeFilters } from '@directus/shared/utils';
 
 type Item = {

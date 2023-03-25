@@ -177,7 +177,7 @@ import DrawerBatch from '@/views/private/components/drawer-batch.vue';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
 import SearchInput from '@/views/private/components/search-input.vue';
 import { useLayout } from '@directus/shared/composables';
-import { Role } from '@directus/shared/types';
+import { Role } from '@directus/types';
 import { mergeFilters } from '@directus/shared/utils';
 import { onBeforeRouteLeave, onBeforeRouteUpdate } from 'vue-router';
 import useNavigation from '../composables/use-navigation';

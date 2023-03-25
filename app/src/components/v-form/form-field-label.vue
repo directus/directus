@@ -28,7 +28,7 @@
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-import { Field } from '@directus/shared/types';
+import { Field } from '@directus/types';
 
 interface Props {
 	field: Field;

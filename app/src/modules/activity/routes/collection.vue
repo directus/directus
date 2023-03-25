@@ -67,7 +67,7 @@ import { usePreset } from '@/composables/use-preset';
 import { useLayout } from '@directus/shared/composables';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
 import SearchInput from '@/views/private/components/search-input.vue';
-import { Filter } from '@directus/shared/types';
+import { Filter } from '@directus/types';
 import { mergeFilters } from '@directus/shared/utils';
 
 export default defineComponent({

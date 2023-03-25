@@ -1,6 +1,6 @@
 import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
-import { FieldFilter, Permission } from '@directus/shared/types';
+import { FieldFilter, Permission } from '@directus/types';
 import { generateJoi } from '@directus/shared/utils';
 
 export function isAllowed(

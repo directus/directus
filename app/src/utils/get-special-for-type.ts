@@ -1,4 +1,4 @@
-import { Type } from '@directus/shared/types';
+import { Type } from '@directus/types';
 
 export function getSpecialForType(type: Type): string[] | null {
 	switch (type) {

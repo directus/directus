@@ -372,11 +372,12 @@ importers:
     specifiers:
       '@babel/core': 7.21.3
       '@babel/preset-env': 7.20.2
-      '@directus/constants': workspace:9.23.4
+      '@directus/constants': workspace:*
       '@directus/exceptions': workspace:*
       '@directus/extensions-sdk': workspace:*
       '@directus/format-title': 10.0.0
       '@directus/shared': workspace:*
+      '@directus/types': workspace:9.23.4
       '@fortawesome/fontawesome-svg-core': 6.3.0
       '@fortawesome/free-brands-svg-icons': 6.3.0
       '@fullcalendar/core': 6.1.4
@@ -482,6 +483,7 @@ importers:
       '@directus/extensions-sdk': link:../packages/extensions-sdk
       '@directus/format-title': 10.0.0
       '@directus/shared': link:../packages/shared
+      '@directus/types': link:../packages/types
       '@fortawesome/fontawesome-svg-core': 6.3.0
       '@fortawesome/free-brands-svg-icons': 6.3.0
       '@fullcalendar/core': 6.1.4
@@ -580,6 +582,9 @@ importers:
       webpack: 5.76.2
       wellknown: 0.5.0
 
+  packages/constants:
+    specifiers: {}
+
   packages/create-directus-extension:
     specifiers:
       '@directus/extensions-sdk': workspace:*
@@ -593,6 +598,7 @@ importers:
   packages/exceptions:
     specifiers:
       '@directus/tsconfig': 0.0.6
+      '@directus/types': workspace:9.23.4
       '@ngneat/falso': 6.4.0
       '@vitest/coverage-c8': 0.29.3
       joi: 17.8.4
@@ -600,6 +606,7 @@ importers:
       vitest: 0.29.3
     devDependencies:
       '@directus/tsconfig': 0.0.6
+      '@directus/types': link:../types
       '@ngneat/falso': 6.4.0
       '@vitest/coverage-c8': 0.29.3_vitest@0.29.3
       joi: 17.8.4

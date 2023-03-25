@@ -40,7 +40,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType, computed, toRefs, watch } from 'vue';
-import { Collection } from '@directus/shared/types';
+import { Collection } from '@directus/types';
 import { useI18n } from 'vue-i18n';
 import { orderBy } from 'lodash';
 import { useFieldDetailStore, syncFieldDetailStoreProperty } from '../store/';

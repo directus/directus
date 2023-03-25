@@ -20,7 +20,7 @@
 import { useI18n } from 'vue-i18n';
 import { ref, defineComponent, PropType, watch, onMounted, onUnmounted, computed, toRefs } from 'vue';
 import { GEOMETRY_TYPES } from '@directus/constants';
-import { Field, GeometryType, GeometryOptions } from '@directus/shared/types';
+import { Field, GeometryType, GeometryOptions } from '@directus/types';
 import { getBasemapSources, getStyleFromBasemapSource } from '@/utils/geometry/basemap';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { Map, CameraOptions } from 'maplibre-gl';

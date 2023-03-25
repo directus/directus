@@ -1,4 +1,4 @@
-import type { FilterOperator } from '@directus/shared/types';
+import type { FilterOperator } from '@directus/types';
 import type { ValidationErrorItem } from 'joi';
 import { BaseException } from './base.js';
 

@@ -84,7 +84,7 @@
 <script lang="ts" setup>
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
-import { Filter, Type, FieldFunction } from '@directus/shared/types';
+import { Filter, Type, FieldFunction } from '@directus/types';
 import {
 	getFilterOperatorsForType,
 	getOutputTypeForFunction,

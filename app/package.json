@@ -37,6 +37,7 @@
 		"@directus/extensions-sdk": "workspace:*",
 		"@directus/format-title": "10.0.0",
 		"@directus/shared": "workspace:*",
+		"@directus/types": "workspace:*",
 		"@fortawesome/fontawesome-svg-core": "6.3.0",
 		"@fortawesome/free-brands-svg-icons": "6.3.0",
 		"@fullcalendar/core": "6.1.4",

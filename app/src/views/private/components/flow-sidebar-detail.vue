@@ -40,7 +40,7 @@ import { useFlowsStore } from '@/stores/flows';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { useCollection } from '@directus/shared/composables';
-import { FlowRaw } from '@directus/shared/types';
+import { FlowRaw } from '@directus/types';
 import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 

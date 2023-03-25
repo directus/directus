@@ -7,7 +7,7 @@ import { saveAsCSV } from '@/utils/save-as-csv';
 import { syncRefProperty } from '@/utils/sync-ref-property';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { useCollection, useItems, useSync } from '@directus/shared/composables';
-import { Field, Item } from '@directus/shared/types';
+import { Field, Item } from '@directus/types';
 import { defineLayout, getEndpoint, getFieldsFromTemplate } from '@directus/shared/utils';
 import { Calendar, CalendarOptions as FullCalendarOptions, EventInput } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';

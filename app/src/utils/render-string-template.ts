@@ -1,6 +1,6 @@
 import { useAliasFields } from '@/composables/use-alias-fields';
 import { useFieldsStore } from '@/stores/fields';
-import { Field } from '@directus/shared/types';
+import { Field } from '@directus/types';
 import { get, getFieldsFromTemplate } from '@directus/shared/utils';
 import { render, renderFn } from 'micromustache';
 import { computed, ComputedRef, Ref, ref, unref } from 'vue';
