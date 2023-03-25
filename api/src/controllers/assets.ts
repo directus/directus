@@ -1,7 +1,7 @@
 import type { Range } from '@directus/storage';
 import { parseJSON } from '@directus/shared/utils';
 import { Router } from 'express';
-import { merge, pick } from 'lodash';
+import { merge, pick } from 'lodash-es';
 import { ASSET_TRANSFORM_QUERY_KEYS, SYSTEM_ASSET_ALLOW_LIST } from '../constants.js';
 import getDatabase from '../database/index.js';
 import env from '../env.js';

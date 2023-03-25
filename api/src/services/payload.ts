@@ -4,7 +4,7 @@ import { parseJSON, toArray } from '@directus/shared/utils';
 import { unflatten } from 'flat';
 import Joi from 'joi';
 import type { Knex } from 'knex';
-import { clone, cloneDeep, isNil, isObject, isPlainObject, omit, pick } from 'lodash';
+import { clone, cloneDeep, isNil, isObject, isPlainObject, omit, pick } from 'lodash-es';
 import { v4 as uuid } from 'uuid';
 import { parse as wktToGeoJSON } from 'wellknown';
 import getDatabase from '../database/index.js';

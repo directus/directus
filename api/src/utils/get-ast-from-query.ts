@@ -5,7 +5,7 @@
 import { REGEX_BETWEEN_PARENS } from '@directus/shared/constants';
 import type { Accountability, PermissionsAction, Query, SchemaOverview } from '@directus/shared/types';
 import type { Knex } from 'knex';
-import { cloneDeep, isEmpty, mapKeys, omitBy, uniq } from 'lodash';
+import { cloneDeep, isEmpty, mapKeys, omitBy, uniq } from 'lodash-es';
 import type { AST, FieldNode, FunctionFieldNode, NestedCollectionNode } from '../types/index.js';
 import { getRelationType } from '../utils/get-relation-type.js';
 

@@ -56,7 +56,7 @@ import rateLimiter from './middleware/rate-limiter-ip.js';
 import sanitizeQuery from './middleware/sanitize-query.js';
 import schema from './middleware/schema.js';
 
-import { merge } from 'lodash';
+import { merge } from 'lodash-es';
 import { registerAuthProviders } from './auth.js';
 import { flushCaches } from './cache.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';

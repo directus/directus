@@ -1,7 +1,7 @@
 import { Accountability, Action, SchemaOverview } from '@directus/shared/types';
 import jwt from 'jsonwebtoken';
 import type { Knex } from 'knex';
-import { clone, cloneDeep } from 'lodash';
+import { clone, cloneDeep } from 'lodash-es';
 import { performance } from 'perf_hooks';
 import { getAuthProvider } from '../auth.js';
 import { DEFAULT_AUTH_PROVIDER } from '../constants.js';

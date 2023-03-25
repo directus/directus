@@ -1,7 +1,7 @@
 import SchemaInspector from '@directus/schema';
 import fse from 'fs-extra';
 import { knex, Knex } from 'knex';
-import { merge } from 'lodash';
+import { merge } from 'lodash-es';
 import path from 'path';
 import { performance } from 'perf_hooks';
 import { promisify } from 'util';

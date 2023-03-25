@@ -45,7 +45,7 @@ import {
 	toInputObjectType,
 } from 'graphql-compose';
 import type { Knex } from 'knex';
-import { flatten, get, mapKeys, merge, omit, pick, set, transform, uniq } from 'lodash';
+import { flatten, get, mapKeys, merge, omit, pick, set, transform, uniq } from 'lodash-es';
 import { clearSystemCache, getCache } from '../../cache.js';
 import { DEFAULT_AUTH_PROVIDER, GENERATE_SPECIAL } from '../../constants.js';
 import getDatabase from '../../database/index.js';

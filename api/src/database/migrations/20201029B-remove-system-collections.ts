@@ -1,5 +1,5 @@
 import type { Knex } from 'knex';
-import { merge } from 'lodash';
+import { merge } from 'lodash-es';
 
 export async function up(knex: Knex): Promise<void> {
 	await knex('directus_collections').delete().where('collection', 'like', 'directus_%');

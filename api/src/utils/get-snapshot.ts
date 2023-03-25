@@ -1,6 +1,6 @@
 import type { SchemaOverview } from '@directus/shared/types';
 import type { Knex } from 'knex';
-import { fromPairs, isArray, isPlainObject, mapValues, omit, sortBy, toPairs } from 'lodash';
+import { fromPairs, isArray, isPlainObject, mapValues, omit, sortBy, toPairs } from 'lodash-es';
 import { version } from './package.js';
 import getDatabase, { getDatabaseClient } from '../database/index.js';
 import { CollectionsService, FieldsService, RelationsService } from '../services/index.js';

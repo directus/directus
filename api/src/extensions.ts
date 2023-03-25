@@ -38,7 +38,7 @@ import chokidar, { FSWatcher } from 'chokidar';
 import express, { Router } from 'express';
 import fse from 'fs-extra';
 import globby from 'globby';
-import { clone, escapeRegExp } from 'lodash';
+import { clone, escapeRegExp } from 'lodash-es';
 import { schedule, validate } from 'node-cron';
 import path from 'path';
 import { rollup } from 'rollup';

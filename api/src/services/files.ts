@@ -2,7 +2,7 @@ import { toArray } from '@directus/shared/utils';
 import encodeURL from 'encodeurl';
 import exif from 'exif-reader';
 import { parse as parseIcc } from 'icc';
-import { clone, pick } from 'lodash';
+import { clone, pick } from 'lodash-es';
 import { extension } from 'mime-types';
 import type { Readable } from 'node:stream';
 import { pipeline } from 'node:stream/promises';

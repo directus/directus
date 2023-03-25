@@ -1,5 +1,5 @@
 import { diff } from 'deep-diff';
-import { orderBy } from 'lodash';
+import { orderBy } from 'lodash-es';
 import { Snapshot, SnapshotDiff, DiffKind } from '../types/index.js';
 import { sanitizeCollection, sanitizeField, sanitizeRelation } from './sanitize-schema.js';
 

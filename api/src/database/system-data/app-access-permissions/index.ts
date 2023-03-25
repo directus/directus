@@ -1,5 +1,5 @@
 import type { Permission } from '@directus/shared/types';
-import { merge } from 'lodash';
+import { merge } from 'lodash-es';
 import { requireYAML } from '../../../utils/require-yaml.js';
 
 const defaults: Partial<Permission> = {

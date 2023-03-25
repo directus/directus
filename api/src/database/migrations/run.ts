@@ -1,6 +1,6 @@
 import fse from 'fs-extra';
 import type { Knex } from 'knex';
-import { orderBy } from 'lodash';
+import { orderBy } from 'lodash-es';
 import path from 'path';
 import env from '../../env.js';
 import logger from '../../logger.js';

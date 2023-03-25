@@ -2,7 +2,7 @@ import { FailedValidationException } from '@directus/shared/exceptions';
 import type { Query } from '@directus/shared/types';
 import { getSimpleHash, toArray } from '@directus/shared/utils';
 import jwt from 'jsonwebtoken';
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from 'lodash-es';
 import { performance } from 'perf_hooks';
 import getDatabase from '../database/index.js';
 import env from '../env.js';

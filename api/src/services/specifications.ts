@@ -1,6 +1,6 @@
 import { spec } from '@directus/specs';
 import type { Knex } from 'knex';
-import { cloneDeep, mergeWith } from 'lodash';
+import { cloneDeep, mergeWith } from 'lodash-es';
 import type {
 	OpenAPIObject,
 	ParameterObject,

@@ -1,4 +1,4 @@
-import { merge } from 'lodash';
+import { merge } from 'lodash-es';
 import type { CollectionMeta } from '../../../types/index.js';
 import { requireYAML } from '../../../utils/require-yaml.js';
 

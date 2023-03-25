@@ -4,7 +4,7 @@ import { addFieldFlag } from '@directus/shared/utils';
 import type Keyv from 'keyv';
 import type { Knex } from 'knex';
 import type { Table } from 'knex-schema-inspector/dist/types/table.js';
-import { omit } from 'lodash';
+import { omit } from 'lodash-es';
 import { clearSystemCache, getCache } from '../cache.js';
 import { ALIAS_TYPES } from '../constants.js';
 import getDatabase, { getSchemaInspector } from '../database/index.js';

@@ -1,7 +1,7 @@
 import type { Item, Query, SchemaOverview } from '@directus/shared/types';
 import { toArray } from '@directus/shared/utils';
 import type { Knex } from 'knex';
-import { clone, cloneDeep, merge, pick, uniq } from 'lodash';
+import { clone, cloneDeep, merge, pick, uniq } from 'lodash-es';
 import getDatabase from './index.js';
 import { getHelpers } from '../database/helpers/index.js';
 import env from '../env.js';

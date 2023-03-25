@@ -1,7 +1,7 @@
 import type { Field, Relation, SchemaOverview } from '@directus/shared/types';
 import { applyChange, Diff, DiffDeleted, DiffNew } from 'deep-diff';
 import type { Knex } from 'knex';
-import { cloneDeep, merge, set } from 'lodash';
+import { cloneDeep, merge, set } from 'lodash-es';
 import { clearSystemCache } from '../cache.js';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';

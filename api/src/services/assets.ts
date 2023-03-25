@@ -1,7 +1,7 @@
 import type { Range, Stat } from '@directus/storage';
 import type { Accountability } from '@directus/shared/types';
 import type { Knex } from 'knex';
-import { clamp } from 'lodash';
+import { clamp } from 'lodash-es';
 import { contentType } from 'mime-types';
 import type { Readable } from 'node:stream';
 import hash from 'object-hash';

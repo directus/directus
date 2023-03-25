@@ -11,7 +11,7 @@ import type {
 } from '@directus/shared/types';
 import { getFilterOperatorsForType, getOutputTypeForFunction } from '@directus/shared/utils';
 import type { Knex } from 'knex';
-import { clone, isPlainObject } from 'lodash';
+import { clone, isPlainObject } from 'lodash-es';
 import validate from 'uuid-validate';
 import { getHelpers } from '../database/helpers/index.js';
 import { InvalidQueryException } from '../exceptions/invalid-query.js';

@@ -6,7 +6,7 @@
 import { parseJSON, toArray } from '@directus/shared/utils';
 import dotenv from 'dotenv';
 import fs from 'fs';
-import { clone, toNumber, toString } from 'lodash';
+import { clone, toNumber, toString } from 'lodash-es';
 import path from 'path';
 import { requireYAML } from './utils/require-yaml.js';
 

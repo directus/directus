@@ -1,5 +1,5 @@
 import { toArray } from '@directus/shared/utils';
-import { merge } from 'lodash';
+import { merge } from 'lodash-es';
 import { pino } from 'pino';
 import type { LoggerOptions } from 'pino';
 import type { Request, RequestHandler } from 'express';

@@ -8,7 +8,7 @@ import { dump as toYAML } from 'js-yaml';
 import { parse as toXML } from 'js2xmlparser';
 import { Parser as CSVParser, transforms as CSVTransforms } from 'json2csv';
 import type { Knex } from 'knex';
-import { set, transform } from 'lodash';
+import { set, transform } from 'lodash-es';
 import type { Readable } from 'node:stream';
 import StreamArray from 'stream-json/streamers/StreamArray.js';
 import stripBomStream from 'strip-bom-stream';
