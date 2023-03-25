@@ -1,6 +1,6 @@
 import cookieParser from 'cookie-parser';
 import express, { Request, RequestHandler, Response } from 'express';
-import fse from 'fs-extra';
+import { readFile } from 'node:fs/promises';
 import type { ServerResponse } from 'http';
 import path from 'path';
 import qs from 'qs';
@@ -191,7 +191,7 @@ export default async function createApp(): Promise<express.Application> {
 		const embeds = extensionManager.getEmbeds();
 
 		// Set the App's base path according to the APIs public URL
-		const html = await fse.readFile(adminPath, 'utf8');
+		const html = await readFile(adminPath, 'utf8');
 		const htmlWithVars = html
 			.replace(/<base \/>/, `<base href="${adminUrl.toString({ rootRelative: true })}/" />`)
 			.replace(/<embed-head \/>/, embeds.head)

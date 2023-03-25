@@ -1,6 +1,6 @@
 import env from '../env.js';
 import logger from '../logger.js';
-import { access } from 'fs-extra';
+import { access } from 'node:fs/promises';
 import { constants } from 'fs';
 import path from 'path';
 import { toArray } from '@directus/shared/utils';

@@ -36,10 +36,10 @@ import alias from '@rollup/plugin-alias';
 import virtual from '@rollup/plugin-virtual';
 import chokidar, { FSWatcher } from 'chokidar';
 import express, { Router } from 'express';
-import fse from 'fs-extra';
 import globby from 'globby';
 import { clone, escapeRegExp } from 'lodash-es';
 import { schedule, validate } from 'node-cron';
+import { readdir } from 'node:fs/promises';
 import path from 'path';
 import { rollup } from 'rollup';
 import getDatabase from './database/index.js';
@@ -364,7 +364,7 @@ class ExtensionManager {
 	}
 
 	private async getSharedDepsMapping(deps: string[]): Promise<Record<string, string>> {
-		const appDir = await fse.readdir(path.join(resolvePackage('@directus/app', __dirname), 'dist', 'assets'));
+		const appDir = await readdir(path.join(resolvePackage('@directus/app', __dirname), 'dist', 'assets'));
 
 		const depsMapping: Record<string, string> = {};
 		for (const dep of deps) {
