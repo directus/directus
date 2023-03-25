@@ -1,5 +1,5 @@
-import { ActionHandler, FilterHandler, InitHandler, ScheduleHandler, EmbedHandler } from './events';
-import { ApiExtensionContext } from './extensions';
+import type { ActionHandler, FilterHandler, InitHandler, ScheduleHandler, EmbedHandler } from './events.js';
+import type { ApiExtensionContext } from './extensions.js';
 
 export type HookExtensionContext = ApiExtensionContext & {
 	emitter: any;

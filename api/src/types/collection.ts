@@ -1,4 +1,4 @@
-import type { Field } from '@directus/shared/types';
+import type { Field } from '@directus/types';
 import type { Table } from '@directus/schema';
 
 export type CollectionMeta = {

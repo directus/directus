@@ -1,4 +1,4 @@
-import type { OperationRaw } from '@directus/shared/types';
+import type { OperationRaw } from '@directus/types';
 import { getFlowManager } from '../flows.js';
 import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '../types/index.js';
 import { ItemsService } from './items.js';

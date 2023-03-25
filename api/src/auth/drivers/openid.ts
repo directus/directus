@@ -1,5 +1,5 @@
 import { BaseException } from '@directus/exceptions';
-import type { Accountability } from '@directus/shared/types';
+import type { Accountability } from '@directus/types';
 import { parseJSON } from '@directus/shared/utils';
 import express, { Router } from 'express';
 import flatten from 'flat';

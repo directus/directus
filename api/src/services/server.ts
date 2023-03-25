@@ -2,7 +2,7 @@ import type { Knex } from 'knex';
 import { merge } from 'lodash-es';
 import os from 'os';
 import { performance } from 'perf_hooks';
-import type { Accountability, SchemaOverview } from '@directus/shared/types';
+import type { Accountability, SchemaOverview } from '@directus/types';
 import { toArray } from '@directus/shared/utils';
 import { Readable } from 'node:stream';
 import { version } from '../utils/package.js';

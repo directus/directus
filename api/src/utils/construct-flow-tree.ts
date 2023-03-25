@@ -1,4 +1,4 @@
-import type { Flow, FlowRaw, Operation, OperationRaw } from '@directus/shared/types';
+import type { Flow, FlowRaw, Operation, OperationRaw } from '@directus/types';
 import { omit } from 'lodash-es';
 
 export function constructFlowTree(flow: FlowRaw): Flow {

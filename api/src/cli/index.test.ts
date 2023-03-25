@@ -1,4 +1,4 @@
-import type { Extension, HookConfig } from '@directus/shared/types';
+import type { Extension, HookConfig } from '@directus/types';
 import type { Command } from 'commander';
 import path from 'path';
 import { beforeEach, describe, expect, test, vi } from 'vitest';

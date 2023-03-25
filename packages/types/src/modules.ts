@@ -1,5 +1,6 @@
-import { RouteRecordRaw } from 'vue-router';
-import { Permission, User } from '../types';
+import type { RouteRecordRaw } from 'vue-router';
+import type { Permission } from './permissions.js';
+import type { User } from './users.js';
 
 export interface ModuleConfig {
 	id: string;

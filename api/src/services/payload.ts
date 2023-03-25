@@ -1,4 +1,4 @@
-import type { Accountability, Query, SchemaOverview } from '@directus/shared/types';
+import type { Accountability, Query, SchemaOverview } from '@directus/types';
 import { format, parseISO, isValid } from 'date-fns';
 import { parseJSON, toArray } from '@directus/shared/utils';
 import flat from 'flat';

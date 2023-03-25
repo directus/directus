@@ -1,5 +1,5 @@
 import { REGEX_BETWEEN_PARENS } from '@directus/constants';
-import type { FieldFunction, Query, SchemaOverview } from '@directus/shared/types';
+import type { FieldFunction, Query, SchemaOverview } from '@directus/types';
 import { getFunctionsForType } from '@directus/shared/utils';
 import type { Knex } from 'knex';
 import { getFunctions } from '../database/helpers/index.js';

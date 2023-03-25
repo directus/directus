@@ -1,4 +1,4 @@
-import type { Role } from '@directus/shared/types';
+import type { Role } from '@directus/types';
 import express from 'express';
 import Joi from 'joi';
 import { ForbiddenException, InvalidCredentialsException, InvalidPayloadException } from '../exceptions/index.js';

@@ -1,4 +1,4 @@
-import type { Field, Relation } from '@directus/shared/types';
+import type { Field, Relation } from '@directus/types';
 import { pick } from 'lodash-es';
 import type { Collection } from '../types/index.js';
 

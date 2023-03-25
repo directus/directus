@@ -1,5 +1,5 @@
 import { createInspector } from '@directus/schema';
-import type { Filter, SchemaOverview } from '@directus/shared/types';
+import type { Filter, SchemaOverview } from '@directus/types';
 import { parseJSON, toArray } from '@directus/shared/utils';
 import type { Knex } from 'knex';
 import { mapValues } from 'lodash-es';

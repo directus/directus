@@ -1,4 +1,4 @@
-import { Accountability, Action } from '@directus/shared/types';
+import { Accountability, Action } from '@directus/types';
 import { uniq } from 'lodash-es';
 import validateUUID from 'uuid-validate';
 import env from '../env.js';

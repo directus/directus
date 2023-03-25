@@ -1,4 +1,4 @@
-import type { Query } from '@directus/shared/types';
+import type { Query } from '@directus/types';
 import { ForbiddenException, UnprocessableEntityException } from '../exceptions/index.js';
 import type { AbstractServiceOptions, Alterations, Item, MutationOptions, PrimaryKey } from '../types/index.js';
 import { ItemsService } from './items.js';

@@ -7,7 +7,7 @@ import type {
 	PermissionsAction,
 	Query,
 	SchemaOverview,
-} from '@directus/shared/types';
+} from '@directus/types';
 import { validatePayload } from '@directus/shared/utils';
 import type { Knex } from 'knex';
 import { cloneDeep, flatten, isArray, isNil, merge, reduce, uniq, uniqWith } from 'lodash-es';

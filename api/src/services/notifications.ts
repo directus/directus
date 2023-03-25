@@ -1,4 +1,4 @@
-import type { Notification } from '@directus/shared/types';
+import type { Notification } from '@directus/types';
 import env from '../env.js';
 import logger from '../logger.js';
 import type { AbstractServiceOptions, MutationOptions, PrimaryKey } from '../types/index.js';

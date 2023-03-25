@@ -1,4 +1,4 @@
-import type { Accountability, PrimaryKey } from '@directus/shared/types';
+import type { Accountability, PrimaryKey } from '@directus/types';
 import { defineOperationApi, optionToObject, toArray } from '@directus/shared/utils';
 import { ItemsService } from '../../services/index.js';
 import type { Item } from '../../types/index.js';

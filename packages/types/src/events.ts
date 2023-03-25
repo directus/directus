@@ -1,6 +1,6 @@
-import { Knex } from 'knex';
-import { Accountability } from './accountability';
-import { SchemaOverview } from './schema';
+import type { Knex } from 'knex';
+import type { Accountability } from './accountability.js';
+import type { SchemaOverview } from './schema.js';
 
 export type EventContext = {
 	database: Knex;

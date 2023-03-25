@@ -3,7 +3,7 @@
  */
 
 import { REGEX_BETWEEN_PARENS } from '@directus/constants';
-import type { Accountability, PermissionsAction, Query, SchemaOverview } from '@directus/shared/types';
+import type { Accountability, PermissionsAction, Query, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import { cloneDeep, isEmpty, mapKeys, omitBy, uniq } from 'lodash-es';
 import type { AST, FieldNode, FunctionFieldNode, NestedCollectionNode } from '../types/index.js';

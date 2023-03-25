@@ -1,4 +1,4 @@
-import type { RelationMeta } from '@directus/shared/types';
+import type { RelationMeta } from '@directus/types';
 import { merge } from 'lodash-es';
 import { requireYAML } from '../../../utils/require-yaml.js';
 import { dirname, resolve } from 'node:path';

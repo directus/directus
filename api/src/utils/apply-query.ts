@@ -8,7 +8,7 @@ import type {
 	Relation,
 	SchemaOverview,
 	Type,
-} from '@directus/shared/types';
+} from '@directus/types';
 import { getFilterOperatorsForType, getOutputTypeForFunction } from '@directus/shared/utils';
 import type { Knex } from 'knex';
 import { clone, isPlainObject } from 'lodash-es';

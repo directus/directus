@@ -1,4 +1,4 @@
-import type { Accountability } from '@directus/shared/types';
+import type { Accountability } from '@directus/types';
 import type { Knex } from 'knex';
 import getDatabase from '../database/index.js';
 import { ForbiddenException } from '../exceptions/index.js';

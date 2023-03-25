@@ -1,4 +1,4 @@
-import type { Type } from '@directus/shared/types';
+import type { Type } from '@directus/types';
 import {
 	GraphQLBoolean,
 	GraphQLFloat,

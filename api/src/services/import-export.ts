@@ -1,4 +1,4 @@
-import type { Accountability, Query, SchemaOverview } from '@directus/shared/types';
+import type { Accountability, Query, SchemaOverview } from '@directus/types';
 import { parseJSON, toArray } from '@directus/shared/utils';
 import { queue } from 'async';
 import csv from 'csv-parser';

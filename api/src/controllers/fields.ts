@@ -1,5 +1,5 @@
 import { TYPES } from '@directus/constants';
-import type { Field, Type } from '@directus/shared/types';
+import type { Field, Type } from '@directus/types';
 import { Router } from 'express';
 import Joi from 'joi';
 import { ALIAS_TYPES } from '../constants.js';

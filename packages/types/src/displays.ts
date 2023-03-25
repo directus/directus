@@ -1,7 +1,7 @@
-import { Component, ComponentOptions } from 'vue';
-import { ExtensionOptionsContext } from './extensions';
-import { Field, LocalType, Type } from './fields';
-import { DeepPartial } from './misc';
+import type { Component, ComponentOptions } from 'vue';
+import type { ExtensionOptionsContext } from './extensions.js';
+import type { Field, LocalType, Type } from './fields.js';
+import type { DeepPartial } from './misc.js';
 
 export type DisplayFieldsFunction = (
 	options: any,

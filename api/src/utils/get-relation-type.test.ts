@@ -1,4 +1,4 @@
-import type { Relation } from '@directus/shared/types';
+import type { Relation } from '@directus/types';
 import { expect, test } from 'vitest';
 import { getRelationType } from '../../src/utils/get-relation-type.js';
 

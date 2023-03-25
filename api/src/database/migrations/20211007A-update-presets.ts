@@ -1,4 +1,4 @@
-import type { Filter, LogicalFilterAND } from '@directus/shared/types';
+import type { Filter, LogicalFilterAND } from '@directus/types';
 import { parseJSON } from '@directus/shared/utils';
 import type { Knex } from 'knex';
 

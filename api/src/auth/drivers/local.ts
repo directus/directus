@@ -1,4 +1,4 @@
-import type { Accountability } from '@directus/shared/types';
+import type { Accountability } from '@directus/types';
 import argon2 from 'argon2';
 import { Router } from 'express';
 import Joi from 'joi';

@@ -1,4 +1,4 @@
-import { Accountability, Action, SchemaOverview } from '@directus/shared/types';
+import { Accountability, Action, SchemaOverview } from '@directus/types';
 import jwt from 'jsonwebtoken';
 import type { Knex } from 'knex';
 import { clone, cloneDeep } from 'lodash-es';

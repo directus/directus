@@ -1,4 +1,4 @@
-import type { RelationMeta } from '@directus/shared/types';
+import type { RelationMeta } from '@directus/types';
 import type { Knex } from 'knex';
 import { createInspector } from '@directus/schema';
 import logger from '../../logger.js';

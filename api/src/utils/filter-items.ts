@@ -1,4 +1,4 @@
-import type { FieldFilter, Query } from '@directus/shared/types';
+import type { FieldFilter, Query } from '@directus/types';
 import { generateJoi } from '@directus/shared/utils';
 
 /*

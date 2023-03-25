@@ -1,4 +1,4 @@
-import type { Accountability, Permission, SchemaOverview } from '@directus/shared/types';
+import type { Accountability, Permission, SchemaOverview } from '@directus/types';
 import { deepMap, parseFilter, parseJSON, parsePreset } from '@directus/shared/utils';
 import { cloneDeep } from 'lodash-es';
 import hash from 'object-hash';

@@ -1,4 +1,4 @@
-import { Action } from '@directus/shared/types';
+import { Action } from '@directus/types';
 import express from 'express';
 import Joi from 'joi';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions/index.js';

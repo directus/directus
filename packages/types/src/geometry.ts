@@ -1,16 +1,16 @@
-import {
-	Point,
-	Polygon,
-	LineString,
-	MultiPoint,
-	MultiPolygon,
-	MultiLineString,
-	GeometryCollection,
-	Geometry,
+import type {
 	Feature,
 	FeatureCollection,
+	Geometry,
+	GeometryCollection,
+	LineString,
+	MultiLineString,
+	MultiPoint,
+	MultiPolygon,
+	Point,
+	Polygon,
 } from 'geojson';
-import { GeometryType, GeometryFormat } from './fields';
+import type { GeometryFormat, GeometryType } from './fields.js';
 
 export type GeometryOptions = {
 	geometryField: string;

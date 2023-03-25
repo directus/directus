@@ -1,4 +1,4 @@
-import type { Query } from '@directus/shared/types';
+import type { Query } from '@directus/types';
 import Joi from 'joi';
 import { isPlainObject, uniq } from 'lodash-es';
 import { stringify } from 'wellknown';

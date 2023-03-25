@@ -8,7 +8,7 @@ import {
 	Operation,
 	OperationHandler,
 	SchemaOverview,
-} from '@directus/shared/types';
+} from '@directus/types';
 import { applyOptionsData, isValidJSON, parseJSON, toArray } from '@directus/shared/utils';
 import fastRedact from 'fast-redact';
 import type { Knex } from 'knex';

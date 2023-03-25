@@ -21,7 +21,7 @@ import type {
 	NestedExtensionType,
 	OperationApiConfig,
 	ScheduleHandler,
-} from '@directus/shared/types';
+} from '@directus/types';
 import { isIn, isTypeIn, pluralize } from '@directus/shared/utils';
 import {
 	ensureExtensionDirs,

@@ -1,5 +1,5 @@
 import { createInspector } from '@directus/schema';
-import type { Accountability, Query, Relation, RelationMeta, SchemaOverview } from '@directus/shared/types';
+import type { Accountability, Query, Relation, RelationMeta, SchemaOverview } from '@directus/types';
 import { toArray } from '@directus/shared/utils';
 import type Keyv from 'keyv';
 import type { Knex } from 'knex';

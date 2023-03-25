@@ -1,4 +1,4 @@
-import type { Field } from '@directus/shared/types';
+import type { Field } from '@directus/types';
 import { knex } from 'knex';
 import type { Knex } from 'knex';
 import { createTracker, MockClient, Tracker } from 'knex-mock-client';

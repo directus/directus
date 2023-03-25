@@ -1,4 +1,4 @@
-import type { SchemaOverview } from '@directus/shared/types';
+import type { SchemaOverview } from '@directus/types';
 import { getSimpleHash } from '@directus/shared/utils';
 import Keyv, { Options } from 'keyv';
 import env from './env.js';
