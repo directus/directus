@@ -50,11 +50,13 @@ import { getFlowManager } from './flows.js';
 import logger from './logger.js';
 import * as services from './services/index.js';
 import type { EventHandler } from './types/index.js';
-import { dynamicImport } from './utils/dynamic-import.js';
 import getModuleDefault from './utils/get-module-default.js';
 import { getSchema } from './utils/get-schema.js';
 import { JobQueue } from './utils/job-queue.js';
 import { Url } from './utils/url.js';
+
+import { createRequire } from 'node:module';
+const require = createRequire(import.meta.url);
 
 let extensionManager: ExtensionManager | undefined;
 
@@ -386,7 +388,7 @@ class ExtensionManager {
 		for (const hook of hooks) {
 			try {
 				const hookPath = path.resolve(hook.path, hook.entrypoint);
-				const hookInstance: HookConfig | { default: HookConfig } = await dynamicImport(hookPath);
+				const hookInstance: HookConfig | { default: HookConfig } = await import(hookPath);
 
 				const config = getModuleDefault(hookInstance);
 

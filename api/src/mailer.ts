@@ -3,6 +3,9 @@ import env from './env.js';
 import logger from './logger.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
 
+import { createRequire } from 'node:module';
+const require = createRequire(import.meta.url);
+
 let transporter: Transporter;
 
 export default function getMailer(): Transporter {

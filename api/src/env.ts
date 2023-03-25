@@ -10,6 +10,9 @@ import { clone, toNumber, toString } from 'lodash';
 import path from 'path';
 import { requireYAML } from './utils/require-yaml.js';
 
+import { createRequire } from 'node:module';
+const require = createRequire(import.meta.url);
+
 // keeping this here for now to prevent a circular import to constants.ts
 const allowedEnvironmentVars = [
 	// general

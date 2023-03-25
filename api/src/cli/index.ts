@@ -14,8 +14,7 @@ import keyGenerate from './commands/security/key.js';
 import secretGenerate from './commands/security/secret.js';
 import usersCreate from './commands/users/create.js';
 import usersPasswd from './commands/users/passwd.js';
-
-const pkg = require('../../package.json');
+import * as pkg from '../utils/package.js';
 
 export async function createCli(): Promise<Command> {
 	const program = new Command();

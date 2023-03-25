@@ -9,6 +9,9 @@ import { getConfigFromEnv } from './utils/get-config-from-env.js';
 import { getMilliseconds } from './utils/get-milliseconds.js';
 import { validateEnv } from './utils/validate-env.js';
 
+import { createRequire } from 'node:module';
+const require = createRequire(import.meta.url);
+
 let cache: Keyv | null = null;
 let systemCache: Keyv | null = null;
 let localSchemaCache: Keyv | null = null;
@@ -167,7 +170,6 @@ function getConfig(store: Store = 'memory', ttl: number | undefined, namespaceSu
 
 	if (store === 'redis') {
 		const KeyvRedis = require('@keyv/redis');
-
 		config.store = new KeyvRedis(env['CACHE_REDIS'] || getConfigFromEnv('CACHE_REDIS_'));
 	}
 
