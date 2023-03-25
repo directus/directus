@@ -26,5 +26,5 @@
 		"isolatedModules": true,
 		"rootDir": "./src"
 	},
-	"include": ["./src/**/*.ts"]
+	"include": ["./src/**/*.ts", "../utils/src/node/get-extensions.ts", "../utils/src/node/get-extensions.ts"]
 }
