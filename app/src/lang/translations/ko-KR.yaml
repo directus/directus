@@ -1354,7 +1354,7 @@ referential_action_set_default: '{field}를 기본값으로 설정'
 choose_action: 액션 선택
 continue_label: 계속
 continue_as: >-
-  {name}이(가)이(가) 현재 인증되었습니다. 이 계정으로 계속하려면 계속을 누르세요.
+  {name}이(가) 현재 인증되었습니다. 이 계정으로 계속하려면 계속을 누르세요.
 editing_role: '{role} 역할'
 creating_webhook: 웹훅 만들기
 default_label: 기본
