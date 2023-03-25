@@ -71,7 +71,8 @@ importers:
       '@authenio/samlify-node-xmllint': 2.0.0
       '@aws-sdk/client-ses': 3.292.0
       '@directus/app': workspace:*
-      '@directus/exceptions': workspace:9.23.4
+      '@directus/constants': workspace:9.23.4
+      '@directus/exceptions': workspace:*
       '@directus/extensions-sdk': workspace:*
       '@directus/format-title': 10.0.0
       '@directus/schema': workspace:*
@@ -218,6 +219,7 @@ importers:
       '@authenio/samlify-node-xmllint': 2.0.0_samlify@2.8.10
       '@aws-sdk/client-ses': 3.292.0
       '@directus/app': link:../app
+      '@directus/constants': link:../packages/constants
       '@directus/exceptions': link:../packages/exceptions
       '@directus/extensions-sdk': link:../packages/extensions-sdk
       '@directus/format-title': 10.0.0
@@ -368,7 +370,8 @@ importers:
     specifiers:
       '@babel/core': 7.21.3
       '@babel/preset-env': 7.20.2
-      '@directus/exceptions': workspace:9.23.4
+      '@directus/constants': workspace:9.23.4
+      '@directus/exceptions': workspace:*
       '@directus/extensions-sdk': workspace:*
       '@directus/format-title': 10.0.0
       '@directus/shared': workspace:*
@@ -469,11 +472,11 @@ importers:
       vuedraggable: 4.1.0
       webpack: 5.76.2
       wellknown: 0.5.0
-    dependencies:
-      '@directus/exceptions': link:../packages/exceptions
     devDependencies:
       '@babel/core': 7.21.3
       '@babel/preset-env': 7.20.2_@babel+core@7.21.3
+      '@directus/constants': link:../packages/constants
+      '@directus/exceptions': link:../packages/exceptions
       '@directus/extensions-sdk': link:../packages/extensions-sdk
       '@directus/format-title': 10.0.0
       '@directus/shared': link:../packages/shared

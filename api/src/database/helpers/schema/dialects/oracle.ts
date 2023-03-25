@@ -1,4 +1,4 @@
-import type { KNEX_TYPES } from '@directus/shared/constants';
+import type { KNEX_TYPES } from '@directus/constants';
 import type { Field, Relation, Type } from '@directus/shared/types';
 import { Options, SchemaHelper } from '../types.js';
 

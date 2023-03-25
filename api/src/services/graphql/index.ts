@@ -1,4 +1,4 @@
-import { FUNCTIONS } from '@directus/shared/constants';
+import { FUNCTIONS } from '@directus/constants';
 import type { BaseException } from '@directus/exceptions';
 import { Accountability, Action, Aggregate, Filter, PrimaryKey, Query, SchemaOverview } from '@directus/shared/types';
 import { parseFilterFunctionPath } from '@directus/shared/utils';

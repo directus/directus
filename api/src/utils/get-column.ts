@@ -1,4 +1,4 @@
-import { REGEX_BETWEEN_PARENS } from '@directus/shared/constants';
+import { REGEX_BETWEEN_PARENS } from '@directus/constants';
 import type { FieldFunction, Query, SchemaOverview } from '@directus/shared/types';
 import { getFunctionsForType } from '@directus/shared/utils';
 import type { Knex } from 'knex';

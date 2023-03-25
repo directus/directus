@@ -3,6 +3,7 @@
 	"version": "9.23.4",
 	"description": "App dashboard for Directus",
 	"homepage": "https://directus.io",
+	"type": "module",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/directus/directus.git",
@@ -31,8 +32,9 @@
 	"devDependencies": {
 		"@babel/core": "7.21.3",
 		"@babel/preset-env": "7.20.2",
-		"@directus/extensions-sdk": "workspace:*",
+		"@directus/constants": "workspace:*",
 		"@directus/exceptions": "workspace:*",
+		"@directus/extensions-sdk": "workspace:*",
 		"@directus/format-title": "10.0.0",
 		"@directus/shared": "workspace:*",
 		"@fortawesome/fontawesome-svg-core": "6.3.0",

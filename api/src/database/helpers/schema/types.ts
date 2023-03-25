@@ -1,4 +1,4 @@
-import type { KNEX_TYPES } from '@directus/shared/constants';
+import type { KNEX_TYPES } from '@directus/constants';
 import type { Field, Relation, Type } from '@directus/shared/types';
 import type { Knex } from 'knex';
 import type { DatabaseClient } from '../../../types/index.js';

@@ -2,7 +2,7 @@ import { version as currentDirectusVersion } from './package.js';
 import { InvalidPayloadException } from '../exceptions/invalid-payload.js';
 import { getDatabaseClient } from '../database/index.js';
 import Joi from 'joi';
-import { TYPES } from '@directus/shared/constants';
+import { TYPES } from '@directus/constants';
 import { ALIAS_TYPES } from '../constants.js';
 import { DatabaseClients, Snapshot } from '../types/index.js';
 

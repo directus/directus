@@ -1,4 +1,4 @@
-import { REGEX_BETWEEN_PARENS } from '@directus/shared/constants';
+import { REGEX_BETWEEN_PARENS } from '@directus/constants';
 import { FieldFunction } from '@directus/shared/types';
 
 /**

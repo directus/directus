@@ -1,4 +1,4 @@
-import { TYPES } from '@directus/shared/constants';
+import { TYPES } from '@directus/constants';
 import type { Field, Type } from '@directus/shared/types';
 import { Router } from 'express';
 import Joi from 'joi';

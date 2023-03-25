@@ -9,7 +9,7 @@ import {
 	Collection,
 	LocalType,
 } from '@directus/shared/types';
-import { LOCAL_TYPES } from '@directus/shared/constants';
+import { LOCAL_TYPES } from '@directus/constants';
 import { computed } from 'vue';
 import { get, set } from 'lodash';
 import { unexpectedError } from '@/utils/unexpected-error';

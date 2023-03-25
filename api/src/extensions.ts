@@ -3,7 +3,7 @@ import {
 	APP_SHARED_DEPS,
 	HYBRID_EXTENSION_TYPES,
 	NESTED_EXTENSION_TYPES,
-} from '@directus/shared/constants';
+} from '@directus/constants';
 import * as sharedExceptions from '@directus/exceptions';
 import type {
 	ActionHandler,

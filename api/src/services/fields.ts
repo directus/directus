@@ -1,6 +1,6 @@
 import type { Column, SchemaInspector } from '@directus/schema';
 import { createInspector } from '@directus/schema';
-import { KNEX_TYPES, REGEX_BETWEEN_PARENS } from '@directus/shared/constants';
+import { KNEX_TYPES, REGEX_BETWEEN_PARENS } from '@directus/constants';
 import type { Accountability, Field, FieldMeta, RawField, SchemaOverview, Type } from '@directus/shared/types';
 import { addFieldFlag, toArray } from '@directus/shared/utils';
 import type Keyv from 'keyv';

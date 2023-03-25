@@ -3,7 +3,7 @@ import {
 	APP_OR_HYBRID_EXTENSION_TYPES,
 	APP_SHARED_DEPS,
 	NESTED_EXTENSION_TYPES,
-} from '@directus/shared/constants';
+} from '@directus/constants';
 import {
 	ensureExtensionDirs,
 	generateExtensionsEntrypoint,
