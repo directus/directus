@@ -245,6 +245,7 @@ float: Float - plávajúca čiarka
 integer: Celé čislo
 json: JSON
 xml: XML
+yaml: YAML
 string: Text
 text: Text
 time: Čas
