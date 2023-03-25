@@ -1,5 +1,5 @@
 import type { Knex } from 'knex';
-import SchemaInspector from 'knex-schema-inspector';
+import SchemaInspector from '@directus/schema';
 import logger from '../../logger.js';
 
 /**

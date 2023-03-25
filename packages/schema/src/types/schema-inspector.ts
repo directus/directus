@@ -1,7 +1,8 @@
 import type { Knex } from 'knex';
-import type { Table } from './table';
-import type { Column } from './column';
-import type { ForeignKey } from './foreign-key';
+import type { Table } from './table.js';
+import type { Column } from './column.js';
+import type { ForeignKey } from './foreign-key.js';
+import type { SchemaOverview } from './overview.js';
 
 export interface SchemaInspector {
 	knex: Knex;

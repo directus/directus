@@ -1,9 +1,9 @@
-import SchemaInspector from '@directus/schema';
+import { createInspector } from '@directus/schema';
 import type { Accountability, FieldMeta, RawField, SchemaOverview } from '@directus/shared/types';
 import { addFieldFlag } from '@directus/shared/utils';
 import type Keyv from 'keyv';
 import type { Knex } from 'knex';
-import type { Table } from 'knex-schema-inspector/dist/types/table.js';
+import type { Table, SchemaInspector } from '@directus/schema';
 import { omit } from 'lodash-es';
 import { clearSystemCache, getCache } from '../cache.js';
 import { ALIAS_TYPES } from '../constants.js';
@@ -35,7 +35,7 @@ export class CollectionsService {
 	knex: Knex;
 	helpers: Helpers;
 	accountability: Accountability | null;
-	schemaInspector: ReturnType<typeof SchemaInspector>;
+	schemaInspector: SchemaInspector;
 	schema: SchemaOverview;
 	cache: Keyv<any> | null;
 	systemCache: Keyv<any>;
@@ -44,7 +44,7 @@ export class CollectionsService {
 		this.knex = options.knex || getDatabase();
 		this.helpers = getHelpers(this.knex);
 		this.accountability = options.accountability || null;
-		this.schemaInspector = options.knex ? SchemaInspector(options.knex) : getSchemaInspector();
+		this.schemaInspector = options.knex ? createInspector(options.knex) : getSchemaInspector();
 		this.schema = options.schema;
 
 		const { cache, systemCache } = getCache();

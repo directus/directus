@@ -8,7 +8,13 @@ import SqliteSchemaInspector from './dialects/sqlite.js';
 import OracleDBSchemaInspector from './dialects/oracledb.js';
 import MSSQLSchemaInspector from './dialects/mssql.js';
 
-export function SchemaInspector(knex: Knex) {
+export * from './types/column.js';
+export * from './types/foreign-key.js';
+export * from './types/table.js';
+export * from './types/overview.js';
+export * from './types/schema-inspector.js';
+
+export const createInspector = (knex: Knex) => {
 	let constructor: SchemaInspectorConstructor;
 
 	switch (knex.client.constructor.name) {
@@ -38,6 +44,4 @@ export function SchemaInspector(knex: Knex) {
 	}
 
 	return new constructor(knex);
-}
-
-export default SchemaInspector;
+};

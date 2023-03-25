@@ -1,9 +1,9 @@
-import SchemaInspector from '@directus/schema';
+import { createInspector } from '@directus/schema';
 import type { Accountability, Query, Relation, RelationMeta, SchemaOverview } from '@directus/shared/types';
 import { toArray } from '@directus/shared/utils';
 import type Keyv from 'keyv';
 import type { Knex } from 'knex';
-import type { ForeignKey } from 'knex-schema-inspector/dist/types/foreign-key.js';
+import type { ForeignKey, SchemaInspector } from '@directus/schema';
 import { clearSystemCache, getCache } from '../cache.js';
 import getDatabase, { getSchemaInspector } from '../database/index.js';
 import { getHelpers, Helpers } from '../database/helpers/index.js';
@@ -19,7 +19,7 @@ import { PermissionsService } from './permissions.js';
 export class RelationsService {
 	knex: Knex;
 	permissionsService: PermissionsService;
-	schemaInspector: ReturnType<typeof SchemaInspector>;
+	schemaInspector: SchemaInspector;
 	accountability: Accountability | null;
 	schema: SchemaOverview;
 	relationsItemService: ItemsService<RelationMeta>;
@@ -29,7 +29,7 @@ export class RelationsService {
 	constructor(options: AbstractServiceOptions) {
 		this.knex = options.knex || getDatabase();
 		this.permissionsService = new PermissionsService(options);
-		this.schemaInspector = options.knex ? SchemaInspector(options.knex) : getSchemaInspector();
+		this.schemaInspector = options.knex ? createInspector(options.knex) : getSchemaInspector();
 		this.schema = options.schema;
 		this.accountability = options.accountability || null;
 		this.relationsItemService = new ItemsService('directus_relations', {

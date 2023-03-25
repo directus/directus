@@ -1,7 +1,8 @@
-import SchemaInspector from '@directus/schema';
+import { createInspector } from '@directus/schema';
+import type { SchemaInspector } from '@directus/schema';
 import fse from 'fs-extra';
 import type { Knex } from 'knex';
-import knex from 'knex';
+import { knex } from 'knex';
 import { merge } from 'lodash-es';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -16,7 +17,7 @@ import { validateEnv } from '../utils/validate-env.js';
 import { getHelpers } from './helpers/index.js';
 
 let database: Knex | null = null;
-let inspector: ReturnType<typeof SchemaInspector> | null = null;
+let inspector: SchemaInspector | null = null;
 let databaseVersion: string | null = null;
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -154,14 +155,14 @@ export default function getDatabase(): Knex {
 	return database;
 }
 
-export function getSchemaInspector(): ReturnType<typeof SchemaInspector> {
+export function getSchemaInspector(): SchemaInspector {
 	if (inspector) {
 		return inspector;
 	}
 
 	const database = getDatabase();
 
-	inspector = SchemaInspector(database);
+	inspector = createInspector(database);
 
 	return inspector;
 }

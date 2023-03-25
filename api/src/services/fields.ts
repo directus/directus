@@ -1,20 +1,20 @@
-import SchemaInspector from '@directus/schema';
+import type { Column, SchemaInspector } from '@directus/schema';
+import { createInspector } from '@directus/schema';
 import { KNEX_TYPES, REGEX_BETWEEN_PARENS } from '@directus/shared/constants';
 import type { Accountability, Field, FieldMeta, RawField, SchemaOverview, Type } from '@directus/shared/types';
 import { addFieldFlag, toArray } from '@directus/shared/utils';
 import type Keyv from 'keyv';
 import type { Knex } from 'knex';
-import type { Column } from 'knex-schema-inspector/dist/types/column.js';
 import { isEqual, isNil } from 'lodash-es';
 import { clearSystemCache, getCache } from '../cache.js';
 import { ALIAS_TYPES } from '../constants.js';
-import getDatabase, { getSchemaInspector } from '../database/index.js';
 import { getHelpers, Helpers } from '../database/helpers/index.js';
+import getDatabase, { getSchemaInspector } from '../database/index.js';
 import { systemFieldRows } from '../database/system-data/fields/index.js';
 import emitter from '../emitter.js';
 import env from '../env.js';
-import { ForbiddenException, InvalidPayloadException } from '../exceptions/index.js';
 import { translateDatabaseError } from '../exceptions/database/translate.js';
+import { ForbiddenException, InvalidPayloadException } from '../exceptions/index.js';
 import { ItemsService } from '../services/items.js';
 import { PayloadService } from '../services/payload.js';
 import type { AbstractServiceOptions, ActionEventParams, MutationOptions } from '../types/index.js';
@@ -29,7 +29,7 @@ export class FieldsService {
 	accountability: Accountability | null;
 	itemsService: ItemsService;
 	payloadService: PayloadService;
-	schemaInspector: ReturnType<typeof SchemaInspector>;
+	schemaInspector: SchemaInspector;
 	schema: SchemaOverview;
 	cache: Keyv<any> | null;
 	systemCache: Keyv<any>;
@@ -37,7 +37,7 @@ export class FieldsService {
 	constructor(options: AbstractServiceOptions) {
 		this.knex = options.knex || getDatabase();
 		this.helpers = getHelpers(this.knex);
-		this.schemaInspector = options.knex ? SchemaInspector(options.knex) : getSchemaInspector();
+		this.schemaInspector = options.knex ? createInspector(options.knex) : getSchemaInspector();
 		this.accountability = options.accountability || null;
 		this.itemsService = new ItemsService('directus_fields', options);
 		this.payloadService = new PayloadService('directus_fields', options);
