@@ -1,18 +1,10 @@
 import type { Accountability } from '@directus/shared/types';
 import { Router } from 'express';
 import Joi from 'joi';
-import ldap, {
-	Client,
-	EqualityFilter,
-	Error,
-	InappropriateAuthenticationError,
-	InsufficientAccessRightsError,
-	InvalidCredentialsError,
-	LDAPResult,
-	SearchCallbackResponse,
-	SearchEntry,
-} from 'ldapjs';
+import type { Client, Error, LDAPResult, SearchCallbackResponse, SearchEntry } from 'ldapjs';
+import ldap from 'ldapjs';
 import env from '../../env.js';
+import { RecordNotUniqueException } from '../../exceptions/database/record-not-unique.js';
 import {
 	InvalidConfigException,
 	InvalidCredentialsException,
@@ -21,7 +13,6 @@ import {
 	ServiceUnavailableException,
 	UnexpectedResponseException,
 } from '../../exceptions/index.js';
-import { RecordNotUniqueException } from '../../exceptions/database/record-not-unique.js';
 import logger from '../../logger.js';
 import { respond } from '../../middleware/respond.js';
 import { AuthenticationService, UsersService } from '../../services/index.js';
@@ -121,7 +112,7 @@ export class LDAPAuthDriver extends AuthDriver {
 
 	private async fetchUserInfo(
 		baseDn: string,
-		filter?: EqualityFilter,
+		filter?: ldap.EqualityFilter,
 		scope?: SearchScope
 	): Promise<UserInfo | undefined> {
 		let { firstNameAttribute, lastNameAttribute, mailAttribute } = this.config;
@@ -178,7 +169,7 @@ export class LDAPAuthDriver extends AuthDriver {
 		});
 	}
 
-	private async fetchUserGroups(baseDn: string, filter?: EqualityFilter, scope?: SearchScope): Promise<string[]> {
+	private async fetchUserGroups(baseDn: string, filter?: ldap.EqualityFilter, scope?: SearchScope): Promise<string[]> {
 		return new Promise((resolve, reject) => {
 			let userGroups: string[] = [];
 
@@ -237,7 +228,7 @@ export class LDAPAuthDriver extends AuthDriver {
 
 		const userInfo = await this.fetchUserInfo(
 			userDn,
-			new EqualityFilter({
+			new ldap.EqualityFilter({
 				attribute: userAttribute ?? 'cn',
 				value: payload['identifier'],
 			}),
@@ -253,7 +244,7 @@ export class LDAPAuthDriver extends AuthDriver {
 		if (groupDn) {
 			const userGroups = await this.fetchUserGroups(
 				groupDn,
-				new EqualityFilter({
+				new ldap.EqualityFilter({
 					attribute: groupAttribute ?? 'member',
 					value: groupAttribute?.toLowerCase() === 'memberuid' && userInfo.uid ? userInfo.uid : userInfo.dn,
 				}),
@@ -351,9 +342,9 @@ export class LDAPAuthDriver extends AuthDriver {
 
 const handleError = (e: Error) => {
 	if (
-		e instanceof InappropriateAuthenticationError ||
-		e instanceof InvalidCredentialsError ||
-		e instanceof InsufficientAccessRightsError
+		e instanceof ldap.InappropriateAuthenticationError ||
+		e instanceof ldap.InvalidCredentialsError ||
+		e instanceof ldap.InsufficientAccessRightsError
 	) {
 		return new InvalidCredentialsException();
 	}

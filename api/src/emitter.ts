@@ -1,5 +1,5 @@
 import type { ActionHandler, EventContext, FilterHandler, InitHandler } from '@directus/shared/types';
-import { EventEmitter2 } from 'eventemitter2';
+import EventEmitter2 from 'eventemitter2';
 import logger from './logger.js';
 
 export class Emitter {
