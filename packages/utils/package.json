@@ -39,10 +39,12 @@
 	},
 	"dependencies": {
 		"@directus/shared": "workspace:*",
-		"@directus/storage": "workspace:*"
+		"@directus/storage": "workspace:*",
+		"micromustache": "8.0.3"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "0.0.6",
+		"@directus/types": "workspace:9.23.4",
 		"@ngneat/falso": "6.4.0",
 		"@vitest/coverage-c8": "0.29.3",
 		"typescript": "4.9.5",

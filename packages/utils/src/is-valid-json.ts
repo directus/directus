@@ -1,4 +1,4 @@
-import { parseJSON } from './parse-json';
+import { parseJSON } from './parse-json.js';
 
 export function isValidJSON(input: string) {
 	try {
