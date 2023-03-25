@@ -43,7 +43,9 @@ export default defineComponent({
 
 		const { providers } = toRefs(props);
 		const ssoProviders = ref<{ name: string; link: string; icon: string }[]>([]);
-
+		const redirectPageAfterOauthLogin = (): string => {
+			return window.location?.search?.split('?redirect=/')?.[1] || '';
+		};
 		watch(
 			providers,
 			() => {
@@ -55,7 +57,7 @@ export default defineComponent({
 						link: `${getRootPath()}auth/login/${provider.name}?redirect=${window.location.href.replace(
 							location.search,
 							''
-						)}?continue`,
+						)}?continue=${redirectPageAfterOauthLogin()}`,
 						icon: provider.icon ?? 'account_circle',
 					}));
 			},
