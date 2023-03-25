@@ -1,4 +1,4 @@
-import { FailedValidationException } from '@directus/shared/exceptions';
+import { FailedValidationException } from '@directus/exceptions';
 import type {
 	Accountability,
 	Aggregate,

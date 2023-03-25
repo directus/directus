@@ -1,5 +1,5 @@
 import { useRelationsStore } from '@/stores/relations';
-import { FailedValidationException } from '@directus/shared/exceptions';
+import { FailedValidationException } from '@directus/exceptions';
 import { Field, LogicalFilterAND } from '@directus/shared/types';
 import { validatePayload } from '@directus/shared/utils';
 import { cloneDeep, flatten, isEmpty, isNil } from 'lodash';

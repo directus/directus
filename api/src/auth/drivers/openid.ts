@@ -1,4 +1,4 @@
-import { BaseException } from '@directus/shared/exceptions';
+import { BaseException } from '@directus/exceptions';
 import type { Accountability } from '@directus/shared/types';
 import { parseJSON } from '@directus/shared/utils';
 import express, { Router } from 'express';

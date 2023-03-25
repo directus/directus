@@ -1,4 +1,4 @@
-import { BaseException } from '@directus/shared/exceptions';
+import { BaseException } from '@directus/exceptions';
 import { toArray } from '@directus/shared/utils';
 import type { ErrorRequestHandler } from 'express';
 import getDatabase from '../database/index.js';

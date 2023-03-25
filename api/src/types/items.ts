@@ -3,7 +3,7 @@
  * expecting an item vs any other generic object.
  */
 
-import type { BaseException } from '@directus/shared/exceptions';
+import type { BaseException } from '@directus/exceptions';
 import type { EventContext } from '@directus/shared/types';
 
 export type Item = Record<string, any>;

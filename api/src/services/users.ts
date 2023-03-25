@@ -1,4 +1,4 @@
-import { FailedValidationException } from '@directus/shared/exceptions';
+import { FailedValidationException } from '@directus/exceptions';
 import type { Query } from '@directus/shared/types';
 import { getSimpleHash, toArray } from '@directus/shared/utils';
 import jwt from 'jsonwebtoken';

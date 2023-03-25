@@ -1,5 +1,5 @@
 import { FUNCTIONS } from '@directus/shared/constants';
-import type { BaseException } from '@directus/shared/exceptions';
+import type { BaseException } from '@directus/exceptions';
 import { Accountability, Action, Aggregate, Filter, PrimaryKey, Query, SchemaOverview } from '@directus/shared/types';
 import { parseFilterFunctionPath } from '@directus/shared/utils';
 import argon2 from 'argon2';

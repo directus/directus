@@ -1,4 +1,4 @@
-import * as exceptions from '@directus/shared/exceptions';
+import * as exceptions from '@directus/exceptions';
 const { BaseException } = exceptions;
 
 export class ForbiddenException extends BaseException {

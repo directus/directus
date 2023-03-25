@@ -71,6 +71,7 @@ importers:
       '@authenio/samlify-node-xmllint': 2.0.0
       '@aws-sdk/client-ses': 3.292.0
       '@directus/app': workspace:*
+      '@directus/exceptions': workspace:9.23.4
       '@directus/extensions-sdk': workspace:*
       '@directus/format-title': 10.0.0
       '@directus/schema': workspace:*
@@ -217,6 +218,7 @@ importers:
       '@authenio/samlify-node-xmllint': 2.0.0_samlify@2.8.10
       '@aws-sdk/client-ses': 3.292.0
       '@directus/app': link:../app
+      '@directus/exceptions': link:../packages/exceptions
       '@directus/extensions-sdk': link:../packages/extensions-sdk
       '@directus/format-title': 10.0.0
       '@directus/schema': link:../packages/schema
@@ -366,6 +368,7 @@ importers:
     specifiers:
       '@babel/core': 7.21.3
       '@babel/preset-env': 7.20.2
+      '@directus/exceptions': workspace:9.23.4
       '@directus/extensions-sdk': workspace:*
       '@directus/format-title': 10.0.0
       '@directus/shared': workspace:*
@@ -466,6 +469,8 @@ importers:
       vuedraggable: 4.1.0
       webpack: 5.76.2
       wellknown: 0.5.0
+    dependencies:
+      '@directus/exceptions': link:../packages/exceptions
     devDependencies:
       '@babel/core': 7.21.3
       '@babel/preset-env': 7.20.2_@babel+core@7.21.3
@@ -579,6 +584,22 @@ importers:
       '@directus/extensions-sdk': link:../extensions-sdk
       '@directus/shared': link:../shared
       inquirer: 8.2.5
+
+  packages/exceptions:
+    specifiers:
+      '@directus/tsconfig': 0.0.6
+      '@ngneat/falso': 6.4.0
+      '@vitest/coverage-c8': 0.29.3
+      joi: 17.8.4
+      typescript: 4.9.5
+      vitest: 0.29.3
+    devDependencies:
+      '@directus/tsconfig': 0.0.6
+      '@ngneat/falso': 6.4.0
+      '@vitest/coverage-c8': 0.29.3_vitest@0.29.3
+      joi: 17.8.4
+      typescript: 4.9.5
+      vitest: 0.29.3
 
   packages/extensions-sdk:
     specifiers:
@@ -4110,13 +4131,11 @@ packages:
 
   /@hapi/hoek/9.3.0:
     resolution: {integrity: sha512-/c6rf4UJlmHlC9b5BaNvzAcFv7HZ2QHaV0D4/HNlBdvFnvQq8RI4kYdhyPCl7Xj+oWvTWQ8ujhqS53LIgAe6KQ==}
-    dev: false
 
   /@hapi/topo/5.1.0:
     resolution: {integrity: sha512-foQZKJig7Ob0BMAYBfcJk8d77QtOe7Wo4ox7ff1lQYoNNAb6jwcY1ncdoy2e9wQZzvNy7ODZCYJkK8kzmcAnAg==}
     dependencies:
       '@hapi/hoek': 9.3.0
-    dev: false
 
   /@humanwhocodes/config-array/0.11.8:
     resolution: {integrity: sha512-UybHIJzJnR5Qc/MsD9Kr+RpO2h+/P1GhOwdiLPXK5TWk5sgTdu88bTD9UP+CKbPPh5Rni1u0GjAdYQLemG8g+g==}
@@ -5098,15 +5117,12 @@ packages:
     resolution: {integrity: sha512-7vwq+rOHVWjyXxVlR76Agnvhy8I9rpzjosTESvmhNeXOXdZZB15Fl+TI9x1SiHZH5Jv2wTGduSxFDIaq0m3DUw==}
     dependencies:
       '@hapi/hoek': 9.3.0
-    dev: false
 
   /@sideway/formula/3.0.1:
     resolution: {integrity: sha512-/poHZJJVjx3L+zVD6g9KgHfYnb443oi7wLu/XKojDviHy6HOEOA6z1Trk5aR1dGcmPenJEgb2sK2I80LeS3MIg==}
-    dev: false
 
   /@sideway/pinpoint/2.0.0:
     resolution: {integrity: sha512-RNiOoTPkptFtSVzQevY/yWtZwf/RxyVnPy/OcA9HBM3MlGDnBEYL5B41H0MTn0Uec8Hi+2qUtTfG2WWZBmMejQ==}
-    dev: false
 
   /@sinclair/typebox/0.25.21:
     resolution: {integrity: sha512-gFukHN4t8K4+wVC+ECqeqwzBDeFeTzBXroBTqE6vcWrQGbEUpHO7LYdG0f4xnvYq4VOEwITSlHlp0JBAIFMS/g==}
@@ -11850,7 +11866,6 @@ packages:
       '@sideway/address': 4.1.4
       '@sideway/formula': 3.0.1
       '@sideway/pinpoint': 2.0.0
-    dev: false
 
   /jose/4.11.1:
     resolution: {integrity: sha512-YRv4Tk/Wlug8qicwqFNFVEZSdbROCHRAC6qu/i0dyNKr5JQdoa2pIGoS04lLO/jXQX7Z9omoNewYIVIxqZBd9Q==}

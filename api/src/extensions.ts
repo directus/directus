@@ -4,7 +4,7 @@ import {
 	HYBRID_EXTENSION_TYPES,
 	NESTED_EXTENSION_TYPES,
 } from '@directus/shared/constants';
-import * as sharedExceptions from '@directus/shared/exceptions';
+import * as sharedExceptions from '@directus/exceptions';
 import type {
 	ActionHandler,
 	ApiExtension,
