@@ -1,11 +1,15 @@
+import formatTitle from '@directus/format-title';
 import fse from 'fs-extra';
 import type { Knex } from 'knex';
 import { orderBy } from 'lodash-es';
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import path from 'path';
 import env from '../../env.js';
 import logger from '../../logger.js';
 import type { Migration } from '../../types/index.js';
-import formatTitle from '@directus/format-title';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export default async function run(database: Knex, direction: 'up' | 'down' | 'latest', log = true): Promise<void> {
 	let migrationFiles = await fse.readdir(__dirname);

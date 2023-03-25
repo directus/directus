@@ -1,4 +1,4 @@
-import { machineId } from 'node-machine-id';
+import mid from 'node-machine-id';
 import os from 'os';
 import { toArray } from '@directus/shared/utils';
 import { version } from './package.js';
@@ -27,7 +27,7 @@ async function getEnvInfo(event: string) {
 		version: version,
 		event: event,
 		project_id: env['KEY'],
-		machine_id: await machineId(),
+		machine_id: await mid.machineId(),
 		environment: env['NODE_ENV'],
 		stack: 'node',
 		os: {

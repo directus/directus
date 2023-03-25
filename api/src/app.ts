@@ -1,9 +1,13 @@
 import cookieParser from 'cookie-parser';
 import express, { Request, RequestHandler, Response } from 'express';
-import { readFile } from 'node:fs/promises';
 import type { ServerResponse } from 'http';
+import { merge } from 'lodash-es';
+import { readFile } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
 import path from 'path';
 import qs from 'qs';
+import { registerAuthProviders } from './auth.js';
+import { flushCaches } from './cache.js';
 import activityRouter from './controllers/activity.js';
 import assetsRouter from './controllers/assets.js';
 import authRouter from './controllers/auth.js';
@@ -55,16 +59,14 @@ import rateLimiterGlobal from './middleware/rate-limiter-global.js';
 import rateLimiter from './middleware/rate-limiter-ip.js';
 import sanitizeQuery from './middleware/sanitize-query.js';
 import schema from './middleware/schema.js';
-
-import { merge } from 'lodash-es';
-import { registerAuthProviders } from './auth.js';
-import { flushCaches } from './cache.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
 import { track } from './utils/track.js';
 import { Url } from './utils/url.js';
 import { validateEnv } from './utils/validate-env.js';
 import { validateStorage } from './utils/validate-storage.js';
 import { init as initWebhooks } from './webhooks.js';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default async function createApp(): Promise<express.Application> {
 	const helmet = await import('helmet');
@@ -185,7 +187,7 @@ export default async function createApp(): Promise<express.Application> {
 	});
 
 	if (env['SERVE_APP']) {
-		const adminPath = require.resolve('@directus/app');
+		const adminPath = path.resolve(__dirname, '@directus/app');
 		const adminUrl = new Url(env['PUBLIC_URL']).addPath('admin');
 
 		const embeds = extensionManager.getEmbeds();

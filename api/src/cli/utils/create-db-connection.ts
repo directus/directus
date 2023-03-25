@@ -1,7 +1,11 @@
 import { knex, Knex } from 'knex';
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import path from 'path';
 import { promisify } from 'util';
 import type { Driver } from '../../types/index.js';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export type Credentials = {
 	filename?: string;

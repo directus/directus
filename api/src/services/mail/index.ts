@@ -11,6 +11,9 @@ import logger from '../../logger.js';
 import getMailer from '../../mailer.js';
 import type { AbstractServiceOptions } from '../../types/index.js';
 import { Url } from '../../utils/url.js';
+import { fileURLToPath } from 'url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const liquidEngine = new Liquid({
 	root: [path.resolve(env['EXTENSIONS_PATH'], 'templates'), path.resolve(__dirname, 'templates')],

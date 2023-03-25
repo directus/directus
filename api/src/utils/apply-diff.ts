@@ -1,5 +1,6 @@
 import type { Field, Relation, SchemaOverview } from '@directus/shared/types';
-import { applyChange, Diff, DiffDeleted, DiffNew } from 'deep-diff';
+import deepDiff from 'deep-diff';
+import type { Diff, DiffDeleted, DiffNew } from 'deep-diff';
 import type { Knex } from 'knex';
 import { cloneDeep, merge, set } from 'lodash-es';
 import { clearSystemCache } from '../cache.js';
@@ -183,7 +184,7 @@ export async function applyDiff(
 				if (currentCollection) {
 					try {
 						const newValues = diff.reduce((acc, currentDiff) => {
-							applyChange(acc, undefined, currentDiff);
+							deepDiff.applyChange(acc, undefined, currentDiff);
 							return acc;
 						}, cloneDeep(currentCollection));
 
@@ -219,7 +220,7 @@ export async function applyDiff(
 				if (currentField) {
 					try {
 						const newValues = diff.reduce((acc, currentDiff) => {
-							applyChange(acc, undefined, currentDiff);
+							deepDiff.applyChange(acc, undefined, currentDiff);
 							return acc;
 						}, cloneDeep(currentField));
 						await fieldsService.updateField(collection, newValues, mutationOptions);
@@ -275,7 +276,7 @@ export async function applyDiff(
 				if (currentRelation) {
 					try {
 						const newValues = diff.reduce((acc, currentDiff) => {
-							applyChange(acc, undefined, currentDiff);
+							deepDiff.applyChange(acc, undefined, currentDiff);
 							return acc;
 						}, cloneDeep(currentRelation));
 						await relationsService.updateOne(collection, field, newValues, mutationOptions);

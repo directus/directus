@@ -1,8 +1,10 @@
 import SchemaInspector from '@directus/schema';
 import fse from 'fs-extra';
-import knex from 'knex';
 import type { Knex } from 'knex';
+import knex from 'knex';
 import { merge } from 'lodash-es';
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import path from 'path';
 import { performance } from 'perf_hooks';
 import { promisify } from 'util';
@@ -16,6 +18,8 @@ import { getHelpers } from './helpers/index.js';
 let database: Knex | null = null;
 let inspector: ReturnType<typeof SchemaInspector> | null = null;
 let databaseVersion: string | null = null;
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export default function getDatabase(): Knex {
 	if (database) {

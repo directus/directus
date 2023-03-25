@@ -40,6 +40,9 @@ import globby from 'globby';
 import { clone, escapeRegExp } from 'lodash-es';
 import { schedule, validate } from 'node-cron';
 import { readdir } from 'node:fs/promises';
+import { createRequire } from 'node:module';
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import path from 'path';
 import { rollup } from 'rollup';
 import getDatabase from './database/index.js';
@@ -55,8 +58,8 @@ import { getSchema } from './utils/get-schema.js';
 import { JobQueue } from './utils/job-queue.js';
 import { Url } from './utils/url.js';
 
-import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 let extensionManager: ExtensionManager | undefined;
 
