@@ -1354,7 +1354,8 @@ referential_action_set_default: '{field}를 기본값으로 설정'
 choose_action: 액션 선택
 continue_label: 계속
 continue_as: >-
-  {name}이(가) 현재 인증되었습니다. 이 계정으로 계속하려면 계속을 누르세요.
+  현재 {name}으로 인증되었습니다.
+  이 계정으로 계속하려면 계속을 누르세요.
 editing_role: '{role} 역할'
 creating_webhook: 웹훅 만들기
 default_label: 기본
@@ -1520,7 +1521,7 @@ interfaces:
     datetime: 날짜 시간
     description: 날짜 및 시간 입력
     include_seconds: 초 포함
-    set_to_now: 지금으로 설정
+    set_to_now: 현재로 설정
     use_24: 24시간 형식 사용
     placeholder: 날짜 시간 선택...
   system-fields:
