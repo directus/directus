@@ -141,7 +141,7 @@ export default function getDatabase(): Knex {
 			times[queryInfo.__knexUid] = performance.now();
 		})
 		.on('query-response', (_response, queryInfo) => {
-			const delta = performance.now() - times[queryInfo.__knexUid];
+			const delta = performance.now() - times[queryInfo.__knexUid]!;
 			logger.trace(`[${delta.toFixed(3)}ms] ${queryInfo.sql} [${queryInfo.bindings.join(', ')}]`);
 			delete times[queryInfo.__knexUid];
 		});

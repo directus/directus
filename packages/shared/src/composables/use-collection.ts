@@ -2,7 +2,7 @@ import { useStores } from './use-system';
 import { AppCollection, Field } from '../types';
 import { computed, ref, Ref, ComputedRef } from 'vue';
 
-type UsableCollection = {
+export type UsableCollection = {
 	info: ComputedRef<AppCollection | null>;
 	fields: ComputedRef<Field[]>;
 	defaults: ComputedRef<Record<string, any>>;

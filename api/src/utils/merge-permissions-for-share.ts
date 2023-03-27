@@ -22,7 +22,7 @@ export function mergePermissionsForShare(
 
 	const { collection, item } = accountability.share_scope!;
 
-	const parentPrimaryKeyField = schema.collections[collection].primary;
+	const parentPrimaryKeyField = schema.collections[collection]!.primary;
 
 	const reducedSchema = reduceSchema(schema, currentPermissions, ['read']);
 

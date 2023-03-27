@@ -52,7 +52,7 @@ export async function applyDiff(
 
 		const createCollections = async (collections: CollectionDelta[]) => {
 			for (const { collection, diff } of collections) {
-				if (diff?.[0].kind === DiffKind.NEW && diff[0].rhs) {
+				if (diff?.[0]?.kind === DiffKind.NEW && diff[0].rhs) {
 					// We'll nest the to-be-created fields in the same collection creation, to prevent
 					// creating a collection without a primary key
 					const fields = snapshotDiff.fields
@@ -96,7 +96,7 @@ export async function applyDiff(
 
 		const deleteCollections = async (collections: CollectionDelta[]) => {
 			for (const { collection, diff } of collections) {
-				if (diff?.[0].kind === DiffKind.DELETE) {
+				if (diff?.[0]?.kind === DiffKind.DELETE) {
 					const relations = schema.relations.filter(
 						(r) => r.related_collection === collection || r.collection === collection
 					);
@@ -136,7 +136,7 @@ export async function applyDiff(
 		// Finds all collections that need to be created
 		const filterCollectionsForCreation = ({ diff }: { collection: string; diff: Diff<Collection | undefined>[] }) => {
 			// Check new collections only
-			const isNewCollection = diff[0].kind === DiffKind.NEW;
+			const isNewCollection = diff[0]?.kind === DiffKind.NEW;
 			if (!isNewCollection) return false;
 
 			// Create now if no group
@@ -155,7 +155,7 @@ export async function applyDiff(
 			//			TheCurrentCollectionInIteration - I exist in snapshotDiff as a new collection but will be created as part of NestedCollection
 			const parentWillBeCreatedInThisApply =
 				snapshotDiff.collections.filter(
-					({ collection, diff }) => diff[0].kind === DiffKind.NEW && collection === groupName
+					({ collection, diff }) => diff[0]?.kind === DiffKind.NEW && collection === groupName
 				).length > 0;
 			// Has group, but parent is not new, parent is also not being created in this snapshot apply
 			if (parentExists && !parentWillBeCreatedInThisApply) return true;
@@ -170,12 +170,12 @@ export async function applyDiff(
 		// delete top level collections (no group) first, then continue with nested collections recursively
 		await deleteCollections(
 			snapshotDiff.collections.filter(
-				({ diff }) => diff[0].kind === DiffKind.DELETE && (diff[0] as DiffDeleted<Collection>).lhs.meta?.group === null
+				({ diff }) => diff[0]?.kind === DiffKind.DELETE && (diff[0] as DiffDeleted<Collection>).lhs.meta?.group === null
 			)
 		);
 
 		for (const { collection, diff } of snapshotDiff.collections) {
-			if (diff?.[0].kind === DiffKind.EDIT || diff?.[0].kind === DiffKind.ARRAY) {
+			if (diff?.[0]?.kind === DiffKind.EDIT || diff?.[0]?.kind === DiffKind.ARRAY) {
 				const currentCollection = currentSnapshot.collections.find((field) => {
 					return field.collection === collection;
 				});
@@ -202,7 +202,7 @@ export async function applyDiff(
 		});
 
 		for (const { collection, field, diff } of snapshotDiff.fields) {
-			if (diff?.[0].kind === DiffKind.NEW && !isNestedMetaUpdate(diff?.[0])) {
+			if (diff?.[0]?.kind === DiffKind.NEW && !isNestedMetaUpdate(diff?.[0])) {
 				try {
 					await fieldsService.createField(collection, (diff[0] as DiffNew<Field>).rhs, undefined, mutationOptions);
 				} catch (err) {
@@ -211,7 +211,7 @@ export async function applyDiff(
 				}
 			}
 
-			if (diff?.[0].kind === DiffKind.EDIT || diff?.[0].kind === DiffKind.ARRAY || isNestedMetaUpdate(diff?.[0])) {
+			if (diff?.[0]?.kind === DiffKind.EDIT || diff?.[0]?.kind === DiffKind.ARRAY || isNestedMetaUpdate(diff[0]!)) {
 				const currentField = currentSnapshot.fields.find((snapshotField) => {
 					return snapshotField.collection === collection && snapshotField.field === field;
 				});
@@ -230,7 +230,7 @@ export async function applyDiff(
 				}
 			}
 
-			if (diff?.[0].kind === DiffKind.DELETE && !isNestedMetaUpdate(diff?.[0])) {
+			if (diff?.[0]?.kind === DiffKind.DELETE && !isNestedMetaUpdate(diff?.[0])) {
 				try {
 					await fieldsService.deleteField(collection, field, mutationOptions);
 				} catch (err) {
@@ -258,7 +258,7 @@ export async function applyDiff(
 				set(structure, diffEdit.path!, undefined);
 			}
 
-			if (diff?.[0].kind === DiffKind.NEW) {
+			if (diff?.[0]?.kind === DiffKind.NEW) {
 				try {
 					await relationsService.createOne((diff[0] as DiffNew<Relation>).rhs, mutationOptions);
 				} catch (err) {
@@ -267,7 +267,7 @@ export async function applyDiff(
 				}
 			}
 
-			if (diff?.[0].kind === DiffKind.EDIT || diff?.[0].kind === DiffKind.ARRAY) {
+			if (diff?.[0]?.kind === DiffKind.EDIT || diff?.[0]?.kind === DiffKind.ARRAY) {
 				const currentRelation = currentSnapshot.relations.find((relation) => {
 					return relation.collection === collection && relation.field === field;
 				});
@@ -286,7 +286,7 @@ export async function applyDiff(
 				}
 			}
 
-			if (diff?.[0].kind === DiffKind.DELETE) {
+			if (diff?.[0]?.kind === DiffKind.DELETE) {
 				try {
 					await relationsService.deleteOne(collection, field, mutationOptions);
 				} catch (err) {

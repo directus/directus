@@ -32,7 +32,7 @@ export abstract class FnHelper extends DatabaseHelper {
 			(relation) => relation.related_collection === collectionName && relation?.meta?.one_field === column
 		);
 
-		const currentPrimary = this.schema.collections[collectionName].primary;
+		const currentPrimary = this.schema.collections[collectionName]!.primary;
 
 		if (!relation) {
 			throw new Error(`Field ${collectionName}.${column} isn't a nested relational collection`);

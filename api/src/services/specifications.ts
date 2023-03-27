@@ -343,7 +343,7 @@ class OASSpecsService implements SpecificationSubService {
 		if (openapi.components?.schemas !== null) {
 			for (const schemaName of OAS_REQUIRED_SCHEMAS) {
 				if (openapi.components!.schemas![schemaName] !== null) {
-					components.schemas[schemaName] = cloneDeep(openapi.components!.schemas![schemaName]);
+					components.schemas[schemaName] = cloneDeep(openapi.components!.schemas![schemaName])!;
 				}
 			}
 		}
