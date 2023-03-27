@@ -1432,7 +1432,6 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
-weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 table: Tabella
@@ -1631,7 +1630,6 @@ interfaces:
   system-folder:
     folder: Cartella
     description: Seleziona una cartella
-    field_hint: Cartella per i file caricati. Non influisce sui file esistenti.
     root_name: Radice libreria file
     system_default: Predefiniti di sistema
   select-radio:
@@ -2095,7 +2093,6 @@ operations:
     name: Invia una notifica
     description: Invia una notifica in app a uno o più utenti
     recipient: Utente
-    recipient_placeholder: Inserisci l'UUID dell'utente e premi invio...
     message: Messaggio
   request:
     name: URL webhook / chiamata

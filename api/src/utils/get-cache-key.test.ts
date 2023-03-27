@@ -1,7 +1,7 @@
-import { Request } from 'express';
+import type { Request } from 'express';
+import { afterEach, beforeAll, describe, expect, SpyInstance, test, vi } from 'vitest';
 import { getCacheKey } from './get-cache-key';
 import * as getGraphqlQueryUtil from './get-graphql-query-and-variables';
-import { afterEach, beforeAll, describe, expect, SpyInstance, test, vi } from 'vitest';
 
 const baseUrl = 'http://localhost';
 const restUrl = `${baseUrl}/items/example`;

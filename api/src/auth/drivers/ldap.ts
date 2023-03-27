@@ -1,3 +1,4 @@
+import type { Accountability } from '@directus/shared/types';
 import { Router } from 'express';
 import Joi from 'joi';
 import ldap, {
@@ -24,7 +25,7 @@ import { RecordNotUniqueException } from '../../exceptions/database/record-not-u
 import logger from '../../logger';
 import { respond } from '../../middleware/respond';
 import { AuthenticationService, UsersService } from '../../services';
-import { AuthDriverOptions, User } from '../../types';
+import type { AuthDriverOptions, User } from '../../types';
 import asyncHandler from '../../utils/async-handler';
 import { getIPFromReq } from '../../utils/get-ip-from-req';
 import { getMilliseconds } from '../../utils/get-milliseconds';
@@ -61,12 +62,12 @@ export class LDAPAuthDriver extends AuthDriver {
 			bindPassword === undefined ||
 			!userDn ||
 			!provider ||
-			(!clientUrl && !config.client?.socketPath)
+			(!clientUrl && !config['client']?.socketPath)
 		) {
 			throw new InvalidConfigException('Invalid provider config', { provider });
 		}
 
-		const clientConfig = typeof config.client === 'object' ? config.client : {};
+		const clientConfig = typeof config['client'] === 'object' ? config['client'] : {};
 
 		this.bindClient = ldap.createClient({ url: clientUrl, reconnect: true, ...clientConfig });
 		this.bindClient.on('error', (err: Error) => {
@@ -145,14 +146,23 @@ export class LDAPAuthDriver extends AuthDriver {
 					}
 
 					res.on('searchEntry', ({ object }: SearchEntry) => {
-						const user = {
-							dn: object.dn,
-							uid: getEntryValue(object.uid),
-							firstName: getEntryValue(object[firstNameAttribute]),
-							lastName: getEntryValue(object[lastNameAttribute]),
-							email: getEntryValue(object[mailAttribute]),
-							userAccountControl: Number(getEntryValue(object.userAccountControl) ?? 0),
+						const user: UserInfo = {
+							dn: object['dn'],
+							userAccountControl: Number(getEntryValue(object['userAccountControl']) ?? 0),
 						};
+
+						const firstName = getEntryValue(object[firstNameAttribute]);
+						if (firstName) user.firstName = firstName;
+
+						const lastName = getEntryValue(object[lastNameAttribute]);
+						if (lastName) user.lastName = lastName;
+
+						const email = getEntryValue(object[mailAttribute]);
+						if (email) user.email = email;
+
+						const uid = getEntryValue(object['uid']);
+						if (uid) user.uid = uid;
+
 						resolve(user);
 					});
 
@@ -187,10 +197,10 @@ export class LDAPAuthDriver extends AuthDriver {
 					}
 
 					res.on('searchEntry', ({ object }: SearchEntry) => {
-						if (typeof object.cn === 'object') {
-							userGroups = [...userGroups, ...object.cn];
-						} else if (object.cn) {
-							userGroups.push(object.cn);
+						if (typeof object['cn'] === 'object') {
+							userGroups = [...userGroups, ...object['cn']];
+						} else if (object['cn']) {
+							userGroups.push(object['cn']);
 						}
 					});
 
@@ -217,7 +227,7 @@ export class LDAPAuthDriver extends AuthDriver {
 	}
 
 	async getUserID(payload: Record<string, any>): Promise<string> {
-		if (!payload.identifier) {
+		if (!payload['identifier']) {
 			throw new InvalidCredentialsException();
 		}
 
@@ -229,7 +239,7 @@ export class LDAPAuthDriver extends AuthDriver {
 			userDn,
 			new EqualityFilter({
 				attribute: userAttribute ?? 'cn',
-				value: payload.identifier,
+				value: payload['identifier'],
 			}),
 			userScope ?? 'one'
 		);
@@ -278,7 +288,7 @@ export class LDAPAuthDriver extends AuthDriver {
 
 		try {
 			await this.usersService.createOne({
-				provider: this.config.provider,
+				provider: this.config['provider'],
 				first_name: userInfo.firstName,
 				last_name: userInfo.lastName,
 				email: userInfo.email,
@@ -302,9 +312,9 @@ export class LDAPAuthDriver extends AuthDriver {
 		}
 
 		return new Promise((resolve, reject) => {
-			const clientConfig = typeof this.config.client === 'object' ? this.config.client : {};
+			const clientConfig = typeof this.config['client'] === 'object' ? this.config['client'] : {};
 			const client = ldap.createClient({
-				url: this.config.clientUrl,
+				url: this.config['clientUrl'],
 				...clientConfig,
 				reconnect: false,
 			});
@@ -324,11 +334,11 @@ export class LDAPAuthDriver extends AuthDriver {
 		});
 	}
 
-	async login(user: User, payload: Record<string, any>): Promise<void> {
-		await this.verify(user, payload.password);
+	override async login(user: User, payload: Record<string, any>): Promise<void> {
+		await this.verify(user, payload['password']);
 	}
 
-	async refresh(user: User): Promise<void> {
+	override async refresh(user: User): Promise<void> {
 		await this.validateBindClient();
 
 		const userInfo = await this.fetchUserInfo(user.external_identifier!);
@@ -370,12 +380,16 @@ export function createLDAPAuthRouter(provider: string): Router {
 	router.post(
 		'/',
 		asyncHandler(async (req, res, next) => {
-			const accountability = {
+			const accountability: Accountability = {
 				ip: getIPFromReq(req),
-				userAgent: req.get('user-agent'),
-				origin: req.get('origin'),
 				role: null,
 			};
+
+			const userAgent = req.get('user-agent');
+			if (userAgent) accountability.userAgent = userAgent;
+
+			const origin = req.get('origin');
+			if (origin) accountability.origin = origin;
 
 			const authenticationService = new AuthenticationService({
 				accountability: accountability,
@@ -401,20 +415,20 @@ export function createLDAPAuthRouter(provider: string): Router {
 			} as Record<string, Record<string, any>>;
 
 			if (mode === 'json') {
-				payload.data.refresh_token = refreshToken;
+				payload['data']!['refresh_token'] = refreshToken;
 			}
 
 			if (mode === 'cookie') {
-				res.cookie(env.REFRESH_TOKEN_COOKIE_NAME, refreshToken, {
+				res.cookie(env['REFRESH_TOKEN_COOKIE_NAME'], refreshToken, {
 					httpOnly: true,
-					domain: env.REFRESH_TOKEN_COOKIE_DOMAIN,
-					maxAge: getMilliseconds(env.REFRESH_TOKEN_TTL),
-					secure: env.REFRESH_TOKEN_COOKIE_SECURE ?? false,
-					sameSite: (env.REFRESH_TOKEN_COOKIE_SAME_SITE as 'lax' | 'strict' | 'none') || 'strict',
+					domain: env['REFRESH_TOKEN_COOKIE_DOMAIN'],
+					maxAge: getMilliseconds(env['REFRESH_TOKEN_TTL']),
+					secure: env['REFRESH_TOKEN_COOKIE_SECURE'] ?? false,
+					sameSite: (env['REFRESH_TOKEN_COOKIE_SAME_SITE'] as 'lax' | 'strict' | 'none') || 'strict',
 				});
 			}
 
-			res.locals.payload = payload;
+			res.locals['payload'] = payload;
 
 			return next();
 		}),

@@ -101,7 +101,28 @@ test('Executes function when valid', () => {
 	).resolves.toEqual({ result: 'start test' });
 });
 
-test('Allows modules that are whitelisted', () => {
+test('Allows built-in modules that are whitelisted', () => {
+	const testCode = `
+		const crypto = require('crypto');
+
+		module.exports = async function (data) {
+			return {
+				result: crypto.createHash('sha256').update('directus').digest('hex'),
+			};
+		};
+	`;
+
+	expect(
+		config.handler({ code: testCode }, {
+			data: {},
+			env: {
+				FLOWS_EXEC_ALLOWED_MODULES: 'crypto',
+			},
+		} as any)
+	).resolves.toEqual({ result: '943e891bf6042f2db8926493c0f94e45b72cb58a21145fdfa3c23b5c057e4b2d' });
+});
+
+test('Allows external modules that are whitelisted', () => {
 	const testCode = `
 		const bytes = require('bytes');
 

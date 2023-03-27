@@ -1,7 +1,7 @@
-import { KNEX_TYPES } from '@directus/shared/constants';
-import { Field, Relation, Type } from '@directus/shared/types';
-import { Knex } from 'knex';
-import { DatabaseClient } from '../../../types';
+import type { KNEX_TYPES } from '@directus/shared/constants';
+import type { Field, Relation, Type } from '@directus/shared/types';
+import type { Knex } from 'knex';
+import type { DatabaseClient } from '../../../types';
 import { getDatabaseClient } from '../../index';
 import { DatabaseHelper } from '../types';
 

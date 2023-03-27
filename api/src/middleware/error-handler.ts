@@ -1,11 +1,11 @@
-import { ErrorRequestHandler } from 'express';
+import { BaseException } from '@directus/shared/exceptions';
+import { toArray } from '@directus/shared/utils';
+import type { ErrorRequestHandler } from 'express';
+import getDatabase from '../database';
 import emitter from '../emitter';
 import env from '../env';
 import { MethodNotAllowedException } from '../exceptions';
-import { BaseException } from '@directus/shared/exceptions';
 import logger from '../logger';
-import { toArray } from '@directus/shared/utils';
-import getDatabase from '../database';
 
 // Note: keep all 4 parameters here. That's how Express recognizes it's the error handler, even if
 // we don't use next
@@ -33,7 +33,7 @@ const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
 	}
 
 	for (const err of errors) {
-		if (env.NODE_ENV === 'development') {
+		if (env['NODE_ENV'] === 'development') {
 			err.extensions = {
 				...(err.extensions || {}),
 				stack: err.stack,
@@ -54,7 +54,7 @@ const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
 			});
 
 			if (err instanceof MethodNotAllowedException) {
-				res.header('Allow', err.extensions.allow.join(', '));
+				res.header('Allow', err.extensions['allow'].join(', '));
 			}
 		} else {
 			logger.error(err);

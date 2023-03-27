@@ -391,6 +391,7 @@ interface_label: Interface
 today: Vandaag
 yesterday: Gisteren
 delete_comment: Reactie verwijderen
+delete_share: Stop met delen
 functions:
   year: Jaar
   month: Maand
@@ -786,6 +787,7 @@ label: Label
 flows: Flows
 flow: Flow
 select_a_flow: Selecteer een Flow
+run_flow_on_current_collection: Voer flow uit op Huidige Collectie
 run_flow_on_current: Voer Flow uit op dit item
 run_flow_on_current_edited_confirm: Dit item kan aangepast worden door deze Flow, weet je zeker dat je het wilt uitvoeren?
 run_flow_success: Flow "{flow}" is succesvol uitgevoerd
@@ -946,6 +948,7 @@ settings_project: Projectinstellingen
 settings_webhooks: Webhooks
 settings_flows: Flows
 settings_presets: Voorkeuren & Bladwijzers
+settings_translation_strings: Schermtekst vertalingen
 one_or_more_options_are_missing: Eén of meer opties ontbreken
 scope: Bereik
 actions: Acties
@@ -1029,6 +1032,11 @@ directus_collection:
   directus_notifications: Notificaties verzonden naar gebruikers
   directus_operations: Operaties die worden uitgevoerd in Flows
   directus_panels: Individuele panelen binnen de Inzichten dashboards
+  directus_presets: Standaardinstellingen voor collecties en bladwijzers
+  directus_roles: Machtigingsgroepen voor systeemgebruikers
+  directus_sessions: Gebruikerssessie-informatie
+  directus_settings: Project configuratie opties
+  directus_users: Systeemgebruikers voor het platform
 fields:
   directus_activity:
     item: Item Primary Key
@@ -1102,6 +1110,7 @@ fields:
     status_draft: Concept
     status_invited: Uitgenodigd
     status_active: Actief
+    status_suspended: Gestopt
     status_archived: Gearchiveerd
     role: Rol
     token: Token
@@ -1171,11 +1180,16 @@ field_options:
     project_name_placeholder: Mijn project...
     project_color_note: Inlog- en logoachtergrond
     project_logo_note: Wit 40x40 SVG/PNG
+    public_note_placeholder: Een kort, publiek bericht dat markdown formattering ondersteunt...
     security_divider_title: Beveiliging
     auth_password_policy:
       none_text: Geen – niet aanbevolen
       weak_text: Zwak – minimaal 8 tekens
       strong_text: Sterk – groot / klein / nummers / speciale tekens
+    storage_asset_presets:
+      fit_label: Vak vullend
+      fit:
+        outside_text: Vak vullend, mag deels buiten vak treden
     mapbox_key: Toegangstoken Mapbox
     mapbox_placeholder: pk.eyJ1Ijo.....
     basemaps_raster: Raster
@@ -1197,6 +1211,7 @@ field_options:
     singleton: Behandel als één object
     language: Taal
     translation: Vertaling
+    translation_placeholder: Voer een vertaling in...
     collection_name: Collectie naam
     singular_unit: Enkelvoudige eenheid
     plural_unit: Meervoudige eenheid
@@ -1253,6 +1268,7 @@ block: Blok
 inline: Doorlopend
 comment: Reactie
 unlimited_usage: Onbeperkt gebruik
+new_share: Delen
 expired: Verlopen
 share: Delen
 shared_leave_blank_for_unlimited: Laat leeg voor geen limiet
@@ -1338,6 +1354,7 @@ sort_asc: Sorteer Oplopend
 sort_desc: Sorteer Aflopend
 template: Sjabloon
 translation: Vertaling
+translation_placeholder: Voer een vertaling in...
 value: Waarde
 view_project: Bekijk project
 report_error: Rapporteer fout
@@ -1454,6 +1471,8 @@ interfaces:
   presentation-notice:
     notice: Melding
     description: Een korte melding weergeven
+  list-o2m:
+    no_collection: Deze collectie is niet vindbaar
   system-folder:
     folder: Map
   select-radio:

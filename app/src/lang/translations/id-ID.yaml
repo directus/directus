@@ -245,6 +245,7 @@ float: Float
 integer: Integer
 json: JSON
 xml: XML
+yaml: YAML
 string: String
 text: Teks
 time: Time
@@ -975,6 +976,21 @@ keep_editing: Tetap Mengedit
 page_help_collections_overview: '**Ikhtisar Koleksi** - — Daftar semua koleksi yang perlu anda akses.'
 page_help_collections_collection: >-
   **Jelajahi Item** — Daftar semua {collection} item yang perlu Anda akses. Sesuaikan tata letak, filter, dan pengurutan untuk menyesuaikan tampilan Anda, dan bahkan simpan markah dari konfigurasi yang berbeda ini untuk akses cepat.
+page_help_collections_item: >-
+  **Detail Item** — Sebuah formulir untuk melihat dan mengelola item. Sidebar ini juga berisi riwayat, revisi, dan komentar yang disematkan.
+page_help_activity_collection: >-
+  ***Jelajahi Aktivitas** - Daftar lengkap dari seluruh aktivitas content dan pengguna system.
+page_help_docs_global: >-
+  **Gambaran Dokumentasi ** — Dokumen yang disesuaikan khusus untuk versi dan skema proyek ini.
+page_help_files_collection: >-
+  **Berkas Pustaka** — Daftar semua aset berkas yang diunggah ke proyek ini. Sesuaikan tata letak, filter, dan penyortiran untuk menyesuaikan tampilan Anda, dan bahkan simpan bookmark dari konfigurasi yang berbeda ini untuk akses cepat.
+page_help_files_item: >-
+  **Detail Berkas** — Sebuah formulir untuk mengelola metadata berkas, mengedit aset asli, dan memperbarui pengaturan akses.
+page_help_settings_project: "**Konfigurasi Proyek** — Opsi konfigurasi global proyek Anda."
+page_help_settings_datamodel_collections: >-
+  **Model Data: Collection** — Menampilkan semua Collection yang tersedia. Ini mencakup Collection yang terlihat, tersembunyi, dan sistem, serta tabel basis data yang tidak dikelola yang dapat ditambahkan.
+page_help_settings_datamodel_fields: >-
+  **Model Data: Collection** — Formulir untuk mengelola Collection ini dan fieldnya.
 activity_feed: Feed Aktifitas
 add_new: Tambah Baru
 create_new: Buat baru
@@ -986,6 +1002,7 @@ cancel: Batal
 collection: Koleksi
 collections: Pengumpulan
 content: Konten
+singleton: Singleton
 singleton_label: Perlakukan sebagai objek tunggal
 directus_collection:
   directus_activity: Log akuntabilitas untuk semua kejadian
@@ -997,6 +1014,8 @@ fields:
     item: Kunci Utama Item
     action: Aksi
     collection: Koleksi
+    timestamp: Aksi Saat
+    user: Aksi oleh
     comment: Komentar
     user_agent: Agen pengguna
     origin: Asal
@@ -1009,6 +1028,7 @@ fields:
     color: Warna
     display_template: Tampilan Template
     hidden: Tersembunyi
+    singleton: Singleton
     archive_app_filter: Filter Aplikasi Arsip
     archive_value: Nilai Arsip
     unarchive_value: Batalkan pengarsipan Nilai
@@ -1091,6 +1111,7 @@ fields:
     project_url: URL Proyek
     project_color: Warna Proyek
     project_logo: Logo Proyek
+    default_language: Bahasa bawaan
     branding: Merk & Gaya
     public_foreground: Latar depan Publik
     public_background: Latar belakang Publik
@@ -1098,15 +1119,20 @@ fields:
     auth_password_policy: Kebijakan Kata sandi Autentik
     auth_login_attempts: Upaya Login Autentik
     files_and_thumbnails: File & Penyimpanan
+    storage_default_folder: Folder bawaan
+    custom_css: CSS Kustomisasi
     module_bar: Papan Modul
+    image_editor: Editor Gambar
   directus_shares:
     name: Nama
     role: Peran
     password: Kata Sandi
     date_start: Tanggal Mulai
+    times_used: Waktu yang digunakan
   directus_fields:
     note: Catatan
     hidden: Tersembunyi
+    singleton: Singleton
     translation: Terjemahan Nama Kolom
     display_template: Templat
   directus_roles:

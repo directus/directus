@@ -40,9 +40,9 @@ export class MessengerRedis implements Messenger {
 	constructor() {
 		const config = getConfigFromEnv('MESSENGER_REDIS');
 
-		this.pub = new IORedis(env.MESSENGER_REDIS ?? config);
-		this.sub = new IORedis(env.MESSENGER_REDIS ?? config);
-		this.namespace = env.MESSENGER_NAMESPACE ?? 'directus';
+		this.pub = new IORedis(env['MESSENGER_REDIS'] ?? config);
+		this.sub = new IORedis(env['MESSENGER_REDIS'] ?? config);
+		this.namespace = env['MESSENGER_NAMESPACE'] ?? 'directus';
 	}
 
 	publish(channel: string, payload: Record<string, any>) {
@@ -71,7 +71,7 @@ let messenger: Messenger;
 export function getMessenger() {
 	if (messenger) return messenger;
 
-	if (env.MESSENGER_STORE === 'redis') {
+	if (env['MESSENGER_STORE'] === 'redis') {
 		messenger = new MessengerRedis();
 	} else {
 		messenger = new MessengerMemory();

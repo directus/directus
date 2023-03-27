@@ -1652,7 +1652,7 @@ interfaces:
   system-folder:
     folder: Folder
     description: Select a folder
-    field_hint: Folder for uploaded files. Does not affect existing files.
+    field_hint: Default folder for uploaded files without a folder specified. Does not affect existing files.
     root_name: File Library Root
     system_default: System Defaults
   select-radio:
@@ -2121,7 +2121,8 @@ operations:
     name: Send Notification
     description: Send an in-app notification to one or more users
     recipient: User
-    recipient_placeholder: Add user UUID and press enter...
+    recipient_placeholder: Enter a UUID...
+    recipient_note: Add user UUID and press enter...
     message: Message
   request:
     name: Webhook / Request URL

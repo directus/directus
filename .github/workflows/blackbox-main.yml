@@ -7,7 +7,7 @@ on:
     paths:
       - api/**
       - tests-blackbox/**
-      - packages/shared/**
+      - packages/**
       - package.json
       - pnpm-lock.yaml
       - .github/workflows/blackbox-main.yml
@@ -61,12 +61,14 @@ jobs:
 
       - name: Start services (SQLite)
         if: matrix.vendor == 'sqlite3'
-        run: docker compose -f tests-blackbox/docker-compose.yml up auth-saml -d --quiet-pull --wait
+        run:
+          docker compose -f tests-blackbox/docker-compose.yml up auth-saml redis minio minio-mc -d --quiet-pull --wait
 
       - name: Start services (other vendors)
         if: matrix.vendor != 'sqlite3'
         run:
-          docker compose -f tests-blackbox/docker-compose.yml up ${{ matrix.vendor }} auth-saml -d --quiet-pull --wait
+          docker compose -f tests-blackbox/docker-compose.yml up ${{ matrix.vendor }} auth-saml redis minio minio-mc -d
+          --quiet-pull --wait
 
       - name: Run tests
         run: TEST_DB=${{ matrix.vendor }} pnpm run -w test:blackbox

@@ -16,7 +16,7 @@ export function createRateLimiter(
 	configPrefix = 'RATE_LIMITER',
 	configOverrides?: IRateLimiterOptionsOverrides
 ): RateLimiterAbstract {
-	switch (env.RATE_LIMITER_STORE) {
+	switch (env['RATE_LIMITER_STORE']) {
 		case 'redis':
 			return new RateLimiterRedis(getConfig('redis', configPrefix, configOverrides));
 		case 'memcache':

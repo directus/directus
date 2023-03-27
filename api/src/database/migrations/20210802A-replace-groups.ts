@@ -1,5 +1,5 @@
 import { parseJSON } from '@directus/shared/utils';
-import { Knex } from 'knex';
+import type { Knex } from 'knex';
 import logger from '../../logger';
 
 export async function up(knex: Knex): Promise<void> {
