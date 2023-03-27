@@ -16,6 +16,7 @@ describe('Logger Redact Tests', () => {
 
 	for (const vendor of vendors) {
 		env[vendor].LOG_STYLE = 'raw';
+		env[vendor].LOG_LEVEL = 'info';
 		env[vendor].PORT = String(Number(env[vendor]!.PORT) + 500);
 	}
 
@@ -49,136 +50,39 @@ describe('Logger Redact Tests', () => {
 				common.TEST_USERS.forEach((userKey) => {
 					describe(common.USER[userKey].NAME, () => {
 						it.each(vendors)('%s', async (vendor) => {
-							// Setup
-							const logsPromise = waitForLogs(tzDirectus[vendor]);
+							const logListener = setupLogListener(tzDirectus[vendor]);
 
-							const refreshToken = (
-								await request(getUrl(vendor, env))
-									.post(`/auth/login`)
-									.send({ email: common.USER[userKey].EMAIL, password: common.USER[userKey].PASSWORD })
-									.expect('Content-Type', /application\/json/)
-							).body.data.refresh_token;
+							try {
+								// Setup
+								const refreshToken = (
+									await request(getUrl(vendor, env))
+										.post(`/auth/login`)
+										.send({ email: common.USER[userKey].EMAIL, password: common.USER[userKey].PASSWORD })
+										.expect('Content-Type', /application\/json/)
+								).body.data.refresh_token;
 
-							const refreshToken2 = (
-								await common.requestGraphQL(getUrl(vendor, env), true, null, {
-									mutation: {
-										auth_login: {
-											__args: {
-												email: common.USER[userKey].EMAIL,
-												password: common.USER[userKey].PASSWORD,
+								const refreshToken2 = (
+									await common.requestGraphQL(getUrl(vendor, env), true, null, {
+										mutation: {
+											auth_login: {
+												__args: {
+													email: common.USER[userKey].EMAIL,
+													password: common.USER[userKey].PASSWORD,
+												},
+												refresh_token: true,
 											},
-											refresh_token: true,
 										},
-									},
-								})
-							).body.data.auth_login.refresh_token;
+									})
+								).body.data.auth_login.refresh_token;
 
-							const response = await request(getUrl(vendor, env))
-								.post(`/auth/refresh`)
-								.send({ refresh_token: refreshToken, mode })
-								.expect('Content-Type', /application\/json/);
+								const response = await request(getUrl(vendor, env))
+									.post(`/auth/refresh`)
+									.send({ refresh_token: refreshToken, mode })
+									.expect('Content-Type', /application\/json/);
 
-							const mutationKey = 'auth_refresh';
+								const mutationKey = 'auth_refresh';
 
-							const gqlResponse = await common.requestGraphQL(getUrl(vendor, env), true, null, {
-								mutation: {
-									[mutationKey]: {
-										__args: {
-											refresh_token: refreshToken2,
-											mode: new EnumType(mode),
-										},
-										access_token: true,
-										expires: true,
-										refresh_token: true,
-									},
-								},
-							});
-
-							const logs = await logsPromise;
-
-							// Assert
-							expect(response.statusCode).toBe(200);
-							if (mode === 'cookie') {
-								expect(response.body).toMatchObject({
-									data: {
-										access_token: expect.any(String),
-										expires: expect.any(Number),
-									},
-								});
-								expect((logs.match(/"cookie":"--redact--"/g) || []).length).toBe(0);
-								expect((logs.match(/"set-cookie":"--redact--"/g) || []).length).toBe(2);
-							} else {
-								expect(response.body).toMatchObject({
-									data: {
-										access_token: expect.any(String),
-										expires: expect.any(Number),
-										refresh_token: expect.any(String),
-									},
-								});
-								expect((logs.match(/"cookie":"--redact--"/g) || []).length).toBe(0);
-								expect((logs.match(/"set-cookie":"--redact--"/g) || []).length).toBe(0);
-							}
-
-							expect(gqlResponse.statusCode).toBe(200);
-							expect(gqlResponse.body).toMatchObject({
-								data: {
-									[mutationKey]: {
-										access_token: expect.any(String),
-										expires: expect.any(String),
-										refresh_token: expect.any(String),
-									},
-								},
-							});
-						});
-					});
-				});
-			});
-		});
-
-		describe('refreshes with refresh_token in the cookie', () => {
-			describe.each(authModes)('for %s mode', (mode) => {
-				common.TEST_USERS.forEach((userKey) => {
-					describe(common.USER[userKey].NAME, () => {
-						it.each(vendors)('%s', async (vendor) => {
-							// Setup
-							const logsPromise = waitForLogs(tzDirectus[vendor]);
-
-							const cookieName = 'directus_refresh_token';
-
-							const refreshToken = (
-								await request(getUrl(vendor, env))
-									.post(`/auth/login`)
-									.send({ email: common.USER[userKey].EMAIL, password: common.USER[userKey].PASSWORD })
-									.expect('Content-Type', /application\/json/)
-							).body.data.refresh_token;
-
-							const refreshToken2 = (
-								await common.requestGraphQL(getUrl(vendor, env), true, null, {
-									mutation: {
-										auth_login: {
-											__args: {
-												email: common.USER[userKey].EMAIL,
-												password: common.USER[userKey].PASSWORD,
-											},
-											refresh_token: true,
-										},
-									},
-								})
-							).body.data.auth_login.refresh_token;
-
-							const response = await request(getUrl(vendor, env))
-								.post(`/auth/refresh`)
-								.set('Cookie', `${cookieName}=${refreshToken}`)
-								.send({ mode })
-								.expect('Content-Type', /application\/json/);
-
-							const mutationKey = 'auth_refresh';
-
-							const gqlResponse = await common.requestGraphQL(
-								getUrl(vendor, env),
-								true,
-								null,
-								{
+								const gqlResponse = await common.requestGraphQL(getUrl(vendor, env), true, null, {
 									mutation: {
 										[mutationKey]: {
 											__args: {
@@ -190,45 +94,150 @@ describe('Logger Redact Tests', () => {
 											refresh_token: true,
 										},
 									},
-								},
-								{ cookies: [`${cookieName}=${refreshToken2}`] }
-							);
+								});
 
-							const logs = await logsPromise;
+								const logs = await logListener.promise;
 
-							// Assert
-							expect(response.statusCode).toBe(200);
-							if (mode === 'cookie') {
-								expect(response.body).toMatchObject({
+								// Assert
+								expect(response.statusCode).toBe(200);
+								if (mode === 'cookie') {
+									expect(response.body).toMatchObject({
+										data: {
+											access_token: expect.any(String),
+											expires: expect.any(Number),
+										},
+									});
+									expect((logs.match(/"cookie":"--redact--"/g) || []).length).toBe(0);
+									expect((logs.match(/"set-cookie":"--redact--"/g) || []).length).toBe(2);
+								} else {
+									expect(response.body).toMatchObject({
+										data: {
+											access_token: expect.any(String),
+											expires: expect.any(Number),
+											refresh_token: expect.any(String),
+										},
+									});
+									expect((logs.match(/"cookie":"--redact--"/g) || []).length).toBe(0);
+									expect((logs.match(/"set-cookie":"--redact--"/g) || []).length).toBe(0);
+								}
+
+								expect(gqlResponse.statusCode).toBe(200);
+								expect(gqlResponse.body).toMatchObject({
 									data: {
-										access_token: expect.any(String),
-										expires: expect.any(Number),
+										[mutationKey]: {
+											access_token: expect.any(String),
+											expires: expect.any(String),
+											refresh_token: expect.any(String),
+										},
 									},
 								});
-								expect((logs.match(/"cookie":"--redact--"/g) || []).length).toBe(2);
-								expect((logs.match(/"set-cookie":"--redact--"/g) || []).length).toBe(2);
-							} else {
-								expect(response.body).toMatchObject({
-									data: {
-										access_token: expect.any(String),
-										expires: expect.any(Number),
-										refresh_token: expect.any(String),
-									},
-								});
-								expect((logs.match(/"cookie":"--redact--"/g) || []).length).toBe(2);
-								expect((logs.match(/"set-cookie":"--redact--"/g) || []).length).toBe(0);
+							} finally {
+								logListener.cleanup();
 							}
+						});
+					});
+				});
+			});
+		});
 
-							expect(gqlResponse.statusCode).toBe(200);
-							expect(gqlResponse.body).toMatchObject({
-								data: {
-									[mutationKey]: {
-										access_token: expect.any(String),
-										expires: expect.any(String),
-										refresh_token: expect.any(String),
+		describe('refreshes with refresh_token in the cookie', () => {
+			describe.each(authModes)('for %s mode', (mode) => {
+				common.TEST_USERS.forEach((userKey) => {
+					describe(common.USER[userKey].NAME, () => {
+						it.each(vendors)('%s', async (vendor) => {
+							const logListener = setupLogListener(tzDirectus[vendor]);
+
+							try {
+								// Setup
+								const cookieName = 'directus_refresh_token';
+
+								const refreshToken = (
+									await request(getUrl(vendor, env))
+										.post(`/auth/login`)
+										.send({ email: common.USER[userKey].EMAIL, password: common.USER[userKey].PASSWORD })
+										.expect('Content-Type', /application\/json/)
+								).body.data.refresh_token;
+
+								const refreshToken2 = (
+									await common.requestGraphQL(getUrl(vendor, env), true, null, {
+										mutation: {
+											auth_login: {
+												__args: {
+													email: common.USER[userKey].EMAIL,
+													password: common.USER[userKey].PASSWORD,
+												},
+												refresh_token: true,
+											},
+										},
+									})
+								).body.data.auth_login.refresh_token;
+
+								const response = await request(getUrl(vendor, env))
+									.post(`/auth/refresh`)
+									.set('Cookie', `${cookieName}=${refreshToken}`)
+									.send({ mode })
+									.expect('Content-Type', /application\/json/);
+
+								const mutationKey = 'auth_refresh';
+
+								const gqlResponse = await common.requestGraphQL(
+									getUrl(vendor, env),
+									true,
+									null,
+									{
+										mutation: {
+											[mutationKey]: {
+												__args: {
+													refresh_token: refreshToken2,
+													mode: new EnumType(mode),
+												},
+												access_token: true,
+												expires: true,
+												refresh_token: true,
+											},
+										},
 									},
-								},
-							});
+									{ cookies: [`${cookieName}=${refreshToken2}`] }
+								);
+
+								const logs = await logListener.promise;
+
+								// Assert
+								expect(response.statusCode).toBe(200);
+								if (mode === 'cookie') {
+									expect(response.body).toMatchObject({
+										data: {
+											access_token: expect.any(String),
+											expires: expect.any(Number),
+										},
+									});
+									expect((logs.match(/"cookie":"--redact--"/g) || []).length).toBe(2);
+									expect((logs.match(/"set-cookie":"--redact--"/g) || []).length).toBe(2);
+								} else {
+									expect(response.body).toMatchObject({
+										data: {
+											access_token: expect.any(String),
+											expires: expect.any(Number),
+											refresh_token: expect.any(String),
+										},
+									});
+									expect((logs.match(/"cookie":"--redact--"/g) || []).length).toBe(2);
+									expect((logs.match(/"set-cookie":"--redact--"/g) || []).length).toBe(0);
+								}
+
+								expect(gqlResponse.statusCode).toBe(200);
+								expect(gqlResponse.body).toMatchObject({
+									data: {
+										[mutationKey]: {
+											access_token: expect.any(String),
+											expires: expect.any(String),
+											refresh_token: expect.any(String),
+										},
+									},
+								});
+							} finally {
+								logListener.cleanup();
+							}
 						});
 					});
 				});
@@ -237,32 +246,39 @@ describe('Logger Redact Tests', () => {
 	});
 });
 
-function waitForLogs(server: ChildProcess) {
+function setupLogListener(server: ChildProcess) {
 	// Discard logs up to this point
 	server.stdout?.resume();
 
-	return new Promise<string>((resolve) => {
-		let logs = '';
-		let receivedRestRefresh = 0;
-		let receivedGraphQLRefresh = 0;
+	let processChunks: (chunk: any) => void;
 
-		const processChunks = (chunk: any) => {
+	const promise = new Promise<string>((resolve) => {
+		let logs = '';
+		let logsREST = 0;
+		let logsGraphQL = 0;
+
+		processChunks = (chunk) => {
 			if (chunk?.includes('"url":"/auth/refresh"')) {
-				receivedRestRefresh++;
+				logsREST++;
 				logs += chunk;
 			}
 			if (chunk?.includes('"url":"/graphql/system"')) {
-				receivedGraphQLRefresh++;
+				logsGraphQL++;
 				logs += chunk;
 			}
 
 			// Wait for REST & GraphQL refresh calls (two GraphQL log entries for login & refresh, cannot be distinguished)
-			if (receivedRestRefresh === 1 && receivedGraphQLRefresh === 2) {
-				server.stdout?.removeListener('data', processChunks);
+			if (logsREST === 1 && logsGraphQL === 2) {
 				resolve(logs);
 			}
 		};
 
 		server.stdout?.on('data', processChunks);
 	});
+
+	const cleanup = () => {
+		server.stdout?.removeListener('data', processChunks);
+	};
+
+	return { promise, cleanup };
 }
