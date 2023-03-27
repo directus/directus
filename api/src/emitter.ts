@@ -1,5 +1,5 @@
 import type { ActionHandler, EventContext, FilterHandler, InitHandler } from '@directus/types';
-import EventEmitter2 from 'eventemitter2';
+import ee2 from 'eventemitter2';
 import logger from './logger.js';
 
 export class Emitter {
@@ -17,9 +17,9 @@ export class Emitter {
 			ignoreErrors: true,
 		};
 
-		this.filterEmitter = new EventEmitter2(emitterOptions);
-		this.actionEmitter = new EventEmitter2(emitterOptions);
-		this.initEmitter = new EventEmitter2(emitterOptions);
+		this.filterEmitter = new ee2.EventEmitter2(emitterOptions);
+		this.actionEmitter = new ee2.EventEmitter2(emitterOptions);
+		this.initEmitter = new ee2.EventEmitter2(emitterOptions);
 	}
 
 	public async emitFilter<T>(

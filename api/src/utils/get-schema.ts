@@ -1,3 +1,4 @@
+import type { SchemaInspector } from '@directus/schema';
 import { createInspector } from '@directus/schema';
 import type { Filter, SchemaOverview } from '@directus/types';
 import { parseJSON, toArray } from '@directus/utils';
@@ -55,10 +56,7 @@ export async function getSchema(options?: {
 	return result;
 }
 
-async function getDatabaseSchema(
-	database: Knex,
-	schemaInspector: ReturnType<typeof SchemaInspector>
-): Promise<SchemaOverview> {
+async function getDatabaseSchema(database: Knex, schemaInspector: SchemaInspector): Promise<SchemaOverview> {
 	const result: SchemaOverview = {
 		collections: {},
 		relations: [],
