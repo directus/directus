@@ -1,10 +1,9 @@
 import cookieParser from 'cookie-parser';
-import express, { Request, Response, RequestHandler } from 'express';
+import express, { Request, RequestHandler, Response } from 'express';
 import fse from 'fs-extra';
+import type { ServerResponse } from 'http';
 import path from 'path';
 import qs from 'qs';
-import { ServerResponse } from 'http';
-
 import activityRouter from './controllers/activity';
 import assetsRouter from './controllers/assets';
 import authRouter from './controllers/auth';
@@ -18,9 +17,9 @@ import foldersRouter from './controllers/folders';
 import graphqlRouter from './controllers/graphql';
 import itemsRouter from './controllers/items';
 import notFoundHandler from './controllers/not-found';
-import panelsRouter from './controllers/panels';
 import notificationsRouter from './controllers/notifications';
 import operationsRouter from './controllers/operations';
+import panelsRouter from './controllers/panels';
 import permissionsRouter from './controllers/permissions';
 import presetsRouter from './controllers/presets';
 import relationsRouter from './controllers/relations';
@@ -29,10 +28,10 @@ import rolesRouter from './controllers/roles';
 import schemaRouter from './controllers/schema';
 import serverRouter from './controllers/server';
 import settingsRouter from './controllers/settings';
+import sharesRouter from './controllers/shares';
 import usersRouter from './controllers/users';
 import utilsRouter from './controllers/utils';
 import webhooksRouter from './controllers/webhooks';
-import sharesRouter from './controllers/shares';
 import { isInstalled, validateDatabaseConnection, validateDatabaseExtensions, validateMigrations } from './database';
 import emitter from './emitter';
 import env from './env';
@@ -41,33 +40,33 @@ import { getExtensionManager } from './extensions';
 import { getFlowManager } from './flows';
 import logger, { expressLogger } from './logger';
 import authenticate from './middleware/authenticate';
-import getPermissions from './middleware/get-permissions';
 import cache from './middleware/cache';
 import { checkIP } from './middleware/check-ip';
 import cors from './middleware/cors';
 import errorHandler from './middleware/error-handler';
 import extractToken from './middleware/extract-token';
-import rateLimiter from './middleware/rate-limiter-ip';
+import getPermissions from './middleware/get-permissions';
 import rateLimiterGlobal from './middleware/rate-limiter-global';
+import rateLimiter from './middleware/rate-limiter-ip';
 import sanitizeQuery from './middleware/sanitize-query';
 import schema from './middleware/schema';
 
+import { merge } from 'lodash';
+import { registerAuthProviders } from './auth';
+import { flushCaches } from './cache';
+import { getConfigFromEnv } from './utils/get-config-from-env';
 import { track } from './utils/track';
+import { Url } from './utils/url';
 import { validateEnv } from './utils/validate-env';
 import { validateStorage } from './utils/validate-storage';
 import { init as initWebhooks } from './webhooks';
-import { flushCaches } from './cache';
-import { registerAuthProviders } from './auth';
-import { Url } from './utils/url';
-import { getConfigFromEnv } from './utils/get-config-from-env';
-import { merge } from 'lodash';
 
 export default async function createApp(): Promise<express.Application> {
 	const helmet = await import('helmet');
 
 	validateEnv(['KEY', 'SECRET']);
 
-	if (!new Url(env.PUBLIC_URL).isAbsolute()) {
+	if (!new Url(env['PUBLIC_URL']).isAbsolute()) {
 		logger.warn('PUBLIC_URL should be a full URL');
 	}
 
@@ -98,7 +97,7 @@ export default async function createApp(): Promise<express.Application> {
 	const app = express();
 
 	app.disable('x-powered-by');
-	app.set('trust proxy', env.IP_TRUST_PROXY);
+	app.set('trust proxy', env['IP_TRUST_PROXY']);
 	app.set('query parser', (str: string) => qs.parse(str, { depth: 10 }));
 
 	app.use(
@@ -129,7 +128,7 @@ export default async function createApp(): Promise<express.Application> {
 		)
 	);
 
-	if (env.HSTS_ENABLED) {
+	if (env['HSTS_ENABLED']) {
 		app.use(helmet.hsts(getConfigFromEnv('HSTS_', ['HSTS_ENABLED'])));
 	}
 
@@ -144,14 +143,14 @@ export default async function createApp(): Promise<express.Application> {
 		next();
 	});
 
-	if (env.CORS_ENABLED === true) {
+	if (env['CORS_ENABLED'] === true) {
 		app.use(cors);
 	}
 
 	app.use((req, res, next) => {
 		(
 			express.json({
-				limit: env.MAX_PAYLOAD_SIZE,
+				limit: env['MAX_PAYLOAD_SIZE'],
 			}) as RequestHandler
 		)(req, res, (err: any) => {
 			if (err) {
@@ -167,8 +166,8 @@ export default async function createApp(): Promise<express.Application> {
 	app.use(extractToken);
 
 	app.get('/', (_req, res, next) => {
-		if (env.ROOT_REDIRECT) {
-			res.redirect(env.ROOT_REDIRECT);
+		if (env['ROOT_REDIRECT']) {
+			res.redirect(env['ROOT_REDIRECT']);
 		} else {
 			next();
 		}
@@ -177,12 +176,12 @@ export default async function createApp(): Promise<express.Application> {
 	app.get('/robots.txt', (_, res) => {
 		res.set('Content-Type', 'text/plain');
 		res.status(200);
-		res.send(env.ROBOTS_TXT);
+		res.send(env['ROBOTS_TXT']);
 	});
 
-	if (env.SERVE_APP) {
+	if (env['SERVE_APP']) {
 		const adminPath = require.resolve('@directus/app');
-		const adminUrl = new Url(env.PUBLIC_URL).addPath('admin');
+		const adminUrl = new Url(env['PUBLIC_URL']).addPath('admin');
 
 		const embeds = extensionManager.getEmbeds();
 
@@ -210,14 +209,14 @@ export default async function createApp(): Promise<express.Application> {
 	}
 
 	// use the rate limiter - all routes for now
-	if (env.RATE_LIMITER_GLOBAL_ENABLED === true) {
+	if (env['RATE_LIMITER_GLOBAL_ENABLED'] === true) {
 		app.use(rateLimiterGlobal);
 	}
-	if (env.RATE_LIMITER_ENABLED === true) {
+	if (env['RATE_LIMITER_ENABLED'] === true) {
 		app.use(rateLimiter);
 	}
 
-	app.get('/server/ping', (req, res) => res.send('pong'));
+	app.get('/server/ping', (_req, res) => res.send('pong'));
 
 	app.use(authenticate);
 

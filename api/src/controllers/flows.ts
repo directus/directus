@@ -5,8 +5,8 @@ import { getFlowManager } from '../flows';
 import { respond } from '../middleware/respond';
 import useCollection from '../middleware/use-collection';
 import { validateBatch } from '../middleware/validate-batch';
-import { MetaService, FlowsService } from '../services';
-import { PrimaryKey } from '../types';
+import { FlowsService, MetaService } from '../services';
+import type { PrimaryKey } from '../types';
 import asyncHandler from '../utils/async-handler';
 import { sanitizeQuery } from '../utils/sanitize-query';
 
@@ -18,7 +18,7 @@ const webhookFlowHandler = asyncHandler(async (req, res, next) => {
 	const flowManager = getFlowManager();
 
 	const result = await flowManager.runWebhookFlow(
-		`${req.method}-${req.params.pk}`,
+		`${req.method}-${req.params['pk']}`,
 		{
 			path: req.path,
 			query: req.query,
@@ -32,7 +32,7 @@ const webhookFlowHandler = asyncHandler(async (req, res, next) => {
 		}
 	);
 
-	res.locals.payload = result;
+	res.locals['payload'] = result;
 	return next();
 });
 
@@ -60,10 +60,10 @@ router.post(
 		try {
 			if (Array.isArray(req.body)) {
 				const items = await service.readMany(savedKeys, req.sanitizedQuery);
-				res.locals.payload = { data: items };
+				res.locals['payload'] = { data: items };
 			} else {
-				const item = await service.readOne(savedKeys[0], req.sanitizedQuery);
-				res.locals.payload = { data: item };
+				const item = await service.readOne(savedKeys[0]!, req.sanitizedQuery);
+				res.locals['payload'] = { data: item };
 			}
 		} catch (error) {
 			if (error instanceof ForbiddenException) {
@@ -91,7 +91,7 @@ const readHandler = asyncHandler(async (req, res, next) => {
 	const records = await service.readByQuery(req.sanitizedQuery);
 	const meta = await metaService.getMetaForQuery(req.collection, req.sanitizedQuery);
 
-	res.locals.payload = { data: records || null, meta };
+	res.locals['payload'] = { data: records || null, meta };
 	return next();
 });
 
@@ -106,9 +106,9 @@ router.get(
 			schema: req.schema,
 		});
 
-		const record = await service.readOne(req.params.pk, req.sanitizedQuery);
+		const record = await service.readOne(req.params['pk']!, req.sanitizedQuery);
 
-		res.locals.payload = { data: record || null };
+		res.locals['payload'] = { data: record || null };
 		return next();
 	}),
 	respond
@@ -136,7 +136,7 @@ router.patch(
 
 		try {
 			const result = await service.readMany(keys, req.sanitizedQuery);
-			res.locals.payload = { data: result };
+			res.locals['payload'] = { data: result };
 		} catch (error) {
 			if (error instanceof ForbiddenException) {
 				return next();
@@ -158,11 +158,11 @@ router.patch(
 			schema: req.schema,
 		});
 
-		const primaryKey = await service.updateOne(req.params.pk, req.body);
+		const primaryKey = await service.updateOne(req.params['pk']!, req.body);
 
 		try {
 			const item = await service.readOne(primaryKey, req.sanitizedQuery);
-			res.locals.payload = { data: item || null };
+			res.locals['payload'] = { data: item || null };
 		} catch (error) {
 			if (error instanceof ForbiddenException) {
 				return next();
@@ -178,7 +178,7 @@ router.patch(
 
 router.delete(
 	'/',
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req, _res, next) => {
 		const service = new FlowsService({
 			accountability: req.accountability,
 			schema: req.schema,
@@ -200,13 +200,13 @@ router.delete(
 
 router.delete(
 	'/:pk',
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req, _res, next) => {
 		const service = new FlowsService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
 
-		await service.deleteOne(req.params.pk);
+		await service.deleteOne(req.params['pk']!);
 
 		return next();
 	}),

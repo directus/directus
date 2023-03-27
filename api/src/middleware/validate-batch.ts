@@ -5,7 +5,7 @@ import asyncHandler from '../utils/async-handler';
 import { sanitizeQuery } from '../utils/sanitize-query';
 
 export const validateBatch = (scope: 'read' | 'update' | 'delete') =>
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req, _res, next) => {
 		if (req.method.toLowerCase() === 'get') {
 			req.body = {};
 			return next();
@@ -46,7 +46,7 @@ export const validateBatch = (scope: 'read' | 'update' | 'delete') =>
 		const { error } = batchSchema.validate(req.body);
 
 		if (error) {
-			throw new FailedValidationException(error.details[0]);
+			throw new FailedValidationException(error.details[0]!);
 		}
 
 		return next();

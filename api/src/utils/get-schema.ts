@@ -1,9 +1,9 @@
 import SchemaInspector from '@directus/schema';
-import { Filter, SchemaOverview } from '@directus/shared/types';
+import type { Filter, SchemaOverview } from '@directus/shared/types';
 import { parseJSON, toArray } from '@directus/shared/utils';
-import { Knex } from 'knex';
+import type { Knex } from 'knex';
 import { mapValues } from 'lodash';
-import { getSystemCache, setSystemCache } from '../cache';
+import { getSchemaCache, setSchemaCache } from '../cache';
 import { ALIAS_TYPES } from '../constants';
 import getDatabase from '../database';
 import { systemCollectionRows } from '../database/system-data/collections';
@@ -28,11 +28,11 @@ export async function getSchema(options?: {
 
 	let result: SchemaOverview;
 
-	if (!options?.bypassCache && env.CACHE_SCHEMA !== false) {
+	if (!options?.bypassCache && env['CACHE_SCHEMA'] !== false) {
 		let cachedSchema;
 
 		try {
-			cachedSchema = (await getSystemCache('schema')) as SchemaOverview;
+			cachedSchema = await getSchemaCache();
 		} catch (err: any) {
 			logger.warn(err, `[schema-cache] Couldn't retrieve cache. ${err}`);
 		}
@@ -43,7 +43,7 @@ export async function getSchema(options?: {
 			result = await getDatabaseSchema(database, schemaInspector);
 
 			try {
-				await setSystemCache('schema', result);
+				await setSchemaCache(result);
 			} catch (err: any) {
 				logger.warn(err, `[schema-cache] Couldn't save cache. ${err}`);
 			}
@@ -74,7 +74,7 @@ async function getDatabaseSchema(
 	];
 
 	for (const [collection, info] of Object.entries(schemaOverview)) {
-		if (toArray(env.DB_EXCLUDE_TABLES).includes(collection)) {
+		if (toArray(env['DB_EXCLUDE_TABLES']).includes(collection)) {
 			logger.trace(`Collection "${collection}" is configured to be excluded and will be ignored`);
 			continue;
 		}
@@ -99,7 +99,7 @@ async function getDatabaseSchema(
 			note: collectionMeta?.note || null,
 			sortField: collectionMeta?.sort_field || null,
 			accountability: collectionMeta ? collectionMeta.accountability : 'all',
-			fields: mapValues(schemaOverview[collection].columns, (column) => {
+			fields: mapValues(schemaOverview[collection]?.columns, (column) => {
 				return {
 					field: column.column_name,
 					defaultValue: getDefaultValue(column) ?? null,
@@ -137,8 +137,8 @@ async function getDatabaseSchema(
 	for (const field of fields) {
 		if (!result.collections[field.collection]) continue;
 
-		const existing = result.collections[field.collection].fields[field.field];
-		const column = schemaOverview[field.collection].columns[field.field];
+		const existing = result.collections[field.collection]?.fields[field.field];
+		const column = schemaOverview[field.collection]?.columns[field.field];
 		const special = field.special ? toArray(field.special) : [];
 
 		if (ALIAS_TYPES.some((type) => special.includes(type)) === false && !existing) continue;
@@ -148,7 +148,7 @@ async function getDatabaseSchema(
 
 		if (validation && typeof validation === 'string') validation = parseJSON(validation);
 
-		result.collections[field.collection].fields[field.field] = {
+		result.collections[field.collection]!.fields[field.field] = {
 			field: field.field,
 			defaultValue: existing?.defaultValue ?? null,
 			nullable: existing?.nullable ?? true,
