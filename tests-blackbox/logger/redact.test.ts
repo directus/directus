@@ -1,26 +1,22 @@
-import config, { Env, getUrl } from '@common/config';
+import config, { getUrl } from '@common/config';
 import vendors from '@common/get-dbs-to-test';
-import request from 'supertest';
-import knex, { Knex } from 'knex';
-import { spawn, ChildProcess } from 'child_process';
-import { awaitDirectusConnection } from '@utils/await-connection';
 import * as common from '@common/index';
-import { cloneDeep } from 'lodash';
+import { awaitDirectusConnection } from '@utils/await-connection';
+import { ChildProcess, spawn } from 'child_process';
 import { EnumType } from 'json-to-graphql-query';
-import { PassThrough } from 'node:stream';
-import { sleep } from '@utils/sleep';
+import knex, { Knex } from 'knex';
+import { cloneDeep } from 'lodash';
+import request from 'supertest';
 
 describe('Logger Redact Tests', () => {
 	const databases = new Map<string, Knex>();
 	const tzDirectus = {} as { [vendor: string]: ChildProcess };
 	const env = cloneDeep(config.envs);
-	const logs = {} as { [vendor: string]: string };
 	const authModes = ['json', 'cookie'];
 
 	for (const vendor of vendors) {
 		env[vendor].LOG_STYLE = 'raw';
 		env[vendor].PORT = String(Number(env[vendor]!.PORT) + 500);
-		logs[vendor] = '';
 	}
 
 	beforeAll(async () => {
@@ -29,34 +25,8 @@ describe('Logger Redact Tests', () => {
 		for (const vendor of vendors) {
 			databases.set(vendor, knex(config.knexConfig[vendor]!));
 
-			const logStream = new PassThrough();
 			const server = spawn('node', ['api/cli', 'start'], { env: env[vendor] });
 			tzDirectus[vendor] = server;
-			logs[vendor] = '';
-
-			const processLogs = (data: any) => {
-				console.log(String(data));
-				logs[vendor] += String(data);
-			};
-
-			logStream.on('data', processLogs);
-			logStream.on('error', processLogs);
-
-			server.on('spawn', () => {
-				server.stdout.pipe(logStream);
-				server.stderr.pipe(logStream);
-			});
-
-			server.on('close', () => {
-				server.stdout.unpipe(logStream);
-				server.stderr.unpipe(logStream);
-			});
-
-			// server.stdout.setEncoding('utf-8');
-			// server.stdout.on('data', (data) => {
-			// 	console.log(logs[vendor]);
-			// 	logs[vendor] += String(data);
-			// });
 
 			promises.push(awaitDirectusConnection(Number(env[vendor].PORT)));
 		}
@@ -74,23 +44,14 @@ describe('Logger Redact Tests', () => {
 	});
 
 	describe('POST /refresh', () => {
-		const logSyncDelay = 100;
-
-		async function waitForLogs() {
-			await sleep(logSyncDelay);
-		}
-
-		async function clearLogs(vendor: string) {
-			await sleep(logSyncDelay);
-			logs[vendor] = '';
-		}
-
 		describe('refreshes with refresh_token in the body', () => {
 			describe.each(authModes)('for %s mode', (mode) => {
 				common.TEST_USERS.forEach((userKey) => {
 					describe(common.USER[userKey].NAME, () => {
 						it.each(vendors)('%s', async (vendor) => {
 							// Setup
+							const logsPromise = waitForLogs(tzDirectus[vendor]);
+
 							const refreshToken = (
 								await request(getUrl(vendor, env))
 									.post(`/auth/login`)
@@ -111,9 +72,6 @@ describe('Logger Redact Tests', () => {
 									},
 								})
 							).body.data.auth_login.refresh_token;
-
-							// Action
-							await clearLogs(vendor);
 
 							const response = await request(getUrl(vendor, env))
 								.post(`/auth/refresh`)
@@ -136,7 +94,7 @@ describe('Logger Redact Tests', () => {
 								},
 							});
 
-							await waitForLogs();
+							const logs = await logsPromise;
 
 							// Assert
 							expect(response.statusCode).toBe(200);
@@ -147,8 +105,8 @@ describe('Logger Redact Tests', () => {
 										expires: expect.any(Number),
 									},
 								});
-								expect((logs[vendor].match(/"cookie":"--redact--"/g) || []).length).toBe(0);
-								expect((logs[vendor].match(/"set-cookie":"--redact--"/g) || []).length).toBe(2);
+								expect((logs.match(/"cookie":"--redact--"/g) || []).length).toBe(0);
+								expect((logs.match(/"set-cookie":"--redact--"/g) || []).length).toBe(2);
 							} else {
 								expect(response.body).toMatchObject({
 									data: {
@@ -157,8 +115,8 @@ describe('Logger Redact Tests', () => {
 										refresh_token: expect.any(String),
 									},
 								});
-								expect((logs[vendor].match(/"cookie":"--redact--"/g) || []).length).toBe(0);
-								expect((logs[vendor].match(/"set-cookie":"--redact--"/g) || []).length).toBe(0);
+								expect((logs.match(/"cookie":"--redact--"/g) || []).length).toBe(0);
+								expect((logs.match(/"set-cookie":"--redact--"/g) || []).length).toBe(0);
 							}
 
 							expect(gqlResponse.statusCode).toBe(200);
@@ -183,6 +141,8 @@ describe('Logger Redact Tests', () => {
 					describe(common.USER[userKey].NAME, () => {
 						it.each(vendors)('%s', async (vendor) => {
 							// Setup
+							const logsPromise = waitForLogs(tzDirectus[vendor]);
+
 							const cookieName = 'directus_refresh_token';
 
 							const refreshToken = (
@@ -205,9 +165,6 @@ describe('Logger Redact Tests', () => {
 									},
 								})
 							).body.data.auth_login.refresh_token;
-
-							// Action
-							await clearLogs(vendor);
 
 							const response = await request(getUrl(vendor, env))
 								.post(`/auth/refresh`)
@@ -237,7 +194,7 @@ describe('Logger Redact Tests', () => {
 								{ cookies: [`${cookieName}=${refreshToken2}`] }
 							);
 
-							await waitForLogs();
+							const logs = await logsPromise;
 
 							// Assert
 							expect(response.statusCode).toBe(200);
@@ -248,8 +205,8 @@ describe('Logger Redact Tests', () => {
 										expires: expect.any(Number),
 									},
 								});
-								expect((logs[vendor].match(/"cookie":"--redact--"/g) || []).length).toBe(2);
-								expect((logs[vendor].match(/"set-cookie":"--redact--"/g) || []).length).toBe(2);
+								expect((logs.match(/"cookie":"--redact--"/g) || []).length).toBe(2);
+								expect((logs.match(/"set-cookie":"--redact--"/g) || []).length).toBe(2);
 							} else {
 								expect(response.body).toMatchObject({
 									data: {
@@ -258,8 +215,8 @@ describe('Logger Redact Tests', () => {
 										refresh_token: expect.any(String),
 									},
 								});
-								expect((logs[vendor].match(/"cookie":"--redact--"/g) || []).length).toBe(2);
-								expect((logs[vendor].match(/"set-cookie":"--redact--"/g) || []).length).toBe(0);
+								expect((logs.match(/"cookie":"--redact--"/g) || []).length).toBe(2);
+								expect((logs.match(/"set-cookie":"--redact--"/g) || []).length).toBe(0);
 							}
 
 							expect(gqlResponse.statusCode).toBe(200);
@@ -279,3 +236,33 @@ describe('Logger Redact Tests', () => {
 		});
 	});
 });
+
+function waitForLogs(server: ChildProcess) {
+	// Discard logs up to this point
+	server.stdout?.resume();
+
+	return new Promise<string>((resolve) => {
+		let logs = '';
+		let receivedRestRefresh = 0;
+		let receivedGraphQLRefresh = 0;
+
+		const processChunks = (chunk: any) => {
+			if (chunk?.includes('"url":"/auth/refresh"')) {
+				receivedRestRefresh++;
+				logs += chunk;
+			}
+			if (chunk?.includes('"url":"/graphql/system"')) {
+				receivedGraphQLRefresh++;
+				logs += chunk;
+			}
+
+			// Wait for REST & GraphQL refresh calls (two GraphQL log entries for login & refresh, cannot be distinguished)
+			if (receivedRestRefresh === 1 && receivedGraphQLRefresh === 2) {
+				server.stdout?.removeListener('data', processChunks);
+				resolve(logs);
+			}
+		};
+
+		server.stdout?.on('data', processChunks);
+	});
+}
