@@ -54,8 +54,7 @@ export async function getPermissions(accountability: Accountability, schema: Sch
 					? await getFilterContext(schema, accountability, requiredPermissionData)
 					: {};
 
-
-				if (containDynamicData && env.CACHE_ENABLED !== false) {
+				if (containDynamicData && env['CACHE_ENABLED'] !== false) {
 					await cache.set(`filterContext-${hash({ user, role, permissions })}`, filterContext);
 				}
 
@@ -99,10 +98,10 @@ export async function getPermissions(accountability: Accountability, schema: Sch
 			? await getFilterContext(schema, accountability, requiredPermissionData)
 			: {};
 
-		if (cache && env.CACHE_PERMISSIONS !== false) {
+		if (cache && env['CACHE_PERMISSIONS'] !== false) {
 			await systemCache.set(cacheKey, { permissions, containDynamicData });
 
-			if (containDynamicData && env.CACHE_ENABLED !== false) {
+			if (containDynamicData && env['CACHE_ENABLED'] !== false) {
 				await cache.set(`filterContext-${hash({ user, role, permissions })}`, filterContext);
 			}
 		}

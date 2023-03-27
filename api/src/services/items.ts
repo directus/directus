@@ -20,7 +20,7 @@ import type {
 import getASTFromQuery from '../utils/get-ast-from-query';
 import { validateKeys } from '../utils/validate-keys';
 import { AuthorizationService } from './authorization';
-import { CacheService } from './cache/cache';
+import type { CacheService } from './cache/cache';
 import { ActivityService, RevisionsService } from './index';
 import { PayloadService } from './payload';
 

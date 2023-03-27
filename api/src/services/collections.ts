@@ -15,7 +15,7 @@ import { FieldsService } from '../services/fields';
 import { ItemsService } from '../services/items';
 import { omit } from 'lodash';
 import { getSchema } from '../utils/get-schema';
-import { CacheService } from './cache/cache';
+import type { CacheService } from './cache/cache';
 import { clearSystemCache } from '../utils/clearSystemCache';
 import type { AbstractServiceOptions, ActionEventParams, Collection, CollectionMeta, MutationOptions } from '../types';
 

@@ -3,7 +3,7 @@ import getDatabase, { getSchemaInspector } from '../database';
 import { getDefaultIndexName } from '../utils/get-default-index-name';
 import { getCache } from '../cache';
 import { getHelpers, Helpers } from '../database/helpers';
-import { CacheService } from './cache/cache';
+import type { CacheService } from './cache/cache';
 import type { Accountability, Query, Relation, RelationMeta, SchemaOverview } from '@directus/shared/types';
 import { toArray } from '@directus/shared/utils';
 import type { Knex } from 'knex';

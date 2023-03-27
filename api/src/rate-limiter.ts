@@ -41,7 +41,7 @@ function getRedisConfig(configPrefix: string, overrides?: IRateLimiterOptionsOve
 	);
 
 	const Redis = require('ioredis');
-	config.storeClient = new Redis(env.RATE_LIMITER_REDIS ?? config);
+	config.storeClient = new Redis(env['RATE_LIMITER_REDIS'] ?? config);
 	delete config.redis;
 
 	delete config.enabled;

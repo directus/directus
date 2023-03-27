@@ -1,11 +1,10 @@
 import type { PermissionsAction, Query } from '@directus/shared/types';
-import type Keyv from 'keyv';
 import { appAccessMinimalPermissions } from '../database/system-data/app-access-permissions';
 import { ItemsService, QueryOptions } from '../services/items';
 import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '../types';
 import { filterItems } from '../utils/filter-items';
 import { getCache } from '../cache';
-import { CacheService } from './cache/cache';
+import type { CacheService } from './cache/cache';
 import { clearSystemCache } from '../utils/clearSystemCache';
 
 export class PermissionsService extends ItemsService {
@@ -82,37 +81,37 @@ export class PermissionsService extends ItemsService {
 
 	override async createOne(data: Partial<Item>, opts?: MutationOptions) {
 		const res = await super.createOne(data, opts);
-		await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
+		await clearSystemCache();
 		return res;
 	}
 
 	override async createMany(data: Partial<Item>[], opts?: MutationOptions) {
 		const res = await super.createMany(data, opts);
-		await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
+		await clearSystemCache();
 		return res;
 	}
 
 	override async updateBatch(data: Partial<Item>[], opts?: MutationOptions) {
 		const res = await super.updateBatch(data, opts);
-		await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
+		await clearSystemCache();
 		return res;
 	}
 
 	override async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions) {
 		const res = await super.updateMany(keys, data, opts);
-		await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
+		await clearSystemCache();
 		return res;
 	}
 
 	override async upsertMany(payloads: Partial<Item>[], opts?: MutationOptions) {
 		const res = await super.upsertMany(payloads, opts);
-		await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
+		await clearSystemCache();
 		return res;
 	}
 
 	override async deleteMany(keys: PrimaryKey[], opts?: MutationOptions) {
 		const res = await super.deleteMany(keys, opts);
-		await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
+		await clearSystemCache();
 		return res;
 	}
 }

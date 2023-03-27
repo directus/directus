@@ -8,7 +8,7 @@ import asyncHandler from '../utils/async-handler';
 import { getIPFromReq } from '../utils/get-ip-from-req';
 import { validateEnv } from '../utils/validate-env';
 
-let checkRateLimit: RequestHandler = (req, res, next) => next();
+let checkRateLimit: RequestHandler = (_req, _res, next) => next();
 export let rateLimiter: RateLimiterRedis | RateLimiterMemory;
 
 if (env['RATE_LIMITER_ENABLED'] === true) {

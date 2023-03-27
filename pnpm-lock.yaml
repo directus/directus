@@ -84,7 +84,6 @@ importers:
       '@directus/storage-driver-s3': workspace:*
       '@directus/utils': workspace:*
       '@godaddy/terminus': 4.11.2
-      '@keyv/redis': 2.5.6
       '@ngneat/falso': 6.4.0
       '@rollup/plugin-alias': 4.0.3
       '@rollup/plugin-virtual': 3.0.1
@@ -268,7 +267,6 @@ importers:
       json-buffer: 3.0.1
       json2csv: 5.0.7
       jsonwebtoken: 9.0.0
-      keyv: 4.5.2
       knex: 2.4.2_gtxrszusl6tkjfynyc22baqi3i
       knex-schema-inspector: 3.0.1
       ldapjs: 2.3.3
@@ -308,9 +306,6 @@ importers:
       vm2: 3.9.14
       wellknown: 0.5.0
     optionalDependencies:
-      '@keyv/redis': 2.5.6
-      keyv-memcache: 1.3.3
-      memcached: 2.2.2
       mysql: 2.18.1
       nodemailer-mailgun-transport: 2.1.5_lodash@4.17.21
       nodemailer-sendgrid: 1.0.3
@@ -4489,17 +4484,6 @@ packages:
     resolution: {integrity: sha512-dfLbk+PwWvFzSxwk3n5ySL0hfBog779o8h68wK/7/APo/7cgyWp5jcXockbxdk5kFRkbeXWm4Fbi9FrdN381sA==}
     dev: true
 
-  /@keyv/redis/2.5.6:
-    resolution: {integrity: sha512-WxR9x/TjGptVM5Vi1IyMqtZ+iAPMY8jh2NkGrHWnvrtGUDll4PyY2GbXkOTC0msGVXuV1JqPEHIM7M648O+Pfg==}
-    engines: {node: '>= 12'}
-    requiresBuild: true
-    dependencies:
-      ioredis: 5.3.1
-    transitivePeerDependencies:
-      - supports-color
-    dev: false
-    optional: true
-
   /@mapbox/extent/0.4.0:
     resolution: {integrity: sha512-MSoKw3qPceGuupn04sdaJrFeLKvcSETVLZCGS8JA9x6zXQL3FWiKaIXYIZEDXd5jpXpWlRxinCZIN49yRy0C9A==}
     dev: true
@@ -8406,11 +8390,6 @@ packages:
       proto-list: 1.2.4
     dev: true
 
-  /connection-parse/0.0.7:
-    resolution: {integrity: sha512-bTTG28diWg7R7/+qE5NZumwPbCiJOT8uPdZYu674brDjBWQctbaQbYlDKhalS+4i5HxIx+G8dZsnBHKzWpp01A==}
-    dev: false
-    optional: true
-
   /console-control-strings/1.1.0:
     resolution: {integrity: sha512-ty/fTekppD2fIwRvnZAVdeOiGd1c7YXEixbgJTNzqcxJWKQnjJ/V1bNEEE6hygpM3WjwHFUVK6HTjWSzV4a8sQ==}
 
@@ -10673,14 +10652,6 @@ packages:
     resolution: {integrity: sha512-WdZTbAByD+pHfl/g9QSsBIIwy8IT+EsPiKDs0KNX+zSHhdDLFKdZu0BQHljvO+0QI/BasbMSUa8wYNCZTvhslg==}
     dev: false
 
-  /hashring/3.2.0:
-    resolution: {integrity: sha512-xCMovURClsQZ+TR30icCZj+34Fq1hs0y6YCASD6ZqdRfYRybb5Iadws2WS+w09mGM/kf9xyA5FCdJQGcgcraSA==}
-    dependencies:
-      connection-parse: 0.0.7
-      simple-lru-cache: 0.0.2
-    dev: false
-    optional: true
-
   /hat/0.0.3:
     resolution: {integrity: sha512-zpImx2GoKXy42fVDSEad2BPKuSQdLcqsCYa48K3zHSzM/ugWuYjLDr8IXxpVuL7uCLHw56eaiLxCRthhOzf5ug==}
     dev: true
@@ -11310,13 +11281,6 @@ packages:
       html-escaper: 2.0.2
       istanbul-lib-report: 3.0.0
     dev: true
-
-  /jackpot/0.0.6:
-    resolution: {integrity: sha512-rbWXX+A9ooq03/dfavLg9OXQ8YB57Wa7PY5c4LfU3CgFpwEhhl3WyXTQVurkaT7zBM5I9SSOaiLyJ4I0DQmC0g==}
-    dependencies:
-      retry: 0.6.0
-    dev: false
-    optional: true
 
   /jake/10.8.5:
     resolution: {integrity: sha512-sVpxYeuAhWt0OTWITwT98oyV0GsXyMlXCF+3L1SuafBVUIr/uILGRB+NqwkzhgXKvoJpDIpQvqkUALgdmQsQxw==}
@@ -12809,21 +12773,6 @@ packages:
   /media-typer/0.3.0:
     resolution: {integrity: sha512-dq+qelQ9akHpcOl/gUVRTxVIOkAJ1wR3QAvb4RsVjS8oVoFjDGTc679wJYmUmknUF5HwMLOgb5O+a3KxfWapPQ==}
     engines: {node: '>= 0.6'}
-
-  /memcached/2.2.2:
-    resolution: {integrity: sha512-lHwUmqkT9WdUUgRsAvquO4xsKXYaBd644Orz31tuth+w/BIfFNuJMWwsG7sa7H3XXytaNfPTZ5R/yOG3d9zJMA==}
-    requiresBuild: true
-    dependencies:
-      hashring: 3.2.0
-      jackpot: 0.0.6
-    dev: false
-    optional: true
-
-  /memjs/1.3.0:
-    resolution: {integrity: sha512-y/V9a0auepA9Lgyr4QieK6K2FczjHucEdTpSS+hHVNmVEkYxruXhkHu8n6DSRQ4HXHEE3cc6Sf9f88WCJXGXsQ==}
-    engines: {node: '>=0.10.0'}
-    dev: false
-    optional: true
 
   /memoizerific/1.11.3:
     resolution: {integrity: sha512-/EuHYwAPdLtXwAwSZkh/Gutery6pD2KYd44oQLhAvQp/50mpyduZh8Q7PYHXTCJ+wuXxt7oij2LXyIJOOYFPog==}
@@ -15800,11 +15749,6 @@ packages:
       once: 1.4.0
       simple-concat: 1.0.1
     dev: false
-
-  /simple-lru-cache/0.0.2:
-    resolution: {integrity: sha512-uEv/AFO0ADI7d99OHDmh1QfYzQk/izT1vCmu/riQfh7qjBVUUgRT87E5s5h7CxWCA/+YoZerykpEthzVrW3LIw==}
-    dev: false
-    optional: true
 
   /simple-swizzle/0.2.2:
     resolution: {integrity: sha512-JA//kQgZtbuY83m+xT+tXJkmJncGMTFT+C+g2h2R9uxkYIrE2yy9sgmcLhCnw57/WSD+Eh3J97FPEDFnbXnDUg==}

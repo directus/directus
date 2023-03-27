@@ -42,11 +42,11 @@ export class MessengerRedis implements Messenger {
 		const config = this.getConfig();
 		this.pub = new IORedis(config);
 		this.sub = new IORedis(config);
-		this.namespace = env.MESSENGER_NAMESPACE ?? 'directus';
+		this.namespace = env['MESSENGER_NAMESPACE'] ?? 'directus';
 	}
 
 	private getConfig() {
-		if ('MESSENGER_REDIS' in env) return env.MESSENGER_REDIS;
+		if ('MESSENGER_REDIS' in env) return env['MESSENGER_REDIS'];
 		return merge({}, getConfigFromEnv('REDIS_'), getConfigFromEnv('MESSENGER_REDIS'));
 	}
 

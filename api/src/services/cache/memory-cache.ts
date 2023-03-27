@@ -15,7 +15,7 @@ export class MemoryCache extends CacheService {
 	}
 
 	async set(key: string, value: any, ttl: number | undefined = this.ttl): Promise<void> {
-		if (await this.isLocked()) return;
+		if (!ttl || (await this.isLocked())) return;
 
 		const _key = this.addPrefix(key);
 		this.store.set(_key, value, { ttl });

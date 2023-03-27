@@ -3,7 +3,6 @@ import type { Accountability, SchemaOverview, Filter } from '@directus/shared/ty
 import { parseJSON, toArray } from '@directus/shared/utils';
 import type { Knex } from 'knex';
 import { mapValues } from 'lodash';
-import { getSchemaCache, setSchemaCache } from '../cache';
 import { ALIAS_TYPES } from '../constants';
 import getDatabase from '../database';
 import { systemCollectionRows } from '../database/system-data/collections';

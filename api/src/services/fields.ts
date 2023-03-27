@@ -20,7 +20,7 @@ import type { AbstractServiceOptions, ActionEventParams, MutationOptions } from 
 import getDefaultValue from '../utils/get-default-value';
 import getLocalType from '../utils/get-local-type';
 import { getSchema } from '../utils/get-schema';
-import { CacheService } from './cache/cache';
+import type { CacheService } from './cache/cache';
 import { clearSystemCache } from '../utils/clearSystemCache';
 import { RelationsService } from './relations';
 
