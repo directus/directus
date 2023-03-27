@@ -6,12 +6,12 @@ import { getEndpoint, moveInArray } from '../utils';
 import { isEqual, throttle } from 'lodash';
 import { computed, ComputedRef, ref, Ref, watch, WritableComputedRef, unref } from 'vue';
 
-type ManualSortData = {
+export type ManualSortData = {
 	item: string | number;
 	to: string | number;
 };
 
-type UsableItems = {
+export type UsableItems = {
 	itemCount: Ref<number | null>;
 	totalCount: Ref<number | null>;
 	items: Ref<Item[]>;
@@ -24,7 +24,7 @@ type UsableItems = {
 	getItemCount: () => Promise<void>;
 };
 
-type ComputedQuery = {
+export type ComputedQuery = {
 	fields: Ref<Query['fields']> | ComputedRef<Query['fields']> | WritableComputedRef<Query['fields']>;
 	alias?: Ref<Query['alias']> | ComputedRef<Query['alias']> | WritableComputedRef<Query['alias']>;
 	limit: Ref<Query['limit']> | ComputedRef<Query['limit']> | WritableComputedRef<Query['limit']>;
