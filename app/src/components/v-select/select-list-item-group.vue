@@ -1,5 +1,6 @@
 <template>
 	<v-list-group
+		v-show="!item.hidden"
 		:active="isActive"
 		:clickable="groupSelectable || item.selectable"
 		:value="item.value"
