@@ -25,7 +25,7 @@ export type MutationOptions = {
 	/**
 	 * Callback function that's fired whenever a revision is made in the mutation
 	 */
-	onRevisionCreate?: (pk: PrimaryKey) => void | undefined;
+	onRevisionCreate?: ((pk: PrimaryKey) => void) | undefined;
 
 	/**
 	 * Flag to disable the auto purging of the cache. Is ignored when CACHE_AUTO_PURGE isn't enabled.
