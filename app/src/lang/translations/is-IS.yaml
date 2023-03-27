@@ -71,6 +71,8 @@ prefix: Forskeyti
 reset_bookmark: Endursetja Bókamerki
 update_bookmark: Uppfæra bókamerki
 delete_bookmark: Eyða bókamerki
+delete_personal_bookmark: Eyða Persónulegu Bókamerki
+delete_role_bookmark: Eyða Hlutverks Bókamerki
 delete_global_bookmark: Eyða altæku bókamerki
 logoutReason:
   SIGN_OUT: Skráð út
@@ -205,33 +207,106 @@ free: Frjálst
 rotate: Snúa
 all_users: Allir Notendur
 flow_name: Nafn
+start_flow: Byrja Flæði
+stop_flow: Stoppa Flæði
+code: Kóði
+insights: Innsýnir
+visible: Sýnilegt
+no_data: Engin G0gn
+center_align: Miðju Jöfnun
+left_align: Vinstri Jöfnun
+right_align: Hægri Jöfnun
+image_url: Mynd Url
+quality: Gæði
+width: Breidd
+height: Hæð
+new_tab: Nýr Flipi
+current_tab: Núverandi Flipi
+save_image: Vista Mynd
 wysiwyg_options:
   forecolor: Forgrunnur Litur
   backcolor: Bakgrunnur Litur
+  h1: Fyrirsögn 1
+  h2: Fyrirsögn 2
+  h3: Fyrirsögn 3
+  h4: Fyrirsögn 4
+  h5: Fyrirsögn 5
+  h6: Fyrirsögn 6
+  fontselect: Velja Stafagerð
+  fontsizeselect: Velja Stafastærð
+  indent: Draga inn
+  outdent: Draga út
+  undo: Afturkalla
+  redo: Endurgera
+  remove: Fjarlægja
+  selectall: Velja Allt
+  table: Tafla
+dropdown: Fellilisti
 choices: Val
+select: Velja...
+tree_view: Tré Sýn
+data: Gögn
+unsaved_changes: Óvistaðar Breytingar
+discard_changes: Henda Breytingum
+discard_all_changes: Henda Öllum Breytingum
 add_new: Bæta við nýjum
+create_new: Búa til Nýtt
+all: Allt
+none: Ekkert
 fields:
   directus_activity:
     origin: Uppruni
   directus_collections:
+    icon: Íkon
     note: Minnispunktur
+    color: Litur
+    hidden: Falið
   directus_files:
     title: Titill
+    description: Lýsing
+    location: Staðsetning
+    modified_on: Breytt Þann
+    created_on: Búið til Þann
+    created_by: Búið til Af
+    embed: Ívefja
     folder: Mappa
+    width: Breidd
+    uploaded_on: Upphlaðið Þann
+    height: Hæð
     duration: Tímalengd
   directus_users:
+    first_name: Fornafn
+    last_name: Eftirnafn
+    email: Tölvupóstur
+    password: Lykilorð
+    avatar: Auðkennismynd
+    location: Staðsetning
     title: Titill
+    description: Lýsing
+    tags: Merki
+    user_preferences: Notandi Stillingar
     language: Tungumál
+    theme: Þema
+    status: Staða
+    status_draft: Drög
+    status_invited: Boðið
+    status_active: Virkt
+    role: Hlutverk
     last_page: Síðasta Síða
     last_access: Síðasta Aðgengi
+  directus_settings:
+    project_name: Verkefni Nafn
   directus_shares:
     name: Nafn
+    password: Lykilorð
   directus_fields:
     note: Minnispunktur
   directus_roles:
     name: Hlutverks Nafn
+    description: Lýsing
   directus_webhooks:
     name: Nafn
+    status: Staða
 field_options:
   directus_settings:
     security_divider_title: Öryggi
@@ -241,10 +316,19 @@ field_options:
   directus_roles:
     fields:
       name_name: Nafn
+  directus_users:
+    preferences_divider: Notandi Stillingar
+    status_dropdown_draft: Drög
+description: Lýsing
+email: Tölvupóstur
+password: Lykilorð
+table: Tafla
+list: Listi
 interfaces:
   filter:
     name: Sía
     add_filter: Bæta við Síu
+    all: Allt
   presentation-links:
     primary: Aðal
   select-dropdown:
@@ -257,20 +341,34 @@ interfaces:
     sort: Flokka
   boolean:
     label_default: Virkt
+  user:
+    modes:
+      dropdown: Fellilisti
 displays:
   translations:
     translations: Þýðingar
+  datetime:
+    long: Langt
+    short: Stutt
+    relative: Hlutfallslegt
+    down: Niður
+    nearest: Næsta
+    up: Upp
+  file:
+    file: Skrá
   formatted-value:
     prefix: Forskeyti
     text: Texti
   labels:
     choices_value_placeholder: Skráðu Gildi...
   user:
+    avatar: Auðkennismynd
     name: Nafn
 layouts:
   cards:
     title: Titill
   tabular:
+    tabular: Tafla
     cozy: Notalegt
   calendar:
     calendar: Dagatal
@@ -284,10 +382,54 @@ layouts:
     group_field: Hópa Sem
     group_title: Hópur Titill
     title: Spjald Titill
+    text: Spjald Texti
+    date: Spjald Dagsetning
+    user: Spjald Notandi
+    image: Spjald Mynd
+    crop: Sneyða
     edit_group: Breyta Hóp
     delete_group: Eyða Hóp
     add_group: Bæta við Hóp
+    show: Sýna
+    no_group: Enginn hópur
+horizontal: Lárétt
+vertical: Lóðrétt
+x_axis: X-Ás
+y_axis: Y-Ás
+both: Bæði
+half_circle: Hálf Hringur
+full_circle: Heill Hringur
+thin: Þunnt
+medium: Meðal
+broad: Breitt
+right: Hægri
+left: Vinstri
+donut: Kleinuhringur
+panels:
+  metric:
+    field: Reitur
+  label:
+    name: Merking
+  list:
+    name: Listi
+  barchart:
+    name: Stöplarit
+    horizontal: Lárétt
+  linechart:
+    name: Línurit
+    smooth: Slétt
+    straight: Beint
+  relational-variable:
+    multiple: Margfeldið
+triggers:
+  common:
+    response_body_all: Öll Gögn
+  webhook:
+    method: Aðferð
+    async: Ólínulegt
 operations:
+  condition:
+    name: Ástand
   item-read:
     name: Lesa Gögn
   log:
@@ -310,3 +452,5 @@ operations:
     flows: Flæði
     flow: Flæði
     data: Gögn
+    serial: Raðnúmer
+    parallel: Samhliða
