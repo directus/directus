@@ -759,7 +759,7 @@ export async function applySearch(
 				this.orWhereRaw(`LOWER(??) LIKE ?`, [`${collection}.${name}`, `%${searchQuery.toLowerCase()}%`]);
 			} else if (['bigInteger', 'integer', 'decimal', 'float'].includes(field.type)) {
 				const number = Number(searchQuery);
-				if (!isNaN(number)) this.orWhere({ [`${collection}.${name}`]: number });
+				if (!isNaN(number)) this.orWhereRaw(`??.?? = ${number}`, [collection, name]);
 			} else if (field.type === 'uuid' && validate(searchQuery)) {
 				this.orWhere({ [`${collection}.${name}`]: searchQuery });
 			}
