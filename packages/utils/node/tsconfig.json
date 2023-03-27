@@ -2,6 +2,8 @@
 	"extends": "../tsconfig.json",
 	"compilerOptions": {
 		"types": ["node"],
-		"outDir": "../dist/node"
-	}
+		"outDir": "../dist/node",
+		"composite": true
+	},
+	"include": ["."]
 }

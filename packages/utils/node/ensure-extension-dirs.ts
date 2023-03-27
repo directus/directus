@@ -1,7 +1,7 @@
 import type { NestedExtensionType } from '@directus/types';
 import fse from 'fs-extra';
 import path from 'path';
-import { pluralize } from '../pluralize.js';
+import { pluralize } from './pluralize.js';
 
 export async function ensureExtensionDirs(
 	extensionsPath: string,

@@ -3,7 +3,7 @@
 	"version": "9.23.4",
 	"type": "module",
 	"scripts": {
-		"build": "tsc --project browser/tsconfig.json",
+		"build": "tsc --project browser/tsconfig.json && tsc --project node/tsconfig.json && tsc --project shared/tsconfig.json",
 		"dev": "tsc --watch",
 		"test": "vitest run",
 		"test:watch": "vitest",

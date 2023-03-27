@@ -3,6 +3,8 @@
 	"compilerOptions": {
 		"lib": ["es2022", "DOM"],
 		"types": [],
-		"outDir": "../dist/browser"
-	}
+		"outDir": "../dist/browser",
+		"composite": true
+	},
+	"include": ["."]
 }

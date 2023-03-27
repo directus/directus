@@ -8,8 +8,8 @@ import type { ApiExtensionType, AppExtensionType, Extension } from '@directus/ty
 import { ExtensionManifest } from '@directus/types';
 import fse from 'fs-extra';
 import path from 'path';
-import { isIn, isTypeIn } from '../array-helpers.js';
-import { pluralize } from '../pluralize.js';
+import { isIn, isTypeIn } from './array-helpers.js';
+import { pluralize } from './pluralize.js';
 import { listFolders } from './list-folders.js';
 import { resolvePackage } from './resolve-package.js';
 

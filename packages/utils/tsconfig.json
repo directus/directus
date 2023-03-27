@@ -3,5 +3,9 @@
 	"compilerOptions": {
 		"outDir": "dist"
 	},
-	"include": ["browser", "node", "shared"]
+	"references": [
+		{ "path": "./browser/tsconfig.json" },
+		{ "path": "./node/tsconfig.json" },
+		{ "path": "./shared/tsconfig.json" }
+	]
 }
