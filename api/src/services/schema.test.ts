@@ -1,11 +1,11 @@
-import { Diff } from 'deep-diff';
+import type { Diff } from 'deep-diff';
 import knex, { Knex } from 'knex';
-import { getTracker, MockClient, Tracker } from 'knex-mock-client';
+import { createTracker, MockClient, Tracker } from 'knex-mock-client';
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 import { SchemaService } from '.';
 import { ForbiddenException } from '..';
-import { Collection } from '../types/collection';
-import { Snapshot, SnapshotDiffWithHash } from '../types/snapshot';
+import type { Collection } from '../types/collection';
+import type { Snapshot, SnapshotDiffWithHash } from '../types/snapshot';
 import { applyDiff } from '../utils/apply-diff';
 import { getSnapshot } from '../utils/get-snapshot';
 
@@ -63,7 +63,7 @@ const testCollectionDiff = {
 
 beforeAll(() => {
 	db = knex({ client: Client_PG });
-	tracker = getTracker();
+	tracker = createTracker(db);
 });
 
 afterEach(() => {

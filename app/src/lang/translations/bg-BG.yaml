@@ -1629,7 +1629,6 @@ interfaces:
   system-folder:
     folder: Папка
     description: Избор на папка
-    field_hint: Папка за качване на файловете. Съществуващите файлове не се променят.
     root_name: Главна папка
     system_default: По подразбиране
   select-radio:
@@ -2071,7 +2070,6 @@ operations:
     name: Изпращане на известие
     description: Изпращане на известие в приложението до потребители
     recipient: Потребител
-    recipient_placeholder: Добавете UUID и натиснете enter...
     message: Съобщение
   request:
     name: Уеб-кука / URL заявка

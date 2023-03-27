@@ -1498,7 +1498,6 @@ interfaces:
   system-folder:
     folder: Kansio
     description: Valitse kansio
-    field_hint: Ladattujen tiedostojen kansio. Ei vaikuta olemassa oleviin tiedostoihin.
     root_name: Tiedostokirjaston juuri
     system_default: Järjestelmän oletukset
   select-radio:

@@ -1,8 +1,8 @@
-import { Knex } from 'knex';
+import type { Accountability, Query, SchemaOverview } from '@directus/shared/types';
+import type { Knex } from 'knex';
 import getDatabase from '../database';
 import { ForbiddenException } from '../exceptions';
-import { AbstractServiceOptions } from '../types';
-import { Accountability, Query, SchemaOverview } from '@directus/shared/types';
+import type { AbstractServiceOptions } from '../types';
 import { applyFilter, applySearch } from '../utils/apply-query';
 
 export class MetaService {
@@ -24,6 +24,7 @@ export class MetaService {
 			query.meta.map((metaVal: string) => {
 				if (metaVal === 'total_count') return this.totalCount(collection);
 				if (metaVal === 'filter_count') return this.filterCount(collection, query);
+				return undefined;
 			})
 		);
 
@@ -86,6 +87,6 @@ export class MetaService {
 
 		const records = await dbQuery;
 
-		return Number(records[0].count);
+		return Number(records[0]!.count);
 	}
 }
