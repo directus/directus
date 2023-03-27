@@ -10,14 +10,14 @@ export type GroupableInstance = {
  * Used to make child item part of the group context. Needs to be used in a component that is a child
  * of a component that has the `useGroupableParent` composition enabled
  */
-type GroupableOptions = {
+export type GroupableOptions = {
 	value?: string | number;
 	group?: string;
 	active?: Ref<boolean>;
 	watch?: boolean;
 };
 
-type UsableGroupable = {
+export type UsableGroupable = {
 	active: Ref<boolean>;
 	toggle: () => void;
 	activate: () => void;

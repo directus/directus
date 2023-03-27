@@ -130,7 +130,7 @@
 						},
 						{
 							text: t('referential_action_cascade', {
-								collection: (oneAllowedCollections ?? []).join(' / '),
+								collection: junctionCollection,
 								field: junctionFieldRelated,
 							}),
 							value: 'delete',
