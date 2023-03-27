@@ -1,6 +1,6 @@
 import { REGEX_BETWEEN_PARENS } from '@directus/constants';
 import type { Accountability, Filter, Role, User } from '@directus/types';
-import { isObjectLike } from 'lodash';
+import { isObjectLike } from 'lodash-es';
 import { adjustDate } from './adjust-date.js';
 import { deepMap } from './deep-map.js';
 import { get } from './get-with-arrays.js';

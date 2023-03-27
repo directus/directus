@@ -1,5 +1,5 @@
 import BaseJoi, { AnySchema, StringSchema as BaseStringSchema, NumberSchema, DateSchema } from 'joi';
-import { escapeRegExp, merge } from 'lodash';
+import { escapeRegExp, merge } from 'lodash-es';
 import type { FieldFilter } from '@directus/types';
 
 export interface StringSchema extends BaseStringSchema {

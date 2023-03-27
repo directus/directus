@@ -1,5 +1,5 @@
 import type { FieldFilter, Filter } from '@directus/types';
-import { flatten } from 'lodash';
+import { flatten } from 'lodash-es';
 import { generateJoi, JoiOptions } from './generate-joi.js';
 import { injectFunctionResults } from './inject-function-results.js';
 import type Joi from 'joi';

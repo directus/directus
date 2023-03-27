@@ -411,7 +411,7 @@ class ExtensionManager {
 		for (const endpoint of endpoints) {
 			try {
 				const endpointPath = path.resolve(endpoint.path, endpoint.entrypoint);
-				const endpointInstance: EndpointConfig | { default: EndpointConfig } = require(endpointPath);
+				const endpointInstance: EndpointConfig | { default: EndpointConfig } = await import(endpointPath);
 
 				const config = getModuleDefault(endpointInstance);
 
@@ -445,7 +445,7 @@ class ExtensionManager {
 		for (const operation of [...internalOperations, ...operations]) {
 			try {
 				const operationPath = path.resolve(operation.path, operation.entrypoint.api!);
-				const operationInstance: OperationApiConfig | { default: OperationApiConfig } = require(operationPath);
+				const operationInstance: OperationApiConfig | { default: OperationApiConfig } = await import(operationPath);
 
 				const config = getModuleDefault(operationInstance);
 
@@ -465,7 +465,7 @@ class ExtensionManager {
 		for (const bundle of bundles) {
 			try {
 				const bundlePath = path.resolve(bundle.path, bundle.entrypoint.api);
-				const bundleInstances: BundleConfig | { default: BundleConfig } = require(bundlePath);
+				const bundleInstances: BundleConfig | { default: BundleConfig } = await import(bundlePath);
 
 				const configs = getModuleDefault(bundleInstances);
 
