@@ -1,17 +1,17 @@
 import { createTerminus, TerminusOptions } from '@godaddy/terminus';
-import { Request } from 'express';
+import type { Request } from 'express';
 import * as http from 'http';
 import * as https from 'https';
 import { once } from 'lodash';
 import qs from 'qs';
+import checkForUpdate from 'update-check';
 import url from 'url';
+import pkg from '../package.json';
 import createApp from './app';
 import getDatabase from './database';
+import emitter from './emitter';
 import env from './env';
 import logger from './logger';
-import emitter from './emitter';
-import checkForUpdate from 'update-check';
-import pkg from '../package.json';
 import { getConfigFromEnv } from './utils/get-config-from-env';
 
 export async function createServer(): Promise<http.Server> {
@@ -94,7 +94,7 @@ export async function createServer(): Promise<http.Server> {
 	return server;
 
 	async function beforeShutdown() {
-		if (env.NODE_ENV !== 'development') {
+		if (env['NODE_ENV'] !== 'development') {
 			logger.info('Shutting down...');
 		}
 	}
@@ -117,7 +117,7 @@ export async function createServer(): Promise<http.Server> {
 			}
 		);
 
-		if (env.NODE_ENV !== 'development') {
+		if (env['NODE_ENV'] !== 'development') {
 			logger.info('Directus shut down OK. Bye bye!');
 		}
 	}
@@ -126,8 +126,8 @@ export async function createServer(): Promise<http.Server> {
 export async function startServer(): Promise<void> {
 	const server = await createServer();
 
-	const host = env.HOST;
-	const port = env.PORT;
+	const host = env['HOST'];
+	const port = env['PORT'];
 
 	server
 		.listen(port, host, () => {

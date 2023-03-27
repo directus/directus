@@ -1620,7 +1620,6 @@ interfaces:
   system-folder:
     folder: Mapa
     description: Odaberite mapu
-    field_hint: Mapa za učitane datoteke. Ne utječe na postojeće datoteke.
     root_name: Korijen biblioteke datoteka
     system_default: Sistemski zadano
   select-radio:
@@ -2028,7 +2027,6 @@ operations:
     name: Pošalji obavijest
     description: Pošaljite obavijest unutar aplikacije jednom ili više korisnika
     recipient: Korisnik
-    recipient_placeholder: Dodajte korisnički UUID i pritisnite enter...
     message: Poruka
   request:
     name: Web dojavnik / URL zahtjeva

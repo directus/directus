@@ -1,8 +1,9 @@
 // @ts-expect-error https://github.com/microsoft/TypeScript/issues/49721
 import type { Range, Stat } from '@directus/storage';
 
-import { Accountability } from '@directus/shared/types';
-import { Knex } from 'knex';
+import type { Accountability } from '@directus/shared/types';
+import type { Knex } from 'knex';
+import { clamp } from 'lodash';
 import { contentType } from 'mime-types';
 import type { Readable } from 'node:stream';
 import hash from 'object-hash';
@@ -12,14 +13,19 @@ import validateUUID from 'uuid-validate';
 import getDatabase from '../database';
 import env from '../env';
 import { ForbiddenException, IllegalAssetTransformation, RangeNotSatisfiableException } from '../exceptions';
+import { ServiceUnavailableException } from '../exceptions/service-unavailable';
 import logger from '../logger';
 import { getStorage } from '../storage';
-import { AbstractServiceOptions, File, Transformation, TransformationParams, TransformationPreset } from '../types';
+import type {
+	AbstractServiceOptions,
+	File,
+	Transformation,
+	TransformationParams,
+	TransformationPreset,
+} from '../types';
 import { getMilliseconds } from '../utils/get-milliseconds';
 import * as TransformationUtils from '../utils/transformations';
 import { AuthorizationService } from './authorization';
-import { clamp } from 'lodash';
-import { ServiceUnavailableException } from '../exceptions/service-unavailable';
 
 export class AssetsService {
 	knex: Knex;
@@ -139,8 +145,8 @@ export class AssetsService {
 			if (
 				!width ||
 				!height ||
-				width > env.ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION ||
-				height > env.ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION
+				width > env['ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION'] ||
+				height > env['ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION']
 			) {
 				throw new IllegalAssetTransformation(
 					`Image is too large to be transformed, or image size couldn't be determined.`
@@ -149,7 +155,7 @@ export class AssetsService {
 
 			const { queue, process } = sharp.counters();
 
-			if (queue + process > env.ASSETS_TRANSFORM_MAX_CONCURRENT) {
+			if (queue + process > env['ASSETS_TRANSFORM_MAX_CONCURRENT']) {
 				throw new ServiceUnavailableException('Server too busy', {
 					service: 'files',
 				});
@@ -158,13 +164,13 @@ export class AssetsService {
 			const readStream = await storage.location(file.storage).read(file.filename_disk, range);
 
 			const transformer = sharp({
-				limitInputPixels: Math.pow(env.ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION, 2),
+				limitInputPixels: Math.pow(env['ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION'], 2),
 				sequentialRead: true,
-				failOn: env.ASSETS_INVALID_IMAGE_SENSITIVITY_LEVEL,
+				failOn: env['ASSETS_INVALID_IMAGE_SENSITIVITY_LEVEL'],
 			});
 
 			transformer.timeout({
-				seconds: clamp(Math.round(getMilliseconds(env.ASSETS_TRANSFORM_TIMEOUT, 0) / 1000), 1, 3600),
+				seconds: clamp(Math.round(getMilliseconds(env['ASSETS_TRANSFORM_TIMEOUT'], 0) / 1000), 1, 3600),
 			});
 
 			if (transforms.find((transform) => transform[0] === 'rotate') === undefined) transformer.rotate();

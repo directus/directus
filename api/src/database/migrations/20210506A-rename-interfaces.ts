@@ -1,5 +1,5 @@
 import { parseJSON } from '@directus/shared/utils';
-import { Knex } from 'knex';
+import type { Knex } from 'knex';
 
 // [before, after, after-option additions]
 const changes: [string, string, Record<string, any>?][] = [
