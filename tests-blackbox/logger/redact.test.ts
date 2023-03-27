@@ -7,14 +7,21 @@ import { awaitDirectusConnection } from '@utils/await-connection';
 import * as common from '@common/index';
 import { cloneDeep } from 'lodash';
 import { EnumType } from 'json-to-graphql-query';
+import { PassThrough } from 'node:stream';
 import { sleep } from '@utils/sleep';
 
 describe('Logger Redact Tests', () => {
 	const databases = new Map<string, Knex>();
 	const tzDirectus = {} as { [vendor: string]: ChildProcess };
-	const envs = {} as { [vendor: string]: Env };
+	const env = cloneDeep(config.envs);
 	const logs = {} as { [vendor: string]: string };
 	const authModes = ['json', 'cookie'];
+
+	for (const vendor of vendors) {
+		env[vendor].LOG_STYLE = 'raw';
+		env[vendor].PORT = String(Number(env[vendor]!.PORT) + 500);
+		logs[vendor] = '';
+	}
 
 	beforeAll(async () => {
 		const promises = [];
@@ -22,22 +29,36 @@ describe('Logger Redact Tests', () => {
 		for (const vendor of vendors) {
 			databases.set(vendor, knex(config.knexConfig[vendor]!));
 
-			const env = cloneDeep(config.envs);
-			env[vendor].LOG_STYLE = 'raw';
-
-			const newServerPort = Number(env[vendor]!.PORT) + 500;
-			env[vendor]!.PORT = String(newServerPort);
-
+			const logStream = new PassThrough();
 			const server = spawn('node', ['api/cli', 'start'], { env: env[vendor] });
 			tzDirectus[vendor] = server;
-			envs[vendor] = env;
 			logs[vendor] = '';
 
-			server.stdout.on('data', (data) => {
+			const processLogs = (data: any) => {
+				console.log(String(data));
 				logs[vendor] += String(data);
+			};
+
+			logStream.on('data', processLogs);
+			logStream.on('error', processLogs);
+
+			server.on('spawn', () => {
+				server.stdout.pipe(logStream);
+				server.stderr.pipe(logStream);
 			});
 
-			promises.push(awaitDirectusConnection(newServerPort));
+			server.on('close', () => {
+				server.stdout.unpipe(logStream);
+				server.stderr.unpipe(logStream);
+			});
+
+			// server.stdout.setEncoding('utf-8');
+			// server.stdout.on('data', (data) => {
+			// 	console.log(logs[vendor]);
+			// 	logs[vendor] += String(data);
+			// });
+
+			promises.push(awaitDirectusConnection(Number(env[vendor].PORT)));
 		}
 
 		// Give the server some time to start
@@ -53,7 +74,7 @@ describe('Logger Redact Tests', () => {
 	});
 
 	describe('POST /refresh', () => {
-		const logSyncDelay = 500;
+		const logSyncDelay = 100;
 
 		async function waitForLogs() {
 			await sleep(logSyncDelay);
@@ -70,8 +91,6 @@ describe('Logger Redact Tests', () => {
 					describe(common.USER[userKey].NAME, () => {
 						it.each(vendors)('%s', async (vendor) => {
 							// Setup
-							const env = envs[vendor];
-
 							const refreshToken = (
 								await request(getUrl(vendor, env))
 									.post(`/auth/login`)
@@ -164,7 +183,6 @@ describe('Logger Redact Tests', () => {
 					describe(common.USER[userKey].NAME, () => {
 						it.each(vendors)('%s', async (vendor) => {
 							// Setup
-							const env = envs[vendor];
 							const cookieName = 'directus_refresh_token';
 
 							const refreshToken = (
