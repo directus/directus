@@ -8,7 +8,7 @@ import { getConfigFromEnv } from '../utils/get-config-from-env';
 export const registerLocations = async (storage: StorageManager) => {
 	const env = getEnv();
 
-	const locations = toArray(env.STORAGE_LOCATIONS);
+	const locations = toArray(env['STORAGE_LOCATIONS']);
 
 	locations.forEach((location: string) => {
 		location = location.trim();

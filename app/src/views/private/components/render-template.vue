@@ -3,17 +3,22 @@
 		<span class="vertical-aligner" />
 		<template v-for="(part, index) in parts" :key="index">
 			<value-null v-if="part === null || (typeof part === 'object' && part.value === null)" />
-			<component
-				:is="`display-${part.component}`"
-				v-else-if="typeof part === 'object' && part.component"
-				v-bind="part.options"
-				:value="part.value"
-				:interface="part.interface"
-				:interface-options="part.interfaceOptions"
-				:type="part.type"
-				:collection="part.collection"
-				:field="part.field"
-			/>
+			<v-error-boundary v-else-if="typeof part === 'object' && part.component" :name="`display-${part.component}`">
+				<component
+					:is="`display-${part.component}`"
+					v-bind="part.options"
+					:value="part.value"
+					:interface="part.interface"
+					:interface-options="part.interfaceOptions"
+					:type="part.type"
+					:collection="part.collection"
+					:field="part.field"
+				/>
+
+				<template #fallback>
+					<span>{{ part.value }}</span>
+				</template>
+			</v-error-boundary>
 			<span v-else-if="typeof part === 'string'" :dir="direction">{{ translate(part) }}</span>
 			<span v-else>{{ part }}</span>
 		</template>

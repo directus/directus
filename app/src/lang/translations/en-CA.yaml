@@ -1417,7 +1417,6 @@ interfaces:
   system-folder:
     folder: Folder
     description: Select a folder
-    field_hint: Folder for uploaded files. Does not affect existing files.
     root_name: File Library Root
     system_default: System Defaults
   select-radio:

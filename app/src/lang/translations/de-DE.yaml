@@ -1630,7 +1630,6 @@ interfaces:
   system-folder:
     folder: Ordner
     description: Ordner auswählen
-    field_hint: Ordner für hochgeladene Dateien. Bestehende Dateien werden nicht beeinflusst.
     root_name: Stammordner für Dateien
     system_default: System-Standardeinstellungen
   select-radio:
@@ -2093,7 +2092,6 @@ operations:
     name: Benachrichtigung senden
     description: App-Interne Benachrichtigung an einen oder mehrere Benutzer senden
     recipient: Benutzer
-    recipient_placeholder: Benutzer UUID eingeben und Enter drücken...
     message: Nachricht
   request:
     name: Webhook / Anfrage URL

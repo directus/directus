@@ -1,21 +1,21 @@
-import { Knex } from 'knex';
-import { systemRelationRows } from '../database/system-data/relations';
-import { ForbiddenException, InvalidPayloadException } from '../exceptions';
-import { SchemaOverview, Relation, RelationMeta, Accountability, Query } from '@directus/shared/types';
-import { toArray } from '@directus/shared/utils';
-import { ItemsService, QueryOptions } from './items';
-import { PermissionsService } from './permissions';
 import SchemaInspector from '@directus/schema';
 import getDatabase, { getSchemaInspector } from '../database';
 import { getDefaultIndexName } from '../utils/get-default-index-name';
 import { getCache } from '../cache';
-import { AbstractServiceOptions, ActionEventParams, MutationOptions } from '../types';
 import { getHelpers, Helpers } from '../database/helpers';
 import { CacheService } from './cache/cache';
+import type { Accountability, Query, Relation, RelationMeta, SchemaOverview } from '@directus/shared/types';
+import { toArray } from '@directus/shared/utils';
+import type { Knex } from 'knex';
+import { systemRelationRows } from '../database/system-data/relations';
 import emitter from '../emitter';
+import { ForbiddenException, InvalidPayloadException } from '../exceptions';
+import type { AbstractServiceOptions, ActionEventParams, MutationOptions } from '../types';
 import { getSchema } from '../utils/get-schema';
 import { clearSystemCache } from '../utils/clearSystemCache';
 import { stitchRelations } from '../utils/stitch-relations';
+import { ItemsService, QueryOptions } from './items';
+import { PermissionsService } from './permissions';
 
 export class RelationsService {
 	knex: Knex;
@@ -120,7 +120,7 @@ export class RelationsService {
 			throw new ForbiddenException();
 		}
 
-		return results[0];
+		return results[0]!;
 	}
 
 	/**
@@ -143,14 +143,14 @@ export class RelationsService {
 			throw new InvalidPayloadException(`Collection "${relation.collection}" doesn't exist`);
 		}
 
-		if (relation.field in this.schema.collections[relation.collection].fields === false) {
+		if (relation.field in this.schema.collections[relation.collection]!.fields === false) {
 			throw new InvalidPayloadException(
 				`Field "${relation.field}" doesn't exist in collection "${relation.collection}"`
 			);
 		}
 
 		// A primary key should not be a foreign key
-		if (this.schema.collections[relation.collection].primary === relation.field) {
+		if (this.schema.collections[relation.collection]!.primary === relation.field) {
 			throw new InvalidPayloadException(
 				`Field "${relation.field}" in collection "${relation.collection}" is a primary key`
 			);
@@ -193,7 +193,7 @@ export class RelationsService {
 						const builder = table
 							.foreign(relation.field!, constraintName)
 							.references(
-								`${relation.related_collection!}.${this.schema.collections[relation.related_collection!].primary}`
+								`${relation.related_collection!}.${this.schema.collections[relation.related_collection!]!.primary}`
 							);
 
 						if (relation.schema?.on_delete) {
@@ -254,7 +254,7 @@ export class RelationsService {
 			throw new InvalidPayloadException(`Collection "${collection}" doesn't exist`);
 		}
 
-		if (field in this.schema.collections[collection].fields === false) {
+		if (field in this.schema.collections[collection]!.fields === false) {
 			throw new InvalidPayloadException(`Field "${field}" doesn't exist in collection "${collection}"`);
 		}
 
@@ -292,7 +292,7 @@ export class RelationsService {
 							.foreign(field, constraintName || undefined)
 							.references(
 								`${existingRelation.related_collection!}.${
-									this.schema.collections[existingRelation.related_collection!].primary
+									this.schema.collections[existingRelation.related_collection!]!.primary
 								}`
 							);
 
@@ -364,7 +364,7 @@ export class RelationsService {
 			throw new InvalidPayloadException(`Collection "${collection}" doesn't exist`);
 		}
 
-		if (field in this.schema.collections[collection].fields === false) {
+		if (field in this.schema.collections[collection]!.fields === false) {
 			throw new InvalidPayloadException(`Field "${field}" doesn't exist in collection "${collection}"`);
 		}
 
@@ -484,8 +484,8 @@ export class RelationsService {
 
 			if (
 				!allowedFields[relation.collection] ||
-				(allowedFields[relation.collection].includes('*') === false &&
-					allowedFields[relation.collection].includes(relation.field) === false)
+				(allowedFields[relation.collection]?.includes('*') === false &&
+					allowedFields[relation.collection]?.includes(relation.field) === false)
 			) {
 				fieldsAllowed = false;
 			}
@@ -494,8 +494,8 @@ export class RelationsService {
 				relation.related_collection &&
 				relation.meta?.one_field &&
 				(!allowedFields[relation.related_collection] ||
-					(allowedFields[relation.related_collection].includes('*') === false &&
-						allowedFields[relation.related_collection].includes(relation.meta.one_field) === false))
+					(allowedFields[relation.related_collection]?.includes('*') === false &&
+						allowedFields[relation.related_collection]?.includes(relation.meta.one_field) === false))
 			) {
 				fieldsAllowed = false;
 			}
@@ -515,11 +515,11 @@ export class RelationsService {
 	 * @TODO This is a bit of a hack, and might be better of abstracted elsewhere
 	 */
 	private alterType(table: Knex.TableBuilder, relation: Partial<Relation>) {
-		const m2oFieldDBType = this.schema.collections[relation.collection!].fields[relation.field!].dbType;
+		const m2oFieldDBType = this.schema.collections[relation.collection!]!.fields[relation.field!]!.dbType;
 		const relatedFieldDBType =
-			this.schema.collections[relation.related_collection!].fields[
-				this.schema.collections[relation.related_collection!].primary
-			].dbType;
+			this.schema.collections[relation.related_collection!]!.fields[
+				this.schema.collections[relation.related_collection!]!.primary
+			]!.dbType;
 
 		if (m2oFieldDBType !== relatedFieldDBType && m2oFieldDBType === 'int' && relatedFieldDBType === 'int unsigned') {
 			table.specificType(relation.field!, 'int unsigned').alter();

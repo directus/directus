@@ -1,16 +1,16 @@
-import { Knex } from 'knex';
-import { Accountability, Query, SchemaOverview } from '@directus/shared/types';
-import { Item, PrimaryKey } from './items';
+import type { Accountability, Query, SchemaOverview } from '@directus/shared/types';
+import type { Knex } from 'knex';
+import type { Item, PrimaryKey } from './items';
 
 export type AbstractServiceOptions = {
 	knex?: Knex;
-	accountability?: Accountability | null;
+	accountability?: Accountability | null | undefined;
 	schema: SchemaOverview;
 };
 
 export interface AbstractService {
 	knex: Knex;
-	accountability: Accountability | null;
+	accountability: Accountability | null | undefined;
 
 	createOne(data: Partial<Item>): Promise<PrimaryKey>;
 	createMany(data: Partial<Item>[]): Promise<PrimaryKey[]>;

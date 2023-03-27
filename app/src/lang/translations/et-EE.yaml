@@ -1186,7 +1186,6 @@ interfaces:
   system-folder:
     folder: Kaust
     description: Vali kaust
-    field_hint: Üles laetud failide kaust. Ei mõjuta olemasolevaid faile.
   select-radio:
     radio-buttons: Raadionupud
     description: Vali üks mitmest valikust

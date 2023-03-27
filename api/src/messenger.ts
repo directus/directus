@@ -76,7 +76,7 @@ let messenger: Messenger;
 export function getMessenger() {
 	if (messenger) return messenger;
 
-	if (env.MESSENGER_STORE === 'redis') {
+	if (env['MESSENGER_STORE'] === 'redis') {
 		messenger = new MessengerRedis();
 	} else {
 		messenger = new MessengerMemory();

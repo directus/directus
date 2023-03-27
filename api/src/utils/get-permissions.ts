@@ -1,4 +1,4 @@
-import { Accountability, Permission, SchemaOverview } from '@directus/shared/types';
+import type { Accountability, Permission, SchemaOverview } from '@directus/shared/types';
 import { deepMap, parseFilter, parseJSON, parsePreset } from '@directus/shared/utils';
 import { cloneDeep } from 'lodash';
 import hash from 'object-hash';
@@ -6,11 +6,11 @@ import { getCache } from '../cache';
 import getDatabase from '../database';
 import { appAccessMinimalPermissions } from '../database/system-data/app-access-permissions';
 import env from '../env';
+import logger from '../logger';
 import { RolesService } from '../services/roles';
 import { UsersService } from '../services/users';
 import { mergePermissions } from '../utils/merge-permissions';
 import { mergePermissionsForShare } from './merge-permissions-for-share';
-import logger from '../logger';
 
 export async function getPermissions(accountability: Accountability, schema: SchemaOverview) {
 	const database = getDatabase();
@@ -21,7 +21,7 @@ export async function getPermissions(accountability: Accountability, schema: Sch
 	const { user, role, app, admin, share_scope } = accountability;
 	const cacheKey = `permissions-${hash({ user, role, app, admin, share_scope })}`;
 
-	if (cache && env.CACHE_PERMISSIONS !== false) {
+	if (cache && env['CACHE_PERMISSIONS'] !== false) {
 		let cachedPermissions;
 
 		try {
@@ -31,8 +31,8 @@ export async function getPermissions(accountability: Accountability, schema: Sch
 		}
 
 		if (cachedPermissions) {
-			if (!cachedPermissions.containDynamicData) {
-				return processPermissions(accountability, cachedPermissions.permissions, {});
+			if (!cachedPermissions['containDynamicData']) {
+				return processPermissions(accountability, cachedPermissions['permissions'], {});
 			}
 
 			const cachedFilterContext = await cache.get(
@@ -40,19 +40,20 @@ export async function getPermissions(accountability: Accountability, schema: Sch
 			);
 
 			if (cachedFilterContext) {
-				return processPermissions(accountability, cachedPermissions.permissions, cachedFilterContext);
+				return processPermissions(accountability, cachedPermissions['permissions'], cachedFilterContext);
 			} else {
 				const {
 					permissions: parsedPermissions,
 					requiredPermissionData,
 					containDynamicData,
-				} = parsePermissions(cachedPermissions.permissions);
+				} = parsePermissions(cachedPermissions['permissions']);
 
 				permissions = parsedPermissions;
 
 				const filterContext = containDynamicData
 					? await getFilterContext(schema, accountability, requiredPermissionData)
 					: {};
+
 
 				if (containDynamicData && env.CACHE_ENABLED !== false) {
 					await cache.set(`filterContext-${hash({ user, role, permissions })}`, filterContext);
@@ -178,13 +179,13 @@ async function getFilterContext(schema: SchemaOverview, accountability: Accounta
 	const filterContext: Record<string, any> = {};
 
 	if (accountability.user && requiredPermissionData.$CURRENT_USER.length > 0) {
-		filterContext.$CURRENT_USER = await usersService.readOne(accountability.user, {
+		filterContext['$CURRENT_USER'] = await usersService.readOne(accountability.user, {
 			fields: requiredPermissionData.$CURRENT_USER,
 		});
 	}
 
 	if (accountability.role && requiredPermissionData.$CURRENT_ROLE.length > 0) {
-		filterContext.$CURRENT_ROLE = await rolesService.readOne(accountability.role, {
+		filterContext['$CURRENT_ROLE'] = await rolesService.readOne(accountability.role, {
 			fields: requiredPermissionData.$CURRENT_ROLE,
 		});
 	}

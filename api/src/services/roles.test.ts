@@ -1,9 +1,9 @@
+import type { SchemaOverview } from '@directus/shared/types';
 import knex, { Knex } from 'knex';
-import { getTracker, MockClient, Tracker } from 'knex-mock-client';
+import { createTracker, MockClient, Tracker } from 'knex-mock-client';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, MockedFunction, SpyInstance, vi } from 'vitest';
 import { ItemsService, PermissionsService, PresetsService, RolesService, UsersService } from '.';
 import { ForbiddenException, UnprocessableEntityException } from '../exceptions';
-import { SchemaOverview } from '@directus/shared/types';
 
 vi.mock('../../src/database/index', () => {
 	return { __esModule: true, default: vi.fn(), getDatabaseClient: vi.fn().mockReturnValue('postgres') };
@@ -45,7 +45,7 @@ describe('Integration Tests', () => {
 
 	beforeAll(async () => {
 		db = vi.mocked(knex({ client: MockClient }));
-		tracker = getTracker();
+		tracker = createTracker(db);
 	});
 
 	beforeEach(() => {

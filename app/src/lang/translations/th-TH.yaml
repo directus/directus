@@ -79,6 +79,8 @@ create_role: สร้างบทบาท
 create_user: สร้างผู้ใช้งาน
 message: ข้อความ
 create_webhook: สร้างเว็บฮุก
+create_translation_string: สร้างสตริงการแปล
+no_translation_string: ไม่มีสตริงการแปล
 invite_users: เชิญชวนผู้ใช้งาน
 invite: เชิญชวน
 email_already_invited: อีเมล "{email}" ได้รับเชิญแล้ว

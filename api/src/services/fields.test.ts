@@ -1,6 +1,6 @@
-import { Field } from '@directus/shared/types';
+import type { Field } from '@directus/shared/types';
 import knex, { Knex } from 'knex';
-import { getTracker, MockClient, Tracker } from 'knex-mock-client';
+import { createTracker, MockClient, Tracker } from 'knex-mock-client';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, MockedFunction, SpyInstance, vi } from 'vitest';
 import { FieldsService } from '.';
 import { InvalidPayloadException } from '../exceptions';
@@ -17,7 +17,7 @@ describe('Integration Tests', () => {
 
 	beforeAll(() => {
 		db = vi.mocked(knex({ client: MockClient }));
-		tracker = getTracker();
+		tracker = createTracker(db);
 	});
 
 	afterEach(() => {

@@ -4,7 +4,7 @@ inputs:
   build:
     description: Build the production bundle of the platform
     required: false
-    default: true
+    default: 'true'
   registry:
     description: NPM registry to set up for auth
     required: false
@@ -18,11 +18,11 @@ runs:
         node-version: 18
         registry-url: ${{ inputs.registry }}
 
-    - uses: pnpm/action-setup@v2.2.4
+    - uses: pnpm/action-setup@v2
       name: Install pnpm
       id: pnpm-install
       with:
-        version: 7.29.1
+        version: 7
         run_install: false
 
     - name: Get pnpm store directory
