@@ -491,13 +491,13 @@ allow_duplicates: 중복 허용
 comments: 코멘트
 no_comments: 아직 코멘트가 없습니다
 click_to_expand: 확장하려면 클릭
-select_item: 물품을 고르시 오
+select_item: 항목 선택
 no_items: 항목 없음
 search_items: 검색
 disabled: 비활성화 됨
 information: 정보
-report_bug: 버그를 제보하기
-request_feature: 요청 기능
+report_bug: 버그 제보
+request_feature: 기능 요청
 request_body: 요청 본문
 interface_not_found: '인터페이스 "{interface}"를 찾을 수 없습니다.'
 operation_not_found: '"{operation}"" 작업을 찾을 수 없습니다.'
@@ -512,7 +512,7 @@ no_files_copy: 표시할 파일이 없습니다.
 user_count: '사용자 없음 | 한명의 사용자 | {count}명의 사용자'
 no_users_copy: 이 역할(role)의 사용자가 아직 없습니다.
 webhooks_count: '웹훅 없음 | 한개의 웹훅 | {count}개의 웹훅'
-no_webhooks_copy: 아직 웹후크가 구성되지 않았습니다. 아래에서 하나 만들어 시작해 보세요.
+no_webhooks_copy: 아직 웹훅이 구성되지 않았습니다. 아래 버튼을 통해 시작해 보세요.
 no_notifications: 알림 없음
 no_notifications_copy: 당신은 모두 잡혔습니다!
 activity_log: 활동 기록
@@ -541,7 +541,7 @@ action: 활동
 ip_address: IP 주소
 user_agent: 사용자 에이전트
 origin: 출처
-webhooks: 웹후크
+webhooks: 웹훅
 decimals: 소수
 value_decimals: 값 소수점
 min_value: 최소값
@@ -997,7 +997,7 @@ page_help_settings_presets_collection: >-
   **사전 설정 찾아보기** — 사용자, 역할, 전역 책갈피 및 기본 보기를 포함하여 프로젝트의 모든 사전 설정을 나열합니다.
 page_help_settings_presets_item: >-
   **사전 설정 세부 정보** — 책갈피 및 기본 컬렉션 사전 설정을 관리하기 위한 양식입니다.
-page_help_settings_webhooks_collection: '**웹후크 찾아보기** — 프로젝트 내의 모든 웹후크를 나열합니다.'
+page_help_settings_webhooks_collection: '**웹훅 찾아보기** — 프로젝트 내의 모든 웹훅을 나열합니다.'
 page_help_settings_webhooks_item: '**Webhook 세부 정보** — 프로젝트 Webhook 생성 및 관리를 위한 양식입니다.'
 page_help_settings_flows_collection: '**플로우 찾아보기** — 프로젝트 내의 모든 플로우을 나열합니다.'
 page_help_settings_flows_item: '**Flow Detail** — 하나 이상의 작업을 관리하기 위한 작업 공간입니다.'
@@ -1063,7 +1063,7 @@ fields:
     note: 메모
     color: 색상
     display_template: 표시 형식
-    hidden: 숨겨진
+    hidden: 숨김
     singleton: 하나씩 일어나는 것
     translations: 컬렉션 명명 번역
     archive_app_filter: 아카이브 앱 필터
@@ -1180,7 +1180,7 @@ fields:
     collection: 컬렉션 이름
     icon: 컬렉션 아이콘
     note: 메모
-    hidden: 숨겨진
+    hidden: 숨김
     singleton: 하나씩 일어나는 것
     translation: 항목 명 번역
     display_template: 템플릿
@@ -1375,7 +1375,7 @@ field: 필드 | 필드
 file: 파일
 file_library: 파일 관리
 forgot_password: 비밀번호를 잊으셨나요?
-hidden: 숨겨진
+hidden: 숨김
 hidden_in_group: '{group}에 숨김'
 icon: 아이콘
 info: 정보
@@ -1650,7 +1650,7 @@ interfaces:
   slider:
     slider: 슬라이더
     description: 슬라이더를 사용하여 숫자 선택
-    always_show_value: 항상 가치를 보여라
+    always_show_value: 항상 값 표시하기
   tags:
     tags: 태그
     description: 태그 선택 또는 추가
