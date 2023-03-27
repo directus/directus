@@ -282,7 +282,7 @@ function getDisplayValue(item: Item, key: string) {
 
 	if (!aliasInfo) return get(item, key);
 
-	const unAliasedItem = Object.keys(item).reduce<Item>((result, key) => {
+	const unaliasedItem = Object.keys(item).reduce<Item>((result, key) => {
 		if (aliasedKeys.value.includes(key)) {
 			if (key !== aliasInfo.fieldAlias) return result;
 			const name = aliasedFields.value[key].fieldName;
