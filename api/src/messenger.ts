@@ -25,14 +25,14 @@ export class MessengerMemory implements Messenger {
 
 	subscribe(channel: string, callback: MessengerSubscriptionCallback) {
 		if (!this.handlers[channel]) this.handlers[channel] = new Set();
-		this.handlers[channel].add(callback);
+		this.handlers[channel]?.add(callback);
 	}
 
 	unsubscribe(channel: string, callback?: MessengerSubscriptionCallback) {
 		if (!callback) {
 			delete this.handlers[channel];
 		} else {
-			this.handlers[channel].delete(callback);
+			this.handlers[channel]?.delete(callback);
 		}
 	}
 }

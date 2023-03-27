@@ -34,7 +34,7 @@ export class ItemsHandler {
 				uid
 			);
 		}
-		const isSingleton = schema.collections[message.collection].singleton;
+		const isSingleton = !!schema.collections[message.collection]?.singleton;
 		const service = new ItemsService(message.collection, { schema, accountability });
 		const metaService = new MetaService({ schema, accountability });
 		let result, meta;

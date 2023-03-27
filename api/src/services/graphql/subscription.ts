@@ -47,7 +47,7 @@ export function createSubscriptionGenerator(self: GraphQLService, event: string,
 						}
 					}
 					const pk = schema.collections[eventData['collection']]?.primary;
-					result[pk] = key;
+					if (pk) result[pk] = key;
 					result['event'] = 'delete';
 					yield { [name]: result };
 				}
