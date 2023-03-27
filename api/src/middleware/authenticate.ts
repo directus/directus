@@ -13,7 +13,7 @@ import { verifyAccessJWT } from '../utils/jwt';
 /**
  * Verify the passed JWT and assign the user ID and role to `req`
  */
-export const handler = async (req: Request, res: Response, next: NextFunction) => {
+export const handler = async (req: Request, _res: Response, next: NextFunction) => {
 	const defaultAccountability: Accountability = {
 		user: null,
 		role: null,

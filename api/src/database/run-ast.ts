@@ -52,7 +52,7 @@ export default async function runAST(
 		const results: { [collection: string]: null | Item | Item[] } = {};
 
 		for (const collection of ast.names) {
-			results[collection] = await run(collection, ast.children[collection], ast.query[collection]);
+			results[collection] = await run(collection, ast.children[collection]!, ast.query[collection]!);
 		}
 
 		return results;
@@ -109,7 +109,7 @@ export default async function runAST(
 					nestedItems = (await runAST(node, schema, { knex, nested: true })) as Item[] | null;
 
 					if (nestedItems) {
-						items = mergeWithParentItems(schema, nestedItems, items, nestedNode);
+						items = mergeWithParentItems(schema, nestedItems, items!, nestedNode)!;
 					}
 
 					if (!nestedItems || nestedItems.length < env['RELATIONAL_BATCH_SIZE']) {
@@ -127,7 +127,7 @@ export default async function runAST(
 
 				if (nestedItems) {
 					// Merge all fetched nested records with the parent items
-					items = mergeWithParentItems(schema, nestedItems, items, nestedNode);
+					items = mergeWithParentItems(schema, nestedItems, items!, nestedNode)!;
 				}
 			}
 		}
@@ -150,8 +150,8 @@ async function parseCurrentLevel(
 	children: (NestedCollectionNode | FieldNode | FunctionFieldNode)[],
 	query: Query
 ) {
-	const primaryKeyField = schema.collections[collection].primary;
-	const columnsInCollection = Object.keys(schema.collections[collection].fields);
+	const primaryKeyField = schema.collections[collection]!.primary;
+	const columnsInCollection = Object.keys(schema.collections[collection]!.fields);
 
 	const columnsToSelectInternal: string[] = [];
 	const nestedCollectionNodes: NestedCollectionNode[] = [];
@@ -221,9 +221,9 @@ function getColumnPreprocessor(knex: Knex, schema: SchemaOverview, table: string
 		let field;
 
 		if (fieldNode.type === 'field' || fieldNode.type === 'functionField') {
-			field = schema.collections[table].fields[stripFunction(fieldNode.name)];
+			field = schema.collections[table]!.fields[stripFunction(fieldNode.name)];
 		} else {
-			field = schema.collections[fieldNode.relation.collection].fields[fieldNode.relation.field];
+			field = schema.collections[fieldNode.relation.collection]!.fields[fieldNode.relation.field];
 		}
 
 		if (field?.type?.startsWith('geometry')) {
@@ -257,7 +257,7 @@ async function getDBQuery(
 		return await applyQuery(knex, table, flatQuery, queryCopy, schema).query;
 	}
 
-	const primaryKey = schema.collections[table].primary;
+	const primaryKey = schema.collections[table]!.primary;
 	const aliasMap: AliasMap = Object.create(null);
 	let dbQuery = knex.from(table);
 	let sortRecords: ColumnSortRecord[] | undefined;
@@ -302,11 +302,11 @@ async function getDBQuery(
 				const sortAlias = `sort_${generateAlias()}`;
 				if (sortRecord.column.includes('.')) {
 					const [alias, field] = sortRecord.column.split('.');
-					const originalCollectionName = getCollectionFromAlias(alias, aliasMap);
-					dbQuery.select(getColumn(knex, alias, field, sortAlias, schema, { originalCollectionName }));
+					const originalCollectionName = getCollectionFromAlias(alias!, aliasMap);
+					dbQuery.select(getColumn(knex, alias!, field!, sortAlias, schema, { originalCollectionName }));
 
 					orderByString += `?? ${sortRecord.order}`;
-					orderByFields.push(getColumn(knex, alias, field, false, schema, { originalCollectionName }));
+					orderByFields.push(getColumn(knex, alias!, field!, false, schema, { originalCollectionName }));
 				} else {
 					dbQuery.select(getColumn(knex, table, sortRecord.column, sortAlias, schema));
 
@@ -332,8 +332,8 @@ async function getDBQuery(
 			sortRecords.map((sortRecord) => {
 				if (sortRecord.column.includes('.')) {
 					const [alias, field] = sortRecord.column.split('.');
-					sortRecord.column = getColumn(knex, alias, field, false, schema, {
-						originalCollectionName: getCollectionFromAlias(alias, aliasMap),
+					sortRecord.column = getColumn(knex, alias!, field!, false, schema, {
+						originalCollectionName: getCollectionFromAlias(alias!, aliasMap),
 					}) as any;
 				} else {
 					sortRecord.column = getColumn(knex, table, sortRecord.column, false, schema) as any;
@@ -376,7 +376,7 @@ function applyParentFilters(
 		if (!nestedNode.relation) continue;
 
 		if (nestedNode.type === 'm2o') {
-			const foreignField = schema.collections[nestedNode.relation.related_collection!].primary;
+			const foreignField = schema.collections[nestedNode.relation.related_collection!]!.primary;
 			const foreignIds = uniq(parentItems.map((res) => res[nestedNode.relation.field])).filter((id) => id);
 
 			merge(nestedNode, { query: { filter: { [foreignField]: { _in: foreignIds } } } });
@@ -411,11 +411,11 @@ function applyParentFilters(
 			for (const parentItem of parentItems) {
 				const collection = parentItem[nestedNode.relation.meta!.one_collection_field!];
 				if (!keysPerCollection[collection]) keysPerCollection[collection] = [];
-				keysPerCollection[collection].push(parentItem[nestedNode.relation.field]);
+				keysPerCollection[collection]!.push(parentItem[nestedNode.relation.field]);
 			}
 
 			for (const relatedCollection of nestedNode.names) {
-				const foreignField = nestedNode.relatedKey[relatedCollection];
+				const foreignField = nestedNode.relatedKey[relatedCollection]!;
 				const foreignIds = uniq(keysPerCollection[relatedCollection]);
 
 				merge(nestedNode, {
@@ -441,7 +441,7 @@ function mergeWithParentItems(
 		for (const parentItem of parentItems) {
 			const itemChild = nestedItems.find((nestedItem) => {
 				return (
-					nestedItem[schema.collections[nestedNode.relation.related_collection!].primary] ==
+					nestedItem[schema.collections[nestedNode.relation.related_collection!]!.primary] ==
 					parentItem[nestedNode.relation.field]
 				);
 			});
@@ -458,10 +458,10 @@ function mergeWithParentItems(
 
 				return (
 					nestedItem[nestedNode.relation.field] ==
-						parentItem[schema.collections[nestedNode.relation.related_collection!].primary] ||
+						parentItem[schema.collections[nestedNode.relation.related_collection!]!.primary] ||
 					nestedItem[nestedNode.relation.field]?.[
-						schema.collections[nestedNode.relation.related_collection!].primary
-					] == parentItem[schema.collections[nestedNode.relation.related_collection!].primary]
+						schema.collections[nestedNode.relation.related_collection!]!.primary
+					] == parentItem[schema.collections[nestedNode.relation.related_collection!]!.primary]
 				);
 			});
 
@@ -516,8 +516,8 @@ function mergeWithParentItems(
 				continue;
 			}
 
-			const itemChild = (nestedItem as Record<string, any[]>)[relatedCollection].find((nestedItem) => {
-				return nestedItem[nestedNode.relatedKey[relatedCollection]] == parentItem[nestedNode.fieldKey];
+			const itemChild = (nestedItem as Record<string, any[]>)[relatedCollection]!.find((nestedItem) => {
+				return nestedItem[nestedNode.relatedKey[relatedCollection]!] == parentItem[nestedNode.fieldKey];
 			});
 
 			parentItem[nestedNode.fieldKey] = itemChild || null;
@@ -545,12 +545,12 @@ function removeTemporaryFields(
 			if (!fields[relatedCollection]) fields[relatedCollection] = [];
 			if (!nestedCollectionNodes[relatedCollection]) nestedCollectionNodes[relatedCollection] = [];
 
-			for (const child of ast.children[relatedCollection]) {
+			for (const child of ast.children[relatedCollection]!) {
 				if (child.type === 'field' || child.type === 'functionField') {
-					fields[relatedCollection].push(child.name);
+					fields[relatedCollection]!.push(child.name);
 				} else {
-					fields[relatedCollection].push(child.fieldKey);
-					nestedCollectionNodes[relatedCollection].push(child);
+					fields[relatedCollection]!.push(child.fieldKey);
+					nestedCollectionNodes[relatedCollection]!.push(child);
 				}
 			}
 		}
@@ -562,20 +562,20 @@ function removeTemporaryFields(
 
 			let item = rawItem;
 
-			for (const nestedNode of nestedCollectionNodes[relatedCollection]) {
+			for (const nestedNode of nestedCollectionNodes[relatedCollection]!) {
 				item[nestedNode.fieldKey] = removeTemporaryFields(
 					schema,
 					item[nestedNode.fieldKey],
 					nestedNode,
-					schema.collections[nestedNode.relation.collection].primary,
+					schema.collections[nestedNode.relation.collection]!.primary,
 					item
 				);
 			}
 
-			const fieldsWithFunctionsApplied = fields[relatedCollection].map((field) => applyFunctionToColumnName(field));
+			const fieldsWithFunctionsApplied = fields[relatedCollection]!.map((field) => applyFunctionToColumnName(field));
 
 			item =
-				fields[relatedCollection].length > 0 ? pick(rawItem, fieldsWithFunctionsApplied) : rawItem[primaryKeyField];
+				fields[relatedCollection]!.length > 0 ? pick(rawItem, fieldsWithFunctionsApplied) : rawItem[primaryKeyField];
 
 			items.push(item);
 		}
@@ -613,8 +613,8 @@ function removeTemporaryFields(
 					item[nestedNode.fieldKey],
 					nestedNode,
 					nestedNode.type === 'm2o'
-						? schema.collections[nestedNode.relation.related_collection!].primary
-						: schema.collections[nestedNode.relation.collection].primary,
+						? schema.collections[nestedNode.relation.related_collection!]!.primary
+						: schema.collections[nestedNode.relation.collection]!.primary,
 					item
 				);
 			}
@@ -627,5 +627,5 @@ function removeTemporaryFields(
 		}
 	}
 
-	return Array.isArray(rawItem) ? items : items[0];
+	return Array.isArray(rawItem) ? items : items[0]!;
 }
