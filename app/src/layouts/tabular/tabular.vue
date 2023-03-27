@@ -293,7 +293,7 @@ function getDisplayValue(item: Item, key: string) {
 		return result;
 	}, {});
 
-	return get(unAliasedItem, key);
+	return get(unaliasedItem, key);
 }
 
 function addField(fieldKey: string) {
