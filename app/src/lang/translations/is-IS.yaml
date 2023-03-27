@@ -356,11 +356,19 @@ displays:
     up: Upp
   file:
     file: Skrá
+  filesize:
+    filesize: Skrá Stærð
   formatted-value:
+    font: Letur
     prefix: Forskeyti
+    color: Litur
+    background: Bakgrunnur
+    icon: Íkon
     text: Texti
   labels:
     choices_value_placeholder: Skráðu Gildi...
+  rating:
+    simple: Einfalt
   user:
     avatar: Auðkennismynd
     name: Nafn
