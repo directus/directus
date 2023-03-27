@@ -897,7 +897,7 @@ wysiwyg_options:
   strikethrough: 취소선
   subscript: 아래첨자
   superscript: 어깨 기호
-  codeblock: 암호
+  codeblock: 코드
   blockquote: 인용구
   bullist: 글머리기호 목록
   numlist: 번호 매기기 목록
@@ -1020,7 +1020,7 @@ no_upscale: 이미지를 확대하지 마세요.
 collection: 컬렉션
 collections: 컬렉션
 content: 데이터 및 컨텐츠 관리
-singleton: 하나씩 일어나는 것
+singleton: 싱글턴 패턴
 singleton_label: 단일 객체로 취급
 system_fields_locked: 시스템 필드가 잠겨 있어 편집할 수 없습니다.
 directus_collection:
@@ -1058,13 +1058,13 @@ fields:
     ip: IP 주소
     revisions: 수정내역
   directus_collections:
-    collection: 수집
+    collection: 컬렉션
     icon: 아이콘
     note: 메모
     color: 색상
     display_template: 표시 형식
     hidden: 숨김
-    singleton: 하나씩 일어나는 것
+    singleton: 싱글턴 패턴
     translations: 컬렉션 명명 번역
     archive_app_filter: 아카이브 앱 필터
     archive_value: 아카이브 가치
@@ -1181,7 +1181,7 @@ fields:
     icon: 컬렉션 아이콘
     note: 메모
     hidden: 숨김
-    singleton: 하나씩 일어나는 것
+    singleton: 싱글턴 패턴
     translation: 항목 명 번역
     display_template: 템플릿
   directus_roles:
@@ -1410,7 +1410,7 @@ revisions: 수정내역
 no_revisions: 수정 내역 없음
 no_logs: 아직 로그가 없습니다
 revert: 돌아가는 것
-save: 구하다
+save: 저장
 schema: 개요
 search: 검색
 select_existing: 기존 선택
@@ -1496,13 +1496,13 @@ interfaces:
     show_all: 모두 보이기
     show_selected: 선택한 항목 표시
   input-code:
-    code: 암호
+    code: 코드
     description: 코드 스니펫 작성 또는 공유
     line_number: 라인 번호
     line_wrapping: 줄 바꿈
     placeholder: 여기에 코드를 입력하세요...
   system-collection:
-    collection: 수집
+    collection: 컬렉션
     description: 기존 컬렉션 중에서 선택
     include_system_collections: 시스템 컬렉션 포함
   system-collections:
@@ -1530,7 +1530,7 @@ interfaces:
   system-display-template:
     display-template: 표시 형식
     description: 정적 텍스트와 동적 필드 값 혼합
-    collection_field: 수집 분야
+    collection_field: 컬렉션 필드
     collection_field_not_setup: 컬렉션 필드 옵션이 잘못 구성되었습니다.
     select_a_collection: 컬렉션 선택
   presentation-divider:
@@ -1594,7 +1594,7 @@ interfaces:
     markdown: 마크다운
     description: 마크다운 입력 및 미리보기
     edit: 수정
-    preview: 시사
+    preview: 미리보기 
     editorFont: 편집기 글꼴
     previewFont: 글꼴 미리보기
     customSyntax: 맞춤형 블록
