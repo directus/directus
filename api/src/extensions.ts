@@ -439,7 +439,7 @@ class ExtensionManager {
 
 		for (const operation of [...internalOperations, ...operations]) {
 			try {
-				const operationPath = path.resolve(operation.path, operation.entrypoint.api);
+				const operationPath = path.resolve(operation.path, operation.entrypoint.api!);
 				const operationInstance: OperationApiConfig | { default: OperationApiConfig } = require(operationPath);
 
 				const config = getModuleDefault(operationInstance);

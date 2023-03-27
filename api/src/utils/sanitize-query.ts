@@ -181,7 +181,7 @@ function sanitizeDeep(deep: Record<string, any>, accountability?: Accountability
 				const parsedSubQuery = sanitizeQuery({ [key.substring(1)]: value }, accountability);
 				// ...however we want to keep them for the nested structure of deep, otherwise there's no
 				// way of knowing when to keep nesting and when to stop
-				const [parsedKey, parsedValue] = Object.entries(parsedSubQuery)[0];
+				const [parsedKey, parsedValue] = Object.entries(parsedSubQuery)[0]!;
 				parsedLevel[`_${parsedKey}`] = parsedValue;
 			} else if (isPlainObject(value)) {
 				parse(value, [...path, key]);

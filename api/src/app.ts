@@ -216,7 +216,7 @@ export default async function createApp(): Promise<express.Application> {
 		app.use(rateLimiter);
 	}
 
-	app.get('/server/ping', (req, res) => res.send('pong'));
+	app.get('/server/ping', (_req, res) => res.send('pong'));
 
 	app.use(authenticate);
 

@@ -99,7 +99,7 @@ async function getDatabaseSchema(
 			note: collectionMeta?.note || null,
 			sortField: collectionMeta?.sort_field || null,
 			accountability: collectionMeta ? collectionMeta.accountability : 'all',
-			fields: mapValues(schemaOverview[collection].columns, (column) => {
+			fields: mapValues(schemaOverview[collection]?.columns, (column) => {
 				return {
 					field: column.column_name,
 					defaultValue: getDefaultValue(column) ?? null,
@@ -137,8 +137,8 @@ async function getDatabaseSchema(
 	for (const field of fields) {
 		if (!result.collections[field.collection]) continue;
 
-		const existing = result.collections[field.collection].fields[field.field];
-		const column = schemaOverview[field.collection].columns[field.field];
+		const existing = result.collections[field.collection]?.fields[field.field];
+		const column = schemaOverview[field.collection]?.columns[field.field];
 		const special = field.special ? toArray(field.special) : [];
 
 		if (ALIAS_TYPES.some((type) => special.includes(type)) === false && !existing) continue;
@@ -148,7 +148,7 @@ async function getDatabaseSchema(
 
 		if (validation && typeof validation === 'string') validation = parseJSON(validation);
 
-		result.collections[field.collection].fields[field.field] = {
+		result.collections[field.collection]!.fields[field.field] = {
 			field: field.field,
 			defaultValue: existing?.defaultValue ?? null,
 			nullable: existing?.nullable ?? true,

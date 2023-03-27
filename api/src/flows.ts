@@ -390,7 +390,7 @@ class FlowManager {
 			return { successor: null, status: 'unknown', data: null, options: null };
 		}
 
-		const handler = this.operations[operation.type];
+		const handler = this.operations[operation.type]!;
 
 		const options = applyOptionsData(operation.options, keyedData);
 

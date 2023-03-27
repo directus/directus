@@ -11,7 +11,7 @@ export const _aliasMap: Record<string, string> = {
 
 export const getStorageDriver = async (driverName: string): Promise<typeof Driver> => {
 	if (driverName in _aliasMap) {
-		driverName = _aliasMap[driverName];
+		driverName = _aliasMap[driverName]!;
 	} else {
 		throw new Error(`Driver "${driverName}" doesn't exist.`);
 	}
