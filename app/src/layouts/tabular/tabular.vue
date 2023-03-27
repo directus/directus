@@ -282,7 +282,7 @@ function getDisplayValue(item: Item, key: string) {
 
 	if (!aliasInfo) return get(item, key);
 
-	const unaliasedItem = Object.keys(item).reduce<Item>((result, key) => {
+	const dealiasedItem = Object.keys(item).reduce<Item>((result, key) => {
 		if (aliasedKeys.value.includes(key)) {
 			if (key !== aliasInfo.fieldAlias) return result;
 			const name = aliasedFields.value[key].fieldName;
@@ -293,7 +293,7 @@ function getDisplayValue(item: Item, key: string) {
 		return result;
 	}, {});
 
-	return get(unaliasedItem, key);
+	return get(dealiasedItem, key);
 }
 
 function addField(fieldKey: string) {
