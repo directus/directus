@@ -1,4 +1,4 @@
-import { toArray } from '@directus/shared/utils';
+import { toArray } from '@directus/utils';
 import env from '../env.js';
 
 interface AuthProvider {

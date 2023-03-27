@@ -1,6 +1,6 @@
 import mid from 'node-machine-id';
 import os from 'os';
-import { toArray } from '@directus/shared/utils';
+import { toArray } from '@directus/utils';
 import { version } from './package.js';
 import env from '../env.js';
 import logger from '../logger.js';

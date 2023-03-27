@@ -22,7 +22,7 @@ import type {
 	OperationApiConfig,
 	ScheduleHandler,
 } from '@directus/types';
-import { isIn, isTypeIn, pluralize } from '@directus/shared/utils';
+import { isIn, isTypeIn, pluralize } from '@directus/utils';
 import {
 	ensureExtensionDirs,
 	generateExtensionsEntrypoint,
@@ -31,7 +31,7 @@ import {
 	pathToRelativeUrl,
 	resolvePackage,
 	resolvePackageExtensions,
-} from '@directus/shared/utils/node';
+} from '@directus/utils/node';
 import alias from '@rollup/plugin-alias';
 import virtual from '@rollup/plugin-virtual';
 import chokidar, { FSWatcher } from 'chokidar';

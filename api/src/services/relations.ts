@@ -1,6 +1,6 @@
 import { createInspector } from '@directus/schema';
 import type { Accountability, Query, Relation, RelationMeta, SchemaOverview } from '@directus/types';
-import { toArray } from '@directus/shared/utils';
+import { toArray } from '@directus/utils';
 import type Keyv from 'keyv';
 import type { Knex } from 'knex';
 import type { ForeignKey, SchemaInspector } from '@directus/schema';

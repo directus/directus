@@ -1,5 +1,5 @@
 import type { SchemaOverview } from '@directus/schema/types/overview';
-import { parseJSON } from '@directus/shared/utils';
+import { parseJSON } from '@directus/utils';
 import type { Column } from '@directus/schema';
 import env from '../env.js';
 import logger from '../logger.js';

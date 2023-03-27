@@ -1,4 +1,4 @@
-import { parseJSON } from '@directus/shared/utils';
+import { parseJSON } from '@directus/utils';
 import Busboy from 'busboy';
 import express, { RequestHandler } from 'express';
 import { load as loadYaml } from 'js-yaml';

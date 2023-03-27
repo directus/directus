@@ -8,7 +8,7 @@ import type {
 	Query,
 	SchemaOverview,
 } from '@directus/types';
-import { validatePayload } from '@directus/shared/utils';
+import { validatePayload } from '@directus/utils';
 import type { Knex } from 'knex';
 import { cloneDeep, flatten, isArray, isNil, merge, reduce, uniq, uniqWith } from 'lodash-es';
 import { GENERATE_SPECIAL } from '../constants.js';

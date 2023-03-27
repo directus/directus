@@ -76,7 +76,6 @@ importers:
       '@directus/extensions-sdk': workspace:*
       '@directus/format-title': 10.0.0
       '@directus/schema': workspace:*
-      '@directus/shared': workspace:*
       '@directus/specs': workspace:*
       '@directus/storage': workspace:*
       '@directus/storage-driver-azure': workspace:*
@@ -225,7 +224,6 @@ importers:
       '@directus/extensions-sdk': link:../packages/extensions-sdk
       '@directus/format-title': 10.0.0
       '@directus/schema': link:../packages/schema
-      '@directus/shared': link:../packages/shared
       '@directus/specs': link:../packages/specs
       '@directus/storage': link:../packages/storage
       '@directus/storage-driver-azure': link:../packages/storage-driver-azure

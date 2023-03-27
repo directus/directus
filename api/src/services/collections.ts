@@ -1,6 +1,6 @@
 import { createInspector } from '@directus/schema';
 import type { Accountability, FieldMeta, RawField, SchemaOverview } from '@directus/types';
-import { addFieldFlag } from '@directus/shared/utils';
+import { addFieldFlag } from '@directus/utils';
 import type Keyv from 'keyv';
 import type { Knex } from 'knex';
 import type { Table, SchemaInspector } from '@directus/schema';

@@ -9,7 +9,7 @@ import {
 	OperationHandler,
 	SchemaOverview,
 } from '@directus/types';
-import { applyOptionsData, isValidJSON, parseJSON, toArray } from '@directus/shared/utils';
+import { applyOptionsData, isValidJSON, parseJSON, toArray } from '@directus/utils';
 import fastRedact from 'fast-redact';
 import type { Knex } from 'knex';
 import { omit, pick } from 'lodash-es';

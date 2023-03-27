@@ -1,4 +1,4 @@
-import { toArray } from '@directus/shared/utils';
+import { toArray } from '@directus/utils';
 import type { Knex } from 'knex';
 import { isArray } from 'lodash-es';
 

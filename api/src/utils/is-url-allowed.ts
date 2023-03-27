@@ -1,4 +1,4 @@
-import { toArray } from '@directus/shared/utils';
+import { toArray } from '@directus/utils';
 import logger from '../logger.js';
 import { URL } from 'url';
 

@@ -1,5 +1,5 @@
 import type { Item, Query, SchemaOverview } from '@directus/types';
-import { toArray } from '@directus/shared/utils';
+import { toArray } from '@directus/utils';
 import type { Knex } from 'knex';
 import { clone, cloneDeep, merge, pick, uniq } from 'lodash-es';
 import getDatabase from './index.js';

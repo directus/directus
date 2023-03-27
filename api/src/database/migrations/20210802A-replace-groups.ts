@@ -1,4 +1,4 @@
-import { parseJSON } from '@directus/shared/utils';
+import { parseJSON } from '@directus/utils';
 import type { Knex } from 'knex';
 import logger from '../../logger.js';
 

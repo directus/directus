@@ -2,7 +2,7 @@ import type { Column, SchemaInspector } from '@directus/schema';
 import { createInspector } from '@directus/schema';
 import { KNEX_TYPES, REGEX_BETWEEN_PARENS } from '@directus/constants';
 import type { Accountability, Field, FieldMeta, RawField, SchemaOverview, Type } from '@directus/types';
-import { addFieldFlag, toArray } from '@directus/shared/utils';
+import { addFieldFlag, toArray } from '@directus/utils';
 import type Keyv from 'keyv';
 import type { Knex } from 'knex';
 import { isEqual, isNil } from 'lodash-es';

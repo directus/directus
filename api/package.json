@@ -82,7 +82,6 @@
 		"@directus/extensions-sdk": "workspace:*",
 		"@directus/format-title": "10.0.0",
 		"@directus/schema": "workspace:*",
-		"@directus/shared": "workspace:*",
 		"@directus/specs": "workspace:*",
 		"@directus/storage": "workspace:*",
 		"@directus/storage-driver-azure": "workspace:*",

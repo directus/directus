@@ -23,8 +23,8 @@ vi.mock('../../src/env', async () => {
 	};
 });
 
-vi.mock('@directus/shared/utils/node', async () => {
-	const actual = await vi.importActual('@directus/shared/utils/node');
+vi.mock('@directus/utils/node', async () => {
+	const actual = await vi.importActual('@directus/utils/node');
 
 	const customCliExtension: Extension = {
 		path: '/hooks/custom-cli',
