@@ -321,7 +321,7 @@ export class CollectionsService {
 
 		if (result.length === 0) throw new ForbiddenException();
 
-		return result[0];
+		return result[0]!;
 	}
 
 	/**

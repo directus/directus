@@ -36,7 +36,7 @@ export class PermissionsService extends ItemsService {
 		for (const result of results) {
 			const { collection, fields } = result;
 			if (!fieldsPerCollection[collection]) fieldsPerCollection[collection] = [];
-			fieldsPerCollection[collection].push(...(fields ?? []));
+			fieldsPerCollection[collection]!.push(...(fields ?? []));
 		}
 
 		return fieldsPerCollection;

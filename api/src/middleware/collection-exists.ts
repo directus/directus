@@ -7,7 +7,7 @@ import { systemCollectionRows } from '../database/system-data/collections';
 import { ForbiddenException } from '../exceptions';
 import asyncHandler from '../utils/async-handler';
 
-const collectionExists: RequestHandler = asyncHandler(async (req, res, next) => {
+const collectionExists: RequestHandler = asyncHandler(async (req, _res, next) => {
 	if (!req.params['collection']) return next();
 
 	if (req.params['collection'] in req.schema.collections === false) {

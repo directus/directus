@@ -96,7 +96,7 @@ export function createLocalAuthRouter(provider: string): Router {
 			} as Record<string, Record<string, any>>;
 
 			if (mode === 'json') {
-				payload['data']['refresh_token'] = refreshToken;
+				payload['data']!['refresh_token'] = refreshToken;
 			}
 
 			if (mode === 'cookie') {

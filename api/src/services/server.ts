@@ -211,20 +211,20 @@ export class ServerService {
 			const startTime = performance.now();
 
 			if (await hasDatabaseConnection()) {
-				checks[`${client}:responseTime`][0].status = 'ok';
+				checks[`${client}:responseTime`]![0]!.status = 'ok';
 			} else {
-				checks[`${client}:responseTime`][0].status = 'error';
-				checks[`${client}:responseTime`][0].output = `Can't connect to the database.`;
+				checks[`${client}:responseTime`]![0]!.status = 'error';
+				checks[`${client}:responseTime`]![0]!.output = `Can't connect to the database.`;
 			}
 
 			const endTime = performance.now();
-			checks[`${client}:responseTime`][0].observedValue = +(endTime - startTime).toFixed(3);
+			checks[`${client}:responseTime`]![0]!.observedValue = +(endTime - startTime).toFixed(3);
 
 			if (
-				checks[`${client}:responseTime`][0].observedValue! > checks[`${client}:responseTime`][0].threshold! &&
-				checks[`${client}:responseTime`][0].status !== 'error'
+				checks[`${client}:responseTime`]![0]!.observedValue! > checks[`${client}:responseTime`]![0]!.threshold! &&
+				checks[`${client}:responseTime`]![0]!.status !== 'error'
 			) {
-				checks[`${client}:responseTime`][0].status = 'warn';
+				checks[`${client}:responseTime`]![0]!.status = 'warn';
 			}
 
 			checks[`${client}:connectionsAvailable`] = [
@@ -271,17 +271,17 @@ export class ServerService {
 				await cache!.set(`health-${checkID}`, true, 5);
 				await cache!.delete(`health-${checkID}`);
 			} catch (err: any) {
-				checks['cache:responseTime'][0].status = 'error';
-				checks['cache:responseTime'][0].output = err;
+				checks['cache:responseTime']![0]!.status = 'error';
+				checks['cache:responseTime']![0]!.output = err;
 			} finally {
 				const endTime = performance.now();
-				checks['cache:responseTime'][0].observedValue = +(endTime - startTime).toFixed(3);
+				checks['cache:responseTime']![0]!.observedValue = +(endTime - startTime).toFixed(3);
 
 				if (
-					checks['cache:responseTime'][0].observedValue > checks['cache:responseTime'][0].threshold! &&
-					checks['cache:responseTime'][0].status !== 'error'
+					checks['cache:responseTime']![0]!.observedValue > checks['cache:responseTime']![0]!.threshold! &&
+					checks['cache:responseTime']![0]!.status !== 'error'
 				) {
-					checks['cache:responseTime'][0].status = 'warn';
+					checks['cache:responseTime']![0]!.status = 'warn';
 				}
 			}
 
@@ -311,17 +311,17 @@ export class ServerService {
 				await rateLimiter.consume(`health-${checkID}`, 1);
 				await rateLimiter.delete(`health-${checkID}`);
 			} catch (err: any) {
-				checks['rateLimiter:responseTime'][0].status = 'error';
-				checks['rateLimiter:responseTime'][0].output = err;
+				checks['rateLimiter:responseTime']![0]!.status = 'error';
+				checks['rateLimiter:responseTime']![0]!.output = err;
 			} finally {
 				const endTime = performance.now();
-				checks['rateLimiter:responseTime'][0].observedValue = +(endTime - startTime).toFixed(3);
+				checks['rateLimiter:responseTime']![0]!.observedValue = +(endTime - startTime).toFixed(3);
 
 				if (
-					checks['rateLimiter:responseTime'][0].observedValue > checks['rateLimiter:responseTime'][0].threshold! &&
-					checks['rateLimiter:responseTime'][0].status !== 'error'
+					checks['rateLimiter:responseTime']![0]!.observedValue > checks['rateLimiter:responseTime']![0]!.threshold! &&
+					checks['rateLimiter:responseTime']![0]!.status !== 'error'
 				) {
-					checks['rateLimiter:responseTime'][0].status = 'warn';
+					checks['rateLimiter:responseTime']![0]!.status = 'warn';
 				}
 			}
 
@@ -353,18 +353,18 @@ export class ServerService {
 				await rateLimiterGlobal.consume(`health-${checkID}`, 1);
 				await rateLimiterGlobal.delete(`health-${checkID}`);
 			} catch (err: any) {
-				checks['rateLimiterGlobal:responseTime'][0].status = 'error';
-				checks['rateLimiterGlobal:responseTime'][0].output = err;
+				checks['rateLimiterGlobal:responseTime']![0]!.status = 'error';
+				checks['rateLimiterGlobal:responseTime']![0]!.output = err;
 			} finally {
 				const endTime = performance.now();
-				checks['rateLimiterGlobal:responseTime'][0].observedValue = +(endTime - startTime).toFixed(3);
+				checks['rateLimiterGlobal:responseTime']![0]!.observedValue = +(endTime - startTime).toFixed(3);
 
 				if (
-					checks['rateLimiterGlobal:responseTime'][0].observedValue >
-						checks['rateLimiterGlobal:responseTime'][0].threshold! &&
-					checks['rateLimiterGlobal:responseTime'][0].status !== 'error'
+					checks['rateLimiterGlobal:responseTime']![0]!.observedValue >
+						checks['rateLimiterGlobal:responseTime']![0]!.threshold! &&
+					checks['rateLimiterGlobal:responseTime']![0]!.status !== 'error'
 				) {
-					checks['rateLimiterGlobal:responseTime'][0].status = 'warn';
+					checks['rateLimiterGlobal:responseTime']![0]!.status = 'warn';
 				}
 			}
 
@@ -399,18 +399,18 @@ export class ServerService {
 						await disk.delete(`health-${checkID}`);
 					});
 				} catch (err: any) {
-					checks[`storage:${location}:responseTime`][0].status = 'error';
-					checks[`storage:${location}:responseTime`][0].output = err;
+					checks[`storage:${location}:responseTime`]![0]!.status = 'error';
+					checks[`storage:${location}:responseTime`]![0]!.output = err;
 				} finally {
 					const endTime = performance.now();
-					checks[`storage:${location}:responseTime`][0].observedValue = +(endTime - startTime).toFixed(3);
+					checks[`storage:${location}:responseTime`]![0]!.observedValue = +(endTime - startTime).toFixed(3);
 
 					if (
-						checks[`storage:${location}:responseTime`][0].observedValue! >
-							checks[`storage:${location}:responseTime`][0].threshold! &&
-						checks[`storage:${location}:responseTime`][0].status !== 'error'
+						checks[`storage:${location}:responseTime`]![0]!.observedValue! >
+							checks[`storage:${location}:responseTime`]![0]!.threshold! &&
+						checks[`storage:${location}:responseTime`]![0]!.status !== 'error'
 					) {
-						checks[`storage:${location}:responseTime`][0].status = 'warn';
+						checks[`storage:${location}:responseTime`]![0]!.status = 'warn';
 					}
 				}
 			}
@@ -433,8 +433,8 @@ export class ServerService {
 			try {
 				await mailer.verify();
 			} catch (err: any) {
-				checks['email:connection'][0].status = 'error';
-				checks['email:connection'][0].output = err;
+				checks['email:connection']![0]!.status = 'error';
+				checks['email:connection']![0]!.output = err;
 			}
 
 			return checks;

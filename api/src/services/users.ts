@@ -38,7 +38,7 @@ export class UsersService extends ItemsService {
 			throw new RecordNotUniqueException('email', {
 				collection: 'directus_users',
 				field: 'email',
-				invalid: duplicates[0],
+				invalid: duplicates[0]!,
 			});
 		}
 
@@ -139,7 +139,7 @@ export class UsersService extends ItemsService {
 	 */
 	override async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
 		const result = await this.createMany([data], opts);
-		return result[0];
+		return result[0]!;
 	}
 
 	/**
@@ -181,7 +181,7 @@ export class UsersService extends ItemsService {
 	}
 
 	override async updateBatch(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
-		const primaryKeyField = this.schema.collections[this.collection].primary;
+		const primaryKeyField = this.schema.collections[this.collection]!.primary;
 
 		const keys: PrimaryKey[] = [];
 
@@ -287,7 +287,7 @@ export class UsersService extends ItemsService {
 	}
 
 	override async deleteByQuery(query: Query, opts?: MutationOptions): Promise<PrimaryKey[]> {
-		const primaryKeyField = this.schema.collections[this.collection].primary;
+		const primaryKeyField = this.schema.collections[this.collection]!.primary;
 		const readQuery = cloneDeep(query);
 		readQuery.fields = [primaryKeyField];
 

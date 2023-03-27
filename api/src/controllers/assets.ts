@@ -132,7 +132,7 @@ router.get(
 
 	// Return file
 	asyncHandler(async (req, res) => {
-		const id = req.params['pk']?.substring(0, 36);
+		const id = req.params['pk']!.substring(0, 36);
 
 		const service = new AssetsService({
 			accountability: req.accountability,
