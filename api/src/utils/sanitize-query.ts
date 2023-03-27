@@ -11,17 +11,17 @@ export function sanitizeQuery(rawQuery: Record<string, any>, accountability?: Ac
 	const env = getEnv();
 	const hasMaxLimit =
 		'MAX_QUERY_LIMIT' in env &&
-		Number(env.MAX_QUERY_LIMIT) >= 0 &&
-		!Number.isNaN(Number(env.MAX_QUERY_LIMIT)) &&
-		Number.isFinite(Number(env.MAX_QUERY_LIMIT));
+		Number(env['MAX_QUERY_LIMIT']) >= 0 &&
+		!Number.isNaN(Number(env['MAX_QUERY_LIMIT'])) &&
+		Number.isFinite(Number(env['MAX_QUERY_LIMIT']));
 	if (rawQuery['limit'] !== undefined) {
 		const limit = sanitizeLimit(rawQuery['limit']);
 
 		if (typeof limit === 'number') {
-			query.limit = limit === -1 && hasMaxLimit ? Number(env.MAX_QUERY_LIMIT) : limit;
+			query.limit = limit === -1 && hasMaxLimit ? Number(env['MAX_QUERY_LIMIT']) : limit;
 		}
 	} else if (hasMaxLimit) {
-		query.limit = Math.min(Number(env.DEFAULT_QUERY_LIMIT), Number(env.MAX_QUERY_LIMIT));
+		query.limit = Math.min(Number(env['DEFAULT_QUERY_LIMIT']), Number(env['MAX_QUERY_LIMIT']));
 	}
 
 	if (rawQuery['fields']) {

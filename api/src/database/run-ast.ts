@@ -469,7 +469,7 @@ function mergeWithParentItems(
 
 			if (nestedNode.query.page && nestedNode.query.page > 1) {
 				parentItem[nestedNode.fieldKey] = parentItem[nestedNode.fieldKey].slice(
-					(nestedNode.query.limit ?? Number(env.DEFAULT_QUERY_LIMIT)) * (nestedNode.query.page - 1)
+					(nestedNode.query.limit ?? Number(env['DEFAULT_QUERY_LIMIT'])) * (nestedNode.query.page - 1)
 				);
 			}
 
@@ -480,7 +480,7 @@ function mergeWithParentItems(
 			if (nestedNode.query.limit !== -1) {
 				parentItem[nestedNode.fieldKey] = parentItem[nestedNode.fieldKey].slice(
 					0,
-					nestedNode.query.limit ?? Number(env.DEFAULT_QUERY_LIMIT)
+					nestedNode.query.limit ?? Number(env['DEFAULT_QUERY_LIMIT'])
 				);
 			}
 
