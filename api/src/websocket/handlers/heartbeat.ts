@@ -4,7 +4,7 @@ import type { WebSocketClient } from '../types';
 import { WebsocketController, getWebsocketController } from '../controllers';
 import type { ActionHandler } from '@directus/shared/types';
 import { WebSocketMessage } from '../messages';
-import env from '../../env';
+import env, { toBoolean } from '../../env';
 
 const HEARTBEAT_FREQUENCY = Number(env['WEBSOCKETS_HEARTBEAT_FREQUENCY']) * 1000;
 
@@ -21,9 +21,11 @@ export class HeartbeatHandler {
 				/* ignore errors */
 			}
 		});
-		emitter.onAction('websocket.connect', () => this.checkClients());
-		emitter.onAction('websocket.error', () => this.checkClients());
-		emitter.onAction('websocket.close', () => this.checkClients());
+		if (toBoolean(env['WEBSOCKETS_HEARTBEAT_ENABLED']) === true) {
+			emitter.onAction('websocket.connect', () => this.checkClients());
+			emitter.onAction('websocket.error', () => this.checkClients());
+			emitter.onAction('websocket.close', () => this.checkClients());
+		}
 	}
 	private checkClients() {
 		const hasClients = this.controller.clients.size > 0;
