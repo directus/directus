@@ -12,7 +12,7 @@ import { parseJSON } from '@directus/shared/utils';
 
 export class WebsocketController extends SocketController {
 	constructor(httpServer: httpServer) {
-		super(httpServer, 'WS REST', String(env['WEBSOCKETS_REST_PATH']), {
+		super(httpServer, String(env['WEBSOCKETS_REST_PATH']), {
 			mode: String(env['WEBSOCKETS_REST_AUTH']).toLowerCase() as AuthMode,
 			timeout: Number(env['WEBSOCKETS_REST_AUTH_TIMEOUT']) * 1000,
 		});

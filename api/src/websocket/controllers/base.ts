@@ -25,7 +25,6 @@ import { registerWebsocketEvents } from './hooks';
 const TOKEN_CHECK_INTERVAL = 15 * 60 * 1000; // 15 minutes
 
 export default abstract class SocketController {
-	name: string;
 	server: WebSocket.Server;
 	clients: Set<WebSocketClient>;
 	authentication: {
@@ -39,7 +38,6 @@ export default abstract class SocketController {
 
 	constructor(
 		httpServer: httpServer,
-		name: string,
 		endpoint: string,
 		authentication: {
 			mode: AuthMode;
@@ -48,7 +46,6 @@ export default abstract class SocketController {
 	) {
 		this.server = new WebSocketServer({ noServer: true });
 		this.clients = new Set();
-		this.name = name;
 		this.endpoint = endpoint;
 		this.authentication = authentication;
 		this.rateLimiter =

@@ -16,7 +16,7 @@ import { bindPubSub } from '../../services/graphql/subscription';
 export class GraphQLSubscriptionController extends SocketController {
 	gql: Server<GraphQLSocket>;
 	constructor(httpServer: httpServer) {
-		super(httpServer, 'WS GraphQL', String(env['WEBSOCKETS_GRAPHQL_PATH']), {
+		super(httpServer, String(env['WEBSOCKETS_GRAPHQL_PATH']), {
 			mode: String(env['WEBSOCKETS_GRAPHQL_AUTH']).toLowerCase() as AuthMode,
 			timeout: Number(env['WEBSOCKETS_GRAPHQL_AUTH_TIMEOUT']) * 1000,
 		});
