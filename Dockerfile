@@ -23,7 +23,7 @@ RUN : \
 	&& tar -zxvf *.tgz package/package.json \
 	&& mv package/package.json package.json \
 	&& rm -r *.tgz package \
-	&& mkdir -p data/database data/extensions data/uploads \
+	&& mkdir -p database extensions uploads \
 	;
 
 ####################################################################################################
@@ -37,9 +37,9 @@ EXPOSE 8055
 
 ENV \
 	DB_CLIENT="sqlite3" \
-	DB_FILENAME="/directus/data/database/database.sqlite" \
-	EXTENSIONS_PATH="/directus/data/extensions" \
-	STORAGE_LOCAL_ROOT="/directus/data/uploads" \
+	DB_FILENAME="/directus/database/database.sqlite" \
+	EXTENSIONS_PATH="/directus/extensions" \
+	STORAGE_LOCAL_ROOT="/directus/uploads" \
 	NODE_ENV="production" \
 	NPM_CONFIG_UPDATE_NOTIFIER="false"
 
