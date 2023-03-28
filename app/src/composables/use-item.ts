@@ -11,7 +11,7 @@ import { validateItem } from '@/utils/validate-item';
 import { useCollection } from '@directus/shared/composables';
 import { getEndpoint } from '@directus/shared/utils';
 import { AxiosResponse } from 'axios';
-import { merge } from 'lodash';
+import { mergeWith } from 'lodash';
 import { computed, ComputedRef, Ref, ref, watch } from 'vue';
 import { usePermissions } from './use-permissions';
 import { Field, Query, Relation } from '@directus/shared/types';
@@ -120,11 +120,19 @@ export function useItem(
 		saving.value = true;
 		validationErrors.value = [];
 
-		const errors = validateItem(
-			merge({}, defaultValues.value, item.value, edits.value),
-			fieldsWithPermissions.value,
-			isNew.value
+		const payloadToValidate = mergeWith(
+			{},
+			defaultValues.value,
+			item.value,
+			edits.value,
+			function (from: any, to: any) {
+				if (typeof to !== 'undefined') {
+					return to;
+				}
+			}
 		);
+
+		const errors = validateItem(payloadToValidate, fieldsWithPermissions.value, isNew.value);
 
 		if (errors.length > 0) {
 			validationErrors.value = errors;
