@@ -1,7 +1,7 @@
 import config, { getUrl } from '@common/config';
 import vendors from '@common/get-dbs-to-test';
 import * as common from '@common/index';
-import { TestLogger } from '@common/logger';
+import { TestLogger } from '@common/test-logger';
 import { awaitDirectusConnection } from '@utils/await-connection';
 import { ChildProcess, spawn } from 'child_process';
 import { EnumType } from 'json-to-graphql-query';

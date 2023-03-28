@@ -41,6 +41,6 @@ export class TestLogger {
 	};
 
 	cleanup = () => {
-		this.server.stdout?.removeListener('data', this.processChunks);
+		this.server.stdout?.off('data', this.processChunks);
 	};
 }
