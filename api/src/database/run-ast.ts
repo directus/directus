@@ -1,9 +1,7 @@
 import type { Item, Query, SchemaOverview } from '@directus/types';
 import { toArray } from '@directus/utils';
 import type { Knex } from 'knex';
-<<<<<<< HEAD
-import { clone, cloneDeep, merge, pick, uniq } from 'lodash-es';
-import getDatabase from './index.js';
+import { clone, cloneDeep, isNil, merge, pick, uniq } from 'lodash-es';
 import { getHelpers } from '../database/helpers/index.js';
 import env from '../env.js';
 import { PayloadService } from '../services/payload.js';
@@ -14,20 +12,7 @@ import { getCollectionFromAlias } from '../utils/get-collection-from-alias.js';
 import type { AliasMap } from '../utils/get-column-path.js';
 import { getColumn } from '../utils/get-column.js';
 import { stripFunction } from '../utils/strip-function.js';
-=======
-import { clone, cloneDeep, isNil, merge, pick, uniq } from 'lodash';
-import getDatabase from '.';
-import { getHelpers } from '../database/helpers';
-import env from '../env';
-import { PayloadService } from '../services/payload';
-import type { AST, FieldNode, FunctionFieldNode, M2ONode, NestedCollectionNode } from '../types/ast';
-import { applyFunctionToColumnName } from '../utils/apply-function-to-column-name';
-import applyQuery, { applyLimit, applySort, ColumnSortRecord, generateAlias } from '../utils/apply-query';
-import { getCollectionFromAlias } from '../utils/get-collection-from-alias';
-import { getColumn } from '../utils/get-column';
-import type { AliasMap } from '../utils/get-column-path';
-import { stripFunction } from '../utils/strip-function';
->>>>>>> main
+import getDatabase from './index.js';
 
 type RunASTOptions = {
 	/**
