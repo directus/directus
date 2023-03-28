@@ -10,17 +10,18 @@ import logger from '../../logger';
 import { getAccountabilityForToken } from '../../utils/get-accountability-for-token';
 import { getExpiresAtForToken } from '../utils/get-expires-at-for-token';
 import { authenticateConnection, authenticationSuccess } from '../authenticate';
-import type { AuthenticationState, AuthMode, UpgradeContext, WebSocketClient } from '../types';
+import type { AuthenticationState, UpgradeContext, WebSocketClient } from '../types';
 import { waitForAnyMessage, waitForMessageType } from '../utils/wait-for-message';
-import { TokenExpiredException } from '../../exceptions';
+import { InvalidConfigException, TokenExpiredException } from '../../exceptions';
 import { handleWebsocketException, WebSocketException } from '../exceptions';
 import emitter from '../../emitter';
 import { createRateLimiter } from '../../rate-limiter';
-import { WebSocketAuthMessage, WebSocketMessage } from '../messages';
+import { AuthMode, WebSocketAuthMessage, WebSocketMessage } from '../messages';
 import { parseJSON } from '@directus/shared/utils';
 import { getMessageType } from '../utils/message';
 import env, { toBoolean } from '../../env';
 import { registerWebsocketEvents } from './hooks';
+import { fromZodError } from 'zod-validation-error';
 
 const TOKEN_CHECK_INTERVAL = 15 * 60 * 1000; // 15 minutes
 
@@ -36,29 +37,53 @@ export default abstract class SocketController {
 	private rateLimiter: RateLimiterAbstract | null;
 	private authInterval: NodeJS.Timer | null;
 
-	constructor(
-		httpServer: httpServer,
-		endpoint: string,
-		authentication: {
-			mode: AuthMode;
-			timeout: number;
-		}
-	) {
+	constructor(httpServer: httpServer, configPrefix: string) {
 		this.server = new WebSocketServer({ noServer: true });
 		this.clients = new Set();
+		this.authInterval = null;
+
+		const { endpoint, authentication, maxConnections } = this.getEnironmentConfig(configPrefix);
 		this.endpoint = endpoint;
 		this.authentication = authentication;
-		this.rateLimiter =
-			toBoolean(env['RATE_LIMITER_ENABLED']) === true
-				? createRateLimiter('RATE_LIMITER', {
-						keyPrefix: 'websocket',
-				  })
-				: null;
-		this.authInterval = null;
-		this.maxConnections = Number.POSITIVE_INFINITY;
+		this.maxConnections = maxConnections;
+		this.rateLimiter = this.getRateLimiter();
+
 		httpServer.on('upgrade', this.handleUpgrade.bind(this));
 		this.checkClientTokens();
 		registerWebsocketEvents();
+	}
+	protected getEnironmentConfig(configPrefix: string): {
+		endpoint: string;
+		authentication: {
+			mode: AuthMode;
+			timeout: number;
+		};
+		maxConnections: number;
+	} {
+		const endpoint = String(env[`${configPrefix}_PATH`]);
+		const authMode = AuthMode.safeParse(String(env[`${configPrefix}_AUTH`]).toLowerCase());
+		const authTimeout = Number(env[`${configPrefix}_AUTH_TIMEOUT`]) * 1000;
+		const maxConnections =
+			`${configPrefix}_CONN_LIMIT` in env ? Number(env[`${configPrefix}_CONN_LIMIT`]) : Number.POSITIVE_INFINITY;
+		if (!authMode.success) {
+			throw new InvalidConfigException(fromZodError(authMode.error, { prefix: `${configPrefix}_AUTH` }).message);
+		}
+		return {
+			endpoint,
+			maxConnections,
+			authentication: {
+				mode: authMode.data,
+				timeout: authTimeout,
+			},
+		};
+	}
+	protected getRateLimiter() {
+		if (toBoolean(env['RATE_LIMITER_ENABLED']) === true) {
+			return createRateLimiter('RATE_LIMITER', {
+				keyPrefix: 'websocket',
+			});
+		}
+		return null;
 	}
 	protected async handleUpgrade(request: IncomingMessage, socket: internal.Duplex, head: Buffer) {
 		const { pathname, query } = parse(request.url!, true);

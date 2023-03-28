@@ -111,3 +111,6 @@ export const WebSocketEvent = z.discriminatedUnion('action', [
 	}),
 ]);
 export type WebSocketEvent = z.infer<typeof WebSocketEvent>;
+
+export const AuthMode = z.union([z.literal('public'), z.literal('handshake'), z.literal('strict')]);
+export type AuthMode = z.infer<typeof AuthMode>;

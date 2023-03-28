@@ -1,6 +1,6 @@
 import type WebSocket from 'ws';
 import type { Server as httpServer } from 'http';
-import type { AuthenticationState, AuthMode, WebSocketClient } from '../types';
+import type { AuthenticationState, WebSocketClient } from '../types';
 import env from '../../env';
 import SocketController from './base';
 import emitter from '../../emitter';
@@ -12,13 +12,7 @@ import { parseJSON } from '@directus/shared/utils';
 
 export class WebsocketController extends SocketController {
 	constructor(httpServer: httpServer) {
-		super(httpServer, String(env['WEBSOCKETS_REST_PATH']), {
-			mode: String(env['WEBSOCKETS_REST_AUTH']).toLowerCase() as AuthMode,
-			timeout: Number(env['WEBSOCKETS_REST_AUTH_TIMEOUT']) * 1000,
-		});
-		if ('WEBSOCKETS_REST_CONN_LIMIT' in env) {
-			this.maxConnections = Number(env['WEBSOCKETS_REST_CONN_LIMIT']);
-		}
+		super(httpServer, 'WEBSOCKETS_REST');
 		this.server.on('connection', (ws: WebSocket, auth: AuthenticationState) => {
 			this.bindEvents(this.createClient(ws, auth));
 		});

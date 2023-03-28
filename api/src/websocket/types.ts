@@ -31,5 +31,3 @@ export type UpgradeContext = {
 export type GraphQLSocket = {
 	client: WebSocketClient;
 };
-
-export type AuthMode = 'public' | 'handshake' | 'strict';

@@ -6,7 +6,7 @@ import { getSchema } from '../../utils/get-schema';
 import { GraphQLService } from '../../services';
 import env from '../../env';
 import SocketController from './base';
-import type { AuthenticationState, AuthMode, GraphQLSocket, UpgradeContext, WebSocketClient } from '../types';
+import type { AuthenticationState, GraphQLSocket, UpgradeContext, WebSocketClient } from '../types';
 import { handleWebsocketException } from '../exceptions';
 import { authenticateConnection, refreshAccountability } from '../authenticate';
 import { ConnectionParams, WebSocketMessage } from '../messages';
@@ -16,13 +16,7 @@ import { bindPubSub } from '../../services/graphql/subscription';
 export class GraphQLSubscriptionController extends SocketController {
 	gql: Server<GraphQLSocket>;
 	constructor(httpServer: httpServer) {
-		super(httpServer, String(env['WEBSOCKETS_GRAPHQL_PATH']), {
-			mode: String(env['WEBSOCKETS_GRAPHQL_AUTH']).toLowerCase() as AuthMode,
-			timeout: Number(env['WEBSOCKETS_GRAPHQL_AUTH_TIMEOUT']) * 1000,
-		});
-		if ('WEBSOCKETS_GRAPHQL_CONN_LIMIT' in env) {
-			this.maxConnections = Number(env['WEBSOCKETS_GRAPHQL_CONN_LIMIT']);
-		}
+		super(httpServer, 'WEBSOCKETS_GRAPHQL');
 		this.server.on('connection', (ws: WebSocket, auth: AuthenticationState) => {
 			this.bindEvents(this.createClient(ws, auth));
 		});
