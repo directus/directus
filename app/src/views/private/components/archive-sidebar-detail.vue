@@ -52,11 +52,16 @@ export default defineComponent({
 		watch(
 			() => selectedItem.value,
 			() => {
-				if (selectedItem.value === null) {
-					router.push(`/content/${props.collection}`);
-				} else {
-					router.push(`/content/${props.collection}?${selectedItem.value}`);
+				const url = new URL(router.currentRoute.value.fullPath, window.location.origin);
+
+				url.searchParams.delete('archived');
+				url.searchParams.delete('all');
+
+				if (selectedItem.value !== null) {
+					url.searchParams.set(selectedItem.value, '');
 				}
+
+				router.push(url.pathname + url.search);
 			}
 		);
 
