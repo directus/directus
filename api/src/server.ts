@@ -10,10 +10,11 @@ import pkg from '../package.json';
 import createApp from './app';
 import getDatabase from './database';
 import emitter from './emitter';
-import env, { toBoolean } from './env';
+import env from './env';
 
 import logger from './logger';
 import { getConfigFromEnv } from './utils/get-config-from-env';
+import { toBoolean } from './utils/to-boolean';
 import {
 	createSubscriptionController,
 	createWebsocketController,
@@ -89,7 +90,7 @@ export async function createServer(): Promise<http.Server> {
 		res.once('close', complete.bind(null, false));
 	});
 
-	if (toBoolean(env['WEBSOCKETS_ENABLED'])) {
+	if (toBoolean(env['WEBSOCKETS_ENABLED']) === true) {
 		createSubscriptionController(server);
 		createWebsocketController(server);
 		startWebsocketHandlers();

@@ -4,7 +4,8 @@ import type { WebSocketClient } from '../types';
 import { WebsocketController, getWebsocketController } from '../controllers';
 import type { ActionHandler } from '@directus/shared/types';
 import { WebSocketMessage } from '../messages';
-import env, { toBoolean } from '../../env';
+import env from '../../env';
+import { toBoolean } from '../../utils/to-boolean';
 
 const HEARTBEAT_FREQUENCY = Number(env['WEBSOCKETS_HEARTBEAT_FREQUENCY']) * 1000;
 

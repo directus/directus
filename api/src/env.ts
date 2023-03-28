@@ -9,6 +9,7 @@ import { clone, toNumber, toString } from 'lodash';
 import path from 'path';
 import { requireYAML } from './utils/require-yaml';
 import { toArray, parseJSON } from '@directus/shared/utils';
+import { toBoolean } from './utils/to-boolean';
 
 // keeping this here for now to prevent a circular import to constants.ts
 const allowedEnvironmentVars = [
@@ -540,8 +541,4 @@ function tryJSON(value: any) {
 	} catch {
 		return value;
 	}
-}
-
-export function toBoolean(value: any): boolean {
-	return value === 'true' || value === true || value === '1' || value === 1;
 }

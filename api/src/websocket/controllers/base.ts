@@ -19,9 +19,10 @@ import { createRateLimiter } from '../../rate-limiter';
 import { AuthMode, WebSocketAuthMessage, WebSocketMessage } from '../messages';
 import { parseJSON } from '@directus/shared/utils';
 import { getMessageType } from '../utils/message';
-import env, { toBoolean } from '../../env';
+import env from '../../env';
 import { registerWebsocketEvents } from './hooks';
 import { fromZodError } from 'zod-validation-error';
+import { toBoolean } from '../../utils/to-boolean';
 
 const TOKEN_CHECK_INTERVAL = 15 * 60 * 1000; // 15 minutes
 
