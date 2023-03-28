@@ -8,7 +8,7 @@ WORKDIR /directus
 
 ENV NODE_OPTIONS=--max-old-space-size=8192
 
-RUN corepack enable && corepack prepare pnpm@7.30.0 --activate
+RUN corepack enable && corepack prepare pnpm@8.0.0 --activate
 
 COPY pnpm-lock.yaml .
 RUN pnpm fetch
