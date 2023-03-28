@@ -1,6 +1,7 @@
 import config, { getUrl } from '@common/config';
 import vendors from '@common/get-dbs-to-test';
 import * as common from '@common/index';
+import { TestLogger } from '@common/logger';
 import { awaitDirectusConnection } from '@utils/await-connection';
 import { ChildProcess, spawn } from 'child_process';
 import { EnumType } from 'json-to-graphql-query';
@@ -10,7 +11,7 @@ import request from 'supertest';
 
 describe('Logger Redact Tests', () => {
 	const databases = new Map<string, Knex>();
-	const tzDirectus = {} as { [vendor: string]: ChildProcess };
+	const directusInstances = {} as { [vendor: string]: ChildProcess };
 	const env = cloneDeep(config.envs);
 	const authModes = ['json', 'cookie'];
 
@@ -27,7 +28,7 @@ describe('Logger Redact Tests', () => {
 			databases.set(vendor, knex(config.knexConfig[vendor]!));
 
 			const server = spawn('node', ['api/cli', 'start'], { env: env[vendor] });
-			tzDirectus[vendor] = server;
+			directusInstances[vendor] = server;
 
 			promises.push(awaitDirectusConnection(Number(env[vendor].PORT)));
 		}
@@ -38,7 +39,7 @@ describe('Logger Redact Tests', () => {
 
 	afterAll(async () => {
 		for (const [vendor, connection] of databases) {
-			tzDirectus[vendor]!.kill();
+			directusInstances[vendor]!.kill();
 
 			await connection.destroy();
 		}
@@ -50,90 +51,97 @@ describe('Logger Redact Tests', () => {
 				common.TEST_USERS.forEach((userKey) => {
 					describe(common.USER[userKey].NAME, () => {
 						it.each(vendors)('%s', async (vendor) => {
-							const logListener = setupLogListener(tzDirectus[vendor]);
+							// Setup
+							const refreshToken = (
+								await request(getUrl(vendor, env))
+									.post(`/auth/login`)
+									.send({ email: common.USER[userKey].EMAIL, password: common.USER[userKey].PASSWORD })
+									.expect('Content-Type', /application\/json/)
+							).body.data.refresh_token;
 
-							try {
-								// Setup
-								const refreshToken = (
-									await request(getUrl(vendor, env))
-										.post(`/auth/login`)
-										.send({ email: common.USER[userKey].EMAIL, password: common.USER[userKey].PASSWORD })
-										.expect('Content-Type', /application\/json/)
-								).body.data.refresh_token;
-
-								const refreshToken2 = (
-									await common.requestGraphQL(getUrl(vendor, env), true, null, {
-										mutation: {
-											auth_login: {
-												__args: {
-													email: common.USER[userKey].EMAIL,
-													password: common.USER[userKey].PASSWORD,
-												},
-												refresh_token: true,
-											},
-										},
-									})
-								).body.data.auth_login.refresh_token;
-
-								const response = await request(getUrl(vendor, env))
-									.post(`/auth/refresh`)
-									.send({ refresh_token: refreshToken, mode })
-									.expect('Content-Type', /application\/json/);
-
-								const mutationKey = 'auth_refresh';
-
-								const gqlResponse = await common.requestGraphQL(getUrl(vendor, env), true, null, {
+							const refreshToken2 = (
+								await common.requestGraphQL(getUrl(vendor, env), true, null, {
 									mutation: {
-										[mutationKey]: {
+										auth_login: {
 											__args: {
-												refresh_token: refreshToken2,
-												mode: new EnumType(mode),
+												email: common.USER[userKey].EMAIL,
+												password: common.USER[userKey].PASSWORD,
 											},
-											access_token: true,
-											expires: true,
 											refresh_token: true,
 										},
 									},
-								});
+								})
+							).body.data.auth_login.refresh_token;
 
-								const logs = await logListener.promise;
+							// Action
+							const logger = new TestLogger(directusInstances[vendor], '/auth/refresh');
 
-								// Assert
-								expect(response.statusCode).toBe(200);
-								if (mode === 'cookie') {
-									expect(response.body).toMatchObject({
-										data: {
-											access_token: expect.any(String),
-											expires: expect.any(Number),
+							const response = await request(getUrl(vendor, env))
+								.post(`/auth/refresh`)
+								.send({ refresh_token: refreshToken, mode })
+								.expect('Content-Type', /application\/json/);
+
+							const logs = await logger.getLogs();
+
+							const loggerGql = new TestLogger(directusInstances[vendor], '/graphql/system');
+
+							const mutationKey = 'auth_refresh';
+
+							const gqlResponse = await common.requestGraphQL(getUrl(vendor, env), true, null, {
+								mutation: {
+									[mutationKey]: {
+										__args: {
+											refresh_token: refreshToken2,
+											mode: new EnumType(mode),
 										},
-									});
-									expect((logs.match(/"cookie":"--redact--"/g) || []).length).toBe(0);
-									expect((logs.match(/"set-cookie":"--redact--"/g) || []).length).toBe(2);
-								} else {
-									expect(response.body).toMatchObject({
-										data: {
-											access_token: expect.any(String),
-											expires: expect.any(Number),
-											refresh_token: expect.any(String),
-										},
-									});
-									expect((logs.match(/"cookie":"--redact--"/g) || []).length).toBe(0);
-									expect((logs.match(/"set-cookie":"--redact--"/g) || []).length).toBe(0);
-								}
+										access_token: true,
+										expires: true,
+										refresh_token: true,
+									},
+								},
+							});
 
-								expect(gqlResponse.statusCode).toBe(200);
-								expect(gqlResponse.body).toMatchObject({
+							const logsGql = await loggerGql.getLogs();
+
+							// Assert
+							expect(response.statusCode).toBe(200);
+							if (mode === 'cookie') {
+								expect(response.body).toMatchObject({
 									data: {
-										[mutationKey]: {
-											access_token: expect.any(String),
-											expires: expect.any(String),
-											refresh_token: expect.any(String),
-										},
+										access_token: expect.any(String),
+										expires: expect.any(Number),
 									},
 								});
-							} finally {
-								logListener.cleanup();
+
+								for (const log of [logs, logsGql]) {
+									expect((log.match(/"cookie":"--redact--"/g) || []).length).toBe(0);
+									expect((log.match(/"set-cookie":"--redact--"/g) || []).length).toBe(1);
+								}
+							} else {
+								expect(response.body).toMatchObject({
+									data: {
+										access_token: expect.any(String),
+										expires: expect.any(Number),
+										refresh_token: expect.any(String),
+									},
+								});
+
+								for (const log of [logs, logsGql]) {
+									expect((log.match(/"cookie":"--redact--"/g) || []).length).toBe(0);
+									expect((log.match(/"set-cookie":"--redact--"/g) || []).length).toBe(0);
+								}
 							}
+
+							expect(gqlResponse.statusCode).toBe(200);
+							expect(gqlResponse.body).toMatchObject({
+								data: {
+									[mutationKey]: {
+										access_token: expect.any(String),
+										expires: expect.any(String),
+										refresh_token: expect.any(String),
+									},
+								},
+							});
 						});
 					});
 				});
@@ -145,99 +153,106 @@ describe('Logger Redact Tests', () => {
 				common.TEST_USERS.forEach((userKey) => {
 					describe(common.USER[userKey].NAME, () => {
 						it.each(vendors)('%s', async (vendor) => {
-							const logListener = setupLogListener(tzDirectus[vendor]);
+							// Setup
+							const cookieName = 'directus_refresh_token';
 
-							try {
-								// Setup
-								const cookieName = 'directus_refresh_token';
+							const refreshToken = (
+								await request(getUrl(vendor, env))
+									.post(`/auth/login`)
+									.send({ email: common.USER[userKey].EMAIL, password: common.USER[userKey].PASSWORD })
+									.expect('Content-Type', /application\/json/)
+							).body.data.refresh_token;
 
-								const refreshToken = (
-									await request(getUrl(vendor, env))
-										.post(`/auth/login`)
-										.send({ email: common.USER[userKey].EMAIL, password: common.USER[userKey].PASSWORD })
-										.expect('Content-Type', /application\/json/)
-								).body.data.refresh_token;
-
-								const refreshToken2 = (
-									await common.requestGraphQL(getUrl(vendor, env), true, null, {
-										mutation: {
-											auth_login: {
-												__args: {
-													email: common.USER[userKey].EMAIL,
-													password: common.USER[userKey].PASSWORD,
-												},
-												refresh_token: true,
+							const refreshToken2 = (
+								await common.requestGraphQL(getUrl(vendor, env), true, null, {
+									mutation: {
+										auth_login: {
+											__args: {
+												email: common.USER[userKey].EMAIL,
+												password: common.USER[userKey].PASSWORD,
 											},
-										},
-									})
-								).body.data.auth_login.refresh_token;
-
-								const response = await request(getUrl(vendor, env))
-									.post(`/auth/refresh`)
-									.set('Cookie', `${cookieName}=${refreshToken}`)
-									.send({ mode })
-									.expect('Content-Type', /application\/json/);
-
-								const mutationKey = 'auth_refresh';
-
-								const gqlResponse = await common.requestGraphQL(
-									getUrl(vendor, env),
-									true,
-									null,
-									{
-										mutation: {
-											[mutationKey]: {
-												__args: {
-													refresh_token: refreshToken2,
-													mode: new EnumType(mode),
-												},
-												access_token: true,
-												expires: true,
-												refresh_token: true,
-											},
+											refresh_token: true,
 										},
 									},
-									{ cookies: [`${cookieName}=${refreshToken2}`] }
-								);
+								})
+							).body.data.auth_login.refresh_token;
 
-								const logs = await logListener.promise;
+							// Action
+							const logger = new TestLogger(directusInstances[vendor], '/auth/refresh');
 
-								// Assert
-								expect(response.statusCode).toBe(200);
-								if (mode === 'cookie') {
-									expect(response.body).toMatchObject({
-										data: {
-											access_token: expect.any(String),
-											expires: expect.any(Number),
-										},
-									});
-									expect((logs.match(/"cookie":"--redact--"/g) || []).length).toBe(2);
-									expect((logs.match(/"set-cookie":"--redact--"/g) || []).length).toBe(2);
-								} else {
-									expect(response.body).toMatchObject({
-										data: {
-											access_token: expect.any(String),
-											expires: expect.any(Number),
-											refresh_token: expect.any(String),
-										},
-									});
-									expect((logs.match(/"cookie":"--redact--"/g) || []).length).toBe(2);
-									expect((logs.match(/"set-cookie":"--redact--"/g) || []).length).toBe(0);
-								}
+							const response = await request(getUrl(vendor, env))
+								.post(`/auth/refresh`)
+								.set('Cookie', `${cookieName}=${refreshToken}`)
+								.send({ mode })
+								.expect('Content-Type', /application\/json/);
 
-								expect(gqlResponse.statusCode).toBe(200);
-								expect(gqlResponse.body).toMatchObject({
-									data: {
+							const logs = await logger.getLogs();
+
+							const loggerGql = new TestLogger(directusInstances[vendor], '/graphql/system');
+
+							const mutationKey = 'auth_refresh';
+
+							const gqlResponse = await common.requestGraphQL(
+								getUrl(vendor, env),
+								true,
+								null,
+								{
+									mutation: {
 										[mutationKey]: {
-											access_token: expect.any(String),
-											expires: expect.any(String),
-											refresh_token: expect.any(String),
+											__args: {
+												refresh_token: refreshToken2,
+												mode: new EnumType(mode),
+											},
+											access_token: true,
+											expires: true,
+											refresh_token: true,
 										},
+									},
+								},
+								{ cookies: [`${cookieName}=${refreshToken2}`] }
+							);
+
+							const logsGql = await loggerGql.getLogs();
+
+							// Assert
+							expect(response.statusCode).toBe(200);
+							if (mode === 'cookie') {
+								expect(response.body).toMatchObject({
+									data: {
+										access_token: expect.any(String),
+										expires: expect.any(Number),
 									},
 								});
-							} finally {
-								logListener.cleanup();
+
+								for (const log of [logs, logsGql]) {
+									expect((log.match(/"cookie":"--redact--"/g) || []).length).toBe(1);
+									expect((log.match(/"set-cookie":"--redact--"/g) || []).length).toBe(1);
+								}
+							} else {
+								expect(response.body).toMatchObject({
+									data: {
+										access_token: expect.any(String),
+										expires: expect.any(Number),
+										refresh_token: expect.any(String),
+									},
+								});
+
+								for (const log of [logs, logsGql]) {
+									expect((log.match(/"cookie":"--redact--"/g) || []).length).toBe(1);
+									expect((log.match(/"set-cookie":"--redact--"/g) || []).length).toBe(0);
+								}
 							}
+
+							expect(gqlResponse.statusCode).toBe(200);
+							expect(gqlResponse.body).toMatchObject({
+								data: {
+									[mutationKey]: {
+										access_token: expect.any(String),
+										expires: expect.any(String),
+										refresh_token: expect.any(String),
+									},
+								},
+							});
 						});
 					});
 				});
@@ -245,40 +260,3 @@ describe('Logger Redact Tests', () => {
 		});
 	});
 });
-
-function setupLogListener(server: ChildProcess) {
-	// Discard logs up to this point
-	server.stdout?.resume();
-
-	let processChunks: (chunk: any) => void;
-
-	const promise = new Promise<string>((resolve) => {
-		let logs = '';
-		let logsREST = 0;
-		let logsGraphQL = 0;
-
-		processChunks = (chunk) => {
-			if (chunk?.includes('"url":"/auth/refresh"')) {
-				logsREST++;
-				logs += chunk;
-			}
-			if (chunk?.includes('"url":"/graphql/system"')) {
-				logsGraphQL++;
-				logs += chunk;
-			}
-
-			// Wait for REST & GraphQL refresh calls (two GraphQL log entries for login & refresh, cannot be distinguished)
-			if (logsREST === 1 && logsGraphQL === 2) {
-				resolve(logs);
-			}
-		};
-
-		server.stdout?.on('data', processChunks);
-	});
-
-	const cleanup = () => {
-		server.stdout?.removeListener('data', processChunks);
-	};
-
-	return { promise, cleanup };
-}
