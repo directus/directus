@@ -265,6 +265,8 @@ add_new: Bæta við nýjum
 create_new: Búa til Nýtt
 all: Allt
 none: Ekkert
+cancel: Hætta við
+content: Efni
 fields:
   directus_activity:
     origin: Uppruni
@@ -277,6 +279,7 @@ fields:
     title: Titill
     description: Lýsing
     location: Staðsetning
+    filesize: Skráarstærð
     modified_on: Breytt Þann
     created_on: Búið til Þann
     created_by: Búið til Af
@@ -323,18 +326,29 @@ field_options:
   directus_settings:
     security_divider_title: Öryggi
   directus_activity:
+    login: Skrá inn
     create: Búa til
   directus_collections:
     language: Tungumál
     sort_divider: Flokka
   directus_roles:
     fields:
+      icon_name: Íkon
       name_name: Nafn
+      name_placeholder: Skráðu titil...
+      link_name: Hlekkur
   directus_users:
     preferences_divider: Notandi Stillingar
     status_dropdown_draft: Drög
   directus_webhooks:
     actions_create: Búa til
+    actions_update: Uppfæra
+    actions_delete: Eyða
+    actions_login: Skrá inn
+    headers:
+      header: Haus
+do_nothing: Gera Ekkert
+share_copy_link: Afrita Hlekk
 description: Lýsing
 email: Tölvupóstur
 password: Lykilorð
