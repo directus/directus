@@ -14,6 +14,7 @@ export default {
 import Graph from 'graphology';
 import Sigma from 'sigma';
 import ForceSupervisor from 'graphology-layout-force/worker';
+import FA2Layout from 'graphology-layout-forceatlas2/worker';
 import { onMounted, onUnmounted, ref, watch } from 'vue';
 import { renderStringTemplate } from '@/utils/render-string-template';
 import { router } from '@/router';
@@ -52,6 +53,7 @@ interface Props {
 	collectionsOptions: Record<string, CollectionOptions>;
 	baseColor: string;
 	baseSize: number;
+	simulation: 'layout-force' | 'layout-forceatlas2';
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -77,7 +79,7 @@ const container = ref<HTMLElement | null>(null);
 let draggedNode: string | null = null;
 let isDragging = false;
 let renderer: Sigma | null = null;
-let layout: ForceSupervisor | null = null;
+let layout: ForceSupervisor | FA2Layout | null = null;
 let graph: Graph = new Graph();
 
 const fieldsStore = useFieldsStore();
@@ -236,9 +238,15 @@ onMounted(() => {
 	if (container.value === null) return;
 
 	if (props.fixedPositions === false) {
-		layout = new ForceSupervisor(graph, {
-			isNodeFixed: (_, attr) => attr.highlighted,
-		});
+		if(props.simulation === 'layout-forceatlas2') {
+			layout = new FA2Layout(graph, {
+				
+			});
+		} else {
+			layout = new ForceSupervisor(graph, {
+				isNodeFixed: (_, attr) => attr.highlighted,
+			});
+		}
 
 		layout.start();
 	}

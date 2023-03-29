@@ -16,6 +16,13 @@
 		<v-input v-model="sizeWritable" :min="1" :max="20" show-thumb-label type="number" />
 	</div>
 	<div class="field">
+		<div class="type-label">{{ t('layouts.graph.simulation.simulation') }}</div>
+		<v-select v-model="simulationWritable" :items="[
+			{ value: 'layout-force', text: t('layouts.graph.simulation.default') },
+			{ value: 'layout-forceatlas2', text: t('layouts.graph.simulation.fast') },
+		]" />
+	</div>
+	<div class="field">
 		<div class="type-label">{{ t('layouts.graph.collections_options') }}</div>
 		<v-list>
 			<v-list-item
@@ -71,6 +78,7 @@ interface Props {
 	info: Collection | null;
 	collectionsForOptions: AppCollection[];
 	relationOptions: Record<string, string>[];
+	simulation: 'layout-force' | 'layout-forceatlas2'
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -87,6 +95,7 @@ const emit = defineEmits([
 	'update:baseSize',
 	'update:collectionsOptions',
 	'update:fixedPositions',
+	'update:simulation',
 ]);
 
 const { t } = useI18n();
@@ -95,6 +104,7 @@ const relationField = useSync(props, 'relationField', emit);
 const colorWritable = useSync(props, 'baseColor', emit);
 const sizeWritable = useSync(props, 'baseSize', emit);
 const fixedPositionWritable = useSync(props, 'fixedPositions', emit);
+const simulationWritable = useSync(props, 'simulation', emit);
 
 function updateCollectionOptions(changes: CollectionOptions) {
 	const newCollectionsOptions = cloneDeep(props.collectionsOptions);

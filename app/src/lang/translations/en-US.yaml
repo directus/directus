@@ -1915,6 +1915,10 @@ layouts:
     filter: Filter
     toggle_simulation: Toggle Simulation
     drawer_title: "{collection} Options"
+    simulation:
+      simulation: Simulation
+      default: Default
+      fast: Fast
   cards:
     cards: Cards
     image_source: Image Source

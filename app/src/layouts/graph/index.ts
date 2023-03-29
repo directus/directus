@@ -44,7 +44,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			_relationField
 		);
 
-		const { relationField, collectionsOptions, baseColor, baseSize, fixedPositions, collectionsForOptions } =
+		const { relationField, collectionsOptions, baseColor, baseSize, fixedPositions, collectionsForOptions, simulation } =
 			useLayoutOptions();
 
 		const displayTemplates = computed(() => {
@@ -142,6 +142,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			fixedPositions,
 			relationOptions,
 			collectionsForOptions,
+			simulation
 		};
 
 		async function resetPresetAndRefresh() {
@@ -242,6 +243,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			const fixedPositions = createViewOption<boolean>('fixedPositions', false);
 			const baseColor = createViewOption<string>('baseColor', '#000000');
 			const baseSize = createViewOption<number>('baseSize', 10);
+			const simulation = createViewOption<number>('simulation', 'layout-force');
 
 			const collectionsForOptions = computed(() => [...relationCollections.value, info.value] as AppCollection[]);
 
@@ -249,7 +251,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				get() {
 					return Object.fromEntries(
 						collectionsForOptions.value.map((collection) => {
-							const existingValue = layoutOptions.value.collectionsOptions?.[collection.collection] ?? {};
+							const existingValue = layoutOptions.value?.collectionsOptions?.[collection.collection] ?? {};
 
 							return [collection.collection, existingValue];
 						})
@@ -263,7 +265,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				},
 			});
 
-			return { relationField, collectionsOptions, baseColor, baseSize, fixedPositions, collectionsForOptions };
+			return { relationField, collectionsOptions, baseColor, baseSize, fixedPositions, collectionsForOptions, simulation };
 
 			function createViewOption<T>(key: keyof LayoutOptions, defaultValue: any) {
 				return computed<T>({

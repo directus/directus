@@ -5,6 +5,7 @@ export type LayoutOptions = {
 	fixedPositions: boolean;
 	baseColor: string;
 	baseSize: number;
+	simulation: 'layout-force' | 'layout-forceatlas2'
 	collectionsOptions: Record<string, CollectionOptions>;
 };
 
