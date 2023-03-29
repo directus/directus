@@ -1,4 +1,4 @@
-import { defineLayout } from '@directus/shared/utils';
+import { defineLayout, getEndpoint } from '@directus/shared/utils';
 import TimelineLayout from './timeline.vue';
 import TimelineOptions from './options.vue';
 import TimelineSidebar from './sidebar.vue';
@@ -6,15 +6,14 @@ import TimelineSidebar from './sidebar.vue';
 import { toRefs, computed, ref, watch, Ref } from 'vue';
 import { useCollection, useFilterFields } from '@directus/shared/composables';
 import { getFieldsFromTemplate } from '@directus/shared/utils';
-import { useRelationsStore } from '@/stores/';
 
-import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
+import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { useSync } from '@directus/shared/composables';
 import { LayoutOptions, LayoutQuery, Day, Event } from './types';
 import { getRootPath } from '@/utils/get-root-path';
 import api, { addTokenToURL } from '@/api';
-import { getEndpoint } from '@/utils/get-endpoint';
 import { Filter } from '@directus/shared/types';
+import { useRelationsStore } from '@/stores/relations';
 
 export type UseEvents = (
 	day: Ref<Day>,
@@ -243,7 +242,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				(result.data.data as Record<string, any>[]).forEach((event) => {
 					const user = userField.value ? event[userField.value] : undefined;
 
-					if (user !== undefined && user.avatar) {
+					if (user?.avatar) {
 						user.image = parseUrl(user.avatar);
 					}
 
