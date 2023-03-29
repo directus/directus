@@ -17,6 +17,7 @@ RUN pnpm install --recursive --offline --frozen-lockfile
 
 RUN : \
 	&& pnpm --recursive --workspace-concurrency=1 run build \
+	&& printf 'dedupe-peer-dependents=false\npublic-hoist-pattern[]=' >> .npmrc \
 	&& pnpm --filter directus deploy --prod dist \
 	&& cd dist \
 	&& pnpm pack \
