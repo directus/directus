@@ -20,7 +20,7 @@
 						: null
 				"
 			>
-				<v-icon :name="modulePart.icon" outline />
+				<v-icon :name="modulePart.icon" />
 			</v-button>
 		</div>
 
@@ -30,13 +30,13 @@
 
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
-import { getModules } from '@/modules/';
-import ModuleBarLogo from './module-bar-logo/';
-import ModuleBarAvatar from './module-bar-avatar/';
-import { useSettingsStore } from '@/stores/';
+import ModuleBarLogo from './module-bar-logo.vue';
+import ModuleBarAvatar from './module-bar-avatar.vue';
+import { useSettingsStore } from '@/stores/settings';
 import { translate } from '@/utils/translate-object-values';
 import { MODULE_BAR_DEFAULT } from '@/constants';
 import { omit } from 'lodash';
+import { useExtensions } from '@/extensions';
 
 export default defineComponent({
 	components: {
@@ -45,7 +45,7 @@ export default defineComponent({
 	},
 	setup() {
 		const settingsStore = useSettingsStore();
-		const { modules: registeredModules } = getModules();
+		const { modules: registeredModules } = useExtensions();
 
 		const registeredModuleIDs = computed(() => registeredModules.value.map((module) => module.id));
 
@@ -84,15 +84,6 @@ export default defineComponent({
 	},
 });
 </script>
-
-<style>
-body {
-	--module-background: #18222f;
-	--module-background-alt: var(--background-normal);
-	--module-icon: #8196b1;
-	--module-icon-alt: var(--foreground-normal-alt);
-}
-</style>
 
 <style lang="scss" scoped>
 .module-bar {

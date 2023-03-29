@@ -1,9 +1,10 @@
-import { Knex } from 'knex';
+import type { Accountability, SchemaOverview } from '@directus/shared/types';
+import type { Knex } from 'knex';
 import getDatabase from '../database';
 import { systemCollectionRows } from '../database/system-data/collections';
+import emitter from '../emitter';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
-import { AbstractServiceOptions, PrimaryKey, SchemaOverview } from '../types';
-import { Accountability } from '@directus/shared/types';
+import type { AbstractServiceOptions, PrimaryKey } from '../types';
 
 export class UtilsService {
 	knex: Knex;
@@ -43,7 +44,7 @@ export class UtilsService {
 			}
 		}
 
-		const primaryKeyField = this.schema.collections[collection].primary;
+		const primaryKeyField = this.schema.collections[collection]!.primary;
 
 		// Make sure all rows have a sort value
 		const countResponse = await this.knex.count('* as count').from(collection).whereNull(sortField).first();
@@ -56,7 +57,7 @@ export class UtilsService {
 				.from(collection)
 				.whereNull(sortField);
 
-			let lastSortValue = lastSortValueResponse ? Object.values(lastSortValueResponse)[0] : 0;
+			let lastSortValue: any = lastSortValueResponse ? Object.values(lastSortValueResponse)[0] : 0;
 
 			for (const row of rowsWithoutSortValue) {
 				lastSortValue++;
@@ -119,5 +120,19 @@ export class UtilsService {
 				.andWhere(sortField, '<=', sourceSortValue)
 				.andWhereNot({ [primaryKeyField]: item });
 		}
+
+		emitter.emitAction(
+			['items.sort', `${collection}.items.sort`],
+			{
+				collection,
+				item,
+				to,
+			},
+			{
+				database: this.knex,
+				schema: this.schema,
+				accountability: this.accountability,
+			}
+		);
 	}
 }

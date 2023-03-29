@@ -24,6 +24,7 @@
 					item-text="name"
 					item-disabled="meta.singleton"
 					multiple
+					:is-menu-same-width="false"
 					:multiple-preview-threshold="0"
 				/>
 			</div>
@@ -64,6 +65,8 @@
 			<v-divider large :inline-title="false">{{ t('sort_field') }}</v-divider>
 			<related-field-select
 				v-model="sortField"
+				:type-allow-list="['integer', 'bigInteger', 'float', 'decimal']"
+				:disabled-fields="unsortableJunctionFields"
 				:collection="junctionCollection"
 				:placeholder="t('add_sort_field')"
 				:nullable="true"
@@ -127,7 +130,7 @@
 						},
 						{
 							text: t('referential_action_cascade', {
-								collection: (oneAllowedCollections ?? []).join(' / '),
+								collection: junctionCollection,
 								field: junctionFieldRelated,
 							}),
 							value: 'delete',
@@ -157,7 +160,9 @@ import { useFieldDetailStore, syncFieldDetailStoreProperty } from '../store';
 import { storeToRefs } from 'pinia';
 import RelatedCollectionSelect from '../shared/related-collection-select.vue';
 import RelatedFieldSelect from '../shared/related-field-select.vue';
-import { useFieldsStore, useCollectionsStore } from '@/stores';
+import { useFieldsStore } from '@/stores/fields';
+import { useCollectionsStore } from '@/stores/collections';
+import { useRelationsStore } from '@/stores/relations';
 import { orderBy } from 'lodash';
 
 export default defineComponent({
@@ -167,6 +172,7 @@ export default defineComponent({
 
 		const fieldDetailStore = useFieldDetailStore();
 		const collectionsStore = useCollectionsStore();
+		const relationsStore = useRelationsStore();
 		const fieldsStore = useFieldsStore();
 
 		const { collection, editing, generationInfo } = storeToRefs(fieldDetailStore);
@@ -187,7 +193,7 @@ export default defineComponent({
 		const availableCollections = computed(() => {
 			return orderBy(
 				[
-					...collectionsStore.allCollections,
+					...collectionsStore.databaseCollections,
 					{
 						divider: true,
 					},
@@ -200,6 +206,15 @@ export default defineComponent({
 				['collection'],
 				['asc']
 			);
+		});
+
+		const unsortableJunctionFields = computed(() => {
+			let fields = ['item', 'collection'];
+			if (junctionCollection.value) {
+				const relations = relationsStore.getRelationsForCollection(junctionCollection.value);
+				fields.push(...relations.map((field) => field.field));
+			}
+			return fields;
 		});
 
 		return {
@@ -218,6 +233,7 @@ export default defineComponent({
 			sortField,
 			onDelete,
 			onDeselect,
+			unsortableJunctionFields,
 		};
 	},
 });

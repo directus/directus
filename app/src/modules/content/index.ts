@@ -6,10 +6,11 @@ import CollectionOrItem from './routes/collection-or-item.vue';
 import Item from './routes/item.vue';
 import ItemNotFound from './routes/not-found.vue';
 import NoCollections from './routes/no-collections.vue';
-import { useCollectionsStore } from '@/stores';
+import { useCollectionsStore } from '@/stores/collections';
 import { Collection } from '@directus/shared/types';
 import { orderBy, isNil } from 'lodash';
 import { useNavigation } from './composables/use-navigation';
+import { useLocalStorage } from '@/composables/use-local-storage';
 import { ref } from 'vue';
 
 const checkForSystem: NavigationGuard = (to, from) => {
@@ -44,6 +45,14 @@ const checkForSystem: NavigationGuard = (to, from) => {
 			return `/settings/webhooks/${to.params.primaryKey}`;
 		} else {
 			return '/settings/webhooks';
+		}
+	}
+
+	if (to.params.collection === 'directus_presets') {
+		if (to.params.primaryKey) {
+			return `/settings/presets/${to.params.primaryKey}`;
+		} else {
+			return '/settings/presets';
 		}
 	}
 
@@ -88,6 +97,14 @@ export default defineModule({
 					}),
 					['meta.sort', 'collection']
 				);
+
+				const { data } = useLocalStorage('last-accessed-collection');
+				if (
+					data.value &&
+					collectionsStore.visibleCollections.find((visibleCollection) => visibleCollection.collection === data.value)
+				) {
+					return `/content/${data.value}`;
+				}
 
 				let firstCollection = findFirst(rootCollections);
 

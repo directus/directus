@@ -1,4 +1,4 @@
-import { Permission } from '.';
+import { Permission } from './permissions';
 
 export type ShareScope = {
 	collection: string;
@@ -16,4 +16,5 @@ export type Accountability = {
 
 	ip?: string;
 	userAgent?: string;
+	origin?: string;
 };

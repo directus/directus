@@ -1,9 +1,9 @@
+import { describe, expect, it } from 'vitest';
 import { getFilterOperatorsForType } from './get-filter-operators-for-type';
-import { TYPES } from '../constants/fields';
 
 describe('', () => {
 	it('returns the filter operators for alias', () => {
-		expect(getFilterOperatorsForType(TYPES[0])).toStrictEqual([
+		expect(getFilterOperatorsForType('alias')).toStrictEqual([
 			'contains',
 			'ncontains',
 			'eq',
@@ -24,15 +24,13 @@ describe('', () => {
 	});
 
 	it('returns the filter operators for boolean', () => {
-		expect(getFilterOperatorsForType(TYPES[2])).toStrictEqual(['eq', 'neq', 'null', 'nnull']);
+		expect(getFilterOperatorsForType('boolean')).toStrictEqual(['eq', 'neq', 'null', 'nnull']);
 	});
 
 	it('returns the filter operators for dateTime', () => {
-		expect(getFilterOperatorsForType(TYPES[4])).toStrictEqual([
+		expect(getFilterOperatorsForType('dateTime')).toStrictEqual([
 			'eq',
 			'neq',
-			'null',
-			'nnull',
 			'lt',
 			'lte',
 			'gt',
@@ -47,7 +45,7 @@ describe('', () => {
 	});
 
 	it('returns the filter operators for float', () => {
-		expect(getFilterOperatorsForType(TYPES[6])).toStrictEqual([
+		expect(getFilterOperatorsForType('float')).toStrictEqual([
 			'eq',
 			'neq',
 			'lt',
@@ -64,7 +62,7 @@ describe('', () => {
 	});
 
 	it('returns the filter operators for integer', () => {
-		expect(getFilterOperatorsForType(TYPES[7])).toStrictEqual([
+		expect(getFilterOperatorsForType('integer')).toStrictEqual([
 			'eq',
 			'neq',
 			'lt',
@@ -81,13 +79,14 @@ describe('', () => {
 	});
 
 	it('returns the filter operators for json', () => {
-		expect(getFilterOperatorsForType(TYPES[8])).toStrictEqual(['null', 'nnull']);
+		expect(getFilterOperatorsForType('json')).toStrictEqual(['null', 'nnull']);
 	});
 
 	it('returns the filter operators for binary', () => {
-		expect(getFilterOperatorsForType(TYPES[13])).toStrictEqual([
+		expect(getFilterOperatorsForType('binary')).toStrictEqual([
 			'contains',
 			'ncontains',
+			'icontains',
 			'starts_with',
 			'nstarts_with',
 			'ends_with',
@@ -104,13 +103,37 @@ describe('', () => {
 	});
 
 	it('returns the filter operators for geometry', () => {
-		expect(getFilterOperatorsForType(TYPES[17])).toStrictEqual([
+		expect(getFilterOperatorsForType('geometry')).toStrictEqual([
+			'eq',
+			'neq',
 			'null',
 			'nnull',
 			'intersects',
 			'nintersects',
 			'intersects_bbox',
 			'nintersects_bbox',
+		]);
+	});
+
+	it('includes validation only types', () => {
+		expect(getFilterOperatorsForType('alias', { includeValidation: true })).toStrictEqual([
+			'contains',
+			'ncontains',
+			'eq',
+			'neq',
+			'lt',
+			'lte',
+			'gt',
+			'gte',
+			'between',
+			'nbetween',
+			'empty',
+			'nempty',
+			'null',
+			'nnull',
+			'in',
+			'nin',
+			'regex',
 		]);
 	});
 });

@@ -1,5 +1,6 @@
-import { getCollectionType } from '.';
+import { describe, expect, it } from 'vitest';
 import { Collection } from '../types';
+import { getCollectionType } from './get-collection-type';
 
 const TableCollection: Collection = {
 	collection: 'table',

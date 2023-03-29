@@ -1,6 +1,8 @@
 import api from '@/api';
 import { defineModule } from '@directus/shared/utils';
-import { useCollectionsStore, useFieldsStore } from '@/stores';
+import { useCollectionsStore } from '@/stores/collections';
+import { useFieldsStore } from '@/stores/fields';
+import { useFlowsStore } from '@/stores/flows';
 import RouterPass from '@/utils/router-passthrough';
 import Collections from './routes/data-model/collections/collections.vue';
 import FieldDetail from './routes/data-model/field-detail/field-detail.vue';
@@ -17,14 +19,19 @@ import RolesPermissionsDetail from './routes/roles/permissions-detail/permission
 import RolesPublicItem from './routes/roles/public-item.vue';
 import WebhooksCollection from './routes/webhooks/collection.vue';
 import WebhooksItem from './routes/webhooks/item.vue';
+import FlowsOverview from './routes/flows/overview.vue';
+import FlowsDetail from './routes/flows/flow.vue';
+import FlowOperationDetail from './routes/flows/components/operation-detail.vue';
+import TranslationStringsCollection from './routes/translation-strings/collection.vue';
 
 export default defineModule({
 	id: 'settings',
 	name: '$t:settings',
 	icon: 'settings',
-	color: 'var(--warning)',
+	color: 'var(--primary)',
 	routes: [
 		{
+			name: 'settings-data-model-redirect',
 			path: '',
 			redirect: '/settings/data-model',
 		},
@@ -62,12 +69,19 @@ export default defineModule({
 					async beforeEnter(to) {
 						const collectionsStore = useCollectionsStore();
 						const info = collectionsStore.getCollection(to.params.collection as string);
-						const fieldsStore = useFieldsStore();
+
+						if (!info) {
+							return {
+								name: 'settings-not-found',
+								params: { _: to.path.split('/').slice(1) },
+							};
+						}
 
 						if (!info?.meta) {
 							await api.patch(`/collections/${to.params.collection}`, { meta: {} });
 						}
 
+						const fieldsStore = useFieldsStore();
 						fieldsStore.hydrate();
 					},
 					props: (route) => ({
@@ -165,6 +179,52 @@ export default defineModule({
 					path: ':primaryKey',
 					component: WebhooksItem,
 					props: true,
+				},
+			],
+		},
+		{
+			path: 'flows',
+			component: RouterPass,
+			children: [
+				{
+					name: 'settings-flows-collection',
+					path: '',
+					component: FlowsOverview,
+				},
+				{
+					name: 'settings-flows-item',
+					path: ':primaryKey',
+					component: FlowsDetail,
+					props: true,
+					async beforeEnter(to) {
+						const { flows } = useFlowsStore();
+						const existingFlow = flows.find((flow) => flow.id === to.params.primaryKey);
+						if (!existingFlow) {
+							return {
+								name: 'settings-not-found',
+								params: { _: to.path.split('/').slice(1) },
+							};
+						}
+					},
+					children: [
+						{
+							name: 'settings-flows-operation',
+							path: ':operationId',
+							component: FlowOperationDetail,
+							props: true,
+						},
+					],
+				},
+			],
+		},
+		{
+			path: 'translation-strings',
+			component: RouterPass,
+			children: [
+				{
+					name: 'settings-translation-strings-collection',
+					path: '',
+					component: TranslationStringsCollection,
 				},
 			],
 		},

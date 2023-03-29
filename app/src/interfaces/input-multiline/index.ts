@@ -17,9 +17,22 @@ export default defineInterface({
 			type: 'string',
 			meta: {
 				width: 'full',
-				interface: 'input-multiline',
+				interface: 'system-input-translated-string',
 				options: {
 					placeholder: '$t:enter_a_placeholder',
+				},
+			},
+		},
+		{
+			field: 'softLength',
+			name: '$t:soft_length',
+			type: 'integer',
+			meta: {
+				width: 'half',
+				interface: 'input',
+				options: {
+					placeholder: '255',
+					min: 1,
 				},
 			},
 		},

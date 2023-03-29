@@ -3,6 +3,7 @@
 		:placeholder="internalPlaceholder"
 		:disabled="disabled"
 		:type="masked ? 'password' : 'text'"
+		:autocomplete="masked ? 'new-password' : 'off'"
 		:model-value="localValue"
 		:class="{ hashed: isHashed && !localValue }"
 		@update:model-value="emitValue"
@@ -18,6 +19,7 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, ref, watch } from 'vue';
 
 export default defineComponent({
+	inheritAttrs: false,
 	props: {
 		value: {
 			type: String,

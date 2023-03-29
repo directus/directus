@@ -11,7 +11,6 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import maplibre, {
 	MapboxGeoJSONFeature,
 	MapLayerMouseEvent,
-	AttributionControl,
 	NavigationControl,
 	GeolocateControl,
 	LngLatBoundsLike,
@@ -20,6 +19,7 @@ import maplibre, {
 	LngLatLike,
 	AnyLayer,
 	Map,
+	AttributionControl,
 } from 'maplibre-gl';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
@@ -27,8 +27,8 @@ import { ref, watch, PropType, onMounted, onUnmounted, defineComponent, toRefs, 
 import { useI18n } from 'vue-i18n';
 
 import { ShowSelect } from '@directus/shared/types';
-import getSetting from '@/utils/get-setting';
-import { useAppStore } from '@/stores';
+import { useAppStore } from '@/stores/app';
+import { useSettingsStore } from '@/stores/settings';
 import { BoxSelectControl, ButtonControl } from '@/utils/geometry/controls';
 import { getBasemapSources, getStyleFromBasemapSource } from '@/utils/geometry/basemap';
 
@@ -72,6 +72,7 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const { t } = useI18n();
 		const appStore = useAppStore();
+		const settingsStore = useSettingsStore();
 		let map: Map;
 		const hoveredFeature = ref<MapboxGeoJSONFeature>();
 		const hoveredCluster = ref<boolean>();
@@ -79,14 +80,14 @@ export default defineComponent({
 		const container = ref<HTMLElement>();
 		const unwatchers = [] as WatchStopHandle[];
 		const { sidebarOpen, basemap } = toRefs(appStore);
-		const mapboxKey = getSetting('mapbox_key');
+		const mapboxKey = settingsStore.settings?.mapbox_key;
 		const basemaps = getBasemapSources();
 		const style = computed(() => {
 			const source = basemaps.find((source) => source.name === basemap.value) ?? basemaps[0];
 			return getStyleFromBasemapSource(source);
 		});
 
-		const attributionControl = new AttributionControl({ compact: true });
+		const attributionControl = new AttributionControl();
 		const navigationControl = new NavigationControl({
 			showCompass: false,
 		});
@@ -125,8 +126,8 @@ export default defineComponent({
 			map = new Map({
 				container: 'map-container',
 				style: style.value,
-				attributionControl: false,
 				dragRotate: false,
+				attributionControl: false,
 				...props.camera,
 				...(mapboxKey ? { accessToken: mapboxKey } : {}),
 			});
@@ -134,7 +135,7 @@ export default defineComponent({
 			if (geocoderControl) {
 				map.addControl(geocoderControl as any, 'top-right');
 			}
-			map.addControl(attributionControl, 'top-right');
+			map.addControl(attributionControl, 'bottom-left');
 			map.addControl(navigationControl, 'top-left');
 			map.addControl(geolocateControl, 'top-left');
 			map.addControl(fitDataControl, 'top-left');
@@ -159,10 +160,7 @@ export default defineComponent({
 					const ids = event.features?.map((f) => f.id);
 					emit('featureselect', { ids, replace: !event.alt });
 				});
-				map.on('moveend', (event) => {
-					if (!event.originalEvent) {
-						return;
-					}
+				map.on('moveend', () => {
 					emit('moveend', {
 						center: map.getCenter(),
 						zoom: map.getZoom(),

@@ -31,7 +31,7 @@ import { defineComponent, PropType, computed } from 'vue';
 import { Permission, Role } from '@directus/shared/types';
 import { Field } from '@directus/shared/types';
 import { useSync } from '@directus/shared/composables';
-import { useFieldsStore } from '@/stores';
+import { useFieldsStore } from '@/stores/fields';
 
 export default defineComponent({
 	props: {
@@ -57,7 +57,7 @@ export default defineComponent({
 		const internalPermission = useSync(props, 'permission', emit);
 
 		const fieldsInCollection = computed(() => {
-			const fields = fieldsStore.getFieldsForCollection(props.permission.collection);
+			const fields = fieldsStore.getFieldsForCollectionSorted(props.permission.collection);
 
 			return fields.map((field: Field) => {
 				return {

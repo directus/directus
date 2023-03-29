@@ -1,13 +1,24 @@
 import api from '@/api';
 import { i18n } from '@/lang';
-import { useRelationsStore } from '@/stores/';
-import { notEmpty } from '@/utils/is-empty/';
+import { useCollectionsStore } from '@/stores/collections';
+import { useRelationsStore } from '@/stores/relations';
+import { getLiteralInterpolatedTranslation } from '@/utils/get-literal-interpolated-translation';
+import { translate as translateLiteral } from '@/utils/translate-literal';
+import { translate } from '@/utils/translate-object-values';
 import { unexpectedError } from '@/utils/unexpected-error';
 import formatTitle from '@directus/format-title';
 import { DeepPartial, Field, FieldRaw, Relation } from '@directus/shared/types';
-import { isEqual, merge, orderBy, omit } from 'lodash';
+import { isEqual, isNil, merge, omit, orderBy } from 'lodash';
 import { nanoid } from 'nanoid';
 import { defineStore } from 'pinia';
+
+type HydrateOptions = {
+	/**
+	 * Allow disabling field translation on hydrate. Used in global app hydration to account for
+	 * user's custom locale instead of the default en-US locale.
+	 */
+	skipTranslation?: boolean;
+};
 
 /**
  * directus_files is a special case. For it to play nice with interfaces/layouts/displays, we need
@@ -58,12 +69,12 @@ export const useFieldsStore = defineStore({
 		fields: [] as Field[],
 	}),
 	actions: {
-		async hydrate() {
+		async hydrate(options?: HydrateOptions) {
 			const fieldsResponse = await api.get<any>(`/fields`, { params: { limit: -1 } });
 
 			const fields: FieldRaw[] = fieldsResponse.data.data;
 			this.fields = [...fields.map(this.parseField), fakeFilesField];
-			this.translateFields();
+			if (options?.skipTranslation !== true) this.translateFields();
 		},
 		async dehydrate() {
 			this.$reset();
@@ -71,16 +82,35 @@ export const useFieldsStore = defineStore({
 		parseField(field: FieldRaw): Field {
 			let name = formatTitle(field.field);
 
-			if (field.meta && notEmpty(field.meta.translations) && field.meta.translations.length > 0) {
+			const localesToKeep =
+				field.meta && !isNil(field.meta.translations) && Array.isArray(field.meta.translations)
+					? field.meta.translations.map((translation) => translation.language)
+					: [];
+
+			for (const locale of i18n.global.availableLocales) {
+				if (
+					i18n.global.te(`fields.${field.collection}.${field.field}`, locale) &&
+					!localesToKeep.includes(locale) &&
+					!field.meta?.system
+				) {
+					i18n.global.mergeLocaleMessage(locale, { fields: { [field.collection]: { [field.field]: undefined } } });
+				}
+			}
+
+			if (field.meta && !isNil(field.meta.translations) && Array.isArray(field.meta.translations)) {
 				for (let i = 0; i < field.meta.translations.length; i++) {
 					const { language, translation } = field.meta.translations[i];
 
 					i18n.global.mergeLocaleMessage(language, {
-						fields: {
-							[field.collection]: {
-								[field.field]: translation,
-							},
-						},
+						...(translation
+							? {
+									fields: {
+										[field.collection]: {
+											[field.field]: getLiteralInterpolatedTranslation(translation),
+										},
+									},
+							  }
+							: {}),
 					});
 				}
 			}
@@ -99,6 +129,12 @@ export const useFieldsStore = defineStore({
 				if (i18n.global.te(`fields.${field.collection}.${field.field}`)) {
 					field.name = i18n.global.t(`fields.${field.collection}.${field.field}`);
 				}
+				if (field.meta?.note) field.meta.note = translateLiteral(field.meta.note);
+				if (field.meta?.options) field.meta.options = translate(field.meta.options);
+				if (field.meta?.display_options) field.meta.display_options = translate(field.meta.display_options);
+				if (field.meta?.validation_message)
+					field.meta.validation_message = translateLiteral(field.meta.validation_message);
+
 				return field;
 			});
 		},
@@ -209,6 +245,7 @@ export const useFieldsStore = defineStore({
 		},
 		async deleteField(collectionKey: string, fieldKey: string) {
 			const relationsStore = useRelationsStore();
+			const collectionsStore = useCollectionsStore();
 
 			const stateClone = [...this.fields];
 			const relationsStateClone = [...relationsStore.relations];
@@ -219,12 +256,18 @@ export const useFieldsStore = defineStore({
 			});
 
 			relationsStore.relations = relationsStore.relations.filter((relation) => {
-				if (relation.collection === collectionKey && relation.field === fieldKey) return false;
+				if (
+					(relation.collection === collectionKey && relation.field === fieldKey) ||
+					(relation.related_collection === collectionKey && relation.meta?.one_field === fieldKey)
+				) {
+					return false;
+				}
 				return true;
 			});
 
 			try {
 				await api.delete(`/fields/${collectionKey}/${fieldKey}`);
+				await collectionsStore.hydrate();
 			} catch (err: any) {
 				this.fields = stateClone;
 				relationsStore.relations = relationsStateClone;
@@ -253,6 +296,28 @@ export const useFieldsStore = defineStore({
 			});
 		},
 		/**
+		 * Retrieve sorted fields including groups. This is necessary because
+		 * fields inside groups starts their sort number from 1 to N again.
+		 */
+		getFieldsForCollectionSorted(collection: string): Field[] {
+			const fields = orderBy(
+				this.fields.filter((field) => field.collection === collection),
+				'meta.sort'
+			);
+
+			const nonGroupFields = fields.filter((field: Field) => !field.meta?.group);
+
+			for (const [index, field] of nonGroupFields.entries()) {
+				const groupFields = fields.filter((groupField: Field) => groupField.meta?.group === field.field);
+
+				if (groupFields.length) {
+					nonGroupFields.splice(index + 1, 0, ...orderBy(groupFields, 'meta.sort'));
+				}
+			}
+
+			return nonGroupFields;
+		},
+		/**
 		 * Retrieve field info for a field or a related field
 		 */
 		getField(collection: string, fieldKey: string): Field | null {
@@ -261,6 +326,12 @@ export const useFieldsStore = defineStore({
 			} else {
 				return this.fields.find((field) => field.collection === collection && field.field === fieldKey) || null;
 			}
+		},
+		/**
+		 * Retrieve nested fields for a given group field
+		 */
+		getFieldGroupChildren(collection: string, fieldKey: string): Field[] | null {
+			return this.fields.filter((field) => field.collection === collection && field.meta?.group === fieldKey) || null;
 		},
 		/**
 		 * Retrieve field info for a (deeply) nested field

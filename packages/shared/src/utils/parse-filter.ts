@@ -1,9 +1,11 @@
-import { REGEX_BETWEEN_PARENS } from '../constants';
-import { Accountability, Filter, User, Role } from '../types';
-import { toArray } from './to-array';
-import { adjustDate } from './adjust-date';
-import { isDynamicVariable } from './is-dynamic-variable';
 import { isObjectLike } from 'lodash';
+import { REGEX_BETWEEN_PARENS } from '../constants';
+import { Accountability, Filter, Role, User } from '../types';
+import { adjustDate } from './adjust-date';
+import { deepMap } from './deep-map';
+import { get } from './get-with-arrays';
+import { isDynamicVariable } from './is-dynamic-variable';
+import { toArray } from './to-array';
 
 type ParseFilterContext = {
 	// The user can add any custom fields to user
@@ -12,6 +14,49 @@ type ParseFilterContext = {
 };
 
 export function parseFilter(
+	filter: Filter | null,
+	accountability: Accountability | null,
+	context: ParseFilterContext = {}
+): Filter | null {
+	let parsedFilter = parseFilterRecursive(filter, accountability, context);
+	if (parsedFilter) {
+		parsedFilter = shiftLogicalOperatorsUp(parsedFilter);
+	}
+	return parsedFilter;
+}
+
+const logicalFilterOperators = ['_and', '_or'];
+const bypassOperators = ['_none', '_some'];
+
+function shiftLogicalOperatorsUp(filter: any): any {
+	const key = Object.keys(filter)[0];
+	if (!key) return filter;
+
+	if (logicalFilterOperators.includes(key)) {
+		for (const childKey of Object.keys(filter[key])) {
+			filter[key][childKey] = shiftLogicalOperatorsUp(filter[key][childKey]);
+		}
+		return filter;
+	} else {
+		const childKey = Object.keys(filter[key])[0];
+		if (!childKey) return filter;
+		if (logicalFilterOperators.includes(childKey)) {
+			return {
+				[childKey]: toArray(filter[key][childKey]).map((childFilter) => {
+					return { [key]: shiftLogicalOperatorsUp(childFilter) };
+				}),
+			};
+		} else if (bypassOperators.includes(childKey)) {
+			return { [key]: { [childKey]: shiftLogicalOperatorsUp(filter[key][childKey]) } };
+		} else if (childKey.startsWith('_')) {
+			return filter;
+		} else {
+			return { [key]: shiftLogicalOperatorsUp(filter[key]) };
+		}
+	}
+}
+
+function parseFilterRecursive(
 	filter: Filter | null,
 	accountability: Accountability | null,
 	context: ParseFilterContext = {}
@@ -35,19 +80,30 @@ export function parseFilter(
 	}
 }
 
+export function parsePreset(
+	preset: Record<string, any> | null,
+	accountability: Accountability | null,
+	context: ParseFilterContext
+) {
+	if (!preset) return preset;
+	return deepMap(preset, (value) => parseFilterValue(value, accountability, context));
+}
+
 function parseFilterEntry(
 	[key, value]: [string, any],
 	accountability: Accountability | null,
 	context: ParseFilterContext
 ): Filter {
 	if (['_or', '_and'].includes(String(key))) {
-		return { [key]: value.map((filter: Filter) => parseFilter(filter, accountability, context)) };
+		return { [key]: value.map((filter: Filter) => parseFilterRecursive(filter, accountability, context)) };
 	} else if (['_in', '_nin', '_between', '_nbetween'].includes(String(key))) {
 		return { [key]: toArray(value).flatMap((value) => parseFilterValue(value, accountability, context)) } as Filter;
-	} else if (String(key).startsWith('_')) {
+	} else if (String(key).startsWith('_') && !bypassOperators.includes(key)) {
 		return { [key]: parseFilterValue(value, accountability, context) };
+	} else if (String(key).startsWith('item__') && isObjectLike(value)) {
+		return { [`item:${String(key).split('item__')[1]}`]: parseFilter(value, accountability, context) } as Filter;
 	} else {
-		return { [key]: parseFilter(value, accountability, context) } as Filter;
+		return { [key]: parseFilterRecursive(value, accountability, context) } as Filter;
 	}
 }
 
@@ -79,13 +135,4 @@ function parseDynamicVariable(value: any, accountability: Accountability | null,
 		if (value === '$CURRENT_ROLE') return accountability?.role ?? null;
 		return get(context, value, null);
 	}
-}
-
-function get(object: Record<string, any> | any[], path: string, defaultValue: any): any {
-	const [key, ...follow] = path.split('.');
-	const result = Array.isArray(object) ? object.map((entry) => entry[key!]) : object?.[key!];
-	if (follow.length > 0) {
-		return get(result, follow.join('.'), defaultValue);
-	}
-	return result ?? defaultValue;
 }

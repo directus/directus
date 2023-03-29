@@ -1,8 +1,12 @@
-import { UsersService, MailService } from '.';
-import { AbstractServiceOptions, PrimaryKey, MutationOptions } from '../types';
-import { ItemsService } from './items';
-import { Notification } from '@directus/shared/types';
+import type { Notification } from '@directus/shared/types';
+import env from '../env';
+import logger from '../logger';
+import type { AbstractServiceOptions, MutationOptions, PrimaryKey } from '../types';
 import { md } from '../utils/md';
+import { Url } from '../utils/url';
+import { ItemsService } from './items';
+import { MailService } from './mail';
+import { UsersService } from './users';
 
 export class NotificationsService extends ItemsService {
 	usersService: UsersService;
@@ -14,34 +18,46 @@ export class NotificationsService extends ItemsService {
 		this.mailService = new MailService({ schema: this.schema, accountability: this.accountability });
 	}
 
-	async createOne(data: Partial<Notification>, opts?: MutationOptions): Promise<PrimaryKey> {
+	override async createOne(data: Partial<Notification>, opts?: MutationOptions): Promise<PrimaryKey> {
+		const response = await super.createOne(data, opts);
+
 		await this.sendEmail(data);
-		return super.createOne(data, opts);
+
+		return response;
 	}
 
-	async createMany(data: Partial<Notification>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
+	override async createMany(data: Partial<Notification>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
+		const response = await super.createMany(data, opts);
+
 		for (const notification of data) {
 			await this.sendEmail(notification);
 		}
 
-		return super.createMany(data, opts);
+		return response;
 	}
 
 	async sendEmail(data: Partial<Notification>) {
 		if (data.recipient) {
-			const user = await this.usersService.readOne(data.recipient, { fields: ['email', 'email_notifications'] });
+			const user = await this.usersService.readOne(data.recipient, {
+				fields: ['id', 'email', 'email_notifications', 'role.app_access'],
+			});
+			const manageUserAccountUrl = new Url(env['PUBLIC_URL']).addPath('admin', 'users', user['id']).toString();
 
-			if (user.email && user.email_notifications === true) {
-				await this.mailService.send({
-					template: {
-						name: 'base',
-						data: {
-							html: data.message ? md(data.message) : '',
+			const html = data.message ? md(data.message) : '';
+
+			if (user['email'] && user['email_notifications'] === true) {
+				try {
+					await this.mailService.send({
+						template: {
+							name: 'base',
+							data: user['role']?.app_access ? { url: manageUserAccountUrl, html } : { html },
 						},
-					},
-					to: user.email,
-					subject: data.subject,
-				});
+						to: user['email'],
+						subject: data.subject,
+					});
+				} catch (error: any) {
+					logger.error(error.message);
+				}
 			}
 		}
 	}

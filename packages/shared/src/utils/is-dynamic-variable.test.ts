@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { isDynamicVariable } from './is-dynamic-variable';
 
 const tests: [string, boolean][] = [

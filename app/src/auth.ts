@@ -1,7 +1,7 @@
 import api from '@/api';
 import { dehydrate, hydrate } from '@/hydrate';
 import { router } from '@/router';
-import { useAppStore } from '@/stores';
+import { useAppStore } from '@/stores/app';
 import { RouteLocationRaw } from 'vue-router';
 import { idleTracker } from './idle';
 import { DEFAULT_AUTH_PROVIDER } from '@/constants';
@@ -109,8 +109,8 @@ export async function refresh({ navigate }: LogoutOptions = { navigate: true }):
 	try {
 		const response = await api.post<any>('/auth/refresh', undefined, {
 			transformRequest(data, headers) {
-				// This seems wrongly typed in Axios itself..
-				delete (headers?.common as unknown as Record<string, string>)?.['Authorization'];
+				// Remove Authorization header from request
+				headers.set('Authorization');
 				return data;
 			},
 		});
@@ -170,7 +170,11 @@ export async function logout(optionsRaw: LogoutOptions = {}): Promise<void> {
 
 	// Only if the user manually signed out should we kill the session by hitting the logout endpoint
 	if (options.reason === LogoutReason.SIGN_OUT) {
-		await api.post(`/auth/logout`);
+		try {
+			await api.post(`/auth/logout`);
+		} catch {
+			// User already signed out
+		}
 	}
 
 	appStore.authenticated = false;

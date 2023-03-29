@@ -27,6 +27,34 @@ export default defineInterface({
 				},
 			},
 			{
+				field: 'enableCreate',
+				name: '$t:creating_items',
+				schema: {
+					default_value: true,
+				},
+				meta: {
+					interface: 'boolean',
+					options: {
+						label: '$t:enable_create_button',
+					},
+					width: 'half',
+				},
+			},
+			{
+				field: 'enableSelect',
+				name: '$t:selecting_items',
+				schema: {
+					default_value: true,
+				},
+				meta: {
+					interface: 'boolean',
+					options: {
+						label: '$t:enable_select_button',
+					},
+					width: 'half',
+				},
+			},
+			{
 				field: 'filter',
 				name: '$t:filter',
 				type: 'json',

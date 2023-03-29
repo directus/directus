@@ -5,8 +5,8 @@ export interface LayoutConfig<Options = any, Query = any> {
 	id: string;
 	name: string;
 	icon: string;
-	component: Component;
 
+	component: Component;
 	slots: {
 		options: Component;
 		sidebar: Component;

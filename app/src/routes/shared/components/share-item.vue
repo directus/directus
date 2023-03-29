@@ -1,6 +1,6 @@
 <template>
 	<v-form
-		v-model="item"
+		v-model="edits"
 		:collection="collection"
 		:initial-values="item"
 		:primary-key="primaryKey"
@@ -28,9 +28,9 @@ export default defineComponent({
 	setup(props) {
 		const { collection, primaryKey } = toRefs(props);
 
-		const { item, loading } = useItem(collection, primaryKey);
+		const { edits, item, loading } = useItem(collection, primaryKey);
 
-		return { item, loading };
+		return { edits, item, loading };
 	},
 });
 </script>

@@ -28,6 +28,7 @@ import 'codemirror/keymap/sublime.js';
 
 import formatTitle from '@directus/format-title';
 import importCodemirrorMode from './import-codemirror-mode';
+import { useWindowSize } from '@/composables/use-window-size';
 
 export default defineComponent({
 	props: {
@@ -36,7 +37,7 @@ export default defineComponent({
 			default: false,
 		},
 		value: {
-			type: [String, Object, Array] as PropType<string | Record<string, any> | any[]>,
+			type: [String, Object, Array, Number, Boolean] as PropType<string | Record<string, any> | any[]>,
 			default: null,
 		},
 		altOptions: {
@@ -72,6 +73,8 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
+		const { width } = useWindowSize();
+
 		const codemirrorEl = ref<HTMLTextAreaElement | null>(null);
 		let codemirror: CodeMirror.Editor | null;
 
@@ -101,7 +104,9 @@ export default defineComponent({
 						}
 
 						try {
-							emit('input', JSON.parse(content));
+							const parsedJson = JSON.parse(content);
+							if (typeof parsedJson !== 'string') return emit('input', parsedJson);
+							return emit('input', content);
 						} catch {
 							// We won't stage invalid JSON
 						}
@@ -115,7 +120,7 @@ export default defineComponent({
 		const stringValue = computed<string>(() => {
 			if (props.value === null) return '';
 
-			if (typeof props.value === 'object') {
+			if (props.type === 'json' || typeof props.value === 'object') {
 				return JSON.stringify(props.value, null, 4);
 			}
 
@@ -130,6 +135,9 @@ export default defineComponent({
 		);
 
 		watch(stringValue, () => {
+			// prevent setting redundantly stringified json value when it's actually the same value
+			if (props.type === 'json' && codemirror?.getValue() === props.value) return;
+
 			if (codemirror?.getValue() !== stringValue.value) {
 				codemirror?.setValue(stringValue.value || '');
 			}
@@ -217,6 +225,16 @@ export default defineComponent({
 			return 0;
 		});
 
+		const readOnly = computed(() => {
+			if (width.value < 600) {
+				// mobile requires 'nocursor' to avoid bringing up the keyboard
+				return props.disabled ? 'nocursor' : false;
+			} else {
+				// desktop cannot use 'nocursor' as it prevents copy/paste
+				return props.disabled;
+			}
+		});
+
 		const defaultOptions: CodeMirror.EditorConfiguration = {
 			tabSize: 4,
 			autoRefresh: true,
@@ -229,6 +247,7 @@ export default defineComponent({
 			},
 			matchBrackets: true,
 			showCursorWhenSelecting: true,
+			lineWiseCopyCut: false,
 			theme: 'default',
 			extraKeys: { Ctrl: 'autocomplete' },
 			lint: true,
@@ -242,7 +261,8 @@ export default defineComponent({
 				{
 					lineNumbers: props.lineNumber,
 					lineWrapping: props.lineWrapping,
-					readOnly: props.disabled ? 'nocursor' : false,
+					readOnly: readOnly.value,
+					cursorBlinkRate: props.disabled ? -1 : 530,
 					mode: props.language,
 					placeholder: props.placeholder,
 				},
@@ -253,7 +273,8 @@ export default defineComponent({
 		watch(
 			() => props.disabled,
 			(disabled) => {
-				codemirror?.setOption('readOnly', disabled ? 'nocursor' : false);
+				codemirror?.setOption('readOnly', readOnly.value);
+				codemirror?.setOption('cursorBlinkRate', disabled ? -1 : 530);
 			},
 			{ immediate: true }
 		);

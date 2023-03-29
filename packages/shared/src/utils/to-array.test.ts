@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { toArray } from './to-array';
 
 describe('toArray', () => {

@@ -1,13 +1,13 @@
 import { Style, RasterSource } from 'maplibre-gl';
-import getSetting from '@/utils/get-setting';
-import maplibre from 'maplibre-gl';
 import { getTheme } from '@/utils/get-theme';
+import { useSettingsStore } from '@/stores/settings';
 
 export type BasemapSource = {
 	name: string;
 	type: 'raster' | 'tile' | 'style';
 	url: string;
 	tileSize?: number;
+	attribution?: string;
 };
 
 const defaultBasemap: BasemapSource = {
@@ -15,6 +15,7 @@ const defaultBasemap: BasemapSource = {
 	type: 'raster',
 	url: 'https://{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png',
 	tileSize: 256,
+	attribution: '© OpenStreetMap contributors',
 };
 
 const baseStyle: Style = {
@@ -23,21 +24,22 @@ const baseStyle: Style = {
 };
 
 export function getBasemapSources(): BasemapSource[] {
-	if (getSetting('mapbox_key')) {
-		return [getDefaultMapboxBasemap(), defaultBasemap, ...(getSetting('basemaps') || [])];
+	const settingsStore = useSettingsStore();
+
+	if (settingsStore.settings?.mapbox_key) {
+		return [getDefaultMapboxBasemap(), defaultBasemap, ...(settingsStore.settings?.basemaps || [])];
 	}
 
-	return [defaultBasemap, ...(getSetting('basemaps') || [])];
+	return [defaultBasemap, ...(settingsStore.settings?.basemaps || [])];
 }
 
 export function getStyleFromBasemapSource(basemap: BasemapSource): Style | string {
-	setMapboxAccessToken(basemap.url);
-
 	if (basemap.type == 'style') {
 		return basemap.url;
 	} else {
 		const style: Style = { ...baseStyle };
 		const source: RasterSource = { type: 'raster' };
+		if (basemap.attribution) source.attribution = basemap.attribution;
 		if (basemap.type == 'raster') {
 			source.tiles = expandUrl(basemap.url);
 			source.tileSize = basemap.tileSize || 512;
@@ -86,20 +88,6 @@ function expandUrl(url: string): string[] {
 	return urls;
 }
 
-function setMapboxAccessToken(styleURL: string): void {
-	styleURL = styleURL.replace(/^mapbox:\//, 'https://api.mapbox.com/styles/v1');
-
-	try {
-		const url = new URL(styleURL);
-		if (url.host == 'api.mapbox.com') {
-			const token = url.searchParams.get('access_token');
-			if (token) maplibre.accessToken = token;
-		}
-	} catch {
-		return;
-	}
-}
-
 function getDefaultMapboxBasemap(): BasemapSource {
 	const defaultMapboxBasemap: BasemapSource = {
 		name: 'Mapbox',
@@ -108,7 +96,7 @@ function getDefaultMapboxBasemap(): BasemapSource {
 	};
 
 	if (getTheme() === 'dark') {
-		defaultMapboxBasemap.url = 'mapbox://styles/directus/cktaixyhk2joh17lrb5i8zs22';
+		defaultMapboxBasemap.url = 'mapbox://styles/directus/cl0bombrr001115taz5ilsynw';
 	}
 
 	return defaultMapboxBasemap;

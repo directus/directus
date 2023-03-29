@@ -1,27 +1,31 @@
+import { EXTENSION_TYPES } from '@directus/shared/constants';
+import type { Plural } from '@directus/shared/types';
+import { depluralize, isIn } from '@directus/shared/utils';
 import { Router } from 'express';
-import asyncHandler from '../utils/async-handler';
+import env from '../env';
 import { RouteNotFoundException } from '../exceptions';
 import { getExtensionManager } from '../extensions';
 import { respond } from '../middleware/respond';
-import { depluralize, isAppExtension } from '@directus/shared/utils';
-import { Plural } from '@directus/shared/types';
+import asyncHandler from '../utils/async-handler';
+import { getCacheControlHeader } from '../utils/get-cache-headers';
+import { getMilliseconds } from '../utils/get-milliseconds';
 
 const router = Router();
 
 router.get(
 	'/:type',
 	asyncHandler(async (req, res, next) => {
-		const type = depluralize(req.params.type as Plural<string>);
+		const type = depluralize(req.params['type'] as Plural<string>);
 
-		if (!isAppExtension(type)) {
+		if (!isIn(type, EXTENSION_TYPES)) {
 			throw new RouteNotFoundException(req.path);
 		}
 
 		const extensionManager = getExtensionManager();
 
-		const extensions = extensionManager.listExtensions(type);
+		const extensions = extensionManager.getExtensionsList(type);
 
-		res.locals.payload = {
+		res.locals['payload'] = {
 			data: extensions,
 		};
 
@@ -31,23 +35,20 @@ router.get(
 );
 
 router.get(
-	'/:type/index.js',
+	'/sources/index.js',
 	asyncHandler(async (req, res) => {
-		const type = depluralize(req.params.type as Plural<string>);
-
-		if (!isAppExtension(type)) {
-			throw new RouteNotFoundException(req.path);
-		}
-
 		const extensionManager = getExtensionManager();
 
-		const extensionSource = extensionManager.getAppExtensions(type);
-		if (extensionSource === undefined) {
+		const extensionSource = extensionManager.getAppExtensions();
+		if (extensionSource === null) {
 			throw new RouteNotFoundException(req.path);
 		}
 
 		res.setHeader('Content-Type', 'application/javascript; charset=UTF-8');
-		res.setHeader('Cache-Control', 'no-store');
+		res.setHeader(
+			'Cache-Control',
+			getCacheControlHeader(req, getMilliseconds(env['EXTENSIONS_CACHE_TTL']), false, false)
+		);
 		res.setHeader('Vary', 'Origin, Cache-Control');
 		res.end(extensionSource);
 	})

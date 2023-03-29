@@ -1,6 +1,7 @@
 import api from '@/api';
-import { Collection } from '@/types';
-import { getFieldsFromTemplate } from '@directus/shared/utils';
+import { Collection } from '@/types/collections';
+import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
+import { getEndpoint, getFieldsFromTemplate } from '@directus/shared/utils';
 import { computed, Ref, ref, watch } from 'vue';
 
 type UsableTemplateData = {
@@ -9,17 +10,17 @@ type UsableTemplateData = {
 	error: Ref<any>;
 };
 
-export default function useTemplateData(
-	collection: Ref<Collection | null>,
-	primaryKey: Ref<string>
-): UsableTemplateData {
+export function useTemplateData(collection: Ref<Collection | null>, primaryKey: Ref<string>): UsableTemplateData {
 	const templateData = ref<Record<string, any>>();
 	const loading = ref(false);
 	const error = ref<any>(null);
 
 	const fields = computed(() => {
 		if (!collection.value?.meta?.display_template) return null;
-		return getFieldsFromTemplate(collection.value.meta.display_template);
+		return adjustFieldsForDisplays(
+			getFieldsFromTemplate(collection.value.meta.display_template),
+			collection.value?.collection
+		);
 	});
 
 	watch([collection, primaryKey], fetchTemplateValues, { immediate: true });
@@ -31,9 +32,11 @@ export default function useTemplateData(
 
 		loading.value = true;
 
+		const baseEndpoint = getEndpoint(collection.value.collection);
+
 		const endpoint = collection.value.collection.startsWith('directus_')
-			? `/${collection.value.collection.substring(9)}/${primaryKey.value}`
-			: `/items/${collection.value.collection}/${encodeURIComponent(primaryKey.value)}`;
+			? `${baseEndpoint}/${primaryKey.value}`
+			: `${baseEndpoint}/${encodeURIComponent(primaryKey.value)}`;
 
 		try {
 			const result = await api.get(endpoint, {

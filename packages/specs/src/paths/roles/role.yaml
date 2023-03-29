@@ -37,7 +37,7 @@ patch:
             description:
               description: Description of the role.
               type: string
-            enforce_2fa:
+            enforce_tfa:
               description: Whether or not this role enforces the use of 2FA.
               type: boolean
             external_id:

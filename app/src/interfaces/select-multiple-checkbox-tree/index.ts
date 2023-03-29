@@ -1,6 +1,7 @@
 import { defineInterface } from '@directus/shared/utils';
 import { DeepPartial, Field } from '@directus/shared/types';
 import InterfaceSelectMultipleCheckboxesTree from './select-multiple-checkbox-tree.vue';
+import PreviewSVG from './preview.svg?raw';
 
 const repeaterFields: DeepPartial<Field>[] = [
 	{
@@ -9,7 +10,7 @@ const repeaterFields: DeepPartial<Field>[] = [
 		name: '$t:text',
 		meta: {
 			width: 'half',
-			interface: 'input',
+			interface: 'system-input-translated-string',
 			options: {
 				placeholder: '$t:interfaces.select-dropdown.choices_name_placeholder',
 			},
@@ -122,4 +123,5 @@ export default defineInterface({
 		},
 	],
 	recommendedDisplays: ['labels'],
+	preview: PreviewSVG,
 });

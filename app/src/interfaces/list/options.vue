@@ -7,7 +7,22 @@
 
 		<div class="grid-element half">
 			<p class="type-label">{{ t('interfaces.list.add_label') }}</p>
-			<v-input v-model="addLabel" class="input" :placeholder="t('create_new')" />
+			<interface-system-input-translated-string
+				:value="addLabel"
+				class="input"
+				:placeholder="t('create_new')"
+				@input="addLabel = $event"
+			/>
+		</div>
+		<div class="grid-element half-left">
+			<p class="type-label">{{ t('interfaces.list.sort') }}</p>
+			<v-select
+				v-model="sort"
+				class="input"
+				:items="sortFields"
+				show-deselect
+				:placeholder="t('interfaces.list.sort_placeholder')"
+			/>
 		</div>
 
 		<div class="grid-element full">
@@ -71,6 +86,7 @@ export default defineComponent({
 					interface: 'input',
 					width: 'half',
 					sort: 2,
+					required: true,
 					options: {
 						dbSafe: true,
 						font: 'monospace',
@@ -135,7 +151,7 @@ export default defineComponent({
 				field: 'note',
 				type: 'string',
 				meta: {
-					interface: 'input',
+					interface: 'system-input-translated-string',
 					width: 'full',
 					sort: 6,
 					options: {
@@ -145,13 +161,26 @@ export default defineComponent({
 				schema: null,
 			},
 			{
+				name: t('required'),
+				field: 'required',
+				type: 'boolean',
+				meta: {
+					interface: 'boolean',
+					sort: 7,
+					options: {
+						label: t('requires_value'),
+					},
+					width: 'half',
+				},
+			},
+			{
 				name: t('options'),
 				field: 'options',
 				type: 'string',
 				meta: {
 					interface: 'system-interface-options',
 					width: 'full',
-					sort: 7,
+					sort: 8,
 					options: {
 						interfaceField: 'interface',
 					},
@@ -183,7 +212,27 @@ export default defineComponent({
 			},
 		});
 
-		return { t, repeaterValue, repeaterFields, template, addLabel };
+		const sort = computed({
+			get() {
+				return props.value?.sort;
+			},
+			set(newSort: string) {
+				emit('input', {
+					...(props.value || {}),
+					sort: newSort,
+				});
+			},
+		});
+
+		const sortFields = computed(() => {
+			if (!repeaterValue.value) return [];
+
+			return repeaterValue.value.map((val) => {
+				return { text: val.field, value: val.field };
+			});
+		});
+
+		return { t, repeaterValue, repeaterFields, template, addLabel, sort, sortFields };
 	},
 });
 </script>

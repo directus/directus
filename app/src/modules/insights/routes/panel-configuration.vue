@@ -5,10 +5,10 @@
 		:subtitle="t('panel_options')"
 		:icon="panel?.icon || 'insert_chart'"
 		persistent
-		@cancel="$emit('cancel')"
+		@cancel="router.push(`/insights/${dashboardKey}`)"
 	>
 		<template #actions>
-			<v-button v-tooltip.bottom="t('done')" :disabled="!edits.type" icon rounded @click="emitSave">
+			<v-button v-tooltip.bottom="t('done')" :disabled="!panel.type" icon rounded @click="stageChanges">
 				<v-icon name="check" />
 			</v-button>
 		</template>
@@ -16,23 +16,22 @@
 		<div class="content">
 			<p class="type-label panel-type-label">{{ t('type') }}</p>
 
-			<v-fancy-select v-model="edits.type" class="select" :items="selectItems" />
+			<v-fancy-select
+				:model-value="panel.type"
+				class="select"
+				:items="selectItems"
+				@update:model-value="edits.type = $event"
+			/>
 
-			<template v-if="edits.type && selectedPanel">
-				<v-notice v-if="!selectedPanel.options || selectedPanel.options.length === 0">
-					{{ t('no_options_available') }}
-				</v-notice>
-
-				<v-form
-					v-else-if="Array.isArray(selectedPanel.options)"
-					v-model="edits.options"
-					:fields="selectedPanel.options"
-					primary-key="+"
-					:initial-values="panel && panel.options"
-				/>
-
-				<component :is="`panel-options-${selectedPanel.id}`" v-else v-model="edits.options" :collection="collection" />
-			</template>
+			<extension-options
+				v-if="panel.type"
+				:model-value="panel.options"
+				:options="customOptionsFields"
+				type="panel"
+				:extension="panel.type"
+				raw-editor-enabled
+				@update:model-value="edits.options = $event"
+			/>
 
 			<v-divider :inline-title="false" large>
 				<template #icon><v-icon name="info" /></template>
@@ -42,24 +41,30 @@
 			<div class="form-grid">
 				<div class="field half-left">
 					<p class="type-label">{{ t('visible') }}</p>
-					<v-checkbox v-model="edits.show_header" block :label="t('show_header')" />
+					<v-checkbox
+						:model-value="panel.show_header"
+						block
+						:label="t('show_header')"
+						@update:model-value="edits.show_header = $event"
+					/>
 				</div>
 
 				<div class="field half-right">
 					<p class="type-label">{{ t('name') }}</p>
 					<v-input
-						v-model="edits.name"
+						:model-value="panel.name"
 						:nullable="false"
-						:disabled="edits.show_header !== true"
+						:disabled="panel.show_header !== true"
 						:placeholder="t('panel_name_placeholder')"
+						@update:model-value="edits.name = $event"
 					/>
 				</div>
 
 				<div class="field half-left">
 					<p class="type-label">{{ t('icon') }}</p>
 					<interface-select-icon
-						:value="edits.icon"
-						:disabled="edits.show_header !== true"
+						:value="panel.icon"
+						:disabled="panel.show_header !== true"
 						@input="edits.icon = $event"
 					/>
 				</div>
@@ -67,8 +72,8 @@
 				<div class="field half-right">
 					<p class="type-label">{{ t('color') }}</p>
 					<interface-select-color
-						:value="edits.color"
-						:disabled="edits.show_header !== true"
+						:value="panel.color"
+						:disabled="panel.show_header !== true"
 						width="half"
 						@input="edits.color = $event"
 					/>
@@ -77,9 +82,10 @@
 				<div class="field full">
 					<p class="type-label">{{ t('note') }}</p>
 					<v-input
-						v-model="edits.note"
-						:disabled="edits.show_header !== true"
+						:model-value="panel.note"
+						:disabled="panel.show_header !== true"
 						:placeholder="t('panel_note_placeholder')"
+						@update:model-value="edits.note = $event"
 					/>
 				</div>
 			</div>
@@ -87,86 +93,104 @@
 	</v-drawer>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent, reactive, watch, PropType } from 'vue';
-import { getPanels } from '@/panels';
-import { FancySelectItem } from '@/components/v-fancy-select/types';
-import { Panel } from '@/types';
-import { useI18n } from 'vue-i18n';
+<script lang="ts" setup>
 import { useDialogRoute } from '@/composables/use-dialog-route';
+import { useExtension } from '@/composables/use-extension';
+import { useExtensions } from '@/extensions';
+import { useInsightsStore } from '@/stores/insights';
+import { CreatePanel } from '@/stores/insights';
+import { Panel } from '@directus/shared/types';
+import { assign, clone, omitBy, isUndefined } from 'lodash';
+import { nanoid } from 'nanoid/non-secure';
+import { storeToRefs } from 'pinia';
+import { computed, reactive, unref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
+import ExtensionOptions from '../../settings/routes/data-model/field-detail/shared/extension-options.vue';
 
-export default defineComponent({
-	name: 'PanelConfiguration',
-	props: {
-		panel: {
-			type: Object as PropType<Partial<Panel>>,
-			default: null,
-		},
-	},
-	emits: ['cancel', 'save'],
-	setup(props, { emit }) {
-		const { t } = useI18n();
+interface Props {
+	dashboardKey: string;
+	panelKey: string;
+}
 
-		const { panels } = getPanels();
+const props = defineProps<Props>();
 
-		const isOpen = useDialogRoute();
+const { t } = useI18n();
 
-		const edits = reactive<Partial<Panel>>({
-			show_header: props.panel?.show_header ?? true,
-			type: props.panel?.type || undefined,
-			name: props.panel?.name,
-			note: props.panel?.note,
-			icon: props.panel?.icon ?? 'insert_chart',
-			color: props.panel?.color ?? '#00C897',
-			width: props.panel?.width ?? undefined,
-			height: props.panel?.height ?? undefined,
-			position_x: props.panel?.position_x ?? 1,
-			position_y: props.panel?.position_y ?? 1,
-			options: props.panel?.options ?? {},
-		});
+const isOpen = useDialogRoute();
 
-		const selectItems = computed<FancySelectItem[]>(() => {
-			return panels.value.map((panel) => {
-				const item: FancySelectItem = {
-					text: panel.name,
-					icon: panel.icon,
-					description: panel.description,
-					value: panel.id,
-				};
+const edits = reactive<Partial<Panel>>({
+	show_header: undefined,
+	type: undefined,
+	name: undefined,
+	note: undefined,
+	icon: undefined,
+	color: undefined,
+	width: undefined,
+	height: undefined,
+	position_x: undefined,
+	position_y: undefined,
+	options: undefined,
+});
 
-				return item;
-			});
-		});
+const insightsStore = useInsightsStore();
 
-		const selectedPanel = computed(() => {
-			return panels.value.find((panel) => panel.id === edits.type);
-		});
+const { panels } = storeToRefs(insightsStore);
+const { panels: panelTypes } = useExtensions();
 
-		watch(selectedPanel, (newPanel) => {
-			if (newPanel) {
-				edits.width = newPanel.minWidth;
-				edits.height = newPanel.minHeight;
-			} else {
-				edits.width = undefined;
-				edits.height = undefined;
-			}
-		});
+const router = useRouter();
 
-		return {
-			selectItems,
-			selectedPanel,
-			close,
-			emitSave,
-			edits,
-			t,
-			isOpen,
+const panel = computed<Partial<Panel>>(() => {
+	if (props.panelKey === '+') return edits;
+	const existing: Partial<Panel> = unref(panels).find((panel) => panel.id === props.panelKey) ?? {};
+	return assign({}, existing, omitBy(edits, isUndefined));
+});
+
+const selectItems = computed<FancySelectItem[]>(() => {
+	return panelTypes.value.map((panelType) => {
+		const item: FancySelectItem = {
+			text: panelType.name,
+			icon: panelType.icon,
+			description: panelType.description,
+			value: panelType.id,
 		};
 
-		function emitSave() {
-			emit('save', edits);
-		}
-	},
+		return item;
+	});
 });
+
+const currentTypeInfo = useExtension(
+	'panel',
+	computed(() => panel.value.type ?? null)
+);
+
+const customOptionsFields = computed(() => {
+	if (typeof currentTypeInfo.value?.options === 'function') {
+		return currentTypeInfo.value?.options(unref(panel)) ?? null;
+	}
+
+	return null;
+});
+
+const stageChanges = () => {
+	if (props.panelKey === '+') {
+		const createPanel = clone(unref(panel));
+
+		createPanel.id = `_${nanoid()}`;
+		createPanel.dashboard = props.dashboardKey;
+		createPanel.width ??= unref(currentTypeInfo)?.minWidth ?? 4;
+		createPanel.height ??= unref(currentTypeInfo)?.minHeight ?? 4;
+		createPanel.position_x ??= 1;
+		createPanel.position_y ??= 1;
+		createPanel.options ??= {};
+
+		insightsStore.stagePanelCreate(unref(createPanel as CreatePanel));
+		router.push(`/insights/${props.dashboardKey}`);
+	} else {
+		insightsStore.stagePanelUpdate({ id: props.panelKey, edits: unref(panel) });
+		router.push(`/insights/${props.dashboardKey}`);
+	}
+};
 </script>
 
 <style scoped>

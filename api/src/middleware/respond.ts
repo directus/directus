@@ -1,35 +1,45 @@
-import { RequestHandler } from 'express';
-import { Transform, transforms } from 'json2csv';
-import ms from 'ms';
-import { PassThrough } from 'stream';
-import { getCache } from '../cache';
+import { parse as parseBytesConfiguration } from 'bytes';
+import type { RequestHandler } from 'express';
+import { getCache, setCacheValue } from '../cache';
 import env from '../env';
-import asyncHandler from '../utils/async-handler';
-import { getCacheKey } from '../utils/get-cache-key';
-import { parse as toXML } from 'js2xmlparser';
-import { getCacheControlHeader } from '../utils/get-cache-headers';
 import logger from '../logger';
+import { ExportService } from '../services';
+import asyncHandler from '../utils/async-handler';
+import { getCacheControlHeader } from '../utils/get-cache-headers';
+import { getCacheKey } from '../utils/get-cache-key';
+import { getDateFormatted } from '../utils/get-date-formatted';
+import { getMilliseconds } from '../utils/get-milliseconds';
+import { stringByteSize } from '../utils/get-string-byte-size';
 
 export const respond: RequestHandler = asyncHandler(async (req, res) => {
 	const { cache } = getCache();
 
+	let exceedsMaxSize = false;
+
+	if (env['CACHE_VALUE_MAX_SIZE'] !== false) {
+		const valueSize = res.locals['payload'] ? stringByteSize(JSON.stringify(res.locals['payload'])) : 0;
+		const maxSize = parseBytesConfiguration(env['CACHE_VALUE_MAX_SIZE']);
+		exceedsMaxSize = valueSize > maxSize;
+	}
+
 	if (
-		req.method.toLowerCase() === 'get' &&
-		env.CACHE_ENABLED === true &&
+		(req.method.toLowerCase() === 'get' || req.originalUrl?.startsWith('/graphql')) &&
+		env['CACHE_ENABLED'] === true &&
 		cache &&
 		!req.sanitizedQuery.export &&
-		res.locals.cache !== false
+		res.locals['cache'] !== false &&
+		exceedsMaxSize === false
 	) {
 		const key = getCacheKey(req);
 
 		try {
-			await cache.set(key, res.locals.payload, ms(env.CACHE_TTL as string));
-			await cache.set(`${key}__expires_at`, Date.now() + ms(env.CACHE_TTL as string));
+			await setCacheValue(cache, key, res.locals['payload'], getMilliseconds(env['CACHE_TTL']));
+			await setCacheValue(cache, `${key}__expires_at`, { exp: Date.now() + getMilliseconds(env['CACHE_TTL'], 0) });
 		} catch (err: any) {
 			logger.warn(err, `[cache] Couldn't set key ${key}. ${err}`);
 		}
 
-		res.setHeader('Cache-Control', getCacheControlHeader(req, ms(env.CACHE_TTL as string)));
+		res.setHeader('Cache-Control', getCacheControlHeader(req, getMilliseconds(env['CACHE_TTL']), true, true));
 		res.setHeader('Vary', 'Origin, Cache-Control');
 	} else {
 		// Don't cache anything by default
@@ -38,6 +48,8 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 	}
 
 	if (req.sanitizedQuery.export) {
+		const exportService = new ExportService({ accountability: req.accountability ?? null, schema: req.schema });
+
 		let filename = '';
 
 		if (req.collection) {
@@ -51,50 +63,33 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 		if (req.sanitizedQuery.export === 'json') {
 			res.attachment(`${filename}.json`);
 			res.set('Content-Type', 'application/json');
-			return res.status(200).send(JSON.stringify(res.locals.payload?.data || null, null, '\t'));
+			return res.status(200).send(exportService.transform(res.locals['payload']?.data, 'json'));
 		}
 
 		if (req.sanitizedQuery.export === 'xml') {
 			res.attachment(`${filename}.xml`);
 			res.set('Content-Type', 'text/xml');
-			return res.status(200).send(toXML('data', res.locals.payload?.data));
+			return res.status(200).send(exportService.transform(res.locals['payload']?.data, 'xml'));
 		}
 
 		if (req.sanitizedQuery.export === 'csv') {
 			res.attachment(`${filename}.csv`);
 			res.set('Content-Type', 'text/csv');
-			const stream = new PassThrough();
+			return res.status(200).send(exportService.transform(res.locals['payload']?.data, 'csv'));
+		}
 
-			if (!res.locals.payload?.data || res.locals.payload.data.length === 0) {
-				stream.end(Buffer.from(''));
-				return stream.pipe(res);
-			} else {
-				stream.end(Buffer.from(JSON.stringify(res.locals.payload.data), 'utf-8'));
-				const json2csv = new Transform({
-					transforms: [transforms.flatten({ separator: '.' })],
-				});
-				return stream.pipe(json2csv).pipe(res);
-			}
+		if (req.sanitizedQuery.export === 'yaml') {
+			res.attachment(`${filename}.yaml`);
+			res.set('Content-Type', 'text/yaml');
+			return res.status(200).send(exportService.transform(res.locals['payload']?.data, 'yaml'));
 		}
 	}
 
-	if (Buffer.isBuffer(res.locals.payload)) {
-		return res.end(res.locals.payload);
-	} else if (res.locals.payload) {
-		return res.json(res.locals.payload);
+	if (Buffer.isBuffer(res.locals['payload'])) {
+		return res.end(res.locals['payload']);
+	} else if (res.locals['payload']) {
+		return res.json(res.locals['payload']);
 	} else {
 		return res.status(204).end();
 	}
 });
-
-function getDateFormatted() {
-	const date = new Date();
-
-	let month = String(date.getMonth() + 1);
-	if (month.length === 1) month = '0' + month;
-
-	let day = String(date.getDate());
-	if (day.length === 1) day = '0' + day;
-
-	return `${date.getFullYear()}-${month}-${day} at ${date.getHours()}.${date.getMinutes()}.${date.getSeconds()}`;
-}

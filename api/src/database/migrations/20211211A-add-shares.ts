@@ -1,8 +1,8 @@
-import { Knex } from 'knex';
+import type { Knex } from 'knex';
 
 export async function up(knex: Knex): Promise<void> {
 	await knex.schema.createTable('directus_shares', (table) => {
-		table.uuid('id').primary();
+		table.uuid('id').primary().notNullable();
 		table.string('name');
 		table.string('collection', 64).references('collection').inTable('directus_collections').onDelete('CASCADE');
 		table.string('item');
@@ -10,8 +10,11 @@ export async function up(knex: Knex): Promise<void> {
 		table.string('password');
 		table.uuid('user_created').references('id').inTable('directus_users').onDelete('SET NULL');
 		table.timestamp('date_created').defaultTo(knex.fn.now());
-		table.timestamp('date_start');
-		table.timestamp('date_end');
+
+		// This was changed after the migration went live to retroactively fix mysql5, see #10693
+		table.timestamp('date_start').nullable().defaultTo(null);
+		table.timestamp('date_end').nullable().defaultTo(null);
+
 		table.integer('times_used').defaultTo(0);
 		table.integer('max_uses');
 	});
@@ -21,7 +24,7 @@ export async function up(knex: Knex): Promise<void> {
 	});
 
 	await knex.schema.alterTable('directus_sessions', (table) => {
-		table.uuid('user').nullable().alter();
+		table.setNullable('user');
 		table.uuid('share').references('id').inTable('directus_shares').onDelete('CASCADE');
 	});
 }

@@ -1,7 +1,11 @@
-#drawer-outlet {
+#dialog-outlet {
 	.container.right .v-drawer {
 		transition: var(--slow) var(--transition);
 		transition-property: transform, border-radius;
+	}
+
+	.container.right:not(:nth-last-child(-n + 5)) {
+		display: none;
 	}
 
 	.container.right:not(:last-of-type) .v-drawer {

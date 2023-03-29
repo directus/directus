@@ -9,18 +9,15 @@
 			<div class="selection-fade"></div>
 			<v-skeleton-loader v-if="loading" />
 			<template v-else>
-				<p v-if="type || imgError" class="type type-title">{{ type }}</p>
+				<v-icon-file v-if="type || imgError" :ext="type" />
 				<template v-else>
-					<img
-						v-if="imageSource"
-						class="image"
-						loading="lazy"
-						:src="imageSource"
-						alt=""
+					<v-image
+						v-if="showThumbnail"
+						:class="imageInfo.fileType"
+						:src="imageInfo.source"
+						:alt="item.title"
 						role="presentation"
-						@error="imgError = true"
 					/>
-					<img v-else-if="svgSource" class="svg" :src="svgSource" alt="" role="presentation" @error="imgError = true" />
 					<v-icon v-else large :name="icon" />
 				</template>
 			</template>
@@ -34,11 +31,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed, ref } from 'vue';
-import { useRouter } from 'vue-router';
-import { getRootPath } from '@/utils/get-root-path';
-import { addTokenToURL } from '@/api';
 import { readableMimeType } from '@/utils/readable-mime-type';
+import { computed, defineComponent, PropType, ref } from 'vue';
+import { useRouter } from 'vue-router';
 
 type File = {
 	[key: string]: any;
@@ -102,10 +97,14 @@ export default defineComponent({
 			return readableMimeType(props.file.type, true);
 		});
 
-		const imageSource = computed(() => {
+		const imageInfo = computed(() => {
+			let fileType = undefined;
 			if (!props.file || !props.file.type) return null;
-			if (props.file.type.startsWith('image') === false) return null;
-			if (props.file.type.includes('svg')) return null;
+			if (props.file.type.startsWith('image') === true) fileType = 'image';
+			if (props.file.type.includes('svg')) fileType = 'svg';
+
+			// Show icon instead of thumbnail
+			if (!fileType) return { source: undefined, fileType };
 
 			let key = 'system-medium-cover';
 
@@ -113,26 +112,20 @@ export default defineComponent({
 				key = 'system-medium-contain';
 			}
 
-			const url = getRootPath() + `assets/${props.file.id}?key=${key}&modified=${props.file.modified_on}`;
-			return addTokenToURL(url);
+			const source = `/assets/${props.file.id}?key=${key}&modified=${props.file.modified_on}`;
+
+			return { source, fileType };
 		});
-
-		const svgSource = computed(() => {
-			if (!props.file || !props.file.type) return null;
-			if (props.file.type.startsWith('image') === false) return null;
-			if (props.file.type.includes('svg') === false) return null;
-
-			const url = getRootPath() + `assets/${props.file.id}?modified=${props.file.modified_on}`;
-			return addTokenToURL(url);
+		const showThumbnail = computed(() => {
+			return imageInfo.value && imageInfo.value.fileType;
 		});
-
 		const selectionIcon = computed(() => {
 			if (!props.item) return 'radio_button_unchecked';
 
 			return props.modelValue.includes(props.item[props.itemKey]) ? 'check_circle' : 'radio_button_unchecked';
 		});
 
-		return { imageSource, svgSource, type, selectionIcon, toggleSelection, handleClick, imgError };
+		return { imageInfo, type, showThumbnail, selectionIcon, toggleSelection, handleClick, imgError };
 
 		function toggleSelection() {
 			if (!props.item) return null;
@@ -201,8 +194,8 @@ export default defineComponent({
 
 		.svg {
 			position: absolute;
-			width: 50%;
-			height: 50%;
+			width: 75%;
+			height: 75%;
 			object-fit: contain;
 		}
 
@@ -338,6 +331,10 @@ export default defineComponent({
 	line-height: 1.3em;
 	white-space: nowrap;
 	text-overflow: ellipsis;
+
+	:deep(.render-template) {
+		height: 100%;
+	}
 }
 
 .subtitle {

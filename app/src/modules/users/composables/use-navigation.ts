@@ -1,20 +1,23 @@
 import api from '@/api';
+import { unexpectedError } from '@/utils/unexpected-error';
 import { Role } from '@directus/shared/types';
 import { ref, Ref } from 'vue';
 
-let roles: Ref<Role[] | null> | null = null;
+let roles: Ref<BasicRole[] | null> | null = null;
 let loading: Ref<boolean> | null = null;
 
-export default function useNavigation(): { roles: Ref<Role[] | null>; loading: Ref<boolean> } {
+export type BasicRole = Pick<Role, 'id' | 'name' | 'icon' | 'admin_access'>;
+
+export default function useNavigation(): { roles: Ref<BasicRole[] | null>; loading: Ref<boolean> } {
 	if (roles === null) {
-		roles = ref<Role[] | null>(null);
+		roles = ref<BasicRole[] | null>(null);
 	}
 
 	if (loading === null) {
 		loading = ref(false);
 	}
 
-	if (roles.value === null && loading?.value === false) {
+	if (loading?.value === false) {
 		fetchRoles();
 	}
 
@@ -22,14 +25,20 @@ export default function useNavigation(): { roles: Ref<Role[] | null>; loading: R
 
 	async function fetchRoles() {
 		if (!loading || !roles) return;
-		loading.value = true;
+		if (!roles.value) loading.value = true;
 
-		const rolesResponse = await api.get(`/roles`, {
-			params: {
-				sort: 'name',
-			},
-		});
-		roles.value = rolesResponse.data.data;
-		loading.value = false;
+		try {
+			const rolesResponse = await api.get(`/roles`, {
+				params: {
+					sort: 'name',
+					fields: ['id', 'name', 'icon', 'admin_access'],
+				},
+			});
+			roles.value = rolesResponse.data.data;
+		} catch (error: any) {
+			unexpectedError(error);
+		} finally {
+			loading.value = false;
+		}
 	}
 }

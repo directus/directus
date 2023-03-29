@@ -26,8 +26,8 @@ type AlterationFunctions = Record<
 export type CustomSyntax = {
 	name: string;
 	icon: string;
-	prefix: string;
-	suffix: string;
+	prefix: string | null;
+	suffix: string | null;
 	box: 'inline' | 'block';
 };
 
@@ -227,6 +227,9 @@ const alterations: AlterationFunctions = {
 	},
 	custom(selection, { cursorTo, cursorHead }, options) {
 		if (!options) return { newSelection: selection, newCursor: cursorHead };
+
+		if (!options.prefix) options.prefix = '';
+		if (!options.suffix) options.suffix = '';
 
 		if (options.box === 'block') {
 			// Multiline

@@ -6,7 +6,7 @@
 
 		<v-list>
 			<v-list-item :to="`/settings/data-model/${field.collection}/${field.field}`">
-				<v-list-item-icon><v-icon name="edit" outline /></v-list-item-icon>
+				<v-list-item-icon><v-icon name="edit" /></v-list-item-icon>
 				<v-list-item-content>
 					{{ t('edit_field') }}
 				</v-list-item-content>
@@ -67,7 +67,7 @@
 				:disabled="field.schema?.is_primary_key === true || noDelete"
 				@click="$emit('delete')"
 			>
-				<v-list-item-icon><v-icon name="delete" outline /></v-list-item-icon>
+				<v-list-item-icon><v-icon name="delete" /></v-list-item-icon>
 				<v-list-item-content>
 					{{ t('delete_field') }}
 				</v-list-item-content>
@@ -80,7 +80,7 @@
 import { computed, defineComponent, PropType } from 'vue';
 import { Field } from '@directus/shared/types';
 import { useI18n } from 'vue-i18n';
-import { getLocalTypeForField } from '../../get-local-type';
+import { getLocalTypeForField } from '@/utils/get-local-type';
 
 export default defineComponent({
 	name: 'FieldSelectMenu',
@@ -107,3 +107,11 @@ export default defineComponent({
 	},
 });
 </script>
+
+<style scoped>
+.v-list-item.danger {
+	--v-list-item-color: var(--danger);
+	--v-list-item-color-hover: var(--danger);
+	--v-list-item-icon-color: var(--danger);
+}
+</style>

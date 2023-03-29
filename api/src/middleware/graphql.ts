@@ -1,7 +1,8 @@
-import { RequestHandler } from 'express';
+import { parseJSON } from '@directus/shared/utils';
+import type { RequestHandler } from 'express';
 import { DocumentNode, getOperationAST, parse, Source } from 'graphql';
 import { InvalidPayloadException, InvalidQueryException, MethodNotAllowedException } from '../exceptions';
-import { GraphQLParams } from '../types';
+import type { GraphQLParams } from '../types';
 import asyncHandler from '../utils/async-handler';
 
 export const parseGraphQL: RequestHandler = asyncHandler(async (req, res, next) => {
@@ -15,11 +16,11 @@ export const parseGraphQL: RequestHandler = asyncHandler(async (req, res, next) 
 	let document: DocumentNode;
 
 	if (req.method === 'GET') {
-		query = (req.query.query as string | undefined) || null;
+		query = (req.query['query'] as string | undefined) || null;
 
-		if (req.query.variables) {
+		if (req.query['variables']) {
 			try {
-				variables = JSON.parse(req.query.variables as string);
+				variables = parseJSON(req.query['variables'] as string);
 			} catch {
 				throw new InvalidQueryException(`Variables are invalid JSON.`);
 			}
@@ -27,7 +28,7 @@ export const parseGraphQL: RequestHandler = asyncHandler(async (req, res, next) 
 			variables = {};
 		}
 
-		operationName = (req.query.operationName as string | undefined) || null;
+		operationName = (req.query['operationName'] as string | undefined) || null;
 	} else {
 		query = req.body.query || null;
 		variables = req.body.variables || null;
@@ -46,17 +47,27 @@ export const parseGraphQL: RequestHandler = asyncHandler(async (req, res, next) 
 		});
 	}
 
+	const operationAST = getOperationAST(document, operationName);
+
 	// You can only do `query` through GET
-	if (req.method === 'GET') {
-		const operationAST = getOperationAST(document, operationName);
-		if (operationAST?.operation !== 'query') {
-			throw new MethodNotAllowedException(`Can only perform a ${operationAST?.operation} from a POST request.`, {
-				allow: ['POST'],
-			});
-		}
+	if (req.method === 'GET' && operationAST?.operation !== 'query') {
+		throw new MethodNotAllowedException(`Can only perform a ${operationAST?.operation} from a POST request.`, {
+			allow: ['POST'],
+		});
 	}
 
-	res.locals.graphqlParams = { document, query, variables, operationName, contextValue: { req, res } } as GraphQLParams;
+	// Prevent caching responses when mutations are made
+	if (operationAST?.operation === 'mutation') {
+		res.locals['cache'] = false;
+	}
+
+	res.locals['graphqlParams'] = {
+		document,
+		query,
+		variables,
+		operationName,
+		contextValue: { req, res },
+	} as GraphQLParams;
 
 	return next();
 });

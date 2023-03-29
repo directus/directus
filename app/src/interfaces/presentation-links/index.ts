@@ -1,5 +1,6 @@
 import { defineInterface } from '@directus/shared/utils';
 import InterfacePresentationLinks from './presentation-links.vue';
+import PreviewSVG from './preview.svg?raw';
 
 export default defineInterface({
 	id: 'presentation-links',
@@ -27,7 +28,7 @@ export default defineInterface({
 							name: '$t:label',
 							meta: {
 								width: 'full',
-								interface: 'input',
+								interface: 'system-input-translated-string',
 								options: {
 									placeholder: '$t:label',
 								},
@@ -84,4 +85,5 @@ export default defineInterface({
 			},
 		},
 	],
+	preview: PreviewSVG,
 });

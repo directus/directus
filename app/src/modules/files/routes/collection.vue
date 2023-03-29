@@ -35,7 +35,7 @@
 
 				<v-dialog v-if="selection.length > 0" v-model="moveToDialogActive" @esc="moveToDialogActive = false">
 					<template #activator="{ on }">
-						<v-button v-tooltip.bottom="t('move_to_folder')" rounded icon class="folder" @click="on">
+						<v-button v-tooltip.bottom="t('move_to_folder')" rounded icon class="folder" secondary @click="on">
 							<v-icon name="folder_move" />
 						</v-button>
 					</template>
@@ -66,6 +66,7 @@
 							rounded
 							icon
 							class="action-delete"
+							secondary
 							@click="on"
 						>
 							<v-icon name="delete" outline />
@@ -87,11 +88,11 @@
 				</v-dialog>
 
 				<v-button
-					v-if="selection.length > 1"
+					v-if="selection.length > 0"
 					v-tooltip.bottom="batchEditAllowed ? t('edit') : t('not_allowed')"
 					rounded
 					icon
-					class="action-batch"
+					secondary
 					:disabled="batchEditAllowed === false"
 					@click="batchEditActive = true"
 				>
@@ -102,7 +103,6 @@
 					v-tooltip.bottom="createAllowed ? t('create_item') : t('not_allowed')"
 					rounded
 					icon
-					class="add-new"
 					:to="folder ? { path: `/files/folders/${folder}/+` } : { path: '/files/+' }"
 					:disabled="createAllowed === false"
 				>
@@ -167,8 +167,10 @@
 				<component :is="`layout-sidebar-${layout}`" v-bind="layoutState" />
 				<export-sidebar-detail
 					collection="directus_files"
+					:layout-query="layoutQuery"
 					:filter="mergeFilters(filter, folderTypeFilter)"
 					:search="search"
+					@refresh="refresh"
 				/>
 			</template>
 
@@ -187,21 +189,23 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, ref, PropType, onMounted, onUnmounted, nextTick } from 'vue';
 import FilesNavigation from '../components/navigation.vue';
 import api from '@/api';
-import usePreset from '@/composables/use-preset';
-import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
+import { usePreset } from '@/composables/use-preset';
+import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
 import AddFolder from '../components/add-folder.vue';
-import SearchInput from '@/views/private/components/search-input';
-import FolderPicker from '../components/folder-picker.vue';
+import SearchInput from '@/views/private/components/search-input.vue';
+import FolderPicker from '@/views/private/components/folder-picker.vue';
 import emitter, { Events } from '@/events';
 import { useRouter, onBeforeRouteLeave, onBeforeRouteUpdate } from 'vue-router';
-import { useNotificationsStore, useUserStore, usePermissionsStore } from '@/stores';
+import { useNotificationsStore } from '@/stores/notifications';
+import { useUserStore } from '@/stores/user';
+import { usePermissionsStore } from '@/stores/permissions';
 import { subDays } from 'date-fns';
-import useFolders, { Folder } from '@/composables/use-folders';
-import useEventListener from '@/composables/use-event-listener';
-import { useLayout } from '@/composables/use-layout';
-import uploadFiles from '@/utils/upload-files';
+import { useFolders, Folder } from '@/composables/use-folders';
+import { useEventListener } from '@/composables/use-event-listener';
+import { useLayout } from '@directus/shared/composables';
+import { uploadFiles } from '@/utils/upload-files';
 import { unexpectedError } from '@/utils/unexpected-error';
-import DrawerBatch from '@/views/private/components/drawer-batch';
+import DrawerBatch from '@/views/private/components/drawer-batch.vue';
 import { Filter } from '@directus/shared/types';
 import { mergeFilters } from '@directus/shared/utils';
 
@@ -657,24 +661,8 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .action-delete {
-	--v-button-background-color: var(--danger-10);
-	--v-button-color: var(--danger);
-	--v-button-background-color-hover: var(--danger-25);
-	--v-button-color-hover: var(--danger);
-}
-
-.action-batch {
-	--v-button-background-color: var(--warning-10);
-	--v-button-color: var(--warning);
-	--v-button-background-color-hover: var(--warning-25);
-	--v-button-color-hover: var(--warning);
-}
-
-.folder {
-	--v-button-background-color: var(--primary-10);
-	--v-button-color: var(--primary);
-	--v-button-background-color-hover: var(--primary-25);
-	--v-button-color-hover: var(--primary);
+	--v-button-background-color-hover: var(--danger) !important;
+	--v-button-color-hover: var(--white) !important;
 }
 
 .header-icon {

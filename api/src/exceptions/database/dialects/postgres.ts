@@ -4,7 +4,7 @@ import { NotNullViolationException } from '../not-null-violation';
 import { RecordNotUniqueException } from '../record-not-unique';
 import { ValueOutOfRangeException } from '../value-out-of-range';
 import { ValueTooLongException } from '../value-too-long';
-import { PostgresError } from './types';
+import type { PostgresError } from './types';
 
 enum PostgresErrorCodes {
 	FOREIGN_KEY_VIOLATION = '23503',
@@ -41,7 +41,7 @@ function uniqueViolation(error: PostgresError) {
 
 	const collection = table;
 	const field = matches[0].slice(1, -1);
-	const invalid = matches[1].slice(1, -1);
+	const invalid = matches[1]!.slice(1, -1);
 
 	return new RecordNotUniqueException(field, {
 		collection,
@@ -58,7 +58,7 @@ function numericValueOutOfRange(error: PostgresError) {
 
 	const collection = matches[0].slice(1, -1);
 	const field = null;
-	const invalid = matches[2].slice(1, -1);
+	const invalid = matches[2]!.slice(1, -1);
 
 	return new ValueOutOfRangeException(field, {
 		collection,
@@ -111,7 +111,7 @@ function foreignKeyViolation(error: PostgresError) {
 
 	const collection = table;
 	const field = matches[0].slice(1, -1);
-	const invalid = matches[1].slice(1, -1);
+	const invalid = matches[1]!.slice(1, -1);
 
 	return new InvalidForeignKeyException(field, {
 		collection,

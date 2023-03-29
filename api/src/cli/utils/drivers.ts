@@ -1,14 +1,17 @@
-export const drivers = {
+import type { Driver } from '../../types';
+
+export const drivers: Record<Driver, string> = {
 	pg: 'PostgreSQL / Redshift',
+	cockroachdb: 'CockroachDB (Beta)',
 	mysql: 'MySQL / MariaDB / Aurora',
 	sqlite3: 'SQLite',
 	mssql: 'Microsoft SQL Server',
-	oracledb: 'Oracle Database (Alpha)',
+	oracledb: 'Oracle Database',
 };
 
-export function getDriverForClient(client: string): keyof typeof drivers | null {
+export function getDriverForClient(client: string): Driver | null {
 	for (const [key, value] of Object.entries(drivers)) {
-		if (value === client) return key as keyof typeof drivers;
+		if (value === client) return key as Driver;
 	}
 
 	return null;

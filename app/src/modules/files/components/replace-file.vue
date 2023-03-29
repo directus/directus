@@ -16,36 +16,29 @@
 	</v-dialog>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
-import { defineComponent } from 'vue';
 
-export default defineComponent({
-	props: {
-		modelValue: {
-			type: Boolean,
-			default: false,
-		},
-		file: {
-			type: Object,
-			default: () => ({}),
-		},
-		preset: {
-			type: Object,
-			default: () => ({}),
-		},
-	},
-	emits: ['update:modelValue', 'replaced'],
-	setup(_props, { emit }) {
-		const { t } = useI18n();
+interface Props {
+	modelValue?: boolean;
+	file?: Record<string, any>;
+	preset?: Record<string, any>;
+}
 
-		return { t, uploaded };
-		function uploaded() {
-			emit('update:modelValue', false);
-			emit('replaced');
-		}
-	},
+withDefaults(defineProps<Props>(), {
+	modelValue: false,
+	file: () => ({}),
+	preset: () => ({}),
 });
+
+const emit = defineEmits(['update:modelValue', 'replaced']);
+
+const { t } = useI18n();
+
+function uploaded() {
+	emit('update:modelValue', false);
+	emit('replaced');
+}
 </script>
 
 <style lang="scss" scoped>

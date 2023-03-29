@@ -10,6 +10,9 @@
 	--fc-button-hover-border-color: transparent;
 	--fc-button-text-color: var(--foreground-subdued);
 	--fc-border-color: var(--border-normal);
+	--fc-highlight-color: var(--primary-10);
+	--fc-neutral-bg-color: var(--background-normal);
+	--fc-list-event-hover-bg-color: var(--background-subdued);
 
 	.fc-more-popover {
 		max-width: var(--form-column-width);

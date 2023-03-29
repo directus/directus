@@ -53,7 +53,7 @@ export default defineComponent({
 				});
 			}
 
-			if (['o2m', 'm2o', 'm2m', 'm2a', 'files'].includes(localType.value)) {
+			if (['o2m', 'm2o', 'm2m', 'm2a', 'files', 'file'].includes(localType.value)) {
 				tabs.splice(1, 0, {
 					text: t('relationship'),
 					value: 'relationship',
@@ -72,6 +72,11 @@ export default defineComponent({
 					]
 				);
 			}
+
+			tabs.push({
+				text: t('validation'),
+				value: 'validation',
+			});
 
 			tabs.push({
 				text: t('conditions'),

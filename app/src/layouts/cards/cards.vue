@@ -80,10 +80,9 @@ import { defineComponent, watch, PropType, ref, inject, Ref } from 'vue';
 
 import Card from './components/card.vue';
 import CardsHeader from './components/header.vue';
-import useElementSize from '@/composables/use-element-size';
 import { Field, Item } from '@directus/shared/types';
-import { useSync } from '@directus/shared/composables';
-import { Collection } from '@/types';
+import { useSync, useElementSize } from '@directus/shared/composables';
+import { Collection } from '@/types/collections';
 import { Filter, ShowSelect } from '@directus/shared/types';
 
 export default defineComponent({

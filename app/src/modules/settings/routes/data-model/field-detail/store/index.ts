@@ -1,6 +1,4 @@
 import { defineStore } from 'pinia';
-import { getInterfaces } from '@/interfaces';
-import { getDisplays } from '@/displays';
 import { has, isEmpty, orderBy, cloneDeep } from 'lodash';
 import {
 	InterfaceConfig,
@@ -15,11 +13,14 @@ import { LOCAL_TYPES } from '@directus/shared/constants';
 import { computed } from 'vue';
 import { get, set } from 'lodash';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { useCollectionsStore, useFieldsStore, useRelationsStore } from '@/stores';
+import { useCollectionsStore } from '@/stores/collections';
+import { useFieldsStore } from '@/stores/fields';
+import { useRelationsStore } from '@/stores/relations';
 
 import * as alterations from './alterations';
-import { getLocalTypeForField } from '../../get-local-type';
+import { getLocalTypeForField } from '@/utils/get-local-type';
 import api from '@/api';
+import { useExtensions } from '@/extensions';
 
 export function syncFieldDetailStoreProperty(path: string, defaultValue?: any) {
 	const fieldDetailStore = useFieldDetailStore();
@@ -37,6 +38,9 @@ export function syncFieldDetailStoreProperty(path: string, defaultValue?: any) {
 export const useFieldDetailStore = defineStore({
 	id: 'fieldDetailStore',
 	state: () => ({
+		// whether there are additional field metadata being fetched (used in startEditing)
+		loading: false,
+
 		// The current collection we're operating in
 		collection: undefined as string | undefined,
 
@@ -76,12 +80,12 @@ export const useFieldDetailStore = defineStore({
 		items: {} as Record<string, Record<string, any>[]>,
 
 		// Various flags that alter the operations of watchers and getters
-		localType: 'standard' as typeof LOCAL_TYPES[number],
+		localType: 'standard' as (typeof LOCAL_TYPES)[number],
 		autoGenerateJunctionRelation: true,
 		saving: false,
 	}),
 	actions: {
-		startEditing(collection: string, field: string, localType?: LocalType) {
+		async startEditing(collection: string, field: string, localType?: LocalType) {
 			// Make sure we clean up any stray values from unexpected paths
 			this.$reset();
 
@@ -113,6 +117,27 @@ export const useFieldDetailStore = defineStore({
 						(relation) => relation.collection === collection && relation.field === field
 					) as DeepPartial<Relation> | undefined;
 				}
+
+				// re-fetch field meta to get the raw untranslated values
+				try {
+					this.loading = true;
+					const response = await api.get(`/fields/${collection}/${field}`);
+					const fetchedFieldMeta = response.data?.data?.meta;
+					this.$patch({
+						field: {
+							meta: {
+								...(fetchedFieldMeta?.note ? { note: fetchedFieldMeta.note } : {}),
+								...(fetchedFieldMeta?.options ? { options: fetchedFieldMeta.options } : {}),
+								...(fetchedFieldMeta?.display_options ? { display_options: fetchedFieldMeta.display_options } : {}),
+								...(fetchedFieldMeta?.validation_message
+									? { validation_message: fetchedFieldMeta.validation_message }
+									: {}),
+							},
+						},
+					});
+				} finally {
+					this.loading = false;
+				}
 			} else {
 				this.update({
 					localType: localType ?? 'standard',
@@ -136,7 +161,7 @@ export const useFieldDetailStore = defineStore({
 				alterations.global.setSpecialForLocalType(updates);
 			}
 
-			const localType = getCurrent('localType') as typeof LOCAL_TYPES[number] | undefined;
+			const localType = getCurrent('localType') as (typeof LOCAL_TYPES)[number] | undefined;
 			if (localType) {
 				alterations[localType].applyChanges(updates, this, helperFn);
 			}
@@ -145,6 +170,34 @@ export const useFieldDetailStore = defineStore({
 		},
 		async save() {
 			if (!this.collection || !this.field.field) return;
+
+			// Validation to prevent cyclic relation
+			const aliasesFromRelation: string[] = [];
+			for (const relation of Object.values(this.relations)) {
+				if (!relation || !relation.collection || !relation.field) continue;
+				if (
+					// Duplicate checks for O2M & M2O
+					(relation.collection === relation.related_collection && relation.field === relation.meta?.one_field) ||
+					// Duplicate checks for M2M & M2A
+					(relation.meta?.one_field &&
+						(aliasesFromRelation.includes(`${relation.collection}:${relation.field}`) ||
+							aliasesFromRelation.includes(`${this.collection}:${relation.meta.one_field}`)))
+				) {
+					throw new Error('Field key cannot be the same as foreign key');
+				}
+				// Track fields used for M2M & M2A
+				if (this.collection === relation.related_collection && relation.meta?.one_field) {
+					aliasesFromRelation.push(`${relation.collection}:${relation.field}`);
+					aliasesFromRelation.push(`${this.collection}:${relation.meta.one_field}`);
+				}
+			}
+			// Duplicate field check for M2A
+			const addedFields = Object.values(this.fields)
+				.map((field) => (field && field.collection && field.field ? `${field.collection}:${field.field}` : null))
+				.filter((field) => field);
+			if (addedFields.some((field) => addedFields.indexOf(field) !== addedFields.lastIndexOf(field))) {
+				throw new Error('Duplicate fields cannot be created');
+			}
 
 			const collectionsStore = useCollectionsStore();
 			const fieldsStore = useFieldsStore();
@@ -229,7 +282,7 @@ export const useFieldDetailStore = defineStore({
 			return missing.length === 0;
 		},
 		interfacesForType(): InterfaceConfig[] {
-			const { interfaces } = getInterfaces();
+			const { interfaces } = useExtensions();
 
 			return orderBy(
 				interfaces.value.filter((inter: InterfaceConfig) => {
@@ -245,7 +298,7 @@ export const useFieldDetailStore = defineStore({
 			);
 		},
 		displaysForType(): DisplayConfig[] {
-			const { displays } = getDisplays();
+			const { displays } = useExtensions();
 
 			return orderBy(
 				displays.value.filter((inter: DisplayConfig) => {

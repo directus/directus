@@ -4,7 +4,7 @@
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
-import { isHex } from '@/utils/color';
+import { isHex } from '@/utils/is-hex';
 
 export default defineComponent({
 	name: 'DisplayIcon',

@@ -25,6 +25,7 @@ import formatTitle from '@directus/format-title';
 import { decode } from 'html-entities';
 import { useI18n } from 'vue-i18n';
 import { isNil } from 'lodash';
+import dompurify from 'dompurify';
 
 export default defineComponent({
 	props: {
@@ -143,7 +144,8 @@ export default defineComponent({
 
 		const displayValue = computed(() => {
 			if (computedFormat.value.text) {
-				return computedFormat.value.text;
+				const { text } = computedFormat.value;
+				return text.startsWith('$t:') ? t(text.slice(3)) : text;
 			}
 
 			if (isNil(props.value) || props.value === '') return null;
@@ -151,7 +153,7 @@ export default defineComponent({
 			let value = String(props.value);
 
 			// Strip out all HTML tags
-			value = value.replace(/(<([^>]+)>)/gi, '');
+			value = dompurify.sanitize(value, { ALLOWED_TAGS: [] });
 
 			// Decode any HTML encoded characters (like &copy;)
 			value = decode(value);
@@ -211,7 +213,9 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .display-formatted {
-	display: inline-block;
+	display: inline;
+	overflow: hidden;
+	text-overflow: ellipsis;
 
 	&.has-background,
 	&.has-border {

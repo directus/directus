@@ -1,5 +1,6 @@
 import { defineInterface } from '@directus/shared/utils';
 import InterfaceSlider from './slider.vue';
+import PreviewSVG from './preview.svg?raw';
 
 export default defineInterface({
 	id: 'slider',
@@ -47,4 +48,5 @@ export default defineInterface({
 			},
 		},
 	],
+	preview: PreviewSVG,
 });

@@ -11,18 +11,23 @@ export type Query = {
 	export?: 'json' | 'csv' | 'xml' | null;
 	group?: string[] | null;
 	aggregate?: Aggregate | null;
-	deep?: Record<string, Query> | null;
+	deep?: NestedDeepQuery | null;
 	alias?: Record<string, string> | null;
-
-	/**
-	 * This isn't a publicly available query, but rather an internal flag used to union query nested
-	 * o2m items.
-	 *
-	 * @todo Deprecate this in favor of an optimized run-ast flow
-	 * @private
-	 */
-	union?: [string, unknown[]];
 };
+
+export type DeepQuery = {
+	_fields?: string[] | null;
+	_sort?: string[] | null;
+	_filter?: Filter | null;
+	_limit?: number | null;
+	_offset?: number | null;
+	_page?: number | null;
+	_search?: string | null;
+	_group?: string[] | null;
+	_aggregate?: Aggregate | null;
+};
+
+export type NestedDeepQuery = { [field: string]: DeepQuery | NestedDeepQuery };
 
 /**
  * Aggregate operation. Contains column name, and the field alias it should be returned as

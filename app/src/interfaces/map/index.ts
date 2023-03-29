@@ -1,6 +1,7 @@
 import { defineInterface } from '@directus/shared/utils';
 import InterfaceMap from './map.vue';
 import Options from './options.vue';
+import PreviewSVG from './preview.svg?raw';
 
 export default defineInterface({
 	id: 'map',
@@ -24,4 +25,5 @@ export default defineInterface({
 	group: 'selection',
 	options: Options,
 	recommendedDisplays: [],
+	preview: PreviewSVG,
 });

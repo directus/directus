@@ -1,11 +1,12 @@
 <template>
 	<v-list-group
 		v-if="isGroup && matchesSearch"
-		v-context-menu="'contextMenu'"
+		v-context-menu="hasContextMenu ? 'contextMenu' : null"
 		:to="to"
 		scope="content-navigation"
 		:value="collection.collection"
 		query
+		:open="collection.meta?.collapse === 'locked'"
 		:arrow-placement="collection.meta?.collapse === 'locked' ? false : 'after'"
 	>
 		<template #activator>
@@ -16,10 +17,10 @@
 				:color="collection.meta?.color"
 			/>
 		</template>
-
 		<navigation-item
 			v-for="childCollection in childCollections"
 			:key="childCollection.collection"
+			:show-hidden="showHidden"
 			:collection="childCollection"
 			:search="search"
 		/>
@@ -58,9 +59,11 @@
 
 <script lang="ts">
 import { defineComponent, PropType, computed } from 'vue';
-import { Collection } from '@/types';
+import { Collection } from '@/types/collections';
 import { Preset } from '@directus/shared/types';
-import { useUserStore, useCollectionsStore, usePresetsStore } from '@/stores';
+import { useUserStore } from '@/stores/user';
+import { useCollectionsStore } from '@/stores/collections';
+import { usePresetsStore } from '@/stores/presets';
 import NavigationItemContent from './navigation-item-content.vue';
 import NavigationBookmark from './navigation-bookmark.vue';
 import { useI18n } from 'vue-i18n';
@@ -125,7 +128,7 @@ export default defineComponent({
 			}
 		});
 
-		const hasContextMenu = computed(() => isAdmin);
+		const hasContextMenu = computed(() => isAdmin && props.collection.type === 'table');
 
 		return {
 			childCollections,

@@ -40,6 +40,29 @@ export default defineInterface({
 				width: 'half',
 			},
 		},
+		{
+			field: 'limit',
+			name: '$t:per_page',
+			type: 'integer',
+			meta: {
+				interface: 'input',
+				width: 'half',
+			},
+			schema: {
+				default_value: 15,
+			},
+		},
+		{
+			field: 'allowDuplicates',
+			name: '$t:allow_duplicates',
+			schema: {
+				default_value: false,
+			},
+			meta: {
+				interface: 'boolean',
+				width: 'half',
+			},
+		},
 	],
 	preview: PreviewSVG,
 });

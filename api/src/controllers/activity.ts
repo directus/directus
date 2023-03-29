@@ -1,3 +1,4 @@
+import { Action } from '@directus/shared/types';
 import express from 'express';
 import Joi from 'joi';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
@@ -5,8 +6,8 @@ import { respond } from '../middleware/respond';
 import useCollection from '../middleware/use-collection';
 import { validateBatch } from '../middleware/validate-batch';
 import { ActivityService, MetaService } from '../services';
-import { Action } from '../types';
 import asyncHandler from '../utils/async-handler';
+import { getIPFromReq } from '../utils/get-ip-from-req';
 
 const router = express.Router();
 
@@ -35,7 +36,7 @@ const readHandler = asyncHandler(async (req, res, next) => {
 
 	const meta = await metaService.getMetaForQuery('directus_activity', req.sanitizedQuery);
 
-	res.locals.payload = {
+	res.locals['payload'] = {
 		data: result,
 		meta,
 	};
@@ -54,9 +55,9 @@ router.get(
 			schema: req.schema,
 		});
 
-		const record = await service.readOne(req.params.pk, req.sanitizedQuery);
+		const record = await service.readOne(req.params['pk']!, req.sanitizedQuery);
 
-		res.locals.payload = {
+		res.locals['payload'] = {
 			data: record || null,
 		};
 
@@ -89,14 +90,15 @@ router.post(
 			...req.body,
 			action: Action.COMMENT,
 			user: req.accountability?.user,
-			ip: req.ip,
+			ip: getIPFromReq(req),
 			user_agent: req.get('user-agent'),
+			origin: req.get('origin'),
 		});
 
 		try {
 			const record = await service.readOne(primaryKey, req.sanitizedQuery);
 
-			res.locals.payload = {
+			res.locals['payload'] = {
 				data: record || null,
 			};
 		} catch (error: any) {
@@ -130,12 +132,12 @@ router.patch(
 			throw new InvalidPayloadException(error.message);
 		}
 
-		const primaryKey = await service.updateOne(req.params.pk, req.body);
+		const primaryKey = await service.updateOne(req.params['pk']!, req.body);
 
 		try {
 			const record = await service.readOne(primaryKey, req.sanitizedQuery);
 
-			res.locals.payload = {
+			res.locals['payload'] = {
 				data: record || null,
 			};
 		} catch (error: any) {
@@ -153,7 +155,7 @@ router.patch(
 
 router.delete(
 	'/comment/:pk',
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req, _res, next) => {
 		const service = new ActivityService({
 			accountability: req.accountability,
 			schema: req.schema,
@@ -163,13 +165,13 @@ router.delete(
 			schema: req.schema,
 		});
 
-		const item = await adminService.readOne(req.params.pk, { fields: ['action'] });
+		const item = await adminService.readOne(req.params['pk']!, { fields: ['action'] });
 
-		if (!item || item.action !== 'comment') {
+		if (!item || item['action'] !== 'comment') {
 			throw new ForbiddenException();
 		}
 
-		await service.deleteOne(req.params.pk);
+		await service.deleteOne(req.params['pk']!);
 
 		return next();
 	}),

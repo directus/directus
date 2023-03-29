@@ -1,5 +1,6 @@
 import { defineInterface } from '@directus/shared/utils';
 import InterfaceBoolean from './boolean.vue';
+import PreviewSVG from './preview.svg?raw';
 
 export default defineInterface({
 	id: 'boolean',
@@ -59,7 +60,7 @@ export default defineInterface({
 			type: 'string',
 			meta: {
 				width: 'half',
-				interface: 'input',
+				interface: 'system-input-translated-string',
 				options: {
 					placeholder: '$t:interfaces.boolean.label_placeholder',
 				},
@@ -69,4 +70,5 @@ export default defineInterface({
 			},
 		},
 	],
+	preview: PreviewSVG,
 });

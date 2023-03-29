@@ -20,7 +20,7 @@
 
 			<template #title-outer:prepend>
 				<v-button class="header-icon" rounded disabled icon secondary>
-					<v-icon name="people_alt" outline />
+					<v-icon name="people_alt" />
 				</v-button>
 			</template>
 
@@ -39,9 +39,10 @@
 							rounded
 							icon
 							class="action-delete"
+							secondary
 							@click="on"
 						>
-							<v-icon name="delete" outline />
+							<v-icon name="delete" />
 						</v-button>
 					</template>
 
@@ -60,15 +61,15 @@
 				</v-dialog>
 
 				<v-button
-					v-if="selection.length > 1"
+					v-if="selection.length > 0"
 					v-tooltip.bottom="batchEditAllowed ? t('edit') : t('not_allowed')"
 					rounded
 					icon
-					class="action-batch"
+					secondary
 					:disabled="batchEditAllowed === false"
 					@click="batchEditActive = true"
 				>
-					<v-icon name="edit" outline />
+					<v-icon name="edit" />
 				</v-button>
 
 				<v-button
@@ -76,7 +77,7 @@
 					v-tooltip.bottom="t('invite_users')"
 					rounded
 					icon
-					class="invite-user"
+					secondary
 					@click="userInviteModalActive = true"
 				>
 					<v-icon name="person_add" />
@@ -150,256 +151,219 @@
 				<component :is="`layout-sidebar-${layout}`" v-bind="layoutState" />
 				<export-sidebar-detail
 					collection="directus_users"
+					:layout-query="layoutQuery"
 					:filter="mergeFilters(filter, roleFilter)"
 					:search="search"
+					@refresh="refresh"
 				/>
 			</template>
 		</private-view>
 	</component>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
+import UsersInvite from '@/views/private/components/users-invite.vue';
+import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { defineComponent, computed, ref } from 'vue';
 import UsersNavigation from '../components/navigation.vue';
-import UsersInvite from '@/views/private/components/users-invite';
 
 import api from '@/api';
-import usePreset from '@/composables/use-preset';
-import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
-import SearchInput from '@/views/private/components/search-input';
-import { onBeforeRouteLeave, onBeforeRouteUpdate } from 'vue-router';
-import { useUserStore, usePermissionsStore } from '@/stores';
-import useNavigation from '../composables/use-navigation';
-import { useLayout } from '@/composables/use-layout';
-import DrawerBatch from '@/views/private/components/drawer-batch';
+import { usePreset } from '@/composables/use-preset';
+import { usePermissionsStore } from '@/stores/permissions';
+import { useServerStore } from '@/stores/server';
+import { useUserStore } from '@/stores/user';
+import { unexpectedError } from '@/utils/unexpected-error';
+import DrawerBatch from '@/views/private/components/drawer-batch.vue';
+import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
+import SearchInput from '@/views/private/components/search-input.vue';
+import { useLayout } from '@directus/shared/composables';
 import { Role } from '@directus/shared/types';
 import { mergeFilters } from '@directus/shared/utils';
-import { unexpectedError } from '@/utils/unexpected-error';
+import { onBeforeRouteLeave, onBeforeRouteUpdate } from 'vue-router';
+import useNavigation from '../composables/use-navigation';
 
 type Item = {
 	[field: string]: any;
 };
 
-export default defineComponent({
-	name: 'UsersCollection',
-	components: { UsersNavigation, LayoutSidebarDetail, SearchInput, UsersInvite, DrawerBatch },
-	props: {
-		role: {
-			type: String,
-			default: null,
-		},
-	},
-	setup(props) {
-		const { t } = useI18n();
+interface Props {
+	role: string | null;
+}
 
-		const { roles } = useNavigation();
-		const userInviteModalActive = ref(false);
-		const userStore = useUserStore();
-		const permissionsStore = usePermissionsStore();
-
-		const layoutRef = ref();
-		const selection = ref<Item[]>([]);
-
-		const { layout, layoutOptions, layoutQuery, filter, search, resetPreset } = usePreset(ref('directus_users'));
-		const { addNewLink } = useLinks();
-
-		const { confirmDelete, deleting, batchDelete, error: deleteError, batchEditActive } = useBatch();
-
-		const { breadcrumb, title } = useBreadcrumb();
-
-		const roleFilter = computed(() => {
-			if (props.role !== null) {
-				return {
-					_and: [
-						{
-							role: {
-								_eq: props.role,
-							},
-						},
-					],
-				};
-			}
-
-			return null;
-		});
-
-		const canInviteUsers = computed(() => {
-			const isAdmin = !!userStore.currentUser?.role?.admin_access;
-
-			if (isAdmin) return true;
-
-			const usersCreatePermission = permissionsStore.permissions.find(
-				(permission) => permission.collection === 'directus_users' && permission.action === 'create'
-			);
-			const rolesReadPermission = permissionsStore.permissions.find(
-				(permission) => permission.collection === 'directus_roles' && permission.action === 'read'
-			);
-
-			return !!usersCreatePermission && !!rolesReadPermission;
-		});
-
-		const { layoutWrapper } = useLayout(layout);
-
-		const { batchEditAllowed, batchDeleteAllowed, createAllowed } = usePermissions();
-
-		onBeforeRouteLeave(() => {
-			selection.value = [];
-		});
-		onBeforeRouteUpdate(() => {
-			selection.value = [];
-		});
-
-		return {
-			t,
-			canInviteUsers,
-			addNewLink,
-			breadcrumb,
-			title,
-			layoutRef,
-			layoutWrapper,
-			selection,
-			layoutOptions,
-			layoutQuery,
-			layout,
-			search,
-			clearFilters,
-			userInviteModalActive,
-			refresh,
-			batchEditAllowed,
-			batchDeleteAllowed,
-			createAllowed,
-			resetPreset,
-			confirmDelete,
-			deleting,
-			batchDelete,
-			deleteError,
-			batchEditActive,
-			filter,
-			roleFilter,
-			mergeFilters,
-		};
-
-		async function refresh() {
-			await layoutRef.value?.state?.refresh?.();
-		}
-
-		function useBatch() {
-			const confirmDelete = ref(false);
-			const deleting = ref(false);
-
-			const batchEditActive = ref(false);
-
-			const error = ref<any>();
-
-			return { batchEditActive, confirmDelete, deleting, batchDelete, error };
-
-			async function batchDelete() {
-				deleting.value = true;
-
-				const batchPrimaryKeys = selection.value;
-
-				try {
-					await api.delete('/users', {
-						data: batchPrimaryKeys,
-					});
-
-					await refresh();
-
-					selection.value = [];
-					confirmDelete.value = false;
-				} catch (err: any) {
-					error.value = err;
-					unexpectedError(err);
-				} finally {
-					deleting.value = false;
-				}
-			}
-		}
-
-		function useLinks() {
-			const addNewLink = computed<string>(() => {
-				return props.role ? `/users/roles/${props.role}/+` : '/users/+';
-			});
-
-			return { addNewLink };
-		}
-
-		function useBreadcrumb() {
-			const breadcrumb = computed(() => {
-				if (!props.role) return null;
-
-				return [
-					{
-						name: t('user_directory'),
-						to: `/users`,
-					},
-				];
-			});
-
-			const title = computed(() => {
-				if (!props.role) return t('user_directory');
-				return roles.value?.find((role: Role) => role.id === props.role)?.name;
-			});
-
-			return { breadcrumb, title };
-		}
-
-		function clearFilters() {
-			filter.value = null;
-			search.value = null;
-		}
-
-		function usePermissions() {
-			const batchEditAllowed = computed(() => {
-				const admin = userStore?.currentUser?.role.admin_access === true;
-				if (admin) return true;
-
-				const updatePermissions = permissionsStore.permissions.find(
-					(permission) => permission.action === 'update' && permission.collection === 'directus_users'
-				);
-				return !!updatePermissions;
-			});
-
-			const batchDeleteAllowed = computed(() => {
-				const admin = userStore?.currentUser?.role.admin_access === true;
-				if (admin) return true;
-
-				const deletePermissions = permissionsStore.permissions.find(
-					(permission) => permission.action === 'delete' && permission.collection === 'directus_users'
-				);
-				return !!deletePermissions;
-			});
-
-			const createAllowed = computed(() => {
-				const admin = userStore?.currentUser?.role.admin_access === true;
-				if (admin) return true;
-
-				const createPermissions = permissionsStore.permissions.find(
-					(permission) => permission.action === 'create' && permission.collection === 'directus_users'
-				);
-				return !!createPermissions;
-			});
-
-			return { batchEditAllowed, batchDeleteAllowed, createAllowed };
-		}
-	},
+const props = withDefaults(defineProps<Props>(), {
+	role: null,
 });
+
+const { t } = useI18n();
+
+const { roles } = useNavigation();
+const userInviteModalActive = ref(false);
+const userStore = useUserStore();
+const permissionsStore = usePermissionsStore();
+const serverStore = useServerStore();
+
+const layoutRef = ref();
+const selection = ref<Item[]>([]);
+
+const { layout, layoutOptions, layoutQuery, filter, search, resetPreset } = usePreset(ref('directus_users'));
+const { addNewLink } = useLinks();
+
+const { confirmDelete, deleting, batchDelete, batchEditActive } = useBatch();
+
+const { breadcrumb, title } = useBreadcrumb();
+
+const roleFilter = computed(() => {
+	if (props.role !== null) {
+		return {
+			_and: [
+				{
+					role: {
+						_eq: props.role,
+					},
+				},
+			],
+		};
+	}
+
+	return null;
+});
+
+const canInviteUsers = computed(() => {
+	if (serverStore.auth.disableDefault === true) return false;
+
+	const isAdmin = !!userStore.currentUser?.role?.admin_access;
+	if (isAdmin) return true;
+
+	const usersCreatePermission = permissionsStore.permissions.find(
+		(permission) => permission.collection === 'directus_users' && permission.action === 'create'
+	);
+	const rolesReadPermission = permissionsStore.permissions.find(
+		(permission) => permission.collection === 'directus_roles' && permission.action === 'read'
+	);
+
+	return !!usersCreatePermission && !!rolesReadPermission;
+});
+
+const { layoutWrapper } = useLayout(layout);
+
+const { batchEditAllowed, batchDeleteAllowed, createAllowed } = usePermissions();
+
+onBeforeRouteLeave(() => {
+	selection.value = [];
+});
+onBeforeRouteUpdate(() => {
+	selection.value = [];
+});
+
+async function refresh() {
+	await layoutRef.value?.state?.refresh?.();
+}
+
+function useBatch() {
+	const confirmDelete = ref(false);
+	const deleting = ref(false);
+
+	const batchEditActive = ref(false);
+
+	const error = ref<any>();
+
+	return { batchEditActive, confirmDelete, deleting, batchDelete, error };
+
+	async function batchDelete() {
+		deleting.value = true;
+
+		const batchPrimaryKeys = selection.value;
+
+		try {
+			await api.delete('/users', {
+				data: batchPrimaryKeys,
+			});
+
+			await refresh();
+
+			selection.value = [];
+			confirmDelete.value = false;
+		} catch (err: any) {
+			error.value = err;
+			unexpectedError(err);
+		} finally {
+			deleting.value = false;
+		}
+	}
+}
+
+function useLinks() {
+	const addNewLink = computed<string>(() => {
+		return props.role ? `/users/roles/${props.role}/+` : '/users/+';
+	});
+
+	return { addNewLink };
+}
+
+function useBreadcrumb() {
+	const breadcrumb = computed(() => {
+		if (!props.role) return null;
+
+		return [
+			{
+				name: t('user_directory'),
+				to: `/users`,
+			},
+		];
+	});
+
+	const title = computed(() => {
+		if (!props.role) return t('user_directory');
+		return roles.value?.find((role: Role) => role.id === props.role)?.name;
+	});
+
+	return { breadcrumb, title };
+}
+
+function clearFilters() {
+	filter.value = null;
+	search.value = null;
+}
+
+function usePermissions() {
+	const batchEditAllowed = computed(() => {
+		const admin = userStore?.currentUser?.role.admin_access === true;
+		if (admin) return true;
+
+		const updatePermissions = permissionsStore.permissions.find(
+			(permission) => permission.action === 'update' && permission.collection === 'directus_users'
+		);
+		return !!updatePermissions;
+	});
+
+	const batchDeleteAllowed = computed(() => {
+		const admin = userStore?.currentUser?.role.admin_access === true;
+		if (admin) return true;
+
+		const deletePermissions = permissionsStore.permissions.find(
+			(permission) => permission.action === 'delete' && permission.collection === 'directus_users'
+		);
+		return !!deletePermissions;
+	});
+
+	const createAllowed = computed(() => {
+		const admin = userStore?.currentUser?.role.admin_access === true;
+		if (admin) return true;
+
+		const createPermissions = permissionsStore.permissions.find(
+			(permission) => permission.action === 'create' && permission.collection === 'directus_users'
+		);
+		return !!createPermissions;
+	});
+
+	return { batchEditAllowed, batchDeleteAllowed, createAllowed };
+}
 </script>
 
 <style lang="scss" scoped>
 .action-delete {
-	--v-button-background-color: var(--danger-10);
-	--v-button-color: var(--danger);
-	--v-button-background-color-hover: var(--danger-25);
-	--v-button-color-hover: var(--danger);
-}
-
-.action-batch {
-	--v-button-background-color: var(--warning-10);
-	--v-button-color: var(--warning);
-	--v-button-background-color-hover: var(--warning-25);
-	--v-button-color-hover: var(--warning);
+	--v-button-background-color-hover: var(--danger) !important;
+	--v-button-color-hover: var(--white) !important;
 }
 
 .header-icon {
@@ -408,12 +372,5 @@ export default defineComponent({
 
 .layout {
 	--layout-offset-top: 64px;
-}
-
-.invite-user {
-	--v-button-background-color: var(--primary-10);
-	--v-button-color: var(--primary);
-	--v-button-background-color-hover: var(--primary-25);
-	--v-button-color-hover: var(--primary);
 }
 </style>

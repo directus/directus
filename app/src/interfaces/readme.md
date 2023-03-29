@@ -40,7 +40,7 @@ The user-facing name of the interface. By using the `i18n` handler from context,
 
 #### `icon`
 
-The icon that's shown when refering to this interface. It's most prominent usage is in the field-setup wizard.
+The icon that's shown when referring to this interface. It's most prominent usage is in the field-setup wizard.
 
 #### `component`
 

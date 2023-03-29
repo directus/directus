@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { deepMap } from './deep-map';
 
 describe('deepMap', () => {

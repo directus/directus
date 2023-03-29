@@ -5,7 +5,7 @@ export type SchemaOverview = {
 			[column: string]: {
 				table_name: string;
 				column_name: string;
-				default_value: any;
+				default_value: string | null;
 				is_nullable: boolean;
 				is_generated: boolean;
 				data_type: string;

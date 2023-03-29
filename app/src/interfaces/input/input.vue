@@ -13,12 +13,14 @@
 		:min="min"
 		:max="max"
 		:step="step"
+		:dir="direction"
+		:autocomplete="masked ? 'new-password' : 'off'"
 		@update:model-value="$emit('input', $event)"
 	>
 		<template v-if="iconLeft" #prepend><v-icon :name="iconLeft" /></template>
-		<template v-if="(percentageRemaining && percentageRemaining <= 20) || iconRight" #append>
+		<template v-if="(percentageRemaining !== null && percentageRemaining <= 20) || iconRight || softLength" #append>
 			<span
-				v-if="percentageRemaining && percentageRemaining <= 20"
+				v-if="(percentageRemaining !== null && percentageRemaining <= 20) || softLength"
 				class="remaining"
 				:class="{
 					warning: percentageRemaining < 10,
@@ -71,7 +73,7 @@ export default defineComponent({
 		},
 		trim: {
 			type: Boolean,
-			default: true,
+			default: false,
 		},
 		font: {
 			type: String as PropType<'sans-serif' | 'serif' | 'monospace'>,
@@ -80,6 +82,10 @@ export default defineComponent({
 		length: {
 			type: Number,
 			default: null,
+		},
+		softLength: {
+			type: Number,
+			default: undefined,
 		},
 		dbSafe: {
 			type: Boolean,
@@ -96,15 +102,19 @@ export default defineComponent({
 		},
 		min: {
 			type: Number,
-			default: null,
+			default: undefined,
 		},
 		max: {
 			type: Number,
-			default: null,
+			default: undefined,
 		},
 		step: {
 			type: Number,
 			default: 1,
+		},
+		direction: {
+			type: String,
+			default: undefined,
 		},
 	},
 	emits: ['input'],
@@ -112,17 +122,24 @@ export default defineComponent({
 		const charsRemaining = computed(() => {
 			if (typeof props.value === 'number') return null;
 
-			if (!props.length) return null;
-			if (!props.value) return null;
-			return +props.length - props.value.length;
+			if (!props.length && !props.softLength) return null;
+			if (!props.value && !props.softLength) return null;
+			if (!props.value && props.softLength) return props.softLength;
+			if (props.softLength) return +props.softLength - props.value.length;
+			if (props.length) return +props.length - props.value.length;
+			return null;
 		});
 
 		const percentageRemaining = computed(() => {
 			if (typeof props.value === 'number') return null;
 
-			if (!props.length) return null;
-			if (!props.value) return null;
-			return 100 - (props.value.length / +props.length) * 100;
+			if (!props.length && !props.softLength) return null;
+			if (!props.value) return 100;
+
+			if (props.softLength) return 100 - (props.value.length / +props.softLength) * 100;
+			if (props.length) return 100 - (props.value.length / +props.length) * 100;
+
+			return 100;
 		});
 
 		const inputType = computed(() => {

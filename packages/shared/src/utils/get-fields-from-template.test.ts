@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { getFieldsFromTemplate } from './get-fields-from-template';
 
 describe('getFieldsFromTemplate', () => {

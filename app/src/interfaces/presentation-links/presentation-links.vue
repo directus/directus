@@ -6,7 +6,6 @@
 			class="action"
 			:class="[link.type]"
 			:secondary="link.type !== 'primary'"
-			:disabled="disabled"
 			:icon="!link.label"
 			:href="link.href"
 			:to="link.to"
@@ -31,10 +30,6 @@ type Link = {
 
 export default defineComponent({
 	props: {
-		disabled: {
-			type: Boolean,
-			default: false,
-		},
 		links: {
 			type: Array as PropType<Link[]>,
 			default: null,
