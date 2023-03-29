@@ -261,7 +261,7 @@ const defaults: Record<string, any> = {
 	TELEMETRY: true,
 
 	ASSETS_CACHE_TTL: '30d',
-	ASSETS_TRANSFORM_MAX_CONCURRENT: 1,
+	ASSETS_TRANSFORM_MAX_CONCURRENT: 25,
 	ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION: 6000,
 	ASSETS_TRANSFORM_MAX_OPERATIONS: 5,
 	ASSETS_TRANSFORM_TIMEOUT: '7500ms',
@@ -343,7 +343,7 @@ export function refreshEnv(): void {
 }
 
 function processConfiguration() {
-	const configPath = path.resolve(process.env.CONFIG_PATH || defaults.CONFIG_PATH);
+	const configPath = path.resolve(process.env['CONFIG_PATH'] || defaults['CONFIG_PATH']);
 
 	if (fs.existsSync(configPath) === false) return {};
 
@@ -400,8 +400,8 @@ function getEnvironmentValueWithPrefix(envArray: Array<string>): Array<string | 
 }
 
 function getEnvironmentValueByType(envVariableString: string) {
-	const variableType = getVariableType(envVariableString);
-	const envVariableValue = getEnvVariableValue(envVariableString, variableType);
+	const variableType = getVariableType(envVariableString)!;
+	const envVariableValue = getEnvVariableValue(envVariableString, variableType)!;
 
 	switch (variableType) {
 		case 'number':

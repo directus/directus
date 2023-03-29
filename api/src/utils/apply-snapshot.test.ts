@@ -1,18 +1,17 @@
 import knex, { Knex } from 'knex';
-import { getTracker, MockClient, Tracker } from 'knex-mock-client';
-import { snapshotApplyTestSchema } from '../__utils__/schemas';
-
+import { createTracker, MockClient, Tracker } from 'knex-mock-client';
+import { afterEach, beforeEach, describe, expect, it, MockedFunction, vi } from 'vitest';
 import { CollectionsService, FieldsService } from '../services';
-import { applySnapshot } from './apply-snapshot';
-import * as getSchema from './get-schema';
+import type { Snapshot, SnapshotField } from '../types';
+import { snapshotApplyTestSchema } from '../__utils__/schemas';
 import {
 	snapshotBeforeCreateCollection,
+	snapshotBeforeDeleteCollection,
 	snapshotCreateCollection,
 	snapshotCreateCollectionNotNested,
-	snapshotBeforeDeleteCollection,
 } from '../__utils__/snapshots';
-import { Snapshot, SnapshotField } from '../types';
-import { describe, afterEach, it, expect, vi, beforeEach, MockedFunction } from 'vitest';
+import { applySnapshot } from './apply-snapshot';
+import * as getSchema from './get-schema';
 
 class Client_PG extends MockClient {}
 
@@ -27,7 +26,7 @@ describe('applySnapshot', () => {
 
 	beforeEach(() => {
 		db = vi.mocked(knex({ client: Client_PG }));
-		tracker = getTracker();
+		tracker = createTracker(db);
 	});
 
 	afterEach(() => {

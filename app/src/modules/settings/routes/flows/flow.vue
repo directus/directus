@@ -1,5 +1,5 @@
 <template>
-	<settings-not-found v-if="!flow" />
+	<settings-not-found v-if="!flow && !loading" />
 	<private-view v-else :title="flow?.name ?? t('loading')">
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded icon exact to="/settings/flows">
@@ -13,9 +13,9 @@
 
 		<template #title:append>
 			<display-color
-				v-tooltip="flow.status === 'active' ? t('active') : t('inactive')"
+				v-tooltip="flow?.status === 'active' ? t('active') : t('inactive')"
 				class="status-dot"
-				:value="flow.status === 'active' ? 'var(--primary)' : 'var(--foreground-subdued)'"
+				:value="flow?.status === 'active' ? 'var(--primary)' : 'var(--foreground-subdued)'"
 			/>
 		</template>
 
@@ -60,14 +60,17 @@
 				<div v-md="t('page_help_settings_flows_item')" class="page-description" />
 			</sidebar-detail>
 
-			<logs-sidebar-detail :flow="flow" />
+			<logs-sidebar-detail v-if="flow" :flow="flow" />
 		</template>
 
 		<template #navigation>
 			<settings-navigation />
 		</template>
 
-		<div class="container">
+		<div v-if="loading || !flow" class="container center">
+			<v-progress-circular indeterminate />
+		</div>
+		<div v-else class="container">
 			<arrows
 				:panels="panels"
 				:arrow-info="arrowInfo"
@@ -105,6 +108,7 @@
 		</div>
 
 		<flow-drawer
+			v-if="flow"
 			:active="triggerDetailOpen"
 			:primary-key="flow.id"
 			:start-tab="'trigger_setup'"
@@ -136,7 +140,7 @@
 
 		<v-dialog :model-value="confirmDelete" @esc="confirmDelete = false">
 			<v-card>
-				<v-card-title>{{ t('flow_delete_confirm', { flow: flow.name }) }}</v-card-title>
+				<v-card-title>{{ t('flow_delete_confirm', { flow: flow?.name }) }}</v-card-title>
 
 				<v-card-actions>
 					<v-button secondary @click="confirmDelete = false">{{ t('cancel') }}</v-button>
@@ -181,7 +185,7 @@
 import { FlowRaw, OperationRaw } from '@directus/shared/types';
 import { useI18n } from 'vue-i18n';
 
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useFlowsStore } from '@/stores/flows';
 import { unexpectedError } from '@/utils/unexpected-error';
 import api from '@/api';
@@ -225,15 +229,45 @@ useShortcut('meta+s', () => {
 const flowsStore = useFlowsStore();
 const stagedFlow = ref<Partial<FlowRaw>>({});
 
+const fetchedFlow = ref<FlowRaw>();
 const flow = computed<FlowRaw | undefined>({
 	get() {
-		const existing = flowsStore.flows.find((flow) => flow.id === props.primaryKey);
-		return merge({}, existing, stagedFlow.value);
+		if (!fetchedFlow.value) return undefined;
+		return merge({}, fetchedFlow.value, stagedFlow.value);
 	},
 	set(newFlow) {
 		stagedFlow.value = newFlow ?? {};
 	},
 });
+
+const loading = ref(false);
+
+watch(
+	() => props.primaryKey,
+	() => {
+		loadCurrentFlow();
+	},
+	{ immediate: true }
+);
+
+async function loadCurrentFlow() {
+	if (!props.primaryKey) return;
+
+	loading.value = true;
+
+	try {
+		const response = await api.get(`/flows/${props.primaryKey}`, {
+			params: {
+				fields: ['*', 'operations.*'],
+			},
+		});
+		fetchedFlow.value = response.data.data;
+	} catch (err: any) {
+		unexpectedError(err);
+	} finally {
+		loading.value = false;
+	}
+}
 
 const exitingOperationKeys = computed(() => [
 	...(flow.value?.operations || []).map((operation) => operation.key),
@@ -457,8 +491,6 @@ async function saveChanges() {
 
 			await api.patch(`/flows/${props.primaryKey}`, changes);
 		}
-
-		await flowsStore.hydrate();
 
 		stagedPanels.value = [];
 		panelsToBeDeleted.value = [];
@@ -704,6 +736,12 @@ function discardAndLeave() {
 	--column-size: 200px;
 	--row-size: 100px;
 	--gap-size: 40px;
+
+	&.center {
+		height: calc(100% - 48px - var(--header-bar-height));
+		display: grid;
+		place-items: center;
+	}
 }
 
 .clear-changes {

@@ -1,11 +1,11 @@
-import getDatabase, { getDatabaseClient } from '../database';
-import { getSchema } from './get-schema';
-import { CollectionsService, FieldsService, RelationsService } from '../services';
+import type { SchemaOverview } from '@directus/shared/types';
+import type { Knex } from 'knex';
+import { fromPairs, isArray, isPlainObject, mapValues, omit, sortBy, toPairs } from 'lodash';
 import { version } from '../../package.json';
-import { Collection, Snapshot, SnapshotField, SnapshotRelation } from '../types';
-import { Knex } from 'knex';
-import { omit, sortBy, toPairs, fromPairs, mapValues, isPlainObject, isArray } from 'lodash';
-import { SchemaOverview } from '@directus/shared/types';
+import getDatabase, { getDatabaseClient } from '../database';
+import { CollectionsService, FieldsService, RelationsService } from '../services';
+import type { Collection, Snapshot, SnapshotField, SnapshotRelation } from '../types';
+import { getSchema } from './get-schema';
 import { sanitizeCollection, sanitizeField, sanitizeRelation } from './sanitize-schema';
 
 export async function getSnapshot(options?: { database?: Knex; schema?: SchemaOverview }): Promise<Snapshot> {

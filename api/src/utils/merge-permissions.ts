@@ -1,5 +1,5 @@
-import { flatten, merge, omit, intersection, isEqual } from 'lodash';
-import { Permission, LogicalFilterOR, LogicalFilterAND } from '@directus/shared/types';
+import type { LogicalFilterAND, LogicalFilterOR, Permission } from '@directus/shared/types';
+import { flatten, intersection, isEqual, merge, omit } from 'lodash';
 
 export function mergePermissions(strategy: 'and' | 'or', ...permissions: Permission[][]): Permission[] {
 	const allPermissions = flatten(permissions);

@@ -11,7 +11,7 @@ export default async function count(collection: string): Promise<void> {
 
 	try {
 		const records = await database(collection).count('*', { as: 'count' });
-		const count = Number(records[0].count);
+		const count = Number(records[0]!.count);
 
 		process.stdout.write(`${count}\n`);
 		database.destroy();
