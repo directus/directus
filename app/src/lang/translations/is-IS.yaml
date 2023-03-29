@@ -206,6 +206,8 @@ filter: Sía
 free: Frjálst
 rotate: Snúa
 all_users: Allir Notendur
+create: Búa til
+bold: Feitletrað
 flow_name: Nafn
 start_flow: Byrja Flæði
 stop_flow: Stoppa Flæði
@@ -224,8 +226,16 @@ new_tab: Nýr Flipi
 current_tab: Núverandi Flipi
 save_image: Vista Mynd
 wysiwyg_options:
+  aligncenter: Jafna Miðju
+  alignleft: Jafna Vinstri
   forecolor: Forgrunnur Litur
   backcolor: Bakgrunnur Litur
+  bold: Feitletrað
+  italic: Skáletrað
+  codeblock: Kóði
+  unlink: Fjarlægja Hlekk
+  copy: Afrita
+  heading: Fyrirsögn
   h1: Fyrirsögn 1
   h2: Fyrirsögn 2
   h3: Fyrirsögn 3
@@ -243,6 +253,8 @@ wysiwyg_options:
   table: Tafla
 dropdown: Fellilisti
 choices: Val
+other: Annað...
+unknown_user: Óþekktur Notandi
 select: Velja...
 tree_view: Tré Sýn
 data: Gögn
@@ -310,6 +322,8 @@ fields:
 field_options:
   directus_settings:
     security_divider_title: Öryggi
+  directus_activity:
+    create: Búa til
   directus_collections:
     language: Tungumál
     sort_divider: Flokka
@@ -319,6 +333,8 @@ field_options:
   directus_users:
     preferences_divider: Notandi Stillingar
     status_dropdown_draft: Drög
+  directus_webhooks:
+    actions_create: Búa til
 description: Lýsing
 email: Tölvupóstur
 password: Lykilorð
@@ -331,6 +347,8 @@ interfaces:
     all: Allt
   presentation-links:
     primary: Aðal
+  input-code:
+    code: Kóði
   select-dropdown:
     choices_value_placeholder: Skráðu Gildi...
   input-rich-text-md:
@@ -360,6 +378,8 @@ displays:
     filesize: Skrá Stærð
   formatted-value:
     font: Letur
+    bold: Feitletrað
+    italic: Skáletrað
     prefix: Forskeyti
     color: Litur
     background: Bakgrunnur
