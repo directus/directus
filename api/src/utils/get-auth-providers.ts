@@ -9,7 +9,7 @@ interface AuthProvider {
 }
 
 export function getAuthProviders(): AuthProvider[] {
-	return toArray(env.AUTH_PROVIDERS)
+	return toArray(env['AUTH_PROVIDERS'])
 		.filter((provider) => provider && env[`AUTH_${provider.toUpperCase()}_DRIVER`])
 		.map((provider) => ({
 			name: provider,

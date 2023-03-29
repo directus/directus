@@ -1,9 +1,9 @@
+import type { Field, Type } from '@directus/shared/types';
 import fse from 'fs-extra';
 import yaml from 'js-yaml';
-import { Knex } from 'knex';
+import type { Knex } from 'knex';
 import { isObject } from 'lodash';
 import path from 'path';
-import { Type, Field } from '@directus/shared/types';
 import { getHelpers } from '../helpers';
 
 type TableSeed = {

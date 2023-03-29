@@ -82,6 +82,7 @@
 						<div class="type-label">{{ t(info.label) }}</div>
 						<v-input
 							v-model="info.name"
+							db-safe
 							class="monospace"
 							:class="{ active: info.enabled }"
 							:disabled="info.inputDisabled"
@@ -252,18 +253,18 @@ export default defineComponent({
 					},
 				});
 
+				const storeHydrations: Promise<void>[] = [];
+
 				const relations = getSystemRelations();
 
 				if (relations.length > 0) {
-					for (const relation of relations) {
-						await api.post('/relations', relation);
-					}
-
-					await relationsStore.hydrate();
+					const requests = relations.map((relation) => api.post('/relations', relation));
+					await Promise.all(requests);
+					storeHydrations.push(relationsStore.hydrate());
 				}
 
-				await collectionsStore.hydrate();
-				await fieldsStore.hydrate();
+				storeHydrations.push(collectionsStore.hydrate(), fieldsStore.hydrate());
+				await Promise.all(storeHydrations);
 
 				notify({
 					title: t('collection_created'),
@@ -384,7 +385,7 @@ export default defineComponent({
 					},
 				});
 
-				archiveField.value = 'status';
+				archiveField.value = systemFields.status.name;
 				archiveValue.value = 'archived';
 				unarchiveValue.value = 'draft';
 			}

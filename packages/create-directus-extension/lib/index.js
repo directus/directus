@@ -2,7 +2,7 @@
 'use strict';
 
 const inquirer = require('inquirer');
-const { EXTENSION_TYPES, EXTENSION_LANGUAGES } = require('@directus/shared/constants');
+const { EXTENSION_LANGUAGES, EXTENSION_TYPES, BUNDLE_EXTENSION_TYPES } = require('@directus/shared/constants');
 const { create } = require('@directus/extensions-sdk/cli');
 
 run();
@@ -28,6 +28,7 @@ async function run() {
 			name: 'language',
 			message: 'Choose the language to use',
 			choices: EXTENSION_LANGUAGES,
+			when: ({ type }) => BUNDLE_EXTENSION_TYPES.includes(type) === false,
 		},
 	]);
 

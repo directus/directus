@@ -1,15 +1,17 @@
-import getDatabase from '../database';
-import { getSchema } from './get-schema';
-import { CollectionsService, FieldsService, RelationsService } from '../services';
+import type { SchemaOverview } from '@directus/shared/types';
+import type { Knex } from 'knex';
+import { fromPairs, isArray, isPlainObject, mapValues, omit, sortBy, toPairs } from 'lodash';
 import { version } from '../../package.json';
-import { Snapshot, SnapshotField, SnapshotRelation } from '../types';
-import { Knex } from 'knex';
-import { omit, sortBy, toPairs, fromPairs, mapValues, isPlainObject, isArray } from 'lodash';
-import { SchemaOverview } from '@directus/shared/types';
+import getDatabase, { getDatabaseClient } from '../database';
+import { CollectionsService, FieldsService, RelationsService } from '../services';
+import type { Collection, Snapshot, SnapshotField, SnapshotRelation } from '../types';
+import { getSchema } from './get-schema';
+import { sanitizeCollection, sanitizeField, sanitizeRelation } from './sanitize-schema';
 
 export async function getSnapshot(options?: { database?: Knex; schema?: SchemaOverview }): Promise<Snapshot> {
 	const database = options?.database ?? getDatabase();
-	const schema = options?.schema ?? (await getSchema({ database }));
+	const vendor = getDatabaseClient(database);
+	const schema = options?.schema ?? (await getSchema({ database, bypassCache: true }));
 
 	const collectionsService = new CollectionsService({ knex: database, schema });
 	const fieldsService = new FieldsService({ knex: database, schema });
@@ -32,9 +34,10 @@ export async function getSnapshot(options?: { database?: Knex; schema?: SchemaOv
 	return {
 		version: 1,
 		directus: version,
-		collections: collectionsSorted,
-		fields: fieldsSorted,
-		relations: relationsSorted,
+		vendor,
+		collections: collectionsSorted.map((collection) => sanitizeCollection(collection)) as Collection[],
+		fields: fieldsSorted.map((field) => sanitizeField(field)) as SnapshotField[],
+		relations: relationsSorted.map((relation) => sanitizeRelation(relation)) as SnapshotRelation[],
 	};
 }
 

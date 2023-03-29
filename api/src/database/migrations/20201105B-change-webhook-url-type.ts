@@ -1,4 +1,4 @@
-import { Knex } from 'knex';
+import type { Knex } from 'knex';
 import { getHelpers } from '../helpers';
 
 export async function up(knex: Knex): Promise<void> {

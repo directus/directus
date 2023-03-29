@@ -1,15 +1,16 @@
-import { NextFunction, Request, Response } from 'express';
+import type { Request, Response } from 'express';
+import { beforeEach, expect, test, vi } from 'vitest';
 import extractToken from '../../src/middleware/extract-token';
 import '../../src/types/express.d.ts';
 
 let mockRequest: Partial<Request & { token?: string }>;
 let mockResponse: Partial<Response>;
-const nextFunction: NextFunction = jest.fn();
+const nextFunction = vi.fn();
 
 beforeEach(() => {
 	mockRequest = {};
 	mockResponse = {};
-	jest.clearAllMocks();
+	vi.clearAllMocks();
 });
 
 test('Token from query', () => {

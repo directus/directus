@@ -16,7 +16,11 @@ router.use(
 			scope: 'system',
 		});
 
-		res.locals.payload = await service.execute(res.locals.graphqlParams);
+		res.locals['payload'] = await service.execute(res.locals['graphqlParams']);
+
+		if (res.locals['payload']?.errors?.length > 0) {
+			res.locals['cache'] = false;
+		}
 
 		return next();
 	}),
@@ -33,7 +37,11 @@ router.use(
 			scope: 'items',
 		});
 
-		res.locals.payload = await service.execute(res.locals.graphqlParams);
+		res.locals['payload'] = await service.execute(res.locals['graphqlParams']);
+
+		if (res.locals['payload']?.errors?.length > 0) {
+			res.locals['cache'] = false;
+		}
 
 		return next();
 	}),

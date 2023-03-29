@@ -1,4 +1,4 @@
-import { Filter } from '@directus/shared/types';
+import type { Filter } from '@directus/shared/types';
 import { defineOperationApi, validatePayload } from '@directus/shared/utils';
 
 type Options = {
@@ -9,7 +9,7 @@ export default defineOperationApi<Options>({
 	id: 'condition',
 
 	handler: ({ filter }, { data }) => {
-		const errors = validatePayload(filter, data);
+		const errors = validatePayload(filter, data, { requireAll: true });
 
 		if (errors.length > 0) {
 			throw errors;

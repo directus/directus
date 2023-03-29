@@ -3,6 +3,7 @@
 		class="v-select"
 		:disabled="disabled"
 		:attached="inline === false"
+		:is-same-width="isMenuSameWidth"
 		:show-arrow="inline === true"
 		:close-on-content-click="closeOnContentClick"
 		:placement="placement"
@@ -182,6 +183,8 @@ interface Props {
 	multiplePreviewThreshold?: number;
 	/** The direction the menu should open */
 	placement?: Placement;
+	/** Should the menu be the same width as the select element */
+	isMenuSameWidth?: true;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -205,6 +208,7 @@ const props = withDefaults(defineProps<Props>(), {
 	label: false,
 	multiplePreviewThreshold: 3,
 	placement: 'bottom',
+	isMenuSameWidth: true,
 });
 
 const emit = defineEmits(['update:modelValue', 'group-toggle']);
@@ -254,6 +258,7 @@ function useItems() {
 				disabled: get(item, props.itemDisabled),
 				selectable: get(item, props.itemSelectable),
 				children: children ? children.filter(filterItem) : children,
+				hidden: internalSearch.value ? !filterItem(item) : false,
 			};
 		};
 
@@ -277,9 +282,7 @@ function useItems() {
 			}
 		};
 
-		const items = internalSearch.value ? props.items.filter(filterItem).map(parseItem) : props.items.map(parseItem);
-
-		return items;
+		return props.items.map(parseItem);
 	});
 
 	const internalItemsCount = computed<number>(() => {

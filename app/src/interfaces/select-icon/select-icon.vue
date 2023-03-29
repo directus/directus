@@ -73,15 +73,14 @@ export default defineComponent({
 		const searchQuery = ref('');
 
 		const filteredIcons = computed(() => {
-			return icons.map((group) => {
-				if (searchQuery.value.length === 0) return group;
+			if (searchQuery.value.length === 0) return icons;
 
+			return icons.map((group) => {
 				const icons = group.icons.filter((icon) => icon.includes(searchQuery.value.toLowerCase()));
 
 				return {
-					...group,
-					icons: icons,
-					length: icons.length,
+					name: group.name,
+					icons,
 				};
 			});
 		});

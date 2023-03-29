@@ -1,20 +1,21 @@
+import type { Accountability } from '@directus/shared/types';
 import { Router } from 'express';
+import {
+	createLDAPAuthRouter,
+	createLocalAuthRouter,
+	createOAuth2AuthRouter,
+	createOpenIDAuthRouter,
+	createSAMLAuthRouter,
+} from '../auth/drivers';
+import { COOKIE_OPTIONS, DEFAULT_AUTH_PROVIDER } from '../constants';
 import env from '../env';
 import { InvalidPayloadException } from '../exceptions';
+import logger from '../logger';
 import { respond } from '../middleware/respond';
 import { AuthenticationService, UsersService } from '../services';
 import asyncHandler from '../utils/async-handler';
 import { getAuthProviders } from '../utils/get-auth-providers';
-import logger from '../logger';
-import {
-	createLocalAuthRouter,
-	createOAuth2AuthRouter,
-	createOpenIDAuthRouter,
-	createLDAPAuthRouter,
-} from '../auth/drivers';
-import { DEFAULT_AUTH_PROVIDER } from '../constants';
 import { getIPFromReq } from '../utils/get-ip-from-req';
-import { COOKIE_OPTIONS } from '../constants';
 
 const router = Router();
 
@@ -39,6 +40,10 @@ for (const authProvider of authProviders) {
 		case 'ldap':
 			authRouter = createLDAPAuthRouter(authProvider.name);
 			break;
+
+		case 'saml':
+			authRouter = createSAMLAuthRouter(authProvider.name);
+			break;
 	}
 
 	if (!authRouter) {
@@ -49,26 +54,30 @@ for (const authProvider of authProviders) {
 	router.use(`/login/${authProvider.name}`, authRouter);
 }
 
-if (!env.AUTH_DISABLE_DEFAULT) {
+if (!env['AUTH_DISABLE_DEFAULT']) {
 	router.use('/login', createLocalAuthRouter(DEFAULT_AUTH_PROVIDER));
 }
 
 router.post(
 	'/refresh',
 	asyncHandler(async (req, res, next) => {
-		const accountability = {
+		const accountability: Accountability = {
 			ip: getIPFromReq(req),
-			userAgent: req.get('user-agent'),
-			origin: req.get('origin'),
 			role: null,
 		};
+
+		const userAgent = req.get('user-agent');
+		if (userAgent) accountability.userAgent = userAgent;
+
+		const origin = req.get('origin');
+		if (origin) accountability.origin = origin;
 
 		const authenticationService = new AuthenticationService({
 			accountability: accountability,
 			schema: req.schema,
 		});
 
-		const currentRefreshToken = req.body.refresh_token || req.cookies[env.REFRESH_TOKEN_COOKIE_NAME];
+		const currentRefreshToken = req.body.refresh_token || req.cookies[env['REFRESH_TOKEN_COOKIE_NAME']];
 
 		if (!currentRefreshToken) {
 			throw new InvalidPayloadException(`"refresh_token" is required in either the JSON payload or Cookie`);
@@ -83,14 +92,14 @@ router.post(
 		} as Record<string, Record<string, any>>;
 
 		if (mode === 'json') {
-			payload.data.refresh_token = refreshToken;
+			payload['data']!['refresh_token'] = refreshToken;
 		}
 
 		if (mode === 'cookie') {
-			res.cookie(env.REFRESH_TOKEN_COOKIE_NAME, refreshToken, COOKIE_OPTIONS);
+			res.cookie(env['REFRESH_TOKEN_COOKIE_NAME'], refreshToken, COOKIE_OPTIONS);
 		}
 
-		res.locals.payload = payload;
+		res.locals['payload'] = payload;
 		return next();
 	}),
 	respond
@@ -99,19 +108,23 @@ router.post(
 router.post(
 	'/logout',
 	asyncHandler(async (req, res, next) => {
-		const accountability = {
+		const accountability: Accountability = {
 			ip: getIPFromReq(req),
-			userAgent: req.get('user-agent'),
-			origin: req.get('origin'),
 			role: null,
 		};
+
+		const userAgent = req.get('user-agent');
+		if (userAgent) accountability.userAgent = userAgent;
+
+		const origin = req.get('origin');
+		if (origin) accountability.origin = origin;
 
 		const authenticationService = new AuthenticationService({
 			accountability: accountability,
 			schema: req.schema,
 		});
 
-		const currentRefreshToken = req.body.refresh_token || req.cookies[env.REFRESH_TOKEN_COOKIE_NAME];
+		const currentRefreshToken = req.body.refresh_token || req.cookies[env['REFRESH_TOKEN_COOKIE_NAME']];
 
 		if (!currentRefreshToken) {
 			throw new InvalidPayloadException(`"refresh_token" is required in either the JSON payload or Cookie`);
@@ -119,12 +132,12 @@ router.post(
 
 		await authenticationService.logout(currentRefreshToken);
 
-		if (req.cookies[env.REFRESH_TOKEN_COOKIE_NAME]) {
-			res.clearCookie(env.REFRESH_TOKEN_COOKIE_NAME, {
+		if (req.cookies[env['REFRESH_TOKEN_COOKIE_NAME']]) {
+			res.clearCookie(env['REFRESH_TOKEN_COOKIE_NAME'], {
 				httpOnly: true,
-				domain: env.REFRESH_TOKEN_COOKIE_DOMAIN,
-				secure: env.REFRESH_TOKEN_COOKIE_SECURE ?? false,
-				sameSite: (env.REFRESH_TOKEN_COOKIE_SAME_SITE as 'lax' | 'strict' | 'none') || 'strict',
+				domain: env['REFRESH_TOKEN_COOKIE_DOMAIN'],
+				secure: env['REFRESH_TOKEN_COOKIE_SECURE'] ?? false,
+				sameSite: (env['REFRESH_TOKEN_COOKIE_SAME_SITE'] as 'lax' | 'strict' | 'none') || 'strict',
 			});
 		}
 
@@ -135,17 +148,21 @@ router.post(
 
 router.post(
 	'/password/request',
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req, _res, next) => {
 		if (typeof req.body.email !== 'string') {
 			throw new InvalidPayloadException(`"email" field is required.`);
 		}
 
-		const accountability = {
+		const accountability: Accountability = {
 			ip: getIPFromReq(req),
-			userAgent: req.get('user-agent'),
-			origin: req.get('origin'),
 			role: null,
 		};
+
+		const userAgent = req.get('user-agent');
+		if (userAgent) accountability.userAgent = userAgent;
+
+		const origin = req.get('origin');
+		if (origin) accountability.origin = origin;
 
 		const service = new UsersService({ accountability, schema: req.schema });
 
@@ -166,7 +183,7 @@ router.post(
 
 router.post(
 	'/password/reset',
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req, _res, next) => {
 		if (typeof req.body.token !== 'string') {
 			throw new InvalidPayloadException(`"token" field is required.`);
 		}
@@ -175,12 +192,16 @@ router.post(
 			throw new InvalidPayloadException(`"password" field is required.`);
 		}
 
-		const accountability = {
+		const accountability: Accountability = {
 			ip: getIPFromReq(req),
-			userAgent: req.get('user-agent'),
-			origin: req.get('origin'),
 			role: null,
 		};
+
+		const userAgent = req.get('user-agent');
+		if (userAgent) accountability.userAgent = userAgent;
+
+		const origin = req.get('origin');
+		if (origin) accountability.origin = origin;
 
 		const service = new UsersService({ accountability, schema: req.schema });
 		await service.resetPassword(req.body.token, req.body.password);
@@ -191,10 +212,10 @@ router.post(
 
 router.get(
 	'/',
-	asyncHandler(async (req, res, next) => {
-		res.locals.payload = {
+	asyncHandler(async (_req, res, next) => {
+		res.locals['payload'] = {
 			data: getAuthProviders(),
-			disableDefault: env.AUTH_DISABLE_DEFAULT,
+			disableDefault: env['AUTH_DISABLE_DEFAULT'],
 		};
 		return next();
 	}),

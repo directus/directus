@@ -197,7 +197,7 @@ function updateValue(item: DisplayItem, lang: string | undefined) {
 
 		if (itemInfo[info.junctionPrimaryKeyField.field] !== undefined) {
 			itemUpdates[info.junctionPrimaryKeyField.field] = itemInfo[info.junctionPrimaryKeyField.field];
-		} else {
+		} else if (primaryKey.value !== '+') {
 			itemUpdates[info.reverseJunctionField.field] = primaryKey.value;
 		}
 

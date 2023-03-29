@@ -1,13 +1,29 @@
-import { shallowRef, Ref } from 'vue';
+import { App } from 'vue';
 import { OperationAppConfig } from '@directus/shared/types';
+import { sortBy } from 'lodash';
 
-const operationsRaw: Ref<OperationAppConfig[]> = shallowRef([]);
-const operations: Ref<OperationAppConfig[]> = shallowRef([]);
+export function getInternalOperations(): OperationAppConfig[] {
+	const operations = import.meta.glob<OperationAppConfig>('./*/index.ts', { import: 'default', eager: true });
 
-export function getOperations(): { operations: Ref<OperationAppConfig[]>; operationsRaw: Ref<OperationAppConfig[]> } {
-	return { operations, operationsRaw };
+	return sortBy(Object.values(operations), 'id');
 }
 
-export function getOperation(name?: string | null): OperationAppConfig | undefined {
-	return !name ? undefined : operations.value.find(({ id }) => id === name);
+export function registerOperations(operations: OperationAppConfig[], app: App): void {
+	for (const operation of operations) {
+		if (
+			typeof operation.overview !== 'function' &&
+			Array.isArray(operation.overview) === false &&
+			operation.overview !== null
+		) {
+			app.component(`operation-overview-${operation.id}`, operation.overview);
+		}
+
+		if (
+			typeof operation.options !== 'function' &&
+			Array.isArray(operation.options) === false &&
+			operation.options !== null
+		) {
+			app.component(`operation-options-${operation.id}`, operation.options);
+		}
+	}
 }

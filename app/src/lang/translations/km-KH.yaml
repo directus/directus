@@ -1,0 +1,25 @@
+---
+children: កូន
+show_all_items: បង្ហាញធាតុទាំងអស់
+edited: តម្លៃបានកែ
+os_version: OS Version
+os_totalmem: OS Memory
+archive: Archive
+archive_confirm: តើ​អ្នក​ប្រាកដ​ជា​ចង់លាក់​ទុក​ធាតុ​នេះក្នុងArchive?
+archive_confirm_count: >-
+  គ្មានធាតុដែលបានជ្រើសរើស | តើ​អ្នក​ប្រាកដ​ជា​ចង់​លាក់ទុក​ធាតុ​នេះក្នុងArchive? | តើអ្នកប្រាកដថាចង់ទុកធាតុ {count} ទាំងនេះទេក្នុងArchive?
+unarchive: ដកចេញពីArchive
+validationError:
+  required: ត្រូវការបញ្ចូលតម្លៃ
+all_access: ការចូលប្រើប្រាស់ទាំងអស់
+no_access: មិនអាចចូលប្រើប្រាស់
+field_file: ឯកសារមួយ
+field_files: ឯកសារច្រើន
+field_m2o: M2O Relationship
+field_m2a: M2A Relationship
+field_o2m: O2M Relationship
+field_m2m: M2M Relationship
+field_translations: ការបកប្រែ
+field_options:
+  directus_collections:
+    archive_divider: Archive

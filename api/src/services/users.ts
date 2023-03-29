@@ -1,28 +1,22 @@
+import { FailedValidationException } from '@directus/shared/exceptions';
+import type { Query } from '@directus/shared/types';
+import { getSimpleHash, toArray } from '@directus/shared/utils';
 import jwt from 'jsonwebtoken';
-import { Knex } from 'knex';
 import { cloneDeep } from 'lodash';
+import { performance } from 'perf_hooks';
 import getDatabase from '../database';
 import env from '../env';
-import { FailedValidationException } from '@directus/shared/exceptions';
 import { ForbiddenException, InvalidPayloadException, UnprocessableEntityException } from '../exceptions';
 import { RecordNotUniqueException } from '../exceptions/database/record-not-unique';
-import { AbstractServiceOptions, Item, PrimaryKey, MutationOptions } from '../types';
-import { Query, SchemaOverview, Accountability } from '@directus/shared/types';
+import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '../types';
 import isUrlAllowed from '../utils/is-url-allowed';
-import { toArray } from '@directus/shared/utils';
+import { stall } from '../utils/stall';
 import { Url } from '../utils/url';
 import { ItemsService } from './items';
 import { MailService } from './mail';
 import { SettingsService } from './settings';
-import { stall } from '../utils/stall';
-import { performance } from 'perf_hooks';
-import { getSimpleHash } from '@directus/shared/utils';
 
 export class UsersService extends ItemsService {
-	knex: Knex;
-	accountability: Accountability | null;
-	schema: SchemaOverview;
-
 	constructor(options: AbstractServiceOptions) {
 		super('directus_users', options);
 
@@ -44,7 +38,7 @@ export class UsersService extends ItemsService {
 			throw new RecordNotUniqueException('email', {
 				collection: 'directus_users',
 				field: 'email',
-				invalid: duplicates[0],
+				invalid: duplicates[0]!,
 			});
 		}
 
@@ -143,24 +137,28 @@ export class UsersService extends ItemsService {
 	/**
 	 * Create a new user
 	 */
-	async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
+	override async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
 		const result = await this.createMany([data], opts);
-		return result[0];
+		return result[0]!;
 	}
 
 	/**
 	 * Create multiple new users
 	 */
-	async createMany(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
-		const emails = data.map((payload) => payload.email).filter((email) => email);
-		const passwords = data.map((payload) => payload.password).filter((password) => password);
+	override async createMany(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
+		const emails = data['map']((payload) => payload['email']).filter((email) => email);
+		const passwords = data['map']((payload) => payload['password']).filter((password) => password);
 
-		if (emails.length) {
-			await this.checkUniqueEmails(emails);
-		}
+		try {
+			if (emails.length) {
+				await this.checkUniqueEmails(emails);
+			}
 
-		if (passwords.length) {
-			await this.checkPasswordPolicy(passwords);
+			if (passwords.length) {
+				await this.checkPasswordPolicy(passwords);
+			}
+		} catch (err: any) {
+			(opts || (opts = {})).preMutationException = err;
 		}
 
 		return await super.createMany(data, opts);
@@ -169,7 +167,7 @@ export class UsersService extends ItemsService {
 	/**
 	 * Update many users by query
 	 */
-	async updateByQuery(query: Query, data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
+	override async updateByQuery(query: Query, data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
 		const keys = await this.getKeysByQuery(query);
 		return keys.length ? await this.updateMany(keys, data, opts) : [];
 	}
@@ -177,13 +175,13 @@ export class UsersService extends ItemsService {
 	/**
 	 * Update a single user by primary key
 	 */
-	async updateOne(key: PrimaryKey, data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
+	override async updateOne(key: PrimaryKey, data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
 		await this.updateMany([key], data, opts);
 		return key;
 	}
 
-	async updateBatch(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
-		const primaryKeyField = this.schema.collections[this.collection].primary;
+	override async updateBatch(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
+		const primaryKeyField = this.schema.collections[this.collection]!.primary;
 
 		const keys: PrimaryKey[] = [];
 
@@ -206,47 +204,59 @@ export class UsersService extends ItemsService {
 	/**
 	 * Update many users by primary key
 	 */
-	async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
-		if (data.role) {
-			// data.role will be an object with id with GraphQL mutations
-			const roleId = data.role?.id ?? data.role;
+	override async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
+		try {
+			if (data['role']) {
+				// data['role'] will be an object with id with GraphQL mutations
+				const roleId = data['role']?.id ?? data['role'];
 
-			const newRole = await this.knex.select('admin_access').from('directus_roles').where('id', roleId).first();
+				const newRole = await this.knex.select('admin_access').from('directus_roles').where('id', roleId).first();
 
-			if (!newRole?.admin_access) {
-				await this.checkRemainingAdminExistence(keys);
+				if (!newRole?.admin_access) {
+					await this.checkRemainingAdminExistence(keys);
+				}
 			}
-		}
 
-		if (data.status !== undefined && data.status !== 'active') {
-			await this.checkRemainingActiveAdmin(keys);
-		}
-
-		if (data.email) {
-			if (keys.length > 1) {
-				throw new RecordNotUniqueException('email', {
-					collection: 'directus_users',
-					field: 'email',
-					invalid: data.email,
-				});
+			if (data['status'] !== undefined && data['status'] !== 'active') {
+				await this.checkRemainingActiveAdmin(keys);
 			}
-			await this.checkUniqueEmails([data.email], keys[0]);
-		}
 
-		if (data.password) {
-			await this.checkPasswordPolicy([data.password]);
-		}
+			if (data['email']) {
+				if (keys.length > 1) {
+					throw new RecordNotUniqueException('email', {
+						collection: 'directus_users',
+						field: 'email',
+						invalid: data['email'],
+					});
+				}
+				await this.checkUniqueEmails([data['email']], keys[0]);
+			}
 
-		if (data.tfa_secret !== undefined) {
-			throw new InvalidPayloadException(`You can't change the "tfa_secret" value manually.`);
-		}
+			if (data['password']) {
+				await this.checkPasswordPolicy([data['password']]);
+			}
 
-		if (data.provider !== undefined) {
-			throw new InvalidPayloadException(`You can't change the "provider" value manually.`);
-		}
+			if (data['tfa_secret'] !== undefined) {
+				throw new InvalidPayloadException(`You can't change the "tfa_secret" value manually.`);
+			}
 
-		if (data.external_identifier !== undefined) {
-			throw new InvalidPayloadException(`You can't change the "external_identifier" value manually.`);
+			if (data['provider'] !== undefined) {
+				if (this.accountability && this.accountability.admin !== true) {
+					throw new InvalidPayloadException(`You can't change the "provider" value manually.`);
+				}
+
+				data['auth_data'] = null;
+			}
+
+			if (data['external_identifier'] !== undefined) {
+				if (this.accountability && this.accountability.admin !== true) {
+					throw new InvalidPayloadException(`You can't change the "external_identifier" value manually.`);
+				}
+
+				data['auth_data'] = null;
+			}
+		} catch (err: any) {
+			(opts || (opts = {})).preMutationException = err;
 		}
 
 		return await super.updateMany(keys, data, opts);
@@ -255,7 +265,7 @@ export class UsersService extends ItemsService {
 	/**
 	 * Delete a single user by primary key
 	 */
-	async deleteOne(key: PrimaryKey, opts?: MutationOptions): Promise<PrimaryKey> {
+	override async deleteOne(key: PrimaryKey, opts?: MutationOptions): Promise<PrimaryKey> {
 		await this.deleteMany([key], opts);
 		return key;
 	}
@@ -263,8 +273,12 @@ export class UsersService extends ItemsService {
 	/**
 	 * Delete multiple users by primary key
 	 */
-	async deleteMany(keys: PrimaryKey[], opts?: MutationOptions): Promise<PrimaryKey[]> {
-		await this.checkRemainingAdminExistence(keys);
+	override async deleteMany(keys: PrimaryKey[], opts?: MutationOptions): Promise<PrimaryKey[]> {
+		try {
+			await this.checkRemainingAdminExistence(keys);
+		} catch (err: any) {
+			(opts || (opts = {})).preMutationException = err;
+		}
 
 		await this.knex('directus_notifications').update({ sender: null }).whereIn('sender', keys);
 
@@ -272,8 +286,8 @@ export class UsersService extends ItemsService {
 		return keys;
 	}
 
-	async deleteByQuery(query: Query, opts?: MutationOptions): Promise<PrimaryKey[]> {
-		const primaryKeyField = this.schema.collections[this.collection].primary;
+	override async deleteByQuery(query: Query, opts?: MutationOptions): Promise<PrimaryKey[]> {
+		const primaryKeyField = this.schema.collections[this.collection]!.primary;
 		const readQuery = cloneDeep(query);
 		readQuery.fields = [primaryKeyField];
 
@@ -292,8 +306,14 @@ export class UsersService extends ItemsService {
 	}
 
 	async inviteUser(email: string | string[], role: string, url: string | null, subject?: string | null): Promise<void> {
-		if (url && isUrlAllowed(url, env.USER_INVITE_URL_ALLOW_LIST) === false) {
-			throw new InvalidPayloadException(`Url "${url}" can't be used to invite users.`);
+		const opts: MutationOptions = {};
+
+		try {
+			if (url && isUrlAllowed(url, env['USER_INVITE_URL_ALLOW_LIST']) === false) {
+				throw new InvalidPayloadException(`Url "${url}" can't be used to invite users.`);
+			}
+		} catch (err: any) {
+			opts.preMutationException = err;
 		}
 
 		const emails = toArray(email);
@@ -304,13 +324,13 @@ export class UsersService extends ItemsService {
 
 		for (const email of emails) {
 			const payload = { email, scope: 'invite' };
-			const token = jwt.sign(payload, env.SECRET as string, { expiresIn: '7d', issuer: 'directus' });
+			const token = jwt.sign(payload, env['SECRET'] as string, { expiresIn: '7d', issuer: 'directus' });
 			const subjectLine = subject ?? "You've been invited";
-			const inviteURL = url ? new Url(url) : new Url(env.PUBLIC_URL).addPath('admin', 'accept-invite');
+			const inviteURL = url ? new Url(url) : new Url(env['PUBLIC_URL']).addPath('admin', 'accept-invite');
 			inviteURL.setQuery('token', token);
 
 			// Create user first to verify uniqueness
-			await this.createOne({ email, role, status: 'invited' });
+			await this.createOne({ email, role, status: 'invited' }, opts);
 
 			await mailService.send({
 				to: email,
@@ -327,7 +347,7 @@ export class UsersService extends ItemsService {
 	}
 
 	async acceptInvite(token: string, password: string): Promise<void> {
-		const { email, scope } = jwt.verify(token, env.SECRET as string, { issuer: 'directus' }) as {
+		const { email, scope } = jwt.verify(token, env['SECRET'] as string, { issuer: 'directus' }) as {
 			email: string;
 			scope: string;
 		};
@@ -350,10 +370,6 @@ export class UsersService extends ItemsService {
 	}
 
 	async requestPasswordReset(email: string, url: string | null, subject?: string | null): Promise<void> {
-		if (url && isUrlAllowed(url, env.PASSWORD_RESET_URL_ALLOW_LIST) === false) {
-			throw new InvalidPayloadException(`Url "${url}" can't be used to reset passwords.`);
-		}
-
 		const STALL_TIME = 500;
 		const timeStart = performance.now();
 
@@ -368,6 +384,10 @@ export class UsersService extends ItemsService {
 			throw new ForbiddenException();
 		}
 
+		if (url && isUrlAllowed(url, env['PASSWORD_RESET_URL_ALLOW_LIST']) === false) {
+			throw new InvalidPayloadException(`Url "${url}" can't be used to reset passwords.`);
+		}
+
 		const mailService = new MailService({
 			schema: this.schema,
 			knex: this.knex,
@@ -375,10 +395,10 @@ export class UsersService extends ItemsService {
 		});
 
 		const payload = { email, scope: 'password-reset', hash: getSimpleHash('' + user.password) };
-		const token = jwt.sign(payload, env.SECRET as string, { expiresIn: '1d', issuer: 'directus' });
+		const token = jwt.sign(payload, env['SECRET'] as string, { expiresIn: '1d', issuer: 'directus' });
 		const acceptURL = url
 			? new Url(url).setQuery('token', token).toString()
-			: new Url(env.PUBLIC_URL).addPath('admin', 'reset-password').setQuery('token', token);
+			: new Url(env['PUBLIC_URL']).addPath('admin', 'reset-password').setQuery('token', token);
 		const subjectLine = subject ? subject : 'Password Reset Request';
 
 		await mailService.send({
@@ -397,7 +417,7 @@ export class UsersService extends ItemsService {
 	}
 
 	async resetPassword(token: string, password: string): Promise<void> {
-		const { email, scope, hash } = jwt.verify(token, env.SECRET as string, { issuer: 'directus' }) as {
+		const { email, scope, hash } = jwt.verify(token, env['SECRET'] as string, { issuer: 'directus' }) as {
 			email: string;
 			scope: string;
 			hash: string;
@@ -405,7 +425,13 @@ export class UsersService extends ItemsService {
 
 		if (scope !== 'password-reset' || !hash) throw new ForbiddenException();
 
-		await this.checkPasswordPolicy([password]);
+		const opts: MutationOptions = {};
+
+		try {
+			await this.checkPasswordPolicy([password]);
+		} catch (err: any) {
+			opts.preMutationException = err;
+		}
 
 		const user = await this.knex.select('id', 'status', 'password').from('directus_users').where({ email }).first();
 
@@ -423,6 +449,6 @@ export class UsersService extends ItemsService {
 			},
 		});
 
-		await service.updateOne(user.id, { password, status: 'active' });
+		await service.updateOne(user.id, { password, status: 'active' }, opts);
 	}
 }
