@@ -50,12 +50,12 @@
 					}}
 				</v-card-title>
 				<v-card-text v-if="peerDependencies.length > 0">
-					<v-notice type="warning">
+					<v-notice type="danger">
 						<div class="delete-dependencies">
 							{{ t('delete_collection_peer_dependencies') }}
 							<ul>
 								<li v-for="dependency in peerDependencies" :key="dependency.collection">
-									{{ dependency.collection }} ({{ dependency.field }})
+									{{ dependency.field }} ({{ dependency.collection }})
 								</li>
 							</ul>
 						</div>
@@ -80,6 +80,7 @@ import { computed, ref } from 'vue';
 import { Collection } from '@/types/collections';
 import { useCollectionsStore } from '@/stores/collections';
 import { useRelationsStore } from '@/stores/relations';
+import { useFieldsStore } from '@/stores/fields';
 
 type Props = {
 	collection: Collection;
@@ -90,6 +91,7 @@ const props = withDefaults(defineProps<Props>(), {});
 const { t } = useI18n();
 
 const collectionsStore = useCollectionsStore();
+const fieldsStore = useFieldsStore();
 const relationsStore = useRelationsStore();
 const { deleting, deleteActive, deleteCollection } = useDelete();
 
@@ -97,8 +99,10 @@ const peerDependencies = computed(() => {
 	return relationsStore.relations
 		.filter(
 			(relation) =>
-				relation.meta?.one_collection === props.collection.collection ||
-				relation.meta?.one_allowed_collections?.includes(props.collection.collection)
+				(relation.meta?.one_collection === props.collection.collection ||
+					relation.meta?.one_allowed_collections?.includes(props.collection.collection)) &&
+				relation.meta?.many_collection &&
+				relation.meta?.many_field
 		)
 		.map((relation) => ({
 			collection: relation.meta?.many_collection,
@@ -120,6 +124,10 @@ function useDelete() {
 		deleting.value = true;
 
 		try {
+			for (const dependency of peerDependencies.value) {
+				await fieldsStore.deleteField(dependency.collection!, dependency.field!);
+			}
+
 			await collectionsStore.deleteCollection(props.collection.collection);
 			deleteActive.value = false;
 		} finally {
