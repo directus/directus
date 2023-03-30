@@ -579,7 +579,9 @@ export class CollectionsService {
 
 					if (revisionsToDelete.length > 0) {
 						const keys = revisionsToDelete.map((record) => record.id);
-						await trx('directus_revisions').update({ parent: null }).whereIn('parent', keys);
+						for(let i = 0; i < keys.length; i += 10_000) {
+							await trx('directus_revisions').update({ parent: null }).whereIn('parent', keys.slice(i, i + 10_000));
+						}
 					}
 
 					await trx('directus_revisions').delete().where('collection', '=', collectionKey);
