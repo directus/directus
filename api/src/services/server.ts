@@ -112,9 +112,7 @@ export class ServerService {
 					  }
 					: false;
 
-				info['websocket'].heartbeat = env['WEBSOCKETS_HEARTBEAT_ENABLED']
-					? env['WEBSOCKETS_HEARTBEAT_PERIOD']
-					: false;
+				info['websocket'].heartbeat = env['WEBSOCKETS_HEARTBEAT_ENABLED'] ? env['WEBSOCKETS_HEARTBEAT_PERIOD'] : false;
 			} else {
 				info['websocket'] = false;
 			}
