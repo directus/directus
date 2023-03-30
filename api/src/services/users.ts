@@ -2,7 +2,7 @@ import { FailedValidationException } from '@directus/shared/exceptions';
 import type { Query } from '@directus/shared/types';
 import { getSimpleHash, toArray } from '@directus/shared/utils';
 import jwt from 'jsonwebtoken';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, isEmpty } from 'lodash';
 import { performance } from 'perf_hooks';
 import getDatabase from '../database';
 import env from '../env';
@@ -132,6 +132,17 @@ export class UsersService extends ItemsService {
 		if (otherAdminUsersCount === 0) {
 			throw new UnprocessableEntityException(`You can't change the active status of the last admin user.`);
 		}
+	}
+
+	/**
+	 * Get basic information of user identified by email
+	 */
+	private async getUserByEmail(email: string): Promise<{ id: string; role: string; status: string }> {
+		return await this.knex
+			.select('id', 'role', 'status')
+			.from('directus_users')
+			.whereRaw(`LOWER(??) = ?`, ['email', email.toLowerCase()])
+			.first();
 	}
 
 	/**
@@ -323,26 +334,38 @@ export class UsersService extends ItemsService {
 		});
 
 		for (const email of emails) {
-			const payload = { email, scope: 'invite' };
-			const token = jwt.sign(payload, env['SECRET'] as string, { expiresIn: '7d', issuer: 'directus' });
-			const subjectLine = subject ?? "You've been invited";
-			const inviteURL = url ? new Url(url) : new Url(env['PUBLIC_URL']).addPath('admin', 'accept-invite');
-			inviteURL.setQuery('token', token);
+			// check if user is known
+			const user = await this.getUserByEmail(email);
 
-			// Create user first to verify uniqueness
-			await this.createOne({ email, role, status: 'invited' }, opts);
+			// Create user first to verify uniqueness if unknown
+			if (isEmpty(user)) {
+				await this.createOne({ email, role, status: 'invited' }, opts);
 
-			await mailService.send({
-				to: email,
-				subject: subjectLine,
-				template: {
-					name: 'user-invitation',
-					data: {
-						url: inviteURL.toString(),
-						email,
+				// for known users update role if changed
+			} else if (user.status === 'invited' && user.role !== role) {
+				await this.updateOne(user.id, { role }, opts);
+			}
+
+			// send invite for new and already invited users
+			if (isEmpty(user) || user.status === 'invited') {
+				const payload = { email, scope: 'invite' };
+				const subjectLine = subject ?? "You've been invited";
+				const token = jwt.sign(payload, env['SECRET'] as string, { expiresIn: '7d', issuer: 'directus' });
+				const inviteURL = url ? new Url(url) : new Url(env['PUBLIC_URL']).addPath('admin', 'accept-invite');
+				inviteURL.setQuery('token', token);
+
+				await mailService.send({
+					to: email,
+					subject: subjectLine,
+					template: {
+						name: 'user-invitation',
+						data: {
+							url: inviteURL.toString(),
+							email,
+						},
 					},
-				},
-			});
+				});
+			}
 		}
 	}
 
