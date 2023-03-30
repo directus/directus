@@ -1,5 +1,5 @@
 import { expect, describe, test, vi, Mock, beforeEach, afterEach } from 'vitest';
-import { getWebsocketController, WebsocketController } from '../controllers';
+import { getWebSocketController, WebSocketController } from '../controllers';
 import emitter from '../../emitter';
 import type { WebSocketClient } from '../types';
 import { HeartbeatHandler } from './heartbeat';
@@ -7,7 +7,7 @@ import type { EventContext } from '@directus/shared/types';
 
 // mocking
 vi.mock('../controllers', () => ({
-	getWebsocketController: vi.fn(() => ({
+	getWebSocketController: vi.fn(() => ({
 		clients: new Set(),
 	})),
 }));
@@ -31,11 +31,11 @@ function mockClient() {
 	} as unknown as WebSocketClient;
 }
 
-describe('Websocket heartbeat handler', () => {
-	let controller: WebsocketController;
+describe('WebSocket heartbeat handler', () => {
+	let controller: WebSocketController;
 	beforeEach(() => {
 		vi.useFakeTimers();
-		controller = getWebsocketController();
+		controller = getWebSocketController();
 	});
 	afterEach(() => {
 		vi.useRealTimers();

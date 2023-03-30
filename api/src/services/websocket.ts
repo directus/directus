@@ -1,14 +1,14 @@
-import { getWebsocketController, WebsocketController } from '../websocket/controllers';
+import { getWebSocketController, WebSocketController } from '../websocket/controllers';
 import type { WebSocketClient } from '../websocket/types';
 import emitter from '../emitter';
 import type { ActionHandler } from '@directus/shared/types';
 import type { WebSocketMessage } from '../websocket/messages';
 
-export class WebsocketService {
-	private controller: WebsocketController;
+export class WebSocketService {
+	private controller: WebSocketController;
 
 	constructor() {
-		this.controller = getWebsocketController();
+		this.controller = getWebSocketController();
 	}
 
 	on(event: 'connect' | 'message' | 'error' | 'close', callback: ActionHandler) {

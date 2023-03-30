@@ -1,27 +1,27 @@
 import type { Server as httpServer } from 'http';
 import { ServiceUnavailableException } from '../../exceptions';
 import { GraphQLSubscriptionController } from './graphql';
-import { WebsocketController } from './rest';
+import { WebSocketController } from './rest';
 import env from '../../env';
 import { toBoolean } from '../../utils/to-boolean';
 
-let websocketController: WebsocketController | undefined;
+let websocketController: WebSocketController | undefined;
 let subscriptionController: GraphQLSubscriptionController | undefined;
 
-export function createWebsocketController(server: httpServer) {
+export function createWebSocketController(server: httpServer) {
 	if (toBoolean(env['WEBSOCKETS_REST_ENABLED'])) {
-		websocketController = new WebsocketController(server);
+		websocketController = new WebSocketController(server);
 	}
 }
 
-export function getWebsocketController() {
+export function getWebSocketController() {
 	if (!toBoolean(env['WEBSOCKETS_ENABLED']) || !toBoolean(env['WEBSOCKETS_REST_ENABLED'])) {
-		throw new ServiceUnavailableException('Websocket server is disabled', {
+		throw new ServiceUnavailableException('WebSocket server is disabled', {
 			service: 'get-websocket-controller',
 		});
 	}
 	if (!websocketController) {
-		throw new ServiceUnavailableException('Websocket server is not initialized', {
+		throw new ServiceUnavailableException('WebSocket server is not initialized', {
 			service: 'get-websocket-controller',
 		});
 	}

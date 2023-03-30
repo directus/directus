@@ -8,7 +8,7 @@ import type { EventContext } from '@directus/shared/types';
 
 // mocking
 vi.mock('../controllers', () => ({
-	getWebsocketController: vi.fn(() => ({
+	getWebSocketController: vi.fn(() => ({
 		clients: new Set(),
 	})),
 }));
@@ -29,7 +29,7 @@ function mockClient() {
 	} as unknown as WebSocketClient;
 }
 
-describe('Websocket heartbeat handler', () => {
+describe('WebSocket heartbeat handler', () => {
 	let handler: ItemsHandler;
 	beforeEach(() => {
 		vi.useFakeTimers();

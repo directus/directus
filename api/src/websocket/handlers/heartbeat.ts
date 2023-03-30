@@ -1,7 +1,7 @@
 import emitter from '../../emitter';
 import { fmtMessage, getMessageType } from '../utils/message';
 import type { WebSocketClient } from '../types';
-import { WebsocketController, getWebsocketController } from '../controllers';
+import { WebSocketController, getWebSocketController } from '../controllers';
 import type { ActionHandler } from '@directus/shared/types';
 import { WebSocketMessage } from '../messages';
 import env from '../../env';
@@ -11,10 +11,10 @@ const HEARTBEAT_FREQUENCY = Number(env['WEBSOCKETS_HEARTBEAT_FREQUENCY']) * 1000
 
 export class HeartbeatHandler {
 	private pulse: NodeJS.Timer | undefined;
-	private controller: WebsocketController;
+	private controller: WebSocketController;
 
-	constructor(controller?: WebsocketController) {
-		this.controller = controller ?? getWebsocketController();
+	constructor(controller?: WebSocketController) {
+		this.controller = controller ?? getWebSocketController();
 		emitter.onAction('websocket.message', ({ client, message }) => {
 			try {
 				this.onMessage(client, WebSocketMessage.parse(message));

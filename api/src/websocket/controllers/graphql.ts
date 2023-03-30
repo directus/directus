@@ -7,7 +7,7 @@ import { GraphQLService } from '../../services';
 import env from '../../env';
 import SocketController from './base';
 import type { AuthenticationState, GraphQLSocket, UpgradeContext, WebSocketClient } from '../types';
-import { handleWebsocketException } from '../exceptions';
+import { handleWebSocketException } from '../exceptions';
 import { authenticateConnection, refreshAccountability } from '../authenticate';
 import { ConnectionParams, WebSocketMessage } from '../messages';
 import { getMessageType } from '../utils/message';
@@ -70,7 +70,7 @@ export class GraphQLSubscriptionController extends SocketController {
 							}
 							await cb(JSON.stringify(message));
 						} catch (error) {
-							handleWebsocketException(client, error, MessageType.Error);
+							handleWebSocketException(client, error, MessageType.Error);
 						}
 					});
 				},

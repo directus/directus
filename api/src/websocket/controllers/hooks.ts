@@ -4,7 +4,7 @@ import type { WebSocketEvent } from '../messages';
 
 let actionsRegistered = false;
 
-export function registerWebsocketEvents() {
+export function registerWebSocketEvents() {
 	if (actionsRegistered) return;
 	actionsRegistered = true;
 

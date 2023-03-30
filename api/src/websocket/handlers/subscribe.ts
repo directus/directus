@@ -5,7 +5,7 @@ import { fmtMessage, getMessageType } from '../utils/message';
 import { refreshAccountability } from '../authenticate';
 import { CollectionsService, FieldsService, MetaService } from '../../services';
 import { sanitizeQuery } from '../../utils/sanitize-query';
-import { handleWebsocketException, WebSocketException } from '../exceptions';
+import { handleWebSocketException, WebSocketException } from '../exceptions';
 import type { Accountability, SchemaOverview } from '@directus/shared/types';
 import { WebSocketSubscribeMessage } from '../messages';
 import { getMessenger, Messenger } from '../../messenger';
@@ -27,7 +27,7 @@ export class SubscribeHandler {
 	constructor() {
 		this.subscriptions = {};
 		this.messenger = getMessenger();
-		this.bindWebsocket();
+		this.bindWebSocket();
 		// listen to the Redis pub/sub and dispatch
 		this.messenger.subscribe('websocket.event', (message: Record<string, any>) => {
 			try {
@@ -40,14 +40,14 @@ export class SubscribeHandler {
 	/**
 	 * Hook into websocket client lifecycle events
 	 */
-	bindWebsocket() {
+	bindWebSocket() {
 		// listen to incoming messages on the connected websockets
 		emitter.onAction('websocket.message', ({ client, message }) => {
 			if (!['subscribe', 'unsubscribe'].includes(getMessageType(message))) return;
 			try {
 				this.onMessage(client, WebSocketSubscribeMessage.parse(message));
 			} catch (error) {
-				handleWebsocketException(client, error, 'subscribe');
+				handleWebSocketException(client, error, 'subscribe');
 			}
 		});
 		// unsubscribe when a connection drops
@@ -111,7 +111,7 @@ export class SubscribeHandler {
 
 				client.send(fmtMessage('subscription', result, subscription.uid));
 			} catch (err) {
-				handleWebsocketException(client, err, 'subscribe');
+				handleWebSocketException(client, err, 'subscribe');
 			}
 		}
 	}
@@ -156,7 +156,7 @@ export class SubscribeHandler {
 				// send an initial response
 				client.send(fmtMessage('subscription', data, subscription.uid));
 			} catch (err) {
-				handleWebsocketException(client, err, 'subscribe');
+				handleWebSocketException(client, err, 'subscribe');
 			}
 		}
 		if (getMessageType(message) === 'unsubscribe') {

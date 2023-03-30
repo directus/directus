@@ -4,7 +4,7 @@ import type { WebSocketClient } from '../types';
 import { fmtMessage, getMessageType } from '../utils/message';
 import emitter from '../../emitter';
 import { sanitizeQuery } from '../../utils/sanitize-query';
-import { handleWebsocketException, WebSocketException } from '../exceptions';
+import { handleWebSocketException, WebSocketException } from '../exceptions';
 import { WebSocketItemsMessage } from '../messages';
 
 export class ItemsHandler {
@@ -15,10 +15,10 @@ export class ItemsHandler {
 				const parsedMessage = WebSocketItemsMessage.parse(message);
 				this.onMessage(client, parsedMessage).catch((err) => {
 					// this catch is required because the async onMessage function is not awaited
-					handleWebsocketException(client, err, 'items');
+					handleWebSocketException(client, err, 'items');
 				});
 			} catch (err) {
-				handleWebsocketException(client, err, 'items');
+				handleWebSocketException(client, err, 'items');
 			}
 		});
 	}

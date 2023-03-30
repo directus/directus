@@ -17,11 +17,11 @@ import { getConfigFromEnv } from './utils/get-config-from-env';
 import { toBoolean } from './utils/to-boolean';
 import {
 	createSubscriptionController,
-	createWebsocketController,
+	createWebSocketController,
 	getSubscriptionController,
-	getWebsocketController,
+	getWebSocketController,
 } from './websocket/controllers';
-import { startWebsocketHandlers } from './websocket/handlers';
+import { startWebSocketHandlers } from './websocket/handlers';
 
 export async function createServer(): Promise<http.Server> {
 	const server = http.createServer(await createApp());
@@ -92,8 +92,8 @@ export async function createServer(): Promise<http.Server> {
 
 	if (toBoolean(env['WEBSOCKETS_ENABLED']) === true) {
 		createSubscriptionController(server);
-		createWebsocketController(server);
-		startWebsocketHandlers();
+		createWebSocketController(server);
+		startWebSocketHandlers();
 	}
 
 	const terminusOptions: TerminusOptions = {
@@ -116,7 +116,7 @@ export async function createServer(): Promise<http.Server> {
 
 	async function onSignal() {
 		getSubscriptionController()?.terminate();
-		getWebsocketController()?.terminate();
+		getWebSocketController()?.terminate();
 		const database = getDatabase();
 		await database.destroy();
 

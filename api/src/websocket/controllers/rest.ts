@@ -5,18 +5,18 @@ import env from '../../env';
 import SocketController from './base';
 import emitter from '../../emitter';
 import { refreshAccountability } from '../authenticate';
-import { handleWebsocketException, WebSocketException } from '../exceptions';
+import { handleWebSocketException, WebSocketException } from '../exceptions';
 import logger from '../../logger';
 import { WebSocketMessage } from '../messages';
 import { parseJSON } from '@directus/shared/utils';
 
-export class WebsocketController extends SocketController {
+export class WebSocketController extends SocketController {
 	constructor(httpServer: httpServer) {
 		super(httpServer, 'WEBSOCKETS_REST');
 		this.server.on('connection', (ws: WebSocket, auth: AuthenticationState) => {
 			this.bindEvents(this.createClient(ws, auth));
 		});
-		logger.info(`Websocket Server started at ws://${env['HOST']}:${env['PORT']}${this.endpoint}`);
+		logger.info(`WebSocket Server started at ws://${env['HOST']}:${env['PORT']}${this.endpoint}`);
 	}
 	private bindEvents(client: WebSocketClient) {
 		client.on('parsed-message', async (message: WebSocketMessage) => {
@@ -25,7 +25,7 @@ export class WebsocketController extends SocketController {
 				client.accountability = await refreshAccountability(client.accountability);
 				emitter.emitAction('websocket.message', { message, client });
 			} catch (error) {
-				handleWebsocketException(client, error, 'server');
+				handleWebSocketException(client, error, 'server');
 				return;
 			}
 		});

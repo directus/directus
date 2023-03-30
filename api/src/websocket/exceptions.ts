@@ -42,7 +42,7 @@ export class WebSocketException extends Error {
 	}
 }
 
-export function handleWebsocketException(client: WebSocketClient | WebSocket, error: unknown, type?: string): void {
+export function handleWebSocketException(client: WebSocketClient | WebSocket, error: unknown, type?: string): void {
 	if (error instanceof BaseException) {
 		client.send(WebSocketException.fromException(error, type).toMessage());
 		return;
@@ -56,5 +56,5 @@ export function handleWebsocketException(client: WebSocketClient | WebSocket, er
 		return;
 	}
 	// unhandled exceptions
-	logger.error(`Websocket unhandled exception ${JSON.stringify({ type, error })}`);
+	logger.error(`WebSocket unhandled exception ${JSON.stringify({ type, error })}`);
 }
