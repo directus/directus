@@ -15,7 +15,7 @@ vi.mock('../../env', async () => {
 	const actual = (await vi.importActual('../../env')) as { default: Record<string, any> };
 	const MOCK_ENV = {
 		...actual.default,
-		WEBSOCKETS_HEARTBEAT_FREQUENCY: 1,
+		WEBSOCKETS_HEARTBEAT_PERIOD: 1,
 	};
 	return {
 		default: MOCK_ENV,
