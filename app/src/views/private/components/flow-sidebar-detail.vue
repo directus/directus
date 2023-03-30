@@ -61,6 +61,7 @@ import { FlowRaw } from '@directus/shared/types';
 import { computed, ref, toRefs, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { translate } from '@/utils/translate-object-values';
+import formatTitle from '@directus/format-title';
 
 interface Props {
 	collection: string;
@@ -137,7 +138,10 @@ const confirmDetails = computed(() => {
 
 	return {
 		description: flow.options.confirmationDescription,
-		fields: flow.options.fields,
+		fields: (flow.options.fields ?? []).map((field: Record<string, any>) => ({
+			...field,
+			name: !field.name && field.field ? formatTitle(field.field) : field.name,
+		})),
 	};
 });
 

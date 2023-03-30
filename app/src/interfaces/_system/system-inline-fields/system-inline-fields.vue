@@ -10,6 +10,7 @@
 <script lang="ts" setup>
 import { FIELD_TYPES_SELECT } from '@/constants';
 import { translate } from '@/utils/translate-object-values';
+import formatTitle from '@directus/format-title';
 import { Field } from '@directus/shared/types';
 import { set } from 'lodash';
 import { computed } from 'vue';
@@ -30,7 +31,9 @@ const repeaterValue = computed({
 			props.value?.map((fieldObj) => {
 				const { field, type, name, meta, schema } = fieldObj;
 
-				const flattenedField: Record<string, any> = { field, type, name };
+				const fieldName = !name && field ? formatTitle(field) : name;
+
+				const flattenedField: Record<string, any> = { field, type, name: fieldName };
 
 				for (const [k, v] of Object.entries(meta ?? {})) {
 					flattenedField[`meta.${k}`] = v;
