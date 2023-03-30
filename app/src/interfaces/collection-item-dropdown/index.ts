@@ -9,7 +9,6 @@ export default defineInterface({
 	icon: 'arrow_right_alt',
 	component: InterfaceSimpleDropdownM2o,
 	types: ['json'],
-	group: 'selection',
 	options: [
 		{
 			field: 'selectedCollection',
