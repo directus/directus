@@ -43,7 +43,7 @@ export default abstract class SocketController {
 		this.clients = new Set();
 		this.authInterval = null;
 
-		const { endpoint, authentication, maxConnections } = this.getEnironmentConfig(configPrefix);
+		const { endpoint, authentication, maxConnections } = this.getEnvironmentConfig(configPrefix);
 		this.endpoint = endpoint;
 		this.authentication = authentication;
 		this.maxConnections = maxConnections;
@@ -53,7 +53,7 @@ export default abstract class SocketController {
 		this.checkClientTokens();
 		registerWebSocketEvents();
 	}
-	protected getEnironmentConfig(configPrefix: string): {
+	protected getEnvironmentConfig(configPrefix: string): {
 		endpoint: string;
 		authentication: {
 			mode: AuthMode;
