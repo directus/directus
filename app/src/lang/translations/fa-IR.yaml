@@ -512,6 +512,13 @@ activity_log: لاگ فعالیت ها
 relationship_not_setup: این رابطه به درستی پیکربندی نشده است
 copy: کپی
 action: فعالیت
+webhooks: هوک های تحت وب
+decimals: رقم اعشار
+value_decimals: مقدار اعشار
+min_value: حداقل مقدار
+max_value: حداکثر مقدار
+automatic: خودکار
+field_width: عرض کامل
 add_filter: افزودن فیلتر
 lower_limit: حد پایینی...
 user_directory: فهرست کاربران
