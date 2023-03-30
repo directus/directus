@@ -46,24 +46,24 @@
 				</v-input>
 			</div>
 
-			<v-list>
+			<v-list :loading="loading">
 				<v-list-item
-					v-for="translation in translations"
-					:key="translation.key"
+					v-for="translationKey in translations"
+					:key="translationKey"
 					class="translation-key"
-					:class="{ selected: localValue && translation.key === localValueWithoutPrefix }"
+					:class="{ selected: localValue && translationKey === localValueWithoutPrefix }"
 					clickable
-					@click="selectKey(translation.key!)"
+					@click="selectKey(translationKey)"
 				>
 					<v-list-item-icon>
 						<v-icon name="translate" />
 					</v-list-item-icon>
-					<v-list-item-content><v-highlight :text="translation.key" :query="searchValue" /></v-list-item-content>
+					<v-list-item-content><v-highlight :text="translationKey" :query="searchValue" /></v-list-item-content>
 					<v-list-item-icon class="info">
-						<TranslationStringsTooltip :translations="translation.translations" hide-display-text />
+						<TranslationStringsTooltip :translations="translationMap[translationKey]" hide-display-text />
 					</v-list-item-icon>
 				</v-list-item>
-				<v-list-item class="new-translation-string" clickable @click="openNewTranslationStringDialog">
+				<v-list-item class="new-translation-string" clickable @click="openNewTranslationStringDrawer">
 					<v-list-item-icon>
 						<v-icon name="add" />
 					</v-list-item-icon>
@@ -75,18 +75,18 @@
 		</v-menu>
 
 		<TranslationStringsDrawer
-			:model-value="isTranslationStringDialogOpen"
+			:model-value="isTranslationStringDrawerOpen"
 			:translation-string="editingTranslationString"
-			@update:model-value="updateTranslationStringsDialog"
+			@close-drawer="closeDrawer"
 			@saved-key="setValue(`${translationPrefix}${$event}`)"
 		/>
 	</div>
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useTranslationStrings, TranslationString } from '@/composables/use-translation-strings';
+import { useTranslationStrings, DisplayTranslationString } from '@/composables/use-translation-strings';
 import TranslationStringsDrawer from '@/modules/settings/routes/translation-strings/translation-strings-drawer.vue';
 import TranslationStringsTooltip from '@/modules/settings/routes/translation-strings/translation-strings-tooltip.vue';
 
@@ -115,16 +115,24 @@ const hasValidKey = ref<boolean>(false);
 const isFocused = ref<boolean>(false);
 const searchValue = ref<string | null>(null);
 
-const { translationStrings } = useTranslationStrings();
+const { loading, translationKeys, translationMap, loadAllTranslations } = useTranslationStrings();
 
-const isTranslationStringDialogOpen = ref<boolean>(false);
+onMounted(() => {
+	loadAllTranslations();
+});
 
-const editingTranslationString = ref<TranslationString | null>(null);
+const isTranslationStringDrawerOpen = ref<boolean>(false);
+
+const editingTranslationString = ref<DisplayTranslationString | null>(null);
 
 const translations = computed(() => {
-	const keys = translationStrings.value ?? [];
-
-	return !searchValue.value ? keys : keys.filter((key) => key.key?.includes(searchValue.value!));
+	// console.log(translationKeys.value);
+	const keys = translationKeys.value ?? [];
+	const filteredKeys = !searchValue.value ? keys : keys.filter((key) => key.includes(searchValue.value!));
+	if (filteredKeys.length > 100) {
+		return filteredKeys.slice(0, 100);
+	}
+	return filteredKeys;
 });
 
 const localValue = computed<string | null>({
@@ -170,16 +178,14 @@ function checkKeyValidity() {
 	hasValidKey.value = localValue.value?.startsWith(translationPrefix) ?? false;
 }
 
-function openNewTranslationStringDialog() {
+function openNewTranslationStringDrawer() {
 	menuEl.value.deactivate();
-	isTranslationStringDialogOpen.value = true;
+	isTranslationStringDrawerOpen.value = true;
 }
 
-function updateTranslationStringsDialog(val: boolean) {
-	if (val) return;
-
+function closeDrawer() {
 	editingTranslationString.value = null;
-	isTranslationStringDialogOpen.value = val;
+	isTranslationStringDrawerOpen.value = false;
 }
 </script>
 

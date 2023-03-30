@@ -17,7 +17,32 @@ export const useSettingsStore = defineStore({
 			const userStore = useUserStore();
 			if (!userStore.currentUser || 'share' in userStore.currentUser) return;
 
-			const response = await api.get(`/settings`);
+			const response = await api.get(`/settings`, {
+				params: {
+					fields: [
+						'project_name',
+						'project_url',
+						'project_color',
+						'project_logo',
+						'public_foreground',
+						'public_background',
+						'public_note',
+						'auth_login_attempts',
+						'auth_password_policy',
+						'storage_asset_transform',
+						'storage_asset_presets',
+						'custom_css',
+						'storage_default_folder',
+						'basemaps',
+						'mapbox_key',
+						'module_bar',
+						'project_descriptor',
+						'default_language',
+						'custom_aspect_ratios',
+						'image_editor',
+					],
+				},
+			});
 			this.settings = response.data.data;
 		},
 
@@ -47,15 +72,23 @@ export const useSettingsStore = defineStore({
 			}
 		},
 
-		async fetchRawTranslationStrings() {
+		async fetchRawTranslationStrings(lang: string) {
 			const response = await api.get(`/settings`, {
 				params: {
-					fields: ['translation_strings'],
+					fields: ['translations'],
+					alias: {
+						translations: 'json(translation_strings$[*])',
+					},
+					deep: {
+						translations: {
+							_filter: {
+								'$.lang': { _eq: lang },
+							},
+						},
+					},
 				},
 			});
-			const { translation_strings } = response.data.data;
-			if (this.settings) this.settings.translation_strings = translation_strings;
-			return translation_strings;
+			return response.data.data?.translations ?? [];
 		},
 	},
 });
