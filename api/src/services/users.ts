@@ -137,9 +137,9 @@ export class UsersService extends ItemsService {
 	/**
 	 * Get basic information of user identified by email
 	 */
-	private async getUserByEmail(email: string): Promise<{ id: string; role: string; status: string }> {
+	private async getUserByEmail(email: string): Promise<{ id: string; role: string; status: string; password: string }> {
 		return await this.knex
-			.select('id', 'role', 'status')
+			.select('id', 'role', 'status', 'password')
 			.from('directus_users')
 			.whereRaw(`LOWER(??) = ?`, ['email', email.toLowerCase()])
 			.first();
@@ -386,7 +386,7 @@ export class UsersService extends ItemsService {
 
 		if (scope !== 'invite') throw new ForbiddenException();
 
-		const user = await this.knex.select('id', 'status').from('directus_users').where({ email }).first();
+		const user = await this.getUserByEmail(email);
 
 		if (user?.status !== 'invited') {
 			throw new InvalidPayloadException(`Email address ${email} hasn't been invited.`);
@@ -405,11 +405,7 @@ export class UsersService extends ItemsService {
 		const STALL_TIME = 500;
 		const timeStart = performance.now();
 
-		const user = await this.knex
-			.select('status', 'password')
-			.from('directus_users')
-			.whereRaw('LOWER(??) = ?', ['email', email.toLowerCase()])
-			.first();
+		const user = await this.getUserByEmail(email);
 
 		if (user?.status !== 'active') {
 			await stall(STALL_TIME, timeStart);
@@ -465,7 +461,7 @@ export class UsersService extends ItemsService {
 			opts.preMutationException = err;
 		}
 
-		const user = await this.knex.select('id', 'status', 'password').from('directus_users').where({ email }).first();
+		const user = await this.getUserByEmail(email);
 
 		if (user?.status !== 'active' || hash !== getSimpleHash('' + user.password)) {
 			throw new ForbiddenException();
