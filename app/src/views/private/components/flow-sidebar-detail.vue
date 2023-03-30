@@ -95,7 +95,7 @@ const manualFlows = computed(() =>
 		)
 		.map((flow) => ({
 			...flow,
-			options: translate(flow.options),
+			options: flow.options ? translate(flow.options) : null,
 		}))
 );
 
@@ -163,7 +163,7 @@ const onFlowClick = async (flowId: string) => {
 
 	if (!flow) return;
 
-	if (hasEdits.value || flow.options.requireConfirmation) {
+	if (hasEdits.value || flow.options?.requireConfirmation) {
 		confirmRunFlow.value = flowId;
 	} else {
 		runManualFlow(flowId);
