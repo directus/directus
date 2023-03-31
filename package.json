@@ -48,7 +48,8 @@
 	"packageManager": "pnpm@8.1.0",
 	"engines": {
 		"node": ">=16.0.0",
-		"npm": ">=8.5.0"
+		"npm": ">=8.5.0",
+		"pnpm": ">=8.0.0"
 	},
 	"volta": {
 		"node": "16.15.0",
