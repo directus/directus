@@ -56,7 +56,7 @@ required: Nauðsynlegt
 create_role: Búa til Hlutverk
 create_user: Búa til Notanda
 message: Skilaboð
-create_webhook: Búa til Vefkrók
+create_webhook: Búa til Vefkrækju
 create_translation_string: Búa til Þýðingar Streng
 no_translation_string: Engir Þýðingar Strengir
 edit_translation_string: Breyta þýðingastreng
@@ -363,22 +363,58 @@ interfaces:
     primary: Aðal
   input-code:
     code: Kóði
+  select-color:
+    color: Litur
   select-dropdown:
     choices_value_placeholder: Skráðu Gildi...
+  file:
+    file: Skrá
+  files:
+    files: Skrár
+  select-icon:
+    icon: Íkon
+    search_for_icon: Leita að íkon...
+  file-image:
+    image: Mynd
   input-rich-text-md:
     edit: Breyta
+    preview: Forskoða
+    box: Blokk / Í línu
+  map:
+    map: Kort
+    zoom: Aðdráttur
+  presentation-notice:
+    notice: Tilkynning
   system-folder:
     folder: Mappa
   list:
     sort: Flokka
+  input-multiline:
+    textarea: Textasvæði
+  input-translated-string:
+    input-translated-string: Þýddir strengir
+    search_placeholder: Leita...
   boolean:
+    color_on: Litur Virkt
+    color_off: Litur Óvirkt
     label_default: Virkt
   user:
+    user: Notandi
     modes:
+      auto: Sjálfvirkt
       dropdown: Fellilisti
 displays:
   translations:
     translations: Þýðingar
+  boolean:
+    icon_on: Íkon Virkt
+    icon_off: Íkon Óvirkt
+    color_on: Litur Virkt
+    color_off: Litur Óvirkt
+  collection:
+    collection: Safn
+  color:
+    color: Litur
   datetime:
     long: Langt
     short: Stutt
@@ -399,15 +435,23 @@ displays:
     background: Bakgrunnur
     icon: Íkon
     text: Texti
+  icon:
+    filled: Fyllt
+  image:
+    image: Mynd
+    circle: Hringur
   labels:
     choices_value_placeholder: Skráðu Gildi...
   rating:
     simple: Einfalt
   user:
+    user: Notandi
     avatar: Auðkennismynd
     name: Nafn
+    both: Bæði
 layouts:
   cards:
+    image_source: Mynd Uppruni
     title: Titill
   tabular:
     tabular: Tafla
@@ -429,6 +473,7 @@ layouts:
     user: Spjald Notandi
     image: Spjald Mynd
     crop: Sneyða
+    advanced: Háþróað
     edit_group: Breyta Hóp
     delete_group: Eyða Hóp
     add_group: Bæta við Hóp
@@ -439,6 +484,7 @@ vertical: Lóðrétt
 x_axis: X-Ás
 y_axis: Y-Ás
 both: Bæði
+function: Föll
 half_circle: Hálf Hringur
 full_circle: Heill Hringur
 thin: Þunnt
@@ -450,6 +496,8 @@ donut: Kleinuhringur
 panels:
   metric:
     field: Reitur
+  time_series:
+    date_field: Dagsetning Reitur
   label:
     name: Merking
   list:
@@ -479,7 +527,9 @@ operations:
   mail:
     name: Senda Tölvupóst
     to: Til
+    body: Líkami
   notification:
+    name: Senda Tilkynningu
     recipient: Notandi
     message: Skilaboð
   request:
@@ -490,6 +540,7 @@ operations:
     header: Haus
   sleep:
     name: Svefn
+    milliseconds: Millisekúndur
   trigger:
     flows: Flæði
     flow: Flæði
