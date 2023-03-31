@@ -3,7 +3,7 @@ import * as common from '@common/index';
 import request from 'supertest';
 import vendors from '@common/get-dbs-to-test';
 import knex, { Knex } from 'knex';
-import { FieldRaw } from '@directus/shared/types';
+import type { FieldRaw } from '@directus/types';
 import { sortedUniq } from 'lodash';
 import { collection } from './crud.seed';
 import { requestGraphQL } from '@common/index';

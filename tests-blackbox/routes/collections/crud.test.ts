@@ -3,7 +3,7 @@ import * as common from '@common/index';
 import request from 'supertest';
 import vendors from '@common/get-dbs-to-test';
 import knex, { Knex } from 'knex';
-import { Collection } from '@directus/shared/types';
+import type { Collection } from '@directus/types';
 import { findIndex } from 'lodash';
 import { requestGraphQL } from '@common/index';
 

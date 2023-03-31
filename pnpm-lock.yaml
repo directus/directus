@@ -4,6 +4,12 @@ importers:
 
   .:
     devDependencies:
+      '@directus/types':
+        specifier: workspace:*
+        version: link:packages/types
+      '@directus/utils':
+        specifier: workspace:*
+        version: link:packages/utils
       '@types/jest':
         specifier: 29.4.4
         version: 29.4.4
@@ -947,6 +953,18 @@ importers:
 
   packages/extensions-sdk:
     dependencies:
+      '@directus/composables':
+        specifier: workspace:*
+        version: link:../composables
+      '@directus/constants':
+        specifier: workspace:*
+        version: link:../constants
+      '@directus/types':
+        specifier: workspace:*
+        version: link:../types
+      '@directus/utils':
+        specifier: workspace:*
+        version: link:../utils
       '@rollup/plugin-commonjs':
         specifier: 23.0.4
         version: 23.0.4(rollup@3.19.1)
@@ -1002,6 +1020,9 @@ importers:
         specifier: 6.0.0
         version: 6.0.0(@vue/compiler-sfc@3.2.47)
     devDependencies:
+      '@directus/tsconfig':
+        specifier: 0.0.6
+        version: 0.0.6
       '@types/fs-extra':
         specifier: 11.0.1
         version: 11.0.1
@@ -1296,7 +1317,7 @@ importers:
   packages/utils:
     dependencies:
       '@directus/constants':
-        specifier: workspace:9.23.4
+        specifier: workspace:*
         version: link:../constants
       '@directus/storage':
         specifier: workspace:*
@@ -1327,7 +1348,7 @@ importers:
         specifier: 0.0.6
         version: 0.0.6
       '@directus/types':
-        specifier: workspace:9.23.4
+        specifier: workspace:*
         version: link:../types
       '@ngneat/falso':
         specifier: 6.4.0

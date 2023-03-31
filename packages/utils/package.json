@@ -33,7 +33,7 @@
 		},
 		"./package.json": "./package.json"
 	},
-	"main": "dist/index.js",
+	"main": "dist/shared/index.js",
 	"files": [
 		"dist",
 		"!**/*.d.ts?(.map)"
@@ -42,7 +42,7 @@
 		"access": "public"
 	},
 	"dependencies": {
-		"@directus/constants": "workspace:9.23.4",
+		"@directus/constants": "workspace:*",
 		"@directus/storage": "workspace:*",
 		"date-fns": "2.29.3",
 		"fs-extra": "11.1.0",
@@ -54,7 +54,7 @@
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "0.0.6",
-		"@directus/types": "workspace:9.23.4",
+		"@directus/types": "workspace:*",
 		"@ngneat/falso": "6.4.0",
 		"@types/fs-extra": "11.0.1",
 		"@types/lodash-es": "4.17.7",
