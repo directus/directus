@@ -1,3 +1,4 @@
+import { URL } from 'node:url';
 import { gte } from 'semver';
 import { fetch } from 'undici';
 
@@ -15,7 +16,7 @@ export const isUpToDate = async (name: string, version: string): Promise<string 
 	});
 
 	if (!response.ok) {
-		throw response.statusText;
+		throw new Error(`Couldn't find latest version for package "${name}": ${response.status} ${response.statusText}`);
 	}
 
 	const packageInformation = (await response.json()) as { 'dist-tags': { [key: string]: string } };
@@ -23,7 +24,7 @@ export const isUpToDate = async (name: string, version: string): Promise<string 
 	const latest = packageInformation?.['dist-tags']?.['latest'];
 
 	if (!latest) {
-		throw new Error();
+		throw new Error(`Couldn't find latest version for package "${name}"`);
 	}
 
 	const upToDate = gte(version, latest);
