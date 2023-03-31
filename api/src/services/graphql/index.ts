@@ -2261,6 +2261,21 @@ export class GraphQLService {
 					return true;
 				},
 			},
+			utils_random_string: {
+				type: GraphQLString,
+				args: {
+					length: GraphQLInt,
+				},
+				resolve: async (_, args) => {
+					const { nanoid } = await import('nanoid');
+
+					if (args['length'] && Number(args['length']) > 500) {
+						throw new InvalidPayloadException(`"length" can't be more than 500 characters`);
+					}
+
+					return nanoid(args['length'] ? Number(args['length']) : 32);
+				},
+			},
 			utils_hash_generate: {
 				type: GraphQLString,
 				args: {
