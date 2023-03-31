@@ -37,6 +37,9 @@ jobs:
           - oracle
           - cockroachdb
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
       - name: Prepare test env
         uses: ./.github/actions/prepare-test-env
 
