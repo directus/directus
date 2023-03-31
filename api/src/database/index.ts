@@ -2,7 +2,7 @@ import { createInspector } from '@directus/schema';
 import type { SchemaInspector } from '@directus/schema';
 import fse from 'fs-extra';
 import type { Knex } from 'knex';
-import knex from 'knex';
+import { knex } from 'knex';
 import { merge } from 'lodash-es';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
