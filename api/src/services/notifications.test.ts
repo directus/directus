@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, SpyInstance, vi } from 'vitest';
-import { ItemsService, NotificationsService } from './index.js';
+import { NotificationsService } from './notifications.js';
+import { ItemsService } from './items.js';
 
 vi.mock('../env.js', async () => {
 	const actual = (await vi.importActual('../env')) as { default: Record<string, any> };

@@ -10,17 +10,17 @@ import type { Snapshot, SnapshotDiffWithHash } from '../types/snapshot.js';
 import { applyDiff } from '../utils/apply-diff.js';
 import { getSnapshot } from '../utils/get-snapshot.js';
 
-vi.mock('../../package.json', () => ({ version: '0.0.0' }));
+vi.mock('../utils/package.js', () => ({ version: '0.0.0' }));
 
-vi.mock('../../src/database/index', () => {
+vi.mock('../../src/database/index.js', () => {
 	return { __esModule: true, default: vi.fn(), getDatabaseClient: vi.fn().mockReturnValue('postgres') };
 });
 
-vi.mock('../utils/get-snapshot', () => ({
+vi.mock('../utils/get-snapshot.js', () => ({
 	getSnapshot: vi.fn(),
 }));
 
-vi.mock('../utils/apply-diff', () => ({
+vi.mock('../utils/apply-diff.js', () => ({
 	applyDiff: vi.fn(),
 }));
 

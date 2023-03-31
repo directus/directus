@@ -4,8 +4,8 @@ import path from 'path';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { createCli } from './index.js';
 
-vi.mock('../../src/env', async () => {
-	const actual = (await vi.importActual('../../src/env')) as { default: Record<string, any> };
+vi.mock('../env.js', async () => {
+	const actual = (await vi.importActual('../env.js')) as { default: Record<string, any> };
 	const MOCK_ENV = {
 		...actual.default,
 		EXTENSIONS_PATH: '',
