@@ -54,7 +54,7 @@ export default defineComponent({
 				to: `/settings/roles`,
 			},
 			{
-				icon: 'bookmark_border',
+				icon: 'bookmark',
 				name: t('settings_presets'),
 				to: `/settings/presets`,
 			},

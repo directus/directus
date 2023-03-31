@@ -15,7 +15,7 @@ const defaultPreset: Omit<Preset, 'collection'> = {
 	layout_query: null,
 	layout_options: null,
 	refresh_interval: null,
-	icon: 'bookmark_outline',
+	icon: 'bookmark',
 	color: null,
 };
 

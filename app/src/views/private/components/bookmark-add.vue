@@ -56,7 +56,7 @@ export default defineComponent({
 
 		const bookmarkValue = reactive({
 			name: null,
-			icon: 'bookmark_outline',
+			icon: 'bookmark',
 			color: null,
 		});
 
@@ -72,7 +72,7 @@ export default defineComponent({
 
 		function cancel() {
 			bookmarkValue.name = null;
-			bookmarkValue.icon = 'bookmark_outline';
+			bookmarkValue.icon = 'bookmark';
 			bookmarkValue.color = null;
 			emit('update:modelValue', false);
 		}

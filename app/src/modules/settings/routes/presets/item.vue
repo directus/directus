@@ -502,7 +502,7 @@ function useForm() {
 				width: 'half',
 			},
 			schema: {
-				default_value: 'bookmark_outline',
+				default_value: 'bookmark',
 			},
 		},
 		{

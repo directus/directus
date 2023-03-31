@@ -128,7 +128,7 @@ function useEditBookmark() {
 	const editActive = ref(false);
 	const editValue = reactive({
 		name: props.bookmark.bookmark,
-		icon: props.bookmark?.icon ?? 'bookmark_outline',
+		icon: props.bookmark?.icon ?? 'bookmark',
 		color: props.bookmark?.color ?? null,
 	});
 	const editSaving = ref(false);
@@ -157,7 +157,7 @@ function useEditBookmark() {
 	function editCancel() {
 		editActive.value = false;
 		editValue.name = props.bookmark.bookmark;
-		editValue.icon = props.bookmark?.icon ?? 'bookmark_outline';
+		editValue.icon = props.bookmark?.icon ?? 'bookmark';
 		editValue.color = props.bookmark?.color ?? null;
 	}
 }
