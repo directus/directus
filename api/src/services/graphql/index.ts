@@ -1826,6 +1826,63 @@ export class GraphQLService {
 			},
 		});
 
+		if (this.accountability?.user) {
+			ServerInfo.addFields({
+				websocket: env['WEBSOCKETS_ENABLED']
+					? {
+							type: new GraphQLObjectType({
+								name: 'server_info_websocket',
+								fields: {
+									rest: {
+										type: env['WEBSOCKETS_REST_ENABLED']
+											? new GraphQLObjectType({
+													name: 'server_info_websocket_rest',
+													fields: {
+														authentication: {
+															type: new GraphQLEnumType({
+																name: 'server_info_websocket_rest_authentication',
+																values: {
+																	public: { value: 'public' },
+																	handshake: { value: 'handshake' },
+																	strict: { value: 'strict' },
+																},
+															}),
+														},
+														path: { type: GraphQLString },
+													},
+											  })
+											: GraphQLBoolean,
+									},
+									graphql: {
+										type: env['WEBSOCKETS_GRAPHQL_ENABLED']
+											? new GraphQLObjectType({
+													name: 'server_info_websocket_graphql',
+													fields: {
+														authentication: {
+															type: new GraphQLEnumType({
+																name: 'server_info_websocket_graphql_authentication',
+																values: {
+																	public: { value: 'public' },
+																	handshake: { value: 'handshake' },
+																	strict: { value: 'strict' },
+																},
+															}),
+														},
+														path: { type: GraphQLString },
+													},
+											  })
+											: GraphQLBoolean,
+									},
+									heartbeat: {
+										type: env['WEBSOCKETS_HEARTBEAT_ENABLED'] ? GraphQLInt : GraphQLBoolean,
+									},
+								},
+							}),
+					  }
+					: GraphQLBoolean,
+			});
+		}
+
 		if (this.accountability?.admin === true) {
 			ServerInfo.addFields({
 				directus: {
