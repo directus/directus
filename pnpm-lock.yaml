@@ -1246,18 +1246,12 @@ importers:
       '@directus/tsconfig':
         specifier: 0.0.6
         version: 0.0.6
-      '@ngneat/falso':
-        specifier: 6.4.0
-        version: 6.4.0
       '@types/express':
         specifier: 4.17.17
         version: 4.17.17
       '@types/geojson':
         specifier: 7946.0.10
         version: 7946.0.10
-      '@vitest/coverage-c8':
-        specifier: 0.29.3
-        version: 0.29.3(vitest@0.29.3)
       express:
         specifier: 4.18.2
         version: 4.18.2
@@ -1273,9 +1267,6 @@ importers:
       typescript:
         specifier: 4.9.5
         version: 4.9.5
-      vitest:
-        specifier: 0.29.3
-        version: 0.29.3(happy-dom@8.9.0)(sass@1.59.3)
       vue:
         specifier: 3.2.47
         version: 3.2.47
