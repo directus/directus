@@ -10,7 +10,7 @@ export {
 	defineOperationApi,
 	getFieldsFromTemplate,
 	getRelationType,
-} from '@directus/shared/utils';
+} from '@directus/utils';
 export {
 	useStores,
 	useApi,

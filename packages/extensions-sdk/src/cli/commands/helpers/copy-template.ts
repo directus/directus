@@ -1,7 +1,7 @@
 import path from 'path';
 import fse from 'fs-extra';
 import getTemplatePath from '../../utils/get-template-path';
-import { ExtensionType } from '@directus/shared/types';
+import { ExtensionType } from '@directus/types';
 import { Language } from '../../types';
 
 type TemplateFile = { type: 'config' | 'source'; path: string };

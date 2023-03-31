@@ -5,15 +5,15 @@ import {
 	EXTENSION_PKG_KEY,
 	EXTENSION_TYPES,
 	HYBRID_EXTENSION_TYPES,
-} from '@directus/shared/constants';
+} from '@directus/constants';
 import {
 	ApiExtensionType,
 	AppExtensionType,
 	ExtensionManifest,
 	ExtensionOptionsBundleEntries,
 	ExtensionOptionsBundleEntry,
-} from '@directus/shared/types';
-import { isIn, isTypeIn } from '@directus/shared/utils';
+} from '@directus/types';
+import { isIn, isTypeIn } from '@directus/utils';
 import commonjs from '@rollup/plugin-commonjs';
 import json from '@rollup/plugin-json';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
@@ -25,23 +25,23 @@ import fse from 'fs-extra';
 import ora from 'ora';
 import path from 'path';
 import {
-	OutputOptions as RollupOutputOptions,
 	Plugin,
-	rollup,
 	RollupError,
 	RollupOptions,
+	OutputOptions as RollupOutputOptions,
+	rollup,
 	watch as rollupWatch,
 } from 'rollup';
 import esbuild from 'rollup-plugin-esbuild';
 import styles from 'rollup-plugin-styles';
 import vue from 'rollup-plugin-vue';
-import { Language, RollupConfig, RollupMode } from '../types';
-import { getLanguageFromPath, isLanguage } from '../utils/languages';
-import { clear, log } from '../utils/logger';
-import tryParseJson from '../utils/try-parse-json';
-import generateBundleEntrypoint from './helpers/generate-bundle-entrypoint';
-import loadConfig from './helpers/load-config';
-import { validateSplitEntrypointOption } from './helpers/validate-cli-options';
+import type { Language, RollupConfig, RollupMode } from '../types.js';
+import { getLanguageFromPath, isLanguage } from '../utils/languages.js';
+import { clear, log } from '../utils/logger.js';
+import tryParseJson from '../utils/try-parse-json.js';
+import generateBundleEntrypoint from './helpers/generate-bundle-entrypoint.js';
+import loadConfig from './helpers/load-config.js';
+import { validateSplitEntrypointOption } from './helpers/validate-cli-options.js';
 
 type BuildOptions = {
 	type?: string;

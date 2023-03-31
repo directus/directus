@@ -1,6 +1,6 @@
-import { APP_EXTENSION_TYPES, API_EXTENSION_TYPES, HYBRID_EXTENSION_TYPES } from '@directus/shared/constants';
-import { ExtensionType } from '@directus/shared/types';
-import { isIn } from '@directus/shared/utils';
+import { APP_EXTENSION_TYPES, API_EXTENSION_TYPES, HYBRID_EXTENSION_TYPES } from '@directus/constants';
+import { ExtensionType } from '@directus/types';
+import { isIn } from '@directus/utils';
 import { Language } from '../../types';
 import getPackageVersion from '../../utils/get-package-version';
 import getSdkVersion from '../../utils/get-sdk-version';

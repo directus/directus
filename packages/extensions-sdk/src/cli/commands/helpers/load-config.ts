@@ -1,7 +1,7 @@
 import path from 'path';
 import fse from 'fs-extra';
 import { Config } from '../../types';
-import { pathToRelativeUrl } from '@directus/shared/utils/node';
+import { pathToRelativeUrl } from '@directus/utils/node';
 
 const CONFIG_FILE_NAMES = ['extension.config.js', 'extension.config.mjs', 'extension.config.cjs'];
 
