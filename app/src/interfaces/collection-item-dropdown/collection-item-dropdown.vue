@@ -48,7 +48,7 @@ type Value = {
 
 const props = withDefaults(
 	defineProps<{
-		value?: Value;
+		value?: Value | null;
 		selectedCollection: string;
 		template?: string | null;
 		disabled?: boolean;
@@ -78,7 +78,11 @@ const displayItem = ref<Record<string, any> | null>(null);
 const value = computed({
 	get: () => props.value,
 	set: (value) => {
-		if (value.key) emit('input', value);
+		if (value && value.key) {
+			emit('input', value);
+		} else {
+			emit('input', null);
+		}
 	},
 });
 
@@ -99,7 +103,7 @@ const requiredFields = computed(() => {
 watch(value, getDisplayItem, { immediate: true });
 
 async function getDisplayItem() {
-	if (!value.value.key) {
+	if (!value.value || !value.value.key) {
 		displayItem.value = null;
 		return;
 	}
