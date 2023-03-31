@@ -296,6 +296,7 @@ o2m_relationship: 일대다 관계
 m2m_relationship: 다대다 관계
 m2a_relationship: 다대다 관계
 invalid_item: 비정상적인 아이템
+modal: 모달
 next: 다음
 field_name: 필드 이름
 translations: 번역
@@ -787,10 +788,7 @@ label: 상표
 flows: 플로우
 flow: 플로우
 select_a_flow: 플로우 선택
-run_flow_on_current_collection: 현재 컬렉션에서 플로우 실행
-run_flow_on_current: 현재 항목에서 플로우 실행
 run_flow_on_current_edited_confirm: 이 항목은 이 플로우에 의해 업데이트될 수 있습니다. 실행하시겠습니까?
-run_flow_on_selected: 먼저 하나 이상의 항목 선택 | 선택한 항목 1개에서 플로우 실행 | {n} 선택한 항목에서 플로우 실행
 run_flow_success: '"{flow}" 플로우이 성공적으로 실행되었습니다.'
 trigger: 방아쇠
 trigger_options: 트리거 옵션
@@ -1644,7 +1642,6 @@ interfaces:
     add_label: '"새로 만들기" 라벨'
     sort: 정렬
     sort_placeholder: 수동
-    field_name_placeholder: 필드 이름 입력...
     field_note_placeholder: 필드 메모 입력...
     incompatible_data: 현재 데이터는 리피터 레이아웃과 호환되지 않으며 리피터 레이아웃에 항목을 추가할 때 재정의됩니다.
   slider:
