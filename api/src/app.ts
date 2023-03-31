@@ -3,7 +3,7 @@ import express, { Request, RequestHandler, Response } from 'express';
 import type { ServerResponse } from 'http';
 import { merge } from 'lodash-es';
 import { readFile } from 'node:fs/promises';
-import { fileURLToPath } from 'node:url';
+import { createRequire } from 'node:module';
 import path from 'path';
 import qs from 'qs';
 import { registerAuthProviders } from './auth.js';
@@ -65,7 +65,6 @@ import { Url } from './utils/url.js';
 import { validateEnv } from './utils/validate-env.js';
 import { validateStorage } from './utils/validate-storage.js';
 import { init as initWebhooks } from './webhooks.js';
-import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
 
