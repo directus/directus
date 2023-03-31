@@ -1,7 +1,7 @@
 import { nanoid } from 'nanoid';
 import { computed, ComputedRef, Ref, ref, watch } from 'vue';
 
-type UsableCustomSelection = {
+export type UsableCustomSelection = {
 	otherValue: Ref<string | null>;
 	usesOtherValue: ComputedRef<boolean>;
 };
