@@ -884,6 +884,9 @@ importers:
         specifier: 3.2.47
         version: 3.2.47
     devDependencies:
+      '@directus/tsconfig':
+        specifier: 0.0.6
+        version: 0.0.6
       '@directus/types':
         specifier: workspace:*
         version: link:../types
