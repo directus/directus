@@ -1,7 +1,7 @@
 import type { Item, Query } from '@directus/types';
 import { getEndpoint, moveInArray } from '@directus/utils';
 import axios from 'axios';
-import { isEqual, throttle } from 'lodash';
+import { isEqual, throttle } from 'lodash-es';
 import { ComputedRef, Ref, WritableComputedRef, computed, ref, unref, watch } from 'vue';
 import { useCollection } from './use-collection.js';
 import { useApi } from './use-system.js';

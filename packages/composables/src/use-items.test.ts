@@ -1,7 +1,7 @@
 import type { Field, Filter } from '@directus/types';
 import { flushPromises } from '@vue/test-utils';
 import type { AxiosRequestConfig } from 'axios';
-import { isEqual } from 'lodash';
+import { isEqual } from 'lodash-es';
 import { afterEach, expect, test, vi } from 'vitest';
 import { computed, ref, unref } from 'vue';
 
