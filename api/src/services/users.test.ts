@@ -11,6 +11,13 @@ vi.mock('../../src/database/index', () => ({
 	getDatabaseClient: vi.fn().mockReturnValue('postgres'),
 }));
 
+vi.mock('./mail', () => {
+	const MailService = vi.fn();
+	MailService.prototype.send = vi.fn();
+
+	return { MailService };
+});
+
 const testRoleId = '4ccdb196-14b3-4ed1-b9da-c1978be07ca2';
 
 const testSchema = {
@@ -65,7 +72,7 @@ describe('Integration Tests', () => {
 
 	describe('Services / Users', () => {
 		let service: UsersService;
-		let mailService: SpyInstance;
+		let mailService: MailService;
 		let superCreateManySpy: SpyInstance;
 		let superUpdateManySpy: SpyInstance;
 		let checkUniqueEmailsSpy: SpyInstance;
@@ -124,16 +131,13 @@ describe('Integration Tests', () => {
 				.spyOn(UsersService.prototype as any, 'checkRemainingActiveAdmin')
 				.mockResolvedValue(() => vi.fn());
 
-			mailService = vi.spyOn(MailService.prototype, 'send').mockResolvedValue(undefined);
+			mailService = new MailService({
+				schema: testSchema,
+			});
 		});
 
 		afterEach(() => {
-			checkUniqueEmailsSpy.mockClear();
-			checkPasswordPolicySpy.mockClear();
-			checkRemainingAdminExistenceSpy.mockClear();
-			checkRemainingActiveAdminSpy.mockClear();
-
-			mailService.mockClear();
+			vi.clearAllMocks();
 		});
 
 		describe('createOne', () => {
@@ -633,7 +637,7 @@ describe('Integration Tests', () => {
 					{}
 				);
 
-				expect(mailService).toBeCalledTimes(1);
+				expect(mailService.send).toBeCalledTimes(1);
 			});
 
 			it('should re-send invites for invited users', async () => {
@@ -653,7 +657,7 @@ describe('Integration Tests', () => {
 				await expect(promise).resolves.not.toThrow();
 
 				expect(superCreateManySpy).not.toBeCalled();
-				expect(mailService).toBeCalledTimes(1);
+				expect(mailService.send).toBeCalledTimes(1);
 			});
 
 			it('should not re-send invites for users in state other than invited', async () => {
@@ -673,7 +677,7 @@ describe('Integration Tests', () => {
 				await expect(promise).resolves.not.toThrow();
 
 				expect(superCreateManySpy).not.toBeCalled();
-				expect(mailService).not.toBeCalled();
+				expect(mailService.send).not.toBeCalled();
 			});
 
 			it('should update role when re-sent invite contains different role than user has', async () => {
