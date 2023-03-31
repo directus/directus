@@ -78,7 +78,7 @@ const displayItem = ref<Record<string, any> | null>(null);
 const value = computed({
 	get: () => props.value,
 	set: (value) => {
-		if (value && value.key) {
+		if (value && typeof value === 'object' && value.key) {
 			emit('input', value);
 		} else {
 			emit('input', null);
