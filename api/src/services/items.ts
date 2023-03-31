@@ -92,7 +92,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	async createOne(data: Partial<Item>, opts: MutationOptions = {}): Promise<PrimaryKey> {
 		if (!opts.mutationTracker) opts.mutationTracker = this.createMutationTracker();
 		if (!opts.bypassLimits) {
-			opts.mutationTracker!.trackMutations(1);
+			opts.mutationTracker.trackMutations(1);
 		}
 
 		const primaryKeyField = this.schema.collections[this.collection]!.primary;
@@ -535,7 +535,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts: MutationOptions = {}): Promise<PrimaryKey[]> {
 		if (!opts.mutationTracker) opts.mutationTracker = this.createMutationTracker();
 		if (!opts.bypassLimits) {
-			opts.mutationTracker!.trackMutations(keys.length);
+			opts.mutationTracker.trackMutations(keys.length);
 		}
 
 		const primaryKeyField = this.schema.collections[this.collection]!.primary;
@@ -829,7 +829,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	async deleteMany(keys: PrimaryKey[], opts: MutationOptions = {}): Promise<PrimaryKey[]> {
 		if (!opts.mutationTracker) opts.mutationTracker = this.createMutationTracker();
 		if (!opts.bypassLimits) {
-			opts.mutationTracker!.trackMutations(keys.length);
+			opts.mutationTracker.trackMutations(keys.length);
 		}
 
 		const primaryKeyField = this.schema.collections[this.collection]!.primary;
