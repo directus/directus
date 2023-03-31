@@ -35,7 +35,7 @@ function isFilterCountRequest(config: AxiosRequestConfig) {
 	return isEqual(Object.keys(config.params), ['filter', 'search', 'aggregate']);
 }
 
-vi.mock('./use-system', () => ({
+vi.mock('./use-system.js', () => ({
 	useApi: vi.fn().mockImplementation(() => ({
 		get: mockApiGet.mockImplementation((_path: string, config: AxiosRequestConfig) => {
 			if (isTotalCountRequest(config) || isFilterCountRequest(config)) {
@@ -48,7 +48,7 @@ vi.mock('./use-system', () => ({
 		post: mockApiPost,
 	})),
 }));
-vi.mock('./use-collection');
+vi.mock('./use-collection.js');
 
 afterEach(() => {
 	vi.clearAllMocks();
