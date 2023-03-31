@@ -142,6 +142,9 @@ importers:
       '@directus/storage-driver-s3':
         specifier: workspace:*
         version: link:../packages/storage-driver-s3
+      '@directus/update-check':
+        specifier: workspace:*
+        version: link:../packages/update-check
       '@directus/utils':
         specifier: workspace:*
         version: link:../packages/utils
@@ -361,9 +364,6 @@ importers:
       tsx:
         specifier: 3.12.6
         version: 3.12.6
-      update-check:
-        specifier: 1.5.4
-        version: 1.5.4
       uuid:
         specifier: 9.0.0
         version: 9.0.0
@@ -1319,6 +1319,13 @@ importers:
         version: 3.21.4
 
   packages/update-check:
+    dependencies:
+      semver:
+        specifier: 7.3.8
+        version: 7.3.8
+      undici:
+        specifier: 5.21.0
+        version: 5.21.0
     devDependencies:
       '@directus/tsconfig':
         specifier: 0.0.6
@@ -1326,6 +1333,9 @@ importers:
       '@ngneat/falso':
         specifier: 6.4.0
         version: 6.4.0
+      '@types/semver':
+        specifier: 7.3.13
+        version: 7.3.13
       '@vitest/coverage-c8':
         specifier: 0.29.3
         version: 0.29.3(vitest@0.29.3)
@@ -1393,6 +1403,9 @@ importers:
       '@vitest/coverage-c8':
         specifier: 0.29.3
         version: 0.29.3(vitest@0.29.3)
+      concurrently:
+        specifier: 7.6.0
+        version: 7.6.0
       typescript:
         specifier: 4.9.5
         version: 4.9.5
@@ -5774,7 +5787,7 @@ packages:
       '@storybook/csf-plugin': 7.0.0-rc.4
       '@storybook/csf-tools': 7.0.0-rc.4
       '@storybook/global': 5.0.0
-      '@storybook/mdx2-csf': 1.0.0-next.6
+      '@storybook/mdx2-csf': 1.0.0-next.7
       '@storybook/node-logger': 7.0.0-rc.4
       '@storybook/postinstall': 7.0.0-rc.4
       '@storybook/preview-api': 7.0.0-rc.4
@@ -5839,7 +5852,7 @@ packages:
     dependencies:
       '@storybook/client-logger': 7.0.0-rc.4
       '@storybook/core-events': 7.0.0-rc.4
-      '@storybook/csf': 0.0.2-next.10
+      '@storybook/csf': 0.0.2-next.11
       '@storybook/global': 5.0.0
       '@storybook/manager-api': 7.0.0-rc.4(react-dom@18.2.0)(react@18.2.0)
       '@storybook/preview-api': 7.0.0-rc.4
@@ -5960,7 +5973,7 @@ packages:
       '@storybook/client-logger': 7.0.0-rc.4
       '@storybook/components': 7.0.0-rc.4(react-dom@18.2.0)(react@18.2.0)
       '@storybook/core-events': 7.0.0-rc.4
-      '@storybook/csf': 0.0.2-next.10
+      '@storybook/csf': 0.0.2-next.11
       '@storybook/docs-tools': 7.0.0-rc.4
       '@storybook/global': 5.0.0
       '@storybook/manager-api': 7.0.0-rc.4(react-dom@18.2.0)(react@18.2.0)
@@ -6031,7 +6044,7 @@ packages:
       '@storybook/client-logger': 7.0.0-rc.4
       '@storybook/core-common': 7.0.0-rc.4
       '@storybook/csf-plugin': 7.0.0-rc.4
-      '@storybook/mdx2-csf': 1.0.0-next.6
+      '@storybook/mdx2-csf': 1.0.0-next.7
       '@storybook/node-logger': 7.0.0-rc.4
       '@storybook/preview': 7.0.0-rc.4
       '@storybook/preview-api': 7.0.0-rc.4
@@ -6143,7 +6156,7 @@ packages:
       '@babel/core': 7.21.3
       '@babel/preset-env': 7.20.2(@babel/core@7.21.3)
       '@babel/types': 7.21.3
-      '@storybook/csf': 0.0.2-next.10
+      '@storybook/csf': 0.0.2-next.11
       '@storybook/csf-tools': 7.0.0-rc.4
       '@storybook/node-logger': 7.0.0-rc.4
       '@storybook/types': 7.0.0-rc.4
@@ -6164,7 +6177,7 @@ packages:
       react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
     dependencies:
       '@storybook/client-logger': 7.0.0-rc.4
-      '@storybook/csf': 0.0.2-next.10
+      '@storybook/csf': 0.0.2-next.11
       '@storybook/global': 5.0.0
       '@storybook/theming': 7.0.0-rc.4(react-dom@18.2.0)(react@18.2.0)
       '@storybook/types': 7.0.0-rc.4
@@ -6221,7 +6234,7 @@ packages:
       '@storybook/builder-manager': 7.0.0-rc.4
       '@storybook/core-common': 7.0.0-rc.4
       '@storybook/core-events': 7.0.0-rc.4
-      '@storybook/csf': 0.0.2-next.10
+      '@storybook/csf': 0.0.2-next.11
       '@storybook/csf-tools': 7.0.0-rc.4
       '@storybook/docs-mdx': 0.0.1-next.6
       '@storybook/global': 5.0.0
@@ -6282,7 +6295,7 @@ packages:
       '@babel/parser': 7.21.3
       '@babel/traverse': 7.21.3
       '@babel/types': 7.21.3
-      '@storybook/csf': 0.0.2-next.10
+      '@storybook/csf': 0.0.2-next.11
       '@storybook/types': 7.0.0-rc.4
       fs-extra: 11.1.0
       recast: 0.23.1
@@ -6291,8 +6304,8 @@ packages:
       - supports-color
     dev: true
 
-  /@storybook/csf@0.0.2-next.10:
-    resolution: {integrity: sha512-m2PFgBP/xRIF85VrDhvesn9ktaD2pN3VUjvMqkAL/cINp/3qXsCyI81uw7N5VEOkQAbWrY2FcydnvEPDEdE8fA==}
+  /@storybook/csf@0.0.2-next.11:
+    resolution: {integrity: sha512-xGt0YSVxZb43sKmEf1GIQD8xEbo+c+S6khDEL7Qu/pYA0gh5z3WUuhOlovnelYj/YJod+XRsfVvk23AaRfUJ4Q==}
     dependencies:
       type-fest: 2.19.0
     dev: true
@@ -6328,7 +6341,7 @@ packages:
       '@storybook/channels': 7.0.0-rc.4
       '@storybook/client-logger': 7.0.0-rc.4
       '@storybook/core-events': 7.0.0-rc.4
-      '@storybook/csf': 0.0.2-next.10
+      '@storybook/csf': 0.0.2-next.11
       '@storybook/global': 5.0.0
       '@storybook/router': 7.0.0-rc.4(react-dom@18.2.0)(react@18.2.0)
       '@storybook/theming': 7.0.0-rc.4(react-dom@18.2.0)(react@18.2.0)
@@ -6348,8 +6361,8 @@ packages:
     resolution: {integrity: sha512-prLxXsCevw5ghWKvS7uAYdMOJ2Cr7jxE4Z1h9OSpVVombiUaU9iFPpNCsfY40VNVi9WuEHSTWH7QV/g453nGiw==}
     dev: true
 
-  /@storybook/mdx2-csf@1.0.0-next.6:
-    resolution: {integrity: sha512-m6plojocU/rmrqWd26yvm8D+oHZPZ6PtSSFmZIgpNDEPVmc8s4fBD6LXOAB5MiPI5f8KLUr2HVhOMZ97o5pDTw==}
+  /@storybook/mdx2-csf@1.0.0-next.7:
+    resolution: {integrity: sha512-xcQ8w4IecABAjsakaZTGiUEnEgFZzVKsMjqECjd+qdkwgD3R/kwrBdfyC15CLM5Ye1miPwYBIwJGeBXB9qxsZg==}
     dev: true
 
   /@storybook/node-logger@7.0.0-beta.52:
@@ -6381,7 +6394,7 @@ packages:
       '@storybook/channels': 7.0.0-rc.4
       '@storybook/client-logger': 7.0.0-rc.4
       '@storybook/core-events': 7.0.0-rc.4
-      '@storybook/csf': 0.0.2-next.10
+      '@storybook/csf': 0.0.2-next.11
       '@storybook/global': 5.0.0
       '@storybook/types': 7.0.0-rc.4
       '@types/qs': 6.9.7
@@ -15695,20 +15708,6 @@ packages:
       unicode-match-property-value-ecmascript: 2.1.0
     dev: true
 
-  /registry-auth-token@3.3.2:
-    resolution: {integrity: sha512-JL39c60XlzCVgNrO+qq68FoNb56w/m7JYvGR2jT5iR1xBrUA3Mfx5Twk5rqTThPmQKMWydGmq8oFtDlxfrmxnQ==}
-    dependencies:
-      rc: 1.2.8
-      safe-buffer: 5.2.1
-    dev: false
-
-  /registry-url@3.1.0:
-    resolution: {integrity: sha512-ZbgR5aZEdf4UKZVBPYIgaglBmSF2Hi94s2PcIHhRGFjKYu+chjJdYfHn4rt3hB6eCKLJ8giVIIfgMa1ehDfZKA==}
-    engines: {node: '>=0.10.0'}
-    dependencies:
-      rc: 1.2.8
-    dev: false
-
   /regjsgen@0.7.1:
     resolution: {integrity: sha512-RAt+8H2ZEzHeYWxZ3H2z6tF18zyyOnlcdaafLrm21Bguj7uZy6ULibiAFdXEtKQY4Sy7wDTwDiOazasMLc4KPA==}
     dev: true
@@ -17613,13 +17612,6 @@ packages:
       browserslist: 4.21.5
       escalade: 3.1.1
       picocolors: 1.0.0
-
-  /update-check@1.5.4:
-    resolution: {integrity: sha512-5YHsflzHP4t1G+8WGPlvKbJEbAJGCgw+Em+dGR1KmBUbr1J36SJBqlHLjR7oob7sco5hWHGQVcr9B2poIVDDTQ==}
-    dependencies:
-      registry-auth-token: 3.3.2
-      registry-url: 3.1.0
-    dev: false
 
   /uri-js@4.4.1:
     resolution: {integrity: sha512-7rKUyy33Q1yc98pQ1DAmLtwX109F7TIfWlW1Ydo8Wl1ii1SeHieeh0HHfPeL2fMXK6z0s8ecKs9frCuLJvndBg==}

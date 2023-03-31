@@ -4,7 +4,7 @@ import * as http from 'http';
 import * as https from 'https';
 import { once } from 'lodash-es';
 import qs from 'qs';
-import checkForUpdate from 'update-check';
+import { isUpToDate } from '@directus/update-check';
 import url from 'url';
 import * as pkg from './utils/package.js';
 import createApp from './app.js';
@@ -131,13 +131,14 @@ export async function startServer(): Promise<void> {
 
 	server
 		.listen(port, host, () => {
-			checkForUpdate(pkg)
+			isUpToDate(pkg.name, pkg.version)
 				.then((update) => {
 					if (update) {
-						logger.warn(`Update available: ${pkg.version} -> ${update.latest}`);
+						logger.warn(`Update available: ${pkg.version} -> ${update}`);
 					}
 				})
-				.catch(() => {
+				.catch((err) => {
+					console.log(err);
 					// No need to log/warn here. The update message is only an informative nice-to-have
 				});
 

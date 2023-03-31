@@ -1,7 +1,12 @@
 import { readFileSync } from 'node:fs';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const { version } = JSON.parse(readFileSync('../package.json', 'utf8')) as {
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+const { name, version } = JSON.parse(readFileSync(resolve(__dirname, '../../package.json'), 'utf8')) as {
+	name: string;
 	version: string;
 };
 
-export { version };
+export { name, version };

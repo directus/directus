@@ -4,7 +4,7 @@
 	"type": "module",
 	"scripts": {
 		"build": "tsc --project browser/tsconfig.json && tsc --project node/tsconfig.json && tsc --project shared/tsconfig.json",
-		"dev": "tsc --watch",
+		"dev": "concurrently \"tsc --watch --project browser/tsconfig.json\" \"tsc --watch --project node/tsconfig.json\" \"tsc --watch --project shared/tsconfig.json\"",
 		"test": "vitest run",
 		"test:watch": "vitest",
 		"test:coverage": "vitest run --coverage"
@@ -62,6 +62,7 @@
 		"@types/node": "18.15.3",
 		"@types/tmp": "0.2.3",
 		"@vitest/coverage-c8": "0.29.3",
+		"concurrently": "7.6.0",
 		"typescript": "4.9.5",
 		"vitest": "0.29.3"
 	}
