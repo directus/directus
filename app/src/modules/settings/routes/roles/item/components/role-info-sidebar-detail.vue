@@ -7,7 +7,7 @@
 					<dd>{{ role.id }}</dd>
 					<v-icon
 						v-if="isCopySupported"
-						name="copy"
+						name="content_copy"
 						small
 						clickable
 						class="clipboard-icon"
