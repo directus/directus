@@ -165,6 +165,15 @@ router.get(
 			}
 		}
 
+		const existingFormat = transformation.transforms?.find((transform) => transform[0] === 'toFormat');
+
+		if(req.headers.accept && req.headers.accept.includes('image/webp') && !existingFormat && env['ASSETS_AUTO_FORMAT'] ) {
+			transformation.transforms = [
+				...transformation.transforms ?? [],
+				['toFormat', 'webp']
+			];
+		}
+
 		const { stream, file, stat } = await service.getAsset(id, transformation, range);
 
 		res.attachment(req.params['filename'] ?? file.filename_download);
