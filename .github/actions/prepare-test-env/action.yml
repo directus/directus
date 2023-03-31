@@ -1,0 +1,24 @@
+name: Prepare Test Env
+description: Prepare the test environment
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Prepare
+      uses: ./.github/actions/prepare
+
+    # See https://github.com/pnpm/pnpm/issues/6300
+    - name: Disable peer deduplication
+      shell: bash
+      run: pnpm config --location=project set dedupe-peer-dependents=false
+
+    - name: Reinstall production dependencies only
+      shell: bash
+      run: pnpm install --prod
+
+    - name: Reinstall dev dependencies in workspace root
+      shell: bash
+      run: pnpm install --workspace-root --dev
