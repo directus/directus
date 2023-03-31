@@ -296,6 +296,7 @@ o2m_relationship: Relazione One to Many
 m2m_relationship: Relazione Many to Many
 m2a_relationship: Relazione Many to Any
 invalid_item: Oggetto non valido
+modal: Modale
 next: Avanti
 field_name: Nome del Campo
 translations: Traduzioni
@@ -787,10 +788,7 @@ label: Etichetta
 flows: Flussi
 flow: Flusso
 select_a_flow: Seleziona un flusso
-run_flow_on_current_collection: Esegui il flusso nella raccolta corrente
-run_flow_on_current: Esegui il flusso sull'elemento corrente
 run_flow_on_current_edited_confirm: Questo elemento potrebbe essere aggiornato dal flusso, sei sicuro di volerlo eseguire?
-run_flow_on_selected: Seleziona prima uno o più elementi | Eseguire il flusso sull'elemento selezionato | Eseguire il flusso sui {n} elementi selezionati
 run_flow_success: Flusso "{flow}" eseguito con successo
 trigger: Trigger
 trigger_options: Opzioni del trigger
@@ -1642,7 +1640,6 @@ interfaces:
     add_label: 'Etichetta "Crea nuovo"'
     sort: Ordinamento
     sort_placeholder: Manuale
-    field_name_placeholder: Inserisci il nome del campo...
     field_note_placeholder: Inserisci la nota del campo...
     incompatible_data: I dati correnti non sono compatibili con l'interfaccia ripetitore e saranno sovrascritti quando si aggiungono elementi al ripetitore
   slider:
