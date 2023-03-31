@@ -18,6 +18,7 @@ import { getStorage } from '../storage';
 import type { AbstractServiceOptions } from '../types';
 import { getOSInfo } from '../utils/get-os-info';
 import { SettingsService } from './settings';
+import { SERVER_ONLINE } from '../server';
 
 export class ServerService {
 	knex: Knex;
@@ -136,6 +137,10 @@ export class ServerService {
 				]))
 			),
 		};
+
+		if(SERVER_ONLINE === false) {
+			data.status = 'error';
+		}
 
 		for (const [service, healthData] of Object.entries(data.checks)) {
 			for (const healthCheck of healthData) {
