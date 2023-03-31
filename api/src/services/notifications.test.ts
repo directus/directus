@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, SpyInstance, vi } from 'vitest';
 import { ItemsService, NotificationsService } from './index.js';
 
-vi.mock('../env', async () => {
+vi.mock('../env.js', async () => {
 	const actual = (await vi.importActual('../env')) as { default: Record<string, any> };
 	const MOCK_ENV = {
 		...actual.default,
@@ -13,7 +13,7 @@ vi.mock('../env', async () => {
 	};
 });
 
-vi.mock('../../src/database/index', () => ({
+vi.mock('../../src/database/index.js', () => ({
 	default: vi.fn(),
 	getDatabaseClient: vi.fn().mockReturnValue('postgres'),
 }));

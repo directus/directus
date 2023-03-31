@@ -2,7 +2,7 @@ import { afterEach, expect, test, vi } from 'vitest';
 
 const axiosDefault = vi.fn();
 
-vi.mock('../../request', () => ({
+vi.mock('../../request/index.js', () => ({
 	getAxios: () =>
 		axiosDefault.mockResolvedValue({
 			status: 200,

@@ -2,7 +2,7 @@ import { afterEach, expect, test, vi } from 'vitest';
 
 const runOperationFlow = vi.fn();
 
-vi.mock('../../flows', () => ({
+vi.mock('../../flows.js', () => ({
 	getFlowManager: vi.fn().mockReturnValue({
 		runOperationFlow,
 	}),

@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, test, vi } from 'vitest';
 
-vi.mock('../../services', () => {
+vi.mock('../../services/items.js', () => {
 	const ItemsService = vi.fn();
 	ItemsService.prototype.updateByQuery = vi.fn();
 	ItemsService.prototype.updateOne = vi.fn();
@@ -8,7 +8,7 @@ vi.mock('../../services', () => {
 	return { ItemsService };
 });
 
-vi.mock('../../utils/get-accountability-for-role', () => ({
+vi.mock('../../utils/get-accountability-for-role.js', () => ({
 	getAccountabilityForRole: vi.fn((role: string | null, _context) => Promise.resolve(role)),
 }));
 
