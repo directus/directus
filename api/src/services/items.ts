@@ -55,11 +55,12 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	}
 
 	createMutationTracker(initialCount = 0): MutationTracker {
+		const maxCount = Number(env['MAX_BATCH_MUTATION']);
 		let mutationCount = initialCount;
 		return {
 			trackMutations(count: number) {
 				mutationCount += count;
-				if (mutationCount > env['MAX_BATCH_MUTATION']) {
+				if (mutationCount > maxCount) {
 					throw new InvalidPayloadException('Max batch mutation limit exceeded');
 				}
 			},
