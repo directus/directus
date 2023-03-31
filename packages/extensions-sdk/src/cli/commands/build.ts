@@ -559,21 +559,21 @@ function getRollupOptions({
 		input: typeof input !== 'string' ? 'entry' : input,
 		external: mode === 'browser' ? APP_SHARED_DEPS : API_SHARED_DEPS,
 		plugins: [
-			typeof input !== 'string' ? virtual(input) : null,
-			mode === 'browser' ? (vue({ preprocessStyles: true }) as Plugin) : null,
-			languages.includes('typescript') ? esbuild({ include: /\.tsx?$/, sourceMap: sourcemap }) : null,
-			mode === 'browser' ? styles() : null,
+			typeof input !== 'string' ? virtual.default(input) : null,
+			mode === 'browser' ? (vue.default({ preprocessStyles: true }) as Plugin) : null,
+			languages.includes('typescript') ? esbuild.default({ include: /\.tsx?$/, sourceMap: sourcemap }) : null,
+			mode === 'browser' ? styles.default() : null,
 			...plugins,
 			nodeResolve({ browser: mode === 'browser' }),
-			commonjs({ esmExternals: mode === 'browser', sourceMap: sourcemap }),
-			json(),
-			replace({
+			commonjs.default({ esmExternals: mode === 'browser', sourceMap: sourcemap }),
+			json.default(),
+			replace.default({
 				values: {
 					'process.env.NODE_ENV': JSON.stringify('production'),
 				},
 				preventAssignment: true,
 			}),
-			minify ? terser() : null,
+			minify ? terser.default() : null,
 		],
 	};
 }

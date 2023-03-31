@@ -176,7 +176,7 @@ function getPackageManifest(name: string, options: ExtensionOptions, deps: Recor
 	};
 
 	if (options.type === 'bundle') {
-		packageManifest.scripts['add'] = 'directus-extension add';
+		packageManifest['scripts']['add'] = 'directus-extension add';
 	}
 
 	return packageManifest;
