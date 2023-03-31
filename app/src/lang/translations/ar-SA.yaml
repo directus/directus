@@ -783,10 +783,7 @@ label: تسمية
 flows: التدفقات
 flow: التدفق
 select_a_flow: حدد تدفق
-run_flow_on_current_collection: تشغيل التدفق على المجموعة الحالية
-run_flow_on_current: تشغيل التدفق على العنصر الحالي
 run_flow_on_current_edited_confirm: قد يتم تحديث هذا العنصر بواسطة هذا التدفق، هل أنت متيقِّن من أنك تريد تنفيذه؟
-run_flow_on_selected: حدد عنصر واحد أو أكثر أولا | تشغيل تدفق على 1 عنصر محدد | تشغيل تدفق على {n} العناصر المحددة
 run_flow_success: تدفق "{flow}" تم بنجاح
 trigger: المحفز
 trigger_options: خيارات المحفز
@@ -1482,7 +1479,6 @@ interfaces:
   list:
     edit_fields: تعديل الحقول
     sort: رتب
-    field_name_placeholder: أدخل اسم الحقل...
   slider:
     slider: شريط
     always_show_value: إظهار القيمة دائمًا
