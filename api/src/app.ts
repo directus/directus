@@ -65,8 +65,9 @@ import { Url } from './utils/url.js';
 import { validateEnv } from './utils/validate-env.js';
 import { validateStorage } from './utils/validate-storage.js';
 import { init as initWebhooks } from './webhooks.js';
+import { createRequire } from 'node:module';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const require = createRequire(import.meta.url);
 
 export default async function createApp(): Promise<express.Application> {
 	const helmet = await import('helmet');
@@ -187,7 +188,7 @@ export default async function createApp(): Promise<express.Application> {
 	});
 
 	if (env['SERVE_APP']) {
-		const adminPath = path.resolve(__dirname, '@directus/app');
+		const adminPath = require.resolve('@directus/app');
 		const adminUrl = new Url(env['PUBLIC_URL']).addPath('admin');
 
 		const embeds = extensionManager.getEmbeds();
