@@ -140,7 +140,7 @@ import { useCollectionsStore } from '@/stores/collections';
 import { usePresetsStore } from '@/stores/presets';
 import { useRouter } from 'vue-router';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { useLayout } from '@directus/shared/composables';
+import { useLayout } from '@directus/composables';
 import { useShortcut } from '@/composables/use-shortcut';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { isEqual } from 'lodash';

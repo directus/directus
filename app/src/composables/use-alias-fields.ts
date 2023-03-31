@@ -1,4 +1,4 @@
-import { getSimpleHash } from '@directus/shared/utils';
+import { getSimpleHash } from '@directus/utils';
 import { Query } from '@directus/types';
 import { computed, ComputedRef, Ref } from 'vue';
 import { merge } from 'lodash';

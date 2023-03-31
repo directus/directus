@@ -81,7 +81,7 @@ import { defineComponent, watch, PropType, ref, inject, Ref } from 'vue';
 import Card from './components/card.vue';
 import CardsHeader from './components/header.vue';
 import { Field, Item } from '@directus/types';
-import { useSync, useElementSize } from '@directus/shared/composables';
+import { useSync, useElementSize } from '@directus/composables';
 import { Collection } from '@/types/collections';
 import { Filter, ShowSelect } from '@directus/types';
 

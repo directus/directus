@@ -106,7 +106,7 @@ import { Header, Sort } from './types';
 import { throttle, clone } from 'lodash';
 import Draggable from 'vuedraggable';
 import { hideDragImage } from '@/utils/hide-drag-image';
-import { useSync } from '@directus/shared/composables';
+import { useSync } from '@directus/composables';
 
 interface Props {
 	headers: Header[];

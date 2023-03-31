@@ -82,7 +82,7 @@ import { parseFilter } from '@/utils/parse-filter';
 import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
 import { Filter } from '@directus/types';
-import { deepMap, getFieldsFromTemplate } from '@directus/shared/utils';
+import { deepMap, getFieldsFromTemplate } from '@directus/utils';
 import { get } from 'lodash';
 import { render } from 'micromustache';
 import { computed, inject, ref, toRefs } from 'vue';

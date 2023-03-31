@@ -81,7 +81,7 @@ import FormFieldMenu from './form-field-menu.vue';
 import { formatFieldFunction } from '@/utils/format-field-function';
 import { useClipboard } from '@/composables/use-clipboard';
 import FormFieldRawEditor from './form-field-raw-editor.vue';
-import { parseJSON } from '@directus/shared/utils';
+import { parseJSON } from '@directus/utils';
 
 interface Props {
 	field: Field;

@@ -1,5 +1,5 @@
 import api from '@/api';
-import { useCollection } from '@directus/shared/composables';
+import { useCollection } from '@directus/composables';
 import { AppCollection, Field } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
@@ -21,7 +21,7 @@ vi.mock('@/api', () => {
 	};
 });
 
-vi.mock('@directus/shared/composables');
+vi.mock('@directus/composables');
 
 beforeEach(() => {
 	setActivePinia(

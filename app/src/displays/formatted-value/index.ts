@@ -1,4 +1,4 @@
-import { defineDisplay } from '@directus/shared/utils';
+import { defineDisplay } from '@directus/utils';
 import { DisplayConfig } from '@directus/types';
 import DisplayFormattedValue from './formatted-value.vue';
 import formatTitle from '@directus/format-title';

@@ -90,7 +90,7 @@ import {
 	getOutputTypeForFunction,
 	parseFilterFunctionPath,
 	parseJSON,
-} from '@directus/shared/utils';
+} from '@directus/utils';
 import { cloneDeep, get, isEmpty, set } from 'lodash';
 import { computed, inject, ref } from 'vue';
 import { useI18n } from 'vue-i18n';

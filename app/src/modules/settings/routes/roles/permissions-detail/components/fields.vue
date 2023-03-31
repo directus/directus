@@ -30,7 +30,7 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed } from 'vue';
 import { Permission, Role } from '@directus/types';
 import { Field } from '@directus/types';
-import { useSync } from '@directus/shared/composables';
+import { useSync } from '@directus/composables';
 import { useFieldsStore } from '@/stores/fields';
 
 export default defineComponent({

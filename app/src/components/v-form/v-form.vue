@@ -90,7 +90,7 @@ import { useFieldsStore } from '@/stores/fields';
 import { applyConditions } from '@/utils/apply-conditions';
 import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
-import { useElementSize } from '@directus/shared/composables';
+import { useElementSize } from '@directus/composables';
 import { Field, ValidationError } from '@directus/types';
 import { assign, cloneDeep, isEqual, isNil, omit, pick } from 'lodash';
 import { computed, ComputedRef, onBeforeUpdate, provide, ref, watch } from 'vue';

@@ -138,7 +138,7 @@ import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { get, clamp, isEmpty, isNil, set } from 'lodash';
 import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
-import { getFieldsFromTemplate } from '@directus/shared/utils';
+import { getFieldsFromTemplate } from '@directus/utils';
 import { Filter } from '@directus/types';
 
 const props = withDefaults(

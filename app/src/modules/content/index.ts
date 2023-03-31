@@ -1,4 +1,4 @@
-import { defineModule } from '@directus/shared/utils';
+import { defineModule } from '@directus/utils';
 import { addQueryToPath } from '@/utils/add-query-to-path';
 import RouterPass from '@/utils/router-passthrough';
 import { LocationQuery, NavigationGuard } from 'vue-router';

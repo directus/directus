@@ -238,10 +238,10 @@ import { readableMimeType } from '@/utils/readable-mime-type';
 import { Filter } from '@directus/types';
 import { computed, reactive, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useCollection } from '@directus/shared/composables';
+import { useCollection } from '@directus/composables';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { debounce } from 'lodash';
-import { getEndpoint } from '@directus/shared/utils';
+import { getEndpoint } from '@directus/utils';
 import FolderPicker from '@/views/private/components/folder-picker.vue';
 import { usePermissionsStore } from '@/stores/permissions';
 
