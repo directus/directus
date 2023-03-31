@@ -1,6 +1,6 @@
 {
 	"name": "@directus/storage-driver-cloudinary",
-	"version": "9.23.3",
+	"version": "9.23.4",
 	"type": "module",
 	"scripts": {
 		"build": "tsc --build",

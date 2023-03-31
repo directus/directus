@@ -35,7 +35,7 @@ router.post(
 				const records = await service.readMany(savedKeys, req.sanitizedQuery);
 				res.locals['payload'] = { data: records };
 			} else {
-				const record = await service.readOne(savedKeys[0], req.sanitizedQuery);
+				const record = await service.readOne(savedKeys[0]!, req.sanitizedQuery);
 				res.locals['payload'] = { data: record };
 			}
 		} catch (error: any) {
@@ -87,7 +87,7 @@ router.get(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
-		const record = await service.readOne(req.params['pk'], req.sanitizedQuery);
+		const record = await service.readOne(req.params['pk']!, req.sanitizedQuery);
 
 		res.locals['payload'] = { data: record || null };
 		return next();
@@ -139,7 +139,7 @@ router.patch(
 			schema: req.schema,
 		});
 
-		const primaryKey = await service.updateOne(req.params['pk'], req.body);
+		const primaryKey = await service.updateOne(req.params['pk']!, req.body);
 
 		try {
 			const record = await service.readOne(primaryKey, req.sanitizedQuery);
@@ -160,7 +160,7 @@ router.patch(
 router.delete(
 	'/',
 	validateBatch('delete'),
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req, _res, next) => {
 		const service = new FoldersService({
 			accountability: req.accountability,
 			schema: req.schema,
@@ -182,13 +182,13 @@ router.delete(
 
 router.delete(
 	'/:pk',
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req, _res, next) => {
 		const service = new FoldersService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
 
-		await service.deleteOne(req.params['pk']);
+		await service.deleteOne(req.params['pk']!);
 
 		return next();
 	}),

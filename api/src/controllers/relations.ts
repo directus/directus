@@ -51,7 +51,7 @@ router.get(
 			schema: req.schema,
 		});
 
-		const relation = await service.readOne(req.params['collection'], req.params['field']);
+		const relation = await service.readOne(req.params['collection']!, req.params['field']!);
 
 		res.locals['payload'] = { data: relation || null };
 		return next();
@@ -130,10 +130,10 @@ router.patch(
 			throw new InvalidPayloadException(error.message);
 		}
 
-		await service.updateOne(req.params['collection'], req.params['field'], req.body);
+		await service.updateOne(req.params['collection']!, req.params['field']!, req.body);
 
 		try {
-			const updatedField = await service.readOne(req.params['collection'], req.params['field']);
+			const updatedField = await service.readOne(req.params['collection']!, req.params['field']!);
 			res.locals['payload'] = { data: updatedField || null };
 		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
@@ -151,12 +151,12 @@ router.patch(
 router.delete(
 	'/:collection/:field',
 	validateCollection,
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req, _res, next) => {
 		const service = new RelationsService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
-		await service.deleteOne(req.params['collection'], req.params['field']);
+		await service.deleteOne(req.params['collection']!, req.params['field']!);
 		return next();
 	}),
 	respond
