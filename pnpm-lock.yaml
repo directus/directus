@@ -1318,6 +1318,24 @@ importers:
         specifier: 3.21.4
         version: 3.21.4
 
+  packages/update-check:
+    devDependencies:
+      '@directus/tsconfig':
+        specifier: 0.0.6
+        version: 0.0.6
+      '@ngneat/falso':
+        specifier: 6.4.0
+        version: 6.4.0
+      '@vitest/coverage-c8':
+        specifier: 0.29.3
+        version: 0.29.3(vitest@0.29.3)
+      typescript:
+        specifier: 4.9.5
+        version: 4.9.5
+      vitest:
+        specifier: 0.29.3
+        version: 0.29.3(happy-dom@8.9.0)(sass@1.59.3)
+
   packages/utils:
     dependencies:
       '@directus/constants':
@@ -10935,6 +10953,7 @@ packages:
       inherits: 2.0.4
       minimatch: 5.1.2
       once: 1.4.0
+    dev: false
 
   /glob@8.1.0:
     resolution: {integrity: sha512-r8hpEjiQEYlF2QU0df3dS+nxxSIreXQS1qRhMJM0Q5NDdR386C7jb7Hwwod8Fgiuex+k0GFjgft18yvxm5XoCQ==}
@@ -12333,7 +12352,7 @@ packages:
     dependencies:
       config-chain: 1.1.13
       editorconfig: 0.15.3
-      glob: 8.0.3
+      glob: 8.1.0
       nopt: 6.0.0
     dev: true
 
