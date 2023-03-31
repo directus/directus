@@ -911,18 +911,9 @@ importers:
       '@directus/tsconfig':
         specifier: 0.0.6
         version: 0.0.6
-      '@ngneat/falso':
-        specifier: 6.4.0
-        version: 6.4.0
-      '@vitest/coverage-c8':
-        specifier: 0.29.3
-        version: 0.29.3(vitest@0.29.3)
       typescript:
         specifier: 4.9.5
         version: 4.9.5
-      vitest:
-        specifier: 0.29.3
-        version: 0.29.3(happy-dom@8.9.0)(sass@1.59.3)
 
   packages/create-directus-extension:
     dependencies:
