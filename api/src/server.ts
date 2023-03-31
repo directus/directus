@@ -137,8 +137,7 @@ export async function startServer(): Promise<void> {
 						logger.warn(`Update available: ${pkg.version} -> ${update}`);
 					}
 				})
-				.catch((err) => {
-					console.log(err);
+				.catch(() => {
 					// No need to log/warn here. The update message is only an informative nice-to-have
 				});
 
