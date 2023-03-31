@@ -167,17 +167,11 @@ router.get(
 
 		const existingFormat = transformation.transforms?.find((transform) => transform[0] === 'toFormat');
 
-		if(req.headers.accept && !existingFormat && env['ASSETS_AUTO_FORMAT'] ) {
-			if(req.headers.accept.includes('image/webp')) {
-				transformation.transforms = [
-					...transformation.transforms ?? [],
-					['toFormat', 'webp']
-				];
-			} else if(req.headers.accept.includes('image/avif')) {
-				transformation.transforms = [
-					...transformation.transforms ?? [],
-					['toFormat', 'avif']
-				];
+		if (req.headers.accept && !existingFormat && env['ASSETS_AUTO_FORMAT']) {
+			if (req.headers.accept.includes('image/webp')) {
+				transformation.transforms = [...(transformation.transforms ?? []), ['toFormat', 'webp']];
+			} else if (req.headers.accept.includes('image/avif')) {
+				transformation.transforms = [...(transformation.transforms ?? []), ['toFormat', 'avif']];
 			}
 		}
 
