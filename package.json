@@ -14,7 +14,6 @@
 		"posttest:blackbox:watch": "ts-node --project ./tests-blackbox/tsconfig.json --transpile-only ./tests-blackbox/setup/teardown.ts"
 	},
 	"devDependencies": {
-		"@directus/shared": "workspace:*",
 		"@types/jest": "29.4.4",
 		"@types/js-yaml": "4.0.5",
 		"@types/lodash": "4.14.191",

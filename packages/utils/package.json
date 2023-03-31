@@ -43,7 +43,6 @@
 	},
 	"dependencies": {
 		"@directus/constants": "workspace:9.23.4",
-		"@directus/shared": "workspace:*",
 		"@directus/storage": "workspace:*",
 		"date-fns": "2.29.3",
 		"fs-extra": "11.1.0",
