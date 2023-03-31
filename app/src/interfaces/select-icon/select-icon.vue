@@ -28,7 +28,7 @@
 		</template>
 
 		<div class="content" :class="width">
-			<template v-for="(group, index) in filteredIcons" :key="group.name">
+			<template v-for="group in filteredIcons" :key="group.name">
 				<v-divider v-if="group.icons.length > 0">
 					{{ group.name }}
 				</v-divider>
