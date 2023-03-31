@@ -138,7 +138,7 @@ export class ServerService {
 			),
 		};
 
-		if(SERVER_ONLINE === false) {
+		if (SERVER_ONLINE === false) {
 			data.status = 'error';
 		}
 
