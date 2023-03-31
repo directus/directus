@@ -296,6 +296,7 @@ o2m_relationship: Relation Un à plusieurs
 m2m_relationship: Relation Plusieurs à plusieurs
 m2a_relationship: Relation Many-to-Any
 invalid_item: Élément invalide
+modal: Modal
 next: Suivant
 field_name: Nom du champ
 translations: Traductions
@@ -787,10 +788,7 @@ label: Étiquette
 flows: Flux
 flow: Flux
 select_a_flow: Sélectionner un flux
-run_flow_on_current_collection: Lancer le flux sur la collection actuelle
-run_flow_on_current: Exécuter le flux sur l'élément actuel
 run_flow_on_current_edited_confirm: Cet élément peut être mis à jour par ce flux, êtes-vous sûr de vouloir l'exécuter ?
-run_flow_on_selected: Sélectionner un ou plusieurs éléments | Exécuter le flux sur 1 élément sélectionné | Exécuter le flux sur {n} éléments sélectionnés
 run_flow_success: Le Flux "{flow}" s'est exécuté avec succès
 trigger: Déclencheur
 trigger_options: Options de Déclenchement
@@ -1432,7 +1430,6 @@ translation: Traduction
 translation_placeholder: Entrez une nouvelle traduction...
 value: Valeur
 view_project: Voir le projet
-weeks: { }
 report_error: Signaler l'erreur
 start: Début
 table: Tableau
@@ -1644,7 +1641,6 @@ interfaces:
     add_label: 'Libellé "Créer Nouveau"'
     sort: Trier
     sort_placeholder: Manuel
-    field_name_placeholder: Entrez le nom du champ...
     field_note_placeholder: Entrez la note du champ...
     incompatible_data: Les données actuelles ne sont pas compatibles avec l'interface répéteur et seront remplacées lors de l'ajout d'éléments dans le répéteur
   slider:
