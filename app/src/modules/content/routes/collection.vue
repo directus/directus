@@ -41,13 +41,7 @@
 						@save="createBookmark"
 					>
 						<template #activator="{ on }">
-							<v-icon
-								v-tooltip.right="t('create_bookmark')"
-								class="toggle"
-								clickable
-								name="bookmark"
-								@click="on"
-							/>
+							<v-icon v-tooltip.right="t('create_bookmark')" class="toggle" clickable name="bookmark" @click="on" />
 						</template>
 					</bookmark-add>
 
