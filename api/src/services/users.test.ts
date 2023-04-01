@@ -79,7 +79,6 @@ describe('Integration Tests', () => {
 		let checkPasswordPolicySpy: SpyInstance;
 		let checkRemainingAdminExistenceSpy: SpyInstance;
 		let checkRemainingActiveAdminSpy: SpyInstance;
-		let inviteUrlSpy: SpyInstance;
 
 		beforeEach(() => {
 			service = new UsersService({
@@ -131,7 +130,8 @@ describe('Integration Tests', () => {
 			checkRemainingActiveAdminSpy = vi
 				.spyOn(UsersService.prototype as any, 'checkRemainingActiveAdmin')
 				.mockResolvedValue(() => vi.fn());
-			inviteUrlSpy = vi.spyOn(UsersService.prototype as any, 'inviteUrl').mockImplementation(() => vi.fn());
+
+			vi.spyOn(UsersService.prototype as any, 'inviteUrl').mockImplementation(() => vi.fn());
 
 			mailService = new MailService({
 				schema: testSchema,
