@@ -301,7 +301,7 @@
 		]
 	},
 	{
-		"name": "Audio&Video",
+		"name": "Audio & Video",
 		"icons": [
 			"10k",
 			"1k",
@@ -461,7 +461,7 @@
 		]
 	},
 	{
-		"name": "Business&Payments",
+		"name": "Business & Payments",
 		"icons": [
 			"account_balance",
 			"account_balance_wallet",
@@ -1507,7 +1507,7 @@
 		]
 	},
 	{
-		"name": "Photo&Image",
+		"name": "Photo & Image",
 		"icons": [
 			"10mp",
 			"11mp",
@@ -1764,7 +1764,7 @@
 		]
 	},
 	{
-		"name": "Privacy&Security",
+		"name": "Privacy & Security",
 		"icons": [
 			"add_moderator",
 			"admin_panel_settings",
