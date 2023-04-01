@@ -146,6 +146,19 @@ export class UsersService extends ItemsService {
 	}
 
 	/**
+	 * create url for inviting users
+	 */
+	private inviteUrl(email: string, url: string | null): string {
+		const payload = { email, scope: 'invite' };
+
+		const token = jwt.sign(payload, env['SECRET'] as string, { expiresIn: '7d', issuer: 'directus' });
+		const inviteURL = url ? new Url(url) : new Url(env['PUBLIC_URL']).addPath('admin', 'accept-invite');
+		inviteURL.setQuery('token', token);
+
+		return inviteURL.toString();
+	}
+
+	/**
 	 * Create a new user
 	 */
 	override async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
@@ -348,11 +361,7 @@ export class UsersService extends ItemsService {
 
 			// send invite for new and already invited users
 			if (isEmpty(user) || user.status === 'invited') {
-				const payload = { email, scope: 'invite' };
 				const subjectLine = subject ?? "You've been invited";
-				const token = jwt.sign(payload, env['SECRET'] as string, { expiresIn: '7d', issuer: 'directus' });
-				const inviteURL = url ? new Url(url) : new Url(env['PUBLIC_URL']).addPath('admin', 'accept-invite');
-				inviteURL.setQuery('token', token);
 
 				await mailService.send({
 					to: email,
@@ -360,7 +369,7 @@ export class UsersService extends ItemsService {
 					template: {
 						name: 'user-invitation',
 						data: {
-							url: inviteURL.toString(),
+							url: this.inviteUrl(email, url),
 							email,
 						},
 					},
