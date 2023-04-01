@@ -270,9 +270,7 @@ this_will_auto_setup_fields_relations: Ovo će automatski postaviti sva potrebna
 click_here: Kliknite ovdje
 to_manually_setup_translations: za ručno postavljanje prijevoda.
 click_to_manage_translated_fields: >-
-  187 / 5,000
-  Translation results
-  Još nema prevedenih polja. Kliknite ovdje da biste ih stvorili. | Postoji jedno prevedeno polje. Kliknite ovdje za upravljanje. | Postoji {count} prevedenih polja. Kliknite ovdje za upravljanje poljima.
+  187 / 5,000 Translation results Još nema prevedenih polja. Kliknite ovdje da biste ih stvorili. | Postoji jedno prevedeno polje. Kliknite ovdje za upravljanje. | Postoji {count} prevedenih polja. Kliknite ovdje za upravljanje poljima.
 fields_group: Grupno polje
 no_collections_found: Nije pronađena nijedna zbirka.
 new_data_alert: 'Sljedeće će se stvoriti unutar vašeg podatkovnog modela:'
@@ -1622,7 +1620,6 @@ interfaces:
   system-folder:
     folder: Mapa
     description: Odaberite mapu
-    field_hint: Mapa za učitane datoteke. Ne utječe na postojeće datoteke.
     root_name: Korijen biblioteke datoteka
     system_default: Sistemski zadano
   select-radio:
@@ -1907,6 +1904,8 @@ layouts:
     crop: Obreži
     advanced: Napredno
     not_all_loaded: Moguće učitati samo prvih 1000 stavki.
+horizontal: Horizontalno
+both: Oboje
 panels:
   metric:
     name: Metrički
@@ -1928,62 +1927,21 @@ panels:
   barchart:
     name: Stupčasti grafikon
     description: Trakasti ili stupčasti grafikoni za usporedbu grupa vrijednosti
-    select_field: Morate odabrati polje.
-    select_collection: Morate odabrati kolekciju.
-    select_x_axis: Morate odabrati X os.
-    function: Funkcija
     horizontal: Horizontalno
-    x_axis_grouping: Grupna agregacija osi X
-    x_axis: X os
-    y_axis_function: Funkcija Y osi
-    y_axis: Y-os
-    show_x_axis: Prikaži X-os
-    show_y_axis: Prikaži Y-os
-    show_data_label: Prikaži oznaku podataka
-    group_by: Grupirano po
-    group_and_function: Morate uključiti ili izostaviti i grupu i funkciju.
-    y_axis_NaN: Y os mora biti broj.
-    y_axis_conditional_one: Vrijednost uvjeta
-    y_axis_conditional_two: mora biti broj.
+    select_collection: Morate odabrati kolekciju.
   linechart:
     name: Linijski grafikon
-    select_field: Morate odabrati polje.
-    select_collection: Morate odabrati kolekciju.
-    select_x_axis: Morate odabrati X os.
-    function: Funkcija
-    x_axis: X os
-    x_axis_decimals: Decimale osi X
     disabled_no_grouping: Onemogućeno kada nije odabrano grupiranje.
-    y_axis: Y-os
-    datasets: Skupovi podataka
-    show_legend: Prikaži legendu
     show_marker: Prikaži markere opisa alata
-    include_y_axis: Morate uključiti Y-os za svaki skup podataka kada grupa nije navedena.
-    group_and_function: Morate uključiti ili izostaviti i grupu i funkciju.
+    curve_type: Tip krivulje
     smooth: Glatko
     straight: Ravno
     step_line: Linija koraka
   meter:
     name: Mjerač
     description: Mjerač za praćenje vrijednosti
-    stroke_width: Širina poteza
-    select_max_value: Morate odabrati maksimalnu vrijednost.
-    max_greater_than_zero: Maksimalna vrijednost mora biti veća od 0.
-    select_field: Morate odabrati polje.
-    select_collection: Morate odabrati kolekciju.
-    function: Funkcija
-    thin: Tanko
-    medium: Srednje
-    broad: Široko
   piechart:
     name: Tortni ili krafnasti dijagram
-    function: Funkcija
-    donut: Krafna
-    show_legend: Prikaži legendu
-    right: Desno
-    bottom: Na dnu
-    monochrome: Monokromatski
-    monochrome_color: Monokromatska boja
   variable:
     name: Globalna varijabla
     description: Postavite globalnu vrijednost za korištenje u filtrima drugih ploča
@@ -2069,7 +2027,6 @@ operations:
     name: Pošalji obavijest
     description: Pošaljite obavijest unutar aplikacije jednom ili više korisnika
     recipient: Korisnik
-    recipient_placeholder: Dodajte korisnički UUID i pritisnite enter...
     message: Poruka
   request:
     name: Web dojavnik / URL zahtjeva

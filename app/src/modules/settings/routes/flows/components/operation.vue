@@ -79,33 +79,36 @@
 				<v-icon name="adjust" />
 			</div>
 		</template>
-		<div v-if="typeof currentOperation?.overview === 'function'" class="block">
-			<div v-tooltip="panel.key" class="name">
-				{{ panel.id === '$trigger' ? t(`triggers.${panel.type}.name`) : panel.name }}
+		<v-error-boundary
+			v-if="typeof currentOperation?.overview === 'function'"
+			:name="`operation-overview-${currentOperation.id}`"
+		>
+			<div class="block">
+				<options-overview :panel="panel" :current-operation="currentOperation" :flow="flow" />
 			</div>
-			<dl class="options-overview selectable">
-				<div
-					v-for="{ label, text, copyable } of translate(currentOperation?.overview(panel.options ?? {}, { flow }))"
-					:key="label"
-				>
-					<dt>{{ label }}</dt>
-					<dd>{{ text }}</dd>
-					<v-icon
-						v-if="isCopySupported && copyable"
-						name="copy"
-						small
-						clickable
-						class="clipboard-icon"
-						@click="copyToClipboard(text)"
-					/>
+
+			<template #fallback="{ error: optionsOverviewError }">
+				<div class="options-overview-error">
+					<v-icon name="warning" />
+					{{ t('unexpected_error') }}
+					<v-error :error="optionsOverviewError" />
 				</div>
-			</dl>
-		</div>
-		<component
-			:is="`operation-overview-${currentOperation.id}`"
+			</template>
+		</v-error-boundary>
+		<v-error-boundary
 			v-else-if="currentOperation && 'id' in currentOperation"
-			:options="currentOperation"
-		/>
+			:name="`operation-overview-${currentOperation.id}`"
+		>
+			<component :is="`operation-overview-${currentOperation.id}`" :options="currentOperation" />
+
+			<template #fallback="{ error: operationOverviewError }">
+				<div class="options-overview-error">
+					<v-icon name="warning" />
+					{{ t('unexpected_error') }}
+					<v-error :error="operationOverviewError" />
+				</div>
+			</template>
+		</v-error-boundary>
 		<template v-if="panel.id === '$trigger'" #footer>
 			<div class="status-footer" :class="flowStatus">
 				<display-color
@@ -135,15 +138,14 @@
 </template>
 
 <script lang="ts" setup>
-import { useClipboard } from '@/composables/use-clipboard';
 import { useExtensions } from '@/extensions';
-import { translate } from '@/utils/translate-object-values';
 import { Vector2 } from '@/utils/vector2';
 import { FlowRaw } from '@directus/shared/types';
 import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { ATTACHMENT_OFFSET, REJECT_OFFSET, RESOLVE_OFFSET } from '../constants';
 import { getTriggers } from '../triggers';
+import OptionsOverview from './options-overview.vue';
 
 export type Target = 'resolve' | 'reject';
 export type ArrowInfo = {
@@ -193,8 +195,6 @@ const emit = defineEmits([
 ]);
 
 const { t } = useI18n();
-
-const { isCopySupported, copyToClipboard } = useClipboard();
 
 const styleVars = {
 	'--reject-left': REJECT_OFFSET.x + 'px',
@@ -483,27 +483,20 @@ function pointerLeave() {
 	}
 }
 
-.options-overview {
-	> div {
-		flex-wrap: wrap;
-		align-items: center;
-		margin-bottom: 6px;
-	}
+.options-overview-error {
+	padding: 20px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+	width: 100%;
+	height: 100%;
 
-	dt {
-		flex-basis: 100%;
-		margin-bottom: -2px;
-	}
+	--v-icon-color: var(--danger);
 
-	dd {
-		font-family: var(--family-monospace);
-		flex-basis: 0;
-	}
-
-	.clipboard-icon {
-		--v-icon-color: var(--foreground-subdued);
-		--v-icon-color-hover: var(--foreground-normal);
-		margin-left: 4px;
+	.v-error {
+		margin-top: 8px;
+		max-width: 100%;
 	}
 }
 

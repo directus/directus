@@ -20,7 +20,7 @@
 
 		<v-notice v-else-if="error" type="error">error</v-notice>
 
-		<div v-show="imageData && !loading && !error" class="editor-container">
+		<div v-if="imageData && !loading && !error" class="editor-container">
 			<div class="editor">
 				<img ref="imageElement" :src="imageURL" role="presentation" alt="" @load="onImageLoad" />
 			</div>

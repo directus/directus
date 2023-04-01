@@ -1,18 +1,20 @@
 import SchemaInspector from '@directus/schema';
+import fse from 'fs-extra';
 import { knex, Knex } from 'knex';
+import { merge } from 'lodash';
+import path from 'path';
 import { performance } from 'perf_hooks';
+import { promisify } from 'util';
 import env from '../env';
 import logger from '../logger';
+import type { DatabaseClient } from '../types';
 import { getConfigFromEnv } from '../utils/get-config-from-env';
 import { validateEnv } from '../utils/validate-env';
-import fse from 'fs-extra';
-import path from 'path';
-import { merge } from 'lodash';
-import { promisify } from 'util';
 import { getHelpers } from './helpers';
 
 let database: Knex | null = null;
 let inspector: ReturnType<typeof SchemaInspector> | null = null;
+let databaseVersion: string | null = null;
 
 export default function getDatabase(): Knex {
 	if (database) {
@@ -36,7 +38,7 @@ export default function getDatabase(): Knex {
 			break;
 
 		case 'oracledb':
-			if (!env.DB_CONNECT_STRING) {
+			if (!env['DB_CONNECT_STRING']) {
 				requiredEnvVars.push('DB_HOST', 'DB_PORT', 'DB_DATABASE', 'DB_USER', 'DB_PASSWORD');
 			} else {
 				requiredEnvVars.push('DB_USER', 'DB_PASSWORD', 'DB_CONNECT_STRING');
@@ -52,7 +54,7 @@ export default function getDatabase(): Knex {
 			}
 			break;
 		case 'mssql':
-			if (!env.DB_TYPE || env.DB_TYPE === 'default') {
+			if (!env['DB_TYPE'] || env['DB_TYPE'] === 'default') {
 				requiredEnvVars.push('DB_HOST', 'DB_PORT', 'DB_DATABASE', 'DB_USER', 'DB_PASSWORD');
 			}
 			break;
@@ -110,6 +112,18 @@ export default function getDatabase(): Knex {
 		};
 	}
 
+	if (client === 'mysql') {
+		poolConfig.afterCreate = async (conn: any, callback: any) => {
+			logger.trace('Retrieving database version');
+			const run = promisify(conn.query.bind(conn));
+
+			const version = await run('SELECT @@version;');
+			databaseVersion = version[0]['@@version'];
+
+			callback(null, conn);
+		};
+	}
+
 	if (client === 'mssql') {
 		// This brings MS SQL in line with the other DB vendors. We shouldn't do any automatic
 		// timezone conversion on the database level, especially not when other database vendors don't
@@ -127,7 +141,7 @@ export default function getDatabase(): Knex {
 			times[queryInfo.__knexUid] = performance.now();
 		})
 		.on('query-response', (_response, queryInfo) => {
-			const delta = performance.now() - times[queryInfo.__knexUid];
+			const delta = performance.now() - times[queryInfo.__knexUid]!;
 			logger.trace(`[${delta.toFixed(3)}ms] ${queryInfo.sql} [${queryInfo.bindings.join(', ')}]`);
 			delete times[queryInfo.__knexUid];
 		});
@@ -145,6 +159,15 @@ export function getSchemaInspector(): ReturnType<typeof SchemaInspector> {
 	inspector = SchemaInspector(database);
 
 	return inspector;
+}
+
+/**
+ * Get database version. Value currently exists for MySQL only.
+ *
+ * @returns Cached database version
+ */
+export function getDatabaseVersion(): string | null {
+	return databaseVersion;
 }
 
 export async function hasDatabaseConnection(database?: Knex): Promise<boolean> {
@@ -179,9 +202,7 @@ export async function validateDatabaseConnection(database?: Knex): Promise<void>
 	}
 }
 
-export function getDatabaseClient(
-	database?: Knex
-): 'mysql' | 'postgres' | 'cockroachdb' | 'sqlite' | 'oracle' | 'mssql' | 'redshift' {
+export function getDatabaseClient(database?: Knex): DatabaseClient {
 	database = database ?? getDatabase();
 
 	switch (database.client.constructor.name) {
@@ -220,7 +241,7 @@ export async function validateMigrations(): Promise<boolean> {
 	try {
 		let migrationFiles = await fse.readdir(path.join(__dirname, 'migrations'));
 
-		const customMigrationsPath = path.resolve(env.EXTENSIONS_PATH, 'migrations');
+		const customMigrationsPath = path.resolve(env['EXTENSIONS_PATH'], 'migrations');
 
 		let customMigrationFiles =
 			((await fse.pathExists(customMigrationsPath)) && (await fse.readdir(customMigrationsPath))) || [];
@@ -276,11 +297,11 @@ async function validateDatabaseCharset(database?: Knex): Promise<void> {
 
 		const tables = await database('information_schema.tables')
 			.select({ name: 'TABLE_NAME', collation: 'TABLE_COLLATION' })
-			.where({ TABLE_SCHEMA: env.DB_DATABASE });
+			.where({ TABLE_SCHEMA: env['DB_DATABASE'] });
 
 		const columns = await database('information_schema.columns')
 			.select({ table_name: 'TABLE_NAME', name: 'COLUMN_NAME', collation: 'COLLATION_NAME' })
-			.where({ TABLE_SCHEMA: env.DB_DATABASE })
+			.where({ TABLE_SCHEMA: env['DB_DATABASE'] })
 			.whereNot({ COLLATION_NAME: collation });
 
 		let inconsistencies = '';

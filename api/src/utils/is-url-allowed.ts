@@ -10,14 +10,18 @@ export default function isUrlAllowed(url: string, allowList: string | string[]):
 
 	if (urlAllowList.includes(url)) return true;
 
-	const parsedWhitelist = urlAllowList.map((allowedURL) => {
-		try {
-			const { hostname, pathname } = new URL(allowedURL);
-			return hostname + pathname;
-		} catch {
-			logger.warn(`Invalid URL used "${url}"`);
-		}
-	});
+	const parsedWhitelist = urlAllowList
+		.map((allowedURL) => {
+			try {
+				const { hostname, pathname } = new URL(allowedURL);
+				return hostname + pathname;
+			} catch {
+				logger.warn(`Invalid URL used "${url}"`);
+			}
+
+			return null;
+		})
+		.filter((f) => f) as string[];
 
 	try {
 		const { hostname, pathname } = new URL(url);

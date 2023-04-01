@@ -1,7 +1,7 @@
-import { Accountability, PrimaryKey } from '@directus/shared/types';
+import type { Accountability, PrimaryKey } from '@directus/shared/types';
 import { defineOperationApi, optionToObject, toArray } from '@directus/shared/utils';
 import { ItemsService } from '../../services';
-import { Item } from '../../types';
+import type { Item } from '../../types';
 import { getAccountabilityForRole } from '../../utils/get-accountability-for-role';
 import { sanitizeQuery } from '../../utils/sanitize-query';
 
@@ -42,12 +42,12 @@ export default defineOperationApi<Options>({
 		let result: Item | Item[] | null;
 
 		if (!key || (Array.isArray(key) && key.length === 0)) {
-			result = await itemsService.readByQuery(sanitizedQueryObject);
+			result = await itemsService.readByQuery(sanitizedQueryObject, { emitEvents: !!emitEvents });
 		} else {
 			const keys = toArray(key);
 
 			if (keys.length === 1) {
-				result = await itemsService.readOne(keys[0], sanitizedQueryObject, { emitEvents: !!emitEvents });
+				result = await itemsService.readOne(keys[0]!, sanitizedQueryObject, { emitEvents: !!emitEvents });
 			} else {
 				result = await itemsService.readMany(keys, sanitizedQueryObject, { emitEvents: !!emitEvents });
 			}

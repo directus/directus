@@ -23,6 +23,7 @@ export * from './presets';
 export * from './relations';
 export * from './revisions';
 export * from './roles';
+export * from './schema';
 export * from './server';
 export * from './settings';
 export * from './specifications';

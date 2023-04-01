@@ -3,7 +3,6 @@ import request from 'supertest';
 import { describe, expect, test, vi } from 'vitest';
 
 import createApp from './app';
-import { ROBOTSTXT } from './constants';
 
 vi.mock('./database', () => ({
 	default: vi.fn(),
@@ -16,17 +15,19 @@ vi.mock('./database', () => ({
 
 vi.mock('./env', async () => {
 	const actual = (await vi.importActual('./env')) as { default: Record<string, any> };
+	const MOCK_ENV = {
+		...actual.default,
+		KEY: 'xxxxxxx-xxxxxx-xxxxxxxx-xxxxxxxxxx',
+		SECRET: 'abcdef',
+		SERVE_APP: true,
+		PUBLIC_URL: 'http://localhost:8055/directus',
+		TELEMETRY: false,
+		LOG_STYLE: 'raw',
+	};
 
 	return {
-		default: {
-			...actual.default,
-			KEY: 'xxxxxxx-xxxxxx-xxxxxxxx-xxxxxxxxxx',
-			SECRET: 'abcdef',
-			SERVE_APP: true,
-			PUBLIC_URL: 'http://localhost:8055/directus',
-			TELEMETRY: false,
-			LOG_STYLE: 'raw',
-		},
+		default: MOCK_ENV,
+		getEnv: () => MOCK_ENV,
 	};
 });
 
@@ -95,7 +96,7 @@ describe('createApp', async () => {
 			const app = await createApp();
 			const response = await request(app).get('/robots.txt');
 
-			expect(response.text).toEqual(ROBOTSTXT);
+			expect(response.text).toEqual('User-agent: *\nDisallow: /');
 		});
 	});
 

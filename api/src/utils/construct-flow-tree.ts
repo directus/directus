@@ -1,4 +1,4 @@
-import { Flow, FlowRaw, Operation, OperationRaw } from '@directus/shared/types';
+import type { Flow, FlowRaw, Operation, OperationRaw } from '@directus/shared/types';
 import { omit } from 'lodash';
 
 export function constructFlowTree(flow: FlowRaw): Flow {
@@ -9,6 +9,7 @@ export function constructFlowTree(flow: FlowRaw): Flow {
 	const flowTree: Flow = {
 		...omit(flow, 'operations'),
 		operation: operationTree,
+		options: flow.options ?? {},
 	};
 
 	return flowTree;

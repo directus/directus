@@ -1503,7 +1503,6 @@ interfaces:
   system-folder:
     folder: Dosar
     description: Selectați un dosar
-    field_hint: Dosar pentru fișierele încărcate. Nu afectează fișierele existente.
     root_name: Rădăcina bibliotecii de fișiere
     system_default: Setări implicite ale sistemului
   select-radio:
@@ -1764,6 +1763,7 @@ layouts:
     no_compatible_fields: Nu există câmpuri compatibile
   kanban:
     crop: Decupare
+both: Ambele
 panels:
   metric:
     name: Metric
@@ -1782,6 +1782,8 @@ panels:
   list:
     name: Listă
     description: Filtrează și afișează câmpuri dintr-o colecție
+  linechart:
+    curve_type: Tipul curbei
 triggers:
   webhook:
     method: Metodă
