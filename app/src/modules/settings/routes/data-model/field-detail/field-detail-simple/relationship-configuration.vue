@@ -129,9 +129,5 @@ export default defineComponent({
 	&:not(:empty) {
 		margin-bottom: 20px;
 	}
-
-	.v-input.matches {
-		--v-input-color: var(--primary);
-	}
 }
 </style>

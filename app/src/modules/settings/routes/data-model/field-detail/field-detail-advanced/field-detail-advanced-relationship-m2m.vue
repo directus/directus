@@ -335,10 +335,6 @@ export default defineComponent({
 	}
 }
 
-.v-input.matches {
-	--v-input-color: var(--primary);
-}
-
 .type-label {
 	margin-bottom: 8px;
 }

@@ -1,57 +1,54 @@
 <template>
-	<v-input
-		key="related-collection-select"
+	<collection-select-menu
+		attached
+		:collections="availableCollections"
+		:system-collections="systemCollections"
 		:model-value="modelValue"
-		:class="{ matches: collectionExists }"
-		db-safe
-		:nullable="false"
-		:disabled="disabled"
-		:placeholder="t('collection') + '...'"
-		@update:model-value="$emit('update:modelValue', $event)"
+		:filter="modelValue"
+		@update:model-value="emitValue($event)"
 	>
-		<template v-if="!disabled" #append>
-			<v-menu show-arrow placement="bottom-end">
-				<template #activator="{ toggle }">
-					<v-icon v-tooltip="t('select_existing')" name="list_alt" clickable :disabled="disabled" @click="toggle" />
+		<template #activator="{ activate, deactivate: deactivateSuggestions }">
+			<v-input
+				key="related-collection-select"
+				:model-value="modelValue"
+				:class="{ matches: collectionExists }"
+				db-safe
+				:nullable="false"
+				:disabled="disabled"
+				:placeholder="t('collection') + '...'"
+				@focus="activate"
+				@update:model-value="emitValue($event)"
+			>
+				<template v-if="!disabled" #append>
+					<collection-select-menu
+						show-arrow
+						placement="bottom-end"
+						:collections="availableCollections"
+						:system-collections="systemCollections"
+						:model-value="modelValue"
+						@update:model-value="emitValue($event)"
+					>
+						<template #activator="{ toggle }">
+							<v-icon
+								v-tooltip="t('select_existing')"
+								name="list_alt"
+								clickable
+								:disabled="disabled"
+								@click="
+									toggle();
+									deactivateSuggestions();
+								"
+							/>
+						</template>
+					</collection-select-menu>
 				</template>
 
-				<v-list class="monospace">
-					<v-list-item
-						v-for="availableCollection in availableCollections"
-						:key="availableCollection.collection"
-						:active="modelValue === availableCollection.collection"
-						clickable
-						@click="$emit('update:modelValue', availableCollection.collection)"
-					>
-						<v-list-item-content>
-							{{ availableCollection.collection }}
-						</v-list-item-content>
-					</v-list-item>
-
-					<v-divider />
-
-					<v-list-group>
-						<template #activator>{{ t('system') }}</template>
-						<v-list-item
-							v-for="systemCollection in systemCollections"
-							:key="systemCollection.collection"
-							:active="modelValue === systemCollection.collection"
-							clickable
-							@click="$emit('update:modelValue', systemCollection.collection)"
-						>
-							<v-list-item-content>
-								{{ systemCollection.collection }}
-							</v-list-item-content>
-						</v-list-item>
-					</v-list-group>
-				</v-list>
-			</v-menu>
+				<template v-if="disabled" #input>
+					<v-text-overflow :text="modelValue" />
+				</template>
+			</v-input>
 		</template>
-
-		<template v-if="disabled" #input>
-			<v-text-overflow :text="modelValue" />
-		</template>
-	</v-input>
+	</collection-select-menu>
 </template>
 
 <script lang="ts">
@@ -59,8 +56,10 @@ import { defineComponent, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useCollectionsStore } from '@/stores/collections';
 import { orderBy } from 'lodash';
+import CollectionSelectMenu from './collection-select-menu.vue';
 
 export default defineComponent({
+	components: { CollectionSelectMenu },
 	props: {
 		modelValue: {
 			type: String,
@@ -72,7 +71,7 @@ export default defineComponent({
 		},
 	},
 	emits: ['update:modelValue'],
-	setup(props) {
+	setup(props, { emit }) {
 		const { t } = useI18n();
 		const collectionsStore = useCollectionsStore();
 
@@ -86,7 +85,15 @@ export default defineComponent({
 
 		const systemCollections = collectionsStore.crudSafeSystemCollections;
 
-		return { t, collectionExists, availableCollections, systemCollections };
+		const emitValue = (collection: string) => emit('update:modelValue', collection);
+
+		return { t, collectionExists, availableCollections, systemCollections, emitValue };
 	},
 });
 </script>
+
+<style lang="scss" scoped>
+.v-input.matches {
+	--v-input-color: var(--primary);
+}
+</style>

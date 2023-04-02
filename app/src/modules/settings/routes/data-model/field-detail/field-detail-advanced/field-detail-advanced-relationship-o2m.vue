@@ -191,10 +191,6 @@ export default defineComponent({
 	}
 }
 
-.v-input.matches {
-	--v-input-color: var(--primary);
-}
-
 .v-list {
 	--v-list-item-content-font-family: var(--family-monospace);
 }
