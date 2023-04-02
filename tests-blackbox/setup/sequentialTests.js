@@ -11,6 +11,8 @@ exports.list = {
 		{ testFilePath: '/schema/timezone/timezone.test.ts' },
 		{ testFilePath: '/schema/timezone/timezone-changed-node-tz-america.test.ts' },
 		{ testFilePath: '/schema/timezone/timezone-changed-node-tz-asia.test.ts' },
+		{ testFilePath: '/routes/collections/schema-cache.test.ts' },
+		{ testFilePath: '/routes/assets/concurrency.test.ts' },
 	],
 	// If specified, only run these tests sequentially
 	only: [

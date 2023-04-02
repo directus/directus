@@ -38,7 +38,7 @@ const applyJoiSchema = Joi.object({
 				Joi.object({
 					collection: Joi.string().required(),
 					field: Joi.string().required(),
-					related_collection: Joi.string(),
+					related_collection: Joi.string().allow(null),
 					diff: Joi.array().items(deepDiffSchema).required(),
 				})
 			)

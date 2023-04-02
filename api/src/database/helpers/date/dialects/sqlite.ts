@@ -1,7 +1,7 @@
 import { DateHelper } from '../types';
 
 export class DateHelperSQLite extends DateHelper {
-	parse(date: string | Date): string {
+	override parse(date: string | Date): string {
 		if (!date) {
 			return date;
 		}
@@ -20,7 +20,7 @@ export class DateHelperSQLite extends DateHelper {
 		return String(new Date(date).getTime());
 	}
 
-	fieldFlagForField(fieldType: string): string {
+	override fieldFlagForField(fieldType: string): string {
 		switch (fieldType) {
 			case 'timestamp':
 				return 'cast-timestamp';

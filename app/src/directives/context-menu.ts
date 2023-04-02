@@ -3,12 +3,16 @@ import { Directive, DirectiveBinding } from 'vue';
 function mounted(element: HTMLElement, binding: DirectiveBinding): void {
 	const contextMenu = binding.instance?.$refs[binding.value];
 
+	if (!contextMenu) return;
+
 	element.addEventListener('contextmenu', activateContextMenu(contextMenu));
 	document.documentElement.addEventListener('pointerdown', deactivateContextMenu(contextMenu));
 }
 
 function unmounted(element: HTMLElement, binding: DirectiveBinding): void {
 	const contextMenu = binding.instance?.$refs[binding.value];
+
+	if (!contextMenu) return;
 
 	element.removeEventListener('contextmenu', activateContextMenu(contextMenu));
 	document.documentElement.removeEventListener('pointerdown', deactivateContextMenu(contextMenu));

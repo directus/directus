@@ -4,6 +4,8 @@ import vendors from '@common/get-dbs-to-test';
 import * as common from '@common/index';
 import {
 	collectionAll,
+	collectionM2A,
+	collectionM2A2,
 	collectionM2M,
 	collectionM2M2,
 	collectionM2O,
@@ -12,6 +14,8 @@ import {
 	collectionO2M2,
 	collectionSelf,
 	deleteAllCollections,
+	junctionM2A,
+	junctionM2A2,
 	junctionM2M,
 	junctionM2M2,
 	junctionSelfM2M,
@@ -502,6 +506,7 @@ function parseSnapshot(vendor: string, snapshot: any) {
 async function assertCollectionsDeleted(vendor: string, pkType: PrimaryKeyType) {
 	for (const setDefaultValues of [false, true]) {
 		const suffix = setDefaultValues ? '2' : '';
+		const responses = [];
 
 		// Setup
 		const localCollectionAll = `${collectionAll}_${pkType}${suffix}`;
@@ -509,6 +514,10 @@ async function assertCollectionsDeleted(vendor: string, pkType: PrimaryKeyType) 
 		const localCollectionM2M2 = `${collectionM2M2}_${pkType}${suffix}`;
 		const localJunctionAllM2M = `${junctionM2M}_${pkType}${suffix}`;
 		const localJunctionM2MM2M2 = `${junctionM2M2}_${pkType}${suffix}`;
+		const localCollectionM2A = `${collectionM2A}_${pkType}${suffix}`;
+		const localCollectionM2A2 = `${collectionM2A2}_${pkType}${suffix}`;
+		const localJunctionAllM2A = `${junctionM2A}_${pkType}${suffix}`;
+		const localJunctionM2AM2A2 = `${junctionM2A2}_${pkType}${suffix}`;
 		const localCollectionM2O = `${collectionM2O}_${pkType}${suffix}`;
 		const localCollectionM2O2 = `${collectionM2O2}_${pkType}${suffix}`;
 		const localCollectionO2M = `${collectionO2M}_${pkType}${suffix}`;
@@ -516,51 +525,86 @@ async function assertCollectionsDeleted(vendor: string, pkType: PrimaryKeyType) 
 		const localCollectionSelf = `${collectionSelf}_${pkType}${suffix}`;
 		const localJunctionSelfM2M = `${junctionSelfM2M}_${pkType}${suffix}`;
 
-		const response = await request(getUrl(vendor))
-			.get(`/items/${localJunctionSelfM2M}`)
-			.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
-		const response2 = await request(getUrl(vendor))
-			.get(`/items/${localCollectionSelf}`)
-			.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
-		const response3 = await request(getUrl(vendor))
-			.get(`/items/${localCollectionO2M2}`)
-			.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
-		const response4 = await request(getUrl(vendor))
-			.get(`/items/${localCollectionO2M}`)
-			.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
-		const response5 = await request(getUrl(vendor))
-			.get(`/items/${localJunctionM2MM2M2}`)
-			.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
-		const response6 = await request(getUrl(vendor))
-			.get(`/items/${localJunctionAllM2M}`)
-			.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
-		const response7 = await request(getUrl(vendor))
-			.get(`/items/${localCollectionM2M2}`)
-			.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
-		const response8 = await request(getUrl(vendor))
-			.get(`/items/${localCollectionM2M}`)
-			.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
-		const response9 = await request(getUrl(vendor))
-			.get(`/items/${localCollectionAll}`)
-			.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
-		const response10 = await request(getUrl(vendor))
-			.get(`/items/${localCollectionM2O}`)
-			.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
-		const response11 = await request(getUrl(vendor))
-			.get(`/items/${localCollectionM2O2}`)
-			.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+		responses.push(
+			await request(getUrl(vendor))
+				.get(`/items/${localJunctionSelfM2M}`)
+				.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+		);
+		responses.push(
+			await request(getUrl(vendor))
+				.get(`/items/${localCollectionSelf}`)
+				.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+		);
+		responses.push(
+			await request(getUrl(vendor))
+				.get(`/items/${localCollectionO2M2}`)
+				.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+		);
+		responses.push(
+			await request(getUrl(vendor))
+				.get(`/items/${localCollectionO2M}`)
+				.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+		);
+		responses.push(
+			await request(getUrl(vendor))
+				.get(`/items/${localJunctionM2AM2A2}`)
+				.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+		);
+		responses.push(
+			await request(getUrl(vendor))
+				.get(`/items/${localJunctionAllM2A}`)
+				.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+		);
+		responses.push(
+			await request(getUrl(vendor))
+				.get(`/items/${localCollectionM2A2}`)
+				.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+		);
+		responses.push(
+			await request(getUrl(vendor))
+				.get(`/items/${localCollectionM2A}`)
+				.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+		);
+
+		responses.push(
+			await request(getUrl(vendor))
+				.get(`/items/${localJunctionM2MM2M2}`)
+				.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+		);
+		responses.push(
+			await request(getUrl(vendor))
+				.get(`/items/${localJunctionAllM2M}`)
+				.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+		);
+		responses.push(
+			await request(getUrl(vendor))
+				.get(`/items/${localCollectionM2M2}`)
+				.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+		);
+		responses.push(
+			await request(getUrl(vendor))
+				.get(`/items/${localCollectionM2M}`)
+				.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+		);
+		responses.push(
+			await request(getUrl(vendor))
+				.get(`/items/${localCollectionAll}`)
+				.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+		);
+		responses.push(
+			await request(getUrl(vendor))
+				.get(`/items/${localCollectionM2O}`)
+				.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+		);
+		responses.push(
+			await request(getUrl(vendor))
+				.get(`/items/${localCollectionM2O2}`)
+				.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+		);
 
 		// Assert
-		expect(response.statusCode).toEqual(403);
-		expect(response2.statusCode).toEqual(403);
-		expect(response3.statusCode).toEqual(403);
-		expect(response4.statusCode).toEqual(403);
-		expect(response5.statusCode).toEqual(403);
-		expect(response6.statusCode).toEqual(403);
-		expect(response7.statusCode).toEqual(403);
-		expect(response8.statusCode).toEqual(403);
-		expect(response9.statusCode).toEqual(403);
-		expect(response10.statusCode).toEqual(403);
-		expect(response11.statusCode).toEqual(403);
+		for (const response of responses) {
+			expect(response.statusCode).toEqual(403);
+		}
 	}
 }

@@ -245,6 +245,7 @@ float: Обтікання
 integer: Ціле число
 json: JSON
 xml: XML
+yaml: YAML
 string: Рядок
 text: Текст
 time: Час
@@ -1629,7 +1630,6 @@ interfaces:
   system-folder:
     folder: Папка
     description: Обрати теку
-    field_hint: Тека для завантажених файлів. Не може вплинути на існуючі файли.
     root_name: Корінь файлової бібліотеки
     system_default: Стандартні налаштування
   select-radio:
@@ -1940,6 +1940,10 @@ layouts:
     no_group: Без Групи
     not_all_loaded: Можна завантажити лише перші 1000 елементів.
 horizontal: Горизонтальний
+x_axis: Вісь X
+y_axis: Вісь Y
+show_x_only: Показувати лише вісь X
+show_y_only: Показувати лише вісь Y
 both: Обидва
 panels:
   metric:
@@ -2027,7 +2031,6 @@ operations:
     name: Надіслати сповіщення
     description: Надіслати сповіщення в застосунку одному або декільком користувачам
     recipient: Користувач
-    recipient_placeholder: Додати UUID користувача та натиснути Enter...
     message: Повідомлення
   request:
     name: Веб хук / URL запиту

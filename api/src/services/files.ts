@@ -15,7 +15,7 @@ import { ForbiddenException, InvalidPayloadException, ServiceUnavailableExceptio
 import logger from '../logger';
 import { getAxios } from '../request/index';
 import { getStorage } from '../storage';
-import { AbstractServiceOptions, File, Metadata, MutationOptions, PrimaryKey } from '../types';
+import type { AbstractServiceOptions, File, Metadata, MutationOptions, PrimaryKey } from '../types';
 import { parseIptc, parseXmp } from '../utils/parse-image-metadata';
 import { ItemsService } from './items';
 
@@ -32,13 +32,24 @@ export class FilesService extends ItemsService {
 	 */
 	async uploadOne(
 		stream: Readable,
-		data: Partial<File> & { filename_download: string; storage: string },
+		data: Partial<File> & { storage: string },
 		primaryKey?: PrimaryKey,
 		opts?: MutationOptions
 	): Promise<PrimaryKey> {
 		const storage = await getStorage();
 
-		const payload = clone(data);
+		let existingFile = {};
+
+		if (primaryKey !== undefined) {
+			existingFile =
+				(await this.knex
+					.select('folder', 'filename_download')
+					.from('directus_files')
+					.where({ id: primaryKey })
+					.first()) ?? {};
+		}
+
+		const payload = { ...existingFile, ...clone(data) };
 
 		if ('folder' in payload === false) {
 			const settings = await this.knex.select('storage_default_folder').from('directus_settings').first();
@@ -63,7 +74,7 @@ export class FilesService extends ItemsService {
 		}
 
 		const fileExtension =
-			path.extname(payload.filename_download) || (payload.type && '.' + extension(payload.type)) || '';
+			path.extname(payload.filename_download!) || (payload.type && '.' + extension(payload.type)) || '';
 
 		payload.filename_disk = primaryKey + (fileExtension || '');
 
@@ -86,12 +97,12 @@ export class FilesService extends ItemsService {
 			const stream = await storage.location(data.storage).read(payload.filename_disk);
 			const { height, width, description, title, tags, metadata } = await this.getMetadata(stream);
 
-			payload.height ??= height;
-			payload.width ??= width;
-			payload.description ??= description;
-			payload.title ??= title;
-			payload.tags ??= tags;
-			payload.metadata ??= metadata;
+			payload.height ??= height ?? null;
+			payload.width ??= width ?? null;
+			payload.description ??= description ?? null;
+			payload.title ??= title ?? null;
+			payload.tags ??= tags ?? null;
+			payload.metadata ??= metadata ?? null;
 		}
 
 		// We do this in a service without accountability. Even if you don't have update permissions to the file,
@@ -103,7 +114,7 @@ export class FilesService extends ItemsService {
 
 		await sudoService.updateOne(primaryKey, payload, { emitEvents: false });
 
-		if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
+		if (this.cache && env['CACHE_AUTO_PURGE'] && opts?.autoPurgeCache !== false) {
 			await this.cache.clear();
 		}
 
@@ -129,7 +140,7 @@ export class FilesService extends ItemsService {
 	/**
 	 * Extract metadata from a buffer's content
 	 */
-	async getMetadata(stream: Readable, allowList = env.FILE_METADATA_ALLOW_LIST): Promise<Metadata> {
+	async getMetadata(stream: Readable, allowList = env['FILE_METADATA_ALLOW_LIST']): Promise<Metadata> {
 		return new Promise((resolve, reject) => {
 			pipeline(
 				stream,
@@ -203,14 +214,14 @@ export class FilesService extends ItemsService {
 						}
 					}
 
-					if (fullMetadata?.iptc?.Caption && typeof fullMetadata.iptc.Caption === 'string') {
-						metadata.description = fullMetadata.iptc?.Caption;
+					if (fullMetadata?.iptc?.['Caption'] && typeof fullMetadata.iptc['Caption'] === 'string') {
+						metadata.description = fullMetadata.iptc?.['Caption'];
 					}
-					if (fullMetadata?.iptc?.Headline && typeof fullMetadata.iptc.Headline === 'string') {
-						metadata.title = fullMetadata.iptc.Headline;
+					if (fullMetadata?.iptc?.['Headline'] && typeof fullMetadata.iptc['Headline'] === 'string') {
+						metadata.title = fullMetadata.iptc['Headline'];
 					}
-					if (fullMetadata?.iptc?.Keywords) {
-						metadata.tags = fullMetadata.iptc.Keywords;
+					if (fullMetadata?.iptc?.['Keywords']) {
+						metadata.tags = fullMetadata.iptc['Keywords'];
 					}
 
 					if (allowList === '*' || allowList?.[0] === '*') {
@@ -266,7 +277,7 @@ export class FilesService extends ItemsService {
 
 		const payload = {
 			filename_download: filename,
-			storage: toArray(env.STORAGE_LOCATIONS)[0],
+			storage: toArray(env['STORAGE_LOCATIONS'])[0],
 			type: fileResponse.headers['content-type'],
 			title: formatTitle(filename),
 			...(body || {}),
@@ -279,7 +290,7 @@ export class FilesService extends ItemsService {
 	 * Create a file (only applicable when it is not a multipart/data POST request)
 	 * Useful for associating metadata with existing file in storage
 	 */
-	async createOne(data: Partial<File>, opts?: MutationOptions): Promise<PrimaryKey> {
+	override async createOne(data: Partial<File>, opts?: MutationOptions): Promise<PrimaryKey> {
 		if (!data.type) {
 			throw new InvalidPayloadException(`"type" is required`);
 		}
@@ -291,7 +302,7 @@ export class FilesService extends ItemsService {
 	/**
 	 * Delete a file
 	 */
-	async deleteOne(key: PrimaryKey, opts?: MutationOptions): Promise<PrimaryKey> {
+	override async deleteOne(key: PrimaryKey, opts?: MutationOptions): Promise<PrimaryKey> {
 		await this.deleteMany([key], opts);
 		return key;
 	}
@@ -299,7 +310,7 @@ export class FilesService extends ItemsService {
 	/**
 	 * Delete multiple files
 	 */
-	async deleteMany(keys: PrimaryKey[], opts?: MutationOptions): Promise<PrimaryKey[]> {
+	override async deleteMany(keys: PrimaryKey[], opts?: MutationOptions): Promise<PrimaryKey[]> {
 		const storage = await getStorage();
 		const files = await super.readMany(keys, { fields: ['id', 'storage'], limit: -1 });
 
@@ -310,15 +321,15 @@ export class FilesService extends ItemsService {
 		await super.deleteMany(keys);
 
 		for (const file of files) {
-			const disk = storage.location(file.storage);
+			const disk = storage.location(file['storage']);
 
 			// Delete file + thumbnails
-			for await (const filepath of disk.list(file.id)) {
+			for await (const filepath of disk.list(file['id'])) {
 				await disk.delete(filepath);
 			}
 		}
 
-		if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
+		if (this.cache && env['CACHE_AUTO_PURGE'] && opts?.autoPurgeCache !== false) {
 			await this.cache.clear();
 		}
 

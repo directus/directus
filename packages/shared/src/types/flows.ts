@@ -3,9 +3,9 @@ type Status = 'active' | 'inactive';
 
 export interface Flow {
 	id: string;
-	name: string;
-	icon: string;
-	description: string;
+	name: string | null;
+	icon: string | null;
+	description: string | null;
 	status: Status;
 	trigger: TriggerType | null;
 	options: Record<string, any>;
@@ -28,12 +28,12 @@ export interface Operation {
 export interface FlowRaw {
 	id: string;
 	name: string;
-	icon: string;
-	color: string;
-	description: string;
+	icon: string | null;
+	color: string | null;
+	description: string | null;
 	status: Status;
 	trigger: TriggerType | null;
-	options: Record<string, any>;
+	options: Record<string, any> | null;
 	operation: string | null;
 	operations: OperationRaw[];
 	date_created: string;

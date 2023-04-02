@@ -1,10 +1,10 @@
 import fse from 'fs-extra';
-import { Knex } from 'knex';
+import type { Knex } from 'knex';
 import { orderBy } from 'lodash';
 import path from 'path';
 import env from '../../env';
 import logger from '../../logger';
-import { Migration } from '../../types';
+import type { Migration } from '../../types';
 import { dynamicImport } from '../../utils/dynamic-import';
 
 // @ts-ignore
@@ -13,7 +13,7 @@ import formatTitle from '@directus/format-title';
 export default async function run(database: Knex, direction: 'up' | 'down' | 'latest', log = true): Promise<void> {
 	let migrationFiles = await fse.readdir(__dirname);
 
-	const customMigrationsPath = path.resolve(env.EXTENSIONS_PATH, 'migrations');
+	const customMigrationsPath = path.resolve(env['EXTENSIONS_PATH'], 'migrations');
 	let customMigrationFiles =
 		((await fse.pathExists(customMigrationsPath)) && (await fse.readdir(customMigrationsPath))) || [];
 
@@ -25,7 +25,7 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 	const migrations = [
 		...migrationFiles.map((path) => parseFilePath(path)),
 		...customMigrationFiles.map((path) => parseFilePath(path, true)),
-	].sort((a, b) => (a.version > b.version ? 1 : -1));
+	].sort((a, b) => (a.version! > b.version! ? 1 : -1));
 
 	const migrationKeys = new Set(migrations.map((m) => m.version));
 	if (migrations.length > migrationKeys.size) {
@@ -58,7 +58,7 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 			nextVersion = migrations[0];
 		} else {
 			nextVersion = migrations.find((migration) => {
-				return migration.version > currentVersion.version && migration.completed === false;
+				return migration.version! > currentVersion.version && migration.completed === false;
 			});
 		}
 
