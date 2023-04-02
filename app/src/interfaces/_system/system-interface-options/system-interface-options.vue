@@ -13,6 +13,7 @@
 			v-model="options"
 			class="extension-options"
 			:fields="optionsFields"
+			:disabled="disabled"
 			primary-key="+"
 		/>
 
@@ -48,6 +49,10 @@ export default defineComponent({
 		collection: {
 			type: String,
 			default: null,
+		},
+		disabled: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	emits: ['input'],

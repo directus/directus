@@ -5,7 +5,7 @@ import { extractError as mysql } from './dialects/mysql';
 import { extractError as oracle } from './dialects/oracle';
 import { extractError as postgres } from './dialects/postgres';
 import { extractError as sqlite } from './dialects/sqlite';
-import { SQLError } from './dialects/types';
+import type { SQLError } from './dialects/types';
 
 /**
  * Translates an error thrown by any of the databases into a pre-defined Exception. Currently

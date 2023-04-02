@@ -1,24 +1,25 @@
-import { Command } from 'commander';
-import { Extension, HookConfig } from '@directus/shared/types';
-import { createCli } from './index';
+import type { Extension, HookConfig } from '@directus/shared/types';
+import type { Command } from 'commander';
 import path from 'path';
-import { test, describe, expect, vi, beforeEach } from 'vitest';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { createCli } from './index';
 
 vi.mock('../../src/env', async () => {
 	const actual = (await vi.importActual('../../src/env')) as { default: Record<string, any> };
-
+	const MOCK_ENV = {
+		...actual.default,
+		EXTENSIONS_PATH: '',
+		SERVE_APP: false,
+		DB_CLIENT: 'pg',
+		DB_HOST: 'localhost',
+		DB_PORT: 5432,
+		DB_DATABASE: 'directus',
+		DB_USER: 'postgres',
+		DB_PASSWORD: 'psql1234',
+	};
 	return {
-		default: {
-			...actual.default,
-			EXTENSIONS_PATH: '',
-			SERVE_APP: false,
-			DB_CLIENT: 'pg',
-			DB_HOST: 'localhost',
-			DB_PORT: 5432,
-			DB_DATABASE: 'directus',
-			DB_USER: 'postgres',
-			DB_PASSWORD: 'psql1234',
-		},
+		default: MOCK_ENV,
+		getEnv: () => MOCK_ENV,
 	};
 });
 

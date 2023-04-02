@@ -17,7 +17,7 @@ router.get(
 			schema: req.schema,
 		});
 		const records = await service.readSingleton(req.sanitizedQuery);
-		res.locals.payload = { data: records || null };
+		res.locals['payload'] = { data: records || null };
 		return next();
 	}),
 	respond
@@ -34,7 +34,7 @@ router.patch(
 
 		try {
 			const record = await service.readSingleton(req.sanitizedQuery);
-			res.locals.payload = { data: record || null };
+			res.locals['payload'] = { data: record || null };
 		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
 				return next();

@@ -86,10 +86,11 @@ export default defineComponent({
 					interface: 'input',
 					width: 'half',
 					sort: 2,
+					required: true,
 					options: {
 						dbSafe: true,
 						font: 'monospace',
-						placeholder: t('interfaces.list.field_name_placeholder'),
+						placeholder: t('field_name_placeholder'),
 					},
 				},
 				schema: null,
@@ -160,13 +161,26 @@ export default defineComponent({
 				schema: null,
 			},
 			{
+				name: t('required'),
+				field: 'required',
+				type: 'boolean',
+				meta: {
+					interface: 'boolean',
+					sort: 7,
+					options: {
+						label: t('requires_value'),
+					},
+					width: 'half',
+				},
+			},
+			{
 				name: t('options'),
 				field: 'options',
 				type: 'string',
 				meta: {
 					interface: 'system-interface-options',
 					width: 'full',
-					sort: 7,
+					sort: 8,
 					options: {
 						interfaceField: 'interface',
 					},

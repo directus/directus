@@ -1,5 +1,5 @@
 import knex, { Knex } from 'knex';
-import { getTracker, MockClient, Tracker } from 'knex-mock-client';
+import { createTracker, MockClient, Tracker } from 'knex-mock-client';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, SpyInstance, vi } from 'vitest';
 import { WebhooksService } from '.';
 import { getMessenger } from '../messenger';
@@ -9,7 +9,7 @@ vi.mock('../../src/database/index', () => {
 });
 
 vi.mock('../messenger', () => {
-	return { getMessenger: vi.fn().mockReturnValue({ publish: vi.fn() }) };
+	return { getMessenger: vi.fn().mockReturnValue({ publish: vi.fn(), subscribe: vi.fn() }) };
 });
 
 describe('Integration Tests', () => {
@@ -18,7 +18,7 @@ describe('Integration Tests', () => {
 
 	beforeAll(async () => {
 		db = knex({ client: MockClient });
-		tracker = getTracker();
+		tracker = createTracker(db);
 	});
 
 	beforeEach(() => {

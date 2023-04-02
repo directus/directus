@@ -245,6 +245,7 @@ float: Float
 integer: Integer
 json: JSON
 xml: XML
+yaml: YAML
 string: String
 text: Teks
 time: Time
@@ -573,6 +574,8 @@ select_an_item: Pilih sebuah item...
 edit: Edit
 enabled: Diaktifkan
 disable_tfa: Nonaktifkan 2FA
+admin_disable_tfa_text: Apa Anda yakin ingin menonaktifkan 2FA pada user ini?
+tfa_setup: Mempersiapkan 2FA
 tfa_scan_code: Scan kode pada aplikasi peng-autentifikasi untuk menyelesaikan pengaturan 2FA
 enter_otp_to_disable_tfa: Masukkan kode OTP untuk menonaktifkan 2FA
 create_account: Buat Akun
@@ -820,6 +823,9 @@ code: Kode
 operation_options: Opsi Operasi
 operation_name: Nama dari operasi...
 operation_key: Pengenal untuk referensi...
+operation_key_unique_error: Tombol operasi harus unik
+operation_handle_resolve: 'Solusi: klik untuk menambahkan atau geser untuk mengatur ulang'
+operation_handle_reject: 'Membatalkan: klik untuk menambahkan atau geser untuk mengatur ulang'
 insights: Wawasan
 dashboard: Dasbor
 panel: Panel
@@ -828,6 +834,7 @@ panel_header: Judul Panel
 panel_name_placeholder: Beri nama panel ini...
 panel_note_placeholder: Opsi detail tentang panel ini...
 panel_delete_confirm: Apakah Anda yakin ingin menghapus panel ini? Tindakan ini tidak dapat dibatalkan.
+list_panel_allow_edit: Izinkan mengedit
 dashboard_delete_confirm: Apakah Anda yakin ingin menghapus dasbor ini? Tindakan ini tidak dapat dibatalkan.
 edit_dashboard: Sunting papan instrumen
 delete_dashboard: Menghapus Dasbor
@@ -840,6 +847,7 @@ no_dashboards_copy: Anda belum memiliki dasbor.
 create_dashboard: Buat Dasbor
 dashboard_name: Nama Dasbor
 no_data: Tidak ada Data
+no_data_in_flow: Tidak ada data yang dihasilkan atau diakses dalam Flow ini
 accountability: Akuntabilitas
 payload: Muatan
 details: Rincian
@@ -856,6 +864,7 @@ media: Media
 quality: Kualitas
 width: Lebar
 height: Tinggi
+transformation_preset_key: Tombol pengaturan ulang transformasi
 source: Sumber
 url_placeholder: Masukkan tautan...
 display_text: Teks Tampilan
@@ -942,8 +951,10 @@ settings_project: Pengaturan Proyek
 settings_webhooks: Webhooks
 settings_flows: Kumpulan Alur
 settings_presets: Preset & Markah
+settings_translation_strings: Terjemahan
 one_or_more_options_are_missing: Satu atau lebih opsi hilang
 scope: Lingkup
+actions: Aksi
 select: Pilih...
 layout: Tata letak
 tree_view: Tampilan Pohon
@@ -953,6 +964,7 @@ preset_search_placeholder: Kueri penelusuran...
 editing_preset: Mengedit Preset
 layout_preview: Pratinjau Tata Letak
 layout_setup: Pengaturan Tata Letak
+data: Data
 unsaved_changes: Perubahan Tidak Disimpan
 unsaved_changes_copy: Anda yakin ingin meninggalkan halaman ini?
 discard_changes: Batalkan Perubahan
@@ -964,6 +976,21 @@ keep_editing: Tetap Mengedit
 page_help_collections_overview: '**Ikhtisar Koleksi** - — Daftar semua koleksi yang perlu anda akses.'
 page_help_collections_collection: >-
   **Jelajahi Item** — Daftar semua {collection} item yang perlu Anda akses. Sesuaikan tata letak, filter, dan pengurutan untuk menyesuaikan tampilan Anda, dan bahkan simpan markah dari konfigurasi yang berbeda ini untuk akses cepat.
+page_help_collections_item: >-
+  **Detail Item** — Sebuah formulir untuk melihat dan mengelola item. Sidebar ini juga berisi riwayat, revisi, dan komentar yang disematkan.
+page_help_activity_collection: >-
+  ***Jelajahi Aktivitas** - Daftar lengkap dari seluruh aktivitas content dan pengguna system.
+page_help_docs_global: >-
+  **Gambaran Dokumentasi ** — Dokumen yang disesuaikan khusus untuk versi dan skema proyek ini.
+page_help_files_collection: >-
+  **Berkas Pustaka** — Daftar semua aset berkas yang diunggah ke proyek ini. Sesuaikan tata letak, filter, dan penyortiran untuk menyesuaikan tampilan Anda, dan bahkan simpan bookmark dari konfigurasi yang berbeda ini untuk akses cepat.
+page_help_files_item: >-
+  **Detail Berkas** — Sebuah formulir untuk mengelola metadata berkas, mengedit aset asli, dan memperbarui pengaturan akses.
+page_help_settings_project: "**Konfigurasi Proyek** — Opsi konfigurasi global proyek Anda."
+page_help_settings_datamodel_collections: >-
+  **Model Data: Collection** — Menampilkan semua Collection yang tersedia. Ini mencakup Collection yang terlihat, tersembunyi, dan sistem, serta tabel basis data yang tidak dikelola yang dapat ditambahkan.
+page_help_settings_datamodel_fields: >-
+  **Model Data: Collection** — Formulir untuk mengelola Collection ini dan fieldnya.
 activity_feed: Feed Aktifitas
 add_new: Tambah Baru
 create_new: Buat baru
@@ -975,6 +1002,7 @@ cancel: Batal
 collection: Koleksi
 collections: Pengumpulan
 content: Konten
+singleton: Singleton
 singleton_label: Perlakukan sebagai objek tunggal
 directus_collection:
   directus_activity: Log akuntabilitas untuk semua kejadian
@@ -986,6 +1014,8 @@ fields:
     item: Kunci Utama Item
     action: Aksi
     collection: Koleksi
+    timestamp: Aksi Saat
+    user: Aksi oleh
     comment: Komentar
     user_agent: Agen pengguna
     origin: Asal
@@ -998,6 +1028,7 @@ fields:
     color: Warna
     display_template: Tampilan Template
     hidden: Tersembunyi
+    singleton: Singleton
     archive_app_filter: Filter Aplikasi Arsip
     archive_value: Nilai Arsip
     unarchive_value: Batalkan pengarsipan Nilai
@@ -1080,6 +1111,7 @@ fields:
     project_url: URL Proyek
     project_color: Warna Proyek
     project_logo: Logo Proyek
+    default_language: Bahasa bawaan
     branding: Merk & Gaya
     public_foreground: Latar depan Publik
     public_background: Latar belakang Publik
@@ -1087,15 +1119,20 @@ fields:
     auth_password_policy: Kebijakan Kata sandi Autentik
     auth_login_attempts: Upaya Login Autentik
     files_and_thumbnails: File & Penyimpanan
+    storage_default_folder: Folder bawaan
+    custom_css: CSS Kustomisasi
     module_bar: Papan Modul
+    image_editor: Editor Gambar
   directus_shares:
     name: Nama
     role: Peran
     password: Kata Sandi
     date_start: Tanggal Mulai
+    times_used: Waktu yang digunakan
   directus_fields:
     note: Catatan
     hidden: Tersembunyi
+    singleton: Singleton
     translation: Terjemahan Nama Kolom
     display_template: Templat
   directus_roles:
@@ -1434,6 +1471,7 @@ layouts:
     cozy: Normal
   kanban:
     advanced: Tingkat lanjut
+both: Keduanya
 panels:
   label:
     name: Label

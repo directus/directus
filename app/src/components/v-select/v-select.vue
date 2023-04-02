@@ -258,6 +258,7 @@ function useItems() {
 				disabled: get(item, props.itemDisabled),
 				selectable: get(item, props.itemSelectable),
 				children: children ? children.filter(filterItem) : children,
+				hidden: internalSearch.value ? !filterItem(item) : false,
 			};
 		};
 
@@ -281,9 +282,7 @@ function useItems() {
 			}
 		};
 
-		const items = internalSearch.value ? props.items.filter(filterItem).map(parseItem) : props.items.map(parseItem);
-
-		return items;
+		return props.items.map(parseItem);
 	});
 
 	const internalItemsCount = computed<number>(() => {
