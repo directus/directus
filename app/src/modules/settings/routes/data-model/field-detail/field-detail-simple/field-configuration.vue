@@ -1,7 +1,7 @@
 <template>
 	<div class="field-configuration" :style="{ 'grid-row': row }">
 		<div class="setup">
-			<template v-if="chosenInterface && !interfaceIdsWithHiddenLabel.includes(chosenInterface)">
+			<template v-if="chosenInterface && !chosenInterfaceConfig.autoKey">
 				<div class="schema">
 					<div class="field half-left">
 						<div class="label type-label">
@@ -110,8 +110,8 @@ export default defineComponent({
 
 		const { interfaces } = useExtensions();
 
-		const interfaceIdsWithHiddenLabel = computed(() =>
-			interfaces.value.filter((inter) => inter.hideLabel === true).map((inter) => inter.id)
+		const interfaceIdsToInterface = computed(() =>
+			Object.fromEntries(interfaces.value.map((inter) => [inter.id, inter]))
 		);
 
 		const customOptionsFields = computed(() => {
@@ -127,10 +127,10 @@ export default defineComponent({
 			(newVal, oldVal) => {
 				if (!newVal) return;
 
-				if (interfaceIdsWithHiddenLabel.value.includes(newVal)) {
+				if (interfaceIdsToInterface.value[newVal].autoKey) {
 					const simplifiedId = newVal.includes('-') ? newVal.split('-')[1] : newVal;
 					key.value = `${simplifiedId}-${nanoid(6).toLowerCase()}`;
-				} else if (oldVal && interfaceIdsWithHiddenLabel.value.includes(oldVal)) {
+				} else if (oldVal && interfaceIdsToInterface.value[oldVal].autoKey) {
 					key.value = null;
 				}
 			},
@@ -159,9 +159,9 @@ export default defineComponent({
 			typeOptions,
 			defaultValue,
 			chosenInterface,
+			chosenInterfaceConfig,
 			required,
 			note,
-			interfaceIdsWithHiddenLabel,
 			readyToSave,
 			saving,
 			localType,
