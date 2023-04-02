@@ -1,11 +1,19 @@
-import { multipartHandler } from './files';
-import { InvalidPayloadException } from '../exceptions/invalid-payload';
-import { PassThrough } from 'stream';
+import type { Request, Response } from 'express';
 import FormData from 'form-data';
-import { vi, describe, expect, it } from 'vitest';
-import { Request, Response } from 'express';
+import { PassThrough } from 'stream';
+import { describe, expect, it, vi } from 'vitest';
+import { InvalidPayloadException } from '../exceptions/invalid-payload';
+import { multipartHandler } from './files';
 
 vi.mock('../../src/database');
+
+vi.mock('../services', () => {
+	const FilesService = vi.fn();
+	FilesService.prototype.uploadOne = vi.fn();
+	const MetaService = vi.fn();
+	MetaService.prototype.getMetaForQuery = vi.fn().mockResolvedValue({});
+	return { FilesService };
+});
 
 describe('multipartHandler', () => {
 	it(`Errors out if request doesn't contain any files to upload`, () => {

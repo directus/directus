@@ -14,18 +14,22 @@
 		primary-key="+"
 	/>
 
-	<component
-		:is="`${type}-options-${extensionInfo!.id}`"
-		v-else
-		:value="optionsValues"
-		:collection="collection"
-		:field="field"
-		@input="optionsValues = $event"
-	/>
+	<v-error-boundary v-else :name="`${type}-options-${extensionInfo!.id}`">
+		<component
+			:is="`${type}-options-${extensionInfo!.id}`"
+			:value="optionsValues"
+			:collection="collection"
+			:field="field"
+			@input="optionsValues = $event"
+		/>
+		<template #fallback>
+			<v-notice type="warning">{{ t('unexpected_error') }}</v-notice>
+		</template>
+	</v-error-boundary>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed } from 'vue';
+import { defineComponent, PropType, computed, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useFieldDetailStore } from '../store';
 import { storeToRefs } from 'pinia';
@@ -69,8 +73,9 @@ export default defineComponent({
 		const fieldDetailStore = useFieldDetailStore();
 
 		const { collection, field } = storeToRefs(fieldDetailStore);
+		const { extension, type } = toRefs(props);
 
-		const extensionInfo = useExtension(props.type, props.extension);
+		const extensionInfo = useExtension(type, extension);
 
 		const usesCustomComponent = computed(() => {
 			if (!extensionInfo.value) return false;

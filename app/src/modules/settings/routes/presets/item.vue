@@ -273,6 +273,7 @@ function useDelete() {
 
 		try {
 			await presetsStore.delete([Number(props.id)]);
+			edits.value = {};
 			router.replace(`/settings/presets`);
 		} catch (err: any) {
 			unexpectedError(err);

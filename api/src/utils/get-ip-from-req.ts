@@ -1,4 +1,4 @@
-import { Request } from 'express';
+import type { Request } from 'express';
 import { isIP } from 'net';
 import env from '../env';
 import logger from '../logger';
@@ -6,8 +6,8 @@ import logger from '../logger';
 export function getIPFromReq(req: Request): string {
 	let ip = req.ip;
 
-	if (env.IP_CUSTOM_HEADER) {
-		const customIPHeaderValue = req.get(env.IP_CUSTOM_HEADER) as unknown;
+	if (env['IP_CUSTOM_HEADER']) {
+		const customIPHeaderValue = req.get(env['IP_CUSTOM_HEADER']) as unknown;
 
 		if (typeof customIPHeaderValue === 'string' && isIP(customIPHeaderValue) !== 0) {
 			ip = customIPHeaderValue;

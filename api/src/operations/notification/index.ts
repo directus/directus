@@ -1,4 +1,4 @@
-import { Accountability } from '@directus/shared/types';
+import type { Accountability } from '@directus/shared/types';
 import { defineOperationApi, optionToString, toArray } from '@directus/shared/utils';
 import { NotificationsService } from '../../services';
 import { getAccountabilityForRole } from '../../utils/get-accountability-for-role';

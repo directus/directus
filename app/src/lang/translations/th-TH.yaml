@@ -79,6 +79,8 @@ create_role: สร้างบทบาท
 create_user: สร้างผู้ใช้งาน
 message: ข้อความ
 create_webhook: สร้างเว็บฮุก
+create_translation_string: สร้างสตริงการแปล
+no_translation_string: ไม่มีสตริงการแปล
 invite_users: เชิญชวนผู้ใช้งาน
 invite: เชิญชวน
 email_already_invited: อีเมล "{email}" ได้รับเชิญแล้ว
@@ -1452,6 +1454,8 @@ layouts:
     edit_group: แก้ไขกลุ่ม
     delete_group: ลบกลุ่ม
     add_group: เพิ่มกลุ่ม
+horizontal: แนวนอน
+both: ทั้งคู่
 panels:
   metric:
     field: ฟิลด์
@@ -1465,15 +1469,6 @@ panels:
   barchart:
     name: แผนภูมิแท่ง
     horizontal: แนวนอน
-    x_axis: แกน X
-    y_axis: แกน Y
-    show_x_axis: แสดงแกน X
-    show_y_axis: แสดงแกน Y
-  linechart:
-    function: ฟังก์ชัน
-    x_axis: แกน X
-    y_axis: แกน Y
-    datasets: ชุดข้อมูล
 triggers:
   webhook:
     method: เมธอด

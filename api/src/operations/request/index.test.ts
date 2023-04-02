@@ -2,13 +2,14 @@ import { afterEach, expect, test, vi } from 'vitest';
 
 const axiosDefault = vi.fn();
 
-vi.mock('axios', () => ({
-	default: axiosDefault.mockResolvedValue({
-		status: 200,
-		statusText: 'OK',
-		headers: {},
-		data: {},
-	}),
+vi.mock('../../request', () => ({
+	getAxios: () =>
+		axiosDefault.mockResolvedValue({
+			status: 200,
+			statusText: 'OK',
+			headers: {},
+			data: {},
+		}),
 }));
 
 const url = '/';
@@ -22,8 +23,7 @@ afterEach(() => {
 
 test('no headers configured', async () => {
 	const body = 'body';
-	const headers = undefined;
-	await config.handler({ url, method, body, headers }, {} as any);
+	await config.handler({ url, method, body }, {} as any);
 
 	expect(axiosDefault).toHaveBeenCalledWith(
 		expect.objectContaining({

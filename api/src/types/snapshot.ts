@@ -1,10 +1,12 @@
-import { Collection } from './collection';
-import { Relation, RelationMeta, Field, FieldMeta } from '@directus/shared/types';
-import { Diff } from 'deep-diff';
+import type { Field, FieldMeta, Relation, RelationMeta } from '@directus/shared/types';
+import type { Diff } from 'deep-diff';
+import type { Collection } from './collection';
+import type { DatabaseClient } from './database';
 
 export type Snapshot = {
 	version: number;
 	directus: string;
+	vendor?: DatabaseClient;
 	collections: Collection[];
 	fields: SnapshotField[];
 	relations: SnapshotRelation[];
@@ -16,6 +18,8 @@ export type SnapshotCollection = Collection & {
 	fields: Array<SnapshotField>;
 	relations: Array<SnapshotRelation>;
 };
+
+export type SnapshotWithHash = Snapshot & { hash: string };
 
 export type SnapshotDiff = {
 	collections: {
@@ -34,3 +38,19 @@ export type SnapshotDiff = {
 		diff: Diff<SnapshotRelation | undefined>[];
 	}[];
 };
+
+export type SnapshotDiffWithHash = { hash: string; diff: SnapshotDiff };
+
+/**
+ * Indicates the kind of change based on comparisons by deep-diff package
+ */
+export const DiffKind = {
+	/** indicates a newly added property/element */
+	NEW: 'N',
+	/** indicates a property/element was deleted */
+	DELETE: 'D',
+	/** indicates a property/element was edited */
+	EDIT: 'E',
+	/** indicates a change occurred within an array */
+	ARRAY: 'A',
+} as const;

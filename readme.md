@@ -11,7 +11,7 @@ Directus is a real-time API and App dashboard for managing SQL database content.
 - **Manage pure SQL.** Works with new or existing SQL databases, no migration required.
 - **Choose your database.** Supports PostgreSQL, MySQL, SQLite, OracleDB, CockroachDB, MariaDB, and MS-SQL.
 - **On-Prem or Cloud.** Run locally, install on-premises, or use our
-  [self-service Cloud service](https://directus.io/pricing) (free tier available).
+  [self-service Cloud service](https://directus.io/pricing).
 - **Completely extensible.** Built to white-label, it is easy to customize our modular platform.
 - **A modern dashboard.** Our no-code Vue.js app is safe and intuitive for non-technical users, no training required.
 
@@ -21,16 +21,14 @@ Directus is a real-time API and App dashboard for managing SQL database content.
 
 ## 🚀 Directus Cloud
 
-[Directus Cloud](https://directus.io/pricing) allows you to create free Community Cloud projects in 90 seconds.
+[Directus Cloud](https://directus.io/pricing) allows you to create projects, hosted by the Directus team, in 90 seconds.
 
-- **Free Community Cloud tier available (no credit card required)**
 - **No product limitations or service usage quotas (unlimited users, API requests, etc)**
 - A modern self-service dashboard to create and monitor all your projects in one place
 - End-to-end solution: Directus, database, serverless auto-scaling, storage, and a global CDN
-- Hourly usage-based pricing for our Standard Cloud allows you to pay-as-you-go
 - Select your desired region and provision a new project in ~90 seconds
 
-**[Create your Free Project](https://directus.cloud)**
+**[Create a Directus Cloud Project](https://directus.cloud)**
 
 <br />
 
@@ -38,9 +36,9 @@ Directus is a real-time API and App dashboard for managing SQL database content.
 
 [The Directus Documentation](https://docs.directus.io) is a great place to start, or explore these other channels:
 
-- [Discord](https://directus.chat) (Live Discussions)
+- [Discord](https://directus.chat) (Questions, Live Discussions)
 - [GitHub Issues](https://github.com/directus/directus/issues) (Report Bugs)
-- [GitHub Discussions](https://github.com/directus/directus/discussions) (Questions, Feature Requests)
+- [GitHub Discussions](https://github.com/directus/directus/discussions) (Feature Requests)
 - [Twitter](https://twitter.com/directus) (Latest News)
 - [YouTube](https://www.youtube.com/c/DirectusVideos/featured) (Video Tutorials)
 
@@ -58,4 +56,4 @@ team, talented contributors, and amazing [GitHub Sponsors](https://github.com/sp
 
 <br />
 
-© 2004-2022, Monospace Inc
+© 2004-2023, Monospace Inc
