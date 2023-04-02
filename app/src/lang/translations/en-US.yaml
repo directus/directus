@@ -1790,6 +1790,9 @@ interfaces:
   system-raw-editor:
     system-raw-editor: Raw Editor
     description: Allow entering of raw or mustache templating values
+  inline-form-m2o:
+    inline-form: Inline Form
+    description: Edit a single related item inline
 displays:
   translations:
     translations: Translations
