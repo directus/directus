@@ -64,7 +64,7 @@ export const MODULE_BAR_DEFAULT = [
 		id: 'docs',
 		enabled: true,
 		name: '$t:documentation',
-		icon: 'help_outline',
+		icon: 'help',
 		url: 'https://docs.directus.io',
 	},
 	{

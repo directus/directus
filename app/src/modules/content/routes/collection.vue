@@ -226,7 +226,7 @@
 			/>
 
 			<template #sidebar>
-				<sidebar-detail icon="info_outline" :title="t('information')" close>
+				<sidebar-detail icon="info" :title="t('information')" close>
 					<div
 						v-md="t('page_help_collections_collection', { collection: currentCollection.name })"
 						class="page-description"

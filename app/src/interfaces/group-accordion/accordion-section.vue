@@ -7,13 +7,7 @@
 				<span class="field-name">{{ field.name }}</span>
 				<v-icon v-if="field.meta?.required === true" class="required" sup name="star" />
 				<v-chip v-if="badge" x-small>{{ badge }}</v-chip>
-				<v-icon
-					v-if="!active && validationMessage"
-					v-tooltip="validationMessage"
-					class="warning"
-					name="error_outline"
-					small
-				/>
+				<v-icon v-if="!active && validationMessage" v-tooltip="validationMessage" class="warning" name="error" small />
 			</div>
 
 			<transition-expand>
