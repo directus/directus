@@ -1,6 +1,6 @@
 import { ForbiddenException, InvalidPayloadException } from '../exceptions/index.js';
 import type { AbstractServiceOptions, PrimaryKey } from '../types/index.js';
-import { ItemsService } from './index.js';
+import { ItemsService } from './items.js';
 
 export class RevisionsService extends ItemsService {
 	constructor(options: AbstractServiceOptions) {

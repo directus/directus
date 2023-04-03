@@ -1,5 +1,3 @@
-// Note: "items" must kept at the top to prevent circular dependencies issues between ItemsService <-> ActivityService / RevisionsService
-export * from './items.js';
 export * from './activity.js';
 export * from './assets.js';
 export * from './authentication.js';
@@ -12,6 +10,7 @@ export * from './flows.js';
 export * from './folders.js';
 export * from './graphql/index.js';
 export * from './import-export.js';
+export * from './items.js';
 export * from './mail/index.js';
 export * from './meta.js';
 export * from './notifications.js';
@@ -26,9 +25,9 @@ export * from './roles.js';
 export * from './schema.js';
 export * from './server.js';
 export * from './settings.js';
+export * from './shares.js';
 export * from './specifications.js';
 export * from './tfa.js';
 export * from './users.js';
 export * from './utils.js';
 export * from './webhooks.js';
-export * from './shares.js';
