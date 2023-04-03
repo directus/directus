@@ -90,7 +90,7 @@ export default defineComponent({
 					options: {
 						dbSafe: true,
 						font: 'monospace',
-						placeholder: t('interfaces.list.field_name_placeholder'),
+						placeholder: t('field_name_placeholder'),
 					},
 				},
 				schema: null,
