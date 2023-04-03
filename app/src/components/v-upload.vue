@@ -94,7 +94,6 @@ import api from '@/api';
 import emitter, { Events } from '@/events';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { Filter } from '@directus/shared/types';
-import file from '@/displays/file';
 
 interface Props {
 	multiple?: boolean;
