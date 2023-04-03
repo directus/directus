@@ -23,7 +23,7 @@ import logger from './logger.js';
 import { getMessenger } from './messenger.js';
 import { ActivityService } from './services/activity.js';
 import * as services from './services/index.js';
-import { FlowsService } from './services/index.js';
+import { FlowsService } from './services/flows.js';
 import { RevisionsService } from './services/revisions.js';
 import type { EventHandler } from './types/index.js';
 import { constructFlowTree } from './utils/construct-flow-tree.js';

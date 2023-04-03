@@ -1,5 +1,5 @@
 import { getSchema } from '../../../utils/get-schema.js';
-import { RolesService } from '../../../services/index.js';
+import { RolesService } from '../../../services/roles.js';
 import getDatabase from '../../../database/index.js';
 import logger from '../../../logger.js';
 

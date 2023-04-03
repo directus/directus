@@ -7,7 +7,7 @@ import { COOKIE_OPTIONS } from '../../constants.js';
 import env from '../../env.js';
 import { InvalidCredentialsException, InvalidPayloadException } from '../../exceptions/index.js';
 import { respond } from '../../middleware/respond.js';
-import { AuthenticationService } from '../../services/index.js';
+import { AuthenticationService } from '../../services/authentication.js';
 import type { User } from '../../types/index.js';
 import asyncHandler from '../../utils/async-handler.js';
 import { getIPFromReq } from '../../utils/get-ip-from-req.js';

@@ -9,7 +9,9 @@ import runMigrations from '../../../database/migrations/run.js';
 import installDatabase from '../../../database/seeds/run.js';
 import env from '../../../env.js';
 import logger from '../../../logger.js';
-import { RolesService, SettingsService, UsersService } from '../../../services/index.js';
+import { RolesService } from '../../../services/roles.js';
+import { SettingsService } from '../../../services/settings.js';
+import { UsersService } from '../../../services/users.js';
 import { getSchema } from '../../../utils/get-schema.js';
 import { defaultAdminRole, defaultAdminUser } from '../../utils/defaults.js';
 

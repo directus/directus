@@ -2,7 +2,8 @@ import { Router } from 'express';
 import { ForbiddenException } from '../exceptions/index.js';
 import { respond } from '../middleware/respond.js';
 import { validateBatch } from '../middleware/validate-batch.js';
-import { CollectionsService, MetaService } from '../services/index.js';
+import { CollectionsService } from '../services/collections.js';
+import { MetaService } from '../services/meta.js';
 import type { Item } from '../types/index.js';
 import asyncHandler from '../utils/async-handler.js';
 

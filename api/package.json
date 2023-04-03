@@ -66,7 +66,7 @@
 	],
 	"scripts": {
 		"build": "tsc --build && copyfiles \"src/**/*.{yaml,liquid}\" -u 1 dist",
-		"cli": "NODE_ENV=development SERVE_APP=false ts-node --script-mode --transpile-only src/cli/run.ts",
+		"cli": "NODE_ENV=development SERVE_APP=false tsx src/cli/run.ts",
 		"dev": "NODE_ENV=development SERVE_APP=false tsx watch src/start.ts",
 		"start": "node cli.js start",
 		"test": "vitest run --config",
@@ -211,7 +211,6 @@
 		"copyfiles": "2.4.1",
 		"form-data": "4.0.0",
 		"knex-mock-client": "2.0.0",
-		"ts-node": "10.9.1",
 		"typescript": "4.9.5",
 		"vitest": "0.29.3"
 	},

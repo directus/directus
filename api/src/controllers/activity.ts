@@ -5,7 +5,8 @@ import { ForbiddenException, InvalidPayloadException } from '../exceptions/index
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { validateBatch } from '../middleware/validate-batch.js';
-import { ActivityService, MetaService } from '../services/index.js';
+import { ActivityService } from '../services/activity.js';
+import { MetaService } from '../services/meta.js';
 import asyncHandler from '../utils/async-handler.js';
 import { getIPFromReq } from '../utils/get-ip-from-req.js';
 

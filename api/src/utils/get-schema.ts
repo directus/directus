@@ -11,7 +11,7 @@ import { systemCollectionRows } from '../database/system-data/collections/index.
 import { systemFieldRows } from '../database/system-data/fields/index.js';
 import env from '../env.js';
 import logger from '../logger.js';
-import { RelationsService } from '../services/index.js';
+import { RelationsService } from '../services/relations.js';
 import getDefaultValue from './get-default-value.js';
 import getLocalType from './get-local-type.js';
 

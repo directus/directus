@@ -3,7 +3,8 @@ import { ForbiddenException, RouteNotFoundException } from '../exceptions/index.
 import collectionExists from '../middleware/collection-exists.js';
 import { respond } from '../middleware/respond.js';
 import { validateBatch } from '../middleware/validate-batch.js';
-import { ItemsService, MetaService } from '../services/index.js';
+import { ItemsService } from '../services/items.js';
+import { MetaService } from '../services/meta.js';
 import type { PrimaryKey } from '../types/index.js';
 import asyncHandler from '../utils/async-handler.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';

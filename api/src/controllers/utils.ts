@@ -11,7 +11,9 @@ import {
 } from '../exceptions/index.js';
 import collectionExists from '../middleware/collection-exists.js';
 import { respond } from '../middleware/respond.js';
-import { ExportService, ImportService, RevisionsService, UtilsService } from '../services/index.js';
+import { ExportService, ImportService } from '../services/import-export.js';
+import { RevisionsService } from '../services/revisions.js';
+import { UtilsService } from '../services/utils.js';
 import asyncHandler from '../utils/async-handler.js';
 import { generateHash } from '../utils/generate-hash.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';

@@ -1,6 +1,6 @@
 import type { Accountability } from '@directus/types';
 import { defineOperationApi, optionToString, toArray } from '@directus/utils';
-import { NotificationsService } from '../../services/index.js';
+import { NotificationsService } from '../../services/items.js';
 import { getAccountabilityForRole } from '../../utils/get-accountability-for-role.js';
 
 type Options = {

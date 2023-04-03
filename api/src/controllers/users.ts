@@ -5,7 +5,11 @@ import { ForbiddenException, InvalidCredentialsException, InvalidPayloadExceptio
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { validateBatch } from '../middleware/validate-batch.js';
-import { AuthenticationService, MetaService, RolesService, TFAService, UsersService } from '../services/index.js';
+import { AuthenticationService } from '../services/authentication.js';
+import { MetaService } from '../services/meta.js';
+import { RolesService } from '../services/roles.js';
+import { TFAService } from '../services/tfa.js';
+import { UsersService } from '../services/users.js';
 import type { PrimaryKey } from '../types/index.js';
 import asyncHandler from '../utils/async-handler.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';

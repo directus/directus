@@ -2,7 +2,7 @@ import express from 'express';
 import { ForbiddenException } from '../exceptions/index.js';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
-import { SettingsService } from '../services/index.js';
+import { SettingsService } from '../services/settings.js';
 import asyncHandler from '../utils/async-handler.js';
 
 const router = express.Router();

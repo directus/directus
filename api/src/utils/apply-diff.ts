@@ -1,13 +1,15 @@
 import type { Field, Relation, SchemaOverview } from '@directus/types';
-import deepDiff from 'deep-diff';
 import type { Diff, DiffDeleted, DiffNew } from 'deep-diff';
+import deepDiff from 'deep-diff';
 import type { Knex } from 'knex';
 import { cloneDeep, merge, set } from 'lodash-es';
 import { clearSystemCache } from '../cache.js';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
 import logger from '../logger.js';
-import { CollectionsService, FieldsService, RelationsService } from '../services/index.js';
+import { CollectionsService } from '../services/collections.js';
+import { FieldsService } from '../services/fields.js';
+import { RelationsService } from '../services/relations.js';
 import {
 	ActionEventParams,
 	Collection,

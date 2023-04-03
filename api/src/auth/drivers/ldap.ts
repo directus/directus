@@ -15,7 +15,8 @@ import {
 } from '../../exceptions/index.js';
 import logger from '../../logger.js';
 import { respond } from '../../middleware/respond.js';
-import { AuthenticationService, UsersService } from '../../services/index.js';
+import { AuthenticationService } from '../../services/authentication.js';
+import { UsersService } from '../../services/users.js';
 import type { AuthDriverOptions, User } from '../../types/index.js';
 import asyncHandler from '../../utils/async-handler.js';
 import { getIPFromReq } from '../../utils/get-ip-from-req.js';

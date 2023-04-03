@@ -1,5 +1,5 @@
 import { defineOperationApi } from '@directus/utils';
-import { MailService } from '../../services/index.js';
+import { MailService } from '../../services/items.js';
 import { md } from '../../utils/md.js';
 
 type Options = {

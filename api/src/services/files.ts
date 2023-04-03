@@ -18,8 +18,6 @@ import { getStorage } from '../storage/index.js';
 import type { AbstractServiceOptions, File, Metadata, MutationOptions, PrimaryKey } from '../types/index.js';
 import { parseIptc, parseXmp } from '../utils/parse-image-metadata.js';
 import { ItemsService } from './items.js';
-
-// @ts-ignore
 import formatTitle from '@directus/format-title';
 
 export class FilesService extends ItemsService {
