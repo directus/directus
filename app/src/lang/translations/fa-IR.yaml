@@ -1254,6 +1254,7 @@ sign_out: خروج از سیستم
 sign_out_confirm: آیا اطمینان دارید که می‌خواهید خارج شوید؟
 template: قالب
 table: جدول
+list: لیست
 interfaces:
   filter:
     name: فیلتر
@@ -1335,6 +1336,7 @@ interfaces:
   select-icon:
     icon: آیکن
   file-image:
+    image: عکس
     crop: تناسب با برش تصویر
     crop_label: برش تصویر در صورت نیاز
   list-m2m:
@@ -1377,38 +1379,87 @@ displays:
     boolean: بولین
   collection:
     collection: کالکشن یا مجموعه
+    description: نمایش یک مجموعه
+    icon_label: نماد مجموعه را نشان دهید
   color:
     color: رنگ
+    description: نمایش یک نقطه رنگی
+    default_color: رنگ پیش فرض
   datetime:
     datetime: تاریخ و زمان
+    description: نمایش مقادیر مربوط به زمان
     format: فرمت
+    long: بلند
+    short: کوتاه
     suffix: پسوند
+    suffix_label: نمایش نشانگر نسبی
+    strict: سخت گیرانه
+    strict_label: از واحدهای سخت گیرانه استفاده کنید
+    round: گرد
+    round_note: یک تابع گِرد را برای استفاده انتخاب کنید
+    down: پایین
+    nearest: نزدیکترین
+    up: بالا
   file:
     file: فایل
+    description: نمایش فایل ها
   filesize:
     filesize: اندازه فایل
     description: نمایش سایز فایل
   formatted-value:
+    formatted-value: مقدار قالب بندی شده
+    description: نمایش یک نسخه قالب بندی شده از متن
     format: فرمت
+    format_label: فرمت خودکار
     font: فونت
     font_serif: فونت Serif
     font_monospace: فونت Monospace
+    bold: توپُر
+    bold_label: از سبک توپُر استفاده کنید
     italic: ایتالیک
+    italic_label: از سبک کج استفاده کنید
     prefix: پيشوند
     suffix: پسوند
     color: رنگ
+    background: پس زمینه
     icon: آیکن
+    border: حاشیه
+    border_label: نمایش حاشیه
     text: متن
   icon:
     icon: آیکن
+    description: نمایش یک آیکن
+    filled: زمینه
+    filled_label: از نوع پرشده استفاده کنید
   image:
+    image: عکس
+    description: نمایش یک پیش نمایش کوچک
     circle: دایره
+    circle_label: نمایش دایره ای
   labels:
+    labels: برچسب ها
+    description: نمایش یک یا فهرستی از برچسب ها
+    default_foreground: پیش زمینه پیش فرض
+    default_background: پس زمینه پیش فرض
+    format_label: هر برچسب را قالب بندی کنید
+    show_as_dot: نمایش به عنوان نقطه
     choices_value_placeholder: یک مقدار را وارد کنید...
+    choices_text_placeholder: ورود یک نوشته...
+  rating:
+    rating: رتبه بندی
+    simple: ساده
+    simple_label: نمایش ستاره ها در قالبی ساده
+  related-values:
+    related-values: مقادیر مرتبط
+    description: نمایش مقادیر مرتبط
+    display_template_configure_notice: پس از ایجاد این فیلد می توانید قالب نمایش را پیکربندی کنید
   user:
     user: کاربر
+    description: نمایش یک کاربر از پنل
     avatar: آواتار
     name: نام
+    both: هردو
+    circle_label: نمایش کاربر در یک دایره
 layouts:
   cards:
     cards: کارت
@@ -1428,13 +1479,81 @@ layouts:
   kanban:
     crop: برش
     advanced: پیشرفته
+horizontal: افقی
+vertical: عمودی
+x_axis: محور افقی
+y_axis: محور عمودی
+show_x_only: نمایش در محور افقی
+show_y_only: نمایش در محور عمودی
+show_data_label: نمایش داده برچسب
+both: هردو
+show_axis_labels: نمایش برچسب های محوری
+half_circle: چرخه نصف
+full_circle: چرخه کامل
+stroke_width: خط عرضی
+rounded_stroke: خط گرد
+thin: نازک
+medium: میانه
+broad: گسترده
+show_labels: نمایش برچسب
+right: راست
+left: چپ
+panels:
+  metric:
+    description: یک مقدار را بر اساس یک پرس و جو نشان دهید
+    field: فیلد
+  time_series:
+    name: سری زمانی
+    description: نمودار خطی را بر اساس مقادیر در طول زمان ارائه دهید
+    date_field: فیلد تاریخ
+    value_field: مقدار فیلد
+  label:
+    name: برچسب
+    description: نمایش چند نوشته
+  list:
+    name: لیست
+    description: فیلدهای یک مجموعه را فیلتر و فهرست کنید
+  barchart:
+    name: نمودار ستونی
+    description: نمودارهای میله ای یا ستونی برای مقایسه گروهی از مقادیر
+    horizontal: افقی
+    select_collection: باید مجموعه ای را انتخاب کنید
+  linechart:
+    name: چارت خطی
+    description: نمودار خطی برای مقایسه تغییر یک فیلد
+    disabled_grouping: هنگام انتخاب گروه بندی غیرفعال می شود.
+    disabled_no_grouping: وقتی هیچ گروهی انتخاب نشده باشد غیرفعال می شود
+    show_marker: نمایس Tooltip
+    curve_type: نوع منحنی
+    smooth: نرم
+    straight: صاف
+    step_line: خط مرحله ای
+  piechart:
+    name: نمودار پای یا دونات
+    description: نمودار دایره ای که نسبت گروه ها را روی یک ستون نشان می دهد
+  variable:
+    name: متغیر کلی
+    variable_key: کلید متغیر
+  relational-variable:
+    name: متغیر رابطه ای کل
+    variable_key: کلید متغیر
+    multiple: چندگانه
+    multiple-label: انتخاب چند مورد
 triggers:
   webhook:
     method: شیوه یا متود
 operations:
+  condition:
+    name: شرط
+  exec:
+    name: خواندن داده
+    description: خواندن داده از پایگاه داده
   item-create:
     payload: ظرفیت یا Payload
   item-update:
+    name: Trigger Flow
+    description: این داده ها را به Flow دیگری منتقل کنید
+    emit_events: انتشار رویدادها
     payload: ظرفیت یا Payload
   log:
     message: پیام
