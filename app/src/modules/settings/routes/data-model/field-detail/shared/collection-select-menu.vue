@@ -4,7 +4,7 @@
 			<slot name="activator" :toggle="toggle" :activate="activate" :deactivate="deactivate" />
 		</template>
 
-		<v-list v-if="filteredCollections?.length > 0 || filteredSystemCollections > 0" class="monospace">
+		<v-list v-if="filteredCollections?.length > 0 || filteredSystemCollections?.length > 0" class="monospace">
 			<v-list-item
 				v-for="collection in filteredCollections"
 				:key="collection.collection"
