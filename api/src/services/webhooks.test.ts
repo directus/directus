@@ -1,4 +1,4 @@
-import { knex } from 'knex';
+import knex from 'knex';
 import type { Knex } from 'knex';
 import { createTracker, MockClient, Tracker } from 'knex-mock-client';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, SpyInstance, vi } from 'vitest';
@@ -18,7 +18,7 @@ describe('Integration Tests', () => {
 	let tracker: Tracker;
 
 	beforeAll(async () => {
-		db = knex({ client: MockClient });
+		db = knex.default({ client: MockClient });
 		tracker = createTracker(db);
 	});
 

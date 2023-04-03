@@ -1,4 +1,5 @@
-import { knex, Knex } from 'knex';
+import knex from 'knex';
+import type { Knex } from 'knex';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import path from 'path';
@@ -77,6 +78,6 @@ export default function createDBConnection(client: Driver, credentials: Credenti
 		};
 	}
 
-	const db = knex(knexConfig);
+	const db = knex.default(knexConfig);
 	return db;
 }

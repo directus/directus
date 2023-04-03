@@ -1,4 +1,4 @@
-import { knex } from 'knex';
+import knex from 'knex';
 import type { Knex } from 'knex';
 import { createTracker, MockClient, Tracker } from 'knex-mock-client';
 import run from './run.js';
@@ -9,7 +9,7 @@ describe('run', () => {
 	let tracker: Tracker;
 
 	beforeAll(() => {
-		db = vi.mocked(knex({ client: MockClient }));
+		db = vi.mocked(knex.default({ client: MockClient }));
 		tracker = createTracker(db);
 	});
 

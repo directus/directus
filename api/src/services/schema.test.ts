@@ -1,5 +1,5 @@
 import type { Diff } from 'deep-diff';
-import { knex } from 'knex';
+import knex from 'knex';
 import type { Knex } from 'knex';
 import { createTracker, MockClient, Tracker } from 'knex-mock-client';
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
@@ -63,7 +63,7 @@ const testCollectionDiff = {
 };
 
 beforeAll(() => {
-	db = knex({ client: Client_PG });
+	db = knex.default({ client: Client_PG });
 	tracker = createTracker(db);
 });
 

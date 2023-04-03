@@ -1,4 +1,4 @@
-import { knex } from 'knex';
+import knex from 'knex';
 import type { Knex } from 'knex';
 import { createTracker, MockClient, Tracker } from 'knex-mock-client';
 import { afterEach, beforeEach, describe, expect, it, MockedFunction, vi } from 'vitest';
@@ -26,7 +26,7 @@ describe('applySnapshot', () => {
 	};
 
 	beforeEach(() => {
-		db = vi.mocked(knex({ client: Client_PG }));
+		db = vi.mocked(knex.default({ client: Client_PG }));
 		tracker = createTracker(db);
 	});
 
