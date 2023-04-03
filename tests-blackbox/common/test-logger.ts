@@ -1,30 +1,25 @@
 import { ChildProcess } from 'child_process';
 
-type StopFunction = (logs: string, logLine: string) => boolean;
-type FilterFunction = (logLine: string) => boolean;
-
 export class TestLogger {
 	private logs: string;
 	private server: ChildProcess;
-	private stopCondition: StopFunction;
-	private filterCondition?: FilterFunction;
+	private stopCondition: string;
+	private filterCondition?: string;
 	private stopped?: boolean;
 	private resolve?: (log: string) => void;
 
-	constructor(server: ChildProcess, stopCondition: string | StopFunction, filter?: string | FilterFunction);
-	constructor(server: ChildProcess, stopCondition: string, filter?: boolean | string | FilterFunction);
-	constructor(server: ChildProcess, stopCondition: string | StopFunction, filter?: boolean | string | FilterFunction) {
+	/**
+	 *
+	 * @param server Process running a Directus instance
+	 * @param stopCondition Finish as soon as the specified string appears in the logs.
+	 * @param filter Only capture log chunks containing the specified string, if `true` uses the same string as defined for `stopCondition`
+	 */
+	constructor(server: ChildProcess, stopCondition: string, filterCondition?: boolean | string) {
 		this.logs = '';
 		this.server = server;
-		this.stopCondition = typeof stopCondition === 'string' ? (logs) => logs.includes(stopCondition) : stopCondition;
-		if (filter) {
-			if (filter === true) {
-				if (typeof stopCondition === 'string') {
-					this.filterCondition = (logLine) => logLine.includes(stopCondition);
-				}
-			} else {
-				this.filterCondition = typeof filter === 'string' ? (logs) => logs.includes(filter) : filter;
-			}
+		this.stopCondition = stopCondition;
+		if (filterCondition) {
+			this.filterCondition = filterCondition === true ? stopCondition : filterCondition;
 		}
 
 		// Discard data up to this point
@@ -36,11 +31,11 @@ export class TestLogger {
 	private processChunks = (chunk: any) => {
 		const logLine = String(chunk);
 
-		if (!this.stopped && (!this.filterCondition || this.filterCondition(logLine))) {
+		if (!this.stopped && (!this.filterCondition || logLine.includes(this.filterCondition))) {
 			this.logs += logLine;
 		}
 
-		if (this.stopCondition(this.logs, logLine)) {
+		if (this.logs.includes(this.stopCondition)) {
 			this.stopped = true;
 			this.cleanup();
 
