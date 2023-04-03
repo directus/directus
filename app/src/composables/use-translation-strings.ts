@@ -13,7 +13,7 @@ export type Translation = {
 export type RawTranslation = {
 	key: string;
 	value: string;
-	lang: Language;
+	language: Language;
 };
 
 export type DisplayTranslationString = {
@@ -58,9 +58,9 @@ export function useTranslationStrings(): UsableTranslationStrings {
 	const translationMap = computed(() => {
 		const result: Record<string, Translation[]> = {};
 		if (translationStrings && translationStrings.value) {
-			for (const { key, value, lang } of translationStrings.value) {
+			for (const { key, value, language } of translationStrings.value) {
 				if (!(key in result)) result[key] = [];
-				result[key].push({ language: lang, translation: value } as Translation);
+				result[key].push({ language, translation: value } as Translation);
 			}
 		}
 		return result;
@@ -68,9 +68,9 @@ export function useTranslationStrings(): UsableTranslationStrings {
 	const displayTranslationStrings = computed(() => {
 		if (!translationStrings || !translationStrings.value) return [];
 		const translationObject = translationStrings.value.reduce(
-			(acc: Record<string, Translation[]>, { key, value, lang }: RawTranslation) => {
+			(acc: Record<string, Translation[]>, { key, value, language }: RawTranslation) => {
 				if (!acc[key]) acc[key] = [];
-				acc[key].push({ language: lang, translation: value });
+				acc[key].push({ language, translation: value });
 				return acc;
 			},
 			{} as Record<string, Translation[]>
@@ -106,7 +106,7 @@ export function useTranslationStrings(): UsableTranslationStrings {
 			translations = await fetchTranslationStrings(lang);
 			translationStrings.value = translations;
 		} else {
-			translations = (translationStrings.value ?? []).filter((item) => item.lang === lang);
+			translations = (translationStrings.value ?? []).filter((item) => item.language === lang);
 		}
 		const localeMessages: Record<string, any> = translations.reduce(
 			(result: Record<string, string>, { key, value }: { key: string; value: string }) => {
@@ -151,9 +151,12 @@ export function useTranslationStrings(): UsableTranslationStrings {
 			unexpectedError(new Error('translation key already exists!'));
 			return;
 		}
-		for (const { language: lang, translation: value } of translation.translations) {
-			translationStrings.value.push({ key: translation.key, lang, value });
+		const newTranslations: RawTranslation[] = [];
+		for (const { language, translation: value } of translation.translations) {
+			newTranslations.push({ key: translation.key, language, value });
+			translationStrings.value.push({ key: translation.key, language, value });
 		}
+		await api.post(`/translation-strings`, newTranslations);
 		await updateLocaleStrings(translationStrings.value);
 	}
 	async function removeTranslation(translationKey: string) {
@@ -163,6 +166,7 @@ export function useTranslationStrings(): UsableTranslationStrings {
 		if (translationKeys.value.includes(translationKey)) {
 			translationStrings.value = translationStrings.value.filter(({ key }) => key !== translationKey);
 		}
+		await api.delete(`/translation-strings/${translationKey}`);
 		await updateLocaleStrings(translationStrings.value);
 	}
 	async function updateTranslation(originalKey: string, translation: DisplayTranslationString) {
@@ -173,8 +177,9 @@ export function useTranslationStrings(): UsableTranslationStrings {
 		if (translationKeys.value.includes(originalKey)) {
 			translationStrings.value = translationStrings.value.filter(({ key }) => key !== originalKey);
 		}
-		for (const { language: lang, translation: value } of translation.translations) {
-			translationStrings.value.push({ key: translation.key, lang, value });
+		for (const { language, translation: value } of translation.translations) {
+			await api.patch(`/translation-strings/${language}/${translation.key}`, { key: translation.key, language, value });
+			translationStrings.value.push({ key: translation.key, language, value });
 		}
 		await updateLocaleStrings(translationStrings.value);
 	}
@@ -188,7 +193,7 @@ export function useTranslationStrings(): UsableTranslationStrings {
 			const language =
 				currentUser && 'language' in currentUser && currentUser.language ? currentUser.language : 'en-US';
 			const localeMessages: Record<string, any> = strings
-				.filter(({ lang }) => lang === language)
+				.filter(({ language: lang }) => lang === language)
 				.reduce((result: Record<string, string>, { key, value }: { key: string; value: string }) => {
 					result[key] = getLiteralInterpolatedTranslation(value, true);
 					return result;
