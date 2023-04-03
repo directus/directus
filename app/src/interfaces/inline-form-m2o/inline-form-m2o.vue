@@ -49,7 +49,6 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<{
 	(e: 'input', value: Props['value']): void;
-	(e: 'setFieldValue', value: any): void;
 }>();
 
 const { collection, field } = toRefs(props);
