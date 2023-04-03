@@ -74,7 +74,7 @@ describe('Logger Redact Tests', () => {
 							).body.data.auth_login.refresh_token;
 
 							// Action
-							const logger = new TestLogger(directusInstances[vendor], '/auth/refresh');
+							const logger = new TestLogger(directusInstances[vendor], '/auth/refresh', true);
 
 							const response = await request(getUrl(vendor, env))
 								.post(`/auth/refresh`)
@@ -83,7 +83,7 @@ describe('Logger Redact Tests', () => {
 
 							const logs = await logger.getLogs();
 
-							const loggerGql = new TestLogger(directusInstances[vendor], '/graphql/system');
+							const loggerGql = new TestLogger(directusInstances[vendor], '/graphql/system', true);
 
 							const mutationKey = 'auth_refresh';
 
@@ -178,7 +178,7 @@ describe('Logger Redact Tests', () => {
 							).body.data.auth_login.refresh_token;
 
 							// Action
-							const logger = new TestLogger(directusInstances[vendor], '/auth/refresh');
+							const logger = new TestLogger(directusInstances[vendor], '/auth/refresh', true);
 
 							const response = await request(getUrl(vendor, env))
 								.post(`/auth/refresh`)
@@ -188,7 +188,7 @@ describe('Logger Redact Tests', () => {
 
 							const logs = await logger.getLogs();
 
-							const loggerGql = new TestLogger(directusInstances[vendor], '/graphql/system');
+							const loggerGql = new TestLogger(directusInstances[vendor], '/graphql/system', true);
 
 							const mutationKey = 'auth_refresh';
 

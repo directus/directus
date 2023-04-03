@@ -1,26 +1,46 @@
 import { ChildProcess } from 'child_process';
 
+type StopFunction = (logs: string, logLine: string) => boolean;
+type FilterFunction = (logLine: string) => boolean;
+
 export class TestLogger {
 	private logs: string;
 	private server: ChildProcess;
-	private stopCondition: string;
+	private stopCondition: StopFunction;
+	private filterCondition?: FilterFunction;
 	private stopped?: boolean;
 	private resolve?: (log: string) => void;
 
-	constructor(server: ChildProcess, stopCondition: string) {
+	constructor(server: ChildProcess, stopCondition: string | StopFunction, filter?: string | FilterFunction);
+	constructor(server: ChildProcess, stopCondition: string, filter?: boolean | string | FilterFunction);
+	constructor(server: ChildProcess, stopCondition: string | StopFunction, filter?: boolean | string | FilterFunction) {
 		this.logs = '';
 		this.server = server;
-		this.stopCondition = stopCondition;
+		this.stopCondition = typeof stopCondition === 'string' ? (logs) => logs.includes(stopCondition) : stopCondition;
+		if (filter) {
+			if (filter === true) {
+				if (typeof stopCondition === 'string') {
+					this.filterCondition = (logLine) => logLine.includes(stopCondition);
+				}
+			} else {
+				this.filterCondition = typeof filter === 'string' ? (logs) => logs.includes(filter) : filter;
+			}
+		}
+
+		// Discard data up to this point
+		server.stdout?.read();
 
 		server.stdout?.on('data', this.processChunks);
 	}
 
 	private processChunks = (chunk: any) => {
-		if (!this.stopped) {
-			this.logs += String(chunk);
+		const logLine = String(chunk);
+
+		if (!this.stopped && (!this.filterCondition || this.filterCondition(logLine))) {
+			this.logs += logLine;
 		}
 
-		if (this.logs.includes(this.stopCondition)) {
+		if (this.stopCondition(this.logs, logLine)) {
 			this.stopped = true;
 			this.cleanup();
 
