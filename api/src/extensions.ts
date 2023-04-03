@@ -32,8 +32,8 @@ import {
 	resolvePackage,
 	resolvePackageExtensions,
 } from '@directus/utils/node';
-import alias from '@rollup/plugin-alias';
-import virtual from '@rollup/plugin-virtual';
+import aliasDefault from '@rollup/plugin-alias';
+import virtualDefault from '@rollup/plugin-virtual';
 import chokidar, { FSWatcher } from 'chokidar';
 import express, { Router } from 'express';
 import globby from 'globby';
@@ -57,6 +57,10 @@ import getModuleDefault from './utils/get-module-default.js';
 import { getSchema } from './utils/get-schema.js';
 import { JobQueue } from './utils/job-queue.js';
 import { Url } from './utils/url.js';
+
+// Workaround for https://github.com/rollup/plugins/issues/1329
+const virtual = virtualDefault as unknown as typeof virtualDefault.default;
+const alias = aliasDefault as unknown as typeof aliasDefault.default;
 
 const require = createRequire(import.meta.url);
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -351,7 +355,7 @@ class ExtensionManager {
 				input: 'entry',
 				external: Object.values(sharedDepsMapping),
 				makeAbsoluteExternalsRelative: false,
-				plugins: [virtual.default({ entry: entrypoint }), alias.default({ entries: internalImports })],
+				plugins: [virtual({ entry: entrypoint }), alias({ entries: internalImports })],
 			});
 			const { output } = await bundle.generate({ format: 'es', compact: true });
 
