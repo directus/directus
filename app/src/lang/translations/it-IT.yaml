@@ -296,6 +296,8 @@ o2m_relationship: Relazione One to Many
 m2m_relationship: Relazione Many to Many
 m2a_relationship: Relazione Many to Any
 invalid_item: Oggetto non valido
+require_confirmation: Richiedi conferma
+dialog: Finestra
 modal: Modale
 next: Avanti
 field_name: Nome del Campo
