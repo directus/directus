@@ -1,7 +1,7 @@
 import type { Item, Query, SchemaOverview } from '@directus/shared/types';
 import { toArray } from '@directus/shared/utils';
 import type { Knex } from 'knex';
-import { clone, cloneDeep, merge, pick, uniq } from 'lodash';
+import { clone, cloneDeep, isNil, merge, pick, uniq } from 'lodash';
 import getDatabase from '.';
 import { getHelpers } from '../database/helpers';
 import env from '../env';
@@ -377,7 +377,7 @@ function applyParentFilters(
 
 		if (nestedNode.type === 'm2o') {
 			const foreignField = schema.collections[nestedNode.relation.related_collection!]!.primary;
-			const foreignIds = uniq(parentItems.map((res) => res[nestedNode.relation.field])).filter((id) => id);
+			const foreignIds = uniq(parentItems.map((res) => res[nestedNode.relation.field])).filter((id) => !isNil(id));
 
 			merge(nestedNode, { query: { filter: { [foreignField]: { _in: foreignIds } } } });
 		} else if (nestedNode.type === 'o2m') {
@@ -402,7 +402,7 @@ function applyParentFilters(
 			}
 
 			const foreignField = nestedNode.relation.field;
-			const foreignIds = uniq(parentItems.map((res) => res[nestedNode.parentKey])).filter((id) => id);
+			const foreignIds = uniq(parentItems.map((res) => res[nestedNode.parentKey])).filter((id) => !isNil(id));
 
 			merge(nestedNode, { query: { filter: { [foreignField]: { _in: foreignIds } } } });
 		} else if (nestedNode.type === 'a2o') {

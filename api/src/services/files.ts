@@ -97,12 +97,12 @@ export class FilesService extends ItemsService {
 			const stream = await storage.location(data.storage).read(payload.filename_disk);
 			const { height, width, description, title, tags, metadata } = await this.getMetadata(stream);
 
-			payload.height = height ?? null;
-			payload.width = width ?? null;
-			payload.description = description ?? null;
-			payload.title = title ?? null;
-			payload.tags = tags ?? null;
-			payload.metadata = metadata ?? null;
+			payload.height ??= height ?? null;
+			payload.width ??= width ?? null;
+			payload.description ??= description ?? null;
+			payload.title ??= title ?? null;
+			payload.tags ??= tags ?? null;
+			payload.metadata ??= metadata ?? null;
 		}
 
 		// We do this in a service without accountability. Even if you don't have update permissions to the file,
