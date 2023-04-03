@@ -3,14 +3,14 @@ import {
 	EXTENSION_PKG_KEY,
 	HYBRID_EXTENSION_TYPES,
 	NESTED_EXTENSION_TYPES,
+	ExtensionManifest,
 } from '@directus/constants';
 import type { ApiExtensionType, AppExtensionType, Extension } from '@directus/types';
-import { ExtensionManifest } from '@directus/types';
 import fse from 'fs-extra';
 import path from 'path';
 import { isIn, isTypeIn } from './array-helpers.js';
-import { pluralize } from './pluralize.js';
 import { listFolders } from './list-folders.js';
+import { pluralize } from './pluralize.js';
 import { resolvePackage } from './resolve-package.js';
 
 export async function resolvePackageExtensions(root: string, extensionNames?: string[]): Promise<Extension[]> {
