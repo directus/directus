@@ -398,7 +398,7 @@ export class UsersService extends ItemsService {
 		const token = jwt.sign(payload, env['SECRET'] as string, { expiresIn: '1d', issuer: 'directus' });
 		const acceptURL = url
 			? new Url(url).setQuery('token', token).toString()
-			: new Url(env['PUBLIC_URL']).addPath('admin', 'reset-password').setQuery('token', token);
+			: new Url(env['PUBLIC_URL']).addPath('admin', 'reset-password').setQuery('token', token).toString();
 		const subjectLine = subject ? subject : 'Password Reset Request';
 
 		await mailService.send({
