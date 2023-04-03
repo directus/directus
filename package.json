@@ -21,6 +21,7 @@
 		"@types/seedrandom": "3.0.5",
 		"@types/supertest": "2.0.12",
 		"@types/uuid": "9.0.1",
+		"@types/ws": "8.5.4",
 		"@typescript-eslint/eslint-plugin": "5.55.0",
 		"@typescript-eslint/parser": "5.55.0",
 		"autocannon": "7.10.0",
@@ -43,7 +44,8 @@
 		"supertest": "6.3.3",
 		"ts-jest": "29.0.5",
 		"typescript": "4.9.5",
-		"uuid": "9.0.0"
+		"uuid": "9.0.0",
+		"ws": "8.12.1"
 	},
 	"engines": {
 		"node": ">=16.0.0",

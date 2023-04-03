@@ -25,6 +25,9 @@ importers:
       '@types/uuid':
         specifier: 9.0.1
         version: 9.0.1
+      '@types/ws':
+        specifier: 8.5.4
+        version: 8.5.4
       '@typescript-eslint/eslint-plugin':
         specifier: 5.55.0
         version: 5.55.0(@typescript-eslint/parser@5.55.0)(eslint@8.36.0)(typescript@4.9.5)
@@ -94,6 +97,9 @@ importers:
       uuid:
         specifier: 9.0.0
         version: 9.0.0
+      ws:
+        specifier: 8.12.1
+        version: 8.12.1
 
   api:
     dependencies:
