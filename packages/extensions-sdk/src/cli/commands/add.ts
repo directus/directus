@@ -3,9 +3,15 @@ import {
 	EXTENSION_NAME_REGEX,
 	EXTENSION_PKG_KEY,
 	EXTENSION_TYPES,
+	ExtensionManifest,
 	HYBRID_EXTENSION_TYPES,
 } from '@directus/constants';
-import { ExtensionManifest, ExtensionOptions, ExtensionOptionsBundleEntry, NestedExtensionType } from '@directus/types';
+import type {
+	ExtensionOptions,
+	ExtensionOptionsBundleEntry,
+	NestedExtensionType,
+	ExtensionManifest as TExtensionManifest,
+} from '@directus/types';
 import { isIn, isTypeIn } from '@directus/utils';
 import { pathToRelativeUrl } from '@directus/utils/node';
 import chalk from 'chalk';
@@ -31,7 +37,7 @@ export default async function add(): Promise<void> {
 		process.exit(1);
 	}
 
-	let extensionManifest: ExtensionManifest;
+	let extensionManifest: TExtensionManifest;
 	let indent: string | null = null;
 
 	try {

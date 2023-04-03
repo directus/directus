@@ -4,14 +4,15 @@ import {
 	APP_SHARED_DEPS,
 	EXTENSION_PKG_KEY,
 	EXTENSION_TYPES,
-	HYBRID_EXTENSION_TYPES,
-} from '@directus/constants';
-import {
-	ApiExtensionType,
-	AppExtensionType,
 	ExtensionManifest,
 	ExtensionOptionsBundleEntries,
+	HYBRID_EXTENSION_TYPES,
+} from '@directus/constants';
+import type {
+	ApiExtensionType,
+	AppExtensionType,
 	ExtensionOptionsBundleEntry,
+	ExtensionManifest as TExtensionManifest,
 } from '@directus/types';
 import { isIn, isTypeIn } from '@directus/utils';
 import commonjs from '@rollup/plugin-commonjs';
@@ -65,7 +66,7 @@ export default async function build(options: BuildOptions): Promise<void> {
 			process.exit(1);
 		}
 
-		let extensionManifest: ExtensionManifest;
+		let extensionManifest: TExtensionManifest;
 
 		try {
 			extensionManifest = ExtensionManifest.parse(await fse.readJSON(packagePath));
