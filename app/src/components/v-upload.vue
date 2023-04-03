@@ -148,8 +148,11 @@ function useUpload() {
 		}
 
 		try {
-			numberOfFiles.value = files.length;
+			if (files.length === 0) {
+				throw new Error('An error has occurred while uploading the files.');
+			}
 
+			numberOfFiles.value = files.length;
 			if (props.multiple === true) {
 				const uploadedFiles = await uploadFiles(Array.from(files), {
 					onProgressChange: (percentage) => {
