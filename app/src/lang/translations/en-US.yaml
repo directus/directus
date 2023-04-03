@@ -1793,6 +1793,12 @@ interfaces:
   inline-form-m2o:
     inline-form: Inline Form
     description: Edit a single related item inline
+    create-related-item: Create Related Item
+    create-related-item-note: Select if the related item should always be created or only if some data has been entered into the form
+    only-with-content: Only create with content
+    always-create: Always create
+    no-read-permission: You are not allowed to view this inline form
+    no-update-permission: You are not allowed to update this inline form
 displays:
   translations:
     translations: Translations

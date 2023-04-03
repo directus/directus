@@ -11,57 +11,32 @@ export default defineInterface({
 	relational: true,
 	localTypes: ['m2o'],
 	group: 'relational',
-	hideLabel: true,
 	options: ({ relations }) => {
 		const collection = relations.m2o?.related_collection;
 
 		return [
 			{
-				field: 'template',
-				name: '$t:interfaces.select-dropdown-m2o.display_template',
-				meta: {
-					interface: 'system-display-template',
-					options: {
-						collectionName: collection,
-					},
-				},
-			},
-			{
-				field: 'enableCreate',
-				name: '$t:creating_items',
+				field: 'createRelatedItem',
+				type: 'string',
+				name: '$t:interfaces.inline-form-m2o.create-related-item',
 				schema: {
-					default_value: true,
+					default_value: 'withContent',
 				},
 				meta: {
-					interface: 'boolean',
+					note: '$t:interfaces.inline-form-m2o.create-related-item-note',
+					width: 'full',
+					interface: 'select-dropdown',
 					options: {
-						label: '$t:enable_create_button',
-					},
-					width: 'half',
-				},
-			},
-			{
-				field: 'enableSelect',
-				name: '$t:selecting_items',
-				schema: {
-					default_value: true,
-				},
-				meta: {
-					interface: 'boolean',
-					options: {
-						label: '$t:enable_select_button',
-					},
-					width: 'half',
-				},
-			},
-			{
-				field: 'filter',
-				name: '$t:filter',
-				type: 'json',
-				meta: {
-					interface: 'system-filter',
-					options: {
-						collectionName: collection,
+						choices: [
+							{
+								text: '$t:interfaces.inline-form-m2o.only-with-content',
+								value: 'withContent',
+							},
+							{
+								text: '$t:interfaces.inline-form-m2o.always-create',
+								value: 'always',
+							},
+						],
 					},
 				},
 			},
