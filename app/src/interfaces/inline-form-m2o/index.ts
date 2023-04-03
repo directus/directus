@@ -11,9 +11,7 @@ export default defineInterface({
 	relational: true,
 	localTypes: ['m2o'],
 	group: 'relational',
-	options: ({ relations }) => {
-		const collection = relations.m2o?.related_collection;
-
+	options: () => {
 		return [
 			{
 				field: 'createRelatedItem',

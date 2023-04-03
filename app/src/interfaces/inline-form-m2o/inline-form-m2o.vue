@@ -110,6 +110,8 @@ watch(
 	{ deep: true, immediate: true }
 );
 
+// watch for a discard (value will be changed back to it's initial key value)
+// refetch data if this is not a new item
 watch(
 	() => props.value,
 	() => {
