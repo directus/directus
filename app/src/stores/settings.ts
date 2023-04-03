@@ -73,22 +73,15 @@ export const useSettingsStore = defineStore({
 		},
 
 		async fetchRawTranslationStrings(lang: string) {
-			const response = await api.get(`/settings`, {
+			const response = await api.get(`/translation-strings`, {
 				params: {
-					fields: ['translations'],
-					alias: {
-						translations: 'json(translation_strings$[*])',
-					},
-					deep: {
-						translations: {
-							_filter: {
-								'$.lang': { _eq: lang },
-							},
-						},
+					fields: ['language', 'key', 'value'],
+					filter: {
+						language: { _eq: lang },
 					},
 				},
 			});
-			return response.data.data?.translations ?? [];
+			return response.data.data ?? [];
 		},
 	},
 });

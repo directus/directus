@@ -22,6 +22,7 @@ import operationsRouter from './controllers/operations';
 import panelsRouter from './controllers/panels';
 import permissionsRouter from './controllers/permissions';
 import presetsRouter from './controllers/presets';
+import translationStringsRouter from './controllers/translation-strings';
 import relationsRouter from './controllers/relations';
 import revisionsRouter from './controllers/revisions';
 import rolesRouter from './controllers/roles';
@@ -253,6 +254,7 @@ export default async function createApp(): Promise<express.Application> {
 	app.use('/panels', panelsRouter);
 	app.use('/permissions', permissionsRouter);
 	app.use('/presets', presetsRouter);
+	app.use('/translation-strings', translationStringsRouter);
 	app.use('/relations', relationsRouter);
 	app.use('/revisions', revisionsRouter);
 	app.use('/roles', rolesRouter);

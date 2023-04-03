@@ -202,18 +202,11 @@ export function useTranslationStrings(): UsableTranslationStrings {
 	}
 
 	async function fetchTranslationStrings(lang: Language): Promise<RawTranslation[]> {
-		const response = await api.get(`/settings`, {
+		const response = await api.get(`/translation-strings`, {
 			params: {
-				fields: ['translations'],
-				alias: {
-					translations: 'json(translation_strings$[*])',
-				},
-				deep: {
-					translations: {
-						_filter: {
-							'$.lang': { _eq: lang },
-						},
-					},
+				fields: ['language', 'key', 'value'],
+				filter: {
+					language: { _eq: lang },
 				},
 			},
 		});
@@ -221,10 +214,10 @@ export function useTranslationStrings(): UsableTranslationStrings {
 	}
 
 	async function fetchAllTranslationStrings(): Promise<RawTranslation[]> {
-		const response = await api.get(`/settings`, {
-			params: { fields: ['translation_strings'] },
+		const response = await api.get(`/translation-strings`, {
+			params: { fields: ['language', 'key', 'value'] },
 		});
-		return response.data.data?.translation_strings ?? [];
+		return response.data.data ?? [];
 	}
 
 	async function loadAllTranslations(): Promise<void> {
