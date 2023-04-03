@@ -5,7 +5,6 @@ import { shouldSkipCache } from './should-skip-cache';
 
 vi.mock('../env');
 
-// test('should always skip cache for requests coming from data studio', () => {
 test.each([
 	{ scenario: 'not relative', publicURL: 'http://admin.example.com', refererHost: '' },
 	{ scenario: 'relative', publicURL: '/', refererHost: 'http://ignore.domain' },
