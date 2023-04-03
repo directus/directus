@@ -178,7 +178,7 @@ export function useTranslationStrings(): UsableTranslationStrings {
 			translationStrings.value = translationStrings.value.filter(({ key }) => key !== originalKey);
 		}
 		for (const { language, translation: value } of translation.translations) {
-			await api.patch(`/translation-strings/${language}/${translation.key}`, { key: translation.key, language, value });
+			await api.post(`/translation-strings`, { key: translation.key, language, value });
 			translationStrings.value.push({ key: translation.key, language, value });
 		}
 		await updateLocaleStrings(translationStrings.value);
@@ -220,7 +220,7 @@ export function useTranslationStrings(): UsableTranslationStrings {
 
 	async function fetchAllTranslationStrings(): Promise<RawTranslation[]> {
 		const response = await api.get(`/translation-strings`, {
-			params: { fields: ['language', 'key', 'value'] },
+			params: { fields: ['id', 'language', 'key', 'value'] },
 		});
 		return response.data.data ?? [];
 	}

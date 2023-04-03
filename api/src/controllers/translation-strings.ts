@@ -1,11 +1,12 @@
 import express from 'express';
-import { ForbiddenException, RouteNotFoundException } from '../exceptions';
+import { ForbiddenException } from '../exceptions';
 import { respond } from '../middleware/respond';
 import { validateBatch } from '../middleware/validate-batch';
 import { ItemsService, MetaService } from '../services';
-import type { PrimaryKey } from '../types';
+import type { Item, PrimaryKey } from '../types';
 import asyncHandler from '../utils/async-handler';
-import { sanitizeQuery } from '../utils/sanitize-query';
+import { omit } from 'lodash';
+// import { sanitizeQuery } from '../utils/sanitize-query';
 
 const router = express.Router();
 
@@ -44,13 +45,31 @@ router.post(
 		});
 
 		const savedKeys: PrimaryKey[] = [];
+		async function customUpsert(item: Partial<Item>) {
+			const result = await service.readByQuery({
+				filter: {
+					_and: [{ language: { _eq: item['language']! } }, { key: { _eq: item['key']! } }],
+				},
+				fields: ['*'],
+				limit: 1,
+			});
+			console.log(result);
+			if (result) {
+				const { id } = result[0]!;
+				const key = await service.updateOne(id, omit(item, 'id'));
+				savedKeys.push(key);
+			} else {
+				const key = await service.createOne(item);
+				savedKeys.push(key);
+			}
+		}
 
 		if (Array.isArray(req.body)) {
-			const keys = await service.createMany(req.body);
-			savedKeys.push(...keys);
+			for (const item of req.body) {
+				await customUpsert(item);
+			}
 		} else {
-			const key = await service.createOne(req.body);
-			savedKeys.push(key);
+			await customUpsert(req.body);
 		}
 
 		try {
@@ -61,50 +80,6 @@ router.post(
 				const result = await service.readOne(savedKeys[0]!, req.sanitizedQuery);
 				res.locals['payload'] = { data: result || null };
 			}
-		} catch (error: any) {
-			if (error instanceof ForbiddenException) {
-				return next();
-			}
-
-			throw error;
-		}
-
-		return next();
-	}),
-	respond
-);
-
-router.patch(
-	'/:language/:key',
-	asyncHandler(async (req, res, next) => {
-		if (req.singleton) {
-			throw new RouteNotFoundException(req.path);
-		}
-
-		const service = new ItemsService('directus_translation_strings', {
-			accountability: req.accountability,
-			schema: req.schema,
-		});
-
-		const updatedPrimaryKey = await service.updateByQuery(
-			{
-				filter: {
-					_and: [
-						{
-							key: {
-								_eq: req.params['key']!,
-							},
-						},
-						{ language: { _eq: req.params['language']! } },
-					],
-				},
-			},
-			req.body
-		);
-
-		try {
-			const result = await service.readMany(updatedPrimaryKey, req.sanitizedQuery);
-			res.locals['payload'] = { data: result || null };
 		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
 				return next();
