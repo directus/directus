@@ -25,14 +25,13 @@
 <script lang="ts" setup>
 import api from '@/api';
 import { computed, ref, toRefs, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { get, isEmpty, isNil } from 'lodash';
 import { useRelationM2O } from '@/composables/use-relation-m2o';
 import { getEndpoint } from '@directus/shared/utils';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { useFieldsStore } from '@/stores/fields';
 import { usePermissions } from '@/composables/use-permissions';
 import { usePermissionsStore } from '@/stores/permissions';
-import { useI18n } from 'vue-i18n';
 
 interface Props {
 	value?: string | number | Record<string, any> | null;
