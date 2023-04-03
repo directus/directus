@@ -69,8 +69,8 @@
 		"cli": "NODE_ENV=development SERVE_APP=false ts-node --script-mode --transpile-only src/cli/run.ts",
 		"dev": "NODE_ENV=development SERVE_APP=false tsx watch src/start.ts",
 		"start": "node cli.js start",
-		"test": "vitest run --config vitest.config.ts",
-		"test:coverage": "vitest run --config vitest.config.ts --coverage",
+		"test": "vitest run --config",
+		"test:coverage": "vitest run --config --coverage",
 		"test:watch": "vitest"
 	},
 	"dependencies": {
