@@ -302,6 +302,12 @@ o2m_relationship: One to Many Relationship
 m2m_relationship: Many to Many Relationship
 m2a_relationship: Many to Any Relationship
 invalid_item: Invalid Item
+require_confirmation: Require Confirmation
+dialog: Dialog
+modal: Modal
+confirmation_dialog: Confirmation Dialog
+confirmation_description: Confirmation Description
+confirmation_input_fields: Confirmation Input Fields
 next: Next
 field_name: Field Name
 translations: Translations
@@ -320,6 +326,7 @@ updated_on: Updated On
 updated_by: Updated By
 primary_key: Primary Key
 foreign_key: Foreign Key
+field_key: Field Key
 finish_setup: Finish Setup
 dismiss: Dismiss
 toggle_raw_editor: Toggle Raw Editor
@@ -796,11 +803,15 @@ label: Label
 flows: Flows
 flow: Flow
 select_a_flow: Select a Flow
-run_flow_on_current_collection: Run flow on Current Collection
-run_flow_on_current: Run flow on Current Item
+run_flow_confirm: Are you sure you want to execute this flow?
+run_flow_on_current_collection: Run Flow on Current Collection
+run_flow_on_current: Run Flow on Current Item
 run_flow_on_current_edited_confirm: This item may be updated by this flow, are you sure you want to execute it?
-run_flow_on_selected: Select One or More Items First | Run flow on 1 Selected Item | Run flow on {n} Selected Items
+run_flow_on_selected: Select One or More Items First | Run Flow on 1 Selected Item | Run Flow on {n} Selected Items
+run_flow: Run Flow
 run_flow_success: Flow "{flow}" ran successfully
+field_name_placeholder: Enter field name...
+field_key_placeholder: Enter field key...
 trigger: Trigger
 trigger_options: Trigger Options
 view_trigger: View Trigger
@@ -1611,6 +1622,9 @@ interfaces:
     many-to-one: Many to One
     description: Select a single related item
     display_template: Display Template
+  collection-item-dropdown:
+    collection-item-dropdown: Collection Item Dropdown
+    description: Select an item from a collection in JSON format
   input-rich-text-md:
     markdown: Markdown
     description: Enter and preview markdown
@@ -1665,7 +1679,6 @@ interfaces:
     add_label: '"Create New" Label'
     sort: Sort
     sort_placeholder: Manual
-    field_name_placeholder: Enter field name...
     field_note_placeholder: Enter field note...
     incompatible_data:
       The current data is not compatible with the repeater interface and will be overridden when adding items to the
