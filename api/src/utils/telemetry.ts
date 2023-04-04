@@ -1,4 +1,4 @@
-import { machineId } from 'node-machine-id';
+import mid from 'node-machine-id';
 import env from '../env.js';
 import logger from '../logger.js';
 import { version } from './package.js';
@@ -12,7 +12,7 @@ export async function collectTelemetry(): Promise<void> {
 				version: version,
 				public_url: env['PUBLIC_URL'],
 				project_id: env['KEY'],
-				machine_id: await machineId(),
+				machine_id: await mid.machineId(),
 				db_client: env['DB_CLIENT'],
 			});
 		} catch (err: any) {
