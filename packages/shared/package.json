@@ -1,6 +1,6 @@
 {
 	"name": "@directus/shared",
-	"version": "9.23.4",
+	"version": "9.24.0",
 	"description": "Code shared between all Directus packages",
 	"homepage": "https://directus.io",
 	"bugs": {
