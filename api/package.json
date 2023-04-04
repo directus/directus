@@ -170,7 +170,7 @@
 	"devDependencies": {
 		"@directus/tsconfig": "0.0.6",
 		"@directus/types": "workspace:*",
-		"@esbuild-kit/esm-loader": "^2.5.5",
+		"@esbuild-kit/esm-loader": "2.5.5",
 		"@ngneat/falso": "6.4.0",
 		"@types/async": "3.2.18",
 		"@types/busboy": "1.5.0",
