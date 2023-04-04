@@ -1,5 +1,5 @@
-import type { KNEX_TYPES } from '@directus/shared/constants';
-import { Options, SchemaHelper } from '../types';
+import type { KNEX_TYPES } from '@directus/constants';
+import { Options, SchemaHelper } from '../types.js';
 
 export class SchemaHelperCockroachDb extends SchemaHelper {
 	override async changeToType(

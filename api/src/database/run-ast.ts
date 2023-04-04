@@ -1,18 +1,18 @@
-import type { Item, Query, SchemaOverview } from '@directus/shared/types';
-import { toArray } from '@directus/shared/utils';
+import type { Item, Query, SchemaOverview } from '@directus/types';
+import { toArray } from '@directus/utils';
 import type { Knex } from 'knex';
-import { clone, cloneDeep, isNil, merge, pick, uniq } from 'lodash';
-import getDatabase from '.';
-import { getHelpers } from '../database/helpers';
-import env from '../env';
-import { PayloadService } from '../services/payload';
-import type { AST, FieldNode, FunctionFieldNode, M2ONode, NestedCollectionNode } from '../types/ast';
-import { applyFunctionToColumnName } from '../utils/apply-function-to-column-name';
-import applyQuery, { applyLimit, applySort, ColumnSortRecord, generateAlias } from '../utils/apply-query';
-import { getCollectionFromAlias } from '../utils/get-collection-from-alias';
-import { getColumn } from '../utils/get-column';
-import type { AliasMap } from '../utils/get-column-path';
-import { stripFunction } from '../utils/strip-function';
+import { clone, cloneDeep, isNil, merge, pick, uniq } from 'lodash-es';
+import { getHelpers } from '../database/helpers/index.js';
+import env from '../env.js';
+import { PayloadService } from '../services/payload.js';
+import type { AST, FieldNode, FunctionFieldNode, M2ONode, NestedCollectionNode } from '../types/ast.js';
+import { applyFunctionToColumnName } from '../utils/apply-function-to-column-name.js';
+import applyQuery, { applyLimit, applySort, ColumnSortRecord, generateAlias } from '../utils/apply-query.js';
+import { getCollectionFromAlias } from '../utils/get-collection-from-alias.js';
+import type { AliasMap } from '../utils/get-column-path.js';
+import { getColumn } from '../utils/get-column.js';
+import { stripFunction } from '../utils/strip-function.js';
+import getDatabase from './index.js';
 
 type RunASTOptions = {
 	/**

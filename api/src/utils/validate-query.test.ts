@@ -1,5 +1,5 @@
 import { describe, expect, test, vi } from 'vitest';
-import { validateQuery } from './validate-query';
+import { validateQuery } from './validate-query.js';
 
 vi.mock('../env', async () => {
 	const actual = (await vi.importActual('../env')) as { default: Record<string, any> };

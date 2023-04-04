@@ -292,6 +292,7 @@ o2m_relationship: Vztah 1:N
 m2m_relationship: Vztah N:N
 m2a_relationship: Vztah N:cokoliv
 invalid_item: Neplatná položka
+modal: Modál
 next: Další
 field_name: Název pole
 translations: Překlady
@@ -762,7 +763,6 @@ label: Popisek
 flows: Toky
 flow: Tok
 select_a_flow: Vybrat tok
-run_flow_on_current: Spustit tok na aktuální položku
 run_flow_success: Tok "{flow}" proběhl úspěšně
 trigger: Spouštěč
 trigger_options: Možnosti spouštěče
@@ -1597,7 +1597,6 @@ interfaces:
     add_label: 'Štítek "Vytvořit nový"'
     sort: Seřadit
     sort_placeholder: Manuálně
-    field_name_placeholder: Zadejte název pole...
     field_note_placeholder: Zadejte poznámku k poli...
     incompatible_data: Aktuální data nejsou kompatibilní s rozhraním opakovače a budou přepsána při přidávání položek do opakovače
   slider:

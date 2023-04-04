@@ -3,8 +3,8 @@ import axios from 'axios';
 import { lookup } from 'node:dns/promises';
 import { isIP } from 'node:net';
 import { URL } from 'node:url';
-import logger from '../logger';
-import { validateIP } from './validate-ip';
+import logger from '../logger.js';
+import { validateIP } from './validate-ip.js';
 
 export const requestInterceptor = async (config: InternalAxiosRequestConfig) => {
 	const uri = axios.getUri(config);

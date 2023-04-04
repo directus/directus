@@ -1,7 +1,7 @@
-import type { ActionHandler, EventContext, FilterHandler, InitHandler } from '@directus/shared/types';
-import { EventEmitter2 } from 'eventemitter2';
-import getDatabase from './database';
-import logger from './logger';
+import type { ActionHandler, EventContext, FilterHandler, InitHandler } from '@directus/types';
+import ee2 from 'eventemitter2';
+import logger from './logger.js';
+import getDatabase from './database/index.js';
 
 export class Emitter {
 	private filterEmitter;
@@ -18,9 +18,9 @@ export class Emitter {
 			ignoreErrors: true,
 		};
 
-		this.filterEmitter = new EventEmitter2(emitterOptions);
-		this.actionEmitter = new EventEmitter2(emitterOptions);
-		this.initEmitter = new EventEmitter2(emitterOptions);
+		this.filterEmitter = new ee2.EventEmitter2(emitterOptions);
+		this.actionEmitter = new ee2.EventEmitter2(emitterOptions);
+		this.initEmitter = new ee2.EventEmitter2(emitterOptions);
 	}
 
 	private getDefaultContext(): EventContext {

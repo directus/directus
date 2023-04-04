@@ -30,7 +30,7 @@ import { startIdleTracking, stopIdleTracking } from './idle';
 import { useSystem } from '@/composables/use-system';
 
 import { setFavicon } from '@/utils/set-favicon';
-import { User } from '@directus/shared/types';
+import { User } from '@directus/types';
 
 export default defineComponent({
 	setup() {
