@@ -7,7 +7,7 @@
 This is the official documentation for the Directus data platform. These docs are also available via
 [a public website](https://docs.directus.io).
 
-**[Learn more about Directus](https://directus.io)**<br /> **[Create your Free Project](https://directus.cloud)**
+**[Learn more about Directus](https://directus.io)**
 
 <br />
 
@@ -15,9 +15,9 @@ This is the official documentation for the Directus data platform. These docs ar
 
 [The Directus Documentation](https://docs.directus.io) is a great place to start, or explore these other channels:
 
-- [Discord](https://directus.chat) (Live Discussions)
+- [Discord](https://directus.chat) (Questions, Live Discussions)
 - [GitHub Issues](https://github.com/directus/directus/issues) (Report Bugs)
-- [GitHub Discussions](https://github.com/directus/directus/discussions) (Questions, Feature Requests)
+- [GitHub Discussions](https://github.com/directus/directus/discussions) (Feature Requests)
 - [Twitter](https://twitter.com/directus) (Latest News)
 - [YouTube](https://www.youtube.com/c/DirectusVideos/featured) (Video Tutorials)
 
