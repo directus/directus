@@ -296,6 +296,7 @@ o2m_relationship: 一对多关系
 m2m_relationship: 多对多关系
 m2a_relationship: 多对任何关系
 invalid_item: 无效条目
+modal: 模式
 next: 下一步
 field_name: 字段名
 translations: 翻译
@@ -787,10 +788,7 @@ label: 标签
 flows: 流程
 flow: 流程
 select_a_flow: 选择一个流程
-run_flow_on_current_collection: 在当前集合上运行流程
-run_flow_on_current: 在当前条目上运行Flow
 run_flow_on_current_edited_confirm: 此流程可能会更新此项，您确定要执行它吗？
-run_flow_on_selected: 先选择一个或多个条目 | 在 1 个选定条目 上运行流程 | 在 {n} 个选定条目 上运行流程
 run_flow_success: 流程 "{flow}" 运行成功
 trigger: 触发器
 trigger_options: 触发器选项
@@ -1642,7 +1640,6 @@ interfaces:
     add_label: '"创建新"标签'
     sort: 排序
     sort_placeholder: 手动
-    field_name_placeholder: 输入字段名称...
     field_note_placeholder: 输入字段备注...
     incompatible_data: 当前数据与重复器接口不兼容，添加项目到重复器时将被覆盖
   slider:
