@@ -24,8 +24,10 @@ async function createSubmission(submission: Submission) {
 			body: JSON.stringify(submission),
 			headers,
 		});
+
 		if (!response.ok) throw Error(response.statusText);
-		const { data } = await response.json();
+
+		const { data } = (await response.json()) as { data: any };
 		return data;
 	} catch (error) {
 		return error;
@@ -39,15 +41,17 @@ async function updateSubmission(id: string, submission: Submission) {
 			body: JSON.stringify(submission),
 			headers,
 		});
+
 		if (!response.ok) throw Error(response.statusText);
-		const { data } = await response.json();
+
+		const { data } = (await response.json()) as { data: any };
 		return data;
 	} catch (error) {
 		return error;
 	}
 }
 
-exports.handler = async (event, context) => {
+exports.handler = async (event) => {
 	if (event.httpMethod !== 'POST') {
 		return { statusCode: 405, body: 'Method Not Allowed' };
 	}
@@ -55,7 +59,8 @@ exports.handler = async (event, context) => {
 	try {
 		const { id, ...data } = JSON.parse(event.body);
 
-		let response;
+		let response: any;
+
 		if (id) {
 			response = await updateSubmission(id, data);
 		} else {
@@ -67,7 +72,9 @@ exports.handler = async (event, context) => {
 			body: JSON.stringify(response),
 		};
 	} catch (error) {
+		// eslint-disable-next-line no-console
 		console.log(error);
+
 		return {
 			statusCode: 500,
 			body: JSON.stringify({ error: 'Feedback submission failed!' }),
