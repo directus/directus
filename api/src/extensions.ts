@@ -395,7 +395,7 @@ class ExtensionManager {
 		for (const hook of hooks) {
 			try {
 				const hookPath = path.resolve(hook.path, hook.entrypoint);
-				const hookInstance: HookConfig | { default: HookConfig } = await import(hookPath);
+				const hookInstance: HookConfig | { default: HookConfig } = await import('file://' + hookPath);
 
 				const config = getModuleDefault(hookInstance);
 
@@ -415,7 +415,7 @@ class ExtensionManager {
 		for (const endpoint of endpoints) {
 			try {
 				const endpointPath = path.resolve(endpoint.path, endpoint.entrypoint);
-				const endpointInstance: EndpointConfig | { default: EndpointConfig } = await import(endpointPath);
+				const endpointInstance: EndpointConfig | { default: EndpointConfig } = await import('file://' + endpointPath);
 
 				const config = getModuleDefault(endpointInstance);
 
@@ -449,7 +449,9 @@ class ExtensionManager {
 		for (const operation of [...internalOperations, ...operations]) {
 			try {
 				const operationPath = path.resolve(operation.path, operation.entrypoint.api!);
-				const operationInstance: OperationApiConfig | { default: OperationApiConfig } = await import(operationPath);
+				const operationInstance: OperationApiConfig | { default: OperationApiConfig } = await import(
+					'file://' + operationPath
+				);
 
 				const config = getModuleDefault(operationInstance);
 
@@ -469,7 +471,7 @@ class ExtensionManager {
 		for (const bundle of bundles) {
 			try {
 				const bundlePath = path.resolve(bundle.path, bundle.entrypoint.api);
-				const bundleInstances: BundleConfig | { default: BundleConfig } = await import(bundlePath);
+				const bundleInstances: BundleConfig | { default: BundleConfig } = await import('file://' + bundlePath);
 
 				const configs = getModuleDefault(bundleInstances);
 
