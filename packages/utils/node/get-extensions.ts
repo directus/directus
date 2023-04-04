@@ -14,8 +14,8 @@ import { pluralize } from './pluralize.js';
 import { resolvePackage } from './resolve-package.js';
 
 export const findExtension = async (folder: string, filename: string) => {
-	if (await fse.exists(path.join(folder, filename, '.cjs'))) return `${filename}.cjs`;
-	if (await fse.exists(path.join(folder, filename, '.mjs'))) return `${filename}.mjs`;
+	if (await fse.exists(path.join(folder, filename + '.cjs'))) return `${filename}.cjs`;
+	if (await fse.exists(path.join(folder, filename + '.mjs'))) return `${filename}.mjs`;
 	return `${filename}.js`;
 };
 
