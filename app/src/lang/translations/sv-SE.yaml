@@ -296,6 +296,7 @@ o2m_relationship: One to Many relation
 m2m_relationship: Many to Many relation
 m2a_relationship: Many to Any relation
 invalid_item: Ogiltigt objekt
+modal: Popup
 next: Nästa
 field_name: Fältnamn
 translations: Översättningar
@@ -767,9 +768,7 @@ label: Etikett
 flows: Flöden
 flow: Flöde
 select_a_flow: Välj ett flöde
-run_flow_on_current: Kör flöde på aktuellt objekt
 run_flow_on_current_edited_confirm: Detta objekt kan uppdateras av detta flöde, är du säker på att du vill köra det?
-run_flow_on_selected: Välj en eller flera objekt Första | Kör flöde på 1 Valda objekt | Kör flöde på {n} Valda objekt
 run_flow_success: Flödet "{flow}" kördes framgångsrikt
 trigger: Utlösare
 create_trigger: Skapa utlösare
@@ -1507,7 +1506,6 @@ interfaces:
     add_label: 'Etikett för "Skapa nytt"'
     sort: Sortera
     sort_placeholder: Manuell
-    field_name_placeholder: Ange fältnamn...
     field_note_placeholder: Ange fältanteckning...
   slider:
     slider: Reglage

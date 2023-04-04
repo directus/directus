@@ -295,6 +295,7 @@ o2m_relationship: Един към много
 m2m_relationship: Много към много
 m2a_relationship: Много към нещо
 invalid_item: Невалиден запис
+modal: Диалог
 next: Напред
 field_name: Име на поле
 translations: Преводи
@@ -786,10 +787,7 @@ label: Надпис
 flows: Автоматизирани процеси
 flow: Процес
 select_a_flow: Избор на процес
-run_flow_on_current_collection: Стартиране на процеса за текущата колекция
-run_flow_on_current: Стартиране на процеса за текущия запис
 run_flow_on_current_edited_confirm: Записът може да бъде редактиран от процеса, сигурни ли сте, че искате да го изпълните?
-run_flow_on_selected: Първо изберете един или повече записи | Стартиране за 1 избран запис | Стартиране за {n} избрани записи
 run_flow_success: Изпълнението на процеса „{flow}“ е успешно
 trigger: Задействане
 trigger_options: Настройка на задействането
@@ -1641,7 +1639,6 @@ interfaces:
     add_label: 'Текст за „Създаване“'
     sort: Сортиране
     sort_placeholder: Ръчно
-    field_name_placeholder: Въвеждане име на полето...
     field_note_placeholder: Въвеждане бележка към полето...
     incompatible_data: Текущите данни не са съвместими с интерфейсът за повторение и ще бъдат заместени при добавяне на нов запис
   slider:

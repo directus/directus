@@ -296,6 +296,7 @@ o2m_relationship: Birden Çoka İlişki
 m2m_relationship: Çoktan Çoka İlişki
 m2a_relationship: Çoktan Herhangi Bire İlişki
 invalid_item: Geçersiz Öğe
+modal: Açılır Pencere
 next: Sonraki
 field_name: Alan Adı
 translations: Çeviriler
@@ -787,10 +788,7 @@ label: Etiket
 flows: Akışlar
 flow: Akış
 select_a_flow: Bir Akış Seç
-run_flow_on_current_collection: Akış şemasını geçerli modelde çalıştır
-run_flow_on_current: Geçerli Öğede akışı çalıştır
 run_flow_on_current_edited_confirm: Bu öğe bu akış tarafından güncellenebilir, yürütmek istediğinizden emin misiniz?
-run_flow_on_selected: Önce Bir Nesneden Seçin | Seçili Nesnede Otomasyon Gerçekleştirin | Seçili {n} Nesnede Otomasyon Gerçekleştirin
 run_flow_success: Akış "{flow}" çalıştırma başarılı
 trigger: Tetikleme
 trigger_options: Tetikleyici Seçenekleri
@@ -1642,7 +1640,6 @@ interfaces:
     add_label: '"Yeni Oluştur" Başlığı'
     sort: Sırala
     sort_placeholder: Elle
-    field_name_placeholder: Alan adı girin...
     field_note_placeholder: Alan notu girin...
     incompatible_data: Mevcut veriler tekrarlayıcı ile uyumlu değildir ve tekrarlayıcıya veri eklenirken üzerine yazılacaktır
   slider:
