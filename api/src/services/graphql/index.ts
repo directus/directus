@@ -1843,15 +1843,61 @@ export class GraphQLService {
 		const ServerInfo = schemaComposer.createObjectTC({
 			name: 'server_info',
 			fields: {
-				project_name: { type: GraphQLString },
-				project_logo: { type: GraphQLString },
-				project_color: { type: GraphQLString },
-				project_foreground: { type: GraphQLString },
-				project_background: { type: GraphQLString },
-				project_note: { type: GraphQLString },
-				custom_css: { type: GraphQLString },
+				project: {
+					type: new GraphQLObjectType({
+						name: 'server_info_project',
+						fields: {
+							project_name: { type: GraphQLString },
+							project_descriptor: { type: GraphQLString },
+							project_logo: { type: GraphQLString },
+							project_color: { type: GraphQLString },
+							default_language: { type: GraphQLString },
+							public_foreground: { type: GraphQLString },
+							public_background: { type: GraphQLString },
+							public_note: { type: GraphQLString },
+							custom_css: { type: GraphQLString },
+						},
+					}),
+				},
 			},
 		});
+
+		if (this.accountability?.user) {
+			ServerInfo.addFields({
+				rateLimit: env['RATE_LIMITER_ENABLED']
+					? {
+							type: new GraphQLObjectType({
+								name: 'server_info_rate_limit',
+								fields: {
+									points: { type: GraphQLInt },
+									duration: { type: GraphQLInt },
+								},
+							}),
+					  }
+					: GraphQLBoolean,
+				rateLimitGlobal: env['RATE_LIMITER_GLOBAL_ENABLED']
+					? {
+							type: new GraphQLObjectType({
+								name: 'server_info_rate_limit_global',
+								fields: {
+									points: { type: GraphQLInt },
+									duration: { type: GraphQLInt },
+								},
+							}),
+					  }
+					: GraphQLBoolean,
+				flows: {
+					type: new GraphQLObjectType({
+						name: 'server_info_flows',
+						fields: {
+							execAllowedModules: {
+								type: new GraphQLList(GraphQLString),
+							},
+						},
+					}),
+				},
+			});
+		}
 
 		if (this.accountability?.admin === true) {
 			ServerInfo.addFields({
@@ -2213,6 +2259,21 @@ export class GraphQLService {
 					}
 					await service.disableTFA(this.accountability.user);
 					return true;
+				},
+			},
+			utils_random_string: {
+				type: GraphQLString,
+				args: {
+					length: GraphQLInt,
+				},
+				resolve: async (_, args) => {
+					const { nanoid } = await import('nanoid');
+
+					if (args['length'] && Number(args['length']) > 500) {
+						throw new InvalidPayloadException(`"length" can't be more than 500 characters`);
+					}
+
+					return nanoid(args['length'] ? Number(args['length']) : 32);
 				},
 			},
 			utils_hash_generate: {
