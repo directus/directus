@@ -1,9 +1,9 @@
 import type { Server as httpServer } from 'http';
-import { ServiceUnavailableException } from '../../exceptions';
-import { GraphQLSubscriptionController } from './graphql';
-import { WebSocketController } from './rest';
-import env from '../../env';
-import { toBoolean } from '../../utils/to-boolean';
+import { WebSocketController } from './rest.js';
+import { GraphQLSubscriptionController } from './graphql.js';
+import { toBoolean } from '../../utils/to-boolean.js';
+import env from '../../env.js';
+import { ServiceUnavailableException } from '../../index.js';
 
 let websocketController: WebSocketController | undefined;
 let subscriptionController: GraphQLSubscriptionController | undefined;
@@ -38,5 +38,5 @@ export function getSubscriptionController() {
 	return subscriptionController;
 }
 
-export * from './graphql';
-export * from './rest';
+export * from './graphql.js';
+export * from './rest.js';

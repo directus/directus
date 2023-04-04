@@ -1,4 +1,4 @@
-import type { WebSocketClient } from '../types';
+import type { WebSocketClient } from '../types.js';
 
 // a simple util for building a message object
 export const fmtMessage = (type: string, data: Record<string, any> = {}, uid?: string | number) => {

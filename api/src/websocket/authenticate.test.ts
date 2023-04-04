@@ -1,11 +1,11 @@
-import type { Accountability } from '@directus/shared/types';
 import { expect, describe, test, vi, Mock } from 'vitest';
-import { InvalidCredentialsException } from '../index';
-import { getAccountabilityForRole } from '../utils/get-accountability-for-role';
-import { getAccountabilityForToken } from '../utils/get-accountability-for-token';
-import { authenticateConnection, authenticationSuccess, refreshAccountability } from './authenticate';
-import type { WebSocketAuthMessage } from './messages';
-import { getExpiresAtForToken } from './utils/get-expires-at-for-token';
+import { InvalidCredentialsException } from '../index.js';
+import { getAccountabilityForRole } from '../utils/get-accountability-for-role.js';
+import { getAccountabilityForToken } from '../utils/get-accountability-for-token.js';
+import { authenticateConnection, authenticationSuccess, refreshAccountability } from './authenticate.js';
+import type { WebSocketAuthMessage } from './messages.js';
+import { getExpiresAtForToken } from './utils/get-expires-at-for-token.js';
+import type { Accountability } from '@directus/types';
 
 vi.mock('../utils/get-accountability-for-token', () => ({
 	getAccountabilityForToken: vi.fn().mockReturnValue({

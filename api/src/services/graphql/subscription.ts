@@ -1,9 +1,9 @@
 import { EventEmitter, on } from 'events';
-import type { Query } from '@directus/shared/types';
-import { ItemsService } from '../items';
-import { getSchema } from '../../utils/get-schema';
-import type { GraphQLService } from './index';
-import { getMessenger } from '../../messenger';
+import { getMessenger } from '../../messenger.js';
+import type { GraphQLService } from './index.js';
+import { getSchema } from '../../utils/get-schema.js';
+import { ItemsService } from '../items.js';
+import type { Query } from '@directus/types';
 
 const messages = createPubSub(new EventEmitter());
 

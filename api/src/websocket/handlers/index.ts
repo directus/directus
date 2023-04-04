@@ -1,6 +1,6 @@
-import { ItemsHandler } from './items';
-import { HeartbeatHandler } from './heartbeat';
-import { SubscribeHandler } from './subscribe';
+import { ItemsHandler } from './items.js';
+import { HeartbeatHandler } from './heartbeat.js';
+import { SubscribeHandler } from './subscribe.js';
 
 export function startWebSocketHandlers() {
 	new HeartbeatHandler();
@@ -8,6 +8,6 @@ export function startWebSocketHandlers() {
 	new SubscribeHandler();
 }
 
-export * from './heartbeat';
-export * from './items';
-export * from './subscribe';
+export * from './heartbeat.js';
+export * from './items.js';
+export * from './subscribe.js';

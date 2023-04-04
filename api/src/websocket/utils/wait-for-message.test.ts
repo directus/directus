@@ -1,5 +1,5 @@
 import { expect, describe, test, vi } from 'vitest';
-import { waitForAnyMessage, waitForMessageType } from './wait-for-message';
+import { waitForAnyMessage, waitForMessageType } from './wait-for-message.js';
 import type { WebSocket, RawData } from 'ws';
 
 function bufferMessage(msg: any): RawData {

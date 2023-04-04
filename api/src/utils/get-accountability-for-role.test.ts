@@ -1,5 +1,5 @@
 import { expect, describe, test, vi } from 'vitest';
-import { getAccountabilityForRole } from './get-accountability-for-role';
+import { getAccountabilityForRole } from './get-accountability-for-role.js';
 
 vi.mock('./get-permissions', () => ({
 	getPermissions: vi.fn().mockReturnValue([]),

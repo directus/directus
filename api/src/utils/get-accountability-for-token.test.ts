@@ -1,8 +1,8 @@
 import { expect, describe, test, vi } from 'vitest';
 import jwt from 'jsonwebtoken';
-import env from '../env';
-import { getAccountabilityForToken } from './get-accountability-for-token';
-import getDatabase from '../database/index';
+import env from '../env.js';
+import { getAccountabilityForToken } from './get-accountability-for-token.js';
+import getDatabase from '../database/index.js';
 
 vi.mock('../env', () => {
 	const MOCK_ENV = {

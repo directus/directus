@@ -1,6 +1,6 @@
 import { expect, describe, test, vi } from 'vitest';
-import { fmtMessage, getMessageType, safeSend } from './message';
-import type { WebSocketClient } from '../types';
+import { fmtMessage, getMessageType, safeSend } from './message.js';
+import type { WebSocketClient } from '../types.js';
 
 describe('fmtMessage util', () => {
 	test('Returns formatted message', () => {

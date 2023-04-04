@@ -1,4 +1,3 @@
-import type { Accountability } from '@directus/shared/types';
 import type { IncomingMessage, Server as httpServer } from 'http';
 import type { RateLimiterAbstract } from 'rate-limiter-flexible';
 import type { ParsedUrlQuery } from 'querystring';
@@ -6,23 +5,24 @@ import WebSocket, { WebSocketServer } from 'ws';
 import type internal from 'stream';
 import { v4 as uuid } from 'uuid';
 import { parse } from 'url';
-import logger from '../../logger';
-import { getAccountabilityForToken } from '../../utils/get-accountability-for-token';
-import { getExpiresAtForToken } from '../utils/get-expires-at-for-token';
-import { authenticateConnection, authenticationSuccess } from '../authenticate';
-import type { AuthenticationState, UpgradeContext, WebSocketClient } from '../types';
-import { waitForAnyMessage, waitForMessageType } from '../utils/wait-for-message';
-import { InvalidConfigException, TokenExpiredException } from '../../exceptions';
-import { handleWebSocketException, WebSocketException } from '../exceptions';
-import emitter from '../../emitter';
-import { createRateLimiter } from '../../rate-limiter';
-import { AuthMode, WebSocketAuthMessage, WebSocketMessage } from '../messages';
-import { parseJSON } from '@directus/shared/utils';
-import { getMessageType } from '../utils/message';
-import env from '../../env';
-import { registerWebSocketEvents } from './hooks';
+import logger from '../../logger.js';
+import { getAccountabilityForToken } from '../../utils/get-accountability-for-token.js';
+import { getExpiresAtForToken } from '../utils/get-expires-at-for-token.js';
+import { authenticateConnection, authenticationSuccess } from '../authenticate.js';
+import type { AuthenticationState, UpgradeContext, WebSocketClient } from '../types.js';
+import { waitForAnyMessage, waitForMessageType } from '../utils/wait-for-message.js';
+import { InvalidConfigException, TokenExpiredException } from '../../exceptions/index.js';
+import { handleWebSocketException, WebSocketException } from '../exceptions.js';
+import emitter from '../../emitter.js';
+import { createRateLimiter } from '../../rate-limiter.js';
+import { AuthMode, WebSocketAuthMessage, WebSocketMessage } from '../messages.js';
+import { getMessageType } from '../utils/message.js';
+import env from '../../env.js';
+import { registerWebSocketEvents } from './hooks.js';
 import { fromZodError } from 'zod-validation-error';
-import { toBoolean } from '../../utils/to-boolean';
+import { toBoolean } from '../../utils/to-boolean.js';
+import type { Accountability } from '@directus/types';
+import { parseJSON } from '@directus/utils';
 
 const TOKEN_CHECK_INTERVAL = 15 * 60 * 1000; // 15 minutes
 

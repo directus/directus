@@ -1,10 +1,10 @@
-import type { Accountability } from '@directus/shared/types';
 import jwt from 'jsonwebtoken';
-import getDatabase from '../database';
-import env from '../env';
-import { InvalidCredentialsException } from '../exceptions';
-import type { DirectusTokenPayload } from '../types';
-import isDirectusJWT from '../utils/is-directus-jwt';
+import getDatabase from '../database/index.js';
+import type { Accountability } from '@directus/types';
+import type { DirectusTokenPayload } from '../types/auth.js';
+import isDirectusJWT from './is-directus-jwt.js';
+import { InvalidCredentialsException } from '../index.js';
+import env from '../env.js';
 
 const { JsonWebTokenError, TokenExpiredError } = jwt;
 

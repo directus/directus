@@ -1,8 +1,9 @@
-import { getWebSocketController, WebSocketController } from '../websocket/controllers';
-import type { WebSocketClient } from '../websocket/types';
-import emitter from '../emitter';
-import type { ActionHandler } from '@directus/shared/types';
-import type { WebSocketMessage } from '../websocket/messages';
+import type { ActionHandler } from '@directus/types';
+import { getWebSocketController } from '../websocket/controllers/index.js';
+import type { WebSocketController } from '../websocket/controllers/rest.js';
+import type { WebSocketClient } from '../websocket/types.js';
+import type { WebSocketMessage } from '../websocket/messages.js';
+import emitter from '../emitter.js';
 
 export class WebSocketService {
 	private controller: WebSocketController;

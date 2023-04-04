@@ -1,17 +1,17 @@
 import type { Server as httpServer } from 'http';
 import { makeServer, Server, MessageType, CloseCode } from 'graphql-ws';
 import type { WebSocket } from 'ws';
-import logger from '../../logger';
-import { getSchema } from '../../utils/get-schema';
-import { GraphQLService } from '../../services';
-import env from '../../env';
-import SocketController from './base';
-import type { AuthenticationState, GraphQLSocket, UpgradeContext, WebSocketClient } from '../types';
-import { handleWebSocketException } from '../exceptions';
-import { authenticateConnection, refreshAccountability } from '../authenticate';
-import { ConnectionParams, WebSocketMessage } from '../messages';
-import { getMessageType } from '../utils/message';
-import { bindPubSub } from '../../services/graphql/subscription';
+import logger from '../../logger.js';
+import { getSchema } from '../../utils/get-schema.js';
+import { GraphQLService } from '../../services/index.js';
+import env from '../../env.js';
+import SocketController from './base.js';
+import type { AuthenticationState, GraphQLSocket, UpgradeContext, WebSocketClient } from '../types.js';
+import { handleWebSocketException } from '../exceptions.js';
+import { authenticateConnection, refreshAccountability } from '../authenticate.js';
+import { ConnectionParams, WebSocketMessage } from '../messages.js';
+import { getMessageType } from '../utils/message.js';
+import { bindPubSub } from '../../services/graphql/subscription.js';
 
 export class GraphQLSubscriptionController extends SocketController {
 	gql: Server<GraphQLSocket>;

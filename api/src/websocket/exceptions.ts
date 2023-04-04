@@ -1,10 +1,11 @@
-import { BaseException } from '@directus/shared/exceptions';
+
 import type { WebSocket } from 'ws';
 import { fromZodError } from 'zod-validation-error';
 import { ZodError } from 'zod';
-import logger from '../logger';
-import type { WebSocketResponse } from './messages';
-import type { WebSocketClient } from './types';
+import logger from '../logger.js';
+import type { WebSocketResponse } from './messages.js';
+import type { WebSocketClient } from './types.js';
+import { BaseException } from '@directus/exceptions';
 
 export class WebSocketException extends Error {
 	type: string;

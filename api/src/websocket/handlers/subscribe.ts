@@ -1,17 +1,17 @@
-import { getSchema } from '../../utils/get-schema';
-import type { Subscription, WebSocketClient } from '../types';
-import emitter from '../../emitter';
-import { fmtMessage, getMessageType } from '../utils/message';
-import { refreshAccountability } from '../authenticate';
-import { CollectionsService, FieldsService, MetaService } from '../../services';
-import { sanitizeQuery } from '../../utils/sanitize-query';
-import { handleWebSocketException, WebSocketException } from '../exceptions';
-import type { Accountability, SchemaOverview } from '@directus/shared/types';
-import { WebSocketSubscribeMessage } from '../messages';
-import { getMessenger, Messenger } from '../../messenger';
-import type { WebSocketEvent } from '../messages';
-import { getService } from '../../utils/get-service';
-import { InvalidPayloadException } from '../../index';
+import { getSchema } from '../../utils/get-schema.js';
+import type { Subscription, WebSocketClient } from '../types.js';
+import emitter from '../../emitter.js';
+import { fmtMessage, getMessageType } from '../utils/message.js';
+import { refreshAccountability } from '../authenticate.js';
+import { CollectionsService, FieldsService, MetaService } from '../../services/index.js';
+import { sanitizeQuery } from '../../utils/sanitize-query.js';
+import { handleWebSocketException, WebSocketException } from '../exceptions.js';
+import { WebSocketSubscribeMessage } from '../messages.js';
+import { getMessenger, Messenger } from '../../messenger.js';
+import type { WebSocketEvent } from '../messages.js';
+import { getService } from '../../utils/get-service.js';
+import { InvalidPayloadException } from '../../index.js';
+import type { Accountability, SchemaOverview } from '@directus/types';
 
 /**
  * Handler responsible for subscriptions

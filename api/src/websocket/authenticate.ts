@@ -1,15 +1,15 @@
-import type { Accountability } from '@directus/shared/types';
-import { AuthenticationService } from '../services';
-import { getSchema } from '../utils/get-schema';
-import { DEFAULT_AUTH_PROVIDER } from '../constants';
-import type { AuthenticationState } from './types';
-import { getAccountabilityForToken } from '../utils/get-accountability-for-token';
-import { getAccountabilityForRole } from '../utils/get-accountability-for-role';
-import getDatabase from '../database';
-import { getExpiresAtForToken } from './utils/get-expires-at-for-token';
-import { WebSocketException } from './exceptions';
-import { InvalidCredentialsException } from '../exceptions';
-import type { BasicAuthMessage, WebSocketResponse } from './messages';
+import { AuthenticationService } from '../services/index.js';
+import { getSchema } from '../utils/get-schema.js';
+import { DEFAULT_AUTH_PROVIDER } from '../constants.js';
+import type { AuthenticationState } from './types.js';
+import { getAccountabilityForToken } from '../utils/get-accountability-for-token.js';
+import { getAccountabilityForRole } from '../utils/get-accountability-for-role.js';
+import getDatabase from '../database/index.js';
+import { getExpiresAtForToken } from './utils/get-expires-at-for-token.js';
+import { WebSocketException } from './exceptions.js';
+import { InvalidCredentialsException } from '../exceptions/index.js';
+import type { BasicAuthMessage, WebSocketResponse } from './messages.js';
+import type { Accountability } from '@directus/types';
 
 export async function authenticateConnection(
 	message: BasicAuthMessage & Record<string, any>

@@ -1,11 +1,11 @@
-import { getSchema } from '../../utils/get-schema';
-import { ItemsService, MetaService } from '../../services';
-import type { WebSocketClient } from '../types';
-import { fmtMessage, getMessageType } from '../utils/message';
-import emitter from '../../emitter';
-import { sanitizeQuery } from '../../utils/sanitize-query';
-import { handleWebSocketException, WebSocketException } from '../exceptions';
-import { WebSocketItemsMessage } from '../messages';
+import { getSchema } from '../../utils/get-schema.js';
+import { ItemsService, MetaService } from '../../services/index.js';
+import type { WebSocketClient } from '../types.js';
+import { fmtMessage, getMessageType } from '../utils/message.js';
+import emitter from '../../emitter.js';
+import { sanitizeQuery } from '../../utils/sanitize-query.js';
+import { handleWebSocketException, WebSocketException } from '../exceptions.js';
+import { WebSocketItemsMessage } from '../messages.js';
 
 export class ItemsHandler {
 	constructor() {

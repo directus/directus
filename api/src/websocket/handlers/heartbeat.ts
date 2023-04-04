@@ -1,11 +1,11 @@
-import emitter from '../../emitter';
-import { fmtMessage, getMessageType } from '../utils/message';
-import type { WebSocketClient } from '../types';
-import { WebSocketController, getWebSocketController } from '../controllers';
-import type { ActionHandler } from '@directus/shared/types';
-import { WebSocketMessage } from '../messages';
-import env from '../../env';
-import { toBoolean } from '../../utils/to-boolean';
+import emitter from '../../emitter.js';
+import { fmtMessage, getMessageType } from '../utils/message.js';
+import type { WebSocketClient } from '../types.js';
+import { WebSocketController, getWebSocketController } from '../controllers/index.js';
+import { WebSocketMessage } from '../messages.js';
+import env from '../../env.js';
+import { toBoolean } from '../../utils/to-boolean.js';
+import type { ActionHandler } from '@directus/types';
 
 const HEARTBEAT_FREQUENCY = Number(env['WEBSOCKETS_HEARTBEAT_PERIOD']) * 1000;
 

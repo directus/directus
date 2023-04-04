@@ -1,9 +1,9 @@
 import { expect, describe, test, vi, Mock, beforeEach, afterEach } from 'vitest';
-import { getWebSocketController, WebSocketController } from '../controllers';
-import emitter from '../../emitter';
-import type { WebSocketClient } from '../types';
-import { HeartbeatHandler } from './heartbeat';
-import type { EventContext } from '@directus/shared/types';
+import { getWebSocketController, WebSocketController } from '../controllers/index.js';
+import emitter from '../../emitter.js';
+import type { WebSocketClient } from '../types.js';
+import { HeartbeatHandler } from './heartbeat.js';
+import type { EventContext } from '@directus/types';
 
 // mocking
 vi.mock('../controllers', () => ({

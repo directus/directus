@@ -1,23 +1,23 @@
 import {
 	ActivityService,
+	DashboardsService,
 	FilesService,
+	FlowsService,
 	FoldersService,
+	ItemsService,
+	NotificationsService,
+	OperationsService,
+	PanelsService,
 	PermissionsService,
 	PresetsService,
-	NotificationsService,
 	RevisionsService,
 	RolesService,
 	SettingsService,
+	SharesService,
 	UsersService,
 	WebhooksService,
-	SharesService,
-	FlowsService,
-	OperationsService,
-	ItemsService,
-	DashboardsService,
-	PanelsService,
-} from '../services';
-import type { AbstractServiceOptions } from '../types/services';
+} from '../index.js';
+import type { AbstractServiceOptions } from '../types/services.js';
 
 /**
  * Select the correct service for the given collection. This allows the individual services to run

@@ -1,5 +1,5 @@
 import { expect, describe, test } from 'vitest';
-import { getExpiresAtForToken } from './get-expires-at-for-token';
+import { getExpiresAtForToken } from './get-expires-at-for-token.js';
 import jwt from 'jsonwebtoken';
 
 describe('getExpiresAtForToken', () => {

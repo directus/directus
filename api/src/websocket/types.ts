@@ -1,7 +1,7 @@
-import type { Accountability, Query } from '@directus/shared/types';
 import type { WebSocket } from 'ws';
 import type { IncomingMessage } from 'http';
 import type internal from 'stream';
+import type { Accountability, Query } from '@directus/types';
 
 export type AuthenticationState = {
 	accountability: Accountability | null;
