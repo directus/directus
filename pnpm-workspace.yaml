@@ -1,4 +1,5 @@
 packages:
   - app
   - api
+  - docs
   - packages/*
