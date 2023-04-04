@@ -55,7 +55,7 @@ import { merge } from 'lodash';
 import { registerAuthProviders } from './auth';
 import { flushCaches } from './cache';
 import { getConfigFromEnv } from './utils/get-config-from-env';
-import { track } from './utils/track';
+import { collectTelemetry } from './utils/telemetry';
 import { Url } from './utils/url';
 import { validateEnv } from './utils/validate-env';
 import { validateStorage } from './utils/validate-storage';
@@ -277,7 +277,7 @@ export default async function createApp(): Promise<express.Application> {
 	// Register all webhooks
 	await initWebhooks();
 
-	track('serverStarted');
+	collectTelemetry();
 
 	await emitter.emitInit('app.after', { app });
 
