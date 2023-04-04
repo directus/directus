@@ -21,6 +21,7 @@ import type { AbstractServiceOptions, ActionEventParams, MutationOptions } from 
 import getDefaultValue from '../utils/get-default-value';
 import getLocalType from '../utils/get-local-type';
 import { getSchema } from '../utils/get-schema';
+import { sanitizeColumn } from '../utils/sanitize-schema';
 import { RelationsService } from './relations';
 
 export class FieldsService {
@@ -395,7 +396,7 @@ export class FieldsService {
 			if (hookAdjustedField.schema) {
 				const existingColumn = await this.schemaInspector.columnInfo(collection, hookAdjustedField.field);
 
-				if (!isEqual(existingColumn, hookAdjustedField.schema)) {
+				if (!isEqual(sanitizeColumn(existingColumn), hookAdjustedField.schema)) {
 					try {
 						await this.knex.schema.alterTable(collection, (table) => {
 							if (!hookAdjustedField.schema) return;
