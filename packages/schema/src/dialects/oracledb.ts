@@ -64,6 +64,7 @@ export function rawColumnToColumn(rawColumn: RawColumn): Column {
 
 export function parseDefaultValue(value: string | null): string | null {
 	if (value === null || value.trim().toLowerCase() === 'null') return null;
+	if (value === 'CURRENT_TIMESTAMP ') return 'CURRENT_TIMESTAMP';
 
 	return stripQuotes(value);
 }
