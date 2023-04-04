@@ -1,6 +1,6 @@
 import type { AxiosInstance } from 'axios';
-import { requestInterceptor } from './request-interceptor';
-import { responseInterceptor } from './response-interceptor';
+import { requestInterceptor } from './request-interceptor.js';
+import { responseInterceptor } from './response-interceptor.js';
 
 export const _cache: { axiosInstance: AxiosInstance | null } = {
 	axiosInstance: null,

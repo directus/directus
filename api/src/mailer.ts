@@ -1,7 +1,10 @@
 import nodemailer, { Transporter } from 'nodemailer';
-import env from './env';
-import logger from './logger';
-import { getConfigFromEnv } from './utils/get-config-from-env';
+import env from './env.js';
+import logger from './logger.js';
+import { getConfigFromEnv } from './utils/get-config-from-env.js';
+
+import { createRequire } from 'node:module';
+const require = createRequire(import.meta.url);
 
 let transporter: Transporter;
 

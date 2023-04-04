@@ -6,6 +6,7 @@
 		"directus",
 		"extensions"
 	],
+	"type": "module",
 	"homepage": "https://directus.io",
 	"repository": {
 		"type": "git",
@@ -32,8 +33,8 @@
 		"lib/index.js"
 	],
 	"dependencies": {
+		"@directus/constants": "workspace:*",
 		"@directus/extensions-sdk": "workspace:*",
-		"@directus/shared": "workspace:*",
 		"inquirer": "8.2.5"
 	}
 }

@@ -3,6 +3,7 @@
 	"version": "9.24.0",
 	"description": "A toolkit to develop extensions to extend Directus",
 	"homepage": "https://directus.io",
+	"type": "module",
 	"bugs": {
 		"url": "https://github.com/directus/directus/issues"
 	},
@@ -14,24 +15,12 @@
 	"funding": "https://github.com/directus/directus?sponsor=1",
 	"author": "Nicola Krumschmidt",
 	"exports": {
-		".": {
-			"import": {
-				"types": "./dist/esm/index.d.ts",
-				"default": "./dist/esm/index.js"
-			},
-			"require": {
-				"types": "./dist/cjs/index.d.ts",
-				"default": "./dist/cjs/index.js"
-			}
-		},
-		"./cli": {
-			"import": "./dist/esm/cli/index.js",
-			"require": "./dist/cjs/cli/index.js"
-		},
+		".": "./dist/index.js",
+		"./cli": "./dist/cli/index.js",
 		"./package.json": "./package.json"
 	},
-	"main": "dist/cjs/index.js",
-	"types": "dist/cjs/index.d.ts",
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
 	"bin": {
 		"directus-extension": "cli.js"
 	},
@@ -41,16 +30,17 @@
 		"!**/*.d.ts.map"
 	],
 	"scripts": {
-		"build": "concurrently --prefix-colors auto --passthrough-arguments \"pnpm:build:* {@}\"",
-		"build:esm": "tsc --project ./tsconfig.json --module ES2015 --outDir ./dist/esm",
-		"build:cjs": "tsc --project ./tsconfig.json --module CommonJS --outDir ./dist/cjs",
+		"build": "tsc --build",
+		"dev": "tsc --watch",
 		"test": "vitest run",
 		"test:watch": "vitest",
-		"test:coverage": "vitest run --coverage",
-		"dev": "pnpm build -- -w --preserveWatchOutput --incremental"
+		"test:coverage": "vitest run --coverage"
 	},
 	"dependencies": {
-		"@directus/shared": "workspace:*",
+		"@directus/composables": "workspace:*",
+		"@directus/constants": "workspace:*",
+		"@directus/types": "workspace:*",
+		"@directus/utils": "workspace:*",
 		"@rollup/plugin-commonjs": "23.0.4",
 		"@rollup/plugin-json": "6.0.0",
 		"@rollup/plugin-node-resolve": "15.0.1",
@@ -71,6 +61,7 @@
 		"rollup-plugin-vue": "6.0.0"
 	},
 	"devDependencies": {
+		"@directus/tsconfig": "0.0.6",
 		"@types/fs-extra": "11.0.1",
 		"@types/inquirer": "8.2.6",
 		"@vitest/coverage-c8": "0.29.3",

@@ -1,7 +1,7 @@
-import { machineId } from 'node-machine-id';
-import { version } from '../../package.json';
-import env from '../env';
-import logger from '../logger';
+import mid from 'node-machine-id';
+import env from '../env.js';
+import logger from '../logger.js';
+import { version } from './package.js';
 
 export async function collectTelemetry(): Promise<void> {
 	const axios = (await import('axios')).default;
@@ -12,7 +12,7 @@ export async function collectTelemetry(): Promise<void> {
 				version: version,
 				public_url: env['PUBLIC_URL'],
 				project_id: env['KEY'],
-				machine_id: await machineId(),
+				machine_id: await mid.machineId(),
 				db_client: env['DB_CLIENT'],
 			});
 		} catch (err: any) {
