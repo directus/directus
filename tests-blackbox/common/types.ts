@@ -1,4 +1,4 @@
-import { Query } from '@directus/shared/types';
+import { Query } from '@directus/types';
 import { ClientOptions } from 'ws';
 
 export type PrimaryKeyType = 'integer' | 'uuid' | 'string';
