@@ -328,31 +328,33 @@ export default class MySQL implements SchemaInspector {
 	// ===============================================================================================
 
 	async foreignKeys(table?: string) {
-		const query = this.knex
-			.select(
-				`rc.TABLE_NAME AS table`,
-				`kcu.COLUMN_NAME AS column`,
-				`rc.REFERENCED_TABLE_NAME AS foreign_key_table`,
-				`kcu.REFERENCED_COLUMN_NAME AS foreign_key_column`,
-				`rc.CONSTRAINT_NAME AS constraint_name`,
-				`rc.UPDATE_RULE AS on_update`,
-				`rc.DELETE_RULE AS on_delete`
-			)
-			.from(`information_schema.referential_constraints AS rc`)
-			.leftJoin(`information_schema.key_column_usage AS kcu `, function () {
-				this.on(`rc.CONSTRAINT_NAME`, `=`, `kcu.CONSTRAINT_NAME`).andOn(
-					`kcu.CONSTRAINT_SCHEMA`,
-					`=`,
-					`rc.CONSTRAINT_SCHEMA`
-				);
-			})
-			.where({
-				'rc.CONSTRAINT_SCHEMA': this.knex.client.database(),
-			});
+		const result = await this.knex.raw<[ForeignKey[]]>(
+			`
+		 SELECT DISTINCT
+			rc.TABLE_NAME AS 'table',
+			kcu.COLUMN_NAME AS 'column',
+			rc.REFERENCED_TABLE_NAME AS 'foreign_key_table',
+			kcu.REFERENCED_COLUMN_NAME AS 'foreign_key_column',
+			rc.CONSTRAINT_NAME AS 'constraint_name',
+			rc.UPDATE_RULE AS on_update,
+			rc.DELETE_RULE AS on_delete
+		 FROM
+			information_schema.referential_constraints AS rc
+		 JOIN information_schema.key_column_usage AS kcu ON
+			rc.CONSTRAINT_NAME = kcu.CONSTRAINT_NAME
+			AND kcu.CONSTRAINT_SCHEMA = rc.CONSTRAINT_SCHEMA
+		 WHERE
+			rc.CONSTRAINT_SCHEMA = ?;
+	  `,
+			[this.knex.client.database()]
+		);
+
+		// Mapping casts "RowDataPacket" object from mysql to plain JS object
+
 		if (table) {
-			query.andWhere({ 'rc.TABLE_NAME': table });
+			return result?.[0]?.filter((row) => row.table === table).map((row) => ({ ...row })) ?? [];
 		}
-		const result: ForeignKey[] = await query;
-		return result;
+
+		return result?.[0]?.map((row) => ({ ...row })) ?? [];
 	}
 }
