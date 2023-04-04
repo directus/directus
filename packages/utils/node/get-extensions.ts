@@ -13,6 +13,12 @@ import { listFolders } from './list-folders.js';
 import { pluralize } from './pluralize.js';
 import { resolvePackage } from './resolve-package.js';
 
+export const findExtension = async (folder: string, filename: string) => {
+	if (await fse.exists(path.join(folder, filename, '.cjs'))) return `${filename}.cjs`;
+	if (await fse.exists(path.join(folder, filename, '.mjs'))) return `${filename}.mjs`;
+	return `${filename}.js`;
+};
+
 export async function resolvePackageExtensions(root: string, extensionNames?: string[]): Promise<Extension[]> {
 	const extensions: Extension[] = [];
 
@@ -113,8 +119,8 @@ export async function getLocalExtensions(root: string): Promise<Extension[]> {
 						name: extensionName,
 						type: extensionType,
 						entrypoint: {
-							app: 'app.js',
-							api: 'api.js',
+							app: await findExtension(extensionPath, 'app'),
+							api: await findExtension(extensionPath, 'api'),
 						},
 						local: true,
 					});
@@ -123,7 +129,7 @@ export async function getLocalExtensions(root: string): Promise<Extension[]> {
 						path: extensionPath,
 						name: extensionName,
 						type: extensionType as AppExtensionType | ApiExtensionType,
-						entrypoint: 'index.js',
+						entrypoint: await findExtension(extensionPath, 'index'),
 						local: true,
 					});
 				}
