@@ -294,6 +294,7 @@ o2m_relationship: One to Many odnos
 m2m_relationship: Many to Manu odnos
 m2a_relationship: Many to Any odnos
 invalid_item: Nevažeća stavka
+modal: Modal
 next: Nastavi
 field_name: Naziv polja
 translations: Prijevodi
@@ -780,7 +781,6 @@ label: Oznaka
 flows: Tokovi
 flow: Tok
 select_a_flow: Odaberite tok
-run_flow_on_current: Pokreni tok na trenutnoj stavci
 run_flow_on_current_edited_confirm: Ova se stavka može ažurirati ovim tokom, jeste li sigurni da je želite izvršiti?
 run_flow_success: Tok "{flow}" je uspješno izvršen
 trigger: Okidač
@@ -1632,7 +1632,6 @@ interfaces:
     add_label: '"Stvori novo" oznaka'
     sort: Sortiraj
     sort_placeholder: Ručno
-    field_name_placeholder: Unesite naziv polja...
     field_note_placeholder: Unesite napomenu o polju...
     incompatible_data: Trenutačni podaci nisu kompatibilni sa sučeljem repetitora i bit će nadjačani prilikom dodavanja stavki u repetitor
   slider:

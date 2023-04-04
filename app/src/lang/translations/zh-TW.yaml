@@ -294,6 +294,7 @@ o2m_relationship: 一對多關聯
 m2m_relationship: 多對多關聯
 m2a_relationship: 多對Any關係
 invalid_item: 無效項目
+modal: 對話框
 next: 下一個
 field_name: 欄位名稱
 translations: 翻譯
@@ -776,7 +777,6 @@ label: 標籤
 flows: 流程
 flow: 流程
 select_a_flow: 選擇流程
-run_flow_on_current: 在目前項目上執行流程
 run_flow_on_current_edited_confirm: 有些項目可能會被這個工作流程更新，是否確定要執行？
 run_flow_success: 流程 {flow} 執行完畢
 trigger: 觸發條件
@@ -1618,7 +1618,6 @@ interfaces:
     add_label: '「新增」標籤'
     sort: 排序
     sort_placeholder: 手動
-    field_name_placeholder: 輸入欄位名稱...
     field_note_placeholder: 輸入欄位備註...
     incompatible_data: 目前的資料與重複器不相容，在將資料加入重複器時將會被覆寫
   slider:

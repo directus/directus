@@ -296,6 +296,7 @@ o2m_relationship: 1:n-Beziehung
 m2m_relationship: n:m-Beziehung
 m2a_relationship: n:x-Beziehung (Many to Any)
 invalid_item: Ungültiges Element
+modal: Modal
 next: Weiter
 field_name: Feldname
 translations: Übersetzungen
@@ -787,10 +788,7 @@ label: Label
 flows: Flows
 flow: Flow
 select_a_flow: Flow auswählen
-run_flow_on_current_collection: Flow für aktuelle Sammlung ausführen
-run_flow_on_current: Flow für aktuelles Element ausführen
 run_flow_on_current_edited_confirm: Dieses Element kann durch diesen Flow aktualisiert werden, bist du dir sicher, dass du es ausführen möchtest?
-run_flow_on_selected: Wählen Sie zuerst eins oder mehrere Elemente aus | Flow für 1 ausgewähltes Element ausführen | Flow für {n} ausgewählte Items ausführen
 run_flow_success: Flow "{flow}" wurde erfolgreich ausgeführt
 trigger: Trigger
 trigger_options: Auslöse-Optionen
@@ -1642,7 +1640,6 @@ interfaces:
     add_label: 'Label für "Neu erstellen"'
     sort: Sortieren
     sort_placeholder: Manuell
-    field_name_placeholder: Feldnamen eingeben...
     field_note_placeholder: Feldnotiz eingeben...
     incompatible_data: Die aktuellen Daten sind nicht kompatibel mit der Repeater-Schnittstelle und werden beim Hinzufügen von Elementen zum Repeater überschrieben
   slider:
