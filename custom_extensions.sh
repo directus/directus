@@ -58,4 +58,5 @@ cp -r ./directus-custom-extensions-release/collect-hook ${DIRECTUS_HOOKS}
 cp -r ./directus-custom-extensions-release/count-alias ${DIRECTUS_INTERFACES}
 cp -r ./directus-custom-extensions-release/salary-ranges ${DIRECTUS_INTERFACES}
 
+
 cp -r ./directus-custom-extensions-release/collect-hook/migrations/* ${DIRECTUS_EXTENSIONS}/migrations
