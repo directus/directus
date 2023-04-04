@@ -456,11 +456,12 @@ export default class Postgres implements SchemaInspector {
 			};
 		});
 
+		if (table && column) return parsedColumns[0];
+
 		const hasPostGIS =
 			(await this.knex.raw(`SELECT oid FROM pg_proc WHERE proname = 'postgis_version'`)).rows.length > 0;
 
 		if (!hasPostGIS) {
-			if (table && column) return parsedColumns[0];
 			return parsedColumns;
 		}
 
