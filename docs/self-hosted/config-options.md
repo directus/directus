@@ -225,10 +225,11 @@ for example. The format for adding LEVELS values is:
 
 ## Server
 
-| Variable                    | Description                                        | Default Value                                                                                                |
-| --------------------------- | -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
-| `SERVER_KEEP_ALIVE_TIMEOUT` | Timeout in milliseconds for socket to be destroyed | [server.keepAliveTimeout](https://github.com/nodejs/node/blob/master/doc/api/http.md#serverkeepalivetimeout) |
-| `SERVER_HEADERS_TIMEOUT`    | Timeout in milliseconds to parse HTTP headers      | [server.headersTimeout](https://github.com/nodejs/node/blob/master/doc/api/http.md#serverheaderstimeout)     |
+| Variable                    | Description                                                       | Default Value                                                                                                |
+| --------------------------- | ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `SERVER_KEEP_ALIVE_TIMEOUT` | Timeout in milliseconds for socket to be destroyed                | [server.keepAliveTimeout](https://github.com/nodejs/node/blob/master/doc/api/http.md#serverkeepalivetimeout) |
+| `SERVER_HEADERS_TIMEOUT`    | Timeout in milliseconds to parse HTTP headers                     | [server.headersTimeout](https://github.com/nodejs/node/blob/master/doc/api/http.md#serverheaderstimeout)     |
+| `SERVER_SHUTDOWN_TIMEOUT`   | Timeout in milliseconds before the server is forcefully shut down | 1000                                                                                                         |
 
 ::: tip Additional Server Variables
 
