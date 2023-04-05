@@ -18,6 +18,7 @@ Fixes #
 - [ ] Improvement
 - [ ] New Feature
 - [ ] Refactor / codestyle updates
+- [ ] Documentation
 - [ ] Other, please describe:
 
 ## Requirements Checklist
