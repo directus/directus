@@ -7,6 +7,7 @@ import getDatabase from '../database/index.js';
 vi.mock('../env', () => {
 	const MOCK_ENV = {
 		SECRET: 'super-secure-secret',
+		EXTENSIONS_PATH: './extensions',
 	};
 	return {
 		default: MOCK_ENV,
