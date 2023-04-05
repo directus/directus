@@ -1,11 +1,11 @@
 import express from 'express';
-import { ForbiddenException, InvalidPayloadException } from '../exceptions';
-import { respond } from '../middleware/respond';
-import useCollection from '../middleware/use-collection';
-import { RelationsService } from '../services';
-import asyncHandler from '../utils/async-handler';
-import validateCollection from '../middleware/collection-exists';
 import Joi from 'joi';
+import { ForbiddenException, InvalidPayloadException } from '../exceptions/index.js';
+import validateCollection from '../middleware/collection-exists.js';
+import { respond } from '../middleware/respond.js';
+import useCollection from '../middleware/use-collection.js';
+import { RelationsService } from '../services/relations.js';
+import asyncHandler from '../utils/async-handler.js';
 
 const router = express.Router();
 

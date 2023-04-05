@@ -1,10 +1,10 @@
-import type { PermissionsAction, Query } from '@directus/shared/types';
+import type { PermissionsAction, Query } from '@directus/types';
 import type Keyv from 'keyv';
-import { clearSystemCache, getCache } from '../cache';
-import { appAccessMinimalPermissions } from '../database/system-data/app-access-permissions';
-import { ItemsService, QueryOptions } from '../services/items';
-import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '../types';
-import { filterItems } from '../utils/filter-items';
+import { clearSystemCache, getCache } from '../cache.js';
+import { appAccessMinimalPermissions } from '../database/system-data/app-access-permissions/index.js';
+import { ItemsService, QueryOptions } from '../services/items.js';
+import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '../types/index.js';
+import { filterItems } from '../utils/filter-items.js';
 
 export class PermissionsService extends ItemsService {
 	systemCache: Keyv<any>;

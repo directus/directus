@@ -25,3 +25,8 @@ TODO
 debug
 debug.ts
 .clinic
+/uploads
+.thumbsmith
+.netlify
+.gitpod.yml
+.vitepress/cache

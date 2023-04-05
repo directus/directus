@@ -1,5 +1,5 @@
 import { test, vi, afterEach, beforeEach, expect } from 'vitest';
-import { getAxios, _cache } from './index';
+import { getAxios, _cache } from './index.js';
 import axios from 'axios';
 import type { AxiosInstance } from 'axios';
 

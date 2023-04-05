@@ -1,9 +1,8 @@
-import type { Permission, Accountability, Filter, SchemaOverview } from '@directus/shared/types';
-
-import { assign, set, uniq } from 'lodash';
-import { mergePermissions } from './merge-permissions';
-import { schemaPermissions } from '../database/system-data/app-access-permissions';
-import { reduceSchema } from './reduce-schema';
+import type { Accountability, Filter, Permission, SchemaOverview } from '@directus/types';
+import { assign, set, uniq } from 'lodash-es';
+import { schemaPermissions } from '../database/system-data/app-access-permissions/index.js';
+import { mergePermissions } from './merge-permissions.js';
+import { reduceSchema } from './reduce-schema.js';
 
 export function mergePermissionsForShare(
 	currentPermissions: Permission[],

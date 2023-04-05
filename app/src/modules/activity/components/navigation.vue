@@ -95,7 +95,7 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, PropType } from 'vue';
 import { useUserStore } from '@/stores/user';
-import { Filter } from '@directus/shared/types';
+import { Filter } from '@directus/types';
 
 export default defineComponent({
 	props: {

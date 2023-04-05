@@ -1,8 +1,8 @@
 import { randIp, randUrl } from '@ngneat/falso';
 import type { AxiosResponse } from 'axios';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
-import { responseInterceptor } from './response-interceptor';
-import { validateIP } from './validate-ip';
+import { responseInterceptor } from './response-interceptor.js';
+import { validateIP } from './validate-ip.js';
 
 vi.mock('./validate-ip');
 

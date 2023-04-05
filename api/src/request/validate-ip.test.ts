@@ -1,8 +1,8 @@
 import { randIp, randUrl } from '@ngneat/falso';
 import os from 'node:os';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
-import { getEnv } from '../env';
-import { validateIP } from './validate-ip';
+import { getEnv } from '../env.js';
+import { validateIP } from './validate-ip.js';
 
 vi.mock('../env');
 vi.mock('node:os');

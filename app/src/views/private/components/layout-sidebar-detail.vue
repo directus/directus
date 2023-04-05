@@ -18,7 +18,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed } from 'vue';
-import { useSync } from '@directus/shared/composables';
+import { useSync } from '@directus/composables';
 import { useExtensions } from '@/extensions';
 import { useExtension } from '@/composables/use-extension';
 
