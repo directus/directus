@@ -1,11 +1,10 @@
-import type { Knex } from 'knex';
-import { merge } from 'lodash-es';
-import os from 'os';
-import { performance } from 'perf_hooks';
 import type { Accountability, SchemaOverview } from '@directus/types';
 import { toArray } from '@directus/utils';
+import type { Knex } from 'knex';
+import { merge } from 'lodash-es';
 import { Readable } from 'node:stream';
-import { version } from '../utils/package.js';
+import os from 'os';
+import { performance } from 'perf_hooks';
 import { getCache } from '../cache.js';
 import getDatabase, { hasDatabaseConnection } from '../database/index.js';
 import env from '../env.js';
@@ -13,9 +12,11 @@ import logger from '../logger.js';
 import getMailer from '../mailer.js';
 import { rateLimiterGlobal } from '../middleware/rate-limiter-global.js';
 import { rateLimiter } from '../middleware/rate-limiter-ip.js';
+import { SERVER_ONLINE } from '../server.js';
 import { getStorage } from '../storage/index.js';
 import type { AbstractServiceOptions } from '../types/index.js';
 import { getOSInfo } from '../utils/get-os-info.js';
+import { version } from '../utils/package.js';
 import { SettingsService } from './settings.js';
 
 export class ServerService {
@@ -135,6 +136,10 @@ export class ServerService {
 				]))
 			),
 		};
+
+		if (SERVER_ONLINE === false) {
+			data.status = 'error';
+		}
 
 		for (const [service, healthData] of Object.entries(data.checks)) {
 			for (const healthCheck of healthData) {
