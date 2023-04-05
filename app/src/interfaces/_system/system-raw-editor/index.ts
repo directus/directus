@@ -1,4 +1,4 @@
-import { defineInterface } from '@directus/shared/utils';
+import { defineInterface } from '@directus/utils';
 import InterfaceInputTranslatedString from './system-raw-editor.vue';
 
 export default defineInterface({

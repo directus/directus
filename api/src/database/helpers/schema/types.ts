@@ -1,9 +1,9 @@
-import type { KNEX_TYPES } from '@directus/shared/constants';
-import type { Field, Relation, Type } from '@directus/shared/types';
+import type { KNEX_TYPES } from '@directus/constants';
+import type { Field, Relation, Type } from '@directus/types';
 import type { Knex } from 'knex';
-import type { DatabaseClient } from '../../../types';
-import { getDatabaseClient } from '../../index';
-import { DatabaseHelper } from '../types';
+import type { DatabaseClient } from '../../../types/index.js';
+import { getDatabaseClient } from '../../index.js';
+import { DatabaseHelper } from '../types.js';
 
 export type Options = { nullable?: boolean; default?: any; length?: number };
 

@@ -1,7 +1,7 @@
 import type { Request } from 'express';
 import { isIP } from 'net';
-import env from '../env';
-import logger from '../logger';
+import env from '../env.js';
+import logger from '../logger.js';
 
 export function getIPFromReq(req: Request): string {
 	let ip = req.ip;

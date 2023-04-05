@@ -294,6 +294,7 @@ o2m_relationship: Relació Un a molts
 m2m_relationship: Relació Molts a molts
 m2a_relationship: Relació Molts a qualsevol
 invalid_item: Element invàlid
+modal: Modal
 next: Següent
 field_name: Nom del camp
 translations: Traduccions
@@ -1531,7 +1532,6 @@ interfaces:
     edit_fields: Edita els camps
     add_label: 'Etiqueta "Crea nou"'
     sort: Ordre
-    field_name_placeholder: Introdueix nou camp...
     field_note_placeholder: Introdueix una nota sobre el camp...
   slider:
     slider: Lliscador

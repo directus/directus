@@ -2,7 +2,7 @@ import request from 'supertest';
 import { Env, getUrl } from './config';
 import * as common from './index';
 import vendors from './get-dbs-to-test';
-import { Filter } from '@directus/shared/types';
+import type { Filter } from '@directus/types';
 
 export function DisableTestCachingSetup() {
 	beforeEach(async () => {

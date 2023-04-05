@@ -1,6 +1,6 @@
-import { BaseException } from '@directus/shared/exceptions';
+import * as sharedExceptions from '@directus/exceptions';
 
-export class GraphQLValidationException extends BaseException {
+export class GraphQLValidationException extends sharedExceptions.BaseException {
 	constructor(extensions: Record<string, any>) {
 		super('GraphQL validation error.', 400, 'GRAPHQL_VALIDATION_EXCEPTION', extensions);
 	}

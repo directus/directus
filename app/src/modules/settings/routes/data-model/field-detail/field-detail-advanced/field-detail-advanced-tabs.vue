@@ -9,7 +9,7 @@
 <script lang="ts">
 import { defineComponent, PropType, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useSync } from '@directus/shared/composables';
+import { useSync } from '@directus/composables';
 import { useFieldDetailStore } from '../store';
 import { storeToRefs } from 'pinia';
 

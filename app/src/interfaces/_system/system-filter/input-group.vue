@@ -73,7 +73,7 @@ import { useFieldsStore } from '@/stores/fields';
 import { useI18n } from 'vue-i18n';
 import { clone, get } from 'lodash';
 import InputComponent from './input-component.vue';
-import { FieldFilter } from '@directus/shared/types';
+import { FieldFilter } from '@directus/types';
 import { fieldToFilter, getComparator, getField } from './utils';
 import { useRelationsStore } from '@/stores/relations';
 
