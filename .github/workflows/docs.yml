@@ -28,6 +28,8 @@ jobs:
 
       - name: Prepare
         uses: ./.github/actions/prepare
+        with:
+          build: false
 
       - name: Lint
         run: pnpm --filter docs spellcheck
