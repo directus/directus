@@ -710,6 +710,25 @@ function sidebar() {
 					text: 'Running Locally',
 				},
 				{
+					link: '/contributing/tests',
+					text: 'Running Tests',
+					collapsible: false,
+					items: [
+						{
+							link: '/contributing/tests/app-unit-tests',
+							text: 'App Unit Tests',
+						},
+						{
+							link: '/contributing/tests/api-unit-tests',
+							text: 'API Unit Tests',
+						},
+						{
+							link: '/contributing/tests/blackbox-tests',
+							text: 'Blackbox Tests',
+						},
+					],
+				},
+				{
 					link: '/contributing/github-ci',
 					text: 'GitHub CI',
 				},
