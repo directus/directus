@@ -28,3 +28,4 @@ debug.ts
 /uploads
 .thumbsmith
 .netlify
+.gitpod.yml
