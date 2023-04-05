@@ -3,12 +3,15 @@
  * For all possible keys, see: https://docs.directus.io/self-hosted/config-options/
  */
 
+import { parseJSON, toArray } from '@directus/utils';
 import dotenv from 'dotenv';
 import fs from 'fs';
-import { clone, toNumber, toString } from 'lodash';
+import { clone, toNumber, toString } from 'lodash-es';
 import path from 'path';
-import { requireYAML } from './utils/require-yaml';
-import { toArray, parseJSON } from '@directus/shared/utils';
+import { requireYAML } from './utils/require-yaml.js';
+
+import { createRequire } from 'node:module';
+const require = createRequire(import.meta.url);
 
 // keeping this here for now to prevent a circular import to constants.ts
 const allowedEnvironmentVars = [
@@ -343,7 +346,7 @@ export function refreshEnv(): void {
 }
 
 function processConfiguration() {
-	const configPath = path.resolve(process.env.CONFIG_PATH || defaults.CONFIG_PATH);
+	const configPath = path.resolve(process.env['CONFIG_PATH'] || defaults['CONFIG_PATH']);
 
 	if (fs.existsSync(configPath) === false) return {};
 
@@ -400,8 +403,8 @@ function getEnvironmentValueWithPrefix(envArray: Array<string>): Array<string | 
 }
 
 function getEnvironmentValueByType(envVariableString: string) {
-	const variableType = getVariableType(envVariableString);
-	const envVariableValue = getEnvVariableValue(envVariableString, variableType);
+	const variableType = getVariableType(envVariableString)!;
+	const envVariableValue = getEnvVariableValue(envVariableString, variableType)!;
 
 	switch (variableType) {
 		case 'number':

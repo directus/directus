@@ -1,6 +1,6 @@
 import type { Request } from 'express';
 import { describe, expect, vi, test } from 'vitest';
-import { getCacheControlHeader } from './get-cache-headers';
+import { getCacheControlHeader } from './get-cache-headers.js';
 
 let factoryEnv: { [k: string]: any } = {};
 
