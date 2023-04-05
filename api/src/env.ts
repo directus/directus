@@ -3,12 +3,15 @@
  * For all possible keys, see: https://docs.directus.io/self-hosted/config-options/
  */
 
+import { parseJSON, toArray } from '@directus/utils';
 import dotenv from 'dotenv';
 import fs from 'fs';
-import { clone, toNumber, toString } from 'lodash';
+import { clone, toNumber, toString } from 'lodash-es';
 import path from 'path';
-import { requireYAML } from './utils/require-yaml';
-import { toArray, parseJSON } from '@directus/shared/utils';
+import { requireYAML } from './utils/require-yaml.js';
+
+import { createRequire } from 'node:module';
+const require = createRequire(import.meta.url);
 
 // keeping this here for now to prevent a circular import to constants.ts
 const allowedEnvironmentVars = [
@@ -223,6 +226,7 @@ const defaults: Record<string, any> = {
 	REFRESH_TOKEN_COOKIE_NAME: 'directus_refresh_token',
 
 	LOGIN_STALL_TIME: 500,
+	SERVER_SHUTDOWN_TIMEOUT: 1000,
 
 	ROOT_REDIRECT: './admin',
 
@@ -307,6 +311,8 @@ const typeMap: Record<string, string> = {
 	FILE_METADATA_ALLOW_LIST: 'array',
 
 	GRAPHQL_INTROSPECTION: 'boolean',
+
+	SERVER_SHUTDOWN_TIMEOUT: 'number',
 };
 
 let env: Record<string, any> = {

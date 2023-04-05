@@ -1,19 +1,20 @@
 import * as validator from '@authenio/samlify-node-xmllint';
-import { BaseException } from '@directus/shared/exceptions';
+import { BaseException } from '@directus/exceptions';
 import express, { Router } from 'express';
 import * as samlify from 'samlify';
-import { getAuthProvider } from '../../auth';
-import { COOKIE_OPTIONS } from '../../constants';
-import env from '../../env';
-import { InvalidCredentialsException, InvalidProviderException } from '../../exceptions';
-import { RecordNotUniqueException } from '../../exceptions/database/record-not-unique';
-import logger from '../../logger';
-import { respond } from '../../middleware/respond';
-import { AuthenticationService, UsersService } from '../../services';
-import type { AuthDriverOptions, User } from '../../types';
-import asyncHandler from '../../utils/async-handler';
-import { getConfigFromEnv } from '../../utils/get-config-from-env';
-import { LocalAuthDriver } from './local';
+import { getAuthProvider } from '../../auth.js';
+import { COOKIE_OPTIONS } from '../../constants.js';
+import env from '../../env.js';
+import { RecordNotUniqueException } from '../../exceptions/database/record-not-unique.js';
+import { InvalidCredentialsException, InvalidProviderException } from '../../exceptions/index.js';
+import logger from '../../logger.js';
+import { respond } from '../../middleware/respond.js';
+import { AuthenticationService } from '../../services/authentication.js';
+import { UsersService } from '../../services/users.js';
+import type { AuthDriverOptions, User } from '../../types/index.js';
+import asyncHandler from '../../utils/async-handler.js';
+import { getConfigFromEnv } from '../../utils/get-config-from-env.js';
+import { LocalAuthDriver } from './local.js';
 
 // tell samlify to use validator...
 samlify.setSchemaValidator(validator);

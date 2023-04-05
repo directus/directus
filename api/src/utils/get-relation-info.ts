@@ -1,5 +1,5 @@
-import type { Relation, RelationMeta } from '@directus/shared/types';
-import { getRelationType } from './get-relation-type';
+import type { Relation, RelationMeta } from '@directus/types';
+import { getRelationType } from './get-relation-type.js';
 
 type RelationInfo = {
 	relation: Relation | null;

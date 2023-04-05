@@ -1,7 +1,7 @@
 import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
-import env from '../env';
-import { ForbiddenException, InvalidCredentialsException } from '../exceptions';
+import env from '../env.js';
+import { ForbiddenException, InvalidCredentialsException } from '../exceptions/index.js';
 import type {
 	AbstractServiceOptions,
 	DirectusTokenPayload,
@@ -10,15 +10,15 @@ import type {
 	MutationOptions,
 	PrimaryKey,
 	ShareData,
-} from '../types';
-import { getMilliseconds } from '../utils/get-milliseconds';
-import { md } from '../utils/md';
-import { Url } from '../utils/url';
-import { userName } from '../utils/user-name';
-import { AuthorizationService } from './authorization';
-import { ItemsService } from './items';
-import { MailService } from './mail';
-import { UsersService } from './users';
+} from '../types/index.js';
+import { getMilliseconds } from '../utils/get-milliseconds.js';
+import { md } from '../utils/md.js';
+import { Url } from '../utils/url.js';
+import { userName } from '../utils/user-name.js';
+import { AuthorizationService } from './authorization.js';
+import { ItemsService } from './items.js';
+import { MailService } from './mail/index.js';
+import { UsersService } from './users.js';
 
 export class SharesService extends ItemsService {
 	authorizationService: AuthorizationService;

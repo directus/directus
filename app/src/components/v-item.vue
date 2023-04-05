@@ -6,7 +6,7 @@
 
 <script setup lang="ts">
 import { toRefs } from 'vue';
-import { useGroupable } from '@directus/shared/composables';
+import { useGroupable } from '@directus/composables';
 
 interface Props {
 	/** Which value to represent when active */
