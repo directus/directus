@@ -1,4 +1,4 @@
-import type { Type } from '@directus/shared/types';
+import type { Type } from '@directus/types';
 import {
 	GraphQLBoolean,
 	GraphQLFloat,
@@ -9,10 +9,10 @@ import {
 	GraphQLType,
 } from 'graphql';
 import { GraphQLJSON } from 'graphql-compose';
-import { GraphQLBigInt } from '../services/graphql/types/bigint';
-import { GraphQLDate } from '../services/graphql/types/date';
-import { GraphQLGeoJSON } from '../services/graphql/types/geojson';
-import { GraphQLHash } from '../services/graphql/types/hash';
+import { GraphQLBigInt } from '../services/graphql/types/bigint.js';
+import { GraphQLDate } from '../services/graphql/types/date.js';
+import { GraphQLGeoJSON } from '../services/graphql/types/geojson.js';
+import { GraphQLHash } from '../services/graphql/types/hash.js';
 
 export function getGraphQLType(
 	localType: Type | 'alias' | 'unknown',

@@ -91,7 +91,7 @@ import Draggable from 'vuedraggable';
 import { computed, ref, toRefs } from 'vue';
 import { hideDragImage } from '@/utils/hide-drag-image';
 import ItemPreview from './item-preview.vue';
-import { Filter } from '@directus/shared/types';
+import { Filter } from '@directus/types';
 import { RelationO2M } from '@/composables/use-relation-o2m';
 import {
 	DisplayItem,
@@ -102,7 +102,7 @@ import {
 import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
 import { useI18n } from 'vue-i18n';
-import { moveInArray } from '@directus/shared/utils';
+import { moveInArray } from '@directus/utils';
 import { cloneDeep, isEmpty } from 'lodash';
 
 type ChangeEvent =

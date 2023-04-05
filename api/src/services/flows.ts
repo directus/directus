@@ -1,7 +1,7 @@
-import type { FlowRaw } from '@directus/shared/types';
-import { getFlowManager } from '../flows';
-import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '../types';
-import { ItemsService } from './items';
+import type { FlowRaw } from '@directus/types';
+import { getFlowManager } from '../flows.js';
+import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '../types/index.js';
+import { ItemsService } from './items.js';
 
 export class FlowsService extends ItemsService<FlowRaw> {
 	constructor(options: AbstractServiceOptions) {

@@ -1,4 +1,4 @@
-import type { Accountability } from '@directus/shared/types';
+import type { Accountability } from '@directus/types';
 import { Router } from 'express';
 import {
 	createLDAPAuthRouter,
@@ -6,16 +6,17 @@ import {
 	createOAuth2AuthRouter,
 	createOpenIDAuthRouter,
 	createSAMLAuthRouter,
-} from '../auth/drivers';
-import { COOKIE_OPTIONS, DEFAULT_AUTH_PROVIDER } from '../constants';
-import env from '../env';
-import { InvalidPayloadException } from '../exceptions';
-import logger from '../logger';
-import { respond } from '../middleware/respond';
-import { AuthenticationService, UsersService } from '../services';
-import asyncHandler from '../utils/async-handler';
-import { getAuthProviders } from '../utils/get-auth-providers';
-import { getIPFromReq } from '../utils/get-ip-from-req';
+} from '../auth/drivers/index.js';
+import { COOKIE_OPTIONS, DEFAULT_AUTH_PROVIDER } from '../constants.js';
+import env from '../env.js';
+import { InvalidPayloadException } from '../exceptions/index.js';
+import logger from '../logger.js';
+import { respond } from '../middleware/respond.js';
+import { AuthenticationService } from '../services/authentication.js';
+import { UsersService } from '../services/users.js';
+import asyncHandler from '../utils/async-handler.js';
+import { getAuthProviders } from '../utils/get-auth-providers.js';
+import { getIPFromReq } from '../utils/get-ip-from-req.js';
 
 const router = Router();
 

@@ -20,17 +20,11 @@ module.exports = {
 	extends: ['eslint:recommended', 'prettier'],
 	rules: defaultRules,
 	parserOptions: {
-		ecmaVersion: 2020,
+		ecmaVersion: 2022,
+		sourceType: 'module',
 	},
 	overrides: [
-		// Parse config files as modules
-		{
-			files: ['rollup.config.js', 'vite?(st).config.js', 'api/globalSetup.js'],
-			parserOptions: {
-				sourceType: 'module',
-			},
-			rules: defaultRules,
-		},
+		// Jest
 		{
 			files: ['**/*.test.js'],
 			env: {

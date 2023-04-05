@@ -1,11 +1,11 @@
 import type { RequestHandler } from 'express';
-import { getCache, getCacheValue } from '../cache';
-import env from '../env';
-import logger from '../logger';
-import asyncHandler from '../utils/async-handler';
-import { getCacheControlHeader } from '../utils/get-cache-headers';
-import { getCacheKey } from '../utils/get-cache-key';
-import { shouldSkipCache } from '../utils/should-skip-cache';
+import { getCache, getCacheValue } from '../cache.js';
+import env from '../env.js';
+import logger from '../logger.js';
+import asyncHandler from '../utils/async-handler.js';
+import { getCacheControlHeader } from '../utils/get-cache-headers.js';
+import { getCacheKey } from '../utils/get-cache-key.js';
+import { shouldSkipCache } from '../utils/should-skip-cache.js';
 
 const checkCacheMiddleware: RequestHandler = asyncHandler(async (req, res, next) => {
 	const { cache } = getCache();
