@@ -4,16 +4,17 @@ import {
 	APP_SHARED_DEPS,
 	EXTENSION_PKG_KEY,
 	EXTENSION_TYPES,
-	HYBRID_EXTENSION_TYPES,
-} from '@directus/shared/constants';
-import {
-	ApiExtensionType,
-	AppExtensionType,
 	ExtensionManifest,
 	ExtensionOptionsBundleEntries,
+	HYBRID_EXTENSION_TYPES,
+} from '@directus/constants';
+import type {
+	ApiExtensionType,
+	AppExtensionType,
 	ExtensionOptionsBundleEntry,
-} from '@directus/shared/types';
-import { isIn, isTypeIn } from '@directus/shared/utils';
+	ExtensionManifest as TExtensionManifest,
+} from '@directus/types';
+import { isIn, isTypeIn } from '@directus/utils';
 import commonjs from '@rollup/plugin-commonjs';
 import json from '@rollup/plugin-json';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
@@ -25,23 +26,23 @@ import fse from 'fs-extra';
 import ora from 'ora';
 import path from 'path';
 import {
-	OutputOptions as RollupOutputOptions,
 	Plugin,
-	rollup,
 	RollupError,
 	RollupOptions,
+	OutputOptions as RollupOutputOptions,
+	rollup,
 	watch as rollupWatch,
 } from 'rollup';
 import esbuild from 'rollup-plugin-esbuild';
 import styles from 'rollup-plugin-styles';
 import vue from 'rollup-plugin-vue';
-import { Language, RollupConfig, RollupMode } from '../types';
-import { getLanguageFromPath, isLanguage } from '../utils/languages';
-import { clear, log } from '../utils/logger';
-import tryParseJson from '../utils/try-parse-json';
-import generateBundleEntrypoint from './helpers/generate-bundle-entrypoint';
-import loadConfig from './helpers/load-config';
-import { validateSplitEntrypointOption } from './helpers/validate-cli-options';
+import type { Language, RollupConfig, RollupMode } from '../types.js';
+import { getLanguageFromPath, isLanguage } from '../utils/languages.js';
+import { clear, log } from '../utils/logger.js';
+import tryParseJson from '../utils/try-parse-json.js';
+import generateBundleEntrypoint from './helpers/generate-bundle-entrypoint.js';
+import loadConfig from './helpers/load-config.js';
+import { validateSplitEntrypointOption } from './helpers/validate-cli-options.js';
 
 type BuildOptions = {
 	type?: string;
@@ -65,7 +66,7 @@ export default async function build(options: BuildOptions): Promise<void> {
 			process.exit(1);
 		}
 
-		let extensionManifest: ExtensionManifest;
+		let extensionManifest: TExtensionManifest;
 
 		try {
 			extensionManifest = ExtensionManifest.parse(await fse.readJSON(packagePath));
@@ -559,21 +560,21 @@ function getRollupOptions({
 		input: typeof input !== 'string' ? 'entry' : input,
 		external: mode === 'browser' ? APP_SHARED_DEPS : API_SHARED_DEPS,
 		plugins: [
-			typeof input !== 'string' ? virtual(input) : null,
-			mode === 'browser' ? (vue({ preprocessStyles: true }) as Plugin) : null,
-			languages.includes('typescript') ? esbuild({ include: /\.tsx?$/, sourceMap: sourcemap }) : null,
-			mode === 'browser' ? styles() : null,
+			typeof input !== 'string' ? virtual.default(input) : null,
+			mode === 'browser' ? (vue.default({ preprocessStyles: true }) as Plugin) : null,
+			languages.includes('typescript') ? esbuild.default({ include: /\.tsx?$/, sourceMap: sourcemap }) : null,
+			mode === 'browser' ? styles.default() : null,
 			...plugins,
 			nodeResolve({ browser: mode === 'browser' }),
-			commonjs({ esmExternals: mode === 'browser', sourceMap: sourcemap }),
-			json(),
-			replace({
+			commonjs.default({ esmExternals: mode === 'browser', sourceMap: sourcemap }),
+			json.default(),
+			replace.default({
 				values: {
 					'process.env.NODE_ENV': JSON.stringify('production'),
 				},
 				preventAssignment: true,
 			}),
-			minify ? terser() : null,
+			minify ? terser.default() : null,
 		],
 	};
 }

@@ -9,7 +9,6 @@ module.exports = {
 		'@directus/storage(.*)$': `${__dirname}/packages/storage/src/$1`,
 		'@directus/extension-sdk(.*)$': `${__dirname}/packages/extension-sdk/src/$1`,
 		'@directus/schema(.*)$': `${__dirname}/packages/schema/src/$1`,
-		'@directus/shared(.*)$': `${__dirname}/packages/shared/src/$1`,
 		'@directus/specs(.*)$': `${__dirname}/packages/specs/$1`,
 	},
 	globals: {

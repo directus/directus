@@ -1,14 +1,14 @@
-import type { Accountability } from '@directus/shared/types';
+import type { Accountability } from '@directus/types';
 import type { NextFunction, Request, Response } from 'express';
-import { isEqual } from 'lodash';
-import getDatabase from '../database';
-import emitter from '../emitter';
-import env from '../env';
-import { InvalidCredentialsException } from '../exceptions';
-import asyncHandler from '../utils/async-handler';
-import { getIPFromReq } from '../utils/get-ip-from-req';
-import isDirectusJWT from '../utils/is-directus-jwt';
-import { verifyAccessJWT } from '../utils/jwt';
+import { isEqual } from 'lodash-es';
+import getDatabase from '../database/index.js';
+import emitter from '../emitter.js';
+import env from '../env.js';
+import { InvalidCredentialsException } from '../exceptions/index.js';
+import asyncHandler from '../utils/async-handler.js';
+import { getIPFromReq } from '../utils/get-ip-from-req.js';
+import isDirectusJWT from '../utils/is-directus-jwt.js';
+import { verifyAccessJWT } from '../utils/jwt.js';
 
 /**
  * Verify the passed JWT and assign the user ID and role to `req`

@@ -1,4 +1,4 @@
-import { DateHelper } from '../types';
+import { DateHelper } from '../types.js';
 import { parseISO } from 'date-fns';
 
 export class DateHelperMySQL extends DateHelper {
