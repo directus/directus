@@ -1,11 +1,11 @@
 import express from 'express';
-import { ForbiddenException } from '../exceptions';
-import { respond } from '../middleware/respond';
-import { validateBatch } from '../middleware/validate-batch';
-import { ItemsService, MetaService } from '../services';
-import type { Item, PrimaryKey } from '../types';
-import asyncHandler from '../utils/async-handler';
-import { omit } from 'lodash';
+import { ForbiddenException } from '../exceptions/index.js';
+import { respond } from '../middleware/respond.js';
+import { validateBatch } from '../middleware/validate-batch.js';
+import { ItemsService, MetaService } from '../services/index.js';
+import type { Item, PrimaryKey } from '../types/index.js';
+import asyncHandler from '../utils/async-handler.js';
+import { omit } from 'lodash-es';
 // import { sanitizeQuery } from '../utils/sanitize-query';
 
 const router = express.Router();
@@ -53,7 +53,6 @@ router.post(
 				fields: ['*'],
 				limit: 1,
 			});
-			console.log(result);
 			if (result) {
 				const { id } = result[0]!;
 				const key = await service.updateOne(id, omit(item, 'id'));
