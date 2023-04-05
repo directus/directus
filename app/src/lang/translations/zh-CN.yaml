@@ -296,7 +296,11 @@ o2m_relationship: 一对多关系
 m2m_relationship: 多对多关系
 m2a_relationship: 多对任何关系
 invalid_item: 无效条目
+require_confirmation: 需要确认
+dialog: 对话框
 modal: 模式
+confirmation_dialog: 确认对话框
+confirmation_description: 确认描述
 confirmation_input_fields: 确认输入字段
 next: 下一步
 field_name: 字段名
@@ -316,7 +320,6 @@ updated_on: 更新于
 updated_by: 更新，由
 primary_key: 主键
 foreign_key: 外键
-field_key: 字段键
 finish_setup: 完成安装
 dismiss: 关闭
 toggle_raw_editor: 切换原始编辑器
@@ -798,7 +801,6 @@ run_flow_on_selected: 先选择一个或多个项目 | 在 1 个选定项目 上
 run_flow: 运行流程
 run_flow_success: 流程 "{flow}" 运行成功
 field_name_placeholder: 输入字段名称...
-field_key_placeholder: 输入字段密钥...
 trigger: 触发器
 trigger_options: 触发器选项
 view_trigger: 查看触发器
