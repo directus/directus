@@ -1,9 +1,9 @@
-import type { Accountability, Aggregate, Filter, Query } from '@directus/shared/types';
-import { parseFilter, parseJSON } from '@directus/shared/utils';
-import { flatten, get, isPlainObject, merge, set } from 'lodash';
-import { getEnv } from '../env';
-import logger from '../logger';
-import { Meta } from '../types';
+import type { Accountability, Aggregate, Filter, Query } from '@directus/types';
+import { parseFilter, parseJSON } from '@directus/utils';
+import { flatten, get, isPlainObject, merge, set } from 'lodash-es';
+import { getEnv } from '../env.js';
+import logger from '../logger.js';
+import { Meta } from '../types/index.js';
 
 export function sanitizeQuery(rawQuery: Record<string, any>, accountability?: Accountability | null): Query {
 	const query: Query = {};

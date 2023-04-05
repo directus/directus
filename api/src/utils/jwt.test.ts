@@ -1,8 +1,12 @@
 import jwt from 'jsonwebtoken';
 import { expect, test, vi } from 'vitest';
-import { InvalidTokenException, ServiceUnavailableException, TokenExpiredException } from '../../src/exceptions';
-import type { DirectusTokenPayload } from '../../src/types';
-import { verifyAccessJWT } from '../../src/utils/jwt';
+import {
+	InvalidTokenException,
+	ServiceUnavailableException,
+	TokenExpiredException,
+} from '../../src/exceptions/index.js';
+import type { DirectusTokenPayload } from '../../src/types/index.js';
+import { verifyAccessJWT } from '../../src/utils/jwt.js';
 
 const payload: DirectusTokenPayload = { role: null, app_access: false, admin_access: false };
 const secret = 'test-secret';

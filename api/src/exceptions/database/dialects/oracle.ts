@@ -1,5 +1,5 @@
-import { ContainsNullValuesException } from '../contains-null-values';
-import type { OracleError } from './types';
+import { ContainsNullValuesException } from '../contains-null-values.js';
+import type { OracleError } from './types.js';
 
 enum OracleErrorCodes {
 	'CONTAINS_NULL_VALUES' = 2296,

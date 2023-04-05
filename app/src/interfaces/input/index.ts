@@ -1,5 +1,5 @@
-import { DeepPartial, Field } from '@directus/shared/types';
-import { defineInterface } from '@directus/shared/utils';
+import { DeepPartial, Field } from '@directus/types';
+import { defineInterface } from '@directus/utils';
 import InterfaceInput from './input.vue';
 import PreviewSVG from './preview.svg?raw';
 

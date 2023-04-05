@@ -180,11 +180,11 @@ export default {
 import { HeaderRaw } from '@/components/v-table/types';
 import { useShortcut } from '@/composables/use-shortcut';
 import { Collection } from '@/types/collections';
-import { useSync } from '@directus/shared/composables';
-import { Field, Filter, Item, ShowSelect } from '@directus/shared/types';
+import { useSync } from '@directus/composables';
+import { Field, Filter, Item, ShowSelect } from '@directus/types';
 import { ComponentPublicInstance, inject, ref, Ref, watch, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { get } from '@directus/shared/utils';
+import { get } from '@directus/utils';
 import { useAliasFields, AliasField } from '@/composables/use-alias-fields';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { isEmpty, merge } from 'lodash';

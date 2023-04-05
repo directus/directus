@@ -1,7 +1,7 @@
-import { FUNCTIONS } from '@directus/shared/constants';
-import type { BaseException } from '@directus/shared/exceptions';
-import { Accountability, Action, Aggregate, Filter, PrimaryKey, Query, SchemaOverview } from '@directus/shared/types';
-import { parseFilterFunctionPath } from '@directus/shared/utils';
+import { FUNCTIONS } from '@directus/constants';
+import type { BaseException } from '@directus/exceptions';
+import { Accountability, Action, Aggregate, Filter, PrimaryKey, Query, SchemaOverview } from '@directus/types';
+import { parseFilterFunctionPath } from '@directus/utils';
 import argon2 from 'argon2';
 import {
 	ArgumentNode,
@@ -45,51 +45,51 @@ import {
 	toInputObjectType,
 } from 'graphql-compose';
 import type { Knex } from 'knex';
-import { flatten, get, mapKeys, merge, omit, pick, set, transform, uniq } from 'lodash';
-import { clearSystemCache, getCache } from '../../cache';
-import { DEFAULT_AUTH_PROVIDER, GENERATE_SPECIAL } from '../../constants';
-import getDatabase from '../../database';
-import env from '../../env';
-import { ForbiddenException, GraphQLValidationException, InvalidPayloadException } from '../../exceptions';
-import { getExtensionManager } from '../../extensions';
-import type { AbstractServiceOptions, GraphQLParams, Item } from '../../types';
-import { generateHash } from '../../utils/generate-hash';
-import { getGraphQLType } from '../../utils/get-graphql-type';
-import { getMilliseconds } from '../../utils/get-milliseconds';
-import { reduceSchema } from '../../utils/reduce-schema';
-import { sanitizeQuery } from '../../utils/sanitize-query';
-import { validateQuery } from '../../utils/validate-query';
-import { ActivityService } from '../activity';
-import { AuthenticationService } from '../authentication';
-import { CollectionsService } from '../collections';
-import { FieldsService } from '../fields';
-import { FilesService } from '../files';
-import { FlowsService } from '../flows';
-import { FoldersService } from '../folders';
-import { ItemsService } from '../items';
-import { NotificationsService } from '../notifications';
-import { OperationsService } from '../operations';
-import { PermissionsService } from '../permissions';
-import { PresetsService } from '../presets';
-import { RelationsService } from '../relations';
-import { RevisionsService } from '../revisions';
-import { RolesService } from '../roles';
-import { ServerService } from '../server';
-import { SettingsService } from '../settings';
-import { SharesService } from '../shares';
-import { SpecificationService } from '../specifications';
-import { TFAService } from '../tfa';
-import { UsersService } from '../users';
-import { UtilsService } from '../utils';
-import { WebhooksService } from '../webhooks';
-import { GraphQLBigInt } from './types/bigint';
-import { GraphQLDate } from './types/date';
-import { GraphQLGeoJSON } from './types/geojson';
-import { GraphQLHash } from './types/hash';
-import { GraphQLStringOrFloat } from './types/string-or-float';
-import { GraphQLVoid } from './types/void';
-import { addPathToValidationError } from './utils/add-path-to-validation-error';
-import processError from './utils/process-error';
+import { flatten, get, mapKeys, merge, omit, pick, set, transform, uniq } from 'lodash-es';
+import { clearSystemCache, getCache } from '../../cache.js';
+import { DEFAULT_AUTH_PROVIDER, GENERATE_SPECIAL } from '../../constants.js';
+import getDatabase from '../../database/index.js';
+import env from '../../env.js';
+import { ForbiddenException, GraphQLValidationException, InvalidPayloadException } from '../../exceptions/index.js';
+import { getExtensionManager } from '../../extensions.js';
+import type { AbstractServiceOptions, GraphQLParams, Item } from '../../types/index.js';
+import { generateHash } from '../../utils/generate-hash.js';
+import { getGraphQLType } from '../../utils/get-graphql-type.js';
+import { getMilliseconds } from '../../utils/get-milliseconds.js';
+import { reduceSchema } from '../../utils/reduce-schema.js';
+import { sanitizeQuery } from '../../utils/sanitize-query.js';
+import { validateQuery } from '../../utils/validate-query.js';
+import { ActivityService } from '../activity.js';
+import { AuthenticationService } from '../authentication.js';
+import { CollectionsService } from '../collections.js';
+import { FieldsService } from '../fields.js';
+import { FilesService } from '../files.js';
+import { FlowsService } from '../flows.js';
+import { FoldersService } from '../folders.js';
+import { ItemsService } from '../items.js';
+import { NotificationsService } from '../notifications.js';
+import { OperationsService } from '../operations.js';
+import { PermissionsService } from '../permissions.js';
+import { PresetsService } from '../presets.js';
+import { RelationsService } from '../relations.js';
+import { RevisionsService } from '../revisions.js';
+import { RolesService } from '../roles.js';
+import { ServerService } from '../server.js';
+import { SettingsService } from '../settings.js';
+import { SharesService } from '../shares.js';
+import { SpecificationService } from '../specifications.js';
+import { TFAService } from '../tfa.js';
+import { UsersService } from '../users.js';
+import { UtilsService } from '../utils.js';
+import { WebhooksService } from '../webhooks.js';
+import { GraphQLBigInt } from './types/bigint.js';
+import { GraphQLDate } from './types/date.js';
+import { GraphQLGeoJSON } from './types/geojson.js';
+import { GraphQLHash } from './types/hash.js';
+import { GraphQLStringOrFloat } from './types/string-or-float.js';
+import { GraphQLVoid } from './types/void.js';
+import { addPathToValidationError } from './utils/add-path-to-validation-error.js';
+import processError from './utils/process-error.js';
 
 const validationRules = Array.from(specifiedRules);
 
@@ -1843,15 +1843,61 @@ export class GraphQLService {
 		const ServerInfo = schemaComposer.createObjectTC({
 			name: 'server_info',
 			fields: {
-				project_name: { type: GraphQLString },
-				project_logo: { type: GraphQLString },
-				project_color: { type: GraphQLString },
-				project_foreground: { type: GraphQLString },
-				project_background: { type: GraphQLString },
-				project_note: { type: GraphQLString },
-				custom_css: { type: GraphQLString },
+				project: {
+					type: new GraphQLObjectType({
+						name: 'server_info_project',
+						fields: {
+							project_name: { type: GraphQLString },
+							project_descriptor: { type: GraphQLString },
+							project_logo: { type: GraphQLString },
+							project_color: { type: GraphQLString },
+							default_language: { type: GraphQLString },
+							public_foreground: { type: GraphQLString },
+							public_background: { type: GraphQLString },
+							public_note: { type: GraphQLString },
+							custom_css: { type: GraphQLString },
+						},
+					}),
+				},
 			},
 		});
+
+		if (this.accountability?.user) {
+			ServerInfo.addFields({
+				rateLimit: env['RATE_LIMITER_ENABLED']
+					? {
+							type: new GraphQLObjectType({
+								name: 'server_info_rate_limit',
+								fields: {
+									points: { type: GraphQLInt },
+									duration: { type: GraphQLInt },
+								},
+							}),
+					  }
+					: GraphQLBoolean,
+				rateLimitGlobal: env['RATE_LIMITER_GLOBAL_ENABLED']
+					? {
+							type: new GraphQLObjectType({
+								name: 'server_info_rate_limit_global',
+								fields: {
+									points: { type: GraphQLInt },
+									duration: { type: GraphQLInt },
+								},
+							}),
+					  }
+					: GraphQLBoolean,
+				flows: {
+					type: new GraphQLObjectType({
+						name: 'server_info_flows',
+						fields: {
+							execAllowedModules: {
+								type: new GraphQLList(GraphQLString),
+							},
+						},
+					}),
+				},
+			});
+		}
 
 		if (this.accountability?.admin === true) {
 			ServerInfo.addFields({
@@ -2213,6 +2259,21 @@ export class GraphQLService {
 					}
 					await service.disableTFA(this.accountability.user);
 					return true;
+				},
+			},
+			utils_random_string: {
+				type: GraphQLString,
+				args: {
+					length: GraphQLInt,
+				},
+				resolve: async (_, args) => {
+					const { nanoid } = await import('nanoid');
+
+					if (args['length'] && Number(args['length']) > 500) {
+						throw new InvalidPayloadException(`"length" can't be more than 500 characters`);
+					}
+
+					return nanoid(args['length'] ? Number(args['length']) : 32);
 				},
 			},
 			utils_hash_generate: {

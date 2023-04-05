@@ -1,13 +1,13 @@
-import type { ActionHandler } from '@directus/shared/types';
-import getDatabase from './database';
-import emitter from './emitter';
-import logger from './logger';
-import { getMessenger } from './messenger';
-import { getAxios } from './request/index';
-import { WebhooksService } from './services';
-import type { Webhook, WebhookHeader } from './types';
-import { getSchema } from './utils/get-schema';
-import { JobQueue } from './utils/job-queue';
+import type { ActionHandler } from '@directus/types';
+import getDatabase from './database/index.js';
+import emitter from './emitter.js';
+import logger from './logger.js';
+import { getMessenger } from './messenger.js';
+import { getAxios } from './request/index.js';
+import { WebhooksService } from './services/webhooks.js';
+import type { Webhook, WebhookHeader } from './types/index.js';
+import { getSchema } from './utils/get-schema.js';
+import { JobQueue } from './utils/job-queue.js';
 
 let registered: { event: string; handler: ActionHandler }[] = [];
 

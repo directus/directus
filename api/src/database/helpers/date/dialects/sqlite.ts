@@ -1,4 +1,4 @@
-import { DateHelper } from '../types';
+import { DateHelper } from '../types.js';
 
 export class DateHelperSQLite extends DateHelper {
 	override parse(date: string | Date): string {

@@ -1,4 +1,4 @@
-import { BaseException } from '@directus/shared/exceptions';
+import { BaseException } from '@directus/exceptions';
 
 type Extensions = {
 	service: string;

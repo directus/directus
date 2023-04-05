@@ -1,12 +1,12 @@
-import type { Notification } from '@directus/shared/types';
-import env from '../env';
-import logger from '../logger';
-import type { AbstractServiceOptions, MutationOptions, PrimaryKey } from '../types';
-import { md } from '../utils/md';
-import { Url } from '../utils/url';
-import { ItemsService } from './items';
-import { MailService } from './mail';
-import { UsersService } from './users';
+import type { Notification } from '@directus/types';
+import env from '../env.js';
+import logger from '../logger.js';
+import type { AbstractServiceOptions, MutationOptions, PrimaryKey } from '../types/index.js';
+import { md } from '../utils/md.js';
+import { Url } from '../utils/url.js';
+import { ItemsService } from './items.js';
+import { MailService } from './mail/index.js';
+import { UsersService } from './users.js';
 
 export class NotificationsService extends ItemsService {
 	usersService: UsersService;

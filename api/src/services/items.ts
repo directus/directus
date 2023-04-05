@@ -1,15 +1,15 @@
-import { Accountability, Action, PermissionsAction, Query, SchemaOverview } from '@directus/shared/types';
+import { Accountability, Action, PermissionsAction, Query, SchemaOverview } from '@directus/types';
 import type Keyv from 'keyv';
 import type { Knex } from 'knex';
-import { assign, clone, cloneDeep, omit, pick, without } from 'lodash';
-import { getCache } from '../cache';
-import getDatabase from '../database';
-import { getHelpers } from '../database/helpers';
-import runAST from '../database/run-ast';
-import emitter from '../emitter';
-import env from '../env';
-import { ForbiddenException, InvalidPayloadException } from '../exceptions';
-import { translateDatabaseError } from '../exceptions/database/translate';
+import { assign, clone, cloneDeep, omit, pick, without } from 'lodash-es';
+import { getCache } from '../cache.js';
+import { getHelpers } from '../database/helpers/index.js';
+import getDatabase from '../database/index.js';
+import runAST from '../database/run-ast.js';
+import emitter from '../emitter.js';
+import env from '../env.js';
+import { translateDatabaseError } from '../exceptions/database/translate.js';
+import { ForbiddenException, InvalidPayloadException } from '../exceptions/index.js';
 import type {
 	AbstractService,
 	AbstractServiceOptions,
@@ -17,12 +17,11 @@ import type {
 	Item as AnyItem,
 	MutationOptions,
 	PrimaryKey,
-} from '../types';
-import getASTFromQuery from '../utils/get-ast-from-query';
-import { validateKeys } from '../utils/validate-keys';
-import { AuthorizationService } from './authorization';
-import { ActivityService, RevisionsService } from './index';
-import { PayloadService } from './payload';
+} from '../types/index.js';
+import getASTFromQuery from '../utils/get-ast-from-query.js';
+import { validateKeys } from '../utils/validate-keys.js';
+import { AuthorizationService } from './authorization.js';
+import { PayloadService } from './payload.js';
 
 export type QueryOptions = {
 	stripNonRequested?: boolean;
@@ -70,6 +69,9 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	 * Create a single new item.
 	 */
 	async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
+		const { ActivityService } = await import('./activity.js');
+		const { RevisionsService } = await import('./revisions.js');
+
 		const primaryKeyField = this.schema.collections[this.collection]!.primary;
 		const fields = Object.keys(this.schema.collections[this.collection]!.fields);
 		const aliases = Object.values(this.schema.collections[this.collection]!.fields)
@@ -118,7 +120,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 					: payload;
 
 			const payloadWithPresets = this.accountability
-				? await authorizationService.validatePayload('create', this.collection, payloadAfterHooks)
+				? authorizationService.validatePayload('create', this.collection, payloadAfterHooks)
 				: payloadAfterHooks;
 
 			if (opts?.preMutationException) {
@@ -503,6 +505,9 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	 * Update many items by primary key, setting all items to the same change
 	 */
 	async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
+		const { ActivityService } = await import('./activity.js');
+		const { RevisionsService } = await import('./revisions.js');
+
 		const primaryKeyField = this.schema.collections[this.collection]!.primary;
 		validateKeys(this.schema, this.collection, primaryKeyField, keys);
 
@@ -549,7 +554,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		}
 
 		const payloadWithPresets = this.accountability
-			? await authorizationService.validatePayload('update', this.collection, payloadAfterHooks)
+			? authorizationService.validatePayload('update', this.collection, payloadAfterHooks)
 			: payloadAfterHooks;
 
 		if (opts?.preMutationException) {
@@ -789,6 +794,8 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	 * Delete multiple items by primary key
 	 */
 	async deleteMany(keys: PrimaryKey[], opts?: MutationOptions): Promise<PrimaryKey[]> {
+		const { ActivityService } = await import('./activity.js');
+
 		const primaryKeyField = this.schema.collections[this.collection]!.primary;
 		validateKeys(this.schema, this.collection, primaryKeyField, keys);
 

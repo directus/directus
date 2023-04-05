@@ -1,0 +1,4 @@
+files:
+  - '**/*.md'
+dictionaries:
+  - dictionary.txt

@@ -783,10 +783,7 @@ label: تسمية
 flows: التدفقات
 flow: التدفق
 select_a_flow: حدد تدفق
-run_flow_on_current_collection: تشغيل التدفق على المجموعة الحالية
-run_flow_on_current: تشغيل التدفق على العنصر الحالي
 run_flow_on_current_edited_confirm: قد يتم تحديث هذا العنصر بواسطة هذا التدفق، هل أنت متيقِّن من أنك تريد تنفيذه؟
-run_flow_on_selected: حدد عنصر واحد أو أكثر أولا | تشغيل تدفق على 1 عنصر محدد | تشغيل تدفق على {n} العناصر المحددة
 run_flow_success: تدفق "{flow}" تم بنجاح
 trigger: المحفز
 trigger_options: خيارات المحفز
@@ -845,6 +842,7 @@ dashboard_name: اسم لوحة التحكم
 no_data: لا توجد بيانات
 accountability: المساءلة
 full_screen: ملء الشاشة
+edit_panels: تحرير لوحة
 image_url: رابط الصورة
 alt_text: النص البديل
 media: وسائط الإعلام
@@ -1078,15 +1076,21 @@ fields:
     status_archived: مؤرشف
     role: الدور
     token: الرمز المميز
+    provider: المزود
+    external_identifier: معرفات خارجية
     last_page: آخر صفحة
     last_access: آخر وصول
+    email_notifications: إشعارات البريد الإلكتروني
   directus_settings:
+    jpg: JPEG
     png: PNG
     webP: WebP
     tiff: Tiff
+    mapping: تعيين
     mapbox_placeholder: pk.eyJ1Ijo.....
     attribution: السمات
     attribution_placeholder: المساهمون © OpenStreetMap
+    additional_transforms: تحولات إضافية
     project_name: اسم المشروع
     project_descriptor: وصف المشروع
     project_url: رابط المشروع
@@ -1103,8 +1107,11 @@ fields:
     storage_default_folder: المجلد الافتراضي
     storage_asset_presets: الإعدادات المسبقة للتحويل
     storage_asset_transform: التحولات المسموح بها
+    overrides: تجاوزات التطبيق
     custom_css: CSS مخصصة
     module_bar: شريط الوحدة
+    transformations_all: السماح بجميع التحولات
+    transformations_none: تعطيل التحولات
     image_editor: محرر الصور
   directus_shares:
     name: الاسم
@@ -1112,6 +1119,7 @@ fields:
     password: كلمة المرور
     date_start: تاريخ البدء
     date_end: تاريخ الانتهاء
+    times_used: الوقت المستغرق
   directus_fields:
     collection: اسم المجموعة
     icon: أيقونة المجموعة
@@ -1206,6 +1214,7 @@ field_options:
       name_name: الاسم
       name_placeholder: أدخل عنوانًا...
     collections_name: مجموعات
+    collections_addLabel: مجموعة جديدة...
   directus_users:
     preferences_divider: تفضيلات المستخدم
     dropdown_auto: تلقائي (مبني على النظام)
@@ -1213,9 +1222,11 @@ field_options:
     dropdown_dark: الوضع المُعتِم
     admin_divider: خيارات المدير
     status_dropdown_draft: مسوّدة
+    status_dropdown_invited: تمت الدعوة
     status_dropdown_active: مفعل
     status_dropdown_suspended: معلّق
     status_dropdown_archived: مؤرشف
+    token: أدخل رمز الوصول الآمن...
   directus_webhooks:
     status_options_active: مفعل
     status_options_inactive: غير نشط
@@ -1224,14 +1235,23 @@ field_options:
     actions_create: انشاء
     actions_update: تحديث
     actions_delete: حذف
+    actions_login: تسجيل الدخول
     headers:
       header: الترويسة
       value: قيمة
 no_fields_in_collection: 'لا توجد حقول في "{collection}" حتى الآن'
+no_value: لا توجد قيمة
 do_nothing: لا تفعل شيئا
 save_current_user_role: احفظ دور المستخدم الحالي
 save_current_datetime: أحفظ التاريخ/الوقت الحالي
+always_open: يعمل دائماً
+block: حَظْر
+inline: ضمن السياق
 comment: تعليق
+shares: مشاركات
+unlimited_usage: استخدام غير محدود
+no_shares: لا توجد مشاركات لإظهارها
+new_share: مشاركة جديدة
 expired: منتهية الصلاحية
 upcoming: القادم
 share: مشاركة
@@ -1460,7 +1480,6 @@ interfaces:
   list:
     edit_fields: تعديل الحقول
     sort: رتب
-    field_name_placeholder: أدخل اسم الحقل...
   slider:
     slider: شريط
     always_show_value: إظهار القيمة دائمًا
