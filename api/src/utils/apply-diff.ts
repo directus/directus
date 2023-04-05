@@ -20,6 +20,7 @@ import {
 	SnapshotField,
 } from '../types/index.js';
 import { getSchema } from './get-schema.js';
+import { getHelpers } from '../database/helpers/index.js';
 
 type CollectionDelta = {
 	collection: string;
@@ -32,6 +33,7 @@ export async function applyDiff(
 	options?: { database?: Knex; schema?: SchemaOverview }
 ): Promise<void> {
 	const database = options?.database ?? getDatabase();
+	const helpers = getHelpers(database);
 	const schema = options?.schema ?? (await getSchema({ database, bypassCache: true }));
 
 	const nestedActionEvents: ActionEventParams[] = [];
@@ -39,6 +41,8 @@ export async function applyDiff(
 		autoPurgeSystemCache: false,
 		bypassEmitAction: (params) => nestedActionEvents.push(params),
 	};
+
+	const runPostColumnChange = await helpers.schema.preColumnChange();
 
 	await database.transaction(async (trx) => {
 		const collectionsService = new CollectionsService({ knex: trx, schema });
@@ -299,6 +303,10 @@ export async function applyDiff(
 			}
 		}
 	});
+
+	if (runPostColumnChange) {
+		await helpers.schema.postColumnChange();
+	}
 
 	await clearSystemCache();
 
