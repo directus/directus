@@ -1,10 +1,9 @@
 [build.environment]
-	NODE_VERSION = "16"
-	NPM_FLAGS = "--version" # prevent Netlify npm install
+	NODE_VERSION = "18"
 
 [build]
   publish = ".vitepress/dist"
-  command = "npx pnpm i --store=node_modules/.pnpm-store --frozen-lockfile && npx pnpm build"
+  command = "pnpm run build"
 
 [dev]
 	command = "pnpm run dev"
