@@ -18,6 +18,7 @@ Fixes #
 - [ ] Improvement
 - [ ] New Feature
 - [ ] Refactor / codestyle updates
+- [ ] Documentation
 - [ ] Other, please describe:
 
 ## Requirements Checklist
@@ -28,4 +29,4 @@ Fixes #
 
 If adding a new feature:
 
-- [ ] Documentation was added/updated. PR:
+- [ ] Documentation was added/updated
