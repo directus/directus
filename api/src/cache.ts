@@ -1,13 +1,13 @@
-import env from './env';
-import { validateEnv } from './utils/validate-env';
-import { getMessenger } from './messenger';
-import { getSimpleHash } from '@directus/shared/utils';
-import type { SchemaOverview } from '@directus/shared/types';
-import type { CacheOptions, CacheService } from './services/cache/cache';
-import { RedisCache } from './services/cache/redis-cache';
-import { MemoryCache } from './services/cache/memory-cache';
-import { clearSystemCache } from './utils/clearSystemCache';
-import { getMilliseconds } from './utils/get-milliseconds';
+import type { CacheOptions, CacheService } from './services/cache/cache.js';
+import { RedisCache } from './services/cache/redis-cache.js';
+import { MemoryCache } from './services/cache/memory-cache.js';
+import { clearSystemCache } from './utils/clearSystemCache.js';
+import type { SchemaOverview } from '@directus/types';
+import { getSimpleHash } from '@directus/utils';
+import env from './env.js';
+import { getMessenger } from './messenger.js';
+import { getMilliseconds } from './utils/get-milliseconds.js';
+import { validateEnv } from './utils/validate-env.js';
 
 let cache: CacheService | null = null;
 let systemCache: CacheService | null = null;

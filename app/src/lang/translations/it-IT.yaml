@@ -296,6 +296,12 @@ o2m_relationship: Relazione One to Many
 m2m_relationship: Relazione Many to Many
 m2a_relationship: Relazione Many to Any
 invalid_item: Oggetto non valido
+require_confirmation: Richiedi conferma
+dialog: Finestra
+modal: Modale
+confirmation_dialog: Finestra di conferma
+confirmation_description: Descrizione della conferma
+confirmation_input_fields: Campi della conferma
 next: Avanti
 field_name: Nome del Campo
 translations: Traduzioni
@@ -314,6 +320,7 @@ updated_on: Aggiornato il
 updated_by: Aggiornato da
 primary_key: Chiave primaria
 foreign_key: Chiave Esterna
+field_key: Chiave del campo
 finish_setup: Termina Configurazione
 dismiss: Chiudi
 toggle_raw_editor: Attiva/Disattiva editor grezzo
@@ -787,11 +794,15 @@ label: Etichetta
 flows: Flussi
 flow: Flusso
 select_a_flow: Seleziona un flusso
-run_flow_on_current_collection: Esegui il flusso nella raccolta corrente
+run_flow_confirm: Sei sicuro di voler eseguire il flusso?
+run_flow_on_current_collection: Esegui il flusso sulla raccolta corrente
 run_flow_on_current: Esegui il flusso sull'elemento corrente
 run_flow_on_current_edited_confirm: Questo elemento potrebbe essere aggiornato dal flusso, sei sicuro di volerlo eseguire?
-run_flow_on_selected: Seleziona prima uno o più elementi | Eseguire il flusso sull'elemento selezionato | Eseguire il flusso sui {n} elementi selezionati
+run_flow_on_selected: Seleziona prima uno o più elementi | Esegui il flusso sull'elemento selezionato | Esegui il flusso sui {n} elementi selezionati
+run_flow: Esegui il flusso
 run_flow_success: Flusso "{flow}" eseguito con successo
+field_name_placeholder: Inserisci il nome del campo...
+field_key_placeholder: Inserisci la chiave del campo...
 trigger: Trigger
 trigger_options: Opzioni del trigger
 view_trigger: Visualizza il trigger
@@ -1432,6 +1443,7 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 table: Tabella
@@ -1589,6 +1601,9 @@ interfaces:
     many-to-one: Molti a Uno
     description: Seleziona un singolo elemento correlato
     display_template: Display Template
+  collection-item-dropdown:
+    collection-item-dropdown: Menù a discesa elemento della raccolta
+    description: Seleziona un elemento da una raccolta in formato JSON
   input-rich-text-md:
     markdown: Markdown
     description: Inserisci e visualizza in anteprima markdown
@@ -1630,6 +1645,7 @@ interfaces:
   system-folder:
     folder: Cartella
     description: Seleziona una cartella
+    field_hint: Cartella predefinita per i file caricati senza una cartella specificata. Non influisce sui file esistenti.
     root_name: Radice libreria file
     system_default: Predefiniti di sistema
   select-radio:
@@ -1642,7 +1658,6 @@ interfaces:
     add_label: 'Etichetta "Crea nuovo"'
     sort: Ordinamento
     sort_placeholder: Manuale
-    field_name_placeholder: Inserisci il nome del campo...
     field_note_placeholder: Inserisci la nota del campo...
     incompatible_data: I dati correnti non sono compatibili con l'interfaccia ripetitore e saranno sovrascritti quando si aggiungono elementi al ripetitore
   slider:
@@ -2093,6 +2108,8 @@ operations:
     name: Invia una notifica
     description: Invia una notifica in app a uno o più utenti
     recipient: Utente
+    recipient_placeholder: Inserisci un UUID...
+    recipient_note: Aggiungi l'UUID del'utente e premi invio...
     message: Messaggio
   request:
     name: URL webhook / chiamata

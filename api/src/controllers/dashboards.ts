@@ -1,12 +1,13 @@
 import express from 'express';
-import { ForbiddenException } from '../exceptions';
-import { respond } from '../middleware/respond';
-import useCollection from '../middleware/use-collection';
-import { validateBatch } from '../middleware/validate-batch';
-import { DashboardsService, MetaService } from '../services';
-import type { PrimaryKey } from '../types';
-import asyncHandler from '../utils/async-handler';
-import { sanitizeQuery } from '../utils/sanitize-query';
+import { ForbiddenException } from '../exceptions/index.js';
+import { respond } from '../middleware/respond.js';
+import useCollection from '../middleware/use-collection.js';
+import { validateBatch } from '../middleware/validate-batch.js';
+import { DashboardsService } from '../services/dashboards.js';
+import { MetaService } from '../services/meta.js';
+import type { PrimaryKey } from '../types/index.js';
+import asyncHandler from '../utils/async-handler.js';
+import { sanitizeQuery } from '../utils/sanitize-query.js';
 
 const router = express.Router();
 

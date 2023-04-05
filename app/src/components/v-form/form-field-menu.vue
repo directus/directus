@@ -50,7 +50,7 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 import { computed } from 'vue';
-import { Field } from '@directus/shared/types';
+import { Field } from '@directus/types';
 import { useClipboard } from '@/composables/use-clipboard';
 
 interface Props {

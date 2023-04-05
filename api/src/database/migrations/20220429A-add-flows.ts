@@ -1,4 +1,4 @@
-import { parseJSON, toArray } from '@directus/shared/utils';
+import { parseJSON, toArray } from '@directus/utils';
 import type { Knex } from 'knex';
 import { v4 as uuid } from 'uuid';
 

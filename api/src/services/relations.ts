@@ -1,26 +1,27 @@
-import SchemaInspector from '@directus/schema';
-import getDatabase, { getSchemaInspector } from '../database';
-import { getDefaultIndexName } from '../utils/get-default-index-name';
-import { getCache } from '../cache';
-import { getHelpers, Helpers } from '../database/helpers';
-import type { CacheService } from './cache/cache';
-import type { Accountability, Query, Relation, RelationMeta, SchemaOverview } from '@directus/shared/types';
-import { toArray } from '@directus/shared/utils';
+import { createInspector } from '@directus/schema';
+import type { Accountability, Query, Relation, RelationMeta, SchemaOverview } from '@directus/types';
+import { toArray } from '@directus/utils';
 import type { Knex } from 'knex';
-import { systemRelationRows } from '../database/system-data/relations';
-import emitter from '../emitter';
-import { ForbiddenException, InvalidPayloadException } from '../exceptions';
-import type { AbstractServiceOptions, ActionEventParams, MutationOptions } from '../types';
-import { getSchema } from '../utils/get-schema';
-import { clearSystemCache } from '../utils/clearSystemCache';
-import { stitchRelations } from '../utils/stitch-relations';
-import { ItemsService, QueryOptions } from './items';
-import { PermissionsService } from './permissions';
+import type { SchemaInspector } from '@directus/schema';
+import { getCache } from '../cache.js';
+import getDatabase, { getSchemaInspector } from '../database/index.js';
+import { getHelpers, Helpers } from '../database/helpers/index.js';
+import { systemRelationRows } from '../database/system-data/relations/index.js';
+import emitter from '../emitter.js';
+import { ForbiddenException, InvalidPayloadException } from '../exceptions/index.js';
+import type { AbstractServiceOptions, ActionEventParams, MutationOptions } from '../types/index.js';
+import { getDefaultIndexName } from '../utils/get-default-index-name.js';
+import { getSchema } from '../utils/get-schema.js';
+import { ItemsService, QueryOptions } from './items.js';
+import { PermissionsService } from './permissions.js';
+import type { CacheService } from './cache/cache.js';
+import { stitchRelations } from '../utils/stitch-relations.js';
+import { clearSystemCache } from '../utils/clearSystemCache.js';
 
 export class RelationsService {
 	knex: Knex;
 	permissionsService: PermissionsService;
-	schemaInspector: ReturnType<typeof SchemaInspector>;
+	schemaInspector: SchemaInspector;
 	accountability: Accountability | null;
 	schema: SchemaOverview;
 	relationsItemService: ItemsService<RelationMeta>;
@@ -30,7 +31,7 @@ export class RelationsService {
 	constructor(options: AbstractServiceOptions) {
 		this.knex = options.knex || getDatabase();
 		this.permissionsService = new PermissionsService(options);
-		this.schemaInspector = options.knex ? SchemaInspector(options.knex) : getSchemaInspector();
+		this.schemaInspector = options.knex ? createInspector(options.knex) : getSchemaInspector();
 		this.schema = options.schema;
 		this.accountability = options.accountability || null;
 		this.relationsItemService = new ItemsService('directus_relations', {

@@ -62,7 +62,7 @@ import CollectionOptions from './collection-options.vue';
 import { Collection } from '@/types/collections';
 import Draggable from 'vuedraggable';
 import { useCollectionsStore } from '@/stores/collections';
-import { DeepPartial } from '@directus/shared/types';
+import { DeepPartial } from '@directus/types';
 import { useI18n } from 'vue-i18n';
 import { unexpectedError } from '@/utils/unexpected-error';
 

@@ -1,15 +1,14 @@
-import { toArray } from '@directus/shared/utils';
-// @ts-expect-error https://github.com/microsoft/TypeScript/issues/49721
+import { toArray } from '@directus/utils';
 import type { StorageManager } from '@directus/storage';
 import { randNumber, randWord } from '@ngneat/falso';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
-import { getEnv } from '../env';
-import { getConfigFromEnv } from '../utils/get-config-from-env';
-import { registerLocations } from './register-locations';
+import { getEnv } from '../env.js';
+import { getConfigFromEnv } from '../utils/get-config-from-env.js';
+import { registerLocations } from './register-locations.js';
 
-vi.mock('../env');
-vi.mock('@directus/shared/utils');
-vi.mock('../utils/get-config-from-env');
+vi.mock('../env.js');
+vi.mock('@directus/utils');
+vi.mock('../utils/get-config-from-env.js');
 
 let sample: {
 	options: {

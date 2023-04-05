@@ -1,23 +1,29 @@
-import SchemaInspector from '@directus/schema';
-import type { Accountability, FieldMeta, RawField, SchemaOverview } from '@directus/shared/types';
-import { addFieldFlag } from '@directus/shared/utils';
+import { createInspector } from '@directus/schema';
+import type { Accountability, FieldMeta, RawField, SchemaOverview } from '@directus/types';
+import { addFieldFlag } from '@directus/utils';
 import type { Knex } from 'knex';
-import type { Table } from 'knex-schema-inspector/dist/types/table';
-import { getCache } from '../cache';
-import { ALIAS_TYPES } from '../constants';
-import getDatabase, { getSchemaInspector } from '../database';
-import { getHelpers, Helpers } from '../database/helpers';
-import { systemCollectionRows } from '../database/system-data/collections';
-import emitter from '../emitter';
-import env from '../env';
-import { ForbiddenException, InvalidPayloadException } from '../exceptions';
-import { FieldsService } from '../services/fields';
-import { ItemsService } from '../services/items';
-import { omit } from 'lodash';
-import { getSchema } from '../utils/get-schema';
-import type { CacheService } from './cache/cache';
-import { clearSystemCache } from '../utils/clearSystemCache';
-import type { AbstractServiceOptions, ActionEventParams, Collection, CollectionMeta, MutationOptions } from '../types';
+import type { Table, SchemaInspector } from '@directus/schema';
+import { omit } from 'lodash-es';
+import { getCache } from '../cache.js';
+import { ALIAS_TYPES } from '../constants.js';
+import getDatabase, { getSchemaInspector } from '../database/index.js';
+import { getHelpers, Helpers } from '../database/helpers/index.js';
+import { systemCollectionRows } from '../database/system-data/collections/index.js';
+import emitter from '../emitter.js';
+import env from '../env.js';
+import { ForbiddenException, InvalidPayloadException } from '../exceptions/index.js';
+import { FieldsService } from '../services/fields.js';
+import { ItemsService } from '../services/items.js';
+import type {
+	AbstractServiceOptions,
+	ActionEventParams,
+	Collection,
+	CollectionMeta,
+	MutationOptions,
+} from '../types/index.js';
+import { getSchema } from '../utils/get-schema.js';
+import type { CacheService } from './cache/cache.js';
+import { clearSystemCache } from '../utils/clearSystemCache.js';
 
 export type RawCollection = {
 	collection: string;
@@ -29,7 +35,7 @@ export class CollectionsService {
 	knex: Knex;
 	helpers: Helpers;
 	accountability: Accountability | null;
-	schemaInspector: ReturnType<typeof SchemaInspector>;
+	schemaInspector: SchemaInspector;
 	schema: SchemaOverview;
 	cache: CacheService | null;
 	systemCache: CacheService;
@@ -38,7 +44,7 @@ export class CollectionsService {
 		this.knex = options.knex || getDatabase();
 		this.helpers = getHelpers(this.knex);
 		this.accountability = options.accountability || null;
-		this.schemaInspector = options.knex ? SchemaInspector(options.knex) : getSchemaInspector();
+		this.schemaInspector = options.knex ? createInspector(options.knex) : getSchemaInspector();
 		this.schema = options.schema;
 
 		const { cache, systemCache } = getCache();

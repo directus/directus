@@ -296,6 +296,7 @@ o2m_relationship: Relation Un à plusieurs
 m2m_relationship: Relation Plusieurs à plusieurs
 m2a_relationship: Relation Many-to-Any
 invalid_item: Élément invalide
+modal: Modal
 next: Suivant
 field_name: Nom du champ
 translations: Traductions
@@ -787,10 +788,7 @@ label: Étiquette
 flows: Flux
 flow: Flux
 select_a_flow: Sélectionner un flux
-run_flow_on_current_collection: Lancer le flux sur la collection actuelle
-run_flow_on_current: Exécuter le flux sur l'élément actuel
 run_flow_on_current_edited_confirm: Cet élément peut être mis à jour par ce flux, êtes-vous sûr de vouloir l'exécuter ?
-run_flow_on_selected: Sélectionner un ou plusieurs éléments | Exécuter le flux sur 1 élément sélectionné | Exécuter le flux sur {n} éléments sélectionnés
 run_flow_success: Le Flux "{flow}" s'est exécuté avec succès
 trigger: Déclencheur
 trigger_options: Options de Déclenchement
@@ -1630,6 +1628,7 @@ interfaces:
   system-folder:
     folder: Dossier
     description: Sélectionner un dossier
+    field_hint: Dossier par défaut pour les fichiers téléchargés sans dossier spécifié. N'affecte pas les fichiers existants.
     root_name: Bibliothèque de fichiers racine
     system_default: Paramètres par défaut du système
   select-radio:
@@ -1642,7 +1641,6 @@ interfaces:
     add_label: 'Libellé "Créer Nouveau"'
     sort: Trier
     sort_placeholder: Manuel
-    field_name_placeholder: Entrez le nom du champ...
     field_note_placeholder: Entrez la note du champ...
     incompatible_data: Les données actuelles ne sont pas compatibles avec l'interface répéteur et seront remplacées lors de l'ajout d'éléments dans le répéteur
   slider:
@@ -2093,6 +2091,8 @@ operations:
     name: Envoyer une notification
     description: Envoyer une notification dans l'application à un ou plusieurs utilisateurs
     recipient: Utilisateur
+    recipient_placeholder: Saisir un UUID...
+    recipient_note: Ajouter un UUID utilisateur et appuyez sur entrée...
     message: Message
   request:
     name: Webhook / URL de requête

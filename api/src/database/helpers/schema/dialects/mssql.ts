@@ -1,5 +1,5 @@
 import type { Knex } from 'knex';
-import { SchemaHelper } from '../types';
+import { SchemaHelper } from '../types.js';
 
 export class SchemaHelperMSSQL extends SchemaHelper {
 	override applyLimit(rootQuery: Knex.QueryBuilder, limit: number): void {

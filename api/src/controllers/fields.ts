@@ -1,14 +1,14 @@
-import { TYPES } from '@directus/shared/constants';
-import type { Field, Type } from '@directus/shared/types';
+import { TYPES } from '@directus/constants';
+import type { Field, Type } from '@directus/types';
 import { Router } from 'express';
 import Joi from 'joi';
-import { ALIAS_TYPES } from '../constants';
-import { ForbiddenException, InvalidPayloadException } from '../exceptions';
-import validateCollection from '../middleware/collection-exists';
-import { respond } from '../middleware/respond';
-import useCollection from '../middleware/use-collection';
-import { FieldsService } from '../services/fields';
-import asyncHandler from '../utils/async-handler';
+import { ALIAS_TYPES } from '../constants.js';
+import { ForbiddenException, InvalidPayloadException } from '../exceptions/index.js';
+import validateCollection from '../middleware/collection-exists.js';
+import { respond } from '../middleware/respond.js';
+import useCollection from '../middleware/use-collection.js';
+import { FieldsService } from '../services/fields.js';
+import asyncHandler from '../utils/async-handler.js';
 
 const router = Router();
 

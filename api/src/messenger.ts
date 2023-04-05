@@ -1,9 +1,9 @@
-import { parseJSON } from '@directus/shared/utils';
 import IORedis from 'ioredis';
 import type { Redis } from 'ioredis';
-import env from './env';
-import { getConfigFromEnv } from './utils/get-config-from-env';
-import { merge } from 'lodash';
+import { merge } from 'lodash-es';
+import { parseJSON } from '@directus/utils';
+import env from './env.js';
+import { getConfigFromEnv } from './utils/get-config-from-env.js';
 
 export type MessengerSubscriptionCallback = (payload: Record<string, any>) => void;
 

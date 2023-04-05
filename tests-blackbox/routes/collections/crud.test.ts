@@ -2,8 +2,9 @@ import config, { getUrl } from '@common/config';
 import * as common from '@common/index';
 import request from 'supertest';
 import vendors from '@common/get-dbs-to-test';
-import knex, { Knex } from 'knex';
-import { Collection } from '@directus/shared/types';
+import knex from 'knex';
+import type { Knex } from 'knex';
+import type { Collection } from '@directus/types';
 import { findIndex } from 'lodash';
 import { requestGraphQL } from '@common/index';
 

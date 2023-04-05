@@ -1,11 +1,11 @@
-import type { PermissionsAction, Query } from '@directus/shared/types';
-import { appAccessMinimalPermissions } from '../database/system-data/app-access-permissions';
-import { ItemsService, QueryOptions } from '../services/items';
-import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '../types';
-import { filterItems } from '../utils/filter-items';
-import { getCache } from '../cache';
-import type { CacheService } from './cache/cache';
-import { clearSystemCache } from '../utils/clearSystemCache';
+import type { PermissionsAction, Query } from '@directus/types';
+import { getCache } from '../cache.js';
+import { appAccessMinimalPermissions } from '../database/system-data/app-access-permissions/index.js';
+import { ItemsService, QueryOptions } from '../services/items.js';
+import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '../types/index.js';
+import { filterItems } from '../utils/filter-items.js';
+import type { CacheService } from './cache/cache.js';
+import { clearSystemCache } from '../utils/clearSystemCache.js';
 
 export class PermissionsService extends ItemsService {
 	systemCache: CacheService;
