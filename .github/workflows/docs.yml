@@ -30,4 +30,4 @@ jobs:
         uses: ./.github/actions/prepare
 
       - name: Lint
-        run: pnpm spellcheck
+        run: pnpm --filter docs spellcheck
