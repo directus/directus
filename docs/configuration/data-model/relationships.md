@@ -211,7 +211,7 @@ Note the following points from the schema above. When we create an O2O in Direct
 
 The easiest way to configure an O2O is to follow the guide on how to
 [create a field (standard)](/configuration/data-model/fields/#create-a-field-standard) and select the **M2O** field type
-from the template wizard. Then, [configure the field's schema](/configuration/data-model/fields/schema), toggling on
+from the template wizard. Then, configure the field's schema, toggling on
 **Unique** so that each value in the M2O field is unique, resulting in an O2O relationship.
 
 :::
