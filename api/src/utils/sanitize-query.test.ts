@@ -1,4 +1,4 @@
-import { describe, expect, test, vi, beforeEach } from 'vitest';
+import { describe, expect, test, vi, beforeEach, afterEach } from 'vitest';
 import { refreshEnv } from '../env.js';
 import { sanitizeQuery } from './sanitize-query.js';
 
