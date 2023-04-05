@@ -287,7 +287,7 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 			}
 
 			const { verifier, redirect, prompt } = tokenData;
-			
+
 			const { searchParams } = redirect ? new URL(redirect) : { searchParams: new Map<string, string>() };
 			let replacedRedirect = null;
 			const nextPage = searchParams.get('continue');
