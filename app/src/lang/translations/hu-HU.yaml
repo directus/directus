@@ -296,6 +296,7 @@ o2m_relationship: Egy a Többhöz kapcsolat
 m2m_relationship: Több a Többhöz kapcsolat
 m2a_relationship: M2A kapcsolat (polimorf asszociációs leképezéshez több táblából)
 invalid_item: Érvénytelen elem
+modal: Ablak
 next: Következő
 field_name: Mezőnév
 translations: Fordítások
@@ -787,10 +788,7 @@ label: Címke
 flows: Folyamatok
 flow: Folyamat
 select_a_flow: Válasszon egy folyamatot
-run_flow_on_current_collection: Futtassa a folyamatot az aktuális gyűjteményben
-run_flow_on_current: Folyamat futtatása a jelenlegi tételen
 run_flow_on_current_edited_confirm: Lehetséges, hogy a tétel frissítve lesz a futtatás miatt, biztosan folytatja?
-run_flow_on_selected: Válassz ki egy vagy több elemet | Futtasd a folyamatot 1 kiválasztott elemen | Futtasd a folyamatot {n} kiválasztott elemen
 run_flow_success: Folyamat "{flow}" sikeresen futtatva
 trigger: Eseményindító
 trigger_options: Trigger opciók
@@ -1642,7 +1640,6 @@ interfaces:
     add_label: '"Új létrehozása" címke'
     sort: Rendezés
     sort_placeholder: Manuális
-    field_name_placeholder: Mezőnév megadása...
     field_note_placeholder: Megjegyzés hozzáadása mezőhöz...
     incompatible_data: Az aktuális adatok nem kompatibilisek az átjátszó interfésszel, és felülbírálásra kerülnek, amikor elemeket adunk az átjátszóhoz
   slider:

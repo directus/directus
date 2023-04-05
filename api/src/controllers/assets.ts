@@ -1,21 +1,20 @@
-// @ts-expect-error https://github.com/microsoft/TypeScript/issues/49721
 import type { Range } from '@directus/storage';
-
-import { parseJSON } from '@directus/shared/utils';
+import { parseJSON } from '@directus/utils';
 import { Router } from 'express';
-import { merge, pick } from 'lodash';
-import { ASSET_TRANSFORM_QUERY_KEYS, SYSTEM_ASSET_ALLOW_LIST } from '../constants';
-import getDatabase from '../database';
-import env from '../env';
-import { InvalidQueryException, RangeNotSatisfiableException } from '../exceptions';
-import logger from '../logger';
-import useCollection from '../middleware/use-collection';
-import { AssetsService, PayloadService } from '../services';
-import { TransformationMethods, TransformationParams, TransformationPreset } from '../types/assets';
-import asyncHandler from '../utils/async-handler';
-import { getCacheControlHeader } from '../utils/get-cache-headers';
-import { getConfigFromEnv } from '../utils/get-config-from-env';
-import { getMilliseconds } from '../utils/get-milliseconds';
+import { merge, pick } from 'lodash-es';
+import { ASSET_TRANSFORM_QUERY_KEYS, SYSTEM_ASSET_ALLOW_LIST } from '../constants.js';
+import getDatabase from '../database/index.js';
+import env from '../env.js';
+import { InvalidQueryException, RangeNotSatisfiableException } from '../exceptions/index.js';
+import logger from '../logger.js';
+import useCollection from '../middleware/use-collection.js';
+import { AssetsService } from '../services/assets.js';
+import { PayloadService } from '../services/payload.js';
+import { TransformationMethods, TransformationParams, TransformationPreset } from '../types/assets.js';
+import asyncHandler from '../utils/async-handler.js';
+import { getCacheControlHeader } from '../utils/get-cache-headers.js';
+import { getConfigFromEnv } from '../utils/get-config-from-env.js';
+import { getMilliseconds } from '../utils/get-milliseconds.js';
 
 const router = Router();
 

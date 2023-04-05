@@ -1,4 +1,4 @@
-import { defineInterface } from '@directus/shared/utils';
+import { defineInterface } from '@directus/utils';
 import InterfaceSimpleDropdownM2o from './collection-item-dropdown.vue';
 import PreviewSVG from './preview.svg?raw';
 
