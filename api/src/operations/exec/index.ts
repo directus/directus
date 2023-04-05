@@ -1,4 +1,4 @@
-import { defineOperationApi, toArray } from '@directus/shared/utils';
+import { defineOperationApi, toArray } from '@directus/utils';
 import { NodeVM, NodeVMOptions, VMScript } from 'vm2';
 import { isBuiltin } from 'node:module';
 

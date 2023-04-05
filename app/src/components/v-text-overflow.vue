@@ -7,7 +7,7 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import { useElementSize } from '@directus/shared/composables';
+import { useElementSize } from '@directus/composables';
 
 interface Props {
 	/** The text that should be displayed */

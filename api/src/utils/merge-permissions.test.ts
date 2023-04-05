@@ -1,6 +1,6 @@
-import type { Filter, Permission } from '@directus/shared/types';
+import type { Filter, Permission } from '@directus/types';
 import { describe, expect, test } from 'vitest';
-import { mergePermission } from '../../src/utils/merge-permissions';
+import { mergePermission } from './merge-permissions.js';
 
 const fullFilter = {} as Filter;
 const conditionalFilter = { user: { id: { _eq: '$CURRENT_USER' } } } as Filter;

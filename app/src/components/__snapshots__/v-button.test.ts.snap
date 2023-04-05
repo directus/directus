@@ -1,4 +1,4 @@
-// Vitest Snapshot v1
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`Mount component 1`] = `
 "<div data-v-28d526fe=\\"\\" class=\\"v-button\\"><button data-v-28d526fe=\\"\\" class=\\"button align-center normal\\" type=\\"button\\"><span data-v-28d526fe=\\"\\" class=\\"content\\"></span>

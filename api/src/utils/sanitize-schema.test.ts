@@ -1,8 +1,7 @@
-import type { Field, Relation } from '@directus/shared/types';
+import type { Field, Relation } from '@directus/types';
 import { expect, test, describe } from 'vitest';
-import type { Collection } from '../types';
-
-import { sanitizeCollection, sanitizeField, sanitizeRelation } from './sanitize-schema';
+import type { Collection } from '../types/index.js';
+import { sanitizeCollection, sanitizeField, sanitizeRelation } from './sanitize-schema.js';
 
 describe('sanitizeCollection', () => {
 	test.each([

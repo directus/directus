@@ -1,18 +1,10 @@
-import type { Accountability } from '@directus/shared/types';
+import type { Accountability } from '@directus/types';
 import { Router } from 'express';
 import Joi from 'joi';
-import ldap, {
-	Client,
-	EqualityFilter,
-	Error,
-	InappropriateAuthenticationError,
-	InsufficientAccessRightsError,
-	InvalidCredentialsError,
-	LDAPResult,
-	SearchCallbackResponse,
-	SearchEntry,
-} from 'ldapjs';
-import env from '../../env';
+import type { Client, Error, LDAPResult, SearchCallbackResponse, SearchEntry } from 'ldapjs';
+import ldap from 'ldapjs';
+import env from '../../env.js';
+import { RecordNotUniqueException } from '../../exceptions/database/record-not-unique.js';
 import {
 	InvalidConfigException,
 	InvalidCredentialsException,
@@ -20,16 +12,16 @@ import {
 	InvalidProviderException,
 	ServiceUnavailableException,
 	UnexpectedResponseException,
-} from '../../exceptions';
-import { RecordNotUniqueException } from '../../exceptions/database/record-not-unique';
-import logger from '../../logger';
-import { respond } from '../../middleware/respond';
-import { AuthenticationService, UsersService } from '../../services';
-import type { AuthDriverOptions, User } from '../../types';
-import asyncHandler from '../../utils/async-handler';
-import { getIPFromReq } from '../../utils/get-ip-from-req';
-import { getMilliseconds } from '../../utils/get-milliseconds';
-import { AuthDriver } from '../auth';
+} from '../../exceptions/index.js';
+import logger from '../../logger.js';
+import { respond } from '../../middleware/respond.js';
+import { AuthenticationService } from '../../services/authentication.js';
+import { UsersService } from '../../services/users.js';
+import type { AuthDriverOptions, User } from '../../types/index.js';
+import asyncHandler from '../../utils/async-handler.js';
+import { getIPFromReq } from '../../utils/get-ip-from-req.js';
+import { getMilliseconds } from '../../utils/get-milliseconds.js';
+import { AuthDriver } from '../auth.js';
 
 interface UserInfo {
 	dn: string;
@@ -121,7 +113,7 @@ export class LDAPAuthDriver extends AuthDriver {
 
 	private async fetchUserInfo(
 		baseDn: string,
-		filter?: EqualityFilter,
+		filter?: ldap.EqualityFilter,
 		scope?: SearchScope
 	): Promise<UserInfo | undefined> {
 		let { firstNameAttribute, lastNameAttribute, mailAttribute } = this.config;
@@ -178,7 +170,7 @@ export class LDAPAuthDriver extends AuthDriver {
 		});
 	}
 
-	private async fetchUserGroups(baseDn: string, filter?: EqualityFilter, scope?: SearchScope): Promise<string[]> {
+	private async fetchUserGroups(baseDn: string, filter?: ldap.EqualityFilter, scope?: SearchScope): Promise<string[]> {
 		return new Promise((resolve, reject) => {
 			let userGroups: string[] = [];
 
@@ -237,7 +229,7 @@ export class LDAPAuthDriver extends AuthDriver {
 
 		const userInfo = await this.fetchUserInfo(
 			userDn,
-			new EqualityFilter({
+			new ldap.EqualityFilter({
 				attribute: userAttribute ?? 'cn',
 				value: payload['identifier'],
 			}),
@@ -253,7 +245,7 @@ export class LDAPAuthDriver extends AuthDriver {
 		if (groupDn) {
 			const userGroups = await this.fetchUserGroups(
 				groupDn,
-				new EqualityFilter({
+				new ldap.EqualityFilter({
 					attribute: groupAttribute ?? 'member',
 					value: groupAttribute?.toLowerCase() === 'memberuid' && userInfo.uid ? userInfo.uid : userInfo.dn,
 				}),
@@ -351,9 +343,9 @@ export class LDAPAuthDriver extends AuthDriver {
 
 const handleError = (e: Error) => {
 	if (
-		e instanceof InappropriateAuthenticationError ||
-		e instanceof InvalidCredentialsError ||
-		e instanceof InsufficientAccessRightsError
+		e instanceof ldap.InappropriateAuthenticationError ||
+		e instanceof ldap.InvalidCredentialsError ||
+		e instanceof ldap.InsufficientAccessRightsError
 	) {
 		return new InvalidCredentialsException();
 	}

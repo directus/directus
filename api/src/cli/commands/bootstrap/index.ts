@@ -1,13 +1,19 @@
-import type { SchemaOverview } from '@directus/shared/types';
+import type { SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
-import getDatabase, { hasDatabaseConnection, isInstalled, validateDatabaseConnection } from '../../../database';
-import runMigrations from '../../../database/migrations/run';
-import installDatabase from '../../../database/seeds/run';
-import env from '../../../env';
-import logger from '../../../logger';
-import { RolesService, SettingsService, UsersService } from '../../../services';
-import { getSchema } from '../../../utils/get-schema';
-import { defaultAdminRole, defaultAdminUser } from '../../utils/defaults';
+import getDatabase, {
+	hasDatabaseConnection,
+	isInstalled,
+	validateDatabaseConnection,
+} from '../../../database/index.js';
+import runMigrations from '../../../database/migrations/run.js';
+import installDatabase from '../../../database/seeds/run.js';
+import env from '../../../env.js';
+import logger from '../../../logger.js';
+import { RolesService } from '../../../services/roles.js';
+import { SettingsService } from '../../../services/settings.js';
+import { UsersService } from '../../../services/users.js';
+import { getSchema } from '../../../utils/get-schema.js';
+import { defaultAdminRole, defaultAdminUser } from '../../utils/defaults.js';
 
 export default async function bootstrap({ skipAdminInit }: { skipAdminInit?: boolean }): Promise<void> {
 	logger.info('Initializing bootstrap...');

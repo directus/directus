@@ -1,20 +1,19 @@
-import { toArray } from '@directus/shared/utils';
+import formatTitle from '@directus/format-title';
+import { toArray } from '@directus/utils';
 import Busboy from 'busboy';
 import express, { RequestHandler } from 'express';
 import Joi from 'joi';
 import path from 'path';
-import env from '../env';
-import { ForbiddenException, InvalidPayloadException } from '../exceptions';
-import { respond } from '../middleware/respond';
-import useCollection from '../middleware/use-collection';
-import { validateBatch } from '../middleware/validate-batch';
-import { FilesService, MetaService } from '../services';
-import type { PrimaryKey } from '../types';
-import asyncHandler from '../utils/async-handler';
-
-// @ts-ignore
-import formatTitle from '@directus/format-title';
-import { sanitizeQuery } from '../utils/sanitize-query';
+import env from '../env.js';
+import { ForbiddenException, InvalidPayloadException } from '../exceptions/index.js';
+import { respond } from '../middleware/respond.js';
+import useCollection from '../middleware/use-collection.js';
+import { validateBatch } from '../middleware/validate-batch.js';
+import { FilesService } from '../services/files.js';
+import { MetaService } from '../services/meta.js';
+import type { PrimaryKey } from '../types/index.js';
+import asyncHandler from '../utils/async-handler.js';
+import { sanitizeQuery } from '../utils/sanitize-query.js';
 
 const router = express.Router();
 

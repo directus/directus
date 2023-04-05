@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import type { Collection } from '../types/collection';
+import type { Collection } from '../types/collection.js';
 import type {
 	Snapshot,
 	SnapshotDiff,
@@ -7,8 +7,8 @@ import type {
 	SnapshotField,
 	SnapshotRelation,
 	SnapshotWithHash,
-} from '../types/snapshot';
-import { validateApplyDiff } from './validate-diff';
+} from '../types/snapshot.js';
+import { validateApplyDiff } from './validate-diff.js';
 
 test('should fail on invalid diff schema', () => {
 	const diff = {} as SnapshotDiffWithHash;

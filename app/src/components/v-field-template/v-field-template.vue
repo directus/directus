@@ -32,7 +32,7 @@
 import { toRefs, ref, watch, onMounted, onUnmounted, computed } from 'vue';
 import FieldListItem from './field-list-item.vue';
 import { FieldTree } from './types';
-import { Field, Relation } from '@directus/shared/types';
+import { Field, Relation } from '@directus/types';
 import { useFieldTree } from '@/composables/use-field-tree';
 import { flattenFieldGroups } from '@/utils/flatten-field-groups';
 
