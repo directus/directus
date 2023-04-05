@@ -14,7 +14,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, inject, ref, watch } from 'vue';
-import { InterfaceConfig } from '@directus/shared/types';
+import { InterfaceConfig } from '@directus/types';
 import { useExtensions } from '@/extensions';
 
 export default defineComponent({

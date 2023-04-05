@@ -5,7 +5,8 @@ import { TestLogger } from '@common/test-logger';
 import { awaitDirectusConnection } from '@utils/await-connection';
 import { ChildProcess, spawn } from 'child_process';
 import { EnumType } from 'json-to-graphql-query';
-import knex, { Knex } from 'knex';
+import knex from 'knex';
+import type { Knex } from 'knex';
 import { cloneDeep } from 'lodash';
 import request from 'supertest';
 

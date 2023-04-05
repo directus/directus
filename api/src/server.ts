@@ -2,17 +2,17 @@ import { createTerminus, TerminusOptions } from '@godaddy/terminus';
 import type { Request } from 'express';
 import * as http from 'http';
 import * as https from 'https';
-import { once } from 'lodash';
+import { once } from 'lodash-es';
 import qs from 'qs';
-import checkForUpdate from 'update-check';
+import { isUpToDate } from '@directus/update-check';
 import url from 'url';
-import pkg from '../package.json';
-import createApp from './app';
-import getDatabase from './database';
-import emitter from './emitter';
-import env from './env';
-import logger from './logger';
-import { getConfigFromEnv } from './utils/get-config-from-env';
+import * as pkg from './utils/package.js';
+import createApp from './app.js';
+import getDatabase from './database/index.js';
+import emitter from './emitter.js';
+import env from './env.js';
+import logger from './logger.js';
+import { getConfigFromEnv } from './utils/get-config-from-env.js';
 
 export async function createServer(): Promise<http.Server> {
 	const server = http.createServer(await createApp());
@@ -131,10 +131,10 @@ export async function startServer(): Promise<void> {
 
 	server
 		.listen(port, host, () => {
-			checkForUpdate(pkg)
+			isUpToDate(pkg.name, pkg.version)
 				.then((update) => {
 					if (update) {
-						logger.warn(`Update available: ${pkg.version} -> ${update.latest}`);
+						logger.warn(`Update available: ${pkg.version} -> ${update}`);
 					}
 				})
 				.catch(() => {

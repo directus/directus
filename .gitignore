@@ -26,3 +26,5 @@ debug
 debug.ts
 .clinic
 /uploads
+.thumbsmith
+.netlify

@@ -294,6 +294,7 @@ o2m_relationship: Yksi moneen (O2M) -suhde
 m2m_relationship: Moni moneen (M2M) -suhde
 m2a_relationship: Moni mihin tahansa (M2A) -suhde
 invalid_item: Virheellinen kohde
+modal: Modaali
 next: Seuraava
 field_name: Kentän nimi
 translations: Käännökset
@@ -780,10 +781,7 @@ label: Tunniste
 flows: Toiminnot
 flow: Vuo
 select_a_flow: Valitse Vuo
-run_flow_on_current_collection: Aja Vuo nykyiselle kokoelmalle
-run_flow_on_current: Aja Vuo nykyiselle kohteelle
 run_flow_on_current_edited_confirm: Tämä kohde voidaan päivittää tällä Vuolla, oletko varma, että haluat suorittaa Vuon?
-run_flow_on_selected: Valitse yksi tai useampi kohde ensin | Aja Vuo 1 valitulle kohteelle | Aja Vuo {n} valitulle kohteelle
 run_flow_success: Vuon "{flow}" suoritus onnistui
 trigger: Laukaisija
 trigger_options: Liipaisun asetukset
@@ -1509,7 +1507,6 @@ interfaces:
     edit_fields: Muokkaa kenttiä
     add_label: '"Luo uusi"-tunniste'
     sort: Järjestä
-    field_name_placeholder: Syötä kentän nimi...
     field_note_placeholder: Syötä kentän muistiinpano...
   slider:
     slider: Liukusäädin
