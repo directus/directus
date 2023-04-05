@@ -67,7 +67,7 @@
 	"scripts": {
 		"build": "tsc --build && copyfiles \"src/**/*.{yaml,liquid}\" -u 1 dist",
 		"cli": "NODE_ENV=development SERVE_APP=false node --loader @esbuild-kit/esm-loader src/cli/run.ts",
-		"dev": "NODE_ENV=development SERVE_APP=false node --loader @esbuild-kit/esm-loader --watch --inspect=0 src/start.ts",
+		"dev": "NODE_ENV=development SERVE_APP=false node --loader @esbuild-kit/esm-loader --watch src/start.ts",
 		"start": "node cli.js start",
 		"test": "vitest run",
 		"test:coverage": "vitest run --coverage",
