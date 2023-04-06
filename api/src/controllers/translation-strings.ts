@@ -2,31 +2,21 @@ import express from 'express';
 import { ForbiddenException } from '../exceptions/index.js';
 import { respond } from '../middleware/respond.js';
 import { validateBatch } from '../middleware/validate-batch.js';
-import { ItemsService, MetaService } from '../services/index.js';
-import type { Item, PrimaryKey } from '../types/index.js';
+import { TranslationStringsService } from '../services/index.js';
 import asyncHandler from '../utils/async-handler.js';
-import { omit } from 'lodash-es';
-// import { sanitizeQuery } from '../utils/sanitize-query';
+import type { PrimaryKey } from '@directus/types';
 
 const router = express.Router();
 
 const readHandler = asyncHandler(async (req, res, next) => {
-	const service = new ItemsService('directus_translation_strings', {
-		accountability: req.accountability,
-		schema: req.schema,
-	});
-
-	const metaService = new MetaService({
+	const service = new TranslationStringsService({
 		accountability: req.accountability,
 		schema: req.schema,
 	});
 
 	const result = await service.readByQuery(req.sanitizedQuery);
 
-	const meta = await metaService.getMetaForQuery('directus_translation_strings', req.sanitizedQuery);
-
 	res.locals['payload'] = {
-		meta: meta,
 		data: result,
 	};
 
@@ -37,47 +27,38 @@ router.search('/', validateBatch('read'), readHandler, respond);
 router.get('/', readHandler, respond);
 
 router.post(
-	'/',
+	'/:key',
 	asyncHandler(async (req, res, next) => {
-		const service = new ItemsService('directus_translation_strings', {
+		const service = new TranslationStringsService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
 
-		const savedKeys: PrimaryKey[] = [];
-		async function customUpsert(item: Partial<Item>) {
-			const result = await service.readByQuery({
-				filter: {
-					_and: [{ language: { _eq: item['language']! } }, { key: { _eq: item['key']! } }],
-				},
-				fields: ['*'],
-				limit: 1,
-			});
-			if (result) {
-				const { id } = result[0]!;
-				const key = await service.updateOne(id, omit(item, 'id'));
-				savedKeys.push(key);
-			} else {
-				const key = await service.createOne(item);
-				savedKeys.push(key);
-			}
-		}
-
-		if (Array.isArray(req.body)) {
-			for (const item of req.body) {
-				await customUpsert(item);
-			}
-		} else {
-			await customUpsert(req.body);
-		}
-
 		try {
+			let savedKeys: PrimaryKey[] = [];
+			const existingKeys: PrimaryKey[] = (
+				await service.readByQuery({
+					fields: ['id'],
+					filter: {
+						key: { _eq: req.params['key']! },
+					},
+				})
+			).map(({ id }) => id);
+
 			if (Array.isArray(req.body)) {
+				savedKeys = await service.upsertMany(req.body);
 				const result = await service.readMany(savedKeys, req.sanitizedQuery);
 				res.locals['payload'] = { data: result || null };
 			} else {
-				const result = await service.readOne(savedKeys[0]!, req.sanitizedQuery);
+				const savedKey = await service.upsertOne(req.body);
+				savedKeys.push(savedKey);
+				const result = await service.readOne(savedKey, req.sanitizedQuery);
 				res.locals['payload'] = { data: result || null };
+			}
+
+			const deleteKeys = existingKeys.filter((id) => !savedKeys.includes(id));
+			if (deleteKeys.length > 0) {
+				await service.deleteMany(deleteKeys);
 			}
 		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
@@ -95,7 +76,7 @@ router.post(
 router.delete(
 	'/:language/:key',
 	asyncHandler(async (req, _res, next) => {
-		const service = new ItemsService('directus_translation_strings', {
+		const service = new TranslationStringsService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
@@ -119,7 +100,7 @@ router.delete(
 router.delete(
 	'/:key',
 	asyncHandler(async (req, _res, next) => {
-		const service = new ItemsService('directus_translation_strings', {
+		const service = new TranslationStringsService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
