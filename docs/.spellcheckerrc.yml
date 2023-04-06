@@ -1,4 +1,5 @@
 files:
   - '**/*.md'
+  - '!node_modules'
 dictionaries:
   - dictionary.txt
