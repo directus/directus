@@ -1,32 +1,46 @@
+# User preferences
 .DS_Store
+
+# Dependencies
 node_modules
-.vs
-.vscode
+
+# Builds / Caches
+dist
+storybook-static
+coverage
+*.tsbuildinfo
+**/.vitepress/cache
+.thumbsmith
+
+# Dotenv configs
 .env
 .env.*
-.secrets
+
+# Logs
 npm-debug.log
-lerna-debug.log
-.nova
+debug
+.clinic
+/tests-blackbox/server-log-*
+
+# IDEs / Editors
+.vscode
 *.code-workspace
-dist
-*.sublime-settings
-*.db
-.nyc_output
 .history
-/.idea/
-*.tsbuildinfo
-.e2e-containers.json
-coverage
+.idea
+*.sublime-settings
+.*.swp
+
+# Environments / Workspaces
+.gitpod.yml
+.netlify
+
+# Temporary files
 TODO
+
+# Directus data
 /schema.yaml
 /schema.json
-.*.swp
-debug
-debug.ts
-.clinic
 /uploads
-.thumbsmith
-.netlify
-.gitpod.yml
-*/.vitepress/cache
+/api/uploads
+/api/extensions
+*.db
