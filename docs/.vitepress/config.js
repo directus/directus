@@ -500,6 +500,10 @@ function sidebar() {
 									text: 'Create Re-Usable Page Components',
 									link: '/use-cases/headless-cms/create-reusable-page-components-using-m2a',
 								},
+								{
+									text: 'Security Best Practices',
+									link: '/use-cases/headless-cms/security',
+								},
 							],
 						},
 					],
