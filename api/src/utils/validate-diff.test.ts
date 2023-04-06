@@ -131,6 +131,47 @@ describe('should throw accurate error', () => {
 	});
 });
 
+test('should not throw error for relation diff with null related_collection (applicable for M2A junction tables)', () => {
+	const diff: any = {
+		hash: 'abc',
+		diff: {
+			collections: [],
+			fields: [],
+			relations: [
+				{
+					collection: 'pages_blocks',
+					field: 'item',
+					related_collection: null,
+					diff: [
+						{
+							kind: 'N',
+							rhs: {
+								collection: 'pages_blocks',
+								field: 'item',
+								related_collection: null,
+								meta: {
+									junction_field: 'pages_id',
+									many_collection: 'pages_blocks',
+									many_field: 'item',
+									one_allowed_collections: ['a', 'b'],
+									one_collection: null,
+									one_collection_field: 'collection',
+									one_deselect_action: 'nullify',
+									one_field: null,
+									sort_field: null,
+								},
+							},
+						},
+					],
+				},
+			],
+		},
+	};
+	const snapshot = { hash: 'abc' } as SnapshotWithHash;
+
+	expect(() => validateApplyDiff(diff, snapshot)).not.toThrow();
+});
+
 test('should detect empty diff', () => {
 	const diff = {
 		hash: 'abc',
