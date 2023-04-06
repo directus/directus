@@ -160,6 +160,9 @@ importers:
       '@rollup/plugin-alias':
         specifier: 4.0.3
         version: 4.0.3(rollup@3.19.1)
+      '@rollup/plugin-node-resolve':
+        specifier: ^15.0.1
+        version: 15.0.1(rollup@3.19.1)
       '@rollup/plugin-virtual':
         specifier: 3.0.1
         version: 3.0.1(rollup@3.19.1)

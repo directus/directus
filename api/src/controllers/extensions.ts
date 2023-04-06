@@ -1,7 +1,7 @@
 import { EXTENSION_TYPES } from '@directus/constants';
 import type { Plural } from '@directus/types';
 import { depluralize, isIn } from '@directus/utils';
-import { Router } from 'express';
+import { Request, Response, Router } from 'express';
 import env from '../env.js';
 import { RouteNotFoundException } from '../exceptions/index.js';
 import { getExtensionManager } from '../extensions.js';
@@ -34,23 +34,40 @@ router.get(
 	respond
 );
 
+function sendJavascript(req: Request, res: Response, source: string | undefined | null): void {
+	if (source === null || source === undefined) {
+		throw new RouteNotFoundException(req.path);
+	}
+
+	res.setHeader('Content-Type', 'application/javascript; charset=UTF-8');
+	res.setHeader(
+		'Cache-Control',
+		getCacheControlHeader(req, getMilliseconds(env['EXTENSIONS_CACHE_TTL']), false, false)
+	);
+	res.setHeader('Vary', 'Origin, Cache-Control');
+	res.end(source);
+}
+
 router.get(
 	'/sources/index.js',
 	asyncHandler(async (req, res) => {
 		const extensionManager = getExtensionManager();
 
 		const extensionSource = extensionManager.getAppExtensions();
-		if (extensionSource === null) {
-			throw new RouteNotFoundException(req.path);
-		}
 
-		res.setHeader('Content-Type', 'application/javascript; charset=UTF-8');
-		res.setHeader(
-			'Cache-Control',
-			getCacheControlHeader(req, getMilliseconds(env['EXTENSIONS_CACHE_TTL']), false, false)
-		);
-		res.setHeader('Vary', 'Origin, Cache-Control');
-		res.end(extensionSource);
+		sendJavascript(req, res, extensionSource);
+	})
+);
+
+router.get(
+	'/sources/:chunk',
+	asyncHandler(async (req, res) => {
+		const chunk = req.params['chunk'] as string;
+		const extensionManager = getExtensionManager();
+
+		const chunkSource = extensionManager.getAppChunk(chunk);
+
+		sendJavascript(req, res, chunkSource?.code);
 	})
 );
 

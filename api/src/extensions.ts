@@ -34,6 +34,7 @@ import {
 } from '@directus/utils/node';
 import aliasDefault from '@rollup/plugin-alias';
 import virtualDefault from '@rollup/plugin-virtual';
+import { nodeResolve } from '@rollup/plugin-node-resolve';
 import chokidar, { FSWatcher } from 'chokidar';
 import express, { Router } from 'express';
 import globby from 'globby';
@@ -84,6 +85,10 @@ type BundleConfig = {
 };
 
 type AppExtensions = string | null;
+type AppChunk = {
+	fileName: string;
+	code: string;
+};
 type ApiExtensions = { path: string }[];
 
 type Options = {
@@ -103,6 +108,7 @@ class ExtensionManager {
 	private extensions: Extension[] = [];
 
 	private appExtensions: AppExtensions = null;
+	private appChunks: AppChunk[] = [];
 	private apiExtensions: ApiExtensions = [];
 
 	private apiEmitter: Emitter;
@@ -226,6 +232,10 @@ class ExtensionManager {
 
 	public getAppExtensions(): string | null {
 		return this.appExtensions;
+	}
+
+	public getAppChunk(fileName: string): AppChunk | undefined {
+		return this.appChunks.find((dynamic) => dynamic.fileName === fileName);
 	}
 
 	public getEndpointRouter(): Router {
@@ -355,9 +365,15 @@ class ExtensionManager {
 				input: 'entry',
 				external: Object.values(sharedDepsMapping),
 				makeAbsoluteExternalsRelative: false,
-				plugins: [virtual({ entry: entrypoint }), alias({ entries: internalImports })],
+				plugins: [virtual({ entry: entrypoint }), alias({ entries: internalImports }), nodeResolve({ browser: true })],
 			});
 			const { output } = await bundle.generate({ format: 'es', compact: true });
+
+			for (const out of output) {
+				if (out.type === 'chunk') {
+					this.appChunks.push({ fileName: out.fileName, code: out.code });
+				}
+			}
 
 			await bundle.close();
 
