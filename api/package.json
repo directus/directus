@@ -66,8 +66,8 @@
 	],
 	"scripts": {
 		"build": "tsc --build && copyfiles \"src/**/*.{yaml,liquid}\" -u 1 dist",
-		"cli": "NODE_ENV=development SERVE_APP=false node --loader @esbuild-kit/esm-loader src/cli/run.ts",
-		"dev": "NODE_ENV=development SERVE_APP=false node --loader @esbuild-kit/esm-loader --watch --inspect=0 src/start.ts",
+		"cli": "NODE_ENV=development SERVE_APP=false tsx src/cli/run.ts",
+		"dev": "NODE_ENV=development SERVE_APP=false tsx watch src/start.ts",
 		"start": "node cli.js start",
 		"test": "vitest run",
 		"test:coverage": "vitest run --coverage",
@@ -162,6 +162,7 @@
 		"stream-json": "1.7.5",
 		"strip-bom-stream": "4.0.0",
 		"tmp-promise": "3.0.3",
+		"tsx": "3.12.6",
 		"uuid": "9.0.0",
 		"uuid-validate": "0.0.3",
 		"vm2": "3.9.14",
@@ -170,7 +171,6 @@
 	"devDependencies": {
 		"@directus/tsconfig": "0.0.6",
 		"@directus/types": "workspace:*",
-		"@esbuild-kit/esm-loader": "2.5.5",
 		"@ngneat/falso": "6.4.0",
 		"@types/async": "3.2.18",
 		"@types/busboy": "1.5.0",
