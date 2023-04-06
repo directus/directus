@@ -22,6 +22,8 @@ import {
 import { startWebSocketHandlers } from './websocket/handlers/index.js';
 import { toBoolean } from './utils/to-boolean.js';
 
+export let SERVER_ONLINE = true;
+
 export async function createServer(): Promise<http.Server> {
 	const server = http.createServer(await createApp());
 
@@ -96,7 +98,10 @@ export async function createServer(): Promise<http.Server> {
 	}
 
 	const terminusOptions: TerminusOptions = {
-		timeout: 1000,
+		timeout:
+			env['SERVER_SHUTDOWN_TIMEOUT'] >= 0 && env['SERVER_SHUTDOWN_TIMEOUT'] < Infinity
+				? env['SERVER_SHUTDOWN_TIMEOUT']
+				: 1000,
 		signals: ['SIGINT', 'SIGTERM', 'SIGHUP'],
 		beforeShutdown,
 		onSignal,
@@ -111,6 +116,7 @@ export async function createServer(): Promise<http.Server> {
 		if (env['NODE_ENV'] !== 'development') {
 			logger.info('Shutting down...');
 		}
+		SERVER_ONLINE = false;
 	}
 
 	async function onSignal() {
