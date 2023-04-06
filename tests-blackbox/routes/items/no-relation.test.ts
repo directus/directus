@@ -1232,11 +1232,15 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							// Assert
 							expect(response.statusCode).toBe(400);
 							expect(response.body.errors).toBeDefined();
-							expect(response.body.errors[0].message).toBe('Max batch mutation limit exceeded');
+							expect(response.body.errors[0].message).toBe(
+								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+							);
 
 							expect(gqlResponse.statusCode).toBe(200);
 							expect(gqlResponse.body.errors).toBeDefined();
-							expect(gqlResponse.body.errors[0].message).toBe('Max batch mutation limit exceeded');
+							expect(gqlResponse.body.errors[0].message).toBe(
+								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+							);
 						},
 						120000
 					);
@@ -1332,11 +1336,15 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							// Assert
 							expect(response.statusCode).toBe(400);
 							expect(response.body.errors).toBeDefined();
-							expect(response.body.errors[0].message).toBe('Max batch mutation limit exceeded');
+							expect(response.body.errors[0].message).toBe(
+								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+							);
 
 							expect(gqlResponse.statusCode).toBe(200);
 							expect(gqlResponse.body.errors).toBeDefined();
-							expect(gqlResponse.body.errors[0].message).toBe('Max batch mutation limit exceeded');
+							expect(gqlResponse.body.errors[0].message).toBe(
+								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+							);
 						},
 						120000
 					);
@@ -1434,11 +1442,15 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							// Assert
 							expect(response.statusCode).toBe(400);
 							expect(response.body.errors).toBeDefined();
-							expect(response.body.errors[0].message).toBe('Max batch mutation limit exceeded');
+							expect(response.body.errors[0].message).toBe(
+								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+							);
 
 							expect(gqlResponse.statusCode).toBe(200);
 							expect(gqlResponse.body.errors).toBeDefined();
-							expect(gqlResponse.body.errors[0].message).toBe('Max batch mutation limit exceeded');
+							expect(gqlResponse.body.errors[0].message).toBe(
+								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+							);
 						},
 						120000
 					);
@@ -1509,7 +1521,9 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							// Assert
 							expect(response.statusCode).toBe(400);
 							expect(response.body.errors).toBeDefined();
-							expect(response.body.errors[0].message).toBe('Max batch mutation limit exceeded');
+							expect(response.body.errors[0].message).toBe(
+								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+							);
 						},
 						120000
 					);
@@ -1657,19 +1671,27 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							// Assert
 							expect(response.statusCode).toBe(400);
 							expect(response.body.errors).toBeDefined();
-							expect(response.body.errors[0].message).toBe('Max batch mutation limit exceeded');
+							expect(response.body.errors[0].message).toBe(
+								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+							);
 
 							expect(response2.statusCode).toBe(400);
 							expect(response2.body.errors).toBeDefined();
-							expect(response2.body.errors[0].message).toBe('Max batch mutation limit exceeded');
+							expect(response2.body.errors[0].message).toBe(
+								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+							);
 
 							expect(gqlResponse.statusCode).toBe(200);
 							expect(gqlResponse.body.errors).toBeDefined();
-							expect(gqlResponse.body.errors[0].message).toBe('Max batch mutation limit exceeded');
+							expect(gqlResponse.body.errors[0].message).toBe(
+								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+							);
 
 							expect(gqlResponse2.statusCode).toBe(200);
 							expect(gqlResponse2.body.errors).toBeDefined();
-							expect(gqlResponse2.body.errors[0].message).toBe('Max batch mutation limit exceeded');
+							expect(gqlResponse2.body.errors[0].message).toBe(
+								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+							);
 						},
 						120000
 					);
@@ -1737,7 +1759,9 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							// Assert
 							expect(response.statusCode).toBe(400);
 							expect(response.body.errors).toBeDefined();
-							expect(response.body.errors[0].message).toBe('Max batch mutation limit exceeded');
+							expect(response.body.errors[0].message).toBe(
+								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+							);
 						},
 						120000
 					);

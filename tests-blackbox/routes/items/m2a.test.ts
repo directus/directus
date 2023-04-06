@@ -1746,7 +1746,9 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								// Assert
 								expect(response.statusCode).toBe(400);
 								expect(response.body.errors).toBeDefined();
-								expect(response.body.errors[0].message).toBe('Max batch mutation limit exceeded');
+								expect(response.body.errors[0].message).toBe(
+									`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+								);
 							},
 							120000
 						);
@@ -1827,7 +1829,9 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								// Assert
 								expect(response.statusCode).toBe(400);
 								expect(response.body.errors).toBeDefined();
-								expect(response.body.errors[0].message).toBe('Max batch mutation limit exceeded');
+								expect(response.body.errors[0].message).toBe(
+									`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+								);
 							},
 							120000
 						);
@@ -1960,7 +1964,9 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								// Assert
 								expect(response.statusCode).toBe(400);
 								expect(response.body.errors).toBeDefined();
-								expect(response.body.errors[0].message).toBe('Max batch mutation limit exceeded');
+								expect(response.body.errors[0].message).toBe(
+									`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+								);
 							},
 							120000
 						);
