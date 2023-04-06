@@ -60,7 +60,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			trackMutations(count: number) {
 				mutationCount += count;
 				if (mutationCount > maxCount) {
-					throw new InvalidPayloadException('Max batch mutation limit exceeded');
+					throw new InvalidPayloadException(`Exceeded max batch mutation limit of ${maxCount}.`);
 				}
 			},
 			getCount() {
