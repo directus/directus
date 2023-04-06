@@ -1,5 +1,4 @@
-import IORedis from 'ioredis';
-import type { Redis } from 'ioredis';
+import { Redis } from 'ioredis';
 import { merge } from 'lodash-es';
 import { parseJSON } from '@directus/utils';
 import env from './env.js';
@@ -40,8 +39,8 @@ export class MessengerRedis implements Messenger {
 
 	constructor() {
 		const config = this.getConfig();
-		this.pub = new IORedis(config);
-		this.sub = new IORedis(config);
+		this.pub = new Redis(config);
+		this.sub = new Redis(config);
 		this.namespace = env['MESSENGER_NAMESPACE'] ?? 'directus';
 	}
 

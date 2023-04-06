@@ -1,4 +1,4 @@
-import { getCache } from '../../cache';
+import { getCache } from '../../cache.js';
 
 export interface CacheOptions {
 	ttl: number | undefined;

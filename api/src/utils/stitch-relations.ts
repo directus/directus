@@ -1,5 +1,6 @@
-import type { Relation, RelationMeta } from '@directus/shared/types';
-import type { ForeignKey } from 'knex-schema-inspector/dist/types/foreign-key';
+import type { ForeignKey } from "@directus/schema";
+import type { Relation, RelationMeta } from "@directus/types";
+
 
 /**
  * Combine raw schema foreign key information with Directus relations meta rows to form final

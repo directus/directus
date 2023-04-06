@@ -1,5 +1,5 @@
-import { toArray } from '@directus/shared/utils';
-import { getCache } from '../cache';
+import { toArray } from '@directus/utils';
+import { getCache } from '../cache.js';
 
 export async function clearSystemCache(forced?: boolean): Promise<void> {
 	const { systemCache } = getCache();

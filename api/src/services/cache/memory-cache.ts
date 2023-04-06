@@ -1,7 +1,7 @@
 import { cloneDeep } from 'lodash';
-import { CacheService } from './cache';
+import { CacheService } from './cache.js';
 import LRU from 'lru-cache';
-import { toArray } from '@directus/shared/utils';
+import { toArray } from '@directus/utils';
 
 export class MemoryCache extends CacheService {
 	store = new LRU<string, any>({

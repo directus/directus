@@ -1,13 +1,13 @@
-import Redis from 'ioredis';
-import env from '../../env';
-import logger from '../../logger';
-import { getConfigFromEnv } from '../../utils/get-config-from-env';
-import { CacheOptions, CacheService } from './cache';
+import env from '../../env.js';
+import logger from '../../logger.js';
+import { getConfigFromEnv } from '../../utils/get-config-from-env.js';
+import { CacheOptions, CacheService } from './cache.js';
 import { parse, stringify } from 'json-buffer';
-import { compress, decompress } from '../../utils/compress';
+import { compress, decompress } from '../../utils/compress.js';
 import { map } from 'async';
 import { merge } from 'lodash';
-import { toArray } from '@directus/shared/utils';
+import { Redis } from 'ioredis';
+import { toArray } from '@directus/utils';
 
 export class RedisCache extends CacheService {
 	client: Redis;

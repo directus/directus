@@ -102,297 +102,441 @@ importers:
         version: 9.0.0
 
   api:
-    specifiers:
-      '@authenio/samlify-node-xmllint': 2.0.0
-      '@aws-sdk/client-ses': 3.292.0
-      '@directus/app': workspace:*
-      '@directus/extensions-sdk': workspace:*
-      '@directus/format-title': 9.15.0
-      '@directus/schema': workspace:*
-      '@directus/shared': workspace:*
-      '@directus/specs': workspace:*
-      '@directus/storage': workspace:*
-      '@directus/storage-driver-azure': workspace:*
-      '@directus/storage-driver-cloudinary': workspace:*
-      '@directus/storage-driver-gcs': workspace:*
-      '@directus/storage-driver-local': workspace:*
-      '@directus/storage-driver-s3': workspace:*
-      '@directus/utils': workspace:*
-      '@godaddy/terminus': 4.11.2
-      '@ngneat/falso': 6.4.0
-      '@rollup/plugin-alias': 4.0.3
-      '@rollup/plugin-virtual': 3.0.1
-      '@types/async': 3.2.18
-      '@types/busboy': 1.5.0
-      '@types/bytes': 3.1.1
-      '@types/cookie-parser': 1.4.3
-      '@types/cors': 2.8.13
-      '@types/deep-diff': 1.0.2
-      '@types/destroy': 1.0.0
-      '@types/encodeurl': 1.0.0
-      '@types/exif-reader': 1.0.0
-      '@types/express': 4.17.17
-      '@types/express-serve-static-core': 4.17.33
-      '@types/fast-redact': 3.0.2
-      '@types/flat': 5.0.2
-      '@types/fs-extra': 11.0.1
-      '@types/inquirer': 8.2.6
-      '@types/js-yaml': 4.0.5
-      '@types/json-buffer': ^3.0.0
-      '@types/json2csv': 5.0.3
-      '@types/jsonwebtoken': 9.0.1
-      '@types/ldapjs': 2.2.5
-      '@types/lodash': 4.14.191
-      '@types/marked': 4.0.8
-      '@types/mime-types': 2.1.1
-      '@types/ms': 0.7.31
-      '@types/node': 18.15.3
-      '@types/node-cron': 3.0.7
-      '@types/nodemailer': 6.4.7
-      '@types/object-hash': 3.0.2
-      '@types/qs': 6.9.7
-      '@types/sanitize-html': 2.9.0
-      '@types/sharp': 0.31.1
-      '@types/stream-json': 1.7.3
-      '@types/uuid': 9.0.1
-      '@types/uuid-validate': 0.0.1
-      '@types/wellknown': 0.5.4
-      '@vitest/coverage-c8': 0.29.3
-      argon2: 0.30.3
-      async: 3.2.4
-      axios: 1.3.4
-      busboy: 1.6.0
-      bytes: 3.1.2
-      camelcase: 6.3.0
-      chalk: 4.1.2
-      chokidar: 3.5.3
-      commander: 9.5.0
-      cookie-parser: 1.4.6
-      copyfiles: 2.4.1
-      cors: 2.8.5
-      csv-parser: 3.0.0
-      date-fns: 2.29.3
-      deep-diff: 1.0.2
-      destroy: 1.2.0
-      dotenv: 16.0.3
-      encodeurl: 1.0.2
-      eventemitter2: 6.4.9
-      execa: 5.1.1
-      exif-reader: 1.2.0
-      express: 4.18.2
-      fast-redact: 3.1.2
-      flat: 5.0.2
-      form-data: 4.0.0
-      fs-extra: 11.1.0
-      globby: 11.1.0
-      graphql: 16.6.0
-      graphql-compose: 9.0.10
-      helmet: 6.0.1
-      icc: 2.0.0
-      inquirer: 8.2.5
-      ioredis: 5.3.1
-      joi: 17.8.4
-      js-yaml: 4.1.0
-      js2xmlparser: 5.0.0
-      json-buffer: ^3.0.1
-      json2csv: 5.0.7
-      jsonwebtoken: 9.0.0
-      knex: 2.4.2
-      knex-mock-client: 2.0.0
-      knex-schema-inspector: 3.0.1
-      ldapjs: 2.3.3
-      liquidjs: 10.6.1
-      lodash: 4.17.21
-      lru-cache: ^7.14.0
-      marked: 4.2.12
-      micromustache: 8.0.3
-      mime-types: 2.1.35
-      ms: 2.1.3
-      mysql: 2.18.1
-      nanoid: 3.3.4
-      node-cron: 3.0.2
-      node-machine-id: 1.1.12
-      nodemailer: 6.9.1
-      nodemailer-mailgun-transport: 2.1.5
-      nodemailer-sendgrid: 1.0.3
-      object-hash: 3.0.0
-      openapi3-ts: 3.2.0
-      openid-client: 5.4.0
-      ora: 5.4.1
-      otplib: 12.0.1
-      pg: 8.10.0
-      pino: 8.11.0
-      pino-http: 8.3.3
-      pino-http-print: 3.1.0
-      pino-pretty: 10.0.0
-      qs: 6.11.1
-      rate-limiter-flexible: 2.4.1
-      rollup: 3.19.1
-      samlify: 2.8.10
-      sanitize-html: 2.10.0
-      sharp: 0.31.3
-      snappy: 7.2.2
-      sqlite3: 5.1.6
-      stream-json: 1.7.5
-      strip-bom-stream: 4.0.0
-      tedious: 15.1.3
-      tmp-promise: 3.0.3
-      ts-node: 10.9.1
-      ts-node-dev: 2.0.0
-      typescript: 4.9.5
-      update-check: 1.5.4
-      uuid: 9.0.0
-      uuid-validate: 0.0.3
-      vitest: 0.29.3
-      vm2: 3.9.14
-      wellknown: 0.5.0
     dependencies:
-      '@authenio/samlify-node-xmllint': 2.0.0_samlify@2.8.10
-      '@aws-sdk/client-ses': 3.292.0
-      '@directus/app': link:../app
-      '@directus/extensions-sdk': link:../packages/extensions-sdk
-      '@directus/format-title': 9.15.0
-      '@directus/schema': link:../packages/schema
-      '@directus/shared': link:../packages/shared
-      '@directus/specs': link:../packages/specs
-      '@directus/storage': link:../packages/storage
-      '@directus/storage-driver-azure': link:../packages/storage-driver-azure
-      '@directus/storage-driver-cloudinary': link:../packages/storage-driver-cloudinary
-      '@directus/storage-driver-gcs': link:../packages/storage-driver-gcs
-      '@directus/storage-driver-local': link:../packages/storage-driver-local
-      '@directus/storage-driver-s3': link:../packages/storage-driver-s3
-      '@directus/utils': link:../packages/utils
-      '@godaddy/terminus': 4.11.2
-      '@rollup/plugin-alias': 4.0.3_rollup@3.19.1
-      '@rollup/plugin-virtual': 3.0.1_rollup@3.19.1
-      argon2: 0.30.3
-      async: 3.2.4
-      axios: 1.3.4
-      busboy: 1.6.0
-      bytes: 3.1.2
-      camelcase: 6.3.0
-      chalk: 4.1.2
-      chokidar: 3.5.3
-      commander: 9.5.0
-      cookie-parser: 1.4.6
-      cors: 2.8.5
-      csv-parser: 3.0.0
-      date-fns: 2.29.3
-      deep-diff: 1.0.2
-      destroy: 1.2.0
-      dotenv: 16.0.3
-      encodeurl: 1.0.2
-      eventemitter2: 6.4.9
-      execa: 5.1.1
-      exif-reader: 1.2.0
-      express: 4.18.2
-      fast-redact: 3.1.2
-      flat: 5.0.2
-      fs-extra: 11.1.0
-      globby: 11.1.0
-      graphql: 16.6.0
-      graphql-compose: 9.0.10_graphql@16.6.0
-      helmet: 6.0.1
-      icc: 2.0.0
-      inquirer: 8.2.5
-      ioredis: 5.3.1
-      joi: 17.8.4
-      js-yaml: 4.1.0
-      js2xmlparser: 5.0.0
-      json-buffer: 3.0.1
-      json2csv: 5.0.7
-      jsonwebtoken: 9.0.0
-      knex: 2.4.2_gtxrszusl6tkjfynyc22baqi3i
-      knex-schema-inspector: 3.0.1
-      ldapjs: 2.3.3
-      liquidjs: 10.6.1
-      lodash: 4.17.21
-      lru-cache: 7.14.1
-      marked: 4.2.12
-      micromustache: 8.0.3
-      mime-types: 2.1.35
-      ms: 2.1.3
-      nanoid: 3.3.4
-      node-cron: 3.0.2
-      node-machine-id: 1.1.12
-      nodemailer: 6.9.1
-      object-hash: 3.0.0
-      openapi3-ts: 3.2.0
-      openid-client: 5.4.0
-      ora: 5.4.1
-      otplib: 12.0.1
-      pino: 8.11.0
-      pino-http: 8.3.3
-      pino-http-print: 3.1.0
-      pino-pretty: 10.0.0
-      qs: 6.11.1
-      rate-limiter-flexible: 2.4.1
-      rollup: 3.19.1
-      samlify: 2.8.10
-      sanitize-html: 2.10.0
-      sharp: 0.31.3
-      snappy: 7.2.2
-      stream-json: 1.7.5
-      strip-bom-stream: 4.0.0
-      tmp-promise: 3.0.3
-      update-check: 1.5.4
-      uuid: 9.0.0
-      uuid-validate: 0.0.3
-      vm2: 3.9.14
-      wellknown: 0.5.0
-
+      '@authenio/samlify-node-xmllint':
+        specifier: 2.0.0
+        version: 2.0.0(samlify@2.8.10)
+      '@aws-sdk/client-ses':
+        specifier: 3.292.0
+        version: 3.292.0
+      '@directus/app':
+        specifier: workspace:*
+        version: link:../app
+      '@directus/constants':
+        specifier: workspace:*
+        version: link:../packages/constants
+      '@directus/exceptions':
+        specifier: workspace:*
+        version: link:../packages/exceptions
+      '@directus/extensions-sdk':
+        specifier: workspace:*
+        version: link:../packages/extensions-sdk
+      '@directus/format-title':
+        specifier: 10.0.0
+        version: 10.0.0
+      '@directus/schema':
+        specifier: workspace:*
+        version: link:../packages/schema
+      '@directus/specs':
+        specifier: workspace:*
+        version: link:../packages/specs
+      '@directus/storage':
+        specifier: workspace:*
+        version: link:../packages/storage
+      '@directus/storage-driver-azure':
+        specifier: workspace:*
+        version: link:../packages/storage-driver-azure
+      '@directus/storage-driver-cloudinary':
+        specifier: workspace:*
+        version: link:../packages/storage-driver-cloudinary
+      '@directus/storage-driver-gcs':
+        specifier: workspace:*
+        version: link:../packages/storage-driver-gcs
+      '@directus/storage-driver-local':
+        specifier: workspace:*
+        version: link:../packages/storage-driver-local
+      '@directus/storage-driver-s3':
+        specifier: workspace:*
+        version: link:../packages/storage-driver-s3
+      '@directus/update-check':
+        specifier: workspace:*
+        version: link:../packages/update-check
+      '@directus/utils':
+        specifier: workspace:*
+        version: link:../packages/utils
+      '@godaddy/terminus':
+        specifier: 4.11.2
+        version: 4.11.2
+      '@rollup/plugin-alias':
+        specifier: 4.0.3
+        version: 4.0.3(rollup@3.19.1)
+      '@rollup/plugin-virtual':
+        specifier: 3.0.1
+        version: 3.0.1(rollup@3.19.1)
+      argon2:
+        specifier: 0.30.3
+        version: 0.30.3
+      async:
+        specifier: 3.2.4
+        version: 3.2.4
+      axios:
+        specifier: 1.3.4
+        version: 1.3.4
+      busboy:
+        specifier: 1.6.0
+        version: 1.6.0
+      bytes:
+        specifier: 3.1.2
+        version: 3.1.2
+      camelcase:
+        specifier: 6.3.0
+        version: 6.3.0
+      chalk:
+        specifier: 4.1.2
+        version: 4.1.2
+      chokidar:
+        specifier: 3.5.3
+        version: 3.5.3
+      commander:
+        specifier: 9.5.0
+        version: 9.5.0
+      cookie-parser:
+        specifier: 1.4.6
+        version: 1.4.6
+      cors:
+        specifier: 2.8.5
+        version: 2.8.5
+      csv-parser:
+        specifier: 3.0.0
+        version: 3.0.0
+      date-fns:
+        specifier: 2.29.3
+        version: 2.29.3
+      deep-diff:
+        specifier: 1.0.2
+        version: 1.0.2
+      destroy:
+        specifier: 1.2.0
+        version: 1.2.0
+      dotenv:
+        specifier: 16.0.3
+        version: 16.0.3
+      encodeurl:
+        specifier: 1.0.2
+        version: 1.0.2
+      eventemitter2:
+        specifier: 6.4.9
+        version: 6.4.9
+      execa:
+        specifier: 5.1.1
+        version: 5.1.1
+      exif-reader:
+        specifier: 1.2.0
+        version: 1.2.0
+      express:
+        specifier: 4.18.2
+        version: 4.18.2
+      fast-redact:
+        specifier: 3.1.2
+        version: 3.1.2
+      flat:
+        specifier: 5.0.2
+        version: 5.0.2
+      fs-extra:
+        specifier: 11.1.0
+        version: 11.1.0
+      globby:
+        specifier: 11.1.0
+        version: 11.1.0
+      graphql:
+        specifier: 16.6.0
+        version: 16.6.0
+      graphql-compose:
+        specifier: 9.0.10
+        version: 9.0.10(graphql@16.6.0)
+      helmet:
+        specifier: 6.0.1
+        version: 6.0.1
+      icc:
+        specifier: 2.0.0
+        version: 2.0.0
+      inquirer:
+        specifier: 8.2.5
+        version: 8.2.5
+      ioredis:
+        specifier: 5.3.1
+        version: 5.3.1
+      joi:
+        specifier: 17.8.4
+        version: 17.8.4
+      js-yaml:
+        specifier: 4.1.0
+        version: 4.1.0
+      js2xmlparser:
+        specifier: 5.0.0
+        version: 5.0.0
+      json-buffer:
+        specifier: ^3.0.1
+        version: 3.0.1
+      json2csv:
+        specifier: 5.0.7
+        version: 5.0.7
+      jsonwebtoken:
+        specifier: 9.0.0
+        version: 9.0.0
+      knex:
+        specifier: 2.4.2
+        version: 2.4.2(mysql@2.18.1)(pg@8.10.0)(sqlite3@5.1.6)(tedious@15.1.3)
+      ldapjs:
+        specifier: 2.3.3
+        version: 2.3.3
+      liquidjs:
+        specifier: 10.6.1
+        version: 10.6.1
+      lodash-es:
+        specifier: 4.17.21
+        version: 4.17.21
+      lru-cache:
+        specifier: 8.0.5
+        version: 8.0.5
+      marked:
+        specifier: 4.2.12
+        version: 4.2.12
+      micromustache:
+        specifier: 8.0.3
+        version: 8.0.3
+      mime-types:
+        specifier: 2.1.35
+        version: 2.1.35
+      ms:
+        specifier: 2.1.3
+        version: 2.1.3
+      nanoid:
+        specifier: 3.3.4
+        version: 3.3.4
+      node-cron:
+        specifier: 3.0.2
+        version: 3.0.2
+      node-machine-id:
+        specifier: 1.1.12
+        version: 1.1.12
+      nodemailer:
+        specifier: 6.9.1
+        version: 6.9.1
+      object-hash:
+        specifier: 3.0.0
+        version: 3.0.0
+      openapi3-ts:
+        specifier: 3.2.0
+        version: 3.2.0
+      openid-client:
+        specifier: 5.4.0
+        version: 5.4.0
+      ora:
+        specifier: 5.4.1
+        version: 5.4.1
+      otplib:
+        specifier: 12.0.1
+        version: 12.0.1
+      pino:
+        specifier: 8.11.0
+        version: 8.11.0
+      pino-http:
+        specifier: 8.3.3
+        version: 8.3.3
+      pino-http-print:
+        specifier: 3.1.0
+        version: 3.1.0
+      pino-pretty:
+        specifier: 10.0.0
+        version: 10.0.0
+      qs:
+        specifier: 6.11.1
+        version: 6.11.1
+      rate-limiter-flexible:
+        specifier: 2.4.1
+        version: 2.4.1
+      rollup:
+        specifier: 3.19.1
+        version: 3.19.1
+      samlify:
+        specifier: 2.8.10
+        version: 2.8.10
+      sanitize-html:
+        specifier: 2.10.0
+        version: 2.10.0
+      sharp:
+        specifier: 0.31.3
+        version: 0.31.3
+      snappy:
+        specifier: 7.2.2
+        version: 7.2.2
+      stream-json:
+        specifier: 1.7.5
+        version: 1.7.5
+      strip-bom-stream:
+        specifier: 4.0.0
+        version: 4.0.0
+      tmp-promise:
+        specifier: 3.0.3
+        version: 3.0.3
+      tsx:
+        specifier: 3.12.6
+        version: 3.12.6
+      uuid:
+        specifier: 9.0.0
+        version: 9.0.0
+      uuid-validate:
+        specifier: 0.0.3
+        version: 0.0.3
+      vm2:
+        specifier: 3.9.14
+        version: 3.9.14
+      wellknown:
+        specifier: 0.5.0
+        version: 0.5.0
     optionalDependencies:
-      mysql: 2.18.1
-      nodemailer-mailgun-transport: 2.1.5_lodash@4.17.21
-      nodemailer-sendgrid: 1.0.3
-      pg: 8.10.0
-      sqlite3: 5.1.6
-      tedious: 15.1.3
+      mysql:
+        specifier: 2.18.1
+        version: 2.18.1
+      nodemailer-mailgun-transport:
+        specifier: 2.1.5
+        version: 2.1.5(lodash@4.17.21)
+      nodemailer-sendgrid:
+        specifier: 1.0.3
+        version: 1.0.3
+      pg:
+        specifier: 8.10.0
+        version: 8.10.0
+      sqlite3:
+        specifier: 5.1.6
+        version: 5.1.6
+      tedious:
+        specifier: 15.1.3
+        version: 15.1.3
     devDependencies:
-      '@ngneat/falso': 6.4.0
-      '@types/async': 3.2.18
-      '@types/busboy': 1.5.0
-      '@types/bytes': 3.1.1
-      '@types/cookie-parser': 1.4.3
-      '@types/cors': 2.8.13
-      '@types/deep-diff': 1.0.2
-      '@types/destroy': 1.0.0
-      '@types/encodeurl': 1.0.0
-      '@types/exif-reader': 1.0.0
-      '@types/express': 4.17.17
-      '@types/express-serve-static-core': 4.17.33
-      '@types/fast-redact': 3.0.2
-      '@types/flat': 5.0.2
-      '@types/fs-extra': 11.0.1
-      '@types/inquirer': 8.2.6
-      '@types/js-yaml': 4.0.5
-      '@types/json-buffer': 3.0.0
-      '@types/json2csv': 5.0.3
-      '@types/jsonwebtoken': 9.0.1
-      '@types/ldapjs': 2.2.5
-      '@types/lodash': 4.14.191
-      '@types/marked': 4.0.8
-      '@types/mime-types': 2.1.1
-      '@types/ms': 0.7.31
-      '@types/node': 18.15.3
-      '@types/node-cron': 3.0.7
-      '@types/nodemailer': 6.4.7
-      '@types/object-hash': 3.0.2
-      '@types/qs': 6.9.7
-      '@types/sanitize-html': 2.9.0
-      '@types/sharp': 0.31.1
-      '@types/stream-json': 1.7.3
-      '@types/uuid': 9.0.1
-      '@types/uuid-validate': 0.0.1
-      '@types/wellknown': 0.5.4
-      '@vitest/coverage-c8': 0.29.3_vitest@0.29.3
-      copyfiles: 2.4.1
-      form-data: 4.0.0
-      knex-mock-client: 2.0.0_knex@2.4.2
-      ts-node: 10.9.1_cbfmry4sbbh4vatmdrsmatfg5a
-      ts-node-dev: 2.0.0_cbfmry4sbbh4vatmdrsmatfg5a
-      typescript: 4.9.5
-      vitest: 0.29.3
+      '@directus/tsconfig':
+        specifier: 0.0.6
+        version: 0.0.6
+      '@directus/types':
+        specifier: workspace:*
+        version: link:../packages/types
+      '@ngneat/falso':
+        specifier: 6.4.0
+        version: 6.4.0
+      '@types/async':
+        specifier: 3.2.18
+        version: 3.2.18
+      '@types/busboy':
+        specifier: 1.5.0
+        version: 1.5.0
+      '@types/bytes':
+        specifier: 3.1.1
+        version: 3.1.1
+      '@types/cookie-parser':
+        specifier: 1.4.3
+        version: 1.4.3
+      '@types/cors':
+        specifier: 2.8.13
+        version: 2.8.13
+      '@types/deep-diff':
+        specifier: 1.0.2
+        version: 1.0.2
+      '@types/destroy':
+        specifier: 1.0.0
+        version: 1.0.0
+      '@types/encodeurl':
+        specifier: 1.0.0
+        version: 1.0.0
+      '@types/exif-reader':
+        specifier: 1.0.0
+        version: 1.0.0
+      '@types/express':
+        specifier: 4.17.17
+        version: 4.17.17
+      '@types/express-serve-static-core':
+        specifier: 4.17.33
+        version: 4.17.33
+      '@types/fast-redact':
+        specifier: 3.0.2
+        version: 3.0.2
+      '@types/flat':
+        specifier: 5.0.2
+        version: 5.0.2
+      '@types/fs-extra':
+        specifier: 11.0.1
+        version: 11.0.1
+      '@types/inquirer':
+        specifier: 8.2.6
+        version: 8.2.6
+      '@types/js-yaml':
+        specifier: 4.0.5
+        version: 4.0.5
+      '@types/json-buffer':
+        specifier: ^3.0.0
+        version: 3.0.0
+      '@types/json2csv':
+        specifier: 5.0.3
+        version: 5.0.3
+      '@types/jsonwebtoken':
+        specifier: 9.0.1
+        version: 9.0.1
+      '@types/ldapjs':
+        specifier: 2.2.5
+        version: 2.2.5
+      '@types/lodash-es':
+        specifier: 4.17.7
+        version: 4.17.7
+      '@types/marked':
+        specifier: 4.0.8
+        version: 4.0.8
+      '@types/mime-types':
+        specifier: 2.1.1
+        version: 2.1.1
+      '@types/ms':
+        specifier: 0.7.31
+        version: 0.7.31
+      '@types/node':
+        specifier: 18.15.3
+        version: 18.15.3
+      '@types/node-cron':
+        specifier: 3.0.7
+        version: 3.0.7
+      '@types/nodemailer':
+        specifier: 6.4.7
+        version: 6.4.7
+      '@types/object-hash':
+        specifier: 3.0.2
+        version: 3.0.2
+      '@types/qs':
+        specifier: 6.9.7
+        version: 6.9.7
+      '@types/sanitize-html':
+        specifier: 2.9.0
+        version: 2.9.0
+      '@types/sharp':
+        specifier: 0.31.1
+        version: 0.31.1
+      '@types/stream-json':
+        specifier: 1.7.3
+        version: 1.7.3
+      '@types/uuid':
+        specifier: 9.0.1
+        version: 9.0.1
+      '@types/uuid-validate':
+        specifier: 0.0.1
+        version: 0.0.1
+      '@types/wellknown':
+        specifier: 0.5.4
+        version: 0.5.4
+      '@vitest/coverage-c8':
+        specifier: 0.29.3
+        version: 0.29.3(vitest@0.29.3)
+      copyfiles:
+        specifier: 2.4.1
+        version: 2.4.1
+      form-data:
+        specifier: 4.0.0
+        version: 4.0.0
+      knex-mock-client:
+        specifier: 2.0.0
+        version: 2.0.0(knex@2.4.2)
+      typescript:
+        specifier: 4.9.5
+        version: 4.9.5
+      vitest:
+        specifier: 0.29.3
+        version: 0.29.3(happy-dom@8.9.0)(sass@1.59.3)
 
   app:
     dependencies:
@@ -5028,7 +5172,7 @@ packages:
     resolution: {integrity: sha512-dfLbk+PwWvFzSxwk3n5ySL0hfBog779o8h68wK/7/APo/7cgyWp5jcXockbxdk5kFRkbeXWm4Fbi9FrdN381sA==}
     dev: true
 
-  /@mapbox/extent/0.4.0:
+  /@mapbox/extent@0.4.0:
     resolution: {integrity: sha512-MSoKw3qPceGuupn04sdaJrFeLKvcSETVLZCGS8JA9x6zXQL3FWiKaIXYIZEDXd5jpXpWlRxinCZIN49yRy0C9A==}
     dev: true
 
@@ -6832,11 +6976,11 @@ packages:
     resolution: {integrity: sha512-FhpRzf927MNQdRZP0J5DLIdTXhjLYzeUTmLAu69mnVksLH9CJY3IuSeEgbKUki7GQZm0WqDkGzyxju2EZGD2wA==}
     dev: true
 
-  /@types/json-buffer/3.0.0:
+  /@types/json-buffer@3.0.0:
     resolution: {integrity: sha512-3YP80IxxFJB4b5tYC2SUPwkg0XQLiu0nWvhRgEatgjf+29IcWO9X1k8xRv5DGssJ/lCrjYTjQPcobJr2yWIVuQ==}
     dev: true
 
-  /@types/json-schema/7.0.11:
+  /@types/json-schema@7.0.11:
     resolution: {integrity: sha512-wOuvG1SN4Us4rez+tylwwwCV1psiNVOkJeM3AUWUNWg/jDQY2+HE/444y5gc+jBmRqASOm2Oeh5c1axHobwRKQ==}
     dev: true
 
@@ -9044,7 +9188,7 @@ packages:
       proto-list: 1.2.4
     dev: true
 
-  /console-control-strings/1.1.0:
+  /console-control-strings@1.1.0:
     resolution: {integrity: sha512-ty/fTekppD2fIwRvnZAVdeOiGd1c7YXEixbgJTNzqcxJWKQnjJ/V1bNEEE6hygpM3WjwHFUVK6HTjWSzV4a8sQ==}
 
   /consolidate@0.15.1(lodash@4.17.21):
@@ -11393,7 +11537,7 @@ packages:
     resolution: {integrity: sha512-WdZTbAByD+pHfl/g9QSsBIIwy8IT+EsPiKDs0KNX+zSHhdDLFKdZu0BQHljvO+0QI/BasbMSUa8wYNCZTvhslg==}
     dev: false
 
-  /hat/0.0.3:
+  /hat@0.0.3:
     resolution: {integrity: sha512-zpImx2GoKXy42fVDSEad2BPKuSQdLcqsCYa48K3zHSzM/ugWuYjLDr8IXxpVuL7uCLHw56eaiLxCRthhOzf5ug==}
     dev: true
 
@@ -12027,7 +12171,7 @@ packages:
       istanbul-lib-report: 3.0.0
     dev: true
 
-  /jake/10.8.5:
+  /jake@10.8.5:
     resolution: {integrity: sha512-sVpxYeuAhWt0OTWITwT98oyV0GsXyMlXCF+3L1SuafBVUIr/uILGRB+NqwkzhgXKvoJpDIpQvqkUALgdmQsQxw==}
     engines: {node: '>=10'}
     hasBin: true
@@ -12825,7 +12969,7 @@ packages:
     resolution: {integrity: sha512-hRkd6/XW4HTsA9vjVpY9tuXJYLSlelnkTmVFu4M9/7MIYQtFcHpbugAU7UbOfjOiVSVYl2fqgBuJ32JUmRo5Ew==}
     dev: true
 
-  /keyv/4.5.2:
+  /keyv@4.5.2:
     resolution: {integrity: sha512-5MHbFaKn8cNSmVW7BYnijeAVlE4cYA/SVkifVgrh7yotnfhKmjuXpDKjrABLnT0SfHWV21P8ow07OGfRrNDg8g==}
     dependencies:
       json-buffer: 3.0.1
@@ -13164,12 +13308,12 @@ packages:
     dependencies:
       yallist: 4.0.0
 
-  /lru-cache/7.14.1:
-    resolution: {integrity: sha512-ysxwsnTKdAx96aTRdhDOCQfDgbHnt8SK0KY8SEjO0wHinhWOFTESbjVCMPbU1uGXg/ch4lifqx0wfjOawU2+WA==}
-    engines: {node: '>=12'}
+  /lru-cache@8.0.5:
+    resolution: {integrity: sha512-MhWWlVnuab1RG5/zMRRcVGXZLCXrZTgfwMikgzCegsPnG62yDQo5JnqKkrK4jO5iKqDAZGItAqN5CtKBCBWRUA==}
+    engines: {node: '>=16.14'}
     dev: false
 
-  /magic-string/0.25.9:
+  /magic-string@0.25.9:
     resolution: {integrity: sha512-RmF0AsMzgt25qzqqLc1+MbHmhdx0ojF2Fvs4XnOqz2ZOBXzzkEwc/dJQZCYHAn7v1jbVOjAZfK8msRn4BxO4VQ==}
     dependencies:
       sourcemap-codec: 1.4.8
@@ -13490,7 +13634,7 @@ packages:
     resolution: {integrity: sha512-dq+qelQ9akHpcOl/gUVRTxVIOkAJ1wR3QAvb4RsVjS8oVoFjDGTc679wJYmUmknUF5HwMLOgb5O+a3KxfWapPQ==}
     engines: {node: '>= 0.6'}
 
-  /memoizerific/1.11.3:
+  /memoizerific@1.11.3:
     resolution: {integrity: sha512-/EuHYwAPdLtXwAwSZkh/Gutery6pD2KYd44oQLhAvQp/50mpyduZh8Q7PYHXTCJ+wuXxt7oij2LXyIJOOYFPog==}
     dependencies:
       map-or-similar: 1.5.0
@@ -16351,7 +16495,7 @@ packages:
     engines: {node: '>= 4'}
     dev: false
 
-  /reusify/1.0.4:
+  /reusify@1.0.4:
     resolution: {integrity: sha512-U9nH88a3fc/ekCF1l0/UP1IosiuIjyTh7hBvXVMHYgVcfGvt897Xguj2UOLDeI5BG2m7/uwyaLVT6fbtCwTyzw==}
     engines: {iojs: '>=1.0.0', node: '>=0.10.0'}
 
@@ -16734,7 +16878,7 @@ packages:
       simple-concat: 1.0.1
     dev: false
 
-  /simple-swizzle/0.2.2:
+  /simple-swizzle@0.2.2:
     resolution: {integrity: sha512-JA//kQgZtbuY83m+xT+tXJkmJncGMTFT+C+g2h2R9uxkYIrE2yy9sgmcLhCnw57/WSD+Eh3J97FPEDFnbXnDUg==}
     dependencies:
       is-arrayish: 0.3.2
