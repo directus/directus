@@ -57,9 +57,7 @@ router.post(
 			}
 
 			const deleteKeys = existingKeys.filter((id) => !savedKeys.includes(id));
-			if (deleteKeys.length > 0) {
-				await service.deleteMany(deleteKeys);
-			}
+			if (deleteKeys.length > 0) await service.deleteMany(deleteKeys);
 		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
 				return next();

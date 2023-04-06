@@ -156,7 +156,7 @@ export function useTranslationStrings(): UsableTranslationStrings {
 			newTranslations.push({ key: translation.key, language, value });
 			translationStrings.value.push({ key: translation.key, language, value });
 		}
-		await api.post(`/translation-strings`, newTranslations);
+		await api.post(`/translation-strings/${translation.key}`, newTranslations);
 		await updateLocaleStrings(translationStrings.value);
 	}
 	async function removeTranslation(translationKey: string) {
@@ -177,10 +177,13 @@ export function useTranslationStrings(): UsableTranslationStrings {
 		if (translationKeys.value.includes(originalKey)) {
 			translationStrings.value = translationStrings.value.filter(({ key }) => key !== originalKey);
 		}
-		for (const { language, translation: value } of translation.translations) {
-			await api.post(`/translation-strings`, { key: translation.key, language, value });
-			translationStrings.value.push({ key: translation.key, language, value });
-		}
+		const flatTranslations = translation.translations.map(({ language, translation: value }) => ({
+			key: translation.key,
+			language,
+			value,
+		}));
+		await api.post(`/translation-strings/${translation.key}`, flatTranslations);
+		translationStrings.value.push(...(flatTranslations as RawTranslation[]));
 		await updateLocaleStrings(translationStrings.value);
 	}
 
@@ -220,7 +223,7 @@ export function useTranslationStrings(): UsableTranslationStrings {
 
 	async function fetchAllTranslationStrings(): Promise<RawTranslation[]> {
 		const response = await api.get(`/translation-strings`, {
-			params: { fields: ['id', 'language', 'key', 'value'] },
+			params: { fields: ['language', 'key', 'value'] },
 		});
 		return response.data.data ?? [];
 	}
