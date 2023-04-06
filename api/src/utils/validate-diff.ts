@@ -14,8 +14,8 @@ const deepDiffSchema = Joi.object({
 		otherwise: Joi.required(),
 	}),
 	index: Joi.number().when('kind', { is: DiffKind.ARRAY, then: Joi.required() }),
-	item: Joi.link('/').when('kind', { is: DiffKind.ARRAY, then: Joi.required() }),
-});
+	item: Joi.link('#deepdiff').when('kind', { is: DiffKind.ARRAY, then: Joi.required() }),
+}).id('deepdiff');
 
 const applyJoiSchema = Joi.object({
 	hash: Joi.string().required(),
