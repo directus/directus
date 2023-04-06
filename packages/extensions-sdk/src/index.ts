@@ -10,7 +10,7 @@ export {
 	defineOperationApi,
 	getFieldsFromTemplate,
 	getRelationType,
-} from '@directus/shared/utils';
+} from '@directus/utils';
 export {
 	useStores,
 	useApi,
@@ -20,4 +20,4 @@ export {
 	useItems,
 	useLayout,
 	useFilterFields,
-} from '@directus/shared/composables';
+} from '@directus/composables';

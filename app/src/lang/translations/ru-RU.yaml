@@ -295,6 +295,7 @@ o2m_relationship: Отношение «один ко многим» (O2M)
 m2m_relationship: Отношение «многие ко многим» (M2M)
 m2a_relationship: Отношение «многие к любому» (M2A)
 invalid_item: Недействительный элемент
+modal: Модальный
 next: Дальше
 field_name: Название поля
 translations: Переводы
@@ -786,10 +787,7 @@ label: Описание
 flows: Процессы
 flow: Процесс
 select_a_flow: Выберите процесс
-run_flow_on_current_collection: Запустить процесс с текущей коллекцией
-run_flow_on_current: Запустить процесс с текущим элементом
 run_flow_on_current_edited_confirm: Этот элемент может быть обновлен этим процессом — вы уверены, что хотите выполнить его?
-run_flow_on_selected: Сначала выберите один или несколько элементов | Запустить процесс с выбранным элементом | Запустить процесс с {n} выбранными элементами
 run_flow_success: Процесс «{flow}» успешно завершён
 trigger: Триггер
 trigger_options: Параметры триггера
@@ -1616,7 +1614,6 @@ interfaces:
     edit_fields: Редактировать поля
     add_label: 'Ярлык «Создать новый»'
     sort: Сортировать
-    field_name_placeholder: Введите название поля...
     field_note_placeholder: Примечание к полю...
   slider:
     slider: Слайдер

@@ -1,5 +1,5 @@
-import getDatabase from '../../../database';
-import logger from '../../../logger';
+import getDatabase from '../../../database/index.js';
+import logger from '../../../logger.js';
 
 export default async function count(collection: string): Promise<void> {
 	const database = getDatabase();

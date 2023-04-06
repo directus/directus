@@ -1,12 +1,12 @@
 import type { RequestHandler } from 'express';
 import ms from 'ms';
 import type { RateLimiterMemcache, RateLimiterMemory, RateLimiterRedis } from 'rate-limiter-flexible';
-import env from '../env';
-import { HitRateLimitException } from '../exceptions';
-import { createRateLimiter } from '../rate-limiter';
-import asyncHandler from '../utils/async-handler';
-import { getIPFromReq } from '../utils/get-ip-from-req';
-import { validateEnv } from '../utils/validate-env';
+import env from '../env.js';
+import { HitRateLimitException } from '../exceptions/index.js';
+import { createRateLimiter } from '../rate-limiter.js';
+import asyncHandler from '../utils/async-handler.js';
+import { getIPFromReq } from '../utils/get-ip-from-req.js';
+import { validateEnv } from '../utils/validate-env.js';
 
 let checkRateLimit: RequestHandler = (_req, _res, next) => next();
 export let rateLimiter: RateLimiterRedis | RateLimiterMemcache | RateLimiterMemory;

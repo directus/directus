@@ -1,18 +1,19 @@
-import SchemaInspector from '@directus/schema';
-import type { Filter, SchemaOverview } from '@directus/shared/types';
-import { parseJSON, toArray } from '@directus/shared/utils';
+import type { SchemaInspector } from '@directus/schema';
+import { createInspector } from '@directus/schema';
+import type { Filter, SchemaOverview } from '@directus/types';
+import { parseJSON, toArray } from '@directus/utils';
 import type { Knex } from 'knex';
-import { mapValues } from 'lodash';
-import { getSchemaCache, setSchemaCache } from '../cache';
-import { ALIAS_TYPES } from '../constants';
-import getDatabase from '../database';
-import { systemCollectionRows } from '../database/system-data/collections';
-import { systemFieldRows } from '../database/system-data/fields';
-import env from '../env';
-import logger from '../logger';
-import { RelationsService } from '../services';
-import getDefaultValue from './get-default-value';
-import getLocalType from './get-local-type';
+import { mapValues } from 'lodash-es';
+import { getSchemaCache, setSchemaCache } from '../cache.js';
+import { ALIAS_TYPES } from '../constants.js';
+import getDatabase from '../database/index.js';
+import { systemCollectionRows } from '../database/system-data/collections/index.js';
+import { systemFieldRows } from '../database/system-data/fields/index.js';
+import env from '../env.js';
+import logger from '../logger.js';
+import { RelationsService } from '../services/relations.js';
+import getDefaultValue from './get-default-value.js';
+import getLocalType from './get-local-type.js';
 
 export async function getSchema(options?: {
 	database?: Knex;
@@ -24,7 +25,7 @@ export async function getSchema(options?: {
 	bypassCache?: boolean;
 }): Promise<SchemaOverview> {
 	const database = options?.database || getDatabase();
-	const schemaInspector = SchemaInspector(database);
+	const schemaInspector = createInspector(database);
 
 	let result: SchemaOverview;
 
@@ -55,10 +56,7 @@ export async function getSchema(options?: {
 	return result;
 }
 
-async function getDatabaseSchema(
-	database: Knex,
-	schemaInspector: ReturnType<typeof SchemaInspector>
-): Promise<SchemaOverview> {
+async function getDatabaseSchema(database: Knex, schemaInspector: SchemaInspector): Promise<SchemaOverview> {
 	const result: SchemaOverview = {
 		collections: {},
 		relations: [],
