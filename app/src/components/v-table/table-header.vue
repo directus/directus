@@ -180,8 +180,8 @@ function getClassesForHeader(header: Header) {
 }
 
 function getTooltipForSortIcon(header: Header) {
-	if (props.sort.by === null) return 'sort_asc';
-	return props.sort.by === header.value && props.sort.desc === false ? 'sort_desc' : 'disable_sort';
+	if (props.sort.by === null || props.sort.by !== header.value) return 'sort_asc';
+	return props.sort.desc === false ? 'sort_desc' : 'disable_sort';
 }
 
 function changeSort(header: Header) {
