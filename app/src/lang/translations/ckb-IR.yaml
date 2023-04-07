@@ -295,6 +295,7 @@ o2m_relationship: پەیوەندی یەک بۆ زۆر
 m2m_relationship: پەیوەندی زۆر بۆ زۆر
 m2a_relationship: پەیوەندی زۆر بۆ هەرشتێک
 invalid_item: مادەی نادروست
+modal: مۆدێل
 next: دواتر
 field_name: ناوی خانە
 translations: وەرگێڕانەکان
@@ -786,10 +787,7 @@ label: پێناس
 flows: لێشاوەکان
 flow: لێشاو
 select_a_flow: لێشاوێک دیاری بکە
-run_flow_on_current_collection: جێبەجێکردنی لێشاو لەم کۆمەڵەیەدا
-run_flow_on_current: جێبەجێکردنی لێشاو لەم مادەیەدا
 run_flow_on_current_edited_confirm: لەوانەیە ئەم مادەیە بەهۆی ئەم لێشاوەوە نوێ بکرێتەوە، ئایا دڵنیای کە دەتەوێت جێبەجێی بکەیت؟
-run_flow_on_selected: سەرەتا یەک یان چەند مادەیەک دیاری بکە | جێبەجێکردنی لێشاو لەسەر یەک مادەی دیاریکراو | جێبەجێکردنی لێشاو لەسەر {n} مادەی دیاریکراو
 run_flow_success: لێشاوی {flow} بەسەرکەوتوویی بەڕێوەچوو
 trigger: وروژاندن
 trigger_options: بژاردەکانی وروژان
@@ -1641,7 +1639,6 @@ interfaces:
     add_label: 'پێناسی "دروستکردنی نوێ"'
     sort: ڕیزکردن
     sort_placeholder: دەستی
-    field_name_placeholder: ناوی خانە تۆماربکە...
     field_note_placeholder: تێبینی خانە تۆماربکە...
     incompatible_data: داتاکانی ئێستا لەگەڵ ڕووکاری دووبارەکەرەوەدا ناگونجێت و لە کاتی زیادکردنی ماددەکان بۆ دووبارەکەرەوەکە دەسڕدرێنەوە
   slider:

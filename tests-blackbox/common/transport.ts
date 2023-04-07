@@ -10,16 +10,17 @@ export async function requestGraphQL(
 	isSystemCollection: boolean,
 	token: string | null,
 	jsonQuery: any,
-	variables?: any
+	options?: { variables?: any; cookies?: string[] }
 ): Promise<any> {
 	const req = request(host)
 		.post(isSystemCollection ? '/graphql/system' : '/graphql')
 		.send({
 			query: processGraphQLJson(jsonQuery),
-			variables,
+			variables: options?.variables,
 		});
 
 	if (token) req.set('Authorization', `Bearer ${token}`);
+	if (options?.cookies) req.set('Cookie', options.cookies);
 
 	return await req;
 }

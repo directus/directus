@@ -1,4 +1,4 @@
-import { createCli } from './index';
+import { createCli } from './index.js';
 
 createCli()
 	.then((program) => program.parseAsync(process.argv))

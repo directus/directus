@@ -1,16 +1,16 @@
-import { parseJSON } from '@directus/shared/utils';
+import { parseJSON } from '@directus/utils';
 import chalk from 'chalk';
 import { promises as fs } from 'fs';
 import inquirer from 'inquirer';
 import { load as loadYaml } from 'js-yaml';
 import path from 'path';
-import getDatabase, { isInstalled, validateDatabaseConnection } from '../../../database';
-import logger from '../../../logger';
-import { DiffKind, Snapshot } from '../../../types';
-import { isNestedMetaUpdate } from '../../../utils/apply-diff';
-import { applySnapshot } from '../../../utils/apply-snapshot';
-import { getSnapshot } from '../../../utils/get-snapshot';
-import { getSnapshotDiff } from '../../../utils/get-snapshot-diff';
+import getDatabase, { isInstalled, validateDatabaseConnection } from '../../../database/index.js';
+import logger from '../../../logger.js';
+import { DiffKind, Snapshot } from '../../../types/index.js';
+import { isNestedMetaUpdate } from '../../../utils/apply-diff.js';
+import { applySnapshot } from '../../../utils/apply-snapshot.js';
+import { getSnapshot } from '../../../utils/get-snapshot.js';
+import { getSnapshotDiff } from '../../../utils/get-snapshot-diff.js';
 
 export async function apply(snapshotPath: string, options?: { yes: boolean; dryRun: boolean }): Promise<void> {
 	const filename = path.resolve(process.cwd(), snapshotPath);

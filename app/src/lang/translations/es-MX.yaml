@@ -295,6 +295,7 @@ o2m_relationship: Relación Uno a Muchos
 m2m_relationship: Relacion Muchos a Muchos
 m2a_relationship: Relación Muchos a Cualquiera
 invalid_item: Elemento inválido
+modal: Diálogo
 next: Siguiente
 field_name: Nombre del campo
 translations: Traducciones
@@ -786,10 +787,7 @@ label: Etiqueta
 flows: Flujos
 flow: Flujo
 select_a_flow: Selecciona un flujo
-run_flow_on_current_collection: Ejecutar flujo en la colección actual
-run_flow_on_current: Ejecutar flujo en el elemento actual
 run_flow_on_current_edited_confirm: Este elemento puede ser actualizado por este flujo, ¿estás seguro que quieres ejecutarlo?
-run_flow_on_selected: Seleccionar uno o más artículos primero | Ejecutar flujo en 1 elemento seleccionado | Ejecutar flujo en {n} artículos seleccionados
 run_flow_success: Flujo "{flow}" se ha ejecutado correctamente
 trigger: Disparador
 trigger_options: Opciones de activación
@@ -1641,7 +1639,6 @@ interfaces:
     add_label: 'Etiqueta "Crear nuevo"'
     sort: Ordenar
     sort_placeholder: Manual
-    field_name_placeholder: Introduzca el nombre del campo...
     field_note_placeholder: Ingresa la nota del campo...
     incompatible_data: Los datos actuales no son compatibles con la interfaz del repetidor y serán reemplazados al agregar elementos al repetidor
   slider:

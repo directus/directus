@@ -1,10 +1,11 @@
 import { Router } from 'express';
-import { ForbiddenException } from '../exceptions';
-import { respond } from '../middleware/respond';
-import { validateBatch } from '../middleware/validate-batch';
-import { CollectionsService, MetaService } from '../services';
-import type { Item } from '../types';
-import asyncHandler from '../utils/async-handler';
+import { ForbiddenException } from '../exceptions/index.js';
+import { respond } from '../middleware/respond.js';
+import { validateBatch } from '../middleware/validate-batch.js';
+import { CollectionsService } from '../services/collections.js';
+import { MetaService } from '../services/meta.js';
+import type { Item } from '../types/index.js';
+import asyncHandler from '../utils/async-handler.js';
 
 const router = Router();
 

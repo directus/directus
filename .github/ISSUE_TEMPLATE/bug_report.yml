@@ -5,7 +5,7 @@ body:
     attributes:
       value: |
         Hi, thank you for taking the time to create an issue! Before you get started, please ensure the following are correct:
-        
+
         - I'm using the [latest version of Directus](https://github.com/directus/directus/releases)
         - I've completed all [Troubleshooting Steps](https://docs.directus.io/getting-started/support/#troubleshooting-steps).
         - There's [no other issue](https://github.com/directus/directus/issues?q=is%3Aissue) that already describes the problem.

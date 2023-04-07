@@ -1,4 +1,4 @@
-// Vitest Snapshot v1
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`Mount component 1`] = `
 "<button data-v-2b39bf8c=\\"\\" class=\\"v-radio\\" type=\\"button\\" aria-pressed=\\"false\\">
