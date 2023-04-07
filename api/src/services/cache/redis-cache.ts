@@ -5,7 +5,7 @@ import { CacheOptions, CacheService } from './cache.js';
 import { parse, stringify } from 'json-buffer';
 import { compress, decompress } from '../../utils/compress.js';
 import { map } from 'async';
-import { merge } from 'lodash';
+import { merge } from 'lodash-es';
 import { Redis } from 'ioredis';
 import { toArray } from '@directus/utils';
 

@@ -1,4 +1,4 @@
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from 'lodash-es';
 import { CacheService } from './cache.js';
 import LRU from 'lru-cache';
 import { toArray } from '@directus/utils';
