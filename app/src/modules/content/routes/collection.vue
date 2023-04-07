@@ -19,6 +19,7 @@
 			v-else
 			:title="bookmark ? bookmarkTitle : currentCollection.name"
 			:small-header="currentLayout?.smallHeader"
+			:header-shadow="currentLayout?.headerShadow"
 		>
 			<template #title-outer:prepend>
 				<v-button class="header-icon" :class="{ archive }" rounded icon secondary disabled>
@@ -202,7 +203,7 @@
 				</template>
 			</v-info>
 
-			<component :is="`layout-${layout || 'tabular'}`" v-else class="layout" v-bind="layoutState">
+			<component :is="`layout-${layout || 'tabular'}`" v-else v-bind="layoutState">
 				<template #no-results>
 					<v-info :title="t('no_results')" icon="search" center>
 						{{ t('no_results_copy') }}
@@ -684,10 +685,6 @@ export default defineComponent({
 
 .header-icon {
 	--v-button-color-disabled: var(--foreground-normal);
-}
-
-.layout {
-	--layout-offset-top: 64px;
 }
 
 .bookmark-controls {

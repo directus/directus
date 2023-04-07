@@ -832,7 +832,7 @@ without a password.
 | Variable                                    | Description                                                                | Default Value |
 | ------------------------------------------- | -------------------------------------------------------------------------- | ------------- |
 | `AUTH_<PROVIDER>_SP_metadata`               | String containing XML metadata for service provider or URL to a remote URL | --            |
-| `AUTH_<PROVIDER>_IDP_metadata`              | String container XML metadata for identity provider or URL to a remote URL | --            |
+| `AUTH_<PROVIDER>_IDP_metadata`              | String containing XML metadata for identity provider or URL to a remote URL | --            |
 | `AUTH_<PROVIDER>_ALLOW_PUBLIC_REGISTRATION` | Automatically create accounts for authenticating users.                    | `false`       |
 | `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`           | A Directus role ID to assign created users.                                | --            |
 | `AUTH_<PROVIDER>_IDENTIFIER_KEY`            | User profile identifier key <sup>[1]</sup>. Will default to `EMAIL_KEY`.   | --            |
