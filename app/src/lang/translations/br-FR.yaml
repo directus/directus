@@ -183,6 +183,7 @@ o2m_relationship: Darempred One-to-Many
 m2m_relationship: Darempred Many-to-Many
 m2a_relationship: Darempred Many-to-Any
 invalid_item: Elfenn direizh
+modal: Model
 next: Da-heul
 field_name: Anv ar vaezienn
 translations: Troidigezhioù
@@ -1011,7 +1012,6 @@ interfaces:
     edit_fields: Aozañ ar maeziennoù
     add_label: 'Skridennad "Krouiñ unan Nevez"'
     sort: Rummañ
-    field_name_placeholder: Bizskrivit anv ar vaezienn...
     field_note_placeholder: Bizskrivit notenn ar vaezienn...
   slider:
     slider: Reti

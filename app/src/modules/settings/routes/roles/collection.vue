@@ -65,7 +65,7 @@ import { Header as TableHeader } from '@/components/v-table/types';
 import { useRouter } from 'vue-router';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { translate } from '@/utils/translate-object-values';
-import { Role } from '@directus/shared/types';
+import { Role } from '@directus/types';
 
 type RoleItem = Partial<Role> & {
 	count?: number;

@@ -296,6 +296,7 @@ o2m_relationship: One-to-Many Relatie
 m2m_relationship: Many-to-Many Relatie
 m2a_relationship: Many-to-Any Relatie
 invalid_item: Ongeldig item
+modal: Modal
 next: Volgende
 field_name: Veldnaam
 translations: Vertalingen
@@ -787,8 +788,6 @@ label: Label
 flows: Flows
 flow: Flow
 select_a_flow: Selecteer een Flow
-run_flow_on_current_collection: Voer flow uit op Huidige Collectie
-run_flow_on_current: Voer Flow uit op dit item
 run_flow_on_current_edited_confirm: Dit item kan aangepast worden door deze Flow, weet je zeker dat je het wilt uitvoeren?
 run_flow_success: Flow "{flow}" is succesvol uitgevoerd
 trigger: Trigger

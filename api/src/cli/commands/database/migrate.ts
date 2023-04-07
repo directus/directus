@@ -1,6 +1,6 @@
-import run from '../../../database/migrations/run';
-import getDatabase from '../../../database';
-import logger from '../../../logger';
+import run from '../../../database/migrations/run.js';
+import getDatabase from '../../../database/index.js';
+import logger from '../../../logger.js';
 
 export default async function migrate(direction: 'latest' | 'up' | 'down'): Promise<void> {
 	const database = getDatabase();

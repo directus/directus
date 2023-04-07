@@ -19,6 +19,7 @@
 			v-else
 			:title="bookmark ? bookmarkTitle : currentCollection.name"
 			:small-header="currentLayout?.smallHeader"
+			:header-shadow="currentLayout?.headerShadow"
 		>
 			<template #title-outer:prepend>
 				<v-button class="header-icon" :class="{ archive }" rounded icon secondary disabled>
@@ -196,7 +197,7 @@
 				</template>
 			</v-info>
 
-			<component :is="`layout-${layout || 'tabular'}`" v-else class="layout" v-bind="layoutState">
+			<component :is="`layout-${layout || 'tabular'}`" v-else v-bind="layoutState">
 				<template #no-results>
 					<v-info :title="t('no_results')" icon="search" center>
 						{{ t('no_results_copy') }}
@@ -275,7 +276,7 @@ import { defineComponent, computed, ref, watch, toRefs } from 'vue';
 import ContentNavigation from '../components/navigation.vue';
 import api from '@/api';
 import ContentNotFound from './not-found.vue';
-import { useCollection, useLayout } from '@directus/shared/composables';
+import { useCollection, useLayout } from '@directus/composables';
 import { usePreset } from '@/composables/use-preset';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
 import ArchiveSidebarDetail from '@/views/private/components/archive-sidebar-detail.vue';
@@ -289,8 +290,8 @@ import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
 import DrawerBatch from '@/views/private/components/drawer-batch.vue';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { mergeFilters } from '@directus/shared/utils';
-import { Filter } from '@directus/shared/types';
+import { mergeFilters } from '@directus/utils';
+import { Filter } from '@directus/types';
 import { useExtension } from '@/composables/use-extension';
 
 type Item = {
@@ -678,10 +679,6 @@ export default defineComponent({
 
 .header-icon {
 	--v-button-color-disabled: var(--foreground-normal);
-}
-
-.layout {
-	--layout-offset-top: 64px;
 }
 
 .bookmark-controls {

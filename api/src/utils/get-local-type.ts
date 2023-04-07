@@ -1,4 +1,4 @@
-import type { FieldMeta, Type } from '@directus/shared/types';
+import type { FieldMeta, Type } from '@directus/types';
 
 const localTypeMap: Record<string, Type | 'unknown'> = {
 	// Shared

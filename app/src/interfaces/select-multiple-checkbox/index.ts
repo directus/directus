@@ -1,4 +1,4 @@
-import { defineInterface } from '@directus/shared/utils';
+import { defineInterface } from '@directus/utils';
 import InterfaceSelectMultipleCheckboxes from './select-multiple-checkbox.vue';
 import PreviewSVG from './preview.svg?raw';
 

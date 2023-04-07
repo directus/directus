@@ -156,7 +156,7 @@ import DrawerItem from '@/views/private/components/drawer-item.vue';
 import { addQueryToPath } from '@/utils/add-query-to-path';
 import { useRelationM2O } from '@/composables/use-relation-m2o';
 import { useRelationSingle, RelationQuerySingle } from '@/composables/use-relation-single';
-import { Filter } from '@directus/shared/types';
+import { Filter } from '@directus/types';
 
 type FileInfo = {
 	id: string;
