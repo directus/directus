@@ -1,12 +1,14 @@
-import type { SchemaOverview } from '@directus/shared/types';
+import type { SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
-import { fromPairs, isArray, isPlainObject, mapValues, omit, sortBy, toPairs } from 'lodash';
-import { version } from '../../package.json';
-import getDatabase, { getDatabaseClient } from '../database';
-import { CollectionsService, FieldsService, RelationsService } from '../services';
-import type { Collection, Snapshot, SnapshotField, SnapshotRelation } from '../types';
-import { getSchema } from './get-schema';
-import { sanitizeCollection, sanitizeField, sanitizeRelation } from './sanitize-schema';
+import { fromPairs, isArray, isPlainObject, mapValues, omit, sortBy, toPairs } from 'lodash-es';
+import getDatabase, { getDatabaseClient } from '../database/index.js';
+import { CollectionsService } from '../services/collections.js';
+import { FieldsService } from '../services/fields.js';
+import { RelationsService } from '../services/relations.js';
+import type { Collection, Snapshot, SnapshotField, SnapshotRelation } from '../types/index.js';
+import { getSchema } from './get-schema.js';
+import { version } from './package.js';
+import { sanitizeCollection, sanitizeField, sanitizeRelation } from './sanitize-schema.js';
 
 export async function getSnapshot(options?: { database?: Knex; schema?: SchemaOverview }): Promise<Snapshot> {
 	const database = options?.database ?? getDatabase();

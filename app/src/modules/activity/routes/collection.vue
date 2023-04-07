@@ -64,16 +64,16 @@
 </template>
 
 <script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, computed, ref } from 'vue';
-import ActivityNavigation from '../components/navigation.vue';
+import { useExtension } from '@/composables/use-extension';
 import { usePreset } from '@/composables/use-preset';
-import { useLayout } from '@directus/shared/composables';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
 import SearchInput from '@/views/private/components/search-input.vue';
-import { Filter } from '@directus/shared/types';
-import { mergeFilters } from '@directus/shared/utils';
-import { useExtension } from '@/composables/use-extension';
+import { useLayout } from '@directus/composables';
+import { Filter } from '@directus/types';
+import { mergeFilters } from '@directus/utils';
+import { computed, defineComponent, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import ActivityNavigation from '../components/navigation.vue';
 
 export default defineComponent({
 	name: 'ActivityCollection',

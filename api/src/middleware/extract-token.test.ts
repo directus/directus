@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express';
 import { beforeEach, expect, test, vi } from 'vitest';
-import extractToken from '../../src/middleware/extract-token';
+import extractToken from '../../src/middleware/extract-token.js';
 import '../../src/types/express.d.ts';
 
 let mockRequest: Partial<Request & { token?: string }>;

@@ -190,30 +190,30 @@
 </template>
 
 <script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, computed, ref, PropType, onMounted, onUnmounted, nextTick } from 'vue';
-import FilesNavigation from '../components/navigation.vue';
 import api from '@/api';
-import { usePreset } from '@/composables/use-preset';
-import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
-import AddFolder from '../components/add-folder.vue';
-import SearchInput from '@/views/private/components/search-input.vue';
-import FolderPicker from '@/views/private/components/folder-picker.vue';
-import emitter, { Events } from '@/events';
-import { useRouter, onBeforeRouteLeave, onBeforeRouteUpdate } from 'vue-router';
-import { useNotificationsStore } from '@/stores/notifications';
-import { useUserStore } from '@/stores/user';
-import { usePermissionsStore } from '@/stores/permissions';
-import { subDays } from 'date-fns';
-import { useFolders, Folder } from '@/composables/use-folders';
 import { useEventListener } from '@/composables/use-event-listener';
-import { useLayout } from '@directus/shared/composables';
-import { uploadFiles } from '@/utils/upload-files';
-import { unexpectedError } from '@/utils/unexpected-error';
-import DrawerBatch from '@/views/private/components/drawer-batch.vue';
-import { Filter } from '@directus/shared/types';
-import { mergeFilters } from '@directus/shared/utils';
 import { useExtension } from '@/composables/use-extension';
+import { Folder, useFolders } from '@/composables/use-folders';
+import { usePreset } from '@/composables/use-preset';
+import emitter, { Events } from '@/events';
+import { useNotificationsStore } from '@/stores/notifications';
+import { usePermissionsStore } from '@/stores/permissions';
+import { useUserStore } from '@/stores/user';
+import { unexpectedError } from '@/utils/unexpected-error';
+import { uploadFiles } from '@/utils/upload-files';
+import DrawerBatch from '@/views/private/components/drawer-batch.vue';
+import FolderPicker from '@/views/private/components/folder-picker.vue';
+import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
+import SearchInput from '@/views/private/components/search-input.vue';
+import { useLayout } from '@directus/composables';
+import { Filter } from '@directus/types';
+import { mergeFilters } from '@directus/utils';
+import { subDays } from 'date-fns';
+import { PropType, computed, defineComponent, nextTick, onMounted, onUnmounted, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { onBeforeRouteLeave, onBeforeRouteUpdate, useRouter } from 'vue-router';
+import AddFolder from '../components/add-folder.vue';
+import FilesNavigation from '../components/navigation.vue';
 
 type Item = {
 	[field: string]: any;

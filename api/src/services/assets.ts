@@ -1,31 +1,29 @@
-// @ts-expect-error https://github.com/microsoft/TypeScript/issues/49721
 import type { Range, Stat } from '@directus/storage';
-
-import type { Accountability } from '@directus/shared/types';
+import type { Accountability } from '@directus/types';
 import type { Knex } from 'knex';
-import { clamp } from 'lodash';
+import { clamp } from 'lodash-es';
 import { contentType } from 'mime-types';
 import type { Readable } from 'node:stream';
 import hash from 'object-hash';
 import path from 'path';
 import sharp from 'sharp';
 import validateUUID from 'uuid-validate';
-import getDatabase from '../database';
-import env from '../env';
-import { ForbiddenException, IllegalAssetTransformation, RangeNotSatisfiableException } from '../exceptions';
-import { ServiceUnavailableException } from '../exceptions/service-unavailable';
-import logger from '../logger';
-import { getStorage } from '../storage';
+import getDatabase from '../database/index.js';
+import env from '../env.js';
+import { ForbiddenException, IllegalAssetTransformation, RangeNotSatisfiableException } from '../exceptions/index.js';
+import { ServiceUnavailableException } from '../exceptions/service-unavailable.js';
+import logger from '../logger.js';
+import { getStorage } from '../storage/index.js';
 import type {
 	AbstractServiceOptions,
 	File,
 	Transformation,
 	TransformationParams,
 	TransformationPreset,
-} from '../types';
-import { getMilliseconds } from '../utils/get-milliseconds';
-import * as TransformationUtils from '../utils/transformations';
-import { AuthorizationService } from './authorization';
+} from '../types/index.js';
+import { getMilliseconds } from '../utils/get-milliseconds.js';
+import * as TransformationUtils from '../utils/transformations.js';
+import { AuthorizationService } from './authorization.js';
 
 export class AssetsService {
 	knex: Knex;
