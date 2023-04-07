@@ -190,6 +190,8 @@ const allowedEnvironmentVars = [
 	// flows
 	'FLOWS_EXEC_ALLOWED_MODULES',
 	'FLOWS_ENV_ALLOW_LIST',
+	'ACTIVITY_RETENTION',
+	'REVISIONS_RETENTION',
 ].map((name) => new RegExp(`^${name}$`));
 
 const acceptedEnvTypes = ['string', 'number', 'regex', 'array', 'json'];
@@ -290,6 +292,8 @@ const defaults: Record<string, any> = {
 
 	FLOWS_EXEC_ALLOWED_MODULES: false,
 	FLOWS_ENV_ALLOW_LIST: false,
+
+	ACTIVITY_RETENTION: '180 days',
 };
 
 // Allows us to force certain environment variable into a type, instead of relying

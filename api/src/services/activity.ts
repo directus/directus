@@ -12,6 +12,8 @@ import { AuthorizationService } from './authorization.js';
 import { ItemsService } from './items.js';
 import { NotificationsService } from './notifications.js';
 import { UsersService } from './users.js';
+import getDatabase from '../database/index.js';
+import { adjustDate } from '@directus/utils';
 
 export class ActivityService extends ItemsService {
 	notificationsService: NotificationsService;
@@ -23,7 +25,17 @@ export class ActivityService extends ItemsService {
 		this.usersService = new UsersService({ schema: this.schema });
 	}
 
+	async truncate() {
+		if (!env['ACTIVITY_RETENTION'] || env['ACTIVITY_RETENTION'] === 'infinite') return;
+		const db = getDatabase();
+		const oldest = adjustDate(new Date(), '-' + env['ACTIVITY_RETENTION']);
+		if (!oldest) throw new Error('Invalid ACTIVITY_RETENTION configured');
+		await db('directus_activity').delete().where('timestamp', '<=', oldest);
+	}
+
 	override async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
+		await this.truncate();
+
 		if (data['action'] === Action.COMMENT && typeof data['comment'] === 'string') {
 			const usersRegExp = new RegExp(/@[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}/gi);
 
@@ -107,5 +119,11 @@ ${comment}
 		}
 
 		return super.createOne(data, opts);
+	}
+
+	override async createMany(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
+		await this.truncate();
+
+		return await super.createMany(data, opts);
 	}
 }
