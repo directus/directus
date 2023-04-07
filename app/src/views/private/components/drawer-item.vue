@@ -37,7 +37,7 @@
 					v-if="junctionField"
 					:disabled="disabled"
 					:loading="loading"
-					:nested="true"
+					:show-no-visible-fields="false"
 					:initial-values="initialValues?.[junctionField]"
 					:primary-key="relatedPrimaryKey"
 					:model-value="internalEdits?.[junctionField]"
@@ -52,7 +52,7 @@
 					v-model="internalEdits"
 					:disabled="disabled"
 					:loading="loading"
-					:nested="true"
+					:show-no-visible-fields="false"
 					:initial-values="initialValues"
 					:autofocus="swapFormOrder"
 					:show-divider="swapFormOrder"
@@ -90,12 +90,12 @@ import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { validateItem } from '@/utils/validate-item';
-import { useCollection } from '@directus/shared/composables';
-import { Field, Relation } from '@directus/shared/types';
+import { useCollection } from '@directus/composables';
+import { Field, Relation } from '@directus/types';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useRouter } from 'vue-router';
-import { getEndpoint } from '@directus/shared/utils';
+import { getEndpoint } from '@directus/utils';
 
 interface Props {
 	collection: string;
@@ -433,6 +433,10 @@ function useActions() {
 .drawer-item-content {
 	padding: var(--content-padding);
 	padding-bottom: var(--content-padding-bottom);
+
+	.file-preview {
+		margin-bottom: var(--form-vertical-gap);
+	}
 	.drawer-item-order {
 		&.swap {
 			display: flex;

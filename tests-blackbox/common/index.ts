@@ -3,3 +3,4 @@ export * from './functions';
 export * from './seed-functions';
 export * from './types';
 export * from './transport';
+export * from './test-logger';

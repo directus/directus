@@ -1,6 +1,6 @@
 import Joi from 'joi';
-import { InvalidPayloadException } from '../index';
-import { DiffKind, SnapshotDiffWithHash, SnapshotWithHash } from '../types/snapshot';
+import { InvalidPayloadException } from '../exceptions/invalid-payload.js';
+import { DiffKind, SnapshotDiffWithHash, SnapshotWithHash } from '../types/snapshot.js';
 
 const deepDiffSchema = Joi.object({
 	kind: Joi.string()
@@ -38,7 +38,7 @@ const applyJoiSchema = Joi.object({
 				Joi.object({
 					collection: Joi.string().required(),
 					field: Joi.string().required(),
-					related_collection: Joi.string(),
+					related_collection: Joi.string().allow(null),
 					diff: Joi.array().items(deepDiffSchema).required(),
 				})
 			)

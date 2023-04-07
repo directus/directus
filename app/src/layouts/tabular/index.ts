@@ -7,9 +7,9 @@ import { hideDragImage } from '@/utils/hide-drag-image';
 import { saveAsCSV } from '@/utils/save-as-csv';
 import { syncRefProperty } from '@/utils/sync-ref-property';
 import { formatCollectionItemsCount } from '@/utils/format-collection-items-count';
-import { useCollection, useItems, useSync } from '@directus/shared/composables';
-import { Field } from '@directus/shared/types';
-import { defineLayout } from '@directus/shared/utils';
+import { useCollection, useItems, useSync } from '@directus/composables';
+import { Field } from '@directus/types';
+import { defineLayout } from '@directus/utils';
 import { debounce } from 'lodash';
 import { computed, ref, toRefs, watch } from 'vue';
 import { useRouter } from 'vue-router';
@@ -17,6 +17,7 @@ import TabularActions from './actions.vue';
 import TabularOptions from './options.vue';
 import TabularLayout from './tabular.vue';
 import { LayoutOptions, LayoutQuery } from './types';
+import { useRelationsStore } from '@/stores/relations';
 
 export default defineLayout<LayoutOptions, LayoutQuery>({
 	id: 'tabular',
@@ -28,10 +29,12 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		sidebar: () => undefined,
 		actions: TabularActions,
 	},
+	headerShadow: false,
 	setup(props, { emit }) {
 		const router = useRouter();
 
 		const fieldsStore = useFieldsStore();
+		const relationsStore = useRelationsStore();
 
 		const selection = useSync(props, 'selection', emit);
 		const layoutOptions = useSync(props, 'layoutOptions', emit);
@@ -226,6 +229,43 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 							});
 
 							description = fieldNames.join(' -> ');
+
+							const types = relationsStore.getRelationTypes(collection.value!, field.key);
+
+							if (types.at(-1) === 'o2m') {
+								const arrayField = fieldsStore.getField(collection.value!, fieldParts.slice(0, -1).join('.'));
+								let display;
+								let displayOptions;
+
+								if (arrayField?.meta?.display) {
+									display = arrayField.meta.display;
+									displayOptions = arrayField.meta.display_options;
+								} else {
+									display = 'related-values';
+									displayOptions = {
+										template: `{{${fieldParts.at(-1)}}}`,
+									};
+								}
+
+								if (arrayField)
+									return {
+										text: field.name,
+										value: arrayField.field,
+										description,
+										width: localWidths.value[field.key] || layoutOptions.value?.widths?.[field.key] || null,
+										align: layoutOptions.value?.align?.[field.key] || 'left',
+										field: {
+											display,
+											displayOptions,
+											interface: arrayField.meta?.interface,
+											interfaceOptions: arrayField.meta?.options,
+											type: arrayField.type,
+											field: arrayField.field,
+											collection: arrayField.collection,
+										},
+										sortable: ['json', 'alias', 'presentation', 'translations'].includes(arrayField.type) === false,
+									} as HeaderRaw;
+							}
 						}
 
 						return {

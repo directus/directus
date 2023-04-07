@@ -1,14 +1,14 @@
-import { REGEX_BETWEEN_PARENS } from '@directus/shared/constants';
-import { FieldFunction, Query, SchemaOverview } from '@directus/shared/types';
-import { getFunctionsForType } from '@directus/shared/utils';
-import { Knex } from 'knex';
-import { getFunctions } from '../database/helpers';
-import { InvalidQueryException } from '../exceptions';
-import { applyFunctionToColumnName } from './apply-function-to-column-name';
+import { REGEX_BETWEEN_PARENS } from '@directus/constants';
+import type { FieldFunction, Query, SchemaOverview } from '@directus/types';
+import { getFunctionsForType } from '@directus/utils';
+import type { Knex } from 'knex';
+import { getFunctions } from '../database/helpers/index.js';
+import { InvalidQueryException } from '../exceptions/index.js';
+import { applyFunctionToColumnName } from './apply-function-to-column-name.js';
 
 type GetColumnOptions = {
-	query?: Query;
-	originalCollectionName?: string;
+	query?: Query | undefined;
+	originalCollectionName?: string | undefined;
 };
 
 /**
@@ -39,14 +39,14 @@ export function getColumn(
 
 		if (functionName in fn) {
 			const collectionName = options?.originalCollectionName || table;
-			const type = schema?.collections[collectionName]?.fields?.[columnName]?.type ?? 'unknown';
+			const type = schema?.collections[collectionName]?.fields?.[columnName!]?.type ?? 'unknown';
 			const allowedFunctions = getFunctionsForType(type);
 
 			if (allowedFunctions.includes(functionName) === false) {
 				throw new InvalidQueryException(`Invalid function specified "${functionName}"`);
 			}
 
-			const result = fn[functionName as keyof typeof fn](table, columnName, {
+			const result = fn[functionName as keyof typeof fn](table, columnName!, {
 				type,
 				query: options?.query,
 				originalCollectionName: options?.originalCollectionName,
