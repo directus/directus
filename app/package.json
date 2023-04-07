@@ -22,8 +22,7 @@
 	"scripts": {
 		"build": "vite build",
 		"build-storybook": "storybook build",
-		"dev": "vite",
-		"serve": "vite preview",
+		"dev": "vite --clearScreen false",
 		"storybook": "storybook dev -p 6006",
 		"test": "vitest run",
 		"test:coverage": "vitest run --coverage",
