@@ -159,7 +159,7 @@ const fields = computed<DeepPartial<Field>[]>(() => {
 	];
 });
 
-const { updating, addTranslation, updateTranslation, removeTranslation } = useTranslationStrings();
+const { updating, upsertTranslation, removeTranslation } = useTranslationStrings();
 
 watch(
 	translationString,
@@ -182,11 +182,10 @@ function closeDrawer() {
 
 async function saveTranslationString() {
 	if (!values.value) return;
-	if (initialValues.value.key) {
-		updateTranslation(initialValues.value.key, values.value);
-	} else {
-		addTranslation(values.value);
+	if (initialValues.value.key && initialValues.value.key !== values.value.key) {
+		await removeTranslation(initialValues.value.key);
 	}
+	await upsertTranslation(values.value);
 	closeDrawer();
 }
 

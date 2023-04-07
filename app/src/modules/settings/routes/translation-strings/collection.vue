@@ -20,7 +20,7 @@
 
 		<template #sidebar>
 			<sidebar-detail icon="info_outline" :title="t('information')" close>
-				<div v-md="t('page_help_settings_translation_strings_collection')" class="page-description" />
+				<div v-md="t('page_help_settings_translation_strings_collection')" class="page-description"></div>
 			</sidebar-detail>
 		</template>
 

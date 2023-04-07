@@ -34,8 +34,7 @@ type UsableTranslationStrings = {
 	refresh: () => Promise<void>;
 
 	updating: Ref<boolean>;
-	addTranslation: (translation: DisplayTranslationString) => Promise<void>;
-	updateTranslation: (originalKey: string, translation: DisplayTranslationString) => Promise<void>;
+	upsertTranslation: (translation: DisplayTranslationString) => Promise<void>;
 	removeTranslation: (translationKey: string) => Promise<void>;
 };
 
@@ -91,8 +90,7 @@ export function useTranslationStrings(): UsableTranslationStrings {
 		loadAllTranslations,
 		refresh,
 		updating,
-		addTranslation,
-		updateTranslation,
+		upsertTranslation,
 		removeTranslation,
 	};
 
@@ -142,13 +140,9 @@ export function useTranslationStrings(): UsableTranslationStrings {
 		}
 	}
 
-	async function addTranslation(translation: DisplayTranslationString) {
+	async function upsertTranslation(translation: DisplayTranslationString) {
 		if (!translation.key || !translation.translations) return;
 		if (!translationKeys.value || !translationStrings || !translationStrings.value) {
-			return;
-		}
-		if (translationKeys.value.includes(translation.key)) {
-			unexpectedError(new Error('translation key already exists!'));
 			return;
 		}
 		const newTranslations: RawTranslation[] = [];
@@ -156,7 +150,7 @@ export function useTranslationStrings(): UsableTranslationStrings {
 			newTranslations.push({ key: translation.key, language, value });
 			translationStrings.value.push({ key: translation.key, language, value });
 		}
-		await api.post(`/translation-strings/${translation.key}`, newTranslations);
+		await api.post(`/translation-strings/${encodeURIComponent(translation.key)}`, newTranslations);
 		await updateLocaleStrings(translationStrings.value);
 	}
 	async function removeTranslation(translationKey: string) {
@@ -165,26 +159,9 @@ export function useTranslationStrings(): UsableTranslationStrings {
 		}
 		if (translationKeys.value.includes(translationKey)) {
 			translationStrings.value = translationStrings.value.filter(({ key }) => key !== translationKey);
+			await api.delete(`/translation-strings/${encodeURIComponent(translationKey)}`);
+			await updateLocaleStrings(translationStrings.value);
 		}
-		await api.delete(`/translation-strings/${translationKey}`);
-		await updateLocaleStrings(translationStrings.value);
-	}
-	async function updateTranslation(originalKey: string, translation: DisplayTranslationString) {
-		if (!translation.key || !translation.translations) return;
-		if (!translationKeys.value || !translationStrings || !translationStrings.value) {
-			return;
-		}
-		if (translationKeys.value.includes(originalKey)) {
-			translationStrings.value = translationStrings.value.filter(({ key }) => key !== originalKey);
-		}
-		const flatTranslations = translation.translations.map(({ language, translation: value }) => ({
-			key: translation.key,
-			language,
-			value,
-		}));
-		await api.post(`/translation-strings/${translation.key}`, flatTranslations);
-		translationStrings.value.push(...(flatTranslations as RawTranslation[]));
-		await updateLocaleStrings(translationStrings.value);
 	}
 
 	async function updateLocaleStrings(strings: RawTranslation[]) {
@@ -216,6 +193,7 @@ export function useTranslationStrings(): UsableTranslationStrings {
 				filter: {
 					language: { _eq: lang },
 				},
+				limit: -1,
 			},
 		});
 		return response.data.data.translations ?? [];
@@ -223,7 +201,7 @@ export function useTranslationStrings(): UsableTranslationStrings {
 
 	async function fetchAllTranslationStrings(): Promise<RawTranslation[]> {
 		const response = await api.get(`/translation-strings`, {
-			params: { fields: ['language', 'key', 'value'] },
+			params: { fields: ['language', 'key', 'value'], limit: -1 },
 		});
 		return response.data.data ?? [];
 	}

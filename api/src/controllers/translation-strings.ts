@@ -26,75 +26,50 @@ const readHandler = asyncHandler(async (req, res, next) => {
 router.search('/', validateBatch('read'), readHandler, respond);
 router.get('/', readHandler, respond);
 
-router.post(
-	'/:key',
-	asyncHandler(async (req, res, next) => {
-		const service = new TranslationStringsService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
+const upsertHandler = asyncHandler(async (req, res, next) => {
+	const service = new TranslationStringsService({
+		accountability: req.accountability,
+		schema: req.schema,
+	});
 
-		try {
-			let savedKeys: PrimaryKey[] = [];
-			const existingKeys: PrimaryKey[] = (
-				await service.readByQuery({
-					fields: ['id'],
-					filter: {
-						key: { _eq: req.params['key']! },
-					},
-				})
-			).map(({ id }) => id);
+	try {
+		let savedKeys: PrimaryKey[] = [];
+		const existingKeys: PrimaryKey[] = (
+			await service.readByQuery({
+				fields: ['id'],
+				filter: {
+					key: { _eq: req.params['key']! },
+				},
+			})
+		).map(({ id }) => id);
 
-			if (Array.isArray(req.body)) {
-				savedKeys = await service.upsertMany(req.body);
-				const result = await service.readMany(savedKeys, req.sanitizedQuery);
-				res.locals['payload'] = { data: result || null };
-			} else {
-				const savedKey = await service.upsertOne(req.body);
-				savedKeys.push(savedKey);
-				const result = await service.readOne(savedKey, req.sanitizedQuery);
-				res.locals['payload'] = { data: result || null };
-			}
-
-			const deleteKeys = existingKeys.filter((id) => !savedKeys.includes(id));
-			if (deleteKeys.length > 0) await service.deleteMany(deleteKeys);
-		} catch (error: any) {
-			if (error instanceof ForbiddenException) {
-				return next();
-			}
-
-			throw error;
+		if (Array.isArray(req.body)) {
+			savedKeys = await service.upsertMany(req.body);
+			const result = await service.readMany(savedKeys, req.sanitizedQuery);
+			res.locals['payload'] = { data: result || null };
+		} else {
+			const savedKey = await service.upsertOne(req.body);
+			savedKeys.push(savedKey);
+			const result = await service.readOne(savedKey, req.sanitizedQuery);
+			res.locals['payload'] = { data: result || null };
 		}
 
-		return next();
-	}),
-	respond
-);
+		const deleteKeys = existingKeys.filter((id) => !savedKeys.includes(id));
+		if (deleteKeys.length > 0) await service.deleteMany(deleteKeys);
+	} catch (error: any) {
+		if (error instanceof ForbiddenException) {
+			return next();
+		}
 
-router.delete(
-	'/:language/:key',
-	asyncHandler(async (req, _res, next) => {
-		const service = new TranslationStringsService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
+		throw error;
+	}
 
-		await service.deleteByQuery({
-			filter: {
-				_and: [
-					{
-						key: {
-							_eq: req.params['key']!,
-						},
-					},
-					{ language: { _eq: req.params['language']! } },
-				],
-			},
-		});
-		return next();
-	}),
-	respond
-);
+	return next();
+});
+
+router.post('/:key', upsertHandler, respond);
+router.patch('/:key', upsertHandler, respond);
+
 router.delete(
 	'/:key',
 	asyncHandler(async (req, _res, next) => {
