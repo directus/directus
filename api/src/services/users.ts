@@ -180,7 +180,9 @@ export class UsersService extends ItemsService {
 		return key;
 	}
 
-	override async updateBatch(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
+	override async updateBatch(data: Partial<Item>[], opts: MutationOptions = {}): Promise<PrimaryKey[]> {
+		if (!opts.mutationTracker) opts.mutationTracker = this.createMutationTracker();
+
 		const primaryKeyField = this.schema.collections[this.collection]!.primary;
 
 		const keys: PrimaryKey[] = [];
