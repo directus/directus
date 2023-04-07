@@ -1,7 +1,7 @@
 import { Accountability, Action, PermissionsAction, Query, SchemaOverview } from '@directus/types';
 import type Keyv from 'keyv';
 import type { Knex } from 'knex';
-import { assign, clone, cloneDeep, omit, pick, without } from 'lodash-es';
+import { assign, clone, cloneDeep, isNil, omit, pick, without } from 'lodash-es';
 import { getCache } from '../cache.js';
 import { getHelpers } from '../database/helpers/index.js';
 import getDatabase from '../database/index.js';
@@ -910,7 +910,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 					continue;
 				}
 
-				if (field.defaultValue) defaults[name] = field.defaultValue;
+				if (!isNil(field.defaultValue)) defaults[name] = field.defaultValue;
 			}
 
 			return defaults as Partial<Item>;
