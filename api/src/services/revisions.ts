@@ -1,5 +1,8 @@
+import { adjustDate } from '@directus/utils';
+import getDatabase from '../database/index.js';
+import env from '../env.js';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions/index.js';
-import type { AbstractServiceOptions, PrimaryKey } from '../types/index.js';
+import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '../types/index.js';
 import { ItemsService } from './items.js';
 
 export class RevisionsService extends ItemsService {
@@ -21,5 +24,25 @@ export class RevisionsService extends ItemsService {
 		});
 
 		await service.updateOne(revision['item'], revision['data']);
+	}
+
+	async truncate() {
+		if (!env['REVISIONS_RETENTION'] || env['REVISIONS_RETENTION'] === 'infinite') return;
+		const db = getDatabase();
+		const oldest = adjustDate(new Date(), '-' + env['REVISIONS_RETENTION']);
+		if (!oldest) throw new Error('Invalid REVISIONS_RETENTION configured');
+		const oldestActivity = await db.select('id').from('directus_activity').where('timestamp', '<=', oldest).first();
+		if (!oldestActivity) return;
+		await db('directus_revisions').delete().where('activity', '<=', oldestActivity.id);
+	}
+
+	override async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
+		await this.truncate();
+		return await super.createOne(data, opts);
+	}
+
+	override async createMany(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
+		await this.truncate();
+		return await super.createMany(data, opts);
 	}
 }

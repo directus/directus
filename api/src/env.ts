@@ -294,6 +294,7 @@ const defaults: Record<string, any> = {
 	FLOWS_ENV_ALLOW_LIST: false,
 
 	ACTIVITY_RETENTION: '180 days',
+	REVISIONS_RETENTION: '90 days',
 };
 
 // Allows us to force certain environment variable into a type, instead of relying
