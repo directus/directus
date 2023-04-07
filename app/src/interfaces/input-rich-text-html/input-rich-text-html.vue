@@ -187,20 +187,18 @@ import { useSettingsStore } from '@/stores/settings';
 import { SettingsStorageAssetPreset } from '@directus/types';
 
 import 'tinymce/tinymce';
+import 'tinymce/models/dom';
 import 'tinymce/themes/silver';
 import 'tinymce/plugins/autoresize/plugin';
 import 'tinymce/plugins/code/plugin';
 import 'tinymce/plugins/directionality/plugin';
 import 'tinymce/plugins/fullscreen/plugin';
-import 'tinymce/plugins/hr/plugin';
 import 'tinymce/plugins/image/plugin';
-import 'tinymce/plugins/imagetools/plugin';
 import 'tinymce/plugins/insertdatetime/plugin';
 import 'tinymce/plugins/link/plugin';
 import 'tinymce/plugins/lists/plugin';
 import 'tinymce/plugins/media/plugin';
 import 'tinymce/plugins/pagebreak/plugin';
-import 'tinymce/plugins/paste/plugin';
 import 'tinymce/plugins/preview/plugin';
 import 'tinymce/plugins/table/plugin';
 import 'tinymce/icons/default';
@@ -240,7 +238,6 @@ export default defineComponent({
 				'customLink',
 				'customImage',
 				'customMedia',
-				'hr',
 				'code',
 				'fullscreen',
 			],
@@ -374,8 +371,20 @@ export default defineComponent({
 				skin_url: false,
 				content_css: false,
 				content_style: getEditorStyles(props.font as 'sans-serif' | 'serif' | 'monospace'),
-				plugins:
-					'media table hr lists image link pagebreak code insertdatetime autoresize paste preview fullscreen directionality',
+				plugins: [
+					'media',
+					'table',
+					'lists',
+					'image',
+					'link',
+					'pagebreak',
+					'code',
+					'insertdatetime',
+					'autoresize',
+					'preview',
+					'fullscreen',
+					'directionality',
+				],
 				branding: false,
 				max_height: 1000,
 				elementpath: false,
