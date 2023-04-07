@@ -13,7 +13,7 @@ jobs:
     steps:
       - id: check
         uses: directus/cla-bot@v0.0.1
-      - if: failure()
+      - if: failure() && steps.check.outputs.missing
         uses: marocchino/sticky-pull-request-comment@v2
         with:
           message: |

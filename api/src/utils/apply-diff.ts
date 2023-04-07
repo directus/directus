@@ -40,6 +40,7 @@ export async function applyDiff(
 	const mutationOptions: MutationOptions = {
 		autoPurgeSystemCache: false,
 		bypassEmitAction: (params) => nestedActionEvents.push(params),
+		bypassLimits: true,
 	};
 
 	const runPostColumnChange = await helpers.schema.preColumnChange();

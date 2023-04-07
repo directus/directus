@@ -11,7 +11,11 @@
 		show-select="none"
 		collection="directus_activity"
 	>
-		<private-view :title="t('activity_feed')">
+		<private-view
+			:title="t('activity_feed')"
+			:small-header="currentLayout?.smallHeader"
+			:header-shadow="currentLayout?.headerShadow"
+		>
 			<template #title-outer:prepend>
 				<v-button class="header-icon" rounded disabled icon secondary>
 					<v-icon name="access_time" />
@@ -30,7 +34,7 @@
 				<activity-navigation v-model:filter="roleFilter" />
 			</template>
 
-			<component :is="`layout-${layout}`" v-bind="layoutState" class="layout">
+			<component :is="`layout-${layout}`" v-bind="layoutState">
 				<template #no-results>
 					<v-info :title="t('no_results')" icon="search" center>
 						{{ t('no_results_copy') }}
@@ -60,15 +64,16 @@
 </template>
 
 <script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, computed, ref } from 'vue';
-import ActivityNavigation from '../components/navigation.vue';
+import { useExtension } from '@/composables/use-extension';
 import { usePreset } from '@/composables/use-preset';
-import { useLayout } from '@directus/composables';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
 import SearchInput from '@/views/private/components/search-input.vue';
+import { useLayout } from '@directus/composables';
 import { Filter } from '@directus/types';
 import { mergeFilters } from '@directus/utils';
+import { computed, defineComponent, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import ActivityNavigation from '../components/navigation.vue';
 
 export default defineComponent({
 	name: 'ActivityCollection',
@@ -87,6 +92,8 @@ export default defineComponent({
 
 		const { layoutWrapper } = useLayout(layout);
 
+		const currentLayout = useExtension('layout', layout);
+
 		const roleFilter = ref<Filter | null>(null);
 
 		return {
@@ -100,6 +107,7 @@ export default defineComponent({
 			filter,
 			roleFilter,
 			mergeFilters,
+			currentLayout,
 		};
 
 		function useBreadcrumb() {
