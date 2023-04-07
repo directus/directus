@@ -206,8 +206,8 @@ prefixing the value with `{type}:`. The following types are available:
 | `MAX_BATCH_MUTATION`       | The maximum number of items for batch mutations when creating, updating and deleting.                      | `Infinity`                   |
 | `MAX_RELATIONAL_DEPTH`     | The maximum depth when filtering / querying relational fields, with a minimum value of `2`.                | `10`                         |
 | `ROBOTS_TXT`               | What the `/robots.txt` endpoint should return                                                              | `User-agent: *\nDisallow: /` |
-| `ACTIVITY_RETENTION`       | How long to save activity logs for                                                                         | `180 days`                   |
-| `REVISIONS_RETENTION`      | How long to save revisions history for                                                                     | `90 days`                    |
+| `ACTIVITY_RETENTION`       | How long to save activity logs for. Set to `infinite` to keep records forever                              | `180 days`                   |
+| `REVISIONS_RETENTION`      | How long to save revisions history for. Set to `infinite` to keep records forever                          | `90 days`                    |
 
 <sup>[1]</sup> The PUBLIC_URL value is used for things like OAuth redirects, forgot-password emails, and logos that
 needs to be publicly available on the internet.
