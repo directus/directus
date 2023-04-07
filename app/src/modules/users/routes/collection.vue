@@ -13,7 +13,11 @@
 		collection="directus_users"
 		:reset-preset="resetPreset"
 	>
-		<private-view :title="title">
+		<private-view
+			:title="title"
+			:small-header="currentLayout?.smallHeader"
+			:header-shadow="currentLayout?.headerShadow"
+		>
 			<template v-if="breadcrumb" #headline>
 				<v-breadcrumb :items="breadcrumb" />
 			</template>
@@ -100,7 +104,7 @@
 
 			<users-invite v-if="canInviteUsers" v-model="userInviteModalActive" @update:model-value="refresh" />
 
-			<component :is="`layout-${layout}`" class="layout" v-bind="layoutState">
+			<component :is="`layout-${layout}`" v-bind="layoutState">
 				<template #no-results>
 					<v-info v-if="!filter && !search" :title="t('user_count', 0)" icon="people_alt" center>
 						{{ t('no_users_copy') }}
@@ -181,6 +185,7 @@ import { Role } from '@directus/types';
 import { mergeFilters } from '@directus/utils';
 import { onBeforeRouteLeave, onBeforeRouteUpdate } from 'vue-router';
 import useNavigation from '../composables/use-navigation';
+import { useExtension } from '@/composables/use-extension';
 
 type Item = {
 	[field: string]: any;
@@ -207,6 +212,8 @@ const selection = ref<Item[]>([]);
 
 const { layout, layoutOptions, layoutQuery, filter, search, resetPreset } = usePreset(ref('directus_users'));
 const { addNewLink } = useLinks();
+
+const currentLayout = useExtension('layout', layout);
 
 const { confirmDelete, deleting, batchDelete, batchEditActive } = useBatch();
 
@@ -368,9 +375,5 @@ function usePermissions() {
 
 .header-icon {
 	--v-button-color-disabled: var(--foreground-normal);
-}
-
-.layout {
-	--layout-offset-top: 64px;
 }
 </style>
