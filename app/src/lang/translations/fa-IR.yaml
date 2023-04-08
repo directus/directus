@@ -320,6 +320,7 @@ updated_on: به روزرسانی شده در
 updated_by: به روزرسانی شده توسط
 primary_key: کلید اصلی
 foreign_key: کلید خارجی
+field_key: کلید API فیلد
 finish_setup: پایان راه‌اندازی
 dismiss: نادیده گرفتن
 toggle_raw_editor: تغییر به ویرایشگر Raw
@@ -515,9 +516,31 @@ no_users_copy: این نقش، هنوز به هیچ کاربری تعلق نگر
 no_notifications: اعلانی موجود نیست
 no_notifications_copy: شما همه اعلانها و پیامها را دیده اید!
 activity_log: لاگ فعالیت ها
+all_items: تمام موارد
+any: هرکدام
+csv: CSV
+no_collections: مجموعه ای وجود ندارد
+create_collection: ایجاد مجموعه
+no_collections_copy_admin: شما هنوز هیچ مجموعه ای ندارید. برای شروع روی دکمه زیر کلیک کنید.
+no_collections_copy: شما هنوز هیچ مجموعه ای ندارید. لطفا با سرپرست سیستم خود تماس بگیرید.
 relationship_not_setup: این رابطه به درستی پیکربندی نشده است
+display_template_not_setup: گزینه نمایش قالب اشتباه پیکربندی شده است
+collection_field_not_setup: گزینه مجموعه فیلد به اشتباه پیکربندی شده است
+select_a_collection: انتخاب یک کالکشن
+select_a_field: انتخاب یک فیلد
+active: فعال
+move_to: انتقال به...
 copy: کپی
+copy_to: کپی در...
+no_other_dashboards_copy: شما هنوز داشبورد دیگری ندارید.
+inactive: غیر فعال
+users: کاربران
+activity: فعالیت های من
+activity_item: گزارش فعالیت ها
 action: فعالیت
+ip_address: آدرس IP
+user_agent: عامل کاربر
+origin: مبدا
 webhooks: هوک های تحت وب
 decimals: رقم اعشار
 value_decimals: مقدار اعشار
@@ -756,6 +779,19 @@ format_text: قالب بندی متن
 format_value: مقدار قالب
 abbreviate_value: مقدار اختصاری
 operator: اپراتور
+bold: توپُر
+toggle: تغییر وضعیت
+icon_on: آیکن روشن
+icon_off: آیکن خاموش
+label: برچسب
+flows: اتوماسیون ها
+flow: اتوماسیون
+select_a_flow: انتخاب یک اتوماسیون
+run_flow_confirm: آیا مطمئنید که می خواهید این اتصال را برقرار کنید؟
+run_flow_on_current_collection: اجرای اتوماسیون در مجموعه فعلی
+run_flow_on_current: اجرای اتوماسیون در مجموعه فعلی
+run_flow_on_current_edited_confirm: این مورد ممکن است توسط این اتوماسیون به‌ روزرسانی شود، آیا مطمئن هستید که می‌خواهید آن را اجرا کنید؟
+run_flow: اجرای اتوماسیون
 set_flow_inactive: برگشت Flow به غیر‌فعال
 edit_flow: ویرایش Flow
 delete_flow: حذف Flow
@@ -996,6 +1032,7 @@ fields:
     timestamp: فعالیت در تاریخ
     user: فعالیت توسط
     comment: نظر
+    origin: مبدا
   directus_collections:
     collection: کالکشن یا مجموعه
     icon: آیکن
@@ -1054,6 +1091,19 @@ fields:
     last_access: آخرین دسترسی
     email_notifications: اعلان های ایمیلی
   directus_settings:
+    png: PNG
+    webP: WebP
+    tiff: Tiff
+    mapping: نقشه برداری
+    basemaps: Basemap
+    basemaps_raster: Raster
+    basemaps_tile: Raster TileJSON
+    basemaps_style: Mapbox Style
+    mapbox_key: Mapbox Access Token
+    mapbox_placeholder: pk.eyJ1Ijo.....
+    attribution: انتساب
+    additional_transforms: تحولات اضافی
+    project_name: نام پروژه
     project_descriptor: درباره پروژه
     project_url: لینک پروژه
     project_color: رنگ پروژه
@@ -1136,7 +1186,12 @@ field_options:
     additional_transforms: تحولات اضافی
     transforms_note: نام متود شارپ و آرگومان های آن. برای اطلاعات بیشتر به https://sharp.pixelplumbing.com/api-constructor مراجعه کنید.
     mapbox_key: کلید دسترسی Mapbox
+    mapbox_placeholder: pk.eyJ1Ijo.....
+    basemaps: Basemap
     basemaps_name_placeholder: نام Basemap را وارد کنید...
+    basemaps_raster: Raster
+    basemaps_tile: Raster TileJSON
+    basemaps_style: Mapbox Style
     files_divider_title: فایلها و تصاویر کوچک
     overrides_divider_title: لغو برنامه
   directus_activity:
@@ -1145,14 +1200,30 @@ field_options:
     update: بروزرسانی
     delete: حذف
   directus_collections:
+    track_activity_revisions: مشاهده فعالیت ها و لاگ ها
+    only_track_activity: فقط مشاهده فعالیت ها
+    do_not_track_anything: هیچ چیز را پیگیری نکن
     collection_setup: راه اندازی مجموعه
     note_placeholder: توضیحات مربوط به این مجموعه...
+    hidden_label: در برنامه پنهان شود
     singleton: به عنوان یک شی واحد رفتار کند
     language: زبان
+    translation: ترجمه
+    translation_placeholder: وارد کردن ترجمه...
     collection_name: نام کالکشن
+    singular_unit: نام واحد
+    plural_unit: نام جمع
     archive_divider: بایگانی
+    archive_field_placeholder: یک فیلد را انتخاب کنید...
+    archive_app_filter: فیلتر بایگانی برنامه را فعال کنید
+    archive_value: مقدار تنظیم شده هنگام بایگانی...
+    unarchive_value: مقدار تنظیم شده هنگام حذف بایگانی...
     sort_divider: مرتب سازی
+    sort_field: یک فیلد را انتخاب کنید...
+    accountability_divider: مسئوليت
+    duplication_divider: تکراری
   directus_files:
+    title: یک عنوان منحصر به فرد
     description: توضیحات اختیاری...
     location: موقعیت اختیاری...
     storage_divider: نحوه نام گذاری فایل
@@ -1175,11 +1246,13 @@ field_options:
     dropdown_auto: انتخاب خودکار پوسته (توسط سیستم)
     dropdown_light: تم روشن
     dropdown_dark: تم شبانه (تاریک)
+    admin_divider: 'تنظیمات ادمین:'
     status_dropdown_draft: پیش‌نویس
     status_dropdown_invited: دعوت شده
     status_dropdown_active: فعال
     status_dropdown_suspended: تعلیق شده
     status_dropdown_archived: بایگانی شده
+    token: یک رمز دسترسی ایمن وارد کنید...
   directus_webhooks:
     status_options_active: فعال
     status_options_inactive: غیر فعال
@@ -1191,7 +1264,16 @@ field_options:
     actions_login: ورود به سیستم
     headers:
       header: سربرگ Header
+      value: مقدار
+      add: اضافه کردن Header
+no_value: بدون مقدار
+do_nothing: کاری انجام نشود
+save_current_user_id: ذخیره نقش کاربر فعلی
 save_current_user_role: ذخیره نقش کاربر فعلی
+save_current_datetime: ذخیره تاریخ و ساعت فعلی
+always_open: همیشه در
+start_open: هنگام باز کردن
+start_collapsed: هنگام بسته شدن
 comment: نظر
 shared_uses_left: برای امنیت بیشتر، این صفحه مشترک با تعداد محدودی بازدید پیکربندی شده است. در حال حاضر {n} بازدید باقی مانده است، پس از آن، صفحه دیگر قابل دسترسی نخواهد بود.
 share_access_page: دسترسی به صفحه Shared
@@ -1259,8 +1341,15 @@ sign_in: ورود
 sign_out: خروج از سیستم
 sign_out_confirm: آیا اطمینان دارید که می‌خواهید خارج شوید؟
 template: قالب
+translation_placeholder: وارد کردن ترجمه...
+report_error: گزارش خطا
+start: آغاز
 table: جدول
 list: لیست
+search_filter: جستجوی فیلترها
+enable_search_filter: فعال کردن جستجو و فیلترها
+item_link: لینک مورد
+show_link_to_item: نمایش لینک در آیتم
 interfaces:
   filter:
     name: فیلتر
@@ -1269,6 +1358,7 @@ interfaces:
     add_group: گروه و / یا
     add_value: افزودن مقدار
     all: همه
+    any: هرکدام
   group-accordion:
     description: نمایش زمینه ها یا گروه ها به عنوان بخش های آکاردئونی
     start: آغاز
@@ -1329,6 +1419,7 @@ interfaces:
     no_fields: بدون فیلد
   system-display-template:
     display-template: نمایش الگو
+    collection_field_not_setup: گزینه مجموعه فیلد به اشتباه پیکربندی شده است
     select_a_collection: انتخاب یک کالکشن
   presentation-divider:
     divider: جدا کننده
@@ -1371,6 +1462,7 @@ interfaces:
     hyphen: جایگزینی با نشان اتصال
     underscore: جایگزینی با زیرین خط
   boolean:
+    toggle: تغییر وضعیت
     label_default: فعال شده
   translations:
     display_template: نمایش الگو
@@ -1383,6 +1475,8 @@ displays:
     translations: ترجمه‌ها
   boolean:
     boolean: بولین
+    icon_on: آیکن روشن
+    icon_off: آیکن خاموش
   collection:
     collection: کالکشن یا مجموعه
     description: نمایش یک مجموعه
@@ -1572,4 +1666,6 @@ operations:
     data: داده Data
     header: سربرگ Header
   trigger:
+    flows: اتوماسیون ها
+    flow: اتوماسیون
     data: داده Data
