@@ -296,6 +296,12 @@ o2m_relationship: رابطه یک-به-چند
 m2m_relationship: رابطه چند-به-چند
 m2a_relationship: رابطه یک-به-هر-مجموعه-ای
 invalid_item: آیتمِ نامعتبر
+require_confirmation: در انتظار تأیید ایمیل ها
+dialog: گفتگو
+modal: مودال
+confirmation_dialog: تایید
+confirmation_description: تایید شرح
+confirmation_input_fields: تایید فیلد ورودی
 next: بعدی
 field_name: نام فیلد
 translations: ترجمه‌ها
