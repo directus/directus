@@ -1,5 +1,5 @@
 import type { Knex } from 'knex';
-import { set } from 'lodash';
+import { set } from 'lodash-es';
 
 type NewTranslationString = {
 	key: string;
