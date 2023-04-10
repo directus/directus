@@ -1,4 +1,4 @@
-import { defineDisplay } from '@directus/shared/utils';
+import { defineDisplay } from '@directus/utils';
 import DisplayLabels from './labels.vue';
 
 export default defineDisplay({
@@ -67,6 +67,7 @@ export default defineDisplay({
 							meta: {
 								interface: 'system-input-translated-string',
 								width: 'half',
+								required: true,
 								options: {
 									placeholder: '$t:displays.labels.choices_text_placeholder',
 								},
@@ -82,6 +83,7 @@ export default defineDisplay({
 									font: 'monospace',
 									placeholder: '$t:displays.labels.choices_value_placeholder',
 								},
+								required: true,
 								width: 'half',
 							},
 						},

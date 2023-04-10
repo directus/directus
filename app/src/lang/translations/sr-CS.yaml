@@ -250,6 +250,7 @@ o2m_relationship: One to Many Relacija
 m2m_relationship: Many to Many Relacija
 m2a_relationship: Many to Any Relacija
 invalid_item: Nevažeća Stavka
+modal: Modalni
 next: Sljedeća
 field_name: Naziv Polja
 translations: Prevodi
@@ -1087,7 +1088,6 @@ interfaces:
     edit_fields: Izmijeni Polja
     add_label: '"Napravi Novi" Labela'
     sort: Sortiranje
-    field_name_placeholder: Unesi ime polja...
     field_note_placeholder: Unesi napomenu polja...
   slider:
     slider: Slajder

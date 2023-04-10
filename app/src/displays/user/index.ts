@@ -1,4 +1,4 @@
-import { defineDisplay } from '@directus/shared/utils';
+import { defineDisplay } from '@directus/utils';
 import DisplayUser from './user.vue';
 import { userName } from '@/utils/user-name';
 

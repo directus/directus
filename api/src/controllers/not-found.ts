@@ -1,7 +1,7 @@
-import { RequestHandler } from 'express';
-import getDatabase from '../database';
-import emitter from '../emitter';
-import { RouteNotFoundException } from '../exceptions';
+import type { RequestHandler } from 'express';
+import getDatabase from '../database/index.js';
+import emitter from '../emitter.js';
+import { RouteNotFoundException } from '../exceptions/index.js';
 
 /**
  * Handles not found routes.

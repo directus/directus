@@ -1,20 +1,26 @@
-import SchemaInspector from '@directus/schema';
-import { knex, Knex } from 'knex';
-import { performance } from 'perf_hooks';
-import env from '../env';
-import logger from '../logger';
-import { getConfigFromEnv } from '../utils/get-config-from-env';
-import { validateEnv } from '../utils/validate-env';
+import { createInspector } from '@directus/schema';
+import type { SchemaInspector } from '@directus/schema';
 import fse from 'fs-extra';
+import type { Knex } from 'knex';
+import knex from 'knex';
+import { merge } from 'lodash-es';
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import path from 'path';
-import { merge } from 'lodash';
+import { performance } from 'perf_hooks';
 import { promisify } from 'util';
-import { getHelpers } from './helpers';
-import { DatabaseClient } from '../types';
+import env from '../env.js';
+import logger from '../logger.js';
+import type { DatabaseClient } from '../types/index.js';
+import { getConfigFromEnv } from '../utils/get-config-from-env.js';
+import { validateEnv } from '../utils/validate-env.js';
+import { getHelpers } from './helpers/index.js';
 
 let database: Knex | null = null;
-let inspector: ReturnType<typeof SchemaInspector> | null = null;
+let inspector: SchemaInspector | null = null;
 let databaseVersion: string | null = null;
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export default function getDatabase(): Knex {
 	if (database) {
@@ -38,7 +44,7 @@ export default function getDatabase(): Knex {
 			break;
 
 		case 'oracledb':
-			if (!env.DB_CONNECT_STRING) {
+			if (!env['DB_CONNECT_STRING']) {
 				requiredEnvVars.push('DB_HOST', 'DB_PORT', 'DB_DATABASE', 'DB_USER', 'DB_PASSWORD');
 			} else {
 				requiredEnvVars.push('DB_USER', 'DB_PASSWORD', 'DB_CONNECT_STRING');
@@ -54,7 +60,7 @@ export default function getDatabase(): Knex {
 			}
 			break;
 		case 'mssql':
-			if (!env.DB_TYPE || env.DB_TYPE === 'default') {
+			if (!env['DB_TYPE'] || env['DB_TYPE'] === 'default') {
 				requiredEnvVars.push('DB_HOST', 'DB_PORT', 'DB_DATABASE', 'DB_USER', 'DB_PASSWORD');
 			}
 			break;
@@ -131,7 +137,7 @@ export default function getDatabase(): Knex {
 		merge(knexConfig, { connection: { options: { useUTC: false } } });
 	}
 
-	database = knex(knexConfig);
+	database = knex.default(knexConfig);
 	validateDatabaseCharset(database);
 
 	const times: Record<string, number> = {};
@@ -141,7 +147,7 @@ export default function getDatabase(): Knex {
 			times[queryInfo.__knexUid] = performance.now();
 		})
 		.on('query-response', (_response, queryInfo) => {
-			const delta = performance.now() - times[queryInfo.__knexUid];
+			const delta = performance.now() - times[queryInfo.__knexUid]!;
 			logger.trace(`[${delta.toFixed(3)}ms] ${queryInfo.sql} [${queryInfo.bindings.join(', ')}]`);
 			delete times[queryInfo.__knexUid];
 		});
@@ -149,14 +155,14 @@ export default function getDatabase(): Knex {
 	return database;
 }
 
-export function getSchemaInspector(): ReturnType<typeof SchemaInspector> {
+export function getSchemaInspector(): SchemaInspector {
 	if (inspector) {
 		return inspector;
 	}
 
 	const database = getDatabase();
 
-	inspector = SchemaInspector(database);
+	inspector = createInspector(database);
 
 	return inspector;
 }
@@ -241,7 +247,7 @@ export async function validateMigrations(): Promise<boolean> {
 	try {
 		let migrationFiles = await fse.readdir(path.join(__dirname, 'migrations'));
 
-		const customMigrationsPath = path.resolve(env.EXTENSIONS_PATH, 'migrations');
+		const customMigrationsPath = path.resolve(env['EXTENSIONS_PATH'], 'migrations');
 
 		let customMigrationFiles =
 			((await fse.pathExists(customMigrationsPath)) && (await fse.readdir(customMigrationsPath))) || [];
@@ -297,11 +303,11 @@ async function validateDatabaseCharset(database?: Knex): Promise<void> {
 
 		const tables = await database('information_schema.tables')
 			.select({ name: 'TABLE_NAME', collation: 'TABLE_COLLATION' })
-			.where({ TABLE_SCHEMA: env.DB_DATABASE });
+			.where({ TABLE_SCHEMA: env['DB_DATABASE'] });
 
 		const columns = await database('information_schema.columns')
 			.select({ table_name: 'TABLE_NAME', name: 'COLUMN_NAME', collation: 'COLLATION_NAME' })
-			.where({ TABLE_SCHEMA: env.DB_DATABASE })
+			.where({ TABLE_SCHEMA: env['DB_DATABASE'] })
 			.whereNot({ COLLATION_NAME: collation });
 
 		let inconsistencies = '';
