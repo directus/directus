@@ -1,4 +1,4 @@
-import { defineDisplay } from '@directus/shared/utils';
+import { defineDisplay } from '@directus/utils';
 import { formatFilesize } from '@/utils/format-filesize';
 import { h } from 'vue';
 

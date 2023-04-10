@@ -1,10 +1,11 @@
 import { Router } from 'express';
-import { ForbiddenException } from '../exceptions';
-import { respond } from '../middleware/respond';
-import { validateBatch } from '../middleware/validate-batch';
-import { CollectionsService, MetaService } from '../services';
-import type { Item } from '../types';
-import asyncHandler from '../utils/async-handler';
+import { ForbiddenException } from '../exceptions/index.js';
+import { respond } from '../middleware/respond.js';
+import { validateBatch } from '../middleware/validate-batch.js';
+import { CollectionsService } from '../services/collections.js';
+import { MetaService } from '../services/meta.js';
+import type { Item } from '../types/index.js';
+import asyncHandler from '../utils/async-handler.js';
 
 const router = Router();
 
@@ -67,7 +68,7 @@ router.get(
 			schema: req.schema,
 		});
 
-		const collection = await collectionsService.readOne(req.params['collection']);
+		const collection = await collectionsService.readOne(req.params['collection']!);
 		res.locals['payload'] = { data: collection || null };
 
 		return next();
@@ -109,10 +110,10 @@ router.patch(
 			schema: req.schema,
 		});
 
-		await collectionsService.updateOne(req.params['collection'], req.body);
+		await collectionsService.updateOne(req.params['collection']!, req.body);
 
 		try {
-			const collection = await collectionsService.readOne(req.params['collection']);
+			const collection = await collectionsService.readOne(req.params['collection']!);
 			res.locals['payload'] = { data: collection || null };
 		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
@@ -129,13 +130,13 @@ router.patch(
 
 router.delete(
 	'/:collection',
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req, _res, next) => {
 		const collectionsService = new CollectionsService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
 
-		await collectionsService.deleteOne(req.params['collection']);
+		await collectionsService.deleteOne(req.params['collection']!);
 
 		return next();
 	}),

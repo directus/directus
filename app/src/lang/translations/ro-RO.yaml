@@ -295,6 +295,7 @@ o2m_relationship: Relație unu la mai multe (O2M)
 m2m_relationship: Relație mai multe la mai multe (M2M)
 m2a_relationship: Relație mai multe la oricare (M2A)
 invalid_item: Element invalid
+modal: Modal
 next: Urmatorul
 field_name: Nume câmp
 translations: Traduceri
@@ -1514,7 +1515,6 @@ interfaces:
     edit_fields: Editare câmpuri
     add_label: 'Eticheta „Creează nou”'
     sort: Sortează
-    field_name_placeholder: Introduceți numele câmpului...
     field_note_placeholder: Introduceți nota câmpului...
     incompatible_data: Datele curente nu sunt compatibile cu interfața de repetare și vor fi suprascrise atunci când se adaugă elemente la repetator
   slider:

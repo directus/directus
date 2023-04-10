@@ -1,4 +1,4 @@
-import { defineInterface } from '@directus/shared/utils';
+import { defineInterface } from '@directus/utils';
 import { defineAsyncComponent } from 'vue';
 import PreviewSVG from './preview.svg?raw';
 
@@ -77,11 +77,11 @@ export default defineInterface({
 								text: '$t:wysiwyg_options.superscript',
 							},
 							{
-								value: 'fontselect',
+								value: 'fontfamily',
 								text: '$t:wysiwyg_options.fontselect',
 							},
 							{
-								value: 'fontsizeselect',
+								value: 'fontsize',
 								text: '$t:wysiwyg_options.fontsizeselect',
 							},
 							{

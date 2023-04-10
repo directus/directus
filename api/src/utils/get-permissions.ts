@@ -1,16 +1,16 @@
-import type { Accountability, Permission, SchemaOverview } from '@directus/shared/types';
-import { deepMap, parseFilter, parseJSON, parsePreset } from '@directus/shared/utils';
-import { cloneDeep } from 'lodash';
+import type { Accountability, Permission, SchemaOverview } from '@directus/types';
+import { deepMap, parseFilter, parseJSON, parsePreset } from '@directus/utils';
+import { cloneDeep } from 'lodash-es';
 import hash from 'object-hash';
-import { getCache, getCacheValue, getSystemCache, setCacheValue, setSystemCache } from '../cache';
-import getDatabase from '../database';
-import { appAccessMinimalPermissions } from '../database/system-data/app-access-permissions';
-import env from '../env';
-import logger from '../logger';
-import { RolesService } from '../services/roles';
-import { UsersService } from '../services/users';
-import { mergePermissions } from '../utils/merge-permissions';
-import { mergePermissionsForShare } from './merge-permissions-for-share';
+import { getCache, getCacheValue, getSystemCache, setCacheValue, setSystemCache } from '../cache.js';
+import getDatabase from '../database/index.js';
+import { appAccessMinimalPermissions } from '../database/system-data/app-access-permissions/index.js';
+import env from '../env.js';
+import logger from '../logger.js';
+import { RolesService } from '../services/roles.js';
+import { UsersService } from '../services/users.js';
+import { mergePermissions } from '../utils/merge-permissions.js';
+import { mergePermissionsForShare } from './merge-permissions-for-share.js';
 
 export async function getPermissions(accountability: Accountability, schema: SchemaOverview) {
 	const database = getDatabase();

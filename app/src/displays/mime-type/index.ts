@@ -1,4 +1,4 @@
-import { defineDisplay } from '@directus/shared/utils';
+import { defineDisplay } from '@directus/utils';
 import { readableMimeType } from '@/utils/readable-mime-type';
 import mime from 'mime/lite';
 import { h } from 'vue';

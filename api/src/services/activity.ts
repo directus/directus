@@ -1,17 +1,17 @@
-import { Accountability, Action } from '@directus/shared/types';
-import { uniq } from 'lodash';
+import { Accountability, Action } from '@directus/types';
+import { uniq } from 'lodash-es';
 import validateUUID from 'uuid-validate';
-import env from '../env';
-import { ForbiddenException } from '../exceptions/forbidden';
-import logger from '../logger';
-import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '../types';
-import { getPermissions } from '../utils/get-permissions';
-import { Url } from '../utils/url';
-import { userName } from '../utils/user-name';
-import { AuthorizationService } from './authorization';
-import { ItemsService } from './items';
-import { NotificationsService } from './notifications';
-import { UsersService } from './users';
+import env from '../env.js';
+import { ForbiddenException } from '../exceptions/forbidden.js';
+import logger from '../logger.js';
+import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '../types/index.js';
+import { getPermissions } from '../utils/get-permissions.js';
+import { Url } from '../utils/url.js';
+import { userName } from '../utils/user-name.js';
+import { AuthorizationService } from './authorization.js';
+import { ItemsService } from './items.js';
+import { NotificationsService } from './notifications.js';
+import { UsersService } from './users.js';
 
 export class ActivityService extends ItemsService {
 	notificationsService: NotificationsService;

@@ -1,27 +1,28 @@
-import SchemaInspector from '@directus/schema';
-import { KNEX_TYPES, REGEX_BETWEEN_PARENS } from '@directus/shared/constants';
-import type { Accountability, Field, FieldMeta, RawField, SchemaOverview, Type } from '@directus/shared/types';
-import { addFieldFlag, toArray } from '@directus/shared/utils';
+import type { Column, SchemaInspector } from '@directus/schema';
+import { createInspector } from '@directus/schema';
+import { KNEX_TYPES, REGEX_BETWEEN_PARENS } from '@directus/constants';
+import type { Accountability, Field, FieldMeta, RawField, SchemaOverview, Type } from '@directus/types';
+import { addFieldFlag, toArray } from '@directus/utils';
 import type Keyv from 'keyv';
 import type { Knex } from 'knex';
-import type { Column } from 'knex-schema-inspector/dist/types/column';
-import { isEqual, isNil } from 'lodash';
-import { clearSystemCache, getCache } from '../cache';
-import { ALIAS_TYPES } from '../constants';
-import getDatabase, { getSchemaInspector } from '../database';
-import { getHelpers, Helpers } from '../database/helpers';
-import { systemFieldRows } from '../database/system-data/fields/';
-import emitter from '../emitter';
-import env from '../env';
-import { ForbiddenException, InvalidPayloadException } from '../exceptions';
-import { translateDatabaseError } from '../exceptions/database/translate';
-import { ItemsService } from '../services/items';
-import { PayloadService } from '../services/payload';
-import type { AbstractServiceOptions, ActionEventParams, MutationOptions } from '../types';
-import getDefaultValue from '../utils/get-default-value';
-import getLocalType from '../utils/get-local-type';
-import { getSchema } from '../utils/get-schema';
-import { RelationsService } from './relations';
+import { isEqual, isNil } from 'lodash-es';
+import { clearSystemCache, getCache } from '../cache.js';
+import { ALIAS_TYPES } from '../constants.js';
+import { getHelpers, Helpers } from '../database/helpers/index.js';
+import getDatabase, { getSchemaInspector } from '../database/index.js';
+import { systemFieldRows } from '../database/system-data/fields/index.js';
+import emitter from '../emitter.js';
+import env from '../env.js';
+import { translateDatabaseError } from '../exceptions/database/translate.js';
+import { ForbiddenException, InvalidPayloadException } from '../exceptions/index.js';
+import { ItemsService } from '../services/items.js';
+import { PayloadService } from '../services/payload.js';
+import type { AbstractServiceOptions, ActionEventParams, MutationOptions } from '../types/index.js';
+import getDefaultValue from '../utils/get-default-value.js';
+import getLocalType from '../utils/get-local-type.js';
+import { getSchema } from '../utils/get-schema.js';
+import { sanitizeColumn } from '../utils/sanitize-schema.js';
+import { RelationsService } from './relations.js';
 
 export class FieldsService {
 	knex: Knex;
@@ -29,7 +30,7 @@ export class FieldsService {
 	accountability: Accountability | null;
 	itemsService: ItemsService;
 	payloadService: PayloadService;
-	schemaInspector: ReturnType<typeof SchemaInspector>;
+	schemaInspector: SchemaInspector;
 	schema: SchemaOverview;
 	cache: Keyv<any> | null;
 	systemCache: Keyv<any>;
@@ -37,7 +38,7 @@ export class FieldsService {
 	constructor(options: AbstractServiceOptions) {
 		this.knex = options.knex || getDatabase();
 		this.helpers = getHelpers(this.knex);
-		this.schemaInspector = options.knex ? SchemaInspector(options.knex) : getSchemaInspector();
+		this.schemaInspector = options.knex ? createInspector(options.knex) : getSchemaInspector();
 		this.accountability = options.accountability || null;
 		this.itemsService = new ItemsService('directus_fields', options);
 		this.payloadService = new PayloadService('directus_fields', options);
@@ -164,7 +165,7 @@ export class FieldsService {
 
 			return result.filter((field) => {
 				if (field.collection in allowedFieldsInCollection === false) return false;
-				const allowedFields = allowedFieldsInCollection[field.collection];
+				const allowedFields = allowedFieldsInCollection[field.collection]!;
 				if (allowedFields[0] === '*') return true;
 				return allowedFields.includes(field.field);
 			});
@@ -255,7 +256,7 @@ export class FieldsService {
 
 		try {
 			const exists =
-				field.field in this.schema.collections[collection].fields ||
+				field.field in this.schema.collections[collection]!.fields ||
 				isNil(
 					await this.knex.select('id').from('directus_fields').where({ collection, field: field.field }).first()
 				) === false;
@@ -386,8 +387,8 @@ export class FieldsService {
 			if (
 				hookAdjustedField.type &&
 				(hookAdjustedField.type === 'alias' ||
-					this.schema.collections[collection].fields[field.field]?.type === 'alias') &&
-				hookAdjustedField.type !== (this.schema.collections[collection].fields[field.field]?.type ?? 'alias')
+					this.schema.collections[collection]!.fields[field.field]?.type === 'alias') &&
+				hookAdjustedField.type !== (this.schema.collections[collection]!.fields[field.field]?.type ?? 'alias')
 			) {
 				throw new InvalidPayloadException('Alias type cannot be changed');
 			}
@@ -395,7 +396,7 @@ export class FieldsService {
 			if (hookAdjustedField.schema) {
 				const existingColumn = await this.schemaInspector.columnInfo(collection, hookAdjustedField.field);
 
-				if (!isEqual(existingColumn, hookAdjustedField.schema)) {
+				if (!isEqual(sanitizeColumn(existingColumn), hookAdjustedField.schema)) {
 					try {
 						await this.knex.schema.alterTable(collection, (table) => {
 							if (!hookAdjustedField.schema) return;
@@ -554,8 +555,8 @@ export class FieldsService {
 				// Delete field only after foreign key constraints are removed
 				if (
 					this.schema.collections[collection] &&
-					field in this.schema.collections[collection].fields &&
-					this.schema.collections[collection].fields[field].alias === false
+					field in this.schema.collections[collection]!.fields &&
+					this.schema.collections[collection]!.fields[field]!.alias === false
 				) {
 					await trx.schema.table(collection, (table) => {
 						table.dropColumn(field);

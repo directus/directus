@@ -1,20 +1,19 @@
-import { toArray } from '@directus/shared/utils';
+import formatTitle from '@directus/format-title';
+import { toArray } from '@directus/utils';
 import Busboy from 'busboy';
 import express, { RequestHandler } from 'express';
 import Joi from 'joi';
 import path from 'path';
-import env from '../env';
-import { ForbiddenException, InvalidPayloadException } from '../exceptions';
-import { respond } from '../middleware/respond';
-import useCollection from '../middleware/use-collection';
-import { validateBatch } from '../middleware/validate-batch';
-import { FilesService, MetaService } from '../services';
-import type { PrimaryKey } from '../types';
-import asyncHandler from '../utils/async-handler';
-
-// @ts-ignore
-import formatTitle from '@directus/format-title';
-import { sanitizeQuery } from '../utils/sanitize-query';
+import env from '../env.js';
+import { ForbiddenException, InvalidPayloadException } from '../exceptions/index.js';
+import { respond } from '../middleware/respond.js';
+import useCollection from '../middleware/use-collection.js';
+import { validateBatch } from '../middleware/validate-batch.js';
+import { FilesService } from '../services/files.js';
+import { MetaService } from '../services/meta.js';
+import type { PrimaryKey } from '../types/index.js';
+import asyncHandler from '../utils/async-handler.js';
+import { sanitizeQuery } from '../utils/sanitize-query.js';
 
 const router = express.Router();
 
@@ -145,7 +144,7 @@ router.post(
 					data: records,
 				};
 			} else {
-				const key = Array.isArray(keys) ? keys[0] : keys;
+				const key = Array.isArray(keys) ? keys[0]! : keys;
 				const record = await service.readOne(key, req.sanitizedQuery);
 
 				res.locals['payload'] = {
@@ -240,7 +239,7 @@ router.get(
 			schema: req.schema,
 		});
 
-		const record = await service.readOne(req.params['pk'], req.sanitizedQuery);
+		const record = await service.readOne(req.params['pk']!, req.sanitizedQuery);
 		res.locals['payload'] = { data: record || null };
 		return next();
 	}),
@@ -292,10 +291,10 @@ router.patch(
 			schema: req.schema,
 		});
 
-		await service.updateOne(req.params['pk'], req.body);
+		await service.updateOne(req.params['pk']!, req.body);
 
 		try {
-			const record = await service.readOne(req.params['pk'], req.sanitizedQuery);
+			const record = await service.readOne(req.params['pk']!, req.sanitizedQuery);
 			res.locals['payload'] = { data: record || null };
 		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
@@ -313,7 +312,7 @@ router.patch(
 router.delete(
 	'/',
 	validateBatch('delete'),
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req, _res, next) => {
 		const service = new FilesService({
 			accountability: req.accountability,
 			schema: req.schema,
@@ -335,13 +334,13 @@ router.delete(
 
 router.delete(
 	'/:pk',
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req, _res, next) => {
 		const service = new FilesService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
 
-		await service.deleteOne(req.params['pk']);
+		await service.deleteOne(req.params['pk']!);
 
 		return next();
 	}),

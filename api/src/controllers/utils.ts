@@ -1,20 +1,22 @@
 import argon2 from 'argon2';
+import Busboy from 'busboy';
 import { Router } from 'express';
 import Joi from 'joi';
+import { flushCaches } from '../cache.js';
 import {
 	ForbiddenException,
 	InvalidPayloadException,
 	InvalidQueryException,
 	UnsupportedMediaTypeException,
-} from '../exceptions';
-import collectionExists from '../middleware/collection-exists';
-import { respond } from '../middleware/respond';
-import { RevisionsService, UtilsService, ImportService, ExportService } from '../services';
-import asyncHandler from '../utils/async-handler';
-import Busboy from 'busboy';
-import { flushCaches } from '../cache';
-import { generateHash } from '../utils/generate-hash';
-import { sanitizeQuery } from '../utils/sanitize-query';
+} from '../exceptions/index.js';
+import collectionExists from '../middleware/collection-exists.js';
+import { respond } from '../middleware/respond.js';
+import { ExportService, ImportService } from '../services/import-export.js';
+import { RevisionsService } from '../services/revisions.js';
+import { UtilsService } from '../services/utils.js';
+import asyncHandler from '../utils/async-handler.js';
+import { generateHash } from '../utils/generate-hash.js';
+import { sanitizeQuery } from '../utils/sanitize-query.js';
 
 const router = Router();
 
@@ -86,12 +88,12 @@ router.post(
 
 router.post(
 	'/revert/:revision',
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req, _res, next) => {
 		const service = new RevisionsService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
-		await service.revert(req.params['revision']);
+		await service.revert(req.params['revision']!);
 		next();
 	}),
 	respond
@@ -124,7 +126,7 @@ router.post(
 
 		busboy.on('file', async (_fieldname, fileStream, { mimeType }) => {
 			try {
-				await service.import(req.params['collection'], mimeType, fileStream);
+				await service.import(req.params['collection']!, mimeType, fileStream);
 			} catch (err: any) {
 				return next(err);
 			}
@@ -141,7 +143,7 @@ router.post(
 router.post(
 	'/export/:collection',
 	collectionExists,
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req, _res, next) => {
 		if (!req.body.query) {
 			throw new InvalidPayloadException(`"query" is required.`);
 		}
@@ -158,7 +160,7 @@ router.post(
 		const sanitizedQuery = sanitizeQuery(req.body.query, req.accountability ?? null);
 
 		// We're not awaiting this, as it's supposed to run async in the background
-		service.exportToFile(req.params['collection'], sanitizedQuery, req.body.format, {
+		service.exportToFile(req.params['collection']!, sanitizedQuery, req.body.format, {
 			file: req.body.file,
 		});
 
