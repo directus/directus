@@ -296,6 +296,7 @@ o2m_relationship: 일대다 관계
 m2m_relationship: 다대다 관계
 m2a_relationship: 다대다 관계
 invalid_item: 비정상적인 아이템
+modal: 모달
 next: 다음
 field_name: 필드 이름
 translations: 번역
@@ -491,13 +492,13 @@ allow_duplicates: 중복 허용
 comments: 코멘트
 no_comments: 아직 코멘트가 없습니다
 click_to_expand: 확장하려면 클릭
-select_item: 물품을 고르시 오
+select_item: 항목 선택
 no_items: 항목 없음
 search_items: 검색
 disabled: 비활성화 됨
 information: 정보
-report_bug: 버그를 제보하기
-request_feature: 요청 기능
+report_bug: 버그 제보
+request_feature: 기능 요청
 request_body: 요청 본문
 interface_not_found: '인터페이스 "{interface}"를 찾을 수 없습니다.'
 operation_not_found: '"{operation}"" 작업을 찾을 수 없습니다.'
@@ -512,7 +513,7 @@ no_files_copy: 표시할 파일이 없습니다.
 user_count: '사용자 없음 | 한명의 사용자 | {count}명의 사용자'
 no_users_copy: 이 역할(role)의 사용자가 아직 없습니다.
 webhooks_count: '웹훅 없음 | 한개의 웹훅 | {count}개의 웹훅'
-no_webhooks_copy: 아직 웹후크가 구성되지 않았습니다. 아래에서 하나 만들어 시작해 보세요.
+no_webhooks_copy: 아직 웹훅이 구성되지 않았습니다. 아래 버튼을 통해 시작해 보세요.
 no_notifications: 알림 없음
 no_notifications_copy: 당신은 모두 잡혔습니다!
 activity_log: 활동 기록
@@ -541,7 +542,7 @@ action: 활동
 ip_address: IP 주소
 user_agent: 사용자 에이전트
 origin: 출처
-webhooks: 웹후크
+webhooks: 웹훅
 decimals: 소수
 value_decimals: 값 소수점
 min_value: 최소값
@@ -787,10 +788,7 @@ label: 상표
 flows: 플로우
 flow: 플로우
 select_a_flow: 플로우 선택
-run_flow_on_current_collection: 현재 컬렉션에서 플로우 실행
-run_flow_on_current: 현재 항목에서 플로우 실행
 run_flow_on_current_edited_confirm: 이 항목은 이 플로우에 의해 업데이트될 수 있습니다. 실행하시겠습니까?
-run_flow_on_selected: 먼저 하나 이상의 항목 선택 | 선택한 항목 1개에서 플로우 실행 | {n} 선택한 항목에서 플로우 실행
 run_flow_success: '"{flow}" 플로우이 성공적으로 실행되었습니다.'
 trigger: 방아쇠
 trigger_options: 트리거 옵션
@@ -897,7 +895,7 @@ wysiwyg_options:
   strikethrough: 취소선
   subscript: 아래첨자
   superscript: 어깨 기호
-  codeblock: 암호
+  codeblock: 코드
   blockquote: 인용구
   bullist: 글머리기호 목록
   numlist: 번호 매기기 목록
@@ -930,7 +928,7 @@ wysiwyg_options:
   source_code: 소스 코드 편집
   fullscreen: 전체화면
   directionality: 방향성
-dropdown: 쓰러지 다
+dropdown: 드롭다운
 choices: 선택
 choices_option_configured_incorrectly: 잘못 구성된 선택 사항
 deselect: 선택 취소
@@ -965,9 +963,9 @@ editing_preset: 사전 설정 편집
 layout_preview: 레이아웃 미리보기
 layout_setup: 레이아웃 설정
 data: 데이터
-unsaved_changes: 저장되지 않은 변경 사항
+unsaved_changes: 변경 내용이 저장되지 않았습니다
 unsaved_changes_copy: 이 페이지에서 나가시겠습니까?
-discard_changes: 변경 사항을 취소
+discard_changes: 변경 내용 취소
 discard_all_changes: 모든 변경 사항 취소
 discard_changes_copy: 모든 변경 사항을 취소하시겠습니까?
 show_x_axis: X축 표시
@@ -997,7 +995,7 @@ page_help_settings_presets_collection: >-
   **사전 설정 찾아보기** — 사용자, 역할, 전역 책갈피 및 기본 보기를 포함하여 프로젝트의 모든 사전 설정을 나열합니다.
 page_help_settings_presets_item: >-
   **사전 설정 세부 정보** — 책갈피 및 기본 컬렉션 사전 설정을 관리하기 위한 양식입니다.
-page_help_settings_webhooks_collection: '**웹후크 찾아보기** — 프로젝트 내의 모든 웹후크를 나열합니다.'
+page_help_settings_webhooks_collection: '**웹훅 찾아보기** — 프로젝트 내의 모든 웹훅을 나열합니다.'
 page_help_settings_webhooks_item: '**Webhook 세부 정보** — 프로젝트 Webhook 생성 및 관리를 위한 양식입니다.'
 page_help_settings_flows_collection: '**플로우 찾아보기** — 프로젝트 내의 모든 플로우을 나열합니다.'
 page_help_settings_flows_item: '**Flow Detail** — 하나 이상의 작업을 관리하기 위한 작업 공간입니다.'
@@ -1020,7 +1018,7 @@ no_upscale: 이미지를 확대하지 마세요.
 collection: 컬렉션
 collections: 컬렉션
 content: 데이터 및 컨텐츠 관리
-singleton: 하나씩 일어나는 것
+singleton: 싱글턴 패턴
 singleton_label: 단일 객체로 취급
 system_fields_locked: 시스템 필드가 잠겨 있어 편집할 수 없습니다.
 directus_collection:
@@ -1058,13 +1056,13 @@ fields:
     ip: IP 주소
     revisions: 수정내역
   directus_collections:
-    collection: 수집
+    collection: 컬렉션
     icon: 아이콘
     note: 메모
     color: 색상
     display_template: 표시 형식
-    hidden: 숨겨진
-    singleton: 하나씩 일어나는 것
+    hidden: 숨김
+    singleton: 싱글턴 패턴
     translations: 컬렉션 명명 번역
     archive_app_filter: 아카이브 앱 필터
     archive_value: 아카이브 가치
@@ -1180,10 +1178,10 @@ fields:
     collection: 컬렉션 이름
     icon: 컬렉션 아이콘
     note: 메모
-    hidden: 숨겨진
-    singleton: 하나씩 일어나는 것
+    hidden: 숨김
+    singleton: 싱글턴 패턴
     translation: 항목 명 번역
-    display_template: 주형
+    display_template: 템플릿
   directus_roles:
     name: 역할명
     icon: 역할 아이콘
@@ -1354,7 +1352,8 @@ referential_action_set_default: '{field}를 기본값으로 설정'
 choose_action: 액션 선택
 continue_label: 계속
 continue_as: >-
-  {name}이(가)이(가) 현재 인증되었습니다. 이 계정으로 계속하려면 계속을 누르세요.
+  현재 {name}으로 인증되었습니다.
+  이 계정으로 계속하려면 계속을 누르세요.
 editing_role: '{role} 역할'
 creating_webhook: 웹훅 만들기
 default_label: 기본
@@ -1374,7 +1373,7 @@ field: 필드 | 필드
 file: 파일
 file_library: 파일 관리
 forgot_password: 비밀번호를 잊으셨나요?
-hidden: 숨겨진
+hidden: 숨김
 hidden_in_group: '{group}에 숨김'
 icon: 아이콘
 info: 정보
@@ -1409,7 +1408,7 @@ revisions: 수정내역
 no_revisions: 수정 내역 없음
 no_logs: 아직 로그가 없습니다
 revert: 돌아가는 것
-save: 구하다
+save: 저장
 schema: 개요
 search: 검색
 select_existing: 기존 선택
@@ -1426,7 +1425,7 @@ export_started: 내보내기를 시작했습니다.
 export_started_copy: 내보내기 시작합니다. 다운로드 준비가 되면 알려드립니다.
 sort_asc: 오름차순 정렬
 sort_desc: 내림차순 정렬
-template: 주형
+template: 템플릿
 require_value_to_be_set: 생성 시 값을 설정해야 함
 translation: 번역
 translation_placeholder: 번역을 입력하세요...
@@ -1495,13 +1494,13 @@ interfaces:
     show_all: 모두 보이기
     show_selected: 선택한 항목 표시
   input-code:
-    code: 암호
+    code: 코드
     description: 코드 스니펫 작성 또는 공유
     line_number: 라인 번호
     line_wrapping: 줄 바꿈
     placeholder: 여기에 코드를 입력하세요...
   system-collection:
-    collection: 수집
+    collection: 컬렉션
     description: 기존 컬렉션 중에서 선택
     include_system_collections: 시스템 컬렉션 포함
   system-collections:
@@ -1520,7 +1519,7 @@ interfaces:
     datetime: 날짜 시간
     description: 날짜 및 시간 입력
     include_seconds: 초 포함
-    set_to_now: 지금으로 설정
+    set_to_now: 현재로 설정
     use_24: 24시간 형식 사용
     placeholder: 날짜 시간 선택...
   system-fields:
@@ -1529,11 +1528,11 @@ interfaces:
   system-display-template:
     display-template: 표시 형식
     description: 정적 텍스트와 동적 필드 값 혼합
-    collection_field: 수집 분야
+    collection_field: 컬렉션 필드
     collection_field_not_setup: 컬렉션 필드 옵션이 잘못 구성되었습니다.
     select_a_collection: 컬렉션 선택
   presentation-divider:
-    divider: 분할기
+    divider: 구분선
     description: 필드에 레이블 지정 및 섹션으로 나누기
     title_placeholder: 제목을 입력하거나 한 줄만 표시하려면 비워두세요...
     inline_title: 인라인 제목
@@ -1569,7 +1568,7 @@ interfaces:
     description: 드롭다운에서 아이콘 선택
     search_for_icon: 아이콘 찾기...
   file-image:
-    image: 영상
+    image: 이미지
     description: 이미지 선택 또는 업로드
     crop: 자르기
     crop_label: 필요에 따라 이미지 자르기
@@ -1593,7 +1592,7 @@ interfaces:
     markdown: 마크다운
     description: 마크다운 입력 및 미리보기
     edit: 수정
-    preview: 시사
+    preview: 미리보기 
     editorFont: 편집기 글꼴
     previewFont: 글꼴 미리보기
     customSyntax: 맞춤형 블록
@@ -1643,13 +1642,12 @@ interfaces:
     add_label: '"새로 만들기" 라벨'
     sort: 정렬
     sort_placeholder: 수동
-    field_name_placeholder: 필드 이름 입력...
     field_note_placeholder: 필드 메모 입력...
     incompatible_data: 현재 데이터는 리피터 레이아웃과 호환되지 않으며 리피터 레이아웃에 항목을 추가할 때 재정의됩니다.
   slider:
     slider: 슬라이더
     description: 슬라이더를 사용하여 숫자 선택
-    always_show_value: 항상 가치를 보여라
+    always_show_value: 항상 값 표시하기
   tags:
     tags: 태그
     description: 태그 선택 또는 추가
@@ -1711,10 +1709,10 @@ interfaces:
     select_mode: 모드 선택
     modes:
       auto: 자동
-      dropdown: 쓰러지 다
+      dropdown: 드롭다운
       modal: 모달
   input-rich-text-html:
-    wysiwyg: 위지위그
+    wysiwyg: WYSIWYG
     description: HTML 형식으로 작성할 수 있는 리치텍스트 에디터
     toolbar: 툴바
     custom_formats: 맞춤 형식

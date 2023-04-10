@@ -1,18 +1,18 @@
-import type { Accountability } from '@directus/shared/types';
+import type { Accountability } from '@directus/types';
 import argon2 from 'argon2';
 import { Router } from 'express';
 import Joi from 'joi';
 import { performance } from 'perf_hooks';
-import { COOKIE_OPTIONS } from '../../constants';
-import env from '../../env';
-import { InvalidCredentialsException, InvalidPayloadException } from '../../exceptions';
-import { respond } from '../../middleware/respond';
-import { AuthenticationService } from '../../services';
-import type { User } from '../../types';
-import asyncHandler from '../../utils/async-handler';
-import { getIPFromReq } from '../../utils/get-ip-from-req';
-import { stall } from '../../utils/stall';
-import { AuthDriver } from '../auth';
+import { COOKIE_OPTIONS } from '../../constants.js';
+import env from '../../env.js';
+import { InvalidCredentialsException, InvalidPayloadException } from '../../exceptions/index.js';
+import { respond } from '../../middleware/respond.js';
+import { AuthenticationService } from '../../services/authentication.js';
+import type { User } from '../../types/index.js';
+import asyncHandler from '../../utils/async-handler.js';
+import { getIPFromReq } from '../../utils/get-ip-from-req.js';
+import { stall } from '../../utils/stall.js';
+import { AuthDriver } from '../auth.js';
 
 export class LocalAuthDriver extends AuthDriver {
 	async getUserID(payload: Record<string, any>): Promise<string> {

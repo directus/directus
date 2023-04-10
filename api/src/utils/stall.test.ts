@@ -1,6 +1,5 @@
 import { afterAll, beforeAll, expect, SpyInstance, test, vi } from 'vitest';
-
-import { stall } from './stall';
+import { stall } from './stall.js';
 
 let performanceNowSpy: SpyInstance;
 

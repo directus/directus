@@ -61,7 +61,6 @@ const primaryKeyField = computed(() => fieldsStore.getPrimaryKeyFieldForCollecti
 function startEditing(item: Record<string, any>) {
 	if (!props.linkToItem) return;
 	currentlyEditing.value = item[primaryKeyField.value];
-	editsAtStart.value = item;
 }
 
 function cancelEdit() {

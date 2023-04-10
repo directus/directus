@@ -1,6 +1,6 @@
 import type { Request } from 'express';
-import env from '../env';
-import { shouldSkipCache } from './should-skip-cache';
+import env from '../env.js';
+import { shouldSkipCache } from './should-skip-cache.js';
 
 /**
  * Returns the Cache-Control header for the current request

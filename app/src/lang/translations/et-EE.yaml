@@ -272,6 +272,7 @@ o2m_relationship: Üks-mitmele suhe (O2M)
 m2m_relationship: Mitu-mitmele suhe (M2M)
 m2a_relationship: Mitu-paljudele suhe (M2A)
 invalid_item: Vigane kirje
+modal: Hüpikaken
 next: Järgmine
 field_name: Välja Nimi
 translations: Tõlked
@@ -1195,7 +1196,6 @@ interfaces:
     edit_fields: Muuda välju
     add_label: '"Lisa uus" nimetus'
     sort: Sorteeri
-    field_name_placeholder: Sisesta välja nimi...
     field_note_placeholder: Sisesta välja märkus...
   slider:
     slider: Liugur

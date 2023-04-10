@@ -180,8 +180,8 @@ export const seedM2MAliasAllFieldTypesValues = async (
 	otherPossibleKeys: any[]
 ) => {
 	try {
-		const collectionItems = await ReadItem(vendor, { collection: collection, fields: '*' });
-		const otherCollectionItems = await ReadItem(vendor, { collection: otherCollection, fields: '*' });
+		const collectionItems = await ReadItem(vendor, { collection: collection, fields: ['*'] });
+		const otherCollectionItems = await ReadItem(vendor, { collection: otherCollection, fields: ['*'] });
 		const newCollectionKeys = collectionItems.map((i: any) => i.id).filter((i: any) => !possibleKeys.includes(i));
 		const newOtherCollectionKeys = otherCollectionItems
 			.map((i: any) => i.id)
@@ -214,8 +214,8 @@ export const seedM2AAliasAllFieldTypesValues = async (
 	otherPossibleKeys: any[]
 ) => {
 	try {
-		const collectionItems = await ReadItem(vendor, { collection: collection, fields: 'id' });
-		const otherCollectionItems = await ReadItem(vendor, { collection: relatedCollection, fields: 'id' });
+		const collectionItems = await ReadItem(vendor, { collection: collection, fields: ['id'] });
+		const otherCollectionItems = await ReadItem(vendor, { collection: relatedCollection, fields: ['id'] });
 		const newCollectionKeys = collectionItems.map((i: any) => i.id).filter((i: any) => !possibleKeys.includes(i));
 		const newOtherCollectionKeys = otherCollectionItems
 			.map((i: any) => i.id)
