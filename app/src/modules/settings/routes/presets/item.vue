@@ -9,7 +9,11 @@
 		:collection="values.collection"
 		readonly
 	>
-		<private-view :title="t('editing_preset')">
+		<private-view
+			:title="t('editing_preset')"
+			:small-header="currentLayout?.smallHeader"
+			:header-shadow="currentLayout?.headerShadow"
+		>
 			<template #headline>
 				<v-breadcrumb :items="[{ name: t('settings_presets'), to: '/settings/presets' }]" />
 			</template>
@@ -145,6 +149,7 @@ import { useShortcut } from '@/composables/use-shortcut';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { isEqual } from 'lodash';
 import { useExtensions } from '@/extensions';
+import { useExtension } from '@/composables/use-extension';
 
 type FormattedPreset = {
 	id: number;
@@ -194,6 +199,8 @@ const layoutFilter = computed<any>({
 });
 
 const layout = computed(() => values.value.layout);
+
+const currentLayout = useExtension('layout', layout);
 
 const { layoutWrapper } = useLayout(layout);
 

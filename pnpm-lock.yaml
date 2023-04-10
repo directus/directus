@@ -380,15 +380,15 @@ importers:
         specifier: 0.0.3
         version: 0.0.3
       vm2:
-        specifier: 3.9.14
-        version: 3.9.14
+        specifier: 3.9.15
+        version: 3.9.15
       wellknown:
         specifier: 0.5.0
         version: 0.5.0
     optionalDependencies:
       '@keyv/redis':
-        specifier: 2.5.6
-        version: 2.5.6
+        specifier: 2.5.7
+        version: 2.5.7
       keyv-memcache:
         specifier: 1.3.3
         version: 1.3.3
@@ -659,8 +659,8 @@ importers:
         specifier: 7.0.0-rc.4
         version: 7.0.0-rc.4(react-dom@18.2.0)(react@18.2.0)(typescript@4.9.5)(vite@4.1.4)(vue@3.2.47)
       '@tinymce/tinymce-vue':
-        specifier: 4.0.7
-        version: 4.0.7(vue@3.2.47)
+        specifier: 5.1.0
+        version: 5.1.0(vue@3.2.47)
       '@turf/meta':
         specifier: 6.5.0
         version: 6.5.0
@@ -839,8 +839,8 @@ importers:
         specifier: 7.0.0-rc.4
         version: 7.0.0-rc.4
       tinymce:
-        specifier: 5.10.7
-        version: 5.10.7
+        specifier: 6.4.1
+        version: 6.4.1
       typescript:
         specifier: 4.9.5
         version: 4.9.5
@@ -5181,8 +5181,8 @@ packages:
     resolution: {integrity: sha512-dfLbk+PwWvFzSxwk3n5ySL0hfBog779o8h68wK/7/APo/7cgyWp5jcXockbxdk5kFRkbeXWm4Fbi9FrdN381sA==}
     dev: true
 
-  /@keyv/redis@2.5.6:
-    resolution: {integrity: sha512-WxR9x/TjGptVM5Vi1IyMqtZ+iAPMY8jh2NkGrHWnvrtGUDll4PyY2GbXkOTC0msGVXuV1JqPEHIM7M648O+Pfg==}
+  /@keyv/redis@2.5.7:
+    resolution: {integrity: sha512-WFDjJ1rXOytwnE56vjunrl+AR/p2T3qG6OK9rfCPR7+GUNlu8DfuNYjnvWeklKmK1FSe7zAYdD1C+MbJt5FJXg==}
     engines: {node: '>= 12'}
     requiresBuild: true
     dependencies:
@@ -6660,12 +6660,12 @@ packages:
       qs: 6.11.1
     dev: true
 
-  /@tinymce/tinymce-vue@4.0.7(vue@3.2.47):
-    resolution: {integrity: sha512-1esB8wGWrjPCY+rK8vy3QB1cxwXo7HLJWuNrcyPl6LOVR+QJjub0OiV/C+TUEsLN6OpCtRv+QnIqMC5vXz783Q==}
+  /@tinymce/tinymce-vue@5.1.0(vue@3.2.47):
+    resolution: {integrity: sha512-Z4R8zaOKrAXBhHWsq+qUlwHY+rvze2RgxHDrZ5+qTYkGvRofW5880HLG9gvv6TRPVsNSQBNMdsaOjJ/eueccgA==}
     peerDependencies:
       vue: ^3.0.0
     dependencies:
-      tinymce: 5.10.7
+      tinymce: 6.4.1
       vue: 3.2.47
     dev: true
 
@@ -17872,8 +17872,8 @@ packages:
     resolution: {integrity: sha512-hGYWYBMPr7p4g5IarQE7XhlyWveh1EKhy4wUBS1LrHXCKYgvz+4/jCqgmJqZxxldesn05vccrtME2RLLZNW7iA==}
     dev: true
 
-  /tinymce@5.10.7:
-    resolution: {integrity: sha512-9UUjaO0R7FxcFo0oxnd1lMs7H+D0Eh+dDVo5hKbVe1a+VB0nit97vOqlinj+YwgoBDt6/DSCUoWqAYlLI8BLYA==}
+  /tinymce@6.4.1:
+    resolution: {integrity: sha512-+/cS2AM9l6p72IBs2uolHbGsBUztLs0WslqNgFaTXtmMksTNUOhh8p08xtA/fa03UGlWEC6/EJoeV95/QDXa2A==}
     dev: true
 
   /tinypool@0.3.1:
@@ -18727,8 +18727,8 @@ packages:
       - terser
     dev: true
 
-  /vm2@3.9.14:
-    resolution: {integrity: sha512-HgvPHYHeQy8+QhzlFryvSteA4uQLBCOub02mgqdR+0bN/akRZ48TGB1v0aCv7ksyc0HXx16AZtMHKS38alc6TA==}
+  /vm2@3.9.15:
+    resolution: {integrity: sha512-XqNqknHGw2avJo13gbIwLNZUumvrSHc9mLqoadFZTpo3KaNEJoe1I0lqTFhRXmXD7WkLyG01aaraXdXT0pa4ag==}
     engines: {node: '>=6.0'}
     hasBin: true
     dependencies:

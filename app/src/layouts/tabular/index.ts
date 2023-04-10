@@ -29,6 +29,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		sidebar: () => undefined,
 		actions: TabularActions,
 	},
+	headerShadow: false,
 	setup(props, { emit }) {
 		const router = useRouter();
 
