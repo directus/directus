@@ -4,6 +4,7 @@ export interface SnackbarRaw {
 	title: string;
 	text?: string;
 	type?: 'info' | 'success' | 'warning' | 'error';
+	code?: string;
 	icon?: string | null;
 	closeable?: boolean;
 	progress?: number;

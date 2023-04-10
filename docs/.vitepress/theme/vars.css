@@ -1,0 +1,71 @@
+/**
+ * VitePress variables overrides
+ *
+ * See https://github.com/vuejs/vitepress/blob/e8cb73e065277ef9b09db1c5088b12307118da9b/src/client/theme-default/styles/vars.css for all available variables
+ * -------------------------------------------------------------------------- */
+
+/**
+ * Colors Base
+ * -------------------------------------------------------------------------- */
+
+:root {
+	--vp-c-black: #21262e;
+	--vp-c-black-pure: #172940;
+	--vp-c-black-soft: #161b22;
+	--vp-c-black-mute: #1d1d21;
+
+	--vp-c-gray: #666672;
+	--vp-c-gray-light-1: #8596ab;
+	--vp-c-gray-light-2: #a2b5cd;
+	--vp-c-gray-light-3: #d3dae4;
+	--vp-c-gray-light-4: #e4eaf1;
+	--vp-c-gray-light-5: #f0f4f9;
+
+	--vp-c-purple: #6644ff;
+	--vp-c-purple-light: #a08bff;
+	--vp-c-purple-lighter: #ddddff;
+	--vp-c-purple-dark: #7359e7;
+	--vp-c-purple-darker: #4422dd;
+	--vp-c-purple-dimm-1: rgba(102, 68, 255, 0.5);
+	--vp-c-purple-dimm-2: rgba(102, 68, 255, 0.25);
+	--vp-c-purple-dimm-3: rgba(102, 68, 255, 0.05);
+}
+
+/**
+ * Colors Theme
+ * -------------------------------------------------------------------------- */
+
+:root {
+	--vp-c-brand: var(--vp-c-purple);
+	--vp-c-brand-light: var(--vp-c-purple-light);
+	--vp-c-brand-lighter: var(--vp-c-purple-lighter);
+	--vp-c-brand-dark: var(--vp-c-purple-dark);
+	--vp-c-brand-darker: var(--vp-c-purple-darker);
+}
+
+.dark {
+	--vp-c-purple: #8866ff;
+	--vp-c-purple-dimm-1: rgba(136, 102, 255, 0.5);
+	--vp-c-purple-dimm-2: rgba(136, 102, 255, 0.25);
+	--vp-c-purple-dimm-3: rgba(136, 102, 255, 0.05);
+}
+
+/**
+ * Component: Custom Block
+ * -------------------------------------------------------------------------- */
+
+:root {
+	--vp-custom-block-tip-border: var(--vp-c-purple-dimm-1);
+	--vp-custom-block-tip-text: var(--vp-c-purple-darker);
+	--vp-custom-block-tip-bg: var(--vp-c-purple-dimm-3);
+	--vp-custom-block-tip-code-bg: var(--vp-custom-block-tip-bg);
+
+	--vp-custom-block-warning-text: var(--vp-c-yellow-darker);
+}
+
+.dark {
+	--vp-custom-block-tip-border: var(--vp-c-purple-dimm-2);
+	--vp-custom-block-tip-text: var(--vp-c-purple-light);
+
+	--vp-custom-block-warning-text: var(--vp-c-yellow);
+}

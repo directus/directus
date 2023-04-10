@@ -1,6 +1,7 @@
-import { TransformationParams } from './types';
-import env from './env';
-import ms from 'ms';
+import type { CookieOptions } from 'express';
+import env from './env.js';
+import type { TransformationParams } from './types/index.js';
+import { getMilliseconds } from './utils/get-milliseconds.js';
 
 export const SYSTEM_ASSET_ALLOW_LIST: TransformationParams[] = [
 	{
@@ -52,15 +53,14 @@ export const GENERATE_SPECIAL = ['uuid', 'date-created', 'role-created', 'user-c
 
 export const UUID_REGEX = '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}';
 
-export const COOKIE_OPTIONS = {
+export const COOKIE_OPTIONS: CookieOptions = {
 	httpOnly: true,
-	domain: env.REFRESH_TOKEN_COOKIE_DOMAIN,
-	maxAge: ms(env.REFRESH_TOKEN_TTL as string),
-	secure: env.REFRESH_TOKEN_COOKIE_SECURE ?? false,
-	sameSite: (env.REFRESH_TOKEN_COOKIE_SAME_SITE as 'lax' | 'strict' | 'none') || 'strict',
+	domain: env['REFRESH_TOKEN_COOKIE_DOMAIN'],
+	maxAge: getMilliseconds(env['REFRESH_TOKEN_TTL']),
+	secure: env['REFRESH_TOKEN_COOKIE_SECURE'] ?? false,
+	sameSite: (env['REFRESH_TOKEN_COOKIE_SAME_SITE'] as 'lax' | 'strict' | 'none') || 'strict',
 };
 
-export const ROBOTSTXT = `
-User-agent: *
-Disallow: /
-`.trim();
+export const OAS_REQUIRED_SCHEMAS = ['Diff', 'Schema', 'Query', 'x-metadata'];
+
+export const REDACT_TEXT = '--redact--';

@@ -28,7 +28,7 @@ describe('Options', () => {
 		expect(config.options()).toHaveLength(1);
 	});
 
-	it('Shows notice when no modules are allowed', () => {
+	it('Shows notice when modules are allowed', () => {
 		const serverStore = useServerStore();
 
 		serverStore.info.flows = {

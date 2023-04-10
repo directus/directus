@@ -33,7 +33,7 @@
 
 <script setup lang="ts">
 import { getJSType } from '@/utils/get-js-type';
-import { Field } from '@directus/shared/types';
+import { Field } from '@directus/types';
 import { isNil } from 'lodash';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -97,3 +97,14 @@ const setRawValue = () => {
 	}
 };
 </script>
+
+<style lang="scss" scoped>
+.v-card-text {
+	.input-code {
+		:deep(.CodeMirror),
+		:deep(.CodeMirror-scroll) {
+			max-height: var(--input-height-tall);
+		}
+	}
+}
+</style>

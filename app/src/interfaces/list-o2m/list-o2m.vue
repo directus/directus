@@ -197,8 +197,8 @@
 import { useRelationO2M } from '@/composables/use-relation-o2m';
 import { useRelationMultiple, RelationQueryMultiple, DisplayItem } from '@/composables/use-relation-multiple';
 import { parseFilter } from '@/utils/parse-filter';
-import { Filter } from '@directus/shared/types';
-import { deepMap, getFieldsFromTemplate, moveInArray } from '@directus/shared/utils';
+import { Filter } from '@directus/types';
+import { deepMap, getFieldsFromTemplate, moveInArray } from '@directus/utils';
 import { render } from 'micromustache';
 import { computed, inject, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -208,7 +208,7 @@ import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import { Sort } from '@/components/v-table/types';
 import Draggable from 'vuedraggable';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
-import { isEmpty, clamp, get } from 'lodash';
+import { isEmpty, clamp, get, isNil } from 'lodash';
 import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
 import { useFieldsStore } from '@/stores/fields';
@@ -317,7 +317,7 @@ const query = computed<RelationQueryMultiple>(() => {
 	return q;
 });
 
-watch([search, searchFilter], () => {
+watch([search, searchFilter, limit], () => {
 	page.value = 1;
 });
 
@@ -414,13 +414,28 @@ function getDeselectTooltip(item: DisplayItem) {
 }
 
 function sortItems(items: DisplayItem[]) {
-	const sortField = relationInfo.value?.sortField;
-	if (!sortField) return;
+	const info = relationInfo.value;
+	const sortField = info?.sortField;
+	if (!info || !sortField) return;
 
-	const sortedItems = items.map((item, index) => ({
-		...item,
-		[sortField]: index + 1,
-	}));
+	const sortedItems = items.map((item, index) => {
+		const relatedId = item?.[info.relatedPrimaryKeyField.field];
+
+		const changes: Record<string, any> = {
+			$index: item.$index,
+			$type: item.$type,
+			$edits: item.$edits,
+			...getItemEdits(item),
+			[sortField]: index + 1,
+		};
+
+		if (!isNil(relatedId)) {
+			changes[info.relatedPrimaryKeyField.field] = relatedId;
+		}
+
+		return changes;
+	});
+
 	update(...sortedItems);
 }
 
@@ -483,8 +498,6 @@ function editRow({ item }: { item: DisplayItem }) {
 }
 
 function stageEdits(item: Record<string, any>) {
-	if (isEmpty(item)) return;
-
 	if (newItem) {
 		create(item);
 	} else {

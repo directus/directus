@@ -11,10 +11,11 @@ import 'codemirror/addon/mode/simple';
 import { computed, onMounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { mustacheMode } from './mustacheMode';
+import { parseJSON } from '@directus/utils';
 
 const props = withDefaults(
 	defineProps<{
-		value?: string;
+		value?: string | object;
 		autofocus?: boolean;
 		disabled?: boolean;
 		type?: string;
@@ -62,6 +63,7 @@ onMounted(async () => {
 			extraKeys: { Ctrl: 'autocomplete' },
 			cursorBlinkRate: props.disabled ? -1 : 530,
 			placeholder: props.placeholder !== undefined ? props.placeholder : t('raw_editor_placeholder'),
+			readOnly: readOnly.value,
 		});
 
 		// prevent new lines for single lines
@@ -84,7 +86,15 @@ onMounted(async () => {
 		codemirror.on('change', (doc, { origin }) => {
 			if (origin === 'setValue') return;
 			const content = doc.getValue();
-			emit('input', content !== '' ? content : null);
+			if (typeof props.value === 'object') {
+				try {
+					emit('input', content !== '' ? parseJSON(content) : null);
+				} catch {
+					// Skip emitting invalid JSON
+				}
+			} else {
+				emit('input', content !== '' ? content : null);
+			}
 		});
 	}
 });

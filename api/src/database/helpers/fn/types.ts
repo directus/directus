@@ -1,15 +1,16 @@
-import { Query, SchemaOverview } from '@directus/shared/types';
-import { Knex } from 'knex';
-import { applyFilter } from '../../../utils/apply-query';
-import { DatabaseHelper } from '../types';
+import type { Query, SchemaOverview } from '@directus/types';
+import type { Knex } from 'knex';
+import { applyFilter } from '../../../utils/apply-query.js';
+import { DatabaseHelper } from '../types.js';
 
 export type FnHelperOptions = {
-	type?: string;
-	query?: Query;
+	type: string | undefined;
+	query: Query | undefined;
+	originalCollectionName: string | undefined;
 };
 
 export abstract class FnHelper extends DatabaseHelper {
-	constructor(protected knex: Knex, protected schema: SchemaOverview) {
+	constructor(knex: Knex, protected schema: SchemaOverview) {
 		super(knex);
 		this.schema = schema;
 	}
@@ -25,14 +26,16 @@ export abstract class FnHelper extends DatabaseHelper {
 	abstract count(table: string, column: string, options?: FnHelperOptions): Knex.Raw;
 
 	protected _relationalCount(table: string, column: string, options?: FnHelperOptions): Knex.Raw {
+		const collectionName = options?.originalCollectionName || table;
+
 		const relation = this.schema.relations.find(
-			(relation) => relation.related_collection === table && relation?.meta?.one_field === column
+			(relation) => relation.related_collection === collectionName && relation?.meta?.one_field === column
 		);
 
-		const currentPrimary = this.schema.collections[table].primary;
+		const currentPrimary = this.schema.collections[collectionName]!.primary;
 
 		if (!relation) {
-			throw new Error(`Field ${table}.${column} isn't a nested relational collection`);
+			throw new Error(`Field ${collectionName}.${column} isn't a nested relational collection`);
 		}
 
 		let countQuery = this.knex
@@ -41,7 +44,7 @@ export abstract class FnHelper extends DatabaseHelper {
 			.where(relation.field, '=', this.knex.raw(`??.??`, [table, currentPrimary]));
 
 		if (options?.query?.filter) {
-			countQuery = applyFilter(this.knex, this.schema, countQuery, options.query.filter, relation.collection, false);
+			countQuery = applyFilter(this.knex, this.schema, countQuery, options.query.filter, relation.collection, {}).query;
 		}
 
 		return this.knex.raw('(' + countQuery.toQuery() + ')');

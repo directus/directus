@@ -20,22 +20,18 @@ module.exports = {
 	extends: ['eslint:recommended', 'prettier'],
 	rules: defaultRules,
 	parserOptions: {
-		ecmaVersion: 2020,
+		ecmaVersion: 2022,
+		sourceType: 'module',
 	},
 	overrides: [
-		// Parse rollup configuration as module
-		{
-			files: ['rollup.config.js', 'vite.config.js'],
-			parserOptions: {
-				sourceType: 'module',
-			},
-		},
+		// Jest
 		{
 			files: ['**/*.test.js'],
 			env: {
 				jest: true,
 			},
 			plugins: ['jest'],
+			rules: defaultRules,
 		},
 		// Configuration for ts/vue files
 		{

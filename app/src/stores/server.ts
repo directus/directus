@@ -7,7 +7,14 @@ import { acceptHMRUpdate, defineStore } from 'pinia';
 import { computed, reactive, unref } from 'vue';
 import { useUserStore } from '@/stores/user';
 
-type Info = {
+type HydrateOptions = {
+	/**
+	 * Allow setting current admin language only when default language gets updated.
+	 */
+	isLanguageUpdated?: boolean;
+};
+
+export type Info = {
 	project: null | {
 		project_name: string | null;
 		project_descriptor: string | null;
@@ -32,7 +39,7 @@ type Info = {
 		uptime: number;
 		totalmem: number;
 	};
-	rateLimiter?:
+	rateLimit?:
 		| false
 		| {
 				points: number;
@@ -43,7 +50,7 @@ type Info = {
 	};
 };
 
-type Auth = {
+export type Auth = {
 	providers: { driver: string; name: string }[];
 	disableDefault: boolean;
 };
@@ -54,7 +61,7 @@ export const useServerStore = defineStore('serverStore', () => {
 		directus: undefined,
 		node: undefined,
 		os: undefined,
-		rateLimiter: undefined,
+		rateLimit: undefined,
 		flows: undefined,
 	});
 
@@ -75,7 +82,7 @@ export const useServerStore = defineStore('serverStore', () => {
 		return options;
 	});
 
-	const hydrate = async () => {
+	const hydrate = async (options?: HydrateOptions) => {
 		const [serverInfoResponse, authResponse] = await Promise.all([
 			api.get(`/server/info`, { params: { limit: -1 } }),
 			api.get('/auth'),
@@ -92,7 +99,9 @@ export const useServerStore = defineStore('serverStore', () => {
 
 		const { currentUser } = useUserStore();
 
-		if (!currentUser?.language) {
+		// set language as default locale before login
+		// or reset language for admin when they update it without having their own language set
+		if (!currentUser || (options?.isLanguageUpdated === true && !currentUser?.language)) {
 			await setLanguage(unref(info)?.project?.default_language ?? 'en-US');
 		}
 

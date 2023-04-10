@@ -1,5 +1,5 @@
-import { REGEX_BETWEEN_PARENS } from '@directus/shared/constants';
-import { FieldFunction } from '@directus/shared/types';
+import { REGEX_BETWEEN_PARENS } from '@directus/constants';
+import { FieldFunction } from '@directus/types';
 
 /**
  * Extracts the function and field name of a field wrapped in a function

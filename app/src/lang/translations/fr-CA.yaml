@@ -80,14 +80,14 @@ create_user: Créer un utilisateur
 message: Message
 delete_panel: Supprimer le panneau
 create_webhook: Créer un webhook
-create_translation_string: Créer une chaîne de traduction
-no_translation_string: Aucune chaîne de traduction
-no_translation_string_copy: Il n'y a pas encore de chaîne de traduction.
+create_translation_string: Créer une traduction
+no_translation_string: Aucune traduction
+no_translation_string_copy: Il n'y a pas encore de traduction.
 translation_string_key_placeholder: Traduction de la clé...
 translation_string_translations_placeholder: Ajouter une nouvelle traduction
-edit_translation_string: Modifier la chaîne de traduction
+edit_translation_string: Modifier la traduction
 delete_translation_string_copy: >-
-  Êtes-vous sûr de vouloir supprimer la chaîne de traduction "{key}" ? Cette action ne peut pas être annulée.
+  Êtes-vous sûr de vouloir supprimer la traduction "{key}" ? Cette action ne peut pas être annulée.
 invite_users: Inviter des utilisateurs
 invite: Inviter
 email_already_invited: '"{email}" a déjà été invité'
@@ -245,6 +245,7 @@ float: Nombre décimal
 integer: Entier
 json: JSON
 xml: XML
+yaml: YAML
 string: Chaîne de caractères
 text: Texte
 time: Heure
@@ -275,6 +276,7 @@ fields_group: Groupe de champs
 no_collections_found: Aucune collection trouvée.
 new_data_alert: 'Les éléments suivants seront créés dans votre Modèle de données :'
 search_collection: Rechercher une collection...
+search_field: Champ de recherche...
 new_field: 'Nouveau Champ'
 new_collection: 'Nouvelle Collection'
 add_m2o_to_collection: 'Ajouter une relation Many-to-One à "{collection}"'
@@ -294,11 +296,12 @@ o2m_relationship: Relation Un à plusieurs
 m2m_relationship: Relation Plusieurs à plusieurs
 m2a_relationship: Relation Many-to-Any
 invalid_item: Élément invalide
+modal: Modal
 next: Suivant
 field_name: Nom du champ
 translations: Traductions
 no_translations: Aucune traduction
-left_to_right: Hello
+left_to_right: De gauche à droite
 right_to_left: De droite à gauche
 note: Remarque
 enter_a_value: Saisissez une valeur...
@@ -366,12 +369,12 @@ related_collections: Collections associées
 translations_collection: Collection de traduction
 languages_collection: Collection de langues
 import_data_input_placeholder: CSV ou JSON...
-import_data_button: Commencer l'importation
-import_data_indeterminate: Importation des données...
+import_data_button: Commencer l'import
+import_data_indeterminate: Import des données...
 import_data_success: Données importées avec succès depuis {filename}
 import_data_error: La structure des données de ce fichier ne correspond pas à la collection.
 label_import: Importer
-label_export: Exportation
+label_export: Export
 import_export: Importer/Exporter
 format: Format
 last_page: Dernière page
@@ -456,14 +459,14 @@ replace_from_url: Remplacer le fichier à partir d'une URL
 no_file_selected: Aucun fichier sélectionné
 download_file: Télécharger le fichier
 open_file_in_tab: Ouvrir le fichier dans un nouvel onglet
-start_export: Démarrer l'exportation
+start_export: Démarrer l'export
 not_available_for_local_downloads: Indisponible pour les téléchargements en local
-exporting_all_items_in_collection: Exportation de tous les {total} éléments dans {collection}.
-exporting_limited_items_in_collection: Exportation de {limit} éléments sur {total} dans le cadre du {collection}.
+exporting_all_items_in_collection: Export de la totalité des {total} éléments dans la collection {collection}.
+exporting_limited_items_in_collection: Exportat de {limit} éléments sur {total} dans la collection {collection}.
 exporting_no_items_to_export: Aucun élément à exporter. Ajustez la configuration d'export ci-dessous.
 exporting_download_hint: Une fois terminé, ce fichier {format} sera automatiquement téléchargé sur votre appareil.
 exporting_batch_hint: Cet export sera traité en lots et, une fois terminé, le fichier {format} sera sauvegardé dans la bibliothèque de fichiers.
-exporting_batch_hint_forced: En raison du grand nombre d'éléments, cette exportation doit être traitée en lots, et une fois terminé, le fichier {format} sera sauvegardé dans la bibliothèque de fichiers.
+exporting_batch_hint_forced: En raison du grand nombre d'éléments, cet export doit être traité par lots, et une fois terminé, le fichier {format} sera sauvegardé dans la bibliothèque de fichiers.
 collection_key: Clé de la collection
 name: Nom
 primary_key_field: Champ de clé primaire
@@ -572,6 +575,8 @@ select_an_item: Sélectionnez un élément...
 edit: Modifier
 enabled: Activé
 disable_tfa: Désactiver l'A2F
+admin_disable_tfa_text: Voulez-vous vraiment désactiver 2FA pour cet utilisateur ?
+tfa_setup: Configurer 2FA
 tfa_scan_code: Scannez le code dans votre application d'authentification pour terminer la configuration de l'A2F
 enter_otp_to_disable_tfa: Entrez l'OTP pour désactiver l'A2F
 create_account: Créer un Compte
@@ -634,7 +639,7 @@ password_reset_sent: Si vous avez un compte, nous vous avons envoyé un lien sé
 password_reset_successful: Mot de passe réinitialisé avec succès
 back: Retour
 filter: Filtre
-edit_image: Éditer l'image
+edit_image: Modifier l'image
 editing_image: Modification de l'image
 square: Carré
 free: Libre
@@ -757,7 +762,7 @@ no_visible_fields_copy: Ce formulaire n'a pas de champs visibles.
 clear_filters: Réinitialiser les filtres
 saves_automatically: Sauvegardé automatiquement
 role: Rôle
-edit_role: Editer le rôle
+edit_role: Modifier le rôle
 rule: Règle
 user: Utilisateur
 no_presets: Aucun préréglage
@@ -783,7 +788,6 @@ label: Étiquette
 flows: Flux
 flow: Flux
 select_a_flow: Sélectionner un flux
-run_flow_on_current: Exécuter le flux sur l'élément actuel
 run_flow_on_current_edited_confirm: Cet élément peut être mis à jour par ce flux, êtes-vous sûr de vouloir l'exécuter ?
 run_flow_success: Le Flux "{flow}" s'est exécuté avec succès
 trigger: Déclencheur
@@ -812,7 +816,7 @@ flow_tracking_null: Ne rien enregistrer
 start_flow: Démarrer le Flux
 stop_flow: Arrêt du Flux
 create_operation: Créer une Opération
-edit_operation: Modifier l'Opération
+edit_operation: Modifier l'opération
 code: Code
 operation_options: Les Options d'Opération
 operation_name: Nom de l'Opération...
@@ -828,6 +832,7 @@ panel_header: En-tête de panneau
 panel_name_placeholder: Nommez ce panneau...
 panel_note_placeholder: Détails facultatifs sur ce panneau...
 panel_delete_confirm: Voulez-vous vraiment supprimer ce panneau ? Cette action ne peut pas être annulée.
+list_panel_allow_edit: Permettre la modification rapide
 dashboard_delete_confirm: Êtes-vous sûr de vouloir supprimer ce tableau de bord ? Cette action ne peut pas être annulée.
 edit_dashboard: Modifier le tableau de bord
 delete_dashboard: Supprimer
@@ -994,7 +999,7 @@ page_help_settings_webhooks_collection: '**Parcourez les Webhooks** — Liste to
 page_help_settings_webhooks_item: '**Détail du Webhook** — Un formulaire pour créer et gérer les webhooks du projet.'
 page_help_settings_flows_collection: '**Parcourir les Flux** — Liste tous les Flux du projet.'
 page_help_settings_flows_item: '**Détail du Flux** - Espace de travail permettant de gérer une ou plusieurs opérations.'
-page_help_settings_translation_strings_collection: '**Parcourir les chaînes de traduction** — Liste toutes les chaînes de traduction du projet.'
+page_help_settings_translation_strings_collection: '**Parcourir les de traductions** — Liste toutes les traductions du projet.'
 page_help_users_collection: '**Répertoire utilisateur** — Liste tous les utilisateurs système de ce projet.'
 page_help_users_item: >-
   **Détail de l'utilisateur** — Gérez les informations de votre compte ou consultez les détails des autres utilisateurs.
@@ -1414,9 +1419,9 @@ sign_out: Déconnexion
 sign_out_confirm: Êtes-vous certain de vouloir vous déconnecter ?
 something_went_wrong: Quelque chose s’est mal passé.
 sort_direction: Ordre de tri
-export_location: Emplacement d'exportation
-export_started: L'exportation a commencé
-export_started_copy: Votre exportation a commencé. Vous serez notifié quand elle sera prête à être téléchargée.
+export_location: Emplacement d'export
+export_started: L'export a commencé
+export_started_copy: Votre export a commencé. Vous serez notifié quand il sera prêt à être téléchargé.
 sort_asc: Tri croissant
 sort_desc: Tri décroissant
 template: Modèle
@@ -1623,7 +1628,7 @@ interfaces:
   system-folder:
     folder: Dossier
     description: Sélectionner un dossier
-    field_hint: Dossier pour les fichiers téléchargés. Cela n'affecte pas les fichiers existants.
+    field_hint: Dossier par défaut pour les fichiers téléchargés sans dossier spécifié. N'affecte pas les fichiers existants.
     root_name: Bibliothèque de fichiers racine
     system_default: Paramètres par défaut du système
   select-radio:
@@ -1635,8 +1640,7 @@ interfaces:
     edit_fields: Modifier les champs
     add_label: 'Libellé "Créer Nouveau"'
     sort: Trier
-    sort_placeholder: Manuelle
-    field_name_placeholder: Entrez le nom du champ...
+    sort_placeholder: Manuel
     field_note_placeholder: Entrez la note du champ...
     incompatible_data: Les données actuelles ne sont pas compatibles avec l'interface répéteur et seront remplacées lors de l'ajout d'éléments dans le répéteur
   slider:
@@ -1676,9 +1680,9 @@ interfaces:
     description: Entrez le texte brut en multiligne
   input-translated-string:
     input-translated-string: Chaînes traduites
-    description: Sélectionner ou ajouter une chaîne de traduction
+    description: Sélectionner ou ajouter une traduction
     search_placeholder: Rechercher...
-    new_translation_string: Nouvelle chaîne de traduction
+    new_translation_string: Nouvelle traduction
   boolean:
     toggle: Case à cocher
     description: Basculer entre l'activation et la désactivation
@@ -1905,9 +1909,57 @@ layouts:
     default_template: Utilisation de la collection par défaut ...
     no_compatible_fields: Aucun champ compatible
   kanban:
+    name: Kanban
+    group_field: Regrouper par
+    group_field_placeholder: Champ à regrouper par...
+    group_title: Nom du groupe
+    group_title_placeholder: Champ pour les titres du groupe...
+    title: Titre de tuile
+    title_placeholder: Champ titre optionnel...
+    text: Texte de tuile
+    text_placeholder: Champ de texte optionnel...
+    date: Date de tuile
+    date_placeholder: Champ de date optionnel...
+    tags: Étiquettes de tuile
+    tags_placeholder: Champ de balises optionnelles...
+    user: Utilisateurs de tuile
+    user_placeholder: Champ utilisateur optionnel...
+    image: Image de tuile
+    image_placeholder: Champ d'image optionnel...
+    image_fit: Ajustement de l'image de la carte
     crop: Rogner
     advanced: Avancé
+    edit_group: Modifier le groupe
+    delete_group: Supprimer le Groupe
+    add_group: Ajouter un Groupe
+    add_group_placeholder: Entrez le nom du nouveau groupe...
+    show_ungrouped: Afficher non-groupé
+    show: Afficher
+    no_group: Aucun Groupe
     not_all_loaded: Impossible de charger les 1000 premiers éléments.
+horizontal: Horizontal
+vertical: Vertical
+x_axis: Axe X
+y_axis: Axe Y
+y_axis_function: Fonction Axe Y
+show_x_only: Afficher seulement l'axe X
+show_y_only: Afficher seulement l'axe Y
+show_data_label: Afficher l'étiquette des données
+both: Tous
+show_axis_labels: Afficher les libellés des axes
+function: Fonction
+half_circle: Demi-cercle
+full_circle: Cercle entier
+stroke_width: Largeur du trait
+rounded_stroke: Trait arrondi
+thin: Fin
+medium: Moyen
+broad: Large
+show_labels: Afficher les libellés
+show_legend: Afficher la légende
+right: Droite
+left: Gauche
+donut: Donut
 panels:
   metric:
     name: Indicateurs
@@ -1929,66 +1981,24 @@ panels:
   barchart:
     name: Graphique en barres
     description: Graphique en barre ou en colonne pour la comparaison de groupes de valeurs
-    select_field: Vous devez choisir un champ.
-    select_collection: Vous devez sélectionner une collection.
-    select_x_axis: Vous devez sélectionner un axe X.
-    function: Fonction
     horizontal: Horizontal
-    x_axis_grouping: Agrégation du groupe d'axe X
-    x_axis: Axe X
-    y_axis_function: Fonction Axe-Y
-    y_axis: Axe Y
-    show_x_axis: Afficher l'axe X
-    show_y_axis: Afficher l'axe Y
-    show_data_label: Afficher l'étiquette des données
-    group_by: 'Groupés par:'
-    group_and_function: Vous devez inclure ou omettre un groupe et une fonction.
-    y_axis_NaN: L'ordonnée doit être un nombre.
-    y_axis_conditional_one: La valeur de la condition
-    y_axis_conditional_two: doit être un nombre.
+    select_collection: Vous devez sélectionner une collection.
   linechart:
     name: Graphique linéaire
-    description: Graphique linéaire pour comparer le changement d'un champ.
-    select_field: Vous devez choisir un champ.
-    select_collection: Vous devez sélectionner une collection.
-    select_x_axis: Vous devez sélectionner un axe X.
-    function: Fonction
-    x_axis: Axe X
-    x_axis_decimals: Décimales de l'axe X
+    description: Graphique linéaire pour comparer le changement d'un champ
+    disabled_grouping: Désactivé lorsque le groupement est sélectionné.
     disabled_no_grouping: Désactivé si aucun groupement n'est sélectionné.
-    y_axis: Axe Y
-    datasets: Jeux de données
-    show_legend: Afficher la légende
     show_marker: Afficher l'info-bulle
-    include_dataset: Vous devez sélectionner au moins un élément.
-    include_y_axis: Vous devez inclure un axe Y pour chaque jeu de données quand aucun groupe n'est spécifié.
-    group_and_function: Vous devez inclure ou omettre un groupe et une fonction.
-    smooth: 'Lisse'
-    straight: 'Droit'
-    step_line: 'Pas'
+    curve_type: Format de courbe
+    smooth: Lisse
+    straight: Droit
+    step_line: Pas
   meter:
-    description: Compteur pour les valeurs de suivi
     name: Compteur
-    stroke_width: Largeur du trait
-    select_max_value: Vous devez sélectionner une valeur maximale.
-    max_greater_than_zero: La valeur doit être supérieure à 0.
-    select_field: Vous devez choisir un champ.
-    select_collection: Vous devez sélectionner une collection.
-    function: Fonction
-    thin: Fin
-    medium: Moyen
-    broad: Large
+    description: Compteur pour les valeurs de suivi
   piechart:
     name: Graphique anneau ou circulaire
-    description: Graphique circulaire montrant les ratios de groupes sur une colonne.
-    function: 'Fonction'
-    donut: Anneau
-    labels: Afficher les libellés
-    legend: Afficher la légende
-    right: Droite
-    bottom: Bas
-    monochrome: Monochrome
-    monochrome_color: Couleur Monochrome
+    description: Graphique circulaire montrant les ratios de groupes sur une colonne
   variable:
     name: Variable globale
     description: Définir une valeur globale pour l'utilisation dans d'autres panneaux de filtres
@@ -2006,7 +2016,7 @@ triggers:
     response_body_last: Données de la Dernière Opération
   event:
     name: Crochet d'Événement
-    description: Déclencheurs sur la plate-forme ou sur les données d'événements
+    description: Déclencheurs en provenance de la plate-forme ou des données d'événements
     action: 'Action (Non Bloquante)'
     filter: 'Filtre (Bloquant)'
   webhook:
@@ -2023,24 +2033,27 @@ triggers:
     description: Déclencheurs à des moments réguliers dans le temps
     cron: Intervalle
   manual:
-    name: Manuelle
-    description: Déclenchements lors d'une exécution manuelle dans la ou les collections sélectionnées
-    collection_and_item: Pages des Collections et des Articles
+    name: Manuel
+    description: Déclenchement manuel grâce à un bouton dans les collections sélectionnées
+    collection_and_item: Pages des collections et des éléments
     collection_only: Page de la Collection Uniquement
-    item_only: Page de l'Article Uniquement
+    item_only: Page de l'élément uniquement
+    collection_page: Page de la collection
+    require_selection: Sélection obligatoire
+a_flow_uuid: Choisir un flux à lancer...
 any_string_or_json: Toute chaîne de caractères ou JSON...
 item_payload_placeholder: C'est le JSON utilisé pour mettre à jour les valeurs des champs de l'élément...
 operation_variables_note: Vous pouvez accéder aux données de flux à l'aide de variables telles que **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** et **{'{'}{'{'}$accountability{'}'}{'}'}**, ou faire référence à des opérations précédentes à l'aide de **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
   condition:
     name: Condition
-    description: Acheminer un flux en fonction de la logique If / Else
+    description: Acheminer un flux en fonction d'une condition de type Si / Sinon
   exec:
     name: Lancer le script
-    description: Exécuter du code arbitraire pour modifier le payload
+    description: Exécuter du code arbitraire pour modifier les données utiles
     modules: 'Les **Node modules** suivants peuvent être utilisés :'
   item-create:
-    name: Créer de la donnée
+    name: Créer des données
     description: Créer des éléments dans la base de données
     payload: Données utiles
     emit_events: Émettre des événements
@@ -2069,20 +2082,21 @@ operations:
     message: Message
     message_placeholder: Entrez un message à afficher dans la console...
   mail:
-    name: Envoyer l'e-mail
+    name: Envoyer un e-mail
     description: Envoyer un email à une ou plusieurs personnes
     to: À
     to_placeholder: Ajoutez des adresses e-mail et appuyez sur entrée...
     body: Corps du mail
   notification:
-    name: Envoyer la Notification
+    name: Envoyer une notification
     description: Envoyer une notification dans l'application à un ou plusieurs utilisateurs
     recipient: Utilisateur
-    recipient_placeholder: Ajouter un UUID utilisateur et appuyez sur entrée...
+    recipient_placeholder: Saisir un UUID...
+    recipient_note: Ajouter un UUID utilisateur et appuyez sur entrée...
     message: Message
   request:
     name: Webhook / URL de requête
-    description: "Faire une requête à un URL"
+    description: "Envoyer une requête à une URL"
     url: URL
     url_placeholder: https://example.com/example
     method: Méthode
@@ -2096,11 +2110,17 @@ operations:
     description: Attendre un nombre donné de millisecondes
     milliseconds: Millisecondes
   transform:
-    name: Transformer la Charge utile
-    description: Modifier la charge utile JSON du Flux
+    name: Transformer les données utiles
+    description: Modifier les données utiles JSON du Flux
   trigger:
     name: Déclencher le Flux
     description: Transmettre ces données à un autre Flux
     flows: Flux
     flow: Flux
     data: Données
+    iteration_mode: Mode d'itération
+    iteration_mode_note: Méthode pour itérer sur des tableaux.
+    serial: En série
+    parallel: En parallèle
+    batch: Par lots
+    batch_size: Taille de chaque lot

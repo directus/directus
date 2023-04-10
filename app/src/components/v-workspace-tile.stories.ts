@@ -17,4 +17,9 @@ const Template = (args) => ({
 export const Primary = Template.bind({});
 Primary.args = {
 	name: 'My Tile',
+	id: '1',
+	x: 0,
+	y: 0,
+	width: 10,
+	height: 10,
 };

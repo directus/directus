@@ -1,0 +1,35 @@
+name: Docs
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - docs/**
+      - .github/workflows/docs.yml
+  pull_request:
+    branches:
+      - main
+    paths:
+      - docs/**
+      - .github/workflows/docs.yml
+
+concurrency:
+  group: docs-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  spellcheck:
+    name: Check Spelling
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Prepare
+        uses: ./.github/actions/prepare
+        with:
+          build: false
+
+      - name: Lint
+        run: pnpm --filter docs spellcheck

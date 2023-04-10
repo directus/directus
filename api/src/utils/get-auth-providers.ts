@@ -1,5 +1,5 @@
-import { toArray } from '@directus/shared/utils';
-import env from '../env';
+import { toArray } from '@directus/utils';
+import env from '../env.js';
 
 interface AuthProvider {
 	label: string;
@@ -9,7 +9,7 @@ interface AuthProvider {
 }
 
 export function getAuthProviders(): AuthProvider[] {
-	return toArray(env.AUTH_PROVIDERS)
+	return toArray(env['AUTH_PROVIDERS'])
 		.filter((provider) => provider && env[`AUTH_${provider.toUpperCase()}_DRIVER`])
 		.map((provider) => ({
 			name: provider,
