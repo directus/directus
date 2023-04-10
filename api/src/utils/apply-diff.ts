@@ -38,6 +38,7 @@ export async function applyDiff(
 	const mutationOptions: MutationOptions = {
 		autoPurgeSystemCache: false,
 		bypassEmitAction: (params) => nestedActionEvents.push(params),
+		bypassLimits: true,
 	};
 
 	await database.transaction(async (trx) => {
