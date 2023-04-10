@@ -6,12 +6,16 @@ const deepDiffSchema = Joi.object({
 	kind: Joi.string()
 		.valid(...Object.values(DiffKind))
 		.required(),
-	path: Joi.array().items(Joi.string()),
-	lhs: Joi.object().when('kind', { is: [DiffKind.DELETE, DiffKind.EDIT], then: Joi.required() }),
-	rhs: Joi.object().when('kind', { is: [DiffKind.NEW, DiffKind.EDIT], then: Joi.required() }),
+	path: Joi.array().items(Joi.alternatives().try(Joi.string(), Joi.number())),
+	lhs: Joi.any().when('kind', { is: [DiffKind.NEW, DiffKind.ARRAY], then: Joi.optional(), otherwise: Joi.required() }),
+	rhs: Joi.any().when('kind', {
+		is: [DiffKind.DELETE, DiffKind.ARRAY],
+		then: Joi.optional(),
+		otherwise: Joi.required(),
+	}),
 	index: Joi.number().when('kind', { is: DiffKind.ARRAY, then: Joi.required() }),
-	item: Joi.link('/').when('kind', { is: DiffKind.ARRAY, then: Joi.required() }),
-});
+	item: Joi.link('#deepdiff').when('kind', { is: DiffKind.ARRAY, then: Joi.required() }),
+}).id('deepdiff');
 
 const applyJoiSchema = Joi.object({
 	hash: Joi.string().required(),
