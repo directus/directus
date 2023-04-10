@@ -164,6 +164,23 @@ test('should not throw error for diffs with varying types of lhs/rhs', () => {
 						},
 					],
 				},
+				{
+					collection: 'b',
+					diff: [
+						{
+							kind: 'E',
+							path: ['meta', 'translations', 1, 'language'],
+							lhs: 'es-ES',
+							rhs: 'nl-NL',
+						},
+						{
+							kind: 'E',
+							path: ['meta', 'translations', 1, 'translation'],
+							lhs: 'nombre',
+							rhs: 'naam',
+						},
+					],
+				},
 			],
 			fields: [
 				{
