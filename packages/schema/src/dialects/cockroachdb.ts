@@ -47,6 +47,8 @@ export function parseDefaultValue(value: string | null) {
 
 	value = value.split('::')[0] ?? null;
 
+	if (value?.trim().toLowerCase() === 'null') return null;
+
 	return stripQuotes(value);
 }
 
