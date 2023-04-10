@@ -1,7 +1,7 @@
 import { useFieldsStore } from '@/stores/fields';
 import { useCollectionsStore } from '@/stores/collections';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
-import { definePanel, getFieldsFromTemplate } from '@directus/shared/utils';
+import { definePanel, getFieldsFromTemplate } from '@directus/utils';
 import PanelList from './panel-list.vue';
 
 export default definePanel({
@@ -111,11 +111,24 @@ export default definePanel({
 			type: 'string',
 			meta: {
 				interface: 'system-display-template',
-				width: 'full',
+				width: 'half',
 				options: {
 					collectionField: 'collection',
 					placeholder: '{{ field }}',
 				},
+			},
+		},
+		{
+			field: 'linkToItem',
+			name: '$t:list_panel_allow_edit',
+			type: 'boolean',
+			meta: {
+				width: 'half',
+				interface: 'toggle',
+				required: true,
+			},
+			schema: {
+				default_value: false,
 			},
 		},
 		{
@@ -126,6 +139,7 @@ export default definePanel({
 				interface: 'system-filter',
 				options: {
 					collectionField: 'collection',
+					relationalFieldSelectable: false,
 				},
 			},
 		},

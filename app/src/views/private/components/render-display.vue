@@ -1,23 +1,27 @@
 <template>
 	<value-null v-if="value === null || value === undefined" />
 	<v-text-overflow v-else-if="displayInfo === null" class="display" :text="value" />
-	<component
-		:is="`display-${display}`"
-		v-else
-		v-bind="translate(options ?? {})"
-		:interface="interface"
-		:interface-options="interfaceOptions"
-		:value="value"
-		:type="type"
-		:collection="collection"
-		:field="field"
-	/>
+	<v-error-boundary v-else :name="`display-${display}`">
+		<component
+			:is="`display-${display}`"
+			v-bind="options"
+			:interface="interface"
+			:interface-options="interfaceOptions"
+			:value="value"
+			:type="type"
+			:collection="collection"
+			:field="field"
+		/>
+
+		<template #fallback>
+			<v-text-overflow class="display" :text="value" />
+		</template>
+	</v-error-boundary>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue';
-import { getDisplay } from '@/displays';
-import { translate } from '@/utils/translate-object-values';
+import { useExtension } from '@/composables/use-extension';
+import { defineComponent } from 'vue';
 
 export default defineComponent({
 	props: {
@@ -55,8 +59,9 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const displayInfo = computed(() => getDisplay(props.display));
-		return { displayInfo, translate };
+		const displayInfo = useExtension('display', props.display);
+
+		return { displayInfo };
 	},
 });
 </script>

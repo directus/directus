@@ -1,12 +1,14 @@
 import config, { getUrl } from '@common/config';
 import vendors from '@common/get-dbs-to-test';
 import request from 'supertest';
-import knex, { Knex } from 'knex';
+import knex from 'knex';
+import type { Knex } from 'knex';
 import { cloneDeep } from 'lodash';
 import { spawn, ChildProcess } from 'child_process';
 import { awaitDirectusConnection } from '@utils/await-connection';
 import { validateDateDifference } from '@utils/validate-date-difference';
 import * as common from '@common/index';
+import { sleep } from '@utils/sleep';
 
 const collectionName = 'schema_timezone_tests';
 
@@ -237,6 +239,8 @@ describe('schema', () => {
 
 		describe('stores the correct timezone data when updated', () => {
 			it.each(vendors)('%s', async (vendor) => {
+				await sleep(1000);
+
 				const payload = {
 					date: sampleDates[0]!.date,
 				};

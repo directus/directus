@@ -35,6 +35,7 @@ tile_size: Ukuran Corak
 edit_field: Edit Kolom
 conditions: Kondisi
 location: Lokasi
+condition_rules: Gaya Bersyarat
 input: Input
 maps: Peta
 switch_user: Beralih/ganti pengguna
@@ -45,8 +46,11 @@ duplicate_field: Kolom Duplikat
 half_width: Lebar Setengah
 full_width: Lebar Penuh
 group: Grup
+export_items: Ekspor Item
 and: Dan
 or: Atau
+init: Awal
+dataset_too_large_currently_showing_n_items: Himpunan data terlalu besar. Saat ini menampilkan {n} item pertama.
 modifier: Pengubah
 custom: Kustomisasi
 hook: Hook
@@ -76,7 +80,10 @@ create_user: Buat User
 message: Pesan
 delete_panel: Hapus Panel
 create_webhook: Buat Webhook
+create_translation_string: Buat Terjemahan
+no_translation_string: Tidak ditemukan terjemahan
 no_translation_string_copy: Belum ada terjemahan tersedia.
+translation_string_key_placeholder: Kunci string terjemahan...
 translation_string_translations_placeholder: Tambahkan terjemahan baru
 edit_translation_string: Sunting Terjemahan
 delete_translation_string_copy: >-
@@ -101,6 +108,9 @@ update_bookmark: Hapus Markah
 delete_bookmark: Hapus Markah
 delete_bookmark_copy: >-
   Apakah anda yakin ingin menghapus markah "{bookmark}"? Tindakan ini tidak dapat dikembalikan.
+delete_personal_bookmark: Hapus Markah Pribadi
+delete_role_bookmark: Hapus Markah Peran
+delete_global_bookmark: Hapus Markah Global
 logoutReason:
   SIGN_OUT: Telah keluar
   SESSION_EXPIRED: Sesi kadaluarsa
@@ -127,6 +137,7 @@ recommended_defaults: Bawaan yang Direkomendasikan
 unarchive: Batalkan pengarsipan
 unarchive_confirm: Apakah Anda yakin ingin membatalkan arsip dari item ini?
 nested_files_folders_will_be_moved: Berkas dan folder yang disarang akan dipindahkan satu tingkat keatas.
+validation_errors_notice: 'Bidang berikut memiliki nilai-nilai yang tidak sah:'
 validationError:
   eq: Nilai harus {valid}
   neq: Nilai tidak boleh {invalid}
@@ -176,6 +187,9 @@ revision_post_create: Ini adalah bagaimana item ini terlihat ketika dibuat.
 revision_post_update: Ini adalah bagaimana item ini terlihat setelah pembaruan.
 changes_made: Dibawah adalah perubahan spesifik yang dibuat dalam revisi ini.
 no_relational_data: Ingat bahwa data yang berhubungan tidak termasuk disini.
+junction_field_location: Lokasi Kolom yang bersimpangan
+top: Atas
+bottom: Bawah
 hide_field: Sembunyikan bidang
 hide_field_on_detail: Sembunyikan Baris pada Rincian
 show_field_on_detail: Tampilkan Baris pada Rincian
@@ -231,6 +245,7 @@ float: Float
 integer: Integer
 json: JSON
 xml: XML
+yaml: YAML
 string: String
 text: Teks
 time: Time
@@ -261,6 +276,7 @@ fields_group: Grup kolom-kolom
 no_collections_found: Tidak ada koleksi ditemukan.
 new_data_alert: 'Berikut ini akan dibuat menurut Model Data Anda:'
 search_collection: Cari Koleksi...
+search_field: Kolom Pencarian...
 new_field: 'Baris Baru'
 new_collection: 'Koleksi Baru'
 add_m2o_to_collection: 'Tambah M2O ke "{collection}"'
@@ -284,10 +300,13 @@ next: Lanjut
 field_name: Nama Kolom
 translations: Terjemahan
 no_translations: Tidak ada terjemahan
+left_to_right: Kiri ke Kanan
+right_to_left: Kanan ke Kiri
 note: Catatan
 enter_a_value: Masukkan sebuah nilai...
 enter_a_placeholder: Masukkan sebuah placeholder...
 length: Panjang
+soft_length: Batasan Umum
 precision_scale: Presisi & Skala
 readonly: Hanya-baca
 unique: Unik
@@ -297,6 +316,8 @@ primary_key: Primary Key
 foreign_key: Kunci Asing
 finish_setup: Selesai Setup
 dismiss: Abaikan
+toggle_raw_editor: Ganti Editor Raw
+raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
 raw_value: Nilai mentah
 copy_raw_value: Salin Nilai Asli
 copy_raw_value_success: Disalin
@@ -309,6 +330,7 @@ edit_raw_value: Sunting Nilai Mentah
 enter_raw_value: Masukkan nilai mentah...
 clear_value: Kosongkan Nilai
 clear_changes: Kosongkan Perubahan
+clear_items: Kosongkan Item
 reset_to_default: Atur Ulang ke Bawaan
 undo_changes: Batalkan Perubahan
 notifications: Notifikasi
@@ -325,8 +347,10 @@ revision_delta_created_externally: Buat secara Eksternal
 revision_delta_updated: 'Diperbarui 1 Baris | Diperbarui {count} Baris'
 revision_delta_deleted: Terhapus
 revision_delta_reverted: Dikembalikan
+revision_delta_update_message: Kolom ini telah diperbarui namun nilainya sedang disembunyikan demi alasan keamanan.
 revision_delta_other: Revisi
 revision_delta_by: '{date} oleh {user}'
+presentation_text_values_cannot_be_reimported: "Menggunakan teks untuk presentasi, nilai tidak dapat diimpor ulang."
 download_page_as_csv: 'Unduh Halaman sebagai CSV'
 private_user: Pengguna Pribadi
 creation_preview: Pratinjau Kreasi
@@ -347,6 +371,7 @@ import_data_input_placeholder: CSV atau JSON...
 import_data_button: Mulai Impor
 import_data_indeterminate: Mengimpor Data...
 import_data_success: Data berhasil diimpor dari {filename}
+import_data_error: Struktur Data dari Berkas ini tidak sesuai dengan Koleksi.
 label_import: Impor
 label_export: Ekspor
 import_export: Impor / Ekspor
@@ -366,6 +391,7 @@ interface_label: Antarmuka
 today: Hari Ini
 yesterday: Kemarin
 delete_comment: Hapus Komentar
+delete_share: Hapus Berbagi
 functions:
   year: Tahun
   month: Bulan
@@ -434,6 +460,12 @@ download_file: Unduh Berkas
 open_file_in_tab: Buka file di tab baru
 start_export: Mulai Ekspor
 not_available_for_local_downloads: Tidak tersedia untuk unduhan lokal
+exporting_all_items_in_collection: Ekspor semua {total} item dalam {collection}.
+exporting_limited_items_in_collection: Ekspor {limit} dari {total} keseluruhan item dalam {collection}.
+exporting_no_items_to_export: Tidak ada item untuk dieskpor. Atur proses ekspor melalui konfigurasi dibawah.
+exporting_download_hint: Setelah selesai, {format} berkas ini akan secara otomatis terunduh ke perangkat anda.
+exporting_batch_hint: Proses ekspor ini akan dilakukan melalui proses batch, dan ketika sudah selesai, {format} berkas ini akan disimpan kedalam Pustaka Berkas.
+exporting_batch_hint_forced: Dikarenakan jumlah item yang sangat banyak, maka proses ekspor ini harus dilakukan melalui proses batch, dan ketika sudah selesai, {format} berkas ini akan tersimpan kedalam Pustaka Berkas.
 collection_key: Kunci Koleksi
 name: Nama
 primary_key_field: Kolom Primary Key
@@ -444,6 +476,7 @@ created_on: Dibuat Pada
 creating_collection_info: Nama dari koleksi dan pengaturan/setup baris "kunci" unik...
 creating_collection_system: Aktifkan dan ganti nama baris opsional manapun ini.
 auto_increment_integer: Integer bertambah-otomatis
+auto_increment_big_integer: Nilai big integer yang otomatis bertambah
 generated_uuid: UUID yang Dihasilkan
 manual_string: String yang diinput manual
 save_and_create_new: Simpan dan Buat Baru
@@ -454,6 +487,7 @@ creating_items: Membuat Item
 enable_create_button: Aktifkan Tombol Buat Baru
 selecting_items: Memilih item
 enable_select_button: Aktifkan Tombol Pemilihan
+allow_duplicates: Izinkan Duplikasi
 comments: Komentar
 no_comments: Belum Ada Komentar
 click_to_expand: Tekan Untuk Memperluas
@@ -464,7 +498,9 @@ disabled: Dinonaktifkan
 information: Informasi
 report_bug: Laporkan Bug
 request_feature: Meminta Fitur
+request_body: Body Permintaan
 interface_not_found: 'Antarmuka "{interface}" tidak ditemukan.'
+operation_not_found: 'Operasi "{operation}" tidak ditemukan.'
 reset_interface: Atur ulang Antarmuka
 display_not_found: 'Tampilan "{display}" tidka ditemukan.'
 reset_display: Set ulang Tampilan
@@ -504,6 +540,7 @@ activity_item: Item Aktifitas
 action: Aksi
 ip_address: Alamat IP
 user_agent: Agen pengguna
+origin: Asal
 webhooks: Webhooks
 decimals: Desimal
 value_decimals: Nilai Desimal
@@ -537,6 +574,8 @@ select_an_item: Pilih sebuah item...
 edit: Edit
 enabled: Diaktifkan
 disable_tfa: Nonaktifkan 2FA
+admin_disable_tfa_text: Apa Anda yakin ingin menonaktifkan 2FA pada user ini?
+tfa_setup: Mempersiapkan 2FA
 tfa_scan_code: Scan kode pada aplikasi peng-autentifikasi untuk menyelesaikan pengaturan 2FA
 enter_otp_to_disable_tfa: Masukkan kode OTP untuk menonaktifkan 2FA
 create_account: Buat Akun
@@ -550,7 +589,11 @@ errors:
   INVALID_CREDENTIALS: Nama pengguna atau kata sandi salah
   INVALID_OTP: Kata sandi satu-kali salah
   INVALID_PAYLOAD: Payload tidak valid
+  INVALID_PROVIDER: Pengguna termasuk kedalam penyedia autentikasi yang berbeda
   INVALID_QUERY: Kueri tidak valid
+  INVALID_CONFIG: Konfigurasi yang tidak valid
+  INVALID_TOKEN: Token tidak valid
+  INVALID_IP: Alamat IP tidak diperbolehkan
   INVALID_USER: Gagal untuk mengautentikasi pengguna
   ITEM_LIMIT_REACHED: Batas item tercapai
   ITEM_NOT_FOUND: Item tidak ditemukan
@@ -566,11 +609,24 @@ errors:
   VALUE_OUT_OF_RANGE: Nilai di luar rentang
   INVALID_FOREIGN_KEY: Foreign key tidak valid
   UNKNOWN: Kesalahan Tidak Terduga
+  GRAPHQL_VALIDATION_EXCEPTION: Pengecualian Validasi GraphQL
+  SERVICE_UNAVAILABLE: Layanan Tidak Tersedia
+  UNSUPPORTED_MEDIA_TYPE: Jenis media tidak didukung
+  UNEXPECTED_RESPONSE: Respon tidak terduga
+  TOKEN_EXPIRED: Token kedaluwarsa
+  RANGE_NOT_SATISFIABLE: Rentang tidak valid
+  METHOD_NOT_ALLOWED: Metode Tidak Diizinkan
+  REQUESTS_EXCEEDED: Batas permintaan telah tercapai
 security: Keamanan
 value_hashed: Nilai telah Di-hash secara Aman
 bookmark_name: Nama bookmark...
 create_bookmark: Buat Bookmark
 edit_bookmark: Sunting Bookmark
+edit_personal_bookmark: Sunting Markah Pribadi
+edit_role_bookmark: Mengubah Markah Peran
+edit_global_bookmark: Sunting Markah Global
+cannot_edit_role_bookmarks: Tidak dapat mengubah Markah Peran
+cannot_edit_global_bookmarks: Tidak dapat mengubah Markah Peran secara Global
 bookmarks: Markah
 presets: Preset
 unexpected_error: Kesalahan Tidak Terduga
@@ -578,9 +634,11 @@ unexpected_error_copy: Terjadi galat yang tidak terduga, Silahkan mencoba lagi n
 copy_details: Salin Rincian
 no_app_access: Tidak Ada Akses Aplikasi
 no_app_access_copy: Pengguna ini tidak diperbolehkan untuk menggunakan aplikasi admin.
+password_reset_sent: Jika Anda memiliki akun, kami telah mengirimkan tautan yang aman untuk mengatur ulang kata sandi Anda
 password_reset_successful: Sandi berhasil diatur ulang
 back: Kembali
 filter: Penyaring
+edit_image: Sunting Gambar
 editing_image: Menyunting Gambar
 square: Persegi
 free: Bebas
@@ -644,6 +702,7 @@ operators:
   nnull: Bukan null
   contains: Mengandung
   ncontains: Tidak mengandung
+  icontains: Mengandung (tidak sensitif)
   starts_with: Dimulai dengan
   nstarts_with: Tidak dimulai dengan
   ends_with: Berakhir dengan
@@ -658,6 +717,8 @@ operators:
   nintersects: Tidak beririsan
   intersects_bbox: Memotong kotak pembatas
   nintersects_bbox: Tidak memotong kotak pembatas
+  regex: Mencocokkan RegExp
+custom_validation_message: Pesan Validasi Kustom
 loading: Memuat...
 drop_to_upload: Lepas untuk mengunggah
 item: Barang
@@ -695,6 +756,8 @@ add_file: Tambahkan berkas
 replace_file: Ganti berkas
 no_results: Tidak Ada Hasil
 no_results_copy: Sesuaikan atau bersihkan filter pencarian untuk melihat hasil.
+no_visible_fields: Formulir Kosong
+no_visible_fields_copy: Formulir ini tidak memiliki kolom yang dapat dilihat.
 clear_filters: Bersihkan Filter
 saves_automatically: Menyimpan Secara Otomatis
 role: Peran
@@ -721,10 +784,45 @@ toggle: Beralih
 icon_on: Ikon Aktif
 icon_off: Ikon Tidak Aktif
 label: Label
+flows: Kumpulan Alur
+flow: Alur
+select_a_flow: Pilih Alur
+run_flow_on_current_edited_confirm: Item ini mungkin akan diperbarui sesuai dengan alur ini, apakah anda yakin akan menjalankannya?
+run_flow_success: Alur "{flow}" berhasil dijalankan
+trigger: Pemicu
+trigger_options: Opsi Pemicu
+view_trigger: Lihat Pemicu
+create_trigger: Buat Pemicu
+trigger_setup: Mempersiapkan Pemicu
+change_trigger: Ubah Pemicu
+flow_delete_confirm: Apakah anda yakin akan menghapus Alur "{flow}"? Tindakan ini tidak dapat dibatalkan.
+set_flow_active: Setel Alur menjadi Aktif
+set_flow_inactive: Setel Alur menjadi Tidak aktif
+edit_flow: Ubah Alur
+delete_flow: Hapus Alur
+no_other_flows_copy: Anda belum memiliki Alur lainnya.
+no_flows: Tidak ada Alur
+no_flows_copy: Anda belum memiliki Alur.
+create_flow: Buat Alur
+creating_new_flow: Membuat Alur Baru
+updating_flow: Memperbarui Alur
+flow_setup: Penyiapan Alur
 flow_name: Nama
+flow_tracking: Pelacakan Log & Aktifitas
+flow_tracking_all: Lacak Log & Aktifitas
 flow_tracking_activity: Hanya Aktifitas Melacak
 flow_tracking_null: Jangan Lacak Apapun
+start_flow: Mulai Alur
+stop_flow: Hentikan Alur
+create_operation: Buat Operasi
+edit_operation: Sunting Operasi
 code: Kode
+operation_options: Opsi Operasi
+operation_name: Nama dari operasi...
+operation_key: Pengenal untuk referensi...
+operation_key_unique_error: Tombol operasi harus unik
+operation_handle_resolve: 'Solusi: klik untuk menambahkan atau geser untuk mengatur ulang'
+operation_handle_reject: 'Membatalkan: klik untuk menambahkan atau geser untuk mengatur ulang'
 insights: Wawasan
 dashboard: Dasbor
 panel: Panel
@@ -733,6 +831,7 @@ panel_header: Judul Panel
 panel_name_placeholder: Beri nama panel ini...
 panel_note_placeholder: Opsi detail tentang panel ini...
 panel_delete_confirm: Apakah Anda yakin ingin menghapus panel ini? Tindakan ini tidak dapat dibatalkan.
+list_panel_allow_edit: Izinkan mengedit
 dashboard_delete_confirm: Apakah Anda yakin ingin menghapus dasbor ini? Tindakan ini tidak dapat dibatalkan.
 edit_dashboard: Sunting papan instrumen
 delete_dashboard: Menghapus Dasbor
@@ -745,9 +844,16 @@ no_dashboards_copy: Anda belum memiliki dasbor.
 create_dashboard: Buat Dasbor
 dashboard_name: Nama Dasbor
 no_data: Tidak ada Data
+no_data_in_flow: Tidak ada data yang dihasilkan atau diakses dalam Flow ini
 accountability: Akuntabilitas
+payload: Muatan
+details: Rincian
 full_screen: Layar Penuh
+full_text_search: Pencarian teks lengkap
 edit_panels: Sunting Panel
+center_align: Rata Tengah
+left_align: Rata Kiri
+right_align: Rata kanan
 fit_to_screen: Sesuaikan dengan Layar
 image_url: Tautan Gambar
 alt_text: Teks Alternatif
@@ -755,6 +861,7 @@ media: Media
 quality: Kualitas
 width: Lebar
 height: Tinggi
+transformation_preset_key: Tombol pengaturan ulang transformasi
 source: Sumber
 url_placeholder: Masukkan tautan...
 display_text: Teks Tampilan
@@ -839,9 +946,12 @@ settings_data_model: Model Data
 settings_permissions: Peran dan Izin
 settings_project: Pengaturan Proyek
 settings_webhooks: Webhooks
+settings_flows: Kumpulan Alur
 settings_presets: Preset & Markah
+settings_translation_strings: Terjemahan
 one_or_more_options_are_missing: Satu atau lebih opsi hilang
 scope: Lingkup
+actions: Aksi
 select: Pilih...
 layout: Tata letak
 tree_view: Tampilan Pohon
@@ -851,6 +961,7 @@ preset_search_placeholder: Kueri penelusuran...
 editing_preset: Mengedit Preset
 layout_preview: Pratinjau Tata Letak
 layout_setup: Pengaturan Tata Letak
+data: Data
 unsaved_changes: Perubahan Tidak Disimpan
 unsaved_changes_copy: Anda yakin ingin meninggalkan halaman ini?
 discard_changes: Batalkan Perubahan
@@ -862,6 +973,21 @@ keep_editing: Tetap Mengedit
 page_help_collections_overview: '**Ikhtisar Koleksi** - — Daftar semua koleksi yang perlu anda akses.'
 page_help_collections_collection: >-
   **Jelajahi Item** — Daftar semua {collection} item yang perlu Anda akses. Sesuaikan tata letak, filter, dan pengurutan untuk menyesuaikan tampilan Anda, dan bahkan simpan markah dari konfigurasi yang berbeda ini untuk akses cepat.
+page_help_collections_item: >-
+  **Detail Item** — Sebuah formulir untuk melihat dan mengelola item. Sidebar ini juga berisi riwayat, revisi, dan komentar yang disematkan.
+page_help_activity_collection: >-
+  ***Jelajahi Aktivitas** - Daftar lengkap dari seluruh aktivitas content dan pengguna system.
+page_help_docs_global: >-
+  **Gambaran Dokumentasi ** — Dokumen yang disesuaikan khusus untuk versi dan skema proyek ini.
+page_help_files_collection: >-
+  **Berkas Pustaka** — Daftar semua aset berkas yang diunggah ke proyek ini. Sesuaikan tata letak, filter, dan penyortiran untuk menyesuaikan tampilan Anda, dan bahkan simpan bookmark dari konfigurasi yang berbeda ini untuk akses cepat.
+page_help_files_item: >-
+  **Detail Berkas** — Sebuah formulir untuk mengelola metadata berkas, mengedit aset asli, dan memperbarui pengaturan akses.
+page_help_settings_project: "**Konfigurasi Proyek** — Opsi konfigurasi global proyek Anda."
+page_help_settings_datamodel_collections: >-
+  **Model Data: Collection** — Menampilkan semua Collection yang tersedia. Ini mencakup Collection yang terlihat, tersembunyi, dan sistem, serta tabel basis data yang tidak dikelola yang dapat ditambahkan.
+page_help_settings_datamodel_fields: >-
+  **Model Data: Collection** — Formulir untuk mengelola Collection ini dan fieldnya.
 activity_feed: Feed Aktifitas
 add_new: Tambah Baru
 create_new: Buat baru
@@ -873,18 +999,23 @@ cancel: Batal
 collection: Koleksi
 collections: Pengumpulan
 content: Konten
+singleton: Singleton
 singleton_label: Perlakukan sebagai objek tunggal
 directus_collection:
   directus_activity: Log akuntabilitas untuk semua kejadian
   directus_collections: Konfigurasi koleksi tambahan dan metadata
   directus_fields: Isian konfigurasi tambahan dan metadata
+  directus_permissions: Izin akses untuk setiap peran
 fields:
   directus_activity:
     item: Kunci Utama Item
     action: Aksi
     collection: Koleksi
+    timestamp: Aksi Saat
+    user: Aksi oleh
     comment: Komentar
     user_agent: Agen pengguna
+    origin: Asal
     ip: Alamat IP
     revisions: Revisi
   directus_collections:
@@ -894,6 +1025,7 @@ fields:
     color: Warna
     display_template: Tampilan Template
     hidden: Tersembunyi
+    singleton: Singleton
     archive_app_filter: Filter Aplikasi Arsip
     archive_value: Nilai Arsip
     unarchive_value: Batalkan pengarsipan Nilai
@@ -976,6 +1108,7 @@ fields:
     project_url: URL Proyek
     project_color: Warna Proyek
     project_logo: Logo Proyek
+    default_language: Bahasa bawaan
     branding: Merk & Gaya
     public_foreground: Latar depan Publik
     public_background: Latar belakang Publik
@@ -983,15 +1116,20 @@ fields:
     auth_password_policy: Kebijakan Kata sandi Autentik
     auth_login_attempts: Upaya Login Autentik
     files_and_thumbnails: File & Penyimpanan
+    storage_default_folder: Folder bawaan
+    custom_css: CSS Kustomisasi
     module_bar: Papan Modul
+    image_editor: Editor Gambar
   directus_shares:
     name: Nama
     role: Peran
     password: Kata Sandi
     date_start: Tanggal Mulai
+    times_used: Waktu yang digunakan
   directus_fields:
     note: Catatan
     hidden: Tersembunyi
+    singleton: Singleton
     translation: Terjemahan Nama Kolom
     display_template: Templat
   directus_roles:
@@ -1328,10 +1466,17 @@ layouts:
     comfortable: Longgar
     compact: Rapat
     cozy: Normal
+  kanban:
+    advanced: Tingkat lanjut
+both: Keduanya
 panels:
   label:
     name: Label
 operations:
+  item-create:
+    payload: Muatan
+  item-update:
+    payload: Muatan
   log:
     message: Pesan
   notification:
@@ -1339,3 +1484,6 @@ operations:
     message: Pesan
   request:
     url: URL
+  trigger:
+    flows: Kumpulan Alur
+    flow: Alur

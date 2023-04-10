@@ -230,6 +230,7 @@ export default defineComponent({
 									_eq: props.folder.id,
 								},
 							},
+							fields: ['id'],
 						},
 					});
 
@@ -240,6 +241,7 @@ export default defineComponent({
 									_eq: props.folder.id,
 								},
 							},
+							fields: ['id'],
 						},
 					});
 
@@ -247,6 +249,8 @@ export default defineComponent({
 
 					const folderKeys = foldersToUpdate.data.data.map((folder: { id: string }) => folder.id);
 					const fileKeys = filesToUpdate.data.data.map((file: { id: string }) => file.id);
+
+					await api.delete(`/folders/${props.folder.id}`);
 
 					if (folderKeys.length > 0) {
 						await api.patch(`/folders`, {
@@ -265,9 +269,6 @@ export default defineComponent({
 							},
 						});
 					}
-
-					await api.delete(`/folders/${props.folder.id}`);
-
 					if (newParent) {
 						router.replace(`/files/folders/${newParent}`);
 					} else {

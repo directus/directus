@@ -1,6 +1,6 @@
 <template>
-	<template v-for="(part, index) in parts">
-		<mark v-if="part.highlighted" :key="index" class="highlight">{{ part.text }}</mark>
+	<template v-for="(part, index) in parts" :key="index">
+		<mark v-if="part.highlighted" class="highlight">{{ part.text }}</mark>
 		<template v-else>{{ part.text }}</template>
 	</template>
 </template>
@@ -9,7 +9,7 @@
 import { computed } from 'vue';
 import { flatten } from 'lodash';
 import { remove as removeDiacritics } from 'diacritics';
-import { toArray } from '@directus/shared/utils';
+import { toArray } from '@directus/utils';
 
 type HighlightPart = {
 	text: string;
@@ -44,7 +44,7 @@ const parts = computed<HighlightPart[]>(() => {
 
 	const matches = flatten(
 		queries.reduce<number[][][]>((acc, query) => {
-			if (query === null) return acc;
+			if (!query) return acc;
 
 			query = removeDiacritics(query.toLowerCase());
 

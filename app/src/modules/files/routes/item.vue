@@ -2,7 +2,7 @@
 	<files-not-found v-if="!loading && !item" />
 	<private-view v-else :title="loading || !item ? t('loading') : item.title">
 		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon secondary exact @click="router.back()">
+			<v-button class="header-icon" rounded icon secondary exact @click="navigateBack">
 				<v-icon name="arrow_back" />
 			</v-button>
 		</template>
@@ -65,9 +65,15 @@
 					</v-card-actions>
 				</v-card>
 			</v-dialog>
-
-			<v-button v-tooltip.bottom="t('download')" rounded icon secondary @click="downloadFile">
-				<v-icon name="file_download" />
+			<v-button
+				v-tooltip.bottom="t('download')"
+				secondary
+				icon
+				rounded
+				:download="item?.filename_download"
+				:href="getAssetUrl(props.primaryKey, true)"
+			>
+				<v-icon name="download" />
 			</v-button>
 
 			<v-button
@@ -176,12 +182,12 @@
 </template>
 
 <script lang="ts" setup>
-import api, { addTokenToURL } from '@/api';
+import api from '@/api';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItem } from '@/composables/use-item';
 import { usePermissions } from '@/composables/use-permissions';
 import { useShortcut } from '@/composables/use-shortcut';
-import { getRootPath } from '@/utils/get-root-path';
+import { getAssetUrl } from '@/utils/get-asset-url';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
@@ -190,7 +196,7 @@ import FolderPicker from '@/views/private/components/folder-picker.vue';
 import ImageEditor from '@/views/private/components/image-editor.vue';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail.vue';
 import SaveOptions from '@/views/private/components/save-options.vue';
-import { Field } from '@directus/shared/types';
+import { Field } from '@directus/types';
 import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
@@ -282,6 +288,20 @@ const fieldsFiltered = computed(() => {
 	return fields.value.filter((field: Field) => fieldsDenyList.includes(field.field) === false);
 });
 
+function navigateBack() {
+	const backState = router.options.history.state.back;
+	if (typeof backState !== 'string' || !backState.startsWith('/login')) {
+		router.back();
+		return;
+	}
+
+	if (item?.value?.folder) {
+		router.push(`/files/folders/${item.value.folder}`);
+	} else {
+		router.push('/files');
+	}
+}
+
 function useBreadcrumb() {
 	const breadcrumb = computed(() => {
 		if (!item?.value?.folder) {
@@ -330,6 +350,7 @@ async function saveAsCopyAndNavigate() {
 async function deleteAndQuit() {
 	try {
 		await remove();
+		edits.value = {};
 		router.replace(to.value);
 	} catch {
 		// `remove` will show the unexpected error dialog
@@ -347,11 +368,6 @@ function discardAndLeave() {
 function discardAndStay() {
 	edits.value = {};
 	confirmLeave.value = false;
-}
-
-function downloadFile() {
-	const filePath = addTokenToURL(getRootPath() + `assets/${props.primaryKey}?download`);
-	window.open(filePath, '_blank');
 }
 
 function useMovetoFolder() {

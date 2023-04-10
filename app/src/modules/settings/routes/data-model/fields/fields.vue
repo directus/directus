@@ -103,7 +103,7 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, toRefs, ref } from 'vue';
 import SettingsNavigation from '../../../components/navigation.vue';
-import { useCollection } from '@directus/shared/composables';
+import { useCollection } from '@directus/composables';
 import FieldsManagement from './components/fields-management.vue';
 
 import { useItem } from '@/composables/use-item';
@@ -185,21 +185,19 @@ export default defineComponent({
 
 		async function deleteAndQuit() {
 			await remove();
-			await collectionsStore.hydrate();
-			await fieldsStore.hydrate();
+			await Promise.all([collectionsStore.hydrate(), fieldsStore.hydrate()]);
+			edits.value = {};
 			router.replace(`/settings/data-model`);
 		}
 
 		async function saveAndStay() {
 			await save();
-			await collectionsStore.hydrate();
-			await fieldsStore.hydrate();
+			await Promise.all([collectionsStore.hydrate(), fieldsStore.hydrate()]);
 		}
 
 		async function saveAndQuit() {
 			await save();
-			await collectionsStore.hydrate();
-			await fieldsStore.hydrate();
+			await Promise.all([collectionsStore.hydrate(), fieldsStore.hydrate()]);
 			router.push(`/settings/data-model`);
 		}
 

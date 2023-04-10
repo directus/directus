@@ -9,7 +9,11 @@
 		:collection="values.collection"
 		readonly
 	>
-		<private-view :title="t('editing_preset')">
+		<private-view
+			:title="t('editing_preset')"
+			:small-header="currentLayout?.smallHeader"
+			:header-shadow="currentLayout?.headerShadow"
+		>
 			<template #headline>
 				<v-breadcrumb :items="[{ name: t('settings_presets'), to: '/settings/presets' }]" />
 			</template>
@@ -134,17 +138,18 @@ import { useI18n } from 'vue-i18n';
 import { computed, ref } from 'vue';
 
 import SettingsNavigation from '../../components/navigation.vue';
-import { Preset, Filter } from '@directus/shared/types';
+import { Preset, Filter } from '@directus/types';
 import api from '@/api';
 import { useCollectionsStore } from '@/stores/collections';
 import { usePresetsStore } from '@/stores/presets';
-import { getLayouts } from '@/layouts';
 import { useRouter } from 'vue-router';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { useLayout } from '@directus/shared/composables';
+import { useLayout } from '@directus/composables';
 import { useShortcut } from '@/composables/use-shortcut';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { isEqual } from 'lodash';
+import { useExtensions } from '@/extensions';
+import { useExtension } from '@/composables/use-extension';
 
 type FormattedPreset = {
 	id: number;
@@ -174,7 +179,7 @@ const router = useRouter();
 
 const collectionsStore = useCollectionsStore();
 const presetsStore = usePresetsStore();
-const { layouts } = getLayouts();
+const { layouts } = useExtensions();
 
 const isNew = computed(() => props.id === '+');
 
@@ -194,6 +199,8 @@ const layoutFilter = computed<any>({
 });
 
 const layout = computed(() => values.value.layout);
+
+const currentLayout = useExtension('layout', layout);
 
 const { layoutWrapper } = useLayout(layout);
 
@@ -273,6 +280,7 @@ function useDelete() {
 
 		try {
 			await presetsStore.delete([Number(props.id)]);
+			edits.value = {};
 			router.replace(`/settings/presets`);
 		} catch (err: any) {
 			unexpectedError(err);
@@ -528,7 +536,7 @@ function useForm() {
 		{
 			field: 'filter',
 			name: t('filter'),
-			type: 'string',
+			type: 'json',
 			meta: {
 				interface: 'system-filter',
 				width: 'half',

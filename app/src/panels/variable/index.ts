@@ -1,4 +1,4 @@
-import { definePanel } from '@directus/shared/utils';
+import { definePanel } from '@directus/utils';
 import PanelVariable from './panel-variable.vue';
 import { FIELD_TYPES_SELECT } from '@/constants';
 import { translate } from '@/utils/translate-object-values';
@@ -26,7 +26,7 @@ export default definePanel({
 					options: {
 						dbSafe: true,
 						font: 'monospace',
-						placeholder: t('interfaces.list.field_name_placeholder'),
+						placeholder: t('field_name_placeholder'),
 					},
 				},
 				schema: null,
@@ -84,4 +84,5 @@ export default definePanel({
 	},
 	minWidth: 12,
 	minHeight: 6,
+	skipUndefinedKeys: ['options'],
 });

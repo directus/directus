@@ -6,9 +6,9 @@
 	</div>
 </template>
 
-<script setup lang="ts">
-import { toRefs } from 'vue';
-import { useCollection } from '@directus/shared/composables';
+<script lang="ts">
+import { defineComponent, toRefs } from 'vue';
+import { useCollection } from '@directus/composables';
 
 interface Props {
 	value?: string

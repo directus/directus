@@ -1,5 +1,5 @@
-import { EXTENSION_LANGUAGES } from '@directus/shared/constants';
-import { Language, LanguageShort } from '../types';
+import { EXTENSION_LANGUAGES } from '@directus/constants';
+import type { Language, LanguageShort } from '../types.js';
 
 export function isLanguage(language: string): language is Language {
 	return (EXTENSION_LANGUAGES as readonly string[]).includes(language);

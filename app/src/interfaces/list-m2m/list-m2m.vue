@@ -109,7 +109,6 @@
 							block
 							clickable
 							:dense="totalItemCount > 4"
-							:disabled="disabled || selectAllowed === false"
 							:class="{ deleted: element.$type === 'deleted' }"
 							@click="editItem(element)"
 						>
@@ -178,6 +177,7 @@
 			:junction-field="relationInfo.junctionField.field"
 			:edits="editsAtStart"
 			:circular-field="relationInfo.reverseJunctionField.field"
+			:junction-field-location="junctionFieldLocation"
 			@input="stageEdits"
 		/>
 
@@ -196,8 +196,8 @@
 import { useRelationM2M } from '@/composables/use-relation-m2m';
 import { useRelationMultiple, RelationQueryMultiple, DisplayItem } from '@/composables/use-relation-multiple';
 import { parseFilter } from '@/utils/parse-filter';
-import { Filter } from '@directus/shared/types';
-import { deepMap, getFieldsFromTemplate } from '@directus/shared/utils';
+import { Filter } from '@directus/types';
+import { deepMap, getFieldsFromTemplate } from '@directus/utils';
 import { render } from 'micromustache';
 import { computed, inject, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -207,7 +207,7 @@ import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import { Sort } from '@/components/v-table/types';
 import Draggable from 'vuedraggable';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
-import { isEmpty, get, clamp } from 'lodash';
+import { isEmpty, get, clamp, isNil, set } from 'lodash';
 import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
 import { useFieldsStore } from '@/stores/fields';
@@ -234,6 +234,7 @@ const props = withDefaults(
 		enableLink?: boolean;
 		limit?: number;
 		allowDuplicates?: boolean;
+		junctionFieldLocation?: string;
 	}>(),
 	{
 		value: () => [],
@@ -249,6 +250,7 @@ const props = withDefaults(
 		enableLink: false,
 		limit: 15,
 		allowDuplicates: false,
+		junctionFieldLocation: 'bottom',
 	}
 );
 
@@ -330,13 +332,13 @@ const query = computed<RelationQueryMultiple>(() => {
 		q.search = search.value;
 	}
 	if (sort.value) {
-		q.sort = [`${sort.value.desc ? '-' : ''}${relationInfo.value.junctionField.field}.${sort.value.by}`];
+		q.sort = [`${sort.value.desc ? '-' : ''}${sort.value.by}`];
 	}
 
 	return q;
 });
 
-watch([search, searchFilter], () => {
+watch([search, searchFilter, limit], () => {
 	page.value = 1;
 });
 
@@ -433,13 +435,32 @@ function getDeselectTooltip(item: DisplayItem) {
 }
 
 function sortItems(items: DisplayItem[]) {
-	const sortField = relationInfo.value?.sortField;
-	if (!sortField) return;
+	const info = relationInfo.value;
+	const sortField = info?.sortField;
+	if (!info || !sortField) return;
 
-	const sortedItems = items.map((item, index) => ({
-		...item,
-		[sortField]: index + 1,
-	}));
+	const sortedItems = items.map((item, index) => {
+		const junctionId = item?.[info.junctionPrimaryKeyField.field];
+		const relatedId = item?.[info.junctionField.field]?.[info.relatedPrimaryKeyField.field];
+
+		const changes: Record<string, any> = {
+			$index: item.$index,
+			$type: item.$type,
+			$edits: item.$edits,
+			...getItemEdits(item),
+			[sortField]: index + 1,
+		};
+
+		if (!isNil(junctionId)) {
+			changes[info.junctionPrimaryKeyField.field] = junctionId;
+		}
+		if (!isNil(relatedId)) {
+			set(changes, info.junctionField.field + '.' + info.relatedPrimaryKeyField.field, relatedId);
+		}
+
+		return changes;
+	});
+
 	update(...sortedItems);
 }
 

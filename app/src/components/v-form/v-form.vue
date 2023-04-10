@@ -1,12 +1,20 @@
 <template>
 	<div ref="el" class="v-form" :class="gridClass">
 		<validation-errors
-			v-if="!nested && validationErrors.length > 0"
+			v-if="showValidationErrors && validationErrors.length > 0"
 			:validation-errors="validationErrors"
 			:fields="fields ? fields : []"
 			@scroll-to-field="scrollToField"
 		/>
-		<template v-for="(fieldName, index) in fieldNames">
+		<v-info
+			v-if="noVisibleFields && showNoVisibleFields && !loading"
+			:title="t('no_visible_fields')"
+			:icon="inline ? false : 'search'"
+			center
+		>
+			{{ t('no_visible_fields_copy') }}
+		</v-info>
+		<template v-for="(fieldName, index) in fieldNames" :key="fieldName">
 			<component
 				:is="`interface-${fieldsMap[fieldName]?.meta?.interface || 'group-standard'}`"
 				v-if="fieldsMap[fieldName]?.meta?.special?.includes('group')"
@@ -16,7 +24,6 @@
 						formFieldEls[fieldName] = el;
 					}
 				"
-				:key="fieldName + '_group'"
 				:class="[
 					fieldsMap[fieldName]?.meta?.width || 'full',
 					index === firstVisibleFieldIndex ? 'first-visible-field' : '',
@@ -45,7 +52,6 @@
 						formFieldEls[fieldName] = el;
 					}
 				"
-				:key="fieldName + '_field'"
 				:class="index === firstVisibleFieldIndex ? 'first-visible-field' : ''"
 				:field="fieldsMap[fieldName] || {}"
 				:autofocus="index === firstEditableFieldIndex && autofocus"
@@ -74,19 +80,21 @@
 				@toggle-raw="toggleRawField(fieldsMap[fieldName])"
 			/>
 		</template>
+		<v-divider v-if="showDivider && !noVisibleFields" />
 	</div>
 </template>
 
 <script setup lang="ts">
-import { useElementSize } from '@directus/shared/composables';
 import { useFormFields } from '@/composables/use-form-fields';
 import { useFieldsStore } from '@/stores/fields';
 import { applyConditions } from '@/utils/apply-conditions';
 import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
-import { Field, ValidationError } from '@directus/shared/types';
+import { useElementSize } from '@directus/composables';
+import { Field, ValidationError } from '@directus/types';
 import { assign, cloneDeep, isEqual, isNil, omit, pick } from 'lodash';
 import { computed, ComputedRef, onBeforeUpdate, provide, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import FormField from './form-field.vue';
 import ValidationErrors from './validation-errors.vue';
 
@@ -107,9 +115,12 @@ interface Props {
 	autofocus?: boolean;
 	group?: string | null;
 	badge?: string;
-	nested?: boolean;
+	showValidationErrors?: boolean;
+	showNoVisibleFields?: boolean;
 	rawEditorEnabled?: boolean;
 	direction?: string;
+	showDivider?: boolean;
+	inline?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -125,10 +136,15 @@ const props = withDefaults(defineProps<Props>(), {
 	autofocus: false,
 	group: null,
 	badge: undefined,
-	nested: false,
+	showValidationErrors: true,
+	showNoVisibleFields: true,
 	rawEditorEnabled: false,
 	direction: undefined,
+	showDivider: false,
+	inline: false,
 });
+
+const { t } = useI18n();
 
 const emit = defineEmits(['update:modelValue']);
 
@@ -180,10 +196,16 @@ const firstVisibleFieldIndex = computed(() => {
 	return null;
 });
 
+const noVisibleFields = computed(() => {
+	return Object.keys(fieldsMap.value).every((fieldKey) => {
+		return fieldsMap.value[fieldKey]?.meta?.hidden === true;
+	});
+});
+
 watch(
 	() => props.validationErrors,
 	(newVal, oldVal) => {
-		if (props.nested) return;
+		if (!props.showValidationErrors) return;
 		if (isEqual(newVal, oldVal)) return;
 		if (newVal?.length > 0) el?.value?.scrollIntoView({ behavior: 'smooth' });
 	}
@@ -276,8 +298,9 @@ function useForm() {
 
 	function setPrimaryKeyReadonly(field: Field) {
 		if (
-			field.schema?.has_auto_increment === true ||
-			(field.schema?.is_primary_key === true && props.primaryKey !== '+')
+			field.schema?.is_primary_key === true &&
+			props.primaryKey !== '+' &&
+			(field.schema?.has_auto_increment === true || field.meta?.special?.includes('uuid'))
 		) {
 			const fieldClone = cloneDeep(field) as any;
 			if (!fieldClone.meta) fieldClone.meta = {};
@@ -378,5 +401,11 @@ function useRawEditor() {
 
 .v-form .first-visible-field :deep(.v-divider) {
 	margin-top: 0;
+}
+
+.v-divider {
+	margin-bottom: 50px;
+	grid-column-start: 1;
+	grid-column-end: 3;
 }
 </style>

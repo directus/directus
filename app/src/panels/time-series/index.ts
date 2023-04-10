@@ -1,7 +1,7 @@
 import { useCollectionsStore } from '@/stores/collections';
 import { getGroups } from '@/utils/get-groups';
-import { Filter } from '@directus/shared/types';
-import { definePanel } from '@directus/shared/utils';
+import { Filter } from '@directus/types';
+import { definePanel } from '@directus/utils';
 import PanelTimeSeries from './panel-time-series.vue';
 
 export default definePanel({
@@ -21,7 +21,7 @@ export default definePanel({
 		if (collectionInfo?.meta?.singleton) return;
 
 		const filter: Filter = {
-			_and: [options.filter || {}],
+			_and: [getParsedOptionsFilter(options.filter)],
 		};
 
 		if (options.range !== 'auto') {
@@ -50,6 +50,15 @@ export default definePanel({
 				limit: -1,
 			},
 		};
+
+		function getParsedOptionsFilter(filter: string | undefined) {
+			if (!filter) return {};
+			try {
+				return JSON.parse(filter);
+			} catch {
+				return filter;
+			}
+		}
 	},
 	component: PanelTimeSeries,
 	options: [
@@ -369,6 +378,7 @@ export default definePanel({
 				interface: 'system-filter',
 				options: {
 					collectionField: 'collection',
+					relationalFieldSelectable: false,
 				},
 			},
 		},

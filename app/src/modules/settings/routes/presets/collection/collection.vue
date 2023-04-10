@@ -13,7 +13,11 @@
 		:collection="collection"
 		:clear-filters="clearFilters"
 	>
-		<private-view :title="t('settings_presets')" :small-header="currentLayout?.smallHeader">
+		<private-view
+			:title="t('settings_presets')"
+			:small-header="currentLayout?.smallHeader"
+			:header-shadow="currentLayout?.headerShadow"
+		>
 			<template #headline>
 				<v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" />
 			</template>
@@ -87,9 +91,9 @@
 				<settings-navigation />
 			</template>
 
-			<component :is="`layout-${layout || 'tabular'}`" class="layout" v-bind="layoutState">
+			<component :is="`layout-${layout || 'tabular'}`" v-bind="layoutState">
 				<template #no-results>
-					<v-info :title="t('no_presets')" icon="bookmark" center type="warning">
+					<v-info :title="t('no_presets')" icon="bookmark" center>
 						{{ t('no_presets_copy') }}
 
 						<template #append>
@@ -99,7 +103,7 @@
 				</template>
 
 				<template #no-items>
-					<v-info :title="t('no_presets')" icon="bookmark" center type="warning">
+					<v-info :title="t('no_presets')" icon="bookmark" center>
 						{{ t('no_presets_copy') }}
 
 						<template v-if="createAllowed" #append>
@@ -147,7 +151,7 @@ import { defineComponent, computed, ref } from 'vue';
 import SettingsNavigation from '../../../components/navigation.vue';
 import PresetsInfoSidebarDetail from './components/presets-info-sidebar-detail.vue';
 
-import { useCollection, useLayout } from '@directus/shared/composables';
+import { useCollection, useLayout } from '@directus/composables';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
 import RefreshSidebarDetail from '@/views/private/components/refresh-sidebar-detail.vue';
 import SearchInput from '@/views/private/components/search-input.vue';
@@ -155,8 +159,8 @@ import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
 import { usePresetsStore } from '@/stores/presets';
 import DrawerBatch from '@/views/private/components/drawer-batch.vue';
-import { getLayouts } from '@/layouts';
 import { usePreset } from '@/composables/use-preset';
+import { useExtension } from '@/composables/use-extension';
 
 export default defineComponent({
 	name: 'ContentCollection',
@@ -175,7 +179,6 @@ export default defineComponent({
 
 		const { t } = useI18n();
 
-		const { layouts } = getLayouts();
 		const userStore = useUserStore();
 		const permissionsStore = usePermissionsStore();
 		const layoutRef = ref();
@@ -187,7 +190,7 @@ export default defineComponent({
 
 		const { confirmDelete, deleting, batchDelete, error: deleteError, batchEditActive } = useBatch();
 
-		const currentLayout = computed(() => layouts.value.find((l) => l.id === layout.value));
+		const currentLayout = useExtension('layout', layout);
 
 		const { batchEditAllowed, batchDeleteAllowed, createAllowed } = usePermissions();
 
@@ -317,9 +320,5 @@ export default defineComponent({
 .action-delete {
 	--v-button-background-color-hover: var(--danger) !important;
 	--v-button-color-hover: var(--white) !important;
-}
-
-.layout {
-	--layout-offset-top: 64px;
 }
 </style>

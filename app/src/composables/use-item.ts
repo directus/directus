@@ -8,13 +8,13 @@ import { notify } from '@/utils/notify';
 import { translate } from '@/utils/translate-object-values';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { validateItem } from '@/utils/validate-item';
-import { useCollection } from '@directus/shared/composables';
-import { getEndpoint } from '@directus/shared/utils';
+import { useCollection } from '@directus/composables';
+import { getEndpoint } from '@directus/utils';
 import { AxiosResponse } from 'axios';
-import { merge } from 'lodash';
+import { mergeWith } from 'lodash';
 import { computed, ComputedRef, Ref, ref, watch } from 'vue';
 import { usePermissions } from './use-permissions';
-import { Field, Relation } from '@directus/shared/types';
+import { Field, Query, Relation } from '@directus/types';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
 
 type UsableItem = {
@@ -38,7 +38,11 @@ type UsableItem = {
 	validationErrors: Ref<any[]>;
 };
 
-export function useItem(collection: Ref<string>, primaryKey: Ref<string | number | null>): UsableItem {
+export function useItem(
+	collection: Ref<string>,
+	primaryKey: Ref<string | number | null>,
+	query: Query = {}
+): UsableItem {
 	const { info: collectionInfo, primaryKeyField } = useCollection(collection);
 	const item = ref<Record<string, any> | null>(null);
 	const error = ref<any>(null);
@@ -103,7 +107,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 		error.value = null;
 
 		try {
-			const response = await api.get(itemEndpoint.value);
+			const response = await api.get(itemEndpoint.value, { params: query });
 			setItemValueToResponse(response);
 		} catch (err: any) {
 			error.value = err;
@@ -116,11 +120,19 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 		saving.value = true;
 		validationErrors.value = [];
 
-		const errors = validateItem(
-			merge({}, defaultValues.value, item.value, edits.value),
-			fieldsWithPermissions.value,
-			isNew.value
+		const payloadToValidate = mergeWith(
+			{},
+			defaultValues.value,
+			item.value,
+			edits.value,
+			function (from: any, to: any) {
+				if (typeof to !== 'undefined') {
+					return to;
+				}
+			}
 		);
+
+		const errors = validateItem(payloadToValidate, fieldsWithPermissions.value, isNew.value);
 
 		if (errors.length > 0) {
 			validationErrors.value = errors;
@@ -168,9 +180,11 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 			...edits.value,
 		};
 
-		// Make sure to delete the primary key
+		// Make sure to delete the primary key if it's has auto increment enabled
 		if (primaryKeyField.value && primaryKeyField.value.field in newItem) {
-			delete newItem[primaryKeyField.value.field];
+			if (primaryKeyField.value.schema?.has_auto_increment || primaryKeyField.value.meta?.special?.includes('uuid')) {
+				delete newItem[primaryKeyField.value.field];
+			}
 		}
 
 		// Make sure to delete nested relational primary keys

@@ -1,7 +1,7 @@
-import { Accountability, SchemaOverview } from '@directus/shared/types';
-import { getPermissions } from './get-permissions';
-import { InvalidConfigException } from '../exceptions';
-import { Knex } from 'knex';
+import type { Accountability, SchemaOverview } from '@directus/types';
+import type { Knex } from 'knex';
+import { InvalidConfigException } from '../exceptions/index.js';
+import { getPermissions } from './get-permissions.js';
 
 export async function getAccountabilityForRole(
 	role: null | string,
@@ -22,6 +22,14 @@ export async function getAccountabilityForRole(
 		};
 
 		generatedAccountability.permissions = await getPermissions(generatedAccountability, context.schema);
+	} else if (role === 'system') {
+		generatedAccountability = {
+			user: null,
+			role: null,
+			admin: true,
+			app: true,
+			permissions: [],
+		};
 	} else {
 		const roleInfo = await context.database
 			.select(['app_access', 'admin_access'])

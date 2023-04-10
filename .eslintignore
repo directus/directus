@@ -1,4 +1,4 @@
 node_modules
 dist
-templates
-stories
+packages/extensions-sdk/templates
+extensions

@@ -4,7 +4,8 @@ fields:
   - field: id
     hidden: true
     interface: input
-    special: uuid
+    special:
+      - uuid
 
   - field: title
     interface: input
@@ -23,7 +24,8 @@ fields:
     interface: tags
     options:
       iconRight: local_offer
-    special: cast-json
+    special:
+      - cast-json
     width: full
     display: labels
     display_options:
@@ -71,7 +73,8 @@ fields:
 
   - field: metadata
     hidden: true
-    special: cast-json
+    special:
+      - cast-json
 
   - field: type
     display: mime-type
@@ -83,7 +86,8 @@ fields:
 
   - field: modified_by
     interface: select-dropdown-m2o
-    special: user-updated
+    special:
+      - user-updated
     width: half
     display: user
     readonly: true
@@ -92,7 +96,8 @@ fields:
 
   - field: modified_on
     interface: datetime
-    special: date-updated
+    special:
+      - date-updated
     width: half
     display: datetime
     readonly: true
@@ -105,7 +110,8 @@ fields:
     display: user
     width: half
     hidden: true
-    special: user-created
+    special:
+      - user-created
 
   - field: uploaded_on
     display: datetime
@@ -115,7 +121,8 @@ fields:
   - field: folder
     width: half
     readonly: true
-    special: m2o
+    special:
+      - m2o
     display: related-values
     display_options:
       template: '{{ name }}'

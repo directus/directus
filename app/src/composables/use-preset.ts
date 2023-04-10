@@ -1,7 +1,7 @@
 import { usePresetsStore } from '@/stores/presets';
 import { useUserStore } from '@/stores/user';
 import { translate } from '@/utils/translate-literal';
-import { Filter, Preset } from '@directus/shared/types';
+import { Filter, Preset } from '@directus/types';
 import { assign, debounce, isEqual } from 'lodash';
 import { computed, ComputedRef, ref, Ref, watch } from 'vue';
 
@@ -94,7 +94,9 @@ export function usePreset(
 
 	// update current bookmark title when it is edited in navigation-bookmark
 	presetsStore.$subscribe(() => {
-		initLocalPreset();
+		if (!bookmarkExists.value) return;
+		const newBookmark = presetsStore.getBookmark(Number(bookmark.value));
+		localPreset.value.bookmark = newBookmark?.bookmark;
 	});
 
 	const layoutOptions = computed<Record<string, any>>({

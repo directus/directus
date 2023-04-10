@@ -1,4 +1,4 @@
-import { CollectionsOverview, Relation } from '@directus/shared/types';
+import type { CollectionsOverview, Relation } from '@directus/types';
 
 export const systemSchema = {
 	collections: {
