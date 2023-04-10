@@ -86,10 +86,7 @@ type BundleConfig = {
 };
 
 type AppExtensions = string | null;
-type AppChunk = {
-	fileName: string;
-	code: string;
-};
+
 type ApiExtensions = { path: string }[];
 
 type Options = {
@@ -109,7 +106,7 @@ class ExtensionManager {
 	private extensions: Extension[] = [];
 
 	private appExtensions: AppExtensions = null;
-	private appChunks: AppChunk[] = [];
+	private appExtensionChunks: Map<string, string>;
 	private apiExtensions: ApiExtensions = [];
 
 	private apiEmitter: Emitter;
@@ -128,6 +125,8 @@ class ExtensionManager {
 		this.endpointRouter = Router();
 
 		this.reloadQueue = new JobQueue();
+
+		this.appExtensionChunks = new Map();
 	}
 
 	public async initialize(options: Partial<Options> = {}): Promise<void> {
@@ -235,8 +234,8 @@ class ExtensionManager {
 		return this.appExtensions;
 	}
 
-	public getAppChunk(fileName: string): AppChunk | undefined {
-		return this.appChunks.find((dynamic) => dynamic.fileName === fileName);
+	public getAppExtensionChunk(name: string): string | null {
+		return this.appExtensionChunks.get(name) ?? null;
 	}
 
 	public getEndpointRouter(): Router {
@@ -372,7 +371,7 @@ class ExtensionManager {
 
 			for (const out of output) {
 				if (out.type === 'chunk') {
-					this.appChunks.push({ fileName: out.fileName, code: out.code });
+					this.appExtensionChunks.set(out.fileName, out.code);
 				}
 			}
 
