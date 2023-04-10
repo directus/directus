@@ -1,5 +1,5 @@
-import { DeepPartial, Field } from '@directus/shared/types';
-import { defineInterface } from '@directus/shared/utils';
+import { DeepPartial, Field } from '@directus/types';
+import { defineInterface } from '@directus/utils';
 import InterfaceInput from './input.vue';
 import PreviewSVG from './preview.svg?raw';
 
@@ -19,7 +19,7 @@ export default defineInterface({
 					name: '$t:placeholder',
 					meta: {
 						width: 'full',
-						interface: 'input',
+						interface: 'system-input-translated-string',
 						options: {
 							placeholder: '$t:enter_a_placeholder',
 						},
@@ -45,6 +45,20 @@ export default defineInterface({
 				},
 			],
 			advanced: [
+				{
+					field: 'softLength',
+					name: '$t:soft_length',
+					type: 'integer',
+					meta: {
+						width: 'half',
+						interface: 'input',
+						options: {
+							placeholder: '255',
+							min: 1,
+							max: field.schema?.max_length,
+						},
+					},
+				},
 				{
 					field: 'font',
 					name: '$t:font',
@@ -164,7 +178,7 @@ export default defineInterface({
 				type: 'string',
 				meta: {
 					width: 'half',
-					interface: 'input',
+					interface: 'system-input-translated-string',
 					options: {
 						placeholder: '$t:enter_a_placeholder',
 					},

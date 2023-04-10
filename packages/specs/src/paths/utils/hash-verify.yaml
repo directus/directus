@@ -1,0 +1,29 @@
+post:
+  summary: Hash a string
+  description: Generate a hash for a given string.
+  operationId: hash-verify
+  requestBody:
+    content:
+      application/json:
+        schema:
+          properties:
+            string:
+              description: String to hash.
+              type: string
+            hash:
+              description: Hash you want to verify against.
+              type: string
+          required: ['string', 'hash']
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            properties:
+              data:
+                type: boolean
+                example: true
+            type: object
+      description: Successful request
+  tags:
+    - Utilities

@@ -1,0 +1,3 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Mount component 1`] = `"<span data-v-0ab7ac28=\\"\\" class=\\"v-chip label\\"><span data-v-0ab7ac28=\\"\\" class=\\"chip-content\\"><!--v-if--></span></span>"`;

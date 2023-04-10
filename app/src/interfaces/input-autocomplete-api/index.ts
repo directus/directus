@@ -1,4 +1,4 @@
-import { defineInterface } from '@directus/shared/utils';
+import { defineInterface } from '@directus/utils';
 import InterfaceInputAutocompleteAPI from './input-autocomplete-api.vue';
 import PreviewSVG from './preview.svg?raw';
 
@@ -106,7 +106,7 @@ export default defineInterface({
 			name: '$t:placeholder',
 			meta: {
 				width: 'half',
-				interface: 'input',
+				interface: 'system-input-translated-string',
 				options: {
 					placeholder: '$t:enter_a_placeholder',
 				},

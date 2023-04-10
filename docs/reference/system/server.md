@@ -1,31 +1,19 @@
 ---
+description: REST and GraphQL API documentation on the Server collection in Directus.
+readTime: 4 min read
 pageClass: page-reference
 ---
 
 # Server
 
-<div class="two-up">
-<div class="left">
-
 > Provides detailed information about the project server, its schema, and its health.
-> [Learn more about Projects](/getting-started/glossary/#projects).
-
-</div>
-<div class="right">
-
-[[toc]]
-
-</div>
-</div>
+> [Learn more about Projects](/getting-started/glossary#projects).
 
 ---
 
 ## Get OpenAPI Specification
 
 Retrieve the OpenAPI spec for the current project.
-
-<div class="two-up">
-<div class="left">
 
 ::: tip Permissions
 
@@ -35,10 +23,7 @@ This OAS spec is based on the read permissions of the currently authenticated us
 
 ### Returns
 
-Object conforming to [the OpenAPI Specification](https://swagger.io/specification/)
-
-</div>
-<div class="right">
+Object conforming to [the OpenAPI Specification](https://swagger.io/specification)
 
 ### REST API
 
@@ -66,17 +51,11 @@ query {
 }
 ```
 
-</div>
-</div>
-
 ---
 
 ## Get GraphQL SDL
 
 Retrieve the GraphQL SDL for the current project.
-
-<div class="two-up">
-<div class="left">
 
 ::: tip Permissions
 
@@ -108,9 +87,6 @@ type articles {
 # etc
 ```
 
-</div>
-<div class="right">
-
 ### REST API
 
 ```
@@ -134,12 +110,9 @@ type Query {
 
 ```graphql
 query {
-	server_specs_graphql(scope: "system")
+	server_specs_graphql(scope: system)
 }
 ```
-
-</div>
-</div>
 
 ---
 
@@ -147,15 +120,9 @@ query {
 
 Ping... pong! 🏓
 
-<div class="two-up">
-<div class="left">
-
 ### Returns
 
 Pong.
-
-</div>
-<div class="right">
 
 ### REST API
 
@@ -183,17 +150,11 @@ query {
 }
 ```
 
-</div>
-</div>
-
 ---
 
 ## Info
 
 Information about the current installation.
-
-<div class="two-up">
-<div class="left">
 
 ::: tip Permissions
 
@@ -203,19 +164,24 @@ The public information is returned for everybody. Admin users get additional inf
 
 ### Returns
 
-<div class="definitions">
-
 `project` **object**\
 Public information about the project. Used to render the Admin App public pages.
 
-See [the settings object](/reference/system/settings/#the-settings-object) for more information on the individual
+See [the settings object](/reference/system/settings#the-settings-object) for more information on the individual
 properties of the `project` object.
 
-</div>
+Logged in users also get the following information:
+
+`rateLimit` **false | object**\
+Whether or not the rate limiter is enabled.
+
+`rateLimit.points` **number**\
+If rate-limiter is enabled, amount of allowed points per duration
+
+`rateLimit.duration` **number**\
+If rate-limiter is enabled, duration in seconds in which points are counted
 
 Admin users also get the following information:
-
-<div class="definitions">
 
 `directus.version` **string**\
 Current version of Directus used.
@@ -237,11 +203,6 @@ How long the operating system has been up.
 
 `os.totalmem` **string**\
 How much memory is available on the operating system.
-
-</div>
-
-</div>
-<div class="right">
 
 ### REST API
 
@@ -273,26 +234,20 @@ query {
 }
 ```
 
-</div>
-</div>
-
 ---
 
 ## Health
 
 Get the current health status of the server.
 
-<div class="two-up">
-<div class="left">
-
 The `/server/health` endpoint shows you a general health status for the server and all connected (third party) services,
 such as Redis or S3.
 
 The output is based on the "Health Check Response for HTTP APIs" draft spec:
-[Health Check Response Format for HTTP APIs Draft Specification](https://tools.ietf.org/id/draft-inadarei-api-health-check-05.html).
+[Health Check Response Format for HTTP APIs Draft Specification](https://datatracker.ietf.org/doc/html/draft-inadarei-api-health-check-06).
 
-This endpoint can be used to ensure a healthy system when running in a horizontally scaled setup, like Kubernetes or AWS
-Elastic Beanstalk.
+This endpoint can be used to ensure a healthy system when running in a horizontally scaled setup, like Kubernetes,
+Google Cloud Platform or AWS Elastic Beanstalk.
 
 By default, the endpoint only returns a `status` of `ok`, `warn` or `error`. By authenticating as an admin, it will
 return more in-depth information about the current health status of the system.
@@ -353,16 +308,10 @@ return more in-depth information about the current health status of the system.
 
 ### Returns
 
-<div class="definitions">
-
 `status` **string**\
 One of `ok`, `warn`, `error`.
 
-</div>
-
 Authenticated admin users also get the following information:
-
-<div class="definitions">
 
 `releaseId` **string**\
 Directus version in use.
@@ -372,11 +321,6 @@ UUID of the current Directus instance.
 
 `checks` **array**\
 Array with the status of all individually connected services.
-
-</div>
-
-</div>
-<div class="right">
 
 ### REST API
 
@@ -403,8 +347,5 @@ query {
 	server_health
 }
 ```
-
-</div>
-</div>
 
 ---

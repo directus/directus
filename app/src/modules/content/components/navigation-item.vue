@@ -1,11 +1,12 @@
 <template>
 	<v-list-group
 		v-if="isGroup && matchesSearch"
-		v-context-menu="'contextMenu'"
+		v-context-menu="hasContextMenu ? 'contextMenu' : null"
 		:to="to"
 		scope="content-navigation"
 		:value="collection.collection"
 		query
+		:open="collection.meta?.collapse === 'locked'"
 		:arrow-placement="collection.meta?.collapse === 'locked' ? false : 'after'"
 	>
 		<template #activator>
@@ -16,10 +17,10 @@
 				:color="collection.meta?.color"
 			/>
 		</template>
-
 		<navigation-item
 			v-for="childCollection in childCollections"
 			:key="childCollection.collection"
+			:show-hidden="showHidden"
 			:collection="childCollection"
 			:search="search"
 		/>
@@ -44,14 +45,6 @@
 
 	<v-menu v-if="hasContextMenu" ref="contextMenu" show-arrow placement="bottom-start">
 		<v-list>
-			<v-list-item v-if="hasArchive" clickable :to="`/content/${collection.collection}?archive`" exact query>
-				<v-list-item-icon>
-					<v-icon name="archive" outline />
-				</v-list-item-icon>
-				<v-list-item-content>
-					<v-text-overflow :text="t('show_archived_items')" />
-				</v-list-item-content>
-			</v-list-item>
 			<v-list-item v-if="isAdmin" clickable :to="`/settings/data-model/${collection.collection}`">
 				<v-list-item-icon>
 					<v-icon name="list_alt" />
@@ -66,9 +59,11 @@
 
 <script lang="ts">
 import { defineComponent, PropType, computed } from 'vue';
-import { Collection } from '@/types';
-import { Preset } from '@directus/shared/types';
-import { useUserStore, useCollectionsStore, usePresetsStore } from '@/stores';
+import { Collection } from '@/types/collections';
+import { Preset } from '@directus/types';
+import { useUserStore } from '@/stores/user';
+import { useCollectionsStore } from '@/stores/collections';
+import { usePresetsStore } from '@/stores/presets';
 import NavigationItemContent from './navigation-item-content.vue';
 import NavigationBookmark from './navigation-bookmark.vue';
 import { useI18n } from 'vue-i18n';
@@ -102,10 +97,6 @@ export default defineComponent({
 
 		const childBookmarks = computed(() => getChildBookmarks(props.collection));
 
-		const hasArchive = computed(
-			() => props.collection.meta?.archive_field && props.collection.meta?.archive_app_filter
-		);
-
 		const isGroup = computed(() => childCollections.value.length > 0 || childBookmarks.value.length > 0);
 
 		const to = computed(() => (props.collection.schema ? `/content/${props.collection.collection}` : ''));
@@ -137,7 +128,7 @@ export default defineComponent({
 			}
 		});
 
-		const hasContextMenu = computed(() => hasArchive.value || isAdmin);
+		const hasContextMenu = computed(() => isAdmin && props.collection.type === 'table');
 
 		return {
 			childCollections,
@@ -147,7 +138,6 @@ export default defineComponent({
 			matchesSearch,
 			isAdmin,
 			t,
-			hasArchive,
 			hasContextMenu,
 		};
 

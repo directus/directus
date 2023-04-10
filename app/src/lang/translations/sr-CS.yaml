@@ -1,28 +1,98 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+identifier: Identifikator
 avatar: Avatar
+application: Aplikacija
+default_provider: Podrazumevano
+method: Metoda
 published: Objavljeno
-edit_field: Izmijeni
-item_revision: Revizija stavke
+draft: Nacrt
+archived: Arhivirano
+modules: Moduli
+module_bar: Modul Bar
+logs: Događaji
+reset_width: Resetuj Širinu
+tile_size: Veličina pločice
+edit_field: Izmeni polje
+conditions: Uslovi
+location: Lokacija
+condition_rules: Pravila Uslova
+input: Unos
+maps: Mape
+switch_user: Promeni Korisnika
+item_creation: Kreiranje Predmeta
+item_revision: Revizija Stavke
+enter_a_name: Unesi ime...
 duplicate_field: Dupliraj
 half_width: Pola širine
 full_width: Puna širina
+group: Grupa
+export_items: Eksportuj Stavke
+and: I
+or: Ili
+init: Inicijalizuj
+dataset_too_large_currently_showing_n_items: Skup podataka je prevelik. Trenutno se prikazuje prvih {n} stavki.
+modifier: Modifikator
+custom: Prilagođeno
+hook: Hook
 fill_width: Popunjeno
 field_name_translations: Prevodi Polja
 enter_password_to_enable_tfa: Unesite vašu lozinku kako biste uključili dvostruku potvrdu autentičnosti
 add_field: Dodaj Polje
 role_name: Naziv uloge
+branch: Grana
+leaf: List
+indeterminate: Neodređeno
+edit_collection: Izmeni Kolekciju
+exclusive: Ekskluzivan
+children: Deca
+db_only_click_to_configure: 'Samo za bazu podataka: Kliknite za Podešavanje'
+show_active_items: Prikaži Aktivne Stavke
 show_archived_items: Prikaži arhivirane stavke
+show_all_items: Prikaži Sve Stavke
 edited: Vrijednost izmijenjena
 required: Obavezno
 required_for_app_access: Obavezno za pristup aplikaciji
 requires_value: Zahtijeva vrijednost
 create_preset: Napravi Izgled
+create_panel: Kreiraj Panel
 create_role: Napravi ulogu
 create_user: Napravi korisnika
+message: Poruka
+delete_panel: Obriši Panel
 create_webhook: Napravi Webhook
+create_translation_string: Kreiraj String za Prevod
+no_translation_string: Nema Stringova za Prevod
+no_translation_string_copy: Još uvek nema Stringova za Prevod.
+translation_string_key_placeholder: Ključ stringa za prevod...
+translation_string_translations_placeholder: Dodaj prevod
+edit_translation_string: Izmeni String za Prevod
+delete_translation_string_copy: >-
+  Da li ste zigurni da želite da izbrišete String za Prevod "{key}"? Ova radnja se ne može opozvati.
 invite_users: Pozovi korisnike
 invite: Pozovi
 email_already_invited: Na ovu "{email}" adresu je već poslat poziv
+subject: Naslov
+inbox: Primljeno
 emails: Email adrese
 connection_excellent: Odlična konekcija
 connection_good: Dobra konekcija
@@ -34,14 +104,17 @@ delete_folder: Obriši Fasciklu
 prefix: Prefiks
 suffix: Sufiks
 reset_bookmark: Poništi postavljanje oznake
-rename_bookmark: Preimenuj oznaku
 update_bookmark: Ažuriraj oznaku
 delete_bookmark: Obriši oznaku
 delete_bookmark_copy: >-
   Da li ste sigurni da želite da obrišete "{bookmark}" oznaku? Ova operacija je trajna.
+delete_personal_bookmark: Izbrišite Lični Obeleživač
+delete_role_bookmark: Izbrišite Lični Obeleživač
+delete_global_bookmark: Izbrišite Globalni Obeleživač
 logoutReason:
   SIGN_OUT: Odjavljen
   SESSION_EXPIRED: Sesija je istekla
+public_label: Javno
 public_description: Kontroliše koji podaci sa API su dostupni bez potrebe za provjerom autentičnosti korisnika.
 not_allowed: Nije dozvoljeno
 directus_version: Directus verzija
@@ -63,7 +136,6 @@ recommended_defaults: Preporučene postavke
 unarchive: Vrati iz arhive
 unarchive_confirm: Da li ste sigurni da želite da vratite iz arhive ovu stavku?
 nested_files_folders_will_be_moved: Ugnježđeni fajlovi i fascikle će biti pomjereni na jedan nivo iznad.
-unknown_validation_errors: 'Došlo je do greške u validaciji kod sljedećih sakrivenih polja:'
 validationError:
   eq: Vrijednost treba biti {valid}
   neq: Vrijednost ne može biti {invalid}
@@ -178,6 +250,7 @@ o2m_relationship: One to Many Relacija
 m2m_relationship: Many to Many Relacija
 m2a_relationship: Many to Any Relacija
 invalid_item: Nevažeća Stavka
+modal: Modalni
 next: Sljedeća
 field_name: Naziv Polja
 translations: Prevodi
@@ -197,9 +270,6 @@ dismiss: Ignoriši
 raw_value: Vrijednost
 edit_raw_value: Izmijeni Vrijednost
 enter_raw_value: Unesi vrijednost...
-clear_value: Obriši vrijednost
-reset_to_default: Vrati na podrazumijevano
-undo_changes: Poništi izmjene
 notifications: Obavještenja
 show_all_activity: Prikaži svu aktivnost
 page_not_found: Stranica nijе pronađеna
@@ -229,10 +299,7 @@ related_collection: Povezane Kolekcije
 related_collections: Povezane Kolekcije
 translations_collection: Prevod Kolekcije
 languages_collection: Jezička Kolekcija
-export_data: Izvoz Podataka
 format: Format
-use_current_filters_settings: Koristi Trenutne Filtere & Podešavanja
-export_collection: 'Izvoz {collection}'
 last_page: Posljednja Stranica
 last_access: Posljednji Pristup
 fill_template: Popuni sa vrijednošću šablona
@@ -248,6 +315,9 @@ interface_label: Interfejs
 today: Danas
 yesterday: Juče
 delete_comment: Obriši komentar
+functions:
+  year: Godina
+  month: Mjesec
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -417,7 +487,6 @@ unexpected_error_copy: Desila se neočekivana greška. Molimo pokušajte kasnije
 copy_details: Kopiraj Detalje
 no_app_access: Bez pristupa Aplikaciji
 no_app_access_copy: Ovom korisniku nije dozvoljeno da koristi administratorsku aplikaciju.
-password_reset_sent: Poslali smo Vam sigurnosni link za resetovanje lozinke
 password_reset_successful: Lozinka je uspješno resetovana
 back: Nazad
 editing_image: Uređivanje Fotografije
@@ -435,8 +504,6 @@ start_end_of_count_items: '{start}-{end} od {count} stavki'
 start_end_of_count_filtered_items: '{start}-{end} od {count} filtriranih stavki'
 one_item: '1 Stavka'
 one_filtered_item: '1 Filtrirana Stavka'
-delete_collection_are_you_sure: >-
-  Da li ste sigurni da želite da obrišete ovu kolekciju? Ova operacija će obrisati kolekciju i sve stavke unutar iste. Ova operacija je trajna.
 collections_shown: Prikazano Kolekcija
 visible_collections: Vidljive Kolekcije
 hidden_collections: Sakrivene Kolekcije
@@ -533,6 +600,11 @@ toggle: Isključi / Uključi
 icon_on: Ikonica Na
 icon_off: Bez Ikonice
 label: Oznaka
+trigger: Okidač
+flow_name: Ime
+flow_tracking_activity: Samo Prati Aktivnost
+flow_tracking_null: Bez praćenja
+code: Kod
 full_screen: Pun ekran
 image_url: Url slike
 alt_text: Alternativni tekst
@@ -751,6 +823,11 @@ fields:
     auth_password_policy: Polisa Lozinke za autentikaciju
     auth_login_attempts: Broj pokušaja prijave
     custom_css: Prilagođeni CSS
+    module_bar: Modul Bar
+  directus_shares:
+    name: Ime
+    role: Uloga
+    password: Lozinka
   directus_fields:
     collection: Ime Kolekcije
     icon: Ikonica Kolekcije
@@ -877,6 +954,7 @@ translation: Prevodi
 value: Vrijednost
 view_project: Pregledaj Projekat
 report_error: Prijavi Grešku
+table: Tabela
 interfaces:
   filter:
     add_filter: Dodaj Filter
@@ -922,6 +1000,8 @@ interfaces:
     include_seconds: Uključujući Sekunde
     set_to_now: Postavi na Sadašnji
     use_24: Koristi 24-časovni Format
+  system-fields:
+    select_a_collection: Izaberi Kolekciju
   system-display-template:
     display-template: Šablon za Prikaz
     description: Miješanje statičnih tekstualnih i dinamičkih vrijednosti polja
@@ -987,8 +1067,6 @@ interfaces:
     customSyntax_label: Dodaj prilagođene tipove sintakse
     customSyntax_add: Dodaj prilagođenu sintaksu
     box: Blok / Linijski
-    imageToken: Token Fotografije
-    imageToken_label: Koji (statični) token prikačiti na izvore slika
   map:
     zoom: Uvеćanjе
   presentation-notice:
@@ -1009,7 +1087,7 @@ interfaces:
     description: Napravi više upisa od postojeće strukture
     edit_fields: Izmijeni Polja
     add_label: '"Napravi Novi" Labela'
-    field_name_placeholder: Unesi ime polja...
+    sort: Sortiranje
     field_note_placeholder: Unesi napomenu polja...
   slider:
     slider: Slajder
@@ -1028,7 +1106,6 @@ interfaces:
     auto_formatter: Koristi automatski format naslova
     alphabetize: Po abecedi
     alphabetize_label: Abecedni red
-    add_tags: Dodaj tagove...
   input:
     input: Unos
     description: Ručno unesite vrijednost
@@ -1080,6 +1157,8 @@ interfaces:
     value_path: Putanja Vrijednosti
     trigger: Okidač
     rate: Ocjena
+  system-token:
+    system-token: Token
 displays:
   translations:
     translations: Prevodi
@@ -1112,6 +1191,7 @@ displays:
     short: Kratko
     relative: Relativno
     relative_label: 'Prikaži relativno vrijeme, primjer: prije 5 minuta'
+    suffix: Sufiks
   file:
     file: Fajl
     description: Prikaži fajlove
@@ -1121,9 +1201,18 @@ displays:
   formatted-value:
     formatted-value: Formatirana Vrijednost
     description: Prikaži formatiranu verziju teksta
-    format_title: Formatiraj Naslov
-    format_title_label: Automatsko formatiranje naslova
+    format: Format
+    font: Font
+    font_serif: Serif
+    font_monospace: Fiksni razmak
+    bold: Podebljano
     bold_label: Koristi podebljan stil
+    italic: Kurziv
+    prefix: Prefiks
+    suffix: Sufiks
+    color: Boja
+    icon: Ikonica
+    text: Text
   formatted-json-value:
     formatted-json-value: Formatirana JSON vrijednost
     description: Prikaži formatiranu verziju objekta
@@ -1179,7 +1268,6 @@ layouts:
     subtitle: Pod naslov
   tabular:
     tabular: Tabela
-    fields: Polja
     spacing: Razmak
     comfortable: Udobno
     compact: Kompaktno
@@ -1188,6 +1276,17 @@ layouts:
     calendar: Kalendar
     start_date_field: Polje Početnog Datuma
     end_date_field: Polje Završnog Datuma
+  kanban:
+    crop: Isjecanje
+both: Oba
 panels:
   label:
     name: Oznaka
+operations:
+  log:
+    message: Poruka
+  notification:
+    recipient: Korisnik
+    message: Poruka
+  request:
+    url: URL adresa

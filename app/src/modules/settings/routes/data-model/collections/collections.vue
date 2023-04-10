@@ -3,7 +3,7 @@
 		<template #headline><v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" /></template>
 
 		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded disabled icon secondary>
+			<v-button class="header-icon" rounded icon exact disabled>
 				<v-icon name="list_alt" />
 			</v-button>
 		</template>
@@ -11,7 +11,7 @@
 		<template #actions>
 			<collection-dialog v-model="collectionDialogActive">
 				<template #activator="{ on }">
-					<v-button v-tooltip.bottom="t('create_folder')" rounded icon class="add-folder" @click="on">
+					<v-button v-tooltip.bottom="t('create_folder')" rounded icon secondary @click="on">
 						<v-icon name="create_new_folder" />
 					</v-button>
 				</template>
@@ -27,7 +27,7 @@
 		</template>
 
 		<div class="padding-box">
-			<v-info v-if="collections.length === 0" type="warning" icon="box" :title="t('no_collections')">
+			<v-info v-if="collections.length === 0" icon="box" :title="t('no_collections')">
 				{{ t('no_collections_copy_admin') }}
 
 				<template #append>
@@ -50,8 +50,8 @@
 						<collection-item
 							:collection="element"
 							:collections="collections"
-							@editCollection="editCollection = $event"
-							@setNestedSort="onSort"
+							@edit-collection="editCollection = $event"
+							@set-nested-sort="onSort"
 						/>
 					</template>
 				</draggable>
@@ -111,8 +111,8 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, ref } from 'vue';
 import SettingsNavigation from '../../../components/navigation.vue';
-import { useCollectionsStore } from '@/stores/';
-import { Collection } from '@/types';
+import { useCollectionsStore } from '@/stores/collections';
+import { Collection } from '@/types/collections';
 import CollectionOptions from './components/collection-options.vue';
 import { sortBy, merge } from 'lodash';
 import CollectionItem from './components/collection-item.vue';
@@ -197,12 +197,14 @@ export default defineComponent({
 			});
 
 			try {
-				await Promise.all(
-					updatesWithSortValue.map((collection) =>
-						api.patch(`/collections/${collection.collection}`, {
+				api.patch(
+					`/collections`,
+					updatesWithSortValue.map((collection) => {
+						return {
+							collection: collection.collection,
 							meta: { sort: collection.meta.sort, group: collection.meta.group },
-						})
-					)
+						};
+					})
 				);
 			} catch (err: any) {
 				unexpectedError(err);
@@ -228,17 +230,14 @@ export default defineComponent({
 }
 
 .header-icon {
-	--v-button-color-disabled: var(--warning);
-	--v-button-background-color-disabled: var(--warning-10);
+	--v-button-background-color-disabled: var(--primary-10);
+	--v-button-color-disabled: var(--primary);
+	--v-button-background-color-hover-disabled: var(--primary-25);
+	--v-button-color-hover-disabled: var(--primary);
 }
 
 .collection-item.hidden {
 	--v-list-item-color: var(--foreground-subdued);
-}
-
-.collection-name {
-	flex-grow: 1;
-	font-family: var(--family-monospace);
 }
 
 .collection-icon {
@@ -247,6 +246,7 @@ export default defineComponent({
 
 .hidden .collection-name {
 	color: var(--foreground-subdued);
+	flex-grow: 1;
 }
 
 .draggable-list :deep(.sortable-ghost) {
@@ -260,13 +260,6 @@ export default defineComponent({
 			opacity: 0;
 		}
 	}
-}
-
-.add-folder {
-	--v-button-background-color: var(--primary-10);
-	--v-button-color: var(--primary);
-	--v-button-background-color-hover: var(--primary-25);
-	--v-button-color-hover: var(--primary);
 }
 
 .db-only {

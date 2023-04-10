@@ -1,30 +1,18 @@
 ---
+description: REST and GraphQL API documentation for file access and management in Directus.
+readTime: 10 min read
 pageClass: page-reference
 ---
 
 # Accessing Files
 
-<div class="two-up">
-<div class="left">
-
 > Every file managed by the platform is uploaded to the configured storage adapter, and its associated metadata is
 > tracked within the `directus_files` system collection. Any requested file transformations are handled on the fly, and
 > are only saved to storage.
 
-</div>
-<div class="right">
-
-[[toc]]
-
-</div>
-</div>
-
 ---
 
-## Accessing an File
-
-<div class="two-up">
-<div class="left">
+## Accessing a File
 
 The location of your actual file originals is based on the project's configuration, but you can consistently access them
 via the API using the following URL.
@@ -34,36 +22,38 @@ example.com/assets/<file-id>
 example.com/assets/1ac73658-8b62-4dea-b6da-529fbc9d01a4
 ```
 
+::: tip SEO
+
+You can provide an optional filename after the UUID to optimize for SEO, for example:
+
+```
+example.com/assets/<file-id>/<filename>
+example.com/assets/1ac73658-8b62-4dea-b6da-529fbc9d01a4/directus-logo.png
+```
+
+This optional filename is also used in the Content-Disposition header when the `?download` query parameter is used.
+
+:::
+
 ::: warning Direct File Access
 
-While you may _technically_ be able to expose your storage adapters root filesystem and access your raw files through
+While you may _technically_ be able to expose your storage adapters root file system and access your raw files through
 there, it is recommended that you always use the Directus API. This is the only way that you can take advantage of file
 permissions and other built-in features.
 
 :::
 
-</div>
-<div class="right">
-
-![Original File](../assets/original.jpg) _Original File Used — 602KB and 1800x1200_
-
-</div>
-</div>
+![Original File](https://cdn.directus.io/docs/v9/reference/files/original-20220216A.jpg) _Original File Used — 602KB and
+1800x1200_
 
 ---
 
 ## Downloading a File
 
-<div class="two-up">
-<div class="left">
-
 To download an asset with the correct filename, you need to add the `?download` query parameter to the request and the
 `download` attribute to your anchor tag. This will ensure the appropriate
 [Content-Disposition](https://www.w3.org/Protocols/rfc2616/rfc2616-sec19.html) headers are added. Without this, the
 download will work on the _same_ domain, however it will have the file's "id" as the filename for cross-origin requests.
-
-</div>
-<div class="right">
 
 ### Example
 
@@ -71,15 +61,9 @@ download will work on the _same_ domain, however it will have the file's "id" as
 <a href="https://your-directus.com/assets/<file-id>?download" target="_blank" download="Your File.pdf">Download</a>
 ```
 
-</div>
-</div>
-
 ---
 
 ## Requesting a Thumbnail
-
-<div class="two-up">
-<div class="left">
 
 Fetching thumbnails is as easy as adding a `key` query parameter to the original file's URL. In the Admin App, you can
 configure different asset presets that control the output of any given image. If a requested thumbnail doesn't yet
@@ -87,7 +71,7 @@ exist, it is dynamically generated and immediately returned.
 
 ### Preset Transformations
 
-- **`key`** — This **key** of the [Storage Asset Preset](/configuration/project-settings/#files-thumbnails), a shortcut
+- **`key`** — This **key** of the [Storage Asset Preset](/configuration/project-settings#files-thumbnails), a shortcut
   for the below parameters
 
 ### Custom Transformations
@@ -121,8 +105,8 @@ For easier comparison, both of the examples below were requested at `200` width,
 `cover` thumbnail forces the dimensions, trimming the outside edges as needed. The `contain` thumbnail always maintains
 its aspect ratio, shrinking the image to fit _within_ the dimensions and adding "letterboxing" as needed.
 
-| Cover                                                          | Contain                                                            |
-| -------------------------------------------------------------- | ------------------------------------------------------------------ |
+| Cover                                                       | Contain                                                         |
+| ----------------------------------------------------------- | --------------------------------------------------------------- |
 | ![Cover](../assets/200-200-cover-75.jpg)<br>_8KB • 200x200_ | ![Contain](../assets/200-200-contain-75.jpg)<br>_6KB • 200x133_ |
 
 ::: tip Aspect Ratio
@@ -131,18 +115,15 @@ Images are never stretched or distorted even when changing the aspect ratio.
 
 ::: -->
 
-### Quality vs Filesize
+### Quality vs File Size
 
-The quality parameter can be any integer from `0-100`. Qualities closer to `0` have lower filesizes, but also poor image
-quality due to compression artifacts. Values closer to `100` have larger filesizes, but better image quality. Below are
-four possible qualities (200x200 cover) to visually compare the balance between compression and filesize.
+The quality parameter can be any integer from `0-100`. Qualities closer to `0` have lower file sizes, but also poor
+image quality due to compression artifacts. Values closer to `100` have larger file sizes, but better image quality.
+Below are four possible qualities (200x200 cover) to visually compare the balance between compression and file size.
 
-| 25%                                             | 50%                                             | 75%                                             | 100%                                               |
-| ----------------------------------------------- | ----------------------------------------------- | ----------------------------------------------- | -------------------------------------------------- |
-| ![25%](../assets/200-200-cover-25.jpg)<br>_4KB_ | ![50%](../assets/200-200-cover-50.jpg)<br>_6KB_ | ![75%](../assets/200-200-cover-75.jpg)<br>_8KB_ | ![100%](../assets/200-200-cover-100.jpg)<br>_38KB_ |
-
-</div>
-<div class="right">
+| 25%                                                                                             | 50%                                                                                             | 75%                                                                                             | 100%                                                                                               |
+| ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| ![25%](https://cdn.directus.io/docs/v9/reference/files/200-200-cover-25-20220216A.jpg)<br>_4KB_ | ![50%](https://cdn.directus.io/docs/v9/reference/files/200-200-cover-50-20220216A.jpg)<br>_6KB_ | ![75%](https://cdn.directus.io/docs/v9/reference/files/200-200-cover-75-20220216A.jpg)<br>_8KB_ | ![100%](https://cdn.directus.io/docs/v9/reference/files/200-200-cover-100-20220216A.jpg)<br>_38KB_ |
 
 ### Preset
 
@@ -167,16 +148,9 @@ example.com/assets/1ac73658-8b62-4dea-b6da-529fbc9d01a4?fit=cover&width=200&heig
 ]
 ```
 
-</div>
-</div>
-
 ---
 
 ## The File Object
-
-<div class="two-up">
-<div class="left">
-<div class="definitions">
 
 `id` **uuid**\
 Primary key of the file
@@ -197,16 +171,16 @@ Title for the file.
 Mimetype of the file.
 
 `folder` **many-to-one**\
-What (virtual) folder the file is in. Many-to-one to [folders](/reference/system/folders/).
+What (virtual) folder the file is in. Many-to-one to [folders](/reference/system/folders).
 
 `uploaded_by` **many-to-one**\
-Who uploaded the file. Many-to-one to [users](/reference/system/users/).
+Who uploaded the file. Many-to-one to [users](/reference/system/users).
 
 `uploaded_on` **datetime**\
 When the file was uploaded.
 
 `modified_by` **many-to-one**\
-Who updated the file last. Many-to-one to [users](/reference/system/users/).
+Who updated the file last. Many-to-one to [users](/reference/system/users).
 
 `filesize` **number**\
 Size of the file in bytes.
@@ -231,10 +205,6 @@ Tags for the file.
 
 `metadata` **object**\
 Any additional metadata Directus was able to scrape from the file. For images, this includes EXIF, IPTC, and ICC information.
-
-</div>
-</div>
-<div class="right">
 
 ```json
 {
@@ -273,17 +243,11 @@ Any additional metadata Directus was able to scrape from the file. For images, t
 }
 ```
 
-</div>
-</div>
-
 ---
 
 ## List Files
 
 List all files that exist in Directus.
-
-<div class="two-up">
-<div class="left">
 
 ### Query Parameters
 
@@ -291,11 +255,8 @@ Supports all [global query parameters](/reference/query).
 
 ### Returns
 
-An array of up to [limit](/reference/query/#limit) [file objects](#the-file-object). If no items are available, data
-will be an empty array.
-
-</div>
-<div class="right">
+An array of up to [limit](/reference/query#limit) [file objects](#the-file-object). If no items are available, data will
+be an empty array.
 
 ### REST API
 
@@ -304,7 +265,7 @@ GET /files
 SEARCH /files
 ```
 
-[Learn more about SEARCH ->](/reference/introduction/#search-http-method)
+[Learn more about SEARCH ->](/reference/introduction#search-http-method)
 
 ### GraphQL
 
@@ -329,17 +290,11 @@ query {
 }
 ```
 
-</div>
-</div>
-
 ---
 
 ## Retrieve a File
 
 Retrieve a single file by primary key.
-
-<div class="two-up">
-<div class="left">
 
 ### Query Parameters
 
@@ -348,9 +303,6 @@ Supports all [global query parameters](/reference/query).
 ### Returns
 
 Returns a [file object](#the-file-object) if a valid primary key was provided.
-
-</div>
-<div class="right">
 
 ### REST API
 
@@ -387,20 +339,16 @@ query {
 }
 ```
 
-</div>
-</div>
-
 ## Upload a File
 
 Upload/create a new file.
 
-<div class="two-up">
-<div class="left">
+To upload a file, use `multipart/form-data` as the encoding type. The file contents has to be provided in a part called
+`file`. All other properties of [the file object](#the-file-object) can be provided as parts as well, except
+`filename_disk` and `filename_download`.
 
-To upload a file, use `multipart/form-data` as the encoding type, instead of JSON.
-
-The file contents has to be provided in a part called `file`. All other properties of
-[the file object](#the-file-object) can be provided as parts as well.
+Alternatively, you can use `application/json` with JSON request body to associate metadata to a file that already exists
+in the storage. The `type` property will be required to specify the mimetype of that file.
 
 ::: tip Order Matters
 
@@ -456,9 +404,6 @@ Supports all [global query parameters](/reference/query).
 Returns the [file object](#the-file-object) for the uploaded file, or an array of [file objects](#the-file-object) if
 multiple files were uploaded at once.
 
-</div>
-<div class="right">
-
 ```
 POST /files
 ```
@@ -477,17 +422,11 @@ Content-Type: image/jpeg
 descü^cprt\wtpthbkpt|rXYZgXYZ¤bXYZ¸rTRCÌ@gTRCÌ@bTRCÌ@descc2textIXXYZ öÖÓ-XYZ 3¤XYZ o¢8õXYZ b·ÚXYZ $ ¶ÏcurvËÉckö?Q4!ñ)2;FQw]íkpz±|¬i¿}ÓÃé0ÿÿÿÛ
 ```
 
-</div>
-</div>
-
 ---
 
 ## Import a File
 
 Import a file from the web
-
-<div class="two-up">
-<div class="left">
 
 ### Query Parameters
 
@@ -495,22 +434,15 @@ Supports all [global query parameters](/reference/query).
 
 ### Request Body
 
-<div class="definitions">
-
 `url` **Required**\
 The URL to download the file from.
 
 `data`\
 Any of [the file object](#the-file-object)'s properties.
 
-</div>
-
 ### Returns
 
 Returns the [file object](#the-file-object) for the imported file.
-
-</div>
-<div class="right">
 
 ### REST API
 
@@ -553,17 +485,11 @@ mutation {
 }
 ```
 
-</div>
-</div>
-
 ---
 
 ## Update a File
 
 Update an existing file, and/or replace it's file contents.
-
-<div class="two-up">
-<div class="left">
 
 ### Query Parameters
 
@@ -578,9 +504,6 @@ information on the structure of this `multipart/form-data` request.
 ### Returns
 
 Returns the [file object](#the-file-object) for the updated file.
-
-</div>
-<div class="right">
 
 ### REST API
 
@@ -621,17 +544,11 @@ mutation {
 }
 ```
 
-</div>
-</div>
-
 ---
 
 ## Update Multiple Files
 
 Update multiple files at the same time.
-
-<div class="two-up">
-<div class="left">
 
 ### Query Parameters
 
@@ -639,22 +556,15 @@ Supports all [global query parameters](/reference/query).
 
 ### Request Body
 
-<div class="definitions">
-
 `keys` **Required**\
 Array of primary keys of the files you'd like to update.
 
 `data` **Required**\
 Any of [the file object](#the-file-object)'s properties.
 
-</div>
-
 ### Returns
 
 Returns the [file objects](#the-file-object) for the updated files.
-
-</div>
-<div class="right">
 
 ### REST API
 
@@ -698,17 +608,11 @@ mutation {
 }
 ```
 
-</div>
-</div>
-
 ---
 
 ## Delete a File
 
 Delete an existing file.
-
-<div class="two-up">
-<div class="left">
 
 ::: danger Destructive
 
@@ -723,9 +627,6 @@ Supports all [global query parameters](/reference/query).
 ### Returns
 
 Empty response.
-
-</div>
-<div class="right">
 
 ### REST API
 
@@ -759,17 +660,11 @@ mutation {
 }
 ```
 
-</div>
-</div>
-
 ---
 
 ## Delete Multiple Files
 
 Delete multiple files at once.
-
-<div class="two-up">
-<div class="left">
 
 ::: danger Destructive
 
@@ -784,9 +679,6 @@ Array of file primary keys
 ### Returns
 
 Empty response.
-
-</div>
-<div class="right">
 
 ### REST API
 
@@ -823,6 +715,3 @@ mutation {
 	}
 }
 ```
-
-</div>
-</div>

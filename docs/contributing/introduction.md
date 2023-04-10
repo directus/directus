@@ -1,21 +1,19 @@
+---
+description: An introduction to the process, rules and guidelines that for all code contributions to Directus.
+readTime: 6 min read
+---
+
 # Contributing
 
-> Our team truly appreciates every single contributor, community member, GitHub star, pull-request, bug report, and
-> feature request. Keeping Directus completely free and open-source is our way of saying: **Thank you!**
+Heya! Welcome to Directus, and thank you for taking the time to contribute back to our project! ❤️ We want everybody to
+be able to contribute to Directus, no matter your background or expertise. In order to facilitate that, we've put
+together a couple tips and tricks below. Our team truly appreciates every single contributor, community member, GitHub
+star, pull-request, bug report, and feature request.
 
-::: tip We're here to help!
-
-If you have _any_ questions along your contributor journey, please feel free to come chat with us on our
-[Discord Community](https://directus.chat).
-
-:::
-
-::: tip Technical Contributor Docs
-
-Technical documentation for contributing to the core codebase is located on the main `directus/directus`
-[GitHub repository's Wiki](https://github.com/directus/directus/wiki).
-
-:::
+> We're here to help!
+>
+> If you have _any_ questions along your contributor journey, please feel free to come chat with us on
+> [our Discord server](https://directus.chat).
 
 ## Code of Conduct
 
@@ -27,10 +25,10 @@ code.**
 respectful of those efforts throughout our ecosystem. Trolling, harassing, insulting, or other unacceptable behavior by
 participants will not be tolerated.**
 
-In the interest of fostering an open and welcoming environment, we as pledge to make participation in our project and
-community a harassment-free experience for everyone, regardless of age, body size, disability, ethnicity, sex
-characteristics, gender identity and expression, level of experience, education, socio-economic status, nationality,
-personal appearance, race, religion, or sexual identity and orientation.
+In the interest of fostering an open and welcoming environment, we as contributors and maintainers pledge to making
+participation in our project and community a harassment-free experience for everyone, regardless of age, body size,
+disability, ethnicity, sex characteristics, gender identity and expression, level of experience, education,
+socio-economic status, nationality, personal appearance, race, religion, or sexual identity and orientation.
 
 Examples of behavior that contributes to creating a positive environment include:
 
@@ -41,54 +39,63 @@ Examples of behavior that contributes to creating a positive environment include
 - Showing empathy towards other community members
 
 **Before continuing, please take a moment to read our full
-[Code of Conduct](https://github.com/directus/directus/blob/main/contributing.md).**
+[Code of Conduct](https://github.com/directus/directus/blob/main/code_of_conduct.md).**
 
-## Wait — Before you Begin
+## Ways to Contribute
 
-When contributing to this repository, it is important to first discuss the change you wish to make with the owners of
-this repository. This can be done via [GitHub Issue](https://github.com/directus/directus/issues),
-[GitHub Discussions](https://github.com/directus/directus/discussions), [Discord](https://directus.chat),
-[email](mailto:info@directus.io), or any other method.
+### Reporting Bugs
 
-Following this rule will help avoid wasted time caused by multiple people working on the same issue or writing code that
-will not be merged.
+If you happen to run into a bug, please post an Issue on our main GitHub Issue board:
+https://github.com/directus/directus/issues
 
-## Feature Requests
+Please be as explicit and detailed as you can in the bug report. The more information available, the easier it is for
+other contributors to help you find the solution or fix. Consider adding a schema snapshot file, or a database dump.
 
-Feature requests are a great way to let our team know what should be prioritized next. You can
-[submit a new feature request](https://github.com/directus/directus/discussions/new) or
-[vote on existing submissions](https://github.com/directus/directus/discussions) via GitHub Discussions.
+### Leaving Feedback
 
-::: warning The 80/20 Rule
+If you have a great idea for an improvement of the platform, or any other feedback, please make sure to open a new
+Discussion on our GitHub Discussions board: https://github.com/directus/directus/discussions
 
-To keep the Directus codebase as clean and simple as possible, we will only consider approving features that we feel at
-least 80% of our user-base will find valuable. If your feature request falls within the 20% range, it is considered an
-edge-case and should be implemented as an extension.
+### Helping Others
 
-:::
+The Directus community is growing quickly, which also means there's more and more people that have questions. Helping
+out your fellow developers by answering questions on [Discord](https://directus.chat) or
+[GitHub Discussions](https://github.com/directus/directus/discussions/categories/q-a) is a great way to help the
+project.
 
-## RFCs
+### Pull Requests
 
-Some Directus features/fixes may require additional design, strategy, and/or discussion before beginning work. For these
-notable pull-requests, you should first submit an RFC (Request For Comments) to our core team via
-[Discord](https://directus.chat). This process is relatively informal, but ensures proper alignment, and helps avoid
-squandered development time by contributors.
+#### Bug Fixes
 
-## Bug Reporting
+We treat Issues on the main repo as actionable items we want to get done. This also means that we welcome PRs for any
+Issue that has been labeled either "Bug", "Improvement", or "New Feature". Labeled issues are bugs or new features that
+have been triaged, accepted, and are ready to be implemented.
 
-Reporting any bugs you come across is an invaluable part of helping keep Directus stable. After confirming a similar
-issue doesn't already exist, you can [submit a bug report](https://github.com/directus/directus/issues/new) via GitHub
-Issues. Please ensure the following for all submissions:
+#### Implementing Features
 
-- You are experiencing an actual bug, not a configuration issue
-- You are using the official (pre-built) version of directus and not a fork
-- You are not asking a question or requesting a new feature
-- You have checked that no similar issue (or discussion) already exists
-- You have entered a clear and concise title
-- You have followed the issue template, with stack details and steps to reproduce
-- You have already completed all [troubleshooting steps](/getting-started/support#troubleshooting-steps)
+With the continuous growth of Directus, more and more people are relying on Directus for (critical) data workloads in
+various use cases. This means we need to be careful with any changes that might affect the stability, security,
+performance, or scalability of Directus. For this reason, it's important that any new feature is properly thought
+through and discussed before being implemented.
 
-## Reporting Security Vulnerabilities
+Before you start writing code to implement your new feature idea, please read through and understand our triaging
+process for new features before diving in. While we encourage and appreciate every code contribution, please understand
+that we can't merge every suggested code change.
+
+##### Triaging Process
+
+Feature Request Discussions that are deemed ready to be implemented with the discussed implementation details are marked
+"Accepted" and converted into an Issue, at which point the feature is ready to be implemented.
+
+New feature ideas reported directly to issues might be converted into a Discussion for further triaging at
+[the core team](https://github.com/orgs/directus/people)'s discretion first. This is often due to a lack of detail, or
+lack of proven interest.
+
+Each Pull Request that comes in is required to resolve [an open Issue](https://github.com/directus/directus/issues) that
+is labeled "Bug", "Improvement", or "New Feature". This ensures that any code change made implements a known actionable
+item, be it a feature or otherwise.
+
+### Reporting Security Vulnerabilities
 
 If you believe you have discovered a security issue within a Directus product or service, please reach out to us
 directly over email: [security@directus.io](mailto:security@directus.io). We will then open a
@@ -99,60 +106,4 @@ team so that proper fixes can be issued to users. Our policy is to credit all re
 order to receive credit, security researchers must follow responsible disclosure practices, including:
 
 - They do not publish the vulnerability prior to the Directus team releasing a fix for it
-- They do not divulge exact details of the issue, eg: through exploits or proof-of-concepts
-
-## Submitting a Pull-Request
-
-### 1. Submit an RFC (if needed)
-
-Please read our docs on the [RFC process](#rfcs).
-
-### 2. Update relevant docs
-
-Before submitting any pull-requests, ensure that any relevant documentation (included in this same repo) is updated.
-
-### 3. Push your changes
-
-```bash
-git push -u origin YOUR-BRANCH-NAME
-```
-
-### Submit a pull-request
-
-Once you push the changes to your repo, the "Compare & pull request" button will appear in GitHub. Click it and you'll
-be taken to a screen where you can fill in the appropriate details. Finally, open the pull request by clicking the
-"Create pull request" button.
-
-Now our core staff will review your contribution and either merge it, or request that you to make changes.
-
-## Syncing Your Fork with Directus
-
-After you have submitted your pull requests, you would need to sync your fork with Directus to pull all the latest
-commits before you continue to contribute.
-
-### 1. Add Directus as a Remote
-
-While your fork is your main remote or origin, you will add Directus as the upstream, which generally refers to the
-original repo that you have forked.
-
-```bash
-git remote add upstream git@github.com:directus/directus.git
-```
-
-### 2. Fetch the Latest Changes
-
-Depending on your setup, you will need to get the latest commits from the `main` branch of Directus by doing a pull,
-reset, rebase or fetch.
-
-```bash
-git pull upstream main
-```
-
-At this point you are ready to continue working on Directus, with the latest commits included!
-
-::: tip
-
-Before you begin or resume development, be sure to always sync, if you are going to submit a pull request with your
-changes!
-
-:::
+- They do not divulge exact details of the issue, e.g., through exploits or proof-of-concepts

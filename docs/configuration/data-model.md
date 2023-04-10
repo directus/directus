@@ -1,387 +1,451 @@
+---
+description:
+  The data model describes the structure of your database's schema using Collections, database tables, and Fields.
+readTime: 15 min read
+---
+
 # Data Model
 
-> The data model describes the structure of your database's schema using [Collections](/app/content-collections/)
-> (database tables) and [Fields](/reference/system/fields/) (database columns).
+> The Directus data studio enables no-code configuration and management for any SQL database, with no arbitrary
+> restrictions on how you build your data model. You get control over table, column and relationship configuration, as
+> well as how users view and interact with data inside the data studio.
 
-[[toc]]
+<!--
+:::tip Before You Begin
 
-## Creating a Collection
+Learn Directus
+Please see the [Quickstart Guide]().
+Configuration > Overview
 
-1. Click the **Create Collection** action button in the Data Model header
-2. Enter a unique **Collection Name** to be used as the database table name, API collection key, and App collection name
-   default.
-3. Configure the name and type of the **Primary Key**.
-   - Auto-Incremented Integer
-   - Generated UUID
-   - Manually Entered String
-4. Optional: Enable and rename any desired **System Fields**.
-   - Status
-   - Sort
-   - Created On
-   - Created By
-   - Updated On
-   - Updated By
-5. Click the **Finish Setup** button
+:::
+-->
 
-::: danger Immutable Keys
+:::tip Learn More
 
-As of now, the key can not be modified after the collections has been created.
+Remember, you will have full access to manage your database using SQL. Directus will mirror any changes. You can also
+configure your data model programmatically via the API. To learn more, see our API documentation on
+[Collections](/reference/system/collections), [Fields](/reference/system/fields), and
+[Relations](/reference/system/relations).
 
 :::
 
-::: tip Database Tables
+## Relational Data Models
 
-Keep in mind that a Directus Collection is just a database table. Therefore you can import or create a table directly in
-the database, and it will automatically appear within Directus. The first time you manage that table, a
-`directus_collections` record will be created with default values.
+In order to understand how Directus handles data models, you will need an understanding of what relational data models
+are. This section provides a brief summary of the core concepts. It may be useful as a review, or for business users
+working on your team that want a simple explanation of how data models work. If you have a firm knowledge of relational
+data model concepts, such as databases, data tables, columns, data types, primary and foreign keys, rows, relationships,
+and schemas then feel free to jump to [Data Models in Directus](#data-models-in-directus).
 
-:::
+### Databases
 
-## Configuring a Collection
+Directus is an SQL database wrapper. A database is a set of data stored in a computer, in a structured way, making it
+organized, accessible, and scalable. The specific way you structure your data within a database is called your data
+model.
 
-You can configure a collection by clicking on it within **Settings > Data Model**. On this page the following options
-are available:
+![A Database Schema](https://cdn.directus.io/docs/v9/configuration/data-model/data-model-20220805/database-schema-20220805A.webp)
 
-- **Fields & Layout** — This manages the fields of this collection, and their form layout. For more information on this
-  configuration, refer to the sections below on Field Management.
-  - [Creating a Field](#creating-a-field-standard)
-  - [Configuring a Field](#configuring-a-field)
-  - [Deleting a Field](#deleting-a-field)
-  - [Duplicating a Field](#duplicating-a-field)
-  - [Changing Field Order & Layout](#adjusting-the-collection-form)
-- **Collection Name** — This is the key for the collection. It can not be modified, but you can override it with
-  Translations (see field below).
-- **Note** — A helpful note that explains the collection's purpose
-- **Icon** — The icon used throughout the App when referencing this collection
-- **Color** — A color for the icon, shown in the navigation and its header
-- **Display Template** — A Field Template that creates dynamic titles for the collection's items
-- **Hidden** — Toggles if the collection should be globally hidden. Keep in mind that Admin roles can always see all
-  collections.
-- **Singleton** — For collections that will only contain a single item (eg: an "About Us" form), the
-  [Collection Page](/app/content-collections/) will be bypassed, taking users directly to the
-  [Item Page](/app/content-items/).
-- **Collection Naming Translations** — While the collection key can not be changed (as of now), this option allows
-  translating the collection name into different languages. By default, the platform uses the
-  [Title Formatter](/getting-started/glossary/#title-formatter) to display collection keys as human readable names, but
-  you can also use translations to explicitly rename more technical table keys.
+### Database vs Excel
 
-### Archive
+To make a comparison most business users can relate with, storing data in a database is _somewhat_ similar to storing
+data in Excel spreadsheets. You know how you can build a table on one sheet in Excel, build another table on another
+sheet, then link the rows of each table together? That is pretty much how a relational data model works. But there are
+some key points where Excel and relational databases differ.
 
-The archive feature allows you to enable "soft-delete" within the collection. Archived items are hidden in the App by
-default, but are still returned normally via the API unless they are filtered out.
+![Data in an Excel Spreadsheet](https://cdn.directus.io/docs/v9/configuration/data-model/data-model-20220805/spreadsheet-20220805A.webp)
 
-- **Archive Field** — The field that holds the archive value
-- **Archive App Filter** — Allows users to view archived items
-- **Archive Value** — The value saved in the Archive Field when archived
-- **Unarchive Value** — The value saved in the Archive Field when unarchived
+Many times, we store data as a table in Excel, but that's not always the case, as the program serves tons of other
+purposes. Excel lets you make your data stylized _(bold, italicized, colored, custom fonts, etc.)_, set dynamic
+functions in cells, add graphics like charts and graphs, and input any kind of data into any cell you'd like with no
+enforced structure. Your Excel spreadsheet is a blank canvas, designed to store up to tens of thousands of rows of
+information.
 
-::: tip Automatic Setup
+![A data table](https://cdn.directus.io/docs/v9/configuration/data-model/data-model-20220805/datatable-20220805A.webp)
 
-When creating a new Collection, you have the option of creating an optional "Status" field. If you choose to include
-this field, the collection's archive settings will automatically be configured for you.
+There is no stylization within databases. They strictly store raw data values in a structured way. Any time you want to
+style data, build a function, put data into a graph, _etc.,_ you must create that functionality in your app or website.
+Databases store raw, un-stylized, structured data and are designed to handle millions, _and in some cases billions and
+trillions_, of rows of information.
 
-:::
+### Data Tables
 
-### Sort
+![A Data Table: rows and columns](https://cdn.directus.io/docs/v9/configuration/data-model/data-model-20220805/rows-and-columns.webp)
 
-The sort feature enables manual drag-and-drop item reordering within the Directus App. This is typically shown on the
-[Collection Page](/app/content-collections/), but can also be used for sorting items within
-[Junction Tables](/getting-started/glossary/#junction-collections). Configuration is as easy as selecting the
-appropriate sort field:
+<!-- image should note rows and columns. -->
 
-- **Sort Field** — Choose a field with the `integer` type. You may want to set this field to be "hidden" so it doesn't
-  show up within the Item Page form.
+SQL databases store data across data tables. Data tables typically store information about one distinct type of record,
+object, or observation, such as a financial transaction, blog post, geo-position, user, IoT event, _or anything_. Data
+tables are further broken down into columns and rows.
 
-::: tip Automatic Setup
+### Columns
 
-When creating a new Collection, you have the option of creating an optional "Sort" field. If you choose to include this
-field, the collection's sort settings will automatically be configured for you.
+![A Column](https://cdn.directus.io/docs/v9/configuration/data-model/data-model-20220805/columns-20220805A.webp)
 
-:::
+Columns are categories that store one kind of information. Each column has a unique, descriptive name and stores one
+unit of information in each of its [cell values](#cell-values). Columns keep the data organized, consistent, and easily
+accessible. The columns you choose to add to a data table will completely depend on the information you need to store.
 
-::: tip Interface Sorting
+<!-- For example, in a database for IoT devices monitoring the weather, an `iot_events` data table may contain columns `device_id`, `location`, `time`, `temperature`, `pressure`, `humidity`, etc. -->
 
-To configure manual sorting within an Interface (eg: M2M, O2M, or M2A), configure as above, but also set the **Sort
-Field** on the field's Relationship pane.
+### Cell Values
 
-:::
+![Cell Values](https://cdn.directus.io/docs/v9/configuration/data-model/data-model-20220805/datatable-cell-value-20220805A.webp)
 
-### Accountability
+Each value in a column is stored in its own cell. In general, you want to create columns that save _atomic_ values. That
+means create the column to store the smallest indivisible units There is no restriction for the kinds of information to
+include in a column, but there are good and bad practices. For example:
 
-By default, the platform tracks all [activity](/reference/system/activity) and [revisions](/reference/system/revisions/)
-for collections. This option allows you to override this, choosing what data is tracked.
+- **A Bad Column:** A `city_state_zipcode` column.
+- **Good Columns:** Separate `city`, `state` and `zipcode` columns.
 
-- **Activity & Revision Tracking** — supports the follow options:
-  - Track Activity & Revisions
-  - Only Track Activity
-  - Do Not Track Anything
+### Data Types
 
-### Duplication
+To further maintain structure and consistency, when you create a column, you must also define its data type. For
+example, an `age` column might be assigned `INTEGER` and a `blog_content` column may be assigned a `STRING` or `TEXT`
+data type. There are countless incongruent, unexpected, and potentially dangerous behaviors that could emerge when a
+program tries to process data with the wrong data type.
 
-The "Save as Copy" option on the Item Page offers a way to effectively duplicate the current item. However, since there
-may be unique or relational data within this form, it's important to control exactly what will be copied. This option
-allows for configuring which parent/relational field values will be copied.
+To give an example, if you type the character `2`, it may be stored as an `INTEGER` or as `STRING`. If you stored `2` as
+an `INTEGER`, when you try to add `2 + 2`, the computer will typically calculate `4`. In some languages, if you stored
+the character `"2"` as a `STRING`, when you try to add `"2" + "2"`, the computer will concatenate them into `22`, while
+in others, trying to do this may crash the program!
 
-## Deleting a Collection
+Therefore when you work with data, it is important to know what its data type is because the wrong data type can cause
+unexpected and even dangerous behaviors in your program.
 
-1. Navigate to **Settings > Data Model > [Collection Name]**
-2. Click the red **Delete Collection** action button in the header
-3. Confirm this decision by clicking **Delete** in the dialog
+### Rows
 
-::: danger Irreversible Change
+![Rows](https://cdn.directus.io/docs/v9/configuration/data-model/data-model-20220805/row-20220805A.webp)
 
-This action is permanent and can not be undone. Please proceed with caution.
+Each row stores data associated to a unique record, event, object, entity, observation, etc. Data tables can contain
+millions, _even billions and trillions_ of rows of data.
 
-:::
+### Primary Keys
 
-## Adjusting the Collection Hierarchy
+![Primary Key](https://cdn.directus.io/docs/v9/configuration/data-model/data-model-20220805/primary-keys-20220805A.webp)
 
-Collections can be organized in several ways, including sorting, custom translations, showing/hiding, and even grouping.
-This organization is reflected in the sidebar navigation, allowing you to control how the users of the app will interact
-with the various collections in your project. Configuring the organization of your collections is done on the
-**Settings > Data Model** page.
+In order to uniquely identify and track each row, every data table must have a primary key column. A primary key is a
+unique ID that identifies a specific row. Any pattern or system could be used to generate primary keys, so long as it
+guarantees each key is unique. Perhaps the most common is incrementing integers, where the primary key on each new row
+increments as follows `1`, `2`, `3`, `4`, etc... The primary key column guarantees you can always find a row and
+differentiate it from other rows.
 
-### Sorting & Grouping
+### Foreign Keys
 
-By using the drag handles on the left of the collection, you can manually put the collections in an order that makes the
-most sense for your project. By dragging a collection underneath another collection, you can turn any collection into a
-group-parent. Groups can even be nested within other groups.
+![Foreign Keys](https://cdn.directus.io/docs/v9/configuration/data-model/data-model-20220805/foreign-keys-20220805A.webp)
 
-Additionally, you can add special "folder" collections that are exclusively used for organizational purposes, and don't
-hold any data themselves. This can be done through the "Create Folder" button in the top right of the page.
+Since primary keys uniquely identify each and every row in a data table, they are the perfect tool to create
+relationships. If you want to relationally link rows between two data tables, you create a column to store _foreign
+keys_, which are simply primary keys from a foreign table. This is called a _foreign key column_, to signify it stores
+the keys from a foreign table.
+
+### Parent vs. Related Tables
 
-### Renaming Collections
+When we talk about two related tables, we refer to them as the _parent table_ and the _related table_. These two terms
+are based solely on perspective, similar to the terms _this_ and _that_ or the terms _here_ and _there_, signifying the
+perspective from which you are looking at the relationship.
+
+For example, within the data model, a [many-to-one relationship](#types-of-relationships) is the same as a
+[one-to-many relationship](#types-of-relationships), the term used just depends on which collection you consider the
+parent.
 
-The key of a collection (eg. what's used in the API / database) can't be changed. However, you can alter how a
-collection is displayed in your app by adding custom translations. This can be done by opening the detail page of a
-collection, and modifying the "Collection Naming Translations" option. Make sure to add translations for all the
-languages your app's users might use for the best results!
+### Types of Relationships
 
-### Hiding Collections
+There are several ways you can relationally link tables:
 
-If you'd like to hide a collection from the navigation by default, but still allow your users to access them through
-other means (like relationships, or direct linking), you can set a collection be hidden by using the triple-dot "More"
-option menu on the right-hand side of the collection row, and selecting the "Make Collection Hidden" option.
+- **One to One** — Each row in the parent data table can link to one row _(max)_ in the related table.
+- **Many to One** — Many rows in the parent data table can link to one row in the related table.
+- **One to Many** — Each row in a data table can link to many rows in another data table.\
+  _Note: in a data model, Many-to-One and One-to-Many relationships are identical. The naming difference is a matter of perspective._
+- **Many to Many** — Many rows in the parent table can link to many rows in the related table. M2M relationships require
+  a third table, called junction table. An M2M is nothing more than an O2M and an M2O stored on the junction table.
+- **Many to Any** — Many Rows in a data table can link to many rows across any other table in the database. Similar to
+  M2M relationships, M2As require a junction data table as well as an additional column on the junction table to store
+  the related tables' names.
 
-Hidden collections can still be accessed by the user by right-clicking on the navigation, and choosing "Show Hidden
-Collections".
+To learn more about how these relationships work conceptually, as well as how they are handled within Directus, see our
+guide on [relationships](/configuration/data-model/relationships).
 
-::: tip Permissions
+### Database Schemas
 
-If you want to prevent a user from accessing a collection altogether, you can configure the read permissions for their
-role to prevent them from viewing the collection. Collections that can't be read by the user won't show up in the
-navigation either.
+![Data Table to schema](https://cdn.directus.io/docs/v9/configuration/data-model/data-model-20220805/datatable-to-schema-20220805A.webp)
 
-:::
+In our examples so far, we have seen and described actual [data tables](#data-tables). As you design your relational
+data model, you will need to create a schema to keep track of its complexity.
 
-## Adjusting the Collection Form
+A schema is a blueprint for your data model, which defines its data tables, columns in each table, details about each
+column and relationships between tables. It does not include the actual data points stored. Here is a simple schema of
+two relationally linked tables:
 
-The [Item Page](/app/content-items/) displays a custom form for viewing and editing each collection's fields. This form
-is highly configurable, with the following field options:
+```
+table_one
+- column1 (primary key)
+- column2 (data type, optionally explain what the column stores)
+- column3 (...)
+```
+
+```
+table_two
+- column1 (primary key)
+- column2 (...)
+- column3 (...)
+- table_one_id (foreign key, relationally links rows via table_one.column1)
+```
+
+In the schema above, we defined two tables with overtly generic names `table_one`, `table_two` and `column1`, `column2`,
+etc. The names you choose for data tables and columns are up to you. Ideally, you should pick unique, memorable names
+that identify the data contents stored within.
+
+In this documentation, we bend the rules of traditional database schemas in two ways. First, we sometimes add a
+full-length explanation of what a column is. Notice in `table_one.column2` there is a note after the column name
+`(data type, optionally....`. It is common practice to include a column's data type in a table schema, but full
+descriptions are not. Second, in our examples, if columns exist in the table but its data type or other details are
+irrelevant to the current learning point, we omit their details so you can focus on the important columns.
+
+Please note too, that with more complex schemas, containing dozens _(or maybe hundreds!)_ of relationally linked data
+tables, you usually include datatype information as well as a visualization of how each and every table interlinks.
+
+![A Complex Schema](https://cdn.directus.io/docs/v9/configuration/data-model/data-model-20220805/complex-schema.webp)
+
+### Avoid Data Duplication
+
+Relational databases allow us to build data models that avoid data duplication, or in other words, when you have the
+same data stored in multiple locations in your database. Data Duplication is inefficient and dangerous.
+
+To give an example, let's consider a `blog` table. In a blog, you may want to display the author's details, so you add
+an `author_name` column.
+
+```
+blog
+- id
+- title
+- content
+- author_name (string, stores author's full name)
+```
+
+The table above stores the author name directly inside of the `blog` data table. However, let's imagine that along with
+our blog posts, we want to display more information about authors, such as their email address, social media, etc. We
+_could_ put this author information into the `blog` data table.
+
+```
+blog
+- id
+- title
+- content
+- author_name (string, stores author's full name)
+- author_email (string, stores author's email)
+- author_img (string, stores link to author's profile picture)
+```
+
+You might be starting to notice this data table no longer represents one single object, but two: blog posts and authors.
+This is _almost always_ a sign the data should be split across different tables and relationally linked.
+
+Now let's also imagine that authors are one type of user. All user details are stored in a `users` data table and its
+data is displayed on each user profile page, for chat messaging and other types of transactions, _this is a common
+situation in many projects_. In this case, the author name and other details would also need to exist in the `users`
+table.
+
+![Duplicate Data](https://cdn.directus.io/docs/v9/configuration/data-model/data-model-20220805/duplicate-data-20220829A.webp)
+
+This creates duplicate data. There are two big problems with this:
+
+First, it becomes difficult or impossible to maintain accurate information. If the author decides to change their social
+media information under `users`, someone would have to go through and update author details on every single row
+containing their blog posts. With just 10 or even 100 blog posts, this would be annoying but perhaps not a massive
+problem. However, as volume of data grows to millions or billions of rows, updating duplicate data becomes a serious
+problem.
+
+Furthermore, an error on an author's name and personal information may not be a truly dangerous situation, but
+inaccurate information would be catastrophic in data tables containing banking transactions or medical records!
+
+Second, it wastes storage space and slows down performance. With a data model containing a few hundred blog posts,
+duplicate data may not take up enough space to cause huge drops in performance. But again, if you have the same
+information repeated again and again over millions or billions of rows, storage is wasted on a massive scale.
+
+### Why We Use Relational Data Models
+
+As shown in the previous section, you want to make sure that every single data point is unique. This is where the
+_relational_ part of relational data models comes into play. To avoid data duplication, it is always best practice to
+_normalize your data model_, which is the technical term used to describe designing a data model so that there is no
+duplicate information stored _at all_. Instead of storing all information needed in a given situation in one table, like
+we saw when mixing up blog and author information above, database normalization is the process of splitting up this
+information across tables and relationally linking it all together so that information is never repeated.
+
+There is a lot to learn to master database normalization and a thorough education in the practice goes beyond the scope
+of this document. There are plenty of resources to learn about it online. However, to provide one simple example by
+improving the example `blog` data table provided in the previous [Avoid Data Duplication](#avoid-data-duplication)
+section:
+
+```
+blog
+- id
+- title
+- content
+- author_name
+- author_email
+- author_img
+```
+
+As described in the section on [Rows](/configuration/data-model#rows), we want each row in a data table to represent one
+unique record, event, object, entity, observation, etc. To do this, we can remove the `author_name` column from the
+`blog` table and replace it with an `author_id` foreign key table, which stores foreign keys from the `users` table.
+
+```
+blog
+- id
+- title
+- content
+- author_id (stores foreign key from users.id)
+```
+
+```
+users
+- id
+- name
+- email
+- role
+- email
+- twitter
+```
+
+Notice the difference. Previously, we placed the author's name directly into a column on the `blog` data table
+_(creating duplicate data)_. Here, we replaced `author_name`, `author_email` and `author_img`, with the `author_id`
+column, which contains foreign keys from `users`. From here, we can use the foreign key to relationally link data
+between `blog` and `users`.
+
+### Working With Relational Data Models
+
+![Database, Backend, Frontend](https://cdn.directus.io/docs/v9/configuration/data-model/data-model-20220805/database-backend-frontend-20220805A.webp)
+
+Once you've designed your data model conceptually, you typically build and interact with it using SQL, or Structured
+Querying Language. This language is used to create, read & query, update, and delete anything and everything in the
+database.
 
-- **Visibility** — Fields can be set to "visible" or "hidden" on the form. This is adjusted via the field's context menu
-  or edit drawer.
-- **Width** — Fields have three different width options relative to the form/page. This is adjusted via the field's
-  context menu or edit drawer.
-  - Half — The field is shown at half the form width
-  - Full — (Default) The field is shown at the full form width
-  - Fill — The field is shown filling the page width
-- **Sort** — Fields can be rearranged via their drag-and-drop handles.
-- **Grouping** — Fields can be organized within different nested groups that are created using the normal Creating a
-  Field flow. Different style groupings are available for different use-cases.
+Once the initial data tables are designed and built, a common next step is to build a backend using something like
+Node.js or Flask. In your backend, you must code custom API endpoints and logic to create, read, query, update, and
+delete data for your specific data model. However, when the backend accesses data, it is still raw, with no stylization.
+Raw data is easy to work with for computers, but often quite difficult to work with for humans.
 
-## Creating a Field (Standard)
+To those who are unfamiliar, the SQL language, raw data, and traditional relational database jargon can feel unintuitive
+and overly-technical.
 
-1. Navigate to **Settings > Data Model > [Collection Name]**
-2. Under Fields & Layout, click the **Create Field** button
-3. **Choose the desired interface** by clicking on the illustration
-4. Add a **Field Key**, which is also used as the default field name
-5. **Configure the field options**, including the default value, required flag, and interface options
+It may not be practical to teach everyone on the team how to work with and think in terms of raw data. In some cases,
+business users may find it difficult or nearly impossible to work with raw data. People are accustomed to see
+information displayed _colorfully, stylized, embedded on a map, etc._ For example, _most people in most situations_
+would find it easy to work with pinpoints on a map, yet find it nearly impossible to identify a position on a world map
+from raw latitude and longitude points stored as JSON.
 
-## Creating a Field (Advanced)
+```json
+"location": {
+  "lat": 36.088010,
+  "lng": 120.379771
+}
+```
 
-1. Navigate to **Settings > Data Model > [Collection Name]**
-2. Under Fields & Layout, click the **Create Field in Advanced Mode** button
-3. **Choose the field type**, and follow its setup steps below.
+Therefore, developers need to build front-ends with polished UIs and custom display logic to make working with the data
+human-friendly. However, even for developers with strong SQL database skills, building out APIs and GUIs to build and
+manage a data model is time consuming.
 
-::: tip Database Columns
+## Data Models in Directus
 
-Keep in mind that a Directus Field is just a database columns. Therefore you can create a columns directly in the
-database, and it will automatically appear within Directus using intelligent defaults. You can then enhance the
-experience further using the following steps.
+<video title="Settings > Data Model" autoplay playsinline muted loop controls>
+	<source src="https://cdn.directus.io/docs/v9/configuration/data-model/data-model-20220805/data-model-overview-20220805A.mp4" type="video/mp4" />
+</video>
 
-:::
+All relational data model concepts listed above apply in Directus. You get complete, un-opinionated, relational data
+model design and configuration. The difference is that Directus handles all SQL, builds the API, and provides a Data
+Studio which lets business users work with data in a human-friendly way.
 
-### Schema
+The Data Studio also offers features and functionalities to display and interact with your data intuitively. Once your
+data model is configured, the data is accessible across the other [modules](/getting-started/glossary#modules).
 
-This pane controls the technical details of the field's database column.
+<!-- Data model configuration takes place across the following pages and menus:
 
-- **Key** — (Required) The database column name and field's API key. The key must be unique within its parent
-  Collection. As of now, all keys are sanitized: lowercased, alphanumeric, and with spaces removed. Keys can not be
-  changed once created, however you can use [Field Name Translations](/configuration/data-model/#field) to override how
-  it's displayed in the App.
-- **Type** — (Required) How the data is saved to the database; See
-  [Directus Data Type Superset](/getting-started/glossary/#data-type-superset). This dropdown maybe be limited or even
-  disabled based on your chosen Field category.
-- **Length** — (Only for certain types) For String types this determines the number of characters that can be stored in
-  the database. For Float and Decimal types, this control becomes **Precision & Scale**.
-- **On Create** — (Only for certain types) For some data types, this option allows you to control what value is saved
-  when an item is created. These values are fallbacks and can be overridden by the App/API. For example, the Timestamp
-  type allows you to "Save Current Date/Time".
-- **On Update** — (Only for certain types) For some data types, this option allows you to control what value is saved
-  when an item is updated. These values are fallbacks and can be overridden by the App/API. For example, the UUID type
-  allows you to "Save Current User ID".
-- **Default Value** — This is the initial value shown for a field when creating an item in the App. If creating an item
-  via the API, this is the fallback value saved to the database if a field value is not submitted.
-- **Allow NULL** — Toggles if the database column is nullable. When disabled, a `NULL` value can not be saved to the
-  field's column.
-- **Unique** — Toggles if the database column's values must all be unique.
+**Settings > Data Model > [Collection] > [Field] > Field Configuration Drawer > [Section]** -->
 
-::: danger Immutable Keys
+You have the power to do the following things, without a line of code or SQL:
 
-As of now, the key can not be modified after the field has been created.
+- View, configure, and manage your relational data model and asset storage.
+- Configure how data is displayed within the Data Studio.
+- Configure how data is interacted with by users in the Data Studio.
+- Translate any and all text in the Data Studio into any language.
 
-:::
+Directus replaces traditional relational database jargon with more user-friendly terms and concepts. Please keep in mind
+that while traditional relational database jargon strictly encompasses database concepts, some of the new Directus terms
+encompass these relational database concepts _plus display and interaction logic_. The following sections will introduce
+Directus terms and map them to classic relational database concepts.
 
-### Relationship
+## Collections
 
-This pane is only shown when configuring relational fields (including images and translations). Depending on the type of
-relationship, you'll be presented with one of the following set of options:
+<video title="Collections" autoplay playsinline muted loop controls>
+	<source src="https://cdn.directus.io/docs/v9/configuration/data-model/data-model-20220805/collections-20220805A.mp4" type="video/mp4" />
+</video>
 
-- [Many-to-One](/configuration/relationships/#many-to-one-m2o)
-- [One-to-Many](/configuration/relationships/#one-to-many-o2m)
-- [Many-to-Many](/configuration/relationships/#many-to-many-m2m)
-- [Many-to-Any](/configuration/relationships/#many-to-many-m2m)
-- [Translations](/configuration/relationships/#translations-o2m)
+A collection _is a set of [items](#items)_. This can be a 1-1 match-up with a data table in SQL, a group of other
+collections, or a readonly view.
 
-::: tip Corresponding Field
+You access all collections, including built-in system collections required to power your project, under **Settings >
+Data Model**. From there, click a collection to open its configurations page. To learn more, see our guide on
+[collections](/configuration/data-model/collections).
 
-[Relationships go both ways](/configuration/relationships/#perspective-matters), so when creating a new relation Field,
-Directus offers to automatically create the corresponding Field on the related Collection.
+## Fields
 
-:::
+<video title="Fields" autoplay playsinline muted loop controls>
+	<source src="https://cdn.directus.io/docs/v9/configuration/data-model/data-model-20220805/fields-20220805A.mp4" type="video/mp4" />
+</video>
 
-### Field
+Fields are database columns, but with a twist.
 
-- **Required** — Toggles if a value for the Field is required.
-  - Empty strings (`''`) and `NULL` are **not** accepted as a valid value
-  - `0` and `false` are accepted as a valid value
-  - Default values are accepted as a valid value
-  - Permission Presets are accepted as a valid value
-- **Readonly** — (App Only) Sets the field to be disabled.
-- **Hidden** — (App Only) Hides the field in the App form.
-  - The field is still available in filters and Layout options.
-- **Note** — (App Only) Displayed below the field in the App form, providing a helpful comment for App users. This note
-  supports markdown.
-- **Field Name Translations** — (App Only) While the field key can not be changed (as of now), this option allows
-  translating the field name into different languages. By default, the platform uses the
-  [Title Formatter](/getting-started/glossary/#title-formatter) to display field keys as human readable names, but you
-  can also use translations to explicitly rename more technical column keys.
+Remember, SQL database columns store pure, raw data. From there, developers build out custom logic and UIs to determine
+how this data is displayed and interacted with. In Directus, fields encompass column configurations, as well as custom
+configuration over how to the data is displayed and interacted with in the Data Studio. Directus also has
+[alias fields](/getting-started/glossary#alias), which are virtual and do not match directly to a column. To learn more,
+see our guide on [fields](/configuration/data-model/fields/).
 
-### Interface
+## Items
 
-This pane includes any customization options that may be defined by the Interface.
+<video title="Collections" autoplay playsinline muted loop controls>
+	<source src="https://cdn.directus.io/docs/v9/configuration/data-model/data-model-20220805/items-20220805A.mp4" type="video/mp4" />
+</video>
 
-### Display
+Items are data table rows, but with a twist.
 
-This pane includes any customization options that may be defined by the Display.
+Remember from our discussion above about traditional databases, the ideal relational database is _normalized_.
+Unfortunately, normalized data is not always the easiest for people to imagine or envision because related data is
+spread across multiple data tables. Therefore, when you access an item, you may get more than just the current
+collection's row level-data, _in some cases an item may provide access to the data in related rows._
 
-### Conditions
+You access items from other app modules, such as [Content](/app/content), [User Directory](/app/user-directory), and
+[File Library](/app/file-library).
 
-Conditions allow you to alter the current field's setup based on the values of other fields in the form. This allows you
-to show/hide the field, make it readonly, or change the interface options.
+## Data Type Superset
 
-Each field can have one or more _rules_. Each rule has the following configuration options:
+Directus abstracts type differences between SQL vendors with a
+[Data Type Superset](/getting-started/glossary#data-type-superset).
 
-- **Name**: The name of the rule. This is only used internally for convenience purposes
-- **Rule**: The rule that controls whether or not these conditions are applied. Rule follows the
-  [Filter Rules](/configuration/filter-rules) spec
-- **Readonly**: Whether or not the field is readonly when the condition is matched
-- **Hidden**: Whether or not the field is hidden when the condition is matched
-- **Required**: Whether or not the field is required when the condition is matched
-- **Interface Options**: Any additional configuration for the selected interface
+## Keys and IDs
 
-These changes to the field are merged onto the base configuration of the field. This means you can have the field hidden
-by default, and then only toggle the hidden state of the field in the condition.
+<video title="Keys and IDs" autoplay playsinline muted loop controls>
+	<source src="https://cdn.directus.io/docs/v9/configuration/data-model/data-model-20220805/keys-and-ids-20220805A.mp4" type="video/mp4" />
+</video>
 
-::: tip Order Matters
+Primary keys are called IDs in Directus fairly frequently. When you
+[create a collection](/configuration/data-model/collections#create-a-collection), you must add an `id` field. Directus
+supports the following types of IDs:
 
-The conditions are matched in order. The **last** condition that matches is the one that's used to apply the changes.
+- **Auto-Incremented Integer** — IDs increment `1`, `2`, `3` up to `2^31-1` or `2,147,483,647`.
+- **Auto-Incremented Big Integer** — IDs increment `1`, `2`, `3` up to `2^63-1` or `9,223,372,036,854,775,807`. _(only
+  available in MySQL and PostgreSQL)_
+- **Generated UUID** — Universally Unique Identifier. Creates a completely unique ID. IDs generated with this system
+  _(not just in your database, but anywhere this system is used)_ are so statistically unlikely to be repeated that for
+  all practical purposes they are unique.
+- **Manually Entered String** — You manually type out a unique string as the ID for each item.
 
-:::
+## Relationships
 
-## Creating Translated Multilingual Fields
+<video title="Relations" autoplay playsinline muted loop controls>
+	<source src="https://cdn.directus.io/docs/v9/configuration/data-model/data-model-20220805/relationships-20220805A.mp4" type="video/mp4" />
+</video>
 
-While you could create individual fields for each translation, such as `title_english`, `title_german`, `title_french`,
-and so on, this is not easily extensible, and creates a less than ideal form layout. Instead, you can use the Directus
-_relational_ [Translations O2M](/configuration/relationships/#translations-o2m) interface. This uses a separate
-collection to store an endless number of translations, and a separate collection of languages that can easily be added
-to without having to change the schema.
-
-Let's take a look at a basic example for "Articles":
-
-- **`articles` Collection**
-  - `id` — (Primary Key)
-  - `author` — Field that is not translated
-  - `date_published` — Field that is not translated
-  - `translations` — A O2M relational field to `article_translations`
-- **`article_translations` Collection**
-  - `id` — (Primary Key)
-  - `article` — The key of the article this belongs to
-  - `language` — The language key of this translation
-  - `title` — The translated Article Title
-  - `text` — The translated Article Text
-- **`languages` Collection**
-  - `language_code` — (Primary Key) eg: "en-US"
-  - `name` — The language name, eg: "English"
-
-As you can see above, you add **non-translated** fields, such as the `author` and `publish_date`, to the parent
-collection. Any **multilingual** fields, such as Title or Text, should be added directly to the Translation Collection.
-You can not simply drag or shift fields from the parent to translations, they must be _created_ in the correct
-collection.
-
-::: tip Translating Parent Fields
-
-To make an existing parent field translatable, you can choose "Duplicate Field" from its context menu, move it to the
-translation collection, and then delete the parent field. However, be aware that this does **not** maintain any existing
-field values in the process.
-
-:::
-
-## Configuring a Field
-
-1. Navigate to **Settings > Data Model > [Collection Name]**
-2. Click the field you want to update
-3. Make any desired updates referencing the [Creating a Field](/configuration/data-model/#creating-a-field) docs above
-
-::: tip System Fields
-
-While all out-of-the-box system fields are locked from editing or deleting, you are able to create new fields within the
-system collections. To get started, expand System Collections from the bottom of **Settings > Data Model**.
-
-:::
-
-## Duplicating a Field
-
-1. Navigate to **Settings > Data Model > [Collection Name]**
-2. Click the **More Options** icon for the field you want to duplicate
-3. Click the **Duplicate Field** option
-
-::: warning Relational and Primary Key Fields
-
-It is not currently possible to duplicate relational fields or a collection's primary key.
-
-:::
-
-## Deleting a Field
-
-1. Navigate to **Settings > Data Model > [Collection Name]**
-2. Click the **More Options** icon for the field you want to delete
-3. Click the **Delete Field** option
-4. Confirm this decision by clicking **Delete** in the dialog
-
-::: danger Irreversible Change
-
-This action is permanent and can not be undone. Please proceed with caution.
-
-:::
+Directus supports all standard [types of relationships](#types-of-relationships), as well as a few more of its own
+compound types. To learn more, see our guide on [relationships](/configuration/data-model/relationships).

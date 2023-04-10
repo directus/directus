@@ -1,7 +1,7 @@
 <template>
 	<div class="permissions-overview-row">
 		<span class="name">
-			{{ collection.name }}
+			<span v-tooltip.left="collection.collection">{{ collection.name }}</span>
 			<span class="actions">
 				<span class="all" @click="setFullAccessAll">{{ t('all') }}</span>
 				<span class="divider">/</span>
@@ -41,13 +41,21 @@
 			:loading="isLoading('delete')"
 			:app-minimal="appMinimal && appMinimal.find((p) => p.action === 'delete')"
 		/>
+		<permissions-overview-toggle
+			action="share"
+			:collection="collection"
+			:role="role"
+			:permissions="permissions"
+			:loading="isLoading('share')"
+			:app-minimal="appMinimal && appMinimal.find((p) => p.action === 'share')"
+		/>
 	</div>
 </template>
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, toRefs } from 'vue';
-import { Permission, Collection } from '@directus/shared/types';
+import { Permission, Collection } from '@directus/types';
 import PermissionsOverviewToggle from './permissions-overview-toggle.vue';
 import useUpdatePermissions from '../composables/use-update-permissions';
 

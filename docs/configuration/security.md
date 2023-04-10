@@ -1,7 +1,5 @@
 # Security
 
-> TK
-
 ## HTTPS
 
 ## Password Salting/Hashing/Algorithm & Password Policy

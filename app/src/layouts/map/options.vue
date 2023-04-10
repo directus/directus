@@ -41,10 +41,10 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, toRefs } from 'vue';
 
-import { useAppStore } from '@/stores';
+import { useAppStore } from '@/stores/app';
 import { getBasemapSources } from '@/utils/geometry/basemap';
-import { GeometryOptions, Item } from '@directus/shared/types';
-import { useSync } from '@directus/shared/composables';
+import { GeometryOptions, Item } from '@directus/types';
+import { useSync } from '@directus/composables';
 
 export default defineComponent({
 	inheritAttrs: false,

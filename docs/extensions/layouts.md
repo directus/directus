@@ -1,7 +1,12 @@
+---
+description: A guide on how to build custom Layouts in Directus.
+readTime: 4 min read
+---
+
 # Custom Layouts <small></small>
 
 > Custom Layouts allow for building new ways to view or interact with Items via the Collection Detail pages.
-> [Learn more about Layouts](/getting-started/glossary/#layouts).
+> [Learn more about Layouts](/getting-started/glossary#layouts).
 
 ## Extension Entrypoint
 
@@ -37,7 +42,7 @@ export default {
 
 - `id` — The unique key for this layout. It is good practice to scope proprietary layouts with an author prefix.
 - `name` — The human-readable name for this layout.
-- `icon` — An icon name from the [material icon set](/getting-started/glossary/#material-icons), or the extended list of
+- `icon` — An icon name from the [material icon set](/getting-started/glossary#material-icons), or the extended list of
   Directus custom icons.
 - `component` — A reference to your layout component.
 - `slots` — Additional components to be added by your layout.
@@ -81,8 +86,8 @@ export default {
 </script>
 ```
 
-In addition to some pre-defined props, the component receives the state defined inside the `setup()` function as
-individual props. Besides some pre-defined emits, the component also provides emits for every property returned by the
+In addition to some predefined props, the component receives the state defined inside the `setup()` function as
+individual props. Besides some predefined emits, the component also provides emits for every property returned by the
 `setup()` function. Those emits are prefixed by `update:`.
 
 These props and emits are available in all components associated with your layout.
@@ -92,7 +97,7 @@ These props and emits are available in all components associated with your layou
 - `collection` — The current collection's name.
 - `selection` — Any currently selected items.
 - `layoutOptions` — The user's currently saved layout options.
-- `layoutQuery` — The user's layout query parameters. (eg: sort, limit, etc)
+- `layoutQuery` — The user's layout query parameters. (e.g., sort, limit, etc)
 - `filter` — The combined active filter.
 - `filterUser` — The user's currently active filter.
 - `filterSystem` — The system's currently active filter.

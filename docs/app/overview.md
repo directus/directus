@@ -1,9 +1,14 @@
+---
+description: The App is a no-code presentation layer for your data, content, and assets.
+readTime: 3 min read
+---
+
 # The Application
 
 > The App is a no-code presentation layer for your data, content, and assets. It uses an intuitive left-to-right visual
 > hierarchy for general organization and navigation.
 
-![Application Overview](../assets/app-overview.svg)
+<img src="https://cdn.directus.io/docs/v9/app-guide/overview/app-overview-20220810A.svg" alt="Directus Application Overview" class="no-shadow" />
 
 ## 1. Module Bar
 
@@ -14,13 +19,13 @@ The leftmost section of the App is the module bar, which includes the:
   progress indicator will also be shown here.
 - **Module Navigation** — Allows navigating between the different modules your user has access to. Customizing the
   Module Navigation is done within the [Project Settings](/app/settings), but the default module list includes:
-  - [Content](/app/content-collections/) — The primary way to view and interact with database content
+  - [Content](/app/content/collections) — The primary way to view and interact with database content
   - [User Directory](/app/user-directory) — A dedicated section for the platform's system Users
   - [File Library](/app/file-library) — An aggregate of all files uploaded and managed within the platform
   - [Insights](/app/insights) — Access to infinitely customizable data dashboards
-  - [App Guide](/app/overview/) — A tailored, in-app portal for the platform's concepts, guides, and reference
+  - [App Guide](/app/overview) — A tailored, in-app portal for the platform's concepts, guides, and reference
   - [Settings](/app/settings) — An admin-only section for configuring the project and system settings
-- **Notifications** - Opens a drawer of notifications, such as from [mentions](/app/content-items/#mentions).
+- **Notifications** - Opens a drawer of notifications, such as from [mentions](/app/content/items#mentions).
 - **Current User Menu** — This component displays the authenticated user's name and avatar.
   - Sign Out — Hovering over the User Menu exposes the button to log out of the platform.
 
@@ -31,7 +36,7 @@ The navigation bar is based on the current module, and includes:
 - **Project Name** — Shows an icon and tooltip indicating the API's connection strength, and the name of your current
   project, which can be configured under [Project Settings](/app/settings).
 - **Navigation** — This is a dynamic navigation based on your current module. Some modules also support
-  [Bookmark Presets](/getting-started/glossary/#presets), which are a customizable links to specific data-sets.
+  [Bookmark Presets](/getting-started/glossary#presets), which are a customizable links to specific data-sets.
 
 ## 3. Page
 

@@ -1,4 +1,4 @@
-import { defineInterface } from '@directus/shared/utils';
+import { defineInterface } from '@directus/utils';
 import InterfaceFiles from './files.vue';
 import PreviewSVG from './preview.svg?raw';
 
@@ -63,6 +63,18 @@ export default defineInterface({
 						label: '$t:enable_select_button',
 					},
 					width: 'half',
+				},
+			},
+			{
+				field: 'limit',
+				name: '$t:per_page',
+				type: 'integer',
+				meta: {
+					interface: 'input',
+					width: 'half',
+				},
+				schema: {
+					default_value: 15,
 				},
 			},
 		];

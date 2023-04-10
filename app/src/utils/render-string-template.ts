@@ -1,6 +1,11 @@
-import { render, renderFn, get } from 'micromustache';
-import { computed, ComputedRef, Ref, unref } from 'vue';
-import { getFieldsFromTemplate } from '@directus/shared/utils';
+import { useAliasFields } from '@/composables/use-alias-fields';
+import { useFieldsStore } from '@/stores/fields';
+import { Field } from '@directus/types';
+import { get, getFieldsFromTemplate } from '@directus/utils';
+import { render, renderFn } from 'micromustache';
+import { computed, ComputedRef, Ref, ref, unref } from 'vue';
+import { set } from 'lodash';
+import { useExtension } from '@/composables/use-extension';
 
 type StringTemplate = {
 	fieldsInTemplate: ComputedRef<string[]>;
@@ -45,4 +50,54 @@ export function renderPlainStringTemplate(template: string, item?: Record<string
 	} catch {
 		return null;
 	}
+}
+
+export function renderDisplayStringTemplate(
+	collection: string,
+	template: string,
+	item: Record<string, any>
+): string | null {
+	const fieldsStore = useFieldsStore();
+
+	const fields = getFieldsFromTemplate(template);
+
+	const fieldsUsed: Record<string, Field | null> = {};
+
+	for (const key of fields) {
+		set(fieldsUsed, key, fieldsStore.getField(collection, key));
+	}
+
+	const { aliasFields } = useAliasFields(ref(fields));
+
+	const parsedItem: Record<string, any> = {};
+
+	for (const key of fields) {
+		const value =
+			!aliasFields.value?.[key] || get(item, key) !== undefined
+				? get(item, key)
+				: get(item, aliasFields.value[key].fullAlias);
+
+		const display = useExtension(
+			'display',
+			computed(() => fieldsUsed[key]?.meta?.display ?? null)
+		);
+
+		if (value !== undefined && value !== null) {
+			set(
+				parsedItem,
+				key,
+				display.value?.handler
+					? display.value.handler(value, fieldsUsed[key]?.meta?.display_options ?? {}, {
+							interfaceOptions: fieldsUsed[key]?.meta?.options ?? {},
+							field: fieldsUsed[key] ?? undefined,
+							collection: collection,
+					  })
+					: value
+			);
+		} else {
+			set(parsedItem, key, value);
+		}
+	}
+
+	return renderPlainStringTemplate(template, parsedItem);
 }

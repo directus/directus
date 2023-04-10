@@ -1,0 +1,7 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Mount component 1`] = `
+"<div data-v-f02f7ebf=\\"\\" class=\\"v-progress-linear danger\\">
+  <div data-v-f02f7ebf=\\"\\" class=\\"inner\\" style=\\"width: 0%;\\"></div>Slot Content
+</div>"
+`;

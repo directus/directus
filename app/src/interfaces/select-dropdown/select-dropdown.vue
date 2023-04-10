@@ -36,7 +36,7 @@ export default defineComponent({
 			default: false,
 		},
 		value: {
-			type: String,
+			type: [String, Number],
 			default: null,
 		},
 		choices: {

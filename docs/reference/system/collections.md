@@ -1,41 +1,24 @@
 ---
+description: REST and GraphQL API documentation on the "Collections" collection in Directus.
+readTime: 5 min read
 pageClass: page-reference
 ---
 
 # Collections
 
-<div class="two-up">
-<div class="left">
-
 > Collections are the individual collections of items, similar to tables in a database. Changes to collections will
-> alter the schema of the database. [Learn more about Collections](/getting-started/glossary/#collections).
-
-</div>
-<div class="right">
-
-[[toc]]
-
-</div>
-</div>
+> alter the schema of the database. [Learn more about Collections](/getting-started/glossary#collections).
 
 ---
 
 ## The Collection Object
 
-<div class="two-up">
-<div class="left">
-<div class="definitions">
-
 `collection` **string**\
 Name of the collection. This matches the table name in the database.
-
-</div>
 
 #### Meta
 
 Directus metadata, primarily used in the Admin App.
-
-<div class="definitions">
 
 `collection` **string**\
 Name of the collection. This matches the table name in the database.
@@ -74,31 +57,26 @@ Whether or not the Admin App should allow the user to view archived items.
 What field holds the sort value on the collection. The Admin App uses this to allow drag-and-drop manual sorting.
 
 `accountability` **string**\
-What data is tracked. One of `all`, `activity`. See [Accountability](/configuration/data-model/#accountability) for more
-information.
+What data is tracked. One of `all`, `activity`. See [Accountability](/configuration/data-model#accountability) for more information.
 
 `item_duplication_fields` **array**\
-What fields are duplicated during "Save as copy" action of an item in this collection. See [Duplication](/configuration/data-model/#duplication)
+What fields are duplicated during "Save as copy" action of an item in this collection. See [Duplication](/configuration/data-model#duplication)
 for more information.
 
 `group` **string**\
-The name of the parent collection. This is used in [grouping/nesting of collections](/configuration/data-model/#sorting-grouping).
+The name of the parent collection. This is used in [grouping/nesting of collections](/configuration/data-model#sorting-grouping).
 
 `sort` **number**\
-What sort order of the collection relative to other collections of the same level. This is used in [sorting of collections](/configuration/data-model/#sorting-grouping).
+What sort order of the collection relative to other collections of the same level. This is used in [sorting of collections](/configuration/data-model#sorting-grouping).
 
 `collapse` **string**\
 What is the default behavior of this collection or "folder" collection when it has nested collections. One of `open`, `closed`,
 `locked`.
 
-</div>
-
 #### Schema
 
 "Raw" database information. Based on the database vendor used, different information might be returned. The following
 are available for all drivers.
-
-<div class="definitions">
 
 `name` **string**\
 The table name.
@@ -106,17 +84,19 @@ The table name.
 `comment` **string**\
 The table comment.
 
-</div>
+#### Fields
+
+This holds an array of initial fields used for the collection. You can use the same model as used in
+[Fields](/reference/system/fields.html) to submit fields here. You can use this to set a custom primary key type as
+well. If a primary key field is omitted, the request will auto-generate an auto-incremented primary key field named
+`id`.
 
 ::: tip
 
-["folder" collections do not hold any data](/configuration/data-model/#sorting-grouping), hence their schema would be
+["folder" collections do not hold any data](/configuration/data-model#sorting-grouping), hence their schema would be
 `null`.
 
 :::
-
-</div>
-<div class="right">
 
 ```json
 {
@@ -149,21 +129,28 @@ The table comment.
 	"schema": {
 		"name": "pages",
 		"comment": null
-	}
+	},
+	"fields": [
+		{
+			"field": "title",
+			"type": "string",
+			"meta": {
+				"icon": "title"
+			},
+			"schema": {
+				"is_primary_key": true,
+				"is_nullable": false
+			}
+		}
+	]
 }
 ```
-
-</div>
-</div>
 
 ---
 
 ## List Collections
 
 List the available collections.
-
-<div class="two-up">
-<div class="left">
 
 ### Query Parameters
 
@@ -173,9 +160,6 @@ This endpoint doesn't currently support any query parameters.
 
 An array of [collection objects](#the-collection-object).
 
-</div>
-<div class="right">
-
 ### REST API
 
 ```
@@ -183,7 +167,7 @@ GET /collections
 SEARCH /collections
 ```
 
-[Learn more about SEARCH ->](/reference/introduction/#search-http-method)
+[Learn more about SEARCH ->](/reference/introduction#search-http-method)
 
 ### GraphQL
 
@@ -207,17 +191,11 @@ query {
 }
 ```
 
-</div>
-</div>
-
 ---
 
 ## Retrieve a Collection
 
 Retrieve a single collection by table name.
-
-<div class="two-up">
-<div class="left">
 
 ### Query Parameters
 
@@ -226,9 +204,6 @@ This endpoint doesn't currently support any query parameters.
 ### Returns
 
 A [collection object](#the-collection-object).
-
-</div>
-<div class="right">
 
 ### REST API
 
@@ -264,17 +239,11 @@ query {
 }
 ```
 
-</div>
-</div>
-
 ---
 
 ## Create a Collection
 
 Create a new Collection. This will create a new table in the database as well.
-
-<div class="two-up">
-<div class="left">
 
 ### Query Parameters
 
@@ -286,7 +255,7 @@ The `collection` property is required, all other properties of the [collection o
 optional.
 
 You are able to provide an array of `fields` to be created during the creation of the collection. See the
-[fields object](/reference/system/fields/#the-fields-object) for more information on what properties are available in a
+[fields object](/reference/system/fields#the-fields-object) for more information on what properties are available in a
 field.
 
 ### Returns
@@ -296,12 +265,9 @@ The [collection object](#the-collection-object) for the collection created in th
 ::: tip
 
 Make sure to pass an empty object for schema (`schema: {}`) when creating collections. Alternatively, you can omit it
-entirely or use `schema: null` to create ["folder" collections](/configuration/data-model/#sorting-grouping).
+entirely or use `schema: null` to create ["folder" collections](/configuration/data-model#sorting-grouping).
 
 :::
-
-</div>
-<div class="right">
 
 ### REST API
 
@@ -349,17 +315,11 @@ mutation {
 }
 ```
 
-</div>
-</div>
-
 ---
 
 ## Update a Collection
 
 Update the metadata for an existing collection.
-
-<div class="two-up">
-<div class="left">
 
 ### Query Parameters
 
@@ -373,9 +333,6 @@ is not supported at this time.
 ### Returns
 
 The [collection object](#the-collection-object) for the updated collection in this request.
-
-</div>
-<div class="right">
 
 ### REST API
 
@@ -417,26 +374,17 @@ mutation {
 }
 ```
 
-</div>
-</div>
-
 ---
 
 ## Delete a Collection
 
 Delete a collection.
 
-<div class="two-up">
-<div class="left">
-
 ::: danger Destructive
 
 Be aware, this will delete the table from the database, including all items in it. This action can't be undone.
 
 :::
-
-</div>
-<div class="right">
 
 ### REST API
 
@@ -471,8 +419,5 @@ mutation {
 	}
 }
 ```
-
-</div>
-</div>
 
 ---

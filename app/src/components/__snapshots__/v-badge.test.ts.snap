@@ -1,0 +1,3 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Mount component 1`] = `"<div data-v-a39517a7=\\"\\" class=\\"v-badge\\"><span data-v-a39517a7=\\"\\" class=\\"badge\\"><span data-v-a39517a7=\\"\\"></span></span>Slot Content</div>"`;

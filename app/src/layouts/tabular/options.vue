@@ -19,80 +19,32 @@
 			]"
 		/>
 	</div>
-
-	<div class="field">
-		<div class="type-label">{{ t('layouts.tabular.fields') }}</div>
-		<draggable
-			v-model="activeFieldsWritable"
-			item-key="field"
-			handle=".drag-handle"
-			:set-data="hideDragImage"
-			:force-fallback="true"
-		>
-			<template #item="{ element }">
-				<v-checkbox v-model="fieldsWritable" :value="element.field" :label="element.name">
-					<template #append>
-						<div class="spacer" />
-						<v-icon name="drag_handle" class="drag-handle" @click.stop />
-					</template>
-				</v-checkbox>
-			</template>
-		</draggable>
-
-		<v-checkbox
-			v-for="field in availableFields.filter((field) => fields.includes(field.field) === false)"
-			:key="field.field"
-			v-model="fieldsWritable"
-			:value="field.field"
-			:label="field.name"
-		/>
-	</div>
 </template>
 
 <script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, PropType } from 'vue';
-
-import Draggable from 'vuedraggable';
-import { useSync } from '@directus/shared/composables';
-import { Field } from '@directus/shared/types';
-
-export default defineComponent({
-	components: { Draggable },
+export default {
 	inheritAttrs: false,
-	props: {
-		fields: {
-			type: Array as PropType<string[]>,
-			required: true,
-		},
-		activeFields: {
-			type: Array as PropType<Field[]>,
-			required: true,
-		},
-		tableSpacing: {
-			type: String as PropType<'compact' | 'cozy' | 'comfortable'>,
-			required: true,
-		},
-		hideDragImage: {
-			type: Function as PropType<(dataTransfer: DataTransfer) => void>,
-			required: true,
-		},
-		availableFields: {
-			type: Array as PropType<Field[]>,
-			required: true,
-		},
-	},
-	emits: ['update:tableSpacing', 'update:activeFields', 'update:fields'],
-	setup(props, { emit }) {
-		const { t } = useI18n();
+};
+</script>
 
-		const fieldsWritable = useSync(props, 'fields', emit);
-		const activeFieldsWritable = useSync(props, 'activeFields', emit);
-		const tableSpacingWritable = useSync(props, 'tableSpacing', emit);
+<script lang="ts" setup>
+import { useI18n } from 'vue-i18n';
+import { useSync } from '@directus/composables';
+import { Field } from '@directus/types';
 
-		return { t, fieldsWritable, activeFieldsWritable, tableSpacingWritable };
-	},
-});
+interface Props {
+	fields: string[];
+	activeFields: Field[];
+	tableSpacing: 'compact' | 'cozy' | 'comfortable';
+}
+
+const props = defineProps<Props>();
+
+const emit = defineEmits(['update:tableSpacing', 'update:activeFields', 'update:fields']);
+
+const { t } = useI18n();
+
+const tableSpacingWritable = useSync(props, 'tableSpacing', emit);
 </script>
 
 <style lang="scss" scoped>

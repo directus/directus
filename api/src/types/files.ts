@@ -19,3 +19,12 @@ export type File = {
 	tags: string | null;
 	metadata: Record<string, any> | null;
 };
+
+export type Metadata = {
+	height?: number | undefined;
+	width?: number | undefined;
+	description?: string | undefined;
+	title?: string | undefined;
+	tags?: any | undefined;
+	metadata?: any | undefined;
+};

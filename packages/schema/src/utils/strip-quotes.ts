@@ -1,8 +1,8 @@
 /**
- * Strip leading/trailing quotes from a string
+ * Strip leading/trailing quotes from a string and handle null values.
  */
-export function stripQuotes(value: string | null): string | null {
-	if (value == null) {
+export function stripQuotes(value?: string | null): string | null {
+	if (value === null || value === undefined) {
 		return null;
 	}
 

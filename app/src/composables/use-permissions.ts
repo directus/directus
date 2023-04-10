@@ -1,15 +1,18 @@
-import { usePermissionsStore, useUserStore } from '@/stores';
-import { Field } from '@directus/shared/types';
+import { usePermissionsStore } from '@/stores/permissions';
+import { useUserStore } from '@/stores/user';
+import { Field } from '@directus/types';
 import { computed, ComputedRef, Ref } from 'vue';
 import { cloneDeep } from 'lodash';
 import { isAllowed } from '../utils/is-allowed';
-import { useCollection } from '@directus/shared/composables';
+import { useCollection } from '@directus/composables';
 
 type UsablePermissions = {
+	createAllowed: ComputedRef<boolean>;
 	deleteAllowed: ComputedRef<boolean>;
 	saveAllowed: ComputedRef<boolean>;
 	archiveAllowed: ComputedRef<boolean>;
 	updateAllowed: ComputedRef<boolean>;
+	shareAllowed: ComputedRef<boolean>;
 	fields: ComputedRef<Field[]>;
 	revisionsAllowed: ComputedRef<boolean>;
 };
@@ -19,6 +22,8 @@ export function usePermissions(collection: Ref<string>, item: Ref<any>, isNew: R
 	const permissionsStore = usePermissionsStore();
 
 	const { info: collectionInfo, fields: rawFields } = useCollection(collection);
+
+	const createAllowed = computed(() => isAllowed(collection.value, 'create', item.value));
 
 	const deleteAllowed = computed(() => isAllowed(collection.value, 'delete', item.value));
 
@@ -31,6 +36,8 @@ export function usePermissions(collection: Ref<string>, item: Ref<any>, isNew: R
 	});
 
 	const updateAllowed = computed(() => isAllowed(collection.value, 'update', item.value));
+
+	const shareAllowed = computed(() => isAllowed(collection.value, 'share', item.value));
 
 	const archiveAllowed = computed(() => {
 		if (!collectionInfo.value?.meta?.archive_field) return false;
@@ -51,6 +58,12 @@ export function usePermissions(collection: Ref<string>, item: Ref<any>, isNew: R
 		if (userStore.currentUser?.role?.admin_access === true) return fields;
 
 		const permissions = permissionsStore.getPermissionsForUser(collection.value, isNew.value ? 'create' : 'update');
+
+		// remove fields without read permissions so they don't show up in the DOM
+		const readableFields = permissionsStore.getPermissionsForUser(collection.value, 'read')?.fields;
+		if (readableFields && readableFields.includes('*') === false) {
+			fields = fields.filter((field) => readableFields.includes(field.field));
+		}
 
 		if (!permissions) return fields;
 
@@ -90,5 +103,14 @@ export function usePermissions(collection: Ref<string>, item: Ref<any>, isNew: R
 		);
 	});
 
-	return { deleteAllowed, saveAllowed, archiveAllowed, updateAllowed, fields, revisionsAllowed };
+	return {
+		createAllowed,
+		deleteAllowed,
+		saveAllowed,
+		archiveAllowed,
+		updateAllowed,
+		shareAllowed,
+		fields,
+		revisionsAllowed,
+	};
 }

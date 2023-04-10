@@ -1,11 +1,65 @@
-import { definePanel } from '@directus/shared/utils';
-import PanelTimeSeries from './time-series.vue';
+import { useCollectionsStore } from '@/stores/collections';
+import { getGroups } from '@/utils/get-groups';
+import { Filter } from '@directus/types';
+import { definePanel } from '@directus/utils';
+import PanelTimeSeries from './panel-time-series.vue';
 
 export default definePanel({
 	id: 'time-series',
 	name: '$t:panels.time_series.name',
 	description: '$t:panels.time_series.description',
 	icon: 'show_chart',
+	query(options) {
+		if (!options?.function || !options.valueField || !options.dateField) {
+			return;
+		}
+
+		const collectionsStore = useCollectionsStore();
+		const collectionInfo = collectionsStore.getCollection(options.collection);
+
+		if (!collectionInfo) return;
+		if (collectionInfo?.meta?.singleton) return;
+
+		const filter: Filter = {
+			_and: [getParsedOptionsFilter(options.filter)],
+		};
+
+		if (options.range !== 'auto') {
+			filter._and.push(
+				{
+					[options.dateField]: {
+						_gte: `$NOW(-${options.range || '1 week'})`,
+					},
+				},
+				{
+					[options.dateField]: {
+						_lte: `$NOW`,
+					},
+				}
+			);
+		}
+
+		return {
+			collection: options.collection,
+			query: {
+				group: getGroups(options.precision, options.dateField),
+				aggregate: {
+					[options.function]: [options.valueField],
+				},
+				filter,
+				limit: -1,
+			},
+		};
+
+		function getParsedOptionsFilter(filter: string | undefined) {
+			if (!filter) return {};
+			try {
+				return JSON.parse(filter);
+			} catch {
+				return filter;
+			}
+		}
+	},
 	component: PanelTimeSeries,
 	options: [
 		{
@@ -16,6 +70,7 @@ export default definePanel({
 				interface: 'system-collection',
 				options: {
 					includeSystem: true,
+					includeSingleton: false,
 				},
 				width: 'half',
 			},
@@ -24,9 +79,6 @@ export default definePanel({
 			field: 'color',
 			name: '$t:color',
 			type: 'string',
-			schema: {
-				default_value: '#00C897',
-			},
 			meta: {
 				interface: 'select-color',
 				width: 'half',
@@ -47,7 +99,7 @@ export default definePanel({
 						},
 						{
 							text: 'Count (Distinct)',
-							value: 'count_distinct',
+							value: 'countDistinct',
 						},
 						{
 							text: 'Average',
@@ -55,7 +107,7 @@ export default definePanel({
 						},
 						{
 							text: 'Average (Distinct)',
-							value: 'avg_distinct',
+							value: 'avgDistinct',
 						},
 						{
 							text: 'Sum',
@@ -63,7 +115,7 @@ export default definePanel({
 						},
 						{
 							text: 'Sum (Distinct)',
-							value: 'sum_distinct',
+							value: 'sumDistinct',
 						},
 						{
 							text: 'Minimum',
@@ -147,6 +199,10 @@ export default definePanel({
 				options: {
 					choices: [
 						{
+							text: 'Automatic (Based on data)',
+							value: 'auto',
+						},
+						{
 							text: 'Past 5 Minutes',
 							value: '5 minutes',
 						},
@@ -197,11 +253,26 @@ export default definePanel({
 			name: '$t:panels.time_series.value_field',
 			meta: {
 				interface: 'system-field',
+				width: 'half',
 				options: {
+					allowForeignKeys: false,
 					collectionField: 'collection',
 					typeAllowList: ['integer', 'bigInteger', 'float', 'decimal'],
 				},
-				width: 'half',
+				conditions: [
+					{
+						rule: {
+							function: {
+								_in: ['count', 'countDistinct'],
+							},
+						},
+						options: {
+							allowPrimaryKey: true,
+							allowForeignKeys: true,
+							typeAllowList: ['integer', 'bigInteger', 'uuid', 'string'],
+						},
+					},
+				],
 			},
 		},
 		{
@@ -307,6 +378,7 @@ export default definePanel({
 				interface: 'system-filter',
 				options: {
 					collectionField: 'collection',
+					relationalFieldSelectable: false,
 				},
 			},
 		},
@@ -335,6 +407,6 @@ export default definePanel({
 			},
 		},
 	],
-	minWidth: 16,
-	minHeight: 8,
+	minWidth: 12,
+	minHeight: 6,
 });

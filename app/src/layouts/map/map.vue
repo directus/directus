@@ -52,9 +52,8 @@
 
 		<template v-if="loading || itemCount > 0">
 			<div class="footer">
-				<div class="pagination">
+				<div v-if="totalPages > 1" class="pagination">
 					<v-pagination
-						v-if="totalPages > 1"
 						:length="totalPages"
 						:total-visible="7"
 						show-first-last
@@ -98,8 +97,8 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType } from 'vue';
 
 import MapComponent from './components/map.vue';
-import { useSync } from '@directus/shared/composables';
-import { GeometryOptions, Item } from '@directus/shared/types';
+import { useSync } from '@directus/composables';
+import { GeometryOptions, Item } from '@directus/types';
 
 export default defineComponent({
 	components: { MapComponent },
@@ -298,6 +297,7 @@ export default defineComponent({
 	background-color: var(--background-page);
 	border: var(--border-width) solid var(--background-page);
 	border-radius: var(--border-radius);
+	box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.1);
 
 	span {
 		width: auto;
@@ -320,13 +320,13 @@ export default defineComponent({
 
 .footer {
 	position: absolute;
-	right: 10px;
-	bottom: 10px;
-	left: 10px;
+	right: 0;
+	bottom: 0;
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
 	box-sizing: border-box;
+	padding: 10px;
 	overflow: hidden;
 	background-color: transparent !important;
 
@@ -334,9 +334,10 @@ export default defineComponent({
 		--v-button-height: 28px;
 
 		display: inline-block;
+		margin-right: 10px;
 
 		button {
-			box-shadow: 0 0 2px 1px rgb(0 0 0 / 0.2);
+			box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.1);
 		}
 	}
 }

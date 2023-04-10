@@ -1,30 +1,17 @@
 ---
+description: REST and GraphQL API documentation on the Webhooks collection in Directus.
+readTime: 5 min read
 pageClass: page-reference
 ---
 
 # Webhooks
 
-<div class="two-up">
-<div class="left">
-
 > Webhooks are configured within the App (no code required) and send HTTP requests to an external service when a
 > specific event is triggered.
-
-</div>
-<div class="right">
-
-[[toc]]
-
-</div>
-</div>
 
 ---
 
 ## The Webhook Object
-
-<div class="two-up">
-<div class="left">
-<div class="definitions">
 
 `id` **integer**\
 Primary key of the webhook.
@@ -50,10 +37,6 @@ When to fire the webhook. Can contain `create`, `update`, `delete`.
 `collections` **csv**\
 What collections to fire this webhook on.
 
-</div>
-</div>
-<div class="right">
-
 ```json
 {
 	"data": {
@@ -69,29 +52,20 @@ What collections to fire this webhook on.
 }
 ```
 
-</div>
-</div>
-
 ---
 
 ## List Webhooks
 
 List all webhooks that exist in Directus.
 
-<div class="two-up">
-<div class="left">
-
 ### Query Parameters
 
-Supports all [global query parameters](/reference/query/).
+Supports all [global query parameters](/reference/query).
 
 ### Returns
 
-An array of up to [limit](/reference/query/#limit) [webhook objects](#the-webhook-object). If no items are available,
+An array of up to [limit](/reference/query#limit) [webhook objects](#the-webhook-object). If no items are available,
 data will be an empty array.
-
-</div>
-<div class="right">
 
 ### REST API
 
@@ -100,7 +74,7 @@ GET /webhooks
 SEARCH /webhooks
 ```
 
-[Learn more about SEARCH ->](/reference/introduction/#search-http-method)
+[Learn more about SEARCH ->](/reference/introduction#search-http-method)
 
 ### GraphQL
 
@@ -125,17 +99,11 @@ query {
 }
 ```
 
-</div>
-</div>
-
 ---
 
 ## Retrieve a Webhook
 
 List an existing webhook by primary key.
-
-<div class="two-up">
-<div class="left">
 
 ### Query Parameters
 
@@ -144,9 +112,6 @@ Supports all [global query parameters](/reference/query).
 ### Returns
 
 Returns the requested [webhook object](#the-webhook-object).
-
-</div>
-<div class="right">
 
 ### REST API
 
@@ -178,17 +143,11 @@ query {
 }
 ```
 
-</div>
-</div>
-
 ---
 
 ## Create a Webhook
 
 Create a new webhook.
-
-<div class="two-up">
-<div class="left">
 
 ### Query Parameters
 
@@ -203,9 +162,6 @@ A partial [webhook object](#the-webhook-object).
 ### Returns
 
 Returns the [webhook object](#the-webhook-object) for the created webhook.
-
-</div>
-<div class="right">
 
 ### REST API
 
@@ -251,17 +207,11 @@ mutation {
 }
 ```
 
-</div>
-</div>
-
 ---
 
 ## Create Multiple Webhook
 
 Create multiple new webhooks.
-
-<div class="two-up">
-<div class="left">
 
 ### Query Parameters
 
@@ -276,9 +226,6 @@ An array of partial [webhook object](#the-webhook-object).
 ### Returns
 
 Returns the [webhook objects](#the-webhook-object) for the created webhooks.
-
-</div>
-<div class="right">
 
 ### REST API
 
@@ -335,17 +282,11 @@ mutation {
 }
 ```
 
-</div>
-</div>
-
 ---
 
 ## Update a Webhook
 
 Update an existing webhook.
-
-<div class="two-up">
-<div class="left">
 
 ### Query Parameters
 
@@ -358,9 +299,6 @@ A partial [webhook object](#the-webhook-object).
 ### Returns
 
 Returns the [webhook object](#the-webhook-object) for the updated webhook.
-
-</div>
-<div class="right">
 
 ### REST API
 
@@ -400,17 +338,11 @@ mutation {
 }
 ```
 
-</div>
-</div>
-
 ---
 
 ## Update Multiple Webhooks
 
 Update multiple existing webhooks.
-
-<div class="two-up">
-<div class="left">
 
 ### Query Parameters
 
@@ -418,22 +350,15 @@ Supports all [global query parameters](/reference/query).
 
 ### Request Body
 
-<div class="definitions">
-
 `keys` **Required**\
 Array of primary keys of the webhooks you'd like to update.
 
 `data` **Required**\
 Any of [the webhook object](#the-webhook-object)'s properties.
 
-</div>
-
 ### Returns
 
 Returns the [webhook objects](#the-webhook-object) for the updated webhooks.
-
-</div>
-<div class="right">
 
 ### REST API
 
@@ -476,24 +401,15 @@ mutation {
 }
 ```
 
-</div>
-</div>
-
 ---
 
 ## Delete a Webhook
 
 Delete an existing webhook.
 
-<div class="two-up">
-<div class="left">
-
 ### Returns
 
 Empty body.
-
-</div>
-<div class="right">
 
 ### REST API
 
@@ -529,17 +445,11 @@ mutation {
 }
 ```
 
-</div>
-</div>
-
 ---
 
 ## Delete Multiple Webhooks
 
 Delete multiple existing webhooks.
-
-<div class="two-up">
-<div class="left">
 
 ### Request Body
 
@@ -548,9 +458,6 @@ An array of webhook primary keys
 ### Returns
 
 Empty body.
-
-</div>
-<div class="right">
 
 ### REST API
 
@@ -587,8 +494,5 @@ mutation {
 	}
 }
 ```
-
-</div>
-</div>
 
 ---

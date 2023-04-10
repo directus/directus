@@ -1,62 +1,79 @@
 import cookieParser from 'cookie-parser';
-import express, { Request, Response, RequestHandler } from 'express';
-import fse from 'fs-extra';
+import express, { Request, RequestHandler, Response } from 'express';
+import type { ServerResponse } from 'http';
+import { merge } from 'lodash-es';
+import { readFile } from 'node:fs/promises';
+import { createRequire } from 'node:module';
 import path from 'path';
 import qs from 'qs';
+import { registerAuthProviders } from './auth.js';
+import { flushCaches } from './cache.js';
+import activityRouter from './controllers/activity.js';
+import assetsRouter from './controllers/assets.js';
+import authRouter from './controllers/auth.js';
+import collectionsRouter from './controllers/collections.js';
+import dashboardsRouter from './controllers/dashboards.js';
+import extensionsRouter from './controllers/extensions.js';
+import fieldsRouter from './controllers/fields.js';
+import filesRouter from './controllers/files.js';
+import flowsRouter from './controllers/flows.js';
+import foldersRouter from './controllers/folders.js';
+import graphqlRouter from './controllers/graphql.js';
+import itemsRouter from './controllers/items.js';
+import notFoundHandler from './controllers/not-found.js';
+import notificationsRouter from './controllers/notifications.js';
+import operationsRouter from './controllers/operations.js';
+import panelsRouter from './controllers/panels.js';
+import permissionsRouter from './controllers/permissions.js';
+import presetsRouter from './controllers/presets.js';
+import relationsRouter from './controllers/relations.js';
+import revisionsRouter from './controllers/revisions.js';
+import rolesRouter from './controllers/roles.js';
+import schemaRouter from './controllers/schema.js';
+import serverRouter from './controllers/server.js';
+import settingsRouter from './controllers/settings.js';
+import sharesRouter from './controllers/shares.js';
+import usersRouter from './controllers/users.js';
+import utilsRouter from './controllers/utils.js';
+import webhooksRouter from './controllers/webhooks.js';
+import {
+	isInstalled,
+	validateDatabaseConnection,
+	validateDatabaseExtensions,
+	validateMigrations,
+} from './database/index.js';
+import emitter from './emitter.js';
+import env from './env.js';
+import { InvalidPayloadException } from './exceptions/invalid-payload.js';
+import { getExtensionManager } from './extensions.js';
+import { getFlowManager } from './flows.js';
+import logger, { expressLogger } from './logger.js';
+import authenticate from './middleware/authenticate.js';
+import cache from './middleware/cache.js';
+import { checkIP } from './middleware/check-ip.js';
+import cors from './middleware/cors.js';
+import errorHandler from './middleware/error-handler.js';
+import extractToken from './middleware/extract-token.js';
+import getPermissions from './middleware/get-permissions.js';
+import rateLimiterGlobal from './middleware/rate-limiter-global.js';
+import rateLimiter from './middleware/rate-limiter-ip.js';
+import sanitizeQuery from './middleware/sanitize-query.js';
+import schema from './middleware/schema.js';
+import { getConfigFromEnv } from './utils/get-config-from-env.js';
+import { collectTelemetry } from './utils/telemetry.js';
+import { Url } from './utils/url.js';
+import { validateEnv } from './utils/validate-env.js';
+import { validateStorage } from './utils/validate-storage.js';
+import { init as initWebhooks } from './webhooks.js';
 
-import activityRouter from './controllers/activity';
-import assetsRouter from './controllers/assets';
-import authRouter from './controllers/auth';
-import collectionsRouter from './controllers/collections';
-import dashboardsRouter from './controllers/dashboards';
-import extensionsRouter from './controllers/extensions';
-import fieldsRouter from './controllers/fields';
-import filesRouter from './controllers/files';
-import foldersRouter from './controllers/folders';
-import graphqlRouter from './controllers/graphql';
-import itemsRouter from './controllers/items';
-import notFoundHandler from './controllers/not-found';
-import panelsRouter from './controllers/panels';
-import notificationsRouter from './controllers/notifications';
-import permissionsRouter from './controllers/permissions';
-import presetsRouter from './controllers/presets';
-import relationsRouter from './controllers/relations';
-import revisionsRouter from './controllers/revisions';
-import rolesRouter from './controllers/roles';
-import serverRouter from './controllers/server';
-import settingsRouter from './controllers/settings';
-import usersRouter from './controllers/users';
-import utilsRouter from './controllers/utils';
-import webhooksRouter from './controllers/webhooks';
-import { isInstalled, validateDatabaseConnection, validateDatabaseExtensions, validateMigrations } from './database';
-import emitter from './emitter';
-import env from './env';
-import { InvalidPayloadException } from './exceptions';
-import { getExtensionManager } from './extensions';
-import logger, { expressLogger } from './logger';
-import authenticate from './middleware/authenticate';
-import getPermissions from './middleware/get-permissions';
-import cache from './middleware/cache';
-import { checkIP } from './middleware/check-ip';
-import cors from './middleware/cors';
-import errorHandler from './middleware/error-handler';
-import extractToken from './middleware/extract-token';
-import rateLimiter from './middleware/rate-limiter';
-import sanitizeQuery from './middleware/sanitize-query';
-import schema from './middleware/schema';
-
-import { track } from './utils/track';
-import { validateEnv } from './utils/validate-env';
-import { validateStorage } from './utils/validate-storage';
-import { register as registerWebhooks } from './webhooks';
-import { flushCaches } from './cache';
-import { registerAuthProviders } from './auth';
-import { Url } from './utils/url';
+const require = createRequire(import.meta.url);
 
 export default async function createApp(): Promise<express.Application> {
+	const helmet = await import('helmet');
+
 	validateEnv(['KEY', 'SECRET']);
 
-	if (!new Url(env.PUBLIC_URL).isAbsolute()) {
+	if (!new Url(env['PUBLIC_URL']).isAbsolute()) {
 		logger.warn('PUBLIC_URL should be a full URL');
 	}
 
@@ -79,14 +96,48 @@ export default async function createApp(): Promise<express.Application> {
 	await registerAuthProviders();
 
 	const extensionManager = getExtensionManager();
+	const flowManager = getFlowManager();
 
 	await extensionManager.initialize();
+	await flowManager.initialize();
 
 	const app = express();
 
 	app.disable('x-powered-by');
-	app.set('trust proxy', true);
+	app.set('trust proxy', env['IP_TRUST_PROXY']);
 	app.set('query parser', (str: string) => qs.parse(str, { depth: 10 }));
+
+	app.use(
+		helmet.contentSecurityPolicy(
+			merge(
+				{
+					useDefaults: true,
+					directives: {
+						// Unsafe-eval is required for vue3 / vue-i18n / app extensions
+						scriptSrc: ["'self'", "'unsafe-eval'"],
+
+						// Even though this is recommended to have enabled, it breaks most local
+						// installations. Making this opt-in rather than opt-out is a little more
+						// friendly. Ref #10806
+						upgradeInsecureRequests: null,
+
+						// These are required for MapLibre
+						// https://cdn.directus.io is required for images/videos in the official docs
+						workerSrc: ["'self'", 'blob:'],
+						childSrc: ["'self'", 'blob:'],
+						imgSrc: ["'self'", 'data:', 'blob:', 'https://cdn.directus.io'],
+						mediaSrc: ["'self'", 'https://cdn.directus.io'],
+						connectSrc: ["'self'", 'https://*'],
+					},
+				},
+				getConfigFromEnv('CONTENT_SECURITY_POLICY_')
+			)
+		)
+	);
+
+	if (env['HSTS_ENABLED']) {
+		app.use(helmet.hsts(getConfigFromEnv('HSTS_', ['HSTS_ENABLED'])));
+	}
 
 	await emitter.emitInit('app.before', { app });
 
@@ -94,10 +145,19 @@ export default async function createApp(): Promise<express.Application> {
 
 	app.use(expressLogger);
 
+	app.use((_req, res, next) => {
+		res.setHeader('X-Powered-By', 'Directus');
+		next();
+	});
+
+	if (env['CORS_ENABLED'] === true) {
+		app.use(cors);
+	}
+
 	app.use((req, res, next) => {
 		(
 			express.json({
-				limit: env.MAX_PAYLOAD_SIZE,
+				limit: env['MAX_PAYLOAD_SIZE'],
 			}) as RequestHandler
 		)(req, res, (err: any) => {
 			if (err) {
@@ -112,45 +172,58 @@ export default async function createApp(): Promise<express.Application> {
 
 	app.use(extractToken);
 
-	app.use((req, res, next) => {
-		res.setHeader('X-Powered-By', 'Directus');
-		next();
-	});
-
-	if (env.CORS_ENABLED === true) {
-		app.use(cors);
-	}
-
-	app.get('/', (req, res, next) => {
-		if (env.ROOT_REDIRECT) {
-			res.redirect(env.ROOT_REDIRECT);
+	app.get('/', (_req, res, next) => {
+		if (env['ROOT_REDIRECT']) {
+			res.redirect(env['ROOT_REDIRECT']);
 		} else {
 			next();
 		}
 	});
 
-	if (env.SERVE_APP) {
+	app.get('/robots.txt', (_, res) => {
+		res.set('Content-Type', 'text/plain');
+		res.status(200);
+		res.send(env['ROBOTS_TXT']);
+	});
+
+	if (env['SERVE_APP']) {
 		const adminPath = require.resolve('@directus/app');
-		const adminUrl = new Url(env.PUBLIC_URL).addPath('admin');
+		const adminUrl = new Url(env['PUBLIC_URL']).addPath('admin');
+
+		const embeds = extensionManager.getEmbeds();
 
 		// Set the App's base path according to the APIs public URL
-		const html = await fse.readFile(adminPath, 'utf8');
-		const htmlWithBase = html.replace(/<base \/>/, `<base href="${adminUrl.toString({ rootRelative: true })}/" />`);
+		const html = await readFile(adminPath, 'utf8');
+		const htmlWithVars = html
+			.replace(/<base \/>/, `<base href="${adminUrl.toString({ rootRelative: true })}/" />`)
+			.replace(/<embed-head \/>/, embeds.head)
+			.replace(/<embed-body \/>/, embeds.body);
 
-		const noCacheIndexHtmlHandler = (req: Request, res: Response) => {
+		const sendHtml = (_req: Request, res: Response) => {
 			res.setHeader('Cache-Control', 'no-cache');
-			res.send(htmlWithBase);
+			res.setHeader('Vary', 'Origin, Cache-Control');
+			res.send(htmlWithVars);
 		};
 
-		app.get('/admin', noCacheIndexHtmlHandler);
-		app.use('/admin', express.static(path.join(adminPath, '..')));
-		app.use('/admin/*', noCacheIndexHtmlHandler);
+		const setStaticHeaders = (res: ServerResponse) => {
+			res.setHeader('Cache-Control', 'max-age=31536000, immutable');
+			res.setHeader('Vary', 'Origin, Cache-Control');
+		};
+
+		app.get('/admin', sendHtml);
+		app.use('/admin', express.static(path.join(adminPath, '..'), { setHeaders: setStaticHeaders }));
+		app.use('/admin/*', sendHtml);
 	}
 
 	// use the rate limiter - all routes for now
-	if (env.RATE_LIMITER_ENABLED === true) {
+	if (env['RATE_LIMITER_GLOBAL_ENABLED'] === true) {
+		app.use(rateLimiterGlobal);
+	}
+	if (env['RATE_LIMITER_ENABLED'] === true) {
 		app.use(rateLimiter);
 	}
+
+	app.get('/server/ping', (_req, res) => res.send('pong'));
 
 	app.use(authenticate);
 
@@ -179,17 +252,21 @@ export default async function createApp(): Promise<express.Application> {
 	app.use('/extensions', extensionsRouter);
 	app.use('/fields', fieldsRouter);
 	app.use('/files', filesRouter);
+	app.use('/flows', flowsRouter);
 	app.use('/folders', foldersRouter);
 	app.use('/items', itemsRouter);
 	app.use('/notifications', notificationsRouter);
+	app.use('/operations', operationsRouter);
 	app.use('/panels', panelsRouter);
 	app.use('/permissions', permissionsRouter);
 	app.use('/presets', presetsRouter);
 	app.use('/relations', relationsRouter);
 	app.use('/revisions', revisionsRouter);
 	app.use('/roles', rolesRouter);
+	app.use('/schema', schemaRouter);
 	app.use('/server', serverRouter);
 	app.use('/settings', settingsRouter);
+	app.use('/shares', sharesRouter);
 	app.use('/users', usersRouter);
 	app.use('/utils', utilsRouter);
 	app.use('/webhooks', webhooksRouter);
@@ -205,9 +282,9 @@ export default async function createApp(): Promise<express.Application> {
 	await emitter.emitInit('routes.after', { app });
 
 	// Register all webhooks
-	await registerWebhooks();
+	await initWebhooks();
 
-	track('serverStarted');
+	collectTelemetry();
 
 	await emitter.emitInit('app.after', { app });
 

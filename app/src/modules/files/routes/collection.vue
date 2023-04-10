@@ -13,7 +13,12 @@
 		collection="directus_files"
 		:reset-preset="resetPreset"
 	>
-		<private-view :title="title" :class="{ dragging }">
+		<private-view
+			:title="title"
+			:class="{ dragging }"
+			:small-header="currentLayout?.smallHeader"
+			:header-shadow="currentLayout?.headerShadow"
+		>
 			<template v-if="breadcrumb" #headline>
 				<v-breadcrumb :items="breadcrumb" />
 			</template>
@@ -35,7 +40,7 @@
 
 				<v-dialog v-if="selection.length > 0" v-model="moveToDialogActive" @esc="moveToDialogActive = false">
 					<template #activator="{ on }">
-						<v-button v-tooltip.bottom="t('move_to_folder')" rounded icon class="folder" @click="on">
+						<v-button v-tooltip.bottom="t('move_to_folder')" rounded icon class="folder" secondary @click="on">
 							<v-icon name="folder_move" />
 						</v-button>
 					</template>
@@ -66,6 +71,7 @@
 							rounded
 							icon
 							class="action-delete"
+							secondary
 							@click="on"
 						>
 							<v-icon name="delete" outline />
@@ -87,11 +93,11 @@
 				</v-dialog>
 
 				<v-button
-					v-if="selection.length > 1"
+					v-if="selection.length > 0"
 					v-tooltip.bottom="batchEditAllowed ? t('edit') : t('not_allowed')"
 					rounded
 					icon
-					class="action-batch"
+					secondary
 					:disabled="batchEditAllowed === false"
 					@click="batchEditActive = true"
 				>
@@ -102,7 +108,6 @@
 					v-tooltip.bottom="createAllowed ? t('create_item') : t('not_allowed')"
 					rounded
 					icon
-					class="add-new"
 					:to="folder ? { path: `/files/folders/${folder}/+` } : { path: '/files/+' }"
 					:disabled="createAllowed === false"
 				>
@@ -114,7 +119,7 @@
 				<files-navigation :current-folder="folder" />
 			</template>
 
-			<component :is="`layout-${layout}`" class="layout" v-bind="layoutState">
+			<component :is="`layout-${layout}`" v-bind="layoutState">
 				<template #no-results>
 					<v-info v-if="!filter && !search" :title="t('file_count', 0)" icon="folder" center>
 						{{ t('no_files_copy') }}
@@ -167,8 +172,10 @@
 				<component :is="`layout-sidebar-${layout}`" v-bind="layoutState" />
 				<export-sidebar-detail
 					collection="directus_files"
+					:layout-query="layoutQuery"
 					:filter="mergeFilters(filter, folderTypeFilter)"
 					:search="search"
+					@refresh="refresh"
 				/>
 			</template>
 
@@ -183,27 +190,30 @@
 </template>
 
 <script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, computed, ref, PropType, onMounted, onUnmounted, nextTick } from 'vue';
-import FilesNavigation from '../components/navigation.vue';
 import api from '@/api';
-import usePreset from '@/composables/use-preset';
-import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
-import AddFolder from '../components/add-folder.vue';
-import SearchInput from '@/views/private/components/search-input';
-import FolderPicker from '../components/folder-picker.vue';
+import { useEventListener } from '@/composables/use-event-listener';
+import { useExtension } from '@/composables/use-extension';
+import { Folder, useFolders } from '@/composables/use-folders';
+import { usePreset } from '@/composables/use-preset';
 import emitter, { Events } from '@/events';
-import { useRouter, onBeforeRouteLeave, onBeforeRouteUpdate } from 'vue-router';
-import { useNotificationsStore, useUserStore, usePermissionsStore } from '@/stores';
-import { subDays } from 'date-fns';
-import useFolders, { Folder } from '@/composables/use-folders';
-import useEventListener from '@/composables/use-event-listener';
-import { useLayout } from '@/composables/use-layout';
-import uploadFiles from '@/utils/upload-files';
+import { useNotificationsStore } from '@/stores/notifications';
+import { usePermissionsStore } from '@/stores/permissions';
+import { useUserStore } from '@/stores/user';
 import { unexpectedError } from '@/utils/unexpected-error';
-import DrawerBatch from '@/views/private/components/drawer-batch';
-import { Filter } from '@directus/shared/types';
-import { mergeFilters } from '@directus/shared/utils';
+import { uploadFiles } from '@/utils/upload-files';
+import DrawerBatch from '@/views/private/components/drawer-batch.vue';
+import FolderPicker from '@/views/private/components/folder-picker.vue';
+import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
+import SearchInput from '@/views/private/components/search-input.vue';
+import { useLayout } from '@directus/composables';
+import { Filter } from '@directus/types';
+import { mergeFilters } from '@directus/utils';
+import { subDays } from 'date-fns';
+import { PropType, computed, defineComponent, nextTick, onMounted, onUnmounted, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { onBeforeRouteLeave, onBeforeRouteUpdate, useRouter } from 'vue-router';
+import AddFolder from '../components/add-folder.vue';
+import FilesNavigation from '../components/navigation.vue';
 
 type Item = {
 	[field: string]: any;
@@ -244,6 +254,8 @@ export default defineComponent({
 		const userStore = useUserStore();
 
 		const { layout, layoutOptions, layoutQuery, filter, search, resetPreset } = usePreset(ref('directus_files'));
+
+		const currentLayout = useExtension('layout', layout);
 
 		const { confirmDelete, deleting, batchDelete, error: deleteError, batchEditActive } = useBatch();
 
@@ -353,6 +365,7 @@ export default defineComponent({
 			batchEditActive,
 			filter,
 			mergeFilters,
+			currentLayout,
 		};
 
 		function useBatch() {
@@ -657,34 +670,13 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .action-delete {
-	--v-button-background-color: var(--danger-10);
-	--v-button-color: var(--danger);
-	--v-button-background-color-hover: var(--danger-25);
-	--v-button-color-hover: var(--danger);
-}
-
-.action-batch {
-	--v-button-background-color: var(--warning-10);
-	--v-button-color: var(--warning);
-	--v-button-background-color-hover: var(--warning-25);
-	--v-button-color-hover: var(--warning);
-}
-
-.folder {
-	--v-button-background-color: var(--primary-10);
-	--v-button-color: var(--primary);
-	--v-button-background-color-hover: var(--primary-25);
-	--v-button-color-hover: var(--primary);
+	--v-button-background-color-hover: var(--danger) !important;
+	--v-button-color-hover: var(--white) !important;
 }
 
 .header-icon {
 	--v-button-color-disabled: var(--foreground-normal);
 }
-
-.layout {
-	--layout-offset-top: 64px;
-}
-
 .drop-border {
 	position: fixed;
 	z-index: 500;

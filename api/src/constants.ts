@@ -1,4 +1,7 @@
-import { TransformationParams } from './types';
+import type { CookieOptions } from 'express';
+import env from './env.js';
+import type { TransformationParams } from './types/index.js';
+import { getMilliseconds } from './utils/get-milliseconds.js';
 
 export const SYSTEM_ASSET_ALLOW_LIST: TransformationParams[] = [
 	{
@@ -40,8 +43,24 @@ export const ASSET_TRANSFORM_QUERY_KEYS = [
 
 export const FILTER_VARIABLES = ['$NOW', '$CURRENT_USER', '$CURRENT_ROLE'];
 
-export const ALIAS_TYPES = ['alias', 'o2m', 'm2m', 'm2a', 'files', 'translations'];
+export const ALIAS_TYPES = ['alias', 'o2m', 'm2m', 'm2a', 'o2a', 'files', 'translations'];
 
 export const DEFAULT_AUTH_PROVIDER = 'default';
 
 export const COLUMN_TRANSFORMS = ['year', 'month', 'day', 'weekday', 'hour', 'minute', 'second'];
+
+export const GENERATE_SPECIAL = ['uuid', 'date-created', 'role-created', 'user-created'];
+
+export const UUID_REGEX = '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}';
+
+export const COOKIE_OPTIONS: CookieOptions = {
+	httpOnly: true,
+	domain: env['REFRESH_TOKEN_COOKIE_DOMAIN'],
+	maxAge: getMilliseconds(env['REFRESH_TOKEN_TTL']),
+	secure: env['REFRESH_TOKEN_COOKIE_SECURE'] ?? false,
+	sameSite: (env['REFRESH_TOKEN_COOKIE_SAME_SITE'] as 'lax' | 'strict' | 'none') || 'strict',
+};
+
+export const OAS_REQUIRED_SCHEMAS = ['Diff', 'Schema', 'Query', 'x-metadata'];
+
+export const REDACT_TEXT = '--redact--';

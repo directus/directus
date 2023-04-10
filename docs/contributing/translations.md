@@ -1,16 +1,23 @@
+---
+description:
+  Directus supports internationalization across the entire App. Many languages are currently supported, with more being
+  added all the time. Anyone can add or refine any languages through the integration with Crowdin
+readTime: 2 min read
+---
+
 # App Translations
 
 > The platform supports internationalization across the entire App. Many languages are currently supported, with more
-> being added all the time. Anyone can add or refine any languages through the integration with CrowdIn.
+> being added all the time. Anyone can add or refine any languages through the integration with Crowdin.
 
 ## Crowdin
 
-Our [Crowdin](https://locales.directus.io/) page provides an external interface for managing all of the different
+Our [Crowdin](https://locales.directus.io) page provides an external interface for managing all of the different
 language translations for the App. You can update and extend existing languages, or request a new language be added.
 
 ## Working with Existing Languages
 
-1. Navigate to [Crowdin](https://locales.directus.io/)
+1. Navigate to [Crowdin](https://locales.directus.io)
 2. Click on the desired language
 3. Click **Translate All** in the header
 4. Log in to Crowdin, or register an account as needed

@@ -13,6 +13,7 @@
 			v-model="options"
 			class="extension-options"
 			:fields="optionsFields"
+			:disabled="disabled"
 			primary-key="+"
 		/>
 
@@ -29,7 +30,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, inject, ref } from 'vue';
-import { getInterface } from '@/interfaces';
+import { useExtension } from '@/composables/use-extension';
 
 export default defineComponent({
 	props: {
@@ -49,6 +50,10 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
+		disabled: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	emits: ['input'],
 	setup(props, { emit }) {
@@ -65,19 +70,11 @@ export default defineComponent({
 
 		const values = inject('values', ref<Record<string, any>>({}));
 
-		const selectedInterface = computed(() => {
-			if (props.interface) {
-				return getInterface(props.interface);
-			}
-
-			if (!values.value[props.interfaceField]) return;
-
-			return getInterface(values.value[props.interfaceField]);
-		});
+		const selectedInterfaceId = computed(() => props.interface ?? values.value[props.interfaceField] ?? null);
+		const selectedInterface = useExtension('interface', selectedInterfaceId);
 
 		const usesCustomComponent = computed(() => {
 			if (!selectedInterface.value) return false;
-
 			return selectedInterface.value.options && 'render' in selectedInterface.value.options;
 		});
 

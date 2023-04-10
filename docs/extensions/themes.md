@@ -1,7 +1,12 @@
+---
+description: A guide on how to build custom Themes in Directus.
+readTime: 2 min read
+---
+
 # Themes & Styling
 
 > **Form Follows Function** is the guiding design principle of Directus. The minimal UI allows the platform to be easily
-> tailored to your brand. [Learn more about the App](/app/overview/).
+> tailored to your brand. [Learn more about the App](/app/overview).
 
 ## App Themes
 
@@ -20,7 +25,7 @@ no limit to customization. Below are several code resources for key SCSS files.
 
 ## Project Styling
 
-See [Adjusting Project Settings](/configuration/project-settings/)
+See [Adjusting Project Settings](/configuration/project-settings)
 
 ## Custom CSS
 
@@ -48,7 +53,7 @@ body {
 ::: warning Action Styling
 
 The `--primary` variable (and its shades) control call-to-actions and all other elements within the App using the
-"Directus Green". While it may be tempting to override this variable with your brand's color, please first review the
+"Directus Purple". While it may be tempting to override this variable with your brand's color, please first review the
 following warnings:
 
 - Avoid using yellow, orange, or red hues that give a sense of "danger"

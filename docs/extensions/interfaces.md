@@ -1,7 +1,12 @@
+---
+description: A guide on how to build custom Interfaces in Directus.
+readTime: 4 min read
+---
+
 # Custom Interfaces <small></small>
 
 > Custom Interfaces allow you to create new ways of viewing or interacting with field data on the Item Detail page.
-> [Learn more about Interfaces](/getting-started/glossary/#interfaces).
+> [Learn more about Interfaces](/getting-started/glossary#interfaces).
 
 ## Extension Entrypoint
 
@@ -29,14 +34,16 @@ export default {
 
 - `id` — The unique key for this interface. It is good practice to scope proprietary interfaces with an author prefix.
 - `name` — The human-readable name for this interface.
-- `icon` — An icon name from the [material icon set](/getting-started/glossary/#material-icons), or the extended list of
+- `icon` — An icon name from the [material icon set](/getting-started/glossary#material-icons), or the extended list of
   Directus custom icons.
 - `description` — A short description (<80 characters) of this interface shown in the App.
 - `component` — A reference to your interface component.
 - `options` — The options of your interface. Can be either an options object or a dedicated Vue component.
-- `types` — An array of supported [types](/concepts/types/).
-- `groups` — An array of field-groups. Accepts `standard`, `file`, `files`, `m2o`, `o2m`, `m2a`, `translations`.
-  Defaults to `standard`.
+- `types` — An array of supported [types](/getting-started/glossary#types).
+- `localTypes` — An array of local types. Accepts `standard`, `file`, `files`, `m2o`, `o2m`, `m2m`, `m2a`,
+  `presentation`, `translations` and `group`. Defaults to `standard`.
+- `group` — The group this interface is shown at when creating a field. Accepts `standard`, `selection`, `relational`,
+  `presentation`, `group` or `other`.
 - `relational` — A boolean that indicates if this interface is a relational interface.
 - `recommendedDisplays` — An array of display names which are recommended to be used with this interface.
 
@@ -88,6 +95,7 @@ component, it should be emitted to the Directus App by using the `input` emit.
 #### Available Emits
 
 - `input` — Update the value of the field.
+- `setFieldValue` - Used to set the value of other fields. 
 
 Other than this simple API to communicate with the Directus App, the interface component is a blank canvas, allowing you
 to create anything you need.

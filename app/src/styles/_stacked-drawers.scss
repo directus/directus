@@ -1,0 +1,28 @@
+#dialog-outlet {
+	.container.right .v-drawer {
+		transition: var(--slow) var(--transition);
+		transition-property: transform, border-radius;
+	}
+
+	.container.right:not(:nth-last-child(-n + 5)) {
+		display: none;
+	}
+
+	.container.right:not(:last-of-type) .v-drawer {
+		overflow: hidden;
+	}
+
+	@for $i from 1 to 6 {
+		> .container.right:not(.dialog-leave-active):nth-last-of-type(#{$i}):not(:last-of-type) .v-drawer {
+			transform: translateX(-#{($i - 1) * 30}px) scale(#{1 - (0.05 * ($i - 1))});
+			transform-origin: left;
+			border-radius: 20px;
+		}
+	}
+
+	.container.right:not(:first-of-type) {
+		&.dialog-leave-active {
+			transition: none !important;
+		}
+	}
+}

@@ -1,43 +1,58 @@
 <template>
 	<sidebar-detail icon="info_outline" :title="t('information')" close>
-		<dl v-if="!isNew && role">
-			<div>
-				<dt>{{ t('primary_key') }}</dt>
-				<dd>{{ role.id }}</dd>
-			</div>
-		</dl>
+		<template v-if="role">
+			<dl>
+				<div class="description-list">
+					<dt>{{ t('primary_key') }}</dt>
+					<dd>{{ role.id }}</dd>
+					<v-icon
+						v-if="isCopySupported"
+						name="copy"
+						small
+						clickable
+						class="clipboard-icon"
+						@click="copyToClipboard(role!.id)"
+					/>
+				</div>
+			</dl>
 
-		<v-divider />
-
+			<v-divider />
+		</template>
 		<div v-md="t('page_help_settings_roles_item')" class="page-description" />
 	</sidebar-detail>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
-import { defineComponent, PropType } from 'vue';
+import { useClipboard } from '@/composables/use-clipboard';
 
-export default defineComponent({
-	props: {
-		isNew: {
-			type: Boolean,
-			default: false,
-		},
-		role: {
-			type: Object as PropType<any>,
-			default: null,
-		},
-	},
-	setup() {
-		const { t } = useI18n();
+interface Props {
+	role?: Record<string, any> | null;
+}
 
-		return { t };
-	},
+withDefaults(defineProps<Props>(), {
+	role: () => null,
 });
+
+const { t } = useI18n();
+
+const { isCopySupported, copyToClipboard } = useClipboard();
 </script>
 
 <style lang="scss" scoped>
 .v-divider {
 	margin: 20px 0;
+}
+
+.description-list {
+	display: flex;
+	align-items: center;
+
+	.clipboard-icon {
+		--v-icon-color: var(--foreground-subdued);
+		--v-icon-color-hover: var(--foreground-normal);
+
+		margin-left: 4px;
+	}
 }
 </style>

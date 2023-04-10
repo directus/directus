@@ -15,9 +15,10 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { computed, defineComponent, ref, watch } from 'vue';
-import DrawerCollection from '@/views/private/components/drawer-collection';
+import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import api from '@/api';
 import { userName } from '@/utils/user-name';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
 	components: {
@@ -103,25 +104,29 @@ export default defineComponent({
 
 			const [endpoint, id] = props.value.split('_');
 
-			if (endpoint === 'role') {
-				const result = await api.get('/roles/' + id, {
-					params: {
-						fields: ['id', 'name'],
-					},
-				});
+			try {
+				if (endpoint === 'role') {
+					const result = await api.get('/roles/' + id, {
+						params: {
+							fields: ['id', 'name'],
+						},
+					});
 
-				itemName.value = result.data.data.name;
-			} else if (endpoint === 'user') {
-				const result = await api.get('/users/' + id, {
-					params: {
-						fields: ['id', 'first_name', 'last_name', 'email'],
-					},
-				});
+					itemName.value = result.data.data.name;
+				} else if (endpoint === 'user') {
+					const result = await api.get('/users/' + id, {
+						params: {
+							fields: ['id', 'first_name', 'last_name', 'email'],
+						},
+					});
 
-				itemName.value = userName(result.data.data);
+					itemName.value = userName(result.data.data);
+				}
+			} catch (error: any) {
+				unexpectedError(error);
+			} finally {
+				loading.value = false;
 			}
-
-			loading.value = false;
 		}
 	},
 });

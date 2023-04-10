@@ -43,7 +43,12 @@
 				<v-divider inline />
 			</template>
 
-			<extension-options type="interface" :extension="chosenInterface" />
+			<extension-options
+				v-model="options"
+				type="interface"
+				:extension="chosenInterface"
+				:options="customOptionsFields"
+			/>
 
 			<v-button class="save" full-width :disabled="!readyToSave" :loading="saving" @click="$emit('save')">
 				{{ t('save') }}
@@ -58,13 +63,14 @@
 
 <script lang="ts">
 import { defineComponent, computed, watch } from 'vue';
-import { getInterface, getInterfaces } from '@/interfaces';
 import { useI18n } from 'vue-i18n';
 import { useFieldDetailStore, syncFieldDetailStoreProperty } from '../store/';
 import { storeToRefs } from 'pinia';
 import ExtensionOptions from '../shared/extension-options.vue';
 import RelationshipConfiguration from './relationship-configuration.vue';
-import { nanoid } from 'nanoid';
+import { useExtensions } from '@/extensions';
+import { useExtension } from '@/composables/use-extension';
+import { nanoid } from 'nanoid/non-secure';
 
 export default defineComponent({
 	components: { ExtensionOptions, RelationshipConfiguration },
@@ -73,24 +79,28 @@ export default defineComponent({
 			type: Number,
 			default: null,
 		},
-		chosenInterface: {
-			type: String,
-			required: true,
-		},
 	},
 	emits: ['save', 'toggleAdvanced'],
-	setup(props) {
-		const fieldDetail = useFieldDetailStore();
+	setup() {
+		const fieldDetailStore = useFieldDetailStore();
 
-		const { readyToSave, saving, localType, collection } = storeToRefs(fieldDetail);
+		const { readyToSave, saving, localType } = storeToRefs(fieldDetailStore);
+
 		const { t } = useI18n();
 
-		const chosenInterface = computed(() => getInterface(props.chosenInterface));
+		const key = syncFieldDetailStoreProperty('field.field');
+		const type = syncFieldDetailStoreProperty('field.type');
+		const defaultValue = syncFieldDetailStoreProperty('field.schema.default_value');
+		const chosenInterface = syncFieldDetailStoreProperty('field.meta.interface');
+		const required = syncFieldDetailStoreProperty('field.meta.required', false);
+		const note = syncFieldDetailStoreProperty('field.meta.note');
+
+		const chosenInterfaceConfig = useExtension('interface', chosenInterface);
 
 		const typeOptions = computed(() => {
-			if (!chosenInterface.value) return [];
+			if (!chosenInterfaceConfig.value) return [];
 
-			return chosenInterface.value.types.map((type) => ({
+			return chosenInterfaceConfig.value.types.map((type) => ({
 				text: t(type),
 				value: type,
 			}));
@@ -98,34 +108,48 @@ export default defineComponent({
 
 		const typeDisabled = computed(() => typeOptions.value.length === 1 || localType.value !== 'standard');
 
-		const key = syncFieldDetailStoreProperty('field.field');
-		const type = syncFieldDetailStoreProperty('field.type');
-		const defaultValue = syncFieldDetailStoreProperty('field.schema.default_value');
-		const required = syncFieldDetailStoreProperty('field.meta.required', false);
-		const note = syncFieldDetailStoreProperty('field.meta.note');
-
-		const { interfaces } = getInterfaces();
+		const { interfaces } = useExtensions();
 
 		const interfaceIdsWithHiddenLabel = computed(() =>
 			interfaces.value.filter((inter) => inter.hideLabel === true).map((inter) => inter.id)
 		);
 
+		const customOptionsFields = computed(() => {
+			if (typeof chosenInterfaceConfig.value?.options === 'function') {
+				return chosenInterfaceConfig.value?.options(fieldDetailStore);
+			}
+
+			return null;
+		});
+
 		watch(
 			chosenInterface,
 			(newVal, oldVal) => {
-				if (!chosenInterface.value) return;
+				if (!newVal) return;
 
-				if (interfaceIdsWithHiddenLabel.value.includes(chosenInterface.value.id)) {
-					const simplifiedId = chosenInterface.value.id.includes('-')
-						? chosenInterface.value.id.split('-')[1]
-						: chosenInterface.value.id;
+				if (interfaceIdsWithHiddenLabel.value.includes(newVal)) {
+					const simplifiedId = newVal.includes('-') ? newVal.split('-')[1] : newVal;
 					key.value = `${simplifiedId}-${nanoid(6).toLowerCase()}`;
-				} else if (oldVal && interfaceIdsWithHiddenLabel.value.includes(oldVal.id)) {
+				} else if (oldVal && interfaceIdsWithHiddenLabel.value.includes(oldVal)) {
 					key.value = null;
 				}
 			},
 			{ immediate: true }
 		);
+
+		const options = computed({
+			get() {
+				return fieldDetailStore.field.meta?.options ?? {};
+			},
+			set(newOptions: Record<string, any>) {
+				fieldDetailStore.$patch((state) => {
+					state.field.meta = {
+						...(state.field.meta ?? {}),
+						options: newOptions,
+					};
+				});
+			},
+		});
 
 		return {
 			key,
@@ -134,13 +158,15 @@ export default defineComponent({
 			typeDisabled,
 			typeOptions,
 			defaultValue,
+			chosenInterface,
 			required,
 			note,
 			interfaceIdsWithHiddenLabel,
 			readyToSave,
 			saving,
 			localType,
-			collection,
+			customOptionsFields,
+			options,
 		};
 	},
 });

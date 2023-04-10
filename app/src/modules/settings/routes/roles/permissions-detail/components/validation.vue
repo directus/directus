@@ -16,8 +16,8 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed } from 'vue';
-import { Permission, Role } from '@directus/shared/types';
-import { useSync } from '@directus/shared/composables';
+import { Permission, Role } from '@directus/types';
+import { useSync } from '@directus/composables';
 
 export default defineComponent({
 	props: {
@@ -45,6 +45,8 @@ export default defineComponent({
 					interface: 'system-filter',
 					options: {
 						collectionName: permissionSync.value.collection,
+						includeValidation: true,
+						includeRelations: false,
 					},
 				},
 			},

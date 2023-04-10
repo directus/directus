@@ -1,6 +1,8 @@
-import { merge } from 'lodash';
-import { Permission } from '@directus/shared/types';
-import { requireYAML } from '../../../utils/require-yaml';
+import type { Permission } from '@directus/types';
+import { merge } from 'lodash-es';
+import path, { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { requireYAML } from '../../../utils/require-yaml.js';
 
 const defaults: Partial<Permission> = {
 	role: null,
@@ -11,6 +13,12 @@ const defaults: Partial<Permission> = {
 	system: true,
 };
 
-const permissions = requireYAML(require.resolve('./app-access-permissions.yaml')) as Permission[];
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
-export const appAccessMinimalPermissions: Permission[] = permissions.map((row) => merge({}, defaults, row));
+const schemaPermissionsRaw = requireYAML(path.resolve(__dirname, './schema-access-permissions.yaml')) as Permission[];
+const permissions = requireYAML(path.resolve(__dirname, './app-access-permissions.yaml')) as Permission[];
+
+export const schemaPermissions: Permission[] = schemaPermissionsRaw.map((row) => merge({}, defaults, row));
+export const appAccessMinimalPermissions: Permission[] = [...schemaPermissions, ...permissions].map((row) =>
+	merge({}, defaults, row)
+);

@@ -19,18 +19,26 @@
 #'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
-identifier: English
-avatar: الصورةالرمزية
+identifier: المعرِّف
+avatar: الصورة الرمزية
+application: التطبيق
 default_provider: الإفتراضي
+method: طريقة
 published: تم نشره
 draft: مسوّدة
 archived: مؤرشف
 modules: الوحدات
 module_bar: شريط الوحدة
+logs: السجلات
+reset_width: أعادة تعيين العرض
 tile_size: حجم الصورة
 edit_field: تعديل الحقل
 conditions: الشروط
+location: الموقع
+condition_rules: قوانين الشرط
+input: إدخال
 maps: الخرائط
+switch_user: تغير المستخدم
 item_creation: إنشاء عنصر
 item_revision: التعديلات على العنصر
 enter_a_name: أدخل اسم...
@@ -38,8 +46,14 @@ duplicate_field: حقل مكرر
 half_width: نصف العرض
 full_width: العرض الكامل
 group: المجموعة
+export_items: تصدير عنصر
 and: و
 or: أو
+init: إطلاق
+dataset_too_large_currently_showing_n_items: مجموعة البيانات كبيرة جداً. حالياً تظهر العناصر {n} الأولى.
+modifier: معدِل
+custom: تخصيص
+hook: ربط
 fill_width: العرض الكامل
 field_name_translations: ترجمة اسم الحقل
 enter_password_to_enable_tfa: أدخل كلمة المرور الخاصة بك لتمكين المصادقة الثنائية
@@ -51,7 +65,10 @@ indeterminate: غير محدد
 edit_collection: تعديل المجموعة
 exclusive: حصري
 children: اطفال
+db_only_click_to_configure: 'قاعدة البيانات فقط: اضغط لتعديل الاعدادات'
+show_active_items: إظهار العناصر النشطة
 show_archived_items: أظهر العناصر المؤرشفة
+show_all_items: عرض جميع العناصر
 edited: تم تعديل القيمة
 required: مطلوب
 required_for_app_access: مطلوب للوصول إلى التطبيق
@@ -60,11 +77,21 @@ create_preset: إنشاء إعدادات مسبقة
 create_panel: إنشاء لوحة
 create_role: إنشاء دور أو صلاحية
 create_user: إضافة مستخدم
+message: الرسالة
 delete_panel: حذف لوحة
 create_webhook: إنشاء Webhook
+create_translation_string: إنشئ نص ترجمة
+no_translation_string: لا توجد نصوص ترجمة
+no_translation_string_copy: لا توجد نصوص ترجمة حتى الآن.
+translation_string_key_placeholder: مفتاح نص الترجمة...
+translation_string_translations_placeholder: إضافة ترجمة جديدة
+edit_translation_string: تحليل نص الترجمة
+delete_translation_string_copy: >-
+  هل أنت متأكد من أنك تريد حذف نص الترجمة لـ "{key}"؟ لا يمكن التراجع عن هذا الإجراء.
 invite_users: دعوة مستخدمين
 invite: دعوة
 email_already_invited: البريد الإلكتروني {email} تم دعوته مسبقاً
+subject: الموضوع
 inbox: صندوق الواردات
 emails: البريد الإلكتروني
 connection_excellent: اتصال ممتاز
@@ -77,16 +104,19 @@ delete_folder: حذف المجلد
 prefix: بادئة
 suffix: لاحقة
 reset_bookmark: إعادة تعيين المفضلة
-rename_bookmark: إعادة تسمية المفضلة
 update_bookmark: تحديث المفضلة
 delete_bookmark: حذف إشارة مرجعية
 delete_bookmark_copy: >-
   هل تريد بالتأكيد حذف ال "{bookmark} "؟ لا يمكن التراجع عن هذا الإجراء.
+delete_personal_bookmark: حذف الإشارة المرجعية الشخصية
+delete_role_bookmark: حذف العلامة من الدور
+delete_global_bookmark: حذف العلامة من الكل
 logoutReason:
   SIGN_OUT: تسجيل الخروج
   SESSION_EXPIRED: انتهت الجلسة
 public_label: عام
 public_description: التحكم بتوفر البيانات على واجهة الربط البرمجي بدون تسجيل دخول.
+admin_description: الدور الأساسي للمدير مع وصول غير مقيّد للتطبيق والـ API.
 not_allowed: غير مسموح
 directus_version: إصدار Directus
 node_version: رقم نسخة الوحدة
@@ -107,7 +137,7 @@ recommended_defaults: الإعدادات الافتراضية الافضل
 unarchive: إزالة من الأرشيف
 unarchive_confirm: هل أنت متأكد من أنك تريد إلغاء أرشفة هذا العنصر؟
 nested_files_folders_will_be_moved: سيتم نقل الملفات والمجلدات الداخلية إلى درجة إلى الأعلى.
-unknown_validation_errors: 'حدثت أخطاء في التحقق من صحة الحقول المخفية التالية:'
+validation_errors_notice: 'الحقول التالية تحمل قيم غير صالحة:'
 validationError:
   eq: القيمة يجب أن تكون {valid}
   neq: لا يمكن أن تكون القيمة {invalid}
@@ -156,6 +186,11 @@ presentation_and_aliases: Presentation & Aliases
 revision_post_create: إليك ما بدا عليه هذا العنصر بعد التحديث.
 revision_post_update: إليك ما بدا عليه هذا العنصر بعد التحديث.
 changes_made: تجد أدناه التغييرات المحددة التي أدخلت على هذا التنقيح.
+no_relational_data: 'ملاحظة: العلاقة بين الجداول غير مدرجة هنا.'
+junction_field_location: موقع الحقول
+top: أعلى
+bottom: الأسفل
+hide_field: إخفاء الحقل
 hide_field_on_detail: مخفي في التفاصيل
 show_field_on_detail: أظهر الحقل في التفاصيل
 delete_field: حذف الحقل
@@ -164,14 +199,24 @@ field_create_success: 'حقل تم إنشاؤه: "{field}"'
 field_update_success: 'حقل تم إنشاؤه: "{field}"'
 duplicate_where_to: أين تريد تكرار هذا الحقل إلى؟
 language: لغة
+language_placeholder: اختر اللغة...
 aggregate_function: وظائف المجاميع
 aggregate_precision: وظائف التدقيق
 group_aggregation: تجميع المجموعات
+group_precision: دِقَّة المجموعة
 global: الإجمالي
 admins_have_all_permissions: المشرفون لديهم جميع الأذونات
 camera: الكاميرا
 show_zero: إظهار صفر
+create_in_advanced_field_creation_mode: إنشاء حقل في الوضع المتقدم
+continue_in_advanced_field_creation_mode: الاستمرار في وضع إنشاء الحقل المتقدم
+validation: التحقق
 sum: المجموع
+sum_distinct: المجموع للقيم المميزة
+avg: المتوسط
+avg_distinct: متوسط المميز
+count: عدد
+count_distinct: العدد للمميز
 min: الحد الأدنى
 max: الحد الأقصى
 exposure: التعرض
@@ -191,6 +236,7 @@ alias: اسم مستعار
 bigInteger: عدد صحيح كبير
 boolean: نعم/لا
 date: التاريخ
+date_range: فترة التاريخ
 datetime: الوقت و التاريخ
 dateTime: الوقت و التاريخ
 precision: الدقة
@@ -205,8 +251,11 @@ time: الوقت
 timestamp: الطابع الزمني
 uuid: UUID
 hash: الهاش
+geometry: الهندسة (الكل)
 geometry.Point: نقطة
+geometry.LineString: LineString
 geometry.Polygon: مضلّع
+geometry.MultiPoint: نقاط متعددة
 not_available_for_type: غير متوفّر لنوع الملفات هذا
 create_translations: إنشاء ترجمات
 auto_refresh: تحديث تلقائي
@@ -224,12 +273,17 @@ fields_group: مجموعة الحقول
 no_collections_found: لم يتم العثور على أية مجموعة.
 new_data_alert: 'سيتم إنشاء ما يلي ضمن نموذج البيانات الخاص بك:'
 search_collection: مجموعة البحث...
+search_field: حقل البحث...
 new_field: 'حقل جديد'
 new_collection: 'مجموعة جديدة'
+add_m2o_to_collection: 'إضافة M2O إلى "{collection}"'
+add_o2m_to_collection: 'إضافة O2M إلى "{collection}"'
+add_m2m_to_collection: 'إضافة M2M إلى "{collection}"'
 choose_a_type: اختر نوع...
 determined_by_relationship: يتم تحديده بالعلاقات
 add_note: أضف ملاحظة مفيدة للمستخدمين...
 add_link: إضافة رابط
+custom_link: رابط مخصص
 default_value: القيمة الافتراضية
 standard_field: حقل قياسي
 single_file: ملف واحد
@@ -243,10 +297,13 @@ next: التالي
 field_name: إسم الحقل
 translations: الترجمة
 no_translations: لا توجد ترجمات
+left_to_right: من اليسار إلى اليمين
+right_to_left: من اليمين إلى اليسار
 note: ملحوظة
 enter_a_value: أدخل قيمة...
 enter_a_placeholder: أدخل قيمة مؤقته...
 length: الطول
+soft_length: حد ناعم
 precision_scale: الدقة والقياس
 readonly: يقرأ فقط
 unique: فريد
@@ -256,11 +313,22 @@ primary_key: المفتاح الرئيسي
 foreign_key: مفتاح خارجي
 finish_setup: إنهاء التثبيت
 dismiss: تجاهل
+toggle_raw_editor: فتح \ إغلاق محرر الخريطة
+raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
 raw_value: قيمة خام
+copy_raw_value: نسخ القيمة الخام
+copy_raw_value_success: تَمَّ النَّسخ
+copy_raw_value_fail: فشل النسخ
+paste_raw_value: لصق قيمة الخام
+paste_raw_value_success: تم النسخ
+paste_raw_value_fail: فشل النسخ
+view_raw_value: عرض قيمة الخام
 edit_raw_value: تعديل القيمة الخام
 enter_raw_value: أدخل قيمة سطر...
-clear_value: إزالة القيمة
-reset_to_default: إعادة تعيين إلى الافتراضي
+clear_value: مسح القيمة
+clear_changes: مسح التغييرات
+clear_items: مسح كل العناصر
+reset_to_default: إعادة التعيين إلى الوضع الإفتراضي
 undo_changes: التراجع عن التغييرات
 notifications: إشعارات
 show_all_activity: أظهر كل النشاط
@@ -276,14 +344,18 @@ revision_delta_created_externally: تم إنشاؤها خارجيا
 revision_delta_updated: 'تم تحديث حقل واحد | تحديث حقول {count}'
 revision_delta_deleted: حذف
 revision_delta_reverted: تمت الإستعادة
+revision_delta_update_message: تم تحديث هذا الحقل ولكن يتم إخفاء قيمته لأسباب أمنية.
 revision_delta_other: تنقيح
 revision_delta_by: '{date} بواسطة {user}'
+presentation_text_values_cannot_be_reimported: "يستخدم نص العرض التقديمي، لا يمكن إعادة استيراد القيم."
+download_page_as_csv: 'تحميل الصفحة كـ CSV'
 private_user: خصخصة المستخدم
 creation_preview: معاينة الإنشاء
 revision_preview: معاينة التعديلات
 updates_made: ترقيات مصنوعة
 leave_comment: اترك تعليقا...
 post_comment_success: تم ارسال التعليق
+post_comment_updated: تم تحديث التعليق
 item_create_success: عنصر تم إنشاؤه | عناصر تم إنشاؤها
 item_update_success: عنصر تم تحديثه | عناصر تم تحديثها
 item_delete_success: عنصر تم حذفه | عناصر تم حذفها
@@ -292,10 +364,15 @@ related_collection: مجموعة ذات صلة
 related_collections: مجموعات ذات صلة
 translations_collection: مجموعة الترجمة
 languages_collection: مجموعة اللغات
-export_data: تصدير البيانات
+import_data_input_placeholder: CSV أو JSON...
+import_data_button: بدء الاستيراد
+import_data_indeterminate: استيراد البيانات...
+import_data_success: البيانات تم استيرادها بنجاح من {filename}
+import_data_error: هيكل بيانات هذا الملف لا يتطابق مع المجموعة.
+label_import: إستيراد
+label_export: تصدير
+import_export: أستيراد / تصدير
 format: التنسيق
-use_current_filters_settings: استخدام التصفية و الإعدادات الحالية
-export_collection: 'تصدير {collection}'
 last_page: آخر صفحة
 last_access: آخر وصول
 fill_template: املأ بقيمة النموذج
@@ -311,8 +388,27 @@ interface_label: الواجهة
 today: اليوم
 yesterday: أمس
 delete_comment: احذف التعليق
-date-fns_time: 'ساعات: دقائق: ثواني'
-date-fns_time_no_seconds: 'س:دد ص'
+delete_share: حذف المشاركة
+functions:
+  year: سنة
+  month: شهر
+  week: أسبوع
+  day: يوم
+  weekday: أيام العمل
+  hour: ساعة
+  minute: دقيقة
+  second: ثانية
+  count: عدد
+date-fns_date: PPP
+date-fns_time: 'h:mm:ss a'
+date-fns_time_no_seconds: 'h:mm a'
+date-fns_time_24hour: 'HH:mm:ss'
+date-fns_time_no_seconds_24hour: 'HH:mm'
+date-fns_date_short: 'MMM d, u'
+date-fns_time_short: 'h:mma'
+date-fns_date_short_no_year: MMM d
+minutes: دقائق
+hours: ساعات
 month: شهر
 year: سنة
 select_all: تحديد الكل
@@ -358,6 +454,15 @@ replace_from_library: استبدال الملف من المكتبة
 replace_from_url: استبدال الملف من رابط
 no_file_selected: لم يتم تحديد ملف
 download_file: تحميل الملف
+open_file_in_tab: أفتح الملف في علامة تبويب جديدة
+start_export: بدء التصدير
+not_available_for_local_downloads: غير متوفر للتنزيلات المحلية
+exporting_all_items_in_collection: تصدير جميع العناصر {total} ضمن {collection}.
+exporting_limited_items_in_collection: تصدير {limit} من أصل {total} عناصر داخل {collection}.
+exporting_no_items_to_export: لا توجد عناصر للتصدير. قم بتعديل تكوين التصدير أدناه.
+exporting_download_hint: بمجرد اكتمال هذا الملف {format} سيتم تنزيله تلقائيا إلى جهازك.
+exporting_batch_hint: سيتم معالجة هذا التصدير في الدفعات، وبمجرد اكتماله، سيتم حفظ الملف {format} في مكتبة الملفات.
+exporting_batch_hint_forced: بسبب العدد الكبير من العناصر، يجب معالجة هذا التصدير في دفعات، وبمجرد الانتهاء من ذلك، سيتم حفظ مِلَفّ {format} في مكتبة الملفات.
 collection_key: مفتاح المجموعة
 name: الاسم
 primary_key_field: '‮حقل المفتاح الرئيسي'
@@ -368,6 +473,7 @@ created_on: تم الإنشاء بتاريخ
 creating_collection_info: اسم المجموعة وإعداد حقل "المفتاح" الفريد من نوعه...
 creating_collection_system: تفعيل وإعادة تسمية أي من هذه الحقول الاختيارية.
 auto_increment_integer: عدد صحيح متسلسل تلقائي
+auto_increment_big_integer: عدد صحيح كبير متسلسل تلقائيا
 generated_uuid: مولد UUID
 manual_string: نص مدخل يدوياً
 save_and_create_new: حفظ وإنشاء جديد
@@ -378,6 +484,7 @@ creating_items: إنشاء عنصر
 enable_create_button: تفعيل زر إعادة المحاولة
 selecting_items: تحديد العناصر
 enable_select_button: تفعيل زر التحديد
+allow_duplicates: السماح بالتكرارات
 comments: تعليقات
 no_comments: لا توجد تعليقات بعد
 click_to_expand: أضغط للمزيد
@@ -388,7 +495,9 @@ disabled: مُعطل
 information: معلومات
 report_bug: تبليغ عن خطأ
 request_feature: طلب ميزة
+request_body: "هيئة الطلب\n"
 interface_not_found: 'لم يتم العثور على واجهة "{interface}".'
+operation_not_found: 'العملية "{operation}" غير موجودة.'
 reset_interface: إعادة تعيين الواجهة
 display_not_found: 'عرض "{display}" غير موجود.'
 reset_display: إعادة تعيين العرض
@@ -400,7 +509,10 @@ no_files_copy: لا توجد ملفات هنا.
 user_count: 'لا توجد عناصر | عنصر واحد | {count} العناصر'
 no_users_copy: لا يوجد مستخدمون في هذه التجزئة.
 webhooks_count: 'لاتوجد روابط ويب | رابط ويب | {count} روابط ويب'
+no_webhooks_copy: لم يتم تكوين أي خطاف ويب بعد. إبدأ بإنشاء واحد أدناه.
 no_notifications: لا توجد إشعارات
+no_notifications_copy: لقد وصلت إلى المدخل الأخير!
+activity_log: سجل الأنشطة
 all_items: كافة العناصر
 any: أي
 csv: CSV
@@ -412,6 +524,7 @@ relationship_not_setup: لم يتم إعداد العلاقة بشكل صحيح
 display_template_not_setup: خيار قالب العرض خاطئ التكوين
 collection_field_not_setup: خيار حقل المجموعة خاطئ التكوين
 select_a_collection: حدد مجموعة
+select_a_field: حدد حقل
 active: مفعل
 move_to: أنقل إلى...
 copy: نسخ
@@ -420,10 +533,17 @@ no_other_dashboards_copy: ليس لديك حتى الآن أي لوحة تحكم
 inactive: غير نشط
 users: المستخدمين
 activity: الأنشطة
+activity_item: عنصر النشاط
 action: الإجراء
 ip_address: عنوان IP
 user_agent: وكيل المستخدم
+origin: الأصل
 webhooks: روابط الويب (Webhooks)
+decimals: الأعداد العشرية
+value_decimals: القيمة العشرية
+min_value: أدنى قيمة
+max_value: أكبر قيمة
+automatic: تلقائي
 field_width: عرض الحقل
 add_filter: إضافة فلتر
 upper_limit: الحد الأقصى...
@@ -451,6 +571,8 @@ select_an_item: تحديد عنصر...
 edit: تعديل
 enabled: تمكين
 disable_tfa: تعطيل المصادقة الثنائية 2FA
+admin_disable_tfa_text: هل أنت متيقِّن من انك تريد تعطيل المصادقة الثنائية لهذا المستخدم؟
+tfa_setup: إعداد خاصية التوثيق الثنائي
 tfa_scan_code: مسح التعليمات البرمجية في تطبيق المصادقة الخاص بك لإنهاء إعداد 2FA
 enter_otp_to_disable_tfa: أدخل OTP لتعطيل 2FA
 create_account: إنشاء حساب
@@ -464,30 +586,55 @@ errors:
   INVALID_CREDENTIALS: اسم المستخدم و / أو كلمة المرور خاطئة
   INVALID_OTP: كلمة مرور لمرة واحدة خاطئة
   INVALID_PAYLOAD: Invalid payload
+  INVALID_PROVIDER: المستخدم ينتمي إلى موفر مصادقة مختلف
   INVALID_QUERY: طلب غير صحيح
+  INVALID_CONFIG: تكوين غير صالح
+  INVALID_TOKEN: رمز دخول غير صحيح
+  INVALID_IP: عنوان IP غير مسموح به
+  INVALID_USER: أخفقت مصادقة المستخدم
   ITEM_LIMIT_REACHED: تم الوصول إلى الحد الأقصى للعناصر
   ITEM_NOT_FOUND: لم يتم العثور على العنصر
   ROUTE_NOT_FOUND: غير موجود
   RECORD_NOT_UNIQUE: تم اكتشاف تكرار القيمة
   USER_SUSPENDED: المستخدم موقوف
   CONTAINS_NULL_VALUES: الحقل يحتوي على قيم فارغة
+  UNPROCESSABLE_ENTITY: كيان غير قابل للمعالجة
   INTERNAL_SERVER_ERROR: خطأ غير متوقع
   NOT_NULL_VIOLATION: لا يمكن أن تكون القيمة فارغة
+  ILLEGAL_ASSET_TRANSFORMATION: مصدر الصورة كبير جدًا للمعاينة
+  VALUE_TOO_LONG: الاسم طويل جدا
+  VALUE_OUT_OF_RANGE: القيمة خارج النطاق
+  INVALID_FOREIGN_KEY: مفتاح مرشح غير صحيح
   UNKNOWN: خطأ غير متوقع
+  SERVICE_UNAVAILABLE: الخدمة غير متاحة
+  UNSUPPORTED_MEDIA_TYPE: نوع الوسائط غير مدعوم
+  UNEXPECTED_RESPONSE: استجابة غير متوقعة
+  TOKEN_EXPIRED: انتهت صلاحية الرمز
+  RANGE_NOT_SATISFIABLE: النطاق غير صالح
+  METHOD_NOT_ALLOWED: الطريقة غير مسموح بها
+  REQUESTS_EXCEEDED: تم بلوغ حد الطلبات
 security: الأمان
 value_hashed: تم تجزئة القيمة بشكل آمن
 bookmark_name: اسم الإشارة المرجعية...
 create_bookmark: إنشاء إشارة مرجعية
 edit_bookmark: تحرير الإشارة المرجعية
+edit_personal_bookmark: تحرير الإشارة المرجعية الشخصية
+edit_role_bookmark: تحرير علامة الدور المرجعية
+edit_global_bookmark: تحرير العلامة المرجعية الشاملة
+cannot_edit_role_bookmarks: لا يمكن تعديل علامات الدور المرجعية
+cannot_edit_global_bookmarks: لا يمكن تعديل العلامات المرجعية الشاملة
 bookmarks: محفوظات
 presets: الإعدادات المسبقة
 unexpected_error: خطأ غير متوقع
 unexpected_error_copy: حدث خطأ غير متوقع. الرجاء المحاولة مرة أخرى لاحقاً.
 copy_details: نسخ التفاصيل
+no_app_access: لا توجد صلاحيه للوصول
 no_app_access_copy: هذا المستخدم غير مسموح له باستخدام تطبيق المدير.
-password_reset_sent: لقد أرسلنا لك رابط آمن لإعادة تعيين كلمة المرور الخاصة بك
+password_reset_sent: إذا كان لديك حساب، فقد أرسلنا لك رابط آمن لإعادة تعيين كلمة المرور الخاصة بك
 password_reset_successful: تم إعادة تعيين كلمة المرور بنجاح
 back: رجوع
+filter: فلترة
+edit_image: تعديل الصورة
 editing_image: تحرير صورة
 square: مربع
 free: حر
@@ -499,12 +646,18 @@ all_users: كل المستخدمين
 delete_collection: احذف المجموعة
 update_collection_success: تم تحديث المجموعة
 delete_collection_success: تم حذف المجموعة
+make_collection_visible: جعل المجموعة مرئية
+make_collection_hidden: جعل المجموعة مخفية
+make_folder_visible: جعل المجلد مرئي
+make_folder_hidden: جعل المجلد مخفي
+goto_collection_content: عرض المحتوى
 start_end_of_count_items: '{start}-{end} من {count} عناصر'
 start_end_of_count_filtered_items: '{start}-{end} من {count} من العناصر المصفاة'
 one_item: '1 عنصر'
 one_filtered_item: '1 عنصر مصفى'
 delete_collection_are_you_sure: >-
-  هل أنت متأكد من أنك تريد حذف هذه المجموعة؟ سيؤدي هذا إلى حذف المجموعة وجميع العناصر فيها. هذا الإجراء دائم.
+  هل أنت متيقِّن من أنك تريد حذف المجموعة"{collection}"؟ سيؤدي هذا إلى حذف المجموعة وجميع العناصر فيها. وهذا الإجراء دائم الأثر.
+delete_folder_are_you_sure: هل أنت متيقِّن من أنك تريد حذف المجلد"{folder}"؟ سيتم نقل المجلدات والمجموعات المتفرعة منه إلى أعلى مستوى.
 collections_shown: المجموعات المعروضة
 visible_collections: مجموعات مرئية
 hidden_collections: مجموعات مخفية
@@ -526,10 +679,12 @@ color: لون
 circle: دائرة
 empty_item: عنصر فارغ
 log_in_with: 'تسجيل الدخول باستخدام {provider}'
+conditional_styles: أنماط مشروطة
 advanced_settings: إعدادات متقدمة
 advanced_filter: تصفية متقدمة
 delete_advanced_filter: حذف التصفية
 change_advanced_filter_operator: تغيير المشغل
+advanced: متقدم
 operators:
   eq: يساوي
   neq: لا يساوي
@@ -543,6 +698,7 @@ operators:
   nnull: باطل
   contains: يحتوي على
   ncontains: لا يحتوي
+  icontains: تحتوي على (غير حساسة)
   starts_with: إبدا بـ
   nstarts_with: لا يبدأ ب
   ends_with: ينتهي ب
@@ -555,6 +711,10 @@ operators:
   has: تتضمن هذه الوسوم
   intersects: تداخلات
   nintersects: لا يتقاطع
+  intersects_bbox: يتقاطع مع الصندوق المحيط
+  nintersects_bbox: لا يتقاطع مع الصندوق المحيط
+  regex: مطابقة RegExp
+custom_validation_message: رسالة التحقق المخصصة
 loading: جار التحميل...
 drop_to_upload: إسقاط إلى التحميل
 item: عنصر
@@ -567,6 +727,7 @@ upload_files_success: 'عدد الصور التي تم تحميلها {count}'
 upload_pending: التحميل معلق
 drag_file_here: السحب والإفلات الملف هنا
 click_to_browse: انقر للتصفح
+interface_options: خيارات الواجهة
 layout_options: خيارات التصميم
 rows: الصفوف
 columns: أعمدة
@@ -584,14 +745,19 @@ all_files: '‮كل الملفات'
 my_files: ملفاتي
 recent_files: احدث الملفات
 create_folder: أنشئ مجلد
+edit_folder: تعديل المجلد
 folder_name: اسم المجلد...
+folder_key: مفتاح المجلد...
 add_file: أضف ملف
 replace_file: استبدال ملف
 no_results: لا توجد نتائج
 no_results_copy: ضبط أو مسح تصفية البحث لرؤية النتائج.
+no_visible_fields: نموذج فارغ
+no_visible_fields_copy: هذا النموذج لا يحتوي على حقول مرئية.
 clear_filters: مسح التصفية
 saves_automatically: يحفظ تلقائياً
 role: الدور
+edit_role: تعديل الدور
 rule: قاعدة
 user: مستخدم
 no_presets: لا إعدادات مسبقة
@@ -603,12 +769,80 @@ on_create: عند الإنشاء
 on_update: عند التحديث
 read: قراءة
 update: تحديث
+delete: حذف
 select_fields: حدد حقول
 format_text: تنسيق النص
+format_value: تنسيق القيمة
+abbreviate_value: قيمة مختصرة
+operator: المُشغِّل
+bold: عريض
 toggle: تبديل
 icon_on: تشغيل الأيقونة
 icon_off: إيقاف الأيقونة
 label: تسمية
+flows: التدفقات
+flow: التدفق
+select_a_flow: حدد تدفق
+run_flow_on_current_edited_confirm: قد يتم تحديث هذا العنصر بواسطة هذا التدفق، هل أنت متيقِّن من أنك تريد تنفيذه؟
+run_flow_success: تدفق "{flow}" تم بنجاح
+trigger: المحفز
+trigger_options: خيارات المحفز
+view_trigger: عرض المحفز
+create_trigger: إنشاء محفز
+trigger_setup: إعداد المحفز
+change_trigger: تغيير المحفز
+flow_delete_confirm: هل أنت متيقِّن من أنك تريد حذف التدفق"{flow}"؟ لا يمكن التراجع عن هذا الإجراء.
+set_flow_active: تعيين التدفق كنشطٌ
+set_flow_inactive: تعيين التدفق كغير نشطٌ
+edit_flow: تعديل التدفق
+delete_flow: حذف التدفق
+no_other_flows_copy: ليس لديك أي تدفقات أخرى حتى الآن.
+no_flows: لا توجد تدفقات
+no_flows_copy: ليس لديك أي تدفقات حتى الآن.
+create_flow: إنشاء تدفق
+creating_new_flow: إنشاء تدفق جديد
+updating_flow: تحديث التدفق
+flow_setup: إعداد التدفق
+flow_name: الاسم
+flow_tracking: تتبع النشاط و السجلات
+flow_tracking_all: تتبع النشاط و السجلات
+flow_tracking_activity: تتبع النشاط فقط
+flow_tracking_null: عدم تتبع أي شيء
+start_flow: بَدْء التدفق
+stop_flow: إيقاف التدفق
+create_operation: إنشاء عملية
+edit_operation: تحرير العملية
+code: نص برمجي
+operation_options: خيارات العملية
+operation_name: اسم العملية...
+operation_key: معرف للمراجعة...
+operation_key_unique_error: مفاتيح العملية يجب أن تكون فريدة في التدفق
+operation_handle_resolve: 'الحل: أنقر للإضافة أو سحب لإعادة التوجيه'
+operation_handle_reject: 'الرفض: أنقر للإضافة أو سحب لإعادة التوجيه'
+insights: بصائر
+dashboard: لوحة التحكم
+panel: لوحة
+panel_options: خيارات اللوحة
+panel_header: رأس اللوحة
+panel_name_placeholder: سمِّ هذه اللوحة...
+panel_note_placeholder: تفاصيل اختيارية حول هذه اللوحة...
+panel_delete_confirm: هل أنت متيقِّن من أنك تريد حذف هذه اللوحة؟ لا يمكن التراجع عن هذا الإجراء.
+list_panel_allow_edit: السماح بالتحرير المضمن
+dashboard_delete_confirm: هل أنت متيقِّن من أنك تريد حذف لوحة التحكم هذه؟ لا يمكن التراجع عن هذا الإجراء.
+edit_dashboard: تحرير لوحة التحكم
+delete_dashboard: حذف لوحة التحكم
+visible: مرئي
+prefix_placeholder: النص قبل القيمة...
+suffix_placeholder: النص بعد القيمة...
+decimals_placeholder: عدد المنازل العشرية...
+no_dashboards: لا توجد لوحة تحكم
+no_dashboards_copy: ليس لديك أي لوحة تحكم حتى الآن.
+create_dashboard: إنشاء لوحة تحكم
+dashboard_name: اسم لوحة التحكم
+no_data: لا توجد بيانات
+accountability: المساءلة
+full_screen: ملء الشاشة
+edit_panels: تحرير لوحة
 image_url: رابط الصورة
 alt_text: النص البديل
 media: وسائط الإعلام
@@ -625,6 +859,7 @@ wysiwyg_options:
   alignright: محاذاة إلى اليمين
   forecolor: لون الواجهة
   backcolor: لون الخلفية
+  bold: عريض
   italic: خط مائل
   underline: مسطر
   codeblock: نص برمجي
@@ -634,6 +869,12 @@ wysiwyg_options:
   copy: نسخ
   cut: قص
   paste: لصق
+  h1: العنوان 1
+  h2: العنوان 2
+  h3: العنوان 3
+  h4: العنوان 4
+  h5: العنوان 5
+  h6: العنوان 6
   fontselect: تحديد الخط
   fontsizeselect: حدد حجم الخط
   remove: احذف
@@ -641,6 +882,7 @@ wysiwyg_options:
   selectall: تحديد الكل
   table: الجدول
   visualaid: عرض العناصر غير المرئية
+  fullscreen: ملء الشاشة
   directionality: الاتجاهية
 dropdown: قائمة منسدلة
 choices: الخيارات
@@ -652,6 +894,7 @@ adding_user: إضافة مستخدم
 unknown_user: مستخدم غير معروف
 creating_in: 'إنشاء عنصر في {collection}'
 editing_in: 'تعديل عنصر في {collection}'
+viewing_in: 'عرض العنصر في {collection}'
 creating_unit: 'إنشاء {unit}'
 editing_unit: 'تعديل {unit}'
 editing_in_batch: 'تعديل دفعة من  {count} عناصر'
@@ -660,20 +903,30 @@ settings_data_model: نموذج البيانات
 settings_permissions: الأدوار والأذونات
 settings_project: إعدادات المشروع
 settings_webhooks: روابط الويب (Webhooks)
+settings_flows: التدفقات
 settings_presets: الإعدادات المسبقة والعلامات
+settings_translation_strings: نصوص التّرجَمَة
 one_or_more_options_are_missing: واحد أو أكثر من الخيارات مفقودة
 scope: مجال
+actions: الإجراءات
 select: حدد...
 layout: نموذج العرض
 changes_are_permanent: التغييرات دائمة
 preset_name_placeholder: يعمل كإعداد افتراضي عندما يكون فارغًا...
+preset_search_placeholder: استعلام البحث...
 editing_preset: تحرير الإعداد المسبق
 layout_preview: معاينة نموذج العرض
 layout_setup: إعداد نموذج العرض
+data: البيانات
 unsaved_changes: لم يتم حفظ التعديلات
 unsaved_changes_copy: هل ترغب حقّا بمغادرة هذه الصفحة؟
 discard_changes: تجاهل التغييرات
+discard_all_changes: تجاهل كل التغييرات
+discard_changes_copy: هل أنت متيقِّن من أنك تريد تجاهل جميع التغييرات التي أجريت؟
+show_x_axis: إظهار المحور X
+show_y_axis: إظهار المحور Y
 keep_editing: استمر في التحرير
+page_help_collections_overview: '**نظرة عامة للمجموعات** - قائمة بجميع المجموعات التي لديك حق الوصول إليها.'
 page_help_collections_collection: >-
   **استعراض العناصر** — قائمة بجميع عناصر {collection} التي لديك حق الوصول إليها. تخصيص نموذج العرض، التصفية، والترتيب لتصميم العرض الخاص بك، وحتى حفظ الإشارات المرجعية لهذه الإعدادات المختلفة للوصول السريع.
 page_help_collections_item: >-
@@ -699,20 +952,52 @@ page_help_settings_presets_item: >-
   **تفاصيل الإعداد المسبق** - نموذج لإدارة الإشارات المرجعية والضبط المسبق الافتراضي للمجموعات.
 page_help_settings_webhooks_collection: '**تصفح Webhooks** - عرض جميع webhooks داخل المشروع.'
 page_help_settings_webhooks_item: '**تفاصيل Webhook ** - نموذج لإنشاء وإدارة webhook للمشروع.'
+page_help_settings_flows_collection: '**تصفح التدفقات** - عرض جميع التدفقات داخل المشروع.'
+page_help_settings_flows_item: '**تفاصيل التدفق** - مساحة عمل لإدارة عملية واحدة أو أكثر.'
+page_help_settings_translation_strings_collection: '**تصفح مقاطع الترجمة** - عرض جميع مقاطع الترجمة داخل المشروع.'
 page_help_users_collection: '**دليل المستخدم** - يعرض جميع مستخدمي النظام داخل هذا المشروع.'
 page_help_users_item: >-
   **تفاصيل المستخدم** - إدارة معلومات حسابك، أو عرض تفاصيل المستخدمين الآخرين.
+page_help_insights_overview: '**البصائر** - قائمة لوحات التحكم التي لديك حق الوصول إليها.'
+page_help_insights_dashboard: '**لوحة البيانات** - مساحة العمل لإدارة لوحة واحدة أو أكثر'
+activity_feed: موجز النشاط
 add_new: إضافة جديدة
 create_new: أنشئ جديد
 all: الجميع
+none: لا شيء
 no_layout_collection_selected_yet: لم يتم تحديد نموذج عرض/مجموعة بعد
 batch_delete_confirm: >-
   لم يتم اختيار عناصر | هل أنت متأكد أنك تريد حذف هذا البند؟ لا يمكن التراجع عن هذا الإجراء. | هل تريد بالتأكيد حذف هذه {count} عنصر ؟ لا يمكن التراجع عن هذا الإجراء.
 cancel: إلغاء
+no_upscale: عدم تكبير أبعاد الصور
 collection: المجموعة
 collections: مجموعات
+content: المحتوى
+singleton: متفرد
 singleton_label: معاملته ككائن واحد
 system_fields_locked: حقول النظام مقفلة ولا يمكن تعديلها
+directus_collection:
+  directus_activity: سجلات المساءلة لجميع الأحداث
+  directus_collections: تكوين وبيانات المجموعة الإضافية الوصفية
+  directus_dashboards: لوحات التحكم داخل وحدة البصائر
+  directus_fields: تكوين وبيانات الحقل الإضافي الوصفية
+  directus_files: البيانات الوصفية لجميع أصول الملفات المدارة
+  directus_flows: تدفقات الأتمتة
+  directus_folders: يوفر مجلدات افتراضية للملفات
+  directus_migrations: ما هي نسخة قاعدة البيانات التي تستخدمها
+  directus_notifications: الإشعارات المرسلة إلى المستخدمين
+  directus_operations: العمليات التي تشتغل في التدفقات
+  directus_panels: لوحات فردية ضمن لوحة تحكم البصائر
+  directus_permissions: أذونات الوصول لكل دور
+  directus_presets: الإعداد المسبق للقيم الافتراضية للمجموعة والعلامات المرجعية
+  directus_relations: تكوين وبيانات العَلاقة الوصفية
+  directus_revisions: لقطات بيانات لجميع الأنشطة
+  directus_roles: مجموعات الأذونات لمستخدمي النظام
+  directus_sessions: معلومات جلسة المستخدم
+  directus_settings: خيارات تكوين المشروع
+  directus_shares: تتبع العناصر المشتركة خارجيًا
+  directus_users: مستخدمي النظام للمنصة
+  directus_webhooks: إعدادات لطلبات HTTP المستندة إلى الأحداث
 fields:
   directus_activity:
     item: المفتاح الأساسي للعنصر
@@ -722,6 +1007,7 @@ fields:
     user: تم بواسطة
     comment: تعليق
     user_agent: وكيل المستخدم
+    origin: الأصل
     ip: عنوان IP
     revisions: المراجعات
   directus_collections:
@@ -731,11 +1017,15 @@ fields:
     color: لون
     display_template: عرض القالب
     hidden: مخفي
+    singleton: متفرد
     translations: ترجمات تسمية المجموعات
+    archive_app_filter: مرشح تطبيق الأرشيف
     archive_value: أرشفة القيمة
     unarchive_value: إلغاء أرشفة القيمة
     sort_field: فرز الحقل
     accountability: تتبع النشاط والتنقيح
+    archive_field: حقل الأرشيف
+    item_duplication_fields: الحقول الممكن تكرارها للعنصر
   directus_files:
     $thumbnail: صورة مصغرة
     title: العنوان
@@ -746,6 +1036,7 @@ fields:
     filename_disk: اسم الملف (القرص)
     filename_download: اسم الملف (تحميل)
     metadata: البيانات التعريفية
+    type: نوع التنسيق الملف
     filesize: حجم الملف
     modified_by: تم التعديل بواسطة
     modified_on: التعديل في
@@ -769,82 +1060,218 @@ fields:
     title: العنوان
     description: التفاصيل
     tags: الوسوم
+    user_preferences: تفضيلات المستخدم
     language: لغة
     theme: السمة
+    theme_auto: تلقائي (مبني على النظام)
+    theme_light: الوضع المضيء
+    theme_dark: الوضع المُعتِم
     tfa_secret: التحقق بخطوتين
+    admin_options: خيارات المدير
     status: حالة
+    status_draft: مسوّدة
+    status_invited: مَدعُوّ
     status_active: مفعل
+    status_suspended: معلّق
+    status_archived: مؤرشف
     role: الدور
+    token: الرمز المميز
+    provider: المزود
+    external_identifier: معرفات خارجية
     last_page: آخر صفحة
     last_access: آخر وصول
+    email_notifications: إشعارات البريد الإلكتروني
   directus_settings:
+    jpg: JPEG
+    png: PNG
+    webP: WebP
+    tiff: Tiff
+    mapping: تعيين
+    mapbox_placeholder: pk.eyJ1Ijo.....
+    attribution: السمات
+    attribution_placeholder: المساهمون © OpenStreetMap
+    additional_transforms: تحولات إضافية
     project_name: اسم المشروع
+    project_descriptor: وصف المشروع
     project_url: رابط المشروع
     project_color: لون المشروع
     project_logo: شعار المشروع
+    default_language: اللغة الافتراضية
+    branding: نمط العلامة التجارية
+    public_foreground: الصورة الأمامية العامة
+    public_background: الخلفية العامة
+    public_note: ملاحظة عامة
+    auth_password_policy: سياسات كلمة المرور
+    auth_login_attempts: محاولات تسجيل الدخول
+    files_and_thumbnails: الملفات والتخزين
+    storage_default_folder: المجلد الافتراضي
+    storage_asset_presets: الإعدادات المسبقة للتحويل
+    storage_asset_transform: التحولات المسموح بها
+    overrides: تجاوزات التطبيق
+    custom_css: CSS مخصصة
     module_bar: شريط الوحدة
+    transformations_all: السماح بجميع التحولات
+    transformations_none: تعطيل التحولات
+    image_editor: محرر الصور
+  directus_shares:
+    name: الاسم
+    role: الدور
+    password: كلمة المرور
+    date_start: تاريخ البدء
+    date_end: تاريخ الانتهاء
+    times_used: الوقت المستغرق
   directus_fields:
     collection: اسم المجموعة
     icon: أيقونة المجموعة
     note: ملحوظة
     hidden: مخفي
+    singleton: متفرد
     translation: ترجمة اسم الحقل
     display_template: قالب
   directus_roles:
     name: إسم الدور
     icon: أيقونة الدور
     description: التفاصيل
+    app_access: صلاحيات تطبيق
+    admin_access: صلاحيات مسؤول
+    enforce_tfa: يتطلب التحقق بخطوتين 2FA
     users: المستخدمون في الدور
   directus_webhooks:
     name: الاسم
     status: حالة
+    data: البيانات
+    header: الترويسة
     value: قيمة
+    headers: ترويسات الطلب
+    data_label: إرسال بيانات الحدث
+    triggers: المحفزات
+    actions: الإجراءات
     collections: مجموعات
 field_options:
   directus_settings:
+    project_name_placeholder: مشروعي...
+    project_color_note: خلفية تسجيل الدخول والشعار
+    project_logo_note: الأبيض 40x40 SVG/PNG
+    public_note_placeholder: رسالة عامة قصيرة تدعم تنسيق مارك داون...
     security_divider_title: الأمان
+    auth_password_policy:
+      none_text: لا شيء - غير مستحسن
+      weak_text: ضعيف - الحد الأدنى 8 أحرف
+      strong_text: قوي – حروف كبيرة/ صغيرة / أرقام / رموز خاصة
+    storage_asset_presets:
+      fit_label: مناسب
+      upscaling: تمدد
+      fit:
+        contain_text: يحتوي على (الحفاظ على تناسب الجوانب)
+        cover_text: الغلاف (يفرض الحجم الدقيق)
+        fit_text: تلائم بالداخل
+        outside_text: تلائم بالخارج
+    additional_transforms: تحولات إضافية
+    mapbox_key: رمز وصول الخريطة
+    mapbox_placeholder: pk.eyJ1Ijo.....
+    files_divider_title: الملفات و الصور المصغرة
+    overrides_divider_title: تجاوزات التطبيق
   directus_activity:
+    login: تسجيل الدخول
     create: انشاء
     update: تحديث
+    delete: حذف
   directus_collections:
     track_activity_revisions: تتبع النشاط والتنقيحات
     only_track_activity: تتبع النشاط فقط
     do_not_track_anything: عدم تتبع أي شيء
     collection_setup: لا توجد مجموعات الإعداد
+    note_placeholder: وصف لهذه المجموعة...
+    hidden_label: إخفاء داخل التطبيق
     singleton: معاملته ككائن واحد
     language: لغة
     translation: الترجمة
+    translation_placeholder: أدخل ترجمة...
     collection_name: اسم المجموعة
+    singular_unit: وحدة المفرد
+    plural_unit: وحدة الجمع
     archive_divider: أرشفة
+    archive_field_placeholder: اختر حقل...
+    archive_app_filter: تفعيل تصفية أرشيف التطبيق
+    archive_value: تعيين القيمة خلال الأرشفة...
+    unarchive_value: تعيين القيمة خلال إلغاء الأرشفة...
     sort_divider: رتب
+    sort_field: إختر حقل...
+    accountability_divider: المساءلة
+    duplication_divider: تكرار
+  directus_files:
+    title: عنوان فريد...
+    description: وصف اختياري...
+    location: موقع اختياري...
+    storage_divider: تسمية الملف
+    filename_disk: الإسم على قرص التخزين...
+    filename_download: الاسم عند التنزيل...
   directus_roles:
+    name: الاسم الفريد لهذا الدور...
+    description: وصف لهذا الدور...
     fields:
       icon_name: أيقونة
       name_name: الاسم
       name_placeholder: أدخل عنوانًا...
     collections_name: مجموعات
+    collections_addLabel: مجموعة جديدة...
   directus_users:
+    preferences_divider: تفضيلات المستخدم
+    dropdown_auto: تلقائي (مبني على النظام)
+    dropdown_light: الوضع المضيء
+    dropdown_dark: الوضع المُعتِم
+    admin_divider: خيارات المدير
+    status_dropdown_draft: مسوّدة
+    status_dropdown_invited: تمت الدعوة
     status_dropdown_active: مفعل
+    status_dropdown_suspended: معلّق
+    status_dropdown_archived: مؤرشف
+    token: أدخل رمز الوصول الآمن...
   directus_webhooks:
     status_options_active: مفعل
     status_options_inactive: غير نشط
+    data_label: إرسال بيانات الحدث
+    triggers_divider: المحفزات
     actions_create: انشاء
     actions_update: تحديث
+    actions_delete: حذف
+    actions_login: تسجيل الدخول
     headers:
+      header: الترويسة
       value: قيمة
 no_fields_in_collection: 'لا توجد حقول في "{collection}" حتى الآن'
+no_value: لا توجد قيمة
 do_nothing: لا تفعل شيئا
 save_current_user_role: احفظ دور المستخدم الحالي
 save_current_datetime: أحفظ التاريخ/الوقت الحالي
+always_open: يعمل دائماً
+block: حَظْر
+inline: ضمن السياق
 comment: تعليق
+shares: مشاركات
+unlimited_usage: استخدام غير محدود
+no_shares: لا توجد مشاركات لإظهارها
+new_share: مشاركة جديدة
+expired: منتهية الصلاحية
+upcoming: القادم
+share: مشاركة
+shared_with_you: تم مشاركة عنصر معك
+shared_enter_passcode: أدخل رمز المرور الخاص بك للمتابعة...
+share_copy_link: نسخ الرابط
+share_copy_link_success: تم نسخ الرابط
+share_copy_link_error: تعذر نسخ الرابط
+share_send_link: إرسال الرابط
 referential_action_field_label_m2o: عند حذف {collection}...
 referential_action_field_label_o2m: عند إلغاء تحديد {collection}...
 referential_action_no_action: منع الحذف
 referential_action_cascade: حذف العنصر {collection} (تسلسلي)
 referential_action_set_default: تعيين {field} إلى قيمته الافتراضية
 choose_action: اختر الإجراء
+continue_label: متابعة
 editing_role: 'دور {role}'
 creating_webhook: إنشاء Webhook
+default_label: الافتراضي
+delete_label: حذف
 delete_are_you_sure: >-
   هذا الإجراء دائم ولا يمكن التراجع عنه. هل أنت متأكد من رغبتك في المتابعة؟
 delete_field_are_you_sure: >-
@@ -855,20 +1282,35 @@ duplicate: مكرر
 limit: الحد
 email: البريد الإلكتروني
 embed: تضمين
+fallback_icon: أيقونة احتياطية
 field: حقل | حقول
 file: ملف
 file_library: مكتبة الملفات
 forgot_password: نسيت كلمة المرور
 hidden: مخفي
+hidden_in_group: مخفي في {group}
 icon: أيقونة
 info: معلومات
+normal: عادي
+success: نجاح
 warning: تحذير
 danger: خطر
+colors:
+  purple: بنفسجي
+  blue: أزرق
+  green: أخضر
+  yellow: أصفر
+  orange: برتقالي
+  red: أحمر
+  black: أسود
+  gray: رمادي
+  white: أبيض
 junction_collection: مجموعة تلاقي
 latency: وقت الإستجابة
 login: تسجيل الدخول
 my_activity: نشاطي
 not_authenticated: لم تتم المصادقة
+authenticated: مصادق
 options: خيارات
 otp: كلمة السر لمرة واحدة OTP
 password: كلمة المرور
@@ -877,6 +1319,8 @@ relationship: العلاقة
 reset: إعادة تعيين
 reset_password: إعادة تعيين كلمة المرور
 revisions: المراجعات
+no_revisions: لا توجد تنقيحات حتى الآن
+no_logs: لا توجد سجلات حتى الآن
 revert: عودة
 save: حفظ
 schema: مخطط
@@ -890,18 +1334,55 @@ sign_out: تسجيل الخروج
 sign_out_confirm: هل أنت متأكد من رغبتك في تسجيل الخروج?
 something_went_wrong: حدث خطأ.
 sort_direction: الترتيب وفق الإتجاه
+export_location: موقع التصدير
+export_started: بدأ التصدير
+export_started_copy: لقد بدأ التصدير الخاص بك. سيتم إعلامك عندما يكون جاهز للتحميل.
 sort_asc: ترتيب تصاعدي
 sort_desc: ترتيب تنازلي
 template: قالب
+require_value_to_be_set: تتطلب القيمة ليتم تعيينها عند الإنشاء
 translation: الترجمة
+translation_placeholder: أدخل ترجمة...
 value: قيمة
 view_project: عرض المشروع
 report_error: الإبلاغ عن خطأ
+start: إبدأ
+table: الجدول
+list: قائمة
+search_filter: البحث والتصفية
+enable_search_filter: تمكين البحث والتصفية
+item_link: رابط العنصر
+show_link_to_item: إظهار رابط للعنصر
+navigate_to_item: الانتقال إلى العنصر
+undo_removed_item: التراجع عن إزالة العنصر
+remove_item: إزالة العنصر
+delete_item: حذف العنصر
 interfaces:
   filter:
+    name: فلترة
+    description: إعداد كائن التصفية.
     add_filter: إضافة فلتر
+    add_group: و / أو مجموعة
+    add_value: إضافة قيمة
+    logic_type_and: و
+    logic_type_or: أو
     all: الجميع
     any: أي
+    and: و
+    of_the_following: من التالي
+    no_rules: لا توجد قواعد مكونة
+    change_value: انقر لتغيير القيمة
+    placeholder: اسحب القواعد هنا
+    add_key_placeholder: أضف مفتاح واضغط على إدخال...
+  fields:
+    name: حقول
+  group-accordion:
+    name: أكورديون
+    description: عرض الحقول أو المجموعات كأقسام أكورديون
+    start: بدء
+    all_closed: تم إغلاق الكل
+    first_opened: تم فتح الأول
+    all_opened: تم فتح الكل
   presentation-links:
     links: روابط
     primary: الأساسي
@@ -913,6 +1394,9 @@ interfaces:
     description: اختر بين خيارات متعددة عبر مربعات الاختيار
     show_more: 'أظهر {count} أكثر'
     items_shown: العناصر المعروضة
+  select-multiple-checkbox-tree:
+    show_all: عرض الكل
+    show_selected: إظهار المحدد
   input-code:
     code: نص برمجي
     description: كتابة أو مشاركة الكود البرمجي
@@ -934,6 +1418,8 @@ interfaces:
     description: أدخل التواريخ والأوقات
     set_to_now: اضبط على الآن
     use_24: استخدم تنسيق 24 ساعة
+  system-fields:
+    select_a_collection: حدد مجموعة
   system-display-template:
     display-template: عرض القالب
     description: خلط النص الثابت وقيم الحقل الديناميكي
@@ -974,7 +1460,10 @@ interfaces:
     description: حدد أو ارفع صورة
   system-interface:
     interface: الواجهة
+  list-m2m:
+    many-to-many: كثير لكثير
   select-dropdown-m2o:
+    many-to-one: كثير إلى واحد
     description: حدد عنصر واحد ذو صلة
     display_template: عرض القالب
   input-rich-text-md:
@@ -990,7 +1479,7 @@ interfaces:
     description: حدد اختيار واحد من خيارات متعددة
   list:
     edit_fields: تعديل الحقول
-    field_name_placeholder: أدخل اسم الحقل...
+    sort: رتب
   slider:
     slider: شريط
     always_show_value: إظهار القيمة دائمًا
@@ -1000,7 +1489,6 @@ interfaces:
     auto_formatter: استخدام التنسيق التلقائي للعنوان
     alphabetize: رتب أبجديا
     alphabetize_label: فرض الترتيب الأبجدي
-    add_tags: إضافة وسوم...
   input:
     description: أدخل قيمة يدوياً
     mask: مقنع
@@ -1010,6 +1498,9 @@ interfaces:
     slug_label: اجعل رابط القيمة المدخلة آمن
   input-multiline:
     description: أدخل النص المتعدد الأسطر
+  input-translated-string:
+    input-translated-string: نصوص التّرجَمَة
+    search_placeholder: بحث...
   boolean:
     toggle: تبديل
     description: التبديل بين تشغيل وإيقاف التشغيل
@@ -1019,6 +1510,7 @@ interfaces:
   translations:
     display_template: عرض القالب
     no_collection: لا توجد مجموعة
+    enable: تفعيل
   user:
     user: مستخدم
     description: حدد مستخدم directus موجود
@@ -1033,6 +1525,8 @@ interfaces:
     options_override: تجاوز الخيارات
   input-autocomplete-api:
     rate: معدل
+  system-token:
+    system-token: الرمز المميز
 displays:
   translations:
     translations: الترجمة
@@ -1059,6 +1553,7 @@ displays:
     short: قصير
     relative: نسبي
     relative_label: 'أظهر الوقت النسبي، مثال: قبل 5 دقائق'
+    suffix: لاحقة
   file:
     file: ملف
     description: اعرض الملفات
@@ -1068,7 +1563,17 @@ displays:
   formatted-value:
     formatted-value: قيمة منسقة
     description: عرض نسخة منسقة من النص
-    format_title: تنسيق العنوان
+    format: التنسيق
+    font: الخط
+    font_serif: خط سيريف Serif
+    font_monospace: Monospace
+    bold: عريض
+    italic: خط مائل
+    prefix: بادئة
+    suffix: لاحقة
+    color: لون
+    icon: أيقونة
+    text: نص
   icon:
     icon: أيقونة
     description: عرض أيقونة
@@ -1107,7 +1612,6 @@ layouts:
     subtitle: الترجمة
   tabular:
     tabular: الجدول
-    fields: حقول
     spacing: المسافة
     comfortable: مريحة
     compact: مضغوط
@@ -1116,6 +1620,54 @@ layouts:
     calendar: تقويم
     start_date_field: حقل تاريخ البداية
     end_date_field: حقل تاريخ الإنتهاء
+  kanban:
+    advanced: متقدم
+both: كل منهما
 panels:
   label:
     name: تسمية
+operations:
+  item-delete:
+    query: الاستعلام
+  item-read:
+    name: قراءة البيانات
+    description: قراءة العناصر من قاعدة البيانات
+    key: المعرفات
+    query: الاستعلام
+    emit_events: إرسال الأحداث
+  item-update:
+    name: تحديث البيانات
+    description: تحديث العناصر في قاعدة البيانات
+    emit_events: إرسال الأحداث
+    key: المعرفات
+    payload: حمولة
+    query: الاستعلام
+  log:
+    message: الرسالة
+  mail:
+    name: إرسال بريد إلكتروني
+    description: إرسال بريد إلكتروني إلى شخص واحد أو أكثر
+    to: إلى
+    to_placeholder: إضافة عناوين البريد الإلكتروني واضغط على إدخال...
+    body: النص
+  notification:
+    name: إرسال إشعار
+    description: إرسال إشعار داخل التطبيق إلى واحد أو أكثر من المستخدمين
+    recipient: مستخدم
+    message: الرسالة
+  request:
+    description: "تقديم طلب إلى عنوان URL"
+    url: الرابط
+    url_placeholder: https://example.com/example
+    method: الطريقة
+    data: البيانات
+    headers: ترويسات
+    header: الترويسة
+    header_placeholder: الترخيص...
+    value_placeholder: Bearer eyJhbGciOi...
+  sleep:
+    name: النوم
+  trigger:
+    flows: التدفقات
+    flow: التدفق
+    data: البيانات

@@ -1,7 +1,12 @@
+---
+description: A guide on how to build custom Display Extensions in Directus.
+readTime: 4 min read
+---
+
 # Custom Displays <small></small>
 
 > Displays are small inline components that allow you to create new ways of viewing field values throughout the App.
-> [Learn more about Displays](/getting-started/glossary/#displays).
+> [Learn more about Displays](/getting-started/glossary#displays).
 
 ## Extension Entrypoint
 
@@ -29,14 +34,14 @@ export default {
 
 - `id` — The unique key for this display. It is good practice to scope proprietary displays with an author prefix.
 - `name` — The human-readable name for this display.
-- `icon` — An icon name from the [material icon set](/getting-started/glossary/#material-icons), or the extended list of
+- `icon` — An icon name from the [material icon set](/getting-started/glossary#material-icons), or the extended list of
   Directus custom icons.
 - `description` — A short description (<80 characters) of this display shown in the App.
 - `component` — A reference to your display component.
 - `options` — The options of your display. Can be either an options object or a dedicated Vue component.
-- `types` — A CSV of supported [types](/concepts/types/).
-- `groups` — An array of field-groups. Accepts `standard`, `file`, `files`, `m2o`, `o2m`, `m2a`, `translations`.
-  Defaults to `standard`.
+- `types` — An array of supported [types](/getting-started/glossary#types).
+- `localTypes` — An array of local types. Accepts `standard`, `file`, `files`, `m2o`, `o2m`, `m2m`, `m2a`,
+  `presentation`, `translations` and `group`. Defaults to `standard`.
 - `fields` — If this option is set, the display will fetch relational fields. Can either be an array of fields or a
   function that returns an array of fields.
 

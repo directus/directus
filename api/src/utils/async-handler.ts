@@ -1,22 +1,6 @@
-import { ErrorRequestHandler, RequestHandler } from 'express';
+import type { RequestHandler, Request, Response, NextFunction } from 'express';
 
-/**
- * Handles promises in routes.
- */
-function asyncHandler(handler: RequestHandler): RequestHandler;
-function asyncHandler(handler: ErrorRequestHandler): ErrorRequestHandler;
-function asyncHandler(handler: RequestHandler | ErrorRequestHandler): RequestHandler | ErrorRequestHandler {
-	if (handler.length === 2 || handler.length === 3) {
-		const scoped: RequestHandler = (req, res, next) =>
-			Promise.resolve((handler as RequestHandler)(req, res, next)).catch(next);
-		return scoped;
-	} else if (handler.length === 4) {
-		const scoped: ErrorRequestHandler = (err, req, res, next) =>
-			Promise.resolve((handler as ErrorRequestHandler)(err, req, res, next)).catch(next);
-		return scoped;
-	} else {
-		throw new Error(`Failed to asyncHandle() function "${handler.name}"`);
-	}
-}
+const asyncHandler = (fn: RequestHandler) => (req: Request, res: Response, next: NextFunction) =>
+	Promise.resolve(fn(req, res, next)).catch(next);
 
 export default asyncHandler;

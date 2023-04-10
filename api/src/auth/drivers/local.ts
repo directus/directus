@@ -1,25 +1,29 @@
-import { Router } from 'express';
+import type { Accountability } from '@directus/types';
 import argon2 from 'argon2';
-import ms from 'ms';
+import { Router } from 'express';
 import Joi from 'joi';
-import { AuthDriver } from '../auth';
-import { User, SessionData } from '../../types';
-import { InvalidCredentialsException, InvalidPayloadException } from '../../exceptions';
-import { AuthenticationService } from '../../services';
-import asyncHandler from '../../utils/async-handler';
-import env from '../../env';
-import { respond } from '../../middleware/respond';
+import { performance } from 'perf_hooks';
+import { COOKIE_OPTIONS } from '../../constants.js';
+import env from '../../env.js';
+import { InvalidCredentialsException, InvalidPayloadException } from '../../exceptions/index.js';
+import { respond } from '../../middleware/respond.js';
+import { AuthenticationService } from '../../services/authentication.js';
+import type { User } from '../../types/index.js';
+import asyncHandler from '../../utils/async-handler.js';
+import { getIPFromReq } from '../../utils/get-ip-from-req.js';
+import { stall } from '../../utils/stall.js';
+import { AuthDriver } from '../auth.js';
 
 export class LocalAuthDriver extends AuthDriver {
 	async getUserID(payload: Record<string, any>): Promise<string> {
-		if (!payload.email) {
+		if (!payload['email']) {
 			throw new InvalidCredentialsException();
 		}
 
 		const user = await this.knex
 			.select('id')
 			.from('directus_users')
-			.whereRaw('LOWER(??) = ?', ['email', payload.email.toLowerCase()])
+			.whereRaw('LOWER(??) = ?', ['email', payload['email'].toLowerCase()])
 			.first();
 
 		if (!user) {
@@ -35,16 +39,15 @@ export class LocalAuthDriver extends AuthDriver {
 		}
 	}
 
-	async login(user: User, payload: Record<string, any>): Promise<SessionData> {
-		await this.verify(user, payload.password);
-		return null;
+	override async login(user: User, payload: Record<string, any>): Promise<void> {
+		await this.verify(user, payload['password']);
 	}
 }
 
 export function createLocalAuthRouter(provider: string): Router {
 	const router = Router();
 
-	const loginSchema = Joi.object({
+	const userLoginSchema = Joi.object({
 		email: Joi.string().email().required(),
 		password: Joi.string().required(),
 		mode: Joi.string().valid('cookie', 'json'),
@@ -54,20 +57,29 @@ export function createLocalAuthRouter(provider: string): Router {
 	router.post(
 		'/',
 		asyncHandler(async (req, res, next) => {
-			const accountability = {
-				ip: req.ip,
-				userAgent: req.get('user-agent'),
+			const STALL_TIME = env['LOGIN_STALL_TIME'];
+			const timeStart = performance.now();
+
+			const accountability: Accountability = {
+				ip: getIPFromReq(req),
 				role: null,
 			};
+
+			const userAgent = req.get('user-agent');
+			if (userAgent) accountability.userAgent = userAgent;
+
+			const origin = req.get('origin');
+			if (origin) accountability.origin = origin;
 
 			const authenticationService = new AuthenticationService({
 				accountability: accountability,
 				schema: req.schema,
 			});
 
-			const { error } = loginSchema.validate(req.body);
+			const { error } = userLoginSchema.validate(req.body);
 
 			if (error) {
+				await stall(STALL_TIME, timeStart);
 				throw new InvalidPayloadException(error.message);
 			}
 
@@ -84,20 +96,14 @@ export function createLocalAuthRouter(provider: string): Router {
 			} as Record<string, Record<string, any>>;
 
 			if (mode === 'json') {
-				payload.data.refresh_token = refreshToken;
+				payload['data']!['refresh_token'] = refreshToken;
 			}
 
 			if (mode === 'cookie') {
-				res.cookie(env.REFRESH_TOKEN_COOKIE_NAME, refreshToken, {
-					httpOnly: true,
-					domain: env.REFRESH_TOKEN_COOKIE_DOMAIN,
-					maxAge: ms(env.REFRESH_TOKEN_TTL as string),
-					secure: env.REFRESH_TOKEN_COOKIE_SECURE ?? false,
-					sameSite: (env.REFRESH_TOKEN_COOKIE_SAME_SITE as 'lax' | 'strict' | 'none') || 'strict',
-				});
+				res.cookie(env['REFRESH_TOKEN_COOKIE_NAME'], refreshToken, COOKIE_OPTIONS);
 			}
 
-			res.locals.payload = payload;
+			res.locals['payload'] = payload;
 
 			return next();
 		}),

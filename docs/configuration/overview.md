@@ -1,6 +1,18 @@
-# Configuring the Platform
+# Overview
 
-> The vast flexibility of Directus is due to its thoughtful configuration options. This section guides administrators
-> through the process of tailoring a newly installed project to your exact needs.
+> Settings Module gives admins ability to bring the app to life. Data models, roles and permissions, flows,
+> translations, branding and whitelabeling, and beyond
 
-## Config Options
+<!-- Intro Video -->
+
+## Project Settings
+
+## Data Model
+
+## Roles & Permissions
+
+## Presets and Bookmarks
+
+## Translation Strings
+
+## Flows

@@ -1,34 +1,29 @@
-import { defineLayout } from '@directus/shared/utils';
+import { useRelationsStore } from '@/stores/relations';
+import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
+import { saveAsCSV } from '@/utils/save-as-csv';
+import { syncRefProperty } from '@/utils/sync-ref-property';
+import { formatCollectionItemsCount } from '@/utils/format-collection-items-count';
+import { useCollection, useItems, useSync } from '@directus/composables';
+import { defineLayout, getFieldsFromTemplate } from '@directus/utils';
+import { clone } from 'lodash';
+import { computed, ref, toRefs } from 'vue';
+import CardsActions from './actions.vue';
 import CardsLayout from './cards.vue';
 import CardsOptions from './options.vue';
-import CardsActions from './actions.vue';
-
-import { useI18n } from 'vue-i18n';
-import { toRefs, computed, ref } from 'vue';
-import { useCollection } from '@directus/shared/composables';
-import { useItems } from '@directus/shared/composables';
-import { getFieldsFromTemplate } from '@directus/shared/utils';
-import { useRelationsStore } from '@/stores/';
-
-import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
-import { clone } from 'lodash';
-import { useSync } from '@directus/shared/composables';
 import { LayoutOptions, LayoutQuery } from './types';
-import { syncRefProperty } from '@/utils/sync-ref-property';
 
 export default defineLayout<LayoutOptions, LayoutQuery>({
 	id: 'cards',
 	name: '$t:layouts.cards.cards',
 	icon: 'grid_4',
 	component: CardsLayout,
+	headerShadow: false,
 	slots: {
 		options: CardsOptions,
 		sidebar: () => undefined,
 		actions: CardsActions,
 	},
 	setup(props, { emit }) {
-		const { t, n } = useI18n();
-
 		const relationsStore = useRelationsStore();
 
 		const selection = useSync(props, 'selection', emit);
@@ -58,36 +53,19 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		const { size, icon, imageSource, title, subtitle, imageFit } = useLayoutOptions();
 		const { sort, limit, page, fields } = useLayoutQuery();
 
-		const { items, loading, error, totalPages, itemCount, totalCount, getItems } = useItems(collection, {
-			sort,
-			limit,
-			page,
-			fields,
-			filter,
-			search,
-		});
+		const { items, loading, error, totalPages, itemCount, totalCount, getItems, getTotalCount, getItemCount } =
+			useItems(collection, {
+				sort,
+				limit,
+				page,
+				fields,
+				filter,
+				search,
+			});
 
 		const showingCount = computed(() => {
-			if ((itemCount.value || 0) < (totalCount.value || 0) && filterUser.value) {
-				if (itemCount.value === 1) {
-					return t('one_filtered_item');
-				}
-				return t('start_end_of_count_filtered_items', {
-					start: n((+page.value - 1) * limit.value + 1),
-					end: n(Math.min(page.value * limit.value, itemCount.value || 0)),
-					count: n(itemCount.value || 0),
-				});
-			}
-
-			if (itemCount.value === 1) {
-				return t('one_item');
-			}
-
-			return t('start_end_of_count_items', {
-				start: n((+page.value - 1) * limit.value + 1),
-				end: n(Math.min(page.value * limit.value, itemCount.value || 0)),
-				count: n(itemCount.value || 0),
-			});
+			const filtering = Boolean((itemCount.value || 0) < (totalCount.value || 0) && filterUser.value);
+			return formatCollectionItemsCount(itemCount.value || 0, page.value, limit.value, filtering);
 		});
 
 		const width = ref(0);
@@ -127,6 +105,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			resetPresetAndRefresh,
 			filter,
 			search,
+			download,
 		};
 
 		async function resetPresetAndRefresh() {
@@ -136,6 +115,13 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		function refresh() {
 			getItems();
+			getTotalCount();
+			getItemCount();
+		}
+
+		function download() {
+			if (!collection.value) return;
+			saveAsCSV(collection.value, fields.value, items.value);
 		}
 
 		function toPage(newPage: number) {

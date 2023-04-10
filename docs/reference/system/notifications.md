@@ -1,29 +1,16 @@
 ---
+description: REST and GraphQL API documentation on the Notifications collection in Directus.
+readTime: 5 min read
 pageClass: page-reference
 ---
 
 # Notifications
 
-<div class="two-up">
-<div class="left">
-
 > Notifications allow you to send/receive messages to/from other users of the platform.
-
-</div>
-<div class="right">
-
-[[toc]]
-
-</div>
-</div>
 
 ---
 
 ## The Notification Object
-
-<div class="two-up">
-<div class="left">
-<div class="definitions">
 
 `id` **integer**\
 Primary key of the revision.
@@ -52,10 +39,6 @@ Collection this notification references.
 `item` **string**\
 Primary key of the item this notification references.
 
-</div>
-</div>
-<div class="right">
-
 ```json
 {
 	"id": 2,
@@ -70,17 +53,11 @@ Primary key of the item this notification references.
 }
 ```
 
-</div>
-</div>
-
 ---
 
 ## List Notifications
 
 List all notifications that exist in Directus.
-
-<div class="two-up">
-<div class="left">
 
 ### Query Parameters
 
@@ -88,11 +65,8 @@ Supports all [global query parameters](/reference/query).
 
 ### Returns
 
-An array of up to [limit](/reference/query/#limit) [notification objects](#the-notification-object). If no items are
+An array of up to [limit](/reference/query#limit) [notification objects](#the-notification-object). If no items are
 available, data will be an empty array.
-
-</div>
-<div class="right">
 
 ### REST API
 
@@ -101,7 +75,7 @@ GET /notifications
 SEARCH /notifications
 ```
 
-[Learn more about SEARCH ->](/reference/introduction/#search-http-method)
+[Learn more about SEARCH ->](/reference/introduction#search-http-method)
 
 ### GraphQL
 
@@ -127,17 +101,11 @@ query {
 }
 ```
 
-</div>
-</div>
-
 ---
 
 ## Retrieve a notification
 
 List an existing notification by primary key.
-
-<div class="two-up">
-<div class="left">
 
 ### Query Parameters
 
@@ -146,9 +114,6 @@ Supports all [global query parameters](/reference/query).
 ### Returns
 
 Returns the requested [notification object](#the-notification-object).
-
-</div>
-<div class="right">
 
 ### REST API
 
@@ -188,17 +153,11 @@ query {
 }
 ```
 
-</div>
-</div>
-
 ---
 
 ## Create a Notification
 
 Create a new notification.
-
-<div class="two-up">
-<div class="left">
 
 ### Query Parameters
 
@@ -211,9 +170,6 @@ A partial [notification object](#the-notification-object).
 ### Returns
 
 Returns the [notification object](#the-notification-object) for the created notification.
-
-</div>
-<div class="right">
 
 ### REST API
 
@@ -255,17 +211,11 @@ mutation {
 }
 ```
 
-</div>
-</div>
-
 ---
 
 ## Create Multiple Notifications
 
 Create multiple new notifications.
-
-<div class="two-up">
-<div class="left">
 
 ### Query Parameters
 
@@ -278,9 +228,6 @@ An array of partial [notification objects](#the-notification-object).
 ### Returns
 
 Returns the [notification object](#the-notification-object) for the created notification.
-
-</div>
-<div class="right">
 
 ### REST API
 
@@ -343,9 +290,6 @@ mutation {
 }
 ```
 
-</div>
-</div>
-
 ---
 
 ## Update a Notification
@@ -359,9 +303,6 @@ notification email to be sent.
 
 :::
 
-<div class="two-up">
-<div class="left">
-
 ### Query Parameters
 
 Supports all [global query parameters](/reference/query).
@@ -373,9 +314,6 @@ A partial [notification object](#the-notification-object).
 ### Returns
 
 Returns the [notification object](#the-notification-object) for the updated notification.
-
-</div>
-<div class="right">
 
 ### REST API
 
@@ -416,17 +354,11 @@ mutation {
 }
 ```
 
-</div>
-</div>
-
 ---
 
 ## Update Multiple Notifications
 
 Update multiple existing notifications.
-
-<div class="two-up">
-<div class="left">
 
 ### Query Parameters
 
@@ -434,22 +366,15 @@ Supports all [global query parameters](/reference/query).
 
 ### Request Body
 
-<div class="definitions">
-
 `keys` **Required**\
 Array of primary keys of the notifications you'd like to update.
 
 `data` **Required**\
 Any of [the notification object](#the-notification-object)'s properties.
 
-</div>
-
 ### Returns
 
 Returns the [notification objects](#the-notification-object) for the updated notifications.
-
-</div>
-<div class="right">
 
 ### REST API
 
@@ -493,24 +418,15 @@ mutation {
 }
 ```
 
-</div>
-</div>
-
 ---
 
 ## Delete a Notification
 
 Delete an existing notification.
 
-<div class="two-up">
-<div class="left">
-
 ### Returns
 
 Empty body.
-
-</div>
-<div class="right">
 
 ### REST API
 
@@ -546,17 +462,11 @@ mutation {
 }
 ```
 
-</div>
-</div>
-
 ---
 
 ## Delete Multiple Notifications
 
 Delete multiple existing notifications.
-
-<div class="two-up">
-<div class="left">
 
 ### Request Body
 
@@ -565,9 +475,6 @@ An array of notification primary keys
 ### Returns
 
 Empty body.
-
-</div>
-<div class="right">
 
 ### REST API
 
@@ -603,6 +510,3 @@ mutation {
 	}
 }
 ```
-
-</div>
-</div>

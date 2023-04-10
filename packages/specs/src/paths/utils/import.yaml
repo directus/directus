@@ -1,0 +1,25 @@
+post:
+  summary: Import Items
+  description: Import multiple records from a JSON or CSV file into a collection.
+  operationId: import
+  parameters:
+    - description: Collection identifier
+      in: path
+      name: collection
+      required: true
+      schema:
+        type: string
+  requestBody:
+    content:
+      multipart/form-data:
+        schema:
+          type: object
+          properties:
+            file:
+              type: string
+              format: binary
+  responses:
+    '200':
+      description: Successful request
+  tags:
+    - Utilities

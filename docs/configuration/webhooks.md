@@ -1,12 +1,25 @@
+---
+description:
+  Webhooks are configured within the App (no code required) and send HTTP requests when a specific event is triggered.
+readTime: 2 min read
+---
+
 # Webhooks
 
 > Webhooks are configured within the App (no code required) and send HTTP requests when a specific event is triggered.
 > [Learn more about Webhooks](https://en.wikipedia.org/wiki/Webhook).
 
+:::warning
+
+Webhooks are a deprecated feature and will be removed from the platform. This functionality has been fully replaced by
+[Flows](/configuration/flows.md).
+
+:::
+
 ## Creating Webhooks
 
-1. Navigate to **Settings > Webhooks**
-2. Click the **Create Webhook** action button in the header
+1. Navigate to **Settings <span mi icon dark>chevron_right</span> Webhooks**
+2. Click <span mi btn>add</span> in the header
 3. Complete the **other webhook form fields** outlined below
 
 - **Name** — A name to help remember this webhooks purpose
@@ -20,13 +33,15 @@
 
 ## Disabling Webhooks
 
-1. Navigate to **Settings > Webhooks > [Webhook]**
+1. Navigate to **Settings <span mi icon dark>chevron_right</span> Webhooks <span mi icon dark>chevron_right</span>
+   [Webhook]**
 2. Set the **status field to inactive**
 
 ## Deleting Webhooks
 
-1. Navigate to **Settings > Webhooks > [Webhook]**
-2. Click the red **Delete Webhook** action button in the header
+1. Navigate to **Settings <span mi icon dark>chevron_right</span> Webhooks <span mi icon dark>chevron_right</span>
+   [Webhook]**
+2. Click <span mi btn dngr>delete</span> in the header
 3. Confirm this decision by clicking **Delete** in the dialog
 
 ::: danger Irreversible Change

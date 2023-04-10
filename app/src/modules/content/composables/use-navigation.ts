@@ -1,4 +1,4 @@
-import { useCollectionsStore } from '@/stores/';
+import { useCollectionsStore } from '@/stores/collections';
 import { Ref, ref, watch } from 'vue';
 
 let showHidden: Ref<boolean>;

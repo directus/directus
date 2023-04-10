@@ -1,3 +1,8 @@
+---
+description: A guide on how to build custom hooks in Directus.
+readTime: 7 min read
+---
+
 # Custom API Hooks <small></small>
 
 > Custom API Hooks allow running custom logic when a specified event occurs within your project. There are different
@@ -26,12 +31,13 @@ export default ({ filter, action }) => {
 
 Your hook can trigger on a variety of different events. An event is defined by its type and its name.
 
-There are four event types to choose from:
+There are five event types to choose from:
 
 - [Filter](#filter)
 - [Action](#action)
 - [Init](#init)
 - [Schedule](#schedule)
+- [Embed](#embed)
 
 Use filter hooks when you want the hook to fire before the event. Use action hooks when you want the hook to fire after
 the event.
@@ -76,7 +82,7 @@ The context object has the following properties:
 ::: warning Performance
 
 Filters can impact performance when not carefully implemented, as they are executed in a blocking manner. This applies
-in particular to filters firing on `read` events.
+in particular to filters firing on `read` events, where a single request can result in a large amount of database reads.
 
 :::
 
@@ -101,16 +107,9 @@ The context object has the following properties:
 - `schema` — The current API schema in use
 - `accountability` — Information about the current user
 
-::: warning Performance
-
-Actions firing on `read` events can impact performance when not carefully implemented, as a single request can result in
-a large amount of database reads.
-
-:::
-
 ### Init
 
-Init hooks execute at a defined point within the lifecycle of Directus. Use init hook objects to inject logic into
+Init hooks execute at a defined point within the life cycle of Directus. Use init hook objects to inject logic into
 internal services.
 
 The init register function receives two parameters:
@@ -142,29 +141,75 @@ export default ({ schedule }) => {
 };
 ```
 
+### Embed
+
+Inject custom JavaScript or CSS into the `<head>` and `<body>` tags within the Data Studio.
+
+The embed register function receives two parameters:
+
+- The position to embed, either `head` or `body`.
+- The value to embed, either a string or a function that returns a string.
+
+Below is an example of registering embed hooks.
+
+```js
+export default ({ embed }, { env }) => {
+	// Google Tag Manager Example
+	embed(
+		'head',
+		() => `<!-- Google Tag Manager -->
+		<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','${env.GTM_ID}');</script>
+		<!-- End Google Tag Manager -->`
+	);
+
+	// Sentry Example
+	embed(
+		'head',
+		'<script src="https://browser.sentry-cdn.com/7.21.1/bundle.min.js" integrity="sha384-xOL2QebDu7YNMtC6jW2i5RpQ5RcWOyQMTwrWBiEDezpjjXM7mXhYGz3vze77V91Q" crossorigin="anonymous"></script>'
+	);
+	embed(
+		'body',
+		() => `<script>
+		Sentry.init({
+			dsn: "${env.SENTRY_DSN}" // "https://examplePublicKey@o0.ingest.sentry.io/0",
+			release: "my-project-name@${env.npm_package_version}",
+			integrations: [new Sentry.BrowserTracing()],
+
+			// We recommend adjusting this value in production, or using tracesSampler
+			// for finer control
+			tracesSampleRate: 1.0,
+		});
+		</script>`
+	);
+};
+```
+
 ## Available Events
 
 ### Filter Events
 
-| Name                          | Payload              | Meta                                 |
-| ----------------------------- | -------------------- | ------------------------------------ |
-| `request.not_found`           | `false`              | `request`, `response`                |
-| `request.error`               | The request errors   | --                                   |
-| `database.error`              | The database error   | `client`                             |
-| `auth.login`                  | The login payload    | `status`, `user`, `provider`         |
-| `auth.jwt`                    | The auth token       | `status`, `user`, `provider`, `type` |
-| `(<collection>.)items.read`   | The read item        | `collection`                         |
-| `(<collection>.)items.create` | The new item         | `collection`                         |
-| `(<collection>.)items.update` | The updated item     | `keys`, `collection`                 |
-| `(<collection>.)items.delete` | The keys of the item | `collection`                         |
-| `<system-collection>.create`  | The new item         | `collection`                         |
-| `<system-collection>.update`  | The updated item     | `keys`, `collection`                 |
-| `<system-collection>.delete`  | The keys of the item | `collection`                         |
+| Name                          | Payload                         | Meta                                 |
+| ----------------------------- | ------------------------------- | ------------------------------------ |
+| `request.not_found`           | `false`                         | `request`, `response`                |
+| `request.error`               | The request errors              | --                                   |
+| `database.error`              | The database error              | `client`                             |
+| `auth.login`                  | The login payload               | `status`, `user`, `provider`         |
+| `auth.jwt`                    | The auth token                  | `status`, `user`, `provider`, `type` |
+| `authenticate`                | The empty accountability object | `req`                                |
+| `(<collection>.)items.query`  | The items query                 | `collection`                         |
+| `(<collection>.)items.read`   | The read item                   | `query`, `collection`                |
+| `(<collection>.)items.create` | The new item                    | `collection`                         |
+| `(<collection>.)items.update` | The updated item                | `keys`, `collection`                 |
+| `(<collection>.)items.delete` | The keys of the item            | `collection`                         |
+| `<system-collection>.create`  | The new item                    | `collection`                         |
+| `<system-collection>.update`  | The updated item                | `keys`, `collection`                 |
+| `<system-collection>.delete`  | The keys of the item            | `collection`                         |
 
 ::: tip System Collections
 
-`<system-collection>` should be replaced with one of the system collection names `activity`, `collections`, `fields`,
-`folders`, `permissions`, `presets`, `relations`, `revisions`, `roles`, `settings`, `users` or `webhooks`.
+`<system-collection>` should be replaced with one of the system collection names `activity`, `collections`,
+`dashboards`, `fields`, `files` (except create/update), `flows`, `folders`, `notifications`, `operations`, `panels`,
+`permissions`, `presets`, `relations`, `revisions`, `roles`, `settings`, `shares`, `users` or `webhooks`.
 
 :::
 
@@ -180,15 +225,17 @@ export default ({ schedule }) => {
 | `(<collection>.)items.read`   | `payload`, `query`, `collection`                    |
 | `(<collection>.)items.create` | `payload`, `key`, `collection`                      |
 | `(<collection>.)items.update` | `payload`, `keys`, `collection`                     |
-| `(<collection>.)items.delete` | `payload`, `collection`                             |
+| `(<collection>.)items.delete` | `keys`, `collection`                                |
+| `(<collection>.)items.sort`   | `collection`, `item`, `to`                          |
 | `<system-collection>.create`  | `payload`, `key`, `collection`                      |
 | `<system-collection>.update`  | `payload`, `keys`, `collection`                     |
-| `<system-collection>.delete`  | `payload`, `collection`                             |
+| `<system-collection>.delete`  | `keys`, `collection`                                |
 
 ::: tip System Collections
 
-`<system-collection>` should be replaced with one of the system collection names `activity`, `collections`, `fields`,
-`folders`, `permissions`, `presets`, `relations`, `revisions`, `roles`, `settings`, `users` or `webhooks`.
+`<system-collection>` should be replaced with one of the system collection names `activity`, `collections`,
+`dashboards`, `fields`, `files` (except create/update), `flows`, `folders`, `notifications`, `operations`, `panels`,
+`permissions`, `presets`, `relations`, `revisions`, `roles`, `settings`, `shares`, `users` or `webhooks`.
 
 :::
 
@@ -215,6 +262,7 @@ The register function receives an object containing the type-specific register f
 - `action` — Listen for an action event
 - `init` — Listen for an init event
 - `schedule` — Execute a function at certain points in time
+- `embed` — Inject custom JavaScript or CSS within the Data Studio
 
 The second parameter is a context object with the following properties:
 
@@ -224,8 +272,19 @@ The second parameter is a context object with the following properties:
 - `getSchema` — Async function that reads the full available schema for use in services
 - `env` — Parsed environment variables
 - `logger` — [Pino](https://github.com/pinojs/pino) instance.
+- `emitter` — [Event emitter](https://github.com/directus/directus/blob/main/api/src/emitter.ts) instance that can be
+  used to trigger custom events for other extensions.
 
-## Example: Sync with External
+::: warning Event loop
+
+When implementing custom events using the emitter make sure you never directly or indirectly emit the same event your
+hook is currently handling as that would result in an infinite loop!
+
+:::
+
+## Examples:
+
+### Sync with External
 
 ```js
 import axios from 'axios';
@@ -235,10 +294,10 @@ export default ({ filter }, { services, exceptions }) => {
 	const { ServiceUnavailableException, ForbiddenException } = exceptions;
 
 	// Sync with external recipes service, cancel creation on failure
-	filter('items.create', async (input, { collection }, { schema }) => {
+	filter('items.create', async (input, { collection }, { schema, database }) => {
 		if (collection !== 'recipes') return input;
 
-		const mailService = new MailService({ schema });
+		const mailService = new MailService({ schema, knex: database });
 
 		try {
 			await axios.post('https://example.com/recipes', input);
@@ -260,4 +319,29 @@ export default ({ filter }, { services, exceptions }) => {
 		return input;
 	});
 };
+```
+
+### Add Sentry monitoring
+
+```js
+import { defineHook } from '@directus/extensions-sdk';
+import * as Sentry from '@sentry/node';
+import '@sentry/tracing';
+
+export default defineHook(({ init }, { env }) => {
+    const { SENTRY_DSN } = env;
+    Sentry.init({
+        dns: SENTRY_DSN
+    });
+    
+    init('routes.before', ({ app }) => {
+        app.use(Sentry.Handlers.requestHandler());
+        console.log('-- Sentry Request Handler Added --');
+    });
+
+    init('routes.custom.after', ({ app }) => {
+        app.use(Sentry.Handlers.errorHandler());
+        console.log('-- Sentry Error Handler Added --');
+    });
+});
 ```

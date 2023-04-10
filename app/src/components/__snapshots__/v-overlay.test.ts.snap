@@ -1,0 +1,8 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Mount component 1`] = `
+"<div data-v-500f2fb5=\\"\\" class=\\"v-overlay active has-click\\">
+  <div data-v-500f2fb5=\\"\\" class=\\"overlay\\"></div>
+  <div data-v-500f2fb5=\\"\\" class=\\"content\\">Slot Content</div>
+</div>"
+`;

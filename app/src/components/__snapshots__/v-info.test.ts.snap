@@ -1,0 +1,9 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Mount component 1`] = `
+"<div data-v-30215bfa=\\"\\" class=\\"v-info info\\">
+  <!--v-if-->
+  <h2 data-v-30215bfa=\\"\\" class=\\"title type-title\\">This is an info</h2>
+  <p data-v-30215bfa=\\"\\" class=\\"content\\">content</p>
+</div>"
+`;

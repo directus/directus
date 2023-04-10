@@ -1,0 +1,8 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Mount component 1`] = `
+"<div data-v-0b5afddc=\\"\\" class=\\"v-progress-circular\\"><svg data-v-0b5afddc=\\"\\" class=\\"circle\\" viewBox=\\"0 0 30 30\\">
+    <path data-v-0b5afddc=\\"\\" class=\\"circle-background\\" d=\\"M12.5,0A12.5,12.5,0,1,1,0,12.5,12.5,12.5,0,0,1,12.5,0Z\\" transform=\\"translate(2.5 2.5)\\"></path>
+    <path data-v-0b5afddc=\\"\\" class=\\"circle-path\\" style=\\"stroke-dasharray: 0, 78.5;\\" d=\\"M12.5,0A12.5,12.5,0,1,1,0,12.5,12.5,12.5,0,0,1,12.5,0Z\\" transform=\\"translate(2.5 2.5)\\"></path>
+  </svg>Slot Content</div>"
+`;

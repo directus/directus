@@ -1,30 +1,17 @@
 ---
+description: REST and GraphQL API documentation on the Presets collection in Directus.
+readTime: 5 min read
 pageClass: page-reference
 ---
 
 # Preset
 
-<div class="two-up">
-<div class="left">
-
 > Presets hold the preferences of individual users of the platform. This allows Directus to show and maintain custom
-> item listings and bookmarks for users of the app. [Learn more about Presets](/getting-started/glossary/#presets).
-
-</div>
-<div class="right">
-
-[[toc]]
-
-</div>
-</div>
+> item listings and bookmarks for users of the app. [Learn more about Presets](/getting-started/glossary#presets).
 
 ---
 
 ## The Preset Object
-
-<div class="two-up">
-<div class="left">
-<div class="definitions">
 
 `id` **uuid**\
 Primary key of the preset.
@@ -33,10 +20,10 @@ Primary key of the preset.
 The title of the bookmark. If this value is `null`, it's considered a preset instead of a bookmark.
 
 `user` **many-to-one**\
-User this preset applies to. Many-to-one to [users](/reference/system/users/).
+User this preset applies to. Many-to-one to [users](/reference/system/users).
 
 `role` **many-to-one**\
-Role this preset applies to. Many-to-one to [users](/reference/system/users/).
+Role this preset applies to. Many-to-one to [users](/reference/system/users).
 
 `collection` **string**\
 Collection this preset applies to.
@@ -55,10 +42,6 @@ The item query used by the layout. This structure is based on the used layout.
 
 `layout_options` **object**\
 The options used by the layout. This structure is based on the used layout.
-
-</div>
-</div>
-<div class="right">
 
 ```json
 {
@@ -90,17 +73,11 @@ The options used by the layout. This structure is based on the used layout.
 }
 ```
 
-</div>
-</div>
-
 ---
 
 ## List Presets
 
 List all presets that exist in Directus.
-
-<div class="two-up">
-<div class="left">
 
 ::: tip Permissions
 
@@ -115,11 +92,8 @@ Supports all [global query parameters](/reference/query).
 
 ### Returns
 
-An array of up to [limit](/reference/query/#limit) [preset objects](#the-preset-object). If no items are available, data
+An array of up to [limit](/reference/query#limit) [preset objects](#the-preset-object). If no items are available, data
 will be an empty array.
-
-</div>
-<div class="right">
 
 ### REST API
 
@@ -128,7 +102,7 @@ GET /presets
 SEARCH /presets
 ```
 
-[Learn more about SEARCH ->](/reference/introduction/#search-http-method)
+[Learn more about SEARCH ->](/reference/introduction#search-http-method)
 
 ### GraphQL
 
@@ -153,17 +127,11 @@ query {
 }
 ```
 
-</div>
-</div>
-
 ---
 
 ## Retrieve a preset
 
 List an existing preset by primary key.
-
-<div class="two-up">
-<div class="left">
 
 ### Query Parameters
 
@@ -172,9 +140,6 @@ Supports all [global query parameters](/reference/query).
 ### Returns
 
 Returns the requested [preset object](#the-preset-object).
-
-</div>
-<div class="right">
 
 ### REST API
 
@@ -211,17 +176,11 @@ query {
 }
 ```
 
-</div>
-</div>
-
 ---
 
 ## Create a Preset
 
 Create a new preset.
-
-<div class="two-up">
-<div class="left">
 
 ### Query Parameters
 
@@ -234,9 +193,6 @@ A partial [preset object](#the-preset-object).
 ### Returns
 
 Returns the [preset object](#the-preset-object) for the created preset.
-
-</div>
-<div class="right">
 
 ### REST API
 
@@ -279,17 +235,11 @@ mutation {
 }
 ```
 
-</div>
-</div>
-
 ---
 
 ## Create Multiple Presets
 
 Create multiple new presets.
-
-<div class="two-up">
-<div class="left">
 
 ### Query Parameters
 
@@ -302,9 +252,6 @@ An array of partial [preset objects](#the-preset-object).
 ### Returns
 
 Returns the [preset object](#the-preset-object) for the created preset.
-
-</div>
-<div class="right">
 
 ### REST API
 
@@ -365,17 +312,11 @@ mutation {
 }
 ```
 
-</div>
-</div>
-
 ---
 
 ## Update a Preset
 
 Update an existing preset.
-
-<div class="two-up">
-<div class="left">
 
 ### Query Parameters
 
@@ -388,9 +329,6 @@ A partial [preset object](#the-preset-object).
 ### Returns
 
 Returns the [preset object](#the-preset-object) for the updated preset.
-
-</div>
-<div class="right">
 
 ### REST API
 
@@ -431,17 +369,11 @@ mutation {
 }
 ```
 
-</div>
-</div>
-
 ---
 
 ## Update Multiple Presets
 
 Update multiple existing presets.
-
-<div class="two-up">
-<div class="left">
 
 ### Query Parameters
 
@@ -449,22 +381,15 @@ Supports all [global query parameters](/reference/query).
 
 ### Request Body
 
-<div class="definitions">
-
 `keys` **Required**\
 Array of primary keys of the presets you'd like to update.
 
 `data` **Required**\
 Any of [the preset object](#the-preset-object)'s properties.
 
-</div>
-
 ### Returns
 
 Returns the [preset objects](#the-preset-object) for the updated presets.
-
-</div>
-<div class="right">
 
 ### REST API
 
@@ -508,24 +433,15 @@ mutation {
 }
 ```
 
-</div>
-</div>
-
 ---
 
 ## Delete a Preset
 
 Delete an existing preset.
 
-<div class="two-up">
-<div class="left">
-
 ### Returns
 
 Empty body.
-
-</div>
-<div class="right">
 
 ### REST API
 
@@ -561,17 +477,11 @@ mutation {
 }
 ```
 
-</div>
-</div>
-
 ---
 
 ## Delete Multiple Presets
 
 Delete multiple existing presets.
-
-<div class="two-up">
-<div class="left">
 
 ### Request Body
 
@@ -580,9 +490,6 @@ An array of preset primary keys
 ### Returns
 
 Empty body.
-
-</div>
-<div class="right">
 
 ### REST API
 
@@ -618,6 +525,3 @@ mutation {
 	}
 }
 ```
-
-</div>
-</div>

@@ -1,13 +1,16 @@
+---
+description: A glossary of key Directus terminology.
+readTime: 15 min read
+---
+
 # Glossary
 
 > This is list of platform-specific terminology, and their meanings. Most are simply more approachable names for
 > technical database terms.
 
-[[toc]]
-
 ## Admin / Administrator
 
-An "Administrators" Role (with Admin access enabled) is included when you first install the platform. All admin roles
+An "Administrator" Role (with Admin access enabled) is included when you first install the platform. All admin roles
 bypass the permissions check, providing unrestricted access to all data within the App and API. Additionally, only roles
 with the admin option enabled can manage Settings within the app.
 
@@ -15,8 +18,8 @@ with the admin option enabled can manage Settings within the app.
 
 [Fields](#fields) that do not map directly to an actual database column are called "alias" fields. For example,
 presentation fields (such as dividers and groups) and certain relational types that display data stored elsewhere (such
-as [One-to-Many (O2M)](/configuration/relationships/#one-to-many-o2m) and
-[Many-to-Many (M2M)](/configuration/relationships/#many-to-many-m2m)).
+as [One-to-Many (O2M)](/configuration/data-model/relationships#one-to-many-o2m) and
+[Many-to-Many (M2M)](/configuration/data-model/relationships#many-to-many-m2m)).
 
 ## API
 
@@ -38,24 +41,24 @@ tracks the event type, user, timestamp, IP address, user-agent, and any associat
 Collections are containers for specific types of Items and contain any number of fields. Each collection represents a
 **table** in your database. By default, the [title formatter](#title-formatter) is used to display any existing database
 table names as human-readable collection titles. There are also "folder" collections that are
-[exclusively used for organizational purposes](/configuration/data-model/#sorting-grouping), and don't hold any data
+[exclusively used for organizational purposes](/configuration/data-model#sorting-grouping), and don't hold any data
 themselves.
 
 Collections can be organized in any way that is appropriate for your project. You can architect them platform-specific
-(eg: _pages_ of a website), or in a more platform-agnostic way (eg: raw _customers_ of your business). While there's no
-right or wrong way to structure your data-model, we recommend keeping your data as agnostic as possible so it is easier
-to repurpose in the future. **In short, learn to see your data as its own asset — not only through the lens of your
-immediate project needs**.
+(e.g., _pages_ of a website), or in a more platform-agnostic way (e.g., raw _customers_ of your business). While there's
+no right or wrong way to structure your data-model, we recommend keeping your data as agnostic as possible so it is
+easier to repurpose in the future. **In short, learn to see your data as its own asset — not only through the lens of
+your immediate project needs**.
 
 The only requirement of a collection is that it must contain a [Primary Key](#primary-key-pk) field. This field stores a
 unique value that is used to reference the Collection's items throughout the database/platform.
 
 ### Relevant Guides
 
-- [Creating a Collection](/configuration/data-model/#creating-a-collection)
-- [Configuring a Collection](/configuration/data-model/#configuring-a-collection)
-- [Deleting a Collection](/configuration/data-model/#deleting-a-collection)
-- [Adjusting a Collection Layout](/configuration/data-model/#adjusting-a-collection-layout)
+- [Creating a Collection](/configuration/data-model#creating-a-collection)
+- [Configuring a Collection](/configuration/data-model#configuring-a-collection)
+- [Deleting a Collection](/configuration/data-model#deleting-a-collection)
+- [Adjusting a Collection Layout](/configuration/data-model#adjusting-a-collection-layout)
 
 ## Dashboards
 
@@ -65,8 +68,9 @@ group data based on department, objective, business process or anything you choo
 ## Database Abstraction
 
 Directus supports mirroring all the most widely used SQL databases, including PostgreSQL, MySQL, Microsoft SQL Server,
-SQLite, OracleDB, MariaDB, and other variants. Each vendor has subtle (and sometimes not so subtle) differences in how
-they function, so Directus includes an abstraction layer that helps it avoid writing different code for each type.
+SQLite, OracleDB, MariaDB, CockroachDB, and other variants. Each vendor has subtle (and sometimes not so subtle)
+differences in how they function, so Directus includes an abstraction layer that helps it avoid writing different code
+for each type.
 
 This means there is also the possibility of supporting other datastores in the future, such as NoSQL options like
 MongoDB, or even third-party data services like Firebase or Heroku. However these options are _fundamentally_ different
@@ -98,19 +102,19 @@ formatting styles, or anything else.
 
 ### Relevant Guides
 
-- [Creating a Custom Display](/extensions/displays/)
+- [Creating a Custom Display](/extensions/displays)
 
 ## Environments
 
-Environments (eg: dev, staging, prod) are tracked as separate Project instances. You can then use schema/content
+Environments (e.g., dev, staging, prod) are tracked as separate Project instances. You can then use schema/content
 migrations to promote data between them.
 
 ## Extensions
 
 The platform has been built to be modular and extensible. This helps keep the core codebase simple and clean (see the
-[80/20 Rule](/contributing/introduction/#feature-requests)), while allowing the flexibility needed to satisfy all
+[80/20 Rule](/contributing/introduction#feature-requests)), while allowing the flexibility needed to satisfy all
 use-cases... no matter how complex. There are many different types of supported extensions, each offering a way to
-deeply customize, override, or extend the core platform. [Learn more about Extensions](/extensions/introduction/).
+deeply customize, override, or extend the core platform. [Learn more about Extensions](/extensions/introduction).
 
 ## Fields
 
@@ -121,25 +125,24 @@ a **column** in your database. For example, an `articles` [Collection](#collecti
 
 ### Relevant Guides
 
-- [Creating a Field](/reference/system/fields/#creating-a-field)
-- [Duplicating Fields](/reference/system/fields/#duplicating-a-field)
-- [Adjusting Field Layout](/reference/system/fields/#adjusting-field-layout)
-- [Deleting Fields](/reference/system/fields/#deleting-a-field)
+- [Creating a Field](/reference/system/fields#creating-a-field)
+- [Duplicating Fields](/reference/system/fields#duplicating-a-field)
+- [Adjusting Field Layout](/reference/system/fields#adjusting-field-layout)
+- [Deleting Fields](/reference/system/fields#deleting-a-field)
 
 ## Files & Assets
 
 As you might have guessed, files includes images, videos, PDFs, text documents, or anything else. While files can
 technically be stored as code in the database, it is far more common to manage them as individual assets on a "drive".
 The platform supports many options for uploading, storing, transforming, and retrieving different types of files, and it
-an excellent Digital Asset Management system.
+is an excellent Digital Asset Management system.
 
 ## Icons
 
 ### Material Icons
 
-Full list of icons [can be found here](https://fonts.google.com/icons). Directus currently supports both filled &
-outlined variants of Material icons. When you intend to use outlined variant of `account_circle`, you can use
-`account_circle_outline`.
+Full list of icons [can be found here](https://fonts.google.com/icons). Directus supports both filled & outlined
+variants of Material icons.
 
 ### Social Icons
 
@@ -159,11 +162,11 @@ proprietary options, such as seating charts, QR codes, or Stripe customer info.
 
 ### Relevant Guides
 
-- [Creating a Custom Interface](/extensions/interfaces/)
+- [Creating a Custom Interface](/extensions/interfaces)
 
 ## Items
 
-Item are objects within a Collection which contain values for one or more fields. Each collection represents a
+Items are objects within a Collection which contain values for one or more fields. Each collection represents a
 **record** in your database.
 
 Items are the primary building blocks of your project content. Similar to a "row" within a spreadsheet, all data within
@@ -174,10 +177,10 @@ Items are referenced (both individually and relationally) by their unique [prima
 
 #### Relevant Guides
 
-- [Creating an Item](/app/content-collections/#creating-an-item)
-- [Archiving an Item](/app/content-items/#archiving-an-item)
-- [Manually Sorting Items](/app/content-collections/#manually-sorting-items)
-- [Deleting an Item](/app/content-items/#deleting-an-item)
+- [Creating an Item](/app/content/items#create-an-item)
+- [Archiving an Item](/app/content/items#archive-an-item)
+- [Manually Sorting Items](/app/content/collections#manually-sort-items)
+- [Deleting an Item](/app/content/items#delete-an-item)
 
 ## Junction Collections
 
@@ -203,18 +206,18 @@ data within the App, such as Gantt charts, seating maps, or spreadsheets.
 
 ### Relevant Guides
 
-- [Creating a Custom Layout](/extensions/layouts/)
+- [Creating a Custom Layout](/extensions/layouts)
 
 ## Modules
 
 Modules are the highest and broadest level of organization within the App. There are several modules included
 out-of-the-box, however you can also add your own.
 
-The [Module Bar](/app/overview/#_1-module-bar) lists all available Modules and allows you to switch between them. Each
+The [Module Bar](/app/overview#_1-module-bar) lists all available Modules and allows you to switch between them. Each
 module also controls its own navigation bar to provide tailored access to sub-pages. All core functionality within the
 App can be bucketed into one of the following modules:
 
-- [Content](/app/content-collections/) — The primary way to view and interact with database content
+- [Content](/app/content/collections) — The primary way to view and interact with database content
 - [User Directory](/app/user-directory) — A dedicated section for the platform's system Users
 - [File Library](/app/file-library) — An aggregate of all files uploaded and managed within the platform
 - [Insights](/app/insights) — Access to infinitely customizable data dashboards
@@ -222,16 +225,16 @@ App can be bucketed into one of the following modules:
 - [Settings](/app/settings) — An admin-only section for configuring the project and system settings
 
 In addition to these core modules, custom modules offer a _blank canvas_ for creating altogether new/different
-experiences within the App, such as proprietary dashboards, compound datasets, or third-party integrations (eg: a Stripe
-Payments Console).
+experiences within the App, such as proprietary dashboards, compound datasets, or third-party integrations (e.g., a
+Stripe Payments Console).
 
 ### Relevant Guides
 
-- [Creating a Custom Module](/extensions/modules/)
+- [Creating a Custom Module](/extensions/modules)
 
 ## Multitenancy
 
-Multitenancy is an architecture that allows multiple tenants (eg: customers) to be managed by the platform. There are
+Multitenancy is an architecture that allows multiple tenants (e.g., customers) to be managed by the platform. There are
 two main ways to achieve multitenancy:
 
 - **Project Scoping** — Creating a super-admin layer that provisions new tenant projects has been made easier by the
@@ -248,11 +251,11 @@ within a [Dashboard](#dashboards) and can be positioned and resized as needed.
 
 ### Relevant Guides
 
-- [Creating a Custom Panel](/extensions/panels/)
+- [Creating a Custom Panel](/extensions/panels)
 
 ## Permissions
 
-Permissions are attached directly to a Role, defining what a user can can create, read, update, and delete within the
+Permissions are attached directly to a Role, defining what a user can create, read, update, and delete within the
 platform. Extremely granular, these filter-based permissions control access for the entire system.
 
 ## Presets
@@ -262,8 +265,8 @@ to define bookmarks that can be used to quickly recall specific datasets.
 
 #### Relevant Guides
 
-- [Creating a Preset](/reference/system/presets/#create-a-preset)
-- [Deleting a Preset](/reference/system/presets/#delete-a-preset)
+- [Creating a Preset](/reference/system/presets#create-a-preset)
+- [Deleting a Preset](/reference/system/presets#delete-a-preset)
 
 ## Primary Key (PK)
 
@@ -278,20 +281,20 @@ often called `id`.
 A Project is a complete instance of the platform. Each project represents a **Database**, but also encapsulates a config
 file, asset storage, and any custom extensions. Projects are the highest level of organization in Directus.
 
-- [Creating a Project](/getting-started/installation/)
-- [Configuring a Project](/configuration/config-options/)
-- [Adjusting Project Settings](/configuration/project-settings/)
-- [Upgrading a Project](/configuration/upgrades-migrations/)
-- [Backing-up a Project](/configuration/upgrades-migrations/#backing-up-a-project)
-- [Migrating a Project](/configuration/upgrades-migrations/#migrating-a-project)
-- [Deleting a Project](/configuration/upgrades-migrations/#deleting-a-project)
+- [Creating a Project](/self-hosted/quickstart)
+- [Configuring a Project](/self-hosted/config-options)
+- [Adjusting Project Settings](/configuration/project-settings)
+- [Upgrading a Project](/self-hosted/upgrades-migrations)
+- [Backing-up a Project](/self-hosted/upgrades-migrations#backing-up-a-project)
+- [Migrating a Project](/self-hosted/upgrades-migrations#migrating-a-project)
+- [Deleting a Project](/self-hosted/upgrades-migrations#deleting-a-project)
 
 ## Relationships
 
 The platform allows you to group Items within different Collections. But often times it is important to "link" items
 across different collections (such as relating `recipes` and `ingredients`) — this is called a relationship, a crucial
 concept within any _relational_ database. There are several different types of relationships, each serving a specific
-purpose. [Learn more about Relationships](/configuration/relationships/).
+purpose. [Learn more about Relationships](/configuration/data-model/relationships).
 
 ## Revisions
 
@@ -313,35 +316,41 @@ There is also a "Public" role that determines access for unauthenticated access.
 
 ### Relevant Guides
 
-- [Creating a Role](/configuration/users-roles-permissions/#creating-a-role)
-- [Configuring a Role](/configuration/users-roles-permissions/#configuring-a-role)
-- [Configuring Role Permissions](/configuration/users-roles-permissions/#configuring-permissions)
-- [Configuring System Permissions](/configuration/users-roles-permissions/#configuring-system-permissions)
-- [Deleting a Role](/configuration/users-roles-permissions/#deleting-a-role)
+- [Creating a Role](/configuration/users-roles-permissions#creating-a-role)
+- [Configuring a Role](/configuration/users-roles-permissions#configure-a-role)
+- [Configuring Role Permissions](/configuration/users-roles-permissions#configure-permissions)
+- [Configuring System Permissions](/configuration/users-roles-permissions#configure-system-permissions)
+- [Deleting a Role](/configuration/users-roles-permissions#deleting-a-role)
+
+## Singleton
+
+- **Directus** - A collection that only contains one single item
+- [**Design pattern**](https://www.patterns.dev/posts/singleton-pattern/) - Classes which can be instantiated once and
+  can be accessed globally. This single instance can be shared throughout our application, which makes singletons great
+  for managing global state in an application.
 
 ## Storage Adapters
 
 Storage adapters allow project files to be stored in different locations or services. By default, Directus includes the
 following drivers:
 
-- **Local Filesystem** — The default, any filesystem location or network-attached storage
+- **Local Filesystem** — The default, any file system location or network-attached storage
 - **S3 or Equivalent** — Including AWS S3, DigitalOcean Spaces, Alibaba OSS, and others
 - **Google Cloud Storage** — A RESTful web service on the Google Cloud Platform
 - **Azure Blob Storage** — Azure storage account containers
 
 ## Title Formatter
 
-Special Casing — If you are trying to update the specific casing (uppercase/lowercase) for a word (eg: `Dna` to `DNA`)
-you will want to add the edge-case to the
-[Format Title package](https://github.com/directus/directus/tree/main/packages/format-title/src). If you feel the case
-passes our [80/20 rule](https://docs.directus.io/contributing/introduction/#feature-requests) you should submit a Pull
-Request to the codebase, otherwise you can update this in your instance.
+Special Casing — If you are trying to update the specific casing (uppercase/lowercase) for a word (e.g., `Dna` to `DNA`)
+you will want to add the edge-case to the [Format Title package](https://github.com/directus/format-title). If you feel
+the case passes our [80/20 rule](https://docs.directus.io/contributing/introduction#feature-requests) you should submit
+a Pull Request to the codebase, otherwise you can update this in your instance.
 
 ## Translations
 
 The platform supports internationalization across its entire Admin App. Many languages are currently supported, with
 more being added all the time. Anyone can add or refine any languages through the integration with
-[CrowdIn](https://locales.directus.io/).
+[Crowdin](https://locales.directus.io).
 
 In addition to the App itself being multilingual, the platform allows translating your schema too. By default,
 collections and field names come from the database's naming, but you can override this in different languages.
@@ -359,7 +368,7 @@ cause data loss, so types are locked within the platform after a field is create
 ### Data Type Superset
 
 Directus uses its built-in database abstraction to properly support all the different SQL vendors. However, these
-vendors do not share support for the same datatypes, instead, each SQL vendor maintains their own list. To standardize
+vendors do not share support for the same data types, instead, each SQL vendor maintains their own list. To standardize
 all of these differences, Directus has a single _superset_ of types that map to the vendor-specific ones.
 
 - **String** — A shorter set of characters with a configurable max length
@@ -379,6 +388,12 @@ all of these differences, Directus has a single _superset_ of types that map to 
 - **UUID** — A universally unique identifier saved in UUIDv4 format
 - **Hash** — A string hashed using argon2 cryptographic hash algorithm
 - **Alias** — For fields that do not have a database column [Learn More](#)
+
+::: warning
+
+For **SQLite**, the **Timestamp** type is stored as a **DateTime**.
+
+:::
 
 ## Users
 

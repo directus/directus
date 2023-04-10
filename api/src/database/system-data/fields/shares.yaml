@@ -1,0 +1,83 @@
+table: directus_shares
+
+fields:
+  - field: id
+    special:
+      - uuid
+    readonly: true
+    hidden: true
+
+  - field: name
+
+  - field: collection
+    width: half
+    hidden: true
+
+  - field: item
+    width: half
+    hidden: true
+
+  - field: role
+    interface: select-dropdown-m2o
+    width: half
+    options:
+      template: '{{name}}'
+      filter:
+        admin_access:
+          _eq: false
+
+  - field: password
+    special:
+      - hash
+      - conceal
+    interface: input-hash
+    options:
+      iconRight: lock
+      masked: true
+    width: half
+    note: $t:shared_leave_blank_for_unlimited
+
+  - field: date_start
+    width: half
+    note: $t:shared_leave_blank_for_unlimited
+
+  - field: date_end
+    width: half
+    note: $t:shared_leave_blank_for_unlimited
+
+  - field: max_uses
+    width: half
+    note: $t:shared_leave_blank_for_unlimited
+
+  - field: times_used
+    width: half
+    readonly: true
+
+  - field: date_created
+    special:
+      - date-created
+      - cast-timestamp
+    width: half
+    readonly: true
+    conditions:
+      - name: notCreatedYet
+        rule:
+          id:
+            _null: true
+        hidden: true
+
+  - field: user_created
+    special:
+      - user-created
+    interface: select-dropdown-m2o
+    width: half
+    display: user
+    options:
+      template: '{{avatar.$thumbnail}} {{first_name}} {{last_name}}'
+    readonly: true
+    conditions:
+      - name: notCreatedYet
+        rule:
+          id:
+            _null: true
+        hidden: true

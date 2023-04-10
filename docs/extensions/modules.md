@@ -1,7 +1,12 @@
+---
+description: A guide on how to build custom Modules in Directus.
+readTime: 5 min read
+---
+
 # Custom Modules <small></small>
 
 > Custom Modules are completely open-ended components that allow you to create new experiences within the Directus
-> platform. [Learn more about Modules](/getting-started/glossary/#modules).
+> platform. [Learn more about Modules](/getting-started/glossary#modules).
 
 ## Extension Entrypoint
 
@@ -31,14 +36,14 @@ export default {
 
 - `id` — The unique key for this module. It is good practice to scope proprietary modules with an author prefix.
 - `name` — The human-readable name for this module.
-- `icon` — An icon name from the [material icon set](/getting-started/glossary/#material-icons), or the extended list of
+- `icon` — An icon name from the [material icon set](/getting-started/glossary#material-icons), or the extended list of
   Directus custom icons.
 - `color` — A color associated with the module.
 - `routes` — Details the routes in your module. The routes are registered as nested routes with the module's `id`
   serving as the base path.
 - `hidden` — A boolean that indicates if the module should be hidden from the module bar.
 - `preRegisterCheck` — A function that receives the current user as the first parameter and the permissions of this user
-  as the second parameter. It should return a boolean that indicates if the check succeded.
+  as the second parameter. It should return a boolean that indicates if the check succeeded.
 
 ## Routes Array
 
@@ -54,7 +59,7 @@ If a route should render something, the route object should have a `component` p
 component.
 
 To learn more about the properties of route objects, you can refer to the
-[Vue Router Docs](https://next.router.vuejs.org/guide/).
+[Vue Router Docs](https://next.router.vuejs.org/guide).
 
 ## Route Component
 
@@ -74,7 +79,7 @@ export default {};
 </script>
 ```
 
-A route component provides an blank canvas for creating anything you need. You can use the globally registered
+A route component provides a blank canvas for creating anything you need. You can use the globally registered
 `private-view` component to get access to Directus' page structure consisting of the module bar, the navigation, the
 sidebar, the header and the main content area.
 
@@ -163,7 +168,7 @@ export default {
 
 In the above example, you can see that:
 
-- The `api` field gets injected into the component and becomes available as an attribute of the component (ie
+- The `api` field gets injected into the component and becomes available as an attribute of the component (i.e.,
   `this.api`)
 - When the component is mounted, it uses `this.api.get` to request a list of all available collections
 - The names of the collections are rendered into a list in the component's template

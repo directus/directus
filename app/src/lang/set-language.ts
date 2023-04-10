@@ -1,22 +1,14 @@
-import { getDisplays } from '@/displays';
-import { getInterfaces } from '@/interfaces';
-import { getPanels } from '@/panels';
-import { getLayouts } from '@/layouts';
-import { getModules } from '@/modules';
-import { useCollectionsStore, useFieldsStore } from '@/stores';
-import { translate } from '@/utils/translate-object-values';
+import { useCollectionsStore } from '@/stores/collections';
+import { useFieldsStore } from '@/stores/fields';
 import availableLanguages from './available-languages.yaml';
 import { i18n, Language, loadedLanguages } from './index';
-
-const { modules, modulesRaw } = getModules();
-const { layouts, layoutsRaw } = getLayouts();
-const { interfaces, interfacesRaw } = getInterfaces();
-const { panels, panelsRaw } = getPanels();
-const { displays, displaysRaw } = getDisplays();
+import { useTranslationStrings } from '@/composables/use-translation-strings';
+import { loadDateFNSLocale } from '@/utils/get-date-fns-locale';
 
 export async function setLanguage(lang: Language): Promise<boolean> {
 	const collectionsStore = useCollectionsStore();
 	const fieldsStore = useFieldsStore();
+	const { mergeTranslationStringsForLanguage } = useTranslationStrings();
 
 	if (Object.keys(availableLanguages).includes(lang) === false) {
 		// eslint-disable-next-line no-console
@@ -38,14 +30,11 @@ export async function setLanguage(lang: Language): Promise<boolean> {
 		(document.querySelector('html') as HTMLElement).setAttribute('lang', lang);
 	}
 
-	modules.value = translate(modulesRaw.value);
-	layouts.value = translate(layoutsRaw.value);
-	interfaces.value = translate(interfacesRaw.value);
-	panels.value = translate(panelsRaw.value);
-	displays.value = translate(displaysRaw.value);
-
+	mergeTranslationStringsForLanguage(lang);
 	collectionsStore.translateCollections();
 	fieldsStore.translateFields();
+
+	await loadDateFNSLocale(lang);
 
 	return true;
 }

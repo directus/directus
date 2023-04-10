@@ -26,7 +26,7 @@ import { useRouter } from 'vue-router';
 import { login } from '@/auth';
 import { RequestError } from '@/api';
 import { translateAPIError } from '@/lang';
-import { useUserStore } from '@/stores';
+import { useUserStore } from '@/stores/user';
 
 type Credentials = {
 	email: string;
@@ -107,7 +107,7 @@ export default defineComponent({
 					credentials.otp = otp.value;
 				}
 
-				await login(credentials, provider.value);
+				await login({ provider: provider.value, credentials });
 
 				const redirectQuery = router.currentRoute.value.query.redirect as string;
 

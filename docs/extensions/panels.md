@@ -1,8 +1,13 @@
+---
+description: A guide on how to build custom Panels in Directus.
+readTime: 3 min read
+---
+
 # Custom Panels <small></small>
 
 > Panels are modular units of data visualization that exist within the [Insights module](/app/insights). Each panel
 > exists within a Dashboard and can be positioned and resized as needed.
-> [Learn more about Panels](/getting-started/glossary/#panels).
+> [Learn more about Panels](/getting-started/glossary#panels).
 
 ## Extension Entrypoint
 
@@ -41,7 +46,7 @@ export default {
 
 - `id` — The unique key for this panel. It is good practice to scope proprietary panels with an author prefix.
 - `name` — The human-readable name for this panel.
-- `icon` — An icon name from the [material icon set](/getting-started/glossary/#material-icons), or the extended list of
+- `icon` — An icon name from the [material icon set](/getting-started/glossary#material-icons), or the extended list of
   Directus custom icons.
 - `description` — A short description (<80 characters) of this panel shown in the App.
 - `component` — A reference to your panel component.

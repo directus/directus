@@ -1,6 +1,5 @@
-import { uniq } from 'lodash';
-import { SchemaOverview } from '../types';
-import { Accountability, PermissionsAction } from '@directus/shared/types';
+import type { Permission, PermissionsAction, SchemaOverview } from '@directus/types';
+import { uniq } from 'lodash-es';
 
 /**
  * Reduces the schema based on the included permissions. The resulting object is the schema structure, but with only
@@ -11,7 +10,7 @@ import { Accountability, PermissionsAction } from '@directus/shared/types';
  */
 export function reduceSchema(
 	schema: SchemaOverview,
-	accountability: Accountability | null,
+	permissions: Permission[] | null,
 	actions: PermissionsAction[] = ['create', 'read', 'update', 'delete']
 ): SchemaOverview {
 	const reduced: SchemaOverview = {
@@ -20,7 +19,7 @@ export function reduceSchema(
 	};
 
 	const allowedFieldsInCollection =
-		accountability?.permissions
+		permissions
 			?.filter((permission) => actions.includes(permission.action))
 			.reduce((acc, permission) => {
 				if (!acc[permission.collection]) {
@@ -28,7 +27,7 @@ export function reduceSchema(
 				}
 
 				if (permission.fields) {
-					acc[permission.collection] = uniq([...acc[permission.collection], ...permission.fields]);
+					acc[permission.collection] = uniq([...acc[permission.collection]!, ...permission.fields]);
 				}
 
 				return acc;
@@ -36,26 +35,43 @@ export function reduceSchema(
 
 	for (const [collectionName, collection] of Object.entries(schema.collections)) {
 		if (
-			accountability?.permissions?.some(
+			!permissions?.some(
 				(permission) => permission.collection === collectionName && actions.includes(permission.action)
 			)
 		) {
-			const fields: SchemaOverview['collections'][string]['fields'] = {};
+			continue;
+		}
 
-			for (const [fieldName, field] of Object.entries(schema.collections[collectionName].fields)) {
-				if (
-					allowedFieldsInCollection[collectionName]?.includes('*') ||
-					allowedFieldsInCollection[collectionName]?.includes(fieldName)
-				) {
-					fields[fieldName] = field;
-				}
+		const fields: SchemaOverview['collections'][string]['fields'] = {};
+
+		for (const [fieldName, field] of Object.entries(schema.collections[collectionName]!.fields)) {
+			if (
+				!allowedFieldsInCollection[collectionName]?.includes('*') &&
+				!allowedFieldsInCollection[collectionName]?.includes(fieldName)
+			) {
+				continue;
 			}
 
-			reduced.collections[collectionName] = {
-				...collection,
-				fields,
-			};
+			const o2mRelation = schema.relations.find(
+				(relation) => relation.related_collection === collectionName && relation.meta?.one_field === fieldName
+			);
+
+			if (
+				o2mRelation &&
+				!permissions?.some(
+					(permission) => permission.collection === o2mRelation.collection && actions.includes(permission.action)
+				)
+			) {
+				continue;
+			}
+
+			fields[fieldName] = field;
 		}
+
+		reduced.collections[collectionName] = {
+			...collection,
+			fields,
+		};
 	}
 
 	reduced.relations = schema.relations.filter((relation) => {
@@ -68,7 +84,9 @@ export function reduceSchema(
 
 		if (
 			relation.related_collection &&
-			Object.keys(allowedFieldsInCollection).includes(relation.related_collection) === false
+			(Object.keys(allowedFieldsInCollection).includes(relation.related_collection) === false ||
+				// Ignore legacy permissions with an empty fields array
+				allowedFieldsInCollection[relation.related_collection]?.length === 0)
 		) {
 			collectionsAllowed = false;
 		}
@@ -84,8 +102,8 @@ export function reduceSchema(
 
 		if (
 			!allowedFieldsInCollection[relation.collection] ||
-			(allowedFieldsInCollection[relation.collection].includes('*') === false &&
-				allowedFieldsInCollection[relation.collection].includes(relation.field) === false)
+			(allowedFieldsInCollection[relation.collection]?.includes('*') === false &&
+				allowedFieldsInCollection[relation.collection]?.includes(relation.field) === false)
 		) {
 			fieldsAllowed = false;
 		}
@@ -94,8 +112,8 @@ export function reduceSchema(
 			relation.related_collection &&
 			relation.meta?.one_field &&
 			(!allowedFieldsInCollection[relation.related_collection] ||
-				(allowedFieldsInCollection[relation.related_collection].includes('*') === false &&
-					allowedFieldsInCollection[relation.related_collection].includes(relation.meta?.one_field) === false))
+				(allowedFieldsInCollection[relation.related_collection]?.includes('*') === false &&
+					allowedFieldsInCollection[relation.related_collection]?.includes(relation.meta?.one_field) === false))
 		) {
 			fieldsAllowed = false;
 		}

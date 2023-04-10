@@ -1,25 +1,29 @@
-import { Range, StatResponse } from '@directus/drive';
-import { Semaphore } from 'async-mutex';
-import { Knex } from 'knex';
+import type { Range, Stat } from '@directus/storage';
+import type { Accountability } from '@directus/types';
+import type { Knex } from 'knex';
+import { clamp } from 'lodash-es';
 import { contentType } from 'mime-types';
+import type { Readable } from 'node:stream';
 import hash from 'object-hash';
 import path from 'path';
 import sharp from 'sharp';
-import getDatabase from '../database';
-import env from '../env';
-import { IllegalAssetTransformation, RangeNotSatisfiableException, ForbiddenException } from '../exceptions';
-import storage from '../storage';
-import { AbstractServiceOptions, File, Transformation, TransformationParams, TransformationPreset } from '../types';
-import { Accountability } from '@directus/shared/types';
-import { AuthorizationService } from './authorization';
-import * as TransformationUtils from '../utils/transformations';
 import validateUUID from 'uuid-validate';
-
-sharp.concurrency(1);
-
-// Note: don't put this in the service. The service can be initialized in multiple places, but they
-// should all share the same semaphore instance.
-const semaphore = new Semaphore(env.ASSETS_TRANSFORM_MAX_CONCURRENT);
+import getDatabase from '../database/index.js';
+import env from '../env.js';
+import { ForbiddenException, IllegalAssetTransformation, RangeNotSatisfiableException } from '../exceptions/index.js';
+import { ServiceUnavailableException } from '../exceptions/service-unavailable.js';
+import logger from '../logger.js';
+import { getStorage } from '../storage/index.js';
+import type {
+	AbstractServiceOptions,
+	File,
+	Transformation,
+	TransformationParams,
+	TransformationPreset,
+} from '../types/index.js';
+import { getMilliseconds } from '../utils/get-milliseconds.js';
+import * as TransformationUtils from '../utils/transformations.js';
+import { AuthorizationService } from './authorization.js';
 
 export class AssetsService {
 	knex: Knex;
@@ -36,17 +40,15 @@ export class AssetsService {
 		id: string,
 		transformation: TransformationParams | TransformationPreset,
 		range?: Range
-	): Promise<{ stream: NodeJS.ReadableStream; file: any; stat: StatResponse }> {
+	): Promise<{ stream: Readable; file: any; stat: Stat }> {
+		const storage = await getStorage();
+
 		const publicSettings = await this.knex
 			.select('project_logo', 'public_background', 'public_foreground')
 			.from('directus_settings')
 			.first();
 
 		const systemPublicKeys = Object.values(publicSettings || {});
-
-		if (systemPublicKeys.includes(id) === false && this.accountability?.admin !== true) {
-			await this.authorizationService.checkAccess('read', 'directus_files', id);
-		}
 
 		/**
 		 * This is a little annoying. Postgres will error out if you're trying to search in `where`
@@ -57,17 +59,53 @@ export class AssetsService {
 
 		if (isValidUUID === false) throw new ForbiddenException();
 
+		if (systemPublicKeys.includes(id) === false && this.accountability?.admin !== true) {
+			await this.authorizationService.checkAccess('read', 'directus_files', id);
+		}
+
 		const file = (await this.knex.select('*').from('directus_files').where({ id }).first()) as File;
 
 		if (!file) throw new ForbiddenException();
 
-		const { exists } = await storage.disk(file.storage).exists(file.filename_disk);
+		const exists = await storage.location(file.storage).exists(file.filename_disk);
 
 		if (!exists) throw new ForbiddenException();
 
 		if (range) {
-			if (range.start >= file.filesize || (range.end && range.end >= file.filesize)) {
+			const missingRangeLimits = range.start === undefined && range.end === undefined;
+			const endBeforeStart = range.start !== undefined && range.end !== undefined && range.end <= range.start;
+			const startOverflow = range.start !== undefined && range.start >= file.filesize;
+			const endUnderflow = range.end !== undefined && range.end <= 0;
+
+			if (missingRangeLimits || endBeforeStart || startOverflow || endUnderflow) {
 				throw new RangeNotSatisfiableException(range);
+			}
+
+			const lastByte = file.filesize - 1;
+
+			if (range.end) {
+				if (range.start === undefined) {
+					// fetch chunk from tail
+					range.start = file.filesize - range.end;
+					range.end = lastByte;
+				}
+
+				if (range.end >= file.filesize) {
+					// fetch entire file
+					range.end = lastByte;
+				}
+			}
+
+			if (range.start) {
+				if (range.end === undefined) {
+					// fetch entire file
+					range.end = lastByte;
+				}
+
+				if (range.start < 0) {
+					// fetch file from head
+					range.start = 0;
+				}
 			}
 		}
 
@@ -83,7 +121,7 @@ export class AssetsService {
 				getAssetSuffix(transforms) +
 				(maybeNewFormat ? `.${maybeNewFormat}` : path.extname(file.filename_disk));
 
-			const { exists } = await storage.disk(file.storage).exists(assetFilename);
+			const exists = await storage.location(file.storage).exists(assetFilename);
 
 			if (maybeNewFormat) {
 				file.type = contentType(assetFilename) || null;
@@ -91,9 +129,9 @@ export class AssetsService {
 
 			if (exists) {
 				return {
-					stream: storage.disk(file.storage).getStream(assetFilename, range),
+					stream: await storage.location(file.storage).read(assetFilename, range),
 					file,
-					stat: await storage.disk(file.storage).getStat(assetFilename),
+					stat: await storage.location(file.storage).stat(assetFilename),
 				};
 			}
 
@@ -105,34 +143,53 @@ export class AssetsService {
 			if (
 				!width ||
 				!height ||
-				width > env.ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION ||
-				height > env.ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION
+				width > env['ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION'] ||
+				height > env['ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION']
 			) {
 				throw new IllegalAssetTransformation(
 					`Image is too large to be transformed, or image size couldn't be determined.`
 				);
 			}
 
-			return await semaphore.runExclusive(async () => {
-				const readStream = storage.disk(file.storage).getStream(file.filename_disk, range);
-				const transformer = sharp({
-					limitInputPixels: Math.pow(env.ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION, 2),
-					sequentialRead: true,
-				}).rotate();
+			const { queue, process } = sharp.counters();
 
-				transforms.forEach(([method, ...args]) => (transformer[method] as any).apply(transformer, args));
+			if (queue + process > env['ASSETS_TRANSFORM_MAX_CONCURRENT']) {
+				throw new ServiceUnavailableException('Server too busy', {
+					service: 'files',
+				});
+			}
 
-				await storage.disk(file.storage).put(assetFilename, readStream.pipe(transformer), type);
+			const readStream = await storage.location(file.storage).read(file.filename_disk, range);
 
-				return {
-					stream: storage.disk(file.storage).getStream(assetFilename, range),
-					stat: await storage.disk(file.storage).getStat(assetFilename),
-					file,
-				};
+			const transformer = sharp({
+				limitInputPixels: Math.pow(env['ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION'], 2),
+				sequentialRead: true,
+				failOn: env['ASSETS_INVALID_IMAGE_SENSITIVITY_LEVEL'],
 			});
+
+			transformer.timeout({
+				seconds: clamp(Math.round(getMilliseconds(env['ASSETS_TRANSFORM_TIMEOUT'], 0) / 1000), 1, 3600),
+			});
+
+			if (transforms.find((transform) => transform[0] === 'rotate') === undefined) transformer.rotate();
+
+			transforms.forEach(([method, ...args]) => (transformer[method] as any).apply(transformer, args));
+
+			readStream.on('error', (e: Error) => {
+				logger.error(e, `Couldn't transform file ${file.id}`);
+				readStream.unpipe(transformer);
+			});
+
+			await storage.location(file.storage).write(assetFilename, readStream.pipe(transformer), type);
+
+			return {
+				stream: await storage.location(file.storage).read(assetFilename, range),
+				stat: await storage.location(file.storage).stat(assetFilename),
+				file,
+			};
 		} else {
-			const readStream = storage.disk(file.storage).getStream(file.filename_disk, range);
-			const stat = await storage.disk(file.storage).getStat(file.filename_disk);
+			const readStream = await storage.location(file.storage).read(file.filename_disk, range);
+			const stat = await storage.location(file.storage).stat(file.filename_disk);
 			return { stream: readStream, file, stat };
 		}
 	}

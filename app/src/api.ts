@@ -1,19 +1,16 @@
 import { logout, LogoutReason, refresh } from '@/auth';
-import { useRequestsStore } from '@/stores/';
+import { useRequestsStore } from '@/stores/requests';
 import { getRootPath } from '@/utils/get-root-path';
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { addQueryToPath } from './utils/add-query-to-path';
-import PQueue from 'p-queue';
+import PQueue, { Options, DefaultAddOptions } from 'p-queue';
 
 const api = axios.create({
 	baseURL: getRootPath(),
 	withCredentials: true,
-	headers: {
-		'Cache-Control': 'no-store',
-	},
 });
 
-const queue = new PQueue({ concurrency: 5, intervalCap: 5, interval: 500, carryoverConcurrencyCount: true });
+let queue = new PQueue({ concurrency: 5, intervalCap: 5, interval: 500, carryoverConcurrencyCount: true });
 
 interface RequestConfig extends AxiosRequestConfig {
 	id: string;
@@ -112,4 +109,9 @@ export function addTokenToURL(url: string, token?: string): string {
 	if (!accessToken) return url;
 
 	return addQueryToPath(url, { access_token: accessToken });
+}
+
+export async function replaceQueue(options?: Options<any, DefaultAddOptions>) {
+	await queue.onIdle();
+	queue = new PQueue(options);
 }

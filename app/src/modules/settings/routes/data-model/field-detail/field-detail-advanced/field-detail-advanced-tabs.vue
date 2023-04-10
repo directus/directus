@@ -9,7 +9,7 @@
 <script lang="ts">
 import { defineComponent, PropType, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useSync } from '@directus/shared/composables';
+import { useSync } from '@directus/composables';
 import { useFieldDetailStore } from '../store';
 import { storeToRefs } from 'pinia';
 
@@ -53,7 +53,7 @@ export default defineComponent({
 				});
 			}
 
-			if (['o2m', 'm2o', 'm2m', 'm2a', 'files'].includes(localType.value)) {
+			if (['o2m', 'm2o', 'm2m', 'm2a', 'files', 'file'].includes(localType.value)) {
 				tabs.splice(1, 0, {
 					text: t('relationship'),
 					value: 'relationship',
@@ -72,6 +72,11 @@ export default defineComponent({
 					]
 				);
 			}
+
+			tabs.push({
+				text: t('validation'),
+				value: 'validation',
+			});
 
 			tabs.push({
 				text: t('conditions'),

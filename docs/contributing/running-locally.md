@@ -1,16 +1,26 @@
+---
+description:
+  This guide explains how to install the _Development_ version of Directus locally so that you can work on the
+  platform's source code.
+readTime: 4 min read
+---
+
 # Running Locally
 
 > This guide explains how to install the _Development_ version of Directus locally so that you can work on the
 > platform's source code. To install the _Production_ version locally, please follow to our
-> [standard installation guides](/getting-started/installation/).
+> [Docker Guide](/self-hosted/docker-guide).
 
 ::: tip Minimum Requirements
 
-You will need to have [the latest version of Node](https://nodejs.org/en/download/current/) to _build_ a Development
+You will need to have [the latest version of Node](https://nodejs.org/en/download/current) to _build_ a Development
 version of Directus.
 
-You can use the JavaScript tool manager [volta](https://volta.sh/) to automatically install the current node and npm
+You can use the JavaScript tool manager [volta](https://volta.sh) to automatically install the current node and npm
 versions.
+
+You will also need to have the package manager [pnpm](https://pnpm.io) installed. You can install pnpm using the
+following command: `npm install -g pnpm`.
 
 :::
 
@@ -35,19 +45,14 @@ git checkout -b YOUR-BRANCH-NAME
 ## 4. Install the dependencies and build the project
 
 ```bash
-npm install
-npm run build
+pnpm install
+pnpm -r build
 ```
 
 ## 5. Create a `.env` file
 
-Create a `.env` file under the `api` folder. You can use the `example.env` file provided under `api` as a starting
-point.
-
-```bash
-# To use the example file
-cp api/example.env api/.env
-```
+Create an `.env` file under the `api` folder using vars from the online
+[config help](https://docs.directus.io/self-hosted/config-options)
 
 ## 6. Initialize the database
 
@@ -57,26 +62,39 @@ which will create the database (file) for you.
 To start the initialization run the following command:
 
 ```bash
-# From within the root of the project
-npm run cli bootstrap
-
-# For SQLite you need to run the command in the 'api' context (to ensure the database file is created in the right directory)
-npm run cli bootstrap --workspace=api
+# Run the command in the 'api' context (to ensure the database file is created in the right directory)
+pnpm --dir api cli bootstrap
 ```
 
 This will set-up the required tables for Directus and make sure all the migrations have run.
 
 ## 7. Start the development server
 
-First you need to choose what packages you want to work on. Then, you should run the `dev` script on that package. You
-can see their names and list of scripts in their related `package.json`. Example of running APP:
+You can run all packages in development with the following command:
 
 ```bash
-npm run dev -w @directus/app
+pnpm -r dev
 ```
 
-If you want to work on multiple packages at once, you should create a new instance of your terminal for each package:
-Example of running Api, App:
+::: warning Race Conditions
+
+When running multiple or all packages, sometimes `ts-node` may not start up the API properly because of race conditions
+due to changes happening to other packages. You can either rerun the command to restart the API or opt to choose what
+packages to work on as described below.
+
+:::
+
+If you wish to choose what packages to work on, you should run the `dev` script for that package. You can see their
+names and list of scripts in their related `package.json`.
+
+Example of running the API only:
+
+```bash
+pnpm --filter directus dev
+```
+
+If you want to work on multiple packages at once, you should create a new instance of your terminal for each package.
+Example of running both the API and App at the same time:
 
 <table>
   <tr>
@@ -91,14 +109,14 @@ Example of running Api, App:
   <td>
 
 ```bash
-npm run dev -w directus
+pnpm --filter directus dev
 ```
 
   </td>
   <td>
 
 ```bash
-npm run dev -w @directus/app
+pnpm --filter @directus/app dev
 ```
 
   </td>
@@ -106,21 +124,6 @@ npm run dev -w @directus/app
 </table>
 
 ---
-
-To work on the Documentation (public website version), you should navigate to the `docs` directory and run the following
-command:
-
-```bash
-npm install
-```
-
-<sup>ℹ This is necessary because the way vue-server-renderer imports vue</sup>
-
-Then you should run
-
-```bash
-npm run dev:site
-```
 
 ::: tip
 
@@ -135,6 +138,30 @@ introduction to [Contributing](/contributing/introduction).
 
 ::: tip Debugging
 
-Check our Wiki for a [guide](https://github.com/directus/directus/wiki/debugging) on debugging the app and api.
+Check our Wiki for a [guide](https://github.com/directus/directus/wiki/debugging) on debugging the app and API.
 
 :::
+
+## 9. Running tests
+
+Tests run automatically through GitHub Actions. However you may wish to run the tests locally especially when you write
+tests yourself.
+
+Install [Docker](https://docs.docker.com/get-docker) and ensure that the service is running.
+
+```bash
+# Ensure that you are testing on the lastest codebase
+pnpm -r build
+
+# Run the unit tests
+pnpm -r test
+
+# Clean up in case you ran the blackbox tests before
+docker compose -f tests-blackbox/docker-compose.yml down -v
+
+# Start the necessary containers for the blackbox tests
+docker compose -f tests-blackbox/docker-compose.yml up -d --wait
+
+# Run the blackbox tests
+pnpm test:blackbox
+```

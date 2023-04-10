@@ -1,0 +1,16 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`should render 1`] = `
+"<v-dialog data-v-33a4ea83=\\"\\" model-value=\\"true\\" persistent=\\"\\">
+  <v-card data-v-33a4ea83=\\"\\">
+    <v-card-title data-v-33a4ea83=\\"\\">edit_raw_value</v-card-title>
+    <v-card-text data-v-33a4ea83=\\"\\">
+      <interface-system-raw-editor data-v-33a4ea83=\\"\\" type=\\"undefined\\" disabled=\\"false\\" language=\\"plaintext\\" placeholder=\\"enter_raw_value\\"></interface-system-raw-editor>
+    </v-card-text>
+    <v-card-actions data-v-33a4ea83=\\"\\">
+      <v-button data-v-33a4ea83=\\"\\" secondary=\\"\\">cancel</v-button>
+      <v-button data-v-33a4ea83=\\"\\">done</v-button>
+    </v-card-actions>
+  </v-card>
+</v-dialog>"
+`;

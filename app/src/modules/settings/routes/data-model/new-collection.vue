@@ -53,6 +53,10 @@
 									value: 'auto_int',
 								},
 								{
+									text: t('auto_increment_big_integer'),
+									value: 'auto_big_int',
+								},
+								{
 									text: t('generated_uuid'),
 									value: 'uuid',
 								},
@@ -78,6 +82,7 @@
 						<div class="type-label">{{ t(info.label) }}</div>
 						<v-input
 							v-model="info.name"
+							db-safe
 							class="monospace"
 							:class="{ active: info.enabled }"
 							:disabled="info.inputDisabled"
@@ -126,13 +131,15 @@ import { useI18n } from 'vue-i18n';
 import { cloneDeep } from 'lodash';
 import { defineComponent, ref, reactive, watch } from 'vue';
 import api from '@/api';
-import { Field, Relation } from '@directus/shared/types';
-import { useFieldsStore, useCollectionsStore, useRelationsStore } from '@/stores/';
+import { Field, Relation } from '@directus/types';
+import { useFieldsStore } from '@/stores/fields';
+import { useCollectionsStore } from '@/stores/collections';
+import { useRelationsStore } from '@/stores/relations';
 import { notify } from '@/utils/notify';
 import { useDialogRoute } from '@/composables/use-dialog-route';
 import { useRouter } from 'vue-router';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { DeepPartial } from '@directus/shared/types';
+import { DeepPartial } from '@directus/types';
 
 const defaultSystemFields = {
 	status: {
@@ -196,7 +203,7 @@ export default defineComponent({
 		const collectionName = ref(null);
 		const singleton = ref(false);
 		const primaryKeyFieldName = ref('id');
-		const primaryKeyFieldType = ref<'auto_int' | 'uuid' | 'manual'>('auto_int');
+		const primaryKeyFieldType = ref<'auto_int' | 'auto_big_int' | 'uuid' | 'manual'>('auto_int');
 
 		const sortField = ref<string>();
 
@@ -246,22 +253,21 @@ export default defineComponent({
 					},
 				});
 
+				const storeHydrations: Promise<void>[] = [];
+
 				const relations = getSystemRelations();
 
 				if (relations.length > 0) {
-					for (const relation of relations) {
-						await api.post('/relations', relation);
-					}
-
-					await relationsStore.hydrate();
+					const requests = relations.map((relation) => api.post('/relations', relation));
+					await Promise.all(requests);
+					storeHydrations.push(relationsStore.hydrate());
 				}
 
-				await collectionsStore.hydrate();
-				await fieldsStore.hydrate();
+				storeHydrations.push(collectionsStore.hydrate(), fieldsStore.hydrate());
+				await Promise.all(storeHydrations);
 
 				notify({
 					title: t('collection_created'),
-					type: 'success',
 				});
 
 				router.replace(`/settings/data-model/${collectionName.value}`);
@@ -307,7 +313,7 @@ export default defineComponent({
 			} else {
 				return {
 					field: primaryKeyFieldName.value,
-					type: 'integer',
+					type: primaryKeyFieldType.value === 'auto_big_int' ? 'bigInteger' : 'integer',
 					meta: {
 						hidden: true,
 						interface: 'input',
@@ -353,16 +359,22 @@ export default defineComponent({
 							showAsDot: true,
 							choices: [
 								{
-									background: '#00C897',
+									text: '$t:published',
 									value: 'published',
+									foreground: '#FFFFFF',
+									background: 'var(--primary)',
 								},
 								{
-									background: '#D3DAE4',
+									text: '$t:draft',
 									value: 'draft',
+									foreground: '#18222F',
+									background: '#D3DAE4',
 								},
 								{
-									background: '#F7971C',
+									text: '$t:archived',
 									value: 'archived',
+									foreground: '#FFFFFF',
+									background: 'var(--warning)',
 								},
 							],
 						},
@@ -373,7 +385,7 @@ export default defineComponent({
 					},
 				});
 
-				archiveField.value = 'status';
+				archiveField.value = systemFields.status.name;
 				archiveValue.value = 'archived';
 				unarchiveValue.value = 'draft';
 			}

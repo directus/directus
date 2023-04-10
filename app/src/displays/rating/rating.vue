@@ -13,8 +13,8 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent, computed, PropType } from 'vue';
+<script lang="ts" setup>
+import { computed } from 'vue';
 
 type InterfaceOptions = {
 	minValue: number;
@@ -22,41 +22,33 @@ type InterfaceOptions = {
 	stepInterval: number;
 };
 
-export default defineComponent({
-	props: {
-		value: {
-			type: [String, Number],
-			default: null,
-		},
-		simple: {
-			type: Boolean,
-			default: false,
-		},
-		interfaceOptions: {
-			type: Object as PropType<InterfaceOptions>,
-			default: null,
-		},
-	},
-	setup(props) {
-		const starCount = computed(() => {
-			if (props.interfaceOptions === null) return 5;
+interface Props {
+	value?: string | number | null;
+	simple?: boolean;
+	interfaceOptions?: InterfaceOptions | null;
+}
 
-			return Math.ceil(props.interfaceOptions.maxValue);
-		});
-
-		const ratingPercentage = computed(() => ({
-			width: (Number(props.value) / starCount.value) * 100 + '%',
-		}));
-
-		return { starCount, ratingPercentage };
-	},
+const props = withDefaults(defineProps<Props>(), {
+	value: undefined,
+	simple: false,
+	interfaceOptions: undefined,
 });
+
+const starCount = computed(() => {
+	if (props.interfaceOptions === null) return 5;
+
+	return Math.ceil(props.interfaceOptions.maxValue ?? 5);
+});
+
+const ratingPercentage = computed(() => ({
+	width: (Number(props.value) / starCount.value) * 100 + '%',
+}));
 </script>
 
 <style lang="scss" scoped>
 .rating {
 	&.simple {
-		display: flex;
+		display: inline-flex;
 		align-items: center;
 		padding: 2px 6px 2px 4px;
 		color: #ffc107;
@@ -76,7 +68,7 @@ export default defineComponent({
 		.active {
 			position: relative;
 			z-index: 2;
-			display: flex;
+			display: inline-flex;
 			width: 0%;
 			overflow: hidden;
 			color: #ffc107;
@@ -87,7 +79,7 @@ export default defineComponent({
 			top: 0;
 			left: 0;
 			z-index: 1;
-			display: flex;
+			display: inline-flex;
 			color: var(--background-normal);
 		}
 	}

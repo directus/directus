@@ -1,60 +1,66 @@
-import { RequestHandler } from 'express';
-import jwt, { JsonWebTokenError, TokenExpiredError } from 'jsonwebtoken';
-import getDatabase from '../database';
-import env from '../env';
-import { InvalidCredentialsException } from '../exceptions';
-import asyncHandler from '../utils/async-handler';
-import isDirectusJWT from '../utils/is-directus-jwt';
+import type { Accountability } from '@directus/types';
+import type { NextFunction, Request, Response } from 'express';
+import { isEqual } from 'lodash-es';
+import getDatabase from '../database/index.js';
+import emitter from '../emitter.js';
+import env from '../env.js';
+import { InvalidCredentialsException } from '../exceptions/index.js';
+import asyncHandler from '../utils/async-handler.js';
+import { getIPFromReq } from '../utils/get-ip-from-req.js';
+import isDirectusJWT from '../utils/is-directus-jwt.js';
+import { verifyAccessJWT } from '../utils/jwt.js';
 
 /**
  * Verify the passed JWT and assign the user ID and role to `req`
  */
-const authenticate: RequestHandler = asyncHandler(async (req, res, next) => {
-	req.accountability = {
+export const handler = async (req: Request, _res: Response, next: NextFunction) => {
+	const defaultAccountability: Accountability = {
 		user: null,
 		role: null,
 		admin: false,
 		app: false,
-		ip: req.ip.startsWith('::ffff:') ? req.ip.substring(7) : req.ip,
-		userAgent: req.get('user-agent'),
+		ip: getIPFromReq(req),
 	};
+
+	const userAgent = req.get('user-agent');
+	if (userAgent) defaultAccountability.userAgent = userAgent;
+
+	const origin = req.get('origin');
+	if (origin) defaultAccountability.origin = origin;
 
 	const database = getDatabase();
 
+	const customAccountability = await emitter.emitFilter(
+		'authenticate',
+		defaultAccountability,
+		{
+			req,
+		},
+		{
+			database,
+			schema: null,
+			accountability: null,
+		}
+	);
+
+	if (customAccountability && isEqual(customAccountability, defaultAccountability) === false) {
+		req.accountability = customAccountability;
+		return next();
+	}
+
+	req.accountability = defaultAccountability;
+
 	if (req.token) {
 		if (isDirectusJWT(req.token)) {
-			let payload: { id: string };
+			const payload = verifyAccessJWT(req.token, env['SECRET']);
 
-			try {
-				payload = jwt.verify(req.token, env.SECRET as string, { issuer: 'directus' }) as { id: string };
-			} catch (err: any) {
-				if (err instanceof TokenExpiredError) {
-					throw new InvalidCredentialsException('Token expired.');
-				} else if (err instanceof JsonWebTokenError) {
-					throw new InvalidCredentialsException('Token invalid.');
-				} else {
-					throw err;
-				}
-			}
+			req.accountability.role = payload.role;
+			req.accountability.admin = payload.admin_access === true || payload.admin_access == 1;
+			req.accountability.app = payload.app_access === true || payload.app_access == 1;
 
-			const user = await database
-				.select('directus_users.role', 'directus_roles.admin_access', 'directus_roles.app_access')
-				.from('directus_users')
-				.leftJoin('directus_roles', 'directus_users.role', 'directus_roles.id')
-				.where({
-					'directus_users.id': payload.id,
-					status: 'active',
-				})
-				.first();
-
-			if (!user) {
-				throw new InvalidCredentialsException();
-			}
-
-			req.accountability.user = payload.id;
-			req.accountability.role = user.role;
-			req.accountability.admin = user.admin_access === true || user.admin_access == 1;
-			req.accountability.app = user.app_access === true || user.app_access == 1;
+			if (payload.share) req.accountability.share = payload.share;
+			if (payload.share_scope) req.accountability.share_scope = payload.share_scope;
+			if (payload.id) req.accountability.user = payload.id;
 		} else {
 			// Try finding the user with the provided token
 			const user = await database
@@ -79,6 +85,6 @@ const authenticate: RequestHandler = asyncHandler(async (req, res, next) => {
 	}
 
 	return next();
-});
+};
 
-export default authenticate;
+export default asyncHandler(handler);

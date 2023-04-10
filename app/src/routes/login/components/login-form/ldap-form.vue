@@ -21,7 +21,7 @@ import { useRouter } from 'vue-router';
 import { login } from '@/auth';
 import { RequestError } from '@/api';
 import { translateAPIError } from '@/lang';
-import { useUserStore } from '@/stores';
+import { useUserStore } from '@/stores/user';
 
 type Credentials = {
 	identifier: string;
@@ -101,7 +101,7 @@ export default defineComponent({
 					credentials.otp = otp.value;
 				}
 
-				await login(credentials, provider.value);
+				await login({ provider: provider.value, credentials });
 
 				// Stores are hydrated after login
 				const lastPage = userStore.currentUser?.last_page;

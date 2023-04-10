@@ -1,30 +1,17 @@
 ---
+description: REST and GraphQL API documentation on the Users collection in Directus.
+readTime: 9 min read
 pageClass: page-reference
 ---
 
 # Users
 
-<div class="two-up">
-<div class="left">
-
 > Directus Users are the individual accounts that let you authenticate into the API and App. Each user belongs to a Role
-> which defines its granular Permissions. [Learn more about Users](/getting-started/glossary/#users/).
-
-</div>
-<div class="right">
-
-[[toc]]
-
-</div>
-</div>
+> which defines its granular Permissions. [Learn more about Users](/getting-started/glossary#users).
 
 ---
 
 ## The User Object
-
-<div class="two-up">
-<div class="left">
-<div class="definitions">
 
 `id` **uuid**\
 Primary key of the user.
@@ -50,11 +37,11 @@ Title of the user.
 `description` **string**\
 Description of the user.
 
-`tags` **csv**\
+`tags` **array**\
 Tags for the user.
 
 `avatar` **many-to-one**\
-Avatar file. Many-to-one to [files](/reference/files/).
+Avatar file. Many-to-one to [files](/reference/files).
 
 `language` **string**\
 Language the Admin App is rendered in. See [our Crowdin page](https://locales.directus.io) for all available languages and
@@ -66,12 +53,32 @@ One of `auto`, `light`, `dark`.
 `tfa_secret` **string**\
 When TFA is enabled, this holds the secret key for it.
 
+`status` **string**\
+Status of the user. One of `draft`, `invited`, `active`, `suspended`, `archived`.
+
+`role` **uuid**\
+Role of the user. Many-to-one to [roles](/reference/system/roles).
+
+`token` **string**\
+Static access token for the user.
+
+`last_access` **date**\
+Last time the user accessed the API.
+
+`last_page` **string**\
+Last page in the app the user used.
+
+`provider` **string**\
+What auth provider was used to register this user.
+
+`external_identifier` **string**\
+Primary key of the user in the third party authentication provider, if used.
+
+`auth_data` **json**\
+Required data about the user as provided by the third party auth provider, if used.
+
 `email_notifications` **boolean**\
 When this is enabled, the user will receive emails for notifications.
-
-</div>
-</div>
-<div class="right">
 
 ```json
 {
@@ -96,17 +103,11 @@ When this is enabled, the user will receive emails for notifications.
 }
 ```
 
-</div>
-</div>
-
 ---
 
 ## List Users
 
 List all users that exist in Directus.
-
-<div class="two-up">
-<div class="left">
 
 ### Query Parameters
 
@@ -114,11 +115,8 @@ Supports all [global query parameters](/reference/query).
 
 ### Returns
 
-An array of up to [limit](/reference/query/#limit) [user objects](#the-user-object). If no items are available, data
-will be an empty array.
-
-</div>
-<div class="right">
+An array of up to [limit](/reference/query#limit) [user objects](#the-user-object). If no items are available, data will
+be an empty array.
 
 ### REST API
 
@@ -127,7 +125,7 @@ GET /users
 SEARCH /users
 ```
 
-[Learn more about SEARCH ->](/reference/introduction/#search-http-method)
+[Learn more about SEARCH ->](/reference/introduction#search-http-method)
 
 ### GraphQL
 
@@ -153,17 +151,11 @@ query {
 }
 ```
 
-</div>
-</div>
-
 ---
 
 ## Retrieve a User
 
 List an existing user by primary key.
-
-<div class="two-up">
-<div class="left">
 
 ### Query Parameters
 
@@ -172,9 +164,6 @@ Supports all [global query parameters](/reference/query).
 ### Returns
 
 Returns the requested [user object](#the-user-object).
-
-</div>
-<div class="right">
 
 ### REST API
 
@@ -212,17 +201,11 @@ query {
 }
 ```
 
-</div>
-</div>
-
 ---
 
 ## Retrieve the Current User
 
 Retrieve the currently authenticated user.
-
-<div class="two-up">
-<div class="left">
 
 ### Query Parameters
 
@@ -231,9 +214,6 @@ Supports all [global query parameters](/reference/query).
 ### Returns
 
 Returns the [user object](#the-user-object) for the currently authenticated user.
-
-</div>
-<div class="right">
 
 ### REST API
 
@@ -263,17 +243,61 @@ query {
 }
 ```
 
-</div>
-</div>
+---
+
+## Update the Current User
+
+Update the authenticated user.
+
+### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
+### Returns
+
+Returns the updated [user object](#the-user-object) for the authenticated user.
+
+### REST API
+
+```
+PATCH /users/me
+```
+
+```json
+// PATCH /users/me
+
+{
+	"email": "new.email@example.com"
+}
+```
+
+### GraphQL
+
+```
+POST /graphql/system
+```
+
+```graphql
+type Mutation {
+	update_users_me(data: update_directus_users_input!): directus_users
+}
+```
+
+##### Example
+
+```graphql
+mutation {
+	update_users_me(data: { email: "new.email@example.com" }) {
+		email
+	}
+}
+```
 
 ---
 
 ## Create a User
 
 Create a new user
-
-<div class="two-up">
-<div class="left">
 
 ### Query Parameters
 
@@ -283,14 +307,11 @@ Supports all [global query parameters](/reference/query).
 
 A partial [user object](#the-user-object).
 
-`email` and `password` are required.
+`email` and `password` are required to authenticate with the default authentication provider.
 
 ### Returns
 
 Returns the [user object](#the-user-object) for the created user.
-
-</div>
-<div class="right">
 
 ### REST API
 
@@ -335,17 +356,11 @@ mutation {
 }
 ```
 
-</div>
-</div>
-
 ---
 
 ## Create Multiple Users
 
 Create multiple new users
-
-<div class="two-up">
-<div class="left">
 
 ### Query Parameters
 
@@ -360,9 +375,6 @@ An array of partial [user objects](#the-user-object).
 ### Returns
 
 Returns the [user objects](#the-user-object) for the created users.
-
-</div>
-<div class="right">
 
 ### REST API
 
@@ -417,17 +429,11 @@ mutation {
 }
 ```
 
-</div>
-</div>
-
 ---
 
 ## Update a User
 
 Update an existing user.
-
-<div class="two-up">
-<div class="left">
 
 ### Query Parameters
 
@@ -440,9 +446,6 @@ A partial [user object](#the-user-object).
 ### Returns
 
 Returns the [user object](#the-user-object) for the updated user.
-
-</div>
-<div class="right">
 
 ### REST API
 
@@ -483,17 +486,11 @@ mutation {
 }
 ```
 
-</div>
-</div>
-
 ---
 
 ## Update Multiple Users
 
 Update multiple existing users.
-
-<div class="two-up">
-<div class="left">
 
 ### Query Parameters
 
@@ -501,22 +498,15 @@ Supports all [global query parameters](/reference/query).
 
 ### Request Body
 
-<div class="definitions">
-
 `keys` **Required**\
 Array of primary keys of the users you'd like to update.
 
 `data` **Required**\
 Any of [the user object](#the-user-object)'s properties.
 
-</div>
-
 ### Returns
 
 Returns the [user objects](#the-user-object) for the updated users.
-
-</div>
-<div class="right">
 
 ### REST API
 
@@ -563,24 +553,15 @@ mutation {
 }
 ```
 
-</div>
-</div>
-
 ---
 
 ## Delete a User
 
 Delete an existing user.
 
-<div class="two-up">
-<div class="left">
-
 ### Returns
 
 Empty body.
-
-</div>
-<div class="right">
 
 ### REST API
 
@@ -616,17 +597,11 @@ mutation {
 }
 ```
 
-</div>
-</div>
-
 ---
 
 ## Delete Multiple Users
 
 Delete multiple existing users.
-
-<div class="two-up">
-<div class="left">
 
 ### Request Body
 
@@ -635,9 +610,6 @@ An array of user primary keys
 ### Returns
 
 Empty body.
-
-</div>
-<div class="right">
 
 ### REST API
 
@@ -674,21 +646,13 @@ mutation {
 }
 ```
 
-</div>
-</div>
-
 ---
 
 ## Invite a new User
 
 Invite a new user by email.
 
-<div class="two-up">
-<div class="left">
-
 ### Request Body
-
-<div class="definitions">
 
 `email` **Required**\
 User email to invite.
@@ -699,16 +663,11 @@ Role of the new user.
 `invite_url`\
 Provide a custom invite url which the link in the email will lead to. The invite token will be passed as a parameter.\
 **Note**: You need to configure the
-[`USER_INVITE_URL_ALLOW_LIST` environment variable](/configuration/config-options/#security) to enable this feature.
-
-</div>
+[`USER_INVITE_URL_ALLOW_LIST` environment variable](/self-hosted/config-options#security) to enable this feature.
 
 ### Returns
 
 Empty body.
-
-</div>
-<div class="right">
 
 ### REST API
 
@@ -747,9 +706,6 @@ mutation {
 }
 ```
 
-</div>
-</div>
-
 ---
 
 ## Accept User Invite
@@ -758,12 +714,7 @@ Accept your invite. The [invite user endpoint](#invite-a-new-user) sends the ema
 
 This link includes a token, which is then used to activate the invited user.
 
-<div class="two-up">
-<div class="left">
-
 ### Request Body
-
-<div class="definitions">
 
 `token` **Required**\
 Accept invite token.
@@ -771,14 +722,9 @@ Accept invite token.
 `password` **Required**\
 Password for the user.
 
-</div>
-
 ### Returns
 
 Empty body.
-
-</div>
-<div class="right">
 
 ### REST API
 
@@ -817,41 +763,24 @@ mutation {
 }
 ```
 
-</div>
-</div>
-
 ---
 
 ## Generate Two-Factor Authentication Secret
 
 Generates a secret and returns the URL to be used in an authenticator app.
 
-<div class="two-up">
-<div class="left">
-
 ### Request Body
-
-<div class="definitions">
 
 `password` **Required**\
 The user's password.
 
-</div>
-
 ### Returns
-
-<div class="definitions">
 
 `secret` **string**\
 OTP secret to be saved in the authenticator app.
 
 `otpauth_url` **string**\
 `otpauth://` formatted URL. Can be rendered as QR code and used in most authenticator apps.
-
-</div>
-
-</div>
-<div class="right">
 
 ### REST API
 
@@ -891,21 +820,13 @@ mutation {
 }
 ```
 
-</div>
-</div>
-
 ---
 
 ## Enable Two-Factor Authentication
 
 Adds a TFA secret to the user account.
 
-<div class="two-up">
-<div class="left">
-
 ### Request Body
-
-<div class="definitions">
 
 `secret` **Required**\
 The TFA secret from tfa/generate.
@@ -913,18 +834,9 @@ The TFA secret from tfa/generate.
 `otp` **Required**\
 OTP generated with the secret, to recheck if the user has a correct TFA setup
 
-</div>
-
 ### Returns
 
-<div class="definitions">
-
 Empty response.
-
-</div>
-
-</div>
-<div class="right">
 
 ### REST API
 
@@ -962,33 +874,20 @@ mutation {
 }
 ```
 
-</div>
-</div>
-
 ---
 
 ## Disable Two-Factor Authentication
 
 Disables two-factor authentication by removing the OTP secret from the user.
 
-<div class="two-up">
-<div class="left">
-
 ### Request Body
-
-<div class="definitions">
 
 `otp` **Required**\
 One-time password generated by the authenticator app.
 
-</div>
-
 ### Returns
 
 Empty response.
-
-</div>
-<div class="right">
 
 ### REST API
 
@@ -1025,6 +924,3 @@ mutation {
 	users_me_tfa_disable(otp: "591763")
 }
 ```
-
-</div>
-</div>

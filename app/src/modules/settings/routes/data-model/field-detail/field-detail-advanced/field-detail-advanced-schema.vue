@@ -41,6 +41,7 @@
 					<v-input
 						v-model="maxLength"
 						type="number"
+						:min="1"
 						:placeholder="type !== 'string' ? t('not_available_for_type') : '255'"
 						:disabled="isExisting || type !== 'string'"
 					/>
@@ -109,7 +110,7 @@
 				/>
 				<interface-input-code
 					v-else-if="type === 'json'"
-					:value="defaultValue || ''"
+					:value="defaultValue"
 					language="JSON"
 					placeholder="NULL"
 					type="json"
@@ -134,9 +135,9 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed } from 'vue';
-import { GEOMETRY_TYPES } from '@directus/shared/constants';
+import { GEOMETRY_TYPES } from '@directus/constants';
 import { translate } from '@/utils/translate-object-values';
-import { Type } from '@directus/shared/types';
+import { Type } from '@directus/types';
 import { TranslateResult } from 'vue-i18n';
 import { useFieldDetailStore, syncFieldDetailStoreProperty } from '../store';
 import { storeToRefs } from 'pinia';

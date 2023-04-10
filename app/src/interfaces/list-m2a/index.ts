@@ -1,4 +1,4 @@
-import { defineInterface } from '@directus/shared/utils';
+import { defineInterface } from '@directus/utils';
 import InterfaceListM2A from './list-m2a.vue';
 import PreviewSVG from './preview.svg?raw';
 
@@ -37,6 +37,29 @@ export default defineInterface({
 				options: {
 					label: '$t:enable_create_button',
 				},
+				width: 'half',
+			},
+		},
+		{
+			field: 'limit',
+			name: '$t:per_page',
+			type: 'integer',
+			meta: {
+				interface: 'input',
+				width: 'half',
+			},
+			schema: {
+				default_value: 15,
+			},
+		},
+		{
+			field: 'allowDuplicates',
+			name: '$t:allow_duplicates',
+			schema: {
+				default_value: false,
+			},
+			meta: {
+				interface: 'boolean',
 				width: 'half',
 			},
 		},

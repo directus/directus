@@ -1,30 +1,17 @@
 ---
+description: REST and GraphQL API documentation on the Activity collection in Directus.
+readTime: 4 min read
 pageClass: page-reference
 ---
 
 # Activity
 
-<div class="two-up">
-<div class="left">
-
-> All events that within Directus are tracked and stored in the activities collection. This gives you full
-> accountability over everything that happens. [Learn more about Activity](/getting-started/glossary/#activity).
-
-</div>
-<div class="right">
-
-[[toc]]
-
-</div>
-</div>
+> All events within Directus are tracked and stored in the activities collection. This gives you full accountability
+> over everything that happens. [Learn more about Activity](/getting-started/glossary#activity).
 
 ---
 
 ## The Activity Object
-
-<div class="two-up">
-<div class="left">
-<div class="definitions">
 
 `action` **string**\
 Action that was performed.
@@ -48,17 +35,13 @@ Unique identifier for the item the action applied to. This is always a string, e
 When the action happened.
 
 `user` **many-to-one**\
-The user who performed this action. Many-to-one to [users](/reference/system/users/#the-users-object).
+The user who performed this action. Many-to-one to [users](/reference/system/users#the-users-object).
 
 `user_agent` **string**\
 User agent string of the browser the user used when the action took place.
 
 `revisions` **one-to-many**\
-Any changes that were made in this activity. One-to-many to [revisions](/reference/system/revisions/#the-revisions-object).
-
-</div>
-</div>
-<div class="right">
+Any changes that were made in this activity. One-to-many to [revisions](/reference/system/revisions#the-revisions-object).
 
 ```json
 {
@@ -75,17 +58,11 @@ Any changes that were made in this activity. One-to-many to [revisions](/referen
 }
 ```
 
-</div>
-</div>
-
 ---
 
 ## List Activity Actions
 
 Returns a list of activity actions.
-
-<div class="two-up">
-<div class="left">
 
 ### Query Parameters
 
@@ -93,11 +70,8 @@ Supports all [global query parameters](/reference/query).
 
 ### Returns
 
-An array of up to [limit](/reference/query/#limit) [activity objects](#the-activity-object). If no items are available,
+An array of up to [limit](/reference/query#limit) [activity objects](#the-activity-object). If no items are available,
 data will be an empty array.
-
-</div>
-<div class="right">
 
 ### REST API
 
@@ -106,7 +80,7 @@ GET /activity
 SEARCH /activity
 ```
 
-[Learn more about SEARCH ->](/reference/introduction/#search-http-method)
+[Learn more about SEARCH ->](/reference/introduction#search-http-method)
 
 ### GraphQL
 
@@ -130,17 +104,11 @@ query {
 }
 ```
 
-</div>
-</div>
-
 ---
 
 ## Retrieve Activity Action
 
 Returns a single activity action by primary key.
-
-<div class="two-up">
-<div class="left">
 
 ### Query Parameters
 
@@ -149,9 +117,6 @@ Supports all [global query parameters](/reference/query).
 ### Returns
 
 Returns an [activity object](#the-activity-object) if a valid identifier was provided.
-
-</div>
-<div class="right">
 
 ### REST API
 
@@ -181,21 +146,13 @@ query {
 }
 ```
 
-</div>
-</div>
-
 ---
 
 ## Create a Comment
 
 Creates a new comment on a given item.
 
-<div class="two-up">
-<div class="left">
-
 ### Request Body
-
-<div class="definitions">
 
 `collection` **Required**\
 Collection in which the item resides.
@@ -206,14 +163,9 @@ Primary Key of the item to comment on.
 `comment` **Required**\
 The comment content. Supports Markdown.
 
-</div>
-
 ### Returns
 
 Returns the [activity object](#the-activity-object) of the created comment.
-
-</div>
-<div class="right">
 
 ### REST API
 
@@ -257,33 +209,20 @@ mutation {
 }
 ```
 
-</div>
-</div>
-
 ---
 
 ## Update a Comment
 
 Updates an existing comment by activity action primary key.
 
-<div class="two-up">
-<div class="left">
-
 ### Request Body
-
-<div class="definitions">
 
 `comment` **Required**\
 The updated comment content. Supports Markdown.
 
-</div>
-
 ### Returns
 
 Returns the [activity object](#the-activity-object) of the created comment.
-
-</div>
-<div class="right">
 
 ### REST API
 
@@ -324,18 +263,11 @@ mutation {
 }
 ```
 
-</div>
-</div>
-
 ---
 
 ## Delete a Comment
 
 Deletes a comment.
-
-<div class="two-up">
-<div class="left"></div>
-<div class="right">
 
 ### REST API
 
@@ -370,6 +302,3 @@ mutation {
 	}
 }
 ```
-
-</div>
-</div>

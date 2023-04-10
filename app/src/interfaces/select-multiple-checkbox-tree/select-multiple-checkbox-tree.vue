@@ -1,6 +1,6 @@
 <template>
 	<div class="select-multiple-checkbox-tree">
-		<div class="search">
+		<div v-if="choices.length > 10" class="search">
 			<v-input v-model="search" class="input" type="text" :placeholder="t('search')">
 				<template #prepend>
 					<v-icon name="search" />

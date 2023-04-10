@@ -1,33 +1,15 @@
-import { Knex } from 'knex';
-// @ts-ignore
-import Client_Oracledb from 'knex/lib/dialects/oracledb';
-
-async function oracleAlterCollections(knex: Knex, type: string): Promise<void> {
-	await knex.raw('ALTER TABLE "directus_webhooks" ADD "collections__temp" ?', [knex.raw(type)]);
-	await knex.raw('UPDATE "directus_webhooks" SET "collections__temp"="collections"');
-	await knex.raw('ALTER TABLE "directus_webhooks" DROP COLUMN "collections"');
-	await knex.raw('ALTER TABLE "directus_webhooks" RENAME COLUMN "collections__temp" TO "collections"');
-	await knex.raw('ALTER TABLE "directus_webhooks" MODIFY "collections" NOT NULL');
-}
+import type { Knex } from 'knex';
+import { getHelpers } from '../helpers/index.js';
 
 export async function up(knex: Knex): Promise<void> {
-	if (knex.client instanceof Client_Oracledb) {
-		await oracleAlterCollections(knex, 'CLOB');
-		return;
-	}
-
-	await knex.schema.alterTable('directus_webhooks', (table) => {
-		table.text('collections').alter();
-	});
+	const helper = getHelpers(knex).schema;
+	const type = helper.isOneOfClients(['oracle', 'cockroachdb']) ? 'text' : 'string';
+	await helper.changeToType('directus_webhooks', 'collections', type);
 }
 
 export async function down(knex: Knex): Promise<void> {
-	if (knex.client instanceof Client_Oracledb) {
-		await oracleAlterCollections(knex, 'VARCHAR2(255)');
-		return;
-	}
-
-	await knex.schema.alterTable('directus_webhooks', (table) => {
-		table.string('collections').notNullable().alter();
+	await getHelpers(knex).schema.changeToType('directus_webhooks', 'collections', 'string', {
+		nullable: false,
+		length: 255,
 	});
 }

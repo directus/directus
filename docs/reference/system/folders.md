@@ -1,30 +1,17 @@
 ---
+description: REST and GraphQL API documentation on the Folders collection in Directus.
+readTime: 4 min read
 pageClass: page-reference
 ---
 
 # Folders
 
-<div class="two-up">
-<div class="left">
-
 > Folders can be used to organize files within the platform. Folders are virtual, and aren't mirrored within the storage
 > adapter.
-
-</div>
-<div class="right">
-
-[[toc]]
-
-</div>
-</div>
 
 ---
 
 ## The Folder Object
-
-<div class="two-up">
-<div class="left">
-<div class="definitions">
 
 `id` **uuid**\
 Primary key of the folder.
@@ -34,10 +21,6 @@ Name of the folder.
 
 `parent` **many-to-one**\
 Parent folder. Many-to-one to folders (recursive).
-
-</div>
-</div>
-<div class="right">
 
 ```json
 {
@@ -49,17 +32,11 @@ Parent folder. Many-to-one to folders (recursive).
 }
 ```
 
-</div>
-</div>
-
 ---
 
 ## List Folders
 
 List all folders that exist in Directus.
-
-<div class="two-up">
-<div class="left">
 
 ### Query Parameters
 
@@ -67,11 +44,8 @@ Supports all [global query parameters](/reference/query).
 
 ### Returns
 
-An array of up to [limit](/reference/query/#limit) [folder objects](#the-folder-object). If no items are available, data
+An array of up to [limit](/reference/query#limit) [folder objects](#the-folder-object). If no items are available, data
 will be an empty array.
-
-</div>
-<div class="right">
 
 ### REST API
 
@@ -80,7 +54,7 @@ GET /folders
 SEARCH /folders
 ```
 
-[Learn more about SEARCH ->](/reference/introduction/#search-http-method)
+[Learn more about SEARCH ->](/reference/introduction#search-http-method)
 
 ### GraphQL
 
@@ -104,17 +78,11 @@ query {
 }
 ```
 
-</div>
-</div>
-
 ---
 
 ## Retrieve a Folder
 
 List all folders that exist in Directus.
-
-<div class="two-up">
-<div class="left">
 
 ### Query Parameters
 
@@ -123,9 +91,6 @@ Supports all [global query parameters](/reference/query).
 ### Returns
 
 Returns a [folder object](#the-folder-object) if a valid primary key was provided.
-
-</div>
-<div class="right">
 
 ### REST API
 
@@ -161,17 +126,11 @@ query {
 }
 ```
 
-</div>
-</div>
-
 ---
 
 ## Create a Folder
 
 Create a new (virtual) folder.
-
-<div class="two-up">
-<div class="left">
 
 ### Query Parameters
 
@@ -184,9 +143,6 @@ A partial [folder object](#the-folder-object). `name` is required.
 ### Returns
 
 Returns the [folder object](#the-folder-object) of the folder that was created.
-
-</div>
-<div class="right">
 
 ### REST API
 
@@ -227,17 +183,11 @@ mutation {
 }
 ```
 
-</div>
-</div>
-
 ---
 
 ## Create Multiple Folders
 
 Create multiple new (virtual) folders.
-
-<div class="two-up">
-<div class="left">
 
 ### Query Parameters
 
@@ -250,9 +200,6 @@ An array of partial [folder objects](#the-folder-object). `name` is required.
 ### Returns
 
 Returns the [folder object](#the-folder-object) of the folder that was created.
-
-</div>
-<div class="right">
 
 ### REST API
 
@@ -298,17 +245,11 @@ mutation {
 }
 ```
 
-</div>
-</div>
-
 ---
 
 ## Update a Folder
 
 Update an existing folder.
-
-<div class="two-up">
-<div class="left">
 
 ### Query Parameters
 
@@ -321,9 +262,6 @@ A partial [folder object](#the-folder-object).
 ### Returns
 
 Returns the [folder object](#the-folder-object) of the folder that was updated.
-
-</div>
-<div class="right">
 
 ### REST API
 
@@ -367,17 +305,11 @@ mutation {
 }
 ```
 
-</div>
-</div>
-
 ---
 
 ## Update Multiple Folders
 
 Update multiple existing folders.
-
-<div class="two-up">
-<div class="left">
 
 ### Query Parameters
 
@@ -385,22 +317,15 @@ Supports all [global query parameters](/reference/query).
 
 ### Request Body
 
-<div class="definitions">
-
 `keys` **Required**\
 Array of primary keys of the folders you'd like to update.
 
 `data` **Required**\
 Any of [the folder object](#the-folder-object)'s properties.
 
-</div>
-
 ### Returns
 
 Returns the [folder objects](#the-folder-object) of the folders that were updated.
-
-</div>
-<div class="right">
 
 ### REST API
 
@@ -447,17 +372,11 @@ mutation {
 }
 ```
 
-</div>
-</div>
-
 ---
 
 ## Delete a Folder
 
 Delete an existing folder.
-
-<div class="two-up">
-<div class="left">
 
 ::: tip Files
 
@@ -468,9 +387,6 @@ Any files in this folder will be moved to the root folder.
 ### Returns
 
 Empty body.
-
-</div>
-<div class="right">
 
 ### REST API
 
@@ -506,17 +422,11 @@ mutation {
 }
 ```
 
-</div>
-</div>
-
 ---
 
 ## Delete Multiple Folders
 
 Delete multiple existing folders.
-
-<div class="two-up">
-<div class="left">
 
 ::: tip Files
 
@@ -531,9 +441,6 @@ An array of folder primary keys.
 ### Returns
 
 Empty body.
-
-</div>
-<div class="right">
 
 ### REST API
 
@@ -570,6 +477,3 @@ mutation {
 	}
 }
 ```
-
-</div>
-</div>

@@ -1,16 +1,18 @@
 import chalk from 'chalk';
 import execa from 'execa';
 import inquirer from 'inquirer';
-import { Knex } from 'knex';
+import Joi from 'joi';
+import type { Knex } from 'knex';
 import ora from 'ora';
-import { v4 as uuidV4 } from 'uuid';
-import runMigrations from '../../../database/migrations/run';
-import runSeed from '../../../database/seeds/run';
-import createDBConnection, { Credentials } from '../../utils/create-db-connection';
-import createEnv from '../../utils/create-env';
-import { drivers, getDriverForClient } from '../../utils/drivers';
-import { databaseQuestions } from './questions';
-import { generateHash } from '../../../utils/generate-hash';
+import { v4 as uuid } from 'uuid';
+import runMigrations from '../../../database/migrations/run.js';
+import runSeed from '../../../database/seeds/run.js';
+import { generateHash } from '../../../utils/generate-hash.js';
+import createDBConnection, { Credentials } from '../../utils/create-db-connection.js';
+import createEnv from '../../utils/create-env/index.js';
+import { defaultAdminRole, defaultAdminUser } from '../../utils/defaults.js';
+import { drivers, getDriverForClient } from '../../utils/drivers.js';
+import { databaseQuestions } from './questions.js';
 
 export default async function init(): Promise<void> {
 	const rootPath = process.cwd();
@@ -74,6 +76,12 @@ export default async function init(): Promise<void> {
 			name: 'email',
 			message: 'Email',
 			default: 'admin@example.com',
+			validate: (input: string) => {
+				const emailSchema = Joi.string().email().required();
+				const { error } = emailSchema.validate(input);
+				if (error) throw new Error('The email entered is not a valid email address!');
+				return true;
+			},
 		},
 		{
 			type: 'password',
@@ -89,25 +97,20 @@ export default async function init(): Promise<void> {
 
 	firstUser.password = await generateHash(firstUser.password);
 
-	const userID = uuidV4();
-	const roleID = uuidV4();
+	const userID = uuid();
+	const roleID = uuid();
 
 	await db('directus_roles').insert({
 		id: roleID,
-		name: 'Administrator',
-		icon: 'verified',
-		admin_access: true,
-		description: 'Initial administrative role with unrestricted App/API access',
+		...defaultAdminRole,
 	});
 
 	await db('directus_users').insert({
 		id: userID,
-		status: 'active',
 		email: firstUser.email,
 		password: firstUser.password,
-		first_name: 'Admin',
-		last_name: 'User',
 		role: roleID,
+		...defaultAdminUser,
 	});
 
 	await db.destroy();

@@ -1,66 +1,97 @@
-# Collection Presets
+---
+description:
+  Presets store the state of a Collection Page. They can be used to set layout defaults or define bookmarks to specific
+  datasets.
+readTime: 3 min read
+---
 
-> Presets store the state of a Collection Detail page. They can be used to set layout defaults or define bookmarks to
-> specific datasets. [Learn more about Presets](/getting-started/glossary/#presets).
+# Presets
 
-## Creating a Preset
+> Presets are items which store the state of a Collection Page. This allows you to set layout defaults or define
+> bookmarks to specific datasets.
 
-1. Navigate to **Settings > Presets & Bookmarks**
-2. Click the **Create Preset** action button in the header
-3. Complete the **other preset form fields** outlined below
+:::tip Before You Begin
 
-- **Collection** — The collection of this preset; supports any project collection, Directus Files, or Directus Users
-- **Scope** — The users that will have access to this preset, either Global, a specific Role, or an individual User
-- **Layout** — The collection detail's layout this preset applies to
-- **Name** — If left blank, this preset will act as a Default for the collection/layout; if given a name, it will be
-  shown as a bookmark
-
-After you have completed the form, the layout preview will be populated with live data. **You can now tailor the layout
-as desired by updating the preview or the filter component in the page sidebar.**
-
-Each preset saves all of the information needed to recreate a view of the collection/layout, including:
-
-- **Collection** — The collection of the preset
-- **Layout** — The Layout the preset applies to
-- **Layout Query** — Order direction, order field, pagination, etc
-- **Layout Options** — The configuration of all layout options
-- **Search** — Any full-text search query applied
-- **Filters** — Any advanced filters applied
-- **User** — Optional; scopes to a specific user
-- **Role** — Optional; scopes to a specific role
-- **Bookmark Name** — Optional; determines if the preset is a bookmark
-
-::: tip Defaults vs Bookmarks
-
-It's important to be aware of the difference between a collection's _defaults_ and its _bookmarks_, both of which are
-configured by presets. A _default_ is how a user will initially view the collection detail without any further
-customization, while a _bookmark_ is a named dataset that can be recalled at any point via the
-[navigation bar](/app/overview/#_2-navigation-bar).
+We recommend you read through the [Quickstart Guide](/getting-started/quickstart.md) to get an overview of the platform
+first, then see our guide on the [Collection Page](/app/content/collections.md) so you're familiar with its features and
+functionalities.
 
 :::
 
-::: tip System Defaults
+:::tip Learn More
 
-You can also adjust the defaults and bookmarks for the Directus Activity, Directus Files, and Directus Users
-collections.
-
-:::
-
-::: tip Order of Defaults
-
-Multiple defaults can be configured for a user, either for different layouts of even the same layout. In this case, the
-preset priority is: User, then Role, then Global.
+To manage Presets and Bookmarks programmatically, see our [API guide on Presets](/reference/system/presets.md).
 
 :::
 
-## Deleting a Preset
+Remember, a [Collection Page](/app/content/collections.md) enables you to customize how its items are presented. That
+is, it lets you sort, search, or filter items and even change [Layouts](/app/layouts.md). In some cases, you may need to
+apply the same display adjustments again and again. Presets save these adjustments, like a snapshot. You can create
+presets for all project collections, as well as `directus_activity`, `directus_files` and `directus_users`.
 
-1. Navigate to **Settings > Presets & Bookmarks > [Preset]**
-2. Click the red **Delete Preset** action button in the header
-3. Confirm this decision by clicking **Delete** in the dialog
+Admins can access and manage all presets under **Settings > Presets and Bookmarks**.
+
+## Create a Preset
+
+<video title="Create a Preset" autoplay playsinline muted loop controls>
+	<source src="https://cdn.directus.io/docs/v9/configuration/presets-bookmarks/presets-bookmarks-20220819/create-a-preset-20220819B.mp4" type="video/mp4" />
+</video>
+
+There are two types or presets, Defaults and Bookmarks.
+
+A _Default_ determines how a user will initially view a Collection Page. When a user makes adjustments to a given
+Collection Page, these are automatically saved as the Default, so the adjustments remain even if the user navigates away
+and then returns.
+
+A _Bookmark_ creates another custom display of the Collection Page, which can be accessed any time on the
+[Navigation Bar](/app/overview#_2-navigation-bar). Users can also
+[create a Bookmark](/app/content/collections.html#create-a-bookmark) for personal use from within the Content Module.
+
+The method to create a preset shown here is for Admin use only. For Administrators, the process to create either a
+Default or a Bookmark is almost exactly the same. The key difference is that if you set a value for **Name**, the preset
+becomes a Bookmark. If **Name** is left blank, the preset will be a Default. To create a preset, follow these steps.
+
+1. Navigate to **Settings > Presets & Bookmarks**.
+2. Click <span mi btn>add</span> in the header.
+3. Configure your preset item's values as desired:
+   - **Collection** — Sets the collection this preset will apply to. Notice the layout preview below, which populates
+     with live data from the selected collection.
+   - **Scope** — Defines which users have access to this preset.
+   - **Layout** — Selects a Layout for the preset, which is adjusted from the Sidebar.
+   - **Name** — Sets a name, which determines if the preset is a Default or Bookmark. Note that this field supports
+     [Translation Strings](/configuration/translation-strings.md).
+4. Scroll down to the **Layout Preview** section and make any other adjustments or configurations as desired. Each
+   preset saves all of the information needed to recreate this Layout Preview, just as it is shown.
+5. Click <span mi btn>check</span> to confirm.
+
+:::tip Preset Priority
+
+Multiple Defaults can be created for the same Collection Page for the same user. When this happens, the preset priority
+is: User, then Role, then Global.
+
+:::
+
+## Edit a Preset
+
+<video title="Edit a Preset" autoplay playsinline muted loop controls>
+	<source src="https://cdn.directus.io/docs/v9/configuration/presets-bookmarks/presets-bookmarks-20220819/edit-a-preset-20220819A.mp4" type="video/mp4" />
+</video>
+
+1. Navigate to **Settings > Presets & Bookmarks > [preset]**.
+2. Reconfigure your preset as desired.
+3. Click <span mi btn>check</span> to confirm.
+
+## Delete a Preset
+
+<video title="Delete a Preset" autoplay playsinline muted loop controls>
+	<source src="https://cdn.directus.io/docs/v9/configuration/presets-bookmarks/presets-bookmarks-20220819/delete-a-preset-20220819A.mp4" type="video/mp4" />
+</video>
+
+1. Navigate to **Settings > Presets & Bookmarks > [preset]**.
+2. Click <span mi btn dngr>delete</span> in the page header and a popup will appear. Click **Confirm**.
 
 ::: danger Irreversible Change
 
-This action is permanent and can not be undone. Please proceed with caution.
+This action is permanent and cannot be undone. Please proceed with caution.
 
 :::
