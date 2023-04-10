@@ -1,4 +1,4 @@
-import request from 'supertest';
+import request, { Response } from 'supertest';
 import { jsonToGraphQLQuery } from 'json-to-graphql-query';
 
 export function processGraphQLJson(jsonQuery: any) {
@@ -11,7 +11,7 @@ export async function requestGraphQL(
 	token: string | null,
 	jsonQuery: any,
 	options?: { variables?: any; cookies?: string[] }
-): Promise<any> {
+): Promise<Response> {
 	const req = request(host)
 		.post(isSystemCollection ? '/graphql/system' : '/graphql')
 		.send({
