@@ -209,7 +209,14 @@ export async function applyDiff(
 			schema: await getSchema({ database: trx, bypassCache: true }),
 		});
 
-		for (const { collection, field, diff } of snapshotDiff.fields) {
+		// temporary test for applying db schema changes first
+		const diffKindOrder = [DiffKind.NEW, DiffKind.DELETE, DiffKind.EDIT, DiffKind.ARRAY];
+		const sortedSnapshotDiffFields = snapshotDiff.fields.sort((a, b) => {
+			if (!a.diff?.[0]?.kind || !b.diff?.[0]?.kind) return 0;
+			return diffKindOrder.indexOf(a.diff?.[0]?.kind) - diffKindOrder.indexOf(b.diff?.[0]?.kind);
+		});
+
+		for (const { collection, field, diff } of sortedSnapshotDiffFields) {
 			if (diff?.[0]?.kind === DiffKind.NEW && !isNestedMetaUpdate(diff?.[0])) {
 				try {
 					await fieldsService.createField(collection, (diff[0] as DiffNew<Field>).rhs, undefined, mutationOptions);
