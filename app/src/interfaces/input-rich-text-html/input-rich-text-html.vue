@@ -398,6 +398,7 @@ export default defineComponent({
 				link_default_protocol: 'https',
 				browser_spellcheck: true,
 				directionality: props.direction,
+				paste_data_images: false,
 				setup,
 				...(props.tinymceOverrides || {}),
 			};
