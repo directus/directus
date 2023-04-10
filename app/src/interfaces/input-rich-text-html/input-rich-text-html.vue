@@ -368,7 +368,6 @@ export default defineComponent({
 
 			return {
 				skin: false,
-				skin_url: false,
 				content_css: false,
 				content_style: getEditorStyles(props.font as 'sans-serif' | 'serif' | 'monospace'),
 				plugins: [
