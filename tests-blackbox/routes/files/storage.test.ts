@@ -6,11 +6,13 @@ import path from 'path';
 import * as common from '@common/index';
 
 const assetsDirectory = [__dirname, '..', '..', 'assets'];
-const storages = ['local'];
+const storages = ['local', 'minio'];
 const imageFile = {
 	name: 'directus.png',
 	type: 'image/png',
 	filesize: '7136',
+	title: 'Directus',
+	description: 'The Directus Logo',
 };
 const imageFilePath = path.join(...assetsDirectory, imageFile.name);
 
@@ -22,8 +24,10 @@ describe('/files', () => {
 				const response = await request(getUrl(vendor))
 					.post('/files')
 					.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
-					.attach('file', createReadStream(imageFilePath))
-					.field('storage', storage);
+					.field('storage', storage)
+					.field('title', imageFile.title)
+					.field('description', imageFile.description)
+					.attach('file', createReadStream(imageFilePath));
 
 				// Normalize filesize to string as bigint returns as a string
 				response.body.data.filesize = String(response.body.data.filesize);
@@ -37,6 +41,8 @@ describe('/files', () => {
 						filename_download: imageFile.name,
 						filename_disk: expect.any(String),
 						storage: storage,
+						title: imageFile.title,
+						description: imageFile.description,
 						id: expect.any(String),
 					})
 				);
@@ -51,8 +57,8 @@ describe('/files', () => {
 				const insertResponse = await request(getUrl(vendor))
 					.post('/files')
 					.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
-					.attach('file', createReadStream(imageFilePath))
-					.field('storage', storage);
+					.field('storage', storage)
+					.attach('file', createReadStream(imageFilePath));
 
 				// Action
 				const response = await request(getUrl(vendor))

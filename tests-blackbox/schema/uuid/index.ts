@@ -1,5 +1,6 @@
-import { getFilterOperatorsForType } from '@directus/shared/utils';
-import { ClientFilterOperator } from '@directus/shared/types';
+/** @TODO replace with import from @directus/utils */
+import { getFilterOperatorsForType } from '../../utils/get-filter-operators-for-type';
+import type { ClientFilterOperator } from '@directus/types';
 import { FilterValidator, FilterEmptyValidator } from '@query/filter';
 import { GeneratedFilter } from '..';
 

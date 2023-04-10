@@ -1,7 +1,7 @@
 <template>
 	<div class="layout-tabular">
 		<v-table
-			v-if="loading || (itemCount && itemCount > 0)"
+			v-if="loading || (itemCount && itemCount > 0 && !error)"
 			ref="table"
 			v-model="selectionWritable"
 			v-model:headers="tableHeadersWritable"
@@ -15,7 +15,7 @@
 			:loading="loading"
 			:row-height="tableRowHeight"
 			:item-key="primaryKeyField?.field"
-			:show-manual-sort="sortField !== null"
+			:show-manual-sort="showManualSort"
 			:manual-sort-key="sortField"
 			allow-header-reorder
 			selection-use-keys
@@ -42,7 +42,7 @@
 						:disabled="!header.sortable"
 						:active="tableSort?.by === header.value && tableSort?.desc === false"
 						clickable
-						@click="onSortChange?.({ by: header.value, desc: false })"
+						@click="onSortChange({ by: header.value, desc: false })"
 					>
 						<v-list-item-icon>
 							<v-icon name="sort" class="flip" />
@@ -56,7 +56,7 @@
 						:active="tableSort?.by === header.value && tableSort?.desc === true"
 						:disabled="!header.sortable"
 						clickable
-						@click="onSortChange?.({ by: header.value, desc: true })"
+						@click="onSortChange({ by: header.value, desc: true })"
 					>
 						<v-list-item-icon>
 							<v-icon name="sort" />
@@ -176,11 +176,16 @@ export default {
 import { HeaderRaw } from '@/components/v-table/types';
 import { useShortcut } from '@/composables/use-shortcut';
 import { Collection } from '@/types/collections';
-import { useSync } from '@directus/shared/composables';
-import { Field, Filter, Item, ShowSelect } from '@directus/shared/types';
-import { ComponentPublicInstance, inject, ref, Ref, watch } from 'vue';
+import { useSync } from '@directus/composables';
+import { Field, Filter, Item, ShowSelect } from '@directus/types';
+import { ComponentPublicInstance, inject, ref, Ref, watch, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { get } from '@directus/shared/utils';
+import { get } from '@directus/utils';
+import { useAliasFields, AliasField } from '@/composables/use-alias-fields';
+import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
+import { isEmpty, merge } from 'lodash';
+import { usePermissionsStore } from '@/stores/permissions';
+import { useUserStore } from '@/stores/user';
 
 interface Props {
 	collection: string;
@@ -208,7 +213,7 @@ interface Props {
 	selectAll: () => void;
 	filterUser?: Filter;
 	search?: string;
-	onSortChange?: (newSort: { by: string; desc: boolean }) => void;
+	onSortChange: (newSort: { by: string; desc: boolean }) => void;
 	onAlignChange?: (field: 'string', align: 'left' | 'center' | 'right') => void;
 }
 
@@ -223,7 +228,6 @@ const props = withDefaults(defineProps<Props>(), {
 	sortField: undefined,
 	filterUser: undefined,
 	search: undefined,
-	onSortChange: () => undefined,
 	onAlignChange: () => undefined,
 });
 
@@ -251,6 +255,24 @@ useShortcut(
 	},
 	table
 );
+const permissionsStore = usePermissionsStore();
+const userStore = useUserStore();
+
+const showManualSort = computed(() => {
+	if (!props.sortField) return false;
+
+	const isAdmin = userStore.currentUser?.role?.admin_access;
+
+	if (isAdmin) return true;
+
+	const permission = permissionsStore.getPermissionsForUser(props.collection, 'update');
+
+	if (!permission) return false;
+
+	if (Array.isArray(permission.fields) && permission.fields.length > 0)
+		return permission.fields.includes(props.sortField) || permission.fields.includes('*');
+	return true;
+});
 
 const fieldsWritable = useSync(props, 'fields', emit);
 

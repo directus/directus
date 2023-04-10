@@ -6,7 +6,7 @@ import path from 'path';
 import * as common from '@common/index';
 
 const assetsDirectory = [__dirname, '..', '..', 'assets'];
-const storages = ['local'];
+const storages = ['local', 'minio'];
 const imageFile = {
 	name: 'directus.png',
 	type: 'image/png',
@@ -22,8 +22,8 @@ describe('/assets', () => {
 				const insertResponse = await request(getUrl(vendor))
 					.post('/files')
 					.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
-					.attach('file', createReadStream(imageFilePath))
-					.field('storage', storage);
+					.field('storage', storage)
+					.attach('file', createReadStream(imageFilePath));
 
 				// Action
 				const response = await request(getUrl(vendor))

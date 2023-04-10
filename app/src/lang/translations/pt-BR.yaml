@@ -23,7 +23,7 @@ identifier: Identificador
 avatar: Imagem de Perfil
 application: Aplicação
 default_provider: Padrão
-method: Método 
+method: Método
 published: Publicado
 draft: Rascunho
 archived: Arquivado
@@ -295,6 +295,7 @@ o2m_relationship: Relacionamento Um-pra-Muitos
 m2m_relationship: Relacionamento Muitos-pra-Muitos
 m2a_relationship: Relacionamento Muitos-pra-Qualquer
 invalid_item: Item inválido
+modal: Modal
 next: Próximo
 field_name: Nome do campo
 translations: Traduções
@@ -573,6 +574,8 @@ select_an_item: Selecione um item...
 edit: Editar
 enabled: Habilitado
 disable_tfa: Desativar verificação em duas etapas
+admin_disable_tfa_text: Tem certeza de que deseja desativar a 2FA para este usuário?
+tfa_setup: Configurar 2FA
 tfa_scan_code: Escaneie o código no seu aplicativo de autenticação para terminar de configurar a 2FA
 enter_otp_to_disable_tfa: Digite o OTP para desativar a 2FA
 create_account: Criar conta
@@ -784,10 +787,7 @@ label: Rótulo
 flows: Fluxos
 flow: Fluxo
 select_a_flow: Selecione um fluxo
-run_flow_on_current_collection: Executar fluxo na coleção atual
-run_flow_on_current: Executar fluxo no Item Atual
 run_flow_on_current_edited_confirm: Este item pode ser alterado por este fluxo, você tem certeza que deseja continuar?
-run_flow_on_selected: Selecione Um ou Mais Itens Primeiro | Execute o fluxo em 1 Item Selecionado | Execute o fluxo em {n} Itens Selecionados
 run_flow_success: Fluxo "{flow}" executado com sucesso
 trigger: Acionar
 trigger_options: Opções de ativação
@@ -1193,7 +1193,7 @@ fields:
     module_list: Navegação do Módulo
   directus_webhooks:
     name: Nome
-    method: Método 
+    method: Método
     status: Status
     data: Dados
     header: Cabeçalho
@@ -1627,7 +1627,6 @@ interfaces:
   system-folder:
     folder: Pasta
     description: Selecionar uma pasta
-    field_hint: Pasta para arquivos carregados. Não afeta os arquivos existentes.
     root_name: Raiz da biblioteca de arquivos
     system_default: Padrões do sistema
   select-radio:
@@ -1640,7 +1639,6 @@ interfaces:
     add_label: 'Texto de "Criar Novo"'
     sort: Ordenar
     sort_placeholder: Manual
-    field_name_placeholder: Inserir nome do campo...
     field_note_placeholder: Insira a nota de campo...
     incompatible_data: Os dados atuais não são compatíveis com a interface de repetição e serão substituídos ao adicionar novos itens
   slider:
@@ -1789,6 +1787,10 @@ displays:
     relative_label: 'Mostrar tempo relativo, por exemplo: 5 minutos atrás'
     suffix: Sufixo
     suffix_label: Mostrar indicador relativo
+    suffix_note: Usa palavras como 'dentro' e 'atrás'
+    strict: Estrito
+    strict_label: Usar unidades rigorosas
+    strict_note: Remove palavras como 'quase', 'sobre', 'menos que'
     round_note: Escolha uma função de arredondamento para usar
   file:
     file: Arquivo
@@ -1890,6 +1892,8 @@ layouts:
   kanban:
     crop: Recortar
     advanced: Avançado
+horizontal: Horizontal
+both: Ambos
 panels:
   metric:
     name: Métrico
@@ -1902,32 +1906,11 @@ panels:
     description: Filtrar e listar campos de uma coleção
   barchart:
     name: Gráfico de barras
-    select_field: Você deve selecionar um campo.
-    select_collection: Você deve selecionar uma coleção.
-    select_x_axis: Você deve selecionar um eixo X.
-    function: Função
     horizontal: Horizontal
-    x_axis: Eixo X
-    y_axis_function: Função do eixo Y
-    y_axis: Eixo Y
-    show_x_axis: Mostrar eixo X
-    show_y_axis: Mostrar eixo Y
-  linechart:
-    select_field: Você deve selecionar um campo.
     select_collection: Você deve selecionar uma coleção.
-    select_x_axis: Você deve selecionar um eixo X.
-    function: Função
-    x_axis: Eixo X
-    y_axis: Eixo Y
-  meter:
-    select_field: Você deve selecionar um campo.
-    select_collection: Você deve selecionar uma coleção.
-    function: Função
-  piechart:
-    function: Função
 triggers:
   webhook:
-    method: Método 
+    method: Método
 operations:
   item-create:
     payload: Payload
@@ -1940,7 +1923,7 @@ operations:
     message: Mensagem
   request:
     url: URL
-    method: Método 
+    method: Método
     data: Dados
     header: Cabeçalho
   trigger:
