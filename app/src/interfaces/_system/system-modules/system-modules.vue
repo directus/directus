@@ -46,7 +46,7 @@
 			@cancel="editing = null"
 		>
 			<template #actions>
-				<v-button v-tooltip.bottom="t('save')" icon rounded @click="save">
+				<v-button v-tooltip.bottom="t('save')" icon rounded :disabled="isSaveDisabled" @click="save">
 					<v-icon name="check" />
 				</v-button>
 			</template>
@@ -60,15 +60,15 @@
 
 <script lang="ts">
 import { defineComponent, PropType, computed, ref } from 'vue';
-import { getModules } from '@/modules';
-import { Settings, SettingsModuleBarModule, SettingsModuleBarLink } from '@directus/shared/types';
+import { Settings, SettingsModuleBarModule, SettingsModuleBarLink } from '@directus/types';
 import { hideDragImage } from '@/utils/hide-drag-image';
 import Draggable from 'vuedraggable';
 import { assign } from 'lodash';
 import { useI18n } from 'vue-i18n';
 import { nanoid } from 'nanoid';
-import { Field, DeepPartial } from '@directus/shared/types';
+import { Field, DeepPartial } from '@directus/types';
 import { MODULE_BAR_DEFAULT } from '@/constants';
+import { useExtensions } from '@/extensions';
 
 type PreviewExtra = {
 	to: string;
@@ -130,7 +130,7 @@ export default defineComponent({
 		const values = ref<SettingsModuleBarLink | null>();
 		const initialValues = ref<SettingsModuleBarLink | null>();
 
-		const { modules: registeredModules } = getModules();
+		const { modules: registeredModules } = useExtensions();
 
 		const availableModulesAsBarModule = computed<SettingsModuleBarModule[]>(() => {
 			return registeredModules.value
@@ -162,6 +162,16 @@ export default defineComponent({
 			},
 		});
 
+		const isSaveDisabled = computed(() => {
+			for (const field of linkFields) {
+				if (field.meta?.required && field.field) {
+					const fieldValue = (values.value as Record<string, any>)[field.field];
+					if (fieldValue === null || fieldValue === undefined || fieldValue === '') return true;
+				}
+			}
+			return false;
+		});
+
 		return {
 			t,
 			editing,
@@ -170,6 +180,7 @@ export default defineComponent({
 			updateItem,
 			edit,
 			linkFields,
+			isSaveDisabled,
 			save,
 			values,
 			remove,

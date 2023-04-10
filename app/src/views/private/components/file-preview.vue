@@ -20,6 +20,7 @@
 import { ref, computed } from 'vue';
 import { readableMimeType } from '@/utils/readable-mime-type';
 import { addTokenToURL } from '@/api';
+import { getRootPath } from '@/utils/get-root-path';
 
 interface Props {
 	mime: string;
@@ -59,7 +60,7 @@ const isSVG = computed(() => props.mime.includes('svg'));
 const maxHeight = computed(() => Math.min(props.height ?? 528, 528) + 'px');
 const isSmall = computed(() => props.height < 528);
 
-const authenticatedSrc = computed(() => addTokenToURL(props.src));
+const authenticatedSrc = computed(() => addTokenToURL(getRootPath() + props.src));
 </script>
 
 <style lang="scss" scoped>

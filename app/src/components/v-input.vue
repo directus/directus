@@ -62,31 +62,53 @@ export default {
 </script>
 
 <script lang="ts" setup>
-import { computed, ref, useAttrs } from 'vue';
-import { omit } from 'lodash';
+import { keyMap, systemKeys } from '@/composables/use-shortcut';
 import slugify from '@sindresorhus/slugify';
+import { omit } from 'lodash';
+import { computed, ref, useAttrs } from 'vue';
 
 interface Props {
+	/** Autofocusses the input on render */
 	autofocus?: boolean;
+	/** Set the disabled state for the input */
 	disabled?: boolean;
+	/** If the input should be clickable */
 	clickable?: boolean;
+	/** Prefix the users value with a value */
 	prefix?: string;
+	/** Show a value at the end of the input */
 	suffix?: string;
+	/** Render the input with 100% width */
 	fullWidth?: boolean;
+	/** What text to display if the input is empty */
 	placeholder?: string | number;
+	/** Used to model the value written inside the input */
 	modelValue?: string | number;
+	/** When active, sets an empty entry to null */
 	nullable?: boolean;
+	/** Force the value to be URL safe */
 	slug?: boolean;
+	/** What character to use as separator in slugs */
 	slugSeparator?: string;
+	/** Defines the type of the input. Either `text` or `number` */
 	type?: string;
+	/** Hide the arrows that are used to increase or decrease a number */
 	hideArrows?: boolean;
+	/** The maximum number that can be entered */
 	max?: number;
+	/** The minimum number that can be entered */
 	min?: number;
+	/** In which unit steps should be counted up or down */
 	step?: number;
+	/** Force the focus state */
 	active?: boolean;
+	/** Make the value save to be used with the DB */
 	dbSafe?: boolean;
+	/** Trim the start and end whitespace */
 	trim?: boolean;
+	/** The kind of autocompletion the browser should do on the input */
 	autocomplete?: string;
+	/** Makes the input smaller */
 	small?: boolean;
 }
 
@@ -151,8 +173,7 @@ const isStepDownAllowed = computed(() => {
 
 function processValue(event: KeyboardEvent) {
 	if (!event.key) return;
-	const key = event.key.toLowerCase();
-	const systemKeys = ['meta', 'shift', 'alt', 'backspace', 'delete', 'tab'];
+	const key = event.key in keyMap ? keyMap[event.key] : event.key.toLowerCase();
 	const value = (event.target as HTMLInputElement).value;
 
 	if (props.slug === true) {
@@ -178,8 +199,10 @@ function processValue(event: KeyboardEvent) {
 			event.preventDefault();
 		}
 
+		const isCombinationWithSystemKeys = event.metaKey || event.ctrlKey || event.shiftKey || event.altKey;
+
 		// Prevent leading number
-		if (value.length === 0 && '0123456789'.split('').includes(key)) {
+		if (value.length === 0 && '0123456789'.split('').includes(key) && !isCombinationWithSystemKeys) {
 			event.preventDefault();
 		}
 	}
@@ -217,10 +240,10 @@ function emitValue(event: InputEvent) {
 
 		if (props.dbSafe === true) {
 			value = value.replace(/\s/g, '_');
-			// prevent pasting of non dbSafeCharacters from bypassing the keydown checks
-			value = value.replace(/[^a-zA-Z0-9_]/g, '');
 			// Replace é -> e etc
 			value = value.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+			// prevent pasting of non dbSafeCharacters from bypassing the keydown checks
+			value = value.replace(/[^a-zA-Z0-9_]/g, '');
 		}
 
 		emit('update:modelValue', value);

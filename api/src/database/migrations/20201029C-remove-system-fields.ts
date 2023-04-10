@@ -1,5 +1,5 @@
-import { Knex } from 'knex';
-import { merge, uniq } from 'lodash';
+import type { Knex } from 'knex';
+import { merge, uniq } from 'lodash-es';
 
 const defaults = {
 	collection: null,

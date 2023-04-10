@@ -3,7 +3,7 @@
 		<slot name="prepend" />
 		<v-list-item v-if="fieldsCount > 20">
 			<v-list-item-content>
-				<v-input v-model="search" autofocus small :placeholder="t('search')">
+				<v-input v-model="search" autofocus small :placeholder="t('search')" @click.stop>
 					<template #append>
 						<v-icon small name="search" />
 					</template>
@@ -17,18 +17,19 @@
 			:field="fieldNode"
 			:search="search"
 			:include-functions="includeFunctions"
+			:relational-field-selectable="relationalFieldSelectable"
 			@add="$emit('select-field', $event)"
 		/>
 	</v-list>
 </template>
 
 <script lang="ts" setup>
-import { useFieldTree } from '@/composables/use-field-tree';
-import { Field } from '@directus/shared/types';
+import { FieldNode, useFieldTree } from '@/composables/use-field-tree';
+import { Field } from '@directus/types';
 import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import VFieldListItem from './v-field-list-item.vue';
-import { debounce } from 'lodash';
+import { debounce, isNil } from 'lodash';
 import { useFieldsStore } from '@/stores/fields';
 
 interface Props {
@@ -37,13 +38,15 @@ interface Props {
 	disabledFields?: string[];
 	includeFunctions?: boolean;
 	includeRelations?: boolean;
+	relationalFieldSelectable?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
+	field: undefined,
 	disabledFields: () => [],
 	includeFunctions: false,
 	includeRelations: true,
-	field: undefined,
+	relationalFieldSelectable: true,
 });
 
 defineEmits(['select-field']);
@@ -72,8 +75,8 @@ const treeList = computed(() => {
 	return list;
 
 	function setDisabled(
-		field: typeof treeListOriginal.value[number]
-	): typeof treeListOriginal.value[number] & { disabled: boolean } {
+		field: (typeof treeListOriginal.value)[number]
+	): (typeof treeListOriginal.value)[number] & { disabled: boolean } {
 		let disabled = field.group || false;
 
 		if (props.disabledFields?.includes(field.key)) disabled = true;
@@ -86,14 +89,17 @@ const treeList = computed(() => {
 	}
 });
 
-function filter(field: Field): boolean {
+function filter(field: Field, parent?: FieldNode): boolean {
 	if (
 		!includeRelations.value &&
 		(field.collection !== collection.value || (field.type === 'alias' && !field.meta?.special?.includes('group')))
 	)
 		return false;
-	if (!search.value) return true;
-	const children = fieldsStore.getFieldGroupChildren(collection.value, field.field);
+	if (!search.value || isNil(parent) === false) return true;
+
+	const children = isNil(field.schema?.foreign_key_table)
+		? fieldsStore.getFieldGroupChildren(field.collection, field.field)
+		: fieldsStore.getFieldsForCollection(field.schema!.foreign_key_table);
 	return children?.some((field) => matchesSearch(field)) || matchesSearch(field);
 
 	function matchesSearch(field: Field) {

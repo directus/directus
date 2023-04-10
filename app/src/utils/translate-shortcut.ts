@@ -1,4 +1,4 @@
-import { capitalizeFirst } from '@/utils/capitalize-first';
+import { capitalize } from 'lodash';
 
 export function translateShortcut(keys: string[]): string {
 	const isMac = navigator.platform.toLowerCase().startsWith('mac') || navigator.platform.startsWith('iP');
@@ -10,14 +10,14 @@ export function translateShortcut(keys: string[]): string {
 				if (key === 'option') return '⌥';
 				if (key === 'shift') return '⇧';
 				if (key === 'alt') return '⌥';
-				return capitalizeFirst(key);
+				return capitalize(key);
 			})
 			.join('');
 	} else {
 		return keys
 			.map((key) => {
 				if (key === 'meta') return 'Ctrl';
-				return capitalizeFirst(key);
+				return capitalize(key);
 			})
 			.join('+');
 	}

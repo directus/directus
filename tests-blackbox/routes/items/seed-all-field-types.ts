@@ -1,4 +1,4 @@
-import { CreateField, CreateItem, SeedFunctions, PrimaryKeyType } from '@common/index';
+import { CreateField, CreateItem, SeedFunctions, PrimaryKeyType, ReadItem } from '@common/index';
 import { TestsFieldSchema } from '@query/filter';
 
 const valuesQuantity = 2;
@@ -21,16 +21,38 @@ export function getTestsAllTypesSchema(): TestsFieldSchema {
 	return fieldSchema;
 }
 
-export const seedAllFieldTypesStructure = async (vendor: string, collection: string) => {
+export const seedAllFieldTypesStructure = async (vendor: string, collection: string, setDefaultValues = false) => {
 	try {
 		const fieldSchema = getTestsAllTypesSchema();
 
 		// Create fields
 		for (const key of Object.keys(fieldSchema)) {
+			let meta = {};
+			let schema = {};
+
+			const fieldType = fieldSchema[key].type;
+
+			if (fieldType === 'uuid') {
+				meta = { special: ['uuid'] };
+			}
+
+			if (setDefaultValues && SeedFunctions.generateValues[fieldType as keyof typeof SeedFunctions.generateValues]) {
+				schema = {
+					default_value: SeedFunctions.generateValues[fieldType as keyof typeof SeedFunctions.generateValues]({
+						quantity: 1,
+						seed: `${collection}_${fieldType}`,
+						vendor,
+						isDefaultValue: true,
+					})[0],
+				};
+			}
+
 			await CreateField(vendor, {
 				collection: collection,
 				field: fieldSchema[key].field.toLowerCase(),
-				type: fieldSchema[key].type,
+				type: fieldType,
+				meta,
+				schema,
 			});
 		}
 
@@ -90,7 +112,7 @@ export const seedAllFieldTypesValues = async (vendor: string, collection: string
 	}
 };
 
-export const seedAliasAllFieldTypesValues = async (
+export const seedO2MAliasAllFieldTypesValues = async (
 	vendor: string,
 	collection: string,
 	pkType: PrimaryKeyType,
@@ -142,6 +164,80 @@ export const seedAliasAllFieldTypesValues = async (
 		}
 
 		expect(true).toBeTruthy();
+	} catch (error) {
+		expect(error).toBeFalsy();
+	}
+};
+
+export const seedM2MAliasAllFieldTypesValues = async (
+	vendor: string,
+	collection: string,
+	otherCollection: string,
+	junctionCollection: string,
+	junctionField: string,
+	otherJunctionField: string,
+	possibleKeys: any[],
+	otherPossibleKeys: any[]
+) => {
+	try {
+		const collectionItems = await ReadItem(vendor, { collection: collection, fields: ['*'] });
+		const otherCollectionItems = await ReadItem(vendor, { collection: otherCollection, fields: ['*'] });
+		const newCollectionKeys = collectionItems.map((i: any) => i.id).filter((i: any) => !possibleKeys.includes(i));
+		const newOtherCollectionKeys = otherCollectionItems
+			.map((i: any) => i.id)
+			.filter((i: any) => !otherPossibleKeys.includes(i));
+
+		if (newCollectionKeys.length !== newOtherCollectionKeys.length) {
+			expect('Keys should have the same length').toBeFalsy();
+		} else {
+			const items = [];
+
+			for (let i = 0; i < newCollectionKeys.length; i++) {
+				items.push({ [junctionField]: newCollectionKeys[i], [otherJunctionField]: newOtherCollectionKeys[i] });
+			}
+
+			await CreateItem(vendor, { collection: junctionCollection, item: items });
+
+			expect(true).toBeTruthy();
+		}
+	} catch (error) {
+		expect(error).toBeFalsy();
+	}
+};
+
+export const seedM2AAliasAllFieldTypesValues = async (
+	vendor: string,
+	collection: string,
+	junctionCollection: string,
+	relatedCollection: string,
+	possibleKeys: any[],
+	otherPossibleKeys: any[]
+) => {
+	try {
+		const collectionItems = await ReadItem(vendor, { collection: collection, fields: ['id'] });
+		const otherCollectionItems = await ReadItem(vendor, { collection: relatedCollection, fields: ['id'] });
+		const newCollectionKeys = collectionItems.map((i: any) => i.id).filter((i: any) => !possibleKeys.includes(i));
+		const newOtherCollectionKeys = otherCollectionItems
+			.map((i: any) => i.id)
+			.filter((i: any) => !otherPossibleKeys.includes(i));
+
+		if (newCollectionKeys.length !== newOtherCollectionKeys.length) {
+			expect('Keys should have the same length').toBeFalsy();
+		} else {
+			const items = [];
+
+			for (let i = 0; i < newCollectionKeys.length; i++) {
+				items.push({
+					[`${junctionCollection}_id`]: newCollectionKeys[i],
+					item: newOtherCollectionKeys[i].toString(),
+					collection: relatedCollection,
+				});
+			}
+
+			await CreateItem(vendor, { collection: junctionCollection, item: items });
+
+			expect(true).toBeTruthy();
+		}
 	} catch (error) {
 		expect(error).toBeFalsy();
 	}

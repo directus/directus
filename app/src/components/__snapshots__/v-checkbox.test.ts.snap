@@ -1,0 +1,9 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Mount component 1`] = `
+"<button data-v-61c33115=\\"\\" class=\\"v-checkbox\\" type=\\"button\\" role=\\"checkbox\\" aria-pressed=\\"false\\">
+  <!--v-if-->
+  <v-icon-stub data-v-61c33115=\\"\\" class=\\"checkbox\\" name=\\"indeterminate_check_box\\" disabled=\\"false\\"></v-icon-stub><span data-v-61c33115=\\"\\" class=\\"label type-text\\"><div>Hi</div></span>
+  <!--v-if-->
+</button>"
+`;

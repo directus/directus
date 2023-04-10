@@ -1,4 +1,4 @@
-import { HeaderRaw, Item } from '@/components/v-table/types';
+import { HeaderRaw, Item, Sort } from '@/components/v-table/types';
 import { useFieldsStore } from '@/stores/fields';
 import { useAliasFields } from '@/composables/use-alias-fields';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
@@ -6,17 +6,18 @@ import { getDefaultDisplayForType } from '@/utils/get-default-display-for-type';
 import { hideDragImage } from '@/utils/hide-drag-image';
 import { saveAsCSV } from '@/utils/save-as-csv';
 import { syncRefProperty } from '@/utils/sync-ref-property';
-import { useCollection, useItems, useSync } from '@directus/shared/composables';
-import { Field } from '@directus/shared/types';
-import { defineLayout } from '@directus/shared/utils';
-import { clone, debounce } from 'lodash';
+import { formatCollectionItemsCount } from '@/utils/format-collection-items-count';
+import { useCollection, useItems, useSync } from '@directus/composables';
+import { Field } from '@directus/types';
+import { defineLayout } from '@directus/utils';
+import { debounce } from 'lodash';
 import { computed, ref, toRefs, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import TabularActions from './actions.vue';
 import TabularOptions from './options.vue';
 import TabularLayout from './tabular.vue';
 import { LayoutOptions, LayoutQuery } from './types';
+import { useRelationsStore } from '@/stores/relations';
 
 export default defineLayout<LayoutOptions, LayoutQuery>({
 	id: 'tabular',
@@ -28,12 +29,12 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		sidebar: () => undefined,
 		actions: TabularActions,
 	},
+	headerShadow: false,
 	setup(props, { emit }) {
-		const { t, n } = useI18n();
-
 		const router = useRouter();
 
 		const fieldsStore = useFieldsStore();
+		const relationsStore = useRelationsStore();
 
 		const selection = useSync(props, 'selection', emit);
 		const layoutOptions = useSync(props, 'layoutOptions', emit);
@@ -54,18 +55,26 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			);
 		});
 
-		const { items, loading, error, totalPages, itemCount, totalCount, changeManualSort, getItems } = useItems(
-			collection,
-			{
-				sort,
-				limit,
-				page,
-				fields: fieldsWithRelationalAliased,
-				alias: aliasQuery,
-				filter,
-				search,
-			}
-		);
+		const {
+			items,
+			loading,
+			error,
+			totalPages,
+			itemCount,
+			totalCount,
+			changeManualSort,
+			getItems,
+			getItemCount,
+			getTotalCount,
+		} = useItems(collection, {
+			sort,
+			limit,
+			page,
+			fields: fieldsWithRelationalAliased,
+			alias: aliasQuery,
+			filter,
+			search,
+		});
 
 		const {
 			tableSort,
@@ -79,27 +88,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		} = useTable();
 
 		const showingCount = computed(() => {
-			if ((itemCount.value || 0) < (totalCount.value || 0) && filterUser.value) {
-				if (itemCount.value === 1) {
-					return t('one_filtered_item');
-				}
-
-				return t('start_end_of_count_filtered_items', {
-					start: n((+page.value - 1) * limit.value + 1),
-					end: n(Math.min(page.value * limit.value, itemCount.value || 0)),
-					count: n(itemCount.value || 0),
-				});
-			}
-
-			if (itemCount.value === 1) {
-				return t('one_item');
-			}
-
-			return t('start_end_of_count_items', {
-				start: n((+page.value - 1) * limit.value + 1),
-				end: n(Math.min(page.value * limit.value, itemCount.value || 0)),
-				count: n(itemCount.value || 0),
-			});
+			const filtering = Boolean((itemCount.value || 0) < (totalCount.value || 0) && filterUser.value);
+			return formatCollectionItemsCount(itemCount.value || 0, page.value, limit.value, filtering);
 		});
 
 		return {
@@ -143,6 +133,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		function refresh() {
 			getItems();
+			getTotalCount();
+			getItemCount();
 		}
 
 		function download() {
@@ -157,7 +149,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		function selectAll() {
 			if (!primaryKeyField.value) return;
 			const pk = primaryKeyField.value;
-			selection.value = clone(items.value).map((item) => item[pk.field]);
+			selection.value = items.value.map((item) => item[pk.field]);
 		}
 
 		function useItemOptions() {
@@ -237,6 +229,43 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 							});
 
 							description = fieldNames.join(' -> ');
+
+							const types = relationsStore.getRelationTypes(collection.value!, field.key);
+
+							if (types.at(-1) === 'o2m') {
+								const arrayField = fieldsStore.getField(collection.value!, fieldParts.slice(0, -1).join('.'));
+								let display;
+								let displayOptions;
+
+								if (arrayField?.meta?.display) {
+									display = arrayField.meta.display;
+									displayOptions = arrayField.meta.display_options;
+								} else {
+									display = 'related-values';
+									displayOptions = {
+										template: `{{${fieldParts.at(-1)}}}`,
+									};
+								}
+
+								if (arrayField)
+									return {
+										text: field.name,
+										value: arrayField.field,
+										description,
+										width: localWidths.value[field.key] || layoutOptions.value?.widths?.[field.key] || null,
+										align: layoutOptions.value?.align?.[field.key] || 'left',
+										field: {
+											display,
+											displayOptions,
+											interface: arrayField.meta?.interface,
+											interfaceOptions: arrayField.meta?.options,
+											type: arrayField.type,
+											field: arrayField.field,
+											collection: arrayField.collection,
+										},
+										sortable: ['json', 'alias', 'presentation', 'translations'].includes(arrayField.type) === false,
+									} as HeaderRaw;
+							}
 						}
 
 						return {
@@ -320,12 +349,13 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				}
 			}
 
-			function onSortChange(newSort: { by: string; desc: boolean }) {
-				let sortString = newSort.by;
-				if (!newSort.by) {
+			function onSortChange(newSort: Sort | null) {
+				if (!newSort?.by) {
 					sort.value = [];
 					return;
 				}
+
+				let sortString = newSort.by;
 				if (newSort.desc === true) {
 					sortString = '-' + sortString;
 				}

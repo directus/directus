@@ -8,7 +8,7 @@
 				:alt="value && userName(value)"
 				:class="{ circle }"
 			/>
-			<v-image
+			<img
 				v-else-if="(display === 'avatar' || display === 'both') && src === null"
 				src="../../assets/avatar-placeholder.svg"
 				role="presentation"

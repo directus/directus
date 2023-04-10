@@ -1,15 +1,19 @@
-import { Knex } from 'knex';
-import { nanoid } from 'nanoid';
-import runMigrations from '../../../database/migrations/run';
-import installDatabase from '../../../database/seeds/run';
-import env from '../../../env';
-import logger from '../../../logger';
-import { getSchema } from '../../../utils/get-schema';
-import { RolesService, UsersService, SettingsService } from '../../../services';
-
-import getDatabase, { isInstalled, validateDatabaseConnection, hasDatabaseConnection } from '../../../database';
-import { SchemaOverview } from '@directus/shared/types';
-import { defaultAdminRole, defaultAdminUser } from '../../utils/defaults';
+import type { SchemaOverview } from '@directus/types';
+import type { Knex } from 'knex';
+import getDatabase, {
+	hasDatabaseConnection,
+	isInstalled,
+	validateDatabaseConnection,
+} from '../../../database/index.js';
+import runMigrations from '../../../database/migrations/run.js';
+import installDatabase from '../../../database/seeds/run.js';
+import env from '../../../env.js';
+import logger from '../../../logger.js';
+import { RolesService } from '../../../services/roles.js';
+import { SettingsService } from '../../../services/settings.js';
+import { UsersService } from '../../../services/users.js';
+import { getSchema } from '../../../utils/get-schema.js';
+import { defaultAdminRole, defaultAdminUser } from '../../utils/defaults.js';
 
 export default async function bootstrap({ skipAdminInit }: { skipAdminInit?: boolean }): Promise<void> {
 	logger.info('Initializing bootstrap...');
@@ -34,9 +38,9 @@ export default async function bootstrap({ skipAdminInit }: { skipAdminInit?: boo
 			logger.info('Skipping creation of default Admin user and role...');
 		}
 
-		if (env.PROJECT_NAME && typeof env.PROJECT_NAME === 'string' && env.PROJECT_NAME.length > 0) {
+		if (env['PROJECT_NAME'] && typeof env['PROJECT_NAME'] === 'string' && env['PROJECT_NAME'].length > 0) {
 			const settingsService = new SettingsService({ schema });
-			await settingsService.upsertSingleton({ project_name: env.PROJECT_NAME });
+			await settingsService.upsertSingleton({ project_name: env['PROJECT_NAME'] });
 		}
 	} else {
 		logger.info('Database already initialized, skipping install');
@@ -62,9 +66,13 @@ async function waitForDatabase(database: Knex) {
 
 	// This will throw and exit the process if the database is not available
 	await validateDatabaseConnection(database);
+
+	return database;
 }
 
 async function createDefaultAdmin(schema: SchemaOverview) {
+	const { nanoid } = await import('nanoid');
+
 	logger.info('Setting up first admin role...');
 	const rolesService = new RolesService({ schema });
 	const role = await rolesService.createOne(defaultAdminRole);
@@ -72,14 +80,14 @@ async function createDefaultAdmin(schema: SchemaOverview) {
 	logger.info('Adding first admin user...');
 	const usersService = new UsersService({ schema });
 
-	let adminEmail = env.ADMIN_EMAIL;
+	let adminEmail = env['ADMIN_EMAIL'];
 
 	if (!adminEmail) {
 		logger.info('No admin email provided. Defaulting to "admin@example.com"');
 		adminEmail = 'admin@example.com';
 	}
 
-	let adminPassword = env.ADMIN_PASSWORD;
+	let adminPassword = env['ADMIN_PASSWORD'];
 
 	if (!adminPassword) {
 		adminPassword = nanoid(12);

@@ -18,73 +18,63 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref, computed } from 'vue';
-import { nanoid } from 'nanoid';
+<script setup lang="ts">
+import { ref, computed } from 'vue';
 import { useShortcut } from '@/composables/use-shortcut';
 import { useDialogRouteLeave } from '@/composables/use-dialog-route';
 
-export default defineComponent({
-	props: {
-		modelValue: {
-			type: Boolean,
-			default: undefined,
-		},
-		persistent: {
-			type: Boolean,
-			default: false,
-		},
-		placement: {
-			type: String,
-			default: 'center',
-			validator: (val: string) => ['center', 'right'].includes(val),
-		},
+interface Props {
+	modelValue?: boolean;
+	persistent?: boolean;
+	placement?: 'right' | 'center';
+}
+
+const props = withDefaults(defineProps<Props>(), {
+	modelValue: undefined,
+	persistent: false,
+	placement: 'center',
+});
+
+const emit = defineEmits(['esc', 'update:modelValue']);
+
+useShortcut('escape', (event, cancelNext) => {
+	if (internalActive.value) {
+		emit('esc');
+		cancelNext();
+	}
+});
+
+const localActive = ref(false);
+
+const className = ref<string | null>(null);
+
+const internalActive = computed({
+	get() {
+		return props.modelValue !== undefined ? props.modelValue : localActive.value;
 	},
-	emits: ['esc', 'update:modelValue'],
-	setup(props, { emit }) {
-		useShortcut('escape', (event, cancelNext) => {
-			if (internalActive.value) {
-				emit('esc');
-				cancelNext();
-			}
-		});
-
-		const localActive = ref(false);
-
-		const className = ref<string | null>(null);
-		const id = computed(() => nanoid());
-
-		const internalActive = computed({
-			get() {
-				return props.modelValue !== undefined ? props.modelValue : localActive.value;
-			},
-			set(newActive: boolean) {
-				localActive.value = newActive;
-				emit('update:modelValue', newActive);
-			},
-		});
-
-		const leave = useDialogRouteLeave();
-
-		return { emitToggle, className, nudge, leave, id, internalActive };
-
-		function emitToggle() {
-			if (props.persistent === false) {
-				emit('update:modelValue', !props.modelValue);
-			} else {
-				nudge();
-			}
-		}
-
-		function nudge() {
-			className.value = 'nudge';
-
-			setTimeout(() => {
-				className.value = null;
-			}, 200);
-		}
+	set(newActive: boolean) {
+		localActive.value = newActive;
+		emit('update:modelValue', newActive);
 	},
 });
+
+const leave = useDialogRouteLeave();
+
+function emitToggle() {
+	if (props.persistent === false) {
+		emit('update:modelValue', !props.modelValue);
+	} else {
+		nudge();
+	}
+}
+
+function nudge() {
+	className.value = 'nudge';
+
+	setTimeout(() => {
+		className.value = null;
+	}, 200);
+}
 </script>
 
 <style lang="scss" scoped>

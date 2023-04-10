@@ -1,13 +1,13 @@
-import { defineOperationApi, parseJSON } from '@directus/shared/utils';
+import { defineOperationApi, optionToObject } from '@directus/utils';
 
 type Options = {
-	json: string;
+	json: string | Record<string, any>;
 };
 
 export default defineOperationApi<Options>({
 	id: 'transform',
 
 	handler: ({ json }) => {
-		return parseJSON(json);
+		return optionToObject(json);
 	},
 });

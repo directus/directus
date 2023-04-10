@@ -14,25 +14,21 @@
 	</span>
 </template>
 
-<script lang="ts">
-import { defineComponent, PropType } from 'vue';
-
+<script setup lang="ts">
 interface Breadcrumb {
 	to: string;
 	name: string;
 	disabled?: boolean;
+	icon?: string;
 }
 
-export default defineComponent({
-	props: {
-		items: {
-			type: Array as PropType<Breadcrumb[]>,
-			default: () => [],
-		},
-	},
-	setup() {
-		return {};
-	},
+interface Props {
+	/** An array of objects which information about each section */
+	items?: Breadcrumb[];
+}
+
+withDefaults(defineProps<Props>(), {
+	items: () => [],
 });
 </script>
 

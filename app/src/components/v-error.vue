@@ -13,52 +13,46 @@
 	</div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, computed, PropType, ref } from 'vue';
+import { computed, ref } from 'vue';
 import { isPlainObject } from 'lodash';
 import { useClipboard } from '@/composables/use-clipboard';
 
-export default defineComponent({
-	props: {
-		error: {
-			type: [Object, Error] as PropType<Record<string, any>>,
-			required: true,
-		},
-	},
-	setup(props) {
-		const { t } = useI18n();
+interface Props {
+	error: Record<string, any>;
+}
 
-		const code = computed(() => {
-			return props.error?.response?.data?.errors?.[0]?.extensions?.code || props.error?.extensions?.code || 'UNKNOWN';
-		});
+const props = defineProps<Props>();
 
-		const message = computed(() => {
-			let message = props.error?.response?.data?.errors?.[0]?.message || props.error?.message;
+const { t } = useI18n();
 
-			if (message.length > 200) {
-				message = message.substring(0, 197) + '...';
-			}
-
-			return message;
-		});
-
-		const copied = ref(false);
-
-		const { isCopySupported, copyToClipboard } = useClipboard();
-
-		return { t, code, copyError, isCopySupported, copied, message };
-
-		async function copyError() {
-			const error = props.error?.response?.data || props.error;
-			const isCopied = await copyToClipboard(
-				JSON.stringify(error, isPlainObject(error) ? null : Object.getOwnPropertyNames(error), 2)
-			);
-			if (!isCopied) return;
-			copied.value = true;
-		}
-	},
+const code = computed(() => {
+	return props.error?.response?.data?.errors?.[0]?.extensions?.code || props.error?.extensions?.code || 'UNKNOWN';
 });
+
+const message = computed(() => {
+	let message = props.error?.response?.data?.errors?.[0]?.message || props.error?.message;
+
+	if (message.length > 200) {
+		message = message.substring(0, 197) + '...';
+	}
+
+	return message;
+});
+
+const copied = ref(false);
+
+const { isCopySupported, copyToClipboard } = useClipboard();
+
+async function copyError() {
+	const error = props.error?.response?.data || props.error;
+	const isCopied = await copyToClipboard(
+		JSON.stringify(error, isPlainObject(error) ? null : Object.getOwnPropertyNames(error), 2)
+	);
+	if (!isCopied) return;
+	copied.value = true;
+}
 </script>
 
 <style lang="scss" scoped>

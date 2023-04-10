@@ -1,0 +1,3 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Mount component 1`] = `"<div data-v-dcb797ca=\\"\\" class=\\"v-text-overflow\\">My text</div>"`;

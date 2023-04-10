@@ -30,6 +30,7 @@
 		<div id="main-content" ref="contentEl" class="content">
 			<header-bar
 				:small="smallHeader"
+				:shadow="headerShadow"
 				show-sidebar-toggle
 				:title="title"
 				@toggle:sidebar="sidebarOpen = !sidebarOpen"
@@ -74,7 +75,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useElementSize } from '@/composables/use-element-size';
+import { useElementSize } from '@directus/composables';
 import { useEventListener } from '@/composables/use-event-listener';
 import { useLocalStorage } from '@/composables/use-local-storage';
 import { useTitle } from '@/composables/use-title';
@@ -98,9 +99,10 @@ import SidebarDetailGroup from './components/sidebar-detail-group.vue';
 interface Props {
 	title?: string | null;
 	smallHeader?: boolean;
+	headerShadow?: boolean;
 }
 
-const props = withDefaults(defineProps<Props>(), { title: null, smallHeader: false });
+const props = withDefaults(defineProps<Props>(), { title: null, smallHeader: false, headerShadow: true });
 
 const { t } = useI18n();
 
@@ -146,10 +148,7 @@ const theme = computed(() => {
 
 provide('main-element', contentEl);
 
-router.afterEach(async (to, from) => {
-	// Hash changes in docs, #12752
-	if (to.path === from.path) return;
-
+router.afterEach(() => {
 	contentEl.value?.scrollTo({ top: 0 });
 	fullScreen.value = false;
 });
@@ -243,6 +242,7 @@ function openSidebar(event: PointerEvent) {
 .private-view {
 	--content-padding: 12px;
 	--content-padding-bottom: 60px;
+	--layout-offset-top: calc(var(--header-bar-height) - 1px);
 
 	display: flex;
 	width: 100%;
@@ -311,6 +311,7 @@ function openSidebar(event: PointerEvent) {
 			right: -2px;
 			bottom: 0;
 			width: 4px;
+			z-index: 3;
 			background-color: var(--primary);
 			cursor: ew-resize;
 			opacity: 0;

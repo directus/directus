@@ -1,0 +1,7 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Mount component 1`] = `
+"<div data-v-a90644d4=\\"\\" class=\\"icon\\">
+  <v-icon-stub data-v-a90644d4=\\"\\" name=\\"insert_drive_file\\"></v-icon-stub><span data-v-a90644d4=\\"\\" class=\\"label\\">png</span>
+</div>"
+`;

@@ -1,17 +1,18 @@
+import type { Type } from '@directus/types';
 import {
 	GraphQLBoolean,
 	GraphQLFloat,
 	GraphQLInt,
+	GraphQLList,
 	GraphQLScalarType,
 	GraphQLString,
-	GraphQLList,
 	GraphQLType,
 } from 'graphql';
 import { GraphQLJSON } from 'graphql-compose';
-import { GraphQLDate } from '../services/graphql/types/date';
-import { GraphQLGeoJSON } from '../services/graphql/types/geojson';
-import { Type } from '@directus/shared/types';
-import { GraphQLHash } from '../services/graphql/types/hash';
+import { GraphQLBigInt } from '../services/graphql/types/bigint.js';
+import { GraphQLDate } from '../services/graphql/types/date.js';
+import { GraphQLGeoJSON } from '../services/graphql/types/geojson.js';
+import { GraphQLHash } from '../services/graphql/types/hash.js';
 
 export function getGraphQLType(
 	localType: Type | 'alias' | 'unknown',
@@ -25,7 +26,7 @@ export function getGraphQLType(
 		case 'boolean':
 			return GraphQLBoolean;
 		case 'bigInteger':
-			return GraphQLString;
+			return GraphQLBigInt;
 		case 'integer':
 			return GraphQLInt;
 		case 'decimal':

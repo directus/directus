@@ -1,0 +1,3 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Mount component 1`] = `"<span data-v-23a4d650=\\"\\" class=\\"v-icon\\"><i data-v-23a4d650=\\"\\" class=\\"\\" data-icon=\\"close\\"></i></span>"`;

@@ -1,12 +1,12 @@
-import { defineDisplay } from '@directus/shared/utils';
+import { defineDisplay } from '@directus/utils';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
-import { getFieldsFromTemplate } from '@directus/shared/utils';
+import { getFieldsFromTemplate } from '@directus/utils';
 import { getRelatedCollection } from '@/utils/get-related-collection';
 import DisplayRelatedValues from './related-values.vue';
 import { useFieldsStore } from '@/stores/fields';
-import { getDisplay } from '@/displays';
 import { get, set } from 'lodash';
 import { renderPlainStringTemplate } from '@/utils/render-string-template';
+import { useExtension } from '@/composables/use-extension';
 
 type Options = {
 	template: string;
@@ -129,10 +129,10 @@ export default defineDisplay({
 				continue;
 			}
 
-			const display = getDisplay(field.meta.display);
+			const display = useExtension('display', field.meta.display);
 
-			const stringValue = display?.handler
-				? display.handler(fieldValue, field?.meta?.display_options ?? {}, {
+			const stringValue = display.value?.handler
+				? display.value.handler(fieldValue, field?.meta?.display_options ?? {}, {
 						interfaceOptions: field?.meta?.options ?? {},
 						field: field ?? undefined,
 						collection: collection,
@@ -147,11 +147,15 @@ export default defineDisplay({
 	types: ['alias', 'string', 'uuid', 'integer', 'bigInteger', 'json'],
 	localTypes: ['m2m', 'm2o', 'o2m', 'translations', 'm2a', 'file', 'files'],
 	fields: (options: Options | null, { field, collection }) => {
-		const { junctionCollection, relatedCollection, path } = getRelatedCollection(collection, field);
-		const fieldsStore = useFieldsStore();
-		const primaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(relatedCollection);
+		const relatedCollectionData = getRelatedCollection(collection, field);
 
-		if (!relatedCollection) return [];
+		if (!relatedCollectionData) return [];
+
+		const fieldsStore = useFieldsStore();
+
+		const { junctionCollection, relatedCollection, path } = relatedCollectionData;
+
+		const primaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(relatedCollection);
 
 		const fields = options?.template
 			? adjustFieldsForDisplays(getFieldsFromTemplate(options.template), junctionCollection ?? relatedCollection)

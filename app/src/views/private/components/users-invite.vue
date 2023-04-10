@@ -112,7 +112,12 @@ export default defineComponent({
 		}
 
 		async function loadRoles() {
-			const response = await api.get('/roles');
+			const response = await api.get('/roles', {
+				params: {
+					sort: 'name',
+					fields: ['id', 'name'],
+				},
+			});
 
 			roles.value = response.data.data.map((role: Record<string, any>) => ({
 				text: role.name,

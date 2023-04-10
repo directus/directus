@@ -14,7 +14,7 @@ import {
 	seedAllFieldTypesStructure,
 	seedAllFieldTypesValues,
 	getTestsAllTypesSchema,
-	seedAliasAllFieldTypesValues,
+	seedO2MAliasAllFieldTypesValues,
 } from './seed-all-field-types';
 import { set } from 'lodash';
 
@@ -25,12 +25,14 @@ export const collectionCities = 'test_items_o2m_cities';
 export type Country = {
 	id?: number | string;
 	name: string;
+	test_datetime?: string;
 };
 
 export type State = {
 	id?: number | string;
 	name: string;
 	country_id?: number | string | null;
+	test_datetime?: string;
 };
 
 export type City = {
@@ -301,8 +303,8 @@ export const seedDBValues = async (cachedSchema: CachedTestsSchema, vendorSchema
 				set(vendorSchemaValues, `${vendor}.${localCollectionCities}.id`, citiesIDs);
 
 				await seedAllFieldTypesValues(vendor, localCollectionCountries, pkType);
-				await seedAliasAllFieldTypesValues(vendor, localCollectionStates, pkType, 'country_id', countriesIDs);
-				await seedAliasAllFieldTypesValues(vendor, localCollectionCities, pkType, 'state_id', statesIDs);
+				await seedO2MAliasAllFieldTypesValues(vendor, localCollectionStates, pkType, 'country_id', countriesIDs);
+				await seedO2MAliasAllFieldTypesValues(vendor, localCollectionCities, pkType, 'state_id', statesIDs);
 			}
 		})
 	);

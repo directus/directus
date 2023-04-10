@@ -17,7 +17,7 @@
 			v-model:active="editActive"
 			:collection="collection"
 			:primary-key="item[props.relationInfo.relatedPrimaryKeyField.field] || '+'"
-			:edits="item"
+			:edits="edits"
 			:circular-field="props.relationInfo.reverseJunctionField.field"
 			@input="$emit('input', $event)"
 		/>
@@ -35,6 +35,7 @@ const props = withDefaults(
 		collection: string;
 		template: string;
 		item: Record<string, any>;
+		edits: Record<string, any>;
 		relationInfo: RelationO2M;
 		disabled?: boolean;
 		open?: boolean;

@@ -8,24 +8,20 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script setup lang="ts">
+interface Props {
+	/** Render the divider vertically */
+	vertical?: boolean;
+	/** Render the title inline with the divider, or under it */
+	inlineTitle?: boolean;
+	/** Renders a larger divider text */
+	large?: boolean;
+}
 
-export default defineComponent({
-	props: {
-		vertical: {
-			type: Boolean,
-			default: false,
-		},
-		inlineTitle: {
-			type: Boolean,
-			default: true,
-		},
-		large: {
-			type: Boolean,
-			default: false,
-		},
-	},
+withDefaults(defineProps<Props>(), {
+	vertical: false,
+	inlineTitle: true,
+	large: false,
 });
 </script>
 

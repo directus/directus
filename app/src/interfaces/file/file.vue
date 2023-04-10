@@ -1,13 +1,14 @@
 <template>
 	<div class="file">
 		<v-menu attached :disabled="loading">
-			<template #activator="{ toggle }">
+			<template #activator="{ toggle, active }">
 				<div>
 					<v-skeleton-loader v-if="loading" type="input" />
 					<v-input
 						v-else
 						clickable
 						readonly
+						:active="active"
 						:disabled="disabled"
 						:placeholder="t('no_file_selected')"
 						:model-value="file && file.title"
@@ -46,7 +47,7 @@
 
 			<v-list>
 				<template v-if="file">
-					<v-list-item :download="file.filename_download" :href="assetURL">
+					<v-list-item clickable :download="file.filename_download" :href="getAssetUrl(file.id, true)">
 						<v-list-item-icon><v-icon name="get_app" /></v-list-item-icon>
 						<v-list-item-content>{{ t('download_file') }}</v-list-item-content>
 					</v-list-item>
@@ -86,7 +87,13 @@
 			:edits="edits"
 			:disabled="disabled"
 			@input="update"
-		/>
+		>
+			<template #actions>
+				<v-button secondary rounded icon :download="file.filename_download" :href="getAssetUrl(file.id, true)">
+					<v-icon name="download" />
+				</v-button>
+			</template>
+		</drawer-item>
 
 		<v-dialog
 			:model-value="activeDialog === 'upload'"
@@ -142,13 +149,14 @@ import { useI18n } from 'vue-i18n';
 import { ref, computed, toRefs } from 'vue';
 import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import api from '@/api';
+import { getAssetUrl } from '@/utils/get-asset-url';
 import { readableMimeType } from '@/utils/readable-mime-type';
 import { unexpectedError } from '@/utils/unexpected-error';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
 import { addQueryToPath } from '@/utils/add-query-to-path';
 import { useRelationM2O } from '@/composables/use-relation-m2o';
 import { useRelationSingle, RelationQuerySingle } from '@/composables/use-relation-single';
-import { Filter } from '@directus/shared/types';
+import { Filter } from '@directus/types';
 
 type FileInfo = {
 	id: string;

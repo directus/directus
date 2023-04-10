@@ -100,22 +100,22 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
 import { computed, ref, useSlots } from 'vue';
-import { ShowSelect } from '@directus/shared/types';
+import { ShowSelect } from '@directus/types';
 import { useEventListener } from '@/composables/use-event-listener';
 import { Header, Sort } from './types';
 import { throttle, clone } from 'lodash';
 import Draggable from 'vuedraggable';
 import { hideDragImage } from '@/utils/hide-drag-image';
-import { useSync } from '@directus/shared/composables';
+import { useSync } from '@directus/composables';
 
 interface Props {
 	headers: Header[];
 	sort: Sort;
+	reordering: boolean;
+	allowHeaderReorder: boolean;
 	showSelect?: ShowSelect;
 	showResize?: boolean;
 	showManualSort?: boolean;
-	allowHeaderReorder: boolean;
-	reordering: boolean;
 	someItemsSelected?: boolean;
 	allItemsSelected?: boolean;
 	fixed?: boolean;
@@ -180,7 +180,8 @@ function getClassesForHeader(header: Header) {
 }
 
 function getTooltipForSortIcon(header: Header) {
-	return props.sort.by === header.value && props.sort.desc === false ? 'sort_desc' : 'sort_asc';
+	if (props.sort.by === null || props.sort.by !== header.value) return 'sort_asc';
+	return props.sort.desc === false ? 'sort_desc' : 'disable_sort';
 }
 
 function changeSort(header: Header) {
@@ -327,6 +328,7 @@ function toggleManualSort() {
 			color: var(--foreground-subdued);
 			opacity: 0;
 			transition: opacity var(--fast) var(--transition);
+			transform: scaleY(-1);
 		}
 
 		&:hover .action-icon {

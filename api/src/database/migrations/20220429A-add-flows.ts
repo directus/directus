@@ -1,5 +1,5 @@
-import { parseJSON, toArray } from '@directus/shared/utils';
-import { Knex } from 'knex';
+import { parseJSON, toArray } from '@directus/utils';
+import type { Knex } from 'knex';
 import { v4 as uuid } from 'uuid';
 
 export async function up(knex: Knex): Promise<void> {

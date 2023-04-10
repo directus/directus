@@ -2,12 +2,12 @@ import api from '@/api';
 import { localizedFormat } from '@/utils/localized-format';
 import { localizedFormatDistance } from '@/utils/localized-format-distance';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { Action, Filter } from '@directus/shared/types';
+import { Action, Filter } from '@directus/types';
 import { isThisYear, isToday, isYesterday, parseISO, format } from 'date-fns';
 import { groupBy, orderBy } from 'lodash';
 import { ref, Ref, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { Revision, RevisionsByDate } from '../views/private/components/revisions-drawer-detail/types';
+import { Revision, RevisionsByDate } from '@/types/revisions';
 
 type UseRevisionsOptions = {
 	action?: Action;
@@ -79,6 +79,7 @@ export function useRevisions(collection: Ref<string>, primaryKey: Ref<number | s
 						'activity.user.last_name',
 						'activity.ip',
 						'activity.user_agent',
+						'activity.origin',
 					],
 					meta: ['filter_count'],
 				},
@@ -115,6 +116,7 @@ export function useRevisions(collection: Ref<string>, primaryKey: Ref<number | s
 						'activity.user.last_name',
 						'activity.ip',
 						'activity.user_agent',
+						'activity.origin',
 					],
 					meta: ['filter_count'],
 				},

@@ -27,6 +27,10 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		includeSingleton: {
+			type: Boolean,
+			default: true,
+		},
 	},
 	emits: ['input'],
 	setup(props) {
@@ -35,8 +39,13 @@ export default defineComponent({
 		const collectionsStore = useCollectionsStore();
 
 		const collections = computed(() => {
+			let collections = collectionsStore.collections;
+			if (!props.includeSingleton) {
+				collections = collections.filter((collection) => collection?.meta?.singleton === false);
+			}
+
 			return [
-				...collectionsStore.collections.filter((collection) => collection.collection.startsWith('directus_') === false),
+				...collections.filter((collection) => collection.collection.startsWith('directus_') === false),
 				...(props.includeSystem ? collectionsStore.crudSafeSystemCollections : []),
 			];
 		});

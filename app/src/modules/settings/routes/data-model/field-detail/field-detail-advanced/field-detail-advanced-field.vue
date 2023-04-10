@@ -17,7 +17,13 @@
 
 		<div v-if="type !== 'group'" class="field full">
 			<div class="label type-label">{{ t('note') }}</div>
-			<interface-system-input-translated-string :value="note" :placeholder="t('add_note')" @input="note = $event" />
+			<v-skeleton-loader v-if="loading" />
+			<interface-system-input-translated-string
+				v-else
+				:value="note"
+				:placeholder="t('add_note')"
+				@input="note = $event"
+			/>
 		</div>
 
 		<div class="field full">
@@ -33,6 +39,7 @@
 						meta: {
 							interface: 'system-language',
 							width: 'half',
+							required: true,
 							display: 'formatted-value',
 							display_options: {
 								font: 'monospace',
@@ -50,6 +57,7 @@
 						meta: {
 							interface: 'input',
 							width: 'half',
+							required: true,
 							options: {
 								placeholder: t('translation_placeholder'),
 							},
@@ -78,10 +86,10 @@ export default defineComponent({
 		const required = syncFieldDetailStoreProperty('field.meta.required', false);
 		const note = syncFieldDetailStoreProperty('field.meta.note');
 		const translations = syncFieldDetailStoreProperty('field.meta.translations');
-		const { field } = storeToRefs(fieldDetailStore);
+		const { loading, field } = storeToRefs(fieldDetailStore);
 		const type = computed(() => field.value.type);
 		const isGenerated = computed(() => field.value.schema?.is_generated);
-		return { t, readonly, hidden, required, note, translations, type, isGenerated };
+		return { t, loading, readonly, hidden, required, note, translations, type, isGenerated };
 	},
 });
 </script>

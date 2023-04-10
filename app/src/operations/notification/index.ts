@@ -1,4 +1,4 @@
-import { defineOperationApp } from '@directus/shared/utils';
+import { defineOperationApp } from '@directus/utils';
 
 export default defineOperationApp({
 	id: 'notification',
@@ -19,14 +19,15 @@ export default defineOperationApp({
 		{
 			field: 'recipient',
 			name: '$t:operations.notification.recipient',
-			type: 'string',
+			type: 'csv',
 			meta: {
 				width: 'half',
-				interface: 'input',
+				interface: 'tags',
 				options: {
 					iconRight: 'people_alt',
-					placeholder: '$t:a_users_uuid',
+					placeholder: '$t:operations.notification.recipient_placeholder',
 				},
+				note: '$t:operations.notification.recipient_note',
 			},
 		},
 		{

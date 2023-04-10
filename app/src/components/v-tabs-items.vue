@@ -4,23 +4,19 @@
 	</v-item-group>
 </template>
 
-<script lang="ts">
-import { defineComponent, PropType } from 'vue';
+<script setup lang="ts">
+interface Props {
+	/** What tab should be currently active */
+	modelValue?: (number | string)[];
+}
 
-export default defineComponent({
-	props: {
-		modelValue: {
-			type: Array as PropType<(string | number)[]>,
-			default: undefined,
-		},
-	},
-	emits: ['update:modelValue'],
-	setup(props, { emit }) {
-		function update(newSelection: readonly (string | number)[]) {
-			emit('update:modelValue', newSelection);
-		}
-
-		return { update };
-	},
+withDefaults(defineProps<Props>(), {
+	modelValue: undefined,
 });
+
+const emit = defineEmits(['update:modelValue']);
+
+function update(newSelection: readonly (string | number)[]) {
+	emit('update:modelValue', newSelection);
+}
 </script>

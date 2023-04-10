@@ -1,4 +1,25 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+identifier: 識別子
 avatar: プロフィール画像
 application: アプリケーション
 default_provider: デフォルト
@@ -8,10 +29,13 @@ draft: 下書き
 archived: アーカイブ済み
 modules: モジュール
 module_bar: モジュールバー
+logs: ログ
+reset_width: 横幅をリセット
 tile_size: タイルサイズ
 edit_field: フィールドの編集
 conditions: 条件
 location: 場所
+condition_rules: 条件ルール
 input: 入力
 maps: 地図
 switch_user: ユーザーを切り替える
@@ -25,7 +49,11 @@ group: グループ
 export_items: アイテムをエクスポート
 and: そして
 or: または
+init: 初期化
+dataset_too_large_currently_showing_n_items: データ量が多すぎるため、最初の {n} 件のみ表示しています。
+modifier: 修飾子
 custom: カスタム
+hook: フック
 fill_width: 幅埋め
 field_name_translations: 項目名の翻訳を追加する
 enter_password_to_enable_tfa: 二段階認証を使用するためパスワードを入力してください
@@ -35,16 +63,29 @@ branch: 分岐
 leaf: リーフ
 indeterminate: 不確定
 edit_collection: コレクションを編集
+exclusive: 排他的
+children: 子要素
 db_only_click_to_configure: 'データベースのみ: クリックして設定する'
 show_active_items: アクティブアイテムを表示
 show_archived_items: アーカイブ済みアイテムを表示
 show_all_items: 全て表示
+edited: 編集された値
 required: 必須
+required_for_app_access: App アクセスに必要なもの
 requires_value: この項目は必須です
 create_preset: プリセットの作成
+create_panel: パネルを作成
 create_role: 権限作成
 create_user: ユーザーの作成
+message: メッセージ
+delete_panel: パネルを削除
 create_webhook: Webhookの作成
+create_translation_string: 翻訳文字列を作成
+no_translation_string: 翻訳文字列なし
+no_translation_string_copy: 翻訳文字列がまだありません。
+translation_string_key_placeholder: 翻訳文字列のキー
+translation_string_translations_placeholder: 翻訳を追加
+edit_translation_string: 翻訳文字列の編集
 invite_users: ユーザーを招待
 invite: 招待する
 email_already_invited: このメールアドレス ({email}) は招待済みです
@@ -63,10 +104,14 @@ logoutReason:
 public_description: 認証せずに利用できる API データを制御します。
 not_allowed: 許可されていない
 directus_version: Directus Version
+os_type: OS 種類
 os_version: OSバージョン
+os_uptime: OS 稼働時間
+os_totalmem: OS メモリ
 archive: アーカイブ
 archive_confirm: この項目をアーカイブしてよろしいですか？
 recommended_defaults: 推奨されるデフォルト値
+unarchive: アーカイブから戻す
 validationError:
   eq: 値は {valid} でなければなりません
   neq: 値は {invalid} にすることはできません
@@ -108,6 +153,8 @@ time: 時刻
 timestamp: Timestamp
 uuid: UUID
 hash: ハッシュ値
+auto_refresh: 自動更新
+refresh_interval: 更新間隔
 auto_generate: 自動生成
 click_here: ここをクリック
 to_manually_setup_translations: 独自の翻訳を設定することができます
@@ -245,6 +292,7 @@ documentation: ドキュメンテーション
 collection_created: コレクションが作成されました
 modified_on: 修正日時
 sort_field: フィールドの並べ替え
+add_sort_field: Sort フィールドを追加
 sort: 並べ替え
 status: ステータス
 remove: 削除
@@ -364,6 +412,7 @@ layout_setup: レイアウト設定
 unsaved_changes_copy: このページを離れてもよろしいですか？
 discard_changes: 変更の破棄
 keep_editing: 編集を続ける
+page_help_settings_project: "**プロジェクトの設定** — プロジェクト全体の設定です。"
 add_new: 新規追加
 create_new: 新規作成
 all: すべて
@@ -379,6 +428,7 @@ fields:
     comment: コメント
     user_agent: ユーザーエージェント
     ip: IPアドレス
+    revisions: 履歴
   directus_collections:
     icon: アイコン
     note: 備考
@@ -468,6 +518,7 @@ save_current_user_role: 現在のユーザーロールを保存
 save_current_datetime: 現在の日付/時刻を保存
 inline: インライン
 comment: コメント
+referential_action_set_null: '{field} フィールドを Null にする'
 delete_field_are_you_sure: >-
   このフィールド：\"{field}\"を削除してよろしいですか？この操作を取り消すことはできません。
 description: 説明
@@ -496,6 +547,7 @@ permissions: 許可
 relationship: 関連
 reset: リセット
 reset_password: パスワードリセット
+revisions: 履歴
 revert: 元に戻す
 save: 保存
 schema: スキーマ
@@ -510,6 +562,7 @@ something_went_wrong: 問題が発生しました
 sort_direction: ソート順
 translation: 翻訳
 value: 値
+table: テーブル
 interfaces:
   filter:
     all: すべて
@@ -581,8 +634,12 @@ layouts:
     comfortable: 広め
     compact: コンパクト
     cozy: 普通
+both: 両方
 operations:
+  log:
+    message: メッセージ
   notification:
     recipient: ユーザー
+    message: メッセージ
   request:
     url: URL

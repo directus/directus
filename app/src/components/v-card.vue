@@ -4,23 +4,17 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script setup lang="ts">
+interface Props {
+	/** Disables any interactions with the card */
+	disabled?: boolean;
+	/** Render without rounded corners */
+	tile?: boolean;
+}
 
-export default defineComponent({
-	props: {
-		disabled: {
-			type: Boolean,
-			default: false,
-		},
-		tile: {
-			type: Boolean,
-			default: false,
-		},
-	},
-	setup() {
-		return {};
-	},
+withDefaults(defineProps<Props>(), {
+	disabled: false,
+	tile: false,
 });
 </script>
 

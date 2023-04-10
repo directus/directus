@@ -2,135 +2,35 @@ import {
 	APP_OR_HYBRID_EXTENSION_PACKAGE_TYPES,
 	APP_OR_HYBRID_EXTENSION_TYPES,
 	APP_SHARED_DEPS,
-} from '@directus/shared/constants';
+	NESTED_EXTENSION_TYPES,
+} from '@directus/constants';
 import {
 	ensureExtensionDirs,
-	generateExtensionsEntry,
+	generateExtensionsEntrypoint,
 	getLocalExtensions,
 	getPackageExtensions,
-} from '@directus/shared/utils/node';
+} from '@directus/utils/node';
 import yaml from '@rollup/plugin-yaml';
 import vue from '@vitejs/plugin-vue';
-import hljs from 'highlight.js';
 import path from 'path';
-import markdownItAnchor from 'markdown-it-anchor';
-import markdownItContainer from 'markdown-it-container';
-import markdownItTableOfContents from 'markdown-it-table-of-contents';
+import fs from 'fs';
 import { searchForWorkspaceRoot } from 'vite';
-import md from 'vite-plugin-vue-markdown';
 import { defineConfig } from 'vitest/config';
-import hljsGraphQL from './src/utils/hljs-graphql';
 
-hljs.registerLanguage('graphql', hljsGraphQL);
+const API_PATH = path.join('..', 'api');
+const EXTENSIONS_PATH = path.join(API_PATH, 'extensions');
 
 // https://vitejs.dev/config/
 export default defineConfig({
 	plugins: [
 		directusExtensions(),
-		vue({
-			include: [/\.vue$/, /\.md$/],
-		}),
-		md({
-			wrapperComponent: 'docs-wrapper',
-			markdownItOptions: {
-				highlight(str, lang) {
-					if (lang && hljs.getLanguage(lang)) {
-						try {
-							return hljs.highlight(str, { language: lang }).value;
-						} catch (err) {
-							// eslint-disable-next-line no-console
-							console.warn('There was an error highlighting in Markdown');
-							// eslint-disable-next-line no-console
-							console.error(err);
-						}
-					}
-
-					return '';
-				},
-			},
-			markdownItSetup(md) {
-				md.use(markdownItTableOfContents, { includeLevel: [2] });
-				md.use(markdownItAnchor, {
-					permalink: markdownItAnchor.permalink.linkInsideHeader({ placement: 'before' }),
-				});
-
-				function hintRenderer(type) {
-					return (tokens, idx) => {
-						const token = tokens[idx];
-						let title = token.info.trim().slice(type.length).trim() || '';
-
-						if (title) title = `<div class="hint-title">${title}</div>`;
-
-						if (token.nesting === 1) {
-							return `<div class="${type} hint">${title}\n`;
-						} else {
-							return '</div>\n';
-						}
-					};
-				}
-
-				md.use(markdownItContainer, 'tip', { render: hintRenderer('tip') });
-				md.use(markdownItContainer, 'warning', { render: hintRenderer('warning') });
-				md.use(markdownItContainer, 'danger', { render: hintRenderer('danger') });
-
-				md.core.ruler.push('router-link', (state) => {
-					state.tokens.forEach((token) => {
-						if (token.type === 'inline') {
-							const inlineTokens = token.children;
-
-							let isTraversingLink = false;
-							for (let i = 0; i < inlineTokens.length; i++) {
-								if (isTraversingLink && inlineTokens[i].type === 'link_close') {
-									inlineTokens[i].tag = 'router-link';
-
-									isTraversingLink = false;
-								} else if (inlineTokens[i].type === 'link_open') {
-									const href = inlineTokens[i].attrs.find((attr) => attr[0] === 'href');
-
-									if (href) {
-										if (href[1].startsWith('http')) {
-											inlineTokens[i].attrs.push(['target', '_blank']);
-											inlineTokens[i].attrs.push(['rel', 'noopener noreferrer']);
-										} else if (!href[1].startsWith('#')) {
-											inlineTokens[i].tag = 'router-link';
-											inlineTokens[i].attrs = [['to', `/docs${href[1]}`]];
-
-											isTraversingLink = true;
-										}
-									}
-								}
-							}
-						}
-					});
-				});
-			},
-			transforms: {
-				before(code) {
-					const titleRegex = /^# ([^\n]+?)( <small><\/small>)?\n/m;
-
-					const titleLine = code.match(titleRegex);
-
-					const title = titleLine?.[1] ?? null;
-					const modularExtension = Boolean(titleLine?.[2]);
-					const codeWithoutTitle = code.replace(titleRegex, '');
-
-					const newCode = `---\ntitle: "${title}"\nmodularExtension: ${modularExtension}${
-						code.startsWith('---\n') ? codeWithoutTitle.substring(3) : `\n---\n\n${codeWithoutTitle}`
-					}`;
-
-					return newCode;
-				},
-			},
-		}),
+		vue(),
 		yaml({
 			transform(data) {
 				return data === null ? {} : undefined;
 			},
 		}),
 	],
-	optimizeDeps: {
-		exclude: ['@directus/docs'],
-	},
 	resolve: {
 		alias: [
 			{ find: '@', replacement: path.resolve(__dirname, 'src') },
@@ -142,24 +42,37 @@ export default defineConfig({
 		port: 8080,
 		proxy: {
 			'^/(?!admin)': {
-				target: process.env.API_URL ? process.env.API_URL : 'http://localhost:8055/',
+				target: process.env.API_URL ? process.env.API_URL : 'http://127.0.0.1:8055/',
 				changeOrigin: true,
 			},
 		},
 		fs: {
-			allow: [searchForWorkspaceRoot(process.cwd()), '/admin/'],
+			allow: [searchForWorkspaceRoot(process.cwd()), ...getExtensionsRealPaths()],
 		},
 	},
 	test: {
 		environment: 'happy-dom',
+		setupFiles: ['src/__setup__/mock-globals.ts'],
 	},
 });
 
-function directusExtensions() {
-	const prefix = '@directus-extensions-';
-	const virtualIds = APP_OR_HYBRID_EXTENSION_TYPES.map((type) => `${prefix}${type}`);
+function getExtensionsRealPaths() {
+	return fs.existsSync(EXTENSIONS_PATH)
+		? fs
+				.readdirSync(EXTENSIONS_PATH)
+				.flatMap((typeDir) => {
+					const extensionTypeDir = path.join(EXTENSIONS_PATH, typeDir);
+					if (!fs.lstatSync(extensionTypeDir).isDirectory()) return;
+					return fs.readdirSync(extensionTypeDir).map((dir) => fs.realpathSync(path.join(extensionTypeDir, dir)));
+				})
+				.filter((v) => v)
+		: [];
+}
 
-	let extensionEntrypoints = {};
+function directusExtensions() {
+	const virtualExtensionsId = '@directus-extensions';
+
+	let extensionsEntrypoint = null;
 
 	return [
 		{
@@ -174,15 +87,13 @@ function directusExtensions() {
 				await loadExtensions();
 			},
 			resolveId(id) {
-				if (virtualIds.includes(id)) {
+				if (id === virtualExtensionsId) {
 					return id;
 				}
 			},
 			load(id) {
-				if (virtualIds.includes(id)) {
-					const extensionType = id.substring(prefix.length);
-
-					return extensionEntrypoints[extensionType];
+				if (id === virtualExtensionsId) {
+					return extensionsEntrypoint;
 				}
 			},
 		},
@@ -199,7 +110,7 @@ function directusExtensions() {
 						output: {
 							entryFileNames: 'assets/[name].[hash].entry.js',
 						},
-						external: virtualIds,
+						external: [virtualExtensionsId],
 						preserveEntrySignatures: 'exports-only',
 					},
 				},
@@ -208,17 +119,12 @@ function directusExtensions() {
 	];
 
 	async function loadExtensions() {
-		const apiPath = path.join('..', 'api');
-		const extensionsPath = path.join(apiPath, 'extensions');
-
-		await ensureExtensionDirs(extensionsPath, APP_OR_HYBRID_EXTENSION_TYPES);
-		const packageExtensions = await getPackageExtensions(apiPath, APP_OR_HYBRID_EXTENSION_PACKAGE_TYPES);
-		const localExtensions = await getLocalExtensions(extensionsPath, APP_OR_HYBRID_EXTENSION_TYPES);
+		await ensureExtensionDirs(EXTENSIONS_PATH, NESTED_EXTENSION_TYPES);
+		const packageExtensions = await getPackageExtensions(API_PATH, APP_OR_HYBRID_EXTENSION_PACKAGE_TYPES);
+		const localExtensions = await getLocalExtensions(EXTENSIONS_PATH, APP_OR_HYBRID_EXTENSION_TYPES);
 
 		const extensions = [...packageExtensions, ...localExtensions];
 
-		for (const extensionType of APP_OR_HYBRID_EXTENSION_TYPES) {
-			extensionEntrypoints[extensionType] = generateExtensionsEntry(extensionType, extensions);
-		}
+		extensionsEntrypoint = generateExtensionsEntrypoint(extensions);
 	}
 }

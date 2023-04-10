@@ -1,6 +1,7 @@
 import api from '@/api';
 import { Collection } from '@/types/collections';
-import { getFieldsFromTemplate } from '@directus/shared/utils';
+import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
+import { getEndpoint, getFieldsFromTemplate } from '@directus/utils';
 import { computed, Ref, ref, watch } from 'vue';
 
 type UsableTemplateData = {
@@ -16,7 +17,10 @@ export function useTemplateData(collection: Ref<Collection | null>, primaryKey: 
 
 	const fields = computed(() => {
 		if (!collection.value?.meta?.display_template) return null;
-		return getFieldsFromTemplate(collection.value.meta.display_template);
+		return adjustFieldsForDisplays(
+			getFieldsFromTemplate(collection.value.meta.display_template),
+			collection.value?.collection
+		);
 	});
 
 	watch([collection, primaryKey], fetchTemplateValues, { immediate: true });
@@ -28,9 +32,11 @@ export function useTemplateData(collection: Ref<Collection | null>, primaryKey: 
 
 		loading.value = true;
 
+		const baseEndpoint = getEndpoint(collection.value.collection);
+
 		const endpoint = collection.value.collection.startsWith('directus_')
-			? `/${collection.value.collection.substring(9)}/${primaryKey.value}`
-			: `/items/${collection.value.collection}/${encodeURIComponent(primaryKey.value)}`;
+			? `${baseEndpoint}/${primaryKey.value}`
+			: `${baseEndpoint}/${encodeURIComponent(primaryKey.value)}`;
 
 		try {
 			const result = await api.get(endpoint, {

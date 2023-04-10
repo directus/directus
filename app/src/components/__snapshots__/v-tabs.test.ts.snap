@@ -1,0 +1,3 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Mount component 1`] = `"<div data-v-21b3cbb9=\\"\\" class=\\"v-tabs horizontal\\">Some value</div>"`;

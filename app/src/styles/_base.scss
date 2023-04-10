@@ -107,6 +107,10 @@ strong {
 	font-weight: 600;
 }
 
+code {
+	font-family: var(--family-monospace);
+}
+
 ::selection {
 	background: var(--background-normal-alt);
 }
