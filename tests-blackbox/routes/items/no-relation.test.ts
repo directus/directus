@@ -1,5 +1,5 @@
 import request from 'supertest';
-import { getUrl } from '@common/config';
+import config, { getUrl } from '@common/config';
 import vendors from '@common/get-dbs-to-test';
 import { v4 as uuid } from 'uuid';
 import { CreateItem } from '@common/functions';
@@ -809,6 +809,962 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 					expect(gqlResponse.statusCode).toBe(200);
 					expect(gqlResponse.body.data[localCollectionArtists].length).toEqual(count - offset);
+				});
+			});
+
+			describe('retrieves offset with limit and sort correctly', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// Setup
+					const count = 9;
+					const offset = 4;
+					const limit = 3;
+					const sort = 'name';
+					const artistName = 'offset-limit-sort-test';
+					const artists = [];
+					const expectedResultAsc = Array.from(Array(count).keys()).slice(offset, offset + limit);
+					const expectedResultDesc = Array.from(Array(count).keys())
+						.sort((v) => -v)
+						.slice(offset, offset + limit);
+
+					for (let i = 0; i < count; i++) {
+						const artist = createArtist(pkType);
+						artist.name = `${i}-${artistName}`;
+						artists.push(artist);
+					}
+					await CreateItem(vendor, { collection: localCollectionArtists, item: artists });
+
+					// Action
+					const responseAsc = await request(getUrl(vendor))
+						.get(`/items/${localCollectionArtists}`)
+						.query({
+							filter: JSON.stringify({
+								name: { _contains: artistName },
+							}),
+							offset,
+							limit,
+							sort,
+						})
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					const gqlResponseAsc = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+						query: {
+							[localCollectionArtists]: {
+								__args: {
+									filter: {
+										name: { _contains: artistName },
+									},
+									offset,
+									limit,
+									sort,
+								},
+								id: true,
+								name: true,
+							},
+						},
+					});
+
+					const responseDesc = await request(getUrl(vendor))
+						.get(`/items/${localCollectionArtists}`)
+						.query({
+							filter: JSON.stringify({
+								name: { _contains: artistName },
+							}),
+							offset,
+							limit,
+							sort: `-${sort}`,
+						})
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					const gqlResponseDesc = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+						query: {
+							[localCollectionArtists]: {
+								__args: {
+									filter: {
+										name: { _contains: artistName },
+									},
+									offset,
+									limit,
+									sort: `-${sort}`,
+								},
+								id: true,
+								name: true,
+							},
+						},
+					});
+
+					// Assert
+					expect(responseAsc.statusCode).toBe(200);
+					expect(responseAsc.body.data.length).toBe(limit);
+					expect(responseAsc.body.data.map((v: any) => parseInt(v.name.split('-')[0]))).toEqual(expectedResultAsc);
+
+					expect(gqlResponseAsc.statusCode).toBe(200);
+					expect(gqlResponseAsc.body.data[localCollectionArtists].length).toEqual(limit);
+					expect(
+						gqlResponseAsc.body.data[localCollectionArtists].map((v: any) => parseInt(v.name.split('-')[0]))
+					).toEqual(expectedResultAsc);
+
+					expect(responseDesc.statusCode).toBe(200);
+					expect(responseDesc.body.data.length).toBe(limit);
+					expect(responseDesc.body.data.map((v: any) => parseInt(v.name.split('-')[0]))).toEqual(expectedResultDesc);
+
+					expect(gqlResponseDesc.statusCode).toBe(200);
+					expect(gqlResponseDesc.body.data[localCollectionArtists].length).toEqual(limit);
+					expect(
+						gqlResponseDesc.body.data[localCollectionArtists].map((v: any) => parseInt(v.name.split('-')[0]))
+					).toEqual(expectedResultDesc);
+				});
+			});
+
+			describe('retrieves offset in aggregation with limit correctly', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// Setup
+					const count = 10;
+					const offset = 3;
+					const limit = 3;
+					const groupBy = ['id', 'name'];
+					const artistName = 'offset-aggregation-limit-test';
+					const artists = [];
+
+					for (let i = 0; i < count; i++) {
+						const artist = createArtist(pkType);
+						artist.name = `${i}-${artistName}`;
+						artists.push(artist);
+					}
+					await CreateItem(vendor, { collection: localCollectionArtists, item: artists });
+
+					// Action
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionArtists}`)
+						.query({
+							aggregate: {
+								count: 'id',
+							},
+							filter: JSON.stringify({
+								name: { _contains: artistName },
+							}),
+							offset,
+							limit,
+							groupBy,
+						})
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					const queryKey = `${localCollectionArtists}_aggregated`;
+
+					const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+						query: {
+							[queryKey]: {
+								__args: {
+									filter: {
+										name: { _contains: artistName },
+									},
+									offset,
+									limit,
+									groupBy,
+								},
+								count: {
+									id: true,
+								},
+								group: true,
+							},
+						},
+					});
+
+					const response2 = await request(getUrl(vendor))
+						.get(`/items/${localCollectionArtists}`)
+						.query({
+							aggregate: {
+								count: 'id',
+							},
+							filter: JSON.stringify({
+								name: { _contains: artistName },
+							}),
+							offset: offset * 2,
+							limit,
+							groupBy,
+						})
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+						query: {
+							[queryKey]: {
+								__args: {
+									filter: {
+										name: { _contains: artistName },
+									},
+									offset: offset * 2,
+									limit,
+									groupBy,
+								},
+								count: {
+									id: true,
+								},
+								group: true,
+							},
+						},
+					});
+
+					// Assert
+					expect(response.statusCode).toBe(200);
+					expect(response.body.data.length).toBe(limit);
+
+					expect(gqlResponse.statusCode).toBe(200);
+					expect(gqlResponse.body.data[queryKey].length).toEqual(limit);
+
+					expect(response2.statusCode).toBe(200);
+					expect(response2.body.data.length).toBe(limit);
+
+					expect(gqlResponse2.statusCode).toBe(200);
+					expect(gqlResponse2.body.data[queryKey].length).toEqual(limit);
+
+					for (const item of response.body.data) {
+						expect(response2.body.data).not.toContain(item);
+					}
+
+					const gqlResults = gqlResponse.body.data[queryKey].map((v: any) => v.group.id);
+					const gqlResults2 = gqlResponse2.body.data[queryKey].map((v: any) => v.group.id);
+
+					for (const item of gqlResults) {
+						expect(gqlResults2).not.toContain(item);
+					}
+				});
+			});
+
+			describe('retrieves offset in aggregation with limit and sort correctly', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// Setup
+					const count = 10;
+					const offset = 3;
+					const limit = 6;
+					const sort = 'name';
+					const groupBy = ['id', 'name'];
+					const artistName = 'offset-aggregation-limit-sort-test';
+					const artists = [];
+					const expectedResultAsc = Array.from(Array(count).keys()).slice(offset, offset + limit);
+					const expectedResultDesc = Array.from(Array(count).keys())
+						.sort((v) => -v)
+						.slice(offset, offset + limit);
+
+					for (let i = 0; i < count; i++) {
+						const artist = createArtist(pkType);
+						artist.name = `${i}-${artistName}`;
+						artists.push(artist);
+					}
+					await CreateItem(vendor, { collection: localCollectionArtists, item: artists });
+
+					// Action
+					const responseAsc = await request(getUrl(vendor))
+						.get(`/items/${localCollectionArtists}`)
+						.query({
+							aggregate: {
+								count: 'id',
+							},
+							filter: JSON.stringify({
+								name: { _contains: artistName },
+							}),
+							offset,
+							limit,
+							sort,
+							groupBy,
+						})
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					const queryKey = `${localCollectionArtists}_aggregated`;
+
+					const gqlResponseAsc = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+						query: {
+							[queryKey]: {
+								__args: {
+									filter: {
+										name: { _contains: artistName },
+									},
+									offset,
+									limit,
+									sort,
+									groupBy,
+								},
+								count: {
+									id: true,
+								},
+								group: true,
+							},
+						},
+					});
+
+					const responseDesc = await request(getUrl(vendor))
+						.get(`/items/${localCollectionArtists}`)
+						.query({
+							aggregate: {
+								count: 'id',
+							},
+							filter: JSON.stringify({
+								name: { _contains: artistName },
+							}),
+							offset,
+							limit,
+							sort: `-${sort}`,
+							groupBy,
+						})
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					const gqlResponseDesc = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+						query: {
+							[queryKey]: {
+								__args: {
+									filter: {
+										name: { _contains: artistName },
+									},
+									offset,
+									limit,
+									sort: `-${sort}`,
+									groupBy,
+								},
+								count: {
+									id: true,
+								},
+								group: true,
+							},
+						},
+					});
+
+					// Assert
+					expect(responseAsc.statusCode).toBe(200);
+					expect(responseAsc.body.data.length).toBe(limit);
+					expect(responseAsc.body.data.map((v: any) => parseInt(v.name.split('-')[0]))).toEqual(expectedResultAsc);
+
+					expect(gqlResponseAsc.statusCode).toBe(200);
+					expect(gqlResponseAsc.body.data[queryKey].length).toEqual(limit);
+					expect(gqlResponseAsc.body.data[queryKey].map((v: any) => parseInt(v.group.name.split('-')[0]))).toEqual(
+						expectedResultAsc
+					);
+
+					expect(responseDesc.statusCode).toBe(200);
+					expect(responseDesc.body.data.length).toBe(limit);
+					expect(responseDesc.body.data.map((v: any) => parseInt(v.name.split('-')[0]))).toEqual(expectedResultDesc);
+
+					expect(gqlResponseDesc.statusCode).toBe(200);
+					expect(gqlResponseDesc.body.data[queryKey].length).toEqual(limit);
+					expect(gqlResponseDesc.body.data[queryKey].map((v: any) => parseInt(v.group.name.split('-')[0]))).toEqual(
+						expectedResultDesc
+					);
+				});
+			});
+		});
+
+		describe('MAX_BATCH_MUTATION Tests', () => {
+			describe('createMany', () => {
+				describe('passes when below limit', () => {
+					it.each(vendors)(
+						'%s',
+						async (vendor) => {
+							// Setup
+							const count = Number(config.envs[vendor].MAX_BATCH_MUTATION);
+							const artists = [];
+							const artists2 = [];
+
+							for (let i = 0; i < count; i++) {
+								artists.push(createArtist(pkType));
+								artists2.push(createArtist(pkType));
+							}
+
+							// Action
+							const response = await request(getUrl(vendor))
+								.post(`/items/${localCollectionArtists}`)
+								.send(artists)
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+							const mutationKey = `create_${localCollectionArtists}_items`;
+
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								mutation: {
+									[mutationKey]: {
+										__args: {
+											data: artists2,
+										},
+										id: true,
+									},
+								},
+							});
+
+							// Assert
+							expect(response.statusCode).toBe(200);
+							expect(response.body.data.length).toBe(count);
+
+							expect(gqlResponse.statusCode).toBe(200);
+							expect(gqlResponse.body.data[mutationKey].length).toEqual(count);
+						},
+						120000
+					);
+				});
+
+				describe('errors when above limit', () => {
+					it.each(vendors)(
+						'%s',
+						async (vendor) => {
+							// Setup
+							const count = Number(config.envs[vendor].MAX_BATCH_MUTATION) + 1;
+							const artists = [];
+							const artists2 = [];
+
+							for (let i = 0; i < count; i++) {
+								artists.push(createArtist(pkType));
+								artists2.push(createArtist(pkType));
+							}
+
+							// Action
+							const response = await request(getUrl(vendor))
+								.post(`/items/${localCollectionArtists}`)
+								.send(artists)
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+							const mutationKey = `create_${localCollectionArtists}_items`;
+
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								mutation: {
+									[mutationKey]: {
+										__args: {
+											data: artists2,
+										},
+										id: true,
+									},
+								},
+							});
+
+							// Assert
+							expect(response.statusCode).toBe(400);
+							expect(response.body.errors).toBeDefined();
+							expect(response.body.errors[0].message).toBe(
+								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+							);
+
+							expect(gqlResponse.statusCode).toBe(200);
+							expect(gqlResponse.body.errors).toBeDefined();
+							expect(gqlResponse.body.errors[0].message).toBe(
+								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+							);
+						},
+						120000
+					);
+				});
+			});
+
+			describe('updateBatch', () => {
+				describe('passes when below limit', () => {
+					it.each(vendors)(
+						'%s',
+						async (vendor) => {
+							// Setup
+							const count = Number(config.envs[vendor].MAX_BATCH_MUTATION);
+							const artists = [];
+							const artists2 = [];
+
+							for (let i = 0; i < count; i++) {
+								artists.push(
+									await CreateItem(vendor, { collection: localCollectionArtists, item: createArtist(pkType) })
+								);
+								artists2.push(
+									await CreateItem(vendor, { collection: localCollectionArtists, item: createArtist(pkType) })
+								);
+							}
+
+							// Action
+							const response = await request(getUrl(vendor))
+								.patch(`/items/${localCollectionArtists}`)
+								.send(artists)
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+							const mutationKey = `update_${localCollectionArtists}_batch`;
+
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								mutation: {
+									[mutationKey]: {
+										__args: {
+											data: artists2,
+										},
+										id: true,
+									},
+								},
+							});
+
+							// Assert
+							expect(response.statusCode).toBe(200);
+							expect(response.body.data.length).toBe(count);
+
+							expect(gqlResponse.statusCode).toBe(200);
+							expect(gqlResponse.body.data[mutationKey].length).toEqual(count);
+						},
+						120000
+					);
+				});
+
+				describe('errors when above limit', () => {
+					it.each(vendors)(
+						'%s',
+						async (vendor) => {
+							// Setup
+							const count = Number(config.envs[vendor].MAX_BATCH_MUTATION) + 1;
+							const artists = [];
+							const artists2 = [];
+
+							for (let i = 0; i < count; i++) {
+								artists.push(
+									await CreateItem(vendor, { collection: localCollectionArtists, item: createArtist(pkType) })
+								);
+								artists2.push(
+									await CreateItem(vendor, { collection: localCollectionArtists, item: createArtist(pkType) })
+								);
+							}
+
+							// Action
+							const response = await request(getUrl(vendor))
+								.patch(`/items/${localCollectionArtists}`)
+								.send(artists)
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+							const mutationKey = `update_${localCollectionArtists}_batch`;
+
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								mutation: {
+									[mutationKey]: {
+										__args: {
+											data: artists2,
+										},
+										id: true,
+									},
+								},
+							});
+
+							// Assert
+							expect(response.statusCode).toBe(400);
+							expect(response.body.errors).toBeDefined();
+							expect(response.body.errors[0].message).toBe(
+								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+							);
+
+							expect(gqlResponse.statusCode).toBe(200);
+							expect(gqlResponse.body.errors).toBeDefined();
+							expect(gqlResponse.body.errors[0].message).toBe(
+								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+							);
+						},
+						120000
+					);
+				});
+			});
+
+			describe('updateMany', () => {
+				describe('passes when below limit', () => {
+					it.each(vendors)(
+						'%s',
+						async (vendor) => {
+							// Setup
+							const count = Number(config.envs[vendor].MAX_BATCH_MUTATION);
+							const artistIDs = [];
+							const artistIDs2 = [];
+
+							for (let i = 0; i < count; i++) {
+								artistIDs.push(
+									(await CreateItem(vendor, { collection: localCollectionArtists, item: createArtist(pkType) })).id
+								);
+								artistIDs2.push(
+									(await CreateItem(vendor, { collection: localCollectionArtists, item: createArtist(pkType) })).id
+								);
+							}
+
+							// Action
+							const response = await request(getUrl(vendor))
+								.patch(`/items/${localCollectionArtists}`)
+								.send({ keys: artistIDs, data: { name: 'updated' } })
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+							const mutationKey = `update_${localCollectionArtists}_items`;
+
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								mutation: {
+									[mutationKey]: {
+										__args: {
+											ids: artistIDs2,
+											data: { name: 'updated' },
+										},
+										id: true,
+									},
+								},
+							});
+
+							// Assert
+							expect(response.statusCode).toBe(200);
+							expect(response.body.data.length).toBe(count);
+
+							expect(gqlResponse.statusCode).toBe(200);
+							expect(gqlResponse.body.data[mutationKey].length).toEqual(count);
+						},
+						120000
+					);
+				});
+
+				describe('errors when above limit', () => {
+					it.each(vendors)(
+						'%s',
+						async (vendor) => {
+							// Setup
+							const count = Number(config.envs[vendor].MAX_BATCH_MUTATION) + 1;
+							const artistIDs = [];
+							const artistIDs2 = [];
+
+							for (let i = 0; i < count; i++) {
+								artistIDs.push(
+									(await CreateItem(vendor, { collection: localCollectionArtists, item: createArtist(pkType) })).id
+								);
+								artistIDs2.push(
+									(await CreateItem(vendor, { collection: localCollectionArtists, item: createArtist(pkType) })).id
+								);
+							}
+
+							// Action
+							const response = await request(getUrl(vendor))
+								.patch(`/items/${localCollectionArtists}`)
+								.send({ keys: artistIDs, data: { name: 'updated' } })
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+							const mutationKey = `update_${localCollectionArtists}_items`;
+
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								mutation: {
+									[mutationKey]: {
+										__args: {
+											ids: artistIDs2,
+											data: { name: 'updated' },
+										},
+										id: true,
+									},
+								},
+							});
+
+							// Assert
+							expect(response.statusCode).toBe(400);
+							expect(response.body.errors).toBeDefined();
+							expect(response.body.errors[0].message).toBe(
+								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+							);
+
+							expect(gqlResponse.statusCode).toBe(200);
+							expect(gqlResponse.body.errors).toBeDefined();
+							expect(gqlResponse.body.errors[0].message).toBe(
+								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+							);
+						},
+						120000
+					);
+				});
+			});
+
+			describe('updateByQuery', () => {
+				describe('passes when below limit', () => {
+					it.each(vendors)(
+						'%s',
+						async (vendor) => {
+							// Setup
+							const count = Number(config.envs[vendor].MAX_BATCH_MUTATION);
+							const company = uuid();
+
+							for (let i = 0; i < count; i++) {
+								const artist = createArtist(pkType);
+								artist.company = company;
+								await CreateItem(vendor, { collection: localCollectionArtists, item: artist });
+							}
+
+							// Action
+							const response = await request(getUrl(vendor))
+								.patch(`/items/${localCollectionArtists}`)
+								.send({
+									query: {
+										filter: JSON.stringify({ company: { _eq: company } }),
+										limit: -1,
+									},
+									data: { name: 'updated' },
+								})
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+							// Assert
+							expect(response.statusCode).toBe(200);
+							expect(response.body.data.length).toBe(count);
+						},
+						120000
+					);
+				});
+
+				describe('errors when above limit', () => {
+					it.each(vendors)(
+						'%s',
+						async (vendor) => {
+							// Setup
+							const count = Number(config.envs[vendor].MAX_BATCH_MUTATION) + 1;
+							const company = uuid();
+
+							for (let i = 0; i < count; i++) {
+								const artist = createArtist(pkType);
+								artist.company = company;
+								await CreateItem(vendor, { collection: localCollectionArtists, item: artist });
+							}
+
+							// Action
+							const response = await request(getUrl(vendor))
+								.patch(`/items/${localCollectionArtists}`)
+								.send({
+									query: {
+										filter: JSON.stringify({ company: { _eq: company } }),
+										limit: -1,
+									},
+									data: { name: 'updated' },
+								})
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+							// Assert
+							expect(response.statusCode).toBe(400);
+							expect(response.body.errors).toBeDefined();
+							expect(response.body.errors[0].message).toBe(
+								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+							);
+						},
+						120000
+					);
+				});
+			});
+
+			describe('deleteMany', () => {
+				describe('passes when below limit', () => {
+					it.each(vendors)(
+						'%s',
+						async (vendor) => {
+							// Setup
+							const count = Number(config.envs[vendor].MAX_BATCH_MUTATION);
+							const artistIDs = [];
+							const artistIDs2 = [];
+							const artistIDs3 = [];
+							const artistIDs4 = [];
+
+							for (let i = 0; i < count; i++) {
+								artistIDs.push(
+									(await CreateItem(vendor, { collection: localCollectionArtists, item: createArtist(pkType) })).id
+								);
+								artistIDs2.push(
+									(await CreateItem(vendor, { collection: localCollectionArtists, item: createArtist(pkType) })).id
+								);
+								artistIDs3.push(
+									(await CreateItem(vendor, { collection: localCollectionArtists, item: createArtist(pkType) })).id
+								);
+								artistIDs4.push(
+									(await CreateItem(vendor, { collection: localCollectionArtists, item: createArtist(pkType) })).id
+								);
+							}
+
+							// Action
+							const response = await request(getUrl(vendor))
+								.delete(`/items/${localCollectionArtists}`)
+								.send({ keys: artistIDs })
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+							const response2 = await request(getUrl(vendor))
+								.delete(`/items/${localCollectionArtists}`)
+								.send({ keys: artistIDs2 })
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+							const mutationKey = `delete_${localCollectionArtists}_items`;
+
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								mutation: {
+									[mutationKey]: {
+										__args: {
+											ids: artistIDs3,
+										},
+										ids: true,
+									},
+								},
+							});
+
+							const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								mutation: {
+									[mutationKey]: {
+										__args: {
+											ids: artistIDs4,
+										},
+										ids: true,
+									},
+								},
+							});
+
+							// Assert
+							expect(response.statusCode).toBe(204);
+
+							expect(response2.statusCode).toBe(204);
+
+							expect(gqlResponse.statusCode).toBe(200);
+							expect(gqlResponse.body.data[mutationKey].ids.length).toEqual(count);
+
+							expect(gqlResponse2.statusCode).toBe(200);
+							expect(gqlResponse2.body.data[mutationKey].ids.length).toEqual(count);
+						},
+						120000
+					);
+				});
+
+				describe('errors when above limit', () => {
+					it.each(vendors)(
+						'%s',
+						async (vendor) => {
+							// Setup
+							const count = Number(config.envs[vendor].MAX_BATCH_MUTATION) + 1;
+							const artistIDs = [];
+							const artistIDs2 = [];
+							const artistIDs3 = [];
+							const artistIDs4 = [];
+
+							for (let i = 0; i < count; i++) {
+								artistIDs.push(
+									(await CreateItem(vendor, { collection: localCollectionArtists, item: createArtist(pkType) })).id
+								);
+								artistIDs2.push(
+									(await CreateItem(vendor, { collection: localCollectionArtists, item: createArtist(pkType) })).id
+								);
+								artistIDs3.push(
+									(await CreateItem(vendor, { collection: localCollectionArtists, item: createArtist(pkType) })).id
+								);
+								artistIDs4.push(
+									(await CreateItem(vendor, { collection: localCollectionArtists, item: createArtist(pkType) })).id
+								);
+							}
+
+							// Action
+							const response = await request(getUrl(vendor))
+								.delete(`/items/${localCollectionArtists}`)
+								.send({ keys: artistIDs })
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+							const response2 = await request(getUrl(vendor))
+								.delete(`/items/${localCollectionArtists}`)
+								.send({ keys: artistIDs2 })
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+							const mutationKey = `delete_${localCollectionArtists}_items`;
+
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								mutation: {
+									[mutationKey]: {
+										__args: {
+											ids: artistIDs3,
+										},
+										ids: true,
+									},
+								},
+							});
+
+							const gqlResponse2 = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								mutation: {
+									[mutationKey]: {
+										__args: {
+											ids: artistIDs4,
+										},
+										ids: true,
+									},
+								},
+							});
+
+							// Assert
+							expect(response.statusCode).toBe(400);
+							expect(response.body.errors).toBeDefined();
+							expect(response.body.errors[0].message).toBe(
+								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+							);
+
+							expect(response2.statusCode).toBe(400);
+							expect(response2.body.errors).toBeDefined();
+							expect(response2.body.errors[0].message).toBe(
+								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+							);
+
+							expect(gqlResponse.statusCode).toBe(200);
+							expect(gqlResponse.body.errors).toBeDefined();
+							expect(gqlResponse.body.errors[0].message).toBe(
+								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+							);
+
+							expect(gqlResponse2.statusCode).toBe(200);
+							expect(gqlResponse2.body.errors).toBeDefined();
+							expect(gqlResponse2.body.errors[0].message).toBe(
+								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+							);
+						},
+						120000
+					);
+				});
+			});
+
+			describe('deleteByQuery', () => {
+				describe('passes when below limit', () => {
+					it.each(vendors)(
+						'%s',
+						async (vendor) => {
+							// Setup
+							const count = Number(config.envs[vendor].MAX_BATCH_MUTATION);
+							const company = uuid();
+
+							for (let i = 0; i < count; i++) {
+								const artist = createArtist(pkType);
+								artist.company = company;
+								await CreateItem(vendor, { collection: localCollectionArtists, item: artist });
+							}
+
+							// Action
+							const response = await request(getUrl(vendor))
+								.delete(`/items/${localCollectionArtists}`)
+								.send({
+									query: {
+										filter: JSON.stringify({ company: { _eq: company } }),
+										limit: -1,
+									},
+								})
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+							// Assert
+							expect(response.statusCode).toBe(204);
+						},
+						120000
+					);
+				});
+
+				describe('errors when above limit', () => {
+					it.each(vendors)(
+						'%s',
+						async (vendor) => {
+							// Setup
+							const count = Number(config.envs[vendor].MAX_BATCH_MUTATION) + 1;
+							const company = uuid();
+
+							for (let i = 0; i < count; i++) {
+								const artist = createArtist(pkType);
+								artist.company = company;
+								await CreateItem(vendor, { collection: localCollectionArtists, item: artist });
+							}
+
+							// Action
+							const response = await request(getUrl(vendor))
+								.delete(`/items/${localCollectionArtists}`)
+								.send({
+									query: {
+										filter: JSON.stringify({ company: { _eq: company } }),
+										limit: -1,
+									},
+								})
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+							// Assert
+							expect(response.statusCode).toBe(400);
+							expect(response.body.errors).toBeDefined();
+							expect(response.body.errors[0].message).toBe(
+								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+							);
+						},
+						120000
+					);
 				});
 			});
 		});

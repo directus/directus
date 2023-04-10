@@ -183,6 +183,7 @@ fields:
               slug: true
               onlyOnCreate: false
             width: full
+            required: true
         - field: fit
           name: $t:field_options.directus_settings.storage_asset_presets.fit_label
           type: string
@@ -322,6 +323,7 @@ fields:
             is_nullable: false
           meta:
             interface: text-input
+            required: true
             options:
               placeholder: $t:field_options.directus_settings.basemaps_name_placeholder
         - field: type
@@ -397,6 +399,7 @@ fields:
           meta:
             interface: text-input
             width: half
+            required: true
             options:
               placeholder: $t:text
         - field: value
@@ -405,5 +408,6 @@ fields:
           meta:
             interface: input
             width: half
+            required: true
             options:
               placeholder: $t:value

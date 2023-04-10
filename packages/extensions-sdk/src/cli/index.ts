@@ -1,4 +1,4 @@
-import create from './commands/create';
-import build from './commands/build';
+import build from './commands/build.js';
+import create from './commands/create.js';
 
 export { create, build };

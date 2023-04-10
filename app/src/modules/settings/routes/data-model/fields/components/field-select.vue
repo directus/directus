@@ -154,7 +154,7 @@ import { getLocalTypeForField } from '@/utils/get-local-type';
 import { getSpecialForType } from '@/utils/get-special-for-type';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { Field } from '@directus/shared/types';
+import { Field } from '@directus/types';
 import FieldSelectMenu from './field-select-menu.vue';
 import { hideDragImage } from '@/utils/hide-drag-image';
 import Draggable from 'vuedraggable';
@@ -459,16 +459,22 @@ export default defineComponent({
 	& + & {
 		margin-top: 8px;
 	}
+
+	&.nested {
+		.field :deep(.input) {
+			border: var(--border-width) solid var(--primary-25);
+		}
+	}
 }
 
 .field {
-	:deep(.input) {
-		border: var(--border-width) solid var(--border-subdued) !important;
+	&.v-input :deep(.input) {
+		border: var(--border-width) solid var(--border-subdued);
 	}
 
-	:deep(.input:hover) {
-		background-color: var(--card-face-color) !important;
-		border: var(--border-width) solid var(--border-normal-alt) !important;
+	&.v-input :deep(.input:hover) {
+		background-color: var(--card-face-color);
+		border: var(--border-width) solid var(--border-normal-alt);
 	}
 
 	.label {
