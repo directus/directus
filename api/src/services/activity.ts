@@ -27,7 +27,7 @@ export class ActivityService extends ItemsService {
 
 	async truncate() {
 		if (!env['ACTIVITY_RETENTION'] || env['ACTIVITY_RETENTION'] === 'infinite') return;
-		const db = getDatabase();
+		const db = this.knex || getDatabase();
 		const oldest = adjustDate(new Date(), '-' + env['ACTIVITY_RETENTION']);
 		if (!oldest) throw new Error('Invalid ACTIVITY_RETENTION configured');
 		await db('directus_activity').delete().where('timestamp', '<=', oldest);

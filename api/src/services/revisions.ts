@@ -28,7 +28,7 @@ export class RevisionsService extends ItemsService {
 
 	async truncate() {
 		if (!env['REVISIONS_RETENTION'] || env['REVISIONS_RETENTION'] === 'infinite') return;
-		const db = getDatabase();
+		const db = this.knex || getDatabase();
 		const oldest = adjustDate(new Date(), '-' + env['REVISIONS_RETENTION']);
 		if (!oldest) throw new Error('Invalid REVISIONS_RETENTION configured');
 		const oldestActivity = await db.select('id').from('directus_activity').where('timestamp', '<=', oldest).first();
