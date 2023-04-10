@@ -1,7 +1,7 @@
 <template>
 	<private-view :title="title">
 		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon secondary exact @click="router.back()">
+			<v-button class="header-icon" rounded icon secondary exact @click="navigateBack">
 				<v-icon name="arrow_back" />
 			</v-button>
 		</template>
@@ -328,6 +328,7 @@ export default defineComponent({
 			item,
 			loading,
 			isNew,
+			navigateBack,
 			breadcrumb,
 			edits,
 			hasEdits,
@@ -368,6 +369,16 @@ export default defineComponent({
 			avatarError,
 			isSavable,
 		};
+
+		function navigateBack() {
+			const backState = router.options.history.state.back;
+			if (typeof backState !== 'string' || !backState.startsWith('/login')) {
+				router.back();
+				return;
+			}
+
+			router.push('/users');
+		}
 
 		function useBreadcrumb() {
 			const breadcrumb = computed(() => [

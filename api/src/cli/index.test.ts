@@ -1,3 +1,4 @@
+import path from 'path';
 import type { Command } from 'commander';
 import type { Extension, HookConfig } from '@directus/shared/types';
 import { createCli } from './index.js';
@@ -16,6 +17,9 @@ vi.mock('../env.js', async () => ({
 		DB_PASSWORD: 'psql1234',
 	}
 }));
+
+const customHookPath = path.resolve('/hooks/custom-cli', 'index.js');
+jest.doMock(customHookPath, () => customCliHook, { virtual: true });
 
 const customCliExtension: Extension = {
 	path: `/hooks/custom-cli`,

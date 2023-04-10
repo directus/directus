@@ -187,6 +187,8 @@ revision_post_create: Voici à quoi ressemblait cet article lors de sa création
 revision_post_update: Voici à quoi ressemblait cet élément après la mise à jour.
 changes_made: Vous trouverez ci-dessous les modifications spécifiques apportées à cette révision.
 no_relational_data: Attention, les données relationnelles ne sont pas incluses.
+junction_field_location: Emplacement des champs de jonction
+top: En haut
 bottom: Bas
 hide_field: Masquer le champ
 hide_field_on_detail: Masquer le champ dans le détail
@@ -297,6 +299,7 @@ field_name: Nom du champ
 translations: Traductions
 no_translations: Aucune traduction
 left_to_right: Hello
+right_to_left: De droite à gauche
 note: Remarque
 enter_a_value: Saisissez une valeur...
 enter_a_placeholder: Entrez un texte d'indication...
@@ -325,6 +328,7 @@ edit_raw_value: Modifier la valeur brute
 enter_raw_value: Saisissez une valeur brute...
 clear_value: Effacer la valeur
 clear_changes: Effacer les modifications
+clear_items: Effacer les éléments
 reset_to_default: Revenir à la valeur par défaut
 undo_changes: Annuler les modifications
 notifications: Notifications
@@ -481,6 +485,7 @@ creating_items: Création d'éléments
 enable_create_button: Activer le bouton de création
 selecting_items: Sélection d'éléments
 enable_select_button: Activer le bouton de sélection
+allow_duplicates: Autoriser les doublons
 comments: Commentaires
 no_comments: Pas encore de commentaires
 click_to_expand: Cliquer pour agrandir
@@ -533,6 +538,7 @@ activity_item: Flux d'activité
 action: Action
 ip_address: Adresse IP
 user_agent: Agent utilisateur
+origin: Origine
 webhooks: Webhooks
 decimals: Décimales
 value_decimals: Valeur décimale
@@ -581,6 +587,9 @@ errors:
   INVALID_PAYLOAD: Payload invalide
   INVALID_PROVIDER: L'utilisateur appartient à un autre fournisseur d'authentification
   INVALID_QUERY: Requête invalide
+  INVALID_CONFIG: Configuration non valide
+  INVALID_TOKEN: Jeton non valide
+  INVALID_IP: Adresse IP non autorisée
   INVALID_USER: Échec de l'authentification utilisateur
   ITEM_LIMIT_REACHED: Nombre d'éléments max atteint
   ITEM_NOT_FOUND: Élément introuvable
@@ -597,6 +606,13 @@ errors:
   INVALID_FOREIGN_KEY: Clé étrangère invalide
   UNKNOWN: Erreur inconnue
   GRAPHQL_VALIDATION_EXCEPTION: Exception de validation de GraphQL
+  SERVICE_UNAVAILABLE: Service indisponible
+  UNSUPPORTED_MEDIA_TYPE: Type de format non pris en charge
+  UNEXPECTED_RESPONSE: Réponse inattendue
+  TOKEN_EXPIRED: Jeton expiré
+  RANGE_NOT_SATISFIABLE: Plage non valide
+  METHOD_NOT_ALLOWED: Méthode non autorisée
+  REQUESTS_EXCEEDED: Limite de requêtes atteinte
 security: Sécurité
 value_hashed: Valeur hashée de manière sûre
 bookmark_name: Nom du favori...
@@ -736,6 +752,8 @@ add_file: Ajouter un fichier
 replace_file: Remplacer le fichier
 no_results: Aucun résultat
 no_results_copy: Ajuster ou effacer les filtres de recherche pour voir les résultats.
+no_visible_fields: Formulaire vide
+no_visible_fields_copy: Ce formulaire n'a pas de champs visibles.
 clear_filters: Réinitialiser les filtres
 saves_automatically: Sauvegardé automatiquement
 role: Rôle
@@ -766,7 +784,7 @@ flows: Flux
 flow: Flux
 select_a_flow: Sélectionner un flux
 run_flow_on_current: Exécuter le flux sur l'élément actuel
-run_flow_on_selected: Aucun élément sélectionné | Exécuter le flux sur 1 élément sélectionné | Exécuter le flux sur {n} éléments sélectionnés
+run_flow_on_current_edited_confirm: Cet élément peut être mis à jour par ce flux, êtes-vous sûr de vouloir l'exécuter ?
 run_flow_success: Le Flux "{flow}" s'est exécuté avec succès
 trigger: Déclencheur
 trigger_options: Options de Déclenchement
@@ -1029,6 +1047,7 @@ fields:
     user: Fait par
     comment: Commentaire
     user_agent: Agent utilisateur
+    origin: Origine
     ip: Adresse IP
     revisions: Historique
   directus_collections:
@@ -1410,6 +1429,14 @@ report_error: Signaler l'erreur
 start: Début
 table: Tableau
 list: Liste
+search_filter: Rechercher & Filtrer
+enable_search_filter: Activer la recherche et le filtrage
+item_link: Lien de l'élément
+show_link_to_item: Afficher un lien vers l'élément
+navigate_to_item: Naviguer vers l'élément
+undo_removed_item: Annuler Supprimer l'élément
+remove_item: Retirer l'élément
+delete_item: Supprimer l'élément
 interfaces:
   filter:
     name: Filtre
@@ -1491,6 +1518,7 @@ interfaces:
     placeholder: Choisissez une date et heure...
   system-fields:
     select_a_collection: Sélectionner une collection
+    no_fields: Aucun champ
   system-display-template:
     display-template: Modèle d'affichage
     description: Mélanger du texte statique et des valeurs de champs dynamiques
@@ -1548,6 +1576,7 @@ interfaces:
   list-m2m:
     many-to-many: Plusieurs à plusieurs
     description: Sélectionner plusieurs éléments de jonction liés
+    columns_configure_notice: Vous pouvez configurer les colonnes après avoir créé ce champ.
     display_template_configure_notice: Vous pourrez configurer le modèle d'affichage après avoir créé ce champ.
   select-dropdown-m2o:
     many-to-one: Plusieurs à un
@@ -1665,6 +1694,7 @@ interfaces:
     user_language: Utiliser la langue actuelle de l'utilisateur
     default_language: Langue par défaut
     language_field: Champ d'indicateur de langue
+    language_direction_field: Champ de direction de la langue
   list-o2m-tree-view:
     description: Arborescence pour les éléments récursifs imbriqués de type "one-to-many"
     recursive_only: La vue en arborescence ne fonctionne que pour les relations récursives.
@@ -1875,33 +1905,9 @@ layouts:
     default_template: Utilisation de la collection par défaut ...
     no_compatible_fields: Aucun champ compatible
   kanban:
-    name: Kanban,
-    group_field: Regrouper par,
-    group_field_placeholder: Champ à regrouper par...,
-    group_title: Nom du groupe,
-    group_title_placeholder: Champ pour les titres du groupe...,
-    title: Titre de tuile,
-    title_placeholder: Champ titre optionnel...,
-    text: Texte de tuile,
-    text_placeholder: Champ de texte optionnel...,
-    date: Date de tuile,
-    date_placeholder: Champ de date optionnel...,
-    tags: Étiquettes de tuile,
-    tags_placeholder: Champ de balises optionnelles...,
-    user: Utilisateurs de tuile,
-    user_placeholder: Champ utilisateur optionnel...,
-    image: Image de tuile,
-    image_placeholder: Champ d'image optionnel...,
-    image_fit: Image ajustée en tuile
-    crop: Rogner,
-    advanced: Avancé,
-    edit_group: Éditer le Groupe,
-    delete_group: Supprimer le Groupe,
-    add_group: Ajouter un Groupe,
-    add_group_placeholder: Entrez le nom du nouveau groupe...,
-    show_ungrouped: Afficher non-groupé,
-    show: Afficher,
-    no_group: Aucun Groupe,
+    crop: Rogner
+    advanced: Avancé
+    show_ungrouped: Afficher non-groupé
     not_all_loaded: Impossible de charger les 1000 premiers éléments.
 panels:
   metric:
@@ -1943,7 +1949,6 @@ panels:
     y_axis_conditional_two: doit être un nombre.
   linechart:
     name: Graphique linéaire
-    description: Graphique linéaire pour comparer le changement d'un champ.
     select_field: Vous devez choisir un champ.
     select_collection: Vous devez sélectionner une collection.
     select_x_axis: Vous devez sélectionner un axe X.
@@ -1955,16 +1960,14 @@ panels:
     datasets: Jeux de données
     show_legend: Afficher la légende
     show_marker: Afficher l'info-bulle
-    include_dataset: Vous devez sélectionner au moins un élément.
     include_y_axis: Vous devez inclure un axe Y pour chaque jeu de données quand aucun groupe n'est spécifié.
     group_and_function: Vous devez inclure ou omettre un groupe et une fonction.
-    smooth: 'Lisse'
-    straight: 'Droit'
-    step_line: 'Pas'
+    smooth: Lisse
+    straight: Droit
+    step_line: Pas
   meter:
-    description: Compteur pour les valeurs de suivi
     name: Compteur
-    arc: Arc
+    description: Compteur pour les valeurs de suivi
     stroke_width: Largeur du trait
     select_max_value: Vous devez sélectionner une valeur maximale.
     max_greater_than_zero: La valeur doit être supérieure à 0.
@@ -1976,11 +1979,9 @@ panels:
     broad: Large
   piechart:
     name: Graphique anneau ou circulaire
-    description: Graphique circulaire montrant les ratios de groupes sur une colonne.
-    function: 'Fonction'
+    function: Fonction
     donut: Anneau
-    labels: Afficher les libellés
-    legend: Afficher la légende
+    show_legend: Afficher la légende
     right: Droite
     bottom: Bas
     monochrome: Monochrome
@@ -1990,7 +1991,11 @@ panels:
     description: Définir une valeur globale pour l'utilisation dans d'autres panneaux de filtres
     variable_key: Clé variable
   relational-variable:
+    name: Variable Relationnelle Globale
+    description: Définir une valeur globale de relation à utiliser dans les filtres d'autres panneaux
     variable_key: Clé variable
+    multiple: Multiple
+    multiple-label: Sélectionner plusieurs éléments
 triggers:
   common:
     response_body: Corps de la Réponse
@@ -2020,7 +2025,6 @@ triggers:
     collection_and_item: Pages des Collections et des Articles
     collection_only: Page de la Collection Uniquement
     item_only: Page de l'Article Uniquement
-a_flow_uuid: La Clé primaire UUID d'un Flux...
 any_string_or_json: Toute chaîne de caractères ou JSON...
 item_payload_placeholder: C'est le JSON utilisé pour mettre à jour les valeurs des champs de l'élément...
 operation_variables_note: Vous pouvez accéder aux données de flux à l'aide de variables telles que **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** et **{'{'}{'{'}$accountability{'}'}{'}'}**, ou faire référence à des opérations précédentes à l'aide de **{'{'}{'{'}operation_key{'}'}{'}'}**.'
@@ -2028,6 +2032,10 @@ operations:
   condition:
     name: Condition
     description: Acheminer un flux en fonction de la logique If / Else
+  exec:
+    name: Lancer le script
+    description: Exécuter du code arbitraire pour modifier le payload
+    modules: 'Les **Node modules** suivants peuvent être utilisés :'
   item-create:
     name: Créer de la donnée
     description: Créer des éléments dans la base de données
@@ -2065,7 +2073,9 @@ operations:
     body: Corps du mail
   notification:
     name: Envoyer la Notification
+    description: Envoyer une notification dans l'application à un ou plusieurs utilisateurs
     recipient: Utilisateur
+    recipient_placeholder: Ajouter un UUID utilisateur et appuyez sur entrée...
     message: Message
   request:
     name: Webhook / URL de requête

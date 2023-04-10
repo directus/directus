@@ -97,11 +97,15 @@ export default defineDisplay({
 	types: ['alias', 'string', 'uuid', 'integer', 'bigInteger', 'json'],
 	localTypes: ['m2m', 'm2o', 'o2m', 'translations', 'm2a', 'file', 'files'],
 	fields: (options: Options | null, { field, collection }) => {
-		const { junctionCollection, relatedCollection, path } = getRelatedCollection(collection, field);
-		const fieldsStore = useFieldsStore();
-		const primaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(relatedCollection);
+		const relatedCollectionData = getRelatedCollection(collection, field);
 
-		if (!relatedCollection) return [];
+		if (!relatedCollectionData) return [];
+
+		const fieldsStore = useFieldsStore();
+
+		const { junctionCollection, relatedCollection, path } = relatedCollectionData;
+
+		const primaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(relatedCollection);
 
 		const fields = options?.template
 			? adjustFieldsForDisplays(getFieldsFromTemplate(options.template), junctionCollection ?? relatedCollection)

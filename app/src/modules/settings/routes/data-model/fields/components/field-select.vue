@@ -152,6 +152,7 @@ import { getInterface } from '@/interfaces';
 import { useRouter } from 'vue-router';
 import { cloneDeep } from 'lodash';
 import { getLocalTypeForField } from '@/utils/get-local-type';
+import { getSpecialForType } from '@/utils/get-special-for-type';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { Field } from '@directus/shared/types';
@@ -309,7 +310,8 @@ export default defineComponent({
 
 		async function openFieldDetail() {
 			if (!props.field.meta) {
-				await fieldsStore.updateField(props.field.collection, props.field.field, { meta: {} });
+				const special = getSpecialForType(props.field.type);
+				await fieldsStore.updateField(props.field.collection, props.field.field, { meta: { special } });
 			}
 
 			router.push(`/settings/data-model/${props.field.collection}/${props.field.field}`);

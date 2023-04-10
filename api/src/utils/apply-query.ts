@@ -2,6 +2,7 @@ import type {
 	Aggregate,
 	ClientFilterOperator,
 	FieldFunction,
+	FieldOverview,
 	Filter,
 	Query,
 	Relation,
@@ -374,17 +375,25 @@ export async function applyFilter(
 
 					if (!columnPath) continue;
 
-					const field = await schema.getField(targetCollection, stripFunction(filterPath[filterPath.length - 1]!));
+					const { type, special } = validateFilterField(
+						schema.collections[targetCollection]!.fields,
+						stripFunction(filterPath[filterPath.length - 1]),
+						targetCollection
+					);
 
-					validateFilterOperator(field!.type, filterOperator, field!.special);
+					validateFilterOperator(type, filterOperator, special);
 
-					await applyFilterToQuery(columnPath, filterOperator, filterValue, logical, targetCollection);
+					applyFilterToQuery(columnPath, filterOperator, filterValue, logical, targetCollection);
 				} else {
-					const field = await schema.getField(collection, stripFunction(filterPath[0]!));
+					const { type, special } = validateFilterField(
+						schema.collections[collection]!.fields,
+						stripFunction(filterPath[0]),
+						collection
+					);
 
-					validateFilterOperator(field!.type, filterOperator, field!.special);
+					validateFilterOperator(type, filterOperator, special);
 
-					await applyFilterToQuery(`${collection}.${filterPath[0]}`, filterOperator, filterValue, logical);
+					applyFilterToQuery(`${collection}.${filterPath[0]}`, filterOperator, filterValue, logical);
 				}
 			} else if (subQuery === false || filterPath.length > 1) {
 				if (!relation) continue;
@@ -419,6 +428,14 @@ export async function applyFilter(
 					dbQuery[logical].whereIn(pkField as string, subQueryBuilder(value));
 				}
 			}
+		}
+
+		function validateFilterField(fields: Record<string, FieldOverview>, key: string, collection = 'unknown') {
+			if (fields[key] === undefined) {
+				throw new InvalidQueryException(`Invalid filter key "${key}" on "${collection}"`);
+			}
+
+			return fields[key];
 		}
 
 		function validateFilterOperator(type: Type, filterOperator: string, special: string[]) {

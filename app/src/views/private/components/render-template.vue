@@ -120,7 +120,7 @@ function handleObject(fieldKey: string) {
 			.join('.');
 	}
 
-	const value = get(props.item, fieldKey, field?.schema?.default_value);
+	const value = get(props.item, fieldKey);
 
 	if (value === undefined) return null;
 

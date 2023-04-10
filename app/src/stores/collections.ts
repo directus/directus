@@ -53,7 +53,18 @@ export const useCollectionsStore = defineStore({
 			let name = formatTitle(collection.collection);
 			const type = getCollectionType(collection);
 
-			if (collection.meta && !isNil(collection.meta.translations)) {
+			const localesToKeep =
+				collection.meta && !isNil(collection.meta.translations) && Array.isArray(collection.meta.translations)
+					? collection.meta.translations.map((translation) => translation.language)
+					: [];
+
+			for (const locale of i18n.global.availableLocales) {
+				if (i18n.global.te(`collection_names.${collection.collection}`, locale) && !localesToKeep.includes(locale)) {
+					i18n.global.mergeLocaleMessage(locale, { collection_names: { [collection.collection]: undefined } });
+				}
+			}
+
+			if (collection.meta && !isNil(collection.meta.translations) && Array.isArray(collection.meta.translations)) {
 				for (let i = 0; i < collection.meta.translations.length; i++) {
 					const { language, translation, singular, plural } = collection.meta.translations[i];
 

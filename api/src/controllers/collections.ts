@@ -76,6 +76,32 @@ router.get(
 );
 
 router.patch(
+	'/',
+	asyncHandler(async (req, res, next) => {
+		const collectionsService = new CollectionsService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		const collectionKeys = await collectionsService.updateBatch(req.body);
+
+		try {
+			const collections = await collectionsService.readMany(collectionKeys);
+			res.locals.payload = { data: collections || null };
+		} catch (error: any) {
+			if (error instanceof ForbiddenException) {
+				return next();
+			}
+
+			throw error;
+		}
+
+		return next();
+	}),
+	respond
+);
+
+router.patch(
 	'/:collection',
 	asyncHandler(async (req, res, next) => {
 		const collectionsService = new CollectionsService({

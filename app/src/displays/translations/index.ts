@@ -17,7 +17,7 @@ export default defineDisplay({
 	handler: (values, options, { collection, field }) => {
 		if (!field || !collection || !Array.isArray(values)) return values;
 
-		const relatedCollections = getRelatedCollection(collection, field.field);
+		const relatedCollection = getRelatedCollection(collection, field.field);
 
 		const fieldsStore = useFieldsStore();
 		const relationsStore = useRelationsStore();
@@ -34,9 +34,11 @@ export default defineDisplay({
 			(relation) => relation.collection === junction.collection && relation.field === junction.meta?.junction_field
 		);
 
-		const primaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(relatedCollections.relatedCollection);
+		if (!relatedCollection) return values;
 
-		if (!relatedCollections || !primaryKeyField || !relation?.related_collection) return values;
+		const primaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(relatedCollection.relatedCollection);
+
+		if (!primaryKeyField || !relation?.related_collection) return values;
 
 		const relatedPrimaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(relation.related_collection);
 
@@ -61,7 +63,7 @@ export default defineDisplay({
 		const fields = fieldKeys.map((fieldKey) => {
 			return {
 				key: fieldKey,
-				field: fieldsStore.getField(relatedCollections.relatedCollection, fieldKey),
+				field: fieldsStore.getField(relatedCollection.relatedCollection, fieldKey),
 			};
 		});
 

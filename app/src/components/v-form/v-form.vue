@@ -6,7 +6,12 @@
 			:fields="fields ? fields : []"
 			@scroll-to-field="scrollToField"
 		/>
-		<v-info v-if="noVisibleFields && !nested && !loading" :title="t('no_visible_fields')" icon="search" center>
+		<v-info
+			v-if="noVisibleFields && !nested && !loading"
+			:title="t('no_visible_fields')"
+			:icon="inline ? false : 'search'"
+			center
+		>
 			{{ t('no_visible_fields_copy') }}
 		</v-info>
 		<template v-for="(fieldName, index) in fieldNames" :key="fieldName">
@@ -80,18 +85,18 @@
 </template>
 
 <script setup lang="ts">
-import { useElementSize } from '@directus/shared/composables';
 import { useFormFields } from '@/composables/use-form-fields';
 import { useFieldsStore } from '@/stores/fields';
 import { applyConditions } from '@/utils/apply-conditions';
 import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
+import { useElementSize } from '@directus/shared/composables';
 import { Field, ValidationError } from '@directus/shared/types';
 import { assign, cloneDeep, isEqual, isNil, omit, pick } from 'lodash';
 import { computed, ComputedRef, onBeforeUpdate, provide, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import FormField from './form-field.vue';
 import ValidationErrors from './validation-errors.vue';
-import { useI18n } from 'vue-i18n';
 
 type FieldValues = {
 	[field: string]: any;
@@ -114,6 +119,7 @@ interface Props {
 	rawEditorEnabled?: boolean;
 	direction?: string;
 	showDivider?: boolean;
+	inline?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -133,6 +139,7 @@ const props = withDefaults(defineProps<Props>(), {
 	rawEditorEnabled: false,
 	direction: undefined,
 	showDivider: false,
+	inline: false,
 });
 
 const { t } = useI18n();

@@ -2,7 +2,7 @@ import getDatabase from './database/index.js';
 import env from './env.js';
 import logger from './logger.js';
 import type { AuthDriver } from './auth/auth.js';
-import { LocalAuthDriver, OAuth2AuthDriver, OpenIDAuthDriver, LDAPAuthDriver } from './auth/drivers/index.js';
+import { LocalAuthDriver, OAuth2AuthDriver, OpenIDAuthDriver, LDAPAuthDriver, SAMLAuthDriver } from './auth/drivers/index.js';
 import { DEFAULT_AUTH_PROVIDER } from './constants.js';
 import { InvalidConfigException } from './exceptions/index.js';
 import type { AuthDriverOptions } from './types/index.js';
@@ -79,6 +79,9 @@ function getProviderInstance(
 
 		case 'ldap':
 			return new LDAPAuthDriver(options, config);
+
+		case 'saml':
+			return new SAMLAuthDriver(options, config);
 	}
 	return undefined;
 }
