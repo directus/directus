@@ -830,20 +830,20 @@ without a password.
 - Identity provider (IdP) authenticates users and provides to service providers an authentication assertion that
   indicates a user has been authenticated.
 
-| Variable                                    | Description                                                                | Default Value |
-| ------------------------------------------- | -------------------------------------------------------------------------- | ------------- |
-| `AUTH_<PROVIDER>_SP_metadata`               | String containing XML metadata for service provider or URL to a remote URL | --            |
-| `AUTH_<PROVIDER>_IDP_metadata`              | String containing XML metadata for identity provider or URL to a remote URL | --            |
-| `AUTH_<PROVIDER>_ALLOW_PUBLIC_REGISTRATION` | Automatically create accounts for authenticating users.                    | `false`       |
-| `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`           | A Directus role ID to assign created users.                                | --            |
-| `AUTH_<PROVIDER>_IDENTIFIER_KEY`            | User profile identifier key <sup>[1]</sup>. Will default to `EMAIL_KEY`.   | --            |
-| `AUTH_<PROVIDER>_EMAIL_KEY`                 | User profile email key.                                                    | `email`       |
+| Variable                                    | Description                                                              | Default Value |
+| ------------------------------------------- | ------------------------------------------------------------------------ | ------------- |
+| `AUTH_<PROVIDER>_SP_metadata`               | String containing XML metadata for service provider                      | --            |
+| `AUTH_<PROVIDER>_IDP_metadata`              | String containing XML metadata for identity provider                     | --            |
+| `AUTH_<PROVIDER>_ALLOW_PUBLIC_REGISTRATION` | Automatically create accounts for authenticating users.                  | `false`       |
+| `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`           | A Directus role ID to assign created users.                              | --            |
+| `AUTH_<PROVIDER>_IDENTIFIER_KEY`            | User profile identifier key <sup>[1]</sup>. Will default to `EMAIL_KEY`. | --            |
+| `AUTH_<PROVIDER>_EMAIL_KEY`                 | User profile email key.                                                  | `email`       |
 
 <sup>[1]</sup> When authenticating, Directus will match the identifier value from the external user profile to a
 Directus users "External Identifier".
 
 The `SP_metadata` and `IDP_metadata` variables should be set to the XML metadata provided by the service provider and
-identity provider respectively or can be set to a URL that will be fetched on startup.
+identity provider respectively.
 
 ### Example: Multiple Auth Providers
 
