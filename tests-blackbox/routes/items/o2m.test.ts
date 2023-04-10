@@ -1,8 +1,8 @@
 import request from 'supertest';
-import { getUrl } from '@common/config';
+import config, { getUrl } from '@common/config';
 import vendors from '@common/get-dbs-to-test';
 import { v4 as uuid } from 'uuid';
-import { CreateItem } from '@common/functions';
+import { CreateItem, ReadItem } from '@common/functions';
 import { CachedTestsSchema, TestsSchemaVendorValues } from '@query/filter';
 import * as common from '@common/index';
 import {
@@ -1842,6 +1842,444 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							parseInt(v.name.split('-')[0])
 						)
 					).toEqual(expectedResultDesc);
+				});
+			});
+		});
+
+		describe('MAX_BATCH_MUTATION Tests', () => {
+			describe('createOne', () => {
+				describe('passes when below limit', () => {
+					it.each(vendors)(
+						'%s',
+						async (vendor) => {
+							// TODO: Fix Oracle exceeded directus_revisions limit of 4000
+							if (vendor === 'oracle') {
+								expect(true).toBe(true);
+								return;
+							}
+
+							// Setup
+							const countNested = Number(config.envs[vendor].MAX_BATCH_MUTATION) - 1;
+							const country: any = createCountry(pkType);
+							const country2: any = createCountry(pkType);
+
+							country.states = Array(countNested)
+								.fill(0)
+								.map(() => createState(pkType));
+
+							country2.states = Array(countNested)
+								.fill(0)
+								.map(() => createState(pkType));
+
+							// Action
+							const response = await request(getUrl(vendor))
+								.post(`/items/${localCollectionCountries}`)
+								.send(country)
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+							const mutationKey = `create_${localCollectionCountries}_item`;
+
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								mutation: {
+									[mutationKey]: {
+										__args: {
+											data: country2,
+										},
+										id: true,
+										states: {
+											id: true,
+										},
+									},
+								},
+							});
+
+							// Assert
+							expect(response.statusCode).toBe(200);
+							expect(response.body.data.states.length).toBe(countNested);
+
+							expect(gqlResponse.statusCode).toBe(200);
+							expect(gqlResponse.body.data[mutationKey].states.length).toEqual(countNested);
+						},
+						120000
+					);
+				});
+
+				describe('errors when above limit', () => {
+					it.each(vendors)(
+						'%s',
+						async (vendor) => {
+							// TODO: Fix Oracle ORA-01086 savepoint never established in this session or is invalid
+							if (vendor === 'oracle') {
+								expect(true).toBe(true);
+								return;
+							}
+
+							// Setup
+							const countNested = Number(config.envs[vendor].MAX_BATCH_MUTATION);
+							const country: any = createCountry(pkType);
+							const country2: any = createCountry(pkType);
+
+							country.states = Array(countNested)
+								.fill(0)
+								.map(() => createState(pkType));
+
+							country2.states = Array(countNested)
+								.fill(0)
+								.map(() => createState(pkType));
+
+							// Action
+							const response = await request(getUrl(vendor))
+								.post(`/items/${localCollectionCountries}`)
+								.send(country)
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+							const mutationKey = `create_${localCollectionCountries}_item`;
+
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								mutation: {
+									[mutationKey]: {
+										__args: {
+											data: country2,
+										},
+										id: true,
+										states: {
+											id: true,
+										},
+									},
+								},
+							});
+
+							// Assert
+							expect(response.statusCode).toBe(400);
+							expect(response.body.errors).toBeDefined();
+							expect(response.body.errors[0].message).toBe(
+								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+							);
+
+							expect(gqlResponse.statusCode).toBe(200);
+							expect(gqlResponse.body.errors).toBeDefined();
+							expect(gqlResponse.body.errors[0].message).toBe(
+								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+							);
+						},
+						120000
+					);
+				});
+			});
+
+			describe('createMany', () => {
+				describe('passes when below limit', () => {
+					it.each(vendors)(
+						'%s',
+						async (vendor) => {
+							// Setup
+							const count = Number(config.envs[vendor].MAX_BATCH_MUTATION) / 10;
+							const countNested = 9;
+							const countries: any[] = [];
+							const countries2: any[] = [];
+
+							for (let i = 0; i < count; i++) {
+								countries.push(createCountry(pkType));
+								countries[i].states = Array(countNested)
+									.fill(0)
+									.map(() => createState(pkType));
+
+								countries2.push(createCountry(pkType));
+								countries2[i].states = Array(countNested)
+									.fill(0)
+									.map(() => createState(pkType));
+							}
+
+							// Action
+							const response = await request(getUrl(vendor))
+								.post(`/items/${localCollectionCountries}`)
+								.send(countries)
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+							const mutationKey = `create_${localCollectionCountries}_items`;
+
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								mutation: {
+									[mutationKey]: {
+										__args: {
+											data: countries2,
+										},
+										id: true,
+									},
+								},
+							});
+
+							// Assert
+							expect(response.statusCode).toBe(200);
+							expect(response.body.data.length).toBe(count);
+
+							expect(gqlResponse.statusCode).toBe(200);
+							expect(gqlResponse.body.data[mutationKey].length).toEqual(count);
+						},
+						120000
+					);
+				});
+
+				describe('errors when above limit', () => {
+					it.each(vendors)(
+						'%s',
+						async (vendor) => {
+							// TODO: Fix Oracle ORA-01086 savepoint never established in this session or is invalid
+							if (vendor === 'oracle') {
+								expect(true).toBe(true);
+								return;
+							}
+
+							// Setup
+							const count = Number(config.envs[vendor].MAX_BATCH_MUTATION) / 10;
+							const countNested = 10;
+							const countries: any[] = [];
+							const countries2: any[] = [];
+
+							for (let i = 0; i < count; i++) {
+								countries.push(createCountry(pkType));
+								countries[i].states = Array(countNested)
+									.fill(0)
+									.map(() => createState(pkType));
+
+								countries2.push(createCountry(pkType));
+								countries2[i].states = Array(countNested)
+									.fill(0)
+									.map(() => createState(pkType));
+							}
+
+							// Action
+							const response = await request(getUrl(vendor))
+								.post(`/items/${localCollectionCountries}`)
+								.send(countries)
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+							const mutationKey = `create_${localCollectionCountries}_items`;
+
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								mutation: {
+									[mutationKey]: {
+										__args: {
+											data: countries2,
+										},
+										id: true,
+									},
+								},
+							});
+
+							// Assert
+							expect(response.statusCode).toBe(400);
+							expect(response.body.errors).toBeDefined();
+							expect(response.body.errors[0].message).toBe(
+								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+							);
+
+							expect(gqlResponse.statusCode).toBe(200);
+							expect(gqlResponse.body.errors).toBeDefined();
+							expect(gqlResponse.body.errors[0].message).toBe(
+								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+							);
+						},
+						120000
+					);
+				});
+			});
+
+			describe('updateBatch', () => {
+				describe('passes when below limit', () => {
+					it.each(vendors)(
+						'%s',
+						async (vendor) => {
+							// Setup
+							const count = Number(config.envs[vendor].MAX_BATCH_MUTATION) / 10;
+							const countCreate = 4;
+							const countUpdate = 3;
+							const countDelete = 2;
+							const countriesID = [];
+							const countriesID2 = [];
+
+							for (let i = 0; i < count; i++) {
+								const country: any = createCountry(pkType);
+								country.states = Array(countUpdate + countDelete)
+									.fill(0)
+									.map(() => createState(pkType));
+								countriesID.push(
+									(await CreateItem(vendor, { collection: localCollectionCountries, item: country })).id
+								);
+
+								const country2: any = createCountry(pkType);
+								country2.states = Array(countUpdate + countDelete)
+									.fill(0)
+									.map(() => createState(pkType));
+								countriesID2.push(
+									(await CreateItem(vendor, { collection: localCollectionCountries, item: country2 })).id
+								);
+							}
+
+							const countries = await ReadItem(vendor, {
+								collection: localCollectionCountries,
+								fields: ['*', 'states.id', 'states.name'],
+								filter: { id: { _in: countriesID } },
+							});
+
+							const countries2 = await ReadItem(vendor, {
+								collection: localCollectionCountries,
+								fields: ['*', 'states.id', 'states.name'],
+								filter: { id: { _in: countriesID2 } },
+							});
+
+							for (const country of countries) {
+								const states = country.states;
+								country.states = {
+									create: Array(countCreate)
+										.fill(0)
+										.map(() => createState(pkType)),
+									update: states.slice(0, countUpdate),
+									delete: states.slice(-countDelete).map((state: State) => state.id),
+								};
+							}
+
+							for (const country of countries2) {
+								country.states = [
+									...country.states,
+									...Array(countCreate)
+										.fill(0)
+										.map(() => createState(pkType)),
+								];
+							}
+
+							// Action
+							const response = await request(getUrl(vendor))
+								.patch(`/items/${localCollectionCountries}`)
+								.send(countries)
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+							const mutationKey = `update_${localCollectionCountries}_batch`;
+
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								mutation: {
+									[mutationKey]: {
+										__args: {
+											data: countries2,
+										},
+										id: true,
+									},
+								},
+							});
+
+							// Assert
+							expect(response.statusCode).toBe(200);
+							expect(response.body.data.length).toBe(count);
+
+							expect(gqlResponse.statusCode).toBe(200);
+							expect(gqlResponse.body.data[mutationKey].length).toEqual(count);
+						},
+						120000
+					);
+				});
+
+				describe('errors when above limit', () => {
+					it.each(vendors)(
+						'%s',
+						async (vendor) => {
+							// TODO: Fix Oracle ORA-01086 savepoint never established in this session or is invalid
+							if (vendor === 'oracle') {
+								expect(true).toBe(true);
+								return;
+							}
+
+							// Setup
+							const count = Number(config.envs[vendor].MAX_BATCH_MUTATION) / 10;
+							const countCreate = 4;
+							const countUpdate = 3;
+							const countDelete = 3;
+							const countriesID = [];
+							const countriesID2 = [];
+
+							for (let i = 0; i < count; i++) {
+								const country: any = createCountry(pkType);
+								country.states = Array(countUpdate + countDelete)
+									.fill(0)
+									.map(() => createState(pkType));
+								countriesID.push(
+									(await CreateItem(vendor, { collection: localCollectionCountries, item: country })).id
+								);
+
+								const country2: any = createCountry(pkType);
+								country2.states = Array(countUpdate + countDelete)
+									.fill(0)
+									.map(() => createState(pkType));
+								countriesID2.push(
+									(await CreateItem(vendor, { collection: localCollectionCountries, item: country2 })).id
+								);
+							}
+
+							const countries = await ReadItem(vendor, {
+								collection: localCollectionCountries,
+								fields: ['*', 'states.id', 'states.name'],
+								filter: { id: { _in: countriesID } },
+							});
+
+							const countries2 = await ReadItem(vendor, {
+								collection: localCollectionCountries,
+								fields: ['*', 'states.id', 'states.name'],
+								filter: { id: { _in: countriesID2 } },
+							});
+
+							for (const country of countries) {
+								const states = country.states;
+								country.states = {
+									create: Array(countCreate)
+										.fill(0)
+										.map(() => createState(pkType)),
+									update: states.slice(0, countUpdate),
+									delete: states.slice(-countDelete).map((state: State) => state.id),
+								};
+							}
+
+							for (const country of countries2) {
+								country.states = [
+									...country.states,
+									...Array(countCreate)
+										.fill(0)
+										.map(() => createState(pkType)),
+								];
+							}
+
+							// Action
+							const response = await request(getUrl(vendor))
+								.patch(`/items/${localCollectionCountries}`)
+								.send(countries)
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+							const mutationKey = `update_${localCollectionCountries}_batch`;
+
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								mutation: {
+									[mutationKey]: {
+										__args: {
+											data: countries2,
+										},
+										id: true,
+									},
+								},
+							});
+
+							// Assert
+							expect(response.statusCode).toBe(400);
+							expect(response.body.errors).toBeDefined();
+							expect(response.body.errors[0].message).toBe(
+								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+							);
+
+							expect(gqlResponse.statusCode).toBe(200);
+							expect(gqlResponse.body.errors).toBeDefined();
+							expect(gqlResponse.body.errors[0].message).toBe(
+								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+							);
+						},
+						120000
+					);
 				});
 			});
 		});

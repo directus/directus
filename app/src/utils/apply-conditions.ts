@@ -1,6 +1,6 @@
-import { Field } from '@directus/shared/types';
+import { Field } from '@directus/types';
 import { parseFilter } from '@/utils/parse-filter';
-import { validatePayload } from '@directus/shared/utils';
+import { validatePayload } from '@directus/utils';
 import { merge } from 'lodash';
 
 export function applyConditions(item: Record<string, any>, field: Field) {

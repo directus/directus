@@ -1,4 +1,3 @@
-// @ts-expect-error https://github.com/microsoft/TypeScript/issues/49721
 import type { Driver } from '@directus/storage';
 
 export const _aliasMap: Record<string, string> = {
@@ -11,7 +10,7 @@ export const _aliasMap: Record<string, string> = {
 
 export const getStorageDriver = async (driverName: string): Promise<typeof Driver> => {
 	if (driverName in _aliasMap) {
-		driverName = _aliasMap[driverName];
+		driverName = _aliasMap[driverName]!;
 	} else {
 		throw new Error(`Driver "${driverName}" doesn't exist.`);
 	}
