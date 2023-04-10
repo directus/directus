@@ -1,8 +1,8 @@
 import api from '@/api';
 import { i18n } from '@/lang';
-import { Collection as CollectionRaw, DeepPartial, Field } from '@directus/shared/types';
+import { Collection as CollectionRaw, DeepPartial, Field } from '@directus/types';
 import { Collection } from '@/types/collections';
-import { getCollectionType } from '@directus/shared/utils';
+import { getCollectionType } from '@directus/utils';
 import { notify } from '@/utils/notify';
 import { getLiteralInterpolatedTranslation } from '@/utils/get-literal-interpolated-translation';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -53,7 +53,18 @@ export const useCollectionsStore = defineStore({
 			let name = formatTitle(collection.collection);
 			const type = getCollectionType(collection);
 
-			if (collection.meta && !isNil(collection.meta.translations)) {
+			const localesToKeep =
+				collection.meta && !isNil(collection.meta.translations) && Array.isArray(collection.meta.translations)
+					? collection.meta.translations.map((translation) => translation.language)
+					: [];
+
+			for (const locale of i18n.global.availableLocales) {
+				if (i18n.global.te(`collection_names.${collection.collection}`, locale) && !localesToKeep.includes(locale)) {
+					i18n.global.mergeLocaleMessage(locale, { collection_names: { [collection.collection]: undefined } });
+				}
+			}
+
+			if (collection.meta && !isNil(collection.meta.translations) && Array.isArray(collection.meta.translations)) {
 				for (let i = 0; i < collection.meta.translations.length; i++) {
 					const { language, translation, singular, plural } = collection.meta.translations[i];
 
@@ -154,8 +165,8 @@ export const useCollectionsStore = defineStore({
 
 			try {
 				await api.delete(`/collections/${collection}`);
-				await this.hydrate();
-				await relationsStore.hydrate();
+				await Promise.all([this.hydrate(), relationsStore.hydrate()]);
+
 				notify({
 					title: i18n.global.t('delete_collection_success'),
 				});

@@ -37,7 +37,7 @@
 					v-if="junctionField"
 					:disabled="disabled"
 					:loading="loading"
-					:nested="true"
+					:show-no-visible-fields="false"
 					:initial-values="initialValues?.[junctionField]"
 					:primary-key="relatedPrimaryKey"
 					:model-value="internalEdits?.[junctionField]"
@@ -52,7 +52,7 @@
 					v-model="internalEdits"
 					:disabled="disabled"
 					:loading="loading"
-					:nested="true"
+					:show-no-visible-fields="false"
 					:initial-values="initialValues"
 					:autofocus="swapFormOrder"
 					:show-divider="swapFormOrder"
@@ -63,12 +63,24 @@
 			</div>
 		</div>
 	</v-drawer>
+	<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
+		<v-card>
+			<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
+			<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
+			<v-card-actions>
+				<v-button secondary @click="discardAndLeave">
+					{{ t('discard_changes') }}
+				</v-button>
+				<v-button @click="confirmLeave = false">{{ t('keep_editing') }}</v-button>
+			</v-card-actions>
+		</v-card>
+	</v-dialog>
 </template>
 
 <script setup lang="ts">
 import api from '@/api';
 import FilePreview from '@/views/private/components/file-preview.vue';
-import { merge, set } from 'lodash';
+import { isEmpty, merge, set } from 'lodash';
 import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -78,9 +90,12 @@ import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { validateItem } from '@/utils/validate-item';
-import { useCollection } from '@directus/shared/composables';
-import { Field, Relation } from '@directus/shared/types';
+import { useCollection } from '@directus/composables';
+import { Field, Relation } from '@directus/types';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
+import { useEditsGuard } from '@/composables/use-edits-guard';
+import { useRouter } from 'vue-router';
+import { getEndpoint } from '@directus/utils';
 
 interface Props {
 	collection: string;
@@ -134,6 +149,17 @@ const isNew = computed(() => props.primaryKey === '+' && props.relatedPrimaryKey
 const swapFormOrder = computed(() => {
 	return props.junctionFieldLocation === 'top';
 });
+
+const hasEdits = computed(() => !isEmpty(internalEdits.value));
+const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
+const router = useRouter();
+
+function discardAndLeave() {
+	if (!leaveTo.value) return;
+	internalEdits.value = {};
+	confirmLeave.value = false;
+	router.push(leaveTo.value);
+}
 
 const title = computed(() => {
 	const collection = relatedCollectionInfo?.value || collectionInfo.value!;
@@ -264,13 +290,14 @@ function useItem() {
 	return { internalEdits, loading, initialValues, fetchItem };
 
 	async function fetchItem() {
-		loading.value = true;
-
 		if (!props.primaryKey) return;
 
+		loading.value = true;
+
+		const baseEndpoint = getEndpoint(props.collection);
 		const endpoint = props.collection.startsWith('directus_')
-			? `/${props.collection.substring(9)}/${props.primaryKey}`
-			: `/items/${props.collection}/${encodeURIComponent(props.primaryKey)}`;
+			? `${baseEndpoint}/${props.primaryKey}`
+			: `${baseEndpoint}/${encodeURIComponent(props.primaryKey)}`;
 
 		let fields = '*';
 
@@ -290,15 +317,16 @@ function useItem() {
 	}
 
 	async function fetchRelatedItem() {
-		loading.value = true;
-
 		const collection = relatedCollection.value;
 
 		if (!collection || !junctionFieldInfo.value) return;
 
+		loading.value = true;
+
+		const baseEndpoint = getEndpoint(collection);
 		const endpoint = collection.startsWith('directus_')
-			? `/${collection.substring(9)}/${props.relatedPrimaryKey}`
-			: `/items/${collection}/${encodeURIComponent(props.relatedPrimaryKey)}`;
+			? `${baseEndpoint}/${props.relatedPrimaryKey}`
+			: `${baseEndpoint}/${encodeURIComponent(props.relatedPrimaryKey)}`;
 
 		try {
 			const response = await api.get(endpoint);
@@ -405,6 +433,10 @@ function useActions() {
 .drawer-item-content {
 	padding: var(--content-padding);
 	padding-bottom: var(--content-padding-bottom);
+
+	.file-preview {
+		margin-bottom: var(--form-vertical-gap);
+	}
 	.drawer-item-order {
 		&.swap {
 			display: flex;

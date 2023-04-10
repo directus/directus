@@ -20,6 +20,7 @@
 				:depth="1"
 				:include-validation="includeValidation"
 				:include-relations="includeRelations"
+				:relational-field-selectable="relationalFieldSelectable"
 				@remove-node="removeNode($event)"
 				@change="emitValue"
 			/>
@@ -44,6 +45,7 @@
 					:collection="collection"
 					include-functions
 					:include-relations="includeRelations"
+					:relational-field-selectable="relationalFieldSelectable"
 					@select-field="addNode($event)"
 				>
 					<template #prepend>
@@ -81,8 +83,14 @@
 
 <script lang="ts" setup>
 import { useFieldsStore } from '@/stores/fields';
-import { Filter, Type, FieldFunction } from '@directus/shared/types';
-import { getFilterOperatorsForType, getOutputTypeForFunction } from '@directus/shared/utils';
+import { useRelationsStore } from '@/stores/relations';
+import { Filter, Type, FieldFunction } from '@directus/types';
+import {
+	getFilterOperatorsForType,
+	getOutputTypeForFunction,
+	parseFilterFunctionPath,
+	parseJSON,
+} from '@directus/utils';
 import { cloneDeep, get, isEmpty, set } from 'lodash';
 import { computed, inject, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -90,7 +98,7 @@ import Nodes from './nodes.vue';
 import { getNodeName } from './utils';
 
 interface Props {
-	value?: Record<string, any>;
+	value?: Record<string, any> | string;
 	disabled?: boolean;
 	collectionName?: string;
 	collectionField?: string;
@@ -99,6 +107,7 @@ interface Props {
 	inline?: boolean;
 	includeValidation?: boolean;
 	includeRelations?: boolean;
+	relationalFieldSelectable?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -111,6 +120,7 @@ const props = withDefaults(defineProps<Props>(), {
 	inline: false,
 	includeValidation: false,
 	includeRelations: true,
+	relationalFieldSelectable: true,
 });
 
 const emit = defineEmits(['input']);
@@ -127,17 +137,20 @@ const collection = computed(() => {
 });
 
 const fieldsStore = useFieldsStore();
+const relationsStore = useRelationsStore();
 
 const innerValue = computed<Filter[]>({
 	get() {
-		if (!props.value || isEmpty(props.value)) return [];
+		const filterValue = typeof props.value === 'string' ? parseJSON(props.value) : props.value;
 
-		const name = getNodeName(props.value);
+		if (!filterValue || isEmpty(filterValue)) return [];
+
+		const name = getNodeName(filterValue);
 
 		if (name === '_and') {
-			return cloneDeep(props.value['_and']);
+			return cloneDeep(filterValue['_and']);
 		} else {
-			return cloneDeep([props.value]);
+			return cloneDeep([filterValue]);
 		}
 	},
 	set(newVal) {
@@ -167,8 +180,17 @@ function addNode(key: string) {
 		if (key.includes('(') && key.includes(')')) {
 			const functionName = key.split('(')[0] as FieldFunction;
 			type = getOutputTypeForFunction(functionName);
+			key = parseFilterFunctionPath(key);
 		} else {
 			type = field?.type || 'unknown';
+
+			// Alias uses the foreign key type
+			if (type === 'alias') {
+				const relations = relationsStore.getRelationsForField(collection.value, key);
+				if (relations[0]) {
+					type = fieldsStore.getField(relations[0].collection, relations[0].field)?.type || 'unknown';
+				}
+			}
 		}
 		let filterOperators = getFilterOperatorsForType(type, { includeValidation: props.includeValidation });
 		const operator = field?.meta?.options?.choices && filterOperators.includes('eq') ? 'eq' : filterOperators[0];

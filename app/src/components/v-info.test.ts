@@ -2,11 +2,7 @@ import { test, expect } from 'vitest';
 import { mount } from '@vue/test-utils';
 
 import VInfo from './v-info.vue';
-import { GlobalMountOptions } from '@vue/test-utils/dist/types';
-
-const global: GlobalMountOptions = {
-	stubs: ['v-icon'],
-};
+import VIcon from './v-icon/v-icon.vue';
 
 test('Mount component', () => {
 	expect(VInfo).toBeTruthy();
@@ -18,13 +14,12 @@ test('Mount component', () => {
 		slots: {
 			default: 'content',
 		},
-		global,
 	});
 
 	expect(wrapper.html()).toMatchSnapshot();
 });
 
-test('stlye props', async () => {
+test('style props', async () => {
 	const types = ['info', 'success', 'warning', 'danger', 'center'];
 
 	for (const type of types) {
@@ -33,21 +28,34 @@ test('stlye props', async () => {
 				title: 'This is an info',
 				type,
 			},
-			global,
 		});
 
 		expect(wrapper.classes()).toContain(type);
 	}
 });
 
-test('icon prop', async () => {
+test('Renders an icon div with the passed icon when icon prop is set', () => {
 	const wrapper = mount(VInfo, {
 		props: {
-			title: 'This is an info',
-			icon: 'close',
+			title: 'This is a test',
+			icon: 'box',
 		},
-		global,
 	});
 
-	expect(wrapper.getComponent({ name: 'v-icon' }).attributes().name).toBe('close');
+	const iconDiv = wrapper.get('div.icon');
+
+	expect(iconDiv.isVisible()).toBe(true);
+	expect(iconDiv.getComponent(VIcon).props().name).toBe('box');
+	expect(iconDiv.getComponent(VIcon).props().large).toBe(true);
+});
+
+test('Does not render icon when icon prop is set to false', () => {
+	const wrapper = mount(VInfo, {
+		props: {
+			title: 'This is a test',
+			icon: false,
+		},
+	});
+
+	expect(wrapper.find('div.icon').exists()).toBe(false);
 });

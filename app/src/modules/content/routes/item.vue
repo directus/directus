@@ -42,7 +42,7 @@
 				icon
 				secondary
 				exact
-				@click="router.back()"
+				@click="navigateBack"
 			>
 				<v-icon name="arrow_back" />
 			</v-button>
@@ -231,7 +231,7 @@ import FlowSidebarDetail from '@/views/private/components/flow-sidebar-detail.vu
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail.vue';
 import SaveOptions from '@/views/private/components/save-options.vue';
 import SharesSidebarDetail from '@/views/private/components/shares-sidebar-detail.vue';
-import { useCollection } from '@directus/shared/composables';
+import { useCollection } from '@directus/composables';
 import { useRouter } from 'vue-router';
 import ContentNavigation from '../components/navigation.vue';
 import ContentNotFound from './not-found.vue';
@@ -364,6 +364,16 @@ const disabledOptions = computed(() => {
 	if (isNew.value) return ['save-as-copy'];
 	return [];
 });
+
+function navigateBack() {
+	const backState = router.options.history.state.back;
+	if (typeof backState !== 'string' || !backState.startsWith('/login')) {
+		router.back();
+		return;
+	}
+
+	router.push(`/content/${props.collection}`);
+}
 
 function useBreadcrumb() {
 	const breadcrumb = computed(() => [

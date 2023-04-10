@@ -1,11 +1,9 @@
-// Vitest Snapshot v1
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`Mount component 1`] = `
-"<div class=\\"v-info info\\" data-v-30215bfa=\\"\\">
-  <div class=\\"icon\\" data-v-30215bfa=\\"\\">
-    <v-icon-stub large=\\"\\" name=\\"box\\" outline=\\"\\" data-v-30215bfa=\\"\\"></v-icon-stub>
-  </div>
-  <h2 class=\\"title type-title\\" data-v-30215bfa=\\"\\">This is an info</h2>
-  <p class=\\"content\\" data-v-30215bfa=\\"\\">content</p>
+"<div data-v-30215bfa=\\"\\" class=\\"v-info info\\">
+  <!--v-if-->
+  <h2 data-v-30215bfa=\\"\\" class=\\"title type-title\\">This is an info</h2>
+  <p data-v-30215bfa=\\"\\" class=\\"content\\">content</p>
 </div>"
 `;

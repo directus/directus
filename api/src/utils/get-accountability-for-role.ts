@@ -1,7 +1,7 @@
-import { Accountability, SchemaOverview } from '@directus/shared/types';
-import { getPermissions } from './get-permissions';
-import { InvalidConfigException } from '../exceptions';
-import { Knex } from 'knex';
+import type { Accountability, SchemaOverview } from '@directus/types';
+import type { Knex } from 'knex';
+import { InvalidConfigException } from '../exceptions/index.js';
+import { getPermissions } from './get-permissions.js';
 
 export async function getAccountabilityForRole(
 	role: null | string,
