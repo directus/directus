@@ -67,7 +67,7 @@
 	"scripts": {
 		"build": "tsc --build && copyfiles \"src/**/*.{yaml,liquid}\" -u 1 dist",
 		"cli": "NODE_ENV=development SERVE_APP=false tsx src/cli/run.ts",
-		"dev": "NODE_ENV=development SERVE_APP=false tsx watch src/start.ts",
+		"dev": "NODE_ENV=development SERVE_APP=false tsx watch --clear-screen=false src/start.ts",
 		"start": "node cli.js start",
 		"test": "vitest run",
 		"test:coverage": "vitest run --coverage",
@@ -166,7 +166,7 @@
 		"tsx": "3.12.6",
 		"uuid": "9.0.0",
 		"uuid-validate": "0.0.3",
-		"vm2": "3.9.14",
+		"vm2": "3.9.15",
 		"wellknown": "0.5.0"
 	},
 	"devDependencies": {
