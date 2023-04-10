@@ -19,6 +19,7 @@
 			v-else
 			:title="bookmark ? bookmarkTitle : currentCollection.name"
 			:small-header="currentLayout?.smallHeader"
+			:header-shadow="currentLayout?.headerShadow"
 		>
 			<template #title-outer:prepend>
 				<v-button class="header-icon" :class="{ archive }" rounded icon secondary disabled>
@@ -202,7 +203,7 @@
 				</template>
 			</v-info>
 
-			<component :is="`layout-${layout || 'tabular'}`" v-else class="layout" v-bind="layoutState">
+			<component :is="`layout-${layout || 'tabular'}`" v-else v-bind="layoutState">
 				<template #no-results>
 					<v-info :title="t('no_results')" icon="search" center>
 						{{ t('no_results_copy') }}
@@ -228,7 +229,7 @@
 				v-model:active="batchEditActive"
 				:primary-keys="selection"
 				:collection="collection"
-				@refresh="drawerBatchRefresh"
+				@refresh="batchRefresh"
 			/>
 
 			<template #sidebar>
@@ -252,7 +253,12 @@
 					@download="download"
 					@refresh="refresh"
 				/>
-				<flow-sidebar-detail location="collection" :collection="collection" :selection="selection" @refresh="refresh" />
+				<flow-sidebar-detail
+					location="collection"
+					:collection="collection"
+					:selection="selection"
+					@refresh="batchRefresh"
+				/>
 			</template>
 
 			<v-dialog :model-value="deleteError !== null">
@@ -276,7 +282,7 @@ import { defineComponent, computed, ref, watch, toRefs } from 'vue';
 import ContentNavigation from '../components/navigation.vue';
 import api from '@/api';
 import ContentNotFound from './not-found.vue';
-import { useCollection, useLayout } from '@directus/shared/composables';
+import { useCollection, useLayout } from '@directus/composables';
 import { usePreset } from '@/composables/use-preset';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
 import ArchiveSidebarDetail from '@/views/private/components/archive-sidebar-detail.vue';
@@ -290,9 +296,9 @@ import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
 import DrawerBatch from '@/views/private/components/drawer-batch.vue';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { getLayouts } from '@/layouts';
-import { mergeFilters } from '@directus/shared/utils';
-import { Filter } from '@directus/shared/types';
+import { mergeFilters } from '@directus/utils';
+import { Filter } from '@directus/types';
+import { useExtension } from '@/composables/use-extension';
 
 type Item = {
 	[field: string]: any;
@@ -331,7 +337,6 @@ export default defineComponent({
 
 		const router = useRouter();
 
-		const { layouts } = getLayouts();
 		const userStore = useUserStore();
 		const permissionsStore = usePermissionsStore();
 		const layoutRef = ref();
@@ -377,7 +382,7 @@ export default defineComponent({
 
 		const { bookmarkDialogActive, creatingBookmark, createBookmark } = useBookmarks();
 
-		const currentLayout = computed(() => layouts.value.find((l) => l.id === layout.value));
+		const currentLayout = useExtension('layout', layout);
 
 		watch(
 			collection,
@@ -465,7 +470,7 @@ export default defineComponent({
 			bookmarkIsMine,
 			bookmarkSaving,
 			clearLocalSave,
-			drawerBatchRefresh,
+			batchRefresh,
 			refresh,
 			refreshInterval,
 			currentLayout,
@@ -483,7 +488,7 @@ export default defineComponent({
 			await layoutRef.value?.state?.download?.();
 		}
 
-		async function drawerBatchRefresh() {
+		async function batchRefresh() {
 			selection.value = [];
 			await refresh();
 		}
@@ -680,10 +685,6 @@ export default defineComponent({
 
 .header-icon {
 	--v-button-color-disabled: var(--foreground-normal);
-}
-
-.layout {
-	--layout-offset-top: 64px;
 }
 
 .bookmark-controls {

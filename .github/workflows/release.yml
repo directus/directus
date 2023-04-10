@@ -8,7 +8,6 @@ on:
 env:
   GHCR_IMAGE: ghcr.io/${{ github.repository }}
   DOCKERHUB_IMAGE: ${{ github.repository }}
-  NODE_OPTIONS: --max_old_space_size=6144
 
 jobs:
   create-release:
@@ -19,20 +18,12 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Create release
-        id: create_release
-        uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: ${{ github.ref }}
-          body: |
-            Directus ${{ github.ref }}
-          draft: false
-          prerelease: false
+        run: gh release create "$GITHUB_REF_NAME" --notes "Directus $GITHUB_REF_NAME"
 
-  build:
-    name: Build Packages
+  publish-npm:
+    name: Publish to NPM
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -40,68 +31,20 @@ jobs:
 
       - name: Prepare
         uses: ./.github/actions/prepare
-
-      - name: Build
-        run: |
-          node docker/pack
-
-      - name: Cache build artifacts
-        uses: actions/cache@v3
         with:
-          path: '**/dist'
-          key: build-artifacts-${{ github.sha }}
-
-  publish-npm:
-    name: Publish to NPM
-    runs-on: ubuntu-latest
-    needs: build
-    # Skip this step in forks
-    if: ${{ github.repository_owner == 'directus' }}
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Restore build artifacts
-        uses: actions/cache@v3
-        with:
-          path: '**/dist'
-          key: build-artifacts-${{ github.sha }}
-
-      - name: Install Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16
-
-      - uses: pnpm/action-setup@v2.2.2
-        name: Install pnpm
-        id: pnpm-install
-        with:
-          version: 7
-          run_install: false
-
-      - name: Install dependencies
-        run: pnpm i
+          registry: https://registry.npmjs.org
 
       - name: Publish packages to NPM
         env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: |
-          pnpm config set "//registry.npmjs.org/:_authToken" "${NPM_TOKEN}"
-          pnpm -r publish --access=public --no-git-checks
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: pnpm -r publish --access=public --no-git-checks
 
   build-images:
     name: Build Images
     runs-on: ubuntu-latest
-    needs: build
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-
-      - name: Restore build artifacts
-        uses: actions/cache@v3
-        with:
-          path: '**/dist'
-          key: build-artifacts-${{ github.sha }}
 
       - name: Setup QEMU
         uses: docker/setup-qemu-action@v2
@@ -131,14 +74,14 @@ jobs:
 
       - name: Login to Docker Hub
         uses: docker/login-action@v2
-        if: ${{ env.DOCKERHUB_IMAGE }}
+        if: env.DOCKERHUB_IMAGE
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
       - name: Login to GHCR
         uses: docker/login-action@v2
-        if: ${{ env.GHCR_IMAGE }}
+        if: env.GHCR_IMAGE
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -148,7 +91,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: .
-          file: ./docker/Dockerfile
+          file: ./Dockerfile
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           platforms: linux/amd64,linux/arm64

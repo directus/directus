@@ -18,7 +18,7 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import { Activity } from './types';
+import { Activity } from '@/types/activity';
 import CommentItemHeader from './comment-item-header.vue';
 import CommentInput from './comment-input.vue';
 

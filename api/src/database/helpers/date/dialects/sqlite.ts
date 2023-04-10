@@ -1,9 +1,14 @@
-import { DateHelper } from '../types';
+import { DateHelper } from '../types.js';
 
 export class DateHelperSQLite extends DateHelper {
-	parse(date: string): string {
+	override parse(date: string | Date): string {
 		if (!date) {
 			return date;
+		}
+
+		// Date generated from NOW()
+		if (date instanceof Date) {
+			return String(date.getTime());
 		}
 
 		// Return the time as string
@@ -15,7 +20,7 @@ export class DateHelperSQLite extends DateHelper {
 		return String(new Date(date).getTime());
 	}
 
-	fieldFlagForField(fieldType: string): string {
+	override fieldFlagForField(fieldType: string): string {
 		switch (fieldType) {
 			case 'timestamp':
 				return 'cast-timestamp';

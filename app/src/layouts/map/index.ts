@@ -1,8 +1,8 @@
 import { getGeometryFormatForType, toGeoJSON } from '@/utils/geometry';
 import { syncRefProperty } from '@/utils/sync-ref-property';
-import { useCollection, useItems, useSync } from '@directus/shared/composables';
-import { Field, Filter, GeometryOptions, Item } from '@directus/shared/types';
-import { defineLayout, getFieldsFromTemplate } from '@directus/shared/utils';
+import { useCollection, useItems, useSync } from '@directus/composables';
+import { Field, Filter, GeometryOptions, Item } from '@directus/types';
+import { defineLayout, getFieldsFromTemplate } from '@directus/utils';
 import { cloneDeep, merge } from 'lodash';
 import { computed, ref, toRefs, watch } from 'vue';
 import { useRouter } from 'vue-router';
@@ -142,14 +142,15 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			shouldUpdateCamera.value = false;
 		});
 
-		const { items, loading, error, totalPages, itemCount, totalCount, getItems } = useItems(collection, {
-			sort,
-			limit,
-			page,
-			search,
-			filter: filterWithLocation,
-			fields: queryFields,
-		});
+		const { items, loading, error, totalPages, itemCount, totalCount, getItems, getTotalCount, getItemCount } =
+			useItems(collection, {
+				sort,
+				limit,
+				page,
+				search,
+				filter: filterWithLocation,
+				fields: queryFields,
+			});
 
 		const geojson = ref<GeoJSON.FeatureCollection>({ type: 'FeatureCollection', features: [] });
 		const geojsonBounds = ref<GeoJSON.BBox>();
@@ -291,6 +292,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		function refresh() {
 			getItems();
+			getTotalCount();
+			getItemCount();
 		}
 
 		function download() {

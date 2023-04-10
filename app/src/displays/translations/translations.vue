@@ -127,6 +127,8 @@ const translations = computed(() => {
 
 .display-translations {
 	display: inline-flex;
+	max-width: 100%;
+	align-items: center;
 
 	.icon {
 		color: var(--foreground-subdued);

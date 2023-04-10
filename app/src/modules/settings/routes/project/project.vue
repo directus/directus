@@ -44,7 +44,7 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, computed } from 'vue';
 import SettingsNavigation from '../../components/navigation.vue';
-import { useCollection } from '@directus/shared/composables';
+import { useCollection } from '@directus/composables';
 import { useSettingsStore } from '@/stores/settings';
 import { useServerStore } from '@/stores/server';
 import ProjectInfoSidebarDetail from './components/project-info-sidebar-detail.vue';
@@ -96,7 +96,7 @@ export default defineComponent({
 			if (edits.value === null) return;
 			saving.value = true;
 			await settingsStore.updateSettings(edits.value);
-			await serverStore.hydrate();
+			await serverStore.hydrate({ isLanguageUpdated: 'default_language' in edits.value });
 			edits.value = null;
 			saving.value = false;
 			initialValues.value = clone(settingsStore.settings);

@@ -10,11 +10,10 @@ post:
             string:
               description: String to hash.
               type: string
-              required: true
             hash:
               description: Hash you want to verify against.
               type: string
-              required: true
+          required: ['string', 'hash']
   responses:
     '200':
       content:

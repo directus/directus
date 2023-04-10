@@ -1,10 +1,10 @@
 import api from '@/api';
-import { Permission, Collection } from '@directus/shared/types';
+import { Permission, Collection } from '@directus/types';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { inject, ref, Ref } from 'vue';
 
 const ACTIONS = ['create', 'read', 'update', 'delete', 'share'] as const;
-type Action = typeof ACTIONS[number];
+type Action = (typeof ACTIONS)[number];
 
 type UsableUpdatePermissions = {
 	getPermission: (action: string) => Permission | undefined;
