@@ -1,13 +1,13 @@
-import { getDisplay } from '@/displays';
+import { i18n } from '@/lang';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
-import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { getRelatedCollection } from '@/utils/get-related-collection';
 import { renderPlainStringTemplate } from '@/utils/render-string-template';
-import { defineDisplay, getFieldsFromTemplate } from '@directus/shared/utils';
+import { defineDisplay, getFieldsFromTemplate } from '@directus/utils';
 import { get, set } from 'lodash';
 import DisplayTranslations from './translations.vue';
-import { i18n } from '@/lang';
+import { useExtension } from '@/composables/use-extension';
+import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 
 type Options = {
 	template: string;
@@ -23,7 +23,7 @@ export default defineDisplay({
 	handler: (values, options, { collection, field }) => {
 		if (!field || !collection || !Array.isArray(values)) return values;
 
-		const relatedCollections = getRelatedCollection(collection, field.field);
+		const relatedCollection = getRelatedCollection(collection, field.field);
 
 		const fieldsStore = useFieldsStore();
 		const relationsStore = useRelationsStore();
@@ -40,9 +40,11 @@ export default defineDisplay({
 			(relation) => relation.collection === junction.collection && relation.field === junction.meta?.junction_field
 		);
 
-		const primaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(relatedCollections.relatedCollection);
+		if (!relatedCollection) return values;
 
-		if (!relatedCollections || !primaryKeyField || !relation?.related_collection) return values;
+		const primaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(relatedCollection.relatedCollection);
+
+		if (!primaryKeyField || !relation?.related_collection) return values;
 
 		const relatedPrimaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(relation.related_collection);
 
@@ -67,7 +69,7 @@ export default defineDisplay({
 		const fields = fieldKeys.map((fieldKey) => {
 			return {
 				key: fieldKey,
-				field: fieldsStore.getField(relatedCollections.relatedCollection, fieldKey),
+				field: fieldsStore.getField(relatedCollection.relatedCollection, fieldKey),
 			};
 		});
 
@@ -83,10 +85,10 @@ export default defineDisplay({
 				continue;
 			}
 
-			const display = getDisplay(field.meta.display);
+			const display = useExtension('display', field.meta.display);
 
-			const stringValue = display?.handler
-				? display.handler(fieldValue, field?.meta?.display_options ?? {}, {
+			const stringValue = display.value?.handler
+				? display.value.handler(fieldValue, field?.meta?.display_options ?? {}, {
 						interfaceOptions: field?.meta?.options ?? {},
 						field: field ?? undefined,
 						collection: collection,
@@ -145,7 +147,7 @@ export default defineDisplay({
 				name: '$t:displays.translations.user_language',
 				type: 'string',
 				schema: {
-					default_value: false,
+					default_value: 'false',
 				},
 				meta: {
 					interface: 'boolean',
@@ -175,25 +177,24 @@ export default defineDisplay({
 
 		if (!translationCollection || !languagesCollection) return [];
 
-		const translationsPrimaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(translationCollection);
 		const languagesPrimaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(languagesCollection);
 
-		const fields = options?.template
-			? adjustFieldsForDisplays(getFieldsFromTemplate(options.template), translationCollection)
-			: [];
+		const fields = new Set<string>();
+		fields.add('*');
 
-		if (translationsPrimaryKeyField && !fields.includes(translationsPrimaryKeyField.field)) {
-			fields.push(translationsPrimaryKeyField.field);
+		if (options?.template) {
+			const templateFields = adjustFieldsForDisplays(getFieldsFromTemplate(options.template), translationCollection);
+			templateFields.forEach((field) => fields.add(field));
 		}
 
-		if (languagesRelation && languagesPrimaryKeyField && !fields.includes(languagesRelation.field)) {
-			fields.push(`${languagesRelation.field}.${languagesPrimaryKeyField.field}`);
+		if (languagesRelation && languagesPrimaryKeyField && !fields.has(languagesRelation.field)) {
+			fields.add(`${languagesRelation.field}.${languagesPrimaryKeyField.field}`);
 
 			if (options?.languageField) {
-				fields.push(`${languagesRelation.field}.${options.languageField}`);
+				fields.add(`${languagesRelation.field}.${options.languageField}`);
 			}
 		}
 
-		return fields;
+		return Array.from(fields);
 	},
 });

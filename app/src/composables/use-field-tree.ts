@@ -1,7 +1,7 @@
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
-import { Field, Relation, Type } from '@directus/shared/types';
-import { getRelationType } from '@directus/shared/utils';
+import { Field, Relation, Type } from '@directus/types';
+import { getRelationType } from '@directus/utils';
 import { isNil } from 'lodash';
 import { Ref, ref, watch } from 'vue';
 
@@ -15,6 +15,7 @@ export type FieldNode = {
 	type: Type;
 	children?: FieldNode[];
 	group?: boolean;
+	_loading?: boolean;
 };
 
 export type FieldTreeContext = {
@@ -73,7 +74,7 @@ export function useFieldTree(
 	}
 
 	function makeNode(field: Field, parent?: FieldNode): FieldNode | FieldNode[] {
-		const relatedCollections = getRelatedCollections(field);
+		const { relationType, relatedCollections } = getRelationTypeAndRelatedCollections(field);
 		const pathContext = parent?.path ? parent.path + '.' : '';
 		const keyContext = parent?.key ? parent.key + '.' : '';
 
@@ -89,13 +90,25 @@ export function useFieldTree(
 				type: field.type,
 			};
 
+			const children = getTree(field.collection, node);
+
+			if (children) {
+				for (const child of children) {
+					if (child.relatedCollection) {
+						child.children = [
+							{ name: 'Loading...', field: '', collection: '', key: '', path: '', type: 'alias', _loading: true },
+						];
+					}
+				}
+			}
+
 			return {
 				...node,
-				children: getTree(field.collection, node),
+				children,
 			};
 		}
 
-		if (relatedCollections.length <= 1) {
+		if (relatedCollections.length <= 1 && relationType !== 'm2a') {
 			return {
 				name: field.name,
 				field: field.field,
@@ -120,20 +133,23 @@ export function useFieldTree(
 		});
 	}
 
-	function getRelatedCollections(field: Field): string[] {
+	function getRelationTypeAndRelatedCollections(field: Field): {
+		relationType: 'o2m' | 'm2o' | 'm2a' | null;
+		relatedCollections: string[];
+	} {
 		const relation = getRelationForField(field);
-		if (!relation?.meta) return [];
+		if (!relation?.meta) return { relationType: null, relatedCollections: [] };
 		const relationType = getRelationType({ relation, collection: field.collection, field: field.field });
 
 		switch (relationType) {
 			case 'o2m':
-				return [relation!.meta!.many_collection];
+				return { relationType: 'o2m', relatedCollections: [relation!.meta!.many_collection] };
 			case 'm2o':
-				return [relation!.meta!.one_collection!];
+				return { relationType: 'm2o', relatedCollections: [relation!.meta!.one_collection!] };
 			case 'm2a':
-				return relation!.meta!.one_allowed_collections!;
+				return { relationType: 'm2a', relatedCollections: relation!.meta!.one_allowed_collections! };
 			default:
-				return [];
+				return { relationType: null, relatedCollections: [] };
 		}
 	}
 
@@ -151,14 +167,25 @@ export function useFieldTree(
 	}
 
 	function getNodeAtPath([field, ...path]: string[], root?: FieldNode[]): FieldNode | undefined {
-		for (const node of root || []) {
-			if (node.field === field) {
-				if (path.length) {
-					return getNodeAtPath(path, node.children);
-				} else {
-					return node;
-				}
-			}
+		let node = root?.find((node) => node.field === field);
+
+		if (!node) {
+			node = root
+				?.reduce<FieldNode[]>((acc, node) => {
+					if (node.group === true && node.children && node.children.length > 0) {
+						acc.push(...node.children);
+					}
+					return acc;
+				}, [])
+				.find((node) => node.field === field);
+		}
+
+		if (!node) return undefined;
+
+		if (path.length) {
+			return getNodeAtPath(path, node.children);
+		} else {
+			return node;
 		}
 	}
 
@@ -167,6 +194,10 @@ export function useFieldTree(
 			visitedPaths.value.add(path);
 
 			const node = getNodeAtPath(path.split('.'), treeList.value);
+
+			if (node && node.children?.length === 1 && node.children[0]._loading) {
+				node.children = getTree(node.relatedCollection, node);
+			}
 
 			for (const child of node?.children || []) {
 				if (child?.relatedCollection) {

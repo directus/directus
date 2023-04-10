@@ -20,7 +20,8 @@ fields:
     width: half
 
   - field: one_allowed_collections
-    special: cast-csv
+    special:
+      - cast-csv
     width: half
 
   - field: junction_field

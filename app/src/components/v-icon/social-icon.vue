@@ -4,7 +4,10 @@
 
 <script setup lang="ts">
 import { h } from 'vue';
-import { icon, findIconDefinition, IconName } from '@fortawesome/fontawesome-svg-core';
+import { findIconDefinition, icon, IconName, library } from '@fortawesome/fontawesome-svg-core';
+import { fab } from '@fortawesome/free-brands-svg-icons';
+
+library.add(fab);
 
 interface Props {
 	name: IconName;

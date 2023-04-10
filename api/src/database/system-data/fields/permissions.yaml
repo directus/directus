@@ -4,12 +4,14 @@ table: directus_permissions
 fields:
   - field: permissions
     hidden: true
-    special: cast-json
+    special:
+      - cast-json
     width: half
 
   - field: presets
     hidden: true
-    special: cast-json
+    special:
+      - cast-json
     width: half
 
   - field: role
@@ -23,11 +25,13 @@ fields:
 
   - field: fields
     width: half
-    special: cast-csv
+    special:
+      - cast-csv
 
   - field: action
     width: half
 
   - field: validation
     width: half
-    special: cast-json
+    special:
+      - cast-json

@@ -6,12 +6,12 @@
 
 <script setup lang="ts">
 import { useFieldsStore } from '@/stores/fields';
-import { Filter } from '@directus/shared/types';
-import { abbreviateNumber, adjustDate } from '@directus/shared/utils';
-import { cssVar } from '@directus/shared/utils/browser';
+import { Filter } from '@directus/types';
+import { abbreviateNumber, adjustDate } from '@directus/utils';
+import { cssVar } from '@directus/utils/browser';
 import ApexCharts from 'apexcharts';
 import { addWeeks } from 'date-fns';
-import { isNil } from 'lodash';
+import { isNil, snakeCase } from 'lodash';
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { orderBy } from 'lodash';
@@ -66,7 +66,7 @@ const chart = ref<ApexCharts>();
 
 const valueLabel = computed(() => {
 	const field = fieldsStore.getField(props.collection, props.valueField)!;
-	const operation = t(props.function);
+	const operation = t(snakeCase(props.function));
 	return `${field.name} (${operation})`;
 });
 

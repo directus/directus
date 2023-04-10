@@ -23,7 +23,7 @@
 			</span>
 		</template>
 		<v-dialog v-model="linkDrawerOpen">
-			<v-card>
+			<v-card class="card">
 				<v-card-title class="card-title">{{ t('wysiwyg_options.link') }}</v-card-title>
 				<v-card-text>
 					<div class="grid">
@@ -51,7 +51,7 @@
 				</v-card-text>
 				<v-card-actions>
 					<v-button secondary @click="closeLinkDrawer">{{ t('cancel') }}</v-button>
-					<v-button :disabled="linkSelection.url === null" @click="saveLink">{{ t('save') }}</v-button>
+					<v-button :disabled="linkSelection.url === null && !linkNode" @click="saveLink">{{ t('save') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
@@ -184,23 +184,21 @@ import useLink from './useLink';
 import useMedia from './useMedia';
 import useSourceCode from './useSourceCode';
 import { useSettingsStore } from '@/stores/settings';
-import { SettingsStorageAssetPreset } from '@directus/shared/types';
+import { SettingsStorageAssetPreset } from '@directus/types';
 
 import 'tinymce/tinymce';
+import 'tinymce/models/dom';
 import 'tinymce/themes/silver';
 import 'tinymce/plugins/autoresize/plugin';
 import 'tinymce/plugins/code/plugin';
 import 'tinymce/plugins/directionality/plugin';
 import 'tinymce/plugins/fullscreen/plugin';
-import 'tinymce/plugins/hr/plugin';
 import 'tinymce/plugins/image/plugin';
-import 'tinymce/plugins/imagetools/plugin';
 import 'tinymce/plugins/insertdatetime/plugin';
 import 'tinymce/plugins/link/plugin';
 import 'tinymce/plugins/lists/plugin';
 import 'tinymce/plugins/media/plugin';
 import 'tinymce/plugins/pagebreak/plugin';
-import 'tinymce/plugins/paste/plugin';
 import 'tinymce/plugins/preview/plugin';
 import 'tinymce/plugins/table/plugin';
 import 'tinymce/icons/default';
@@ -240,7 +238,6 @@ export default defineComponent({
 				'customLink',
 				'customImage',
 				'customMedia',
-				'hr',
 				'code',
 				'fullscreen',
 			],
@@ -319,7 +316,7 @@ export default defineComponent({
 			mediaButton,
 		} = useMedia(editorRef, imageToken);
 
-		const { linkButton, linkDrawerOpen, closeLinkDrawer, saveLink, linkSelection } = useLink(editorRef);
+		const { linkButton, linkDrawerOpen, closeLinkDrawer, saveLink, linkSelection, linkNode } = useLink(editorRef);
 
 		const { codeDrawerOpen, code, closeCodeDrawer, saveCode, sourceCodeButton } = useSourceCode(editorRef);
 
@@ -371,11 +368,22 @@ export default defineComponent({
 
 			return {
 				skin: false,
-				skin_url: false,
 				content_css: false,
 				content_style: getEditorStyles(props.font as 'sans-serif' | 'serif' | 'monospace'),
-				plugins:
-					'media table hr lists image link pagebreak code insertdatetime autoresize paste preview fullscreen directionality',
+				plugins: [
+					'media',
+					'table',
+					'lists',
+					'image',
+					'link',
+					'pagebreak',
+					'code',
+					'insertdatetime',
+					'autoresize',
+					'preview',
+					'fullscreen',
+					'directionality',
+				],
 				branding: false,
 				max_height: 1000,
 				elementpath: false,
@@ -390,6 +398,7 @@ export default defineComponent({
 				link_default_protocol: 'https',
 				browser_spellcheck: true,
 				directionality: props.direction,
+				paste_data_images: false,
 				setup,
 				...(props.tinymceOverrides || {}),
 			};
@@ -428,6 +437,7 @@ export default defineComponent({
 			closeLinkDrawer,
 			saveLink,
 			linkSelection,
+			linkNode,
 			codeDrawerOpen,
 			code,
 			closeCodeDrawer,
@@ -572,8 +582,12 @@ export default defineComponent({
 	padding-bottom: var(--content-padding);
 }
 
-:deep(.v-card-title) {
-	margin-bottom: 24px;
-	font-size: 24px;
+.card {
+	overflow: auto;
+
+	.card-title {
+		margin-bottom: 24px;
+		font-size: 24px;
+	}
 }
 </style>

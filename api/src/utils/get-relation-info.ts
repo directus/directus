@@ -1,25 +1,32 @@
-import { Relation, RelationMeta } from '@directus/shared/types';
-import { getRelationType } from './get-relation-type';
+import type { Relation, RelationMeta } from '@directus/types';
+import { getRelationType } from './get-relation-type.js';
 
 type RelationInfo = {
 	relation: Relation | null;
 	relationType: string | null;
 };
 
+function checkImplicitRelation(field: string) {
+	if (field.startsWith('$FOLLOW(') && field.endsWith(')')) {
+		return field.slice(8, -1).split(',');
+	}
+	return null;
+}
+
 export function getRelationInfo(relations: Relation[], collection: string, field: string): RelationInfo {
 	if (field.startsWith('$FOLLOW') && field.length > 500) {
 		throw new Error(`Implicit $FOLLOW statement is too big to parse. Got: "${field.substring(500)}..."`);
 	}
 
-	const implicitRelation = field.match(/^\$FOLLOW\((.*?),(.*?)(?:,(.*?))?\)$/)?.slice(1);
+	const implicitRelation = checkImplicitRelation(field);
 
 	if (implicitRelation) {
 		if (implicitRelation[2] === undefined) {
 			const [m2oCollection, m2oField] = implicitRelation;
 
 			const relation: Relation = {
-				collection: m2oCollection.trim(),
-				field: m2oField.trim(),
+				collection: m2oCollection!.trim(),
+				field: m2oField!.trim(),
 				related_collection: collection,
 				schema: null,
 				meta: null,
@@ -30,8 +37,8 @@ export function getRelationInfo(relations: Relation[], collection: string, field
 			const [a2oCollection, a2oItemField, a2oCollectionField] = implicitRelation;
 
 			const relation: Relation = {
-				collection: a2oCollection.trim(),
-				field: a2oItemField.trim(),
+				collection: a2oCollection!.trim(),
+				field: a2oItemField!.trim(),
 				related_collection: collection,
 				schema: null,
 				meta: {

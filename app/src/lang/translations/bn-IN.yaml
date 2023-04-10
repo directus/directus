@@ -1,4 +1,25 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+identifier: শনাক্তকারী
 avatar: অবতার
 application: অ্যাপ্লিকেশন
 default_provider: ডিফল্ট
@@ -8,6 +29,7 @@ draft: খসড়া
 archived: সংরক্ষণাগারভুক্ত
 modules: মডিউল
 module_bar: মডিউল বার
+logs: ক্রিয়াকলাপ
 reset_width: প্রস্থ পুনঃস্থাপন করুন
 tile_size: টাইল সাইজ
 edit_field: সম্পাদনা ক্ষেত্র
@@ -27,8 +49,11 @@ group: গ্রুপ
 export_items: আইটেম রপ্তানি করুন
 and: এবং
 or: অথবা
+init: এটায়
 dataset_too_large_currently_showing_n_items: ডেটাসেটটি অনেক বড়ো। বর্তমানে শুধু মাত্র প্রথম {n} আইটেমটি দেখানো হচ্ছে।
 modifier: বাছাইকারী
+custom: ব্যক্তিগতকরণ
+hook: হুক
 fill_width: প্রস্থ পূরণ করুন
 field_name_translations: ক্ষেত্রের নাম অনুবাদ
 enter_password_to_enable_tfa: টু-ফ্যাক্টর প্রমাণীকরণ সক্ষম করতে আপনার পাসওয়ার্ড লিখুন
@@ -42,6 +67,82 @@ exclusive: একচেটিয়া
 children: শিশু
 db_only_click_to_configure: 'শুধুমাত্র তথ্যশাল: সজ্জিত করতে ক্লিক করুন'
 show_active_items: সক্রিয় আইটেমগুলি দেখুন
+show_archived_items: আক্রাইভ আইটেম দেখুন
+show_all_items: সব আইটেম
+edited: সম্পাদিত ডেটা
+required: আবশ্যক
+required_for_app_access: অ্যাপ অ্যাক্সেসের জন্য আবশ্যক
+requires_value: ডেটা আবশ্যক
+create_preset: প্রিসেট তৈরি করুন
+create_panel: প্যানেল তৈরি করুন
+create_role: ভূমিকা তৈরি করুন
+create_user: ব্যবহারকারী তৈরি করুন
+message: বার্তা
+delete_panel: প্যানেল মুছুন
+create_webhook: ওয়েবহুক তৈরি করুন
+create_translation_string: অনুবাদ স্ট্রিং তৈরি করুন
+no_translation_string: কোন অনুবাদ স্ট্রিং নেই
+no_translation_string_copy: এখনও কোন অনুবাদ স্ট্রিং নেই।
+translation_string_key_placeholder: অনুবাদ স্ট্রিং-এর চাবি...
+translation_string_translations_placeholder: নতুন অনুবাদ যোগ করুন
+edit_translation_string: অনুবাদ স্ট্রিং সম্পাদনা করুন
+delete_translation_string_copy: >-
+  আপনি কি সত্যিই অনুবাদ স্ট্রিং "{key}" মুছতে চান? এই ক্রিয়াটি আর পূর্বাবস্থায় ফিরিয়ে আনা যাবে না।
+invite_users: ব্যবহারকারীদের আমন্ত্রণ জানান
+invite: আমন্ত্রণ করুন
+email_already_invited: এই ইমেলটিতে "{email}" ইতিমধ্যেই আমন্ত্রণ জানানো হয়েছে৷
+subject: বিষয়
+inbox: ইনবক্স
+emails: ইমেইলগুলি
+connection_excellent: চমৎকার সংযোগ
+connection_good: ভালো সংযোগ
+connection_fair: মোটামুটি সংযোগ
+connection_poor: খারাপ সংযোগ
+primary: প্রাথমিক
+rename_folder: ফোল্ডারের নতুন নাম দিন
+delete_folder: ফোল্ডার মুছুন
+reset_bookmark: বুকমার্ক রিসেট করুন
+update_bookmark: বুকমার্ক আপডেট করুন
+delete_bookmark: বুকমার্ক মুছুন
+delete_bookmark_copy: >-
+  আপনি কি সত্যিই এই "{bookmark}" বুকমার্কটিকে মুছতে চান? এই বুকমার্কটি কিন্তু আর পূর্বাবস্থায় ফেরানো যাবে না।
+delete_personal_bookmark: ব্যক্তিগত বুকমার্ক মুছুন
+delete_role_bookmark: ভূমিকা বুকমার্ক মুছুন
+delete_global_bookmark: গ্লোবাল বুকমার্ক মুছুন
+logoutReason:
+  SIGN_OUT: সাইন আউট করা হয়েছে
+  SESSION_EXPIRED: সেশন উত্তীর্ণ
+public_label: সার্বজনীন
+public_description: এটা নিয়ন্ত্রণ করে প্রমাণীকরণ ছাড়া কোন কোন API ডেটা উপলব্ধ।
+admin_description: অনিয়ন্ত্রিত অ্যাপ/এপিআই অ্যাক্সেস সহ প্রাথমিক প্রশাসনিক ভূমিকা।
+not_allowed: অনুমতি নেই
+directus_version: ডাইরেক্টাস সংস্করণ
+node_version: নোড সংস্করণ
+node_uptime: নোড আপটাইম
+os_type: কোন OS
+os_version: OS সংস্করণ
+os_uptime: ওএস আপটাইম
+os_totalmem: ওএস মেমোরি
+archive: সংরক্ষণাগার
+archive_confirm: আপনি কি নিশ্চিত যে আপনি এই আইটেমটি সংরক্ষণাগারে পাঠাতে চান?
+archive_confirm_count: >-
+  কোন আইটেম নির্বাচিত করা হয়নি | আপনি কি নিশ্চিত যে আপনি এই আইটেমটি সংরক্ষণাগারে পাঠাতে চান? | আপনি কি নিশ্চিত আপনি {count}টি আইটেম সংরক্ষণাগারে পাঠাতে চান?
+reset_system_permissions_to: 'সিস্টেম অনুমতি রিসেট করুন:'
+reset_system_permissions_copy: এই ক্রিয়াটি আপনার সিস্টেমের সংগ্রহগুলিতে প্রয়োগ করা যেকোনো ব্যাক্তিগত অনুমতিগুলিকে ওভাররাইট করবে৷ আপনি কি নিশ্চিত?
+the_following_are_minimum_permissions: যখন "অ্যাপ অ্যাক্সেস" সক্ষম করা থাকে তখন নিম্নলিখিতগুলি ন্যূনতম অনুমতিগুলো প্রয়োজন৷ আপনি এর বাইরে অন্য কোনও অনুমতিও চালু করতে পারেন, তবে নিচেরগুলো নয়।
+app_access_minimum: ন্যূনতম অ্যাপ অ্যাক্সেসগুলি
+recommended_defaults: প্রস্তাবিত ডিফল্ট
+unarchive: আর্কাইভ মুক্ত করুন
+unarchive_confirm: আপনি কি নিশ্চিত যে আপনি এই আইটেমটি সংরক্ষণাগার থেকে বের করতে চান?
+validationError:
+  eq: মান {valid} হতে হবে
+  neq: মান {invalid} হতে পারে না
+text: পাঠ্য
+time: সময়
+timestamp: টাইমস্ট্যাম্প
+uuid: ইউইউআইডি
+hash: হ্যাশ
+geometry: জ্যামিতি (সমস্ত)
 fields:
   directus_settings:
     module_bar: মডিউল বার
@@ -49,3 +150,19 @@ fields:
     translation: ক্ষেত্রের নাম অনুবাদ
   directus_roles:
     name: নামভূমিকা
+field_options:
+  directus_collections:
+    archive_divider: সংরক্ষণাগার
+interfaces:
+  presentation-links:
+    primary: প্রাথমিক
+  input-hash:
+    hash: হ্যাশ
+displays:
+  formatted-value:
+    text: পাঠ্য
+operations:
+  log:
+    message: বার্তা
+  notification:
+    message: বার্তা

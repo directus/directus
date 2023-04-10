@@ -23,23 +23,37 @@ identifier: पहचानकर्ता
 avatar: अवतार
 application: एप्लीकेशन
 default_provider: Hi
+method: विधि
 published: प्रकाशित
 draft: प्रारूप
 archived: संग्रह
 modules: मॉड्यूल
+module_bar: मॉड्यूल बार
+logs: लॉग
+reset_width: चौड़ाई रीसेट करें
 tile_size: टाइल आकार
 edit_field: एडिट फील्ड
 conditions: शर्तेँ
+location: स्थान
+condition_rules: शर्त नियम
+input: इनपुट
 maps: मानचित्र
 switch_user: उपयोगकर्ता/यूजर बदले
+item_creation: आइटम निर्माण
 item_revision: आइटम संशोधन
 enter_a_name: कोई नाम प्रविष्ट करें
 duplicate_field: डुप्लिकेट फ़ील्ड
 half_width: आधी चौड़ाई
 full_width: पुरी चौड़ाई
 group: समूह
+export_items: निर्यात आइटम
 and: और
 or: या
+init: इसमें
+dataset_too_large_currently_showing_n_items: डेटासेट बहुत बड़ा है। पहले {n} आइटम दिखा रहा है।
+modifier: संशोधक
+custom: निजीकृत
+hook: हुक
 fill_width: संपूर्ण चौड़ाई
 field_name_translations: फ़ील्ड नाम अनुवाद
 enter_password_to_enable_tfa: टू-फैक्टर ऑथेंटिकेशन को सक्षम करने के लिए अपना पासवर्ड दर्ज करें
@@ -47,11 +61,14 @@ add_field: नया क्षेत्र
 role_name: भूमिका नाम
 branch: शाखा
 leaf: पत्ता
+indeterminate: पता लगाने में असमर्थ
 edit_collection: कलेक्शन संपादित करें
 exclusive: विशेष
 children: बच्चे
 db_only_click_to_configure: 'केवल डेटाबेस: कॉन्फ़िगर करने के लिए क्लिक करें'
+show_active_items: सक्रिय आइटम दिखाएं
 show_archived_items: आर्काइव आइटम दिखाएं
+show_all_items: सभी आइटम दिखाएं
 edited: डेटा संपादित
 required: आवश्यक
 required_for_app_access: ऐप एक्सेस के लिए आवश्यक
@@ -60,8 +77,17 @@ create_preset: प्रीसेट बनाएं
 create_panel: पैनल बनाएँ
 create_role: भूमिका बनाएं
 create_user: यूजर बनाएं
+message: संदेश
+delete_panel: पैनल हटाएं
 create_webhook: Webhook बनाएं
+create_translation_string: अनुवाद स्ट्रिंग बनाएं
+no_translation_string: कोई अनुवाद स्ट्रिंग नहीं
+no_translation_string_copy: अभी तक कोई अनुवाद स्ट्रिंग नहीं है।
+translation_string_key_placeholder: अनुवाद स्ट्रिंग कुंजी...
 translation_string_translations_placeholder: नया अनुवाद जोड़ें
+edit_translation_string: अनुवाद स्ट्रिंग संपादित करें
+delete_translation_string_copy: >-
+  क्या आप वाकई अनुवाद स्ट्रिंग "{key}" को हटाना चाहते हैं? इस क्रिया को पूर्ववत नहीं किया जा सकता है।
 invite_users: यूज़र आमंत्रित करें
 invite: आमंत्रित करें
 email_already_invited: ईमेल "{email}" पहले ही आमंत्रित किया जा चुका है
@@ -82,11 +108,15 @@ update_bookmark: अपडेट बुकमार्क
 delete_bookmark: डिलीट बुकमार्क
 delete_bookmark_copy: >-
   क्या आप वाकई "{bookmark}" बुकमार्क हटाना चाहते हैं? इसको आप अनडू नहीं कर सकते
+delete_personal_bookmark: व्यक्तिगत बुकमार्क हटाएं
+delete_role_bookmark: भूमिका बुकमार्क हटाएं
+delete_global_bookmark: वैश्विक बुकमार्क हटाएं
 logoutReason:
   SIGN_OUT: साइंड आउट
   SESSION_EXPIRED: समय बीत गया
 public_label: सार्वजनिक
 public_description: यह नियंत्रित करता है कि authentication के बिना कौन सा API डेटा उपलब्ध है
+admin_description: अप्रतिबंधित ऐप/एपीआई एक्सेस के साथ प्रारंभिक प्रशासनिक भूमिका।
 not_allowed: अनुमति नहीं हैं
 directus_version: Directus वर्शन
 node_version: Node वर्शन
@@ -107,6 +137,7 @@ recommended_defaults: अनुशंसित डिफ़ॉल्ट
 unarchive: अनआर्काइव
 unarchive_confirm: क्या आप वाकई इस आइटम को अनआर्काइव करना चाहते हैं?
 nested_files_folders_will_be_moved: नेस्टेड फ़ाइलें और फ़ोल्डर एक स्तर ऊपर ले जाया जाएगा
+validation_errors_notice: 'निम्न फ़ील्ड में अमान्य मान हैं:'
 validationError:
   eq: मान {valid} होना चाहिए
   neq: मान {invalid} नहीं हो सकता
@@ -130,14 +161,19 @@ no_access: नो एक्सेस
 use_custom: कस्टम
 nullable: Nullable
 allow_null_value: NULL मान की अनुमति दें
+allow_multiple: एकाधिक की अनुमति दें
+allow_multiple_to_be_open: एकाधिक को खोलने की अनुमति दें
 enter_value_to_replace_nulls: इस क्षेत्र में वर्तमान में किसी भी NULL मान को बदलने के लिए कृपया एक नया मान दर्ज करें
 field_standard: नार्मल फील्ड
 field_presentation: प्रस्तुति और उपनाम
+field_file: एक फाइल
+field_files: एकाधिक फ़ाइलें
 field_m2o: M2O रिलेशन
 field_m2a: M2A रिलेशन
 field_o2m: O2M रिलेशन
 field_m2m: M2M रिलेशन
 field_translations: अनुवाद
+field_group: फील्ड समूह
 item_permissions: आइटम अनुमतियां
 field_permissions: फील्ड अनुमतियाँ
 field_validation: फील्ड मान्यकरण
@@ -147,17 +183,38 @@ fields_for_role: 'फ़ील्ड्स जो {role} भूमिका {action
 validation_for_role: 'फील्ड {action} नियमों जो {role} भूमिका पालन करना चाहिए'
 presets_for_role: '{role} भूमिका के लिए फ़ील्ड मान जो डिफ़ॉल्ट होगा'
 presentation_and_aliases: प्रस्तुति और उपनाम
+revision_post_create: यहां बताया गया है कि जब यह आइटम बनाया गया था तो यह कैसा दिखता था।
 revision_post_update: यहां देखें कि अपडेट के बाद यह आइटम कैसा दिखता है
+changes_made: इस संशोधन में किए गए विशिष्ट परिवर्तन नीचे दिए गए हैं।
+no_relational_data: ध्यान रखें कि संबंधपरक डेटा यहां शामिल नहीं है।
+junction_field_location: जंक्शन क्षेत्र स्थान
+top: ऊपर
+bottom: नीचे
 hide_field: फ़ील्ड छुपाएँ
 hide_field_on_detail: विवरण पर फ़ील्ड छुपाएँ
+show_field_on_detail: विस्तार से फ़ील्ड दिखाएं
+delete_field: फ़ील्ड हटाएँ
+fields_and_layout: फ़ील्ड और लेआउट
+field_create_success: 'बनाया गया फ़ील्ड: "{field}"'
+field_update_success: 'अपडेट किया गया फ़ील्ड: "{field}"'
+duplicate_where_to: आप इस फ़ील्ड को कहाँ पर डुप्लिकेट करना चाहेंगे?
 language: भाषा
 language_placeholder: भाषा चुनें
+aggregate_function: कुल समारोह
+aggregate_precision: कुल प्रेसिजन
+group_aggregation: समूह एकत्रीकरण
+group_precision: समूह प्रेसिजन
 global: ग्लोबल
 admins_have_all_permissions: Admins के पास सभी अनुमतियां हैं
 camera: कैमरा
 show_zero: शून्य दिखाओ
+create_in_advanced_field_creation_mode: उन्नत मोड में फ़ील्ड बनाएँ
+continue_in_advanced_field_creation_mode: उन्नत फ़ील्ड निर्माण मोड में जारी रखें
 validation: मान्यकरण
+sum: जोड़
+sum_distinct: योग अलग
 avg: औसत
+avg_distinct: औसत विशिष्ट
 count: गिनती
 min: न्यूनतम
 max: अधिकतम
@@ -181,6 +238,7 @@ date: Date
 date_range: तिथि सीमा
 datetime: DateTime
 dateTime: DateTime
+precision: निखारा
 decimal: Decimal
 float: Float
 integer: Integer
@@ -192,8 +250,64 @@ time: Time
 timestamp: Timestamp
 uuid: UUID
 hash: Hash
+geometry.Point: बिंदु
+click_here: यहाँ क्लिक करें
+new_field: 'नया क्षेत्र'
+new_collection: 'नया संग्रह'
+next: अगला
+left_to_right: बाएं से दायां
+note: ध्यान दें
+enter_a_value: एक मान दर्ज करें...
+enter_a_placeholder: प्लेसहोल्डर दर्ज करें...
+length: लंबाई
+soft_length: सॉफ्ट लिमिट
+precision_scale: प्रेसिजन और स्केल
+readonly: केवल पढ़ने के लिए
+unique: अद्वितीय
+updated_on: को अपडेट किया
+updated_by: द्वारा अपडेट
+primary_key: प्राथमिक कुंजी
+foreign_key: विदेशी कुंजी
 finish_setup: सेटअप खत्म करें
 dismiss: ख़ारिज करें
+toggle_raw_editor: कच्चे संपादक को टॉगल करें
+raw_editor_placeholder: "{'{'}{'{'}$trigger.पेलोड.उदाहरण{'}'}{'}'}"
+raw_value: अपरिष्कृत मान
+copy_raw_value: रॉ वैल्यू कॉपी करें
+copy_raw_value_success: कॉपी किया गया
+copy_raw_value_fail: कॉपी विफल
+paste_raw_value: कच्चा मूल्य चिपकाएँ
+paste_raw_value_success: चिपकाया गया
+paste_raw_value_fail: चिपकाना विफल
+view_raw_value: कच्चा मूल्य देखें
+edit_raw_value: कच्चा मूल्य संपादित करें
+enter_raw_value: कच्चा मान दर्ज करें...
+clear_value: स्पष्ट मूल्य
+clear_changes: परिवर्तन साफ़ करें
+clear_items: सभी आइटम हटाना
+reset_to_default: डिफ़ॉल्ट पर रीसेट करें
+undo_changes: परिवर्तन पूर्ववत करें
+notifications: सूचनाएँ
+show_all_activity: समस्त गतिविधयाँ दिखाएँ
+page_not_found: पेज नहीं मिला
+page_not_found_body: आप जिस पेज की तलाश कर रहे हैं, वह मौजूद नहीं है।
+confirm_revert: वापस लौटने की पुष्टि करें
+confirm_revert_body: यह आइटम को चयनित स्थिति में वापस लाएगा।
+display: दिखाएँ
+settings_update_success: सेटिंग को अद्यतन किया गया है
+title: शीर्षक
+revision_delta_created: बनाया गया
+revision_delta_created_externally: बाहरी रूप से बनाया गया
+revision_delta_updated: 'अपडेट किया गया 1 फ़ील्ड | अपडेट किया गया {count} फ़ील्ड'
+revision_delta_deleted: हटाएं गए
+revision_delta_reverted: पहले जैसा करें
+revision_delta_update_message: इस फ़ील्ड को अपडेट कर दिया गया है लेकिन सुरक्षा कारणों से इसके मूल्य को छुपाया जा रहा है।
+revision_delta_other: संशोधन
+revision_delta_by: '{user} द्वारा {date} '
+presentation_text_values_cannot_be_reimported: "प्रस्तुति पाठ का उपयोग करता है, मूल्यों को फिर से आयात नहीं किया जा सकता है।"
+download_page_as_csv: 'CSV के रूप में डाउनलोड करें'
+private_user: निजी उपयोगकर्ता
+creation_preview: निर्माण पूर्वावलोकन
 label_import: आयात करें
 label_export: निर्यात करें
 import_export: आयात / निर्यात
@@ -319,19 +433,25 @@ wysiwyg_options:
 settings_webhooks: Webhooks
 fields:
   directus_collections:
+    note: ध्यान दें
     color: Color
     sort_field: Sort Field
   directus_files:
+    title: शीर्षक
     modified_on: संशोधन का समय
     folder: फ़ोल्डर
     duration: अवधि
   directus_users:
+    title: शीर्षक
     language: भाषा
     role: भूमिका
+  directus_settings:
+    module_bar: मॉड्यूल बार
   directus_shares:
     name: नाम
     role: भूमिका
   directus_fields:
+    note: ध्यान दें
     translation: फ़ील्ड नाम अनुवाद
   directus_roles:
     name: भूमिका नाम
@@ -358,6 +478,8 @@ interfaces:
     color: Color
   presentation-divider:
     divider: Divider
+  select-dropdown:
+    choices_value_placeholder: एक मान दर्ज करें...
   input-hash:
     hash: Hash
   map:
@@ -389,11 +511,19 @@ displays:
     text: Text
   image:
     circle: Circle
+  labels:
+    choices_value_placeholder: एक मान दर्ज करें...
   user:
     user: यूज़र
     name: नाम
+layouts:
+  cards:
+    title: शीर्षक
 operations:
+  log:
+    message: संदेश
   notification:
     recipient: यूज़र
+    message: संदेश
   request:
     url: URL

@@ -1,8 +1,7 @@
-import { useFieldsStore } from '@/stores/fields';
 import { useCollectionsStore } from '@/stores/collections';
-import panel from '@directus-extensions-panel';
-import { PanelQuery } from '@directus/shared/types';
-import { definePanel } from '@directus/shared/utils';
+import { useFieldsStore } from '@/stores/fields';
+import { PanelQuery } from '@directus/types';
+import { definePanel } from '@directus/utils';
 import { computed } from 'vue';
 import PanelMetric from './panel-metric.vue';
 
@@ -181,6 +180,7 @@ export default definePanel({
 					interface: 'system-filter',
 					options: {
 						collectionField: 'collection',
+						relationalFieldSelectable: false,
 					},
 				},
 			},
