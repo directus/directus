@@ -4,20 +4,13 @@ body:
   - type: markdown
     attributes:
       value: |
-        Hi, thank you for taking the time to create an issue! Please make sure to fill out this form in as much detail you can. 
+        Hi, thank you for taking the time to create an issue! Before you get started, please ensure the following are correct:
+
+        - I'm using the [latest version of Directus](https://github.com/directus/directus/releases)
+        - I've completed all [Troubleshooting Steps](https://docs.directus.io/getting-started/support/#troubleshooting-steps).
+        - There's [no other issue](https://github.com/directus/directus/issues?q=is%3Aissue) that already describes the problem.
 
         _For issues specific to Directus Cloud projects, please reach out through the Live Chat in our Cloud Dashboard._
-  - type: checkboxes
-    id: requirements
-    attributes:
-      label: Checklist
-      options:
-        - label: I'm using the [latest version of Directus](https://github.com/directus/directus/releases)
-          required: true
-        - label: There's [no other issue](https://github.com/directus/directus/issues?q=is%3Aissue) that already describes the problem.
-          required: true
-        - label: I've completed all [Troubleshooting Steps](https://docs.directus.io/getting-started/support/#troubleshooting-steps).
-          required: true
   - type: textarea
     attributes:
       label: Describe the Bug

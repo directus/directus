@@ -1,6 +1,6 @@
-import { toArray } from '@directus/shared/utils';
-import { Knex } from 'knex';
-import { isArray } from 'lodash';
+import { toArray } from '@directus/utils';
+import type { Knex } from 'knex';
+import { isArray } from 'lodash-es';
 
 export async function up(knex: Knex): Promise<void> {
 	const fields = await knex

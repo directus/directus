@@ -94,7 +94,7 @@ export default defineComponent({
 					!!field.schema?.is_primary_key ||
 					props.disabledFields.includes(field.field) ||
 					props.typeDenyList.includes(field.type) ||
-					!props.typeAllowList?.includes(field.type),
+					(props.typeAllowList && !props.typeAllowList.includes(field.type)),
 			}));
 		});
 
