@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import { parseGraphQL } from '../middleware/graphql';
-import { respond } from '../middleware/respond';
-import { GraphQLService } from '../services';
-import asyncHandler from '../utils/async-handler';
+import { parseGraphQL } from '../middleware/graphql.js';
+import { respond } from '../middleware/respond.js';
+import { GraphQLService } from '../services/graphql/index.js';
+import asyncHandler from '../utils/async-handler.js';
 
 const router = Router();
 
@@ -16,10 +16,10 @@ router.use(
 			scope: 'system',
 		});
 
-		res.locals.payload = await service.execute(res.locals.graphqlParams);
+		res.locals['payload'] = await service.execute(res.locals['graphqlParams']);
 
-		if (res.locals.payload?.errors?.length > 0) {
-			res.locals.cache = false;
+		if (res.locals['payload']?.errors?.length > 0) {
+			res.locals['cache'] = false;
 		}
 
 		return next();
@@ -37,10 +37,10 @@ router.use(
 			scope: 'items',
 		});
 
-		res.locals.payload = await service.execute(res.locals.graphqlParams);
+		res.locals['payload'] = await service.execute(res.locals['graphqlParams']);
 
-		if (res.locals.payload?.errors?.length > 0) {
-			res.locals.cache = false;
+		if (res.locals['payload']?.errors?.length > 0) {
+			res.locals['cache'] = false;
 		}
 
 		return next();

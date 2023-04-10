@@ -1,8 +1,8 @@
 import request from 'supertest';
-import { getUrl } from '@common/config';
+import config, { getUrl } from '@common/config';
 import vendors from '@common/get-dbs-to-test';
 import { v4 as uuid } from 'uuid';
-import { CreateItem } from '@common/functions';
+import { CreateItem, ReadItem } from '@common/functions';
 import { CachedTestsSchema, TestsSchemaVendorValues } from '@query/filter';
 import * as common from '@common/index';
 import {
@@ -1138,6 +1138,394 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								})
 							).toEqual(expectedDesc);
 						});
+					});
+				});
+			});
+
+			describe('MAX_BATCH_MUTATION Tests', () => {
+				describe('createMany', () => {
+					describe('passes when below limit', () => {
+						it.each(vendors)(
+							'%s',
+							async (vendor) => {
+								// Setup
+								const count = Number(config.envs[vendor].MAX_BATCH_MUTATION) / 2;
+								const states: any[] = [];
+								const states2: any[] = [];
+
+								for (let i = 0; i < count; i++) {
+									states.push(createState(pkType));
+									states[i].country_id = createCountry(pkType);
+
+									states2.push(createState(pkType));
+									states2[i].country_id = createCountry(pkType);
+								}
+
+								// Action
+								const response = await request(getUrl(vendor))
+									.post(`/items/${localCollectionStates}`)
+									.send(states)
+									.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+								const mutationKey = `create_${localCollectionStates}_items`;
+								const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+									mutation: {
+										[mutationKey]: {
+											__args: {
+												data: states2,
+											},
+											id: true,
+										},
+									},
+								});
+
+								// Assert
+								expect(response.statusCode).toBe(200);
+								expect(response.body.data.length).toBe(count);
+								expect(gqlResponse.statusCode).toBe(200);
+								expect(gqlResponse.body.data[mutationKey].length).toEqual(count);
+							},
+							120000
+						);
+					});
+
+					describe('errors when above limit', () => {
+						it.each(vendors)(
+							'%s',
+							async (vendor) => {
+								// Setup
+								const count = Number(config.envs[vendor].MAX_BATCH_MUTATION) / 2 + 1;
+								const states: any[] = [];
+								const states2: any[] = [];
+								for (let i = 0; i < count; i++) {
+									states.push(createState(pkType));
+									states[i].country_id = createCountry(pkType);
+
+									states2.push(createState(pkType));
+									states2[i].country_id = createCountry(pkType);
+								}
+
+								// Action
+								const response = await request(getUrl(vendor))
+									.post(`/items/${localCollectionStates}`)
+									.send(states)
+									.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+								const mutationKey = `create_${localCollectionStates}_items`;
+								const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+									mutation: {
+										[mutationKey]: {
+											__args: {
+												data: states2,
+											},
+											id: true,
+										},
+									},
+								});
+
+								// Assert
+								expect(response.statusCode).toBe(400);
+								expect(response.body.errors).toBeDefined();
+								expect(response.body.errors[0].message).toBe(
+									`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+								);
+
+								expect(gqlResponse.statusCode).toBe(200);
+								expect(gqlResponse.body.errors).toBeDefined();
+								expect(gqlResponse.body.errors[0].message).toBe(
+									`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+								);
+							},
+							120000
+						);
+					});
+				});
+
+				describe('updateBatch', () => {
+					describe('passes when below limit', () => {
+						it.each(vendors)(
+							'%s',
+							async (vendor) => {
+								// Setup
+								const count = Number(config.envs[vendor].MAX_BATCH_MUTATION) / 2;
+								const countCreate = Math.floor(count / 2);
+								const statesID = [];
+								const statesID2 = [];
+
+								for (let i = 0; i < count; i++) {
+									const state: any = createState(pkType);
+									state.name = `max_batch_mutation_${i.toString().padStart(3, '0')}`;
+									if (i >= countCreate) {
+										state.country_id = createCountry(pkType);
+									}
+									statesID.push((await CreateItem(vendor, { collection: localCollectionStates, item: state })).id);
+
+									const state2: any = createState(pkType);
+									state2.name = `max_batch_mutation_gql_${i.toString().padStart(3, '0')}`;
+									if (i >= countCreate) {
+										state2.country_id = createCountry(pkType);
+									}
+									statesID2.push((await CreateItem(vendor, { collection: localCollectionStates, item: state2 })).id);
+								}
+
+								const states = await ReadItem(vendor, {
+									collection: localCollectionStates,
+									fields: ['*', 'country_id.id', 'country_id.name'],
+									sort: ['name'],
+									filter: { id: { _in: statesID } },
+								});
+
+								const states2 = await ReadItem(vendor, {
+									collection: localCollectionStates,
+									fields: ['*', 'country_id.id', 'country_id.name'],
+									sort: ['name'],
+									filter: { id: { _in: statesID2 } },
+								});
+
+								for (let i = 0; i < states.length; i++) {
+									if (i < countCreate) {
+										states[i].country_id = createCountry(pkType);
+									} else {
+										states[i].country_id.name = 'updated';
+									}
+								}
+
+								for (let i = 0; i < states2.length; i++) {
+									if (i < countCreate) {
+										states2[i].country_id = createCountry(pkType);
+									} else {
+										states2[i].country_id.name = 'updated';
+									}
+								}
+
+								// Action
+								const response = await request(getUrl(vendor))
+									.patch(`/items/${localCollectionStates}`)
+									.send(states)
+									.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+								const mutationKey = `update_${localCollectionStates}_batch`;
+
+								const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+									mutation: {
+										[mutationKey]: {
+											__args: {
+												data: states2,
+											},
+											id: true,
+										},
+									},
+								});
+
+								// Assert
+								expect(response.statusCode).toBe(200);
+								expect(response.body.data.length).toBe(count);
+
+								expect(gqlResponse.statusCode).toBe(200);
+								expect(gqlResponse.body.data[mutationKey].length).toEqual(count);
+							},
+							120000
+						);
+					});
+
+					describe('errors when above limit', () => {
+						it.each(vendors)(
+							'%s',
+							async (vendor) => {
+								// Setup
+								const count = Number(config.envs[vendor].MAX_BATCH_MUTATION) / 2 + 1;
+								const countCreate = Math.floor(count / 2);
+								const statesID = [];
+								const statesID2 = [];
+
+								for (let i = 0; i < count; i++) {
+									const state: any = createState(pkType);
+									state.name = `max_batch_mutation_${i.toString().padStart(3, '0')}`;
+									if (i >= countCreate) {
+										state.country_id = createCountry(pkType);
+									}
+									statesID.push((await CreateItem(vendor, { collection: localCollectionStates, item: state })).id);
+
+									const state2: any = createState(pkType);
+									state2.name = `max_batch_mutation_gql_${i.toString().padStart(3, '0')}`;
+									if (i >= countCreate) {
+										state2.country_id = createCountry(pkType);
+									}
+									statesID2.push((await CreateItem(vendor, { collection: localCollectionStates, item: state2 })).id);
+								}
+
+								const states = await ReadItem(vendor, {
+									collection: localCollectionStates,
+									fields: ['*', 'country_id.id', 'country_id.name'],
+									sort: ['name'],
+									filter: { id: { _in: statesID } },
+								});
+
+								const states2 = await ReadItem(vendor, {
+									collection: localCollectionStates,
+									fields: ['*', 'country_id.id', 'country_id.name'],
+									sort: ['name'],
+									filter: { id: { _in: statesID2 } },
+								});
+
+								for (let i = 0; i < states.length; i++) {
+									if (i < countCreate) {
+										states[i].country_id = createCountry(pkType);
+									} else {
+										states[i].country_id.name = 'updated';
+									}
+								}
+
+								for (let i = 0; i < states2.length; i++) {
+									if (i < countCreate) {
+										states2[i].country_id = createCountry(pkType);
+									} else {
+										states2[i].country_id.name = 'updated';
+									}
+								}
+
+								// Action
+								const response = await request(getUrl(vendor))
+									.patch(`/items/${localCollectionStates}`)
+									.send(states)
+									.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+								const mutationKey = `update_${localCollectionStates}_batch`;
+
+								const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+									mutation: {
+										[mutationKey]: {
+											__args: {
+												data: states2,
+											},
+											id: true,
+										},
+									},
+								});
+
+								// Assert
+								expect(response.statusCode).toBe(400);
+								expect(response.body.errors).toBeDefined();
+								expect(response.body.errors[0].message).toBe(
+									`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+								);
+
+								expect(gqlResponse.statusCode).toBe(200);
+								expect(gqlResponse.body.errors).toBeDefined();
+								expect(gqlResponse.body.errors[0].message).toBe(
+									`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+								);
+							},
+							120000
+						);
+					});
+				});
+
+				describe('updateMany', () => {
+					describe('passes when below limit', () => {
+						it.each(vendors)(
+							'%s',
+							async (vendor) => {
+								// Setup
+								const count = Number(config.envs[vendor].MAX_BATCH_MUTATION) - 1;
+								const stateIDs = [];
+								const stateIDs2 = [];
+								const newCountry = createCountry(pkType);
+
+								for (let i = 0; i < count; i++) {
+									const state: any = createState(pkType);
+									state.country_id = createCountry(pkType);
+									stateIDs.push((await CreateItem(vendor, { collection: localCollectionStates, item: state })).id);
+
+									const state2: any = createState(pkType);
+									state2.country_id = createCountry(pkType);
+									stateIDs2.push((await CreateItem(vendor, { collection: localCollectionStates, item: state2 })).id);
+								}
+
+								// Action
+								const response = await request(getUrl(vendor))
+									.patch(`/items/${localCollectionStates}`)
+									.send({ keys: stateIDs, data: { country_id: newCountry } })
+									.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+								const mutationKey = `update_${localCollectionStates}_items`;
+
+								const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+									mutation: {
+										[mutationKey]: {
+											__args: {
+												ids: stateIDs2,
+												data: { country_id: newCountry },
+											},
+											id: true,
+										},
+									},
+								});
+
+								// Assert
+								expect(response.statusCode).toBe(200);
+								expect(response.body.data.length).toBe(count);
+
+								expect(gqlResponse.statusCode).toBe(200);
+								expect(gqlResponse.body.data[mutationKey].length).toEqual(count);
+							},
+							120000
+						);
+					});
+
+					describe('errors when above limit', () => {
+						it.each(vendors)(
+							'%s',
+							async (vendor) => {
+								// Setup
+								const count = Number(config.envs[vendor].MAX_BATCH_MUTATION);
+								const stateIDs = [];
+								const stateIDs2 = [];
+								const newCountry = createCountry(pkType);
+
+								for (let i = 0; i < count; i++) {
+									const state: any = createState(pkType);
+									state.country_id = createCountry(pkType);
+									stateIDs.push((await CreateItem(vendor, { collection: localCollectionStates, item: state })).id);
+
+									const state2: any = createState(pkType);
+									state2.country_id = createCountry(pkType);
+									stateIDs2.push((await CreateItem(vendor, { collection: localCollectionStates, item: state2 })).id);
+								}
+
+								// Action
+								const response = await request(getUrl(vendor))
+									.patch(`/items/${localCollectionStates}`)
+									.send({ keys: stateIDs, data: { country_id: newCountry } })
+									.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+								const mutationKey = `update_${localCollectionStates}_items`;
+
+								const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+									mutation: {
+										[mutationKey]: {
+											__args: {
+												ids: stateIDs2,
+												data: { country_id: newCountry },
+											},
+											id: true,
+										},
+									},
+								});
+
+								// Assert
+								expect(response.statusCode).toBe(400);
+								expect(response.body.errors).toBeDefined();
+								expect(response.body.errors[0].message).toBe(
+									`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+								);
+
+								expect(gqlResponse.statusCode).toBe(200);
+								expect(gqlResponse.body.errors).toBeDefined();
+								expect(gqlResponse.body.errors[0].message).toBe(
+									`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+								);
+							},
+							120000
+						);
 					});
 				});
 			});

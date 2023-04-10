@@ -1,4 +1,4 @@
-// Vitest Snapshot v1
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`Mount component 1`] = `
 "<div data-v-6a3718b7=\\"\\" class=\\"v-textarea full-width has-content\\">

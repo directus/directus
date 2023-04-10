@@ -1,5 +1,5 @@
 import request from 'supertest';
-import { getUrl } from '@common/config';
+import config, { getUrl } from '@common/config';
 import vendors from '@common/get-dbs-to-test';
 import { v4 as uuid } from 'uuid';
 import { CreateItem, ReadItem } from '@common/functions';
@@ -138,6 +138,188 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					expect(gqlResponse.body.data[localCollectionShapes][0].children).toHaveLength(1);
 				});
 			});
+
+			describe(`retrieves circles' radius only`, () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// Setup
+					const shape = createShape(pkType);
+					const insertedShape = await CreateItem(vendor, {
+						collection: localCollectionShapes,
+						item: {
+							...shape,
+							children: {
+								create: [
+									{ collection: localCollectionCircles, item: createCircle(pkType) },
+									{ collection: localCollectionCircles, item: createCircle(pkType) },
+									{ collection: localCollectionSquares, item: createSquare(pkType) },
+									{ collection: localCollectionSquares, item: createSquare(pkType) },
+								],
+								update: [],
+								delete: [],
+							},
+						},
+					});
+
+					// Action
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionShapes}/${insertedShape.id}`)
+						.query({
+							fields: `children.item:${localCollectionCircles}.radius`,
+						})
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+						query: {
+							[localCollectionShapes]: {
+								__args: {
+									filter: {
+										id: {
+											_eq: insertedShape.id,
+										},
+									},
+								},
+								children: {
+									item: {
+										__on: [
+											{
+												__typeName: localCollectionCircles,
+												radius: true,
+											},
+										],
+										__typename: true,
+									},
+								},
+							},
+						},
+					});
+
+					// Assert
+					expect(response.statusCode).toEqual(200);
+					expect(response.body.data.children).toHaveLength(4);
+					for (const child of response.body.data.children) {
+						if (typeof child.item === 'object') {
+							expect(child.item).toEqual(
+								expect.objectContaining({
+									radius: expect.any(Number),
+								})
+							);
+						}
+					}
+
+					expect(gqlResponse.statusCode).toEqual(200);
+					expect(gqlResponse.body.data[localCollectionShapes][0].children).toHaveLength(4);
+					for (const child of gqlResponse.body.data[localCollectionShapes][0].children) {
+						if (child.item.__typename === localCollectionCircles) {
+							expect(child.item).toEqual(
+								expect.objectContaining({
+									radius: expect.any(Number),
+									__typename: localCollectionCircles,
+								})
+							);
+						} else {
+							expect(child.item).toEqual(
+								expect.objectContaining({
+									__typename: localCollectionSquares,
+								})
+							);
+						}
+					}
+				});
+			});
+
+			describe(`retrieves all fields in circles only`, () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// Setup
+					const shape = createShape(pkType);
+					const insertedShape = await CreateItem(vendor, {
+						collection: localCollectionShapes,
+						item: {
+							...shape,
+							children: {
+								create: [
+									{ collection: localCollectionCircles, item: createCircle(pkType) },
+									{ collection: localCollectionCircles, item: createCircle(pkType) },
+									{ collection: localCollectionSquares, item: createSquare(pkType) },
+									{ collection: localCollectionSquares, item: createSquare(pkType) },
+								],
+								update: [],
+								delete: [],
+							},
+						},
+					});
+
+					// Action
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionShapes}/${insertedShape.id}`)
+						.query({
+							fields: `children.item:${localCollectionCircles}.*`,
+						})
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+						query: {
+							[localCollectionShapes]: {
+								__args: {
+									filter: {
+										id: {
+											_eq: insertedShape.id,
+										},
+									},
+								},
+								children: {
+									item: {
+										__on: [
+											{
+												__typeName: localCollectionCircles,
+												id: true,
+												name: true,
+												radius: true,
+											},
+										],
+										__typename: true,
+									},
+								},
+							},
+						},
+					});
+
+					// Assert
+					expect(response.statusCode).toEqual(200);
+					expect(response.body.data.children).toHaveLength(4);
+					for (const child of response.body.data.children) {
+						if (typeof child.item === 'object') {
+							expect(child.item).toEqual(
+								expect.objectContaining({
+									id: expect.anything(),
+									name: expect.any(String),
+									radius: expect.any(Number),
+								})
+							);
+						}
+					}
+
+					expect(gqlResponse.statusCode).toEqual(200);
+					expect(gqlResponse.body.data[localCollectionShapes][0].children).toHaveLength(4);
+					for (const child of gqlResponse.body.data[localCollectionShapes][0].children) {
+						if (child.item.__typename === localCollectionCircles) {
+							expect(child.item).toEqual(
+								expect.objectContaining({
+									id: expect.anything(),
+									name: expect.any(String),
+									radius: expect.any(Number),
+									__typename: localCollectionCircles,
+								})
+							);
+						} else {
+							expect(child.item).toEqual(
+								expect.objectContaining({
+									__typename: localCollectionSquares,
+								})
+							);
+						}
+					}
+				});
+			});
 		});
 
 		describe('GET /:collection', () => {
@@ -243,6 +425,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							.get(`/items/${localCollectionShapes}`)
 							.query({
 								filter: JSON.stringify({
+									name: { _eq: insertedShape.name },
 									children: {
 										[`item:${localCollectionCircles}`]: {
 											name: { _eq: circle.name },
@@ -256,6 +439,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							.get(`/items/${localCollectionShapes}`)
 							.query({
 								filter: JSON.stringify({
+									name: { _eq: insertedShape.name },
 									children: {
 										[`item:${localCollectionSquares}`]: {
 											width: { _eq: square.width },
@@ -270,6 +454,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								[localCollectionShapes]: {
 									__args: {
 										filter: {
+											name: { _eq: insertedShape.name },
 											children: {
 												[`item__${localCollectionCircles}`]: {
 													name: { _eq: circle.name },
@@ -287,6 +472,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								[localCollectionShapes]: {
 									__args: {
 										filter: {
+											name: { _eq: insertedShape.name },
 											children: {
 												[`item__${localCollectionSquares}`]: {
 													width: { _eq: square.width },
@@ -468,7 +654,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 							const retrievedShape = await ReadItem(vendor, {
 								collection: localCollectionShapes,
-								fields: '*.*.*',
+								fields: ['*.*.*'],
 								filter: { id: { _eq: insertedShape.id } },
 							});
 
@@ -1483,6 +1669,307 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								})
 							).toEqual(expectedDesc);
 						});
+					});
+				});
+			});
+
+			describe('MAX_BATCH_MUTATION Tests', () => {
+				describe('createOne', () => {
+					describe('passes when below limit', () => {
+						it.each(vendors)(
+							'%s',
+							async (vendor) => {
+								// TODO: Fix Oracle exceeded directus_revisions limit of 4000
+								if (vendor === 'oracle') {
+									expect(true).toBe(true);
+									return;
+								}
+
+								// Setup
+								const countNested = Number(config.envs[vendor].MAX_BATCH_MUTATION) / 2 - 1;
+								const shape: any = createShape(pkType);
+
+								shape.children = Array(countNested)
+									.fill(0)
+									.map((_, index) => {
+										if (index < countNested / 2) {
+											return { collection: localCollectionCircles, item: createCircle(pkType) };
+										} else {
+											return { collection: localCollectionSquares, item: createSquare(pkType) };
+										}
+									});
+
+								// Action
+								const response = await request(getUrl(vendor))
+									.post(`/items/${localCollectionShapes}`)
+									.send(shape)
+									.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+								// Assert
+								expect(response.statusCode).toBe(200);
+								expect(response.body.data.children.length).toBe(countNested);
+							},
+							120000
+						);
+					});
+
+					describe('errors when above limit', () => {
+						it.each(vendors)(
+							'%s',
+							async (vendor) => {
+								// TODO: Fix Oracle ORA-01086 savepoint never established in this session or is invalid
+								if (vendor === 'oracle') {
+									expect(true).toBe(true);
+									return;
+								}
+
+								// Setup
+								const countNested = Number(config.envs[vendor].MAX_BATCH_MUTATION) / 2;
+								const shape: any = createShape(pkType);
+
+								shape.children = Array(countNested)
+									.fill(0)
+									.map((_, index) => {
+										if (index < countNested / 2) {
+											return { collection: localCollectionCircles, item: createCircle(pkType) };
+										} else {
+											return { collection: localCollectionSquares, item: createSquare(pkType) };
+										}
+									});
+
+								// Action
+								const response = await request(getUrl(vendor))
+									.post(`/items/${localCollectionShapes}`)
+									.send(shape)
+									.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+								// Assert
+								expect(response.statusCode).toBe(400);
+								expect(response.body.errors).toBeDefined();
+								expect(response.body.errors[0].message).toBe(
+									`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+								);
+							},
+							120000
+						);
+					});
+				});
+
+				describe('createMany', () => {
+					describe('passes when below limit', () => {
+						it.each(vendors)(
+							'%s',
+							async (vendor) => {
+								// Setup
+								const count = Number(config.envs[vendor].MAX_BATCH_MUTATION) / 10;
+								const countNested = 4;
+								const shapes: any[] = [];
+
+								for (let i = 0; i < count; i++) {
+									shapes.push(createShape(pkType));
+									shapes[i].children = Array(countNested)
+										.fill(0)
+										.map((_, index) => {
+											if (index < countNested / 2) {
+												return { collection: localCollectionCircles, item: createCircle(pkType) };
+											} else {
+												return { collection: localCollectionSquares, item: createSquare(pkType) };
+											}
+										});
+								}
+
+								// Action
+								const response = await request(getUrl(vendor))
+									.post(`/items/${localCollectionShapes}`)
+									.send(shapes)
+									.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+								// Assert
+								expect(response.statusCode).toBe(200);
+								expect(response.body.data.length).toBe(count);
+							},
+							120000
+						);
+					});
+
+					describe('errors when above limit', () => {
+						it.each(vendors)(
+							'%s',
+							async (vendor) => {
+								// TODO: Fix Oracle ORA-01086 savepoint never established in this session or is invalid
+								if (vendor === 'oracle') {
+									expect(true).toBe(true);
+									return;
+								}
+
+								// Setup
+								const count = Number(config.envs[vendor].MAX_BATCH_MUTATION) / 10;
+								const countNested = 5;
+								const shapes: any[] = [];
+
+								for (let i = 0; i < count; i++) {
+									shapes.push(createShape(pkType));
+									shapes[i].children = Array(countNested)
+										.fill(0)
+										.map((_, index) => {
+											if (index < countNested / 2) {
+												return { collection: localCollectionCircles, item: createCircle(pkType) };
+											} else {
+												return { collection: localCollectionSquares, item: createSquare(pkType) };
+											}
+										});
+								}
+
+								// Action
+								const response = await request(getUrl(vendor))
+									.post(`/items/${localCollectionShapes}`)
+									.send(shapes)
+									.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+								// Assert
+								expect(response.statusCode).toBe(400);
+								expect(response.body.errors).toBeDefined();
+								expect(response.body.errors[0].message).toBe(
+									`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+								);
+							},
+							120000
+						);
+					});
+				});
+
+				describe('updateBatch', () => {
+					describe('passes when below limit', () => {
+						it.each(vendors)(
+							'%s',
+							async (vendor) => {
+								// Setup
+								const count = Number(config.envs[vendor].MAX_BATCH_MUTATION) / 10;
+								const countCreate = 2;
+								const countUpdate = 2;
+								const countDelete = 1;
+								const shapesID = [];
+
+								for (let i = 0; i < count; i++) {
+									const shape: any = createShape(pkType);
+									shape.children = Array(countUpdate + countDelete)
+										.fill(0)
+										.map((_, index) => {
+											if (index < (countUpdate + countDelete) / 2) {
+												return { collection: localCollectionCircles, item: createCircle(pkType) };
+											} else {
+												return { collection: localCollectionSquares, item: createSquare(pkType) };
+											}
+										});
+									shapesID.push((await CreateItem(vendor, { collection: localCollectionShapes, item: shape })).id);
+								}
+
+								const shapes = await ReadItem(vendor, {
+									collection: localCollectionShapes,
+									fields: ['*', 'children.id', 'children.collection', 'children.item.id', 'children.item.name'],
+									filter: { id: { _in: shapesID } },
+								});
+
+								for (const shape of shapes) {
+									const children = shape.children;
+									shape.children = {
+										create: Array(countCreate)
+											.fill(0)
+											.map((_, index) => {
+												if (index < countCreate / 2) {
+													return { collection: localCollectionCircles, item: createCircle(pkType) };
+												} else {
+													return { collection: localCollectionSquares, item: createSquare(pkType) };
+												}
+											}),
+										update: children.slice(0, countUpdate),
+										delete: children.slice(-countDelete).map((child: Circle | Square) => child.id),
+									};
+								}
+
+								// Action
+								const response = await request(getUrl(vendor))
+									.patch(`/items/${localCollectionShapes}`)
+									.send(shapes)
+									.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+								// Assert
+								expect(response.statusCode).toBe(200);
+								expect(response.body.data.length).toBe(count);
+							},
+							120000
+						);
+					});
+
+					describe('errors when above limit', () => {
+						it.each(vendors)(
+							'%s',
+							async (vendor) => {
+								// TODO: Fix Oracle ORA-01086 savepoint never established in this session or is invalid
+								if (vendor === 'oracle') {
+									expect(true).toBe(true);
+									return;
+								}
+
+								// Setup
+								const count = Number(config.envs[vendor].MAX_BATCH_MUTATION) / 10;
+								const countCreate = 2;
+								const countUpdate = 2;
+								const countDelete = 2;
+								const shapesID = [];
+
+								for (let i = 0; i < count; i++) {
+									const shape: any = createShape(pkType);
+									shape.children = Array(countUpdate + countDelete)
+										.fill(0)
+										.map((_, index) => {
+											if (index < (countUpdate + countDelete) / 2) {
+												return { collection: localCollectionCircles, item: createCircle(pkType) };
+											} else {
+												return { collection: localCollectionSquares, item: createSquare(pkType) };
+											}
+										});
+									shapesID.push((await CreateItem(vendor, { collection: localCollectionShapes, item: shape })).id);
+								}
+
+								const shapes = await ReadItem(vendor, {
+									collection: localCollectionShapes,
+									fields: ['*', 'children.id', 'children.collection', 'children.item.id', 'children.item.name'],
+									filter: { id: { _in: shapesID } },
+								});
+
+								for (const shape of shapes) {
+									const children = shape.children;
+									shape.children = {
+										create: Array(countCreate)
+											.fill(0)
+											.map((_, index) => {
+												if (index < countCreate / 2) {
+													return { collection: localCollectionCircles, item: createCircle(pkType) };
+												} else {
+													return { collection: localCollectionSquares, item: createSquare(pkType) };
+												}
+											}),
+										update: children.slice(0, countUpdate),
+										delete: children.slice(-countDelete).map((child: Circle | Square) => child.id),
+									};
+								}
+
+								// Action
+								const response = await request(getUrl(vendor))
+									.patch(`/items/${localCollectionShapes}`)
+									.send(shapes)
+									.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+								// Assert
+								expect(response.statusCode).toBe(400);
+								expect(response.body.errors).toBeDefined();
+								expect(response.body.errors[0].message).toBe(
+									`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+								);
+							},
+							120000
+						);
 					});
 				});
 			});

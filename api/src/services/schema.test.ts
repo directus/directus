@@ -1,25 +1,26 @@
-import { Diff } from 'deep-diff';
-import knex, { Knex } from 'knex';
-import { getTracker, MockClient, Tracker } from 'knex-mock-client';
+import type { Diff } from 'deep-diff';
+import knex from 'knex';
+import type { Knex } from 'knex';
+import { createTracker, MockClient, Tracker } from 'knex-mock-client';
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
-import { SchemaService } from '.';
-import { ForbiddenException } from '..';
-import { Collection } from '../types/collection';
-import { Snapshot, SnapshotDiffWithHash } from '../types/snapshot';
-import { applyDiff } from '../utils/apply-diff';
-import { getSnapshot } from '../utils/get-snapshot';
+import { SchemaService } from './schema.js';
+import { ForbiddenException } from '../exceptions/forbidden.js';
+import type { Collection } from '../types/collection.js';
+import type { Snapshot, SnapshotDiffWithHash } from '../types/snapshot.js';
+import { applyDiff } from '../utils/apply-diff.js';
+import { getSnapshot } from '../utils/get-snapshot.js';
 
-vi.mock('../../package.json', () => ({ version: '0.0.0' }));
+vi.mock('../utils/package.js', () => ({ version: '0.0.0' }));
 
-vi.mock('../../src/database/index', () => {
+vi.mock('../../src/database/index.js', () => {
 	return { __esModule: true, default: vi.fn(), getDatabaseClient: vi.fn().mockReturnValue('postgres') };
 });
 
-vi.mock('../utils/get-snapshot', () => ({
+vi.mock('../utils/get-snapshot.js', () => ({
 	getSnapshot: vi.fn(),
 }));
 
-vi.mock('../utils/apply-diff', () => ({
+vi.mock('../utils/apply-diff.js', () => ({
 	applyDiff: vi.fn(),
 }));
 
@@ -62,8 +63,8 @@ const testCollectionDiff = {
 };
 
 beforeAll(() => {
-	db = knex({ client: Client_PG });
-	tracker = getTracker();
+	db = knex.default({ client: Client_PG });
+	tracker = createTracker(db);
 });
 
 afterEach(() => {

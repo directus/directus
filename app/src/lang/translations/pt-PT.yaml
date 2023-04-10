@@ -28,6 +28,7 @@ published: Publicado
 draft: Rascunho
 archived: Arquivado
 modules: Módulos
+module_bar: Barra de Módulo
 logs: Registo de Eventos
 reset_width: Redefinir Largura
 tile_size: Tamanho do ícone
@@ -50,6 +51,8 @@ and: E
 or: Ou
 init: Init
 dataset_too_large_currently_showing_n_items: O conjunto de dados é muito grande. A mostrar os primeiros {n} itens.
+custom: Personalizado
+hook: Gancho (hook)
 fill_width: Ocupar a largura
 field_name_translations: Nome do campo para as traduções
 enter_password_to_enable_tfa: Coloque a password para ativar a autenticação de 2 fatores
@@ -82,6 +85,8 @@ no_translation_string_copy: Ainda não existem traduções.
 translation_string_key_placeholder: Chave da tradução...
 translation_string_translations_placeholder: Adicionar nova tradução
 edit_translation_string: Editar String de Tradução
+delete_translation_string_copy: >-
+  Tem a certeza que pretende eliminar o texto de tradução "{key}"? Esta ação não pode ser revertida.
 invite_users: Convidar utlizadores
 invite: Convidar
 email_already_invited: Este e-mail já foi convidado
@@ -101,8 +106,7 @@ reset_bookmark: Restaurar marcador
 update_bookmark: Atualizar o marcador
 delete_bookmark: Eliminar o marcador
 delete_bookmark_copy: >-
-  Tem a certeza que pretende remover o marcador "{bookmark}"?
-  Esta ação não pode ser desfeita.
+  Tem a certeza que pretende remover o marcador "{bookmark}"? Esta ação não pode ser desfeita.
 delete_personal_bookmark: Apagar marcador pessoal
 delete_global_bookmark: Apagar marcador global
 logoutReason:
@@ -788,6 +792,7 @@ fields:
     public_background: Fundo Público
     public_note: Nota Pública
     custom_css: CSS Personalizado
+    module_bar: Barra de Módulo
   directus_shares:
     name: Nome
     role: Perfil

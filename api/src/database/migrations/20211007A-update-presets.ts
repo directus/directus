@@ -1,6 +1,6 @@
-import { Filter, LogicalFilterAND } from '@directus/shared/types';
-import { parseJSON } from '@directus/shared/utils';
-import { Knex } from 'knex';
+import type { Filter, LogicalFilterAND } from '@directus/types';
+import { parseJSON } from '@directus/utils';
+import type { Knex } from 'knex';
 
 type OldFilter = {
 	key: string;
