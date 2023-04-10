@@ -1,4 +1,4 @@
-import { JsonValue } from '@directus/shared/types';
+import type { JsonValue } from '@directus/types';
 
 export default function tryParseJson(str: string): JsonValue | undefined {
 	try {

@@ -1,7 +1,7 @@
 import { afterEach, beforeAll, expect, test, vi } from 'vitest';
 
-import { validateEnv } from './validate-env';
-import logger from '../logger';
+import { validateEnv } from './validate-env.js';
+import logger from '../logger.js';
 
 vi.mock('../env', () => ({
 	getEnv: vi.fn().mockReturnValue({

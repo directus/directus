@@ -16,6 +16,7 @@ const Template = (args) => ({
 
 export const Primary = Template.bind({});
 Primary.args = {
+	editMode: false,
 	tiles: [
 		{
 			id: '1',

@@ -76,7 +76,7 @@ import { useWindowSize } from '@/composables/use-window-size';
 import vTooltip from '@/directives/tooltip';
 import { useFieldsStore } from '@/stores/fields';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { toArray } from '@directus/shared/utils';
+import { toArray } from '@directus/utils';
 import { isNil } from 'lodash';
 import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -197,7 +197,7 @@ function updateValue(item: DisplayItem, lang: string | undefined) {
 
 		if (itemInfo[info.junctionPrimaryKeyField.field] !== undefined) {
 			itemUpdates[info.junctionPrimaryKeyField.field] = itemInfo[info.junctionPrimaryKeyField.field];
-		} else {
+		} else if (primaryKey.value !== '+') {
 			itemUpdates[info.reverseJunctionField.field] = primaryKey.value;
 		}
 

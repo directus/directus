@@ -10,5 +10,6 @@ jobs:
         uses: peter-evans/slash-command-dispatch@v3
         with:
           token: ${{ secrets.LINEAR_PAT }}
+          reactions: false
           commands: |
             linear

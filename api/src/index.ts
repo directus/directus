@@ -1,3 +1,3 @@
-export { default as createApp } from './app';
-export * from './services';
-export * from './exceptions';
+export { default as createApp } from './app.js';
+export * from './services/index.js';
+export * from './exceptions/index.js';
