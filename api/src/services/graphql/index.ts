@@ -2365,9 +2365,10 @@ export class GraphQLService {
 					name: 'directus_collections_meta',
 					fields: Object.values(schema.read.collections['directus_collections']!.fields).reduce((acc, field) => {
 						acc[field.field] = {
-							type: field.nullable
-								? getGraphQLType(field.type, field.special)
-								: new GraphQLNonNull(getGraphQLType(field.type, field.special)),
+							type:
+								field.nullable || field.generated || field.type === 'uuid' || field.defaultValue
+									? getGraphQLType(field.type, field.special)
+									: new GraphQLNonNull(getGraphQLType(field.type, field.special)),
 							description: field.note,
 						} as ObjectTypeComposerFieldConfigDefinition<any, any, any>;
 
