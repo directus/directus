@@ -33,8 +33,8 @@ import {
 	resolvePackageExtensions,
 } from '@directus/utils/node';
 import aliasDefault from '@rollup/plugin-alias';
+import nodeResolveDefault from '@rollup/plugin-node-resolve';
 import virtualDefault from '@rollup/plugin-virtual';
-import { nodeResolve } from '@rollup/plugin-node-resolve';
 import chokidar, { FSWatcher } from 'chokidar';
 import express, { Router } from 'express';
 import globby from 'globby';
@@ -62,6 +62,7 @@ import { Url } from './utils/url.js';
 // Workaround for https://github.com/rollup/plugins/issues/1329
 const virtual = virtualDefault as unknown as typeof virtualDefault.default;
 const alias = aliasDefault as unknown as typeof aliasDefault.default;
+const nodeResolve = nodeResolveDefault as unknown as typeof nodeResolveDefault.default;
 
 const require = createRequire(import.meta.url);
 const __dirname = dirname(fileURLToPath(import.meta.url));
