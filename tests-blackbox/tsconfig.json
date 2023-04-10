@@ -27,7 +27,6 @@
 			"@directus/gatsby-source-directus/*": ["../packages/gatsby-source-directus/src/*"],
 			"@directus/schema/*": ["../packages/schema/src/*"],
 			"@directus/sdk/*": ["../packages/sdk/src/*"],
-			"@directus/shared/*": ["../packages/shared/src/*"],
 			"@directus/specs/*": ["../packages/specs/*"],
 			"@common/*": ["./common/*"],
 			"@query/*": ["./query/*"],

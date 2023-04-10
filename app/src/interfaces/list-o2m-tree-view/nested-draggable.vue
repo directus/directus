@@ -87,23 +87,23 @@ export default {
 </script>
 
 <script setup lang="ts">
-import Draggable from 'vuedraggable';
-import { computed, ref, toRefs } from 'vue';
-import { hideDragImage } from '@/utils/hide-drag-image';
-import ItemPreview from './item-preview.vue';
-import { Filter } from '@directus/shared/types';
-import { RelationO2M } from '@/composables/use-relation-o2m';
 import {
+	ChangesItem,
 	DisplayItem,
 	RelationQueryMultiple,
 	useRelationMultiple,
-	ChangesItem,
 } from '@/composables/use-relation-multiple';
+import { RelationO2M } from '@/composables/use-relation-o2m';
+import { hideDragImage } from '@/utils/hide-drag-image';
 import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
-import { useI18n } from 'vue-i18n';
-import { moveInArray } from '@directus/shared/utils';
+import { Filter } from '@directus/types';
+import { moveInArray } from '@directus/utils';
 import { cloneDeep } from 'lodash';
+import { computed, ref, toRefs } from 'vue';
+import { useI18n } from 'vue-i18n';
+import Draggable from 'vuedraggable';
+import ItemPreview from './item-preview.vue';
 
 type ChangeEvent =
 	| {

@@ -1,14 +1,12 @@
-// @ts-expect-error https://github.com/microsoft/TypeScript/issues/49721
 import type { StorageManager } from '@directus/storage';
-
-import { toArray } from '@directus/shared/utils';
-import { getEnv } from '../env';
-import { getConfigFromEnv } from '../utils/get-config-from-env';
+import { toArray } from '@directus/utils';
+import { getEnv } from '../env.js';
+import { getConfigFromEnv } from '../utils/get-config-from-env.js';
 
 export const registerLocations = async (storage: StorageManager) => {
 	const env = getEnv();
 
-	const locations = toArray(env.STORAGE_LOCATIONS);
+	const locations = toArray(env['STORAGE_LOCATIONS']);
 
 	locations.forEach((location: string) => {
 		location = location.trim();

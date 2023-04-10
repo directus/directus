@@ -1,8 +1,8 @@
-import { Diff } from 'deep-diff';
+import type { Diff } from 'deep-diff';
 import { describe, expect, it } from 'vitest';
-import { SnapshotField } from '../types/snapshot';
+import type { SnapshotField } from '../types/snapshot.js';
 
-import { isNestedMetaUpdate } from './apply-diff';
+import { isNestedMetaUpdate } from './apply-diff.js';
 
 describe('isNestedMetaUpdate', () => {
 	it.each([

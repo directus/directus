@@ -1,8 +1,8 @@
-import { Knex } from 'knex';
-import { SchemaHelper } from '../types';
+import type { Knex } from 'knex';
+import { SchemaHelper } from '../types.js';
 
 export class SchemaHelperMSSQL extends SchemaHelper {
-	applyLimit(rootQuery: Knex.QueryBuilder, limit: number): void {
+	override applyLimit(rootQuery: Knex.QueryBuilder, limit: number): void {
 		// The ORDER BY clause is invalid in views, inline functions, derived tables, subqueries,
 		// and common table expressions, unless TOP, OFFSET or FOR XML is also specified.
 		if (limit === -1) {
@@ -12,12 +12,12 @@ export class SchemaHelperMSSQL extends SchemaHelper {
 		}
 	}
 
-	applyOffset(rootQuery: Knex.QueryBuilder, offset: number): void {
+	override applyOffset(rootQuery: Knex.QueryBuilder, offset: number): void {
 		rootQuery.offset(offset);
 		rootQuery.orderBy(1);
 	}
 
-	formatUUID(uuid: string): string {
+	override formatUUID(uuid: string): string {
 		return uuid.toUpperCase();
 	}
 }

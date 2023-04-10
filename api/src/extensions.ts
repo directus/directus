@@ -3,12 +3,13 @@ import {
 	APP_SHARED_DEPS,
 	HYBRID_EXTENSION_TYPES,
 	NESTED_EXTENSION_TYPES,
-} from '@directus/shared/constants';
-import * as sharedExceptions from '@directus/shared/exceptions';
-import {
+} from '@directus/constants';
+import * as sharedExceptions from '@directus/exceptions';
+import type {
 	ActionHandler,
 	ApiExtension,
 	BundleExtension,
+	EmbedHandler,
 	EndpointConfig,
 	Extension,
 	ExtensionInfo,
@@ -17,10 +18,11 @@ import {
 	HookConfig,
 	HybridExtension,
 	InitHandler,
-	EmbedHandler,
+	NestedExtensionType,
 	OperationApiConfig,
 	ScheduleHandler,
-} from '@directus/shared/types';
+} from '@directus/types';
+import { isIn, isTypeIn, pluralize } from '@directus/utils';
 import {
 	ensureExtensionDirs,
 	generateExtensionsEntrypoint,
@@ -29,32 +31,39 @@ import {
 	pathToRelativeUrl,
 	resolvePackage,
 	resolvePackageExtensions,
-} from '@directus/shared/utils/node';
-import express, { Router } from 'express';
-import fse from 'fs-extra';
-import path from 'path';
-import getDatabase from './database';
-import emitter, { Emitter } from './emitter';
-import env from './env';
-import * as exceptions from './exceptions';
-import logger from './logger';
-import { dynamicImport } from './utils/dynamic-import';
-import { getSchema } from './utils/get-schema';
-
-import { isIn, isTypeIn, pluralize } from '@directus/shared/utils';
-import alias from '@rollup/plugin-alias';
-import virtual from '@rollup/plugin-virtual';
+} from '@directus/utils/node';
+import aliasDefault from '@rollup/plugin-alias';
+import virtualDefault from '@rollup/plugin-virtual';
 import chokidar, { FSWatcher } from 'chokidar';
+import express, { Router } from 'express';
 import globby from 'globby';
-import { clone, escapeRegExp } from 'lodash';
+import { clone, escapeRegExp } from 'lodash-es';
 import { schedule, validate } from 'node-cron';
+import { readdir } from 'node:fs/promises';
+import { createRequire } from 'node:module';
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import path from 'path';
 import { rollup } from 'rollup';
-import { getFlowManager } from './flows';
-import * as services from './services';
-import { EventHandler } from './types';
-import getModuleDefault from './utils/get-module-default';
-import { JobQueue } from './utils/job-queue';
-import { Url } from './utils/url';
+import getDatabase from './database/index.js';
+import emitter, { Emitter } from './emitter.js';
+import env from './env.js';
+import * as exceptions from './exceptions/index.js';
+import { getFlowManager } from './flows.js';
+import logger from './logger.js';
+import * as services from './services/index.js';
+import type { EventHandler } from './types/index.js';
+import getModuleDefault from './utils/get-module-default.js';
+import { getSchema } from './utils/get-schema.js';
+import { JobQueue } from './utils/job-queue.js';
+import { Url } from './utils/url.js';
+
+// Workaround for https://github.com/rollup/plugins/issues/1329
+const virtual = virtualDefault as unknown as typeof virtualDefault.default;
+const alias = aliasDefault as unknown as typeof aliasDefault.default;
+
+const require = createRequire(import.meta.url);
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 let extensionManager: ExtensionManager | undefined;
 
@@ -84,7 +93,7 @@ type Options = {
 
 const defaultOptions: Options = {
 	schedule: true,
-	watch: env.EXTENSIONS_AUTO_RELOAD && env.NODE_ENV !== 'development',
+	watch: env['EXTENSIONS_AUTO_RELOAD'] && env['NODE_ENV'] !== 'development',
 };
 
 class ExtensionManager {
@@ -183,24 +192,30 @@ class ExtensionManager {
 		}
 
 		function mapInfo(extension: Extension): ExtensionInfo {
-			const extensionInfo = {
+			const extensionInfo: ExtensionInfo = {
 				name: extension.name,
 				type: extension.type,
 				local: extension.local,
-				host: extension.host,
-				version: extension.version,
+				entries: [],
 			};
 
+			if (extension.host) extensionInfo.host = extension.host;
+			if (extension.version) extensionInfo.version = extension.version;
+
 			if (extension.type === 'bundle') {
-				return {
-					...extensionInfo,
+				const bundleExtensionInfo: Omit<BundleExtension, 'entrypoint' | 'path'> = {
+					name: extensionInfo.name,
+					type: 'bundle',
+					local: extensionInfo.local,
 					entries: extension.entries.map((entry) => ({
 						name: entry.name,
 						type: entry.type,
-					})),
+					})) as { name: ExtensionInfo['name']; type: NestedExtensionType }[],
 				};
+
+				return bundleExtensionInfo;
 			} else {
-				return extensionInfo as ExtensionInfo;
+				return extensionInfo;
 			}
 		}
 	}
@@ -231,7 +246,7 @@ class ExtensionManager {
 
 	private async load(): Promise<void> {
 		try {
-			await ensureExtensionDirs(env.EXTENSIONS_PATH, NESTED_EXTENSION_TYPES);
+			await ensureExtensionDirs(env['EXTENSIONS_PATH'], NESTED_EXTENSION_TYPES);
 
 			this.extensions = await this.getExtensions();
 		} catch (err: any) {
@@ -244,7 +259,7 @@ class ExtensionManager {
 		await this.registerOperations();
 		await this.registerBundles();
 
-		if (env.SERVE_APP) {
+		if (env['SERVE_APP']) {
 			this.appExtensions = await this.generateExtensionBundle();
 		}
 
@@ -256,7 +271,7 @@ class ExtensionManager {
 
 		this.apiEmitter.offAll();
 
-		if (env.SERVE_APP) {
+		if (env['SERVE_APP']) {
 			this.appExtensions = null;
 		}
 
@@ -268,7 +283,7 @@ class ExtensionManager {
 			logger.info('Watching extensions for changes...');
 
 			const localExtensionPaths = NESTED_EXTENSION_TYPES.flatMap((type) => {
-				const typeDir = path.posix.join(pathToRelativeUrl(env.EXTENSIONS_PATH), pluralize(type));
+				const typeDir = path.posix.join(pathToRelativeUrl(env['EXTENSIONS_PATH']), pluralize(type));
 
 				if (isIn(type, HYBRID_EXTENSION_TYPES)) {
 					return [path.posix.join(typeDir, '*', 'app.js'), path.posix.join(typeDir, '*', 'api.js')];
@@ -317,12 +332,12 @@ class ExtensionManager {
 	}
 
 	private async getExtensions(): Promise<Extension[]> {
-		const packageExtensions = await getPackageExtensions(env.PACKAGE_FILE_LOCATION);
-		const localPackageExtensions = await resolvePackageExtensions(env.EXTENSIONS_PATH);
-		const localExtensions = await getLocalExtensions(env.EXTENSIONS_PATH);
+		const packageExtensions = await getPackageExtensions(env['PACKAGE_FILE_LOCATION']);
+		const localPackageExtensions = await resolvePackageExtensions(env['EXTENSIONS_PATH']);
+		const localExtensions = await getLocalExtensions(env['EXTENSIONS_PATH']);
 
 		return [...packageExtensions, ...localPackageExtensions, ...localExtensions].filter(
-			(extension) => env.SERVE_APP || APP_EXTENSION_TYPES.includes(extension.type as any) === false
+			(extension) => env['SERVE_APP'] || APP_EXTENSION_TYPES.includes(extension.type as any) === false
 		);
 	}
 
@@ -356,7 +371,7 @@ class ExtensionManager {
 	}
 
 	private async getSharedDepsMapping(deps: string[]): Promise<Record<string, string>> {
-		const appDir = await fse.readdir(path.join(resolvePackage('@directus/app', __dirname), 'dist', 'assets'));
+		const appDir = await readdir(path.join(resolvePackage('@directus/app', __dirname), 'dist', 'assets'));
 
 		const depsMapping: Record<string, string> = {};
 		for (const dep of deps) {
@@ -364,7 +379,7 @@ class ExtensionManager {
 			const depName = appDir.find((file) => depRegex.test(file));
 
 			if (depName) {
-				const depUrl = new Url(env.PUBLIC_URL).addPath('admin', 'assets', depName);
+				const depUrl = new Url(env['PUBLIC_URL']).addPath('admin', 'assets', depName);
 
 				depsMapping[dep] = depUrl.toString({ rootRelative: true });
 			} else {
@@ -380,7 +395,7 @@ class ExtensionManager {
 		for (const hook of hooks) {
 			try {
 				const hookPath = path.resolve(hook.path, hook.entrypoint);
-				const hookInstance: HookConfig | { default: HookConfig } = await dynamicImport(hookPath);
+				const hookInstance: HookConfig | { default: HookConfig } = await import(`file://${hookPath}`);
 
 				const config = getModuleDefault(hookInstance);
 
@@ -400,7 +415,7 @@ class ExtensionManager {
 		for (const endpoint of endpoints) {
 			try {
 				const endpointPath = path.resolve(endpoint.path, endpoint.entrypoint);
-				const endpointInstance: EndpointConfig | { default: EndpointConfig } = require(endpointPath);
+				const endpointInstance: EndpointConfig | { default: EndpointConfig } = await import(`file://${endpointPath}`);
 
 				const config = getModuleDefault(endpointInstance);
 
@@ -433,8 +448,10 @@ class ExtensionManager {
 
 		for (const operation of [...internalOperations, ...operations]) {
 			try {
-				const operationPath = path.resolve(operation.path, operation.entrypoint.api);
-				const operationInstance: OperationApiConfig | { default: OperationApiConfig } = require(operationPath);
+				const operationPath = path.resolve(operation.path, operation.entrypoint.api!);
+				const operationInstance: OperationApiConfig | { default: OperationApiConfig } = await import(
+					`file://${operationPath}`
+				);
 
 				const config = getModuleDefault(operationInstance);
 
@@ -454,7 +471,7 @@ class ExtensionManager {
 		for (const bundle of bundles) {
 			try {
 				const bundlePath = path.resolve(bundle.path, bundle.entrypoint.api);
-				const bundleInstances: BundleConfig | { default: BundleConfig } = require(bundlePath);
+				const bundleInstances: BundleConfig | { default: BundleConfig } = await import(`file://${bundlePath}`);
 
 				const configs = getModuleDefault(bundleInstances);
 

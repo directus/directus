@@ -1,8 +1,6 @@
-import { validateEnv } from '../utils/validate-env';
-import { registerDrivers } from './register-drivers';
-import { registerLocations } from './register-locations';
-
-// @ts-expect-error https://github.com/microsoft/TypeScript/issues/49721
+import { validateEnv } from '../utils/validate-env.js';
+import { registerDrivers } from './register-drivers.js';
+import { registerLocations } from './register-locations.js';
 import type { StorageManager } from '@directus/storage';
 
 export const _cache: { storage: any | null } = {
