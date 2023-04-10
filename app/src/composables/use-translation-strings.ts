@@ -148,9 +148,11 @@ export function useTranslationStrings(): UsableTranslationStrings {
 		const newTranslations: RawTranslation[] = [];
 		for (const { language, translation: value } of translation.translations) {
 			newTranslations.push({ key: translation.key, language, value });
-			translationStrings.value.push({ key: translation.key, language, value });
 		}
 		await api.post(`/translation-strings/${encodeURIComponent(translation.key)}`, newTranslations);
+		translationStrings.value = translationStrings.value
+			.filter(({ key }) => key !== translation.key)
+			.concat(newTranslations);
 		await updateLocaleStrings(translationStrings.value);
 	}
 	async function removeTranslation(translationKey: string) {
